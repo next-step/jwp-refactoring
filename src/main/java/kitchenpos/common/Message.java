@@ -17,7 +17,9 @@ public enum Message {
     ERROR_ORDER_SHOULD_HAVE_NON_EMPTY_TABLE("비어있는 테이블의 주문을 받을 수 없습니다."),
     ERROR_ORDER_SHOULD_HAVE_REGISTERED_MENU("등록된 메뉴만 주문할 수 있습니다."),
     ERROR_ORDER_NOT_FOUND("등록되지 않은 주문입니다."),
-    ERROR_ORDER_STATUS_CANNOT_BE_CHANGED_WHEN_COMPLETED("완료 처리된 주문의 상태는 변경할 수 없습니다.");
+    ERROR_ORDER_STATUS_CANNOT_BE_CHANGED_WHEN_COMPLETED("완료 처리된 주문의 상태는 변경할 수 없습니다."),
+    ERROR_ORDER_TABLE_NOT_FOUND("등록되지 않은 주문테이블입니다."),
+    ERROR_ORDER_TABLE_CANNOT_BE_EMPTY_WHEN_ORDERS_IN_COOKING_OR_MEAL("주문의 상태가 요리중이거나 식사중인 테이블은 비울 수 없습니다.");
 
     private String message;
 

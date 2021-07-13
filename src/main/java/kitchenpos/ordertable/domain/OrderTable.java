@@ -37,12 +37,18 @@ public class OrderTable {
         this.empty = empty;
     }
 
-    public boolean cleanTable() {
+    public OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
+        this.id = id;
+        this.tableGroup = tableGroup;
+        this.numberOfGuests = numberOfGuests;
+        this.empty = empty;
+    }
+
+    public void changeEmpty(boolean isEmpty) {
         if (tableGroup != null) {
             throw new CannotCleanTableException(ERROR_ORDER_TABLE_CANNOT_BE_CLEANED_WHEN_GROUPED);
         }
-        this.empty = true;
-        return true;
+        this.empty = isEmpty;
     }
 
     public void updateNumberOfGuestsTo(int number) {
@@ -79,10 +85,6 @@ public class OrderTable {
         return numberOfGuests;
     }
 
-    public void setNumberOfGuests(final int numberOfGuests) {
-        this.numberOfGuests = numberOfGuests;
-    }
-
     public boolean isEmpty() {
         return empty;
     }
@@ -90,5 +92,4 @@ public class OrderTable {
     public void setEmpty(final boolean empty) {
         this.empty = empty;
     }
-
 }

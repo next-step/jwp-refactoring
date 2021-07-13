@@ -18,7 +18,7 @@ public class TableTest {
     void 단체지정된_테이블의_비어있음_여부_변경시_예외발생() {
         OrderTable 단체지정_된_테이블 = new OrderTable(new TableGroup(), 3, false);
 
-        assertThatThrownBy(() -> 단체지정_된_테이블.cleanTable())
+        assertThatThrownBy(() -> 단체지정_된_테이블.changeEmpty(true))
                 .isInstanceOf(CannotCleanTableException.class);
     }
 

@@ -1,11 +1,11 @@
 package kitchenpos.table.ui;
 
-
 import kitchenpos.ordertable.application.TableService;
 import kitchenpos.common.ControllerTest;
 import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.dto.OrderTableRequest;
+import kitchenpos.ordertable.dto.OrderTableResponse;
 import kitchenpos.ordertable.ui.TableRestController;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @WebMvcTest(controllers = TableRestController.class)
-public class TableControllerTest extends ControllerTest<OrderTable> {
+public class TableControllerTest extends ControllerTest<OrderTableRequest> {
 
     private static final String BASE_URI = "/api/tables";
 
@@ -31,27 +31,22 @@ public class TableControllerTest extends ControllerTest<OrderTable> {
     @Autowired
     private TableRestController tableRestController;
 
-    private OrderTable 첫번째_테이블;
-
     @Override
     protected Object controller() {
         return tableRestController;
     }
 
-    @BeforeEach
-    void 사전준비() {
-        첫번째_테이블 = new OrderTable();
-        첫번째_테이블.setId(1L);
-    }
+    private final OrderTable 비어있지_않은_테이블 = new OrderTable(1L, null, 3, false);
+    private final OrderTable 비어있는_테이블 = new OrderTable(2L, null, 3, true);
 
     @DisplayName("주문테이블 생성요청")
     @Test
     void 주문테이블_생성요청() throws Exception {
         //Given
-        when(tableService.create(any())).thenReturn(첫번째_테이블);
+        when(tableService.create(any())).thenReturn(OrderTableResponse.of(비어있는_테이블));
 
         //When
-        ResultActions 결과 = postRequest(BASE_URI, 첫번째_테이블);
+        ResultActions 결과 = postRequest(BASE_URI, OrderTableRequest.of(비어있는_테이블));
 
         //Then
         생성성공(결과);
@@ -61,8 +56,8 @@ public class TableControllerTest extends ControllerTest<OrderTable> {
     @Test
     void 주문테이블_목록_조회요청() throws Exception {
         //Given
-        List<OrderTable> 주문테이블_목록 = new ArrayList<>(Arrays.asList(첫번째_테이블));
-        when(tableService.list()).thenReturn(주문테이블_목록);
+        List<OrderTable> 주문테이블_목록 = new ArrayList<>(Arrays.asList(비어있는_테이블, 비어있지_않은_테이블));
+        when(tableService.list()).thenReturn(OrderTableResponse.ofList(주문테이블_목록));
 
         //When
         ResultActions 결과 = getRequest(BASE_URI);
@@ -71,19 +66,16 @@ public class TableControllerTest extends ControllerTest<OrderTable> {
         조회성공(결과);
     }
 
-    @DisplayName("주문테이블 비어있음 여부 수정요청")
+    @DisplayName("주문테이블을 비어있음으로 수정요청")
     @Test
     void 주문테이블_비어있음_수정요청() throws Exception {
         //Given
-        OrderTable 테이블_리퀘스트 = new OrderTable();
-        테이블_리퀘스트.setId(첫번째_테이블.getId());
-        테이블_리퀘스트.setEmpty(true);
-        when(tableService.changeEmpty(첫번째_테이블.getId(), 테이블_리퀘스트)).thenReturn(테이블_리퀘스트);
+        when(tableService.changeEmpty(비어있지_않은_테이블.getId(), OrderTableRequest.of(비어있는_테이블))).thenReturn(OrderTableResponse.of(비어있는_테이블));
 
-        String 수정요청_URI = BASE_URI + "/" + 첫번째_테이블.getId() + "/empty";
+        String 수정요청_URI = BASE_URI + "/" + 비어있지_않은_테이블.getId() + "/empty";
 
         //When
-        ResultActions 결과 = putRequest(수정요청_URI, 테이블_리퀘스트);
+        ResultActions 결과 = putRequest(수정요청_URI, OrderTableRequest.of(비어있지_않은_테이블));
 
         //Then
         수정성공(결과);
@@ -93,15 +85,14 @@ public class TableControllerTest extends ControllerTest<OrderTable> {
     @Test
     void 주문테이블_손님수_수정요청() throws Exception {
         //Given
-        OrderTable 테이블_리퀘스트 = new OrderTable();
-        테이블_리퀘스트.setId(첫번째_테이블.getId());
-        테이블_리퀘스트.setNumberOfGuests(3);
-        when(tableService.changeNumberOfGuests(첫번째_테이블.getId(), 테이블_리퀘스트)).thenReturn(테이블_리퀘스트);
+        OrderTable 변경될_손님수_정보_가지고있는_테이블 = new OrderTable(99, false);
+        when(tableService.changeNumberOfGuests(비어있지_않은_테이블.getId(), OrderTableRequest.of(변경될_손님수_정보_가지고있는_테이블)))
+                .thenReturn(OrderTableResponse.of(변경될_손님수_정보_가지고있는_테이블));
 
-        String 수정요청_URI = BASE_URI + "/" + 첫번째_테이블.getId() + "/number-of-guests";
+        String 수정요청_URI = BASE_URI + "/" + 비어있지_않은_테이블.getId() + "/number-of-guests";
 
         //When
-        ResultActions 결과 = putRequest(수정요청_URI, 테이블_리퀘스트);
+        ResultActions 결과 = putRequest(수정요청_URI, OrderTableRequest.of(변경될_손님수_정보_가지고있는_테이블));
 
         //Then
         수정성공(결과);
