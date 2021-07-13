@@ -1,6 +1,14 @@
 package kitchenpos.application;
 
-import kitchenpos.domain.*;
+import kitchenpos.menu.application.MenuService;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.order.application.OrderService;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.table.application.TableService;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.application.TableGroupService;
 import kitchenpos.utils.TestUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -100,8 +108,8 @@ class TableServiceTest {
 
     @ParameterizedTest
     @DisplayName("주문 테이블의 비어있는 상태값을 수정시, 주문테이블의 주문이 `조리` 상태, `식사` 상태이면 주문 테이블 상태를 바꿀 수 없다.")
-    @EnumSource(value = OrderStatus.class, names = {"COOKING", "MEAL"})
-    void changeEmptyExceptionTest3(OrderStatus orderStatus) {
+    @EnumSource(value = Order.OrderStatus.class, names = {"COOKING", "MEAL"})
+    void changeEmptyExceptionTest3(Order.OrderStatus orderStatus) {
         //given
         Menu menu = menuService.list().get(0);
         OrderTable orderTable = tableService.create(
@@ -109,8 +117,8 @@ class TableServiceTest {
         );
 
 
-        Order savedOrder = orderService.create(new Order(orderTable, OrderLineItem.valueOf(menu, 1L)));
-        savedOrder.chaangeOrderStatus(orderStatus);
+        Order savedOrder = orderService.create(new Order(orderTable.getId(), OrderLineItem.valueOf(menu, 1L)));
+        savedOrder.changeOrderStatus(orderStatus);
         orderService.changeOrderStatus(savedOrder.getId(), savedOrder);
 
         // then

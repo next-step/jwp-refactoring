@@ -1,7 +1,12 @@
 package kitchenpos.application;
 
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.order.application.OrderService;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.table.application.TableService;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.application.TableGroupService;
 import kitchenpos.utils.TestUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -73,7 +78,7 @@ class TableGroupServiceTest {
         assertThatThrownBy(() -> {
             TableGroup tableGroup = new TableGroup(orderTable1, null);
             tableGroupService.create(tableGroup);
-        }).isInstanceOf(RuntimeException.class).hasMessageContaining("주문테이블 최소 갯수는 2개입니다.");
+        }).isInstanceOf(RuntimeException.class).hasMessageContaining("주문테이블 최소 갯수는 2개 입니다.");
     }
 
     @DisplayName("주문 테이블 그룹을 등록시, 주문테이블들은 사전에 등록되어 있어야 한다.")
