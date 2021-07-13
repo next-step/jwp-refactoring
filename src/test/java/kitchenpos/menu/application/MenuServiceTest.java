@@ -34,8 +34,6 @@ public class MenuServiceTest {
     @Mock
     private MenuGroupRepository menuGroupRepository;
     @Mock
-    private MenuProductRepository menuProductRepository;
-    @Mock
     private ProductRepository productRepository;
 
     private Long menu1Id = 1L;
@@ -51,7 +49,7 @@ public class MenuServiceTest {
 
     @BeforeEach
     void setUp() {
-        menuService = new MenuService(menuRepository, menuGroupRepository, menuProductRepository, productRepository);
+        menuService = new MenuService(menuRepository, menuGroupRepository, productRepository);
     }
 
     @DisplayName("메뉴를 등록할 수 있다")
