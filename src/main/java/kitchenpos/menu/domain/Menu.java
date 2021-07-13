@@ -23,17 +23,17 @@ public class Menu {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     private String name;
 
     @Embedded
     private Price price;
 
-    @ManyToOne // 단방향
+    @ManyToOne(optional = false)
     @JoinColumn(name = "menu_group_id")
     private MenuGroup menuGroup;
 
-    @Embedded // 양방향
+    @Embedded
     private MenuProducts menuProducts = new MenuProducts();
 
     protected Menu() {
@@ -63,7 +63,7 @@ public class Menu {
     }
 
     private void validatePrice() {
-        if (price.getValue().compareTo(menuProducts.totalPrice()) > 0) {
+        if (price.getValue().compareTo(menuProducts.totalMenuProductPrice()) > 0) {
             throw new InvalidPriceException("메뉴의 가격은 메뉴 상품 목록 가격의 합보다 높을 수 없습니다.");
         }
     }

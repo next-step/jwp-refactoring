@@ -1,8 +1,8 @@
 package kitchenpos.table.application;
 
-import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.domain.TableDependencyHelper;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.domain.TableGroupRepository;
 import kitchenpos.table.dto.TableGroupRequest;
@@ -27,7 +27,7 @@ import static org.mockito.BDDMockito.given;
 class TableGroupServiceTest {
 
     @Mock
-    private OrderRepository orderRepository;
+    private TableDependencyHelper tableDependencyHelper;
 
     @Mock
     private OrderTableRepository orderTableRepository;
@@ -83,7 +83,7 @@ class TableGroupServiceTest {
         TableGroup tableGroup = new TableGroup(Arrays.asList(orderTable1, orderTable2));
 
         given(tableGroupRepository.findById(any())).willReturn(Optional.of(tableGroup));
-        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any())).willReturn(true);
+        given(tableDependencyHelper.existsByOrderTableIdInAndOrderStatusNotCompletion(any())).willReturn(true);
 
         // when & then
         assertThatThrownBy(() -> tableGroupService.ungroup(tableGroup.getId()))

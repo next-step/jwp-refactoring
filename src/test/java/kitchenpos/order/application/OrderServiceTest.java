@@ -66,7 +66,6 @@ class OrderServiceTest {
         OrderRequest orderRequest = new OrderRequest(1L, Arrays.asList(orderLineItemDto));
 
         given(menuRepository.countByIdIn(any())).willReturn(1);
-        given(menuRepository.findById(any())).willReturn(Optional.of(menu));
         given(orderTableRepository.findById(any())).willReturn(Optional.of(new OrderTable(1L, 1, true)));
         given(orderRepository.save(any())).willReturn(order);
 

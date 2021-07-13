@@ -1,7 +1,5 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.menu.domain.Menu;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -20,29 +18,28 @@ public class OrderLineItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne // 양방향
+    @ManyToOne(optional = false)
     @JoinColumn(name = "order_id")
     private Order order;
 
-    @ManyToOne // 단방향
-    @JoinColumn(name = "menu_id")
-    private Menu menu;
+    @Column(name = "menu_id")
+    private Long menuId;
 
-    @Column(name = "quantity")
+    @Column(name = "quantity", nullable = false)
     private long quantity;
 
     protected OrderLineItem() {
     }
 
-    public OrderLineItem(final Menu menu, final long quantity) {
-        this.menu = menu;
+    public OrderLineItem(final Long menuId, final long quantity) {
+        this.menuId = menuId;
         this.quantity = quantity;
     }
 
-    public OrderLineItem(final Long id, final Order order, final Menu menu, final long quantity) {
+    public OrderLineItem(final Long id, final Order order, final Long menuId, final long quantity) {
         this.id = id;
         this.order = order;
-        this.menu = menu;
+        this.menuId = menuId;
         this.quantity = quantity;
     }
 
@@ -58,8 +55,8 @@ public class OrderLineItem {
         return order;
     }
 
-    public Menu getMenu() {
-        return menu;
+    public Long getMenuId() {
+        return menuId;
     }
 
     public long getQuantity() {
@@ -78,4 +75,5 @@ public class OrderLineItem {
     public int hashCode() {
         return Objects.hash(id);
     }
+
 }

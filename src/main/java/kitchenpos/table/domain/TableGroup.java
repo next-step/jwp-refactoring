@@ -2,7 +2,6 @@ package kitchenpos.table.domain;
 
 import kitchenpos.table.exception.AlreadyExistTableGroupException;
 import kitchenpos.table.exception.InvalidMinOrderTableSizeException;
-import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -24,9 +23,8 @@ public class TableGroup {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @CreatedDate
-    @Column(name = "created_date")
-    private LocalDateTime createdDate;
+    @Column(name = "created_date", nullable = false)
+    private LocalDateTime createdDate = LocalDateTime.now();
 
     @Embedded
     private OrderTables orderTables = new OrderTables();

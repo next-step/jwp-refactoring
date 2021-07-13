@@ -1,9 +1,8 @@
 package kitchenpos.table.application;
 
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.domain.TableDependencyHelper;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.exception.FailedChangeEmptyException;
@@ -11,18 +10,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.Arrays;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 
 @Service
 public class TableService {
-    private final OrderRepository orderRepository;
+    private final TableDependencyHelper tableDependencyHelper;
     private final OrderTableRepository orderTableRepository;
 
-    public TableService(final OrderRepository orderRepository, final OrderTableRepository orderTableRepository) {
-        this.orderRepository = orderRepository;
+    public TableService(final TableDependencyHelper tableDependencyHelper, final OrderTableRepository orderTableRepository) {
+        this.tableDependencyHelper = tableDependencyHelper;
         this.orderTableRepository = orderTableRepository;
     }
 
@@ -43,8 +41,7 @@ public class TableService {
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         final OrderTable savedOrderTable = findById(orderTableId);
-        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTableId,
-                Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
+        if (tableDependencyHelper.existsByOrderTableIdAndOrderStatusNotCompletion(orderTableId)) {
             throw new FailedChangeEmptyException("주문 상태가 완료일때만 빈 테이블 여부 변경 가능합니다.");
         }
 
