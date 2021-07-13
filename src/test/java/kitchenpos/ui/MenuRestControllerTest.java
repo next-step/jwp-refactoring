@@ -1,114 +1,65 @@
 package kitchenpos.ui;
 
-import static org.hamcrest.Matchers.containsString;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.math.BigDecimal;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import kitchenpos.application.MenuService;
+import kitchenpos.application.MenuGroupService;
+import kitchenpos.application.ProductService;
 import kitchenpos.domain.Menu;
+import kitchenpos.domain.MenuGroup;
+import kitchenpos.domain.MenuProduct;
+import kitchenpos.domain.Product;
+import kitchenpos.dto.request.MenuGroupRequest;
+import kitchenpos.dto.request.MenuRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.filter.CharacterEncodingFilter;
 
-@DisplayName("메뉴 관련 테스트")
-@SpringBootTest
-class MenuRestControllerTest {
-    public static final String MENUS_URI = "/api/menus";
+import java.math.BigDecimal;
+import java.util.Arrays;
 
-    private Menu menu1;
-    private Menu menu2;
+class MenuRestControllerTest extends ControllerTest {
 
-    private MockMvc mockMvc;
-
-    @MockBean
-    private MenuService menuService;
+    private final String MENU_URI = "/api/menus";
 
     @Autowired
-    private ObjectMapper objectMapper;
+    private ProductService productService;
 
+    @Autowired
+    private MenuGroupService menuGroupService;
+
+    private MenuGroup 후라이드양념반반메뉴;
+    private Product 후라이드상품;
+    private Product 양념치킨상품;
+    private MenuProduct 후라이드;
+    private MenuProduct 양념치킨;
 
     @BeforeEach
-    void setUp(@Autowired MenuRestController menuRestController) {
-        // MockMvc
-        mockMvc = MockMvcBuilders.standaloneSetup(menuRestController)
-                .addFilter(new CharacterEncodingFilter(StandardCharsets.UTF_8.name(), true))
-                .alwaysDo(print())
-                .build();
-
-        menu1 = new Menu();
-        menu1.setId(1L);
-        menu1.setName("후라이드치킨");
-        menu1.setPrice(new BigDecimal(16000));
-        menu1.setMenuGroupId(2L);
-
-        menu2 = new Menu();
-        menu2.setId(2L);
-        menu2.setName("양념치킨");
-        menu2.setPrice(new BigDecimal(16000));
-        menu2.setMenuGroupId(2L);
+    void setUp() {
+        MenuGroupRequest menuGroupRequest = new MenuGroupRequest("후라이드양념반반메뉴");
+        후라이드양념반반메뉴 = menuGroupService.create(menuGroupRequest);
+        후라이드상품 = productService.findById(1l);
+        양념치킨상품 = productService.findById(2l);
     }
 
-    public String toJsonString(Menu menu) throws JsonProcessingException {
-        return objectMapper.writeValueAsString(menu);
-    }
-
+    @DisplayName("메뉴를 등록한다")
     @Test
-    @DisplayName("메뉴을 등록할 수 있다.")
-    public void create() throws Exception {
-        // given
-        given(menuService.create(any())).willReturn(menu1);
+    void create() throws Exception {
+        MenuRequest menuRequest = 메뉴를_생성한다(32000, 후라이드양념반반메뉴);
+        String body = objectMapper.writeValueAsString(menuRequest);
 
-        // when
-        final ResultActions actions = mockMvc.perform(post(MENUS_URI)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(toJsonString(menu1)));
-
-        // then
-        actions
-                .andExpect(status().isCreated())
-                .andExpect(header().string("location", MENUS_URI + "/1"))
-                .andExpect(content().string(containsString("1")))
-                .andExpect(content().string(containsString("후라이드치킨")))
-                .andExpect(content().string(containsString("16000")))
-                .andExpect(content().string(containsString("2")));
+        컨트롤러_생성_요청_및_검증(MENU_URI, body);
     }
 
+    @DisplayName("메뉴 목록을 조회한다")
     @Test
-    @DisplayName("메뉴의 목록을 조회할 수 있다.")
-    public void list() throws Exception {
-        // given
-        given(menuService.list()).willReturn(Arrays.asList(menu1, menu2));
+    void search() throws Exception {
+        컨트롤러_조회_요청_및_검증(MENU_URI);
+    }
 
-        // when
-        final ResultActions actions = mockMvc.perform(get(MENUS_URI)
-                .contentType(MediaType.APPLICATION_JSON));
-
-        // then
-        actions
-                .andExpect(status().isOk())
-                .andExpect(content().string(containsString("1")))
-                .andExpect(content().string(containsString("후라이드치킨")))
-                .andExpect(content().string(containsString("16000")))
-                .andExpect(content().string(containsString("2")))
-                .andExpect(content().string(containsString("양념치킨")));
+    private MenuRequest 메뉴를_생성한다(int price, MenuGroup menuGroup) {
+        Menu menu = new Menu("후라이드양념반반", BigDecimal.valueOf(price), menuGroup);
+        후라이드 = new MenuProduct(menu, 후라이드상품, 1);
+        양념치킨 = new MenuProduct(menu, 양념치킨상품, 1);
+        menu.updateMenuProducts(Arrays.asList(후라이드, 양념치킨));
+        return MenuRequest.of(menu);
     }
 }
