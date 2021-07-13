@@ -41,7 +41,7 @@ public class OrderService {
         orderTable.checkEmptyTable();
 
         Order order = new Order(orderTable.getId(), OrderStatus.COOKING, orderRequest.getOrderLineItems());
-        orderTable.addOrder(order);
+
         return OrderResponse.from(orderRepository.save(order));
     }
 

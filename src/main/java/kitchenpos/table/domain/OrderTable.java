@@ -1,12 +1,13 @@
 package kitchenpos.table.domain;
 
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.Orders;
 import kitchenpos.table.exception.EmptyException;
 import kitchenpos.table.exception.IllegalNumberOfGuestsException;
 import kitchenpos.table.exception.NoneNullGroupIdException;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.util.Objects;
 
 @Entity
@@ -18,9 +19,6 @@ public class OrderTable {
     private Long tableGroupId;
     private int numberOfGuests;
     private boolean empty;
-
-    @Embedded
-    private Orders orders = new Orders();
 
     protected OrderTable() {
     }
@@ -58,14 +56,7 @@ public class OrderTable {
 
     public void changeEmpty(final boolean empty) {
         validateGroupId();
-        checkMealOrCook();
         this.empty = empty;
-    }
-
-    private void checkMealOrCook() {
-        if (!orders.isCompletedAllOrders()) {
-            throw new IllegalArgumentException();
-        }
     }
 
     private void validateGroupId() {
@@ -100,14 +91,6 @@ public class OrderTable {
 
     public void upgroup() {
         this.tableGroupId = null;
-    }
-
-    public void addOrder(Order order) {
-        orders.add(order);
-    }
-
-    public boolean isCompletedOrders() {
-        return orders.isCompletedAllOrders();
     }
 
     public void grouped(Long tableGroupId) {
