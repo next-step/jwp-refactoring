@@ -41,9 +41,9 @@ class TableServiceTest {
     @InjectMocks
     private TableService tableService;
 
-    private final TableGroup 단체지정 = null;
-    private final OrderTable 비어있지_않은_테이블 = new OrderTable(1L, 단체지정, 3, false);
-    private final OrderTable 비어있는_테이블 = new OrderTable(1L, 단체지정, 3, true);
+    private final TableGroup 단체지정_안됨 = null;
+    private final OrderTable 비어있지_않은_테이블 = new OrderTable(1L, 단체지정_안됨, 3, false);
+    private final OrderTable 비어있는_테이블 = new OrderTable(1L, 단체지정_안됨, 3, true);
 
     @DisplayName("테이블을 등록한다")
     @Test

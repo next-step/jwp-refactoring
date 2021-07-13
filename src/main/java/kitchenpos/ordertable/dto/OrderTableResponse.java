@@ -12,7 +12,6 @@ public class OrderTableResponse {
     private boolean empty;
 
     public OrderTableResponse() {
-
     }
 
     private OrderTableResponse(Long id, int numberOfGuests, boolean empty) {

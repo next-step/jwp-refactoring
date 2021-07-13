@@ -7,8 +7,9 @@ import org.springframework.data.annotation.CreatedDate;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-import static kitchenpos.common.Message.ERROR_ORDER_SHOULD_HAVE_NON_EMPTY_TABLE;
-import static kitchenpos.common.Message.ERROR_ORDER_STATUS_CANNOT_BE_CHANGED_WHEN_COMPLETED;
+import static kitchenpos.common.Message.*;
+import static kitchenpos.order.domain.OrderStatus.COOKING;
+import static kitchenpos.order.domain.OrderStatus.MEAL;
 
 @Entity
 @Table(name = "orders")
@@ -41,6 +42,7 @@ public class Order {
         this.orderStatus = orderStatus;
         this.orderLineItems = orderLineItems;
         orderLineItems.ofOrder(this);
+        orderTable.addOrder(this);
     }
 
     private void validateOrderTableStatus(OrderTable orderTable) {
@@ -55,6 +57,10 @@ public class Order {
         }
         this.orderStatus = orderStatus;
         return this;
+    }
+
+    public boolean cannotBeChanged() {
+        return orderStatus == MEAL || orderStatus == COOKING;
     }
 
     private boolean checkWhetherCompleted() {
@@ -80,25 +86,11 @@ public class Order {
     public OrderStatus getOrderStatus() {
         return orderStatus;
     }
-
-    public void setOrderStatus(final OrderStatus orderStatus) {
-        this.orderStatus = orderStatus;
-    }
-
     public LocalDateTime getOrderedTime() {
         return orderedTime;
-    }
-
-    public void setOrderedTime(final LocalDateTime orderedTime) {
-        this.orderedTime = orderedTime;
     }
 
     public OrderLineItems getOrderLineItems() {
         return orderLineItems;
     }
-
-    public void setOrderLineItems(final OrderLineItems orderLineItems) {
-        this.orderLineItems = orderLineItems;
-    }
-
 }

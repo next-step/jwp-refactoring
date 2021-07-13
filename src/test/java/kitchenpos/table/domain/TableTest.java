@@ -6,12 +6,11 @@ import kitchenpos.ordertable.domain.TableGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-
 import static kitchenpos.common.Message.ERROR_TABLE_GUESTS_NUMBER_CANNOT_BE_CHANGED_WHEN_EMPTY;
 import static kitchenpos.common.Message.ERROR_TABLE_GUESTS_NUMBER_CANNOT_BE_SMALLER_THAN_ZERO;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-public class TableTest {
+class TableTest {
 
     @DisplayName("단체지정된 테이블의 비어있음 여부를 변경하는 경우, 예외발생한다")
     @Test
@@ -21,7 +20,6 @@ public class TableTest {
         assertThatThrownBy(() -> 단체지정_된_테이블.changeEmpty(true))
                 .isInstanceOf(CannotCleanTableException.class);
     }
-
 
     @DisplayName("테이블의 손님수를 0명 미만으로 입력하여 변경시, 예외 발생한다")
     @Test
@@ -34,7 +32,6 @@ public class TableTest {
                 .hasMessage(ERROR_TABLE_GUESTS_NUMBER_CANNOT_BE_SMALLER_THAN_ZERO.showText());
     }
 
-
     @DisplayName("비어있는 테이블의 손님수를 변경시, 예외 발생한다")
     @Test
     void 비어있는_테이블의_손님수_변경시_예외발생() {
@@ -43,6 +40,5 @@ public class TableTest {
         assertThatThrownBy(() -> 비어있는_테이블.updateNumberOfGuestsTo(5))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(ERROR_TABLE_GUESTS_NUMBER_CANNOT_BE_CHANGED_WHEN_EMPTY.showText());
-
     }
 }

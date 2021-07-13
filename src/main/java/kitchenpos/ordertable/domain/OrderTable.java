@@ -1,6 +1,9 @@
 package kitchenpos.ordertable.domain;
 
 import kitchenpos.exception.CannotCleanTableException;
+import kitchenpos.exception.CannotUpdateException;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.Orders;
 
 import javax.persistence.*;
 
@@ -19,8 +22,11 @@ public class OrderTable {
     @Column(name = "number_of_guests", nullable = false)
     private int numberOfGuests;
 
+    @Embedded
+    private Orders orders = new Orders();
+
     @Column(name = "empty", nullable = false)
-    private boolean empty;
+    private boolean empty = true;
 
     public OrderTable() {
     }
@@ -32,6 +38,12 @@ public class OrderTable {
 
     public OrderTable(TableGroup tableGroup, int numberOfGuests, boolean empty) {
         this.tableGroup = tableGroup;
+        this.numberOfGuests = numberOfGuests;
+        this.empty = empty;
+    }
+
+    public OrderTable(Long id, int numberOfGuests, boolean empty) {
+        this.id = id;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
     }
@@ -60,24 +72,31 @@ public class OrderTable {
         this.numberOfGuests = number;
     }
 
+    public void assignToTableGroup(TableGroup tableGroup) {
+        this.tableGroup = tableGroup;
+    }
+
+    public boolean isAssignedToTableGroup() {
+        return tableGroup != null;
+    }
+
+    public void unGroup() {
+        if (orders.isNotCompleted()) {
+            throw new CannotUpdateException(ERROR_TABLE_GROUP_CANNOT_BE_UNGROUPED_WHEN_ORDERS_NOT_COMPLETED);
+        }
+        this.tableGroup = null;
+    }
+
+    public void addOrder(Order order) {
+        orders.add(order);
+    }
+
     public Long getId() {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public TableGroup getTableGroup() {
         return tableGroup;
-    }
-
-    public void setTableGroupNew(final TableGroup tableGroup) {
-        this.tableGroup = tableGroup;
-    }
-
-    public void setTableGroup(final Long tableGroupId) {
-        this.tableGroup = tableGroup;
     }
 
     public int getNumberOfGuests() {
@@ -86,9 +105,5 @@ public class OrderTable {
 
     public boolean isEmpty() {
         return empty;
-    }
-
-    public void setEmpty(final boolean empty) {
-        this.empty = empty;
     }
 }
