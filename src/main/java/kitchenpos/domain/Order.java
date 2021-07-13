@@ -50,20 +50,11 @@ public class Order {
         validateEmptyOrderLineItems();
     }
 
-    public void validateOrderStatus(OrderStatus orderStatus) {
-        if (Objects.equals(this.orderStatus, orderStatus)) {
-            throw new OrderException("주문상태가 올바르지 않습니다", orderStatus);
-        }
-    }
-
-    public void validateMenuSize(long size) {
-        if (orderLineItems.size() != size) {
-            throw new OrderException("주문 메뉴의 사이즈가 다릅니다", size);
-        }
-    }
-
-
     public void updateOrderStatus(OrderStatus orderStatus) {
+        if (Objects.equals(this.orderStatus, OrderStatus.COMPLETION)) {
+            throw new OrderException("주문상태가 올바르지 않습니다", OrderStatus.COMPLETION);
+        }
+
         this.orderStatus = orderStatus;
     }
 
