@@ -2,7 +2,6 @@ package kitchenpos.table.domain;
 
 import kitchenpos.table.exception.AlreadyExistTableGroupException;
 import kitchenpos.table.exception.InvalidMinOrderTableSizeException;
-import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;

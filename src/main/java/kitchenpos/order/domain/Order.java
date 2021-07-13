@@ -2,7 +2,6 @@ package kitchenpos.order.domain;
 
 import kitchenpos.order.exception.ChangeOrderStatusFailedException;
 import kitchenpos.order.exception.EmptyOrderLineItemException;
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.util.CollectionUtils;
 
 import javax.persistence.Column;
