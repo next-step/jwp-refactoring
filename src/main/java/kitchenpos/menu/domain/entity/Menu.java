@@ -4,7 +4,6 @@ import kitchenpos.menu.domain.value.MenuProducts;
 import kitchenpos.menu.domain.value.Price;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
@@ -13,6 +12,7 @@ public class Menu {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+
     @Embedded
     private Price price;
 
@@ -34,24 +34,18 @@ public class Menu {
         this.menuProducts.toMenu(this);
     }
 
-    public static Menu of(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        System.out.println("name = " + name);
-        System.out.println("menuGroup = " + menuGroup);
-        System.out.println("price = " + price);
-        System.out.println("menuProducts = " + menuProducts);
+    public static Menu of(String name, Price price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
         validateMenuProductsSum(price, menuProducts);
-        return new Menu(name, Price.of(price), menuGroup, new MenuProducts(menuProducts));
+        return new Menu(name, price, menuGroup, new MenuProducts(menuProducts));
     }
 
-    private static void validateMenuProductsSum(BigDecimal menuPrice, List<MenuProduct> menuProducts) {
+    private static void validateMenuProductsSum(Price menuPrice, List<MenuProduct> menuProducts) {
         Double sum = menuProducts.stream()
                 .mapToDouble(menuProduct -> menuProduct.getProduct().price())
                 .sum();
-        System.out.println("sum = " + sum);
-        System.out.println("menuPrice = " + menuPrice);
-//        if (sum.compareTo(menuPrice.doubleValue()) > 0 ) {
-//            throw new IllegalArgumentException();
-//        }
+        if(menuPrice.greaterThan(sum)){
+            throw new IllegalArgumentException();
+        }
     }
 
     public Long getId() {

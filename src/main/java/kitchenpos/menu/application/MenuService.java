@@ -1,6 +1,7 @@
 package kitchenpos.menu.application;
 
 import kitchenpos.menu.domain.entity.*;
+import kitchenpos.menu.domain.value.Price;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.product.domain.entity.Product;
@@ -16,26 +17,20 @@ import java.util.stream.Collectors;
 public class MenuService {
     private final MenuRepository menuRepository;
     private final MenuGroupRepository menuGroupRepository;
-    private final MenuProductRepository menuProductRepository;
     private final ProductRepository productRepository;
 
     public MenuService(
             MenuRepository menuRepository,
             MenuGroupRepository menuGroupRepository,
-            MenuProductRepository menuProductRepository,
             ProductRepository productRepository) {
         this.menuRepository = menuRepository;
         this.menuGroupRepository = menuGroupRepository;
-        this.menuProductRepository = menuProductRepository;
         this.productRepository = productRepository;
     }
 
     public MenuResponse create(final MenuRequest menuRequest) {
-        //TODO 메뉴에 포함된 상품의 총 가격은 메뉴의 가격보다 클 수 없다.
-        System.out.println("menuRequest = " + menuRequest);
-
         Menu menu = Menu.of(menuRequest.getName(),
-                menuRequest.getPrice(),
+                Price.of(menuRequest.getPrice()),
                 findMenuGroup(menuRequest.getMenuGroupId()),
                 findMenuProducts(menuRequest));
         return MenuResponse.of(menuRepository.save(menu));
