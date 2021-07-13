@@ -31,8 +31,8 @@ import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.exception.MenuException;
 import kitchenpos.menu.exception.PriceException;
-import kitchenpos.product.domain.Product;
-import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.menu.domain.Product;
+import kitchenpos.menu.domain.ProductRepository;
 
 @DisplayName("메뉴 서비스 테스트")
 @ExtendWith(MockitoExtension.class)

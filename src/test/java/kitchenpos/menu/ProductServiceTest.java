@@ -16,11 +16,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.menu.exception.PriceException;
-import kitchenpos.product.application.ProductService;
-import kitchenpos.product.domain.Product;
-import kitchenpos.product.domain.ProductRepository;
-import kitchenpos.product.dto.ProductRequest;
-import kitchenpos.product.dto.ProductResponse;
+import kitchenpos.menu.application.ProductService;
+import kitchenpos.menu.domain.Product;
+import kitchenpos.menu.domain.ProductRepository;
+import kitchenpos.menu.dto.ProductRequest;
+import kitchenpos.menu.dto.ProductResponse;
 
 @DisplayName("상품 서비스 테스트")
 @ExtendWith(MockitoExtension.class)

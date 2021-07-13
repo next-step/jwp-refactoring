@@ -38,7 +38,7 @@ import kitchenpos.order.exception.OrderException;
 import kitchenpos.table.domain.NumberOfGuests;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableRepository;
-import kitchenpos.product.domain.Product;
+import kitchenpos.menu.domain.Product;
 import kitchenpos.table.TableServiceTest;
 
 @DisplayName("주문 서비스 테스트")

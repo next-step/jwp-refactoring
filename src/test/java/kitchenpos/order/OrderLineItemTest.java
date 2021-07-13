@@ -16,7 +16,7 @@ import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.domain.Price;
 import kitchenpos.menu.domain.Quantity;
 import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.product.domain.Product;
+import kitchenpos.menu.domain.Product;
 
 @DisplayName("주문 항목 도메인 테스트")
 public class OrderLineItemTest {

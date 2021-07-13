@@ -21,7 +21,7 @@ import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.NumberOfGuests;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.product.domain.Product;
+import kitchenpos.menu.domain.Product;
 
 @DisplayName("주문 테이블 도메인 테스트")
 public class OrderTableTest {

@@ -5,7 +5,6 @@ import java.util.stream.Collectors;
 
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProducts;
-import kitchenpos.product.dto.ProductResponse;
 
 public class MenuProductResponse {
 	private Long seq;

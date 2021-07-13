@@ -16,8 +16,8 @@ import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.exception.MenuException;
-import kitchenpos.product.domain.Product;
-import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.menu.domain.Product;
+import kitchenpos.menu.domain.ProductRepository;
 
 @Service
 public class MenuService {

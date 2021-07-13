@@ -16,7 +16,7 @@ import kitchenpos.menu.domain.Price;
 import kitchenpos.menu.domain.Quantity;
 import kitchenpos.menu.exception.MenuException;
 import kitchenpos.menu.exception.PriceException;
-import kitchenpos.product.domain.Product;
+import kitchenpos.menu.domain.Product;
 
 @DisplayName("메뉴 도메인 테스트")
 public class MenuTest {

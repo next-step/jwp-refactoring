@@ -36,7 +36,7 @@ import kitchenpos.table.dto.OrderTableChangeEmptyRequest;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.exception.TableException;
-import kitchenpos.product.domain.Product;
+import kitchenpos.menu.domain.Product;
 import kitchenpos.table.domain.TableGroup;
 
 @DisplayName("주문 테이블 서비스 테스트")
