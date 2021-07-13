@@ -48,6 +48,17 @@ public class TableService {
         return OrderTableResponse.of(orderTableRepository.save(savedOrderTable));
     }
 
+    public OrderTableResponse changeNumberOfGuests(final Long orderTableId,
+        final OrderTableRequest orderTableRequest) {
+        final OrderTable savedOrderTable = findOrderTable(orderTableId);
+        if (savedOrderTable.isEmpty()) {
+            throw new OrderTableIsEmptyException();
+        }
+        savedOrderTable
+            .changeNumberOfGuests(NumberOfGuests.of(orderTableRequest.getNumberOfGuests()));
+        return OrderTableResponse.of(orderTableRepository.save(savedOrderTable));
+    }
+
     private void validateOrderStatus(Long orderTableId) {
         if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
             orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
@@ -66,14 +77,5 @@ public class TableService {
             .orElseThrow(NotFoundOrderTableException::new);
     }
 
-    public OrderTableResponse changeNumberOfGuests(final Long orderTableId,
-        final OrderTableRequest orderTableRequest) {
-        final OrderTable savedOrderTable = findOrderTable(orderTableId);
-        if (savedOrderTable.isEmpty()) {
-            throw new OrderTableIsEmptyException();
-        }
-        savedOrderTable
-            .changeNumberOfGuests(NumberOfGuests.of(orderTableRequest.getNumberOfGuests()));
-        return OrderTableResponse.of(orderTableRepository.save(savedOrderTable));
-    }
+
 }

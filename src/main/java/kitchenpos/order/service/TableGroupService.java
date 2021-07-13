@@ -27,6 +27,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class TableGroupService {
 
+    private static final int MIN_GROUP_SIZE = 2;
+
     private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
     private final TableGroupRepository tableGroupRepository;
@@ -39,12 +41,24 @@ public class TableGroupService {
     }
 
     public TableGroupResponse create(TableGroupRequest tableGroupRequest) {
-        validateOrderTableCountSmallerThanTwo(tableGroupRequest);
-        List<Long> orderTableIds = getOrderTableIds(tableGroupRequest);
-        List<OrderTable> orderTables = orderTableRepository.findAllById(orderTableIds);
+        List<OrderTable> orderTables = orderTableRepository
+            .findAllById(getOrderTableIds(tableGroupRequest));
         validateOrderTable(tableGroupRequest, orderTables);
-        TableGroup tableGroup = new TableGroup(new OrderTables(orderTables));
-        return TableGroupResponse.of(tableGroupRepository.save(tableGroup));
+        return TableGroupResponse
+            .of(tableGroupRepository.save(new TableGroup(new OrderTables(orderTables))));
+    }
+
+    public void ungroup(Long tableGroupId) {
+        TableGroup tableGroup = findTableGroup(tableGroupId);
+        List<OrderTable> orderTables = findOrderTables(tableGroup);
+        List<Long> orderTableIds = getOrderTableIds(orderTables);
+        validateOrderStatusInCookingOrMeal(orderTableIds);
+        orderTables.forEach(OrderTable::unGroup);
+    }
+
+    private List<OrderTable> findOrderTables(TableGroup tableGroup) {
+        return orderTableRepository
+            .findAllByTableGroupId(tableGroup.getId());
     }
 
     private void validateOrderTable(TableGroupRequest tableGroupRequest,
@@ -76,24 +90,16 @@ public class TableGroupService {
     }
 
     private void validateOrderTableCountSmallerThanTwo(TableGroupRequest tableGroupRequest) {
-        if (tableGroupRequest.getOrderTables().size() < 2) {
+        if (tableGroupRequest.getOrderTables().size() < MIN_GROUP_SIZE) {
             throw new OrderTableCountException();
         }
     }
 
     private List<Long> getOrderTableIds(TableGroupRequest tableGroupRequest) {
+        validateOrderTableCountSmallerThanTwo(tableGroupRequest);
         return tableGroupRequest.getOrderTables()
             .stream().map(OrderTableRequest::getId)
             .collect(Collectors.toList());
-    }
-
-    public void ungroup(Long tableGroupId) {
-        TableGroup tableGroup = findTableGroup(tableGroupId);
-        List<OrderTable> orderTables = orderTableRepository
-            .findAllByTableGroupId(tableGroup.getId());
-        List<Long> orderTableIds = getOrderTableIds(orderTables);
-        validateOrderStatusInCookingOrMeal(orderTableIds);
-        orderTables.forEach(OrderTable::unGroup);
     }
 
     private void validateOrderStatusInCookingOrMeal(List<Long> orderTableIds) {
