@@ -42,12 +42,7 @@ public class Menu {
     }
 
     public Menu(String name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
-        validatePrice(price, menuProducts);
-        this.name = name;
-        this.price = price;
-        this.menuGroup = menuGroup;
-        this.menuProducts = menuProducts;
-        menuProducts.registerProduct(this);
+        this(null, name, price, menuGroup, menuProducts);
     }
 
     private void validatePrice(Price price, MenuProducts menuProducts) {

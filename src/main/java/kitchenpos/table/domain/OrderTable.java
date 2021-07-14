@@ -29,8 +29,7 @@ public class OrderTable {
     }
 
     public OrderTable(int numberOfGuests) {
-        this.numberOfGuests = numberOfGuests;
-        this.empty = false;
+        this(null, numberOfGuests);
     }
 
     public Long getId() {

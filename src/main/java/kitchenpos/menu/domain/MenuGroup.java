@@ -22,7 +22,7 @@ public class MenuGroup {
     }
 
     public MenuGroup(String name) {
-        this.name = name;
+        this(null, name);
     }
 
     public Long getId() {

@@ -5,7 +5,6 @@ import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.exception.NotFoundOrderTable;
 import kitchenpos.table.application.TableGroupService;
 import kitchenpos.table.domain.*;
 import kitchenpos.table.dto.OrderTableRequest;
@@ -14,6 +13,7 @@ import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
 import kitchenpos.table.exception.NotChangeToEmptyThatCookingOrMealTable;
 import kitchenpos.table.exception.NotEmptyOrExistTableGroupException;
+import kitchenpos.table.exception.NotExistOrderTable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,7 +24,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -74,7 +73,7 @@ public class TableGroupServiceTest {
         // than
         // 단체 테이블 등록 요청시 예외 발생
         assertThatThrownBy(() -> tableGroupService.create(tableGroupRequest))
-                .isInstanceOf(NotFoundOrderTable.class);
+                .isInstanceOf(NotExistOrderTable.class);
     }
 
     @Test

@@ -41,11 +41,7 @@ public class Order {
     }
 
     public Order(OrderTable orderTable, OrderLineItems orderLineItems) {
-        this.orderTable = orderTable;
-        this.orderStatus = OrderStatus.COOKING;
-        this.orderLineItems = orderLineItems;
-        this.orderedTime = LocalDateTime.now();
-        this.orderLineItems.registerOrder(this);
+        this(null, orderTable, orderLineItems);
     }
 
     public void changeOrderStatusCooking() {
