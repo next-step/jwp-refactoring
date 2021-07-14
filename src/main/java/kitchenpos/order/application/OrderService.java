@@ -78,7 +78,7 @@ public class OrderService {
 
     private OrderLineItem findOrderLineItem(Menu menus, OrderRequest orderRequest) {
         return orderRequest.getOrderLineItemRequests().stream()
-                .filter(orderLineItemRequest -> orderLineItemRequest.getMenuId() == menus.getId())
+                .filter(orderLineItemRequest -> orderLineItemRequest.getMenuId().equals(menus.getId()))
                 .map(orderLineItemRequest -> new OrderLineItem(menus, orderLineItemRequest.getQuantity()))
                 .findFirst()
                 .orElseThrow(IllegalArgumentException::new);

@@ -43,10 +43,10 @@ public class TableGroupService {
                 .map(OrderTable::getId)
                 .collect(Collectors.toList());
         final List<Order> orders = orderRepository.findByOrderTableIdIn(orderTableIds);
-        orders.forEach(order -> order.ungroup());
+        orders.forEach(Order::ungroup);
         tableGroupRepository.deleteById(tableGroupId);
         return orderTables.stream()
-                .map(orderTable -> OrderTableResponse.of(orderTable))
+                .map(OrderTableResponse::of)
                 .collect(Collectors.toList());
     }
 

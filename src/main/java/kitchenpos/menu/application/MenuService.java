@@ -38,7 +38,7 @@ public class MenuService {
     public List<MenuResponse> list() {
         final List<Menu> menus = menuRepository.findAll();
         return menus.stream()
-                .map(menu -> MenuResponse.of(menu))
+                .map(MenuResponse::of)
                 .collect(Collectors.toList());
     }
 
@@ -64,7 +64,7 @@ public class MenuService {
 
     private MenuProduct findMenuProduct(Product product, MenuRequest menuRequest) {
         return menuRequest.getMenuProductRequests().stream()
-                .filter(menuProductRequest -> menuProductRequest.getProductId() == product.getId())
+                .filter(menuProductRequest -> menuProductRequest.getProductId().equals(product.getId()))
                 .map(menuProductRequest -> new MenuProduct(product, menuProductRequest.getQuantity()))
                 .findFirst()
                 .orElseThrow(IllegalArgumentException::new);

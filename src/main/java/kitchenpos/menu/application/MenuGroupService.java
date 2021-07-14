@@ -30,7 +30,7 @@ public class MenuGroupService {
     public List<MenuGroupResponse> list() {
         return menuGroupRepository.findAll()
                 .stream()
-                .map(menuGroup -> MenuGroupResponse.of(menuGroup))
+                .map(MenuGroupResponse::of)
                 .collect(Collectors.toList());
     }
 }
