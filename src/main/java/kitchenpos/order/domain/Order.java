@@ -1,18 +1,16 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.application.OrderTableNotFoundException;
+import org.springframework.util.CollectionUtils;
 
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -21,17 +19,15 @@ import java.util.Objects;
 @Entity
 @Table(name = "orders")
 public class Order {
-    private static final String INVALID_MENU_COUNT = "올바르지 않는 메뉴 갯수";
-    private static final String ORDER_LINE_EMPTY = "주문 항목이 비어 있습니다.";
-    public static final String CHANGE_NOT_ALLOWED = "주문완료에서는 변경을 할 수 없습니다.";
+    private static final String CHANGE_NOT_ALLOWED = "주문완료에서는 변경을 할 수 없습니다.";
+    private static final String NOT_EXIST_ORDER_LINE_TABLES = "존재하지 않는 주문 테이블";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_table_id", foreignKey = @ForeignKey(name = "fk_orders_order_table"))
-    private OrderTable orderTable;
+    @Column(name = "order_table_id")
+    private Long orderTableId;
 
     @Enumerated(value = EnumType.STRING)
     private OrderStatus orderStatus;
@@ -49,11 +45,11 @@ public class Order {
         orderLineItem.registerOrder(id);
     }
 
-    public static Order of(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
-        validateOrder(orderTable);
+    public static Order of(Long orderTableId, List<OrderLineItem> orderLineItems) {
+        validateOrderLineItems(orderLineItems);
 
         Order order = Order.builder()
-                .orderTable(orderTable)
+                .orderTableId(orderTableId)
                 .orderStatus(OrderStatus.COOKING)
                 .orderLineItems(new OrderLineItems())
                 .orderedTime(LocalDateTime.now())
@@ -65,9 +61,9 @@ public class Order {
         return order;
     }
 
-    private static void validateOrder(OrderTable orderTable) {
-        if (orderTable.isEmpty()) {
-            throw new IllegalStateException(ORDER_LINE_EMPTY);
+    private static void validateOrderLineItems(List<OrderLineItem> orderLineItems) {
+        if (CollectionUtils.isEmpty(orderLineItems)) {
+            throw new OrderTableNotFoundException(NOT_EXIST_ORDER_LINE_TABLES);
         }
     }
 
@@ -86,8 +82,8 @@ public class Order {
         return id;
     }
 
-    public OrderTable getOrderTable() {
-        return orderTable;
+    public Long getOrderTableId() {
+        return orderTableId;
     }
 
     public OrderStatus getOrderStatus() {
@@ -114,8 +110,8 @@ public class Order {
             return this;
         }
 
-        public Builder orderTable(OrderTable orderTable) {
-            order.orderTable = orderTable;
+        public Builder orderTableId(Long orderTableId) {
+            order.orderTableId = orderTableId;
             return this;
         }
 
@@ -156,7 +152,7 @@ public class Order {
     public String toString() {
         return "Order{" +
                 "id=" + id +
-                ", orderTable=" + orderTable +
+                ", orderTableId=" + orderTableId +
                 ", orderStatus=" + orderStatus +
                 ", orderLineItems=" + orderLineItems +
                 ", orderedTime=" + orderedTime +

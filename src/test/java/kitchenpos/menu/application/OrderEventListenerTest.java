@@ -42,7 +42,7 @@ class OrderEventListenerTest {
                 .build();
 
         OrderTable givenOrderTable = new OrderTable(1L, 1L, 5, false);
-        Order order = Order.of(givenOrderTable, Arrays.asList(orderLineItem, orderLineItem2));
+        Order order = Order.of(1L, Arrays.asList(orderLineItem, orderLineItem2));
         OrderGeneratedEvent orderGeneratedEvent = new OrderGeneratedEvent(order);
 
         when(menuService.getMenuExistCount(anyList()))
