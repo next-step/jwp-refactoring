@@ -31,7 +31,9 @@ public class MenuResponse {
                                 menu.getName(),
                                 menu.getPrice().value(),
                                 menu.getMenuGroup().getId(),
-                                menu.getMenuProducts().convertAll(MenuProductResponse::of));
+                                menu.getMenuProducts()
+                                    .convertAll(menuProduct -> MenuProductResponse.of(menuProduct,
+                                                                                      menu.getId())));
 
     }
 

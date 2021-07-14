@@ -8,6 +8,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import kitchenpos.common.Price;
 import kitchenpos.exception.KitchenposException;
@@ -15,15 +16,16 @@ import kitchenpos.exception.KitchenposException;
 @Embeddable
 public class MenuProducts {
 
-    @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "menuId")
     private List<MenuProduct> menuProducts = new ArrayList<>();
 
     public void add(List<MenuProduct> menuProducts) {
         this.menuProducts.addAll(menuProducts);
     }
 
-    public void connectMenu(final Menu menu) {
-        this.menuProducts.forEach(menuProduct -> menuProduct.connectMenu(menu));
+    public void mappingMenu(final Long menuId) {
+        this.menuProducts.forEach(menuProduct -> menuProduct.mappingMenu(menuId));
     }
 
     public void checkOverPrice(final Price price) {

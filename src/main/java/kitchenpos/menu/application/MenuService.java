@@ -5,6 +5,7 @@ import static kitchenpos.exception.KitchenposExceptionMessage.NOT_FOUND_PRODUCT;
 
 import java.util.stream.Collectors;
 import kitchenpos.exception.KitchenposException;
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
@@ -17,7 +18,6 @@ import kitchenpos.product.domain.Product;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @Transactional
@@ -38,8 +38,8 @@ public class MenuService {
 
     public MenuResponse create(final MenuRequest request) {
         final MenuGroup menuGroup = findMenuGroupById(request.getMenuGroupId());
-        return MenuResponse.of(menuRepository.save(request.toMenu(menuGroup,
-                                                                  getMenuProducts(request))));
+        Menu savedMenu = menuRepository.save(request.toMenu(menuGroup, getMenuProducts(request)));
+        return MenuResponse.of(savedMenu);
     }
 
     private List<MenuProduct> getMenuProducts(MenuRequest request) {
