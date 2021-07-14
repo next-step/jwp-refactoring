@@ -3,11 +3,10 @@ package kitchenpos.table.domain;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.Orders;
 import kitchenpos.table.domain.exception.CannotOrderEmptyTableException;
-import kitchenpos.table.domain.exception.UngroupTableException;
+import kitchenpos.table.domain.exception.InvalidOrderTableException;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -16,9 +15,8 @@ public class OrderTable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "table_group_id")
-    private OrderTableGroup tableGroup;
+    @Column(name = "table_group_id")
+    private Long tableGroupId;
 
     @Embedded
     private NumberOfGuests numberOfGuests;
@@ -32,9 +30,9 @@ public class OrderTable {
     protected OrderTable() {
     }
 
-    private OrderTable(Long id, OrderTableGroup tableGroup, NumberOfGuests numberOfGuests, Orders orders, boolean empty) {
+    private OrderTable(Long id, Long tableGroupId, NumberOfGuests numberOfGuests, Orders orders, boolean empty) {
         this.id = id;
-        this.tableGroup = tableGroup;
+        this.tableGroupId = tableGroupId;
         this.numberOfGuests = numberOfGuests;
         this.orders = orders;
         this.empty = empty;
@@ -45,7 +43,9 @@ public class OrderTable {
     }
 
     public void changeEmpty(boolean empty) {
-        validateTableGroup();
+        if (Objects.nonNull(this.tableGroupId)) {
+            throw new InvalidOrderTableException("이미 그룹화된 테이블은 주문가능상태를 변경할 수 없습니다.");
+        }
         validateNotCompletionStatus();
         this.empty = empty;
     }
@@ -55,8 +55,21 @@ public class OrderTable {
         this.numberOfGuests = NumberOfGuests.of(numberOfGuests);
     }
 
-    public void registerGroup(OrderTableGroup orderTableGroup) {
-        this.tableGroup = orderTableGroup;
+    public void registerGroup(Long tableGroupId) {
+        if (Objects.isNull(tableGroupId)) {
+            throw new InvalidOrderTableException("그룹화하려는 테이블 그룹의 아이디가 null 입니다.");
+        }
+
+        if (Objects.nonNull(this.tableGroupId)) {
+            throw new InvalidOrderTableException("이미 그룹화된 테이블입니다.");
+        }
+
+        if (!empty) {
+            throw new InvalidOrderTableException("테이블 그룹을 지으려면 주문 불가능 상태여야합니다.");
+        }
+
+        this.empty = false;
+        this.tableGroupId = tableGroupId;
     }
 
     public void validateOrderable() {
@@ -65,21 +78,9 @@ public class OrderTable {
         }
     }
 
-    public void validateTableGroupable() {
-        validateTableGroup();
-        if (!empty) {
-            throw new UngroupTableException("테이블 그룹을 지으려면 주문 불가능 상태여야합니다.");
-        }
-    }
-
-    private void validateTableGroup() {
-        if (Objects.nonNull(tableGroup)) {
-            throw new UngroupTableException("이미 그룹화된 테이블입니다.");
-        }
-    }
-
     public void ungroup() {
-        this.tableGroup = null;
+        validateNotCompletionStatus();
+        this.tableGroupId = null;
     }
 
     public void validateNotCompletionStatus() {
@@ -94,8 +95,8 @@ public class OrderTable {
         return id;
     }
 
-    public OrderTableGroup getTableGroup() {
-        return tableGroup;
+    public Long getTableGroupId() {
+        return tableGroupId;
     }
 
     public NumberOfGuests getNumberOfGuests() {

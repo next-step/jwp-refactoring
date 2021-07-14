@@ -18,7 +18,7 @@
   - ![alt](./domain_graph.png)
   - [X] 양방향 연관관계 찾기
 - [ ] 양방향 연관관계 끊어내기
-  - [ ] OrderTable -> OrderTableGroup 제거
+  - [X] OrderTable -> OrderTableGroup 제거
   - [ ] Order -> OrderTable 제거
   - [ ] OrderLineItem -> Order 제거
   - [ ] MenuProduct -> Menu 제거
