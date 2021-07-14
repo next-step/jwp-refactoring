@@ -1,6 +1,6 @@
 package kitchenpos.table.domain;
 
-import kitchenpos.table.domain.exception.NegativeNumberOfGuestsException;
+import kitchenpos.table.domain.exception.InvalidNumberOfGuestsException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -23,6 +23,6 @@ class NumberOfGuestsTest {
     void createException() {
         //when
         assertThatThrownBy(() -> NumberOfGuests.of(-1))
-                .isInstanceOf(NegativeNumberOfGuestsException.class); //then
+                .isInstanceOf(InvalidNumberOfGuestsException.class); //then
     }
 }

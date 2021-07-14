@@ -2,10 +2,12 @@ package kitchenpos.application;
 
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.domain.exception.CannotUngroupException;
+import kitchenpos.order.domain.Orders;
+import kitchenpos.table.application.OrderTableService;
+import kitchenpos.table.domain.exception.CannotUngroupException;
 import kitchenpos.table.application.OrderTableGroupService;
 import kitchenpos.table.domain.*;
-import kitchenpos.table.domain.exception.InvalidOrderTableException;
+import kitchenpos.table.domain.exception.CannotRegisterGroupException;
 import kitchenpos.table.presentation.dto.OrderTableGroupRequest;
 import kitchenpos.table.presentation.dto.OrderTableGroupResponse;
 import kitchenpos.table.presentation.dto.OrderTableRequest;
@@ -103,7 +105,7 @@ class TableGroupServiceTest extends DataBaseCleanSupport {
 
         //when
         assertThatThrownBy(() -> orderTableGroupService.create(tableGroup))
-                .isInstanceOf(InvalidOrderTableException.class); //then
+                .isInstanceOf(CannotRegisterGroupException.class); //then
     }
 
     @DisplayName("다른 주문 테이블 그룹에 속하지 않아야만 한다.")
@@ -141,8 +143,9 @@ class TableGroupServiceTest extends DataBaseCleanSupport {
     void ungroupExceptionIfOrderTableStatusIsCookingOrMeal() {
         //given
         OrderTable orderTable = saveOrderTable(4, false);
+        OrderTable orderTable1 = saveOrderTable(4, false);
+        orderTable.ordered(Lists.list());
         OrderTableGroup orderTableGroup = orderTableGroupRepository.save(OrderTableGroup.of(Lists.list(orderTable)));
-        Order.createWithMapping(orderTable, OrderStatus.COOKING, Lists.list());
 
         //when
         assertThatThrownBy(() -> orderTableGroupService.ungroup(orderTableGroup.getId()))
@@ -160,8 +163,8 @@ class TableGroupServiceTest extends DataBaseCleanSupport {
                 OrderTableRequest.of(orderTable2.getId(), orderTable2.getNumberOfGuests().getValue(), orderTable2.isEmpty())));
 
         //when
-        AssertionsForClassTypes.assertThatThrownBy(() -> orderTableGroupService.create(tableGroup))
-                .isInstanceOf(InvalidOrderTableException.class); //then
+        assertThatThrownBy(() -> orderTableGroupService.create(tableGroup))
+                .isInstanceOf(CannotRegisterGroupException.class); //then
     }
 
     private OrderTable saveOrderTable(int numberOfGuests, boolean empty) {

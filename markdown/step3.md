@@ -15,11 +15,11 @@
 ## 연관관계 끊어내기
 
 - [X] 객체 그래프 그려보기  
-  - ![alt](./domain_graph.png)
+  - 목표 ![alt](./domain_graph.png)
   - [X] 양방향 연관관계 찾기
 - [ ] 양방향 연관관계 끊어내기
   - [X] OrderTable -> OrderTableGroup 제거
-  - [ ] Order -> OrderTable 제거
+  - [X] Order -> OrderTable 제거
   - [ ] OrderLineItem -> Order 제거
   - [ ] MenuProduct -> Menu 제거
 - [ ] 어그리게잇 Order, Menu 설정

@@ -1,12 +1,13 @@
 package kitchenpos.table.domain;
 
 import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.Orders;
-import kitchenpos.table.domain.exception.CannotOrderEmptyTableException;
-import kitchenpos.table.domain.exception.InvalidOrderTableException;
+import kitchenpos.table.domain.exception.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -43,52 +44,68 @@ public class OrderTable {
     }
 
     public void changeEmpty(boolean empty) {
-        if (Objects.nonNull(this.tableGroupId)) {
-            throw new InvalidOrderTableException("이미 그룹화된 테이블은 주문가능상태를 변경할 수 없습니다.");
-        }
-        validateNotCompletionStatus();
+        validateChangeEmpty();
         this.empty = empty;
     }
 
+    private void validateChangeEmpty() {
+        if (Objects.nonNull(this.tableGroupId)) {
+            throw new CannotChangeEmptyException("이미 그룹화된 테이블은 주문가능상태를 변경할 수 없습니다.");
+        }
+        if (orders.hasCookingOrMeal()) {
+            throw new CannotChangeEmptyException("주문 테이블에 속한 주문 중에 진행중인 것이 있습니다.");
+        }
+    }
+
     public void changeNumberOfGuests(int numberOfGuests) {
-        validateOrderable();
+        validateChangeNumberOfGuests();
         this.numberOfGuests = NumberOfGuests.of(numberOfGuests);
     }
 
+    private void validateChangeNumberOfGuests() {
+        if (empty) {
+            throw new CannotChangeGuestEmptyTableException();
+        }
+    }
+
     public void registerGroup(Long tableGroupId) {
-        if (Objects.isNull(tableGroupId)) {
-            throw new InvalidOrderTableException("그룹화하려는 테이블 그룹의 아이디가 null 입니다.");
-        }
-
-        if (Objects.nonNull(this.tableGroupId)) {
-            throw new InvalidOrderTableException("이미 그룹화된 테이블입니다.");
-        }
-
-        if (!empty) {
-            throw new InvalidOrderTableException("테이블 그룹을 지으려면 주문 불가능 상태여야합니다.");
-        }
-
+        validateRegisterGroup(tableGroupId);
         this.empty = false;
         this.tableGroupId = tableGroupId;
     }
 
-    public void validateOrderable() {
-        if (empty) {
-            throw new CannotOrderEmptyTableException();
+    private void validateRegisterGroup(Long tableGroupId) {
+        if (Objects.isNull(tableGroupId)) {
+            throw new CannotRegisterGroupException("그룹화하려는 테이블 그룹의 아이디가 null 입니다.");
+        }
+        if (Objects.nonNull(this.tableGroupId)) {
+            throw new CannotRegisterGroupException("이미 그룹화된 테이블입니다.");
+        }
+        if (!empty) {
+            throw new CannotRegisterGroupException("테이블 그룹을 지으려면 주문 불가능 상태여야합니다.");
         }
     }
 
     public void ungroup() {
-        validateNotCompletionStatus();
+        validateUpgroup();
         this.tableGroupId = null;
     }
 
-    public void validateNotCompletionStatus() {
-        orders.validateAllNotCompletionStatus();
+    private void validateUpgroup() {
+        if (orders.hasCookingOrMeal()) {
+            throw new CannotUngroupException();
+        }
     }
 
-    public void addOrder(Order order) {
-        orders.add(order);
+    public Order ordered(List<OrderLineItem> orderLineItems) {
+        validateOrdered();
+        return orders.newOrder(getId(), orderLineItems);
+    }
+
+    private void validateOrdered() {
+        if (empty) {
+            throw new CannotOrderEmptyTableException();
+        }
     }
 
     public Long getId() {

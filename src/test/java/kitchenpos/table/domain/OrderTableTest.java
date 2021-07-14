@@ -1,7 +1,9 @@
 package kitchenpos.table.domain;
 
-import kitchenpos.table.domain.exception.CannotOrderEmptyTableException;
-import kitchenpos.table.domain.exception.InvalidOrderTableException;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.Orders;
+import kitchenpos.table.domain.exception.*;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,7 +24,7 @@ class OrderTableTest {
 
         //when
         assertThatThrownBy(() -> orderTable1.changeEmpty(false))
-                .isInstanceOf(InvalidOrderTableException.class); //then
+                .isInstanceOf(CannotChangeEmptyException.class); //then
     }
 
     @DisplayName("테이블 인원수를 변경한다.")
@@ -46,7 +48,7 @@ class OrderTableTest {
 
         //when
         assertThatThrownBy(() -> orderTable.changeNumberOfGuests(3))
-                .isInstanceOf(CannotOrderEmptyTableException.class);
+                .isInstanceOf(CannotChangeGuestEmptyTableException.class);
     }
 
     @DisplayName("테이블 그룹화된 아이디를 등록한다.")
@@ -70,7 +72,7 @@ class OrderTableTest {
 
         //when
         assertThatThrownBy(() -> orderTable.registerGroup(1L))
-                .isInstanceOf(InvalidOrderTableException.class);
+                .isInstanceOf(CannotRegisterGroupException.class);
     }
 
     @DisplayName("테이블 그룹을 지으려면 아이디는 필수값이다.")
@@ -81,7 +83,7 @@ class OrderTableTest {
 
         //when
         assertThatThrownBy(() -> orderTable.registerGroup(null))
-                .isInstanceOf(InvalidOrderTableException.class);
+                .isInstanceOf(CannotRegisterGroupException.class);
     }
 
     @DisplayName("그룹화된 주문테이블은 그룹해제 후 그룹이 가능하다.")
@@ -93,6 +95,17 @@ class OrderTableTest {
 
         //when
         assertThatThrownBy(() -> orderTable.registerGroup(2L))
-                .isInstanceOf(InvalidOrderTableException.class);
+                .isInstanceOf(CannotRegisterGroupException.class);
+    }
+
+    @DisplayName("주문테이블이 주문 불가능 상태일 경우 주문할 수 없다.")
+    @Test
+    void createOrderExceptionIfTableEmptyIsTrue() {
+        //given
+        OrderTable orderTable = OrderTable.of(4, true);
+
+        //when
+        assertThatThrownBy(() -> orderTable.ordered(Lists.list()))
+                .isInstanceOf(CannotOrderEmptyTableException.class); //then
     }
 }

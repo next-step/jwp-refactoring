@@ -1,6 +1,6 @@
 package kitchenpos.table.domain;
 
-import kitchenpos.table.domain.exception.InvalidOrderTableException;
+import kitchenpos.table.domain.exception.CannotRegisterGroupException;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -39,7 +39,7 @@ class OrderTablesTest {
 
         //when
         assertThatThrownBy(() -> orderTables.groupBy(1L))
-                .isInstanceOf(InvalidOrderTableException.class); //then
+                .isInstanceOf(CannotRegisterGroupException.class); //then
     }
 
     @DisplayName("테이블 그룹을 지으려면 모든 테이블이 그룹화되어있지 않아야한다.")
@@ -54,6 +54,6 @@ class OrderTablesTest {
 
         //when
         assertThatThrownBy(() -> orderTables.groupBy(1L))
-                .isInstanceOf(InvalidOrderTableException.class); //then
+                .isInstanceOf(CannotRegisterGroupException.class); //then
     }
 }
