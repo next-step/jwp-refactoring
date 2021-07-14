@@ -1,7 +1,5 @@
 package kitchenpos.order.dto;
 
-import kitchenpos.order.domain.TableGroup;
-
 import java.util.List;
 
 public class TableGroupRequest {

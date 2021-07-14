@@ -12,13 +12,13 @@ public class TableGroupResponse {
 
     public TableGroupResponse() {}
 
-    public TableGroupResponse(TableGroup tableGroup) {
+    public TableGroupResponse(TableGroup tableGroup, List<OrderTable> orderTables) {
         this.id = tableGroup.getId();
-        this.orderTableResponseList = toOrderTableResponseList(tableGroup.getOrderTables());
+        this.orderTableResponseList = toOrderTableResponseList(orderTables);
     }
 
-    public static TableGroupResponse of(TableGroup tableGroup) {
-        return new TableGroupResponse(tableGroup);
+    public static TableGroupResponse of(TableGroup tableGroup, List<OrderTable> orderTables) {
+        return new TableGroupResponse(tableGroup, orderTables);
     }
 
     public List<OrderTableResponse> toOrderTableResponseList(List<OrderTable> orderTables) {

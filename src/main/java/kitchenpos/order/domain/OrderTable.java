@@ -17,9 +17,6 @@ public class OrderTable {
     @JoinColumn(name = "table_group_id")
     private TableGroup tableGroup;
 
-    @OneToMany(mappedBy = "orderTable")
-    private List<Order> orders = new ArrayList<>();
-
     private NumberOfGuests numberOfGuests;
     private boolean empty;
 
@@ -40,10 +37,6 @@ public class OrderTable {
 
     public Long getId() {
         return id;
-    }
-
-    public TableGroup getTableGroup() {
-        return tableGroup;
     }
 
     public Long getTableGroupId() {
@@ -79,6 +72,9 @@ public class OrderTable {
         validGroupTableNull("이미 그룹으로 묶여있는 경우 그룹화 할 수 없습니다.");
     }
 
+    public void group(TableGroup tableGroup) {
+        this.tableGroup = tableGroup;
+    }
     public void unGroup() {
         this.tableGroup = null;
     }
