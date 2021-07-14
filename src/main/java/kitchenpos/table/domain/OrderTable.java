@@ -41,10 +41,6 @@ public class OrderTable {
         return empty;
     }
 
-    public void setEmpty(final boolean empty) {
-        this.empty = empty;
-    }
-
     public void changeToEmpty() {
         if(tableGroup != null){
             throw new NotChangeToEmptyThatGroupTable();
