@@ -16,7 +16,7 @@ public class MenuProducts {
     }
 
     public MenuProducts(List<MenuProduct> menuProducts) {
-        this.menuProducts = menuProducts;
+        this(menuProducts, null);
     }
 
     public MenuProducts(List<MenuProduct> menuProducts, Menu menu) {

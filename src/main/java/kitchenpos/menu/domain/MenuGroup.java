@@ -21,8 +21,7 @@ public class MenuGroup {
     }
 
     public MenuGroup(String name) {
-        validateName(name);
-        this.name = name;
+        this(0L, name);
     }
 
     public MenuGroup(Long id, String name) {

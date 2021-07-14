@@ -28,9 +28,7 @@ public class TableGroup {
     }
 
     public TableGroup(OrderTables orderTables) {
-        validateOrderTables(orderTables);
-        this.orderTables = orderTables;
-        this.orderTables.assignTableGroup(this);
+        this(0L, orderTables);
     }
 
     public TableGroup(Long id, OrderTables orderTables) {

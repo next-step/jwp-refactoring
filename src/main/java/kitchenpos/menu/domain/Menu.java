@@ -30,11 +30,7 @@ public class Menu {
     }
 
     public Menu(String name, Price price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        validateMenuProducts(menuProducts, price);
-        this.name = name;
-        this.price = price;
-        this.menuGroup = menuGroup;
-        this.menuProducts = new MenuProducts(menuProducts, this);
+        this(0L, name, price, menuGroup, menuProducts);
     }
 
     public Menu(Long id, String name, Price price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {

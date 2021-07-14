@@ -26,8 +26,7 @@ public class MenuProduct {
     }
 
     public MenuProduct(Product product, Quantity quantity) {
-        this.product = product;
-        this.quantity = quantity;
+        this(0L, null, product, quantity);
     }
 
     public MenuProduct(Long seq, Menu menu, Product product, Quantity quantity) {
