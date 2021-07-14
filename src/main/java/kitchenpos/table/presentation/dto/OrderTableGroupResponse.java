@@ -24,7 +24,6 @@ public class OrderTableGroupResponse {
         return new OrderTableGroupResponse(tableGroup.getId(), tableGroup.getCreatedDate(), tableGroup.getOrderTables().stream()
                 .map(OrderTableResponse::of)
                 .collect(Collectors.toList()));
-
     }
 
     public static List<OrderTableGroupResponse> ofList(List<OrderTableGroup> tableGroups) {

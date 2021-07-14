@@ -1,4 +1,4 @@
-package kitchenpos.order.presentation.dto.exception;
+package kitchenpos.order.application.exception;
 
 import kitchenpos.common.error.exception.BusinessException;
 
