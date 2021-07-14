@@ -1,9 +1,12 @@
 package kitchenpos.application;
 
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Product;
+import kitchenpos.menu.application.MenuService;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menuGroup.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menuGroup.application.MenuGroupService;
+import kitchenpos.product.application.ProductService;
+import kitchenpos.product.domain.Product;
 import kitchenpos.utils.TestUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,7 +37,7 @@ class MenuServiceTest {
     void createTest() {
         // given
         MenuGroup menuGroup = menuGroupService.create(new MenuGroup("테스트 메뉴"));
-        Menu menu = new Menu(name, BigDecimal.valueOf(15000), menuGroup);
+        Menu menu = new Menu(name, BigDecimal.valueOf(15000), menuGroup.getId());
         Product product = productService.create(new Product(name, BigDecimal.valueOf(15000)));
         new MenuProduct(menu, product,1);
 
@@ -50,11 +53,11 @@ class MenuServiceTest {
     void createExceptionTest1() {
         // given
         MenuGroup menuGroup = menuGroupService.create(new MenuGroup("테스트 메뉴"));
-        assertThatThrownBy(() -> menuService.create(new Menu(name, null, menuGroup)))
+        assertThatThrownBy(() -> menuService.create(new Menu(name, null, menuGroup.getId())))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessageContaining("가격");
 
-        assertThatThrownBy(() -> menuService.create(new Menu(name, BigDecimal.valueOf(-1), menuGroup)))
+        assertThatThrownBy(() -> menuService.create(new Menu(name, BigDecimal.valueOf(-1), menuGroup.getId())))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessageContaining("가격").hasMessageContaining("0원");
     }
@@ -65,7 +68,7 @@ class MenuServiceTest {
         // given
         MenuGroup noneMenuGroup = new MenuGroup(TestUtils.getRandomId(), "없는 메뉴");
 
-        Menu menu = new Menu(name, BigDecimal.valueOf(15000), noneMenuGroup);
+        Menu menu = new Menu(name, BigDecimal.valueOf(15000), noneMenuGroup.getId());
         Product product = productService.create(new Product(name, BigDecimal.valueOf(15000)));
         new MenuProduct(menu, product,1);
 
@@ -79,7 +82,7 @@ class MenuServiceTest {
     void createExceptionTest3() {
         // given
         MenuGroup menuGroup = menuGroupService.create(new MenuGroup("테스트 메뉴"));
-        Menu menu = new Menu(name, BigDecimal.valueOf(15000), menuGroup);
+        Menu menu = new Menu(name, BigDecimal.valueOf(15000), menuGroup.getId());
         Product product = new Product(999L, name, BigDecimal.valueOf(15000));
         new MenuProduct( menu, product,1);
 
@@ -93,7 +96,7 @@ class MenuServiceTest {
     void createExceptionTest4() {
         // given
         MenuGroup menuGroup = menuGroupService.create(new MenuGroup("테스트 메뉴"));
-        Menu menu = new Menu(name, BigDecimal.valueOf(1500000), menuGroup);
+        Menu menu = new Menu(name, BigDecimal.valueOf(1500000), menuGroup.getId());
         Product product = productService.create(new Product(name, BigDecimal.valueOf(15000)));
         new MenuProduct(menu, product,1);
 
