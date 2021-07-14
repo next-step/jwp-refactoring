@@ -10,20 +10,16 @@ import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.TableGroup;
 import kitchenpos.order.dto.TableGroupRequest;
 import kitchenpos.order.dto.TableGroupResponse;
-import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.order.repository.OrderTableRepository;
 import kitchenpos.order.repository.TableGroupRepository;
 
 @Service
 @Transactional(readOnly = true)
 public class TableGroupService {
-	private final OrderRepository orderRepository;
 	private final OrderTableRepository orderTableRepository;
 	private final TableGroupRepository tableGroupRepository;
 
-	public TableGroupService(OrderRepository orderRepository,
-		OrderTableRepository orderTableRepository, TableGroupRepository tableGroupRepository) {
-		this.orderRepository = orderRepository;
+	public TableGroupService(OrderTableRepository orderTableRepository, TableGroupRepository tableGroupRepository) {
 		this.orderTableRepository = orderTableRepository;
 		this.tableGroupRepository = tableGroupRepository;
 	}
