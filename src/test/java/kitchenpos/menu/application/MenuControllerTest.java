@@ -37,12 +37,12 @@ public class MenuControllerTest extends ControllerTest<MenuRequest> {
     private MenuProduct 콜라_한개 = new MenuProduct(콜라_상품_ID, Quantity.of(1L));
     private List<MenuProduct> 메뉴상품목록 = Arrays.asList(후라이드_한마리, 콜라_한개);
     private Menu 후라이드세트 = new Menu(1L, "후라이드세트", Price.valueOf(15000),
-            인기메뉴, 메뉴상품목록);
+            인기메뉴.getId(), 메뉴상품목록);
 
     private MenuResponse 메뉴_첫번째_응답 = new MenuResponse(1L, 후라이드세트.getName(), 후라이드세트.getPrice().value(),
-            후라이드세트.getMenuGroup().getId(), new ArrayList<>());
+            후라이드세트.getMenuGroupId(), new ArrayList<>());
     private MenuResponse 메뉴_두번째_응답 = new MenuResponse(2L, 후라이드세트.getName(), 후라이드세트.getPrice().value(),
-            후라이드세트.getMenuGroup().getId(), new ArrayList<>());
+            후라이드세트.getMenuGroupId(), new ArrayList<>());
 
     @Override
     protected Object controller() {

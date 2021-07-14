@@ -52,7 +52,7 @@ class MenuServiceTest {
     private final MenuProduct 후라이드_한마리 = new MenuProduct(후라이드.getId(), Quantity.of(1L));
     private final MenuProduct 콜라_한개 = new MenuProduct(콜라.getId(), Quantity.of(1L));
     private final List<MenuProduct> 메뉴상품_목록 = Arrays.asList(후라이드_한마리, 콜라_한개);
-    private Menu 후라이드세트 = new Menu("후라이드세트", Price.valueOf(10000), 인기메뉴, 메뉴상품_목록);
+    private Menu 후라이드세트 = new Menu("후라이드세트", Price.valueOf(10000), 인기메뉴.getId(), 메뉴상품_목록);
 
     @DisplayName("0원 이상의 가격으로 메뉴를 등록한다")
     @Test

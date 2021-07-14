@@ -14,9 +14,6 @@ public class MenuGroup {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Embedded
-    private Menus menus = new Menus();
-
     protected MenuGroup() {
     }
 

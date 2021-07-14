@@ -24,7 +24,7 @@ public class MenuRequest {
     }
 
     public static MenuRequest of(Menu menu) {
-        return new MenuRequest(menu.getName(), menu.getPrice().value(), menu.getMenuGroup().getId(),
+        return new MenuRequest(menu.getName(), menu.getPrice().value(), menu.getMenuGroupId(),
                 MenuProductRequest.ofList(menu.getMenuProducts().getMenuProducts()));
     }
 
