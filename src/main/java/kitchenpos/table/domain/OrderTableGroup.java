@@ -11,11 +11,11 @@ public class OrderTableGroup {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private LocalDateTime createdDate;
-
     @Embedded
     private OrderTables orderTables;
+
+    @Column(nullable = false)
+    private LocalDateTime createdDate;
 
     protected OrderTableGroup() {
     }
@@ -26,21 +26,20 @@ public class OrderTableGroup {
         this.orderTables = orderTables;
     }
 
-    private OrderTableGroup(OrderTables orderTables) {
-        this(null, LocalDateTime.now(), orderTables);
-        orderTables.groupBy(this);
+    public static OrderTableGroup of(List<OrderTable> orderTables) {
+        return new OrderTableGroup(null, LocalDateTime.now(), OrderTables.of(orderTables));
     }
 
-    public static OrderTableGroup createWithMapping(OrderTables orderTables) {
-        return new OrderTableGroup(orderTables);
+    public static OrderTableGroup of(Long id, List<OrderTable> orderTables) {
+        return new OrderTableGroup(id, LocalDateTime.now(), OrderTables.of(orderTables));
     }
 
-    public void ungroup() {
+    public void grouped(){
+        orderTables.groupBy(getId());
+    }
+
+    public void ungrouped() {
         orderTables.ungroup();
-    }
-
-    public void validateNotCompletionStatus() {
-        orderTables.validateNotCompletionStatus();
     }
 
     public Long getId() {

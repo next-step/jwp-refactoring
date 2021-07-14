@@ -15,7 +15,7 @@ import java.util.List;
 @Embeddable
 public class MenuProducts {
 
-    @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "menu")
     @ReadOnlyProperty
     private final List<MenuProduct> menuProducts;
 

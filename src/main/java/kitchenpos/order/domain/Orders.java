@@ -1,9 +1,12 @@
 package kitchenpos.order.domain;
 
-import org.springframework.data.annotation.ReadOnlyProperty;
+import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -12,8 +15,10 @@ import java.util.List;
 @Embeddable
 public class Orders {
 
-    @OneToMany(mappedBy = "orderTable", cascade = CascadeType.ALL)
-    @ReadOnlyProperty
+    @Fetch(FetchMode.SELECT)
+    @BatchSize(size = 100)
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "order_table_id")
     private final List<Order> orders;
 
     protected Orders() {
@@ -28,12 +33,14 @@ public class Orders {
         return new Orders(orders);
     }
 
-    public void validateAllNotCompletionStatus() {
-        orders.forEach(Order::validateNotCompletionStatus);
+    public boolean hasCookingOrMeal() {
+        return orders.stream().anyMatch(Order::isCookingOrMeal);
     }
 
-    public void add(Order order) {
-        orders.add(order);
+    public Order newOrder(Long orderTableId, List<OrderLineItem> orderLineItems) {
+        Order cookingOrder = Order.of(orderTableId, OrderStatus.COOKING, orderLineItems);
+        orders.add(cookingOrder);
+        return cookingOrder;
     }
 
     public List<Order> getUnmodifiableList() {

@@ -11,9 +11,8 @@ public class OrderLineItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id")
-    private Order order;
+    @Column(name = "order_id")
+    private Long orderId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "menu_id")
@@ -25,9 +24,9 @@ public class OrderLineItem {
     protected OrderLineItem() {
     }
 
-    private OrderLineItem(Long seq, Order order, Menu menu, long quantity) {
+    private OrderLineItem(Long seq, Long orderId, Menu menu, long quantity) {
         this.seq = seq;
-        this.order = order;
+        this.orderId = orderId;
         this.menu = menu;
         this.quantity = Quantity.of(quantity);
     }
@@ -36,16 +35,16 @@ public class OrderLineItem {
         return new OrderLineItem(null, null, menu, quantity);
     }
 
-    public void registerOrder(Order order) {
-        this.order = order;
+    public void registerOrder(Long orderId) {
+        this.orderId = orderId;
     }
 
     public Long getSeq() {
         return seq;
     }
 
-    public Order getOrder() {
-        return order;
+    public Long getOrderId() {
+        return orderId;
     }
 
     public Menu getMenu() {

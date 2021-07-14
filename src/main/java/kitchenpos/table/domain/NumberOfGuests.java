@@ -1,6 +1,6 @@
 package kitchenpos.table.domain;
 
-import kitchenpos.table.domain.exception.NegativeNumberOfGuestsException;
+import kitchenpos.table.domain.exception.InvalidNumberOfGuestsException;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -24,7 +24,7 @@ public class NumberOfGuests {
 
     private void validateValue(int value) {
         if (value < MIN_VALUE) {
-            throw new NegativeNumberOfGuestsException(MIN_VALUE);
+            throw new InvalidNumberOfGuestsException(MIN_VALUE);
         }
     }
 

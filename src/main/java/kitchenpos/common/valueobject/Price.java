@@ -41,7 +41,7 @@ public class Price {
         return value.multiply(BigDecimal.valueOf(quantity.getValue()));
     }
 
-    public Price add(Price price){
+    public Price add(Price price) {
         return Price.of(value.add(price.getValue()));
     }
 

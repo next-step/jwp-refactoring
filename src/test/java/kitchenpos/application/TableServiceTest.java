@@ -3,12 +3,10 @@ package kitchenpos.application;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.domain.exception.CannotUngroupException;
+import kitchenpos.table.domain.exception.*;
 import kitchenpos.table.application.OrderTableService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.table.domain.exception.NegativeNumberOfGuestsException;
-import kitchenpos.table.domain.exception.CannotOrderEmptyTableException;
 import kitchenpos.table.presentation.dto.OrderTableRequest;
 import kitchenpos.table.presentation.dto.OrderTableResponse;
 import org.assertj.core.util.Lists;
@@ -35,10 +33,12 @@ class TableServiceTest extends DataBaseCleanSupport {
     private OrderTableRepository orderTableRepository;
 
     private OrderTable 주문한_테이블;
+    private Order 주문됨;
 
     @BeforeEach
     void setUp() {
         주문한_테이블 = orderTableRepository.save(OrderTable.of(4, false));
+        주문됨 = 주문한_테이블.ordered(Lists.list());
     }
 
     @DisplayName("주문 테이블을 추가한다.")
@@ -64,6 +64,9 @@ class TableServiceTest extends DataBaseCleanSupport {
     @DisplayName("특정 주문 테이블의 상태를 변경한다.")
     @Test
     void changeEmpty() {
+        //given
+        주문됨.changeOrderStatus(OrderStatus.COMPLETION);
+
         //when
         OrderTableResponse actual = tableService.changeEmpty(주문한_테이블.getId(), OrderTableRequest.of(false));
 
@@ -74,14 +77,9 @@ class TableServiceTest extends DataBaseCleanSupport {
     @DisplayName("테이블의 주문 상태가 계산 완료가 아니면 테이블 상태를 변경할 수 없다.")
     @Test
     void changeEmptyExceptionIfTableOrderStatusIsNotCompletion() {
-        //given
-        orderRepository.save(Order.createWithMapping(주문한_테이블, OrderStatus.COOKING, Lists.list()));
-        Long orderTableId = 주문한_테이블.getId();
-        OrderTableRequest orderTableRequest = OrderTableRequest.of(false);
-
         //when
-        assertThatThrownBy(() -> tableService.changeEmpty(orderTableId, orderTableRequest))
-                .isInstanceOf(CannotUngroupException.class); //then
+        assertThatThrownBy(() -> tableService.changeEmpty(주문한_테이블.getId(), OrderTableRequest.of(false)))
+                .isInstanceOf(CannotChangeEmptyException.class); //then
     }
 
     @DisplayName("특정 테이블의 인원 수를 예약한다.")
@@ -104,7 +102,7 @@ class TableServiceTest extends DataBaseCleanSupport {
 
         //when
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(주문불가능_테이블_id, orderTableRequest))
-                .isInstanceOf(CannotOrderEmptyTableException.class); //then
+                .isInstanceOf(CannotChangeGuestEmptyTableException.class); //then
     }
 
     @DisplayName("주문 테이블의 인원수는 최소 0명 이상이어야 한다.")
@@ -116,6 +114,6 @@ class TableServiceTest extends DataBaseCleanSupport {
 
         //when
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(주문한_테이블_id, orderTableRequest))
-                .isInstanceOf(NegativeNumberOfGuestsException.class); //then
+                .isInstanceOf(InvalidNumberOfGuestsException.class); //then
     }
 }

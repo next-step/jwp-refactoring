@@ -33,7 +33,7 @@ public class OrderService {
         List<Menu> menus = menuService.findByIdIn(orderRequest.getMenuIds());
         List<OrderLineItem> orderLineItems = orderRequest.getOrderLineItemsBy(menus);
         OrderTable orderTable = orderTableService.findById(orderRequest.getOrderTableId());
-        Order order = Order.createWithMapping(orderTable, OrderStatus.COOKING, orderLineItems);
+        Order order = orderTable.ordered(orderLineItems);
         return OrderResponse.of(orderRepository.save(order));
     }
 
