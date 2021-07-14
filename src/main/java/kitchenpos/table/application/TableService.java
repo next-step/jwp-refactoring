@@ -4,6 +4,7 @@ import kitchenpos.dao.OrderDao;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import org.springframework.stereotype.Service;
@@ -58,4 +59,16 @@ public class TableService {
         return orderTableRepository.findById(orderTableId)
                 .orElseThrow(() -> new IllegalArgumentException("미등록 주문 테이블 입니다."));
     }
+
+    public OrderTables findAllByIds(List<Long> orderTableIds) {
+        List<OrderTable> orderTables = orderTableRepository.findAllById(orderTableIds);
+        return new OrderTables(orderTables);
+
+    }
+
+    public OrderTables findAllByTableGroupId(Long tableGroupId) {
+        List<OrderTable> orderTables = orderTableRepository.findAllByTableGroupId(tableGroupId);
+        return new OrderTables(orderTables);
+    }
+
 }

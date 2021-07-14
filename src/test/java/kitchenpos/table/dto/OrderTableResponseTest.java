@@ -11,7 +11,7 @@ class OrderTableResponseTest {
 
     @Test
     void 주문_테이블_entity를_이용하여_주문_테이블_반환_객체_생성() {
-        OrderTable orderTable = new OrderTable(1L, null, 0, true);
+        OrderTable orderTable = new OrderTable(1L, 0, true);
 
         OrderTableResponse expected = OrderTableResponse.of(orderTable);
         assertThat(expected.getId()).isEqualTo(orderTable.getId());

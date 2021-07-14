@@ -4,14 +4,13 @@ import kitchenpos.dao.OrderDao;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -90,5 +89,28 @@ class TableServiceTest {
         OrderTableRequest request = new OrderTableRequest(2, false);
         OrderTableResponse expected = tableService.changeNumberOfGuests(orderTable.getId(), request);
         assertThat(expected.getNumberOfGuests()).isEqualTo(request.getNumberOfGuests());
+    }
+
+    @Test
+    void 주문_테이블_아이디_리스트_기준_조회() {
+        OrderTable orderTableNo1 = new OrderTable( 1L, 1L, 0, true);
+        OrderTable orderTableNo2 = new OrderTable( 2L, 1L, 0, true);
+        List<OrderTable> orderTables = Arrays.asList(orderTableNo1, orderTableNo2);
+        when(orderTableRepository.findAllById(Arrays.asList(1L, 2L))).thenReturn(orderTables);
+
+        OrderTables expected = tableService.findAllByIds(Arrays.asList(1L, 2L));
+        assertThat(expected).isEqualTo(new OrderTables(orderTables));
+    }
+
+    @Test
+    void 테이블_그룹_아이디_기준_으로_주문_테이블_조회() {
+        OrderTable orderTableNo1 = new OrderTable( 1L, 1L, 0, true);
+        OrderTable orderTableNo2 = new OrderTable( 2L, 1L, 0, true);
+        List<OrderTable> orderTables = Arrays.asList(orderTableNo1, orderTableNo2);
+
+        when(orderTableRepository.findAllByTableGroupId(1L)).thenReturn(orderTables);
+
+        OrderTables expected = tableService.findAllByTableGroupId(1L);
+        assertThat(expected).isEqualTo(new OrderTables(orderTables));
     }
 }

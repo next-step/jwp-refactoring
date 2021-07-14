@@ -71,6 +71,14 @@ public class OrderTable {
         return empty;
     }
 
+    public void withTableGroup(Long tableGroupId) {
+        this.tableGroupId = tableGroupId;
+    }
+
+    public void ungroup() {
+        this.tableGroupId = null;
+    }
+
     @Override
     public boolean equals(Object object) {
         if (this == object) return true;
