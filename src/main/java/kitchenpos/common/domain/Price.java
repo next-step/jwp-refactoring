@@ -60,6 +60,10 @@ public class Price implements Comparable<Price> {
         return new Price(amount.multiply(value));
     }
 
+    public boolean isExceed(Price sumPrice) {
+        return compareTo(sumPrice) > 0;
+    }
+
     @Override
     public int compareTo(Price price) {
         return amount.compareTo(price.amount);

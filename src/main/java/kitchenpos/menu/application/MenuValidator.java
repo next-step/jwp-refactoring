@@ -23,7 +23,7 @@ public class MenuValidator {
     public void validationMenuProductPrices(Price menuPrice, List<MenuProductRequest> menuProductRequests) {
         List<Product> products = productRepository.findAllById(findProductIds(menuProductRequests));
         Price sumPrice = sumMenuProductPrices(menuProductRequests, products);
-        if (menuPrice.compareTo(sumPrice) > 0) {
+        if (menuPrice.isExceed(sumPrice)) {
             throw new MenuPriceExceedException();
         }
     }
