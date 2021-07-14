@@ -21,10 +21,10 @@ public class TableResponse {
     }
 
     public static TableResponse of(OrderTable orderTable) {
-        Long tableGroupId = null;
-        if (Objects.nonNull(orderTable.getTableGroup())) {
-            tableGroupId = orderTable.getTableGroup().getId();
-        }
+        return new TableResponse(orderTable.getId(), null, orderTable.getNumberOfGuests().value(), orderTable.isEmpty());
+    }
+
+    public static TableResponse of(OrderTable orderTable, Long tableGroupId) {
         return new TableResponse(orderTable.getId(), tableGroupId, orderTable.getNumberOfGuests().value(), orderTable.isEmpty());
     }
 

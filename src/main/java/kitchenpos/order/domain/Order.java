@@ -27,7 +27,8 @@ public class Order {
     @Column(updatable = false)
     private LocalDateTime orderedTime;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    @JoinColumn(name = "order_id")
+    @OneToMany(cascade = CascadeType.ALL)
     private List<OrderLineItem> orderLineItems = new ArrayList<>();
 
     protected Order() {}
@@ -41,21 +42,23 @@ public class Order {
 
     public void setOrderTable(OrderTable orderTable) {
         this.orderTable = orderTable;
-        orderTable.addOrder(this);
     }
 
     public void addOrderLineItem(OrderLineItem orderLineItem) {
         if (!orderLineItems.contains(orderLineItem)) {
             this.orderLineItems.add(orderLineItem);
         }
-        orderLineItem.setOrder(this);
     }
 
     public void changeOrderStatus(OrderStatus orderStatus) {
-        if (this.orderStatus == OrderStatus.COMPLETION) {
+        if (isCompletion()) {
             throw new IllegalArgumentException("주문상태가 계산완료입니다.");
         }
         this.orderStatus = orderStatus;
+    }
+
+    public boolean isCompletion() {
+        return this.orderStatus == OrderStatus.COMPLETION;
     }
 
     public Long getId() {

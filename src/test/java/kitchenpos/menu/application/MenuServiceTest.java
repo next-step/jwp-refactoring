@@ -1,9 +1,8 @@
 package kitchenpos.menu.application;
 
+import kitchenpos.util.TestSupport;
 import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.Product;
-import kitchenpos.menu.domain.ProductRepository;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
@@ -24,13 +23,9 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @DisplayName("메뉴 서비스 통합 테스트")
 @Transactional
 @SpringBootTest
-public class MenuServiceTest {
+public class MenuServiceTest extends TestSupport {
     @Autowired
     private MenuService menuService;
-    @Autowired
-    private ProductRepository productRepository;
-    @Autowired
-    private MenuGroupRepository menuGroupRepository;
 
     private Product 후라이드;
     private Product 양념치킨;
@@ -38,9 +33,9 @@ public class MenuServiceTest {
 
     @BeforeEach
     public void setUp() {
-        후라이드 = 상품_등록됨("후라이드", BigDecimal.valueOf(18_000));
-        양념치킨 = 상품_등록됨("후라이드", BigDecimal.valueOf(19_000));
-        치킨 = 메뉴그룹_등록됨("치킨");
+        후라이드 = 상품_등록되어있음("후라이드", BigDecimal.valueOf(18_000));
+        양념치킨 = 상품_등록되어있음("후라이드", BigDecimal.valueOf(19_000));
+        치킨 = 메뉴그룹_등록되어있음("치킨");
     }
 
     @DisplayName("메뉴 등록 예외 - 메뉴그룹이 존재하지 않는 경우")
@@ -128,14 +123,5 @@ public class MenuServiceTest {
 
         //then
         assertThat(menus.size()).isEqualTo(3);
-    }
-
-    private MenuGroup 메뉴그룹_등록됨(String name) {
-        return menuGroupRepository.save(new MenuGroup(name));
-    }
-
-    private Product 상품_등록됨(String name, BigDecimal price) {
-        Product product = new Product(name, price);
-        return productRepository.save(product);
     }
 }

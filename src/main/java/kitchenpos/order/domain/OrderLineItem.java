@@ -8,10 +8,6 @@ public class OrderLineItem {
     @Id
     private Long seq;
 
-    @JoinColumn(name = "order_id")
-    @ManyToOne
-    private Order order;
-
     private Long menuId;
 
     @Embedded
@@ -26,14 +22,6 @@ public class OrderLineItem {
 
     public Long getSeq() {
         return seq;
-    }
-
-    public Long getOrderId() {
-        return order.getId();
-    }
-
-    public void setOrder(final Order order) {
-        this.order = order;
     }
 
     public Long getMenuId() {

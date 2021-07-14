@@ -1,15 +1,16 @@
 package kitchenpos.order.application;
 
+import kitchenpos.util.TestSupport;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.domain.OrderTableRepository;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusRequest;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,22 +27,23 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @DisplayName("메뉴 서비스 통합 테스트")
 @Transactional
 @SpringBootTest
-public class OrderServiceTest {
+public class OrderServiceTest extends TestSupport {
     @Autowired
     private OrderService orderService;
-    @Autowired
-    private MenuRepository menuRepository;
-    @Autowired
-    private OrderTableRepository orderTableRepository;
-    @Autowired
-    private OrderRepository orderRepository;
+
+    private Menu menu;
+    private OrderTable orderTable;
+
+    @BeforeEach
+    public void setUp() {
+        menu = 메뉴_등록되어있음("메뉴", BigDecimal.valueOf(1000));
+        orderTable = 테이블_등록되어있음(5, false);
+    }
 
     @DisplayName("주문 등록")
     @Test
     public void 주문_등록_확인() throws Exception {
         //given
-        Menu menu = 메뉴_등록됨("메뉴", BigDecimal.valueOf(1000));
-        OrderTable orderTable = 테이블_등록됨(5, false);
         OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(menu.getId(), 2L);
         OrderRequest orderRequest = new OrderRequest(orderTable.getId(), Arrays.asList(orderLineItemRequest));
 
@@ -56,8 +58,6 @@ public class OrderServiceTest {
     @Test
     public void 주문목록_조회_확인() throws Exception {
         //given
-        Menu menu = 메뉴_등록됨("메뉴", BigDecimal.valueOf(1000));
-        OrderTable orderTable = 테이블_등록됨(5, false);
         OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(menu.getId(), 2L);
         OrderRequest orderRequest = new OrderRequest(orderTable.getId(), Arrays.asList(orderLineItemRequest));
         orderService.create(orderRequest);
@@ -88,25 +88,13 @@ public class OrderServiceTest {
     @Test
     public void 주문상태_변경_확인() throws Exception {
         //given
-        Menu menu = 메뉴_등록됨("치킨", BigDecimal.valueOf(1_000));
-        OrderTable orderTable = 테이블_등록됨(5, false);
-        OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(menu.getId(), 2L);
-        OrderRequest orderRequest = new OrderRequest(orderTable.getId(), Arrays.asList(orderLineItemRequest));
-        OrderResponse orderResponse = orderService.create(orderRequest);
-        OrderStatusRequest orderStatusRequest = new OrderStatusRequest(OrderStatus.MEAL);
+        Order order = 주문_등록되어있음(orderTable, Arrays.asList(new OrderLineItem(menu.getId(), 2L)));
 
         //when
-        OrderResponse changeOrderResponse = orderService.changeOrderStatus(orderResponse.getId(), orderStatusRequest);
+        OrderStatusRequest orderStatusRequest = new OrderStatusRequest(OrderStatus.MEAL);
+        OrderResponse changeOrderResponse = orderService.changeOrderStatus(order.getId(), orderStatusRequest);
 
         //then
         assertThat(changeOrderResponse.getOrderStatus()).isEqualTo(OrderStatus.MEAL);
-    }
-
-    private OrderTable 테이블_등록됨(int numberOfGuests, boolean empty) {
-        return orderTableRepository.save(new OrderTable(numberOfGuests, empty));
-    }
-
-    public Menu 메뉴_등록됨(String name, BigDecimal price) {
-        return menuRepository.save(new Menu(name, price, null));
     }
 }

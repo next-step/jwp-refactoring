@@ -1,11 +1,6 @@
 package kitchenpos.order.domain;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
-import static kitchenpos.order.domain.OrderStatus.*;
 
 @Entity
 public class OrderTable {
@@ -21,9 +16,6 @@ public class OrderTable {
 
     private boolean empty;
 
-    @OneToMany(mappedBy = "orderTable", orphanRemoval = true)
-    private List<Order> orders = new ArrayList<>();
-
     protected OrderTable() {
     }
 
@@ -32,14 +24,7 @@ public class OrderTable {
         this.empty = empty;
     }
 
-    public void addOrder(Order order) {
-        if (!orders.contains(order)) {
-            orders.add(order);
-        }
-    }
-
     public void changeEmpty(boolean empty) {
-        verifyChangeableEmpty();
         this.empty = empty;
     }
 
@@ -48,32 +33,19 @@ public class OrderTable {
         this.numberOfGuests = new NumberOfGuests(numberOfGuests);
     }
 
-    public void changeTableGroup(TableGroup tableGroup) {
+    public void group(TableGroup tableGroup) {
         this.tableGroup = tableGroup;
-        if (Objects.nonNull(tableGroup)) {
-            tableGroup.addOrderTable(this);
-        }
+        this.empty = false;
+    }
+
+    public void ungroup() {
+        this.tableGroup = null;
     }
 
     private void verifyChangeable() {
         if (isEmpty()) {
             throw new IllegalArgumentException();
         }
-    }
-
-    private void verifyChangeableEmpty() {
-        if (orders.stream()
-                .anyMatch(order -> (order.getOrderStatus() == COOKING || order.getOrderStatus() == MEAL))) {
-            throw new IllegalArgumentException("주문테이블의 주문상태가 조리나 식사입니다.");
-        }
-        if (Objects.nonNull(tableGroup)) {
-            throw new IllegalArgumentException("단체지정이 되어있으면 안됩니다.");
-        }
-    }
-
-    public boolean isCompletionAllOrders() {
-        return orders.stream()
-                .allMatch(order -> order.getOrderStatus() == COMPLETION);
     }
 
     public Long getId() {
@@ -94,13 +66,5 @@ public class OrderTable {
 
     public boolean isEmpty() {
         return empty;
-    }
-
-    public void setEmpty(final boolean empty) {
-        this.empty = empty;
-    }
-
-    public List<Order> getOrders() {
-        return orders;
     }
 }

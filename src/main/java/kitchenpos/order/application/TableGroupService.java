@@ -1,9 +1,7 @@
 package kitchenpos.order.application;
 
-import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.domain.OrderTableRepository;
-import kitchenpos.order.domain.TableGroup;
-import kitchenpos.order.domain.TableGroupRepository;
+import kitchenpos.order.domain.*;
+import kitchenpos.order.domain.service.TableGroupDomainService;
 import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.order.dto.TableGroupRequest;
 import kitchenpos.order.dto.TableGroupResponse;
@@ -18,18 +16,24 @@ import java.util.stream.Collectors;
 public class TableGroupService {
     private final OrderTableRepository orderTableRepository;
     private final TableGroupRepository tableGroupRepository;
+    private final OrderRepository orderRepository;
+    private final TableGroupDomainService tableGroupDomainService;
 
     public TableGroupService(final OrderTableRepository orderTableRepository,
-                             final TableGroupRepository tableGroupRepository) {
+                             final TableGroupRepository tableGroupRepository, OrderRepository orderRepository,
+                             final TableGroupDomainService tableGroupDomainService) {
         this.orderTableRepository = orderTableRepository;
         this.tableGroupRepository = tableGroupRepository;
+        this.orderRepository = orderRepository;
+        this.tableGroupDomainService = tableGroupDomainService;
     }
 
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
         List<OrderTable> orderTables = findOrderTableAllBy(tableGroupRequest.getOrderTables());
         verifyAvailableTableGroupSize(tableGroupRequest.getOrderTables().size(), orderTables.size());
-        TableGroup saveTableGroup = tableGroupRepository.save(new TableGroup(orderTables));
-        return TableGroupResponse.of(saveTableGroup);
+        TableGroup group = tableGroupDomainService.group(orderTables);
+        TableGroup saveTableGroup = tableGroupRepository.save(group);
+        return TableGroupResponse.of(saveTableGroup, orderTables);
     }
 
     private List<OrderTable> findOrderTableAllBy(List<OrderTableRequest> orderTableRequests) {
@@ -51,12 +55,10 @@ public class TableGroupService {
     }
 
     public void ungroup(final Long tableGroupId) {
-        TableGroup tableGroup = findTableGroupById(tableGroupId);
-        tableGroup.ungroup();
-    }
-
-    private TableGroup findTableGroupById(Long tableGroupId) {
-        return tableGroupRepository.findById(tableGroupId)
-                .orElseThrow(() -> new IllegalArgumentException("단체지정이 존재하지 않습니다."));
+        List<Order> orders = orderRepository.findAllByTableGroupId(tableGroupId);
+        List<OrderTable> orderTables = orders.stream()
+                .map(Order::getOrderTable)
+                .collect(Collectors.toList());
+        tableGroupDomainService.ungroup(orderTables, orders);
     }
 }
