@@ -1,146 +1,114 @@
 package kitchenpos.application;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.mockito.BDDMockito.given;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.dao.TableGroupDao;
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.advice.exception.OrderTableException;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.dto.request.OrderTableRequest;
+import kitchenpos.dto.request.TableGroupRequest;
+import kitchenpos.repository.OrderRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
-@DisplayName("단체 지정 기능 테스트")
-@ExtendWith(MockitoExtension.class)
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.Mockito.when;
+
+@SpringBootTest
 class TableGroupServiceTest {
-    private TableGroup tableGroup;
-    private OrderTable orderTable1;
-    private OrderTable orderTable2;
-    private List<OrderTable> orderTables;
 
-    @Mock
-    OrderDao orderDao;
+    private List<OrderTableRequest> orderTableRequests;
+    private OrderTable 테이블_1번;
+    private OrderTable 테이블_2번;
 
-    @Mock
-    OrderTableDao orderTableDao;
+    @Autowired
+    private TableGroupService tableGroupService;
 
-    @Mock
-    TableGroupDao tableGroupDao;
+    @Autowired
+    private TableService tableService;
 
-    @InjectMocks
-    TableGroupService tableGroupService;
+    @Autowired
+    private OrderService orderService;
 
+    @MockBean
+    private OrderRepository orderRepository;
 
     @BeforeEach
     void setUp() {
-        orderTables = new ArrayList<>();
-
-        tableGroup = new TableGroup();
-        tableGroup.setId(1L);
-
-        orderTable1 = new OrderTable();
-        orderTable1.setId(1L);
-        orderTable1.setNumberOfGuests(5);
-        orderTable1.setEmpty(true);
-
-        orderTable2 = new OrderTable();
-        orderTable2.setId(2L);
-        orderTable2.setNumberOfGuests(3);
-        orderTable2.setEmpty(true);
-
-        orderTables.add(orderTable1);
-        orderTables.add(orderTable2);
-
-        tableGroup.setOrderTables(orderTables);
+        테이블_1번 = 테이블을_생성한다(0, true);
+        테이블_2번 = 테이블을_생성한다(0, true);
+        List<OrderTable> orderTables = new ArrayList<>();
+        orderTables.add(테이블_1번);
+        orderTables.add(테이블_2번);
+        orderTableRequests = orderTables.stream()
+            .map(OrderTableRequest::of)
+            .collect(Collectors.toList());
     }
 
+    @DisplayName("테이블 그룹을 생성한다 : 각 테이블들의 테이블 그룹 id를 등록하고 상태를 비어있지않음으로 변경한다")
     @Test
-    @DisplayName("2 개 이상의 빈 테이블을 단체로 지정할 수 있다.")
-    public void create() throws Exception {
-        // given
-        List<Long> orderTableIds = tableGroup.getOrderTables().stream()
-                .map(OrderTable::getId)
-                .collect(Collectors.toList());
-        given(orderTableDao.findAllByIdIn(orderTableIds)).willReturn(orderTables);
-        given(tableGroupDao.save(tableGroup)).willReturn(tableGroup);
-        given(orderTableDao.save(orderTable1)).willReturn(orderTable1);
+    void create() {
+        TableGroup tableGroup = 테이블_그룹을_생성한다(new TableGroupRequest(orderTableRequests));
 
-        // when
-        TableGroup tableGroup = tableGroupService.create(this.tableGroup);
+        List<OrderTable> orderTables = tableGroup.getOrderTables();
 
-        // then
-        assertThat(tableGroup.getId()).isEqualTo(this.tableGroup.getId());
+        orderTables.forEach(group -> {
+            assertThat(group.getTableGroup().getId()).isEqualTo(tableGroup.getId());
+            assertThat(group.isEmpty()).isEqualTo(false);
+        });
     }
 
+    @DisplayName("테이블 그룹을 생성한다 : 테이블 사이즈가 2미만이면 익셉션 발생")
     @Test
-    @DisplayName("단체 지정은 중복될 수 없다.")
-    public void createFail() throws Exception {
-        // given
-        List<Long> orderTableIds = tableGroup.getOrderTables().stream()
-                .map(OrderTable::getId)
-                .collect(Collectors.toList());
-        orderTable1.setTableGroupId(2L);
-        given(orderTableDao.findAllByIdIn(orderTableIds)).willReturn(orderTables);
-
-        // when then
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableGroupService.create(tableGroup));
+    void createException() {
+        assertThatThrownBy(() -> 테이블_그룹을_생성한다(new TableGroupRequest()))
+            .isInstanceOf(OrderTableException.class);
     }
 
+
+    @DisplayName("각 주문 테이블의 테이블 그룹 id를 지운다")
     @Test
-    @DisplayName("단체 지정을 해지할 수 있다.")
-    public void ungroup() throws Exception {
-        // given
+    void ungroup() {
+        TableGroup tableGroup = 테이블_그룹을_생성한다(new TableGroupRequest(orderTableRequests));
         List<Long> orderTableIds = tableGroup.getOrderTables().stream()
-                .map(OrderTable::getId)
-                .collect(Collectors.toList());
+            .map(OrderTable::getId)
+            .collect(Collectors.toList());
 
-        orderTable1.setTableGroupId(tableGroup.getId());
-        orderTable2.setTableGroupId(tableGroup.getId());
+        테이블_그룹을_비운다(tableGroup.getId());
 
-        given(orderTableDao.findAllByTableGroupId(tableGroup.getId())).willReturn(orderTables);
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(
-                orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).willReturn(false);
-        given(orderTableDao.save(orderTable1)).willReturn(orderTable1);
-        given(orderTableDao.save(orderTable2)).willReturn(orderTable2);
-
-        // when
-        tableGroupService.ungroup(tableGroup.getId());
-
-        // then
-        assertThat(orderTable1.getTableGroupId()).isNull();
-        assertThat(orderTable2.getTableGroupId()).isNull();
+        orderTableIds.forEach(id -> {
+            assertThat(orderService.findOrderTableById(id).getTableGroup()).isNull();
+        });
     }
 
+    @DisplayName("테이블 그룹을 제거한다 : OrderStatus가 COOKING, MEAL이면 익셉션 발생")
     @Test
-    @DisplayName("단체 지정된 주문 테이블의 주문 상태가 조리 또는 식사인 경우 단체 지정을 해지할 수 없다.")
-    public void ungroupFail() throws Exception {
-        // given
-        List<Long> orderTableIds = tableGroup.getOrderTables().stream()
-                .map(OrderTable::getId)
-                .collect(Collectors.toList());
+    void ungroupException() {
+        TableGroup tableGroup = 테이블_그룹을_생성한다(new TableGroupRequest(orderTableRequests));
 
-        orderTable1.setTableGroupId(tableGroup.getId());
-        orderTable2.setTableGroupId(tableGroup.getId());
+        when(orderRepository.existsByOrderTableInAndOrderStatusIn(anyList(), anyList())).thenReturn(true);
 
-        given(orderTableDao.findAllByTableGroupId(tableGroup.getId())).willReturn(orderTables);
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(
-                orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).willReturn(true);
+        assertThatThrownBy(() -> tableGroupService.ungroup(tableGroup.getId()))
+            .isInstanceOf(OrderTableException.class);
+    }
 
-        // when then
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableGroupService.ungroup(tableGroup.getId()));
+    private OrderTable 테이블을_생성한다(int numberOfGuest, boolean empty) {
+        return tableService.create(new OrderTableRequest(numberOfGuest, empty));
+    }
+
+    private void 테이블_그룹을_비운다(Long id) {
+        tableGroupService.ungroup(id);
+    }
+
+    private TableGroup 테이블_그룹을_생성한다(TableGroupRequest tableGroupRequest) {
+        return tableGroupService.create(tableGroupRequest);
     }
 }
