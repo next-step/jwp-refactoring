@@ -34,7 +34,6 @@ public class TableGroup {
         this.createdDate = LocalDateTime.now();
         this.orderTables = OrderTables.of(orderTables);
         this.orderTables.checkEmptyAndNotIncludeTableGroup();
-        this.orderTables.grouping(this);
     }
 
     public Long getId() {
@@ -47,9 +46,5 @@ public class TableGroup {
 
     public OrderTables getOrderTables() {
         return orderTables;
-    }
-
-    public void addOrderTable(final OrderTable orderTable) {
-        this.orderTables.add(orderTable);
     }
 }

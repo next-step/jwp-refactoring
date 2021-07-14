@@ -6,13 +6,15 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import kitchenpos.table.domain.OrderTable;
 
 @Embeddable
 public class OrderTables {
 
-    @OneToMany(mappedBy = "tableGroup", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "tableGroupId")
     private List<OrderTable> orderTables = new ArrayList<>();
 
     public static OrderTables of(final List<OrderTable> orderTableList) {
@@ -51,10 +53,6 @@ public class OrderTables {
         return this.orderTables.stream()
                                .map(OrderTable::getId)
                                .collect(Collectors.toList());
-    }
-
-    public void grouping(final TableGroup tableGroup) {
-        orderTables.forEach(orderTable -> orderTable.grouping(tableGroup));
     }
 
     public void ungroup() {

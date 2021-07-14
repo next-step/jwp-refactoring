@@ -25,7 +25,8 @@ public class TableGroupResponse {
         return new TableGroupResponse(tableGroup.getId(),
                                       tableGroup.getCreatedDate(),
                                       tableGroup.getOrderTables()
-                                                .convertAll(OrderTableResponse::of));
+                                                .convertAll(orderTable -> OrderTableResponse.of(tableGroup.getId(),
+                                                                                                orderTable)));
     }
 
     public Long getId() {
