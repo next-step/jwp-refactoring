@@ -130,3 +130,15 @@
 ![class-dependency](docs/image/kitchenpos-class-dependency.png)
 
 * 다이어 그램상 의존성이 한 방향 (그림 상 아래에서 위로) 흐르는 것으로 보인다.
+
+---
+
+# 4단계 - 멀티 모듈 적용
+
+* aggregate로 설정해 둔 단위로 패키지를 분리해 두었으니, 각자의 패키지가 module이 되면 좋을 것 같음.
+* module-product, module-menugroup, module-menu, module-table, module-tablegroup, module-order로 분리해본다.
+
+## 이전 단계 코드리뷰 TODO
+- [x] 이전단계 코드리뷰 -  ProductEntity내에서 price.getter 사용하는 부분 개선
+- [x] 이전단계 코드리뷰 -  MenuEntity에서 중복된 생성자 로직 개선
+- [x] 이전단계 코드리뷰 -  UsingOrderRepositoryValidator domain 패키지로 이동
