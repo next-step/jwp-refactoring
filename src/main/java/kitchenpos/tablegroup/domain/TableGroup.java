@@ -1,7 +1,5 @@
 package kitchenpos.tablegroup.domain;
 
-import org.springframework.data.annotation.CreatedDate;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
@@ -11,9 +9,8 @@ public class TableGroup {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @CreatedDate
     @Column(updatable = false)
-    private LocalDateTime createdDate;
+    private LocalDateTime createdDate = LocalDateTime.now();
 
     public TableGroup() {
     }

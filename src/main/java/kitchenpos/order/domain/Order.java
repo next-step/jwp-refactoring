@@ -1,7 +1,6 @@
 package kitchenpos.order.domain;
 
 import kitchenpos.order.exception.AlreadyCompletionException;
-import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -19,9 +18,8 @@ public class Order {
 
     private Long orderTableId;
 
-    @CreatedDate
     @Column(updatable = false)
-    private LocalDateTime orderedTime;
+    private LocalDateTime orderedTime = LocalDateTime.now();
 
     @Embedded
     private OrderLineItems orderLineItems;
