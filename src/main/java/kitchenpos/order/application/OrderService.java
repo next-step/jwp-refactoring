@@ -1,14 +1,8 @@
 package kitchenpos.order.application;
 
-import static kitchenpos.exception.KitchenposExceptionMessage.NOT_FOUND_MENU;
 import static kitchenpos.exception.KitchenposExceptionMessage.NOT_FOUND_ORDER;
-import static kitchenpos.exception.KitchenposExceptionMessage.NOT_FOUND_ORDER_TABLE;
 
 import kitchenpos.exception.KitchenposException;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.table.domain.OrderTable;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
@@ -27,21 +21,21 @@ import java.util.stream.Collectors;
 @Transactional
 public class OrderService {
 
-    private final MenuRepository menuRepository;
     private final OrderRepository orderRepository;
-    private final OrderTableRepository orderTableRepository;
+    private final OrderTableValidator orderTableValidator;
+    private final MenuValidator menuValidator;
 
-    public OrderService(final MenuRepository menuRepository,
-                        final OrderRepository orderRepository,
-                        final OrderTableRepository orderTableRepository) {
-        this.menuRepository = menuRepository;
+    public OrderService(final OrderRepository orderRepository,
+                        final OrderTableValidator orderTableValidator,
+                        final MenuValidator menuValidator) {
         this.orderRepository = orderRepository;
-        this.orderTableRepository = orderTableRepository;
+        this.orderTableValidator = orderTableValidator;
+        this.menuValidator = menuValidator;
     }
 
     public OrderResponse create(final OrderRequest orderRequest) {
-        OrderTable orderTable = findOrderTableById(orderRequest.getOrderTableId());
-        final Order savedOrder = orderRepository.save(new Order(orderTable.getId(),
+        orderTableValidator.checkExistsOrderTable(orderRequest.getOrderTableId());
+        final Order savedOrder = orderRepository.save(new Order(orderRequest.getOrderTableId(),
                                                                 OrderStatus.COOKING,
                                                                 getOrderLineItems(orderRequest)));
         return OrderResponse.of(savedOrder);
@@ -55,21 +49,10 @@ public class OrderService {
     }
 
     private OrderLineItem createOrderLineItem(OrderLineItemRequest orderLineItemRequest) {
-        Menu menu = findMenuById(orderLineItemRequest.getMenuId());
-        return new OrderLineItem(menu.getId(),
+        menuValidator.checkExistsMenu(orderLineItemRequest.getMenuId());
+        return new OrderLineItem(orderLineItemRequest.getMenuId(),
                                  orderLineItemRequest.getQuantity());
     }
-
-    private Menu findMenuById(final Long menuId) {
-        return menuRepository.findById(menuId)
-                             .orElseThrow(() -> new KitchenposException(NOT_FOUND_MENU));
-    }
-
-    private OrderTable findOrderTableById(final Long orderTableId) {
-        return orderTableRepository.findById(orderTableId)
-                                   .orElseThrow(() -> new KitchenposException(NOT_FOUND_ORDER_TABLE));
-    }
-
 
     @Transactional(readOnly = true)
     public List<OrderResponse> list() {
