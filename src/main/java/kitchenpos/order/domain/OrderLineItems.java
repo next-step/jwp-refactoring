@@ -6,6 +6,7 @@ import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Embeddable
 public class OrderLineItems {
@@ -20,12 +21,21 @@ public class OrderLineItems {
         this.orderLineItems = orderLineItems;
     }
 
-
     public void registerOrder(Order order) {
         orderLineItems.forEach(orderLineItem -> orderLineItem.registerOrder(order));
     }
 
+    public List<Long> getMenuIds() {
+        return orderLineItems.stream()
+                .map(orderLineItem -> orderLineItem.getMenuId())
+                .collect(Collectors.toList());
+    }
+
     public List<OrderLineItem> getOrderLineItems() {
         return orderLineItems;
+    }
+
+    public boolean isEqualsMenuCount(int menuCount) {
+        return orderLineItems.size() == menuCount;
     }
 }
