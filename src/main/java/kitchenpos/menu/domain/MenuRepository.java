@@ -7,5 +7,5 @@ import java.util.List;
 
 @Repository
 public interface MenuRepository extends JpaRepository<Menu, Long> {
-    List<Menu> findByIdIn(List<Long> menuIds);
+    int countByIdIn(List<Long> ids);
 }

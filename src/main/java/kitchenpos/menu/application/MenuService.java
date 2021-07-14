@@ -1,6 +1,6 @@
 package kitchenpos.menu.application;
 
-import kitchenpos.menu.application.exception.NotExistMenusException;
+import kitchenpos.menu.application.exception.BadProductIdException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
@@ -8,7 +8,6 @@ import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.presentation.dto.MenuProductRequest;
 import kitchenpos.menu.presentation.dto.MenuRequest;
 import kitchenpos.menu.presentation.dto.MenuResponse;
-import kitchenpos.menu.application.exception.BadProductIdException;
 import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
 import org.springframework.stereotype.Service;
@@ -60,14 +59,5 @@ public class MenuService {
     @Transactional(readOnly = true)
     public List<MenuResponse> list() {
         return MenuResponse.ofList(menuRepository.findAll());
-    }
-
-    @Transactional(readOnly = true)
-    public List<Menu> findByIdIn(List<Long> menuIds) {
-        List<Menu> menus = menuRepository.findByIdIn(menuIds);
-        if (menus.isEmpty()) {
-            throw new NotExistMenusException();
-        }
-        return menus;
     }
 }

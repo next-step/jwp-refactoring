@@ -67,17 +67,6 @@ class OrderServiceTest extends DataBaseCleanSupport {
         assertThat(actual.getOrderTableId()).isEqualTo(주문테이블.getId());
     }
 
-    @DisplayName("주문은 메뉴를 지정해야한다.")
-    @Test
-    void createOrderExceptionIfMenuIsNull() {
-        //given
-        OrderRequest request = OrderRequest.of(주문테이블.getId(), OrderStatus.COOKING, Lists.list());
-
-        //when
-        assertThatThrownBy(() -> orderService.create(request))
-                .isInstanceOf(NotExistMenusException.class); //then
-    }
-
     @DisplayName("주문은 주문 테이블을 지정해야한다.")
     @Test
     void createOrderExceptionIfOrderTableIsNull() {
