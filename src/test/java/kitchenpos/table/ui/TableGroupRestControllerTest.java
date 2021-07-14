@@ -1,10 +1,11 @@
-package kitchenpos.tablegroup.ui;
+package kitchenpos.table.ui;
 
 import kitchenpos.MockMvcTestHelper;
-import kitchenpos.tablegroup.application.TableGroupService;
-import kitchenpos.tablegroup.dto.TableGroupRequest;
-import kitchenpos.tablegroup.dto.TableGroupRequest.OrderTableIdRequest;
-import kitchenpos.tablegroup.dto.TableGroupResponse;
+import kitchenpos.table.application.TableGroupService;
+import kitchenpos.table.dto.TableGroupRequest;
+import kitchenpos.table.dto.TableGroupRequest.OrderTableIdRequest;
+import kitchenpos.table.dto.TableGroupResponse;
+import kitchenpos.table.ui.TableGroupRestController;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;

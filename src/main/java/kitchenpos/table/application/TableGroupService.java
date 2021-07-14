@@ -1,4 +1,4 @@
-package kitchenpos.tablegroup.application;
+package kitchenpos.table.application;
 
 import static kitchenpos.exception.KitchenposExceptionMessage.EXISTS_NOT_COMPLETION_ORDER;
 import static kitchenpos.exception.KitchenposExceptionMessage.NOT_FOUND_ORDER_TABLE;
@@ -7,14 +7,14 @@ import static kitchenpos.exception.KitchenposExceptionMessage.NOT_FOUND_TABLE_GR
 import kitchenpos.exception.KitchenposException;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.tablegroup.domain.OrderTables;
-import kitchenpos.tablegroup.domain.TableGroupRepository;
+import kitchenpos.table.domain.OrderTables;
+import kitchenpos.table.domain.TableGroupRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.tablegroup.domain.TableGroup;
-import kitchenpos.tablegroup.dto.TableGroupRequest;
-import kitchenpos.tablegroup.dto.TableGroupRequest.OrderTableIdRequest;
-import kitchenpos.tablegroup.dto.TableGroupResponse;
+import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.dto.TableGroupRequest;
+import kitchenpos.table.dto.TableGroupRequest.OrderTableIdRequest;
+import kitchenpos.table.dto.TableGroupResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
