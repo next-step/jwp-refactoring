@@ -31,7 +31,7 @@ class TableGroupServiceTest {
     @InjectMocks
     private TableGroupService tableGroupService;
 
-    private final TableGroup 단체지정_안됨 = null;
+    private final Long 단체지정_안됨 = null;
     private final boolean 비어있음 = true;
     private final OrderTable 비어있는_첫번째_테이블 = new OrderTable(1L, 단체지정_안됨, 3, 비어있음);
     private final OrderTable 비어있는_두번째_테이블 = new OrderTable(2L, 단체지정_안됨, 3, 비어있음);

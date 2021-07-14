@@ -18,8 +18,8 @@ public class OrderTables {
         this.orderTables = orderTables;
     }
 
-    public void assignTableGroup(TableGroup tableGroup) {
-        orderTables.forEach(orderTable -> orderTable.assignToTableGroup(tableGroup));
+    public void assignTableGroup(Long tableGroupId) {
+        orderTables.forEach(orderTable -> orderTable.assignToTableGroup(tableGroupId));
     }
 
     public List<OrderTable> getOrderTables() {

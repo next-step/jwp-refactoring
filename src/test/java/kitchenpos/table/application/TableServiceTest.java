@@ -41,7 +41,7 @@ class TableServiceTest {
     @InjectMocks
     private TableService tableService;
 
-    private final TableGroup 단체지정_안됨 = null;
+    private final Long 단체지정_안됨 = null;
     private final OrderTable 비어있지_않은_테이블 = new OrderTable(1L, 단체지정_안됨, 3, false);
     private final OrderTable 비어있는_테이블 = new OrderTable(1L, 단체지정_안됨, 3, true);
 
@@ -76,7 +76,7 @@ class TableServiceTest {
     @Test
     void 테이블의_비어있음_여부_변경() {
         //Given
-        OrderTable 변경테이블 = new OrderTable(비어있지_않은_테이블.getTableGroup(), 비어있지_않은_테이블.getNumberOfGuests(), false);
+        OrderTable 변경테이블 = new OrderTable(비어있지_않은_테이블.getTableGroupId(), 비어있지_않은_테이블.getNumberOfGuests(), false);
         OrderTableRequest 비어있음_변경_요청 = OrderTableRequest.of(변경테이블);
         when(orderTableRepository.findById(비어있지_않은_테이블.getId())).thenReturn(Optional.of(비어있지_않은_테이블));
         when(orderRepository.existsByOrderTableIdAndOrderStatusIn(비어있지_않은_테이블.getId(), Arrays.asList(COOKING.name(), MEAL.name())))

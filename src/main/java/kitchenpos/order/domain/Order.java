@@ -1,7 +1,6 @@
 package kitchenpos.order.domain;
 
 import kitchenpos.exception.CannotUpdateException;
-import kitchenpos.ordertable.domain.OrderTable;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
@@ -19,9 +18,8 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
     @JoinColumn(name = "order_table_id", foreignKey = @ForeignKey(name = "fk_orders_order_table"), nullable = false)
-    private OrderTable orderTable;
+    private Long orderTableId;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "order_status", nullable = false)
@@ -36,17 +34,17 @@ public class Order {
     public Order() {
     }
 
-    public Order(OrderTable orderTable, OrderStatus orderStatus, OrderLineItems orderLineItems) {
-        validateOrderTableStatus(orderTable);
-        this.orderTable = orderTable;
+    public Order(Long orderTableId, OrderStatus orderStatus, OrderLineItems orderLineItems) {
+        validateOrderTableStatus(orderTableId);
+        this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
         this.orderLineItems = orderLineItems;
         orderLineItems.ofOrder(this);
-        orderTable.addOrder(this);
+        //orderTableId.addOrder(this); -> orderTable에서 직접 add
     }
 
-    private void validateOrderTableStatus(OrderTable orderTable) {
-        if (orderTable.isEmpty()) {
+    private void validateOrderTableStatus(Long orderTableId) {
+        if (orderTableId == null) {
             throw new IllegalArgumentException(ERROR_ORDER_SHOULD_HAVE_NON_EMPTY_TABLE.showText());
         }
     }
@@ -71,13 +69,14 @@ public class Order {
         return id;
     }
 
-    public OrderTable getOrderTable() {
-        return orderTable;
+    public Long getOrderTableId() {
+        return orderTableId;
     }
 
     public OrderStatus getOrderStatus() {
         return orderStatus;
     }
+
     public LocalDateTime getOrderedTime() {
         return orderedTime;
     }

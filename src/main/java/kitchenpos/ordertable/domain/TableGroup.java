@@ -35,9 +35,10 @@ public class TableGroup {
         validateOrderTables(orderTables);
         this.id = id;
         this.orderTables = orderTables;
-        this.orderTables.assignTableGroup(this);
+        this.orderTables.assignTableGroup(this.id);
     }
 
+    /* OrderTable에게 가야할 로직인듯 */
     private void validateOrderTables(OrderTables orderTables) {
         if (orderTables == null || orderTables.size() < MINIMUM_REQUIRED_NUMBER_OF_TABLES) {
             throw new IllegalArgumentException(ERROR_ORDERTABLES_SHOULD_HAVE_AT_LEAST_TWO_TABLES.showText());

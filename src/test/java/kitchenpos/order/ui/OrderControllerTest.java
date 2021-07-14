@@ -55,7 +55,7 @@ public class OrderControllerTest extends ControllerTest<OrderRequest> {
 
     private final OrderTable 첫번째_테이블 = new OrderTable(3, false);
     private final OrderLineItem 주문_항목_첫번째 = new OrderLineItem(첫번째_메뉴, Quantity.of(3L));
-    private Order 첫번째_주문 = new Order(첫번째_테이블, COOKING, new OrderLineItems(Arrays.asList(주문_항목_첫번째)));
+    private Order 첫번째_주문 = new Order(첫번째_테이블.getId(), COOKING, new OrderLineItems(Arrays.asList(주문_항목_첫번째)));
 
 
     @DisplayName("주문 생성요청")

@@ -15,9 +15,8 @@ public class OrderTable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "table_group_id", foreignKey = @ForeignKey(name = "fk_order_table_table_group"))
-    private TableGroup tableGroup;
+    private Long tableGroupId;
 
     @Column(name = "number_of_guests", nullable = false)
     private int numberOfGuests;
@@ -35,23 +34,19 @@ public class OrderTable {
         this(0L, null, numberOfGuests, empty);
     }
 
-    public OrderTable(TableGroup tableGroup, int numberOfGuests, boolean empty) {
-        this(0L, tableGroup, numberOfGuests, empty);
+    public OrderTable(Long tableGroupId, int numberOfGuests, boolean empty) {
+        this(0L, tableGroupId, numberOfGuests, empty);
     }
 
-    public OrderTable(Long id, int numberOfGuests, boolean empty) {
-        this(id, null, numberOfGuests, empty);
-    }
-
-    public OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
+    public OrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
         this.id = id;
-        this.tableGroup = tableGroup;
+        this.tableGroupId = tableGroupId;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
     }
 
     public void changeEmpty(boolean isEmpty) {
-        if (tableGroup != null) {
+        if (tableGroupId != null) {
             throw new CannotCleanTableException(ERROR_ORDER_TABLE_CANNOT_BE_CLEANED_WHEN_GROUPED);
         }
         this.empty = isEmpty;
@@ -67,19 +62,19 @@ public class OrderTable {
         this.numberOfGuests = number;
     }
 
-    public void assignToTableGroup(TableGroup tableGroup) {
-        this.tableGroup = tableGroup;
+    public void assignToTableGroup(Long tableGroupId) {
+        this.tableGroupId = tableGroupId;
     }
 
     public boolean isAssignedToTableGroup() {
-        return tableGroup != null;
+        return tableGroupId != null;
     }
 
     public void unGroup() {
         if (orders.isNotCompleted()) {
             throw new CannotUpdateException(ERROR_TABLE_GROUP_CANNOT_BE_UNGROUPED_WHEN_ORDERS_NOT_COMPLETED);
         }
-        this.tableGroup = null;
+        this.tableGroupId = null;
     }
 
     public void addOrder(Order order) {
@@ -90,8 +85,8 @@ public class OrderTable {
         return id;
     }
 
-    public TableGroup getTableGroup() {
-        return tableGroup;
+    public Long getTableGroupId() {
+        return tableGroupId;
     }
 
     public int getNumberOfGuests() {

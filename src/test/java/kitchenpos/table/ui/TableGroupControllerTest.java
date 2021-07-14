@@ -37,8 +37,8 @@ public class TableGroupControllerTest extends ControllerTest<TableGroupRequest> 
     }
 
     private final boolean 비어있음 = true;
-    private final OrderTable 비어있는_첫번째_테이블 = new OrderTable(1L, 3, 비어있음);
-    private final OrderTable 비어있는_두번째_테이블 = new OrderTable(2L, 3, 비어있음);
+    private final OrderTable 비어있는_첫번째_테이블 = new OrderTable( 3, 비어있음);
+    private final OrderTable 비어있는_두번째_테이블 = new OrderTable(3, 비어있음);
     private TableGroup 테이블그룹 = new TableGroup(1L, new OrderTables(Arrays.asList(비어있는_첫번째_테이블, 비어있는_두번째_테이블)));
 
     @DisplayName("단체지정 생성요청")

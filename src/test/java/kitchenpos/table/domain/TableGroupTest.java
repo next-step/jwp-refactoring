@@ -19,7 +19,7 @@ class TableGroupTest {
     private final boolean 비어있지_않음 = false;
     private final OrderTable 단체지정_안된_비어있는_테이블 = new OrderTable(3, 비어있음);
     private final OrderTable 단체지정_안된_비어있지_않은_테이블 = new OrderTable(3, 비어있지_않음);
-    private final OrderTable 단체지정_된_비어있는_테이블 = new OrderTable(new TableGroup(), 3, 비어있음);
+    private final OrderTable 단체지정_된_비어있는_테이블 = new OrderTable(1L, 3, 비어있음);
 
     @DisplayName("단체지정시 주문 테이블 목록이 비어있는 경우, 예외가 발생한다")
     @Test

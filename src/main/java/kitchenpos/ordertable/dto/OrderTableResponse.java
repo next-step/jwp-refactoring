@@ -28,10 +28,10 @@ public class OrderTableResponse {
     }
 
     public static OrderTableResponse of(OrderTable orderTable) {
-        if (orderTable.getTableGroup() == null) {
+        if (orderTable.getTableGroupId() == null) {
             return new OrderTableResponse(orderTable.getId(), orderTable.getNumberOfGuests(), orderTable.isEmpty());
         }
-        return new OrderTableResponse(orderTable.getId(), orderTable.getTableGroup().getId(),
+        return new OrderTableResponse(orderTable.getId(), orderTable.getTableGroupId(),
                 orderTable.getNumberOfGuests(), orderTable.isEmpty());
     }
 

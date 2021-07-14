@@ -18,7 +18,7 @@ public class OrderRequest {
     }
 
     public static OrderRequest of(Order order) {
-        return new OrderRequest(order.getOrderTable().getId(),
+        return new OrderRequest(order.getOrderTableId(),
                 OrderLineItemRequest.ofList(order.getOrderLineItems().temporaryGetList()));
     }
 
