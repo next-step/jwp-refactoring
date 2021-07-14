@@ -1,5 +1,6 @@
 package kitchenpos.ordertable.application;
 
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
@@ -13,9 +14,11 @@ import java.util.List;
 
 @Service
 public class TableService {
+    private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
 
-    public TableService(OrderTableRepository orderTableRepository) {
+    public TableService(OrderRepository orderRepository, OrderTableRepository orderTableRepository) {
+        this.orderRepository = orderRepository;
         this.orderTableRepository = orderTableRepository;
     }
 
@@ -34,8 +37,10 @@ public class TableService {
     public OrderTableResponse changeEmpty(final Long orderTableId, final boolean empty) {
         OrderTable orderTable = findById(orderTableId);
 
-        if (orderTableRepository.findAllById(
-                orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
+        List<OrderStatus> orderStatuses = Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL);
+
+        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
+                orderTableId, orderStatuses)) {
             throw new IllegalArgumentException();
         }
 
