@@ -19,15 +19,15 @@ public class Product {
 
     public Product() {}
 
-    public Product(Long id, Name name, Price price) {
+    public Product(Long id, String name, BigDecimal price) {
         this.id = id;
-        this.name = name;
-        this.price = price;
+        this.name = new Name(name);
+        this.price = new Price(price);
     }
 
-    public Product(Name name, Price price) {
-        this.name = name;
-        this.price = price;
+    public Product(String name, BigDecimal price) {
+        this.name = new Name(name);
+        this.price = new Price(price);
     }
 
     public Long getId() {
