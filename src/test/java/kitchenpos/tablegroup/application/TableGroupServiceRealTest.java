@@ -4,7 +4,6 @@ import kitchenpos.order.domain.OrderLinkerImplementation;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.domain.TableGroupLinker;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
@@ -17,7 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Arrays;
-import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -54,8 +53,8 @@ class TableGroupServiceRealTest {
     void create() {
         TableGroupResponse response = tableGroupService.create(new TableGroupRequest(Arrays.asList(table1, table2)));
 
-        List<TableGroup> groups = tableGroupRepository.findAll();
-        assertThat(groups).isNotEmpty();
-        assertThat(groups.get(0).getId()).isNotNull();
+        Optional<OrderTable> orderTable = orderTableRepository.findById(table1.getId());
+        assertThat(orderTable.isPresent()).isTrue();
+        assertThat(orderTable.get().getTableGroupId()).isNotNull();
     }
 }
