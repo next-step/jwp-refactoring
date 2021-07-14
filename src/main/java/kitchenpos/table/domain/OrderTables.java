@@ -1,13 +1,12 @@
 package kitchenpos.table.domain;
 
-import kitchenpos.table.exception.NotEmptyOrExistTableGroupException;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Embeddable
 public class OrderTables {
@@ -19,19 +18,35 @@ public class OrderTables {
     }
 
     public OrderTables(List<OrderTable> orderTables) {
-        if (!isEmptyTableAndNotExistTableGroupId(orderTables)) {
+        /*if (!isEmptyTableAndNotExistTableGroupId(orderTables)) {
             throw new NotEmptyOrExistTableGroupException();
-        }
+        }*/
         this.orderTables = orderTables;
     }
 
-    private boolean isEmptyTableAndNotExistTableGroupId(List<OrderTable> orderTables) {
+    /*private boolean isEmptyTableAndNotExistTableGroupId(List<OrderTable> orderTables) {
         return orderTables.stream()
                 .allMatch(orderTable -> orderTable.isEmptyTableAndNotExistTableGroupId());
-    }
+    }*/
 
     public void registerTableGroup(TableGroup tableGroup) {
         orderTables.forEach(orderTable -> orderTable.registerTableGroup(tableGroup));
+    }
+
+    public void unRegisterTableGroup() {
+        orderTables.forEach(orderTable -> orderTable.registerTableGroup(null));
+    }
+
+    public List<Long> getOrderIds() {
+        return orderTables.stream()
+                .map(orderTable -> orderTable.getOrderId())
+                .collect(Collectors.toList());
+    }
+
+    public List<Long> getOrderTableIds() {
+        return orderTables.stream()
+                .map(orderTable -> orderTable.getId())
+                .collect(Collectors.toList());
     }
 
     public List<OrderTable> getOrderTables() {

@@ -2,6 +2,7 @@ package kitchenpos.table.domain;
 
 import kitchenpos.order.exception.NotChangeToEmptyThatGroupTable;
 import kitchenpos.table.exception.NotChangeNumberOfGuestThatEmptyTable;
+import kitchenpos.table.util.OrderTableValidator;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -15,6 +16,9 @@ public class OrderTable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "table_group_id", foreignKey = @ForeignKey(name = "fk_order_table_table_group"))
     private TableGroup tableGroup;
+
+    @Column(name = "order_id")
+    private Long orderId;
 
     private int numberOfGuests;
     private boolean empty;
@@ -32,23 +36,31 @@ public class OrderTable {
         this(null, numberOfGuests);
     }
 
-    public Long getId() {
-        return id;
+    public void registerOrder(Long orderId) {
+        this.orderId = orderId;
     }
 
-    public boolean isEmpty() {
-        return empty;
-    }
-
-    public void changeToEmpty() {
-        if(tableGroup != null){
+    public void validateToEmpty(OrderTableValidator orderTableValidator) {
+        if (tableGroup != null) {
             throw new NotChangeToEmptyThatGroupTable();
         }
+        orderTableValidator.validateToEmpty(this);
+        makeEmptyTable();
+    }
+
+    public void registerTableGroup(TableGroup tableGroup) {
+        this.tableGroup = tableGroup;
+        if (tableGroup != null) {
+            this.empty = false;
+        }
+    }
+
+    private void makeEmptyTable() {
         this.empty = true;
     }
 
-    public void changeTableGroupId(TableGroup tableGroup) {
-        this.tableGroup = tableGroup;
+    public boolean isEmpty() {
+        return this.empty;
     }
 
     public void changeNumberOfGuests(int numberOfGuests) {
@@ -61,26 +73,41 @@ public class OrderTable {
         this.numberOfGuests = numberOfGuests;
     }
 
+    public boolean isEmptyTableAndNotExistTableGroupId() {
+        return this.empty || this.tableGroup == null;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
     public TableGroup getTableGroup() {
         return tableGroup;
+    }
+
+    public Long getOrderId() {
+        return this.orderId;
     }
 
     public int getNumberOfGuests() {
         return numberOfGuests;
     }
 
-    public boolean isEmptyTableAndNotExistTableGroupId() {
-        return this.empty || this.tableGroup == null;
-    }
-
-    public void registerTableGroup(TableGroup tableGroup) {
-        this.tableGroup = tableGroup;
-        this.empty = false;
-    }
-
-    public void ungroup() {
+    /*public void ungroup() {
         this.tableGroup = null;
         this.empty = true;
+    }*/
+
+    /*테스트메서드*/
+    public void changeToEmpty() {
+        if (tableGroup != null) {
+            throw new NotChangeToEmptyThatGroupTable();
+        }
+        this.empty = true;
+    }
+
+    public void changeTableGroup(TableGroup tableGroup) {
+        this.tableGroup = tableGroup;
     }
 
     @Override
