@@ -39,7 +39,6 @@ public class Orders {
 
     public Order newOrder(Long orderTableId, List<OrderLineItem> orderLineItems) {
         Order cookingOrder = Order.of(orderTableId, OrderStatus.COOKING, orderLineItems);
-        cookingOrder.registerOrderLineItem();
         orders.add(cookingOrder);
         return cookingOrder;
     }

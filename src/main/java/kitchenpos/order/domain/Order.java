@@ -57,7 +57,7 @@ public class Order {
     }
 
     public void registerOrderLineItem() {
-        orderLineItems.registerAll(this);
+        orderLineItems.registerAll(getId());
     }
 
     public Long getId() {

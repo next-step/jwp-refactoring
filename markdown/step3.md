@@ -20,7 +20,7 @@
 - [ ] 양방향 연관관계 끊어내기
   - [X] OrderTable -> OrderTableGroup 제거
   - [X] Order -> OrderTable 제거
-  - [ ] OrderLineItem -> Order 제거
+  - [X] OrderLineItem -> Order 제거
   - [ ] MenuProduct -> Menu 제거
 - [ ] 어그리게잇 Order, Menu 설정
   - [ ] OrderLineItem -> Menu 제거
