@@ -7,16 +7,16 @@ import static kitchenpos.exception.KitchenposExceptionMessage.NOT_FOUND_ORDER_TA
 import kitchenpos.exception.KitchenposException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.domain.OrderTable;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusRequest;
-import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.table.domain.OrderTable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

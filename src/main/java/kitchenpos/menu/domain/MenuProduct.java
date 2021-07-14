@@ -4,8 +4,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Transient;
-import kitchenpos.common.Price;
 
 @Entity
 public class MenuProduct {
@@ -20,21 +18,13 @@ public class MenuProduct {
 
     private long quantity;
 
-    @Transient
-    private Price productPrice;
-
     protected MenuProduct() {
         // empty
     }
 
-    public MenuProduct(final Long productId, final Price productPrice, final long quantity) {
+    public MenuProduct(final Long productId, final long quantity) {
         this.productId = productId;
-        this.productPrice = productPrice;
         this.quantity = quantity;
-    }
-
-    public Price calculatePrice() {
-        return this.productPrice.multiply(this.quantity);
     }
 
     public long getQuantity() {

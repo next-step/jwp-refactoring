@@ -40,8 +40,6 @@ public class Menu {
         this.price = builder.price;
         this.menuGroup = builder.menuGroup;
         this.menuProducts.add(builder.menuProducts);
-
-        this.menuProducts.checkOverPrice(this.price);
     }
 
     public Long getId() {

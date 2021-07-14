@@ -1,9 +1,9 @@
 package kitchenpos.menu.application;
 
 import static kitchenpos.exception.KitchenposExceptionMessage.NOT_FOUND_MENU_GROUP;
-import static kitchenpos.exception.KitchenposExceptionMessage.NOT_FOUND_PRODUCT;
 
 import java.util.stream.Collectors;
+import kitchenpos.common.Price;
 import kitchenpos.exception.KitchenposException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
@@ -12,9 +12,7 @@ import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuGroupRepository;
-import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.product.domain.Product;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,18 +24,19 @@ public class MenuService {
 
     private final MenuRepository menuRepository;
     private final MenuGroupRepository menuGroupRepository;
-    private final ProductRepository productRepository;
+    private final ProductValidator productValidator;
 
     public MenuService(final MenuRepository menuRepository,
                        final MenuGroupRepository menuGroupRepository,
-                       final ProductRepository productRepository) {
+                       final ProductValidator productValidator) {
         this.menuRepository = menuRepository;
         this.menuGroupRepository = menuGroupRepository;
-        this.productRepository = productRepository;
+        this.productValidator = productValidator;
     }
 
     public MenuResponse create(final MenuRequest request) {
         final MenuGroup menuGroup = findMenuGroupById(request.getMenuGroupId());
+        productValidator.checkOverPrice(Price.of(request.getPrice()), request.getMenuProducts());
         Menu savedMenu = menuRepository.save(request.toMenu(menuGroup, getMenuProducts(request)));
         return MenuResponse.of(savedMenu);
     }
@@ -50,15 +49,8 @@ public class MenuService {
     }
 
     private MenuProduct createMenuProduct(MenuProductRequest menuProductRequest) {
-        Product product = findProductById(menuProductRequest);
-        return new MenuProduct(product.getId(),
-                               product.getPrice(),
+        return new MenuProduct(menuProductRequest.getProductId(),
                                menuProductRequest.getQuantity());
-    }
-
-    private Product findProductById(MenuProductRequest menuProductRequest) {
-        return productRepository.findById(menuProductRequest.getProductId())
-                                .orElseThrow(() -> new KitchenposException(NOT_FOUND_PRODUCT));
     }
 
     private MenuGroup findMenuGroupById(final Long menuGroupId) {
