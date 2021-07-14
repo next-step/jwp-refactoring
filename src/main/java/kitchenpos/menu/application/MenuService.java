@@ -26,7 +26,8 @@ public class MenuService {
     }
 
     public MenuResponse create(final MenuRequest menuRequest) {
-        MenuGroup menuGroup = menuGroupRepository.findById(menuRequest.getMenuGroupId()).orElseThrow(() -> new NotFoundMenuGroupException());
+        MenuGroup menuGroup = menuGroupRepository.findById(menuRequest.getMenuGroupId())
+                .orElseThrow(() -> new NotFoundMenuGroupException());
         List<Product> products = findAllProductByIds(menuRequest.getProductIds());
         List<MenuProduct> menuProducts = toMenuProduct(products, menuRequest);
         Menu menu = toMenu(menuProducts, menuGroup, menuRequest);

@@ -41,8 +41,10 @@ public class OrderTableService {
     }
 
     public OrderTableResponse changeEmpty(final Long orderTableId) {
-        final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId).orElseThrow(() -> new NotFoundOrderTable());
-        final Order order = orderRepository.findByOrderTableId(orderTableId).orElseThrow(() -> new NotFoundOrder());
+        final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
+                .orElseThrow(() -> new NotFoundOrderTable());
+        final Order order = orderRepository.findByOrderTableId(orderTableId)
+                .orElseThrow(() -> new NotFoundOrder());
         if (order.isCookingOrMeal()) {
             throw new NotChangeToEmptyThatCookingOrMealTable();
         }
@@ -51,7 +53,8 @@ public class OrderTableService {
     }
 
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final OrderTableRequest orderTableRequest) {
-        OrderTable orderTable = orderTableRepository.findById(orderTableId).orElseThrow(() -> new NotFoundOrderTable());
+        OrderTable orderTable = orderTableRepository.findById(orderTableId)
+                .orElseThrow(() -> new NotFoundOrderTable());
         orderTable.changeNumberOfGuests(orderTableRequest.getNumberOfGuests());
         return OrderTableResponse.of(orderTable);
     }

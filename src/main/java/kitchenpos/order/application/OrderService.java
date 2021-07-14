@@ -51,7 +51,8 @@ public class OrderService {
     }
 
     public OrderResponse changeOrderStatus(final Long orderId) {
-        final Order savedOrder = orderRepository.findById(orderId).orElseThrow(() -> new NotFoundOrder());
+        final Order savedOrder = orderRepository.findById(orderId)
+                .orElseThrow(() -> new NotFoundOrder());
         savedOrder.changeOrderStatusCooking();
         return OrderResponse.of(savedOrder);
     }
@@ -63,7 +64,8 @@ public class OrderService {
     }
 
     private OrderTable findOrderTable(Long orderTableId) {
-        OrderTable orderTable = orderTableRepository.findById(orderTableId).orElseThrow(() -> new NotFoundOrderTable());
+        OrderTable orderTable = orderTableRepository.findById(orderTableId)
+                .orElseThrow(() -> new NotFoundOrderTable());
         if (orderTable.isEmpty()) {
             throw new IllegalArgumentException();
         }
