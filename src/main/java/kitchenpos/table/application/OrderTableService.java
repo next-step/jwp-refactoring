@@ -18,11 +18,11 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
-public class TableService {
+public class OrderTableService {
     private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
 
-    public TableService(OrderRepository orderRepository, OrderTableRepository orderTableRepository) {
+    public OrderTableService(OrderRepository orderRepository, OrderTableRepository orderTableRepository) {
         this.orderRepository = orderRepository;
         this.orderTableRepository = orderTableRepository;
     }

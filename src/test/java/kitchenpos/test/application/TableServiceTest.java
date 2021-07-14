@@ -7,7 +7,7 @@ import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.exception.NotChangeToEmptyThatGroupTable;
 import kitchenpos.order.exception.NotFoundOrderTable;
-import kitchenpos.table.application.TableService;
+import kitchenpos.table.application.OrderTableService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.OrderTables;
@@ -45,7 +45,7 @@ public class TableServiceTest {
     private OrderTableRepository orderTableRepository;
 
     @InjectMocks
-    private TableService tableService;
+    private OrderTableService orderTableService;
 
     @BeforeEach
     public void setUp() {
@@ -61,7 +61,7 @@ public class TableServiceTest {
         // 주문 테이블 등록 요청
         OrderTable orderTable = new OrderTable(10);
         when(orderTableRepository.save(orderTable)).thenReturn(orderTable);
-        OrderTableResponse expected = tableService.create(firstOrderTableRequest);
+        OrderTableResponse expected = orderTableService.create(firstOrderTableRequest);
 
         // then
         // 주문 테이블 저장
@@ -80,7 +80,7 @@ public class TableServiceTest {
         // when
         // 주문 테이블 리스트 조회함
         when(orderTableRepository.findAll()).thenReturn(Arrays.asList(firstOrderTable, secondOrderTable));
-        List<OrderTableResponse> expected = tableService.list();
+        List<OrderTableResponse> expected = orderTableService.list();
 
         // then
         // 리스트 조회됨
@@ -96,7 +96,7 @@ public class TableServiceTest {
 
         // then
         // 예외 발생
-        assertThatThrownBy(() -> tableService.changeEmpty(1L))
+        assertThatThrownBy(() -> orderTableService.changeEmpty(1L))
                 .isInstanceOf(NotFoundOrderTable.class);
     }
 
@@ -129,7 +129,7 @@ public class TableServiceTest {
 
         // then
         // 예외 발생
-        assertThatThrownBy(() -> tableService.changeEmpty(1L))
+        assertThatThrownBy(() -> orderTableService.changeEmpty(1L))
                 .isInstanceOf(NotChangeToEmptyThatGroupTable.class);
     }
 
@@ -156,7 +156,7 @@ public class TableServiceTest {
 
         // then
         // 예외 발생
-        assertThatThrownBy(() -> tableService.changeEmpty(1L))
+        assertThatThrownBy(() -> orderTableService.changeEmpty(1L))
                 .isInstanceOf(NotChangeToEmptyThatCookingOrMealTable.class);
     }
 
@@ -183,7 +183,7 @@ public class TableServiceTest {
         when(orderRepository.findByOrderTableId(1L)).thenReturn(Optional.of(order));
 
         //then 변경됨
-        OrderTableResponse expected = tableService.changeEmpty(1L);
+        OrderTableResponse expected = orderTableService.changeEmpty(1L);
         assertThat(expected.getEmpty()).isTrue();
     }
 
@@ -201,7 +201,7 @@ public class TableServiceTest {
 
         // then
         // 예외 발생
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, firstOrderTableRequest))
+        assertThatThrownBy(() -> orderTableService.changeNumberOfGuests(1L, firstOrderTableRequest))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -214,7 +214,7 @@ public class TableServiceTest {
 
         // then
         // 예외 발생
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, firstOrderTableRequest))
+        assertThatThrownBy(() -> orderTableService.changeNumberOfGuests(1L, firstOrderTableRequest))
                 .isInstanceOf(NotFoundOrderTable.class);
     }
 
@@ -229,7 +229,7 @@ public class TableServiceTest {
 
         // then
         // 예외 발생
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, firstOrderTableRequest))
+        assertThatThrownBy(() -> orderTableService.changeNumberOfGuests(1L, firstOrderTableRequest))
                 .isInstanceOf(NotChangeNumberOfGuestThatEmptyTable.class);
     }
 
@@ -243,7 +243,7 @@ public class TableServiceTest {
 
         // then
         // 정상 변경
-        OrderTableResponse expected = tableService.changeNumberOfGuests(1L, firstOrderTableRequest);
+        OrderTableResponse expected = orderTableService.changeNumberOfGuests(1L, firstOrderTableRequest);
         assertThat(expected.getNumberOfGuests()).isEqualTo(10);
     }
 
