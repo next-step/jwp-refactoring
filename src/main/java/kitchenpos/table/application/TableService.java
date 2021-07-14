@@ -1,13 +1,11 @@
 package kitchenpos.table.application;
 
-import static kitchenpos.exception.KitchenposExceptionMessage.EXISTS_NOT_COMPLETION_ORDER;
+
 import static kitchenpos.exception.KitchenposExceptionMessage.NOT_FOUND_ORDER_TABLE;
 
 import java.util.stream.Collectors;
 import kitchenpos.exception.KitchenposException;
-import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.dto.OrderTableChangeEmptyRequest;
 import kitchenpos.table.dto.OrderTableChangeNumberOfGuestsRequest;
@@ -22,12 +20,12 @@ import java.util.List;
 @Transactional
 public class TableService {
 
-    private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
+    private final OrderValidator orderValidator;
 
-    public TableService(final OrderRepository orderRepository, final OrderTableRepository orderTableRepository) {
-        this.orderRepository = orderRepository;
+    public TableService(final OrderTableRepository orderTableRepository, final OrderValidator orderValidator) {
         this.orderTableRepository = orderTableRepository;
+        this.orderValidator = orderValidator;
     }
 
     public OrderTableResponse create(final OrderTableRequest orderTableRequest) {
@@ -45,7 +43,7 @@ public class TableService {
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableChangeEmptyRequest request) {
         final OrderTable savedOrderTable = findOrderTableById(orderTableId);
         savedOrderTable.checkEmptyAndNotIncludeOrderTable();
-        checkNotCompletionOrder(orderTableId);
+        orderValidator.checkNotCompletionOrder(orderTableId);
         savedOrderTable.changeEmpty(request.isEmpty());
         return OrderTableResponse.of(savedOrderTable);
     }
@@ -53,13 +51,6 @@ public class TableService {
     private OrderTable findOrderTableById(Long orderTableId) {
         return orderTableRepository.findById(orderTableId)
                                    .orElseThrow(() -> new KitchenposException(NOT_FOUND_ORDER_TABLE));
-    }
-
-    private void checkNotCompletionOrder(Long orderTableId) {
-        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTableId,
-                                                                 OrderStatus.excludeCompletionList())) {
-            throw new KitchenposException(EXISTS_NOT_COMPLETION_ORDER);
-        }
     }
 
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final OrderTableChangeNumberOfGuestsRequest request) {
