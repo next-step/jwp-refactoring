@@ -45,8 +45,12 @@ public class Product {
         return name;
     }
 
-    public BigDecimal price() {
-        return price.getValue();
+    public BigDecimal multiplyValueOfPriceByQuantity(final long quantity) {
+        return price.multiplyByQuantity(quantity);
+    }
+
+    public BigDecimal valueOfPrice() {
+        return price.value();
     }
 
     @Override

@@ -32,7 +32,15 @@ public class Price {
         }
     }
 
-    public BigDecimal getValue() {
+    public BigDecimal multiplyByQuantity(final long quantity) {
+        return value.multiply(BigDecimal.valueOf(quantity));
+    }
+
+    public int compareTo(final BigDecimal other) {
+        return this.value.compareTo(other);
+    }
+
+    public BigDecimal value() {
         return value;
     }
 }

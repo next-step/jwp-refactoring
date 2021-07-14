@@ -27,6 +27,10 @@ public class MenuProducts {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
+    public int size() {
+        return menuProducts.size();
+    }
+
     public List<MenuProduct> getMenuProducts() {
         return menuProducts;
     }

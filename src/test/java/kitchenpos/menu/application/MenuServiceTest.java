@@ -71,8 +71,8 @@ class MenuServiceTest {
         // then
         assertThat(createdMenu.getId()).isEqualTo(강정치킨plus강정치킨.getId());
         assertThat(createdMenu.getName()).isEqualTo(강정치킨plus강정치킨.getName());
-        assertThat(createdMenu.getPrice()).isEqualTo(강정치킨plus강정치킨.getPrice().getValue());
-        assertThat(createdMenu.getMenuGroupId()).isEqualTo(강정치킨plus강정치킨.getMenuGroup().getId());
+        assertThat(createdMenu.getPrice()).isEqualTo(강정치킨plus강정치킨.valueOfPrice());
+        assertThat(createdMenu.getMenuGroupId()).isEqualTo(강정치킨plus강정치킨.getMenuGroupId());
     }
 
     @DisplayName("메뉴의 메뉴그룹이 올바르지 않으면 등록할 수 없다 : 메뉴의 메뉴 그룹은 등록된 메뉴 그룹이어야 한다.")
@@ -112,8 +112,8 @@ class MenuServiceTest {
         assertThat(menus).hasSize(1);
         assertThat(menus.get(0).getId()).isEqualTo(강정치킨plus강정치킨.getId());
         assertThat(menus.get(0).getName()).isEqualTo(강정치킨plus강정치킨.getName());
-        assertThat(menus.get(0).getPrice()).isEqualTo(강정치킨plus강정치킨.getPrice().getValue());
-        assertThat(menus.get(0).getMenuGroupId()).isEqualTo(강정치킨plus강정치킨.getMenuGroup().getId());
-        assertThat(menus.get(0).getMenuProducts().size()).isEqualTo(강정치킨plus강정치킨.getMenuProducts().size());
+        assertThat(menus.get(0).getPrice()).isEqualTo(강정치킨plus강정치킨.valueOfPrice());
+        assertThat(menus.get(0).getMenuGroupId()).isEqualTo(강정치킨plus강정치킨.getMenuGroupId());
+        assertThat(menus.get(0).getMenuProducts().size()).isEqualTo(강정치킨plus강정치킨.sizeOfMenuProducts());
     }
 }

@@ -43,7 +43,7 @@ class ProductServiceTest {
         // then
         assertThat(createdProduct.getId()).isEqualTo(강정치킨.getId());
         assertThat(createdProduct.getName()).isEqualTo(강정치킨.getName());
-        assertThat(createdProduct.getPrice()).isEqualTo(강정치킨.price());
+        assertThat(createdProduct.getPrice()).isEqualTo(강정치킨.valueOfPrice());
     }
 
     @DisplayName("상품의 가격이 올바르지 않으면 등록할 수 없다 : 상품의 가격은 0 원 이상이어야 한다.")
@@ -70,10 +70,10 @@ class ProductServiceTest {
                 () -> assertThat(products).hasSize(2),
                 () -> assertThat(products.get(0).getId()).isEqualTo(강정치킨.getId()),
                 () -> assertThat(products.get(0).getName()).isEqualTo(강정치킨.getName()),
-                () -> assertThat(products.get(0).getPrice()).isEqualTo(강정치킨.price()),
+                () -> assertThat(products.get(0).getPrice()).isEqualTo(강정치킨.valueOfPrice()),
                 () -> assertThat(products.get(1).getId()).isEqualTo(후라이드.getId()),
                 () -> assertThat(products.get(1).getName()).isEqualTo(후라이드.getName()),
-                () -> assertThat(products.get(1).getPrice()).isEqualTo(후라이드.price())
+                () -> assertThat(products.get(1).getPrice()).isEqualTo(후라이드.valueOfPrice())
         );
     }
 }
