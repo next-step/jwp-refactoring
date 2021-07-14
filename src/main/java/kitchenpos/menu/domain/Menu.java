@@ -43,13 +43,13 @@ public class Menu {
     }
 
     public void validateMenuProducts(List<MenuProduct> menuProducts, Price price) {
-        Price sum = Price.valueOf(0);
-        for (MenuProduct menuProduct : menuProducts) {
-            sum = sum.add(menuProduct.getTotalPrice());
-        }
-        if (price.compareTo(sum) > 0) {
-            throw new IllegalArgumentException(Message.ERROR_MENU_PRICE_CANNOT_BE_BIGGER_THAN_MENUPRODUCTS_TOTAL.showText());
-        }
+//        Price sum = Price.valueOf(0);
+//        for (MenuProduct menuProduct : menuProducts) {
+//            sum = sum.add(menuProduct.getTotalPrice());
+//        }
+//        if (price.compareTo(sum) > 0) {
+//            throw new IllegalArgumentException(Message.ERROR_MENU_PRICE_CANNOT_BE_BIGGER_THAN_MENUPRODUCTS_TOTAL.showText());
+//        }
     }
 
     public Long getId() {

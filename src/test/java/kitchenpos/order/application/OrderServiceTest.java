@@ -46,7 +46,7 @@ class OrderServiceTest {
 
     private final MenuGroup 첫번째_메뉴그룹 = new MenuGroup("메뉴그룹");
     private final Product 첫번째_상품 = new Product("첫번째 상품", Price.valueOf(13000));
-    private final MenuProduct 첫번째_메뉴상품 = new MenuProduct(첫번째_상품, Quantity.of(1L));
+    private final MenuProduct 첫번째_메뉴상품 = new MenuProduct(첫번째_상품.getId(), Quantity.of(1L));
     private final Menu 첫번째_메뉴 = new Menu("첫번째 메뉴", Price.valueOf(13000), 첫번째_메뉴그룹, Arrays.asList(첫번째_메뉴상품));
 
     private final OrderTable 첫번째_테이블 = new OrderTable(3, false);

@@ -34,12 +34,15 @@ public class MenuService {
     }
 
     public MenuResponse create(final MenuRequest menuRequest) {
-
-        MenuGroup menuGroup = menuGroupRepository.findById(menuRequest.getMenuGroupId())
-                .orElseThrow(() -> new CannotFindException(ERROR_MENUGROUP_NOT_FOUND));
+        MenuGroup menuGroup = findMenuGroupById(menuRequest);
         List<MenuProduct> menuProducts = getMenuProducts(menuRequest);
         Menu savedMenu = menuRepository.save(new Menu(menuRequest.getName(), Price.valueOf(menuRequest.getPrice()), menuGroup, menuProducts));
         return MenuResponse.of(savedMenu);
+    }
+
+    private MenuGroup findMenuGroupById(MenuRequest menuRequest) {
+        return menuGroupRepository.findById(menuRequest.getMenuGroupId())
+                .orElseThrow(() -> new CannotFindException(ERROR_MENUGROUP_NOT_FOUND));
     }
 
     private List<MenuProduct> getMenuProducts(MenuRequest menuRequest) {
@@ -51,7 +54,7 @@ public class MenuService {
         List<MenuProduct> menuProducts = new ArrayList<>();
         for (MenuProductRequest menuProductRequest : menuProductRequests) {
             Product product = findProductById(menuProductRequest.getProductId(), products);
-            menuProducts.add(new MenuProduct(product, Quantity.of(menuProductRequest.getQuantity())));
+            menuProducts.add(new MenuProduct(product.getId(), Quantity.of(menuProductRequest.getQuantity())));
         }
         return menuProducts;
     }
