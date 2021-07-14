@@ -1,110 +1,82 @@
 package kitchenpos.ui;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import kitchenpos.application.OrderService;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.presentation.dto.OrderLineItemRequest;
+import kitchenpos.order.presentation.dto.OrderRequest;
+import kitchenpos.order.presentation.dto.OrderResponse;
+import kitchenpos.table.presentation.dto.OrderTableRequest;
 import org.assertj.core.util.Lists;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.filter.CharacterEncodingFilter;
 
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.util.List;
 
-import static org.hamcrest.Matchers.containsString;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = OrderRestController.class)
-class OrderRestControllerTest {
+@DisplayName("주문 통합테스트")
+class OrderRestControllerTest extends IntegrationSupport {
     private static final String URI = "/api/orders";
-
-    @Autowired
-    private OrderRestController orderRestController;
-
-    @MockBean
-    private OrderService orderService;
-
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    private MockMvc mockMvc;
-    private Order 주문;
-
-    @BeforeEach
-    void setUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(orderRestController)
-                .addFilter(new CharacterEncodingFilter(StandardCharsets.UTF_8.name(), true))
-                .alwaysDo(print())
-                .build();
-
-        주문 = new Order();
-        주문.setId(1L);
-        주문.setOrderTableId(1L);
-        주문.setOrderStatus(OrderStatus.COOKING.name());
-        주문.setOrderedTime(LocalDateTime.now());
-        주문.setOrderLineItems(Lists.list(new OrderLineItem()));
-    }
 
     @DisplayName("주문을 추가한다.")
     @Test
     void create() throws Exception {
         //given
-        given(orderService.create(any())).willReturn(주문);
+        mockMvc.perform(putAsJson("/api/tables/1/empty", OrderTableRequest.of(false)));
 
         //when
-        ResultActions actions = mockMvc.perform(post(URI)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(주문)));
+        ResultActions actions = mockMvc.perform(postAsJson(URI, OrderRequest.of(1L, OrderStatus.COOKING, Lists.list(OrderLineItemRequest.of(1L, 1)))));
 
         //then
-        actions.andExpect(status().isCreated())
-                .andExpect(header().string("location", URI + "/1"))
-                .andExpect(content().string(containsString("1")))
-                .andExpect(content().string(containsString("COOKING")));
+        actions.andExpect(status().isCreated());
+        //and then
+        OrderResponse response = toObject(actions.andReturn(), OrderResponse.class);
+        assertThat(response.getId()).isNotNull();
+        assertThat(response.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
+        assertThat(response.getOrderLineItems()).isNotEmpty();
     }
 
     @DisplayName("주문을 모두 조회한다.")
     @Test
     void list() throws Exception {
         //given
-        given(orderService.list()).willReturn(Lists.list(주문));
+        mockMvc.perform(putAsJson("/api/tables/2/empty", OrderTableRequest.of(false)));
+        mockMvc.perform(postAsJson(URI, OrderRequest.of(2L, OrderStatus.COOKING, Lists.list(OrderLineItemRequest.of(2L, 2)))));
 
         //when
         ResultActions actions = mockMvc.perform(get(URI));
 
         //then
-        actions.andExpect(status().isOk())
-                .andExpect(jsonPath("$").isNotEmpty())
-                .andExpect(jsonPath("$[0].id").isNotEmpty())
-                .andExpect(jsonPath("$[0].orderStatus").value(OrderStatus.COOKING.name()));
+        actions.andExpect(status().isOk());
+        //and then
+        List<OrderResponse> response = toList(actions.andReturn(), OrderResponse.class);
+        assertThat(response).isNotEmpty();
     }
 
     @DisplayName("특정 주문의 상태를 변경한다.")
     @Test
     void changeOrderStatus() throws Exception {
         //given
-        given(orderService.changeOrderStatus(any(), any())).willReturn(주문);
+        mockMvc.perform(putAsJson("/api/tables/3/empty", OrderTableRequest.of(false)));
+        MvcResult mvcResult = mockMvc.perform(postAsJson(URI, OrderRequest.of(3L, OrderStatus.COOKING, Lists.list(OrderLineItemRequest.of(3L, 3))))).andReturn();
+        OrderResponse orderResponse = toObject(mvcResult, OrderResponse.class);
 
         //when
-        ResultActions actions = mockMvc.perform(put(URI + "/{orderId}/order-status", 주문.getId())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(주문)));
+        ResultActions actions = mockMvc.perform(putAsJson(URI + "/" + orderResponse.getId() + "/order-status", OrderRequest.of(
+                3L,
+                OrderStatus.COMPLETION,
+                Lists.list(OrderLineItemRequest.of(3L, 4))
+        )));
 
         //then
         actions.andExpect(status().isOk());
+        //and then
+        OrderResponse response = toObject(actions.andReturn(), OrderResponse.class);
+        assertThat(response.getId()).isEqualTo(orderResponse.getId());
+        assertThat(response.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION);
     }
 }
