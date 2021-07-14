@@ -9,8 +9,6 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import kitchenpos.table.domain.OrderTable;
-
 class OrderTest {
 
 	@DisplayName("이미 완료된 주문의 상태를 변경하려고 했을때 오류 발생")

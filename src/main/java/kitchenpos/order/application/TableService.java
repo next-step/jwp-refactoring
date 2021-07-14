@@ -1,4 +1,4 @@
-package kitchenpos.table.application;
+package kitchenpos.order.application;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -7,10 +7,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import kitchenpos.order.domain.NumberOfGuests;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.dto.OrderTableRequest;
-import kitchenpos.table.dto.OrderTableResponse;
-import kitchenpos.table.repository.OrderTableRepository;
+import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.dto.OrderTableRequest;
+import kitchenpos.order.dto.OrderTableResponse;
+import kitchenpos.order.repository.OrderTableRepository;
 
 @Service
 @Transactional(readOnly = true)

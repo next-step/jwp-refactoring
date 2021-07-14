@@ -18,8 +18,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import kitchenpos.table.domain.OrderTable;
-
 @Entity
 @Table(name = "orders")
 public class Order {

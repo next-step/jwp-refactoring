@@ -24,13 +24,13 @@ import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderLineItemResponse;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.repository.OrderRepository;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.repository.OrderTableRepository;
+import kitchenpos.order.repository.OrderTableRepository;
 
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {

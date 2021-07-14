@@ -1,4 +1,4 @@
-package kitchenpos.table.application;
+package kitchenpos.order.application;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -22,11 +22,11 @@ import kitchenpos.order.domain.NumberOfGuests;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.TableGroup;
-import kitchenpos.table.dto.OrderTableRequest;
-import kitchenpos.table.dto.OrderTableResponse;
-import kitchenpos.table.repository.OrderTableRepository;
+import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.domain.TableGroup;
+import kitchenpos.order.dto.OrderTableRequest;
+import kitchenpos.order.dto.OrderTableResponse;
+import kitchenpos.order.repository.OrderTableRepository;
 
 @ExtendWith(MockitoExtension.class)
 class TableServiceTest {
