@@ -6,6 +6,7 @@ import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.exception.NotChangeToEmptyThatGroupTable;
+import kitchenpos.order.exception.NotFoundOrder;
 import kitchenpos.order.exception.NotFoundOrderTable;
 import kitchenpos.table.application.OrderTableService;
 import kitchenpos.table.domain.OrderTable;
@@ -88,16 +89,16 @@ public class TableServiceTest {
     }
 
     @Test
-    @DisplayName("저장되어 있지 않은 테이블 빈 테이블로 변경 시 예외 처리")
+    @DisplayName("저장되어 있지 않은 주문의 테이블을 빈 테이블로 변경 시 예외 처리")
     void isBlackOrderTable_exception() {
         // when
         // 주문 테이블 리스트 조회
-        when(orderTableRepository.findById(1L)).thenReturn(Optional.empty());
+        when(orderRepository.findByOrderTableId(1L)).thenReturn(Optional.empty());
 
         // then
         // 예외 발생
         assertThatThrownBy(() -> orderTableService.changeEmpty(1L))
-                .isInstanceOf(NotFoundOrderTable.class);
+                .isInstanceOf(NotFoundOrder.class);
     }
 
     @Test
@@ -113,10 +114,9 @@ public class TableServiceTest {
         // 주문 메뉴 및 테이블 생성되어 있음
         Menu firstMenu = new Menu(1L);
         Menu secondMenu = new Menu(2L);
-        OrderTable orderTable = new OrderTable(1L, 10);
         OrderLineItem firstOrderLineItem = new OrderLineItem(firstMenu, 1L);
         OrderLineItem secondOrderLineItem = new OrderLineItem(secondMenu, 1L);
-        Order order = new Order(orderTable, new OrderLineItems(Arrays.asList(firstOrderLineItem, secondOrderLineItem)));
+        Order order = new Order(firstOrderTable, new OrderLineItems(Arrays.asList(firstOrderLineItem, secondOrderLineItem)));
 
         // and
         // 계산 완료 테이블임
@@ -124,7 +124,6 @@ public class TableServiceTest {
 
         // when
         // 주문 테이블 등록되어 있음
-        when(orderTableRepository.findById(1L)).thenReturn(Optional.of(firstOrderTable));
         when(orderRepository.findByOrderTableId(1L)).thenReturn(Optional.of(order));
 
         // then
@@ -151,7 +150,6 @@ public class TableServiceTest {
 
         // when
         // 주문 테이블 등록되어 있음
-        when(orderTableRepository.findById(1L)).thenReturn(Optional.of(firstOrderTable));
         when(orderRepository.findByOrderTableId(1L)).thenReturn(Optional.of(order));
 
         // then
@@ -179,7 +177,6 @@ public class TableServiceTest {
         // and
         // 계산 완료 테이블
         order.changeOrderStatusComplete();
-        when(orderTableRepository.findById(1L)).thenReturn(Optional.of(firstOrderTable));
         when(orderRepository.findByOrderTableId(1L)).thenReturn(Optional.of(order));
 
         //then 변경됨
