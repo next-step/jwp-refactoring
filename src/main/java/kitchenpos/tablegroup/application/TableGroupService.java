@@ -33,14 +33,15 @@ public class TableGroupService {
 
     public TableGroupResponse create(final TableGroupRequest request) {
         OrderTables orderTables = new OrderTables(request.getOrderTables());
-        checkInitOrderTables(orderTables);
+        List<OrderTable> savedTables = checkInitOrderTables(orderTables);
         final TableGroup savedTableGroup = tableGroupRepository.save(new TableGroup());
-        orderTables.grouped(savedTableGroup.getId());
+        savedTables.forEach(table -> table.grouped(savedTableGroup.getId()));
+        orderTableRepository.saveAll(savedTables);
 
-        return TableGroupResponse.from(savedTableGroup, orderTables);
+        return TableGroupResponse.from(savedTableGroup, savedTables);
     }
 
-    private void checkInitOrderTables(OrderTables orderTables) {
+    private List<OrderTable> checkInitOrderTables(OrderTables orderTables) {
         List<OrderTable> savedOrderTables = orderTableRepository.findAllById(orderTables.toOrderTableIds());
 
         if (orderTables.size() != savedOrderTables.size()) {
@@ -50,6 +51,8 @@ public class TableGroupService {
         for (final OrderTable savedOrderTable : savedOrderTables) {
             checkOrderTableEmptyOrGroupNull(savedOrderTable);
         }
+
+        return savedOrderTables;
     }
 
     private void checkOrderTableEmptyOrGroupNull(OrderTable savedOrderTable) {
