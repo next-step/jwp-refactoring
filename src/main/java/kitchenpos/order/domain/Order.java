@@ -9,11 +9,16 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import kitchenpos.table.domain.OrderTable;
 
 @Entity
 @Table(name = "orders")
@@ -22,8 +27,9 @@ public class Order {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(name = "order_table_id")
-	private Long orderTableId;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "order_table_id")
+	private OrderTable orderTable;
 
 	@Enumerated(value = EnumType.STRING)
 	private OrderStatus orderStatus;
@@ -37,25 +43,36 @@ public class Order {
 	protected Order() {
 	}
 
-	public static Order ofCooking(Long orderTableId, List<OrderLineItem> orderLineItems) {
-		return new Order(orderTableId, OrderStatus.COOKING, LocalDateTime.now(), orderLineItems);
+	public static Order ofCooking(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
+		return new Order(orderTable, OrderStatus.COOKING, LocalDateTime.now(), orderLineItems);
 	}
 
-	public Order(Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime,
+	public Order(OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime,
 		List<OrderLineItem> orderLineItems) {
-
+		validateEmptyOrderTable(orderTable);
 		validateEmptyOrderItems(orderLineItems);
 
 		for (OrderLineItem orderLineItem : orderLineItems) {
 			addOrderLineItem(orderLineItem);
 		}
-		this.orderTableId = orderTableId;
+		this.order(orderTable);
 		this.orderStatus = orderStatus;
 		this.orderedTime = orderedTime;
 	}
 
-	public Long getOrderTableId() {
-		return orderTableId;
+	private void order(OrderTable orderTable) {
+		this.orderTable = orderTable;
+		orderTable.addOrder(this);
+	}
+
+	private void validateEmptyOrderTable(OrderTable orderTable) {
+		if (orderTable == null || orderTable.isEmpty()) {
+			throw new IllegalArgumentException("비어있는 테이블은 주문할 수 없습니다.");
+		}
+	}
+
+	public OrderTable getOrderTable() {
+		return orderTable;
 	}
 
 	private void validateEmptyOrderItems(List<OrderLineItem> orderLineItems) {
@@ -98,5 +115,12 @@ public class Order {
 
 	public boolean isUnChangeable() {
 		return OrderStatus.isUnChangeable(orderStatus);
+	}
+
+	public Long getOrderTableId() {
+		if (orderTable == null) {
+			return null;
+		}
+		return orderTable.getId();
 	}
 }

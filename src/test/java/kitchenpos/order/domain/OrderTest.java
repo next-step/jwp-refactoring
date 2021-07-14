@@ -19,7 +19,7 @@ class OrderTest {
 		OrderTable orderTable = new OrderTable(null, null, false);
 		ArrayList<OrderLineItem> items = new ArrayList<>();
 		items.add(new OrderLineItem(null, null, 3));
-		Order order = new Order(orderTable.getId(), OrderStatus.COMPLETION, LocalDateTime.of(2021, 7, 4, 0, 0), items);
+		Order order = new Order(orderTable, OrderStatus.COMPLETION, LocalDateTime.of(2021, 7, 4, 0, 0), items);
 		assertThatThrownBy(() -> {
 			order.changeState(OrderStatus.MEAL);
 		}).isInstanceOf(IllegalArgumentException.class)
@@ -31,7 +31,7 @@ class OrderTest {
 	void testOrderEmptyOrderItems() {
 		OrderTable orderTable = new OrderTable(null, null, false);
 		assertThatThrownBy(() -> {
-			new Order(orderTable.getId(), OrderStatus.COMPLETION, LocalDateTime.of(2021, 7, 4, 0, 0), null);
+			new Order(orderTable, OrderStatus.COMPLETION, LocalDateTime.of(2021, 7, 4, 0, 0), null);
 		}).isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining("주문 항목을 구성해야 주문이 가능합니다.");
 	}
@@ -43,8 +43,9 @@ class OrderTest {
 		OrderLineItem orderLineItem = new OrderLineItem(null, 1L, 1L);
 		orderLineItems.add(orderLineItem);
 
+		OrderTable orderTable = new OrderTable(null, null, false);
 		LocalDateTime orderedDate = LocalDateTime.of(2021, 7, 4, 0, 0);
-		Order actual = new Order(1L, OrderStatus.COOKING, orderedDate, orderLineItems);
+		Order actual = new Order(orderTable, OrderStatus.COOKING, orderedDate, orderLineItems);
 
 		assertThat(actual.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
 		assertThat(actual.getOrderedTime()).isEqualTo(orderedDate);

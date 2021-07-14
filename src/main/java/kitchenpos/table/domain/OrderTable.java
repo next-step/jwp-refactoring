@@ -1,5 +1,7 @@
 package kitchenpos.table.domain;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.Column;
@@ -10,8 +12,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 import kitchenpos.order.domain.NumberOfGuests;
+import kitchenpos.order.domain.Order;
 
 @Entity
 public class OrderTable {
@@ -22,6 +26,9 @@ public class OrderTable {
 	@ManyToOne
 	@JoinColumn(name = "table_group_id")
 	private TableGroup tableGroup;
+
+	@OneToMany(mappedBy = "orderTable")
+	private List<Order> orders = new ArrayList<>();
 
 	@Embedded
 	private NumberOfGuests numberOfGuests;
@@ -81,15 +88,28 @@ public class OrderTable {
 		this.numberOfGuests = numberOfGuests;
 	}
 
+	private void validateChangeableStatus() {
+		boolean unChangeable = this.orders.stream().anyMatch(Order::isUnChangeable);
+		if (unChangeable) {
+			throw new IllegalArgumentException("주문 상태가 완료되어야 단체지정이 해제가능합니다.");
+		}
+	}
+
 	public void changeEmpty(boolean empty) {
 		if (this.tableGroup != null) {
 			throw new IllegalArgumentException("단체 지정되어있는 테이블은 변경할 수 없습니다.");
 		}
+
+		validateChangeableStatus();
 		this.empty = empty;
 	}
 
 	public void unGroup() {
-		// validateChangeableStatus();
+		validateChangeableStatus();
 		this.tableGroup = null;
+	}
+
+	public void addOrder(Order order) {
+		this.orders.add(order);
 	}
 }

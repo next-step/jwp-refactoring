@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kitchenpos.order.domain.Order;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
@@ -46,13 +45,6 @@ public class TableGroupService {
 	public void ungroup(final Long tableGroupId) {
 		TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
 			.orElseThrow(() -> new IllegalArgumentException("id에 해당하는 단체지정을 찾을 수 없습니다."));
-		List<OrderTable> orderTables = tableGroup.getOrderTables();
-		List<Long> orderTableIds = orderTables.stream().map(OrderTable::getId).collect(Collectors.toList());
-		List<Order> orders = orderRepository.findByOrderTableIdIn(orderTableIds);
-		boolean unChangeable = orders.stream().anyMatch(Order::isUnChangeable);
-		if (unChangeable) {
-			throw new IllegalArgumentException("주문 상태가 완료되어야 단체지정이 해제가능합니다.");
-		}
 		tableGroup.unGroup();
 	}
 }

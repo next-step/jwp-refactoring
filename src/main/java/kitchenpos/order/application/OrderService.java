@@ -34,11 +34,7 @@ public class OrderService {
 	public OrderResponse create(final OrderRequest orderRequest) {
 		List<OrderLineItem> orderLineItems = createOrderLineItems(orderRequest);
 		final OrderTable orderTable = findOrderTable(orderRequest);
-		if (orderTable.isEmpty()) {
-			throw new IllegalArgumentException("비어있는 테이블은 주문할 수 없습니다.");
-		}
-
-		Order order = Order.ofCooking(orderTable.getId(), orderLineItems);
+		Order order = Order.ofCooking(orderTable, orderLineItems);
 		return OrderResponse.of(orderRepository.save(order));
 	}
 
