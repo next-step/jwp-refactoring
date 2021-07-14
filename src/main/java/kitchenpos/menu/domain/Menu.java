@@ -41,8 +41,6 @@ public class Menu {
         this.menuGroup = builder.menuGroup;
         this.menuProducts.add(builder.menuProducts);
 
-//        this.menuProducts.mappingMenu(this.id);
-
         this.menuProducts.checkOverPrice(this.price);
     }
 

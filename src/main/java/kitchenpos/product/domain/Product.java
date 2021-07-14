@@ -27,7 +27,6 @@ public class Product {
         this.price = price;
     }
 
-
     public Long getId() {
         return id;
     }
@@ -38,9 +37,5 @@ public class Product {
 
     public Price getPrice() {
         return price;
-    }
-
-    public Price multiply(final long times) {
-        return this.price.multiply(times);
     }
 }
