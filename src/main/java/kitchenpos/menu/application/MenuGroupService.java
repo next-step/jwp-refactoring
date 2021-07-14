@@ -8,8 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-@Transactional
 @Service
+@Transactional
 public class MenuGroupService {
     private final MenuGroupRepository menuGroupRepository;
 
@@ -21,6 +21,7 @@ public class MenuGroupService {
         return MenuGroupResponse.of(menuGroupRepository.save(menuGroupRequest.toMenuGroup()));
     }
 
+    @Transactional(readOnly = true)
     public List<MenuGroupResponse> list() {
         return MenuGroupResponse.ofList(menuGroupRepository.findAll());
     }

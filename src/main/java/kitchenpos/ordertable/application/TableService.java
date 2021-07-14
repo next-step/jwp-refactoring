@@ -3,9 +3,7 @@ package kitchenpos.ordertable.application;
 import kitchenpos.exception.CannotFindException;
 import kitchenpos.exception.CannotUpdateException;
 import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.ordertable.domain.OrderTableRepository;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
@@ -35,6 +33,7 @@ public class TableService {
         return OrderTableResponse.of(orderTableRepository.save(orderTableRequest.toOrderTable()));
     }
 
+    @Transactional(readOnly = true)
     public List<OrderTableResponse> list() {
         return OrderTableResponse.ofList(orderTableRepository.findAll());
     }

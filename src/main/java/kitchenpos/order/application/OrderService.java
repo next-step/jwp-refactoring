@@ -20,8 +20,8 @@ import java.util.stream.Collectors;
 import static kitchenpos.common.Message.*;
 import static kitchenpos.order.domain.OrderStatus.COOKING;
 
-@Transactional
 @Service
+@Transactional
 public class OrderService {
     private final MenuRepository menuRepository;
     private final OrderRepository orderRepository;
@@ -30,7 +30,6 @@ public class OrderService {
     public OrderService(
             final MenuRepository menuRepository,
             final OrderRepository orderRepository,
-            final OrderLineItemRepository orderLineItemRepository,
             final OrderTableRepository orderTableRepository
     ) {
         this.menuRepository = menuRepository;
