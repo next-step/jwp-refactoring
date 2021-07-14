@@ -11,9 +11,12 @@ import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.exception.EmptyOrderLineItemsException;
 import kitchenpos.order.exception.NotEqualsOrderCountAndMenuCount;
-import kitchenpos.order.exception.NotFoundOrder;
+import kitchenpos.order.exception.NotFoundOrderException;
+import kitchenpos.order.util.OrderMapper;
+import kitchenpos.order.util.OrderValidator;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -38,19 +41,26 @@ public class OrderServiceTest {
     private OrderLineItemRequest secondOrderLineItemRequest;
 
     @Mock
-    private MenuRepository menuRepository;
+    private OrderMapper orderMapper;
 
     @Mock
     private OrderRepository orderRepository;
 
+    private OrderValidator orderValidator;
+
+    private OrderService orderService;
+
     @Mock
-    private OrderLineItemRepository orderLineItemRepository;
+    private MenuRepository menuRepository;
 
     @Mock
     private OrderTableRepository orderTableRepository;
 
-    @InjectMocks
-    private OrderService orderService;
+    @BeforeEach
+    public void setUp() {
+        orderValidator = new OrderValidator(menuRepository, orderTableRepository);
+        orderService = new OrderService(orderMapper, orderValidator, orderRepository);
+    }
 
     @Test
     @DisplayName("주문항목이 없으면 예외발생")
@@ -58,6 +68,13 @@ public class OrderServiceTest {
         // given
         // 주문 생성되어 있음
         OrderRequest orderRequest = new OrderRequest(1L, new ArrayList<>());
+        OrderLineItems orderLineItems = new OrderLineItems(new ArrayList<OrderLineItem>());
+        when(orderMapper.mapFormToOrder(orderRequest)).thenReturn(new Order(1L, 1L, orderLineItems));
+
+        // when
+        // 주문 테이블 등록되어 있음
+        OrderTable orderTable = new OrderTable(10);
+        when(orderTableRepository.findById(1L)).thenReturn(Optional.of(orderTable));
 
         // then
         // 주문 요청 시 오류 발생
@@ -70,20 +87,28 @@ public class OrderServiceTest {
     void isNotCollectQuantityMenuCount_exception() {
         // given
         // 주문 아이템 생성됨
-        firstOrderLineItemRequest = 주문_아이템_생성(1L, 1L);
-        secondOrderLineItemRequest = 주문_아이템_생성(2L, 1L);
+        Menu firstMenu = new Menu(1L);
+        OrderTable orderTable = new OrderTable(1L, 10);
+        OrderLineItem firstOrderLineItem = new OrderLineItem(1L, 1L);
+        OrderLineItem secondOrderLineItem = new OrderLineItem(2L, 1L);
+        Order order = new Order(1L, new OrderLineItems(Arrays.asList(firstOrderLineItem, secondOrderLineItem)));
 
         // and
         // 주문 생성되어 있음
-        OrderRequest order = new OrderRequest(1L, Arrays.asList(firstOrderLineItemRequest, secondOrderLineItemRequest));
+        OrderRequest orderRequest= new OrderRequest(1L, Arrays.asList(firstOrderLineItemRequest, secondOrderLineItemRequest));
+        when(orderMapper.mapFormToOrder(orderRequest)).thenReturn(order);
 
         // when
         // 실제로 한개의 메뉴만 있음
-        when(menuRepository.countByIdIn(Arrays.asList(1L, 2L))).thenReturn(1L);
+        when(menuRepository.findByIdIn(Arrays.asList(1L, 2L))).thenReturn(Arrays.asList(firstMenu));
+
+        // and
+        // 주문 테이블 등록되어 있음
+        when(orderTableRepository.findById(1L)).thenReturn(Optional.of(orderTable));
 
         // then
         // 주문 생성 요청하면 오류 발생
-        assertThatThrownBy(() -> orderService.create(order))
+        assertThatThrownBy(() -> orderService.create(orderRequest))
                 .isInstanceOf(NotEqualsOrderCountAndMenuCount.class);
     }
 
@@ -92,23 +117,28 @@ public class OrderServiceTest {
     void isNotExistMenu() {
         // given
         // 주문 아이템 생성됨
-        firstOrderLineItemRequest = 주문_아이템_생성(1L, 1L);
-        secondOrderLineItemRequest = 주문_아이템_생성(2L, 1L);
-        when(menuRepository.countByIdIn(Arrays.asList(1L, 2L))).thenReturn(2L);
+        OrderLineItem firstOrderLineItem = new OrderLineItem(1L, 1L);
+        OrderLineItem secondOrderLineItem = new OrderLineItem(2L, 1L);
+        Order order = new Order(1L, new OrderLineItems(Arrays.asList(firstOrderLineItem, secondOrderLineItem)));
 
         // and
         // 주문 생성되어 있음
-        OrderRequest order = new OrderRequest(1L, Arrays.asList(firstOrderLineItemRequest, secondOrderLineItemRequest));
+        OrderRequest orderRequest= new OrderRequest(1L, Arrays.asList(firstOrderLineItemRequest, secondOrderLineItemRequest));
+        when(orderMapper.mapFormToOrder(orderRequest)).thenReturn(order);
+
+        // and
+        // 주문 테이블 등록되어 있음
         OrderTable orderTable = new OrderTable(1L, 10);
-        when(orderTableRepository.findById(1L)).thenReturn(Optional.ofNullable(orderTable));
+        when(orderTableRepository.findById(1L)).thenReturn(Optional.of(orderTable));
 
         // when
         // 메뉴가 존재하지 않음
-        when(menuRepository.findById(1L)).thenReturn(Optional.empty());
+        when(menuRepository.findByIdIn(Arrays.asList(1L, 2L))).thenReturn(new ArrayList<Menu>());
+
 
         // then
         // 주문 요청함
-        assertThatThrownBy(() -> orderService.create(order))
+        assertThatThrownBy(() -> orderService.create(orderRequest))
                 .isInstanceOf(NotFoundMenuException.class);
     }
 
@@ -117,29 +147,29 @@ public class OrderServiceTest {
     void 주문_정상_접수() {
         // given
         // 주문 아이템 생성됨
-        firstOrderLineItemRequest = 주문_아이템_생성(1L, 1L);
-        secondOrderLineItemRequest = 주문_아이템_생성(2L, 1L);
-        when(menuRepository.countByIdIn(Arrays.asList(1L, 2L))).thenReturn(2L);
-
-        // and
-        // 메뉴 등록되어 있음
         Menu firstMenu = new Menu(1L);
         Menu secondMenu = new Menu(2L);
-        when(menuRepository.findById(1L)).thenReturn(Optional.of(firstMenu));
-        when(menuRepository.findById(2L)).thenReturn(Optional.of(secondMenu));
+        OrderTable orderTable = new OrderTable(1L, 10);
+        OrderLineItem firstOrderLineItem = new OrderLineItem(1L, 1L);
+        OrderLineItem secondOrderLineItem = new OrderLineItem(2L, 1L);
+        Order order = new Order(1L, new OrderLineItems(Arrays.asList(firstOrderLineItem, secondOrderLineItem)));
 
         // and
-        // 주문 메뉴 및 테이블 생성되어 있음
-        OrderRequest orderRequest = new OrderRequest(1L, Arrays.asList(firstOrderLineItemRequest, secondOrderLineItemRequest));
-        OrderTable orderTable = new OrderTable(1L, 10);
-        OrderLineItem firstOrderLineItem = new OrderLineItem(firstMenu, 1L);
-        OrderLineItem secondOrderLineItem = new OrderLineItem(secondMenu, 1L);
-        Order order = new Order(orderTable, new OrderLineItems(Arrays.asList(firstOrderLineItem, secondOrderLineItem)));
-        when(orderTableRepository.findById(1L)).thenReturn(Optional.ofNullable(orderTable));
+        // 주문 생성되어 있음
+        OrderRequest orderRequest= new OrderRequest(1L, Arrays.asList(firstOrderLineItemRequest, secondOrderLineItemRequest));
+        when(orderMapper.mapFormToOrder(orderRequest)).thenReturn(order);
+
+        // and
+        // 두개의 메뉴 요청됨
+        when(menuRepository.findByIdIn(Arrays.asList(1L, 2L))).thenReturn(Arrays.asList(firstMenu, secondMenu));
+
+        // and
+        // 주문 테이블 등록되어 있음
+        when(orderTableRepository.findById(1L)).thenReturn(Optional.of(orderTable));
 
         // when
         // 주문 요청함
-        when(orderRepository.save(any(Order.class))).thenReturn(order);
+        when(orderRepository.save(order)).thenReturn(order);
         OrderResponse expected = orderService.create(orderRequest);
 
         // than
@@ -152,17 +182,11 @@ public class OrderServiceTest {
     void 주문_조회_테스트() {
         // given
         // 주문 아이템 생성됨
-        firstOrderLineItemRequest = 주문_아이템_생성(1L, 1L);
-        secondOrderLineItemRequest = 주문_아이템_생성(2L, 1L);
-
-        // and
-        // 주문 메뉴 및 테이블 생성되어 있음
-        Menu firstMenu = new Menu(1L);
-        Menu secondMenu = new Menu(2L);
         OrderTable orderTable = new OrderTable(1L, 10);
-        OrderLineItem firstOrderLineItem = new OrderLineItem(firstMenu, 1L);
-        OrderLineItem secondOrderLineItem = new OrderLineItem(secondMenu, 1L);
-        Order order = new Order(orderTable, new OrderLineItems(Arrays.asList(firstOrderLineItem, secondOrderLineItem)));
+        OrderLineItem firstOrderLineItem = new OrderLineItem(1L, 1L);
+        OrderLineItem secondOrderLineItem = new OrderLineItem(2L, 1L);
+        Order order = new Order(1L, 1L, new OrderLineItems(Arrays.asList(firstOrderLineItem, secondOrderLineItem)));
+        order.progressCook();
 
         // when
         // 주문 조회 함
@@ -179,18 +203,12 @@ public class OrderServiceTest {
     @DisplayName("주문 상태 변경 시 없는 주문 예외")
     void 주문_상태_변경_테스트() {
         // given
-        // 주문 아이템 생성됨
-        firstOrderLineItemRequest = 주문_아이템_생성(1L, 1L);
-        secondOrderLineItemRequest = 주문_아이템_생성(2L, 1L);
-
-        // and
-        // 주문 생성되어 있음
-        OrderRequest order = new OrderRequest(1L, Arrays.asList(firstOrderLineItemRequest, secondOrderLineItemRequest));
+        when(orderRepository.findById(1L)).thenReturn(Optional.empty());
 
         // then
         // 주문이 없음
         assertThatThrownBy(() -> orderService.changeOrderStatus(1L))
-                .isInstanceOf(NotFoundOrder.class);
+                .isInstanceOf(NotFoundOrderException.class);
     }
 
     @Test
@@ -206,9 +224,10 @@ public class OrderServiceTest {
         Menu firstMenu = new Menu(1L);
         Menu secondMenu = new Menu(2L);
         OrderTable orderTable = new OrderTable(1L, 10);
-        OrderLineItem firstOrderLineItem = new OrderLineItem(firstMenu, 1L);
-        OrderLineItem secondOrderLineItem = new OrderLineItem(secondMenu, 1L);
-        Order order = new Order(orderTable, new OrderLineItems(Arrays.asList(firstOrderLineItem, secondOrderLineItem)));
+        OrderLineItem firstOrderLineItem = new OrderLineItem(1L, 1L);
+        OrderLineItem secondOrderLineItem = new OrderLineItem(1L, 1L);
+        Order order = new Order(1L, new OrderLineItems(Arrays.asList(firstOrderLineItem, secondOrderLineItem)));
+        order.changeOrderStatusComplete();
 
         // when
         // 주문 조회됨
