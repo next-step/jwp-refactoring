@@ -30,8 +30,7 @@ public class TableGroupService {
     @Transactional
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
         final List<Long> orderTableIds = tableGroupRequest.getOrderTableIds();
-        final List<OrderTable> orderTables = orderTableRepository.findAllByIdIn(orderTableIds)
-                .orElseThrow(() -> new NotFoundOrderTable());
+        final List<OrderTable> orderTables = orderTableRepository.findAllByIdIn(orderTableIds);
         TableGroup tableGroup = toTableGroup(orderTables, tableGroupRequest);
         final TableGroup savedTableGroup = tableGroupRepository.save(tableGroup);
         return TableGroupResponse.of(savedTableGroup);
@@ -39,13 +38,11 @@ public class TableGroupService {
 
     @Transactional
     public List<OrderTableResponse> ungroup(final Long tableGroupId) {
-        final List<OrderTable> orderTables = orderTableRepository.findAllByTableGroupId(tableGroupId)
-                .orElseThrow(() -> new NotFoundOrderTable());
+        final List<OrderTable> orderTables = orderTableRepository.findAllByTableGroupId(tableGroupId);
         final List<Long> orderTableIds = orderTables.stream()
                 .map(OrderTable::getId)
                 .collect(Collectors.toList());
-        final List<Order> orders = orderRepository.existsByOrderTableIdIn(orderTableIds)
-                .orElseThrow(() -> new NotFoundOrder());
+        final List<Order> orders = orderRepository.findByOrderTableIdIn(orderTableIds);
         orders.forEach(order -> order.ungroup());
         tableGroupRepository.deleteById(tableGroupId);
         return orderTables.stream()

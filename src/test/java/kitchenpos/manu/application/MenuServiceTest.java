@@ -71,7 +71,7 @@ public class MenuServiceTest {
 
         // and
         // 제품 등록되어 있음
-        when(productRepository.findAllByIdIn(Arrays.asList(1L))).thenReturn(Optional.of(new ArrayList<Product>(Arrays.asList(짜장면))));
+        when(productRepository.findAllByIdIn(Arrays.asList(1L))).thenReturn(new ArrayList<Product>(Arrays.asList(짜장면)));
 
         // then
         // 등록 요청 시 예외 발생
@@ -135,7 +135,7 @@ public class MenuServiceTest {
 
         // and
         // 제품 등록되어 있음
-        when(productRepository.findAllByIdIn(Arrays.asList(1L, 2L))).thenReturn(Optional.of(new ArrayList<Product>(Arrays.asList(짜장면, 탕수육))));
+        when(productRepository.findAllByIdIn(Arrays.asList(1L, 2L))).thenReturn(new ArrayList<Product>(Arrays.asList(짜장면, 탕수육)));
 
         // then
         // 등록 요청 시 예외 발생
@@ -166,7 +166,7 @@ public class MenuServiceTest {
 
         // and
         // 제품 등록되어 있음
-        when(productRepository.findAllByIdIn(Arrays.asList(1L, 2L))).thenReturn(Optional.of(new ArrayList<Product>(Arrays.asList(짜장면, 탕수육))));
+        when(productRepository.findAllByIdIn(Arrays.asList(1L, 2L))).thenReturn(new ArrayList<Product>(Arrays.asList(짜장면, 탕수육)));
 
         // and
         // 메뉴와 메뉴에 등록된 상품들이 등록되어 있음

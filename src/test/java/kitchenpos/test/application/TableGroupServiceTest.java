@@ -93,7 +93,7 @@ public class TableGroupServiceTest {
         OrderTable secondOrder = new OrderTable(2L, 10);
 
         // when
-        when(orderTableRepository.findAllByIdIn(Arrays.asList(1L, 2L))).thenReturn(Optional.of(new ArrayList<OrderTable>(Arrays.asList(firstOrder, secondOrder))));
+        when(orderTableRepository.findAllByIdIn(Arrays.asList(1L, 2L))).thenReturn(new ArrayList<OrderTable>(Arrays.asList(firstOrder, secondOrder)));
 
         // than
         // 단체 테이블 등록 요청시 예외 발생
@@ -116,7 +116,7 @@ public class TableGroupServiceTest {
         secondOrder.changeToEmpty();
 
         // when
-        when(orderTableRepository.findAllByIdIn(Arrays.asList(1L, 2L))).thenReturn(Optional.of(new ArrayList<OrderTable>(Arrays.asList(firstOrder, secondOrder))));
+        when(orderTableRepository.findAllByIdIn(Arrays.asList(1L, 2L))).thenReturn(new ArrayList<OrderTable>(Arrays.asList(firstOrder, secondOrder)));
 
         // and
         // 단체 테이블 등록 요청
@@ -142,7 +142,7 @@ public class TableGroupServiceTest {
         // not empty 주문 테이블 생성되어 있음
         OrderTable firstOrderTable = new OrderTable(1L, 10);
         OrderTable secondOrderTable = new OrderTable(2L, 10);
-        when(orderTableRepository.findAllByTableGroupId(1L)).thenReturn(Optional.of(new ArrayList<OrderTable>(Arrays.asList(firstOrderTable, secondOrderTable))));
+        when(orderTableRepository.findAllByTableGroupId(1L)).thenReturn(new ArrayList<OrderTable>(Arrays.asList(firstOrderTable, secondOrderTable)));
 
         // when
         // 아직 COOKING 또는 MEAL order 상태
@@ -152,7 +152,7 @@ public class TableGroupServiceTest {
         OrderLineItem secondOrderLineItem = new OrderLineItem(secondMenu, 1L);
         Order firstOrder = new Order(firstOrderTable, new OrderLineItems(Arrays.asList(firstOrderLineItem, secondOrderLineItem)));
         Order secondOrder = new Order(secondOrderTable, new OrderLineItems(Arrays.asList(firstOrderLineItem, secondOrderLineItem)));
-        when(orderRepository.existsByOrderTableIdIn(Arrays.asList(1L, 2L))).thenReturn(Optional.of(new ArrayList<Order>(Arrays.asList(firstOrder, secondOrder))));
+        when(orderRepository.findByOrderTableIdIn(Arrays.asList(1L, 2L))).thenReturn(new ArrayList<Order>(Arrays.asList(firstOrder, secondOrder)));
 
         // than
         // 단체테이블 해제 오류
@@ -167,7 +167,7 @@ public class TableGroupServiceTest {
         // not empty 주문 테이블 생성되어 있음
         OrderTable firstOrderTable = new OrderTable(1L, 10);
         OrderTable secondOrderTable = new OrderTable(2L, 10);
-        when(orderTableRepository.findAllByTableGroupId(1L)).thenReturn(Optional.of(new ArrayList<OrderTable>(Arrays.asList(firstOrderTable, secondOrderTable))));
+        when(orderTableRepository.findAllByTableGroupId(1L)).thenReturn(new ArrayList<OrderTable>(Arrays.asList(firstOrderTable, secondOrderTable)));
 
         // when
         // 아직 COOKING 또는 MEAL order 상태
@@ -183,7 +183,7 @@ public class TableGroupServiceTest {
         // COOKING 또는 MEAL 상태가 아님
         firstOrder.changeOrderStatusComplete();
         secondOrder.changeOrderStatusComplete();
-        when(orderRepository.existsByOrderTableIdIn(Arrays.asList(1L, 2L))).thenReturn(Optional.of(new ArrayList<Order>(Arrays.asList(firstOrder, secondOrder))));
+        when(orderRepository.findByOrderTableIdIn(Arrays.asList(1L, 2L))).thenReturn(new ArrayList<Order>(Arrays.asList(firstOrder, secondOrder)));
 
         // than
         // 단체 테이블 해제

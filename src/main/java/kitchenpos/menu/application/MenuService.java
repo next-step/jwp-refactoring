@@ -43,7 +43,7 @@ public class MenuService {
     }
 
     private List<Product> findAllProductByIds(List<Long> productIds) {
-        List<Product> products = productRepository.findAllByIdIn(productIds).orElseThrow(() -> new NotFoundProductException());
+        List<Product> products = productRepository.findAllByIdIn(productIds);
         if (products.size() != productIds.size()) {
             throw new NotFoundProductException();
         }
