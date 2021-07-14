@@ -21,8 +21,8 @@ class MenuProductsTest {
     @BeforeEach
     void setUp() {
         menuProducts = new MenuProducts();
-        MenuProduct 테스트_상품_1 = new MenuProduct(new Product("테스트1", Price.of(BigDecimal.valueOf(3000L))), 3); // 9000
-        MenuProduct 테스트_상품_2 = new MenuProduct(new Product("테스트2", Price.of(BigDecimal.valueOf(2000L))), 1); // 2000
+        MenuProduct 테스트_상품_1 = new MenuProduct(1L, Price.of(BigDecimal.valueOf(3000L)), 3); // 9000
+        MenuProduct 테스트_상품_2 = new MenuProduct(2L, Price.of(BigDecimal.valueOf(2000L)), 1); // 2000
         menuProducts.add(Arrays.asList(테스트_상품_1, 테스트_상품_2));
     }
 
@@ -48,9 +48,9 @@ class MenuProductsTest {
     @Test
     void convertAllTest() {
         // when
-        assertThat(menuProducts.convertAll(menuProduct -> menuProduct.getProduct().getName()))
+        assertThat(menuProducts.convertAll(menuProduct -> menuProduct.getProductId()))
             .hasSize(2)
-            .containsExactly("테스트1", "테스트2");
+            .containsExactly(1L, 2L);
     }
 
 }

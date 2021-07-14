@@ -50,7 +50,9 @@ public class MenuService {
     }
 
     private MenuProduct createMenuProduct(MenuProductRequest menuProductRequest) {
-        return new MenuProduct(findProductById(menuProductRequest),
+        Product product = findProductById(menuProductRequest);
+        return new MenuProduct(product.getId(),
+                               product.getPrice(),
                                menuProductRequest.getQuantity());
     }
 

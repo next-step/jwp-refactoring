@@ -24,10 +24,6 @@ public class MenuProducts {
         this.menuProducts.addAll(menuProducts);
     }
 
-    public void mappingMenu(final Long menuId) {
-        this.menuProducts.forEach(menuProduct -> menuProduct.mappingMenu(menuId));
-    }
-
     public void checkOverPrice(final Price price) {
         Price sum = this.menuProducts.stream()
                                      .map(this::calculatePrice)
@@ -38,7 +34,7 @@ public class MenuProducts {
     }
 
     private Price calculatePrice(MenuProduct menuProduct) {
-        return menuProduct.calculatePrice(menuProduct.getQuantity());
+        return menuProduct.calculatePrice();
     }
 
     public <R> List<R> convertAll(Function<MenuProduct, R> converter) {

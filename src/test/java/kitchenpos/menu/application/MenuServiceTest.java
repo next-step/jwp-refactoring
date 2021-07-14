@@ -48,7 +48,7 @@ class MenuServiceTest {
     void createTest() {
         // given
         Product 불고기 = new Product("불고기", Price.of(BigDecimal.valueOf(1000L)));
-        MenuProduct 메뉴_불고기 = new MenuProduct(불고기, 3);
+        MenuProduct 메뉴_불고기 = new MenuProduct(1l, Price.of(BigDecimal.valueOf(1000L)), 3);
         MenuGroup 메뉴_그룹 = new MenuGroup("메뉴그룹");
 
         MenuRequest menuRequest = MenuRequest.Builder.of("메뉴1", BigDecimal.valueOf(2000L))

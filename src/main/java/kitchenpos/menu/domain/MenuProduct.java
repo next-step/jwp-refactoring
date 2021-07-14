@@ -1,17 +1,11 @@
 package kitchenpos.menu.domain;
 
-import java.util.Objects;
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 import kitchenpos.common.Price;
-import kitchenpos.product.domain.Product;
 
 @Entity
 public class MenuProduct {
@@ -22,27 +16,25 @@ public class MenuProduct {
 
     private Long menuId;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "product_id", foreignKey = @ForeignKey(name = "fk_menu_product_product"))
-    private Product product;
+    private Long productId;
 
     private long quantity;
+
+    @Transient
+    private Price productPrice;
 
     protected MenuProduct() {
         // empty
     }
 
-    public MenuProduct(final Product product, final long quantity) {
-        this.product = product;
+    public MenuProduct(final Long productId, final Price productPrice, final long quantity) {
+        this.productId = productId;
+        this.productPrice = productPrice;
         this.quantity = quantity;
     }
 
-    public void mappingMenu(final Long menuId) {
-        this.menuId = menuId;
-    }
-
-    public Price calculatePrice(final long times) {
-        return this.product.multiply(times);
+    public Price calculatePrice() {
+        return this.productPrice.multiply(this.quantity);
     }
 
     public long getQuantity() {
@@ -53,18 +45,7 @@ public class MenuProduct {
         return seq;
     }
 
-    public Product getProduct() {
-        return product;
-    }
-
-    public Long getMenuId() {
-        return this.menuId;
-    }
-
     public Long getProductId() {
-        if (Objects.isNull(this.product)) {
-            return 0L;
-        }
-        return this.product.getId();
+        return this.productId;
     }
 }

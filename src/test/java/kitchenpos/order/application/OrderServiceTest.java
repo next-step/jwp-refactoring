@@ -55,11 +55,10 @@ class OrderServiceTest {
     @Test
     void createTest() {
         // given
-        Product 불고기 = new Product("불고기", Price.of(BigDecimal.valueOf(1000L)));
         MenuGroup 메뉴_그룹 = new MenuGroup("메뉴 그룹");
         Menu 메뉴 = Menu.Builder.of("메뉴1", Price.of(BigDecimal.valueOf(2000L)))
                                  .menuGroup(메뉴_그룹)
-                                 .menuProducts(Arrays.asList(new MenuProduct(불고기, 5)))
+                                 .menuProducts(Arrays.asList(new MenuProduct(1l, Price.of(BigDecimal.valueOf(1000L)), 5)))
                                  .build();
         List<OrderLineItemRequest> orderLineItemRequests = Arrays.asList(new OrderLineItemRequest(1L, 3),
                                                                          new OrderLineItemRequest(2L, 1));
