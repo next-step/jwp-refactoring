@@ -1,0 +1,9 @@
+bootJar {
+    enabled = true
+}
+jar {
+    enabled = true
+}
+dependencies {
+
+}
