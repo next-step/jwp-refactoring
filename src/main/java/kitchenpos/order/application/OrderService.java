@@ -40,7 +40,8 @@ public class OrderService {
     }
 
     public OrderResponse create(final OrderRequest orderRequest) {
-        final Order savedOrder = orderRepository.save(new Order(findOrderTableById(orderRequest.getOrderTableId()),
+        OrderTable orderTable = findOrderTableById(orderRequest.getOrderTableId());
+        final Order savedOrder = orderRepository.save(new Order(orderTable.getId(),
                                                                 OrderStatus.COOKING,
                                                                 getOrderLineItems(orderRequest)));
         return OrderResponse.of(savedOrder);
