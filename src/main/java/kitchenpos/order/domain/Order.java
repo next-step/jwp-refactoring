@@ -7,16 +7,12 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import kitchenpos.order.exception.CannotChangeOrderStatusException;
-import kitchenpos.table.domain.OrderTable;
 
 @Entity
 @Table(name = "orders")
@@ -27,9 +23,7 @@ public class Order {
     @Enumerated(EnumType.STRING)
     @Column(name = "order_status")
     private OrderStatus orderStatus;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_table_id")
-    private OrderTable orderTable;
+    private Long orderTableId;
     @Column(name = "ordered_time")
     private LocalDateTime orderedTime;
     @Embedded
@@ -38,10 +32,10 @@ public class Order {
     public Order() {
     }
 
-    public Order(LocalDateTime orderedTime, OrderTable orderTable) {
+    public Order(LocalDateTime orderedTime, Long orderTableId) {
         this.orderStatus = OrderStatus.COOKING;
         this.orderedTime = orderedTime;
-        this.orderTable = orderTable;
+        this.orderTableId = orderTableId;
         this.orderLineItems = new OrderLineItems();
     }
 
@@ -74,8 +68,8 @@ public class Order {
         this.orderStatus = orderStatus;
     }
 
-    public OrderTable getOrderTable() {
-        return orderTable;
+    public Long getOrderTableId() {
+        return this.orderTableId;
     }
 
     private void validateOrderStatusIsCompleted() {

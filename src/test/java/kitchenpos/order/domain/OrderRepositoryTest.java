@@ -50,7 +50,7 @@ class OrderRepositoryTest {
     @DisplayName("기본 저장 확인")
     List<DynamicTest> save() {
         // given
-        Order order = new Order(LocalDateTime.now(), orderTable);
+        Order order = new Order(LocalDateTime.now(), orderTable.getId());
         OrderLineItem orderLineItem1 = new OrderLineItem(order, menu, 3L);
         OrderLineItem orderLineItem2 = new OrderLineItem(order, menu, 2L);
         order.addOrderLineItem(orderLineItem1);
@@ -72,7 +72,7 @@ class OrderRepositoryTest {
     @DisplayName("특정 주문상태를 가진 하나의 주문 테이블이 존재하는지 확인")
     void existsByOrderTableIdAndOrderStatusIn() {
         // given
-        Order order = new Order(LocalDateTime.now(), orderTable);
+        Order order = new Order(LocalDateTime.now(), orderTable.getId());
         OrderLineItem orderLineItem1 = new OrderLineItem(order, menu, 3L);
         OrderLineItem orderLineItem2 = new OrderLineItem(order, menu, 2L);
         order.addOrderLineItem(orderLineItem1);
@@ -90,7 +90,7 @@ class OrderRepositoryTest {
     @DisplayName("특정 주문상태를 가진 다수의 주문 테이블이 존재하는지 확인")
     void existsByOrderTableIdInAndOrderStatusIn() {
         // given
-        Order order = new Order(LocalDateTime.now(), orderTable);
+        Order order = new Order(LocalDateTime.now(), orderTable.getId());
         OrderLineItem orderLineItem1 = new OrderLineItem(order, menu, 3L);
         OrderLineItem orderLineItem2 = new OrderLineItem(order, menu, 2L);
         order.addOrderLineItem(orderLineItem1);

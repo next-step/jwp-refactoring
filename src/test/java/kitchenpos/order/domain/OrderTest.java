@@ -8,14 +8,13 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import kitchenpos.order.exception.CannotChangeOrderStatusException;
-import kitchenpos.table.domain.OrderTable;
 
 class OrderTest {
     @Test
     @DisplayName("주문 완료상태인 주문의 주문상태 수정 시 오류 발생")
     void name() {
         // given
-        Order order = new Order(LocalDateTime.now(), new OrderTable(3, false));
+        Order order = new Order(LocalDateTime.now(), 1L);
         order.changeOrderStatus(OrderStatus.COMPLETION);
 
         // then

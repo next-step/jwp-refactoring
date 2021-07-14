@@ -66,9 +66,10 @@ class OrderServiceTest {
     @DisplayName("모든 주문을 조회하는 기능")
     List<DynamicTest> find_allOrders1() {
         // mocking
-        Order order = new Order(LocalDateTime.now(), new OrderTable(3, false));
+        Order order = new Order(LocalDateTime.now(), 1L);
         order.addOrderLineItem(new OrderLineItem(order, menu, 3L));
         given(orderRepository.findAll()).willReturn(Arrays.asList(order));
+        given(tableService.findById(anyLong())).willReturn(new OrderTable(3, false));
 
         // when
         List<OrderResponse> findOrderResponses = orderService.findAllOrders();
@@ -85,9 +86,10 @@ class OrderServiceTest {
     void change_orderStatus1() {
         // given
         OrderRequest orderRequest = new OrderRequest(OrderStatus.MEAL, 1L, new ArrayList<>());
-        Order order = new Order(LocalDateTime.now(), new OrderTable(3, false));
+        Order order = new Order(LocalDateTime.now(), 1L);
         order.addOrderLineItem(new OrderLineItem(order, menu, 3L));
         given(orderRepository.findById(anyLong())).willReturn(Optional.of(order));
+        given(tableService.findById(anyLong())).willReturn(new OrderTable(3, false));
 
         // when
         OrderResponse resultOrderResponse = orderService.changeOrderStatus(1L, orderRequest);
@@ -119,7 +121,7 @@ class OrderServiceTest {
         OrderRequest orderRequest = new OrderRequest(OrderStatus.COOKING, 1L,
                 Arrays.asList(new OrderLineItemRequest(1L, 1L)));
         OrderTable orderTable = new OrderTable(3, false);
-        Order order = new Order(LocalDateTime.now(), orderTable);
+        Order order = new Order(LocalDateTime.now(), 1L);
         order.addOrderLineItem(new OrderLineItem(order, menu, 3L));
 
         given(tableService.findOrderTableByIdAndEmptyIsFalse(anyLong())).willReturn(orderTable);

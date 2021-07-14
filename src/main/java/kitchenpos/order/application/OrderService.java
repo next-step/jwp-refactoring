@@ -38,34 +38,21 @@ public class OrderService {
     public List<OrderResponse> findAllOrders() {
         return orderRepository.findAll()
                 .stream()
-                .map(OrderResponse::of)
+                .map(this::toOrderResponse)
                 .collect(Collectors.toList());
     }
 
     public OrderResponse changeOrderStatus(final Long orderId, final OrderRequest orderRequest) {
         Order order = orderRepository.findById(orderId).orElseThrow(OrderNotFoundException::new);
         order.changeOrderStatus(orderRequest.getOrderStatus());
-        return OrderResponse.of(order);
+        return OrderResponse.of(order, tableService.findById(order.getOrderTableId()));
     }
 
     public OrderResponse create(final OrderRequest orderRequest) {
         OrderTable orderTable = tableService.findOrderTableByIdAndEmptyIsFalse(orderRequest.getOrderTableId());
-        Order order = makeOrderWithOrderLineItemRequests(new Order(LocalDateTime.now(), orderTable),
-                orderRequest.getOrderLineItemRequests());
-        return OrderResponse.of(orderRepository.save(order));
-    }
-
-    private Order makeOrderWithOrderLineItemRequests(Order order, List<OrderLineItemRequest> orderLineItemRequests) {
-        if (orderLineItemRequests.isEmpty()) {
-            throw new IllegalArgumentException("입력된 주문 항목이 없습니다.");
-        }
-        orderLineItemRequests.forEach(o -> order.addOrderLineItem(createOrderLineItem(order, o)));
-        return order;
-    }
-
-    private OrderLineItem createOrderLineItem(Order order, OrderLineItemRequest orderLineItemRequest) {
-        Menu menu = menuService.findMenuById(orderLineItemRequest.getMenuId());
-        return new OrderLineItem(order, menu, orderLineItemRequest.getQuantity());
+        Order order = orderRepository.save(makeOrderWithOrderLineItemRequests(new Order(LocalDateTime.now(), orderTable.getId()),
+                orderRequest.getOrderLineItemRequests()));
+        return OrderResponse.of(order, orderTable);
     }
 
     public void validateExistsOrdersStatusIsCookingOrMeal(List<Long> orderTableIds) {
@@ -80,5 +67,22 @@ public class OrderService {
                 orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
             throw new OrderAlreadyExistsException("주문 상태가 COOKING 또는 MEAL인 주문이 존재합니다. 입력 ID : " + orderTableId);
         }
+    }
+
+    private OrderResponse toOrderResponse(Order order) {
+        return OrderResponse.of(order, tableService.findById(order.getOrderTableId()));
+    }
+
+    private Order makeOrderWithOrderLineItemRequests(Order order, List<OrderLineItemRequest> orderLineItemRequests) {
+        if (orderLineItemRequests.isEmpty()) {
+            throw new IllegalArgumentException("입력된 주문 항목이 없습니다.");
+        }
+        orderLineItemRequests.forEach(o -> order.addOrderLineItem(createOrderLineItem(order, o)));
+        return order;
+    }
+
+    private OrderLineItem createOrderLineItem(Order order, OrderLineItemRequest orderLineItemRequest) {
+        Menu menu = menuService.findMenuById(orderLineItemRequest.getMenuId());
+        return new OrderLineItem(order, menu, orderLineItemRequest.getQuantity());
     }
 }

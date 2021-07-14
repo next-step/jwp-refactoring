@@ -69,9 +69,9 @@ class OrderRestControllerTest extends MockMvcControllerTest {
         // given
         OrderLineItemRequest orderLineItemRequest1 = new OrderLineItemRequest(1L, 1L);
         OrderRequest orderRequest = new OrderRequest(OrderStatus.COOKING, 1L, Arrays.asList(orderLineItemRequest1));
-        Order order = new Order(LocalDateTime.now(), new OrderTable(3, false));
+        Order order = new Order(LocalDateTime.now(), 1L);
         order.addOrderLineItem(new OrderLineItem(order, menu, 3L));
-        OrderResponse orderResponse = OrderResponse.of(order);
+        OrderResponse orderResponse = OrderResponse.of(order, new OrderTable(3, false));
         given(orderService.create(any(OrderRequest.class))).willReturn(orderResponse);
 
         // then
@@ -89,9 +89,9 @@ class OrderRestControllerTest extends MockMvcControllerTest {
     @DisplayName("주문 목록을 조회할 수 있다.")
     void retrieve_orderList() throws Exception {
         // given
-        Order order = new Order(LocalDateTime.now(), new OrderTable(3, false));
+        Order order = new Order(LocalDateTime.now(), 1L);
         order.addOrderLineItem(new OrderLineItem(order, menu, 3L));
-        OrderResponse orderResponse = OrderResponse.of(order);
+        OrderResponse orderResponse = OrderResponse.of(order, new OrderTable(3, false));
         given(orderService.findAllOrders()).willReturn(Arrays.asList(orderResponse));
 
         // then
@@ -108,10 +108,10 @@ class OrderRestControllerTest extends MockMvcControllerTest {
     void change_orderStatus() throws Exception {
         // given
         OrderRequest orderRequest = new OrderRequest(OrderStatus.MEAL, 1L, new ArrayList<>());
-        Order order = new Order(LocalDateTime.now(), new OrderTable(3, false));
+        Order order = new Order(LocalDateTime.now(), 1L);
         order.changeOrderStatus(OrderStatus.MEAL);
         order.addOrderLineItem(new OrderLineItem(order, menu, 3L));
-        OrderResponse orderResponse = OrderResponse.of(order);
+        OrderResponse orderResponse = OrderResponse.of(order, new OrderTable(3, false));
         given(orderService.changeOrderStatus(anyLong(), any(OrderRequest.class))).willReturn(orderResponse);
 
         // then

@@ -6,6 +6,7 @@ import java.util.List;
 
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.dto.OrderTableResponse;
 
 public class OrderResponse {
@@ -26,10 +27,10 @@ public class OrderResponse {
         this.orderLineItemResponses = orderLineItemResponses;
     }
 
-    public static OrderResponse of(Order order) {
+    public static OrderResponse of(Order order, OrderTable orderTable) {
         List<OrderLineItemResponse> collect = order.getOrderLineItems().toResponses();
         return new OrderResponse(order.getId(), order.getOrderStatus(), order.getOrderedTime(),
-                OrderTableResponse.of(order.getOrderTable()), collect);
+                OrderTableResponse.of(orderTable), collect);
     }
 
     public Long getId() {
