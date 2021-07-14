@@ -2,12 +2,14 @@ package kitchenpos.order.ui;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.when;
+import static org.mockito.BDDMockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -21,14 +23,19 @@ import org.springframework.http.MediaType;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import kitchenpos.application.OrderService;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderStatus;
-import kitchenpos.ui.OrderRestController;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.order.application.OrderService;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.product.domain.Product;
+import kitchenpos.table.domain.OrderTable;
 import kitchenpos.utils.MockMvcControllerTest;
-import kitchenpos.utils.domain.MenuObjects;
-import kitchenpos.utils.domain.OrderLineItemObjects;
-import kitchenpos.utils.domain.OrderObjects;
 
 @DisplayName("주문 관리 기능")
 @WebMvcTest(controllers = OrderRestController.class)
@@ -41,9 +48,7 @@ class OrderRestControllerTest extends MockMvcControllerTest {
     @Autowired
     private OrderRestController orderRestController;
 
-    private OrderLineItemObjects orderLineItemObjects;
-    private OrderObjects orderObjects;
-    private MenuObjects menuObjects;
+    private Menu menu;
 
     @Override
     protected Object controller() {
@@ -52,29 +57,31 @@ class OrderRestControllerTest extends MockMvcControllerTest {
 
     @BeforeEach
     void setUp() {
-        orderLineItemObjects = new OrderLineItemObjects();
-        orderObjects = new OrderObjects();
-        menuObjects = new MenuObjects();
+        MenuGroup menuGroup = new MenuGroup("AB");
+        menu = new Menu("A", BigDecimal.valueOf(20000.00), menuGroup);
+        menu.addMenuProduct(new MenuProduct(menu, new Product("a", BigDecimal.valueOf(15000.00)), 1));
+        menu.addMenuProduct(new MenuProduct(menu, new Product("a", BigDecimal.valueOf(15000.00)), 1));
     }
 
     @Test
     @DisplayName("주문을 등록할 수 있다.")
     void create_order() throws Exception {
         // given
-        orderLineItemObjects.getOrderLineItem1().setOrderId(orderObjects.getOrder1().getId());
-        orderLineItemObjects.getOrderLineItem2().setOrderId(orderObjects.getOrder1().getId());
-        orderObjects.getOrder1().setOrderLineItems(new ArrayList<>(Arrays.asList(orderLineItemObjects.getOrderLineItem1(), orderLineItemObjects.getOrderLineItem2())));
-        when(orderService.create(any(Order.class))).thenReturn(orderObjects.getOrder1());
+        OrderLineItemRequest orderLineItemRequest1 = new OrderLineItemRequest(1L, 1L);
+        OrderRequest orderRequest = new OrderRequest(OrderStatus.COOKING, 1L, Arrays.asList(orderLineItemRequest1));
+        Order order = new Order(LocalDateTime.now(), new OrderTable(3, false));
+        order.addOrderLineItem(new OrderLineItem(order, menu, 3L));
+        OrderResponse orderResponse = OrderResponse.of(order);
+        given(orderService.create(any(OrderRequest.class))).willReturn(orderResponse);
 
         // then
         mockMvc.perform(post(DEFAULT_REQUEST_URL)
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .content(new ObjectMapper().writeValueAsString(orderObjects.getOrder2())))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(new ObjectMapper().writeValueAsString(orderRequest)))
                 .andDo(print())
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("id").value(orderObjects.getOrder1().getId()))
-                .andExpect(jsonPath("orderTableId").value(orderObjects.getOrder1().getOrderTableId()))
-                .andExpect(jsonPath("orderLineItems.[0].orderId").value(orderObjects.getOrder1().getId()))
+                .andExpect(jsonPath("orderStatus").value(orderResponse.getOrderStatus().name()))
+                .andExpect(jsonPath("orderLineItemResponses.length()").value(1))
         ;
     }
 
@@ -82,35 +89,39 @@ class OrderRestControllerTest extends MockMvcControllerTest {
     @DisplayName("주문 목록을 조회할 수 있다.")
     void retrieve_orderList() throws Exception {
         // given
-        when(orderService.list()).thenReturn(orderObjects.getOrders());
+        Order order = new Order(LocalDateTime.now(), new OrderTable(3, false));
+        order.addOrderLineItem(new OrderLineItem(order, menu, 3L));
+        OrderResponse orderResponse = OrderResponse.of(order);
+        given(orderService.findAllOrders()).willReturn(Arrays.asList(orderResponse));
 
         // then
         mockMvc.perform(get(DEFAULT_REQUEST_URL))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("[0].id").value(orderObjects.getOrder1().getId()))
-                .andExpect(jsonPath("[0].orderTableId").value(orderObjects.getOrder1().getOrderTableId()))
-                .andExpect(jsonPath("[4].id").value(orderObjects.getOrder5().getId()))
-                .andExpect(jsonPath("[4].orderTableId").value(orderObjects.getOrder5().getOrderTableId()))
+                .andExpect(jsonPath("[0].orderStatus").value(orderResponse.getOrderStatus().name()))
+                .andExpect(jsonPath("length()").value(1))
         ;
     }
 
     @Test
-    @DisplayName("주문을 수정할 수 있다.")
+    @DisplayName("주문의 상태를 수정할 수 있다.")
     void change_orderStatus() throws Exception {
         // given
-        orderObjects.getOrder2().setOrderStatus(OrderStatus.COMPLETION.name());
-        when(orderService.changeOrderStatus(anyLong(), any(Order.class))).thenReturn(orderObjects.getOrder2());
+        OrderRequest orderRequest = new OrderRequest(OrderStatus.MEAL, 1L, new ArrayList<>());
+        Order order = new Order(LocalDateTime.now(), new OrderTable(3, false));
+        order.changeOrderStatus(OrderStatus.MEAL);
+        order.addOrderLineItem(new OrderLineItem(order, menu, 3L));
+        OrderResponse orderResponse = OrderResponse.of(order);
+        given(orderService.changeOrderStatus(anyLong(), any(OrderRequest.class))).willReturn(orderResponse);
 
         // then
         mockMvc.perform(put(DEFAULT_REQUEST_URL + "/1/order-status")
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .content(new ObjectMapper().writeValueAsString(orderObjects.getOrder4()))
-                    .accept(MediaType.APPLICATION_JSON_VALUE))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(new ObjectMapper().writeValueAsString(orderRequest))
+                .accept(MediaType.APPLICATION_JSON_VALUE))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("id").value(orderObjects.getOrder2().getId()))
-                .andExpect(jsonPath("orderStatus").value(orderObjects.getOrder2().getOrderStatus()))
+                .andExpect(jsonPath("orderStatus").value(orderResponse.getOrderStatus().name()))
         ;
     }
 }
