@@ -25,10 +25,10 @@ public class OrderResponse {
     }
 
     public static OrderResponse of(Order order) {
-        List<OrderLineItemResponse> orderLineItemResponses = order.getOrderLineItems().stream()
+        List<OrderLineItemResponse> orderLineItemResponses = order.getOrderLineItems().getOrderLineItems().stream()
                 .map(orderLineItem -> OrderLineItemResponse.of(orderLineItem))
                 .collect(Collectors.toList());
-        return new OrderResponse(order.getId(), order.getOrderTable().getId(), order.getOrderStatus().toString(), order.getOrderedTime(), orderLineItemResponses);
+        return new OrderResponse(order.getId(), order.getOrderTableId(), order.getOrderStatus().toString(), order.getOrderedTime(), orderLineItemResponses);
     }
 
     public Long getId() {

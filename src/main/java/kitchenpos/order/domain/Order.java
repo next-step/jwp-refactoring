@@ -1,6 +1,7 @@
 package kitchenpos.order.domain;
 
 import kitchenpos.order.OrderStatus;
+import kitchenpos.order.util.OrderValidator;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.exception.NotChangeToEmptyThatCookingOrMealTable;
 
@@ -16,9 +17,7 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_table_id", foreignKey = @ForeignKey(name = "fk_orders_order_table"))
-    private OrderTable orderTable;
+    private Long orderTableId;
 
     @Enumerated(value = EnumType.STRING)
     private OrderStatus orderStatus;
@@ -31,23 +30,32 @@ public class Order {
     protected Order() {
     }
 
-    public Order(Long id, OrderTable orderTableId, OrderLineItems orderLineItems) {
+    public Order(Long id, Long orderTableId, OrderLineItems orderLineItems) {
         this.id = id;
-        this.orderTable = orderTableId;
-        this.orderStatus = OrderStatus.COOKING;
+        this.orderTableId = orderTableId;
         this.orderLineItems = orderLineItems;
         this.orderedTime = LocalDateTime.now();
         this.orderLineItems.registerOrder(this);
     }
 
-    public Order(OrderTable orderTable, OrderLineItems orderLineItems) {
-        this(null, orderTable, orderLineItems);
+    public Order(Long orderTableId, OrderLineItems orderLineItems) {
+        this(null, orderTableId, orderLineItems);
+    }
+
+    public void validateOrder(OrderValidator orderValidator) {
+        orderValidator.validateOrder(this);
+        progressCook();
+    }
+
+    public void progressCook() {
+        this.orderStatus = OrderStatus.COOKING;
+    }
+
+    public boolean isCookingOrMeal() {
+        return this.orderStatus.isCookingOrMeal();
     }
 
     public void changeOrderStatusCooking() {
-        if (orderStatus.isCompletion()) {
-            throw new IllegalArgumentException();
-        }
         this.orderStatus = OrderStatus.COOKING;
     }
 
@@ -55,17 +63,12 @@ public class Order {
         this.orderStatus = OrderStatus.COMPLETION;
     }
 
-    public boolean isCookingOrMeal() {
-        return this.orderStatus.isCookingOrMeal();
-    }
-
-
     public Long getId() {
         return id;
     }
 
-    public OrderTable getOrderTable() {
-        return orderTable;
+    public Long getOrderTableId() {
+        return this.orderTableId;
     }
 
     public OrderStatus getOrderStatus() {
@@ -76,15 +79,8 @@ public class Order {
         return orderedTime;
     }
 
-    public List<OrderLineItem> getOrderLineItems() {
-        return orderLineItems.getOrderLineItems();
-    }
-
-    public void ungroup() {
-        if (orderStatus.isCookingOrMeal()){
-            throw new NotChangeToEmptyThatCookingOrMealTable();
-        }
-        orderTable.ungroup();
+    public OrderLineItems getOrderLineItems() {
+        return this.orderLineItems;
     }
 
     @Override
@@ -92,11 +88,11 @@ public class Order {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Order order = (Order) o;
-        return Objects.equals(id, order.id) && Objects.equals(orderTable, order.orderTable) && orderStatus == order.orderStatus;
+        return Objects.equals(id, order.id) && Objects.equals(orderTableId, order.orderTableId) && orderStatus == order.orderStatus;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, orderTable, orderStatus);
+        return Objects.hash(id, orderTableId, orderStatus);
     }
 }

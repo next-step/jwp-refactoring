@@ -6,7 +6,7 @@ import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.exception.NotChangeToEmptyThatGroupTable;
-import kitchenpos.order.exception.NotFoundOrder;
+import kitchenpos.order.exception.NotFoundOrderException;
 import kitchenpos.order.exception.NotFoundOrderTable;
 import kitchenpos.table.application.OrderTableService;
 import kitchenpos.table.domain.OrderTable;
@@ -98,7 +98,7 @@ public class TableServiceTest {
         // then
         // 예외 발생
         assertThatThrownBy(() -> orderTableService.changeEmpty(1L))
-                .isInstanceOf(NotFoundOrder.class);
+                .isInstanceOf(NotFoundOrderException.class);
     }
 
     @Test

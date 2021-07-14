@@ -1,11 +1,6 @@
 package kitchenpos.order.dto;
 
-import kitchenpos.order.exception.EmptyOrderLineItemsException;
-import org.springframework.util.CollectionUtils;
-
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class OrderRequest {
     private Long orderTableId;
@@ -19,7 +14,7 @@ public class OrderRequest {
         this.orderLineItemRequests = orderLineItemRequests;
     }
 
-    public List<Long> getMenuIds() {
+    /*public List<Long> getMenuIds() {
         if(CollectionUtils.isEmpty(orderLineItemRequests)){
             throw new EmptyOrderLineItemsException();
         }
@@ -30,7 +25,7 @@ public class OrderRequest {
 
     public boolean isEqualsMenuSize(long countByIdIn) {
         return orderLineItemRequests.size() == countByIdIn;
-    }
+    }*/
 
     public Long getOrderTableId() {
         return orderTableId;
@@ -38,18 +33,5 @@ public class OrderRequest {
 
     public List<OrderLineItemRequest> getOrderLineItemRequests() {
         return orderLineItemRequests;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        OrderRequest that = (OrderRequest) o;
-        return Objects.equals(orderTableId, that.orderTableId) && Objects.equals(orderLineItemRequests, that.orderLineItemRequests);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(orderTableId, orderLineItemRequests);
     }
 }
