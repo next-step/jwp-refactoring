@@ -2,7 +2,6 @@ package kitchenpos.order.application;
 
 import static kitchenpos.exception.KitchenposExceptionMessage.NOT_FOUND_MENU;
 import static kitchenpos.exception.KitchenposExceptionMessage.NOT_FOUND_ORDER;
-import static kitchenpos.exception.KitchenposExceptionMessage.NOT_FOUND_ORDER_LINE_ITEM;
 import static kitchenpos.exception.KitchenposExceptionMessage.NOT_FOUND_ORDER_TABLE;
 
 import kitchenpos.exception.KitchenposException;

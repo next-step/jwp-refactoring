@@ -17,7 +17,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.Table;
 import kitchenpos.exception.KitchenposException;
 import kitchenpos.table.domain.OrderTable;
 import org.springframework.data.annotation.CreatedDate;
@@ -55,8 +54,6 @@ public class Order {
         this.orderStatus = orderStatus;
         this.orderLineItems.add(orderLineItems);
         this.orderedTime = LocalDateTime.now();
-
-        this.orderLineItems.connectOrder(this);
     }
 
     public Order changeOrderStatus(final OrderStatus orderStatus) {

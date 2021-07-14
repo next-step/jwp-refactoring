@@ -6,22 +6,19 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 
 @Embeddable
 public class OrderLineItems {
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "orderId")
     private List<OrderLineItem> orderLineItems = new ArrayList<>();
 
     public void add(List<OrderLineItem> orderLineItems) {
         this.orderLineItems.addAll(orderLineItems);
     }
-
-    public void connectOrder(final Order order) {
-        this.orderLineItems.forEach(orderLineItem -> orderLineItem.connectOrder(order));
-    }
-
 
     public <R> List<R> convertAll(Function<OrderLineItem, R> converter) {
         return this.orderLineItems.stream()

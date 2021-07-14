@@ -12,15 +12,15 @@ public class OrderLineItemResponse {
         // empty
     }
 
-    private OrderLineItemResponse(final OrderLineItem orderLineItem) {
+    private OrderLineItemResponse(final Long orderId, final OrderLineItem orderLineItem) {
         this.seq = orderLineItem.getSeq();
-        this.orderId = orderLineItem.orderId();
+        this.orderId = orderId;
         this.menuId = orderLineItem.menuId();
         this.quantity = orderLineItem.getQuantity();
     }
 
-    public static OrderLineItemResponse of(final OrderLineItem orderLineItem) {
-        return new OrderLineItemResponse(orderLineItem);
+    public static OrderLineItemResponse of(final Long orderId, final OrderLineItem orderLineItem) {
+        return new OrderLineItemResponse(orderId, orderLineItem);
     }
 
     public Long getSeq() {
