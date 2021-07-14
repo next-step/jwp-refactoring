@@ -74,6 +74,6 @@ public class OrderLineItemDetailRequest {
     }
 
     public OrderLineItemDetail toEntity() {
-        return new OrderLineItemDetail(this.name, this.price(), this.quantity());
+        return new OrderLineItemDetail(getProductId(), getName(), price(), quantity());
     }
 }

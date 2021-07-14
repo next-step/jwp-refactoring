@@ -1,5 +1,6 @@
 package kitchenpos.menu.domain;
 
+import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.Column;
@@ -10,7 +11,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import kitchenpos.generic.price.domain.Price;
-import kitchenpos.menu.exception.ExceedingTotalPriceException;
 
 @Entity
 public class Menu {
@@ -20,6 +20,9 @@ public class Menu {
 
     @Column(nullable = false)
     private String name;
+
+    @Column(nullable = false)
+    private Long menuGroupId;
 
     @Embedded
     @Column(nullable = false)
@@ -36,24 +39,19 @@ public class Menu {
     }
 
     Menu(Long id, String name, Price price, MenuProducts menuProducts) {
-        checkArguments(name, price, menuProducts);
-        checkPriceAndSummation(price, menuProducts);
         this.id = id;
         this.name = name;
         this.price = price;
         this.menuProducts = menuProducts;
     }
 
-    private void checkArguments(String name, Price price, MenuProducts menuProducts) {
-        if (Objects.isNull(name) || Objects.isNull(price) || Objects.isNull(menuProducts)) {
-            throw new IllegalArgumentException("메뉴를 생성하려면 모든 필수값이 입력되어야 합니다.");
-        }
+    public void setMenuGroupId(MenuValidator validator, Long menuGroupId) {
+        this.menuGroupId = menuGroupId;
+        validator.validate(this);
     }
 
-    private void checkPriceAndSummation(Price price, MenuProducts menuProducts) {
-        if (price.isBiggerThan(menuProducts.summation())) {
-            throw new ExceedingTotalPriceException("메뉴 가격이 제품 가격의 총 합을 초과합니다.");
-        }
+    public List<Long> getProductIds() {
+        return menuProducts.getProductIds();
     }
 
     public Long getId() {
@@ -62,6 +60,10 @@ public class Menu {
 
     public String getName() {
         return name;
+    }
+
+    public Long getMenuGroupId() {
+        return menuGroupId;
     }
 
     public MenuProducts getMenuProducts() {

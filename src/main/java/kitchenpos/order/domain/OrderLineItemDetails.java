@@ -17,7 +17,7 @@ import kitchenpos.menu.domain.MenuDetailOption;
 public class OrderLineItemDetails {
 
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "order_line_item_seq", foreignKey = @ForeignKey(name = "fk_order_menu_product_order_line_item"))
+    @JoinColumn(name = "order_line_item_seq", foreignKey = @ForeignKey(name = "fk_order_line_item_detail_order_line_item"))
     private List<OrderLineItemDetail> orderLineItemDetails = new ArrayList<>();
 
     public static OrderLineItemDetails of(OrderLineItemDetail... orderLineItemDetails) {

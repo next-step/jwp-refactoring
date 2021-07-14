@@ -20,6 +20,7 @@ import kitchenpos.order.exception.NotEnoughTablesException;
 import kitchenpos.order.exception.OrderNotCompletedException;
 import kitchenpos.order.exception.OrderNotFoundException;
 import kitchenpos.order.exception.OrderTableNotFoundException;
+import kitchenpos.product.exception.ProductMismatchException;
 import kitchenpos.product.exception.ProductNotFoundException;
 import kitchenpos.order.exception.TableGroupNotFoundException;
 
@@ -37,6 +38,7 @@ public class GeneralExceptionHandler {
     @ExceptionHandler(value = {
         MenuDetailMismatchException.class,
         MenuMismatchException.class,
+        ProductMismatchException.class
     })
     public ResponseEntity<Void> orderMenuMismatchException(Exception e) {
         log.debug("주문정보와 메뉴 스펙이 일치하지 않습니다.", e);

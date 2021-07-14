@@ -19,6 +19,9 @@ public class OrderLineItemDetail {
     private Long seq;
 
     @Column(nullable = false)
+    private Long productId;
+
+    @Column(nullable = false)
     private String name;
 
     @Embedded
@@ -32,13 +35,14 @@ public class OrderLineItemDetail {
     protected OrderLineItemDetail() {
     }
 
-    public OrderLineItemDetail(String name, Price price, Quantity quantity) {
+    public OrderLineItemDetail(Long productId, String name, Price price, Quantity quantity) {
+        this.productId = productId;
         this.name = name;
         this.price = price;
         this.quantity = quantity;
     }
 
     public MenuDetailOption toMenuDetailOption() {
-        return new MenuDetailOption(this.name, this.price, this.quantity);
+        return new MenuDetailOption(productId, name, price, quantity);
     }
 }

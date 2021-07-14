@@ -1,7 +1,6 @@
 package kitchenpos.menu.ui;
 
 import static kitchenpos.menu.domain.MenuGroupTest.*;
-import static kitchenpos.menu.domain.MenuTest.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -51,8 +50,6 @@ class MenuGroupRestControllerTest extends IntegrationTest {
             .andExpect(status().isOk())
             .andExpect(jsonPath("$").exists())
             .andExpect(jsonPath("$[1].id").value(한마리메뉴.getId()))
-            .andExpect(jsonPath("$[1].name").value(한마리메뉴.getName()))
-            .andExpect(jsonPath("$[1].menus[0].name").value(후라이드_메뉴.getName()))
-            .andExpect(jsonPath("$[1].menus[0].price").value(후라이드_메뉴.getPrice().longValue()));
+            .andExpect(jsonPath("$[1].name").value(한마리메뉴.getName()));
     }
 }

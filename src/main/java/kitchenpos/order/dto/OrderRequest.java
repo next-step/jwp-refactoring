@@ -50,9 +50,7 @@ public class OrderRequest {
     }
 
     public Order toEntity() {
-        return new Order(
-            orderTableId,
-            OrderLineItems.of(orderLineItems.stream()
+        return new Order(OrderLineItems.of(orderLineItems.stream()
                 .map(OrderLineItemRequest::toEntity)
                 .collect(Collectors.toList())));
     }

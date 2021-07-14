@@ -8,10 +8,7 @@ import org.junit.jupiter.api.Test;
 import kitchenpos.generic.exception.IllegalOperationException;
 import kitchenpos.order.exception.NotEnoughTablesException;
 import kitchenpos.order.exception.OrderNotCompletedException;
-import kitchenpos.order.domain.NumberOfGuests;
-import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.domain.OrderTables;
-import kitchenpos.order.domain.TableGroup;
+import kitchenpos.generic.guests.domain.NumberOfGuests;
 
 @DisplayName("테이블 그룹 단위 테스트")
 public class TableGroupTest {

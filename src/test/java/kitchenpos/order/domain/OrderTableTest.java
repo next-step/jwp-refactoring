@@ -8,6 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import kitchenpos.generic.exception.IllegalOperationException;
+import kitchenpos.generic.guests.domain.NumberOfGuests;
 import kitchenpos.order.exception.OrderNotCompletedException;
 import kitchenpos.generic.quantity.domain.Quantity;
 

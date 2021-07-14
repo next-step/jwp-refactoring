@@ -16,7 +16,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.order.domain.NumberOfGuests;
+import kitchenpos.generic.guests.domain.NumberOfGuests;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.OrderTableRepository;
 import kitchenpos.order.domain.OrderTableTest;
@@ -26,7 +26,6 @@ import kitchenpos.order.domain.TableGroupTest;
 import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.generic.exception.IllegalOperationException;
 import kitchenpos.order.exception.OrderTableNotFoundException;
-import kitchenpos.order.service.TableService;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("테이블 서비스")

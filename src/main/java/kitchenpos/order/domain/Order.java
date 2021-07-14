@@ -26,7 +26,7 @@ public class Order {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private OrderStatus orderStatus;
+    private OrderStatus orderStatus = OrderStatus.COOKING;
 
     @Column(nullable = false)
     private LocalDateTime orderedTime = LocalDateTime.now();
@@ -37,25 +37,18 @@ public class Order {
     protected Order() {
     }
 
-    public Order(Long orderTableId, OrderLineItems orderLineItems) {
-        this.orderTableId = orderTableId;
+    public Order(OrderLineItems orderLineItems) {
         this.orderLineItems = orderLineItems;
     }
 
-    Order(OrderStatus orderStatus) {
-        this.orderStatus = orderStatus;
-    }
-
-    Order(Long id, Long orderTableId, OrderStatus orderStatus, OrderLineItems orderLineItems) {
+    Order(Long id, OrderLineItems orderLineItems) {
         this.id = id;
-        this.orderTableId = orderTableId;
-        this.orderStatus = orderStatus;
         this.orderLineItems = orderLineItems;
     }
 
-    public void place(OrderValidator validator) {
+    public void place(OrderValidator validator, Long orderTableId) {
+        this.orderTableId = orderTableId;
         validator.validate(this);
-        orderStatus = OrderStatus.COOKING;
     }
 
     public void changeStatus(OrderValidator validator, OrderStatus orderStatus) {

@@ -24,7 +24,7 @@ public class OrderService {
     @Transactional
     public Order create(final OrderRequest request) {
         Order order = request.toEntity();
-        order.place(orderValidator);
+        order.place(orderValidator, request.getOrderTableId());
         return orderRepository.save(order);
     }
 

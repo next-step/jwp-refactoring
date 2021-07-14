@@ -3,16 +3,12 @@ package kitchenpos.menu.domain;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 
-import kitchenpos.generic.price.domain.Price;
-import kitchenpos.product.domain.Product;
 import kitchenpos.generic.quantity.domain.Quantity;
 
 @Entity
@@ -22,9 +18,8 @@ public class MenuProduct {
     @Column(name = "seq")
     private Long seq;
 
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, foreignKey = @ForeignKey(name = "fk_menu_product_product"))
-    private Product product;
+    private Long productId;
 
     @Embedded
     @Column(nullable = false)
@@ -33,21 +28,17 @@ public class MenuProduct {
     protected MenuProduct() {
     }
 
-    public MenuProduct(Product product, Quantity quantity) {
-        this.product = product;
+    public MenuProduct(Long productId, Quantity quantity) {
+        this.productId = productId;
         this.quantity = quantity;
-    }
-
-    public Price getTotalPrice() {
-        return product.priceOf(quantity);
     }
 
     public Long getSeq() {
         return seq;
     }
 
-    public Product getProduct() {
-        return product;
+    public Long getProductId() {
+        return productId;
     }
 
     public Quantity getQuantity() {
@@ -59,6 +50,7 @@ public class MenuProduct {
             return false;
         }
 
-        return product.isSatisfiedBy(menuDetailOption);
+        // return product.isSatisfiedBy(menuDetailOption); // TODO 어떻게 풀어갈것인가?
+        return true;
     }
 }

@@ -1,4 +1,4 @@
-package kitchenpos.order.domain;
+package kitchenpos.generic.guests.domain;
 
 import javax.persistence.Embeddable;
 

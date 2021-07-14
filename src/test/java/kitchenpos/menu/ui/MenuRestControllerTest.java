@@ -62,8 +62,7 @@ class MenuRestControllerTest extends IntegrationTest {
             .andExpect(jsonPath("$.price").value(request.getPrice().longValue()))
             .andExpect(jsonPath("$.menuProducts[0].seq").exists())
             .andExpect(jsonPath("$.menuProducts[0].quantity").value(양념.getQuantity()))
-            .andExpect(jsonPath("$.menuProducts[0].product.name").value(양념치킨.getName()))
-            .andExpect(jsonPath("$.menuProducts[0].product.price").value(양념치킨.getPrice().longValue()));
+            .andExpect(jsonPath("$.menuProducts[0].productId").value(양념치킨.getId()));
     }
 
     @Test

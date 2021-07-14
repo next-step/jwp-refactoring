@@ -15,6 +15,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import kitchenpos.generic.exception.IllegalOperationException;
+import kitchenpos.generic.guests.domain.NumberOfGuests;
 
 @Entity
 public class OrderTable {

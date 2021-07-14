@@ -119,7 +119,7 @@ class OrderRestControllerTest extends IntegrationTest {
             .andDo(print())
             .andExpect(status().isOk())
             .andExpect(jsonPath("$[0].id").value(테이블9주문_조리.getId()))
-            .andExpect(jsonPath("$[0].orderStatus").value(테이블9주문_조리.getOrderStatus().name()));
+            .andExpect(jsonPath("$[0].orderStatus").value("COOKING"));
     }
 
     @Test
