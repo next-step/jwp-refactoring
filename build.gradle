@@ -1,33 +1,62 @@
-plugins {
-    id 'org.springframework.boot' version '2.4.1'
-    id 'io.spring.dependency-management' version '1.0.10.RELEASE'
-    id 'java'
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.4.1")
+        classpath "io.spring.gradle:dependency-management-plugin:1.0.10.RELEASE"
+    }
 }
 
-group = 'camp.nextstep.edu'
-version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '1.8'
+subprojects {
+    version '1.0'
 
-repositories {
-    mavenCentral()
+    apply plugin: 'java'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+
+    sourceCompatibility = 1.8
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        testCompile 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+        testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    }
+
+    test {
+        useJUnitPlatform()
+    }
 }
 
-dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.flywaydb:flyway-core'
-    runtimeOnly 'com.h2database:h2'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-
-    // rest assured
-    testImplementation 'io.rest-assured:rest-assured:3.3.0'
-
-    compile "com.google.guava:guava:16+"
+project(':module-app') {
+    dependencies {
+        compile  project(':module-ordering')
+        compile  project(':module-menu')
+        compile  project(':module-common')
+    }
 }
 
-test {
-    useJUnitPlatform()
+project(':module-ordering') {
+    dependencies {
+        compile  project(':module-common')
+        compile  project(':module-menu')
+    }
+}
+
+project(':module-menu') {
+    dependencies {
+        compile  project(':module-common')
+    }
+}
+
+project(':module-common') {
+    dependencies {
+
+    }
 }

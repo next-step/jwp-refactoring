@@ -1,0 +1,11 @@
+bootJar { enabled = false }
+jar { enabled = true }
+
+dependencies {
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'io.rest-assured:rest-assured:3.3.0'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    compile "com.google.guava:guava:16+"
+    runtimeOnly 'com.h2database:h2'
+
+}
