@@ -18,16 +18,8 @@ public class OrderTables {
     }
 
     public OrderTables(List<OrderTable> orderTables) {
-        /*if (!isEmptyTableAndNotExistTableGroupId(orderTables)) {
-            throw new NotEmptyOrExistTableGroupException();
-        }*/
         this.orderTables = orderTables;
     }
-
-    /*private boolean isEmptyTableAndNotExistTableGroupId(List<OrderTable> orderTables) {
-        return orderTables.stream()
-                .allMatch(orderTable -> orderTable.isEmptyTableAndNotExistTableGroupId());
-    }*/
 
     public void registerTableGroup(TableGroup tableGroup) {
         orderTables.forEach(orderTable -> orderTable.registerTableGroup(tableGroup));

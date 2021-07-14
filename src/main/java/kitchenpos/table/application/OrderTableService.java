@@ -28,9 +28,6 @@ public class OrderTableService {
 
     public OrderTableResponse create(final OrderTableRequest orderTableRequest) {
         OrderTable orderTable = orderTableMapper.mapFormToOrderTable(orderTableRequest);
-
-        /*OrderTable orderTable = new OrderTable(orderTableRequest.getNumberOfGuests());
-        OrderTable persistOrderTable = orderTableRepository.save(orderTable);*/
         return OrderTableResponse.of(orderTableRepository.save(orderTable));
     }
 
@@ -44,13 +41,6 @@ public class OrderTableService {
     public OrderTableResponse changeEmpty(final Long orderTableId) {
         OrderTable orderTable = findOrderTableById(orderTableId);
         orderTable.validateToEmpty(orderTableValidator);
-        /*final Order order = orderRepository.findByOrderTableId(orderTableId)
-                .orElseThrow(() -> new NotFoundOrderException());
-        if (order.isCookingOrMeal()) {
-            throw new NotChangeToEmptyThatCookingOrMealTable();
-        }
-        OrderTable persistOrderTable = order.getOrderTableId();
-        persistOrderTable.changeToEmpty();*/
         return OrderTableResponse.of(orderTable);
     }
 

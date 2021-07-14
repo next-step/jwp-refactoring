@@ -1,6 +1,6 @@
 package kitchenpos.table.domain;
 
-import kitchenpos.order.exception.NotChangeToEmptyThatGroupTable;
+import kitchenpos.table.exception.NotChangeToEmptyThatGroupTable;
 import kitchenpos.table.exception.NotChangeNumberOfGuestThatEmptyTable;
 import kitchenpos.table.util.OrderTableValidator;
 
@@ -93,12 +93,6 @@ public class OrderTable {
         return numberOfGuests;
     }
 
-    /*public void ungroup() {
-        this.tableGroup = null;
-        this.empty = true;
-    }*/
-
-    /*테스트메서드*/
     public void changeToEmpty() {
         if (tableGroup != null) {
             throw new NotChangeToEmptyThatGroupTable();

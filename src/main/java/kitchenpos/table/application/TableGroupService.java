@@ -39,12 +39,6 @@ public class TableGroupService {
         TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
                 .orElseThrow(() -> new NotFoundTableGroupException());
         tableGroup.validateUngroup(tableGroupValidator);
-        /*final List<OrderTable> orderTables = orderTableRepository.findAllByTableGroupId(tableGroupId);
-        final List<Long> orderTableIds = orderTables.stream()
-                .map(OrderTable::getId)
-                .collect(Collectors.toList());
-        final List<Order> orders = orderRepository.findByOrderTableIdIn(orderTableIds);
-        orders.forEach(Order::ungroup);*/
         tableGroupRepository.deleteById(tableGroupId);
     }
 

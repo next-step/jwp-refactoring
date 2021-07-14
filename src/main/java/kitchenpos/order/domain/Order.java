@@ -2,12 +2,9 @@ package kitchenpos.order.domain;
 
 import kitchenpos.order.OrderStatus;
 import kitchenpos.order.util.OrderValidator;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.exception.NotChangeToEmptyThatCookingOrMealTable;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Objects;
 
 @Entity
