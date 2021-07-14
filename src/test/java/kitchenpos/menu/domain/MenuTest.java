@@ -1,6 +1,7 @@
 package kitchenpos.menu.domain;
 
 import kitchenpos.menu.exception.InvalidPriceException;
+import kitchenpos.menugroup.domain.MenuGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

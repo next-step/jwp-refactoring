@@ -1,6 +1,7 @@
 package kitchenpos.menu.domain;
 
 import kitchenpos.menu.exception.InvalidPriceException;
+import kitchenpos.menugroup.domain.MenuGroup;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;

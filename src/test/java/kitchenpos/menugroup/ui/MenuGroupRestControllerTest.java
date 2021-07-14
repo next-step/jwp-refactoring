@@ -1,10 +1,10 @@
-package kitchenpos.menu.ui;
+package kitchenpos.menugroup.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.config.MockMvcTestConfig;
-import kitchenpos.menu.application.MenuGroupService;
-import kitchenpos.menu.dto.MenuGroupRequest;
-import kitchenpos.menu.dto.MenuGroupResponse;
+import kitchenpos.menugroup.application.MenuGroupService;
+import kitchenpos.menugroup.dto.MenuGroupRequest;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
