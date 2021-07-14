@@ -1,10 +1,10 @@
 package kitchenpos;
 
-import static kitchenpos.domain.MenuProductTest.*;
-import static kitchenpos.domain.MenuTest.*;
-import static kitchenpos.domain.OrderStatus.*;
-import static kitchenpos.domain.OrderTableTest.*;
-import static kitchenpos.domain.ProductTest.*;
+import static kitchenpos.menu.domain.MenuProductTest.*;
+import static kitchenpos.menu.domain.MenuTest.*;
+import static kitchenpos.order.domain.OrderStatus.*;
+import static kitchenpos.order.domain.OrderTableTest.*;
+import static kitchenpos.product.domain.ProductTest.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -23,9 +23,9 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import kitchenpos.dto.OrderLineItemDetailRequest;
-import kitchenpos.dto.OrderLineItemRequest;
-import kitchenpos.dto.OrderRequest;
+import kitchenpos.order.dto.OrderLineItemDetailRequest;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderRequest;
 
 @SpringBootTest
 @AutoConfigureMockMvc
