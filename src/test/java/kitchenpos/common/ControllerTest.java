@@ -1,26 +1,27 @@
 package kitchenpos.common;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import kitchenpos.order.dto.OrderStatusRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
-import java.util.List;
-
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest
+@MockBean(JpaMetamodelMappingContext.class)
 public abstract class ControllerTest<T> {
 
     private MockMvc mockMvc;
@@ -55,22 +56,26 @@ public abstract class ControllerTest<T> {
                 .content(objectMapper.writeValueAsString(request)));
     }
 
+    protected ResultActions putStatusRequest(String path, OrderStatusRequest request) throws Exception {
+        return mockMvc.perform(put(path)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(objectMapper.writeValueAsString(request)));
+    }
+
     protected ResultActions deleteRequest(String path) throws Exception {
         return mockMvc.perform(delete(path)
                 .contentType(MediaType.APPLICATION_JSON_VALUE));
     }
 
-    protected void 목록_조회성공(ResultActions resultActions, List<T> expectedResult) throws Exception {
-        resultActions.andExpect(status().isOk())
-                .andExpect(content().string(objectMapper.writeValueAsString(expectedResult)));
+    protected void 조회성공(ResultActions resultActions) throws Exception {
+        resultActions.andExpect(status().isOk());
     }
 
-    protected void 생성성공(ResultActions resultActions, T expectedResult) throws Exception {
-        resultActions.andExpect(status().isCreated())
-                .andExpect(content().string(objectMapper.writeValueAsString(expectedResult)));
+    protected void 생성성공(ResultActions resultActions) throws Exception {
+        resultActions.andExpect(status().isCreated());
     }
 
-    protected void 수정성공(ResultActions resultActions, T expectedResult) throws Exception {
+    protected void 수정성공(ResultActions resultActions) throws Exception {
         resultActions.andExpect(status().isOk());
     }
 
