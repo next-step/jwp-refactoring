@@ -20,7 +20,7 @@ public class MenuProducts {
     public void validationByPrice(Price menuPrice) {
         Price totalPrice = this.menuProducts.stream()
             .map(MenuProduct::calculate)
-            .reduce(Price::plus).orElse(new Price());
+            .reduce(Price::plus).orElse(Price.ZERO());
 
         if (menuPrice.compareTo(totalPrice) > 0) {
             throw new IllegalArgumentException("메뉴의 가격은 `[메뉴의 수량] X [상품의 가격]` 보다 비쌀 수 없다.");

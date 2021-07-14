@@ -8,8 +8,12 @@ import java.util.Objects;
 public class Price implements Comparable<Price> {
     private final BigDecimal price;
 
-    public Price() {
+    private Price() {
         this.price = BigDecimal.ZERO;
+    }
+
+    public static Price ZERO() {
+        return new Price();
     }
 
     public Price(final BigDecimal price) {
