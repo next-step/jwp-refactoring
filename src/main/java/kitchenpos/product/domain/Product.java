@@ -43,6 +43,10 @@ public class Product {
         return price;
     }
 
+    public BigDecimal multiplyQuantity(long quantity) {
+        return price.multiplyQuantity(quantity);
+    }
+
     @Override
     public boolean equals(Object object) {
         if (this == object) return true;

@@ -2,6 +2,7 @@ package kitchenpos.product.application;
 
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.product.domain.Products;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -59,5 +60,14 @@ class ProductServiceTest {
         when(productRepository.findAll()).thenReturn(Arrays.asList(짜장면, 짬뽕));
         List<ProductResponse> products = productService.list();
         assertThat(products).containsExactly(짜장면_결과, 짬뽕_결과);
+    }
+
+    @Test
+    void 등록된_상품_id_기준으로_조회() {
+        List<Long> ids = Arrays.asList(1L, 2L);
+        when(productRepository.findAllById(ids)).thenReturn(Arrays.asList(짜장면, 짬뽕));
+        Products products = productService.findProductsByIds(ids);
+        assertThat(products.contains(짜장면)).isTrue();
+        assertThat(products.contains(짬뽕)).isTrue();
     }
 }

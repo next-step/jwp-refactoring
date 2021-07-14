@@ -17,4 +17,11 @@ class ProductTest {
         assertThat(product.getName()).isEqualTo(name);
         assertThat(product.getPrice().price()).isEqualTo(price);
     }
+
+    @Test
+    void 상품과_수량_곱셈() {
+        BigDecimal expected = BigDecimal.valueOf(14000);
+        Product product = new Product("짜장면", new BigDecimal(7000));
+        assertThat(product.multiplyQuantity(2)).isEqualTo(expected);
+    }
 }
