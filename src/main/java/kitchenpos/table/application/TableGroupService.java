@@ -1,58 +1,56 @@
 package kitchenpos.table.application;
 
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.exception.NotFoundOrder;
-import kitchenpos.order.exception.NotFoundOrderTable;
-import kitchenpos.table.domain.*;
-import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTables;
+import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.domain.TableGroupRepository;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
-import kitchenpos.table.exception.NotExistOrderTable;
+import kitchenpos.table.exception.NotFoundOrderTableException;
+import kitchenpos.table.exception.NotFoundTableGroupException;
+import kitchenpos.table.util.TableGroupMapper;
+import kitchenpos.table.util.TableGroupValidator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class TableGroupService {
-    private final OrderRepository orderRepository;
-    private final OrderTableRepository orderTableRepository;
+    private final TableGroupMapper tableGroupMapper;
+    private final TableGroupValidator tableGroupValidator;
     private final TableGroupRepository tableGroupRepository;
 
-    public TableGroupService(OrderRepository orderRepository, OrderTableRepository orderTableRepository, TableGroupRepository tableGroupRepository) {
-        this.orderRepository = orderRepository;
-        this.orderTableRepository = orderTableRepository;
+    public TableGroupService(TableGroupMapper tableGroupMapper, TableGroupValidator tableGroupValidator, TableGroupRepository tableGroupRepository) {
+        this.tableGroupMapper = tableGroupMapper;
+        this.tableGroupValidator = tableGroupValidator;
         this.tableGroupRepository = tableGroupRepository;
     }
 
     @Transactional
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
-        final List<Long> orderTableIds = tableGroupRequest.getOrderTableIds();
-        final List<OrderTable> orderTables = orderTableRepository.findAllByIdIn(orderTableIds);
-        TableGroup tableGroup = toTableGroup(orderTables, tableGroupRequest);
-        final TableGroup savedTableGroup = tableGroupRepository.save(tableGroup);
-        return TableGroupResponse.of(savedTableGroup);
+        TableGroup tableGroup = tableGroupMapper.mapFormToTableGroup(tableGroupRequest);
+        tableGroup.validateGroup(tableGroupValidator);
+        return TableGroupResponse.of(tableGroupRepository.save(tableGroup));
     }
 
     @Transactional
-    public List<OrderTableResponse> ungroup(final Long tableGroupId) {
-        final List<OrderTable> orderTables = orderTableRepository.findAllByTableGroupId(tableGroupId);
+    public void ungroup(final Long tableGroupId) {
+        TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
+                .orElseThrow(() -> new NotFoundTableGroupException());
+        tableGroup.validateUngroup(tableGroupValidator);
+        /*final List<OrderTable> orderTables = orderTableRepository.findAllByTableGroupId(tableGroupId);
         final List<Long> orderTableIds = orderTables.stream()
                 .map(OrderTable::getId)
                 .collect(Collectors.toList());
         final List<Order> orders = orderRepository.findByOrderTableIdIn(orderTableIds);
-        orders.forEach(Order::ungroup);
+        orders.forEach(Order::ungroup);*/
         tableGroupRepository.deleteById(tableGroupId);
-        return orderTables.stream()
-                .map(OrderTableResponse::of)
-                .collect(Collectors.toList());
     }
 
     private TableGroup toTableGroup(List<OrderTable> orderTables, TableGroupRequest tableGroupRequest) {
         if (!tableGroupRequest.isSameOrderTableCount(orderTables.size())) {
-            throw new NotExistOrderTable();
+            throw new NotFoundOrderTableException();
         }
         return new TableGroup(new OrderTables(orderTables));
     }
