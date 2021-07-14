@@ -1,6 +1,5 @@
 package kitchenpos.menu.application;
 
-import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
@@ -51,7 +50,7 @@ class MenuServiceTest {
     @BeforeEach
     void setUp() {
         메뉴그룹 = menuGroupService.create(new MenuGroupRequest("버거킹"));
-        콜라 = productService.create(new ProductRequest("콜라", new BigDecimal(콜라가격)));
+        콜라 = productService.create(new ProductRequest("콜라",  new BigDecimal(콜라가격)));
         감튀 = productService.create(new ProductRequest("감자튀김", new BigDecimal(감튀가격)));
         버거 = productService.create(new ProductRequest("콰트로치즈와퍼", new BigDecimal(버거가격)));
         요청_콜라 = new MenuProductRequest(콜라.getId(), 1L);

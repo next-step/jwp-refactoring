@@ -30,18 +30,6 @@ class OrderTest {
     }
 
     @Test
-    @DisplayName("1 개 이상의 등록된 메뉴로 주문을 등록할 수 있다.")
-    public void createFail1() throws Exception {
-        // given
-        OrderTable orderTable = new OrderTable(0, false);
-
-        // when then
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> Order.of(orderTable, new OrderLineItems(new ArrayList<>())))
-                .withMessageMatching("최소 주문 메뉴 개수를 만족하지 못하여 주문을 등록할 수 없습니다.");
-    }
-
-    @Test
     @DisplayName("빈 테이블에는 주문을 등록할 수 없다.")
     public void createFail2() throws Exception {
         // given
