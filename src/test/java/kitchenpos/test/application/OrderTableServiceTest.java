@@ -1,13 +1,10 @@
 package kitchenpos.test.application;
 
-import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.exception.NotChangeToEmptyThatGroupTable;
-import kitchenpos.order.exception.NotFoundOrderException;
-import kitchenpos.order.exception.NotFoundOrderTable;
 import kitchenpos.table.application.OrderTableService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
@@ -17,11 +14,13 @@ import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.exception.NotChangeNumberOfGuestThatEmptyTable;
 import kitchenpos.table.exception.NotChangeToEmptyThatCookingOrMealTable;
+import kitchenpos.table.exception.NotFoundOrderTableException;
+import kitchenpos.table.util.OrderTableMapper;
+import kitchenpos.table.util.OrderTableValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -35,7 +34,7 @@ import static org.mockito.Mockito.when;
 
 @DisplayName("테이블 기능 관련 테스트")
 @ExtendWith(MockitoExtension.class)
-public class TableServiceTest {
+public class OrderTableServiceTest {
     private OrderTableRequest firstOrderTableRequest;
     private OrderTableRequest secondOrderTableRequest;
 
@@ -43,13 +42,20 @@ public class TableServiceTest {
     private OrderRepository orderRepository;
 
     @Mock
+    private OrderTableMapper orderTableMapper;
+
+    private OrderTableValidator orderTableValidator;
+
+    @Mock
     private OrderTableRepository orderTableRepository;
 
-    @InjectMocks
     private OrderTableService orderTableService;
 
     @BeforeEach
     public void setUp() {
+        orderTableValidator = new OrderTableValidator(orderRepository);
+        orderTableService = new OrderTableService(orderTableMapper, orderTableValidator, orderTableRepository);
+
         // given
         firstOrderTableRequest = 주문_테이블_생성(10);
         secondOrderTableRequest = 주문_테이블_생성(10);
@@ -61,6 +67,7 @@ public class TableServiceTest {
         // when
         // 주문 테이블 등록 요청
         OrderTable orderTable = new OrderTable(10);
+        when(orderTableMapper.mapFormToOrderTable(firstOrderTableRequest)).thenReturn(orderTable);
         when(orderTableRepository.save(orderTable)).thenReturn(orderTable);
         OrderTableResponse expected = orderTableService.create(firstOrderTableRequest);
 
@@ -93,38 +100,26 @@ public class TableServiceTest {
     void isBlackOrderTable_exception() {
         // when
         // 주문 테이블 리스트 조회
-        when(orderRepository.findByOrderTableId(1L)).thenReturn(Optional.empty());
+        when(orderTableRepository.findById(1L)).thenReturn(Optional.empty());
 
         // then
         // 예외 발생
         assertThatThrownBy(() -> orderTableService.changeEmpty(1L))
-                .isInstanceOf(NotFoundOrderException.class);
+                .isInstanceOf(NotFoundOrderTableException.class);
     }
 
     @Test
     @DisplayName("단체 테이블에 속한 테이블 변경 불가")
-    void isOrderTalbleOfGroupTable_exception() {
+    void isOrderTableOfGroupTable_exception() {
         // give
         // 해당 주문 테이블은 단체 테이블임
         OrderTable firstOrderTable = new OrderTable(10);
         TableGroup tableGroup = new TableGroup(new OrderTables(Arrays.asList(firstOrderTable)));
-        firstOrderTable.changeTableGroupId(tableGroup);
-
-        // and
-        // 주문 메뉴 및 테이블 생성되어 있음
-        Menu firstMenu = new Menu(1L);
-        Menu secondMenu = new Menu(2L);
-        OrderLineItem firstOrderLineItem = new OrderLineItem(firstMenu, 1L);
-        OrderLineItem secondOrderLineItem = new OrderLineItem(secondMenu, 1L);
-        Order order = new Order(firstOrderTable, new OrderLineItems(Arrays.asList(firstOrderLineItem, secondOrderLineItem)));
-
-        // and
-        // 계산 완료 테이블임
-        order.changeOrderStatusComplete();
+        firstOrderTable.changeTableGroup(tableGroup);
 
         // when
         // 주문 테이블 등록되어 있음
-        when(orderRepository.findByOrderTableId(1L)).thenReturn(Optional.of(order));
+        when(orderTableRepository.findById(1L)).thenReturn(Optional.of(firstOrderTable));
 
         // then
         // 예외 발생
@@ -137,19 +132,18 @@ public class TableServiceTest {
     void isCookingOrMealingOrderTable_exception() {
         // give
         // 해당 주문 테이블 생성되어 있음
-        OrderTable firstOrderTable = new OrderTable(10);
+        OrderTable firstOrderTable = new OrderTable(1L, 10);
 
         // and
         // 주문 메뉴 및 테이블 생성되어 있음
-        Menu firstMenu = new Menu(1L);
-        Menu secondMenu = new Menu(2L);
-        OrderTable orderTable = new OrderTable(1L, 10);
-        OrderLineItem firstOrderLineItem = new OrderLineItem(firstMenu, 1L);
-        OrderLineItem secondOrderLineItem = new OrderLineItem(secondMenu, 1L);
-        Order order = new Order(orderTable, new OrderLineItems(Arrays.asList(firstOrderLineItem, secondOrderLineItem)));
+        OrderLineItem firstOrderLineItem = new OrderLineItem(1L, 1L);
+        OrderLineItem secondOrderLineItem = new OrderLineItem(2L, 1L);
+        Order order = new Order(1L, new OrderLineItems(Arrays.asList(firstOrderLineItem, secondOrderLineItem)));
+        order.progressCook();
 
         // when
-        // 주문 테이블 등록되어 있음
+        // 주문테이블과 주문 등록되어 있음
+        when(orderTableRepository.findById(1L)).thenReturn(Optional.of(firstOrderTable));
         when(orderRepository.findByOrderTableId(1L)).thenReturn(Optional.of(order));
 
         // then
@@ -163,20 +157,18 @@ public class TableServiceTest {
     void 주문_테이블_정상_변경() {
         // give
         // 주문 테이블 등록되어 있음
-        OrderTable firstOrderTable = new OrderTable(10);
+        OrderTable firstOrderTable = new OrderTable(1L, 10);
 
         // and
         // 주문 메뉴 및 테이블 생성되어 있음
-        Menu firstMenu = new Menu(1L);
-        Menu secondMenu = new Menu(2L);
-        OrderTable orderTable = new OrderTable(1L, 10);
-        OrderLineItem firstOrderLineItem = new OrderLineItem(firstMenu, 1L);
-        OrderLineItem secondOrderLineItem = new OrderLineItem(secondMenu, 1L);
-        Order order = new Order(orderTable, new OrderLineItems(Arrays.asList(firstOrderLineItem, secondOrderLineItem)));
+        OrderLineItem firstOrderLineItem = new OrderLineItem(1L, 1L);
+        OrderLineItem secondOrderLineItem = new OrderLineItem(2L, 1L);
+        Order order = new Order(1L, new OrderLineItems(Arrays.asList(firstOrderLineItem, secondOrderLineItem)));
 
         // and
         // 계산 완료 테이블
         order.changeOrderStatusComplete();
+        when(orderTableRepository.findById(1L)).thenReturn(Optional.of(firstOrderTable));
         when(orderRepository.findByOrderTableId(1L)).thenReturn(Optional.of(order));
 
         //then 변경됨
@@ -212,7 +204,7 @@ public class TableServiceTest {
         // then
         // 예외 발생
         assertThatThrownBy(() -> orderTableService.changeNumberOfGuests(1L, firstOrderTableRequest))
-                .isInstanceOf(NotFoundOrderTable.class);
+                .isInstanceOf(NotFoundOrderTableException.class);
     }
 
     @Test

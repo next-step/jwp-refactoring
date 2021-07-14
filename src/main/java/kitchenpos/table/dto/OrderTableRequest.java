@@ -16,11 +16,11 @@ public class OrderTableRequest {
         this.numberOfGuests = numberOfGuests;
     }
 
-    public int getNumberOfGuests() {
-        return this.numberOfGuests;
-    }
-
     public Long getId(){
         return this.id;
+    }
+
+    public int getNumberOfGuests() {
+        return this.numberOfGuests;
     }
 }
