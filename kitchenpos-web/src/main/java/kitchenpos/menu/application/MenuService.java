@@ -1,5 +1,6 @@
 package kitchenpos.menu.application;
 
+import kitchenpos.common.domain.Price;
 import kitchenpos.menu.domain.*;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
@@ -45,7 +46,7 @@ public class MenuService {
         List<Long> productIds = menuRequest.getProductIds();
         List<Product> findProducts = productRepository.findByIdIn(productIds);
 
-        return new MenuProducts(menuRequest, findProducts);
+        return new MenuProducts(menuRequest.getMenuProducts(), findProducts, new Price(menuRequest.getPrice()));
     }
 
     public List<MenuResponse> list() {
