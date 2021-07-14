@@ -51,8 +51,8 @@ class OrderRepositoryTest {
     List<DynamicTest> save() {
         // given
         Order order = new Order(LocalDateTime.now(), orderTable.getId());
-        OrderLineItem orderLineItem1 = new OrderLineItem(order, menu, 3L);
-        OrderLineItem orderLineItem2 = new OrderLineItem(order, menu, 2L);
+        OrderLineItem orderLineItem1 = new OrderLineItem(order, menu.getId(), 3L);
+        OrderLineItem orderLineItem2 = new OrderLineItem(order, menu.getId(), 2L);
         order.addOrderLineItem(orderLineItem1);
         order.addOrderLineItem(orderLineItem2);
 
@@ -73,8 +73,8 @@ class OrderRepositoryTest {
     void existsByOrderTableIdAndOrderStatusIn() {
         // given
         Order order = new Order(LocalDateTime.now(), orderTable.getId());
-        OrderLineItem orderLineItem1 = new OrderLineItem(order, menu, 3L);
-        OrderLineItem orderLineItem2 = new OrderLineItem(order, menu, 2L);
+        OrderLineItem orderLineItem1 = new OrderLineItem(order, menu.getId(), 3L);
+        OrderLineItem orderLineItem2 = new OrderLineItem(order, menu.getId(), 2L);
         order.addOrderLineItem(orderLineItem1);
         order.addOrderLineItem(orderLineItem2);
         orderRepository.save(order);
@@ -91,8 +91,8 @@ class OrderRepositoryTest {
     void existsByOrderTableIdInAndOrderStatusIn() {
         // given
         Order order = new Order(LocalDateTime.now(), orderTable.getId());
-        OrderLineItem orderLineItem1 = new OrderLineItem(order, menu, 3L);
-        OrderLineItem orderLineItem2 = new OrderLineItem(order, menu, 2L);
+        OrderLineItem orderLineItem1 = new OrderLineItem(order, menu.getId(), 3L);
+        OrderLineItem orderLineItem2 = new OrderLineItem(order, menu.getId(), 2L);
         order.addOrderLineItem(orderLineItem1);
         order.addOrderLineItem(orderLineItem2);
         orderRepository.save(order);

@@ -65,7 +65,7 @@ class OrderServiceTest {
     List<DynamicTest> find_allOrders1() {
         // mocking
         Order order = new Order(LocalDateTime.now(), 1L);
-        order.addOrderLineItem(new OrderLineItem(order, menu, 3L));
+        order.addOrderLineItem(new OrderLineItem(order, 1L, 3L));
         given(orderRepository.findAll()).willReturn(Arrays.asList(order));
 
         // when
@@ -84,7 +84,7 @@ class OrderServiceTest {
         // given
         OrderRequest orderRequest = new OrderRequest(OrderStatus.MEAL, 1L, new ArrayList<>());
         Order order = new Order(LocalDateTime.now(), 1L);
-        order.addOrderLineItem(new OrderLineItem(order, menu, 3L));
+        order.addOrderLineItem(new OrderLineItem(order, 1L, 3L));
         given(orderRepository.findById(anyLong())).willReturn(Optional.of(order));
 
         // when
@@ -118,10 +118,11 @@ class OrderServiceTest {
                 Arrays.asList(new OrderLineItemRequest(1L, 1L)));
         OrderTable orderTable = new OrderTable(3, false);
         Order order = new Order(LocalDateTime.now(), 1L);
-        order.addOrderLineItem(new OrderLineItem(order, menu, 3L));
+        order.addOrderLineItem(new OrderLineItem(order, 1L, 3L));
 
         given(tableService.findOrderTableByIdAndEmptyIsFalse(anyLong())).willReturn(orderTable);
         given(orderRepository.save(any(Order.class))).willReturn(order);
+        given(menuService.findMenuById(anyLong())).willReturn(new Menu("Menu", BigDecimal.valueOf(10000.00), 1L));
 
         // when
         OrderResponse resultOrderResponse = orderService.create(orderRequest);
