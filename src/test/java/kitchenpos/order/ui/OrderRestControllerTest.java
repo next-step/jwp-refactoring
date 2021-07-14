@@ -33,7 +33,7 @@ public class OrderRestControllerTest extends RestControllerTest<OrderRequest> {
     private static final OrderLineItem 첫번째_주문항목 = new OrderLineItem(1L, 1L, 1L);
     private static final List<OrderLineItem> 주문_항목_목록 = new ArrayList<>(Arrays.asList(첫번째_주문항목));
     private static final OrderTable 주문테이블 = new OrderTable(1L);
-    private static final Order 주문 = new Order(1L, 주문테이블, OrderStatus.COOKING, LocalDateTime.now(), 주문_항목_목록);
+    private static final Order 주문 = new Order(1L, 주문테이블.getId(), OrderStatus.COOKING, LocalDateTime.now(), 주문_항목_목록);
     private static final List<OrderResponse> 주문_목록 = new ArrayList<>(Arrays.asList(OrderResponse.of(주문)));
 
     @MockBean

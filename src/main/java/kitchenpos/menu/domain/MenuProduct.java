@@ -10,10 +10,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import kitchenpos.common.domain.Price;
 import kitchenpos.common.domain.Quantity;
 import kitchenpos.menu.exception.MenuProductQuantityNegativeException;
-import kitchenpos.product.domain.Product;
 
 @Entity
 public class MenuProduct {
@@ -26,9 +24,8 @@ public class MenuProduct {
     @JoinColumn(name = "menu_id", foreignKey = @ForeignKey(name = "fk_menu_product_menu"), nullable = false)
     private Menu menu;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id", foreignKey = @ForeignKey(name = "fk_menu_product_product"), nullable = false)
-    private Product product;
+    @Column(name = "product_id", nullable = false)
+    private Long productId;
 
     @Embedded
     @Column(nullable = false)
@@ -37,16 +34,16 @@ public class MenuProduct {
     protected MenuProduct() {
     }
 
-    public MenuProduct(Product product, Long quantity) {
+    public MenuProduct(Long productId, Long quantity) {
         validationQuantity(quantity);
-        this.product = product;
+        this.productId = productId;
         this.quantity = new Quantity(quantity);
     }
 
-    public MenuProduct(Long menuId, Product product, Long quantity) {
+    public MenuProduct(Long menuId, Long productId, Long quantity) {
         validationQuantity(quantity);
         this.menu = new Menu(menuId);
-        this.product = product;
+        this.productId = productId;
         this.quantity = new Quantity(quantity);
     }
 
@@ -64,12 +61,8 @@ public class MenuProduct {
         return menu;
     }
 
-    public Product getProduct() {
-        return product;
-    }
-
-    public Price getPrice() {
-        return product.multiplyPrice(quantity);
+    public Long getProductId() {
+        return productId;
     }
 
     public Quantity getQuantity() {
@@ -79,4 +72,5 @@ public class MenuProduct {
     public void toMenu(Menu menu) {
         this.menu = menu;
     }
+
 }
