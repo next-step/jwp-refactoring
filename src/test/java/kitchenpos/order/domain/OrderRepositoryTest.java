@@ -42,7 +42,7 @@ class OrderRepositoryTest {
     @BeforeEach
     void setUp() {
         menuGroup = menuGroupRepository.save(new MenuGroup("a"));
-        menu = menuRepository.save(new Menu("A", BigDecimal.valueOf(10000.00), menuGroup));
+        menu = menuRepository.save(new Menu("A", BigDecimal.valueOf(10000.00), menuGroup.getId()));
         orderTable = orderTableRepository.save(new OrderTable(4, false));
     }
 

@@ -7,11 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 
 import kitchenpos.common.domain.Name;
-import kitchenpos.menugroup.domain.MenuGroup;
 
 @Entity
 public class Menu {
@@ -24,18 +21,16 @@ public class Menu {
     private MenuPrice menuPrice;
     @Embedded
     private MenuProducts menuProducts;
-    @ManyToOne
-    @JoinColumn(name = "menu_group_id")
-    private MenuGroup menuGroup;
+    private Long menuGroupId;
 
     public Menu() {
     }
 
-    public Menu(String name, BigDecimal price, MenuGroup menuGroup) {
+    public Menu(String name, BigDecimal price, Long menuGroupId) {
         this.menuName = new Name(name);
         this.menuPrice = new MenuPrice(price);
         this.menuProducts = new MenuProducts();
-        this.menuGroup = menuGroup;
+        this.menuGroupId = menuGroupId;
     }
 
     public Long getId() {
@@ -54,8 +49,8 @@ public class Menu {
         return menuProducts;
     }
 
-    public MenuGroup getMenuGroup() {
-        return menuGroup;
+    public Long getMenuGroupId() {
+        return menuGroupId;
     }
 
     public void addMenuProduct(MenuProduct menuProduct) {

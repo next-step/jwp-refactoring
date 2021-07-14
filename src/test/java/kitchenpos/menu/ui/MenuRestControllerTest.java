@@ -59,7 +59,7 @@ class MenuRestControllerTest extends MockMvcControllerTest {
         product1 = new Product("A", BigDecimal.valueOf(1000));
         product2 = new Product("B", BigDecimal.valueOf(2000));
         menuGroup = new MenuGroup("1");
-        menu = new Menu("AB", BigDecimal.valueOf(3000), menuGroup);
+        menu = new Menu("AB", BigDecimal.valueOf(3000), 1L);
         menuProduct1 = new MenuProduct(menu, product1, 1L);
         menuProduct2 = new MenuProduct(menu, product1, 1L);
         menu.addMenuProduct(menuProduct1);
@@ -89,7 +89,7 @@ class MenuRestControllerTest extends MockMvcControllerTest {
         // given
         MenuRequest menuRequest = new MenuRequest("A", null, 1L, new ArrayList<>());
         MenuGroup menuGroup = new MenuGroup("AB");
-        Menu menu = new Menu("A", BigDecimal.valueOf(20000.00), menuGroup);
+        Menu menu = new Menu("A", BigDecimal.valueOf(20000.00), 1L);
         menu.addMenuProduct(new MenuProduct(menu, new Product("a", BigDecimal.valueOf(15000.00)), 1));
         menu.addMenuProduct(new MenuProduct(menu, new Product("a", BigDecimal.valueOf(15000.00)), 1));
         MenuResponse menuResponse = MenuResponse.of(menu);

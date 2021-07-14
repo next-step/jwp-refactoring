@@ -38,21 +38,21 @@ public class OrderService {
     public List<OrderResponse> findAllOrders() {
         return orderRepository.findAll()
                 .stream()
-                .map(this::toOrderResponse)
+                .map(OrderResponse::of)
                 .collect(Collectors.toList());
     }
 
     public OrderResponse changeOrderStatus(final Long orderId, final OrderRequest orderRequest) {
         Order order = orderRepository.findById(orderId).orElseThrow(OrderNotFoundException::new);
         order.changeOrderStatus(orderRequest.getOrderStatus());
-        return OrderResponse.of(order, tableService.findById(order.getOrderTableId()));
+        return OrderResponse.of(order);
     }
 
     public OrderResponse create(final OrderRequest orderRequest) {
         OrderTable orderTable = tableService.findOrderTableByIdAndEmptyIsFalse(orderRequest.getOrderTableId());
         Order order = orderRepository.save(makeOrderWithOrderLineItemRequests(new Order(LocalDateTime.now(), orderTable.getId()),
                 orderRequest.getOrderLineItemRequests()));
-        return OrderResponse.of(order, orderTable);
+        return OrderResponse.of(order);
     }
 
     public void validateExistsOrdersStatusIsCookingOrMeal(List<Long> orderTableIds) {
@@ -67,10 +67,6 @@ public class OrderService {
                 orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
             throw new OrderAlreadyExistsException("주문 상태가 COOKING 또는 MEAL인 주문이 존재합니다. 입력 ID : " + orderTableId);
         }
-    }
-
-    private OrderResponse toOrderResponse(Order order) {
-        return OrderResponse.of(order, tableService.findById(order.getOrderTableId()));
     }
 
     private Order makeOrderWithOrderLineItemRequests(Order order, List<OrderLineItemRequest> orderLineItemRequests) {

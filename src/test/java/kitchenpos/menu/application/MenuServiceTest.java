@@ -42,10 +42,6 @@ class MenuServiceTest {
     @Mock
     private MenuRepository menuRepository;
     @Mock
-    private MenuGroupRepository menuGroupRepository;
-    @Mock
-    private ProductRepository productRepository;
-    @Mock
     private MenuGroupService menuGroupService;
     @Mock
     private ProductService productService;
@@ -64,7 +60,7 @@ class MenuServiceTest {
         Product product1 = new Product("A", BigDecimal.valueOf(1000));
         Product product2 = new Product("B", BigDecimal.valueOf(2000));
         MenuGroup menuGroup = new MenuGroup("1");
-        Menu menu = new Menu("AB", BigDecimal.valueOf(3000), menuGroup);
+        Menu menu = new Menu("AB", BigDecimal.valueOf(3000), 1L);
         menu.addMenuProduct(new MenuProduct(menu, product1, 1L));
         menu.addMenuProduct(new MenuProduct(menu, product2, 1L));
         given(menuRepository.findAll()).willReturn(Arrays.asList(menu));
@@ -97,7 +93,7 @@ class MenuServiceTest {
         // and
         Product product1 = new Product("a", BigDecimal.valueOf(8000.00));
         Product product2 = new Product("b", BigDecimal.valueOf(4000.00));
-        Menu menu = new Menu(menuRequest.getName(), menuRequest.getPrice(), menuGroup);
+        Menu menu = new Menu(menuRequest.getName(), menuRequest.getPrice(), 1L);
         // and
         given(menuGroupService.findById(anyLong())).willReturn(menuGroup);
         given(productService.findById(1L)).willReturn(product1);
@@ -110,7 +106,6 @@ class MenuServiceTest {
         // then
         return Arrays.asList(
                 dynamicTest("메뉴 ID 확인됨.", () -> assertThat(menuResponse.getName()).isEqualTo(menu.getName().toString())),
-                dynamicTest("메뉴 그룹 ID 확인됨.", () -> assertThat(menuResponse.getMenuGroupResponse().getName()).isEqualTo(menuGroup.getMenuGroupName().toString())),
                 dynamicTest("메뉴상품의 상품 ID 확인됨.", () -> assertThat(menuResponse.getMenuProductResponses()).size().isEqualTo(2))
         );
     }

@@ -28,10 +28,9 @@ class MenuRepositoryTest {
     @DisplayName("기본 저장 확인")
     void save() {
         // given
-        MenuGroup menuGroup = menuGroupRepository.save(new MenuGroup("한마리"));
         Product product1 = productRepository.save(new Product("양념치킨", BigDecimal.valueOf(17000.00)));
         Product product2 = productRepository.save(new Product("후라이드치킨", BigDecimal.valueOf(15000.00)));
-        Menu menu = new Menu("A", BigDecimal.valueOf(19000.00), menuGroup);
+        Menu menu = new Menu("A", BigDecimal.valueOf(19000.00), 1L);
         menu.addMenuProduct(new MenuProduct(menu, product1, 1));
         menu.addMenuProduct(new MenuProduct(menu, product2, 1));
 
@@ -49,7 +48,7 @@ class MenuRepositoryTest {
         MenuGroup menuGroup = menuGroupRepository.save(new MenuGroup("한마리"));
         Product product1 = productRepository.save(new Product("양념치킨", BigDecimal.valueOf(17000.00)));
         Product product2 = productRepository.save(new Product("후라이드치킨", BigDecimal.valueOf(15000.00)));
-        Menu menu = new Menu("A", BigDecimal.valueOf(19000.00), menuGroup);
+        Menu menu = new Menu("A", BigDecimal.valueOf(19000.00), 1L);
         menu.addMenuProduct(new MenuProduct(menu, product1, 1));
         menu.addMenuProduct(new MenuProduct(menu, product2, 1));
         Menu save = menuRepository.save(menu);

@@ -24,7 +24,6 @@ import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.exception.MenuNotFoundException;
-import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
@@ -56,8 +55,7 @@ class OrderServiceTest {
 
     @BeforeEach
     void setUp() {
-        MenuGroup menuGroup = new MenuGroup("AB");
-        menu = new Menu("A", BigDecimal.valueOf(20000.00), menuGroup);
+        menu = new Menu("A", BigDecimal.valueOf(20000.00), 1L);
         menu.addMenuProduct(new MenuProduct(menu, new Product("a", BigDecimal.valueOf(15000.00)), 1));
         menu.addMenuProduct(new MenuProduct(menu, new Product("a", BigDecimal.valueOf(15000.00)), 1));
     }
@@ -69,7 +67,6 @@ class OrderServiceTest {
         Order order = new Order(LocalDateTime.now(), 1L);
         order.addOrderLineItem(new OrderLineItem(order, menu, 3L));
         given(orderRepository.findAll()).willReturn(Arrays.asList(order));
-        given(tableService.findById(anyLong())).willReturn(new OrderTable(3, false));
 
         // when
         List<OrderResponse> findOrderResponses = orderService.findAllOrders();
@@ -89,7 +86,6 @@ class OrderServiceTest {
         Order order = new Order(LocalDateTime.now(), 1L);
         order.addOrderLineItem(new OrderLineItem(order, menu, 3L));
         given(orderRepository.findById(anyLong())).willReturn(Optional.of(order));
-        given(tableService.findById(anyLong())).willReturn(new OrderTable(3, false));
 
         // when
         OrderResponse resultOrderResponse = orderService.changeOrderStatus(1L, orderRequest);
@@ -125,7 +121,6 @@ class OrderServiceTest {
         order.addOrderLineItem(new OrderLineItem(order, menu, 3L));
 
         given(tableService.findOrderTableByIdAndEmptyIsFalse(anyLong())).willReturn(orderTable);
-        given(menuService.findMenuById(anyLong())).willReturn(menu);
         given(orderRepository.save(any(Order.class))).willReturn(order);
 
         // when
@@ -134,7 +129,7 @@ class OrderServiceTest {
         // then
         return Arrays.asList(
                 dynamicTest("주문 초기 상태 확인됨.", () -> assertThat(resultOrderResponse.getOrderStatus()).isEqualTo(OrderStatus.COOKING)),
-                dynamicTest("주문 테이블 확인됨.", () -> assertThat(resultOrderResponse.getOrderTableResponse()).isNotNull()),
+                dynamicTest("주문 테이블 확인됨.", () -> assertThat(resultOrderResponse.getOrderTableId()).isNotNull()),
                 dynamicTest("주문 항목 갯수 확인됨.", () -> assertThat(resultOrderResponse.getOrderLineItemResponses()).size().isOne())
         );
     }

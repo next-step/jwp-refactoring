@@ -25,7 +25,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
@@ -34,7 +33,6 @@ import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.product.domain.Product;
-import kitchenpos.table.domain.OrderTable;
 import kitchenpos.utils.MockMvcControllerTest;
 
 @DisplayName("주문 관리 기능")
@@ -57,8 +55,7 @@ class OrderRestControllerTest extends MockMvcControllerTest {
 
     @BeforeEach
     void setUp() {
-        MenuGroup menuGroup = new MenuGroup("AB");
-        menu = new Menu("A", BigDecimal.valueOf(20000.00), menuGroup);
+        menu = new Menu("A", BigDecimal.valueOf(20000.00), 1L);
         menu.addMenuProduct(new MenuProduct(menu, new Product("a", BigDecimal.valueOf(15000.00)), 1));
         menu.addMenuProduct(new MenuProduct(menu, new Product("a", BigDecimal.valueOf(15000.00)), 1));
     }
@@ -71,7 +68,7 @@ class OrderRestControllerTest extends MockMvcControllerTest {
         OrderRequest orderRequest = new OrderRequest(OrderStatus.COOKING, 1L, Arrays.asList(orderLineItemRequest1));
         Order order = new Order(LocalDateTime.now(), 1L);
         order.addOrderLineItem(new OrderLineItem(order, menu, 3L));
-        OrderResponse orderResponse = OrderResponse.of(order, new OrderTable(3, false));
+        OrderResponse orderResponse = OrderResponse.of(order);
         given(orderService.create(any(OrderRequest.class))).willReturn(orderResponse);
 
         // then
@@ -91,7 +88,7 @@ class OrderRestControllerTest extends MockMvcControllerTest {
         // given
         Order order = new Order(LocalDateTime.now(), 1L);
         order.addOrderLineItem(new OrderLineItem(order, menu, 3L));
-        OrderResponse orderResponse = OrderResponse.of(order, new OrderTable(3, false));
+        OrderResponse orderResponse = OrderResponse.of(order);
         given(orderService.findAllOrders()).willReturn(Arrays.asList(orderResponse));
 
         // then
@@ -111,7 +108,7 @@ class OrderRestControllerTest extends MockMvcControllerTest {
         Order order = new Order(LocalDateTime.now(), 1L);
         order.changeOrderStatus(OrderStatus.MEAL);
         order.addOrderLineItem(new OrderLineItem(order, menu, 3L));
-        OrderResponse orderResponse = OrderResponse.of(order, new OrderTable(3, false));
+        OrderResponse orderResponse = OrderResponse.of(order);
         given(orderService.changeOrderStatus(anyLong(), any(OrderRequest.class))).willReturn(orderResponse);
 
         // then
