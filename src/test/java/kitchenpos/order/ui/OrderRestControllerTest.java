@@ -108,16 +108,16 @@ class OrderRestControllerTest {
     }
 
     private void 메뉴_생성() {
-        product = new Product(1L, new Name("뿌링클순살"), new Price(new BigDecimal(18000)));
+        product = new Product(1L, "뿌링클순살", new BigDecimal(18000));
         menuProduct = new MenuProduct(1L, product, 1L);
-        menu = new Menu(1L, new Name("뿌링클치즈볼"), new Price(new BigDecimal(18000)), new MenuGroup(1L, "뿌링클 시리즈"), Arrays.asList(menuProduct));
+        menu = new Menu(1L, "뿌링클치즈볼", new BigDecimal(18000), new MenuGroup(1L, "뿌링클 시리즈"));
 
     }
 
     private void 주문_생성() {
-        orderLIneItem = new OrderLineItem(1L, menu, 1L);
-        order1 = new Order(1L, mock(OrderTable.class), OrderStatus.COOKING, Arrays.asList(orderLIneItem));
-        order = new OrderResponse(order1);
+        order1 = new Order(1L, mock(OrderTable.class), OrderStatus.COOKING);
+        orderLIneItem = new OrderLineItem(1L, order1, menu.getId(), 1L);
+        order = new OrderResponse(order1, Arrays.asList(orderLIneItem));
     }
 
     private void 주문_요청값_생성() {
@@ -154,7 +154,9 @@ class OrderRestControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isNotEmpty())
                 .andExpect(jsonPath("$[0].id").isNotEmpty())
-                .andExpect(jsonPath("$[0].orderStatus").value(OrderStatus.COOKING.name()));
+                .andExpect(jsonPath("$[0].orderStatus").value(OrderStatus.COOKING.name()))
+                .andExpect(jsonPath("$[0].orderLineItems").isNotEmpty())
+                .andExpect(jsonPath("$[0].orderLineItems[0].orderId").value(order.getId()));
     }
 
     private ResultActions 주문_상태_변경_요청(OrderRequest orderRequest) throws Exception{

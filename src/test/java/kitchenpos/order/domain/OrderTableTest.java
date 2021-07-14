@@ -4,10 +4,7 @@ import kitchenpos.menu.domain.Menu;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import static kitchenpos.order.domain.OrderTest.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -25,7 +22,7 @@ public class OrderTableTest {
         tableGroup = new TableGroup(1L);
 
         orderTable = 주문테이블_생성(1L, tableGroup, 3, false);
-        orderLineItem = 주문_목록_생성(1L, menu, 3L);
+        orderLineItem = 주문_목록_생성(1L, 1L, 3L);
     }
     @DisplayName("주문 테이블 생성한다.")
     @Test
@@ -51,7 +48,7 @@ public class OrderTableTest {
     @Test
     void emptyOrderTable_예외() {
         OrderTable orderTable = 주문_테이블_생성_요청(1L, tableGroup, 2, false);
-        Order order = 주문_생성_요청(orderTable, OrderStatus.COOKING, Arrays.asList(orderLineItem));
+        Order order = 주문_생성_요청(orderTable, OrderStatus.COOKING);
 
         그룹화된_테이블_비울경우_예외_발생(orderTable, order);
 
@@ -61,7 +58,7 @@ public class OrderTableTest {
     @Test
     void emptyOrderTable_예외2() {
         OrderTable orderTable = new OrderTable(2, false);
-        Order order = 주문_생성_요청(orderTable, OrderStatus.COOKING, Arrays.asList(orderLineItem));
+        Order order = 주문_생성_요청(orderTable, OrderStatus.COOKING);
 
         주문_상태가_조리_혹은_식사일때_테이블_비울경우_예외_발생함(orderTable, order);
     }
@@ -70,7 +67,7 @@ public class OrderTableTest {
     @Test
     void empty() {
         OrderTable orderTable = new OrderTable(2, false);
-        Order order = 주문_생성_요청(orderTable, OrderStatus.COMPLETION, Arrays.asList(orderLineItem));
+        Order order = 주문_생성_요청(orderTable, OrderStatus.COMPLETION);
 
         주문_테이블_비우기_요청(orderTable, order);
 

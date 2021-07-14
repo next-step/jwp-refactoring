@@ -87,8 +87,8 @@ class TableGroupRestControllerTest {
         OrderTable orderTable = new OrderTable(1L, null, 3, true);
         OrderTable orderTable2 = new OrderTable(1L, null,4, true);
         List<OrderTable> orderTables = Arrays.asList(orderTable, orderTable2);
-        tableGroup = new TableGroup(1L, orderTables);
-        return new TableGroupResponse(tableGroup);
+        tableGroup = new TableGroup(1L);
+        return new TableGroupResponse(tableGroup, orderTables);
     }
 
     private void setUpMockMvc() {
