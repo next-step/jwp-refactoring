@@ -22,7 +22,7 @@ public class MenuResponse {
         this.name = menu.getName();
         this.price = menu.getPrice();
         this.menuGroup = new MenuGroupResponse(menu.getMenuGroup());
-        this.menuProducts = toMenuProductResponse(menu.getMenuProducts());
+        //this.menuProducts = toMenuProductResponse(menu.getMenuProducts());
     }
 
     public Long getId() {
