@@ -1,8 +1,8 @@
 package kitchenpos.table.application;
 
-import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.domain.TableDependencyHelper;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.exception.FailedChangeEmptyException;
@@ -27,7 +27,7 @@ import static org.mockito.BDDMockito.given;
 class TableServiceTest {
 
     @Mock
-    private OrderRepository orderRepository;
+    private TableDependencyHelper tableDependencyHelper;
 
     @Mock
     private OrderTableRepository orderTableRepository;
@@ -66,7 +66,7 @@ class TableServiceTest {
         // given
         OrderTableRequest orderTableRequest = new OrderTableRequest(1, false);
         given(orderTableRepository.findById(any())).willReturn(Optional.of(orderTable1));
-        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), any())).willReturn(false);
+        given(tableDependencyHelper.existsByOrderTableIdAndOrderStatusNotCompletion(any())).willReturn(false);
 
         // when
         OrderTableResponse changedOrderTable = tableService.changeEmpty(orderTable1.getId(), orderTableRequest);
@@ -93,7 +93,7 @@ class TableServiceTest {
         // given
         OrderTableRequest orderTableRequest = new OrderTableRequest(1, false);
         given(orderTableRepository.findById(any())).willReturn(Optional.of(orderTable1));
-        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), any())).willReturn(true);
+        given(tableDependencyHelper.existsByOrderTableIdAndOrderStatusNotCompletion(any())).willReturn(true);
 
         // when & then
         assertThatThrownBy(() -> tableService.changeEmpty(orderTable1.getId(), orderTableRequest))

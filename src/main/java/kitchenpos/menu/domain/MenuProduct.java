@@ -19,15 +19,15 @@ public class MenuProduct {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne // 양방향
+    @ManyToOne
     @JoinColumn(name = "menu_id")
     private Menu menu;
 
-    @ManyToOne // 단방향
+    @ManyToOne(optional = false)
     @JoinColumn(name = "product_id")
     private Product product;
 
-    @Column(name = "quantity")
+    @Column(name = "quantity", nullable = false)
     private long quantity;
 
     protected MenuProduct() {}
@@ -62,8 +62,8 @@ public class MenuProduct {
         return quantity;
     }
 
-    public BigDecimal productPrice() {
-        return this.product.price();
+    public BigDecimal menuProductPrice() {
+        return product.price().multiply(BigDecimal.valueOf(quantity));
     }
 
     @Override

@@ -1,6 +1,5 @@
 package kitchenpos.order.application;
 
-import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
@@ -56,10 +55,8 @@ public class OrderService {
 
     private List<OrderLineItem> toOrderLineItems(final OrderRequest orderRequest) {
         return orderRequest.getOrderLineItems().stream()
-                .map(orderLineItem -> {
-                    Menu menu = menuRepository.findById(orderLineItem.getMenuId()).orElseThrow(EntityNotFoundException::new);
-                    return new OrderLineItem(menu, orderLineItem.getQuantity());
-                }).collect(toList());
+                .map(orderLineItem -> new OrderLineItem(orderLineItem.getMenuId(), orderLineItem.getQuantity()))
+                .collect(toList());
     }
 
     @Transactional(readOnly = true)

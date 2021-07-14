@@ -21,9 +21,9 @@ public class MenuProducts {
         }
     }
 
-    public BigDecimal totalPrice() {
+    public BigDecimal totalMenuProductPrice() {
         return menuProducts.stream()
-                .map(menuProduct -> menuProduct.productPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())))
+                .map(MenuProduct::menuProductPrice)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 

@@ -2,7 +2,6 @@ package kitchenpos.order.domain;
 
 import kitchenpos.order.exception.ChangeOrderStatusFailedException;
 import kitchenpos.order.exception.EmptyOrderLineItemException;
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.util.CollectionUtils;
 
 import javax.persistence.Column;
@@ -30,14 +29,13 @@ public class Order {
     private Long orderTableId;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "order_status")
+    @Column(name = "order_status", nullable = false)
     private OrderStatus orderStatus;
 
-    @CreatedDate
-    @Column(name = "ordered_time")
-    private LocalDateTime orderedTime;
+    @Column(name = "ordered_time", nullable = false)
+    private LocalDateTime orderedTime = LocalDateTime.now();;
 
-    @Embedded // 양방향
+    @Embedded
     private OrderLineItems orderLineItems = new OrderLineItems();
 
     protected Order() {
