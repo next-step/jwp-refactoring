@@ -1,9 +1,5 @@
-bootJar.enabled(false)
-jar.enabled(true)
-
-repositories {
-    mavenCentral()
-}
+bootJar { enabled = false }
+jar { enabled = true }
 
 dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -12,10 +8,4 @@ dependencies {
     compile "com.google.guava:guava:16+"
     runtimeOnly 'com.h2database:h2'
 
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
-}
-
-test {
-    useJUnitPlatform()
 }

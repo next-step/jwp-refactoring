@@ -1,5 +1,8 @@
 package kitchenpos.ordering.acceptance;
 
+import io.restassured.RestAssured;
+import kitchenpos.AcceptanceTest;
+import kitchenpos.RestAssuredCRUD;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.*;
 import kitchenpos.ordering.domain.OrderLineItem;
@@ -17,8 +20,6 @@ import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  | 한글명 | 영문명 | 설명 |

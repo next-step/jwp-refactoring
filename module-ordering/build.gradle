@@ -1,23 +1,10 @@
-bootJar.enabled(false)
-jar.enabled(true)
-
-group 'camp.nextstep.edu'
-version '0.0.1-SNAPSHOT'
-
-repositories {
-    mavenCentral()
-}
+bootJar { enabled = false }
+jar { enabled = true }
 
 dependencies {
+    testImplementation 'io.rest-assured:rest-assured:3.3.0'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     compile('org.springframework.boot:spring-boot-starter-data-jpa')
     runtime('com.h2database:h2')
-    testCompile('org.springframework.boot:spring-boot-starter-test')
 
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
-}
-
-test {
-    useJUnitPlatform()
 }

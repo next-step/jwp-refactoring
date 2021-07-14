@@ -1,6 +1,7 @@
 package kitchenpos.table.application;
 
 import kitchenpos.ordering.domain.OrderRepository;
+import kitchenpos.table.application.TableGroupService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

@@ -1,6 +1,5 @@
-package kitchen.menu.application;
+package kitchenpos.menu.application;
 
-import kitchenpos.menu.application.ProductService;
 import kitchenpos.menu.domain.Product;
 import kitchenpos.menu.domain.ProductRepository;
 import kitchenpos.menu.dto.ProductRequest;
@@ -19,8 +18,6 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
 
 @DisplayName("상품 서비스 관련 테스트")
 @ExtendWith(MockitoExtension.class)
