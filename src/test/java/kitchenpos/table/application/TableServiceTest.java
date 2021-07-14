@@ -23,7 +23,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.order.application.OrderService;
-import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.application.OrderValidator;
 import kitchenpos.order.exception.OrderAlreadyExistsException;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
@@ -32,7 +32,6 @@ import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.exception.NonEmptyOrderTableNotFoundException;
 import kitchenpos.table.exception.OrderTableNotFoundException;
 import kitchenpos.table.exception.TableGroupAlreadyExistsException;
-import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.utils.domain.OrderTableObjects;
 
 @DisplayName("테이블 서비스")
@@ -43,6 +42,8 @@ class TableServiceTest {
     private OrderService orderService;
     @Mock
     private OrderTableRepository orderTableRepository;
+    @Mock
+    private OrderValidator orderValidator;
 
     @InjectMocks
     private TableService tableService;
@@ -106,7 +107,7 @@ class TableServiceTest {
         OrderTableResponse resultOrderTableResponse = tableService.changeEmpty(1L, orderTableRequest);
 
         // then
-        verify(orderService).validateExistsOrderStatusIsCookingANdMeal(any());
+        verify(orderValidator).validateExistsOrderStatusIsCookingANdMeal(any());
         assertThat(resultOrderTableResponse.isEmpty()).isTrue();
     }
 
@@ -128,19 +129,22 @@ class TableServiceTest {
                 }),
                 dynamicTest("단체지정이 된 상태일 경우 오류 발생.", () -> {
                     // And
-                    changeEmptyOrderTable.setTableGroup(new TableGroup());
+//                    changeEmptyOrderTable.setTableGroup(new TableGroup());
+                    changeEmptyOrderTable.groupBy(1L);
                     given(orderTableRepository.findById(any())).willReturn(Optional.of(changeEmptyOrderTable));
 
                     // when
                     assertThatThrownBy(() -> tableService.changeEmpty(1L, orderTableRequest))
                             .isInstanceOf(TableGroupAlreadyExistsException.class)
                             .hasMessage("테이블 그룹이 이미 존재합니다.");
+                    verify(orderValidator).validateExistsOrderStatusIsCookingANdMeal(anyLong());
                 }),
                 dynamicTest("주문 상태가 COOKING이거나 MEAL상태이면 오류 발생.", () -> {
                     // And
-                    changeEmptyOrderTable.setTableGroup(null);
+//                    changeEmptyOrderTable.setTableGroup(null);
+                    changeEmptyOrderTable.ungroup();
                     given(orderTableRepository.findById(any())).willReturn(Optional.of(changeEmptyOrderTable));
-                    doThrow(OrderAlreadyExistsException.class).when(orderService).validateExistsOrderStatusIsCookingANdMeal(any());
+                    doThrow(OrderAlreadyExistsException.class).when(orderValidator).validateExistsOrderStatusIsCookingANdMeal(any());
 
                     // when
                     assertThatThrownBy(() -> tableService.changeEmpty(changeEmptyOrderTable.getId(), orderTableRequest))

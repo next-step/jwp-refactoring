@@ -43,10 +43,14 @@ public class OrderTables {
     }
 
     public void ungroupOrderTables() {
-        this.orderTables.forEach(orderTable -> orderTable.setTableGroup(null));
+        this.orderTables.forEach(OrderTable::ungroup);
     }
 
     public boolean isSameSize(int size) {
         return this.orderTables.size() == size;
+    }
+
+    public void groupOrderTables(Long tableGroupId) {
+        this.orderTables.forEach(orderTable -> orderTable.groupBy(tableGroupId));
     }
 }
