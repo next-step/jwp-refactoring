@@ -1,8 +1,9 @@
 package kitchenpos.table.domain;
 
+import kitchenpos.table.util.TableGroupValidator;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -21,7 +22,17 @@ public class TableGroup {
     public TableGroup(OrderTables orderTables){
         this.orderTables = orderTables;
         this.createdDate = LocalDateTime.now();
+    }
+
+    public void validateGroup(TableGroupValidator tableGroupValidator) {
+        tableGroupValidator.validateGroup(this);
         orderTables.registerTableGroup(this);
+    }
+
+    public void validateUngroup(TableGroupValidator tableGroupValidator) {
+        tableGroupValidator.validateUngroup(this);
+        orderTables.unRegisterTableGroup();
+        orderTables = null;
     }
 
     public Long getId() {
@@ -32,8 +43,8 @@ public class TableGroup {
         return createdDate;
     }
 
-    public List<OrderTable> getOrderTables() {
-        return orderTables.getOrderTables();
+    public OrderTables getOrderTables() {
+        return orderTables;
     }
 
     @Override

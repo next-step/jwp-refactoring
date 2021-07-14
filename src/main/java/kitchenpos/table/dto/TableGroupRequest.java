@@ -27,4 +27,8 @@ public class TableGroupRequest {
     public boolean isSameOrderTableCount(int orderTableSize) {
         return orderTableRequests.size() == orderTableSize;
     }
+
+    public List<OrderTableRequest> getOrderTableRequests() {
+        return orderTableRequests;
+    }
 }
