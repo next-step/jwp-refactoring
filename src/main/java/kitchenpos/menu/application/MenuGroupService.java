@@ -21,13 +21,9 @@ public class MenuGroupService {
     }
 
     public MenuGroupResponse create(final MenuGroupRequest menuGroupRequest) {
-        MenuGroup menuGroup = toMenuGroup(menuGroupRequest.getName());
+        MenuGroup menuGroup = new MenuGroup(menuGroupRequest.getName());
         MenuGroup persistMenuGroup = menuGroupRepository.save(menuGroup);
         return MenuGroupResponse.of(persistMenuGroup);
-    }
-
-    private MenuGroup toMenuGroup(String name) {
-        return new MenuGroup(name);
     }
 
     @Transactional(readOnly = true)

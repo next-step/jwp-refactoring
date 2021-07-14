@@ -28,7 +28,7 @@ public class OrderTableService {
     }
 
     public OrderTableResponse create(final OrderTableRequest orderTableRequest) {
-        OrderTable orderTable = toOrderTable(orderTableRequest.getNumberOfGuests());
+        OrderTable orderTable = new OrderTable(orderTableRequest.getNumberOfGuests());
         OrderTable persistOrderTable = orderTableRepository.save(orderTable);
         return OrderTableResponse.of(persistOrderTable);
     }
@@ -54,9 +54,5 @@ public class OrderTableService {
         OrderTable orderTable = orderTableRepository.findById(orderTableId).orElseThrow(() -> new NotFoundOrderTable());
         orderTable.changeNumberOfGuests(orderTableRequest.getNumberOfGuests());
         return OrderTableResponse.of(orderTable);
-    }
-
-    private OrderTable toOrderTable(int numberOfGuests) {
-        return new OrderTable(numberOfGuests);
     }
 }

@@ -38,7 +38,7 @@ public class OrderService {
         final OrderTable orderTable = findOrderTable(orderRequest.getOrderTableId());
         List<Menu> menus = findMenusByIds(menuIds);
         List<OrderLineItem> orderLineItems = toOrderLineItem(menus, orderRequest);
-        Order order = toOrder(orderTable, orderLineItems);
+        Order order = new Order(orderTable, new OrderLineItems(orderLineItems));
         final Order persistOrder = orderRepository.save(order);
         return OrderResponse.of(persistOrder);
     }
@@ -68,10 +68,6 @@ public class OrderService {
             throw new IllegalArgumentException();
         }
         return orderTable;
-    }
-
-    private Order toOrder(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
-        return new Order(orderTable, new OrderLineItems(orderLineItems));
     }
 
     private List<OrderLineItem> toOrderLineItem(List<Menu> menus, OrderRequest orderRequest) {
