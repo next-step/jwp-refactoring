@@ -12,9 +12,8 @@ public class MenuProduct {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "menu_id")
-    private Menu menu;
+    @Column(name = "menu_id")
+    private Long menuId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
@@ -26,9 +25,9 @@ public class MenuProduct {
     protected MenuProduct() {
     }
 
-    public MenuProduct(Long seq, Menu menu, Product product, long quantity) {
+    public MenuProduct(Long seq, Long menuId, Product product, long quantity) {
         this.seq = seq;
-        this.menu = menu;
+        this.menuId = menuId;
         this.product = product;
         this.quantity = Quantity.of(quantity);
     }
@@ -45,8 +44,8 @@ public class MenuProduct {
         return seq;
     }
 
-    public Menu getMenu() {
-        return menu;
+    public Long getMenuId() {
+        return menuId;
     }
 
     public Product getProduct() {
@@ -57,8 +56,8 @@ public class MenuProduct {
         return quantity;
     }
 
-    public void registerMenu(Menu menu) {
-        this.menu = menu;
+    public void registerMenu(Long menuId) {
+        this.menuId = menuId;
     }
 
     public BigDecimal getCalculatedPrice() {

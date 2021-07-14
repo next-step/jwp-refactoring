@@ -2,11 +2,11 @@ package kitchenpos.menu.domain;
 
 import kitchenpos.common.valueobject.Price;
 import kitchenpos.menu.domain.exception.BadMenuPriceException;
-import org.springframework.data.annotation.ReadOnlyProperty;
+import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Embeddable;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,8 +15,10 @@ import java.util.List;
 @Embeddable
 public class MenuProducts {
 
-    @OneToMany(mappedBy = "menu")
-    @ReadOnlyProperty
+    @Fetch(FetchMode.SELECT)
+    @BatchSize(size = 100)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "menu_id", nullable = false, insertable = false, updatable = false)
     private final List<MenuProduct> menuProducts;
 
     protected MenuProducts() {
@@ -44,7 +46,7 @@ public class MenuProducts {
         }
     }
 
-    public void registerAll(Menu menu) {
-        menuProducts.forEach(menuProduct -> menuProduct.registerMenu(menu));
+    public void registerAll(Long menuId) {
+        menuProducts.forEach(menuProduct -> menuProduct.registerMenu(menuId));
     }
 }

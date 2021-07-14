@@ -17,11 +17,11 @@
 - [X] 객체 그래프 그려보기  
   - 목표 ![alt](./domain_graph.png)
   - [X] 양방향 연관관계 찾기
-- [ ] 양방향 연관관계 끊어내기
+- [X] 양방향 연관관계 끊어내기
   - [X] OrderTable -> OrderTableGroup 제거
   - [X] Order -> OrderTable 제거
   - [X] OrderLineItem -> Order 제거
-  - [ ] MenuProduct -> Menu 제거
+  - [X] MenuProduct -> Menu 제거
 - [ ] 어그리게잇 Order, Menu 설정
   - [ ] OrderLineItem -> Menu 제거
   - [ ] 어그리게잇 간 이벤트 호출 방식으로 변경
