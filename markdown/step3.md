@@ -23,5 +23,5 @@
   - [X] OrderLineItem -> Order 제거
   - [X] MenuProduct -> Menu 제거
 - [ ] 어그리게잇 Order, Menu 설정
-  - [ ] OrderLineItem -> Menu 제거
+  - [X] OrderLineItem -> Menu 제거
   - [ ] 어그리게잇 간 이벤트 호출 방식으로 변경
