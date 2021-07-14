@@ -22,15 +22,20 @@ public class MenuValidator {
 
     public void validationMenuProductPrices(Price menuPrice, List<MenuProductRequest> menuProductRequests) {
         List<Product> products = productRepository.findAllById(findProductIds(menuProductRequests));
+        Price sumPrice = sumMenuProductPrices(menuProductRequests, products);
+        if (menuPrice.compareTo(sumPrice) > 0) {
+            throw new MenuPriceExceedException();
+        }
+    }
+
+    private Price sumMenuProductPrices(List<MenuProductRequest> menuProductRequests, List<Product> products) {
         Price sumPrice = Price.wonOf(0);
         for (MenuProductRequest menuProductRequest : menuProductRequests) {
             Product product = findProductById(products, menuProductRequest.getProductId());
             Quantity quantity = new Quantity(menuProductRequest.getQuantity());
             sumPrice = sumPrice.plus(product.multiplyPrice(quantity));
         }
-        if (menuPrice.compareTo(sumPrice) > 0) {
-            throw new MenuPriceExceedException();
-        }
+        return sumPrice;
     }
 
     private List<Long> findProductIds(List<MenuProductRequest> menuProductRequests) {
