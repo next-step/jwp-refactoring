@@ -22,7 +22,7 @@ public class OrderTableTest {
     public static OrderTable 테이블5 = new OrderTable(5L, NumberOfGuests.of(0), true);
     public static OrderTable 테이블6 = new OrderTable(6L, NumberOfGuests.of(0), true);
     public static OrderTable 테이블7 = new OrderTable(7L, NumberOfGuests.of(0), true);
-    public static OrderTable 테이블8 = new OrderTable(8L, NumberOfGuests.of(0), true);
+    public static OrderTable 테이블8_빈자리 = new OrderTable(8L, NumberOfGuests.of(0), true);
     public static OrderTable 테이블9_사용중 = new OrderTable(9L, NumberOfGuests.of(4), false);
     public static OrderTable 테이블10_사용중 = new OrderTable(10L, NumberOfGuests.of(8), false);
     public static OrderTable 테이블11_사용중 = new OrderTable(11L, NumberOfGuests.of(2), false);

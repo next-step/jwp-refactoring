@@ -35,6 +35,10 @@ public class OrderLineItems {
         this.orderLineItems = orderLineItems;
     }
 
+    public int size() {
+        return orderLineItems.size();
+    }
+
     public boolean isEmpty() {
         return orderLineItems.isEmpty();
     }

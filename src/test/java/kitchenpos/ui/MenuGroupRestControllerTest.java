@@ -2,7 +2,6 @@ package kitchenpos.ui;
 
 import static kitchenpos.domain.MenuGroupTest.*;
 import static kitchenpos.domain.MenuTest.*;
-import static org.springframework.test.annotation.DirtiesContext.ClassMode.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -13,18 +12,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import kitchenpos.dto.MenuGroupRequest;
+import kitchenpos.utils.IntegrationTest;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@DirtiesContext(classMode = BEFORE_CLASS)
 @DisplayName("메뉴 그룹 통합 테스트")
-class MenuGroupRestControllerTest {
+class MenuGroupRestControllerTest extends IntegrationTest {
 
     @Autowired
     MockMvc mockMvc;

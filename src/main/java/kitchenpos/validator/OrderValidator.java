@@ -44,6 +44,10 @@ public class OrderValidator {
             throw new IllegalArgumentException("주문 상세 내역은 하나 이상 존재해야 합니다.");
         }
 
+        if (order.getOrderLineItems().size() != menus.size()) {
+            throw new MenuMismatchException("메뉴 갯수와 주문 목록 수는 일치해야 합니다");
+        }
+
         order.getOrderLineItems()
             .forEach(item -> validateOrderLineItem(item, menus.get(item.getMenuId())));
     }

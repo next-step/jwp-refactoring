@@ -57,9 +57,17 @@ public class GeneralExceptionHandler {
     }
 
     @ExceptionHandler(value = {
+        IllegalArgumentException.class,
+        NotEnoughTablesException.class
+    })
+    public ResponseEntity<Void> invalidConditionException(Exception e) {
+        log.debug("잘못 된 요청값이 전달되었습니다.", e);
+        return ResponseEntity.status(BAD_REQUEST).build();
+    }
+
+    @ExceptionHandler(value = {
         ExceedingTotalPriceException.class,
         IllegalOperationException.class,
-        NotEnoughTablesException.class,
         OrderNotCompletedException.class,
     })
     public ResponseEntity<Void> illegalOperationException(Exception e) {
