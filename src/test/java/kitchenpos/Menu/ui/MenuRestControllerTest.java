@@ -103,8 +103,8 @@ public class MenuRestControllerTest {
     }
 
     private void 메뉴_상품_등록() {
-        menuProduct = new MenuProduct(1L, product, 1L);
-        menuProduct2 = new MenuProduct(1L, product2, 1L);
+        menuProduct = new MenuProduct(1L, product.getId(), 1L);
+        menuProduct2 = new MenuProduct(1L, product2.getId(), 1L);
     }
 
     private void 메뉴_그룹_등록() {

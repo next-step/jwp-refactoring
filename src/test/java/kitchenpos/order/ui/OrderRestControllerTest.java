@@ -109,7 +109,7 @@ class OrderRestControllerTest {
 
     private void 메뉴_생성() {
         product = new Product(1L, "뿌링클순살", new BigDecimal(18000));
-        menuProduct = new MenuProduct(1L, product, 1L);
+        menuProduct = new MenuProduct(1L, product.getId(), 1L);
         menu = new Menu(1L, "뿌링클치즈볼", new BigDecimal(18000), new MenuGroup(1L, "뿌링클 시리즈"));
 
     }

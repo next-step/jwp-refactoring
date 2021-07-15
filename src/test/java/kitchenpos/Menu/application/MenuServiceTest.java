@@ -92,8 +92,8 @@ public class MenuServiceTest {
     }
 
     private void 메뉴_상품_생성() {
-        menuProduct1 = new MenuProduct(1L, 뿌링클, 1L);
-        menuProduct2 = new MenuProduct(2L, 치즈볼, 1L);
+        menuProduct1 = new MenuProduct(1L, 뿌링클.getId(), 1L);
+        menuProduct2 = new MenuProduct(2L, 치즈볼.getId(), 1L);
 
         menuProducts.add(menuProduct1);
         menuProducts.add(menuProduct2);

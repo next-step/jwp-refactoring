@@ -53,8 +53,8 @@ class MenuTest {
     private void 메뉴_상품_목록_생성() {
         뿌링클 = new Product("뿌링클", new BigDecimal("18000"));
         치즈볼 = new Product("치즈볼", new BigDecimal("5000"));
-        menuProducts.add(new MenuProduct(1L, 뿌링클, 1));
-        menuProducts.add(new MenuProduct(2L, 치즈볼, 1));
+        menuProducts.add(new MenuProduct(1L, 뿌링클.getId(), 1));
+        menuProducts.add(new MenuProduct(2L, 치즈볼.getId(), 1));
     }
 
     private void 메뉴_생성됨(Menu createMenu, String menuName, BigDecimal price) {
