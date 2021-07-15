@@ -48,7 +48,7 @@ class OrderServiceTest {
             new OrderTable(1, false)
         );
 
-        Order order = new Order(orderTable.getId(), OrderLineItem.valueOf(menu, 1L));
+        Order order = new Order(orderTable.getId(), OrderLineItem.valueOf(menu.getId(), 1L));
 
         // when
         Order actualOrder = orderService.create(order);
@@ -80,7 +80,7 @@ class OrderServiceTest {
             new OrderTable(1, false)
         );
 
-        Order order = new Order(orderTable.getId(), OrderLineItem.valueOf(noneMenu, 1L));
+        Order order = new Order(orderTable.getId(), OrderLineItem.valueOf(noneMenu.getId(), 1L));
 
         // when
         assertThatThrownBy(() -> orderService.create(order))
@@ -95,7 +95,7 @@ class OrderServiceTest {
         Menu menu = menuService.list().get(0);
         OrderTable orderTable = new OrderTable(TestUtils.getRandomId(), 1, false);
 
-        Order order = new Order(TestUtils.getRandomId(), orderTable.getId(), OrderLineItem.valueOf(menu, 1L));
+        Order order = new Order(TestUtils.getRandomId(), orderTable.getId(), OrderLineItem.valueOf(menu.getId(), 1L));
 
         // when
         assertThatThrownBy(() -> orderService.create(order))
@@ -113,7 +113,7 @@ class OrderServiceTest {
         );
 
         // when
-        Order order = new Order(orderTable.getId(), OrderLineItem.valueOf(menu, 1L));
+        Order order = new Order(orderTable.getId(), OrderLineItem.valueOf(menu.getId(), 1L));
 
         // then
         assertThatThrownBy(() -> orderService.create(order))
@@ -130,7 +130,7 @@ class OrderServiceTest {
             new OrderTable(1, false)
         );
 
-        Order order = new Order(orderTable.getId(), OrderLineItem.valueOf(menu, 1L));
+        Order order = new Order(orderTable.getId(), OrderLineItem.valueOf(menu.getId(), 1L));
         order = orderService.create(order);
 
         // when
@@ -151,7 +151,7 @@ class OrderServiceTest {
             new OrderTable(1, false)
         );
 
-        Order order = new Order(TestUtils.getRandomId(), orderTable.getId(), OrderLineItem.valueOf(menu, 1L));
+        Order order = new Order(TestUtils.getRandomId(), orderTable.getId(), OrderLineItem.valueOf(menu.getId(), 1L));
 
         // then
         assertThatThrownBy(() -> orderService.changeOrderStatus(order.getId(), order))
@@ -168,7 +168,7 @@ class OrderServiceTest {
             new OrderTable(1, false)
         );
 
-        Order order = new Order(orderTable.getId(), OrderLineItem.valueOf(menu, 1L));
+        Order order = new Order(orderTable.getId(), OrderLineItem.valueOf(menu.getId(), 1L));
         Order createdOrder = orderService.create(order);
         createdOrder.changeOrderStatus(Order.OrderStatus.COMPLETION);
 

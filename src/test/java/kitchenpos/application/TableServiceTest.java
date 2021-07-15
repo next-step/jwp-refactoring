@@ -117,7 +117,7 @@ class TableServiceTest {
         );
 
 
-        Order savedOrder = orderService.create(new Order(orderTable.getId(), OrderLineItem.valueOf(menu, 1L)));
+        Order savedOrder = orderService.create(new Order(orderTable.getId(), OrderLineItem.valueOf(menu.getId(), 1L)));
         savedOrder.changeOrderStatus(orderStatus);
         orderService.changeOrderStatus(savedOrder.getId(), savedOrder);
 

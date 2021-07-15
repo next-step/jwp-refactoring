@@ -1,7 +1,5 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.menu.domain.Menu;
-
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -16,22 +14,21 @@ public class OrderLineItem {
     @JoinColumn(name = "order_id", foreignKey = @ForeignKey(name = "fk_order_line_item_orders"))
     private Order order;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "menu_id", foreignKey = @ForeignKey(name = "fk_order_line_item_menu"))
-    private Menu menu;
+    @Column(name = "menu_id")
+    private Long menuId;
 
     private long quantity;
 
     public OrderLineItem() {
     }
 
-    public static OrderLineItem valueOf(final Menu menu, final long quantity) {
-        return new OrderLineItem(null, menu, quantity);
+    public static OrderLineItem valueOf(final Long menuId, final long quantity) {
+        return new OrderLineItem(null, menuId, quantity);
     }
 
-    private OrderLineItem(final Order order, final Menu menu, final long quantity) {
+    private OrderLineItem(final Order order, final Long menuId, final long quantity) {
         this.order = order;
-        this.menu = menu;
+        this.menuId = menuId;
         this.quantity = quantity;
     }
 
@@ -47,8 +44,8 @@ public class OrderLineItem {
         return order;
     }
 
-    public Menu getMenu() {
-        return menu;
+    public Long getMenuId() {
+        return menuId;
     }
 
     public long getQuantity() {

@@ -74,7 +74,7 @@ public class Order extends AbstractAggregateRoot<Order> {
 
     public List<Long> getOrderLineItemIds() {
         return orderLineItems.list().stream()
-            .map(orderLineItem -> orderLineItem.getMenu().getId())
+            .map(orderLineItem -> orderLineItem.getMenuId())
             .collect(Collectors.toList());
     }
 
