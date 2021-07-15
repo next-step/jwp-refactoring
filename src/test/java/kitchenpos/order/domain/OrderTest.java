@@ -74,7 +74,7 @@ public class OrderTest {
     }
 
     public static Order 주문_생성_요청(OrderTable orderTable, OrderStatus orderStatus) {
-        return new Order(orderTable, orderStatus);
+        return new Order(orderTable.getId(), orderStatus);
     }
 
     private void 완료된_주문_변경시_예외_발생(Order createdOrder, OrderStatus cooking) {

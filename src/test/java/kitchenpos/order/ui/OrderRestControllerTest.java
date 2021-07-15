@@ -108,7 +108,7 @@ class OrderRestControllerTest {
     }
 
     private void 주문_생성() {
-        order1 = new Order(1L, mock(OrderTable.class), OrderStatus.COOKING);
+        order1 = new Order(1L, 1L, OrderStatus.COOKING);
         orderLIneItem = new OrderLineItem(1L, order1, menu.getId(), 1L);
         order = new OrderResponse(order1, Arrays.asList(orderLIneItem));
     }

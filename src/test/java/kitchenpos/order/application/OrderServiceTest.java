@@ -126,7 +126,7 @@ public class OrderServiceTest {
 
     private Order 주문_생성(Long id, OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
         Menu menu = mock(Menu.class);
-        return new Order(1L, new OrderTable(1, false), orderStatus);
+        return new Order(1L, orderTable.getId(), orderStatus);
     }
 
     private void 주문상태_완료시_변경_불가_예외_발생함(OrderRequest orderRequest) {

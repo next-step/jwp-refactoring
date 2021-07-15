@@ -48,7 +48,7 @@ public class OrderLineItemsEventTest {
     }
 
     private void 주문_생성() {
-        savedOrder = new Order(1L, orderTable, OrderStatus.COOKING);
+        savedOrder = new Order(1L, orderTable.getId(), OrderStatus.COOKING);
     }
 
     private void 주문_이벤트_생성() {

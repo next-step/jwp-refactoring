@@ -100,7 +100,7 @@ public class TableGroupEventTest {
         TableGroup tableGroup = new TableGroup(1L);
         OrderTable orderTable1 = new OrderTable(1L, tableGroup, 3, true);
 
-        Order order1 = new Order(1L, orderTable1, OrderStatus.COOKING);
+        Order order1 = new Order(1L, orderTable1.getId(), OrderStatus.COOKING);
 
         given(orderTableRepository.findAllByTableGroupId(anyLong())).willReturn(Arrays.asList(orderTable1));
         given(orderRepository.findByOrderTaleId(anyLong())).willReturn(order1);
@@ -113,7 +113,7 @@ public class TableGroupEventTest {
     void ungroup() {
         TableGroup tableGroup = new TableGroup(1L);
         OrderTable orderTable1 = new OrderTable(1L, tableGroup, 3, true);
-        Order order1 = new Order(1L, orderTable1, OrderStatus.COMPLETION);
+        Order order1 = new Order(1L, orderTable1.getId(), OrderStatus.COMPLETION);
 
         given(orderTableRepository.findAllByTableGroupId(anyLong())).willReturn(Arrays.asList(orderTable1));
         given(orderRepository.findByOrderTaleId(anyLong())).willReturn(order1);
