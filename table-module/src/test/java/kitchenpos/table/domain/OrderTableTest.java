@@ -3,7 +3,6 @@ package kitchenpos.table.domain;
 import kitchenpos.table.exception.EmptyException;
 import kitchenpos.table.exception.IllegalNumberOfGuestsException;
 import kitchenpos.table.exception.NoneNullGroupIdException;
-import kitchenpos.tablegroup.domain.TableGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -35,8 +34,7 @@ class OrderTableTest {
     @Test
     void fail_changeEmpty1() {
         boolean expectedEmpty = false;
-        TableGroup tableGroup = new TableGroup(1L);
-        OrderTable orderTable = new OrderTable(tableGroup.getId(), 2, true);
+        OrderTable orderTable = new OrderTable(1L, 2, true);
 
         assertThatThrownBy(() -> orderTable.changeEmpty(expectedEmpty))
                 .isInstanceOf(NoneNullGroupIdException.class);

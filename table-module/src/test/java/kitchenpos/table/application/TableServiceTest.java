@@ -7,7 +7,6 @@ import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.exception.EmptyException;
 import kitchenpos.table.exception.IllegalOrderTableException;
-import kitchenpos.tablegroup.domain.TableGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -105,9 +104,8 @@ class TableServiceTest {
     @DisplayName("주문 테이블 empty 값을 변경 실패한다. - 변경하려는 주문 테이블이 테이블 그룹으로 지정되어 있으면 변경 실패")
     @Test
     void fail_changeEmpty2() {
-        TableGroup tableGroup = new TableGroup(1L);
-        OrderTable 주문테이블1 = new OrderTable(1L, tableGroup.getId(), 2, false);
-        OrderTable 주문테이블2 = new OrderTable(2L, tableGroup.getId(), 3, false);
+        OrderTable 주문테이블1 = new OrderTable(1L, 1L, 2, false);
+        OrderTable 주문테이블2 = new OrderTable(2L, 1L, 3, false);
         OrderTableRequest changeTable = new OrderTableRequest(2, false);
         given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(주문테이블1));
         doNothing().when(orderTableLinker).validateOrderStatusByOrderTableId(anyLong());
