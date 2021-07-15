@@ -1,6 +1,5 @@
 package kitchenpos.menu.domain;
 
-import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.Column;
@@ -45,7 +44,7 @@ public class Menu {
         this.menuProducts = menuProducts;
     }
 
-    public void setMenuGroupId(MenuValidator validator, Long menuGroupId) {
+    public void registerMenu(MenuValidator validator, Long menuGroupId) {
         this.menuGroupId = menuGroupId;
         validator.validate(this);
     }

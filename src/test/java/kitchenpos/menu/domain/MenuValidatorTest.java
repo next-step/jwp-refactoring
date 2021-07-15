@@ -1,7 +1,7 @@
 package kitchenpos.menu.domain;
 
 import static java.util.Collections.*;
-import static kitchenpos.menu.domain.MenuGroupTest.*;
+import static kitchenpos.menugroup.domain.MenuGroupTest.*;
 import static kitchenpos.menu.domain.MenuTest.*;
 import static kitchenpos.product.domain.ProductTest.*;
 import static org.assertj.core.api.Assertions.*;
@@ -21,6 +21,7 @@ import kitchenpos.generic.price.domain.Price;
 import kitchenpos.generic.quantity.domain.Quantity;
 import kitchenpos.menu.exception.ExceedingTotalPriceException;
 import kitchenpos.menu.exception.MenuGroupNotFoundException;
+import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.product.domain.ProductRepository;
 
 @DisplayName("메뉴 밸리데이터 테스트")

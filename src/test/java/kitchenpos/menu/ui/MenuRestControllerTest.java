@@ -1,6 +1,6 @@
 package kitchenpos.menu.ui;
 
-import static kitchenpos.menu.domain.MenuGroupTest.*;
+import static kitchenpos.menugroup.domain.MenuGroupTest.*;
 import static kitchenpos.menu.domain.MenuTest.*;
 import static kitchenpos.product.domain.ProductTest.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;

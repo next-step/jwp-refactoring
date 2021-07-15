@@ -1,4 +1,4 @@
-package kitchenpos.menu.domain;
+package kitchenpos.menugroup.domain;
 
 public class MenuGroupTest {
     public static MenuGroup 두마리메뉴 = new MenuGroup(1L, "두마리메뉴");

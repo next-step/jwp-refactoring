@@ -23,7 +23,7 @@ public class MenuService {
     @Transactional
     public Menu create(final MenuRequest request) {
         Menu menu = request.toEntity();
-        menu.setMenuGroupId(menuValidator, request.getMenuGroupId());
+        menu.registerMenu(menuValidator, request.getMenuGroupId());
         return menuRepository.save(menu);
     }
 
