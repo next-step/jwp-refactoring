@@ -1,14 +1,13 @@
-package kitchenpos.order.ui;
+package kitchenpos.table.ui;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kitchenpos.order.application.TableGroupService;
-import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.domain.TableGroup;
-import kitchenpos.order.dto.OrderTableRequest;
-import kitchenpos.order.dto.TableGroupRequest;
-import kitchenpos.order.dto.TableGroupResponse;
-import kitchenpos.order.ui.TableGroupRestController;
+import kitchenpos.table.application.TableGroupService;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.TableGroupRequest;
+import kitchenpos.table.dto.TableGroupResponse;
+import kitchenpos.table.ui.TableGroupRestController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,7 +21,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 

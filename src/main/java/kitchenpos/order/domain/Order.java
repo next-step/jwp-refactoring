@@ -1,6 +1,7 @@
 package kitchenpos.order.domain;
 
 import kitchenpos.common.BaseEntity;
+import kitchenpos.table.domain.OrderTable;
 
 import javax.persistence.*;
 

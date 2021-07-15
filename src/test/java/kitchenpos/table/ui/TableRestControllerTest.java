@@ -1,19 +1,18 @@
-package kitchenpos.order.ui;
+package kitchenpos.table.ui;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kitchenpos.order.application.TableService;
-import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.domain.TableGroup;
-import kitchenpos.order.dto.OrderTableRequest;
-import kitchenpos.order.dto.OrderTableResponse;
-import kitchenpos.order.ui.TableRestController;
+import kitchenpos.table.application.TableService;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.table.ui.TableRestController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;

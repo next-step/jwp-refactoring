@@ -1,4 +1,4 @@
-package kitchenpos.order.event.order;
+package kitchenpos.order.event;
 
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
@@ -10,9 +10,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static kitchenpos.order.event.order.OrderLineItemValidator.validOrderLIneItemCount;
-import static kitchenpos.order.event.order.OrderLineItemValidator.validOrderLineItemEmpty;
 
 @Component
 public class OrderLineItemsEventHandler {
@@ -28,9 +25,9 @@ public class OrderLineItemsEventHandler {
     @EventListener
     public void savedOrderLineItems(OrderCreatedEvent orderCreatedEvent) {
         List<OrderLineItem> orderLineItems = orderCreatedEvent.getOrderLineItems();
-        validOrderLineItemEmpty(orderLineItems);
+        OrderLineItemValidator.validOrderLineItemEmpty(orderLineItems);
         List<Menu> menus = findMenuAllById(orderLineItems);
-        validOrderLIneItemCount(orderLineItems, menus.size());
+        OrderLineItemValidator.validOrderLIneItemCount(orderLineItems, menus.size());
         orderLineItemRepository.saveAll(orderLineItems);
     }
 

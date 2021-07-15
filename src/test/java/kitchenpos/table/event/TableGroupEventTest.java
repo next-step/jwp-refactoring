@@ -1,16 +1,16 @@
-package kitchenpos.order.event;
+package kitchenpos.table.event;
 
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.domain.TableGroup;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.TableGroup;
 import kitchenpos.order.domain.repository.OrderRepository;
-import kitchenpos.order.domain.repository.OrderTableRepository;
-import kitchenpos.order.dto.OrderTableRequest;
-import kitchenpos.order.dto.TableGroupRequest;
-import kitchenpos.order.event.tableGroup.TableGroupCreatedEvent;
-import kitchenpos.order.event.tableGroup.TableGroupEventHandler;
-import kitchenpos.order.event.tableGroup.TableGroupUngroupEvent;
+import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.TableGroupRequest;
+import kitchenpos.table.event.TableGroupCreatedEvent;
+import kitchenpos.table.event.TableGroupEventHandler;
+import kitchenpos.table.event.TableGroupUngroupEvent;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

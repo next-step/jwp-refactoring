@@ -1,4 +1,4 @@
-package kitchenpos.order.event.order;
+package kitchenpos.order.event;
 
 import kitchenpos.order.domain.OrderLineItem;
 import org.springframework.util.CollectionUtils;

@@ -1,10 +1,10 @@
-package kitchenpos.order.event.tableGroup;
+package kitchenpos.table.event;
 
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderTable;
+import kitchenpos.table.domain.OrderTable;
 import kitchenpos.order.domain.repository.OrderRepository;
-import kitchenpos.order.domain.repository.OrderTableRepository;
-import kitchenpos.order.dto.OrderTableRequest;
+import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.dto.OrderTableRequest;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static kitchenpos.order.event.tableGroup.TableGroupValidator.*;
+import static kitchenpos.table.event.TableGroupValidator.*;
 
 @Component
 public class TableGroupEventHandler {

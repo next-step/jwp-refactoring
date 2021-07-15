@@ -1,9 +1,6 @@
 package kitchenpos.order.ui;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kitchenpos.common.Name;
-import kitchenpos.common.Price;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
@@ -11,11 +8,10 @@ import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.domain.OrderTable;
+import kitchenpos.table.domain.OrderTable;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.order.ui.OrderRestController;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -31,13 +27,10 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.Collections;
 
 //import static kitchenpos.order.application.OrderServiceTest.주문_생성;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;

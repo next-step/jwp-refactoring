@@ -1,4 +1,4 @@
-package kitchenpos.order.event.order;
+package kitchenpos.order.event;
 
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.dto.MenuProductRequest;

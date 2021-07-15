@@ -1,11 +1,10 @@
-package kitchenpos.order.event.tableGroup;
+package kitchenpos.table.event;
 
-import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.dto.OrderTableRequest;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.dto.OrderTableRequest;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class TableGroupValidator {
     public static void validOrderTablesSize(List<OrderTableRequest> orderTables) {

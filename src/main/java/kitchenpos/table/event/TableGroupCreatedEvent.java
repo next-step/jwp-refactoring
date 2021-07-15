@@ -1,8 +1,8 @@
-package kitchenpos.order.event.tableGroup;
+package kitchenpos.table.event;
 
-import kitchenpos.order.domain.TableGroup;
-import kitchenpos.order.dto.OrderTableRequest;
-import kitchenpos.order.dto.TableGroupRequest;
+import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.TableGroupRequest;
 
 import java.util.List;
 
