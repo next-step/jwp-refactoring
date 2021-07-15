@@ -1,7 +1,6 @@
 package kitchenpos.order.domain;
 
 import kitchenpos.common.BaseEntity;
-import kitchenpos.table.domain.OrderTable;
 
 import javax.persistence.*;
 
@@ -12,24 +11,22 @@ public class Order extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
-    @JoinColumn(name = "order_table_id")
-    private OrderTable orderTable;
+    private Long orderTableId;
 
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
 
     public Order() {}
 
-    public Order(Long id, OrderTable orderTable, OrderStatus orderStatus) {
+    public Order(Long id, Long orderTableId, OrderStatus orderStatus) {
         this.id = id;
-        this.orderTable = orderTable;
+        this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
         this.orderStatus = orderStatus;
     }
 
-    public Order(OrderTable orderTable, OrderStatus orderStatus) {
-        this.orderTable = orderTable;
+    public Order(Long orderTableId, OrderStatus orderStatus) {
+        this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
         this.orderStatus = orderStatus;
     }
@@ -38,12 +35,12 @@ public class Order extends BaseEntity {
         return id;
     }
 
-    public OrderTable getOrderTable() {
-        return orderTable;
-    }
+//    public OrderTable getOrderTable() {
+//        return orderTableId;
+//    }
 
     public Long getOrderTableId() {
-        return orderTable.getId();
+        return orderTableId;
     }
 
     public OrderStatus getOrderStatus() {

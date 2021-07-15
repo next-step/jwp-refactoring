@@ -38,7 +38,7 @@ public class OrderService {
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
         final OrderTable orderTable = findOrderTable(orderRequest);
-        final Order persistOrder = orderRepository.save(new Order(orderTable, OrderStatus.COOKING));
+        final Order persistOrder = orderRepository.save(new Order(orderRequest.getOrderTableId(), OrderStatus.COOKING));
         publisher.publishEvent(new OrderCreatedEvent(persistOrder, orderRequest.toOrderLineItems()));
         return OrderResponse.of(persistOrder, findOrderLineItems(orderTable.getId()));
     }
