@@ -1,7 +1,7 @@
-package kitchenpos.table.application;
+package kitchenpos.order.application;
 
-import kitchenpos.order.domain.OrderTableValidatedEvent;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -9,32 +9,34 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class OrderTableValidatedEventListenerTest {
+class OrderValidatorTest {
 
     @Mock
-    private OrderTableService orderTableService;
+    private OrderTableRepository orderTableRepository;
 
-    private OrderTableValidatedEventListener orderTableValidatedEventListener;
+    private OrderValidator orderValidator;
 
     @BeforeEach
     void setUp() {
-        orderTableValidatedEventListener = new OrderTableValidatedEventListener(orderTableService);
+        orderValidator = new OrderValidator(orderTableRepository);
     }
 
     @DisplayName("주문이 주문 테이블이 비어있는 상태로 주어지면 예외를 던진다.")
     @Test
     void create_order_with_empty_order_table() {
-        OrderTableValidatedEvent orderTableValidatedEvent = new OrderTableValidatedEvent(1L);
         OrderTable givenOrderTable = new OrderTable(1L, null, 2, true);
-        when(orderTableService.findOrderTable(anyLong()))
-                .thenReturn(givenOrderTable);
+        when(orderTableRepository.findById(anyLong()))
+                .thenReturn(Optional.of(givenOrderTable));
 
-        assertThatThrownBy(() -> orderTableValidatedEventListener.validateOrderTable(orderTableValidatedEvent))
+        assertThatThrownBy(() -> orderValidator.validateOrderTable(1L))
                 .isInstanceOf(IllegalStateException.class);
     }
+
 }

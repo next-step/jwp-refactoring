@@ -6,7 +6,6 @@ import kitchenpos.order.domain.OrderGeneratedEvent;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.domain.OrderTableValidatedEvent;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import org.springframework.context.ApplicationEventPublisher;
@@ -23,17 +22,19 @@ import static java.util.stream.Collectors.toList;
 public class OrderService {
     private static final String NOT_FOUND_ORDER = "찾을 수 없는 주문 ";
     private final OrderRepository orderRepository;
+    private final OrderValidator orderValidator;
     private final ApplicationEventPublisher applicationEventPublisher;
 
-    public OrderService(OrderRepository orderRepository, ApplicationEventPublisher applicationEventPublisher) {
+    public OrderService(OrderRepository orderRepository, OrderValidator orderValidator, ApplicationEventPublisher applicationEventPublisher) {
         this.orderRepository = orderRepository;
+        this.orderValidator = orderValidator;
         this.applicationEventPublisher = applicationEventPublisher;
     }
 
     @Transactional
     public OrderResponse create(OrderRequest orderRequest) {
         Long orderTableId = orderRequest.getOrderTableId();
-        applicationEventPublisher.publishEvent(new OrderTableValidatedEvent(orderTableId));
+        orderValidator.validateOrderTable(orderTableId);
         List<OrderLineItem> orderLineItems = orderRequest.getOrderLineItem();
         Order order = Order.of(orderTableId, orderLineItems);
         applicationEventPublisher.publishEvent(new OrderGeneratedEvent(order));

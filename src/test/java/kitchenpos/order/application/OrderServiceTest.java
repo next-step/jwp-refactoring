@@ -34,13 +34,16 @@ class OrderServiceTest {
     private OrderRepository orderRepository;
 
     @Mock
+    private OrderValidator orderValidator;
+
+    @Mock
     private ApplicationEventPublisher applicationEventPublisher;
 
     private OrderService orderService;
 
     @BeforeEach
     void setUp() {
-        orderService = new OrderService(orderRepository, applicationEventPublisher);
+        orderService = new OrderService(orderRepository, orderValidator, applicationEventPublisher);
     }
 
     @DisplayName("주어진 주문을 저장하고, 저장된 객체를 리턴한다.")
