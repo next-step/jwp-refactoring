@@ -1,15 +1,14 @@
 package kitchenpos.order.application;
 
 import kitchenpos.advice.exception.OrderException;
-import kitchenpos.menu.MenuService;
+import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.dto.MenuGroupRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menugroup.application.MenuGroupService;
 import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menugroup.dto.MenuGroupRequest;
 import kitchenpos.order.application.OrderService;
-import kitchenpos.order.application.TableService;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
@@ -17,8 +16,9 @@ import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.product.application.ProductService;
-import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.product.domain.Product;
+import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.application.TableService;
 import kitchenpos.tablegroup.application.TableGroupService;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
@@ -145,8 +145,8 @@ class OrderServiceTest {
 
     private MenuRequest 메뉴를_생성한다(int price, MenuGroup menuGroup) {
         Menu menu = new Menu("후라이드양념반반", BigDecimal.valueOf(price), menuGroup);
-        후라이드 = new MenuProduct(menu, 후라이드상품, 1);
-        양념치킨 = new MenuProduct(menu, 양념치킨상품, 1);
+        후라이드 = new MenuProduct(menu.getId(), 후라이드상품, 1);
+        양념치킨 = new MenuProduct(menu.getId(), 양념치킨상품, 1);
         menu.updateMenuProducts(Arrays.asList(후라이드, 양념치킨));
         return MenuRequest.of(menu);
     }

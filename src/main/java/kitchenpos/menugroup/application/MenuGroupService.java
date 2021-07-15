@@ -2,7 +2,7 @@ package kitchenpos.menugroup.application;
 
 import kitchenpos.advice.exception.MenuGroupException;
 import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.menu.dto.MenuGroupRequest;
+import kitchenpos.menugroup.dto.MenuGroupRequest;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

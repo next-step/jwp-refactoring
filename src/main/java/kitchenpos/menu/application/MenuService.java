@@ -1,4 +1,4 @@
-package kitchenpos.menu;
+package kitchenpos.menu.application;
 
 import kitchenpos.advice.exception.MenuException;
 import kitchenpos.menugroup.application.MenuGroupService;
@@ -13,7 +13,6 @@ import kitchenpos.menu.domain.MenuRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -37,8 +36,17 @@ public class MenuService {
     @Transactional
     public Menu create(final MenuRequest menuRequest) {
         MenuGroup menuGroup = menuGroupService.findById(menuRequest.getMenuGroupId());
-        final List<MenuProduct> menuProducts = getMenuProducts(menuRequest, menuGroup);
-        return menuRepository.save(menuRequest.toMenu(menuGroup, menuProducts));
+        Menu menu = menuRepository.save(menuRequest.toMenu(menuGroup));
+
+        List<Product> products = productService.findAllById(menuRequest.getProductIds());
+        Map<Long, Product> productMap = products.stream()
+            .collect(Collectors.toMap(Product::getId, product -> product));
+
+        for (MenuProductRequest request : menuRequest.getMenuProducts()) {
+            MenuProduct menuProduct = new MenuProduct(productMap.get(request.getProductId()), request.getQuantity());
+            menu.addMenuProduct(menuProduct);
+        }
+        return menu;
     }
 
     public List<Menu> list() {
@@ -55,20 +63,5 @@ public class MenuService {
 
     public List<Menu> findAllById(List<Long> ids) {
         return menuRepository.findAllById(ids);
-    }
-
-    private List<MenuProduct> getMenuProducts(MenuRequest menuRequest, MenuGroup menuGroup) {
-        final List<MenuProduct> menuProducts = new ArrayList<>();
-
-        List<Product> products = productService.findAllById(menuRequest.getProductIds());
-        Map<Long, Product> productMap = products.stream()
-            .collect(Collectors.toMap(Product::getId, product -> product));
-
-        for (MenuProductRequest request : menuRequest.getMenuProducts()) {
-            MenuProduct menuProduct = new MenuProduct(menuRequest.toMenu(menuGroup), productMap.get(request.getProductId()), request.getQuantity());
-            menuProducts.add(menuProduct);
-        }
-
-        return menuProducts;
     }
 }
