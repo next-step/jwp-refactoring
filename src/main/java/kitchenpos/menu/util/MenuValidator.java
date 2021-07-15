@@ -14,7 +14,7 @@ import java.util.List;
 public class MenuValidator {
     private final ProductRepository productRepository;
 
-    private MenuValidator(ProductRepository productRepository) {
+    public MenuValidator(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
 
