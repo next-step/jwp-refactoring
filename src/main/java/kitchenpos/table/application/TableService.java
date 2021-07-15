@@ -1,7 +1,7 @@
 package kitchenpos.table.application;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.enums.OrderStatus;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.OrderTables;
@@ -19,11 +19,11 @@ import java.util.stream.Collectors;
 public class TableService {
 
     private final OrderTableRepository orderTableRepository;
-    private final OrderDao orderDao;
+    private final OrderRepository orderRepository;
 
-    public TableService(OrderTableRepository orderTableRepository, OrderDao orderDao) {
+    public TableService(OrderTableRepository orderTableRepository, OrderRepository orderRepository) {
         this.orderTableRepository = orderTableRepository;
-        this.orderDao = orderDao;
+        this.orderRepository = orderRepository;
     }
 
     public OrderTableResponse create(final OrderTableRequest request) {
@@ -40,10 +40,7 @@ public class TableService {
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         OrderTable orderTable = this.findById(orderTableId);
         orderTable.checkValidEmptyTableGroup();
-        if (orderDao.existsByOrderTableIdAndOrderStatusIn(
-                orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new IllegalArgumentException();
-        }
+        checkValidOrderStatusCompletion(Arrays.asList(orderTable.getId()));
         orderTable.changeEmpty(orderTableRequest.isEmpty());
         return OrderTableResponse.of(orderTable);
     }
@@ -73,5 +70,11 @@ public class TableService {
 
     public OrderTable findOrderTable(Long orderTableId) {
         return findById(orderTableId);
+    }
+
+    public void checkValidOrderStatusCompletion(List<Long> orderTableIds) {
+        if (orderRepository.countByOrderTableIdInAndOrderStatus(orderTableIds, OrderStatus.COMPLETION) > 0) {
+            throw new IllegalArgumentException();
+        }
     }
 }

@@ -1,8 +1,5 @@
 package kitchenpos.tablegroup.application;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
 import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTables;
 import kitchenpos.tablegroup.domain.TableGroup;
@@ -13,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -23,12 +19,9 @@ public class TableGroupService {
     private final TableGroupRepository tableGroupRepository;
     private final TableService tableService;
 
-    private final OrderDao orderDao;
-
-    public TableGroupService(TableGroupRepository tableGroupRepository,TableService tableService, OrderDao orderDao) {
+    public TableGroupService(TableGroupRepository tableGroupRepository, TableService tableService) {
         this.tableGroupRepository = tableGroupRepository;
         this.tableService = tableService;
-        this.orderDao = orderDao;
     }
 
     public TableGroupResponse create(final TableGroupRequest request) {
@@ -42,10 +35,7 @@ public class TableGroupService {
 
     public void ungroup(final Long tableGroupId) {
         final OrderTables orderTables = tableService.findAllByTableGroupId(tableGroupId);
-        if (orderDao.existsByOrderTableIdInAndOrderStatusIn(
-                orderTables.generateOrderTableIds(), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new IllegalArgumentException();
-        }
+        tableService.checkValidOrderStatusCompletion(orderTables.generateOrderTableIds());
         orderTables.updateUnGroup();
     }
 

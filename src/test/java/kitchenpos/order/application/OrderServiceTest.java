@@ -1,6 +1,6 @@
 package kitchenpos.order.application;
 
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.enums.OrderStatus;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.order.domain.Orders;
 import kitchenpos.order.domain.OrderLineItem;

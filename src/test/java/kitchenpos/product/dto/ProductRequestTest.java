@@ -1,12 +1,14 @@
 package kitchenpos.product.dto;
 
 import kitchenpos.product.domain.Product;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@DisplayName("상품 요청 테스트")
 class ProductRequestTest {
 
     @Test

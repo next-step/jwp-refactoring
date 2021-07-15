@@ -1,7 +1,5 @@
 package kitchenpos.tablegroup.application;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.domain.OrderStatus;
 import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTables;
@@ -20,7 +18,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -32,8 +29,6 @@ import static org.mockito.Mockito.when;
 @DisplayName("테이블 그룹 관련 기능 테스트")
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
-    @Mock
-    private OrderDao orderDao;
 
     @Mock
     private TableGroupRepository tableGroupRepository;
@@ -83,22 +78,6 @@ class TableGroupServiceTest {
         이번_테이블.withTableGroup(tableGroup.getId());
         OrderTables orderTables = new OrderTables(Arrays.asList(일번_테이블, 이번_테이블));
         when(tableService.findAllByTableGroupId(1L)).thenReturn(orderTables);
-        List<String> orderStatuses = Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name());
-        when(orderDao.existsByOrderTableIdInAndOrderStatusIn(Arrays.asList(1L, 2L), orderStatuses)).thenReturn(false);
         tableGroupService.ungroup(1L);
     }
-
-    @Test
-    void 테이블_그룹에_소속된_주문_테이블의_상태가_조리중_또는_식사중인_경우_에러발생() {
-        LocalDateTime now = LocalDateTime.now();
-        TableGroup tableGroup = new TableGroup(1L, now);
-        일번_테이블.withTableGroup(tableGroup.getId());
-        이번_테이블.withTableGroup(tableGroup.getId());
-        OrderTables orderTables = new OrderTables(Arrays.asList(일번_테이블, 이번_테이블));
-        when(tableService.findAllByTableGroupId(1L)).thenReturn(orderTables);
-        List<String> orderStatuses = Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name());
-        when(orderDao.existsByOrderTableIdInAndOrderStatusIn(Arrays.asList(1L, 2L), orderStatuses)).thenReturn(true);
-        assertThatThrownBy(() -> tableGroupService.ungroup(1L)).isInstanceOf(IllegalArgumentException.class);
-    }
-
 }

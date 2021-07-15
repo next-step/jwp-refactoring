@@ -1,7 +1,7 @@
 package kitchenpos.table.application;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.enums.OrderStatus;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.OrderTables;
@@ -32,7 +32,7 @@ class TableServiceTest {
     private OrderTableRepository orderTableRepository;
 
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
 
     @InjectMocks
     private TableService tableService;
@@ -77,8 +77,7 @@ class TableServiceTest {
     @Test
     void 주문_상태가_조리중_식사중일때_테이블_상태_변경_시_에러발생() {
         when(orderTableRepository.findById(1L)).thenReturn(Optional.of(orderTable));
-        List<String> orderStatuses = Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name());
-        when(orderDao.existsByOrderTableIdAndOrderStatusIn(1L, orderStatuses)).thenReturn(true);
+        when(orderRepository.countByOrderTableIdInAndOrderStatus(Arrays.asList(1L), OrderStatus.COMPLETION)).thenReturn(1L);
         assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), request)).isInstanceOf(IllegalArgumentException.class);
     }
 

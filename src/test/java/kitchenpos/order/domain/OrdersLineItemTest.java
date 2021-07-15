@@ -1,13 +1,15 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.enums.OrderStatus;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@DisplayName("주문 항목 entity 테스트")
 class OrdersLineItemTest {
 
     private OrderLineItem 주문_항목;
