@@ -5,10 +5,12 @@ import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Component
 public class OrderMapper {
     public Order mapFormToOrder(OrderRequest orderRequest) {
         OrderLineItems orderLineItems = mapFormToOrderLineItems(orderRequest.getOrderLineItemRequests());

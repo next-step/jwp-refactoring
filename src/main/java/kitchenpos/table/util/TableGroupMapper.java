@@ -5,11 +5,12 @@ import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.TableGroupRequest;
-import org.springframework.util.CollectionUtils;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Component
 public class TableGroupMapper {
 
     public TableGroup mapFormToTableGroup(TableGroupRequest tableGroupRequest) {
