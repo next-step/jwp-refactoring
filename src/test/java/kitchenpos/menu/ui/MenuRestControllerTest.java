@@ -27,8 +27,6 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.product.domain.Product;
 import kitchenpos.utils.MockMvcControllerTest;
 
 @DisplayName("메뉴 관리 기능")
@@ -42,9 +40,6 @@ class MenuRestControllerTest extends MockMvcControllerTest {
     @Autowired
     private MenuRestController menuRestController;
 
-    private Product product1;
-    private Product product2;
-    private MenuGroup menuGroup;
     private Menu menu;
     private MenuProduct menuProduct1;
     private MenuProduct menuProduct2;
@@ -56,9 +51,6 @@ class MenuRestControllerTest extends MockMvcControllerTest {
 
     @BeforeEach
     void setUp() {
-        product1 = new Product("A", BigDecimal.valueOf(1000));
-        product2 = new Product("B", BigDecimal.valueOf(2000));
-        menuGroup = new MenuGroup("1");
         menu = new Menu("AB", BigDecimal.valueOf(3000), 1L);
         menuProduct1 = new MenuProduct(menu, 1L, 1L);
         menuProduct2 = new MenuProduct(menu, 2L, 1L);
@@ -88,7 +80,6 @@ class MenuRestControllerTest extends MockMvcControllerTest {
     void save_menu1() throws Exception {
         // given
         MenuRequest menuRequest = new MenuRequest("A", null, 1L, new ArrayList<>());
-        MenuGroup menuGroup = new MenuGroup("AB");
         Menu menu = new Menu("A", BigDecimal.valueOf(20000.00), 1L);
         menu.addMenuProduct(new MenuProduct(menu, 1L, 1));
         menu.addMenuProduct(new MenuProduct(menu, 2L, 1));

@@ -20,7 +20,6 @@ import kitchenpos.product.exception.ProductNotFoundException;
 
 @ExtendWith(MockitoExtension.class)
 class ProductMenuServiceImplTest {
-
     @Mock
     private ProductRepository productRepository;
 
@@ -48,4 +47,5 @@ class ProductMenuServiceImplTest {
         // then
         assertThat(productMenuService.calculateProductsPrice(1L, 2L)).isEqualTo(BigDecimal.valueOf(10_000.00));
     }
+
 }

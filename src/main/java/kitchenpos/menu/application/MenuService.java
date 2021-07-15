@@ -14,28 +14,26 @@ import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.menu.exception.MenuNotFoundException;
-import kitchenpos.menugroup.application.MenuGroupValidator;
 
 @Service
 @Transactional
 public class MenuService {
     private final MenuRepository menuRepository;
-    private final MenuGroupValidator menuGroupValidator;
+    private final MenuGroupMenuValidator menuGroupMenuValidator;
     private final MenuValidator menuValidator;
     private final ProductMenuService productMenuService;
 
     @Autowired
-    public MenuService(final MenuRepository menuRepository, final MenuGroupValidator menuGroupValidator,
+    public MenuService(final MenuRepository menuRepository, final MenuGroupMenuValidator menuGroupMenuValidator,
                        final MenuValidator menuValidator, final ProductMenuService productMenuService) {
         this.menuRepository = menuRepository;
-        this.menuGroupValidator = menuGroupValidator;
+        this.menuGroupMenuValidator = menuGroupMenuValidator;
         this.menuValidator = menuValidator;
         this.productMenuService = productMenuService;
     }
 
     public MenuResponse create(final MenuRequest menuRequest) {
-        menuGroupValidator.validateExistsMenuGroupById(menuRequest.getMenuGroupId());
+        menuGroupMenuValidator.validateExistsMenuGroupById(menuRequest.getMenuGroupId());
         Menu menu = menuRepository.save(new Menu(menuRequest.getName(), menuRequest.getPrice(), menuRequest.getMenuGroupId()));
         menuValidator.validateMenuPrice(menu, getTotalProductsPrice(menuRequest));
         menuRequest.getMenuProductRequests()
@@ -48,7 +46,7 @@ public class MenuService {
                 .stream()
                 .map(menuProductRequest -> productMenuService.calculateProductsPrice(menuProductRequest.getProductId(),
                         menuProductRequest.getQuantity()))
-                .reduce(BigDecimal.ZERO, (total, productPrice) -> total.add(productPrice));
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     public List<MenuResponse> findAllMenu() {
@@ -56,11 +54,6 @@ public class MenuService {
                 .stream()
                 .map(MenuResponse::of)
                 .collect(Collectors.toList());
-    }
-
-    public Menu findMenuById(Long id) {
-        return menuRepository.findById(id)
-                .orElseThrow(() -> new MenuNotFoundException("조회된 메뉴가 없습니다. 입력 ID : " + id));
     }
 
     private MenuProduct createMenuProduct(Menu menu, MenuProductRequest menuProductRequest) {
