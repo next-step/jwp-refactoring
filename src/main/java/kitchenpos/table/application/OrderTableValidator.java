@@ -8,9 +8,10 @@ import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.exception.MisMatchedOrderTablesSizeException;
 import kitchenpos.table.exception.NonEmptyOrderTableNotFoundException;
+import kitchenpos.tablegroup.application.TableGroupOrderTableValidator;
 
 @Component
-public class OrderTableValidator {
+public class OrderTableValidator implements TableGroupOrderTableValidator {
     private static final int ORDER_TABLE_MINIMUM_SIZE = 2;
     private final OrderTableRepository orderTableRepository;
 
@@ -32,6 +33,7 @@ public class OrderTableValidator {
                 .forEach(this::validateOrderTableIsEmptyOrHasTableGroup);
     }
 
+    @Override
     public void validateOrderTablesConditionForCreatingTableGroup(List<Long> orderTableIds) {
         if (orderTableIds.size() < ORDER_TABLE_MINIMUM_SIZE) {
             throw new IllegalArgumentException("정산 그룹 생성은 2개 이상의 테이블만 가능합니다.");

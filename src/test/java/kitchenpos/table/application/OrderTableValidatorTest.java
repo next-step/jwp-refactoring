@@ -25,6 +25,7 @@ import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.exception.MisMatchedOrderTablesSizeException;
 import kitchenpos.table.exception.NonEmptyOrderTableNotFoundException;
 
+@DisplayName("테이블 Validator 기능 검증")
 @ExtendWith(MockitoExtension.class)
 class OrderTableValidatorTest {
     @Mock

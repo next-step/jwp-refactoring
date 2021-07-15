@@ -12,7 +12,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
@@ -22,16 +21,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.order.application.OrderService;
 import kitchenpos.order.application.OrderValidator;
-import kitchenpos.order.exception.OrderAlreadyExistsException;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.exception.OrderTableNotFoundException;
 import kitchenpos.table.exception.TableGroupAlreadyExistsException;
-import kitchenpos.utils.domain.OrderTableObjects;
 
 @DisplayName("테이블 서비스")
 @ExtendWith(MockitoExtension.class)
@@ -40,41 +36,23 @@ class TableServiceTest {
     private OrderTableRepository orderTableRepository;
     @Mock
     private OrderValidator orderValidator;
-
     @InjectMocks
     private TableService tableService;
-
-    private OrderTable changeEmptyOrderTable;
-    private OrderTable beforeOrderTable;
-    private OrderTable createOrderTable;
-    private OrderTable changeNumberOrderTable;
-    private List<OrderTable> orderTables;
-    private OrderTableRequest orderTableRequest;
-
-    @BeforeEach
-    void setUp() {
-        OrderTableObjects orderTableObjects = new OrderTableObjects();
-        changeEmptyOrderTable = orderTableObjects.getOrderTable1();
-        beforeOrderTable = orderTableObjects.getOrderTable2();
-        changeNumberOrderTable = orderTableObjects.getOrderTable3();
-        createOrderTable = orderTableObjects.getOrderTable4();
-        orderTableRequest = orderTableObjects.getOrderTableRequest4();
-        orderTables = orderTableObjects.getOrderTables();
-    }
 
     @Test
     @DisplayName("주문 테이블 생성")
     void create_orderTable() {
         // given
-        given(orderTableRepository.save(any(OrderTable.class))).willReturn(createOrderTable);
+        OrderTable orderTable = new OrderTable(3, false);
+        given(orderTableRepository.save(any(OrderTable.class))).willReturn(orderTable);
 
         // when
-        OrderTableResponse orderTableResponse = tableService.create(orderTableRequest);
+        OrderTableResponse orderTableResponse = tableService.create(new OrderTableRequest(3, false));
 
         // then
         assertAll(
-                () -> assertThat(orderTableResponse.getNumberOfGuests()).isEqualTo(createOrderTable.getNumberOfGuests().toInt()),
-                () -> assertThat(orderTableResponse.isEmpty()).isEqualTo(createOrderTable.isEmpty())
+                () -> assertThat(orderTableResponse.getNumberOfGuests()).isEqualTo(orderTable.getNumberOfGuests().toInt()),
+                () -> assertThat(orderTableResponse.isEmpty()).isEqualTo(orderTable.isEmpty())
         );
     }
 
@@ -82,6 +60,7 @@ class TableServiceTest {
     @DisplayName("주문 테이블 전체 조회")
     void find_all_orderTable() {
         // mocking
+        List<OrderTable> orderTables = Arrays.asList(new OrderTable(3, false), new OrderTable(2, false));
         given(orderTableRepository.findAll()).willReturn(orderTables);
 
         // when
@@ -96,8 +75,8 @@ class TableServiceTest {
     void changeEmpty_table() {
         // given
         OrderTableRequest orderTableRequest = new OrderTableRequest(4, true);
-        beforeOrderTable.changeEmpty(false);
-        given(orderTableRepository.findById(any())).willReturn(Optional.of(beforeOrderTable));
+        OrderTable orderTable = new OrderTable(3, false);
+        given(orderTableRepository.findById(any())).willReturn(Optional.of(orderTable));
 
         // when
         OrderTableResponse resultOrderTableResponse = tableService.changeEmpty(1L, orderTableRequest);
@@ -125,8 +104,9 @@ class TableServiceTest {
                 }),
                 dynamicTest("단체지정이 된 상태일 경우 오류 발생.", () -> {
                     // And
-                    changeEmptyOrderTable.groupBy(1L);
-                    given(orderTableRepository.findById(any())).willReturn(Optional.of(changeEmptyOrderTable));
+                    OrderTable orderTable = new OrderTable(3, false);
+                    orderTable.groupBy(1L);
+                    given(orderTableRepository.findById(any())).willReturn(Optional.of(orderTable));
 
                     // when
                     assertThatThrownBy(() -> tableService.changeEmpty(1L, orderTableRequest))
@@ -136,13 +116,14 @@ class TableServiceTest {
                 }),
                 dynamicTest("주문 상태가 COOKING이거나 MEAL상태이면 오류 발생.", () -> {
                     // And
-                    changeEmptyOrderTable.ungroup();
-                    given(orderTableRepository.findById(any())).willReturn(Optional.of(changeEmptyOrderTable));
-                    doThrow(OrderAlreadyExistsException.class).when(orderValidator).validateExistsOrderStatusIsCookingANdMeal(any());
+                    OrderTable orderTable = new OrderTable(3, false);
+                    orderTable.ungroup();
+                    given(orderTableRepository.findById(any())).willReturn(Optional.of(orderTable));
+                    doThrow(RuntimeException.class).when(orderValidator).validateExistsOrderStatusIsCookingANdMeal(any());
 
                     // when
-                    assertThatThrownBy(() -> tableService.changeEmpty(changeEmptyOrderTable.getId(), orderTableRequest))
-                            .isInstanceOf(OrderAlreadyExistsException.class);
+                    assertThatThrownBy(() -> tableService.changeEmpty(1L, orderTableRequest))
+                            .isInstanceOf(RuntimeException.class);
                 })
         );
     }
@@ -151,14 +132,15 @@ class TableServiceTest {
     @DisplayName("고객 수 변경 요청")
     void change_numberOfGuests() {
         // given
-        beforeOrderTable.changeNumberOfGuests(3);
-        beforeOrderTable.changeEmpty(false);
+        OrderTable orderTable = new OrderTable(3, false);
+        orderTable.changeEmpty(false);
         OrderTableResponse orderTableResponse = OrderTableResponse.of(1L, 1L, 5, false);
-        changeNumberOrderTable.changeNumberOfGuests(4);
-        given(orderTableRepository.findByIdAndEmptyIsFalse(anyLong())).willReturn(Optional.of(beforeOrderTable));
+        orderTable.changeNumberOfGuests(4);
+        given(orderTableRepository.findByIdAndEmptyIsFalse(anyLong())).willReturn(Optional.of(orderTable));
 
         // when
-        OrderTableResponse resultOrderTableResponse = tableService.changeNumberOfGuests(1L, new OrderTableRequest(5, false));
+        OrderTableResponse resultOrderTableResponse = tableService.changeNumberOfGuests(1L,
+                new OrderTableRequest(5, false));
 
         // then
         assertThat(resultOrderTableResponse.getNumberOfGuests()).isEqualTo(orderTableResponse.getNumberOfGuests());
@@ -170,8 +152,9 @@ class TableServiceTest {
         return Arrays.asList(
                 dynamicTest("변경하려는 고객의 수가 음수로 입력되었을 경우 오류 발생.", () -> {
                     // given
+                    OrderTable orderTable = new OrderTable(3, false);
                     OrderTableRequest orderTableRequest = new OrderTableRequest(-1, false);
-                    given(orderTableRepository.findByIdAndEmptyIsFalse(anyLong())).willReturn(Optional.of(changeNumberOrderTable));
+                    given(orderTableRepository.findByIdAndEmptyIsFalse(anyLong())).willReturn(Optional.of(orderTable));
 
                     // then
                     assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, orderTableRequest))

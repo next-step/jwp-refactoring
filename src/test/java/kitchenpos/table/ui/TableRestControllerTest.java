@@ -25,7 +25,6 @@ import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
-import kitchenpos.utils.domain.OrderTableObjects;
 import kitchenpos.utils.MockMvcControllerTest;
 
 @DisplayName("테이블 관리 기능")
@@ -38,23 +37,16 @@ class TableRestControllerTest extends MockMvcControllerTest {
     @Autowired
     private TableRestController tableRestController;
 
-    private OrderTableObjects orderTableObjects;
-
     @Override
     protected Object controller() {
         return tableRestController;
-    }
-
-    @BeforeEach
-    void setUp() {
-        orderTableObjects = new OrderTableObjects();
     }
 
     @Test
     @DisplayName("테이블 목록을 조회할 수 있다.")
     void retrieve_tableList1() throws Exception {
         // given
-        OrderTable orderTable = orderTableObjects.getOrderTable1();
+        OrderTable orderTable = new OrderTable(3, false);
         OrderTableResponse orderTableResponse = OrderTableResponse.of(1L, orderTable.getTableGroupId(), orderTable.getNumberOfGuests().toInt(), orderTable.isEmpty());
         given(tableService.list()).willReturn(new ArrayList<>(Arrays.asList(orderTableResponse)));
 
@@ -78,7 +70,7 @@ class TableRestControllerTest extends MockMvcControllerTest {
         // then
         mockMvc.perform(post(DEFAULT_REQUEST_URL)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(new ObjectMapper().writeValueAsString(orderTableObjects.getOrderTableRequest1()))
+                    .content(new ObjectMapper().writeValueAsString(new OrderTableRequest(3, false)))
                     .accept(MediaType.APPLICATION_JSON_VALUE))
                 .andDo(print())
                 .andExpect(status().isCreated())
@@ -112,13 +104,14 @@ class TableRestControllerTest extends MockMvcControllerTest {
     @DisplayName("테이블 인원을 수정할 수 있다.")
     void change_numberOfGuests() throws Exception {
         // given
+        OrderTableRequest orderTableRequest = new OrderTableRequest(3, false);
         OrderTableResponse orderTableResponse = OrderTableResponse.of(1L, 1L, 4, false);
         given(tableService.changeNumberOfGuests(anyLong(), any(OrderTableRequest.class))).willReturn(orderTableResponse);
 
         // then
         mockMvc.perform(put(DEFAULT_REQUEST_URL + "/4/number-of-guests")
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .content(new ObjectMapper().writeValueAsString(orderTableObjects.getOrderTableRequest1()))
+                    .content(new ObjectMapper().writeValueAsString(orderTableRequest))
                     .accept(MediaType.APPLICATION_JSON_VALUE))
                 .andDo(print())
                 .andExpect(status().isOk())
