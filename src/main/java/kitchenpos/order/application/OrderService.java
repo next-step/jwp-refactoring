@@ -40,8 +40,8 @@ public class OrderService {
         OrderTable orderTable = findOrderTable(orderRequest);
         orderTable.checkEmptyTable();
 
-        Order order = new Order(orderTable, OrderStatus.COOKING, orderRequest.getOrderLineItems());
-        orderTable.addOrder(order);
+        Order order = new Order(orderTable.getId(), OrderStatus.COOKING, orderRequest.getOrderLineItems());
+
         return OrderResponse.from(orderRepository.save(order));
     }
 
@@ -58,7 +58,7 @@ public class OrderService {
     public List<OrderResponse> list() {
         final List<Order> orders = orderRepository.findAll();
         return orders.stream()
-                .map(OrderResponse::from)
+                .map(order -> OrderResponse.from(order))
                 .collect(Collectors.toList());
     }
 

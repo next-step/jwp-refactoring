@@ -66,7 +66,7 @@ class OrderRestControllerTest {
         OrderLineItem orderLineItem = new OrderLineItem(1L, 1L, 1L, 1L);
         List<OrderLineItem> 주문내역들 = Arrays.asList(orderLineItem);
         OrderRequest orderRequest = new OrderRequest(주문테이블1.getId(), 주문내역들);
-        Order order = new Order(1L, 주문테이블1, OrderStatus.COOKING, 주문내역들);
+        Order order = new Order(1L, OrderStatus.COOKING, 주문내역들);
         String orderJsonString = objectMapper.writeValueAsString(orderRequest);
         given(orderService.create(any())).willReturn(OrderResponse.from(order));
 
@@ -80,9 +80,9 @@ class OrderRestControllerTest {
     @Test
     void list() throws Exception {
         OrderLineItem orderLineItem1 = new OrderLineItem(1L, 1L, 1L, 1L);
-        Order order1 = new Order(1L, 주문테이블1, OrderStatus.COOKING, Arrays.asList(orderLineItem1));
+        Order order1 = new Order(1L, OrderStatus.COOKING, Arrays.asList(orderLineItem1));
         OrderLineItem orderLineItem2 = new OrderLineItem(2L, 2L, 3L, 1L);
-        Order order2 = new Order(2L, 주문테이블2, OrderStatus.MEAL, Arrays.asList(orderLineItem2));
+        Order order2 = new Order(2L, OrderStatus.MEAL, Arrays.asList(orderLineItem2));
 
         given(orderService.list()).willReturn(Arrays.asList(OrderResponse.from(order1), OrderResponse.from(order2)));
 
@@ -95,7 +95,7 @@ class OrderRestControllerTest {
     void changeOrderStatus() throws Exception {
         Long orderId = 1L;
         OrderLineItem orderLineItem1 = new OrderLineItem(1L, orderId, 1L, 1L);
-        Order changedOrder = new Order(orderId, 주문테이블1, OrderStatus.MEAL, Arrays.asList(orderLineItem1));
+        Order changedOrder = new Order(orderId, OrderStatus.MEAL, Arrays.asList(orderLineItem1));
         OrderStatusRequest orderStatusRequest = new OrderStatusRequest(OrderStatus.COMPLETION.name());
         String orderJsonString = objectMapper.writeValueAsString(orderStatusRequest);
 
