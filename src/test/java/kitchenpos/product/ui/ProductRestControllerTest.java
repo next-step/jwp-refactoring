@@ -69,25 +69,6 @@ class ProductRestControllerTest extends MockMvcControllerTest {
         ;
     }
 
-//    @Test
-//    @DisplayName("상품 목록을 조회한다.")
-//    void retrieve_productList1() throws Exception {
-//        // mocking
-//        when(productService.list()).thenReturn(productObject.getProducts());
-//
-//        // when
-//        mockMvc.perform(get(REQUEST_URL))
-//                .andDo(print())
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("[0].id").value(productObject.getProduct1().getId()))
-//                .andExpect(jsonPath("[0].name").value(productObject.getProduct1().getName()))
-//                .andExpect(jsonPath("[0].price").value(productObject.getProduct1().getPrice()))
-//                .andExpect(jsonPath("[5].id").value(productObject.getProduct6().getId()))
-//                .andExpect(jsonPath("[5].name").value(productObject.getProduct6().getName()))
-//                .andExpect(jsonPath("[5].price").value(productObject.getProduct6().getPrice()))
-//        ;
-//    }
-
     @Test
     @DisplayName("상품을 등록할 수 있다.")
     void save_product() throws Exception {
@@ -107,24 +88,4 @@ class ProductRestControllerTest extends MockMvcControllerTest {
                 .andExpect(jsonPath("price").value(result.getPrice()))
         ;
     }
-
-//
-//    @Test
-//    @DisplayName("상품을 등록할 수 있다.")
-//    void save_product1() throws Exception {
-//        // mocking
-//        when(productService.create(any(Product.class))).thenReturn(productObject.getProduct3());
-//
-//        // when
-//        mockMvc.perform(post(REQUEST_URL)
-//                    .contentType(MediaType.APPLICATION_JSON)
-//                    .content(new ObjectMapper().writeValueAsString(productObject.getProduct1())))
-//                .andDo(print())
-//                .andExpect(status().isCreated())
-//                .andExpect(jsonPath("id").value(productObject.getProduct3().getId()))
-//                .andExpect(jsonPath("name").value(productObject.getProduct3().getName()))
-//                .andExpect(jsonPath("price").value(productObject.getProduct3().getPrice()))
-//        ;
-
-//    }
 }
