@@ -1,20 +1,22 @@
 package kitchenpos.tablegroup.application;
 
 import kitchenpos.advice.exception.OrderTableException;
-import kitchenpos.order.domain.OrderTable;
-import kitchenpos.tablegroup.application.TableGroupService;
-import kitchenpos.tablegroup.domain.TableGroup;
-import kitchenpos.order.dto.OrderTableRequest;
-import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.application.TableService;
+import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.dto.OrderTableRequest;
+import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.domain.TableGroupRepository;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +42,9 @@ class TableGroupServiceTest {
 
     @Autowired
     private OrderService orderService;
+
+    @Autowired
+    private TableGroupRepository tableGroupRepository;
 
     @MockBean
     private OrderRepository orderRepository;
@@ -93,11 +98,18 @@ class TableGroupServiceTest {
     }
 
     @DisplayName("테이블 그룹을 제거한다 : OrderStatus가 COOKING, MEAL이면 익셉션 발생")
+    @Transactional
     @Test
     void ungroupException() {
         TableGroup tableGroup = 테이블_그룹을_생성한다(new TableGroupRequest(orderTableRequests));
 
-        when(orderRepository.existsByOrderTableInAndOrderStatusIn(anyList(), anyList())).thenReturn(true);
+        List<OrderTable> orderTables = orderTableRequests.stream()
+            .map(OrderTableRequest::getId)
+            .map(id -> orderService.findOrderTableById(id))
+            .collect(Collectors.toList());
+
+        orderTables.forEach(orderTable -> orderTable.addOrder(Order.ofCooking(orderTable.getId())));
+        tableGroup.updateOrderTables(orderTables);
 
         assertThatThrownBy(() -> tableGroupService.ungroup(tableGroup.getId()))
             .isInstanceOf(OrderTableException.class);

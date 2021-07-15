@@ -5,9 +5,9 @@ import kitchenpos.advice.exception.TableGroupException;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.tablegroup.domain.TableGroup;
-import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.application.TableService;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,18 +15,16 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
 public class TableGroupService {
-    private final OrderService orderService;
     private final TableService tableService;
     private final TableGroupRepository tableGroupRepository;
 
-    public TableGroupService(final OrderService orderService,
-        final TableService tableService,
+    public TableGroupService(final TableService tableService,
         final TableGroupRepository tableGroupRepository) {
-        this.orderService = orderService;
         this.tableService = tableService;
         this.tableGroupRepository = tableGroupRepository;
     }
@@ -34,35 +32,21 @@ public class TableGroupService {
     @Transactional
     public TableGroup create(final TableGroupRequest tableGroupRequest) {
         tableGroupRequest.validateOrderTableSize();
-
-        final List<OrderTable> orderTables = tableService.findAllByIdIn(tableGroupRequest.getOrderTableIds());
-        validateOrderTableEmpty(orderTables);
-
-        final TableGroup tableGroup = new TableGroup(orderTables);
-        tableGroup.validateEqualOrderTableSize(orderTables.size());
-        tableGroup.updateOrderTables(orderTables);
-        return tableGroup;
+        List<OrderTable> orderTables = tableService.findAllByIdIn(tableGroupRequest.getOrderTableIds());
+        return tableGroupRepository.save(new TableGroup(orderTables));
     }
-
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
         final TableGroup tableGroup = findTableGroupById(tableGroupId);
-
-        orderService.validateOrderStatusNotIn(tableGroup.getOrderTables(), Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL));
+        final List<OrderTable> orderTables = tableService.findAllByTableGroupId(tableGroupId);
+        orderTables.forEach(OrderTable::validateOrderStatusNotInCookingAndMeal);
 
         tableGroup.ungroup();
+        tableGroupRepository.delete(tableGroup);
     }
 
     public TableGroup findTableGroupById(Long id) {
         return tableGroupRepository.findById(id).orElseThrow(() -> new TableGroupException("테이블 그룹이 존재하지 않습니다", id));
-    }
-
-    private void validateOrderTableEmpty(List<OrderTable> savedOrderTables) {
-        for (final OrderTable savedOrderTable : savedOrderTables) {
-            if ((!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroup())) && savedOrderTable.getOrderTables().size() < 2 ) {
-                throw new OrderTableException("주문 테이블이 비어있거나 2개미만입니다");
-            }
-        }
     }
 }

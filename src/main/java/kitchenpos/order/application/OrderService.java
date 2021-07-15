@@ -39,10 +39,14 @@ public class OrderService {
 
     @Transactional
     public Order create(final OrderRequest orderRequest) {
-        List<OrderLineItem> orderLineItems = getOrderItem(orderRequest);
+        Order order = getOrderItem(orderRequest);
 
-        Order order = Order.ofCooking(findOrderTableById(orderRequest.getOrderTableId()), orderLineItems);
-        return orderRepository.save(order);
+        order.validateEmptyOrderLineItems();
+        order.validateMenuSize(menuService.countByIdIn(orderRequest.getMenuIds()));
+
+        OrderTable orderTable = findOrderTableById(orderRequest.getOrderTableId());
+        orderTable.addOrder(order);
+        return order;
     }
 
     public List<Order> list() {
@@ -80,8 +84,8 @@ public class OrderService {
             .orElseThrow(() -> new OrderTableException("주문하는 주문 테이블 id가 없습니다. ", id));
     }
 
-    private List<OrderLineItem> getOrderItem(OrderRequest orderRequest) {
-        final List<OrderLineItem> orderLineItems = new ArrayList<>();
+    private Order getOrderItem(OrderRequest orderRequest) {
+        Order order = orderRepository.save(Order.ofCooking(orderRequest.getOrderTableId()));
         List<Menu> menus = menuService.findAllById(orderRequest.getMenuIds());
 
         Map<Long, Menu> menuMap = menus.stream()
@@ -89,9 +93,9 @@ public class OrderService {
 
         for (final OrderLineItemRequest request : orderRequest.getOrderLineItems()) {
             OrderLineItem orderLineItem = new OrderLineItem(menuMap.get(request.getMenuId()), request.getQuantity());
-            orderLineItems.add(orderLineItem);
+            order.addOrderLineItem(orderLineItem);
         }
 
-        return orderLineItems;
+        return order;
     }
 }
