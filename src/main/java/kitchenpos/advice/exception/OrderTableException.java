@@ -1,7 +1,7 @@
 package kitchenpos.advice.exception;
 
 import java.util.List;
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.order.domain.OrderStatus;
 
 public class OrderTableException extends RuntimeException {
 
