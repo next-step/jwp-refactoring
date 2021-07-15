@@ -1,1 +1,10 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+    }
+}
+
 rootProject.name = 'kitchenpos'
+include 'module-menu'
+include 'module-order'
+
