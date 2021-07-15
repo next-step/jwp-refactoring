@@ -36,9 +36,6 @@ import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.exception.OrderNotFoundException;
-import kitchenpos.table.application.OrderTableValidator;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.exception.NonEmptyOrderTableNotFoundException;
 
 @DisplayName("주문 서비스")
 @ExtendWith(MockitoExtension.class)
@@ -48,7 +45,7 @@ class OrderServiceTest {
     @Mock
     private MenuValidator menuValidator;
     @Mock
-    private OrderTableValidator orderTableValidator;
+    private TableOrderValidator tableOrderValidator;
 
     @InjectMocks
     private OrderService orderService;
@@ -118,7 +115,6 @@ class OrderServiceTest {
         // given
         OrderRequest orderRequest = new OrderRequest(OrderStatus.COOKING, 1L,
                 Arrays.asList(new OrderLineItemRequest(1L, 1L)));
-        OrderTable orderTable = new OrderTable(3, false);
         Order order = new Order(LocalDateTime.now(), 1L);
         order.addOrderLineItem(new OrderLineItem(order, 1L, 3L));
 
@@ -128,7 +124,7 @@ class OrderServiceTest {
         OrderResponse resultOrderResponse = orderService.create(orderRequest);
 
         // then
-        verify(orderTableValidator).validateExistsOrderTableByIdAndEmptyIsFalse(anyLong());
+        verify(tableOrderValidator).validateExistsOrderTableByIdAndEmptyIsFalse(anyLong());
         verify(menuValidator).validateExistsMenuById(anyLong());
         return Arrays.asList(
                 dynamicTest("주문 초기 상태 확인됨.", () -> assertThat(resultOrderResponse.getOrderStatus()).isEqualTo(OrderStatus.COOKING)),
@@ -157,7 +153,7 @@ class OrderServiceTest {
                     doThrow(MenuNotFoundException.class).when(menuValidator).validateExistsMenuById(anyLong());
 
                     // then
-                    verify(orderTableValidator).validateExistsOrderTableByIdAndEmptyIsFalse(anyLong());
+                    verify(tableOrderValidator).validateExistsOrderTableByIdAndEmptyIsFalse(anyLong());
                     assertThatThrownBy(() -> orderService.create(orderRequest))
                             .isInstanceOf(MenuNotFoundException.class);
                 }),
@@ -165,11 +161,11 @@ class OrderServiceTest {
                     // given
                     OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(1L, 1L);
                     OrderRequest orderRequest = new OrderRequest(OrderStatus.COOKING, 1L, Arrays.asList(orderLineItemRequest));
-                    doThrow(NonEmptyOrderTableNotFoundException.class).when(orderTableValidator).validateExistsOrderTableByIdAndEmptyIsFalse(anyLong());
+                    doThrow(RuntimeException.class).when(tableOrderValidator).validateExistsOrderTableByIdAndEmptyIsFalse(anyLong());
 
                     // then
                     assertThatThrownBy(() -> orderService.create(orderRequest))
-                            .isInstanceOf(NonEmptyOrderTableNotFoundException.class);
+                            .isInstanceOf(RuntimeException.class);
                 })
         );
     }

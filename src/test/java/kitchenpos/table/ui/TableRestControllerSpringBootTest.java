@@ -40,7 +40,7 @@ class TableRestControllerSpringBootTest extends MockMvcControllerTest {
                 .andExpect(jsonPath("[1].empty").value(true))
                 .andExpect(jsonPath("[7].id").value(8))
                 .andExpect(jsonPath("[7].numberOfGuests").value(0))
-                .andExpect(jsonPath("[7].empty").value(true))
+                .andExpect(jsonPath("[7].empty").value(false))
         ;
     }
 

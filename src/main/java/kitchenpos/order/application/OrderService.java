@@ -15,17 +15,16 @@ import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.exception.OrderNotFoundException;
-import kitchenpos.table.application.OrderTableValidator;
 
 @Service
 @Transactional
 public class OrderService {
-    private final OrderTableValidator orderTableValidator;
+    private final TableOrderValidator tableOrderValidator;
     private final MenuValidator menuValidator;
     private final OrderRepository orderRepository;
 
-    public OrderService(OrderTableValidator orderTableValidator, MenuValidator menuValidator, OrderRepository orderRepository) {
-        this.orderTableValidator = orderTableValidator;
+    public OrderService(TableOrderValidator tableOrderValidator, MenuValidator menuValidator, OrderRepository orderRepository) {
+        this.tableOrderValidator = tableOrderValidator;
         this.menuValidator = menuValidator;
         this.orderRepository = orderRepository;
     }
@@ -44,7 +43,7 @@ public class OrderService {
     }
 
     public OrderResponse create(final OrderRequest orderRequest) {
-        orderTableValidator.validateExistsOrderTableByIdAndEmptyIsFalse(orderRequest.getOrderTableId());
+        tableOrderValidator.validateExistsOrderTableByIdAndEmptyIsFalse(orderRequest.getOrderTableId());
         Order order = orderRepository.save(makeOrderWithOrderLineItemRequests(new Order(LocalDateTime.now(), orderRequest.getOrderTableId()),
                 orderRequest.getOrderLineItemRequests()));
         return OrderResponse.of(order);

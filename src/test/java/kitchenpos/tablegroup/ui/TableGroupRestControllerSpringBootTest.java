@@ -34,7 +34,7 @@ class TableGroupRestControllerSpringBootTest extends MockMvcControllerTest {
     @DisplayName("단체 지정 등록을 할 수 있다.")
     void create_tableGroup() throws Exception {
         // given
-        TableGroupRequest tableGroupRequest = new TableGroupRequest(Arrays.asList(1L, 2L));
+        TableGroupRequest tableGroupRequest = new TableGroupRequest(Arrays.asList(2L, 3L));
 
         // then
         mockMvc.perform(post(DEFAULT_REQUEST_URL)

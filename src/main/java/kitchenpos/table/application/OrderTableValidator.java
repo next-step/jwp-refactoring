@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
+import kitchenpos.order.application.TableOrderValidator;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.exception.MisMatchedOrderTablesSizeException;
@@ -11,7 +12,7 @@ import kitchenpos.table.exception.NonEmptyOrderTableNotFoundException;
 import kitchenpos.tablegroup.application.TableGroupOrderTableValidator;
 
 @Component
-public class OrderTableValidator implements TableGroupOrderTableValidator {
+public class OrderTableValidator implements TableGroupOrderTableValidator, TableOrderValidator {
     private static final int ORDER_TABLE_MINIMUM_SIZE = 2;
     private final OrderTableRepository orderTableRepository;
 
@@ -44,6 +45,7 @@ public class OrderTableValidator implements TableGroupOrderTableValidator {
         validateOrderTableIsEmptyOrHasTableGroups(orderTableIds);
     }
 
+    @Override
     public void validateExistsOrderTableByIdAndEmptyIsFalse(Long orderTableId) {
         this.orderTableRepository.findByIdAndEmptyIsFalse(orderTableId)
                 .orElseThrow(() -> new NonEmptyOrderTableNotFoundException("비어있지 않은 테이블 대상이 존재하지 않습니다. 입력 ID : " + orderTableId));
