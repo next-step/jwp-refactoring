@@ -4,7 +4,7 @@ import static java.util.Collections.*;
 import static kitchenpos.menu.domain.MenuProductTest.*;
 import static kitchenpos.menu.domain.MenuTest.*;
 import static kitchenpos.order.domain.OrderStatus.*;
-import static kitchenpos.order.domain.OrderTableTest.*;
+import static kitchenpos.ordertable.domain.OrderTableTest.*;
 import static kitchenpos.order.domain.OrderTest.*;
 import static kitchenpos.product.domain.ProductTest.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;

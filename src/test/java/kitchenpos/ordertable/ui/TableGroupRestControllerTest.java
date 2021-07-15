@@ -1,6 +1,6 @@
-package kitchenpos.order.ui;
+package kitchenpos.ordertable.ui;
 
-import static kitchenpos.order.domain.OrderTableTest.*;
+import static kitchenpos.ordertable.domain.OrderTableTest.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -19,8 +19,8 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import kitchenpos.order.dto.OrderTableRequest;
-import kitchenpos.order.dto.TableGroupRequest;
+import kitchenpos.ordertable.dto.OrderTableRequest;
+import kitchenpos.ordertable.dto.TableGroupRequest;
 import kitchenpos.utils.IntegrationTest;
 
 @SpringBootTest

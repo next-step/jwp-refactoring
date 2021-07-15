@@ -15,6 +15,8 @@ import kitchenpos.generic.exception.MenuDetailMismatchException;
 import kitchenpos.generic.exception.MenuMismatchException;
 import kitchenpos.generic.exception.MenuNotFoundException;
 import kitchenpos.generic.exception.OrderTableNotFoundException;
+import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductOption;
 import kitchenpos.product.domain.ProductRepository;

@@ -1,4 +1,4 @@
-package kitchenpos.order.domain;
+package kitchenpos.ordertable.domain;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -9,6 +9,9 @@ import kitchenpos.generic.exception.IllegalOperationException;
 import kitchenpos.generic.exception.NotEnoughTablesException;
 import kitchenpos.generic.exception.OrderNotCompletedException;
 import kitchenpos.generic.guests.domain.NumberOfGuests;
+import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.domain.OrderTables;
+import kitchenpos.ordertable.domain.TableGroup;
 
 @DisplayName("테이블 그룹 단위 테스트")
 public class TableGroupTest {

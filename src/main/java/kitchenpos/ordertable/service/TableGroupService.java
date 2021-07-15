@@ -1,14 +1,14 @@
-package kitchenpos.order.service;
+package kitchenpos.ordertable.service;
 
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kitchenpos.order.domain.OrderTables;
-import kitchenpos.order.domain.TableGroup;
-import kitchenpos.order.domain.TableGroupRepository;
-import kitchenpos.order.dto.TableGroupRequest;
+import kitchenpos.ordertable.domain.OrderTables;
+import kitchenpos.ordertable.domain.TableGroup;
+import kitchenpos.ordertable.domain.TableGroupRepository;
+import kitchenpos.ordertable.dto.TableGroupRequest;
 import kitchenpos.generic.exception.TableGroupNotFoundException;
 
 @Service

@@ -1,13 +1,13 @@
-package kitchenpos.order.service;
+package kitchenpos.ordertable.service;
 
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.domain.OrderTableRepository;
-import kitchenpos.order.dto.OrderTableRequest;
+import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.domain.OrderTableRepository;
+import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.generic.exception.OrderTableNotFoundException;
 
 @Service

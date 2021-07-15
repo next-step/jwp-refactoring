@@ -1,6 +1,6 @@
-package kitchenpos.order.service;
+package kitchenpos.ordertable.service;
 
-import static kitchenpos.order.domain.OrderTableTest.*;
+import static kitchenpos.ordertable.domain.OrderTableTest.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -15,8 +15,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.order.dto.OrderTableRequest;
-import kitchenpos.order.dto.TableGroupRequest;
+import kitchenpos.ordertable.dto.OrderTableRequest;
+import kitchenpos.ordertable.dto.TableGroupRequest;
 import kitchenpos.generic.exception.OrderTableNotFoundException;
 
 @ExtendWith(MockitoExtension.class)

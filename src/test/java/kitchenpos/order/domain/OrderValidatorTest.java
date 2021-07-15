@@ -4,7 +4,7 @@ import static kitchenpos.menu.domain.MenuProductTest.*;
 import static kitchenpos.menu.domain.MenuTest.*;
 import static kitchenpos.order.domain.OrderLineItemDetailTest.*;
 import static kitchenpos.order.domain.OrderLineItemTest.*;
-import static kitchenpos.order.domain.OrderTableTest.*;
+import static kitchenpos.ordertable.domain.OrderTableTest.*;
 import static kitchenpos.product.domain.ProductTest.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -24,6 +24,7 @@ import kitchenpos.generic.price.domain.Price;
 import kitchenpos.generic.quantity.domain.Quantity;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.generic.exception.MenuMismatchException;
+import kitchenpos.ordertable.domain.OrderTableRepository;
 
 @DisplayName("주문 밸리데이터 테스트")
 @ExtendWith(MockitoExtension.class)

@@ -1,8 +1,6 @@
 package kitchenpos.order.domain;
 
 import static kitchenpos.order.domain.OrderLineItemTest.*;
-import static kitchenpos.order.domain.OrderStatus.*;
-import static kitchenpos.order.domain.OrderTableTest.*;
 
 import org.junit.jupiter.api.DisplayName;
 
