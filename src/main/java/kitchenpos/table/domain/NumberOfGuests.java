@@ -1,11 +1,14 @@
 package kitchenpos.table.domain;
 
+import kitchenpos.exception.IllegalNumberOfGuestsException;
+
 import javax.persistence.Embeddable;
 import java.util.Objects;
 
 @Embeddable
 public class NumberOfGuests {
 
+    public static final String NEGATIVE_NUMBER_ERROR_MESSAGE = "손님 수는 음수를 입력할 수 없습니다.";
     private int numberOfGuests;
 
     public NumberOfGuests() {
@@ -22,7 +25,7 @@ public class NumberOfGuests {
 
     private void checkIsNegative(int numberOfGuests) {
         if (numberOfGuests < 0) {
-            throw new IllegalArgumentException("손닙 수는 음수를 입력할 수 없습니다.");
+            throw new IllegalNumberOfGuestsException(NEGATIVE_NUMBER_ERROR_MESSAGE);
         }
     }
 

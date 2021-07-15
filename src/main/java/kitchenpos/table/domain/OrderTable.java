@@ -1,10 +1,15 @@
 package kitchenpos.table.domain;
 
+import kitchenpos.exception.OrderTableException;
+
 import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
 public class OrderTable {
+
+    private static final String NOT_CHANGE_GROUP_TABLE_ERROR_MESSAGE = "그룹핑 되어있는 테이블 상태를 변경할 수 없습니다.";
+    private static final String NOT_CHANGE_EMPTY_TABLE_ERROR_MESSAGE = "비어있는 테이블의 인원수를 변경할 수 없습니다.";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,13 +42,13 @@ public class OrderTable {
 
     public void checkValidEmptyTableGroup() {
         if (Objects.nonNull(tableGroupId)) {
-            throw new IllegalArgumentException("그룹핑 되어있는 테이블 상태를 변경할 수 없습니다.");
+            throw new OrderTableException(NOT_CHANGE_GROUP_TABLE_ERROR_MESSAGE);
         }
     }
 
     public void checkIsEmpty() {
         if (empty) {
-            throw new IllegalArgumentException("비어있는 테이블의 인원수를 변경할 수 없습니다.");
+            throw new OrderTableException(NOT_CHANGE_EMPTY_TABLE_ERROR_MESSAGE);
         }
     }
 

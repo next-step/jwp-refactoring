@@ -1,5 +1,6 @@
 package kitchenpos.order.application;
 
+import kitchenpos.exception.OrderException;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.Orders;
@@ -17,6 +18,10 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class OrderService {
+
+    private static final String NOT_EQUAL_MENU_COUNT_ERROR_MESSAGE = "주문 항목 수량과 메뉴 수량이 일치 하지않습니다.";
+    private static final String NOT_FOUND_ORDER_ERROR_MESSAGE = "주문 정보를 찾을 수 없습니다.";
+    private static final String EMPTY_ORDER_ITEM_ERROR_MESSAGE = "주문 항목이 존재하지 않습니다.";
 
     private final OrderRepository orderRepository;
 
@@ -48,7 +53,7 @@ public class OrderService {
     }
 
     public OrderResponse changeOrderStatus(final Long orderId, final OrderRequest request) {
-        Orders orders = orderRepository.findById(orderId).orElseThrow(() -> new IllegalArgumentException());
+        Orders orders = orderRepository.findById(orderId).orElseThrow(() -> new OrderException(NOT_FOUND_ORDER_ERROR_MESSAGE));
         orders.checkOrderStatus();
         orders.updateOrderStatus(request.getOrderStatus());
         return OrderResponse.of(orders);
@@ -57,13 +62,13 @@ public class OrderService {
     private void checkValidMenuCount(OrderRequest request) {
         long menuCount = menuService.countByMenuId(request.toMenuIds());
         if (request.getOrderLineItemRequests().size() != menuCount) {
-            throw new IllegalArgumentException("주문 항목 수량과 메뉴 수량이 일치 하지않습니다.");
+            throw new OrderException(NOT_EQUAL_MENU_COUNT_ERROR_MESSAGE);
         }
     }
 
     private void validOrderLineItemCount(final OrderRequest request) {
         if (CollectionUtils.isEmpty(request.getOrderLineItemRequests())) {
-            throw new IllegalArgumentException("주문 항목이 존재하지 않습니다.");
+            throw new OrderException(EMPTY_ORDER_ITEM_ERROR_MESSAGE);
         }
     }
 }

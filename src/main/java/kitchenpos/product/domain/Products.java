@@ -1,6 +1,7 @@
 package kitchenpos.product.domain;
 
 
+import kitchenpos.exception.ProductException;
 import kitchenpos.menu.dto.MenuProductRequest;
 
 import java.math.BigDecimal;
@@ -35,7 +36,7 @@ public class Products {
 
     public void checkProductsSize(int size) {
         if (products.size() != size) {
-            throw new IllegalArgumentException(NOT_EQUAL_PRODUCT_COUNT_ERROR_MESSAGE);
+            throw new ProductException(NOT_EQUAL_PRODUCT_COUNT_ERROR_MESSAGE);
         }
     }
 

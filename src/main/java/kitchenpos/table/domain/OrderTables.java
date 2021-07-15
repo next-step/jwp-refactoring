@@ -1,5 +1,6 @@
 package kitchenpos.table.domain;
 
+import kitchenpos.exception.OrderTableException;
 import kitchenpos.tablegroup.domain.TableGroup;
 
 import java.util.ArrayList;
@@ -9,8 +10,9 @@ import java.util.stream.Collectors;
 
 public class OrderTables {
 
-    private List<OrderTable> orderTables = new ArrayList<>();
+    private static final String NOT_EMPTY_TABLE_ERROR_MESSAGE = "이미 그룹핑된 테이블이 존재합니다.";
 
+    private List<OrderTable> orderTables = new ArrayList<>();
 
     public OrderTables() {
     }
@@ -27,7 +29,7 @@ public class OrderTables {
 
     public void checkValidEmptyTableGroup() {
         if (orderTables.stream().anyMatch(orderTable -> Objects.nonNull(orderTable.getTableGroupId()))) {
-            throw new IllegalArgumentException();
+            throw new OrderTableException(NOT_EMPTY_TABLE_ERROR_MESSAGE);
         }
     }
 

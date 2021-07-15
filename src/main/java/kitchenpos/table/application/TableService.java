@@ -1,6 +1,7 @@
 package kitchenpos.table.application;
 
 import kitchenpos.enums.OrderStatus;
+import kitchenpos.exception.OrderTableException;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
@@ -17,6 +18,9 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class TableService {
+
+    private static final String NOT_FOUND_ORDER_TABLE_ERROR_MESSAGE = "미등록 주문 테이블 입니다.";
+    private static final String NOT_CHANGE_ORDER_STATUS_ERROR_MESSAGE = "주문 상태가 완료 상태인 주문 테이블 입니다.";
 
     private final OrderTableRepository orderTableRepository;
     private final OrderRepository orderRepository;
@@ -54,7 +58,7 @@ public class TableService {
 
     private OrderTable findById(final Long orderTableId) {
         return orderTableRepository.findById(orderTableId)
-                .orElseThrow(() -> new IllegalArgumentException("미등록 주문 테이블 입니다."));
+                .orElseThrow(() -> new OrderTableException(NOT_FOUND_ORDER_TABLE_ERROR_MESSAGE));
     }
 
     public OrderTables findAllByIds(List<Long> orderTableIds) {
@@ -74,7 +78,7 @@ public class TableService {
 
     public void checkValidOrderStatusCompletion(List<Long> orderTableIds) {
         if (orderRepository.countByOrderTableIdInAndOrderStatus(orderTableIds, OrderStatus.COMPLETION) > 0) {
-            throw new IllegalArgumentException();
+            throw new OrderTableException(NOT_CHANGE_ORDER_STATUS_ERROR_MESSAGE);
         }
     }
 }

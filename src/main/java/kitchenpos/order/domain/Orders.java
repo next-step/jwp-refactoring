@@ -1,6 +1,7 @@
 package kitchenpos.order.domain;
 
 import kitchenpos.enums.OrderStatus;
+import kitchenpos.exception.OrderException;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -13,6 +14,7 @@ import java.util.Objects;
 @EntityListeners(AuditingEntityListener.class)
 public class Orders {
 
+    public static final String CHECK_ORDER_STATUE_ERROR_MESSAGE = "주문 상태가 완료인 경우 주문 상태 변경이 불가능 합니다.";
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -54,7 +56,7 @@ public class Orders {
 
     public void checkOrderStatus() {
         if (Objects.equals(OrderStatus.COMPLETION, orderStatus)) {
-            throw new IllegalArgumentException("주문 상태가 완료인 경우 주문 상태 변경이 불가능 합니다.");
+            throw new OrderException(CHECK_ORDER_STATUE_ERROR_MESSAGE);
         }
     }
 

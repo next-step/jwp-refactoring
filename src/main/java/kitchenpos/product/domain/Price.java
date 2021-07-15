@@ -9,7 +9,8 @@ import java.util.Objects;
 @Embeddable
 public class Price {
 
-    public static final String NULL_OR_NEGATIVE_NUMBER_ERROR_MESSAGE = "상품 가격은 음수 일 수 없습니다.";
+    private static final String NULL_OR_NEGATIVE_NUMBER_ERROR_MESSAGE = "상품 가격은 음수 일 수 없습니다.";
+
     private BigDecimal price;
 
     public Price() {

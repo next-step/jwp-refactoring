@@ -1,5 +1,6 @@
 package kitchenpos.tablegroup.application;
 
+import kitchenpos.exception.TableGroupException;
 import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTables;
 import kitchenpos.tablegroup.domain.TableGroup;
@@ -15,6 +16,8 @@ import java.util.List;
 @Service
 @Transactional
 public class TableGroupService {
+
+    private  static final String MINIMUM_GROUP_TABLE_COUNT_ERROR_MESSAGE = "2개 이상의 테이블을 그룹핑할 수 있습니다.";
 
     private final TableGroupRepository tableGroupRepository;
     private final TableService tableService;
@@ -46,7 +49,7 @@ public class TableGroupService {
 
     private void checkValidOrderTableCount(final List<Long> orderTableIds) {
         if (CollectionUtils.isEmpty(orderTableIds) || orderTableIds.size() < 2) {
-            throw new IllegalArgumentException("2개 이상의 테이블을 그룹핑할 수 있습니다.");
+            throw new TableGroupException(MINIMUM_GROUP_TABLE_COUNT_ERROR_MESSAGE);
         }
     }
 }

@@ -1,5 +1,6 @@
 package kitchenpos.menu.application;
 
+import kitchenpos.exception.MenuException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProductRepository;
@@ -53,7 +54,7 @@ public class MenuService {
 
     private void checkExistsMenuGroup(Long menuGroupId) {
         if (!menuGroupRepository.existsById(menuGroupId)) {
-            throw new IllegalArgumentException(NOT_EXISTS_MENU_GROUP_ERROR_MESSAGE);
+            throw new MenuException(NOT_EXISTS_MENU_GROUP_ERROR_MESSAGE);
         }
     }
 
