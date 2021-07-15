@@ -3,7 +3,6 @@ package kitchenpos.menu.domain;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -39,34 +38,22 @@ public class MenuProducts {
         return menuProducts.isEmpty();
     }
 
-    public boolean containsAll(MenuProducts menuProducts) {
-        return this.menuProducts.containsAll(menuProducts.menuProducts);
-    }
-
-    public List<Long> getProductIds() {
-        return menuProducts.stream().map(MenuProduct::getProductId).collect(Collectors.toList());
-    }
-
-    public void forEach(Consumer<MenuProduct> consumer) {
-        menuProducts.forEach(consumer);
-    }
-
     public <T> List<T> mapList(Function<MenuProduct, T> function) {
         return menuProducts.stream()
             .map(function)
             .collect(Collectors.toList());
     }
 
-    public boolean isSatisfiedBy(List<MenuDetailOption> menuDetailOptions) {
-        if (menuProducts.size() != menuDetailOptions.size()) {
+    public boolean isSatisfiedBy(List<MenuProductOption> menuProductOptions) {
+        if (menuProducts.size() != menuProductOptions.size()) {
             return false;
         }
 
-        return menuDetailOptions.stream().allMatch(this::isSatisfiedBy);
+        return menuProductOptions.stream().allMatch(this::isSatisfiedBy);
     }
 
-    private boolean isSatisfiedBy(MenuDetailOption menuDetailOption) {
+    private boolean isSatisfiedBy(MenuProductOption menuProductOption) {
         return menuProducts.stream()
-            .anyMatch(menuProduct -> menuProduct.isSatisfiedBy(menuDetailOption));
+            .anyMatch(menuProduct -> menuProduct.isSatisfiedBy(menuProductOption));
     }
 }

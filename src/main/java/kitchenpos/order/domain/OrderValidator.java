@@ -6,14 +6,19 @@ import org.springframework.stereotype.Component;
 
 import kitchenpos.generic.exception.IllegalOperationException;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuDetailOption;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProductOption;
 import kitchenpos.menu.domain.MenuOption;
+import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.exception.MenuDetailMismatchException;
 import kitchenpos.menu.exception.MenuMismatchException;
 import kitchenpos.menu.exception.MenuNotFoundException;
 import kitchenpos.order.exception.OrderTableNotFoundException;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductOption;
 import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.product.domain.Products;
 import kitchenpos.product.exception.ProductMismatchException;
 import kitchenpos.product.exception.ProductNotFoundException;
 
@@ -54,18 +59,22 @@ public class OrderValidator {
             throw new MenuMismatchException("메뉴가 변경되었습니다.");
         }
 
-        List<MenuDetailOption> menuDetailOptions = orderLineItem.getMenuDetailOptions();
-        if (!menu.getMenuProducts().isSatisfiedBy(menuDetailOptions)) {
-            throw new MenuMismatchException("메뉴 세부항목이 변경되었습니다.");
-        }
-
-        menuDetailOptions
-            .forEach(option -> validateDetailProduct(option, getProduct(option)));
+        validateOrderLineItemDetail(orderLineItem.getOrderLineItemDetails(), menu.getMenuProducts());
     }
 
-    private void validateDetailProduct(MenuDetailOption menuDetailOption, Product product) {
-        if (!product.isSatisfiedBy(menuDetailOption)) {
-            throw new ProductMismatchException("제품 세부 항목이 변경되었습니다.");
+    private void validateOrderLineItemDetail(OrderLineItemDetails orderLineItemDetails, MenuProducts menuProducts) {
+        List<MenuProductOption> menuProductOptions = orderLineItemDetails.toMenuDetailOptions();
+        if (!menuProducts.isSatisfiedBy(menuProductOptions)) {
+            throw new MenuDetailMismatchException("메뉴 세부항목이 변경되었습니다.");
+        }
+
+        validateProduct(orderLineItemDetails, getProducts(menuProducts));
+    }
+
+    private void validateProduct(OrderLineItemDetails orderLineItemDetails, Products products) {
+        List<ProductOption> productOptions = orderLineItemDetails.toProductOptions();
+        if (!products.isSatisfiedBy(productOptions)) {
+            throw new ProductMismatchException("제품 정보가 변경되었습니다.");
         }
     }
 
@@ -80,8 +89,12 @@ public class OrderValidator {
             .orElseThrow(() -> new MenuNotFoundException("해당 ID의 메뉴가 존재하지 않습니다."));
     }
 
-    private Product getProduct(MenuDetailOption menuDetailOption) {
-        return productRepository.findById(menuDetailOption.getProductId())
+    private Products getProducts(MenuProducts menuProducts) {
+        return Products.of(menuProducts.mapList(this::getProduct));
+    }
+
+    private Product getProduct(MenuProduct menuProduct) {
+        return productRepository.findById(menuProduct.getProductId())
             .orElseThrow(() -> new ProductNotFoundException("해당 ID의 제품이 존재하지 않습니다."));
     }
 

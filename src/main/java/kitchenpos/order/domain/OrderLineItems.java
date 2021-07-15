@@ -43,17 +43,13 @@ public class OrderLineItems {
         return orderLineItems.isEmpty();
     }
 
-    public boolean contains(OrderLineItem orderLineItem) {
-        return orderLineItems.contains(orderLineItem);
-    }
-
-    public void forEach(Consumer<OrderLineItem> consumer) {
-        orderLineItems.forEach(consumer);
-    }
-
     public <T> List<T> mapList(Function<OrderLineItem, T> function) {
         return orderLineItems.stream()
             .map(function)
             .collect(Collectors.toList());
+    }
+
+    public void forEach(Consumer<OrderLineItem> consumer) {
+        orderLineItems.forEach(consumer);
     }
 }

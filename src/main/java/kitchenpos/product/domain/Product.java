@@ -10,8 +10,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import kitchenpos.generic.price.domain.Price;
-import kitchenpos.generic.quantity.domain.Quantity;
-import kitchenpos.menu.domain.MenuDetailOption;
 
 @Entity
 public class Product {
@@ -46,10 +44,6 @@ public class Product {
         }
     }
 
-    public Price priceOf(Quantity quantity) {
-        return price.of(quantity);
-    }
-
     public Long getId() {
         return id;
     }
@@ -62,11 +56,11 @@ public class Product {
         return price;
     }
 
-    public boolean isSatisfiedBy(MenuDetailOption menuDetailOption) {
-        if (!this.name.equals(menuDetailOption.getName())) {
+    public boolean isSatisfiedBy(ProductOption productOption) {
+        if (!this.name.equals(productOption.getName())) {
             return false;
         }
 
-        return this.price.hasSameValueAs(menuDetailOption.getPrice());
+        return this.price.hasSameValueAs(productOption.getPrice());
     }
 }

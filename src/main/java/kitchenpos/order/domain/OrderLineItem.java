@@ -1,6 +1,5 @@
 package kitchenpos.order.domain;
 
-import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.Column;
@@ -14,7 +13,6 @@ import javax.persistence.JoinColumn;
 
 import kitchenpos.generic.price.domain.Price;
 import kitchenpos.generic.quantity.domain.Quantity;
-import kitchenpos.menu.domain.MenuDetailOption;
 import kitchenpos.menu.domain.MenuOption;
 
 @Entity
@@ -71,6 +69,10 @@ public class OrderLineItem {
         return quantity;
     }
 
+    public OrderLineItemDetails getOrderLineItemDetails() {
+        return orderLineItemDetails;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o)
@@ -88,9 +90,5 @@ public class OrderLineItem {
 
     public MenuOption getMenuOption() {
         return new MenuOption(this.name, this.price);
-    }
-
-    public List<MenuDetailOption> getMenuDetailOptions() {
-        return this.orderLineItemDetails.toMenuDetailOptions();
     }
 }

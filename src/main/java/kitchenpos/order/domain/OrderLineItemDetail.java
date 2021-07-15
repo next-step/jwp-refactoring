@@ -9,7 +9,8 @@ import javax.persistence.Id;
 
 import kitchenpos.generic.price.domain.Price;
 import kitchenpos.generic.quantity.domain.Quantity;
-import kitchenpos.menu.domain.MenuDetailOption;
+import kitchenpos.menu.domain.MenuProductOption;
+import kitchenpos.product.domain.ProductOption;
 
 @Entity
 public class OrderLineItemDetail {
@@ -42,7 +43,11 @@ public class OrderLineItemDetail {
         this.quantity = quantity;
     }
 
-    public MenuDetailOption toMenuDetailOption() {
-        return new MenuDetailOption(productId, name, price, quantity);
+    public MenuProductOption toMenuDetailOption() {
+        return new MenuProductOption(productId, quantity);
+    }
+
+    public ProductOption toProductOption() {
+        return new ProductOption(productId, name, price);
     }
 }

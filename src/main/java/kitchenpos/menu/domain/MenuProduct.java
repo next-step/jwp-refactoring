@@ -45,12 +45,11 @@ public class MenuProduct {
         return quantity;
     }
 
-    public boolean isSatisfiedBy(MenuDetailOption menuDetailOption) {
-        if (!this.quantity.equals(menuDetailOption.getQuantity())) {
+    public boolean isSatisfiedBy(MenuProductOption menuProductOption) {
+        if (!this.productId.equals(menuProductOption.getProductId())) {
             return false;
         }
 
-        // return product.isSatisfiedBy(menuDetailOption); // TODO 어떻게 풀어갈것인가?
-        return true;
+        return this.quantity.equals(menuProductOption.getQuantity());
     }
 }

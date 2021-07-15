@@ -11,7 +11,8 @@ import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 
-import kitchenpos.menu.domain.MenuDetailOption;
+import kitchenpos.menu.domain.MenuProductOption;
+import kitchenpos.product.domain.ProductOption;
 
 @Embeddable
 public class OrderLineItemDetails {
@@ -35,9 +36,15 @@ public class OrderLineItemDetails {
         this.orderLineItemDetails = orderLineItemDetails;
     }
 
-    public List<MenuDetailOption> toMenuDetailOptions() {
+    public List<MenuProductOption> toMenuDetailOptions() {
         return orderLineItemDetails.stream()
             .map(OrderLineItemDetail::toMenuDetailOption)
+            .collect(Collectors.toList());
+    }
+
+    public List<ProductOption> toProductOptions() {
+        return orderLineItemDetails.stream()
+            .map(OrderLineItemDetail::toProductOption)
             .collect(Collectors.toList());
     }
 }

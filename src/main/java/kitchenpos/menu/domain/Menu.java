@@ -50,10 +50,6 @@ public class Menu {
         validator.validate(this);
     }
 
-    public List<Long> getProductIds() {
-        return menuProducts.getProductIds();
-    }
-
     public Long getId() {
         return id;
     }
@@ -74,6 +70,14 @@ public class Menu {
         return price;
     }
 
+    public boolean isSatisfiedBy(MenuOption menuOption) {
+        if (!this.name.equals(menuOption.getName())) {
+            return false;
+        }
+
+        return this.price.hasSameValueAs(menuOption.getPrice());
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o)
@@ -87,13 +91,5 @@ public class Menu {
     @Override
     public int hashCode() {
         return Objects.hash(id);
-    }
-
-    public boolean isSatisfiedBy(MenuOption menuOption) {
-        if (!this.name.equals(menuOption.getName())) {
-            return false;
-        }
-
-        return this.price.hasSameValueAs(menuOption.getPrice());
     }
 }
