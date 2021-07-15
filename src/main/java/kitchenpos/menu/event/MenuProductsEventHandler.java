@@ -2,13 +2,14 @@ package kitchenpos.menu.event;
 
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProductRepository;
-import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 @Component
@@ -25,20 +26,25 @@ public class MenuProductsEventHandler {
     @EventListener
     public void saveMenuProduct(MenuCreatedEvent event) {
         List<MenuProduct> menuProductList = new ArrayList<>();
+        BigDecimal sum = BigDecimal.ZERO;
 
         for (MenuProductRequest menuProductRequest : event.getMenuProductRequests()) {
-            productRepository.findById(menuProductRequest.getProductId()).ifPresent(
-                    product -> menuProductList.add(
-                            new MenuProduct(event.getMenu(), product, menuProductRequest.getQuantity())
-                    )
-            );
+            Product product = findByProductId(menuProductRequest.getProductId());
+            menuProductList.add(new MenuProduct(event.getMenu(), product.getId(), menuProductRequest.getQuantity()));
+            sum = sum.add(multiplyPrice(product.getPrice(), menuProductRequest.getQuantity()));
         }
 
-        MenuProducts menuProducts = new MenuProducts(menuProductList);
+        MenuProductValidator.validPrice(event.getMenu(), sum);
 
-        MenuProductValidator.validPrice(menuProducts, event.getMenu());
+        menuProductRepository.saveAll(menuProductList);
+    }
 
-        menuProductRepository.saveAll(menuProducts.getMenuProducts());
+    private BigDecimal multiplyPrice(BigDecimal MenuPrice, Long quantity) {
+        return MenuPrice.multiply(BigDecimal.valueOf(quantity));
+    }
+
+    private Product findByProductId(Long prductId) {
+        return productRepository.findById(prductId).orElseThrow(IllegalArgumentException::new);
     }
 
 }
