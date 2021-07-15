@@ -38,8 +38,8 @@ public class TableGroupValidator {
         if (!exists(tableGroup)) {
             throw new TableGroupNotFoundException("해당 ID의 테이블 그룹이 존재하지 않습니다.");
         }
-        
-        if (isUngroupable(tableGroup)) {
+
+        if (includeOrderInProgess(tableGroup)) {
             throw new OrderNotCompletedException("테이블에 완결되지 않은 주문이 존재합니다.");
         }
     }
@@ -48,7 +48,7 @@ public class TableGroupValidator {
         return tableGroupRepository.existsById(tableGroup.getId());
     }
 
-    private boolean isUngroupable(TableGroup tableGroup) {
+    private boolean includeOrderInProgess(TableGroup tableGroup) {
         List<Long> orderTableIds = orderTableRepository.findAllByTableGroupId(tableGroup.getId())
             .stream().map(OrderTable::getId).collect(Collectors.toList());
         return orderRepository.existsAllByOrderTableIdInAndOrderStatusIn(orderTableIds, asList(COOKING, MEAL));

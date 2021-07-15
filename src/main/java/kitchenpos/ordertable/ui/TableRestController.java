@@ -1,16 +1,21 @@
 package kitchenpos.ordertable.ui;
 
-import kitchenpos.ordertable.service.TableService;
-import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.dto.OrderTableRequest;
-import kitchenpos.ordertable.dto.OrderTableResponse;
-
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
 import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.dto.OrderTableRequest;
+import kitchenpos.ordertable.dto.OrderTableResponse;
+import kitchenpos.ordertable.service.TableService;
 
 @RestController
 public class TableRestController {

@@ -6,14 +6,14 @@ import java.util.Optional;
 import org.springframework.stereotype.Component;
 
 import kitchenpos.generic.exception.CalculationFailedException;
-import kitchenpos.generic.price.domain.Price;
 import kitchenpos.generic.exception.ExceedingTotalPriceException;
 import kitchenpos.generic.exception.MenuGroupNotFoundException;
+import kitchenpos.generic.exception.ProductNotFoundException;
+import kitchenpos.generic.price.domain.Price;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
-import kitchenpos.generic.exception.ProductNotFoundException;
 
 @Component
 public class MenuValidator {

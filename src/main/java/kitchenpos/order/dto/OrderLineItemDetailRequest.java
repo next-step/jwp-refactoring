@@ -2,9 +2,9 @@ package kitchenpos.order.dto;
 
 import java.math.BigDecimal;
 
-import kitchenpos.order.domain.OrderLineItemDetail;
 import kitchenpos.generic.price.domain.Price;
 import kitchenpos.generic.quantity.domain.Quantity;
+import kitchenpos.order.domain.OrderLineItemDetail;
 
 public class OrderLineItemDetailRequest {
     private Long menuProductSeq;

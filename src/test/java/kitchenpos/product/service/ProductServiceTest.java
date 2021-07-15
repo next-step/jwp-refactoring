@@ -18,7 +18,6 @@ import kitchenpos.generic.price.domain.Price;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.domain.ProductTest;
-import kitchenpos.product.service.ProductService;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("제품 서비스")

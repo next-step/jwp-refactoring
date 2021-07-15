@@ -89,7 +89,7 @@ class OrderValidatorTest {
         새로운_주문 = mock(Order.class);
         when(새로운_주문.isCompleted()).thenReturn(true);
 
-        assertThatThrownBy(() -> validator.checkChangeable(새로운_주문))
+        assertThatThrownBy(() -> validator.validateChangeOrderStatus(새로운_주문))
             .isInstanceOf(IllegalOperationException.class);
     }
 }

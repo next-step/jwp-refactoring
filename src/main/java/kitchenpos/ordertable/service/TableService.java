@@ -5,17 +5,20 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import kitchenpos.generic.exception.OrderTableNotFoundException;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
+import kitchenpos.ordertable.domain.OrderTableValidator;
 import kitchenpos.ordertable.dto.OrderTableRequest;
-import kitchenpos.generic.exception.OrderTableNotFoundException;
 
 @Service
 public class TableService {
 
+    private final OrderTableValidator validator;
     private final OrderTableRepository orderTableRepository;
 
-    public TableService(OrderTableRepository orderTableRepository) {
+    public TableService(OrderTableValidator validator, OrderTableRepository orderTableRepository) {
+        this.validator = validator;
         this.orderTableRepository = orderTableRepository;
     }
 
@@ -31,7 +34,7 @@ public class TableService {
     @Transactional
     public OrderTable changeEmpty(final Long orderTableId, final OrderTableRequest request) {
         final OrderTable savedOrderTable = findById(orderTableId);
-        savedOrderTable.changeEmpty(request.isEmpty());
+        savedOrderTable.changeEmpty(validator, request.isEmpty());
 
         return savedOrderTable;
     }
@@ -39,7 +42,7 @@ public class TableService {
     @Transactional
     public OrderTable changeNumberOfGuests(final Long orderTableId, final OrderTableRequest orderTable) {
         final OrderTable savedOrderTable = findById(orderTableId);
-        savedOrderTable.changeNumberOfGuests(orderTable.numberOfGuests());
+        savedOrderTable.changeNumberOfGuests(validator, orderTable.numberOfGuests());
 
         return savedOrderTable;
     }

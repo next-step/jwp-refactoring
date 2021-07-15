@@ -4,10 +4,10 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderLineItemDetails;
 import kitchenpos.generic.price.domain.Price;
 import kitchenpos.generic.quantity.domain.Quantity;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderLineItemDetails;
 
 public class OrderLineItemRequest {
     private Long menuId;

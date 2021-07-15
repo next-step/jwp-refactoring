@@ -1,9 +1,8 @@
 package kitchenpos.menu.ui;
 
-import kitchenpos.menu.service.MenuService;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.dto.MenuRequest;
-import kitchenpos.menu.dto.MenuResponse;
+import java.net.URI;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,9 +10,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.net.URI;
-import java.util.List;
-import java.util.stream.Collectors;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.menu.service.MenuService;
 
 @RestController
 public class MenuRestController {

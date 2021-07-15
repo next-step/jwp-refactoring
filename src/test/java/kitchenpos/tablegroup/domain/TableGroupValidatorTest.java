@@ -24,6 +24,7 @@ import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
 
+@DisplayName("테이블 그룹 밸리데이터 테스트")
 @ExtendWith(MockitoExtension.class)
 class TableGroupValidatorTest {
 

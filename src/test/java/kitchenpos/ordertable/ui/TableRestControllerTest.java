@@ -87,7 +87,7 @@ class TableRestControllerTest extends IntegrationTest {
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(request)))
             .andDo(print())
-            .andExpect(status().isBadRequest());
+            .andExpect(status().isConflict());
     }
 
     @Test
@@ -98,7 +98,7 @@ class TableRestControllerTest extends IntegrationTest {
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(request)))
             .andDo(print())
-            .andExpect(status().isBadRequest());
+            .andExpect(status().isConflict());
     }
 
     @Test

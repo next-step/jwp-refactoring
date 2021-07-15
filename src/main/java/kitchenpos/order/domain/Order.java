@@ -52,7 +52,7 @@ public class Order {
     }
 
     public void changeStatus(OrderValidator validator, OrderStatus orderStatus) {
-        validator.checkChangeable(this);
+        validator.validateChangeOrderStatus(this);
         this.orderStatus = orderStatus;
     }
 

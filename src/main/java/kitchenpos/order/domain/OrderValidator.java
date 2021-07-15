@@ -5,24 +5,24 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 import kitchenpos.generic.exception.IllegalOperationException;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuProductOption;
-import kitchenpos.menu.domain.MenuOption;
-import kitchenpos.menu.domain.MenuProducts;
-import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.generic.exception.MenuDetailMismatchException;
 import kitchenpos.generic.exception.MenuMismatchException;
 import kitchenpos.generic.exception.MenuNotFoundException;
 import kitchenpos.generic.exception.OrderTableNotFoundException;
+import kitchenpos.generic.exception.ProductMismatchException;
+import kitchenpos.generic.exception.ProductNotFoundException;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuOption;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProductOption;
+import kitchenpos.menu.domain.MenuProducts;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductOption;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.domain.Products;
-import kitchenpos.generic.exception.ProductMismatchException;
-import kitchenpos.generic.exception.ProductNotFoundException;
 
 @Component
 public class OrderValidator {
@@ -80,7 +80,7 @@ public class OrderValidator {
         }
     }
 
-    public void checkChangeable(Order order) {
+    public void validateChangeOrderStatus(Order order) {
         if (order.isCompleted()) {
             throw new IllegalOperationException("완결 된 주문은 상태를 변경할 수 없습니다.");
         }

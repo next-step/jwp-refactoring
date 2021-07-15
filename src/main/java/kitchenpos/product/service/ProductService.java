@@ -5,9 +5,9 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import kitchenpos.generic.exception.ProductNotFoundException;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
-import kitchenpos.generic.exception.ProductNotFoundException;
 
 @Service
 public class ProductService {

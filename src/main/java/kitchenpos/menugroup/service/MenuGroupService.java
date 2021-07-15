@@ -5,10 +5,10 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import kitchenpos.generic.exception.MenuGroupNotFoundException;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.menugroup.dto.MenuGroupRequest;
-import kitchenpos.generic.exception.MenuGroupNotFoundException;
 
 @Service
 public class MenuGroupService {

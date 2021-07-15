@@ -1,9 +1,6 @@
 package kitchenpos.ordertable.domain;
 
-import java.util.List;
-
 import org.springframework.context.event.EventListener;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,8 +24,8 @@ public class TableGroupingEventHandler {
     @Transactional
     public void handle(TableGroupedEvent event) {
         tableGroupRepository.save(new TableGroup());
-        List<OrderTable> orderTables = orderTableRepository.findAllById(event.getOrderTableIds());
-        orderTables.forEach(orderTable -> orderTable.setTableGroupId(event.getTableGroupId()));
+        orderTableRepository.findAllById(event.getOrderTableIds())
+            .forEach(orderTable -> orderTable.groupedBy(event.getTableGroupId()));
     }
 
     @EventListener
