@@ -1,11 +1,5 @@
 package kitchenpos.common.exception;
 
-import kitchenpos.menu.application.MenuGroupNotFoundException;
-import kitchenpos.menu.application.MenuNotMatchException;
-import kitchenpos.order.application.OrderLineItemNotFoundException;
-import kitchenpos.order.application.OrderNotFoundException;
-import kitchenpos.product.application.ProductNotFoundException;
-import kitchenpos.table.application.OrderTableNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -32,43 +26,7 @@ public class GlobalExceptionHandler {
     public ErrorResponse handleEntityExist(Exception e) {
         return new ErrorResponse(e.getMessage());
     }
-
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(MenuNotMatchException.class)
-    public ErrorResponse handleMenuNotMatch(Exception e) {
-        return new ErrorResponse(e.getMessage());
-    }
-
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(OrderLineItemNotFoundException.class)
-    public ErrorResponse handleOrderLineItemNotFound(Exception e) {
-        return new ErrorResponse(e.getMessage());
-    }
-
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(OrderNotFoundException.class)
-    public ErrorResponse handleOrderNotFound(Exception e) {
-        return new ErrorResponse(e.getMessage());
-    }
-
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(OrderTableNotFoundException.class)
-    public ErrorResponse handleOrderTableNotFound(Exception e) {
-        return new ErrorResponse(e.getMessage());
-    }
-
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(MenuGroupNotFoundException.class)
-    public ErrorResponse handleMenuGroupNotFound(Exception e) {
-        return new ErrorResponse(e.getMessage());
-    }
-
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(ProductNotFoundException.class)
-    public ErrorResponse handleProductNotFound(Exception e) {
-        return new ErrorResponse(e.getMessage());
-    }
-
+    
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Throwable.class)
     public ErrorResponse handleException(Exception e) {
