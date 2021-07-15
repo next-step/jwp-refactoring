@@ -1,6 +1,5 @@
 package kitchenpos.table.application;
 
-import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.OrderTables;
@@ -22,7 +21,6 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
@@ -30,7 +28,7 @@ import static org.mockito.Mockito.when;
 class TableServiceTest {
 
     @Mock
-    private OrderRepository orderRepository;
+    private OrderTableValidator orderTableValidator;
 
     @Mock
     private OrderTableRepository orderTableRepository;
@@ -39,7 +37,7 @@ class TableServiceTest {
 
     @BeforeEach
     void setUp() {
-        tableService = new TableService(orderRepository, orderTableRepository);
+        tableService = new TableService(orderTableValidator, orderTableRepository);
     }
 
     @Test
@@ -81,8 +79,6 @@ class TableServiceTest {
 
         when(orderTableRepository.findById(anyLong()))
                 .thenReturn(Optional.of(savedOrderTable1));
-        when(orderRepository.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList()))
-                .thenReturn(false);
         final OrderTableResponse actual = tableService.changeEmpty(givenOrderTableId, orderTableRequest);
 
         assertThat(actual.getEmpty()).isTrue();
@@ -100,8 +96,6 @@ class TableServiceTest {
 
         when(orderTableRepository.findById(anyLong()))
                 .thenReturn(Optional.of(savedOrderTable1));
-        when(orderRepository.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList()))
-                .thenReturn(false);
 
         assertThatThrownBy(() -> tableService.changeEmpty(givenOrderTableId, orderTableRequest))
                 .isInstanceOf(EntityExistsException.class);
@@ -127,7 +121,6 @@ class TableServiceTest {
     void change_with_empty_number_of_guests() {
         Long givenOrderTableId = 1L;
         int updateNumberOfGuest = -1;
-//        TableGroup tableGroup = TableGroup.of(new OrderTables(new ArrayList<>()));
         final OrderTable savedOrderTable = new OrderTable(1L, null, 3, false);
         final OrderTableRequest orderTableRequest = new OrderTableRequest(updateNumberOfGuest, false);
 
