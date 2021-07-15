@@ -144,4 +144,4 @@
 * [x] MenuService의 비즈니스 로직 domain으로 이관 및 단위 테스트 작성
 * [x] TableSerivce의 비즈니스 로직 domain으로 이관 및 단위 테스트 작성
 * [x] TableGroupService의 비즈니스 로직 domain으로 이관 및 단위 테스트 작성
-* [ ] OrderService의 비즈니스 로직 domain으로 이관 및 단위 테스트 작성
+* [x] OrderService의 비즈니스 로직 domain으로 이관 및 단위 테스트 작성

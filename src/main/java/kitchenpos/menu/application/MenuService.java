@@ -56,4 +56,8 @@ public class MenuService {
             throw new IllegalArgumentException(NOT_EXISTS_MENU_GROUP_ERROR_MESSAGE);
         }
     }
+
+    public long countByMenuId(List<Long> menuIds) {
+        return menuRepository.countByIdIn(menuIds);
+    }
 }

@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("주문 테이블 반환 객체 테스트")
-class OrderTableResponseTest {
+class OrdersTableResponseTest {
 
     @Test
     void 주문_테이블_entity를_이용하여_주문_테이블_반환_객체_생성() {

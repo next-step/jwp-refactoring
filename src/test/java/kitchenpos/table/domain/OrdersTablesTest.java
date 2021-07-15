@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DisplayName("주문 테이블 일급 컬렉션 객체 테스트")
-class OrderTablesTest {
+class OrdersTablesTest {
 
     private OrderTable 일번_테이블;
     private OrderTable 이번_테이블;

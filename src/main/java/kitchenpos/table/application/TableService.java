@@ -71,4 +71,7 @@ public class TableService {
         return new OrderTables(orderTables);
     }
 
+    public OrderTable findOrderTable(Long orderTableId) {
+        return findById(orderTableId);
+    }
 }
