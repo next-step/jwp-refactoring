@@ -50,7 +50,7 @@ public class OrderService {
         List<OrderLineItem> orderlineItems = new ArrayList<>();
         for (OrderLineItemRequest orderLineItemRequest : orderLineItemRequests) {
             Menu menu = menuService.findById(orderLineItemRequest.getMenuId());
-            orderlineItems.add(new OrderLineItem(menu, orderLineItemRequest.getQuantity()));
+            orderlineItems.add(new OrderLineItem(menu.getId(), orderLineItemRequest.getQuantity()));
         }
         return new OrderLineItems(orderlineItems);
     }
