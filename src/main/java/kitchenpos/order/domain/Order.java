@@ -50,10 +50,11 @@ public class Order {
         this.orderLineItems = new ArrayList<>();
     }
 
-    public void validateOrderStatus(OrderStatus orderStatus) {
-        if (Objects.equals(this.orderStatus, orderStatus)) {
-            throw new OrderException("주문상태가 올바르지 않습니다", orderStatus);
+    public void updateOrderStatusCheck(OrderStatus orderStatus) {
+        if (Objects.equals(this.orderStatus, OrderStatus.COMPLETION)) {
+            throw new OrderException("주문상태가 올바르지 않습니다", OrderStatus.COMPLETION);
         }
+        this.orderStatus = orderStatus;
     }
 
     public void validateMenuSize(long size) {

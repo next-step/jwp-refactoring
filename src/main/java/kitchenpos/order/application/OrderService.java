@@ -51,21 +51,9 @@ public class OrderService {
     public Order changeOrderStatus(final Long orderId, final OrderRequest orderRequest) {
         final Order savedOrder = findOrderById(orderId);
 
-        savedOrder.updateOrderStatus(orderRequest.getOrderStatus());
+        savedOrder.updateOrderStatusCheck(orderRequest.getOrderStatus());
 
         return savedOrder;
-    }
-
-    public void validateOrderStatusNotIn(List<OrderTable> orderTables, List<OrderStatus> orderStatuses) {
-        if (orderRepository.existsByOrderTableInAndOrderStatusIn(orderTables, orderStatuses)) {
-            throw new OrderTableException("올바르지 않은 주문상태가 포함되어있습니다", orderStatuses);
-        }
-    }
-
-    public void validateOrderStatusNotIn(OrderTable orderTable, List<OrderStatus> orderStatuses) {
-        if (orderRepository.existsByOrderTableAndOrderStatusIn(orderTable, orderStatuses)) {
-            throw new OrderTableException("올바르지 않은 주문상태가 포함되어있습니다", orderStatuses);
-        }
     }
 
     private Order findOrderById(Long id) {

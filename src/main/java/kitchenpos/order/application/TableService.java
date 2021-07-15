@@ -36,13 +36,12 @@ public class TableService {
     @Transactional
     public OrderTable changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
 
-        final OrderTable savedOrderTable = orderService.findOrderTableById(orderTableId);
-        savedOrderTable.validateTableGroupIsNull();
+        final OrderTable orderTable = orderService.findOrderTableById(orderTableId);
+        orderTable.validateTableGroupIsNull();
+        orderTable.validateOrderStatusNotInCookingAndMeal();
+        orderTable.updateEmpty(orderTableRequest.getEmpty());
 
-        orderService.validateOrderStatusNotIn(savedOrderTable, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL));
-        savedOrderTable.updateEmpty(orderTableRequest.getEmpty());
-
-        return savedOrderTable;
+        return orderTable;
     }
 
     @Transactional

@@ -5,6 +5,7 @@ import kitchenpos.advice.exception.MenuGroupException;
 import kitchenpos.advice.exception.PriceException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menugroup.application.MenuGroupService;
 import kitchenpos.menugroup.domain.MenuGroup;
@@ -44,6 +45,9 @@ class MenuServiceTest {
     private MenuProduct 후라이드;
     private MenuProduct 양념치킨;
 
+    MenuProductRequest menuProductRequest_후라이드;
+    MenuProductRequest menuProductRequest_양념;
+
     @BeforeEach
     void setUp() {
         MenuGroupRequest menuGroupRequest = new MenuGroupRequest("후라이드양념반반메뉴");
@@ -56,7 +60,7 @@ class MenuServiceTest {
     @DisplayName("메뉴를 생성한다")
     @Test
     void create() {
-        MenuRequest menuRequest = 메뉴를_생성한다(32000, 후라이드양념반반메뉴);
+        MenuRequest menuRequest = 메뉴요청을_생성한다(32000, 후라이드양념반반메뉴);
         Menu savedMenu = menuService.create(menuRequest);
         assertThat(savedMenu.getName()).isEqualTo("후라이드양념반반");
     }
@@ -71,7 +75,7 @@ class MenuServiceTest {
     @DisplayName("메뉴를 생성한다 : menuGroupId가 존재하지 않으면 익셉션 발생")
     @Test
     void createMenuGroupIdException() {
-        MenuRequest menuRequest = 메뉴를_생성한다(32000, new MenuGroup(100l, "메뉴그룹없음"));
+        MenuRequest menuRequest = 메뉴요청을_생성한다(32000, new MenuGroup(100l, "메뉴그룹없음"));
 
         assertThatThrownBy(() -> menuService.create(menuRequest))
             .isInstanceOf(MenuGroupException.class);
@@ -92,11 +96,22 @@ class MenuServiceTest {
         assertThat(menus.size()).isGreaterThanOrEqualTo(1);
     }
 
-    private MenuRequest 메뉴를_생성한다(int price, MenuGroup menuGroup) {
+    private Menu 메뉴를_생성한다(int price, MenuGroup menuGroup) {
         Menu menu = new Menu("후라이드양념반반", BigDecimal.valueOf(price), menuGroup);
         후라이드 = new MenuProduct(menu.getId(), 후라이드상품, 1);
         양념치킨 = new MenuProduct(menu.getId(), 양념치킨상품, 1);
         menu.updateMenuProducts(Arrays.asList(후라이드, 양념치킨));
-        return MenuRequest.of(menu);
+        return menu;
+    }
+
+    private MenuRequest 메뉴요청을_생성한다(int price, MenuGroup menuGroup) {
+        Menu menu = 메뉴를_생성한다(price, menuGroup);
+
+        menuProductRequest_후라이드 = new MenuProductRequest(menu.getId(), 후라이드상품.getId(), 1L);
+        menuProductRequest_양념 = new MenuProductRequest(menu.getId(), 양념치킨상품.getId(), 1L);
+        List<MenuProductRequest> menuProductRequests = Arrays.asList(menuProductRequest_후라이드, menuProductRequest_양념);
+
+        MenuRequest menuRequest = new MenuRequest("후라이드양념반반", BigDecimal.valueOf(price), menuGroup.getId(), menuProductRequests);
+        return menuRequest;
     }
 }

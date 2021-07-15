@@ -36,6 +36,7 @@ public class TableGroupService {
         return tableGroupRepository.save(new TableGroup(orderTables));
     }
 
+
     @Transactional
     public void ungroup(final Long tableGroupId) {
         final TableGroup tableGroup = findTableGroupById(tableGroupId);
