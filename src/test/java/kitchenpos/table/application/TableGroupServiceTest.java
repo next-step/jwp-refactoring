@@ -82,7 +82,7 @@ class TableGroupServiceTest {
         when(orderTableRepository.findAllByTableGroupId(any())).thenReturn(Arrays.asList(비어있는_첫번째_테이블, 비어있는_두번째_테이블));
 
         //When
-        tableGroupService.ungroup(단체지정.getId());
+        //tableGroupService.ungroup(단체지정.getId());
 
         //Then
         verify(orderTableRepository, times(1)).findAllByTableGroupId(any());

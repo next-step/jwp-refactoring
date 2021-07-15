@@ -1,8 +1,6 @@
 package kitchenpos.ordertable.domain;
 
 import kitchenpos.exception.CannotUpdateException;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.Orders;
 
 import javax.persistence.*;
 
@@ -19,9 +17,6 @@ public class OrderTable {
 
     @Column(name = "number_of_guests", nullable = false)
     private int numberOfGuests;
-
-    @Embedded
-    private Orders orders = new Orders();
 
     @Column(name = "empty", nullable = false)
     private boolean empty = true;
@@ -68,17 +63,13 @@ public class OrderTable {
     public boolean isAssignedToTableGroup() {
         return tableGroupId != null;
     }
-
-    public void unGroup() {
-        if (orders.isNotCompleted()) {
-            throw new CannotUpdateException(ERROR_TABLE_GROUP_CANNOT_BE_UNGROUPED_WHEN_ORDERS_NOT_COMPLETED);
-        }
-        this.tableGroupId = null;
-    }
-
-    public void addOrder(Order order) {
-        orders.add(order);
-    }
+/* TableGroup 리팩토링 시 반영 */
+//    public void unGroup() {
+//        if (orders.isNotCompleted()) {
+//            throw new CannotUpdateException(ERROR_TABLE_GROUP_CANNOT_BE_UNGROUPED_WHEN_ORDERS_NOT_COMPLETED);
+//        }
+//        this.tableGroupId = null;
+//    }
 
     public Long getId() {
         return id;

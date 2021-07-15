@@ -46,8 +46,9 @@ public class TableGroupService {
                 .collect(Collectors.toList());
     }
 
-    public void ungroup(final Long tableGroupId) {
-        final List<OrderTable> orderTables = orderTableRepository.findAllByTableGroupId(tableGroupId);
-        orderTables.forEach(OrderTable::unGroup);
-    }
+    /* TableGroup 리팩토링 시 반영 */
+//    public void ungroup(final Long tableGroupId) {
+//        final List<OrderTable> orderTables = orderTableRepository.findAllByTableGroupId(tableGroupId);
+//        orderTables.forEach(OrderTable::unGroup);
+//    }
 }
