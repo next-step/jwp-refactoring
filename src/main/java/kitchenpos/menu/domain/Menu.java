@@ -4,6 +4,7 @@ import kitchenpos.common.model.Price;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -59,8 +60,8 @@ public class Menu {
         this.menuProducts.add(menuProduct);
     }
 
-    public void validationByPrice() {
-        this.menuProducts.validationByPrice(price);
+    public void validationByPrice(Map<Long, Price> productPriceMap) {
+        this.menuProducts.validationByPrice(price, productPriceMap);
     }
 
     @Override

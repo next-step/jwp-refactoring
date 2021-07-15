@@ -1,12 +1,16 @@
 package kitchenpos.menu.application;
 
+import kitchenpos.common.model.Price;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menuGroup.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -46,6 +50,13 @@ public class MenuService {
             throw new IllegalArgumentException("상품에 등록된 메뉴만 등록할 수 있습니다.");
         }
 
-        menu.validationByPrice();
+        menu.validationByPrice(getProductPriceMap(menu));
+    }
+
+    @Transactional(readOnly = true)
+    protected Map<Long, Price> getProductPriceMap(final Menu menu) {
+        List<Product> allByIdIn = productRepository.findAllByIdIn(menu.getProductIds());
+
+        return allByIdIn.stream().collect(Collectors.toMap(x -> x.getId(), x -> x.getPrice()));
     }
 }

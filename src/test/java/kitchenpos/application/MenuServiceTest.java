@@ -39,7 +39,7 @@ class MenuServiceTest {
         MenuGroup menuGroup = menuGroupService.create(new MenuGroup("테스트 메뉴"));
         Menu menu = new Menu(name, BigDecimal.valueOf(15000), menuGroup.getId());
         Product product = productService.create(new Product(name, BigDecimal.valueOf(15000)));
-        new MenuProduct(menu, product,1);
+        new MenuProduct(menu, product.getId(),1);
 
         // when
         Menu actualMenu = menuService.create(menu);
@@ -70,7 +70,7 @@ class MenuServiceTest {
 
         Menu menu = new Menu(name, BigDecimal.valueOf(15000), noneMenuGroup.getId());
         Product product = productService.create(new Product(name, BigDecimal.valueOf(15000)));
-        new MenuProduct(menu, product,1);
+        new MenuProduct(menu, product.getId(),1);
 
         assertThatThrownBy(() -> menuService.create(menu))
                 .isInstanceOf(RuntimeException.class)
@@ -84,7 +84,7 @@ class MenuServiceTest {
         MenuGroup menuGroup = menuGroupService.create(new MenuGroup("테스트 메뉴"));
         Menu menu = new Menu(name, BigDecimal.valueOf(15000), menuGroup.getId());
         Product product = new Product(999L, name, BigDecimal.valueOf(15000));
-        new MenuProduct( menu, product,1);
+        new MenuProduct( menu, product.getId(),1);
 
         assertThatThrownBy(() -> menuService.create(menu))
                 .isInstanceOf(RuntimeException.class)
@@ -98,7 +98,7 @@ class MenuServiceTest {
         MenuGroup menuGroup = menuGroupService.create(new MenuGroup("테스트 메뉴"));
         Menu menu = new Menu(name, BigDecimal.valueOf(1500000), menuGroup.getId());
         Product product = productService.create(new Product(name, BigDecimal.valueOf(15000)));
-        new MenuProduct(menu, product,1);
+        new MenuProduct(menu, product.getId(),1);
 
         assertThatThrownBy(() -> menuService.create(menu))
                 .isInstanceOf(RuntimeException.class)

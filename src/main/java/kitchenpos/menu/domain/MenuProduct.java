@@ -1,8 +1,6 @@
 package kitchenpos.menu.domain;
 
 import kitchenpos.common.model.Price;
-import kitchenpos.product.domain.Product;
-
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -17,34 +15,32 @@ public class MenuProduct {
     @JoinColumn(name = "menu_id", foreignKey = @ForeignKey(name = "fk_menu_product_menu"))
     private Menu menu;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id", foreignKey = @ForeignKey(name = "fk_menu_product_product"))
-    private Product product;
+    @Column(name = "product_id")
+    private Long productId;
 
     private long quantity;
 
     public MenuProduct() {
     }
 
-    public MenuProduct(final Menu menu, final Product product, final long quantity) {
-        this(null, menu, product, quantity);
+    public MenuProduct(final Menu menu, final Long productId, final long quantity) {
+        this(null, menu, productId, quantity);
     }
 
-    public MenuProduct(final Long id, final Menu menu, final Product product, final long quantity) {
+    public MenuProduct(final Long id, final Menu menu, final Long productId, final long quantity) {
         setMenu(menu);
 
         this.id = id;
-        this.product = product;
+        this.productId = productId;
         this.quantity = quantity;
     }
 
     public Long getProductId() {
-        return product.getId();
+        return productId;
     }
 
-    //TODO : Product와 느슨한 결합으로 변경하는 방법을 고민해보기
-    Price calculate() {
-        return product.getPrice().times(quantity);
+    Price calculate(Price productPrice) {
+         return productPrice.times(quantity);
     }
 
     private void setMenu(final Menu menu) {
