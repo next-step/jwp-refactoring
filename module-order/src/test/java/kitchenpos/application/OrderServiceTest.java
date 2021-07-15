@@ -1,15 +1,15 @@
 package kitchenpos.application;
 
+import kitchenpos.order.application.OrderService;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.*;
 import kitchenpos.order.exception.EmptyOrderTableException;
 import kitchenpos.order.exception.OrderStatusCompleteException;
-import kitchenpos.tablegroup.domain.TableGroup;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.order.application.OrderService;
 import kitchenpos.ordertable.domain.OrderTableRepository;
+import kitchenpos.tablegroup.domain.TableGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,7 +24,8 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)

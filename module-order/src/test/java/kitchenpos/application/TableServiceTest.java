@@ -2,8 +2,8 @@ package kitchenpos.application;
 
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.exception.EmptyOrderTableException;
-import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.application.TableService;
+import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.ordertable.dto.*;
 import kitchenpos.ordertable.exception.AlreadyHaveTableGroupException;
