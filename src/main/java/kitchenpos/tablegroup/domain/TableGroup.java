@@ -1,53 +1,43 @@
 package kitchenpos.tablegroup.domain;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import javax.persistence.Column;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-import kitchenpos.ordertable.domain.OrderTables;
+import org.springframework.data.domain.AbstractAggregateRoot;
 
 @Entity
-public class TableGroup {
+public class TableGroup extends AbstractAggregateRoot<TableGroup> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Embedded
-    private OrderTables orderTables = new OrderTables();
-
     @Column(nullable = false)
     private LocalDateTime createdDate = LocalDateTime.now();
 
-    protected TableGroup() {
-    }
-
-    public TableGroup(OrderTables orderTables) {
-        this(null, orderTables);
-    }
-
-    public TableGroup(Long id, OrderTables orderTables) { // TODO default로 변경 필요
-        this.id = id;
-        this.orderTables = orderTables.withTableGroup(this);
+    public TableGroup() {
     }
 
     public Long getId() {
         return id;
     }
 
-    public OrderTables getOrderTables() {
-        return orderTables;
-    }
-
     public LocalDateTime getCreatedDate() {
         return createdDate;
     }
 
-    public void ungroup() {
-        orderTables.ungroup();
+    public void ungroup(TableGroupValidator validator) {
+        validator.validateUngrouping(this);
+        registerEvent(new TableUngroupedEvent(this));
+    }
+
+    public void group(TableGroupValidator validator, List<Long> orderTableIds) {
+        validator.validateGrouping(orderTableIds);
+        registerEvent(new TableGroupedEvent(this, orderTableIds));
     }
 }

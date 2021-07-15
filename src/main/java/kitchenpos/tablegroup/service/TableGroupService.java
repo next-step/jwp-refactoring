@@ -1,43 +1,35 @@
 package kitchenpos.tablegroup.service;
 
-import java.util.stream.Collectors;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kitchenpos.ordertable.domain.OrderTables;
-import kitchenpos.ordertable.service.TableService;
+import kitchenpos.generic.exception.TableGroupNotFoundException;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
+import kitchenpos.tablegroup.domain.TableGroupValidator;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
-import kitchenpos.generic.exception.TableGroupNotFoundException;
 
 @Service
 public class TableGroupService {
-
-    private final TableService tableService;
+    private final TableGroupValidator validator;
     private final TableGroupRepository tableGroupRepository;
 
-    public TableGroupService(TableService tableService, TableGroupRepository tableGroupRepository) {
-        this.tableService = tableService;
+    public TableGroupService(TableGroupValidator validator, TableGroupRepository tableGroupRepository) {
+        this.validator = validator;
         this.tableGroupRepository = tableGroupRepository;
     }
 
     @Transactional
     public TableGroup create(final TableGroupRequest request) {
-        OrderTables orderTables = OrderTables.of(request.getOrderTables()
-            .stream()
-            .map(req -> tableService.findById(req.getId()))
-            .collect(Collectors.toList()));
-
-        return tableGroupRepository.save(new TableGroup(orderTables));
+        TableGroup tableGroup = tableGroupRepository.save(new TableGroup());
+        tableGroup.group(validator, request.getOrderTableIds());
+        return tableGroup;
     }
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
         TableGroup tableGroup = findById(tableGroupId);
-        tableGroup.ungroup();
-
+        tableGroup.ungroup(validator);
         tableGroupRepository.delete(tableGroup);
     }
 

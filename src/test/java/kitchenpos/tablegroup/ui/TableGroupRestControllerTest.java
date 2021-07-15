@@ -54,11 +54,7 @@ class TableGroupRestControllerTest extends IntegrationTest {
             .content(objectMapper.writeValueAsString(request)))
             .andDo(print())
             .andExpect(status().isCreated())
-            .andExpect(jsonPath("$.id").exists())
-            .andExpect(jsonPath("$.orderTables").isNotEmpty())
-            .andExpect(jsonPath("$.orderTables[0].id").value(테이블3.getId()))
-            .andExpect(jsonPath("$.orderTables[0].numberOfGuests").value(테이블3.getNumberOfGuests().value()))
-            .andExpect(jsonPath("$.orderTables[0].empty").value(false));
+            .andExpect(jsonPath("$.id").exists());
     }
 
     @Test
@@ -124,6 +120,6 @@ class TableGroupRestControllerTest extends IntegrationTest {
     void ungroup_failed() throws Exception {
         mockMvc.perform(delete("/api/table-groups/{id}", 2L))
             .andDo(print())
-            .andExpect(status().isNoContent());
+            .andExpect(status().isConflict());
     }
 }

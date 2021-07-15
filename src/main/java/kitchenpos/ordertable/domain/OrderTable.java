@@ -24,9 +24,7 @@ public class OrderTable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(foreignKey = @ForeignKey(name = "fk_order_table_table_group"))
-    private TableGroup tableGroup;
+    private Long tableGroupId;
 
     @Column(nullable = false)
     @Embedded
@@ -39,21 +37,18 @@ public class OrderTable {
     }
 
     public OrderTable(NumberOfGuests numberOfGuests, boolean empty) {
-        this(null, numberOfGuests, empty);
+        this(null, null, numberOfGuests, empty);
     }
 
-    public OrderTable(Long id, NumberOfGuests numberOfGuests, boolean empty) { // TODO default로 변경 필요
+    OrderTable(Long id, Long tableGroupId, NumberOfGuests numberOfGuests, boolean empty) {
         this.id = id;
+        this.tableGroupId = tableGroupId;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
     }
 
-    public OrderTable withTableGroup(TableGroup tableGroup) {
-        checkEmpty();
-        checkNotGrouped();
-        this.tableGroup = tableGroup;
-        this.empty = false;
-        return this;
+    public void setTableGroupId(Long tableGroupId) {
+        this.tableGroupId = tableGroupId;
     }
 
     public void changeEmpty(boolean empty) {
@@ -68,8 +63,7 @@ public class OrderTable {
     }
 
     public void leaveTableGroup() {
-        checkOrders();
-        this.tableGroup = null;
+        this.tableGroupId = null;
     }
 
     private void checkOrders() {
@@ -78,16 +72,10 @@ public class OrderTable {
         // }
     }
 
-    private void checkEmpty() {
-        if (!this.isEmpty()) {
-            throw new IllegalOperationException("테이블이 비어있지 않습니다.");
-        }
-    }
-
     private void checkNotGrouped() {
-        if (this.hasTableGroup()) {
-            throw new IllegalArgumentException("테이블 그룹에 포함되어 있습니다.");
-        }
+        // if (this.hasTableGroup()) { // TODO 나중에 확인!
+        //     throw new IllegalArgumentException("테이블 그룹에 포함되어 있습니다.");
+        // }
     }
 
     private void checkNotEmpty() {
@@ -100,16 +88,16 @@ public class OrderTable {
         return empty;
     }
 
-    public boolean hasTableGroup() {
-        return Objects.nonNull(tableGroup);
+    public boolean isGroupable() {
+        return isEmpty() && !getTableGroupId().isPresent();
     }
 
     public Long getId() {
         return id;
     }
 
-    public Optional<TableGroup> getTableGroup() {
-        return Optional.ofNullable(tableGroup);
+    public Optional<Long> getTableGroupId() {
+        return Optional.ofNullable(tableGroupId);
     }
 
     public NumberOfGuests getNumberOfGuests() {

@@ -56,7 +56,7 @@ public class Order {
         this.orderStatus = orderStatus;
     }
 
-    public boolean inProgress() {
+    public boolean isInProgress() {
         return orderStatus.inProgress();
     }
 

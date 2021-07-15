@@ -29,7 +29,7 @@ public class Orders {
     }
 
     public boolean hasOrderInProgress() {
-        return orders.stream().anyMatch(Order::inProgress);
+        return orders.stream().anyMatch(Order::isInProgress);
     }
 
     public boolean contains(Order order) {
