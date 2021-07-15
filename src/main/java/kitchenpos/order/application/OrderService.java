@@ -39,22 +39,22 @@ public class OrderService {
 
     public OrderResponse create(final OrderRequest orderRequest) {
         final OrderTable orderTable = findOrderTable(orderRequest);
-        final OrderLineItems orderLineItems = getOrderLineItems(orderRequest);
+        final List<OrderLineItem> orderLineItems = getOrderLineItems(orderRequest);
         final Order savedOrder = orderRepository.save(new Order(orderTable.getId(), COOKING, orderLineItems));
 
         return OrderResponse.of(savedOrder);
     }
 
-    private OrderLineItems getOrderLineItems(OrderRequest orderRequest) {
-        return new OrderLineItems(orderRequest.getOrderLineItemRequests()
+    private List<OrderLineItem> getOrderLineItems(OrderRequest orderRequest) {
+        return orderRequest.getOrderLineItemRequests()
                 .stream()
                 .map(this::getOrderLineItem)
-                .collect(Collectors.toList()));
+                .collect(Collectors.toList());
     }
 
     private OrderLineItem getOrderLineItem(OrderLineItemRequest orderLineItemRequest) {
         Menu menu = findMenuById(orderLineItemRequest.getMenuId());
-        return new OrderLineItem(menu, Quantity.of(orderLineItemRequest.getQuantity()));
+        return new OrderLineItem(menu.getId(), Quantity.of(orderLineItemRequest.getQuantity()));
     }
 
     private Menu findMenuById(Long menuId) {

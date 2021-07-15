@@ -5,6 +5,7 @@ import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static kitchenpos.common.Message.*;
 import static kitchenpos.order.domain.OrderStatus.COOKING;
@@ -34,13 +35,11 @@ public class Order {
     public Order() {
     }
 
-    public Order(Long orderTableId, OrderStatus orderStatus, OrderLineItems orderLineItems) {
+    public Order(Long orderTableId, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
         validateOrderTableStatus(orderTableId);
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
-        this.orderLineItems = orderLineItems;
-        orderLineItems.ofOrder(this);
-        //orderTableId.addOrder(this); -> orderTable에서 직접 add
+        this.orderLineItems = new OrderLineItems(orderLineItems, this);
     }
 
     private void validateOrderTableStatus(Long orderTableId) {

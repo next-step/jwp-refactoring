@@ -21,7 +21,7 @@ public class OrderLineItemRequest {
     }
 
     public static OrderLineItemRequest of(OrderLineItem orderLineItem) {
-        return new OrderLineItemRequest(orderLineItem.getMenu().getId(),
+        return new OrderLineItemRequest(orderLineItem.getMenuId(),
                 orderLineItem.getOrder().getId(),
                 orderLineItem.getQuantity().value());
     }

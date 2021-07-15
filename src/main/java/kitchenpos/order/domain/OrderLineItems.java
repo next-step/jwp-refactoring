@@ -19,19 +19,18 @@ public class OrderLineItems {
     protected OrderLineItems() {
     }
 
-    public OrderLineItems(List<OrderLineItem> orderLineItems) {
+    public OrderLineItems(List<OrderLineItem> orderLineItems, Order order) {
         validateCount(orderLineItems);
         this.orderLineItems = orderLineItems;
+        for (OrderLineItem orderLineItem : orderLineItems) {
+            orderLineItem.ofOrder(order);
+        }
     }
 
     private void validateCount(List<OrderLineItem> orderLineItems) {
         if (orderLineItems == null || orderLineItems.size() < MINIMUM_LINE_COUNT) {
             throw new IllegalArgumentException(ERROR_ORDER_LINE_ITEMS_SHOULD_HAVE_AT_LEAST_ONE_ITEM.showText());
         }
-    }
-
-    public void ofOrder(Order order) {
-        this.orderLineItems.forEach(orderLineItem -> orderLineItem.ofOrder(order));
     }
 
     public List<OrderLineItem> temporaryGetList() {
