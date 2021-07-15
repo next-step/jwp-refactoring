@@ -52,7 +52,7 @@ class MenuServiceTest {
                                                      .build();
 
         Mockito.when(menuGroupRepository.findById(any())).thenReturn(Optional.of(메뉴_그룹));
-        Mockito.when(menuRepository.save(any())).thenReturn(menuRequest.toMenu(메뉴_그룹, Arrays.asList(메뉴_불고기)));
+        Mockito.when(menuRepository.save(any())).thenReturn(menuRequest.toMenu(1L, Arrays.asList(메뉴_불고기)));
 
         // when
         MenuResponse result = menuService.create(menuRequest);

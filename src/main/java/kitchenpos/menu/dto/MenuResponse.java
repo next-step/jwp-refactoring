@@ -30,7 +30,7 @@ public class MenuResponse {
         return new MenuResponse(menu.getId(),
                                 menu.getName(),
                                 menu.getPrice().value(),
-                                menu.getMenuGroup().getId(),
+                                menu.getMenuGroupId(),
                                 menu.getMenuProducts()
                                     .convertAll(menuProduct -> MenuProductResponse.of(menuProduct,
                                                                                       menu.getId())));

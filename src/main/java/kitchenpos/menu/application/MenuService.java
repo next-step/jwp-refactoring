@@ -37,7 +37,7 @@ public class MenuService {
     public MenuResponse create(final MenuRequest request) {
         final MenuGroup menuGroup = findMenuGroupById(request.getMenuGroupId());
         productValidator.checkOverPrice(Price.of(request.getPrice()), request.getMenuProducts());
-        Menu savedMenu = menuRepository.save(request.toMenu(menuGroup, getMenuProducts(request)));
+        Menu savedMenu = menuRepository.save(request.toMenu(menuGroup.getId(), getMenuProducts(request)));
         return MenuResponse.of(savedMenu);
     }
 
