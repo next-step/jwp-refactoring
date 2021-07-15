@@ -1,6 +1,5 @@
 package kitchenpos.ordertable.domain;
 
-import kitchenpos.exception.CannotCleanTableException;
 import kitchenpos.exception.CannotUpdateException;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.Orders;
@@ -47,7 +46,7 @@ public class OrderTable {
 
     public void changeEmpty(boolean isEmpty) {
         if (tableGroupId != null) {
-            throw new CannotCleanTableException(ERROR_ORDER_TABLE_CANNOT_BE_CLEANED_WHEN_GROUPED);
+            throw new CannotUpdateException(ERROR_ORDER_TABLE_CANNOT_BE_CLEANED_WHEN_GROUPED);
         }
         this.empty = isEmpty;
     }

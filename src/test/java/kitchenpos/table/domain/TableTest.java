@@ -1,6 +1,6 @@
 package kitchenpos.table.domain;
 
-import kitchenpos.exception.CannotCleanTableException;
+import kitchenpos.exception.CannotUpdateException;
 import kitchenpos.ordertable.domain.OrderTable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,7 +18,7 @@ class TableTest {
         OrderTable 단체지정_된_테이블 = new OrderTable(단체지정_ID, 3, false);
 
         assertThatThrownBy(() -> 단체지정_된_테이블.changeEmpty(true))
-                .isInstanceOf(CannotCleanTableException.class);
+                .isInstanceOf(CannotUpdateException.class);
     }
 
     @DisplayName("테이블의 손님수를 0명 미만으로 입력하여 변경시, 예외 발생한다")
