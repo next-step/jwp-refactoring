@@ -8,12 +8,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +21,6 @@ import org.springframework.http.MediaType;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
@@ -45,18 +41,9 @@ class OrderRestControllerTest extends MockMvcControllerTest {
     @Autowired
     private OrderRestController orderRestController;
 
-    private Menu menu;
-
     @Override
     protected Object controller() {
         return orderRestController;
-    }
-
-    @BeforeEach
-    void setUp() {
-        menu = new Menu("A", BigDecimal.valueOf(20000.00), 1L);
-        menu.addMenuProduct(new MenuProduct(menu, 1L, 1));
-        menu.addMenuProduct(new MenuProduct(menu, 2L, 1));
     }
 
     @Test

@@ -7,14 +7,12 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.*;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
@@ -24,10 +22,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.menu.application.MenuValidator;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.exception.MenuNotFoundException;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
@@ -43,21 +37,12 @@ class OrderServiceTest {
     @Mock
     private OrderRepository orderRepository;
     @Mock
-    private MenuValidator menuValidator;
+    private OrderMenuValidator orderMenuValidator;
     @Mock
-    private TableOrderValidator tableOrderValidator;
+    private OrderOrderTableValidator orderOrderTableValidator;
 
     @InjectMocks
     private OrderService orderService;
-
-    private Menu menu;
-
-    @BeforeEach
-    void setUp() {
-        menu = new Menu("A", BigDecimal.valueOf(20000.00), 1L);
-        menu.addMenuProduct(new MenuProduct(menu, 1L, 1));
-        menu.addMenuProduct(new MenuProduct(menu, 2L, 1));
-    }
 
     @TestFactory
     @DisplayName("모든 주문을 조회하는 기능")
@@ -124,8 +109,8 @@ class OrderServiceTest {
         OrderResponse resultOrderResponse = orderService.create(orderRequest);
 
         // then
-        verify(tableOrderValidator).validateExistsOrderTableByIdAndEmptyIsFalse(anyLong());
-        verify(menuValidator).validateExistsMenuById(anyLong());
+        verify(orderOrderTableValidator).validateExistsOrderTableByIdAndEmptyIsFalse(anyLong());
+        verify(orderMenuValidator).validateExistsMenuById(anyLong());
         return Arrays.asList(
                 dynamicTest("주문 초기 상태 확인됨.", () -> assertThat(resultOrderResponse.getOrderStatus()).isEqualTo(OrderStatus.COOKING)),
                 dynamicTest("주문 테이블 확인됨.", () -> assertThat(resultOrderResponse.getOrderTableId()).isNotNull()),
@@ -150,18 +135,18 @@ class OrderServiceTest {
                     // given
                     OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(1L, 1L);
                     OrderRequest orderRequest = new OrderRequest(OrderStatus.COOKING, 2L, Arrays.asList(orderLineItemRequest));
-                    doThrow(MenuNotFoundException.class).when(menuValidator).validateExistsMenuById(anyLong());
+                    doThrow(RuntimeException.class).when(orderMenuValidator).validateExistsMenuById(anyLong());
 
                     // then
-                    verify(tableOrderValidator).validateExistsOrderTableByIdAndEmptyIsFalse(anyLong());
+                    verify(orderOrderTableValidator).validateExistsOrderTableByIdAndEmptyIsFalse(anyLong());
                     assertThatThrownBy(() -> orderService.create(orderRequest))
-                            .isInstanceOf(MenuNotFoundException.class);
+                            .isInstanceOf(RuntimeException.class);
                 }),
                 dynamicTest("비어있는 주문 테이블이 없을 경우 오류 발생됨.", () -> {
                     // given
                     OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(1L, 1L);
                     OrderRequest orderRequest = new OrderRequest(OrderStatus.COOKING, 1L, Arrays.asList(orderLineItemRequest));
-                    doThrow(RuntimeException.class).when(tableOrderValidator).validateExistsOrderTableByIdAndEmptyIsFalse(anyLong());
+                    doThrow(RuntimeException.class).when(orderOrderTableValidator).validateExistsOrderTableByIdAndEmptyIsFalse(anyLong());
 
                     // then
                     assertThatThrownBy(() -> orderService.create(orderRequest))

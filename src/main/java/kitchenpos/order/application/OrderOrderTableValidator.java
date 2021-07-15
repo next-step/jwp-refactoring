@@ -1,5 +1,5 @@
 package kitchenpos.order.application;
 
-public interface TableOrderValidator {
+public interface OrderOrderTableValidator {
     void validateExistsOrderTableByIdAndEmptyIsFalse(Long orderTableId);
 }

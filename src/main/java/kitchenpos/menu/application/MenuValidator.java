@@ -8,9 +8,10 @@ import org.springframework.stereotype.Component;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.exception.MenuNotFoundException;
+import kitchenpos.order.application.OrderMenuValidator;
 
 @Component
-public class MenuValidator {
+public class MenuValidator implements OrderMenuValidator {
     @Autowired
     private MenuRepository menuRepository;
 
@@ -20,6 +21,7 @@ public class MenuValidator {
         }
     }
 
+    @Override
     public void validateExistsMenuById(Long menuId) {
         menuRepository.findById(menuId)
                 .orElseThrow(() -> new MenuNotFoundException("조회된 메뉴가 없습니다. 입력 ID : " + menuId));

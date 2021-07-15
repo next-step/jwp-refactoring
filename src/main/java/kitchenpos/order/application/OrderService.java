@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kitchenpos.menu.application.MenuValidator;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
@@ -19,13 +18,13 @@ import kitchenpos.order.exception.OrderNotFoundException;
 @Service
 @Transactional
 public class OrderService {
-    private final TableOrderValidator tableOrderValidator;
-    private final MenuValidator menuValidator;
+    private final OrderOrderTableValidator orderOrderTableValidator;
+    private final OrderMenuValidator orderMenuValidator;
     private final OrderRepository orderRepository;
 
-    public OrderService(TableOrderValidator tableOrderValidator, MenuValidator menuValidator, OrderRepository orderRepository) {
-        this.tableOrderValidator = tableOrderValidator;
-        this.menuValidator = menuValidator;
+    public OrderService(OrderOrderTableValidator orderOrderTableValidator, OrderMenuValidator orderMenuValidator, OrderRepository orderRepository) {
+        this.orderOrderTableValidator = orderOrderTableValidator;
+        this.orderMenuValidator = orderMenuValidator;
         this.orderRepository = orderRepository;
     }
 
@@ -43,7 +42,7 @@ public class OrderService {
     }
 
     public OrderResponse create(final OrderRequest orderRequest) {
-        tableOrderValidator.validateExistsOrderTableByIdAndEmptyIsFalse(orderRequest.getOrderTableId());
+        orderOrderTableValidator.validateExistsOrderTableByIdAndEmptyIsFalse(orderRequest.getOrderTableId());
         Order order = orderRepository.save(makeOrderWithOrderLineItemRequests(new Order(LocalDateTime.now(), orderRequest.getOrderTableId()),
                 orderRequest.getOrderLineItemRequests()));
         return OrderResponse.of(order);
@@ -58,7 +57,7 @@ public class OrderService {
     }
 
     private OrderLineItem createOrderLineItem(Order order, OrderLineItemRequest orderLineItemRequest) {
-        menuValidator.validateExistsMenuById(orderLineItemRequest.getMenuId());
+        orderMenuValidator.validateExistsMenuById(orderLineItemRequest.getMenuId());
         return new OrderLineItem(order, orderLineItemRequest.getMenuId(), orderLineItemRequest.getQuantity());
     }
 }
