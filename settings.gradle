@@ -3,5 +3,5 @@ include 'menu-module'
 include 'product-module'
 include 'table-module'
 include 'tablegroup-module'
-include 'odrder-module'
+include 'order-module'
 
