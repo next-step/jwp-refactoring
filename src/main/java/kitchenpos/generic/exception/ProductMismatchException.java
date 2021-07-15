@@ -1,4 +1,4 @@
-package kitchenpos.product.exception;
+package kitchenpos.generic.exception;
 
 public class ProductMismatchException extends RuntimeException {
     public ProductMismatchException(String message) {

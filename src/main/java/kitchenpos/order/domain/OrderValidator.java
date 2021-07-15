@@ -11,16 +11,16 @@ import kitchenpos.menu.domain.MenuProductOption;
 import kitchenpos.menu.domain.MenuOption;
 import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.menu.exception.MenuDetailMismatchException;
-import kitchenpos.menu.exception.MenuMismatchException;
-import kitchenpos.menu.exception.MenuNotFoundException;
-import kitchenpos.order.exception.OrderTableNotFoundException;
+import kitchenpos.generic.exception.MenuDetailMismatchException;
+import kitchenpos.generic.exception.MenuMismatchException;
+import kitchenpos.generic.exception.MenuNotFoundException;
+import kitchenpos.generic.exception.OrderTableNotFoundException;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductOption;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.domain.Products;
-import kitchenpos.product.exception.ProductMismatchException;
-import kitchenpos.product.exception.ProductNotFoundException;
+import kitchenpos.generic.exception.ProductMismatchException;
+import kitchenpos.generic.exception.ProductNotFoundException;
 
 @Component
 public class OrderValidator {

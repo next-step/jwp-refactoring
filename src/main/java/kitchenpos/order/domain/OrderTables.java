@@ -12,7 +12,7 @@ import javax.persistence.OneToMany;
 
 import org.springframework.util.CollectionUtils;
 
-import kitchenpos.order.exception.NotEnoughTablesException;
+import kitchenpos.generic.exception.NotEnoughTablesException;
 
 @Embeddable
 public class OrderTables {

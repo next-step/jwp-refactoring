@@ -6,8 +6,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import kitchenpos.generic.exception.IllegalOperationException;
-import kitchenpos.order.exception.NotEnoughTablesException;
-import kitchenpos.order.exception.OrderNotCompletedException;
+import kitchenpos.generic.exception.NotEnoughTablesException;
+import kitchenpos.generic.exception.OrderNotCompletedException;
 import kitchenpos.generic.guests.domain.NumberOfGuests;
 
 @DisplayName("테이블 그룹 단위 테스트")

@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.dto.OrderRequest;
-import kitchenpos.order.exception.OrderNotFoundException;
+import kitchenpos.generic.exception.OrderNotFoundException;
 import kitchenpos.order.domain.OrderValidator;
 
 @Service

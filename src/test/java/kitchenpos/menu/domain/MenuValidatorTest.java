@@ -19,8 +19,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.generic.price.domain.Price;
 import kitchenpos.generic.quantity.domain.Quantity;
-import kitchenpos.menu.exception.ExceedingTotalPriceException;
-import kitchenpos.menu.exception.MenuGroupNotFoundException;
+import kitchenpos.generic.exception.ExceedingTotalPriceException;
+import kitchenpos.generic.exception.MenuGroupNotFoundException;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.product.domain.ProductRepository;
 

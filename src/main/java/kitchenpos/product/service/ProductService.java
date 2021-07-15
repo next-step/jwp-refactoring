@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
-import kitchenpos.product.exception.ProductNotFoundException;
+import kitchenpos.generic.exception.ProductNotFoundException;
 
 @Service
 public class ProductService {

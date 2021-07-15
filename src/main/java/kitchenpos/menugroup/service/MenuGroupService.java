@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.menugroup.dto.MenuGroupRequest;
-import kitchenpos.menu.exception.MenuGroupNotFoundException;
+import kitchenpos.generic.exception.MenuGroupNotFoundException;
 
 @Service
 public class MenuGroupService {

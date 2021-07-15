@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.OrderTableRepository;
 import kitchenpos.order.dto.OrderTableRequest;
-import kitchenpos.order.exception.OrderTableNotFoundException;
+import kitchenpos.generic.exception.OrderTableNotFoundException;
 
 @Service
 public class TableService {

@@ -10,19 +10,19 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
 import kitchenpos.generic.exception.CalculationFailedException;
-import kitchenpos.menu.exception.ExceedingTotalPriceException;
+import kitchenpos.generic.exception.ExceedingTotalPriceException;
 import kitchenpos.generic.exception.IllegalOperationException;
-import kitchenpos.menu.exception.MenuDetailMismatchException;
-import kitchenpos.menu.exception.MenuGroupNotFoundException;
-import kitchenpos.menu.exception.MenuMismatchException;
-import kitchenpos.menu.exception.MenuNotFoundException;
-import kitchenpos.order.exception.NotEnoughTablesException;
-import kitchenpos.order.exception.OrderNotCompletedException;
-import kitchenpos.order.exception.OrderNotFoundException;
-import kitchenpos.order.exception.OrderTableNotFoundException;
-import kitchenpos.product.exception.ProductMismatchException;
-import kitchenpos.product.exception.ProductNotFoundException;
-import kitchenpos.order.exception.TableGroupNotFoundException;
+import kitchenpos.generic.exception.MenuDetailMismatchException;
+import kitchenpos.generic.exception.MenuGroupNotFoundException;
+import kitchenpos.generic.exception.MenuMismatchException;
+import kitchenpos.generic.exception.MenuNotFoundException;
+import kitchenpos.generic.exception.NotEnoughTablesException;
+import kitchenpos.generic.exception.OrderNotCompletedException;
+import kitchenpos.generic.exception.OrderNotFoundException;
+import kitchenpos.generic.exception.OrderTableNotFoundException;
+import kitchenpos.generic.exception.ProductMismatchException;
+import kitchenpos.generic.exception.ProductNotFoundException;
+import kitchenpos.generic.exception.TableGroupNotFoundException;
 
 @ControllerAdvice
 public class GeneralExceptionHandler {

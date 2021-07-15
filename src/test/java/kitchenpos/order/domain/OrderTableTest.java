@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import kitchenpos.generic.exception.IllegalOperationException;
 import kitchenpos.generic.guests.domain.NumberOfGuests;
-import kitchenpos.order.exception.OrderNotCompletedException;
+import kitchenpos.generic.exception.OrderNotCompletedException;
 import kitchenpos.generic.quantity.domain.Quantity;
 
 @DisplayName("주문 테이블 단위 테스트")

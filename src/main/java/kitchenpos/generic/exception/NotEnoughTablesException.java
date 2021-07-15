@@ -1,4 +1,4 @@
-package kitchenpos.order.exception;
+package kitchenpos.generic.exception;
 
 public class NotEnoughTablesException extends RuntimeException {
     public NotEnoughTablesException(String message, Object... args) {

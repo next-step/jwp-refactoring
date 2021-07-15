@@ -9,7 +9,7 @@ import kitchenpos.order.domain.OrderTables;
 import kitchenpos.order.domain.TableGroup;
 import kitchenpos.order.domain.TableGroupRepository;
 import kitchenpos.order.dto.TableGroupRequest;
-import kitchenpos.order.exception.TableGroupNotFoundException;
+import kitchenpos.generic.exception.TableGroupNotFoundException;
 
 @Service
 public class TableGroupService {

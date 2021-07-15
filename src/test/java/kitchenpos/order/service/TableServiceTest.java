@@ -25,7 +25,7 @@ import kitchenpos.order.domain.TableGroup;
 import kitchenpos.order.domain.TableGroupTest;
 import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.generic.exception.IllegalOperationException;
-import kitchenpos.order.exception.OrderTableNotFoundException;
+import kitchenpos.generic.exception.OrderTableNotFoundException;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("테이블 서비스")

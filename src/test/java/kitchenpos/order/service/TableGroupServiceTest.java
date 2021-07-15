@@ -17,9 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.order.dto.TableGroupRequest;
-import kitchenpos.order.exception.OrderTableNotFoundException;
-import kitchenpos.order.service.TableGroupService;
-import kitchenpos.order.service.TableService;
+import kitchenpos.generic.exception.OrderTableNotFoundException;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("테이블 그룹 서비스")

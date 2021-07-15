@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import kitchenpos.order.exception.NotEnoughTablesException;
+import kitchenpos.generic.exception.NotEnoughTablesException;
 import kitchenpos.generic.guests.domain.NumberOfGuests;
 
 @DisplayName("주문 테이블 컬렉션 단위 테스트")

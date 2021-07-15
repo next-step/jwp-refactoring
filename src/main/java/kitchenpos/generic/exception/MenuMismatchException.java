@@ -1,4 +1,4 @@
-package kitchenpos.menu.exception;
+package kitchenpos.generic.exception;
 
 public class MenuMismatchException extends RuntimeException {
     public MenuMismatchException(String message) {
