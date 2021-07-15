@@ -1,11 +1,14 @@
 package kitchenpos.menu.application;
 
-import kitchenpos.menu.domain.*;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuGroupRepository;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.exception.NotFoundMenuGroupException;
-import kitchenpos.menu.exception.NotFoundProductException;
-import kitchenpos.wrap.Price;
+import kitchenpos.menu.util.MenuMapper;
+import kitchenpos.menu.util.MenuValidator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,24 +18,24 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class MenuService {
+    private final MenuMapper menuMapper;
+    private final MenuValidator menuValidator;
     private final MenuRepository menuRepository;
     private final MenuGroupRepository menuGroupRepository;
-    private final ProductRepository productRepository;
 
-    public MenuService(MenuRepository menuRepository, MenuGroupRepository menuGroupRepository, ProductRepository productRepository) {
+    public MenuService(MenuMapper menuMapper, MenuValidator menuValidator, MenuRepository menuRepository, MenuGroupRepository menuGroupRepository) {
+        this.menuMapper = menuMapper;
+        this.menuValidator = menuValidator;
         this.menuRepository = menuRepository;
         this.menuGroupRepository = menuGroupRepository;
-        this.productRepository = productRepository;
     }
 
     public MenuResponse create(final MenuRequest menuRequest) {
         MenuGroup menuGroup = menuGroupRepository.findById(menuRequest.getMenuGroupId())
                 .orElseThrow(() -> new NotFoundMenuGroupException());
-        List<Product> products = findAllProductByIds(menuRequest.getProductIds());
-        List<MenuProduct> menuProducts = toMenuProduct(products, menuRequest);
-        Menu menu = toMenu(menuProducts, menuGroup, menuRequest);
-        Menu persistMenu = menuRepository.save(menu);
-        return MenuResponse.of(persistMenu);
+        Menu menu = menuMapper.mapFormToMenu(menuRequest, menuGroup);
+        menu.validateToMenu(menuValidator);
+        return MenuResponse.of(menuRepository.save(menu));
     }
 
     @Transactional(readOnly = true)
@@ -41,33 +44,5 @@ public class MenuService {
         return menus.stream()
                 .map(MenuResponse::of)
                 .collect(Collectors.toList());
-    }
-
-    private List<Product> findAllProductByIds(List<Long> productIds) {
-        List<Product> products = productRepository.findAllByIdIn(productIds);
-        if (products.size() != productIds.size()) {
-            throw new NotFoundProductException();
-        }
-        return products;
-    }
-
-    private Menu toMenu(List<MenuProduct> menuProductList, MenuGroup menuGroup, MenuRequest menuRequest) {
-        MenuProducts menuProducts = new MenuProducts(menuProductList);
-        Price price = new Price(menuRequest.getPrice());
-        return new Menu(menuRequest.getName(), price, menuGroup, menuProducts);
-    }
-
-    private List<MenuProduct> toMenuProduct(List<Product> products, MenuRequest menuRequest) {
-        return products.stream()
-                .map(product -> findMenuProduct(product, menuRequest))
-                .collect(Collectors.toList());
-    }
-
-    private MenuProduct findMenuProduct(Product product, MenuRequest menuRequest) {
-        return menuRequest.getMenuProductRequests().stream()
-                .filter(menuProductRequest -> menuProductRequest.getProductId().equals(product.getId()))
-                .map(menuProductRequest -> new MenuProduct(product, menuProductRequest.getQuantity()))
-                .findFirst()
-                .orElseThrow(IllegalArgumentException::new);
     }
 }

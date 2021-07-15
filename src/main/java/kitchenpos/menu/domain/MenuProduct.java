@@ -13,26 +13,21 @@ public class MenuProduct {
     @JoinColumn(name = "menu_id", foreignKey = @ForeignKey(name = "fk_menu_product_menu"))
     private Menu menu;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id", foreignKey = @ForeignKey(name = "fk_menu_product_product"))
-    private Product product;
+    @Column(name = "product_id")
+    private Long productId;
 
     private Long quantity;
 
     protected MenuProduct() {
     }
 
-    public MenuProduct(Product product, Long quantity) {
-        this.product = product;
+    public MenuProduct(Long productId, Long quantity) {
+        this.productId = productId;
         this.quantity = quantity;
     }
 
     public void registerMenu(Menu menu) {
         this.menu = menu;
-    }
-
-    public BigDecimal getPriceByQuantity() {
-        return product.getPriceByQuantity(quantity);
     }
 
     public Long getSeq() {
@@ -43,8 +38,8 @@ public class MenuProduct {
         return menu;
     }
 
-    public Product getProduct() {
-        return product;
+    public Long getProductId() {
+        return productId;
     }
 
     public Long getQuantity() {

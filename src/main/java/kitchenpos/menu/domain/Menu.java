@@ -1,9 +1,9 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.menu.util.MenuValidator;
 import kitchenpos.wrap.Price;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 
@@ -32,24 +32,20 @@ public class Menu {
     }
 
     public Menu(Long id, String name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
-        validatePrice(price, menuProducts);
         this.id = id;
         this.name = name;
         this.price = price;
         this.menuGroup = menuGroup;
         this.menuProducts = menuProducts;
-        menuProducts.registerProduct(this);
     }
 
     public Menu(String name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
         this(null, name, price, menuGroup, menuProducts);
     }
 
-    private void validatePrice(Price price, MenuProducts menuProducts) {
-        BigDecimal productsPrice = menuProducts.calculationTotalAmount();
-        if (!price.isCheapThanProductsPrice(productsPrice)) {
-            throw new IllegalArgumentException();
-        }
+    public void validateToMenu(MenuValidator menuValidator) {
+        menuValidator.validateToMenu(this);
+        menuProducts.registerProduct(this);
     }
 
     public Long getId() {
