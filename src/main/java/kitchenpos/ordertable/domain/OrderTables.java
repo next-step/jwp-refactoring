@@ -13,6 +13,7 @@ import javax.persistence.OneToMany;
 import org.springframework.util.CollectionUtils;
 
 import kitchenpos.generic.exception.NotEnoughTablesException;
+import kitchenpos.tablegroup.domain.TableGroup;
 
 @Embeddable
 public class OrderTables {
@@ -30,7 +31,7 @@ public class OrderTables {
         return new OrderTables(orderTables);
     }
 
-    protected OrderTables() {
+    public OrderTables() { // TODO protected로 변경 필요
     }
 
     public OrderTables(List<OrderTable> orderTables) {

@@ -1,6 +1,8 @@
-package kitchenpos.ordertable.dto;
+package kitchenpos.tablegroup.dto;
 
 import java.util.List;
+
+import kitchenpos.ordertable.dto.OrderTableRequest;
 
 public class TableGroupRequest {
     private Long id;

@@ -7,9 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import kitchenpos.generic.exception.NotEnoughTablesException;
 import kitchenpos.generic.guests.domain.NumberOfGuests;
-import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.domain.OrderTables;
-import kitchenpos.ordertable.domain.TableGroup;
+import kitchenpos.tablegroup.domain.TableGroup;
 
 @DisplayName("주문 테이블 컬렉션 단위 테스트")
 class OrderTablesTest {

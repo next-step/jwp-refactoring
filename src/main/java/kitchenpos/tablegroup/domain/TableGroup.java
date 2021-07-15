@@ -1,4 +1,4 @@
-package kitchenpos.ordertable.domain;
+package kitchenpos.tablegroup.domain;
 
 import java.time.LocalDateTime;
 
@@ -8,6 +8,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+
+import kitchenpos.ordertable.domain.OrderTables;
 
 @Entity
 public class TableGroup {
@@ -28,7 +30,7 @@ public class TableGroup {
         this(null, orderTables);
     }
 
-    TableGroup(Long id, OrderTables orderTables) {
+    public TableGroup(Long id, OrderTables orderTables) { // TODO default로 변경 필요
         this.id = id;
         this.orderTables = orderTables.withTableGroup(this);
     }

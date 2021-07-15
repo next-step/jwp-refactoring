@@ -16,6 +16,7 @@ import javax.persistence.ManyToOne;
 
 import kitchenpos.generic.exception.IllegalOperationException;
 import kitchenpos.generic.guests.domain.NumberOfGuests;
+import kitchenpos.tablegroup.domain.TableGroup;
 
 @Entity
 public class OrderTable {
@@ -41,7 +42,7 @@ public class OrderTable {
         this(null, numberOfGuests, empty);
     }
 
-    OrderTable(Long id, NumberOfGuests numberOfGuests, boolean empty) {
+    public OrderTable(Long id, NumberOfGuests numberOfGuests, boolean empty) { // TODO default로 변경 필요
         this.id = id;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
