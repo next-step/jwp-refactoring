@@ -69,7 +69,7 @@ public class MenuServiceTest {
 		assertThat(menu.getPrice()).isEqualTo(new BigDecimal(20000));
 	}
 
-	@DisplayName("(오류 케이스)가격이 음수인 메뉴를 등록한다.")
+	@DisplayName("가격이 음수인 메뉴를 등록할 수 없다.")
 	@Test
 	void createMenuWithMinusPrice() {
 		// given
@@ -83,7 +83,7 @@ public class MenuServiceTest {
 			.isInstanceOf(IllegalArgumentException.class);
 	}
 
-	@DisplayName("(오류 케이스)등록되어 있지 않은 메뉴 그룹을 요청한다.")
+	@DisplayName("등록되어 있지 않은 메뉴 그룹을 요청할 수 없다.")
 	@Test
 	void createMenuWithNotExistMenuGroup() {
 		// given
@@ -97,7 +97,7 @@ public class MenuServiceTest {
 			.isInstanceOf(IllegalArgumentException.class);
 	}
 
-	@DisplayName("(오류 케이스)등록되어 있지 않은 상품을 요청한다.")
+	@DisplayName("등록되어 있지 않은 상품을 요청한 수 없다.")
 	@Test
 	void createMenuWithNotExistProduct() {
 		// given
@@ -110,7 +110,7 @@ public class MenuServiceTest {
 			.isInstanceOf(IllegalArgumentException.class);
 	}
 
-	@DisplayName("(오류 케이스)상품의 가격 합 보다 메뉴의 가격이 더 클 수 없다.")
+	@DisplayName("상품의 가격 합 보다 메뉴의 가격이 더 클 수 없다.")
 	@Test
 	void createMenuWhereMenuPriceIsBiggerThanProductSum() {
 		// given
