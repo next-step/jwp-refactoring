@@ -31,8 +31,8 @@ class MenuRepositoryTest {
         Product product1 = productRepository.save(new Product("양념치킨", BigDecimal.valueOf(17000.00)));
         Product product2 = productRepository.save(new Product("후라이드치킨", BigDecimal.valueOf(15000.00)));
         Menu menu = new Menu("A", BigDecimal.valueOf(19000.00), 1L);
-        menu.addMenuProduct(new MenuProduct(menu, product1, 1));
-        menu.addMenuProduct(new MenuProduct(menu, product2, 1));
+        menu.addMenuProduct(new MenuProduct(menu, product1.getId(), 1));
+        menu.addMenuProduct(new MenuProduct(menu, product2.getId(), 1));
 
         // when
         Menu save = menuRepository.save(menu);
@@ -49,8 +49,8 @@ class MenuRepositoryTest {
         Product product1 = productRepository.save(new Product("양념치킨", BigDecimal.valueOf(17000.00)));
         Product product2 = productRepository.save(new Product("후라이드치킨", BigDecimal.valueOf(15000.00)));
         Menu menu = new Menu("A", BigDecimal.valueOf(19000.00), 1L);
-        menu.addMenuProduct(new MenuProduct(menu, product1, 1));
-        menu.addMenuProduct(new MenuProduct(menu, product2, 1));
+        menu.addMenuProduct(new MenuProduct(menu, product1.getId(), 1));
+        menu.addMenuProduct(new MenuProduct(menu, product2.getId(), 1));
         Menu save = menuRepository.save(menu);
 
         // when

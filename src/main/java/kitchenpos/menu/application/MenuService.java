@@ -1,5 +1,6 @@
 package kitchenpos.menu.application;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,34 +15,40 @@ import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.exception.MenuNotFoundException;
-import kitchenpos.menugroup.application.MenuGroupService;
-import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.product.application.ProductService;
-import kitchenpos.product.domain.Product;
+import kitchenpos.menugroup.application.MenuGroupValidator;
 
 @Service
 @Transactional
 public class MenuService {
-
     private final MenuRepository menuRepository;
-    private final MenuGroupService menuGroupService;
-    private final ProductService productService;
+    private final MenuGroupValidator menuGroupValidator;
+    private final MenuValidator menuValidator;
+    private final ProductMenuService productMenuService;
 
     @Autowired
-    public MenuService(final MenuRepository menuRepository, final MenuGroupService menuGroupService,
-                       final ProductService productService) {
+    public MenuService(final MenuRepository menuRepository, final MenuGroupValidator menuGroupValidator,
+                       final MenuValidator menuValidator, final ProductMenuService productMenuService) {
         this.menuRepository = menuRepository;
-        this.menuGroupService = menuGroupService;
-        this.productService = productService;
+        this.menuGroupValidator = menuGroupValidator;
+        this.menuValidator = menuValidator;
+        this.productMenuService = productMenuService;
     }
 
     public MenuResponse create(final MenuRequest menuRequest) {
-        MenuGroup menuGroup = menuGroupService.findById(menuRequest.getMenuGroupId());
-        Menu menu = menuRepository.save(new Menu(menuRequest.getName(), menuRequest.getPrice(), menuGroup.getId()));
+        menuGroupValidator.validateExistsMenuGroupById(menuRequest.getMenuGroupId());
+        Menu menu = menuRepository.save(new Menu(menuRequest.getName(), menuRequest.getPrice(), menuRequest.getMenuGroupId()));
+        menuValidator.validateMenuPrice(menu, getTotalProductsPrice(menuRequest));
         menuRequest.getMenuProductRequests()
                 .forEach(menuProductRequest -> menu.addMenuProduct(createMenuProduct(menu, menuProductRequest)));
-        menu.validateMenuPrice();
         return MenuResponse.of(menu);
+    }
+
+    private BigDecimal getTotalProductsPrice(MenuRequest menuRequest) {
+        return menuRequest.getMenuProductRequests()
+                .stream()
+                .map(menuProductRequest -> productMenuService.calculateProductsPrice(menuProductRequest.getProductId(),
+                        menuProductRequest.getQuantity()))
+                .reduce(BigDecimal.ZERO, (total, productPrice) -> total.add(productPrice));
     }
 
     public List<MenuResponse> findAllMenu() {
@@ -57,7 +64,6 @@ public class MenuService {
     }
 
     private MenuProduct createMenuProduct(Menu menu, MenuProductRequest menuProductRequest) {
-        Product product = productService.findById(menuProductRequest.getProductId());
-        return new MenuProduct(menu, product, menuProductRequest.getQuantity());
+        return new MenuProduct(menu, menuProductRequest.getProductId(), menuProductRequest.getQuantity());
     }
 }

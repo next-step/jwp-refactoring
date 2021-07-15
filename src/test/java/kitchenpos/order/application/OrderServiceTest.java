@@ -14,7 +14,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -33,7 +37,6 @@ import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.exception.OrderAlreadyExistsException;
 import kitchenpos.order.exception.OrderNotFoundException;
-import kitchenpos.product.domain.Product;
 import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.exception.NonEmptyOrderTableNotFoundException;
@@ -56,8 +59,8 @@ class OrderServiceTest {
     @BeforeEach
     void setUp() {
         menu = new Menu("A", BigDecimal.valueOf(20000.00), 1L);
-        menu.addMenuProduct(new MenuProduct(menu, new Product("a", BigDecimal.valueOf(15000.00)), 1));
-        menu.addMenuProduct(new MenuProduct(menu, new Product("a", BigDecimal.valueOf(15000.00)), 1));
+        menu.addMenuProduct(new MenuProduct(menu, 1L, 1));
+        menu.addMenuProduct(new MenuProduct(menu, 2L, 1));
     }
 
     @TestFactory

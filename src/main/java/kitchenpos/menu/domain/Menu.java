@@ -60,10 +60,4 @@ public class Menu {
     public boolean isMenuPriceGreaterThan(BigDecimal targetPrice) {
         return this.menuPrice.isGreaterThan(targetPrice);
     }
-
-    public void validateMenuPrice() {
-        if (isMenuPriceGreaterThan(menuProducts.getTotalProductPrice())) {
-            throw new IllegalArgumentException("메뉴 급액이 제품 합계금액보다 클 수 없습니다.");
-        }
-    }
 }

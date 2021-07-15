@@ -13,7 +13,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -25,15 +28,9 @@ import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuProductResponse;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.menugroup.application.MenuGroupService;
-import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menugroup.application.MenuGroupValidator;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.menugroup.exception.MenuGroupNotFoundException;
-import kitchenpos.product.application.ProductService;
-import kitchenpos.product.domain.Product;
-import kitchenpos.product.domain.ProductRepository;
-import kitchenpos.product.exception.ProductNotFoundException;
 
 @DisplayName("메뉴 서비스")
 @ExtendWith(MockitoExtension.class)
@@ -42,9 +39,11 @@ class MenuServiceTest {
     @Mock
     private MenuRepository menuRepository;
     @Mock
-    private MenuGroupService menuGroupService;
+    private ProductMenuService productMenuService;
     @Mock
-    private ProductService productService;
+    private MenuGroupValidator menuGroupValidator;
+    @Mock
+    private MenuValidator menuValidator;
     @InjectMocks
     private MenuService menuService;
 
@@ -57,12 +56,9 @@ class MenuServiceTest {
     @DisplayName("전체 메뉴 조회")
     List<DynamicTest> find_allMenu() {
         // given
-        Product product1 = new Product("A", BigDecimal.valueOf(1000));
-        Product product2 = new Product("B", BigDecimal.valueOf(2000));
-        MenuGroup menuGroup = new MenuGroup("1");
         Menu menu = new Menu("AB", BigDecimal.valueOf(3000), 1L);
-        menu.addMenuProduct(new MenuProduct(menu, product1, 1L));
-        menu.addMenuProduct(new MenuProduct(menu, product2, 1L));
+        menu.addMenuProduct(new MenuProduct(menu, 1L, 1L));
+        menu.addMenuProduct(new MenuProduct(menu, 2L, 1L));
         given(menuRepository.findAll()).willReturn(Arrays.asList(menu));
 
         // when
@@ -85,25 +81,22 @@ class MenuServiceTest {
     @DisplayName("메뉴를 등록한다.")
     List<DynamicTest> create_menu() {
         // given
-        MenuGroup menuGroup = new MenuGroup("A");
         MenuProductRequest menuProductRequest1 = new MenuProductRequest(1L, 1L);
         MenuProductRequest menuProductRequest2 = new MenuProductRequest(2L, 1L);
         MenuRequest menuRequest = new MenuRequest("Aa", BigDecimal.valueOf(12000.00), 1L,
                 Arrays.asList(menuProductRequest1, menuProductRequest2));
-        // and
-        Product product1 = new Product("a", BigDecimal.valueOf(8000.00));
-        Product product2 = new Product("b", BigDecimal.valueOf(4000.00));
         Menu menu = new Menu(menuRequest.getName(), menuRequest.getPrice(), 1L);
         // and
-        given(menuGroupService.findById(anyLong())).willReturn(menuGroup);
-        given(productService.findById(1L)).willReturn(product1);
-        given(productService.findById(2L)).willReturn(product2);
         given(menuRepository.save(any(Menu.class))).willReturn(menu);
+        given(productMenuService.calculateProductsPrice(1L, 1L)).willReturn(BigDecimal.valueOf(8000.00));
+        given(productMenuService.calculateProductsPrice(2L, 1L)).willReturn(BigDecimal.valueOf(4000.00));
 
         // when
         MenuResponse menuResponse = menuService.create(menuRequest);
 
         // then
+        verify(menuValidator).validateMenuPrice(any(Menu.class), any(BigDecimal.class));
+        verify(menuGroupValidator).validateExistsMenuGroupById(anyLong());
         return Arrays.asList(
                 dynamicTest("메뉴 ID 확인됨.", () -> assertThat(menuResponse.getName()).isEqualTo(menu.getName().toString())),
                 dynamicTest("메뉴상품의 상품 ID 확인됨.", () -> assertThat(menuResponse.getMenuProductResponses()).size().isEqualTo(2))
@@ -117,16 +110,15 @@ class MenuServiceTest {
                 dynamicTest("메뉴금액 미입력 오류 발생함.", () -> {
                     // given
                     MenuRequest menuRequest = new MenuRequest("Aa", null, 1L, new ArrayList<>());
-                    given(menuGroupService.findById(1L)).willReturn(new MenuGroup("A"));
 
                     // then
                     assertThatThrownBy(() -> menuService.create(menuRequest))
                             .isInstanceOf(IllegalArgumentException.class);
+                    verify(menuGroupValidator).validateExistsMenuGroupById(1L);
                 }),
                 dynamicTest("메뉴금액 음수 입력 오류 발생함.", () -> {
                     // given
                     MenuRequest menuRequest = new MenuRequest("Aa", BigDecimal.valueOf(-1), 2L, new ArrayList<>());
-                    given(menuGroupService.findById(2L)).willReturn(new MenuGroup("A"));
 
                     // then
                     assertThatThrownBy(() -> menuService.create(menuRequest))
@@ -136,23 +128,10 @@ class MenuServiceTest {
                 dynamicTest("등록되지 않은 메뉴그룹으로 등록 시도 시 오류 발생함.", () -> {
                     // given
                     MenuRequest menuRequest = new MenuRequest("Aa", BigDecimal.valueOf(1000), 100L, new ArrayList<>());
-                    given(menuGroupService.findById(100L)).willThrow(MenuGroupNotFoundException.class);
-
+                    doThrow(MenuGroupNotFoundException.class).when(menuGroupValidator).validateExistsMenuGroupById(100L);
                     // then
                     assertThatThrownBy(() -> menuService.create(menuRequest))
                             .isInstanceOf(MenuGroupNotFoundException.class);
-                }),
-                dynamicTest("메뉴상품에 등록된 상품 ID로 상품조회 실패 시 오류 발생함.", () -> {
-                    // given
-                    MenuGroup menuGroup = new MenuGroup("A");
-                    MenuRequest menuRequest = new MenuRequest("Aa", BigDecimal.valueOf(1000), 3L,
-                            Arrays.asList(new MenuProductRequest(1L, 1L)));
-                    given(menuGroupService.findById(3L)).willReturn(menuGroup);
-                    given(productService.findById(1L)).willThrow(ProductNotFoundException.class);
-
-                    // then
-                    assertThatThrownBy(() -> menuService.create(menuRequest))
-                            .isInstanceOf(ProductNotFoundException.class);
                 })
         );
     }

@@ -32,7 +32,6 @@ import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.product.domain.Product;
 import kitchenpos.utils.MockMvcControllerTest;
 
 @DisplayName("주문 관리 기능")
@@ -56,8 +55,8 @@ class OrderRestControllerTest extends MockMvcControllerTest {
     @BeforeEach
     void setUp() {
         menu = new Menu("A", BigDecimal.valueOf(20000.00), 1L);
-        menu.addMenuProduct(new MenuProduct(menu, new Product("a", BigDecimal.valueOf(15000.00)), 1));
-        menu.addMenuProduct(new MenuProduct(menu, new Product("a", BigDecimal.valueOf(15000.00)), 1));
+        menu.addMenuProduct(new MenuProduct(menu, 1L, 1));
+        menu.addMenuProduct(new MenuProduct(menu, 2L, 1));
     }
 
     @Test
