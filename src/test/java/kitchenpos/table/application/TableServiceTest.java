@@ -29,7 +29,6 @@ import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
-import kitchenpos.table.exception.NonEmptyOrderTableNotFoundException;
 import kitchenpos.table.exception.OrderTableNotFoundException;
 import kitchenpos.table.exception.TableGroupAlreadyExistsException;
 import kitchenpos.utils.domain.OrderTableObjects;
@@ -37,9 +36,6 @@ import kitchenpos.utils.domain.OrderTableObjects;
 @DisplayName("테이블 서비스")
 @ExtendWith(MockitoExtension.class)
 class TableServiceTest {
-
-    @Mock
-    private OrderService orderService;
     @Mock
     private OrderTableRepository orderTableRepository;
     @Mock
@@ -129,7 +125,6 @@ class TableServiceTest {
                 }),
                 dynamicTest("단체지정이 된 상태일 경우 오류 발생.", () -> {
                     // And
-//                    changeEmptyOrderTable.setTableGroup(new TableGroup());
                     changeEmptyOrderTable.groupBy(1L);
                     given(orderTableRepository.findById(any())).willReturn(Optional.of(changeEmptyOrderTable));
 
@@ -141,7 +136,6 @@ class TableServiceTest {
                 }),
                 dynamicTest("주문 상태가 COOKING이거나 MEAL상태이면 오류 발생.", () -> {
                     // And
-//                    changeEmptyOrderTable.setTableGroup(null);
                     changeEmptyOrderTable.ungroup();
                     given(orderTableRepository.findById(any())).willReturn(Optional.of(changeEmptyOrderTable));
                     doThrow(OrderAlreadyExistsException.class).when(orderValidator).validateExistsOrderStatusIsCookingANdMeal(any());
@@ -174,16 +168,6 @@ class TableServiceTest {
     @DisplayName("고객 수 변경 요청 오류 발생")
     List<DynamicTest> changeNumberOfGuests_exception() {
         return Arrays.asList(
-                dynamicTest("변경하려는 테이블 조회가 실패 하거나 비어있는 테이블 일 경우 오류 발생.", () -> {
-                    // given
-                    OrderTableRequest orderTableRequest = new OrderTableRequest(10, true);
-                    given(orderTableRepository.findByIdAndEmptyIsFalse(anyLong())).willReturn(Optional.empty());
-
-                    // then
-                    assertThatThrownBy(() -> tableService.changeNumberOfGuests(100L, orderTableRequest))
-                            .isInstanceOf(NonEmptyOrderTableNotFoundException.class)
-                            .hasMessage("비어있지 않은 테이블 대상이 존재하지 않습니다. 입력 ID : 100");
-                }),
                 dynamicTest("변경하려는 고객의 수가 음수로 입력되었을 경우 오류 발생.", () -> {
                     // given
                     OrderTableRequest orderTableRequest = new OrderTableRequest(-1, false);

@@ -6,9 +6,12 @@ import org.springframework.stereotype.Component;
 
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.exception.MisMatchedOrderTablesSizeException;
+import kitchenpos.table.exception.NonEmptyOrderTableNotFoundException;
 
 @Component
 public class OrderTableValidator {
+    private static final int ORDER_TABLE_MINIMUM_SIZE = 2;
     private final OrderTableRepository orderTableRepository;
 
     public OrderTableValidator(OrderTableRepository orderTableRepository) {
@@ -25,6 +28,22 @@ public class OrderTableValidator {
     }
 
     public void validateOrderTableIsEmptyOrHasTableGroups(List<Long> orderTableIds) {
-        orderTableRepository.findByIdIn(orderTableIds).forEach(this::validateOrderTableIsEmptyOrHasTableGroup);
+        orderTableRepository.findByIdIn(orderTableIds)
+                .forEach(this::validateOrderTableIsEmptyOrHasTableGroup);
+    }
+
+    public void validateOrderTablesConditionForCreatingTableGroup(List<Long> orderTableIds) {
+        if (orderTableIds.size() < ORDER_TABLE_MINIMUM_SIZE) {
+            throw new IllegalArgumentException("정산 그룹 생성은 2개 이상의 테이블만 가능합니다.");
+        }
+        if (orderTableRepository.countByIdIn(orderTableIds) != orderTableIds.size()) {
+            throw new MisMatchedOrderTablesSizeException("입력된 항목과 조회결과가 일치하지 않습니다.");
+        }
+        validateOrderTableIsEmptyOrHasTableGroups(orderTableIds);
+    }
+
+    public void validateExistsOrderTableByIdAndEmptyIsFalse(Long orderTableId) {
+        this.orderTableRepository.findByIdAndEmptyIsFalse(orderTableId)
+                .orElseThrow(() -> new NonEmptyOrderTableNotFoundException("비어있지 않은 테이블 대상이 존재하지 않습니다. 입력 ID : " + orderTableId));
     }
 }

@@ -21,7 +21,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.exception.OrderAlreadyExistsException;
 
-@Disabled
 @ExtendWith(MockitoExtension.class)
 class OrderValidatorTest {
     @Mock
