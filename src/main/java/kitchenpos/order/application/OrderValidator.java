@@ -8,9 +8,10 @@ import org.springframework.stereotype.Component;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.exception.OrderAlreadyExistsException;
+import kitchenpos.tablegroup.application.TableGroupOrderValidator;
 
 @Component
-public class OrderValidator {
+public class OrderValidator implements TableGroupOrderValidator {
 
     private final OrderRepository orderRepository;
 
@@ -18,6 +19,7 @@ public class OrderValidator {
         this.orderRepository = orderRepository;
     }
 
+    @Override
     public void validateExistsOrdersStatusIsCookingOrMeal(List<Long> orderTableIds) {
         if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
                 orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {

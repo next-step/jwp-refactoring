@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import kitchenpos.common.event.GroupedTablesEvent;
 import kitchenpos.common.event.UngroupedTablesEvent;
-import kitchenpos.order.application.OrderValidator;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
@@ -20,15 +19,15 @@ public class TableGroupService {
     private final TableGroupRepository tableGroupRepository;
     private final TableGroupOrderTableService tableGroupOrderTableService;
     private final ApplicationEventPublisher publisher;
-    private final OrderValidator orderValidator;
+    private final TableGroupOrderValidator tableGroupOrderValidator;
     private final TableGroupOrderTableValidator tableGroupOrderTableValidator;
 
-    public TableGroupService(final ApplicationEventPublisher publisher, final OrderValidator orderValidator,
+    public TableGroupService(final ApplicationEventPublisher publisher, final TableGroupOrderValidator tableGroupOrderValidator,
                              final TableGroupOrderTableService tableGroupOrderTableService,
                              final TableGroupOrderTableValidator tableGroupOrderTableValidator,
                              final TableGroupRepository tableGroupRepository) {
         this.publisher = publisher;
-        this.orderValidator = orderValidator;
+        this.tableGroupOrderValidator = tableGroupOrderValidator;
         this.tableGroupOrderTableService = tableGroupOrderTableService;
         this.tableGroupOrderTableValidator = tableGroupOrderTableValidator;
         this.tableGroupRepository = tableGroupRepository;
@@ -36,7 +35,7 @@ public class TableGroupService {
 
     public void ungroup(final Long tableGroupId) {
         List<Long> orderTableIds = tableGroupOrderTableService.findOrderTableIdsByTableGroupId(tableGroupId);
-        orderValidator.validateExistsOrdersStatusIsCookingOrMeal(orderTableIds);
+        tableGroupOrderValidator.validateExistsOrdersStatusIsCookingOrMeal(orderTableIds);
         publisher.publishEvent(new UngroupedTablesEvent(orderTableIds));
     }
 

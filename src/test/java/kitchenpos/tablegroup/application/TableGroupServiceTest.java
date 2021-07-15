@@ -22,7 +22,6 @@ import org.springframework.context.ApplicationEventPublisher;
 
 import kitchenpos.common.event.GroupedTablesEvent;
 import kitchenpos.common.event.UngroupedTablesEvent;
-import kitchenpos.order.application.OrderValidator;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
@@ -32,7 +31,7 @@ import kitchenpos.tablegroup.dto.TableGroupResponse;
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
     @Mock
-    private OrderValidator orderValidator;
+    private TableGroupOrderValidator tableGroupOrderValidator;
     @Mock
     private ApplicationEventPublisher publisher;
     @Mock
@@ -76,7 +75,7 @@ class TableGroupServiceTest {
         tableGroupService.ungroup(1L);
 
         // then
-        verify(orderValidator).validateExistsOrdersStatusIsCookingOrMeal(any(List.class));
+        verify(tableGroupOrderValidator).validateExistsOrdersStatusIsCookingOrMeal(any(List.class));
         verify(publisher).publishEvent(any(UngroupedTablesEvent.class));
     }
 
@@ -87,7 +86,7 @@ class TableGroupServiceTest {
                 dynamicTest("테이블들의 주문 상태가 COOKING이거나 MEAL인 상태가 존재하는 경우 오류 발생.", () -> {
                     // and
                     given(tableGroupOrderTableService.findOrderTableIdsByTableGroupId(anyLong())).willReturn(Arrays.asList(1L, 2L));
-                    doThrow(RuntimeException.class).when(orderValidator).validateExistsOrdersStatusIsCookingOrMeal(any(List.class));
+                    doThrow(RuntimeException.class).when(tableGroupOrderValidator).validateExistsOrdersStatusIsCookingOrMeal(any(List.class));
 
                     // then
                     assertThatThrownBy(() -> tableGroupService.ungroup(1L))
