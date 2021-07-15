@@ -63,10 +63,10 @@ public class TableServiceTest {
 	@Test
 	void changeNumberOfGuestsInHappyCase() {
 		// Given
-		when(orderTableDao.findById(1L)).thenReturn(Optional.of(new OrderTable(1L, 5, false)));
-		when(orderTableDao.save(any())).thenReturn(new OrderTable(1L, 10, false));
+		when(orderTableDao.findById(1L)).thenReturn(Optional.of(new OrderTable(1L, 1L, 5, false)));
+		when(orderTableDao.save(any())).thenReturn(new OrderTable(2L, 1L, 10, false));
 		// When
-		OrderTable orderTable = tableService.changeNumberOfGuests(1L, new OrderTable(1L, 10, false));
+		OrderTable orderTable = tableService.changeNumberOfGuests(1L, new OrderTable(2L, 1L, 10, false));
 		// Then
 		assertThat(orderTable.getNumberOfGuests()).isEqualTo(10);
 	}

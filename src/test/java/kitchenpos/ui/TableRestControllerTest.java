@@ -33,7 +33,7 @@ public class TableRestControllerTest extends WebMvcTestConfiguration {
 
 	@Test
 	void listTest() throws Exception {
-		given(tableService.list()).willReturn(Arrays.asList(new OrderTable(1L, 10, false), new OrderTable(2L, 4, true)));
+		given(tableService.list()).willReturn(Arrays.asList(new OrderTable(1L, 1L, 10, false), new OrderTable(2L, 2L, 4, true)));
 
 		mockMvc.perform(get("/api/tables"))
 			.andDo(print())
