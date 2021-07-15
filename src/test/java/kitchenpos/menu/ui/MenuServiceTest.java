@@ -49,8 +49,8 @@ class MenuServiceTest {
     private final Product 콜라 = new Product(2L, "콜라", Price.valueOf(1000));
     private final MenuGroup 인기메뉴 = new MenuGroup(메뉴그룹_ID, "인기메뉴");
 
-    private final MenuProduct 후라이드_한마리 = new MenuProduct(후라이드.getId(), Quantity.of(1L));
-    private final MenuProduct 콜라_한개 = new MenuProduct(콜라.getId(), Quantity.of(1L));
+    private final MenuProduct 후라이드_한마리 = new MenuProduct(후라이드, Quantity.of(1L));
+    private final MenuProduct 콜라_한개 = new MenuProduct(콜라, Quantity.of(1L));
     private final List<MenuProduct> 메뉴상품_목록 = Arrays.asList(후라이드_한마리, 콜라_한개);
     private Menu 후라이드세트 = new Menu("후라이드세트", Price.valueOf(10000), 인기메뉴.getId(), 메뉴상품_목록);
 

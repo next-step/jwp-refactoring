@@ -26,8 +26,7 @@ public class MenuService {
     public MenuService(
             final MenuRepository menuRepository,
             final MenuGroupRepository menuGroupRepository,
-            final ProductRepository productRepository
-    ) {
+            final ProductRepository productRepository) {
         this.menuRepository = menuRepository;
         this.menuGroupRepository = menuGroupRepository;
         this.productRepository = productRepository;
@@ -54,7 +53,7 @@ public class MenuService {
         List<MenuProduct> menuProducts = new ArrayList<>();
         for (MenuProductRequest menuProductRequest : menuProductRequests) {
             Product product = findProductById(menuProductRequest.getProductId(), products);
-            menuProducts.add(new MenuProduct(product.getId(), Quantity.of(menuProductRequest.getQuantity())));
+            menuProducts.add(new MenuProduct(product, Quantity.of(menuProductRequest.getQuantity())));
         }
         return menuProducts;
     }

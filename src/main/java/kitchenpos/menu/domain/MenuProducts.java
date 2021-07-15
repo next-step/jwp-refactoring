@@ -6,6 +6,8 @@ import javax.persistence.OneToMany;
 import java.util.Collections;
 import java.util.List;
 
+import static kitchenpos.common.Message.ERROR_MENU_PRICE_CANNOT_BE_BIGGER_THAN_MENUPRODUCTS_TOTAL;
+
 @Embeddable
 public class MenuProducts {
 
@@ -20,9 +22,20 @@ public class MenuProducts {
     }
 
     public MenuProducts(List<MenuProduct> menuProducts, Menu menu) {
+        validateMenuProductsPrice(menuProducts, menu);
         this.menuProducts = menuProducts;
         for (MenuProduct menuProduct : menuProducts) {
             menuProduct.ofMenu(menu);
+        }
+    }
+
+    private void validateMenuProductsPrice(List<MenuProduct> menuProducts, Menu menu) {
+        Price sum = Price.valueOf(0);
+        for (MenuProduct menuProduct : menuProducts) {
+            sum = sum.add(menuProduct.getTotalPrice());
+        }
+        if (menu.comparePriceTo(sum) > 0) {
+            throw new IllegalArgumentException(ERROR_MENU_PRICE_CANNOT_BE_BIGGER_THAN_MENUPRODUCTS_TOTAL.showText());
         }
     }
 
