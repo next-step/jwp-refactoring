@@ -32,7 +32,7 @@ public class MenuService {
     public MenuResponse create(final MenuRequest menuRequest) {
         MenuProducts menuProducts = new MenuProducts(menuRequest.getMenuProducts());
         Products products = new Products(productRepository.findAllById(menuProducts.toMenuProductIds()));
-        Long sum = products.calculateSumPrice(menuRequest.getMenuProducts());
+        Long sum = products.calculateSumPrice(menuProducts.toMenuProductIds());
 
         return MenuResponse.from(menuRepository.save(
                 new Menu(menuRequest.getName(), BigDecimal.valueOf(menuRequest.getPrice()), findMenuGroup(menuRequest),
