@@ -26,10 +26,10 @@ public class TableGroupMapper {
 
     private OrderTable toOrderTable(Long id, int numberOfGuests) {
         if (id != null) {
-            new IllegalArgumentException("주문 테이블 ID는 필수입니다.");
+            throw new IllegalArgumentException("주문 테이블 ID는 필수입니다.");
         }
         if(numberOfGuests < 0){
-            new IllegalArgumentException("테이블 손님은 0명 이상이어야 합니다.");
+            throw new IllegalArgumentException("테이블 손님은 0명 이상이어야 합니다.");
         }
         return new OrderTable(id, numberOfGuests);
     }
