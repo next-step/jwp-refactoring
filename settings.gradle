@@ -1,1 +1,2 @@
-rootProject.name = 'kitchenpos'
+rootProject.name = 'kitchenpos-multi-modules'
+include 'kitchenpos-app-web', 'kitchenpos-domain'
