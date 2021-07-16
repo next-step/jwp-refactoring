@@ -62,8 +62,9 @@ public class MenuProduct {
         return quantity.value();
     }
 
-    public BigDecimal getMenuProductPrice() {
-        return product.getPrice().multiply(BigDecimal.valueOf(quantity.value()));
+    public BigDecimal menuPrice() {
+        return product.totalPrice(quantity.value());
+
     }
 
     public void updateMenu(Menu menu) {

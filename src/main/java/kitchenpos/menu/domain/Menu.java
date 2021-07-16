@@ -6,6 +6,7 @@ import kitchenpos.menugroup.domain.MenuGroup;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "menu")

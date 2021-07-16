@@ -32,18 +32,12 @@ public class MenuService {
 
     @Transactional
     public MenuResponse create(MenuRequest menuRequest) {
-        priceValidCheck(menuRequest.getPrice());
+
         MenuGroup menuGroup = menuGroupService.findById(menuRequest.getMenuGroupId());
         MenuProducts menuProducts = findMenuProducts(menuRequest.getMenuProducts());
         Menu menu = new Menu(menuRequest.getName(), menuRequest.getPrice(), menuGroup, menuProducts);
 
         return MenuResponse.of(menuRepository.save(menu));
-    }
-
-    private void priceValidCheck(BigDecimal price) {
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException("메뉴 가격은 0원 이상이어야 합니다.");
-        }
     }
 
     private MenuProducts findMenuProducts(List<MenuProductRequest> menuProductRequests) {

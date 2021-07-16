@@ -27,8 +27,8 @@ class MenuTest {
         양념 = new Product("양념",BigDecimal.valueOf(17000));
         반1 =  new MenuProduct( 후라이드, 1);
         반2 =  new MenuProduct( 양념, 2);
-        BigDecimal 반1가격 = 반1.getMenuProductPrice().multiply(BigDecimal.valueOf(반1.getQuantity()));
-        BigDecimal 반2가격 = 반2.getMenuProductPrice().multiply(BigDecimal.valueOf(반2.getQuantity()));
+        BigDecimal 반1가격 = 반1.menuPrice().multiply(BigDecimal.valueOf(반1.getQuantity()));
+        BigDecimal 반2가격 = 반2.menuPrice().multiply(BigDecimal.valueOf(반2.getQuantity()));
         total = 반1가격.add(반2가격);
     }
 
