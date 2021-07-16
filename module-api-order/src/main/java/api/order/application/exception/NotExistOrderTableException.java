@@ -1,6 +1,6 @@
-package kitchenpos.table.application.exception;
+package api.order.application.exception;
 
-import kitchenpos.common.error.exception.NotExistException;
+import common.error.NotExistException;
 
 public class NotExistOrderTableException extends NotExistException {
     public NotExistOrderTableException() {

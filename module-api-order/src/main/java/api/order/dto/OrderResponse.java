@@ -1,7 +1,7 @@
-package kitchenpos.order.presentation.dto;
+package api.order.dto;
 
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderStatus;
+import domain.order.Order;
+import domain.order.OrderStatus;
 
 import java.time.LocalDateTime;
 import java.util.List;

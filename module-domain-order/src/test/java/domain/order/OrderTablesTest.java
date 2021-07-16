@@ -1,4 +1,4 @@
-package kitchenpos.table.domain;
+package domain.order;
 
 import domain.order.exception.CannotRegisterGroupException;
 import org.assertj.core.util.Lists;

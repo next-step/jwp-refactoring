@@ -1,6 +1,6 @@
-package kitchenpos.table.application.exception;
+package api.order.application.exception;
 
-import kitchenpos.common.error.exception.BusinessException;
+import common.error.BusinessException;
 
 public class BadSizeOrderTableException extends BusinessException {
     public BadSizeOrderTableException(int minValue) {

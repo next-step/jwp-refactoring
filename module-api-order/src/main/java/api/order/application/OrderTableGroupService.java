@@ -1,13 +1,13 @@
-package kitchenpos.table.application;
+package api.order.application;
 
-import kitchenpos.table.application.exception.NotExistOrderTableException;
-import kitchenpos.table.application.exception.NotExistOrderTableGroupException;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableGroup;
-import kitchenpos.table.domain.OrderTableGroupRepository;
-import kitchenpos.table.presentation.dto.OrderTableGroupRequest;
-import kitchenpos.table.presentation.dto.OrderTableGroupResponse;
-import kitchenpos.table.application.exception.BadSizeOrderTableException;
+import api.order.application.exception.NotExistOrderTableException;
+import api.order.application.exception.NotExistOrderTableGroupException;
+import api.order.dto.OrderTableGroupRequest;
+import api.order.dto.OrderTableGroupResponse;
+import api.order.application.exception.BadSizeOrderTableException;
+import domain.order.OrderTable;
+import domain.order.OrderTableGroup;
+import domain.order.OrderTableGroupRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

@@ -1,8 +1,7 @@
-package kitchenpos.menu.domain;
+package domain.menu;
 
-import kitchenpos.common.valueobject.Price;
-import kitchenpos.menu.domain.exception.BadMenuPriceException;
-import kitchenpos.product.domain.Product;
+import common.valueobject.Price;
+import domain.menu.exception.BadMenuPriceException;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

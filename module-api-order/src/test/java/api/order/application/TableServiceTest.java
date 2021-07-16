@@ -1,13 +1,7 @@
-package kitchenpos.application;
+package api.order.application;
 
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItems;
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
+import domain.order.*;
 import domain.order.exception.*;
-import api.order.application.OrderTableService;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
 import api.order.dto.OrderTableRequest;
 import api.order.dto.OrderTableResponse;
 import org.assertj.core.util.Lists;

@@ -1,9 +1,6 @@
-package kitchenpos.application;
+package api.order.application;
 
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItems;
-import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.domain.Orders;
+import domain.order.*;
 import domain.order.exception.CannotUngroupException;
 import api.order.application.OrderTableGroupService;
 import domain.order.exception.CannotRegisterGroupException;

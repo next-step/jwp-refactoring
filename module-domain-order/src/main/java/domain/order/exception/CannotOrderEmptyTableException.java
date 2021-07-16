@@ -1,6 +1,6 @@
-package kitchenpos.table.domain.exception;
+package domain.order.exception;
 
-import kitchenpos.common.error.exception.BusinessException;
+import common.error.BusinessException;
 
 public class CannotOrderEmptyTableException extends BusinessException {
     public CannotOrderEmptyTableException() {

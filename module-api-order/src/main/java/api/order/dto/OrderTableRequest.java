@@ -1,4 +1,4 @@
-package kitchenpos.table.presentation.dto;
+package api.order.dto;
 
 public class OrderTableRequest {
     private Long id;

@@ -1,4 +1,4 @@
-package kitchenpos.order.domain;
+package domain.order;
 
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Fetch;
