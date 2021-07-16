@@ -1,57 +1,46 @@
 package tablegroup.application;
 
+import kitchenpos.exception.CannotFindException;
 import kitchenpos.ordertable.domain.*;
-import kitchenpos.ordertable.dto.OrderTableRequest;
+import tablegroup.domain.TableGroupValidator;
 import tablegroup.dto.TableGroupRequest;
 import tablegroup.dto.TableGroupResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import tablegroup.domain.OrderTables;
 import tablegroup.domain.TableGroup;
 import tablegroup.domain.TableGroupRepository;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
-import static kitchenpos.common.Message.ERROR_TABLES_SHOULD_ALL_BE_REGISTERED_TO_BE_GROUPED;
+import static kitchenpos.common.Message.ERROR_TABLE_GROUP_NOT_FOUND;
 
 @Service
 @Transactional
 public class TableGroupService {
 
-    private final OrderTableRepository orderTableRepository;
+    private final TableGroupValidator tableGroupValidator;
     private final TableGroupRepository tableGroupRepository;
 
-    public TableGroupService(final OrderTableRepository orderTableRepository, final TableGroupRepository tableGroupRepository) {
-        this.orderTableRepository = orderTableRepository;
+    public TableGroupService(final TableGroupValidator tableGroupValidator, final TableGroupRepository tableGroupRepository) {
+        this.tableGroupValidator = tableGroupValidator;
         this.tableGroupRepository = tableGroupRepository;
     }
 
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
-        final List<Long> orderTableIds = collectOrderTableIds(tableGroupRequest);
-        final List<OrderTable> savedOrderTables = findOrderTablesByIdIn(orderTableIds);
+        tableGroupValidator.validateGrouping(tableGroupRequest);
+        return TableGroupResponse.of(tableGroupRepository.save(new TableGroup()));
+    }
 
-        if (orderTableIds.size() != savedOrderTables.size()) {
-            throw new IllegalArgumentException(ERROR_TABLES_SHOULD_ALL_BE_REGISTERED_TO_BE_GROUPED.showText());
+    public void ungroup(final Long tableGroupId) {
+        TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
+                .orElseThrow(() -> new CannotFindException(ERROR_TABLE_GROUP_NOT_FOUND));
+        List<OrderTable> orderTables = tableGroupValidator.validateUngrouping(tableGroup.getId());
+        unGroupOrderTables(orderTables);
+    }
+
+    private void unGroupOrderTables(List<OrderTable> orderTables) {
+        for (OrderTable orderTable : orderTables) {
+            orderTable.unGroup();
         }
-
-        TableGroup tableGroup = new TableGroup(new OrderTables((savedOrderTables)));
-        return TableGroupResponse.of(tableGroupRepository.save(tableGroup));
     }
-
-    private List<OrderTable> findOrderTablesByIdIn(List<Long> orderTableIds) {
-        return orderTableRepository.findAllByIdIn(orderTableIds);
-    }
-
-    private List<Long> collectOrderTableIds(TableGroupRequest tableGroupRequest) {
-        return tableGroupRequest.getOrderTables().stream()
-                .map(OrderTableRequest::getId)
-                .collect(Collectors.toList());
-    }
-
-    /* TableGroup 리팩토링 시 반영 */
-//    public void ungroup(final Long tableGroupId) {
-//        final List<OrderTable> orderTables = orderTableRepository.findAllByTableGroupId(tableGroupId);
-//        orderTables.forEach(OrderTable::unGroup);
-//    }
 }

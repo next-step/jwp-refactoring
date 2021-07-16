@@ -2,8 +2,6 @@ package kitchenpos.tablegroup.ui;
 
 import tablegroup.application.TableGroupService;
 import kitchenpos.common.ControllerTest;
-import kitchenpos.ordertable.domain.OrderTable;
-import tablegroup.domain.OrderTables;
 import tablegroup.domain.TableGroup;
 import tablegroup.dto.TableGroupRequest;
 import tablegroup.dto.TableGroupResponse;
@@ -15,7 +13,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.ResultActions;
 
-import java.util.Arrays;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -37,9 +34,7 @@ public class TableGroupControllerTest extends ControllerTest<TableGroupRequest> 
     }
 
     private final boolean 비어있음 = true;
-    private final OrderTable 비어있는_첫번째_테이블 = new OrderTable( 3, 비어있음);
-    private final OrderTable 비어있는_두번째_테이블 = new OrderTable(3, 비어있음);
-    private TableGroup 테이블그룹 = new TableGroup(1L, new OrderTables(Arrays.asList(비어있는_첫번째_테이블, 비어있는_두번째_테이블)));
+    private TableGroup 테이블그룹 = new TableGroup();
 
     @DisplayName("단체지정 생성요청")
     @Test

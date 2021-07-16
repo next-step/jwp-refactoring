@@ -63,13 +63,10 @@ public class OrderTable {
     public boolean isAssignedToTableGroup() {
         return tableGroupId != null;
     }
-/* TableGroup 리팩토링 시 반영 */
-//    public void unGroup() {
-//        if (orders.isNotCompleted()) {
-//            throw new CannotUpdateException(ERROR_TABLE_GROUP_CANNOT_BE_UNGROUPED_WHEN_ORDERS_NOT_COMPLETED);
-//        }
-//        this.tableGroupId = null;
-//    }
+
+    public void unGroup() {
+        this.tableGroupId = null;
+    }
 
     public Long getId() {
         return id;
