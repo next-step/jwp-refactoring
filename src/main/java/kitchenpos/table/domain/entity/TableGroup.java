@@ -25,12 +25,13 @@ public class TableGroup {
 
     public TableGroup(OrderTables orderTables) {
         this.orderTables = orderTables;
-        orderTables.toTableGroup(this);
+        //orderTables.toTableGroup(this);
     }
 
     public TableGroup(Long id, OrderTables orderTables) {
         this.id = id;
         this.orderTables = orderTables;
+        //orderTables.toTableGroup(this);
     }
 
     public Long getId() {

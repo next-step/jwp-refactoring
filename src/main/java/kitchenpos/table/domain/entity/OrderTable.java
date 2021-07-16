@@ -46,6 +46,10 @@ public class OrderTable {
         this.empty = false;
     }
 
+    public OrderTable(Long id) {
+        this.id = id;
+    }
+
     public Long getId() {
         return id;
     }
@@ -76,5 +80,15 @@ public class OrderTable {
 
     public void changeNumberOfGuests(NumberOfGuests numberOfGuests) {
         this.numberOfGuests = numberOfGuests;
+    }
+
+    @Override
+    public String toString() {
+        return "OrderTable{" +
+            "id=" + id +
+            ", tableGroup=" + tableGroup +
+            ", numberOfGuests=" + numberOfGuests +
+            ", empty=" + empty +
+            '}';
     }
 }

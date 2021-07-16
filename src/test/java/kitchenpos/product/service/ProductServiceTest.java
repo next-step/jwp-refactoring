@@ -2,32 +2,22 @@ package kitchenpos.product.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 import kitchenpos.product.domain.entity.Product;
-import kitchenpos.product.domain.entity.ProductRepository;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
 class ProductServiceTest {
 
-    @Mock
-    ProductRepository productRepository;
-
-    @InjectMocks
+    @Autowired
     ProductService productService;
 
     private Product 양념치킨;
@@ -47,9 +37,6 @@ class ProductServiceTest {
     @Test
     @DisplayName("상품을 생성한다.")
     void create() {
-        //given
-        when(productRepository.save(any())).thenReturn(양념치킨);
-
         //when
         ProductResponse createdProduct = productService.create(양념치킨_리퀘스트);
 
@@ -71,15 +58,10 @@ class ProductServiceTest {
     @Test
     @DisplayName("전체 상품을 조회한다.")
     void list() {
-        //given
-        when(productRepository.findAll()).thenReturn(Arrays.asList(양념치킨, 후라이드치킨));
-
         //when
         List<ProductResponse> foundProducts = productService.list();
 
         //then
-        assertThat(
-            foundProducts.stream().map(ProductResponse::getName).collect(Collectors.toList()))
-            .containsExactly(양념치킨.getName(), 후라이드치킨.getName());
+        assertThat(foundProducts.size()).isGreaterThan(0);
     }
 }

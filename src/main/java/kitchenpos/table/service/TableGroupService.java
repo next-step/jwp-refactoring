@@ -44,8 +44,11 @@ public class TableGroupService {
         List<OrderTable> orderTables = orderTableRepository
             .findAllById(getOrderTableIds(tableGroupRequest));
         validateOrderTable(tableGroupRequest, orderTables);
-        return TableGroupResponse
-            .of(tableGroupRepository.save(new TableGroup(new OrderTables(orderTables))));
+        TableGroup savedTableGroup = tableGroupRepository
+            .save(new TableGroup(new OrderTables(orderTables)));
+        orderTables.forEach(orderTable -> orderTable.toTableGroup(savedTableGroup));
+
+        return TableGroupResponse.of(savedTableGroup);
     }
 
     public void ungroup(Long tableGroupId) {
@@ -53,6 +56,7 @@ public class TableGroupService {
         List<OrderTable> orderTables = findOrderTables(tableGroup);
         List<Long> orderTableIds = getOrderTableIds(orderTables);
         validateOrderStatusInCookingOrMeal(orderTableIds);
+
         orderTables.forEach(OrderTable::unGroup);
     }
 
