@@ -12,7 +12,6 @@ import kitchenpos.menu.domain.entity.Menu;
 import kitchenpos.menu.domain.entity.MenuRepository;
 import kitchenpos.order.domain.entity.Order;
 import kitchenpos.order.domain.entity.OrderLineItem;
-import kitchenpos.order.domain.entity.OrderLineItemRepository;
 import kitchenpos.order.domain.entity.OrderRepository;
 import kitchenpos.table.domain.entity.OrderTable;
 import kitchenpos.table.domain.entity.OrderTableRepository;
@@ -37,8 +36,6 @@ class OrderServiceTest {
     MenuRepository menuRepository;
     @Mock
     OrderRepository orderRepository;
-    @Mock
-    OrderLineItemRepository orderLineItemRepository;
     @Mock
     OrderTableRepository orderTableRepository;
 
