@@ -47,6 +47,7 @@ public class MenuService {
         return MenuResponse.of(savedMenu, savedMenuProducts);
     }
 
+    @Transactional(readOnly = true)
     public List<MenuResponse> list() {
         final List<Menu> menus = menuRepository.findAll();
         return menus.stream().map(MenuResponse::of).collect(Collectors.toList());
