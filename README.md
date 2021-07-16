@@ -51,8 +51,45 @@
 - [x] 주문 테이블 그룹을 삭제할수 있다.
     * 주문 테이블 그룹의 주문 테이블이 `조리` 상태이거나, `식사` 상태이면, 삭제할수 없다.
 
+## 모듈
+- app-web
+```
+─kitchenpos
+   ├─application
+   ├─dto
+   │  ├─request
+   │  └─response
+   └─ui
+```
+
+- domain-menus
+```
+└─kitchenpos
+    ├─menu
+    │  ├─applicati
+    │  └─domain
+    ├─menuGroup
+    │  ├─applicati
+    │  └─domain
+    └─product
+        ├─applicat
+        └─domain
+```
+
+- domain-orders
+```
+└─kitchenpos
+    ├─order
+    │  ├─applica
+    │  └─domain
+    └─orderTable
+        ├─applic
+        ├─domain
+        └─event
+```
+
 ## 테이블 스키마
-![ERD](src/main/resources/db/erd/erd.png)
+![ERD](module-app-web/src/main/resources/db/erd/erd.png)
 
 ## 용어 사전
 
