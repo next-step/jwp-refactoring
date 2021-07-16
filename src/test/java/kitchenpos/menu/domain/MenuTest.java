@@ -1,5 +1,6 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.common.Exception.WrongPriceException;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -38,7 +39,7 @@ class MenuTest {
 
         //when && then
         assertThatThrownBy(() -> new Menu("반반치킨", new BigDecimal(50000), null, new MenuProducts(Arrays.asList(반1,반2))))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(WrongPriceException.class)
                 .hasMessageContaining("메뉴 가격은 상품 가격의 총 합보다 클 수 없습니다.");
     }
 

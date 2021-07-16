@@ -1,5 +1,7 @@
 package kitchenpos.table.application;
 
+import kitchenpos.common.Exception.NotExistException;
+import kitchenpos.common.Exception.UnchangeableException;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
@@ -57,12 +59,12 @@ public class OrderTableService {
 
     private void orderStatusValidCheck(OrderTable orderTable) {
         if (orderService.changeStatusValidCheck(orderTable)) {
-            throw new IllegalArgumentException("주문이 조리나 식사 상태에서는 변경할 수 없습니다.");
+            throw new UnchangeableException("주문이 조리나 식사 상태에서는 변경할 수 없습니다.");
         }
     }
 
     public OrderTable findById(Long orderTableId) {
-        return orderTableRepository.findById(orderTableId).orElseThrow(() -> new IllegalArgumentException("등록되지 않은 주문 테이블입니다."));
+        return orderTableRepository.findById(orderTableId).orElseThrow(() -> new NotExistException("등록되지 않은 주문 테이블입니다."));
     }
 
     private void changeNumberOfGuestsValidCheck(OrderTableRequest orderTableRequest, OrderTable savedOrderTable) {
@@ -79,7 +81,7 @@ public class OrderTableService {
 
     private void numberOfGuestsValidCheck(int numberOfGuests) {
         if (numberOfGuests < 0) {
-            throw new IllegalArgumentException("방문 고객 수는 0명 이상이어야 합니다.");
+            throw new UnchangeableException("방문 고객 수는 0명 이상이어야 합니다.");
         }
     }
 

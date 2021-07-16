@@ -1,5 +1,8 @@
 package kitchenpos.order.application;
 
+import kitchenpos.common.Exception.EmptyException;
+import kitchenpos.common.Exception.NotExistException;
+import kitchenpos.common.Exception.UnchangeableException;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.domain.*;
@@ -60,7 +63,7 @@ class OrderServiceTest {
 
         //when && then
         assertThatThrownBy(() -> orderService.create(orderRequest))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(EmptyException.class)
                 .hasMessageContaining("주문 항목이 비어있습니다.");
 
     }
@@ -70,11 +73,11 @@ class OrderServiceTest {
     @Test
     void createFailBecauseOfNotExistMenuTest() {
         //given
-        doThrow(new IllegalArgumentException("등록된 메뉴가 아닙니다.")).when(menuService).findById(any());
+        doThrow(new NotExistException("등록된 메뉴가 아닙니다.")).when(menuService).findById(any());
 
         //when && then
         assertThatThrownBy(() -> orderService.create(orderRequest))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(NotExistException.class)
                 .hasMessageContaining("등록된 메뉴가 아닙니다.");
     }
 
@@ -88,7 +91,7 @@ class OrderServiceTest {
 
         //when && then
         assertThatThrownBy(() -> orderService.create(orderRequest))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(NotExistException.class)
                 .hasMessageContaining("등록되지 않은 주문 테이블입니다.");
 
     }
@@ -103,7 +106,7 @@ class OrderServiceTest {
 
         //when && then
         assertThatThrownBy(() -> orderService.create(orderRequest))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(EmptyException.class)
                 .hasMessageContaining("빈 테이블은 주문 할 수 없습니다.");
 
     }
@@ -154,7 +157,7 @@ class OrderServiceTest {
 
         //when && then
         assertThatThrownBy(() -> orderService.changeOrderStatus(any(), orderRequest))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(NotExistException.class)
                 .hasMessageContaining("등록되지 않은 주문입니다.");
 
     }
@@ -169,7 +172,7 @@ class OrderServiceTest {
 
         //when && then
         assertThatThrownBy(() -> orderService.changeOrderStatus(1l, orderRequest))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(UnchangeableException.class)
                 .hasMessageContaining("이미 완료된 주문입니다.");
 
     }

@@ -1,5 +1,7 @@
 package kitchenpos.table.domain;
 
+import kitchenpos.common.Exception.AlreadyGroupedException;
+import kitchenpos.common.Exception.IsNotEmptyException;
 import kitchenpos.tablegroup.domain.TableGroup;
 
 import javax.persistence.*;
@@ -66,13 +68,13 @@ public class OrderTable {
 
     private void isTableGroupEmptyCheck() {
         if (Objects.nonNull(tableGroupId)) {
-            throw new IllegalArgumentException("단체 지정된 주문 테이블입니다.");
+            throw new AlreadyGroupedException("단체 지정된 주문 테이블입니다.");
         }
     }
 
     protected void availableToUpdateCheck() {
         if (!empty) {
-            throw new IllegalArgumentException("빈 주문 테이블이 아닙니다.");
+            throw new IsNotEmptyException("빈 주문 테이블이 아닙니다.");
         }
     }
 

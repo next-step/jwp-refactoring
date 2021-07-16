@@ -1,5 +1,8 @@
 package kitchenpos.table.application;
 
+import kitchenpos.common.Exception.AlreadyGroupedException;
+import kitchenpos.common.Exception.NotExistException;
+import kitchenpos.common.Exception.UnchangeableException;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
@@ -86,7 +89,7 @@ class TableServiceTest {
 
         //when && then
         assertThatThrownBy(() -> orderTableService.changeEmpty(givenOrderTable.getId(), changeEmptyRequest))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(NotExistException.class)
                 .hasMessageContaining("등록되지 않은 주문 테이블입니다.");
     }
 
@@ -100,8 +103,8 @@ class TableServiceTest {
 
         //when && then
         assertThatThrownBy(() -> orderTableService.changeEmpty(givenOrderTable.getId(), changeEmptyRequest))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("체 지정된 주문 테이블입니다.");
+                .isInstanceOf(AlreadyGroupedException.class)
+                .hasMessageContaining("단체 지정된 주문 테이블입니다.");
     }
 
     @DisplayName("빈 테이블 설정을 할 때 주문 상태가 `조리`, `식사` 이면 빈 테이블 설정 할 수 없다.")
@@ -109,11 +112,11 @@ class TableServiceTest {
     void changeEmptyFailBecauseOfOrderStatusTest() {
         //given
         given(orderTableRepository.findById(givenOrderTable.getId())).willReturn(Optional.ofNullable(givenOrderTable));
-        doThrow(new IllegalArgumentException("주문이 조리나 식사 상태에서는 변경할 수 없습니다.")).when(orderService).changeStatusValidCheck(any());
+        doThrow(new UnchangeableException("주문이 조리나 식사 상태에서는 변경할 수 없습니다.")).when(orderService).changeStatusValidCheck(any());
 
         //when && then
         assertThatThrownBy(() -> orderTableService.changeEmpty(givenOrderTable.getId(), changeEmptyRequest))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(UnchangeableException.class)
                 .hasMessageContaining("주문이 조리나 식사 상태에서는 변경할 수 없습니다.");
     }
 
@@ -140,7 +143,7 @@ class TableServiceTest {
 
         //when && then
         assertThatThrownBy(() -> orderTableService.changeNumberOfGuests(givenOrderTable.getId(), orderTableRequest))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(UnchangeableException.class)
                 .hasMessageContaining("방문 고객 수는 0명 이상이어야 합니다.");
     }
 
@@ -153,7 +156,7 @@ class TableServiceTest {
 
         //when && then
         assertThatThrownBy(() -> orderTableService.changeNumberOfGuests(givenOrderTable.getId(), changeNumberOfGuestsRequest))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(NotExistException.class)
                 .hasMessageContaining("등록되지 않은 주문 테이블입니다.");
     }
 
@@ -166,7 +169,7 @@ class TableServiceTest {
 
         //when && then
         assertThatThrownBy(() -> orderTableService.changeNumberOfGuests(givenOrderTable.getId(), orderTableRequest))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(UnchangeableException.class)
                 .hasMessageContaining("빈 주문 테이블입니다.");
     }
 

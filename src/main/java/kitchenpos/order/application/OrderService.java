@@ -1,5 +1,7 @@
 package kitchenpos.order.application;
 
+import kitchenpos.common.Exception.EmptyException;
+import kitchenpos.common.Exception.NotExistException;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.domain.*;
@@ -40,7 +42,7 @@ public class OrderService {
     }
 
     private OrderTable findOrderTable(Long orderTableId) {
-        OrderTable orderTable = orderTableRepository.findById(orderTableId).orElseThrow(() -> new IllegalArgumentException("등록되지 않은 주문 테이블입니다."));
+        OrderTable orderTable = orderTableRepository.findById(orderTableId).orElseThrow(() -> new NotExistException("등록되지 않은 주문 테이블입니다."));
         return orderTable;
     }
 
@@ -56,7 +58,7 @@ public class OrderService {
 
     private void orderLineItemsEmptyCheck(List<OrderLineItemRequest> orderLineItemRequests) {
         if (CollectionUtils.isEmpty(orderLineItemRequests)) {
-            throw new IllegalArgumentException("주문 항목이 비어있습니다.");
+            throw new EmptyException("주문 항목이 비어있습니다.");
         }
     }
 
@@ -74,7 +76,7 @@ public class OrderService {
     }
 
     private Order findById(Long orderId) {
-        return orderRepository.findById(orderId).orElseThrow(() -> new IllegalArgumentException("등록되지 않은 주문입니다."));
+        return orderRepository.findById(orderId).orElseThrow(() -> new NotExistException("등록되지 않은 주문입니다."));
 
     }
 

@@ -1,5 +1,7 @@
 package kitchenpos.common.domain;
 
+import kitchenpos.common.Exception.WrongPriceException;
+
 import javax.persistence.Embeddable;
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -33,7 +35,7 @@ public class Price {
 
     public void availablePriceCheck(BigDecimal totalPrice) {
         if (price.compareTo(totalPrice) > ZERO) {
-            throw new IllegalArgumentException("메뉴 가격은 상품 가격의 총 합보다 클 수 없습니다.");
+            throw new WrongPriceException("메뉴 가격은 상품 가격의 총 합보다 클 수 없습니다.");
         }
     }
 }

@@ -1,5 +1,6 @@
 package kitchenpos.tablegroup.application;
 
+import kitchenpos.common.Exception.UnchangeableException;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.table.application.OrderTableService;
 import kitchenpos.table.domain.OrderTable;
@@ -74,7 +75,7 @@ public class TableGroupService {
     private void orderStatusCheck(List<OrderTable> orderTables) {
         if (orderService.existsByOrderTableIdInAndOrderStatusIn(
                 orderTables, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException("주문이 조리나 식사 상태에서는 변경할 수 없습니다.");
+            throw new UnchangeableException("주문이 조리나 식사 상태에서는 변경할 수 없습니다.");
         }
     }
 

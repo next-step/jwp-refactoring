@@ -1,5 +1,6 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.common.Exception.UnchangeableException;
 import kitchenpos.table.domain.OrderTable;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -87,7 +88,7 @@ public class Order {
 
     public void updateStatus(String orderStatusRequest) {
         if (orderStatus.equals(OrderStatus.COMPLETION)) {
-            throw new IllegalArgumentException("이미 완료된 주문입니다.");
+            throw new UnchangeableException("이미 완료된 주문입니다.");
         }
         this.orderStatus = OrderStatus.valueOf(orderStatusRequest);
     }

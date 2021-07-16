@@ -1,5 +1,6 @@
 package kitchenpos.menu.application;
 
+import kitchenpos.common.Exception.NotExistException;
 import kitchenpos.menu.domain.*;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
@@ -62,6 +63,6 @@ public class MenuService {
     }
 
     public Menu findById(Long menuId) {
-        return menuRepository.findById(menuId).orElseThrow(() -> new IllegalArgumentException("등록된 메뉴가 아닙니다."));
+        return menuRepository.findById(menuId).orElseThrow(() -> new NotExistException("등록된 메뉴가 아닙니다."));
     }
 }

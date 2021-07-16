@@ -1,5 +1,6 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.common.Exception.UnchangeableException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.table.domain.OrderTable;
@@ -29,7 +30,7 @@ class OrderTest {
 
         //when && then
         assertThatThrownBy(() ->order.updateStatus(OrderStatus.COOKING.name()))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(UnchangeableException.class)
                 .hasMessageContaining("이미 완료된 주문입니다.");
     }
 

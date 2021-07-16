@@ -1,5 +1,8 @@
 package kitchenpos.tablegroup.application;
 
+import kitchenpos.common.Exception.AlreadyGroupedException;
+import kitchenpos.common.Exception.IsNotEmptyException;
+import kitchenpos.common.Exception.UnchangeableException;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.table.application.OrderTableService;
 import kitchenpos.table.domain.OrderTable;
@@ -97,7 +100,7 @@ class TableGroupServiceTest {
 
         //when && then
         assertThatThrownBy(() -> tableGroupService.create(tableGroupRequest))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(IsNotEmptyException.class)
                 .hasMessageContaining("빈 주문 테이블이 아닙니다.");
     }
 
@@ -111,7 +114,7 @@ class TableGroupServiceTest {
 
         //when && then
         assertThatThrownBy(() -> tableGroupService.create(tableGroupRequest))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(AlreadyGroupedException.class)
                 .hasMessageContaining("단체 지정된 주문 테이블입니다.");
     }
 
@@ -145,7 +148,7 @@ class TableGroupServiceTest {
 
         //when && then
         assertThatThrownBy(() -> tableGroupService.ungroup(1L))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(UnchangeableException.class)
                 .hasMessageContaining("주문이 조리나 식사 상태에서는 변경할 수 없습니다.");
     }
 
