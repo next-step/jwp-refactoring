@@ -21,17 +21,16 @@ class TableGroupResponseTest {
 
     @BeforeEach
     void setUp() {
-        테이블_그룹 = new TableGroup(1L, LocalDateTime.now());
         일번_테이블 = new OrderTable(1L, 0, true);
         이번_테이블 = new OrderTable(2L, 0, true);
-        일번_테이블.withTableGroup(테이블_그룹);
-        이번_테이블.withTableGroup(테이블_그룹);
+        테이블_그룹 = new TableGroup(1L, LocalDateTime.now());
+        테이블_그룹.addOrderTable(일번_테이블);
+        테이블_그룹.addOrderTable(이번_테이블);
     }
 
     @Test
     void 주문_테이블_일급_컬렉션_객체와_테이블_그룹_entity를_이용하여_테이블_그룹_반환_객체_생성() {
-        OrderTables orderTables = new OrderTables(Arrays.asList(일번_테이블, 이번_테이블));
-        TableGroupResponse tableGroupResponse = TableGroupResponse.of(테이블_그룹, orderTables);
+        TableGroupResponse tableGroupResponse = TableGroupResponse.of(테이블_그룹);
         assertThat(tableGroupResponse.getId()).isEqualTo(테이블_그룹.getId());
         assertThat(tableGroupResponse.getCreatedDate()).isEqualTo(테이블_그룹.getCreatedDate());
         assertThat(tableGroupResponse.getOrderTableResponses().size()).isEqualTo(2);

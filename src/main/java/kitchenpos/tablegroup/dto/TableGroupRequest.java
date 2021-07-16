@@ -20,6 +20,6 @@ public class TableGroupRequest {
     }
 
     public TableGroup toTableGroup() {
-        return new TableGroup();
+        return TableGroup.create();
     }
 }

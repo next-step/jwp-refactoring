@@ -1,6 +1,7 @@
 package kitchenpos.table.domain;
 
 import kitchenpos.exception.OrderTableException;
+import kitchenpos.order.domain.Orders;
 import kitchenpos.tablegroup.domain.TableGroup;
 
 import javax.persistence.*;
@@ -20,6 +21,10 @@ public class OrderTable {
     @JoinColumn(name = "table_group_id", foreignKey = @ForeignKey(name = "fk_order_table_table_group"))
     private TableGroup tableGroup;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id", foreignKey = @ForeignKey(name = "fk_order_table_orders"))
+    private Orders order;
+
     @Embedded
     private NumberOfGuests numberOfGuests = new NumberOfGuests();
 
@@ -32,6 +37,10 @@ public class OrderTable {
         this.id = id;
         this.numberOfGuests = new NumberOfGuests(numberOfGuests);
         this.empty = empty;
+    }
+
+    public void withOrder(Orders order) {
+        this.order = order;
     }
 
     public OrderTable(int numberOfGuests, boolean empty) {
@@ -99,5 +108,11 @@ public class OrderTable {
     @Override
     public int hashCode() {
         return Objects.hash(id, tableGroup, numberOfGuests, empty);
+    }
+
+    public void checkValidOrderStatusCompletion() {
+        if (Objects.nonNull(order)) {
+            order.checkOrderStatus();
+        }
     }
 }

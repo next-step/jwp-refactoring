@@ -19,6 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -52,18 +53,15 @@ class TableGroupServiceTest {
     @Test
     void 테이블_그룹_생성() {
         LocalDateTime now = LocalDateTime.now();
-        TableGroup tableGroup = new TableGroup(1L, now);
 
         OrderTables orderTables = new OrderTables(Arrays.asList(일번_테이블, 이번_테이블));
         when(tableService.findAllByIds(Arrays.asList(1L, 2L))).thenReturn(orderTables);
-        when(tableGroupRepository.save(any(TableGroup.class))).thenReturn(tableGroup);
 
+        TableGroup tableGroup = new TableGroup(1L, now, orderTables);
+        when(tableGroupRepository.save(any(TableGroup.class))).thenReturn(tableGroup);
         TableGroupResponse expected = tableGroupService.create(new TableGroupRequest(Arrays.asList(1L, 2L)));
         assertThat(expected.getId()).isEqualTo(tableGroup.getId());
         assertThat(expected.getOrderTableResponses().size()).isEqualTo(2);
-        Set<Long> tableGroupIds = expected.getOrderTableResponses().stream().map(OrderTableResponse::getTableGroupId).collect(Collectors.toSet());
-        assertThat(tableGroupIds.size()).isEqualTo(1);
-        assertThat(tableGroupIds).contains(1L);
     }
 
     @Test
@@ -77,8 +75,7 @@ class TableGroupServiceTest {
         TableGroup tableGroup = new TableGroup(1L, now);
         일번_테이블.withTableGroup(tableGroup);
         이번_테이블.withTableGroup(tableGroup);
-        OrderTables orderTables = new OrderTables(Arrays.asList(일번_테이블, 이번_테이블));
-        when(tableService.findAllByTableGroupId(1L)).thenReturn(orderTables);
+        when(tableGroupRepository.findById(1L)).thenReturn(Optional.of(tableGroup));
         tableGroupService.ungroup(1L);
     }
 }

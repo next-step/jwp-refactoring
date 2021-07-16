@@ -1,6 +1,8 @@
 package kitchenpos.table.application;
 
+import kitchenpos.exception.OrderException;
 import kitchenpos.exception.OrderTableException;
+import kitchenpos.order.domain.Orders;
 import kitchenpos.order.enums.OrderStatus;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
@@ -81,9 +83,10 @@ class TableServiceTest {
 
     @Test
     void 주문_상태가_조리중_식사중일때_테이블_상태_변경_시_에러발생() {
+        Orders order = new Orders(1L, 1L, OrderStatus.COMPLETION, LocalDateTime.now());
+        orderTable.withOrder(order);
         when(orderTableRepository.findById(1L)).thenReturn(Optional.of(orderTable));
-        when(orderRepository.countByOrderTableIdInAndOrderStatus(Arrays.asList(1L), OrderStatus.COMPLETION)).thenReturn(1L);
-        assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), request)).isInstanceOf(OrderTableException.class);
+        assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), request)).isInstanceOf(OrderException.class);
     }
 
     @Test

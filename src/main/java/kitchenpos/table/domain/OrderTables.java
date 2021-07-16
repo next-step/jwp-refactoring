@@ -3,16 +3,21 @@ package kitchenpos.table.domain;
 import kitchenpos.exception.OrderTableException;
 import kitchenpos.tablegroup.domain.TableGroup;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Embeddable;
+import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+@Embeddable
 public class OrderTables {
 
     private static final String NOT_EMPTY_TABLE_ERROR_MESSAGE = "이미 그룹핑된 테이블이 존재합니다.";
     private static final String NOT_EQUAL_TABLE_COUNT_ERROR_MESSAGE = "요청 주문 테이블 아이디 수량과 조회 결과 주문 테이블 수량이 일치하지않습니다.";
 
+    @OneToMany(mappedBy = "tableGroup", cascade = CascadeType.PERSIST)
     private List<OrderTable> orderTables = new ArrayList<>();
 
     public OrderTables() {
@@ -55,6 +60,12 @@ public class OrderTables {
         }
     }
 
+    public void addOrderTable(OrderTable orderTable) {
+        if (!orderTables.contains(orderTable)) {
+            orderTables.add(orderTable);
+        }
+    }
+
     @Override
     public boolean equals(Object object) {
         if (this == object) return true;
@@ -66,5 +77,11 @@ public class OrderTables {
     @Override
     public int hashCode() {
         return Objects.hash(orderTables);
+    }
+
+    public void checkOrderStatus() {
+        for (OrderTable orderTable : orderTables) {
+            orderTable.checkValidOrderStatusCompletion();
+        }
     }
 }

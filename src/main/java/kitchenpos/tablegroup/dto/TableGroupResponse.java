@@ -23,8 +23,8 @@ public class TableGroupResponse {
         this.orderTableResponses = orderTableResponses;
     }
 
-    public static TableGroupResponse of(TableGroup tableGroup, OrderTables orderTables) {
-        List<OrderTableResponse> orderTableResponses = orderTables.orderTables().stream().map(OrderTableResponse::of).collect(Collectors.toList());
+    public static TableGroupResponse of(TableGroup tableGroup) {
+        List<OrderTableResponse> orderTableResponses = tableGroup.getOrderTables().orderTables().stream().map(OrderTableResponse::of).collect(Collectors.toList());
         return new TableGroupResponse(tableGroup.getId(), tableGroup.getCreatedDate(), orderTableResponses);
     }
 

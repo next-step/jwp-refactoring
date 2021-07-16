@@ -20,7 +20,6 @@ import java.util.stream.Collectors;
 public class TableService {
 
     private static final String NOT_FOUND_ORDER_TABLE_ERROR_MESSAGE = "미등록 주문 테이블 입니다.";
-    private static final String NOT_CHANGE_ORDER_STATUS_ERROR_MESSAGE = "주문 상태가 완료 상태인 주문 테이블 입니다.";
 
     private final OrderTableRepository orderTableRepository;
     private final OrderRepository orderRepository;
@@ -44,7 +43,7 @@ public class TableService {
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         OrderTable orderTable = this.findById(orderTableId);
         orderTable.checkValidEmptyTableGroup();
-        checkValidOrderStatusCompletion(Arrays.asList(orderTable.getId()));
+        orderTable.checkValidOrderStatusCompletion();
         orderTable.changeEmpty(orderTableRequest.isEmpty());
         return OrderTableResponse.of(orderTable);
     }
@@ -74,11 +73,5 @@ public class TableService {
 
     public OrderTable findOrderTable(Long orderTableId) {
         return findById(orderTableId);
-    }
-
-    public void checkValidOrderStatusCompletion(List<Long> orderTableIds) {
-        if (orderRepository.countByOrderTableIdInAndOrderStatus(orderTableIds, OrderStatus.COMPLETION) > 0) {
-            throw new OrderTableException(NOT_CHANGE_ORDER_STATUS_ERROR_MESSAGE);
-        }
     }
 }
