@@ -1,6 +1,6 @@
-package kitchenpos.common.valueobject;
+package common.valueobject;
 
-import kitchenpos.common.valueobject.exception.InvalidNameException;
+import common.valueobject.exception.InvalidNameException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

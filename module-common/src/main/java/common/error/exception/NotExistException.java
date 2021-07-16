@@ -1,4 +1,4 @@
-package kitchenpos.common.error.exception;
+package common.error.exception;
 
 import java.util.NoSuchElementException;
 

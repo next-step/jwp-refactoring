@@ -1,6 +1,6 @@
-package kitchenpos.common.valueobject;
+package common.valueobject;
 
-import kitchenpos.common.valueobject.exception.NegativeQuantityException;
+import common.valueobject.exception.NegativeQuantityException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

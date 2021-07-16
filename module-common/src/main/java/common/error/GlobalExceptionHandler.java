@@ -1,12 +1,7 @@
-package kitchenpos.common.error;
+package common.error;
 
-import kitchenpos.common.error.exception.BusinessException;
-import kitchenpos.common.error.exception.NotExistException;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import common.error.exception.BusinessException;
+import common.error.exception.NotExistException;
 
 @ControllerAdvice
 @ResponseBody

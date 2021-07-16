@@ -1,6 +1,6 @@
-package kitchenpos.common.valueobject.exception;
+package common.valueobject.exception;
 
-import kitchenpos.common.error.exception.BusinessException;
+import common.error.exception.BusinessException;
 
 public class InvalidNameException extends BusinessException {
     public InvalidNameException() {

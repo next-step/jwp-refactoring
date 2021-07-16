@@ -1,4 +1,4 @@
-package kitchenpos.common.error;
+package common.error;
 
 public class ErrorResponse {
     private final String message;
