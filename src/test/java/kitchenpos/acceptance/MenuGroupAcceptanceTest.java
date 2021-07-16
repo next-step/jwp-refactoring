@@ -16,7 +16,7 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
 	@DisplayName("메뉴 그룹 등록 및 조회 시나리오")
 	@Test
 	void createMenuAndFindMenuScenario() {
-		// Scenario : 메뉴 그룹 등록 및 조회 시나리오
+		// Scenario
 		// When
 		ExtractableResponse<Response> menuGroupCreatedResponse = RestAssured
 			.given().log().all()

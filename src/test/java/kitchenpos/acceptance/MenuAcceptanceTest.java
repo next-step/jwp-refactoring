@@ -23,7 +23,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
 	@Test
 	void createMenuAndFindMenuScenario() {
 		// Backgroud
-		// Given : 메뉴 그룹 등록되어 있음
+		// Given
 		ExtractableResponse<Response> menuGroupResponse = RestAssured
 			.given().log().all()
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -33,7 +33,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
 			.extract();
 		MenuGroup menuGroup = menuGroupResponse.as(MenuGroup.class);
 
-		// And : 상품 등록되어 있음
+		// And
 		ExtractableResponse<Response> productResponse = RestAssured
 			.given().log().all()
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -43,7 +43,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
 			.extract();
 		Product product = productResponse.as(Product.class);
 
-		// Scenario : 메뉴 등록 및 조회 시나리오
+		// Scenario
 		// When
 		ExtractableResponse<Response> menuCreatedResponse = RestAssured
 			.given().log().all()
