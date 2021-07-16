@@ -3,6 +3,7 @@ package kitchenpos.ui;
 import kitchenpos.application.ProductService;
 import kitchenpos.domain.Product;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,4 +35,9 @@ public class ProductRestController {
                 .body(productService.list())
                 ;
     }
+
+	@ExceptionHandler(IllegalArgumentException.class)
+	public ResponseEntity handleRuntimeException(IllegalArgumentException illegalArgumentException) {
+		return ResponseEntity.badRequest().build();
+	}
 }

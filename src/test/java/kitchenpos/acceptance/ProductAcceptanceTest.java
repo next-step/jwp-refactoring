@@ -50,4 +50,21 @@ public class ProductAcceptanceTest extends AcceptanceTest {
 
 		assertThat(productName).isEqualTo("매운 라면");
 	}
+
+	@DisplayName("상품 오류 시나리오")
+	@Test
+	void productErrorScenario() {
+		// Scenario
+		// When
+		ExtractableResponse<Response> productWithMunusPriceResponse = RestAssured
+			.given().log().all()
+			.contentType(MediaType.APPLICATION_JSON_VALUE)
+			.body(new Product("매운 라면", new BigDecimal(-1000)))
+			.when().post("/api/products")
+			.then().log().all()
+			.extract();
+
+		// Then
+		assertThat(productWithMunusPriceResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+	}
 }
