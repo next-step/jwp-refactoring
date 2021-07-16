@@ -36,15 +36,9 @@ public class TableService {
 
     public OrderTableResponse changeEmpty(final Long orderTableId,
         OrderTableRequest orderTableRequest) {
-
         final OrderTable savedOrderTable = findOrderTable(orderTableId);
-        //1. 합석테이블이 있는지(테이블그룹) 확인한다.
         validateOrderTableHasTableGroup(savedOrderTable);
-        //2. 주문상태가 조리,식사 중인지 확인한다. 계산완료된 주문만 빈테이블로 만들수 있다.
-
         tableValidator.validateOrderStatusInCookingOrMeal(orderTableId);
-
-        //3. 빈테이블로 만든다.
         savedOrderTable.changeEmpty(orderTableRequest.isEmpty());
         return OrderTableResponse.of(orderTableRepository.save(savedOrderTable));
     }
@@ -70,6 +64,4 @@ public class TableService {
         return orderTableRepository.findById(orderTableId)
             .orElseThrow(NotFoundOrderTableException::new);
     }
-
-
 }
