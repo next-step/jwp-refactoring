@@ -11,25 +11,25 @@ import kitchenpos.tablegroup.dto.TableGroupRequest;
 
 @Service
 public class TableGroupService {
-    private final TableGroupValidator validator;
+    private final TableGroupValidator tableGroupValidator;
     private final TableGroupRepository tableGroupRepository;
 
-    public TableGroupService(TableGroupValidator validator, TableGroupRepository tableGroupRepository) {
-        this.validator = validator;
+    public TableGroupService(TableGroupValidator tableGroupValidator, TableGroupRepository tableGroupRepository) {
+        this.tableGroupValidator = tableGroupValidator;
         this.tableGroupRepository = tableGroupRepository;
     }
 
     @Transactional
     public TableGroup create(final TableGroupRequest request) {
         TableGroup tableGroup = tableGroupRepository.save(new TableGroup());
-        tableGroup.group(validator, request.getOrderTableIds());
+        tableGroup.group(tableGroupValidator, request.getOrderTableIds());
         return tableGroup;
     }
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
         TableGroup tableGroup = findById(tableGroupId);
-        tableGroup.ungroup(validator);
+        tableGroup.ungroup(tableGroupValidator);
         tableGroupRepository.delete(tableGroup);
     }
 

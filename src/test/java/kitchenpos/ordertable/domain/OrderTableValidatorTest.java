@@ -15,7 +15,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import kitchenpos.generic.exception.IllegalOperationException;
 import kitchenpos.generic.exception.OrderNotCompletedException;
 import kitchenpos.generic.exception.OrderTableNotFoundException;
-import kitchenpos.order.domain.OrderRepository;
 
 @DisplayName("주문 테이블 밸리데이터 테스트")
 @ExtendWith(MockitoExtension.class)
@@ -25,9 +24,9 @@ class OrderTableValidatorTest {
     OrderTableValidator validator;
 
     @Mock
-    OrderRepository orderRepository;
-    @Mock
     OrderTableRepository orderTableRepository;
+    @Mock
+    OrderStatusCheckService orderStatusCheckService;
 
     @Test
     @DisplayName("상태 변경 실패 - 테이블이 존재하지 않음")
@@ -59,7 +58,7 @@ class OrderTableValidatorTest {
         // given
         OrderTable dummy = new OrderTable();
         when(orderTableRepository.existsById(any())).thenReturn(true);
-        when(orderRepository.existsAllByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).thenReturn(true);
+        when(orderStatusCheckService.existsOrdersInProgress(any())).thenReturn(true);
 
         // then
         assertThatThrownBy(() -> validator.validateChangeTableStatus(dummy))

@@ -1,4 +1,4 @@
-package kitchenpos.tablegroup.domain;
+package kitchenpos.ordertable.domain;
 
 import static kitchenpos.ordertable.domain.OrderTableTest.*;
 import static org.assertj.core.api.Assertions.*;
@@ -21,15 +21,15 @@ import kitchenpos.generic.exception.NotEnoughTablesException;
 import kitchenpos.generic.exception.OrderNotCompletedException;
 import kitchenpos.generic.exception.TableGroupNotFoundException;
 import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.domain.OrderTableRepository;
+import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.domain.TableGroupRepository;
 
 @DisplayName("테이블 그룹 밸리데이터 테스트")
 @ExtendWith(MockitoExtension.class)
-class TableGroupValidatorTest {
+class TableGroupValidatorImplTest {
 
     @InjectMocks
-    TableGroupValidator validator;
+    TableGroupValidatorImpl validator;
 
     @Mock
     OrderRepository orderRepository;

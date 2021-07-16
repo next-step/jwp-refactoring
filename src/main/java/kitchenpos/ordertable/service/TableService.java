@@ -13,12 +13,11 @@ import kitchenpos.ordertable.dto.OrderTableRequest;
 
 @Service
 public class TableService {
-
-    private final OrderTableValidator validator;
+    private final OrderTableValidator orderTableValidator;
     private final OrderTableRepository orderTableRepository;
 
-    public TableService(OrderTableValidator validator, OrderTableRepository orderTableRepository) {
-        this.validator = validator;
+    public TableService(OrderTableValidator orderTableValidator, OrderTableRepository orderTableRepository) {
+        this.orderTableValidator = orderTableValidator;
         this.orderTableRepository = orderTableRepository;
     }
 
@@ -34,7 +33,7 @@ public class TableService {
     @Transactional
     public OrderTable changeEmpty(final Long orderTableId, final OrderTableRequest request) {
         final OrderTable savedOrderTable = findById(orderTableId);
-        savedOrderTable.changeEmpty(validator, request.isEmpty());
+        savedOrderTable.changeEmpty(orderTableValidator, request.isEmpty());
 
         return savedOrderTable;
     }
@@ -42,7 +41,7 @@ public class TableService {
     @Transactional
     public OrderTable changeNumberOfGuests(final Long orderTableId, final OrderTableRequest orderTable) {
         final OrderTable savedOrderTable = findById(orderTableId);
-        savedOrderTable.changeNumberOfGuests(validator, orderTable.numberOfGuests());
+        savedOrderTable.changeNumberOfGuests(orderTableValidator, orderTable.numberOfGuests());
 
         return savedOrderTable;
     }

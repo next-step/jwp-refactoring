@@ -1,25 +1,21 @@
 package kitchenpos.ordertable.domain;
 
-import static java.util.Arrays.*;
-import static java.util.Collections.*;
-import static kitchenpos.order.domain.OrderStatus.*;
-
 import org.springframework.stereotype.Component;
 
 import kitchenpos.generic.exception.IllegalOperationException;
 import kitchenpos.generic.exception.OrderNotCompletedException;
 import kitchenpos.generic.exception.OrderTableNotFoundException;
-import kitchenpos.order.domain.OrderRepository;
 
 @Component
 public class OrderTableValidator {
 
-    private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
+    private final OrderStatusCheckService orderStatusCheckService;
 
-    public OrderTableValidator(OrderRepository orderRepository, OrderTableRepository orderTableRepository) {
-        this.orderRepository = orderRepository;
+    public OrderTableValidator(OrderTableRepository orderTableRepository,
+            OrderStatusCheckService orderStatusCheckService) {
         this.orderTableRepository = orderTableRepository;
+        this.orderStatusCheckService = orderStatusCheckService;
     }
 
     public void validateChangeTableStatus(OrderTable orderTable) {
@@ -37,8 +33,7 @@ public class OrderTableValidator {
     }
 
     private boolean includeOrderInProgress(OrderTable orderTable) {
-        return orderRepository.existsAllByOrderTableIdInAndOrderStatusIn(
-            singletonList(orderTable.getId()), asList(COOKING, MEAL));
+        return orderStatusCheckService.existsOrdersInProgress(orderTable.getId());
     }
 
     public void validateChangeNumberOfGuests(OrderTable orderTable) {

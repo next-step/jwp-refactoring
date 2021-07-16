@@ -3,6 +3,7 @@ package kitchenpos.ordertable.domain;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
 
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
@@ -39,5 +40,9 @@ public class OrderTables {
 
     public boolean isGroupable() {
         return orderTables.stream().allMatch(OrderTable::isGroupable);
+    }
+
+    public void forEach(Consumer<OrderTable> consumer) {
+        orderTables.forEach(consumer);
     }
 }
