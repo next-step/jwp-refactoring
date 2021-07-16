@@ -61,8 +61,8 @@ class MenuRestControllerTest {
 
         메뉴그룹_한마리메뉴 = new MenuGroup(1L, "한마리메뉴");
         프로덕트_후라이드치킨 = new Product(1L, "후라이드치킨", BigDecimal.valueOf(18000));
-        메뉴프로덕트_후라이드치킨_후라이드치킨 = new MenuProduct(1L, 프로덕트_후라이드치킨, 1);
-        메뉴_후라이드 = Menu.of("후라이드", Price.of(BigDecimal.valueOf(18000)), 메뉴그룹_한마리메뉴,
+        메뉴프로덕트_후라이드치킨_후라이드치킨 = new MenuProduct(1L, 프로덕트_후라이드치킨.getId(), 1);
+        메뉴_후라이드 = Menu.of("후라이드", Price.of(BigDecimal.valueOf(18000)), 메뉴그룹_한마리메뉴.getId(),
             Arrays.asList(메뉴프로덕트_후라이드치킨_후라이드치킨));
 
         메뉴그룹_한마리메뉴_리퀘스트 = new MenuGroupRequest(1L, "한마리메뉴");

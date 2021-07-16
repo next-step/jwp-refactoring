@@ -48,3 +48,8 @@ INSERT INTO order_table (id, table_group_id, number_of_guests, empty) VALUES (10
 INSERT INTO order_line_item (order_id, menu_id, quantity) VALUES (1,3,1);
 
 INSERT INTO orders (id, order_table_id, order_status, ordered_time) VALUES (100, 3, 'COMPLETION', now());
+
+--메뉴서비스 테스트데이터
+INSERT INTO order_table (id, number_of_guests, empty) VALUES (21, 0, true);
+INSERT INTO orders (id, order_table_id, order_status, ordered_time) VALUES (21, 21, 'COOKING', now());
+

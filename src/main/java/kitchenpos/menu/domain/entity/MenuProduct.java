@@ -8,7 +8,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import kitchenpos.menu.domain.value.Quantity;
-import kitchenpos.product.domain.entity.Product;
 
 @Entity
 public class MenuProduct {
@@ -21,9 +20,7 @@ public class MenuProduct {
     @JoinColumn(name = "menu_id")
     private Menu menu;
 
-    @ManyToOne
-    @JoinColumn(name = "product_id")
-    private Product product;
+    private Long productId;
 
     @Embedded
     private Quantity quantity;
@@ -31,20 +28,14 @@ public class MenuProduct {
     public MenuProduct() {
     }
 
-    public MenuProduct(Menu menu, Product product, long quantity) {
-        this.menu = menu;
-        this.product = product;
-        this.quantity = Quantity.of(quantity);
-    }
-
-    public MenuProduct(Long seq, Product product, long quantity) {
+    public MenuProduct(Long seq, Long productId, long quantity) {
         this.seq = seq;
-        this.product = product;
+        this.productId = productId;
         this.quantity = Quantity.of(quantity);
     }
 
-    public MenuProduct(Product product, long quantity) {
-        this.product = product;
+    public MenuProduct(Long productId, long quantity) {
+        this.productId = productId;
         this.quantity = Quantity.of(quantity);
     }
 
@@ -56,8 +47,8 @@ public class MenuProduct {
         return menu;
     }
 
-    public Product getProduct() {
-        return product;
+    public Long getProductId() {
+        return productId;
     }
 
     public Quantity getQuantity() {

@@ -47,7 +47,7 @@ package TablePackage #DDDDDD {
 
   'MenuGroup <-- Menu
 
-  Product <-- MenuProduct
+  'Product <-- MenuProduct
 
   MenuGroup <-- MenuGroupService
   MenuGroupRepository <-- MenuGroupService

@@ -1,11 +1,13 @@
 package kitchenpos.menu.domain.entity;
 
+import java.util.List;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import kitchenpos.menu.domain.value.MenuProducts;
 import kitchenpos.menu.domain.value.Price;
-
-import javax.persistence.*;
-import java.util.List;
-import kitchenpos.menu.exception.MenuPriceGreaterThanProductsSumException;
 
 @Entity
 public class Menu {
@@ -18,8 +20,6 @@ public class Menu {
     @Embedded
     private Price price;
 
-    @ManyToOne
-    @JoinColumn(name = "menu_group_id")
     private Long menuGroupId;
 
     @Embedded
@@ -42,17 +42,7 @@ public class Menu {
 
     public static Menu of(String name, Price price, Long menuGroupId,
         List<MenuProduct> menuProducts) {
-        validateMenuProductsSum(price, menuProducts);
         return new Menu(name, price, menuGroupId, new MenuProducts(menuProducts));
-    }
-
-    private static void validateMenuProductsSum(Price menuPrice, List<MenuProduct> menuProducts) {
-        Double sum = menuProducts.stream()
-            .mapToDouble(menuProduct -> menuProduct.getProduct().price())
-            .sum();
-        if (menuPrice.greaterThan(sum)) {
-            throw new MenuPriceGreaterThanProductsSumException();
-        }
     }
 
     public Long getId() {
