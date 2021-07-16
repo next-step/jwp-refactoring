@@ -1,22 +1,18 @@
 package kitchenpos.table.service;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import kitchenpos.order.domain.entity.OrderRepository;
 import kitchenpos.table.domain.entity.OrderTable;
 import kitchenpos.table.domain.entity.OrderTableRepository;
 import kitchenpos.table.domain.entity.TableGroup;
 import kitchenpos.table.domain.entity.TableGroupRepository;
-import kitchenpos.order.domain.value.OrderStatus;
 import kitchenpos.table.domain.value.OrderTables;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
 import kitchenpos.table.exception.NotFoundOrderTableException;
 import kitchenpos.table.exception.NotFoundTableGroupException;
-import kitchenpos.table.exception.OrderStatusInCookingOrMealException;
 import kitchenpos.table.exception.OrderTableCountException;
 import kitchenpos.table.exception.OrderTableHasTableGroupException;
 import kitchenpos.table.exception.OrderTableIsNotEmptyException;
@@ -29,15 +25,15 @@ public class TableGroupService {
 
     private static final int MIN_GROUP_SIZE = 2;
 
-    private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
     private final TableGroupRepository tableGroupRepository;
+    private final TableValidator tableValidator;
 
-    public TableGroupService(OrderRepository orderRepository,
-        OrderTableRepository orderTableRepository, TableGroupRepository tableGroupRepository) {
-        this.orderRepository = orderRepository;
+    public TableGroupService(OrderTableRepository orderTableRepository,
+        TableGroupRepository tableGroupRepository, TableValidator tableValidator) {
         this.orderTableRepository = orderTableRepository;
         this.tableGroupRepository = tableGroupRepository;
+        this.tableValidator = tableValidator;
     }
 
     public TableGroupResponse create(TableGroupRequest tableGroupRequest) {
@@ -55,8 +51,7 @@ public class TableGroupService {
         TableGroup tableGroup = findTableGroup(tableGroupId);
         List<OrderTable> orderTables = findOrderTables(tableGroup);
         List<Long> orderTableIds = getOrderTableIds(orderTables);
-        validateOrderStatusInCookingOrMeal(orderTableIds);
-
+        tableValidator.validateOrderStatusInCookingOrMeal(orderTableIds);
         orderTables.forEach(OrderTable::unGroup);
     }
 
@@ -104,13 +99,6 @@ public class TableGroupService {
         return tableGroupRequest.getOrderTables()
             .stream().map(OrderTableRequest::getId)
             .collect(Collectors.toList());
-    }
-
-    private void validateOrderStatusInCookingOrMeal(List<Long> orderTableIds) {
-        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
-            orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new OrderStatusInCookingOrMealException();
-        }
     }
 
     private TableGroup findTableGroup(Long tableGroupId) {

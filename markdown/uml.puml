@@ -70,13 +70,13 @@ package TablePackage #DDDDDD {
   OrderTable <-- TableGroup
 
   OrderRepository <-- TableGroupService
-  OrderTable <-- TableGroupService
-  OrderTableRepository <-- TableGroupService
+  'OrderTable <-- TableGroupService
+  'OrderTableRepository <-- TableGroupService
   TableGroup <-- TableGroupService
   TableGroupRepository <-- TableGroupService
 
-  OrderRepository <-- TableService
-  OrderTable <-- TableService
+  'OrderRepository <-- TableService
+  'OrderTable <-- TableService
   OrderTableRepository <-- TableService
 
   TableGroup <-- TableGroupRepository

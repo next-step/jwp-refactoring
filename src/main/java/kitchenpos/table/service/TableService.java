@@ -1,17 +1,13 @@
 package kitchenpos.table.service;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import kitchenpos.order.domain.entity.OrderRepository;
 import kitchenpos.table.domain.entity.OrderTable;
 import kitchenpos.table.domain.entity.OrderTableRepository;
 import kitchenpos.table.domain.value.NumberOfGuests;
-import kitchenpos.order.domain.value.OrderStatus;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.exception.NotFoundOrderTableException;
-import kitchenpos.table.exception.OrderStatusInCookingOrMealException;
 import kitchenpos.table.exception.OrderTableHasTableGroupException;
 import kitchenpos.table.exception.OrderTableIsEmptyException;
 import org.springframework.stereotype.Service;
@@ -21,13 +17,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class TableService {
 
-    private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
+    private final TableValidator tableValidator;
 
-    public TableService(OrderRepository orderRepository,
-        OrderTableRepository orderTableRepository) {
-        this.orderRepository = orderRepository;
+    public TableService(OrderTableRepository orderTableRepository, TableValidator tableValidator) {
         this.orderTableRepository = orderTableRepository;
+        this.tableValidator = tableValidator;
     }
 
     public OrderTableResponse create(OrderTableRequest orderTableRequest) {
@@ -46,7 +41,9 @@ public class TableService {
         //1. 합석테이블이 있는지(테이블그룹) 확인한다.
         validateOrderTableHasTableGroup(savedOrderTable);
         //2. 주문상태가 조리,식사 중인지 확인한다. 계산완료된 주문만 빈테이블로 만들수 있다.
-        validateOrderStatus(orderTableId);
+
+        tableValidator.validateOrderStatusInCookingOrMeal(orderTableId);
+
         //3. 빈테이블로 만든다.
         savedOrderTable.changeEmpty(orderTableRequest.isEmpty());
         return OrderTableResponse.of(orderTableRepository.save(savedOrderTable));
@@ -61,13 +58,6 @@ public class TableService {
         savedOrderTable
             .changeNumberOfGuests(NumberOfGuests.of(orderTableRequest.getNumberOfGuests()));
         return OrderTableResponse.of(orderTableRepository.save(savedOrderTable));
-    }
-
-    private void validateOrderStatus(Long orderTableId) {
-        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
-            orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new OrderStatusInCookingOrMealException();
-        }
     }
 
     private void validateOrderTableHasTableGroup(OrderTable savedOrderTable) {
