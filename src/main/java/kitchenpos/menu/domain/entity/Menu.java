@@ -6,6 +6,7 @@ import kitchenpos.menu.domain.value.Price;
 import javax.persistence.*;
 import java.util.List;
 import kitchenpos.menu.exception.MenuPriceGreaterThanProductsSumException;
+import kitchenpos.menugroup.domain.MenuGroup;
 
 @Entity
 public class Menu {
