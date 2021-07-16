@@ -31,8 +31,10 @@ class MenuGroupControllerTest extends ControllerTest<MenuGroup> {
     @Autowired
     private MenuGroupRestController menuGroupRestController;
 
-    private MenuGroupRequest 첫번째_메뉴그룹 = new MenuGroupRequest("첫번째_메뉴그룹");
-    private MenuGroupRequest 두번째_메뉴그룹 = new MenuGroupRequest("두번째_메뉴그룹");
+    private MenuGroupRequest 첫번째_메뉴그룹_요청 = new MenuGroupRequest("첫번째_메뉴그룹");
+    private MenuGroupRequest 두번째_메뉴그룹_요청 = new MenuGroupRequest("두번째_메뉴그룹");
+    private MenuGroupResponse 첫번째_메뉴그룹_응답 = new MenuGroupResponse(1L, "첫번째_메뉴그룹");
+    private MenuGroupResponse 두번째_메뉴그룹_응답 = new MenuGroupResponse(2L, "두번째_메뉴그룹");
 
     @Override
     protected Object controller() {
@@ -44,22 +46,22 @@ class MenuGroupControllerTest extends ControllerTest<MenuGroup> {
     @Test
     void 메뉴그룹_생성요청() throws Exception {
         //Given
-        when(menuGroupService.create(any())).thenReturn(MenuGroupResponse.of(첫번째_메뉴그룹.toMenuGroup()));
+        when(menuGroupService.create(any())).thenReturn(MenuGroupResponse.of(첫번째_메뉴그룹_요청.toMenuGroup()));
 
         //When
-        ResultActions 결과 = postRequest(BASE_URI, 첫번째_메뉴그룹.toMenuGroup());
+        ResultActions 결과 = postRequest(BASE_URI, 첫번째_메뉴그룹_요청.toMenuGroup());
 
         //Then
         생성성공(결과);
-        결과.andExpect(jsonPath("$.name").value(첫번째_메뉴그룹.getName()));
+        결과.andExpect(jsonPath("$.name").value(첫번째_메뉴그룹_요청.getName()));
     }
 
     @DisplayName("메뉴그룹 목록 조회요청")
     @Test
     void 메뉴그룹_목록_조회요청() throws Exception {
         //Given
-        List<MenuGroupRequest> 메뉴그룹_목록 = new ArrayList<>(Arrays.asList(첫번째_메뉴그룹, 두번째_메뉴그룹));
-        when(menuGroupService.list()).thenReturn(MenuGroupResponse.ofList(MenuGroupRequest.toMenuGroupList(메뉴그룹_목록)));
+        List<MenuGroupRequest> 메뉴그룹_목록 = new ArrayList<>(Arrays.asList(첫번째_메뉴그룹_요청, 두번째_메뉴그룹_요청));
+        when(menuGroupService.list()).thenReturn(Arrays.asList(첫번째_메뉴그룹_응답, 두번째_메뉴그룹_응답));
 
         //When
         ResultActions 결과 = getRequest(BASE_URI);

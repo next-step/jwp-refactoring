@@ -1,5 +1,6 @@
 package kitchenpos.menu.application;
 
+import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.dto.MenuGroupRequest;
 import kitchenpos.menu.dto.MenuGroupResponse;
@@ -7,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -23,6 +25,12 @@ public class MenuGroupService {
 
     @Transactional(readOnly = true)
     public List<MenuGroupResponse> list() {
-        return MenuGroupResponse.ofList(menuGroupRepository.findAll());
+        return convertListToMenuGroupResponse(menuGroupRepository.findAll());
+    }
+
+    private List<MenuGroupResponse> convertListToMenuGroupResponse(List<MenuGroup> list) {
+        return list.stream()
+                .map(MenuGroupResponse::of)
+                .collect(Collectors.toList());
     }
 }
