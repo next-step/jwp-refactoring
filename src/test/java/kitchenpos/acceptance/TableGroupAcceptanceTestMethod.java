@@ -17,4 +17,13 @@ public class TableGroupAcceptanceTestMethod {
 			.then().log().all()
 			.extract();
 	}
+
+	public static ExtractableResponse<Response> ungroupTableGroup(Long id) {
+		return RestAssured
+			.given().log().all()
+			.contentType(MediaType.APPLICATION_JSON_VALUE)
+			.when().delete("/api/table-groups/" + id)
+			.then().log().all()
+			.extract();
+	}
 }
