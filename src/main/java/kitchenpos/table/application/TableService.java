@@ -1,6 +1,6 @@
 package kitchenpos.table.application;
 
-import kitchenpos.enums.OrderStatus;
+import kitchenpos.order.enums.OrderStatus;
 import kitchenpos.exception.OrderTableException;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.OrderTable;

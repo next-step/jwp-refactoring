@@ -1,7 +1,7 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.enums.OrderStatus;
 import kitchenpos.exception.OrderException;
+import kitchenpos.order.enums.OrderStatus;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 

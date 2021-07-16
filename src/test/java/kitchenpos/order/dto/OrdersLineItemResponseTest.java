@@ -1,6 +1,6 @@
 package kitchenpos.order.dto;
 
-import kitchenpos.enums.OrderStatus;
+import kitchenpos.order.enums.OrderStatus;
 import kitchenpos.order.domain.Orders;
 import kitchenpos.order.domain.OrderLineItem;
 import org.junit.jupiter.api.DisplayName;

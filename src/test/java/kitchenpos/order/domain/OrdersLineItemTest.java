@@ -1,6 +1,6 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.enums.OrderStatus;
+import kitchenpos.order.enums.OrderStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
