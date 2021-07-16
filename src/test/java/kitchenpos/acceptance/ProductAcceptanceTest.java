@@ -1,5 +1,6 @@
 package kitchenpos.acceptance;
 
+import static kitchenpos.acceptance.ProductAcceptanceTestMethod.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.math.BigDecimal;
@@ -7,9 +8,7 @@ import java.math.BigDecimal;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.domain.Product;
@@ -20,34 +19,20 @@ public class ProductAcceptanceTest extends AcceptanceTest {
 	void createProductAndFindProductScenario() {
 		// Scenario
 		// When
-		ExtractableResponse<Response> productCreatedResponse = RestAssured
-			.given().log().all()
-			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.body(new Product("매운 라면", new BigDecimal(8000)))
-			.when().post("/api/products")
-			.then().log().all()
-			.extract();
+		ExtractableResponse<Response> productCreatedResponse = createProduct(new Product("매운 라면", new BigDecimal(8000)));
 		Product createdProduct = productCreatedResponse.as(Product.class);
-
 		// Then
 		assertThat(productCreatedResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
 		assertThat(createdProduct.getName()).isEqualTo("매운 라면");
 
 		// When
-		ExtractableResponse<Response> findProductResponse = RestAssured
-			.given().log().all()
-			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.when().get("/api/products")
-			.then().log().all()
-			.extract();
-
+		ExtractableResponse<Response> findProductResponse = findProduct();
+		// Then
 		String productName = findProductResponse.jsonPath().getList(".", Product.class).stream()
 			.filter(product -> product.getId() == createdProduct.getId())
 			.map(Product::getName)
 			.findFirst()
-			.get()
-			;
-
+			.get();
 		assertThat(productName).isEqualTo("매운 라면");
 	}
 
@@ -56,14 +41,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
 	void productErrorScenario() {
 		// Scenario
 		// When
-		ExtractableResponse<Response> productWithMunusPriceResponse = RestAssured
-			.given().log().all()
-			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.body(new Product("매운 라면", new BigDecimal(-1000)))
-			.when().post("/api/products")
-			.then().log().all()
-			.extract();
-
+		ExtractableResponse<Response> productWithMunusPriceResponse = createProduct(new Product("매운 라면", new BigDecimal(-1000)));
 		// Then
 		assertThat(productWithMunusPriceResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
 	}

@@ -1,7 +1,5 @@
 package kitchenpos.acceptance;
 
-import java.math.BigDecimal;
-
 import org.springframework.http.MediaType;
 
 import io.restassured.RestAssured;
@@ -16,6 +14,15 @@ public class ProductAcceptanceTestMethod {
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
 			.body(product)
 			.when().post("/api/products")
+			.then().log().all()
+			.extract();
+	}
+
+	public static ExtractableResponse<Response> findProduct() {
+		return RestAssured
+			.given().log().all()
+			.contentType(MediaType.APPLICATION_JSON_VALUE)
+			.when().get("/api/products")
 			.then().log().all()
 			.extract();
 	}
