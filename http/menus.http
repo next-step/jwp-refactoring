@@ -1,6 +1,6 @@
 ###
 POST {{host}}/api/menus
-Content-Type: kitchenpos.application/json
+Content-Type: application/json
 
 {
   "name": "후라이드+후라이드",
