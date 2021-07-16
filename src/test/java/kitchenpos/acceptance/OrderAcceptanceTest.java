@@ -1,5 +1,10 @@
 package kitchenpos.acceptance;
 
+import static kitchenpos.acceptance.MenuAcceptanceTestMethod.*;
+import static kitchenpos.acceptance.MenuGroupAcceptanceTestMethod.*;
+import static kitchenpos.acceptance.OrderAcceptanceTestMethod.*;
+import static kitchenpos.acceptance.ProductAcceptanceTestMethod.*;
+import static kitchenpos.acceptance.TableAcceptanceTestMethod.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.math.BigDecimal;
@@ -9,9 +14,7 @@ import java.util.Arrays;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.domain.Menu;
@@ -28,91 +31,41 @@ public class OrderAcceptanceTest extends AcceptanceTest {
 	void createOrderAndChangeStatusAndFindOrderScenario() {
 		// Backgroud
 		// Given
-		ExtractableResponse<Response> menuGroupResponse = RestAssured
-			.given().log().all()
-			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.body(new MenuGroup("인기 메뉴"))
-			.when().post("/api/menu-groups")
-			.then().log().all()
-			.extract();
+		ExtractableResponse<Response> menuGroupResponse = createMenuGroup(new MenuGroup("인기 메뉴"));
 		MenuGroup menuGroup = menuGroupResponse.as(MenuGroup.class);
-
 		// And
-		ExtractableResponse<Response> productResponse = RestAssured
-			.given().log().all()
-			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.body(new Product("매운 라면", new BigDecimal(8000)))
-			.when().post("/api/products")
-			.then().log().all()
-			.extract();
+		ExtractableResponse<Response> productResponse = createProduct(new Product("매운 라면", new BigDecimal(8000)));
 		Product product = productResponse.as(Product.class);
-
 		// And
-		ExtractableResponse<Response> menuCreatedResponse = RestAssured
-			.given().log().all()
-			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.body(new Menu("라면 메뉴", new BigDecimal(8000), menuGroup.getId(), Arrays.asList(new MenuProduct(product.getId(), 2L))))
-			.when().post("/api/menus")
-			.then().log().all()
-			.extract();
+		ExtractableResponse<Response> menuCreatedResponse = createMenu(new Menu("라면 메뉴", new BigDecimal(8000), menuGroup.getId(), Arrays.asList(new MenuProduct(product.getId(), 2L))));
 		Menu createdMenu = menuCreatedResponse.as(Menu.class);
-
 		// And
-		ExtractableResponse<Response> tableCreatedResponse = RestAssured
-			.given().log().all()
-			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.body(new OrderTable(2, false))
-			.when().post("/api/tables/")
-			.then().log().all()
-			.extract();
+		ExtractableResponse<Response> tableCreatedResponse = createOrderTable(new OrderTable(2, false));
 		OrderTable createdOrderTable = tableCreatedResponse.as(OrderTable.class);
 
 		// Scenario
 		// When
-		Order cookingOrder = new Order(createdOrderTable.getId(), "COOKING", LocalDateTime.now(), Arrays.asList(new OrderLineItem(createdMenu.getId(), 2)));
-
-		ExtractableResponse<Response> orderCreatedResponse = RestAssured
-			.given().log().all()
-			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.body(cookingOrder)
-			.when().post("/api/orders")
-			.then().log().all()
-			.extract();
+		ExtractableResponse<Response> orderCreatedResponse = createOrder(new Order(createdOrderTable.getId(), "COOKING", LocalDateTime.now(), Arrays.asList(new OrderLineItem(createdMenu.getId(), 2))));
 		Order createdOrder = orderCreatedResponse.as(Order.class);
-
 		// Then
 		assertThat(orderCreatedResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
 		assertThat(createdOrder.getOrderStatus()).isEqualTo("COOKING");
 
 		// When
-		ExtractableResponse<Response> changeOrderResponse = RestAssured
-			.given().log().all()
-			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.body(new Order("MEAL"))
-			.when().put("/api/orders/" + createdOrder.getId() + "/order-status")
-			.then().log().all()
-			.extract();
+		ExtractableResponse<Response> changeOrderResponse = changeOrderStatus(createdOrder.getId(), new Order("MEAL"));
 		Order statusChangedOrder = changeOrderResponse.as(Order.class);
-
 		// Then
 		assertThat(changeOrderResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
 		assertThat(statusChangedOrder.getOrderStatus()).isEqualTo("MEAL");
 
 		// When
-		ExtractableResponse<Response> findOrderResponse = RestAssured
-			.given().log().all()
-			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.when().get("/api/orders")
-			.then().log().all()
-			.extract();
-
+		ExtractableResponse<Response> findOrderResponse = findOrder();
+		// Then
 		String orderStatus = findOrderResponse.jsonPath().getList(".", Order.class).stream()
 			.filter(order -> order.getId() == createdOrder.getId())
 			.map(Order::getOrderStatus)
 			.findFirst()
-			.get()
-			;
-
+			.get();
 		assertThat(orderStatus).isEqualTo("MEAL");
 	}
 
@@ -121,139 +74,53 @@ public class OrderAcceptanceTest extends AcceptanceTest {
 	void orderErrorScenario() {
 		// Backgroud
 		// Given
-		ExtractableResponse<Response> menuGroupResponse = RestAssured
-			.given().log().all()
-			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.body(new MenuGroup("인기 메뉴"))
-			.when().post("/api/menu-groups")
-			.then().log().all()
-			.extract();
+		ExtractableResponse<Response> menuGroupResponse = createMenuGroup(new MenuGroup("인기 메뉴"));
 		MenuGroup menuGroup = menuGroupResponse.as(MenuGroup.class);
-
 		// And
-		ExtractableResponse<Response> productResponse = RestAssured
-			.given().log().all()
-			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.body(new Product("매운 라면", new BigDecimal(8000)))
-			.when().post("/api/products")
-			.then().log().all()
-			.extract();
+		ExtractableResponse<Response> productResponse = createProduct(new Product("매운 라면", new BigDecimal(8000)));
 		Product product = productResponse.as(Product.class);
-
 		// And
-		ExtractableResponse<Response> menuCreatedResponse = RestAssured
-			.given().log().all()
-			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.body(new Menu("라면 메뉴", new BigDecimal(8000), menuGroup.getId(), Arrays.asList(new MenuProduct(product.getId(), 2L))))
-			.when().post("/api/menus")
-			.then().log().all()
-			.extract();
+		ExtractableResponse<Response> menuCreatedResponse = createMenu(new Menu("라면 메뉴", new BigDecimal(8000), menuGroup.getId(), Arrays.asList(new MenuProduct(product.getId(), 2L))));
 		Menu createdMenu = menuCreatedResponse.as(Menu.class);
-
 		// And
-		ExtractableResponse<Response> tableCreatedResponse = RestAssured
-			.given().log().all()
-			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.body(new OrderTable(2, false))
-			.when().post("/api/tables/")
-			.then().log().all()
-			.extract();
+		ExtractableResponse<Response> tableCreatedResponse = createOrderTable(new OrderTable(2, false));
 		OrderTable createdOrderTable = tableCreatedResponse.as(OrderTable.class);
 
 		// Scenario
 		// When
-		Order orderWithoutOrderList = new Order(createdOrderTable.getId(), "COOKING", LocalDateTime.now(), null);
-
-		ExtractableResponse<Response> orderWithoutOrderListResponse = RestAssured
-			.given().log().all()
-			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.body(orderWithoutOrderList)
-			.when().post("/api/orders")
-			.then().log().all()
-			.extract();
+		ExtractableResponse<Response> orderWithoutOrderListResponse = createOrder(new Order(createdOrderTable.getId(), "COOKING", LocalDateTime.now(), null));
 		// Then
 		assertThat(orderWithoutOrderListResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
 
 		// When
-		Order orderWithNotExistsMenu = new Order(createdOrderTable.getId(), "COOKING", LocalDateTime.now(), Arrays.asList(new OrderLineItem(0L, 2)));
-
-		ExtractableResponse<Response> orderWithNotExistsMenuResponse = RestAssured
-			.given().log().all()
-			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.body(orderWithNotExistsMenu)
-			.when().post("/api/orders")
-			.then().log().all()
-			.extract();
+		ExtractableResponse<Response> orderWithNotExistsMenuResponse = createOrder(new Order(createdOrderTable.getId(), "COOKING", LocalDateTime.now(), Arrays.asList(new OrderLineItem(0L, 2))));
 		// Then
-		assertThat(orderWithoutOrderListResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+		assertThat(orderWithNotExistsMenuResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
 
 		// When
-		Order orderWithoutOrderTable = new Order(0L, "COOKING", LocalDateTime.now(), Arrays.asList(new OrderLineItem(0L, 2)));
-
-		ExtractableResponse<Response> orderWithoutOrderTableResponse = RestAssured
-			.given().log().all()
-			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.body(orderWithNotExistsMenu)
-			.when().post("/api/orders")
-			.then().log().all()
-			.extract();
+		ExtractableResponse<Response> orderWithoutOrderTableResponse = createOrder(new Order(0L, "COOKING", LocalDateTime.now(), Arrays.asList(new OrderLineItem(0L, 2))));
 		// Then
 		assertThat(orderWithoutOrderTableResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
 
 		// When
-		ExtractableResponse<Response> changeStatusWithNotExitsOrderResponse = RestAssured
-			.given().log().all()
-			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.body(new Order("MEAL"))
-			.when().put("/api/orders/" + 0L + "/order-status")
-			.then().log().all()
-			.extract();
-
+		ExtractableResponse<Response> changeStatusWithNotExitsOrderResponse = changeOrderStatus(0L, new Order("MEAL"));
 		// Then
 		assertThat(changeStatusWithNotExitsOrderResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
 
 		// Given : 주문 등록
-		Order cookingOrder = new Order(createdOrderTable.getId(), "COOKING", LocalDateTime.now(), Arrays.asList(new OrderLineItem(createdMenu.getId(), 2)));
-
-		ExtractableResponse<Response> orderCreatedResponse = RestAssured
-			.given().log().all()
-			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.body(cookingOrder)
-			.when().post("/api/orders")
-			.then().log().all()
-			.extract();
+		ExtractableResponse<Response> orderCreatedResponse = createOrder(new Order(createdOrderTable.getId(), "COOKING", LocalDateTime.now(), Arrays.asList(new OrderLineItem(createdMenu.getId(), 2))));
 		Order createdOrder = orderCreatedResponse.as(Order.class);
 		// When
-		ExtractableResponse<Response> changeStatusWithNotExistsStatus = RestAssured
-			.given().log().all()
-			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.body(new Order("PREPARING"))
-			.when().put("/api/orders/" + createdOrder.getId() + "/order-status")
-			.then().log().all()
-			.extract();
+		ExtractableResponse<Response> changeStatusWithNotExistsStatus = changeOrderStatus(createdOrder.getId(), new Order("PREPARING"));
 		// Then
 		assertThat(changeStatusWithNotExistsStatus.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
 
 		// Given
-		ExtractableResponse<Response> changeOrderResponse = RestAssured
-			.given().log().all()
-			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.body(new Order("COMPLETION"))
-			.when().put("/api/orders/" + createdOrder.getId() + "/order-status")
-			.then().log().all()
-			.extract();
+		ExtractableResponse<Response> changeOrderResponse = changeOrderStatus(createdOrder.getId(), new Order("COMPLETION"));
 		Order statusChangedOrder = changeOrderResponse.as(Order.class);
-
 		// When
-		ExtractableResponse<Response> changeStatusWithCompletedOrder = RestAssured
-			.given().log().all()
-			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.body(new Order("MEAL"))
-			.when().put("/api/orders/" + statusChangedOrder.getId() + "/order-status")
-			.then().log().all()
-			.extract();
-
+		ExtractableResponse<Response> changeStatusWithCompletedOrder = changeOrderStatus(createdOrder.getId(), new Order("MEAL"));
 		// Then
-		assertThat(changeStatusWithNotExitsOrderResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+		assertThat(changeStatusWithCompletedOrder.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
 	}
 }
