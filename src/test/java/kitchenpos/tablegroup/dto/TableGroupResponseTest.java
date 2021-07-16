@@ -22,10 +22,10 @@ class TableGroupResponseTest {
     @BeforeEach
     void setUp() {
         테이블_그룹 = new TableGroup(1L, LocalDateTime.now());
-        일번_테이블 = new OrderTable(1L,null, 0, true);
-        이번_테이블 = new OrderTable(2L, null, 0, true);
-        일번_테이블.withTableGroup(1L);
-        이번_테이블.withTableGroup(1L);
+        일번_테이블 = new OrderTable(1L, 0, true);
+        이번_테이블 = new OrderTable(2L, 0, true);
+        일번_테이블.withTableGroup(테이블_그룹);
+        이번_테이블.withTableGroup(테이블_그룹);
     }
 
     @Test

@@ -45,8 +45,8 @@ class TableGroupServiceTest {
 
     @BeforeEach
     void setUp() {
-        일번_테이블 = new OrderTable(1L,null, 0, true);
-        이번_테이블 = new OrderTable(2L, null, 0, true);
+        일번_테이블 = new OrderTable(1L, 0, true);
+        이번_테이블 = new OrderTable(2L, 0, true);
     }
 
     @Test
@@ -75,8 +75,8 @@ class TableGroupServiceTest {
     void 테이블_그룹_그룹핑_해제() {
         LocalDateTime now = LocalDateTime.now();
         TableGroup tableGroup = new TableGroup(1L, now);
-        일번_테이블.withTableGroup(tableGroup.getId());
-        이번_테이블.withTableGroup(tableGroup.getId());
+        일번_테이블.withTableGroup(tableGroup);
+        이번_테이블.withTableGroup(tableGroup);
         OrderTables orderTables = new OrderTables(Arrays.asList(일번_테이블, 이번_테이블));
         when(tableService.findAllByTableGroupId(1L)).thenReturn(orderTables);
         tableGroupService.ungroup(1L);

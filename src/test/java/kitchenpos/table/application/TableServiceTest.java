@@ -8,6 +8,7 @@ import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.tablegroup.domain.TableGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,6 +17,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -40,11 +42,13 @@ class TableServiceTest {
 
     private OrderTableRequest request;
     private OrderTable orderTable;
+    private TableGroup tableGroup;
 
     @BeforeEach
     void setUp() {
+        tableGroup = new TableGroup(1L, LocalDateTime.now());
         request = new OrderTableRequest(0, true);
-        orderTable = new OrderTable(1L, null, 0, true);
+        orderTable = new OrderTable(1L, 0, true);
     }
 
     @Test
@@ -93,8 +97,8 @@ class TableServiceTest {
 
     @Test
     void 주문_테이블_아이디_리스트_기준_조회() {
-        OrderTable orderTableNo1 = new OrderTable( 1L, 1L, 0, true);
-        OrderTable orderTableNo2 = new OrderTable( 2L, 1L, 0, true);
+        OrderTable orderTableNo1 = new OrderTable( 1L, 0, true);
+        OrderTable orderTableNo2 = new OrderTable( 2L, 0, true);
         List<OrderTable> orderTables = Arrays.asList(orderTableNo1, orderTableNo2);
         when(orderTableRepository.findAllById(Arrays.asList(1L, 2L))).thenReturn(orderTables);
 
@@ -104,11 +108,13 @@ class TableServiceTest {
 
     @Test
     void 테이블_그룹_아이디_기준_으로_주문_테이블_조회() {
-        OrderTable orderTableNo1 = new OrderTable( 1L, 1L, 0, true);
-        OrderTable orderTableNo2 = new OrderTable( 2L, 1L, 0, true);
+        OrderTable orderTableNo1 = new OrderTable( 1L, 0, true);
+        orderTableNo1.withTableGroup(tableGroup);
+        OrderTable orderTableNo2 = new OrderTable( 2L, 0, true);
+        orderTableNo2.withTableGroup(tableGroup);
         List<OrderTable> orderTables = Arrays.asList(orderTableNo1, orderTableNo2);
 
-        when(orderTableRepository.findAllByTableGroupId(1L)).thenReturn(orderTables);
+        when(orderTableRepository.findAllByTableGroup(1L)).thenReturn(orderTables);
 
         OrderTables expected = tableService.findAllByTableGroupId(1L);
         assertThat(expected).isEqualTo(new OrderTables(orderTables));

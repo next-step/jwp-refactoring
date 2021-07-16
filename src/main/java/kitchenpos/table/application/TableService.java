@@ -68,7 +68,7 @@ public class TableService {
     }
 
     public OrderTables findAllByTableGroupId(Long tableGroupId) {
-        List<OrderTable> orderTables = orderTableRepository.findAllByTableGroupId(tableGroupId);
+        List<OrderTable> orderTables = orderTableRepository.findAllByTableGroup(tableGroupId);
         return new OrderTables(orderTables);
     }
 

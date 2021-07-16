@@ -37,7 +37,7 @@ public class OrderTables {
     public void updateGrouping(TableGroup tableGroup) {
         for (OrderTable orderTable : orderTables) {
             orderTable.changeEmpty(false);
-            orderTable.withTableGroup(tableGroup.getId());
+            orderTable.withTableGroup(tableGroup);
         }
     }
 

@@ -19,10 +19,13 @@ class OrdersTablesTest {
     private OrderTable 일번_테이블;
     private OrderTable 이번_테이블;
 
+    private TableGroup 테이블_그룹;
+
     @BeforeEach
     void setUp() {
-        일번_테이블 = new OrderTable(1L,null, 0, true);
-        이번_테이블 = new OrderTable(2L, null, 0, true);
+        일번_테이블 = new OrderTable(1L, 0, true);
+        이번_테이블 = new OrderTable(2L, 0, true);
+        테이블_그룹 = new TableGroup(1L, LocalDateTime.now());
     }
 
     @Test
@@ -33,7 +36,7 @@ class OrdersTablesTest {
 
     @Test
     void 그룹핑된_주문_테이블이_존재하는경우_에러_발생() {
-        일번_테이블.withTableGroup(1L);
+        일번_테이블.withTableGroup(테이블_그룹);
         OrderTables orderTables = new OrderTables(Arrays.asList(일번_테이블, 이번_테이블));
         assertThatThrownBy(() -> orderTables.checkValidEmptyTableGroup()).isInstanceOf(OrderTableException.class);
     }
@@ -42,8 +45,8 @@ class OrdersTablesTest {
     void 주문_테이블_그룹핑_처리() {
         TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now());
         OrderTables orderTables = new OrderTables(Arrays.asList(일번_테이블, 이번_테이블));
-        일번_테이블.withTableGroup(1L);
-        이번_테이블.withTableGroup(1L);
+        일번_테이블.withTableGroup(테이블_그룹);
+        이번_테이블.withTableGroup(테이블_그룹);
         orderTables.updateGrouping(tableGroup);
         assertThat(orderTables.orderTables().get(0).getTableGroupId()).isEqualTo(1L);
         assertThat(orderTables.orderTables().get(0).isEmpty()).isEqualTo(false);
@@ -61,8 +64,8 @@ class OrdersTablesTest {
     @Test
     void 소속된_주문_테이블_그룹_해제() {
         OrderTables orderTables = new OrderTables(Arrays.asList(일번_테이블, 이번_테이블));
-        일번_테이블.withTableGroup(1L);
-        이번_테이블.withTableGroup(1L);
+        일번_테이블.withTableGroup(테이블_그룹);
+        이번_테이블.withTableGroup(테이블_그룹);
 
         orderTables.updateUnGroup();
         assertThat(orderTables.orderTables().get(0).getTableGroupId()).isNull();

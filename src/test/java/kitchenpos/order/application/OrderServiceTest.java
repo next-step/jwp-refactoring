@@ -58,7 +58,7 @@ class OrderServiceTest {
                 new OrderLineItemRequest(2L, 1)
         );
         주문_요청 = new OrderRequest(1L, null, null, orderLineItemRequests);
-        주문_테이블 = new OrderTable(1L, null, 4, false);
+        주문_테이블 = new OrderTable(1L, 4, false);
         주문 = new Orders(1L, 1L, OrderStatus.COOKING, LocalDateTime.now());
         주문_항목 = Arrays.asList(
                 new OrderLineItem(1L, 주문, 1L, 1),

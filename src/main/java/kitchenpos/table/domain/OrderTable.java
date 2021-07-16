@@ -1,6 +1,7 @@
 package kitchenpos.table.domain;
 
 import kitchenpos.exception.OrderTableException;
+import kitchenpos.tablegroup.domain.TableGroup;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -14,31 +15,35 @@ public class OrderTable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long tableGroupId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "table_group_id", foreignKey = @ForeignKey(name = "fk_order_table_table_group"))
+    private TableGroup tableGroup;
+
     @Embedded
     private NumberOfGuests numberOfGuests = new NumberOfGuests();
+
     private boolean empty;
 
     protected OrderTable() {
     }
 
-    public OrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
+    public OrderTable(Long id, int numberOfGuests, boolean empty) {
         this.id = id;
-        this.tableGroupId = tableGroupId;
         this.numberOfGuests = new NumberOfGuests(numberOfGuests);
         this.empty = empty;
     }
 
-    public OrderTable(Long tableGroupId, int numberOfGuests, boolean empty) {
-        this(null, tableGroupId, numberOfGuests, empty);
+    public OrderTable(int numberOfGuests, boolean empty) {
+        this(null, numberOfGuests, empty);
     }
 
-    public OrderTable(int numberOfGuests, boolean empty) {
-        this(null, null, numberOfGuests, empty);
+    public void withTableGroup(TableGroup tableGroup) {
+        this.tableGroup = tableGroup;
     }
 
     public void checkValidEmptyTableGroup() {
-        if (Objects.nonNull(tableGroupId)) {
+        if (Objects.nonNull(tableGroup)) {
             throw new OrderTableException(NOT_CHANGE_GROUP_TABLE_ERROR_MESSAGE);
         }
     }
@@ -62,7 +67,10 @@ public class OrderTable {
     }
 
     public Long getTableGroupId() {
-        return tableGroupId;
+        if (Objects.nonNull(tableGroup)) {
+            return tableGroup.getId();
+        }
+        return null;
     }
 
     public NumberOfGuests getNumberOfGuests() {
@@ -73,12 +81,8 @@ public class OrderTable {
         return empty;
     }
 
-    public void withTableGroup(Long tableGroupId) {
-        this.tableGroupId = tableGroupId;
-    }
-
     public void ungroup() {
-        this.tableGroupId = null;
+        this.tableGroup = null;
     }
 
     @Override
@@ -88,12 +92,12 @@ public class OrderTable {
         OrderTable that = (OrderTable) object;
         return empty == that.empty &&
                 Objects.equals(id, that.id) &&
-                Objects.equals(tableGroupId, that.tableGroupId) &&
+                Objects.equals(tableGroup, that.tableGroup) &&
                 Objects.equals(numberOfGuests, that.numberOfGuests);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, tableGroupId, numberOfGuests, empty);
+        return Objects.hash(id, tableGroup, numberOfGuests, empty);
     }
 }
