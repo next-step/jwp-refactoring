@@ -62,7 +62,7 @@ public class TableServiceTest {
 		assertThat(orderTables.size()).isEqualTo(2);
 	}
 
-	@DisplayName("테이블을 비운다.")
+	@DisplayName("테이블을 비우거나 채운다.")
 	@Test
 	void changeEmptyInHappyCase() {
 		// Given

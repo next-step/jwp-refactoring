@@ -67,7 +67,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
 		OrderTable changeEmptyOrderTable = changeEmptyResponse.as(OrderTable.class);
 
 		// Then
-		assertThat(changeNumberResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+		assertThat(changeEmptyResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
 		assertThat(changeEmptyOrderTable.isEmpty()).isEqualTo(true);
 
 		// When : 주문 테이블 조회

@@ -93,7 +93,7 @@ public class TableGroupServiceTest {
 		lenient().when(orderTableDao.findAllByIdIn(Arrays.asList(1L, 2L))).thenReturn(Arrays.asList(new OrderTable(1L, null, 5, false), new OrderTable(2L, null, 10, true)));
 		lenient().when(tableGroupDao.save(any())).thenReturn(new TableGroup(LocalDateTime.now(), Arrays.asList(orderTableWithFivePeople, orderTableWithTenPeople)));
 		// when, then
-		assertThatThrownBy(() -> tableGroupService.create(new TableGroup(LocalDateTime.now(), Arrays.asList(orderTableWithFivePeople))));
+		assertThatThrownBy(() -> tableGroupService.create(new TableGroup(LocalDateTime.now(), Arrays.asList(orderTableWithFivePeople, orderTableWithTenPeople))));
 	}
 
 	@DisplayName("단체 지정 해제한다.")
