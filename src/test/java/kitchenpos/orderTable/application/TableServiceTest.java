@@ -1,4 +1,4 @@
-package kitchenpos.application;
+package kitchenpos.orderTable.application;
 
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
