@@ -34,12 +34,6 @@ public class MenuRequest {
                 .collect(Collectors.toList());
     }
 
-    public List<Long> getAllProductIds() {
-        return menuProductRequests.stream()
-                .map(MenuProductRequest::getProductId)
-                .collect(Collectors.toList());
-    }
-
     public String getName() {
         return name;
     }

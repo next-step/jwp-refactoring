@@ -1,6 +1,7 @@
-package kitchenpos.menu.application;
+package kitchenpos.menu.ui;
 
 import kitchenpos.common.ControllerTest;
+import kitchenpos.menu.application.MenuGroupService;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.dto.MenuGroupRequest;
 import kitchenpos.menu.dto.MenuGroupResponse;

@@ -1,6 +1,5 @@
-package kitchenpos.menu.ui;
+package kitchenpos.menu.application;
 
-import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.*;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
@@ -38,11 +37,7 @@ class MenuServiceTest {
     private Long 후라이드_상품_ID = 1L;
     private Long 콜라_상품_ID = 2L;
 
-//    private final Product 후라이드 = new Product(1L, "후라이드", Price.valueOf(16000));
-//    private final Product 콜라 = new Product(2L, "콜라", Price.valueOf(1000));
-
     private final MenuGroup 인기메뉴 = new MenuGroup(메뉴그룹_ID, "인기메뉴");
-
     private final MenuProduct 후라이드_한마리 = new MenuProduct(후라이드_상품_ID, Quantity.of(1L));
     private final MenuProduct 콜라_한개 = new MenuProduct(콜라_상품_ID, Quantity.of(1L));
     private final List<MenuProduct> 메뉴상품_목록 = Arrays.asList(후라이드_한마리, 콜라_한개);
