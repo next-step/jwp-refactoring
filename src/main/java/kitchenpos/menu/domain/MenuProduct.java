@@ -19,7 +19,7 @@ public class MenuProduct {
     @Embedded
     private Quantity quantity = new Quantity();
 
-    public MenuProduct() {
+    protected MenuProduct() {
     }
 
     public MenuProduct(Long seq, Menu menu, Long productId, Quantity quantity) {

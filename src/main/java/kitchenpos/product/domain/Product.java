@@ -14,10 +14,10 @@ public class Product {
     private String name;
 
     @Embedded
-    private Price price;
+    private Price price = new Price();
 
 
-    public Product() {
+    protected Product() {
     }
 
     public Product(String name, BigDecimal price) {

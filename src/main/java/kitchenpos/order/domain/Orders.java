@@ -30,7 +30,7 @@ public class Orders {
     @Embedded
     private OrderLineItems orderLineItems = new OrderLineItems();
 
-    public Orders() {
+    protected Orders() {
     }
 
     public Orders(Long id, Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime) {

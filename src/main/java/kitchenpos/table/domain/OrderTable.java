@@ -19,7 +19,7 @@ public class OrderTable {
     private NumberOfGuests numberOfGuests = new NumberOfGuests();
     private boolean empty;
 
-    public OrderTable() {
+    protected OrderTable() {
     }
 
     public OrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
