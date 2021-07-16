@@ -49,14 +49,8 @@ public class OrderTable {
     }
 
     public void changeEmpty(boolean empty) {
-        tableGroupValidCheck();
+        isTableGroupEmptyCheck();
         this.empty = empty;
-    }
-
-    private void tableGroupValidCheck() {
-        if (Objects.nonNull(this.tableGroupId)) {
-            throw new IllegalArgumentException("단체 지정된 테이블은 변경할 수 없습니다.");
-        }
     }
 
     public void updateTableGroup(Long tableGroupId) {
@@ -67,12 +61,12 @@ public class OrderTable {
 
     private void updatePossibleCheck() {
         availableToUpdateCheck();
-        hasTableGroupIdCheck();
+        isTableGroupEmptyCheck();
     }
 
-    protected void hasTableGroupIdCheck() {
+    private void isTableGroupEmptyCheck() {
         if (Objects.nonNull(tableGroupId)) {
-            throw new IllegalArgumentException("이미 단체 지정된 테이블이 있습니다.");
+            throw new IllegalArgumentException("단체 지정된 주문 테이블입니다.");
         }
     }
 

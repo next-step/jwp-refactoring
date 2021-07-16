@@ -101,7 +101,7 @@ class TableServiceTest {
         //when && then
         assertThatThrownBy(() -> orderTableService.changeEmpty(givenOrderTable.getId(), changeEmptyRequest))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("단체 지정된 테이블은 변경할 수 없습니다.");
+                .hasMessageContaining("체 지정된 주문 테이블입니다.");
     }
 
     @DisplayName("빈 테이블 설정을 할 때 주문 상태가 `조리`, `식사` 이면 빈 테이블 설정 할 수 없다.")

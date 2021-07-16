@@ -1,16 +1,15 @@
 package kitchenpos.table.domain;
 
-import kitchenpos.tablegroup.domain.TableGroup;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import java.util.Collections;
 import java.util.List;
 
 @Embeddable
 public class OrderTables {
-    @OneToMany(mappedBy = "tableGroup", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany
+    @JoinColumn(name = "tableGroupId")
     private List<OrderTable> orderTables;
 
     public static final int MINIMUM_SIZE = 2;

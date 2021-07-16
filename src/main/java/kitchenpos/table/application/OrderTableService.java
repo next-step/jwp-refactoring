@@ -39,7 +39,6 @@ public class OrderTableService {
     @Transactional
     public OrderTableResponse changeEmpty(Long orderTableId, OrderTableRequest orderTableRequest) {
         final OrderTable savedOrderTable = findById(orderTableId);
-
         orderStatusValidCheck(savedOrderTable);
         savedOrderTable.changeEmpty(orderTableRequest.isEmpty());
 

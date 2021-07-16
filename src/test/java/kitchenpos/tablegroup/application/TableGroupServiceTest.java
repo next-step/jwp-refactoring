@@ -106,13 +106,13 @@ class TableGroupServiceTest {
     void createTempFailBecauseOfHasTableGroupIdTest() {
         //given
         OrderTable hasNotOrderTable = new OrderTable(1L,null,1,true);
-        OrderTable hasGroupOrderTable = new OrderTable(1L, new TableGroup(),1,true);
+        OrderTable hasGroupOrderTable = new OrderTable(1L, 1L,1,true);
         given(orderTableService.findAllByIdIn(any())).willReturn(Arrays.asList(hasNotOrderTable,hasGroupOrderTable));
 
         //when && then
         assertThatThrownBy(() -> tableGroupService.create(tableGroupRequest))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("이미 단체 지정된 테이블이 있습니다.");
+                .hasMessageContaining("단체 지정된 주문 테이블입니다.");
     }
 
     @DisplayName("단체 지정.")
