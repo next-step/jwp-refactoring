@@ -62,7 +62,8 @@ class OrderRestControllerTest extends IntegrationTest {
             .andDo(print())
             .andExpect(status().isCreated())
             .andExpect(jsonPath("$.id").exists())
-            .andExpect(jsonPath("$.orderStatus").value(COOKING.name()));
+            .andExpect(jsonPath("$.orderStatus").value(COOKING.name()))
+            .andExpect(jsonPath("$.orderTableId").value(테이블12_사용중_주문전.getId()));
     }
 
     @Test
@@ -119,7 +120,8 @@ class OrderRestControllerTest extends IntegrationTest {
             .andDo(print())
             .andExpect(status().isOk())
             .andExpect(jsonPath("$[0].id").value(테이블9주문_조리.getId()))
-            .andExpect(jsonPath("$[0].orderStatus").value("COOKING"));
+            .andExpect(jsonPath("$[0].orderStatus").value("COOKING"))
+            .andExpect(jsonPath("$[0].orderTableId").value(9));
     }
 
     @Test
@@ -132,7 +134,8 @@ class OrderRestControllerTest extends IntegrationTest {
             .andDo(print())
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.id").value(테이블10주문_식사.getId()))
-            .andExpect(jsonPath("$.orderStatus").value(COMPLETION.name()));
+            .andExpect(jsonPath("$.orderStatus").value(COMPLETION.name()))
+            .andExpect(jsonPath("$.orderTableId").value(10));
     }
 
     @Test
