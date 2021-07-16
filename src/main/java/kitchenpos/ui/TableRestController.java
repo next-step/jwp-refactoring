@@ -51,4 +51,9 @@ public class TableRestController {
                 .body(tableService.changeNumberOfGuests(orderTableId, orderTable))
                 ;
     }
+
+	@ExceptionHandler(IllegalArgumentException.class)
+	public ResponseEntity handleRuntimeException(IllegalArgumentException illegalArgumentException) {
+		return ResponseEntity.badRequest().build();
+	}
 }
