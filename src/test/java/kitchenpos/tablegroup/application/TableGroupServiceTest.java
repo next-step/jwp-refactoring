@@ -1,5 +1,6 @@
 package kitchenpos.tablegroup.application;
 
+import kitchenpos.exception.TableGroupException;
 import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTables;
@@ -67,7 +68,7 @@ class TableGroupServiceTest {
 
     @Test
     void 주문테이블이_1개만있을때_테이블그룹_생성_요청_시_에러_발생() {
-        assertThatThrownBy(() -> tableGroupService.create(new TableGroupRequest(Arrays.asList(1L)))).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> tableGroupService.create(new TableGroupRequest(Arrays.asList(1L)))).isInstanceOf(TableGroupException.class);
     }
 
     @Test

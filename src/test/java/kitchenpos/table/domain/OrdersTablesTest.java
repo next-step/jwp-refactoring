@@ -1,5 +1,6 @@
 package kitchenpos.table.domain;
 
+import kitchenpos.exception.OrderTableException;
 import kitchenpos.tablegroup.domain.TableGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -27,14 +28,14 @@ class OrdersTablesTest {
     @Test
     void 주문_테이블_일급_컬렉션_객체의_아이템_갯수가_대상_갯수와_일치하지않을때_에러_발생() {
         OrderTables orderTables = new OrderTables(Arrays.asList(일번_테이블));
-        assertThatThrownBy(() -> orderTables.checkValidEqualToRequestSize(Arrays.asList(1L, 2L))).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> orderTables.checkValidEqualToRequestSize(Arrays.asList(1L, 2L))).isInstanceOf(OrderTableException.class);
     }
 
     @Test
     void 그룹핑된_주문_테이블이_존재하는경우_에러_발생() {
         일번_테이블.withTableGroup(1L);
         OrderTables orderTables = new OrderTables(Arrays.asList(일번_테이블, 이번_테이블));
-        assertThatThrownBy(() -> orderTables.checkValidEmptyTableGroup()).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> orderTables.checkValidEmptyTableGroup()).isInstanceOf(OrderTableException.class);
     }
 
     @Test

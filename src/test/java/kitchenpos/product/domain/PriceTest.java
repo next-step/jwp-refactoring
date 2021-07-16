@@ -1,5 +1,6 @@
 package kitchenpos.product.domain;
 
+import kitchenpos.exception.IllegalPriceException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -22,12 +23,12 @@ public class PriceTest {
     @ParameterizedTest
     @NullSource
     void 가격_객체에_null_입력_시_에러_발생(BigDecimal price) {
-        assertThatThrownBy(() -> new Price(price)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> new Price(price)).isInstanceOf(IllegalPriceException.class);
     }
 
     @Test
     void 가격_객체에_음수값_입력_시_에러_발생() {
-        assertThatThrownBy(() -> new Price(new BigDecimal(-1000))).isInstanceOf(IllegalArgumentException.class);
-        assertThatThrownBy(() -> new Price(-1000)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> new Price(new BigDecimal(-1000))).isInstanceOf(IllegalPriceException.class);
+        assertThatThrownBy(() -> new Price(-1000)).isInstanceOf(IllegalPriceException.class);
     }
 }

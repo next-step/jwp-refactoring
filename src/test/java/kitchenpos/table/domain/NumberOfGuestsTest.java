@@ -1,5 +1,6 @@
 package kitchenpos.table.domain;
 
+import kitchenpos.exception.IllegalNumberOfGuestsException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -18,6 +19,6 @@ class NumberOfGuestsTest {
 
     @Test
     void 손님_수를_음수_입력_시_에러_발생() {
-        assertThatThrownBy(() -> new NumberOfGuests(-1)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> new NumberOfGuests(-1)).isInstanceOf(IllegalNumberOfGuestsException.class);
     }
 }

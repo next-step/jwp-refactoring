@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 public class OrderTables {
 
     private static final String NOT_EMPTY_TABLE_ERROR_MESSAGE = "이미 그룹핑된 테이블이 존재합니다.";
+    private static final String NOT_EQUAL_TABLE_COUNT_ERROR_MESSAGE = "요청 주문 테이블 아이디 수량과 조회 결과 주문 테이블 수량이 일치하지않습니다.";
 
     private List<OrderTable> orderTables = new ArrayList<>();
 
@@ -23,7 +24,7 @@ public class OrderTables {
 
     public void checkValidEqualToRequestSize(List<Long> orderTableIds) {
         if (orderTables.isEmpty() || orderTables.size() != orderTableIds.size()) {
-            throw new IllegalArgumentException();
+            throw new OrderTableException(NOT_EQUAL_TABLE_COUNT_ERROR_MESSAGE);
         }
     }
 

@@ -1,5 +1,6 @@
 package kitchenpos.table.domain;
 
+import kitchenpos.exception.OrderTableException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,11 +38,11 @@ class OrdersTableTest {
     @Test
     void 상태_변경시_그룹핑_되어있는_주문_테이블인_경우_에러발생() {
         orderTable = new OrderTable(1L, 1L, 0, true);
-        assertThatThrownBy(() -> orderTable.checkValidEmptyTableGroup()).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> orderTable.checkValidEmptyTableGroup()).isInstanceOf(OrderTableException.class);
     }
 
     @Test
     void 상태_변경시_비어있는_주문_테이블인_경우_에러발생() {
-        assertThatThrownBy(() -> orderTable.checkIsEmpty()).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> orderTable.checkIsEmpty()).isInstanceOf(OrderTableException.class);
     }
 }

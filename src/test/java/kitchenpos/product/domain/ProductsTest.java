@@ -1,5 +1,6 @@
 package kitchenpos.product.domain;
 
+import kitchenpos.exception.ProductException;
 import kitchenpos.menu.dto.MenuProductRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -48,6 +49,6 @@ class ProductsTest {
     @Test
     void 예상하는_메뉴_상품_사이즈가_아닌경우_에러발생() {
         Products products = new Products(Arrays.asList(짜장면));
-        assertThatThrownBy(() -> products.checkProductsSize(2)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> products.checkProductsSize(2)).isInstanceOf(ProductException.class);
     }
 }

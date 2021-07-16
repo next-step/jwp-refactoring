@@ -1,5 +1,6 @@
 package kitchenpos.menu.application;
 
+import kitchenpos.exception.MenuException;
 import kitchenpos.menu.domain.*;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
@@ -91,7 +92,7 @@ class MenuServiceTest {
     @Test
     void 존재하지않는_메뉴그룹_아이디_등록_요청_시_에러_발생() {
         when(menuGroupRepository.existsById(1L)).thenReturn(false);
-        assertThatThrownBy(() -> menuService.create(menuRequest)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> menuService.create(menuRequest)).isInstanceOf(MenuException.class);
     }
 
     @Test

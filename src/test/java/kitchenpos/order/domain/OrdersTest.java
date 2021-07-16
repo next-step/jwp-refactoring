@@ -1,5 +1,6 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.exception.OrderException;
 import kitchenpos.order.enums.OrderStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -36,7 +37,7 @@ class OrdersTest {
     @Test
     void 주문_상태_변경시_주문_entity의_주문_상태가_완료인_경우_에러발생() {
         주문.updateOrderStatus(OrderStatus.COMPLETION);
-        assertThatThrownBy(() -> 주문.checkOrderStatus()).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> 주문.checkOrderStatus()).isInstanceOf(OrderException.class);
     }
 
     @Test

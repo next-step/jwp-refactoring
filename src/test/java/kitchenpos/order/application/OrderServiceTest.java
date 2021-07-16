@@ -1,5 +1,7 @@
 package kitchenpos.order.application;
 
+import kitchenpos.exception.OrderException;
+import kitchenpos.exception.OrderTableException;
 import kitchenpos.order.enums.OrderStatus;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.order.domain.Orders;
@@ -84,17 +86,17 @@ class OrderServiceTest {
     @Test
     void 주문_아이템이_존재하지않을경우_에러발생() {
         주문_요청 = new OrderRequest(1L, null, null, Collections.emptyList());
-        assertThatThrownBy(() -> orderService.create(주문_요청)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> orderService.create(주문_요청)).isInstanceOf(OrderException.class);
 
         주문_요청 = new OrderRequest(1L, null, null, null);
-        assertThatThrownBy(() -> orderService.create(주문_요청)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> orderService.create(주문_요청)).isInstanceOf(OrderException.class);
     }
 
     @Test
     void 주문한_아이템의_갯수와_실제_조회한_아이템의_갯수가_일치하지않을때_에러발생() {
         when(menuService.countByMenuId(Arrays.asList(1L, 2L))).thenReturn(1L);
         주문.addOrderLineItems(주문_항목);
-        assertThatThrownBy(() -> orderService.create(주문_요청)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> orderService.create(주문_요청)).isInstanceOf(OrderException.class);
     }
 
     @Test
@@ -103,7 +105,7 @@ class OrderServiceTest {
         주문.addOrderLineItems(주문_항목);
         when(menuService.countByMenuId(Arrays.asList(1L, 2L))).thenReturn(2L);
         when(tableService.findOrderTable(주문.getOrderTableId())).thenReturn(주문_테이블);
-        assertThatThrownBy(() -> orderService.create(주문_요청)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> orderService.create(주문_요청)).isInstanceOf(OrderTableException.class);
     }
 
     @Test
@@ -134,6 +136,6 @@ class OrderServiceTest {
     void 존재하지않는_주문의_상태_변경_시_에러발생() {
         주문_요청 = new OrderRequest(9L, OrderStatus.MEAL, null, orderLineItemRequests);
         when(orderRepository.findById(주문.getId())).thenReturn(Optional.empty());
-        assertThatThrownBy(() -> orderService.changeOrderStatus(주문.getId(), 주문_요청)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> orderService.changeOrderStatus(주문.getId(), 주문_요청)).isInstanceOf(OrderException.class);
     }
 }

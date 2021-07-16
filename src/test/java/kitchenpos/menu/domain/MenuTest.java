@@ -1,5 +1,7 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.exception.IllegalPriceException;
+import kitchenpos.exception.MenuException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,7 +22,7 @@ class MenuTest {
 
     @Test
     void 파라미터로_받은_금액보다_메뉴의_금액이_큰_경우_에러_발생() {
-        assertThatThrownBy(() -> 메뉴.validMenuTotalAmount(new BigDecimal(18000))).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> 메뉴.validMenuTotalAmount(new BigDecimal(18000))).isInstanceOf(MenuException.class);
     }
 
     @Test
