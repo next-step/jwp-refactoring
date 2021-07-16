@@ -1,6 +1,6 @@
-package kitchenpos.table.event;
+package kitchenpos.orderTable.event;
 
-import kitchenpos.table.domain.OrderTable;
+import kitchenpos.orderTable.domain.OrderTable;
 
 public class OrderTableEmptiedEvent {
     private final OrderTable orderTable;

@@ -1,6 +1,6 @@
-package kitchenpos.table.domain;
+package kitchenpos.orderTable.domain;
 
-import kitchenpos.table.event.TableGroupRemovedEvent;
+import kitchenpos.orderTable.event.TableGroupRemovedEvent;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.domain.AbstractAggregateRoot;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;

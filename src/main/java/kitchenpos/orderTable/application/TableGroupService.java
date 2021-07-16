@@ -1,18 +1,13 @@
-package kitchenpos.table.application;
+package kitchenpos.orderTable.application;
 
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.TableGroup;
-import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.table.domain.OrderTableGroupRepository;
-import kitchenpos.table.dto.TableRequest;
+import kitchenpos.orderTable.domain.OrderTable;
+import kitchenpos.orderTable.domain.TableGroup;
+import kitchenpos.orderTable.domain.OrderTableRepository;
+import kitchenpos.orderTable.domain.OrderTableGroupRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.Table;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
-import java.util.function.Function;
 
 @Service
 @Transactional

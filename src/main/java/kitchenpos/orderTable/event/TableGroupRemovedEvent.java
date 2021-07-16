@@ -1,6 +1,6 @@
-package kitchenpos.table.event;
+package kitchenpos.orderTable.event;
 
-import kitchenpos.table.domain.OrderTables;
+import kitchenpos.orderTable.domain.OrderTables;
 
 public class TableGroupRemovedEvent  {
     private final OrderTables orderTables;

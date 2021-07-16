@@ -1,9 +1,9 @@
-package kitchenpos.table.application;
+package kitchenpos.orderTable.application;
 
-import kitchenpos.table.event.OrderTableChangedEvent;
-import kitchenpos.table.event.OrderTableEmptiedEvent;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.orderTable.event.OrderTableChangedEvent;
+import kitchenpos.orderTable.event.OrderTableEmptiedEvent;
+import kitchenpos.orderTable.domain.OrderTable;
+import kitchenpos.orderTable.domain.OrderTableRepository;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

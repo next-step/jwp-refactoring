@@ -1,4 +1,4 @@
-package kitchenpos.table.domain;
+package kitchenpos.orderTable.domain;
 
 import javax.persistence.*;
 import java.util.Objects;

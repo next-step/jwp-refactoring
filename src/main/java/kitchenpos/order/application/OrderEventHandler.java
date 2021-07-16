@@ -2,11 +2,11 @@ package kitchenpos.order.application;
 
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTables;
-import kitchenpos.table.event.OrderTableChangedEvent;
-import kitchenpos.table.event.OrderTableEmptiedEvent;
-import kitchenpos.table.event.TableGroupRemovedEvent;
+import kitchenpos.orderTable.domain.OrderTable;
+import kitchenpos.orderTable.domain.OrderTables;
+import kitchenpos.orderTable.event.OrderTableChangedEvent;
+import kitchenpos.orderTable.event.OrderTableEmptiedEvent;
+import kitchenpos.orderTable.event.TableGroupRemovedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
