@@ -46,14 +46,10 @@ public class MenuService {
 
     private MenuProduct createMenuProductWith(List<MenuProductRequest> menuProductRequests, Product product) {
         return menuProductRequests.stream()
-                .filter(menuProductRequest -> isProductIdMatch(menuProductRequest, product))
+                .filter(menuProductRequest -> product.isProductId(menuProductRequest.getProductId()))
                 .map(menuProductRequest -> MenuProduct.of(product, menuProductRequest.getQuantity()))
                 .findFirst()
                 .orElseThrow(BadProductIdException::new);
-    }
-
-    private boolean isProductIdMatch(MenuProductRequest menuProductRequest, Product product) {
-        return Objects.equals(menuProductRequest.getProductId(), product.getId());
     }
 
     @Transactional(readOnly = true)

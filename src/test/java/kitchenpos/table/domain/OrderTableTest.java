@@ -1,9 +1,9 @@
 package kitchenpos.table.domain;
 
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.domain.Orders;
-import kitchenpos.table.domain.exception.*;
+import kitchenpos.table.domain.exception.CannotChangeEmptyException;
+import kitchenpos.table.domain.exception.CannotChangeGuestEmptyTableException;
+import kitchenpos.table.domain.exception.CannotOrderEmptyTableException;
+import kitchenpos.table.domain.exception.CannotRegisterGroupException;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
