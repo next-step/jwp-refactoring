@@ -32,8 +32,7 @@ public class TableGroupControllerTest extends ControllerTest<TableGroupRequest> 
         return tableGroupRestController;
     }
 
-    private final boolean 비어있음 = true;
-    private TableGroup 테이블그룹 = new TableGroup();
+    private TableGroup 테이블그룹 = new TableGroup(1L);
 
     @DisplayName("단체지정 생성요청")
     @Test
