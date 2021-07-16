@@ -43,10 +43,6 @@ public class Order {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public LocalDateTime getOrderedTime() {
         return orderedTime;
     }
@@ -70,6 +66,10 @@ public class Order {
 
     public Long getOrderTableId() {
         return this.orderTableId;
+    }
+
+    public boolean equalsOrderStatus(OrderStatus orderStatus) {
+        return this.orderStatus.equals(orderStatus);
     }
 
     private void validateOrderStatusIsCompleted() {

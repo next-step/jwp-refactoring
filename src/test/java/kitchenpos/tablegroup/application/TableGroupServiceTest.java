@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.*;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -22,6 +23,10 @@ import org.springframework.context.ApplicationEventPublisher;
 
 import kitchenpos.common.event.GroupedTablesEvent;
 import kitchenpos.common.event.UngroupedTablesEvent;
+import kitchenpos.order.application.OrderTableGroupService;
+import kitchenpos.order.domain.Order;
+import kitchenpos.table.application.TableTableGroupService;
+import kitchenpos.table.domain.OrderTable;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
@@ -39,7 +44,11 @@ class TableGroupServiceTest {
     @Mock
     private TableGroupOrderTableValidator tableGroupOrderTableValidator;
     @Mock
-    private TableGroupOrderTableService tableGroupOrderTableService;
+    private TableGroupValidator tableGroupValidator;
+    @Mock
+    private OrderTableGroupService orderTableGroupService;
+    @Mock
+    private TableTableGroupService tableTableGroupService;
 
     @InjectMocks
     private TableGroupService tableGroupService;
@@ -55,13 +64,14 @@ class TableGroupServiceTest {
         // given
         TableGroupRequest tableGroupRequest = new TableGroupRequest(Arrays.asList(1L, 2L));
         TableGroup tableGroup = new TableGroup();
+        given(tableTableGroupService.findOrderTableByIds(any(List.class))).willReturn(Arrays.asList(new OrderTable(3, false)));
         given(tableGroupRepository.save(any(TableGroup.class))).willReturn(tableGroup);
 
         // when
         TableGroupResponse tableGroupResponse = tableGroupService.create(tableGroupRequest);
 
         // then
-        verify(tableGroupOrderTableValidator).validateOrderTablesConditionForCreatingTableGroup(any(List.class));
+        verify(tableGroupValidator).validateOrderTablesConditionForCreatingTableGroup(any(List.class), anyInt());
         verify(publisher).publishEvent(any(GroupedTablesEvent.class));
     }
 
@@ -69,13 +79,14 @@ class TableGroupServiceTest {
     @DisplayName("단체지정 취소")
     void ungroup() {
         // given
-        given(tableGroupOrderTableService.findOrderTableIdsByTableGroupId(anyLong())).willReturn(Arrays.asList(1L, 2L));
+        given(tableTableGroupService.findOrderTableIdsByTableGroupId(anyLong())).willReturn(Arrays.asList(1L, 2L));
+        given(orderTableGroupService.findOrdersByOrderTableIdIn(any(List.class))).willReturn(Arrays.asList(new Order(LocalDateTime.now(), 1L)));
 
         // when
         tableGroupService.ungroup(1L);
 
         // then
-        verify(tableGroupOrderValidator).validateExistsOrdersStatusIsCookingOrMeal(any(List.class));
+        verify(tableGroupValidator).validateExistsOrdersStatusIsCookingOrMeal(any(List.class));
         verify(publisher).publishEvent(any(UngroupedTablesEvent.class));
     }
 
@@ -85,8 +96,9 @@ class TableGroupServiceTest {
         return Arrays.asList(
                 dynamicTest("테이블들의 주문 상태가 COOKING이거나 MEAL인 상태가 존재하는 경우 오류 발생.", () -> {
                     // and
-                    given(tableGroupOrderTableService.findOrderTableIdsByTableGroupId(anyLong())).willReturn(Arrays.asList(1L, 2L));
-                    doThrow(RuntimeException.class).when(tableGroupOrderValidator).validateExistsOrdersStatusIsCookingOrMeal(any(List.class));
+                    given(tableTableGroupService.findOrderTableIdsByTableGroupId(anyLong())).willReturn(Arrays.asList(1L, 2L));
+                    given(orderTableGroupService.findOrdersByOrderTableIdIn(any(List.class))).willReturn(Arrays.asList(new Order(LocalDateTime.now(), 1L)));
+                    doThrow(RuntimeException.class).when(tableGroupValidator).validateExistsOrdersStatusIsCookingOrMeal(any(List.class));
 
                     // then
                     assertThatThrownBy(() -> tableGroupService.ungroup(1L))

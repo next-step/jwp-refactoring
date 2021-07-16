@@ -77,4 +77,19 @@ class OrderRepositoryTest {
         // then
         assertThat(exists).isTrue();
     }
+
+    @Test
+    @DisplayName("테이블 ID 기준으로 주문 찾기")
+    void find_by_orderIds() {
+        // given
+        Order order1 = new Order(LocalDateTime.now(), 1L);
+        Order order2 = new Order(LocalDateTime.now(), 2L);
+        orderRepository.saveAll(Arrays.asList(order1, order2));
+
+        // when
+        List<Order> orders = orderRepository.findByOrderTableIdIn(Arrays.asList(1L, 2L));
+
+        // then
+        assertThat(orders).size().isEqualTo(2);
+    }
 }

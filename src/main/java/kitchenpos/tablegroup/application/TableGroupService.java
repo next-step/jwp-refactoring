@@ -8,6 +8,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import kitchenpos.common.event.GroupedTablesEvent;
 import kitchenpos.common.event.UngroupedTablesEvent;
+import kitchenpos.order.application.OrderTableGroupService;
+import kitchenpos.order.domain.Order;
+import kitchenpos.table.application.TableTableGroupService;
+import kitchenpos.table.domain.OrderTable;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
@@ -17,31 +21,32 @@ import kitchenpos.tablegroup.dto.TableGroupResponse;
 @Transactional
 public class TableGroupService {
     private final TableGroupRepository tableGroupRepository;
-    private final TableGroupOrderTableService tableGroupOrderTableService;
+    private final TableTableGroupService tableTableGroupService;
+    private final OrderTableGroupService orderTableGroupService;
+    private final TableGroupValidator tableGroupValidator;
     private final ApplicationEventPublisher publisher;
-    private final TableGroupOrderValidator tableGroupOrderValidator;
-    private final TableGroupOrderTableValidator tableGroupOrderTableValidator;
 
-    public TableGroupService(final ApplicationEventPublisher publisher, final TableGroupOrderValidator tableGroupOrderValidator,
-                             final TableGroupOrderTableService tableGroupOrderTableService,
-                             final TableGroupOrderTableValidator tableGroupOrderTableValidator,
-                             final TableGroupRepository tableGroupRepository) {
+    public TableGroupService(final ApplicationEventPublisher publisher, final TableGroupRepository tableGroupRepository,
+                             final TableTableGroupService tableTableGroupService, final OrderTableGroupService orderTableGroupService,
+                             final TableGroupValidator tableGroupValidator) {
         this.publisher = publisher;
-        this.tableGroupOrderValidator = tableGroupOrderValidator;
-        this.tableGroupOrderTableService = tableGroupOrderTableService;
-        this.tableGroupOrderTableValidator = tableGroupOrderTableValidator;
         this.tableGroupRepository = tableGroupRepository;
+        this.tableTableGroupService = tableTableGroupService;
+        this.orderTableGroupService = orderTableGroupService;
+        this.tableGroupValidator = tableGroupValidator;
     }
 
     public void ungroup(final Long tableGroupId) {
-        List<Long> orderTableIds = tableGroupOrderTableService.findOrderTableIdsByTableGroupId(tableGroupId);
-        tableGroupOrderValidator.validateExistsOrdersStatusIsCookingOrMeal(orderTableIds);
+        List<Long> orderTableIds = tableTableGroupService.findOrderTableIdsByTableGroupId(tableGroupId);
+        List<Order> orders = orderTableGroupService.findOrdersByOrderTableIdIn(orderTableIds);
+        tableGroupValidator.validateExistsOrdersStatusIsCookingOrMeal(orders);
         publisher.publishEvent(new UngroupedTablesEvent(orderTableIds));
     }
 
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
         List<Long> orderTableIds = tableGroupRequest.getOrderTableIds();
-        tableGroupOrderTableValidator.validateOrderTablesConditionForCreatingTableGroup(orderTableIds);
+        List<OrderTable> orderTables = tableTableGroupService.findOrderTableByIds(orderTableIds);
+        tableGroupValidator.validateOrderTablesConditionForCreatingTableGroup(orderTables, orderTableIds.size());
         TableGroup tableGroup = tableGroupRepository.save(new TableGroup());
         publisher.publishEvent(new GroupedTablesEvent(orderTableIds, tableGroup.getId()));
         return TableGroupResponse.of(tableGroup);

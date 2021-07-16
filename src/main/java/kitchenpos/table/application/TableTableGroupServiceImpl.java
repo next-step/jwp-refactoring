@@ -7,15 +7,18 @@ import org.springframework.stereotype.Service;
 
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.tablegroup.application.TableGroupOrderTableService;
 
 @Service
-public class TableGroupOrderTableServiceImpl implements TableGroupOrderTableService {
-
+public class TableTableGroupServiceImpl implements TableTableGroupService{
     private final OrderTableRepository orderTableRepository;
 
-    public TableGroupOrderTableServiceImpl(OrderTableRepository orderTableRepository) {
+    public TableTableGroupServiceImpl(OrderTableRepository orderTableRepository) {
         this.orderTableRepository = orderTableRepository;
+    }
+
+    @Override
+    public List<OrderTable> findOrderTableByIds(List<Long> orderTableIds) {
+        return orderTableRepository.findByIdIn(orderTableIds);
     }
 
     @Override

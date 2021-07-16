@@ -10,7 +10,6 @@ import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.OrderTables;
 
 @Component
-@Transactional
 public class OrderTableEventHandler {
 
     private final OrderTableRepository orderTableRepository;
@@ -19,11 +18,13 @@ public class OrderTableEventHandler {
         this.orderTableRepository = orderTableRepository;
     }
 
+    @Transactional
     @EventListener
     public void ungroupedTables(UngroupedTablesEvent ungroupedTablesEvent) {
         new OrderTables(orderTableRepository.findByIdIn(ungroupedTablesEvent.getOrderTables())).ungroupOrderTables();
     }
 
+    @Transactional
     @EventListener
     public void groupedTables(GroupedTablesEvent groupedTablesEvent) {
         new OrderTables(orderTableRepository.findByIdIn(groupedTablesEvent.getOrderTableIds()))
