@@ -94,7 +94,5 @@ class ProductServiceTest {
         // then
         assertThat(foundProducts).containsExactlyElementsOf(products);
         verify(productDao, times(1)).findAll();
-
     }
-
 }
