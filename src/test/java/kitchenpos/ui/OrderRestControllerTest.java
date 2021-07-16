@@ -52,7 +52,7 @@ class OrderRestControllerTest {
 	@Test
 	void createTest() throws Exception {
 		Order order = new Order(1L, null, null, null, null);
-		given(orderService.create(any())).willReturn(order);
+		given(orderService.create(any(Order.class))).willReturn(order);
 
 		mockMvc.perform(
 				post(BASE_URL)

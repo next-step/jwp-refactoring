@@ -24,8 +24,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -55,10 +54,10 @@ class OrderServiceTest {
 	void orderCreateTest() {
 		OrderTable orderTable = new OrderTable(1L, 1L, 1, false);
 
-		when(menuDao.countByIdIn(any())).thenReturn(2L);
+		when(menuDao.countByIdIn(anyList())).thenReturn(2L);
 		when(orderTableDao.findById(anyLong())).thenReturn(Optional.of(orderTable));
-		when(orderDao.save(any())).thenReturn(order);
-		when(orderLineItemDao.save(any())).thenReturn(new OrderLineItem());
+		when(orderDao.save(any(Order.class))).thenReturn(order);
+		when(orderLineItemDao.save(any(OrderLineItem.class))).thenReturn(new OrderLineItem());
 
 		assertThat(orderService.create(order)).isNotNull();
 	}
@@ -74,7 +73,7 @@ class OrderServiceTest {
 	@Test
 	@DisplayName("주문 생성 시 order line item 의 개수와 메뉴의 숫자가 일치하지 않으면 익셉션 발생")
 	void orderCreateFailTest2() {
-		when(menuDao.countByIdIn(any())).thenReturn(1L);
+		when(menuDao.countByIdIn(anyList())).thenReturn(1L);
 
 		assertThatThrownBy(() -> orderService.create(order))
 				.isInstanceOf(IllegalArgumentException.class);
@@ -85,7 +84,7 @@ class OrderServiceTest {
 	void orderCreateFailTest3() {
 		OrderTable orderTable = new OrderTable(1L, 1L, 1, true);
 
-		when(menuDao.countByIdIn(any())).thenReturn(2L);
+		when(menuDao.countByIdIn(anyList())).thenReturn(2L);
 		when(orderTableDao.findById(anyLong())).thenReturn(Optional.of(orderTable));
 
 		assertThatThrownBy(() -> orderService.create(order))

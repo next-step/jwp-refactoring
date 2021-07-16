@@ -49,7 +49,7 @@ class TableGroupRestControllerTest {
 
 	@Test
 	void createTest() throws Exception {
-		given(tableGroupService.create(any())).willReturn(new TableGroup(1L, null, null));
+		given(tableGroupService.create(any(TableGroup.class))).willReturn(new TableGroup(1L, null, null));
 
 		mockMvc.perform(
 				post(BASE_URL)

@@ -23,7 +23,7 @@ class MenuGroupServiceTest {
 
 	@Test
 	void menuGroupCreateTest() {
-		when(menuGroupDao.save(any())).thenReturn(new MenuGroup());
+		when(menuGroupDao.save(any(MenuGroup.class))).thenReturn(new MenuGroup());
 		assertThat(menuGroupService.create(new MenuGroup())).isNotNull();
 	}
 

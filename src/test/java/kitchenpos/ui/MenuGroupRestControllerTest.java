@@ -51,7 +51,7 @@ class MenuGroupRestControllerTest {
 	@Test
 	void createTest() throws Exception {
 		MenuGroup menuGroup = new MenuGroup(1L, "치킨");
-		given(menuGroupService.create(any())).willReturn(menuGroup);
+		given(menuGroupService.create(any(MenuGroup.class))).willReturn(menuGroup);
 
 		mockMvc.perform(
 				post(BASE_URL)

@@ -53,7 +53,7 @@ class ProductRestControllerTest {
 
 	@Test
 	void createTest() throws Exception {
-		given(productService.create(any())).willReturn(new Product(1L));
+		given(productService.create(any(Product.class))).willReturn(new Product(1L));
 
 		mockMvc.perform(
 				post(BASE_URL)

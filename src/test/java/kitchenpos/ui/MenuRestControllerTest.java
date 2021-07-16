@@ -53,7 +53,7 @@ public class MenuRestControllerTest {
 
 	@Test
 	void createTest() throws Exception {
-		given(menuService.create(any())).willReturn(new Menu(1L));
+		given(menuService.create(any(Menu.class))).willReturn(new Menu(1L));
 
 		mockMvc.perform(
 				post(BASE_URL)

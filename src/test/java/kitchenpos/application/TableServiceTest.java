@@ -15,8 +15,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 @DisplayName("테이블 컨트롤러 테스트")
@@ -32,7 +31,7 @@ public class TableServiceTest {
 
 	@Test
 	void orderTableCreateTest() {
-		when(orderTableDao.save(any())).thenReturn(new OrderTable());
+		when(orderTableDao.save(any(OrderTable.class))).thenReturn(new OrderTable());
 		assertThat(tableService.create(new OrderTable())).isNotNull();
 	}
 
@@ -47,8 +46,8 @@ public class TableServiceTest {
 		OrderTable orderTable = new OrderTable(1L, null, 2, false);
 
 		when(orderTableDao.findById(anyLong())).thenReturn(Optional.of(orderTable));
-		when(orderDao.existsByOrderTableIdAndOrderStatusIn(anyLong(), any())).thenReturn(false);
-		when(orderTableDao.save(any())).thenReturn(new OrderTable());
+		when(orderDao.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).thenReturn(false);
+		when(orderTableDao.save(any(OrderTable.class))).thenReturn(new OrderTable());
 		assertThat(tableService.changeEmpty(1L, orderTable)).isNotNull();
 	}
 
@@ -67,7 +66,7 @@ public class TableServiceTest {
 	void changeEmptyFailTest2() {
 		OrderTable orderTable = new OrderTable(1L, null, 2, false);
 		when(orderTableDao.findById(anyLong())).thenReturn(Optional.of(orderTable));
-		when(orderDao.existsByOrderTableIdAndOrderStatusIn(anyLong(), any())).thenReturn(true);
+		when(orderDao.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).thenReturn(true);
 
 		assertThatThrownBy(() -> tableService.changeEmpty(1L, orderTable))
 				.isInstanceOf(IllegalArgumentException.class);
@@ -79,7 +78,7 @@ public class TableServiceTest {
 		OrderTable orderTable2 = new OrderTable(2L, null, 4, false);
 
 		when(orderTableDao.findById(anyLong())).thenReturn(Optional.of(orderTable));
-		when(orderTableDao.save(any())).thenReturn(new OrderTable());
+		when(orderTableDao.save(any(OrderTable.class))).thenReturn(new OrderTable());
 
 		tableService.changeNumberOfGuests(1L, orderTable2);
 		assertThat(orderTable.getNumberOfGuests()).isEqualTo(4);

@@ -41,16 +41,17 @@ public class MenuServiceTest {
 
 	@Test
 	void menuCreateTest() {
-		Product product = new Product();
+		Product product = new Product(1L);
 		product.setPrice(BigDecimal.valueOf(10000));
 
 		MenuProduct menuProduct = new MenuProduct();
 		menuProduct.setQuantity(10);
+		menuProduct.setProductId(1L);
 
 		when(menuGroupDao.existsById(anyLong())).thenReturn(true);
-		when(productDao.findById(any())).thenReturn(Optional.of(product));
-		when(menuDao.save(any())).thenReturn(new Menu(1L));
-		when(menuProductDao.save(any())).thenReturn(new MenuProduct());
+		when(productDao.findById(anyLong())).thenReturn(Optional.of(product));
+		when(menuDao.save(any(Menu.class))).thenReturn(new Menu(1L));
+		when(menuProductDao.save(any(MenuProduct.class))).thenReturn(new MenuProduct());
 
 		assertThat(menuService.create(new Menu(1L, "치킨", BigDecimal.valueOf(20000), 1L, Arrays.asList(menuProduct)))).isNotNull();
 	}
@@ -70,6 +71,7 @@ public class MenuServiceTest {
 	void menuCreateFailTest2() {
 		MenuProduct menuProduct = new MenuProduct();
 		menuProduct.setQuantity(10);
+		menuProduct.setProductId(1L);
 
 		when(menuGroupDao.existsById(anyLong())).thenReturn(false);
 
@@ -85,9 +87,10 @@ public class MenuServiceTest {
 
 		MenuProduct menuProduct = new MenuProduct();
 		menuProduct.setQuantity(1);
+		menuProduct.setProductId(1L);
 
 		when(menuGroupDao.existsById(anyLong())).thenReturn(true);
-		when(productDao.findById(any())).thenReturn(Optional.of(product));
+		when(productDao.findById(anyLong())).thenReturn(Optional.of(product));
 
 		assertThatThrownBy(() -> menuService.create(new Menu(1L, "치킨", BigDecimal.valueOf(20000), 1L, Arrays.asList(menuProduct))))
 				.isInstanceOf(IllegalArgumentException.class);

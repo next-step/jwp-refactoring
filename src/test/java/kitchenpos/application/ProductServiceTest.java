@@ -28,7 +28,7 @@ class ProductServiceTest {
 	@Test
 	void createProductTest() {
 		Product inputProduct = new Product("피자", BigDecimal.valueOf(10000));
-		when(productDao.save(any())).thenReturn(new Product());
+		when(productDao.save(any(Product.class))).thenReturn(new Product());
 		assertThat(productService.create(inputProduct)).isNotNull();
 	}
 
