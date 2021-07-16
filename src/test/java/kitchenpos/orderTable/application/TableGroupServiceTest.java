@@ -64,21 +64,6 @@ class TableGroupServiceTest {
 
     }
 
-    @DisplayName("주문 테이블 그룹을 등록시, 2개 이상의 주문 테이블만 등록할수 있다.")
-    @Test
-    void createExceptionTest1() {
-        //given
-        OrderTable orderTable1 = tableService.create(
-            new OrderTable(TestUtils.getRandomId(), 1)
-        );
-
-        // then
-        assertThatThrownBy(() -> {
-            TableGroup tableGroup = new TableGroup(orderTable1, null);
-            tableGroupService.create(tableGroup);
-        }).isInstanceOf(RuntimeException.class).hasMessageContaining("주문테이블 최소 갯수는 2개 입니다.");
-    }
-
     @DisplayName("주문 테이블 그룹을 등록시, 주문테이블들은 사전에 등록되어 있어야 한다.")
     @Test
     void createExceptionTest2() {
@@ -94,21 +79,4 @@ class TableGroupServiceTest {
                 .hasMessageContaining("사전에").hasMessageContaining("등록");
     }
 
-    @DisplayName("주문 테이블 그룹을 등록시, 테이블이 비어있어야 등록할수 있다.")
-    @Test
-    void createExceptionTest3() {
-        // given
-        OrderTable orderTable1 = tableService.create(
-            new OrderTable(1)
-        );
-
-        OrderTable orderTable2 = tableService.create(
-            new OrderTable(1)
-        );
-
-        // then
-        assertThatThrownBy(() -> new TableGroup(orderTable1, orderTable2))
-                .isInstanceOf(RuntimeException.class)
-                .hasMessageContaining("테이블이 비어있지 않습니다.");
-    }
 }
