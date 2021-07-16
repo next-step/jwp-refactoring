@@ -1,7 +1,7 @@
 # 키친포스
 
 ## 요구 사항
-[Step1](./markdown/step1.md)
+[Step1](docs/step1.md)
 
 ## 용어 사전
 

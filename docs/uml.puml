@@ -14,7 +14,9 @@ package OrderPackage #DDDDDD {
   class OrderService
   class Order
   class OrderLineItem
+  class OrderValidator
   interface OrderRepository
+
 }
 package ProductPackage #DDDDDD {
   class ProductService
@@ -26,6 +28,7 @@ package TablePackage #DDDDDD {
   class TableGroupService
   class OrderTable
   class TableGroup
+  interface OrderValidatorInTable
   interface OrderTableRepository
   interface TableGroupRepository
 }
@@ -34,29 +37,16 @@ package TablePackage #DDDDDD {
   MenuGroupPackage <-[thickness=8]- MenuPackage
   MenuPackage <-[thickness=8]- OrderPackage
   TablePackage <-[thickness=8]- OrderPackage
-  OrderPackage <-[thickness=8]- TablePackage
-
 
   Menu <-- MenuService
-  'MenuGroup <-- MenuService
   MenuGroupRepository <-- MenuService
   MenuProduct <-- MenuService
   MenuRepository <-- MenuService
   Product <-- MenuService
   ProductRepository <-- MenuService
 
-  'MenuGroup <-- Menu
-
-  'Product <-- MenuProduct
-
   MenuGroup <-- MenuGroupService
   MenuGroupRepository <-- MenuGroupService
-'------------------------------------------------------
-  'OrderTable <-- Order
-
-  'Menu <-- OrderLineItem
-
-  'Menu <-- OrderService
   MenuRepository <-- OrderService
   Order <-- OrderService
   OrderLineItem <-- OrderService
@@ -64,24 +54,15 @@ package TablePackage #DDDDDD {
   OrderTable <-- OrderService
   OrderTableRepository <-- OrderService
 
+  OrderValidatorInTable <-- OrderValidator
+
   Product <-- ProductService
   ProductRepository <-- ProductService
 
   OrderTable <-- TableGroup
 
-  'OrderRepository <-- TableGroupService
-  'OrderTable <-- TableGroupService
-  'OrderTableRepository <-- TableGroupService
   TableGroup <-- TableGroupService
   TableGroupRepository <-- TableGroupService
 
-  'OrderRepository <-- TableService
-  'OrderTable <-- TableService
   OrderTableRepository <-- TableService
-
-  TableGroup <-- TableGroupRepository
-  Order <-- OrderRepository
-  Menu <-- MenuRepository
-  OrderTableRepository <-- TableService
-  OrderTable <-- OrderTableRepository
 @enduml
