@@ -1,11 +1,10 @@
 package kitchenpos.table.domain;
 
-import kitchenpos.tablegroup.domain.TableGroup;
 import org.springframework.util.CollectionUtils;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,7 +15,8 @@ import java.util.stream.Collectors;
 public class OrderTables {
     private static final String NOT_VALID_FOR_TABLE_GROUP = "테이블 그룹을 지정할 수 없는 상태입니다.";
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "tableGroup", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "table_group_id")
     private List<OrderTable> orderTables = new ArrayList<>();
 
     protected OrderTables() {
@@ -36,7 +36,7 @@ public class OrderTables {
 
     public void assignTableGroup(TableGroup tableGroup) {
         checkOrderTableValid();
-        orderTables.forEach(orderTable -> orderTable.assignTableGroup(tableGroup));
+        orderTables.forEach(orderTable -> orderTable.assignTableGroup(tableGroup.getId()));
     }
 
     public void checkOrderTableValid() {

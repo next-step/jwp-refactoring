@@ -1,7 +1,5 @@
 package kitchenpos.table.application;
 
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableRequest;
@@ -9,7 +7,6 @@ import kitchenpos.table.dto.OrderTableResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
@@ -18,12 +15,12 @@ import static java.util.stream.Collectors.toList;
 @Transactional(readOnly = true)
 public class TableService {
     private static final String NOT_FOUND_ORDER_TABLE = "찾을 수 없는 주문 테이블: ";
-    private static final String INVALID_CHANGE_ORDER_STATUS = "변경 할 수 없는 주문 상태입니다";
-    private final OrderRepository orderRepository;
+
+    private final OrderTableValidator orderTableValidator;
     private final OrderTableRepository orderTableRepository;
 
-    public TableService(OrderRepository orderRepository, OrderTableRepository orderTableRepository) {
-        this.orderRepository = orderRepository;
+    public TableService(OrderTableValidator orderTableValidator, OrderTableRepository orderTableRepository) {
+        this.orderTableValidator = orderTableValidator;
         this.orderTableRepository = orderTableRepository;
     }
 
@@ -43,7 +40,7 @@ public class TableService {
     @Transactional
     public OrderTableResponse changeEmpty(Long orderTableId, OrderTableRequest request) {
         OrderTable orderTable = findOrderTable(orderTableId);
-        checkOrderStatus(orderTableId);
+        orderTableValidator.validateEmptyStatus(orderTableId);
         orderTable.changeEmpty(request.getEmpty());
         return new OrderTableResponse(orderTable);
     }
@@ -53,13 +50,6 @@ public class TableService {
         OrderTable orderTable = findOrderTable(orderTableId);
         orderTable.changeNumberOfGuests(request.getNumberOfGuests());
         return new OrderTableResponse(orderTable);
-    }
-
-    private void checkOrderStatus(Long orderTableId) {
-        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
-                orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalStateException(INVALID_CHANGE_ORDER_STATUS);
-        }
     }
 
     private OrderTable findOrderTable(Long orderTableId) {

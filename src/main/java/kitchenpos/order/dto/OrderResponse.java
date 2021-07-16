@@ -3,7 +3,6 @@ package kitchenpos.order.dto;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.table.domain.OrderTable;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -12,7 +11,7 @@ import java.util.Objects;
 public class OrderResponse {
     private Long id;
 
-    private OrderTable orderTable;
+    private Long orderTableId;
 
     private OrderStatus orderStatus;
 
@@ -23,9 +22,9 @@ public class OrderResponse {
     public OrderResponse() {
     }
 
-    public OrderResponse(Long id, OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems, LocalDateTime orderedTime) {
+    public OrderResponse(Long id, Long orderTableId, OrderStatus orderStatus, List<OrderLineItem> orderLineItems, LocalDateTime orderedTime) {
         this.id = id;
-        this.orderTable = orderTable;
+        this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
         this.orderLineItems = orderLineItems;
         this.orderedTime = orderedTime;
@@ -33,7 +32,7 @@ public class OrderResponse {
 
     public OrderResponse(Order order) {
         this.id = order.getId();
-        this.orderTable = order.getOrderTable();
+        this.orderTableId = order.getOrderTableId();
         this.orderStatus = order.getOrderStatus();
         this.orderLineItems = order.getOrderLineItems();
         this.orderedTime = order.getOrderedTime();
@@ -43,8 +42,8 @@ public class OrderResponse {
         return id;
     }
 
-    public OrderTable getOrderTable() {
-        return orderTable;
+    public Long getOrderTableId() {
+        return orderTableId;
     }
 
     public OrderStatus getOrderStatus() {
@@ -64,22 +63,19 @@ public class OrderResponse {
         if (this == o) return true;
         if (!(o instanceof OrderResponse)) return false;
         OrderResponse that = (OrderResponse) o;
-        return Objects.equals(getId(), that.getId()) && Objects.equals(getOrderTable(),
-                that.getOrderTable()) && getOrderStatus() == that.getOrderStatus() &&
-                Objects.equals(getOrderLineItems(), that.getOrderLineItems()) &&
-                Objects.equals(getOrderedTime(), that.getOrderedTime());
+        return Objects.equals(getId(), that.getId()) && Objects.equals(getOrderTableId(), that.getOrderTableId()) && getOrderStatus() == that.getOrderStatus() && Objects.equals(getOrderLineItems(), that.getOrderLineItems()) && Objects.equals(getOrderedTime(), that.getOrderedTime());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getOrderTable(), getOrderStatus(), getOrderLineItems(), getOrderedTime());
+        return Objects.hash(getId(), getOrderTableId(), getOrderStatus(), getOrderLineItems(), getOrderedTime());
     }
 
     @Override
     public String toString() {
         return "OrderResponse{" +
                 "id=" + id +
-                ", orderTable=" + orderTable +
+                ", orderTableId=" + orderTableId +
                 ", orderStatus=" + orderStatus +
                 ", orderLineItems=" + orderLineItems +
                 ", orderedTime=" + orderedTime +

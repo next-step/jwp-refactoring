@@ -1,4 +1,4 @@
-package kitchenpos.tablegroup.dto;
+package kitchenpos.table.dto;
 
 public class TableGroupId {
     private Long id;

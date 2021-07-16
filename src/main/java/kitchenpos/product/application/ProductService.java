@@ -1,6 +1,7 @@
 package kitchenpos.product.application;
 
 
+import kitchenpos.common.model.Price;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.dto.ProductRequest;
@@ -15,6 +16,7 @@ import static java.util.stream.Collectors.toList;
 @Service
 @Transactional(readOnly = true)
 public class ProductService {
+    public static final String NOT_EXIST_PRODUCT = "존재하지 않는 상품입니다 : ";
     private final ProductRepository productRepository;
 
     public ProductService(ProductRepository productRepository) {
@@ -32,5 +34,12 @@ public class ProductService {
                 .stream()
                 .map(ProductResponse::new)
                 .collect(toList());
+    }
+
+    public Price getProductPrice(Long productId, Long quantity) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ProductNotFoundException(NOT_EXIST_PRODUCT + productId));
+
+        return product.getTotalPrice(quantity);
     }
 }
