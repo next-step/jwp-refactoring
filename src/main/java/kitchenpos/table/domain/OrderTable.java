@@ -30,14 +30,11 @@ public class OrderTable {
     }
 
     public OrderTable(Long tableGroupId, int numberOfGuests, boolean empty) {
-        this.tableGroupId = tableGroupId;
-        this.numberOfGuests = new NumberOfGuests(numberOfGuests);
-        this.empty = empty;
+        this(null, tableGroupId, numberOfGuests, empty);
     }
 
     public OrderTable(int numberOfGuests, boolean empty) {
-        this.numberOfGuests =new NumberOfGuests(numberOfGuests);
-        this.empty = empty;
+        this(null, null, numberOfGuests, empty);
     }
 
     public void checkValidEmptyTableGroup() {

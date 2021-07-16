@@ -41,10 +41,7 @@ public class Orders {
     }
 
     public Orders(Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime) {
-        this.orderTableId = orderTableId;
-        this.orderStatus = orderStatus;
-        this.orderedTime = orderedTime;
-
+        this(null, orderTableId, orderStatus, orderedTime);
     }
 
     public void addOrderLineItems(List<OrderLineItem> orderLineItems) {

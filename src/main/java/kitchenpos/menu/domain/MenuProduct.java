@@ -30,14 +30,11 @@ public class MenuProduct {
     }
 
     public MenuProduct(Menu menu, Long productId, long quantity) {
-        this.menu = menu;
-        this.productId = productId;
-        this.quantity = new Quantity(quantity);
+        this(null, menu, productId, new Quantity(quantity));
     }
 
     public MenuProduct(Long productId, long quantity) {
-        this.productId = productId;
-        this.quantity = new Quantity(quantity);
+        this(null, null, productId, new Quantity(quantity));
     }
 
     public void withMenu(Menu menu) {
