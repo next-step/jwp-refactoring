@@ -1,17 +1,14 @@
 package kitchenpos.order.application;
 
-import kitchenpos.order.application.event.OrderCreatedEvent;
+import kitchenpos.menu.application.MenuService;
+import kitchenpos.order.application.exception.BadMenuIdException;
 import kitchenpos.order.application.exception.NotExistOrderException;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.*;
 import kitchenpos.order.presentation.dto.OrderLineItemRequest;
 import kitchenpos.order.presentation.dto.OrderRequest;
 import kitchenpos.order.presentation.dto.OrderResponse;
 import kitchenpos.table.application.OrderTableService;
 import kitchenpos.table.domain.OrderTable;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,20 +19,23 @@ import java.util.stream.Collectors;
 public class OrderService {
     private final OrderRepository orderRepository;
     private final OrderTableService orderTableService;
-    private final ApplicationEventPublisher eventPublisher;
+    private final MenuService menuService;
 
-    public OrderService(OrderRepository orderRepository, OrderTableService orderTableService, ApplicationEventPublisher eventPublisher) {
+    public OrderService(OrderRepository orderRepository, OrderTableService orderTableService, MenuService menuService) {
         this.orderRepository = orderRepository;
         this.orderTableService = orderTableService;
-        this.eventPublisher = eventPublisher;
+        this.menuService = menuService;
     }
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
-        List<OrderLineItem> orderLineItems = getOrderLineItemsBy(orderRequest.getOrderLineItems());
+        OrderLineItems orderLineItems = OrderLineItems.of(getOrderLineItemsBy(orderRequest.getOrderLineItems()));
+        if (!orderLineItems.isSizeEqualsTo(menuService.countByIdIn(orderLineItems.getMenuIds()))) {
+            throw new BadMenuIdException();
+        }
+
         OrderTable orderTable = orderTableService.findById(orderRequest.getOrderTableId());
         Order order = orderTable.ordered(orderLineItems);
-        eventPublisher.publishEvent(new OrderCreatedEvent(order));
         return OrderResponse.of(orderRepository.save(order));
     }
 

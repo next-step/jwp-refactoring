@@ -55,4 +55,9 @@ public class MenuService {
     public List<MenuResponse> findMenuResponses() {
         return MenuResponse.ofList(menuRepository.findAll());
     }
+
+    @Transactional(readOnly = true)
+    public int countByIdIn(List<Long> menuIds) {
+        return menuRepository.countByIdIn(menuIds);
+    }
 }

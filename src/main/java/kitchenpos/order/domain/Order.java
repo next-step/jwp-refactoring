@@ -37,8 +37,8 @@ public class Order {
         this.orderLineItems = orderLineItems;
     }
 
-    public static Order of(Long orderTableId, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
-        return new Order(null, orderTableId, orderStatus, LocalDateTime.now(), OrderLineItems.of(orderLineItems));
+    public static Order of(Long orderTableId, OrderStatus orderStatus, OrderLineItems orderLineItems) {
+        return new Order(null, orderTableId, orderStatus, LocalDateTime.now(), orderLineItems);
     }
 
     public void changeOrderStatus(OrderStatus orderStatus) {

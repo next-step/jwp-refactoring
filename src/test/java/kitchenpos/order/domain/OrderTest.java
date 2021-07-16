@@ -15,7 +15,7 @@ class OrderTest {
     @Test
     void changeOrderStatus() {
         //given
-        Order order = Order.of(1L, OrderStatus.COOKING, Lists.list());
+        Order order = Order.of(1L, OrderStatus.COOKING, OrderLineItems.of(Lists.list()));
 
         //when
         order.changeOrderStatus(OrderStatus.MEAL);
@@ -32,7 +32,7 @@ class OrderTest {
     @Test
     void changeOrderStatusExceptionIfSameStatusBefore() {
         //given
-        Order order = Order.of(1L, OrderStatus.COOKING, Lists.list());
+        Order order = Order.of(1L, OrderStatus.COOKING, OrderLineItems.of(Lists.list()));
         order.changeOrderStatus(OrderStatus.COMPLETION);
 
         //when
@@ -44,7 +44,7 @@ class OrderTest {
     @Test
     void validateNotCompletionStatus() {
         //given
-        Order order = Order.of(1L, OrderStatus.COOKING, Lists.list());
+        Order order = Order.of(1L, OrderStatus.COOKING, OrderLineItems.of(Lists.list()));
 
         //when
         boolean actual = order.isCookingOrMeal();

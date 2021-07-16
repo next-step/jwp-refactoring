@@ -1,6 +1,7 @@
 package kitchenpos.application;
 
 import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.Orders;
 import kitchenpos.table.application.OrderTableService;
@@ -144,7 +145,7 @@ class TableGroupServiceTest extends DataBaseCleanSupport {
         //given
         OrderTable orderTable = saveOrderTable(4, false);
         OrderTable orderTable1 = saveOrderTable(4, false);
-        orderTable.ordered(Lists.list());
+        orderTable.ordered(OrderLineItems.of(Lists.list()));
         OrderTableGroup orderTableGroup = orderTableGroupRepository.save(OrderTableGroup.of(Lists.list(orderTable)));
 
         //when

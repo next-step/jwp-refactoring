@@ -1,6 +1,7 @@
 package kitchenpos.application;
 
 import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.exception.*;
@@ -38,7 +39,7 @@ class TableServiceTest extends DataBaseCleanSupport {
     @BeforeEach
     void setUp() {
         주문한_테이블 = orderTableRepository.save(OrderTable.of(4, false));
-        주문됨 = 주문한_테이블.ordered(Lists.list());
+        주문됨 = 주문한_테이블.ordered(OrderLineItems.of(Lists.list()));
     }
 
     @DisplayName("주문 테이블을 추가한다.")

@@ -1,6 +1,6 @@
 package kitchenpos.application;
 
-import kitchenpos.menu.application.exception.NotExistMenusException;
+import kitchenpos.order.application.exception.BadMenuIdException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuGroupRepository;
@@ -42,6 +42,7 @@ class OrderServiceTest extends DataBaseCleanSupport {
 
     private OrderTable 주문테이블;
     private OrderLineItemRequest 주문할_후라이드반마리;
+    private OrderLineItemRequest 중복_주문할_후라이드반마리;
 
     @BeforeEach
     void setUp() {
@@ -49,6 +50,7 @@ class OrderServiceTest extends DataBaseCleanSupport {
         Menu 후라이드반마리 = menuRepository.save(Menu.of("후라이드반마리", BigDecimal.valueOf(7000), 착한세트));
         주문테이블 = orderTableRepository.save(OrderTable.of(1, false));
         주문할_후라이드반마리 = OrderLineItemRequest.of(후라이드반마리.getId(), 1);
+        중복_주문할_후라이드반마리 = OrderLineItemRequest.of(후라이드반마리.getId(), 3);
     }
 
     @DisplayName("주문을 추가한다.")
@@ -65,6 +67,17 @@ class OrderServiceTest extends DataBaseCleanSupport {
         assertThat(actual.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
         assertThat(actual.getOrderLineItems().size()).isEqualTo(1);
         assertThat(actual.getOrderTableId()).isEqualTo(주문테이블.getId());
+    }
+
+    @Test
+    @DisplayName("주문은 중복된 메뉴를 설정할 수 없다.")
+    void createOrderException() {
+        //given
+        OrderRequest request = OrderRequest.of(주문테이블.getId(), OrderStatus.COOKING, Lists.list(주문할_후라이드반마리, 중복_주문할_후라이드반마리));
+
+        //when
+        assertThatThrownBy(() -> orderService.create(request))
+                .isInstanceOf(BadMenuIdException.class); //then
     }
 
     @DisplayName("주문은 주문 테이블을 지정해야한다.")

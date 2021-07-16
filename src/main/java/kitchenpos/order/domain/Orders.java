@@ -37,7 +37,7 @@ public class Orders {
         return orders.stream().anyMatch(Order::isCookingOrMeal);
     }
 
-    public Order newOrder(Long orderTableId, List<OrderLineItem> orderLineItems) {
+    public Order newOrder(Long orderTableId, OrderLineItems orderLineItems) {
         Order cookingOrder = Order.of(orderTableId, OrderStatus.COOKING, orderLineItems);
         orders.add(cookingOrder);
         return cookingOrder;

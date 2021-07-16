@@ -2,6 +2,7 @@ package kitchenpos.table.domain;
 
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.Orders;
 import kitchenpos.table.domain.exception.*;
 
@@ -97,7 +98,7 @@ public class OrderTable {
         }
     }
 
-    public Order ordered(List<OrderLineItem> orderLineItems) {
+    public Order ordered(OrderLineItems orderLineItems) {
         validateOrdered();
         return orders.newOrder(getId(), orderLineItems);
     }

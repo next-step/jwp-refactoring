@@ -1,5 +1,6 @@
 package kitchenpos.table.domain;
 
+import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.table.domain.exception.CannotChangeEmptyException;
 import kitchenpos.table.domain.exception.CannotChangeGuestEmptyTableException;
 import kitchenpos.table.domain.exception.CannotOrderEmptyTableException;
@@ -105,7 +106,7 @@ class OrderTableTest {
         OrderTable orderTable = OrderTable.of(4, true);
 
         //when
-        assertThatThrownBy(() -> orderTable.ordered(Lists.list()))
+        assertThatThrownBy(() -> orderTable.ordered(OrderLineItems.of(Lists.list())))
                 .isInstanceOf(CannotOrderEmptyTableException.class); //then
     }
 }
