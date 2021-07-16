@@ -1,5 +1,6 @@
 package kitchenpos.acceptance;
 
+import static kitchenpos.acceptance.MenuGroupAcceptanceTestMethod.*;
 import static org.assertj.core.api.Assertions.*;
 
 import org.junit.jupiter.api.DisplayName;
@@ -18,32 +19,18 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
 	void createMenuGroupAndFindMenuGroupScenario() {
 		// Scenario
 		// When
-		ExtractableResponse<Response> menuGroupCreatedResponse = RestAssured
-			.given().log().all()
-			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.body(new MenuGroup("인기 메뉴"))
-			.when().post("/api/menu-groups")
-			.then().log().all()
-			.extract();
+		ExtractableResponse<Response> menuGroupCreatedResponse = createMenuGroup(new MenuGroup("인기 메뉴"));
 		MenuGroup createdMenuGroup = menuGroupCreatedResponse.as(MenuGroup.class);
 		// Then
 		assertThat(menuGroupCreatedResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
 		assertThat(createdMenuGroup.getName()).isEqualTo("인기 메뉴");
 		// When
-		ExtractableResponse<Response> menuGroupResponse = RestAssured
-			.given().log().all()
-			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.when().get("/api/menu-groups")
-			.then().log().all()
-			.extract();
-
+		ExtractableResponse<Response> menuGroupResponse = findMenuGroup();
 		String menuName = menuGroupResponse.jsonPath().getList(".", MenuGroup.class).stream()
 			.filter(menuGroup -> menuGroup.getId() == createdMenuGroup.getId())
 			.map(MenuGroup::getName)
 			.findFirst()
-			.get()
-			;
-
+			.get();
 		assertThat(menuName).isEqualTo("인기 메뉴");
 	}
 }

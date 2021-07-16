@@ -17,4 +17,13 @@ public class MenuGroupAcceptanceTestMethod {
 			.then().log().all()
 			.extract();
 	}
+
+	public static ExtractableResponse<Response> findMenuGroup() {
+		return RestAssured
+			.given().log().all()
+			.contentType(MediaType.APPLICATION_JSON_VALUE)
+			.when().get("/api/menu-groups")
+			.then().log().all()
+			.extract();
+	}
 }
