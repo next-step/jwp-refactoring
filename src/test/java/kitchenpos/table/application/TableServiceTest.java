@@ -1,6 +1,7 @@
 package kitchenpos.table.application;
 
 import kitchenpos.common.Exception.AlreadyGroupedException;
+import kitchenpos.common.Exception.EmptyException;
 import kitchenpos.common.Exception.NotExistException;
 import kitchenpos.common.Exception.UnchangeableException;
 import kitchenpos.order.application.OrderService;
@@ -169,7 +170,7 @@ class TableServiceTest {
 
         //when && then
         assertThatThrownBy(() -> orderTableService.changeNumberOfGuests(givenOrderTable.getId(), orderTableRequest))
-                .isInstanceOf(UnchangeableException.class)
+                .isInstanceOf(EmptyException.class)
                 .hasMessageContaining("빈 주문 테이블입니다.");
     }
 

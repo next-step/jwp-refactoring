@@ -1,5 +1,6 @@
 package kitchenpos.table.application;
 
+import kitchenpos.common.Exception.EmptyException;
 import kitchenpos.common.Exception.NotExistException;
 import kitchenpos.common.Exception.UnchangeableException;
 import kitchenpos.order.application.OrderService;
@@ -75,7 +76,7 @@ public class OrderTableService {
 
     private void emptyValidCheck(boolean empty) {
         if (empty) {
-            throw new IllegalArgumentException("빈 주문 테이블입니다.");
+            throw new EmptyException("빈 주문 테이블입니다.");
         }
     }
 

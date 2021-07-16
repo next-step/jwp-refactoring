@@ -1,5 +1,6 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.common.Exception.EmptyException;
 import kitchenpos.common.Exception.UnchangeableException;
 import kitchenpos.table.domain.OrderTable;
 import org.springframework.data.annotation.CreatedDate;
@@ -52,7 +53,7 @@ public class Order {
 
     private void orderTableVaildCheck(OrderTable orderTable) {
         if (orderTable.isEmpty()) {
-                throw new IllegalArgumentException("빈 테이블은 주문 할 수 없습니다.");
+                throw new EmptyException("빈 테이블은 주문 할 수 없습니다.");
         }
     }
 
