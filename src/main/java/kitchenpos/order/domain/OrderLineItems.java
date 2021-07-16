@@ -10,7 +10,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Embeddable
-public class OrderLineItems {
+class OrderLineItems {
     @Transient
     private Order order;
 
@@ -20,7 +20,7 @@ public class OrderLineItems {
     protected OrderLineItems() {
     }
 
-    public OrderLineItems(final Order order) {
+    protected OrderLineItems(final Order order) {
         this.order = order;
     }
 
@@ -41,11 +41,11 @@ public class OrderLineItems {
         orderLineItems.stream().forEach(this::add);
     }
 
-    public List<OrderLineItem> list() {
+    protected List<OrderLineItem> list() {
         return Collections.unmodifiableList(orderLineItems);
     }
 
-    public boolean isSameSize(Long size) {
+    protected boolean isSameSize(Long size) {
         return orderLineItems.size() == size;
     }
 }

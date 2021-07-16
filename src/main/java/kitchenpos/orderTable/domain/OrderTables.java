@@ -12,7 +12,7 @@ public class OrderTables {
     @OneToMany(mappedBy = "tableGroup", cascade = CascadeType.MERGE)
     private final List<OrderTable> orderTables;
 
-    public OrderTables() {
+    protected OrderTables() {
         orderTables = new ArrayList<>();
     }
 
@@ -26,7 +26,7 @@ public class OrderTables {
                 .collect(Collectors.toList());
     }
 
-    public void append(final TableGroup tableGroup, final OrderTable ...orderTableArray) {
+    protected void append(final TableGroup tableGroup, final OrderTable ...orderTableArray) {
         List<OrderTable> orderTables = Arrays.stream(orderTableArray)
             .filter(Objects::nonNull)
             .distinct().collect(Collectors.toList());
@@ -67,7 +67,7 @@ public class OrderTables {
         }
     }
 
-    public boolean isSameSize(final Long size) {
+    protected boolean isSameSize(final Long size) {
         return orderTables.size() == size;
     }
 }
