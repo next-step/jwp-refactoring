@@ -33,7 +33,7 @@ public class MenuProducts {
                 return menuProduct.calculate(productPrice);
             })
             .reduce(Price::plus)
-            .orElse(Price.ZERO());
+            .orElse(Price.ZERO);
     }
 
     public void add(final MenuProduct menuProduct) {

@@ -6,14 +6,16 @@ import java.util.Objects;
 
 @Embeddable
 public class Price implements Comparable<Price> {
+    public static Price ZERO = new Price();
+    public static Price TEN = new Price(BigDecimal.TEN);
+    public static Price HUNDRED = new Price(BigDecimal.valueOf(100));
+    public static Price THOUSAND = new Price(BigDecimal.valueOf(1000));
+    public static Price TEN_THOUSAND = new Price(BigDecimal.valueOf(10_000));
+
     private final BigDecimal price;
 
     private Price() {
         this.price = BigDecimal.ZERO;
-    }
-
-    public static Price ZERO() {
-        return new Price();
     }
 
     public Price(final BigDecimal price) {
