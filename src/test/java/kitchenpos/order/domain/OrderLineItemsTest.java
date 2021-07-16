@@ -1,14 +1,11 @@
 package kitchenpos.order.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
 import kitchenpos.common.Price;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,13 +18,9 @@ class OrderLineItemsTest {
         // given
         Product 불고기 = new Product("불고기", Price.of(BigDecimal.valueOf(1000L)));
         MenuGroup 메뉴_그룹 = new MenuGroup("메뉴 그룹");
-        Menu 메뉴 = Menu.Builder.of("메뉴1", Price.of(BigDecimal.valueOf(2000L)))
-                              .menuGroup(메뉴_그룹)
-                              .menuProducts(Arrays.asList(new MenuProduct(불고기, 5)))
-                              .build();
         OrderLineItems orderLineItems = new OrderLineItems();
-        OrderLineItem 주문아이템1 = new OrderLineItem(메뉴, 3);
-        OrderLineItem 주문아이템2 = new OrderLineItem(메뉴, 5);
+        OrderLineItem 주문아이템1 = new OrderLineItem(1L, 3);
+        OrderLineItem 주문아이템2 = new OrderLineItem(2L, 5);
         orderLineItems.add(Arrays.asList(주문아이템1, 주문아이템2));
 
         // when

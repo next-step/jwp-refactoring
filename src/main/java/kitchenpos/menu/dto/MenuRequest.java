@@ -5,7 +5,6 @@ import java.util.List;
 import kitchenpos.common.Price;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menugroup.domain.MenuGroup;
 
 public class MenuRequest {
     private String name;
@@ -36,17 +35,13 @@ public class MenuRequest {
         return menuGroupId;
     }
 
-    public void setMenuProducts(List<MenuProductRequest> menuProducts) {
-        this.menuProducts = menuProducts;
-    }
-
     public List<MenuProductRequest> getMenuProducts() {
         return menuProducts;
     }
 
-    public Menu toMenu(final MenuGroup menuGroup, final List<MenuProduct> menuProducts) {
+    public Menu toMenu(final Long menuGroupId, final List<MenuProduct> menuProducts) {
         return Menu.Builder.of(this.name, Price.of(this.price))
-                           .menuGroup(menuGroup)
+                           .menuGroup(menuGroupId)
                            .menuProducts(menuProducts)
                            .build();
     }

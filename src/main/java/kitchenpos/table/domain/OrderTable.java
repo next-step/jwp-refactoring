@@ -2,20 +2,14 @@ package kitchenpos.table.domain;
 
 import static kitchenpos.exception.KitchenposExceptionMessage.ALREADY_INCLUDE_TABLE_GROUP;
 import static kitchenpos.exception.KitchenposExceptionMessage.EMPTY_GUESTS;
+import static kitchenpos.exception.KitchenposExceptionMessage.GUESTS_CANNOT_LOWER_THAN_MIN;
 
 import java.util.Objects;
-import java.util.Optional;
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import kitchenpos.exception.KitchenposException;
-import kitchenpos.tablegroup.domain.TableGroup;
 
 @Entity
 public class OrderTable {
@@ -24,9 +18,7 @@ public class OrderTable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "table_group_id", foreignKey = @ForeignKey(name = "fk_order_table_table_group"))
-    private TableGroup tableGroup;
+    private Long tableGroupId;
 
     private int numberOfGuests;
     private boolean empty;
@@ -42,14 +34,9 @@ public class OrderTable {
 
     public void checkEmptyAndNotIncludeOrderTable() {
         checkEmpty();
-        if (Objects.nonNull(this.tableGroup)) {
+        if (Objects.nonNull(this.tableGroupId)) {
             throw new KitchenposException(ALREADY_INCLUDE_TABLE_GROUP);
         }
-    }
-
-    public void grouping(final TableGroup tableGroup) {
-        this.tableGroup = tableGroup;
-        tableGroup.addOrderTable(this);
     }
 
     public void changeEmpty(boolean empty) {
@@ -57,8 +44,11 @@ public class OrderTable {
     }
 
     public void changeNumberOfGuests(final int numberOfGuests) {
-        checkEmpty();
+        if (numberOfGuests <= 0) {
+            throw new KitchenposException(GUESTS_CANNOT_LOWER_THAN_MIN);
+        }
         this.numberOfGuests = numberOfGuests;
+        this.empty = false;
     }
 
     private void checkEmpty() {
@@ -71,10 +61,6 @@ public class OrderTable {
         return id;
     }
 
-    public Optional<TableGroup> getTableGroup() {
-        return Optional.ofNullable(tableGroup);
-    }
-
     public int getNumberOfGuests() {
         return numberOfGuests;
     }
@@ -84,6 +70,6 @@ public class OrderTable {
     }
 
     public void ungroup() {
-        this.tableGroup = null;
+        this.tableGroupId = null;
     }
 }

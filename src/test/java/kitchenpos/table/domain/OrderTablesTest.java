@@ -1,6 +1,5 @@
-package kitchenpos.tablegroup.domain;
+package kitchenpos.table.domain;
 
-import static kitchenpos.exception.KitchenposExceptionMessage.ALREADY_INCLUDE_TABLE_GROUP;
 import static kitchenpos.exception.KitchenposExceptionMessage.EMPTY_GUESTS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
@@ -8,7 +7,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.Arrays;
 import kitchenpos.exception.KitchenposException;
-import kitchenpos.table.domain.OrderTable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -51,22 +49,5 @@ class OrderTablesTest {
         assertThatThrownBy(orderTables::checkEmptyAndNotIncludeTableGroup)
             .isInstanceOf(KitchenposException.class)
             .hasMessageContaining(EMPTY_GUESTS.getMessage());
-    }
-
-
-    @DisplayName("내부 원소들이 이미 테이블 그룹에 소속되어있을때 체크 테스트")
-    @Test
-    void checkEmptyAndIncludeTableGroupTest() {
-        // given
-        OrderTables orderTables = new OrderTables();
-        OrderTable orderTable = new OrderTable(10, false);
-        TableGroup tableGroup = new TableGroup(Arrays.asList(orderTable));
-        orderTables.addAll(Arrays.asList(orderTable,
-                                         new OrderTable(10, false)));
-
-        // when
-        assertThatThrownBy(orderTables::checkEmptyAndNotIncludeTableGroup)
-            .isInstanceOf(KitchenposException.class)
-            .hasMessageContaining(ALREADY_INCLUDE_TABLE_GROUP.getMessage());
     }
 }

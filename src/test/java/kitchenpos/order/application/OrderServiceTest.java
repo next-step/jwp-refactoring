@@ -4,20 +4,19 @@ import java.math.BigDecimal;
 import kitchenpos.common.Price;
 import kitchenpos.exception.KitchenposException;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusRequest;
-import kitchenpos.product.domain.Product;
-import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -42,11 +41,11 @@ import static org.mockito.ArgumentMatchers.any;
 class OrderServiceTest {
 
     @Mock
-    private MenuRepository menuRepository;
-    @Mock
     private OrderRepository orderRepository;
     @Mock
     private OrderTableRepository orderTableRepository;
+    @Mock
+    private MenuRepository menuRepository;
 
     @InjectMocks
     private OrderService orderService;
@@ -55,21 +54,20 @@ class OrderServiceTest {
     @Test
     void createTest() {
         // given
-        Product 불고기 = new Product("불고기", Price.of(BigDecimal.valueOf(1000L)));
-        MenuGroup 메뉴_그룹 = new MenuGroup("메뉴 그룹");
         Menu 메뉴 = Menu.Builder.of("메뉴1", Price.of(BigDecimal.valueOf(2000L)))
-                                 .menuGroup(메뉴_그룹)
-                                 .menuProducts(Arrays.asList(new MenuProduct(불고기, 5)))
-                                 .build();
+                              .menuGroup(1L)
+                              .menuProducts(Arrays.asList(new MenuProduct(1l, 5)))
+                              .build();
         List<OrderLineItemRequest> orderLineItemRequests = Arrays.asList(new OrderLineItemRequest(1L, 3),
                                                                          new OrderLineItemRequest(2L, 1));
-        OrderLineItem orderLineItem = new OrderLineItem(메뉴, 3);
-        OrderTable orderTable = new OrderTable(5, false);
-        Order order = new Order(orderTable, OrderStatus.COOKING, Arrays.asList(orderLineItem));
+        OrderLineItem orderLineItem = new OrderLineItem(1L, 3);
+        Order order = new Order(1L, OrderStatus.COOKING, Arrays.asList(orderLineItem));
         OrderRequest orderRequest = new OrderRequest(1l, orderLineItemRequests);
 
-        Mockito.when(orderTableRepository.findById(1L)).thenReturn(Optional.of(orderTable));
-        Mockito.when(menuRepository.findById(any())).thenReturn(Optional.of(메뉴));
+        Mockito.when(orderTableRepository.findById(1L))
+               .thenReturn(Optional.of(new OrderTable(3, false)));
+        Mockito.when(menuRepository.findById(1L)).thenReturn(Optional.of(메뉴));
+        Mockito.when(menuRepository.findById(2L)).thenReturn(Optional.of(메뉴));
         Mockito.when(orderRepository.save(any())).thenReturn(order);
 
         // when
@@ -113,8 +111,8 @@ class OrderServiceTest {
     @Test
     void listTest() {
         // given
-        Order order1 = new Order(new OrderTable(3, false), null, Collections.emptyList());
-        Order order2 = new Order(new OrderTable(4, false), null, Collections.emptyList());
+        Order order1 = new Order(1L, null, Collections.emptyList());
+        Order order2 = new Order(2L, null, Collections.emptyList());
 
         Mockito.when(orderRepository.findAll()).thenReturn(Arrays.asList(order1, order2));
 
@@ -129,7 +127,7 @@ class OrderServiceTest {
     @Test
     void changeOrderStatusTest() {
         // given
-        Order order = new Order(new OrderTable(3, false), null, Collections.emptyList());
+        Order order = new Order(1L, null, Collections.emptyList());
 
         Mockito.when(orderRepository.findById(any())).thenReturn(Optional.of(order));
 
@@ -158,7 +156,7 @@ class OrderServiceTest {
     @Test
     void changeOrderStatusAlreadyCompleteTest() {
         // given
-        Order order = new Order(new OrderTable(3, false), OrderStatus.COMPLETION, Collections.emptyList());
+        Order order = new Order(1L, OrderStatus.COMPLETION, Collections.emptyList());
 
         Mockito.when(orderRepository.findById(any())).thenReturn(Optional.of(order));
 

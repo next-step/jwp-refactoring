@@ -1,15 +1,13 @@
-package kitchenpos.tablegroup.application;
+package kitchenpos.table.application;
 
 import java.util.Optional;
-import kitchenpos.exception.KitchenposException;
-import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.tablegroup.domain.TableGroupRepository;
+import kitchenpos.table.domain.TableGroupRepository;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.tablegroup.domain.TableGroup;
-import kitchenpos.tablegroup.dto.TableGroupRequest;
-import kitchenpos.tablegroup.dto.TableGroupRequest.OrderTableIdRequest;
-import kitchenpos.tablegroup.dto.TableGroupResponse;
+import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.dto.TableGroupRequest;
+import kitchenpos.table.dto.TableGroupRequest.OrderTableIdRequest;
+import kitchenpos.table.dto.TableGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,23 +18,20 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 
-import static kitchenpos.exception.KitchenposExceptionMessage.EXISTS_NOT_COMPLETION_ORDER;
-import static kitchenpos.exception.KitchenposExceptionMessage.ORDER_TABLE_CONNOT_LOWER_THAN_MIN;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
 
     @Mock
-    private OrderRepository orderRepository;
-
-    @Mock
     private OrderTableRepository orderTableRepository;
 
     @Mock
     private TableGroupRepository tableGroupRepository;
+
+    @Mock
+    private OrderValidator orderValidator;
 
     @InjectMocks
     private TableGroupService tableGroupService;
@@ -73,26 +68,8 @@ class TableGroupServiceTest {
 
         Mockito.when(tableGroupRepository.findById(1L))
                .thenReturn(Optional.of(new TableGroup(Arrays.asList(orderTable1, orderTable2))));
-        Mockito.when(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any())).thenReturn(false);
 
         // when
         tableGroupService.ungroup(1L);
-    }
-
-    @DisplayName("테이블 그룹으로 묶일 주문 테이블의 상태가 COMPLETION이 아닐 경우")
-    @Test
-    void ungroupTestWithWrongStatus() {
-        // given
-        OrderTable orderTable1 = new OrderTable(3, false);
-        OrderTable orderTable2 = new OrderTable(4, false);
-
-        Mockito.when(tableGroupRepository.findById(1L))
-               .thenReturn(Optional.of(new TableGroup(Arrays.asList(orderTable1, orderTable2))));
-        Mockito.when(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any())).thenReturn(true);
-
-        // when
-        assertThatThrownBy(() -> tableGroupService.ungroup(1L))
-            .isInstanceOf(KitchenposException.class)
-            .hasMessageContaining(EXISTS_NOT_COMPLETION_ORDER.getMessage());
     }
 }

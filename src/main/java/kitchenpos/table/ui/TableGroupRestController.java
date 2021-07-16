@@ -1,10 +1,10 @@
-package kitchenpos.tablegroup.ui;
+package kitchenpos.table.ui;
 
 import io.swagger.annotations.ApiOperation;
 import javax.validation.Valid;
-import kitchenpos.tablegroup.application.TableGroupService;
-import kitchenpos.tablegroup.dto.TableGroupRequest;
-import kitchenpos.tablegroup.dto.TableGroupResponse;
+import kitchenpos.table.application.TableGroupService;
+import kitchenpos.table.dto.TableGroupRequest;
+import kitchenpos.table.dto.TableGroupResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

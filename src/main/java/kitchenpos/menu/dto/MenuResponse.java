@@ -29,9 +29,11 @@ public class MenuResponse {
     public static MenuResponse of(final Menu menu) {
         return new MenuResponse(menu.getId(),
                                 menu.getName(),
-                                menu.getPrice().getValue(),
-                                menu.getMenuGroup().getId(),
-                                menu.getMenuProducts().convertAll(MenuProductResponse::of));
+                                menu.getPrice().value(),
+                                menu.getMenuGroupId(),
+                                menu.getMenuProducts()
+                                    .convertAll(menuProduct -> MenuProductResponse.of(menuProduct,
+                                                                                      menu.getId())));
 
     }
 

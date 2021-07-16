@@ -1,4 +1,4 @@
-package kitchenpos.tablegroup.domain;
+package kitchenpos.table.domain;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -8,7 +8,6 @@ import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import kitchenpos.table.domain.OrderTable;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -34,7 +33,6 @@ public class TableGroup {
         this.createdDate = LocalDateTime.now();
         this.orderTables = OrderTables.of(orderTables);
         this.orderTables.checkEmptyAndNotIncludeTableGroup();
-        this.orderTables.grouping(this);
     }
 
     public Long getId() {
@@ -47,9 +45,5 @@ public class TableGroup {
 
     public OrderTables getOrderTables() {
         return orderTables;
-    }
-
-    public void addOrderTable(final OrderTable orderTable) {
-        this.orderTables.add(orderTable);
     }
 }

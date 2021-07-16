@@ -6,11 +6,11 @@ import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.menugroup.domain.MenuGroupRepository;
-import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -47,18 +47,20 @@ class MenuServiceTest {
     @Test
     void createTest() {
         // given
-        Product 불고기 = new Product("불고기", Price.of(BigDecimal.valueOf(1000L)));
-        MenuProduct 메뉴_불고기 = new MenuProduct(불고기, 3);
+        MenuProduct 메뉴_불고기 = new MenuProduct(1l, 3);
         MenuGroup 메뉴_그룹 = new MenuGroup("메뉴그룹");
 
         MenuRequest menuRequest = MenuRequest.Builder.of("메뉴1", BigDecimal.valueOf(2000L))
                                                      .menuGroupId(1L)
-                                                     .menuProducts(Arrays.asList(new MenuProductRequest(1L, 1000)))
+                                                     .menuProducts(Arrays.asList(
+                                                         new MenuProductRequest(1L, 1000)))
                                                      .build();
 
         Mockito.when(menuGroupRepository.findById(any())).thenReturn(Optional.of(메뉴_그룹));
-        Mockito.when(productRepository.findById(any())).thenReturn(Optional.of(불고기));
-        Mockito.when(menuRepository.save(any())).thenReturn(menuRequest.toMenu(메뉴_그룹, Arrays.asList(메뉴_불고기)));
+        Mockito.when(productRepository.findById(1L))
+               .thenReturn(Optional.of(new Product("불고기", Price.of(BigDecimal.valueOf(1000L)))));
+        Mockito.when(menuRepository.save(any()))
+               .thenReturn(menuRequest.toMenu(1L, Arrays.asList(메뉴_불고기)));
 
         // when
         MenuResponse result = menuService.create(menuRequest);
@@ -79,7 +81,8 @@ class MenuServiceTest {
         // given
         MenuRequest menuRequest = MenuRequest.Builder.of("메뉴1", BigDecimal.valueOf(2000L))
                                                      .menuGroupId(1L)
-                                                     .menuProducts(Arrays.asList(new MenuProductRequest()))
+                                                     .menuProducts(
+                                                         Arrays.asList(new MenuProductRequest()))
                                                      .build();
         Mockito.when(menuGroupRepository.findById(any())).thenReturn(Optional.empty());
 
@@ -89,18 +92,20 @@ class MenuServiceTest {
             .hasMessageContaining(NOT_FOUND_MENU_GROUP.getMessage());
     }
 
-    @DisplayName("메뉴에 포함된 금액보다 메뉴 가격이 더 비싼경우")
+
+    @DisplayName("메뉴 가격이 주어진 상품보다 낮은지 체크 테스트")
     @Test
-    void overPriceMenu() {
+    void checkNotOverPriceTest() {
         // given
-        Product 불고기 = new Product("불고기", Price.of(BigDecimal.valueOf(1000L)));
-        MenuGroup 메뉴_그룹 = new MenuGroup("메뉴그룹");
-        MenuRequest menuRequest = MenuRequest.Builder.of("메뉴1", BigDecimal.valueOf(5000L))
+        MenuRequest menuRequest = MenuRequest.Builder.of("메뉴1", BigDecimal.valueOf(3000L))
                                                      .menuGroupId(1L)
-                                                     .menuProducts(Arrays.asList(new MenuProductRequest(1l, 3)))
+                                                     .menuProducts(Arrays.asList(
+                                                         new MenuProductRequest(1L, 1)))
                                                      .build();
-        Mockito.when(menuGroupRepository.findById(any())).thenReturn(Optional.of(메뉴_그룹));
-        Mockito.when(productRepository.findById(any())).thenReturn(Optional.of(불고기));
+
+        Mockito.when(menuGroupRepository.findById(any())).thenReturn(Optional.of(new MenuGroup("메뉴그룹")));
+        Mockito.when(productRepository.findById(1L))
+               .thenReturn(Optional.of(new Product("블고기", Price.of(BigDecimal.valueOf(2000L)))));
 
         // when
         assertThatThrownBy(() -> menuService.create(menuRequest))

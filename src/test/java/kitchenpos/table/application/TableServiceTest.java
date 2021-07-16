@@ -1,6 +1,5 @@
 package kitchenpos.table.application;
 
-import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.dto.OrderTableChangeEmptyRequest;
@@ -26,10 +25,10 @@ import static org.mockito.ArgumentMatchers.any;
 class TableServiceTest {
 
     @Mock
-    private OrderRepository orderRepository;
+    private OrderTableRepository orderTableRepository;
 
     @Mock
-    private OrderTableRepository orderTableRepository;
+    private OrderValidator orderValidator;
 
     @InjectMocks
     private TableService tableService;
@@ -71,7 +70,6 @@ class TableServiceTest {
         OrderTableChangeEmptyRequest request = new OrderTableChangeEmptyRequest(true);
         OrderTable orderTable = new OrderTable(3, false);
         Mockito.when(orderTableRepository.findById(any())).thenReturn(Optional.of(orderTable));
-        Mockito.when(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), any())).thenReturn(false);
 
         // when
         OrderTableResponse actual = tableService.changeEmpty(1l, request);

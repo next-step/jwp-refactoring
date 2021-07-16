@@ -11,18 +11,18 @@ import kitchenpos.exception.KitchenposException;
 @Embeddable
 public class Price {
 
-    private static final BigDecimal MIN_PRICE = BigDecimal.ZERO;
+    private static final BigDecimal MIN = BigDecimal.ZERO;
     public static final Price ZERO = new Price(BigDecimal.ZERO);
 
-    @Column(precision = 19, scale = 2)
-    private BigDecimal price;
+    @Column(name = "price", precision = 19, scale = 2)
+    private BigDecimal value;
 
     protected Price() {
         // empty
     }
 
-    private Price(final BigDecimal price) {
-        this.price = price;
+    private Price(final BigDecimal value) {
+        this.value = value;
     }
 
     public static Price of(final BigDecimal price) {
@@ -30,25 +30,25 @@ public class Price {
         return new Price(price);
     }
 
-    public Price add(final Price price) {
-        return Price.of(this.price.add(price.price));
-    }
-
-    public Price multiply(final long times) {
-        return Price.of(this.price.multiply(BigDecimal.valueOf(times)));
-    }
-
     private static void checkPriceGreaterThanMin(final BigDecimal price) {
-        if (Objects.isNull(price) || price.compareTo(MIN_PRICE) < 0) {
+        if (Objects.isNull(price) || price.compareTo(MIN) < 0) {
             throw new KitchenposException(PRICE_CANNOT_LOWER_THAN_MIN);
         }
     }
 
-    public boolean isBiggerThan(final Price price) {
-        return this.price.compareTo(price.price) > 0;
+    public Price add(final Price price) {
+        return Price.of(this.value.add(price.value));
     }
 
-    public BigDecimal getValue() {
-        return this.price;
+    public Price multiply(final long times) {
+        return Price.of(this.value.multiply(BigDecimal.valueOf(times)));
+    }
+
+    public boolean isBiggerThan(final Price price) {
+        return this.value.compareTo(price.value) > 0;
+    }
+
+    public BigDecimal value() {
+        return this.value;
     }
 }

@@ -1,18 +1,12 @@
 package kitchenpos.menu.domain;
 
 import java.util.List;
-import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import kitchenpos.common.Price;
-import kitchenpos.menugroup.domain.MenuGroup;
 
 @Entity
 public class Menu {
@@ -25,9 +19,7 @@ public class Menu {
     @Embedded
     private Price price;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "menu_group_id", foreignKey = @ForeignKey(name = "fk_menu_menu_group"))
-    private MenuGroup menuGroup;
+    private Long menuGroupId;
 
     @Embedded
     private MenuProducts menuProducts = new MenuProducts();
@@ -39,12 +31,8 @@ public class Menu {
     public Menu(Builder builder) {
         this.name = builder.name;
         this.price = builder.price;
-        this.menuGroup = builder.menuGroup;
+        this.menuGroupId = builder.menuGroupId;
         this.menuProducts.add(builder.menuProducts);
-
-        this.menuProducts.connectMenu(this);
-
-        this.menuProducts.checkOverPrice(this.price);
     }
 
     public Long getId() {
@@ -59,8 +47,8 @@ public class Menu {
         return price;
     }
 
-    public MenuGroup getMenuGroup() {
-        return menuGroup;
+    public Long getMenuGroupId() {
+        return menuGroupId;
     }
 
     public MenuProducts getMenuProducts() {
@@ -70,7 +58,7 @@ public class Menu {
     public static class Builder {
         private final String name;
         private final Price price;
-        private MenuGroup menuGroup;
+        private Long menuGroupId;
         private List<MenuProduct> menuProducts;
 
         private Builder(final String name, final Price price) {
@@ -82,8 +70,8 @@ public class Menu {
             return new Builder(name, price);
         }
 
-        public Builder menuGroup(final MenuGroup menuGroup) {
-            this.menuGroup = menuGroup;
+        public Builder menuGroup(final Long menuGroupId) {
+            this.menuGroupId = menuGroupId;
             return this;
         }
 
