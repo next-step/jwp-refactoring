@@ -1,14 +1,16 @@
 package kitchenpos.menu.domain;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Embeddable
 public class MenuProducts {
 
-    @OneToMany
+    @OneToMany(mappedBy = "menuId", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MenuProduct> menuProducts = new ArrayList<>();
 
     protected MenuProducts() {

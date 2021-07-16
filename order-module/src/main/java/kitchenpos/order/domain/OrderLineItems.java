@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 @Embeddable
 public class OrderLineItems {
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "orderId", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderLineItem> orderLineItems;
 
     protected OrderLineItems() {

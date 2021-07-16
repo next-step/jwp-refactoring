@@ -1,6 +1,8 @@
 package kitchenpos.menu.application;
 
-import kitchenpos.menu.domain.*;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroupRepository;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.product.domain.ProductRepository;
@@ -50,7 +52,7 @@ public class MenuService {
     public List<MenuResponse> list() {
         List<Menu> menus = menuRepository.findAll();
         return menus.stream()
-             .map(MenuResponse::from)
-             .collect(Collectors.toList());
+                .map(MenuResponse::from)
+                .collect(Collectors.toList());
     }
 }
