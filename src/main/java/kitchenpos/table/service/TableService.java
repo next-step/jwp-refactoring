@@ -18,11 +18,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class TableService {
 
     private final OrderTableRepository orderTableRepository;
-    private final TableValidator tableValidator;
+    private final OrderValidatorInTable orderValidatorInTable;
 
-    public TableService(OrderTableRepository orderTableRepository, TableValidator tableValidator) {
+    public TableService(OrderTableRepository orderTableRepository, OrderValidatorInTable orderValidatorInTable) {
         this.orderTableRepository = orderTableRepository;
-        this.tableValidator = tableValidator;
+        this.orderValidatorInTable = orderValidatorInTable;
     }
 
     public OrderTableResponse create(OrderTableRequest orderTableRequest) {
@@ -38,7 +38,7 @@ public class TableService {
         OrderTableRequest orderTableRequest) {
         final OrderTable savedOrderTable = findOrderTable(orderTableId);
         validateOrderTableHasTableGroup(savedOrderTable);
-        tableValidator.validateOrderStatusInCookingOrMeal(orderTableId);
+        orderValidatorInTable.validateOrderStatusInCookingOrMeal(orderTableId);
         savedOrderTable.changeEmpty(orderTableRequest.isEmpty());
         return OrderTableResponse.of(orderTableRepository.save(savedOrderTable));
     }

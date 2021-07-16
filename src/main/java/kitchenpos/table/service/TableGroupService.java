@@ -27,13 +27,13 @@ public class TableGroupService {
 
     private final OrderTableRepository orderTableRepository;
     private final TableGroupRepository tableGroupRepository;
-    private final TableValidator tableValidator;
+    private final OrderValidatorInTable orderValidatorInTable;
 
     public TableGroupService(OrderTableRepository orderTableRepository,
-        TableGroupRepository tableGroupRepository, TableValidator tableValidator) {
+        TableGroupRepository tableGroupRepository, OrderValidatorInTable orderValidatorInTable) {
         this.orderTableRepository = orderTableRepository;
         this.tableGroupRepository = tableGroupRepository;
-        this.tableValidator = tableValidator;
+        this.orderValidatorInTable = orderValidatorInTable;
     }
 
     public TableGroupResponse create(TableGroupRequest tableGroupRequest) {
@@ -51,7 +51,7 @@ public class TableGroupService {
         TableGroup tableGroup = findTableGroup(tableGroupId);
         List<OrderTable> orderTables = findOrderTables(tableGroup);
         List<Long> orderTableIds = getOrderTableIds(orderTables);
-        tableValidator.validateOrderStatusInCookingOrMeal(orderTableIds);
+        orderValidatorInTable.validateOrderStatusInCookingOrMeal(orderTableIds);
         orderTables.forEach(OrderTable::unGroup);
     }
 
