@@ -34,7 +34,7 @@ class ProductServiceTest extends DataBaseCleanSupport {
     @Test
     void list() {
         //when
-        List<ProductResponse> actual = productService.list();
+        List<ProductResponse> actual = productService.findProductResponses();
 
         //then
         assertThat(actual.size()).isNotZero();

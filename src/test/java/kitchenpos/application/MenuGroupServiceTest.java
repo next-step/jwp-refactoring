@@ -35,7 +35,7 @@ class MenuGroupServiceTest extends DataBaseCleanSupport {
     @Test
     void list() {
         //when
-        List<MenuGroupResponse> actual = menuGroupService.list();
+        List<MenuGroupResponse> actual = menuGroupService.findMenuGroupResponses();
 
         //then
         assertThat(actual.size()).isNotZero();

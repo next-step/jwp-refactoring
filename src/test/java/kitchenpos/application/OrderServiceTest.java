@@ -86,7 +86,7 @@ class OrderServiceTest extends DataBaseCleanSupport {
         orderService.create(주문요청);
 
         //when
-        List<OrderResponse> actual = orderService.list();
+        List<OrderResponse> actual = orderService.findOrderResponses();
 
         //then
         assertThat(actual.size()).isNotZero();

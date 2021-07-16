@@ -29,7 +29,7 @@ public class TableRestController {
     @GetMapping("/api/tables")
     public ResponseEntity<List<OrderTableResponse>> list() {
         return ResponseEntity.ok()
-                .body(tableService.list())
+                .body(tableService.findOrderTableResponses())
                 ;
     }
 

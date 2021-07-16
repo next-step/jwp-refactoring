@@ -55,7 +55,7 @@ class TableServiceTest extends DataBaseCleanSupport {
     @Test
     void list() {
         //when
-        List<OrderTableResponse> actual = tableService.list();
+        List<OrderTableResponse> actual = tableService.findOrderTableResponses();
 
         //then
         assertThat(actual.size()).isNotZero();

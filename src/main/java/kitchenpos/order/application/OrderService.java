@@ -46,7 +46,7 @@ public class OrderService {
     }
 
     @Transactional(readOnly = true)
-    public List<OrderResponse> list() {
+    public List<OrderResponse> findOrderResponses() {
         return OrderResponse.ofList(orderRepository.findAll());
     }
 
