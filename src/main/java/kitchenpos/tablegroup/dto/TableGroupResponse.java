@@ -9,9 +9,6 @@ public class TableGroupResponse {
     private Long id;
     private LocalDateTime createdDate;
 
-    public TableGroupResponse() {
-    }
-
     private TableGroupResponse(Long id, LocalDateTime createdDate ){
         this.id = id;
         this.createdDate = createdDate;

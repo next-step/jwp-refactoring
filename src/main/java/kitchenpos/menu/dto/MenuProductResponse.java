@@ -11,9 +11,6 @@ public class MenuProductResponse {
     private Long productId;
     private Long quantity;
 
-    public MenuProductResponse() {
-    }
-
     public MenuProductResponse(Long seq, Long menuId, Long productId, Long quantity) {
         this.seq = seq;
         this.menuId = menuId;

@@ -11,9 +11,6 @@ public class OrderTableResponse {
     private int numberOfGuests;
     private boolean empty;
 
-    public OrderTableResponse() {
-    }
-
     private OrderTableResponse(Long id, int numberOfGuests, boolean empty) {
         this.id = id;
         this.numberOfGuests = numberOfGuests;
