@@ -13,6 +13,7 @@ import javax.persistence.Table;
 import kitchenpos.order.domain.value.OrderLineItems;
 import kitchenpos.order.domain.value.OrderStatus;
 import kitchenpos.order.exception.OrderStatusCompletionException;
+import kitchenpos.table.domain.entity.OrderTable;
 
 @Entity
 @Table(name = "orders")

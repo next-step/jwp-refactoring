@@ -1,4 +1,4 @@
-package kitchenpos.order.service;
+package kitchenpos.table.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -9,13 +9,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import kitchenpos.order.domain.entity.OrderRepository;
-import kitchenpos.order.domain.entity.OrderTable;
-import kitchenpos.order.domain.entity.OrderTableRepository;
-import kitchenpos.order.domain.entity.TableGroup;
-import kitchenpos.order.domain.value.NumberOfGuests;
+import kitchenpos.table.domain.entity.OrderTable;
+import kitchenpos.table.domain.entity.OrderTableRepository;
+import kitchenpos.table.domain.entity.TableGroup;
+import kitchenpos.table.domain.value.NumberOfGuests;
 import kitchenpos.order.domain.value.OrderStatus;
-import kitchenpos.order.dto.OrderTableRequest;
-import kitchenpos.order.dto.OrderTableResponse;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.table.service.TableService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

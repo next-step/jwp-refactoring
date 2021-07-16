@@ -1,25 +1,25 @@
-package kitchenpos.order.service;
+package kitchenpos.table.service;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import kitchenpos.order.domain.entity.OrderRepository;
-import kitchenpos.order.domain.entity.OrderTable;
-import kitchenpos.order.domain.entity.OrderTableRepository;
-import kitchenpos.order.domain.entity.TableGroup;
-import kitchenpos.order.domain.entity.TableGroupRepository;
+import kitchenpos.table.domain.entity.OrderTable;
+import kitchenpos.table.domain.entity.OrderTableRepository;
+import kitchenpos.table.domain.entity.TableGroup;
+import kitchenpos.table.domain.entity.TableGroupRepository;
 import kitchenpos.order.domain.value.OrderStatus;
 import kitchenpos.order.domain.value.OrderTables;
-import kitchenpos.order.dto.OrderTableRequest;
-import kitchenpos.order.dto.TableGroupRequest;
-import kitchenpos.order.dto.TableGroupResponse;
-import kitchenpos.order.exception.NotFoundOrderTableException;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.TableGroupRequest;
+import kitchenpos.table.dto.TableGroupResponse;
+import kitchenpos.table.exception.NotFoundOrderTableException;
 import kitchenpos.order.exception.NotFoundTableGroupException;
 import kitchenpos.order.exception.OrderStatusInCookingOrMealException;
-import kitchenpos.order.exception.OrderTableCountException;
-import kitchenpos.order.exception.OrderTableHasTableGroupException;
-import kitchenpos.order.exception.OrderTableIsNotEmptyException;
+import kitchenpos.table.exception.OrderTableCountException;
+import kitchenpos.table.exception.OrderTableHasTableGroupException;
+import kitchenpos.table.exception.OrderTableIsNotEmptyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

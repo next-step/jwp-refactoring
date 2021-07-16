@@ -1,7 +1,7 @@
-package kitchenpos.order.domain.value;
+package kitchenpos.table.domain.value;
 
 import javax.persistence.Embeddable;
-import kitchenpos.order.exception.NumberOfGuestsNotNegativeNumberException;
+import kitchenpos.table.exception.NumberOfGuestsNotNegativeNumberException;
 
 @Embeddable
 public class NumberOfGuests {

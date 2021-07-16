@@ -1,19 +1,19 @@
-package kitchenpos.order.service;
+package kitchenpos.table.service;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import kitchenpos.order.domain.entity.OrderRepository;
-import kitchenpos.order.domain.entity.OrderTable;
-import kitchenpos.order.domain.entity.OrderTableRepository;
-import kitchenpos.order.domain.value.NumberOfGuests;
+import kitchenpos.table.domain.entity.OrderTable;
+import kitchenpos.table.domain.entity.OrderTableRepository;
+import kitchenpos.table.domain.value.NumberOfGuests;
 import kitchenpos.order.domain.value.OrderStatus;
-import kitchenpos.order.dto.OrderTableRequest;
-import kitchenpos.order.dto.OrderTableResponse;
-import kitchenpos.order.exception.NotFoundOrderTableException;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.table.exception.NotFoundOrderTableException;
 import kitchenpos.order.exception.OrderStatusInCookingOrMealException;
-import kitchenpos.order.exception.OrderTableHasTableGroupException;
-import kitchenpos.order.exception.OrderTableIsEmptyException;
+import kitchenpos.table.exception.OrderTableHasTableGroupException;
+import kitchenpos.table.exception.OrderTableIsEmptyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

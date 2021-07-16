@@ -1,4 +1,4 @@
-package kitchenpos.order.exception;
+package kitchenpos.table.exception;
 
 public class OrderTableIsEmptyException extends IllegalArgumentException {
 

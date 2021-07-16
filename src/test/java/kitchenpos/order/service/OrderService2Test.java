@@ -8,7 +8,7 @@ import java.util.List;
 import kitchenpos.menu.domain.entity.Menu;
 import kitchenpos.order.domain.entity.Order;
 import kitchenpos.order.domain.entity.OrderLineItem;
-import kitchenpos.order.domain.entity.OrderTable;
+import kitchenpos.table.domain.entity.OrderTable;
 import kitchenpos.order.domain.value.OrderLineItems;
 import kitchenpos.order.domain.value.OrderStatus;
 import kitchenpos.order.domain.value.Quantity;

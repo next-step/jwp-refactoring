@@ -1,4 +1,4 @@
-package kitchenpos.order.ui;
+package kitchenpos.table.ui;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
@@ -12,8 +12,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.nio.charset.StandardCharsets;
-import kitchenpos.order.dto.OrderTableRequest;
-import kitchenpos.order.service.TableService;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.service.TableService;
+import kitchenpos.table.ui.TableRestController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
