@@ -24,12 +24,6 @@ public class OrderTableRequest {
         return new OrderTableRequest(orderTable.getNumberOfGuests(), orderTable.isEmpty());
     }
 
-    public static List<OrderTableRequest> ofList(List<OrderTable> orderTables) {
-        return orderTables.stream()
-                .map(OrderTableRequest::of)
-                .collect(Collectors.toList());
-    }
-
     public OrderTable toOrderTable() {
         return new OrderTable(this.numberOfGuests, this.empty);
     }

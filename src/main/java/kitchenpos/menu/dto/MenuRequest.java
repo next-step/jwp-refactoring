@@ -28,12 +28,6 @@ public class MenuRequest {
                 MenuProductRequest.ofList(menu.getMenuProducts().values()));
     }
 
-    public static List<MenuRequest> ofList(List<Menu> list) {
-        return list.stream()
-                .map(MenuRequest::of)
-                .collect(Collectors.toList());
-    }
-
     public String getName() {
         return name;
     }
