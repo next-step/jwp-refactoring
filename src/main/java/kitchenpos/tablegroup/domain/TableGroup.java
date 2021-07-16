@@ -18,7 +18,7 @@ public class TableGroup {
     @CreatedDate
     private LocalDateTime createdDate;
 
-    protected TableGroup() {
+    public TableGroup() {
     }
 
     public TableGroup(Long id, LocalDateTime createdDate) {
