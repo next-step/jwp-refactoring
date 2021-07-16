@@ -41,10 +41,14 @@ public class Order {
         orderLineItems.toOrder(this);
     }
 
-    public Order(Long orderTableId, OrderLineItems orderLineItems) {
+    private Order(Long orderTableId, OrderLineItems orderLineItems) {
         this.orderTableId = orderTableId;
         this.orderLineItems = orderLineItems;
         orderLineItems.toOrder(this);
+    }
+
+    public static Order of(Long orderTableId, OrderLineItems orderLineItems) {
+        return new Order(orderTableId, orderLineItems);
     }
 
     public Long getId() {

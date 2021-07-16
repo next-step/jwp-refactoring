@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import kitchenpos.menu.domain.entity.Menu;
 import kitchenpos.menu.domain.entity.MenuProduct;
 import kitchenpos.menu.domain.entity.MenuRepository;
+import kitchenpos.menu.domain.value.MenuProducts;
 import kitchenpos.menu.domain.value.Price;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
@@ -52,10 +53,10 @@ public class MenuService {
             toMenuProductEntities(menuRequest));
     }
 
-    private List<MenuProduct> toMenuProductEntities(MenuRequest menuRequest) {
-        return menuRequest.getMenuProducts().stream()
+    private MenuProducts toMenuProductEntities(MenuRequest menuRequest) {
+        return new MenuProducts(menuRequest.getMenuProducts().stream()
             .map(menuProductRequest -> new MenuProduct(menuProductRequest.getProductId(),
-                menuProductRequest.getQuantity())).collect(Collectors.toList());
+                menuProductRequest.getQuantity())).collect(Collectors.toList()));
     }
 
     private void validateProductPriceSum(MenuRequest menuRequest) {

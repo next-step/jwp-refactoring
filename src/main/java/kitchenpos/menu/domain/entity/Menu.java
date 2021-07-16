@@ -41,8 +41,8 @@ public class Menu {
     }
 
     public static Menu of(String name, Price price, Long menuGroupId,
-        List<MenuProduct> menuProducts) {
-        return new Menu(name, price, menuGroupId, new MenuProducts(menuProducts));
+        MenuProducts menuProducts) {
+        return new Menu(name, price, menuGroupId, menuProducts);
     }
 
     public Long getId() {

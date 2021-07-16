@@ -3,12 +3,12 @@ package kitchenpos.order.service;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import kitchenpos.menu.domain.entity.Menu;
 import kitchenpos.menu.domain.entity.MenuRepository;
 import kitchenpos.menu.exception.NotFoundMenuException;
 import kitchenpos.order.domain.entity.Order;
 import kitchenpos.order.domain.entity.OrderLineItem;
 import kitchenpos.order.domain.entity.OrderRepository;
+import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.table.domain.entity.OrderTable;
 import kitchenpos.table.domain.entity.OrderTableRepository;
 import kitchenpos.order.domain.value.OrderLineItems;
@@ -39,13 +39,22 @@ public class OrderService {
     }
 
     public OrderResponse create(final OrderRequest orderRequest) {
-        //1.테이블의 상태를 확인한다.
-        //2.주문항목을 확인한다
-        //3.주문한다.
         validateOrderTable(orderRequest);
-        List<OrderLineItem> orderLineItems = findOrderLineItems(orderRequest);
-        Order order = new Order(orderRequest.getOrderTableId(), new OrderLineItems(orderLineItems));
-        return OrderResponse.of(orderRepository.save(order));
+        validateOrderLineItems(orderRequest);
+        return OrderResponse.of(orderRepository.save(toOrderEntity(orderRequest)));
+    }
+
+    private Order toOrderEntity(OrderRequest orderRequest) {
+        return Order.of(orderRequest.getOrderTableId(),
+            toOrderLineItemEntities(orderRequest.getOrderLineItems()));
+    }
+
+    private OrderLineItems toOrderLineItemEntities(
+        List<OrderLineItemRequest> orderLineItemRequests) {
+        return new OrderLineItems(orderLineItemRequests.stream()
+            .map(orderLineItemRequest -> new OrderLineItem(orderLineItemRequest.getMenuId(),
+                Quantity.of(orderLineItemRequest.getQuantity())))
+            .collect(Collectors.toList()));
     }
 
     private void validateOrderTable(OrderRequest orderRequest) {
@@ -56,18 +65,23 @@ public class OrderService {
         }
     }
 
-    private List<OrderLineItem> findOrderLineItems(OrderRequest orderRequest) {
-        validateOrderLineItemIsNullOrZero(orderRequest);
-        return orderRequest.getOrderLineItems().stream()
-            .map(orderLineItemRequest -> {
-                Menu menu = menuRepository.findById(orderLineItemRequest.getMenuId())
-                    .orElseThrow(NotFoundMenuException::new);
-                return new OrderLineItem(menu.getId(), Quantity.of(orderLineItemRequest.getQuantity()));
-            }).collect(Collectors.toList());
+    private void validateOrderLineItems(OrderRequest orderRequest) {
+        validateOrderLineItemIsNullOrEmpty(orderRequest);
+        List<Long> menuIds = getMenuIds(orderRequest);
+        if (orderRequest.getOrderLineItems().size() != menuRepository.countByIdIn(menuIds)) {
+            throw new NotFoundMenuException();
+        }
     }
 
-    private void validateOrderLineItemIsNullOrZero(OrderRequest orderRequest) {
-        if (Objects.isNull(orderRequest.getOrderLineItems()) || orderRequest.getOrderLineItems().size() == 0){
+    private List<Long> getMenuIds(OrderRequest orderRequest) {
+        return orderRequest.getOrderLineItems()
+            .stream().map(OrderLineItemRequest::getMenuId)
+            .collect(Collectors.toList());
+    }
+
+    private void validateOrderLineItemIsNullOrEmpty(OrderRequest orderRequest) {
+        if (Objects.isNull(orderRequest.getOrderLineItems())
+            || orderRequest.getOrderLineItems().isEmpty()) {
             throw new OrderLineItemIsNullOrZeroException();
         }
     }
