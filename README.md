@@ -70,3 +70,10 @@
     - [x] OneToMany -> ManyToOne 으로 다중성이 적은 방향으로 단방향 의존하도록 변경
 - [x] 메뉴 정보가 변경되더라도 주문 항목이 변경되지 않게 구현
     - [x] 간접참조하도록 도메인 이벤트 구현
+   
+### step4 멀티모듈 구성하기
+- [x] step3 피드백 적용 - OrderTable 과 Order 의존성 제거
+- [x] 멀티 모듈 적용
+   - api : controller 클래스
+   - common : 공통 사용 클래스
+   - domain : service, domain, dto, event 클래스
