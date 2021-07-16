@@ -5,4 +5,5 @@ include 'kitchenpos-product'
 include 'kitchenpos-order'
 include 'kitchenpos-menu'
 include 'kitchenpos-order'
+include 'kitchenpos-api'
 
