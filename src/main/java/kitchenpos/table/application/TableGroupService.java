@@ -1,11 +1,18 @@
 package kitchenpos.table.application;
 
+import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.OrderTableGroupRepository;
+import kitchenpos.table.dto.TableRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.Table;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
 
 @Service
 @Transactional
@@ -24,6 +31,14 @@ public class TableGroupService {
         return orderTableGroupRepository.save(tableGroup);
     }
 
+    public TableGroup create(final List<Long> tableIds) {
+        OrderTable[] OrderTableArray = tableIds.stream()
+            .map(this::getOrderTable)
+            .toArray(OrderTable[]::new);
+
+        return create(new TableGroup(OrderTableArray));
+    }
+
     public void ungroup(final Long tableGroupId) {
         TableGroup tableGroup = getOrderTableGroupById(tableGroupId);
         tableGroup.remove();
@@ -31,11 +46,17 @@ public class TableGroupService {
     }
 
     @Transactional(readOnly = true)
-    protected TableGroup getOrderTableGroupById(final Long tableGroupId) {
-        return orderTableGroupRepository.findById(tableGroupId).orElseThrow(() -> new RuntimeException());
+    protected OrderTable getOrderTable(final Long tableId) {
+        return orderTableRepository.findById(tableId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 테이블입니다."));
     }
 
     @Transactional(readOnly = true)
+    protected TableGroup getOrderTableGroupById(final Long tableGroupId) {
+        return orderTableGroupRepository.findById(tableGroupId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 테이블 그룹입니다."));
+    }
+
     protected void validationByNewTableGroup(final TableGroup tableGroup) {
         final List<Long> orderTableIds = tableGroup.getOrderTableIds();
 
