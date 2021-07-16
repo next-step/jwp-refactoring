@@ -11,7 +11,7 @@ import kitchenpos.order.domain.value.OrderStatus;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.exception.NotFoundOrderTableException;
-import kitchenpos.order.exception.OrderStatusInCookingOrMealException;
+import kitchenpos.table.exception.OrderStatusInCookingOrMealException;
 import kitchenpos.table.exception.OrderTableHasTableGroupException;
 import kitchenpos.table.exception.OrderTableIsEmptyException;
 import org.springframework.stereotype.Service;
