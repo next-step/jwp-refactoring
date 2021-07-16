@@ -1,4 +1,4 @@
-package kitchenpos.common;
+package kitchenpos.common.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.order.dto.OrderStatusRequest;

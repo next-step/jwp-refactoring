@@ -1,6 +1,6 @@
-package kitchenpos.menu.dto;
+package kitchenpos.menugroup.dto;
 
-import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menugroup.domain.MenuGroup;
 
 import java.util.Objects;
 

@@ -1,7 +1,7 @@
 package kitchenpos.product.ui;
 
 import kitchenpos.product.application.ProductService;
-import kitchenpos.common.ControllerTest;
+import kitchenpos.common.ui.ControllerTest;
 import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

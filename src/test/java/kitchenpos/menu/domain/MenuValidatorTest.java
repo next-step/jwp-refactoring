@@ -3,6 +3,8 @@ package kitchenpos.menu.domain;
 import kitchenpos.common.Price;
 import kitchenpos.common.Quantity;
 import kitchenpos.exception.CannotFindException;
+import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import org.junit.jupiter.api.DisplayName;

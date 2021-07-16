@@ -1,12 +1,13 @@
 package kitchenpos.menu.ui;
 
-import kitchenpos.common.ControllerTest;
+import kitchenpos.common.ui.ControllerTest;
 import kitchenpos.common.Price;
 import kitchenpos.common.Quantity;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.*;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

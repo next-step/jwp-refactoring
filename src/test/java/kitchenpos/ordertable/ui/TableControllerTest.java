@@ -1,11 +1,10 @@
 package kitchenpos.ordertable.ui;
 
 import kitchenpos.ordertable.application.TableService;
-import kitchenpos.common.ControllerTest;
+import kitchenpos.common.ui.ControllerTest;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
-import kitchenpos.ordertable.ui.TableRestController;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

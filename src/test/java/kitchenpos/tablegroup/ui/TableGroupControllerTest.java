@@ -1,7 +1,7 @@
 package kitchenpos.tablegroup.ui;
 
 import kitchenpos.tablegroup.application.TableGroupService;
-import kitchenpos.common.ControllerTest;
+import kitchenpos.common.ui.ControllerTest;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
