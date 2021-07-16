@@ -2,11 +2,13 @@ package tablegroup.domain;
 
 
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 public class TableGroup {
 
     public static final int MINIMUM_REQUIRED_NUMBER_OF_TABLES = 2;
