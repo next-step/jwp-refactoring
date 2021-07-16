@@ -28,14 +28,8 @@ public class OrderTables {
 
     public void updateTableGroup(TableGroup tableGroup) {
         for (OrderTable orderTable : orderTables) {
-            updatePossible(orderTable);
             orderTable.updateTableGroup(tableGroup);
         }
-    }
-
-    private void updatePossible(OrderTable orderTable) {
-        orderTable.availableToUpdateCheck();
-        orderTable.hasTableGroupIdCheck();
     }
 
     public void releaseGroup() {

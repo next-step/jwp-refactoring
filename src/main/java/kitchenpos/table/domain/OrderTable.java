@@ -61,8 +61,14 @@ public class OrderTable {
     }
 
     public void updateTableGroup(TableGroup tableGroup) {
+        updatePossibleCheck();
         this.empty = false;
         this.tableGroup = tableGroup;
+    }
+
+    private void updatePossibleCheck() {
+        availableToUpdateCheck();
+        hasTableGroupIdCheck();
     }
 
     protected void hasTableGroupIdCheck() {
