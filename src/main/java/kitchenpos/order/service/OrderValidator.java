@@ -5,13 +5,14 @@ import java.util.List;
 import kitchenpos.order.domain.entity.OrderRepository;
 import kitchenpos.order.domain.value.OrderStatus;
 import kitchenpos.table.exception.OrderStatusInCookingOrMealException;
+import kitchenpos.table.service.OrderValidatorInTable;
 import org.springframework.stereotype.Component;
 
 @Component
-public class OrderValidatorInTable implements kitchenpos.table.service.OrderValidatorInTable {
+public class OrderValidator implements OrderValidatorInTable {
     private final OrderRepository orderRepository;
 
-    public OrderValidatorInTable(OrderRepository orderRepository) {
+    public OrderValidator(OrderRepository orderRepository) {
         this.orderRepository = orderRepository;
     }
 
