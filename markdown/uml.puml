@@ -54,7 +54,7 @@ package TablePackage #DDDDDD {
 '------------------------------------------------------
   'OrderTable <-- Order
 
-  Menu <-- OrderLineItem
+  'Menu <-- OrderLineItem
 
   Menu <-- OrderService
   MenuRepository <-- OrderService

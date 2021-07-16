@@ -42,19 +42,18 @@ public class OrderService {
         //1.테이블의 상태를 확인한다.
         //2.주문항목을 확인한다
         //3.주문한다.
-        OrderTable orderTable = validateOrder(orderRequest);
+        validateOrderTable(orderRequest);
         List<OrderLineItem> orderLineItems = findOrderLineItems(orderRequest);
-        Order order = new Order(orderTable.getId(), new OrderLineItems(orderLineItems));
+        Order order = new Order(orderRequest.getOrderTableId(), new OrderLineItems(orderLineItems));
         return OrderResponse.of(orderRepository.save(order));
     }
 
-    private OrderTable validateOrder(OrderRequest orderRequest) {
+    private void validateOrderTable(OrderRequest orderRequest) {
         OrderTable orderTable = orderTableRepository.findById(orderRequest.getOrderTableId())
             .orElseThrow(NotFoundOrderTableException::new);
         if (orderTable.isEmpty()) {
             throw new OrderTableIsEmptyException();
         }
-        return orderTable;
     }
 
     private List<OrderLineItem> findOrderLineItems(OrderRequest orderRequest) {
@@ -63,7 +62,7 @@ public class OrderService {
             .map(orderLineItemRequest -> {
                 Menu menu = menuRepository.findById(orderLineItemRequest.getMenuId())
                     .orElseThrow(NotFoundMenuException::new);
-                return new OrderLineItem(menu, Quantity.of(orderLineItemRequest.getQuantity()));
+                return new OrderLineItem(menu.getId(), Quantity.of(orderLineItemRequest.getQuantity()));
             }).collect(Collectors.toList());
     }
 

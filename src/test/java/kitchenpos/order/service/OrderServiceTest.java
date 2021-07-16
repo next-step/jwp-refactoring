@@ -56,7 +56,7 @@ class OrderServiceTest {
     @BeforeEach
     void setUp() {
         메뉴_후라이드_후라이드 = new Menu();
-        주문라인아이템 = new OrderLineItem(1L, null, 메뉴_후라이드_후라이드, Quantity.of(1L));
+        주문라인아이템 = new OrderLineItem(1L, null, 메뉴_후라이드_후라이드.getId(), Quantity.of(1L));
         주문라인아이템_리퀘스트 = new OrderLineItemRequest(1L, 1L, 999L, 1L);
         주문테이블 = new OrderTable();
         주문 = new Order(1L, 주문테이블.getId(), OrderStatus.MEAL.name(),
