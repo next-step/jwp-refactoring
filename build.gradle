@@ -1,27 +1,98 @@
-plugins {
-    id 'org.springframework.boot' version '2.4.1'
-    id 'io.spring.dependency-management' version '1.0.10.RELEASE'
-    id 'java'
+buildscript {
+    ext {
+        springBootVersion = '2.4.1'
+        springGradleDependencyVersion = '1.0.10.RELEASE'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath "io.spring.gradle:dependency-management-plugin:${springGradleDependencyVersion}"
+    }
 }
 
-group = 'camp.nextstep.edu'
-version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '1.8'
+subprojects {
+    group = 'camp.nextstep.edu'
+    version = '0.0.1-SNAPSHOT'
 
-repositories {
-    mavenCentral()
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'java'
+
+    sourceCompatibility = 1.8
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        testImplementation('org.springframework.boot:spring-boot-starter-test')
+    }
+
+    test {
+        useJUnitPlatform()
+    }
 }
 
-dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.flywaydb:flyway-core'
-    runtimeOnly 'com.h2database:h2'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+project(':kitchenpos-api') {
+    bootJar {
+        enabled = true
+    }
+    jar {
+        enabled = true
+    }
+
+    dependencies {
+        implementation project(':kitchenpos-product')
+        implementation project(':kitchenpos-table')
+        implementation project(':kitchenpos-order')
+        implementation project(':kitchenpos-menu')
+        implementation 'org.springframework.boot:spring-boot-starter-web'
+        implementation 'org.flywaydb:flyway-core'
+        runtimeOnly 'com.h2database:h2'
+    }
 }
 
-test {
-    useJUnitPlatform()
+project(':kitchenpos-common') {
+    dependencies {
+        implementation group: 'org.springframework', name: 'spring-web', version: '5.3.2'
+        implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    }
+}
+
+project(':kitchenpos-menu') {
+    dependencies {
+        implementation project(':kitchenpos-common')
+        implementation project(':kitchenpos-order')
+        implementation group: 'org.springframework', name: 'spring-web', version: '5.3.2'
+        implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    }
+}
+
+project(':kitchenpos-order') {
+    dependencies {
+        implementation project(':kitchenpos-common')
+        implementation project(':kitchenpos-table')
+        implementation group: 'org.springframework', name: 'spring-web', version: '5.3.2'
+        implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    }
+}
+
+project(':kitchenpos-product') {
+    dependencies {
+        implementation project(':kitchenpos-common')
+        implementation project(':kitchenpos-menu')
+        implementation group: 'org.springframework', name: 'spring-web', version: '5.3.2'
+        implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    }
+}
+
+project(':kitchenpos-table') {
+    dependencies {
+        implementation project(':kitchenpos-common')
+        implementation project(':kitchenpos-order')
+        implementation group: 'org.springframework', name: 'spring-web', version: '5.3.2'
+        implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    }
 }
