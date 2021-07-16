@@ -29,7 +29,7 @@ public class MenuResponse {
         return new MenuResponse(menu.getId(),
             menu.getName(),
             menu.getPrice().getValue(),
-            menu.getMenuGroup().getId(),
+            menu.getMenuGroupId(),
             MenuProductResponse.ofList(menu.getMenuProducts()));
     }
 

@@ -3,7 +3,6 @@ package kitchenpos.menu.service;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.menu.domain.entity.Menu;
-import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.entity.MenuProduct;
 import kitchenpos.menu.domain.entity.MenuRepository;
@@ -34,10 +33,12 @@ public class MenuService {
         this.productRepository = productRepository;
     }
 
-    public MenuResponse create(final MenuRequest menuRequest) {
+    public MenuResponse create(MenuRequest menuRequest) {
+        validateMenuGroup(menuRequest.getMenuGroupId());
+
         Menu menu = Menu.of(menuRequest.getName(),
             Price.of(menuRequest.getPrice()),
-            findMenuGroup(menuRequest.getMenuGroupId()),
+            menuRequest.getMenuGroupId(),
             findMenuProducts(menuRequest));
         return MenuResponse.of(menuRepository.save(menu));
     }
@@ -52,8 +53,8 @@ public class MenuService {
             }).collect(Collectors.toList());
     }
 
-    private MenuGroup findMenuGroup(Long menuGroupId) {
-        return menuGroupRepository.findById(menuGroupId)
+    private void validateMenuGroup(Long menuGroupId) {
+        menuGroupRepository.findById(menuGroupId)
             .orElseThrow(NotFoundMenuGroupException::new);
     }
 

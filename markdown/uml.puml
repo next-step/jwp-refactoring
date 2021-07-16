@@ -38,14 +38,14 @@ package TablePackage #DDDDDD {
 
 
   Menu <-- MenuService
-  MenuGroup <-- MenuService
+  'MenuGroup <-- MenuService
   MenuGroupRepository <-- MenuService
   MenuProduct <-- MenuService
   MenuRepository <-- MenuService
   Product <-- MenuService
   ProductRepository <-- MenuService
 
-  MenuGroup <-- Menu
+  'MenuGroup <-- Menu
 
   Product <-- MenuProduct
 

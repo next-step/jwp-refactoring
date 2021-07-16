@@ -6,7 +6,6 @@ import kitchenpos.menu.domain.value.Price;
 import javax.persistence.*;
 import java.util.List;
 import kitchenpos.menu.exception.MenuPriceGreaterThanProductsSumException;
-import kitchenpos.menugroup.domain.MenuGroup;
 
 @Entity
 public class Menu {
@@ -21,7 +20,7 @@ public class Menu {
 
     @ManyToOne
     @JoinColumn(name = "menu_group_id")
-    private MenuGroup menuGroup;
+    private Long menuGroupId;
 
     @Embedded
     private MenuProducts menuProducts;
@@ -33,18 +32,18 @@ public class Menu {
         this.id = id;
     }
 
-    public Menu(String name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
+    public Menu(String name, Price price, Long menuGroupId, MenuProducts menuProducts) {
         this.name = name;
         this.price = price;
-        this.menuGroup = menuGroup;
+        this.menuGroupId = menuGroupId;
         this.menuProducts = menuProducts;
         this.menuProducts.toMenu(this);
     }
 
-    public static Menu of(String name, Price price, MenuGroup menuGroup,
+    public static Menu of(String name, Price price, Long menuGroupId,
         List<MenuProduct> menuProducts) {
         validateMenuProductsSum(price, menuProducts);
-        return new Menu(name, price, menuGroup, new MenuProducts(menuProducts));
+        return new Menu(name, price, menuGroupId, new MenuProducts(menuProducts));
     }
 
     private static void validateMenuProductsSum(Price menuPrice, List<MenuProduct> menuProducts) {
@@ -72,7 +71,7 @@ public class Menu {
         return menuProducts.getMenuProducts();
     }
 
-    public MenuGroup getMenuGroup() {
-        return menuGroup;
+    public Long getMenuGroupId() {
+        return menuGroupId;
     }
 }
