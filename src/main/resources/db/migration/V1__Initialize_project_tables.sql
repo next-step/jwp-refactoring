@@ -39,6 +39,7 @@ CREATE TABLE menu_product (
 CREATE TABLE order_table (
     id BIGINT(20) NOT NULL AUTO_INCREMENT,
     table_group_id BIGINT(20),
+    order_id BIGINT(20),
     number_of_guests INT(11) NOT NULL,
     empty BIT(1) NOT NULL,
     PRIMARY KEY (id)
