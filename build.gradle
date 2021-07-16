@@ -45,3 +45,10 @@ project(':order-module') {
         implementation project(':tablegroup-module')
     }
 }
+
+project(':tablegroup-module') {
+    dependencies {
+        implementation project(':menu-module')
+        implementation project(':table-module')
+    }
+}
