@@ -1,5 +1,7 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.common.Quantity;
+
 import javax.persistence.*;
 
 @Entity

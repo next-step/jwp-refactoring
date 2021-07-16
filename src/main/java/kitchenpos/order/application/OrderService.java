@@ -3,7 +3,7 @@ package kitchenpos.order.application;
 import kitchenpos.exception.CannotFindException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.menu.domain.Quantity;
+import kitchenpos.common.Quantity;
 import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;

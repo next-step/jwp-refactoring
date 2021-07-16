@@ -1,6 +1,8 @@
 package kitchenpos.menu.ui;
 
 import kitchenpos.common.ControllerTest;
+import kitchenpos.common.Price;
+import kitchenpos.common.Quantity;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.*;
 import kitchenpos.menu.dto.MenuRequest;

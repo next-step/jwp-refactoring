@@ -1,11 +1,12 @@
 package kitchenpos.ordertable.ui;
 
+import kitchenpos.common.Price;
+import kitchenpos.common.Quantity;
 import kitchenpos.menu.domain.*;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.common.ControllerTest;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.dto.OrderLineItemResponse;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
@@ -18,7 +19,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.time.LocalDateTime;

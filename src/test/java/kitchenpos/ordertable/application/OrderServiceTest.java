@@ -1,5 +1,7 @@
 package kitchenpos.ordertable.application;
 
+import kitchenpos.common.Price;
+import kitchenpos.common.Quantity;
 import kitchenpos.exception.CannotFindException;
 import kitchenpos.menu.domain.*;
 import kitchenpos.order.application.OrderService;

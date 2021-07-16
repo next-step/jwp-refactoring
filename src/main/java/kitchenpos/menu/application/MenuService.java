@@ -1,5 +1,7 @@
 package kitchenpos.menu.application;
 
+import kitchenpos.common.Price;
+import kitchenpos.common.Quantity;
 import kitchenpos.menu.domain.*;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
@@ -37,7 +39,7 @@ public class MenuService {
 
     private List<MenuProduct> toMenuProductList(List<MenuProductRequest> menuProductRequests) {
         return menuProductRequests.stream()
-                .map(menuProductRequest -> toMenuProduct(menuProductRequest))
+                .map(this::toMenuProduct)
                 .collect(Collectors.toList());
     }
 
