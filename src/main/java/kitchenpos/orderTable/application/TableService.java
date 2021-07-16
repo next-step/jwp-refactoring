@@ -38,18 +38,18 @@ public class TableService {
         return orderTableRepository.save(orderTable);
     }
 
-    public OrderTable changeEmpty(final Long orderTableId, final OrderTable orderTable) {
+    public OrderTable changeEmpty(final Long orderTableId, final boolean empty) {
         final OrderTable savedOrderTable = getOrderTableByOrderTableId(orderTableId);
 
-        eventPublisher.publishEvent(new OrderTableChangedEvent(savedOrderTable, orderTable.isEmpty()));
+        eventPublisher.publishEvent(new OrderTableChangedEvent(savedOrderTable, empty));
 
         return savedOrderTable;
     }
 
-    public OrderTable changeNumberOfGuests(final Long orderTableId, final OrderTable orderTable) {
+    public OrderTable changeNumberOfGuests(final Long orderTableId, final int numberOfGuests) {
         final OrderTable savedOrderTable = getOrderTableByOrderTableId(orderTableId);
 
-        savedOrderTable.changeNumberOfGuests(orderTable.getNumberOfGuests());
+        savedOrderTable.changeNumberOfGuests(numberOfGuests);
 
         return savedOrderTable;
     }

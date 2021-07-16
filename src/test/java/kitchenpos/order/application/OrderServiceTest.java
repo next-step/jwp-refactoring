@@ -44,7 +44,7 @@ class OrderServiceTest {
         // given
         Menu menu = menuService.list().get(0);
         OrderTable orderTable = tableService.create(
-            new OrderTable(1, false)
+            new OrderTable(1)
         );
 
         Order order = new Order(orderTable.getId(), OrderLineItem.valueOf(menu.getId(), 1L));
@@ -61,7 +61,7 @@ class OrderServiceTest {
     void createExceptionTest1() {
         // given
         OrderTable orderTable = tableService.create(
-            new OrderTable(1, false)
+            new OrderTable(1)
         );
 
         // when
@@ -75,7 +75,7 @@ class OrderServiceTest {
     void createExceptionTest2() {
         // given
         OrderTable orderTable = tableService.create(
-            new OrderTable(1, false)
+            new OrderTable(1)
         );
 
         Order order = new Order(orderTable.getId(), OrderLineItem.valueOf(null, 1L));
@@ -91,7 +91,7 @@ class OrderServiceTest {
     void createExceptionTest3() {
         // given
         Menu menu = menuService.list().get(0);
-        OrderTable orderTable = new OrderTable(TestUtils.getRandomId(), 1, false);
+        OrderTable orderTable = new OrderTable(TestUtils.getRandomId(), 1);
 
         Order order = new Order(TestUtils.getRandomId(), orderTable.getId(), OrderLineItem.valueOf(menu.getId(), 1L));
 
@@ -107,7 +107,7 @@ class OrderServiceTest {
         // given
         Menu menu = menuService.list().get(0);
         OrderTable orderTable = tableService.create(
-            new OrderTable(1, true)
+            new OrderTable(0)
         );
 
         // when
@@ -125,7 +125,7 @@ class OrderServiceTest {
         // given
         Menu menu = menuService.list().get(0);
         OrderTable orderTable = tableService.create(
-            new OrderTable(1, false)
+            new OrderTable(1)
         );
 
         Order order = new Order(orderTable.getId(), OrderLineItem.valueOf(menu.getId(), 1L));
@@ -146,7 +146,7 @@ class OrderServiceTest {
         // given
         Menu menu = menuService.list().get(0);
         OrderTable orderTable = tableService.create(
-            new OrderTable(1, false)
+            new OrderTable(1)
         );
 
         Order order = new Order(TestUtils.getRandomId(), orderTable.getId(), OrderLineItem.valueOf(menu.getId(), 1L));
@@ -163,7 +163,7 @@ class OrderServiceTest {
         // given
         Menu menu = menuService.list().get(0);
         OrderTable orderTable = tableService.create(
-            new OrderTable(1, false)
+            new OrderTable(1)
         );
 
         Order order = new Order(orderTable.getId(), OrderLineItem.valueOf(menu.getId(), 1L));

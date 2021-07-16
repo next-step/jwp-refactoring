@@ -19,14 +19,16 @@ public class OrderTable {
     protected OrderTable() {
     }
 
-    public OrderTable(final int numberOfGuests, final boolean empty) {
-        this(null, numberOfGuests, empty);
+    public OrderTable(final int numberOfGuests) {
+        this(null, numberOfGuests);
     }
 
-    public OrderTable(final Long id, final int numberOfGuests, final boolean empty) {
+    public OrderTable(final Long id, final int numberOfGuests) {
+        validateNumberOfGuests(numberOfGuests);
+
         this.id = id;
         this.numberOfGuests = numberOfGuests;
-        this.empty = empty;
+        this.empty = (numberOfGuests < 1);
     }
 
     public Long getId() {
@@ -38,9 +40,7 @@ public class OrderTable {
     }
 
     public void changeNumberOfGuests(final int numberOfGuests) {
-        if (numberOfGuests < 0) {
-            throw new IllegalArgumentException("손님 수는 음수는 불가능합니다.");
-        }
+        validateNumberOfGuests(numberOfGuests);
 
         if (isEmpty()) {
             throw new IllegalArgumentException("해당테이블은 비어있어 수정이 불가능합니다");
@@ -71,6 +71,12 @@ public class OrderTable {
 
     public TableGroup getTableGroup() {
         return tableGroup;
+    }
+
+    private void validateNumberOfGuests(final int numberOfGuests) {
+        if (numberOfGuests < 0) {
+            throw new IllegalArgumentException("손님 수는 음수는 불가능합니다.");
+        }
     }
 
     @Override

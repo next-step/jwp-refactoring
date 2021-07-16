@@ -32,11 +32,11 @@ class TableGroupServiceTest {
     void createAndUngroupTest() {
         // given
         OrderTable orderTable1 = tableService.create(
-            new OrderTable(TestUtils.getRandomId(), 1, true)
+            new OrderTable(TestUtils.getRandomId(), 0)
         );
 
         OrderTable orderTable2 = tableService.create(
-            new OrderTable(TestUtils.getRandomId(), 1, true)
+            new OrderTable(TestUtils.getRandomId(), 0)
         );
 
         TableGroup tableGroup = new TableGroup(TestUtils.getRandomId(), orderTable1, orderTable2);
@@ -69,7 +69,7 @@ class TableGroupServiceTest {
     void createExceptionTest1() {
         //given
         OrderTable orderTable1 = tableService.create(
-            new OrderTable(TestUtils.getRandomId(), 1, true)
+            new OrderTable(TestUtils.getRandomId(), 1)
         );
 
         // then
@@ -84,8 +84,8 @@ class TableGroupServiceTest {
     void createExceptionTest2() {
         // when
         TableGroup tableGroup = new TableGroup(
-            new OrderTable(TestUtils.getRandomId(),1, true),
-            new OrderTable(TestUtils.getRandomId(),1, true)
+            new OrderTable(TestUtils.getRandomId(), 0),
+            new OrderTable(TestUtils.getRandomId(), 0)
         );
 
         // then
@@ -99,11 +99,11 @@ class TableGroupServiceTest {
     void createExceptionTest3() {
         // given
         OrderTable orderTable1 = tableService.create(
-            new OrderTable(1, false)
+            new OrderTable(1)
         );
 
         OrderTable orderTable2 = tableService.create(
-            new OrderTable(1, true)
+            new OrderTable(1)
         );
 
         // then

@@ -23,7 +23,15 @@ public class TableRequest {
         this.empty = empty;
     }
 
+    public int getNumberOfGuests() {
+        return numberOfGuests;
+    }
+
+    public boolean isEmpty() {
+        return empty;
+    }
+
     public OrderTable toEntity() {
-        return new OrderTable(id, numberOfGuests, empty);
+        return new OrderTable(id, numberOfGuests);
     }
 }
