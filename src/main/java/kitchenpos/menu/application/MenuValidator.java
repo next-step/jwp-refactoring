@@ -3,18 +3,14 @@ package kitchenpos.menu.application;
 import java.math.BigDecimal;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.exception.CannotCreateMenuException;
 import kitchenpos.menugroup.domain.MenuGroup;
 
 @Component
 public class MenuValidator {
-    @Autowired
-    private MenuRepository menuRepository;
 
     public void validateMenuPrice(Menu menu, BigDecimal totalPrice) {
         if (menu.isMenuPriceGreaterThan(totalPrice)) {
