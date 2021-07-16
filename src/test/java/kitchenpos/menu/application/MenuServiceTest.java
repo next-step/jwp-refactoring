@@ -1,6 +1,5 @@
 package kitchenpos.menu.application;
 
-import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menuGroup.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
@@ -89,20 +88,6 @@ class MenuServiceTest {
         assertThatThrownBy(() -> menuService.create(menu))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessageContaining("상품에 등록된");
-    }
-
-    @DisplayName("메뉴를 등록시, 메뉴의 가격은 `[메뉴의 수량] X [상품의 가격]` 보다 비쌀 수 없다.")
-    @Test
-    void createExceptionTest4() {
-        // given
-        MenuGroup menuGroup = menuGroupService.create(new MenuGroup("테스트 메뉴"));
-        Menu menu = new Menu(name, BigDecimal.valueOf(1500000), menuGroup.getId());
-        Product product = productService.create(new Product(name, BigDecimal.valueOf(15000)));
-        new MenuProduct(menu, product.getId(),1);
-
-        assertThatThrownBy(() -> menuService.create(menu))
-                .isInstanceOf(RuntimeException.class)
-                .hasMessageContaining("메뉴의 가격").hasMessageContaining("보다 비쌀 수 없다");
     }
 
     @DisplayName("메뉴들을 조회할수 있다.")

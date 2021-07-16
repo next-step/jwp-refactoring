@@ -10,15 +10,15 @@ import java.util.List;
 import java.util.Map;
 
 @Embeddable
-public class MenuProducts {
+class MenuProducts {
     @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MenuProduct> menuProducts = new ArrayList<>();
 
-    public List<MenuProduct> list() {
+    protected List<MenuProduct> list() {
         return Collections.unmodifiableList(menuProducts);
     }
 
-    public void validationByPrice(Price menuPrice, Map<Long, Price> productPriceMap) {
+    protected void validationByPrice(Price menuPrice, Map<Long, Price> productPriceMap) {
         Price totalPrice = calculateTotalPrice(productPriceMap);
 
         if (menuPrice.compareTo(totalPrice) > 0) {
@@ -36,7 +36,7 @@ public class MenuProducts {
             .orElse(Price.ZERO);
     }
 
-    public void add(final MenuProduct menuProduct) {
+    protected void add(final MenuProduct menuProduct) {
         menuProducts.add(menuProduct);
     }
 }
