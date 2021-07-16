@@ -1,6 +1,7 @@
 package kitchenpos.menu.application;
 
 import kitchenpos.exception.MenuException;
+import kitchenpos.exception.ProductException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProductRepository;
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 public class MenuService {
 
     private static final String NOT_EXISTS_MENU_GROUP_ERROR_MESSAGE = "미등록 메뉴 그룹 입니다.";
+    private static final String NOT_EQUAL_PRODUCT_COUNT_ERROR_MESSAGE = "미등록 상품을 메뉴 상품으로 등록 요청 하였습니다.";
 
     private final MenuRepository menuRepository;
     private final MenuProductRepository menuProductRepository;
@@ -37,14 +39,13 @@ public class MenuService {
 
     public MenuResponse create(final MenuRequest menuRequest) {
         checkExistsMenuGroup(menuRequest.getMenuGroupId());
-        Menu menu = menuRequest.toMenu();
         Products products = productService.findProductsByIds(menuRequest.toProductIds());
-        products.checkProductsSize(menuRequest.getMenuProducts().size());
-        BigDecimal menuTotalAmount = products.calcProductsPrice(menuRequest.getMenuProducts());
+        checkProductsSize(products, menuRequest.getMenuProducts().size());
+        BigDecimal menuTotalAmount = menuRequest.calcProductsPrice(products);
+        Menu menu = menuRequest.toMenu();
         menu.validMenuTotalAmount(menuTotalAmount);
-        final Menu savedMenu = menuRepository.save(menu);
-        List<MenuProduct> savedMenuProducts = menuProductRepository.saveAll(menuRequest.toMenuProducts(savedMenu));
-        return MenuResponse.of(savedMenu, savedMenuProducts);
+        menu.addMenuProducts(menuRequest.toMenuProducts());
+        return MenuResponse.of(menuRepository.save(menu));
     }
 
     @Transactional(readOnly = true)
@@ -61,5 +62,11 @@ public class MenuService {
 
     public long countByMenuId(List<Long> menuIds) {
         return menuRepository.countByIdIn(menuIds);
+    }
+
+    public void checkProductsSize(Products products, int size) {
+        if (products.getProducts().size() != size) {
+            throw new ProductException(NOT_EQUAL_PRODUCT_COUNT_ERROR_MESSAGE);
+        }
     }
 }

@@ -75,9 +75,10 @@ class MenuServiceTest {
         List<Product> products = Arrays.asList(짜장면, 탕수육);
         when(productService.findProductsByIds(Arrays.asList(1L, 2L))).thenReturn(new Products(products));
 
-        when(menuRepository.save(any(Menu.class))).thenReturn(메뉴);
         List<MenuProduct> menuProducts = Arrays.asList(짜장면_메뉴, 탕수육_메뉴);
-        when(menuProductRepository.saveAll(any(List.class))).thenReturn(menuProducts);
+        메뉴.addMenuProducts(menuProducts);
+
+        when(menuRepository.save(any(Menu.class))).thenReturn(메뉴);
 
         MenuResponse expected = menuService.create(menuRequest);
 
@@ -97,8 +98,8 @@ class MenuServiceTest {
 
     @Test
     void 메뉴_조회() {
-        메뉴.addMenuProducts(짜장면_메뉴);
-        메뉴.addMenuProducts(탕수육_메뉴);
+        메뉴.addMenuProduct(짜장면_메뉴);
+        메뉴.addMenuProduct(탕수육_메뉴);
         when(menuRepository.findAll()).thenReturn(Arrays.asList(메뉴));
 
         List<MenuResponse> menus = menuService.list();

@@ -1,6 +1,5 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.exception.IllegalPriceException;
 import kitchenpos.exception.MenuException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -28,7 +27,7 @@ class MenuTest {
     @Test
     void 메뉴_entity_에_메뉴_상품_추가() {
         MenuProduct menuProduct = new MenuProduct(1L, 1);
-        메뉴.addMenuProducts(menuProduct);
+        메뉴.addMenuProduct(menuProduct);
         assertThat(메뉴.getMenuProducts().products().size()).isEqualTo(1);
     }
 }

@@ -29,8 +29,8 @@ class MenuResponseTest {
 
     @Test
     void 메뉴_entity_객체를_이용하여_메뉴_반환_객체_생성() {
-        메뉴.addMenuProducts(짜장면_메뉴);
-        메뉴.addMenuProducts(탕수육_메뉴);
+        메뉴.addMenuProduct(짜장면_메뉴);
+        메뉴.addMenuProduct(탕수육_메뉴);
         MenuResponse expected = MenuResponse.of(메뉴);
         assertThat(expected.getId()).isEqualTo(메뉴.getId());
         assertThat(expected.getName()).isEqualTo(메뉴.getName());

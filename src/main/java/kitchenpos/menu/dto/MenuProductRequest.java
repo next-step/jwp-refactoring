@@ -1,6 +1,5 @@
 package kitchenpos.menu.dto;
 
-import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 
 public class MenuProductRequest {
@@ -16,8 +15,8 @@ public class MenuProductRequest {
         this.quantity = quantity;
     }
 
-    public MenuProduct toMenuProduct(Menu menu) {
-        return new MenuProduct(menu, productId, quantity);
+    public MenuProduct toMenuProduct() {
+        return new MenuProduct(productId, quantity);
     }
 
 

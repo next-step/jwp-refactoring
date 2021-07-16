@@ -2,6 +2,8 @@ package kitchenpos.menu.dto;
 
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.Products;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -36,12 +38,11 @@ class MenuRequestTest {
 
     @Test
     void 메뉴_요청_객체에_포함되어있는_메뉴_상품_리스트를_이용하여_메뉴_상품_entity_생성() {
-        Menu menu = menuRequest.toMenu();
-        List<MenuProduct> menuProducts = menuRequest.toMenuProducts(menu);
+        List<MenuProduct> menuProducts = menuRequest.toMenuProducts();
         assertThat(menuProducts.size()).isEqualTo(2);
         List<MenuProduct> expected = Arrays.asList(
-                new MenuProduct(menu, 1L, 1),
-                new MenuProduct(menu, 2L, 1)
+                new MenuProduct(1L, 1),
+                new MenuProduct( 2L, 1)
         );
         assertThat(menuProducts).containsExactlyElementsOf(expected);
     }
@@ -51,5 +52,16 @@ class MenuRequestTest {
         List<Long> actual = menuRequest.toProductIds();
         assertThat(actual.size()).isEqualTo(2);
         assertThat(actual).containsExactly(1L, 2L);
+    }
+
+    @Test
+    void 메뉴_상품_수량을_이용하여_총액_구하기() {
+
+        Product 짜장면 = new Product(1L, "짜장면", new BigDecimal(7000));
+        Product 탕수육 = new Product(2L, "탕수육", new BigDecimal(12000));
+        BigDecimal expected = BigDecimal.valueOf(19000);
+        Products products = new Products(Arrays.asList(짜장면, 탕수육));
+        BigDecimal actual = menuRequest.calcProductsPrice(products);
+        assertThat(actual.compareTo(expected)).isEqualTo(0);
     }
 }

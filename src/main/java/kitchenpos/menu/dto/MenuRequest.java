@@ -2,9 +2,13 @@ package kitchenpos.menu.dto;
 
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.Products;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class MenuRequest {
@@ -44,11 +48,21 @@ public class MenuRequest {
         return new Menu(name, price, menuGroupId);
     }
 
-    public List<MenuProduct> toMenuProducts(Menu menu) {
-        return menuProducts.stream().map(menuProduct -> menuProduct.toMenuProduct(menu)).collect(Collectors.toList());
+    public List<MenuProduct> toMenuProducts() {
+        return menuProducts.stream().map(menuProduct -> menuProduct.toMenuProduct()).collect(Collectors.toList());
     }
 
     public List<Long> toProductIds() {
         return menuProducts.stream().map(MenuProductRequest::getProductId).collect(Collectors.toList());
+    }
+
+    public BigDecimal calcProductsPrice(Products products) {
+        Map<Long, Product> productMap = products.getProducts().stream().collect(Collectors.toMap(Product::getId, Function.identity()));
+        return menuProducts
+                .stream()
+                .filter(menuProductRequest -> productMap.containsKey(menuProductRequest.getProductId()))
+                .map(menuProductRequest -> productMap.get(menuProductRequest.getProductId()).multiplyQuantity(menuProductRequest.getQuantity()))
+                .reduce(BigDecimal::add)
+                .orElse(BigDecimal.ZERO);
     }
 }

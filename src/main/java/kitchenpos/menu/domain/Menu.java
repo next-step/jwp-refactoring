@@ -5,6 +5,7 @@ import kitchenpos.product.domain.Price;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.List;
 
 @Entity
 public class Menu {
@@ -42,7 +43,13 @@ public class Menu {
         this(id, name, new Price(price), menuGroupId);
     }
 
-    public void addMenuProducts(MenuProduct menuProduct) {
+    public void addMenuProducts(List<MenuProduct> menuProducts) {
+        for (MenuProduct menuProduct : menuProducts) {
+            addMenuProduct(menuProduct);
+        }
+    }
+
+    public void addMenuProduct(MenuProduct menuProduct) {
         if (!menuProducts.contains(menuProduct)) {
             menuProduct.withMenu(this);
             menuProducts.addMenuProduct(menuProduct);
