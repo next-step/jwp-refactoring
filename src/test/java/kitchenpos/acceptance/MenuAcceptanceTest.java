@@ -1,5 +1,8 @@
 package kitchenpos.acceptance;
 
+import static kitchenpos.acceptance.MenuAcceptanceTestMethod.*;
+import static kitchenpos.acceptance.MenuGroupAcceptanceTestMethod.*;
+import static kitchenpos.acceptance.ProductAcceptanceTestMethod.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.math.BigDecimal;
@@ -8,9 +11,7 @@ import java.util.Arrays;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.domain.Menu;
@@ -24,52 +25,27 @@ public class MenuAcceptanceTest extends AcceptanceTest {
 	void createMenuAndFindMenuScenario() {
 		// Backgroud
 		// Given
-		ExtractableResponse<Response> menuGroupResponse = RestAssured
-			.given().log().all()
-			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.body(new MenuGroup("인기 메뉴"))
-			.when().post("/api/menu-groups")
-			.then().log().all()
-			.extract();
+		ExtractableResponse<Response> menuGroupResponse = createMenuGroup(new MenuGroup("인기 메뉴"));
 		MenuGroup menuGroup = menuGroupResponse.as(MenuGroup.class);
 		// And
-		ExtractableResponse<Response> productResponse = RestAssured
-			.given().log().all()
-			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.body(new Product("매운 라면", new BigDecimal(8000)))
-			.when().post("/api/products")
-			.then().log().all()
-			.extract();
+		ExtractableResponse<Response> productResponse = createProduct(new Product("매운 라면", new BigDecimal(8000)));
 		Product product = productResponse.as(Product.class);
 
 		// Scenario
 		// When
-		ExtractableResponse<Response> menuCreatedResponse = RestAssured
-			.given().log().all()
-			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.body(new Menu("라면 메뉴", new BigDecimal(8000), menuGroup.getId(), Arrays.asList(new MenuProduct(product.getId(), 2L))))
-			.when().post("/api/menus")
-			.then().log().all()
-			.extract();
+		ExtractableResponse<Response> menuCreatedResponse = createMenu(new Menu("라면 메뉴", new BigDecimal(8000), menuGroup.getId(), Arrays.asList(new MenuProduct(product.getId(), 2L))));
 		Menu createdMenu = menuCreatedResponse.as(Menu.class);
 		// Then
 		assertThat(menuCreatedResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
 
 		// When
-		ExtractableResponse<Response> menuResponse = RestAssured
-			.given().log().all()
-			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.when().get("/api/menus")
-			.then().log().all()
-			.extract();
+		ExtractableResponse<Response> menuResponse = findAllMenu();
 		// Then
 		String menuName = menuResponse.jsonPath().getList(".", Menu.class).stream()
 			.filter(menu -> menu.getId() == createdMenu.getId())
 			.map(Menu::getName)
 			.findFirst()
-			.get()
-			;
-
+			.get();
 		assertThat(menuName).isEqualTo("라면 메뉴");
 	}
 
@@ -78,55 +54,25 @@ public class MenuAcceptanceTest extends AcceptanceTest {
 	void menuErroScenario() {
 		// Backgroud
 		// Given
-		ExtractableResponse<Response> menuGroupResponse = RestAssured
-			.given().log().all()
-			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.body(new MenuGroup("인기 메뉴"))
-			.when().post("/api/menu-groups")
-			.then().log().all()
-			.extract();
+		ExtractableResponse<Response> menuGroupResponse = createMenuGroup(new MenuGroup("인기 메뉴"));
 		MenuGroup menuGroup = menuGroupResponse.as(MenuGroup.class);
 		// And
-		ExtractableResponse<Response> productResponse = RestAssured
-			.given().log().all()
-			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.body(new Product("매운 라면", new BigDecimal(8000)))
-			.when().post("/api/products")
-			.then().log().all()
-			.extract();
+		ExtractableResponse<Response> productResponse = createProduct(new Product("매운 라면", new BigDecimal(8000)));
 		Product product = productResponse.as(Product.class);
 
 		// Scenario
 		// When
-		ExtractableResponse<Response> minusPriceResponse = RestAssured
-			.given().log().all()
-			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.body(new Menu("라면 메뉴", new BigDecimal(-8000), menuGroup.getId(), Arrays.asList(new MenuProduct(product.getId(), 2L))))
-			.when().post("/api/menus")
-			.then().log().all()
-			.extract();
+		ExtractableResponse<Response> minusPriceResponse = createMenu(new Menu("라면 메뉴", new BigDecimal(-8000), menuGroup.getId(), Arrays.asList(new MenuProduct(product.getId(), 2L))));
 		// Then
 		assertThat(minusPriceResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
 
 		// When
-		ExtractableResponse<Response> notExistsProductResponse = RestAssured
-			.given().log().all()
-			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.body(new Menu("라면 메뉴", new BigDecimal(-8000), menuGroup.getId(), Arrays.asList(new MenuProduct(0L, 2L))))
-			.when().post("/api/menus")
-			.then().log().all()
-			.extract();
+		ExtractableResponse<Response> notExistsProductResponse = createMenu(new Menu("라면 메뉴", new BigDecimal(8000), menuGroup.getId(), Arrays.asList(new MenuProduct(0L, 2L))));
 		// Then
 		assertThat(notExistsProductResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
 
 		// When
-		ExtractableResponse<Response> menuPriceIsBiggerThanProductSumResponse = RestAssured
-			.given().log().all()
-			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.body(new Menu("라면 메뉴", new BigDecimal(1000000), menuGroup.getId(), Arrays.asList(new MenuProduct(product.getId(), 2L))))
-			.when().post("/api/menus")
-			.then().log().all()
-			.extract();
+		ExtractableResponse<Response> menuPriceIsBiggerThanProductSumResponse = createMenu(new Menu("라면 메뉴", new BigDecimal(1000000), menuGroup.getId(), Arrays.asList(new MenuProduct(product.getId(), 2L))));
 		// Then
 		assertThat(menuPriceIsBiggerThanProductSumResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
 	}
