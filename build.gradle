@@ -8,12 +8,15 @@ buildscript {
         classpath "io.spring.gradle:dependency-management-plugin:1.0.6.RELEASE"
     }
 }
-
+plugins {
+    id "org.flywaydb.flyway" version "7.11.2"
+}
 subprojects {
     group 'camp.nextstep.edu'
     version '0.0.1-SNAPSHOT'
 
     apply plugin: 'java'
+    apply plugin: 'org.flywaydb.flyway'
     apply plugin: 'org.springframework.boot'
     apply plugin: 'io.spring.dependency-management'
 
@@ -24,9 +27,9 @@ subprojects {
     }
 
     dependencies {
-        implementation 'org.springframework.boot:spring-boot-starter'
-        testImplementation 'org.springframework.boot:spring-boot-starter-test'
         implementation 'org.springframework.boot:spring-boot-starter-web'
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+        implementation 'mysql:mysql-connector-java'
         runtimeOnly 'com.h2database:h2'
     }
 }
