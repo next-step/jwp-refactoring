@@ -38,7 +38,7 @@
 - [x] 기존 프로세스 정리
 - [x] 유비쿼터스 언어로 도메인 명세서 작성
 - [x] ProductService를 테스트로 보호
-- [ ] MenuGroupsService 테스트로 보호
+- [x] MenuGroupService 테스트로 보호
 - [ ] MenuService를 테스트로 보호
 - [ ] OrderService를 테스트로 보호
 - [ ] TableService를 테스트로 보호
