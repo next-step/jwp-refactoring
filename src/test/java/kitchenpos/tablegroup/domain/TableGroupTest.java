@@ -1,8 +1,8 @@
-package kitchenpos.table.domain;
+package kitchenpos.tablegroup.domain;
 
 import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.domain.OrderTables;
-import kitchenpos.ordertable.domain.TableGroup;
+import tablegroup.domain.OrderTables;
+import tablegroup.domain.TableGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

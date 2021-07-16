@@ -1,4 +1,6 @@
-package kitchenpos.ordertable.domain;
+package tablegroup.domain;
+
+import kitchenpos.ordertable.domain.OrderTable;
 
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;

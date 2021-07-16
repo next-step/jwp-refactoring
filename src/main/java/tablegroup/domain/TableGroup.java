@@ -1,5 +1,6 @@
-package kitchenpos.ordertable.domain;
+package tablegroup.domain;
 
+import kitchenpos.ordertable.domain.OrderTable;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;

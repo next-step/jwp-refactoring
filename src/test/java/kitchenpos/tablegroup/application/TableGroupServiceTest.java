@@ -1,15 +1,18 @@
-package kitchenpos.table.application;
+package kitchenpos.tablegroup.application;
 
-import kitchenpos.ordertable.application.TableGroupService;
+import tablegroup.application.TableGroupService;
 import kitchenpos.ordertable.domain.*;
 import kitchenpos.ordertable.dto.OrderTableRequest;
-import kitchenpos.ordertable.dto.TableGroupRequest;
+import tablegroup.dto.TableGroupRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import tablegroup.domain.OrderTables;
+import tablegroup.domain.TableGroup;
+import tablegroup.domain.TableGroupRepository;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;

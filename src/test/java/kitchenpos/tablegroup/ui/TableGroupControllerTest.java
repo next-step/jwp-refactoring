@@ -1,13 +1,13 @@
-package kitchenpos.table.ui;
+package kitchenpos.tablegroup.ui;
 
-import kitchenpos.ordertable.application.TableGroupService;
+import tablegroup.application.TableGroupService;
 import kitchenpos.common.ControllerTest;
 import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.domain.OrderTables;
-import kitchenpos.ordertable.domain.TableGroup;
-import kitchenpos.ordertable.dto.TableGroupRequest;
-import kitchenpos.ordertable.dto.TableGroupResponse;
-import kitchenpos.ordertable.ui.TableGroupRestController;
+import tablegroup.domain.OrderTables;
+import tablegroup.domain.TableGroup;
+import tablegroup.dto.TableGroupRequest;
+import tablegroup.dto.TableGroupResponse;
+import tablegroup.ui.TableGroupRestController;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

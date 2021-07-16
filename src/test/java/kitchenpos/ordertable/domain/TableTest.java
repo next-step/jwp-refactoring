@@ -1,4 +1,4 @@
-package kitchenpos.table.domain;
+package kitchenpos.ordertable.domain;
 
 import kitchenpos.exception.CannotUpdateException;
 import kitchenpos.ordertable.domain.OrderTable;

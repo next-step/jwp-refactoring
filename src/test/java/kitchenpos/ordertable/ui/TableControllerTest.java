@@ -1,4 +1,4 @@
-package kitchenpos.table.ui;
+package kitchenpos.ordertable.ui;
 
 import kitchenpos.ordertable.application.TableService;
 import kitchenpos.common.ControllerTest;

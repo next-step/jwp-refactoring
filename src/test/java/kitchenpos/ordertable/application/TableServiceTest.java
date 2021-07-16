@@ -1,4 +1,4 @@
-package kitchenpos.table.application;
+package kitchenpos.ordertable.application;
 
 import kitchenpos.exception.CannotFindException;
 import kitchenpos.ordertable.application.TableService;
