@@ -26,6 +26,12 @@ subprojects {
     }
 }
 
+project(':module-api-advice') {
+    dependencies {
+        implementation project(':module-common')
+    }
+}
+
 project(':module-api-menu') {
     dependencies {
     }

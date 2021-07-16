@@ -1,4 +1,4 @@
-package common.error.exception;
+package common.error;
 
 import java.util.NoSuchElementException;
 

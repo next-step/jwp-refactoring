@@ -1,4 +1,4 @@
-package common.error.exception;
+package common.error;
 
 public class BusinessException extends RuntimeException {
     public BusinessException(String message) {

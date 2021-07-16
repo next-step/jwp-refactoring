@@ -5,3 +5,5 @@ include 'module-api-order'
 include 'module-api-menu'
 include 'module-domain-order'
 include 'module-domain-menu'
+include 'module-api-advice'
+

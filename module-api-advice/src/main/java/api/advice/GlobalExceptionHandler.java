@@ -1,7 +1,12 @@
-package common.error;
+package api.advice;
 
-import common.error.exception.BusinessException;
-import common.error.exception.NotExistException;
+import common.error.BusinessException;
+import common.error.NotExistException;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ControllerAdvice
 @ResponseBody

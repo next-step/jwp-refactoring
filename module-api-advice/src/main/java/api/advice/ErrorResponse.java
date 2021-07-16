@@ -1,4 +1,4 @@
-package common.error;
+package api.advice;
 
 public class ErrorResponse {
     private final String message;

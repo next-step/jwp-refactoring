@@ -1,6 +1,6 @@
 package common.valueobject.exception;
 
-import common.error.exception.BusinessException;
+import common.error.BusinessException;
 
 public class NegativeQuantityException extends BusinessException {
     public NegativeQuantityException(long minQuantity) {

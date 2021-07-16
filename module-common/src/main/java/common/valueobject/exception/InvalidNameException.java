@@ -1,6 +1,6 @@
 package common.valueobject.exception;
 
-import common.error.exception.BusinessException;
+import common.error.BusinessException;
 
 public class InvalidNameException extends BusinessException {
     public InvalidNameException() {
