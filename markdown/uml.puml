@@ -51,8 +51,9 @@ package TablePackage #DDDDDD {
 
   MenuGroup <-- MenuGroupService
   MenuGroupRepository <-- MenuGroupService
+'------------------------------------------------------
+  'OrderTable <-- Order
 
-  OrderTable <-- Order
   Menu <-- OrderLineItem
 
   Menu <-- OrderService

@@ -7,13 +7,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import kitchenpos.order.domain.value.OrderLineItems;
 import kitchenpos.order.domain.value.OrderStatus;
 import kitchenpos.order.exception.OrderStatusCompletionException;
-import kitchenpos.table.domain.entity.OrderTable;
 
 @Entity
 @Table(name = "orders")
@@ -23,9 +20,7 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "order_table_id")
-    private OrderTable orderTable;
+    private Long orderTableId;
 
     private String orderStatus = OrderStatus.COOKING.name();
 
@@ -37,17 +32,17 @@ public class Order {
     public Order() {
     }
 
-    public Order(Long id, OrderTable orderTable, String orderStatus,
+    public Order(Long id, Long orderTableId, String orderStatus,
         OrderLineItems orderLineItems) {
         this.id = id;
-        this.orderTable = orderTable;
+        this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
         this.orderLineItems = orderLineItems;
         orderLineItems.toOrder(this);
     }
 
-    public Order(OrderTable orderTable, OrderLineItems orderLineItems) {
-        this.orderTable = orderTable;
+    public Order(Long orderTableId, OrderLineItems orderLineItems) {
+        this.orderTableId = orderTableId;
         this.orderLineItems = orderLineItems;
         orderLineItems.toOrder(this);
     }
@@ -56,8 +51,8 @@ public class Order {
         return id;
     }
 
-    public OrderTable getOrderTable() {
-        return orderTable;
+    public Long getOrderTableId() {
+        return orderTableId;
     }
 
     public String getOrderStatus() {

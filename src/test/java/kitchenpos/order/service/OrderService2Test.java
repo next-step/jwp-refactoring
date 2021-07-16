@@ -42,10 +42,10 @@ class OrderService2Test {
         주문라인아이템 = new OrderLineItem(1L, null, 메뉴_후라이드_후라이드, Quantity.of(1L));
         주문라인아이템_리퀘스트 = new OrderLineItemRequest(1L, 1L, 1L, 1L);
         주문테이블 = new OrderTable();
-        주문 = new Order(1L, 주문테이블, OrderStatus.MEAL.name(),
+        주문 = new Order(1L, 주문테이블.getId(), OrderStatus.MEAL.name(),
             new OrderLineItems(Arrays.asList(주문라인아이템)));
         주문_리퀘스트 = new OrderRequest(100L, 7L, Arrays.asList(주문라인아이템_리퀘스트));
-        주문_변경 = new Order(1L, 주문테이블, OrderStatus.COMPLETION.name(),
+        주문_변경 = new Order(1L, 주문테이블.getId(), OrderStatus.COMPLETION.name(),
             new OrderLineItems(Arrays.asList(주문라인아이템)));
         주문_변경_리퀘스트 = new OrderRequest(OrderStatus.COMPLETION.name());
     }
@@ -126,7 +126,7 @@ class OrderService2Test {
     @DisplayName("주문상태가 계산완료인경우 주문 상태 변경을 실패한다.")
     void changeOrderStatus_with_exception_when_order_status_is_completion() {
         //given
-        주문 = new Order(100L, 주문테이블, OrderStatus.COMPLETION.name(),
+        주문 = new Order(100L, 주문테이블.getId(), OrderStatus.COMPLETION.name(),
             new OrderLineItems(Arrays.asList(주문라인아이템)));
         주문_리퀘스트 = new OrderRequest(1L, 주문테이블.getId(), OrderStatus.COMPLETION.name(),
             Arrays.asList(주문라인아이템_리퀘스트));

@@ -105,7 +105,7 @@ class TableService2Test {
     @DisplayName("조리 또는 식사중일 경우 상태변경은 실패한다.")
     void changeEmpty_when_orderStatus_in_cooking_or_meal_re() {
         //given
-        주문테이블_테이블1 = new OrderTable(2L, NumberOfGuests.of(3), false);
+        주문테이블_테이블1 = new OrderTable(21L, NumberOfGuests.of(3), false);
         //when && then
         assertThatThrownBy(() -> tableService.changeEmpty(주문테이블_테이블1.getId(), 주문테이블_상태변경테이블_리퀘스트))
             .isInstanceOf(IllegalArgumentException.class);

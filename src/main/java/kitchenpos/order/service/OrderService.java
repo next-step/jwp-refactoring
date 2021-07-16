@@ -39,10 +39,22 @@ public class OrderService {
     }
 
     public OrderResponse create(final OrderRequest orderRequest) {
-        OrderTable orderTable = findOrderTable(orderRequest);
+        //1.테이블의 상태를 확인한다.
+        //2.주문항목을 확인한다
+        //3.주문한다.
+        OrderTable orderTable = validateOrder(orderRequest);
         List<OrderLineItem> orderLineItems = findOrderLineItems(orderRequest);
-        Order order = new Order(orderTable, new OrderLineItems(orderLineItems));
+        Order order = new Order(orderTable.getId(), new OrderLineItems(orderLineItems));
         return OrderResponse.of(orderRepository.save(order));
+    }
+
+    private OrderTable validateOrder(OrderRequest orderRequest) {
+        OrderTable orderTable = orderTableRepository.findById(orderRequest.getOrderTableId())
+            .orElseThrow(NotFoundOrderTableException::new);
+        if (orderTable.isEmpty()) {
+            throw new OrderTableIsEmptyException();
+        }
+        return orderTable;
     }
 
     private List<OrderLineItem> findOrderLineItems(OrderRequest orderRequest) {
@@ -59,15 +71,6 @@ public class OrderService {
         if (Objects.isNull(orderRequest.getOrderLineItems()) || orderRequest.getOrderLineItems().size() == 0){
             throw new OrderLineItemIsNullOrZeroException();
         }
-    }
-
-    private OrderTable findOrderTable(OrderRequest orderRequest) {
-        OrderTable orderTable = orderTableRepository.findById(orderRequest.getOrderTableId())
-            .orElseThrow(NotFoundOrderTableException::new);
-        if (orderTable.isEmpty()) {
-            throw new OrderTableIsEmptyException();
-        }
-        return orderTable;
     }
 
     public List<OrderResponse> list() {
