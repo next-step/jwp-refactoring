@@ -15,7 +15,7 @@ import kitchenpos.domain.MenuGroup;
 public class MenuGroupAcceptanceTest extends AcceptanceTest {
 	@DisplayName("메뉴 그룹 등록 및 조회 시나리오")
 	@Test
-	void createMenuAndFindMenuScenario() {
+	void createMenuGroupAndFindMenuGroupScenario() {
 		// Scenario
 		// When
 		ExtractableResponse<Response> menuGroupCreatedResponse = RestAssured

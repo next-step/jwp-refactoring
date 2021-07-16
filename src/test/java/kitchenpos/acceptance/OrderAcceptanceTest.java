@@ -25,7 +25,7 @@ import kitchenpos.domain.Product;
 public class OrderAcceptanceTest extends AcceptanceTest {
 	@DisplayName("주문 등록, 상태변경 조회 시나리오")
 	@Test
-	void createMenuAndFindMenuScenario() {
+	void createOrderAndChangeStatusAndFindOrderScenario() {
 		// Backgroud
 		// Given
 		ExtractableResponse<Response> menuGroupResponse = RestAssured
