@@ -32,7 +32,7 @@ public class MenuProducts {
     }
 
     public BigDecimal getTotalPrice() {
-        return menuProducts.stream().map(MenuProduct::getMenuProductPrice)
+        return menuProducts.stream().map(MenuProduct::menuPrice)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 

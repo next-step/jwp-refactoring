@@ -41,7 +41,6 @@ public class OrderService {
 
     private OrderTable findOrderTable(Long orderTableId) {
         OrderTable orderTable = orderTableRepository.findById(orderTableId).orElseThrow(() -> new IllegalArgumentException("등록되지 않은 주문 테이블입니다."));
-        orderTable.availableToOrderCheck();
         return orderTable;
     }
 

@@ -86,9 +86,4 @@ public class OrderTable {
         this.tableGroup = null;
     }
 
-    public void availableToOrderCheck() {
-        if (empty) {
-            throw new IllegalArgumentException("빈 테이블은 주문 할 수 없습니다.");
-        }
-    }
 }

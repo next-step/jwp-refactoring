@@ -43,10 +43,18 @@ public class Order {
     }
 
     public Order(OrderTable orderTable, OrderLineItems orderLineItems) {
+        orderTableVaildCheck(orderTable);
         this.orderTable = orderTable;
         this.orderStatus = OrderStatus.COOKING;
         updateOrderItems(orderLineItems);
     }
+
+    private void orderTableVaildCheck(OrderTable orderTable) {
+        if (orderTable.isEmpty()) {
+                throw new IllegalArgumentException("빈 테이블은 주문 할 수 없습니다.");
+        }
+    }
+
 
     private void updateOrderItems(OrderLineItems orderLineItems) {
         orderLineItems.updateOrder(this);
