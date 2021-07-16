@@ -1,7 +1,7 @@
-package kitchenpos.order.dto;
+package kitchenpos.table.dto;
 
-import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.domain.TableGroup;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.TableGroup;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -12,13 +12,13 @@ public class TableGroupResponse {
 
     public TableGroupResponse() {}
 
-    public TableGroupResponse(TableGroup tableGroup) {
+    public TableGroupResponse(TableGroup tableGroup, List<OrderTable> orderTables) {
         this.id = tableGroup.getId();
-        this.orderTableResponseList = toOrderTableResponseList(tableGroup.getOrderTables());
+        this.orderTableResponseList = toOrderTableResponseList(orderTables);
     }
 
-    public static TableGroupResponse of(TableGroup tableGroup) {
-        return new TableGroupResponse(tableGroup);
+    public static TableGroupResponse of(TableGroup tableGroup, List<OrderTable> orderTables) {
+        return new TableGroupResponse(tableGroup, orderTables);
     }
 
     public List<OrderTableResponse> toOrderTableResponseList(List<OrderTable> orderTables) {

@@ -38,7 +38,7 @@ public class ProductTest {
     }
 
     public static Product 상품_생성(String 뿌링클, BigDecimal price) {
-        return new Product(new Name("뿌링클"), new Price(price));
+        return new Product("뿌링클", price);
     }
 
     private void 상품_생성됨(Product product) {

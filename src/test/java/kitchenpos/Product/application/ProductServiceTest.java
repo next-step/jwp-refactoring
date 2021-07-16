@@ -72,7 +72,7 @@ public class ProductServiceTest {
     }
 
     public static Product 상품_생성(Long id, String name, BigDecimal price) {
-        return new Product(id, new Name(name), new Price(price));
+        return new Product(id, name, price);
     }
 
     private ProductResponse 상품_생성_요청() {

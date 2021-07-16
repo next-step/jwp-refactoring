@@ -98,13 +98,13 @@ public class MenuRestControllerTest {
     }
 
     private void 상품_등록() {
-        product = new Product(new Name("뿌링클순살치킨"), new Price(new BigDecimal(20000)));
-        product2 = new Product(new Name("간장순살치킨"), new Price(new BigDecimal(18000)));
+        product = new Product("뿌링클순살치킨", new BigDecimal(20000));
+        product2 = new Product("간장순살치킨", new BigDecimal(18000));
     }
 
     private void 메뉴_상품_등록() {
-        menuProduct = new MenuProduct(1L, product, 1L);
-        menuProduct2 = new MenuProduct(1L, product2, 1L);
+        menuProduct = new MenuProduct(1L, product.getId(), 1L);
+        menuProduct2 = new MenuProduct(1L, product2.getId(), 1L);
     }
 
     private void 메뉴_그룹_등록() {
@@ -112,8 +112,8 @@ public class MenuRestControllerTest {
     }
 
     private void 메뉴_응답값_등록() {
-        menu1 = MenuResponse.of(new Menu(1L,new Name("뿌링클"), new Price(new BigDecimal(18000)), menuGroup, Arrays.asList(menuProduct)));
-        menu2 = MenuResponse.of(new Menu(2L, new Name("맛초킹"), new Price(new BigDecimal(18000)), menuGroup, Arrays.asList(menuProduct2)));
+        menu1 = MenuResponse.of(new Menu(1L,"뿌링클", new BigDecimal(18000), menuGroup));
+        menu2 = MenuResponse.of(new Menu(2L, "맛초킹", new BigDecimal(18000), menuGroup));
 
     }
 

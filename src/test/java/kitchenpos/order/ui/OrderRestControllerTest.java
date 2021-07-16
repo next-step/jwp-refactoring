@@ -1,9 +1,6 @@
 package kitchenpos.order.ui;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kitchenpos.common.Name;
-import kitchenpos.common.Price;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
@@ -11,11 +8,10 @@ import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.domain.OrderTable;
+import kitchenpos.table.domain.OrderTable;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.order.ui.OrderRestController;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -31,13 +27,10 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.Collections;
 
 //import static kitchenpos.order.application.OrderServiceTest.주문_생성;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -108,16 +101,16 @@ class OrderRestControllerTest {
     }
 
     private void 메뉴_생성() {
-        product = new Product(1L, new Name("뿌링클순살"), new Price(new BigDecimal(18000)));
-        menuProduct = new MenuProduct(1L, product, 1L);
-        menu = new Menu(1L, new Name("뿌링클치즈볼"), new Price(new BigDecimal(18000)), new MenuGroup(1L, "뿌링클 시리즈"), Arrays.asList(menuProduct));
+        product = new Product(1L, "뿌링클순살", new BigDecimal(18000));
+        menuProduct = new MenuProduct(1L, product.getId(), 1L);
+        menu = new Menu(1L, "뿌링클치즈볼", new BigDecimal(18000), new MenuGroup(1L, "뿌링클 시리즈"));
 
     }
 
     private void 주문_생성() {
-        orderLIneItem = new OrderLineItem(1L, menu, 1L);
-        order1 = new Order(1L, mock(OrderTable.class), OrderStatus.COOKING, Arrays.asList(orderLIneItem));
-        order = new OrderResponse(order1);
+        order1 = new Order(1L, 1L, OrderStatus.COOKING);
+        orderLIneItem = new OrderLineItem(1L, order1, menu.getId(), 1L);
+        order = new OrderResponse(order1, Arrays.asList(orderLIneItem));
     }
 
     private void 주문_요청값_생성() {
@@ -154,7 +147,9 @@ class OrderRestControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isNotEmpty())
                 .andExpect(jsonPath("$[0].id").isNotEmpty())
-                .andExpect(jsonPath("$[0].orderStatus").value(OrderStatus.COOKING.name()));
+                .andExpect(jsonPath("$[0].orderStatus").value(OrderStatus.COOKING.name()))
+                .andExpect(jsonPath("$[0].orderLineItems").isNotEmpty())
+                .andExpect(jsonPath("$[0].orderLineItems[0].orderId").value(order.getId()));
     }
 
     private ResultActions 주문_상태_변경_요청(OrderRequest orderRequest) throws Exception{

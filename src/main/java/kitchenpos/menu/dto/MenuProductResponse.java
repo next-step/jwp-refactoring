@@ -5,14 +5,14 @@ import kitchenpos.product.dto.ProductResponse;
 
 public class MenuProductResponse {
     private Long seq;
-    private ProductResponse product;
+    private Long productId;
     private long quantity;
 
     public MenuProductResponse() {}
 
     public MenuProductResponse(MenuProduct menuProduct) {
         this.seq = menuProduct.getSeq();
-        this.product = new ProductResponse(menuProduct.getProduct());
+        this.productId = menuProduct.getProductId();
         this.quantity = menuProduct.getQuantity();
     }
 
@@ -24,8 +24,8 @@ public class MenuProductResponse {
         return seq;
     }
 
-    public ProductResponse getProduct() {
-        return product;
+    public Long getProduct() {
+        return productId;
     }
 
     public long getQuantity() {

@@ -1,4 +1,4 @@
-package kitchenpos.order.dto;
+package kitchenpos.table.dto;
 
 public class OrderTableRequest {
     private Long id;
@@ -7,6 +7,13 @@ public class OrderTableRequest {
     private boolean empty;
 
     public OrderTableRequest() {}
+
+    public OrderTableRequest(Long id, int numberOfGuests, boolean empty) {
+        this.id = id;
+        this.tableGroup = null;
+        this.numberOfGuests = numberOfGuests;
+        this.empty = empty;
+    }
 
     public OrderTableRequest(Long id, Long tableGroup, int numberOfGuests, boolean empty) {
         this.id = id;

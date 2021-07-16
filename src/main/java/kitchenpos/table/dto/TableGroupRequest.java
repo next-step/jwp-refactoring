@@ -1,6 +1,4 @@
-package kitchenpos.order.dto;
-
-import kitchenpos.order.domain.TableGroup;
+package kitchenpos.table.dto;
 
 import java.util.List;
 

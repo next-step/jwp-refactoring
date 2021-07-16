@@ -3,10 +3,7 @@ package kitchenpos.Menu.application;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.*;
 import kitchenpos.menu.dto.*;
-import kitchenpos.common.Name;
-import kitchenpos.common.Price;
 import kitchenpos.product.domain.Product;
-import kitchenpos.product.domain.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,12 +11,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.math.BigDecimal;
 import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
@@ -45,7 +42,7 @@ public class MenuServiceTest {
     private MenuGroupRepository menuGroupRepository;
 
     @Mock
-    private ProductRepository productRepository;
+    private ApplicationEventPublisher publisher;
 
     @InjectMocks
     private MenuService menuService;
@@ -63,13 +60,13 @@ public class MenuServiceTest {
         menuRequest = 메뉴_생성_요청_변수_생성("뿌링클치즈볼", new BigDecimal(21000), menuGroup.getId(), menuProductRequests);
 
         menu = 메뉴_생성("뿌링클치즈볼", new BigDecimal(21000), menuGroup, menuProducts);
+
+        menuService =  new MenuService(menuRepository, menuGroupRepository, publisher);
     }
 
     @DisplayName("메뉴를 등록한다.")
     @Test
     void create() {
-        given(productRepository.findById(뿌링클.getId())).willReturn(Optional.of(뿌링클));
-        given(productRepository.findById(치즈볼.getId())).willReturn(Optional.of(치즈볼));
         given(menuGroupRepository.findById(menuGroup.getId())).willReturn(Optional.of(menuGroup));
         given(menuRepository.save(any())).willReturn(menu);
 
@@ -78,19 +75,10 @@ public class MenuServiceTest {
         메뉴_생성됨(menuResponse);
     }
 
-    @DisplayName("존재하지 않는 메뉴 그룹을 메뉴에 등록시 예외 발생한다.")
-    @Test
-    void create_메뉴그룹_예외() {
-        given(productRepository.findById(뿌링클.getId())).willReturn(Optional.of(뿌링클));
-        given(productRepository.findById(치즈볼.getId())).willReturn(Optional.of(치즈볼));
-
-        존재하지_않는_메뉴그룹으로_메뉴_생성_요청시_예외_발생함(menuRequest);
-    }
-
     @DisplayName("메뉴의 목록을 조회한다.")
     @Test
     void searchList() {
-        Menu menu2 = new Menu("후라이드치즈볼", new BigDecimal(20000), menuGroup, menuProducts);
+        Menu menu2 = new Menu("후라이드치즈볼", new BigDecimal(20000), menuGroup);
         given(menuRepository.findAll()).willReturn(Arrays.asList(menu, menu2));
 
         List<MenuResponse> menus = 메뉴_목록_조회_요청();
@@ -99,13 +87,13 @@ public class MenuServiceTest {
     }
 
     private void 상품_생성() {
-        뿌링클 = new Product(1L, new Name("뿌링클"), new Price(new BigDecimal(18000)));
-        치즈볼 = new Product(1L, new Name("치즈볼"), new Price(new BigDecimal(18000)));
+        뿌링클 = new Product(1L, "뿌링클", new BigDecimal(18000));
+        치즈볼 = new Product(1L, "치즈볼", new BigDecimal(18000));
     }
 
     private void 메뉴_상품_생성() {
-        menuProduct1 = new MenuProduct(1L, 뿌링클, 1L);
-        menuProduct2 = new MenuProduct(2L, 치즈볼, 1L);
+        menuProduct1 = new MenuProduct(1L, 뿌링클.getId(), 1L);
+        menuProduct2 = new MenuProduct(2L, 치즈볼.getId(), 1L);
 
         menuProducts.add(menuProduct1);
         menuProducts.add(menuProduct2);
@@ -134,16 +122,10 @@ public class MenuServiceTest {
     private void 메뉴_생성됨(MenuResponse menuResponse) {
         assertThat(menuResponse.getName()).isEqualTo(menu.getName());
         assertThat(menuResponse.getPrice()).isEqualTo(menu.getPrice());
-        assertThat(menuResponse.getMenuProducts().get(0).getProduct().getName()).isEqualTo(뿌링클.getName());
     }
 
     public static Menu 메뉴_생성(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        return new Menu(name, price, menuGroup, menuProducts);
-    }
-
-    private void 존재하지_않는_메뉴그룹으로_메뉴_생성_요청시_예외_발생함(MenuRequest menuRequest) {
-        assertThatThrownBy(() ->menuService.create(menuRequest))
-                .isInstanceOf(IllegalArgumentException.class);
+        return new Menu(name, price, menuGroup);
     }
 
     private List<MenuResponse> 메뉴_목록_조회_요청() {
