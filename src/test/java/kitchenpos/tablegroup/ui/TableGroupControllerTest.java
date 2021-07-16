@@ -1,11 +1,10 @@
 package kitchenpos.tablegroup.ui;
 
-import tablegroup.application.TableGroupService;
+import kitchenpos.tablegroup.application.TableGroupService;
 import kitchenpos.common.ControllerTest;
-import tablegroup.domain.TableGroup;
-import tablegroup.dto.TableGroupRequest;
-import tablegroup.dto.TableGroupResponse;
-import tablegroup.ui.TableGroupRestController;
+import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
+import kitchenpos.tablegroup.dto.TableGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

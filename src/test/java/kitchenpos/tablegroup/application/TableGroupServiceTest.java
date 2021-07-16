@@ -1,16 +1,15 @@
 package kitchenpos.tablegroup.application;
 
-import tablegroup.application.TableGroupService;
-import tablegroup.domain.TableGroupValidator;
-import tablegroup.dto.TableGroupRequest;
+import kitchenpos.tablegroup.domain.TableGroupValidator;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import tablegroup.domain.TableGroup;
-import tablegroup.domain.TableGroupRepository;
+import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.domain.TableGroupRepository;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;

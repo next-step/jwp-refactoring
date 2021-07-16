@@ -1,4 +1,4 @@
-package tablegroup.domain;
+package kitchenpos.tablegroup.domain;
 
 import kitchenpos.exception.CannotUpdateException;
 import kitchenpos.order.domain.Order;
@@ -6,7 +6,7 @@ import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
 import org.springframework.stereotype.Component;
-import tablegroup.dto.TableGroupRequest;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
 
 import java.util.List;
 import java.util.stream.Collectors;

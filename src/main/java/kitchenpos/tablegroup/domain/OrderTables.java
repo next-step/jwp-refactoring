@@ -1,4 +1,4 @@
-package tablegroup.domain;
+package kitchenpos.tablegroup.domain;
 
 import kitchenpos.ordertable.domain.OrderTable;
 

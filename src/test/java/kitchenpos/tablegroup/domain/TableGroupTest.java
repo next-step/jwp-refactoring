@@ -1,16 +1,5 @@
 package kitchenpos.tablegroup.domain;
 
-import kitchenpos.ordertable.domain.OrderTable;
-import tablegroup.domain.OrderTables;
-import tablegroup.domain.TableGroup;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-
-import java.util.Arrays;
-import java.util.Collections;
-
-import static kitchenpos.common.Message.ERROR_ORDERTABLES_SHOULD_HAVE_AT_LEAST_TWO_TABLES;
-import static kitchenpos.common.Message.ERROR_TABLES_CANNOT_BE_GROUPED;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class TableGroupTest {

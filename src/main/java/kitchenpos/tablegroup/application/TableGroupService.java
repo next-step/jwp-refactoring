@@ -1,14 +1,14 @@
-package tablegroup.application;
+package kitchenpos.tablegroup.application;
 
 import kitchenpos.exception.CannotFindException;
 import kitchenpos.ordertable.domain.*;
-import tablegroup.domain.TableGroupValidator;
-import tablegroup.dto.TableGroupRequest;
-import tablegroup.dto.TableGroupResponse;
+import kitchenpos.tablegroup.domain.TableGroupRepository;
+import kitchenpos.tablegroup.domain.TableGroupValidator;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
+import kitchenpos.tablegroup.dto.TableGroupResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import tablegroup.domain.TableGroup;
-import tablegroup.domain.TableGroupRepository;
+import kitchenpos.tablegroup.domain.TableGroup;
 
 import java.util.List;
 
