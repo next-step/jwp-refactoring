@@ -32,22 +32,46 @@ test {
     useJUnitPlatform()
 }
 
+dependencies {
+    implementation project(':common')
+    implementation project(':menu-module')
+    implementation project(':order-module')
+    implementation project(':product-module')
+    implementation project(':table-module')
+    implementation project(':tablegroup-module')
+}
+
 project(':menu-module') {
     dependencies {
+        implementation project(':common')
         implementation project(':product-module')
     }
 }
 
 project(':order-module') {
     dependencies {
+        implementation project(':common')
         implementation project(':menu-module')
         implementation project(':table-module')
         implementation project(':tablegroup-module')
     }
 }
 
+project(':product-module') {
+    dependencies {
+        implementation project(':common')
+    }
+}
+
+project(':table-module') {
+    dependencies {
+        implementation project(':common')
+    }
+}
+
 project(':tablegroup-module') {
     dependencies {
+        implementation project(':common')
         implementation project(':menu-module')
         implementation project(':table-module')
     }

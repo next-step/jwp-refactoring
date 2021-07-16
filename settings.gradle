@@ -4,4 +4,5 @@ include 'product-module'
 include 'table-module'
 include 'tablegroup-module'
 include 'order-module'
+include 'common'
 
