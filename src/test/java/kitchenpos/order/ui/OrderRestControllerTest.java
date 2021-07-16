@@ -10,6 +10,7 @@ import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.order.application.TableService;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.domain.OrderTables;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderTableRequest;
@@ -79,7 +80,7 @@ class OrderRestControllerTest extends ControllerTest {
         orderTables.add(테이블_1번);
         orderTables.add(테이블_2번);
 
-        TableGroup tableGroup = 테이블_그룹을_생성한다(new TableGroup(orderTables));
+        TableGroup tableGroup = 테이블_그룹을_생성한다(new TableGroup(new OrderTables(orderTables)));
         OrderTable orderTable = 테이블을_생성한다(tableGroup, 0, false);
 
         OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(menu.getId(), 2l);

@@ -1,12 +1,11 @@
 package kitchenpos.order.domain;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import kitchenpos.advice.exception.OrderTableException;
-import kitchenpos.tablegroup.domain.TableGroup;
-
-import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Entity
 public class OrderTable {
@@ -15,13 +14,8 @@ public class OrderTable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "table_group_id")
-    private TableGroup tableGroup;
-
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "order_table_id")
-    private List<Order> orders;
+    @Column(name = "table_group_id")
+    private Long tableGroupId;
 
     private int numberOfGuests;
     private boolean empty;
@@ -29,38 +23,23 @@ public class OrderTable {
     protected OrderTable() {
     }
 
-    public OrderTable(TableGroup tableGroup, int numberOfGuests, boolean empty) {
-        this.tableGroup = tableGroup;
+    public OrderTable(Long tableGroupId, int numberOfGuests, boolean empty) {
+        this.tableGroupId = tableGroupId;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
-        this.orders = new ArrayList<>();
     }
 
     public OrderTable(int numberOfGuests, boolean empty) {
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
-        this.orders = new ArrayList<>();
-    }
-
-    public void addOrder(Order order) {
-        this.orders.add(order);
-    }
-
-
-    public void validateOrderStatusNotInCookingAndMeal() {
-        List<OrderStatus> orderStatuses = getOrderStatuses();
-
-        if (orderStatuses.contains(OrderStatus.COOKING) || orderStatuses.contains(OrderStatus.MEAL)) {
-            throw new OrderTableException("올바르지 않은 주문상태가 포함되어있습니다", orderStatuses);
-        }
     }
 
     public void ungroup() {
-        this.tableGroup = null;
+        this.tableGroupId = null;
     }
 
     public void validateTableGroupIsNull() {
-        if (this.tableGroup != null) {
+        if (this.tableGroupId != null) {
             throw new OrderTableException("테이블 그룹은 비어있어야 합니다");
         }
     }
@@ -69,12 +48,8 @@ public class OrderTable {
         return id;
     }
 
-    public OrderTable(TableGroup tableGroup) {
-        this.tableGroup = tableGroup;
-    }
-
-    public TableGroup getTableGroup() {
-        return tableGroup;
+    public Long getTableGroupId() {
+        return tableGroupId;
     }
 
     public int getNumberOfGuests() {
@@ -85,9 +60,9 @@ public class OrderTable {
         return empty;
     }
 
-    public void addTableGroup(TableGroup tableGroup) {
+    public void addTableGroup(Long tableGroupId) {
         updateEmpty(false);
-        this.tableGroup = tableGroup;
+        this.tableGroupId = tableGroupId;
     }
 
     public void updateEmpty(boolean empty) {
@@ -96,15 +71,5 @@ public class OrderTable {
 
     public void updateNumberOfGuests(int numberOfGuests) {
         this.numberOfGuests = numberOfGuests;
-    }
-
-    public List<Order> getOrders() {
-        return orders;
-    }
-
-    private List<OrderStatus> getOrderStatuses() {
-        return orders.stream()
-            .map(Order::getOrderStatus)
-            .collect(Collectors.toList());
     }
 }

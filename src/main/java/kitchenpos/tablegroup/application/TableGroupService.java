@@ -1,30 +1,30 @@
 package kitchenpos.tablegroup.application;
 
-import kitchenpos.advice.exception.OrderTableException;
-import kitchenpos.advice.exception.TableGroupException;
-import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.domain.OrderTable;
-import kitchenpos.tablegroup.domain.TableGroup;
-import kitchenpos.order.application.OrderService;
-import kitchenpos.order.application.TableService;
-import kitchenpos.tablegroup.dto.TableGroupRequest;
-import kitchenpos.tablegroup.domain.TableGroupRepository;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
+import kitchenpos.advice.exception.TableGroupException;
+import kitchenpos.order.application.OrderService;
+import kitchenpos.order.application.TableService;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.domain.OrderTables;
+import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.domain.TableGroupRepository;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional(readOnly = true)
 public class TableGroupService {
+    private final OrderService orderService;
     private final TableService tableService;
     private final TableGroupRepository tableGroupRepository;
 
-    public TableGroupService(final TableService tableService,
+    public TableGroupService(final OrderService orderService,
+        final TableService tableService,
         final TableGroupRepository tableGroupRepository) {
+        this.orderService = orderService;
         this.tableService = tableService;
         this.tableGroupRepository = tableGroupRepository;
     }
@@ -33,7 +33,7 @@ public class TableGroupService {
     public TableGroup create(final TableGroupRequest tableGroupRequest) {
         tableGroupRequest.validateOrderTableSize();
         List<OrderTable> orderTables = tableService.findAllByIdIn(tableGroupRequest.getOrderTableIds());
-        return tableGroupRepository.save(new TableGroup(orderTables));
+        return tableGroupRepository.save(new TableGroup(new OrderTables(orderTables)));
     }
 
 
@@ -41,9 +41,10 @@ public class TableGroupService {
     public void ungroup(final Long tableGroupId) {
         final TableGroup tableGroup = findTableGroupById(tableGroupId);
         final List<OrderTable> orderTables = tableService.findAllByTableGroupId(tableGroupId);
-        orderTables.forEach(OrderTable::validateOrderStatusNotInCookingAndMeal);
 
-        tableGroup.ungroup();
+        orderService.validateOrderStatusNotIn(orderTables, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL));
+
+        tableGroup.getOrderTables().ungroup();
         tableGroupRepository.delete(tableGroup);
     }
 

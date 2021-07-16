@@ -1,13 +1,20 @@
 package kitchenpos.menu.domain;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import kitchenpos.advice.exception.MenuException;
-
-import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import kitchenpos.advice.exception.MenuException;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.product.domain.Product;
 
@@ -24,7 +31,6 @@ public class Menu {
     @Embedded
     private Price price;
 
-    @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "menu_group_id", nullable = false)
     private MenuGroup menuGroup;
@@ -43,10 +49,9 @@ public class Menu {
         this.menuProducts = new ArrayList<>();
     }
 
-    public Menu(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        this.name = name;
-        this.price = new Price(price);
-        this.menuGroup = menuGroup;
+    public Menu(String name, BigDecimal price, MenuGroup menuGroup,
+        List<MenuProduct> menuProducts) {
+        this(name, price, menuGroup);
         this.menuProducts = new ArrayList<>();
         updateMenuProducts(menuProducts);
     }
@@ -67,7 +72,8 @@ public class Menu {
         BigDecimal sum = getSumOfPrices(menuProducts);
 
         if (price.compareTo(new Price(sum)) > 0) {
-            throw new MenuException("메뉴 가격과 각 가격의 총합보다 큽니다", price.getMoney().longValue(), sum.longValue());
+            throw new MenuException("메뉴 가격과 각 가격의 총합보다 큽니다", price.getMoney().longValue(),
+                sum.longValue());
         }
     }
 
@@ -75,7 +81,7 @@ public class Menu {
         BigDecimal sum = BigDecimal.ZERO;
         for (final MenuProduct menuProduct : menuProducts) {
             final Product product = menuProduct.getProduct();
-            sum = sum.add(product.getPrice().multiply(menuProduct.getQuantity()));
+            sum = sum.add(product.priceMultiply(menuProduct.getQuantity()));
         }
         return sum;
     }
@@ -113,8 +119,12 @@ public class Menu {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         Menu menu = (Menu) o;
 

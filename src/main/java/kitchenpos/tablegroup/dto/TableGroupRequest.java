@@ -24,7 +24,7 @@ public class TableGroupRequest {
     }
 
     public static TableGroupRequest of(TableGroup tableGroup) {
-        List<OrderTableRequest> orderTableRequests = tableGroup.getOrderTables().stream()
+        List<OrderTableRequest> orderTableRequests = tableGroup.getOrderTables().values().stream()
                 .map(OrderTableRequest::of)
                 .collect(Collectors.toList());
 

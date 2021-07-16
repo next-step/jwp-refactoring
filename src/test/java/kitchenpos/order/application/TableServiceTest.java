@@ -29,8 +29,8 @@ class TableServiceTest {
     @Autowired
     private TableService tableService;
 
-    @Autowired
-    private OrderTableRepository orderTableRepository;
+    @MockBean
+    private OrderRepository orderRepository;
 
     @DisplayName("테이블을 생성한다")
     @Test
@@ -56,6 +56,7 @@ class TableServiceTest {
     void changeEmpty() {
         OrderTable orderTable = 테이블을_생성한다(0, true);
         orderTable.updateEmpty(false);
+        when(orderRepository.existsByOrderTableAndOrderStatusIn(any(), anyList())).thenReturn(false);
         OrderTable changeOrderTable = tableService.changeEmpty(orderTable.getId(), OrderTableRequest.of(orderTable));
 
         assertThat(changeOrderTable.isEmpty()).isFalse();
@@ -66,8 +67,7 @@ class TableServiceTest {
     void changeEmptyException() {
         OrderTable orderTable = 테이블을_생성한다(0, true);
         orderTable.updateEmpty(false);
-        orderTable.addOrder(Order.ofCooking(orderTable.getId()));
-        orderTableRepository.save(orderTable);
+        when(orderRepository.existsByOrderTableAndOrderStatusIn(any(), anyList())).thenReturn(true);
         assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), OrderTableRequest.of(orderTable)))
             .isInstanceOf(OrderTableException.class);
     }

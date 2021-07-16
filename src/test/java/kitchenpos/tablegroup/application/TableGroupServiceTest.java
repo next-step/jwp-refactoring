@@ -66,11 +66,10 @@ class TableGroupServiceTest {
     void create() {
         TableGroup tableGroup = 테이블_그룹을_생성한다(new TableGroupRequest(orderTableRequests));
 
-        List<OrderTable> orderTables = tableGroup.getOrderTables();
+        List<OrderTable> orderTables = tableGroup.getOrderTables().values();
 
         orderTables.forEach(group -> {
-            assertThat(group.getTableGroup().getId()).isEqualTo(tableGroup.getId());
-            assertThat(group.isEmpty()).isEqualTo(false);
+            assertThat(tableGroup.getOrderTables().values()).contains(group);
         });
     }
 
@@ -86,14 +85,14 @@ class TableGroupServiceTest {
     @Test
     void ungroup() {
         TableGroup tableGroup = 테이블_그룹을_생성한다(new TableGroupRequest(orderTableRequests));
-        List<Long> orderTableIds = tableGroup.getOrderTables().stream()
+        List<Long> orderTableIds = tableGroup.getOrderTables().values().stream()
             .map(OrderTable::getId)
             .collect(Collectors.toList());
 
         테이블_그룹을_비운다(tableGroup.getId());
 
         orderTableIds.forEach(id -> {
-            assertThat(orderService.findOrderTableById(id).getTableGroup()).isNull();
+            assertThat(orderService.findOrderTableById(id).getTableGroupId()).isNull();
         });
     }
 
@@ -103,13 +102,7 @@ class TableGroupServiceTest {
     void ungroupException() {
         TableGroup tableGroup = 테이블_그룹을_생성한다(new TableGroupRequest(orderTableRequests));
 
-        List<OrderTable> orderTables = orderTableRequests.stream()
-            .map(OrderTableRequest::getId)
-            .map(id -> orderService.findOrderTableById(id))
-            .collect(Collectors.toList());
-
-        orderTables.forEach(orderTable -> orderTable.addOrder(Order.ofCooking(orderTable.getId())));
-        tableGroup.updateOrderTables(orderTables);
+        when(orderRepository.existsByOrderTableInAndOrderStatusIn(anyList(), anyList())).thenReturn(true);
 
         assertThatThrownBy(() -> tableGroupService.ungroup(tableGroup.getId()))
             .isInstanceOf(OrderTableException.class);

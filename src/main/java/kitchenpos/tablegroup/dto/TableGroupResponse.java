@@ -21,7 +21,7 @@ public class TableGroupResponse {
     }
 
     public static TableGroupResponse of(TableGroup tableGroup) {
-        List<OrderTableResponse> orderTableResponses = tableGroup.getOrderTables().stream()
+        List<OrderTableResponse> orderTableResponses = tableGroup.getOrderTables().values().stream()
                 .map(OrderTableResponse::of)
                 .collect(Collectors.toList());
 

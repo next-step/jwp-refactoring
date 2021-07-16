@@ -1,5 +1,12 @@
 package kitchenpos.order.application;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import kitchenpos.advice.exception.OrderException;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
@@ -8,17 +15,16 @@ import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menugroup.application.MenuGroupService;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.dto.MenuGroupRequest;
-import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.domain.OrderTables;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.application.TableService;
 import kitchenpos.tablegroup.application.TableGroupService;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
@@ -27,14 +33,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 class OrderServiceTest {
@@ -87,7 +85,7 @@ class OrderServiceTest {
         orderTables.add(테이블_1번);
         orderTables.add(테이블_2번);
 
-        TableGroup tableGroup = 테이블_그룹을_생성한다(new TableGroup(orderTables));
+        TableGroup tableGroup = 테이블_그룹을_생성한다(new TableGroup(new OrderTables(orderTables)));
         OrderTable orderTable = 테이블을_생성한다(tableGroup, 0, false);
 
         OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(menu.getId(), 2l);
