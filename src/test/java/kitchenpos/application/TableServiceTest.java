@@ -123,8 +123,8 @@ public class TableServiceTest {
 	@Test
 	void changeNumberOfGuestsWithMinusNumber() {
 		// Given
-		when(orderTableDao.findById(1L)).thenReturn(Optional.of(orderTableWithFivePeople));
-		when(orderTableDao.save(any())).thenReturn(orderTableWithFivePeople);
+		lenient().when(orderTableDao.findById(1L)).thenReturn(Optional.of(orderTableWithFivePeople));
+		lenient().when(orderTableDao.save(any())).thenReturn(orderTableWithFivePeople);
 		// When, Then
 		assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, new OrderTable(2L, null, -10, false))).isInstanceOf(IllegalArgumentException.class);
 	}
@@ -133,7 +133,7 @@ public class TableServiceTest {
 	@Test
 	void changeNumberOfGuestsWithNotExistsOrderTable() {
 		// Given
-		when(orderTableDao.save(any())).thenReturn(orderTableWithFivePeople);
+		lenient().when(orderTableDao.save(any())).thenReturn(orderTableWithFivePeople);
 		// When, Then
 		assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, new OrderTable(2L, null, -10, false))).isInstanceOf(IllegalArgumentException.class);
 	}
