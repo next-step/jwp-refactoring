@@ -1,8 +1,7 @@
-package kitchenpos.application;
+package api.menu.application;
 
-import kitchenpos.product.application.ProductService;
-import kitchenpos.product.presentation.dto.ProductRequest;
-import kitchenpos.product.presentation.dto.ProductResponse;
+import api.menu.dto.ProductRequest;
+import api.menu.dto.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

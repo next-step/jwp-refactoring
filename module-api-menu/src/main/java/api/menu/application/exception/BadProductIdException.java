@@ -1,6 +1,6 @@
-package kitchenpos.menu.application.exception;
+package api.menu.application.exception;
 
-import kitchenpos.common.error.exception.BusinessException;
+import common.error.BusinessException;
 
 public class BadProductIdException extends BusinessException {
     public BadProductIdException() {

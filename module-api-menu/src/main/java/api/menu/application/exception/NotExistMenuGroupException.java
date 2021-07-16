@@ -1,6 +1,6 @@
-package kitchenpos.menu.application.exception;
+package api.menu.application.exception;
 
-import kitchenpos.common.error.exception.NotExistException;
+import common.error.NotExistException;
 
 public class NotExistMenuGroupException extends NotExistException {
     public NotExistMenuGroupException() {

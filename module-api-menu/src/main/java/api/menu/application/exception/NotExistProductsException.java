@@ -1,6 +1,6 @@
-package kitchenpos.product.application.exception;
+package api.menu.application.exception;
 
-import kitchenpos.common.error.exception.NotExistException;
+import common.error.NotExistException;
 
 public class NotExistProductsException extends NotExistException {
     public NotExistProductsException() {

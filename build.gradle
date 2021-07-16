@@ -41,6 +41,9 @@ project(':module-api-menu') {
 
 project(':module-api-order') {
     dependencies {
+        implementation project(':module-domain-order')
+        implementation project(':module-api-menu')
+        implementation project(':module-common')
     }
 }
 
@@ -52,6 +55,7 @@ project(':module-domain-menu') {
 
 project(':module-domain-order') {
     dependencies {
+        implementation project(':module-common')
     }
 }
 

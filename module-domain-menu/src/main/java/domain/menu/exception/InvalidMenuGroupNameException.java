@@ -1,6 +1,6 @@
-package kitchenpos.menu.domain.exception;
+package domain.menu.exception;
 
-import kitchenpos.common.error.exception.BusinessException;
+import common.error.BusinessException;
 
 public class InvalidMenuGroupNameException extends BusinessException {
     public InvalidMenuGroupNameException() {

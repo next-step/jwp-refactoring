@@ -1,6 +1,6 @@
-package kitchenpos.product.domain.exception;
+package domain.menu.exception;
 
-import kitchenpos.common.error.exception.BusinessException;
+import common.error.BusinessException;
 
 public class InvalidProductNameException extends BusinessException {
     public InvalidProductNameException() {

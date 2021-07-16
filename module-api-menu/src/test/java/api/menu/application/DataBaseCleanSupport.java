@@ -1,4 +1,4 @@
-package kitchenpos.application;
+package api.menu.application;
 
 import org.junit.jupiter.api.AfterEach;
 import org.springframework.beans.factory.annotation.Autowired;
