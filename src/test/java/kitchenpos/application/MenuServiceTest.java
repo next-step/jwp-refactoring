@@ -97,11 +97,11 @@ public class MenuServiceTest {
 			.isInstanceOf(IllegalArgumentException.class);
 	}
 
-	@DisplayName("등록되어 있지 않은 상품을 요청한 수 없다.")
+	@DisplayName("등록되어 있지 않은 상품을 요청할 수 없다.")
 	@Test
 	void createMenuWithNotExistProduct() {
 		// given
-		lenient().when(menuGroupDao.existsById(1L)).thenReturn(false);
+		lenient().when(menuGroupDao.existsById(1L)).thenReturn(true);
 		lenient().when(menuDao.save(any())).thenReturn(ramenMenu);
 		lenient().when(menuProductDao.save(any())).thenReturn(menuProduct);
 		// when, then
@@ -114,9 +114,9 @@ public class MenuServiceTest {
 	@Test
 	void createMenuWhereMenuPriceIsBiggerThanProductSum() {
 		// given
-		Product expensiveChicken = new Product("치킨", new BigDecimal(1000000));
-		lenient().when(menuGroupDao.existsById(1L)).thenReturn(false);
-		lenient().when(productDao.findById(1L)).thenReturn(Optional.of(expensiveChicken));
+		Product cheapChicken = new Product("치킨", new BigDecimal(100));
+		lenient().when(menuGroupDao.existsById(1L)).thenReturn(true);
+		lenient().when(productDao.findById(1L)).thenReturn(Optional.of(cheapChicken));
 		lenient().when(menuDao.save(any())).thenReturn(chickenMenu);
 		lenient().when(menuProductDao.save(any())).thenReturn(menuProduct);
 		// when, then

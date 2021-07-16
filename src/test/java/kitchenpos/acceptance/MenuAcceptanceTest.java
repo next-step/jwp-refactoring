@@ -32,7 +32,6 @@ public class MenuAcceptanceTest extends AcceptanceTest {
 			.then().log().all()
 			.extract();
 		MenuGroup menuGroup = menuGroupResponse.as(MenuGroup.class);
-
 		// And
 		ExtractableResponse<Response> productResponse = RestAssured
 			.given().log().all()
@@ -53,9 +52,9 @@ public class MenuAcceptanceTest extends AcceptanceTest {
 			.then().log().all()
 			.extract();
 		Menu createdMenu = menuCreatedResponse.as(Menu.class);
-
 		// Then
 		assertThat(menuCreatedResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+
 		// When
 		ExtractableResponse<Response> menuResponse = RestAssured
 			.given().log().all()
@@ -63,7 +62,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
 			.when().get("/api/menus")
 			.then().log().all()
 			.extract();
-
+		// Then
 		String menuName = menuResponse.jsonPath().getList(".", Menu.class).stream()
 			.filter(menu -> menu.getId() == createdMenu.getId())
 			.map(Menu::getName)
@@ -72,5 +71,63 @@ public class MenuAcceptanceTest extends AcceptanceTest {
 			;
 
 		assertThat(menuName).isEqualTo("라면 메뉴");
+	}
+
+	@DisplayName("메뉴 오류 시나리오")
+	@Test
+	void menuErroScenario() {
+		// Backgroud
+		// Given
+		ExtractableResponse<Response> menuGroupResponse = RestAssured
+			.given().log().all()
+			.contentType(MediaType.APPLICATION_JSON_VALUE)
+			.body(new MenuGroup("인기 메뉴"))
+			.when().post("/api/menu-groups")
+			.then().log().all()
+			.extract();
+		MenuGroup menuGroup = menuGroupResponse.as(MenuGroup.class);
+		// And
+		ExtractableResponse<Response> productResponse = RestAssured
+			.given().log().all()
+			.contentType(MediaType.APPLICATION_JSON_VALUE)
+			.body(new Product("매운 라면", new BigDecimal(8000)))
+			.when().post("/api/products")
+			.then().log().all()
+			.extract();
+		Product product = productResponse.as(Product.class);
+
+		// Scenario
+		// When
+		ExtractableResponse<Response> minusPriceResponse = RestAssured
+			.given().log().all()
+			.contentType(MediaType.APPLICATION_JSON_VALUE)
+			.body(new Menu("라면 메뉴", new BigDecimal(-8000), menuGroup.getId(), Arrays.asList(new MenuProduct(product.getId(), 2L))))
+			.when().post("/api/menus")
+			.then().log().all()
+			.extract();
+		// Then
+		assertThat(minusPriceResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+
+		// When
+		ExtractableResponse<Response> notExistsProductResponse = RestAssured
+			.given().log().all()
+			.contentType(MediaType.APPLICATION_JSON_VALUE)
+			.body(new Menu("라면 메뉴", new BigDecimal(-8000), menuGroup.getId(), Arrays.asList(new MenuProduct(0L, 2L))))
+			.when().post("/api/menus")
+			.then().log().all()
+			.extract();
+		// Then
+		assertThat(notExistsProductResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+
+		// When
+		ExtractableResponse<Response> menuPriceIsBiggerThanProductSumResponse = RestAssured
+			.given().log().all()
+			.contentType(MediaType.APPLICATION_JSON_VALUE)
+			.body(new Menu("라면 메뉴", new BigDecimal(1000000), menuGroup.getId(), Arrays.asList(new MenuProduct(product.getId(), 2L))))
+			.when().post("/api/menus")
+			.then().log().all()
+			.extract();
+		// Then
+		assertThat(menuPriceIsBiggerThanProductSumResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
 	}
 }
