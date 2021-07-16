@@ -1,9 +1,10 @@
 bootJar {
-    enabled = true
+    enabled = false
 }
 jar {
     enabled = true
 }
 dependencies {
-
+    implementation 'org.junit.jupiter:junit-jupiter'
+    implementation 'org.assertj:assertj-core'
 }

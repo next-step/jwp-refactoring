@@ -1,6 +1,7 @@
 package kitchenpos.product.domain;
 
 import java.util.Objects;
+import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -22,7 +23,7 @@ public class Product {
     private String name;
 
     @Embedded
-    @Column(nullable = false)
+    @AttributeOverride(name = "amount", column = @Column(name = "price", nullable = false))
     private Price price = Price.wonOf(0);
 
     public Product() {

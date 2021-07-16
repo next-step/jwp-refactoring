@@ -2,6 +2,8 @@ package kitchenpos.menu.domain;
 
 import java.util.List;
 import java.util.Objects;
+import javax.persistence.AttributeOverride;
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -24,6 +26,7 @@ public class Menu {
     private String name;
 
     @Embedded
+    @AttributeOverride(name = "amount", column = @Column(name = "price", nullable = false))
     private Price price = Price.wonOf(0);
 
     @ManyToOne(fetch = FetchType.LAZY)

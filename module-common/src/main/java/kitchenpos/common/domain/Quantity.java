@@ -1,16 +1,12 @@
 package kitchenpos.common.domain;
 
 import java.util.Objects;
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
 import kitchenpos.common.exception.NotEnoughMiniumQuantityException;
 
-@Embeddable
 public class Quantity {
 
     private static final int MIN = 1;
 
-    @Column(name = "quantity")
     private Long value;
 
     protected Quantity() {

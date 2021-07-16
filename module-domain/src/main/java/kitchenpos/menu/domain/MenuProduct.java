@@ -1,5 +1,6 @@
 package kitchenpos.menu.domain;
 
+import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -28,7 +29,7 @@ public class MenuProduct {
     private Long productId;
 
     @Embedded
-    @Column(nullable = false)
+    @AttributeOverride(name = "value", column = @Column(name = "quantity", nullable = false))
     private Quantity quantity;
 
     protected MenuProduct() {
