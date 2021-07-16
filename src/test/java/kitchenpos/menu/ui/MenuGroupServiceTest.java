@@ -1,5 +1,6 @@
 package kitchenpos.menu.ui;
 
+import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.dto.MenuGroupRequest;
 import kitchenpos.menu.dto.MenuGroupResponse;
 import kitchenpos.menu.application.MenuGroupService;
@@ -11,7 +12,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -30,29 +30,29 @@ class MenuGroupServiceTest {
     @InjectMocks
     private MenuGroupService menuGroupService;
 
-    private MenuGroupRequest 한마리메뉴 = new MenuGroupRequest("한마리메뉴");
-    private MenuGroupRequest 두마리메뉴 = new MenuGroupRequest("두마리메뉴");
-
+    private MenuGroupRequest 첫번째_메뉴그룹_요청 = new MenuGroupRequest("첫번째_메뉴그룹");
+    private MenuGroup 첫번째_메뉴그룹 = new MenuGroup(1L, "첫번째_메뉴그룹");
+    private MenuGroup 두번째_메뉴그룹 = new MenuGroup(2L, "두번째_메뉴그룹");
     @DisplayName("메뉴 그룹을 등록한다")
     @Test
     void 메뉴그룹_등록() {
         //Given
-        when(menuGroupRepository.save(any())).thenReturn(한마리메뉴.toMenuGroup());
+        when(menuGroupRepository.save(any())).thenReturn(첫번째_메뉴그룹_요청.toMenuGroup());
 
         //When
-        MenuGroupResponse 생성된_메뉴그룹 = menuGroupService.create(한마리메뉴);
+        MenuGroupResponse 생성된_메뉴그룹 = menuGroupService.create(첫번째_메뉴그룹_요청);
 
         //Then
         verify(menuGroupRepository, times(1)).save(any());
-        assertThat(생성된_메뉴그룹.getName()).isEqualTo(한마리메뉴.getName());
+        assertThat(생성된_메뉴그룹.getName()).isEqualTo(첫번째_메뉴그룹_요청.getName());
     }
 
     @DisplayName("메뉴 그룹 목록을 조회한다")
     @Test
     void 메뉴그룹_목록_조회() {
         //Given
-        List<MenuGroupRequest> 입력한_메뉴그룹_목록 = new ArrayList<>(Arrays.asList(한마리메뉴, 두마리메뉴));
-        when(menuGroupRepository.findAll()).thenReturn(MenuGroupRequest.toMenuGroupList(입력한_메뉴그룹_목록));
+        List<MenuGroup> 입력한_메뉴그룹_목록 = Arrays.asList(첫번째_메뉴그룹, 두번째_메뉴그룹);
+        when(menuGroupRepository.findAll()).thenReturn(입력한_메뉴그룹_목록);
 
         //When
         List<MenuGroupResponse> 조회된_메뉴그룹_목록 = menuGroupService.list();

@@ -60,4 +60,7 @@ public class Menu {
         return menuProducts;
     }
 
+    public int getMenuProductsSize() {
+        return menuProducts.size();
+    }
 }
