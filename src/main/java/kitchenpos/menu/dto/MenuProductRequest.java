@@ -27,7 +27,7 @@ public class MenuProductRequest {
     }
 
     public static MenuProductRequest of(MenuProduct menuProduct) {
-        return new MenuProductRequest(menuProduct.getMenuId(),
+        return new MenuProductRequest(menuProduct.getMenu().getId(),
                 menuProduct.getProductId(),
                 menuProduct.getQuantity().value());
     }

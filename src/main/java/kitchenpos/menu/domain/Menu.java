@@ -24,6 +24,10 @@ public class Menu {
     public Menu() {
     }
 
+    public Menu(Long id) {
+        this.id = id;
+    }
+
     public Menu(String name, Price price, Long menuGroupId, List<MenuProduct> menuProducts) {
         this(0L, name, price, menuGroupId, menuProducts);
     }
