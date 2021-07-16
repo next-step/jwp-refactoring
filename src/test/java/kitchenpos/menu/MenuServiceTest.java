@@ -22,11 +22,9 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuProductRepository;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.domain.Price;
 import kitchenpos.menu.domain.Product;
-import kitchenpos.menu.domain.ProductRepository;
 import kitchenpos.menu.domain.Quantity;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
@@ -112,8 +110,6 @@ public class MenuServiceTest {
 		}).isInstanceOf(MenuException.class);
 
 	}
-
-
 
 	@DisplayName("메뉴 생성 - 메뉴 리스트를 조회한다")
 	@Test

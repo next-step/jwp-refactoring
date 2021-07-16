@@ -17,17 +17,14 @@ import org.springframework.context.ApplicationEventPublisher;
 
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItems;
-import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.application.TableGroupService;
 import kitchenpos.table.domain.NumberOfGuests;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.domain.TableGroupRepository;
-import kitchenpos.table.domain.TableRepository;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
-import kitchenpos.table.exception.TableGroupException;
 
 @DisplayName("단체 지정 서비스 테스트")
 @ExtendWith(MockitoExtension.class)

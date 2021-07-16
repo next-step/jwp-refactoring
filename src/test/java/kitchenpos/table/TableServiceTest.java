@@ -16,12 +16,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuProducts;
-import kitchenpos.menu.domain.Price;
-import kitchenpos.menu.domain.Quantity;
 import kitchenpos.order.OrderServiceTest;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
@@ -36,8 +30,14 @@ import kitchenpos.table.dto.OrderTableChangeEmptyRequest;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.exception.TableException;
-import kitchenpos.menu.domain.Product;
+
 import kitchenpos.table.domain.TableGroup;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.Price;
+import kitchenpos.menu.domain.Product;
+import kitchenpos.menu.domain.Quantity;
 
 @DisplayName("주문 테이블 서비스 테스트")
 @ExtendWith(MockitoExtension.class)

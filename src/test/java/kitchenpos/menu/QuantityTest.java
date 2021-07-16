@@ -6,7 +6,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import kitchenpos.menu.domain.Quantity;
-import kitchenpos.menu.exception.MenuException;
 import kitchenpos.menu.exception.QuantityException;
 
 @DisplayName("수량 도메인 테스트")
