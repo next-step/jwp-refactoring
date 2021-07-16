@@ -33,7 +33,6 @@ public class MenuRestController {
         return ResponseEntity.ok().body(menuService.list());
     }
 
-
 	@ExceptionHandler(IllegalArgumentException.class)
 	public ResponseEntity handleRuntimeException(IllegalArgumentException illegalArgumentException) {
 		return ResponseEntity.badRequest().build();

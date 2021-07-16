@@ -115,4 +115,145 @@ public class OrderAcceptanceTest extends AcceptanceTest {
 
 		assertThat(orderStatus).isEqualTo("MEAL");
 	}
+
+	@DisplayName("주문 오류 시나리오")
+	@Test
+	void orderErrorScenario() {
+		// Backgroud
+		// Given
+		ExtractableResponse<Response> menuGroupResponse = RestAssured
+			.given().log().all()
+			.contentType(MediaType.APPLICATION_JSON_VALUE)
+			.body(new MenuGroup("인기 메뉴"))
+			.when().post("/api/menu-groups")
+			.then().log().all()
+			.extract();
+		MenuGroup menuGroup = menuGroupResponse.as(MenuGroup.class);
+
+		// And
+		ExtractableResponse<Response> productResponse = RestAssured
+			.given().log().all()
+			.contentType(MediaType.APPLICATION_JSON_VALUE)
+			.body(new Product("매운 라면", new BigDecimal(8000)))
+			.when().post("/api/products")
+			.then().log().all()
+			.extract();
+		Product product = productResponse.as(Product.class);
+
+		// And
+		ExtractableResponse<Response> menuCreatedResponse = RestAssured
+			.given().log().all()
+			.contentType(MediaType.APPLICATION_JSON_VALUE)
+			.body(new Menu("라면 메뉴", new BigDecimal(8000), menuGroup.getId(), Arrays.asList(new MenuProduct(product.getId(), 2L))))
+			.when().post("/api/menus")
+			.then().log().all()
+			.extract();
+		Menu createdMenu = menuCreatedResponse.as(Menu.class);
+
+		// And
+		ExtractableResponse<Response> tableCreatedResponse = RestAssured
+			.given().log().all()
+			.contentType(MediaType.APPLICATION_JSON_VALUE)
+			.body(new OrderTable(2, false))
+			.when().post("/api/tables/")
+			.then().log().all()
+			.extract();
+		OrderTable createdOrderTable = tableCreatedResponse.as(OrderTable.class);
+
+		// Scenario
+		// When
+		Order orderWithoutOrderList = new Order(createdOrderTable.getId(), "COOKING", LocalDateTime.now(), null);
+
+		ExtractableResponse<Response> orderWithoutOrderListResponse = RestAssured
+			.given().log().all()
+			.contentType(MediaType.APPLICATION_JSON_VALUE)
+			.body(orderWithoutOrderList)
+			.when().post("/api/orders")
+			.then().log().all()
+			.extract();
+		// Then
+		assertThat(orderWithoutOrderListResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+
+		// When
+		Order orderWithNotExistsMenu = new Order(createdOrderTable.getId(), "COOKING", LocalDateTime.now(), Arrays.asList(new OrderLineItem(0L, 2)));
+
+		ExtractableResponse<Response> orderWithNotExistsMenuResponse = RestAssured
+			.given().log().all()
+			.contentType(MediaType.APPLICATION_JSON_VALUE)
+			.body(orderWithNotExistsMenu)
+			.when().post("/api/orders")
+			.then().log().all()
+			.extract();
+		// Then
+		assertThat(orderWithoutOrderListResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+
+		// When
+		Order orderWithoutOrderTable = new Order(0L, "COOKING", LocalDateTime.now(), Arrays.asList(new OrderLineItem(0L, 2)));
+
+		ExtractableResponse<Response> orderWithoutOrderTableResponse = RestAssured
+			.given().log().all()
+			.contentType(MediaType.APPLICATION_JSON_VALUE)
+			.body(orderWithNotExistsMenu)
+			.when().post("/api/orders")
+			.then().log().all()
+			.extract();
+		// Then
+		assertThat(orderWithoutOrderTableResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+
+		// When
+		ExtractableResponse<Response> changeStatusWithNotExitsOrderResponse = RestAssured
+			.given().log().all()
+			.contentType(MediaType.APPLICATION_JSON_VALUE)
+			.body(new Order("MEAL"))
+			.when().put("/api/orders/" + 0L + "/order-status")
+			.then().log().all()
+			.extract();
+
+		// Then
+		assertThat(changeStatusWithNotExitsOrderResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+
+		// Given : 주문 등록
+		Order cookingOrder = new Order(createdOrderTable.getId(), "COOKING", LocalDateTime.now(), Arrays.asList(new OrderLineItem(createdMenu.getId(), 2)));
+
+		ExtractableResponse<Response> orderCreatedResponse = RestAssured
+			.given().log().all()
+			.contentType(MediaType.APPLICATION_JSON_VALUE)
+			.body(cookingOrder)
+			.when().post("/api/orders")
+			.then().log().all()
+			.extract();
+		Order createdOrder = orderCreatedResponse.as(Order.class);
+		// When
+		ExtractableResponse<Response> changeStatusWithNotExistsStatus = RestAssured
+			.given().log().all()
+			.contentType(MediaType.APPLICATION_JSON_VALUE)
+			.body(new Order("PREPARING"))
+			.when().put("/api/orders/" + createdOrder.getId() + "/order-status")
+			.then().log().all()
+			.extract();
+		// Then
+		assertThat(changeStatusWithNotExistsStatus.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+
+		// Given
+		ExtractableResponse<Response> changeOrderResponse = RestAssured
+			.given().log().all()
+			.contentType(MediaType.APPLICATION_JSON_VALUE)
+			.body(new Order("COMPLETION"))
+			.when().put("/api/orders/" + createdOrder.getId() + "/order-status")
+			.then().log().all()
+			.extract();
+		Order statusChangedOrder = changeOrderResponse.as(Order.class);
+
+		// When
+		ExtractableResponse<Response> changeStatusWithCompletedOrder = RestAssured
+			.given().log().all()
+			.contentType(MediaType.APPLICATION_JSON_VALUE)
+			.body(new Order("MEAL"))
+			.when().put("/api/orders/" + statusChangedOrder.getId() + "/order-status")
+			.then().log().all()
+			.extract();
+
+		// Then
+		assertThat(changeStatusWithNotExitsOrderResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+	}
 }

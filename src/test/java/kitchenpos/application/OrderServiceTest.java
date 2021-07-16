@@ -85,7 +85,7 @@ public class OrderServiceTest {
 		lenient().when(orderDao.save(any())).thenReturn(cookingOrder);
 		lenient().when(orderLineItemDao.save(any())).thenReturn(orderLineItem);
 		// when, then
-		assertThatThrownBy(() -> orderService.create(new Order(1L, "COOKING", LocalDateTime.now(), null)));
+		assertThatThrownBy(() -> orderService.create(new Order(1L, "COOKING", LocalDateTime.now(), Arrays.asList(orderLineItem))));
 	}
 
 	@DisplayName("주문 테이블은 반드시 포함되어야 한다.")
@@ -96,7 +96,7 @@ public class OrderServiceTest {
 		lenient().when(orderDao.save(any())).thenReturn(cookingOrder);
 		lenient().when(orderLineItemDao.save(any())).thenReturn(orderLineItem);
 		// when, then
-		assertThatThrownBy(() -> orderService.create(new Order(1L, "COOKING", LocalDateTime.now(), null)));
+		assertThatThrownBy(() -> orderService.create(new Order(1L, "COOKING", LocalDateTime.now(), Arrays.asList(orderLineItem))));
 	}
 
 	@DisplayName("주문을 조회한다.")
@@ -123,7 +123,7 @@ public class OrderServiceTest {
 		assertThat(order.getOrderStatus()).isEqualTo("COMPLETION");
 	}
 
-	@DisplayName("없는 주문 상태로 변경하지 못한다.")
+	@DisplayName("없는 주문의 상태는 변경하지 못한다.")
 	@Test
 	void changeOrderStatusTestWithNotExistOrder() {
 		// given
