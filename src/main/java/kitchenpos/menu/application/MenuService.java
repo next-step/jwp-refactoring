@@ -14,26 +14,28 @@ import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.menugroup.application.MenuGroupMenuService;
+import kitchenpos.product.application.ProductMenuService;
 
 @Service
 @Transactional
 public class MenuService {
     private final MenuRepository menuRepository;
-    private final MenuGroupMenuValidator menuGroupMenuValidator;
     private final MenuValidator menuValidator;
     private final ProductMenuService productMenuService;
+    private final MenuGroupMenuService menuGroupMenuService;
 
     @Autowired
-    public MenuService(final MenuRepository menuRepository, final MenuGroupMenuValidator menuGroupMenuValidator,
-                       final MenuValidator menuValidator, final ProductMenuService productMenuService) {
+    public MenuService(final MenuRepository menuRepository, final MenuValidator menuValidator,
+                       final ProductMenuService productMenuService, final MenuGroupMenuService menuGroupMenuService) {
         this.menuRepository = menuRepository;
-        this.menuGroupMenuValidator = menuGroupMenuValidator;
         this.menuValidator = menuValidator;
         this.productMenuService = productMenuService;
+        this.menuGroupMenuService = menuGroupMenuService;
     }
 
     public MenuResponse create(final MenuRequest menuRequest) {
-        menuGroupMenuValidator.validateExistsMenuGroupById(menuRequest.getMenuGroupId());
+        menuValidator.validateExistsMenuGroup(menuGroupMenuService.findMenuGroupById(menuRequest.getMenuGroupId()));
         Menu menu = menuRepository.save(new Menu(menuRequest.getName(), menuRequest.getPrice(), menuRequest.getMenuGroupId()));
         menuValidator.validateMenuPrice(menu, getTotalProductsPrice(menuRequest));
         menuRequest.getMenuProductRequests()

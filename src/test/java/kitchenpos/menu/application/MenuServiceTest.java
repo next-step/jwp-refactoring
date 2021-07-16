@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.DisplayName;
@@ -28,6 +29,9 @@ import kitchenpos.menu.dto.MenuProductResponse;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menugroup.application.MenuGroupMenuService;
+import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.product.application.ProductMenuService;
 
 @DisplayName("메뉴 서비스")
 @ExtendWith(MockitoExtension.class)
@@ -37,9 +41,9 @@ class MenuServiceTest {
     @Mock
     private ProductMenuService productMenuService;
     @Mock
-    private MenuGroupMenuValidator menuGroupMenuValidator;
-    @Mock
     private MenuValidator menuValidator;
+    @Mock
+    private MenuGroupMenuService menuGroupMenuService;
     @InjectMocks
     private MenuService menuService;
 
@@ -78,6 +82,7 @@ class MenuServiceTest {
                 Arrays.asList(menuProductRequest1, menuProductRequest2));
         Menu menu = new Menu(menuRequest.getName(), menuRequest.getPrice(), 1L);
         // and
+        given(menuGroupMenuService.findMenuGroupById(anyLong())).willReturn(Optional.of(new MenuGroup("A")));
         given(menuRepository.save(any(Menu.class))).willReturn(menu);
         given(productMenuService.calculateProductsPrice(1L, 1L)).willReturn(BigDecimal.valueOf(8000.00));
         given(productMenuService.calculateProductsPrice(2L, 1L)).willReturn(BigDecimal.valueOf(4000.00));
@@ -87,7 +92,7 @@ class MenuServiceTest {
 
         // then
         verify(menuValidator).validateMenuPrice(any(Menu.class), any(BigDecimal.class));
-        verify(menuGroupMenuValidator).validateExistsMenuGroupById(anyLong());
+        verify(menuValidator).validateExistsMenuGroup(any(Optional.class));
         return Arrays.asList(
                 dynamicTest("메뉴 ID 확인됨.", () -> assertThat(menuResponse.getName()).isEqualTo(menu.getName().toString())),
                 dynamicTest("메뉴상품의 상품 ID 확인됨.", () -> assertThat(menuResponse.getMenuProductResponses()).size().isEqualTo(2))
@@ -105,11 +110,12 @@ class MenuServiceTest {
                     // then
                     assertThatThrownBy(() -> menuService.create(menuRequest))
                             .isInstanceOf(IllegalArgumentException.class);
-                    verify(menuGroupMenuValidator).validateExistsMenuGroupById(1L);
+                    verify(menuValidator).validateExistsMenuGroup(any(Optional.class));
                 }),
                 dynamicTest("메뉴금액 음수 입력 오류 발생함.", () -> {
                     // given
                     MenuRequest menuRequest = new MenuRequest("Aa", BigDecimal.valueOf(-1), 2L, new ArrayList<>());
+                    given(menuGroupMenuService.findMenuGroupById(anyLong())).willReturn(Optional.of(new MenuGroup("A")));
 
                     // then
                     assertThatThrownBy(() -> menuService.create(menuRequest))
@@ -119,7 +125,7 @@ class MenuServiceTest {
                 dynamicTest("등록되지 않은 메뉴그룹으로 등록 시도 시 오류 발생함.", () -> {
                     // given
                     MenuRequest menuRequest = new MenuRequest("Aa", BigDecimal.valueOf(1000), 100L, new ArrayList<>());
-                    doThrow(RuntimeException.class).when(menuGroupMenuValidator).validateExistsMenuGroupById(100L);
+                    doThrow(RuntimeException.class).when(menuValidator).validateExistsMenuGroup(any(Optional.class));
                     // then
                     assertThatThrownBy(() -> menuService.create(menuRequest))
                             .isInstanceOf(RuntimeException.class);
