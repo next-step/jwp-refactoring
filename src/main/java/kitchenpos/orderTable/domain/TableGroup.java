@@ -23,7 +23,7 @@ public class TableGroup extends AbstractAggregateRoot<TableGroup> {
     @CreatedDate
     private LocalDateTime createdDate;
 
-    public TableGroup() {
+    protected TableGroup() {
     }
 
     public TableGroup(final OrderTable...orderTables) {

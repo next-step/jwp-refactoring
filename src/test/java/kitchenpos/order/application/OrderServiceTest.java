@@ -2,7 +2,6 @@ package kitchenpos.order.application;
 
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.orderTable.application.TableService;
@@ -75,12 +74,11 @@ class OrderServiceTest {
     @Test
     void createExceptionTest2() {
         // given
-        Menu noneMenu = new Menu();
         OrderTable orderTable = tableService.create(
             new OrderTable(1, false)
         );
 
-        Order order = new Order(orderTable.getId(), OrderLineItem.valueOf(noneMenu.getId(), 1L));
+        Order order = new Order(orderTable.getId(), OrderLineItem.valueOf(null, 1L));
 
         // when
         assertThatThrownBy(() -> orderService.create(order))

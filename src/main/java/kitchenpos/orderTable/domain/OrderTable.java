@@ -16,7 +16,7 @@ public class OrderTable {
     private int numberOfGuests;
     private boolean empty;
 
-    public OrderTable() {
+    protected OrderTable() {
     }
 
     public OrderTable(final int numberOfGuests, final boolean empty) {

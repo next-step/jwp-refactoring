@@ -19,7 +19,7 @@ public class OrderLineItem {
 
     private long quantity;
 
-    public OrderLineItem() {
+    protected OrderLineItem() {
     }
 
     public static OrderLineItem valueOf(final Long menuId, final long quantity) {

@@ -32,7 +32,7 @@ public class Order extends AbstractAggregateRoot<Order> {
     @CreatedDate
     private LocalDateTime orderedTime;
 
-    public Order() {
+    protected Order() {
     }
 
     public Order(final Long id, final Long orderTableId, final OrderLineItem... orderLineItems) {
