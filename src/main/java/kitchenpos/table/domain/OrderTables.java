@@ -26,9 +26,9 @@ public class OrderTables {
         return Collections.unmodifiableList(orderTables);
     }
 
-    public void updateTableGroup(TableGroup tableGroup) {
+    public void updateTableGroup(Long tableGroupId) {
         for (OrderTable orderTable : orderTables) {
-            orderTable.updateTableGroup(tableGroup);
+            orderTable.updateTableGroup(tableGroupId);
         }
     }
 

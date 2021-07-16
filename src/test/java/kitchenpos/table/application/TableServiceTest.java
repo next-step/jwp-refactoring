@@ -95,7 +95,7 @@ class TableServiceTest {
     void changeEmptyFailBecauseOfHasTableGroupIdTest() {
         //given
         TableGroup tableGroup = new TableGroup(1l, LocalDateTime.now());
-        givenOrderTable.updateTableGroup(tableGroup);
+        givenOrderTable.updateTableGroup(1l);
         given(orderTableRepository.findById(givenOrderTable.getId())).willReturn(Optional.ofNullable(givenOrderTable));
 
         //when && then

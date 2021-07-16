@@ -11,18 +11,16 @@ public class OrderTable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne
-    @JoinColumn(name = "table_group_id")
-    private TableGroup tableGroup;
+    private Long tableGroupId;
     private int numberOfGuests;
     private boolean empty;
 
     protected OrderTable() {
     }
 
-    public OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
+    public OrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
         this.id = id;
-        this.tableGroup = tableGroup;
+        this.tableGroupId = tableGroupId;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
     }
@@ -30,22 +28,16 @@ public class OrderTable {
     public OrderTable(int numberOfGuests, boolean isEmpty) {
         this.numberOfGuests = numberOfGuests;
         this.empty = isEmpty;
-        this.tableGroup = null;
+        this.tableGroupId = null;
     }
 
     public Long getId() {
         return id;
     }
 
-    public TableGroup getTableGroup() {
-        return tableGroup;
-    }
 
     public Long getTableGroupId() {
-        if (tableGroup == null) {
-            return null;
-        }
-        return tableGroup.getId();
+        return tableGroupId;
     }
 
     public int getNumberOfGuests() {
@@ -57,13 +49,20 @@ public class OrderTable {
     }
 
     public void changeEmpty(boolean empty) {
+        tableGroupValidCheck();
         this.empty = empty;
     }
 
-    public void updateTableGroup(TableGroup tableGroup) {
+    private void tableGroupValidCheck() {
+        if (Objects.nonNull(this.tableGroupId)) {
+            throw new IllegalArgumentException("단체 지정된 테이블은 변경할 수 없습니다.");
+        }
+    }
+
+    public void updateTableGroup(Long tableGroupId) {
         updatePossibleCheck();
         this.empty = false;
-        this.tableGroup = tableGroup;
+        this.tableGroupId = tableGroupId;
     }
 
     private void updatePossibleCheck() {
@@ -72,7 +71,7 @@ public class OrderTable {
     }
 
     protected void hasTableGroupIdCheck() {
-        if (Objects.nonNull(tableGroup)) {
+        if (Objects.nonNull(tableGroupId)) {
             throw new IllegalArgumentException("이미 단체 지정된 테이블이 있습니다.");
         }
     }
@@ -89,7 +88,7 @@ public class OrderTable {
 
 
     public void releaseGroup() {
-        this.tableGroup = null;
+        this.tableGroupId = null;
     }
 
 }

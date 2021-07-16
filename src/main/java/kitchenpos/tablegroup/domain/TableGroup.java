@@ -40,7 +40,7 @@ public class TableGroup {
     }
 
     private void updateOrderTables(OrderTables orderTables) {
-        orderTables.updateTableGroup(this);
+        orderTables.updateTableGroup(this.id);
         this.orderTables = orderTables;
     }
 

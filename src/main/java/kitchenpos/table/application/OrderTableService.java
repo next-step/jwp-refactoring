@@ -40,8 +40,7 @@ public class OrderTableService {
     public OrderTableResponse changeEmpty(Long orderTableId, OrderTableRequest orderTableRequest) {
         final OrderTable savedOrderTable = findById(orderTableId);
 
-        changeEmptyValidCheck(savedOrderTable);
-
+        orderStatusValidCheck(savedOrderTable);
         savedOrderTable.changeEmpty(orderTableRequest.isEmpty());
 
         return OrderTableResponse.of(savedOrderTable);
@@ -57,28 +56,15 @@ public class OrderTableService {
         return OrderTableResponse.of(savedOrderTable);
     }
 
-    private void changeEmptyValidCheck(OrderTable savedOrderTable) {
-        tableGroupValidCheck(savedOrderTable.getTableGroup());
-        orderStatusValidCheck(savedOrderTable);
-    }
-
     private void orderStatusValidCheck(OrderTable orderTable) {
         if (orderService.changeStatusValidCheck(orderTable)) {
             throw new IllegalArgumentException("주문이 조리나 식사 상태에서는 변경할 수 없습니다.");
         }
     }
 
-    private void tableGroupValidCheck(TableGroup tableGroup) {
-        if (Objects.nonNull(tableGroup)) {
-            throw new IllegalArgumentException("단체 지정된 테이블은 변경할 수 없습니다.");
-        }
-    }
-
     public OrderTable findById(Long orderTableId) {
         return orderTableRepository.findById(orderTableId).orElseThrow(() -> new IllegalArgumentException("등록되지 않은 주문 테이블입니다."));
-
     }
-
 
     private void changeNumberOfGuestsValidCheck(OrderTableRequest orderTableRequest, OrderTable savedOrderTable) {
         numberOfGuestsValidCheck(orderTableRequest.getNumberOfGuests());
