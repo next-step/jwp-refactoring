@@ -69,7 +69,7 @@ package TablePackage #DDDDDD {
 
   OrderTable <-- TableGroup
 
-  OrderRepository <-- TableGroupService
+  'OrderRepository <-- TableGroupService
   'OrderTable <-- TableGroupService
   'OrderTableRepository <-- TableGroupService
   TableGroup <-- TableGroupService
