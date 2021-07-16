@@ -15,8 +15,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class OrderTest {
 
     private OrderStatus 주문상태 = OrderStatus.COOKING;
-    private OrderLineItem 주문수량메뉴1 = new OrderLineItem(1L, 1L, 1L, 1L);
-    private OrderLineItem 주문수량메뉴2 = new OrderLineItem(2L, 1L, 1L, 1L);
+    private OrderLineItem 주문수량메뉴1 = new OrderLineItem(1L,  1L, 1L);
+    private OrderLineItem 주문수량메뉴2 = new OrderLineItem(2L,  1L, 1L);
     private List<OrderLineItem> 주문한내역들 = Arrays.asList(주문수량메뉴1, 주문수량메뉴2);
 
     @DisplayName("주문을 생성한다.")

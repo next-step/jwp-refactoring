@@ -6,6 +6,7 @@ import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.dto.OrderLineItemResponse;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusRequest;
@@ -67,8 +68,8 @@ class OrderServiceTest {
     void setUp() {
         치킨메뉴 = new Menu(1L, "치킨메뉴", BigDecimal.valueOf(20000));
         튀김메뉴 = new Menu(2L, "튀김메뉴", BigDecimal.valueOf(10000));
-        주문수량메뉴1 = new OrderLineItem(1L, 1L, 치킨메뉴.getId(), 1L);
-        주문수량메뉴2 = new OrderLineItem(2L, 1L, 튀김메뉴.getId(), 1L);
+        주문수량메뉴1 = new OrderLineItem(1L, 치킨메뉴.getId(), 1L);
+        주문수량메뉴2 = new OrderLineItem(2L, 튀김메뉴.getId(), 1L);
         주문내역들 = Arrays.asList(주문수량메뉴1, 주문수량메뉴2);
         주문테이블 = new OrderTable(1L, 1L, 4, false);
         new주문테이블 = new OrderTable(2L, 1L, 4, false);
@@ -90,7 +91,8 @@ class OrderServiceTest {
 
         assertAll(
                 () -> assertThat(savedOrder.getId()).isEqualTo(주문.getId()),
-                () -> assertThat(savedOrder.getOrderLineItems()).contains(주문수량메뉴1, 주문수량메뉴2));
+                () -> assertThat(savedOrder.getOrderLineItems())
+                        .contains(OrderLineItemResponse.from(주문수량메뉴1), OrderLineItemResponse.from(주문수량메뉴2)));
 
         verify(menuRepository, times(1)).findAllById(anyList());
         verify(orderTableRepository, times(1)).findById(anyLong());
@@ -166,9 +168,7 @@ class OrderServiceTest {
 
         OrderResponse changed = orderService.changeOrderStatus(주문.getId(), orderStatusRequest);
 
-        assertAll(
-                () -> assertThat(changed.getOrderStatus()).isEqualTo(changedStatus),
-                () -> assertThat(changed.getOrderLineItems()).isEqualTo(주문.getOrderLineItems()));
+        assertAll(() -> assertThat(changed.getOrderStatus()).isEqualTo(changedStatus));
 
         verify(orderRepository, times(1)).findById(anyLong());
     }

@@ -4,6 +4,7 @@ import kitchenpos.menu.exception.IllegalPriceException;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -15,11 +16,10 @@ public class Menu {
     private String name;
     private BigDecimal price;
 
-    @ManyToOne
-    private MenuGroup menuGroup;
+    private Long menuGroupId;
 
     @Embedded
-    private MenuProducts menuProducts;
+    private MenuProducts menuProducts = new MenuProducts();
 
     private static final String BASIC_PRICE_EXCEPTION = "금액은 0보다 작거나 null일 수 없습니다.";
     private static final String PRICE_LIMIT_EXCEPTION = "금액은 메뉴 상품들의 총 가격 보다 클 수 없습니다.";
@@ -27,12 +27,11 @@ public class Menu {
    protected Menu() {
     }
 
-    public Menu(String name, BigDecimal price, MenuGroup menuGroup, Long sum, List<MenuProduct> menuProducts) {
+    public Menu(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
         validatePrice(price);
         this.name = name;
         this.price = price;
-        validateLimitPrice(sum);
-        this.menuGroup = menuGroup;
+        this.menuGroupId = menuGroupId;
         this.menuProducts = new MenuProducts(menuProducts);
     }
 
@@ -66,11 +65,15 @@ public class Menu {
         return price;
     }
 
-    public MenuGroup getMenuGroup() {
-        return menuGroup;
+    public Long getMenuGroupId() {
+        return menuGroupId;
     }
 
     public List<MenuProduct> getMenuProducts() {
-        return menuProducts.getMenuProducts();
+        return new ArrayList<>(menuProducts.getMenuProducts());
+    }
+
+    public List<Long> toProductIds() {
+       return menuProducts.toMenuProductIds();
     }
 }

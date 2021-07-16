@@ -3,7 +3,6 @@ package kitchenpos.menu.ui;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
@@ -55,9 +54,9 @@ class MenuRestControllerTest {
     @DisplayName("메뉴를 등록한다.")
     @Test
     void create() throws Exception {
-        List<MenuProduct> menuProducts = Arrays.asList(new MenuProduct(7L, 7L, 7L, 1));
+        List<MenuProduct> menuProducts = Arrays.asList(new MenuProduct(7L, 7L, 1));
         MenuRequest menuRequest = new MenuRequest("쓰리라차치킨", 20000L, 1L, menuProducts);
-        Menu menu = new Menu("쓰리라차치킨", BigDecimal.valueOf(20000), new MenuGroup(1L, "그룹1"), 30000L, menuProducts);
+        Menu menu = new Menu("쓰리라차치킨", BigDecimal.valueOf(20000), 1L, menuProducts);
         String jsonString = objectMapper.writeValueAsString(menuRequest);
 
         given(menuService.create(any())).willReturn(MenuResponse.from(menu));
@@ -71,8 +70,8 @@ class MenuRestControllerTest {
     @DisplayName("메뉴 리스트를 조회한다.")
     @Test
     void list() throws Exception {
-        List<MenuProduct> menuProducts = Arrays.asList(new MenuProduct(7L, 7L, 7L, 1));
-        Menu menu = new Menu("쓰리라차치킨", BigDecimal.valueOf(20000), new MenuGroup(1L, "그룹1"), 30000L, menuProducts);
+        List<MenuProduct> menuProducts = Arrays.asList(new MenuProduct(7L, 7L, 1));
+        Menu menu = new Menu("쓰리라차치킨", BigDecimal.valueOf(20000),1L, menuProducts);
         List<MenuResponse> menus = Arrays.asList(MenuResponse.from(menu));
         given(menuService.list()).willReturn(menus);
 

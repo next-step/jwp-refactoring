@@ -30,17 +30,20 @@ public class MenuService {
     }
 
     public MenuResponse create(final MenuRequest menuRequest) {
-        MenuProducts menuProducts = new MenuProducts(menuRequest.getMenuProducts());
-        Products products = new Products(productRepository.findAllById(menuProducts.toMenuProductIds()));
-        Long sum = products.calculateSumPrice(menuProducts.toMenuProductIds());
+        Menu menu = new Menu(menuRequest.getName(), BigDecimal.valueOf(menuRequest.getPrice()),
+                checkMenuGroup(menuRequest), menuRequest.getMenuProducts());
 
-        return MenuResponse.from(menuRepository.save(
-                new Menu(menuRequest.getName(), BigDecimal.valueOf(menuRequest.getPrice()), findMenuGroup(menuRequest),
-                        sum, menuRequest.getMenuProducts())));
+        List<Long> productIds = menu.toProductIds();
+        Products products = new Products(productRepository.findAllById(productIds));
+        Long sum = products.calculateSumPrice(productIds);
+        menu.validateLimitPrice(sum);
+
+        return MenuResponse.from(menuRepository.save(menu));
     }
 
-    private MenuGroup findMenuGroup(MenuRequest menuRequest) {
-        return menuGroupRepository.findById(menuRequest.getMenuGroupId()).orElseThrow(IllegalArgumentException::new);
+    private Long checkMenuGroup(MenuRequest menuRequest) {
+        menuGroupRepository.findById(menuRequest.getMenuGroupId()).orElseThrow(IllegalArgumentException::new);
+        return menuRequest.getMenuGroupId();
     }
 
     @Transactional(readOnly = true)

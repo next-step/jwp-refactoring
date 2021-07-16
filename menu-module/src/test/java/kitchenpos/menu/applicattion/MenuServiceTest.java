@@ -2,6 +2,7 @@ package kitchenpos.menu.applicattion;
 
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.*;
+import kitchenpos.menu.dto.MenuProductResponse;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.exception.IllegalPriceException;
@@ -54,13 +55,13 @@ class MenuServiceTest {
 
     @BeforeEach
     void setUp() {
-        menuProduct1 = new MenuProduct(1L, 1L, 1L, 1);
-        menuProduct2 = new MenuProduct(2L, 1L, 2L, 2);
+        menuProduct1 = new MenuProduct(1L, 1L, 1);
+        menuProduct2 = new MenuProduct(2L, 2L, 2);
         menuProducts = Arrays.asList(menuProduct1, menuProduct2);
         product1 = new Product(1L, "신메뉴1", BigDecimal.valueOf(20000));
         product2 = new Product(2L, "신메뉴2", BigDecimal.valueOf(10000));
-        menu1 = new Menu("신메뉴1", BigDecimal.valueOf(20000), new MenuGroup(1L, "그룹1"), 30000L, menuProducts);
-        menu2 = new Menu("신메뉴2", BigDecimal.valueOf(30000), new MenuGroup(1L, "그룹1"), 30000L, menuProducts);
+        menu1 = new Menu("신메뉴1", BigDecimal.valueOf(20000), 1L, menuProducts);
+        menu2 = new Menu("신메뉴2", BigDecimal.valueOf(30000), 1L, menuProducts);
         menuGroup = new MenuGroup(1L, "그룹1");
     }
 
@@ -71,7 +72,7 @@ class MenuServiceTest {
         given(menuGroupRepository.findById(any())).willReturn(Optional.ofNullable(menuGroup));
         given(productRepository.findAllById(anyList())).willReturn(Arrays.asList(product1, product2));
         given(menuRepository.save(any())).willReturn(new Menu(menu.getName(),
-                BigDecimal.valueOf(menu.getPrice()), new MenuGroup(1L, "그룹1"), 30000L, menuProducts));
+                BigDecimal.valueOf(menu.getPrice()), 1L, menuProducts));
 
         MenuResponse savedMenu = menuService.create(menu);
 
@@ -79,7 +80,8 @@ class MenuServiceTest {
                 () -> assertThat(savedMenu.getName()).isEqualTo(menu.getName()),
                 () -> assertThat(savedMenu.getPrice()).isEqualTo(menu.getPrice()),
                 () -> assertThat(savedMenu.getMenuGroupId()).isEqualTo(menu.getMenuGroupId()),
-                () -> assertThat(savedMenu.getMenuProducts()).contains(menuProduct1, menuProduct2));
+                () -> assertThat(savedMenu.getMenuProducts())
+                        .contains(MenuProductResponse.from(menuProduct1), MenuProductResponse.from(menuProduct2)));
 
         verify(menuGroupRepository, times(1)).findById(any());
         verify(productRepository, times(1)).findAllById(anyList());
@@ -91,12 +93,9 @@ class MenuServiceTest {
     void fail_create1() {
         MenuRequest menu = new MenuRequest("후라이드2마리", 20000L, 1L, menuProducts);
         Product product = new Product(1L, "신메뉴", BigDecimal.valueOf(20000L));
-        given(productRepository.findAllById(anyList())).willReturn(Arrays.asList(product));
 
         assertThatThrownBy(() -> menuService.create(menu))
                 .isInstanceOf(IllegalArgumentException.class);
-
-        verify(productRepository, times(1)).findAllById(anyList());
     }
 
     @DisplayName("메뉴를 등록에 실패한다 - 메뉴 등록시 메뉴 상품들의 총 가격(상품 * 수량의 총합) 보다 클 수 없다.")
@@ -117,12 +116,15 @@ class MenuServiceTest {
     @DisplayName("메뉴 리스트를 조회한다. (메뉴 조회시 메뉴에 대한 수량 정보도 같이 가져온다.)")
     @Test
     void list() {
-        List<MenuProduct> menuProducts1 = Arrays.asList(new MenuProduct(1L, 1L, 1L, 1L));
-        List<MenuProduct> menuProducts2 = Arrays.asList(new MenuProduct(2L, 2L, 2L, 1L));
-        List<MenuProduct> menuProducts3 = Arrays.asList(new MenuProduct(3L, 3L, 3L, 1L));
-        Menu menu1 = new Menu("메뉴1", BigDecimal.valueOf(15000), new MenuGroup(1L, "그룹1"), 30000L, menuProducts1);
-        Menu menu2 = new Menu("메뉴2", BigDecimal.valueOf(17000), new MenuGroup(1L, "그룹1"), 30000L, menuProducts2);
-        Menu menu3 = new Menu("메뉴3", BigDecimal.valueOf(15000), new MenuGroup(1L, "그룹1"), 30000L, menuProducts3);
+        MenuProduct 메뉴상품1 = new MenuProduct(1L, 1L, 1L);
+        MenuProduct 메뉴상품2 = new MenuProduct(2L, 2L, 1L);
+        MenuProduct 메뉴상품3 = new MenuProduct(3L, 3L, 1L);
+        List<MenuProduct> menuProducts1 = Arrays.asList(메뉴상품1);
+        List<MenuProduct> menuProducts2 = Arrays.asList(메뉴상품2);
+        List<MenuProduct> menuProducts3 = Arrays.asList(메뉴상품3);
+        Menu menu1 = new Menu("메뉴1", BigDecimal.valueOf(15000), 1L,  menuProducts1);
+        Menu menu2 = new Menu("메뉴2", BigDecimal.valueOf(17000), 1L,  menuProducts2);
+        Menu menu3 = new Menu("메뉴3", BigDecimal.valueOf(15000), 1L,  menuProducts3);
         List<Menu> menus = Arrays.asList(menu1, menu2, menu3);
         given(menuRepository.findAll()).willReturn(menus);
 
@@ -130,9 +132,9 @@ class MenuServiceTest {
 
         assertAll(
                 () -> assertThat(selectedMenus.get(0).getName()).isEqualTo(menus.get(0).getName()),
-                () -> assertThat(selectedMenus.get(0).getMenuProducts()).isEqualTo(menuProducts1),
-                () -> assertThat(selectedMenus.get(1).getMenuProducts()).isEqualTo(menuProducts2),
-                () -> assertThat(selectedMenus.get(2).getMenuProducts()).isEqualTo(menuProducts3));
+                () -> assertThat(selectedMenus.get(0).getMenuProducts()).contains(MenuProductResponse.from(메뉴상품1)),
+                () -> assertThat(selectedMenus.get(1).getMenuProducts()).contains(MenuProductResponse.from(메뉴상품2)),
+                () -> assertThat(selectedMenus.get(2).getMenuProducts()).contains(MenuProductResponse.from(메뉴상품3)));
 
         verify(menuRepository, times(1)).findAll();
     }

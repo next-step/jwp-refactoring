@@ -18,8 +18,8 @@ class OrderLineItemsTest {
 
     private Menu 치킨메뉴 = new Menu(1L, "치킨메뉴", BigDecimal.valueOf(20000));
     private Menu 튀김메뉴 = new Menu(2L, "튀김메뉴", BigDecimal.valueOf(10000));
-    private OrderLineItem 주문수량메뉴1 = new OrderLineItem(1L, 1L, 치킨메뉴.getId(), 1L);
-    private OrderLineItem 주문수량메뉴2 = new OrderLineItem(2L, 1L, 튀김메뉴.getId(), 1L);
+    private OrderLineItem 주문수량메뉴1 = new OrderLineItem(1L,  치킨메뉴.getId(), 1L);
+    private OrderLineItem 주문수량메뉴2 = new OrderLineItem(2L,  튀김메뉴.getId(), 1L);
     private List<OrderLineItem> 주문내역들 = Arrays.asList(주문수량메뉴1, 주문수량메뉴2);
 
     @DisplayName("주문이 생성된다.")

@@ -2,15 +2,17 @@ package kitchenpos.menu.domain;
 
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Embeddable
 public class MenuProducts {
 
     @OneToMany
-    private final List<MenuProduct> menuProducts;
+    private List<MenuProduct> menuProducts = new ArrayList<>();
+
+    protected MenuProducts() {
+    }
 
     public MenuProducts(List<MenuProduct> menuProducts) {
         this.menuProducts = menuProducts;

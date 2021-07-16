@@ -29,12 +29,12 @@ class MenuTest {
     @DisplayName("메뉴가 생성된다. (메뉴명, 가격, 메뉴그룹id, 메뉴 상품 리스트) 입력")
     @Test
     void createMenu() {
-        Menu menu = new Menu(menuName, price, menuGroup, 20_000L, menuProducts);
+        Menu menu = new Menu(menuName, price, menuGroup.getId(), menuProducts);
 
         assertAll(
                 () -> assertThat(menu.getName()).isEqualTo(menuName),
                 () -> assertThat(menu.getPrice()).isEqualTo(price),
-                () -> assertThat(menu.getMenuGroup()).isEqualTo(menuGroup),
+                () -> assertThat(menu.getMenuGroupId()).isEqualTo(menuGroup.getId()),
                 () -> assertThat(menu.getMenuProducts()).containsExactly(메뉴상품1, 메뉴상품2));
     }
 
@@ -42,14 +42,14 @@ class MenuTest {
     @ParameterizedTest
     @ValueSource(ints = {-1, Integer.MIN_VALUE})
     void fail_createMenu_for_price1(int price) {
-        assertThatThrownBy(() -> new Menu(menuName, new BigDecimal(price), menuGroup, 20_000L, menuProducts))
+        assertThatThrownBy(() -> new Menu(menuName, new BigDecimal(price), menuGroup.getId(), menuProducts))
                 .isInstanceOf(IllegalPriceException.class);
     }
 
     @DisplayName("메뉴 생성을 실패한다. -가격이 null일 경우 실패한다.")
     @Test
     void fail_createMenu_for_price2() {
-        assertThatThrownBy(() -> new Menu(menuName, null, menuGroup, 20_000L, menuProducts))
+        assertThatThrownBy(() -> new Menu(menuName, null, menuGroup.getId(), menuProducts))
                 .isInstanceOf(IllegalPriceException.class);
     }
 
@@ -57,7 +57,8 @@ class MenuTest {
     @Test
     void fail_createMenu_for_price3() {
         BigDecimal bigPrice = BigDecimal.valueOf(30_000);
-        assertThatThrownBy(() -> new Menu(menuName, bigPrice, menuGroup, 20_000L, menuProducts))
+        Menu menu = new Menu(menuName, bigPrice, menuGroup.getId(), menuProducts);
+        assertThatThrownBy(() -> menu.validateLimitPrice(상품1.getPrice().longValue() + 상품2.getPrice().longValue()))
                 .isInstanceOf(IllegalPriceException.class);
     }
 }
