@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import kitchenpos.menu.application.MenuOrderService;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
@@ -14,18 +15,22 @@ import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.exception.OrderNotFoundException;
+import kitchenpos.table.application.TableOrderService;
 
 @Service
 @Transactional
 public class OrderService {
-    private final OrderOrderTableValidator orderOrderTableValidator;
-    private final OrderMenuValidator orderMenuValidator;
+    private final OrderValidator orderValidator;
     private final OrderRepository orderRepository;
+    private final TableOrderService tableOrderService;
+    private final MenuOrderService menuOrderService;
 
-    public OrderService(OrderOrderTableValidator orderOrderTableValidator, OrderMenuValidator orderMenuValidator, OrderRepository orderRepository) {
-        this.orderOrderTableValidator = orderOrderTableValidator;
-        this.orderMenuValidator = orderMenuValidator;
+    public OrderService(OrderValidator orderValidator,
+                        OrderRepository orderRepository, TableOrderService tableOrderService, MenuOrderService menuOrderService) {
+        this.orderValidator = orderValidator;
         this.orderRepository = orderRepository;
+        this.tableOrderService = tableOrderService;
+        this.menuOrderService = menuOrderService;
     }
 
     public List<OrderResponse> findAllOrders() {
@@ -42,7 +47,7 @@ public class OrderService {
     }
 
     public OrderResponse create(final OrderRequest orderRequest) {
-        orderOrderTableValidator.validateExistsOrderTableByIdAndEmptyIsFalse(orderRequest.getOrderTableId());
+        orderValidator.validateNotEmptyOrderTableExists(tableOrderService.findTableById(orderRequest.getOrderTableId()));
         Order order = orderRepository.save(makeOrderWithOrderLineItemRequests(new Order(LocalDateTime.now(), orderRequest.getOrderTableId()),
                 orderRequest.getOrderLineItemRequests()));
         return OrderResponse.of(order);
@@ -57,7 +62,7 @@ public class OrderService {
     }
 
     private OrderLineItem createOrderLineItem(Order order, OrderLineItemRequest orderLineItemRequest) {
-        orderMenuValidator.validateExistsMenuById(orderLineItemRequest.getMenuId());
+        orderValidator.validateExistsMenu(menuOrderService.findMenuById(orderLineItemRequest.getMenuId()));
         return new OrderLineItem(order, orderLineItemRequest.getMenuId(), orderLineItemRequest.getQuantity());
     }
 }

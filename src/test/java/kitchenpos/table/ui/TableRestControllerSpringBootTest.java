@@ -69,14 +69,13 @@ class TableRestControllerSpringBootTest extends MockMvcControllerTest {
         OrderTableRequest orderTableRequest = new OrderTableRequest(0, false);
 
         // then
-        mockMvc.perform(put(DEFAULT_REQUEST_URL + "/1/empty")
+        mockMvc.perform(put(DEFAULT_REQUEST_URL + "/4/empty")
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .content(new ObjectMapper().writeValueAsString(orderTableRequest))
                     .accept(MediaType.APPLICATION_JSON_VALUE))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("id").value(1))
-                .andExpect(jsonPath("numberOfGuests").value(0))
+                .andExpect(jsonPath("numberOfGuests").value(3))
                 .andExpect(jsonPath("empty").value(false))
         ;
     }

@@ -7,6 +7,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,6 +23,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import kitchenpos.menu.application.MenuOrderService;
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
@@ -30,6 +33,8 @@ import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.exception.OrderNotFoundException;
+import kitchenpos.table.application.TableOrderService;
+import kitchenpos.table.domain.OrderTable;
 
 @DisplayName("주문 서비스")
 @ExtendWith(MockitoExtension.class)
@@ -37,9 +42,11 @@ class OrderServiceTest {
     @Mock
     private OrderRepository orderRepository;
     @Mock
-    private OrderMenuValidator orderMenuValidator;
+    private TableOrderService tableOrderService;
     @Mock
-    private OrderOrderTableValidator orderOrderTableValidator;
+    private OrderValidator orderValidator;
+    @Mock
+    private MenuOrderService menuOrderService;
 
     @InjectMocks
     private OrderService orderService;
@@ -104,13 +111,15 @@ class OrderServiceTest {
         order.addOrderLineItem(new OrderLineItem(order, 1L, 3L));
 
         given(orderRepository.save(any(Order.class))).willReturn(order);
+        given(tableOrderService.findTableById(anyLong())).willReturn(Optional.of(new OrderTable(3, false)));
+        given(menuOrderService.findMenuById(anyLong())).willReturn(Optional.of(new Menu("a", BigDecimal.valueOf(10000.00), 1L)));
 
         // when
         OrderResponse resultOrderResponse = orderService.create(orderRequest);
 
         // then
-        verify(orderOrderTableValidator).validateExistsOrderTableByIdAndEmptyIsFalse(anyLong());
-        verify(orderMenuValidator).validateExistsMenuById(anyLong());
+        verify(orderValidator).validateNotEmptyOrderTableExists(any(Optional.class));
+        verify(orderValidator).validateExistsMenu(any(Optional.class));
         return Arrays.asList(
                 dynamicTest("주문 초기 상태 확인됨.", () -> assertThat(resultOrderResponse.getOrderStatus()).isEqualTo(OrderStatus.COOKING)),
                 dynamicTest("주문 테이블 확인됨.", () -> assertThat(resultOrderResponse.getOrderTableId()).isNotNull()),
@@ -135,10 +144,10 @@ class OrderServiceTest {
                     // given
                     OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(1L, 1L);
                     OrderRequest orderRequest = new OrderRequest(OrderStatus.COOKING, 2L, Arrays.asList(orderLineItemRequest));
-                    doThrow(RuntimeException.class).when(orderMenuValidator).validateExistsMenuById(anyLong());
+                    doThrow(RuntimeException.class).when(orderValidator).validateExistsMenu(Optional.empty());
 
                     // then
-                    verify(orderOrderTableValidator).validateExistsOrderTableByIdAndEmptyIsFalse(anyLong());
+                    verify(orderValidator).validateNotEmptyOrderTableExists(any(Optional.class));
                     assertThatThrownBy(() -> orderService.create(orderRequest))
                             .isInstanceOf(RuntimeException.class);
                 }),
@@ -146,7 +155,7 @@ class OrderServiceTest {
                     // given
                     OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(1L, 1L);
                     OrderRequest orderRequest = new OrderRequest(OrderStatus.COOKING, 1L, Arrays.asList(orderLineItemRequest));
-                    doThrow(RuntimeException.class).when(orderOrderTableValidator).validateExistsOrderTableByIdAndEmptyIsFalse(anyLong());
+                    doThrow(RuntimeException.class).when(orderValidator).validateNotEmptyOrderTableExists(Optional.empty());
 
                     // then
                     assertThatThrownBy(() -> orderService.create(orderRequest))

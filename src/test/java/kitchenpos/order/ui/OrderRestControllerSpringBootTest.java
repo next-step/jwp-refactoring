@@ -39,7 +39,7 @@ class OrderRestControllerSpringBootTest extends MockMvcControllerTest {
     void create_order() throws Exception {
         // given
         OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(1L, 1L);
-        OrderRequest orderRequest = new OrderRequest(OrderStatus.COOKING, 7L, Arrays.asList(orderLineItemRequest));
+        OrderRequest orderRequest = new OrderRequest(OrderStatus.COOKING, 1L, Arrays.asList(orderLineItemRequest));
 
         // then
         mockMvc.perform(post(DEFAULT_REQUEST_URL)
@@ -60,7 +60,7 @@ class OrderRestControllerSpringBootTest extends MockMvcControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("[0].id").value(1))
-                .andExpect(jsonPath("[0].orderTableId").value(7))
+                .andExpect(jsonPath("[0].orderTableId").value(1))
         ;
     }
 
