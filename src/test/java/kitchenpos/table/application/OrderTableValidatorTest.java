@@ -33,58 +33,6 @@ class OrderTableValidatorTest {
     @InjectMocks
     private OrderTableValidator orderTableValidator;
 
-    @TestFactory
-    @DisplayName("단체지정 대상 유효성 검증 로직 테스트")
-    List<DynamicTest> orderTable_is_empty_or_hasTableGroups() {
-        OrderTable orderTable1 = new OrderTable(3, true);
-        OrderTable orderTable2 = new OrderTable(3, false);
-        OrderTable orderTable3 = new OrderTable(3, true);
-
-        return Arrays.asList(
-                dynamicTest("단체지정 테이블 중 비어있지 않은 테이블이 존재할 경우 오류 발생.", () -> {
-                    // given
-                    given(orderTableRepository.findByIdIn(any(List.class))).willReturn(Arrays.asList(orderTable1, orderTable2));
-
-                    // then
-                    assertThatThrownBy(() -> orderTableValidator.validateOrderTableIsEmptyOrHasTableGroups(Arrays.asList(1L, 2L)))
-                            .isInstanceOf(IllegalArgumentException.class)
-                            .hasMessage("비어있지 않은 테이블은 정산 그룹에 포함시킬 수 없습니다.");
-                }),
-                dynamicTest("단체지정 테이블 중 테이블 그룹이 지정되어 있는 테이블이 존재할 경우 오류 발생.", () -> {
-                    // given
-                    orderTable1.groupBy(1L);
-                    given(orderTableRepository.findByIdIn(any(List.class))).willReturn(Arrays.asList(orderTable1, orderTable3));
-
-                    // then
-                    assertThatThrownBy(() -> orderTableValidator.validateOrderTableIsEmptyOrHasTableGroups(Arrays.asList(1L, 2L)))
-                            .isInstanceOf(IllegalArgumentException.class)
-                            .hasMessage("정산 그룹에 포함된 테이블을 새로운 정산그룹에 포함시킬 수 없습니다.");
-                })
-        );
-    }
-
-    @TestFactory
-    @DisplayName("단체지정 등록 오류")
-    List<DynamicTest> group_exception() {
-        return Arrays.asList(
-                dynamicTest("단체지정 테이블이 2개 이상이 아닐 경우 오류 발생.", () -> {
-                    // then
-                    assertThatThrownBy(() -> orderTableValidator.validateOrderTablesConditionForCreatingTableGroup(Arrays.asList(1L)))
-                            .isInstanceOf(IllegalArgumentException.class)
-                            .hasMessage("정산 그룹 생성은 2개 이상의 테이블만 가능합니다.");
-                }),
-                dynamicTest("단체지정 테이블 중 등록되지 않은 테이블이 존재할 경우 오류 발생.", () -> {
-                    // given
-                    given(orderTableRepository.countByIdIn(any(List.class))).willReturn(1L);
-
-                    // then
-                    assertThatThrownBy(() -> orderTableValidator.validateOrderTablesConditionForCreatingTableGroup(Arrays.asList(1L, 2L)))
-                            .isInstanceOf(MisMatchedOrderTablesSizeException.class)
-                            .hasMessage("입력된 항목과 조회결과가 일치하지 않습니다.");
-                })
-        );
-    }
-
     @Test
     @DisplayName("비어있지 않은 테이블ID가 존재하지 않을 떄 오류 발생")
     void validateExistsOrderTableByIdAndEmptyIsFalse() {

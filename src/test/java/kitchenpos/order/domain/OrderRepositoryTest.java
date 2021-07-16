@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
@@ -79,7 +80,7 @@ class OrderRepositoryTest {
     }
 
     @Test
-    @DisplayName("테이블 ID 기준으로 주문 찾기")
+    @DisplayName("여러 테이블 ID 기준으로 주문 찾기")
     void find_by_orderIds() {
         // given
         Order order1 = new Order(LocalDateTime.now(), 1L);
@@ -91,5 +92,19 @@ class OrderRepositoryTest {
 
         // then
         assertThat(orders).size().isEqualTo(2);
+    }
+
+    @Test
+    @DisplayName("단일 테이블 ID 기준으로 주문 찾기")
+    void find_by_orderId() {
+        // given
+        Order order = new Order(LocalDateTime.now(), 1L);
+        orderRepository.save(order);
+
+        // when
+        Optional<Order> orders = orderRepository.findByOrderTableId(order.getId());
+
+        // then
+        assertThat(order).isNotNull();
     }
 }

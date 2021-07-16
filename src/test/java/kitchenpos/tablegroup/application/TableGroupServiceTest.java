@@ -36,13 +36,9 @@ import kitchenpos.tablegroup.dto.TableGroupResponse;
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
     @Mock
-    private TableGroupOrderValidator tableGroupOrderValidator;
-    @Mock
     private ApplicationEventPublisher publisher;
     @Mock
     private TableGroupRepository tableGroupRepository;
-    @Mock
-    private TableGroupOrderTableValidator tableGroupOrderTableValidator;
     @Mock
     private TableGroupValidator tableGroupValidator;
     @Mock

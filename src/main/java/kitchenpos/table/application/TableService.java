@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kitchenpos.order.application.OrderValidator;
+import kitchenpos.order.application.OrderOrderTableService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableRequest;
@@ -18,12 +18,14 @@ import kitchenpos.table.exception.OrderTableNotFoundException;
 @Transactional
 public class TableService {
     private final OrderTableRepository orderTableRepository;
-    private final OrderValidator orderValidator;
+    private final TableValidator tableValidator;
+    private final OrderOrderTableService orderOrderTableService;
 
-    public TableService(final OrderTableRepository orderTableRepository,
-                        OrderValidator orderValidator) {
+    public TableService(final OrderTableRepository orderTableRepository, final TableValidator tableValidator,
+                        final OrderOrderTableService orderOrderTableService) {
         this.orderTableRepository = orderTableRepository;
-        this.orderValidator = orderValidator;
+        this.tableValidator = tableValidator;
+        this.orderOrderTableService = orderOrderTableService;
     }
 
     public OrderTableResponse create(final OrderTableRequest orderTableRequest) {
@@ -49,7 +51,7 @@ public class TableService {
 
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         final OrderTable savedOrderTable = findOrderTableById(orderTableId);
-        orderValidator.validateExistsOrderStatusIsCookingANdMeal(orderTableId);
+        tableValidator.validateExistsOrderStatusIsCookingANdMeal(orderOrderTableService.findOrderByOrderTableId(orderTableId));
         savedOrderTable.changeEmpty(orderTableRequest.isEmpty());
         return OrderTableResponse.of(savedOrderTable);
     }

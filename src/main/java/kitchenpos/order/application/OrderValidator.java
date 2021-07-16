@@ -1,30 +1,20 @@
 package kitchenpos.order.application;
 
 import java.util.Arrays;
-import java.util.List;
 
 import org.springframework.stereotype.Component;
 
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.exception.OrderAlreadyExistsException;
-import kitchenpos.tablegroup.application.TableGroupOrderValidator;
 
 @Component
-public class OrderValidator implements TableGroupOrderValidator {
+public class OrderValidator {
 
     private final OrderRepository orderRepository;
 
     public OrderValidator(OrderRepository orderRepository) {
         this.orderRepository = orderRepository;
-    }
-
-    @Override
-    public void validateExistsOrdersStatusIsCookingOrMeal(List<Long> orderTableIds) {
-        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
-                orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new OrderAlreadyExistsException("주문 상태가 COOKING 또는 MEAL인 주문이 존재합니다.");
-        }
     }
 
     public void validateExistsOrderStatusIsCookingANdMeal(Long orderTableId) {

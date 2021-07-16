@@ -8,6 +8,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.*;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -21,7 +22,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.order.application.OrderValidator;
+import kitchenpos.order.application.OrderOrderTableService;
+import kitchenpos.order.domain.Order;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableRequest;
@@ -35,7 +37,9 @@ class TableServiceTest {
     @Mock
     private OrderTableRepository orderTableRepository;
     @Mock
-    private OrderValidator orderValidator;
+    private OrderOrderTableService orderOrderTableService;
+    @Mock
+    private TableValidator tableValidator;
     @InjectMocks
     private TableService tableService;
 
@@ -77,12 +81,13 @@ class TableServiceTest {
         OrderTableRequest orderTableRequest = new OrderTableRequest(4, true);
         OrderTable orderTable = new OrderTable(3, false);
         given(orderTableRepository.findById(any())).willReturn(Optional.of(orderTable));
+        given(orderOrderTableService.findOrderByOrderTableId(1L)).willReturn(Optional.of(new Order(LocalDateTime.now(), 1L)));
 
         // when
         OrderTableResponse resultOrderTableResponse = tableService.changeEmpty(1L, orderTableRequest);
 
         // then
-        verify(orderValidator).validateExistsOrderStatusIsCookingANdMeal(any());
+        verify(tableValidator).validateExistsOrderStatusIsCookingANdMeal(any(Optional.class));
         assertThat(resultOrderTableResponse.isEmpty()).isTrue();
     }
 
@@ -107,19 +112,20 @@ class TableServiceTest {
                     OrderTable orderTable = new OrderTable(3, false);
                     orderTable.groupBy(1L);
                     given(orderTableRepository.findById(any())).willReturn(Optional.of(orderTable));
+                    given(orderOrderTableService.findOrderByOrderTableId(1L)).willReturn(Optional.of(new Order(LocalDateTime.now(), 1L)));
 
                     // when
                     assertThatThrownBy(() -> tableService.changeEmpty(1L, orderTableRequest))
                             .isInstanceOf(TableGroupAlreadyExistsException.class)
                             .hasMessage("테이블 그룹이 이미 존재합니다.");
-                    verify(orderValidator).validateExistsOrderStatusIsCookingANdMeal(anyLong());
+                    verify(tableValidator).validateExistsOrderStatusIsCookingANdMeal(any(Optional.class));
                 }),
                 dynamicTest("주문 상태가 COOKING이거나 MEAL상태이면 오류 발생.", () -> {
                     // And
                     OrderTable orderTable = new OrderTable(3, false);
                     orderTable.ungroup();
                     given(orderTableRepository.findById(any())).willReturn(Optional.of(orderTable));
-                    doThrow(RuntimeException.class).when(orderValidator).validateExistsOrderStatusIsCookingANdMeal(any());
+                    doThrow(RuntimeException.class).when(tableValidator).validateExistsOrderStatusIsCookingANdMeal(any(Optional.class));
 
                     // when
                     assertThatThrownBy(() -> tableService.changeEmpty(1L, orderTableRequest))
