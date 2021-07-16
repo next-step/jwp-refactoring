@@ -3,20 +3,19 @@ package kitchenpos.order;
 import static org.assertj.core.api.Assertions.*;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuProducts;
-import kitchenpos.menu.domain.Price;
-import kitchenpos.menu.domain.Quantity;
+
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.Price;
 import kitchenpos.menu.domain.Product;
+import kitchenpos.menu.domain.Quantity;
 
 @DisplayName("주문 항목 도메인 테스트")
 public class OrderLineItemTest {

@@ -3,20 +3,15 @@ package kitchenpos.menu;
 import static org.assertj.core.api.Assertions.*;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuProducts;
+import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.Price;
-import kitchenpos.menu.domain.Quantity;
-import kitchenpos.menu.exception.MenuException;
-import kitchenpos.menu.exception.PriceException;
 import kitchenpos.menu.domain.Product;
+import kitchenpos.menu.exception.PriceException;
 
 @DisplayName("메뉴 도메인 테스트")
 public class MenuTest {

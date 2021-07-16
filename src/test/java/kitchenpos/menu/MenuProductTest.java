@@ -9,8 +9,8 @@ import org.junit.jupiter.api.Test;
 
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.Price;
-import kitchenpos.menu.domain.Quantity;
 import kitchenpos.menu.domain.Product;
+import kitchenpos.menu.domain.Quantity;
 
 @DisplayName("메뉴 상품 도메인 테스트")
 public class MenuProductTest {
