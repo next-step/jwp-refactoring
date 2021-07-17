@@ -37,24 +37,8 @@ public class OrderLineItems {
             .collect(Collectors.toList());
     }
 
-    public long size() {
-        return orderLineItems.size();
-    }
-
     public List<OrderLineItem> toList() {
         return orderLineItems;
-    }
-
-    public void addAll(final List<OrderLineItem> orderLineItems) {
-        this.orderLineItems.addAll(orderLineItems);
-    }
-
-    public void add(final OrderLineItem orderLineItem) {
-        this.orderLineItems.add(orderLineItem);
-    }
-
-    public void updateOrder(final Order order) {
-        orderLineItems.forEach(orderLineItem -> orderLineItem.updateOrder(order));
     }
 
     @Override

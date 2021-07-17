@@ -32,9 +32,9 @@ public class OrderLineItem {
     public OrderLineItem() {
     }
 
-    public OrderLineItem(final Order order, final Menu menu, final long quantity) {
+    public OrderLineItem(final Order order, final Long menuId, final long quantity) {
         this.order = order;
-        this.menuId = menu.getId();
+        this.menuId = menuId;
         this.quantity = new Quantity(quantity);
     }
 
@@ -57,10 +57,6 @@ public class OrderLineItem {
 
     public long getQuantity() {
         return quantity.value();
-    }
-
-    public void updateOrder(final Order order) {
-        this.order = order;
     }
 
     @Override
