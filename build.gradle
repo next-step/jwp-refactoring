@@ -78,7 +78,6 @@ project(':kitchenpos-order') {
         enabled = true
     }
     dependencies {
-        implementation project(':kitchenpos-common')
         implementation project(':kitchenpos-table')
         implementation 'org.springframework:spring-web'
         implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
@@ -102,7 +101,6 @@ project(':kitchenpos-table') {
         enabled = true
     }
     dependencies {
-        implementation project(':kitchenpos-common')
         implementation project(':kitchenpos-order')
         implementation 'org.springframework:spring-web'
         implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
