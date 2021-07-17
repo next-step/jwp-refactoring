@@ -24,7 +24,7 @@ public class MenuProduct {
     }
 
     public MenuProduct(Long productId, Quantity quantity) {
-        this(0L, null, productId, quantity);
+        this(null, null, productId, quantity);
     }
 
     public MenuProduct(Menu menu, Long productId, Quantity quantity) {

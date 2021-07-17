@@ -1,7 +1,7 @@
 # 키친포스
 
-## 키친포스 다이아그램
-![kitchenpos.png](kitchenpos.png)
+## 키친포스 다이어그램
+![Kitchenpos_v2 .png](Kitchenpos_v2.png)
 
 ## 👩‍🍳`KitchenPos`의 요구 사항
 
