@@ -51,8 +51,8 @@ class TableGroupRestControllerTest {
             .alwaysDo(print())
             .build();
 
-        테이블1 = new OrderTable(4L, 테이블그룹, NumberOfGuests.of(4), true);
-        테이블2 = new OrderTable(5L, 테이블그룹, NumberOfGuests.of(4), true);
+        테이블1 = new OrderTable(4L, NumberOfGuests.of(4), true);
+        테이블2 = new OrderTable(5L, NumberOfGuests.of(4), true);
 
         테이블_손님이_존재 = new OrderTable();
 

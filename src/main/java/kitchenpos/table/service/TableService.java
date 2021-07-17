@@ -55,7 +55,7 @@ public class TableService {
     }
 
     private void validateOrderTableHasTableGroup(OrderTable savedOrderTable) {
-        if (Objects.nonNull(savedOrderTable.getTableGroup())) {
+        if (Objects.nonNull(savedOrderTable.getTableGroupId())) {
             throw new OrderTableHasTableGroupException();
         }
     }

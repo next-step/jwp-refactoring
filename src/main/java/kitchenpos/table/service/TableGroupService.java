@@ -42,7 +42,7 @@ public class TableGroupService {
         validateOrderTable(tableGroupRequest, orderTables);
         TableGroup savedTableGroup = tableGroupRepository
             .save(new TableGroup(new OrderTables(orderTables)));
-        orderTables.forEach(orderTable -> orderTable.toTableGroup(savedTableGroup));
+        orderTables.forEach(orderTable -> orderTable.toTableGroup(savedTableGroup.getId()));
 
         return TableGroupResponse.of(savedTableGroup);
     }
@@ -69,7 +69,7 @@ public class TableGroupService {
 
     private void validateOrderTableHasTableGroup(List<OrderTable> orderTables) {
         if (orderTables.stream()
-            .anyMatch(orderTable -> Objects.nonNull(orderTable.getTableGroup()))) {
+            .anyMatch(orderTable -> Objects.nonNull(orderTable.getTableGroupId()))) {
             throw new OrderTableHasTableGroupException();
         }
     }

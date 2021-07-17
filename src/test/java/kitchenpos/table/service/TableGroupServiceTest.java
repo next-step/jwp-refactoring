@@ -95,7 +95,7 @@ class TableGroupServiceTest {
     void create_with_exception_when_has_table_group() {
         //given
         TableGroup tableGroup = new TableGroup();
-        오더테이블_테이블2 = new OrderTable(2L, tableGroup, NumberOfGuests.of(4), true);
+        오더테이블_테이블2 = new OrderTable(2L, tableGroup.getId(), NumberOfGuests.of(4), true);
 
         //when && then
         assertThatThrownBy(() -> tableGroupService.create(테이블그룹_테이블1_테이블2_리퀘스트))
@@ -110,8 +110,8 @@ class TableGroupServiceTest {
 
         //then
         assertAll(() -> {
-            assertThat(오더테이블_테이블1.getTableGroup()).isNull();
-            assertThat(오더테이블_테이블2.getTableGroup()).isNull();
+            assertThat(오더테이블_테이블1.getTableGroupId()).isNull();
+            assertThat(오더테이블_테이블2.getTableGroupId()).isNull();
         });
     }
 

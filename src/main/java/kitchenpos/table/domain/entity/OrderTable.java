@@ -5,8 +5,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import kitchenpos.table.domain.value.NumberOfGuests;
 
 @Entity
@@ -16,9 +14,7 @@ public class OrderTable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "table_group_id")
-    private TableGroup tableGroup;
+    private Long tableGroupId;
 
     @Embedded
     private NumberOfGuests numberOfGuests;
@@ -27,10 +23,10 @@ public class OrderTable {
     public OrderTable() {
     }
 
-    public OrderTable(Long id, TableGroup tableGroup, NumberOfGuests numberOfGuests,
+    public OrderTable(Long id, Long tableGroupId, NumberOfGuests numberOfGuests,
         boolean empty) {
         this.id = id;
-        this.tableGroup = tableGroup;
+        this.tableGroupId = tableGroupId;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
     }
@@ -54,8 +50,8 @@ public class OrderTable {
         return id;
     }
 
-    public TableGroup getTableGroup() {
-        return tableGroup;
+    public Long getTableGroupId() {
+        return tableGroupId;
     }
 
     public NumberOfGuests getNumberOfGuests() {
@@ -66,12 +62,12 @@ public class OrderTable {
         return empty;
     }
 
-    public void toTableGroup(TableGroup tableGroup) {
-        this.tableGroup = tableGroup;
+    public void toTableGroup(Long tableGroupId) {
+        this.tableGroupId = tableGroupId;
     }
 
     public void unGroup() {
-        this.tableGroup = null;
+        this.tableGroupId = null;
     }
 
     public void changeEmpty(boolean empty) {
@@ -86,7 +82,7 @@ public class OrderTable {
     public String toString() {
         return "OrderTable{" +
             "id=" + id +
-            ", tableGroup=" + tableGroup +
+            ", tableGroup=" + tableGroupId +
             ", numberOfGuests=" + numberOfGuests +
             ", empty=" + empty +
             '}';

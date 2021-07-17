@@ -10,7 +10,7 @@ import kitchenpos.table.domain.entity.TableGroup;
 @Embeddable
 public class OrderTables {
 
-    @OneToMany(mappedBy = "tableGroup")
+    @OneToMany(mappedBy = "tableGroupId")
     private List<OrderTable> orderTables;
 
     public OrderTables() {
@@ -21,7 +21,7 @@ public class OrderTables {
     }
 
     public void toTableGroup(TableGroup tableGroup) {
-        orderTables.forEach(orderTable -> orderTable.toTableGroup(tableGroup));
+        orderTables.forEach(orderTable -> orderTable.toTableGroup(tableGroup.getId()));
     }
 
     public List<OrderTable> getValue() {
