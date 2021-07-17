@@ -17,11 +17,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootTest
 class TableGroupServiceTest {
 
-    @Autowired
+    //@Autowired
     TableGroupService tableGroupService;
 
     OrderTable 오더테이블_테이블1;

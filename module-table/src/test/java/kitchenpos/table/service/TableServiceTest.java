@@ -18,7 +18,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 class TableServiceTest {
 
-    @Autowired
+    //@Autowired
     TableService tableService;
 
     OrderTable 주문테이블_테이블1;
