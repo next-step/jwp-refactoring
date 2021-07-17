@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuMapper;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuProductRepository;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.domain.MenuValidator;
 import kitchenpos.menu.dto.MenuRequest;
@@ -20,14 +19,15 @@ import kitchenpos.menu.dto.MenuResponse;
 public class MenuService {
     private final MenuRepository menuRepository;
     private final MenuValidator menuValidator;
-    private final MenuProductRepository menuProductRepository;
+    private final MenuProductService menuProductService;
 
     public MenuService(final MenuRepository menuRepository,
-        final MenuValidator menuValidator, final MenuProductRepository menuProductRepository) {
+        final MenuValidator menuValidator,
+        final MenuProductService menuProductService) {
 
         this.menuRepository = menuRepository;
         this.menuValidator = menuValidator;
-        this.menuProductRepository = menuProductRepository;
+        this.menuProductService = menuProductService;
     }
 
     public MenuResponse create(final MenuRequest menuRequest) {
@@ -35,7 +35,7 @@ public class MenuService {
         final Menu menu = menuMapper.toMenu();
         final Menu saved = menuRepository.save(menu);
         final List<MenuProduct> menuProducts = menuMapper.toMenuProducts(saved);
-        final List<MenuProduct> savedMenuProducts = menuProductRepository.saveAll(menuProducts);
+        final List<MenuProduct> savedMenuProducts = menuProductService.createAll(menuProducts);
 
         return MenuResponse.of(saved, savedMenuProducts);
     }
