@@ -16,10 +16,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
+
 import static kitchenpos.common.Message.*;
+import static kitchenpos.menu.MenuTestFixture.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -36,18 +37,6 @@ public class MenuValidatorTest {
     @InjectMocks
     MenuValidator menuValidator;
 
-    private String 메뉴이름 = "메뉴이름";
-    private Price 가격 = Price.valueOf(15000);
-    private Long 메뉴그룹_ID = 1L;
-    private Long 후라이드_상품_ID = 1L;
-    private Long 콜라_상품_ID = 2L;
-
-    private MenuProductRequest 후라이드_한마리_요청 = new MenuProductRequest(후라이드_상품_ID, 1L);
-    private MenuProductRequest 콜라_한개_요청 = new MenuProductRequest(콜라_상품_ID, 1L);
-    private List<MenuProductRequest> 메뉴상품목록 = Arrays.asList(후라이드_한마리_요청, 콜라_한개_요청);
-    private Menu 메뉴 = new Menu(메뉴이름, 가격, 메뉴그룹_ID);
-    private MenuRequest 메뉴_요청 = new MenuRequest(메뉴.getName(), 메뉴.getPrice().value(), 메뉴.getMenuGroupId(), 메뉴상품목록);
-
     @DisplayName("메뉴 그룹이 기존에 등록되어 있지 않은 경우, 메뉴 등록시 예외가 발생한다")
     @Test
     void 메뉴그룹_등록되어있지_않은_경우_예외발생() {
@@ -55,7 +44,7 @@ public class MenuValidatorTest {
         when(menuGroupRepository.findById(any())).thenReturn(Optional.empty());
 
         //When + Then
-        Throwable 메뉴그룹_없음_예외 = catchThrowable(() -> menuValidator.validate(메뉴_요청));
+        Throwable 메뉴그룹_없음_예외 = catchThrowable(() -> menuValidator.validate(맥모닝콤보_요청));
         assertThat(메뉴그룹_없음_예외).isInstanceOf(CannotFindException.class)
                 .hasMessage(ERROR_MENUGROUP_NOT_FOUND.showText());
     }
@@ -67,7 +56,7 @@ public class MenuValidatorTest {
         when(menuGroupRepository.findById(any())).thenReturn(Optional.of(new MenuGroup()));
 
         //When + Then
-        Throwable 상품_없음_예외 = catchThrowable(() -> menuValidator.validate(메뉴_요청));
+        Throwable 상품_없음_예외 = catchThrowable(() -> menuValidator.validate(맥모닝콤보_요청));
         assertThat(상품_없음_예외).isInstanceOf(CannotFindException.class)
                 .hasMessage(ERROR_PRODUCT_NOT_FOUND.showText());
     }
@@ -76,14 +65,15 @@ public class MenuValidatorTest {
     @Test
     void 메뉴등록시_가격이_메뉴상품_목록의_가격합보다_큰_경우_예외발생() {
         //Given
-        Product 후라이드 = new Product("후라이드", Price.valueOf(5000));
-        Product 콜라 = new Product("콜라", Price.valueOf(1000));
+
+        Product 아이스_아메리카노 = new Product(아이스_아메리카노_상품_ID, "아이스 아메리카노", Price.valueOf(2000));
+        Product 에그맥머핀 = new Product(에그맥머핀_상품_ID, "에그 맥머핀", Price.valueOf(3000));
 
         when(menuGroupRepository.findById(any())).thenReturn(Optional.of(new MenuGroup()));
-        when(productRepository.findAllById(any())).thenReturn(Arrays.asList(후라이드, 콜라));
+        when(productRepository.findAllById(any())).thenReturn(Arrays.asList(아이스_아메리카노, 에그맥머핀));
 
         //When + Then
-        Throwable 메뉴_가격_큼_예외 = catchThrowable(() -> menuValidator.validate(메뉴_요청));
+        Throwable 메뉴_가격_큼_예외 = catchThrowable(() -> menuValidator.validate(맥모닝콤보_요청));
         assertThat(메뉴_가격_큼_예외).isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(ERROR_MENU_PRICE_CANNOT_BE_BIGGER_THAN_MENUPRODUCTS_TOTAL.showText());
     }
