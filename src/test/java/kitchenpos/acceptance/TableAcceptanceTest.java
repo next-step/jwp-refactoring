@@ -22,7 +22,7 @@ import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menuGroup.dto.MenuGroupRequest;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.order.dto.OrderRequest;
-import kitchenpos.domain.OrderLineItemRequest;
+import kitchenpos.table.dto.OrderLineItemRequest;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.tableGroup.dto.TableGroupRequest;

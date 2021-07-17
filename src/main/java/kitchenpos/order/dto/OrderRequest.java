@@ -3,9 +3,7 @@ package kitchenpos.order.dto;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import org.springframework.lang.NonNull;
-
-import kitchenpos.domain.OrderLineItemRequest;
+import kitchenpos.table.dto.OrderLineItemRequest;
 
 public class OrderRequest {
     private Long id;

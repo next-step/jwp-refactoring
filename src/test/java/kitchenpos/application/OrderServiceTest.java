@@ -22,7 +22,7 @@ import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.order.dto.OrderRequest;
-import kitchenpos.domain.OrderLineItemRequest;
+import kitchenpos.table.dto.OrderLineItemRequest;
 import kitchenpos.table.dto.OrderTableRequest;
 
 @ExtendWith(MockitoExtension.class)
