@@ -56,7 +56,7 @@ public class TableService {
     }
 
     private List<Order> findAllOrder(final Long orderTableId) {
-        return orderRepository.findAllByOrderTable_Id(orderTableId);
+        return orderRepository.findAllByOrderTableId(orderTableId);
     }
 
     private OrderTable findOrderTable(final Long orderTableId) {

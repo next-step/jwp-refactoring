@@ -46,10 +46,10 @@ public class TableGroupEventHandler {
     }
 
     private List<OrderTable> findAllOrderTable(final TableUnGroupEvent tableUnGroupEvent) {
-        return orderTableRepository.findAllByTableGroup_Id(tableUnGroupEvent.getTableGroupId());
+        return orderTableRepository.findAllByTableGroupId(tableUnGroupEvent.getTableGroupId());
     }
 
     private List<Order> findAllOrder(final List<Long> orderTableIds) {
-        return orderRepository.findAllByOrderTable_IdIn(orderTableIds);
+        return orderRepository.findAllByOrderTableIdIn(orderTableIds);
     }
 }

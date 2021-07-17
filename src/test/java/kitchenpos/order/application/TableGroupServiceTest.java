@@ -123,13 +123,13 @@ class TableGroupServiceTest {
         final OrderTable orderTable = new OrderTable();
         final OrderTable orderTable2 = new OrderTable();
         final List<OrderTable> orderTables = Arrays.asList(orderTable, orderTable2);
-        given(orderTableRepository.findAllByTableGroup_Id(tableGroupId)).willReturn(orderTables);
+        given(orderTableRepository.findAllByTableGroupId(tableGroupId)).willReturn(orderTables);
 
         // when
         tableGroupService.ungroup(tableGroupId);
 
         // then
-        verify(orderTableRepository).findAllByTableGroup_Id(tableGroupId);
-        verify(orderRepository).findAllByOrderTable_IdIn(anyList());
+        verify(orderTableRepository).findAllByTableGroupId(tableGroupId);
+        verify(orderRepository).findAllByOrderTableIdIn(anyList());
     }
 }

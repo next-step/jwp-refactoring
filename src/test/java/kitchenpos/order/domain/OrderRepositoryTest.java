@@ -32,7 +32,7 @@ class OrderRepositoryTest {
         final Order order = orderRepository.save(new Order(orderTable, orderLineItems));
 
         // when
-        final List<Order> actual = orderRepository.findAllByOrderTable_IdIn(
+        final List<Order> actual = orderRepository.findAllByOrderTableIdIn(
             Collections.singletonList(order.getOrderTableId()));
 
         // then
