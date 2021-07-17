@@ -1,0 +1,13 @@
+###
+POST {{menu}}/api/products
+Content-Type: application/json
+
+{
+  "name": "강정치킨",
+  "price": 17000
+}
+
+###
+GET {{menu}}/api/products
+
+###
