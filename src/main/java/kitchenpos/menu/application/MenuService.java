@@ -34,18 +34,18 @@ public class MenuService {
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
 		MenuGroup menuGroup = menuGroupRepository.findById(menuRequest.getMenuGroupId()).orElseThrow(IllegalAccessError::new);
-		Menu menu = new Menu(menuRequest.getName(), new Price(menuRequest.getPrice()), menuGroup);
+		Menu menu = menuRepository.save(new Menu(menuRequest.getName(), new Price(menuRequest.getPrice()), menuGroup));
 		List<MenuProduct> menuProducts = collectMenuProduct(menuRequest, menu);
 		menu.addMenuProducts(menuProducts);
-		Menu savedMenu = menuRepository.save(menu);
+		// Menu savedMenu = menuRepository.save(menu);
 
-		return MenuResponse.of(savedMenu);
+		return MenuResponse.of(menu);
     }
 
 	private List<MenuProduct> collectMenuProduct(MenuRequest menuRequest, Menu menu) {
 		List<MenuProduct> menuProducts = new ArrayList<>();
 		for (MenuProductRequest menuProductRequest : menuRequest.getMenuProducts()) {
-			Product product = productRepository.findById(menuProductRequest.getProductId()).orElseThrow(IllegalAccessError::new);
+			Product product = productRepository.findById(menuProductRequest.getProductId()).orElseThrow(IllegalArgumentException::new);
 			menuProducts.add(new MenuProduct(menu, product, menuProductRequest.getQuantity()));
 		}
 

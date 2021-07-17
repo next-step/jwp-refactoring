@@ -11,6 +11,9 @@ public class Price {
 	@Column(nullable = false)
 	private BigDecimal price;
 
+	public Price() {
+	}
+
 	public Price(BigDecimal price) {
 		validatePriceExistsAndBiggerThanZero(price);
 		this.price = price;

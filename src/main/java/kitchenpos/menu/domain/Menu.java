@@ -32,7 +32,6 @@ public class Menu {
 
 	@ManyToOne
 	@JoinColumn(foreignKey = @ForeignKey(name = "fk_menu_menu_group"))
-	@Column(nullable = false)
 	private MenuGroup menuGroup;
 
 	@OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -78,6 +77,6 @@ public class Menu {
 			throw new IllegalArgumentException();
 		}
 
-		menuProducts.addAll(menuProducts);
+		this.menuProducts.addAll(menuProducts);
 	}
 }

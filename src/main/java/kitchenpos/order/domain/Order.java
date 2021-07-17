@@ -27,10 +27,8 @@ public class Order {
 
 	@ManyToOne
 	@JoinColumn(foreignKey = @ForeignKey(name = "fk_orders_order_table"))
-	@Column(nullable = false)
 	private OrderTable orderTable;
 
-	@Enumerated(EnumType.STRING)
 	private String orderStatus;
 
 	private LocalDateTime orderedTime;

@@ -20,7 +20,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
 	void createProductAndFindProductScenario() {
 		// Scenario
 		// When
-		ExtractableResponse<Response> productCreatedResponse = createProduct(new ProductRequest("매운 라면", new BigDecimal(8000)));
+		ExtractableResponse<Response> productCreatedResponse = createProduct(new ProductRequest("매운 라면",8000L));
 		ProductRequest createdProduct = productCreatedResponse.as(ProductRequest.class);
 		// Then
 		assertThat(productCreatedResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
@@ -42,7 +42,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
 	void productErrorScenario() {
 		// Scenario
 		// When
-		ExtractableResponse<Response> productWithMunusPriceResponse = createProduct(new ProductRequest("매운 라면", new BigDecimal(-1000)));
+		ExtractableResponse<Response> productWithMunusPriceResponse = createProduct(new ProductRequest("매운 라면", -1000L));
 		// Then
 		assertThat(productWithMunusPriceResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
 	}

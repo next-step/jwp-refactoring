@@ -16,9 +16,12 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menuGroup.dto.MenuGroupRequest;
 import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menuGroup.dto.MenuGroupResponse;
 import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 
 public class MenuAcceptanceTest extends AcceptanceTest {
 	@DisplayName("메뉴 등록 및 조회 시나리오")
@@ -27,24 +30,24 @@ public class MenuAcceptanceTest extends AcceptanceTest {
 		// Backgroud
 		// Given
 		ExtractableResponse<Response> menuGroupResponse = createMenuGroup(new MenuGroupRequest("인기 메뉴"));
-		MenuGroupRequest menuGroup = menuGroupResponse.as(MenuGroupRequest.class);
+		MenuGroupResponse menuGroup = menuGroupResponse.as(MenuGroupResponse.class);
 		// And
 		ExtractableResponse<Response> productResponse = createProduct(new ProductRequest("매운 라면", 8000L));
-		ProductRequest product = productResponse.as(ProductRequest.class);
+		ProductResponse product = productResponse.as(ProductResponse.class);
 
 		// Scenario
 		// When
 		ExtractableResponse<Response> menuCreatedResponse = createMenu(new MenuRequest("라면 메뉴", new BigDecimal(8000), menuGroup.getId(), Arrays.asList(new MenuProductRequest(product.getId(), 2L))));
-		MenuRequest createdMenu = menuCreatedResponse.as(MenuRequest.class);
+		MenuResponse createdMenu = menuCreatedResponse.as(MenuResponse.class);
 		// Then
 		assertThat(menuCreatedResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
 
 		// When
 		ExtractableResponse<Response> menuResponse = findAllMenu();
 		// Then
-		String menuName = menuResponse.jsonPath().getList(".", MenuRequest.class).stream()
+		String menuName = menuResponse.jsonPath().getList(".", MenuResponse.class).stream()
 			.filter(menu -> menu.getId() == createdMenu.getId())
-			.map(MenuRequest::getName)
+			.map(MenuResponse::getName)
 			.findFirst()
 			.get();
 		assertThat(menuName).isEqualTo("라면 메뉴");
@@ -56,10 +59,10 @@ public class MenuAcceptanceTest extends AcceptanceTest {
 		// Backgroud
 		// Given
 		ExtractableResponse<Response> menuGroupResponse = createMenuGroup(new MenuGroupRequest("인기 메뉴"));
-		MenuGroupRequest menuGroup = menuGroupResponse.as(MenuGroupRequest.class);
+		MenuGroupResponse menuGroup = menuGroupResponse.as(MenuGroupResponse.class);
 		// And
 		ExtractableResponse<Response> productResponse = createProduct(new ProductRequest("매운 라면", 8000L));
-		ProductRequest product = productResponse.as(ProductRequest.class);
+		ProductResponse product = productResponse.as(ProductResponse.class);
 
 		// Scenario
 		// When

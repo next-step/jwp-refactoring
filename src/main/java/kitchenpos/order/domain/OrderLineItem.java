@@ -19,12 +19,10 @@ public class OrderLineItem {
 
 	@ManyToOne
 	@JoinColumn(foreignKey = @ForeignKey(name = "fk_order_line_item_orders"))
-	@Column(nullable = false)
 	private Order order;
 
 	@ManyToOne
 	@JoinColumn(foreignKey = @ForeignKey(name = "fk_order_line_item_menu"))
-	@Column(nullable = false)
 	private Menu menu;
 
 	private int quantity;
