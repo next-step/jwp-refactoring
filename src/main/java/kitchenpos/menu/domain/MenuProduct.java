@@ -1,5 +1,7 @@
 package kitchenpos.menu.domain;
 
+import java.math.BigDecimal;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
@@ -27,5 +29,19 @@ public class MenuProduct {
 	@Column(nullable = false)
 	private Product product;
 
-	private int quantity;
+	private long quantity;
+
+	public MenuProduct(Menu menu, Product product, long quantity) {
+		this.menu = menu;
+		this.product = product;
+		this.quantity = quantity;
+	}
+
+	public BigDecimal getPrice() {
+		return product.getPrice().getPrice(); // to-do : 없앨 것
+	}
+
+	public long getQuantity() {
+		return quantity;
+	}
 }

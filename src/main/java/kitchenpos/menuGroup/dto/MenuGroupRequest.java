@@ -1,6 +1,8 @@
-package kitchenpos.domain;
+package kitchenpos.menuGroup.dto;
 
 import java.util.Objects;
+
+import kitchenpos.menuGroup.domain.MenuGroup;
 
 public class MenuGroupRequest {
     private Long id;
@@ -28,6 +30,10 @@ public class MenuGroupRequest {
     public void setName(final String name) {
         this.name = name;
     }
+
+    public MenuGroup toMenuGroup() {
+    	return new MenuGroup(name);
+	}
 
 	@Override
 	public boolean equals(Object o) {

@@ -21,8 +21,8 @@ import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
 import kitchenpos.dao.ProductDao;
-import kitchenpos.domain.MenuRequest;
-import kitchenpos.domain.MenuProductRequest;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.product.dto.ProductRequest;
 
 @ExtendWith(MockitoExtension.class)

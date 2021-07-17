@@ -16,7 +16,7 @@ import org.springframework.http.MediaType;
 
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.ui.MenuRestController;
-import kitchenpos.domain.MenuRequest;
+import kitchenpos.menu.dto.MenuRequest;
 
 @WebMvcTest(MenuRestController.class)
 public class MenuRestControllerTest extends WebMvcTestConfiguration {

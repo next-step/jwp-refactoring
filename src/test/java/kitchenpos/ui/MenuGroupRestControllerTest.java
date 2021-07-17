@@ -14,7 +14,7 @@ import org.springframework.http.MediaType;
 
 import kitchenpos.menuGroup.application.MenuGroupService;
 import kitchenpos.menuGroup.ui.MenuGroupRestController;
-import kitchenpos.domain.MenuGroupRequest;
+import kitchenpos.menuGroup.dto.MenuGroupRequest;
 
 @WebMvcTest(MenuGroupRestController.class)
 public class MenuGroupRestControllerTest extends WebMvcTestConfiguration{

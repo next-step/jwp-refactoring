@@ -1,7 +1,7 @@
 package kitchenpos.product.ui;
 
 import kitchenpos.product.application.ProductService;
-import kitchenpos.product.domain.ProductResponse;
+import kitchenpos.product.dto.ProductResponse;
 import kitchenpos.product.dto.ProductRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;

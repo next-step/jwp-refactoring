@@ -1,6 +1,7 @@
-package kitchenpos.product.domain;
+package kitchenpos.product.dto;
 
 import kitchenpos.menu.domain.Price;
+import kitchenpos.product.domain.Product;
 
 public class ProductResponse {
 	private Long id;

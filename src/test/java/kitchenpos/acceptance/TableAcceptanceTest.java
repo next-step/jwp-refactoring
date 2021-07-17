@@ -18,9 +18,9 @@ import org.springframework.http.HttpStatus;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.MenuRequest;
-import kitchenpos.domain.MenuGroupRequest;
-import kitchenpos.domain.MenuProductRequest;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menuGroup.dto.MenuGroupRequest;
+import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.domain.OrderRequest;
 import kitchenpos.domain.OrderLineItemRequest;
 import kitchenpos.domain.OrderTableRequest;

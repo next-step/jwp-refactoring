@@ -5,7 +5,7 @@ import org.springframework.http.MediaType;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.MenuGroupRequest;
+import kitchenpos.menuGroup.dto.MenuGroupRequest;
 
 public class MenuGroupAcceptanceTestMethod {
 	public static ExtractableResponse<Response> createMenuGroup(MenuGroupRequest menuGroup) {

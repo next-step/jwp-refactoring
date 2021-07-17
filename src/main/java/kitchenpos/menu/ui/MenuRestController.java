@@ -1,7 +1,7 @@
 package kitchenpos.menu.ui;
 
 import kitchenpos.menu.application.MenuService;
-import kitchenpos.domain.MenuRequest;
+import kitchenpos.menu.dto.MenuRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.MenuGroupRequest;
+import kitchenpos.menuGroup.dto.MenuGroupRequest;
 
 public class MenuGroupAcceptanceTest extends AcceptanceTest {
 	@DisplayName("메뉴 그룹 등록 및 조회 시나리오")

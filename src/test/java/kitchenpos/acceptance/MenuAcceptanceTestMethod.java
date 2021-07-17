@@ -5,7 +5,7 @@ import org.springframework.http.MediaType;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.MenuRequest;
+import kitchenpos.menu.dto.MenuRequest;
 
 public class MenuAcceptanceTestMethod {
 	public static ExtractableResponse<Response> createMenu(MenuRequest menu) {
