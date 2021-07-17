@@ -109,7 +109,7 @@ class MenuServiceTest extends DataBaseCleanSupport {
     @Test
     void list() {
         //when
-        List<MenuResponse> actual = menuService.list();
+        List<MenuResponse> actual = menuService.findMenuResponses();
 
         //then
         assertThat(actual.size()).isNotZero();

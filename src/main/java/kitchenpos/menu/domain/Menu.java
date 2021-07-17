@@ -40,7 +40,7 @@ public class Menu {
 
     private Menu(Name name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
         this(null, name, price, menuGroup, menuProducts);
-        menuProducts.registerAll(this);
+        menuProducts.registerAll(getId());
     }
 
     public static Menu of(String name, BigDecimal price, MenuGroup menuGroup) {
@@ -51,7 +51,7 @@ public class Menu {
         return new Menu(null, Name.of(name), Price.of(price), null, MenuProducts.of(new ArrayList<>()));
     }
 
-    public static Menu createWithMapping(String name, BigDecimal menuPrice, MenuGroup menuGroup, List<MenuProduct> menuProductList) {
+    public static Menu create(String name, BigDecimal menuPrice, MenuGroup menuGroup, List<MenuProduct> menuProductList) {
         MenuProducts menuProducts = MenuProducts.of(menuProductList);
         Price price = Price.of(menuPrice);
         menuProducts.validatePrice(price);

@@ -1,9 +1,11 @@
 package kitchenpos.table.domain;
 
-import kitchenpos.table.domain.exception.UngroupTableException;
-import org.springframework.data.annotation.ReadOnlyProperty;
+import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.Embeddable;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,8 +15,10 @@ import java.util.stream.Collectors;
 @Embeddable
 public class OrderTables {
 
-    @OneToMany(mappedBy = "tableGroup")
-    @ReadOnlyProperty
+    @Fetch(FetchMode.SELECT)
+    @BatchSize(size = 100)
+    @OneToMany
+    @JoinColumn(name = "table_group_id")
     private final List<OrderTable> orderTables;
 
     protected OrderTables() {
@@ -23,26 +27,6 @@ public class OrderTables {
 
     private OrderTables(List<OrderTable> orderTables) {
         this.orderTables = orderTables;
-    }
-
-    private OrderTables(List<OrderTable> orderTables, int tableCount) {
-        this(orderTables);
-        validateSize(tableCount);
-        validateGroupable();
-    }
-
-    private void validateSize(int tableCount) {
-        if (orderTables.size() != tableCount) {
-            throw new UngroupTableException("요청한 테이블 아이디 중 잘못된 아이디가 있습니다.");
-        }
-    }
-
-    private void validateGroupable() {
-        orderTables.forEach(OrderTable::validateTableGroupable);
-    }
-
-    public static OrderTables create(List<OrderTable> orderTables, int tableCount) {
-        return new OrderTables(orderTables, tableCount);
     }
 
     public static OrderTables of(List<OrderTable> orderTables) {
@@ -63,11 +47,7 @@ public class OrderTables {
         orderTables.forEach(OrderTable::ungroup);
     }
 
-    public void validateNotCompletionStatus() {
-        orderTables.forEach(OrderTable::validateNotCompletionStatus);
-    }
-
-    public void groupBy(OrderTableGroup orderTableGroup) {
-        orderTables.forEach(orderTable -> orderTable.registerGroup(orderTableGroup));
+    public void groupBy(Long orderTableId) {
+        orderTables.forEach(orderTable -> orderTable.registerGroup(orderTableId));
     }
 }

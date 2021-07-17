@@ -25,7 +25,7 @@ public class OrderTableService {
     }
 
     @Transactional(readOnly = true)
-    public List<OrderTableResponse> list() {
+    public List<OrderTableResponse> findOrderTableResponses() {
         return OrderTableResponse.ofList(orderTableRepository.findAll());
     }
 

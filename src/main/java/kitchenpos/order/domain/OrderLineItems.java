@@ -1,19 +1,20 @@
 package kitchenpos.order.domain;
 
-import org.springframework.data.annotation.ReadOnlyProperty;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Embeddable
 public class OrderLineItems {
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-    @ReadOnlyProperty
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "order_id")
     private final List<OrderLineItem> orderLineItems;
 
     protected OrderLineItems() {
@@ -32,7 +33,17 @@ public class OrderLineItems {
         return Collections.unmodifiableList(orderLineItems);
     }
 
-    public void registerAll(Order order) {
-        orderLineItems.forEach(orderLineItem -> orderLineItem.registerOrder(order));
+    public void registerAll(Long orderId) {
+        orderLineItems.forEach(orderLineItem -> orderLineItem.registerOrder(orderId));
+    }
+
+    public List<Long> getMenuIds() {
+        return orderLineItems.stream()
+                .map(OrderLineItem::getMenuId)
+                .collect(Collectors.toList());
+    }
+
+    public boolean isSizeEqualsTo(int size) {
+        return Objects.equals(orderLineItems.size(), size);
     }
 }

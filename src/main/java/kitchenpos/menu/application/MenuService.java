@@ -1,10 +1,11 @@
 package kitchenpos.menu.application;
 
-import kitchenpos.menu.application.exception.NotExistMenusException;
+import kitchenpos.menu.application.exception.BadProductIdException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.presentation.dto.MenuProductRequest;
 import kitchenpos.menu.presentation.dto.MenuRequest;
 import kitchenpos.menu.presentation.dto.MenuResponse;
 import kitchenpos.product.application.ProductService;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class MenuService {
@@ -28,25 +30,34 @@ public class MenuService {
 
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
-        MenuGroup menuGroup = menuGroupService.findById(menuRequest.getMenuGroupId());
         List<Product> products = productService.findByIdIn(menuRequest.getProductsIds());
-        List<MenuProduct> menuProducts = menuRequest.getMenuProductsBy(products);
-        Menu menu = Menu.createWithMapping(menuRequest.getName(), menuRequest.getPrice(), menuGroup, menuProducts);
+        List<MenuProduct> menuProducts = getMenuProductsBy(menuRequest.getMenuProducts(), products);
+        MenuGroup menuGroup = menuGroupService.findById(menuRequest.getMenuGroupId());
+        Menu menu = Menu.create(menuRequest.getName(), menuRequest.getPrice(), menuGroup, menuProducts);
         return MenuResponse.of(menuRepository.save(menu));
     }
 
+    private List<MenuProduct> getMenuProductsBy(List<MenuProductRequest> menuProductRequests, List<Product> products) {
+        return products.stream()
+                .map(product -> createMenuProductWith(menuProductRequests, product))
+                .collect(Collectors.toList());
+    }
+
+    private MenuProduct createMenuProductWith(List<MenuProductRequest> menuProductRequests, Product product) {
+        return menuProductRequests.stream()
+                .filter(menuProductRequest -> product.isProductId(menuProductRequest.getProductId()))
+                .map(menuProductRequest -> MenuProduct.of(product, menuProductRequest.getQuantity()))
+                .findFirst()
+                .orElseThrow(BadProductIdException::new);
+    }
+
     @Transactional(readOnly = true)
-    public List<MenuResponse> list() {
+    public List<MenuResponse> findMenuResponses() {
         return MenuResponse.ofList(menuRepository.findAll());
     }
 
     @Transactional(readOnly = true)
-    public List<Menu> findByIdIn(List<Long> menuIds) {
-        List<Menu> menus = menuRepository.findByIdIn(menuIds);
-        if (menus.isEmpty()) {
-            throw new NotExistMenusException();
-        }
-
-        return menus;
+    public int countByIdIn(List<Long> menuIds) {
+        return menuRepository.countByIdIn(menuIds);
     }
 }

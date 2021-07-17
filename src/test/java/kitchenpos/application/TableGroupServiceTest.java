@@ -1,15 +1,19 @@
 package kitchenpos.application;
 
 import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.domain.exception.CannotUngroupException;
+import kitchenpos.order.domain.Orders;
+import kitchenpos.table.application.OrderTableService;
+import kitchenpos.table.domain.exception.CannotUngroupException;
 import kitchenpos.table.application.OrderTableGroupService;
 import kitchenpos.table.domain.*;
-import kitchenpos.table.domain.exception.UngroupTableException;
+import kitchenpos.table.domain.exception.CannotRegisterGroupException;
 import kitchenpos.table.presentation.dto.OrderTableGroupRequest;
 import kitchenpos.table.presentation.dto.OrderTableGroupResponse;
 import kitchenpos.table.presentation.dto.OrderTableRequest;
-import kitchenpos.table.presentation.dto.exception.BadSizeOrderTableException;
+import kitchenpos.table.application.exception.BadSizeOrderTableException;
+import org.assertj.core.api.AssertionsForClassTypes;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -102,7 +106,7 @@ class TableGroupServiceTest extends DataBaseCleanSupport {
 
         //when
         assertThatThrownBy(() -> orderTableGroupService.create(tableGroup))
-                .isInstanceOf(UngroupTableException.class); //then
+                .isInstanceOf(CannotRegisterGroupException.class); //then
     }
 
     @DisplayName("다른 주문 테이블 그룹에 속하지 않아야만 한다.")
@@ -123,16 +127,16 @@ class TableGroupServiceTest extends DataBaseCleanSupport {
         //given
         OrderTable orderTable1 = saveOrderTable(4, true);
         OrderTable orderTable2 = saveOrderTable(2, true);
-        OrderTableGroup orderTableGroup = orderTableGroupRepository.save(OrderTableGroup.createWithMapping(OrderTables.of(Lists.list(orderTable1, orderTable2))));
+        OrderTableGroup orderTableGroup = orderTableGroupRepository.save(OrderTableGroup.of(Lists.list(orderTable1, orderTable2)));
 
         //when
         orderTableGroupService.ungroup(orderTableGroup.getId());
 
         //then
         OrderTable savedOrderTable1 = orderTableRepository.findById(orderTable1.getId()).get();
-        assertThat(savedOrderTable1.getTableGroup()).isNull();
+        assertThat(savedOrderTable1.getTableGroupId()).isNull();
         OrderTable savedOrderTable2 = orderTableRepository.findById(orderTable2.getId()).get();
-        assertThat(savedOrderTable2.getTableGroup()).isNull();
+        assertThat(savedOrderTable2.getTableGroupId()).isNull();
     }
 
     @DisplayName("테이블 그룹내 속한 주문 테이블 중 조리중, 식사중 상태이면 삭제할 수 없다.")
@@ -140,12 +144,28 @@ class TableGroupServiceTest extends DataBaseCleanSupport {
     void ungroupExceptionIfOrderTableStatusIsCookingOrMeal() {
         //given
         OrderTable orderTable = saveOrderTable(4, false);
-        OrderTableGroup orderTableGroup = orderTableGroupRepository.save(OrderTableGroup.createWithMapping(OrderTables.of(Lists.list(orderTable))));
-        Order.createWithMapping(orderTable, OrderStatus.COOKING, Lists.list());
+        OrderTable orderTable1 = saveOrderTable(4, false);
+        orderTable.ordered(OrderLineItems.of(Lists.list()));
+        OrderTableGroup orderTableGroup = orderTableGroupRepository.save(OrderTableGroup.of(Lists.list(orderTable)));
 
         //when
         assertThatThrownBy(() -> orderTableGroupService.ungroup(orderTableGroup.getId()))
                 .isInstanceOf(CannotUngroupException.class); //then
+    }
+
+    @DisplayName("그룹화 요청 테이블과 실제 테이블이 다를 경우 예외를 발생시킨다.")
+    @Test
+    void groupExceptionIfRequestSizeIsDifferentFromActualTableCount() {
+        //given
+        OrderTable orderTable1 = saveOrderTable(4, false);
+        OrderTable orderTable2 = saveOrderTable(2, false);
+        OrderTableGroupRequest tableGroup = OrderTableGroupRequest.of(Lists.list(
+                OrderTableRequest.of(orderTable1.getId(), orderTable1.getNumberOfGuests().getValue(), orderTable1.isEmpty()),
+                OrderTableRequest.of(orderTable2.getId(), orderTable2.getNumberOfGuests().getValue(), orderTable2.isEmpty())));
+
+        //when
+        assertThatThrownBy(() -> orderTableGroupService.create(tableGroup))
+                .isInstanceOf(CannotRegisterGroupException.class); //then
     }
 
     private OrderTable saveOrderTable(int numberOfGuests, boolean empty) {

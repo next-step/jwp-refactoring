@@ -1,7 +1,10 @@
 package kitchenpos.table.domain;
 
+import kitchenpos.order.domain.OrderLineItems;
+import kitchenpos.table.domain.exception.CannotChangeEmptyException;
+import kitchenpos.table.domain.exception.CannotChangeGuestEmptyTableException;
 import kitchenpos.table.domain.exception.CannotOrderEmptyTableException;
-import kitchenpos.table.domain.exception.UngroupTableException;
+import kitchenpos.table.domain.exception.CannotRegisterGroupException;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,11 +20,12 @@ class OrderTableTest {
         //given
         OrderTable orderTable1 = OrderTable.of(4, true);
         OrderTable orderTable2 = OrderTable.of(2, true);
-        OrderTableGroup.createWithMapping(OrderTables.of(Lists.list(orderTable1, orderTable2)));
+        OrderTableGroup orderTableGroup = OrderTableGroup.of(1L, Lists.list(orderTable1, orderTable2));
+        orderTableGroup.grouped();
 
         //when
         assertThatThrownBy(() -> orderTable1.changeEmpty(false))
-                .isInstanceOf(UngroupTableException.class); //then
+                .isInstanceOf(CannotChangeEmptyException.class); //then
     }
 
     @DisplayName("테이블 인원수를 변경한다.")
@@ -45,17 +49,64 @@ class OrderTableTest {
 
         //when
         assertThatThrownBy(() -> orderTable.changeNumberOfGuests(3))
-                .isInstanceOf(CannotOrderEmptyTableException.class);
+                .isInstanceOf(CannotChangeGuestEmptyTableException.class);
+    }
+
+    @DisplayName("테이블 그룹화된 아이디를 등록한다.")
+    @Test
+    void registerGroup() {
+        //given
+        OrderTable orderTable = OrderTable.of(4, true);
+
+        //when
+        orderTable.registerGroup(1L);
+
+        //then
+        assertThat(orderTable.getTableGroupId()).isEqualTo(1L);
     }
 
     @DisplayName("테이블 그룹을 지으려면 주문 불가능 상태여야한다.")
     @Test
-    void validateTableGroupable() {
+    void registerGroupInvalid1() {
         //given
         OrderTable orderTable = OrderTable.of(4, false);
 
         //when
-        assertThatThrownBy(orderTable::validateTableGroupable)
-                .isInstanceOf(UngroupTableException.class);
+        assertThatThrownBy(() -> orderTable.registerGroup(1L))
+                .isInstanceOf(CannotRegisterGroupException.class);
+    }
+
+    @DisplayName("테이블 그룹을 지으려면 아이디는 필수값이다.")
+    @Test
+    void registerGroupInvalid2() {
+        //given
+        OrderTable orderTable = OrderTable.of(4, true);
+
+        //when
+        assertThatThrownBy(() -> orderTable.registerGroup(null))
+                .isInstanceOf(CannotRegisterGroupException.class);
+    }
+
+    @DisplayName("그룹화된 주문테이블은 그룹해제 후 그룹이 가능하다.")
+    @Test
+    void registerGroupInvalid3() {
+        //given
+        OrderTable orderTable = OrderTable.of(4, true);
+        orderTable.registerGroup(1L);
+
+        //when
+        assertThatThrownBy(() -> orderTable.registerGroup(2L))
+                .isInstanceOf(CannotRegisterGroupException.class);
+    }
+
+    @DisplayName("주문테이블이 주문 불가능 상태일 경우 주문할 수 없다.")
+    @Test
+    void createOrderExceptionIfTableEmptyIsTrue() {
+        //given
+        OrderTable orderTable = OrderTable.of(4, true);
+
+        //when
+        assertThatThrownBy(() -> orderTable.ordered(OrderLineItems.of(Lists.list())))
+                .isInstanceOf(CannotOrderEmptyTableException.class); //then
     }
 }

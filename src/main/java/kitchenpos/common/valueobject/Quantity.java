@@ -23,12 +23,12 @@ public class Quantity {
     }
 
     private void validateValue(long value) {
-        if(value < MIN_QUANTITY){
+        if (value < MIN_QUANTITY) {
             throw new NegativeQuantityException(MIN_QUANTITY);
         }
     }
 
-    public static Quantity of(long value){
+    public static Quantity of(long value) {
         return new Quantity(value);
     }
 

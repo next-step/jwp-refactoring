@@ -1,6 +1,7 @@
 package kitchenpos.product.domain;
 
 import kitchenpos.common.valueobject.Price;
+import kitchenpos.menu.presentation.dto.MenuProductRequest;
 import kitchenpos.product.domain.exception.InvalidProductNameException;
 
 import javax.persistence.*;
@@ -37,6 +38,10 @@ public class Product {
 
     public static Product of(String name, BigDecimal price) {
         return new Product(null, name, price);
+    }
+
+    public boolean isProductId(Long productId) {
+        return Objects.equals(productId, getId());
     }
 
     public Long getId() {

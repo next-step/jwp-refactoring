@@ -1,7 +1,6 @@
 package kitchenpos.order.domain;
 
 import kitchenpos.common.valueobject.Quantity;
-import kitchenpos.menu.domain.Menu;
 
 import javax.persistence.*;
 
@@ -11,13 +10,11 @@ public class OrderLineItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id")
-    private Order order;
+    @Column(name = "order_id")
+    private Long orderId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "menu_id")
-    private Menu menu;
+    @Column(name = "menu_id")
+    private Long menuId;
 
     @Embedded
     private Quantity quantity;
@@ -25,31 +22,31 @@ public class OrderLineItem {
     protected OrderLineItem() {
     }
 
-    private OrderLineItem(Long seq, Order order, Menu menu, long quantity) {
+    private OrderLineItem(Long seq, Long orderId, Long menuId, long quantity) {
         this.seq = seq;
-        this.order = order;
-        this.menu = menu;
+        this.orderId = orderId;
+        this.menuId = menuId;
         this.quantity = Quantity.of(quantity);
     }
 
-    public static OrderLineItem of(Menu menu, long quantity) {
-        return new OrderLineItem(null, null, menu, quantity);
+    public static OrderLineItem of(Long menuId, long quantity) {
+        return new OrderLineItem(null, null, menuId, quantity);
     }
 
-    public void registerOrder(Order order) {
-        this.order = order;
+    public void registerOrder(Long orderId) {
+        this.orderId = orderId;
     }
 
     public Long getSeq() {
         return seq;
     }
 
-    public Order getOrder() {
-        return order;
+    public Long getOrderId() {
+        return orderId;
     }
 
-    public Menu getMenu() {
-        return menu;
+    public Long getMenuId() {
+        return menuId;
     }
 
     public Quantity getQuantity() {

@@ -1,12 +1,7 @@
 package kitchenpos.menu.presentation.dto;
 
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.presentation.dto.exception.BadProductIdException;
-import kitchenpos.product.domain.Product;
-
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class MenuRequest {
@@ -33,24 +28,6 @@ public class MenuRequest {
         return menuProducts.stream()
                 .map(MenuProductRequest::getProductId)
                 .collect(Collectors.toList());
-    }
-
-    public List<MenuProduct> getMenuProductsBy(List<Product> products) {
-        return products.stream()
-                .map(this::createMenuProductWith)
-                .collect(Collectors.toList());
-    }
-
-    private MenuProduct createMenuProductWith(Product product) {
-        return menuProducts.stream()
-                .filter(menuProductRequest -> isProductIdMatch(menuProductRequest, product))
-                .map(menuProductRequest -> MenuProduct.of(product, menuProductRequest.getQuantity()))
-                .findFirst()
-                .orElseThrow(BadProductIdException::new);
-    }
-
-    private boolean isProductIdMatch(MenuProductRequest menuProductRequest, Product product) {
-        return Objects.equals(menuProductRequest.getProductId(), product.getId());
     }
 
     public String getName() {

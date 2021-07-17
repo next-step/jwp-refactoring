@@ -1,12 +1,10 @@
 package kitchenpos.order.application;
 
 import kitchenpos.menu.application.MenuService;
-import kitchenpos.menu.domain.Menu;
+import kitchenpos.order.application.exception.BadMenuIdException;
 import kitchenpos.order.application.exception.NotExistOrderException;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.*;
+import kitchenpos.order.presentation.dto.OrderLineItemRequest;
 import kitchenpos.order.presentation.dto.OrderRequest;
 import kitchenpos.order.presentation.dto.OrderResponse;
 import kitchenpos.table.application.OrderTableService;
@@ -15,30 +13,40 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
     private final OrderRepository orderRepository;
-    private final MenuService menuService;
     private final OrderTableService orderTableService;
+    private final MenuService menuService;
 
-    public OrderService(OrderRepository orderRepository, MenuService menuService, OrderTableService orderTableService) {
+    public OrderService(OrderRepository orderRepository, OrderTableService orderTableService, MenuService menuService) {
         this.orderRepository = orderRepository;
-        this.menuService = menuService;
         this.orderTableService = orderTableService;
+        this.menuService = menuService;
     }
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
-        List<Menu> menus = menuService.findByIdIn(orderRequest.getMenuIds());
-        List<OrderLineItem> orderLineItems = orderRequest.getOrderLineItemsBy(menus);
+        OrderLineItems orderLineItems = OrderLineItems.of(getOrderLineItemsBy(orderRequest.getOrderLineItems()));
+        if (!orderLineItems.isSizeEqualsTo(menuService.countByIdIn(orderLineItems.getMenuIds()))) {
+            throw new BadMenuIdException();
+        }
+
         OrderTable orderTable = orderTableService.findById(orderRequest.getOrderTableId());
-        Order order = Order.createWithMapping(orderTable, OrderStatus.COOKING, orderLineItems);
+        Order order = orderTable.ordered(orderLineItems);
         return OrderResponse.of(orderRepository.save(order));
     }
 
+    private List<OrderLineItem> getOrderLineItemsBy(List<OrderLineItemRequest> orderLineItemRequests) {
+        return orderLineItemRequests.stream()
+                .map(orderLineItemRequest -> OrderLineItem.of(orderLineItemRequest.getMenuId(), orderLineItemRequest.getQuantity()))
+                .collect(Collectors.toList());
+    }
+
     @Transactional(readOnly = true)
-    public List<OrderResponse> list() {
+    public List<OrderResponse> findOrderResponses() {
         return OrderResponse.ofList(orderRepository.findAll());
     }
 
