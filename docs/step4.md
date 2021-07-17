@@ -5,18 +5,3 @@
 - 의존성 주입, HTTP 요청/응답, 이벤트 발행/구독 등 다양한 방식으로 모듈 간 데이터를 주고받을 수 있다.
 
 
-##이슈
-Caused by: org.springframework.beans.factory.NoSuchBeanDefinitionException: 
-No qualifying bean of type 'kitchenpos.table.service.OrderValidatorInTable' available: 
-expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {}
-
-시도
-@Componentscan
-<-- OrderValidatorInTable 구현 클래스를 주입을 못시킴
-
-@ComponentScan({
-"kitchenpos.order.service.OrderValidator"
-})
-<-- Service Autowired 주입을 못시킴
-
-
