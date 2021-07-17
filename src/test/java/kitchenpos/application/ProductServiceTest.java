@@ -1,6 +1,6 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.ProductDao;
+import kitchenpos.dao.ProductRepository;
 import kitchenpos.domain.Product;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.DisplayName;
@@ -19,7 +19,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
 	@Mock
-	private ProductDao productDao;
+	private ProductRepository productRepository;
 
 	@InjectMocks
 	private ProductService productService;
@@ -27,7 +27,7 @@ class ProductServiceTest {
 	@Test
 	void createProductTest() {
 		Product product = new Product("피자", BigDecimal.valueOf(10000));
-		when(productDao.save(product)).thenReturn(product);
+		when(productRepository.save(product)).thenReturn(product);
 		assertThat(productService.create(product)).isNotNull();
 	}
 
@@ -45,7 +45,7 @@ class ProductServiceTest {
 
 	@Test
 	void getProductListTest() {
-		when(productDao.findAll()).thenReturn(Lists.list(new Product(), new Product()));
+		when(productRepository.findAll()).thenReturn(Lists.list(new Product(), new Product()));
 		assertThat(productService.list()).hasSize(2);
 	}
 }

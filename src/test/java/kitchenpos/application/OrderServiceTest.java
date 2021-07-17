@@ -1,9 +1,9 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderLineItemDao;
-import kitchenpos.dao.OrderTableDao;
+import kitchenpos.dao.MenuRepository;
+import kitchenpos.dao.OrderRepository;
+import kitchenpos.dao.OrderLineItemRepository;
+import kitchenpos.dao.OrderTableRepository;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
@@ -24,19 +24,18 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
 	@Mock
-	private MenuDao menuDao;
+	private MenuRepository menuRepository;
 	@Mock
-	private OrderDao orderDao;
+	private OrderRepository orderRepository;
 	@Mock
-	private OrderLineItemDao orderLineItemDao;
+	private OrderLineItemRepository orderLineItemRepository;
 	@Mock
-	private OrderTableDao orderTableDao;
+	private OrderTableRepository orderTableRepository;
 
 	@InjectMocks
 	private OrderService orderService;
@@ -55,10 +54,10 @@ class OrderServiceTest {
 	void orderCreateTest() {
 		OrderTable orderTable = new OrderTable(1L, 1L, 1, false);
 
-		when(menuDao.countByIdIn(Lists.list(1L, 2L))).thenReturn(2L);
-		when(orderTableDao.findById(1L)).thenReturn(Optional.of(orderTable));
-		when(orderDao.save(order)).thenReturn(order);
-		when(orderLineItemDao.save(orderLineItem)).thenReturn(orderLineItem);
+		when(menuRepository.countByIdIn(Lists.list(1L, 2L))).thenReturn(2L);
+		when(orderTableRepository.findById(1L)).thenReturn(Optional.of(orderTable));
+		when(orderRepository.save(order)).thenReturn(order);
+		when(orderLineItemRepository.save(orderLineItem)).thenReturn(orderLineItem);
 
 		assertThat(orderService.create(order)).isNotNull();
 	}
@@ -74,7 +73,7 @@ class OrderServiceTest {
 	@Test
 	@DisplayName("주문 생성 시 order line item 의 개수와 메뉴의 숫자가 일치하지 않으면 익셉션 발생")
 	void orderCreateFailTest2() {
-		when(menuDao.countByIdIn(Lists.list(1L, 2L))).thenReturn(1L);
+		when(menuRepository.countByIdIn(Lists.list(1L, 2L))).thenReturn(1L);
 
 		assertThatThrownBy(() -> orderService.create(order))
 				.isInstanceOf(IllegalArgumentException.class);
@@ -85,8 +84,8 @@ class OrderServiceTest {
 	void orderCreateFailTest3() {
 		OrderTable orderTable = new OrderTable(1L, 1L, 1, true);
 
-		when(menuDao.countByIdIn(Lists.list(1L, 2L))).thenReturn(2L);
-		when(orderTableDao.findById(1L)).thenReturn(Optional.of(orderTable));
+		when(menuRepository.countByIdIn(Lists.list(1L, 2L))).thenReturn(2L);
+		when(orderTableRepository.findById(1L)).thenReturn(Optional.of(orderTable));
 
 		assertThatThrownBy(() -> orderService.create(order))
 				.isInstanceOf(IllegalArgumentException.class);
@@ -94,7 +93,7 @@ class OrderServiceTest {
 
 	@Test
 	void getOrderListTest() {
-		when(orderDao.findAll()).thenReturn(Lists.list(new Order(), new Order()));
+		when(orderRepository.findAll()).thenReturn(Lists.list(new Order(), new Order()));
 		assertThat(orderService.list()).hasSize(2);
 	}
 
@@ -102,7 +101,7 @@ class OrderServiceTest {
 	void changeOrderStatusTest() {
 		Order order = new Order(1L, 1L, OrderStatus.COMPLETION.name(), LocalDateTime.now(), Collections.emptyList());
 
-		when(orderDao.findById(1L)).thenReturn(Optional.of(this.order));
+		when(orderRepository.findById(1L)).thenReturn(Optional.of(this.order));
 		assertThat(orderService.changeOrderStatus(1L, order).getOrderStatus()).isEqualTo(OrderStatus.COMPLETION.name());
 	}
 
@@ -111,7 +110,7 @@ class OrderServiceTest {
 	void changeOrderStatusFailTest() {
 		Order order = new Order(1L, 1L, OrderStatus.COMPLETION.name(), LocalDateTime.now(), Collections.emptyList());
 
-		when(orderDao.findById(1L)).thenReturn(Optional.of(order));
+		when(orderRepository.findById(1L)).thenReturn(Optional.of(order));
 		assertThatThrownBy(() -> orderService.changeOrderStatus(1L, order))
 				.isInstanceOf(IllegalArgumentException.class);
 	}

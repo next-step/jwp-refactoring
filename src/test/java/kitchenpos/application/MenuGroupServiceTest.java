@@ -1,6 +1,6 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuGroupDao;
+import kitchenpos.dao.MenuGroupRepository;
 import kitchenpos.domain.MenuGroup;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Test;
@@ -16,7 +16,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class MenuGroupServiceTest {
 	@Mock
-	private MenuGroupDao menuGroupDao;
+	private MenuGroupRepository menuGroupRepository;
 
 	@InjectMocks
 	private MenuGroupService menuGroupService;
@@ -24,13 +24,13 @@ class MenuGroupServiceTest {
 	@Test
 	void menuGroupCreateTest() {
 		MenuGroup menuGroup = new MenuGroup();
-		when(menuGroupDao.save(menuGroup)).thenReturn(menuGroup);
+		when(menuGroupRepository.save(menuGroup)).thenReturn(menuGroup);
 		assertThat(menuGroupService.create(menuGroup)).isNotNull();
 	}
 
 	@Test
 	void getMenuGroupListTest() {
-		when(menuGroupDao.findAll()).thenReturn(Lists.newArrayList(new MenuGroup(), new MenuGroup()));
+		when(menuGroupRepository.findAll()).thenReturn(Lists.newArrayList(new MenuGroup(), new MenuGroup()));
 		assertThat(menuGroupService.list()).hasSize(2);
 	}
 }

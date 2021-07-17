@@ -1,12 +1,18 @@
 package kitchenpos.domain;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
+@Entity
 public class TableGroup {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private LocalDateTime createdDate;
+
+	@OneToMany(mappedBy = "id")
 	private List<OrderTable> orderTables;
 
 	public TableGroup() {
@@ -20,10 +26,6 @@ public class TableGroup {
 
 	public Long getId() {
 		return id;
-	}
-
-	public void setId(final Long id) {
-		this.id = id;
 	}
 
 	public LocalDateTime getCreatedDate() {

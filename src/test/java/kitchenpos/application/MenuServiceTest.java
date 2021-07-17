@@ -1,9 +1,9 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.dao.MenuProductDao;
-import kitchenpos.dao.ProductDao;
+import kitchenpos.dao.MenuRepository;
+import kitchenpos.dao.MenuGroupRepository;
+import kitchenpos.dao.MenuProductRepository;
+import kitchenpos.dao.ProductRepository;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
@@ -21,19 +21,18 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class MenuServiceTest {
 	@Mock
-	private MenuDao menuDao;
+	private MenuRepository menuRepository;
 	@Mock
-	private MenuGroupDao menuGroupDao;
+	private MenuGroupRepository menuGroupRepository;
 	@Mock
-	private MenuProductDao menuProductDao;
+	private MenuProductRepository menuProductRepository;
 	@Mock
-	private ProductDao productDao;
+	private ProductRepository productRepository;
 
 	@InjectMocks
 	private MenuService menuService;
@@ -49,10 +48,10 @@ public class MenuServiceTest {
 
 		Menu menu = new Menu(1L, "치킨", BigDecimal.valueOf(20000), 1L, Arrays.asList(menuProduct));
 
-		when(menuGroupDao.existsById(1L)).thenReturn(true);
-		when(productDao.findById(1L)).thenReturn(Optional.of(product));
-		when(menuDao.save(menu)).thenReturn(menu);
-		when(menuProductDao.save(menuProduct)).thenReturn(menuProduct);
+		when(menuGroupRepository.existsById(1L)).thenReturn(true);
+		when(productRepository.findById(1L)).thenReturn(Optional.of(product));
+		when(menuRepository.save(menu)).thenReturn(menu);
+		when(menuProductRepository.save(menuProduct)).thenReturn(menuProduct);
 
 		assertThat(menuService.create(menu)).isNotNull();
 	}
@@ -74,7 +73,7 @@ public class MenuServiceTest {
 		menuProduct.setQuantity(10);
 		menuProduct.setProductId(1L);
 
-		when(menuGroupDao.existsById(1L)).thenReturn(false);
+		when(menuGroupRepository.existsById(1L)).thenReturn(false);
 
 		assertThatThrownBy(() -> menuService.create(new Menu(1L, "치킨", BigDecimal.valueOf(20000), 1L, Arrays.asList(menuProduct))))
 				.isInstanceOf(IllegalArgumentException.class);
@@ -90,8 +89,8 @@ public class MenuServiceTest {
 		menuProduct.setQuantity(1);
 		menuProduct.setProductId(1L);
 
-		when(menuGroupDao.existsById(1L)).thenReturn(true);
-		when(productDao.findById(1L)).thenReturn(Optional.of(product));
+		when(menuGroupRepository.existsById(1L)).thenReturn(true);
+		when(productRepository.findById(1L)).thenReturn(Optional.of(product));
 
 		assertThatThrownBy(() -> menuService.create(new Menu(1L, "치킨", BigDecimal.valueOf(20000), 1L, Arrays.asList(menuProduct))))
 				.isInstanceOf(IllegalArgumentException.class);
@@ -99,7 +98,7 @@ public class MenuServiceTest {
 
 	@Test
 	void getMenuListTest() {
-		when(menuDao.findAll()).thenReturn(Lists.list(new Menu(), new Menu()));
+		when(menuRepository.findAll()).thenReturn(Lists.list(new Menu(), new Menu()));
 		assertThat(menuService.list()).hasSize(2);
 	}
 }
