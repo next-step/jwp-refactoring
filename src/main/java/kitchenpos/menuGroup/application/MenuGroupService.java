@@ -19,20 +19,10 @@ public class MenuGroupService {
         this.menuGroupRepository = menuGroupRepository;
     }
 
-
-/*
-    private final MenuGroupRepository menuGroupRepository;
-
-    public MenuGroupService(final MenuGroupRepository menuGroupRepository) {
-    	this.menuGroupRepository = menuGroupRepository;
-	}
-*/
-
     @Transactional
     public MenuGroupResponse create(final MenuGroupRequest menuGroupRequest) {
 		MenuGroup menuGroup = menuGroupRepository.save(menuGroupRequest.toMenuGroup());
     	return MenuGroupResponse.of(menuGroup);
-    	//return menuGroupDao.save(menuGroupRequest);
     }
 
     public List<MenuGroupResponse> list() {
@@ -41,6 +31,5 @@ public class MenuGroupService {
     	return menuGroups.stream()
 			.map(menuGroup -> MenuGroupResponse.of(menuGroup))
 			.collect(Collectors.toList());
-        //return menuGroupDao.findAll();
     }
 }
