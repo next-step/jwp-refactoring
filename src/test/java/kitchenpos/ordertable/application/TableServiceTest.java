@@ -1,7 +1,6 @@
 package kitchenpos.ordertable.application;
 
 import kitchenpos.exception.CannotFindException;
-import kitchenpos.ordertable.application.TableService;
 import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.dto.OrderTableRequest;
@@ -18,6 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static kitchenpos.common.Message.ERROR_ORDER_TABLE_NOT_FOUND;
+import static kitchenpos.ordertable.OrderTableTestFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.ArgumentMatchers.any;
@@ -32,9 +32,6 @@ class TableServiceTest {
     @InjectMocks
     private TableService tableService;
 
-    private final Long 단체지정_안됨 = null;
-    private final OrderTable 비어있지_않은_테이블 = new OrderTable(1L, 단체지정_안됨, 3, false);
-    private final OrderTable 비어있는_테이블 = new OrderTable(1L, 단체지정_안됨, 3, true);
 
     @DisplayName("테이블을 등록한다")
     @Test

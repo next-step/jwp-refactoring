@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static kitchenpos.ordertable.OrderTableTestFixture.비어있는_테이블;
+import static kitchenpos.ordertable.OrderTableTestFixture.비어있지_않은_테이블;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -34,9 +36,6 @@ public class TableControllerTest extends ControllerTest<OrderTableRequest> {
     protected Object controller() {
         return tableRestController;
     }
-
-    private final OrderTable 비어있지_않은_테이블 = new OrderTable(1L, null, 3, false);
-    private final OrderTable 비어있는_테이블 = new OrderTable(2L, null, 3, true);
 
     @DisplayName("주문테이블 생성요청")
     @Test

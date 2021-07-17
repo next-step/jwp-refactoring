@@ -35,7 +35,12 @@ public class Order {
     }
 
     public Order(Long orderTableId, OrderStatus orderStatus) {
+        this(null, orderTableId, orderStatus);
+    }
+
+    public Order(Long id, Long orderTableId, OrderStatus orderStatus) {
         validateOrderTableStatus(orderTableId);
+        this.id = id;
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
     }

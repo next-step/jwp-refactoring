@@ -14,8 +14,8 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.Arrays;
 
-import static kitchenpos.order.domain.OrderStatus.COOKING;
 import static kitchenpos.order.domain.OrderStatus.MEAL;
+import static kitchenpos.ordertable.OrderTableTestFixture.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -35,31 +35,12 @@ public class OrderControllerTest extends ControllerTest<OrderRequest> {
         return orderRestController;
     }
 
-    private final Long 상품_ID = 1L;
-    private final Long 메뉴_ID = 1L;
-    private final Long 메뉴_두번째_ID = 2L;
-    private final Long 테이블_ID = 1L;
-    private final Long 주문_ID = 1L;
-
-    private final OrderLineItemResponse 주문_항목_첫번째_응답
-            = new OrderLineItemResponse(1L, 주문_ID, 메뉴_ID,1L);
-    private final OrderLineItemResponse 주문_항목_두번째_응답
-            = new OrderLineItemResponse(2L, 주문_ID, 메뉴_두번째_ID,1L);
-    private final Order 첫번째_주문 = new Order(테이블_ID, COOKING);
-    private final Order 두번째_주문 = new Order(테이블_ID, COOKING);
-    private final OrderResponse 첫번째_주문_응답 = OrderResponse.of(첫번째_주문, Arrays.asList(주문_항목_첫번째_응답));
-    private final OrderResponse 두번째_주문_응답 = OrderResponse.of(두번째_주문, Arrays.asList(주문_항목_두번째_응답));
-
-    private final OrderLineItemRequest 주문_항목_첫번째_요청 = new OrderLineItemRequest(메뉴_ID, 1L);
-    private final OrderRequest 첫번째_주문_요청 = new OrderRequest(테이블_ID, Arrays.asList(주문_항목_첫번째_요청));
-    private final OrderRequest 두번째_주문_요청 = new OrderRequest(테이블_ID, Arrays.asList(주문_항목_첫번째_요청));
-
 
     @DisplayName("주문 생성요청")
     @Test
     void 주문_생성요청() throws Exception {
         //Given
-        when(orderService.create(any())).thenReturn(OrderResponse.of(첫번째_주문, Arrays.asList(주문_항목_첫번째_응답)));
+        when(orderService.create(any())).thenReturn(OrderResponse.of(첫번째_주문, Arrays.asList(주문_항목_첫번째_응답, 주문_항목_두번째_응답)));
 
         //When
         ResultActions 결과 = postRequest(BASE_URI, 첫번째_주문_요청);
@@ -85,12 +66,12 @@ public class OrderControllerTest extends ControllerTest<OrderRequest> {
     @Test
     void 주문_상태_수정요청() throws Exception {
         //Given
-        Order 변경된_주문 = new Order(테이블_ID, MEAL);
-        OrderResponse 주문상태_변경_응답 = new OrderResponse(변경된_주문);
+        Order 변경된_주문 = new Order(비어있지_않은_테이블.getId(), MEAL);
+        OrderResponse 주문상태_변경_응답 = OrderResponse.of(변경된_주문);
 
-        when(orderService.changeOrderStatus(주문_ID, OrderStatusRequest.of(MEAL))).thenReturn(주문상태_변경_응답);
+        when(orderService.changeOrderStatus(첫번째_주문.getId(), OrderStatusRequest.of(MEAL))).thenReturn(주문상태_변경_응답);
 
-        String 수정요청_URI = BASE_URI + "/" + 주문_ID + "/order-status";
+        String 수정요청_URI = BASE_URI + "/" + 첫번째_주문.getId() + "/order-status";
 
         //When
         ResultActions 결과 = putStatusRequest(수정요청_URI, OrderStatusRequest.of(MEAL));

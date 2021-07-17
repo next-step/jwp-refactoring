@@ -13,19 +13,19 @@ public class OrderResponse {
     private LocalDateTime orderedTime;
     private List<OrderLineItemResponse> orderLineItemResponses;
 
-    public OrderResponse(Order order) {
-        this.id = order.getId();
-        this.orderTableId = order.getOrderTableId();
-        this.orderStatus = order.getOrderStatus().name();
-        this.orderedTime = order.getOrderedTime();
+    private OrderResponse(Long id, Long orderTableId, String orderStatus, LocalDateTime orderedTime) {
+        this.id = id;
+        this.orderTableId = orderTableId;
+        this.orderStatus = orderStatus;
+        this.orderedTime = orderedTime;
     }
 
     public static OrderResponse of(Order order) {
-        return new OrderResponse(order);
+        return new OrderResponse(order.getId(), order.getOrderTableId(), order.getOrderStatus().name(), order.getOrderedTime());
     }
 
     public static OrderResponse of(Order order, List<OrderLineItemResponse> orderLineItemResponses) {
-        OrderResponse orderResponse = new OrderResponse(order);
+        OrderResponse orderResponse = OrderResponse.of(order);
         orderResponse.orderLineItemResponses = orderLineItemResponses;
         return orderResponse;
     }

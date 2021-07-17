@@ -1,19 +1,13 @@
 package kitchenpos.ordertable.application;
 
-import kitchenpos.common.Price;
-import kitchenpos.common.Quantity;
 import kitchenpos.exception.CannotFindException;
 import kitchenpos.menu.domain.*;
-import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.*;
-import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusRequest;
-import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
-import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,8 +21,9 @@ import java.util.List;
 import java.util.Optional;
 
 import static kitchenpos.common.Message.*;
-import static kitchenpos.order.domain.OrderStatus.COOKING;
+import static kitchenpos.menu.MenuTestFixture.맥모닝콤보;
 import static kitchenpos.order.domain.OrderStatus.MEAL;
+import static kitchenpos.ordertable.OrderTableTestFixture.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -53,24 +48,12 @@ class OrderServiceTest {
     @InjectMocks
     OrderService orderService;
 
-    private final MenuGroup 첫번째_메뉴그룹 = new MenuGroup("메뉴그룹");
-    private final Product 첫번째_상품 = new Product("첫번째 상품", Price.valueOf(13000));
-    private final MenuProduct 첫번째_메뉴상품 = new MenuProduct(첫번째_상품.getId(), Quantity.of(1L));
-    private final Menu 첫번째_메뉴 = new Menu("첫번째 메뉴", Price.valueOf(13000), 첫번째_메뉴그룹.getId());
-
-    private final OrderTable 첫번째_테이블 = new OrderTable(3, false);
-    private final OrderLineItem 주문_항목_첫번째 = new OrderLineItem(첫번째_메뉴.getId(), Quantity.of(3L));
-
-    private Order 첫번째_주문 = new Order(첫번째_테이블.getId(), COOKING);
-    private final OrderLineItemRequest 주문_항목_첫번째_요청 = new OrderLineItemRequest(첫번째_메뉴.getId(), 1L);
-    private final OrderRequest 첫번째_주문_요청 = new OrderRequest(첫번째_테이블.getId(), Arrays.asList(주문_항목_첫번째_요청));
-
     @DisplayName("주문을 등록할 수 있다")
     @Test
     void 주문_등록() {
         //Given
-        when(orderTableRepository.findById(any())).thenReturn(Optional.of(첫번째_테이블));
-        when(menuRepository.findById(any())).thenReturn(Optional.of(첫번째_메뉴));
+        when(orderTableRepository.findById(any())).thenReturn(Optional.of(비어있지_않은_테이블));
+        when(menuRepository.findById(any())).thenReturn(Optional.of(맥모닝콤보));
         when(orderRepository.save(any())).thenReturn(첫번째_주문);
 
         //When
@@ -94,7 +77,7 @@ class OrderServiceTest {
     @Test
     void 등록되지_않은_메뉴로_주문_생성시_예외발생() {
         //Given
-        when(orderTableRepository.findById(any())).thenReturn(Optional.of(첫번째_테이블));
+        when(orderTableRepository.findById(any())).thenReturn(Optional.of(비어있지_않은_테이블));
 
         //When + Then
         Throwable 메뉴_없음_예외 = catchThrowable(() -> orderService.create(첫번째_주문_요청));
@@ -106,8 +89,8 @@ class OrderServiceTest {
     @Test
     void 주문_항목이_1개_미만_주문_생성시_예외발생() {
         //Given
-        OrderRequest 주문_요청 = new OrderRequest(첫번째_테이블.getId(), Collections.EMPTY_LIST);
-        when(orderTableRepository.findById(any())).thenReturn(Optional.of(첫번째_테이블));
+        OrderRequest 주문_요청 = new OrderRequest(비어있지_않은_테이블.getId(), Collections.EMPTY_LIST);
+        when(orderTableRepository.findById(any())).thenReturn(Optional.of(비어있지_않은_테이블));
 
         //When + Then
         Throwable 메뉴_없음_예외 = catchThrowable(() -> orderService.create(주문_요청));

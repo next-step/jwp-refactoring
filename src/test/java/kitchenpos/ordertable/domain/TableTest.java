@@ -1,7 +1,6 @@
 package kitchenpos.ordertable.domain;
 
 import kitchenpos.exception.CannotUpdateException;
-import kitchenpos.ordertable.domain.OrderTable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
