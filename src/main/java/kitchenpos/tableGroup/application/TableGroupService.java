@@ -43,37 +43,6 @@ public class TableGroupService {
 		TableGroup tableGroup = tableGroupRepository.save(new TableGroup(LocalDateTime.now(), orderTables));
 
 		return TableGroupResponse.of(tableGroup);
-/*
-        final List<OrderTableRequest> orderTableRequests = tableGroupRequest.getOrderTables();
-
-        if (CollectionUtils.isEmpty(orderTableRequests) || orderTableRequests.size() < 2) {
-            throw new IllegalArgumentException();
-        }
-
-        final List<OrderTableRequest> savedOrderTables = orderTableRepository.findAllByIdIn(orderTables);
-
-        if (orderTableRequests.size() != savedOrderTables.size()) {
-            throw new IllegalArgumentException();
-        }
-
-        for (final OrderTableRequest savedOrderTable : savedOrderTables) {
-            if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroupId())) {
-                throw new IllegalArgumentException();
-            }
-        }
-
-        tableGroupRequest.setCreatedDate(LocalDateTime.now());
-
-        final kitchenpos.tableGroup.dto.TableGroupRequest savedTableGroup = this.tableGroupRepository.save(tableGroup);
-
-        final Long tableGroupId = savedTableGroup.getId();
-        for (final OrderTableRequest savedOrderTable : savedOrderTables) {
-            savedOrderTable.setTableGroupId(tableGroupId);
-            savedOrderTable.setEmpty(false);
-            orderTableRepository.save(savedOrderTable);
-        }
-        savedTableGroup.setOrderTables(savedOrderTables);
-*/
     }
 
     @Transactional
@@ -88,16 +57,10 @@ public class TableGroupService {
                 orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
             throw new IllegalArgumentException();
         }
-        
+
 		for (final OrderTable orderTable : orderTables) {
 			orderTable.unGroup();
 			orderTableRepository.save(orderTable);
 		}
-/*
-        for (final OrderTable orderTable : orderTables) {
-            orderTable.setTableGroupId(null);
-            orderTableRepository.save(orderTable);
-        }
-*/
 	}
 }
