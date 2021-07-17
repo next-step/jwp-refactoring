@@ -16,7 +16,8 @@ public class Menu {
     private String name;
     private BigDecimal price;
 
-    private Long menuGroupId;
+    @ManyToOne
+    private MenuGroup menuGroup;
 
     @Embedded
     private MenuProducts menuProducts;
@@ -27,11 +28,11 @@ public class Menu {
    protected Menu() {
     }
 
-    public Menu(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
+    public Menu(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
         validatePrice(price);
         this.name = name;
         this.price = price;
-        this.menuGroupId = menuGroupId;
+        this.menuGroup = menuGroup;
         this.menuProducts = new MenuProducts(menuProducts);
     }
 
@@ -65,8 +66,8 @@ public class Menu {
         return price;
     }
 
-    public Long getMenuGroupId() {
-        return menuGroupId;
+    public MenuGroup getMenuGroup() {
+        return menuGroup;
     }
 
     public List<MenuProduct> getMenuProducts() {

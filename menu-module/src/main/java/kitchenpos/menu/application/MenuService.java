@@ -1,6 +1,7 @@
 package kitchenpos.menu.application;
 
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuRequest;
@@ -43,9 +44,8 @@ public class MenuService {
         return MenuResponse.from(menuRepository.save(menu));
     }
 
-    private Long checkMenuGroup(MenuRequest menuRequest) {
-        menuGroupRepository.findById(menuRequest.getMenuGroupId()).orElseThrow(IllegalArgumentException::new);
-        return menuRequest.getMenuGroupId();
+    private MenuGroup checkMenuGroup(MenuRequest menuRequest) {
+        return menuGroupRepository.findById(menuRequest.getMenuGroupId()).orElseThrow(IllegalArgumentException::new);
     }
 
     @Transactional(readOnly = true)

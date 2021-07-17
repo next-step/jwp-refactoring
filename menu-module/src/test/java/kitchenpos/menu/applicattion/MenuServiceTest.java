@@ -60,9 +60,9 @@ class MenuServiceTest {
         menuProducts = Arrays.asList(menuProduct1, menuProduct2);
         product1 = new Product(1L, "신메뉴1", BigDecimal.valueOf(20000));
         product2 = new Product(2L, "신메뉴2", BigDecimal.valueOf(10000));
-        menu1 = new Menu("신메뉴1", BigDecimal.valueOf(20000), 1L, menuProducts);
-        menu2 = new Menu("신메뉴2", BigDecimal.valueOf(30000), 1L, menuProducts);
         menuGroup = new MenuGroup(1L, "그룹1");
+        menu1 = new Menu("신메뉴1", BigDecimal.valueOf(20000), menuGroup, menuProducts);
+        menu2 = new Menu("신메뉴2", BigDecimal.valueOf(30000), menuGroup, menuProducts);
     }
 
     @DisplayName("메뉴를 등록한다. (메뉴 상품(MenuProduct) 리스트에도 메뉴를 등록한다.)")
@@ -72,14 +72,14 @@ class MenuServiceTest {
         given(menuGroupRepository.findById(any())).willReturn(Optional.ofNullable(menuGroup));
         given(productRepository.findAllById(anyList())).willReturn(Arrays.asList(product1, product2));
         given(menuRepository.save(any())).willReturn(new Menu(menu.getName(),
-                BigDecimal.valueOf(menu.getPrice()), 1L, menuProducts));
+                BigDecimal.valueOf(menu.getPrice()), menuGroup, menuProducts));
 
         MenuResponse savedMenu = menuService.create(menu);
 
         assertAll(
                 () -> assertThat(savedMenu.getName()).isEqualTo(menu.getName()),
                 () -> assertThat(savedMenu.getPrice()).isEqualTo(menu.getPrice()),
-                () -> assertThat(savedMenu.getMenuGroupId()).isEqualTo(menu.getMenuGroupId()),
+                () -> assertThat(savedMenu.getMenuGroup().getId()).isEqualTo(menu.getMenuGroupId()),
                 () -> assertThat(savedMenu.getMenuProducts())
                         .contains(MenuProductResponse.from(menuProduct1), MenuProductResponse.from(menuProduct2)));
 
@@ -104,7 +104,7 @@ class MenuServiceTest {
         MenuRequest menu = new MenuRequest("후라이드2마리", 20000L, 1L, menuProducts);
         Product product = new Product(1L, "신메뉴", BigDecimal.valueOf(2000L));
         given(productRepository.findAllById(anyList())).willReturn(Arrays.asList(product));
-        given(menuGroupRepository.findById(anyLong())).willReturn(Optional.of(new MenuGroup(1L, "그룹1")));
+        given(menuGroupRepository.findById(anyLong())).willReturn(Optional.of(menuGroup));
 
         assertThatThrownBy(() -> menuService.create(menu))
                 .isInstanceOf(IllegalPriceException.class);
@@ -122,9 +122,9 @@ class MenuServiceTest {
         List<MenuProduct> menuProducts1 = Arrays.asList(메뉴상품1);
         List<MenuProduct> menuProducts2 = Arrays.asList(메뉴상품2);
         List<MenuProduct> menuProducts3 = Arrays.asList(메뉴상품3);
-        Menu menu1 = new Menu("메뉴1", BigDecimal.valueOf(15000), 1L,  menuProducts1);
-        Menu menu2 = new Menu("메뉴2", BigDecimal.valueOf(17000), 1L,  menuProducts2);
-        Menu menu3 = new Menu("메뉴3", BigDecimal.valueOf(15000), 1L,  menuProducts3);
+        Menu menu1 = new Menu("메뉴1", BigDecimal.valueOf(15000), menuGroup,  menuProducts1);
+        Menu menu2 = new Menu("메뉴2", BigDecimal.valueOf(17000), menuGroup,  menuProducts2);
+        Menu menu3 = new Menu("메뉴3", BigDecimal.valueOf(15000), menuGroup,  menuProducts3);
         List<Menu> menus = Arrays.asList(menu1, menu2, menu3);
         given(menuRepository.findAll()).willReturn(menus);
 
