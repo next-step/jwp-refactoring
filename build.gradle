@@ -7,30 +7,27 @@ plugins {
 allprojects {
     group 'com.kichenpos'
     version '1.0-SNAPSHOT'
-}
 
-repositories {
-    mavenCentral()
+    repositories {
+        mavenCentral()
+    }
 }
 
 subprojects {
     apply plugin: 'org.springframework.boot'
     apply plugin: 'io.spring.dependency-management'
     apply plugin: 'java'
+
+    dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter-web'
+        implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+        implementation 'org.flywaydb:flyway-core'
+        runtimeOnly 'com.h2database:h2'
+    }
+
+    test {
+        useJUnitPlatform()
+    }
 }
-
-test {
-    useJUnitPlatform()
-}
-
-//project(':domain') {
-//    dependencies {
-//        implementation project(':common')
-//    }
-//}
-
-//project(':api') {
-//    dependencies {
-//        implementation project(':domain')
-//    }
-//}
