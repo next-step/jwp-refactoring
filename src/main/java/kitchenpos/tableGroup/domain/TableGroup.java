@@ -25,7 +25,7 @@ public class TableGroup {
 	@Column(nullable = false)
 	private LocalDateTime createdDate;
 
-	@OneToMany(mappedBy = "order_table", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "tableGroup", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<OrderTable> orderTables;
 
 	public TableGroup(LocalDateTime createdDate, List<OrderTable> orderTables) {
@@ -49,11 +49,13 @@ public class TableGroup {
 	}
 
 	private void validateOrderTableOccupied(List<OrderTable> orderTables) {
-		for (OrderTable orderTable : orderTables) {
-			if (!orderTable.isEmpty() || Objects.nonNull(orderTable.getTableGroup())) {
-				throw new IllegalArgumentException();
-			}
+		if(isNotEmptyOrTableGroupExists(orderTables)) {
+			throw new IllegalArgumentException();
 		}
+	}
+
+	private boolean isNotEmptyOrTableGroupExists(List<OrderTable> orderTables) {
+		return orderTables.stream().filter(orderTable -> !orderTable.isEmpty() || Objects.nonNull(orderTable.getTableGroup())).findAny().isPresent();
 	}
 
 	private void validateOrderTablesSize(List<OrderTable> orderTables) {
