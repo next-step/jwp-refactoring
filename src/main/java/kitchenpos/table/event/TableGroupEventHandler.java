@@ -12,6 +12,7 @@ import kitchenpos.order.domain.Orders;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.OrderTables;
+import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.event.TableGroupUpdateEvent;
 import kitchenpos.tablegroup.event.TableUnGroupEvent;
 
@@ -31,7 +32,8 @@ public class TableGroupEventHandler {
     @EventListener
     public void updateTableGroup(final TableGroupUpdateEvent event) {
         final List<OrderTable> orderTables = orderTableRepository.findAllByIdIn(event.getOrderTablesIds());
-        orderTables.forEach(orderTable -> orderTable.updateTableGroup(event.getTableGroup()));
+        final TableGroup tableGroup = event.getTableGroup();
+        orderTables.forEach(orderTable -> orderTable.updateTableGroup(tableGroup.getId()));
         orderTableRepository.saveAll(orderTables);
     }
 

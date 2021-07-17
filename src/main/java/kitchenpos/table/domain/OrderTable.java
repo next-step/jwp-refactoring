@@ -1,17 +1,12 @@
 package kitchenpos.table.domain;
 
 import java.util.Objects;
-import java.util.Optional;
 
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-
-import kitchenpos.tablegroup.domain.TableGroup;
 
 @Entity
 public class OrderTable {
@@ -20,9 +15,8 @@ public class OrderTable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "table_group_id")
-    private TableGroup tableGroup;
+    private Long tableGroupId;
 
     private int numberOfGuests;
 
@@ -31,8 +25,8 @@ public class OrderTable {
     public OrderTable() {
     }
 
-    public OrderTable(final TableGroup tableGroup, final int numberOfGuests) {
-        this.tableGroup = tableGroup;
+    public OrderTable(final Long tableGroupId, final int numberOfGuests) {
+        this.tableGroupId = tableGroupId;
         this.numberOfGuests = numberOfGuests;
         this.empty = false;
     }
@@ -47,9 +41,7 @@ public class OrderTable {
     }
 
     public Long getTableGroupId() {
-        return Optional.ofNullable(tableGroup)
-            .map(TableGroup::getId)
-            .orElse(null);
+        return tableGroupId;
     }
 
     public int getNumberOfGuests() {
@@ -77,20 +69,16 @@ public class OrderTable {
     }
 
     public void ungroup() {
-        tableGroup = null;
+        tableGroupId = null;
     }
 
-    public void updateTableGroup(final TableGroup tableGroup) {
-        this.tableGroup = tableGroup;
+    public void updateTableGroup(final Long tableGroupId) {
+        this.tableGroupId = tableGroupId;
         this.empty = false;
     }
 
     public boolean hasTableGroupId() {
-        if (tableGroup == null) {
-            return false;
-        }
-
-        return tableGroup.getId() != null;
+        return tableGroupId != null;
     }
 
     @Override
@@ -101,11 +89,11 @@ public class OrderTable {
             return false;
         final OrderTable that = (OrderTable)o;
         return numberOfGuests == that.numberOfGuests && empty == that.empty && Objects.equals(id, that.id)
-            && Objects.equals(tableGroup, that.tableGroup);
+            && Objects.equals(tableGroupId, that.tableGroupId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, tableGroup, numberOfGuests, empty);
+        return Objects.hash(id, tableGroupId, numberOfGuests, empty);
     }
 }

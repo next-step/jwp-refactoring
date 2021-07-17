@@ -10,7 +10,6 @@ import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 
 import kitchenpos.order.domain.Orders;
-import kitchenpos.tablegroup.domain.TableGroup;
 
 @Embeddable
 public class OrderTables {
@@ -31,12 +30,6 @@ public class OrderTables {
             .collect(Collectors.toList());
     }
 
-    public List<Long> tableGroupIds() {
-        return orderTables.stream()
-            .map(OrderTable::getTableGroupId)
-            .collect(Collectors.toList());
-    }
-
     public void ungroup(final Orders orders) {
         validateOrderStatus(orders);
 
@@ -54,28 +47,6 @@ public class OrderTables {
 
     public List<OrderTable> toList() {
         return Collections.unmodifiableList(orderTables);
-    }
-
-    public int size() {
-        return orderTables.size();
-    }
-
-    public boolean hasOccupiedTable() {
-        return orderTables.stream()
-            .anyMatch(OrderTable::isOccupied);
-    }
-
-    public boolean hasTableGroupId() {
-        return orderTables.stream()
-            .anyMatch(orderTable -> orderTable.getTableGroupId() != null);
-    }
-
-    public void addAll(final List<OrderTable> orderTables) {
-        this.orderTables.addAll(orderTables);
-    }
-
-    public void updateTableGroup(final TableGroup tableGroup) {
-        orderTables.forEach(orderTable -> orderTable.updateTableGroup(tableGroup));
     }
 
     @Override
