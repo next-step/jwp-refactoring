@@ -2,7 +2,7 @@ package kitchenpos.order.service;
 
 import java.util.Arrays;
 import java.util.List;
-import kitchenpos.order.domain.entity.OrderRepository;
+import kitchenpos.order.domain.repository.OrderRepository;
 import kitchenpos.order.domain.value.OrderStatus;
 import kitchenpos.table.exception.OrderStatusInCookingOrMealException;
 import kitchenpos.table.service.OrderValidatorInTable;

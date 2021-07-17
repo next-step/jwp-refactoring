@@ -20,7 +20,6 @@ public class OrderTableResponse {
     }
 
     public static OrderTableResponse of(OrderTable orderTable) {
-        System.out.println("orderTable = " + orderTable);
         return new OrderTableResponse(orderTable.getId(),
             orderTable.getNumberOfGuests().getValue(),
             orderTable.isEmpty());

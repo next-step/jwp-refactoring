@@ -3,7 +3,7 @@ package kitchenpos.table.service;
 import java.util.List;
 import java.util.Objects;
 import kitchenpos.table.domain.entity.OrderTable;
-import kitchenpos.table.domain.entity.OrderTableRepository;
+import kitchenpos.table.domain.repository.OrderTableRepository;
 import kitchenpos.table.domain.value.NumberOfGuests;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;

@@ -11,7 +11,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import kitchenpos.menu.domain.entity.Menu;
 import kitchenpos.menu.domain.value.MenuProducts;
-import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menugroup.domain.entity.MenuGroup;
 import kitchenpos.menu.domain.entity.MenuProduct;
 import kitchenpos.menu.domain.value.Price;
 import kitchenpos.menugroup.dto.MenuGroupRequest;
