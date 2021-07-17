@@ -1,6 +1,6 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.menu.util.MenuValidator;
+import kitchenpos.menu.handler.MenuValidator;
 import kitchenpos.wrap.Price;
 
 import javax.persistence.*;

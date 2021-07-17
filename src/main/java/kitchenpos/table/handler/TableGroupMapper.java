@@ -1,4 +1,4 @@
-package kitchenpos.table.util;
+package kitchenpos.table.handler;
 
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTables;

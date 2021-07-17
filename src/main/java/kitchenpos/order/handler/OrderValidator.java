@@ -1,4 +1,4 @@
-package kitchenpos.order.util;
+package kitchenpos.order.handler;
 
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;

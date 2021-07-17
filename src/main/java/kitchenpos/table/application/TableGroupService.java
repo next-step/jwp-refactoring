@@ -8,8 +8,8 @@ import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
 import kitchenpos.table.exception.NotFoundOrderTableException;
 import kitchenpos.table.exception.NotFoundTableGroupException;
-import kitchenpos.table.util.TableGroupMapper;
-import kitchenpos.table.util.TableGroupValidator;
+import kitchenpos.table.handler.TableGroupMapper;
+import kitchenpos.table.handler.TableGroupValidator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

@@ -1,6 +1,6 @@
 package kitchenpos.table.domain;
 
-import kitchenpos.table.util.TableGroupValidator;
+import kitchenpos.table.handler.TableGroupValidator;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
