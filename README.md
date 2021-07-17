@@ -115,3 +115,25 @@
 - [x] order service refactoring
     - [x] orderLineTimes relation refactoring
     - [x] orderLineTimes first collection create
+
+---
+## 4단계 - 멀티 모듈 적용
+### 4단계 요구사항
+
+* Gradle의 멀티 모듈 개념을 적용해 자유롭게 서로 다른 프로젝트로 분리해 본다.
+    * 컨텍스트 간의 독립된 모듈로 만들 수 있다.
+    * 계층 간의 독립된 모듈로 만들 수 있다.
+* 의존성 주입, HTTP 요청/응답, 이벤트 발행/구독 등 다양한 방식으로 모듈 간 데이터를 주고받을 수 있다.
+
+
+### 요구사항 구현 단계
+* sub module 생성
+    - [x] module-web : client와 직접적인 connect를 하는 controller
+    - [x] module-api : 실제 domain business logic을 수행할 service
+    - [x] module-common : domain과 repository 등 공통적인 부분
+    
+* sub module build.gradle 
+    - [x] dependency : 각 모듈에 필요한 dependency를 분리하여 의존주입
+    
+* project dependency
+    - [x] : 각 서브모듈끼리의 dependency 주입
