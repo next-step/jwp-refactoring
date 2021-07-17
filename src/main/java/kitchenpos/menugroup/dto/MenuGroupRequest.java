@@ -1,4 +1,4 @@
-package kitchenpos.menu.dto;
+package kitchenpos.menugroup.dto;
 
 public class MenuGroupRequest {
     private String name;
@@ -6,7 +6,7 @@ public class MenuGroupRequest {
     public MenuGroupRequest() {
     }
 
-    public MenuGroupRequest(String name) {
+    public MenuGroupRequest(final String name) {
         this.name = name;
     }
 

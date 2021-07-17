@@ -1,4 +1,4 @@
-package kitchenpos.menu.application;
+package kitchenpos.menugroup.application;
 
 import static org.mockito.Mockito.*;
 
@@ -8,9 +8,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuGroupRepository;
-import kitchenpos.menu.dto.MenuGroupRequest;
+import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menugroup.domain.MenuGroupRepository;
+import kitchenpos.menugroup.dto.MenuGroupRequest;
 
 @ExtendWith(MockitoExtension.class)
 class MenuGroupServiceTest {
@@ -21,11 +21,10 @@ class MenuGroupServiceTest {
     @InjectMocks
     private MenuGroupService menuGroupService;
 
-
     @Test
     void create() {
         // given
-        MenuGroupRequest menuGroup = new MenuGroupRequest();
+        final MenuGroupRequest menuGroup = new MenuGroupRequest();
 
         // when
         menuGroupService.create(menuGroup);
