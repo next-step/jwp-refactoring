@@ -1,28 +1,21 @@
 package kitchenpos.table.domain;
 
 import java.util.Objects;
-import java.util.Optional;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 
 import kitchenpos.table.exception.TableGroupAlreadyExistsException;
-import kitchenpos.tablegroup.domain.TableGroup;
 
 @Entity
 public class OrderTable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "table_group_id")
-    private TableGroup tableGroup;
+    private Long tableGroupId;
     @Embedded
     private NumberOfGuests numberOfGuests;
     private boolean empty;
@@ -40,20 +33,7 @@ public class OrderTable {
     }
 
     public Long getTableGroupId() {
-        return Optional.ofNullable(this.tableGroup)
-                .map(TableGroup::getId)
-                .orElse(null);
-    }
-
-    public TableGroup getTableGroup() {
-        return tableGroup;
-    }
-
-    public void setTableGroup(final TableGroup tableGroup) {
-        if (!Objects.isNull(tableGroup)) {
-            this.empty = false;
-        }
-        this.tableGroup = tableGroup;
+        return this.tableGroupId;
     }
 
     public NumberOfGuests getNumberOfGuests() {
@@ -65,7 +45,7 @@ public class OrderTable {
     }
 
     public boolean hasTableGroup() {
-        return !Objects.isNull(this.tableGroup);
+        return !Objects.isNull(this.tableGroupId);
     }
 
     public void changeEmpty(boolean empty) {
@@ -81,5 +61,13 @@ public class OrderTable {
         if (hasTableGroup()) {
             throw new TableGroupAlreadyExistsException();
         }
+    }
+
+    public void groupBy(Long tableGroupId) {
+        this.tableGroupId = tableGroupId;
+    }
+
+    public void ungroup() {
+        this.tableGroupId = null;
     }
 }

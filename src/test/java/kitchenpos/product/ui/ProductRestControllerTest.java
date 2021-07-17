@@ -7,10 +7,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +23,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.product.application.ProductService;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
-import kitchenpos.utils.domain.ProductObjects;
 import kitchenpos.utils.MockMvcControllerTest;
 
 @DisplayName("상품 관리 기능")
@@ -36,95 +35,48 @@ class ProductRestControllerTest extends MockMvcControllerTest {
 
     @Autowired
     private ProductRestController productRestController;
-    private ProductObjects productObject;
 
     @Override
     protected Object controller() {
         return productRestController;
     }
 
-    @BeforeEach
-    void setUp() {
-        productObject = new ProductObjects();
-    }
-
     @Test
     @DisplayName("상품 목록을 조회한다.")
     void retrieve_productList() throws Exception {
         // given
-        List<ProductResponse> productResponses = productObject.getProducts()
-                .stream()
-                .map(ProductResponse::of)
-                .collect(Collectors.toList());
+        ProductResponse productResponse1 = ProductResponse.of(1L, "A", BigDecimal.valueOf(1_000.00));
+        ProductResponse productResponse2 = ProductResponse.of(2L, "B", BigDecimal.valueOf(1_000.00));
+        List<ProductResponse> productResponses = Arrays.asList(productResponse1, productResponse2);
+
         given(productService.findAllProducts()).willReturn(productResponses);
 
         // when
         mockMvc.perform(get(REQUEST_URL))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("[0].name").value(productObject.getProduct1().getProductName().toString()))
-                .andExpect(jsonPath("[0].price").value(productObject.getProduct1().getProductPrice().toBigDecimal()))
-                .andExpect(jsonPath("[5].name").value(productObject.getProduct6().getProductName().toString()))
-                .andExpect(jsonPath("[5].price").value(productObject.getProduct6().getProductPrice().toBigDecimal()))
+                .andExpect(jsonPath("[0].name").value(productResponse1.getName()))
+                .andExpect(jsonPath("[0].price").value(productResponse1.getPrice()))
+                .andExpect(jsonPath("[1].name").value(productResponse2.getName()))
+                .andExpect(jsonPath("[1].price").value(productResponse2.getPrice()))
         ;
     }
-
-//    @Test
-//    @DisplayName("상품 목록을 조회한다.")
-//    void retrieve_productList1() throws Exception {
-//        // mocking
-//        when(productService.list()).thenReturn(productObject.getProducts());
-//
-//        // when
-//        mockMvc.perform(get(REQUEST_URL))
-//                .andDo(print())
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("[0].id").value(productObject.getProduct1().getId()))
-//                .andExpect(jsonPath("[0].name").value(productObject.getProduct1().getName()))
-//                .andExpect(jsonPath("[0].price").value(productObject.getProduct1().getPrice()))
-//                .andExpect(jsonPath("[5].id").value(productObject.getProduct6().getId()))
-//                .andExpect(jsonPath("[5].name").value(productObject.getProduct6().getName()))
-//                .andExpect(jsonPath("[5].price").value(productObject.getProduct6().getPrice()))
-//        ;
-//    }
 
     @Test
     @DisplayName("상품을 등록할 수 있다.")
     void save_product() throws Exception {
         // given
-        ProductRequest productRequest = new ProductRequest(productObject.getProduct3().getProductName().toString(),
-                productObject.getProduct3().getProductPrice().toBigDecimal());
-        ProductResponse result = ProductResponse.of(productObject.getProduct3());
-        given(productService.create(any(ProductRequest.class))).willReturn(result);
+        ProductResponse productResponse1 = ProductResponse.of(1L, "A", BigDecimal.valueOf(1_000.00));
+        given(productService.create(any(ProductRequest.class))).willReturn(productResponse1);
 
         // then
         mockMvc.perform(post(REQUEST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(new ObjectMapper().writeValueAsString(productRequest)))
+                .content(new ObjectMapper().writeValueAsString(new ProductRequest("A", BigDecimal.valueOf(10_000.00)))))
                 .andDo(print())
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("name").value(result.getName()))
-                .andExpect(jsonPath("price").value(result.getPrice()))
+                .andExpect(jsonPath("name").value(productResponse1.getName()))
+                .andExpect(jsonPath("price").value(productResponse1.getPrice()))
         ;
     }
-
-//
-//    @Test
-//    @DisplayName("상품을 등록할 수 있다.")
-//    void save_product1() throws Exception {
-//        // mocking
-//        when(productService.create(any(Product.class))).thenReturn(productObject.getProduct3());
-//
-//        // when
-//        mockMvc.perform(post(REQUEST_URL)
-//                    .contentType(MediaType.APPLICATION_JSON)
-//                    .content(new ObjectMapper().writeValueAsString(productObject.getProduct1())))
-//                .andDo(print())
-//                .andExpect(status().isCreated())
-//                .andExpect(jsonPath("id").value(productObject.getProduct3().getId()))
-//                .andExpect(jsonPath("name").value(productObject.getProduct3().getName()))
-//                .andExpect(jsonPath("price").value(productObject.getProduct3().getPrice()))
-//        ;
-
-//    }
 }

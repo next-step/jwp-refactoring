@@ -8,12 +8,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,9 +21,6 @@ import org.springframework.http.MediaType;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
@@ -33,8 +28,6 @@ import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.product.domain.Product;
-import kitchenpos.table.domain.OrderTable;
 import kitchenpos.utils.MockMvcControllerTest;
 
 @DisplayName("주문 관리 기능")
@@ -48,19 +41,9 @@ class OrderRestControllerTest extends MockMvcControllerTest {
     @Autowired
     private OrderRestController orderRestController;
 
-    private Menu menu;
-
     @Override
     protected Object controller() {
         return orderRestController;
-    }
-
-    @BeforeEach
-    void setUp() {
-        MenuGroup menuGroup = new MenuGroup("AB");
-        menu = new Menu("A", BigDecimal.valueOf(20000.00), menuGroup);
-        menu.addMenuProduct(new MenuProduct(menu, new Product("a", BigDecimal.valueOf(15000.00)), 1));
-        menu.addMenuProduct(new MenuProduct(menu, new Product("a", BigDecimal.valueOf(15000.00)), 1));
     }
 
     @Test
@@ -69,8 +52,8 @@ class OrderRestControllerTest extends MockMvcControllerTest {
         // given
         OrderLineItemRequest orderLineItemRequest1 = new OrderLineItemRequest(1L, 1L);
         OrderRequest orderRequest = new OrderRequest(OrderStatus.COOKING, 1L, Arrays.asList(orderLineItemRequest1));
-        Order order = new Order(LocalDateTime.now(), new OrderTable(3, false));
-        order.addOrderLineItem(new OrderLineItem(order, menu, 3L));
+        Order order = new Order(LocalDateTime.now(), 1L);
+        order.addOrderLineItem(new OrderLineItem(order, 1L, 3L));
         OrderResponse orderResponse = OrderResponse.of(order);
         given(orderService.create(any(OrderRequest.class))).willReturn(orderResponse);
 
@@ -89,8 +72,8 @@ class OrderRestControllerTest extends MockMvcControllerTest {
     @DisplayName("주문 목록을 조회할 수 있다.")
     void retrieve_orderList() throws Exception {
         // given
-        Order order = new Order(LocalDateTime.now(), new OrderTable(3, false));
-        order.addOrderLineItem(new OrderLineItem(order, menu, 3L));
+        Order order = new Order(LocalDateTime.now(), 1L);
+        order.addOrderLineItem(new OrderLineItem(order, 1L, 3L));
         OrderResponse orderResponse = OrderResponse.of(order);
         given(orderService.findAllOrders()).willReturn(Arrays.asList(orderResponse));
 
@@ -108,9 +91,9 @@ class OrderRestControllerTest extends MockMvcControllerTest {
     void change_orderStatus() throws Exception {
         // given
         OrderRequest orderRequest = new OrderRequest(OrderStatus.MEAL, 1L, new ArrayList<>());
-        Order order = new Order(LocalDateTime.now(), new OrderTable(3, false));
+        Order order = new Order(LocalDateTime.now(), 1L);
         order.changeOrderStatus(OrderStatus.MEAL);
-        order.addOrderLineItem(new OrderLineItem(order, menu, 3L));
+        order.addOrderLineItem(new OrderLineItem(order, 1L, 3L));
         OrderResponse orderResponse = OrderResponse.of(order);
         given(orderService.changeOrderStatus(anyLong(), any(OrderRequest.class))).willReturn(orderResponse);
 

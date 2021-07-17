@@ -6,7 +6,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import kitchenpos.table.exception.TableGroupAlreadyExistsException;
-import kitchenpos.tablegroup.domain.TableGroup;
 
 @DisplayName("OrderTable 테스트")
 class OrderTableTest {
@@ -16,7 +15,7 @@ class OrderTableTest {
     void cannot_change_empty() {
         // given
         OrderTable orderTable = new OrderTable(3, false);
-        orderTable.setTableGroup(new TableGroup());
+        orderTable.groupBy(1L);
 
         // then
         assertThatThrownBy(() -> orderTable.changeEmpty(true))

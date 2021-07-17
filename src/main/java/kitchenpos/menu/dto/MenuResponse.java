@@ -5,33 +5,32 @@ import java.util.ArrayList;
 import java.util.List;
 
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menugroup.dto.MenuGroupResponse;
 
 public class MenuResponse {
     private Long id;
     private String name;
     private BigDecimal price;
+    private Long menuGroupId;
     private List<MenuProductResponse> menuProductResponses = new ArrayList<>();
-    private MenuGroupResponse menuGroupResponse;
 
     protected MenuResponse() {
     }
 
-    private MenuResponse(Long id, String name, BigDecimal price, List<MenuProductResponse> menuProductResponses, MenuGroupResponse menuGroupResponse) {
+    private MenuResponse(Long id, String name, BigDecimal price, List<MenuProductResponse> menuProductResponses, Long menuGroupId) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.menuProductResponses = menuProductResponses;
-        this.menuGroupResponse = menuGroupResponse;
+        this.menuGroupId = menuGroupId;
     }
 
     public static MenuResponse of(Menu menu) {
         List<MenuProductResponse> menuProductResponses = menu.getMenuProducts().toResponses();
-        return new MenuResponse(menu.getId(), menu.getName().toString(), menu.getPrice().toBigDecimal(), menuProductResponses, MenuGroupResponse.of(menu.getMenuGroup()));
+        return new MenuResponse(menu.getId(), menu.getName().toString(), menu.getPrice().toBigDecimal(), menuProductResponses, menu.getMenuGroupId());
     }
 
-    public static MenuResponse of(Long id, String name, BigDecimal price,List<MenuProductResponse> menuProductResponses , MenuGroupResponse menuGroupResponse) {
-        return new MenuResponse(id, name, price, menuProductResponses, menuGroupResponse);
+    public static MenuResponse of(Long id, String name, BigDecimal price,List<MenuProductResponse> menuProductResponses , Long menuGroupId) {
+        return new MenuResponse(id, name, price, menuProductResponses, menuGroupId);
     }
 
     public Long getId() {
@@ -50,7 +49,7 @@ public class MenuResponse {
         return menuProductResponses;
     }
 
-    public MenuGroupResponse getMenuGroupResponse() {
-        return menuGroupResponse;
+    public Long getMenuGroupId() {
+        return menuGroupId;
     }
 }

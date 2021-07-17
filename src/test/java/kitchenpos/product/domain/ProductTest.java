@@ -11,8 +11,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 
-import kitchenpos.product.dto.ProductRequest;
-
 @DisplayName("상품 도메인 테스트")
 class ProductTest {
 

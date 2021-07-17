@@ -5,6 +5,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.mockito.BDDMockito.*;
 
+import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -19,12 +21,10 @@ import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
-import kitchenpos.utils.domain.ProductObjects;
 
 @DisplayName("상품 서비스")
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
-
     @Mock
     private ProductRepository productRepository;
 
@@ -37,10 +37,10 @@ class ProductServiceTest {
 
     @BeforeEach
     void setUp() {
-        ProductObjects productObjects = new ProductObjects();
-        createProduct = productObjects.getProduct1();
-        createRequest = productObjects.getProductRequest1();
-        products = productObjects.getProducts();
+        createProduct = new Product("A", BigDecimal.valueOf(10_000.00));
+        createRequest = new ProductRequest("A", BigDecimal.valueOf(10_000.00));
+        products = Arrays.asList(new Product("B", BigDecimal.valueOf(5_000.00)),
+                new Product("C", BigDecimal.valueOf(4_000.00)));
     }
 
     @Test

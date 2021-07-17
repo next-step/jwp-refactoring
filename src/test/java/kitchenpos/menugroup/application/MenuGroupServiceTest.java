@@ -4,9 +4,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.*;
 
+import java.util.Arrays;
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,7 +18,6 @@ import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.menugroup.dto.MenuGroupRequest;
 import kitchenpos.menugroup.dto.MenuGroupResponse;
-import kitchenpos.utils.domain.MenuGroupObjects;
 
 @DisplayName("메뉴그룹 서비스")
 @ExtendWith(MockitoExtension.class)
@@ -29,36 +28,27 @@ class MenuGroupServiceTest {
     @InjectMocks
     private MenuGroupService menuGroupService;
 
-    private MenuGroupObjects menuGroupObjects;
-    private MenuGroup menuGroup1;
-    private MenuGroupRequest createMenuGroupRequest;
-
-    @BeforeEach
-    void setUp() {
-        menuGroupObjects = new MenuGroupObjects();
-        menuGroup1 = menuGroupObjects.getMenuGroup1();
-        createMenuGroupRequest = menuGroupObjects.getMenuGroupRequest1();
-    }
-
     @Test
     @DisplayName("메뉴그룹을 생성한다.")
     void create_menuGroup() {
         // given
-        given(menuGroupRepository.save(any(MenuGroup.class))).willReturn(menuGroupObjects.getMenuGroup1());
+        MenuGroup menuGroup = new MenuGroup("A");
+        given(menuGroupRepository.save(any(MenuGroup.class))).willReturn(new MenuGroup("A"));
 
         // when
-        MenuGroupResponse savedMenuGroup = menuGroupService.create(createMenuGroupRequest);
+        MenuGroupResponse savedMenuGroup = menuGroupService.create(new MenuGroupRequest("A"));
 
         // then
-        assertThat(savedMenuGroup.getName()).isEqualTo(menuGroupObjects.getMenuGroup1().getMenuGroupName().toString());
+        assertThat(savedMenuGroup.getName()).isEqualTo(menuGroup.getMenuGroupName().toString());
     }
 
     @Test
     @DisplayName("메뉴그룹 목록을 조회한다.")
     void find_menuGroupList() {
         // given
-        List<MenuGroupResponse> menuGroupResponses = menuGroupObjects.getMenuGroupResponses();
-        given(menuGroupRepository.findAll()).willReturn(menuGroupObjects.getMenuGroups());
+        List<MenuGroupResponse> menuGroupResponses = Arrays.asList(MenuGroupResponse.of(1L, "A"), MenuGroupResponse.of(2L, "B"));
+        List<MenuGroup> menuGroups = Arrays.asList(new MenuGroup("A"), new MenuGroup("B"));
+        given(menuGroupRepository.findAll()).willReturn(menuGroups);
 
         // when
         List<MenuGroupResponse> resultResponses = menuGroupService.findAllMenuGroups();

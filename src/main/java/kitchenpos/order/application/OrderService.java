@@ -1,38 +1,36 @@
 package kitchenpos.order.application;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kitchenpos.menu.application.MenuService;
-import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.application.MenuOrderService;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.order.exception.OrderAlreadyExistsException;
 import kitchenpos.order.exception.OrderNotFoundException;
-import kitchenpos.table.application.TableService;
-import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.application.TableOrderService;
 
 @Service
 @Transactional
 public class OrderService {
-    private final TableService tableService;
-    private final MenuService menuService;
+    private final OrderValidator orderValidator;
     private final OrderRepository orderRepository;
+    private final TableOrderService tableOrderService;
+    private final MenuOrderService menuOrderService;
 
-    public OrderService(TableService tableService, MenuService menuService, OrderRepository orderRepository) {
-        this.tableService = tableService;
-        this.menuService = menuService;
+    public OrderService(OrderValidator orderValidator,
+                        OrderRepository orderRepository, TableOrderService tableOrderService, MenuOrderService menuOrderService) {
+        this.orderValidator = orderValidator;
         this.orderRepository = orderRepository;
+        this.tableOrderService = tableOrderService;
+        this.menuOrderService = menuOrderService;
     }
 
     public List<OrderResponse> findAllOrders() {
@@ -49,10 +47,10 @@ public class OrderService {
     }
 
     public OrderResponse create(final OrderRequest orderRequest) {
-        OrderTable orderTable = tableService.findOrderTableByIdAndEmptyIsFalse(orderRequest.getOrderTableId());
-        Order order = makeOrderWithOrderLineItemRequests(new Order(LocalDateTime.now(), orderTable),
-                orderRequest.getOrderLineItemRequests());
-        return OrderResponse.of(orderRepository.save(order));
+        orderValidator.validateNotEmptyOrderTableExists(tableOrderService.findTableById(orderRequest.getOrderTableId()));
+        Order order = orderRepository.save(makeOrderWithOrderLineItemRequests(new Order(LocalDateTime.now(), orderRequest.getOrderTableId()),
+                orderRequest.getOrderLineItemRequests()));
+        return OrderResponse.of(order);
     }
 
     private Order makeOrderWithOrderLineItemRequests(Order order, List<OrderLineItemRequest> orderLineItemRequests) {
@@ -64,21 +62,7 @@ public class OrderService {
     }
 
     private OrderLineItem createOrderLineItem(Order order, OrderLineItemRequest orderLineItemRequest) {
-        Menu menu = menuService.findMenuById(orderLineItemRequest.getMenuId());
-        return new OrderLineItem(order, menu, orderLineItemRequest.getQuantity());
-    }
-
-    public void validateExistsOrdersStatusIsCookingOrMeal(List<Long> orderTableIds) {
-        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
-                orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new OrderAlreadyExistsException("주문 상태가 COOKING 또는 MEAL인 주문이 존재합니다.");
-        }
-    }
-
-    public void validateExistsOrderStatusIsCookingANdMeal(Long orderTableId) {
-        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
-                orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new OrderAlreadyExistsException("주문 상태가 COOKING 또는 MEAL인 주문이 존재합니다. 입력 ID : " + orderTableId);
-        }
+        orderValidator.validateExistsMenu(menuOrderService.findMenuById(orderLineItemRequest.getMenuId()));
+        return new OrderLineItem(order, orderLineItemRequest.getMenuId(), orderLineItemRequest.getQuantity());
     }
 }

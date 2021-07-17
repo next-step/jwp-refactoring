@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kitchenpos.order.application.OrderService;
+import kitchenpos.order.application.OrderOrderTableService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableRequest;
@@ -18,11 +18,14 @@ import kitchenpos.table.exception.OrderTableNotFoundException;
 @Transactional
 public class TableService {
     private final OrderTableRepository orderTableRepository;
-    private final OrderService orderService;
+    private final TableValidator tableValidator;
+    private final OrderOrderTableService orderOrderTableService;
 
-    public TableService(final OrderTableRepository orderTableRepository, final OrderService orderService) {
+    public TableService(final OrderTableRepository orderTableRepository, final TableValidator tableValidator,
+                        final OrderOrderTableService orderOrderTableService) {
         this.orderTableRepository = orderTableRepository;
-        this.orderService = orderService;
+        this.tableValidator = tableValidator;
+        this.orderOrderTableService = orderOrderTableService;
     }
 
     public OrderTableResponse create(final OrderTableRequest orderTableRequest) {
@@ -46,13 +49,9 @@ public class TableService {
         return OrderTableResponse.of(savedOrderTable);
     }
 
-    public List<OrderTable> findOrderTablesByIds(List<Long> ids) {
-        return orderTableRepository.findByIdIn(ids);
-    }
-
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         final OrderTable savedOrderTable = findOrderTableById(orderTableId);
-        orderService.validateExistsOrderStatusIsCookingANdMeal(orderTableId);
+        tableValidator.validateExistsOrderStatusIsCookingANdMeal(orderOrderTableService.findOrderByOrderTableId(orderTableId));
         savedOrderTable.changeEmpty(orderTableRequest.isEmpty());
         return OrderTableResponse.of(savedOrderTable);
     }

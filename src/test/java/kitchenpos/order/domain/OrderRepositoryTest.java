@@ -3,12 +3,11 @@ package kitchenpos.order.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
@@ -16,43 +15,18 @@ import org.junit.jupiter.api.TestFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.menugroup.domain.MenuGroupRepository;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
-
 @DataJpaTest
 class OrderRepositoryTest {
-
     @Autowired
     private OrderRepository orderRepository;
-    @Autowired
-    private MenuRepository menuRepository;
-    @Autowired
-    private MenuGroupRepository menuGroupRepository;
-    @Autowired
-    private OrderTableRepository orderTableRepository;
-
-    private MenuGroup menuGroup;
-    private Menu menu;
-    private OrderTable orderTable;
-
-    @BeforeEach
-    void setUp() {
-        menuGroup = menuGroupRepository.save(new MenuGroup("a"));
-        menu = menuRepository.save(new Menu("A", BigDecimal.valueOf(10000.00), menuGroup));
-        orderTable = orderTableRepository.save(new OrderTable(4, false));
-    }
 
     @TestFactory
     @DisplayName("기본 저장 확인")
     List<DynamicTest> save() {
         // given
-        Order order = new Order(LocalDateTime.now(), orderTable);
-        OrderLineItem orderLineItem1 = new OrderLineItem(order, menu, 3L);
-        OrderLineItem orderLineItem2 = new OrderLineItem(order, menu, 2L);
+        Order order = new Order(LocalDateTime.now(), 1L);
+        OrderLineItem orderLineItem1 = new OrderLineItem(order, 1L, 3L);
+        OrderLineItem orderLineItem2 = new OrderLineItem(order, 1L, 2L);
         order.addOrderLineItem(orderLineItem1);
         order.addOrderLineItem(orderLineItem2);
 
@@ -72,15 +46,15 @@ class OrderRepositoryTest {
     @DisplayName("특정 주문상태를 가진 하나의 주문 테이블이 존재하는지 확인")
     void existsByOrderTableIdAndOrderStatusIn() {
         // given
-        Order order = new Order(LocalDateTime.now(), orderTable);
-        OrderLineItem orderLineItem1 = new OrderLineItem(order, menu, 3L);
-        OrderLineItem orderLineItem2 = new OrderLineItem(order, menu, 2L);
+        Order order = new Order(LocalDateTime.now(), 1L);
+        OrderLineItem orderLineItem1 = new OrderLineItem(order, 1L, 3L);
+        OrderLineItem orderLineItem2 = new OrderLineItem(order, 1L, 2L);
         order.addOrderLineItem(orderLineItem1);
         order.addOrderLineItem(orderLineItem2);
         orderRepository.save(order);
 
         // when
-        boolean exists = orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTable.getId(), Arrays.asList(OrderStatus.COOKING));
+        boolean exists = orderRepository.existsByOrderTableIdAndOrderStatusIn(1L, Arrays.asList(OrderStatus.COOKING));
 
         // then
         assertThat(exists).isTrue();
@@ -90,18 +64,47 @@ class OrderRepositoryTest {
     @DisplayName("특정 주문상태를 가진 다수의 주문 테이블이 존재하는지 확인")
     void existsByOrderTableIdInAndOrderStatusIn() {
         // given
-        Order order = new Order(LocalDateTime.now(), orderTable);
-        OrderLineItem orderLineItem1 = new OrderLineItem(order, menu, 3L);
-        OrderLineItem orderLineItem2 = new OrderLineItem(order, menu, 2L);
+        Order order = new Order(LocalDateTime.now(), 1L);
+        OrderLineItem orderLineItem1 = new OrderLineItem(order, 1L, 3L);
+        OrderLineItem orderLineItem2 = new OrderLineItem(order, 1L, 2L);
         order.addOrderLineItem(orderLineItem1);
         order.addOrderLineItem(orderLineItem2);
         orderRepository.save(order);
 
         // when
-        boolean exists = orderRepository.existsByOrderTableIdInAndOrderStatusIn(Arrays.asList(orderTable.getId()),
+        boolean exists = orderRepository.existsByOrderTableIdInAndOrderStatusIn(Arrays.asList(1L),
                 Arrays.asList(OrderStatus.COOKING));
 
         // then
         assertThat(exists).isTrue();
+    }
+
+    @Test
+    @DisplayName("여러 테이블 ID 기준으로 주문 찾기")
+    void find_by_orderIds() {
+        // given
+        Order order1 = new Order(LocalDateTime.now(), 1L);
+        Order order2 = new Order(LocalDateTime.now(), 2L);
+        orderRepository.saveAll(Arrays.asList(order1, order2));
+
+        // when
+        List<Order> orders = orderRepository.findByOrderTableIdIn(Arrays.asList(1L, 2L));
+
+        // then
+        assertThat(orders).size().isEqualTo(2);
+    }
+
+    @Test
+    @DisplayName("단일 테이블 ID 기준으로 주문 찾기")
+    void find_by_orderId() {
+        // given
+        Order order = new Order(LocalDateTime.now(), 1L);
+        orderRepository.save(order);
+
+        // when
+        Optional<Order> orders = orderRepository.findByOrderTableId(order.getId());
+
+        // then
+        assertThat(order).isNotNull();
     }
 }

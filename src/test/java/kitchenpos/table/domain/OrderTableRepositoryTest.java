@@ -81,15 +81,16 @@ class OrderTableRepositoryTest {
     }
 
     @Test
+    @DisplayName("단체지정 ID 기준으로 테이블 목록 조회")
     void findByTableGroupId() {
         // given
         TableGroup tableGroup = new TableGroup();
+        tableGroupRepository.save(tableGroup);
         OrderTable orderTable1 = new OrderTable(3, true);
         OrderTable orderTable2 = new OrderTable(3, true);
+        orderTable1.groupBy(tableGroup.getId());
+        orderTable2.groupBy(tableGroup.getId());
         orderTableRepository.saveAll(Arrays.asList(orderTable1, orderTable2));
-        tableGroup.addOrderTable(orderTable1);
-        tableGroup.addOrderTable(orderTable2);
-        tableGroupRepository.save(tableGroup);
 
         // when
         List<OrderTable> orderTables = orderTableRepository.findByTableGroupId(tableGroup.getId());

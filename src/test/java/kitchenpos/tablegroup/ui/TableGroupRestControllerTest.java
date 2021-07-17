@@ -22,7 +22,6 @@ import org.springframework.http.MediaType;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import kitchenpos.table.domain.OrderTable;
 import kitchenpos.tablegroup.application.TableGroupService;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
@@ -52,8 +51,7 @@ class TableGroupRestControllerTest extends MockMvcControllerTest {
     @DisplayName("단체 지정 등록을 할 수 있다.")
     void create_tableGroup1() throws Exception {
         TableGroupRequest tableGroupRequest = new TableGroupRequest(Arrays.asList(4L));
-        OrderTable orderTable = new OrderTable(4, false);
-        TableGroupResponse tableGroupResponse = TableGroupResponse.of(1L, LocalDateTime.now(), Arrays.asList(orderTable));
+        TableGroupResponse tableGroupResponse = TableGroupResponse.of(1L, LocalDateTime.now());
         given(tableGroupService.create(any(TableGroupRequest.class))).willReturn(tableGroupResponse);
 
         mockMvc.perform(post(DEFAULT_REQUEST_URL)
@@ -63,7 +61,6 @@ class TableGroupRestControllerTest extends MockMvcControllerTest {
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("id").value(tableGroupResponse.getId()))
-                .andExpect(jsonPath("orderTableResponses.length()").value(tableGroupResponse.getOrderTableResponses().size()))
         ;
     }
 
