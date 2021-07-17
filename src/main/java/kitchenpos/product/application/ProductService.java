@@ -14,11 +14,9 @@ import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
-    private final ProductDao productDao;
     private final ProductRepository productRepository;
 
-    public ProductService(final ProductDao productDao, final ProductRepository productRepository) {
-        this.productDao = productDao;
+    public ProductService(final ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
 
