@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static java.util.Arrays.asList;
+import static kitchenpos.fixture.MenuGroupFixture.메뉴그룹_주류;
+import static kitchenpos.fixture.MenuGroupFixture.메뉴그룹_치킨류;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 import static org.mockito.Mockito.verify;
@@ -38,10 +40,7 @@ class MenuGroupServiceTest {
 
     @MethodSource("methodSource_create_성공")
     @ParameterizedTest
-    void create_성공(String name) {
-        // given
-        MenuGroup menuGroup = new MenuGroup(1L, name);
-
+    void create_성공(MenuGroup menuGroup) {
         // when
         when(menuGroupDao.save(menuGroup)).thenReturn(menuGroup);
         MenuGroup createdMenuGroup = menuGroupService.create(menuGroup);
@@ -53,8 +52,8 @@ class MenuGroupServiceTest {
 
     Stream<Arguments> methodSource_create_성공() {
         return Stream.of(
-                Arguments.of("치킨류"),
-                Arguments.of("안주류")
+                Arguments.of(메뉴그룹_치킨류),
+                Arguments.of(메뉴그룹_주류)
         );
     }
 
@@ -62,8 +61,8 @@ class MenuGroupServiceTest {
     void list_성공() {
         // given
         List<MenuGroup> menuGroups = asList(
-                new MenuGroup(1L, "치킨류"),
-                new MenuGroup(2L, "안주류"));
+                메뉴그룹_치킨류,
+                메뉴그룹_주류);
 
         // when
         when(menuGroupDao.findAll()).thenReturn(menuGroups);

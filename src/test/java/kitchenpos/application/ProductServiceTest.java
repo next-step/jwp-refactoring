@@ -2,6 +2,7 @@ package kitchenpos.application;
 
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
+import kitchenpos.fixture.ProductFixture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -19,6 +20,7 @@ import java.util.stream.Stream;
 
 import static java.math.BigDecimal.valueOf;
 import static java.util.Arrays.asList;
+import static kitchenpos.fixture.ProductFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
@@ -42,10 +44,7 @@ class ProductServiceTest {
 
     @MethodSource("methodSource_create_성공")
     @ParameterizedTest
-    void create_성공(String name, BigDecimal price) {
-        // given
-        Product product = new Product(name, price);
-
+    void create_성공(Product product) {
         // when
         when(productDao.save(product)).thenReturn(product);
         Product createdProduct = productService.create(product);
@@ -57,8 +56,8 @@ class ProductServiceTest {
 
     Stream<Arguments> methodSource_create_성공() {
         return Stream.of(
-                Arguments.of("후라이드치킨", valueOf(0)),
-                Arguments.of("후라이드치킨", valueOf(18_000))
+                Arguments.of(상품_무료_콜라_서비스),
+                Arguments.of(상품_후라이드_치킨)
         );
     }
 
@@ -84,8 +83,7 @@ class ProductServiceTest {
     @Test
     void list_성공() {
         // given
-        List<Product> products = asList(new Product("순살지코바양념치킨", valueOf(20_000)),
-                new Product("콜라 1.5L", valueOf(3_000)));
+        List<Product> products = asList(상품_후라이드_치킨, 상품_양념_치킨, 상품_무료_콜라_서비스);
 
         // when
         when(productDao.findAll()).thenReturn(products);
