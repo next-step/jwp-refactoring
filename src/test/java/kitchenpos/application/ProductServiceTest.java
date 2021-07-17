@@ -17,7 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.product.application.ProductService;
 import kitchenpos.dao.ProductDao;
-import kitchenpos.domain.ProductRequest;
+import kitchenpos.product.dto.ProductRequest;
 
 @ExtendWith(MockitoExtension.class)
 public class ProductServiceTest {

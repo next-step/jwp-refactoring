@@ -5,7 +5,7 @@ import org.springframework.http.MediaType;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.ProductRequest;
+import kitchenpos.product.dto.ProductRequest;
 
 public class ProductAcceptanceTestMethod {
 	public static ExtractableResponse<Response> createProduct(ProductRequest product) {

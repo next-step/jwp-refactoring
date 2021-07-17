@@ -15,7 +15,7 @@ import org.springframework.http.MediaType;
 
 import kitchenpos.product.application.ProductService;
 import kitchenpos.product.ui.ProductRestController;
-import kitchenpos.domain.ProductRequest;
+import kitchenpos.product.dto.ProductRequest;
 
 @WebMvcTest(ProductRestController.class)
 public class ProductRestControllerTest extends WebMvcTestConfiguration {

@@ -11,7 +11,7 @@ import org.springframework.http.HttpStatus;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.ProductRequest;
+import kitchenpos.product.dto.ProductRequest;
 
 public class ProductAcceptanceTest extends AcceptanceTest {
 	@DisplayName("상품 등록 및 조회 시나리오")

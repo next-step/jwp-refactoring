@@ -17,7 +17,7 @@ import io.restassured.response.Response;
 import kitchenpos.domain.MenuRequest;
 import kitchenpos.domain.MenuGroupRequest;
 import kitchenpos.domain.MenuProductRequest;
-import kitchenpos.domain.ProductRequest;
+import kitchenpos.product.dto.ProductRequest;
 
 public class MenuAcceptanceTest extends AcceptanceTest {
 	@DisplayName("메뉴 등록 및 조회 시나리오")

@@ -23,7 +23,7 @@ import kitchenpos.dao.MenuProductDao;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.MenuRequest;
 import kitchenpos.domain.MenuProductRequest;
-import kitchenpos.domain.ProductRequest;
+import kitchenpos.product.dto.ProductRequest;
 
 @ExtendWith(MockitoExtension.class)
 public class MenuServiceTest {

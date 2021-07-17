@@ -23,7 +23,7 @@ import kitchenpos.domain.MenuProductRequest;
 import kitchenpos.domain.OrderRequest;
 import kitchenpos.domain.OrderLineItemRequest;
 import kitchenpos.domain.OrderTableRequest;
-import kitchenpos.domain.ProductRequest;
+import kitchenpos.product.dto.ProductRequest;
 
 public class OrderAcceptanceTest extends AcceptanceTest {
 	@DisplayName("주문 등록, 상태변경 조회 시나리오")

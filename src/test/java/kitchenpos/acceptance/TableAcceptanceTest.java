@@ -24,7 +24,7 @@ import kitchenpos.domain.MenuProductRequest;
 import kitchenpos.domain.OrderRequest;
 import kitchenpos.domain.OrderLineItemRequest;
 import kitchenpos.domain.OrderTableRequest;
-import kitchenpos.domain.ProductRequest;
+import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.domain.TableGroupRequest;
 
 public class TableAcceptanceTest extends AcceptanceTest {
