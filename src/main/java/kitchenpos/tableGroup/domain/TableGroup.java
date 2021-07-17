@@ -41,6 +41,10 @@ public class TableGroup {
 		return createdDate;
 	}
 
+	public List<OrderTable> getOrderTables() {
+		return orderTables;
+	}
+
 	public void addOrderTables(List<OrderTable> orderTables) {
 		validateOrderTablesSize(orderTables);
 		validateOrderTableOccupied(orderTables);

@@ -28,7 +28,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
 		ExtractableResponse<Response> menuGroupResponse = createMenuGroup(new MenuGroupRequest("인기 메뉴"));
 		MenuGroupRequest menuGroup = menuGroupResponse.as(MenuGroupRequest.class);
 		// And
-		ExtractableResponse<Response> productResponse = createProduct(new ProductRequest("매운 라면", new BigDecimal(8000)));
+		ExtractableResponse<Response> productResponse = createProduct(new ProductRequest("매운 라면", 8000L));
 		ProductRequest product = productResponse.as(ProductRequest.class);
 
 		// Scenario
@@ -57,7 +57,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
 		ExtractableResponse<Response> menuGroupResponse = createMenuGroup(new MenuGroupRequest("인기 메뉴"));
 		MenuGroupRequest menuGroup = menuGroupResponse.as(MenuGroupRequest.class);
 		// And
-		ExtractableResponse<Response> productResponse = createProduct(new ProductRequest("매운 라면", new BigDecimal(8000)));
+		ExtractableResponse<Response> productResponse = createProduct(new ProductRequest("매운 라면", 8000L));
 		ProductRequest product = productResponse.as(ProductRequest.class);
 
 		// Scenario

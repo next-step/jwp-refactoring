@@ -1,5 +1,6 @@
 package kitchenpos.menu.dto;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import kitchenpos.menu.domain.Menu;
@@ -30,5 +31,13 @@ public class MenuResponse {
 
 	public static MenuResponse of(Menu menu) {
 		return new MenuResponse(menu.getId(), menu.getName(), menu.getPrice(), menu.getMenuGroup(), menu.getMenuProducts());
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public BigDecimal getPrice() {
+		return price.getPrice();
 	}
 }

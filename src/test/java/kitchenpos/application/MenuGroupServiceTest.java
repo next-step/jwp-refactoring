@@ -13,9 +13,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menuGroup.application.MenuGroupService;
+import kitchenpos.menuGroup.domain.MenuGroup;
 import kitchenpos.menuGroup.domain.MenuGroupRepository;
 import kitchenpos.menuGroup.dto.MenuGroupRequest;
+import kitchenpos.menuGroup.dto.MenuGroupResponse;
 
 @ExtendWith(MockitoExtension.class)
 public class MenuGroupServiceTest {
@@ -35,7 +38,7 @@ public class MenuGroupServiceTest {
 		// given
 		when(menuGroupDao.save(any())).thenReturn(new MenuGroupRequest("메뉴 그룹 1번"));
 		// when
-		MenuGroupRequest menuGroup = menuGroupService.create(new MenuGroupRequest());
+		MenuGroupResponse menuGroup = menuGroupService.create(new MenuGroupRequest());
 		// then
 		assertThat(menuGroup.getName()).isEqualTo("메뉴 그룹 1번");
 	}
@@ -44,9 +47,9 @@ public class MenuGroupServiceTest {
 	@Test
 	void findMenuGroup() {
 		// given
-		when(menuGroupDao.findAll()).thenReturn(Arrays.asList(new MenuGroupRequest("메뉴 그룹 1번"), new MenuGroupRequest("메뉴 그룹 2번")));
+		when(menuGroupDao.findAll()).thenReturn(Arrays.asList(new MenuGroup("메뉴 그룹 1번"), new MenuGroup("메뉴 그룹 2번")));
 		// when
-		List<MenuGroupRequest> menuGroups = menuGroupService.list();
+		List<MenuGroupResponse> menuGroups = menuGroupService.list();
 		// then
 		assertThat(menuGroups.size()).isEqualTo(2);
 		assertThat(menuGroups.get(0).getName()).isEqualTo("메뉴 그룹 1번");

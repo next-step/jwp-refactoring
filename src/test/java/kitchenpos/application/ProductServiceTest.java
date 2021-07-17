@@ -15,9 +15,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import kitchenpos.menu.domain.Price;
 import kitchenpos.product.application.ProductService;
+import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 
 @ExtendWith(MockitoExtension.class)
 public class ProductServiceTest {
@@ -25,24 +28,24 @@ public class ProductServiceTest {
 	private ProductRequest hotRamen;
 
 	@Mock
-	private ProductRepository productDao;
+	private ProductRepository productRepository;
 
 	@InjectMocks
 	private ProductService productService;
 
 	@BeforeEach
 	void setUp() {
-		chicken = new ProductRequest("치킨", new BigDecimal(10000));
-		hotRamen = new ProductRequest("매운 라면", new BigDecimal(10000));
+		chicken = new ProductRequest("치킨", 10000L);
+		hotRamen = new ProductRequest("매운 라면", 10000L);
 	}
 
 	@DisplayName("상품을 등록한다.")
 	@Test
 	void createTestInHappyCase() {
 		// given
-		when(productDao.save(any())).thenReturn(chicken);
+		when(productRepository.save(any())).thenReturn(chicken);
 		// when
-		ProductRequest product = productService.create(chicken);
+		ProductResponse product = productService.create(chicken);
 		// then
 		assertThat(product.getName()).isEqualTo("치킨");
 	}
@@ -51,18 +54,18 @@ public class ProductServiceTest {
 	@Test
 	void createTestWithMinusPrice() {
 		// given
-		lenient().when(productDao.save(any())).thenReturn(new ProductRequest("치킨", new BigDecimal(-10000)));
+		lenient().when(productRepository.save(any())).thenReturn(new ProductRequest("치킨", -10000L));
 		// when, then
-		assertThatThrownBy(() -> productService.create(new ProductRequest("치킨", new BigDecimal(-10000))));
+		assertThatThrownBy(() -> productService.create(new ProductRequest("치킨", -10000L)));
 	}
 
 	@DisplayName("상품을 조회한다.")
 	@Test
 	void listTestInHappyCase() {
 		// given
-		when(productDao.findAll()).thenReturn(Arrays.asList(chicken, hotRamen));
+		when(productRepository.findAll()).thenReturn(Arrays.asList(new Product("치킨", new Price(new BigDecimal(10000))), new Product("라면", new Price(new BigDecimal(10000)))));
 		// when
-		List<ProductRequest> products = productService.list();
+		List<ProductResponse> products = productService.list();
 		// then
 		assertThat(products.size()).isEqualTo(2);
 	}

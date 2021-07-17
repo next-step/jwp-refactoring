@@ -95,7 +95,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
 		ExtractableResponse<Response> menuGroupResponse = createMenuGroup(new MenuGroupRequest("인기 메뉴"));
 		MenuGroupRequest menuGroup = menuGroupResponse.as(MenuGroupRequest.class);
 		// And
-		ExtractableResponse<Response> productResponse = createProduct(new ProductRequest("매운 라면", new BigDecimal(8000)));
+		ExtractableResponse<Response> productResponse = createProduct(new ProductRequest("매운 라면", 8000L));
 		ProductRequest product = productResponse.as(ProductRequest.class);
 		// And
 		ExtractableResponse<Response> menuCreatedResponse = createMenu(new MenuRequest("라면 메뉴", new BigDecimal(8000), menuGroup.getId(), Arrays.asList(new MenuProductRequest(product.getId(), 2L))));

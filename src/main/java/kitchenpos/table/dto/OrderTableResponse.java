@@ -27,4 +27,12 @@ public class OrderTableResponse {
 	public static OrderTableResponse of(OrderTable orderTable) {
 		return new OrderTableResponse(orderTable.getId(), TableGroupResponse.of(orderTable.getTableGroup()), orderTable.getNumberOfGuest(), orderTable.isEmpty());
 	}
+
+	public NumberOfGuests getNumberOfGuests() {
+		return numberOfGuest;
+	}
+
+	public boolean isEmpty() {
+		return empty;
+	}
 }

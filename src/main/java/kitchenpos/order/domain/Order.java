@@ -74,4 +74,8 @@ public class Order {
 	public void updateStatus(String status) {
 		this.orderStatus = status;
 	}
+
+	public String getOrderStatus() {
+		return orderStatus;
+	}
 }

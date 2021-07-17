@@ -14,44 +14,54 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import kitchenpos.table.domain.NumberOfGuests;
+import kitchenpos.table.domain.OrderTable;
 import kitchenpos.tableGroup.application.TableGroupService;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.tableGroup.domain.TableGroupRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.tableGroup.dto.TableGroupResponse;
 
 @ExtendWith(MockitoExtension.class)
 public class TableGroupServiceTest {
-	private OrderTableRequest orderTableWithFivePeople;
-	private OrderTableRequest orderTableWithTenPeople;
+	private OrderTableRequest orderTableWithFivePeopleRequest;
+	private OrderTableRequest orderTableWithTenPeopleRequest;
+	private OrderTable orderTableWithFivePeople;
+	private OrderTable orderTableWithTenPeople;
 
 	@Mock
-	private OrderRepository orderDao;
+	private OrderRepository orderRepository;
 
 	@Mock
-	private OrderTableRepository orderTableDao;
+	private OrderTableRepository orderTableRepository;
 
 	@Mock
-	private TableGroupRepository tableGroupDao;
+	private TableGroupRepository tableGroupRepository;
 
 	@InjectMocks
 	private TableGroupService tableGroupService;
 
 	@BeforeEach
 	void setUp() {
-		orderTableWithFivePeople = new OrderTableRequest(1L, null, 5, true);
-		orderTableWithTenPeople = new OrderTableRequest(2L, null, 10, true);
+		orderTableWithFivePeopleRequest = new OrderTableRequest(1L, null, 5, true);
+		orderTableWithTenPeopleRequest = new OrderTableRequest(2L, null, 10, true);
+		orderTableWithFivePeople = new OrderTable(new NumberOfGuests(5), true);
+		orderTableWithTenPeople = new OrderTable(new NumberOfGuests(10), true);
+
 	}
 
 	@DisplayName("단체 지정을 등록한다.")
 	@Test
 	void createTestInHappyCase() {
 		// given
-		when(orderTableDao.findAllByIdIn(Arrays.asList(1L, 2L))).thenReturn(Arrays.asList(orderTableWithFivePeople, orderTableWithTenPeople));
-		when(tableGroupDao.save(any())).thenReturn(new kitchenpos.tableGroup.dto.TableGroupRequest(LocalDateTime.now(), Arrays.asList(orderTableWithFivePeople, orderTableWithTenPeople)));
+		when(orderTableRepository.findAllByIdIn(Arrays.asList(1L, 2L))).thenReturn(Arrays.asList(orderTableWithFivePeople, orderTableWithTenPeople));
+		when(tableGroupRepository.save(any())).thenReturn(new kitchenpos.tableGroup.dto.TableGroupRequest(LocalDateTime.now(), Arrays.asList(
+			orderTableWithFivePeopleRequest, orderTableWithTenPeopleRequest)));
 		// when
-		kitchenpos.tableGroup.dto.TableGroupRequest tableGroup = tableGroupService.create(new kitchenpos.tableGroup.dto.TableGroupRequest(LocalDateTime.now(), Arrays.asList(orderTableWithFivePeople, orderTableWithTenPeople)));
+		TableGroupResponse tableGroup = tableGroupService.create(new kitchenpos.tableGroup.dto.TableGroupRequest(LocalDateTime.now(), Arrays.asList(
+			orderTableWithFivePeopleRequest, orderTableWithTenPeopleRequest)));
 		// then
 		assertThat(tableGroup.getOrderTables().size()).isEqualTo(2);
 	}
@@ -60,48 +70,56 @@ public class TableGroupServiceTest {
 	@Test
 	void createTestWithOneOrderTable() {
 		// given
-		lenient().when(orderTableDao.findAllByIdIn(Arrays.asList(1L, 2L))).thenReturn(Arrays.asList(orderTableWithFivePeople, orderTableWithTenPeople));
-		lenient().when(tableGroupDao.save(any())).thenReturn(new kitchenpos.tableGroup.dto.TableGroupRequest(LocalDateTime.now(), Arrays.asList(orderTableWithFivePeople, orderTableWithTenPeople)));
+		lenient().when(orderTableRepository.findAllByIdIn(Arrays.asList(1L, 2L))).thenReturn(Arrays.asList(orderTableWithFivePeople, orderTableWithTenPeople));
+		lenient().when(tableGroupRepository.save(any())).thenReturn(new kitchenpos.tableGroup.dto.TableGroupRequest(LocalDateTime.now(), Arrays.asList(
+			orderTableWithFivePeopleRequest, orderTableWithTenPeopleRequest)));
 		// when, then
-		assertThatThrownBy(() -> tableGroupService.create(new kitchenpos.tableGroup.dto.TableGroupRequest(LocalDateTime.now(), Arrays.asList(orderTableWithFivePeople))));
+		assertThatThrownBy(() -> tableGroupService.create(new kitchenpos.tableGroup.dto.TableGroupRequest(LocalDateTime.now(), Arrays.asList(
+			orderTableWithFivePeopleRequest))));
 	}
 
 	@DisplayName("주문 테이블은 먼저 등록되어 있어야 한다.")
 	@Test
 	void createTestWithNotExistsOrderTable() {
 		// given
-		lenient().when(orderTableDao.findAllByIdIn(Arrays.asList(1L, 2L))).thenReturn(null);
-		lenient().when(tableGroupDao.save(any())).thenReturn(new kitchenpos.tableGroup.dto.TableGroupRequest(LocalDateTime.now(), Arrays.asList(orderTableWithFivePeople, orderTableWithTenPeople)));
+		lenient().when(orderTableRepository.findAllByIdIn(Arrays.asList(1L, 2L))).thenReturn(null);
+		lenient().when(tableGroupRepository.save(any())).thenReturn(new kitchenpos.tableGroup.dto.TableGroupRequest(LocalDateTime.now(), Arrays.asList(
+			orderTableWithFivePeopleRequest, orderTableWithTenPeopleRequest)));
 		// when, then
-		assertThatThrownBy(() -> tableGroupService.create(new kitchenpos.tableGroup.dto.TableGroupRequest(LocalDateTime.now(), Arrays.asList(orderTableWithFivePeople))));
+		assertThatThrownBy(() -> tableGroupService.create(new kitchenpos.tableGroup.dto.TableGroupRequest(LocalDateTime.now(), Arrays.asList(
+			orderTableWithFivePeopleRequest))));
 	}
 
 	@DisplayName("기 단체 지정된 주문 테이블은 새롭게 단체 지정할 수 없다.")
 	@Test
 	void createTestWithAlreadyTableGroupedOrderTable() {
 		// given
-		lenient().when(orderTableDao.findAllByIdIn(Arrays.asList(1L, 2L))).thenReturn(Arrays.asList(new OrderTableRequest(1L, 1L, 5, true), new OrderTableRequest(2L, null, 10, true)));
-		lenient().when(tableGroupDao.save(any())).thenReturn(new kitchenpos.tableGroup.dto.TableGroupRequest(LocalDateTime.now(), Arrays.asList(orderTableWithFivePeople, orderTableWithTenPeople)));
+		lenient().when(orderTableRepository.findAllByIdIn(Arrays.asList(1L, 2L))).thenReturn(Arrays.asList(orderTableWithFivePeople, orderTableWithTenPeople));
+		lenient().when(tableGroupRepository.save(any())).thenReturn(new kitchenpos.tableGroup.dto.TableGroupRequest(LocalDateTime.now(), Arrays.asList(
+			orderTableWithFivePeopleRequest, orderTableWithTenPeopleRequest)));
 		// when, then
-		assertThatThrownBy(() -> tableGroupService.create(new kitchenpos.tableGroup.dto.TableGroupRequest(LocalDateTime.now(), Arrays.asList(orderTableWithFivePeople))));
+		assertThatThrownBy(() -> tableGroupService.create(new kitchenpos.tableGroup.dto.TableGroupRequest(LocalDateTime.now(), Arrays.asList(
+			orderTableWithFivePeopleRequest))));
 	}
 
 	@DisplayName("요청 주문 테이블은 비어 있어야만 한다.")
 	@Test
 	void createTestWithEmptyOrderTable() {
 		// given
-		lenient().when(orderTableDao.findAllByIdIn(Arrays.asList(1L, 2L))).thenReturn(Arrays.asList(new OrderTableRequest(1L, null, 5, false), new OrderTableRequest(2L, null, 10, true)));
-		lenient().when(tableGroupDao.save(any())).thenReturn(new kitchenpos.tableGroup.dto.TableGroupRequest(LocalDateTime.now(), Arrays.asList(orderTableWithFivePeople, orderTableWithTenPeople)));
+		lenient().when(orderTableRepository.findAllByIdIn(Arrays.asList(1L, 2L))).thenReturn(Arrays.asList(new OrderTable(new NumberOfGuests(5), false), new OrderTable(new NumberOfGuests(10), true)));
+		lenient().when(tableGroupRepository.save(any())).thenReturn(new kitchenpos.tableGroup.dto.TableGroupRequest(LocalDateTime.now(), Arrays.asList(
+			orderTableWithFivePeopleRequest, orderTableWithTenPeopleRequest)));
 		// when, then
-		assertThatThrownBy(() -> tableGroupService.create(new kitchenpos.tableGroup.dto.TableGroupRequest(LocalDateTime.now(), Arrays.asList(orderTableWithFivePeople, orderTableWithTenPeople))));
+		assertThatThrownBy(() -> tableGroupService.create(new kitchenpos.tableGroup.dto.TableGroupRequest(LocalDateTime.now(), Arrays.asList(
+			orderTableWithFivePeopleRequest, orderTableWithTenPeopleRequest))));
 	}
 
 	@DisplayName("단체 지정 해제한다.")
 	@Test
 	void ungroupTestInHappyCase() {
 		// given
-		when(orderTableDao.findAllByTableGroupId(1L)).thenReturn(Arrays.asList(orderTableWithFivePeople, orderTableWithTenPeople));
-		when(orderDao.existsByOrderTableIdInAndOrderStatusIn(Arrays.asList(1L, 2L), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).thenReturn(false);
+		when(orderTableRepository.findAllByTableGroupId(1L)).thenReturn(Arrays.asList(orderTableWithFivePeople, orderTableWithTenPeople));
+		when(orderRepository.existsByOrderTableIdInAndOrderStatusIn(Arrays.asList(1L, 2L), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).thenReturn(false);
 		// when
 		tableGroupService.ungroup(1L);
 		// then
@@ -111,8 +129,8 @@ public class TableGroupServiceTest {
 	@Test
 	void ungroupTestWithCookingOrMealStatus() {
 		// given
-		when(orderTableDao.findAllByTableGroupId(1L)).thenReturn(Arrays.asList(orderTableWithFivePeople, orderTableWithTenPeople));
-		when(orderDao.existsByOrderTableIdInAndOrderStatusIn(Arrays.asList(1L, 2L), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).thenReturn(true);
+		when(orderTableRepository.findAllByTableGroupId(1L)).thenReturn(Arrays.asList(orderTableWithFivePeople, orderTableWithTenPeople));
+		when(orderRepository.existsByOrderTableIdInAndOrderStatusIn(Arrays.asList(1L, 2L), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).thenReturn(true);
 		// when, then
 		assertThatThrownBy(() -> tableGroupService.ungroup(1L));
 	}

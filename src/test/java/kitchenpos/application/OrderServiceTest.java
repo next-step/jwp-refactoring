@@ -16,19 +16,20 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.order.application.OrderService;
 import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.order.application.OrderService;
+import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.dao.OrderLineItemDao;
-import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderLineItemRequest;
-import kitchenpos.table.dto.OrderTableRequest;
 
 @ExtendWith(MockitoExtension.class)
 public class OrderServiceTest {
-	private OrderLineItemRequest orderLineItem;
-	private OrderRequest cookingOrder;
+	private OrderLineItemRequest orderLineItemRequest;
+	private OrderRequest cookingOrderRequest;
 
 	@Mock
 	private MenuRepository menuDao;
@@ -36,8 +37,8 @@ public class OrderServiceTest {
 	@Mock
 	private OrderRepository orderDao;
 
-	@Mock
-	private OrderLineItemDao orderLineItemDao;
+	// @Mock
+	// private OrderLineItemDao orderLineItemDao;
 
 	@Mock
 	private OrderTableRepository orderTableDao;
@@ -47,8 +48,8 @@ public class OrderServiceTest {
 
 	@BeforeEach
 	void setUp() {
-		orderLineItem = new OrderLineItemRequest(1L, 1L, 2);
-		cookingOrder = new OrderRequest(1L, "COOKING", LocalDateTime.now(), Arrays.asList(orderLineItem));
+		orderLineItemRequest = new OrderLineItemRequest(1L, 1L, 2);
+		cookingOrderRequest = new OrderRequest(1L, "COOKING", LocalDateTime.now(), Arrays.asList(orderLineItemRequest));
 	}
 
 	@DisplayName("주문을 등록한다.")
@@ -56,14 +57,14 @@ public class OrderServiceTest {
 	void createTestInHappyCase() {
 		// given
 		when(menuDao.countByIdIn(Arrays.asList(1L))).thenReturn(1L);
-		when(orderTableDao.findById(1L)).thenReturn(Optional.of(new OrderTableRequest()));
-		when(orderDao.save(any())).thenReturn(cookingOrder);
-		when(orderLineItemDao.save(any())).thenReturn(orderLineItem);
+		when(orderTableDao.findById(1L)).thenReturn(Optional.of(new OrderTable()));
+		when(orderDao.save(any())).thenReturn(cookingOrderRequest);
+		// when(orderLineItemDao.save(any())).thenReturn(orderLineItem);
 		// when
-		OrderRequest order = orderService.create(cookingOrder);
+		OrderResponse orderResponse = orderService.create(cookingOrderRequest);
 		// then
-		assertThat(order.getOrderLineItems().size()).isEqualTo(1);
-		assertThat(order.getOrderStatus()).isEqualTo("COOKING");
+		assertThat(orderResponse.getOrderLineItems().size()).isEqualTo(1);
+		assertThat(orderResponse.getOrderStatus()).isEqualTo("COOKING");
 	}
 
 	@DisplayName("주문 항목 없이 주문을 등록하지 못한다.")
@@ -71,9 +72,9 @@ public class OrderServiceTest {
 	void createTestWithNoOrderLineItem() {
 		// given
 		lenient().when(menuDao.countByIdIn(Arrays.asList(1L))).thenReturn(1L);
-		lenient().when(orderTableDao.findById(1L)).thenReturn(Optional.of(new OrderTableRequest()));
-		lenient().when(orderDao.save(any())).thenReturn(cookingOrder);
-		lenient().when(orderLineItemDao.save(any())).thenReturn(orderLineItem);
+		lenient().when(orderTableDao.findById(1L)).thenReturn(Optional.of(new OrderTable()));
+		lenient().when(orderDao.save(any())).thenReturn(cookingOrderRequest);
+		//lenient().when(orderLineItemDao.save(any())).thenReturn(orderLineItemRequest);
 		// when, then
 		assertThatThrownBy(() -> orderService.create(new OrderRequest(1L, "COOKING", LocalDateTime.now(), null)));
 	}
@@ -82,11 +83,12 @@ public class OrderServiceTest {
 	@Test
 	void createTestWithNotExistsMenu() {
 		// given
-		lenient().when(orderTableDao.findById(1L)).thenReturn(Optional.of(new OrderTableRequest()));
-		lenient().when(orderDao.save(any())).thenReturn(cookingOrder);
-		lenient().when(orderLineItemDao.save(any())).thenReturn(orderLineItem);
+		lenient().when(orderTableDao.findById(1L)).thenReturn(Optional.of(new OrderTable()));
+		lenient().when(orderDao.save(any())).thenReturn(cookingOrderRequest);
+		//lenient().when(orderLineItemDao.save(any())).thenReturn(orderLineItemRequest);
 		// when, then
-		assertThatThrownBy(() -> orderService.create(new OrderRequest(1L, "COOKING", LocalDateTime.now(), Arrays.asList(orderLineItem))));
+		assertThatThrownBy(() -> orderService.create(new OrderRequest(1L, "COOKING", LocalDateTime.now(), Arrays.asList(
+			orderLineItemRequest))));
 	}
 
 	@DisplayName("주문 테이블은 반드시 포함되어야 한다.")
@@ -94,20 +96,21 @@ public class OrderServiceTest {
 	void createTestWithNotExistsOrderTable() {
 		// given
 		lenient().when(menuDao.countByIdIn(Arrays.asList(1L))).thenReturn(1L);
-		lenient().when(orderDao.save(any())).thenReturn(cookingOrder);
-		lenient().when(orderLineItemDao.save(any())).thenReturn(orderLineItem);
+		lenient().when(orderDao.save(any())).thenReturn(cookingOrderRequest);
+		//lenient().when(orderLineItemDao.save(any())).thenReturn(orderLineItem);
 		// when, then
-		assertThatThrownBy(() -> orderService.create(new OrderRequest(1L, "COOKING", LocalDateTime.now(), Arrays.asList(orderLineItem))));
+		assertThatThrownBy(() -> orderService.create(new OrderRequest(1L, "COOKING", LocalDateTime.now(), Arrays.asList(
+			orderLineItemRequest))));
 	}
 
 	@DisplayName("주문을 조회한다.")
 	@Test
 	void listTestInHappyCase() {
 		// given
-		when(orderDao.findAll()).thenReturn(Arrays.asList(cookingOrder));
-		when(orderLineItemDao.findAllByOrderId(any())).thenReturn(Arrays.asList(orderLineItem));
+		when(orderDao.findAll()).thenReturn(Arrays.asList(new Order(new OrderTable(), "COOKING", LocalDateTime.now())));
+		// when(orderLineItemDao.findAllByOrderId(any())).thenReturn(Arrays.asList(orderLineItemRequest));
 		// when
-		List<OrderRequest> orders = orderService.list();
+		List<OrderResponse> orders = orderService.list();
 		// then
 		assertThat(orders.get(0).getOrderLineItems().size()).isEqualTo(1);
 		assertThat(orders.get(0).getOrderStatus()).isEqualTo("COOKING");
@@ -117,9 +120,9 @@ public class OrderServiceTest {
 	@Test
 	void changeOrderStatusTestInHappyCase() {
 		// given
-		when(orderDao.findById(1L)).thenReturn(Optional.of(cookingOrder));
+		when(orderDao.findById(1L)).thenReturn(Optional.of(new Order(new OrderTable(), "COOKING", LocalDateTime.now())));
 		// when
-		OrderRequest order = orderService.changeOrderStatus(1L, new OrderRequest(1L, "COMPLETION", LocalDateTime.now(), Arrays.asList(new OrderLineItemRequest())));
+		OrderResponse order = orderService.changeOrderStatus(1L, new OrderRequest(1L, "COMPLETION", LocalDateTime.now(), Arrays.asList(new OrderLineItemRequest())));
 		// then
 		assertThat(order.getOrderStatus()).isEqualTo("COMPLETION");
 	}
@@ -137,7 +140,8 @@ public class OrderServiceTest {
 	@Test
 	void changeOrderStatusTestWithCompletedStatus() {
 		// given
-		when(orderDao.findById(1L)).thenReturn(Optional.of(new OrderRequest(1L, "COMPLETION", LocalDateTime.now(), Arrays.asList(orderLineItem))));
+		when(orderDao.findById(1L)).thenReturn(Optional.of(new Order(new OrderTable(), "COMPLETION", LocalDateTime.now())));
+
 		// when, then
 		assertThatThrownBy(() -> orderService.changeOrderStatus(1L, new OrderRequest(1L, "COOKING", LocalDateTime.now(), Arrays.asList(new OrderLineItemRequest()))))
 			.isInstanceOf(IllegalArgumentException.class);
@@ -147,7 +151,7 @@ public class OrderServiceTest {
 	@Test
 	void changeOrderStatusTestWithNotExistsStatus() {
 		// given
-		when(orderDao.findById(1L)).thenReturn(Optional.of(new OrderRequest(1L, "COOKING", LocalDateTime.now(), Arrays.asList(orderLineItem))));
+		when(orderDao.findById(1L)).thenReturn(Optional.of(new Order(new OrderTable(), "COOKING", LocalDateTime.now())));
 		// when, then
 		assertThatThrownBy(() -> orderService.changeOrderStatus(1L, new OrderRequest(1L, "PREPARING", LocalDateTime.now(), Arrays.asList(new OrderLineItemRequest()))))
 			.isInstanceOf(IllegalArgumentException.class);
