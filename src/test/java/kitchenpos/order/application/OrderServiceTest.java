@@ -11,6 +11,7 @@ import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderLineItemResponse;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.order.publisher.OrderEventPublisher;
 import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTable;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,10 +38,7 @@ class OrderServiceTest {
     private OrderRepository orderRepository;
 
     @Mock
-    private MenuService menuService;
-
-    @Mock
-    private TableService tableService;
+    private OrderEventPublisher eventPublisher;
 
     @InjectMocks
     private OrderService orderService;
@@ -68,8 +66,6 @@ class OrderServiceTest {
 
     @Test
     void 주문_생성_기능() {
-        when(menuService.countByMenuId(Arrays.asList(1L, 2L))).thenReturn(2L);
-        when(tableService.findOrderTable(주문_요청.getOrderTableId())).thenReturn(주문_테이블);
         주문.addOrderLineItems(주문_항목);
         when(orderRepository.save(any(Orders.class))).thenReturn(주문);
 
@@ -92,21 +88,18 @@ class OrderServiceTest {
         assertThatThrownBy(() -> orderService.create(주문_요청)).isInstanceOf(OrderException.class);
     }
 
-    @Test
-    void 주문한_아이템의_갯수와_실제_조회한_아이템의_갯수가_일치하지않을때_에러발생() {
-        when(menuService.countByMenuId(Arrays.asList(1L, 2L))).thenReturn(1L);
-        주문.addOrderLineItems(주문_항목);
-        assertThatThrownBy(() -> orderService.create(주문_요청)).isInstanceOf(OrderException.class);
-    }
-
-    @Test
-    void 주문_테이블이_비어있는_상태이면_에러발생() {
-        주문_테이블.changeEmpty(true);
-        주문.addOrderLineItems(주문_항목);
-        when(menuService.countByMenuId(Arrays.asList(1L, 2L))).thenReturn(2L);
-        when(tableService.findOrderTable(주문.getOrderTableId())).thenReturn(주문_테이블);
-        assertThatThrownBy(() -> orderService.create(주문_요청)).isInstanceOf(OrderTableException.class);
-    }
+//    @Test
+//    void 주문한_아이템의_갯수와_실제_조회한_아이템의_갯수가_일치하지않을때_에러발생() {
+//        주문.addOrderLineItems(주문_항목);
+//        assertThatThrownBy(() -> orderService.create(주문_요청)).isInstanceOf(OrderException.class);
+//    }
+//
+//    @Test
+//    void 주문_테이블이_비어있는_상태이면_에러발생() {
+//        주문_테이블.changeEmpty(true);
+//        주문.addOrderLineItems(주문_항목);
+//        assertThatThrownBy(() -> orderService.create(주문_요청)).isInstanceOf(OrderTableException.class);
+//    }
 
     @Test
     void 주문_리스트_조회() {

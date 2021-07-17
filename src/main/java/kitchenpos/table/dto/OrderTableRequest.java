@@ -26,10 +26,6 @@ public class OrderTableRequest {
         return new OrderTable(tableGroupId, numberOfGuests, empty);
     }
 
-    public OrderTable createNewOrderTable() {
-        return new OrderTable(numberOfGuests, empty);
-    }
-
     public Long getTableGroupId() {
         return tableGroupId;
     }

@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class TableGroupService {
 
-    private  static final String MINIMUM_GROUP_TABLE_COUNT_ERROR_MESSAGE = "2개 이상의 테이블을 그룹핑할 수 있습니다.";
     public static final String NOT_FOUND_TABLE_GROUP_ERROR_MESSAGE = "테이블 그룹이 존재하지 않습니다.";
 
     private final TableGroupRepository tableGroupRepository;
