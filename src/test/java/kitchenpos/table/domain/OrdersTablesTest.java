@@ -1,7 +1,6 @@
 package kitchenpos.table.domain;
 
 import kitchenpos.exception.OrderTableException;
-import kitchenpos.tablegroup.domain.TableGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

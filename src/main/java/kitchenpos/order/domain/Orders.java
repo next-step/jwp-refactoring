@@ -57,6 +57,10 @@ public class Orders {
         }
     }
 
+    public boolean isCompletion() {
+        return orderStatus == OrderStatus.COMPLETION;
+    }
+
     public void updateOrderStatus(OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
     }

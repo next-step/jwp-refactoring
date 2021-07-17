@@ -1,14 +1,13 @@
-package kitchenpos.tablegroup.dto;
+package kitchenpos.table.dto;
 
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTables;
-import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.dto.TableGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -33,6 +32,5 @@ class TableGroupResponseTest {
         TableGroupResponse tableGroupResponse = TableGroupResponse.of(테이블_그룹);
         assertThat(tableGroupResponse.getId()).isEqualTo(테이블_그룹.getId());
         assertThat(tableGroupResponse.getCreatedDate()).isEqualTo(테이블_그룹.getCreatedDate());
-        assertThat(tableGroupResponse.getOrderTableResponses().size()).isEqualTo(2);
     }
 }

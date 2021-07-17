@@ -1,17 +1,15 @@
 package kitchenpos.table.application;
 
-import kitchenpos.order.enums.OrderStatus;
 import kitchenpos.exception.OrderTableException;
-import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.table.publisher.TableEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,14 +17,14 @@ import java.util.stream.Collectors;
 @Transactional
 public class TableService {
 
-    private static final String NOT_FOUND_ORDER_TABLE_ERROR_MESSAGE = "미등록 주문 테이블 입니다.";
+    private static final String NOT_FOUND_ORDER_TABLE_ERROR_MESSAGE = "등록 되지 않은 주문 테이블 입니다.";
 
     private final OrderTableRepository orderTableRepository;
-    private final OrderRepository orderRepository;
+    private final TableEventPublisher tableEventPublisher;
 
-    public TableService(OrderTableRepository orderTableRepository, OrderRepository orderRepository) {
+    public TableService(OrderTableRepository orderTableRepository, TableEventPublisher tableEventPublisher) {
         this.orderTableRepository = orderTableRepository;
-        this.orderRepository = orderRepository;
+        this.tableEventPublisher = tableEventPublisher;
     }
 
     public OrderTableResponse create(final OrderTableRequest request) {
@@ -42,8 +40,7 @@ public class TableService {
 
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         OrderTable orderTable = this.findById(orderTableId);
-        orderTable.checkValidEmptyTableGroup();
-        orderTable.checkValidOrderStatusCompletion();
+        tableEventPublisher.changeEmptyValidPublishEvent(orderTable, orderTableRequest.isEmpty());
         orderTable.changeEmpty(orderTableRequest.isEmpty());
         return OrderTableResponse.of(orderTable);
     }

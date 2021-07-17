@@ -1,10 +1,12 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.order.enums.OrderStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface OrderRepository extends JpaRepository<Orders, Long> {
-    long countByOrderTableIdInAndOrderStatus(List<Long> orderTableId, OrderStatus orderStatus);
+    List<Orders> findAllByOrderTableIdIn(List<Long> orderTableIds);
+
+    Optional<Orders> findByOrOrderTableId(Long orderTableId);
 }

@@ -1,7 +1,6 @@
 package kitchenpos.table.domain;
 
 import kitchenpos.exception.OrderTableException;
-import kitchenpos.tablegroup.domain.TableGroup;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
@@ -79,9 +78,4 @@ public class OrderTables {
         return Objects.hash(orderTables);
     }
 
-    public void checkOrderStatus() {
-        for (OrderTable orderTable : orderTables) {
-            orderTable.checkValidOrderStatusCompletion();
-        }
-    }
 }

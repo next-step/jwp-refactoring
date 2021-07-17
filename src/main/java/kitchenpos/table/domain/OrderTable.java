@@ -1,8 +1,6 @@
 package kitchenpos.table.domain;
 
 import kitchenpos.exception.OrderTableException;
-import kitchenpos.order.domain.Orders;
-import kitchenpos.tablegroup.domain.TableGroup;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -10,7 +8,6 @@ import java.util.Objects;
 @Entity
 public class OrderTable {
 
-    private static final String NOT_CHANGE_GROUP_TABLE_ERROR_MESSAGE = "그룹핑 되어있는 테이블 상태를 변경할 수 없습니다.";
     private static final String NOT_CHANGE_EMPTY_TABLE_ERROR_MESSAGE = "비어있는 테이블의 인원수를 변경할 수 없습니다.";
 
     @Id
@@ -20,10 +17,6 @@ public class OrderTable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "table_group_id", foreignKey = @ForeignKey(name = "fk_order_table_table_group"))
     private TableGroup tableGroup;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id", foreignKey = @ForeignKey(name = "fk_order_table_orders"))
-    private Orders order;
 
     @Embedded
     private NumberOfGuests numberOfGuests = new NumberOfGuests();
@@ -39,22 +32,12 @@ public class OrderTable {
         this.empty = empty;
     }
 
-    public void withOrder(Orders order) {
-        this.order = order;
-    }
-
     public OrderTable(int numberOfGuests, boolean empty) {
         this(null, numberOfGuests, empty);
     }
 
     public void withTableGroup(TableGroup tableGroup) {
         this.tableGroup = tableGroup;
-    }
-
-    public void checkValidEmptyTableGroup() {
-        if (Objects.nonNull(tableGroup)) {
-            throw new OrderTableException(NOT_CHANGE_GROUP_TABLE_ERROR_MESSAGE);
-        }
     }
 
     public void checkIsEmpty() {
@@ -80,6 +63,10 @@ public class OrderTable {
             return tableGroup.getId();
         }
         return null;
+    }
+
+    public TableGroup getTableGroup() {
+        return tableGroup;
     }
 
     public NumberOfGuests getNumberOfGuests() {
@@ -108,11 +95,5 @@ public class OrderTable {
     @Override
     public int hashCode() {
         return Objects.hash(id, tableGroup, numberOfGuests, empty);
-    }
-
-    public void checkValidOrderStatusCompletion() {
-        if (Objects.nonNull(order)) {
-            order.checkOrderStatus();
-        }
     }
 }

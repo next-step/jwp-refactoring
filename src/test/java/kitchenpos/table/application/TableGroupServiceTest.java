@@ -1,14 +1,12 @@
-package kitchenpos.tablegroup.application;
+package kitchenpos.table.application;
 
-import kitchenpos.exception.TableGroupException;
-import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTables;
-import kitchenpos.table.dto.OrderTableResponse;
-import kitchenpos.tablegroup.domain.TableGroup;
-import kitchenpos.tablegroup.domain.TableGroupRepository;
-import kitchenpos.tablegroup.dto.TableGroupRequest;
-import kitchenpos.tablegroup.dto.TableGroupResponse;
+import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.domain.TableGroupRepository;
+import kitchenpos.table.dto.TableGroupRequest;
+import kitchenpos.table.dto.TableGroupResponse;
+import kitchenpos.table.publisher.TableEventPublisher;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,11 +18,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -36,7 +31,7 @@ class TableGroupServiceTest {
     private TableGroupRepository tableGroupRepository;
 
     @Mock
-    private TableService tableService;
+    private TableEventPublisher eventPublisher;
 
     @InjectMocks
     private TableGroupService tableGroupService;
@@ -55,18 +50,11 @@ class TableGroupServiceTest {
         LocalDateTime now = LocalDateTime.now();
 
         OrderTables orderTables = new OrderTables(Arrays.asList(일번_테이블, 이번_테이블));
-        when(tableService.findAllByIds(Arrays.asList(1L, 2L))).thenReturn(orderTables);
 
         TableGroup tableGroup = new TableGroup(1L, now, orderTables);
         when(tableGroupRepository.save(any(TableGroup.class))).thenReturn(tableGroup);
         TableGroupResponse expected = tableGroupService.create(new TableGroupRequest(Arrays.asList(1L, 2L)));
         assertThat(expected.getId()).isEqualTo(tableGroup.getId());
-        assertThat(expected.getOrderTableResponses().size()).isEqualTo(2);
-    }
-
-    @Test
-    void 주문테이블이_1개만있을때_테이블그룹_생성_요청_시_에러_발생() {
-        assertThatThrownBy(() -> tableGroupService.create(new TableGroupRequest(Arrays.asList(1L)))).isInstanceOf(TableGroupException.class);
     }
 
     @Test

@@ -1,16 +1,13 @@
 package kitchenpos.table.application;
 
-import kitchenpos.exception.OrderException;
 import kitchenpos.exception.OrderTableException;
-import kitchenpos.order.domain.Orders;
-import kitchenpos.order.enums.OrderStatus;
-import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.OrderTables;
+import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
-import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.table.publisher.TableEventPublisher;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,13 +28,13 @@ import static org.mockito.Mockito.when;
 
 @DisplayName("테이블 관련 기능 테스트")
 @ExtendWith(MockitoExtension.class)
-class TableServiceTest {
+class OrderTableServiceTest {
 
     @Mock
     private OrderTableRepository orderTableRepository;
 
     @Mock
-    private OrderRepository orderRepository;
+    public TableEventPublisher eventPublisher;
 
     @InjectMocks
     private TableService tableService;
@@ -76,17 +73,17 @@ class TableServiceTest {
     }
 
     @Test
-    void 존재하지않는_테이블_상태_변경_시_에러_발생() {
-        when(orderTableRepository.findById(1L)).thenReturn(Optional.empty());
-        assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), request)).isInstanceOf(OrderTableException.class);
+    void 테이블_상태_변경() {
+        OrderTableRequest request = new OrderTableRequest(0, false);
+        when(orderTableRepository.findById(1L)).thenReturn(Optional.of(orderTable));
+        OrderTableResponse orderTableResponse = tableService.changeEmpty(1L, request);
+        assertThat(orderTableResponse.isEmpty()).isEqualTo(request.isEmpty());
     }
 
     @Test
-    void 주문_상태가_조리중_식사중일때_테이블_상태_변경_시_에러발생() {
-        Orders order = new Orders(1L, 1L, OrderStatus.COMPLETION, LocalDateTime.now());
-        orderTable.withOrder(order);
-        when(orderTableRepository.findById(1L)).thenReturn(Optional.of(orderTable));
-        assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), request)).isInstanceOf(OrderException.class);
+    void 존재하지않는_테이블_상태_변경_시_에러_발생() {
+        when(orderTableRepository.findById(1L)).thenReturn(Optional.empty());
+        assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), request)).isInstanceOf(OrderTableException.class);
     }
 
     @Test
