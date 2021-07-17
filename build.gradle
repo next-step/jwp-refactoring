@@ -39,9 +39,6 @@ project(':kitchenpos-api') {
     bootJar {
         enabled = true
     }
-    jar {
-        enabled = true
-    }
 
     dependencies {
         implementation project(':kitchenpos-product')
@@ -55,6 +52,9 @@ project(':kitchenpos-api') {
 }
 
 project(':kitchenpos-common') {
+    jar {
+        enabled = true
+    }
     dependencies {
         implementation 'org.springframework:spring-web'
         implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
@@ -62,6 +62,9 @@ project(':kitchenpos-common') {
 }
 
 project(':kitchenpos-menu') {
+    jar {
+        enabled = true
+    }
     dependencies {
         implementation project(':kitchenpos-common')
         implementation project(':kitchenpos-order')
@@ -71,6 +74,9 @@ project(':kitchenpos-menu') {
 }
 
 project(':kitchenpos-order') {
+    jar {
+        enabled = true
+    }
     dependencies {
         implementation project(':kitchenpos-common')
         implementation project(':kitchenpos-table')
@@ -80,6 +86,9 @@ project(':kitchenpos-order') {
 }
 
 project(':kitchenpos-product') {
+    jar {
+        enabled = true
+    }
     dependencies {
         implementation project(':kitchenpos-common')
         implementation project(':kitchenpos-menu')
@@ -89,6 +98,9 @@ project(':kitchenpos-product') {
 }
 
 project(':kitchenpos-table') {
+    jar {
+        enabled = true
+    }
     dependencies {
         implementation project(':kitchenpos-common')
         implementation project(':kitchenpos-order')
