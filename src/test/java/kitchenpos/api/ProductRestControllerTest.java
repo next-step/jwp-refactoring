@@ -2,7 +2,8 @@ package kitchenpos.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.product.application.ProductService;
-import kitchenpos.product.domain.Product;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -52,21 +53,23 @@ class ProductRestControllerTest {
 
 	@Test
 	void createTest() throws Exception {
-		Product product = new Product(1L);
-		given(productService.create(product)).willReturn(product);
+		ProductRequest productRequest = new ProductRequest("치킨", BigDecimal.valueOf(20000));
+		ProductResponse productResponse = new ProductResponse(1L, "치킨", BigDecimal.valueOf(20000));
+
+		given(productService.create(productRequest)).willReturn(productResponse);
 
 		mockMvc.perform(
 				post(BASE_URL)
 						.contentType(MediaType.APPLICATION_JSON)
-						.content(objectMapper.writeValueAsString(product)))
+						.content(objectMapper.writeValueAsString(productRequest)))
 				.andExpect(status().isCreated())
 				.andExpect(header().string("location", BASE_URL + "/1"));
 	}
 
 	@Test
 	void listTest() throws Exception {
-		List<Product> products = Lists.list(new Product("피자", BigDecimal.valueOf(30000)), new Product());
-		given(productService.list()).willReturn(products);
+		List<ProductResponse> productResponses = Lists.list(new ProductResponse(1L, "피자", BigDecimal.valueOf(30000)), new ProductResponse());
+		given(productService.list()).willReturn(productResponses);
 
 		mockMvc.perform(
 				get(BASE_URL).contentType(MediaType.APPLICATION_JSON))
