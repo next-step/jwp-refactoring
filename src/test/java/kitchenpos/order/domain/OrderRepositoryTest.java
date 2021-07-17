@@ -12,8 +12,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.Product;
 
 @DataJpaTest
 class OrderRepositoryTest {
@@ -25,9 +23,7 @@ class OrderRepositoryTest {
     void findAllByOrderTableIdIn() {
         // given
         final OrderTable orderTable = new OrderTable(new TableGroup(), 1);
-        final List<MenuProduct> menuProducts = Collections.singletonList(
-            new MenuProduct(new Product("name", BigDecimal.ONE), 1));
-        final Menu menu = new Menu("name", BigDecimal.ONE, new MenuGroup("name"), menuProducts);
+        final Menu menu = new Menu("name", BigDecimal.ONE, new MenuGroup("name").getId());
         final OrderLineItem orderLineItem = new OrderLineItem(menu, 1);
         final List<OrderLineItem> orderLineItemList = Collections.singletonList(orderLineItem);
         final OrderLineItems orderLineItems = new OrderLineItems(orderLineItemList);

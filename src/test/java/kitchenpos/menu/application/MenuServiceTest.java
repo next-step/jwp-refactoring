@@ -23,7 +23,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuGroupRepository;
-import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProductRepository;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.domain.Product;
@@ -55,9 +54,7 @@ class MenuServiceTest {
         final List<MenuProductRequest> menuProductRequests = Collections.singletonList(new MenuProductRequest(1L, 1));
         final MenuRequest menuRequest = new MenuRequest("name", BigDecimal.ZERO, 1L, menuProductRequests);
         final MenuGroup menuGroup = new MenuGroup();
-        final List<MenuProduct> menuProducts = Collections.singletonList(
-            new MenuProduct(new Product("name", BigDecimal.ONE), 1L));
-        final Menu savedMenu = new Menu("name", menuRequest.getPrice(), menuGroup, menuProducts);
+        final Menu savedMenu = new Menu("name", menuRequest.getPrice(), menuGroup.getId());
         given(menuRepository.save(any(Menu.class))).willReturn(savedMenu);
         given(menuGroupRepository.findById(menuRequest.getMenuGroupId())).willReturn(Optional.of(menuGroup));
         given(productRepository.findById(anyLong())).willReturn(Optional.of(new Product("name", new BigDecimal(100))));

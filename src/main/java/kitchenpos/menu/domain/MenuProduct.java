@@ -1,6 +1,5 @@
 package kitchenpos.menu.domain;
 
-import java.math.BigDecimal;
 import java.util.Objects;
 
 import javax.persistence.Embedded;
@@ -23,24 +22,18 @@ public class MenuProduct {
     @JoinColumn(name = "menu_id")
     private Menu menu;
 
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
-    private Product product;
+    private Long productId;
 
     @Embedded
     private Quantity quantity;
 
-    public MenuProduct() {
+    protected MenuProduct() {
     }
 
-    public MenuProduct(final Product product, final long quantity) {
-        this.product = product;
-        this.quantity = new Quantity(quantity);
-    }
-
-    public MenuProduct(final Menu menu, final Product product, final long quantity) {
+    public MenuProduct(final Menu menu, final Long productId, final long quantity) {
         this.menu = menu;
-        this.product = product;
+        this.productId = productId;
         this.quantity = new Quantity(quantity);
     }
 
@@ -48,24 +41,8 @@ public class MenuProduct {
         return seq;
     }
 
-    public Long getMenuId() {
-        return menu.getId();
-    }
-
-    public Long getProductId() {
-        return product.getId();
-    }
-
     public long getQuantity() {
         return quantity.value();
-    }
-
-    public BigDecimal price() {
-        return product.getPrice().multiply(new BigDecimal(quantity.value()));
-    }
-
-    public void updateMenu(final Menu menu) {
-        this.menu = menu;
     }
 
     @Override
@@ -76,11 +53,11 @@ public class MenuProduct {
             return false;
         final MenuProduct that = (MenuProduct)o;
         return Objects.equals(seq, that.seq) && Objects.equals(menu, that.menu)
-            && Objects.equals(product, that.product) && Objects.equals(quantity, that.quantity);
+            && Objects.equals(productId, that.productId) && Objects.equals(quantity, that.quantity);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(seq, menu, product, quantity);
+        return Objects.hash(seq, menu, productId, quantity);
     }
 }

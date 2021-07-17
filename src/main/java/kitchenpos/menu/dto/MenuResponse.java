@@ -32,7 +32,12 @@ public class MenuResponse {
 
     public static MenuResponse of(final Menu menu) {
         return new MenuResponse(menu.getId(), menu.getName(), menu.getPrice(),
-            menu.getMenuGroupId(), menu.getMenuProducts());
+            menu.getMenuGroupId(), null);
+    }
+
+    public static MenuResponse of(final Menu menu, final List<MenuProduct> menuProducts) {
+        return new MenuResponse(menu.getId(), menu.getName(), menu.getPrice(),
+            menu.getMenuGroupId(), menuProducts);
     }
 
     public Long getId() {
