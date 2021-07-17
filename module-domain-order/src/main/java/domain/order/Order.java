@@ -56,10 +56,6 @@ public class Order {
         return Objects.equals(orderStatus, OrderStatus.COOKING) || Objects.equals(orderStatus, OrderStatus.MEAL);
     }
 
-    public void registerOrderLineItem() {
-        orderLineItems.registerAll(getId());
-    }
-
     public Long getId() {
         return id;
     }

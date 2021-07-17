@@ -2,6 +2,7 @@ package domain.order;
 
 import domain.order.exception.CannotRegisterGroupException;
 import org.assertj.core.util.Lists;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -10,13 +11,21 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 class OrderTablesTest {
 
+    private OrderTable orderTable1 = OrderTable.of(4, true);
+    private OrderTable orderTable2 = OrderTable.of(2, true);
+    private OrderTable orderTable3 = OrderTable.of(3, true);
+
+    @BeforeEach
+    void setUp() {
+         orderTable1 = OrderTable.of(4, true);
+         orderTable2 = OrderTable.of(2, true);
+         orderTable3 = OrderTable.of(3, true);
+    }
+
     @DisplayName("테이블 그룹을 짓는다.")
     @Test
     void groupBy() {
         //given
-        OrderTable orderTable1 = OrderTable.of(4, true);
-        OrderTable orderTable2 = OrderTable.of(2, true);
-        OrderTable orderTable3 = OrderTable.of(3, true);
         OrderTables orderTables = OrderTables.of(Lists.list(orderTable1, orderTable2, orderTable3));
 
         //when
@@ -32,10 +41,8 @@ class OrderTablesTest {
     @Test
     void groupByInvalid1() {
         //given
-        OrderTable orderTable1 = OrderTable.of(4, true);
-        OrderTable orderTable2 = OrderTable.of(2, false);
-        OrderTable orderTable3 = OrderTable.of(3, true);
-        OrderTables orderTables = OrderTables.of(Lists.list(orderTable1, orderTable2, orderTable3));
+        OrderTable orderTable = OrderTable.of(5, false);
+        OrderTables orderTables = OrderTables.of(Lists.list(orderTable1, orderTable2, orderTable3, orderTable));
 
         //when
         assertThatThrownBy(() -> orderTables.groupBy(1L))
@@ -46,14 +53,27 @@ class OrderTablesTest {
     @Test
     void groupByInvalid2() {
         //given
-        OrderTable orderTable1 = OrderTable.of(4, true);
-        orderTable1.registerGroup(2L);
-        OrderTable orderTable2 = OrderTable.of(2, true);
-        OrderTable orderTable3 = OrderTable.of(3, true);
+        orderTable2.registerGroup(2L);
         OrderTables orderTables = OrderTables.of(Lists.list(orderTable1, orderTable2, orderTable3));
 
         //when
         assertThatThrownBy(() -> orderTables.groupBy(1L))
                 .isInstanceOf(CannotRegisterGroupException.class); //then
+    }
+
+    @DisplayName("테이블 그룹을 해제한다.")
+    @Test
+    void ungrouped() {
+        //given
+        OrderTables orderTables = OrderTables.of(Lists.list(orderTable1, orderTable2, orderTable3));
+        orderTables.groupBy(99L);
+
+        //when
+        orderTables.ungroup();
+
+        //then
+        assertThat(orderTable1.getTableGroupId()).isNull();
+        assertThat(orderTable2.getTableGroupId()).isNull();
+        assertThat(orderTable3.getTableGroupId()).isNull();
     }
 }

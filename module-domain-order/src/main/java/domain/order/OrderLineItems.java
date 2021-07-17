@@ -33,10 +33,6 @@ public class OrderLineItems {
         return Collections.unmodifiableList(orderLineItems);
     }
 
-    public void registerAll(Long orderId) {
-        orderLineItems.forEach(orderLineItem -> orderLineItem.registerOrder(orderId));
-    }
-
     public List<Long> getMenuIds() {
         return orderLineItems.stream()
                 .map(OrderLineItem::getMenuId)
