@@ -30,30 +30,32 @@ class MenuServiceTest {
     MenuRepository menuRepository;
 
     @Mock
+    MenuProductRepository menuProductRepository;
+
+    @Mock
     MenuValidator menuValidator;
 
     @InjectMocks
     private MenuService menuService;
 
-    private final Long 메뉴_ID = 1L;
     private final Long 메뉴그룹_ID = 1L;
-    private Long 후라이드_상품_ID = 1L;
-    private Long 콜라_상품_ID = 2L;
+    private final Long 후라이드_상품_ID = 1L;
+    private final Long 콜라_상품_ID = 2L;
 
     private final MenuGroup 인기메뉴 = new MenuGroup(메뉴그룹_ID, "인기메뉴");
+    
     private final MenuProduct 후라이드_한마리 = new MenuProduct(후라이드_상품_ID, Quantity.of(1L));
     private final MenuProduct 콜라_한개 = new MenuProduct(콜라_상품_ID, Quantity.of(1L));
-    private final List<MenuProduct> 메뉴상품_목록 = Arrays.asList(후라이드_한마리, 콜라_한개);
-    private Menu 후라이드세트 = new Menu("후라이드세트", Price.valueOf(10000), 인기메뉴.getId(), 메뉴상품_목록);
+    private final MenuProductRequest 후라이드_한마리_요청 = new MenuProductRequest(후라이드_상품_ID, 1L);
+    private final MenuProductRequest 콜라_한개_요청 = new MenuProductRequest(콜라_상품_ID, 1L);
+    private final List<MenuProductRequest> 메뉴상품목록 = Arrays.asList(후라이드_한마리_요청, 콜라_한개_요청);
+    private final Menu 후라이드세트 = new Menu("후라이드세트", Price.valueOf(10000), 인기메뉴.getId());
+    private final MenuRequest 후라이드세트_요청 = new MenuRequest(후라이드세트.getName(), 후라이드세트.getPrice().value(), 후라이드세트.getMenuGroupId(), 메뉴상품목록);
 
     @DisplayName("0원 이상의 가격으로 메뉴를 등록한다")
     @Test
     void 메뉴_등록() {
         //Given
-        MenuProductRequest 후라이드_한마리_요청 = new MenuProductRequest(메뉴_ID, 후라이드_상품_ID, 1L);
-        MenuProductRequest 콜라_한개_요청 = new MenuProductRequest(메뉴_ID, 콜라_상품_ID, 1L);
-        MenuRequest 후라이드세트_요청 = new MenuRequest(후라이드세트.getName(), 후라이드세트.getPrice().value(),
-                메뉴그룹_ID, Arrays.asList(후라이드_한마리_요청, 콜라_한개_요청));
         when(menuRepository.save(any())).thenReturn(후라이드세트);
 
         //When
@@ -61,6 +63,7 @@ class MenuServiceTest {
 
         //Then
         verify(menuRepository, times(1)).save(any());
+        verify(menuProductRepository,times(1)).saveAll(any());
     }
 
     @DisplayName("메뉴 목록을 조회할 수 있다")
@@ -69,6 +72,7 @@ class MenuServiceTest {
         //Given
         List<Menu> 입력한_메뉴_목록 = new ArrayList<>(Arrays.asList(후라이드세트));
         when(menuRepository.findAll()).thenReturn(입력한_메뉴_목록);
+        when(menuProductRepository.findAllByMenuIdIn(any())).thenReturn(Arrays.asList(후라이드_한마리, 콜라_한개));
 
         //When
         List<MenuResponse> 조회된_메뉴_목록 = menuService.list();

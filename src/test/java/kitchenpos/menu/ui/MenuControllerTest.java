@@ -2,13 +2,12 @@ package kitchenpos.menu.ui;
 
 import kitchenpos.common.ui.ControllerTest;
 import kitchenpos.common.Price;
-import kitchenpos.common.Quantity;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.*;
+import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,14 +33,15 @@ public class MenuControllerTest extends ControllerTest<MenuRequest> {
     @Autowired
     private MenuRestController menuRestController;
 
-    private Product 후라이드 = new Product("후라이드", Price.valueOf(16000));
-    private Product 콜라 = new Product("콜라", Price.valueOf(1000));
     private MenuGroup 인기메뉴 = new MenuGroup("인기메뉴");
-    private MenuProduct 후라이드_한마리 = new MenuProduct(후라이드.getId(), Quantity.of(1L));
-    private MenuProduct 콜라_한개 = new MenuProduct(콜라.getId(), Quantity.of(1L));
-    private List<MenuProduct> 메뉴상품목록 = Arrays.asList(후라이드_한마리, 콜라_한개);
-    private Menu 후라이드세트 = new Menu(1L, "후라이드세트", Price.valueOf(15000),
-            인기메뉴.getId(), 메뉴상품목록);
+
+    private Long 후라이드_ID = 1L;
+    private Long 콜라_ID = 2L;
+    private MenuProductRequest 후라이드_한마리_요청 = new MenuProductRequest(후라이드_ID, 1L);
+    private MenuProductRequest 콜라_한개_요청 = new MenuProductRequest(콜라_ID, 1L);
+    private List<MenuProductRequest> 메뉴상품목록 = Arrays.asList(후라이드_한마리_요청, 콜라_한개_요청);
+    private Menu 후라이드세트 = new Menu(1L, "후라이드세트", Price.valueOf(15000), 인기메뉴.getId());
+    private MenuRequest 후라이드세트_요청 = new MenuRequest(후라이드세트.getName(), 후라이드세트.getPrice().value(), 후라이드세트.getMenuGroupId(), 메뉴상품목록);
 
     private MenuResponse 메뉴_첫번째_응답 = new MenuResponse(1L, 후라이드세트.getName(), 후라이드세트.getPrice().value(),
             후라이드세트.getMenuGroupId(), new ArrayList<>());
@@ -60,7 +60,7 @@ public class MenuControllerTest extends ControllerTest<MenuRequest> {
         when(menuService.create(any())).thenReturn(메뉴_첫번째_응답);
 
         //When
-        ResultActions 결과 = postRequest(BASE_URI, MenuRequest.of(후라이드세트));
+        ResultActions 결과 = postRequest(BASE_URI,후라이드세트_요청);
 
         //Then
         생성성공(결과);

@@ -1,8 +1,9 @@
 package kitchenpos.menu.domain;
 
 import kitchenpos.common.Price;
-import kitchenpos.common.Quantity;
 import kitchenpos.exception.CannotFindException;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.product.domain.Product;
@@ -41,10 +42,11 @@ public class MenuValidatorTest {
     private Long 후라이드_상품_ID = 1L;
     private Long 콜라_상품_ID = 2L;
 
-    private final MenuProduct 후라이드_한마리 = new MenuProduct(후라이드_상품_ID, Quantity.of(1L));
-    private final MenuProduct 콜라_한개 = new MenuProduct(콜라_상품_ID, Quantity.of(1L));
-    private List<MenuProduct> 메뉴상품들 = Arrays.asList(후라이드_한마리, 콜라_한개);
-    private Menu 메뉴 = new Menu(메뉴이름, 가격, 메뉴그룹_ID, 메뉴상품들);
+    private MenuProductRequest 후라이드_한마리_요청 = new MenuProductRequest(후라이드_상품_ID, 1L);
+    private MenuProductRequest 콜라_한개_요청 = new MenuProductRequest(콜라_상품_ID, 1L);
+    private List<MenuProductRequest> 메뉴상품목록 = Arrays.asList(후라이드_한마리_요청, 콜라_한개_요청);
+    private Menu 메뉴 = new Menu(메뉴이름, 가격, 메뉴그룹_ID);
+    private MenuRequest 메뉴_요청 = new MenuRequest(메뉴.getName(), 메뉴.getPrice().value(), 메뉴.getMenuGroupId(), 메뉴상품목록);
 
     @DisplayName("메뉴 그룹이 기존에 등록되어 있지 않은 경우, 메뉴 등록시 예외가 발생한다")
     @Test
@@ -53,7 +55,7 @@ public class MenuValidatorTest {
         when(menuGroupRepository.findById(any())).thenReturn(Optional.empty());
 
         //When + Then
-        Throwable 메뉴그룹_없음_예외 = catchThrowable(() -> menuValidator.validate(메뉴));
+        Throwable 메뉴그룹_없음_예외 = catchThrowable(() -> menuValidator.validate(메뉴_요청));
         assertThat(메뉴그룹_없음_예외).isInstanceOf(CannotFindException.class)
                 .hasMessage(ERROR_MENUGROUP_NOT_FOUND.showText());
     }
@@ -65,7 +67,7 @@ public class MenuValidatorTest {
         when(menuGroupRepository.findById(any())).thenReturn(Optional.of(new MenuGroup()));
 
         //When + Then
-        Throwable 상품_없음_예외 = catchThrowable(() -> menuValidator.validate(메뉴));
+        Throwable 상품_없음_예외 = catchThrowable(() -> menuValidator.validate(메뉴_요청));
         assertThat(상품_없음_예외).isInstanceOf(CannotFindException.class)
                 .hasMessage(ERROR_PRODUCT_NOT_FOUND.showText());
     }
@@ -81,7 +83,7 @@ public class MenuValidatorTest {
         when(productRepository.findAllById(any())).thenReturn(Arrays.asList(후라이드, 콜라));
 
         //When + Then
-        Throwable 메뉴_가격_큼_예외 = catchThrowable(() -> menuValidator.validate(메뉴));
+        Throwable 메뉴_가격_큼_예외 = catchThrowable(() -> menuValidator.validate(메뉴_요청));
         assertThat(메뉴_가격_큼_예외).isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(ERROR_MENU_PRICE_CANNOT_BE_BIGGER_THAN_MENUPRODUCTS_TOTAL.showText());
     }

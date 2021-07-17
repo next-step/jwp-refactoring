@@ -14,6 +14,11 @@ public class MenuProductRequest {
     public MenuProductRequest() {
     }
 
+    public MenuProductRequest(Long productId, Long quantity) {
+        this.productId = productId;
+        this.quantity = quantity;
+    }
+
     public MenuProductRequest(Long menuId, Long productId, Long quantity) {
         this.menuId = menuId;
         this.productId = productId;

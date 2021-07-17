@@ -3,6 +3,7 @@ package kitchenpos.common;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.math.BigDecimal;
+import java.util.Objects;
 
 import static kitchenpos.common.Message.ERROR_PRICE_REQUIRED;
 import static kitchenpos.common.Message.ERROR_PRICE_SHOULD_BE_OVER_THAN_ZERO;
@@ -55,4 +56,16 @@ public class Price {
         return this.price;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Price price1 = (Price) o;
+        return Objects.equals(price, price1.price);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(price);
+    }
 }

@@ -3,7 +3,7 @@ package kitchenpos.menu.domain;
 import kitchenpos.common.Price;
 
 import javax.persistence.*;
-import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class Menu {
@@ -20,30 +20,18 @@ public class Menu {
     @JoinColumn(name = "menu_group_id", foreignKey = @ForeignKey(name = "fk_menu_menu_group"), nullable = false)
     private Long menuGroupId;
 
-    @Embedded
-    private MenuProducts menuProducts;
-
     public Menu() {
     }
 
-    public Menu(Long id) {
-        this.id = id;
+    public Menu(String name, Price price, Long menuGroupId) {
+        this(0L, name, price, menuGroupId);
     }
 
-    public Menu(String name, Price price, Long menuGroupId, List<MenuProduct> menuProducts) {
-        this(0L, name, price, menuGroupId, menuProducts);
-    }
-
-    public Menu(Long id, String name, Price price, Long menuGroupId, List<MenuProduct> menuProducts) {
+    public Menu(Long id, String name, Price price, Long menuGroupId) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.menuGroupId = menuGroupId;
-        this.menuProducts = new MenuProducts(menuProducts, this);
-    }
-
-    public int comparePriceTo(Price sum) {
-        return this.price.compareTo(sum);
     }
 
     public Long getId() {
@@ -62,11 +50,19 @@ public class Menu {
         return menuGroupId;
     }
 
-    public MenuProducts getMenuProducts() {
-        return menuProducts;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Menu menu = (Menu) o;
+        return Objects.equals(id, menu.id)
+                && Objects.equals(name, menu.name)
+                && Objects.equals(price, menu.price)
+                && Objects.equals(menuGroupId, menu.menuGroupId);
     }
 
-    public int getMenuProductsSize() {
-        return menuProducts.size();
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, price, menuGroupId);
     }
 }

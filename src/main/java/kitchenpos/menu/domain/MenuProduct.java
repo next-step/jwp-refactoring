@@ -27,8 +27,8 @@ public class MenuProduct {
         this(0L, null, productId, quantity);
     }
 
-    public MenuProduct(Long menuId, Long productId, Quantity quantity) {
-        this(null, new Menu(menuId), productId, quantity);
+    public MenuProduct(Menu menu, Long productId, Quantity quantity) {
+        this(null, menu, productId, quantity);
     }
 
     public MenuProduct(Long seq, Menu menu, Long productId, Quantity quantity) {
@@ -38,8 +38,8 @@ public class MenuProduct {
         this.quantity = quantity;
     }
 
-    public void ofMenu(Menu menu) {
-        this.menu = menu;
+    public boolean isMenuProductOf(Menu menu) {
+        return this.menu.equals(menu);
     }
 
     public Long getSeq() {

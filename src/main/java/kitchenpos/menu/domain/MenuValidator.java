@@ -2,6 +2,8 @@ package kitchenpos.menu.domain;
 
 import kitchenpos.common.Price;
 import kitchenpos.exception.CannotFindException;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
@@ -22,23 +24,24 @@ public class MenuValidator {
         this.productRepository = productRepository;
     }
 
-    public void validate(Menu menu) {
-        validateMenuGroup(menu);
-        validate(menu, getProducts(menu));
+    public void validate(MenuRequest menuRequest) {
+        validateMenuGroup(menuRequest);
+        validate(menuRequest, getProducts(menuRequest));
     }
 
-    private void validateMenuGroup(Menu menu) {
-        menuGroupRepository.findById(menu.getMenuGroupId())
+    private void validateMenuGroup(MenuRequest menuRequest) {
+        menuGroupRepository.findById(menuRequest.getMenuGroupId())
                 .orElseThrow(() -> new CannotFindException(ERROR_MENUGROUP_NOT_FOUND));
     }
 
-    private void validate(Menu menu, List<Product> products) {
-        if (menu.getMenuProductsSize() != products.size()) {
+    private void validate(MenuRequest menuRequest, List<Product> products) {
+        if (menuRequest.getMenuProductRequests().size() != products.size()) {
             throw new CannotFindException(ERROR_PRODUCT_NOT_FOUND);
         }
 
+        Price menuPrice = Price.valueOf(menuRequest.getPrice());
         Price productsTotalPrice = getProductsPrice(products);
-        if (menu.comparePriceTo(productsTotalPrice) > 0) {
+        if (menuPrice.compareTo(productsTotalPrice) > 0) {
             throw new IllegalArgumentException(ERROR_MENU_PRICE_CANNOT_BE_BIGGER_THAN_MENUPRODUCTS_TOTAL.showText());
         }
     }
@@ -51,15 +54,11 @@ public class MenuValidator {
         return sum;
     }
 
-    private List<Product> getProducts(Menu menu) {
-        List<MenuProduct> menuProducts = getMenuProducts(menu);
-        List<Long> productIds = menuProducts.stream()
-                .map(MenuProduct::getProductId)
+    private List<Product> getProducts(MenuRequest menuRequest) {
+        List<MenuProductRequest> menuProductRequests = menuRequest.getMenuProductRequests();
+        List<Long> productIds = menuProductRequests.stream()
+                .map(MenuProductRequest::getProductId)
                 .collect(Collectors.toList());
         return productRepository.findAllById(productIds);
-    }
-
-    private List<MenuProduct> getMenuProducts(Menu menu) {
-        return menu.getMenuProducts().values();
     }
 }

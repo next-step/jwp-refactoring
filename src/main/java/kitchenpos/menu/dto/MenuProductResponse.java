@@ -24,7 +24,7 @@ public class MenuProductResponse {
                 .collect(Collectors.toList());
     }
 
-    private static MenuProductResponse of(MenuProduct menuProduct) {
+    public static MenuProductResponse of(MenuProduct menuProduct) {
         return new MenuProductResponse(menuProduct.getSeq(),
                 menuProduct.getMenu().getId(),
                 menuProduct.getProductId(),
