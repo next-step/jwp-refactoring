@@ -2,26 +2,60 @@ plugins {
     id 'org.springframework.boot' version '2.4.1'
     id 'io.spring.dependency-management' version '1.0.10.RELEASE'
     id 'java'
+    id 'java-test-fixtures'
 }
 
 group = 'camp.nextstep.edu'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '1.8'
 
-repositories {
-    mavenCentral()
+
+subprojects {
+    group 'kitchenpos'
+    version '1.0'
+
+    apply plugin: 'java'
+    apply plugin: 'java-test-fixtures'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+
+    sourceCompatibility = 1.8
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        testImplementation('org.springframework.boot:spring-boot-starter-test')
+    }
 }
 
-dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.flywaydb:flyway-core'
-    runtimeOnly 'com.h2database:h2'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+project(':module-web') {
+    dependencies {
+        implementation(project(':module-generic'))
+        implementation(project(':module-menus'))
+        implementation(project(':module-orders'))
+
+        testImplementation(testFixtures(project(':module-menus')))
+        testImplementation(testFixtures(project(':module-orders')))
+    }
 }
 
-test {
-    useJUnitPlatform()
+project(':module-menus') {
+    dependencies {
+        implementation(project(':module-generic'))
+        testFixturesImplementation(testFixtures(project(':module-generic')))
+    }
+}
+
+project(':module-orders') {
+    dependencies {
+        implementation(project(':module-generic'))
+        implementation(project(':module-menus'))
+
+        testImplementation(testFixtures(project(':module-menus')))
+
+        testFixturesImplementation(testFixtures(project(':module-generic')))
+        testFixturesImplementation(testFixtures(project(':module-menus')))
+    }
 }
