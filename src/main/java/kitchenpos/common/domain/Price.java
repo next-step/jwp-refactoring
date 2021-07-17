@@ -1,4 +1,4 @@
-package kitchenpos.menu.domain;
+package kitchenpos.common.domain;
 
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -29,7 +29,7 @@ class Price {
         return price;
     }
 
-    boolean greaterThan(final BigDecimal bigDecimal) {
+    public boolean greaterThan(final BigDecimal bigDecimal) {
         return price.compareTo(bigDecimal) > 0;
     }
 

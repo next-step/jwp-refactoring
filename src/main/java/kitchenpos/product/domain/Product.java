@@ -9,7 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-import kitchenpos.menu.domain.Price;
+import kitchenpos.common.domain.Price;
 
 @Entity
 public class Product {

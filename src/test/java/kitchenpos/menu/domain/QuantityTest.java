@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
+import kitchenpos.common.domain.Quantity;
+
 public class QuantityTest {
 
     @Test

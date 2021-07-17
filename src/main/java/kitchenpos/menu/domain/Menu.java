@@ -10,6 +10,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 
+import kitchenpos.common.domain.Price;
+
 @Entity
 public class Menu {
 
