@@ -2,7 +2,8 @@ package kitchenpos.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.menu.application.MenuService;
-import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -52,21 +53,23 @@ public class MenuRestControllerTest {
 
 	@Test
 	void createTest() throws Exception {
-		Menu menu = new Menu(1L, "치킨", BigDecimal.valueOf(10000), null, null);
-		given(menuService.create(menu)).willReturn(menu);
+		MenuRequest menuRequest = new MenuRequest("치킨", BigDecimal.valueOf(10000), null, null);
+		MenuResponse menuResponse = new MenuResponse(1L, "치킨", BigDecimal.valueOf(10000), null, null);
+
+		given(menuService.create(menuRequest)).willReturn(menuResponse);
 
 		mockMvc.perform(
 				post(BASE_URL)
 						.contentType(MediaType.APPLICATION_JSON)
-						.content(objectMapper.writeValueAsString(menu)))
+						.content(objectMapper.writeValueAsString(menuRequest)))
 				.andExpect(status().isCreated())
 				.andExpect(header().string("location", BASE_URL + "/1"));
 	}
 
 	@Test
 	void listTest() throws Exception {
-		List<Menu> menus = Lists.list(new Menu("치킨", BigDecimal.valueOf(10000), null, null), new Menu());
-		given(menuService.list()).willReturn(menus);
+		List<MenuResponse> menuResponses = Lists.list(new MenuResponse(1L, "치킨", BigDecimal.valueOf(10000), null, null), new MenuResponse());
+		given(menuService.list()).willReturn(menuResponses);
 
 		mockMvc.perform(
 				get(BASE_URL).contentType(MediaType.APPLICATION_JSON))

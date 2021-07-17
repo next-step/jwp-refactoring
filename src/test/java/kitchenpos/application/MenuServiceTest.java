@@ -1,12 +1,12 @@
 package kitchenpos.application;
 
 import kitchenpos.menu.application.MenuService;
-import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.menu.domain.MenuGroupRepository;
-import kitchenpos.menu.domain.MenuProductRepository;
-import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuGroupRepository;
+import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.DisplayName;
@@ -18,7 +18,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -31,69 +30,44 @@ public class MenuServiceTest {
 	@Mock
 	private MenuGroupRepository menuGroupRepository;
 	@Mock
-	private MenuProductRepository menuProductRepository;
-	@Mock
-	private ProductRepository productRepository;
+	private ProductService productService;
 
 	@InjectMocks
 	private MenuService menuService;
 
 	@Test
 	void menuCreateTest() {
-		Product product = new Product(1L);
-		product.setPrice(BigDecimal.valueOf(10000));
-
-		MenuProduct menuProduct = new MenuProduct();
-		menuProduct.setQuantity(10);
-		menuProduct.setProductId(1L);
-
-		Menu menu = new Menu(1L, "치킨", BigDecimal.valueOf(20000), 1L, Arrays.asList(menuProduct));
+		MenuRequest menuRequest = new MenuRequest("치킨", BigDecimal.valueOf(20000), 1L, Arrays.asList(new MenuProductRequest(1L, 10L)));
+		Menu menu = new Menu(1L, "치킨", BigDecimal.valueOf(20000), 1L);
+		Product product = new Product(1L, "치킨무", BigDecimal.valueOf(10000));
 
 		when(menuGroupRepository.existsById(1L)).thenReturn(true);
-		when(productRepository.findById(1L)).thenReturn(Optional.of(product));
-		when(menuRepository.save(menu)).thenReturn(menu);
-		when(menuProductRepository.save(menuProduct)).thenReturn(menuProduct);
+		when(menuRepository.save(menuRequest.toMenu())).thenReturn(menu);
+		when(productService.findById(1L)).thenReturn(product);
 
-		assertThat(menuService.create(menu)).isNotNull();
+		assertThat(menuService.create(menuRequest)).isNotNull();
 	}
 
 	@Test
 	@DisplayName("메뉴 생성 시 금액이 없거나 0원 이하면 익셉션 발생.")
 	void menuCreateFailTest() {
-		Menu menu = new Menu(1L, "치킨", null, 1L, Arrays.asList(new MenuProduct()));
-		assertThatThrownBy(() -> menuService.create(menu));
+		MenuRequest menuRequest = new MenuRequest("치킨", null, 1L, Arrays.asList(new MenuProductRequest()));
+		assertThatThrownBy(() -> menuService.create(menuRequest))
+				.isInstanceOf(RuntimeException.class);
 
-		menu.setPrice(BigDecimal.ZERO);
-		assertThatThrownBy(() -> menuService.create(menu));
+		MenuRequest menuRequest2 = new MenuRequest("치킨", BigDecimal.ZERO, 1L, Arrays.asList(new MenuProductRequest()));
+		assertThatThrownBy(() -> menuService.create(menuRequest2))
+				.isInstanceOf(RuntimeException.class);
 	}
 
 	@Test
 	@DisplayName("메뉴 생성 시 메뉴 그룹이 존재하지 않으면 익셉션 발생.")
 	void menuCreateFailTest2() {
-		MenuProduct menuProduct = new MenuProduct();
-		menuProduct.setQuantity(10);
-		menuProduct.setProductId(1L);
+		MenuRequest menuRequest = new MenuRequest("치킨", BigDecimal.valueOf(20000), 1L, Arrays.asList(new MenuProductRequest(1L, 10L)));
 
 		when(menuGroupRepository.existsById(1L)).thenReturn(false);
 
-		assertThatThrownBy(() -> menuService.create(new Menu(1L, "치킨", BigDecimal.valueOf(20000), 1L, Arrays.asList(menuProduct))))
-				.isInstanceOf(IllegalArgumentException.class);
-	}
-
-	@Test
-	@DisplayName("포함된 메뉴 상품의 총 가격이 메뉴상품의 총 가격보다 크면 익셉션 발생")
-	void menuCreateFailTest3() {
-		Product product = new Product();
-		product.setPrice(BigDecimal.valueOf(10000));
-
-		MenuProduct menuProduct = new MenuProduct();
-		menuProduct.setQuantity(1);
-		menuProduct.setProductId(1L);
-
-		when(menuGroupRepository.existsById(1L)).thenReturn(true);
-		when(productRepository.findById(1L)).thenReturn(Optional.of(product));
-
-		assertThatThrownBy(() -> menuService.create(new Menu(1L, "치킨", BigDecimal.valueOf(20000), 1L, Arrays.asList(menuProduct))))
+		assertThatThrownBy(() -> menuService.create(menuRequest))
 				.isInstanceOf(IllegalArgumentException.class);
 	}
 

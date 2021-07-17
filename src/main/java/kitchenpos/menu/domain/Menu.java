@@ -14,8 +14,8 @@ public class Menu {
 	private BigDecimal price;
 	private Long menuGroupId;
 
-	@OneToMany(mappedBy = "id")
-	private List<MenuProduct> menuProducts;
+	@Embedded
+	private MenuProducts menuProducts = new MenuProducts();
 
 	public Menu() {
 	}
@@ -24,11 +24,24 @@ public class Menu {
 		this.id = id;
 	}
 
+	public Menu(String name, BigDecimal price, Long menuGroupId) {
+		this.name = name;
+		this.price = price;
+		this.menuGroupId = menuGroupId;
+	}
+
 	public Menu(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
 		this.name = name;
 		this.price = price;
 		this.menuGroupId = menuGroupId;
-		this.menuProducts = menuProducts;
+		addMenuProduct(menuProducts);
+	}
+
+	public Menu(Long id, String name, BigDecimal price, Long menuGroupId) {
+		this.id = id;
+		this.name = name;
+		this.price = price;
+		this.menuGroupId = menuGroupId;
 	}
 
 	public Menu(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
@@ -36,7 +49,7 @@ public class Menu {
 		this.name = name;
 		this.price = price;
 		this.menuGroupId = menuGroupId;
-		this.menuProducts = menuProducts;
+		addMenuProduct(menuProducts);
 	}
 
 	public Long getId() {
@@ -47,32 +60,31 @@ public class Menu {
 		return name;
 	}
 
-	public void setName(final String name) {
-		this.name = name;
-	}
-
 	public BigDecimal getPrice() {
 		return price;
-	}
-
-	public void setPrice(final BigDecimal price) {
-		this.price = price;
 	}
 
 	public Long getMenuGroupId() {
 		return menuGroupId;
 	}
 
-	public void setMenuGroupId(final Long menuGroupId) {
-		this.menuGroupId = menuGroupId;
-	}
-
 	public List<MenuProduct> getMenuProducts() {
-		return menuProducts;
+		return menuProducts.getMenuProducts();
 	}
 
-	public void setMenuProducts(final List<MenuProduct> menuProducts) {
-		this.menuProducts = menuProducts;
+	public void addMenuProduct(final List<MenuProduct> menuProducts) {
+		validatePrice(menuProducts);
+		this.menuProducts.addAllMenuProducts(menuProducts);
+	}
+
+	private void validatePrice(List<MenuProduct> menuProducts) {
+		BigDecimal sumOfProductsPrice = menuProducts.stream().map(menuProduct -> menuProduct.getProduct().getPrice()
+				.multiply(BigDecimal.valueOf(menuProduct.getQuantity())))
+				.reduce(BigDecimal.ZERO, BigDecimal::add);
+
+		if (price.compareTo(sumOfProductsPrice) > 0) {
+			throw new IllegalArgumentException("메뉴의 가격이 부정확합니다.");
+		}
 	}
 
 	@Override
@@ -80,7 +92,7 @@ public class Menu {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		Menu menu = (Menu) o;
-		return Objects.equals(id, menu.id) && Objects.equals(name, menu.name) && Objects.equals(price, menu.price) && Objects.equals(menuGroupId, menu.menuGroupId) && Objects.equals(menuProducts, menu.menuProducts);
+		return Objects.equals(id, menu.id) && Objects.equals(name, menu.name) && Objects.equals(price, menu.price) && Objects.equals(menuGroupId, menu.menuGroupId);
 	}
 
 	@Override
