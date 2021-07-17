@@ -1,6 +1,5 @@
-package kitchenpos.menu;
+package kitchenpos.product;
 
-import static kitchenpos.menu.ui.ProductRestControllerTest.BASE_URL;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.response.ExtractableResponse;
@@ -9,7 +8,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import kitchenpos.menu.dto.ProductResponse;
+import kitchenpos.product.dto.ProductResponse;
+import kitchenpos.product.ui.ProductRestControllerTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -32,7 +32,7 @@ public class ProductAcceptanceTest extends AcceptancePerMethodTest {
     }
 
     public static ExtractableResponse<Response> 상품_목록_조회_요청() {
-        return get(BASE_URL);
+        return AcceptanceTest.get(ProductRestControllerTest.BASE_URL);
     }
 
     private List<ProductResponse> 상품_목록_조회됨(ExtractableResponse<Response> response) {
@@ -47,7 +47,7 @@ public class ProductAcceptanceTest extends AcceptancePerMethodTest {
         params.put("name", name);
         params.put("price", price);
 
-        return post(params, BASE_URL);
+        return AcceptanceTest.post(params, ProductRestControllerTest.BASE_URL);
     }
 
     public static void 상품이_등록됨(ExtractableResponse response) {

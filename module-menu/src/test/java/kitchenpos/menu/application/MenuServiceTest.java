@@ -15,7 +15,6 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.menu.domain.Product;
 import kitchenpos.menu.dto.MenuRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,6 +22,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
 @DisplayName("메뉴 서비스")
 @ExtendWith(MockitoExtension.class)
@@ -32,19 +32,19 @@ public class MenuServiceTest {
     public static final Price 감자튀김_가격 = Price.wonOf(2000);
     public static final Price 콜라_가격 = Price.wonOf(1000);
     public static final Price 치즈버거세트_가격 = new Price(6000);
-    public static final Product 치즈버거 = new Product(1L, "치즈버거", 치즈버거_가격);
-    public static final Product 감자튀김 = new Product(2L, "감자튀김", 감자튀김_가격);
-    public static final Product 콜라 = new Product(3L, "콜라", 콜라_가격);
+    public static final Long 치즈버거_ID = 1L;
+    public static final Long 감자튀김_ID = 2L;
+    public static final Long 콜라_ID = 3L;
     public static final Long 치즈버거세트_메뉴ID = 1L;
-    public static final MenuProduct 치즈버거세트_치즈버거 = new MenuProduct(치즈버거세트_메뉴ID, 치즈버거.getId(), 1L);
-    public static final MenuProduct 치즈버거세트_감자튀김 = new MenuProduct(치즈버거세트_메뉴ID, 감자튀김.getId(), 1L);
-    public static final MenuProduct 치즈버거세트_콜라 = new MenuProduct(치즈버거세트_메뉴ID, 콜라.getId(), 1L);
+    public static final MenuProduct 치즈버거세트_치즈버거 = new MenuProduct(치즈버거세트_메뉴ID, 치즈버거_ID, 1L);
+    public static final MenuProduct 치즈버거세트_감자튀김 = new MenuProduct(치즈버거세트_메뉴ID, 감자튀김_ID, 1L);
+    public static final MenuProduct 치즈버거세트_콜라 = new MenuProduct(치즈버거세트_메뉴ID, 콜라_ID, 1L);
     public static final MenuGroup 패스트푸드 = new MenuGroup(1L, "패스트푸드");
 
     @Mock
     private MenuRepository menuRepository;
     @Mock
-    private MenuValidator menuValidator;
+    private RabbitTemplate rabbitTemplate;
     @InjectMocks
     private MenuService menuService;
 

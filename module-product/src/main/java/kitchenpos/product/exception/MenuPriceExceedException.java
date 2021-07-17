@@ -1,4 +1,4 @@
-package kitchenpos.menu.exception;
+package kitchenpos.product.exception;
 
 public class MenuPriceExceedException extends RuntimeException {
 

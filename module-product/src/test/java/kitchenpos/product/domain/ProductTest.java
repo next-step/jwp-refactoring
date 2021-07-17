@@ -1,11 +1,10 @@
-package kitchenpos.menu.domain;
+package kitchenpos.product.domain;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import kitchenpos.common.domain.Price;
 import kitchenpos.common.exception.PriceEmptyException;
 import kitchenpos.common.exception.PriceNegativeException;
-import kitchenpos.menu.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

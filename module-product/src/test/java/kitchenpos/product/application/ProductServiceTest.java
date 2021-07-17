@@ -1,4 +1,4 @@
-package kitchenpos.menu.application;
+package kitchenpos.product.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -14,9 +14,9 @@ import java.util.List;
 import kitchenpos.common.domain.Price;
 import kitchenpos.common.exception.PriceEmptyException;
 import kitchenpos.common.exception.PriceNegativeException;
-import kitchenpos.menu.domain.Product;
-import kitchenpos.menu.domain.ProductRepository;
-import kitchenpos.menu.dto.ProductRequest;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.product.dto.ProductRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
