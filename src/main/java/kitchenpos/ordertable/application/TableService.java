@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static kitchenpos.common.Message.ERROR_ORDER_TABLE_NOT_FOUND;
 
@@ -26,12 +27,22 @@ public class TableService {
     }
 
     public OrderTableResponse create(final OrderTableRequest orderTableRequest) {
-        return OrderTableResponse.of(orderTableRepository.save(orderTableRequest.toOrderTable()));
+        return OrderTableResponse.of(orderTableRepository.save(toOrderTable(orderTableRequest)));
+    }
+
+    private OrderTable toOrderTable(OrderTableRequest orderTableRequest) {
+        return new OrderTable(orderTableRequest.getNumberOfGuests(), orderTableRequest.isEmpty());
     }
 
     @Transactional(readOnly = true)
     public List<OrderTableResponse> list() {
-        return OrderTableResponse.ofList(orderTableRepository.findAll());
+        return toOrderTableResponses(orderTableRepository.findAll());
+    }
+
+    private List<OrderTableResponse> toOrderTableResponses(List<OrderTable> orderTables) {
+        return orderTables.stream()
+                .map(OrderTableResponse::of)
+                .collect(Collectors.toList());
     }
 
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {

@@ -2,9 +2,6 @@ package kitchenpos.menu.dto;
 
 import kitchenpos.menu.domain.MenuProduct;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 public class MenuProductRequest {
 
     private Long menuId;
@@ -23,12 +20,6 @@ public class MenuProductRequest {
         this.menuId = menuId;
         this.productId = productId;
         this.quantity = quantity;
-    }
-
-    public static List<MenuProductRequest> ofList(List<MenuProduct> menuProducts) {
-        return menuProducts.stream()
-                .map(MenuProductRequest::of)
-                .collect(Collectors.toList());
     }
 
     public static MenuProductRequest of(MenuProduct menuProduct) {

@@ -6,6 +6,7 @@ import kitchenpos.order.dto.OrderLineItemResponse;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.dto.OrderTableResponse;
 
 import java.util.Arrays;
 
@@ -20,6 +21,11 @@ public class OrderTableTestFixture {
 
     public static final Order 첫번째_주문 = new Order(1L, 비어있지_않은_테이블.getId(), COOKING);
     public static final Order 두번째_주문 = new Order(2L, 비어있지_않은_테이블.getId(), COOKING);
+
+    public static final OrderTableResponse 비어있지_않은_테이블_응답 = new OrderTableResponse(비어있지_않은_테이블.getId(), 비어있지_않은_테이블.getTableGroupId(),
+            비어있지_않은_테이블.getNumberOfGuests(), 비어있지_않은_테이블.isEmpty());
+    public static final OrderTableResponse 비어있는_테이블_응답 = new OrderTableResponse(비어있는_테이블.getId(), 비어있는_테이블.getTableGroupId(),
+            비어있는_테이블.getNumberOfGuests(), 비어있는_테이블.isEmpty());
 
     public static final OrderLineItemRequest 주문_항목_첫번째_요청 = new OrderLineItemRequest(맥모닝콤보.getId(), 1L);
     public static final OrderLineItemRequest 주문_항목_두번째_요청 = new OrderLineItemRequest(맥모닝콤보.getId(), 3L);

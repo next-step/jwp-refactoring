@@ -16,8 +16,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static kitchenpos.ordertable.OrderTableTestFixture.비어있는_테이블;
-import static kitchenpos.ordertable.OrderTableTestFixture.비어있지_않은_테이블;
+import static kitchenpos.ordertable.OrderTableTestFixture.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -54,8 +53,7 @@ public class TableControllerTest extends ControllerTest<OrderTableRequest> {
     @Test
     void 주문테이블_목록_조회요청() throws Exception {
         //Given
-        List<OrderTable> 주문테이블_목록 = new ArrayList<>(Arrays.asList(비어있는_테이블, 비어있지_않은_테이블));
-        when(tableService.list()).thenReturn(OrderTableResponse.ofList(주문테이블_목록));
+        when(tableService.list()).thenReturn(Arrays.asList(비어있지_않은_테이블_응답, 비어있는_테이블_응답));
 
         //When
         ResultActions 결과 = getRequest(BASE_URI);
