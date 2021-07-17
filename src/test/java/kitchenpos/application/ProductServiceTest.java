@@ -34,11 +34,11 @@ class ProductServiceTest {
 
     @Mock
     private ProductDao productDao;
+
     private ProductService productService;
 
     @BeforeEach
     void setUp() {
-        // given
         productService = new ProductService(productDao);
     }
 

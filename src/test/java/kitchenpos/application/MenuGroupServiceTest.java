@@ -34,7 +34,6 @@ class MenuGroupServiceTest {
 
     @BeforeEach
     void setUp() {
-        // given
         menuGroupService = new MenuGroupService(menuGroupDao);
     }
 

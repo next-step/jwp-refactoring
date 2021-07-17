@@ -7,6 +7,7 @@ import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -27,8 +28,10 @@ import static kitchenpos.fixture.ProductFixture.상품_양념_치킨;
 import static kitchenpos.fixture.ProductFixture.상품_후라이드_치킨;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 import static org.mockito.Mockito.when;
 
+@TestInstance(PER_CLASS)
 @ExtendWith(MockitoExtension.class)
 class MenuServiceTest {
 
@@ -59,7 +62,7 @@ class MenuServiceTest {
                 .isThrownBy(() -> menuService.create(menu));
     }
 
-    static Stream<Arguments> methodSource_create_예외_유효하지_않은_메뉴가격() {
+    Stream<Arguments> methodSource_create_예외_유효하지_않은_메뉴가격() {
         return Stream.of(
                 Arguments.of(
                         new Menu(메뉴_치킨_세트.getId(),
@@ -127,7 +130,7 @@ class MenuServiceTest {
         assertThat(createdMenu).isEqualTo(menu);
     }
 
-    static Stream<Arguments> methodSource_create_성공() {
+    Stream<Arguments> methodSource_create_성공() {
         return Stream.of(
                 Arguments.of(
                         new Menu(메뉴_치킨_세트.getId(),
