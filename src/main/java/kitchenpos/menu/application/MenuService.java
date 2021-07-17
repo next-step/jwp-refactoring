@@ -54,7 +54,7 @@ public class MenuService {
     @Transactional(readOnly = true)
     public List<MenuResponse> list() {
         final List<Menu> menus = menuRepository.findAll();
-        List<Long> menuIds = menus.stream()
+        final List<Long> menuIds = menus.stream()
                 .map(Menu::getId)
                 .collect(Collectors.toList());
         final List<MenuProduct> menuProducts = menuProductRepository.findAllByMenuIdIn(menuIds);

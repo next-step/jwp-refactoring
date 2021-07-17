@@ -6,7 +6,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Objects;
 
 import static kitchenpos.common.Message.*;
 import static kitchenpos.order.domain.OrderStatus.COOKING;
@@ -31,22 +31,13 @@ public class Order {
     @CreatedDate
     private LocalDateTime orderedTime;
 
-    @Embedded
-    private OrderLineItems orderLineItems;
-
     public Order() {
     }
 
     public Order(Long orderTableId, OrderStatus orderStatus) {
-        this.orderTableId = orderTableId;
-        this.orderStatus = orderStatus;
-    }
-
-    public Order(Long orderTableId, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
         validateOrderTableStatus(orderTableId);
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
-        this.orderLineItems = new OrderLineItems(orderLineItems, this);
     }
 
     private void validateOrderTableStatus(Long orderTableId) {
@@ -87,7 +78,19 @@ public class Order {
         return orderedTime;
     }
 
-    public OrderLineItems getOrderLineItems() {
-        return orderLineItems;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Order order = (Order) o;
+        return Objects.equals(id, order.id)
+                && Objects.equals(orderTableId, order.orderTableId)
+                && orderStatus == order.orderStatus
+                && Objects.equals(orderedTime, order.orderedTime);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, orderTableId, orderStatus, orderedTime);
     }
 }

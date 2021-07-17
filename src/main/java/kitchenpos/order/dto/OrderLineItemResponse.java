@@ -12,7 +12,7 @@ public class OrderLineItemResponse {
     private Long menuId;
     private Long quantity;
 
-    private OrderLineItemResponse(Long seq, Long orderId, Long menuId, Long quantity) {
+    public OrderLineItemResponse(Long seq, Long orderId, Long menuId, Long quantity) {
         this.seq = seq;
         this.orderId = orderId;
         this.menuId = menuId;

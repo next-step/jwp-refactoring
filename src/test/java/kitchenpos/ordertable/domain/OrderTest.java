@@ -2,11 +2,8 @@ package kitchenpos.ordertable.domain;
 
 import kitchenpos.exception.CannotUpdateException;
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import java.util.Arrays;
 
 import static kitchenpos.common.Message.ERROR_ORDER_SHOULD_HAVE_NON_EMPTY_TABLE;
 import static kitchenpos.common.Message.ERROR_ORDER_STATUS_CANNOT_BE_CHANGED_WHEN_COMPLETED;
@@ -20,7 +17,7 @@ public class OrderTest {
     void 비어있는_테이블_주문_생성시_예외발생() {
         Long 비어있는_테이블 = null;
 
-        assertThatThrownBy(() -> new Order(비어있는_테이블, COOKING, Arrays.asList(new OrderLineItem())))
+        assertThatThrownBy(() -> new Order(비어있는_테이블, COOKING))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(ERROR_ORDER_SHOULD_HAVE_NON_EMPTY_TABLE.showText());
     }
@@ -29,7 +26,7 @@ public class OrderTest {
     @Test
     void 완료처리된_주문_상태_변경시_예외발생() {
         Long 주문테이블_ID = 3L;
-        Order 주문 = new Order(주문테이블_ID, COMPLETION, Arrays.asList(new OrderLineItem()));
+        Order 주문 = new Order(주문테이블_ID, COMPLETION);
 
         assertThatThrownBy(() -> 주문.changeOrderStatus(COOKING))
                 .isInstanceOf(CannotUpdateException.class)

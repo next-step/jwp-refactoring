@@ -48,4 +48,7 @@ public class OrderLineItem {
         return quantity;
     }
 
+    public boolean isItemOf(Order order) {
+        return this.order.equals(order);
+    }
 }

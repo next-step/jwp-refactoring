@@ -7,6 +7,7 @@ import kitchenpos.menu.domain.*;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.*;
+import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusRequest;
@@ -21,6 +22,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,6 +45,9 @@ class OrderServiceTest {
     OrderRepository orderRepository;
 
     @Mock
+    OrderLineItemRepository orderLineItemRepository;
+
+    @Mock
     OrderTableRepository orderTableRepository;
 
     @InjectMocks
@@ -56,7 +61,9 @@ class OrderServiceTest {
     private final OrderTable 첫번째_테이블 = new OrderTable(3, false);
     private final OrderLineItem 주문_항목_첫번째 = new OrderLineItem(첫번째_메뉴.getId(), Quantity.of(3L));
 
-    private Order 첫번째_주문 = new Order(첫번째_테이블.getId(), COOKING, Arrays.asList(주문_항목_첫번째));
+    private Order 첫번째_주문 = new Order(첫번째_테이블.getId(), COOKING);
+    private final OrderLineItemRequest 주문_항목_첫번째_요청 = new OrderLineItemRequest(첫번째_메뉴.getId(), 1L);
+    private final OrderRequest 첫번째_주문_요청 = new OrderRequest(첫번째_테이블.getId(), Arrays.asList(주문_항목_첫번째_요청));
 
     @DisplayName("주문을 등록할 수 있다")
     @Test
@@ -67,17 +74,18 @@ class OrderServiceTest {
         when(orderRepository.save(any())).thenReturn(첫번째_주문);
 
         //When
-        orderService.create(OrderRequest.of(첫번째_주문));
+        orderService.create(첫번째_주문_요청);
 
         //Then
         verify(orderRepository, times(1)).save(any());
+        verify(orderLineItemRepository, times(1)).saveAll(any());
     }
 
     @DisplayName("등록되지 않은 주문 테이블로 주문 생성시, 예외 발생한다")
     @Test
     void 등록되지_않은_주문_테이블로_주문_생성시_예외발생() {
         //When + Then
-        Throwable 주문테이블_없음_예외 = catchThrowable(() -> orderService.create(OrderRequest.of(첫번째_주문)));
+        Throwable 주문테이블_없음_예외 = catchThrowable(() -> orderService.create(첫번째_주문_요청));
         assertThat(주문테이블_없음_예외).isInstanceOf(CannotFindException.class)
                 .hasMessage(ERROR_ORDER_SHOULD_HAVE_REGISTERED_TABLE.showText());
     }
@@ -89,9 +97,22 @@ class OrderServiceTest {
         when(orderTableRepository.findById(any())).thenReturn(Optional.of(첫번째_테이블));
 
         //When + Then
-        Throwable 메뉴_없음_예외 = catchThrowable(() -> orderService.create(OrderRequest.of(첫번째_주문)));
+        Throwable 메뉴_없음_예외 = catchThrowable(() -> orderService.create(첫번째_주문_요청));
         assertThat(메뉴_없음_예외).isInstanceOf(CannotFindException.class)
                 .hasMessage(ERROR_ORDER_SHOULD_HAVE_REGISTERED_MENU.showText());
+    }
+
+    @DisplayName("주문 항목이 1개 미만인 주문 생성시, 예외 발생한다")
+    @Test
+    void 주문_항목이_1개_미만_주문_생성시_예외발생() {
+        //Given
+        OrderRequest 주문_요청 = new OrderRequest(첫번째_테이블.getId(), Collections.EMPTY_LIST);
+        when(orderTableRepository.findById(any())).thenReturn(Optional.of(첫번째_테이블));
+
+        //When + Then
+        Throwable 메뉴_없음_예외 = catchThrowable(() -> orderService.create(주문_요청));
+        assertThat(메뉴_없음_예외).isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(ERROR_ORDER_LINE_ITEMS_SHOULD_HAVE_AT_LEAST_ONE_ITEM.showText());
     }
 
     @DisplayName("주문 목록을 조회할 수 있다")

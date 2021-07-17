@@ -4,7 +4,6 @@ import kitchenpos.order.domain.Order;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class OrderResponse {
 
@@ -14,26 +13,21 @@ public class OrderResponse {
     private LocalDateTime orderedTime;
     private List<OrderLineItemResponse> orderLineItemResponses;
 
-    public OrderResponse(Long id, Long orderTableId, String orderStatus, LocalDateTime orderedTime, List<OrderLineItemResponse> orderLineItemResponses) {
-        this.id = id;
-        this.orderTableId = orderTableId;
-        this.orderStatus = orderStatus;
-        this.orderedTime = orderedTime;
-        this.orderLineItemResponses = orderLineItemResponses;
+    public OrderResponse(Order order) {
+        this.id = order.getId();
+        this.orderTableId = order.getOrderTableId();
+        this.orderStatus = order.getOrderStatus().name();
+        this.orderedTime = order.getOrderedTime();
     }
 
     public static OrderResponse of(Order order) {
-        return new OrderResponse(order.getId(),
-                order.getOrderTableId(),
-                order.getOrderStatus().name(),
-                order.getOrderedTime(),
-                OrderLineItemResponse.ofList(order.getOrderLineItems().temporaryGetList()));
+        return new OrderResponse(order);
     }
 
-    public static List<OrderResponse> ofList(List<Order> orders) {
-        return orders.stream()
-                .map(OrderResponse::of)
-                .collect(Collectors.toList());
+    public static OrderResponse of(Order order, List<OrderLineItemResponse> orderLineItemResponses) {
+        OrderResponse orderResponse = new OrderResponse(order);
+        orderResponse.orderLineItemResponses = orderLineItemResponses;
+        return orderResponse;
     }
 
     public Long getId() {
