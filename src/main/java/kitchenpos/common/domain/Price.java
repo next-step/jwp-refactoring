@@ -6,8 +6,7 @@ import java.util.Objects;
 import javax.persistence.Embeddable;
 
 @Embeddable
-public
-class Price {
+public class Price {
 
     private BigDecimal price;
 
