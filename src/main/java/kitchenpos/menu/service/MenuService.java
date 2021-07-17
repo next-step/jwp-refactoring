@@ -1,19 +1,19 @@
 package kitchenpos.menu.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.menu.domain.entity.Menu;
-import kitchenpos.menu.domain.entity.MenuGroup;
-import kitchenpos.menu.domain.entity.MenuGroupRepository;
-import kitchenpos.menu.domain.entity.MenuProduct;
-import kitchenpos.menu.domain.entity.MenuRepository;
+import kitchenpos.menu.domain.repository.MenuRepository;
 import kitchenpos.menu.domain.value.Price;
+import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.menu.exception.MenuPriceGreaterThanProductsSumException;
 import kitchenpos.menu.exception.NotFoundMenuGroupException;
-import kitchenpos.menu.exception.NotFoundProductException;
+import kitchenpos.menugroup.domain.repository.MenuGroupRepository;
 import kitchenpos.product.domain.entity.Product;
-import kitchenpos.product.domain.entity.ProductRepository;
+import kitchenpos.product.domain.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,30 +34,42 @@ public class MenuService {
         this.productRepository = productRepository;
     }
 
-    public MenuResponse create(final MenuRequest menuRequest) {
-        Menu menu = Menu.of(menuRequest.getName(),
-            Price.of(menuRequest.getPrice()),
-            findMenuGroup(menuRequest.getMenuGroupId()),
-            findMenuProducts(menuRequest));
-        return MenuResponse.of(menuRepository.save(menu));
-    }
-
-    private List<MenuProduct> findMenuProducts(MenuRequest menuRequest) {
-        return menuRequest.getMenuProducts()
-            .stream()
-            .map(menuProductRequest -> {
-                Product product = productRepository.findById(menuProductRequest.getProductId())
-                    .orElseThrow(NotFoundProductException::new);
-                return new MenuProduct(product, menuProductRequest.getQuantity());
-            }).collect(Collectors.toList());
-    }
-
-    private MenuGroup findMenuGroup(Long menuGroupId) {
-        return menuGroupRepository.findById(menuGroupId)
-            .orElseThrow(NotFoundMenuGroupException::new);
+    public MenuResponse create(MenuRequest menuRequest) {
+        validateMenuGroup(menuRequest.getMenuGroupId());
+        validateProductPriceSum(menuRequest);
+        return MenuResponse.of(menuRepository.save(toMenuEntity(menuRequest)));
     }
 
     public List<MenuResponse> list() {
         return MenuResponse.ofList(menuRepository.findAll());
+    }
+
+    private Menu toMenuEntity(MenuRequest menuRequest) {
+        return Menu.of(menuRequest.getName(),
+            Price.of(menuRequest.getPrice()),
+            menuRequest.getMenuGroupId());
+    }
+
+    private void validateProductPriceSum(MenuRequest menuRequest) {
+        List<Product> products = productRepository.findAllById(getProductIds(menuRequest));
+
+        Price menuPrice = Price.of(menuRequest.getPrice());
+        Price productsSum = Price.of(
+            BigDecimal.valueOf(products.stream().mapToDouble(Product::price).sum()));
+
+        if (menuPrice.isGreaterThan(productsSum)) {
+            throw new MenuPriceGreaterThanProductsSumException();
+        }
+    }
+
+    private List<Long> getProductIds(MenuRequest menuRequest) {
+        return menuRequest.getMenuProducts().stream()
+            .map(MenuProductRequest::getProductId).collect(
+                Collectors.toList());
+    }
+
+    private void validateMenuGroup(Long menuGroupId) {
+        menuGroupRepository.findById(menuGroupId)
+            .orElseThrow(NotFoundMenuGroupException::new);
     }
 }

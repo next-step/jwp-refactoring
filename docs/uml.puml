@@ -1,0 +1,68 @@
+@startuml
+package MenuPackage #DDDDDD {
+  class MenuService
+  class Menu
+  class MenuProduct
+  interface MenuRepository
+}
+package MenuGroupPackage #DDDDDD {
+  class MenuGroupService
+  class MenuGroup
+  interface MenuGroupRepository
+}
+package OrderPackage #DDDDDD {
+  class OrderService
+  class Order
+  class OrderLineItem
+  class OrderValidator
+  interface OrderRepository
+
+}
+package ProductPackage #DDDDDD {
+  class ProductService
+  class Product
+  interface ProductRepository
+}
+package TablePackage #DDDDDD {
+  class TableService
+  class TableGroupService
+  class OrderTable
+  class TableGroup
+  interface OrderValidatorInTable
+  interface OrderTableRepository
+  interface TableGroupRepository
+}
+
+  ProductPackage <-[thickness=8]- MenuPackage
+  MenuGroupPackage <-[thickness=8]- MenuPackage
+  MenuPackage <-[thickness=8]- OrderPackage
+  TablePackage <-[thickness=8]- OrderPackage
+
+  Menu <-- MenuService
+  MenuGroupRepository <-- MenuService
+  MenuProduct <-- MenuService
+  MenuRepository <-- MenuService
+  Product <-- MenuService
+  ProductRepository <-- MenuService
+
+  MenuGroup <-- MenuGroupService
+  MenuGroupRepository <-- MenuGroupService
+  MenuRepository <-- OrderService
+  Order <-- OrderService
+  OrderLineItem <-- OrderService
+  OrderRepository <-- OrderService
+  OrderTable <-- OrderService
+  OrderTableRepository <-- OrderService
+
+  OrderValidatorInTable <-- OrderValidator
+
+  Product <-- ProductService
+  ProductRepository <-- ProductService
+
+  OrderTable <-- TableGroup
+
+  TableGroup <-- TableGroupService
+  TableGroupRepository <-- TableGroupService
+
+  OrderTableRepository <-- TableService
+@enduml
