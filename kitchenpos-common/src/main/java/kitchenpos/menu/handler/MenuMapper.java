@@ -1,4 +1,4 @@
-package kitchenpos.menu.handler;
+package kitchenpos.menu.mapper;
 
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;

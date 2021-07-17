@@ -1,4 +1,4 @@
-package kitchenpos.order.handler;
+package kitchenpos.order.mapper;
 
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
