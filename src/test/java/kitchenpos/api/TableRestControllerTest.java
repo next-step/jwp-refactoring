@@ -2,7 +2,8 @@ package kitchenpos.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.table.application.TableService;
-import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -49,21 +50,23 @@ public class TableRestControllerTest {
 
 	@Test
 	void createTest() throws Exception {
-		OrderTable orderTable = new OrderTable(1L, null, 2, true);
-		given(tableService.create(orderTable)).willReturn(orderTable);
+		OrderTableRequest orderTableRequest = new OrderTableRequest(2, true);
+		OrderTableResponse orderTableResponse = new OrderTableResponse(1L, null, 2, true);
+
+		given(tableService.create(orderTableRequest)).willReturn(orderTableResponse);
 
 		mockMvc.perform(
 				post(BASE_URL)
 						.contentType(MediaType.APPLICATION_JSON)
-						.content(objectMapper.writeValueAsString(orderTable)))
+						.content(objectMapper.writeValueAsString(orderTableRequest)))
 				.andExpect(status().isCreated())
 				.andExpect(header().string("location", BASE_URL + "/1"));
 	}
 
 	@Test
 	void listTest() throws Exception {
-		List<OrderTable> orderTables = Lists.list(new OrderTable(), new OrderTable());
-		given(tableService.list()).willReturn(orderTables);
+		List<OrderTableResponse> orderTableResponses = Lists.list(new OrderTableResponse(), new OrderTableResponse());
+		given(tableService.list()).willReturn(orderTableResponses);
 
 		mockMvc.perform(
 				get(BASE_URL).contentType(MediaType.APPLICATION_JSON))
@@ -73,25 +76,25 @@ public class TableRestControllerTest {
 
 	@Test
 	void changeEmptyTest() throws Exception {
-		OrderTable orderTable = new OrderTable(1L, 1L, 2, true);
-		given(tableService.changeEmpty(1L, orderTable)).willReturn(orderTable);
+		OrderTableResponse orderTableRequest = new OrderTableResponse(1L, 1L, 2, false);
+		given(tableService.changeEmpty(1L, false)).willReturn(orderTableRequest);
 
 		mockMvc.perform(
-				put(BASE_URL + "/{orderTableId}/empty", orderTable.getId())
+				put(BASE_URL + "/{orderTableId}/empty", 1L)
 						.contentType(MediaType.APPLICATION_JSON)
-						.content(objectMapper.writeValueAsString(orderTable)))
+						.content(objectMapper.writeValueAsString(false)))
 				.andExpect(status().isOk());
 	}
 
 	@Test
 	void changeNumberOfGuestsTest() throws Exception {
-		OrderTable orderTable = new OrderTable(1L, 1L, 2, true);
-		given(tableService.changeNumberOfGuests(1L, orderTable)).willReturn(orderTable);
+		OrderTableResponse orderTableResponse = new OrderTableResponse(1L, 1L, 4, false);
+		given(tableService.changeNumberOfGuests(1L, 4)).willReturn(orderTableResponse);
 
 		mockMvc.perform(
-				put(BASE_URL + "/{orderTableId}/number-of-guests", orderTable.getId())
+				put(BASE_URL + "/{orderTableId}/number-of-guests", 1L)
 						.contentType(MediaType.APPLICATION_JSON)
-						.content(objectMapper.writeValueAsString(orderTable)))
+						.content(objectMapper.writeValueAsString(4)))
 				.andExpect(status().isOk());
 	}
 }

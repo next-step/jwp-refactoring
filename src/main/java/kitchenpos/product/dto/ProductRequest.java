@@ -13,7 +13,7 @@ public class ProductRequest {
 	@Min(0)
 	private BigDecimal price;
 
-	public ProductRequest() {
+	protected ProductRequest() {
 	}
 
 	public ProductRequest(String name, BigDecimal price) {

@@ -15,7 +15,7 @@ public class OrderRequest {
 	@NotEmpty
 	private List<OrderLineItemRequest> orderLineItemRequests;
 
-	public OrderRequest() {
+	protected OrderRequest() {
 	}
 
 	public OrderRequest(Long orderTableId, LocalDateTime orderedTime, List<OrderLineItemRequest> orderLineItemIds) {

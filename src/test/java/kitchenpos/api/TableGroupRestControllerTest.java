@@ -2,7 +2,9 @@ package kitchenpos.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.table.application.TableGroupService;
-import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.table.dto.TableGroupRequest;
+import kitchenpos.table.dto.TableGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,6 +15,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.filter.CharacterEncodingFilter;
+
+import java.time.LocalDateTime;
+import java.util.Arrays;
 
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -48,13 +53,15 @@ class TableGroupRestControllerTest {
 
 	@Test
 	void createTest() throws Exception {
-		TableGroup tableGroup = new TableGroup(1L, null, null);
-		given(tableGroupService.create(tableGroup)).willReturn(tableGroup);
+		TableGroupRequest tableGroupRequest = new TableGroupRequest(LocalDateTime.of(2021, 1, 1, 1, 1, 1), Arrays.asList(0L, 1L));
+		TableGroupResponse tableGroupResponse = new TableGroupResponse(1L, LocalDateTime.of(2021, 1, 1, 1, 1, 1), Arrays.asList(new OrderTableResponse(), new OrderTableResponse()));
+
+		given(tableGroupService.create(tableGroupRequest)).willReturn(tableGroupResponse);
 
 		mockMvc.perform(
 				post(BASE_URL)
 						.contentType(MediaType.APPLICATION_JSON)
-						.content(objectMapper.writeValueAsString(tableGroup)))
+						.content(objectMapper.writeValueAsString(tableGroupRequest)))
 				.andExpect(status().isCreated())
 				.andExpect(header().string("location", BASE_URL + "/1"));
 	}

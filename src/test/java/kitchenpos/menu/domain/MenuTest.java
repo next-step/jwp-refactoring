@@ -12,7 +12,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class MenuTest {
 	@Test
 	@DisplayName("포함된 상품 가격의 총 합이 입력 가격보다 작으면 익셉션 발생")
-	void menuCreateFailTest() {
+	void addMenuProductFailTest() {
 		Menu menu = new Menu(1L, "치킨", BigDecimal.valueOf(20000), 1L);
 		Product product = new Product(1L, "치킨", BigDecimal.valueOf(10000));
 		MenuProduct menuProduct = new MenuProduct(menu, product, 1);

@@ -20,10 +20,6 @@ public class Menu {
 	public Menu() {
 	}
 
-	public Menu(Long id) {
-		this.id = id;
-	}
-
 	public Menu(String name, BigDecimal price, Long menuGroupId) {
 		this.name = name;
 		this.price = price;

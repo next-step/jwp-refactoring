@@ -1,14 +1,12 @@
 package kitchenpos.order.application;
 
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderValidator;
+import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -50,5 +48,18 @@ public class OrderService {
 
 		order.changeStatus(orderStatus);
 		return OrderResponse.of(order);
+	}
+
+	public void checkProcessingOrders(List<Long> ids) {
+		if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(ids, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
+			throw new IllegalArgumentException("아직 진행중인 주문이 존재합니다.");
+		}
+	}
+
+	public void checkProcessingOrder(Long id) {
+		if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
+				id, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
+			throw new IllegalArgumentException("완료 되지 않은 주문이 존재 합니다.");
+		}
 	}
 }

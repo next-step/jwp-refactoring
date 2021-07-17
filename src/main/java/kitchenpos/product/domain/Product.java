@@ -18,10 +18,6 @@ public class Product {
 	public Product() {
 	}
 
-	public Product(Long id) {
-		this.id = id;
-	}
-
 	public Product(String name, BigDecimal price) {
 		this.name = name;
 		this.price = price;

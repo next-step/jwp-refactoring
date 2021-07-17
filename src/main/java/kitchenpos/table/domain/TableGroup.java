@@ -12,16 +12,15 @@ public class TableGroup {
 	private Long id;
 	private LocalDateTime createdDate;
 
-	@OneToMany(mappedBy = "id")
-	private List<OrderTable> orderTables;
+	@Embedded
+	private OrderTables orderTables = new OrderTables();
 
 	public TableGroup() {
 	}
 
-	public TableGroup(Long id, LocalDateTime createdDate, List<OrderTable> orderTables) {
+	public TableGroup(Long id, LocalDateTime createdDate) {
 		this.id = id;
 		this.createdDate = createdDate;
-		this.orderTables = orderTables;
 	}
 
 	public Long getId() {
@@ -32,16 +31,12 @@ public class TableGroup {
 		return createdDate;
 	}
 
-	public void setCreatedDate(final LocalDateTime createdDate) {
-		this.createdDate = createdDate;
-	}
-
 	public List<OrderTable> getOrderTables() {
-		return orderTables;
+		return orderTables.getOrderTables();
 	}
 
-	public void setOrderTables(final List<OrderTable> orderTables) {
-		this.orderTables = orderTables;
+	public void addOrderTables(final List<OrderTable> orderTables) {
+		this.orderTables.addAllOrderTables(orderTables);
 	}
 
 	@Override
@@ -49,11 +44,11 @@ public class TableGroup {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		TableGroup that = (TableGroup) o;
-		return Objects.equals(id, that.id) && Objects.equals(createdDate, that.createdDate) && Objects.equals(orderTables, that.orderTables);
+		return Objects.equals(id, that.id) && Objects.equals(createdDate, that.createdDate);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id, createdDate, orderTables);
+		return Objects.hash(id, createdDate);
 	}
 }

@@ -1,73 +1,55 @@
 package kitchenpos.table.application;
 
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.application.OrderService;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class TableService {
-    private final OrderRepository orderRepository;
-    private final OrderTableRepository orderTableRepository;
+	private final OrderService orderService;
+	private final OrderTableRepository orderTableRepository;
 
-    public TableService(final OrderRepository orderRepository, final OrderTableRepository orderTableRepository) {
-        this.orderRepository = orderRepository;
-        this.orderTableRepository = orderTableRepository;
-    }
+	public TableService(final OrderService orderService, final OrderTableRepository orderTableRepository) {
+		this.orderService = orderService;
+		this.orderTableRepository = orderTableRepository;
+	}
 
-    @Transactional
-    public OrderTable create(final OrderTable orderTable) {
-        orderTable.setTableGroupId(null);
+	@Transactional
+	public OrderTableResponse create(final OrderTableRequest orderTableRequest) {
+		return OrderTableResponse.of(orderTableRepository.save(orderTableRequest.toOrderTable()));
+	}
 
-        return orderTableRepository.save(orderTable);
-    }
+	public List<OrderTableResponse> list() {
+		return OrderTableResponse.of(orderTableRepository.findAll());
+	}
 
-    public List<OrderTable> list() {
-        return orderTableRepository.findAll();
-    }
+	@Transactional
+	public OrderTableResponse changeEmpty(final Long orderTableId, final boolean empty) {
+		final OrderTable orderTable = findById(orderTableId);
 
-    @Transactional
-    public OrderTable changeEmpty(final Long orderTableId, final OrderTable orderTable) {
-        final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
+		orderService.checkProcessingOrder(orderTableId);
+		orderTable.changeEmpty(empty);
+		return OrderTableResponse.of(orderTable);
+	}
 
-        if (Objects.nonNull(savedOrderTable.getTableGroupId())) {
-            throw new IllegalArgumentException();
-        }
+	@Transactional
+	public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final int numberOfGuests) {
+		if (numberOfGuests < 0) {
+			throw new IllegalArgumentException("손님 숫자는 0보다 작을 수 없습니다.");
+		}
+		final OrderTable orderTable = findById(orderTableId);
+		orderTable.changeNumberOfGuests(numberOfGuests);
+		return OrderTableResponse.of(orderTable);
+	}
 
-        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
-                orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new IllegalArgumentException();
-        }
-
-        savedOrderTable.setEmpty(orderTable.isEmpty());
-
-        return orderTableRepository.save(savedOrderTable);
-    }
-
-    @Transactional
-    public OrderTable changeNumberOfGuests(final Long orderTableId, final OrderTable orderTable) {
-        final int numberOfGuests = orderTable.getNumberOfGuests();
-
-        if (numberOfGuests < 0) {
-            throw new IllegalArgumentException();
-        }
-
-        final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
-
-        if (savedOrderTable.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
-
-        savedOrderTable.setNumberOfGuests(numberOfGuests);
-
-        return orderTableRepository.save(savedOrderTable);
-    }
+	private OrderTable findById(Long id) {
+		return orderTableRepository.findById(id)
+				.orElseThrow(() -> new RuntimeException("주문 테이블이 존재하지 않습니다. id: " + id));
+	}
 }

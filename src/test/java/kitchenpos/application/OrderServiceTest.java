@@ -9,6 +9,7 @@ import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -19,6 +20,7 @@ import java.util.Arrays;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -61,5 +63,19 @@ class OrderServiceTest {
 
 		when(orderRepository.findById(1L)).thenReturn(Optional.of(order));
 		assertThat(orderService.changeOrderStatus(1L, OrderStatus.MEAL.name()).getOrderStatus()).isEqualTo(OrderStatus.MEAL.name());
+	}
+
+
+	@Test
+	@DisplayName("이미 완료되지 않은 주문 테이블이 존재하면 익셉션 발생")
+	void checkProcessingOrderTest() {
+		when(orderRepository.existsByOrderTableIdAndOrderStatusIn(1L, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).thenReturn(true);
+		when(orderRepository.existsByOrderTableIdInAndOrderStatusIn(Arrays.asList(1L, 2L), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).thenReturn(true);
+
+		assertThatThrownBy(() -> orderService.checkProcessingOrder(1L))
+				.isInstanceOf(IllegalArgumentException.class);
+
+		assertThatThrownBy(() -> orderService.checkProcessingOrders(Arrays.asList(1L, 2L)))
+				.isInstanceOf(IllegalArgumentException.class);
 	}
 }

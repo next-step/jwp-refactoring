@@ -18,6 +18,11 @@ public class OrderTable {
 	public OrderTable() {
 	}
 
+	public OrderTable(int numberOfGuests, boolean empty) {
+		this.numberOfGuests = numberOfGuests;
+		this.empty = empty;
+	}
+
 	public OrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
 		this.id = id;
 		this.tableGroupId = tableGroupId;
@@ -33,15 +38,25 @@ public class OrderTable {
 		return tableGroupId;
 	}
 
-	public void setTableGroupId(final Long tableGroupId) {
+	public void addTableGroupId(final Long tableGroupId) {
+		doesExistTableGroupId();
 		this.tableGroupId = tableGroupId;
+	}
+
+	public void doesExistTableGroupId() {
+		if (tableGroupId != null) {
+			throw new IllegalArgumentException("이미 테이블 그룹이 할당되어 있습니다.");
+		}
 	}
 
 	public int getNumberOfGuests() {
 		return numberOfGuests;
 	}
 
-	public void setNumberOfGuests(final int numberOfGuests) {
+	public void changeNumberOfGuests(final int numberOfGuests) {
+		if (empty) {
+			throw new IllegalArgumentException("주문 테이블이 빈 테이블입니다.");
+		}
 		this.numberOfGuests = numberOfGuests;
 	}
 
@@ -49,7 +64,19 @@ public class OrderTable {
 		return empty;
 	}
 
-	public void setEmpty(final boolean empty) {
+	public void removeTableGroupId() {
+		tableGroupId = null;
+	}
+
+	public void fillTable() {
+		if (!this.empty) {
+			throw new IllegalArgumentException("주문 테이블이 비어있지 않습니다.");
+		}
+		this.empty = false;
+	}
+
+	public void changeEmpty(boolean empty) {
+		doesExistTableGroupId();
 		this.empty = empty;
 	}
 
