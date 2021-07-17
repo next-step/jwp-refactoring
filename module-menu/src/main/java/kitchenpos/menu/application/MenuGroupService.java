@@ -23,6 +23,7 @@ public class MenuGroupService {
         return MenuGroupResponse.of(menuGroupRepository.save(menuGroup));
     }
 
+    @Transactional(readOnly = true)
     public List<MenuGroupResponse> list() {
         return MenuGroupResponse.listOf(menuGroupRepository.findAll());
     }
