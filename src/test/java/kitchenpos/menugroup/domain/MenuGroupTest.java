@@ -1,7 +1,6 @@
 package kitchenpos.menugroup.domain;
 
 import kitchenpos.common.Message;
-import kitchenpos.menugroup.domain.MenuGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -12,7 +11,6 @@ public class MenuGroupTest {
     @DisplayName("메뉴그룹 생성시, 이름을 입력하지 않으면 예외발생")
     @Test
     void 메뉴그룹_생성_이름없으면_예외발생() {
-
         String 메뉴그룹이름 = null;
 
         assertThatThrownBy(() -> new MenuGroup(메뉴그룹이름))

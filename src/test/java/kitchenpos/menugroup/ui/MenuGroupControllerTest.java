@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static kitchenpos.menugroup.MenuGroupTestFixture.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -31,11 +32,6 @@ class MenuGroupControllerTest extends ControllerTest<MenuGroup> {
     @Autowired
     private MenuGroupRestController menuGroupRestController;
 
-    private MenuGroupRequest 첫번째_메뉴그룹_요청 = new MenuGroupRequest("첫번째_메뉴그룹");
-    private MenuGroupRequest 두번째_메뉴그룹_요청 = new MenuGroupRequest("두번째_메뉴그룹");
-    private MenuGroupResponse 첫번째_메뉴그룹_응답 = new MenuGroupResponse(1L, "첫번째_메뉴그룹");
-    private MenuGroupResponse 두번째_메뉴그룹_응답 = new MenuGroupResponse(2L, "두번째_메뉴그룹");
-
     @Override
     protected Object controller() {
         return menuGroupRestController;
@@ -46,22 +42,22 @@ class MenuGroupControllerTest extends ControllerTest<MenuGroup> {
     @Test
     void 메뉴그룹_생성요청() throws Exception {
         //Given
-        when(menuGroupService.create(any())).thenReturn(MenuGroupResponse.of(첫번째_메뉴그룹_요청.toMenuGroup()));
+        when(menuGroupService.create(any())).thenReturn(MenuGroupResponse.of(맥모닝_메뉴그룹_요청.toMenuGroup()));
 
         //When
-        ResultActions 결과 = postRequest(BASE_URI, 첫번째_메뉴그룹_요청.toMenuGroup());
+        ResultActions 결과 = postRequest(BASE_URI, 맥모닝_메뉴그룹_요청.toMenuGroup());
 
         //Then
         생성성공(결과);
-        결과.andExpect(jsonPath("$.name").value(첫번째_메뉴그룹_요청.getName()));
+        결과.andExpect(jsonPath("$.name").value(맥모닝_메뉴그룹_요청.getName()));
     }
 
     @DisplayName("메뉴그룹 목록 조회요청")
     @Test
     void 메뉴그룹_목록_조회요청() throws Exception {
         //Given
-        List<MenuGroupRequest> 메뉴그룹_목록 = new ArrayList<>(Arrays.asList(첫번째_메뉴그룹_요청, 두번째_메뉴그룹_요청));
-        when(menuGroupService.list()).thenReturn(Arrays.asList(첫번째_메뉴그룹_응답, 두번째_메뉴그룹_응답));
+        List<MenuGroupRequest> 메뉴그룹_목록 = new ArrayList<>(Arrays.asList(맥모닝_메뉴그룹_요청, 맥디너_메뉴그룹_요청));
+        when(menuGroupService.list()).thenReturn(Arrays.asList(맥모닝_메뉴그룹_응답, 맥디너_메뉴그룹_응답));
 
         //When
         ResultActions 결과 = getRequest(BASE_URI);
