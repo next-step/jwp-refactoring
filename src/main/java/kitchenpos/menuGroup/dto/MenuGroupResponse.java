@@ -14,6 +14,10 @@ public class MenuGroupResponse {
 		this.name = name;
 	}
 
+	public Long getId() {
+		return id;
+	}
+
 	public static MenuGroupResponse of(MenuGroup menuGroup) {
 		return new MenuGroupResponse(menuGroup.getId(), menuGroup.getName());
 	}

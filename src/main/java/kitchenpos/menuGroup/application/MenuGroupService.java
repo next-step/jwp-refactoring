@@ -1,8 +1,7 @@
 package kitchenpos.menuGroup.application;
 
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.menuGroup.domain.MenuGroup;
 import kitchenpos.menuGroup.domain.MenuGroupRepository;
+import kitchenpos.menuGroup.domain.MenuGroup;
 import kitchenpos.menuGroup.dto.MenuGroupRequest;
 import kitchenpos.menuGroup.dto.MenuGroupResponse;
 
@@ -14,18 +13,20 @@ import java.util.stream.Collectors;
 
 @Service
 public class MenuGroupService {
-/*
-    private final MenuGroupDao menuGroupDao;
+    private final MenuGroupRepository menuGroupRepository;
 
-    public MenuGroupService(final MenuGroupDao menuGroupDao) {
-        this.menuGroupDao = menuGroupDao;
+    public MenuGroupService(final MenuGroupRepository menuGroupRepository) {
+        this.menuGroupRepository = menuGroupRepository;
     }
-*/
+
+
+/*
     private final MenuGroupRepository menuGroupRepository;
 
     public MenuGroupService(final MenuGroupRepository menuGroupRepository) {
     	this.menuGroupRepository = menuGroupRepository;
 	}
+*/
 
     @Transactional
     public MenuGroupResponse create(final MenuGroupRequest menuGroupRequest) {

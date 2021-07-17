@@ -17,7 +17,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.order.application.OrderService;
-import kitchenpos.dao.MenuDao;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
@@ -31,7 +31,7 @@ public class OrderServiceTest {
 	private OrderRequest cookingOrder;
 
 	@Mock
-	private MenuDao menuDao;
+	private MenuRepository menuDao;
 
 	@Mock
 	private OrderDao orderDao;

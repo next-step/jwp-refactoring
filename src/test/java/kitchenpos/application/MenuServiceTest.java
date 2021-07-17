@@ -17,8 +17,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.menu.application.MenuService;
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuGroupDao;
+import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menuGroup.domain.MenuGroupRepository;
 import kitchenpos.dao.MenuProductDao;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.menu.dto.MenuRequest;
@@ -34,9 +34,9 @@ public class MenuServiceTest {
 	private MenuProductRequest menuProduct;
 
 	@Mock
-	private MenuDao menuDao;
+	private MenuRepository menuDao;
 	@Mock
-	private MenuGroupDao menuGroupDao;
+	private MenuGroupRepository menuGroupDao;
 	@Mock
 	private MenuProductDao menuProductDao;
 	@Mock

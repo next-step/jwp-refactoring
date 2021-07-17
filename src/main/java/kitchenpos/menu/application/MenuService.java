@@ -4,10 +4,6 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.domain.Price;
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.dao.MenuProductDao;
-import kitchenpos.dao.ProductDao;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuResponse;
@@ -15,14 +11,12 @@ import kitchenpos.menuGroup.domain.MenuGroup;
 import kitchenpos.menuGroup.domain.MenuGroupRepository;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
-import kitchenpos.product.dto.ProductRequest;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -69,6 +63,8 @@ public class MenuService {
 
 		menu.addMenuProducts(menuProducts);
 		Menu savedMenu = menuRepository.save(menu);
+
+		return MenuResponse.of(savedMenu);
 /*
 		if (!menuGroupDao.existsById(menuRequest.getMenuGroupId())) {
 			throw new IllegalArgumentException();
@@ -102,12 +98,14 @@ public class MenuService {
         }
         savedMenu.setMenuProducts(savedMenuProducts);
 */
-
-        return savedMenu;
     }
 
     public List<MenuResponse> list() {
-    	List<Menu> menus = menuRepository.findAll();
+		List<Menu> menus = menuRepository.findAll();
+
+		return menus.stream()
+			.map(menu -> MenuResponse.of(menu))
+			.collect(Collectors.toList());
 /*
         final List<MenuRequest> menus = menuDao.findAll();
 
@@ -116,6 +114,5 @@ public class MenuService {
         }
 */
 
-        return menus;
     }
 }

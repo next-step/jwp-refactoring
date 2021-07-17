@@ -39,6 +39,7 @@ public class Menu {
 	@OneToMany(mappedBy = "menu_product_id", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<MenuProduct> menuProducts = new ArrayList<>();
 
+
 	public Menu() {
 	}
 
@@ -46,6 +47,26 @@ public class Menu {
 		this.name = name;
 		this.price = price;
 		this.menuGroup = menuGroup;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public Price getPrice() {
+		return price;
+	}
+
+	public MenuGroup getMenuGroup() {
+		return menuGroup;
+	}
+
+	public List<MenuProduct> getMenuProducts() {
+		return menuProducts;
 	}
 
 	public void addMenuProducts(List<MenuProduct> menuProducts) {

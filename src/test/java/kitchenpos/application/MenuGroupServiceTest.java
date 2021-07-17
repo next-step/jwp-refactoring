@@ -14,7 +14,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.menuGroup.application.MenuGroupService;
-import kitchenpos.dao.MenuGroupDao;
+import kitchenpos.menuGroup.domain.MenuGroupRepository;
 import kitchenpos.menuGroup.dto.MenuGroupRequest;
 
 @ExtendWith(MockitoExtension.class)
@@ -22,7 +22,7 @@ public class MenuGroupServiceTest {
 	private MenuGroupService menuGroupService;
 
 	@Mock
-	private MenuGroupDao menuGroupDao;
+	private MenuGroupRepository menuGroupDao;
 
 	@BeforeEach
 	void setUp() {
