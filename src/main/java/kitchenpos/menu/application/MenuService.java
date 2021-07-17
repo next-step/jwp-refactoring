@@ -10,7 +10,6 @@ import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menuGroup.domain.MenuGroup;
 import kitchenpos.menuGroup.domain.MenuGroupRepository;
 import kitchenpos.product.domain.Product;
-import kitchenpos.product.domain.ProductRepository;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,10 +40,10 @@ public class MenuService {
 */
 
     final private MenuGroupRepository menuGroupRepository;
-	final private ProductRepository productRepository;
+	final private ProductRepository_ productRepository;
 	final private MenuRepository menuRepository;
 
-	public MenuService(final MenuGroupRepository menuGroupRepository, final ProductRepository productRepository, final MenuRepository menuRepository) {
+	public MenuService(final MenuGroupRepository menuGroupRepository, final ProductRepository_ productRepository, final MenuRepository menuRepository) {
 		this.menuGroupRepository = menuGroupRepository;
 		this.productRepository = productRepository;
 		this.menuRepository = menuRepository;

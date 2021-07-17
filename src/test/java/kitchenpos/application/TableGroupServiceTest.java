@@ -15,12 +15,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.tableGroup.application.TableGroupService;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.dao.TableGroupDao;
+import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.table.dto.OrderTableRepository;
+import kitchenpos.tableGroup.domain.TableGroupRepository;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTableRequest;
-import kitchenpos.domain.TableGroupRequest;
 
 @ExtendWith(MockitoExtension.class)
 public class TableGroupServiceTest {
@@ -28,13 +27,13 @@ public class TableGroupServiceTest {
 	private OrderTableRequest orderTableWithTenPeople;
 
 	@Mock
-	private OrderDao orderDao;
+	private OrderRepository orderDao;
 
 	@Mock
-	private OrderTableDao orderTableDao;
+	private OrderTableRepository orderTableDao;
 
 	@Mock
-	private TableGroupDao tableGroupDao;
+	private TableGroupRepository tableGroupDao;
 
 	@InjectMocks
 	private TableGroupService tableGroupService;
@@ -50,9 +49,9 @@ public class TableGroupServiceTest {
 	void createTestInHappyCase() {
 		// given
 		when(orderTableDao.findAllByIdIn(Arrays.asList(1L, 2L))).thenReturn(Arrays.asList(orderTableWithFivePeople, orderTableWithTenPeople));
-		when(tableGroupDao.save(any())).thenReturn(new TableGroupRequest(LocalDateTime.now(), Arrays.asList(orderTableWithFivePeople, orderTableWithTenPeople)));
+		when(tableGroupDao.save(any())).thenReturn(new kitchenpos.tableGroup.dto.TableGroupRequest(LocalDateTime.now(), Arrays.asList(orderTableWithFivePeople, orderTableWithTenPeople)));
 		// when
-		TableGroupRequest tableGroup = tableGroupService.create(new TableGroupRequest(LocalDateTime.now(), Arrays.asList(orderTableWithFivePeople, orderTableWithTenPeople)));
+		kitchenpos.tableGroup.dto.TableGroupRequest tableGroup = tableGroupService.create(new kitchenpos.tableGroup.dto.TableGroupRequest(LocalDateTime.now(), Arrays.asList(orderTableWithFivePeople, orderTableWithTenPeople)));
 		// then
 		assertThat(tableGroup.getOrderTables().size()).isEqualTo(2);
 	}
@@ -62,9 +61,9 @@ public class TableGroupServiceTest {
 	void createTestWithOneOrderTable() {
 		// given
 		lenient().when(orderTableDao.findAllByIdIn(Arrays.asList(1L, 2L))).thenReturn(Arrays.asList(orderTableWithFivePeople, orderTableWithTenPeople));
-		lenient().when(tableGroupDao.save(any())).thenReturn(new TableGroupRequest(LocalDateTime.now(), Arrays.asList(orderTableWithFivePeople, orderTableWithTenPeople)));
+		lenient().when(tableGroupDao.save(any())).thenReturn(new kitchenpos.tableGroup.dto.TableGroupRequest(LocalDateTime.now(), Arrays.asList(orderTableWithFivePeople, orderTableWithTenPeople)));
 		// when, then
-		assertThatThrownBy(() -> tableGroupService.create(new TableGroupRequest(LocalDateTime.now(), Arrays.asList(orderTableWithFivePeople))));
+		assertThatThrownBy(() -> tableGroupService.create(new kitchenpos.tableGroup.dto.TableGroupRequest(LocalDateTime.now(), Arrays.asList(orderTableWithFivePeople))));
 	}
 
 	@DisplayName("주문 테이블은 먼저 등록되어 있어야 한다.")
@@ -72,9 +71,9 @@ public class TableGroupServiceTest {
 	void createTestWithNotExistsOrderTable() {
 		// given
 		lenient().when(orderTableDao.findAllByIdIn(Arrays.asList(1L, 2L))).thenReturn(null);
-		lenient().when(tableGroupDao.save(any())).thenReturn(new TableGroupRequest(LocalDateTime.now(), Arrays.asList(orderTableWithFivePeople, orderTableWithTenPeople)));
+		lenient().when(tableGroupDao.save(any())).thenReturn(new kitchenpos.tableGroup.dto.TableGroupRequest(LocalDateTime.now(), Arrays.asList(orderTableWithFivePeople, orderTableWithTenPeople)));
 		// when, then
-		assertThatThrownBy(() -> tableGroupService.create(new TableGroupRequest(LocalDateTime.now(), Arrays.asList(orderTableWithFivePeople))));
+		assertThatThrownBy(() -> tableGroupService.create(new kitchenpos.tableGroup.dto.TableGroupRequest(LocalDateTime.now(), Arrays.asList(orderTableWithFivePeople))));
 	}
 
 	@DisplayName("기 단체 지정된 주문 테이블은 새롭게 단체 지정할 수 없다.")
@@ -82,9 +81,9 @@ public class TableGroupServiceTest {
 	void createTestWithAlreadyTableGroupedOrderTable() {
 		// given
 		lenient().when(orderTableDao.findAllByIdIn(Arrays.asList(1L, 2L))).thenReturn(Arrays.asList(new OrderTableRequest(1L, 1L, 5, true), new OrderTableRequest(2L, null, 10, true)));
-		lenient().when(tableGroupDao.save(any())).thenReturn(new TableGroupRequest(LocalDateTime.now(), Arrays.asList(orderTableWithFivePeople, orderTableWithTenPeople)));
+		lenient().when(tableGroupDao.save(any())).thenReturn(new kitchenpos.tableGroup.dto.TableGroupRequest(LocalDateTime.now(), Arrays.asList(orderTableWithFivePeople, orderTableWithTenPeople)));
 		// when, then
-		assertThatThrownBy(() -> tableGroupService.create(new TableGroupRequest(LocalDateTime.now(), Arrays.asList(orderTableWithFivePeople))));
+		assertThatThrownBy(() -> tableGroupService.create(new kitchenpos.tableGroup.dto.TableGroupRequest(LocalDateTime.now(), Arrays.asList(orderTableWithFivePeople))));
 	}
 
 	@DisplayName("요청 주문 테이블은 비어 있어야만 한다.")
@@ -92,9 +91,9 @@ public class TableGroupServiceTest {
 	void createTestWithEmptyOrderTable() {
 		// given
 		lenient().when(orderTableDao.findAllByIdIn(Arrays.asList(1L, 2L))).thenReturn(Arrays.asList(new OrderTableRequest(1L, null, 5, false), new OrderTableRequest(2L, null, 10, true)));
-		lenient().when(tableGroupDao.save(any())).thenReturn(new TableGroupRequest(LocalDateTime.now(), Arrays.asList(orderTableWithFivePeople, orderTableWithTenPeople)));
+		lenient().when(tableGroupDao.save(any())).thenReturn(new kitchenpos.tableGroup.dto.TableGroupRequest(LocalDateTime.now(), Arrays.asList(orderTableWithFivePeople, orderTableWithTenPeople)));
 		// when, then
-		assertThatThrownBy(() -> tableGroupService.create(new TableGroupRequest(LocalDateTime.now(), Arrays.asList(orderTableWithFivePeople, orderTableWithTenPeople))));
+		assertThatThrownBy(() -> tableGroupService.create(new kitchenpos.tableGroup.dto.TableGroupRequest(LocalDateTime.now(), Arrays.asList(orderTableWithFivePeople, orderTableWithTenPeople))));
 	}
 
 	@DisplayName("단체 지정 해제한다.")

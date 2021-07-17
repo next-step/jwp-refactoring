@@ -22,7 +22,7 @@ import kitchenpos.menuGroup.dto.MenuGroupRequest;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.domain.OrderTableRequest;
 import kitchenpos.product.dto.ProductRequest;
-import kitchenpos.domain.TableGroupRequest;
+import kitchenpos.tableGroup.dto.TableGroupRequest;
 
 public class TableGroupAcceptanceTest extends AcceptanceTest {
 	@DisplayName("메뉴 그룹 등록 및 그룹 해제 시나리오")

@@ -2,6 +2,9 @@ package kitchenpos.domain;
 
 import java.util.Objects;
 
+import kitchenpos.table.domain.NumberOfGuests;
+import kitchenpos.table.domain.OrderTable;
+
 public class OrderTableRequest {
     private Long id;
     private Long tableGroupId;
@@ -53,10 +56,9 @@ public class OrderTableRequest {
         this.tableGroupId = tableGroupId;
     }
 
-    public int getNumberOfGuests() {
-        return numberOfGuests;
-    }
-
+	public NumberOfGuests getNumberOfGuests() {
+		return new NumberOfGuests(numberOfGuests);
+	}
     public void setNumberOfGuests(final int numberOfGuests) {
         this.numberOfGuests = numberOfGuests;
     }
@@ -68,6 +70,12 @@ public class OrderTableRequest {
     public void setEmpty(final boolean empty) {
         this.empty = empty;
     }
+
+	public OrderTable toOrderTable() {
+		return new OrderTable(new NumberOfGuests(numberOfGuests), empty);
+	}
+
+
 
 	@Override
 	public boolean equals(Object o) {

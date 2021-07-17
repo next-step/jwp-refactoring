@@ -25,7 +25,7 @@ import kitchenpos.domain.OrderRequest;
 import kitchenpos.domain.OrderLineItemRequest;
 import kitchenpos.domain.OrderTableRequest;
 import kitchenpos.product.dto.ProductRequest;
-import kitchenpos.domain.TableGroupRequest;
+import kitchenpos.tableGroup.dto.TableGroupRequest;
 
 public class TableAcceptanceTest extends AcceptanceTest {
 	@DisplayName("주문 테이블 등록, 인원수 조정, 빈테이블로 변경 및 조회 시나리오")

@@ -13,7 +13,7 @@ import org.springframework.http.MediaType;
 
 import kitchenpos.tableGroup.application.TableGroupService;
 import kitchenpos.tableGroup.ui.TableGroupRestController;
-import kitchenpos.domain.TableGroupRequest;
+import kitchenpos.tableGroup.dto.TableGroupRequest;
 
 @WebMvcTest(TableGroupRestController.class)
 public class TableGroupRestControllerTest extends WebMvcTestConfiguration {

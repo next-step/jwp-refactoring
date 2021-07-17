@@ -1,7 +1,12 @@
-package kitchenpos.domain;
+package kitchenpos.tableGroup.dto;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import kitchenpos.domain.OrderTableRequest;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.tableGroup.domain.TableGroup;
 
 public class TableGroupRequest {
     private Long id;
@@ -39,4 +44,12 @@ public class TableGroupRequest {
     public void setOrderTables(final List<OrderTableRequest> orderTables) {
         this.orderTables = orderTables;
     }
+
+    public TableGroup toTableGroup() {
+    	List<OrderTable> orderTables = this.orderTables.stream()
+			.map(orderTableRequest -> orderTableRequest.toOrderTable())
+			.collect(Collectors.toList());
+
+    	return new TableGroup(createdDate, orderTables);
+	}
 }

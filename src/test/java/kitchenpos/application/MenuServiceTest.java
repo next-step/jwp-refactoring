@@ -20,7 +20,7 @@ import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menuGroup.domain.MenuGroupRepository;
 import kitchenpos.dao.MenuProductDao;
-import kitchenpos.dao.ProductDao;
+import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.product.dto.ProductRequest;
@@ -40,7 +40,7 @@ public class MenuServiceTest {
 	@Mock
 	private MenuProductDao menuProductDao;
 	@Mock
-	private ProductDao productDao;
+	private ProductRepository productDao;
 
 	@InjectMocks
 	private MenuService menuService;

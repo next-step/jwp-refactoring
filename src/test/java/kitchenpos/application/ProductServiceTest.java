@@ -16,7 +16,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.product.application.ProductService;
-import kitchenpos.dao.ProductDao;
+import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.dto.ProductRequest;
 
 @ExtendWith(MockitoExtension.class)
@@ -25,7 +25,7 @@ public class ProductServiceTest {
 	private ProductRequest hotRamen;
 
 	@Mock
-	private ProductDao productDao;
+	private ProductRepository productDao;
 
 	@InjectMocks
 	private ProductService productService;

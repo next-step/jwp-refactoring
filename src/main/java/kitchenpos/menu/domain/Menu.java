@@ -17,7 +17,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import kitchenpos.menuGroup.domain.MenuGroup;
-import kitchenpos.product.domain.Product;
 
 @Entity
 public class Menu {

@@ -5,7 +5,7 @@ import org.springframework.http.MediaType;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.TableGroupRequest;
+import kitchenpos.tableGroup.dto.TableGroupRequest;
 
 public class TableGroupAcceptanceTestMethod {
 	public static ExtractableResponse<Response> createTableGroup(TableGroupRequest tableGroup) {

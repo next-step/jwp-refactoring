@@ -18,9 +18,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.order.application.OrderService;
 import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.dao.OrderDao;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.dao.OrderLineItemDao;
-import kitchenpos.dao.OrderTableDao;
+import kitchenpos.table.dto.OrderTableRepository;
 import kitchenpos.domain.OrderRequest;
 import kitchenpos.domain.OrderLineItemRequest;
 import kitchenpos.domain.OrderTableRequest;
@@ -34,13 +34,13 @@ public class OrderServiceTest {
 	private MenuRepository menuDao;
 
 	@Mock
-	private OrderDao orderDao;
+	private OrderRepository orderDao;
 
 	@Mock
 	private OrderLineItemDao orderLineItemDao;
 
 	@Mock
-	private OrderTableDao orderTableDao;
+	private OrderTableRepository orderTableDao;
 
 	@InjectMocks
 	private OrderService orderService;

@@ -1,9 +1,9 @@
 package kitchenpos.order.application;
 
 import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.dao.OrderDao;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.dao.OrderLineItemDao;
-import kitchenpos.dao.OrderTableDao;
+import kitchenpos.table.dto.OrderTableRepository;
 import kitchenpos.domain.OrderRequest;
 import kitchenpos.domain.OrderLineItemRequest;
 import kitchenpos.domain.OrderStatus;
@@ -21,15 +21,15 @@ import java.util.stream.Collectors;
 @Service
 public class OrderService {
     private final MenuRepository menuDao;
-    private final OrderDao orderDao;
+    private final OrderRepository orderDao;
     private final OrderLineItemDao orderLineItemDao;
-    private final OrderTableDao orderTableDao;
+    private final OrderTableRepository orderTableDao;
 
     public OrderService(
             final MenuRepository menuDao,
-            final OrderDao orderDao,
+            final OrderRepository orderDao,
             final OrderLineItemDao orderLineItemDao,
-            final OrderTableDao orderTableDao
+            final OrderTableRepository orderTableDao
     ) {
         this.menuDao = menuDao;
         this.orderDao = orderDao;

@@ -1,6 +1,5 @@
 package kitchenpos.dao;
 
-import kitchenpos.domain.TableGroupRequest;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -16,8 +15,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import kitchenpos.tableGroup.domain.TableGroupRepository;
+
 @Repository
-public class JdbcTemplateTableGroupDao implements TableGroupDao {
+public class JdbcTemplateTableGroupDao implements TableGroupRepository {
     private static final String TABLE_NAME = "table_group";
     private static final String KEY_COLUMN_NAME = "id";
 
@@ -33,14 +34,14 @@ public class JdbcTemplateTableGroupDao implements TableGroupDao {
     }
 
     @Override
-    public TableGroupRequest save(final TableGroupRequest entity) {
+    public kitchenpos.tableGroup.dto.TableGroupRequest save(final kitchenpos.tableGroup.dto.TableGroupRequest entity) {
         final SqlParameterSource parameters = new BeanPropertySqlParameterSource(entity);
         final Number key = jdbcInsert.executeAndReturnKey(parameters);
         return select(key.longValue());
     }
 
     @Override
-    public Optional<TableGroupRequest> findById(final Long id) {
+    public Optional<kitchenpos.tableGroup.dto.TableGroupRequest> findById(final Long id) {
         try {
             return Optional.of(select(id));
         } catch (final EmptyResultDataAccessException e) {
@@ -49,20 +50,20 @@ public class JdbcTemplateTableGroupDao implements TableGroupDao {
     }
 
     @Override
-    public List<TableGroupRequest> findAll() {
+    public List<kitchenpos.tableGroup.dto.TableGroupRequest> findAll() {
         final String sql = "SELECT id, created_date FROM table_group";
         return jdbcTemplate.query(sql, (resultSet, rowNumber) -> toEntity(resultSet));
     }
 
-    private TableGroupRequest select(final Long id) {
+    private kitchenpos.tableGroup.dto.TableGroupRequest select(final Long id) {
         final String sql = "SELECT id, created_date FROM table_group WHERE id = (:id)";
         final SqlParameterSource parameters = new MapSqlParameterSource()
                 .addValue("id", id);
         return jdbcTemplate.queryForObject(sql, parameters, (resultSet, rowNumber) -> toEntity(resultSet));
     }
 
-    private TableGroupRequest toEntity(final ResultSet resultSet) throws SQLException {
-        final TableGroupRequest entity = new TableGroupRequest();
+    private kitchenpos.tableGroup.dto.TableGroupRequest toEntity(final ResultSet resultSet) throws SQLException {
+        final kitchenpos.tableGroup.dto.TableGroupRequest entity = new kitchenpos.tableGroup.dto.TableGroupRequest();
         entity.setId(resultSet.getLong(KEY_COLUMN_NAME));
         entity.setCreatedDate(resultSet.getObject("created_date", LocalDateTime.class));
         return entity;
