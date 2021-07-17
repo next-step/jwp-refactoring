@@ -75,5 +75,12 @@
 - [x] step3 피드백 적용 - OrderTable 과 Order 의존성 제거
 - [x] 멀티 모듈 적용
    - api : controller 클래스
-   - common : 공통 사용 클래스
-   - domain : service, domain, dto, event 클래스
+   - menu : service, domain, dto, event 클래스
+   - order : service, domain, dto, event 클래스
+   - product : service, domain, dto, event 클래스
+   - table : service, domain, dto, event 클래스
+    #### step4 피드백
+    - [x] 각 모듈의 공통 설정은 루트 build.gradle 에서 관리하도록 설정
+    - [x] api 모듈이 실행 가능하지 않은 아카이브 jar 제거
+    - [x] 모듈을 각 도메인별로 구성하기
+        - [x] common 모듈 제거
