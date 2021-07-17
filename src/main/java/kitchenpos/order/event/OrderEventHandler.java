@@ -13,6 +13,7 @@ import java.util.List;
 public class OrderEventHandler {
 
     private static final String NOT_EQUAL_MENU_COUNT_ERROR_MESSAGE = "존재하지않는 메뉴가 주문 항목에 포함되어 있습니다.";
+    private static final String ORDER_TABLE_EMPTY_ERROR_MESSAGE = "비어있는 테이블의 주문은 생성할 수 없습니다.";
 
     private final MenuService menuService;
     private final TableService tableService;
@@ -38,7 +39,7 @@ public class OrderEventHandler {
     private void validateOrderTable(Long orderTableId) {
         OrderTable orderTable = tableService.findOrderTable(orderTableId);
         if (orderTable.isEmpty()) {
-            throw new OrderException("비어있는 테이블의 주문은 생성할 수 없습니다.");
+            throw new OrderException(ORDER_TABLE_EMPTY_ERROR_MESSAGE);
         }
     }
 }

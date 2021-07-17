@@ -88,19 +88,6 @@ class OrderServiceTest {
         assertThatThrownBy(() -> orderService.create(주문_요청)).isInstanceOf(OrderException.class);
     }
 
-//    @Test
-//    void 주문한_아이템의_갯수와_실제_조회한_아이템의_갯수가_일치하지않을때_에러발생() {
-//        주문.addOrderLineItems(주문_항목);
-//        assertThatThrownBy(() -> orderService.create(주문_요청)).isInstanceOf(OrderException.class);
-//    }
-//
-//    @Test
-//    void 주문_테이블이_비어있는_상태이면_에러발생() {
-//        주문_테이블.changeEmpty(true);
-//        주문.addOrderLineItems(주문_항목);
-//        assertThatThrownBy(() -> orderService.create(주문_요청)).isInstanceOf(OrderTableException.class);
-//    }
-
     @Test
     void 주문_리스트_조회() {
         주문.addOrderLineItems(주문_항목);

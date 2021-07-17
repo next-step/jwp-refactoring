@@ -20,8 +20,8 @@ public class TableEventPublisher {
     }
 
 
-    public void changeEmptyValidPublishEvent(OrderTable orderTable, boolean empty) {
-        OrderTableChangeEmptyValidEvent orderTableChangeEmptyValidEvent = new OrderTableChangeEmptyValidEvent(orderTable, empty);
+    public void changeEmptyValidPublishEvent(OrderTable orderTable) {
+        OrderTableChangeEmptyValidEvent orderTableChangeEmptyValidEvent = new OrderTableChangeEmptyValidEvent(orderTable);
         eventPublisher.publishEvent(orderTableChangeEmptyValidEvent);
     }
 
