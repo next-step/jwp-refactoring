@@ -12,32 +12,19 @@ import java.util.Arrays;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import kitchenpos.application.ProductService;
+import kitchenpos.common.BaseControllerTest;
 import kitchenpos.domain.Product;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class ProductRestControllerTest {
-    @Autowired
-    WebApplicationContext wac;
-
-    @Autowired
-    ObjectMapper objectMapper;
-
-    @Autowired
-    MockMvc mockMvc;
-
+class ProductRestControllerTest extends BaseControllerTest {
     @MockBean
     ProductService mockProductService;
 
