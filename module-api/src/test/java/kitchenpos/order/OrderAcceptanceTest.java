@@ -40,7 +40,6 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-
         MenuResponse menuResponse = 메뉴_등록되어_있음(generateMenuRequest());
         orderTableResponse = 주문_테이블_등록_되어있음(new OrderTableRequest(1, false));
         orderLineItemRequest = new OrderLineItemRequest(menuResponse.getId(),11l);

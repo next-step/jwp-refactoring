@@ -109,7 +109,7 @@ class TableGroupServiceTest {
     void createTempFailBecauseOfHasTableGroupIdTest() {
         //given
         OrderTable hasNotOrderTable = new OrderTable(1L,null,1,true);
-        OrderTable hasGroupOrderTable = new OrderTable(1L, 1L,1,true);
+        OrderTable hasGroupOrderTable = new OrderTable(1L, new TableGroup(),1,true);
         given(orderTableService.findAllByIdIn(any())).willReturn(Arrays.asList(hasNotOrderTable,hasGroupOrderTable));
 
         //when && then

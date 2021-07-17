@@ -1,5 +1,8 @@
 package kitchenpos.table.domain;
 
+import kitchenpos.tablegroup.domain.TableGroup;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
@@ -8,8 +11,7 @@ import java.util.List;
 
 @Embeddable
 public class OrderTables {
-    @OneToMany
-    @JoinColumn(name = "tableGroupId")
+    @OneToMany(mappedBy = "tableGroup", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderTable> orderTables;
 
     public static final int MINIMUM_SIZE = 2;
@@ -25,9 +27,9 @@ public class OrderTables {
         return Collections.unmodifiableList(orderTables);
     }
 
-    public void updateTableGroup(Long tableGroupId) {
+    public void updateTableGroup(TableGroup tableGroup) {
         for (OrderTable orderTable : orderTables) {
-            orderTable.updateTableGroup(tableGroupId);
+            orderTable.updateTableGroup(tableGroup);
         }
     }
 

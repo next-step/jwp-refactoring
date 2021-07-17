@@ -24,6 +24,12 @@ public class Product {
     protected Product() {
     }
 
+    public Product(Long id, String name, BigDecimal price) {
+        this.id = id;
+        this.name = name;
+        this.price = new Price(price);
+    }
+
     public Product(String name, BigDecimal price) {
         nameValidCheck(name);
         this.name = name;

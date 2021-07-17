@@ -13,16 +13,18 @@ public class OrderTable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long tableGroupId;
+    @ManyToOne
+    @JoinColumn(name = "table_group_id")
+    private TableGroup tableGroup;
     private int numberOfGuests;
     private boolean empty;
 
     protected OrderTable() {
     }
 
-    public OrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
+    public OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
         this.id = id;
-        this.tableGroupId = tableGroupId;
+        this.tableGroup = tableGroup;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
     }
@@ -30,7 +32,7 @@ public class OrderTable {
     public OrderTable(int numberOfGuests, boolean isEmpty) {
         this.numberOfGuests = numberOfGuests;
         this.empty = isEmpty;
-        this.tableGroupId = null;
+        this.tableGroup = null;
     }
 
     public Long getId() {
@@ -39,7 +41,10 @@ public class OrderTable {
 
 
     public Long getTableGroupId() {
-        return tableGroupId;
+        if (tableGroup == null) {
+            return null;
+        }
+        return tableGroup.getId();
     }
 
     public int getNumberOfGuests() {
@@ -55,10 +60,10 @@ public class OrderTable {
         this.empty = empty;
     }
 
-    public void updateTableGroup(Long tableGroupId) {
+    public void updateTableGroup(TableGroup tableGroup) {
         updatePossibleCheck();
         this.empty = false;
-        this.tableGroupId = tableGroupId;
+        this.tableGroup = tableGroup;
     }
 
     private void updatePossibleCheck() {
@@ -67,7 +72,7 @@ public class OrderTable {
     }
 
     private void isTableGroupEmptyCheck() {
-        if (Objects.nonNull(tableGroupId)) {
+        if (Objects.nonNull(tableGroup)) {
             throw new AlreadyGroupedException("단체 지정된 주문 테이블입니다.");
         }
     }
@@ -84,7 +89,7 @@ public class OrderTable {
 
 
     public void releaseGroup() {
-        this.tableGroupId = null;
+        this.tableGroup = null;
     }
 
 }

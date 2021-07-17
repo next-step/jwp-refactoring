@@ -30,7 +30,7 @@ public class tableAcceptanceTest extends AcceptanceTest {
     @DisplayName("DTO와 JPA를 사용하여 주문 테이블을 생성할 수 있다")
     @Test
     void createTest() {
-
+        super.setUp();
         //when
         ExtractableResponse<Response> response = 주문_테이블_등록_요청(orderTableRequest);
 
