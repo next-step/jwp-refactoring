@@ -5,10 +5,6 @@ plugins {
 }
 
 allprojects {
-
-}
-
-subprojects {
     apply plugin: 'org.springframework.boot'
     apply plugin: 'io.spring.dependency-management'
     apply plugin: 'java'
@@ -26,23 +22,10 @@ subprojects {
     }
 }
 
-project(':module-api-advice') {
-    dependencies {
-        implementation project(':module-common')
-    }
-}
-
-project(':module-api-menu') {
+project(':module-api') {
     dependencies {
         implementation project(':module-domain-menu')
-        implementation project(':module-common')
-    }
-}
-
-project(':module-api-order') {
-    dependencies {
         implementation project(':module-domain-order')
-        implementation project(':module-api-menu')
         implementation project(':module-common')
     }
 }
