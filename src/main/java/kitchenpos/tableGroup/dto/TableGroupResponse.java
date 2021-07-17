@@ -19,4 +19,8 @@ public class TableGroupResponse {
 	public static TableGroupResponse of(TableGroup tableGroup) {
 		return new TableGroupResponse(tableGroup.getId(), tableGroup.getCreatedDate());
 	}
+
+	public Long getId() {
+		return id;
+	}
 }
