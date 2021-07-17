@@ -15,15 +15,16 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import kitchenpos.table.application.TableService;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.OrderTableRequest;
 
 @ExtendWith(MockitoExtension.class)
 public class TableServiceTest {
-	private OrderTable orderTableWithFivePeople;
-	private OrderTable orderTableWithTenPeople;
+	private OrderTableRequest orderTableWithFivePeople;
+	private OrderTableRequest orderTableWithTenPeople;
 
 	@Mock
 	private OrderDao orderDao;
@@ -36,8 +37,8 @@ public class TableServiceTest {
 
 	@BeforeEach
 	void setUp() {
-		orderTableWithFivePeople = new OrderTable(1L, null, 5, false);
-		orderTableWithTenPeople = new OrderTable(2L, null, 10, false);
+		orderTableWithFivePeople = new OrderTableRequest(1L, null, 5, false);
+		orderTableWithTenPeople = new OrderTableRequest(2L, null, 10, false);
 	}
 
 	@DisplayName("테이블을 등록한다.")
@@ -46,7 +47,7 @@ public class TableServiceTest {
 		// Given
 		when(orderTableDao.save(any())).thenReturn(orderTableWithFivePeople);
 		// When
-		OrderTable orderTable = tableService.create(orderTableWithFivePeople);
+		OrderTableRequest orderTable = tableService.create(orderTableWithFivePeople);
 		// Then
 		assertThat(orderTable.getNumberOfGuests()).isEqualTo(5);
 	}
@@ -57,7 +58,7 @@ public class TableServiceTest {
 		// Given
 		when(orderTableDao.findAll()).thenReturn(Arrays.asList(orderTableWithFivePeople, orderTableWithTenPeople));
 		// When
-		List<OrderTable> orderTables = tableService.list();
+		List<OrderTableRequest> orderTables = tableService.list();
 		// Then
 		assertThat(orderTables.size()).isEqualTo(2);
 	}
@@ -68,9 +69,9 @@ public class TableServiceTest {
 		// Given
 		lenient().when(orderTableDao.findById(1L)).thenReturn(Optional.of(orderTableWithFivePeople));
 		lenient().when(orderDao.existsByOrderTableIdInAndOrderStatusIn(Arrays.asList(1L), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).thenReturn(false);
-		lenient().when(orderTableDao.save(any())).thenReturn(new OrderTable(1L, null, 5, true));
+		lenient().when(orderTableDao.save(any())).thenReturn(new OrderTableRequest(1L, null, 5, true));
 		// When
-		OrderTable orderTable = tableService.changeEmpty(1L, orderTableWithFivePeople);
+		OrderTableRequest orderTable = tableService.changeEmpty(1L, orderTableWithFivePeople);
 		// Then
 		assertThat(orderTable.isEmpty()).isEqualTo(true);
 	}
@@ -80,7 +81,7 @@ public class TableServiceTest {
 	void changeEmptyWithNotExistsOrderTable() {
 		// Given
 		lenient().when(orderDao.existsByOrderTableIdInAndOrderStatusIn(Arrays.asList(1L), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).thenReturn(false);
-		lenient().when(orderTableDao.save(any())).thenReturn(new OrderTable(1L, null, 5, true));
+		lenient().when(orderTableDao.save(any())).thenReturn(new OrderTableRequest(1L, null, 5, true));
 		// When, Then
 		assertThatThrownBy(() -> tableService.changeEmpty(1L, orderTableWithFivePeople)).isInstanceOf(IllegalArgumentException.class);
 	}
@@ -89,9 +90,9 @@ public class TableServiceTest {
 	@Test
 	void changeEmptyWithOrderTableHavingTableGroup() {
 		// Given
-		lenient().when(orderTableDao.findById(1L)).thenReturn(Optional.of(new OrderTable(1L, 1L, 5, false)));
+		lenient().when(orderTableDao.findById(1L)).thenReturn(Optional.of(new OrderTableRequest(1L, 1L, 5, false)));
 		lenient().when(orderDao.existsByOrderTableIdInAndOrderStatusIn(Arrays.asList(1L), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).thenReturn(false);
-		lenient().when(orderTableDao.save(any())).thenReturn(new OrderTable(1L, null, 5, true));
+		lenient().when(orderTableDao.save(any())).thenReturn(new OrderTableRequest(1L, null, 5, true));
 		// When, Then
 		assertThatThrownBy(() -> tableService.changeEmpty(1L, orderTableWithFivePeople)).isInstanceOf(IllegalArgumentException.class);
 	}
@@ -100,9 +101,9 @@ public class TableServiceTest {
 	@Test
 	void changeEmptyWithCookingOrMealTable() {
 		// Given
-		lenient().when(orderTableDao.findById(1L)).thenReturn(Optional.of(new OrderTable(1L, 1L, 5, false)));
+		lenient().when(orderTableDao.findById(1L)).thenReturn(Optional.of(new OrderTableRequest(1L, 1L, 5, false)));
 		lenient().when(orderDao.existsByOrderTableIdInAndOrderStatusIn(Arrays.asList(1L), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).thenReturn(true);
-		lenient().when(orderTableDao.save(any())).thenReturn(new OrderTable(1L, null, 5, true));
+		lenient().when(orderTableDao.save(any())).thenReturn(new OrderTableRequest(1L, null, 5, true));
 		// When, Then
 		assertThatThrownBy(() -> tableService.changeEmpty(1L, orderTableWithFivePeople)).isInstanceOf(IllegalArgumentException.class);
 	}
@@ -114,7 +115,7 @@ public class TableServiceTest {
 		when(orderTableDao.findById(1L)).thenReturn(Optional.of(orderTableWithFivePeople));
 		when(orderTableDao.save(any())).thenReturn(orderTableWithFivePeople);
 		// When
-		OrderTable orderTable = tableService.changeNumberOfGuests(1L, orderTableWithTenPeople);
+		OrderTableRequest orderTable = tableService.changeNumberOfGuests(1L, orderTableWithTenPeople);
 		// Then
 		assertThat(orderTable.getNumberOfGuests()).isEqualTo(10);
 	}
@@ -126,7 +127,7 @@ public class TableServiceTest {
 		lenient().when(orderTableDao.findById(1L)).thenReturn(Optional.of(orderTableWithFivePeople));
 		lenient().when(orderTableDao.save(any())).thenReturn(orderTableWithFivePeople);
 		// When, Then
-		assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, new OrderTable(2L, null, -10, false))).isInstanceOf(IllegalArgumentException.class);
+		assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, new OrderTableRequest(2L, null, -10, false))).isInstanceOf(IllegalArgumentException.class);
 	}
 
 	@DisplayName("요청한 테이블은 기 존재해야 한다.")
@@ -135,16 +136,16 @@ public class TableServiceTest {
 		// Given
 		lenient().when(orderTableDao.save(any())).thenReturn(orderTableWithFivePeople);
 		// When, Then
-		assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, new OrderTable(2L, null, -10, false))).isInstanceOf(IllegalArgumentException.class);
+		assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, new OrderTableRequest(2L, null, -10, false))).isInstanceOf(IllegalArgumentException.class);
 	}
 
 	@DisplayName("비어 있는 테이블은 인원 변경이 불가하다.")
 	@Test
 	void changeNumberOfGuestsWithEmptyOrderTable() {
 		// Given
-		lenient().when(orderTableDao.findById(1L)).thenReturn(Optional.of(new OrderTable(1L, null, 5, true)));
+		lenient().when(orderTableDao.findById(1L)).thenReturn(Optional.of(new OrderTableRequest(1L, null, 5, true)));
 		lenient().when(orderTableDao.save(any())).thenReturn(orderTableWithFivePeople);
 		// When, Then
-		assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, new OrderTable(2L, null, -10, false))).isInstanceOf(IllegalArgumentException.class);
+		assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, new OrderTableRequest(2L, null, -10, false))).isInstanceOf(IllegalArgumentException.class);
 	}
 }

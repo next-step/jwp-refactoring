@@ -13,8 +13,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 
-import kitchenpos.application.TableService;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.table.application.TableService;
+import kitchenpos.table.ui.TableRestController;
+import kitchenpos.domain.OrderTableRequest;
 
 @WebMvcTest(TableRestController.class)
 public class TableRestControllerTest extends WebMvcTestConfiguration {
@@ -23,17 +24,17 @@ public class TableRestControllerTest extends WebMvcTestConfiguration {
 
 	@Test
 	void createTest() throws Exception {
-		given(tableService.create(any())).willReturn(new OrderTable());
+		given(tableService.create(any())).willReturn(new OrderTableRequest());
 
 		mockMvc.perform(post("/api/tables")
-			.content(objectMapper.writeValueAsString(new OrderTable())).contentType(MediaType.APPLICATION_JSON))
+			.content(objectMapper.writeValueAsString(new OrderTableRequest())).contentType(MediaType.APPLICATION_JSON))
 			.andDo(print())
 			.andExpect(status().isCreated());
 	}
 
 	@Test
 	void listTest() throws Exception {
-		given(tableService.list()).willReturn(Arrays.asList(new OrderTable(1L, 1L, 10, false), new OrderTable(2L, 2L, 4, true)));
+		given(tableService.list()).willReturn(Arrays.asList(new OrderTableRequest(1L, 1L, 10, false), new OrderTableRequest(2L, 2L, 4, true)));
 
 		mockMvc.perform(get("/api/tables"))
 			.andDo(print())
@@ -43,11 +44,11 @@ public class TableRestControllerTest extends WebMvcTestConfiguration {
 	@Test
 	void changeEmptyTest() throws Exception {
 		Long orderTableId = 1L;
-		given(tableService.changeEmpty(any(), any())).willReturn(new OrderTable());
+		given(tableService.changeEmpty(any(), any())).willReturn(new OrderTableRequest());
 
 		mockMvc.perform(put("/api/tables/" + orderTableId + "/empty")
 			.param("orderTableId", orderTableId + "")
-			.content(objectMapper.writeValueAsString(new OrderTable()))
+			.content(objectMapper.writeValueAsString(new OrderTableRequest()))
 			.contentType(MediaType.APPLICATION_JSON))
 			.andDo(print())
 			.andExpect(status().isOk());
@@ -56,11 +57,11 @@ public class TableRestControllerTest extends WebMvcTestConfiguration {
 	@Test
 	void changeNumberOfGuestTest() throws Exception {
 		Long orderTableId = 1L;
-		given(tableService.changeEmpty(any(), any())).willReturn(new OrderTable());
+		given(tableService.changeEmpty(any(), any())).willReturn(new OrderTableRequest());
 
 		mockMvc.perform(put("/api/tables/" + orderTableId +"/number-of-guests")
 			.param("orderTableId", orderTableId + "")
-			.content(objectMapper.writeValueAsString(new OrderTable()))
+			.content(objectMapper.writeValueAsString(new OrderTableRequest()))
 			.contentType(MediaType.APPLICATION_JSON))
 			.andDo(print())
 			.andExpect(status().isOk());

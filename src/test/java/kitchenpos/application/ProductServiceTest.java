@@ -15,13 +15,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import kitchenpos.product.application.ProductService;
 import kitchenpos.dao.ProductDao;
-import kitchenpos.domain.Product;
+import kitchenpos.domain.ProductRequest;
 
 @ExtendWith(MockitoExtension.class)
 public class ProductServiceTest {
-	private Product chicken;
-	private Product hotRamen;
+	private ProductRequest chicken;
+	private ProductRequest hotRamen;
 
 	@Mock
 	private ProductDao productDao;
@@ -31,8 +32,8 @@ public class ProductServiceTest {
 
 	@BeforeEach
 	void setUp() {
-		chicken = new Product("치킨", new BigDecimal(10000));
-		hotRamen = new Product("매운 라면", new BigDecimal(10000));
+		chicken = new ProductRequest("치킨", new BigDecimal(10000));
+		hotRamen = new ProductRequest("매운 라면", new BigDecimal(10000));
 	}
 
 	@DisplayName("상품을 등록한다.")
@@ -41,7 +42,7 @@ public class ProductServiceTest {
 		// given
 		when(productDao.save(any())).thenReturn(chicken);
 		// when
-		Product product = productService.create(chicken);
+		ProductRequest product = productService.create(chicken);
 		// then
 		assertThat(product.getName()).isEqualTo("치킨");
 	}
@@ -50,9 +51,9 @@ public class ProductServiceTest {
 	@Test
 	void createTestWithMinusPrice() {
 		// given
-		lenient().when(productDao.save(any())).thenReturn(new Product("치킨", new BigDecimal(-10000)));
+		lenient().when(productDao.save(any())).thenReturn(new ProductRequest("치킨", new BigDecimal(-10000)));
 		// when, then
-		assertThatThrownBy(() -> productService.create(new Product("치킨", new BigDecimal(-10000))));
+		assertThatThrownBy(() -> productService.create(new ProductRequest("치킨", new BigDecimal(-10000))));
 	}
 
 	@DisplayName("상품을 조회한다.")
@@ -61,7 +62,7 @@ public class ProductServiceTest {
 		// given
 		when(productDao.findAll()).thenReturn(Arrays.asList(chicken, hotRamen));
 		// when
-		List<Product> products = productService.list();
+		List<ProductRequest> products = productService.list();
 		// then
 		assertThat(products.size()).isEqualTo(2);
 	}

@@ -2,7 +2,6 @@ package kitchenpos.acceptance;
 
 import static kitchenpos.acceptance.MenuAcceptanceTestMethod.*;
 import static kitchenpos.acceptance.MenuGroupAcceptanceTestMethod.*;
-import static kitchenpos.acceptance.OrderAcceptanceTestMethod.*;
 import static kitchenpos.acceptance.ProductAcceptanceTestMethod.*;
 import static kitchenpos.acceptance.TableAcceptanceTestMethod.*;
 import static kitchenpos.acceptance.TableGroupAcceptanceTestMethod.*;
@@ -18,14 +17,12 @@ import org.springframework.http.HttpStatus;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.Product;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.domain.MenuRequest;
+import kitchenpos.domain.MenuGroupRequest;
+import kitchenpos.domain.MenuProductRequest;
+import kitchenpos.domain.OrderTableRequest;
+import kitchenpos.domain.ProductRequest;
+import kitchenpos.domain.TableGroupRequest;
 
 public class TableGroupAcceptanceTest extends AcceptanceTest {
 	@DisplayName("메뉴 그룹 등록 및 그룹 해제 시나리오")
@@ -33,25 +30,25 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
 	void createTableGroupAndUngroupScenario() {
 		// Backgroud
 		// Given
-		ExtractableResponse<Response> menuGroupResponse = createMenuGroup(new MenuGroup("인기 메뉴"));
-		MenuGroup menuGroup = menuGroupResponse.as(MenuGroup.class);
+		ExtractableResponse<Response> menuGroupResponse = createMenuGroup(new MenuGroupRequest("인기 메뉴"));
+		MenuGroupRequest menuGroup = menuGroupResponse.as(MenuGroupRequest.class);
 		// And
-		ExtractableResponse<Response> productResponse = createProduct(new Product("매운 라면", new BigDecimal(8000)));
-		Product product = productResponse.as(Product.class);
+		ExtractableResponse<Response> productResponse = createProduct(new ProductRequest("매운 라면", new BigDecimal(8000)));
+		ProductRequest product = productResponse.as(ProductRequest.class);
 		// And
-		ExtractableResponse<Response> menuCreatedResponse = createMenu(new Menu("라면 메뉴", new BigDecimal(8000), menuGroup.getId(), Arrays.asList(new MenuProduct(product.getId(), 2L))));
-		Menu createdMenu = menuCreatedResponse.as(Menu.class);
+		ExtractableResponse<Response> menuCreatedResponse = createMenu(new MenuRequest("라면 메뉴", new BigDecimal(8000), menuGroup.getId(), Arrays.asList(new MenuProductRequest(product.getId(), 2L))));
+		MenuRequest createdMenu = menuCreatedResponse.as(MenuRequest.class);
 		// And
-		ExtractableResponse<Response> tableWithFivePeopleCreatedResponse = createOrderTable(new OrderTable(5, true));
-		OrderTable createdOrderTableWithFivePeople = tableWithFivePeopleCreatedResponse.as(OrderTable.class);
+		ExtractableResponse<Response> tableWithFivePeopleCreatedResponse = createOrderTable(new OrderTableRequest(5, true));
+		OrderTableRequest createdOrderTableWithFivePeople = tableWithFivePeopleCreatedResponse.as(OrderTableRequest.class);
 		// And
-		ExtractableResponse<Response> tableWithTenPeopleCreatedResponse = createOrderTable(new OrderTable(10, true));
-		OrderTable createdOrderTableWithTenPeople = tableWithTenPeopleCreatedResponse.as(OrderTable.class);
+		ExtractableResponse<Response> tableWithTenPeopleCreatedResponse = createOrderTable(new OrderTableRequest(10, true));
+		OrderTableRequest createdOrderTableWithTenPeople = tableWithTenPeopleCreatedResponse.as(OrderTableRequest.class);
 
 		// Scenario
 		// When
-		ExtractableResponse<Response> tableGroupCreatedResponse = createTableGroup(new TableGroup(LocalDateTime.now(), Arrays.asList(createdOrderTableWithFivePeople, createdOrderTableWithTenPeople)));
-		TableGroup createdTableGroup = tableGroupCreatedResponse.as(TableGroup.class);
+		ExtractableResponse<Response> tableGroupCreatedResponse = createTableGroup(new TableGroupRequest(LocalDateTime.now(), Arrays.asList(createdOrderTableWithFivePeople, createdOrderTableWithTenPeople)));
+		TableGroupRequest createdTableGroup = tableGroupCreatedResponse.as(TableGroupRequest.class);
 		// Then
 		assertThat(tableGroupCreatedResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
 		assertThat(createdTableGroup.getOrderTables().size()).isEqualTo(2);
@@ -62,40 +59,41 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
 	void tableGroupErrorScenario() {
 		// Backgroud
 		// Given
-		ExtractableResponse<Response> tableWithFivePeopleCreatedResponse = createOrderTable(new OrderTable(5, true));
-		OrderTable createdOrderTableWithFivePeople = tableWithFivePeopleCreatedResponse.as(OrderTable.class);
+		ExtractableResponse<Response> tableWithFivePeopleCreatedResponse = createOrderTable(new OrderTableRequest(5, true));
+		OrderTableRequest createdOrderTableWithFivePeople = tableWithFivePeopleCreatedResponse.as(OrderTableRequest.class);
 
 		// Scenario
 		// When
-		ExtractableResponse<Response> createTableGroupWithOneOrderTableResponse = createTableGroup(new TableGroup(LocalDateTime.now(), Arrays.asList(createdOrderTableWithFivePeople)));
+		ExtractableResponse<Response> createTableGroupWithOneOrderTableResponse = createTableGroup(new TableGroupRequest(LocalDateTime.now(), Arrays.asList(createdOrderTableWithFivePeople)));
 		// Then
 		assertThat(createTableGroupWithOneOrderTableResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
 
 		// When
-		ExtractableResponse<Response> tableGroupWithNotExistsOrderTableCreatedResponse = createTableGroup(new TableGroup(LocalDateTime.now(), Arrays.asList(new OrderTable(0L, 5, true))));
+		ExtractableResponse<Response> tableGroupWithNotExistsOrderTableCreatedResponse = createTableGroup(new TableGroupRequest(LocalDateTime.now(), Arrays.asList(new OrderTableRequest(0L, 5, true))));
 		// Then
 		assertThat(tableGroupWithNotExistsOrderTableCreatedResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
 
 		// Given : 기 단체 지정
-		ExtractableResponse<Response> tableWithSevenPeopleCreatedResponse = createOrderTable(new OrderTable(7, true));
-		OrderTable createdOrderTableWithSevenPeople = tableWithSevenPeopleCreatedResponse.as(OrderTable.class);
+		ExtractableResponse<Response> tableWithSevenPeopleCreatedResponse = createOrderTable(new OrderTableRequest(7, true));
+		OrderTableRequest createdOrderTableWithSevenPeople = tableWithSevenPeopleCreatedResponse.as(OrderTableRequest.class);
 
-		ExtractableResponse<Response> tableWithTenPeopleCreatedResponse = createOrderTable(new OrderTable(10, true));
-		OrderTable createdOrderTableWithTenPeople = tableWithTenPeopleCreatedResponse.as(OrderTable.class);
+		ExtractableResponse<Response> tableWithTenPeopleCreatedResponse = createOrderTable(new OrderTableRequest(10, true));
+		OrderTableRequest createdOrderTableWithTenPeople = tableWithTenPeopleCreatedResponse.as(OrderTableRequest.class);
 
-		ExtractableResponse<Response> tableGroupCreatedResponse = createTableGroup(new TableGroup(LocalDateTime.now(), Arrays.asList(createdOrderTableWithFivePeople, createdOrderTableWithSevenPeople)));
-		TableGroup createdTableGroup = tableGroupCreatedResponse.as(TableGroup.class);
+		ExtractableResponse<Response> tableGroupCreatedResponse = createTableGroup(new TableGroupRequest(LocalDateTime.now(), Arrays.asList(createdOrderTableWithFivePeople, createdOrderTableWithSevenPeople)));
+		TableGroupRequest createdTableGroup = tableGroupCreatedResponse.as(TableGroupRequest.class);
 		assertThat(tableGroupCreatedResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
 		// When
-		ExtractableResponse<Response> createTableGroupWithAlreadyTableGroupedResponse = createTableGroup(new TableGroup(LocalDateTime.now(), Arrays.asList(createdOrderTableWithFivePeople, createdOrderTableWithSevenPeople)));
+		ExtractableResponse<Response> createTableGroupWithAlreadyTableGroupedResponse = createTableGroup(new TableGroupRequest(LocalDateTime.now(), Arrays.asList(createdOrderTableWithFivePeople, createdOrderTableWithSevenPeople)));
 		// Then
 		assertThat(createTableGroupWithAlreadyTableGroupedResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
 
 		// Given
-		ExtractableResponse<Response> tableWithElevenPeopleAndNotEmptyCreatedResponse = createOrderTable(new OrderTable(11, false));
-		OrderTable createdOrderTableWithElevenPeopleAndNotEmpty = tableWithElevenPeopleAndNotEmptyCreatedResponse.as(OrderTable.class);
+		ExtractableResponse<Response> tableWithElevenPeopleAndNotEmptyCreatedResponse = createOrderTable(new OrderTableRequest(11, false));
+		OrderTableRequest createdOrderTableWithElevenPeopleAndNotEmpty = tableWithElevenPeopleAndNotEmptyCreatedResponse.as(
+			OrderTableRequest.class);
 		// When
-		ExtractableResponse<Response> createTableGroupWithNotEmptyTableResponse = createTableGroup(new TableGroup(LocalDateTime.now(), Arrays.asList(createdOrderTableWithSevenPeople, createdOrderTableWithElevenPeopleAndNotEmpty)));
+		ExtractableResponse<Response> createTableGroupWithNotEmptyTableResponse = createTableGroup(new TableGroupRequest(LocalDateTime.now(), Arrays.asList(createdOrderTableWithSevenPeople, createdOrderTableWithElevenPeopleAndNotEmpty)));
 		// Then
 		assertThat(createTableGroupWithNotEmptyTableResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
 	}

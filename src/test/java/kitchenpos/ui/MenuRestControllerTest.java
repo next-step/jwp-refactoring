@@ -14,8 +14,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 
-import kitchenpos.application.MenuService;
-import kitchenpos.domain.Menu;
+import kitchenpos.menu.application.MenuService;
+import kitchenpos.menu.ui.MenuRestController;
+import kitchenpos.domain.MenuRequest;
 
 @WebMvcTest(MenuRestController.class)
 public class MenuRestControllerTest extends WebMvcTestConfiguration {
@@ -25,10 +26,10 @@ public class MenuRestControllerTest extends WebMvcTestConfiguration {
 	@Test
 	void createTest() throws Exception {
 		// Given
-		when(menuService.create(any())).thenReturn(new Menu());
+		when(menuService.create(any())).thenReturn(new MenuRequest());
 		// When, Then
 		mockMvc.perform(post("/api/menus")
-			.content(objectMapper.writeValueAsString(new Menu())).contentType(MediaType.APPLICATION_JSON))
+			.content(objectMapper.writeValueAsString(new MenuRequest())).contentType(MediaType.APPLICATION_JSON))
 			.andDo(print())
 			.andExpect(status().isCreated());
 	}
@@ -36,7 +37,7 @@ public class MenuRestControllerTest extends WebMvcTestConfiguration {
 	@Test
 	void listTest() throws Exception {
 		// Given
-		when(menuService.list()).thenReturn(Arrays.asList(new Menu("1번 메뉴", new BigDecimal(10000), 1L), new Menu("2번 메뉴", new BigDecimal(20000), 2L)));
+		when(menuService.list()).thenReturn(Arrays.asList(new MenuRequest("1번 메뉴", new BigDecimal(10000), 1L), new MenuRequest("2번 메뉴", new BigDecimal(20000), 2L)));
 		// When, Then
 		mockMvc.perform(get("/api/menus"))
 			.andDo(print())

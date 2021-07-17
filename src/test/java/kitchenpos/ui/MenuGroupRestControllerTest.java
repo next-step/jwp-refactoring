@@ -12,8 +12,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 
-import kitchenpos.application.MenuGroupService;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.menuGroup.application.MenuGroupService;
+import kitchenpos.menuGroup.ui.MenuGroupRestController;
+import kitchenpos.domain.MenuGroupRequest;
 
 @WebMvcTest(MenuGroupRestController.class)
 public class MenuGroupRestControllerTest extends WebMvcTestConfiguration{
@@ -23,10 +24,10 @@ public class MenuGroupRestControllerTest extends WebMvcTestConfiguration{
 	@Test
 	void createTest() throws Exception {
 		// Given
-		when(menuGroupService.create(any())).thenReturn(new MenuGroup());
+		when(menuGroupService.create(any())).thenReturn(new MenuGroupRequest());
 		// When, Then
 		mockMvc.perform(post("/api/menu-groups")
-			.content(objectMapper.writeValueAsString(new MenuGroup())).contentType(MediaType.APPLICATION_JSON))
+			.content(objectMapper.writeValueAsString(new MenuGroupRequest())).contentType(MediaType.APPLICATION_JSON))
 			.andDo(print())
 			.andExpect(status().isCreated());
 	}
@@ -34,7 +35,7 @@ public class MenuGroupRestControllerTest extends WebMvcTestConfiguration{
 	@Test
 	void list() throws Exception {
 		// Given
-		when(menuGroupService.list()).thenReturn(Arrays.asList(new MenuGroup("1번 메뉴 그룹"), new MenuGroup("2번 메뉴 그룹")));
+		when(menuGroupService.list()).thenReturn(Arrays.asList(new MenuGroupRequest("1번 메뉴 그룹"), new MenuGroupRequest("2번 메뉴 그룹")));
 		// When, Then
 		mockMvc.perform(get("/api/menu-groups"))
 			.andDo(print())

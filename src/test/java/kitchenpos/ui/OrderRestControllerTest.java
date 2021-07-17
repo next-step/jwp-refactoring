@@ -2,15 +2,12 @@ package kitchenpos.ui;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.*;
-import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,14 +15,15 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 
-import kitchenpos.application.OrderService;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
+import kitchenpos.order.application.OrderService;
+import kitchenpos.order.ui.OrderRestController;
+import kitchenpos.domain.OrderRequest;
+import kitchenpos.domain.OrderLineItemRequest;
 
 @WebMvcTest(OrderRestController.class)
 public class OrderRestControllerTest extends WebMvcTestConfiguration {
-	private Order order1;
-	private Order order2;
+	private OrderRequest order1;
+	private OrderRequest order2;
 
 	@MockBean
 	private OrderService orderService;
@@ -33,16 +31,16 @@ public class OrderRestControllerTest extends WebMvcTestConfiguration {
 	@BeforeEach
 	void setUp() {
 		super.setUp();
-		order1 = new Order(1L, "COOKING", LocalDateTime.now(), Arrays.asList(new OrderLineItem(1L, 1L, 5L), new OrderLineItem(1L, 2L, 4L)));
-		order2 = new Order(2L, "COMPLETION", LocalDateTime.now(), Arrays.asList(new OrderLineItem(2L, 1L, 3L)));
+		order1 = new OrderRequest(1L, "COOKING", LocalDateTime.now(), Arrays.asList(new OrderLineItemRequest(1L, 1L, 5L), new OrderLineItemRequest(1L, 2L, 4L)));
+		order2 = new OrderRequest(2L, "COMPLETION", LocalDateTime.now(), Arrays.asList(new OrderLineItemRequest(2L, 1L, 3L)));
 	}
 
 	@Test
 	void createTest() throws Exception {
-		when(orderService.create(any())).thenReturn(new Order());
+		when(orderService.create(any())).thenReturn(new OrderRequest());
 
 		mockMvc.perform(post("/api/orders")
-			.content(objectMapper.writeValueAsString(new Order()))
+			.content(objectMapper.writeValueAsString(new OrderRequest()))
 			.contentType(MediaType.APPLICATION_JSON))
 			.andDo(print())
 			.andExpect(status().isCreated());
@@ -62,11 +60,11 @@ public class OrderRestControllerTest extends WebMvcTestConfiguration {
 	void changeOrderStatus() throws Exception {
 		Long orderId = 1L;
 		// Given
-		given(orderService.changeOrderStatus(orderId, new Order())).willReturn(new Order());
+		given(orderService.changeOrderStatus(orderId, new OrderRequest())).willReturn(new OrderRequest());
 		// When, Then
 		mockMvc.perform(put("/api/orders/" + orderId + "/order-status")
 			.param("orderId", orderId + "")
-			.content(objectMapper.writeValueAsString(new Order()))
+			.content(objectMapper.writeValueAsString(new OrderRequest()))
 			.contentType(MediaType.APPLICATION_JSON))
 			.andDo(print())
 			.andExpect(status().isOk());

@@ -11,8 +11,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 
-import kitchenpos.application.TableGroupService;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.tableGroup.application.TableGroupService;
+import kitchenpos.tableGroup.ui.TableGroupRestController;
+import kitchenpos.domain.TableGroupRequest;
 
 @WebMvcTest(TableGroupRestController.class)
 public class TableGroupRestControllerTest extends WebMvcTestConfiguration {
@@ -21,10 +22,10 @@ public class TableGroupRestControllerTest extends WebMvcTestConfiguration {
 
 	@Test
 	void createTest() throws Exception {
-		given(tableGroupService.create(any())).willReturn(new TableGroup());
+		given(tableGroupService.create(any())).willReturn(new TableGroupRequest());
 
 		mockMvc.perform(post("/api/table-groups")
-			.content(objectMapper.writeValueAsString(new TableGroup())).contentType(MediaType.APPLICATION_JSON))
+			.content(objectMapper.writeValueAsString(new TableGroupRequest())).contentType(MediaType.APPLICATION_JSON))
 			.andDo(print())
 			.andExpect(status().isCreated());
 	}
@@ -34,7 +35,7 @@ public class TableGroupRestControllerTest extends WebMvcTestConfiguration {
 		Long tableGroupId = 1L;
 
 		mockMvc.perform(delete("/api/table-groups/" + tableGroupId)
-			.content(objectMapper.writeValueAsString(new TableGroup())).contentType(MediaType.APPLICATION_JSON))
+			.content(objectMapper.writeValueAsString(new TableGroupRequest())).contentType(MediaType.APPLICATION_JSON))
 			.andDo(print())
 			.andExpect(status().isNoContent());
 	}

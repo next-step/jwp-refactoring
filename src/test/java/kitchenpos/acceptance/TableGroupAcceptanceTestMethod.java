@@ -5,10 +5,10 @@ import org.springframework.http.MediaType;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.domain.TableGroupRequest;
 
 public class TableGroupAcceptanceTestMethod {
-	public static ExtractableResponse<Response> createTableGroup(TableGroup tableGroup) {
+	public static ExtractableResponse<Response> createTableGroup(TableGroupRequest tableGroup) {
 		return RestAssured
 			.given().log().all()
 			.contentType(MediaType.APPLICATION_JSON_VALUE)

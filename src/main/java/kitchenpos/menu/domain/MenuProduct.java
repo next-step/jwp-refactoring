@@ -22,8 +22,10 @@ public class MenuProduct {
 	@Column(nullable = false)
 	private Menu menu;
 
-	
+	@ManyToOne
+	@JoinColumn(foreignKey = @ForeignKey(name = "fk_menu_product_product"))
 	@Column(nullable = false)
 	private Product product;
+
 	private int quantity;
 }

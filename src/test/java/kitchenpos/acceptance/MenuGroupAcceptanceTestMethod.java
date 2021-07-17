@@ -5,10 +5,10 @@ import org.springframework.http.MediaType;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.domain.MenuGroupRequest;
 
 public class MenuGroupAcceptanceTestMethod {
-	public static ExtractableResponse<Response> createMenuGroup(MenuGroup menuGroup) {
+	public static ExtractableResponse<Response> createMenuGroup(MenuGroupRequest menuGroup) {
 		return RestAssured
 			.given().log().all()
 			.contentType(MediaType.APPLICATION_JSON_VALUE)

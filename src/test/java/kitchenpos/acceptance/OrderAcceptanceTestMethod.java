@@ -5,10 +5,10 @@ import org.springframework.http.MediaType;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.Order;
+import kitchenpos.domain.OrderRequest;
 
 public class OrderAcceptanceTestMethod {
-	public static ExtractableResponse<Response> createOrder(Order order) {
+	public static ExtractableResponse<Response> createOrder(OrderRequest order) {
 		return RestAssured
 			.given().log().all()
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -18,7 +18,7 @@ public class OrderAcceptanceTestMethod {
 			.extract();
 	}
 
-	public static ExtractableResponse<Response> changeOrderStatus(Long orderId, Order status) {
+	public static ExtractableResponse<Response> changeOrderStatus(Long orderId, OrderRequest status) {
 		return RestAssured
 			.given().log().all()
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
