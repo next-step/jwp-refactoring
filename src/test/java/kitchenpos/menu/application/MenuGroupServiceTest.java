@@ -1,6 +1,5 @@
 package kitchenpos.menu.application;
 
-import kitchenpos.menu.application.MenuGroupService;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.dto.MenuGroupRequest;
@@ -43,7 +42,7 @@ class MenuGroupServiceTest {
     void 메뉴_그룹_생성() {
         MenuGroupRequest request = new MenuGroupRequest("추천 메뉴");
         when(menuGroupRepository.save(any(MenuGroup.class))).thenReturn(추천_메뉴);
-        MenuGroupResponse actual = menuGroupService.newCreate(request);
+        MenuGroupResponse actual = menuGroupService.create(request);
         assertThat(actual.getId()).isEqualTo(추천_메뉴.getId());
         assertThat(actual.getName()).isEqualTo(추천_메뉴.getName());
     }
@@ -54,7 +53,7 @@ class MenuGroupServiceTest {
         MenuGroupResponse 세트_메뉴_결과 = MenuGroupResponse.of(세트_메뉴);
 
         when(menuGroupRepository.findAll()).thenReturn(Arrays.asList(추천_메뉴, 세트_메뉴));
-        List<MenuGroupResponse> menuGroups = menuGroupService.newList();
+        List<MenuGroupResponse> menuGroups = menuGroupService.list();
         assertThat(menuGroups).containsExactly(추천_메뉴_결과, 세트_메뉴_결과);
 
     }

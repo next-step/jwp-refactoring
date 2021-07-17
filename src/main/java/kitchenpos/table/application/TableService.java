@@ -40,7 +40,7 @@ public class TableService {
 
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         OrderTable orderTable = this.findById(orderTableId);
-        tableEventPublisher.changeEmptyValidPublishEvent(orderTable, orderTableRequest.isEmpty());
+        tableEventPublisher.changeEmptyValidPublishEvent(orderTable);
         orderTable.changeEmpty(orderTableRequest.isEmpty());
         return OrderTableResponse.of(orderTable);
     }
