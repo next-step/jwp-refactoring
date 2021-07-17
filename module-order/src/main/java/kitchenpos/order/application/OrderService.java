@@ -4,37 +4,29 @@ import java.util.List;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.domain.OrderTableRepository;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.order.exception.CannotOrderException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class OrderService {
 
-    public static final String CANNOT_ORDER_AN_EMPTY_TABLE = "빈 테이블은 주문할 수 없습니다.";
-
     private final OrderRepository orderRepository;
-    private final OrderTableRepository orderTableRepository;
+    private final OrderEventPublisher orderEventPublisher;
 
-    public OrderService(OrderRepository orderRepository, OrderTableRepository orderTableRepository) {
+    public OrderService(OrderRepository orderRepository, OrderEventPublisher orderEventPublisher) {
         this.orderRepository = orderRepository;
-        this.orderTableRepository = orderTableRepository;
+        this.orderEventPublisher = orderEventPublisher;
     }
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
-        OrderTable orderTable = orderTableRepository.findById(orderRequest.getOrderTableId())
-            .orElseThrow(IllegalArgumentException::new);
-        if (orderTable.isEmpty()) {
-            throw new CannotOrderException(CANNOT_ORDER_AN_EMPTY_TABLE);
-        }
-        Order order = new Order(orderTable.getId(), OrderLineItemRequest.toOrderLineItems(orderRequest.getOrderLineItems()));
-        return OrderResponse.of(orderRepository.save(order));
+        Order order = new Order(orderRequest.getOrderTableId(), OrderLineItemRequest.toOrderLineItems(orderRequest.getOrderLineItems()));
+        OrderResponse orderResponse = OrderResponse.of(orderRepository.save(order));
+        orderEventPublisher.publishCreateOrderEvent(orderResponse);
+        return orderResponse;
     }
 
     public List<OrderResponse> list() {
@@ -50,4 +42,27 @@ public class OrderService {
 
         return OrderResponse.of(savedOrder);
     }
+
+    public void deleteOrderById(Long id) {
+        orderRepository.deleteById(id);
+    }
+
+    public boolean isNotCompletedByOrderTableId(Long orderTableId) {
+        List<Order> orders = orderRepository.findAllByOrderTableId(orderTableId);
+        if (orders.isEmpty()) {
+            return false;
+        }
+        return orders.stream()
+            .allMatch(Order::isCompleted);
+    }
+
+    public boolean isNotCompletedByOrderTableIds(List<Long> orderTableIds) {
+        List<Order> orders = orderRepository.findByOrderTableIdIn(orderTableIds);
+        if (orders.isEmpty()) {
+            return false;
+        }
+        return orders.stream()
+            .allMatch(Order::isCompleted);
+    }
+
 }

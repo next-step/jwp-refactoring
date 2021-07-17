@@ -1,9 +1,6 @@
 package kitchenpos.order.application;
 
-import static kitchenpos.order.application.TableServiceTest.두명;
-import static kitchenpos.order.application.TableServiceTest.비어있음;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
@@ -18,11 +15,8 @@ import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.domain.OrderTableRepository;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
-import kitchenpos.order.exception.CannotOrderException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,7 +31,6 @@ public class OrderServiceTest {
     private static final boolean 비어있지않음 = false;
     private static final Long 주문테이블_ID = 1L;
     private static final Long 주문_ID = 1L;
-    private static final OrderTable 주문테이블 = new OrderTable(주문테이블_ID, 두명, 비어있지않음);
     private static final OrderLineItem 첫번째_주문항목 = new OrderLineItem(주문_ID, 1L, 1);
     private static final OrderLineItem 두번째_주문항목 = new OrderLineItem(주문_ID, 2L, 1);
     private static final List<OrderLineItem> 주문_항목_목록 = new ArrayList<>(Arrays.asList(첫번째_주문항목, 두번째_주문항목));
@@ -45,7 +38,7 @@ public class OrderServiceTest {
     @Mock
     private OrderRepository orderRepository;
     @Mock
-    private OrderTableRepository orderTableRepository;
+    private OrderEventPublisher orderEventPublisher;
     @InjectMocks
     private OrderService orderService;
 
@@ -54,28 +47,13 @@ public class OrderServiceTest {
     void create() {
         // Given
         OrderRequest 주문 = new OrderRequest(주문테이블_ID, OrderStatus.COOKING, LocalDateTime.now(), OrderLineItemRequest.listOf(주문_항목_목록));
-        given(orderTableRepository.findById(any())).willReturn(Optional.of(주문테이블));
         given(orderRepository.save(any())).willReturn(주문.toOrder());
 
         // When
         orderService.create(주문);
 
         // Then
-        verify(orderTableRepository, times(1)).findById(any());
         verify(orderRepository, times(1)).save(any());
-    }
-
-    @DisplayName("빈 테이블인경우 주문할 수 없다.")
-    @Test
-    void create_fail() {
-        // Given
-        OrderTable 빈테이블 = new OrderTable(주문테이블_ID, 두명, 비어있음);
-        OrderRequest 주문 = new OrderRequest(주문테이블_ID, OrderStatus.COOKING, LocalDateTime.now(), OrderLineItemRequest.listOf(주문_항목_목록));
-        given(orderTableRepository.findById(any())).willReturn(Optional.of(빈테이블));
-
-        // When & Then
-        assertThatThrownBy(() -> orderService.create(주문))
-            .isInstanceOf(CannotOrderException.class);
     }
 
     @DisplayName("주문 목록을 조회한다.")

@@ -1,9 +1,5 @@
 package kitchenpos.order.dto;
 
-import java.util.List;
-import java.util.stream.Collectors;
-import kitchenpos.order.domain.OrderTable;
-
 public class OrderTableRequest {
 
     private Long id;
@@ -23,26 +19,6 @@ public class OrderTableRequest {
         this.tableGroupId = tableGroupId;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
-    }
-
-    public static List<OrderTableRequest> listOf(List<OrderTable> orderTables) {
-        return orderTables.stream()
-            .map(OrderTableRequest::of)
-            .collect(Collectors.toList());
-    }
-
-    public static OrderTableRequest of(OrderTable orderTable) {
-        return new OrderTableRequest(orderTable.getId(), orderTable.getTableGroupId(), orderTable.getNumberOfGuests(), orderTable.isEmpty());
-    }
-
-    public static List<OrderTable> toOrderTables(List<OrderTableRequest> orderTables) {
-        return orderTables.stream()
-            .map(OrderTableRequest::toOrderTable)
-            .collect(Collectors.toList());
-    }
-
-    public OrderTable toOrderTable() {
-        return new OrderTable(id, tableGroupId, numberOfGuests, empty);
     }
 
     public Long getId() {

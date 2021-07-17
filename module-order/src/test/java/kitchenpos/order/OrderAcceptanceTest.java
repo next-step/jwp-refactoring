@@ -1,10 +1,6 @@
 package kitchenpos.order;
 
 import static kitchenpos.order.ui.OrderRestControllerTest.BASE_URL;
-import static kitchenpos.order.TableAcceptanceTest.주문테이블_등록_요청;
-import static kitchenpos.order.TableAcceptanceTest.주문테이블_등록_응답에서_주문테이블ID_가져오기;
-import static kitchenpos.order.application.TableServiceTest.두명;
-import static kitchenpos.order.application.TableServiceTest.비어있지않음;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.response.ExtractableResponse;
@@ -26,12 +22,16 @@ import org.springframework.http.HttpStatus;
 @DisplayName("주문 관련 기능")
 public class OrderAcceptanceTest extends AcceptancePerMethodTest {
 
+    public static final int 두명 = 2;
+    public static final boolean 비어있지않음 = false;
+    public static final boolean 비어있음 = true;
+
     @DisplayName("주문 관리")
     @Test
     void manage() {
         // Given
         Long 메뉴_ID = 1L;
-        Long 주문테이블_ID = 주문테이블_등록_응답에서_주문테이블ID_가져오기(주문테이블_등록_요청(두명, 비어있지않음));
+        Long 주문테이블_ID = 1L;
         List<OrderLineItemRequest> 주문상품목록 = new ArrayList<>(Arrays.asList(new OrderLineItemRequest(메뉴_ID, 1)));
         OrderRequest 주문 = new OrderRequest(주문테이블_ID, OrderStatus.COOKING, LocalDateTime.now(), 주문상품목록);
 

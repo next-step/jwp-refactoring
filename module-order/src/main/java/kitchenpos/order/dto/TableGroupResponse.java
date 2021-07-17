@@ -1,12 +1,17 @@
 package kitchenpos.order.dto;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import java.time.LocalDateTime;
 import java.util.List;
-import kitchenpos.order.domain.TableGroup;
 
 public class TableGroupResponse {
 
     private Long id;
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime createdDate;
     private List<OrderTableResponse> orderTables;
 
@@ -17,10 +22,6 @@ public class TableGroupResponse {
         this.id = id;
         this.createdDate = createdDate;
         this.orderTables = orderTables;
-    }
-
-    public static TableGroupResponse of(TableGroup tableGroup) {
-        return new TableGroupResponse(tableGroup.getId(), tableGroup.getCreatedDate(), OrderTableResponse.listOf(tableGroup.getOrderTables()));
     }
 
     public Long getId() {

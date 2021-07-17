@@ -1,0 +1,19 @@
+###
+POST {{table}}/api/table-groups
+Content-Type: application/json
+
+{
+  "orderTables": [
+    {
+      "id": 1
+    },
+    {
+      "id": 2
+    }
+  ]
+}
+
+###
+DELETE {{table}}/api/table-groups/1
+
+###
