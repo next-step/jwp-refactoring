@@ -35,16 +35,8 @@ allprojects {
     }
 }
 
-project(':module-menu') {
-    dependencies {
-        implementation project(':module-menugroup')
-        implementation project(':module-product')
-    }
-}
-
 project(':module-order') {
     dependencies {
         implementation project(':module-menu')
-        implementation project(':module-table')
     }
 }
