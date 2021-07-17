@@ -21,7 +21,6 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
@@ -48,12 +47,14 @@ public class MenuServiceTest {
 		menuProduct.setQuantity(10);
 		menuProduct.setProductId(1L);
 
-		when(menuGroupDao.existsById(anyLong())).thenReturn(true);
-		when(productDao.findById(anyLong())).thenReturn(Optional.of(product));
-		when(menuDao.save(any(Menu.class))).thenReturn(new Menu(1L));
-		when(menuProductDao.save(any(MenuProduct.class))).thenReturn(new MenuProduct());
+		Menu menu = new Menu(1L, "치킨", BigDecimal.valueOf(20000), 1L, Arrays.asList(menuProduct));
 
-		assertThat(menuService.create(new Menu(1L, "치킨", BigDecimal.valueOf(20000), 1L, Arrays.asList(menuProduct)))).isNotNull();
+		when(menuGroupDao.existsById(1L)).thenReturn(true);
+		when(productDao.findById(1L)).thenReturn(Optional.of(product));
+		when(menuDao.save(menu)).thenReturn(menu);
+		when(menuProductDao.save(menuProduct)).thenReturn(menuProduct);
+
+		assertThat(menuService.create(menu)).isNotNull();
 	}
 
 	@Test
@@ -73,7 +74,7 @@ public class MenuServiceTest {
 		menuProduct.setQuantity(10);
 		menuProduct.setProductId(1L);
 
-		when(menuGroupDao.existsById(anyLong())).thenReturn(false);
+		when(menuGroupDao.existsById(1L)).thenReturn(false);
 
 		assertThatThrownBy(() -> menuService.create(new Menu(1L, "치킨", BigDecimal.valueOf(20000), 1L, Arrays.asList(menuProduct))))
 				.isInstanceOf(IllegalArgumentException.class);
@@ -89,8 +90,8 @@ public class MenuServiceTest {
 		menuProduct.setQuantity(1);
 		menuProduct.setProductId(1L);
 
-		when(menuGroupDao.existsById(anyLong())).thenReturn(true);
-		when(productDao.findById(anyLong())).thenReturn(Optional.of(product));
+		when(menuGroupDao.existsById(1L)).thenReturn(true);
+		when(productDao.findById(1L)).thenReturn(Optional.of(product));
 
 		assertThatThrownBy(() -> menuService.create(new Menu(1L, "치킨", BigDecimal.valueOf(20000), 1L, Arrays.asList(menuProduct))))
 				.isInstanceOf(IllegalArgumentException.class);

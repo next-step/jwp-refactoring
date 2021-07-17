@@ -42,10 +42,11 @@ class OrderServiceTest {
 	private OrderService orderService;
 
 	private Order order;
+	private OrderLineItem orderLineItem;
 
 	@BeforeEach
 	void setUp() {
-		OrderLineItem orderLineItem = new OrderLineItem(1L, 1L, 1L, 1L);
+		orderLineItem = new OrderLineItem(1L, 1L, 1L, 1L);
 		OrderLineItem orderLineItem2 = new OrderLineItem(2L, 1L, 2L, 2L);
 		order = new Order(1L, 1L, OrderStatus.MEAL.name(), LocalDateTime.now(), Arrays.asList(orderLineItem, orderLineItem2));
 	}
@@ -54,10 +55,10 @@ class OrderServiceTest {
 	void orderCreateTest() {
 		OrderTable orderTable = new OrderTable(1L, 1L, 1, false);
 
-		when(menuDao.countByIdIn(anyList())).thenReturn(2L);
-		when(orderTableDao.findById(anyLong())).thenReturn(Optional.of(orderTable));
-		when(orderDao.save(any(Order.class))).thenReturn(order);
-		when(orderLineItemDao.save(any(OrderLineItem.class))).thenReturn(new OrderLineItem());
+		when(menuDao.countByIdIn(Lists.list(1L, 2L))).thenReturn(2L);
+		when(orderTableDao.findById(1L)).thenReturn(Optional.of(orderTable));
+		when(orderDao.save(order)).thenReturn(order);
+		when(orderLineItemDao.save(orderLineItem)).thenReturn(orderLineItem);
 
 		assertThat(orderService.create(order)).isNotNull();
 	}
@@ -73,7 +74,7 @@ class OrderServiceTest {
 	@Test
 	@DisplayName("주문 생성 시 order line item 의 개수와 메뉴의 숫자가 일치하지 않으면 익셉션 발생")
 	void orderCreateFailTest2() {
-		when(menuDao.countByIdIn(anyList())).thenReturn(1L);
+		when(menuDao.countByIdIn(Lists.list(1L, 2L))).thenReturn(1L);
 
 		assertThatThrownBy(() -> orderService.create(order))
 				.isInstanceOf(IllegalArgumentException.class);
@@ -84,8 +85,8 @@ class OrderServiceTest {
 	void orderCreateFailTest3() {
 		OrderTable orderTable = new OrderTable(1L, 1L, 1, true);
 
-		when(menuDao.countByIdIn(anyList())).thenReturn(2L);
-		when(orderTableDao.findById(anyLong())).thenReturn(Optional.of(orderTable));
+		when(menuDao.countByIdIn(Lists.list(1L, 2L))).thenReturn(2L);
+		when(orderTableDao.findById(1L)).thenReturn(Optional.of(orderTable));
 
 		assertThatThrownBy(() -> orderService.create(order))
 				.isInstanceOf(IllegalArgumentException.class);
@@ -101,7 +102,7 @@ class OrderServiceTest {
 	void changeOrderStatusTest() {
 		Order order = new Order(1L, 1L, OrderStatus.COMPLETION.name(), LocalDateTime.now(), Collections.emptyList());
 
-		when(orderDao.findById(anyLong())).thenReturn(Optional.of(this.order));
+		when(orderDao.findById(1L)).thenReturn(Optional.of(this.order));
 		assertThat(orderService.changeOrderStatus(1L, order).getOrderStatus()).isEqualTo(OrderStatus.COMPLETION.name());
 	}
 
@@ -110,7 +111,7 @@ class OrderServiceTest {
 	void changeOrderStatusFailTest() {
 		Order order = new Order(1L, 1L, OrderStatus.COMPLETION.name(), LocalDateTime.now(), Collections.emptyList());
 
-		when(orderDao.findById(anyLong())).thenReturn(Optional.of(order));
+		when(orderDao.findById(1L)).thenReturn(Optional.of(order));
 		assertThatThrownBy(() -> orderService.changeOrderStatus(1L, order))
 				.isInstanceOf(IllegalArgumentException.class);
 	}

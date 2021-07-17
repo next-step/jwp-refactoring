@@ -19,7 +19,6 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import static org.hamcrest.Matchers.containsString;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -53,12 +52,13 @@ public class MenuRestControllerTest {
 
 	@Test
 	void createTest() throws Exception {
-		given(menuService.create(any(Menu.class))).willReturn(new Menu(1L));
+		Menu menu = new Menu(1L, "치킨", BigDecimal.valueOf(10000), null, null);
+		given(menuService.create(menu)).willReturn(menu);
 
 		mockMvc.perform(
 				post(BASE_URL)
 						.contentType(MediaType.APPLICATION_JSON)
-						.content(objectMapper.writeValueAsString(new Menu("치킨", BigDecimal.valueOf(10000), null, null))))
+						.content(objectMapper.writeValueAsString(menu)))
 				.andExpect(status().isCreated())
 				.andExpect(header().string("location", BASE_URL + "/1"));
 	}

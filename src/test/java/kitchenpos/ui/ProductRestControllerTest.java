@@ -19,7 +19,6 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import static org.hamcrest.Matchers.containsString;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -53,12 +52,13 @@ class ProductRestControllerTest {
 
 	@Test
 	void createTest() throws Exception {
-		given(productService.create(any(Product.class))).willReturn(new Product(1L));
+		Product product = new Product(1L);
+		given(productService.create(product)).willReturn(product);
 
 		mockMvc.perform(
 				post(BASE_URL)
 						.contentType(MediaType.APPLICATION_JSON)
-						.content(objectMapper.writeValueAsString(new Product())))
+						.content(objectMapper.writeValueAsString(product)))
 				.andExpect(status().isCreated())
 				.andExpect(header().string("location", BASE_URL + "/1"));
 	}

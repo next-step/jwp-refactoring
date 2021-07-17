@@ -14,7 +14,6 @@ import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -27,9 +26,9 @@ class ProductServiceTest {
 
 	@Test
 	void createProductTest() {
-		Product inputProduct = new Product("피자", BigDecimal.valueOf(10000));
-		when(productDao.save(any(Product.class))).thenReturn(new Product());
-		assertThat(productService.create(inputProduct)).isNotNull();
+		Product product = new Product("피자", BigDecimal.valueOf(10000));
+		when(productDao.save(product)).thenReturn(product);
+		assertThat(productService.create(product)).isNotNull();
 	}
 
 	@Test

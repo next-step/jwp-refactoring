@@ -18,7 +18,6 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -52,7 +51,7 @@ class OrderRestControllerTest {
 	@Test
 	void createTest() throws Exception {
 		Order order = new Order(1L, null, null, null, null);
-		given(orderService.create(any(Order.class))).willReturn(order);
+		given(orderService.create(order)).willReturn(order);
 
 		mockMvc.perform(
 				post(BASE_URL)

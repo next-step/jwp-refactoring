@@ -17,7 +17,6 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 import java.util.List;
 
 import static org.hamcrest.Matchers.containsString;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -51,7 +50,7 @@ class MenuGroupRestControllerTest {
 	@Test
 	void createTest() throws Exception {
 		MenuGroup menuGroup = new MenuGroup(1L, "치킨");
-		given(menuGroupService.create(any(MenuGroup.class))).willReturn(menuGroup);
+		given(menuGroupService.create(menuGroup)).willReturn(menuGroup);
 
 		mockMvc.perform(
 				post(BASE_URL)

@@ -14,7 +14,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -49,12 +48,13 @@ class TableGroupRestControllerTest {
 
 	@Test
 	void createTest() throws Exception {
-		given(tableGroupService.create(any(TableGroup.class))).willReturn(new TableGroup(1L, null, null));
+		TableGroup tableGroup = new TableGroup(1L, null, null);
+		given(tableGroupService.create(tableGroup)).willReturn(tableGroup);
 
 		mockMvc.perform(
 				post(BASE_URL)
 						.contentType(MediaType.APPLICATION_JSON)
-						.content(objectMapper.writeValueAsString(new TableGroup())))
+						.content(objectMapper.writeValueAsString(tableGroup)))
 				.andExpect(status().isCreated())
 				.andExpect(header().string("location", BASE_URL + "/1"));
 	}

@@ -17,8 +17,6 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -52,7 +50,7 @@ public class TableRestControllerTest {
 	@Test
 	void createTest() throws Exception {
 		OrderTable orderTable = new OrderTable(1L, null, 2, true);
-		given(tableService.create(any(OrderTable.class))).willReturn(orderTable);
+		given(tableService.create(orderTable)).willReturn(orderTable);
 
 		mockMvc.perform(
 				post(BASE_URL)
@@ -76,7 +74,7 @@ public class TableRestControllerTest {
 	@Test
 	void changeEmptyTest() throws Exception {
 		OrderTable orderTable = new OrderTable(1L, 1L, 2, true);
-		given(tableService.changeEmpty(anyLong(), any(OrderTable.class))).willReturn(orderTable);
+		given(tableService.changeEmpty(1L, orderTable)).willReturn(orderTable);
 
 		mockMvc.perform(
 				put(BASE_URL + "/{orderTableId}/empty", orderTable.getId())
@@ -88,7 +86,7 @@ public class TableRestControllerTest {
 	@Test
 	void changeNumberOfGuestsTest() throws Exception {
 		OrderTable orderTable = new OrderTable(1L, 1L, 2, true);
-		given(tableService.changeNumberOfGuests(anyLong(), any(OrderTable.class))).willReturn(orderTable);
+		given(tableService.changeNumberOfGuests(1L, orderTable)).willReturn(orderTable);
 
 		mockMvc.perform(
 				put(BASE_URL + "/{orderTableId}/number-of-guests", orderTable.getId())
