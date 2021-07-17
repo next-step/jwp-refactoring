@@ -12,6 +12,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 
 import kitchenpos.tableGroup.application.TableGroupService;
+import kitchenpos.tableGroup.dto.TableGroupResponse;
 import kitchenpos.tableGroup.ui.TableGroupRestController;
 import kitchenpos.tableGroup.dto.TableGroupRequest;
 
@@ -22,7 +23,7 @@ public class TableGroupRestControllerTest extends WebMvcTestConfiguration {
 
 	@Test
 	void createTest() throws Exception {
-		given(tableGroupService.create(any())).willReturn(new TableGroupRequest());
+		given(tableGroupService.create(any())).willReturn(new TableGroupResponse());
 
 		mockMvc.perform(post("/api/table-groups")
 			.content(objectMapper.writeValueAsString(new TableGroupRequest())).contentType(MediaType.APPLICATION_JSON))

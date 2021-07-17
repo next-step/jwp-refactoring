@@ -14,6 +14,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 
 import kitchenpos.table.application.TableService;
+import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.ui.TableRestController;
 import kitchenpos.table.dto.OrderTableRequest;
 
@@ -24,7 +25,7 @@ public class TableRestControllerTest extends WebMvcTestConfiguration {
 
 	@Test
 	void createTest() throws Exception {
-		given(tableService.create(any())).willReturn(new OrderTableRequest());
+		given(tableService.create(any())).willReturn(new OrderTableResponse());
 
 		mockMvc.perform(post("/api/tables")
 			.content(objectMapper.writeValueAsString(new OrderTableRequest())).contentType(MediaType.APPLICATION_JSON))
@@ -34,7 +35,7 @@ public class TableRestControllerTest extends WebMvcTestConfiguration {
 
 	@Test
 	void listTest() throws Exception {
-		given(tableService.list()).willReturn(Arrays.asList(new OrderTableRequest(1L, 1L, 10, false), new OrderTableRequest(2L, 2L, 4, true)));
+		given(tableService.list()).willReturn(Arrays.asList(new OrderTableResponse(), new OrderTableResponse()));
 
 		mockMvc.perform(get("/api/tables"))
 			.andDo(print())
@@ -44,7 +45,7 @@ public class TableRestControllerTest extends WebMvcTestConfiguration {
 	@Test
 	void changeEmptyTest() throws Exception {
 		Long orderTableId = 1L;
-		given(tableService.changeEmpty(any(), any())).willReturn(new OrderTableRequest());
+		given(tableService.changeEmpty(any(), any())).willReturn(new OrderTableResponse());
 
 		mockMvc.perform(put("/api/tables/" + orderTableId + "/empty")
 			.param("orderTableId", orderTableId + "")
@@ -57,7 +58,7 @@ public class TableRestControllerTest extends WebMvcTestConfiguration {
 	@Test
 	void changeNumberOfGuestTest() throws Exception {
 		Long orderTableId = 1L;
-		given(tableService.changeEmpty(any(), any())).willReturn(new OrderTableRequest());
+		given(tableService.changeEmpty(any(), any())).willReturn(new OrderTableResponse());
 
 		mockMvc.perform(put("/api/tables/" + orderTableId +"/number-of-guests")
 			.param("orderTableId", orderTableId + "")

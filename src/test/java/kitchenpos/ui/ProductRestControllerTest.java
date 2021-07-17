@@ -13,7 +13,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 
+import kitchenpos.menu.domain.Price;
 import kitchenpos.product.application.ProductService;
+import kitchenpos.product.dto.ProductResponse;
 import kitchenpos.product.ui.ProductRestController;
 import kitchenpos.product.dto.ProductRequest;
 
@@ -24,7 +26,7 @@ public class ProductRestControllerTest extends WebMvcTestConfiguration {
 
 	@Test
 	void createTest() throws Exception {
-		given(productService.create(any())).willReturn(new ProductRequest());
+		given(productService.create(any())).willReturn(new ProductResponse());
 
 		mockMvc.perform(post("/api/products")
 			.content(objectMapper.writeValueAsString(new ProductRequest())).contentType(MediaType.APPLICATION_JSON))
@@ -34,7 +36,7 @@ public class ProductRestControllerTest extends WebMvcTestConfiguration {
 
 	@Test
 	void listTest() throws Exception {
-		given(productService.list()).willReturn(Arrays.asList(new ProductRequest("양념치킨", new BigDecimal(10000)), new ProductRequest("알싸한 마늘 치킨", new BigDecimal(20000))));
+		given(productService.list()).willReturn(Arrays.asList(new ProductResponse(), new ProductResponse()));
 
 		mockMvc.perform(get("/api/products"))
 			.andDo(print())

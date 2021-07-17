@@ -31,6 +31,9 @@ public class MenuProduct {
 
 	private long quantity;
 
+	public MenuProduct() {
+	}
+
 	public MenuProduct(Menu menu, Product product, long quantity) {
 		this.menu = menu;
 		this.product = product;

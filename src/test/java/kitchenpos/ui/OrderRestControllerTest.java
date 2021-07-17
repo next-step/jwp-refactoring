@@ -16,6 +16,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 
 import kitchenpos.order.application.OrderService;
+import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.ui.OrderRestController;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.table.dto.OrderLineItemRequest;
@@ -37,7 +38,7 @@ public class OrderRestControllerTest extends WebMvcTestConfiguration {
 
 	@Test
 	void createTest() throws Exception {
-		when(orderService.create(any())).thenReturn(new OrderRequest());
+		when(orderService.create(any())).thenReturn(new OrderResponse());
 
 		mockMvc.perform(post("/api/orders")
 			.content(objectMapper.writeValueAsString(new OrderRequest()))
@@ -49,7 +50,7 @@ public class OrderRestControllerTest extends WebMvcTestConfiguration {
 	@Test
 	void listTest() throws Exception {
 		// Given
-		when(orderService.list()).thenReturn(Arrays.asList(order1, order2));
+		when(orderService.list()).thenReturn(Arrays.asList(new OrderResponse(), new OrderResponse()));
 		// When, Then
 		mockMvc.perform(get("/api/orders"))
 			.andDo(print())
@@ -60,7 +61,7 @@ public class OrderRestControllerTest extends WebMvcTestConfiguration {
 	void changeOrderStatus() throws Exception {
 		Long orderId = 1L;
 		// Given
-		given(orderService.changeOrderStatus(orderId, new OrderRequest())).willReturn(new OrderRequest());
+		given(orderService.changeOrderStatus(orderId, new OrderRequest())).willReturn(new OrderResponse());
 		// When, Then
 		mockMvc.perform(put("/api/orders/" + orderId + "/order-status")
 			.param("orderId", orderId + "")
