@@ -38,14 +38,4 @@ class MenuResponseTest {
         assertThat(expected.getPrice()).isEqualTo(메뉴.getPrice().price());
         assertThat(expected.getMenuProductResponses().size()).isEqualTo(2);
     }
-
-    @Test
-    void 메뉴_entity_객체를_이용하여_메뉴_반환_객체_생성_메뉴_상품_리스트_별도로_주어질때() {
-        MenuResponse expected = MenuResponse.of(메뉴, Arrays.asList(짜장면_메뉴, 탕수육_메뉴));
-        assertThat(expected.getId()).isEqualTo(메뉴.getId());
-        assertThat(expected.getName()).isEqualTo(메뉴.getName());
-        assertThat(expected.getMenuGroupId()).isEqualTo(메뉴.getMenuGroupId());
-        assertThat(expected.getPrice()).isEqualTo(메뉴.getPrice().price());
-        assertThat(expected.getMenuProductResponses().size()).isEqualTo(2);
-    }
 }

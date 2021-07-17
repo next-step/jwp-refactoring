@@ -2,7 +2,10 @@ package kitchenpos.product.domain;
 
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class Products {
     private List<Product> products;
@@ -15,8 +18,12 @@ public class Products {
         return this.products.contains(product);
     }
 
-    public List<Product> getProducts() {
-        return products;
+    public int productSize() {
+        return products.size();
+    }
+
+    public Map<Long, Product> generateProductMap() {
+        return products.stream().collect(Collectors.toMap(Product::getId, Function.identity()));
     }
 
     @Override

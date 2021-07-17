@@ -55,14 +55,4 @@ public class MenuRequest {
     public List<Long> toProductIds() {
         return menuProducts.stream().map(MenuProductRequest::getProductId).collect(Collectors.toList());
     }
-
-    public BigDecimal calcProductsPrice(Products products) {
-        Map<Long, Product> productMap = products.getProducts().stream().collect(Collectors.toMap(Product::getId, Function.identity()));
-        return menuProducts
-                .stream()
-                .filter(menuProductRequest -> productMap.containsKey(menuProductRequest.getProductId()))
-                .map(menuProductRequest -> productMap.get(menuProductRequest.getProductId()).multiplyQuantity(menuProductRequest.getQuantity()))
-                .reduce(BigDecimal::add)
-                .orElse(BigDecimal.ZERO);
-    }
 }

@@ -1,6 +1,5 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.exception.MenuException;
 import kitchenpos.product.domain.Price;
 
 import javax.persistence.*;
@@ -10,7 +9,6 @@ import java.util.List;
 @Entity
 public class Menu {
 
-    public static final String ILLEGAL_MENU_PRICE_ERROR_MESSAGE = "메뉴의 가격이 잘못 입력되었습니다.";
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -53,13 +51,6 @@ public class Menu {
         if (!menuProducts.contains(menuProduct)) {
             menuProduct.withMenu(this);
             menuProducts.addMenuProduct(menuProduct);
-        }
-    }
-
-
-    public void validMenuTotalAmount(BigDecimal menuTotalAmount) {
-        if (price.isGreaterThen(menuTotalAmount)) {
-            throw new MenuException(ILLEGAL_MENU_PRICE_ERROR_MESSAGE);
         }
     }
 

@@ -20,14 +20,14 @@ public class MenuGroupRestController {
 
     @PostMapping
     public ResponseEntity<MenuGroupResponse> create(@RequestBody final MenuGroupRequest menuGroup) {
-        final MenuGroupResponse created = menuGroupService.newCreate(menuGroup);
+        final MenuGroupResponse created = menuGroupService.create(menuGroup);
         final URI uri = URI.create("/api/menu-groups/" + created.getId());
         return ResponseEntity.created(uri).body(created);
     }
 
     @GetMapping
     public ResponseEntity<List<MenuGroupResponse>> list() {
-        return ResponseEntity.ok().body(menuGroupService.newList());
+        return ResponseEntity.ok().body(menuGroupService.list());
 
     }
 }

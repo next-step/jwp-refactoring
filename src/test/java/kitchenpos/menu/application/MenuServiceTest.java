@@ -1,14 +1,14 @@
 package kitchenpos.menu.application;
 
-import kitchenpos.exception.MenuException;
-import kitchenpos.menu.domain.*;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.domain.Quantity;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.menu.domain.MenuGroupRepository;
-import kitchenpos.product.application.ProductService;
+import kitchenpos.menu.publisher.MenuEventPublisher;
 import kitchenpos.product.domain.Product;
-import kitchenpos.product.domain.Products;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,7 +22,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -34,13 +33,7 @@ class MenuServiceTest {
     private MenuRepository menuRepository;
 
     @Mock
-    private MenuProductRepository menuProductRepository;
-
-    @Mock
-    private MenuGroupRepository menuGroupRepository;
-
-    @Mock
-    private ProductService productService;
+    private MenuEventPublisher eventPublisher;
 
     @InjectMocks
     private MenuService menuService;
@@ -71,9 +64,7 @@ class MenuServiceTest {
 
     @Test
     void 메뉴_등록_기능() {
-        when(menuGroupRepository.existsById(1L)).thenReturn(true);
         List<Product> products = Arrays.asList(짜장면, 탕수육);
-        when(productService.findProductsByIds(Arrays.asList(1L, 2L))).thenReturn(new Products(products));
 
         List<MenuProduct> menuProducts = Arrays.asList(짜장면_메뉴, 탕수육_메뉴);
         메뉴.addMenuProducts(menuProducts);
@@ -88,12 +79,6 @@ class MenuServiceTest {
         assertThat(expected.getPrice()).isEqualTo(메뉴.getPrice().price());
 
         assertThat(expected.getMenuProductResponses().size()).isEqualTo(2);
-    }
-
-    @Test
-    void 존재하지않는_메뉴그룹_아이디_등록_요청_시_에러_발생() {
-        when(menuGroupRepository.existsById(1L)).thenReturn(false);
-        assertThatThrownBy(() -> menuService.create(menuRequest)).isInstanceOf(MenuException.class);
     }
 
     @Test

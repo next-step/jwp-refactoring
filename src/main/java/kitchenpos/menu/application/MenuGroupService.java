@@ -20,13 +20,13 @@ public class MenuGroupService {
         this.menuGroupRepository = menuGroupRepository;
     }
 
-    public MenuGroupResponse newCreate(final MenuGroupRequest request) {
+    public MenuGroupResponse create(final MenuGroupRequest request) {
         MenuGroup menuGroup = menuGroupRepository.save(request.toMenuGroup());
         return MenuGroupResponse.of(menuGroup);
     }
 
     @Transactional(readOnly = true)
-    public List<MenuGroupResponse> newList() {
+    public List<MenuGroupResponse> list() {
         List<MenuGroup> menuGroups = menuGroupRepository.findAll();
         return menuGroups.stream().map(MenuGroupResponse::of).collect(Collectors.toList());
     }
