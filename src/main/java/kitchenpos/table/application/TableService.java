@@ -12,6 +12,7 @@ import java.util.List;
 
 @Service
 public class TableService {
+	private static final int MINIMUM_NUMBER_OF_GUEST = 0;
 	private final OrderService orderService;
 	private final OrderTableRepository orderTableRepository;
 
@@ -40,7 +41,7 @@ public class TableService {
 
 	@Transactional
 	public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final int numberOfGuests) {
-		if (numberOfGuests < 0) {
+		if (numberOfGuests < MINIMUM_NUMBER_OF_GUEST) {
 			throw new IllegalArgumentException("손님 숫자는 0보다 작을 수 없습니다.");
 		}
 		final OrderTable orderTable = findById(orderTableId);
