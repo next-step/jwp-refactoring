@@ -1,11 +1,9 @@
-package kitchenpos.test.application;
+package kitchenpos.table.application;
 
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.table.exception.NotChangeToEmptyThatGroupTable;
-import kitchenpos.table.application.OrderTableService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.OrderTables;
@@ -14,6 +12,7 @@ import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.exception.NotChangeNumberOfGuestThatEmptyTable;
 import kitchenpos.table.exception.NotChangeToEmptyThatCookingOrMealTable;
+import kitchenpos.table.exception.NotChangeToEmptyThatGroupTable;
 import kitchenpos.table.exception.NotFoundOrderTableException;
 import kitchenpos.table.handler.OrderTableMapper;
 import kitchenpos.table.handler.OrderTableValidator;

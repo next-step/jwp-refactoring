@@ -1,4 +1,4 @@
-package kitchenpos.manu.application;
+package kitchenpos.menu.application;
 
 import kitchenpos.menu.application.ProductService;
 import kitchenpos.menu.domain.Product;
@@ -6,11 +6,13 @@ import kitchenpos.menu.domain.ProductRepository;
 import kitchenpos.menu.dto.ProductRequest;
 import kitchenpos.menu.dto.ProductResponse;
 import kitchenpos.wrap.Price;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
@@ -38,7 +40,7 @@ public class ProductServiceTest {
         // given
         치킨_요청 = 상품_요청("치킨", 17000);
         Product 치킨 = 상품_생성("치킨", 17000);
-        when(productRepository.save(치킨_요청.toProduct())).thenReturn(치킨);
+        Mockito.when(productRepository.save(치킨_요청.toProduct())).thenReturn(치킨);
 
         // when
         // 메뉴 그룹을 등록 요청
@@ -46,7 +48,7 @@ public class ProductServiceTest {
 
         // then
         // 메뉴 그릅 등록 됨
-        assertThat(expected.getName()).isEqualTo(치킨.getName());
+        Assertions.assertThat(expected.getName()).isEqualTo(치킨.getName());
     }
 
     @Test
@@ -58,7 +60,7 @@ public class ProductServiceTest {
 
         // than
         // 예외 발생
-        assertThatThrownBy(() -> productService.create(치킨_요청))
+        Assertions.assertThatThrownBy(() -> productService.create(치킨_요청))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -69,13 +71,13 @@ public class ProductServiceTest {
         // 메뉴 그룹 리스트 조회 요청 함
         Product 치킨 = 상품_생성("치킨", 17000);
         Product 콜라 = 상품_생성("콜라", 1000);
-        when(productRepository.findAll()).thenReturn(Arrays.asList(치킨, 콜라));
+        Mockito.when(productRepository.findAll()).thenReturn(Arrays.asList(치킨, 콜라));
         List<ProductResponse> expected = productService.list();
 
         // then
         // 메뉴 그릅 등록 됨
-        assertThat(expected.size()).isEqualTo(2);
-        assertThat(expected).containsAll(Arrays.asList(ProductResponse.of(치킨), ProductResponse.of(콜라)));
+        Assertions.assertThat(expected.size()).isEqualTo(2);
+        Assertions.assertThat(expected).containsAll(Arrays.asList(ProductResponse.of(치킨), ProductResponse.of(콜라)));
     }
 
     private ProductRequest 상품_요청(String name, int price) {

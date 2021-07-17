@@ -96,7 +96,7 @@ public class OrderServiceTest {
 
         // and
         // 주문 생성되어 있음
-        OrderRequest orderRequest= new OrderRequest(1L, Arrays.asList(firstOrderLineItemRequest, secondOrderLineItemRequest));
+        OrderRequest orderRequest = new OrderRequest(1L, Arrays.asList(firstOrderLineItemRequest, secondOrderLineItemRequest));
         when(orderMapper.mapFormToOrder(orderRequest)).thenReturn(order);
 
         // when
@@ -124,7 +124,7 @@ public class OrderServiceTest {
 
         // and
         // 주문 생성되어 있음
-        OrderRequest orderRequest= new OrderRequest(1L, Arrays.asList(firstOrderLineItemRequest, secondOrderLineItemRequest));
+        OrderRequest orderRequest = new OrderRequest(1L, Arrays.asList(firstOrderLineItemRequest, secondOrderLineItemRequest));
         when(orderMapper.mapFormToOrder(orderRequest)).thenReturn(order);
 
         // and
@@ -157,7 +157,7 @@ public class OrderServiceTest {
 
         // and
         // 주문 생성되어 있음
-        OrderRequest orderRequest= new OrderRequest(1L, Arrays.asList(firstOrderLineItemRequest, secondOrderLineItemRequest));
+        OrderRequest orderRequest = new OrderRequest(1L, Arrays.asList(firstOrderLineItemRequest, secondOrderLineItemRequest));
         when(orderMapper.mapFormToOrder(orderRequest)).thenReturn(order);
 
         // and
