@@ -4,9 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.menu.domain.entity.Menu;
-import kitchenpos.menu.domain.entity.MenuProduct;
 import kitchenpos.menu.domain.repository.MenuRepository;
-import kitchenpos.menu.domain.value.MenuProducts;
 import kitchenpos.menu.domain.value.Price;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
@@ -49,14 +47,7 @@ public class MenuService {
     private Menu toMenuEntity(MenuRequest menuRequest) {
         return Menu.of(menuRequest.getName(),
             Price.of(menuRequest.getPrice()),
-            menuRequest.getMenuGroupId(),
-            toMenuProductEntities(menuRequest));
-    }
-
-    private MenuProducts toMenuProductEntities(MenuRequest menuRequest) {
-        return new MenuProducts(menuRequest.getMenuProducts().stream()
-            .map(menuProductRequest -> new MenuProduct(menuProductRequest.getProductId(),
-                menuProductRequest.getQuantity())).collect(Collectors.toList()));
+            menuRequest.getMenuGroupId());
     }
 
     private void validateProductPriceSum(MenuRequest menuRequest) {

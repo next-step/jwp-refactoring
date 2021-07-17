@@ -25,12 +25,20 @@ public class MenuResponse {
         this.menuProducts = menuProducts;
     }
 
+    public MenuResponse(Long id, String name, BigDecimal price, Long menuGroupId) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.menuGroupId = menuGroupId;
+    }
+
     public static MenuResponse of(Menu menu) {
         return new MenuResponse(menu.getId(),
             menu.getName(),
             menu.getPrice().getPrice(),
-            menu.getMenuGroupId(),
-            MenuProductResponse.ofList(menu.getMenuProducts()));
+            menu.getMenuGroupId()
+            //,            MenuProductResponse.ofList(menu.getMenuProducts())
+        );
     }
 
     public static List<MenuResponse> ofList(List<Menu> menus) {
