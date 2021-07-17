@@ -1,0 +1,5 @@
+project(':menu') {
+    dependencies {
+        implementation project(':product')
+    }
+}
