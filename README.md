@@ -70,6 +70,46 @@
     - [X] Spring Events 적용해보기
     - [X] Service 및 Repository 참조는 Interface 또는 Validator로 대신하기
 
+### 요구사항 4
+- Gradle의 멀티 모듈 개념을 적용해 자유롭게 서로 다른 프로젝트로 분리해 본다.
+    - 컨텍스트 간의 독립된 모듈로 만들 수 있다.
+    - 계층 간의 독립된 모듈로 만들 수 있다.
+
+#### 상세 구현내용 정리
+- [ ] 아래 링크 내용을 토대로 계층간의 독립된 모듈로 구성
+    - 멀티모듈 구성 - [멀티모듈 설계 이야기 with Spring, Gradle](https://techblog.woowahan.com/2637/)
+    - 통합테스트 케이스 분리 및 빌드 - [Gradle Multi Project](https://kwonnam.pe.kr/wiki/gradle/multiproject)
+    - 구성 내용
+        + [ ] 공통으로 사용되는 클래스 및 유틸성 기능들은 common으로 구성
+        + [ ] 도메인 및 도메인과 연결된 Repository 인터페이스를 domain으로 구성. common 모듈을 의존.
+        + [ ] 애플리케이션 실행에 필요한 클래스와 기능이 구현된 클래스를 app으로 구성. domain 모듈을 의존.
+        + [ ] 컨트롤러 단위에서 SpringBootTest를 이용한 통합테스트 케이스는 별도로 test-support로 구성.
+            - app모듈의 불필요한 의존성을 제거하기 위해 해당 테스트 케이스는 별도로 분리.
+- [ ] 모듈 빌드를 진행 후 lib 참조 확인.
+    - `./gradlew clean :module-app:build` 명령어로 app모듈 빌드 진행
+    - 생성된 app의 jar 파일 내부에 module-domain, module-common이름의 jar 파일 포함된것 확인
+
+
+### 요구사항 4
+- Gradle의 멀티 모듈 개념을 적용해 자유롭게 서로 다른 프로젝트로 분리해 본다.
+    - 컨텍스트 간의 독립된 모듈로 만들 수 있다.
+    - 계층 간의 독립된 모듈로 만들 수 있다.
+
+#### 상세 구현내용 정리
+- [X] 아래 링크 내용을 토대로 계층간의 독립된 모듈로 구성
+    - 멀티모듈 구성 - [멀티모듈 설계 이야기 with Spring, Gradle](https://techblog.woowahan.com/2637/)
+    - 통합테스트 케이스 분리 및 빌드 - [Gradle Multi Project](https://kwonnam.pe.kr/wiki/gradle/multiproject)
+    - 구성 내용
+        + [X] 공통으로 사용되는 클래스 및 유틸성 기능들은 common으로 구성
+        + [X] 도메인 및 도메인과 연결된 Repository 인터페이스를 domain으로 구성. common 모듈을 의존.
+        + [X] 애플리케이션 실행에 필요한 클래스와 기능이 구현된 클래스를 app으로 구성. domain 모듈을 의존.
+        + [X] 컨트롤러 단위에서 SpringBootTest를 이용한 통합테스트 케이스는 별도로 test-support로 구성.
+            - app모듈의 불필요한 의존성을 제거하기 위해 해당 테스트 케이스는 별도로 분리.
+- [X] 모듈 빌드를 진행 후 lib 참조 확인.
+    - `./gradlew clean :module-app:build` 명령어로 app모듈 빌드 진행
+    - 생성된 app의 jar 파일 내부에 module-domain, module-common이름의 jar 파일 포함된것 확인.
+    ![img.png](result.png)
+
 ## 용어 사전
 
 | 한글명 | 영문명 | 설명 |
