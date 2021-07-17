@@ -1,0 +1,5 @@
+project(':table') {
+    dependencies {
+        implementation project(':order')
+    }
+}
