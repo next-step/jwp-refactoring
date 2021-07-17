@@ -33,10 +33,11 @@ subprojects {
 project(':module-web') {
     dependencies {
         implementation(project(':module-generic'))
-        implementation(project(':module-menus'))
-        implementation(project(':module-orders'))
 
+        implementation(project(':module-menus'))
         testImplementation(testFixtures(project(':module-menus')))
+
+        implementation(project(':module-orders'))
         testImplementation(testFixtures(project(':module-orders')))
     }
 }
@@ -44,18 +45,17 @@ project(':module-web') {
 project(':module-menus') {
     dependencies {
         implementation(project(':module-generic'))
-        testFixturesImplementation(testFixtures(project(':module-generic')))
+        testFixturesImplementation(project(':module-generic'))
     }
 }
 
 project(':module-orders') {
     dependencies {
         implementation(project(':module-generic'))
+        testFixturesImplementation(project(':module-generic'))
+
         implementation(project(':module-menus'))
-
         testImplementation(testFixtures(project(':module-menus')))
-
-        testFixturesImplementation(testFixtures(project(':module-generic')))
         testFixturesImplementation(testFixtures(project(':module-menus')))
     }
 }
