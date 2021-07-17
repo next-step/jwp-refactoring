@@ -2,7 +2,9 @@ package kitchenpos.table.util;
 
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.dto.OrderTableRequest;
+import org.springframework.stereotype.Component;
 
+@Component
 public class OrderTableMapper {
     public OrderTable mapFormToOrderTable(OrderTableRequest orderTableRequest) {
         if(orderTableRequest.getNumberOfGuests() < 1){

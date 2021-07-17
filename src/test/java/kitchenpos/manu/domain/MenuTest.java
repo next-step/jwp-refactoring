@@ -14,8 +14,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class MenuTest {
     @Test
     void 메뉴_생성() {
-        Product 떡볶이 = new Product("떡볶이", new Price(BigDecimal.valueOf(17000)));
-        MenuProduct 분식_떡볶이 = new MenuProduct(떡볶이, 1L);
+        Product 떡볶이 = new Product(1L, "떡볶이", new Price(BigDecimal.valueOf(17000)));
+        MenuProduct 분식_떡볶이 = new MenuProduct(1L, 1L);
 
         Menu 분식 = new Menu("분식", new Price(BigDecimal.valueOf(17000)), new MenuGroup(1L, "분식메뉴"), new MenuProducts(Arrays.asList(분식_떡볶이)));
         assertThat(분식).isEqualTo(new Menu("분식", new Price(BigDecimal.valueOf(17000)), new MenuGroup(1L, "분식메뉴"), new MenuProducts(Arrays.asList(분식_떡볶이))));

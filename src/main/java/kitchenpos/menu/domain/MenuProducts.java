@@ -4,9 +4,9 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Embeddable
 public class MenuProducts {
@@ -26,15 +26,13 @@ public class MenuProducts {
         this.menuProducts.forEach(menuProduct -> menuProduct.registerMenu(menu));
     }
 
-    public BigDecimal calculationTotalAmount() {
-        BigDecimal productsPrice = BigDecimal.ZERO;
-        for (MenuProduct menuProduct: menuProducts) {
-            productsPrice = productsPrice.add(menuProduct.getPriceByQuantity());
-        }
-        return productsPrice;
-    }
-
     public List<MenuProduct> getMenuProducts() {
         return menuProducts;
+    }
+
+    public List<Long> getProductIds() {
+        return menuProducts.stream()
+                .map(menuProduct -> menuProduct.getProductId())
+                .collect(Collectors.toList());
     }
 }
