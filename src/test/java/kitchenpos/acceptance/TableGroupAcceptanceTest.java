@@ -20,7 +20,7 @@ import io.restassured.response.Response;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menuGroup.dto.MenuGroupRequest;
 import kitchenpos.menu.dto.MenuProductRequest;
-import kitchenpos.domain.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.tableGroup.dto.TableGroupRequest;
 

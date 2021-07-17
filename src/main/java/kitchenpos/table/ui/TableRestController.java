@@ -1,7 +1,7 @@
 package kitchenpos.table.ui;
 
 import kitchenpos.table.application.TableService;
-import kitchenpos.domain.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 
 import org.springframework.http.ResponseEntity;

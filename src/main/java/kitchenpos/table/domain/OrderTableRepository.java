@@ -1,4 +1,4 @@
-package kitchenpos.table.dto;
+package kitchenpos.table.domain;
 
 import java.util.List;
 import java.util.Optional;

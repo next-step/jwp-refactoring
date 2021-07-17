@@ -15,7 +15,7 @@ import org.springframework.http.MediaType;
 
 import kitchenpos.table.application.TableService;
 import kitchenpos.table.ui.TableRestController;
-import kitchenpos.domain.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableRequest;
 
 @WebMvcTest(TableRestController.class)
 public class TableRestControllerTest extends WebMvcTestConfiguration {

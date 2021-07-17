@@ -20,10 +20,10 @@ import kitchenpos.order.application.OrderService;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.dao.OrderLineItemDao;
-import kitchenpos.table.dto.OrderTableRepository;
-import kitchenpos.domain.OrderRequest;
+import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.domain.OrderLineItemRequest;
-import kitchenpos.domain.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableRequest;
 
 @ExtendWith(MockitoExtension.class)
 public class OrderServiceTest {

@@ -1,7 +1,9 @@
-package kitchenpos.domain;
+package kitchenpos.order.dto;
 
 import java.time.LocalDateTime;
 import java.util.List;
+
+import kitchenpos.domain.OrderLineItemRequest;
 
 public class OrderRequest {
     private Long id;

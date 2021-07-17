@@ -1,4 +1,4 @@
-package kitchenpos.domain;
+package kitchenpos.table.dto;
 
 import java.util.Objects;
 
@@ -56,12 +56,13 @@ public class OrderTableRequest {
         this.tableGroupId = tableGroupId;
     }
 
-	public NumberOfGuests getNumberOfGuests() {
-		return new NumberOfGuests(numberOfGuests);
-	}
     public void setNumberOfGuests(final int numberOfGuests) {
         this.numberOfGuests = numberOfGuests;
     }
+
+	public NumberOfGuests getNumberOfGuests() {
+		return new NumberOfGuests(numberOfGuests);
+	}
 
     public boolean isEmpty() {
         return empty;

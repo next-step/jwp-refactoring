@@ -5,7 +5,7 @@ import org.springframework.http.MediaType;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.OrderRequest;
+import kitchenpos.order.dto.OrderRequest;
 
 public class OrderAcceptanceTestMethod {
 	public static ExtractableResponse<Response> createOrder(OrderRequest order) {

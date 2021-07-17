@@ -16,10 +16,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.tableGroup.application.TableGroupService;
 import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.table.dto.OrderTableRepository;
+import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.tableGroup.domain.TableGroupRepository;
-import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTableRequest;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.table.dto.OrderTableRequest;
 
 @ExtendWith(MockitoExtension.class)
 public class TableGroupServiceTest {

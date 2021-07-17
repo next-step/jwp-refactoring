@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import kitchenpos.domain.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.tableGroup.domain.TableGroup;
 
