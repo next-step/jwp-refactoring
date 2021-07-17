@@ -24,7 +24,6 @@ public class OrderLineItem {
     @JoinColumn(name = "order_id")
     private Order order;
 
-    @JoinColumn(name = "menu_id")
     private Long menuId;
 
     private Quantity quantity;

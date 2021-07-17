@@ -24,7 +24,6 @@ public class MenuProduct {
     @JoinColumn(name = "menu_id")
     private Menu menu;
 
-    @JoinColumn(name = "product_id")
     private Long productId;
 
     @Embedded

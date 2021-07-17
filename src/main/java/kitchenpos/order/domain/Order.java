@@ -10,7 +10,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 
 import org.springframework.data.annotation.CreatedDate;
@@ -25,7 +24,6 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @JoinColumn(name = "order_table_id")
     private Long orderTableId;
 
     @Enumerated(EnumType.STRING)
