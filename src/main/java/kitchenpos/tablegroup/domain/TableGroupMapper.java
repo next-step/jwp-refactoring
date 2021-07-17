@@ -13,7 +13,8 @@ public class TableGroupMapper {
         this.tableGroupValidator.validate(this.tableGroupRequest);
     }
 
-    public static TableGroupMapper of(final TableGroupValidator tableGroupValidator, final TableGroupRequest tableGroupRequest) {
+    public static TableGroupMapper of(final TableGroupValidator tableGroupValidator,
+        final TableGroupRequest tableGroupRequest) {
         return new TableGroupMapper(tableGroupValidator, tableGroupRequest);
     }
 
@@ -22,6 +23,6 @@ public class TableGroupMapper {
     }
 
     public TableGroupUpdateEvent toTableGroupUpdateEvent(final TableGroup tableGroup) {
-        return new TableGroupUpdateEvent(tableGroup, tableGroupRequest.getOrderTableIdRequests());
+        return new TableGroupUpdateEvent(tableGroup, tableGroupRequest.getOrderTables());
     }
 }

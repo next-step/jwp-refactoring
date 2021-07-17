@@ -6,27 +6,27 @@ import java.util.stream.Collectors;
 import org.springframework.util.CollectionUtils;
 
 public class TableGroupRequest {
-    private List<OrderTableIdRequest> orderTableIdRequests;
+    private List<OrderTableIdRequest> orderTables;
 
     public TableGroupRequest() {
     }
 
-    public TableGroupRequest(final List<OrderTableIdRequest> orderTableIdRequests) {
-        this.orderTableIdRequests = orderTableIdRequests;
+    public TableGroupRequest(final List<OrderTableIdRequest> orderTables) {
+        this.orderTables = orderTables;
     }
 
-    public List<OrderTableIdRequest> getOrderTableIdRequests() {
-        return orderTableIdRequests;
+    public List<OrderTableIdRequest> getOrderTables() {
+        return orderTables;
     }
 
     public List<Long> ids() {
-        return orderTableIdRequests.stream()
+        return orderTables.stream()
             .map(OrderTableIdRequest::getId)
             .collect(Collectors.toList());
     }
 
     public boolean isEmptyOrderTables() {
-        return CollectionUtils.isEmpty(orderTableIdRequests);
+        return CollectionUtils.isEmpty(orderTables);
     }
 
     public int orderTablesSize() {
@@ -34,6 +34,6 @@ public class TableGroupRequest {
             return 0;
         }
 
-        return orderTableIdRequests.size();
+        return orderTables.size();
     }
 }
