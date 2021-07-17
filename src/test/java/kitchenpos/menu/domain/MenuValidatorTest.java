@@ -12,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.product.domain.ProductRepository;
 
 @DataJpaTest
 class MenuValidatorTest {

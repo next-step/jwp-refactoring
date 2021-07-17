@@ -6,6 +6,7 @@ import java.util.Objects;
 import javax.persistence.Embeddable;
 
 @Embeddable
+public
 class Price {
 
     private BigDecimal price;
@@ -13,7 +14,7 @@ class Price {
     protected Price() {
     }
 
-    Price(final BigDecimal price) {
+    public Price(final BigDecimal price) {
         validate(price);
         this.price = price;
     }
@@ -24,7 +25,7 @@ class Price {
         }
     }
 
-    BigDecimal value() {
+    public BigDecimal value() {
         return price;
     }
 
