@@ -35,7 +35,7 @@ public class Menu {
 	@Column(nullable = false)
 	private MenuGroup menuGroup;
 
-	@OneToMany(mappedBy = "menu_product_id", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "menu_product", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<MenuProduct> menuProducts = new ArrayList<>();
 
 

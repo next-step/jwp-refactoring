@@ -1,5 +1,7 @@
 package kitchenpos.domain;
 
+import kitchenpos.order.domain.OrderLineItem;
+
 public class OrderLineItemRequest {
     private Long seq;
     private Long orderId;
@@ -51,4 +53,8 @@ public class OrderLineItemRequest {
     public void setQuantity(final long quantity) {
         this.quantity = quantity;
     }
+
+    public OrderLineItem toOrderLineItem(){
+    	return new OrderLineItem();
+	}
 }
