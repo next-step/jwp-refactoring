@@ -3,6 +3,7 @@ package kitchenpos.application;
 import kitchenpos.menu.application.MenuGroupService;
 import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.dto.MenuGroupRequest;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,9 +25,9 @@ class MenuGroupServiceTest {
 
 	@Test
 	void menuGroupCreateTest() {
-		MenuGroup menuGroup = new MenuGroup();
-		when(menuGroupRepository.save(menuGroup)).thenReturn(menuGroup);
-		assertThat(menuGroupService.create(menuGroup)).isNotNull();
+		MenuGroupRequest menuGroupRequest = new MenuGroupRequest();
+		when(menuGroupRepository.save(menuGroupRequest.toMenuGroup())).thenReturn(menuGroupRequest.toMenuGroup());
+		assertThat(menuGroupService.create(menuGroupRequest)).isNotNull();
 	}
 
 	@Test

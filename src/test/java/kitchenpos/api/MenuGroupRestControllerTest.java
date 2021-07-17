@@ -2,7 +2,10 @@ package kitchenpos.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.menu.application.MenuGroupService;
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.dto.MenuGroupRequest;
+import kitchenpos.menu.dto.MenuGroupResponse;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -49,21 +52,22 @@ class MenuGroupRestControllerTest {
 
 	@Test
 	void createTest() throws Exception {
-		MenuGroup menuGroup = new MenuGroup(1L, "치킨");
-		given(menuGroupService.create(menuGroup)).willReturn(menuGroup);
+		MenuGroupRequest menuGroupRequest = new MenuGroupRequest("치킨");
+		MenuGroupResponse menuGroupResponse = new MenuGroupResponse(1L, "치킨");
+		given(menuGroupService.create(menuGroupRequest)).willReturn(menuGroupResponse);
 
 		mockMvc.perform(
 				post(BASE_URL)
 						.contentType(MediaType.APPLICATION_JSON)
-						.content(objectMapper.writeValueAsString(menuGroup)))
+						.content(objectMapper.writeValueAsString(menuGroupResponse)))
 				.andExpect(status().isCreated())
 				.andExpect(header().string("location", BASE_URL + "/1"));
 	}
 
 	@Test
 	void listTest() throws Exception {
-		List<MenuGroup> menuGroups = Lists.list(new MenuGroup(1L, "치킨"), new MenuGroup());
-		given(menuGroupService.list()).willReturn(menuGroups);
+		List<MenuGroupResponse> menuGroupResponses = Lists.list(new MenuGroupResponse(1L, "치킨"), new MenuGroupResponse(2L, "피자"));
+		given(menuGroupService.list()).willReturn(menuGroupResponses);
 
 		mockMvc.perform(
 				get(BASE_URL).contentType(MediaType.APPLICATION_JSON))
