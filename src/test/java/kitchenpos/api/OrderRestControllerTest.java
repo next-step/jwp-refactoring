@@ -2,8 +2,11 @@ package kitchenpos.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.order.application.OrderService;
-import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderLineItemResponse;
+import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,6 +19,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
+import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.mockito.BDDMockito.given;
@@ -50,21 +55,23 @@ class OrderRestControllerTest {
 
 	@Test
 	void createTest() throws Exception {
-		Order order = new Order(1L, null, null, null, null);
-		given(orderService.create(order)).willReturn(order);
+		OrderRequest orderRequest = new OrderRequest(1L, LocalDateTime.of(2021, 1, 1, 1, 1), Arrays.asList(new OrderLineItemRequest()));
+		OrderResponse orderResponse = new OrderResponse(1L, 1L, OrderStatus.COOKING.name(), LocalDateTime.of(2021, 1, 1, 1, 1), Arrays.asList(new OrderLineItemResponse()));
+
+		given(orderService.create(orderRequest)).willReturn(orderResponse);
 
 		mockMvc.perform(
 				post(BASE_URL)
 						.contentType(MediaType.APPLICATION_JSON)
-						.content(objectMapper.writeValueAsString(order)))
+						.content(objectMapper.writeValueAsString(orderRequest)))
 				.andExpect(status().isCreated())
 				.andExpect(header().string("location", BASE_URL + "/1"));
 	}
 
 	@Test
 	void listTest() throws Exception {
-		List<Order> orders = Lists.list(new Order(), new Order());
-		given(orderService.list()).willReturn(orders);
+		List<OrderResponse> orderResponses = Lists.list(new OrderResponse(), new OrderResponse());
+		given(orderService.list()).willReturn(orderResponses);
 
 		mockMvc.perform(
 				get(BASE_URL).contentType(MediaType.APPLICATION_JSON))
@@ -74,13 +81,13 @@ class OrderRestControllerTest {
 
 	@Test
 	void changeOrderStatusTest() throws Exception {
-		Order order = new Order(1L, null, OrderStatus.COMPLETION.name(), null, null);
-		given(orderService.changeOrderStatus(order.getId(), order)).willReturn(order);
+		OrderResponse orderResponse = new OrderResponse(1L, 1L, OrderStatus.COMPLETION.name(), null, Arrays.asList(new OrderLineItemResponse(), new OrderLineItemResponse()));
+		given(orderService.changeOrderStatus(orderResponse.getOrderId(), OrderStatus.COMPLETION.name())).willReturn(orderResponse);
 
 		mockMvc.perform(
-				put(BASE_URL + "/{orderId}/order-status", order.getId())
+				put(BASE_URL + "/{orderId}/order-status", orderResponse.getOrderId())
 						.contentType(MediaType.APPLICATION_JSON)
-						.content(objectMapper.writeValueAsString(order)))
+						.content(objectMapper.writeValueAsString(orderResponse)))
 				.andExpect(status().isOk());
 	}
 }
