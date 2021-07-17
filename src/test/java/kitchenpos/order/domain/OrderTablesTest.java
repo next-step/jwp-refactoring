@@ -4,8 +4,6 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
@@ -22,9 +20,8 @@ class OrderTablesTest {
         final OrderTable orderTable1 = mock(OrderTable.class);
         final OrderTable orderTable2 = mock(OrderTable.class);
         final OrderTables orderTables = new OrderTables(Arrays.asList(orderTable1, orderTable2));
-        final List<OrderLineItem> orderLineItems = Collections.emptyList();
-        final Order order1 = new Order(orderTable1, OrderStatus.COMPLETION, orderLineItems);
-        final Order order2 = new Order(orderTable2, OrderStatus.COMPLETION, orderLineItems);
+        final Order order1 = new Order(orderTable1.getId(), OrderStatus.COMPLETION);
+        final Order order2 = new Order(orderTable2.getId(), OrderStatus.COMPLETION);
         final Orders orders = new Orders(Arrays.asList(order1, order2));
         given(tableGroup.getId()).willReturn(1L);
 
@@ -42,12 +39,11 @@ class OrderTablesTest {
         final OrderTable orderTable1 = mock(OrderTable.class);
         final OrderTable orderTable2 = mock(OrderTable.class);
         final OrderTables orderTables = new OrderTables(Arrays.asList(orderTable1, orderTable2));
-        final List<OrderLineItem> orderLineItems = Collections.emptyList();
-        final Order order1 = new Order(orderTable1, OrderStatus.COOKING, orderLineItems);
-        final Order order2 = new Order(orderTable2, OrderStatus.COMPLETION, orderLineItems);
+        final Order order1 = new Order(orderTable1.getId(), OrderStatus.COOKING);
+        final Order order2 = new Order(orderTable2.getId(), OrderStatus.COMPLETION);
         final Orders orders = new Orders(Arrays.asList(order1, order2));
-        given(orderTable1.getId()).willReturn(1L);
-        given(orderTable2.getId()).willReturn(2L);
+        given(orderTable1.getTableGroupId()).willReturn(1L);
+        given(orderTable2.getTableGroupId()).willReturn(2L);
 
         // when
         final Throwable throwable = catchThrowable(() -> orderTables.ungroup(orders));

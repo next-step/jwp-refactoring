@@ -3,6 +3,7 @@ package kitchenpos.tablegroup.domain;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
@@ -42,7 +43,7 @@ public class TableGroupValidator {
     }
 
     private void validateOrderTableSize(final List<Long> ids, final List<OrderTable> orderTables) {
-        if (ids.size() != orderTables.size()) {
+        if (CollectionUtils.isEmpty(orderTables) || ids.size() != orderTables.size()) {
             throw new IllegalArgumentException("등록되지 않은 테이블이 있습니다.");
         }
     }

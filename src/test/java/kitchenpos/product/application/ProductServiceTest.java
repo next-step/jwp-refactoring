@@ -1,7 +1,7 @@
 package kitchenpos.product.application;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.BDDMockito.*;
 
 import java.math.BigDecimal;
 import java.util.stream.Stream;
@@ -33,6 +33,7 @@ class ProductServiceTest {
         // given
         final ProductRequest productRequest = new ProductRequest();
         productRequest.setPrice(BigDecimal.ZERO);
+        given(productRepository.save(any(Product.class))).willReturn(new Product("name", BigDecimal.ZERO));
 
         // when
         productService.create(productRequest);

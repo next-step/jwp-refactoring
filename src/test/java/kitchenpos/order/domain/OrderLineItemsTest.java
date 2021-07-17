@@ -9,8 +9,6 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import kitchenpos.menu.domain.Menu;
-
 public class OrderLineItemsTest {
 
     @Test
@@ -29,14 +27,10 @@ public class OrderLineItemsTest {
     void ids() {
         // given
         final Order order = mock(Order.class);
-        final Menu menu1 = mock(Menu.class);
-        final Menu menu2 = mock(Menu.class);
-        final OrderLineItem orderLineItem1 = new OrderLineItem(order, menu1.getId(), 1);
-        final OrderLineItem orderLineItem2 = new OrderLineItem(order, menu2.getId(), 1);
+        final OrderLineItem orderLineItem1 = new OrderLineItem(order, 1L, 1);
+        final OrderLineItem orderLineItem2 = new OrderLineItem(order, 2L, 1);
         final List<OrderLineItem> orderLineItemList = Arrays.asList(orderLineItem1, orderLineItem2);
         final OrderLineItems orderLineItems = new OrderLineItems(orderLineItemList);
-        given(menu1.getId()).willReturn(1L);
-        given(menu2.getId()).willReturn(2L);
 
         // when
         final List<Long> actual = orderLineItems.menuIds();

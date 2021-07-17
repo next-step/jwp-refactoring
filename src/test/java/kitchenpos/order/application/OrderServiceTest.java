@@ -15,17 +15,19 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 
-import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderLineItemRepository;
 import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.OrderValidator;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
 
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
@@ -41,6 +43,12 @@ class OrderServiceTest {
     @Mock
     private OrderTableRepository orderTableRepository;
 
+    @Mock
+    private OrderValidator orderValidator;
+
+    @Mock
+    private ApplicationEventPublisher publisher;
+
     @InjectMocks
     private OrderService orderService;
 
@@ -52,8 +60,8 @@ class OrderServiceTest {
 
     @BeforeEach
     void setUp() {
-        order = new Order();
-        savedOrder = new Order();
+        order = new Order(1L, OrderStatus.COOKING);
+        savedOrder = new Order(1L);
         orderLineItem = new OrderLineItem();
         orderLineItem2 = new OrderLineItem();
     }
@@ -66,14 +74,7 @@ class OrderServiceTest {
         final List<OrderLineItemRequest> orderLineItemRequests = Arrays.asList(orderLineItemRequest1,
             orderLineItemRequest2);
         final OrderRequest orderRequest = new OrderRequest(1L, orderLineItemRequests);
-        final Menu menu1 = mock(Menu.class);
-        final Menu menu2 = mock(Menu.class);
-        given(menu1.getId()).willReturn(1L);
-        given(menu2.getId()).willReturn(2L);
-        given(menuRepository.findAllByIdIn(anyList())).willReturn(Arrays.asList(menu1, menu2));
         given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(new OrderTable()));
-
-        savedOrder.setId(1L);
         given(orderRepository.save(any(Order.class))).willReturn(savedOrder);
 
         // when
@@ -124,17 +125,19 @@ class OrderServiceTest {
     @Test
     void changeOrderStatus() {
         // given
-        final OrderRequest order = new OrderRequest();
-        order.setOrderStatus("COOKING");
+        final List<OrderLineItemRequest> orderLineItems = Collections.singletonList(new OrderLineItemRequest(1L, 1L));
+        final OrderRequest orderRequest = new OrderRequest(1L, orderLineItems, "COOKING");
         final Order savedOrder = new Order();
         given(orderRepository.findById(orderId)).willReturn(Optional.of(savedOrder));
+        final Order newOrder = new Order(1L, OrderStatus.COOKING);
+        given(orderRepository.save(savedOrder)).willReturn(newOrder);
 
         // when
-        orderService.changeOrderStatus(orderId, order);
+        orderService.changeOrderStatus(orderId, orderRequest);
 
         // then
         verify(orderRepository).save(savedOrder);
-        assertThat(savedOrder.getOrderStatus().name()).isEqualTo(order.getOrderStatus());
+        assertThat(savedOrder.getOrderStatus().name()).isEqualTo(orderRequest.getOrderStatus());
     }
 
     @Test

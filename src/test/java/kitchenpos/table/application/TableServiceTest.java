@@ -1,4 +1,4 @@
-package kitchenpos.order.application;
+package kitchenpos.table.application;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
@@ -12,7 +12,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableRequest;
@@ -57,9 +56,9 @@ class TableServiceTest {
         final Long orderTableId = 1L;
         final OrderTableRequest orderTableRequest = new OrderTableRequest();
         final TableGroup tableGroup = mock(TableGroup.class);
-        final OrderTable savedOrderTable = new OrderTable(tableGroup, 1);
+        final OrderTable savedOrderTable = new OrderTable(null, 1);
         given(orderTableRepository.findById(orderTableId)).willReturn(Optional.of(savedOrderTable));
-        given(tableGroup.getId()).willReturn(null);
+        given(orderTableRepository.save(savedOrderTable)).willReturn(new OrderTable());
 
         // when
         tableService.changeEmpty(orderTableId, orderTableRequest);
@@ -89,9 +88,8 @@ class TableServiceTest {
         final Long orderTableId = 1L;
         final OrderTableRequest orderTableRequest = new OrderTableRequest();
         final TableGroup tableGroup = mock(TableGroup.class);
-        final OrderTable notNullTableGroupId = new OrderTable(tableGroup, 1);
+        final OrderTable notNullTableGroupId = new OrderTable(tableGroup.getId(), 1);
         given(orderTableRepository.findById(orderTableId)).willReturn(Optional.of(notNullTableGroupId));
-        given(tableGroup.getId()).willReturn(1L);
 
         // when
         final Throwable notNullTableGroupIdException = catchThrowable(
@@ -106,10 +104,9 @@ class TableServiceTest {
         // given
         final Long orderTableId = 1L;
         final OrderTableRequest orderTableRequest = new OrderTableRequest(1);
-        final TableGroup tableGroup = mock(TableGroup.class);
-        final OrderTable savedOrderTable = new OrderTable(tableGroup, 1);
+        final OrderTable savedOrderTable = new OrderTable(null, 1);
         given(orderTableRepository.findById(orderTableId)).willReturn(Optional.of(savedOrderTable));
-        given(tableGroup.getId()).willReturn(null);
+        given(orderTableRepository.save(savedOrderTable)).willReturn(new OrderTable());
 
         // when
         tableService.changeNumberOfGuests(orderTableId, orderTableRequest);
@@ -139,10 +136,9 @@ class TableServiceTest {
         final Long orderTableId = 1L;
         final OrderTableRequest orderTableRequest = new OrderTableRequest(1);
         final TableGroup tableGroup = mock(TableGroup.class);
-        final OrderTable savedOrderTable = new OrderTable(tableGroup, 1);
+        final OrderTable savedOrderTable = new OrderTable(tableGroup.getId(), 1);
         savedOrderTable.changeEmpty(true);
         given(orderTableRepository.findById(orderTableId)).willReturn(Optional.of(savedOrderTable));
-        given(tableGroup.getId()).willReturn(null);
 
         // when
         final Throwable emptyOrderTable = catchThrowable(

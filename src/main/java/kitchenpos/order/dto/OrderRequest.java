@@ -16,6 +16,12 @@ public class OrderRequest {
         this.orderLineItems = orderLineItems;
     }
 
+    public OrderRequest(final Long orderTableId, final List<OrderLineItemRequest> orderLineItems, final String orderStatus) {
+        this.orderTableId = orderTableId;
+        this.orderLineItems = orderLineItems;
+        this.orderStatus = orderStatus;
+    }
+
     public Long getOrderTableId() {
         return orderTableId;
     }

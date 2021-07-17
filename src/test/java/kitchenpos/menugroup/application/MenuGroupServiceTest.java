@@ -1,6 +1,6 @@
 package kitchenpos.menugroup.application;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.BDDMockito.*;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,6 +25,7 @@ class MenuGroupServiceTest {
     void create() {
         // given
         final MenuGroupRequest menuGroup = new MenuGroupRequest();
+        given(menuGroupRepository.save(any(MenuGroup.class))).willReturn(new MenuGroup("name"));
 
         // when
         menuGroupService.create(menuGroup);

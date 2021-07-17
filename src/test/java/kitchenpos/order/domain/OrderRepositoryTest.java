@@ -2,7 +2,6 @@ package kitchenpos.order.domain;
 
 import static org.assertj.core.api.Assertions.*;
 
-import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 
@@ -10,10 +9,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.domain.TableGroupRepository;
 
 @DataJpaTest
 class OrderRepositoryTest {
@@ -21,15 +20,19 @@ class OrderRepositoryTest {
     @Autowired
     private OrderRepository orderRepository;
 
+    @Autowired
+    private TableGroupRepository tableGroupRepository;
+
+    @Autowired
+    private OrderTableRepository orderTableRepository;
+
     @Test
     void findAllByOrderTableIdIn() {
         // given
-        final OrderTable orderTable = new OrderTable(new TableGroup(), 1);
-        final Menu menu = new Menu("name", BigDecimal.ONE, new MenuGroup("name").getId());
-        final OrderLineItem orderLineItem = new OrderLineItem(menu, 1);
-        final List<OrderLineItem> orderLineItemList = Collections.singletonList(orderLineItem);
-        final OrderLineItems orderLineItems = new OrderLineItems(orderLineItemList);
-        final Order order = orderRepository.save(new Order(orderTable, orderLineItems));
+        final TableGroup tableGroup = tableGroupRepository.save(new TableGroup());
+        final OrderTable orderTable = new OrderTable(tableGroup.getId(), 1);
+        final OrderTable savedOrderTable = orderTableRepository.save(orderTable);
+        final Order order = orderRepository.save(new Order(savedOrderTable.getId()));
 
         // when
         final List<Order> actual = orderRepository.findAllByOrderTableIdIn(
