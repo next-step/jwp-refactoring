@@ -27,7 +27,13 @@ public class TableService {
     }
 
     public OrderTableResponse create(final OrderTableRequest orderTableRequest) {
-        return OrderTableResponse.of(orderTableRepository.save(toOrderTable(orderTableRequest)));
+        OrderTable savedOrderTable = orderTableRepository.save(toOrderTable(orderTableRequest));
+        return toOrderTableResponse(savedOrderTable);
+    }
+
+    private OrderTableResponse toOrderTableResponse(OrderTable orderTable) {
+        return new OrderTableResponse(orderTable.getId(), orderTable.getTableGroupId(),
+                orderTable.getNumberOfGuests(), orderTable.isEmpty());
     }
 
     private OrderTable toOrderTable(OrderTableRequest orderTableRequest) {
@@ -41,7 +47,7 @@ public class TableService {
 
     private List<OrderTableResponse> toOrderTableResponses(List<OrderTable> orderTables) {
         return orderTables.stream()
-                .map(OrderTableResponse::of)
+                .map(this::toOrderTableResponse)
                 .collect(Collectors.toList());
     }
 
@@ -49,7 +55,7 @@ public class TableService {
         final OrderTable savedOrderTable = findOrderTableById(orderTableId);
         eventPublisher.publishEvent(new TableEmptyStatusChangedEvent(orderTableRequest));
         savedOrderTable.changeEmpty(orderTableRequest.isEmpty());
-        return OrderTableResponse.of(savedOrderTable);
+        return toOrderTableResponse(savedOrderTable);
     }
 
     private OrderTable findOrderTableById(Long orderTableId) {
@@ -60,6 +66,6 @@ public class TableService {
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         final OrderTable savedOrderTable = findOrderTableById(orderTableId);
         savedOrderTable.updateNumberOfGuestsTo(orderTableRequest.getNumberOfGuests());
-        return OrderTableResponse.of(savedOrderTable);
+        return toOrderTableResponse(savedOrderTable);
     }
 }

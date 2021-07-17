@@ -43,13 +43,20 @@ public class OrderService {
         final Order savedOrder = orderRepository.save(new Order(orderTable.getId(), COOKING));
         final List<OrderLineItem> orderLineItems = getOrderLineItems(orderRequest, savedOrder);
         final List<OrderLineItem> savedOrderLineItems = orderLineItemRepository.saveAll(orderLineItems);
-        return OrderResponse.of(savedOrder, toOrderLineItemResponses(savedOrderLineItems));
+        return toOrderResponse(savedOrder, toOrderLineItemResponses(savedOrderLineItems));
     }
 
     private List<OrderLineItemResponse> toOrderLineItemResponses(List<OrderLineItem> savedOrderLineItems) {
         return savedOrderLineItems.stream()
-                .map(OrderLineItemResponse::of)
+                .map(this::toOrderLineItemResponse)
                 .collect(Collectors.toList());
+    }
+
+    private OrderLineItemResponse toOrderLineItemResponse(OrderLineItem orderLineItem) {
+        return new OrderLineItemResponse(orderLineItem.getSeq(),
+                orderLineItem.getOrder().getId(),
+                orderLineItem.getMenuId(),
+                orderLineItem.getQuantity().value());
     }
 
     private List<OrderLineItem> getOrderLineItems(OrderRequest orderRequest, Order savedOrder) {
@@ -94,14 +101,30 @@ public class OrderService {
             List<OrderLineItem> itemsOfOrder = orderLineItems.stream()
                     .filter(orderLineItem -> orderLineItem.isItemOf(order))
                     .collect(Collectors.toList());
-            orderResponses.add(OrderResponse.of(order, toOrderLineItemResponses(itemsOfOrder) ));
+            orderResponses.add(toOrderResponse(order, toOrderLineItemResponses(itemsOfOrder)));
         }
         return orderResponses;
     }
 
     public OrderResponse changeOrderStatus(final Long orderId, final OrderStatusRequest orderStatusRequest) {
         final Order savedOrder = findOrderById(orderId);
-        return OrderResponse.of(savedOrder.changeOrderStatus(orderStatusRequest.getOrderStatus()));
+        savedOrder.changeOrderStatus(orderStatusRequest.getOrderStatus());
+        return toOrderResponse(savedOrder);
+    }
+
+    private OrderResponse toOrderResponse(Order order) {
+        return new OrderResponse(order.getId(),
+                order.getOrderTableId(),
+                order.getOrderStatus().name(),
+                order.getOrderedTime());
+    }
+
+    private OrderResponse toOrderResponse(Order order, List<OrderLineItemResponse> orderLineItemResponses) {
+        return new OrderResponse(order.getId(),
+                order.getOrderTableId(),
+                order.getOrderStatus().name(),
+                order.getOrderedTime(),
+                orderLineItemResponses);
     }
 
     private Order findOrderById(Long orderId) {

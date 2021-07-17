@@ -38,10 +38,10 @@ public class TableGroupControllerTest extends ControllerTest<TableGroupRequest> 
     @Test
     void 단체지정_생성요청() throws Exception {
         //Given
-        when(tableGroupService.create(any())).thenReturn(TableGroupResponse.of(테이블그룹));
+        when(tableGroupService.create(any())).thenReturn(new TableGroupResponse(테이블그룹.getId(), 테이블그룹.getCreatedDate()));
 
         //When
-        ResultActions 결과 = postRequest(BASE_URI, TableGroupRequest.of(테이블그룹));
+        ResultActions 결과 = postRequest(BASE_URI, new TableGroupRequest(테이블그룹.getId(), 테이블그룹.getCreatedDate()));
 
         //Then
         생성성공(결과);

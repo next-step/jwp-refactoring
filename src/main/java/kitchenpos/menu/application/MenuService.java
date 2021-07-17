@@ -32,7 +32,11 @@ public class MenuService {
         Menu savedMenu = menuRepository.save(toMenu(menuRequest));
         List<MenuProduct> menuProducts = toMenuProducts(menuRequest.getMenuProductRequests(), savedMenu);
         menuProductRepository.saveAll(menuProducts);
-        return MenuResponse.of(savedMenu, toMenuProductResponses(menuProducts));
+        return new MenuResponse(savedMenu.getId(),
+                savedMenu.getName(),
+                savedMenu.getPrice().value(),
+                savedMenu.getMenuGroupId(),
+                toMenuProductResponses(menuProducts));
     }
 
     private List<MenuProduct> toMenuProducts(List<MenuProductRequest> menuProductRequests, Menu menu) {
@@ -63,7 +67,11 @@ public class MenuService {
             List<MenuProduct> menuProductsOfMenu = menuProducts.stream()
                     .filter(menuProduct -> menuProduct.isMenuProductOf(menu))
                     .collect(Collectors.toList());
-            menuResponses.add(MenuResponse.of(menu, toMenuProductResponses(menuProductsOfMenu)));
+            menuResponses.add(new MenuResponse(menu.getId(),
+                    menu.getName(),
+                    menu.getPrice().value(),
+                    menu.getMenuGroupId(),
+                    toMenuProductResponses(menuProductsOfMenu)));
         }
 
         return menuResponses;
@@ -72,7 +80,10 @@ public class MenuService {
     private List<MenuProductResponse> toMenuProductResponses(List<MenuProduct> menuProducts) {
         final List<MenuProductResponse> responses = new ArrayList<>();
         for (MenuProduct menuProduct : menuProducts) {
-            responses.add(MenuProductResponse.of(menuProduct));
+            responses.add(new MenuProductResponse(menuProduct.getSeq(),
+                    menuProduct.getMenu().getId(),
+                    menuProduct.getProductId(),
+                    menuProduct.getQuantity().value()));
         }
         return responses;
     }

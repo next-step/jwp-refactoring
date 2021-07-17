@@ -28,7 +28,8 @@ public class TableGroupService {
 
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
         tableGroupValidator.validateGrouping(tableGroupRequest);
-        return TableGroupResponse.of(tableGroupRepository.save(new TableGroup()));
+        TableGroup savedTableGroup = tableGroupRepository.save(new TableGroup());
+        return new TableGroupResponse(savedTableGroup.getId(), savedTableGroup.getCreatedDate());
     }
 
     public void ungroup(final Long tableGroupId) {

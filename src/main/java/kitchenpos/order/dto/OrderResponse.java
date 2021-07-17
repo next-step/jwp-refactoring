@@ -1,7 +1,5 @@
 package kitchenpos.order.dto;
 
-import kitchenpos.order.domain.Order;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -13,21 +11,16 @@ public class OrderResponse {
     private LocalDateTime orderedTime;
     private List<OrderLineItemResponse> orderLineItemResponses;
 
-    private OrderResponse(Long id, Long orderTableId, String orderStatus, LocalDateTime orderedTime) {
+    public OrderResponse(Long id, Long orderTableId, String orderStatus, LocalDateTime orderedTime) {
+        this(id, orderTableId, orderStatus, orderedTime, null);
+    }
+
+    public OrderResponse(Long id, Long orderTableId, String orderStatus, LocalDateTime orderedTime, List<OrderLineItemResponse> orderLineItemResponses) {
         this.id = id;
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
-    }
-
-    public static OrderResponse of(Order order) {
-        return new OrderResponse(order.getId(), order.getOrderTableId(), order.getOrderStatus().name(), order.getOrderedTime());
-    }
-
-    public static OrderResponse of(Order order, List<OrderLineItemResponse> orderLineItemResponses) {
-        OrderResponse orderResponse = OrderResponse.of(order);
-        orderResponse.orderLineItemResponses = orderLineItemResponses;
-        return orderResponse;
+        this.orderLineItemResponses = orderLineItemResponses;
     }
 
     public Long getId() {

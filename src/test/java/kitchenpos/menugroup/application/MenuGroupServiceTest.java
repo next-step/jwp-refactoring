@@ -33,7 +33,7 @@ class MenuGroupServiceTest {
     @Test
     void 메뉴그룹_등록() {
         //Given
-        when(menuGroupRepository.save(any())).thenReturn(맥모닝_메뉴그룹_요청.toMenuGroup());
+        when(menuGroupRepository.save(any())).thenReturn(맥모닝_메뉴그룹);
 
         //When
         MenuGroupResponse 생성된_메뉴그룹 = menuGroupService.create(맥모닝_메뉴그룹_요청);

@@ -4,7 +4,6 @@ import kitchenpos.common.ui.ControllerTest;
 import kitchenpos.menugroup.application.MenuGroupService;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.dto.MenuGroupRequest;
-import kitchenpos.menugroup.dto.MenuGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,10 +41,10 @@ class MenuGroupControllerTest extends ControllerTest<MenuGroup> {
     @Test
     void 메뉴그룹_생성요청() throws Exception {
         //Given
-        when(menuGroupService.create(any())).thenReturn(MenuGroupResponse.of(맥모닝_메뉴그룹_요청.toMenuGroup()));
+        when(menuGroupService.create(any())).thenReturn(맥모닝_메뉴그룹_응답);
 
         //When
-        ResultActions 결과 = postRequest(BASE_URI, 맥모닝_메뉴그룹_요청.toMenuGroup());
+        ResultActions 결과 = postRequest(BASE_URI, 맥모닝_메뉴그룹);
 
         //Then
         생성성공(결과);

@@ -9,12 +9,8 @@ public class OrderStatusRequest {
     public OrderStatusRequest() {
     }
 
-    private OrderStatusRequest(OrderStatus orderStatus) {
+    public OrderStatusRequest(OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
-    }
-
-    public static OrderStatusRequest of(OrderStatus orderStatus) {
-        return new OrderStatusRequest(orderStatus);
     }
 
     public OrderStatus getOrderStatus() {

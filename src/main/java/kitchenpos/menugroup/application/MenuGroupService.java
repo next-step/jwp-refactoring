@@ -20,7 +20,8 @@ public class MenuGroupService {
     }
 
     public MenuGroupResponse create(final MenuGroupRequest menuGroupRequest) {
-        return MenuGroupResponse.of(menuGroupRepository.save(menuGroupRequest.toMenuGroup()));
+        MenuGroup savedMenuGroup = menuGroupRepository.save(new MenuGroup(menuGroupRequest.getName()));
+        return new MenuGroupResponse(savedMenuGroup.getId(), savedMenuGroup.getName());
     }
 
     @Transactional(readOnly = true)
@@ -30,7 +31,7 @@ public class MenuGroupService {
 
     private List<MenuGroupResponse> convertListToMenuGroupResponse(List<MenuGroup> list) {
         return list.stream()
-                .map(MenuGroupResponse::of)
+                .map(menuGroup -> new MenuGroupResponse(menuGroup.getId(), menuGroup.getName()))
                 .collect(Collectors.toList());
     }
 }

@@ -1,7 +1,5 @@
 package kitchenpos.tablegroup.dto;
 
-import kitchenpos.tablegroup.domain.TableGroup;
-
 import java.time.LocalDateTime;
 
 public class TableGroupResponse {
@@ -9,14 +7,9 @@ public class TableGroupResponse {
     private Long id;
     private LocalDateTime createdDate;
 
-    private TableGroupResponse(Long id, LocalDateTime createdDate ){
+    public TableGroupResponse(Long id, LocalDateTime createdDate ){
         this.id = id;
         this.createdDate = createdDate;
-    }
-
-    public static TableGroupResponse of(TableGroup tableGroup) {
-        return new TableGroupResponse(tableGroup.getId(),
-                tableGroup.getCreatedDate());
     }
 
     public Long getId() {

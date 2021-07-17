@@ -1,7 +1,5 @@
 package kitchenpos.tablegroup.dto;
 
-import kitchenpos.tablegroup.domain.TableGroup;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -23,10 +21,6 @@ public class TableGroupRequest {
         this.id = id;
         this.createdDate = createdDate;
         this.orderTableIds = orderTableIds;
-    }
-
-    public static TableGroupRequest of(TableGroup tableGroup) {
-        return new TableGroupRequest(tableGroup.getId(), tableGroup.getCreatedDate());
     }
 
     public Long getId() {

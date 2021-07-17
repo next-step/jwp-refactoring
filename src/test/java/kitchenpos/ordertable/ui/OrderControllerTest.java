@@ -40,7 +40,7 @@ public class OrderControllerTest extends ControllerTest<OrderRequest> {
     @Test
     void 주문_생성요청() throws Exception {
         //Given
-        when(orderService.create(any())).thenReturn(OrderResponse.of(첫번째_주문, Arrays.asList(주문_항목_첫번째_응답, 주문_항목_두번째_응답)));
+        when(orderService.create(any())).thenReturn(첫번째_주문_응답);
 
         //When
         ResultActions 결과 = postRequest(BASE_URI, 첫번째_주문_요청);
@@ -67,14 +67,17 @@ public class OrderControllerTest extends ControllerTest<OrderRequest> {
     void 주문_상태_수정요청() throws Exception {
         //Given
         Order 변경된_주문 = new Order(비어있지_않은_테이블.getId(), MEAL);
-        OrderResponse 주문상태_변경_응답 = OrderResponse.of(변경된_주문);
+        OrderResponse 주문상태_변경_응답 = new OrderResponse(변경된_주문.getId(),
+                변경된_주문.getOrderTableId(),
+                변경된_주문.getOrderStatus().name(),
+                변경된_주문.getOrderedTime());
 
-        when(orderService.changeOrderStatus(첫번째_주문.getId(), OrderStatusRequest.of(MEAL))).thenReturn(주문상태_변경_응답);
+        when(orderService.changeOrderStatus(첫번째_주문.getId(), new OrderStatusRequest(MEAL))).thenReturn(주문상태_변경_응답);
 
         String 수정요청_URI = BASE_URI + "/" + 첫번째_주문.getId() + "/order-status";
 
         //When
-        ResultActions 결과 = putStatusRequest(수정요청_URI, OrderStatusRequest.of(MEAL));
+        ResultActions 결과 = putStatusRequest(수정요청_URI, new OrderStatusRequest(MEAL));
 
         //Then
         수정성공(결과);

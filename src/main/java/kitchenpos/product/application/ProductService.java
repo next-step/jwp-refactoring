@@ -22,7 +22,11 @@ public class ProductService {
 
     public ProductResponse create(final ProductRequest productRequest) {
         Product saved = productRepository.save(toProduct(productRequest));
-        return ProductResponse.of(saved);
+        return toProductResponse(saved);
+    }
+
+    private ProductResponse toProductResponse(Product product) {
+       return new ProductResponse(product.getId(), product.getName(), product.getPrice().value());
     }
 
     private Product toProduct(ProductRequest productRequest) {
@@ -36,7 +40,7 @@ public class ProductService {
 
     private List<ProductResponse> toProductResponses(List<Product> products) {
         return products.stream()
-                .map(ProductResponse::of)
+                .map(this::toProductResponse)
                 .collect(Collectors.toList());
     }
 }

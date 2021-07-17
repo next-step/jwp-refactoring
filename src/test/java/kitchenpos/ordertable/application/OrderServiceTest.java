@@ -118,7 +118,7 @@ class OrderServiceTest {
         when(orderRepository.findById(첫번째_주문.getId())).thenReturn(Optional.of(첫번째_주문));
 
         //When
-        OrderResponse 변경된_주문 = orderService.changeOrderStatus(첫번째_주문.getId(), OrderStatusRequest.of(MEAL));
+        OrderResponse 변경된_주문 = orderService.changeOrderStatus(첫번째_주문.getId(), new OrderStatusRequest(MEAL));
 
         //Then
         assertThat(변경된_주문.getOrderStatus()).isEqualTo(MEAL.name());
@@ -128,7 +128,7 @@ class OrderServiceTest {
     @Test
     void 등록되지_않은_주문의_주문상태_변경() {
         //When + Then
-        Throwable 주문없음_예외 = catchThrowable(() -> orderService.changeOrderStatus(첫번째_주문.getId(), OrderStatusRequest.of(MEAL)));
+        Throwable 주문없음_예외 = catchThrowable(() -> orderService.changeOrderStatus(첫번째_주문.getId(), new OrderStatusRequest(MEAL)));
         assertThat(주문없음_예외).isInstanceOf(CannotFindException.class)
                 .hasMessage(ERROR_ORDER_NOT_FOUND.showText());
     }
