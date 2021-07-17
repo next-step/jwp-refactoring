@@ -1,9 +1,9 @@
 # 키친포스
 
 ## 요구 사항
-- [ ] 패키지 코드와 .http, .sql을 파일을 참고하며 전반적인 요구사항 정리
-- [ ] 정리한 키친포스의 요구 사항을 토대로 테스트 코드를 작성한다. 모든 Business Object에 대한 테스트 코드를 작성한다. @SpringBootTest를 이용한 통합 테스트 코드 또는 @ExtendWith(MockitoExtension.class)를 이용한 단위 테스트 코드를 작성한다.
-- [ ] 인수 테스트 코드 작성은 권장하지만 필수는 아니다. 미션을 진행함에 있어 아래 문서를 적극 활용한다.
+- [x] 패키지 코드와 .http, .sql을 파일을 참고하며 전반적인 요구사항 정리
+- [x] 정리한 키친포스의 요구 사항을 토대로 테스트 코드를 작성한다. 모든 Business Object에 대한 테스트 코드를 작성한다. @SpringBootTest를 이용한 통합 테스트 코드 또는 @ExtendWith(MockitoExtension.class)를 이용한 단위 테스트 코드를 작성한다.
+- [x] 인수 테스트 코드 작성은 권장하지만 필수는 아니다. 미션을 진행함에 있어 아래 문서를 적극 활용한다.
 
 ## 도메인 명세서
 - 제품
@@ -40,9 +40,9 @@
 - [x] ProductService를 테스트로 보호
 - [x] MenuGroupService 테스트로 보호
 - [x] MenuService를 테스트로 보호
-- [ ] OrderService를 테스트로 보호
-- [ ] TableService를 테스트로 보호
-- [ ] TableGroupService를 테스트로 보호
+- [x] OrderService를 테스트로 보호
+- [x] TableService를 테스트로 보호
+- [x] TableGroupService를 테스트로 보호
 
 ## 용어 사전
 
