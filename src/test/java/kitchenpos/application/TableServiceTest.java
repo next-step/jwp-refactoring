@@ -71,8 +71,7 @@ class TableServiceTest {
         List<OrderTable> orderTables = asList(
                 주문_테이블_조리_중인_주문_테이블,
                 주문_테이블_식사_중인_주문_테이블,
-                주문_테이블_계산_완료된_주문_테이블,
-                주문_테이블_1번_테이블_그룹에_속한_테이블
+                주문_테이블_계산_완료된_주문_테이블
         );
 
         // when
@@ -87,13 +86,13 @@ class TableServiceTest {
     @Test
     void changeEmpty_예외_테이블_그룹_아이디가_존재() {
         // when
-        when(orderTableDao.findById(주문_테이블_1번_테이블_그룹에_속한_테이블.getId()))
-                .thenReturn(Optional.of(주문_테이블_1번_테이블_그룹에_속한_테이블));
+        when(orderTableDao.findById(주문_테이블_2번_테이블_그룹에_속한_1번쨰_테이블.getId()))
+                .thenReturn(Optional.of(주문_테이블_2번_테이블_그룹에_속한_1번쨰_테이블));
 
         // then
         assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> tableService.changeEmpty(주문_테이블_1번_테이블_그룹에_속한_테이블.getId(),
-                        주문_테이블_1번_테이블_그룹에_속한_테이블));
+                .isThrownBy(() -> tableService.changeEmpty(주문_테이블_2번_테이블_그룹에_속한_1번쨰_테이블.getId(),
+                        주문_테이블_2번_테이블_그룹에_속한_1번쨰_테이블));
     }
 
     @MethodSource("methodSource_changeEmpty_예외_완료되지_않은_주문")

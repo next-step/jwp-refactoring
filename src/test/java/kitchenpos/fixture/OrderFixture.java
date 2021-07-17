@@ -33,4 +33,18 @@ public class OrderFixture {
             COMPLETION.name(),
             currentDateTimeSupplier.get(),
             asList(주문_항목_감자튀김_생성.apply(1L, 1L), 주문_항목_후라이드_치킨_생성.apply(1L, 1L)));
+
+    public static Order 주문_2번_테이블_그룹_1번_테이블_후라이드_감자_튀김
+            = new Order(4L,
+            주문_테이블_2번_테이블_그룹에_속한_1번쨰_테이블.getId(),
+            COMPLETION.name(),
+            currentDateTimeSupplier.get(),
+            asList(주문_항목_감자튀김_생성.apply(1L, 1L), 주문_항목_후라이드_치킨_생성.apply(1L, 1L)));
+
+    public static Order 주문_2번_테이블_그룹_2번_테이블_후라이드_감자_튀김
+            = new Order(5L,
+            주문_테이블_2번_테이블_그룹에_속한_2번쨰_테이블.getId(),
+            COMPLETION.name(),
+            currentDateTimeSupplier.get(),
+            asList(주문_항목_감자튀김_생성.apply(1L, 1L), 주문_항목_후라이드_치킨_생성.apply(1L, 1L)));
 }
