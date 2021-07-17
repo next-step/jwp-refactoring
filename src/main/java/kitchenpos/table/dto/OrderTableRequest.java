@@ -1,4 +1,4 @@
-package kitchenpos.order.dto;
+package kitchenpos.table.dto;
 
 public class OrderTableRequest {
     private int numberOfGuests;
@@ -7,7 +7,7 @@ public class OrderTableRequest {
     public OrderTableRequest() {
     }
 
-    public OrderTableRequest(int numberOfGuests) {
+    public OrderTableRequest(final int numberOfGuests) {
         this.numberOfGuests = numberOfGuests;
         this.empty = false;
     }

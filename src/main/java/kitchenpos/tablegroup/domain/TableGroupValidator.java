@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
-import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.domain.OrderTableRepository;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 
 @Component

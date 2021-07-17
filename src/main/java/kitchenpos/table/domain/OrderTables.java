@@ -1,4 +1,4 @@
-package kitchenpos.order.domain;
+package kitchenpos.table.domain;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 
+import kitchenpos.order.domain.Orders;
 import kitchenpos.tablegroup.domain.TableGroup;
 
 @Embeddable

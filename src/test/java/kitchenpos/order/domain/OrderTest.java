@@ -8,6 +8,8 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
+import kitchenpos.table.domain.OrderTable;
+
 public class OrderTest {
     @Test
     void given_CompletedOrder_when_ChangeOrderStatus_then_ThrowException() {

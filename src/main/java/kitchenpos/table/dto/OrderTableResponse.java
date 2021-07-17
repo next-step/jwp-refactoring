@@ -1,25 +1,25 @@
-package kitchenpos.order.dto;
+package kitchenpos.table.dto;
 
-import kitchenpos.order.domain.OrderTable;
+import kitchenpos.table.domain.OrderTable;
 
 public class OrderTableResponse {
 
-    private Long id;
+    private final Long id;
 
-    private Long tableGroupId;
+    private final Long tableGroupId;
 
-    private int numberOfGuests;
+    private final int numberOfGuests;
 
-    private boolean empty;
+    private final boolean empty;
 
-    public OrderTableResponse(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
+    public OrderTableResponse(final Long id, final Long tableGroupId, final int numberOfGuests, final boolean empty) {
         this.id = id;
         this.tableGroupId = tableGroupId;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
     }
 
-    public static OrderTableResponse of(OrderTable orderTable) {
+    public static OrderTableResponse of(final OrderTable orderTable) {
         return new OrderTableResponse(orderTable.getId(), orderTable.getTableGroupId(),
             orderTable.getNumberOfGuests(), orderTable.isEmpty());
     }

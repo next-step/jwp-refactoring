@@ -1,4 +1,4 @@
-package kitchenpos.tablegroup.event;
+package kitchenpos.table.event;
 
 import java.util.List;
 
@@ -8,10 +8,12 @@ import org.springframework.stereotype.Component;
 
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.domain.OrderTableRepository;
-import kitchenpos.order.domain.OrderTables;
 import kitchenpos.order.domain.Orders;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.domain.OrderTables;
+import kitchenpos.tablegroup.event.TableGroupUpdateEvent;
+import kitchenpos.tablegroup.event.TableUnGroupEvent;
 
 @Component
 public class TableGroupEventHandler {

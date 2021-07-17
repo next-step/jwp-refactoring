@@ -9,6 +9,8 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTables;
 import kitchenpos.tablegroup.domain.TableGroup;
 
 class OrderTablesTest {

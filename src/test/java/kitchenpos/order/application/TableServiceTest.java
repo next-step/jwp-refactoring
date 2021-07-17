@@ -12,9 +12,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.domain.OrderTableRepository;
-import kitchenpos.order.dto.OrderTableRequest;
+import kitchenpos.table.application.TableService;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.tablegroup.domain.TableGroup;
 
 @ExtendWith(MockitoExtension.class)

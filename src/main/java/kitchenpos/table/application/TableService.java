@@ -1,4 +1,4 @@
-package kitchenpos.order.application;
+package kitchenpos.table.application;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -8,11 +8,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.domain.OrderTableRepository;
 import kitchenpos.order.domain.Orders;
-import kitchenpos.order.dto.OrderTableRequest;
-import kitchenpos.order.dto.OrderTableResponse;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
 
 @Transactional
 @Service

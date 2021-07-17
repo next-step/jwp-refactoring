@@ -12,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.table.domain.OrderTable;
 import kitchenpos.tablegroup.domain.TableGroup;
 
 @DataJpaTest
