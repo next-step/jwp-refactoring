@@ -9,6 +9,8 @@ import java.util.stream.Collectors;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 
+import kitchenpos.tablegroup.domain.TableGroup;
+
 @Embeddable
 public class OrderTables {
 

@@ -14,8 +14,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.OrderTableRepository;
-import kitchenpos.order.domain.TableGroup;
 import kitchenpos.order.dto.OrderTableRequest;
+import kitchenpos.tablegroup.domain.TableGroup;
 
 @ExtendWith(MockitoExtension.class)
 class TableServiceTest {

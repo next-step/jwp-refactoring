@@ -11,6 +11,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import kitchenpos.tablegroup.domain.TableGroup;
+
 @Entity
 public class OrderTable {
 
@@ -81,6 +83,14 @@ public class OrderTable {
     public void updateTableGroup(final TableGroup tableGroup) {
         this.tableGroup = tableGroup;
         this.empty = false;
+    }
+
+    public boolean hasTableGroupId() {
+        if (tableGroup == null) {
+            return false;
+        }
+
+        return tableGroup.getId() != null;
     }
 
     @Override

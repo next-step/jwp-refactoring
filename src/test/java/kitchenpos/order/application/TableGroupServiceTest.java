@@ -16,14 +16,18 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.OrderTableRepository;
-import kitchenpos.order.domain.OrderTables;
-import kitchenpos.order.domain.TableGroup;
-import kitchenpos.order.domain.TableGroupRepository;
-import kitchenpos.order.dto.TableGroupRequest;
+import kitchenpos.tablegroup.application.TableGroupService;
+import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.domain.TableGroupMapper;
+import kitchenpos.tablegroup.domain.TableGroupRepository;
+import kitchenpos.tablegroup.domain.TableGroupValidator;
+import kitchenpos.tablegroup.dto.OrderTableIdRequest;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
 
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
@@ -37,20 +41,31 @@ class TableGroupServiceTest {
     @Mock
     private TableGroupRepository tableGroupRepository;
 
+    @Mock
+    private TableGroupValidator tableGroupValidator;
+
+    @Mock
+    private ApplicationEventPublisher publisher;
+
     @InjectMocks
     private TableGroupService tableGroupService;
 
     @Test
     void create() {
         // given
-        final TableGroupRequest tableGroupRequest = new TableGroupRequest();
-        tableGroupRequest.setOrderTables(Arrays.asList(new OrderTable(), new OrderTable()));
+        final TableGroupRequest tableGroupRequest = new TableGroupRequest(
+            Arrays.asList(new OrderTableIdRequest(), new OrderTableIdRequest()));
         final OrderTable orderTable = new OrderTable(2);
         orderTable.changeEmpty(true);
         final OrderTable orderTable2 = new OrderTable(3);
         orderTable2.changeEmpty(true);
         final List<OrderTable> savedOrderTables = Arrays.asList(orderTable, orderTable2);
         given(orderTableRepository.findAllByIdIn(anyList())).willReturn(savedOrderTables);
+        final TableGroup tableGroup = new TableGroup();
+        final TableGroupMapper tableGroupMapper = new TableGroupMapper(tableGroupValidator, tableGroupRequest);
+        given(TableGroupMapper.of(tableGroupValidator, tableGroupRequest)).willReturn(tableGroupMapper);
+        given(tableGroupMapper.toTableGroup()).willReturn(tableGroup);
+        given(tableGroup.getId()).willReturn(1L);
 
         // when
         tableGroupService.create(tableGroupRequest);
@@ -61,10 +76,9 @@ class TableGroupServiceTest {
 
     @ParameterizedTest
     @MethodSource("provideOrderTables")
-    void given_InvalidOrderTables_when_Create_then_ThrownException(final List<OrderTable> orderTables) {
+    void given_InvalidOrderTables_when_Create_then_ThrownException(final List<OrderTableIdRequest> orderTables) {
         // given
-        final TableGroupRequest tableGroupRequest = new TableGroupRequest();
-        tableGroupRequest.setOrderTables(orderTables);
+        final TableGroupRequest tableGroupRequest = new TableGroupRequest(orderTables);
 
         // when
         final Throwable oneOrderTableException = catchThrowable(() -> tableGroupService.create(tableGroupRequest));
@@ -76,7 +90,7 @@ class TableGroupServiceTest {
     private static Stream<Arguments> provideOrderTables() {
         return Stream.of(
             Arguments.of((Object)null),
-            Arguments.of(Collections.singletonList(new OrderTable()))
+            Arguments.of(Collections.singletonList(new OrderTableIdRequest()))
         );
     }
 
@@ -84,8 +98,8 @@ class TableGroupServiceTest {
     @MethodSource("provideAllOrderTables")
     void given_InvalidTableGroup_when_Create_then_ThrownException(final List<OrderTable> orderTables) {
         // given
-        final TableGroupRequest twoOrderTables = new TableGroupRequest();
-        twoOrderTables.setOrderTables(Arrays.asList(new OrderTable(), new OrderTable()));
+        final TableGroupRequest twoOrderTables = new TableGroupRequest(
+            Arrays.asList(new OrderTableIdRequest(), new OrderTableIdRequest()));
         given(orderTableRepository.findAllByIdIn(anyList())).willReturn(orderTables);
 
         // when
@@ -117,18 +131,5 @@ class TableGroupServiceTest {
         // then
         verify(orderTableRepository).findAllByTableGroup_Id(tableGroupId);
         verify(orderRepository).findAllByOrderTable_IdIn(anyList());
-    }
-
-    @Test
-    void given_GroupedOrderTables_when_CreateTableGroup_then_ThrowException() {
-        // given
-        final List<OrderTable> orderTables = Arrays.asList(new OrderTable(new TableGroup(), 1),
-            new OrderTable(new TableGroup(), 2));
-
-        // when
-        final Throwable throwable = catchThrowable(() -> new TableGroup(new OrderTables(orderTables)));
-
-        // then
-        assertThat(throwable).isInstanceOf(IllegalArgumentException.class);
     }
 }
