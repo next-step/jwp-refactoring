@@ -1,15 +1,14 @@
 package kitchenpos.order.application;
 
-import kitchenpos.advice.exception.OrderTableException;
-import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.dto.OrderTableRequest;
-import kitchenpos.order.domain.OrderTableRepository;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.util.Arrays;
 import java.util.List;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.domain.OrderTableRepository;
+import kitchenpos.order.domain.OrderTables;
+import kitchenpos.order.dto.OrderTableRequest;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional(readOnly = true)
@@ -51,23 +50,17 @@ public class TableService {
         final int numberOfGuests = orderTableRequest.getNumberOfGuests();
 
         final OrderTable savedOrderTable = orderService.findOrderTableById(orderTableId);
-        validateOrderTableIsEmpty(savedOrderTable);
 
         savedOrderTable.updateNumberOfGuests(numberOfGuests);
         return savedOrderTable;
     }
 
-    public List<OrderTable> findAllByIdIn(List<Long> orderTableIds) {
-        return orderTableRepository.findAllByIdIn(orderTableIds);
+    public OrderTables findAllByIdIn(List<Long> orderTableIds) {
+        List<OrderTable> orderTables = orderTableRepository.findAllByIdIn(orderTableIds);
+        return new OrderTables(orderTables);
     }
 
     public List<OrderTable> findAllByTableGroupId(Long tableGroupId) {
         return orderTableRepository.findAllByTableGroupId(tableGroupId);
-    }
-
-    private void validateOrderTableIsEmpty(OrderTable savedOrderTable) {
-        if (savedOrderTable.isEmpty()) {
-            throw new OrderTableException("주문 테이블이 비어있습니다");
-        }
     }
 }

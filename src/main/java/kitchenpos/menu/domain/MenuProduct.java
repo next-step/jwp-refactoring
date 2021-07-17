@@ -15,7 +15,7 @@ public class MenuProduct {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long seq;
+    private Long id;
 
     @Column(name = "menu_id")
     private Long menuId;
@@ -40,8 +40,8 @@ public class MenuProduct {
         this.quantity = quantity;
     }
 
-    public Long getSeq() {
-        return seq;
+    public Long getId() {
+        return id;
     }
 
     public void updateMenuId(Long menuId) {
@@ -63,7 +63,7 @@ public class MenuProduct {
     @Override
     public String toString() {
         return "MenuProduct{" +
-            "seq=" + seq +
+            "id=" + id +
             ", menuId=" + menuId +
             ", product=" + product +
             ", quantity=" + quantity +

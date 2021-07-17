@@ -1,5 +1,6 @@
 package kitchenpos.order.application;
 
+import java.util.ArrayList;
 import kitchenpos.advice.exception.OrderException;
 import kitchenpos.advice.exception.OrderTableException;
 import kitchenpos.menu.application.MenuService;
@@ -35,7 +36,6 @@ public class OrderService {
     public Order create(final OrderRequest orderRequest) {
         Order order = getOrderItem(orderRequest);
 
-        order.validateEmptyOrderLineItems();
         order.validateMenuSize(menuService.countByIdIn(orderRequest.getMenuIds()));
 
         return order;
@@ -52,12 +52,6 @@ public class OrderService {
         savedOrder.updateOrderStatusCheck(orderRequest.getOrderStatus());
 
         return savedOrder;
-    }
-
-    public void validateOrderStatusNotIn(List<OrderTable> orderTables, List<OrderStatus> orderStatuses) {
-        if (orderRepository.existsByOrderTableInAndOrderStatusIn(orderTables, orderStatuses)) {
-            throw new OrderTableException("올바르지 않은 주문상태가 포함되어있습니다", orderStatuses);
-        }
     }
 
     public void validateOrderStatusNotIn(OrderTable orderTable, List<OrderStatus> orderStatuses) {
@@ -77,8 +71,7 @@ public class OrderService {
     }
 
     private Order getOrderItem(OrderRequest orderRequest) {
-        OrderTable orderTable = findOrderTableById(orderRequest.getOrderTableId());
-        Order order = orderRepository.save(Order.ofCooking(orderTable));
+        final List<OrderLineItem> orderLineItems = new ArrayList<>();
         List<Menu> menus = menuService.findAllById(orderRequest.getMenuIds());
 
         Map<Long, Menu> menuMap = menus.stream()
@@ -86,9 +79,11 @@ public class OrderService {
 
         for (final OrderLineItemRequest request : orderRequest.getOrderLineItems()) {
             OrderLineItem orderLineItem = new OrderLineItem(menuMap.get(request.getMenuId()), request.getQuantity());
-            order.addOrderLineItem(orderLineItem);
+            orderLineItems.add(orderLineItem);
         }
 
-        return order;
+        final OrderTable orderTable = findOrderTableById(orderRequest.getOrderTableId());
+        Order order = Order.ofCooking(orderTable, orderLineItems);
+        return orderRepository.save(order);
     }
 }

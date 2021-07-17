@@ -40,15 +40,16 @@ public class Order {
     protected Order() {
     }
 
-    public static Order ofCooking(OrderTable orderTable) {
-        return new Order(orderTable, OrderStatus.COOKING);
+    public static Order ofCooking(OrderTable orderTable, List<OrderLineItem> orderLineItem) {
+        return new Order(orderTable, OrderStatus.COOKING, orderLineItem);
     }
 
-    public Order(OrderTable orderTable, OrderStatus orderStatus) {
+    public Order(OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItem) {
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
         this.orderedTime = LocalDateTime.now();
-        this.orderLineItems = new ArrayList<>();
+        this.orderLineItems = orderLineItem;
+        validateEmptyOrderLineItems();
     }
 
     public void updateOrderStatusCheck(OrderStatus orderStatus) {

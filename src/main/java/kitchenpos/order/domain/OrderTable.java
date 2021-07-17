@@ -70,6 +70,13 @@ public class OrderTable {
     }
 
     public void updateNumberOfGuests(int numberOfGuests) {
+        validateOrderTableIsEmpty();
         this.numberOfGuests = numberOfGuests;
+    }
+
+    private void validateOrderTableIsEmpty() {
+        if (isEmpty()) {
+            throw new OrderTableException("주문 테이블이 비어있습니다");
+        }
     }
 }

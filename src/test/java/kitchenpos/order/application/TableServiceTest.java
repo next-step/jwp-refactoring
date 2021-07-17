@@ -96,9 +96,8 @@ class TableServiceTest {
     @Test
     void changeNumberOfGuestsStatusException() {
         OrderTable orderTable = 테이블을_생성한다(0, true);
-        orderTable.updateNumberOfGuests(10);
 
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTable.getId(), OrderTableRequest.of(orderTable)))
+        assertThatThrownBy(() -> orderTable.updateNumberOfGuests(10))
             .isInstanceOf(OrderTableException.class);
     }
 
