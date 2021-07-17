@@ -22,14 +22,14 @@ public class OrderFixture {
 
     public static Order 주문_후라이드_한마리_감자튀김_식사중
             = new Order(2L,
-            주문_테이블_조리_중인_주문_테이블.getId(),
+            주문_테이블_식사_중인_주문_테이블.getId(),
             MEAL.name(),
             currentDateTimeSupplier.get(),
             asList(주문_항목_감자튀김_생성.apply(1L, 1L), 주문_항목_후라이드_치킨_생성.apply(1L, 1L)));
 
     public static Order 주문_후라이드_한마리_감자튀김_계산완료
             = new Order(3L,
-            주문_테이블_조리_중인_주문_테이블.getId(),
+            주문_테이블_계산_완료된_주문_테이블.getId(),
             COMPLETION.name(),
             currentDateTimeSupplier.get(),
             asList(주문_항목_감자튀김_생성.apply(1L, 1L), 주문_항목_후라이드_치킨_생성.apply(1L, 1L)));
