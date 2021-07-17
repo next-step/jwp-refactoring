@@ -39,4 +39,9 @@ public class OrderRestController {
     ) {
         return ResponseEntity.ok(orderService.changeOrderStatus(orderId, order));
     }
+
+	@ExceptionHandler(IllegalArgumentException.class)
+	public ResponseEntity handleRuntimeException(IllegalArgumentException illegalArgumentException) {
+		return ResponseEntity.badRequest().build();
+	}
 }
