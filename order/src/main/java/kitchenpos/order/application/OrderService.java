@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 @Service
 public class OrderService {
     private final OrderRepository orderRepository;
+    private final OrderLineItemRepository orderLineItemRepository;
     private final ApplicationEventPublisher publisher;
 
     public OrderService(
@@ -22,6 +23,7 @@ public class OrderService {
             final ApplicationEventPublisher publisher
     ) {
         this.orderRepository = orderRepository;
+        this.orderLineItemRepository = orderLineItemRepository;
         this.publisher = publisher;
     }
 
@@ -29,14 +31,14 @@ public class OrderService {
     public OrderResponse create(final OrderRequest orderRequest) {
         final Order persistOrder = orderRepository.save(new Order(orderRequest.getOrderTableId(), OrderStatus.COOKING));
         publisher.publishEvent(new OrderCreatedEvent(persistOrder, orderRequest.toOrderLineItems()));
-        return OrderResponse.of(persistOrder);
+        return OrderResponse.of(persistOrder, findOrderLineItems(persistOrder.getId()));
     }
 
     public List<OrderResponse> list() {
         final List<Order> orders = orderRepository.findAll();
 
         return orders.stream()
-                .map(order -> new OrderResponse(order))
+                .map(order -> new OrderResponse(order, findOrderLineItems(order.getId())))
                 .collect(Collectors.toList());
     }
 
@@ -44,10 +46,14 @@ public class OrderService {
     public OrderResponse changeOrderStatus(final Long orderId, final OrderRequest order) {
         final Order savedOrder = findOrderById(orderId);
         savedOrder.updateOrderStatus(order.getOrderStatus());
-        return OrderResponse.of(savedOrder);
+        return OrderResponse.of(savedOrder, findOrderLineItems(savedOrder.getId()));
     }
 
     public Order findOrderById(Long orderId) {
         return orderRepository.findById(orderId).orElseThrow(IllegalArgumentException::new);
+    }
+
+    public List<OrderLineItem> findOrderLineItems(Long orderId) {
+        return orderLineItemRepository.findAllByOrderId(orderId);
     }
 }

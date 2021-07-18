@@ -10,13 +10,17 @@ public class OrderResponse {
     private Long id;
     private Long orderTableId;
     private String orderStatus;
+    private List<OrderLineItemResponse> orderLineItems;
 
     public OrderResponse() {}
 
-    public OrderResponse(Order order) {
+    public OrderResponse(Order order, List<OrderLineItem> orderLineItems) {
         this.id = order.getId();
         this.orderTableId = order.getOrderTableId();
         this.orderStatus = order.getOrderStatus().name();
+        this.orderLineItems = orderLineItems.stream()
+                .map(OrderLineItemResponse::new)
+                .collect(Collectors.toList());
     }
 
     public Long getId() {
@@ -31,7 +35,11 @@ public class OrderResponse {
         return orderStatus;
     }
 
-    public static OrderResponse of(Order order) {
-        return new OrderResponse(order);
+    public List<OrderLineItemResponse> getOrderLineItems() {
+        return orderLineItems;
+    }
+
+    public static OrderResponse of(Order order, List<OrderLineItem> orderLineItems) {
+        return new OrderResponse(order, orderLineItems);
     }
 }

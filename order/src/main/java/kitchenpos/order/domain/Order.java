@@ -23,12 +23,10 @@ public class Order extends BaseEntity {
         this.id = id;
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
-        this.orderStatus = orderStatus;
     }
 
     public Order(Long orderTableId, OrderStatus orderStatus) {
         this.orderTableId = orderTableId;
-        this.orderStatus = orderStatus;
         this.orderStatus = orderStatus;
     }
 
