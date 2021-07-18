@@ -1,7 +1,9 @@
 package kitchenpos.product.domain;
 
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public class Products {
@@ -15,8 +17,15 @@ public class Products {
         return this.products.contains(product);
     }
 
-    public List<Product> getProducts() {
-        return products;
+    public int productSize() {
+        return products.size();
+    }
+
+    public BigDecimal calcTotalProductAmount(Map<Long, Long> menuProductMap) {
+        return products.stream().filter(product -> menuProductMap.containsKey(product.getId()))
+                .map(product -> product.multiplyQuantity(menuProductMap.get(product.getId())))
+                .reduce(BigDecimal::add)
+                .orElse(BigDecimal.ZERO);
     }
 
     @Override

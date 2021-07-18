@@ -52,8 +52,4 @@ public class Price {
     public BigDecimal multiplyQuantity(long quantity) {
         return price.multiply(BigDecimal.valueOf(quantity));
     }
-
-    public boolean isGreaterThen(BigDecimal menuTotalAmount) {
-        return price.compareTo(menuTotalAmount) > 0;
-    }
 }

@@ -54,14 +54,14 @@ class MenuRequestTest {
         assertThat(actual).containsExactly(1L, 2L);
     }
 
-    @Test
-    void 메뉴_상품_수량을_이용하여_총액_구하기() {
-
-        Product 짜장면 = new Product(1L, "짜장면", new BigDecimal(7000));
-        Product 탕수육 = new Product(2L, "탕수육", new BigDecimal(12000));
-        BigDecimal expected = BigDecimal.valueOf(19000);
-        Products products = new Products(Arrays.asList(짜장면, 탕수육));
-        BigDecimal actual = menuRequest.calcProductsPrice(products);
-        assertThat(actual.compareTo(expected)).isEqualTo(0);
-    }
+//    @Test
+//    void 메뉴_상품_수량을_이용하여_총액_구하기() {
+//
+//        Product 짜장면 = new Product(1L, "짜장면", new BigDecimal(7000));
+//        Product 탕수육 = new Product(2L, "탕수육", new BigDecimal(12000));
+//        BigDecimal expected = BigDecimal.valueOf(19000);
+//        Products products = new Products(Arrays.asList(짜장면, 탕수육));
+//        BigDecimal actual = menuRequest.calcProductsPrice(products);
+//        assertThat(actual.compareTo(expected)).isEqualTo(0);
+//    }
 }

@@ -51,13 +51,18 @@ public class Orders {
         }
     }
 
-    public void checkOrderStatus() {
+    private void checkOrderStatus() {
         if (Objects.equals(OrderStatus.COMPLETION, orderStatus)) {
             throw new OrderException(CHECK_ORDER_STATUE_ERROR_MESSAGE);
         }
     }
 
+    public boolean isCompletion() {
+        return orderStatus == OrderStatus.COMPLETION;
+    }
+
     public void updateOrderStatus(OrderStatus orderStatus) {
+        checkOrderStatus();
         this.orderStatus = orderStatus;
     }
 
