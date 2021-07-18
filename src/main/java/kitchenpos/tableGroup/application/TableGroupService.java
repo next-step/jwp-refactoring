@@ -32,6 +32,14 @@ public class TableGroupService {
 
     @Transactional
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
+		List<OrderTable> orderTables = validateOrderTableAllExists(tableGroupRequest);
+		TableGroup savedTableGroup = tableGroupRepository.save(new TableGroup(LocalDateTime.now()));
+		savedTableGroup.addOrderTables(orderTables);
+
+		return TableGroupResponse.of(savedTableGroup);
+    }
+
+	private List<OrderTable> validateOrderTableAllExists(TableGroupRequest tableGroupRequest) {
 		final List<Long> orderTableIds = tableGroupRequest.getOrderTables().stream()
 			.map(OrderTableRequest::getId)
 			.collect(Collectors.toList());
@@ -41,29 +49,27 @@ public class TableGroupService {
 		if (orderTableIds.size() != orderTables.size()) {
 			throw new IllegalArgumentException();
 		}
+		return orderTables;
+	}
 
-		TableGroup savedTableGroup = tableGroupRepository.save(new TableGroup(LocalDateTime.now()));
-		savedTableGroup.addOrderTables(orderTables);
-
-		return TableGroupResponse.of(savedTableGroup);
-    }
-
-    @Transactional
+	@Transactional
     public void ungroup(final Long tableGroupId) {
         final List<OrderTable> orderTables = orderTableRepository.findAllByTableGroupId(tableGroupId);
-
-        final List<Long> orderTableIds = orderTables.stream()
-                .map(OrderTable::getId)
-                .collect(Collectors.toList());
-
-        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
-                orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new IllegalArgumentException();
-        }
-
+		validateUngroupable(orderTables);
 		for (final OrderTable orderTable : orderTables) {
 			orderTable.unGroup();
 			orderTableRepository.save(orderTable);
+		}
+	}
+
+	private void validateUngroupable(List<OrderTable> orderTables) {
+		final List<Long> orderTableIds = orderTables.stream()
+				.map(OrderTable::getId)
+				.collect(Collectors.toList());
+
+		if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
+				orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
+			throw new IllegalArgumentException();
 		}
 	}
 }
