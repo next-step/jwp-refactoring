@@ -29,9 +29,6 @@ import static org.mockito.Mockito.when;
 class OrderTableEventHandlerTest {
 
     @Mock
-    private TableService tableService;
-
-    @Mock
     private OrderRepository orderRepository;
 
     @InjectMocks
@@ -48,10 +45,8 @@ class OrderTableEventHandlerTest {
 
     @Test
     void 주문_테이블_그룹핑() {
-        TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now());
         List<Long> orderTableIds = Arrays.asList(1L, 2L);
         OrderTables orderTables = new OrderTables(Arrays.asList(일번_테이블, 이번_테이블));
-        when(tableService.findAllByIds(orderTableIds)).thenReturn(orderTables);
         OrderTableGroupEvent orderTableGroupEvent = new OrderTableGroupEvent(orderTableIds, orderTables);
         orderTableEventHandler.groupOrderTable(orderTableGroupEvent);
     }
@@ -62,7 +57,6 @@ class OrderTableEventHandlerTest {
         tableGroup.addOrderTable(일번_테이블);
         OrderTables orderTables = new OrderTables(Arrays.asList(일번_테이블));
         List<Long> orderTableIds = Arrays.asList(1L);
-        when(tableService.findAllByIds(orderTableIds)).thenReturn(orderTables);
         OrderTableGroupEvent orderTableGroupEvent = new OrderTableGroupEvent(orderTableIds, orderTables);
         assertThatThrownBy(() -> orderTableEventHandler.groupOrderTable(orderTableGroupEvent)).isInstanceOf(TableGroupException.class);
     }
