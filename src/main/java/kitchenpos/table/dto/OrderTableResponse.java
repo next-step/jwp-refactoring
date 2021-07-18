@@ -1,11 +1,14 @@
 package kitchenpos.table.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import kitchenpos.table.domain.NumberOfGuests;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.tableGroup.domain.TableGroup;
 
 public class OrderTableResponse {
 	private Long id;
+	@JsonIgnore
 	private TableGroup tableGroup;
 	private NumberOfGuests numberOfGuests;
 	private boolean empty;

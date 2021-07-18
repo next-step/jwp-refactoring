@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.table.dto.OrderLineItemRequest;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
@@ -43,7 +44,7 @@ public class OrderService {
 		validateOrderTableEmpty(orderTable);
 		Order savedOrder = orderRepository.save(new Order(orderTable, OrderStatus.COOKING.name(), LocalDateTime.now()));
         savedOrder.addOrderLineItems(orderLineItems.stream()
-			.map(OrderLineItemRequest::toOrderLineItem)
+			.map(orderLineItemRequest -> new OrderLineItem(savedOrder, menuRepository.findById(orderLineItemRequest.getMenuId()).get(), orderLineItemRequest.getQuantity()))
 			.collect(Collectors.toList()));
 
         return OrderResponse.of(savedOrder);

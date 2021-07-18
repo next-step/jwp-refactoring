@@ -53,8 +53,4 @@ public class OrderLineItemRequest {
     public void setQuantity(final long quantity) {
         this.quantity = quantity;
     }
-
-    public OrderLineItem toOrderLineItem(){
-    	return new OrderLineItem();
-	}
 }

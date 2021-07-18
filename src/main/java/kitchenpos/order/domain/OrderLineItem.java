@@ -25,5 +25,14 @@ public class OrderLineItem {
 	@JoinColumn(foreignKey = @ForeignKey(name = "fk_order_line_item_menu"))
 	private Menu menu;
 
-	private int quantity;
+	private Long quantity;
+
+	public OrderLineItem() {
+	}
+
+	public OrderLineItem(Order order, Menu menu, Long quantity) {
+		this.order = order;
+		this.menu = menu;
+		this.quantity = quantity;
+	}
 }

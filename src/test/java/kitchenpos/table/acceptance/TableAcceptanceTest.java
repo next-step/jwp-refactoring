@@ -65,13 +65,13 @@ public class TableAcceptanceTest extends AcceptanceTest {
 		// When : 주문 테이블 조회
 		ExtractableResponse<Response> findOrderTableResponse = findOrderTable();
 		// Then
-		boolean idOrderTableEmpty = findOrderTableResponse.jsonPath().getList(".", OrderTableResponse.class).stream()
+		boolean isOrderTableEmpty = findOrderTableResponse.jsonPath().getList(".", OrderTableResponse.class).stream()
 			.filter(orderTable -> orderTable.getId() == createdOrderTable.getId())
 			.map(OrderTableResponse::isEmpty)
 			.findFirst()
 			.get();
 		assertThat(findOrderTableResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
-		assertThat(idOrderTableEmpty).isEqualTo(true);
+		assertThat(isOrderTableEmpty).isEqualTo(true);
 	}
 
 	@DisplayName("주문 테이블 오류 시나리오")
@@ -90,7 +90,10 @@ public class TableAcceptanceTest extends AcceptanceTest {
 		ExtractableResponse<Response> tableWithTenPeopleCreatedResponse = createOrderTable(new OrderTableRequest(10, true));
 		OrderTableResponse createdOrderTableWithTenPeople = tableWithTenPeopleCreatedResponse.as(OrderTableResponse.class);
 
-		ExtractableResponse<Response> tableGroupCreatedResponse = createTableGroup(new TableGroupRequest(LocalDateTime.now(), Arrays.asList(new OrderTableRequest(5, true), new OrderTableRequest(10, true))));
+		OrderTableRequest orderTableWithFivePeople = new OrderTableRequest(createdOrderTableWithFivePeople.getId(), null, createdOrderTableWithFivePeople.getNumberOfGuests().getNumberOfGuests(), createdOrderTableWithFivePeople.isEmpty());
+		OrderTableRequest orderTableWithTenPeople = new OrderTableRequest(createdOrderTableWithTenPeople.getId(), null, createdOrderTableWithTenPeople.getNumberOfGuests().getNumberOfGuests(), createdOrderTableWithTenPeople.isEmpty());
+
+		ExtractableResponse<Response> tableGroupCreatedResponse = createTableGroup(new TableGroupRequest(LocalDateTime.now(), Arrays.asList(orderTableWithFivePeople, orderTableWithTenPeople)));
 		TableGroupResponse createdTableGroup = tableGroupCreatedResponse.as(TableGroupResponse.class);
 		assertThat(tableGroupCreatedResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
 
