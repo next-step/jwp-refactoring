@@ -1,6 +1,7 @@
-package kitchenpos.order.domain;
+package kitchenpos.order.application;
 
 import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.order.application.OrderValidator;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.table.domain.OrderTableRepository;

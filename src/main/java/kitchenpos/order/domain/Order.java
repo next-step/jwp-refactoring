@@ -11,7 +11,8 @@ public class Order {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private Long orderTableId;
-	private String orderStatus;
+	@Enumerated(EnumType.STRING)
+	private OrderStatus orderStatus;
 	private LocalDateTime orderedTime;
 
 	@Embedded
@@ -22,14 +23,14 @@ public class Order {
 
 	public Order(Long orderTableId, String orderStatus, LocalDateTime orderedTime) {
 		this.orderTableId = orderTableId;
-		this.orderStatus = orderStatus;
+		this.orderStatus = OrderStatus.valueOf(orderStatus);
 		this.orderedTime = orderedTime;
 	}
 
 	public Order(Long id, Long orderTableId, String orderStatus, LocalDateTime orderedTime) {
 		this.id = id;
 		this.orderTableId = orderTableId;
-		this.orderStatus = orderStatus;
+		this.orderStatus = OrderStatus.valueOf(orderStatus);
 		this.orderedTime = orderedTime;
 	}
 
@@ -47,7 +48,7 @@ public class Order {
 	}
 
 	private void checkCompleted() {
-		if (Objects.equals(OrderStatus.COMPLETION.name(), orderStatus)) {
+		if (orderStatus.isCompletion()) {
 			throw new IllegalArgumentException("주문이 이미 완료 되었습니다. id: " + id);
 		}
 	}
@@ -60,7 +61,7 @@ public class Order {
 		return orderTableId;
 	}
 
-	public String getOrderStatus() {
+	public OrderStatus getOrderStatus() {
 		return orderStatus;
 	}
 
@@ -78,6 +79,6 @@ public class Order {
 
 	public void changeStatus(String orderStatus) {
 		checkCompleted();
-		this.orderStatus = orderStatus;
+		this.orderStatus = OrderStatus.valueOf(orderStatus);
 	}
 }

@@ -10,6 +10,7 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
+@RequestMapping("/api/orders")
 public class OrderRestController {
 	private final OrderService orderService;
 
@@ -17,19 +18,19 @@ public class OrderRestController {
 		this.orderService = orderService;
 	}
 
-	@PostMapping("/api/orders")
+	@PostMapping
 	public ResponseEntity<OrderResponse> create(@RequestBody final OrderRequest orderRequest) {
 		final OrderResponse created = orderService.create(orderRequest);
 		final URI uri = URI.create("/api/orders/" + created.getOrderId());
 		return ResponseEntity.created(uri).body(created);
 	}
 
-	@GetMapping("/api/orders")
+	@GetMapping
 	public ResponseEntity<List<OrderResponse>> list() {
 		return ResponseEntity.ok().body(orderService.list());
 	}
 
-	@PutMapping("/api/orders/{orderId}/order-status")
+	@PutMapping("/{orderId}/order-status")
 	public ResponseEntity<OrderResponse> changeOrderStatus(
 			@PathVariable final Long orderId,
 			@RequestBody final String orderStatus

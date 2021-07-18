@@ -4,7 +4,7 @@ import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.domain.OrderValidator;
+import kitchenpos.order.application.OrderValidator;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import org.assertj.core.util.Lists;
@@ -62,7 +62,7 @@ class OrderServiceTest {
 		Order order = new Order(1L, 1L, OrderStatus.COOKING.name(), null);
 
 		when(orderRepository.findById(1L)).thenReturn(Optional.of(order));
-		assertThat(orderService.changeOrderStatus(1L, OrderStatus.MEAL.name()).getOrderStatus()).isEqualTo(OrderStatus.MEAL.name());
+		assertThat(orderService.changeOrderStatus(1L, OrderStatus.MEAL.name()).getOrderStatus()).isEqualTo(OrderStatus.MEAL);
 	}
 
 

@@ -39,7 +39,7 @@ public class TableServiceTest {
 
 	@Test
 	void getOrderTableListTest() {
-		when(orderTableRepository.findAll()).thenReturn(Lists.list(new OrderTable(), new OrderTable()));
+		when(orderTableRepository.findAll()).thenReturn(Lists.list(new OrderTable(1, true), new OrderTable(2, false)));
 		assertThat(tableService.list()).hasSize(2);
 	}
 
@@ -64,6 +64,8 @@ public class TableServiceTest {
 	@Test
 	@DisplayName("손님의 수 변경 시 손님이 음수면 익셉션 발생")
 	void changeNumberOfGuestsFailTest() {
+		OrderTable orderTable = new OrderTable(1L, null, 2, false);
+		when(orderTableRepository.findById(1L)).thenReturn(Optional.of(orderTable));
 		assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, -4))
 				.isInstanceOf(IllegalArgumentException.class);
 	}

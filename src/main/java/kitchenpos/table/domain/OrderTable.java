@@ -6,6 +6,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.util.Objects;
 
+import static kitchenpos.common.Constants.MINIMUM_NUMBER_OF_GUEST;
+
 @Entity
 public class OrderTable {
 	@Id
@@ -15,7 +17,7 @@ public class OrderTable {
 	private int numberOfGuests;
 	private boolean empty;
 
-	public OrderTable() {
+	protected OrderTable() {
 	}
 
 	public OrderTable(int numberOfGuests, boolean empty) {
@@ -24,10 +26,9 @@ public class OrderTable {
 	}
 
 	public OrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
+		this(numberOfGuests, empty);
 		this.id = id;
 		this.tableGroupId = tableGroupId;
-		this.numberOfGuests = numberOfGuests;
-		this.empty = empty;
 	}
 
 	public Long getId() {
@@ -54,10 +55,18 @@ public class OrderTable {
 	}
 
 	public void changeNumberOfGuests(final int numberOfGuests) {
+		validateChangeNumberOfGuests(numberOfGuests);
+		this.numberOfGuests = numberOfGuests;
+	}
+
+	private void validateChangeNumberOfGuests(int numberOfGuests) {
 		if (empty) {
 			throw new IllegalArgumentException("주문 테이블이 빈 테이블입니다.");
 		}
-		this.numberOfGuests = numberOfGuests;
+
+		if (numberOfGuests < MINIMUM_NUMBER_OF_GUEST) {
+			throw new IllegalArgumentException("손님 숫자는 0보다 작을 수 없습니다.");
+		}
 	}
 
 	public boolean isEmpty() {

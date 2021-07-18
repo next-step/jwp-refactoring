@@ -56,7 +56,7 @@ class OrderRestControllerTest {
 	@Test
 	void createTest() throws Exception {
 		OrderRequest orderRequest = new OrderRequest(1L, LocalDateTime.of(2021, 1, 1, 1, 1), Arrays.asList(new OrderLineItemRequest()));
-		OrderResponse orderResponse = new OrderResponse(1L, 1L, OrderStatus.COOKING.name(), LocalDateTime.of(2021, 1, 1, 1, 1), Arrays.asList(new OrderLineItemResponse()));
+		OrderResponse orderResponse = new OrderResponse(1L, 1L, OrderStatus.COOKING, LocalDateTime.of(2021, 1, 1, 1, 1), Arrays.asList(new OrderLineItemResponse()));
 
 		given(orderService.create(orderRequest)).willReturn(orderResponse);
 
@@ -81,7 +81,7 @@ class OrderRestControllerTest {
 
 	@Test
 	void changeOrderStatusTest() throws Exception {
-		OrderResponse orderResponse = new OrderResponse(1L, 1L, OrderStatus.COMPLETION.name(), null, Arrays.asList(new OrderLineItemResponse(), new OrderLineItemResponse()));
+		OrderResponse orderResponse = new OrderResponse(1L, 1L, OrderStatus.COMPLETION, null, Arrays.asList(new OrderLineItemResponse(), new OrderLineItemResponse()));
 		given(orderService.changeOrderStatus(orderResponse.getOrderId(), OrderStatus.COMPLETION.name())).willReturn(orderResponse);
 
 		mockMvc.perform(
