@@ -35,12 +35,6 @@ class OrdersTest {
     }
 
     @Test
-    void 주문_상태_변경시_주문_entity의_주문_상태가_완료인_경우_에러발생() {
-        주문.updateOrderStatus(OrderStatus.COMPLETION);
-        assertThatThrownBy(() -> 주문.checkOrderStatus()).isInstanceOf(OrderException.class);
-    }
-
-    @Test
     void 주문_entity에_주문_항목_리스트_추가() {
         주문.addOrderLineItems(주문_항목);
         List<OrderLineItem> orderLineItems = 주문.getOrderLineItems().orderLineItems();

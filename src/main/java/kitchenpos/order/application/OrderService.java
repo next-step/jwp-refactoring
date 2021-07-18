@@ -44,7 +44,6 @@ public class OrderService {
 
     public OrderResponse changeOrderStatus(final Long orderId, final OrderRequest request) {
         Orders orders = orderRepository.findById(orderId).orElseThrow(() -> new OrderException(NOT_FOUND_ORDER_ERROR_MESSAGE));
-        orders.checkOrderStatus();
         orders.updateOrderStatus(request.getOrderStatus());
         return OrderResponse.of(orders);
     }
