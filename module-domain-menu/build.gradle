@@ -1,0 +1,8 @@
+bootJar{ enabled = false }
+jar{ enabled = true }
+
+project(':module-domain-menu') {
+    dependencies {
+        compile project(':module-domain-product')
+    }
+}

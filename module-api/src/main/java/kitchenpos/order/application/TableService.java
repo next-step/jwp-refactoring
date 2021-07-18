@@ -1,0 +1,71 @@
+package kitchenpos.order.application;
+
+import kitchenpos.common.exception.CannotFindException;
+import kitchenpos.order.dto.OrderTableRequest;
+import kitchenpos.order.dto.OrderTableResponse;
+import kitchenpos.order.event.TableEmptyStatusChangedEvent;
+import kitchenpos.ordertable.OrderTable;
+import kitchenpos.ordertable.OrderTableRepository;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static kitchenpos.common.exception.Message.ERROR_ORDER_TABLE_NOT_FOUND;
+
+@Service
+@Transactional
+public class TableService {
+    private final ApplicationEventPublisher eventPublisher;
+    private final OrderTableRepository orderTableRepository;
+
+    public TableService(final ApplicationEventPublisher eventPublisher, final OrderTableRepository orderTableRepository) {
+        this.eventPublisher = eventPublisher;
+        this.orderTableRepository = orderTableRepository;
+    }
+
+    public OrderTableResponse create(final OrderTableRequest orderTableRequest) {
+        OrderTable savedOrderTable = orderTableRepository.save(toOrderTable(orderTableRequest));
+        return toOrderTableResponse(savedOrderTable);
+    }
+
+    private OrderTableResponse toOrderTableResponse(OrderTable orderTable) {
+        return new OrderTableResponse(orderTable.getId(), orderTable.getTableGroupId(),
+                orderTable.getNumberOfGuests(), orderTable.isEmpty());
+    }
+
+    private OrderTable toOrderTable(OrderTableRequest orderTableRequest) {
+        return new OrderTable(orderTableRequest.getNumberOfGuests(), orderTableRequest.isEmpty());
+    }
+
+    @Transactional(readOnly = true)
+    public List<OrderTableResponse> list() {
+        return toOrderTableResponses(orderTableRepository.findAll());
+    }
+
+    private List<OrderTableResponse> toOrderTableResponses(List<OrderTable> orderTables) {
+        return orderTables.stream()
+                .map(this::toOrderTableResponse)
+                .collect(Collectors.toList());
+    }
+
+    public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
+        final OrderTable savedOrderTable = findOrderTableById(orderTableId);
+        eventPublisher.publishEvent(new TableEmptyStatusChangedEvent(orderTableRequest));
+        savedOrderTable.changeEmpty(orderTableRequest.isEmpty());
+        return toOrderTableResponse(savedOrderTable);
+    }
+
+    private OrderTable findOrderTableById(Long orderTableId) {
+        return orderTableRepository.findById(orderTableId)
+                .orElseThrow(() -> new CannotFindException(ERROR_ORDER_TABLE_NOT_FOUND));
+    }
+
+    public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final OrderTableRequest orderTableRequest) {
+        final OrderTable savedOrderTable = findOrderTableById(orderTableId);
+        savedOrderTable.updateNumberOfGuestsTo(orderTableRequest.getNumberOfGuests());
+        return toOrderTableResponse(savedOrderTable);
+    }
+}

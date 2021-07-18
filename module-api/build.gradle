@@ -1,0 +1,13 @@
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.flywaydb:flyway-core'
+    runtimeOnly 'com.h2database:h2'
+}
+
+project(':module-api'){
+    dependencies {
+        compile project(':module-domain-product')
+        compile project(':module-domain-menu')
+        compile project(':module-domain-order')
+    }
+}

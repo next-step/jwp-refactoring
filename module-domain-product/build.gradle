@@ -1,0 +1,8 @@
+bootJar{ enabled = false }
+jar{ enabled = true }
+
+project(':module-domain-product') {
+    dependencies {
+        compile project(':module-common')
+    }
+}
