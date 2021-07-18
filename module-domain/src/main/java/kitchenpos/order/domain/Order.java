@@ -99,6 +99,10 @@ public class Order {
         }
     }
 
+    public boolean isNotCompletion() {
+        return !OrderStatus.COMPLETION.equals(orderStatus);
+    }
+
     @Override
     public String toString() {
         return "Order{" +

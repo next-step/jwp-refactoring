@@ -1,6 +1,5 @@
 package kitchenpos.tablegroup.application;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.advice.exception.OrderTableException;
@@ -42,9 +41,6 @@ public class TableGroupService {
     @Transactional
     public void ungroup(final Long tableGroupId) {
         final TableGroup tableGroup = findTableGroupById(tableGroupId);
-        final List<OrderTable> orderTables = tableService.findAllByTableGroupId(tableGroupId);
-
-        validateOrderStatusNotIn(orderTables, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL));
 
         tableGroup.getOrderTables().ungroup();
         tableGroupRepository.delete(tableGroup);
@@ -52,15 +48,5 @@ public class TableGroupService {
 
     public TableGroup findTableGroupById(Long id) {
         return tableGroupRepository.findById(id).orElseThrow(() -> new TableGroupException("테이블 그룹이 존재하지 않습니다", id));
-    }
-
-    public void validateOrderStatusNotIn(List<OrderTable> orderTables, List<OrderStatus> orderStatuses) {
-        if (orderRepository.existsByOrderTableInAndOrderStatusIn(orderTables, orderStatuses)) {
-            List<String> orderStatusList =  orderStatuses.stream()
-                .map(orderStatus -> orderStatus.name())
-                .collect(Collectors.toList());
-
-            throw new OrderTableException("올바르지 않은 주문상태가 포함되어있습니다", orderStatusList);
-        }
     }
 }

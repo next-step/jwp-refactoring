@@ -1,6 +1,8 @@
 package kitchenpos.order.domain;
 
+import java.util.Objects;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -16,6 +18,9 @@ public class OrderTable {
 
     @Column(name = "table_group_id")
     private Long tableGroupId;
+
+    @Embedded
+    private Orders orders;
 
     private int numberOfGuests;
     private boolean empty;
@@ -35,13 +40,8 @@ public class OrderTable {
     }
 
     public void ungroup() {
+        ungroupValidate();
         this.tableGroupId = null;
-    }
-
-    public void validateTableGroupIsNull() {
-        if (this.tableGroupId != null) {
-            throw new OrderTableException("테이블 그룹은 비어있어야 합니다");
-        }
     }
 
     public Long getId() {
@@ -66,7 +66,21 @@ public class OrderTable {
     }
 
     public void updateEmpty(boolean empty) {
+        emptyValidate();
         this.empty = empty;
+    }
+
+    private void emptyValidate() {
+        if (hasOtherOrderTable()) {
+            throw new IllegalArgumentException("단체 지정된 주문 테이블은 빈 테이블 설정 또는 해지할 수 없습니다.");
+        }
+        if (orders.isNotCompletion()) {
+            throw new IllegalArgumentException("조리 또는 식사인 테이블은 빈 테이블 설정 또는 해지할 수 없습니다.");
+        }
+    }
+
+    public boolean hasOtherOrderTable() {
+        return Objects.nonNull(tableGroupId);
     }
 
     public void updateNumberOfGuests(int numberOfGuests) {
@@ -77,6 +91,12 @@ public class OrderTable {
     private void validateOrderTableIsEmpty() {
         if (isEmpty()) {
             throw new OrderTableException("주문 테이블이 비어있습니다");
+        }
+    }
+
+    private void ungroupValidate() {
+        if (orders.isNotCompletion()) {
+            throw new IllegalArgumentException("아직 식사를 완료하지 않아, 단체 지정을 해지할 수 없습니다.");
         }
     }
 }

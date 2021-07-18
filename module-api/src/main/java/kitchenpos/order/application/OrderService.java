@@ -54,15 +54,6 @@ public class OrderService {
         return savedOrder;
     }
 
-    public void validateOrderStatusNotIn(OrderTable orderTable, List<OrderStatus> orderStatuses) {
-        if (orderRepository.existsByOrderTableAndOrderStatusIn(orderTable, orderStatuses)) {
-            List<String> orderStatusList =  orderStatuses.stream()
-                .map(orderStatus -> orderStatus.name())
-                .collect(Collectors.toList());
-            throw new OrderTableException("올바르지 않은 주문상태가 포함되어있습니다", orderStatusList);
-        }
-    }
-
     private Order findOrderById(Long id) {
         return orderRepository.findById(id)
             .orElseThrow(() -> new OrderException("존재하는 주문 id가 없습니다. ", id));
