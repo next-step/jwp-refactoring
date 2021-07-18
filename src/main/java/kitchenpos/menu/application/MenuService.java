@@ -1,82 +1,90 @@
 package kitchenpos.menu.application;
 
-import kitchenpos.exception.CannotFindException;
+import kitchenpos.common.Price;
+import kitchenpos.common.Quantity;
 import kitchenpos.menu.domain.*;
 import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuProductResponse;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.product.domain.ProductRepository;
-import kitchenpos.product.domain.Product;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static kitchenpos.common.Message.ERROR_MENUGROUP_NOT_FOUND;
-import static kitchenpos.common.Message.ERROR_PRODUCT_NOT_FOUND;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
 public class MenuService {
     private final MenuRepository menuRepository;
-    private final MenuGroupRepository menuGroupRepository;
-    private final ProductRepository productRepository;
+    private final MenuProductRepository menuProductRepository;
+    private final MenuValidator menuValidator;
 
-    public MenuService(
-            final MenuRepository menuRepository,
-            final MenuGroupRepository menuGroupRepository,
-            final ProductRepository productRepository
-    ) {
+    public MenuService(final MenuRepository menuRepository, final MenuProductRepository menuProductRepository, final MenuValidator menuValidator) {
         this.menuRepository = menuRepository;
-        this.menuGroupRepository = menuGroupRepository;
-        this.productRepository = productRepository;
+        this.menuProductRepository = menuProductRepository;
+        this.menuValidator = menuValidator;
     }
 
     public MenuResponse create(final MenuRequest menuRequest) {
-
-        MenuGroup menuGroup = menuGroupRepository.findById(menuRequest.getMenuGroupId())
-                .orElseThrow(() -> new CannotFindException(ERROR_MENUGROUP_NOT_FOUND));
-        List<MenuProduct> menuProducts = getMenuProducts(menuRequest);
-        Menu savedMenu = menuRepository.save(new Menu(menuRequest.getName(), Price.valueOf(menuRequest.getPrice()), menuGroup, menuProducts));
-        return MenuResponse.of(savedMenu);
+        menuValidator.validate(menuRequest);
+        Menu savedMenu = menuRepository.save(toMenu(menuRequest));
+        List<MenuProduct> menuProducts = toMenuProducts(menuRequest.getMenuProductRequests(), savedMenu);
+        menuProductRepository.saveAll(menuProducts);
+        return new MenuResponse(savedMenu.getId(),
+                savedMenu.getName(),
+                savedMenu.getPrice().value(),
+                savedMenu.getMenuGroupId(),
+                toMenuProductResponses(menuProducts));
     }
 
-    private List<MenuProduct> getMenuProducts(MenuRequest menuRequest) {
-        List<Product> products = getProducts(menuRequest);
-        return getMenuProductsWithProducts(menuRequest.getMenuProductRequests(), products);
+    private List<MenuProduct> toMenuProducts(List<MenuProductRequest> menuProductRequests, Menu menu) {
+        return menuProductRequests.stream()
+                .map(menuProductRequest -> toMenuProduct(menuProductRequest, menu))
+                .collect(Collectors.toList());
     }
 
-    private List<MenuProduct> getMenuProductsWithProducts(List<MenuProductRequest> menuProductRequests, List<Product> products) {
-        List<MenuProduct> menuProducts = new ArrayList<>();
-        for (MenuProductRequest menuProductRequest : menuProductRequests) {
-            Product product = findProductById(menuProductRequest.getProductId(), products);
-            menuProducts.add(new MenuProduct(product, Quantity.of(menuProductRequest.getQuantity())));
-        }
-        return menuProducts;
+    private MenuProduct toMenuProduct(MenuProductRequest menuProductRequest, Menu menu) {
+        return new MenuProduct(menu, menuProductRequest.getProductId(), Quantity.of(menuProductRequest.getQuantity()));
     }
 
-    private Product findProductById(Long productId, List<Product> products) {
-        return products.stream()
-                .filter(product -> product.hasSameIdAs(productId))
-                .findFirst()
-                .orElseThrow(() -> new CannotFindException(ERROR_PRODUCT_NOT_FOUND));
-    }
-
-    private List<Product> getProducts(MenuRequest menuRequest) {
-        List<Long> productIds = menuRequest.getAllProductIds();
-        List<Product> products = productRepository.findAllById(productIds);
-
-        if (productIds.size() != products.size()) {
-            throw new CannotFindException(ERROR_PRODUCT_NOT_FOUND);
-        }
-
-        return products;
+    private Menu toMenu(MenuRequest menuRequest) {
+        return new Menu(menuRequest.getName(),
+                Price.valueOf(menuRequest.getPrice()),
+                menuRequest.getMenuGroupId());
     }
 
     @Transactional(readOnly = true)
     public List<MenuResponse> list() {
         final List<Menu> menus = menuRepository.findAll();
-        return MenuResponse.ofList(menus);
+        final List<Long> menuIds = menus.stream()
+                .map(Menu::getId)
+                .collect(Collectors.toList());
+        final List<MenuProduct> menuProducts = menuProductRepository.findAllByMenuIdIn(menuIds);
+        final List<MenuResponse> menuResponses = new ArrayList<>();
+        for (Menu menu : menus) {
+            List<MenuProduct> menuProductsOfMenu = menuProducts.stream()
+                    .filter(menuProduct -> menuProduct.isMenuProductOf(menu))
+                    .collect(Collectors.toList());
+            menuResponses.add(new MenuResponse(menu.getId(),
+                    menu.getName(),
+                    menu.getPrice().value(),
+                    menu.getMenuGroupId(),
+                    toMenuProductResponses(menuProductsOfMenu)));
+        }
+
+        return menuResponses;
+    }
+
+    private List<MenuProductResponse> toMenuProductResponses(List<MenuProduct> menuProducts) {
+        final List<MenuProductResponse> responses = new ArrayList<>();
+        for (MenuProduct menuProduct : menuProducts) {
+            responses.add(new MenuProductResponse(menuProduct.getSeq(),
+                    menuProduct.getMenu().getId(),
+                    menuProduct.getProductId(),
+                    menuProduct.getQuantity().value()));
+        }
+        return responses;
     }
 }

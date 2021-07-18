@@ -1,6 +1,5 @@
 package kitchenpos.product.application;
 
-import kitchenpos.menu.domain.Price;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.dto.ProductResponse;
@@ -15,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static kitchenpos.product.ProductTestFixture.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -27,17 +26,14 @@ class ProductServiceTest {
     @InjectMocks
     private ProductService productService;
 
-    private Product 후라이드 = new Product("후라이드", Price.valueOf(16000));
-    private Product 양념치킨 = new Product("양념치킨", Price.valueOf(19000));
-
     @DisplayName("0원 이상의 가격으로 상품을 등록한다")
     @Test
     void 상품_등록() {
         //Given
-        when(productRepository.save(any())).thenReturn(후라이드);
+        when(productRepository.save(any())).thenReturn(아이스아메리카노);
 
         //When
-        ProductResponse 생성된_상품 = productService.create(후라이드);
+        ProductResponse 생성된_상품 = productService.create(아이스아메리카노_요청);
 
         //Then
         verify(productRepository, times(1)).save(any());
@@ -47,7 +43,7 @@ class ProductServiceTest {
     @Test
     void 상품_목록_조회() {
         //Given
-        List<Product> 입력한_상품_목록 = new ArrayList<>(Arrays.asList(후라이드, 양념치킨));
+        List<Product> 입력한_상품_목록 = new ArrayList<>(Arrays.asList(아이스아메리카노, 에그맥머핀));
         when(productRepository.findAll()).thenReturn(입력한_상품_목록);
 
         //When

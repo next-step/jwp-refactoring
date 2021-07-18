@@ -8,6 +8,7 @@ public enum Message {
     ERROR_PRICE_SHOULD_BE_OVER_THAN_ZERO("가격은 0원 이상이어야 합니다."),
     ERROR_MENUGROUP_NOT_FOUND("등록되지 않은 메뉴 그룹입니다."),
     ERROR_PRODUCT_NOT_FOUND("등록되지 않은 상품이 있습니다."),
+    ERROR_TABLE_GROUP_NOT_FOUND("등록되지 않은 상품이 있습니다."),
     ERROR_MENU_PRICE_CANNOT_BE_BIGGER_THAN_MENUPRODUCTS_TOTAL("메뉴의 가격은 메뉴 상품들의 가격합보다 클 수 없습니다."),
     ERROR_ORDER_TABLE_CANNOT_BE_CLEANED_WHEN_GROUPED("단체지정된 테이블은 비울 수 없습니다."),
     ERROR_TABLE_GUESTS_NUMBER_CANNOT_BE_SMALLER_THAN_ZERO("테이블의 손님수는 0 이상이어야 합니다."),
@@ -23,7 +24,9 @@ public enum Message {
     ERROR_ORDERTABLES_SHOULD_HAVE_AT_LEAST_TWO_TABLES("주문 테이블 목록에는 최소 2개 이상의 테이블이 있어야 합니다."),
     ERROR_TABLES_CANNOT_BE_GROUPED("이미 단체지정 되어있거나, 비어있지 않은 테이블은 단체지정할 수 없습니다."),
     ERROR_TABLES_SHOULD_ALL_BE_REGISTERED_TO_BE_GROUPED("단체 지정이 되기 위해서는 모든 테이블이 등록되어 있어야 합니다."),
-    ERROR_TABLE_GROUP_CANNOT_BE_UNGROUPED_WHEN_ORDERS_NOT_COMPLETED("주문들이 완료되지 않은 상태에서는 단체지정을 해제할 수 없습니다");
+    ERROR_TABLE_GROUP_CANNOT_BE_UNGROUPED_WHEN_ORDERS_NOT_COMPLETED("주문들이 완료되지 않은 상태에서는 단체지정을 해제할 수 없습니다"),
+    ERROR_TABLE_GROUP_CANNOT_BE_UNGROUPED_WHEN_TABLES_NOT_EMPTY("주문 테이블이 비어있지 않은 상태에서는 단체지정을 해제할 수 없습니다")
+    ;
 
     private String message;
 

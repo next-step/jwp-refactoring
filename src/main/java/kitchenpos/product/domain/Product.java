@@ -1,7 +1,7 @@
 package kitchenpos.product.domain;
 
 import kitchenpos.common.Message;
-import kitchenpos.menu.domain.Price;
+import kitchenpos.common.Price;
 
 import javax.persistence.*;
 
@@ -21,9 +21,7 @@ public class Product {
     }
 
     public Product(String name, Price price) {
-        validateName(name);
-        this.name = name;
-        this.price = price;
+        this(0L, name, price);
     }
 
     public Product(Long id, String name, Price price) {

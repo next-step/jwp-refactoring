@@ -1,7 +1,5 @@
 package kitchenpos.order.dto;
 
-import kitchenpos.order.domain.Order;
-
 import java.util.List;
 
 public class OrderRequest {
@@ -15,11 +13,6 @@ public class OrderRequest {
     public OrderRequest(Long orderTableId, List<OrderLineItemRequest> orderLineItemRequests) {
         this.orderTableId = orderTableId;
         this.orderLineItemRequests = orderLineItemRequests;
-    }
-
-    public static OrderRequest of(Order order) {
-        return new OrderRequest(order.getOrderTable().getId(),
-                OrderLineItemRequest.ofList(order.getOrderLineItems().temporaryGetList()));
     }
 
     public Long getOrderTableId() {

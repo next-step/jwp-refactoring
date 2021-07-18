@@ -1,17 +1,19 @@
 package kitchenpos.order.domain;
 
 import kitchenpos.exception.CannotUpdateException;
-import kitchenpos.ordertable.domain.OrderTable;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 import static kitchenpos.common.Message.*;
 import static kitchenpos.order.domain.OrderStatus.COOKING;
 import static kitchenpos.order.domain.OrderStatus.MEAL;
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "orders")
 public class Order {
 
@@ -19,9 +21,8 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
     @JoinColumn(name = "order_table_id", foreignKey = @ForeignKey(name = "fk_orders_order_table"), nullable = false)
-    private OrderTable orderTable;
+    private Long orderTableId;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "order_status", nullable = false)
@@ -30,23 +31,22 @@ public class Order {
     @CreatedDate
     private LocalDateTime orderedTime;
 
-    @Embedded
-    private OrderLineItems orderLineItems;
-
     public Order() {
     }
 
-    public Order(OrderTable orderTable, OrderStatus orderStatus, OrderLineItems orderLineItems) {
-        validateOrderTableStatus(orderTable);
-        this.orderTable = orderTable;
-        this.orderStatus = orderStatus;
-        this.orderLineItems = orderLineItems;
-        orderLineItems.ofOrder(this);
-        orderTable.addOrder(this);
+    public Order(Long orderTableId, OrderStatus orderStatus) {
+        this(null, orderTableId, orderStatus);
     }
 
-    private void validateOrderTableStatus(OrderTable orderTable) {
-        if (orderTable.isEmpty()) {
+    public Order(Long id, Long orderTableId, OrderStatus orderStatus) {
+        validateOrderTableStatus(orderTableId);
+        this.id = id;
+        this.orderTableId = orderTableId;
+        this.orderStatus = orderStatus;
+    }
+
+    private void validateOrderTableStatus(Long orderTableId) {
+        if (orderTableId == null) {
             throw new IllegalArgumentException(ERROR_ORDER_SHOULD_HAVE_NON_EMPTY_TABLE.showText());
         }
     }
@@ -71,18 +71,31 @@ public class Order {
         return id;
     }
 
-    public OrderTable getOrderTable() {
-        return orderTable;
+    public Long getOrderTableId() {
+        return orderTableId;
     }
 
     public OrderStatus getOrderStatus() {
         return orderStatus;
     }
+
     public LocalDateTime getOrderedTime() {
         return orderedTime;
     }
 
-    public OrderLineItems getOrderLineItems() {
-        return orderLineItems;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Order order = (Order) o;
+        return Objects.equals(id, order.id)
+                && Objects.equals(orderTableId, order.orderTableId)
+                && orderStatus == order.orderStatus
+                && Objects.equals(orderedTime, order.orderedTime);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, orderTableId, orderStatus, orderedTime);
     }
 }
