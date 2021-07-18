@@ -1,27 +1,63 @@
 plugins {
     id 'org.springframework.boot' version '2.4.1'
     id 'io.spring.dependency-management' version '1.0.10.RELEASE'
-    id 'java'
+    id 'java-library'
 }
 
-group = 'camp.nextstep.edu'
-version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '1.8'
+allprojects {
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'java-library'
 
-repositories {
-    mavenCentral()
+    group = 'camp.nextstep.edu'
+    version = '0.0.1-SNAPSHOT'
+    sourceCompatibility = '1.8'
+
+    repositories {
+        mavenCentral()
+    }
+
+    test {
+        useJUnitPlatform()
+    }
 }
 
-dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.flywaydb:flyway-core'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    runtimeOnly 'com.h2database:h2'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+subprojects {
+    dependencies {
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    }
 }
 
-test {
-    useJUnitPlatform()
+project(':module-common') {
+    dependencies {
+        implementation group: 'javax.persistence', name: 'javax.persistence-api', version: '2.2'
+    }
+}
+
+project(':module-menu') {
+    dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+        runtimeOnly 'com.h2database:h2'
+        api project(':module-common')
+    }
+}
+
+project(':module-order') {
+    dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+        runtimeOnly 'com.h2database:h2'
+        api project(':module-menu')
+    }
+}
+
+project(':module-web') {
+    dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter-actuator'
+        implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+        implementation 'org.springframework.boot:spring-boot-starter-web'
+        implementation 'org.flywaydb:flyway-core'
+        implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+        runtimeOnly 'com.h2database:h2'
+        implementation project(':module-order')
+    }
 }
