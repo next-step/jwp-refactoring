@@ -1,13 +1,13 @@
 plugins {
     id 'org.springframework.boot' version '2.4.1'
     id 'io.spring.dependency-management' version '1.0.10.RELEASE'
-    id 'java'
+    id 'java-library'
 }
 
 allprojects {
     apply plugin: 'org.springframework.boot'
     apply plugin: 'io.spring.dependency-management'
-    apply plugin: 'java'
+    apply plugin: 'java-library'
 
     group = 'camp.nextstep.edu'
     version = '0.0.1-SNAPSHOT'
@@ -38,7 +38,7 @@ project(':module-menu') {
     dependencies {
         implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
         runtimeOnly 'com.h2database:h2'
-        implementation project(':module-common')
+        api project(':module-common')
     }
 }
 
@@ -46,8 +46,7 @@ project(':module-order') {
     dependencies {
         implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
         runtimeOnly 'com.h2database:h2'
-        implementation project(':module-common')
-        implementation project(':module-menu')
+        api project(':module-menu')
     }
 }
 
@@ -59,7 +58,6 @@ project(':module-web') {
         implementation 'org.flywaydb:flyway-core'
         implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
         runtimeOnly 'com.h2database:h2'
-        implementation project(':module-menu')
         implementation project(':module-order')
     }
 }
