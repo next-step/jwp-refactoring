@@ -1,7 +1,7 @@
 package kitchenpos.ordertable.application;
 
 import kitchenpos.common.exception.CannotFindException;
-import kitchenpos.menu.domain.*;
+import kitchenpos.menu.MenuRepository;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.OrderRequest;

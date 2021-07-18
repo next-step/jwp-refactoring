@@ -1,8 +1,8 @@
 package kitchenpos.product.application;
 
 import kitchenpos.product.ProductTestFixture;
-import kitchenpos.product.domain.ProductRepository;
-import kitchenpos.product.domain.Product;
+import kitchenpos.product.ProductRepository;
+import kitchenpos.product.Product;
 import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static kitchenpos.product.ProductTestFixture.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)

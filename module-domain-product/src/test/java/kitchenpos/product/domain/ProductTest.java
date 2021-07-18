@@ -2,6 +2,7 @@ package kitchenpos.product.domain;
 
 import kitchenpos.common.exception.Message;
 import kitchenpos.common.domain.Price;
+import kitchenpos.product.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

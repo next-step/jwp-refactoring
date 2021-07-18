@@ -29,10 +29,20 @@ allprojects {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     runtimeOnly 'com.h2database:h2'
+    compile project(':module-domain-product')
+    compile project(':module-domain-menu')
+    testCompile project(':module-api').sourceSets.test.output
 
 }
 
 project(':module-api'){
+    dependencies {
+        compile project(':module-domain-product')
+        compile project(':module-domain-menu')
+    }
+}
+
+project(':module-domain-menu') {
     dependencies {
         compile project(':module-domain-product')
     }
