@@ -1,7 +1,7 @@
 package kitchenpos.product.ui;
 
+import kitchenpos.product.ProductTestFixture;
 import kitchenpos.product.application.ProductService;
-import kitchenpos.common.ui.ControllerTest;
 import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,8 +14,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static kitchenpos.product.ProductTestFixture.에그맥머핀_응답;
-import static kitchenpos.product.ProductTestFixture.아이스아메리카노_응답;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -39,10 +37,10 @@ public class ProductControllerTest extends ControllerTest<ProductResponse> {
     @Test
     void 상품_생성요청() throws Exception {
         //Given
-        when(productService.create(any())).thenReturn(아이스아메리카노_응답);
+        when(productService.create(any())).thenReturn(ProductTestFixture.아이스아메리카노_응답);
 
         //When
-        ResultActions 결과 = postRequest(BASE_URI, 아이스아메리카노_응답);
+        ResultActions 결과 = postRequest(BASE_URI, ProductTestFixture.아이스아메리카노_응답);
 
         //Then
         생성성공(결과);
@@ -52,7 +50,7 @@ public class ProductControllerTest extends ControllerTest<ProductResponse> {
     @Test
     void 메뉴그룹_목록_조회요청() throws Exception {
         //Given
-        List<ProductResponse> 상품_목록 = new ArrayList<>(Arrays.asList(아이스아메리카노_응답, 에그맥머핀_응답));
+        List<ProductResponse> 상품_목록 = new ArrayList<>(Arrays.asList(ProductTestFixture.아이스아메리카노_응답, ProductTestFixture.에그맥머핀_응답));
         when(productService.list()).thenReturn(상품_목록);
 
         //When

@@ -1,5 +1,6 @@
 package kitchenpos.product.application;
 
+import kitchenpos.product.ProductTestFixture;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.dto.ProductResponse;
@@ -30,10 +31,10 @@ class ProductServiceTest {
     @Test
     void 상품_등록() {
         //Given
-        when(productRepository.save(any())).thenReturn(아이스아메리카노);
+        when(productRepository.save(any())).thenReturn(ProductTestFixture.아이스아메리카노);
 
         //When
-        ProductResponse 생성된_상품 = productService.create(아이스아메리카노_요청);
+        ProductResponse 생성된_상품 = productService.create(ProductTestFixture.아이스아메리카노_요청);
 
         //Then
         verify(productRepository, times(1)).save(any());
@@ -43,7 +44,7 @@ class ProductServiceTest {
     @Test
     void 상품_목록_조회() {
         //Given
-        List<Product> 입력한_상품_목록 = new ArrayList<>(Arrays.asList(아이스아메리카노, 에그맥머핀));
+        List<Product> 입력한_상품_목록 = new ArrayList<>(Arrays.asList(ProductTestFixture.아이스아메리카노, ProductTestFixture.에그맥머핀));
         when(productRepository.findAll()).thenReturn(입력한_상품_목록);
 
         //When

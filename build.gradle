@@ -28,10 +28,20 @@ allprojects {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.flywaydb:flyway-core'
     runtimeOnly 'com.h2database:h2'
 
-    compile project(':module-common')
+}
+
+project(':module-api'){
+    dependencies {
+        compile project(':module-domain-product')
+    }
+}
+
+project(':module-domain-product') {
+    dependencies {
+        compile project(':module-common')
+    }
 }
 
 
