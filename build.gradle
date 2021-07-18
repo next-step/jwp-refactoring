@@ -24,20 +24,27 @@ allprojects {
 
 subprojects {
     dependencies {
-        implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
         runtimeOnly 'com.h2database:h2'
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
     }
 }
 
+project(':module-common') {
+    dependencies {
+        implementation group: 'javax.persistence', name: 'javax.persistence-api', version: '2.2'
+    }
+}
+
 project(':module-menu') {
     dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
         implementation project(':module-common')
     }
 }
 
 project(':module-order') {
     dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
         implementation project(':module-common')
         implementation project(':module-menu')
     }
@@ -49,6 +56,7 @@ project(':module-web') {
         implementation 'org.springframework.boot:spring-boot-starter-jdbc'
         implementation 'org.springframework.boot:spring-boot-starter-web'
         implementation 'org.flywaydb:flyway-core'
+        implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
         implementation project(':module-menu')
         implementation project(':module-order')
     }
