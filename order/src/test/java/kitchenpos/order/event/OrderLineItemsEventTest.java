@@ -11,8 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.TableGroup;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -30,26 +28,18 @@ public class OrderLineItemsEventTest {
     MenuRepository menuRepository;
 
     private Order savedOrder;
-    private TableGroup tableGroup;
-    private OrderTable orderTable;
     private OrderLineItemsEventHandler orderLineItemEventHandler;
     private OrderCreatedEvent orderCreatedEvent;
 
     @BeforeEach
     void setUp() {
-        테이블_그룹_주문_테이블_생성();
         주문_생성();
         주문_이벤트_생성();
         orderLineItemEventHandler = new OrderLineItemsEventHandler(menuRepository, orderLineItemRepository);
     }
 
-    private void 테이블_그룹_주문_테이블_생성() {
-        tableGroup = new TableGroup(1L);
-        orderTable = new OrderTable(1L, tableGroup, 4, false);
-    }
-
     private void 주문_생성() {
-        savedOrder = new Order(1L, orderTable.getId(), OrderStatus.COOKING);
+        savedOrder = new Order(1L, 1L, OrderStatus.COOKING);
     }
 
     private void 주문_이벤트_생성() {

@@ -39,7 +39,7 @@ project(':api') {
 
         implementation 'org.springframework.boot:spring-boot-starter-web'
         implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-
+        implementation 'org.springframework.boot:spring-boot-starter-test'
         implementation 'org.flywaydb:flyway-core'
         runtimeOnly 'com.h2database:h2'
     }
@@ -70,7 +70,7 @@ project(':order') {
     dependencies {
         implementation project(':product')
         implementation project(':menu')
-        implementation project(':table')
+
         implementation 'org.springframework:spring-web'
         implementation 'jakarta.persistence:jakarta.persistence-api'
         implementation 'org.springframework.data:spring-data-jpa'
@@ -99,7 +99,6 @@ project(':table') {
         enabled = true
     }
     dependencies {
-        implementation project(':order')
         implementation 'org.springframework:spring-web'
         implementation 'jakarta.persistence:jakarta.persistence-api'
         implementation 'org.springframework.data:spring-data-jpa'
