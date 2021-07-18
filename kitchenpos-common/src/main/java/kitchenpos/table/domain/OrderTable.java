@@ -2,7 +2,7 @@ package kitchenpos.table.domain;
 
 import kitchenpos.table.exception.NotChangeToEmptyThatGroupTable;
 import kitchenpos.table.exception.NotChangeNumberOfGuestThatEmptyTable;
-import kitchenpos.table.handler.OrderTableValidator;
+import kitchenpos.table.validator.OrderTableValidator;
 
 import javax.persistence.*;
 import java.util.Objects;

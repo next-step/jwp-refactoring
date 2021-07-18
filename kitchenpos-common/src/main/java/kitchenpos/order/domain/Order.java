@@ -1,7 +1,7 @@
 package kitchenpos.order.domain;
 
 import kitchenpos.order.OrderStatus;
-import kitchenpos.order.handler.OrderValidator;
+import kitchenpos.order.validator.OrderValidator;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;

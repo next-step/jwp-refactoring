@@ -1,4 +1,4 @@
-package kitchenpos.table.handler;
+package kitchenpos.table.validator;
 
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;

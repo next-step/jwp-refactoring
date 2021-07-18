@@ -7,8 +7,8 @@ import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.exception.NotFoundMenuGroupException;
-import kitchenpos.menu.handler.MenuMapper;
-import kitchenpos.menu.handler.MenuValidator;
+import kitchenpos.menu.mapper.MenuMapper;
+import kitchenpos.menu.validator.MenuValidator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

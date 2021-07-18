@@ -1,4 +1,4 @@
-package kitchenpos.table.handler;
+package kitchenpos.table.mapper;
 
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTables;

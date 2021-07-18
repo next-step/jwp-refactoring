@@ -5,8 +5,8 @@ import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.exception.NotFoundOrderException;
-import kitchenpos.order.handler.OrderMapper;
-import kitchenpos.order.handler.OrderValidator;
+import kitchenpos.order.mapper.OrderMapper;
+import kitchenpos.order.validator.OrderValidator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
