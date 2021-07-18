@@ -4,7 +4,6 @@ import kitchenpos.exception.OrderTableException;
 import kitchenpos.exception.TableGroupException;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.Orders;
-import kitchenpos.table.application.OrderTableService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.domain.TableGroup;
@@ -24,11 +23,9 @@ public class OrderTableEventHandler {
     public static final String CONTAIN_ORDER_STATUS_COMPLETION_ERROR_MESSAGE = "주문 상태가 완료 상태가 아닌 주문 테이블이 존재하여 그룹 해제에 실패하였습니다.";
     public static final String ORDER_STATUS_COMPLETION_ERROR_MESSAGE = "주문 상태가 완료 상태가 아닌 경우 테이블 상태를 변경할 수 없습니다.";
 
-    private final OrderTableService orderTableService;
     private final OrderRepository orderRepository;
 
-    public OrderTableEventHandler(OrderTableService orderTableService, OrderRepository orderRepository) {
-        this.orderTableService = orderTableService;
+    public OrderTableEventHandler(OrderRepository orderRepository) {
         this.orderRepository = orderRepository;
     }
 
