@@ -30,12 +30,19 @@ subprojects {
 project(':kitchenpos-api') {
     dependencies {
         compile project(':kitchenpos-common')
+        compile project(':kitchenpos-domain')
     }
 }
+
+project(':kitchenpos-domain') {
+    dependencies {
+        compile project(':kitchenpos-common')
+    }
+}
+
 
 project(':kitchenpos-web') {
     dependencies {
         compile project(':kitchenpos-api')
-        compile project(':kitchenpos-common')
     }
 }
