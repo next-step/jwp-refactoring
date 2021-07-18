@@ -1,7 +1,0 @@
-project(':order') {
-    dependencies {
-        implementation project(':product')
-        implementation project(':table')
-        implementation project(':menu')
-    }
-}
