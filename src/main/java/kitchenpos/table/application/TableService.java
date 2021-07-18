@@ -54,9 +54,16 @@ public class TableService {
 
 	private void validateCookingOrMealStatusExists(Long orderTableId) {
     	List<Order> orders = orderRepository.findByOrderTableId(orderTableId);
-    	if(orders.stream().filter(order -> order.getOrderStatus().equals(OrderStatus.COOKING.name()) || order.getOrderStatus().equals(OrderStatus.MEAL.name())).findAny().isPresent()) {
+    	if(isEmptyChangeable(orders)) {
 			throw new IllegalArgumentException();
 		}
+	}
+
+	private boolean isEmptyChangeable(List<Order> orders) {
+		return orders.stream()
+			.filter(order -> order.isEmptyChageable())
+			.findAny()
+			.isPresent();
 	}
 
 	private void validateTableGrouped(OrderTable savedOrderTable) {

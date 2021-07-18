@@ -63,19 +63,23 @@ public class Order {
 		return orderedTime;
 	}
 
+	public String getOrderStatus() {
+		return orderStatus;
+	}
+
 	public List<OrderLineItem> getOrderLineItems() {
 		return orderLineItems;
 	}
 
 	public boolean isStatusChangeable() {
-		return Objects.equals(OrderStatus.COMPLETION.name(), orderStatus);
+		return !Objects.equals(OrderStatus.COMPLETION.name(), orderStatus);
+	}
+
+	public boolean isEmptyChageable() {
+		return orderStatus.equals(OrderStatus.COOKING.name()) || orderStatus.equals(OrderStatus.MEAL.name());
 	}
 
 	public void updateStatus(String status) {
 		this.orderStatus = status;
-	}
-
-	public String getOrderStatus() {
-		return orderStatus;
 	}
 }

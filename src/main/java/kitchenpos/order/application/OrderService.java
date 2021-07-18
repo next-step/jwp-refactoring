@@ -92,7 +92,7 @@ public class OrderService {
 	}
 
 	private void validateOrderStatusChangeable(Order savedOrder) {
-		if (savedOrder.isStatusChangeable()) {
+		if (!savedOrder.isStatusChangeable()) {
 			throw new IllegalArgumentException();
 		}
 	}
