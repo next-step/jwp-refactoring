@@ -1,24 +1,25 @@
 package kitchenpos.table.event;
 
+import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.domain.TableGroup;
 
 import java.util.List;
 
 public class OrderTableGroupEvent {
 
-    private TableGroup tableGroup;
     private List<Long> orderTableIds;
+    private OrderTables orderTables;
 
-    public OrderTableGroupEvent(TableGroup tableGroup, List<Long> orderTableIds) {
-        this.tableGroup = tableGroup;
+    public OrderTableGroupEvent(List<Long> orderTableIds, OrderTables orderTables) {
         this.orderTableIds = orderTableIds;
-    }
-
-    public TableGroup getTableGroup() {
-        return tableGroup;
+        this.orderTables = orderTables;
     }
 
     public List<Long> getOrderTableIds() {
         return orderTableIds;
+    }
+
+    public OrderTables getOrderTables() {
+        return orderTables;
     }
 }

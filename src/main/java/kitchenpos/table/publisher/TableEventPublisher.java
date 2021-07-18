@@ -1,6 +1,7 @@
 package kitchenpos.table.publisher;
 
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.event.OrderTableChangeEmptyValidEvent;
 import kitchenpos.table.event.OrderTableGroupEvent;
@@ -31,8 +32,8 @@ public class TableEventPublisher {
 
     }
 
-    public void groupEventPublish(TableGroup tableGroup, List<Long> orderTableIds) {
-        OrderTableGroupEvent orderTableGroupEvent = new OrderTableGroupEvent(tableGroup, orderTableIds);
+    public void groupEventPublish(List<Long> tableGroupIds, OrderTables orderTables) {
+        OrderTableGroupEvent orderTableGroupEvent = new OrderTableGroupEvent(tableGroupIds, orderTables);
         eventPublisher.publishEvent(orderTableGroupEvent);
     }
 }

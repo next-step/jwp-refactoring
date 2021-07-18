@@ -34,11 +34,8 @@ public class OrderTableEventHandler {
 
     @EventListener
     public void groupOrderTable(OrderTableGroupEvent orderTableGroupEvent) {
-        List<Long> orderTableIds = orderTableGroupEvent.getOrderTableIds();
-        validateTableIds(orderTableIds);
-        OrderTables orderTables = tableService.findAllByIds(orderTableIds);
-        validateOrderTables(orderTables, orderTableIds);
-        orderTables.updateGrouping(orderTableGroupEvent.getTableGroup());
+        validateTableIds(orderTableGroupEvent.getOrderTableIds());
+        validateOrderTables(orderTableGroupEvent.getOrderTables(), orderTableGroupEvent.getOrderTableIds());
     }
 
     @EventListener
@@ -53,7 +50,7 @@ public class OrderTableEventHandler {
     public void changeEmptyOrderTable(OrderTableChangeEmptyValidEvent orderTableChangeEmptyValidEvent) {
         OrderTable orderTable = orderTableChangeEmptyValidEvent.getOrderTable();
         validateIsGroupTable(orderTable);
-        Optional<Orders> optionalOrder = orderRepository.findByOrOrderTableId(orderTable.getId());
+        Optional<Orders> optionalOrder = orderRepository.findByOrderTableId(orderTable.getId());
         optionalOrder.ifPresent(order -> validateOrderStatus(order));
     }
 

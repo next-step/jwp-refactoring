@@ -50,8 +50,9 @@ class OrderTableEventHandlerTest {
     void 주문_테이블_그룹핑() {
         TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now());
         List<Long> orderTableIds = Arrays.asList(1L, 2L);
-        OrderTableGroupEvent orderTableGroupEvent = new OrderTableGroupEvent(tableGroup, orderTableIds);
-        when(tableService.findAllByIds(orderTableIds)).thenReturn(new OrderTables(Arrays.asList(일번_테이블, 이번_테이블)));
+        OrderTables orderTables = new OrderTables(Arrays.asList(일번_테이블, 이번_테이블));
+        when(tableService.findAllByIds(orderTableIds)).thenReturn(orderTables);
+        OrderTableGroupEvent orderTableGroupEvent = new OrderTableGroupEvent(orderTableIds, orderTables);
         orderTableEventHandler.groupOrderTable(orderTableGroupEvent);
     }
 
@@ -59,7 +60,10 @@ class OrderTableEventHandlerTest {
     void 주문_테이블이_1개만있을때_테이블그룹_생성_요청_시_에러_발생() {
         TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now());
         tableGroup.addOrderTable(일번_테이블);
-        OrderTableGroupEvent orderTableGroupEvent = new OrderTableGroupEvent(tableGroup, Arrays.asList(1L));
+        OrderTables orderTables = new OrderTables(Arrays.asList(일번_테이블));
+        List<Long> orderTableIds = Arrays.asList(1L);
+        when(tableService.findAllByIds(orderTableIds)).thenReturn(orderTables);
+        OrderTableGroupEvent orderTableGroupEvent = new OrderTableGroupEvent(orderTableIds, orderTables);
         assertThatThrownBy(() -> orderTableEventHandler.groupOrderTable(orderTableGroupEvent)).isInstanceOf(TableGroupException.class);
     }
 
@@ -86,7 +90,7 @@ class OrderTableEventHandlerTest {
     @Test
     void 테이블_상태_변경_시_주문_상태가_완료가_아닌_경우_에러_발생() {
         Orders 일번_주문 = new Orders(1L, 1L, OrderStatus.MEAL, LocalDateTime.now());
-        when(orderRepository.findByOrOrderTableId(1L)).thenReturn(java.util.Optional.of(일번_주문));
+        when(orderRepository.findByOrderTableId(1L)).thenReturn(java.util.Optional.of(일번_주문));
         OrderTableChangeEmptyValidEvent orderTableChangeEmptyValidEvent = new OrderTableChangeEmptyValidEvent(일번_테이블);
         assertThatThrownBy(() -> orderTableEventHandler.changeEmptyOrderTable(orderTableChangeEmptyValidEvent)).isInstanceOf(OrderTableException.class);
     }

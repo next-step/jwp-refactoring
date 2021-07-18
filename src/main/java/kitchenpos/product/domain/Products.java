@@ -1,11 +1,10 @@
 package kitchenpos.product.domain;
 
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public class Products {
     private List<Product> products;
@@ -22,8 +21,11 @@ public class Products {
         return products.size();
     }
 
-    public Map<Long, Product> generateProductMap() {
-        return products.stream().collect(Collectors.toMap(Product::getId, Function.identity()));
+    public BigDecimal calcTotalProductAmount(Map<Long, Long> menuProductMap) {
+        return products.stream().filter(product -> menuProductMap.containsKey(product.getId()))
+                .map(product -> product.multiplyQuantity(menuProductMap.get(product.getId())))
+                .reduce(BigDecimal::add)
+                .orElse(BigDecimal.ZERO);
     }
 
     @Override

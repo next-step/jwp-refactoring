@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Component
 public class MenuEventHandler {
@@ -55,11 +56,8 @@ public class MenuEventHandler {
     }
 
     private BigDecimal calcTotalProductAmount(List<MenuProductRequest> menuProducts, Products products) {
-        Map<Long, Product> productMap = products.generateProductMap();
-        return menuProducts.stream()
-                .filter(menuProductRequest -> productMap.containsKey(menuProductRequest.getProductId()))
-                .map(menuProductRequest -> productMap.get(menuProductRequest.getProductId()).multiplyQuantity(menuProductRequest.getQuantity()))
-                .reduce(BigDecimal::add)
-                .orElse(BigDecimal.ZERO);
+        Map<Long, Long> menuProductMap = menuProducts.stream()
+                .collect(Collectors.toMap(MenuProductRequest::getProductId, MenuProductRequest::getQuantity));
+        return products.calcTotalProductAmount(menuProductMap);
     }
 }
