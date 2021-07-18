@@ -29,6 +29,14 @@ public class Price {
 		return price;
 	}
 
+	public BigDecimal getTotalPrice(long quantity) {
+		return price.multiply(BigDecimal.valueOf(quantity));
+	}
+
+	public boolean isBiggerThan(BigDecimal target) {
+		return price.compareTo(target) > 0;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o)
@@ -42,13 +50,5 @@ public class Price {
 	@Override
 	public int hashCode() {
 		return Objects.hash(price);
-	}
-
-	public BigDecimal getTotalPrice(long quantity) {
-		return price.multiply(BigDecimal.valueOf(quantity));
-	}
-
-	public boolean isBiggerThan(BigDecimal target) {
-		return price.compareTo(target) > 0;
 	}
 }

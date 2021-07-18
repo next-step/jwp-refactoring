@@ -39,12 +39,16 @@ public class OrderService {
 		final OrderTable orderTable = orderTableRepository.findById(orderRequest.getOrderTableId()).orElseThrow(IllegalArgumentException::new);
 		validateOrderTableEmpty(orderTable);
 		Order savedOrder = orderRepository.save(new Order(orderTable, OrderStatus.COOKING.name(), LocalDateTime.now()));
-        savedOrder.addOrderLineItems(orderLineItems.stream()
-			.map(orderLineItemRequest -> new OrderLineItem(savedOrder, menuRepository.findById(orderLineItemRequest.getMenuId()).orElse(null), orderLineItemRequest.getQuantity()))
-			.collect(Collectors.toList()));
+        savedOrder.addOrderLineItems(getOrderLineItems(orderLineItems, savedOrder));
 
         return OrderResponse.of(savedOrder);
     }
+
+	private List<OrderLineItem> getOrderLineItems(List<OrderLineItemRequest> orderLineItems, Order savedOrder) {
+		return orderLineItems.stream()
+			.map(orderLineItemRequest -> new OrderLineItem(savedOrder, menuRepository.findById(orderLineItemRequest.getMenuId()).orElse(null), orderLineItemRequest.getQuantity()))
+			.collect(Collectors.toList());
+	}
 
 	private void validateOrderTableEmpty(OrderTable orderTable) {
 		if (orderTable.isEmpty()) {
@@ -54,8 +58,8 @@ public class OrderService {
 
 	private void validateOrderLineItemsAllExists(List<OrderLineItemRequest> orderLineItems) {
 		final List<Long> menuIds = orderLineItems.stream()
-                .map(OrderLineItemRequest::getMenuId)
-                .collect(Collectors.toList());
+			.map(OrderLineItemRequest::getMenuId)
+			.collect(Collectors.toList());
 
 		if (orderLineItems.size() != menuRepository.countByIdIn(menuIds)) {
 			throw new IllegalArgumentException();
@@ -78,12 +82,14 @@ public class OrderService {
     public OrderResponse changeOrderStatus(final Long orderId, final OrderRequest orderRequest) {
         final Order savedOrder = orderRepository.findById(orderId).orElseThrow(IllegalArgumentException::new);
 		validateOrderStatusChangeable(savedOrder);
-		final OrderStatus orderStatus = OrderStatus.valueOf(orderRequest.getOrderStatus());
-		savedOrder.updateStatus(orderStatus.name());
-        // Order order = orderRepository.save(savedOrder);
+		savedOrder.updateStatus(getStatus(orderRequest));
 
         return OrderResponse.of(savedOrder);
     }
+
+	private String getStatus(OrderRequest orderRequest) {
+		return OrderStatus.valueOf(orderRequest.getOrderStatus()).name();
+	}
 
 	private void validateOrderStatusChangeable(Order savedOrder) {
 		if (savedOrder.isStatusChangeable()) {
