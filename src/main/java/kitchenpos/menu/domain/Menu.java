@@ -68,15 +68,19 @@ public class Menu {
 	}
 
 	public void addMenuProducts(List<MenuProduct> menuProducts) {
-		BigDecimal sum = BigDecimal.ZERO;
-		for (MenuProduct menuProduct : menuProducts) {
-			sum = sum.add(menuProduct.getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
-		}
-
-		if (price.getPrice().compareTo(sum) > 0) {
-			throw new IllegalArgumentException();
-		}
+		validateMenuPriceBiggerThanSumOfProducts(menuProducts);
 
 		this.menuProducts.addAll(menuProducts);
+	}
+
+	private void validateMenuPriceBiggerThanSumOfProducts(List<MenuProduct> menuProducts) {
+		BigDecimal sum = BigDecimal.ZERO;
+		for (MenuProduct menuProduct : menuProducts) {
+			sum = sum.add(menuProduct.getTotalPrice());
+		}
+
+		if (price.isBiggerThan(sum)) {
+			throw new IllegalArgumentException();
+		}
 	}
 }

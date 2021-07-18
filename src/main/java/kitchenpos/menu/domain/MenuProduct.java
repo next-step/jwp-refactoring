@@ -39,10 +39,14 @@ public class MenuProduct {
 	}
 
 	public BigDecimal getPrice() {
-		return product.getPrice().getPrice(); // to-do : 없앨 것
+		return product.getPrice().getPrice();
 	}
 
 	public long getQuantity() {
 		return quantity;
+	}
+
+	public BigDecimal getTotalPrice() {
+		return product.getTotalPrice(quantity);
 	}
 }

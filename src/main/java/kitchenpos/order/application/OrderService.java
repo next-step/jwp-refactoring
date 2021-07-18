@@ -25,11 +25,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
 
-    public OrderService(
-            final MenuRepository menuRepository,
-            final OrderRepository orderRepository,
-            final OrderTableRepository orderTableRepository
-    ) {
+    public OrderService(final MenuRepository menuRepository, final OrderRepository orderRepository, final OrderTableRepository orderTableRepository) {
         this.menuRepository = menuRepository;
         this.orderRepository = orderRepository;
         this.orderTableRepository = orderTableRepository;

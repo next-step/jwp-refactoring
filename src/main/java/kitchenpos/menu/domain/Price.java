@@ -43,4 +43,12 @@ public class Price {
 	public int hashCode() {
 		return Objects.hash(price);
 	}
+
+	public BigDecimal getTotalPrice(long quantity) {
+		return price.multiply(BigDecimal.valueOf(quantity));
+	}
+
+	public boolean isBiggerThan(BigDecimal target) {
+		return price.compareTo(target) > 0;
+	}
 }
