@@ -19,6 +19,7 @@ import kitchenpos.table.domain.OrderTable;
 import kitchenpos.tableGroup.application.TableGroupService;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.tableGroup.domain.TableGroup;
 import kitchenpos.tableGroup.domain.TableGroupRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.dto.OrderTableRequest;
@@ -57,8 +58,7 @@ public class TableGroupServiceTest {
 	void createTestInHappyCase() {
 		// given
 		when(orderTableRepository.findAllByIdIn(Arrays.asList(1L, 2L))).thenReturn(Arrays.asList(orderTableWithFivePeople, orderTableWithTenPeople));
-		when(tableGroupRepository.save(any())).thenReturn(new kitchenpos.tableGroup.dto.TableGroupRequest(LocalDateTime.now(), Arrays.asList(
-			orderTableWithFivePeopleRequest, orderTableWithTenPeopleRequest)));
+		when(tableGroupRepository.save(any())).thenReturn(new TableGroup(LocalDateTime.now(), Arrays.asList(orderTableWithFivePeople, orderTableWithTenPeople)));
 		// when
 		TableGroupResponse tableGroup = tableGroupService.create(new kitchenpos.tableGroup.dto.TableGroupRequest(LocalDateTime.now(), Arrays.asList(
 			orderTableWithFivePeopleRequest, orderTableWithTenPeopleRequest)));
@@ -119,7 +119,7 @@ public class TableGroupServiceTest {
 	void ungroupTestInHappyCase() {
 		// given
 		when(orderTableRepository.findAllByTableGroupId(1L)).thenReturn(Arrays.asList(orderTableWithFivePeople, orderTableWithTenPeople));
-		when(orderRepository.existsByOrderTableIdInAndOrderStatusIn(Arrays.asList(1L, 2L), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).thenReturn(false);
+		when(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any())).thenReturn(false);
 		// when
 		tableGroupService.ungroup(1L);
 		// then

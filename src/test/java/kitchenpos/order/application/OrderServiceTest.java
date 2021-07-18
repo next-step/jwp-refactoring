@@ -17,7 +17,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.dto.OrderRequest;
@@ -32,16 +31,16 @@ public class OrderServiceTest {
 	private OrderRequest cookingOrderRequest;
 
 	@Mock
-	private MenuRepository menuDao;
+	private MenuRepository menuRepository;
 
 	@Mock
-	private OrderRepository orderDao;
+	private OrderRepository orderRepository;
 
 	// @Mock
 	// private OrderLineItemDao orderLineItemDao;
 
 	@Mock
-	private OrderTableRepository orderTableDao;
+	private OrderTableRepository orderTableRepository;
 
 	@InjectMocks
 	private OrderService orderService;
@@ -56,10 +55,9 @@ public class OrderServiceTest {
 	@Test
 	void createTestInHappyCase() {
 		// given
-		when(menuDao.countByIdIn(Arrays.asList(1L))).thenReturn(1L);
-		when(orderTableDao.findById(1L)).thenReturn(Optional.of(new OrderTable()));
-		when(orderDao.save(any())).thenReturn(cookingOrderRequest);
-		// when(orderLineItemDao.save(any())).thenReturn(orderLineItem);
+		when(menuRepository.countByIdIn(Arrays.asList(1L))).thenReturn(1L);
+		when(orderTableRepository.findById(1L)).thenReturn(Optional.of(new OrderTable()));
+		when(orderRepository.save(any())).thenReturn(new Order(new OrderTable(), "COOKING", LocalDateTime.now()));
 		// when
 		OrderResponse orderResponse = orderService.create(cookingOrderRequest);
 		// then
@@ -71,9 +69,9 @@ public class OrderServiceTest {
 	@Test
 	void createTestWithNoOrderLineItem() {
 		// given
-		lenient().when(menuDao.countByIdIn(Arrays.asList(1L))).thenReturn(1L);
-		lenient().when(orderTableDao.findById(1L)).thenReturn(Optional.of(new OrderTable()));
-		lenient().when(orderDao.save(any())).thenReturn(cookingOrderRequest);
+		lenient().when(menuRepository.countByIdIn(Arrays.asList(1L))).thenReturn(1L);
+		lenient().when(orderTableRepository.findById(1L)).thenReturn(Optional.of(new OrderTable()));
+		lenient().when(orderRepository.save(any())).thenReturn(cookingOrderRequest);
 		//lenient().when(orderLineItemDao.save(any())).thenReturn(orderLineItemRequest);
 		// when, then
 		assertThatThrownBy(() -> orderService.create(new OrderRequest(1L, "COOKING", LocalDateTime.now(), null)));
@@ -83,8 +81,8 @@ public class OrderServiceTest {
 	@Test
 	void createTestWithNotExistsMenu() {
 		// given
-		lenient().when(orderTableDao.findById(1L)).thenReturn(Optional.of(new OrderTable()));
-		lenient().when(orderDao.save(any())).thenReturn(cookingOrderRequest);
+		lenient().when(orderTableRepository.findById(1L)).thenReturn(Optional.of(new OrderTable()));
+		lenient().when(orderRepository.save(any())).thenReturn(cookingOrderRequest);
 		//lenient().when(orderLineItemDao.save(any())).thenReturn(orderLineItemRequest);
 		// when, then
 		assertThatThrownBy(() -> orderService.create(new OrderRequest(1L, "COOKING", LocalDateTime.now(), Arrays.asList(
@@ -95,8 +93,8 @@ public class OrderServiceTest {
 	@Test
 	void createTestWithNotExistsOrderTable() {
 		// given
-		lenient().when(menuDao.countByIdIn(Arrays.asList(1L))).thenReturn(1L);
-		lenient().when(orderDao.save(any())).thenReturn(cookingOrderRequest);
+		lenient().when(menuRepository.countByIdIn(Arrays.asList(1L))).thenReturn(1L);
+		lenient().when(orderRepository.save(any())).thenReturn(cookingOrderRequest);
 		//lenient().when(orderLineItemDao.save(any())).thenReturn(orderLineItem);
 		// when, then
 		assertThatThrownBy(() -> orderService.create(new OrderRequest(1L, "COOKING", LocalDateTime.now(), Arrays.asList(
@@ -107,12 +105,11 @@ public class OrderServiceTest {
 	@Test
 	void listTestInHappyCase() {
 		// given
-		when(orderDao.findAll()).thenReturn(Arrays.asList(new Order(new OrderTable(), "COOKING", LocalDateTime.now())));
+		when(orderRepository.findAll()).thenReturn(Arrays.asList(new Order(new OrderTable(), "COOKING", LocalDateTime.now())));
 		// when(orderLineItemDao.findAllByOrderId(any())).thenReturn(Arrays.asList(orderLineItemRequest));
 		// when
 		List<OrderResponse> orders = orderService.list();
 		// then
-		assertThat(orders.get(0).getOrderLineItems().size()).isEqualTo(1);
 		assertThat(orders.get(0).getOrderStatus()).isEqualTo("COOKING");
 	}
 
@@ -120,7 +117,7 @@ public class OrderServiceTest {
 	@Test
 	void changeOrderStatusTestInHappyCase() {
 		// given
-		when(orderDao.findById(1L)).thenReturn(Optional.of(new Order(new OrderTable(), "COOKING", LocalDateTime.now())));
+		when(orderRepository.findById(1L)).thenReturn(Optional.of(new Order(new OrderTable(), "COOKING", LocalDateTime.now())));
 		// when
 		OrderResponse order = orderService.changeOrderStatus(1L, new OrderRequest(1L, "COMPLETION", LocalDateTime.now(), Arrays.asList(new OrderLineItemRequest())));
 		// then
@@ -140,7 +137,7 @@ public class OrderServiceTest {
 	@Test
 	void changeOrderStatusTestWithCompletedStatus() {
 		// given
-		when(orderDao.findById(1L)).thenReturn(Optional.of(new Order(new OrderTable(), "COMPLETION", LocalDateTime.now())));
+		when(orderRepository.findById(1L)).thenReturn(Optional.of(new Order(new OrderTable(), "COMPLETION", LocalDateTime.now())));
 
 		// when, then
 		assertThatThrownBy(() -> orderService.changeOrderStatus(1L, new OrderRequest(1L, "COOKING", LocalDateTime.now(), Arrays.asList(new OrderLineItemRequest()))))
@@ -151,7 +148,7 @@ public class OrderServiceTest {
 	@Test
 	void changeOrderStatusTestWithNotExistsStatus() {
 		// given
-		when(orderDao.findById(1L)).thenReturn(Optional.of(new Order(new OrderTable(), "COOKING", LocalDateTime.now())));
+		when(orderRepository.findById(1L)).thenReturn(Optional.of(new Order(new OrderTable(), "COOKING", LocalDateTime.now())));
 		// when, then
 		assertThatThrownBy(() -> orderService.changeOrderStatus(1L, new OrderRequest(1L, "PREPARING", LocalDateTime.now(), Arrays.asList(new OrderLineItemRequest()))))
 			.isInstanceOf(IllegalArgumentException.class);

@@ -16,8 +16,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.domain.Price;
 import kitchenpos.menu.dto.MenuProductRequest;
@@ -30,11 +30,11 @@ import kitchenpos.product.dto.ProductRequest;
 
 @ExtendWith(MockitoExtension.class)
 public class MenuServiceTest {
-	private MenuRequest chickenMenu;
-	private MenuRequest ramenMenu;
-	private MenuRequest sogogiMenu;
-	private ProductRequest chicken;
-	private MenuProductRequest menuProduct;
+	private MenuRequest chickenMenuRequest;
+	private MenuRequest ramenMenuRequest;
+	private MenuRequest sogogiMenuRequest;
+	private ProductRequest chickenRequest;
+	private MenuProductRequest menuProductRequest;
 
 	@Mock
 	private MenuRepository menuRepository;
@@ -50,11 +50,11 @@ public class MenuServiceTest {
 
 	@BeforeEach
 	void setUp() {
-	 	chickenMenu = new MenuRequest("치킨 메뉴", new BigDecimal(20000), 1L);
-		ramenMenu = new MenuRequest("라면 메뉴", new BigDecimal(30000), 2L);
-		sogogiMenu = new MenuRequest("소고기 메뉴", new BigDecimal(100000), 3L);
-		chicken = new ProductRequest("치킨", 8000L);
-		menuProduct = new MenuProductRequest(1L, 1L, 2L);
+	 	chickenMenuRequest = new MenuRequest("치킨 메뉴", new BigDecimal(20000), 1L);
+		ramenMenuRequest = new MenuRequest("라면 메뉴", new BigDecimal(30000), 2L);
+		sogogiMenuRequest = new MenuRequest("소고기 메뉴", new BigDecimal(100000), 3L);
+		chickenRequest = new ProductRequest("치킨", 8000L);
+		menuProductRequest = new MenuProductRequest(1L, 1L, 2L);
 	}
 
 	@DisplayName("메뉴를 등록한다.")
@@ -62,15 +62,15 @@ public class MenuServiceTest {
 	void createMenuInHappyCase() {
 		// given
 		lenient().when(menuGroupRepository.existsById(1L)).thenReturn(true);
-		lenient().when(productRepository.findById(1L)).thenReturn(Optional.of(chicken.toProduct()));
-		lenient().when(menuRepository.save(any())).thenReturn(chickenMenu);
-		// lenient().when(menuProductDao.save(any())).thenReturn(menuProduct);
+		lenient().when(menuGroupRepository.findById(1L)).thenReturn(Optional.of(new MenuGroup("인기 메뉴")));
+		lenient().when(productRepository.findById(1L)).thenReturn(Optional.of(chickenRequest.toProduct()));
+		lenient().when(menuRepository.save(any())).thenReturn(new Menu("치킨 메뉴", new Price(new BigDecimal(15000)), new MenuGroup("인기 메뉴")));
 		// when
-		List<MenuProductRequest> menuProducts = Arrays.asList(menuProduct);
-		MenuResponse menu = menuService.create(new MenuRequest("치킨 메뉴", new BigDecimal(20000), 1L, menuProducts));
+		List<MenuProductRequest> menuProducts = Arrays.asList(menuProductRequest);
+		MenuResponse menu = menuService.create(new MenuRequest("치킨 메뉴", new BigDecimal(15000), 1L, menuProducts));
 		// then
 		assertThat(menu.getName()).isEqualTo("치킨 메뉴");
-		assertThat(menu.getPrice()).isEqualTo(new BigDecimal(20000));
+		assertThat(menu.getPrice()).isEqualTo(new Price(new BigDecimal(15000)));
 	}
 
 	@DisplayName("가격이 음수인 메뉴를 등록할 수 없다.")
@@ -78,11 +78,11 @@ public class MenuServiceTest {
 	void createMenuWithMinusPrice() {
 		// given
 		lenient().when(menuGroupRepository.existsById(1L)).thenReturn(true);
-		lenient().when(productRepository.findById(1L)).thenReturn(Optional.of(chicken.toProduct()));
-		lenient().when(menuRepository.save(any())).thenReturn(chickenMenu);
+		lenient().when(productRepository.findById(1L)).thenReturn(Optional.of(chickenRequest.toProduct()));
+		lenient().when(menuRepository.save(any())).thenReturn(chickenMenuRequest);
 		//lenient().when(menuProductDao.save(any())).thenReturn(menuProduct);
 		// when, then
-		List<MenuProductRequest> menuProducts = Arrays.asList(menuProduct);
+		List<MenuProductRequest> menuProducts = Arrays.asList(menuProductRequest);
 		assertThatThrownBy(() -> menuService.create(new MenuRequest("치킨 메뉴", new BigDecimal(-10000), 1L, menuProducts)))
 			.isInstanceOf(IllegalArgumentException.class);
 	}
@@ -92,11 +92,11 @@ public class MenuServiceTest {
 	void createMenuWithNotExistMenuGroup() {
 		// given
 		lenient().when(menuGroupRepository.existsById(1L)).thenReturn(false);
-		lenient().when(productRepository.findById(1L)).thenReturn(Optional.of(chicken.toProduct()));
-		lenient().when(menuRepository.save(any())).thenReturn(chickenMenu);
+		lenient().when(productRepository.findById(1L)).thenReturn(Optional.of(chickenRequest.toProduct()));
+		lenient().when(menuRepository.save(any())).thenReturn(chickenMenuRequest);
 		//lenient().when(menuProductDao.save(any())).thenReturn(menuProduct);
 		// when, then
-		List<MenuProductRequest> menuProducts = Arrays.asList(menuProduct);
+		List<MenuProductRequest> menuProducts = Arrays.asList(menuProductRequest);
 		assertThatThrownBy(() -> menuService.create(new MenuRequest("치킨 메뉴", new BigDecimal(20000), 1L, menuProducts)))
 			.isInstanceOf(IllegalArgumentException.class);
 	}
@@ -106,10 +106,10 @@ public class MenuServiceTest {
 	void createMenuWithNotExistProduct() {
 		// given
 		lenient().when(menuGroupRepository.existsById(1L)).thenReturn(true);
-		lenient().when(menuRepository.save(any())).thenReturn(ramenMenu);
+		lenient().when(menuRepository.save(any())).thenReturn(ramenMenuRequest);
 		//lenient().when(menuProductDao.save(any())).thenReturn(menuProduct);
 		// when, then
-		List<MenuProductRequest> menuProducts = Arrays.asList(menuProduct);
+		List<MenuProductRequest> menuProducts = Arrays.asList(menuProductRequest);
 		assertThatThrownBy(() -> menuService.create(new MenuRequest("치킨 메뉴", new BigDecimal(20000), 1L, menuProducts)))
 			.isInstanceOf(IllegalArgumentException.class);
 	}
@@ -121,10 +121,10 @@ public class MenuServiceTest {
 		ProductRequest cheapChicken = new ProductRequest("치킨", 100L);
 		lenient().when(menuGroupRepository.existsById(1L)).thenReturn(true);
 		lenient().when(productRepository.findById(1L)).thenReturn(Optional.of(cheapChicken.toProduct()));
-		lenient().when(menuRepository.save(any())).thenReturn(chickenMenu);
+		lenient().when(menuRepository.save(any())).thenReturn(chickenMenuRequest);
 		//lenient().when(menuProductDao.save(any())).thenReturn(menuProduct);
 		// when, then
-		List<MenuProductRequest> menuProducts = Arrays.asList(menuProduct);
+		List<MenuProductRequest> menuProducts = Arrays.asList(menuProductRequest);
 		assertThatThrownBy(() -> menuService.create(new MenuRequest("치킨 메뉴", new BigDecimal(20000), 1L, menuProducts)))
 			.isInstanceOf(IllegalArgumentException.class);
 	}

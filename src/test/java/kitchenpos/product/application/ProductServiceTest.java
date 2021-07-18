@@ -43,7 +43,7 @@ public class ProductServiceTest {
 	@Test
 	void createTestInHappyCase() {
 		// given
-		when(productRepository.save(any())).thenReturn(chicken);
+		when(productRepository.save(any())).thenReturn(new Product("치킨", new Price(new BigDecimal(10000))));
 		// when
 		ProductResponse product = productService.create(chicken);
 		// then
@@ -53,10 +53,8 @@ public class ProductServiceTest {
 	@DisplayName("상품 가격은 0보다 작을 수 없다.")
 	@Test
 	void createTestWithMinusPrice() {
-		// given
-		lenient().when(productRepository.save(any())).thenReturn(new ProductRequest("치킨", -10000L));
 		// when, then
-		assertThatThrownBy(() -> productService.create(new ProductRequest("치킨", -10000L)));
+		assertThatThrownBy(() -> productService.create(new ProductRequest("치킨", -10000L))).isInstanceOf(IllegalArgumentException.class);
 	}
 
 	@DisplayName("상품을 조회한다.")

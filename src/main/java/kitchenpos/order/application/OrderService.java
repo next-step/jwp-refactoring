@@ -44,7 +44,7 @@ public class OrderService {
 		validateOrderTableEmpty(orderTable);
 		Order savedOrder = orderRepository.save(new Order(orderTable, OrderStatus.COOKING.name(), LocalDateTime.now()));
         savedOrder.addOrderLineItems(orderLineItems.stream()
-			.map(orderLineItemRequest -> new OrderLineItem(savedOrder, menuRepository.findById(orderLineItemRequest.getMenuId()).get(), orderLineItemRequest.getQuantity()))
+			.map(orderLineItemRequest -> new OrderLineItem(savedOrder, menuRepository.findById(orderLineItemRequest.getMenuId()).orElse(null), orderLineItemRequest.getQuantity()))
 			.collect(Collectors.toList()));
 
         return OrderResponse.of(savedOrder);
@@ -84,9 +84,9 @@ public class OrderService {
 		validateOrderStatusChangeable(savedOrder);
 		final OrderStatus orderStatus = OrderStatus.valueOf(orderRequest.getOrderStatus());
 		savedOrder.updateStatus(orderStatus.name());
-        Order order = orderRepository.save(savedOrder);
+        // Order order = orderRepository.save(savedOrder);
 
-        return OrderResponse.of(order);
+        return OrderResponse.of(savedOrder);
     }
 
 	private void validateOrderStatusChangeable(Order savedOrder) {

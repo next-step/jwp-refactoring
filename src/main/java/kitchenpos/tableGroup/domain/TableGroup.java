@@ -27,7 +27,7 @@ public class TableGroup {
 	private LocalDateTime createdDate;
 
 	@OneToMany(mappedBy = "tableGroup", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<OrderTable> orderTables = new ArrayList<>();
+	private List<OrderTable> orderTables;
 
 	public TableGroup() {
 	}
@@ -61,7 +61,7 @@ public class TableGroup {
 			orderTable.mapTableGroup(this);
 		}
 
-		this.orderTables.addAll(orderTables);
+		this.orderTables = orderTables;
 	}
 
 	private void validateOrderTableOccupied(List<OrderTable> orderTables) {
@@ -71,7 +71,9 @@ public class TableGroup {
 	}
 
 	private boolean isNotEmptyOrTableGroupExists(List<OrderTable> orderTables) {
-		return orderTables.stream().filter(orderTable -> !orderTable.isEmpty() || Objects.nonNull(orderTable.getTableGroup())).findAny().isPresent();
+		return orderTables.stream()
+			.filter(orderTable -> !orderTable.isEmpty() || Objects.nonNull(orderTable.getTableGroup())).findAny()
+			.isPresent();
 	}
 
 	private void validateOrderTablesSize(List<OrderTable> orderTables) {

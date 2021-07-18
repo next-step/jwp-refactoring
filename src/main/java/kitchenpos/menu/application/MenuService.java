@@ -33,11 +33,10 @@ public class MenuService {
 
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
-		MenuGroup menuGroup = menuGroupRepository.findById(menuRequest.getMenuGroupId()).orElseThrow(IllegalAccessError::new);
+		MenuGroup menuGroup = menuGroupRepository.findById(menuRequest.getMenuGroupId()).orElseThrow(IllegalArgumentException::new);
 		Menu menu = menuRepository.save(new Menu(menuRequest.getName(), new Price(menuRequest.getPrice()), menuGroup));
 		List<MenuProduct> menuProducts = collectMenuProduct(menuRequest, menu);
 		menu.addMenuProducts(menuProducts);
-		// Menu savedMenu = menuRepository.save(menu);
 
 		return MenuResponse.of(menu);
     }
