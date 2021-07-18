@@ -1,7 +1,7 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.common.Price;
-import kitchenpos.exception.CannotFindException;
+import kitchenpos.common.domain.Price;
+import kitchenpos.common.exception.CannotFindException;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static kitchenpos.common.Message.*;
+import static kitchenpos.common.exception.Message.*;
 
 @Component
 public class MenuValidator {

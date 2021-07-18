@@ -1,6 +1,6 @@
 package kitchenpos.tablegroup.domain;
 
-import kitchenpos.exception.CannotUpdateException;
+import kitchenpos.common.exception.CannotUpdateException;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.ordertable.domain.OrderTable;
@@ -11,7 +11,7 @@ import kitchenpos.tablegroup.dto.TableGroupRequest;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static kitchenpos.common.Message.*;
+import static kitchenpos.common.exception.Message.*;
 import static kitchenpos.order.domain.OrderStatus.COMPLETION;
 
 @Component

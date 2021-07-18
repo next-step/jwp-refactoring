@@ -1,9 +1,9 @@
 package kitchenpos.order.application;
 
-import kitchenpos.exception.CannotFindException;
+import kitchenpos.common.exception.CannotFindException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.common.Quantity;
+import kitchenpos.common.domain.Quantity;
 import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.*;
 import kitchenpos.ordertable.domain.OrderTableRepository;
@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static kitchenpos.common.Message.*;
+import static kitchenpos.common.exception.Message.*;
 import static kitchenpos.order.domain.OrderStatus.COOKING;
 
 @Service

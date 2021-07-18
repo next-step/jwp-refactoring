@@ -1,7 +1,7 @@
 package kitchenpos.menu.application;
 
-import kitchenpos.common.Price;
-import kitchenpos.common.Quantity;
+import kitchenpos.common.domain.Price;
+import kitchenpos.common.domain.Quantity;
 import kitchenpos.menu.domain.*;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuProductResponse;

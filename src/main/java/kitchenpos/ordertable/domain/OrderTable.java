@@ -1,10 +1,10 @@
 package kitchenpos.ordertable.domain;
 
-import kitchenpos.exception.CannotUpdateException;
+import kitchenpos.common.exception.CannotUpdateException;
 
 import javax.persistence.*;
 
-import static kitchenpos.common.Message.*;
+import static kitchenpos.common.exception.Message.*;
 
 @Entity
 public class OrderTable {

@@ -1,6 +1,6 @@
 package kitchenpos.order.event;
 
-import kitchenpos.exception.CannotUpdateException;
+import kitchenpos.common.exception.CannotUpdateException;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.ordertable.event.TableEmptyStatusChangedEvent;
@@ -10,7 +10,7 @@ import org.springframework.transaction.event.TransactionalEventListener;
 
 import java.util.List;
 
-import static kitchenpos.common.Message.ERROR_ORDER_TABLE_CANNOT_BE_EMPTY_WHEN_ORDERS_IN_COOKING_OR_MEAL;
+import static kitchenpos.common.exception.Message.ERROR_ORDER_TABLE_CANNOT_BE_EMPTY_WHEN_ORDERS_IN_COOKING_OR_MEAL;
 
 @Component
 public class TableEmptyStatusChangedEventHandler {

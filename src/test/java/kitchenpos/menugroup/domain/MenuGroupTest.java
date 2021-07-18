@@ -1,6 +1,6 @@
 package kitchenpos.menugroup.domain;
 
-import kitchenpos.common.Message;
+import kitchenpos.common.exception.Message;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

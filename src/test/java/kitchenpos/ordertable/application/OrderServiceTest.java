@@ -1,6 +1,6 @@
 package kitchenpos.ordertable.application;
 
-import kitchenpos.exception.CannotFindException;
+import kitchenpos.common.exception.CannotFindException;
 import kitchenpos.menu.domain.*;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.*;
@@ -20,7 +20,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static kitchenpos.common.Message.*;
+import static kitchenpos.common.exception.Message.*;
 import static kitchenpos.menu.MenuTestFixture.맥모닝콤보;
 import static kitchenpos.order.domain.OrderStatus.MEAL;
 import static kitchenpos.ordertable.OrderTableTestFixture.*;

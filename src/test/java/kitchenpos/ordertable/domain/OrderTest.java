@@ -1,12 +1,12 @@
 package kitchenpos.ordertable.domain;
 
-import kitchenpos.exception.CannotUpdateException;
+import kitchenpos.common.exception.CannotUpdateException;
 import kitchenpos.order.domain.Order;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static kitchenpos.common.Message.ERROR_ORDER_SHOULD_HAVE_NON_EMPTY_TABLE;
-import static kitchenpos.common.Message.ERROR_ORDER_STATUS_CANNOT_BE_CHANGED_WHEN_COMPLETED;
+import static kitchenpos.common.exception.Message.ERROR_ORDER_SHOULD_HAVE_NON_EMPTY_TABLE;
+import static kitchenpos.common.exception.Message.ERROR_ORDER_STATUS_CANNOT_BE_CHANGED_WHEN_COMPLETED;
 import static kitchenpos.order.domain.OrderStatus.*;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 

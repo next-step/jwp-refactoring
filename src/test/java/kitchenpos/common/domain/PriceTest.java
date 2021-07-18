@@ -1,13 +1,12 @@
 package kitchenpos.common.domain;
 
-import kitchenpos.common.Price;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 
-import static kitchenpos.common.Message.ERROR_PRICE_REQUIRED;
-import static kitchenpos.common.Message.ERROR_PRICE_SHOULD_BE_OVER_THAN_ZERO;
+import static kitchenpos.common.exception.Message.ERROR_PRICE_REQUIRED;
+import static kitchenpos.common.exception.Message.ERROR_PRICE_SHOULD_BE_OVER_THAN_ZERO;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class PriceTest {

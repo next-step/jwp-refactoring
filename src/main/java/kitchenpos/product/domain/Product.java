@@ -1,7 +1,7 @@
 package kitchenpos.product.domain;
 
-import kitchenpos.common.Message;
-import kitchenpos.common.Price;
+import kitchenpos.common.exception.Message;
+import kitchenpos.common.domain.Price;
 
 import javax.persistence.*;
 

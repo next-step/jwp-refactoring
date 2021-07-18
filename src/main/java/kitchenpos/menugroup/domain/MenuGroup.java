@@ -1,6 +1,6 @@
 package kitchenpos.menugroup.domain;
 
-import kitchenpos.common.Message;
+import kitchenpos.common.exception.Message;
 
 import javax.persistence.*;
 

@@ -1,12 +1,12 @@
-package kitchenpos.common;
+package kitchenpos.common.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-import static kitchenpos.common.Message.ERROR_PRICE_REQUIRED;
-import static kitchenpos.common.Message.ERROR_PRICE_SHOULD_BE_OVER_THAN_ZERO;
+import static kitchenpos.common.exception.Message.ERROR_PRICE_REQUIRED;
+import static kitchenpos.common.exception.Message.ERROR_PRICE_SHOULD_BE_OVER_THAN_ZERO;
 
 @Embeddable
 public class Price {

@@ -1,6 +1,6 @@
 package kitchenpos.tablegroup.application;
 
-import kitchenpos.exception.CannotFindException;
+import kitchenpos.common.exception.CannotFindException;
 import kitchenpos.ordertable.domain.*;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
 import kitchenpos.tablegroup.domain.TableGroupValidator;
@@ -12,7 +12,7 @@ import kitchenpos.tablegroup.domain.TableGroup;
 
 import java.util.List;
 
-import static kitchenpos.common.Message.ERROR_TABLE_GROUP_NOT_FOUND;
+import static kitchenpos.common.exception.Message.ERROR_TABLE_GROUP_NOT_FOUND;
 
 @Service
 @Transactional

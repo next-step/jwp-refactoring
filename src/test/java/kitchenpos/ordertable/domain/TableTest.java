@@ -1,11 +1,11 @@
 package kitchenpos.ordertable.domain;
 
-import kitchenpos.exception.CannotUpdateException;
+import kitchenpos.common.exception.CannotUpdateException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static kitchenpos.common.Message.ERROR_TABLE_GUESTS_NUMBER_CANNOT_BE_CHANGED_WHEN_EMPTY;
-import static kitchenpos.common.Message.ERROR_TABLE_GUESTS_NUMBER_CANNOT_BE_SMALLER_THAN_ZERO;
+import static kitchenpos.common.exception.Message.ERROR_TABLE_GUESTS_NUMBER_CANNOT_BE_CHANGED_WHEN_EMPTY;
+import static kitchenpos.common.exception.Message.ERROR_TABLE_GUESTS_NUMBER_CANNOT_BE_SMALLER_THAN_ZERO;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class TableTest {

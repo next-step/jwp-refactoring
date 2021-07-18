@@ -1,9 +1,7 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.common.Price;
-import kitchenpos.exception.CannotFindException;
-import kitchenpos.menu.dto.MenuProductRequest;
-import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.common.domain.Price;
+import kitchenpos.common.exception.CannotFindException;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.product.domain.Product;
@@ -19,7 +17,7 @@ import java.util.Arrays;
 import java.util.Optional;
 
 
-import static kitchenpos.common.Message.*;
+import static kitchenpos.common.exception.Message.*;
 import static kitchenpos.menu.MenuTestFixture.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;

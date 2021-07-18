@@ -1,6 +1,6 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.common.Quantity;
+import kitchenpos.common.domain.Quantity;
 
 import javax.persistence.*;
 

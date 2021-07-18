@@ -1,6 +1,6 @@
 package kitchenpos.ordertable.application;
 
-import kitchenpos.exception.CannotFindException;
+import kitchenpos.common.exception.CannotFindException;
 import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.dto.OrderTableRequest;
@@ -16,7 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static kitchenpos.common.Message.ERROR_ORDER_TABLE_NOT_FOUND;
+import static kitchenpos.common.exception.Message.ERROR_ORDER_TABLE_NOT_FOUND;
 import static kitchenpos.ordertable.OrderTableTestFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
