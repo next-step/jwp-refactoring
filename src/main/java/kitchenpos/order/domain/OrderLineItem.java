@@ -10,8 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import kitchenpos.common.domain.Quantity;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.Quantity;
 
 @Entity
 public class OrderLineItem {
@@ -24,7 +24,6 @@ public class OrderLineItem {
     @JoinColumn(name = "order_id")
     private Order order;
 
-    @JoinColumn(name = "menu_id")
     private Long menuId;
 
     private Quantity quantity;
@@ -32,9 +31,9 @@ public class OrderLineItem {
     public OrderLineItem() {
     }
 
-    public OrderLineItem(final Order order, final Menu menu, final long quantity) {
+    public OrderLineItem(final Order order, final Long menuId, final long quantity) {
         this.order = order;
-        this.menuId = menu.getId();
+        this.menuId = menuId;
         this.quantity = new Quantity(quantity);
     }
 
@@ -57,10 +56,6 @@ public class OrderLineItem {
 
     public long getQuantity() {
         return quantity.value();
-    }
-
-    public void updateOrder(final Order order) {
-        this.order = order;
     }
 
     @Override

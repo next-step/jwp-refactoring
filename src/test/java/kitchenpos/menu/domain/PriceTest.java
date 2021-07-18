@@ -11,12 +11,14 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import kitchenpos.common.domain.Price;
+
 class PriceTest {
 
     @DisplayName("가격 도메인 유효성 체크 테스트")
     @ParameterizedTest
     @MethodSource("providePrice")
-    void validate(BigDecimal price) {
+    void validate(final BigDecimal price) {
         // when
         final Throwable throwable = catchThrowable(() -> new Price(price));
 
