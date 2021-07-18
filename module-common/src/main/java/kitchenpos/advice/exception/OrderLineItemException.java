@@ -1,6 +1,6 @@
 package kitchenpos.advice.exception;
 
-public class OrderLineItemException extends RuntimeException {
+public class OrderLineItemException extends BusinessException {
 
     public OrderLineItemException(String message) {
         super(message);

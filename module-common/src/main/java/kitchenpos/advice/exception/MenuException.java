@@ -1,6 +1,6 @@
 package kitchenpos.advice.exception;
 
-public class MenuException extends RuntimeException {
+public class MenuException extends BusinessException {
 
     public MenuException(String message, long id) {
         super(String.format(message + "id : %d", id));

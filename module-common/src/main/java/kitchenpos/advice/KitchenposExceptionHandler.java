@@ -1,5 +1,6 @@
 package kitchenpos.advice;
 
+import kitchenpos.advice.exception.BusinessException;
 import kitchenpos.advice.exception.MenuException;
 import kitchenpos.advice.exception.MenuGroupException;
 import kitchenpos.advice.exception.OrderException;
@@ -14,8 +15,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 public class KitchenposExceptionHandler {
 
-    @ExceptionHandler({MenuGroupException.class, ProductException.class, PriceException.class, OrderException.class,
-            MenuException.class, TableGroupException.class, OrderTableException.class})
+    @ExceptionHandler({BusinessException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     ResponseEntity check(Exception e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());

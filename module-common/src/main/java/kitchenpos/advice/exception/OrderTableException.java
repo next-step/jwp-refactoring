@@ -2,7 +2,7 @@ package kitchenpos.advice.exception;
 
 import java.util.List;
 
-public class OrderTableException extends RuntimeException {
+public class OrderTableException extends BusinessException {
 
     public OrderTableException(String message) {
         super(message);
