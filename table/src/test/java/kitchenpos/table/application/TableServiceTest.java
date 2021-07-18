@@ -45,7 +45,7 @@ public class TableServiceTest {
 
     @BeforeEach
     void setUp() {
-        tableService = new TableService(orderRepository, orderTableRepository, publisher);
+        tableService = new TableService(orderTableRepository, publisher);
     }
     @DisplayName("주문 테이블을 생성한다.")
     @Test

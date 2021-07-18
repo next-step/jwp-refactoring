@@ -13,8 +13,6 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
 
 import java.util.Arrays;
 import java.util.List;
@@ -35,16 +33,13 @@ public class OrderServiceTest {
     OrderRepository orderRepository;
 
     @Mock
-    OrderTableRepository orderTableRepository;
-
-    @Mock
     private ApplicationEventPublisher publisher;
 
     OrderService orderService;
 
     @BeforeEach
     void setUp() {
-        orderService = new OrderService(orderRepository, orderTableRepository, orderLineItemRepository, publisher);
+        orderService = new OrderService(orderRepository, orderLineItemRepository, publisher);
     }
 
     @DisplayName("주문을 등록한다.")
@@ -54,11 +49,9 @@ public class OrderServiceTest {
         OrderLineItemRequest orderLineItemRequest = mock(OrderLineItemRequest.class);
         Menu menu = mock(Menu.class);
         Order order = mock(Order.class);
-        OrderTable orderTable = mock(OrderTable.class);
         OrderLineItem orderLineItem = mock(OrderLineItem.class);
 
         when(orderRequest.toOrderLineItems()).thenReturn(Arrays.asList(orderLineItem));
-        when(orderTableRepository.findById(ArgumentMatchers.any())).thenReturn(Optional.ofNullable(orderTable));
         when(order.getOrderStatus()).thenReturn(OrderStatus.COOKING);
         when(orderRepository.save(ArgumentMatchers.any())).thenReturn(order);
 
@@ -84,7 +77,7 @@ public class OrderServiceTest {
     @Test
     void changeOrderStatus_완료시_변경_불가() {
         Menu menu = mock(Menu.class);
-        Order order = 주문_생성(1L, new OrderTable(1, false), OrderStatus.COMPLETION, Arrays.asList(new OrderLineItem(1L, menu.getId(), 2)));
+        Order order = 주문_생성(1L, OrderStatus.COMPLETION, Arrays.asList(new OrderLineItem(1L, menu.getId(), 2)));
         OrderRequest orderRequest = mock(OrderRequest.class);
 
         when(orderRequest.getOrderStatus()).thenReturn(OrderStatus.COMPLETION);
@@ -97,7 +90,7 @@ public class OrderServiceTest {
     @Test
     void changeOrderStatus() {
         Menu menu = mock(Menu.class);
-        Order order = 주문_생성(1L, new OrderTable(1, false), OrderStatus.COOKING, Arrays.asList(new OrderLineItem(1L, menu.getId(), 2)));
+        Order order = 주문_생성(1L, OrderStatus.COOKING, Arrays.asList(new OrderLineItem(1L, menu.getId(), 2)));
 
         OrderRequest orderRequest = mock(OrderRequest.class);
 
@@ -126,9 +119,9 @@ public class OrderServiceTest {
         assertThat(findOrders.get(0).getId()).isEqualTo(1L);
     }
 
-    private Order 주문_생성(Long id, OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
+    private Order 주문_생성(Long id, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
         Menu menu = mock(Menu.class);
-        return new Order(1L, orderTable.getId(), orderStatus);
+        return new Order(1L, 1L, orderStatus);
     }
 
     private void 주문상태_완료시_변경_불가_예외_발생함(OrderRequest orderRequest) {

@@ -15,12 +15,10 @@ import java.util.stream.Collectors;
 
 @Service
 public class TableService {
-    private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
     private final ApplicationEventPublisher publisher;
 
-    public TableService(final OrderRepository orderRepository, final OrderTableRepository orderTableRepository, final ApplicationEventPublisher publisher) {
-        this.orderRepository = orderRepository;
+    public TableService(final OrderTableRepository orderTableRepository, final ApplicationEventPublisher publisher) {
         this.orderTableRepository = orderTableRepository;
         this.publisher = publisher;
     }
