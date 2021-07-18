@@ -40,7 +40,6 @@ project(':kitchenpos-domain') {
     }
 }
 
-
 project(':kitchenpos-web') {
     dependencies {
         compile project(':kitchenpos-api')
