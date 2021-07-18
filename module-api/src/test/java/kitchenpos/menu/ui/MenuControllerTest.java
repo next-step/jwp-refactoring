@@ -3,7 +3,7 @@ package kitchenpos.menu.ui;
 import kitchenpos.menu.MenuTestFixture;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.dto.MenuRequest;
-import kitchenpos.product.ui.ControllerTest;
+import kitchenpos.ControllerTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

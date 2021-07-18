@@ -1,5 +1,6 @@
 package kitchenpos.product.ui;
 
+import kitchenpos.ControllerTest;
 import kitchenpos.product.ProductTestFixture;
 import kitchenpos.product.application.ProductService;
 import kitchenpos.product.dto.ProductResponse;

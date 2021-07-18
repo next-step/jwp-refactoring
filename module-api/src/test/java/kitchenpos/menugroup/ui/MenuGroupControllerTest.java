@@ -3,7 +3,7 @@ package kitchenpos.menugroup.ui;
 import kitchenpos.menugroup.MenuGroup;
 import kitchenpos.menugroup.application.MenuGroupService;
 import kitchenpos.menugroup.dto.MenuGroupRequest;
-import kitchenpos.product.ui.ControllerTest;
+import kitchenpos.ControllerTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
