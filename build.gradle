@@ -26,30 +26,4 @@ allprojects {
     }
 }
 
-project(':module-api'){
-    dependencies {
-        compile project(':module-domain-product')
-        compile project(':module-domain-menu')
-        compile project(':module-domain-order')
-    }
-}
-
-project(':module-domain-order') {
-    dependencies {
-        compile project(':module-common')
-    }
-}
-
-project(':module-domain-menu') {
-    dependencies {
-        compile project(':module-domain-product')
-    }
-}
-
-project(':module-domain-product') {
-    dependencies {
-        compile project(':module-common')
-    }
-}
-
 
