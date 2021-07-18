@@ -60,8 +60,8 @@ public class OrderTableRequest {
         this.numberOfGuests = numberOfGuests;
     }
 
-	public NumberOfGuests getNumberOfGuests() {
-		return new NumberOfGuests(numberOfGuests);
+	public int getNumberOfGuests() {
+		return numberOfGuests;
 	}
 
     public boolean isEmpty() {
@@ -75,8 +75,6 @@ public class OrderTableRequest {
 	public OrderTable toOrderTable() {
 		return new OrderTable(new NumberOfGuests(numberOfGuests), empty);
 	}
-
-
 
 	@Override
 	public boolean equals(Object o) {

@@ -16,10 +16,12 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 import kitchenpos.table.domain.OrderTable;
 
 @Entity
+@Table(name = "ORDERS")
 public class Order {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

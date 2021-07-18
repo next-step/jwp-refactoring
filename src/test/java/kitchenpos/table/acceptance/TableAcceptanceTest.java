@@ -20,13 +20,20 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menuGroup.dto.MenuGroupRequest;
 import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menuGroup.dto.MenuGroupResponse;
 import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.product.dto.ProductResponse;
+import kitchenpos.table.domain.NumberOfGuests;
 import kitchenpos.table.dto.OrderLineItemRequest;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.tableGroup.dto.TableGroupRequest;
+import kitchenpos.tableGroup.dto.TableGroupResponse;
 
 public class TableAcceptanceTest extends AcceptanceTest {
 	@DisplayName("주문 테이블 등록, 인원수 조정, 빈테이블로 변경 및 조회 시나리오")
@@ -35,21 +42,21 @@ public class TableAcceptanceTest extends AcceptanceTest {
 		// Scenario
 		// When : 주문 테이블 등록
 		ExtractableResponse<Response> tableCreatedResponse = createOrderTable(new OrderTableRequest(10, false));
-		OrderTableRequest createdOrderTable = tableCreatedResponse.as(OrderTableRequest.class);
+		OrderTableResponse createdOrderTable = tableCreatedResponse.as(OrderTableResponse.class);
 		// Then
 		assertThat(tableCreatedResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-		assertThat(createdOrderTable.getNumberOfGuests()).isEqualTo(10);
+		assertThat(createdOrderTable.getNumberOfGuests()).isEqualTo(new NumberOfGuests(10));
 
 		// When : 인원수 조정
 		ExtractableResponse<Response> changeNumberResponse = changeNumber(createdOrderTable.getId(), new OrderTableRequest(5));
-		OrderTableRequest changeNumberOrderTable = changeNumberResponse.as(OrderTableRequest.class);
+		OrderTableResponse changeNumberOrderTable = changeNumberResponse.as(OrderTableResponse.class);
 		// Then
 		assertThat(changeNumberResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
-		assertThat(changeNumberOrderTable.getNumberOfGuests()).isEqualTo(5);
+		assertThat(changeNumberOrderTable.getNumberOfGuests()).isEqualTo(new NumberOfGuests(5));
 
 		// When : 빈 테이블로 변경
 		ExtractableResponse<Response> changeEmptyResponse = changeEmpty(createdOrderTable.getId(), new OrderTableRequest(true));
-		OrderTableRequest changeEmptyOrderTable = changeEmptyResponse.as(OrderTableRequest.class);
+		OrderTableResponse changeEmptyOrderTable = changeEmptyResponse.as(OrderTableResponse.class);
 
 		// Then
 		assertThat(changeEmptyResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -58,9 +65,9 @@ public class TableAcceptanceTest extends AcceptanceTest {
 		// When : 주문 테이블 조회
 		ExtractableResponse<Response> findOrderTableResponse = findOrderTable();
 		// Then
-		boolean idOrderTableEmpty = findOrderTableResponse.jsonPath().getList(".", OrderTableRequest.class).stream()
+		boolean idOrderTableEmpty = findOrderTableResponse.jsonPath().getList(".", OrderTableResponse.class).stream()
 			.filter(orderTable -> orderTable.getId() == createdOrderTable.getId())
-			.map(OrderTableRequest::isEmpty)
+			.map(OrderTableResponse::isEmpty)
 			.findFirst()
 			.get();
 		assertThat(findOrderTableResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -78,13 +85,13 @@ public class TableAcceptanceTest extends AcceptanceTest {
 
 		// Given : 주문 테이블 등록
 		ExtractableResponse<Response> tableWithFivePeopleCreatedResponse = createOrderTable(new OrderTableRequest(5, true));
-		OrderTableRequest createdOrderTableWithFivePeople = tableWithFivePeopleCreatedResponse.as(OrderTableRequest.class);
+		OrderTableResponse createdOrderTableWithFivePeople = tableWithFivePeopleCreatedResponse.as(OrderTableResponse.class);
 
 		ExtractableResponse<Response> tableWithTenPeopleCreatedResponse = createOrderTable(new OrderTableRequest(10, true));
-		OrderTableRequest createdOrderTableWithTenPeople = tableWithTenPeopleCreatedResponse.as(OrderTableRequest.class);
+		OrderTableResponse createdOrderTableWithTenPeople = tableWithTenPeopleCreatedResponse.as(OrderTableResponse.class);
 
-		ExtractableResponse<Response> tableGroupCreatedResponse = createTableGroup(new TableGroupRequest(LocalDateTime.now(), Arrays.asList(createdOrderTableWithFivePeople, createdOrderTableWithTenPeople)));
-		TableGroupRequest createdTableGroup = tableGroupCreatedResponse.as(TableGroupRequest.class);
+		ExtractableResponse<Response> tableGroupCreatedResponse = createTableGroup(new TableGroupRequest(LocalDateTime.now(), Arrays.asList(new OrderTableRequest(5, true), new OrderTableRequest(10, true))));
+		TableGroupResponse createdTableGroup = tableGroupCreatedResponse.as(TableGroupResponse.class);
 		assertThat(tableGroupCreatedResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
 
 		// When : 테이블 비움
@@ -94,19 +101,19 @@ public class TableAcceptanceTest extends AcceptanceTest {
 
 		// Given : 주문 등록
 		ExtractableResponse<Response> menuGroupResponse = createMenuGroup(new MenuGroupRequest("인기 메뉴"));
-		MenuGroupRequest menuGroup = menuGroupResponse.as(MenuGroupRequest.class);
+		MenuGroupResponse menuGroup = menuGroupResponse.as(MenuGroupResponse.class);
 		// And
 		ExtractableResponse<Response> productResponse = createProduct(new ProductRequest("매운 라면", 8000L));
-		ProductRequest product = productResponse.as(ProductRequest.class);
+		ProductResponse product = productResponse.as(ProductResponse.class);
 		// And
 		ExtractableResponse<Response> menuCreatedResponse = createMenu(new MenuRequest("라면 메뉴", new BigDecimal(8000), menuGroup.getId(), Arrays.asList(new MenuProductRequest(product.getId(), 2L))));
-		MenuRequest createdMenu = menuCreatedResponse.as(MenuRequest.class);
+		MenuResponse createdMenu = menuCreatedResponse.as(MenuResponse.class);
 		// And
 		ExtractableResponse<Response> tableCreatedResponse = createOrderTable(new OrderTableRequest(2, false));
-		OrderTableRequest createdOrderTable = tableCreatedResponse.as(OrderTableRequest.class);
+		OrderTableResponse createdOrderTable = tableCreatedResponse.as(OrderTableResponse.class);
 		// And
 		ExtractableResponse<Response> orderCreatedResponse = createOrder(new OrderRequest(createdOrderTable.getId(), "COOKING", LocalDateTime.now(), Arrays.asList(new OrderLineItemRequest(createdMenu.getId(), 2))));
-		OrderRequest createdOrder = orderCreatedResponse.as(OrderRequest.class);
+		OrderResponse createdOrder = orderCreatedResponse.as(OrderResponse.class);
 		assertThat(orderCreatedResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
 
 		// When : 빈 테이블로 변경
@@ -126,7 +133,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
 
 		// Given : 주문 테이블 등록
 		ExtractableResponse<Response> tableWithOnePeopleCreatedResponse =  createOrderTable(new OrderTableRequest(1, true));
-		OrderTableRequest createdOrderTableWithOnePeople = tableWithOnePeopleCreatedResponse.as(OrderTableRequest.class);
+		OrderTableResponse createdOrderTableWithOnePeople = tableWithOnePeopleCreatedResponse.as(OrderTableResponse.class);
 		// When : 비어 있는 테이블에 대한 인원 변경 요청
 		ExtractableResponse<Response> changeNumberWithEmptyTableResponse = changeNumber(createdOrderTableWithOnePeople.getId(), new OrderTableRequest(8));
 		// Then

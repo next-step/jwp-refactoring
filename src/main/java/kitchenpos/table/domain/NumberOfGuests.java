@@ -26,6 +26,10 @@ public class NumberOfGuests {
 		}
 	}
 
+	public int getNumberOfGuests() {
+		return numberOfGuests;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o)

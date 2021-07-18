@@ -3,6 +3,7 @@ package kitchenpos.tableGroup.application;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.tableGroup.domain.TableGroupRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.tableGroup.domain.TableGroup;
@@ -31,15 +32,20 @@ public class TableGroupService {
 
     @Transactional
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
-		final List<OrderTable> orderTables = tableGroupRequest.getOrderTables().stream()
-				.map(orderTableRequest -> orderTableRepository
-					.findByTableGroupId(orderTableRequest.getId())
-					.orElseThrow(IllegalAccessError::new))
-                .collect(Collectors.toList());
+		final List<Long> orderTableIds = tableGroupRequest.getOrderTables().stream()
+			.map(OrderTableRequest::getId)
+			.collect(Collectors.toList());
 
-		TableGroup tableGroup = tableGroupRepository.save(new TableGroup(LocalDateTime.now(), orderTables));
+		List<OrderTable> orderTables = orderTableRepository.findAllByIdIn(orderTableIds);
 
-		return TableGroupResponse.of(tableGroup);
+		if (orderTableIds.size() != orderTables.size()) {
+			throw new IllegalArgumentException();
+		}
+
+		TableGroup savedTableGroup = tableGroupRepository.save(new TableGroup(LocalDateTime.now()));
+		savedTableGroup.addOrderTables(orderTables);
+
+		return TableGroupResponse.of(savedTableGroup);
     }
 
     @Transactional

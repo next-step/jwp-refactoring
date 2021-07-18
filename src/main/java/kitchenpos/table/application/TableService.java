@@ -1,6 +1,8 @@
 package kitchenpos.table.application;
 
+import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.table.domain.NumberOfGuests;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.order.domain.OrderStatus;
@@ -51,7 +53,8 @@ public class TableService {
 	}
 
 	private void validateCookingOrMealStatusExists(Long orderTableId) {
-		if (orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
+    	List<Order> orders = orderRepository.findByOrderTableId(orderTableId);
+    	if(orders.stream().filter(order -> order.getOrderStatus().equals(OrderStatus.COOKING.name()) || order.getOrderStatus().equals(OrderStatus.MEAL.name())).findAny().isPresent()) {
 			throw new IllegalArgumentException();
 		}
 	}
@@ -66,7 +69,7 @@ public class TableService {
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId).orElseThrow(IllegalArgumentException::new);
 		validateOrderTableEmpty(savedOrderTable);
-		savedOrderTable.updateNumberOfGuests(orderTableRequest.getNumberOfGuests());
+		savedOrderTable.updateNumberOfGuests(new NumberOfGuests(orderTableRequest.getNumberOfGuests()));
 
 		return OrderTableResponse.of(orderTableRepository.save(savedOrderTable));
 	}

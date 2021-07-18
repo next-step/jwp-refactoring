@@ -24,8 +24,6 @@ public class OrderTable {
 	@JoinColumn(foreignKey = @ForeignKey(name = "fk_order_table_table_group"))
 	private TableGroup tableGroup;
 
-	// @Column(nullable = false)
-	// private int numberOfGuests;
 	@Embedded
 	private NumberOfGuests numberOfGuests;
 
@@ -49,7 +47,7 @@ public class OrderTable {
 		return tableGroup;
 	}
 
-	public NumberOfGuests getNumberOfGuest() {
+	public NumberOfGuests getNumberOfGuests() {
 		return numberOfGuests;
 	}
 
@@ -71,5 +69,9 @@ public class OrderTable {
 
 	public void unGroup() {
 		this.tableGroup = null;
+	}
+
+	public void mapTableGroup(TableGroup tableGroup) {
+		this.tableGroup = tableGroup;
 	}
 }

@@ -13,6 +13,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 
 public class ProductAcceptanceTest extends AcceptanceTest {
 	@DisplayName("상품 등록 및 조회 시나리오")
@@ -21,7 +22,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
 		// Scenario
 		// When
 		ExtractableResponse<Response> productCreatedResponse = createProduct(new ProductRequest("매운 라면",8000L));
-		ProductRequest createdProduct = productCreatedResponse.as(ProductRequest.class);
+		ProductResponse createdProduct = productCreatedResponse.as(ProductResponse.class);
 		// Then
 		assertThat(productCreatedResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
 		assertThat(createdProduct.getName()).isEqualTo("매운 라면");
@@ -29,9 +30,9 @@ public class ProductAcceptanceTest extends AcceptanceTest {
 		// When
 		ExtractableResponse<Response> findProductResponse = findProduct();
 		// Then
-		String productName = findProductResponse.jsonPath().getList(".", ProductRequest.class).stream()
+		String productName = findProductResponse.jsonPath().getList(".", ProductResponse.class).stream()
 			.filter(product -> product.getId() == createdProduct.getId())
-			.map(ProductRequest::getName)
+			.map(ProductResponse::getName)
 			.findFirst()
 			.get();
 		assertThat(productName).isEqualTo("매운 라면");

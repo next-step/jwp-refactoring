@@ -1,6 +1,7 @@
 package kitchenpos.tableGroup.domain;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -26,7 +27,14 @@ public class TableGroup {
 	private LocalDateTime createdDate;
 
 	@OneToMany(mappedBy = "tableGroup", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<OrderTable> orderTables;
+	private List<OrderTable> orderTables = new ArrayList<>();
+
+	public TableGroup() {
+	}
+
+	public TableGroup(LocalDateTime createdDate) {
+		this.createdDate = createdDate;
+	}
 
 	public TableGroup(LocalDateTime createdDate, List<OrderTable> orderTables) {
 		this.createdDate = createdDate;
@@ -49,7 +57,11 @@ public class TableGroup {
 		validateOrderTablesSize(orderTables);
 		validateOrderTableOccupied(orderTables);
 
-		this.orderTables = orderTables;
+		for (OrderTable orderTable : orderTables) {
+			orderTable.mapTableGroup(this);
+		}
+
+		this.orderTables.addAll(orderTables);
 	}
 
 	private void validateOrderTableOccupied(List<OrderTable> orderTables) {
