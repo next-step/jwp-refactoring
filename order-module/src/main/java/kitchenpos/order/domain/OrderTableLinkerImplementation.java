@@ -2,17 +2,14 @@ package kitchenpos.order.domain;
 
 import kitchenpos.table.domain.OrderTableLinker;
 import kitchenpos.table.exception.IllegalOrderTableException;
-import kitchenpos.tablegroup.domain.TableGroupLinker;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-
 @Component
-public class OrderLinkerImplementation implements OrderTableLinker, TableGroupLinker {
+public class OrderTableLinkerImplementation implements OrderTableLinker {
 
     private final OrderRepository orderRepository;
 
-    public OrderLinkerImplementation(OrderRepository orderRepository) {
+    public OrderTableLinkerImplementation(OrderRepository orderRepository) {
         this.orderRepository = orderRepository;
     }
 
@@ -22,11 +19,5 @@ public class OrderLinkerImplementation implements OrderTableLinker, TableGroupLi
         if (!orders.isCompletedAllOrders()) {
             throw new IllegalOrderTableException();
         }
-    }
-
-    @Override
-    public void validateOrderStatusByTableIds(List<Long> orderTableIds) {
-        orderTableIds.stream()
-                .forEach(orderTableId -> validateOrderStatusByOrderTableId(orderTableId));
     }
 }
