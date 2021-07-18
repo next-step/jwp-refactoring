@@ -49,7 +49,6 @@ project(':module-web') {
         implementation 'org.springframework.boot:spring-boot-starter-jdbc'
         implementation 'org.springframework.boot:spring-boot-starter-web'
         implementation 'org.flywaydb:flyway-core'
-        implementation project(':module-common')
         implementation project(':module-menu')
         implementation project(':module-order')
     }
