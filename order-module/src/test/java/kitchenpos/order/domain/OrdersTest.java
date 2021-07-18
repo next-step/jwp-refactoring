@@ -1,6 +1,5 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.exception.OrderException;
 import kitchenpos.order.enums.OrderStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
