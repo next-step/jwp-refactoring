@@ -2,7 +2,7 @@ package kitchenpos.order.event;
 
 import kitchenpos.exception.OrderException;
 import kitchenpos.menu.application.MenuService;
-import kitchenpos.table.application.TableService;
+import kitchenpos.table.application.OrderTableService;
 import kitchenpos.table.domain.OrderTable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,7 +25,7 @@ class OrderEventHandlerTest {
     private MenuService menuService;
 
     @Mock
-    private TableService tableService;
+    private OrderTableService orderTableService;
 
     @InjectMocks
     private OrderEventHandler orderEventHandler;
@@ -43,7 +43,7 @@ class OrderEventHandlerTest {
         OrderTable 주문_테이블 = new OrderTable(1L, 4, true);
         List<Long> menuIds = Arrays.asList(1L);
         when(menuService.countByMenuId(menuIds)).thenReturn(1L);
-        when(tableService.findOrderTable(1L)).thenReturn(주문_테이블);
+        when(orderTableService.findOrderTable(1L)).thenReturn(주문_테이블);
         OrderValidEvent orderValidEvent = new OrderValidEvent(menuIds, 1L);
         assertThatThrownBy(() -> orderEventHandler.createOrderValidEvent(orderValidEvent)).isInstanceOf(OrderException.class);
     }

@@ -15,14 +15,14 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
-public class TableService {
+public class OrderTableService {
 
     private static final String NOT_FOUND_ORDER_TABLE_ERROR_MESSAGE = "등록 되지 않은 주문 테이블 입니다.";
 
     private final OrderTableRepository orderTableRepository;
     private final TableEventPublisher tableEventPublisher;
 
-    public TableService(OrderTableRepository orderTableRepository, TableEventPublisher tableEventPublisher) {
+    public OrderTableService(OrderTableRepository orderTableRepository, TableEventPublisher tableEventPublisher) {
         this.orderTableRepository = orderTableRepository;
         this.tableEventPublisher = tableEventPublisher;
     }

@@ -2,7 +2,7 @@ package kitchenpos.order.event;
 
 import kitchenpos.exception.OrderException;
 import kitchenpos.menu.application.MenuService;
-import kitchenpos.table.application.TableService;
+import kitchenpos.table.application.OrderTableService;
 import kitchenpos.table.domain.OrderTable;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
@@ -16,11 +16,11 @@ public class OrderEventHandler {
     private static final String ORDER_TABLE_EMPTY_ERROR_MESSAGE = "비어있는 테이블의 주문은 생성할 수 없습니다.";
 
     private final MenuService menuService;
-    private final TableService tableService;
+    private final OrderTableService orderTableService;
 
-    public OrderEventHandler(MenuService menuService, TableService tableService) {
+    public OrderEventHandler(MenuService menuService, OrderTableService orderTableService) {
         this.menuService = menuService;
-        this.tableService = tableService;
+        this.orderTableService = orderTableService;
     }
 
     @EventListener
@@ -37,7 +37,7 @@ public class OrderEventHandler {
     }
 
     private void validateOrderTable(Long orderTableId) {
-        OrderTable orderTable = tableService.findOrderTable(orderTableId);
+        OrderTable orderTable = orderTableService.findOrderTable(orderTableId);
         if (orderTable.isEmpty()) {
             throw new OrderException(ORDER_TABLE_EMPTY_ERROR_MESSAGE);
         }

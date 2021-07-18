@@ -28,7 +28,7 @@ import static org.mockito.Mockito.when;
 class TableGroupServiceTest {
 
     @Mock
-    private TableService tableService;
+    private OrderTableService orderTableService;
 
     @Mock
     private TableGroupRepository tableGroupRepository;
@@ -52,7 +52,7 @@ class TableGroupServiceTest {
     void 테이블_그룹_생성() {
         LocalDateTime now = LocalDateTime.now();
         OrderTables orderTables = new OrderTables(Arrays.asList(일번_테이블, 이번_테이블));
-        when(tableService.findAllByIds(Arrays.asList(1L, 2L))).thenReturn(orderTables);
+        when(orderTableService.findAllByIds(Arrays.asList(1L, 2L))).thenReturn(orderTables);
         TableGroup tableGroup = new TableGroup(1L, now, orderTables);
         when(tableGroupRepository.save(any(TableGroup.class))).thenReturn(tableGroup);
         TableGroupResponse expected = tableGroupService.create(new TableGroupRequest(Arrays.asList(1L, 2L)));

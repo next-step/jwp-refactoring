@@ -5,7 +5,6 @@ import kitchenpos.exception.TableGroupException;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.Orders;
 import kitchenpos.order.enums.OrderStatus;
-import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.domain.TableGroup;

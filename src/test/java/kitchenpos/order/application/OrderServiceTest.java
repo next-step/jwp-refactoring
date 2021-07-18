@@ -1,9 +1,7 @@
 package kitchenpos.order.application;
 
 import kitchenpos.exception.OrderException;
-import kitchenpos.exception.OrderTableException;
 import kitchenpos.order.enums.OrderStatus;
-import kitchenpos.menu.application.MenuService;
 import kitchenpos.order.domain.Orders;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
@@ -12,7 +10,6 @@ import kitchenpos.order.dto.OrderLineItemResponse;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.publisher.OrderEventPublisher;
-import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

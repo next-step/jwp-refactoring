@@ -28,7 +28,7 @@ import static org.mockito.Mockito.when;
 
 @DisplayName("테이블 관련 기능 테스트")
 @ExtendWith(MockitoExtension.class)
-class OrderTableServiceTest {
+class OrderOrderTableServiceTest {
 
     @Mock
     private OrderTableRepository orderTableRepository;
@@ -37,7 +37,7 @@ class OrderTableServiceTest {
     public TableEventPublisher eventPublisher;
 
     @InjectMocks
-    private TableService tableService;
+    private OrderTableService orderTableService;
 
     private OrderTableRequest request;
     private OrderTable orderTable;
@@ -53,7 +53,7 @@ class OrderTableServiceTest {
     @Test
     void 테이블_생성_기능() {
         when(orderTableRepository.save(any(OrderTable.class))).thenReturn(orderTable);
-        OrderTableResponse expected = tableService.create(request);
+        OrderTableResponse expected = orderTableService.create(request);
         assertThat(expected.getId()).isEqualTo(orderTable.getId());
         assertThat(expected.getNumberOfGuests()).isEqualTo(orderTable.getNumberOfGuests().numberOfGuests());
         assertThat(expected.getTableGroupId()).isNull();
@@ -63,7 +63,7 @@ class OrderTableServiceTest {
     @Test
     void 테이블_조회_기능() {
         when(orderTableRepository.findAll()).thenReturn(Arrays.asList(orderTable));
-        List<OrderTableResponse> orderTables = tableService.list();
+        List<OrderTableResponse> orderTables = orderTableService.list();
         assertThat(orderTables.size()).isEqualTo(1);
         OrderTableResponse expected = orderTables.get(0);
         assertThat(expected.getId()).isEqualTo(orderTable.getId());
@@ -76,14 +76,14 @@ class OrderTableServiceTest {
     void 테이블_상태_변경() {
         OrderTableRequest request = new OrderTableRequest(0, false);
         when(orderTableRepository.findById(1L)).thenReturn(Optional.of(orderTable));
-        OrderTableResponse orderTableResponse = tableService.changeEmpty(1L, request);
+        OrderTableResponse orderTableResponse = orderTableService.changeEmpty(1L, request);
         assertThat(orderTableResponse.isEmpty()).isEqualTo(request.isEmpty());
     }
 
     @Test
     void 존재하지않는_테이블_상태_변경_시_에러_발생() {
         when(orderTableRepository.findById(1L)).thenReturn(Optional.empty());
-        assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), request)).isInstanceOf(OrderTableException.class);
+        assertThatThrownBy(() -> orderTableService.changeEmpty(orderTable.getId(), request)).isInstanceOf(OrderTableException.class);
     }
 
     @Test
@@ -91,7 +91,7 @@ class OrderTableServiceTest {
         orderTable.changeEmpty(false);
         when(orderTableRepository.findById(orderTable.getId())).thenReturn(Optional.of(orderTable));
         OrderTableRequest request = new OrderTableRequest(2, false);
-        OrderTableResponse expected = tableService.changeNumberOfGuests(orderTable.getId(), request);
+        OrderTableResponse expected = orderTableService.changeNumberOfGuests(orderTable.getId(), request);
         assertThat(expected.getNumberOfGuests()).isEqualTo(request.getNumberOfGuests());
     }
 
@@ -102,7 +102,7 @@ class OrderTableServiceTest {
         List<OrderTable> orderTables = Arrays.asList(orderTableNo1, orderTableNo2);
         when(orderTableRepository.findAllById(Arrays.asList(1L, 2L))).thenReturn(orderTables);
 
-        OrderTables expected = tableService.findAllByIds(Arrays.asList(1L, 2L));
+        OrderTables expected = orderTableService.findAllByIds(Arrays.asList(1L, 2L));
         assertThat(expected).isEqualTo(new OrderTables(orderTables));
     }
 
@@ -116,7 +116,7 @@ class OrderTableServiceTest {
 
         when(orderTableRepository.findAllByTableGroup(1L)).thenReturn(orderTables);
 
-        OrderTables expected = tableService.findAllByTableGroupId(1L);
+        OrderTables expected = orderTableService.findAllByTableGroupId(1L);
         assertThat(expected).isEqualTo(new OrderTables(orderTables));
     }
 }

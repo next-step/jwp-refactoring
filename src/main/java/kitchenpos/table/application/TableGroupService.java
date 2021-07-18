@@ -17,19 +17,19 @@ public class TableGroupService {
     public static final String NOT_FOUND_TABLE_GROUP_ERROR_MESSAGE = "테이블 그룹이 존재하지 않습니다.";
 
     private final TableGroupRepository tableGroupRepository;
-    private final TableService tableService;
+    private final OrderTableService orderTableService;
     private final TableEventPublisher tableEventPublisher;
 
 
-    public TableGroupService(TableGroupRepository tableGroupRepository, TableService tableService, TableEventPublisher tableEventPublisher) {
+    public TableGroupService(TableGroupRepository tableGroupRepository, OrderTableService orderTableService, TableEventPublisher tableEventPublisher) {
         this.tableGroupRepository = tableGroupRepository;
-        this.tableService = tableService;
+        this.orderTableService = orderTableService;
         this.tableEventPublisher = tableEventPublisher;
     }
 
     public TableGroupResponse create(final TableGroupRequest request) {
         TableGroup tableGroup = tableGroupRepository.save(request.toTableGroup());
-        OrderTables orderTables = tableService.findAllByIds(request.getOrderTableIds());
+        OrderTables orderTables = orderTableService.findAllByIds(request.getOrderTableIds());
         tableEventPublisher.groupEventPublish(request.getOrderTableIds(), orderTables);
         orderTables.updateGrouping(tableGroup);
         return TableGroupResponse.of(tableGroup);
