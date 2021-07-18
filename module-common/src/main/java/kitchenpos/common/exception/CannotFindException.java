@@ -1,6 +1,5 @@
 package kitchenpos.common.exception;
 
-import kitchenpos.common.exception.Message;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 

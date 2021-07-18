@@ -8,7 +8,8 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-import static kitchenpos.common.exception.Message.*;
+import static kitchenpos.common.exception.Message.ERROR_ORDER_SHOULD_HAVE_NON_EMPTY_TABLE;
+import static kitchenpos.common.exception.Message.ERROR_ORDER_STATUS_CANNOT_BE_CHANGED_WHEN_COMPLETED;
 import static kitchenpos.order.domain.OrderStatus.COOKING;
 import static kitchenpos.order.domain.OrderStatus.MEAL;
 
