@@ -15,8 +15,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.table.domain.NumberOfGuests;
+import kitchenpos.table.domain.NumberOfGuestsTest;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.tableGroup.application.TableGroupService;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.tableGroup.domain.TableGroup;

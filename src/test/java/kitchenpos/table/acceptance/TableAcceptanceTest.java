@@ -28,6 +28,7 @@ import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.product.dto.ProductResponse;
 import kitchenpos.table.domain.NumberOfGuests;
+import kitchenpos.table.domain.NumberOfGuestsTest;
 import kitchenpos.table.dto.OrderLineItemRequest;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.product.dto.ProductRequest;

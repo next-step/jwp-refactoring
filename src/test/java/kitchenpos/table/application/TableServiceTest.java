@@ -19,6 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.NumberOfGuests;
+import kitchenpos.table.domain.NumberOfGuestsTest;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.order.domain.OrderStatus;
