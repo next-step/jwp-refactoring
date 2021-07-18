@@ -99,6 +99,7 @@ project(':table') {
         enabled = true
     }
     dependencies {
+        implementation project(':order')
         implementation 'org.springframework:spring-web'
         implementation 'jakarta.persistence:jakarta.persistence-api'
         implementation 'org.springframework.data:spring-data-jpa'
