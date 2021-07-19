@@ -1,7 +1,6 @@
 package kitchenpos.table.event;
 
 import kitchenpos.table.domain.OrderTables;
-import kitchenpos.table.domain.TableGroup;
 
 import java.util.List;
 
