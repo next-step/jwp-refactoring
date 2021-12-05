@@ -9,9 +9,6 @@ import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
 
 /**
  * - 상품을 등록할 수 있다
@@ -30,19 +27,13 @@ class ProductServiceTest {
 
     @BeforeEach
     void setUp() {
-        productDao = mock(ProductDao.class);
+        productDao = new InMemoryProductDao();
         productService = new ProductService(productDao);
     }
 
     @Test
     void create_상품을_등록할_수_있다() {
-        // given
-        given(productDao.save(any(Product.class))).willReturn(상품);
-
-        // when
         Product savedProduct = productService.create(상품);
-
-        // then
         assertAll(
                 () -> assertThat(savedProduct.getName()).isEqualTo(상품_이름),
                 () -> assertThat(savedProduct.getPrice()).isEqualTo(상품_가격)
