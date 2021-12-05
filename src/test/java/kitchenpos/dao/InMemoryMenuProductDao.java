@@ -3,6 +3,7 @@ package kitchenpos.dao;
 import kitchenpos.domain.MenuProduct;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class InMemoryMenuProductDao extends InMemoryDao<MenuProduct> implements MenuProductDao {
 
@@ -12,6 +13,8 @@ public class InMemoryMenuProductDao extends InMemoryDao<MenuProduct> implements 
 
     @Override
     public List<MenuProduct> findAllByMenuId(Long menuId) {
-        return null;
+        return db.values().stream()
+                .filter(menuProduct -> menuProduct.getMenuId() == menuId)
+                .collect(Collectors.toList());
     }
 }

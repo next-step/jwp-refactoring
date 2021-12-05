@@ -13,6 +13,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -97,6 +98,22 @@ class MenuServiceTest {
     void create_메뉴의_가격이_올바르지_않으면_등록_할_수_없다(BigDecimal 올바르지_않은_메뉴_가격) {
         assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> menuService.create(메뉴(저장된_메뉴_그룹, 메뉴_이름, 올바르지_않은_메뉴_가격, 메뉴_상품(저장된_상품, 수량))));
+    }
+
+    @Test
+    void list_메뉴_목록을_조회할_수_있다() {
+        Menu 저장된_메뉴 = menuService.create(메뉴(저장된_메뉴_그룹, 메뉴_이름, 메뉴_가격, 메뉴_상품(저장된_상품, 수량)));
+        List<Menu> menus = menuService.list();
+        assertAll(
+                () -> assertThat(menus.size()).isEqualTo(1),
+                () -> assertThat(menus.get(0).getName()).isEqualTo(메뉴_이름),
+                () -> assertThat(menus.get(0).getPrice()).isEqualTo(메뉴_가격),
+                () -> assertThat(menus.get(0).getMenuGroupId()).isEqualTo(저장된_메뉴_그룹.getId()),
+                () -> assertThat(menus.get(0).getMenuProducts().size()).isEqualTo(1),
+                () -> assertThat(menus.get(0).getMenuProducts().get(0).getMenuId()).isEqualTo(저장된_메뉴.getId()),
+                () -> assertThat(menus.get(0).getMenuProducts().get(0).getProductId()).isEqualTo(저장된_상품.getId()),
+                () -> assertThat(menus.get(0).getMenuProducts().get(0).getQuantity()).isEqualTo(수량)
+        );
     }
 
     private static Menu 메뉴(long menuGroupId, String name, BigDecimal price, MenuProduct menuProduct) {
