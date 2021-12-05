@@ -92,6 +92,13 @@ class MenuServiceTest {
                 .isThrownBy(() -> menuService.create(메뉴(저장된_메뉴_그룹, 메뉴_이름, 메뉴_가격, 메뉴_상품(존재하지_않는_상품_아이디, 수량))));
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = {"100000"})
+    void create_메뉴의_가격이_올바르지_않으면_등록_할_수_없다(BigDecimal 올바르지_않은_메뉴_가격) {
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> menuService.create(메뉴(저장된_메뉴_그룹, 메뉴_이름, 올바르지_않은_메뉴_가격, 메뉴_상품(저장된_상품, 수량))));
+    }
+
     private static Menu 메뉴(long menuGroupId, String name, BigDecimal price, MenuProduct menuProduct) {
         Menu menu = new Menu();
         menu.setName(name);
