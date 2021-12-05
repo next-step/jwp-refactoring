@@ -9,6 +9,7 @@ import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -50,6 +51,13 @@ class ProductServiceTest {
     void create_상품의_가격이_올바르지_않으면_등록할_수_없다(BigDecimal 유효하지_않은_상품_가격) {
         assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> productService.create(상품_생성(상품_이름, 유효하지_않은_상품_가격)));
+    }
+
+    @Test
+    void list_상품의_목록을_조회할_수_있다() {
+        productService.create(상품);
+        List<Product> products = productService.list();
+        assertThat(products.size()).isEqualTo(1);
     }
 
     private static Product 상품_생성(String name, BigDecimal price) {

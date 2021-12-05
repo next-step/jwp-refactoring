@@ -3,10 +3,7 @@ package kitchenpos.application;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class InMemoryProductDao implements ProductDao {
 
@@ -26,6 +23,6 @@ public class InMemoryProductDao implements ProductDao {
 
     @Override
     public List<Product> findAll() {
-        return null;
+        return new ArrayList(db.values());
     }
 }
