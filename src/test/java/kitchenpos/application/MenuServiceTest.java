@@ -7,11 +7,15 @@ import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 /**
@@ -62,6 +66,17 @@ class MenuServiceTest {
                 () -> assertThat(savedMenu.getMenuGroupId()).isEqualTo(저장된_메뉴_그룹.getId()),
                 () -> assertThat(savedMenu.getMenuProducts().size()).isEqualTo(1)
         );
+    }
+
+    @ParameterizedTest
+    @NullSource
+    @ValueSource(strings = {"-1"})
+    void create_메뉴의_가격이_올바르지_않으면_등록할_수_없다(BigDecimal 올바르지_않은_가격) {
+        MenuGroup 저장된_메뉴_그룹 = menuGroupDao.save(메뉴_그룹);
+        Product 저장된_상품 = productDao.save(상품);
+
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> menuService.create(메뉴(저장된_메뉴_그룹, 메뉴_이름, 올바르지_않은_가격, 메뉴_상품(저장된_상품, 수량))));
     }
 
     private static Menu 메뉴(long menuGroupId, String name, BigDecimal price, MenuProduct menuProduct) {
