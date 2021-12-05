@@ -2,6 +2,7 @@ package kitchenpos.application;
 
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -20,24 +21,39 @@ import static org.mockito.Mockito.mock;
  */
 class ProductServiceTest {
 
+    private static final String 상품_이름 = "강정치킨";
+    private static final BigDecimal 상품_가격 = new BigDecimal(17_000);
+    private static final Product 상품 = 상품_생성(상품_이름, 상품_가격);
+
+    ProductDao productDao;
+    ProductService productService;
+
+    @BeforeEach
+    void setUp() {
+        productDao = mock(ProductDao.class);
+        productService = new ProductService(productDao);
+    }
+
     @Test
     void create_상품을_등록할_수_있다() {
         // given
-        ProductDao productDao = mock(ProductDao.class);
-        ProductService productService = new ProductService(productDao);
-        Product product = new Product();
-        product.setId(1L);
-        product.setName("강정치킨");
-        product.setPrice(new BigDecimal(17_000));
-        given(productDao.save(any(Product.class))).willReturn(product);
+        given(productDao.save(any(Product.class))).willReturn(상품);
 
         // when
-        Product savedProduct = productService.create(product);
+        Product savedProduct = productService.create(상품);
 
         // then
         assertAll(
-                () -> assertThat(savedProduct.getName()).isEqualTo("강정치킨"),
-                () -> assertThat(savedProduct.getPrice()).isEqualTo(new BigDecimal(17_000))
+                () -> assertThat(savedProduct.getName()).isEqualTo(상품_이름),
+                () -> assertThat(savedProduct.getPrice()).isEqualTo(상품_가격)
         );
+    }
+
+    private static Product 상품_생성(String name, BigDecimal price) {
+        Product product = new Product();
+        product.setId(1L);
+        product.setName(name);
+        product.setPrice(price);
+        return product;
     }
 }
