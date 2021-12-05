@@ -25,7 +25,7 @@ class ProductServiceTest {
 
     private static final String 상품_이름 = "강정치킨";
     private static final BigDecimal 상품_가격 = new BigDecimal(17_000);
-    private static final Product 상품 = 상품_생성(상품_이름, 상품_가격);
+    private static final Product 상품 = 상품(상품_이름, 상품_가격);
 
     ProductDao productDao;
     ProductService productService;
@@ -50,7 +50,7 @@ class ProductServiceTest {
     @ValueSource(strings = {"-1"})
     void create_상품의_가격이_올바르지_않으면_등록할_수_없다(BigDecimal 유효하지_않은_상품_가격) {
         assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> productService.create(상품_생성(상품_이름, 유효하지_않은_상품_가격)));
+                .isThrownBy(() -> productService.create(상품(상품_이름, 유효하지_않은_상품_가격)));
     }
 
     @Test
@@ -60,7 +60,7 @@ class ProductServiceTest {
         assertThat(products.size()).isEqualTo(1);
     }
 
-    private static Product 상품_생성(String name, BigDecimal price) {
+    private static Product 상품(String name, BigDecimal price) {
         Product product = new Product();
         product.setId(1L);
         product.setName(name);
