@@ -43,6 +43,8 @@ class MenuServiceTest {
     private MenuProductDao menuProductDao;
     private ProductDao productDao;
     private MenuService menuService;
+    private MenuGroup 저장된_메뉴_그룹;
+    private Product 저장된_상품;
 
     @BeforeEach
     void setUp() {
@@ -51,13 +53,13 @@ class MenuServiceTest {
         menuProductDao = new InMemoryMenuProductDao();
         productDao = new InMemoryProductDao();
         menuService = new MenuService(menuDao, menuGroupDao, menuProductDao, productDao);
+
+        저장된_메뉴_그룹 = menuGroupDao.save(메뉴_그룹);
+        저장된_상품 = productDao.save(상품);
     }
 
     @Test
     void create_메뉴를_등록할_수_있다() {
-        MenuGroup 저장된_메뉴_그룹 = menuGroupDao.save(메뉴_그룹);
-        Product 저장된_상품 = productDao.save(상품);
-
         Menu savedMenu = menuService.create(메뉴(저장된_메뉴_그룹, 메뉴_이름, 메뉴_가격, 메뉴_상품(저장된_상품, 수량)));
 
         assertAll(
@@ -72,9 +74,6 @@ class MenuServiceTest {
     @NullSource
     @ValueSource(strings = {"-1"})
     void create_메뉴의_가격이_올바르지_않으면_등록할_수_없다(BigDecimal 올바르지_않은_가격) {
-        MenuGroup 저장된_메뉴_그룹 = menuGroupDao.save(메뉴_그룹);
-        Product 저장된_상품 = productDao.save(상품);
-
         assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> menuService.create(메뉴(저장된_메뉴_그룹, 메뉴_이름, 올바르지_않은_가격, 메뉴_상품(저장된_상품, 수량))));
     }
