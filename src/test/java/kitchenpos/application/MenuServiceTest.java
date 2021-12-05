@@ -85,6 +85,13 @@ class MenuServiceTest {
                 .isThrownBy(() -> menuService.create(메뉴(존재하지_않는_메뉴_그룹_아이디, 메뉴_이름, 메뉴_가격, 메뉴_상품(저장된_상품, 수량))));
     }
 
+    @ParameterizedTest
+    @ValueSource(longs = {0L})
+    void create_메뉴_상품의_상품이_존재하지_않으면_등록할_수_없다(Long 존재하지_않는_상품_아이디) {
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> menuService.create(메뉴(저장된_메뉴_그룹, 메뉴_이름, 메뉴_가격, 메뉴_상품(존재하지_않는_상품_아이디, 수량))));
+    }
+
     private static Menu 메뉴(long menuGroupId, String name, BigDecimal price, MenuProduct menuProduct) {
         Menu menu = new Menu();
         menu.setName(name);
@@ -98,9 +105,13 @@ class MenuServiceTest {
         return 메뉴(menuGroup.getId(), name, price, menuProduct);
     }
 
-    private static MenuProduct 메뉴_상품(Product savedProduct, int quantity) {
+    private static MenuProduct 메뉴_상품(Product product, int quantity) {
+        return 메뉴_상품(product.getId(), quantity);
+    }
+
+    private static MenuProduct 메뉴_상품(Long productId, int quantity) {
         MenuProduct menuProduct = new MenuProduct();
-        menuProduct.setProductId(savedProduct.getId());
+        menuProduct.setProductId(productId);
         menuProduct.setQuantity(quantity);
         return menuProduct;
     }
