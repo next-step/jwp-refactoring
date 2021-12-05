@@ -4,10 +4,14 @@ import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 /**
@@ -38,6 +42,14 @@ class ProductServiceTest {
                 () -> assertThat(savedProduct.getName()).isEqualTo(상품_이름),
                 () -> assertThat(savedProduct.getPrice()).isEqualTo(상품_가격)
         );
+    }
+
+    @ParameterizedTest
+    @NullSource
+    @ValueSource(strings = {"-1"})
+    void create_상품의_가격이_올바르지_않으면_등록할_수_없다(BigDecimal 유효하지_않은_상품_가격) {
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> productService.create(상품_생성(상품_이름, 유효하지_않은_상품_가격)));
     }
 
     private static Product 상품_생성(String name, BigDecimal price) {
