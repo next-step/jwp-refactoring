@@ -61,13 +61,15 @@ class MenuServiceTest {
 
     @Test
     void create_메뉴를_등록할_수_있다() {
-        Menu savedMenu = menuService.create(메뉴(저장된_메뉴_그룹, 메뉴_이름, 메뉴_가격, 메뉴_상품(저장된_상품, 수량)));
-
+        Menu 저장된_메뉴 = menuService.create(메뉴(저장된_메뉴_그룹, 메뉴_이름, 메뉴_가격, 메뉴_상품(저장된_상품, 수량)));
         assertAll(
-                () -> assertThat(savedMenu.getPrice()).isEqualTo(메뉴_가격),
-                () -> assertThat(savedMenu.getName()).isEqualTo(메뉴_이름),
-                () -> assertThat(savedMenu.getMenuGroupId()).isEqualTo(저장된_메뉴_그룹.getId()),
-                () -> assertThat(savedMenu.getMenuProducts().size()).isEqualTo(1)
+                () -> assertThat(저장된_메뉴.getPrice()).isEqualTo(메뉴_가격),
+                () -> assertThat(저장된_메뉴.getName()).isEqualTo(메뉴_이름),
+                () -> assertThat(저장된_메뉴.getMenuGroupId()).isEqualTo(저장된_메뉴_그룹.getId()),
+                () -> assertThat(저장된_메뉴.getMenuProducts().size()).isEqualTo(1),
+                () -> assertThat(저장된_메뉴.getMenuProducts().get(0).getMenuId()).isEqualTo(저장된_메뉴.getId()),
+                () -> assertThat(저장된_메뉴.getMenuProducts().get(0).getProductId()).isEqualTo(저장된_상품.getId()),
+                () -> assertThat(저장된_메뉴.getMenuProducts().get(0).getQuantity()).isEqualTo(수량)
         );
     }
 
