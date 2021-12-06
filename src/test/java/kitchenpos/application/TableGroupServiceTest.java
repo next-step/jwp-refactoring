@@ -11,6 +11,7 @@ import java.util.List;
 
 import static kitchenpos.fixture.OrderTableFixture.주문_테이블;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -55,6 +56,15 @@ class TableGroupServiceTest {
                 () -> assertThat(저장된_단체_지정.getOrderTables().size()).isEqualTo(2),
                 () -> assertThat(저장된_단체_지정.getCreatedDate()).isNotNull()
         );
+    }
+
+    @Test
+    void create_단체_지정의_주문_테이블이_올바르지_않으면_단체_지정을_저장할_수_없다() {
+        OrderTable 저장된_주문_테이블1 = orderTableDao.save(빈_주문_테이블);
+        TableGroup tableGroup = 단체_지정(Arrays.asList(저장된_주문_테이블1));
+
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> tableGroupService.create(tableGroup));
     }
 
     private TableGroup 단체_지정(List<OrderTable> orderTables) {
