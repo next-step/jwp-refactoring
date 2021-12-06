@@ -6,7 +6,10 @@ import kitchenpos.domain.MenuGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 /**
  * - 메뉴 그룹을 등록할 수 있다
@@ -15,7 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class MenuGroupServiceTest {
 
     private static final String 메뉴_그룹_이름 = "추천메뉴";
-    private static final MenuGroup 메뉴_그룹 = 메뉴(메뉴_그룹_이름);
+    private static final MenuGroup 메뉴_그룹 = 메뉴_그룹(메뉴_그룹_이름);
 
     private MenuGroupDao menuGroupDao;
     private MenuGroupService menuGroupService;
@@ -32,7 +35,17 @@ class MenuGroupServiceTest {
         assertThat(savedMenuGroup.getName()).isEqualTo(메뉴_그룹_이름);
     }
 
-    private static MenuGroup 메뉴(String name) {
+    @Test
+    void create_메뉴_그룹_목록을_조회할_수_있다() {
+        menuGroupService.create(메뉴_그룹);
+        List<MenuGroup> menuGroups = menuGroupService.list();
+        assertAll(
+                () -> assertThat(menuGroups.size()).isEqualTo(1),
+                () -> assertThat(menuGroups.get(0).getName()).isEqualTo(메뉴_그룹_이름)
+        );
+    }
+
+    private static MenuGroup 메뉴_그룹(String name) {
         MenuGroup menuGroup = new MenuGroup();
         menuGroup.setName(name);
         return menuGroup;
