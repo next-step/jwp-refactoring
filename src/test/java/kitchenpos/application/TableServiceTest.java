@@ -8,6 +8,8 @@ import kitchenpos.domain.OrderTable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -29,6 +31,7 @@ class TableServiceTest {
 
     private static final int 손님_수 = 0;
     private static final boolean 빈_테이블 = true;
+    private static final OrderTable 주문_테이블 = 주문_테이블(손님_수, 빈_테이블);
 
     private OrderDao orderDao;
     private OrderTableDao orderTableDao;
@@ -43,7 +46,7 @@ class TableServiceTest {
 
     @Test
     void create_주문_테이블을_등록할_수_있다() {
-        OrderTable 저장된_주문_테이블 = tableService.create(주문_테이블(손님_수, 빈_테이블));
+        OrderTable 저장된_주문_테이블 = tableService.create(주문_테이블);
         assertAll(
                 () -> assertThat(저장된_주문_테이블.getTableGroupId()).isNull(),
                 () -> assertThat(저장된_주문_테이블.getNumberOfGuests()).isEqualTo(손님_수),
@@ -51,7 +54,19 @@ class TableServiceTest {
         );
     }
 
-    private OrderTable 주문_테이블(int numberOfGuests, boolean empty) {
+    @Test
+    void list_주문_테이블_목록을_조회할_수_있다() {
+        tableService.create(주문_테이블);
+        List<OrderTable> orderTables = tableService.list();
+        assertAll(
+                () -> assertThat(orderTables.size()).isEqualTo(1),
+                () -> assertThat(orderTables.get(0).getTableGroupId()).isNull(),
+                () -> assertThat(orderTables.get(0).getNumberOfGuests()).isEqualTo(손님_수),
+                () -> assertThat(orderTables.get(0).isEmpty()).isTrue()
+        );
+    }
+
+    private static OrderTable 주문_테이블(int numberOfGuests, boolean empty) {
         OrderTable orderTable = new OrderTable();
         orderTable.setNumberOfGuests(numberOfGuests);
         orderTable.setEmpty(empty);
