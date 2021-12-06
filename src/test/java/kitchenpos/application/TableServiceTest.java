@@ -81,6 +81,13 @@ class TableServiceTest {
         assertThat(변경된_주문_테이블.isEmpty()).isTrue();
     }
 
+    @ParameterizedTest
+    @ValueSource(longs = 0L)
+    void changeEmpty_주문_테이블이_존재하지_않으면_빈_테이블로_변경할_수_없다(Long 존재하지_않는_테이블_아이디) {
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> tableService.changeEmpty(존재하지_않는_테이블_아이디, 주문_테이블));
+    }
+
     private static OrderTable 주문_테이블(int numberOfGuests, boolean empty) {
         OrderTable orderTable = new OrderTable();
         orderTable.setNumberOfGuests(numberOfGuests);
