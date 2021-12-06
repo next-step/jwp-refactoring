@@ -92,6 +92,13 @@ class OrderServiceTest {
                 .isThrownBy(() -> orderService.create(주문(존재하지_않는_주문_테이블_아이디, 주문_항목(저장된_메뉴, 수량))));
     }
 
+    @Test
+    void create_주문_테이블이_올바르지_않으면_주문을_등록할_수_없다() {
+        OrderTable 비어있는_주문_테이블 = orderTableDao.save(주문_테이블(true, 2));
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> orderService.create(주문(비어있는_주문_테이블, 주문_항목(저장된_메뉴, 수량))));
+    }
+
     private static OrderTable 주문_테이블(boolean empty, int numberOfGuests) {
         OrderTable orderTable = new OrderTable();
         orderTable.setEmpty(empty);
