@@ -15,6 +15,8 @@ public class InMemoryOrderDao extends InMemoryDao<Order> implements OrderDao {
 
     @Override
     public boolean existsByOrderTableIdInAndOrderStatusIn(List<Long> orderTableIds, List<String> orderStatuses) {
-        return false;
+        return db.values().stream()
+                .filter(order -> orderTableIds.contains(order.getOrderTableId()))
+                .anyMatch(order -> orderStatuses.contains(order.getOrderStatus()));
     }
 }

@@ -2,6 +2,7 @@ package kitchenpos.dao;
 
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.lang.reflect.Field;
 import java.util.*;
 
 public class InMemoryDao<E> {
@@ -21,6 +22,22 @@ public class InMemoryDao<E> {
     }
 
     public E save(E entity) {
+        try {
+            Field keyColumn = entity.getClass().getDeclaredField(keyColumnName);
+            keyColumn.setAccessible(true);
+            Object key = keyColumn.get(entity);
+            return saveOrUpdate(entity, key);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return saveOrUpdate(entity, null);
+    }
+
+    private E saveOrUpdate(E entity, Object key) {
+        if (!Objects.isNull(key)) {
+            db.put((Long) key, entity);
+            return entity;
+        }
         db.put(++id, entity);
         ReflectionTestUtils.setField(entity, keyColumnName, id);
         return entity;

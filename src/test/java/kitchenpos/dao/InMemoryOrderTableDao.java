@@ -16,6 +16,8 @@ public class InMemoryOrderTableDao extends InMemoryDao<OrderTable> implements Or
 
     @Override
     public List<OrderTable> findAllByTableGroupId(Long tableGroupId) {
-        return null;
+        return db.values().stream()
+                .filter(orderTable -> orderTable.getTableGroupId() == tableGroupId)
+                .collect(Collectors.toList());
     }
 }
