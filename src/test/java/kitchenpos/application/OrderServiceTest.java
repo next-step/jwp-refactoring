@@ -127,6 +127,18 @@ class OrderServiceTest {
         assertThat(변경된_주문.getOrderStatus()).isEqualTo(변경될_주문_상태.name());
     }
 
+    @ParameterizedTest
+    @EnumSource(value = OrderStatus.class, names = {"COMPLETION"})
+    void changeOrderStatus_주문_상태_올바르지_않으면_주문_상태를_변경할_수_없다(OrderStatus 올바르지_않은_주문_상태) {
+        Order 저장된_주문 = orderService.create(주문(저장된_주문_테이블, 주문_항목(저장된_메뉴, 수량)));
+        Order 완료_상태의_주문 = 주문(저장된_주문_테이블, 주문_항목(저장된_메뉴, 수량), 올바르지_않은_주문_상태);
+        orderService.changeOrderStatus(저장된_주문.getId(), 완료_상태의_주문);
+
+        Order 식사_상태의_주문 = 주문(저장된_주문_테이블, 주문_항목(저장된_메뉴, 수량), OrderStatus.MEAL);
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> orderService.changeOrderStatus(저장된_주문.getId(), 식사_상태의_주문));
+    }
+
     private static OrderTable 주문_테이블(boolean empty, int numberOfGuests) {
         OrderTable orderTable = new OrderTable();
         orderTable.setEmpty(empty);
