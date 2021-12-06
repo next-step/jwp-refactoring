@@ -124,6 +124,15 @@ class TableServiceTest {
                 .isThrownBy(() -> tableService.changeNumberOfGuests(null, 주문_테이블(유효하지_않은_손님_수, true)));
     }
 
+    @ParameterizedTest
+    @ValueSource(booleans = true)
+    void changeNumberOfGuests_주문_테이블이_빈_테이블_여부가_올바르지_않으면_방문한_손님_수를_변경할_수_없다(boolean 빈_테이블) {
+        OrderTable 저장된_주문_테이블 = tableService.create(주문_테이블(손님_수, 빈_테이블));
+
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> tableService.changeNumberOfGuests(저장된_주문_테이블.getId(), 주문_테이블(1, true)));
+    }
+
     private static OrderTable 주문_테이블(int numberOfGuests, boolean empty) {
         return 주문_테이블(numberOfGuests, null, empty);
     }
