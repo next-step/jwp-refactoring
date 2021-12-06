@@ -5,6 +5,7 @@ import kitchenpos.domain.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.math.BigDecimal;
@@ -115,6 +116,17 @@ class OrderServiceTest {
         );
     }
 
+    @ParameterizedTest
+    @EnumSource(value = OrderStatus.class, names = {"MEAL"})
+    void changeOrderStatus_주문_상태를_변경할_수_있다(OrderStatus 변경될_주문_상태) {
+        Order 저장된_주문 = orderService.create(주문(저장된_주문_테이블, 주문_항목(저장된_메뉴, 수량)));
+        Order 변경될_주문 = 주문(저장된_주문_테이블, 주문_항목(저장된_메뉴, 수량), 변경될_주문_상태);
+
+        Order 변경된_주문 = orderService.changeOrderStatus(저장된_주문.getId(), 변경될_주문);
+
+        assertThat(변경된_주문.getOrderStatus()).isEqualTo(변경될_주문_상태.name());
+    }
+
     private static OrderTable 주문_테이블(boolean empty, int numberOfGuests) {
         OrderTable orderTable = new OrderTable();
         orderTable.setEmpty(empty);
@@ -123,22 +135,27 @@ class OrderServiceTest {
     }
 
     private static Order 주문(Long orderTableId, OrderLineItem orderLineItem) {
-        return 주문(orderTableId, Arrays.asList(orderLineItem));
+        return 주문(orderTableId, Arrays.asList(orderLineItem), OrderStatus.COOKING);
     }
 
-    private static Order 주문(Long orderTableId, List<OrderLineItem> orderLineItems) {
+    private static Order 주문(Long orderTableId, List<OrderLineItem> orderLineItems, OrderStatus orderStatus) {
         Order order = new Order();
+        order.setOrderStatus(orderStatus.name());
         order.setOrderTableId(orderTableId);
         order.setOrderLineItems(orderLineItems);
         return order;
     }
 
+    private static Order 주문(OrderTable orderTable, OrderLineItem orderLineItem, OrderStatus orderStatus) {
+        return 주문(orderTable.getId(), Arrays.asList(orderLineItem), orderStatus);
+    }
+
     private static Order 주문(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
-        return 주문(orderTable.getId(), orderLineItems);
+        return 주문(orderTable.getId(), orderLineItems, OrderStatus.COOKING);
     }
 
     private static Order 주문(OrderTable orderTable, OrderLineItem orderLineItem) {
-        return 주문(orderTable.getId(), orderLineItem);
+        return 주문(orderTable.getId(), Arrays.asList(orderLineItem), OrderStatus.COOKING);
     }
 
     private static OrderLineItem 주문_항목(Long menuId, int quantity) {
