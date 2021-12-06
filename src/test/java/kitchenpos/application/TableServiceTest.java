@@ -4,14 +4,19 @@ import kitchenpos.dao.InMemoryOrderDao;
 import kitchenpos.dao.InMemoryOrderTableDao;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
+import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.List;
 
+import static kitchenpos.fixture.OrderFixture.주문;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 /**
  * - 주문 테이블을 등록할 수 있다
@@ -64,6 +69,16 @@ class TableServiceTest {
                 () -> assertThat(orderTables.get(0).getNumberOfGuests()).isEqualTo(손님_수),
                 () -> assertThat(orderTables.get(0).isEmpty()).isTrue()
         );
+    }
+
+    @Test
+    void changeEmpty_주문_테이블을_빈_테이블로_변경할_수_있다() {
+        OrderTable 저장된_주문_테이블 = tableService.create(주문_테이블(손님_수, false));
+        orderDao.save(주문(저장된_주문_테이블, null, OrderStatus.COMPLETION));
+
+        OrderTable 변경된_주문_테이블 = tableService.changeEmpty(저장된_주문_테이블.getId(), 주문_테이블(손님_수, true));
+
+        assertThat(변경된_주문_테이블.isEmpty()).isTrue();
     }
 
     private static OrderTable 주문_테이블(int numberOfGuests, boolean empty) {
