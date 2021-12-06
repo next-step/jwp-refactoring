@@ -4,6 +4,8 @@ import kitchenpos.dao.*;
 import kitchenpos.domain.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -81,6 +83,13 @@ class OrderServiceTest {
         List<OrderLineItem> 존재하는_메뉴_개수_이상의_주문_항목 = Arrays.asList(주문_항목(저장된_메뉴, 수량), 주문_항목(저장된_메뉴, 수량));
         assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> orderService.create(주문(저장된_주문_테이블, 존재하는_메뉴_개수_이상의_주문_항목)));
+    }
+
+    @ParameterizedTest
+    @ValueSource(longs = {0L})
+    void create_주문_테이블이_존재하지_않으면_등록할_수_없다(Long 존재하지_않는_주문_테이블_아이디) {
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> orderService.create(주문(존재하지_않는_주문_테이블_아이디, 주문_항목(저장된_메뉴, 수량))));
     }
 
     private static OrderTable 주문_테이블(boolean empty, int numberOfGuests) {
