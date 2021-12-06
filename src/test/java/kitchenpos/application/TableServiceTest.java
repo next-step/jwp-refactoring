@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
  * - 주문 테이블을 빈 테이블로 변경할 수 있다
  * - 주문 테이블이 존재하지 않으면 빈 테이블로 변경할 수 없다
  * - 주문 테이블의 테이블 그룹 아이디가 올바르지 않으면 빈 테이블로 변경할 수 없다
- *     - 테이블 그룹 아이디가 존재해야 한다
+ *     - 테이블 그룹 아이디가 없어야 한다
  * - 주문 테이블 아이디와 주문 혹은 식사 주문 상태인 주문이 존재하면 빈 테이블 여부를 변경할 수 없다
  * - 주문 테이블의 방문한 손님 수를 변경할 수 있다
  * - 주문 테이블의 방문한 손님 수가 올바르지 않으면 방문한 손님 수를 변경할 수 없다
@@ -88,10 +88,24 @@ class TableServiceTest {
                 .isThrownBy(() -> tableService.changeEmpty(존재하지_않는_테이블_아이디, 주문_테이블));
     }
 
+    @ParameterizedTest
+    @ValueSource(longs = 1L)
+    void changeEmpty_주문_테이블의_테이블_그룹_아이디가_올바르지_않으면_빈_테이블로_변경할_수_없다(Long 존재하는_테이블_그룹_아이디) {
+        OrderTable 저장된_주문_테이블 = orderTableDao.save(주문_테이블(손님_수, 존재하는_테이블_그룹_아이디, 빈_테이블));
+
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> tableService.changeEmpty(저장된_주문_테이블.getId(), 주문_테이블));
+    }
+
     private static OrderTable 주문_테이블(int numberOfGuests, boolean empty) {
+        return 주문_테이블(numberOfGuests, null, empty);
+    }
+
+    private static OrderTable 주문_테이블(int numberOfGuests, Long tableGroupId, boolean empty) {
         OrderTable orderTable = new OrderTable();
         orderTable.setNumberOfGuests(numberOfGuests);
         orderTable.setEmpty(empty);
+        orderTable.setTableGroupId(tableGroupId);
         return orderTable;
     }
 }
