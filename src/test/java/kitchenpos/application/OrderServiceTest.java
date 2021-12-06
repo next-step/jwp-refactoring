@@ -7,10 +7,13 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import static kitchenpos.fixture.MenuFixture.메뉴;
 import static kitchenpos.fixture.MenuProductFixture.메뉴_상품;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 /**
@@ -38,6 +41,8 @@ class OrderServiceTest {
     private OrderLineItemDao orderLineItemDao;
     private OrderTableDao orderTableDao;
     private OrderService orderService;
+    private Menu 저장된_메뉴;
+    private OrderTable 저장된_주문_테이블;
 
     @BeforeEach
     void setUp() {
@@ -46,15 +51,14 @@ class OrderServiceTest {
         orderLineItemDao = new InMemoryOrderLineItemDao();
         orderTableDao = new InMemoryOrderTableDao();
         orderService = new OrderService(menuDao, orderDao, orderLineItemDao, orderTableDao);
+
+        저장된_메뉴 = menuDao.save(메뉴);
+        저장된_주문_테이블 = orderTableDao.save(주문_테이블);
     }
 
     @Test
     void create_주문을_등록할_수_있다() {
-        Menu 저장된_메뉴 = menuDao.save(메뉴);
-        OrderTable 저장된_주문_테이블 = orderTableDao.save(주문_테이블);
-
         Order savedOrder = orderService.create(주문(저장된_주문_테이블, 주문_항목(저장된_메뉴, 수량)));
-
         assertAll(
                 () -> assertThat(savedOrder.getOrderTableId()).isEqualTo(저장된_주문_테이블.getId()),
                 () -> assertThat(savedOrder.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name()),
@@ -66,6 +70,14 @@ class OrderServiceTest {
         );
     }
 
+    @Test
+    void create_주문_항목_목록이_올바르지_않으면_주문을_등록할_수_없다() {
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> orderService.create(주문(저장된_주문_테이블, Collections.emptyList())));
+    }
+
+
+
     private static OrderTable 주문_테이블(boolean empty, int numberOfGuests) {
         OrderTable orderTable = new OrderTable();
         orderTable.setEmpty(empty);
@@ -74,10 +86,18 @@ class OrderServiceTest {
     }
 
     private static Order 주문(Long orderTableId, OrderLineItem orderLineItem) {
+        return 주문(orderTableId, Arrays.asList(orderLineItem));
+    }
+
+    private static Order 주문(Long orderTableId, List<OrderLineItem> orderLineItems) {
         Order order = new Order();
         order.setOrderTableId(orderTableId);
-        order.setOrderLineItems(Arrays.asList(orderLineItem));
+        order.setOrderLineItems(orderLineItems);
         return order;
+    }
+
+    private static Order 주문(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
+        return 주문(orderTable.getId(), orderLineItems);
     }
 
     private static Order 주문(OrderTable orderTable, OrderLineItem orderLineItem) {
