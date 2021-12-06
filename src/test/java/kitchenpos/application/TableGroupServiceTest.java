@@ -76,6 +76,16 @@ class TableGroupServiceTest {
                 .isThrownBy(() -> tableGroupService.create(tableGroup));
     }
 
+    @Test
+    void create_단체_지정의_주문_테이블이_올바르지_않으면_단체_지정을_저장할_수_없다() {
+        OrderTable 빈_주문_테이블 = orderTableDao.save(주문_테이블(0, 1L, true));
+        OrderTable 채워진_주문_테이블 = orderTableDao.save(주문_테이블(2, null, false));
+        TableGroup tableGroup = 단체_지정(Arrays.asList(빈_주문_테이블, 채워진_주문_테이블));
+
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> tableGroupService.create(tableGroup));
+    }
+
     private TableGroup 단체_지정(List<OrderTable> orderTables) {
         TableGroup tableGroup = new TableGroup();
         tableGroup.setOrderTables(orderTables);
