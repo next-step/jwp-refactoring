@@ -9,6 +9,7 @@ import kitchenpos.domain.OrderTable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.List;
@@ -92,6 +93,16 @@ class TableServiceTest {
     @ValueSource(longs = 1L)
     void changeEmpty_주문_테이블의_테이블_그룹_아이디가_올바르지_않으면_빈_테이블로_변경할_수_없다(Long 존재하는_테이블_그룹_아이디) {
         OrderTable 저장된_주문_테이블 = orderTableDao.save(주문_테이블(손님_수, 존재하는_테이블_그룹_아이디, 빈_테이블));
+
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> tableService.changeEmpty(저장된_주문_테이블.getId(), 주문_테이블));
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = OrderStatus.class, names = {"COOKING", "MEAL"})
+    void changeEmpty_주문_테이블_아이디와_주문_혹은_식사_주문_상태인_주문이_존재하면_빈_테이블_여부를_변경할_수_없다(OrderStatus 올바르지_않은_주문_상태) {
+        OrderTable 저장된_주문_테이블 = tableService.create(주문_테이블(손님_수, false));
+        orderDao.save(주문(저장된_주문_테이블, null, 올바르지_않은_주문_상태));
 
         assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> tableService.changeEmpty(저장된_주문_테이블.getId(), 주문_테이블));
