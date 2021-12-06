@@ -48,12 +48,14 @@ class TableGroupServiceTest {
     void create_단체_지정을_저장할_수_있다() {
         OrderTable 저장된_주문_테이블1 = orderTableDao.save(빈_주문_테이블);
         OrderTable 저장된_주문_테이블2 = orderTableDao.save(빈_주문_테이블);
-        TableGroup tableGroup = 단체_지정(Arrays.asList(저장된_주문_테이블1, 저장된_주문_테이블2));
+        TableGroup 단체_지정 = 단체_지정(Arrays.asList(저장된_주문_테이블1, 저장된_주문_테이블2));
 
-        TableGroup 저장된_단체_지정 = tableGroupService.create(tableGroup);
+        TableGroup 저장된_단체_지정 = tableGroupService.create(단체_지정);
 
         assertAll(
                 () -> assertThat(저장된_단체_지정.getOrderTables().size()).isEqualTo(2),
+                () -> assertThat(저장된_단체_지정.getOrderTables().get(0).isEmpty()).isFalse(),
+                () -> assertThat(저장된_단체_지정.getOrderTables().get(0).getTableGroupId()).isEqualTo(단체_지정.getId()),
                 () -> assertThat(저장된_단체_지정.getCreatedDate()).isNotNull()
         );
     }
