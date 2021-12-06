@@ -99,6 +99,22 @@ class OrderServiceTest {
                 .isThrownBy(() -> orderService.create(주문(비어있는_주문_테이블, 주문_항목(저장된_메뉴, 수량))));
     }
 
+    @Test
+    void list_주문_목록을_조회할_수_있다() {
+        Order 저장된_주문 = orderService.create(주문(저장된_주문_테이블, 주문_항목(저장된_메뉴, 수량)));
+        List<Order> orders = orderService.list();
+        assertAll(
+                () -> assertThat(orders.size()).isEqualTo(1),
+                () -> assertThat(orders.get(0).getOrderStatus()).isEqualTo(OrderStatus.COOKING.name()),
+                () -> assertThat(orders.get(0).getOrderTableId()).isEqualTo(저장된_주문_테이블.getId()),
+                () -> assertThat(orders.get(0).getOrderedTime()).isNotNull(),
+                () -> assertThat(orders.get(0).getOrderLineItems().size()).isEqualTo(1),
+                () -> assertThat(orders.get(0).getOrderLineItems().get(0).getOrderId()).isEqualTo(저장된_주문.getId()),
+                () -> assertThat(orders.get(0).getOrderLineItems().get(0).getMenuId()).isEqualTo(저장된_메뉴.getId()),
+                () -> assertThat(orders.get(0).getOrderLineItems().get(0).getQuantity()).isEqualTo(수량)
+        );
+    }
+
     private static OrderTable 주문_테이블(boolean empty, int numberOfGuests) {
         OrderTable orderTable = new OrderTable();
         orderTable.setEmpty(empty);
