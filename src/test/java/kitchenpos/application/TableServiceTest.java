@@ -117,6 +117,13 @@ class TableServiceTest {
         assertThat(변경된_주문_테이블.getNumberOfGuests()).isEqualTo(유효한_손님_수);
     }
 
+    @ParameterizedTest
+    @ValueSource(ints = {-1, 0})
+    void changeNumberOfGuests_주문_테이블의_방문한_손님_수가_올바르지_않으면_방문한_손님_수를_변경할_수_없다(int 유효하지_않은_손님_수) {
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> tableService.changeNumberOfGuests(null, 주문_테이블(유효하지_않은_손님_수, true)));
+    }
+
     private static OrderTable 주문_테이블(int numberOfGuests, boolean empty) {
         return 주문_테이블(numberOfGuests, null, empty);
     }
