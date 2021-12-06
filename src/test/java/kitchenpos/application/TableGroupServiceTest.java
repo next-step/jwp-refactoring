@@ -12,14 +12,14 @@ import java.util.List;
 import static kitchenpos.fixture.OrderTableFixture.주문_테이블;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 /**
  * - 단체 지정을 저장할 수 있다
- * - 단체 지정의 주문 테이블이 올바르지 않으면 단체 지정을 저장할 수 없다
+ * - 단체 지정의 주문 테이블의 개수가 올바르지 않으면 단체 지정을 저장할 수 없다
  *     - 주문 테이블 목록이 비어 있을 수 없다
  *     - 주문 테이블 목록의 크기는 2 이상이어야 한다
- * - 단체 지정의 주문 테이블이 올바르지 않으면 단체 지정을 저장할 수 없다
+ * - 단체 지정의 저장된 주문 테이블이 올바르지 않으면 단체 지정을 저장할 수 없다
  *     - 주문 테이블 목록과 저장된 저장된 주문 테이블 목록의 크기가 같아야 한다
  * - 단체 지정의 주문 테이블이 올바르지 않으면 단체 지정을 저장할 수 없다
  *     - 주문 테이블 목록이 비어 있을 수 없다
@@ -59,9 +59,18 @@ class TableGroupServiceTest {
     }
 
     @Test
-    void create_단체_지정의_주문_테이블이_올바르지_않으면_단체_지정을_저장할_수_없다() {
+    void create_단체_지정의_주문_테이블의_개수가_올바르지_않으면_단체_지정을_저장할_수_없다() {
         OrderTable 저장된_주문_테이블1 = orderTableDao.save(빈_주문_테이블);
         TableGroup tableGroup = 단체_지정(Arrays.asList(저장된_주문_테이블1));
+
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> tableGroupService.create(tableGroup));
+    }
+
+    @Test
+    void create_단체_지정의_저장된_주문_테이블이_올바르지_않으면_단체_지정을_저장할_수_없다() {
+        OrderTable 저장된_주문_테이블 = orderTableDao.save(빈_주문_테이블);
+        TableGroup tableGroup = 단체_지정(Arrays.asList(저장된_주문_테이블, 빈_주문_테이블));
 
         assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> tableGroupService.create(tableGroup));
