@@ -40,7 +40,7 @@ class OrderServiceTest {
 
     private static final int 수량 = 1;
     private static final Menu 메뉴 = 메뉴(1L, "후라이드", new BigDecimal(17_000), 메뉴_상품(1L, 1));
-    private static final OrderTable 주문_테이블 = 주문_테이블(false, 2);
+    private static final OrderTable 주문_테이블 = 주문_테이블(2, false);
 
     private MenuDao menuDao;
     private OrderDao orderDao;
@@ -98,7 +98,7 @@ class OrderServiceTest {
 
     @Test
     void create_주문_테이블이_올바르지_않으면_주문을_등록할_수_없다() {
-        OrderTable 비어있는_주문_테이블 = orderTableDao.save(주문_테이블(true, 2));
+        OrderTable 비어있는_주문_테이블 = orderTableDao.save(주문_테이블(2, true));
         assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> orderService.create(주문(비어있는_주문_테이블, 주문_항목(저장된_메뉴, 수량))));
     }

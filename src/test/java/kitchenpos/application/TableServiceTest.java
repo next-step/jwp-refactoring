@@ -15,6 +15,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import java.util.List;
 
 import static kitchenpos.fixture.OrderFixture.주문;
+import static kitchenpos.fixture.OrderTableFixture.주문_테이블;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -131,18 +132,6 @@ class TableServiceTest {
 
         assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> tableService.changeNumberOfGuests(저장된_주문_테이블.getId(), 채워진_주문_테이블()));
-    }
-
-    private static OrderTable 주문_테이블(int numberOfGuests, boolean empty) {
-        return 주문_테이블(numberOfGuests, null, empty);
-    }
-
-    private static OrderTable 주문_테이블(int numberOfGuests, Long tableGroupId, boolean empty) {
-        OrderTable orderTable = new OrderTable();
-        orderTable.setNumberOfGuests(numberOfGuests);
-        orderTable.setEmpty(empty);
-        orderTable.setTableGroupId(tableGroupId);
-        return orderTable;
     }
 
     private OrderTable 채워진_주문_테이블() {
