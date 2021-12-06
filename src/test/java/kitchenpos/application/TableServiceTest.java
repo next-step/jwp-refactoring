@@ -81,7 +81,6 @@ class TableServiceTest {
 
         assertThat(변경된_주문_테이블.isEmpty()).isTrue();
     }
-
     @ParameterizedTest
     @ValueSource(longs = 0L)
     void changeEmpty_주문_테이블이_존재하지_않으면_빈_테이블로_변경할_수_없다(Long 존재하지_않는_테이블_아이디) {
@@ -106,6 +105,16 @@ class TableServiceTest {
 
         assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> tableService.changeEmpty(저장된_주문_테이블.getId(), 주문_테이블));
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = 1)
+    void changeNumberOfGuests_주문_테이블의_방문한_손님_수를_변경할_수_있다(int 유효한_손님_수) {
+        OrderTable 저장된_주문_테이블 = tableService.create(주문_테이블(손님_수, false));
+
+        OrderTable 변경된_주문_테이블 = tableService.changeNumberOfGuests(저장된_주문_테이블.getId(), 주문_테이블(유효한_손님_수, true));
+
+        assertThat(변경된_주문_테이블.getNumberOfGuests()).isEqualTo(유효한_손님_수);
     }
 
     private static OrderTable 주문_테이블(int numberOfGuests, boolean empty) {
