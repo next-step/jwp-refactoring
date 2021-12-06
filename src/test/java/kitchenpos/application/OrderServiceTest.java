@@ -31,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
  * - 주문 상태를 변경할 수 있다
  * - 주문 상태 올바르지 않으면 주문 상태를 변경할 수 없다
  *     - 주문 상태가 완료가 아니어야 한다
- * - 주문이 존재하지 않으면 등록할 수 없다
+ * - 주문이 존재하지 않으면 주문 상태를 변경할 수 없다
  */
 class OrderServiceTest {
 
@@ -125,6 +125,15 @@ class OrderServiceTest {
         Order 변경된_주문 = orderService.changeOrderStatus(저장된_주문.getId(), 변경될_주문);
 
         assertThat(변경된_주문.getOrderStatus()).isEqualTo(변경될_주문_상태.name());
+    }
+
+    @ParameterizedTest
+    @ValueSource(longs = {0L})
+    void changeOrderStatus_주문이_존재하지_않으면_주문_상태를_변경할_수_없다(Long 존재하지_않는_주문_아이디) {
+        Order 변경될_주문 = 주문(저장된_주문_테이블, 주문_항목(저장된_메뉴, 수량), OrderStatus.MEAL);
+
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> orderService.changeOrderStatus(존재하지_않는_주문_아이디, 변경될_주문));
     }
 
     @ParameterizedTest
