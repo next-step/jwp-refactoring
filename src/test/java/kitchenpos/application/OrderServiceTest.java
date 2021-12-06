@@ -76,7 +76,12 @@ class OrderServiceTest {
                 .isThrownBy(() -> orderService.create(주문(저장된_주문_테이블, Collections.emptyList())));
     }
 
-
+    @Test
+    void create_주문_항목_개수과_존재하는_메뉴_개수가_일치하지_않으면_등록할_수_없다() {
+        List<OrderLineItem> 존재하는_메뉴_개수_이상의_주문_항목 = Arrays.asList(주문_항목(저장된_메뉴, 수량), 주문_항목(저장된_메뉴, 수량));
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> orderService.create(주문(저장된_주문_테이블, 존재하는_메뉴_개수_이상의_주문_항목)));
+    }
 
     private static OrderTable 주문_테이블(boolean empty, int numberOfGuests) {
         OrderTable orderTable = new OrderTable();
