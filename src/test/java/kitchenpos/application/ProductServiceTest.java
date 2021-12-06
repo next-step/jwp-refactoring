@@ -12,6 +12,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import java.math.BigDecimal;
 import java.util.List;
 
+import static kitchenpos.fixture.ProductFixture.상품;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -59,13 +60,5 @@ class ProductServiceTest {
         productService.create(상품);
         List<Product> products = productService.list();
         assertThat(products.size()).isEqualTo(1);
-    }
-
-    private static Product 상품(String name, BigDecimal price) {
-        Product product = new Product();
-        product.setId(1L);
-        product.setName(name);
-        product.setPrice(price);
-        return product;
     }
 }

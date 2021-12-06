@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static kitchenpos.fixture.MenuGroupFixture.메뉴_그룹;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -45,9 +46,4 @@ class MenuGroupServiceTest {
         );
     }
 
-    private static MenuGroup 메뉴_그룹(String name) {
-        MenuGroup menuGroup = new MenuGroup();
-        menuGroup.setName(name);
-        return menuGroup;
-    }
 }

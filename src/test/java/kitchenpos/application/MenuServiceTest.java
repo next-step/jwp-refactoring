@@ -5,6 +5,8 @@ import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
+import kitchenpos.fixture.MenuGroupFixture;
+import kitchenpos.fixture.ProductFixture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -15,6 +17,10 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
+import static kitchenpos.fixture.MenuFixture.메뉴;
+import static kitchenpos.fixture.MenuGroupFixture.메뉴_그룹;
+import static kitchenpos.fixture.MenuProductFixture.메뉴_상품;
+import static kitchenpos.fixture.ProductFixture.상품;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -116,42 +122,5 @@ class MenuServiceTest {
                 () -> assertThat(menus.get(0).getMenuProducts().get(0).getProductId()).isEqualTo(저장된_상품.getId()),
                 () -> assertThat(menus.get(0).getMenuProducts().get(0).getQuantity()).isEqualTo(수량)
         );
-    }
-
-    private static Menu 메뉴(long menuGroupId, String name, BigDecimal price, MenuProduct menuProduct) {
-        Menu menu = new Menu();
-        menu.setName(name);
-        menu.setPrice(price);
-        menu.setMenuGroupId(menuGroupId);
-        menu.setMenuProducts(Arrays.asList(menuProduct));
-        return menu;
-    }
-
-    private static Menu 메뉴(MenuGroup menuGroup, String name, BigDecimal price, MenuProduct menuProduct) {
-        return 메뉴(menuGroup.getId(), name, price, menuProduct);
-    }
-
-    private static MenuProduct 메뉴_상품(Product product, int quantity) {
-        return 메뉴_상품(product.getId(), quantity);
-    }
-
-    private static MenuProduct 메뉴_상품(Long productId, int quantity) {
-        MenuProduct menuProduct = new MenuProduct();
-        menuProduct.setProductId(productId);
-        menuProduct.setQuantity(quantity);
-        return menuProduct;
-    }
-
-    private static MenuGroup 메뉴_그룹() {
-        MenuGroup menuGroup = new MenuGroup();
-        menuGroup.setName("추천메뉴");
-        return menuGroup;
-    }
-
-    private static Product 상품(String name, BigDecimal price) {
-        Product product = new Product();
-        product.setName(name);
-        product.setPrice(price);
-        return product;
     }
 }
