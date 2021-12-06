@@ -8,6 +8,8 @@ public class InMemoryMenuDao extends InMemoryDao<Menu> implements MenuDao {
 
     @Override
     public long countByIdIn(List<Long> ids) {
-        return 0;
+        return db.values().stream()
+                .filter(menu -> ids.contains(menu.getId()))
+                .count();
     }
 }
