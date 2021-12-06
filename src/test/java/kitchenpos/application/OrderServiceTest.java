@@ -15,6 +15,9 @@ import java.util.List;
 
 import static kitchenpos.fixture.MenuFixture.메뉴;
 import static kitchenpos.fixture.MenuProductFixture.메뉴_상품;
+import static kitchenpos.fixture.OrderFixture.주문;
+import static kitchenpos.fixture.OrderLineItemFixture.주문_항목;
+import static kitchenpos.fixture.OrderTableFixture.주문_테이블;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -140,53 +143,12 @@ class OrderServiceTest {
     @EnumSource(value = OrderStatus.class, names = {"COMPLETION"})
     void changeOrderStatus_주문_상태_올바르지_않으면_주문_상태를_변경할_수_없다(OrderStatus 올바르지_않은_주문_상태) {
         Order 저장된_주문 = orderService.create(주문(저장된_주문_테이블, 주문_항목(저장된_메뉴, 수량)));
+
         Order 완료_상태의_주문 = 주문(저장된_주문_테이블, 주문_항목(저장된_메뉴, 수량), 올바르지_않은_주문_상태);
         orderService.changeOrderStatus(저장된_주문.getId(), 완료_상태의_주문);
 
         Order 식사_상태의_주문 = 주문(저장된_주문_테이블, 주문_항목(저장된_메뉴, 수량), OrderStatus.MEAL);
         assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> orderService.changeOrderStatus(저장된_주문.getId(), 식사_상태의_주문));
-    }
-
-    private static OrderTable 주문_테이블(boolean empty, int numberOfGuests) {
-        OrderTable orderTable = new OrderTable();
-        orderTable.setEmpty(empty);
-        orderTable.setNumberOfGuests(numberOfGuests);
-        return orderTable;
-    }
-
-    private static Order 주문(Long orderTableId, OrderLineItem orderLineItem) {
-        return 주문(orderTableId, Arrays.asList(orderLineItem), OrderStatus.COOKING);
-    }
-
-    private static Order 주문(Long orderTableId, List<OrderLineItem> orderLineItems, OrderStatus orderStatus) {
-        Order order = new Order();
-        order.setOrderStatus(orderStatus.name());
-        order.setOrderTableId(orderTableId);
-        order.setOrderLineItems(orderLineItems);
-        return order;
-    }
-
-    private static Order 주문(OrderTable orderTable, OrderLineItem orderLineItem, OrderStatus orderStatus) {
-        return 주문(orderTable.getId(), Arrays.asList(orderLineItem), orderStatus);
-    }
-
-    private static Order 주문(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
-        return 주문(orderTable.getId(), orderLineItems, OrderStatus.COOKING);
-    }
-
-    private static Order 주문(OrderTable orderTable, OrderLineItem orderLineItem) {
-        return 주문(orderTable.getId(), Arrays.asList(orderLineItem), OrderStatus.COOKING);
-    }
-
-    private static OrderLineItem 주문_항목(Long menuId, int quantity) {
-        OrderLineItem orderLineItem = new OrderLineItem();
-        orderLineItem.setMenuId(menuId);
-        orderLineItem.setQuantity(quantity);
-        return orderLineItem;
-    }
-
-    private static OrderLineItem 주문_항목(Menu menu, int quantity) {
-        return 주문_항목(menu.getId(), quantity);
     }
 }
