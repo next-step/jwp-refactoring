@@ -55,8 +55,10 @@
 
 ### 레거시코드 분석
 #### UML
+![class-diagram](http://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/LuneChaser/jwp-refactoring/step1/uml/legacy_classDiagram.pu)
 
 #### ERD
+![erd](https://raw.githubusercontent.com/LuneChaser/jwp-refactoring/step1/erd/legacy_kitchenpos.jpg)
 
 #### API List
 - MenuGroupRestController.java
