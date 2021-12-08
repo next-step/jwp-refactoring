@@ -24,7 +24,7 @@ class TableServiceTest {
     private TableService tableService;
 
     public static OrderTable orderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
-        OrderTable orderTable = new OrderTable();
+        final OrderTable orderTable = new OrderTable();
         orderTable.setId(id);
         orderTable.setTableGroupId(tableGroupId);
         orderTable.setNumberOfGuests(numberOfGuests);
@@ -46,7 +46,7 @@ class TableServiceTest {
         when(orderTableDao.save(any(OrderTable.class))).thenReturn(orderTable);
 
         // when
-        OrderTable actual = tableService.create(orderTable);
+        final OrderTable actual = tableService.create(orderTable);
 
         // then
         assertThat(actual).isEqualTo(orderTable);
@@ -55,12 +55,12 @@ class TableServiceTest {
     @Test
     void 방문한_손님수_입력() {
         // given
-        OrderTable orderTable = orderTable(1L, null, 3, false);
+        final OrderTable orderTable = orderTable(1L, null, 3, false);
         when(orderTableDao.findById(anyLong())).thenReturn(Optional.of(orderTable));
         when(orderTableDao.save(any(OrderTable.class))).thenReturn(orderTable);
 
         // when
-        OrderTable actual = tableService.changeNumberOfGuests(orderTable.getId(), orderTable);
+        final OrderTable actual = tableService.changeNumberOfGuests(orderTable.getId(), orderTable);
 
         // then
         assertThat(actual.getNumberOfGuests()).isEqualTo(orderTable.getNumberOfGuests());
@@ -69,7 +69,7 @@ class TableServiceTest {
     @Test
     void 방문한_손님수_입력_주문테이블_미존재() {
         // given
-        OrderTable orderTable = orderTable(1L, null, 5, false);
+        final OrderTable orderTable = orderTable(1L, null, 5, false);
         when(orderTableDao.findById(anyLong())).thenReturn(Optional.empty());
         when(orderTableDao.save(any(OrderTable.class))).thenReturn(orderTable);
 
@@ -82,7 +82,7 @@ class TableServiceTest {
     @Test
     void 방문한_손님수_오류() {
         // given
-        OrderTable orderTable = orderTable(1L, null, -1, false);
+        final OrderTable orderTable = orderTable(1L, null, -1, false);
         when(orderTableDao.findById(anyLong())).thenReturn(Optional.of(orderTable));
 
         // when
@@ -94,7 +94,7 @@ class TableServiceTest {
     @Test
     void 방문한_손님수_입력_테이블_손님_존재() {
         // given
-        OrderTable orderTable = orderTable(1L, null, 5, true);
+        final OrderTable orderTable = orderTable(1L, null, 5, true);
         when(orderTableDao.findById(anyLong())).thenReturn(Optional.of(orderTable));
 
         // when
@@ -106,12 +106,12 @@ class TableServiceTest {
     @Test
     void 주문_테이블_조회() {
         // given
-        OrderTable orderTable = orderTable(1L, null, 4, true);
-        OrderTable orderTable2 = orderTable(2L, null, 6, true);
+        final OrderTable orderTable = orderTable(1L, null, 4, true);
+        final OrderTable orderTable2 = orderTable(2L, null, 6, true);
         when(orderTableDao.findAll()).thenReturn(new ArrayList<>(Arrays.asList(orderTable, orderTable2)));
 
         // when
-        List<OrderTable> actual = tableService.list();
+        final List<OrderTable> actual = tableService.list();
 
         // then
         assertAll(
@@ -123,13 +123,13 @@ class TableServiceTest {
     @Test
     void 주문_테이블_비우기() {
         // given
-        OrderTable orderTable = orderTable(1L, null, 3, true);
+        final OrderTable orderTable = orderTable(1L, null, 3, true);
         when(orderTableDao.findById(anyLong())).thenReturn(Optional.of(orderTable));
         when(orderDao.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).thenReturn(false);
         when(orderTableDao.save(any(OrderTable.class))).thenReturn(orderTable);
 
         // when
-        OrderTable actual = tableService.changeEmpty(orderTable.getId(), orderTable);
+        final OrderTable actual = tableService.changeEmpty(orderTable.getId(), orderTable);
 
         // then
         assertThat(actual.isEmpty()).isTrue();
@@ -138,7 +138,7 @@ class TableServiceTest {
     @Test
     void 주문_테이블_비우기_그룹_테이블_오류() {
         // given
-        OrderTable orderTable = orderTable(1L, 1L, 3, true);
+        final OrderTable orderTable = orderTable(1L, 1L, 3, true);
         when(orderTableDao.findById(anyLong())).thenReturn(Optional.of(orderTable));
         when(orderDao.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).thenReturn(false);
         when(orderTableDao.save(any(OrderTable.class))).thenReturn(orderTable);
@@ -152,7 +152,7 @@ class TableServiceTest {
     @Test
     void 주문_테이블_비우기_조리중_오류() {
         // given
-        OrderTable orderTable = orderTable(1L, 1L, 3, true);
+        final OrderTable orderTable = orderTable(1L, 1L, 3, true);
         when(orderTableDao.findById(anyLong())).thenReturn(Optional.of(orderTable));
         when(orderDao.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).thenReturn(true);
         when(orderTableDao.save(any(OrderTable.class))).thenReturn(orderTable);
