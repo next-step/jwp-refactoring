@@ -21,9 +21,9 @@
 ## 1단계 - 테스트를 통한 코드 보호
 ### 요구사항
 - [x] `kitchenpos` 패키지의 코드을 통한 키친포스의 요구 사항을 `README.md`에 작성
-- [ ] 작성한 키친포스의 요구 사항을 토대로 테스트 코드를 작성
-  - [ ] 모든 Business Object에 대한 테스트 코드를 작성
-  - [ ] `@SpringBootTest`를 이용한 통합 테스트 코드 또는 `@ExtendWith(MockitoExtension.class)`를 이용한 단위 테스트 코드를 작성
+- [x] 작성한 키친포스의 요구 사항을 토대로 테스트 코드를 작성
+  - [x] 모든 Business Object에 대한 테스트 코드를 작성
+  - [x] `@SpringBootTest`를 이용한 통합 테스트 코드 또는 `@ExtendWith(MockitoExtension.class)`를 이용한 단위 테스트 코드를 작성
 
 ### 키친포스 요구사항
 - 메뉴그룹
