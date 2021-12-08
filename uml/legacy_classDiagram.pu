@@ -1,0 +1,137 @@
+@startuml Lotto_3step
+skinparam groupInheritance 2
+
+package service {
+    class MenuGroupService {
+        - menuGroupDao : MenuGroupDao
+
+        + create(menuGroup : MenuGroup) : MenuGroup
+        + list() : List<MenuGroup>
+    }
+
+    class MenuService {
+        - menuDao : MenuDao
+        - menuGroupDao : MenuGroupDao
+        - menuProductDao : MenuProductDao
+        - productDao : ProductDao
+
+        + create(menu : Menu) : Menu
+        + list() : List<Menu>
+    }
+
+    class OrderService {
+        - menuDao : MenuDao
+        - orderDao : OrderDao
+        - orderLineItemDao : OrderLineItemDao
+        - orderTableDao : OrderTableDao
+
+        + create(order : Order) : Order
+        + list() : List<Order>
+        + changeOrderStatus(orderId : Long, order : Order) : Order
+    }
+
+    class ProductService {
+        - productDao : ProductDao
+
+        + create(Product product) : Product
+        + list() :List<Product>
+    }
+
+    class TableGroupService {
+        - orderDao : OrderDao
+        - orderTableDao : OrderTableDao
+        - tableGroupDao : TableGroupDao
+
+        + create(tableGroup : TableGroup) : TableGroup
+        + ungroup(tableGroupId : Long)
+    }
+
+    class TableService {
+        - orderDao : OrderDao
+        - orderTableDao : OrderTableDao
+
+        + create(orderTable : OrderTable) : OrderTable
+        + list() : List<OrderTable>
+        + changeEmpty(orderTableId : Long, orderTable : OrderTable) : OrderTable
+        + changeNumberOfGuests(orderTableId : Long, orderTable : OrderTable) : OrderTable
+    }
+}
+
+class Menu {
+    - id : Long
+    - name : String
+    - price : BigDecimal
+    - menuGroupId : Long
+    - menuProducts : List<MenuProduct>
+}
+
+class MenuGroup {
+    - id : Long
+    - name : String
+}
+
+class MenuProduct {
+    - seq : Long
+    - menuId : Long
+    - productId : Long
+    - quantity : long
+}
+
+class Order {
+    - id : Long
+    - orderTableId : Long
+    - orderStatus : String
+    - orderedTime : LocalDateTime
+    - orderLineItems : List<OrderLineItem>
+}
+
+class OrderLineItem {
+    - seq : Long
+    - orderId : Long
+    - menuId : Long
+    - quantity : long
+}
+
+enum OrderStatus {
+    COOKING
+    MEAL
+    COMPLETION
+}
+
+class OrderTable {
+    - id : Long
+    - tableGroupId : Long
+    - numberOfGuests : int
+    - empty : boolean
+}
+
+class Product {
+    - id : Long
+    - name : String
+    - price : BigDecimal
+}
+
+class TableGroup {
+    - id : Long
+    - createdDate : LocalDateTime
+    - orderTables : List<OrderTable>
+}
+
+MenuGroupService <-- MenuGroup
+MenuService <-- Menu
+MenuService <-- MenuProduct
+OrderService <-- Order
+OrderService <-- OrderLineItem
+OrderService <-- OrderTable
+OrderService <-- OrderStatus
+ProductService <-- Product
+TableGroupService <-- TableGroup
+TableGroupService <-- OrderTable
+TableGroupService <-- OrderStatus
+TableService <-- OrderTable
+TableService <-- OrderStatus
+
+Menu *-- MenuProduct
+Order *-- OrderLineItem
+TableGroup *-- OrderTable
+@enduml
