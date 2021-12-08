@@ -4,6 +4,7 @@ import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.MenuGroup;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -12,6 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.*;
 
+@DisplayName("메뉴 그룹 관리")
 class MenuGroupServiceTest {
 
     private MenuGroupDao menuGroupDao;
@@ -31,7 +33,8 @@ class MenuGroupServiceTest {
     }
 
     @Test
-    public void 메뉴_그룹_생성() {
+    @DisplayName("메뉴 그룹 생성")
+    public void createMenu() {
         //given
         MenuGroup menuGroup = menuGroup(1L, "group");
         when(menuGroupDao.save(any(MenuGroup.class))).thenReturn(menuGroup);
@@ -45,7 +48,7 @@ class MenuGroupServiceTest {
     }
 
     @Test
-    public void 메뉴_그룹_조회() {
+    public void findAllMenuGroup() {
         //given
         MenuGroup menuGroup = menuGroup(1L, "group");
         MenuGroup menuGroup2 = menuGroup(2L, "group2");
@@ -59,7 +62,7 @@ class MenuGroupServiceTest {
         assertAll(
                 () -> assertThat(actual).hasSize(2),
                 () -> assertThat(actual).containsExactly(menuGroup, menuGroup2)
-                );
+        );
     }
 
 }

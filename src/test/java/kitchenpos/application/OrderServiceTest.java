@@ -91,8 +91,8 @@ class OrderServiceTest {
     }
 
     @Nested
-    @DisplayName("주문 테스트")
-    class OrderCreate {
+    @DisplayName("주문 생성")
+    class CreateOrder {
         @Test
         @DisplayName("성공")
         void createSuccess() {
@@ -115,7 +115,7 @@ class OrderServiceTest {
 
         @Test
         @DisplayName("실패 - 등록되지 않은 메뉴 존재.")
-        void createFailMenuSizeError() {
+        void createFailNotExistsMenu() {
             // given
             OrderTable orderTable = orderTable(1L, null, 0, false);
             Order order = order(1L, orderTable.getId(), OrderStatus.COOKING.name());
@@ -131,7 +131,7 @@ class OrderServiceTest {
 
         @Test
         @DisplayName("실패 - 주문 테이블 찾을 수 없음.")
-        void createFailOrderTableError() {
+        void createFailNotExistsOrderTable() {
             // given
             OrderTable orderTable = orderTable(1L, null, 0, false);
             Order order = order(1L, orderTable.getId(), OrderStatus.COOKING.name());
@@ -173,7 +173,7 @@ class OrderServiceTest {
         }
 
         @Test
-        @DisplayName("실패 - 해당 주문은 완료된건")
+        @DisplayName("실패 - 완료된 주문 건")
         void changeOrderStatusFailOrderComplete() {
             // given
             OrderTable orderTable = orderTable(1L, null, 0, false);

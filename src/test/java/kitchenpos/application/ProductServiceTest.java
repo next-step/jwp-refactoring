@@ -4,6 +4,8 @@ import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -14,6 +16,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.*;
 
+@DisplayName("상품 관리")
 class ProductServiceTest {
 
     private ProductDao productDao;
@@ -34,32 +37,7 @@ class ProductServiceTest {
     }
 
     @Test
-    void 상품_생성() {
-        //given
-        final Product expected = product(1L, "콜라", BigDecimal.valueOf(1000));
-        when(productDao.save(any(Product.class))).thenReturn(expected);
-
-        //when
-        final Product actual = productService.create(expected);
-
-        //then
-        assertThat(actual).isEqualTo(expected);
-    }
-
-    @Test
-    void 상품_생성_금액_오류() {
-        //given
-        final Product expected = product(1L, "콜라", BigDecimal.valueOf(-1));
-        when(productDao.save(any(Product.class))).thenReturn(expected);
-
-        //when
-        assertThatThrownBy(() -> {
-            final Product actual = productService.create(expected);
-        }).isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
-    void 상품_내역_조회() {
+    void findAllProduct() {
         //given
         final Product expected = product(1L, "콜라", BigDecimal.valueOf(1000));
         final Product expected2 = product(2L, "소스", BigDecimal.valueOf(1000));
@@ -73,6 +51,37 @@ class ProductServiceTest {
                 () -> assertThat(actual).hasSize(2),
                 () -> assertThat(actual).containsExactly(expected, expected2)
         );
+    }
+
+    @Nested
+    @DisplayName("상품 생성")
+    class CreateProduct {
+        @Test
+        @DisplayName("성공")
+        void createSuccess() {
+            //given
+            final Product expected = product(1L, "콜라", BigDecimal.valueOf(1000));
+            when(productDao.save(any(Product.class))).thenReturn(expected);
+
+            //when
+            final Product actual = productService.create(expected);
+
+            //then
+            assertThat(actual).isEqualTo(expected);
+        }
+
+        @Test
+        @DisplayName("실패 - 잘못된 상품 금액")
+        void createFailIllegalPrice() {
+            //given
+            final Product expected = product(1L, "콜라", BigDecimal.valueOf(-1));
+            when(productDao.save(any(Product.class))).thenReturn(expected);
+
+            //when
+            assertThatThrownBy(() -> {
+                final Product actual = productService.create(expected);
+            }).isInstanceOf(IllegalArgumentException.class);
+        }
     }
 
 }

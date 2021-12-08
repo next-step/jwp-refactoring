@@ -6,6 +6,8 @@ import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
@@ -21,6 +23,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+@DisplayName("주문 테이블 그룹 관리")
 class TableGroupServiceTest {
 
     private OrderDao orderDao;
@@ -65,90 +68,105 @@ class TableGroupServiceTest {
         tableGroupService = new TableGroupService(orderDao, orderTableDao, tableGroupDao);
     }
 
-    @Test
-    void 주문_테이블_그룹_생성() {
-        // given
-        final TableGroup tableGroup = tableGroup(1L);
-        setOrderTables(tableGroup, 3);
-        setMockCreateData(tableGroup);
+    @Nested
+    @DisplayName("주문 테이블 그룹 생성")
+    class CreateTableGroup {
+        @Test
+        @DisplayName("성공")
+        void createTableGroupSuccess() {
+            // given
+            final TableGroup tableGroup = tableGroup(1L);
+            setOrderTables(tableGroup, 3);
+            setMockCreateData(tableGroup);
 
-        // when
-        final TableGroup actual = tableGroupService.create(tableGroup);
+            // when
+            final TableGroup actual = tableGroupService.create(tableGroup);
 
-        // then
-        assertAll(
-                () -> assertThat(actual).isEqualTo(tableGroup),
-                () -> assertThat(actual.getOrderTables()).hasSize(3),
-                () -> assertThat(actual.getOrderTables()).containsAll(tableGroup.getOrderTables()),
-                () -> assertThat(actual.getOrderTables()).filteredOnNull("tableGroupId").isNotNull()
-        );
+            // then
+            assertAll(
+                    () -> assertThat(actual).isEqualTo(tableGroup),
+                    () -> assertThat(actual.getOrderTables()).hasSize(3),
+                    () -> assertThat(actual.getOrderTables()).containsAll(tableGroup.getOrderTables()),
+                    () -> assertThat(actual.getOrderTables()).filteredOnNull("tableGroupId").isNotNull()
+            );
+        }
+
+        @Test
+        @DisplayName("실패 - 그룹 조건 최소 테이블 수 미달")
+        void createFailOrderTableSize() {
+            // given
+            final TableGroup tableGroup = tableGroup(1L);
+            setOrderTables(tableGroup, 1);
+            setMockCreateData(tableGroup);
+
+            // when
+            assertThatThrownBy(() -> {
+                TableGroup actual = tableGroupService.create(tableGroup);
+            }).isInstanceOf(IllegalArgumentException.class);
+        }
+
+        @Test
+        @DisplayName("실패 - 요청 주문 테이블이 비어있지 않음")
+        void createFailOrderTableNotEmpty() {
+            // given
+            final TableGroup tableGroup = tableGroup(1L);
+            setOrderTables(tableGroup, 3);
+            tableGroup.getOrderTables().get(1).setEmpty(false);
+            setMockCreateData(tableGroup);
+
+            // when
+            assertThatThrownBy(() -> {
+                TableGroup actual = tableGroupService.create(tableGroup);
+            }).isInstanceOf(IllegalArgumentException.class);
+        }
+
+        @Test
+        @DisplayName("실패 - 요청 주문 테이블 중 그룹이 존재")
+        void createFailOrderTableExistsTableGroupId() {
+            // given
+            final TableGroup tableGroup = tableGroup(1L);
+            setOrderTables(tableGroup, 3);
+            tableGroup.getOrderTables().get(1).setTableGroupId(10L);
+            setMockCreateData(tableGroup);
+
+            // when
+            assertThatThrownBy(() -> {
+                TableGroup actual = tableGroupService.create(tableGroup);
+            }).isInstanceOf(IllegalArgumentException.class);
+        }
     }
 
-    @Test
-    void 주문_테이블_그룹_생성_최소_그룹수_미달() {
-        // given
-        final TableGroup tableGroup = tableGroup(1L);
-        setOrderTables(tableGroup, 1);
-        setMockCreateData(tableGroup);
 
-        // when
-        assertThatThrownBy(() -> {
-            TableGroup actual = tableGroupService.create(tableGroup);
-        }).isInstanceOf(IllegalArgumentException.class);
-    }
+    @Nested
+    @DisplayName("주문 테이블 그룹 해제")
+    class UnTableGroup {
+        @Test
+        @DisplayName("성공")
+        void tableUnGroupSuccess() {
+            // given
+            final TableGroup tableGroup = tableGroup(1L);
+            setOrderTables(tableGroup, 3);
+            boolean 조리중 = false;
+            setMockUnGroupData(tableGroup, 조리중);
 
-    @Test
-    void 주문_테이블_그룹_생성_비어있지_않은_테이블_존재() {
-        // given
-        final TableGroup tableGroup = tableGroup(1L);
-        setOrderTables(tableGroup, 3);
-        tableGroup.getOrderTables().get(1).setEmpty(false);
-        setMockCreateData(tableGroup);
-
-        // when
-        assertThatThrownBy(() -> {
-            TableGroup actual = tableGroupService.create(tableGroup);
-        }).isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
-    void 주문_테이블_그룹_생성_그룹_존재하는_테이블_존재() {
-        // given
-        final TableGroup tableGroup = tableGroup(1L);
-        setOrderTables(tableGroup, 3);
-        tableGroup.getOrderTables().get(1).setTableGroupId(10L);
-        setMockCreateData(tableGroup);
-
-        // when
-        assertThatThrownBy(() -> {
-            TableGroup actual = tableGroupService.create(tableGroup);
-        }).isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
-    void 주문_테이블_그룹_해제() {
-        // given
-        final TableGroup tableGroup = tableGroup(1L);
-        setOrderTables(tableGroup, 3);
-        boolean 조리중 = false;
-        setMockUnGroupData(tableGroup, 조리중);
-
-        // when
-        tableGroupService.ungroup(tableGroup.getId());
-    }
-
-    @Test
-    void 주문_테이블_그룹_해제_조리중인_테이블_존재() {
-        // given
-        final TableGroup tableGroup = tableGroup(1L);
-        setOrderTables(tableGroup, 3);
-        boolean 조리중 = true;
-        setMockUnGroupData(tableGroup, 조리중);
-
-        // when
-        assertThatThrownBy(() -> {
+            // when
             tableGroupService.ungroup(tableGroup.getId());
-        }).isInstanceOf(IllegalArgumentException.class);
+        }
+
+        @Test
+        @DisplayName("실패 - 조리 중인 테이블이 존재")
+        void tableUnGroupFailExistsCooking() {
+            // given
+            final TableGroup tableGroup = tableGroup(1L);
+            setOrderTables(tableGroup, 3);
+            boolean 조리중 = true;
+            setMockUnGroupData(tableGroup, 조리중);
+
+            // when
+            assertThatThrownBy(() -> {
+                tableGroupService.ungroup(tableGroup.getId());
+            }).isInstanceOf(IllegalArgumentException.class);
+        }
     }
 
 }
