@@ -28,17 +28,17 @@ class MenuGroupServiceTest {
     @DisplayName("메뉴 그룹을 등록할 수 있다.")
     void create() {
         //given
-        MenuGroup menuGroup = menuGroupRequest("면류");
+        MenuGroup request = menuGroupCreateRequest("면류");
 
         //when
-        menuGroupService.create(menuGroup);
+        menuGroupService.create(request);
 
         //then
         ArgumentCaptor<MenuGroup> captor = ArgumentCaptor.forClass(MenuGroup.class);
         verify(menuGroupDao, only()).save(captor.capture());
         assertThat(captor.getValue())
             .extracting(MenuGroup::getName)
-            .isEqualTo(menuGroup.getName());
+            .isEqualTo(request.getName());
     }
 
     @Test
@@ -51,7 +51,7 @@ class MenuGroupServiceTest {
         verify(menuGroupDao, only()).findAll();
     }
 
-    private MenuGroup menuGroupRequest(String name) {
+    private MenuGroup menuGroupCreateRequest(String name) {
         MenuGroup menuGroup = new MenuGroup();
         menuGroup.setName(name);
         return menuGroup;

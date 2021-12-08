@@ -50,8 +50,8 @@ class MenuServiceTest {
     @DisplayName("메뉴를 등록할 수 있다.")
     void create() {
         //given
-        MenuProduct menuProductRequest = menuProductRequest(1L, 1L);
-        Menu menuRequest = menuRequest("짜장면 세트", BigDecimal.ONE, 1L,
+        MenuProduct menuProductRequest = menuProductCreateRequest(1L, 1L);
+        Menu menuRequest = menuCreateRequest("짜장면 세트", BigDecimal.ONE, 1L,
             Collections.singletonList(menuProductRequest));
 
         when(menuGroupDao.existsById(menuRequest.getMenuGroupId())).thenReturn(true);
@@ -72,8 +72,8 @@ class MenuServiceTest {
     @DisplayName("메뉴의 가격은 반드시 존재해야 한다.")
     void create_nullPrice_thrownException() {
         //given
-        MenuProduct menuProductRequest = menuProductRequest(1L, 1L);
-        Menu menuRequest = menuRequest("짜장면 메뉴", null, 1L,
+        MenuProduct menuProductRequest = menuProductCreateRequest(1L, 1L);
+        Menu menuRequest = menuCreateRequest("짜장면 메뉴", null, 1L,
             Collections.singletonList(menuProductRequest));
 
         //when
@@ -88,8 +88,8 @@ class MenuServiceTest {
     @DisplayName("가격은 0원 이상이어야 한다.")
     void create_priceLessThanZero_thrownException() {
         //given
-        MenuProduct menuProductRequest = menuProductRequest(1L, 1L);
-        Menu menuRequest = menuRequest("짜장면 메뉴", BigDecimal.valueOf(-1), 1L,
+        MenuProduct menuProductRequest = menuProductCreateRequest(1L, 1L);
+        Menu menuRequest = menuCreateRequest("짜장면 메뉴", BigDecimal.valueOf(-1), 1L,
             Collections.singletonList(menuProductRequest));
 
         //when
@@ -104,8 +104,8 @@ class MenuServiceTest {
     @DisplayName("메뉴 그룹은 반드시 존재해야 한다.")
     void create_notExistMenuGroup_thrownException() {
         //given
-        MenuProduct menuProductRequest = menuProductRequest(1L, 1L);
-        Menu menuRequest = menuRequest("짜장면 메뉴", BigDecimal.TEN, 1L,
+        MenuProduct menuProductRequest = menuProductCreateRequest(1L, 1L);
+        Menu menuRequest = menuCreateRequest("짜장면 메뉴", BigDecimal.TEN, 1L,
             Collections.singletonList(menuProductRequest));
 
         when(menuGroupDao.existsById(anyLong())).thenReturn(false);
@@ -122,8 +122,8 @@ class MenuServiceTest {
     @DisplayName("등록하려는 상품은 반드시 존재해야 한다.")
     void create_notExistProduct_thrownException() {
         //given
-        MenuProduct menuProductRequest = menuProductRequest(1L, 1L);
-        Menu menuRequest = menuRequest("짜장면 메뉴", BigDecimal.TEN, 1L,
+        MenuProduct menuProductRequest = menuProductCreateRequest(1L, 1L);
+        Menu menuRequest = menuCreateRequest("짜장면 메뉴", BigDecimal.TEN, 1L,
             Collections.singletonList(menuProductRequest));
 
         when(menuGroupDao.existsById(anyLong())).thenReturn(true);
@@ -141,8 +141,8 @@ class MenuServiceTest {
     @DisplayName("등록하려는 메뉴의 가격은 메뉴 상품들의 수량 * 가격을 모두 합친 금액보다 작거나 같아야 한다.")
     void create_priceLessThanMenuProductPrice_thrownException() {
         //given
-        MenuProduct menuProductRequest = menuProductRequest(1L, 1L);
-        Menu menuRequest = menuRequest("짜장면 메뉴", BigDecimal.TEN, 1L,
+        MenuProduct menuProductRequest = menuProductCreateRequest(1L, 1L);
+        Menu menuRequest = menuCreateRequest("짜장면 메뉴", BigDecimal.TEN, 1L,
             Collections.singletonList(menuProductRequest));
 
         when(menuGroupDao.existsById(menuRequest.getMenuGroupId())).thenReturn(true);
@@ -187,7 +187,7 @@ class MenuServiceTest {
             .isEqualTo(menuProductRequest.getQuantity());
     }
 
-    private Menu menuRequest(String name, BigDecimal price, long menuGroupId,
+    private Menu menuCreateRequest(String name, BigDecimal price, long menuGroupId,
         List<MenuProduct> menuProducts) {
         Menu menu = new Menu();
         menu.setName(name);
@@ -197,7 +197,7 @@ class MenuServiceTest {
         return menu;
     }
 
-    private MenuProduct menuProductRequest(long productId, long quantity) {
+    private MenuProduct menuProductCreateRequest(long productId, long quantity) {
         MenuProduct menuProduct = new MenuProduct();
         menuProduct.setProductId(productId);
         menuProduct.setQuantity(quantity);
