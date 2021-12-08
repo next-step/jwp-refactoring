@@ -60,7 +60,6 @@ class MenuGroupServiceTest {
                 () -> assertThat(actual).hasSize(2),
                 () -> assertThat(actual).containsExactly(menuGroup, menuGroup2)
                 );
-
     }
 
 }

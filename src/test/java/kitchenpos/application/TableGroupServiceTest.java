@@ -150,4 +150,5 @@ class TableGroupServiceTest {
             tableGroupService.ungroup(tableGroup.getId());
         }).isInstanceOf(IllegalArgumentException.class);
     }
+
 }

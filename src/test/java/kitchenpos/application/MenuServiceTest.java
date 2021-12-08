@@ -148,6 +148,6 @@ class MenuServiceTest {
                 () -> assertThat(actual).contains(menu),
                 () -> assertThat(actual).hasSize(1)
         );
-
     }
+
 }

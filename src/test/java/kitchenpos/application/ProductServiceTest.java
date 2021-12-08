@@ -74,4 +74,5 @@ class ProductServiceTest {
                 () -> assertThat(actual).containsExactly(expected, expected2)
         );
     }
+
 }
