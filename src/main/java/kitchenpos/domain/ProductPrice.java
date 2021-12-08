@@ -3,18 +3,18 @@ package kitchenpos.domain;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-public class MenuPrice {
+public class ProductPrice {
 
     private static final int MIN_PRICE = 0;
 
     private final BigDecimal price;
 
-    public MenuPrice(BigDecimal price) {
+    public ProductPrice(BigDecimal price) {
         check(price);
         this.price = price;
     }
 
-    public MenuPrice(int price) {
+    public ProductPrice(int price) {
         this(new BigDecimal(price));
     }
 
@@ -22,5 +22,9 @@ public class MenuPrice {
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < MIN_PRICE) {
             throw new IllegalArgumentException();
         }
+    }
+
+    public BigDecimal getPrice() {
+        return price;
     }
 }

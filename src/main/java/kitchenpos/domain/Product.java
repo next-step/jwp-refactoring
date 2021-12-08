@@ -6,20 +6,24 @@ public class Product {
 
     private Long id;
     private String name;
-    private BigDecimal price;
+    private ProductPrice price;
 
-    public Product(Long id, String name, BigDecimal price) {
+    public Product(Long id, String name, ProductPrice price) {
         this.id = id;
         this.name = name;
         this.price = price;
     }
 
-    public Product(String name, BigDecimal price) {
+    public Product(String name, ProductPrice price) {
         this(null, name, price);
     }
 
     public Product(String name, int price) {
-        this(null, name, new BigDecimal(price));
+        this(null, name, new ProductPrice(price));
+    }
+
+    public Product(String name, BigDecimal price) {
+        this(null, name, new ProductPrice(price));
     }
 
     public Long getId() {
@@ -39,10 +43,10 @@ public class Product {
     }
 
     public BigDecimal getPrice() {
-        return price;
+        return price.getPrice();
     }
 
     public void setPrice(final BigDecimal price) {
-        this.price = price;
+        this.price = new ProductPrice(price);
     }
 }
