@@ -31,7 +31,7 @@ class MenuGroupServiceTest {
     }
 
     @Test
-    public void create() {
+    public void 메뉴_그룹_생성() {
         //given
         MenuGroup menuGroup = menuGroup(1L, "group");
         when(menuGroupDao.save(any(MenuGroup.class))).thenReturn(menuGroup);
@@ -45,7 +45,7 @@ class MenuGroupServiceTest {
     }
 
     @Test
-    public void findAll() {
+    public void 메뉴_그룹_조회() {
         //given
         MenuGroup menuGroup = menuGroup(1L, "group");
         MenuGroup menuGroup2 = menuGroup(2L, "group2");
