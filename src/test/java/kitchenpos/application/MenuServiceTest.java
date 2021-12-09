@@ -148,7 +148,7 @@ class MenuServiceTest {
         assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menu));
     }
 
-    @DisplayName("")
+    @DisplayName("Menu 목록을 조회한다.")
     @Test
     void findList() {
         // given
