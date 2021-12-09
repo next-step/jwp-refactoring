@@ -9,6 +9,10 @@ public class OrderTableFixture {
     public static OrderTable 주문2_단체테이블 = new OrderTable();
 
     static {
+        init();
+    }
+
+    public static void init() {
         주문_개인테이블.setId(1L);
         주문_개인테이블.setEmpty(false);
 

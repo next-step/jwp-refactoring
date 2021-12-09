@@ -12,6 +12,10 @@ public class ProductFixture {
     public static Product 닭가슴살 = new Product();
 
     static {
+        init();
+    }
+
+    public static void init() {
         돼지고기.setId(1L);
         돼지고기.setName("돼지고기");
         돼지고기.setPrice(BigDecimal.valueOf(9_000));

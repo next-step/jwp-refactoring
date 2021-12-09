@@ -16,6 +16,10 @@ public class OrderFixture {
     public static OrderLineItem 불고기_주문항목 = new OrderLineItem();
 
     static {
+        init();
+    }
+
+    public static void init() {
         // Order
         불고기_주문.setId(1L);
         불고기_주문.setOrderTableId(주문_개인테이블.getId());

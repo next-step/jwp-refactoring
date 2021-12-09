@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,6 +24,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
+import kitchenpos.application.fixture.OrderFixture;
+import kitchenpos.application.fixture.OrderTableFixture;
 import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
@@ -56,6 +59,11 @@ class OrderServiceTest {
         when(orderTableDao.findById(주문_개인테이블.getId())).thenReturn(Optional.ofNullable(주문_개인테이블));
         when(orderDao.save(any(Order.class))).thenReturn(불고기_주문);
         when(orderLineItemDao.save(불고기_주문항목)).thenReturn(불고기_주문항목);
+    }
+
+    @AfterEach
+    void setDown() {
+        OrderFixture.init();
     }
 
     @DisplayName("Order 를 등록한다.")
@@ -113,7 +121,7 @@ class OrderServiceTest {
         assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(order));
     }
 
-    @DisplayName("Order 를 등록 시, OrderTable 이 빈(empty) 상태면 않으면 예외가 발생한다.")
+    @DisplayName("Order 를 등록 시, OrderTable 이 빈(empty) 상태면 예외가 발생한다.")
     @Test
     void create5() {
         // given
@@ -149,6 +157,7 @@ class OrderServiceTest {
         Order changedStatusOrder = orderService.changeOrderStatus(불고기_주문.getId(), 불고기_식사중_주문);
 
         // then
+        assertThat(changedStatusOrder).isEqualTo(불고기_주문);
         assertThat(changedStatusOrder.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name());
     }
 

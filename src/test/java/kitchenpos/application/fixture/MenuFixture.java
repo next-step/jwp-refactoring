@@ -20,6 +20,10 @@ public class MenuFixture {
     public static MenuProduct 샐러드_닭가슴살 = new MenuProduct();
 
     static {
+        init();
+    }
+
+    public static void init() {
         // Menu
         불고기.setId(1L);
         불고기.setName("불고기");
