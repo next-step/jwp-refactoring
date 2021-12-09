@@ -48,13 +48,14 @@ public class TableGroupServiceTest {
     
     @BeforeEach
     void setUp() {
-        치킨_주문_개인테이블.setId(3L);
-        치킨_주문_개인테이블.setEmpty(false);
-
         치킨_주문_단체테이블.setId(1L);
         치킨_주문_단체테이블.setEmpty(true);
+
         치킨2_주문_단체테이블.setId(2L);
         치킨2_주문_단체테이블.setEmpty(true);
+        
+        치킨_주문_개인테이블.setId(3L);
+        치킨_주문_개인테이블.setEmpty(false);
 
         단체주문테이블.setId(1L);
         단체주문테이블.setOrderTables(List.of(치킨_주문_단체테이블, 치킨2_주문_단체테이블));
@@ -116,9 +117,9 @@ public class TableGroupServiceTest {
     @DisplayName("미존재 주문테이블가 포함된 단체지정으로 저장시 예외가 발생된다.")
     @Test
     void exception_createTableGoup_containNotExistOrderTable() {
-        미존재_주문테이블포함_조회_DB내용();
-
         // given
+        when(orderTableDao.findAllByIdIn(List.of(this.치킨_주문_단체테이블.getId(), this.치킨2_주문_단체테이블.getId()))).thenReturn(List.of(this.치킨_주문_단체테이블));
+
         TableGroup 신규_단체지정 = new TableGroup();
         신규_단체지정.setOrderTables(List.of(this.치킨_주문_단체테이블, this.치킨2_주문_단체테이블));
         
@@ -127,11 +128,6 @@ public class TableGroupServiceTest {
         Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
                     .isThrownBy(() -> tableGroupService.create(신규_단체지정));
     }
-
-    private void 미존재_주문테이블포함_조회_DB내용() {
-        when(orderTableDao.findAllByIdIn(List.of(this.치킨_주문_단체테이블.getId(), this.치킨2_주문_단체테이블.getId()))).thenReturn(List.of(this.치킨_주문_단체테이블));
-    }
-
 
     @DisplayName("단체지정이 될 주문테이블 다른 단체지정에 등록된 경우 예외가 발생된다.")
     @Test
@@ -150,7 +146,8 @@ public class TableGroupServiceTest {
     @DisplayName("단체지정이 해제된다.")
     @Test
     void update_tableUnGroup() {
-        단체지정_해제전_DB내용();
+        // given
+        when(orderTableDao.findAllByTableGroupId(this.단체주문테이블.getId())).thenReturn(this.단체주문테이블.getOrderTables());
 
         // when
         tableGroupService.ungroup(this.단체주문테이블.getId());
@@ -159,16 +156,12 @@ public class TableGroupServiceTest {
         verify(orderTableDao, atLeast(1)).save(any(OrderTable.class));
     }
 
-    private void 단체지정_해제전_DB내용() {
-        when(orderTableDao.findAllByTableGroupId(this.단체주문테이블.getId())).thenReturn(this.단체주문테이블.getOrderTables());
-    }
-
     @DisplayName("주문테이블의 주문상태가 계산 단계가 아닐때 단체지정이 해제시 예외가 발생된다.")
     @Test
     void exception_updateTableUnGroup_notCompletionOrderStatus() {
         // given
         when(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(),anyList())).thenReturn(true);
-        단체지정_해제전_DB내용();
+        when(orderTableDao.findAllByTableGroupId(this.단체주문테이블.getId())).thenReturn(this.단체주문테이블.getOrderTables());
 
         // when
         // then

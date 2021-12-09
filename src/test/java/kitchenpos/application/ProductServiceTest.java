@@ -48,14 +48,14 @@ public class ProductServiceTest {
         코카콜라.setId(3L);
         코카콜라.setName("코카콜라");
         코카콜라.setPrice(BigDecimal.valueOf(3_000));
-        
-        when(productDao.save(any(Product.class))).thenReturn(this.뿌링클치킨);
     }
 
     @DisplayName("상품이 저장된다.")
     @Test
     void create_product() {
-        // given
+        // given        
+        when(productDao.save(any(Product.class))).thenReturn(this.뿌링클치킨);
+
         Product 새상품 = new Product();
         새상품.setPrice(BigDecimal.valueOf(15_000));
 
@@ -96,7 +96,8 @@ public class ProductServiceTest {
     @DisplayName("상품이 조회된다.")
     @Test
     void search_product() {
-        상품_조회전_DB내용();
+        // given
+        when(productDao.findAll()).thenReturn(List.of(this.뿌링클치킨, this.치킨무, this.코카콜라));
 
         // when
         List<Product> searchedProducts = productService.list();
@@ -104,9 +105,4 @@ public class ProductServiceTest {
         // then
         Assertions.assertThat(searchedProducts).isEqualTo(List.of(this.뿌링클치킨, this.치킨무, this.코카콜라));
     }
-
-    private void 상품_조회전_DB내용() {
-        when(productDao.findAll()).thenReturn(List.of(this.뿌링클치킨, this.치킨무, this.코카콜라));
-    }
-
 }

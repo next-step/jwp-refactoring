@@ -116,17 +116,17 @@ public class OrderServiceTest {
         치킨_주문항목.setOrderId(치킨주문.getId());
         치킨_주문항목.setMenuId(뿌링클콤보.getId());
         치킨_주문항목.setQuantity(1L);
-
-        when(menuDao.countByIdIn(List.of(this.뿌링클콤보.getId()))).thenReturn(1L);
-        when(orderTableDao.findById(this.치킨_주문_단체테이블.getId())).thenReturn(Optional.of(this.치킨_주문_단체테이블));
-        when(orderDao.save(any(Order.class))).thenReturn(this.치킨주문);
-        when(orderLineItemDao.save(this.치킨_주문항목)).thenReturn(this.치킨_주문항목);
     }
 
     @DisplayName("주문이 저장된다.")
     @Test
     void create_order() {
         // given
+        when(menuDao.countByIdIn(List.of(this.뿌링클콤보.getId()))).thenReturn(1L);
+        when(orderTableDao.findById(this.치킨_주문_단체테이블.getId())).thenReturn(Optional.of(this.치킨_주문_단체테이블));
+        when(orderDao.save(any(Order.class))).thenReturn(this.치킨주문);
+        when(orderLineItemDao.save(this.치킨_주문항목)).thenReturn(this.치킨_주문항목);
+
         Order 주문신청 = new Order();
         주문신청.setOrderLineItems(List.of(this.치킨_주문항목));
         
@@ -143,9 +143,9 @@ public class OrderServiceTest {
     @DisplayName("주문에속하는 수량있는 메뉴가 없는 주문은 예외가 발생된다.")
     @Test
     void exception_createOrder_emptyOrderedMenu() {
-        등록된_메뉴개수조회전_DB내용(List.of(this.뿌링클콤보.getId()));
-
         // given
+        when(menuDao.countByIdIn(List.of(this.뿌링클콤보.getId()))).thenReturn(0L);
+
         Order 주문신청 = new Order();
         주문신청.setOrderLineItems(List.of(this.치킨_주문항목));
 
@@ -158,11 +158,32 @@ public class OrderServiceTest {
     @DisplayName("미등록된 주문테이블에서 주문 시 예외가 발생된다.")
     @Test
     void exception_createOrder_notExistedOrderTable() {
-        미등록된_주문테이블_조회전_DB내용(this.치킨_주문_단체테이블);
-
         // given
+        when(menuDao.countByIdIn(List.of(this.뿌링클콤보.getId()))).thenReturn(1L);
+        when(orderTableDao.findById(this.치킨_주문_단체테이블.getId())).thenReturn(Optional.empty());
+
         Order 주문신청 = new Order();
         주문신청.setOrderLineItems(List.of(this.치킨_주문항목));
+
+        // when
+        // then
+        Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
+                    .isThrownBy(() -> orderService.create(주문신청));
+    }
+    
+    @DisplayName("주문테이블이 빈테이블일 시 예외가 발생된다.")
+    @Test
+    void exception_createOrder_emptyOrderTable() {
+        // given
+        when(menuDao.countByIdIn(List.of(this.뿌링클콤보.getId()))).thenReturn(1L);
+        when(orderTableDao.findById(this.치킨_주문_단체테이블.getId())).thenReturn(Optional.of(this.치킨_주문_단체테이블));
+
+
+        Order 주문신청 = new Order();
+        주문신청.setOrderLineItems(List.of(this.치킨_주문항목));
+
+        치킨_주문_단체테이블.setEmpty(true);
+        주문신청.setOrderTableId(this.치킨_주문_단체테이블.getId());
 
         // when
         // then
@@ -173,9 +194,10 @@ public class OrderServiceTest {
     @DisplayName("주문이 조회된다.")
     @Test
     void search_order() {
-        주문조회전_DB등록내용();
-        
         // when
+        when(orderDao.findAll()).thenReturn(List.of(this.치킨주문));
+        when(orderLineItemDao.findAllByOrderId(this.치킨주문.getId())).thenReturn(List.of(this.치킨_주문항목));
+        
         List<Order> orders = orderService.list();
 
         // then
@@ -185,9 +207,11 @@ public class OrderServiceTest {
     @DisplayName("주문의 상태가 변경된다.")
     @Test
     void update_orderStatus() {
-        계산안된_주문_상태변경전_DB내용();
-
         // given
+        when(orderDao.findById(this.치킨주문.getId())).thenReturn(Optional.of(this.치킨주문));
+
+        this.치킨주문.setOrderStatus(OrderStatus.MEAL.name());
+
         Order 주문_상태변경 = this.치킨주문;
         주문_상태변경.setOrderStatus(OrderStatus.MEAL.name());
 
@@ -201,9 +225,10 @@ public class OrderServiceTest {
     @DisplayName("계산이 완료된 주문의 상태를 변경시 예외가 발생된다.")
     @Test
     void exception_updateOrderStatus_afterOrderStatusCompletion() {
-        계산된_주문_상태변경전_DB내용();
-
         // given
+        when(orderDao.findById(this.치킨주문.getId())).thenReturn(Optional.of(this.치킨주문));
+
+        this.치킨주문.setOrderStatus(OrderStatus.COMPLETION.name());
         Order 주문_상태변경 = this.치킨주문;
         주문_상태변경.setOrderStatus(OrderStatus.COMPLETION.name());
 
@@ -211,27 +236,5 @@ public class OrderServiceTest {
         // then
         Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
                     .isThrownBy(() -> orderService.changeOrderStatus(주문_상태변경.getId(), 주문_상태변경));
-    }
-
-    private void 등록된_메뉴개수조회전_DB내용(List<Long> menuIds) {
-        when(menuDao.countByIdIn(menuIds)).thenReturn(0L);
-    }
-
-    private void 미등록된_주문테이블_조회전_DB내용(OrderTable orderTable) {
-        when(orderTableDao.findById(orderTable.getId())).thenReturn(Optional.empty());
-    }
-
-    private void 주문조회전_DB등록내용() {
-        when(orderDao.findAll()).thenReturn(List.of(this.치킨주문));
-        when(orderLineItemDao.findAllByOrderId(this.치킨주문.getId())).thenReturn(List.of(this.치킨_주문항목));
-    }
-
-    private void 계산안된_주문_상태변경전_DB내용() {
-        this.치킨주문.setOrderStatus(OrderStatus.MEAL.name());
-        when(orderDao.findById(this.치킨주문.getId())).thenReturn(Optional.of(this.치킨주문));
-    }
-    private void 계산된_주문_상태변경전_DB내용() {
-        this.치킨주문.setOrderStatus(OrderStatus.COMPLETION.name());
-        when(orderDao.findById(this.치킨주문.getId())).thenReturn(Optional.of(this.치킨주문));
     }
 }

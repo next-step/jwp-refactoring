@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
@@ -24,7 +25,6 @@ public class MenuGroupServiceTest {
     @InjectMocks
     private MenuGroupService menuGroupService;
 
-    
     private MenuGroup 치킨_메뉴그룹 = new MenuGroup();
     private MenuGroup 사이드_메뉴그룹 = new MenuGroup();
     
@@ -41,10 +41,10 @@ public class MenuGroupServiceTest {
     @Test
     void create_menuGroup() {
         // given
+        when(menuGroupDao.save(any(MenuGroup.class))).thenReturn(this.치킨_메뉴그룹);
+
         MenuGroup menuGroup = new MenuGroup();
         menuGroup.setName("치킨");
-
-        when(menuGroupDao.save(menuGroup)).thenReturn(this.치킨_메뉴그룹);
 
         // when
         MenuGroup savedMenuGroup = menuGroupService.create(menuGroup);
