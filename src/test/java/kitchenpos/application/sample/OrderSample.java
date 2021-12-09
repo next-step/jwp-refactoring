@@ -26,5 +26,4 @@ public class OrderSample {
         order.setOrderLineItems(Collections.singletonList(twoOrderItem()));
         return order;
     }
-
 }

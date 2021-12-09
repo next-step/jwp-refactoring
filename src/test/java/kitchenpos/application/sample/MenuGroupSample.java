@@ -10,5 +10,4 @@ public class MenuGroupSample {
         menuGroup.setName("두마리메뉴");
         return menuGroup;
     }
-
 }

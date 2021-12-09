@@ -18,5 +18,4 @@ public class MenuSample {
         menu.setMenuGroupId(두마리메뉴().getId());
         return menu;
     }
-
 }

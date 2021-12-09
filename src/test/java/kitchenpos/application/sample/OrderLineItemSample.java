@@ -11,5 +11,4 @@ public class OrderLineItemSample {
         orderLineItem.setMenuId(1L);
         return orderLineItem;
     }
-
 }

@@ -27,6 +27,4 @@ public class OrderTableSample {
         orderTable.setEmpty(true);
         return orderTable;
     }
-
-
 }

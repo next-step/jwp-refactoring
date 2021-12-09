@@ -64,9 +64,8 @@ public class TableGroupAcceptanceStep {
     }
 
     public static void 단체_해제_됨(ExtractableResponse<Response> response) {
-        List<OrderTable> orderTableResponse = 테이블_목록_조회_요청()
-            .as(new TypeRef<List<OrderTable>>() {
-            });
+        List<OrderTable> orderTableResponse = 테이블_목록_조회_요청().as(new TypeRef<List<OrderTable>>() {
+        });
         assertAll(
             () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value()),
             () -> assertThat(orderTableResponse)

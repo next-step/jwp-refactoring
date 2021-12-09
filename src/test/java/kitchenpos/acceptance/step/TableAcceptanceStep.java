@@ -116,5 +116,4 @@ public class TableAcceptanceStep {
         orderTable.setEmpty(empty);
         return orderTable;
     }
-
 }

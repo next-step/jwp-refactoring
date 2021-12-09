@@ -12,5 +12,4 @@ public class ProductSample {
         product.setPrice(BigDecimal.ONE);
         return product;
     }
-
 }
