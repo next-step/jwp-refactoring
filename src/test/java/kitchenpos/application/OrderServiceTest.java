@@ -55,15 +55,12 @@ class OrderServiceTest {
 
     @BeforeEach
     void setUp() {
+        OrderFixture.init();
+
         when(menuDao.countByIdIn(Arrays.asList(불고기.getId()))).thenReturn(1L);
         when(orderTableDao.findById(주문_개인테이블.getId())).thenReturn(Optional.ofNullable(주문_개인테이블));
         when(orderDao.save(any(Order.class))).thenReturn(불고기_주문);
         when(orderLineItemDao.save(불고기_주문항목)).thenReturn(불고기_주문항목);
-    }
-
-    @AfterEach
-    void setDown() {
-        OrderFixture.init();
     }
 
     @DisplayName("Order 를 등록한다.")

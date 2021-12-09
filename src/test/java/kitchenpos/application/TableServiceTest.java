@@ -42,13 +42,10 @@ class TableServiceTest {
 
     @BeforeEach
     void setUp() {
+        OrderTableFixture.init();
+
         when(orderTableDao.findById(주문_개인테이블.getId())).thenReturn(Optional.ofNullable(주문_개인테이블));
         when(orderTableDao.save(any(OrderTable.class))).thenReturn(주문_개인테이블);
-    }
-
-    @AfterEach
-    void setDown() {
-        OrderTableFixture.init();
     }
 
     @DisplayName("OrderTable 을 등록한다.")
