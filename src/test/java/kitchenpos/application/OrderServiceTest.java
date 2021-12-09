@@ -78,7 +78,7 @@ class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("주문 항목이 비어있으면 안된다.")
+    @DisplayName("등록하려는 주문의 상품 항목이 비어있으면 안된다.")
     void create_emptyOrderLineItems_thrownException() {
         //given
         Order orderRequest = orderCreateRequest(1L, Collections.emptyList());
@@ -92,7 +92,7 @@ class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("주문 항목들의 모든 메뉴는 등록되어 있어야 한다.")
+    @DisplayName("등록하려는 주문의 모든 메뉴는 등록되어 있어야 한다.")
     void create_notExistsMenu_thrownException() {
         //given
         Order orderRequest = orderCreateRequest(1L,
@@ -108,7 +108,7 @@ class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("주문 테이블 정보는 반드시 존재해야 한다.")
+    @DisplayName("등록하려는 주문의 테이블 정보는 반드시 존재해야 한다.")
     void create_notExistsOrderTable_thrownException() {
         //given
         Order orderRequest = orderCreateRequest(1L,
@@ -125,7 +125,7 @@ class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("주문 테이블은 비어있지 않아야 한다.")
+    @DisplayName("등록하려는 주문의 테이블은 비어있지 않아야 한다.")
     void create_emptyOrderTable_thrownException() {
         //given
         Order orderRequest = orderCreateRequest(1L,
@@ -143,6 +143,7 @@ class OrderServiceTest {
     }
 
     @Test
+    @DisplayName("주문들을 조회할 수 있다.")
     void list() {
         //given
         Order cookingOrder = cookingOrder();
@@ -189,7 +190,7 @@ class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("완료된 주문을 변경할 수 없다.")
+    @DisplayName("완료된 주문의 상태를 변경할 수 없다.")
     void changeOrderStatus_completedOrder_thrownException() {
         //given
         Order updateRequest = orderUpdateRequest(OrderStatus.MEAL);

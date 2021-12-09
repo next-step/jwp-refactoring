@@ -14,11 +14,21 @@ import java.math.BigDecimal;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.Product;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 @DisplayName("메뉴 관련 기능")
 class MenuAcceptanceTest extends AcceptanceTest {
+
+    private MenuGroup 두마리메뉴;
+    private Product 후라이드치킨;
+
+    @BeforeEach
+    void setUp() {
+        두마리메뉴 = 메뉴_그룹_등록_되어_있음("두마리메뉴");
+        후라이드치킨 = 상품_등록_되어_있음("후라이드치킨", BigDecimal.TEN);
+    }
 
     @Test
     @DisplayName("메뉴를 등록할 수 있다.")
@@ -27,8 +37,6 @@ class MenuAcceptanceTest extends AcceptanceTest {
         String name = "후라이드치킨세트";
         BigDecimal price = BigDecimal.TEN;
         int quantity = 2;
-        MenuGroup 두마리메뉴 = 메뉴_그룹_등록_되어_있음("두마리메뉴");
-        Product 후라이드치킨 = 상품_등록_되어_있음("후라이드치킨", BigDecimal.TEN);
 
         //when
         ExtractableResponse<Response> response = 메뉴_등록_요청(name, price,
@@ -42,8 +50,6 @@ class MenuAcceptanceTest extends AcceptanceTest {
     @DisplayName("메뉴들을 조회할 수 있다.")
     void list() {
         //given
-        MenuGroup 두마리메뉴 = 메뉴_그룹_등록_되어_있음("두마리메뉴");
-        Product 후라이드치킨 = 상품_등록_되어_있음("후라이드치킨", BigDecimal.TEN);
         Menu menu = 메뉴_등록_되어_있음("후라이드치킨세트", BigDecimal.TEN,
             두마리메뉴.getId(), 후라이드치킨.getId(), 2);
 

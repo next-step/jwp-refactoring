@@ -1,7 +1,7 @@
 package kitchenpos.application;
 
-import static kitchenpos.application.sample.MenuSample.짜장면_세트;
-import static kitchenpos.application.sample.ProductSample.짜장면;
+import static kitchenpos.application.sample.MenuSample.후라이드치킨세트;
+import static kitchenpos.application.sample.ProductSample.후라이드치킨;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -51,12 +51,13 @@ class MenuServiceTest {
     void create() {
         //given
         MenuProduct menuProductRequest = menuProductCreateRequest(1L, 1L);
-        Menu menuRequest = menuCreateRequest("짜장면 세트", BigDecimal.ONE, 1L,
+        Menu menuRequest = menuCreateRequest("후라이드치킨세트", BigDecimal.ONE, 1L,
             Collections.singletonList(menuProductRequest));
 
         when(menuGroupDao.existsById(menuRequest.getMenuGroupId())).thenReturn(true);
-        when(productDao.findById(menuProductRequest.getProductId())).thenReturn(Optional.of(짜장면()));
-        when(menuDao.save(any())).thenReturn(짜장면_세트());
+        when(productDao.findById(menuProductRequest.getProductId()))
+            .thenReturn(Optional.of(후라이드치킨()));
+        when(menuDao.save(any())).thenReturn(후라이드치킨세트());
 
         //when
         menuService.create(menuRequest);
@@ -69,11 +70,11 @@ class MenuServiceTest {
     }
 
     @Test
-    @DisplayName("메뉴의 가격은 반드시 존재해야 한다.")
+    @DisplayName("등록하려는 메뉴의 가격은 반드시 존재해야 한다.")
     void create_nullPrice_thrownException() {
         //given
         MenuProduct menuProductRequest = menuProductCreateRequest(1L, 1L);
-        Menu menuRequest = menuCreateRequest("짜장면 메뉴", null, 1L,
+        Menu menuRequest = menuCreateRequest("후라이드치킨세트", null, 1L,
             Collections.singletonList(menuProductRequest));
 
         //when
@@ -85,11 +86,11 @@ class MenuServiceTest {
     }
 
     @Test
-    @DisplayName("가격은 0원 이상이어야 한다.")
+    @DisplayName("등록하려는 메뉴의 가격은 0원 이상이어야 한다.")
     void create_priceLessThanZero_thrownException() {
         //given
         MenuProduct menuProductRequest = menuProductCreateRequest(1L, 1L);
-        Menu menuRequest = menuCreateRequest("짜장면 메뉴", BigDecimal.valueOf(-1), 1L,
+        Menu menuRequest = menuCreateRequest("후라이드치킨세트", BigDecimal.valueOf(-1), 1L,
             Collections.singletonList(menuProductRequest));
 
         //when
@@ -101,11 +102,11 @@ class MenuServiceTest {
     }
 
     @Test
-    @DisplayName("메뉴 그룹은 반드시 존재해야 한다.")
+    @DisplayName("등록하려는 메뉴의 메뉴 그룹은 반드시 존재해야 한다.")
     void create_notExistMenuGroup_thrownException() {
         //given
         MenuProduct menuProductRequest = menuProductCreateRequest(1L, 1L);
-        Menu menuRequest = menuCreateRequest("짜장면 메뉴", BigDecimal.TEN, 1L,
+        Menu menuRequest = menuCreateRequest("후라이드치킨세트", BigDecimal.TEN, 1L,
             Collections.singletonList(menuProductRequest));
 
         when(menuGroupDao.existsById(anyLong())).thenReturn(false);
@@ -119,11 +120,11 @@ class MenuServiceTest {
     }
 
     @Test
-    @DisplayName("등록하려는 상품은 반드시 존재해야 한다.")
+    @DisplayName("등록하려는 메뉴의 상품은 반드시 존재해야 한다.")
     void create_notExistProduct_thrownException() {
         //given
         MenuProduct menuProductRequest = menuProductCreateRequest(1L, 1L);
-        Menu menuRequest = menuCreateRequest("짜장면 메뉴", BigDecimal.TEN, 1L,
+        Menu menuRequest = menuCreateRequest("후라이드치킨세트", BigDecimal.TEN, 1L,
             Collections.singletonList(menuProductRequest));
 
         when(menuGroupDao.existsById(anyLong())).thenReturn(true);
@@ -138,15 +139,16 @@ class MenuServiceTest {
     }
 
     @Test
-    @DisplayName("등록하려는 메뉴의 가격은 메뉴 상품들의 수량 * 가격을 모두 합친 금액보다 작거나 같아야 한다.")
+    @DisplayName("등록하려는 메뉴의 가격은 상품들의 수량 * 가격을 모두 합친 금액보다 작거나 같아야 한다.")
     void create_priceLessThanMenuProductPrice_thrownException() {
         //given
         MenuProduct menuProductRequest = menuProductCreateRequest(1L, 1L);
-        Menu menuRequest = menuCreateRequest("짜장면 메뉴", BigDecimal.TEN, 1L,
+        Menu menuRequest = menuCreateRequest("후라이드치킨세트", BigDecimal.TEN, 1L,
             Collections.singletonList(menuProductRequest));
 
         when(menuGroupDao.existsById(menuRequest.getMenuGroupId())).thenReturn(true);
-        when(productDao.findById(menuProductRequest.getProductId())).thenReturn(Optional.of(짜장면()));
+        when(productDao.findById(menuProductRequest.getProductId()))
+            .thenReturn(Optional.of(후라이드치킨()));
 
         //when
         ThrowingCallable createCallable = () -> menuService.create(menuRequest);
@@ -160,15 +162,15 @@ class MenuServiceTest {
     @DisplayName("메뉴들을 조회할 수 있다.")
     void list() {
         //given
-        Menu 짜장면_세트 = 짜장면_세트();
-        when(menuDao.findAll()).thenReturn(Collections.singletonList(짜장면_세트));
+        Menu 후라이드치킨세트 = 후라이드치킨세트();
+        when(menuDao.findAll()).thenReturn(Collections.singletonList(후라이드치킨세트));
 
         //when
         menuService.list();
 
         //then
         verify(menuDao, only()).findAll();
-        verify(menuProductDao, only()).findAllByMenuId(짜장면_세트.getId());
+        verify(menuProductDao, only()).findAllByMenuId(후라이드치킨세트.getId());
     }
 
     private void requestedMenuSave(Menu menuRequest) {

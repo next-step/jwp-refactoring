@@ -70,7 +70,7 @@ class TableGroupServiceTest {
     }
 
     @Test
-    @DisplayName("주문 테이블은 반드시 2개 이상이어야 한다.")
+    @DisplayName("등록하려는 단체의 주문 테이블은 반드시 2개 이상이어야 한다.")
     void create_orderTableSizeLessThanTwo_thrownException() {
         //given
         TableGroup request = tableGroupCreateRequest(
@@ -103,7 +103,7 @@ class TableGroupServiceTest {
     }
 
     @Test
-    @DisplayName("주문 테이블이 비어있지 않거나 단체가 지정되어 있으면 안된다.")
+    @DisplayName("등록하려는 단체의 주문 테이블이 비어있지 않거나 단체가 지정되어 있으면 안된다.")
     void create_containNotEmptyOrderTable_thrownException() {
         //given
         TableGroup request = tableGroupCreateRequest(
@@ -146,7 +146,7 @@ class TableGroupServiceTest {
     }
 
     @Test
-    @DisplayName("조리 또는 식사 중인 주문이 있으면 해제가 불가능하다.")
+    @DisplayName("해제하려는 단체에 조리 또는 식사 중인 주문이 있으면 해제가 불가능하다.")
     void ungroup_cookOrMealStatus_thrownException() {
         //given
         long tableGroupId = 1L;

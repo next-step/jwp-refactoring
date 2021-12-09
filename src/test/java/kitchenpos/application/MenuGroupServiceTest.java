@@ -28,7 +28,7 @@ class MenuGroupServiceTest {
     @DisplayName("메뉴 그룹을 등록할 수 있다.")
     void create() {
         //given
-        MenuGroup request = menuGroupCreateRequest("면류");
+        MenuGroup request = menuGroupCreateRequest("두마리메뉴");
 
         //when
         menuGroupService.create(request);

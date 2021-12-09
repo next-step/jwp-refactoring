@@ -31,7 +31,7 @@ class ProductServiceTest {
     @DisplayName("상품을 등록할 수 있다.")
     void create() {
         //given
-        Product productRequest = productCreateRequest("짜장면", BigDecimal.ONE);
+        Product productRequest = productCreateRequest("후라이드치킨", BigDecimal.ONE);
 
         //when
         productService.create(productRequest);
@@ -45,10 +45,10 @@ class ProductServiceTest {
     }
 
     @Test
-    @DisplayName("가격은 반드시 존재해야 한다.")
+    @DisplayName("등록하려는 상품의 가격은 반드시 존재해야 한다.")
     void create_nullPrice_thrownException() {
         //given
-        Product productRequest = productCreateRequest("짜장면", null);
+        Product productRequest = productCreateRequest("후라이드치킨", null);
 
         //when
         ThrowingCallable createCallable = () -> productService.create(productRequest);
@@ -59,10 +59,10 @@ class ProductServiceTest {
     }
 
     @Test
-    @DisplayName("가격은 0원 이상이어야 한다.")
+    @DisplayName("등록하려는 상품의 가격은 0원 이상이어야 한다.")
     void create_priceLessThanZero_thrownException() {
         //given
-        Product productRequest = productCreateRequest("짜장면", BigDecimal.valueOf(-1));
+        Product productRequest = productCreateRequest("후라이드치킨", BigDecimal.valueOf(-1));
 
         //when
         ThrowingCallable createCallable = () -> productService.create(productRequest);
