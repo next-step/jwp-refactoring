@@ -25,17 +25,12 @@ public class MenuGroupServiceTest {
     private MenuGroupService menuGroupService;
 
     private MenuGroup 치킨_메뉴그룹;
-    private MenuGroup 사이드_메뉴그룹;
 
     @BeforeEach
     void setUp() {
         치킨_메뉴그룹 = new MenuGroup();
         치킨_메뉴그룹.setId(1L);
         치킨_메뉴그룹.setName("치킨");
-
-        사이드_메뉴그룹 = new MenuGroup();
-        사이드_메뉴그룹.setId(2L);
-        사이드_메뉴그룹.setName("사이드");
     }
 
     @DisplayName("메뉴그룹이 저장된다.")
@@ -55,12 +50,16 @@ public class MenuGroupServiceTest {
     @Test
     void search_menuGroup() {
         // given
-        when(menuGroupDao.findAll()).thenReturn(List.of(this.치킨_메뉴그룹, this.사이드_메뉴그룹));
+        MenuGroup 사이드_메뉴그룹 = new MenuGroup();
+        사이드_메뉴그룹.setId(2L);
+        사이드_메뉴그룹.setName("사이드");
+
+        when(menuGroupDao.findAll()).thenReturn(List.of(this.치킨_메뉴그룹, 사이드_메뉴그룹));
 
         // when
         List<MenuGroup> searchedMenuGroups = menuGroupService.list();
 
         // then
-        Assertions.assertThat(searchedMenuGroups).isEqualTo(List.of(this.치킨_메뉴그룹, this.사이드_메뉴그룹));
+        Assertions.assertThat(searchedMenuGroups).isEqualTo(List.of(this.치킨_메뉴그룹, 사이드_메뉴그룹));
     }
 }

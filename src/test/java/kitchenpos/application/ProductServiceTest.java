@@ -1,6 +1,5 @@
 package kitchenpos.application;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;

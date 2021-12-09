@@ -41,7 +41,6 @@ public class TableGroupServiceTest {
     @InjectMocks
     private TableGroupService tableGroupService;
 
-    private OrderTable 치킨_주문_개인테이블;
     private OrderTable 치킨_주문_단체테이블;
     private OrderTable 치킨2_주문_단체테이블;
     private TableGroup 단체주문테이블;
@@ -55,10 +54,6 @@ public class TableGroupServiceTest {
         치킨2_주문_단체테이블 = new OrderTable();
         치킨2_주문_단체테이블.setId(2L);
         치킨2_주문_단체테이블.setEmpty(true);
-
-        치킨_주문_개인테이블 = new OrderTable();
-        치킨_주문_개인테이블.setId(3L);
-        치킨_주문_개인테이블.setEmpty(false);
 
         단체주문테이블 = new TableGroup();
         단체주문테이블.setId(1L);

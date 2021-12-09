@@ -24,7 +24,6 @@ import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
@@ -108,7 +107,7 @@ public class OrderServiceTest {
 
         치킨_주문_단체테이블 = new OrderTable();
         치킨_주문_단체테이블.setId(1L);
-        치킨_주문_단체테이블.setEmpty(true);
+        치킨_주문_단체테이블.setEmpty(false);
 
         치킨_주문항목 = new OrderLineItem();
         치킨_주문항목.setSeq(1L);
@@ -134,10 +133,7 @@ public class OrderServiceTest {
         when(orderDao.save(any(Order.class))).thenReturn(this.치킨주문);
         when(orderLineItemDao.save(this.치킨_주문항목)).thenReturn(this.치킨_주문항목);
 
-
         this.치킨주문.setOrderLineItems(List.of(this.치킨_주문항목));
-
-        치킨_주문_단체테이블.setEmpty(false);
         this.치킨주문.setOrderTableId(this.치킨_주문_단체테이블.getId());
 
         // when
@@ -184,9 +180,9 @@ public class OrderServiceTest {
         when(orderTableDao.findById(this.치킨_주문_단체테이블.getId())).thenReturn(Optional.of(this.치킨_주문_단체테이블));
 
         this.치킨주문.setOrderLineItems(List.of(this.치킨_주문항목));
+        this.치킨주문.setOrderTableId(this.치킨_주문_단체테이블.getId());
 
         치킨_주문_단체테이블.setEmpty(true);
-        this.치킨주문.setOrderTableId(this.치킨_주문_단체테이블.getId());
 
         // when
         // then
@@ -197,10 +193,11 @@ public class OrderServiceTest {
     @DisplayName("주문이 조회된다.")
     @Test
     void search_order() {
-        // when
+        // given
         when(orderDao.findAll()).thenReturn(List.of(this.치킨주문));
         when(orderLineItemDao.findAllByOrderId(this.치킨주문.getId())).thenReturn(List.of(this.치킨_주문항목));
 
+        // when
         List<Order> orders = orderService.list();
 
         // then

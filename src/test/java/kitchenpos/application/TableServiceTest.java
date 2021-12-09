@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -140,7 +141,6 @@ public class TableServiceTest {
         // given
         when(orderTableDao.findById(this.치킨_주문_단체테이블.getId())).thenReturn(Optional.of(this.치킨_주문_단체테이블));
         when(orderDao.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).thenReturn(true);
-
         when(orderTableDao.save(any(OrderTable.class))).thenReturn(this.치킨_주문_단체테이블);
 
         this.치킨_주문_단체테이블.setNumberOfGuests(3);
@@ -150,7 +150,10 @@ public class TableServiceTest {
         OrderTable changedOrderTable = tableService.changeNumberOfGuests(this.치킨_주문_단체테이블.getId(), this.치킨_주문_단체테이블);
 
         // then
-        Assertions.assertThat(changedOrderTable).isEqualTo(this.치킨_주문_단체테이블);
+        assertAll(
+            () -> Assertions.assertThat(changedOrderTable.getNumberOfGuests()).isEqualTo(3),
+            () -> Assertions.assertThat(changedOrderTable.isEmpty()).isFalse()
+        );
     }
 
     @DisplayName("주문테이블의 방문한 손님수를 0이만으로 변경시 예외가 발생된다.")
