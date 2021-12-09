@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 
+import static kitchenpos.menu.domain.fixture.ProductDomainFixture.product;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -23,7 +24,7 @@ class ProductTest {
             BigDecimal price = BigDecimal.valueOf(15000);
 
             // when
-            Product actual = new Product(name, price);
+            Product actual = product(name, price);
 
             // then
             assertAll(
@@ -41,7 +42,7 @@ class ProductTest {
 
             // when
             Assertions.assertThatThrownBy(() -> {
-                Product actual = new Product(name, price);
+                Product actual = product(name, price);
             }).isInstanceOf(IllegalArgumentException.class);
         }
 
@@ -53,7 +54,7 @@ class ProductTest {
 
             // when
             Assertions.assertThatThrownBy(() -> {
-                Product actual = new Product(name, null);
+                Product actual = product(name, null);
             }).isInstanceOf(IllegalArgumentException.class);
         }
 
@@ -66,7 +67,7 @@ class ProductTest {
 
             // when
             Assertions.assertThatThrownBy(() -> {
-                Product actual = new Product(name, price);
+                Product actual = product(name, price);
             }).isInstanceOf(IllegalArgumentException.class);
         }
     }

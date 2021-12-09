@@ -4,6 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import static kitchenpos.menu.domain.fixture.MenuGroupDomainFixture.menuGroup;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -21,7 +22,7 @@ class MenuGroupTest {
             String expected = "치킨 세트";
 
             // when
-            MenuGroup actual = new MenuGroup(expected);
+            MenuGroup actual = menuGroup(expected);
 
             // then
             assertThat(actual.getName()).isEqualTo(expected);
@@ -35,7 +36,7 @@ class MenuGroupTest {
 
             // when
             assertThatThrownBy(() -> {
-                MenuGroup actual = new MenuGroup(expected);
+                MenuGroup actual = menuGroup(expected);
             }).isInstanceOf(IllegalArgumentException.class);
         }
 
