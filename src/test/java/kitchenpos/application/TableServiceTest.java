@@ -86,7 +86,7 @@ class TableServiceTest {
     }
 
     @Test
-    @DisplayName("변경하려는 테이블의 정보가 반드시 저장되어 있어야 한다.")
+    @DisplayName("빈테이블 여부를 변경하려면 변경하려는 테이블의 정보가 반드시 저장되어 있어야 한다.")
     void changeEmpty_notExistOrderTable_thrownException() {
         //given
         OrderTable request = emptyUpdateRequest(false);
@@ -101,7 +101,7 @@ class TableServiceTest {
     }
 
     @Test
-    @DisplayName("그룹이 지정되어 있지 않아야 한다.")
+    @DisplayName("빈테이블 여부를 변경하려면 그룹이 지정되어 있지 않아야 한다.")
     void changeEmpty_existTableGroupId_thrownException() {
         //given
         OrderTable request = emptyUpdateRequest(false);
@@ -119,7 +119,7 @@ class TableServiceTest {
     }
 
     @Test
-    @DisplayName("주문 상태가 조리 또는 식사 중이라면 변경이 불가능하다.")
+    @DisplayName("빈테이블 여부를 변경하려면 주문 상태가 조리 또는 식사 중이라면 변경이 불가능하다.")
     void changeEmpty_cookOrMealStatus_thrownException() {
         //given
         OrderTable request = emptyUpdateRequest(false);
