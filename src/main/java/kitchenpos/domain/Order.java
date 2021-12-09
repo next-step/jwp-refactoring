@@ -19,6 +19,10 @@ public class Order {
         this.orderLineItems = orderLineItems;
     }
 
+    public Order(String orderStatus) {
+        this.orderStatus = orderStatus;
+    }
+
     public Long getId() {
         return id;
     }
