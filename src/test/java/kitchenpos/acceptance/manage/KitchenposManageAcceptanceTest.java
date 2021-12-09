@@ -19,10 +19,10 @@ import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.Product;
-import kitchenpos.presentation.MenuGroupTest;
-import kitchenpos.presentation.MenuTest;
-import kitchenpos.presentation.ProductTest;
-import kitchenpos.presentation.TableTest;
+import kitchenpos.presentation.MenuGroupRestControllerTest;
+import kitchenpos.presentation.MenuRestControllerTest;
+import kitchenpos.presentation.ProductRestControllerTest;
+import kitchenpos.presentation.TableRestControllerTest;
 import kitchenpos.testassistance.config.TestConfig;
 
 public class KitchenposManageAcceptanceTest extends TestConfig {
@@ -30,10 +30,10 @@ public class KitchenposManageAcceptanceTest extends TestConfig {
     @Test
     void addMenu_newGroup() {
         // when
-        MenuGroup 신메뉴그룹 = MenuGroupTest.메뉴그룹_저장(Fixture.사이드메뉴).as(MenuGroup.class);
+        MenuGroup 신메뉴그룹 = MenuGroupRestControllerTest.메뉴그룹_저장(Fixture.사이드메뉴).as(MenuGroup.class);
         List<MenuProduct> 메뉴_상품패키지 = 제품팩키지_생성(List.of(Fixture.참치맛감자튀김, Fixture.고등어맛감자튀김));
         Menu 신매뉴 = 신메뉴_생성(신메뉴그룹, 메뉴_상품패키지);
-        Menu 등록된_신메뉴 = MenuTest.메뉴_저장요청(신매뉴).as(Menu.class);
+        Menu 등록된_신메뉴 = MenuRestControllerTest.메뉴_저장요청(신매뉴).as(Menu.class);
 
         // then
         메뉴_저장됨(신메뉴그룹, 등록된_신메뉴);    
@@ -46,7 +46,7 @@ public class KitchenposManageAcceptanceTest extends TestConfig {
         OrderTable 신규_주문테이블 = 신규_주문테이블_생성();
 
         // when
-        ExtractableResponse<Response> response = TableTest.주문테이블_저장요청(신규_주문테이블);
+        ExtractableResponse<Response> response = TableRestControllerTest.주문테이블_저장요청(신규_주문테이블);
 
         // then
         신규_주문테이블_저장됨(response);
@@ -92,7 +92,7 @@ public class KitchenposManageAcceptanceTest extends TestConfig {
         List<MenuProduct> productPackage = new ArrayList<>();
 
         for (Product product : products) {
-            Product createdProduct = ProductTest.상품_저장요청(product).as(Product.class);
+            Product createdProduct = ProductRestControllerTest.상품_저장요청(product).as(Product.class);
             
             MenuProduct menuProduct = new MenuProduct();
             menuProduct.setProductId(createdProduct.getId());

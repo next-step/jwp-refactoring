@@ -17,10 +17,10 @@ import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
-import kitchenpos.presentation.MenuTest;
-import kitchenpos.presentation.OrderTest;
-import kitchenpos.presentation.TableTest;
-import kitchenpos.presentation.TableGroupTest;
+import kitchenpos.presentation.MenuRestControllerTest;
+import kitchenpos.presentation.OrderRestControllerTest;
+import kitchenpos.presentation.TableRestControllerTest;
+import kitchenpos.presentation.TableGroupRestControllerTest;
 import kitchenpos.testassistance.config.TestConfig;
 
 public class KitchenposOrderAcceptanceTest extends TestConfig {
@@ -31,7 +31,7 @@ public class KitchenposOrderAcceptanceTest extends TestConfig {
         OrderTable 손님있는_테이블 = 테이블에_손님이앉음(2);
 
         // when
-        Menu[] 메뉴들 = MenuTest.메뉴_조회요청().as(Menu[].class);
+        Menu[] 메뉴들 = MenuRestControllerTest.메뉴_조회요청().as(Menu[].class);
         List<OrderLineItem> 주문명세서 = 주문명세서_생성(List.of(메뉴들[0], 메뉴들[1]));
         Order 주문 = 테이블_주문요청(손님있는_테이블, 주문명세서);
 
@@ -49,9 +49,9 @@ public class KitchenposOrderAcceptanceTest extends TestConfig {
         TableGroup 단체결제지정 = new TableGroup();
         단체결제지정.setOrderTables(List.of(손님있는_테이블1, 손님있는_테이블2));
 
-        TableGroupTest.단체지정_저장요청(단체결제지정);
+        TableGroupRestControllerTest.단체지정_저장요청(단체결제지정);
 
-        Menu[] 메뉴들 = MenuTest.메뉴_조회요청().as(Menu[].class);
+        Menu[] 메뉴들 = MenuRestControllerTest.메뉴_조회요청().as(Menu[].class);
 
         List<OrderLineItem> 주문명세서 = 주문명세서_생성(List.of(메뉴들[0], 메뉴들[1]));
 
@@ -71,7 +71,7 @@ public class KitchenposOrderAcceptanceTest extends TestConfig {
         OrderTable 손님있는_테이블 = 테이블에_손님이앉음(2);
 
         // when
-        Menu[] 메뉴들 = MenuTest.메뉴_조회요청().as(Menu[].class);
+        Menu[] 메뉴들 = MenuRestControllerTest.메뉴_조회요청().as(Menu[].class);
         List<OrderLineItem> 주문명세서 = 주문명세서_생성(List.of(메뉴들[0], 메뉴들[1]));
         Order 주문 = 테이블_주문요청(손님있는_테이블, 주문명세서);
 
@@ -80,7 +80,7 @@ public class KitchenposOrderAcceptanceTest extends TestConfig {
 
         // when
         주문.setOrderStatus(OrderStatus.COMPLETION.name());
-        Order 결재된_주문 = OrderTest.주문_상태변경요청(주문).as(Order.class);
+        Order 결재된_주문 = OrderRestControllerTest.주문_상태변경요청(주문).as(Order.class);
 
         // then
         Assertions.assertThat(결재된_주문.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION.name());
@@ -124,7 +124,7 @@ public class KitchenposOrderAcceptanceTest extends TestConfig {
         // when
         Order 주문 = 주문_생성(orderTable, OrderSpecification);
 
-        return OrderTest.주문_저장요청(주문).as(Order.class);
+        return OrderRestControllerTest.주문_저장요청(주문).as(Order.class);
     }
 
     private Order 주문_생성(OrderTable orderTable, List<OrderLineItem> OrderSpecification) {
@@ -139,8 +139,8 @@ public class KitchenposOrderAcceptanceTest extends TestConfig {
 
         OrderTable 손님있는_테이블 = 손님있는_테이블_생성(numberOfGuests, 손님없는_테이블들);
 
-        손님있는_테이블 = TableTest.주문테이블_빈테이블_변경요청(손님있는_테이블).as(OrderTable.class);
-        손님있는_테이블 = TableTest.주문테이블_고객수_변경요청(손님있는_테이블).as(OrderTable.class);
+        손님있는_테이블 = TableRestControllerTest.주문테이블_빈테이블_변경요청(손님있는_테이블).as(OrderTable.class);
+        손님있는_테이블 = TableRestControllerTest.주문테이블_고객수_변경요청(손님있는_테이블).as(OrderTable.class);
 
         return 손님있는_테이블;
     }
@@ -153,7 +153,7 @@ public class KitchenposOrderAcceptanceTest extends TestConfig {
     }
 
     private List<OrderTable> 반테이블들_조회됨() {
-        return List.of(TableTest.주문테이블_조회요청().as(OrderTable[].class)).stream()
+        return List.of(TableRestControllerTest.주문테이블_조회요청().as(OrderTable[].class)).stream()
                     .filter(OrderTable::isEmpty)
                     .collect(Collectors.toList());
     }

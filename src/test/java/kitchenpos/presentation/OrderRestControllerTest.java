@@ -21,7 +21,7 @@ import kitchenpos.domain.OrderTable;
 import kitchenpos.testassistance.config.TestConfig;
 
 @DisplayName("주문 API기능에 관한")
-public class OrderTest extends TestConfig {
+public class OrderRestControllerTest extends TestConfig {
     @DisplayName("주문이 저장된다.")
     @Test
     void save_order() {
@@ -70,11 +70,11 @@ public class OrderTest extends TestConfig {
         OrderTable orderTable = 반테이블들_조회됨().get(0);
         orderTable.setEmpty(false);
 
-        TableTest.주문테이블_빈테이블_변경요청(orderTable);
+        TableRestControllerTest.주문테이블_빈테이블_변경요청(orderTable);
 
         order.setOrderTableId(orderTable.getId());
 
-        Menu[] menus = MenuTest.메뉴_조회요청().as(Menu[].class);        
+        Menu[] menus = MenuRestControllerTest.메뉴_조회요청().as(Menu[].class);        
 
         List<OrderLineItem> orderLineItem = 주문명세서_생성(List.of(menus[0], menus[1]));
         order.setOrderLineItems(orderLineItem);
@@ -97,7 +97,7 @@ public class OrderTest extends TestConfig {
     }
 
     private List<OrderTable> 반테이블들_조회됨() {
-        return List.of(TableTest.주문테이블_조회요청().as(OrderTable[].class)).stream()
+        return List.of(TableRestControllerTest.주문테이블_조회요청().as(OrderTable[].class)).stream()
                                 .filter(OrderTable::isEmpty)
                                 .collect(Collectors.toList());
     }

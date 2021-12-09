@@ -30,7 +30,7 @@ import kitchenpos.domain.Product;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
-public class MenuTest {
+public class MenuServiceTest {
     @Mock
     private MenuDao menuDao;
 

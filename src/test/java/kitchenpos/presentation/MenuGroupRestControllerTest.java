@@ -13,7 +13,7 @@ import kitchenpos.domain.MenuGroup;
 import kitchenpos.testassistance.config.TestConfig;
 
 @DisplayName("메뉴그룹 API기능에 관한")
-public class MenuGroupTest extends TestConfig {
+public class MenuGroupRestControllerTest extends TestConfig {
     @DisplayName("메뉴그룹이 조회된다.")
     @Test
     void search_menuGroup() {

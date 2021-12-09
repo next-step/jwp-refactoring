@@ -28,7 +28,7 @@ import kitchenpos.domain.OrderTable;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
-public class OrderTest {
+public class OrderServiceTest {
     @Mock
     private MenuDao menuDao;
 

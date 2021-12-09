@@ -17,7 +17,7 @@ import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.MenuGroup;
 
 @ExtendWith(MockitoExtension.class)
-public class MenuGroupTest {
+public class MenuGroupServiceTest {
     @Mock
     private MenuGroupDao menuGroupDao;
 

@@ -17,7 +17,7 @@ import kitchenpos.domain.MenuProduct;
 import kitchenpos.testassistance.config.TestConfig;
 
 @DisplayName("메뉴 API기능에 관한")
-public class MenuTest extends TestConfig {
+public class MenuRestControllerTest extends TestConfig {
     @DisplayName("메뉴가 저장된다.")
     @Test
     void save_menu() {

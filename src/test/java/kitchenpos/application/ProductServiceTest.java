@@ -25,7 +25,7 @@ import kitchenpos.domain.Product;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
-public class ProductTest {
+public class ProductServiceTest {
     @Mock
     private ProductDao productDao;
 

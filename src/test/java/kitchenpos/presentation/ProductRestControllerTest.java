@@ -16,7 +16,7 @@ import kitchenpos.domain.Product;
 import kitchenpos.testassistance.config.TestConfig;
 
 @DisplayName("상품 API기능에 관한")
-public class ProductTest extends TestConfig {
+public class ProductRestControllerTest extends TestConfig {
     @DisplayName("상품이 저장된다.")
     @Test
     void save_product() {

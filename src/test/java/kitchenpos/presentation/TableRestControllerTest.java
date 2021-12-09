@@ -18,7 +18,7 @@ import kitchenpos.domain.OrderTable;
 import kitchenpos.testassistance.config.TestConfig;
 
 @DisplayName("주문테이블 API기능에 관한")
-public class TableTest extends TestConfig {
+public class TableRestControllerTest extends TestConfig {
     @DisplayName("주문테이블이 저장된다.")
     @Test
     void save_table() {
@@ -52,7 +52,7 @@ public class TableTest extends TestConfig {
         orderTable.setNumberOfGuests(0);
 
         // when
-        OrderTable savedOrderTable = TableTest.주문테이블_저장요청(orderTable).as(OrderTable.class);
+        OrderTable savedOrderTable = TableRestControllerTest.주문테이블_저장요청(orderTable).as(OrderTable.class);
       
         // given
         savedOrderTable.setEmpty(true);

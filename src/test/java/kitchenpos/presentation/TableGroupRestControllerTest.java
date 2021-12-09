@@ -17,7 +17,7 @@ import kitchenpos.domain.TableGroup;
 import kitchenpos.testassistance.config.TestConfig;
 
 @DisplayName("단체지정 API기능에 관한")
-public class TableGroupTest extends TestConfig {
+public class TableGroupRestControllerTest extends TestConfig {
     @DisplayName("단체지정이 저장된다.")
     @Test
     void save_product() {
@@ -56,7 +56,7 @@ public class TableGroupTest extends TestConfig {
         return 단체지정_저장요청(tableGroup).as(TableGroup.class);
     }
     private List<OrderTable> 반테이블들_조회됨() {
-        return List.of(TableTest.주문테이블_조회요청().as(OrderTable[].class)).stream()
+        return List.of(TableRestControllerTest.주문테이블_조회요청().as(OrderTable[].class)).stream()
                                 .filter(OrderTable::isEmpty)
                                 .collect(Collectors.toList());
     }
