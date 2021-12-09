@@ -27,31 +27,34 @@ import kitchenpos.presentation.TableRestControllerTest;
 import kitchenpos.testassistance.config.TestConfig;
 
 public class KitchenposManageAcceptanceTest extends TestConfig {
-    
-    private MenuGroup 사이드메뉴 = new MenuGroup();
+    private MenuGroup 사이드메뉴;
 
-    private Product 참치맛감자튀김 = new Product();
-    private Product 고등어맛감자튀김 = new Product();
+    private Product 참치맛감자튀김;
+    private Product 고등어맛감자튀김;
 
-    private Menu 신메뉴 = new Menu();
-    
+    private Menu 신메뉴;
+
     @BeforeEach
-    
+
     public void setUp() {
         super.setUp();
 
+        사이드메뉴 = new MenuGroup();
         사이드메뉴.setName("사이트메뉴");
 
+        참치맛감자튀김 = new Product();
         참치맛감자튀김.setName("참치맛감자튀김");
         참치맛감자튀김.setPrice(BigDecimal.valueOf(2_000).setScale(2));
-        
+
+        고등어맛감자튀김 = new Product();
         고등어맛감자튀김.setName("고등어맛감자튀김");
         고등어맛감자튀김.setPrice(BigDecimal.valueOf(2_000).setScale(2));
 
+        신메뉴 = new Menu();
         신메뉴.setName("감튀세상");
         신메뉴.setPrice(BigDecimal.valueOf(3_000).setScale(2));
     }
-    
+
     @DisplayName("새로운 유형의 메뉴가 추가된다.")
     @Test
     void addMenu_newGroup() {
@@ -62,7 +65,7 @@ public class KitchenposManageAcceptanceTest extends TestConfig {
         Menu 등록된_신메뉴 = MenuRestControllerTest.메뉴_저장요청(신매뉴).as(Menu.class);
 
         // then
-        메뉴_저장됨(신메뉴그룹, 등록된_신메뉴);    
+        메뉴_저장됨(신메뉴그룹, 등록된_신메뉴);
     }
 
     @DisplayName("신규 주문테이블 생성")
@@ -86,7 +89,7 @@ public class KitchenposManageAcceptanceTest extends TestConfig {
         return 신규_주문테이블;
     }
 
-    private void 신규_주문테이블_저장됨(ExtractableResponse<Response> response) { 
+    private void 신규_주문테이블_저장됨(ExtractableResponse<Response> response) {
         assertAll(
             () -> Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
             () -> Assertions.assertThat(response.as(OrderTable.class).getTableGroupId()).isNull(),
@@ -119,7 +122,7 @@ public class KitchenposManageAcceptanceTest extends TestConfig {
 
         for (Product product : products) {
             Product createdProduct = ProductRestControllerTest.상품_저장요청(product).as(Product.class);
-            
+
             MenuProduct menuProduct = new MenuProduct();
             menuProduct.setProductId(createdProduct.getId());
             menuProduct.setQuantity(1L);

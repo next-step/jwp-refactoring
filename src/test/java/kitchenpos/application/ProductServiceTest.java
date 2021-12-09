@@ -31,20 +31,23 @@ public class ProductServiceTest {
     @InjectMocks
     private ProductService productService;
 
-    private Product 뿌링클치킨 = new Product();
-    private Product 치킨무 = new Product();
-    private Product 코카콜라 = new Product();
+    private Product 뿌링클치킨;
+    private Product 치킨무;
+    private Product 코카콜라;
 
     @BeforeEach
     void setUp() {
+        뿌링클치킨 = new Product();
         뿌링클치킨.setId(1L);
         뿌링클치킨.setName("뿌링클치킨");
         뿌링클치킨.setPrice(BigDecimal.valueOf(15_000));
 
+        치킨무 = new Product();
         치킨무.setId(2L);
         치킨무.setName("치킨무");
         치킨무.setPrice(BigDecimal.valueOf(1_000));
 
+        코카콜라 = new Product();
         코카콜라.setId(3L);
         코카콜라.setName("코카콜라");
         코카콜라.setPrice(BigDecimal.valueOf(3_000));
@@ -53,14 +56,11 @@ public class ProductServiceTest {
     @DisplayName("상품이 저장된다.")
     @Test
     void create_product() {
-        // given        
-        when(productDao.save(any(Product.class))).thenReturn(this.뿌링클치킨);
-
-        Product 새상품 = new Product();
-        새상품.setPrice(BigDecimal.valueOf(15_000));
+        // given
+        when(productDao.save(this.뿌링클치킨)).thenReturn(this.뿌링클치킨);
 
         // when
-        Product createdProduct = productService.create(새상품);
+        Product createdProduct = productService.create(this.뿌링클치킨);
 
         // then
         Assertions.assertThat(createdProduct).isEqualTo(this.뿌링클치킨);
@@ -70,13 +70,12 @@ public class ProductServiceTest {
     @Test
     void exception_craeteProduct_nullPrice() {
         // given
-        Product 새상품 = new Product();
-        새상품.setPrice(null);
+        this.뿌링클치킨.setPrice(null);
 
         // when
         // then
         Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
-                    .isThrownBy(() -> productService.create(새상품));
+                    .isThrownBy(() -> productService.create(this.뿌링클치킨));
     }
 
     @DisplayName("상품 가격이 0보다 작으면 예외가 발생한다.")
@@ -84,13 +83,12 @@ public class ProductServiceTest {
     @ParameterizedTest(name="[{index}] 상품가격은 [{0}]")
     void exception_craeteProduct_underZeroPrice(int price) {
         // given
-        Product 새상품 = new Product();
-        새상품.setPrice(BigDecimal.valueOf(price));
+        this.뿌링클치킨.setPrice(BigDecimal.valueOf(price));
 
         // when
         // then
         Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
-                    .isThrownBy(() -> productService.create(새상품));
+                    .isThrownBy(() -> productService.create(this.뿌링클치킨));
     }
 
     @DisplayName("상품이 조회된다.")

@@ -21,7 +21,7 @@ public class DBCleaner implements InitializingBean {
         jdbcTemplate.execute("DELETE FROM orders");
         jdbcTemplate.execute("DELETE FROM order_table");
         jdbcTemplate.execute("DELETE FROM table_group");
-        jdbcTemplate.execute("DELETE FROM menu_product");        
+        jdbcTemplate.execute("DELETE FROM menu_product");
         jdbcTemplate.execute("DELETE FROM menu");
         jdbcTemplate.execute("DELETE FROM product");
         jdbcTemplate.execute("DELETE FROM menu_group");

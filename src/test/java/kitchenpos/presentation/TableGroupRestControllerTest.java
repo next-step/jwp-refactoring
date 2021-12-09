@@ -60,7 +60,7 @@ public class TableGroupRestControllerTest extends TestConfig {
                                 .filter(OrderTable::isEmpty)
                                 .collect(Collectors.toList());
     }
-    
+
     private void 단체지정_저장됨(ExtractableResponse<Response> response) {
         Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }

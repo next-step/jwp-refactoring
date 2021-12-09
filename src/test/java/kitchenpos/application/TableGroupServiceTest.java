@@ -41,22 +41,26 @@ public class TableGroupServiceTest {
     @InjectMocks
     private TableGroupService tableGroupService;
 
-    private OrderTable 치킨_주문_개인테이블 = new OrderTable();    
-    private OrderTable 치킨_주문_단체테이블 = new OrderTable();
-    private OrderTable 치킨2_주문_단체테이블 = new OrderTable();
-    private TableGroup 단체주문테이블 = new TableGroup();
-    
+    private OrderTable 치킨_주문_개인테이블;
+    private OrderTable 치킨_주문_단체테이블;
+    private OrderTable 치킨2_주문_단체테이블;
+    private TableGroup 단체주문테이블;
+
     @BeforeEach
     void setUp() {
+        치킨_주문_단체테이블 = new OrderTable();
         치킨_주문_단체테이블.setId(1L);
         치킨_주문_단체테이블.setEmpty(true);
 
+        치킨2_주문_단체테이블 = new OrderTable();
         치킨2_주문_단체테이블.setId(2L);
         치킨2_주문_단체테이블.setEmpty(true);
-        
+
+        치킨_주문_개인테이블 = new OrderTable();
         치킨_주문_개인테이블.setId(3L);
         치킨_주문_개인테이블.setEmpty(false);
 
+        단체주문테이블 = new TableGroup();
         단체주문테이블.setId(1L);
         단체주문테이블.setOrderTables(List.of(치킨_주문_단체테이블, 치킨2_주문_단체테이블));
         단체주문테이블.setCreatedDate(LocalDateTime.now());
@@ -67,14 +71,11 @@ public class TableGroupServiceTest {
     void create_tableGroup() {
         // given
         when(orderTableDao.findAllByIdIn(List.of(this.치킨_주문_단체테이블.getId(), this.치킨2_주문_단체테이블.getId()))).thenReturn(List.of(this.치킨_주문_단체테이블, this.치킨2_주문_단체테이블));
-        when(tableGroupDao.save(any(TableGroup.class))).thenReturn(this.단체주문테이블);
+        when(tableGroupDao.save(this.단체주문테이블)).thenReturn(this.단체주문테이블);
         when(orderTableDao.save(any(OrderTable.class))).thenReturn(null);
 
-        TableGroup 신규_단체지정 = new TableGroup();
-        신규_단체지정.setOrderTables(List.of(this.치킨_주문_단체테이블, this.치킨2_주문_단체테이블));
-        
         // when
-        TableGroup createdTableGroup = tableGroupService.create(신규_단체지정);
+        TableGroup createdTableGroup = tableGroupService.create(this.단체주문테이블);
 
         // then
         Assertions.assertThat(createdTableGroup).isEqualTo(this.단체주문테이블);
@@ -88,13 +89,12 @@ public class TableGroupServiceTest {
         when(tableGroupDao.save(any(TableGroup.class))).thenReturn(this.단체주문테이블);
         when(orderTableDao.save(any(OrderTable.class))).thenReturn(null);
 
-        TableGroup 신규_단체지정 = new TableGroup();
-        신규_단체지정.setOrderTables(null);
-        
+        this.단체주문테이블.setOrderTables(null);
+
         // when
         // then
         Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
-                    .isThrownBy(() -> tableGroupService.create(신규_단체지정));
+                    .isThrownBy(() -> tableGroupService.create(this.단체주문테이블));
     }
 
     @DisplayName("주문테이블의 개수가 2개 미만으로 단체지정시 예외가 발생된다.")
@@ -105,13 +105,12 @@ public class TableGroupServiceTest {
         when(tableGroupDao.save(any(TableGroup.class))).thenReturn(this.단체주문테이블);
         when(orderTableDao.save(any(OrderTable.class))).thenReturn(null);
 
-        TableGroup 신규_단체지정 = new TableGroup();
-        신규_단체지정.setOrderTables(List.of(this.치킨_주문_단체테이블));
+        this.단체주문테이블.setOrderTables(List.of(this.치킨_주문_단체테이블));
 
         // when
         // then
         Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
-                    .isThrownBy(() -> tableGroupService.create(신규_단체지정));
+                    .isThrownBy(() -> tableGroupService.create(this.단체주문테이블));
     }
 
     @DisplayName("미존재 주문테이블가 포함된 단체지정으로 저장시 예외가 발생된다.")
@@ -120,27 +119,25 @@ public class TableGroupServiceTest {
         // given
         when(orderTableDao.findAllByIdIn(List.of(this.치킨_주문_단체테이블.getId(), this.치킨2_주문_단체테이블.getId()))).thenReturn(List.of(this.치킨_주문_단체테이블));
 
-        TableGroup 신규_단체지정 = new TableGroup();
-        신규_단체지정.setOrderTables(List.of(this.치킨_주문_단체테이블, this.치킨2_주문_단체테이블));
-        
+        this.단체주문테이블.setOrderTables(List.of(this.치킨_주문_단체테이블, this.치킨2_주문_단체테이블));
+
         // when
         // then
         Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
-                    .isThrownBy(() -> tableGroupService.create(신규_단체지정));
+                    .isThrownBy(() -> tableGroupService.create(this.단체주문테이블));
     }
 
     @DisplayName("단체지정이 될 주문테이블 다른 단체지정에 등록된 경우 예외가 발생된다.")
     @Test
     void exception_createTableGoup_existOrderTableInOtherTableGroup() {
         // given
-        TableGroup 신규_단체지정 = new TableGroup();
         this.치킨_주문_단체테이블.setTableGroupId(this.단체주문테이블.getId());
-        신규_단체지정.setOrderTables(List.of(this.치킨_주문_단체테이블, this.치킨2_주문_단체테이블));
-        
+        this.단체주문테이블.setOrderTables(List.of(this.치킨_주문_단체테이블, this.치킨2_주문_단체테이블));
+
         // when
         // then
         Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
-                    .isThrownBy(() -> tableGroupService.create(신규_단체지정));
+                    .isThrownBy(() -> tableGroupService.create(this.단체주문테이블));
     }
 
     @DisplayName("단체지정이 해제된다.")

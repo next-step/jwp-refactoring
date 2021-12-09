@@ -53,7 +53,7 @@ public class TableRestControllerTest extends TestConfig {
 
         // when
         OrderTable savedOrderTable = TableRestControllerTest.주문테이블_저장요청(orderTable).as(OrderTable.class);
-      
+
         // given
         savedOrderTable.setEmpty(true);
 
@@ -138,7 +138,7 @@ public class TableRestControllerTest extends TestConfig {
     private void 주문테이블_고객수_변경됨(ExtractableResponse<Response> response) {
         assertAll(
             () -> Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-            () -> Assertions.assertThat(response.as(OrderTable.class).getNumberOfGuests()).isEqualTo(2)  
+            () -> Assertions.assertThat(response.as(OrderTable.class).getNumberOfGuests()).isEqualTo(2)
         );
     }
 

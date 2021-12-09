@@ -58,7 +58,7 @@ public class KitchenposOrderAcceptanceTest extends TestConfig {
         // then
         Order 주문1 = 테이블_주문요청(손님있는_테이블1, 주문명세서);
         Order 주문2 = 테이블_주문요청(손님있는_테이블2, 주문명세서);
-        
+
         // then
         테이블_주문됨(손님있는_테이블1, 주문명세서, 주문1);
         테이블_주문됨(손님있는_테이블2, 주문명세서, 주문2);

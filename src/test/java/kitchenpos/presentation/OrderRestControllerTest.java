@@ -74,11 +74,11 @@ public class OrderRestControllerTest extends TestConfig {
 
         order.setOrderTableId(orderTable.getId());
 
-        Menu[] menus = MenuRestControllerTest.메뉴_조회요청().as(Menu[].class);        
+        Menu[] menus = MenuRestControllerTest.메뉴_조회요청().as(Menu[].class);
 
         List<OrderLineItem> orderLineItem = 주문명세서_생성(List.of(menus[0], menus[1]));
         order.setOrderLineItems(orderLineItem);
-        
+
         return order;
     }
 
@@ -101,7 +101,7 @@ public class OrderRestControllerTest extends TestConfig {
                                 .filter(OrderTable::isEmpty)
                                 .collect(Collectors.toList());
     }
-    
+
     private void 주문_저장됨(ExtractableResponse<Response> response) {
         Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
