@@ -2,10 +2,12 @@ package kitchenpos.acceptance.manage;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.opentest4j.MultipleFailuresError;
@@ -13,7 +15,6 @@ import org.springframework.http.HttpStatus;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.acceptance.fixture.Fixture;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
@@ -26,12 +27,37 @@ import kitchenpos.presentation.TableRestControllerTest;
 import kitchenpos.testassistance.config.TestConfig;
 
 public class KitchenposManageAcceptanceTest extends TestConfig {
+    
+    private MenuGroup 사이드메뉴 = new MenuGroup();
+
+    private Product 참치맛감자튀김 = new Product();
+    private Product 고등어맛감자튀김 = new Product();
+
+    private Menu 신메뉴 = new Menu();
+    
+    @BeforeEach
+    
+    public void setUp() {
+        super.setUp();
+
+        사이드메뉴.setName("사이트메뉴");
+
+        참치맛감자튀김.setName("참치맛감자튀김");
+        참치맛감자튀김.setPrice(BigDecimal.valueOf(2_000).setScale(2));
+        
+        고등어맛감자튀김.setName("고등어맛감자튀김");
+        고등어맛감자튀김.setPrice(BigDecimal.valueOf(2_000).setScale(2));
+
+        신메뉴.setName("감튀세상");
+        신메뉴.setPrice(BigDecimal.valueOf(3_000).setScale(2));
+    }
+    
     @DisplayName("새로운 유형의 메뉴가 추가된다.")
     @Test
     void addMenu_newGroup() {
         // when
-        MenuGroup 신메뉴그룹 = MenuGroupRestControllerTest.메뉴그룹_저장(Fixture.사이드메뉴).as(MenuGroup.class);
-        List<MenuProduct> 메뉴_상품패키지 = 제품팩키지_생성(List.of(Fixture.참치맛감자튀김, Fixture.고등어맛감자튀김));
+        MenuGroup 신메뉴그룹 = MenuGroupRestControllerTest.메뉴그룹_저장(this.사이드메뉴).as(MenuGroup.class);
+        List<MenuProduct> 메뉴_상품패키지 = 제품팩키지_생성(List.of(this.참치맛감자튀김, this.고등어맛감자튀김));
         Menu 신매뉴 = 신메뉴_생성(신메뉴그룹, 메뉴_상품패키지);
         Menu 등록된_신메뉴 = MenuRestControllerTest.메뉴_저장요청(신매뉴).as(Menu.class);
 
@@ -70,7 +96,7 @@ public class KitchenposManageAcceptanceTest extends TestConfig {
     }
 
     private Menu 신메뉴_생성(MenuGroup 신메뉴그룹, List<MenuProduct> 메뉴_상품패키지) {
-        Menu 신매뉴 = Fixture.신메뉴;
+        Menu 신매뉴 = this.신메뉴;
         신매뉴.setMenuGroupId(신메뉴그룹.getId());
         신매뉴.setMenuProducts(메뉴_상품패키지);
         return 신매뉴;
@@ -78,8 +104,8 @@ public class KitchenposManageAcceptanceTest extends TestConfig {
 
     private void 메뉴_저장됨(MenuGroup 신메뉴그룹, Menu 등록된_신메뉴) throws MultipleFailuresError {
         assertAll(
-            () -> Assertions.assertThat(등록된_신메뉴.getName()).isEqualTo(Fixture.신메뉴.getName()),
-            () -> Assertions.assertThat(등록된_신메뉴.getPrice()).isEqualTo(Fixture.신메뉴.getPrice()),
+            () -> Assertions.assertThat(등록된_신메뉴.getName()).isEqualTo(this.신메뉴.getName()),
+            () -> Assertions.assertThat(등록된_신메뉴.getPrice()).isEqualTo(this.신메뉴.getPrice()),
             () -> Assertions.assertThat(등록된_신메뉴.getMenuGroupId()).isEqualTo(신메뉴그룹.getId())
         );
 

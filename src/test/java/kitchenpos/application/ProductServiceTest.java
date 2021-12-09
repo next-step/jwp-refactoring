@@ -19,7 +19,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
-import kitchenpos.application.fixture.Fixture;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
 
@@ -32,10 +31,25 @@ public class ProductServiceTest {
     @InjectMocks
     private ProductService productService;
 
+    private Product 뿌링클치킨 = new Product();
+    private Product 치킨무 = new Product();
+    private Product 코카콜라 = new Product();
+
     @BeforeEach
     void setUp() {
-        //given
-        제품등록_사전DB저장내용();
+        뿌링클치킨.setId(1L);
+        뿌링클치킨.setName("뿌링클치킨");
+        뿌링클치킨.setPrice(BigDecimal.valueOf(15_000));
+
+        치킨무.setId(2L);
+        치킨무.setName("치킨무");
+        치킨무.setPrice(BigDecimal.valueOf(1_000));
+
+        코카콜라.setId(3L);
+        코카콜라.setName("코카콜라");
+        코카콜라.setPrice(BigDecimal.valueOf(3_000));
+        
+        when(productDao.save(any(Product.class))).thenReturn(this.뿌링클치킨);
     }
 
     @DisplayName("상품이 저장된다.")
@@ -49,7 +63,7 @@ public class ProductServiceTest {
         Product createdProduct = productService.create(새상품);
 
         // then
-        Assertions.assertThat(createdProduct).isEqualTo(Fixture.뿌링클치킨);
+        Assertions.assertThat(createdProduct).isEqualTo(this.뿌링클치킨);
     }
 
     @DisplayName("상품 가격이 없으면 예외가 발생한다.")
@@ -88,14 +102,11 @@ public class ProductServiceTest {
         List<Product> searchedProducts = productService.list();
 
         // then
-        Assertions.assertThat(searchedProducts).isEqualTo(List.of(Fixture.뿌링클치킨, Fixture.치킨무, Fixture.코카콜라));
+        Assertions.assertThat(searchedProducts).isEqualTo(List.of(this.뿌링클치킨, this.치킨무, this.코카콜라));
     }
 
     private void 상품_조회전_DB내용() {
-        when(productDao.findAll()).thenReturn(List.of(Fixture.뿌링클치킨, Fixture.치킨무, Fixture.코카콜라));
+        when(productDao.findAll()).thenReturn(List.of(this.뿌링클치킨, this.치킨무, this.코카콜라));
     }
 
-    private void 제품등록_사전DB저장내용() {
-        when(productDao.save(any(Product.class))).thenReturn(Fixture.뿌링클치킨);
-    }
 }
