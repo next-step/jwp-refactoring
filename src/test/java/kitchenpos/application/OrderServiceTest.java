@@ -1,83 +1,113 @@
 package kitchenpos.application;
 
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
-import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.*;
-import org.junit.jupiter.api.BeforeEach;
+
+import kitchenpos.dao.MenuDao;
+import kitchenpos.dao.OrderDao;
+import kitchenpos.dao.OrderLineItemDao;
+import kitchenpos.dao.OrderTableDao;
+import kitchenpos.domain.Order;
+import kitchenpos.domain.OrderLineItem;
+import kitchenpos.domain.OrderStatus;
+import kitchenpos.domain.OrderTable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
+class OrderServiceTest {
 
-@DisplayName("주문 테스트")
-public class OrderServiceTest extends AcceptanceTest {
+    @Mock
+    MenuDao menuDao;
+    @Mock
+    OrderDao orderDao;
+    @Mock
+    OrderLineItemDao orderLineItemDao;
+    @Mock
+    OrderTableDao orderTableDao;
 
-    OrderTable createdOrderTable;
-    List<OrderLineItem> orderLineItems;
-
-    @BeforeEach
-    public void setUp() {
-        super.setUp();
-        OrderLineItem orderLineItem1 = new OrderLineItem(1L, 1L);
-        OrderLineItem orderLineItem2 = new OrderLineItem(2L, 1L);
-        OrderTable orderTable = new OrderTable(4, false);
-
-        orderLineItems = new ArrayList<>();
-        orderLineItems.add(orderLineItem1);
-        orderLineItems.add(orderLineItem2);
-
-        ExtractableResponse<Response> createResponse = TableFactory.주문테이블_생성_요청(orderTable);
-        createdOrderTable = 주문테이블이_생성됨(createResponse);
-
-    }
-
-    @DisplayName("주문을 등록한다")
+    @DisplayName("주문을 등록한다.")
     @Test
-    void createTest() {
+    void createTest(){
+        // given
+        Order order = mock(Order.class);
 
-        Order order = new Order(createdOrderTable.getId(), orderLineItems);
-        ExtractableResponse<Response> createOrderResponse = OrderFactory.주문_생성_요청(order);
+        OrderLineItem orderLineItem = mock(OrderLineItem.class);
+        when(orderLineItem.getMenuId()).thenReturn(1L);
+        List<Long> menuIds = new ArrayList<>();
+        menuIds.add(orderLineItem.getMenuId());
 
-        assertThat(createOrderResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        when(menuDao.countByIdIn(menuIds)).thenReturn(1L);
+        when(order.getOrderLineItems()).thenReturn(Arrays.asList(orderLineItem));
+
+        OrderTable orderTable = mock(OrderTable.class);
+        when(orderTable.getId()).thenReturn(1L);
+        when(orderTableDao.findById(order.getId())).thenReturn(Optional.of(orderTable));
+
+        Order savedOrder = mock(Order.class);
+        when(savedOrder.getId()).thenReturn(1L);
+        when(orderDao.save(any())).thenReturn(savedOrder);
+        OrderService orderService = new OrderService(menuDao, orderDao, orderLineItemDao, orderTableDao);
+
+        // when
+        Order createdOrder = orderService.create(order);
+
+        // then
+        assertThat(createdOrder.getId()).isNotNull();
     }
 
-    @DisplayName("주문을 조회한다")
+    @DisplayName("주문의 목록을 조회한다.")
     @Test
-    void getListTest() {
+    void list(){
 
-        Order order = new Order(createdOrderTable.getId(), orderLineItems);
-        Order createdOrder = OrderFactory.주문_생성_요청(order).as(Order.class);
+        Order order = mock(Order.class);
+        when(order.getId()).thenReturn(1L);
+        when(orderDao.findAll()).thenReturn(Arrays.asList(order));
 
-        ExtractableResponse<Response> response = OrderFactory.주문_조회_요청();
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        List<Order> orders = Arrays.asList(response.as(Order[].class));
-        assertThat(orders).contains(createdOrder);
+        OrderLineItem orderLineItem = mock(OrderLineItem.class);
+        when(orderLineItemDao.findAllByOrderId(order.getId())).thenReturn(Arrays.asList(orderLineItem));
+        OrderService orderService = new OrderService(menuDao, orderDao, orderLineItemDao, orderTableDao);
+
+        // when
+        List<Order> orders = orderService.list();
+
+        // then
+        assertThat(orders).contains(order);
+
     }
-
-    @DisplayName("주문을 변경한다")
+  
+    @DisplayName("주문의 상태를 변경한다.")
     @Test
     void changeOrderStatusTest() {
 
-        Order order = new Order(createdOrderTable.getId(), orderLineItems);
-        Order createdOrder = OrderFactory.주문_생성_요청(order).as(Order.class);
-        createdOrder.setOrderStatus(OrderStatus.MEAL.name());
+        // given
+        Order order = new Order(OrderStatus.COOKING.toString());
 
-        ExtractableResponse<Response> response = OrderFactory.주문_상태변경_요청(createdOrder, createdOrder.getId());
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.as(Order.class).getOrderStatus()).isEqualTo(OrderStatus.MEAL.name());
+        Order expectedOrder = mock(Order.class);
+        when(expectedOrder.getId()).thenReturn(1L);
+        when(expectedOrder.getOrderStatus()).thenReturn(OrderStatus.COOKING.toString());
+
+        when(orderDao.findById(1L)).thenReturn(Optional.of(expectedOrder));
+
+        OrderLineItem orderLineItem = mock(OrderLineItem.class);
+        when(orderLineItemDao.findAllByOrderId(1L)).thenReturn(Arrays.asList(orderLineItem));
+
+        OrderService orderService = new OrderService(menuDao, orderDao, orderLineItemDao, orderTableDao);
+        // when
+        Order savedOrder = orderService.changeOrderStatus(1L, order);
+        // then
+        assertThat(savedOrder.getId()).isNotNull();
+        assertThat(savedOrder.getOrderStatus()).isEqualTo(order.getOrderStatus());
+
     }
-
-    public static OrderTable 주문테이블이_생성됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-        return response.as(OrderTable.class);
-    }
-
 
 }

@@ -1,51 +1,58 @@
 package kitchenpos.application;
 
-
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
-import kitchenpos.AcceptanceTest;
+import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.Product;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.*;
 
-@DisplayName("메뉴그룹 테스트")
-class MenuGroupServiceTest extends AcceptanceTest {
+@ExtendWith(MockitoExtension.class)
+class MenuGroupServiceTest {
 
+    @Mock
+    private MenuGroupDao menuGroupDao;
 
-    @DisplayName("메뉴그룹을 등록한다")
+    @DisplayName("메뉴 그룹을 등록한다.")
     @Test
     void createTest() {
+        // given
+        MenuGroup menuGroup = new MenuGroup("한식");
 
-        MenuGroup menuGroup = new MenuGroup(1L, "치킨");
+        MenuGroup expectedMenuGroup = mock(MenuGroup.class);
+        when(expectedMenuGroup.getId()).thenReturn(1L);
+        when(expectedMenuGroup.getName()).thenReturn("한식");
 
-        ExtractableResponse<Response> createResponse = MenuGroupFactory.메뉴그룹_생성_요청(menuGroup);
-        MenuGroup createdMenuGroup = 메뉴그룹이_생성됨(createResponse);
+        when(menuGroupDao.save(menuGroup)).thenReturn(expectedMenuGroup);
+        MenuGroupService menuGroupService = new MenuGroupService(menuGroupDao);
 
+        // when
+        MenuGroup savedMenuGroup = menuGroupService.create(menuGroup);
+
+        // then
+        assertThat(savedMenuGroup.getId()).isNotNull();
+        assertThat(savedMenuGroup.getName()).isEqualTo(menuGroup.getName());
     }
 
-    @DisplayName("메뉴그룹을 조회한다")
+    @DisplayName("메뉴 그룹의 목록을 조회한다.")
     @Test
     void getListTest() {
+        // given
+        MenuGroup expectedMenuGroup = mock(MenuGroup.class);
+        when(menuGroupDao.findAll()).thenReturn(Arrays.asList(expectedMenuGroup));
+        MenuGroupService menuGroupService = new MenuGroupService(menuGroupDao);
 
-        MenuGroup menuGroup = new MenuGroup(1L, "치킨");
+        // when
+        List<MenuGroup> menuGroups = menuGroupService.list();
 
-        ExtractableResponse<Response> createResponse = MenuGroupFactory.메뉴그룹_생성_요청(menuGroup);
-        MenuGroup createdMenuGroup = 메뉴그룹이_생성됨(createResponse);
-        ExtractableResponse<Response> getResponse = MenuGroupFactory.메뉴그룹_조회_요청();
-        List<MenuGroup> menuGroups = Arrays.asList(getResponse.as(MenuGroup[].class));
-        assertThat(menuGroups).contains(createdMenuGroup);
-    }
-
-    public static MenuGroup 메뉴그룹이_생성됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-        return response.as(MenuGroup.class);
+        // then
+        assertThat(menuGroups).contains(expectedMenuGroup);
     }
 }

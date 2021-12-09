@@ -1,51 +1,112 @@
 package kitchenpos.application;
 
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
-import kitchenpos.AcceptanceTest;
+import kitchenpos.dao.OrderDao;
+import kitchenpos.dao.OrderTableDao;
+import kitchenpos.dao.TableGroupDao;
+import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
-import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+@ExtendWith(MockitoExtension.class)
+class TableGroupServiceTest {
+
+    @Mock
+    OrderDao orderDao;
+    @Mock
+    OrderTableDao orderTableDao;
+    @Mock
+    TableGroupDao tableGroupDao;
 
 
-class TableGroupServiceTest extends AcceptanceTest {
-
-    @DisplayName("테이블 그룹을 등록한다")
+    @DisplayName("단체를 지정한다.")
     @Test
     void createTest() {
 
-        ExtractableResponse<Response> getResponse = TableFactory.주문테이블_조회_요청();
-        List<OrderTable> orderTables = Arrays.asList(getResponse.as(OrderTable[].class));
+        // given
+        OrderTable orderTable1 = mock(OrderTable.class);
+        when(orderTable1.getId()).thenReturn(1L);
+        OrderTable orderTable2 = mock(OrderTable.class);
+        when(orderTable2.getId()).thenReturn(2L);
 
-        TableGroup tableGroup = new TableGroup(orderTables);
+        TableGroup tableGroup = new TableGroup(Arrays.asList(orderTable1, orderTable2));
 
-        ExtractableResponse<Response> createTableGroupResponse = TableGroupFactory.주문그룹테이블_생성_요청(tableGroup);
-        TableGroupFactory.주문그룹테이블이_생성됨(createTableGroupResponse);
+        OrderTable savedOrderTable1 = mock(OrderTable.class);
+        when(savedOrderTable1.isEmpty()).thenReturn(true);
+        when(savedOrderTable1.getTableGroupId()).thenReturn(null);
 
+        OrderTable savedOrderTable2 = mock(OrderTable.class);
+        when(savedOrderTable2.isEmpty()).thenReturn(true);
+        when(savedOrderTable2.getTableGroupId()).thenReturn(null);
+
+        when(orderTableDao.findAllByIdIn(Arrays.asList(orderTable1.getId(), orderTable2.getId()))).thenReturn(Arrays.asList(savedOrderTable1, savedOrderTable2));
+
+        TableGroup savedTableGroup = mock(TableGroup.class);
+        when(savedTableGroup.getId()).thenReturn(1L);
+
+        when(tableGroupDao.save(tableGroup)).thenReturn(savedTableGroup);
+
+        OrderTable expectedOrderTable1 = mock(OrderTable.class);
+        OrderTable expectedOrderTable2 = mock(OrderTable.class);
+
+        when(savedTableGroup.getOrderTables()).thenReturn(Arrays.asList(expectedOrderTable1, expectedOrderTable2));
+
+
+        TableGroupService tableGroupService = new TableGroupService(orderDao, orderTableDao, tableGroupDao);
+
+        // when
+        TableGroup createdTableGroup = tableGroupService.create(tableGroup);
+
+        // then
+        assertThat(createdTableGroup.getId()).isNotNull();
+        assertThat(createdTableGroup.getOrderTables()).containsExactly(expectedOrderTable1, expectedOrderTable2);
     }
 
-    @DisplayName("테이블 그룹을 해제한다")
-    @Test
-    void unGroupTest() {
 
-        ExtractableResponse<Response> getResponse = TableFactory.주문테이블_조회_요청();
-        List<OrderTable> orderTables = Arrays.asList(getResponse.as(OrderTable[].class));
+    @DisplayName("단체를 해제한다.")
+   @Test
+    void ungroupTest(){
 
-        TableGroup tableGroup = new TableGroup(orderTables);
+        // given
+        Long tableGroupId = 1L;
 
-        ExtractableResponse<Response> createTableGroupResponse = TableGroupFactory.주문그룹테이블_생성_요청(tableGroup);
-        TableGroup createdTableGroup = TableGroupFactory.주문그룹테이블이_생성됨(createTableGroupResponse);
+        OrderTable orderTable1 = mock(OrderTable.class);
+        when(orderTable1.getId()).thenReturn(1L);
+        OrderTable orderTable2 = mock(OrderTable.class);
+        when(orderTable2.getId()).thenReturn(2L);
 
-        ExtractableResponse<Response> deleteTableGroupResponse = TableGroupFactory.주문그룹테이블_삭제_요청(createdTableGroup.getId());
-        assertThat(deleteTableGroupResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        TableGroup tableGroup = mock(TableGroup.class);
+        when(tableGroup.getId()).thenReturn(tableGroupId);
+
+        when(orderTableDao.findAllByTableGroupId(tableGroup.getId())).thenReturn(Arrays.asList(orderTable1, orderTable2));
+        when(orderDao.existsByOrderTableIdInAndOrderStatusIn(Arrays.asList(orderTable1.getId(), orderTable2.getId()),
+                Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).thenReturn(false);
+
+        OrderTable expectedOrderTable1 = mock(OrderTable.class);
+        when(expectedOrderTable1.getTableGroupId()).thenReturn(null);
+        OrderTable expectedOrderTable2 = mock(OrderTable.class);
+        when(expectedOrderTable2.getTableGroupId()).thenReturn(null);
+
+        when(orderTableDao.save(orderTable1)).thenReturn(expectedOrderTable1);
+        when(orderTableDao.save(orderTable2)).thenReturn(expectedOrderTable2);
+
+        TableGroupService tableGroupService = new TableGroupService(orderDao, orderTableDao, tableGroupDao);
+
+        // when
+        tableGroupService.ungroup(tableGroupId);
+
+        // then
+        assertThat(expectedOrderTable1.getTableGroupId()).isNull();
+        assertThat(expectedOrderTable2.getTableGroupId()).isNull();
 
     }
-
 }

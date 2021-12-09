@@ -1,60 +1,113 @@
 package kitchenpos.application;
 
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
-import kitchenpos.AcceptanceTest;
+import kitchenpos.dao.OrderDao;
+import kitchenpos.dao.OrderTableDao;
+import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.*;
 
-class TableServiceTest extends AcceptanceTest {
+@ExtendWith(MockitoExtension.class)
+class TableServiceTest {
+
+    @Mock
+    OrderDao orderDao;
+    @Mock
+    OrderTableDao orderTableDao;
 
 
-    @DisplayName("주문테이블을 등록한다")
+    @DisplayName("테이블을 생성한다.")
     @Test
     void createTest() {
 
-        OrderTable orderTable = new OrderTable(4, false);
+        // given
+        OrderTable orderTable = new OrderTable();
 
-        ExtractableResponse<Response> createResponse = TableFactory.주문테이블_생성_요청(orderTable);
-        OrderTable createdOrderTable = TableFactory.주문테이블이_생성됨(createResponse);
-        ExtractableResponse<Response> getResponse = TableFactory.주문테이블_조회_요청();
-        List<OrderTable> tableFactories = Arrays.asList(getResponse.as(OrderTable[].class));
-        assertThat(tableFactories).contains(createdOrderTable);
+        OrderTable expectedOrderTable = mock(OrderTable.class);
+        when(expectedOrderTable.getId()).thenReturn(1L);
+        when(orderTableDao.save(orderTable)).thenReturn(expectedOrderTable);
+
+        TableService tableService = new TableService(orderDao, orderTableDao);
+
+        // when
+        OrderTable createdOrderTable = tableService.create(orderTable);
+
+        // then
+        assertThat(createdOrderTable.getId()).isNotNull();
     }
 
-    @DisplayName("주문테이블 상태를 변경한다.")
+
+    @DisplayName("테이블을 조회한다.")
+    @Test
+    void getListTest() {
+
+        // given
+        OrderTable orderTable = new OrderTable();
+        when(orderTableDao.findAll()).thenReturn(Arrays.asList(orderTable));
+        TableService tableService = new TableService(orderDao, orderTableDao);
+
+        // when
+        List<OrderTable> orderTables = tableService.list();
+
+        // then
+        assertThat(orderTables).contains(orderTable);
+    }
+
+    @DisplayName("테이블을 비운다.")
     @Test
     void changeEmptyTest() {
 
-        OrderTable orderTable = new OrderTable(4, true);
+        //given
+        Long orderTableId = 1L;
 
-        ExtractableResponse<Response> createResponse = TableFactory.주문테이블_생성_요청(orderTable);
-        OrderTable createdOrderTable = TableFactory.주문테이블이_생성됨(createResponse);
-        createdOrderTable.changeFull();
+        OrderTable orderTable  = mock(OrderTable.class);
+        when(orderTable .getTableGroupId()).thenReturn(null);
 
-        ExtractableResponse<Response> changeStatusResponse = TableFactory.주문테이블_상태변경_요청(createdOrderTable.getId(), createdOrderTable);
-        assertThat(changeStatusResponse.as(OrderTable.class).isEmpty()).isEqualTo(false);
+        when(orderTableDao.findById(orderTableId)).thenReturn(Optional.of(orderTable ));
+        when(orderDao.existsByOrderTableIdAndOrderStatusIn(
+                orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).thenReturn(false);
+
+        OrderTable savedOrderTable = mock(OrderTable.class);
+        when(savedOrderTable.isEmpty()).thenReturn(true);
+        when(orderTableDao.save(orderTable )).thenReturn(savedOrderTable);
+
+        TableService tableService = new TableService(orderDao, orderTableDao);
+
+        // when
+        OrderTable changedOrderTable = tableService.changeEmpty(orderTableId, orderTable);
+
+        // then
+        assertThat(changedOrderTable.isEmpty()).isTrue();
     }
 
-    @DisplayName("주문테이블 게스트 수를 변경한다.")
+    @DisplayName("테이블의 손님 수를 변경한다.")
     @Test
-    void changeNumberOfGuestsTest() {
+    void changeNumberOfGuests(){
+        // given
+        Long orderTableId = 1L;
+        OrderTable orderTable = mock(OrderTable.class);
+        when(orderTable.getNumberOfGuests()).thenReturn(3);
+        when(orderTableDao.findById(orderTableId)).thenReturn(Optional.of(orderTable));
 
-        OrderTable orderTable = new OrderTable(4, false);
+        OrderTable savedOrderTable = mock(OrderTable.class);
+        when(savedOrderTable.getNumberOfGuests()).thenReturn(3);
+        when(orderTableDao.save(orderTable)).thenReturn(savedOrderTable);
+        TableService tableService = new TableService(orderDao, orderTableDao);
 
-        ExtractableResponse<Response> createResponse = TableFactory.주문테이블_생성_요청(orderTable);
-        OrderTable createdOrderTable = TableFactory.주문테이블이_생성됨(createResponse);
-        createdOrderTable.setNumberOfGuests(3);
+        // when
+        OrderTable changedOrderTable = tableService.changeNumberOfGuests(orderTableId, orderTable);
 
-        ExtractableResponse<Response> changeStatusResponse = TableFactory.주문테이블_게스트변경_요청(createdOrderTable.getId(), createdOrderTable);
-        assertThat(changeStatusResponse.as(OrderTable.class).getNumberOfGuests()).isEqualTo(3);
+        // then
+        assertThat(changedOrderTable.getNumberOfGuests()).isEqualTo(orderTable.getNumberOfGuests());
     }
-
-    
 }

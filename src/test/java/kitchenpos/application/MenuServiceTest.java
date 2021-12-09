@@ -1,79 +1,95 @@
 package kitchenpos.application;
 
-
-import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.*;
-import org.junit.jupiter.api.BeforeEach;
+import kitchenpos.dao.MenuDao;
+import kitchenpos.dao.MenuGroupDao;
+import kitchenpos.dao.MenuProductDao;
+import kitchenpos.dao.ProductDao;
+import kitchenpos.domain.Menu;
+import kitchenpos.domain.MenuGroup;
+import kitchenpos.domain.MenuProduct;
+import kitchenpos.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import org.springframework.http.HttpStatus;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
+class MenuServiceTest {
 
-@DisplayName("메뉴 테스트")
-class MenuServiceTest extends AcceptanceTest {
+    @Mock
+    MenuDao menuDao;
+    @Mock
+    MenuGroupDao menuGroupDao;
+    @Mock
+    MenuProductDao menuProductDao;
+    @Mock
+    ProductDao productDao;
 
-    MenuGroup createdMenuGroup;
-    Product createdProduct;
-    Menu createdMenu;
-
-    @BeforeEach
-    public void setUp() {
-        super.setUp();
-
-        ExtractableResponse<Response> createdResponse;
-
-        Product product = new Product("후라이드치킨", BigDecimal.valueOf(18000));
-        createdResponse = ProductFactory.상품_생성_요청(product);
-        createdProduct = ProductServiceTest.상품이_생성됨(createdResponse);
-
-        MenuGroup menuGroup = new MenuGroup(1L, "치킨");
-        createdResponse = MenuGroupFactory.메뉴그룹_생성_요청(menuGroup);
-        createdMenuGroup = MenuGroupServiceTest.메뉴그룹이_생성됨(createdResponse);
-
-    }
-
-    @DisplayName("메뉴를 등록한다")
+    @DisplayName("메뉴를 등록한다.")
     @Test
     void createTest() {
 
-        Menu menu = new Menu("후라이드치킨", BigDecimal.valueOf(18000), createdMenuGroup.getId());
+        MenuGroup 한마리메뉴 = mock(MenuGroup.class);
+        Product 후라이드 = mock(Product.class);
 
-        MenuProduct menuProduct = new MenuProduct(menu.getId(), createdProduct.getId(), 10L);
-        menu.addMenuProduct(menuProduct);
+        // given
+        Long 한마리메뉴_id = 2L;
+        when(한마리메뉴.getId()).thenReturn(한마리메뉴_id);
 
-        ExtractableResponse<Response> createResponse = MenuFactory.메뉴_생성_요청(menu);
-        createdMenu = 메뉴가_생성됨(createResponse);
+        Long 후라이드_id = 1L;
+        when(후라이드.getPrice()).thenReturn(BigDecimal.valueOf(16000));
+
+        Menu 후라이드치킨 = new Menu("후라이드치킨", BigDecimal.valueOf(16000), 한마리메뉴.getId());
+        MenuProduct 후라이드치킨_상품 = new MenuProduct(후라이드치킨.getId(), 후라이드_id, 1L);
+        후라이드치킨.addMenuProduct(후라이드치킨_상품);
+
+        when(menuGroupDao.existsById(후라이드치킨.getMenuGroupId())).thenReturn(true);
+        when(productDao.findById(후라이드_id)).thenReturn(Optional.of(후라이드));
+        MenuService menuService = new MenuService(menuDao, menuGroupDao, menuProductDao, productDao);
+
+        Menu expectedMenu = mock(Menu.class);
+        when(expectedMenu.getId()).thenReturn(1L);
+        when(expectedMenu.getName()).thenReturn("후라이드치킨");
+        when(expectedMenu.getPrice()).thenReturn(BigDecimal.valueOf(16000));
+        when(expectedMenu.getMenuGroupId()).thenReturn(한마리메뉴_id);
+
+        when(menuDao.save(후라이드치킨)).thenReturn(expectedMenu);
+
+        // when
+        Menu created_후라이드치킨 = menuService.create(후라이드치킨);
+        // then
+        assertThat(created_후라이드치킨.getId()).isNotNull();
+        assertThat(created_후라이드치킨.getName()).isEqualTo(후라이드치킨.getName());
+        assertThat(created_후라이드치킨.getPrice()).isEqualTo(후라이드치킨.getPrice());
+        assertThat(created_후라이드치킨.getMenuGroupId()).isEqualTo(후라이드치킨.getMenuGroupId());
     }
 
-    @DisplayName("메뉴를 조회한다")
+    @DisplayName("메뉴의 목록을 조회한다.")
     @Test
     void getListTest() {
+        // given
+        Menu menu = mock(Menu.class);
+        when(menu.getId()).thenReturn(1L);
 
-        Menu menu = new Menu("후라이드치킨", BigDecimal.valueOf(18000), createdMenuGroup.getId());
+        MenuProduct menuProduct = mock(MenuProduct.class);
 
-        MenuProduct menuProduct = new MenuProduct(menu.getId(), createdProduct.getId(), 10L);
-        menu.addMenuProduct(menuProduct);
+        when(menuDao.findAll()).thenReturn(Arrays.asList(menu));
+        when(menuProductDao.findAllByMenuId(menu.getId())).thenReturn(Arrays.asList(menuProduct));
+        MenuService menuService = new MenuService(menuDao, menuGroupDao, menuProductDao, productDao);
 
-        ExtractableResponse<Response> createResponse = MenuFactory.메뉴_생성_요청(menu);
-        createdMenu = 메뉴가_생성됨(createResponse);
-
-        ExtractableResponse<Response> getResponse = MenuFactory.메뉴_조회_요청();
-        List<Menu> menus = Arrays.asList(getResponse.as(Menu[].class));
-        assertThat(menus).contains(createdMenu);
-    }
-
-    public static Menu 메뉴가_생성됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-        return response.as(Menu.class);
+        // when
+        List<Menu> menus = menuService.list();
+        // then
+        assertThat(menus).contains(menu);
     }
 
 }
