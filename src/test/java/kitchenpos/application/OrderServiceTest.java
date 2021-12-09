@@ -26,15 +26,9 @@ class OrderServiceTest extends ServiceTest {
         OrderTable orderTable = 테이블_저장(false);
         Menu savedMenu = 메뉴_저장();
 
-        OrderLineItem orderLineItem = new OrderLineItem();
-        orderLineItem.setMenuId(savedMenu.getId());
-        orderLineItem.setQuantity(2);
-
-        Order order = new Order();
-        order.setOrderTableId(orderTable.getId());
-        order.setOrderStatus(OrderStatus.COOKING.name());
-        order.setOrderedTime(LocalDateTime.now());
-        order.setOrderLineItems(Collections.singletonList(orderLineItem));
+        OrderLineItem orderLineItem = new OrderLineItem(savedMenu.getId(), 2);
+        Order order = new Order(
+                orderTable.getId(), OrderStatus.COOKING, LocalDateTime.now(), Collections.singletonList(orderLineItem));
 
         // when
         Order savedOrder = orderService.create(order);
@@ -56,12 +50,7 @@ class OrderServiceTest extends ServiceTest {
     void createThrowException1() {
         // given
         OrderTable orderTable = 테이블_저장(false);
-        Menu savedMenu = 메뉴_저장();
-
-        Order order = new Order();
-        order.setOrderTableId(orderTable.getId());
-        order.setOrderStatus(OrderStatus.COOKING.name());
-        order.setOrderedTime(LocalDateTime.now());
+        Order order = new Order(orderTable.getId(), OrderStatus.COOKING, LocalDateTime.now(), null);
 
         // when & then
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> orderService.create(order));
@@ -72,16 +61,9 @@ class OrderServiceTest extends ServiceTest {
     void createThrowException2() {
         // given
         OrderTable orderTable = 테이블_저장(false);
-
-        OrderLineItem orderLineItem = new OrderLineItem();
-        orderLineItem.setMenuId(0L);
-        orderLineItem.setQuantity(2);
-
-        Order order = new Order();
-        order.setOrderTableId(orderTable.getId());
-        order.setOrderStatus(OrderStatus.COOKING.name());
-        order.setOrderedTime(LocalDateTime.now());
-        order.setOrderLineItems(Collections.singletonList(orderLineItem));
+        OrderLineItem orderLineItem = new OrderLineItem(0L, 2);
+        Order order = new Order(
+                orderTable.getId(), OrderStatus.COOKING, LocalDateTime.now(), Collections.singletonList(orderLineItem));
 
         // when & then
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> orderService.create(order));
@@ -92,16 +74,8 @@ class OrderServiceTest extends ServiceTest {
     void createThrowException3() {
         // given
         Menu savedMenu = 메뉴_저장();
-
-        OrderLineItem orderLineItem = new OrderLineItem();
-        orderLineItem.setMenuId(savedMenu.getId());
-        orderLineItem.setQuantity(2);
-
-        Order order = new Order();
-        order.setOrderTableId(0L);
-        order.setOrderStatus(OrderStatus.COOKING.name());
-        order.setOrderedTime(LocalDateTime.now());
-        order.setOrderLineItems(Collections.singletonList(orderLineItem));
+        OrderLineItem orderLineItem = new OrderLineItem(savedMenu.getId(), 2);
+        Order order = new Order(0L, OrderStatus.COOKING, LocalDateTime.now(), Collections.singletonList(orderLineItem));
 
         // when & then
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> orderService.create(order));
@@ -113,16 +87,9 @@ class OrderServiceTest extends ServiceTest {
         // given
         OrderTable orderTable = 테이블_저장(true);
         Menu savedMenu = 메뉴_저장();
-
-        OrderLineItem orderLineItem = new OrderLineItem();
-        orderLineItem.setMenuId(savedMenu.getId());
-        orderLineItem.setQuantity(2);
-
-        Order order = new Order();
-        order.setOrderTableId(orderTable.getId());
-        order.setOrderStatus(OrderStatus.COOKING.name());
-        order.setOrderedTime(LocalDateTime.now());
-        order.setOrderLineItems(Collections.singletonList(orderLineItem));
+        OrderLineItem orderLineItem = new OrderLineItem(savedMenu.getId(), 2);
+        Order order = new Order(
+                orderTable.getId(), OrderStatus.COOKING, LocalDateTime.now(), Collections.singletonList(orderLineItem));
 
         // when & then
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> orderService.create(order));
@@ -146,9 +113,7 @@ class OrderServiceTest extends ServiceTest {
     void changeOrderStatus() {
         // given
         Order savedOrder = 주문_저장();
-
-        Order order = new Order();
-        order.setOrderStatus(OrderStatus.MEAL.name());
+        Order order = new Order(OrderStatus.MEAL);
 
         // when
         Order modifiedOrder = orderService.changeOrderStatus(savedOrder.getId(), order);
@@ -161,8 +126,7 @@ class OrderServiceTest extends ServiceTest {
     @DisplayName("존재하지 않는 주문 ID로 주문의 주문 상태를 변경하면 예외를 발생한다.")
     void changeOrderStatusThrowException1() {
         // given
-        Order order = new Order();
-        order.setOrderStatus(OrderStatus.MEAL.name());
+        Order order = new Order(OrderStatus.MEAL);
 
         // when & then
         assertThatExceptionOfType(IllegalArgumentException.class)
@@ -176,8 +140,7 @@ class OrderServiceTest extends ServiceTest {
         Order savedOrder = 주문_저장();
         주문_상태를_COMPLETION_으로_상태_변경(savedOrder.getId());
 
-        Order order = new Order();
-        order.setOrderStatus(OrderStatus.MEAL.name());
+        Order order = new Order(OrderStatus.MEAL);
 
         // when & then
         assertThatExceptionOfType(IllegalArgumentException.class)

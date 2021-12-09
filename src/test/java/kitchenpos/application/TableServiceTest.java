@@ -18,9 +18,7 @@ class TableServiceTest extends ServiceTest {
     @DisplayName("테이블을 등록한다.")
     void create() {
         // given
-        OrderTable orderTable = new OrderTable();
-        orderTable.setNumberOfGuests(2);
-        orderTable.setEmpty(true);
+        OrderTable orderTable = new OrderTable(2, true);
 
         // when
         OrderTable savedOrderTable = tableService.create(orderTable);
@@ -48,9 +46,7 @@ class TableServiceTest extends ServiceTest {
     void changeEmpty() {
         // given
         OrderTable savedOrderTable = 테이블_저장(false);
-
-        OrderTable orderTable = new OrderTable();
-        orderTable.setEmpty(false);
+        OrderTable orderTable = new OrderTable(false);
 
         // when
         OrderTable modifiedOrderTable = tableService.changeEmpty(savedOrderTable.getId(), orderTable);
@@ -63,8 +59,7 @@ class TableServiceTest extends ServiceTest {
     @DisplayName("존재하지 않는 테이블 ID로 테이블의 상태를 변경하면 예외를 발생한다.")
     void changeEmptyThrowException1() {
         // given
-        OrderTable orderTable = new OrderTable();
-        orderTable.setEmpty(false);
+        OrderTable orderTable = new OrderTable(true);
 
         // when & then
         assertThatExceptionOfType(IllegalArgumentException.class)
@@ -77,9 +72,7 @@ class TableServiceTest extends ServiceTest {
         // given
         TableGroup savedTableGroup = 테이블_그룹_저장();
         OrderTable savedOrderTable = 테이블_조회(savedTableGroup.getOrderTables().get(0).getId());
-
-        OrderTable orderTable = new OrderTable();
-        orderTable.setEmpty(false);
+        OrderTable orderTable = new OrderTable(false);
 
         // when & then
         assertThatExceptionOfType(IllegalArgumentException.class)
@@ -91,9 +84,7 @@ class TableServiceTest extends ServiceTest {
     void changeNumberOfGuests() {
         // given
         OrderTable savedOrderTable = 테이블_저장(false);
-
-        OrderTable orderTable = new OrderTable();
-        orderTable.setNumberOfGuests(4);
+        OrderTable orderTable = new OrderTable(4);
 
         // when
         OrderTable modifiedOrderTable = tableService.changeNumberOfGuests(savedOrderTable.getId(), orderTable);
@@ -107,9 +98,7 @@ class TableServiceTest extends ServiceTest {
     void changeNumberOfGuestsThrowException1() {
         // given
         OrderTable savedOrderTable = 테이블_저장(false);
-
-        OrderTable orderTable = new OrderTable();
-        orderTable.setNumberOfGuests(-1);
+        OrderTable orderTable = new OrderTable(-1);
 
         // when & then
         assertThatExceptionOfType(IllegalArgumentException.class)
@@ -120,8 +109,7 @@ class TableServiceTest extends ServiceTest {
     @DisplayName("존재하지 않는 테이블 ID로 테이블의 방문한 손님 수를 변경하면 예외를 발생한다.")
     void changeNumberOfGuestsThrowException2() {
         // given
-        OrderTable orderTable = new OrderTable();
-        orderTable.setNumberOfGuests(4);
+        OrderTable orderTable = new OrderTable(4);
 
         // when & then
         assertThatExceptionOfType(IllegalArgumentException.class)
@@ -133,9 +121,7 @@ class TableServiceTest extends ServiceTest {
     void changeNumberOfGuestsThrowException3() {
         // given
         OrderTable savedOrderTable = 테이블_저장(true);
-
-        OrderTable orderTable = new OrderTable();
-        orderTable.setNumberOfGuests(4);
+        OrderTable orderTable = new OrderTable(4);
 
         // when & then
         assertThatExceptionOfType(IllegalArgumentException.class)

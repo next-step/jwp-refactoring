@@ -5,7 +5,6 @@ import kitchenpos.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
@@ -18,9 +17,7 @@ class ProductServiceTest extends ServiceTest {
     @DisplayName("상품을 등록한다.")
     void create() {
         // given
-        Product product = new Product();
-        product.setName("매운양념치킨");
-        product.setPrice(new BigDecimal(18_000));
+        Product product = new Product("매운양념치킨", 18_000);
 
         // when
         Product savedProduct = productService.create(product);
@@ -37,9 +34,7 @@ class ProductServiceTest extends ServiceTest {
     @DisplayName("0보다 작은 가격으로 상품을 등록하면 예외를 발생한다.")
     void createThrowException() {
         // given
-        Product product = new Product();
-        product.setName("매운양념치킨");
-        product.setPrice(new BigDecimal(-1));
+        Product product = new Product("매운양념치킨", -1);
 
         // when & then
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> productService.create(product));

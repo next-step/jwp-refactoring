@@ -22,10 +22,7 @@ class TableGroupServiceTest extends ServiceTest {
         // given
         OrderTable orderTable1 = 테이블_저장(true);
         OrderTable orderTable2 = 테이블_저장(true);
-
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.setCreatedDate(LocalDateTime.now());
-        tableGroup.setOrderTables(Arrays.asList(orderTable1, orderTable2));
+        TableGroup tableGroup = new TableGroup(LocalDateTime.now(), Arrays.asList(orderTable1, orderTable2));
 
         // when
         TableGroup savedTableGroup = tableGroupService.create(tableGroup);
@@ -43,10 +40,7 @@ class TableGroupServiceTest extends ServiceTest {
     void createThrowException1() {
         // given
         OrderTable orderTable = 테이블_저장(true);
-
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.setCreatedDate(LocalDateTime.now());
-        tableGroup.setOrderTables(Collections.singletonList(orderTable));
+        TableGroup tableGroup = new TableGroup(LocalDateTime.now(), Collections.singletonList(orderTable));
 
         // when & then
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> tableGroupService.create(tableGroup));
@@ -57,13 +51,8 @@ class TableGroupServiceTest extends ServiceTest {
     void createThrowException2() {
         // given
         OrderTable orderTable1 = 테이블_저장(true);
-        OrderTable orderTable2 = new OrderTable();
-        orderTable2.setNumberOfGuests(2);
-        orderTable2.setEmpty(true);
-
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.setCreatedDate(LocalDateTime.now());
-        tableGroup.setOrderTables(Arrays.asList(orderTable1, orderTable2));
+        OrderTable orderTable2 = new OrderTable(2, true);
+        TableGroup tableGroup = new TableGroup(LocalDateTime.now(), Arrays.asList(orderTable1, orderTable2));
 
         // when & then
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> tableGroupService.create(tableGroup));
@@ -75,10 +64,7 @@ class TableGroupServiceTest extends ServiceTest {
         // given
         OrderTable orderTable1 = 테이블_저장(true);
         OrderTable orderTable2 = 테이블_저장(false);
-
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.setCreatedDate(LocalDateTime.now());
-        tableGroup.setOrderTables(Arrays.asList(orderTable1, orderTable2));
+        TableGroup tableGroup = new TableGroup(LocalDateTime.now(), Arrays.asList(orderTable1, orderTable2));
 
         // when & then
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> tableGroupService.create(tableGroup));

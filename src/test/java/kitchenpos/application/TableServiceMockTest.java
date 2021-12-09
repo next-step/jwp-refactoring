@@ -22,9 +22,7 @@ class TableServiceMockTest extends ServiceTest {
     void changeEmptyThrowException() {
         // given
         OrderTable savedOrderTable = 테이블_저장(false);
-
-        OrderTable orderTable = new OrderTable();
-        orderTable.setEmpty(true);
+        OrderTable orderTable = new OrderTable(true);
 
         given(orderDao.existsByOrderTableIdAndOrderStatusIn(any(), any())).willReturn(true);
 

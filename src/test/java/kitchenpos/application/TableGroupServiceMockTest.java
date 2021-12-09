@@ -31,10 +31,7 @@ class TableGroupServiceMockTest extends ServiceTest {
         OrderTable orderTable1 = 테이블_생성();
         OrderTable orderTable2 = 테이블_생성();
         orderTable2.setTableGroupId(1L);
-
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.setCreatedDate(LocalDateTime.now());
-        tableGroup.setOrderTables(Arrays.asList(orderTable1, orderTable2));
+        TableGroup tableGroup = new TableGroup(LocalDateTime.now(), Arrays.asList(orderTable1, orderTable2));
 
         given(orderTableDao.findAllByIdIn(any())).willReturn(Arrays.asList(orderTable1, orderTable2));
 
@@ -49,10 +46,7 @@ class TableGroupServiceMockTest extends ServiceTest {
         OrderTable orderTable1 = 테이블_생성();
         OrderTable orderTable2 = 테이블_생성();
         orderTable2.setTableGroupId(1L);
-
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.setCreatedDate(LocalDateTime.now());
-        tableGroup.setOrderTables(Arrays.asList(orderTable1, orderTable2));
+        TableGroup tableGroup = new TableGroup(LocalDateTime.now(), Arrays.asList(orderTable1, orderTable2));
 
         given(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(), any())).willReturn(true);
 
@@ -62,9 +56,6 @@ class TableGroupServiceMockTest extends ServiceTest {
     }
 
     private OrderTable 테이블_생성() {
-        OrderTable orderTable1 = new OrderTable();
-        orderTable1.setNumberOfGuests(2);
-        orderTable1.setEmpty(true);
-        return orderTable1;
+        return new OrderTable(2, true);
     }
 }

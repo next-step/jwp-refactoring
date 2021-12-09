@@ -25,15 +25,9 @@ public class MenuServiceTest extends ServiceTest {
         Product savedProduct = 상품_저장();
         MenuGroup savedMenuGroup = 메뉴_그룹_저장();
 
-        MenuProduct menuProduct = new MenuProduct();
-        menuProduct.setProductId(savedProduct.getId());
-        menuProduct.setQuantity(1);
-
-        Menu menu = new Menu();
-        menu.setName(savedProduct.getName());
-        menu.setPrice(savedProduct.getPrice());
-        menu.setMenuGroupId(savedMenuGroup.getId());
-        menu.setMenuProducts(Collections.singletonList(menuProduct));
+        MenuProduct menuProduct = new MenuProduct(savedProduct.getId(), 1);
+        Menu menu = new Menu(
+                savedProduct.getName(), savedProduct.getPrice(), savedMenuGroup.getId(), Collections.singletonList(menuProduct));
 
         // when
         Menu savedMenu = menuService.create(menu);
@@ -57,15 +51,8 @@ public class MenuServiceTest extends ServiceTest {
         Product savedProduct = 상품_저장();
         MenuGroup savedMenuGroup = 메뉴_그룹_저장();
 
-        MenuProduct menuProduct = new MenuProduct();
-        menuProduct.setProductId(savedProduct.getId());
-        menuProduct.setQuantity(1);
-
-        Menu menu = new Menu();
-        menu.setName(savedProduct.getName());
-        menu.setPrice(new BigDecimal(-1));
-        menu.setMenuGroupId(savedMenuGroup.getId());
-        menu.setMenuProducts(Collections.singletonList(menuProduct));
+        MenuProduct menuProduct = new MenuProduct(savedProduct.getId(), 1);
+        Menu menu = new Menu(savedProduct.getName(), -1, savedMenuGroup.getId(), Collections.singletonList(menuProduct));
 
         // when & then
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> menuService.create(menu));
@@ -77,15 +64,8 @@ public class MenuServiceTest extends ServiceTest {
         // given
         Product savedProduct = 상품_저장();
 
-        MenuProduct menuProduct = new MenuProduct();
-        menuProduct.setProductId(savedProduct.getId());
-        menuProduct.setQuantity(1);
-
-        Menu menu = new Menu();
-        menu.setName(savedProduct.getName());
-        menu.setPrice(savedProduct.getPrice());
-        menu.setMenuGroupId(0L);
-        menu.setMenuProducts(Collections.singletonList(menuProduct));
+        MenuProduct menuProduct = new MenuProduct(savedProduct.getId(), 1);
+        Menu menu = new Menu(savedProduct.getName(), savedProduct.getPrice(), 0L, Collections.singletonList(menuProduct));
 
         // when & then
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> menuService.create(menu));
@@ -98,15 +78,9 @@ public class MenuServiceTest extends ServiceTest {
         Product savedProduct = 상품_저장();
         MenuGroup savedMenuGroup = 메뉴_그룹_저장();
 
-        MenuProduct menuProduct = new MenuProduct();
-        menuProduct.setProductId(0L);
-        menuProduct.setQuantity(1);
-
-        Menu menu = new Menu();
-        menu.setName(savedProduct.getName());
-        menu.setPrice(savedProduct.getPrice());
-        menu.setMenuGroupId(savedMenuGroup.getId());
-        menu.setMenuProducts(Collections.singletonList(menuProduct));
+        MenuProduct menuProduct = new MenuProduct(0L, 1);
+        Menu menu = new Menu(
+                savedProduct.getName(), savedProduct.getPrice(), savedMenuGroup.getId(), Collections.singletonList(menuProduct));
 
         // when & then
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> menuService.create(menu));
@@ -119,15 +93,10 @@ public class MenuServiceTest extends ServiceTest {
         Product savedProduct = 상품_저장();
         MenuGroup savedMenuGroup = 메뉴_그룹_저장();
 
-        MenuProduct menuProduct = new MenuProduct();
-        menuProduct.setProductId(savedProduct.getId());
-        menuProduct.setQuantity(1);
-
-        Menu menu = new Menu();
-        menu.setName(savedProduct.getName());
-        menu.setPrice(savedProduct.getPrice().add(BigDecimal.ONE));
-        menu.setMenuGroupId(savedMenuGroup.getId());
-        menu.setMenuProducts(Collections.singletonList(menuProduct));
+        MenuProduct menuProduct = new MenuProduct(savedProduct.getId(), 1);
+        Menu menu = new Menu(
+                savedProduct.getName(), savedProduct.getPrice().add(BigDecimal.ONE), savedMenuGroup.getId(),
+                Collections.singletonList(menuProduct));
 
         // when & then
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> menuService.create(menu));

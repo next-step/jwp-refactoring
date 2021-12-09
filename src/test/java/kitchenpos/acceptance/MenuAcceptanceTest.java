@@ -9,7 +9,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
-import java.math.BigDecimal;
 import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.*;
@@ -21,15 +20,8 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     @DisplayName("메뉴를 등록한다.")
     void create() {
         // given
-        MenuProduct menuProduct = new MenuProduct();
-        menuProduct.setProductId(1L);
-        menuProduct.setQuantity(1);
-
-        Menu menu = new Menu();
-        menu.setName("후라이드치킨");
-        menu.setPrice(new BigDecimal(16_000));
-        menu.setMenuGroupId(2L);
-        menu.setMenuProducts(Collections.singletonList(menuProduct));
+        MenuProduct menuProduct = new MenuProduct(1L, 1);
+        Menu menu = new Menu("후라이드치킨", 16_000, 2L, Collections.singletonList(menuProduct));
 
         // when
         ExtractableResponse<Response> response = 메뉴_등록_요청(menu);

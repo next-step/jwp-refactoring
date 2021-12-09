@@ -8,8 +8,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
-import java.math.BigDecimal;
-
 import static org.assertj.core.api.Assertions.*;
 
 @DisplayName("상품 인수 테스트")
@@ -19,9 +17,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
     @DisplayName("상품을 등록한다.")
     void create() {
         // given
-        Product product = new Product();
-        product.setName("매운양념치킨");
-        product.setPrice(new BigDecimal(18_000));
+        Product product = new Product("매운양념치킨", 18_000);
 
         // when
         ExtractableResponse<Response> response = 상품_등록_요청(product);

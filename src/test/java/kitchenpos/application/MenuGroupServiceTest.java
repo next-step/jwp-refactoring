@@ -17,8 +17,7 @@ class MenuGroupServiceTest extends ServiceTest {
     @DisplayName("메뉴 그룹을 등록한다.")
     void create() {
         // given
-        MenuGroup menuGroup = new MenuGroup();
-        menuGroup.setName("세마리메뉴");
+        MenuGroup menuGroup = new MenuGroup("세마리메뉴");
 
         // when
         MenuGroup savedMenuGroup = menuGroupService.create(menuGroup);

@@ -28,21 +28,10 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
 
-        OrderTable orderTable;
-        orderTable = new OrderTable();
-        orderTable.setNumberOfGuests(2);
-        orderTable.setEmpty(false);
-        orderTable = 테이블_등록되어_있음(orderTable);
-
-        OrderLineItem orderLineItem = new OrderLineItem();
-        orderLineItem.setMenuId(1L);
-        orderLineItem.setQuantity(2);
-
-        order = new Order();
-        order.setOrderTableId(orderTable.getId());
-        order.setOrderStatus(OrderStatus.COOKING.name());
-        order.setOrderedTime(LocalDateTime.now());
-        order.setOrderLineItems(Collections.singletonList(orderLineItem));
+        OrderTable orderTable = 테이블_등록되어_있음(new OrderTable(2, false));
+        OrderLineItem orderLineItem = new OrderLineItem(1L, 2);
+        order = new Order(
+                orderTable.getId(), OrderStatus.COOKING, LocalDateTime.now(),Collections.singletonList(orderLineItem));
     }
 
     @Test
@@ -73,9 +62,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     void changeOrderStatus() {
         // given
         Order savedOrder = 주문_등록되어_있음(order);
-
-        Order modifyOrder = new Order();
-        modifyOrder.setOrderStatus(OrderStatus.MEAL.name());
+        Order modifyOrder = new Order(OrderStatus.MEAL);
 
         // when
         ExtractableResponse<Response> response = 주문의_주문_상태_변경_요청(savedOrder.getId(), modifyOrder);

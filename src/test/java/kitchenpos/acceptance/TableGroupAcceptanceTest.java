@@ -27,24 +27,15 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
 
-        orderTable1 = new OrderTable();
-        orderTable1.setNumberOfGuests(2);
-        orderTable1.setEmpty(true);
-        orderTable1 = 테이블_등록되어_있음(orderTable1);
-
-        orderTable2 = new OrderTable();
-        orderTable2.setNumberOfGuests(2);
-        orderTable2.setEmpty(true);
-        orderTable2 = 테이블_등록되어_있음(orderTable2);
+        orderTable1 = 테이블_등록되어_있음(new OrderTable(2, true));
+        orderTable2 = 테이블_등록되어_있음(new OrderTable(2, true));
     }
 
     @Test
     @DisplayName("테이블 그룹을 등록한다.")
     void create() {
         // given
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.setCreatedDate(LocalDateTime.now());
-        tableGroup.setOrderTables(Arrays.asList(orderTable1, orderTable2));
+        TableGroup tableGroup = new TableGroup(LocalDateTime.now(), Arrays.asList(orderTable1, orderTable2));
 
         // when
         ExtractableResponse<Response> response = 테이블_그룹_등록_요청(tableGroup);
@@ -57,11 +48,8 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
     @DisplayName("테이블 그룹에서 테이블을 제거한다.")
     void list() {
         // given
-        TableGroup savedTableGroup = new TableGroup();
-        savedTableGroup.setCreatedDate(LocalDateTime.now());
-        savedTableGroup.setOrderTables(Arrays.asList(orderTable1, orderTable2));
-
-        savedTableGroup = 테이블_그룹_등록되어_있음(savedTableGroup);
+        TableGroup savedTableGroup = 테이블_그룹_등록되어_있음(
+                new TableGroup(LocalDateTime.now(), Arrays.asList(orderTable1, orderTable2)));
 
         // when
         ExtractableResponse<Response> response = 테이블_그룹에서_테이블_제거_요청(savedTableGroup.getId());
