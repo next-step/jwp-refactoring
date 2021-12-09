@@ -1,5 +1,10 @@
 # 키친포스
 
+## uml
+
+![legacy-kichenpos](./uml/legacy-kichenpos.png)
+![legacy-erd](./uml/legacy-erd.png)
+
 ## 요구 사항
 
 ---
