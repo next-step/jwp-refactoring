@@ -13,6 +13,10 @@ public class TableStatusRequest {
         this.empty = empty;
     }
 
+    public boolean isEmpty() {
+        return empty;
+    }
+
     public TableStatus status() {
         return TableStatus.valueOf(empty);
     }

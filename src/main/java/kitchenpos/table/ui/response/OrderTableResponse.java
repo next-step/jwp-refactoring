@@ -4,10 +4,13 @@ import kitchenpos.domain.OrderTable;
 
 public final class OrderTableResponse {
 
-    private final long id;
-    private final Long tableGroupId;
-    private final int numberOfGuests;
-    private final boolean empty;
+    private long id;
+    private Long tableGroupId;
+    private int numberOfGuests;
+    private boolean empty;
+
+    private OrderTableResponse() {
+    }
 
     private OrderTableResponse(long id, Long tableGroupId, int numberOfGuests, boolean empty) {
         this.id = id;

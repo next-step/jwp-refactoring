@@ -10,6 +10,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.math.BigDecimal;
 import kitchenpos.domain.Product;
+import kitchenpos.product.ui.response.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -36,7 +37,7 @@ class ProductAcceptanceTest extends AcceptanceTest {
         //given
         String name = "후라이드치킨";
         BigDecimal price = BigDecimal.TEN;
-        Product product = 상품_등록_되어_있음(name, price);
+        ProductResponse product = 상품_등록_되어_있음(name, price);
 
         //when
         ExtractableResponse<Response> response = 상품_목록_조회_요청();

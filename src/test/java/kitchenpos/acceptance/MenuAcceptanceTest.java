@@ -11,9 +11,9 @@ import static kitchenpos.acceptance.step.ProductAcceptanceStep.상품_등록_되
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.math.BigDecimal;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.Product;
+import kitchenpos.menu.ui.response.MenuGroupResponse;
+import kitchenpos.menu.ui.response.MenuResponse;
+import kitchenpos.product.ui.response.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,8 +21,8 @@ import org.junit.jupiter.api.Test;
 @DisplayName("메뉴 관련 기능")
 class MenuAcceptanceTest extends AcceptanceTest {
 
-    private MenuGroup 두마리메뉴;
-    private Product 후라이드치킨;
+    private MenuGroupResponse 두마리메뉴;
+    private ProductResponse 후라이드치킨;
 
     @BeforeEach
     void setUp() {
@@ -50,7 +50,7 @@ class MenuAcceptanceTest extends AcceptanceTest {
     @DisplayName("메뉴들을 조회할 수 있다.")
     void list() {
         //given
-        Menu menu = 메뉴_등록_되어_있음("후라이드치킨세트", BigDecimal.TEN,
+        MenuResponse menu = 메뉴_등록_되어_있음("후라이드치킨세트", BigDecimal.TEN,
             두마리메뉴.getId(), 후라이드치킨.getId(), 2);
 
         //when

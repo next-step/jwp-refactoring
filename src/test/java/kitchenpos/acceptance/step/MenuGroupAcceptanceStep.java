@@ -10,18 +10,20 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.menu.ui.request.MenuGroupRequest;
+import kitchenpos.menu.ui.response.MenuGroupResponse;
 import org.springframework.http.HttpStatus;
 
 public class MenuGroupAcceptanceStep {
 
-    public static MenuGroup 메뉴_그룹_등록_되어_있음(String name) {
-        return 메뉴_그룹_등록_요청(name).as(MenuGroup.class);
+    public static MenuGroupResponse 메뉴_그룹_등록_되어_있음(String name) {
+        return 메뉴_그룹_등록_요청(name).as(MenuGroupResponse.class);
     }
 
     public static ExtractableResponse<Response> 메뉴_그룹_등록_요청(String name) {
         return RestAssured.given().log().all()
             .contentType(ContentType.JSON)
-            .body(createRequest(name))
+            .body(new MenuGroupRequest(name))
             .when()
             .post("/api/menu-groups")
             .then().log().all()
@@ -31,11 +33,9 @@ public class MenuGroupAcceptanceStep {
     public static void 메뉴_그룹_등록_됨(ExtractableResponse<Response> response, String expectedName) {
         assertAll(
             () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
-            () -> assertThat(response.as(MenuGroup.class))
-                .satisfies(group -> {
-                    assertThat(group.getId()).isNotNull();
-                    assertThat(group.getName()).isEqualTo(expectedName);
-                })
+            () -> assertThat(response.as(MenuGroupResponse.class))
+                .extracting(MenuGroupResponse::getName)
+                .isEqualTo(expectedName)
         );
     }
 
@@ -48,21 +48,15 @@ public class MenuGroupAcceptanceStep {
     }
 
     public static void 메뉴_그룹_목록_조회_됨(ExtractableResponse<Response> response,
-        MenuGroup expectedMenuGroup) {
-        List<MenuGroup> groups = response.as(new TypeRef<List<MenuGroup>>() {
+        MenuGroupResponse expectedMenuGroup) {
+        List<MenuGroupResponse> groups = response.as(new TypeRef<List<MenuGroupResponse>>() {
         });
         assertAll(
             () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
             () -> assertThat(groups)
                 .first()
-                .extracting(MenuGroup::getId)
+                .extracting(MenuGroupResponse::getId)
                 .isEqualTo(expectedMenuGroup.getId())
         );
-    }
-
-    private static MenuGroup createRequest(String name) {
-        MenuGroup menuGroup = new MenuGroup();
-        menuGroup.setName(name);
-        return menuGroup;
     }
 }

@@ -21,6 +21,11 @@ import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.Product;
+import kitchenpos.menu.ui.response.MenuGroupResponse;
+import kitchenpos.menu.ui.response.MenuResponse;
+import kitchenpos.order.ui.response.OrderResponse;
+import kitchenpos.product.ui.response.ProductResponse;
+import kitchenpos.table.ui.response.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,13 +34,13 @@ import org.junit.jupiter.api.Test;
 class OrderAcceptanceTest extends AcceptanceTest {
 
 
-    private Menu 후라이드치킨세트;
-    private OrderTable 주문테이블;
+    private MenuResponse 후라이드치킨세트;
+    private OrderTableResponse 주문테이블;
 
     @BeforeEach
     void setUp() {
-        MenuGroup 두마리메뉴 = 메뉴_그룹_등록_되어_있음("두마리메뉴");
-        Product 후라이드치킨 = 상품_등록_되어_있음("후라이드치킨", BigDecimal.TEN);
+        MenuGroupResponse 두마리메뉴 = 메뉴_그룹_등록_되어_있음("두마리메뉴");
+        ProductResponse 후라이드치킨 = 상품_등록_되어_있음("후라이드치킨", BigDecimal.TEN);
         후라이드치킨세트 = 메뉴_등록_되어_있음("후라이드치킨세트", BigDecimal.TEN,
             두마리메뉴.getId(), 후라이드치킨.getId(), 2);
         주문테이블 = 테이블_저장되어_있음(3, false);
@@ -48,7 +53,8 @@ class OrderAcceptanceTest extends AcceptanceTest {
         int quantity = 2;
 
         //when
-        ExtractableResponse<Response> response = 주문_등록_요청(주문테이블, 후라이드치킨세트, quantity);
+        ExtractableResponse<Response> response = 주문_등록_요청(주문테이블.getId(), 후라이드치킨세트.getId(),
+            quantity);
 
         //then
         주문_등록_됨(response, quantity, 후라이드치킨세트);
@@ -58,7 +64,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
     @DisplayName("주문들을 조회할 수 있다.")
     void list() {
         //given
-        Order order = 주문_등록_되어_있음(주문테이블, 후라이드치킨세트, 2);
+        OrderResponse order = 주문_등록_되어_있음(주문테이블.getId(), 후라이드치킨세트.getId(), 2);
 
         //when
         ExtractableResponse<Response> response = 주문_목록_조회_요청();
@@ -71,7 +77,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
     @DisplayName("주문 상태를 변경할 수 있다.")
     void changeOrderStatus() {
         //given
-        Order order = 주문_등록_되어_있음(주문테이블, 후라이드치킨세트, 2);
+        OrderResponse order = 주문_등록_되어_있음(주문테이블.getId(), 후라이드치킨세트.getId(), 2);
         OrderStatus status = OrderStatus.MEAL;
 
         //when

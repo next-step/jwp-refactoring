@@ -11,8 +11,8 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.Arrays;
 import java.util.List;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.table.ui.response.OrderTableResponse;
+import kitchenpos.table.ui.response.TableGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -23,8 +23,8 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
     @DisplayName("단체 지정을 등록할 수 있다.")
     void create() {
         //given
-        OrderTable firstOrderTable = 테이블_저장되어_있음(3, true);
-        OrderTable secondOrderTable = 테이블_저장되어_있음(5, true);
+        OrderTableResponse firstOrderTable = 테이블_저장되어_있음(3, true);
+        OrderTableResponse secondOrderTable = 테이블_저장되어_있음(5, true);
         List<Long> orderTableIds = Arrays.asList(firstOrderTable.getId(), secondOrderTable.getId());
 
         //when
@@ -38,9 +38,9 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
     @DisplayName("단체 지정을 해제할 수 있다.")
     void ungroup() {
         //given
-        OrderTable firstOrderTable = 테이블_저장되어_있음(3, true);
-        OrderTable secondOrderTable = 테이블_저장되어_있음(5, true);
-        TableGroup tableGroup = 단체_지정_되어_있음(
+        OrderTableResponse firstOrderTable = 테이블_저장되어_있음(3, true);
+        OrderTableResponse secondOrderTable = 테이블_저장되어_있음(5, true);
+        TableGroupResponse tableGroup = 단체_지정_되어_있음(
             Arrays.asList(firstOrderTable.getId(), secondOrderTable.getId()));
 
         //when

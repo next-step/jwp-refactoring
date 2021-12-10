@@ -18,6 +18,14 @@ public class OrderTableRequest {
         this.empty = empty;
     }
 
+    public int getNumberOfGuests() {
+        return numberOfGuests;
+    }
+
+    public boolean isEmpty() {
+        return empty;
+    }
+
     public Headcount numberOfGuests() {
         return Headcount.from(numberOfGuests);
     }

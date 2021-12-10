@@ -13,6 +13,10 @@ public final class MenuGroupRequest {
         this.name = name;
     }
 
+    public String getName() {
+        return name;
+    }
+
     public Name name() {
         return Name.from(name);
     }

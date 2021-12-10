@@ -11,24 +11,27 @@ import io.restassured.response.Response;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
-import kitchenpos.domain.Menu;
 import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.menu.ui.response.MenuResponse;
+import kitchenpos.order.ui.request.OrderLineItemRequest;
+import kitchenpos.order.ui.request.OrderRequest;
+import kitchenpos.order.ui.request.OrderStatusRequest;
+import kitchenpos.order.ui.response.OrderResponse;
 import org.springframework.http.HttpStatus;
 
 public class OrderAcceptanceStep {
 
-    public static Order 주문_등록_되어_있음(OrderTable orderTable, Menu menu, int quantity) {
-        return 주문_등록_요청(orderTable, menu, quantity).as(Order.class);
+    public static OrderResponse 주문_등록_되어_있음(long tableId, long menuId, int quantity) {
+        return 주문_등록_요청(tableId, menuId, quantity).as(OrderResponse.class);
     }
 
-    public static ExtractableResponse<Response> 주문_등록_요청(OrderTable orderTable,
-        Menu menu, int quantity) {
+    public static ExtractableResponse<Response> 주문_등록_요청(long tableId,
+        long menuId, int quantity) {
         return RestAssured.given().log().all()
             .contentType(ContentType.JSON)
-            .body(orderCreateRequest(orderTable, orderLineItemRequest(menu, quantity)))
+            .body(new OrderRequest(tableId,
+                Collections.singletonList(new OrderLineItemRequest(menuId, quantity))))
             .when()
             .post("/api/orders")
             .then().log().all()
@@ -36,7 +39,7 @@ public class OrderAcceptanceStep {
     }
 
     public static void 주문_등록_됨(ExtractableResponse<Response> response,
-        int expectedQuantity, Menu expectedMenu) {
+        int expectedQuantity, MenuResponse expectedMenu) {
         Order order = response.as(Order.class);
         assertAll(
             () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
@@ -60,13 +63,14 @@ public class OrderAcceptanceStep {
             .extract();
     }
 
-    public static void 주문_목록_조회_됨(ExtractableResponse<Response> response, Order expectedOrder) {
-        List<Order> orders = response.as(new TypeRef<List<Order>>() {
+    public static void 주문_목록_조회_됨(ExtractableResponse<Response> response,
+        OrderResponse expectedOrder) {
+        List<OrderResponse> orders = response.as(new TypeRef<List<OrderResponse>>() {
         });
         assertAll(
             () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
             () -> assertThat(orders).first()
-                .extracting(Order::getId)
+                .extracting(OrderResponse::getId)
                 .isEqualTo(expectedOrder.getId())
         );
     }
@@ -74,7 +78,7 @@ public class OrderAcceptanceStep {
     public static ExtractableResponse<Response> 주문_상태_수정_요청(long id, OrderStatus status) {
         return RestAssured.given().log().all()
             .contentType(ContentType.JSON)
-            .body(orderUpdateRequest(status))
+            .body(new OrderStatusRequest(status.name()))
             .when()
             .put("/api/orders/{orderId}/order-status", id)
             .then().log().all()
@@ -85,29 +89,10 @@ public class OrderAcceptanceStep {
         OrderStatus expectedStatus) {
         assertAll(
             () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-            () -> assertThat(response.as(Order.class))
-                .extracting(Order::getOrderStatus)
+            () -> assertThat(response.as(OrderResponse.class))
+                .extracting(OrderResponse::getOrderStatus)
                 .isEqualTo(expectedStatus.name())
         );
     }
 
-    public static Order orderCreateRequest(OrderTable table, OrderLineItem orderLineItem) {
-        Order order = new Order();
-        order.setOrderLineItems(Collections.singletonList(orderLineItem));
-        order.setOrderTableId(table.getId());
-        return order;
-    }
-
-    private static Order orderUpdateRequest(OrderStatus orderStatus) {
-        Order order = new Order();
-        order.setOrderStatus(orderStatus.name());
-        return order;
-    }
-
-    private static OrderLineItem orderLineItemRequest(Menu menu, int quantity) {
-        OrderLineItem orderLineItem = new OrderLineItem();
-        orderLineItem.setQuantity(quantity);
-        orderLineItem.setMenuId(menu.getId());
-        return orderLineItem;
-    }
 }

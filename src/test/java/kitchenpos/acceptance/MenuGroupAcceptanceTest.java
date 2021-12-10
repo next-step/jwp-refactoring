@@ -9,6 +9,7 @@ import static kitchenpos.acceptance.step.MenuGroupAcceptanceStep.메뉴_그룹_�
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.menu.ui.response.MenuGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -32,7 +33,7 @@ class MenuGroupAcceptanceTest extends AcceptanceTest {
     @DisplayName("메뉴 그룹들을 조회할 수 있다.")
     void list() {
         //given
-        MenuGroup menuGroup = 메뉴_그룹_등록_되어_있음("두마리메뉴");
+        MenuGroupResponse menuGroup = 메뉴_그룹_등록_되어_있음("두마리메뉴");
 
         //when
         ExtractableResponse<Response> response = 메뉴_그룹_목록_조회_요청();

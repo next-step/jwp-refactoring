@@ -11,18 +11,20 @@ import io.restassured.response.Response;
 import java.math.BigDecimal;
 import java.util.List;
 import kitchenpos.domain.Product;
+import kitchenpos.product.ui.request.ProductRequest;
+import kitchenpos.product.ui.response.ProductResponse;
 import org.springframework.http.HttpStatus;
 
 public class ProductAcceptanceStep {
 
-    public static Product 상품_등록_되어_있음(String name, BigDecimal price) {
-        return 상품_등록_요청(name, price).as(Product.class);
+    public static ProductResponse 상품_등록_되어_있음(String name, BigDecimal price) {
+        return 상품_등록_요청(name, price).as(ProductResponse.class);
     }
 
     public static ExtractableResponse<Response> 상품_등록_요청(String name, BigDecimal price) {
         return RestAssured.given().log().all()
             .contentType(ContentType.JSON)
-            .body(createRequest(name, price))
+            .body(new ProductRequest(name, price))
             .when()
             .post("/api/products")
             .then().log().all()
@@ -50,22 +52,16 @@ public class ProductAcceptanceStep {
             .extract();
     }
 
-    public static void 상품_목록_조회_됨(ExtractableResponse<Response> response, Product expectedProduct) {
-        List<Product> products = response.as(new TypeRef<List<Product>>() {
+    public static void 상품_목록_조회_됨(
+        ExtractableResponse<Response> response, ProductResponse expectedProduct) {
+        List<ProductResponse> products = response.as(new TypeRef<List<ProductResponse>>() {
         });
         assertAll(
             () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
             () -> assertThat(products)
                 .first()
-                .extracting(Product::getId)
+                .extracting(ProductResponse::getId)
                 .isEqualTo(expectedProduct.getId())
         );
-    }
-
-    private static Product createRequest(String name, BigDecimal price) {
-        Product product = new Product();
-        product.setName(name);
-        product.setPrice(price);
-        return product;
     }
 }

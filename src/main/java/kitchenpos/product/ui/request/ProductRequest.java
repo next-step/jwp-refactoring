@@ -18,6 +18,14 @@ public final class ProductRequest {
         this.price = price;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
     public Name name() {
         return Name.from(name);
     }

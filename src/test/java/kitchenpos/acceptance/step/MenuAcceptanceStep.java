@@ -11,17 +11,18 @@ import io.restassured.response.Response;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Product;
+import kitchenpos.menu.ui.request.MenuProductRequest;
+import kitchenpos.menu.ui.request.MenuRequest;
+import kitchenpos.menu.ui.response.MenuGroupResponse;
+import kitchenpos.menu.ui.response.MenuResponse;
+import kitchenpos.product.ui.response.ProductResponse;
 import org.springframework.http.HttpStatus;
 
 public class MenuAcceptanceStep {
 
-    public static Menu 메뉴_등록_되어_있음(String name, BigDecimal price,
+    public static MenuResponse 메뉴_등록_되어_있음(String name, BigDecimal price,
         long menuGroupId, long productId, int quantity) {
-        return 메뉴_등록_요청(name, price, menuGroupId, productId, quantity).as(Menu.class);
+        return 메뉴_등록_요청(name, price, menuGroupId, productId, quantity).as(MenuResponse.class);
     }
 
     public static ExtractableResponse<Response> 메뉴_등록_요청(String name, BigDecimal price,
@@ -29,8 +30,8 @@ public class MenuAcceptanceStep {
         long productId, int quantity) {
         return RestAssured.given().log().all()
             .contentType(ContentType.JSON)
-            .body(menuCreateRequest(name, price, menuGroupId,
-                Collections.singletonList(menuProductCreateRequest(productId, quantity))))
+            .body(new MenuRequest(name, price, menuGroupId,
+                Collections.singletonList(new MenuProductRequest(productId, quantity))))
             .when()
             .post("/api/menus")
             .then().log().all()
@@ -38,11 +39,10 @@ public class MenuAcceptanceStep {
     }
 
     public static void 메뉴_등록_됨(ExtractableResponse<Response> response, String name,
-        BigDecimal price, int quantity, MenuGroup menuGroup, Product product) {
-        Menu menu = response.as(Menu.class);
+        BigDecimal price, int quantity, MenuGroupResponse menuGroup, ProductResponse product) {
+        MenuResponse menu = response.as(MenuResponse.class);
         assertAll(
             () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
-            () -> assertThat(menu.getId()).isNotNull(),
             () -> assertThat(menu.getName()).isEqualTo(name),
             () -> assertThat(menu.getPrice()).isEqualByComparingTo(price),
             () -> assertThat(menu.getMenuGroupId()).isEqualTo(menuGroup.getId()),
@@ -63,32 +63,15 @@ public class MenuAcceptanceStep {
             .extract();
     }
 
-    public static void 메뉴_목록_조회_됨(ExtractableResponse<Response> response, Menu menu) {
-        List<Menu> menus = response.as(new TypeRef<List<Menu>>() {
+    public static void 메뉴_목록_조회_됨(ExtractableResponse<Response> response, MenuResponse menu) {
+        List<MenuResponse> menus = response.as(new TypeRef<List<MenuResponse>>() {
         });
         assertAll(
             () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
             () -> assertThat(menus)
                 .first()
-                .extracting(Menu::getId)
+                .extracting(MenuResponse::getId)
                 .isEqualTo(menu.getId())
         );
-    }
-
-    private static Menu menuCreateRequest(String name, BigDecimal price, long menuGroupId,
-        List<MenuProduct> menuProductRequests) {
-        Menu menu = new Menu();
-        menu.setName(name);
-        menu.setPrice(price);
-        menu.setMenuProducts(menuProductRequests);
-        menu.setMenuGroupId(menuGroupId);
-        return menu;
-    }
-
-    private static MenuProduct menuProductCreateRequest(long productId, int quantity) {
-        MenuProduct menuProduct = new MenuProduct();
-        menuProduct.setProductId(productId);
-        menuProduct.setQuantity(quantity);
-        return menuProduct;
     }
 }

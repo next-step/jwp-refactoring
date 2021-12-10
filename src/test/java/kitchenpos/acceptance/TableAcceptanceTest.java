@@ -13,6 +13,7 @@ import static kitchenpos.acceptance.step.TableAcceptanceStep.테이블_저장되
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.table.ui.response.OrderTableResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -53,7 +54,7 @@ class TableAcceptanceTest extends AcceptanceTest {
     void changeEmpty() {
         //given
         final boolean expectedEmpty = false;
-        OrderTable orderTable = 테이블_저장되어_있음(5, true);
+        OrderTableResponse orderTable = 테이블_저장되어_있음(5, true);
 
         //when
         ExtractableResponse<Response> response = 테이블_빈_상태_수정_요청(orderTable.getId(), expectedEmpty);
@@ -67,7 +68,7 @@ class TableAcceptanceTest extends AcceptanceTest {
     void changeNumberOfGuests() {
         //given
         final int expectedNumber = 1;
-        OrderTable orderTable = 테이블_저장되어_있음(5, false);
+        OrderTableResponse orderTable = 테이블_저장되어_있음(5, false);
 
         //when
         ExtractableResponse<Response> response = 테이블_손님_수_수정_요청(orderTable.getId(), expectedNumber);

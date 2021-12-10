@@ -15,13 +15,17 @@ import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.table.ui.request.TableGroupRequest;
+import kitchenpos.table.ui.request.TableGroupRequest.OrderTableIdRequest;
+import kitchenpos.table.ui.response.OrderTableResponse;
+import kitchenpos.table.ui.response.TableGroupResponse;
 import org.assertj.core.groups.Tuple;
 import org.springframework.http.HttpStatus;
 
 public class TableGroupAcceptanceStep {
 
-    public static TableGroup 단체_지정_되어_있음(List<Long> orderTableIds) {
-        return 단체_지정_요청(orderTableIds).as(TableGroup.class);
+    public static TableGroupResponse 단체_지정_되어_있음(List<Long> orderTableIds) {
+        return 단체_지정_요청(orderTableIds).as(TableGroupResponse.class);
     }
 
     public static ExtractableResponse<Response> 단체_지정_요청(List<Long> orderTableIds) {
@@ -55,7 +59,7 @@ public class TableGroupAcceptanceStep {
         );
     }
 
-    public static ExtractableResponse<Response> 단체_해제_요청(TableGroup tableGroup) {
+    public static ExtractableResponse<Response> 단체_해제_요청(TableGroupResponse tableGroup) {
         return RestAssured.given().log().all()
             .when()
             .delete("/api/table-groups/{tableGroupId}", tableGroup.getId())
@@ -64,29 +68,20 @@ public class TableGroupAcceptanceStep {
     }
 
     public static void 단체_해제_됨(ExtractableResponse<Response> response) {
-        List<OrderTable> orderTableResponse = 테이블_목록_조회_요청().as(new TypeRef<List<OrderTable>>() {
-        });
+        List<OrderTableResponse> orderTableResponse = 테이블_목록_조회_요청()
+            .as(new TypeRef<List<OrderTableResponse>>() {
+            });
         assertAll(
             () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value()),
             () -> assertThat(orderTableResponse)
-                .extracting(OrderTable::getTableGroupId)
+                .extracting(OrderTableResponse::getTableGroupId)
                 .containsExactly(null, null)
         );
     }
 
-    private static TableGroup tableGroupRequest(List<Long> orderTableIds) {
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.setOrderTables(
-            orderTableIds.stream()
-                .map(TableGroupAcceptanceStep::orderTableRequest)
-                .collect(Collectors.toList())
-        );
-        return tableGroup;
-    }
-
-    private static OrderTable orderTableRequest(Long orderTableId) {
-        OrderTable orderTable = new OrderTable();
-        orderTable.setId(orderTableId);
-        return orderTable;
+    private static TableGroupRequest tableGroupRequest(List<Long> orderTableIds) {
+        return new TableGroupRequest(orderTableIds.stream()
+            .map(OrderTableIdRequest::new)
+            .collect(Collectors.toList()));
     }
 }

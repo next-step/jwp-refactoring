@@ -14,6 +14,10 @@ public class TableGuestsCountRequest {
         this.numberOfGuests = numberOfGuests;
     }
 
+    public int getNumberOfGuests() {
+        return numberOfGuests;
+    }
+
     public Headcount numberOfGuests() {
         return Headcount.from(numberOfGuests);
     }

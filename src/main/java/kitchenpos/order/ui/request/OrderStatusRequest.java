@@ -14,6 +14,10 @@ public final class OrderStatusRequest {
         this.orderStatus = orderStatus;
     }
 
+    public String getOrderStatus() {
+        return orderStatus;
+    }
+
     public OrderStatus status() {
         return OrderStatus.valueOf(orderStatus);
     }
