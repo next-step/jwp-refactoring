@@ -3,7 +3,10 @@ package kitchenpos.menu.dto;
 import kitchenpos.menu.domain.Price;
 import kitchenpos.menu.domain.menu.Menu;
 import kitchenpos.menu.domain.menugroup.MenuGroup;
+import kitchenpos.menu.domain.menuproduct.MenuProduct;
 import kitchenpos.menu.domain.menuproduct.MenuProducts;
+
+import java.util.List;
 
 public class MenuResponse {
 
@@ -11,14 +14,17 @@ public class MenuResponse {
     private String name;
     private Price menuPrice;
     private MenuGroup menuGroup;
-    private MenuProducts menuProducts;
+    private List<MenuProduct> menuProducts;
+
+    public MenuResponse() {
+    }
 
     private MenuResponse(Menu menu) {
         this.id = menu.getId();
         this.name = menu.getName();
         this.menuPrice = menu.getMenuPrice();
         this.menuGroup = menu.getMenuGroup();
-        this.menuProducts = menu.getMenuProducts();
+        this.menuProducts = menu.getMenuProducts().getMenuProducts();
     }
 
     public static MenuResponse of(Menu menu) {
@@ -41,7 +47,7 @@ public class MenuResponse {
         return menuGroup;
     }
 
-    public MenuProducts getMenuProducts() {
+    public List<MenuProduct> getMenuProducts() {
         return menuProducts;
     }
 }
