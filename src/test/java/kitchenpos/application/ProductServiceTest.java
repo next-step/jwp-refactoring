@@ -54,31 +54,6 @@ public class ProductServiceTest {
         Assertions.assertThat(createdProduct).isEqualTo(this.뿌링클치킨);
     }
 
-    @DisplayName("상품 가격이 없으면 예외가 발생한다.")
-    @Test
-    void exception_craeteProduct_nullPrice() {
-        // given
-        this.뿌링클치킨.changePrice(null);
-
-        // when
-        // then
-        Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
-                    .isThrownBy(() -> productService.create(this.뿌링클치킨));
-    }
-
-    @DisplayName("상품 가격이 0보다 작으면 예외가 발생한다.")
-    @ValueSource(ints = {-1, -10})
-    @ParameterizedTest(name="[{index}] 상품가격은 [{0}]")
-    void exception_craeteProduct_underZeroPrice(int price) {
-        // given
-        this.뿌링클치킨.changePrice(Price.of(price));
-
-        // when
-        // then
-        Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
-                    .isThrownBy(() -> productService.create(this.뿌링클치킨));
-    }
-
     @DisplayName("상품이 조회된다.")
     @Test
     void search_product() {

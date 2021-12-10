@@ -26,14 +26,22 @@ public class Menu {
     private List<MenuProduct> menuProducts;
 
     protected Menu() {
-
     }
 
-    private Menu(String name, Price price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+    private Menu(Long id, String name, Price price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.menuGroup = menuGroup;
+        this.menuProducts = menuProducts;
     }
 
     public static Menu of(String name, Price price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        return new Menu(name, price, menuGroup, menuProducts);
+        return new Menu(null, name, price, menuGroup, menuProducts);
+    }
+    
+    public static Menu of(Long id, String name, Price price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+        return new Menu(id, name, price, menuGroup, menuProducts);
     }
 
     public Long getId() {

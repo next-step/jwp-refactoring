@@ -65,11 +65,11 @@ public class OrderServiceTest {
 
     @BeforeEach
     void setUp() {
-        뿌링클치킨 = Product.of("뿌링클치킨", Price.of(15_000));
-        치킨무 = Product.of("치킨무", Price.of(1_000));
-        코카콜라 = Product.of("코카콜라", Price.of(3_000));
+        뿌링클치킨 = Product.of(1L, "뿌링클치킨", Price.of(15_000));
+        치킨무 = Product.of(2L, "치킨무", Price.of(1_000));
+        코카콜라 = Product.of(3L, "코카콜라", Price.of(3_000));
 
-        뿌링클콤보 = Menu.of("뿌링클콤보", Price.of(18_000), null, null);
+        뿌링클콤보 = Menu.of(1L, "뿌링클콤보", Price.of(18_000), null, null);
 
         뿌링클콤보_뿌링클치킨 = MenuProduct.of(뿌링클콤보, 뿌링클치킨, 1L);
         뿌링클콤보_치킨무 = MenuProduct.of(뿌링클콤보, 치킨무, 1L);
@@ -77,7 +77,7 @@ public class OrderServiceTest {
         
         뿌링클콤보.changeMenuProducts(List.of(뿌링클콤보_뿌링클치킨, 뿌링클콤보_치킨무, 뿌링클콤보_코카콜라));
 
-        치킨_주문_단체테이블 = OrderTable.of(null, 0);
+        치킨_주문_단체테이블 = OrderTable.of(1L, null, 0);
 
         치킨_주문항목 = OrderLineItem.of(null, 뿌링클콤보, 1L);
         
@@ -99,6 +99,7 @@ public class OrderServiceTest {
 
         this.치킨주문.changeOrderLineItems(List.of(this.치킨_주문항목));
         this.치킨주문.changeOrderTable(this.치킨_주문_단체테이블);
+        this.치킨_주문_단체테이블.changeEmpty(false);
 
         // when
         Order savedOrder = orderService.create(this.치킨주문);

@@ -38,7 +38,7 @@ public class TableService {
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
 
-        if (Objects.nonNull(savedOrderTable.getTableGroup().getId())) {
+        if (savedOrderTable.hasTableGroup()) {
             throw new IllegalArgumentException();
         }
 

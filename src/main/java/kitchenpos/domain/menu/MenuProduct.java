@@ -28,16 +28,21 @@ public class MenuProduct {
     protected MenuProduct() {
     }
 
-    private MenuProduct(Menu menu, Product product, long quantity) {
+    private MenuProduct(Long seq, Menu menu, Product product, long quantity) {
+        this.seq = seq;
         this.menu = menu;
         this.product = product;
         this.quantity = quantity;
     }
 
     public static MenuProduct of(Menu menu, Product product, long quantity) {
-        return new MenuProduct(menu, product, quantity);
+        return new MenuProduct(null, menu, product, quantity);
     }
-
+    
+    public static MenuProduct of(Long seq, Menu menu, Product product, long quantity) {
+        return new MenuProduct(seq, menu, product, quantity);
+    }
+    
     public Long getSeq() {
         return this.seq;
     }

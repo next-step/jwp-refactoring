@@ -11,23 +11,28 @@ import kitchenpos.domain.Price;
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     private String name;
     private Price price;
 
     protected Product() {
     }
 
-    private Product(String name, Price price) {
+    private Product(Long id, String name, Price price) {
+        this.id = id;
         this.name = name;
         this.price = price;
     }
 
     public static Product of(String name, Price price) {
-        return new Product(name, price);
+        return new Product(null, name, price);
     }
 
-    public long getId() {
+    public static Product of(Long id, String name, Price price) {
+        return new Product(id, name, price);
+    }
+
+    public Long getId() {
         return this.id;
     }
 

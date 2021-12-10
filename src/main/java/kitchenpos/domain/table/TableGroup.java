@@ -21,13 +21,18 @@ public class TableGroup {
     protected TableGroup() {
     }
 
-    private TableGroup(LocalDateTime createdDate, List<OrderTable> orderTables) {
+    private TableGroup(Long id, LocalDateTime createdDate, List<OrderTable> orderTables) {
+        this.id = id;
         this.createdDate = createdDate;
         this.orderTables = orderTables;
     }
 
     public static TableGroup of(LocalDateTime createdDate, List<OrderTable> orderTables) {
-        return new TableGroup(createdDate, orderTables);
+        return new TableGroup(null, createdDate, orderTables);
+    }
+
+    public static TableGroup of(Long id, LocalDateTime createdDate, List<OrderTable> orderTables) {
+        return new TableGroup(id, createdDate, orderTables);
     }
 
     public Long getId() {

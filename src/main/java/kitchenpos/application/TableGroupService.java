@@ -48,7 +48,7 @@ public class TableGroupService {
         }
 
         for (final OrderTable savedOrderTable : savedOrderTables) {
-            if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroup().getId())) {
+            if (!savedOrderTable.isEmpty() || savedOrderTable.hasTableGroup()) {
                 throw new IllegalArgumentException();
             }
         }

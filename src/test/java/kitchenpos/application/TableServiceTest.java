@@ -48,11 +48,9 @@ public class TableServiceTest {
 
     @BeforeEach
     void setUp() {
-        치킨_주문_단체테이블 = OrderTable.of(null, 0);
-
-        치킨2_주문_단체테이블 = OrderTable.of(null, 0);
-
-        치킨_주문_개인테이블 =  OrderTable.of(null, 0);
+        치킨_주문_단체테이블 = OrderTable.of(1L, null, 0);
+        치킨2_주문_단체테이블 = OrderTable.of(2L, null, 0);
+        치킨_주문_개인테이블 =  OrderTable.of(3L, null, 0);
 
         단체주문테이블 = TableGroup.of(LocalDateTime.now(), List.of(치킨_주문_단체테이블, 치킨2_주문_단체테이블));
     }
@@ -135,7 +133,7 @@ public class TableServiceTest {
         when(orderTableRepository.save(any(OrderTable.class))).thenReturn(this.치킨_주문_단체테이블);
 
         this.치킨_주문_단체테이블.changeNumberOfGuests(3);
-        //this.치킨_주문_단체테이블.setEmpty(false);
+        this.치킨_주문_단체테이블.changeEmpty(false);
 
         // when
         OrderTable changedOrderTable = tableService.changeNumberOfGuests(this.치킨_주문_단체테이블.getId(), this.치킨_주문_단체테이블);

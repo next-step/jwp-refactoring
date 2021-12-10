@@ -20,16 +20,28 @@ public class OrderTable {
     private TableGroup tableGroup;
     private int numberOfGuests;
 
+    boolean empty;
+ 
     protected OrderTable() {
     }
 
-    private OrderTable(TableGroup tableGroup, int numberOfGuests) {
+    private OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
+        this.id = id;
         this.tableGroup = tableGroup;
         this.numberOfGuests = numberOfGuests;
+        this.empty = empty;
     }
 
     public static OrderTable of(TableGroup tableGroup, int numberOfGuests) {
-        return new OrderTable(tableGroup, numberOfGuests);
+        return new OrderTable(null, tableGroup, numberOfGuests, true);
+    }
+
+    public static OrderTable of(Long id, TableGroup tableGroup, int numberOfGuests) {
+        return new OrderTable(id, tableGroup, numberOfGuests, true);
+    }
+
+    public static OrderTable of(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
+        return new OrderTable(id, tableGroup, numberOfGuests, empty);
     }
 
     public long getId() {
@@ -44,7 +56,7 @@ public class OrderTable {
     }
 
     public boolean isEmpty() {
-        return this.numberOfGuests < 1;
+        return empty;
     }
 
     public void changeTableGroup(TableGroup tableGroup) {
@@ -53,5 +65,17 @@ public class OrderTable {
 
     public void changeNumberOfGuests(int numberOfGuests) {
         this.numberOfGuests = numberOfGuests;
+    }
+
+    public boolean getEmpty() {
+        return this.empty;
+    }
+
+    public void changeEmpty(boolean empty) {
+        this.empty = empty;
+    }
+
+    public boolean hasTableGroup() {
+        return tableGroup != null;
     }
 }

@@ -63,20 +63,17 @@ public class MenuServiceTest {
     @BeforeEach
     void setUp() {
         치킨_메뉴그룹 = MenuGroup.of("치킨");
-        
         사이드_메뉴그룹 = MenuGroup.of("사이드");
 
-        뿌링클치킨 = Product.of("뿌링클치킨", Price.of(15_000));
+        뿌링클치킨 = Product.of(1L, "뿌링클치킨", Price.of(15_000));
+        치킨무 = Product.of(2L, "치킨무", Price.of(1_000));
+        코카콜라 = Product.of(3L, "코카콜라", Price.of(3_000));
 
-        치킨무 = Product.of("치킨무", Price.of(1_000));
-
-        코카콜라 = Product.of("코카콜라", Price.of(3_000));
+        뿌링클콤보_뿌링클치킨 = MenuProduct.of(1L, 뿌링클콤보, 뿌링클치킨, 1L);
+        뿌링클콤보_치킨무 = MenuProduct.of(2L, 뿌링클콤보, 치킨무, 1L);
+        뿌링클콤보_코카콜라 = MenuProduct.of(3L, 뿌링클콤보, 코카콜라, 1L);
 
         뿌링클콤보 = Menu.of("뿌링클콤보", Price.of(18_000), 치킨_메뉴그룹, List.of(뿌링클콤보_뿌링클치킨, 뿌링클콤보_치킨무, 뿌링클콤보_코카콜라));
-
-        뿌링클콤보_뿌링클치킨 = MenuProduct.of(뿌링클콤보, 뿌링클치킨, 1L);
-        뿌링클콤보_치킨무 = MenuProduct.of(뿌링클콤보, 치킨무, 1L);
-        뿌링클콤보_치킨무 = MenuProduct.of(뿌링클콤보, 코카콜라, 1L);
     }
 
     @DisplayName("메뉴가 저장된다.")
@@ -100,19 +97,6 @@ public class MenuServiceTest {
     void exception_createMenu_nullPrice() {
         // given
         this.뿌링클콤보.changePrice(null);
-
-        // when
-        // then
-        Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
-                    .isThrownBy(() -> menuService.create(this.뿌링클콤보));
-    }
-
-    @DisplayName("메뉴가격이 0보다 작으면 예외가 발생한다.")
-    @ValueSource(ints = {-1, -10})
-    @ParameterizedTest(name="[{index}] 메뉴가격은 [{0}]")
-    void exception_createMenu_underZeroPrice(int price) {
-        // given
-        this.뿌링클콤보.changePrice(Price.of(price));
 
         // when
         // then
