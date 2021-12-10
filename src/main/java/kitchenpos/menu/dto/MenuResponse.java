@@ -4,7 +4,6 @@ import kitchenpos.menu.domain.Price;
 import kitchenpos.menu.domain.menu.Menu;
 import kitchenpos.menu.domain.menugroup.MenuGroup;
 import kitchenpos.menu.domain.menuproduct.MenuProduct;
-import kitchenpos.menu.domain.menuproduct.MenuProducts;
 
 import java.util.List;
 

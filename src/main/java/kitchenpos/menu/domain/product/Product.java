@@ -1,12 +1,11 @@
 package kitchenpos.menu.domain.product;
 
 import kitchenpos.menu.domain.Price;
+import org.springframework.util.ObjectUtils;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Objects;
-
-import org.springframework.util.ObjectUtils;
 
 @Entity
 public class Product {

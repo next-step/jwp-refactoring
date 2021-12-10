@@ -27,7 +27,7 @@ public class Menu {
     private MenuGroup menuGroup;
 
     @Embedded
-    private MenuProducts menuProducts = new MenuProducts();
+    private final MenuProducts menuProducts = new MenuProducts();
 
     protected Menu() {
     }
