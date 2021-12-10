@@ -26,9 +26,9 @@ class MenuGroupAcceptanceTest extends AcceptanceTest {
     private MenuGroupResponse 일인_세트_등록됨;
     private MenuGroupResponse 패밀리_세트_등록됨;
 
-    private void 메뉴_그룹_생성됨(ExtractableResponse<Response> actual) {
+    private void 메뉴_그룹_생성됨(ExtractableResponse<Response> actual, MenuGroupRequest menuGroupRequest) {
         MenuGroupResponse response = actual.as(MenuGroupResponse.class);
-        assertThat(response.getName()).isEqualTo(일인_세트.getName());
+        assertThat(response.getName()).isEqualTo(menuGroupRequest.getName());
     }
 
     private void 메뉴_그룹_조회됨(ExtractableResponse<Response> actual, MenuGroupResponse... expected) {
@@ -68,7 +68,7 @@ class MenuGroupAcceptanceTest extends AcceptanceTest {
 
             // then
             응답_CREATE(actual);
-            메뉴_그룹_생성됨(actual);
+            메뉴_그룹_생성됨(actual, 일인_세트);
         }
 
         @Test
