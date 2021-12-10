@@ -1,0 +1,73 @@
+@startuml
+
+left to right direction
+
+entity orders {
+  * id : int <<generated>>
+  --
+  * order_status : text
+  * ordered_time : datetime
+  * order_table_id : int
+}
+
+entity order_line_item {
+  * seq : int <<generated>>
+  --
+  * order_id : int
+  * menu_id : int
+  * quantity : int
+}
+
+entity menu {
+  * id : int <<generated>>
+  --
+  * name : text
+  * price : decimal
+  * menu_group_id : int
+}
+
+entity menu_group {
+  * id : int <<generated>>
+  --
+  * name : text
+}
+
+entity menu_product {
+  * seq : int <<generated>>
+  --
+  * menu_id : int
+  * product_id : int
+  * quantity : int
+}
+
+entity order_table {
+  * id : int <<generated>>
+  --
+  table_group_id : int
+  * number_of_guests : int
+  * empty : bit
+}
+
+entity table_group {
+  * id : int <<generated>>
+  --
+  * created_date : datetime
+}
+
+entity product {
+  * id : int <<generated>>
+  --
+  * name : text
+  * price : decimal
+}
+
+orders ||--|{ order_line_item
+order_line_item ||--|| menu
+menu }|--|| menu_group
+menu ||--|{ menu_product
+order_table }|--o| table_group
+menu_product ||--|| product
+orders ||--|| order_table
+
+
+@enduml

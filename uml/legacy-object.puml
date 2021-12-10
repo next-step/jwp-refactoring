@@ -1,0 +1,166 @@
+@startuml
+
+package dao {
+    class MenuDao
+    class MenuGroupDao
+    class MenuProductDao
+    class OrderDao
+    class OrderLineItemDao
+    class OrderTableDao
+    class ProductDao
+    class TableGroupDao
+}
+
+package application {
+    MenuGroupService --> MenuGroupDao
+
+    MenuService --> MenuDao
+    MenuService --> MenuGroupDao
+    MenuService --> MenuProductDao
+    MenuService --> ProductDao
+    OrderService --> MenuDao
+    OrderService --> OrderDao
+    OrderService --> OrderLineItemDao
+    OrderService --> OrderTableDao
+    ProductService --> ProductDao
+    TableGroupService --> OrderDao
+    TableGroupService --> OrderTableDao
+    TableGroupService --> TableGroupDao
+    TableService --> OrderDao
+    TableService --> OrderTableDao
+
+    class MenuGroupService {
+        - MenuGroupDao menuGroupDao
+        + create()
+        + list()
+    }
+
+    class MenuService {
+        - MenuDao menuDao
+        - MenuGroupDao menuGroupDao
+        - MenuProductDao menuProductDao
+        - ProductDao productDao
+        + create()
+        + list()
+    }
+
+    class OrderService {
+        - MenuDao menuDao
+        - OrderDao orderDao
+        - OrderLineItemDao orderLineItemDao
+        - OrderTableDao orderTableDao
+        + create()
+        + list()
+        + changeOrderStatus()
+    }
+
+    class ProductService {
+        - ProductDao productDao
+        + create()
+        + list()
+    }
+
+    class TableGroupService {
+        - OrderDao orderDao
+        - OrderTableDao orderTableDao
+        - TableGroupDao tableGroupDao
+        + create()
+        + ungroup()
+    }
+
+    class TableService {
+        - OrderDao orderDao
+        - OrderTableDao orderTableDao
+        + create()
+        + list()
+        + changeEmpty()
+        + changeNumberOfGuests()
+    }
+}
+
+package domain {
+
+    Menu o--> "*" MenuProduct : aggregation
+    Order o--> "*" OrderLineItem : aggregation
+    TableGroup o--> "*" OrderTable : aggregation
+
+    MenuGroupService ..> MenuGroup
+
+    MenuService ..> Menu
+    MenuService ..> MenuProduct
+    MenuService ..> Product
+
+    OrderService ..> Order
+    OrderService ..> OrderLineItem
+    OrderService ..> OrderStatus
+    OrderService ..> OrderTable
+
+    ProductService ..> Product
+
+    TableGroupService ..> OrderStatus
+    TableGroupService ..> OrderTable
+    TableGroupService ..> TableGroup
+
+    TableService ..> OrderStatus
+    TableService ..> OrderTable
+
+    class Menu {
+        - Long id
+        - String name
+        - BigDecimal price
+        - Long menuGroupId
+        - List<MenuProduct> menuProducts
+    }
+
+    class MenuGroup {
+        - Long id
+        - String name
+    }
+
+    class MenuProduct {
+        - Long seq
+        - Long menuId
+        - Long productId
+        - long quantity
+    }
+
+    class Order {
+        - Long id
+        - Long orderTableId
+        - String orderStatus
+        - LocalDateTime orderedTime
+        - List<OrderLineItem> orderLineItems
+    }
+
+    class OrderLineItem {
+        - Long seq
+        - Long orderId
+        - Long menuId
+        - long quantity
+    }
+
+    enum OrderStatus {
+        COOKING, MEAL, COMPLETION
+    }
+
+    class OrderTable {
+        - Long id
+        - Long tableGroupId
+        - int numberOfGuests
+        - boolean empty
+    }
+
+    class Product {
+        - Long id
+        - String name
+        - BigDecimal price
+    }
+
+    class TableGroup {
+        - Long id
+        - LocalDateTime createdDate
+        - List<OrderTable> orderTables
+    }
+}
+
+@enduml
