@@ -13,7 +13,7 @@ import kitchenpos.domain.table.TableGroup;
 public class OrderTable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name ="table_group_id")
@@ -44,7 +44,7 @@ public class OrderTable {
         return new OrderTable(id, tableGroup, numberOfGuests, empty);
     }
 
-    public long getId() {
+    public Long getId() {
         return this.id;
     }
 

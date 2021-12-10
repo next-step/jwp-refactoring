@@ -59,7 +59,7 @@ public class TableGroupService {
 
         for (final OrderTable savedOrderTable : savedOrderTables) {
             savedOrderTable.changeTableGroup(tableGroup);
-            //savedOrderTable.setEmpty(false);
+            savedOrderTable.changeEmpty(false);
             orderTableRepository.save(savedOrderTable);
         }
         savedTableGroup.changeOrderTables(savedOrderTables);

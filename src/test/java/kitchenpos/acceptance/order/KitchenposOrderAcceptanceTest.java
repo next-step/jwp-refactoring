@@ -141,7 +141,7 @@ public class KitchenposOrderAcceptanceTest extends TestConfig {
     private OrderTable 손님있는_테이블_생성(int numberOfGuests, List<OrderTable> 손님없는_테이블들) {
         OrderTable 손님있는_테이블 = 손님없는_테이블들.get(0);
         손님있는_테이블.changeNumberOfGuests(numberOfGuests);
-        //손님있는_테이블.setEmpty(false);
+        손님있는_테이블.changeEmpty(false);
         return 손님있는_테이블;
     }
 

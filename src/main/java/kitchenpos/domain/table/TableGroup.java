@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 import kitchenpos.domain.order.OrderTable;
 
@@ -16,6 +17,8 @@ public class TableGroup {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private LocalDateTime createdDate;
+
+    @OneToMany(mappedBy = "id")
     private List<OrderTable> orderTables;
 
     protected TableGroup() {

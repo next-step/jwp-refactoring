@@ -16,11 +16,11 @@ public class MenuProduct {
     private Long seq;
 
     @ManyToOne
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "menu_id")
     private Menu menu;
 
     @ManyToOne
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "product_id")
     private Product product;
 
     private long quantity;

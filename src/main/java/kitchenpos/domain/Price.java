@@ -2,7 +2,12 @@ package kitchenpos.domain;
 
 import java.math.BigDecimal;
 
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+
+@Embeddable
 public class Price {
+    @Column(name = "price")
     BigDecimal value;
 
     protected Price() {

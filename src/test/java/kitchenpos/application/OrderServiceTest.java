@@ -147,7 +147,7 @@ public class OrderServiceTest {
         this.치킨주문.changeOrderLineItems(List.of(this.치킨_주문항목));
         this.치킨주문.changeOrderTable(this.치킨_주문_단체테이블);
 
-        //치킨_주문_단체테이블.setEmpty(true);
+        치킨_주문_단체테이블.changeEmpty(true);
 
         // when
         // then

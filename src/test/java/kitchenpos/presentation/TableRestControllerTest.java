@@ -47,7 +47,7 @@ public class TableRestControllerTest extends TestConfig {
     void update_table() {
         // given
         OrderTable orderTable = OrderTable.of(null, 0);
-        //orderTable.setEmpty(false);
+        orderTable.changeEmpty(false);
 
         // when
         OrderTable savedOrderTable = TableRestControllerTest.주문테이블_저장요청(orderTable).as(OrderTable.class);
