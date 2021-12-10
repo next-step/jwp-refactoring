@@ -1,14 +1,13 @@
 package kitchenpos.dao;
 
-import kitchenpos.domain.ProductPrice;
 import kitchenpos.domain.Product;
+import kitchenpos.domain.ProductPrice;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.sql.ResultSet;
@@ -16,7 +15,6 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
-@Repository
 public class JdbcTemplateProductDao implements ProductDao {
     private static final String TABLE_NAME = "product";
     private static final String KEY_COLUMN_NAME = "id";
