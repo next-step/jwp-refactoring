@@ -1,5 +1,6 @@
 package kitchenpos.domain;
 
+
 public class OrderTable {
     private Long id;
     private Long tableGroupId;
@@ -37,4 +38,5 @@ public class OrderTable {
     public void setEmpty(final boolean empty) {
         this.empty = empty;
     }
+
 }

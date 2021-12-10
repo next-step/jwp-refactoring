@@ -1,5 +1,6 @@
 package kitchenpos.domain;
 
+
 public class OrderLineItem {
     private Long seq;
     private Long orderId;
@@ -37,4 +38,5 @@ public class OrderLineItem {
     public void setQuantity(final long quantity) {
         this.quantity = quantity;
     }
+
 }
