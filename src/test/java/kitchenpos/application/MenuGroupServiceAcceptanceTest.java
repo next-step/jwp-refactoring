@@ -9,9 +9,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
-import java.util.Arrays;
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("메뉴그룹 테스트")
@@ -41,8 +38,7 @@ class MenuGroupServiceAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> createResponse = MenuGroupFactory.메뉴그룹_생성_요청(menuGroup);
         MenuGroup createdMenuGroup = 메뉴그룹이_생성됨(createResponse);
         ExtractableResponse<Response> getResponse = MenuGroupFactory.메뉴그룹_조회_요청();
-        List<MenuGroup> menuGroups = Arrays.asList(getResponse.as(MenuGroup[].class));
-        assertThat(menuGroups).contains(createdMenuGroup);
+        assertThat(getResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
     public static MenuGroup 메뉴그룹이_생성됨(ExtractableResponse<Response> response) {

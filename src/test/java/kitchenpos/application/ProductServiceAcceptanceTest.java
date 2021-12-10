@@ -9,8 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -41,8 +39,7 @@ class ProductServiceAcceptanceTest extends AcceptanceTest {
         Product createdProduct = 상품이_생성됨(createResponse);
 
         ExtractableResponse<Response> getResponse = ProductFactory.상품_조회_요청();
-        List<Product> products= Arrays.asList(getResponse.as(Product[].class));
-        assertThat(products).contains(createdProduct);
+        assertThat(getResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
     public static Product 상품이_생성됨(ExtractableResponse<Response> response) {

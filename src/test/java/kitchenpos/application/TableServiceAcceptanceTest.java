@@ -4,11 +4,10 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.domain.OrderTable;
+import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -26,8 +25,7 @@ class TableServiceAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> createResponse = TableFactory.주문테이블_생성_요청(orderTable);
         OrderTable createdOrderTable = TableFactory.주문테이블이_생성됨(createResponse);
         ExtractableResponse<Response> getResponse = TableFactory.주문테이블_조회_요청();
-        List<OrderTable> tableFactories = Arrays.asList(getResponse.as(OrderTable[].class));
-        assertThat(tableFactories).contains(createdOrderTable);
+        assertThat(getResponse.statusCode()).isEqualTo(HttpStatus.SC_OK);
     }
 
     @DisplayName("주문테이블 상태를 변경한다.")
@@ -40,7 +38,7 @@ class TableServiceAcceptanceTest extends AcceptanceTest {
 
         ExtractableResponse<Response> createResponse = TableFactory.주문테이블_생성_요청(orderTable);
         OrderTable createdOrderTable = TableFactory.주문테이블이_생성됨(createResponse);
-        createdOrderTable.changeFull();
+        createdOrderTable.setEmpty(false);
 
         ExtractableResponse<Response> changeStatusResponse = TableFactory.주문테이블_상태변경_요청(createdOrderTable.getId(), createdOrderTable);
         assertThat(changeStatusResponse.as(OrderTable.class).isEmpty()).isFalse();
