@@ -20,23 +20,23 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.dao.TableGroupDao;
+import kitchenpos.domain.OrderRepository;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.OrderTableRepository;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.domain.TableGroupRepository;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
 public class TableGroupServiceTest {
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
 
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @Mock
-    private TableGroupDao tableGroupDao;
+    private TableGroupRepository tableGroupRepository;
 
     @InjectMocks
     private TableGroupService tableGroupService;
@@ -47,27 +47,20 @@ public class TableGroupServiceTest {
 
     @BeforeEach
     void setUp() {
-        치킨_주문_단체테이블 = new OrderTable();
-        치킨_주문_단체테이블.setId(1L);
-        치킨_주문_단체테이블.setEmpty(true);
+        치킨_주문_단체테이블 = OrderTable.of(null, 0);
 
-        치킨2_주문_단체테이블 = new OrderTable();
-        치킨2_주문_단체테이블.setId(2L);
-        치킨2_주문_단체테이블.setEmpty(true);
+        치킨2_주문_단체테이블 = OrderTable.of(null, 0);
 
-        단체주문테이블 = new TableGroup();
-        단체주문테이블.setId(1L);
-        단체주문테이블.setOrderTables(List.of(치킨_주문_단체테이블, 치킨2_주문_단체테이블));
-        단체주문테이블.setCreatedDate(LocalDateTime.now());
+        단체주문테이블 = TableGroup.of(LocalDateTime.now(), List.of(치킨_주문_단체테이블, 치킨2_주문_단체테이블));
     }
 
     @DisplayName("단체지정이 저장된다.")
     @Test
     void create_tableGroup() {
         // given
-        when(orderTableDao.findAllByIdIn(List.of(this.치킨_주문_단체테이블.getId(), this.치킨2_주문_단체테이블.getId()))).thenReturn(List.of(this.치킨_주문_단체테이블, this.치킨2_주문_단체테이블));
-        when(tableGroupDao.save(this.단체주문테이블)).thenReturn(this.단체주문테이블);
-        when(orderTableDao.save(any(OrderTable.class))).thenReturn(null);
+        when(orderTableRepository.findAllByIdIn(List.of(this.치킨_주문_단체테이블.getId(), this.치킨2_주문_단체테이블.getId()))).thenReturn(List.of(this.치킨_주문_단체테이블, this.치킨2_주문_단체테이블));
+        when(tableGroupRepository.save(this.단체주문테이블)).thenReturn(this.단체주문테이블);
+        when(orderTableRepository.save(any(OrderTable.class))).thenReturn(null);
 
         // when
         TableGroup createdTableGroup = tableGroupService.create(this.단체주문테이블);
@@ -80,11 +73,11 @@ public class TableGroupServiceTest {
     @Test
     void exception_createTableGoup_notExistOrderTable() {
         // given
-        when(orderTableDao.findAllByIdIn(List.of(this.치킨_주문_단체테이블.getId(), this.치킨2_주문_단체테이블.getId()))).thenReturn(List.of(this.치킨_주문_단체테이블, this.치킨2_주문_단체테이블));
-        when(tableGroupDao.save(any(TableGroup.class))).thenReturn(this.단체주문테이블);
-        when(orderTableDao.save(any(OrderTable.class))).thenReturn(null);
+        when(orderTableRepository.findAllByIdIn(List.of(this.치킨_주문_단체테이블.getId(), this.치킨2_주문_단체테이블.getId()))).thenReturn(List.of(this.치킨_주문_단체테이블, this.치킨2_주문_단체테이블));
+        when(tableGroupRepository.save(any(TableGroup.class))).thenReturn(this.단체주문테이블);
+        when(orderTableRepository.save(any(OrderTable.class))).thenReturn(null);
 
-        this.단체주문테이블.setOrderTables(null);
+        this.단체주문테이블.changeOrderTables(null);
 
         // when
         // then
@@ -96,11 +89,11 @@ public class TableGroupServiceTest {
     @Test
     void exception_createTableGoup_underTwoCountOrderTable() {
         // given
-        when(orderTableDao.findAllByIdIn(List.of(this.치킨_주문_단체테이블.getId(), this.치킨2_주문_단체테이블.getId()))).thenReturn(List.of(this.치킨_주문_단체테이블, this.치킨2_주문_단체테이블));
-        when(tableGroupDao.save(any(TableGroup.class))).thenReturn(this.단체주문테이블);
-        when(orderTableDao.save(any(OrderTable.class))).thenReturn(null);
+        when(orderTableRepository.findAllByIdIn(List.of(this.치킨_주문_단체테이블.getId(), this.치킨2_주문_단체테이블.getId()))).thenReturn(List.of(this.치킨_주문_단체테이블, this.치킨2_주문_단체테이블));
+        when(tableGroupRepository.save(any(TableGroup.class))).thenReturn(this.단체주문테이블);
+        when(orderTableRepository.save(any(OrderTable.class))).thenReturn(null);
 
-        this.단체주문테이블.setOrderTables(List.of(this.치킨_주문_단체테이블));
+        this.단체주문테이블.changeOrderTables(List.of(this.치킨_주문_단체테이블));
 
         // when
         // then
@@ -112,9 +105,9 @@ public class TableGroupServiceTest {
     @Test
     void exception_createTableGoup_containNotExistOrderTable() {
         // given
-        when(orderTableDao.findAllByIdIn(List.of(this.치킨_주문_단체테이블.getId(), this.치킨2_주문_단체테이블.getId()))).thenReturn(List.of(this.치킨_주문_단체테이블));
+        when(orderTableRepository.findAllByIdIn(List.of(this.치킨_주문_단체테이블.getId(), this.치킨2_주문_단체테이블.getId()))).thenReturn(List.of(this.치킨_주문_단체테이블));
 
-        this.단체주문테이블.setOrderTables(List.of(this.치킨_주문_단체테이블, this.치킨2_주문_단체테이블));
+        this.단체주문테이블.changeOrderTables(List.of(this.치킨_주문_단체테이블, this.치킨2_주문_단체테이블));
 
         // when
         // then
@@ -126,8 +119,8 @@ public class TableGroupServiceTest {
     @Test
     void exception_createTableGoup_existOrderTableInOtherTableGroup() {
         // given
-        this.치킨_주문_단체테이블.setTableGroupId(this.단체주문테이블.getId());
-        this.단체주문테이블.setOrderTables(List.of(this.치킨_주문_단체테이블, this.치킨2_주문_단체테이블));
+        this.치킨_주문_단체테이블.changeTableGroup(this.단체주문테이블);
+        this.단체주문테이블.changeOrderTables(List.of(this.치킨_주문_단체테이블, this.치킨2_주문_단체테이블));
 
         // when
         // then
@@ -139,21 +132,21 @@ public class TableGroupServiceTest {
     @Test
     void update_tableUnGroup() {
         // given
-        when(orderTableDao.findAllByTableGroupId(this.단체주문테이블.getId())).thenReturn(this.단체주문테이블.getOrderTables());
+        when(orderTableRepository.findAllByTableGroupId(this.단체주문테이블.getId())).thenReturn(this.단체주문테이블.getOrderTables());
 
         // when
         tableGroupService.ungroup(this.단체주문테이블.getId());
 
         // then
-        verify(orderTableDao, atLeast(1)).save(any(OrderTable.class));
+        verify(orderTableRepository, atLeast(1)).save(any(OrderTable.class));
     }
 
     @DisplayName("주문테이블의 주문상태가 계산 단계가 아닐때 단체지정이 해제시 예외가 발생된다.")
     @Test
     void exception_updateTableUnGroup_notCompletionOrderStatus() {
         // given
-        when(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(),anyList())).thenReturn(true);
-        when(orderTableDao.findAllByTableGroupId(this.단체주문테이블.getId())).thenReturn(this.단체주문테이블.getOrderTables());
+        when(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(),anyList())).thenReturn(true);
+        when(orderTableRepository.findAllByTableGroupId(this.단체주문테이블.getId())).thenReturn(this.단체주문테이블.getOrderTables());
 
         // when
         // then

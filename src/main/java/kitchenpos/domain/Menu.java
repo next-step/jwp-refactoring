@@ -30,7 +30,7 @@ public class Menu {
     private Menu(String name, Price price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
     }
 
-    public static Menu  of(String name, Price price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+    public static Menu of(String name, Price price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
         return new Menu(name, price, menuGroup, menuProducts);
     }
 
@@ -55,6 +55,18 @@ public class Menu {
 
     public void changeMenuProducts(List<MenuProduct> menuProducts) {
         this.menuProducts = menuProducts;
+    }
+
+    public void chnageMenuGroup(MenuGroup menuGroup) {
+        this.menuGroup = menuGroup;
+    }
+
+    public void changePrice(Price price) {
+        this.price = price;
+    }
+
+    public void changeMenuGroup(MenuGroup menuGroup) {
+        this.menuGroup = menuGroup;
     }
 
 }

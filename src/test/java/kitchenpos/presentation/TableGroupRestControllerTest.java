@@ -24,8 +24,7 @@ public class TableGroupRestControllerTest extends TestConfig {
         // given
         List<OrderTable> orderTables = 반테이블들_조회됨();
 
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.setOrderTables(List.of(orderTables.get(0), orderTables.get(1)));
+        TableGroup tableGroup = TableGroup.of(null, List.of(orderTables.get(0), orderTables.get(1)));
 
         // when
         ExtractableResponse<Response> response = 단체지정_저장요청(tableGroup);
@@ -50,8 +49,7 @@ public class TableGroupRestControllerTest extends TestConfig {
     private TableGroup 단제치정_생성() {
         List<OrderTable> orderTables = 반테이블들_조회됨();
 
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.setOrderTables(List.of(orderTables.get(0), orderTables.get(1)));
+        TableGroup tableGroup = TableGroup.of(null, List.of(orderTables.get(0), orderTables.get(1)));
 
         return 단체지정_저장요청(tableGroup).as(TableGroup.class);
     }

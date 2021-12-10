@@ -23,8 +23,7 @@ public class TableRestControllerTest extends TestConfig {
     @Test
     void save_table() {
         // given
-        OrderTable orderTable = new OrderTable();
-        orderTable.setNumberOfGuests(2);
+        OrderTable orderTable = OrderTable.of(null, 2);
 
         // when
         ExtractableResponse<Response> response = 주문테이블_저장요청(orderTable);
@@ -47,15 +46,14 @@ public class TableRestControllerTest extends TestConfig {
     @Test
     void update_table() {
         // given
-        OrderTable orderTable = new OrderTable();
-        orderTable.setEmpty(false);
-        orderTable.setNumberOfGuests(0);
+        OrderTable orderTable = OrderTable.of(null, 0);
+        //orderTable.setEmpty(false);
 
         // when
         OrderTable savedOrderTable = TableRestControllerTest.주문테이블_저장요청(orderTable).as(OrderTable.class);
 
         // given
-        savedOrderTable.setEmpty(true);
+        savedOrderTable.changeNumberOfGuests(10);
 
         // when
         ExtractableResponse<Response> response = 주문테이블_빈테이블_변경요청(savedOrderTable);
@@ -72,12 +70,9 @@ public class TableRestControllerTest extends TestConfig {
 
         // when
         OrderTable orderTable = orderTables.get(0);
-        orderTable.setEmpty(false);
-        OrderTable orderTableChangedStatus = 주문테이블_빈테이블_변경요청(orderTable).as(OrderTable.class);
-
-        // when
-        orderTableChangedStatus.setNumberOfGuests(2);
-        ExtractableResponse<Response> response = 주문테이블_고객수_변경요청(orderTableChangedStatus);
+        
+        orderTable.changeNumberOfGuests(2);
+        ExtractableResponse<Response> response = 주문테이블_고객수_변경요청(orderTable);
 
         // then
         주문테이블_고객수_변경됨(response);

@@ -12,6 +12,7 @@ import org.springframework.http.MediaType;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import kitchenpos.domain.Price;
 import kitchenpos.domain.Product;
 import kitchenpos.testassistance.config.TestConfig;
 
@@ -21,9 +22,7 @@ public class ProductRestControllerTest extends TestConfig {
     @Test
     void save_product() {
         // given
-        Product product = new Product();
-        product.setName("강정치킨");
-        product.setPrice(BigDecimal.valueOf(17_000));
+        Product product = Product.of("강정치킨", Price.of(17_000));
 
         // when
         ExtractableResponse<Response> response = 상품_저장요청(product);

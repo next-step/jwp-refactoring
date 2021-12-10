@@ -19,6 +19,7 @@ import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.Price;
 import kitchenpos.domain.Product;
 import kitchenpos.presentation.MenuGroupRestControllerTest;
 import kitchenpos.presentation.MenuRestControllerTest;
@@ -39,20 +40,12 @@ public class KitchenposManageAcceptanceTest extends TestConfig {
     public void setUp() {
         super.setUp();
 
-        사이드메뉴 = new MenuGroup();
-        사이드메뉴.setName("사이트메뉴");
+        사이드메뉴 = MenuGroup.of("사이드메뉴");
 
-        참치맛감자튀김 = new Product();
-        참치맛감자튀김.setName("참치맛감자튀김");
-        참치맛감자튀김.setPrice(BigDecimal.valueOf(2_000).setScale(2));
+        참치맛감자튀김 = Product.of("참치맛감자튀김", Price.of(2_000));
+        고등어맛감자튀김 =  Product.of("고등어맛감자튀김", Price.of(2_000));
 
-        고등어맛감자튀김 = new Product();
-        고등어맛감자튀김.setName("고등어맛감자튀김");
-        고등어맛감자튀김.setPrice(BigDecimal.valueOf(2_000).setScale(2));
-
-        신메뉴 = new Menu();
-        신메뉴.setName("감튀세상");
-        신메뉴.setPrice(BigDecimal.valueOf(3_000).setScale(2));
+        신메뉴 = Menu.of("감튀세상", Price.of(3_000), null, null);
     }
 
     @DisplayName("새로운 유형의 메뉴가 추가된다.")
@@ -82,17 +75,14 @@ public class KitchenposManageAcceptanceTest extends TestConfig {
     }
 
     private OrderTable 신규_주문테이블_생성() {
-        OrderTable 신규_주문테이블 = new OrderTable();
-        신규_주문테이블.setTableGroupId(null);
-        신규_주문테이블.setNumberOfGuests(0);
-        신규_주문테이블.setEmpty(true);
+        OrderTable 신규_주문테이블 = OrderTable.of(null, 0);
         return 신규_주문테이블;
     }
 
     private void 신규_주문테이블_저장됨(ExtractableResponse<Response> response) {
         assertAll(
             () -> Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
-            () -> Assertions.assertThat(response.as(OrderTable.class).getTableGroupId()).isNull(),
+            () -> Assertions.assertThat(response.as(OrderTable.class).getTableGroup().getId()).isNull(),
             () -> Assertions.assertThat(response.as(OrderTable.class).getNumberOfGuests()).isEqualTo(0),
             () -> Assertions.assertThat(response.as(OrderTable.class).isEmpty()).isEqualTo(true)
         );
@@ -100,8 +90,8 @@ public class KitchenposManageAcceptanceTest extends TestConfig {
 
     private Menu 신메뉴_생성(MenuGroup 신메뉴그룹, List<MenuProduct> 메뉴_상품패키지) {
         Menu 신매뉴 = this.신메뉴;
-        신매뉴.setMenuGroupId(신메뉴그룹.getId());
-        신매뉴.setMenuProducts(메뉴_상품패키지);
+        신매뉴.chnageMenuGroup(신메뉴그룹);
+        신매뉴.changeMenuProducts(메뉴_상품패키지);
         return 신매뉴;
     }
 
@@ -109,11 +99,11 @@ public class KitchenposManageAcceptanceTest extends TestConfig {
         assertAll(
             () -> Assertions.assertThat(등록된_신메뉴.getName()).isEqualTo(this.신메뉴.getName()),
             () -> Assertions.assertThat(등록된_신메뉴.getPrice()).isEqualTo(this.신메뉴.getPrice()),
-            () -> Assertions.assertThat(등록된_신메뉴.getMenuGroupId()).isEqualTo(신메뉴그룹.getId())
+            () -> Assertions.assertThat(등록된_신메뉴.getMenuGroup().getId()).isEqualTo(신메뉴그룹.getId())
         );
 
         for (MenuProduct menuproduct : 등록된_신메뉴.getMenuProducts()) {
-            Assertions.assertThat(menuproduct.getMenuId()).isEqualTo(등록된_신메뉴.getId());
+            Assertions.assertThat(menuproduct.getMenu().getId()).isEqualTo(등록된_신메뉴.getId());
         }
     }
 
@@ -123,9 +113,7 @@ public class KitchenposManageAcceptanceTest extends TestConfig {
         for (Product product : products) {
             Product createdProduct = ProductRestControllerTest.상품_저장요청(product).as(Product.class);
 
-            MenuProduct menuProduct = new MenuProduct();
-            menuProduct.setProductId(createdProduct.getId());
-            menuProduct.setQuantity(1L);
+            MenuProduct menuProduct = MenuProduct.of(null, createdProduct, 1L);
             productPackage.add(menuProduct);
         }
 

@@ -14,6 +14,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
+import kitchenpos.domain.Price;
 import kitchenpos.testassistance.config.TestConfig;
 
 @DisplayName("메뉴 API기능에 관한")
@@ -69,17 +70,8 @@ public class MenuRestControllerTest extends TestConfig {
     }
 
     public static Menu 신메뉴() {
-        Menu menu = new Menu();
-        menu.setName("후라이드+후라이드");
-        menu.setPrice(BigDecimal.valueOf(19_000));
-        menu.setMenuGroupId(1L);
-
-        MenuProduct menuProduct = new MenuProduct();
-        menuProduct.setProductId(1L);
-        menuProduct.setQuantity(2);
-
-        List<MenuProduct> menuProducts = List.of(menuProduct);
-        menu.setMenuProducts(menuProducts);
+        MenuProduct menuProduct = MenuProduct.of(null, null, 2);
+        Menu menu = Menu.of("후라이드+후라이드", Price.of(19_000), null, List.of(menuProduct));
         return menu;
     }
 }

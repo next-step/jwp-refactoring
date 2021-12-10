@@ -28,8 +28,7 @@ public class MenuGroupRestControllerTest extends TestConfig {
     @Test
     void save_menuGroup() {
         // given
-        MenuGroup menuGroup = new MenuGroup();
-        menuGroup.setName("테스트 메뉴");
+        MenuGroup menuGroup = MenuGroup.of("테스트 메뉴");
 
         // when
         ExtractableResponse<Response> response = 메뉴그룹_저장(menuGroup);

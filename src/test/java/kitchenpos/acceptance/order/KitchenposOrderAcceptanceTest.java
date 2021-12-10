@@ -46,8 +46,7 @@ public class KitchenposOrderAcceptanceTest extends TestConfig {
         OrderTable 손님있는_테이블1 = 테이블에_손님이앉음(2);
         OrderTable 손님있는_테이블2 = 테이블에_손님이앉음(4);
 
-        TableGroup 단체결제지정 = new TableGroup();
-        단체결제지정.setOrderTables(List.of(손님있는_테이블1, 손님있는_테이블2));
+        TableGroup 단체결제지정 = TableGroup.of(null, List.of(손님있는_테이블1, 손님있는_테이블2));
 
         TableGroupRestControllerTest.단체지정_저장요청(단체결제지정);
 
@@ -79,7 +78,7 @@ public class KitchenposOrderAcceptanceTest extends TestConfig {
         테이블_주문됨(손님있는_테이블, 주문명세서, 주문);
 
         // when
-        주문.setOrderStatus(OrderStatus.COMPLETION.name());
+        주문.changeOrderStatus(OrderStatus.COMPLETION);
         Order 결재된_주문 = OrderRestControllerTest.주문_상태변경요청(주문).as(Order.class);
 
         // then
@@ -88,17 +87,17 @@ public class KitchenposOrderAcceptanceTest extends TestConfig {
 
     private void 테이블_주문됨(OrderTable 손님있는_테이블, List<OrderLineItem> 주문명세서, Order 주문) throws MultipleFailuresError {
         Assertions.assertThat(주문.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
-        Assertions.assertThat(주문.getOrderTableId()).isEqualTo(손님있는_테이블.getId());
+        Assertions.assertThat(주문.getOrderTable().getId()).isEqualTo(손님있는_테이블.getId());
 
         assertAll(
-            () -> Assertions.assertThat(주문.getOrderLineItems().get(0).getOrderId()).isEqualTo(주문.getId()),
-            () -> Assertions.assertThat(주문.getOrderLineItems().get(0).getMenuId()).isEqualTo(주문명세서.get(0).getMenuId()),
+            () -> Assertions.assertThat(주문.getOrderLineItems().get(0).getOrder().getId()).isEqualTo(주문.getId()),
+            () -> Assertions.assertThat(주문.getOrderLineItems().get(0).getMenu().getId()).isEqualTo(주문명세서.get(0).getMenu().getId()),
             () -> Assertions.assertThat(주문.getOrderLineItems().get(0).getQuantity()).isEqualTo(주문명세서.get(0).getQuantity())
         );
 
         assertAll(
-            () -> Assertions.assertThat(주문.getOrderLineItems().get(1).getOrderId()).isEqualTo(주문.getId()),
-            () -> Assertions.assertThat(주문.getOrderLineItems().get(1).getMenuId()).isEqualTo(주문명세서.get(1).getMenuId()),
+            () -> Assertions.assertThat(주문.getOrderLineItems().get(1).getOrder()).isEqualTo(주문.getId()),
+            () -> Assertions.assertThat(주문.getOrderLineItems().get(1).getMenu()).isEqualTo(주문명세서.get(1).getMenu()),
             () -> Assertions.assertThat(주문.getOrderLineItems().get(1).getQuantity()).isEqualTo(주문명세서.get(1).getQuantity())
         );
     }
@@ -114,10 +113,7 @@ public class KitchenposOrderAcceptanceTest extends TestConfig {
     }
 
     private OrderLineItem 주문항목_생성(final Menu menu) {
-        OrderLineItem 주문항목 = new OrderLineItem();
-        주문항목.setMenuId(menu.getId());
-        주문항목.setQuantity(1L);
-        return 주문항목;
+        return OrderLineItem.of(null, menu, 1L);
     }
 
     private Order 테이블_주문요청(OrderTable orderTable, List<OrderLineItem> OrderSpecification) {
@@ -128,10 +124,7 @@ public class KitchenposOrderAcceptanceTest extends TestConfig {
     }
 
     private Order 주문_생성(OrderTable orderTable, List<OrderLineItem> OrderSpecification) {
-        Order 주문 = new Order();
-        주문.setOrderTableId(orderTable.getId());
-        주문.setOrderLineItems(OrderSpecification);
-        return 주문;
+        return Order.of(orderTable, null, null, OrderSpecification);
     }
 
     private OrderTable 테이블에_손님이앉음(int numberOfGuests) {
@@ -147,8 +140,8 @@ public class KitchenposOrderAcceptanceTest extends TestConfig {
 
     private OrderTable 손님있는_테이블_생성(int numberOfGuests, List<OrderTable> 손님없는_테이블들) {
         OrderTable 손님있는_테이블 = 손님없는_테이블들.get(0);
-        손님있는_테이블.setNumberOfGuests(numberOfGuests);
-        손님있는_테이블.setEmpty(false);
+        손님있는_테이블.changeNumberOfGuests(numberOfGuests);
+        //손님있는_테이블.setEmpty(false);
         return 손님있는_테이블;
     }
 

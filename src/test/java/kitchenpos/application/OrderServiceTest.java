@@ -19,32 +19,33 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderLineItemDao;
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
+import kitchenpos.domain.MenuRepository;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
+import kitchenpos.domain.OrderLineItemRepository;
+import kitchenpos.domain.OrderRepository;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.OrderTableRepository;
+import kitchenpos.domain.Price;
 import kitchenpos.domain.Product;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
 public class OrderServiceTest {
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
 
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
 
     @Mock
-    private OrderLineItemDao orderLineItemDao;
+    private OrderLineItemRepository orderLineItemRepository;
 
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @InjectMocks
     private OrderService orderService;
@@ -65,76 +66,40 @@ public class OrderServiceTest {
 
     @BeforeEach
     void setUp() {
-        뿌링클치킨 = new Product();
-        뿌링클치킨.setId(1L);
-        뿌링클치킨.setName("뿌링클치킨");
-        뿌링클치킨.setPrice(BigDecimal.valueOf(15_000));
+        뿌링클치킨 = Product.of("뿌링클치킨", Price.of(15_000));
+        치킨무 = Product.of("치킨무", Price.of(1_000));
+        코카콜라 = Product.of("코카콜라", Price.of(3_000));
 
-        치킨무 = new Product();
-        치킨무.setId(2L);
-        치킨무.setName("치킨무");
-        치킨무.setPrice(BigDecimal.valueOf(1_000));
+        뿌링클콤보 = Menu.of("뿌링클콤보", Price.of(18_000), null, null);
 
-        코카콜라 = new Product();
-        코카콜라.setId(3L);
-        코카콜라.setName("코카콜라");
-        코카콜라.setPrice(BigDecimal.valueOf(3_000));
+        뿌링클콤보_뿌링클치킨 = MenuProduct.of(뿌링클콤보, 뿌링클치킨, 1L);
+        뿌링클콤보_치킨무 = MenuProduct.of(뿌링클콤보, 치킨무, 1L);
+        뿌링클콤보_코카콜라 = MenuProduct.of(뿌링클콤보, 코카콜라, 1L);
+        
+        뿌링클콤보.changeMenuProducts(List.of(뿌링클콤보_뿌링클치킨, 뿌링클콤보_치킨무, 뿌링클콤보_코카콜라));
 
-        뿌링클콤보 = new Menu();
-        뿌링클콤보.setId(1L);
-        뿌링클콤보.setName("뿌링클콤보");
-        뿌링클콤보.setPrice(BigDecimal.valueOf(18_000));
+        치킨_주문_단체테이블 = OrderTable.of(null, 0);
 
-        뿌링클콤보_뿌링클치킨 = new MenuProduct();
-        뿌링클콤보_뿌링클치킨.setSeq(1L);
-        뿌링클콤보_뿌링클치킨.setMenuId(뿌링클콤보.getId());
-        뿌링클콤보_뿌링클치킨.setProductId(뿌링클치킨.getId());
-        뿌링클콤보_뿌링클치킨.setQuantity(1L);
+        치킨_주문항목 = OrderLineItem.of(null, 뿌링클콤보, 1L);
+        
 
-        뿌링클콤보_치킨무 = new MenuProduct();
-        뿌링클콤보_치킨무.setSeq(2L);
-        뿌링클콤보_치킨무.setMenuId(뿌링클콤보.getId());
-        뿌링클콤보_치킨무.setProductId(치킨무.getId());
-        뿌링클콤보_치킨무.setQuantity(1L);
+        치킨주문 = Order.of(치킨_주문_단체테이블, null, LocalDateTime.now(), List.of(치킨_주문항목));
 
-        뿌링클콤보_코카콜라 = new MenuProduct();
-        뿌링클콤보_코카콜라.setSeq(3L);
-        뿌링클콤보_코카콜라.setMenuId(뿌링클콤보.getId());
-        뿌링클콤보_코카콜라.setProductId(코카콜라.getId());
-        뿌링클콤보_코카콜라.setQuantity(1L);
-
-        뿌링클콤보.setMenuProducts(List.of(뿌링클콤보_뿌링클치킨, 뿌링클콤보_치킨무, 뿌링클콤보_코카콜라));
-
-        치킨_주문_단체테이블 = new OrderTable();
-        치킨_주문_단체테이블.setId(1L);
-        치킨_주문_단체테이블.setEmpty(false);
-
-        치킨_주문항목 = new OrderLineItem();
-        치킨_주문항목.setSeq(1L);
-
-        치킨주문 = new Order();
-        치킨주문.setId(1L);
-        치킨주문.setOrderTableId(치킨_주문_단체테이블.getId());
-        치킨주문.setOrderStatus("");
-        치킨주문.setOrderedTime(LocalDateTime.now());
-        치킨주문.setOrderLineItems(List.of(치킨_주문항목));
-
-        치킨_주문항목.setOrderId(치킨주문.getId());
-        치킨_주문항목.setMenuId(뿌링클콤보.getId());
-        치킨_주문항목.setQuantity(1L);
+        치킨_주문항목.changeOrder(치킨주문);
+        
     }
 
     @DisplayName("주문이 저장된다.")
     @Test
     void create_order() {
         // given
-        when(menuDao.countByIdIn(List.of(this.뿌링클콤보.getId()))).thenReturn(1L);
-        when(orderTableDao.findById(this.치킨_주문_단체테이블.getId())).thenReturn(Optional.of(this.치킨_주문_단체테이블));
-        when(orderDao.save(any(Order.class))).thenReturn(this.치킨주문);
-        when(orderLineItemDao.save(this.치킨_주문항목)).thenReturn(this.치킨_주문항목);
+        when(menuRepository.countByIdIn(List.of(this.뿌링클콤보.getId()))).thenReturn(1L);
+        when(orderTableRepository.findById(this.치킨_주문_단체테이블.getId())).thenReturn(Optional.of(this.치킨_주문_단체테이블));
+        when(orderRepository.save(any(Order.class))).thenReturn(this.치킨주문);
+        when(orderLineItemRepository.save(this.치킨_주문항목)).thenReturn(this.치킨_주문항목);
 
-        this.치킨주문.setOrderLineItems(List.of(this.치킨_주문항목));
-        this.치킨주문.setOrderTableId(this.치킨_주문_단체테이블.getId());
+        this.치킨주문.changeOrderLineItems(List.of(this.치킨_주문항목));
+        this.치킨주문.changeOrderTable(this.치킨_주문_단체테이블);
 
         // when
         Order savedOrder = orderService.create(this.치킨주문);
@@ -147,9 +112,9 @@ public class OrderServiceTest {
     @Test
     void exception_createOrder_emptyOrderedMenu() {
         // given
-        when(menuDao.countByIdIn(List.of(this.뿌링클콤보.getId()))).thenReturn(0L);
+        when(menuRepository.countByIdIn(List.of(this.뿌링클콤보.getId()))).thenReturn(0L);
 
-        this.치킨주문.setOrderLineItems(List.of(this.치킨_주문항목));
+        this.치킨주문.changeOrderLineItems(List.of(this.치킨_주문항목));
 
         // when
         // then
@@ -161,10 +126,10 @@ public class OrderServiceTest {
     @Test
     void exception_createOrder_notExistedOrderTable() {
         // given
-        when(menuDao.countByIdIn(List.of(this.뿌링클콤보.getId()))).thenReturn(1L);
-        when(orderTableDao.findById(this.치킨_주문_단체테이블.getId())).thenReturn(Optional.empty());
+        when(menuRepository.countByIdIn(List.of(this.뿌링클콤보.getId()))).thenReturn(1L);
+        when(orderTableRepository.findById(this.치킨_주문_단체테이블.getId())).thenReturn(Optional.empty());
 
-        this.치킨주문.setOrderLineItems(List.of(this.치킨_주문항목));
+        this.치킨주문.changeOrderLineItems(List.of(this.치킨_주문항목));
 
         // when
         // then
@@ -176,13 +141,13 @@ public class OrderServiceTest {
     @Test
     void exception_createOrder_emptyOrderTable() {
         // given
-        when(menuDao.countByIdIn(List.of(this.뿌링클콤보.getId()))).thenReturn(1L);
-        when(orderTableDao.findById(this.치킨_주문_단체테이블.getId())).thenReturn(Optional.of(this.치킨_주문_단체테이블));
+        when(menuRepository.countByIdIn(List.of(this.뿌링클콤보.getId()))).thenReturn(1L);
+        when(orderTableRepository.findById(this.치킨_주문_단체테이블.getId())).thenReturn(Optional.of(this.치킨_주문_단체테이블));
 
-        this.치킨주문.setOrderLineItems(List.of(this.치킨_주문항목));
-        this.치킨주문.setOrderTableId(this.치킨_주문_단체테이블.getId());
+        this.치킨주문.changeOrderLineItems(List.of(this.치킨_주문항목));
+        this.치킨주문.changeOrderTable(this.치킨_주문_단체테이블);
 
-        치킨_주문_단체테이블.setEmpty(true);
+        //치킨_주문_단체테이블.setEmpty(true);
 
         // when
         // then
@@ -194,8 +159,8 @@ public class OrderServiceTest {
     @Test
     void search_order() {
         // given
-        when(orderDao.findAll()).thenReturn(List.of(this.치킨주문));
-        when(orderLineItemDao.findAllByOrderId(this.치킨주문.getId())).thenReturn(List.of(this.치킨_주문항목));
+        when(orderRepository.findAll()).thenReturn(List.of(this.치킨주문));
+        when(orderLineItemRepository.findAllByOrderId(this.치킨주문.getId())).thenReturn(List.of(this.치킨_주문항목));
 
         // when
         List<Order> orders = orderService.list();
@@ -208,9 +173,9 @@ public class OrderServiceTest {
     @Test
     void update_orderStatus() {
         // given
-        when(orderDao.findById(this.치킨주문.getId())).thenReturn(Optional.of(this.치킨주문));
+        when(orderRepository.findById(this.치킨주문.getId())).thenReturn(Optional.of(this.치킨주문));
 
-        this.치킨주문.setOrderStatus(OrderStatus.MEAL.name());
+        this.치킨주문.changeOrderStatus(OrderStatus.MEAL);
 
         // when
         Order chagedOrder = orderService.changeOrderStatus(this.치킨주문.getId(), this.치킨주문);
@@ -223,9 +188,9 @@ public class OrderServiceTest {
     @Test
     void exception_updateOrderStatus_afterOrderStatusCompletion() {
         // given
-        when(orderDao.findById(this.치킨주문.getId())).thenReturn(Optional.of(this.치킨주문));
+        when(orderRepository.findById(this.치킨주문.getId())).thenReturn(Optional.of(this.치킨주문));
 
-        this.치킨주문.setOrderStatus(OrderStatus.COMPLETION.name());
+        this.치킨주문.changeOrderStatus(OrderStatus.COMPLETION);
 
         // when
         // then

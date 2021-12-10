@@ -23,19 +23,19 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
+import kitchenpos.domain.OrderRepository;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.OrderTableRepository;
 import kitchenpos.domain.TableGroup;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
 public class TableServiceTest {
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
 
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @InjectMocks
     private TableService tableService;
@@ -48,29 +48,20 @@ public class TableServiceTest {
 
     @BeforeEach
     void setUp() {
-        치킨_주문_단체테이블 = new OrderTable();
-        치킨_주문_단체테이블.setId(1L);
-        치킨_주문_단체테이블.setEmpty(true);
+        치킨_주문_단체테이블 = OrderTable.of(null, 0);
 
-        치킨2_주문_단체테이블 = new OrderTable();
-        치킨2_주문_단체테이블.setId(2L);
-        치킨2_주문_단체테이블.setEmpty(true);
+        치킨2_주문_단체테이블 = OrderTable.of(null, 0);
 
-        치킨_주문_개인테이블 = new OrderTable();
-        치킨_주문_개인테이블.setId(3L);
-        치킨_주문_개인테이블.setEmpty(false);
+        치킨_주문_개인테이블 =  OrderTable.of(null, 0);
 
-        단체주문테이블 = new TableGroup();
-        단체주문테이블.setId(1L);
-        단체주문테이블.setOrderTables(List.of(치킨_주문_단체테이블, 치킨2_주문_단체테이블));
-        단체주문테이블.setCreatedDate(LocalDateTime.now());
+        단체주문테이블 = TableGroup.of(LocalDateTime.now(), List.of(치킨_주문_단체테이블, 치킨2_주문_단체테이블));
     }
 
     @DisplayName("주문테이블이 생성된다.")
     @Test
     void create_orderTable() {
         // given
-        when(orderTableDao.save(any(OrderTable.class))).thenReturn(this.치킨_주문_단체테이블);
+        when(orderTableRepository.save(any(OrderTable.class))).thenReturn(this.치킨_주문_단체테이블);
 
         // when
         OrderTable createdOrderTable = tableService.create(this.치킨_주문_단체테이블);
@@ -83,7 +74,7 @@ public class TableServiceTest {
     @Test
     void search_orderTable() {
         // given
-        when(orderTableDao.findAll()).thenReturn(List.of(this.치킨_주문_단체테이블, this.치킨2_주문_단체테이블));
+        when(orderTableRepository.findAll()).thenReturn(List.of(this.치킨_주문_단체테이블, this.치킨2_주문_단체테이블));
 
         // when
         List<OrderTable> searchedOrderTable = tableService.list();
@@ -97,8 +88,8 @@ public class TableServiceTest {
     @Test
     void update_orderTable_emptyStatus() {
         // given
-        when(orderTableDao.findById(this.치킨_주문_개인테이블.getId())).thenReturn(Optional.of(this.치킨_주문_개인테이블));
-        when(orderTableDao.save(this.치킨_주문_개인테이블)).thenReturn(this.치킨_주문_개인테이블);
+        when(orderTableRepository.findById(this.치킨_주문_개인테이블.getId())).thenReturn(Optional.of(this.치킨_주문_개인테이블));
+        when(orderTableRepository.save(this.치킨_주문_개인테이블)).thenReturn(this.치킨_주문_개인테이블);
 
         // when
         OrderTable changedOrderTable = tableService.changeEmpty(this.치킨_주문_개인테이블.getId(), this.치킨_주문_개인테이블);
@@ -111,9 +102,9 @@ public class TableServiceTest {
     @Test
     void exception_updateOrderTable_existOrderTableInTableGroup() {
         // given
-        when(orderTableDao.findById(this.치킨_주문_단체테이블.getId())).thenReturn(Optional.of(this.치킨_주문_단체테이블));
-        when(orderDao.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).thenReturn(true);
-        this.치킨_주문_단체테이블.setTableGroupId(this.단체주문테이블.getId());
+        when(orderTableRepository.findById(this.치킨_주문_단체테이블.getId())).thenReturn(Optional.of(this.치킨_주문_단체테이블));
+        when(orderRepository.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).thenReturn(true);
+        this.치킨_주문_단체테이블.changeTableGroup(this.단체주문테이블);
 
         // when
         // then
@@ -125,9 +116,9 @@ public class TableServiceTest {
     @Test
     void exception_updateOrderTable_EmptyStatus() {
         // given
-        when(orderTableDao.findById(this.치킨_주문_단체테이블.getId())).thenReturn(Optional.of(this.치킨_주문_단체테이블));
-        when(orderDao.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).thenReturn(true);
-        this.치킨_주문_단체테이블.setTableGroupId(this.단체주문테이블.getId());
+        when(orderTableRepository.findById(this.치킨_주문_단체테이블.getId())).thenReturn(Optional.of(this.치킨_주문_단체테이블));
+        when(orderRepository.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).thenReturn(true);
+        this.치킨_주문_단체테이블.changeTableGroup(this.단체주문테이블);
 
         // when
         // then
@@ -139,12 +130,12 @@ public class TableServiceTest {
     @Test
     void update_orderTable_numberOfGuests() {
         // given
-        when(orderTableDao.findById(this.치킨_주문_단체테이블.getId())).thenReturn(Optional.of(this.치킨_주문_단체테이블));
-        when(orderDao.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).thenReturn(true);
-        when(orderTableDao.save(any(OrderTable.class))).thenReturn(this.치킨_주문_단체테이블);
+        when(orderTableRepository.findById(this.치킨_주문_단체테이블.getId())).thenReturn(Optional.of(this.치킨_주문_단체테이블));
+        when(orderRepository.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).thenReturn(true);
+        when(orderTableRepository.save(any(OrderTable.class))).thenReturn(this.치킨_주문_단체테이블);
 
-        this.치킨_주문_단체테이블.setNumberOfGuests(3);
-        this.치킨_주문_단체테이블.setEmpty(false);
+        this.치킨_주문_단체테이블.changeNumberOfGuests(3);
+        //this.치킨_주문_단체테이블.setEmpty(false);
 
         // when
         OrderTable changedOrderTable = tableService.changeNumberOfGuests(this.치킨_주문_단체테이블.getId(), this.치킨_주문_단체테이블);
@@ -161,11 +152,10 @@ public class TableServiceTest {
     @ParameterizedTest(name ="[{index}] 방문한 손님수는 [{0}]")
     void exception_updateOrderTable_underZeroCountAboutNumberOfGuest(int numberOfGuests) {
         // given
-        when(orderTableDao.findById(this.치킨_주문_단체테이블.getId())).thenReturn(Optional.of(this.치킨_주문_단체테이블));
-        when(orderDao.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).thenReturn(true);
+        when(orderTableRepository.findById(this.치킨_주문_단체테이블.getId())).thenReturn(Optional.of(this.치킨_주문_단체테이블));
+        when(orderRepository.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).thenReturn(true);
 
-        this.치킨_주문_단체테이블.setNumberOfGuests(numberOfGuests);
-        this.치킨_주문_단체테이블.setEmpty(false);
+        this.치킨_주문_단체테이블.changeNumberOfGuests(numberOfGuests);
 
         // when
         // then
@@ -178,11 +168,10 @@ public class TableServiceTest {
     @Test
     void exception_updateOrderTable_atEmptyTable() {
         // given
-        when(orderTableDao.findById(this.치킨_주문_단체테이블.getId())).thenReturn(Optional.of(this.치킨_주문_단체테이블));
-        when(orderDao.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).thenReturn(true);
+        when(orderTableRepository.findById(this.치킨_주문_단체테이블.getId())).thenReturn(Optional.of(this.치킨_주문_단체테이블));
+        when(orderRepository.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).thenReturn(true);
 
-        this.치킨_주문_단체테이블.setNumberOfGuests(3);
-        this.치킨_주문_단체테이블.setEmpty(true);
+        this.치킨_주문_단체테이블.changeNumberOfGuests(3);
 
         // when
         // then

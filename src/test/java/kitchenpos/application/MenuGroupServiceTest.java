@@ -13,13 +13,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.domain.MenuGroupRepository;
 
 @ExtendWith(MockitoExtension.class)
 public class MenuGroupServiceTest {
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
 
     @InjectMocks
     private MenuGroupService menuGroupService;
@@ -28,16 +28,15 @@ public class MenuGroupServiceTest {
 
     @BeforeEach
     void setUp() {
-        치킨_메뉴그룹 = new MenuGroup();
-        치킨_메뉴그룹.setId(1L);
-        치킨_메뉴그룹.setName("치킨");
+        치킨_메뉴그룹 = MenuGroup.of("치킨");
+        //치킨_메뉴그룹.setId(1L);
     }
 
     @DisplayName("메뉴그룹이 저장된다.")
     @Test
     void create_menuGroup() {
         // given
-        when(menuGroupDao.save(this.치킨_메뉴그룹)).thenReturn(this.치킨_메뉴그룹);
+        when(menuGroupRepository.save(this.치킨_메뉴그룹)).thenReturn(this.치킨_메뉴그룹);
 
         // when
         MenuGroup savedMenuGroup = menuGroupService.create(this.치킨_메뉴그룹);
@@ -50,11 +49,11 @@ public class MenuGroupServiceTest {
     @Test
     void search_menuGroup() {
         // given
-        MenuGroup 사이드_메뉴그룹 = new MenuGroup();
-        사이드_메뉴그룹.setId(2L);
-        사이드_메뉴그룹.setName("사이드");
+        MenuGroup 사이드_메뉴그룹 = MenuGroup.of("사이드");
+        //사이드_메뉴그룹.setId(2L);
+        
 
-        when(menuGroupDao.findAll()).thenReturn(List.of(this.치킨_메뉴그룹, 사이드_메뉴그룹));
+        when(menuGroupRepository.findAll()).thenReturn(List.of(this.치킨_메뉴그룹, 사이드_메뉴그룹));
 
         // when
         List<MenuGroup> searchedMenuGroups = menuGroupService.list();

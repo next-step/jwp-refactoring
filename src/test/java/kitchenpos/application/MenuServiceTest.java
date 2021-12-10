@@ -20,29 +20,30 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.dao.MenuProductDao;
-import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.domain.MenuGroupRepository;
 import kitchenpos.domain.MenuProduct;
+import kitchenpos.domain.MenuProductRepository;
+import kitchenpos.domain.MenuRepository;
+import kitchenpos.domain.Price;
 import kitchenpos.domain.Product;
+import kitchenpos.domain.ProductRepository;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
 public class MenuServiceTest {
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
 
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
 
     @Mock
-    private MenuProductDao menuProductDao;
+    private MenuProductRepository menuProductRepository;
 
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     @InjectMocks
     private MenuService menuService;
@@ -62,66 +63,32 @@ public class MenuServiceTest {
 
     @BeforeEach
     void setUp() {
-        치킨_메뉴그룹 = new MenuGroup();
-        치킨_메뉴그룹.setId(1L);
-        치킨_메뉴그룹.setName("치킨");
+        치킨_메뉴그룹 = MenuGroup.of("치킨");
+        
+        사이드_메뉴그룹 = MenuGroup.of("사이드");
 
-        사이드_메뉴그룹 = new MenuGroup();
-        사이드_메뉴그룹.setId(2L);
-        사이드_메뉴그룹.setName("사이드");
+        뿌링클치킨 = Product.of("뿌링클치킨", Price.of(15_000));
 
-        뿌링클치킨 = new Product();
-        뿌링클치킨.setId(1L);
-        뿌링클치킨.setName("뿌링클치킨");
-        뿌링클치킨.setPrice(BigDecimal.valueOf(15_000));
+        치킨무 = Product.of("치킨무", Price.of(1_000));
 
-        치킨무 = new Product();
-        치킨무.setId(2L);
-        치킨무.setName("치킨무");
-        치킨무.setPrice(BigDecimal.valueOf(1_000));
+        코카콜라 = Product.of("코카콜라", Price.of(3_000));
 
-        코카콜라 = new Product();
-        코카콜라.setId(3L);
-        코카콜라.setName("코카콜라");
-        코카콜라.setPrice(BigDecimal.valueOf(3_000));
+        뿌링클콤보 = Menu.of("뿌링클콤보", Price.of(18_000), 치킨_메뉴그룹, List.of(뿌링클콤보_뿌링클치킨, 뿌링클콤보_치킨무, 뿌링클콤보_코카콜라));
 
-        뿌링클콤보 = new Menu();
-        뿌링클콤보.setId(1L);
-
-        뿌링클콤보_뿌링클치킨 = new MenuProduct();
-        뿌링클콤보_뿌링클치킨.setSeq(1L);
-        뿌링클콤보_뿌링클치킨.setMenuId(뿌링클콤보.getId());
-        뿌링클콤보_뿌링클치킨.setProductId(뿌링클치킨.getId());
-        뿌링클콤보_뿌링클치킨.setQuantity(1L);
-
-        뿌링클콤보_치킨무 = new MenuProduct();
-        뿌링클콤보_치킨무.setSeq(2L);
-        뿌링클콤보_치킨무.setMenuId(뿌링클콤보.getId());
-        뿌링클콤보_치킨무.setProductId(치킨무.getId());
-        뿌링클콤보_치킨무.setQuantity(1L);
-
-        뿌링클콤보_코카콜라 = new MenuProduct();
-        뿌링클콤보_코카콜라.setSeq(3L);
-        뿌링클콤보_코카콜라.setMenuId(뿌링클콤보.getId());
-        뿌링클콤보_코카콜라.setProductId(코카콜라.getId());
-        뿌링클콤보_코카콜라.setQuantity(1L);
-
-        뿌링클콤보.setName("뿌링클콤보");
-        뿌링클콤보.setPrice(BigDecimal.valueOf(18_000));
-        뿌링클콤보.setMenuGroupId(치킨_메뉴그룹.getId());
-        뿌링클콤보.setMenuProducts(List.of(뿌링클콤보_뿌링클치킨, 뿌링클콤보_치킨무, 뿌링클콤보_코카콜라));
-
+        뿌링클콤보_뿌링클치킨 = MenuProduct.of(뿌링클콤보, 뿌링클치킨, 1L);
+        뿌링클콤보_치킨무 = MenuProduct.of(뿌링클콤보, 치킨무, 1L);
+        뿌링클콤보_치킨무 = MenuProduct.of(뿌링클콤보, 코카콜라, 1L);
     }
 
     @DisplayName("메뉴가 저장된다.")
     @Test
     void craete_menu() {
         // when
-        when(menuGroupDao.existsById(this.치킨_메뉴그룹.getId())).thenReturn(true);
-        when(productDao.findById(this.뿌링클콤보_뿌링클치킨.getProductId())).thenReturn(Optional.of(this.뿌링클치킨));
-        when(productDao.findById(this.뿌링클콤보_치킨무.getProductId())).thenReturn(Optional.of(this.치킨무));
-        when(productDao.findById(this.뿌링클콤보_코카콜라.getProductId())).thenReturn(Optional.of(this.코카콜라));
-        when(menuDao.save(any(Menu.class))).thenReturn(this.뿌링클콤보);
+        when(menuGroupRepository.existsById(this.치킨_메뉴그룹.getId())).thenReturn(true);
+        when(productRepository.findById(this.뿌링클콤보_뿌링클치킨.getProduct().getId())).thenReturn(Optional.of(this.뿌링클치킨));
+        when(productRepository.findById(this.뿌링클콤보_치킨무.getProduct().getId())).thenReturn(Optional.of(this.치킨무));
+        when(productRepository.findById(this.뿌링클콤보_코카콜라.getProduct().getId())).thenReturn(Optional.of(this.코카콜라));
+        when(menuRepository.save(any(Menu.class))).thenReturn(this.뿌링클콤보);
 
         Menu savedMenu = menuService.create(this.뿌링클콤보);
 
@@ -133,7 +100,7 @@ public class MenuServiceTest {
     @Test
     void exception_createMenu_nullPrice() {
         // given
-        this.뿌링클콤보.setPrice(null);
+        this.뿌링클콤보.changePrice(null);
 
         // when
         // then
@@ -146,7 +113,7 @@ public class MenuServiceTest {
     @ParameterizedTest(name="[{index}] 메뉴가격은 [{0}]")
     void exception_createMenu_underZeroPrice(int price) {
         // given
-        this.뿌링클콤보.setPrice(BigDecimal.valueOf(price));
+        this.뿌링클콤보.changePrice(Price.of(price));
 
         // when
         // then
@@ -158,7 +125,7 @@ public class MenuServiceTest {
     @Test
     void exception_createMenu_containNotExistMenuGroup() {
         // given
-        this.뿌링클콤보.setMenuGroupId(this.사이드_메뉴그룹.getId());
+        this.뿌링클콤보.changeMenuGroup(this.사이드_메뉴그룹);
 
         // when
         // then
@@ -170,8 +137,8 @@ public class MenuServiceTest {
     @Test
     void exception_createMenu_notExistProduct() {
         // given
-        when(menuGroupDao.existsById(this.치킨_메뉴그룹.getId())).thenReturn(true);
-        when(productDao.findById(this.코카콜라.getId())).thenThrow(IllegalArgumentException.class);
+        when(menuGroupRepository.existsById(this.치킨_메뉴그룹.getId())).thenReturn(true);
+        when(productRepository.findById(this.코카콜라.getId())).thenThrow(IllegalArgumentException.class);
 
         // when
         // then
@@ -183,12 +150,12 @@ public class MenuServiceTest {
     @Test
     void exception_createMenu_productPriceSumGreaterThanMenuPrice() {
         // given
-        when(menuGroupDao.existsById(this.치킨_메뉴그룹.getId())).thenReturn(true);
-        when(productDao.findById(this.뿌링클콤보_뿌링클치킨.getProductId())).thenReturn(Optional.of(this.뿌링클치킨));
-        when(productDao.findById(this.뿌링클콤보_치킨무.getProductId())).thenReturn(Optional.of(this.치킨무));
-        when(productDao.findById(this.뿌링클콤보_코카콜라.getProductId())).thenReturn(Optional.of(this.코카콜라));
+        when(menuGroupRepository.existsById(this.치킨_메뉴그룹.getId())).thenReturn(true);
+        when(productRepository.findById(this.뿌링클콤보_뿌링클치킨.getProduct().getId())).thenReturn(Optional.of(this.뿌링클치킨));
+        when(productRepository.findById(this.뿌링클콤보_치킨무.getProduct().getId())).thenReturn(Optional.of(this.치킨무));
+        when(productRepository.findById(this.뿌링클콤보_코카콜라.getProduct().getId())).thenReturn(Optional.of(this.코카콜라));
 
-        this.뿌링클콤보.setPrice(BigDecimal.valueOf(20_000));
+        this.뿌링클콤보.changePrice(Price.of(20_000));
 
         // when
         // then
@@ -200,8 +167,8 @@ public class MenuServiceTest {
     @Test
     void search_menu() {
         // given
-        when(menuDao.findAll()).thenReturn(List.of(this.뿌링클콤보));
-        when(menuProductDao.findAllByMenuId(this.뿌링클콤보.getId())).thenReturn(this.뿌링클콤보.getMenuProducts());
+        when(menuRepository.findAll()).thenReturn(List.of(this.뿌링클콤보));
+        when(menuProductRepository.findAllByMenuId(this.뿌링클콤보.getId())).thenReturn(this.뿌링클콤보.getMenuProducts());
 
         // when
         List<Menu> searchedMenu = menuService.list();

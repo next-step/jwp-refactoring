@@ -55,7 +55,7 @@ public class OrderRestControllerTest extends TestConfig {
         Order createdOrder = 주문_저장요청(order).as(Order.class);
 
         // given
-        createdOrder.setOrderStatus(OrderStatus.MEAL.name());
+        createdOrder.changeOrderStatus(OrderStatus.MEAL);
 
         // when
         ExtractableResponse<Response> response = 주문_상태변경요청(createdOrder);
@@ -65,32 +65,23 @@ public class OrderRestControllerTest extends TestConfig {
     }
 
     private Order 저장될_주문생성() {
-        Order order = new Order();
-
         OrderTable orderTable = 반테이블들_조회됨().get(0);
-        orderTable.setEmpty(false);
+        orderTable.changeNumberOfGuests(10);
 
-        TableRestControllerTest.주문테이블_빈테이블_변경요청(orderTable);
-
-        order.setOrderTableId(orderTable.getId());
+        OrderTable changedOrderTable = TableRestControllerTest.주문테이블_빈테이블_변경요청(orderTable).as(OrderTable.class);
 
         Menu[] menus = MenuRestControllerTest.메뉴_조회요청().as(Menu[].class);
 
-        List<OrderLineItem> orderLineItem = 주문명세서_생성(List.of(menus[0], menus[1]));
-        order.setOrderLineItems(orderLineItem);
+        List<OrderLineItem> orderLineItems = 주문명세서_생성(List.of(menus[0], menus[1]));
 
-        return order;
+        return Order.of(changedOrderTable, null, null, orderLineItems);
     }
 
     private List<OrderLineItem> 주문명세서_생성(List<Menu> menus) {
         List<OrderLineItem> orderLineItems = new ArrayList<>();
 
         for (final Menu menu : menus) {
-            OrderLineItem orderLineItem = new OrderLineItem();
-            orderLineItem.setMenuId(menu.getId());
-            orderLineItem.setQuantity(1L);
-
-            orderLineItems.add(orderLineItem);
+            orderLineItems.add(OrderLineItem.of(null, menu, 1L));
         }
 
         return orderLineItems;

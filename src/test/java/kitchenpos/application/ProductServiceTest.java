@@ -18,14 +18,15 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
-import kitchenpos.dao.ProductDao;
+import kitchenpos.domain.Price;
 import kitchenpos.domain.Product;
+import kitchenpos.domain.ProductRepository;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
 public class ProductServiceTest {
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     @InjectMocks
     private ProductService productService;
@@ -36,27 +37,16 @@ public class ProductServiceTest {
 
     @BeforeEach
     void setUp() {
-        뿌링클치킨 = new Product();
-        뿌링클치킨.setId(1L);
-        뿌링클치킨.setName("뿌링클치킨");
-        뿌링클치킨.setPrice(BigDecimal.valueOf(15_000));
-
-        치킨무 = new Product();
-        치킨무.setId(2L);
-        치킨무.setName("치킨무");
-        치킨무.setPrice(BigDecimal.valueOf(1_000));
-
-        코카콜라 = new Product();
-        코카콜라.setId(3L);
-        코카콜라.setName("코카콜라");
-        코카콜라.setPrice(BigDecimal.valueOf(3_000));
+        뿌링클치킨 = Product.of("뿌링클치킨", Price.of(15_000));
+        치킨무 = Product.of("치킨무", Price.of(1_000));
+        코카콜라 = Product.of("코카콜라", Price.of(3_000));
     }
 
     @DisplayName("상품이 저장된다.")
     @Test
     void create_product() {
         // given
-        when(productDao.save(this.뿌링클치킨)).thenReturn(this.뿌링클치킨);
+        when(productRepository.save(this.뿌링클치킨)).thenReturn(this.뿌링클치킨);
 
         // when
         Product createdProduct = productService.create(this.뿌링클치킨);
@@ -69,7 +59,7 @@ public class ProductServiceTest {
     @Test
     void exception_craeteProduct_nullPrice() {
         // given
-        this.뿌링클치킨.setPrice(null);
+        this.뿌링클치킨.changePrice(null);
 
         // when
         // then
@@ -82,7 +72,7 @@ public class ProductServiceTest {
     @ParameterizedTest(name="[{index}] 상품가격은 [{0}]")
     void exception_craeteProduct_underZeroPrice(int price) {
         // given
-        this.뿌링클치킨.setPrice(BigDecimal.valueOf(price));
+        this.뿌링클치킨.changePrice(Price.of(price));
 
         // when
         // then
@@ -94,7 +84,7 @@ public class ProductServiceTest {
     @Test
     void search_product() {
         // given
-        when(productDao.findAll()).thenReturn(List.of(this.뿌링클치킨, this.치킨무, this.코카콜라));
+        when(productRepository.findAll()).thenReturn(List.of(this.뿌링클치킨, this.치킨무, this.코카콜라));
 
         // when
         List<Product> searchedProducts = productService.list();

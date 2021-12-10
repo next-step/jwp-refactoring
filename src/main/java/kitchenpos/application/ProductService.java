@@ -23,9 +23,6 @@ public class ProductService {
     public Product create(final Product product) {
         final Price price = product.getPrice();
 
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException();
-        }
 
         return productRepository.save(product);
     }
