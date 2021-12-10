@@ -12,22 +12,6 @@ public class Menu {
     private Long menuGroupId;
     private List<MenuProduct> menuProducts;
 
-    public Menu() {
-    }
-
-    public Menu(String name, BigDecimal price, Long menuGroupId) {
-        this.name = name;
-        this.price = price;
-        this.menuGroupId = menuGroupId;
-    }
-
-    public void addMenuProduct(MenuProduct menuProduct) {
-        if(menuProducts == null){
-            menuProducts = new ArrayList<>();
-        }
-        menuProducts.add(menuProduct);
-    }
-
     public Long getId() {
         return id;
     }
