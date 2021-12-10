@@ -1,13 +1,18 @@
 package kitchenpos.domain;
 
+import javax.persistence.Embeddable;
 import java.math.BigDecimal;
 import java.util.Objects;
 
+@Embeddable
 public class ProductPrice {
 
     private static final int MIN_PRICE = 0;
 
-    private final BigDecimal price;
+    private BigDecimal price;
+
+    protected ProductPrice() {
+    }
 
     public ProductPrice(BigDecimal price) {
         check(price);
