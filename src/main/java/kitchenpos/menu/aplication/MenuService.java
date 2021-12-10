@@ -22,7 +22,8 @@ public class MenuService {
     private final MenuGroupService menuGroupService;
     private final ProductService productService;
 
-    public MenuService(MenuRepository menuRepository, MenuProductRepository menuProductRepository, MenuGroupService menuGroupService, ProductService productService) {
+    public MenuService(MenuRepository menuRepository, MenuProductRepository menuProductRepository,
+                       MenuGroupService menuGroupService, ProductService productService) {
         this.menuRepository = menuRepository;
         this.menuProductRepository = menuProductRepository;
         this.menuGroupService = menuGroupService;
