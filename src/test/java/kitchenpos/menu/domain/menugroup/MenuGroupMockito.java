@@ -31,7 +31,7 @@ class MenuGroupMockito {
         when(menuGroupRepository.save(any(MenuGroup.class))).thenReturn(패밀리_세트);
 
         //when
-        MenuGroupResponse actual = menuGroupService.create(패밀리_세트_요청);
+        MenuGroupResponse actual = menuGroupService.saveMenuGroup(패밀리_세트_요청);
 
         //then
         assertThat(actual.getName()).isEqualTo(패밀리_세트.getName());
