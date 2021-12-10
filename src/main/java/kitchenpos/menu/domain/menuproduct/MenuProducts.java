@@ -16,4 +16,8 @@ public class MenuProducts {
     public void add(Menu menu, Product product, long quantity) {
         menuProducts.add(new MenuProduct(menu, product, quantity));
     }
+
+    public List<MenuProduct> getMenuProducts() {
+        return menuProducts;
+    }
 }

@@ -1,5 +1,6 @@
 package kitchenpos.menu.domain.menuproduct;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import kitchenpos.menu.domain.menu.Menu;
 import kitchenpos.menu.domain.product.Product;
 
@@ -13,10 +14,12 @@ public class MenuProduct {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
 
+    @JsonIgnore
     @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @JoinColumn(name = "menu_id")
     private Menu menu;
 
+    @JsonIgnore
     @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     private Product product;

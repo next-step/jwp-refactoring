@@ -23,11 +23,11 @@ public class Menu {
     private Price menuPrice;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "menu_id")
+    @JoinColumn(name = "menu_group_id")
     private MenuGroup menuGroup;
 
     @Embedded
-    private MenuProducts menuProducts;
+    private MenuProducts menuProducts = new MenuProducts();
 
     protected Menu() {
     }
