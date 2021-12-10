@@ -27,11 +27,13 @@ class ProductServiceTest {
     @Test
     void createTest(){
 
-        Product product = new Product("후라이드", BigDecimal.valueOf(16000));
+        Product product = new Product();
+        product.setName("후라이드치킨");
+        product.setPrice(BigDecimal.valueOf(18000));
 
         Product expectedProduct = mock(Product.class);
         when(expectedProduct.getId()).thenReturn(1L);
-        when(expectedProduct.getName()).thenReturn("후라이드");
+        when(expectedProduct.getName()).thenReturn("후라이드치킨");
 
         when(productDao.save(product)).thenReturn(expectedProduct);
 

@@ -90,7 +90,8 @@ class OrderServiceTest {
     void changeOrderStatusTest() {
 
         // given
-        Order order = new Order(OrderStatus.COOKING.toString());
+        Order order = new Order();
+        order.setOrderStatus(OrderStatus.COOKING.toString());
 
         Order expectedOrder = mock(Order.class);
         when(expectedOrder.getId()).thenReturn(1L);

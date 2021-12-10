@@ -38,7 +38,8 @@ class TableGroupServiceTest {
         OrderTable orderTable2 = mock(OrderTable.class);
         when(orderTable2.getId()).thenReturn(2L);
 
-        TableGroup tableGroup = new TableGroup(Arrays.asList(orderTable1, orderTable2));
+        TableGroup tableGroup = new TableGroup();
+        tableGroup.setOrderTables(Arrays.asList(orderTable1, orderTable2));
 
         OrderTable savedOrderTable1 = mock(OrderTable.class);
         when(savedOrderTable1.isEmpty()).thenReturn(true);

@@ -48,9 +48,18 @@ class MenuServiceTest {
         Long 후라이드_id = 1L;
         when(후라이드.getPrice()).thenReturn(BigDecimal.valueOf(16000));
 
-        Menu 후라이드치킨 = new Menu("후라이드치킨", BigDecimal.valueOf(16000), 한마리메뉴.getId());
-        MenuProduct 후라이드치킨_상품 = new MenuProduct(후라이드치킨.getId(), 후라이드_id, 1L);
-        후라이드치킨.addMenuProduct(후라이드치킨_상품);
+
+        Menu 후라이드치킨 = new Menu();
+        후라이드치킨.setName("후라이드치킨");
+        후라이드치킨.setPrice(BigDecimal.valueOf(16000));
+        후라이드치킨.setMenuGroupId(한마리메뉴.getId());
+
+        MenuProduct 후라이드치킨_상품 = new MenuProduct();
+        후라이드치킨_상품.setMenuId(후라이드치킨.getId());
+        후라이드치킨_상품.setProductId(후라이드_id);
+        후라이드치킨_상품.setQuantity(1L);
+
+        후라이드치킨.setMenuProducts(Arrays.asList(후라이드치킨_상품));
 
         when(menuGroupDao.existsById(후라이드치킨.getMenuGroupId())).thenReturn(true);
         when(productDao.findById(후라이드_id)).thenReturn(Optional.of(후라이드));

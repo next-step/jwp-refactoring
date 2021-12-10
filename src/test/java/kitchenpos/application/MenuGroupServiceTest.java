@@ -24,7 +24,8 @@ class MenuGroupServiceTest {
     @Test
     void createTest() {
         // given
-        MenuGroup menuGroup = new MenuGroup("한식");
+        MenuGroup menuGroup = new MenuGroup();
+        menuGroup.setName("한식");
 
         MenuGroup expectedMenuGroup = mock(MenuGroup.class);
         when(expectedMenuGroup.getId()).thenReturn(1L);
