@@ -12,13 +12,10 @@ import static kitchenpos.utils.AcceptanceFixture.post;
 public class MenuGroupDomainFixture {
 
     public static MenuGroup 일인_세트 = menuGroup("일인 세트");
-    public static MenuGroupRequest 일인_세트_요청 = MenuGroupRequest.from("일인 세트");
-    public static MenuGroupResponse 일인_세트_등록됨 = 메뉴_그룹_생성_요청(일인_세트_요청).as(MenuGroupResponse.class);
+    public static MenuGroupRequest 일인_세트_요청 = MenuGroupRequest.from(일인_세트.getName());
 
     public static MenuGroup 패밀리_세트 = menuGroup("패밀리 세트");
-    public static MenuGroupRequest 패밀리_세트_요청 = MenuGroupRequest.from("패밀리_세트 세트");
-    public static MenuGroupResponse 패밀리_세트_등록됨 = 메뉴_그룹_생성_요청(패밀리_세트_요청).as(MenuGroupResponse.class);
-
+    public static MenuGroupRequest 패밀리_세트_요청 = MenuGroupRequest.from(패밀리_세트.getName());
 
     public static MenuGroup menuGroup(String name) {
         return new MenuGroup(name);

@@ -2,8 +2,6 @@ package kitchenpos.menu.domain.product;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.menu.dto.MenuGroupRequest;
-import kitchenpos.menu.dto.MenuGroupResponse;
 import kitchenpos.menu.dto.ProductRequest;
 import kitchenpos.menu.dto.ProductResponse;
 import kitchenpos.utils.AcceptanceTest;
@@ -16,9 +14,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static kitchenpos.menu.domain.fixture.MenuGroupDomainFixture.일인_세트;
-import static kitchenpos.menu.domain.fixture.ProductAcceptanceFixture.상품_생성_요청;
-import static kitchenpos.menu.domain.fixture.ProductAcceptanceFixture.상품_조회_요청;
+import static kitchenpos.menu.domain.fixture.ProductDomainFixture.상품_생성_요청;
+import static kitchenpos.menu.domain.fixture.ProductDomainFixture.상품_조회_요청;
 import static kitchenpos.utils.AcceptanceFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -47,13 +44,13 @@ class ProductAcceptanceTest extends AcceptanceTest {
 
     @Test
     @DisplayName("상품 조회")
-    public void 메뉴_그룹_조회() {
+    public void 상품_조회() {
         // given
         치킨_등록됨 = 상품_생성_요청(ProductRequest.of("치킨", BigDecimal.valueOf(15000))).as(ProductResponse.class);
         콜라_등록됨 = 상품_생성_요청(ProductRequest.of("콜라", BigDecimal.valueOf(1000))).as(ProductResponse.class);
 
         // when
-        ExtractableResponse<Response> actual = 상품_조회_요청();
+        final ExtractableResponse<Response> actual = 상품_조회_요청();
 
         응답_OK(actual);
         상품_조회됨(actual, 치킨_등록됨, 콜라_등록됨);
@@ -69,7 +66,7 @@ class ProductAcceptanceTest extends AcceptanceTest {
             치킨 = ProductRequest.of("치킨", BigDecimal.valueOf(15000));
 
             // when
-            ExtractableResponse<Response> actual = 상품_생성_요청(치킨);
+            final ExtractableResponse<Response> actual = 상품_생성_요청(치킨);
 
             // then
             응답_CREATE(actual);
@@ -83,7 +80,7 @@ class ProductAcceptanceTest extends AcceptanceTest {
             치킨 = ProductRequest.of("", BigDecimal.valueOf(15000));
 
             // when
-            ExtractableResponse<Response> actual = 상품_생성_요청(치킨);
+            final ExtractableResponse<Response> actual = 상품_생성_요청(치킨);
 
             // then
             응답_BAD_REQUEST(actual);
@@ -96,7 +93,7 @@ class ProductAcceptanceTest extends AcceptanceTest {
             치킨 = ProductRequest.of("치킨", BigDecimal.valueOf(-1));
 
             // when
-            ExtractableResponse<Response> actual = 상품_생성_요청(치킨);
+            final ExtractableResponse<Response> actual = 상품_생성_요청(치킨);
 
             // then
             응답_BAD_REQUEST(actual);
@@ -109,12 +106,10 @@ class ProductAcceptanceTest extends AcceptanceTest {
             치킨 = ProductRequest.of("치킨", null);
 
             // when
-            ExtractableResponse<Response> actual = 상품_생성_요청(치킨);
+            final ExtractableResponse<Response> actual = 상품_생성_요청(치킨);
 
             // then
             응답_BAD_REQUEST(actual);
         }
     }
-
-
 }

@@ -32,10 +32,10 @@ class MenuGroupAcceptanceTest extends AcceptanceTest {
     }
 
     private void 메뉴_그룹_조회됨(ExtractableResponse<Response> actual, MenuGroupResponse... expected) {
-        List<String> expectedNames = Arrays.stream(expected).map(MenuGroupResponse::getName).collect(Collectors.toList());
+        final List<String> expectedNames = Arrays.stream(expected).map(MenuGroupResponse::getName).collect(Collectors.toList());
 
-        List<MenuGroupResponse> response = actual.jsonPath().getList(".", MenuGroupResponse.class);
-        List<String> responseNames = response.stream().map(MenuGroupResponse::getName).collect(Collectors.toList());
+        final List<MenuGroupResponse> response = actual.jsonPath().getList(".", MenuGroupResponse.class);
+        final List<String> responseNames = response.stream().map(MenuGroupResponse::getName).collect(Collectors.toList());
 
         assertThat(responseNames).containsAll(expectedNames);
     }
@@ -48,7 +48,7 @@ class MenuGroupAcceptanceTest extends AcceptanceTest {
         패밀리_세트_등록됨 = 메뉴_그룹_생성_요청(MenuGroupRequest.from("패밀리 세트")).as(MenuGroupResponse.class);
 
         // when
-        ExtractableResponse<Response> actual = 메뉴_그룹_조회_요청();
+        final ExtractableResponse<Response> actual = 메뉴_그룹_조회_요청();
 
         응답_OK(actual);
         메뉴_그룹_조회됨(actual, 일인_세트_등록됨, 패밀리_세트_등록됨);
@@ -64,7 +64,7 @@ class MenuGroupAcceptanceTest extends AcceptanceTest {
             일인_세트 = MenuGroupRequest.from("1인 세트");
 
             // when
-            ExtractableResponse<Response> actual = 메뉴_그룹_생성_요청(일인_세트);
+            final ExtractableResponse<Response> actual = 메뉴_그룹_생성_요청(일인_세트);
 
             // then
             응답_CREATE(actual);
@@ -78,7 +78,7 @@ class MenuGroupAcceptanceTest extends AcceptanceTest {
             일인_세트 = MenuGroupRequest.from("");
 
             // when
-            ExtractableResponse<Response> actual = 메뉴_그룹_생성_요청(일인_세트);
+            final ExtractableResponse<Response> actual = 메뉴_그룹_생성_요청(일인_세트);
 
             // then
             응답_BAD_REQUEST(actual);

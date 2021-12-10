@@ -1,7 +1,6 @@
 package kitchenpos.menu.domain.menugroup;
 
 import kitchenpos.menu.aplication.MenuGroupService;
-import kitchenpos.menu.dto.MenuGroupRequest;
 import kitchenpos.menu.dto.MenuGroupResponse;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.DisplayName;
@@ -9,8 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static kitchenpos.menu.domain.fixture.MenuGroupDomainFixture.일인_세트;
-import static kitchenpos.menu.domain.fixture.MenuGroupDomainFixture.패밀리_세트;
+import static kitchenpos.menu.domain.fixture.MenuGroupDomainFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
@@ -20,7 +18,7 @@ class MenuGroupMockito {
     private MenuGroupRepository menuGroupRepository;
     private MenuGroupService menuGroupService;
 
-    public void setUpMock() {
+    private void setUpMock() {
         menuGroupRepository = mock(MenuGroupRepository.class);
         menuGroupService = new MenuGroupService(menuGroupRepository);
     }
@@ -33,7 +31,7 @@ class MenuGroupMockito {
         when(menuGroupRepository.save(any(MenuGroup.class))).thenReturn(패밀리_세트);
 
         //when
-        MenuGroupResponse actual = menuGroupService.create(MenuGroupRequest.from("패밀리 세트"));
+        MenuGroupResponse actual = menuGroupService.create(패밀리_세트_요청);
 
         //then
         assertThat(actual.getName()).isEqualTo(패밀리_세트.getName());
