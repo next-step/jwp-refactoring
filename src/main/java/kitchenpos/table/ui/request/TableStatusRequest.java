@@ -1,0 +1,19 @@
+package kitchenpos.table.ui.request;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import kitchenpos.table.domain.TableStatus;
+
+public class TableStatusRequest {
+
+    private final boolean empty;
+
+    @JsonCreator
+    public TableStatusRequest(@JsonProperty("empty") boolean empty) {
+        this.empty = empty;
+    }
+
+    public TableStatus status() {
+        return TableStatus.valueOf(empty);
+    }
+}
