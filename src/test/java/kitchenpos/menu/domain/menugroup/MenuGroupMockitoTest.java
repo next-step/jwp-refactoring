@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 @DisplayName("메뉴 그룹 관리")
-class MenuGroupMockito {
+class MenuGroupMockitoTest {
 
     private MenuGroupRepository menuGroupRepository;
     private MenuGroupService menuGroupService;

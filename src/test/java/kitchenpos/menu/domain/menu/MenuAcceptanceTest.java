@@ -41,10 +41,10 @@ class MenuAcceptanceTest extends AcceptanceTest {
         @DisplayName("성공")
         public void create() {
             // given
-            MenuProductRequest 사이다_한개 = MenuProductRequest.of(사이다_생성됨.getId(), 1);
-            MenuProductRequest 양념소스_두개 = MenuProductRequest.of(양념소스_생성됨.getId(), 2);
+            MenuProductRequest 사이다_한개 = MenuProductRequest.of(사이다_생성됨().getId(), 1);
+            MenuProductRequest 양념소스_두개 = MenuProductRequest.of(양념소스_생성됨().getId(), 2);
             MenuRequest 후라이드_치킨 = MenuRequest.of("후라이드 치킨", BigDecimal.valueOf(15000),
-                    일인_세트_생성됨.getId(), Lists.newArrayList(사이다_한개, 양념소스_두개));
+                    일인_세트_생성됨().getId(), Lists.newArrayList(사이다_한개, 양념소스_두개));
 
             // when
             ExtractableResponse<Response> actual = 메뉴_생성_요청(후라이드_치킨);
@@ -58,10 +58,10 @@ class MenuAcceptanceTest extends AcceptanceTest {
         @DisplayName("실패 - 메뉴명 없음")
         public void failNameEmpty() {
             // given
-            MenuProductRequest 사이다_한개 = MenuProductRequest.of(사이다_생성됨.getId(), 1);
-            MenuProductRequest 양념소스_두개 = MenuProductRequest.of(양념소스_생성됨.getId(), 2);
+            MenuProductRequest 사이다_한개 = MenuProductRequest.of(사이다_생성됨().getId(), 1);
+            MenuProductRequest 양념소스_두개 = MenuProductRequest.of(양념소스_생성됨().getId(), 2);
             MenuRequest 후라이드_치킨 = MenuRequest.of("", BigDecimal.valueOf(15000),
-                    일인_세트_생성됨.getId(), Lists.newArrayList(사이다_한개, 양념소스_두개));
+                    일인_세트_생성됨().getId(), Lists.newArrayList(사이다_한개, 양념소스_두개));
 
             // when
             ExtractableResponse<Response> actual = 메뉴_생성_요청(후라이드_치킨);
@@ -74,8 +74,8 @@ class MenuAcceptanceTest extends AcceptanceTest {
         @DisplayName("실패 - 메뉴 그룹 없음")
         public void failMenuGroupEmpty() {
             // given
-            MenuProductRequest 사이다_한개 = MenuProductRequest.of(사이다_생성됨.getId(), 1);
-            MenuProductRequest 양념소스_두개 = MenuProductRequest.of(양념소스_생성됨.getId(), 2);
+            MenuProductRequest 사이다_한개 = MenuProductRequest.of(사이다_생성됨().getId(), 1);
+            MenuProductRequest 양념소스_두개 = MenuProductRequest.of(양념소스_생성됨().getId(), 2);
             MenuRequest 후라이드_치킨 = MenuRequest.of("후라이드 치킨", BigDecimal.valueOf(15000),
                     null, Lists.newArrayList(사이다_한개, 양념소스_두개));
 
@@ -90,10 +90,10 @@ class MenuAcceptanceTest extends AcceptanceTest {
         @DisplayName("실패 - 잘못된 메뉴 가격 입력")
         public void failPriceIllegal() {
             // given
-            MenuProductRequest 사이다_한개 = MenuProductRequest.of(사이다_생성됨.getId(), 1);
-            MenuProductRequest 양념소스_두개 = MenuProductRequest.of(양념소스_생성됨.getId(), 2);
+            MenuProductRequest 사이다_한개 = MenuProductRequest.of(사이다_생성됨().getId(), 1);
+            MenuProductRequest 양념소스_두개 = MenuProductRequest.of(양념소스_생성됨().getId(), 2);
             MenuRequest 후라이드_치킨 = MenuRequest.of("후라이드 치킨", BigDecimal.valueOf(-1),
-                    일인_세트_생성됨.getId(), Lists.newArrayList(사이다_한개, 양념소스_두개));
+                    일인_세트_생성됨().getId(), Lists.newArrayList(사이다_한개, 양념소스_두개));
 
             // when
             ExtractableResponse<Response> actual = 메뉴_생성_요청(후라이드_치킨);

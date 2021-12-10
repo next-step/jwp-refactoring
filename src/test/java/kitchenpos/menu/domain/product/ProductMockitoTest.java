@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.*;
 
 @DisplayName("상품 관리")
-class ProductMockito {
+class ProductMockitoTest {
 
     private ProductRepository productRepository;
     private ProductService productService;
