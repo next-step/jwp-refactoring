@@ -10,11 +10,11 @@ import static kitchenpos.utils.AcceptanceFixture.post;
 public class MenuAcceptanceFixture {
 
     public static ExtractableResponse<Response> 메뉴_생성(MenuRequest menuRequest) {
-        return post("/new/api/menus", menuRequest);
+        return post("/api/menus", menuRequest);
     }
 
     public static ExtractableResponse<Response> 메뉴_전체_조회() {
-        return get("/new/api/menus");
+        return get("/api/menus");
     }
 
 }
