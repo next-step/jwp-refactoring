@@ -84,7 +84,7 @@ public class OrderServiceTest {
         뿌링클콤보.setId(1L);
         뿌링클콤보.setName("뿌링클콤보");
         뿌링클콤보.setPrice(BigDecimal.valueOf(18_000));
-   
+
         뿌링클콤보_뿌링클치킨 = new MenuProduct();
         뿌링클콤보_뿌링클치킨.setSeq(1L);
         뿌링클콤보_뿌링클치킨.setMenuId(뿌링클콤보.getId());
@@ -118,7 +118,7 @@ public class OrderServiceTest {
         치킨주문.setOrderStatus("");
         치킨주문.setOrderedTime(LocalDateTime.now());
         치킨주문.setOrderLineItems(List.of(치킨_주문항목));
-        
+
         치킨_주문항목.setOrderId(치킨주문.getId());
         치킨_주문항목.setMenuId(뿌링클콤보.getId());
         치킨_주문항목.setQuantity(1L);

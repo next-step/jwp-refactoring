@@ -53,4 +53,8 @@ public class Menu {
         return this.menuProducts;
     }
 
+    public void changeMenuProducts(List<MenuProduct> menuProducts) {
+        this.menuProducts = menuProducts;
+    }
+
 }

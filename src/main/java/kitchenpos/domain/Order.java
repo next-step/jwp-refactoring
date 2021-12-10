@@ -55,4 +55,20 @@ public class Order {
     public List<OrderLineItem> getOrderLineItems() {
         return this.orderLineItems;
     }
+
+    public void changeOrderTable(OrderTable orderTable) {
+        this.orderTable = orderTable;
+    }
+
+    public void changeOrderStatus(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
+    }
+
+    public void changeOrderedTime(LocalDateTime localDateTime) {
+        this.orderedTime = localDateTime;
+    }
+
+    public void changeOrderLineItems(List<OrderLineItem> orderLineItems) {
+        this.orderLineItems = orderLineItems;
+    }
 }

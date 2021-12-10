@@ -53,4 +53,8 @@ public class OrderLineItem {
     public long getQuantity() {
         return this.quantity;
     }
+
+    public void changeOrder(Order order) {
+        this.order = order;
+    }
 }

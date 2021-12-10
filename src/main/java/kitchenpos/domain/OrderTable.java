@@ -40,4 +40,16 @@ public class OrderTable {
     public int getNumberOfGuests() {
         return this.numberOfGuests;
     }
+
+    public boolean isEmpty() {
+        return this.numberOfGuests < 1;
+    }
+
+    public void changeTableGroup(TableGroup tableGroup) {
+        this.tableGroup = tableGroup;
+    }
+
+    public void changeNumberOfGuests(int numberOfGuests) {
+        this.numberOfGuests = numberOfGuests;
+    }
 }
