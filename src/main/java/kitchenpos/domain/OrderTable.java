@@ -1,6 +1,5 @@
 package kitchenpos.domain;
 
-import java.util.Objects;
 
 public class OrderTable {
     private Long id;
@@ -40,20 +39,4 @@ public class OrderTable {
         this.empty = empty;
     }
 
-    public void changeFull() {
-        this.empty = false;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        OrderTable that = (OrderTable) o;
-        return numberOfGuests == that.numberOfGuests && empty == that.empty && Objects.equals(id, that.id) && Objects.equals(tableGroupId, that.tableGroupId);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, tableGroupId, numberOfGuests, empty);
-    }
 }
