@@ -12,8 +12,8 @@ import org.springframework.http.MediaType;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.domain.order.OrderTable;
+import kitchenpos.domain.table.TableGroup;
 import kitchenpos.testassistance.config.TestConfig;
 
 @DisplayName("단체지정 API기능에 관한")
