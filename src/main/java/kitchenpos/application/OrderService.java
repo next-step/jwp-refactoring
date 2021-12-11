@@ -40,12 +40,47 @@ public class OrderService {
 
     @Transactional
     public Order create(final Order order) {
+        final OrderTable orderTable = orderTableRepository.findById(order.getOrderTable().getId()).orElseThrow(IllegalArgumentException::new);
         final List<OrderLineItem> orderLineItems = order.getOrderLineItems();
 
-        if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalArgumentException();
+        validationOfCreate(orderTable, orderLineItems);
+
+        order.changeOrderTable(orderTable);
+        order.changeOrderStatus(OrderStatus.COOKING);
+        order.changeOrderedTime(LocalDateTime.now());
+
+        final Order savedOrder = orderRepository.save(order);
+        final List<OrderLineItem> savedOrderLineItems = saveOrderLineItem(order, orderLineItems);
+
+        savedOrder.changeOrderLineItems(savedOrderLineItems);
+
+        return savedOrder;
+    }
+
+    private List<OrderLineItem> saveOrderLineItem(final Order order, final List<OrderLineItem> orderLineItems) {
+        final List<OrderLineItem> savedOrderLineItems = new ArrayList<>();
+
+        for (final OrderLineItem orderLineItem : orderLineItems) {
+            orderLineItem.changeOrder(order);
+            savedOrderLineItems.add(orderLineItemRepository.save(orderLineItem));
         }
 
+        return savedOrderLineItems;
+    }
+
+    private void validationOfCreate(final OrderTable orderTable, final List<OrderLineItem> orderLineItems) {
+        checkEmptyOfOrderLineItem(orderLineItems);
+        checkExistOfMenu(orderLineItems);
+        checkEmptyTable(orderTable);
+    }
+
+    private void checkEmptyTable(final OrderTable orderTable) {
+        if (orderTable.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    private void checkExistOfMenu(final List<OrderLineItem> orderLineItems) {
         final List<Long> menuIds = orderLineItems.stream()
                 .map(OrderLineItem::getMenu)
                 .map(Menu::getId)
@@ -54,30 +89,15 @@ public class OrderService {
         if (orderLineItems.size() != menuRepository.countByIdIn(menuIds)) {
             throw new IllegalArgumentException();
         }
-
-        final OrderTable orderTable = orderTableRepository.findById(order.getOrderTable().getId())
-                .orElseThrow(IllegalArgumentException::new);
-
-        if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
-
-        order.changeOrderTable(orderTable);
-        order.changeOrderStatus(OrderStatus.COOKING);
-        order.changeOrderedTime(LocalDateTime.now());
-
-        final Order savedOrder = orderRepository.save(order);
-
-        final List<OrderLineItem> savedOrderLineItems = new ArrayList<>();
-        for (final OrderLineItem orderLineItem : orderLineItems) {
-            orderLineItem.changeOrder(order);
-            savedOrderLineItems.add(orderLineItemRepository.save(orderLineItem));
-        }
-        savedOrder.changeOrderLineItems(savedOrderLineItems);
-
-        return savedOrder;
     }
 
+    private void checkEmptyOfOrderLineItem(final List<OrderLineItem> orderLineItems) {
+        if (CollectionUtils.isEmpty(orderLineItems)) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    @Transactional(readOnly = true)
     public List<Order> list() {
         final List<Order> orders = orderRepository.findAll();
 
@@ -93,17 +113,20 @@ public class OrderService {
         final Order savedOrder = orderRepository.findById(orderId)
                                                     .orElseThrow(IllegalArgumentException::new);
 
-        if (OrderStatus.COMPLETION.equals(savedOrder.getOrderStatus())) {
-            throw new IllegalArgumentException();
-        }
+        validateionOfChageOrderStatus(savedOrder);
 
-        final OrderStatus orderStatus = order.getOrderStatus();
-        savedOrder.changeOrderStatus(orderStatus);
+        savedOrder.changeOrderStatus(order.getOrderStatus());
 
         orderRepository.save(savedOrder);
 
         savedOrder.changeOrderLineItems(orderLineItemRepository.findAllByOrderId(orderId));
 
         return savedOrder;
+    }
+
+    private void validateionOfChageOrderStatus(final Order savedOrder) {
+        if (OrderStatus.COMPLETION.equals(savedOrder.getOrderStatus())) {
+            throw new IllegalArgumentException();
+        }
     }
 }

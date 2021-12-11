@@ -10,7 +10,6 @@ import kitchenpos.domain.order.OrderTableRepository;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class TableService {
@@ -29,6 +28,7 @@ public class TableService {
         return orderTableRepository.save(orderTable);
     }
 
+    @Transactional(readOnly = true)
     public List<OrderTable> list() {
         return orderTableRepository.findAll();
     }
@@ -36,39 +36,60 @@ public class TableService {
     @Transactional
     public OrderTable changeEmpty(final Long orderTableId, final OrderTable orderTable) {
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
+                                                                .orElseThrow(IllegalArgumentException::new);
 
-        if (savedOrderTable.hasTableGroup()) {
-            throw new IllegalArgumentException();
-        }
-
-        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
-                orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new IllegalArgumentException();
-        }
+        validationOfChangeEmpty(orderTableId, savedOrderTable);
 
         savedOrderTable.changeEmpty(orderTable.isEmpty());
 
         return orderTableRepository.save(savedOrderTable);
     }
 
+    private void validationOfChangeEmpty(final Long orderTableId, final OrderTable savedOrderTable) {
+        checkHasTableGroup(savedOrderTable);
+        checkOrderStatusOfOrderTable(orderTableId);
+    }
+
+    private void checkOrderStatusOfOrderTable(final Long orderTableId) {
+        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    private void checkHasTableGroup(final OrderTable savedOrderTable) {
+        if (savedOrderTable.hasTableGroup()) {
+            throw new IllegalArgumentException();
+        }
+    }
+
     @Transactional
     public OrderTable changeNumberOfGuests(final Long orderTableId, final OrderTable orderTable) {
         final int numberOfGuests = orderTable.getNumberOfGuests();
 
-        if (numberOfGuests < 0) {
-            throw new IllegalArgumentException();
-        }
-
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
+                                                                .orElseThrow(IllegalArgumentException::new);
 
-        if (savedOrderTable.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
+        validationOfChangeNumberOfGuests(numberOfGuests, savedOrderTable);
 
         savedOrderTable.changeNumberOfGuests(numberOfGuests);
 
         return orderTableRepository.save(savedOrderTable);
+    }
+
+    private void validationOfChangeNumberOfGuests(final int numberOfGuests, final OrderTable savedOrderTable) {
+        checkPotiveOfNumberOfGuests(numberOfGuests);
+        checkEmptyTable(savedOrderTable);
+    }
+
+    private void checkEmptyTable(final OrderTable savedOrderTable) {
+        if (savedOrderTable.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    private void checkPotiveOfNumberOfGuests(final int numberOfGuests) {
+        if (numberOfGuests < 0) {
+            throw new IllegalArgumentException();
+        }
     }
 }

@@ -3,10 +3,11 @@ package kitchenpos.application;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kitchenpos.domain.menu.MenuGroup;
 import kitchenpos.domain.menu.MenuGroupRepository;
+import kitchenpos.dto.MenuGroupDto;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class MenuGroupService {
@@ -17,11 +18,13 @@ public class MenuGroupService {
     }
 
     @Transactional
-    public MenuGroup create(final MenuGroup menuGroup) {
-        return menuGroupRepository.save(menuGroup);
+    public MenuGroupDto create(final MenuGroupDto menuGroup) {
+        return MenuGroupDto.of(menuGroupRepository.save(menuGroup.toMenuGroup()));
     }
 
-    public List<MenuGroup> list() {
-        return menuGroupRepository.findAll();
+    public List<MenuGroupDto> list() {
+        return menuGroupRepository.findAll().stream()
+                                    .map(MenuGroupDto::of)
+                                    .collect(Collectors.toList());
     }
 }
