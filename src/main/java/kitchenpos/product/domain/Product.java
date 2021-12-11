@@ -1,33 +1,90 @@
 package kitchenpos.product.domain;
 
-import java.math.BigDecimal;
+import java.util.Objects;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import kitchenpos.common.domain.Name;
+import kitchenpos.common.domain.Price;
+import org.springframework.util.Assert;
 
+@Entity
 public class Product {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
-    private BigDecimal price;
+
+    @Embedded
+    private Name name;
+
+    @Embedded
+    private Price price;
+
+    public Product() {
+    }
+
+    private Product(Name name, Price price) {
+        Assert.notNull(name, "이름은 필수입니다.");
+        Assert.notNull(price, "가격은 필수입니다.");
+        this.name = name;
+        this.price = price;
+    }
+
+    public static Product of(Name name, Price price) {
+        return new Product(name, price);
+    }
 
     public Long getId() {
         return id;
     }
 
-    public void setId(final Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 
-    public String getName() {
+    public Name getName() {
         return name;
     }
 
-    public void setName(final String name) {
+    public void setName(Name name) {
         this.name = name;
     }
 
-    public BigDecimal getPrice() {
+    public Price getPrice() {
         return price;
     }
 
-    public void setPrice(final BigDecimal price) {
+    public void setPrice(Price price) {
         this.price = price;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, price);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Product product = (Product) o;
+        return Objects.equals(id, product.id) && Objects.equals(name, product.name)
+            && Objects.equals(price, product.price);
+    }
+
+    @Override
+    public String toString() {
+        return "Product{" +
+            "id=" + id +
+            ", name=" + name +
+            ", price=" + price +
+            '}';
     }
 }

@@ -23,6 +23,10 @@ public class Name {
         return new Name(value);
     }
 
+    public String value() {
+        return value;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(value);

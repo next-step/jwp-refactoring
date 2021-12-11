@@ -25,6 +25,10 @@ public class Price {
         return new Price(value);
     }
 
+    public BigDecimal value() {
+        return value;
+    }
+
     private boolean isZeroOrPositive(BigDecimal value) {
         return value.compareTo(BigDecimal.ZERO) >= 0;
     }

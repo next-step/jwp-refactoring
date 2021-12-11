@@ -37,8 +37,8 @@ public final class ProductRequest {
 
     public Product toEntity() {
         Product product = new Product();
-        product.setName(name);
-        product.setPrice(price);
+        product.setName(name());
+        product.setPrice(price());
         return product;
     }
 }
