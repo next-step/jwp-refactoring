@@ -2,7 +2,7 @@ package kitchenpos.table.ui.response;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.table.domain.OrderTable;
 
 public final class OrderTableResponse {
 

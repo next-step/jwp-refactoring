@@ -2,7 +2,7 @@ package kitchenpos.menu.ui.response;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProduct;
 
 public final class MenuProductResponse {
 

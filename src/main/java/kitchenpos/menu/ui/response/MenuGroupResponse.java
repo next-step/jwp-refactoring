@@ -2,7 +2,7 @@ package kitchenpos.menu.ui.response;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuGroup;
 
 public final class MenuGroupResponse {
 

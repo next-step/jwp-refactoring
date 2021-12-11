@@ -2,7 +2,7 @@ package kitchenpos.table.ui.request;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.Headcount;
 import kitchenpos.table.domain.TableStatus;
 

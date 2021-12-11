@@ -3,7 +3,7 @@ package kitchenpos.order.ui.request;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import kitchenpos.common.domain.Quantity;
-import kitchenpos.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderLineItem;
 
 public final class OrderLineItemRequest {
 
