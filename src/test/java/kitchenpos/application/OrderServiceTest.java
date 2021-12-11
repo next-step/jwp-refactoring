@@ -16,6 +16,7 @@ import java.util.List;
 import static kitchenpos.fixture.MenuFixture.메뉴;
 import static kitchenpos.fixture.MenuProductFixture.메뉴_상품;
 import static kitchenpos.fixture.OrderFixture.주문;
+import static kitchenpos.fixture.OrderFixture.주문_요청;
 import static kitchenpos.fixture.OrderLineItemFixture.주문_항목;
 import static kitchenpos.fixture.OrderTableFixture.주문_테이블;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -64,14 +65,14 @@ class OrderServiceTest {
 
     @Test
     void create_주문을_등록할_수_있다() {
-        Order savedOrder = orderService.create(주문(저장된_주문_테이블, 주문_항목(저장된_메뉴, 수량)));
+        Order savedOrder = orderService.create(주문_요청(저장된_주문_테이블, 주문_항목(저장된_메뉴, 수량)));
         assertAll(
-                () -> assertThat(savedOrder.getOrderTableId()).isEqualTo(저장된_주문_테이블.getId()),
-                () -> assertThat(savedOrder.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name()),
+                () -> assertThat(savedOrder.getOrderTable().getId()).isEqualTo(저장된_주문_테이블.getId()),
+                () -> assertThat(savedOrder.getOrderStatus()).isEqualTo(OrderStatus.COOKING),
                 () -> assertThat(savedOrder.getOrderedTime()).isNotNull(),
                 () -> assertThat(savedOrder.getOrderLineItems().size()).isEqualTo(1),
-                () -> assertThat(savedOrder.getOrderLineItems().get(0).getOrderId()).isEqualTo(savedOrder.getId()),
-                () -> assertThat(savedOrder.getOrderLineItems().get(0).getMenuId()).isEqualTo(저장된_메뉴.getId()),
+                () -> assertThat(savedOrder.getOrderLineItems().get(0).getOrder().getId()).isEqualTo(savedOrder.getId()),
+                () -> assertThat(savedOrder.getOrderLineItems().get(0).getMenu().getId()).isEqualTo(저장된_메뉴.getId()),
                 () -> assertThat(savedOrder.getOrderLineItems().get(0).getQuantity()).isEqualTo(수량)
         );
     }
@@ -79,42 +80,42 @@ class OrderServiceTest {
     @Test
     void create_주문_항목_목록이_올바르지_않으면_주문을_등록할_수_없다() {
         assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> orderService.create(주문(저장된_주문_테이블, Collections.emptyList())));
+                .isThrownBy(() -> orderService.create(주문_요청(저장된_주문_테이블, Collections.emptyList())));
     }
 
     @Test
     void create_주문_항목_개수과_존재하는_메뉴_개수가_일치하지_않으면_등록할_수_없다() {
         List<OrderLineItem> 존재하는_메뉴_개수_이상의_주문_항목 = Arrays.asList(주문_항목(저장된_메뉴, 수량), 주문_항목(저장된_메뉴, 수량));
         assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> orderService.create(주문(저장된_주문_테이블, 존재하는_메뉴_개수_이상의_주문_항목)));
+                .isThrownBy(() -> orderService.create(주문_요청(저장된_주문_테이블, 존재하는_메뉴_개수_이상의_주문_항목)));
     }
 
     @ParameterizedTest
     @ValueSource(longs = {0L})
     void create_주문_테이블이_존재하지_않으면_등록할_수_없다(Long 존재하지_않는_주문_테이블_아이디) {
         assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> orderService.create(주문(존재하지_않는_주문_테이블_아이디, 주문_항목(저장된_메뉴, 수량))));
+                .isThrownBy(() -> orderService.create(주문_요청(존재하지_않는_주문_테이블_아이디, 주문_항목(저장된_메뉴, 수량))));
     }
 
     @Test
     void create_주문_테이블이_올바르지_않으면_주문을_등록할_수_없다() {
         OrderTable 비어있는_주문_테이블 = orderTableDao.save(주문_테이블(2, true));
         assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> orderService.create(주문(비어있는_주문_테이블, 주문_항목(저장된_메뉴, 수량))));
+                .isThrownBy(() -> orderService.create(주문_요청(비어있는_주문_테이블, 주문_항목(저장된_메뉴, 수량))));
     }
 
     @Test
     void list_주문_목록을_조회할_수_있다() {
-        Order 저장된_주문 = orderService.create(주문(저장된_주문_테이블, 주문_항목(저장된_메뉴, 수량)));
+        Order 저장된_주문 = orderService.create(주문_요청(저장된_주문_테이블, 주문_항목(저장된_메뉴, 수량)));
         List<Order> orders = orderService.list();
         assertAll(
                 () -> assertThat(orders.size()).isEqualTo(1),
-                () -> assertThat(orders.get(0).getOrderStatus()).isEqualTo(OrderStatus.COOKING.name()),
-                () -> assertThat(orders.get(0).getOrderTableId()).isEqualTo(저장된_주문_테이블.getId()),
+                () -> assertThat(orders.get(0).getOrderStatus()).isEqualTo(OrderStatus.COOKING),
+                () -> assertThat(orders.get(0).getOrderTable().getId()).isEqualTo(저장된_주문_테이블.getId()),
                 () -> assertThat(orders.get(0).getOrderedTime()).isNotNull(),
                 () -> assertThat(orders.get(0).getOrderLineItems().size()).isEqualTo(1),
-                () -> assertThat(orders.get(0).getOrderLineItems().get(0).getOrderId()).isEqualTo(저장된_주문.getId()),
-                () -> assertThat(orders.get(0).getOrderLineItems().get(0).getMenuId()).isEqualTo(저장된_메뉴.getId()),
+                () -> assertThat(orders.get(0).getOrderLineItems().get(0).getOrder().getId()).isEqualTo(저장된_주문.getId()),
+                () -> assertThat(orders.get(0).getOrderLineItems().get(0).getMenu().getId()).isEqualTo(저장된_메뉴.getId()),
                 () -> assertThat(orders.get(0).getOrderLineItems().get(0).getQuantity()).isEqualTo(수량)
         );
     }
@@ -122,12 +123,12 @@ class OrderServiceTest {
     @ParameterizedTest
     @EnumSource(value = OrderStatus.class, names = {"MEAL"})
     void changeOrderStatus_주문_상태를_변경할_수_있다(OrderStatus 변경될_주문_상태) {
-        Order 저장된_주문 = orderService.create(주문(저장된_주문_테이블, 주문_항목(저장된_메뉴, 수량)));
+        Order 저장된_주문 = orderService.create(주문_요청(저장된_주문_테이블, 주문_항목(저장된_메뉴, 수량)));
         Order 변경될_주문 = 주문(저장된_주문_테이블, 주문_항목(저장된_메뉴, 수량), 변경될_주문_상태);
 
         Order 변경된_주문 = orderService.changeOrderStatus(저장된_주문.getId(), 변경될_주문);
 
-        assertThat(변경된_주문.getOrderStatus()).isEqualTo(변경될_주문_상태.name());
+        assertThat(변경된_주문.getOrderStatus()).isEqualTo(변경될_주문_상태);
     }
 
     @ParameterizedTest
@@ -142,7 +143,7 @@ class OrderServiceTest {
     @ParameterizedTest
     @EnumSource(value = OrderStatus.class, names = {"COMPLETION"})
     void changeOrderStatus_주문_상태_올바르지_않으면_주문_상태를_변경할_수_없다(OrderStatus 올바르지_않은_주문_상태) {
-        Order 저장된_주문 = orderService.create(주문(저장된_주문_테이블, 주문_항목(저장된_메뉴, 수량)));
+        Order 저장된_주문 = orderService.create(주문_요청(저장된_주문_테이블, 주문_항목(저장된_메뉴, 수량)));
 
         Order 완료_상태의_주문 = 주문(저장된_주문_테이블, 주문_항목(저장된_메뉴, 수량), 올바르지_않은_주문_상태);
         orderService.changeOrderStatus(저장된_주문.getId(), 완료_상태의_주문);

@@ -13,6 +13,7 @@ import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 
 import static kitchenpos.fixture.OrderFixture.주문;
@@ -78,7 +79,7 @@ class TableServiceTest {
     @Test
     void changeEmpty_주문_테이블을_빈_테이블로_변경할_수_있다() {
         OrderTable 저장된_주문_테이블 = tableService.create(채워진_주문_테이블());
-        orderDao.save(주문(저장된_주문_테이블, null, OrderStatus.COMPLETION));
+        orderDao.save(주문(저장된_주문_테이블, Arrays.asList(), OrderStatus.COMPLETION));
 
         OrderTable 변경된_주문_테이블 = tableService.changeEmpty(저장된_주문_테이블.getId(), 빈_주문_테이블);
 
@@ -104,7 +105,7 @@ class TableServiceTest {
     @EnumSource(value = OrderStatus.class, names = {"COOKING", "MEAL"})
     void changeEmpty_주문_테이블_아이디와_주문_혹은_식사_주문_상태인_주문이_존재하면_빈_테이블_여부를_변경할_수_없다(OrderStatus 올바르지_않은_주문_상태) {
         OrderTable 저장된_주문_테이블 = tableService.create(채워진_주문_테이블());
-        orderDao.save(주문(저장된_주문_테이블, null, 올바르지_않은_주문_상태));
+        orderDao.save(주문(저장된_주문_테이블, Arrays.asList(), 올바르지_않은_주문_상태));
 
         assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> tableService.changeEmpty(저장된_주문_테이블.getId(), 빈_주문_테이블));

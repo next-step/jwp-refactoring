@@ -14,7 +14,7 @@ public class InMemoryOrderLineItemDao extends InMemoryDao<OrderLineItem> impleme
     @Override
     public List<OrderLineItem> findAllByOrderId(Long orderId) {
         return db.values().stream()
-                .filter(orderLineItem -> orderLineItem.getOrderId() == orderId)
+                .filter(orderLineItem -> orderLineItem.getOrder().getId() == orderId)
                 .collect(Collectors.toList());
     }
 }

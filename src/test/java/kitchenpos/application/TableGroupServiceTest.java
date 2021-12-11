@@ -113,7 +113,7 @@ class TableGroupServiceTest {
     void ungroup_단체_지정의_주문_테이블_아이디와_주문_혹은_식사_주문_상태인_주문이_존재하면_단체_지정을_해제할_수_없다(OrderStatus 유효하지_않은_주문_상태) {
         OrderTable 저장된_주문_테이블1 = orderTableDao.save(빈_주문_테이블());
         OrderTable 저장된_주문_테이블2 = orderTableDao.save(빈_주문_테이블());
-        orderDao.save(주문(저장된_주문_테이블1, null, 유효하지_않은_주문_상태));
+        orderDao.save(주문(저장된_주문_테이블1, Arrays.asList(), 유효하지_않은_주문_상태));
         TableGroupRequest 단체_지정 = 단체_지정_요청(Arrays.asList(저장된_주문_테이블1, 저장된_주문_테이블2));
         TableGroup 저장된_단체_지정 = tableGroupService.create(단체_지정);
 
