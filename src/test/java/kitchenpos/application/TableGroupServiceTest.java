@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 
 import static kitchenpos.fixture.OrderFixture.주문;
 import static kitchenpos.fixture.OrderTableFixture.주문_테이블;
+import static kitchenpos.fixture.TableGroupFixture.단체_지정_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -122,12 +123,5 @@ class TableGroupServiceTest {
 
     private OrderTable 빈_주문_테이블() {
         return 주문_테이블(0, true);
-    }
-
-    private TableGroupRequest 단체_지정_요청(List<OrderTable> orderTables) {
-        List<TableRequest> tableRequests = orderTables.stream()
-                .map(orderTable -> new TableRequest(orderTable.getId()))
-                .collect(Collectors.toList());
-        return new TableGroupRequest(tableRequests);
     }
 }
