@@ -33,40 +33,31 @@ public class TableService {
 
     @Transactional
     public OrderTable changeEmpty(final Long orderTableId, final TableRequest request) {
-        final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
+        checkCompleteTable(orderTableId);
 
-        if (Objects.nonNull(savedOrderTable.getTableGroup())) {
-            throw new IllegalArgumentException();
-        }
+        final OrderTable savedOrderTable = getOrderTable(orderTableId);
+        savedOrderTable.changeEmpty(request.isEmpty());
 
-        if (orderDao.existsByOrderTableIdAndOrderStatusIn(
-                orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new IllegalArgumentException();
-        }
-
-        savedOrderTable.setEmpty(request.isEmpty());
-
-        return orderTableDao.save(savedOrderTable);
+        return savedOrderTable;
     }
 
     @Transactional
     public OrderTable changeNumberOfGuests(final Long orderTableId, final TableRequest request) {
-        final int numberOfGuests = request.getNumberOfGuests();
+        final OrderTable savedOrderTable = getOrderTable(orderTableId);
+        savedOrderTable.changeNumberOfGuests(request.getNumberOfGuests());
 
-        if (numberOfGuests < 0) {
+        return savedOrderTable;
+    }
+
+    private void checkCompleteTable(Long orderTableId) {
+        if (orderDao.existsByOrderTableIdAndOrderStatusIn(
+                orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
             throw new IllegalArgumentException();
         }
+    }
 
-        final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
+    private OrderTable getOrderTable(Long orderTableId) {
+        return orderTableDao.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
-
-        if (savedOrderTable.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
-
-        savedOrderTable.setNumberOfGuests(numberOfGuests);
-
-        return orderTableDao.save(savedOrderTable);
     }
 }

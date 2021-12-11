@@ -1,6 +1,7 @@
 package kitchenpos.domain;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 public class OrderTable {
@@ -37,6 +38,23 @@ public class OrderTable {
 
     public Long getId() {
         return id;
+    }
+
+    public void changeEmpty(boolean empty) {
+        if (Objects.nonNull(tableGroup)) {
+            throw new IllegalArgumentException();
+        }
+        this.empty = empty;
+    }
+
+    public void changeNumberOfGuests(int numberOfGuests) {
+        if (empty) {
+            throw new IllegalArgumentException();
+        }
+        if (numberOfGuests < 0) {
+            throw new IllegalArgumentException();
+        }
+        this.numberOfGuests = numberOfGuests;
     }
 
     public void setId(final Long id) {
