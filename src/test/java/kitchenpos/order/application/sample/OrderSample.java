@@ -4,8 +4,8 @@ import static kitchenpos.order.application.sample.OrderLineItemSample.후라이�
 import static kitchenpos.table.application.sample.OrderTableSample.채워진_다섯명_테이블;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
 import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderStatus;
 
 public class OrderSample {
@@ -16,7 +16,7 @@ public class OrderSample {
         order.setOrderTableId(채워진_다섯명_테이블().getId());
         order.setOrderStatus(OrderStatus.COOKING.name());
         order.setOrderedTime(LocalDateTime.now());
-        order.setOrderLineItems(Collections.singletonList(후라이드치킨세트_두개()));
+        order.setOrderLineItems(OrderLineItems.singleton(후라이드치킨세트_두개()));
         return order;
     }
 
@@ -26,7 +26,7 @@ public class OrderSample {
         order.setOrderTableId(채워진_다섯명_테이블().getId());
         order.setOrderStatus(OrderStatus.COMPLETION.name());
         order.setOrderedTime(LocalDateTime.now());
-        order.setOrderLineItems(Collections.singletonList(후라이드치킨세트_두개()));
+        order.setOrderLineItems(OrderLineItems.singleton(후라이드치킨세트_두개()));
         return order;
     }
 }

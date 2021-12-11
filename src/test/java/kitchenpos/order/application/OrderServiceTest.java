@@ -70,7 +70,6 @@ class OrderServiceTest {
         Order order = 조리중인_후라이트치킨세트_두개_주문();
         when(orderDao.save(any())).thenReturn(order);
         OrderLineItem orderLineItem = 후라이드치킨세트_두개();
-        orderLineItem.setOrderId(order.getId());
         when(orderLineItemDao.save(any())).thenReturn(orderLineItem);
 
         //when

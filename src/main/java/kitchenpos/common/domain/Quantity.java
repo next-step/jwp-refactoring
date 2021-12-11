@@ -22,6 +22,10 @@ public class Quantity {
         return new Quantity(value);
     }
 
+    public long value() {
+        return value;
+    }
+
     private boolean isZeroOrPositive(long value) {
         return value >= 0;
     }

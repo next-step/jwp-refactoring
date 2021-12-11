@@ -31,9 +31,6 @@ public final class OrderLineItemRequest {
     }
 
     public OrderLineItem toEntity() {
-        OrderLineItem orderLineItem = new OrderLineItem();
-        orderLineItem.setMenuId(menuId);
-        orderLineItem.setQuantity(quantity);
-        return orderLineItem;
+        return OrderLineItem.of(quantity, menuId);
     }
 }

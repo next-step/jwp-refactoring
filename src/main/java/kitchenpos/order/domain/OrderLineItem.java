@@ -1,10 +1,46 @@
 package kitchenpos.order.domain;
 
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import kitchenpos.common.domain.Quantity;
+
+@Entity
 public class OrderLineItem {
-    private Long seq;
-    private Long orderId;
-    private Long menuId;
-    private long quantity;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long seq;
+
+    @Embedded
+    private Quantity quantity;
+
+    @Column(nullable = false, updatable = false)
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_order_line_item_menu"))
+    private long menuId;
+
+    @ManyToOne
+    @JoinColumn(name = "order_id", nullable = false, updatable = false,
+        foreignKey = @ForeignKey(name = "fk_order_line_item_orders"))
+    private Order order;
+
+    public OrderLineItem() {
+    }
+
+    private OrderLineItem(Quantity quantity, long menuId) {
+        this.quantity = quantity;
+        this.menuId = menuId;
+    }
+
+    public static OrderLineItem of(long quantity, long menuId) {
+        return new OrderLineItem(Quantity.from(quantity), menuId);
+    }
 
     public Long getSeq() {
         return seq;
@@ -15,11 +51,7 @@ public class OrderLineItem {
     }
 
     public Long getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(final Long orderId) {
-        this.orderId = orderId;
+        return order.getId();
     }
 
     public Long getMenuId() {
@@ -31,10 +63,20 @@ public class OrderLineItem {
     }
 
     public long getQuantity() {
-        return quantity;
+        return quantity.value();
     }
 
     public void setQuantity(final long quantity) {
-        this.quantity = quantity;
+        this.quantity = Quantity.from(quantity);
+    }
+
+    @Override
+    public String toString() {
+        return "OrderLineItem{" +
+            "seq=" + seq +
+            ", quantity=" + quantity +
+            ", menuId=" + menuId +
+            ", order=" + order +
+            '}';
     }
 }
