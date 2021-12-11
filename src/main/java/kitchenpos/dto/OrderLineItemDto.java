@@ -1,5 +1,7 @@
 package kitchenpos.dto;
 
+import java.util.Objects;
+
 import kitchenpos.domain.order.OrderLineItem;
 
 public class OrderLineItemDto {
@@ -42,4 +44,21 @@ public class OrderLineItemDto {
     public long getQuantity() {
         return this.quantity;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this)
+            return true;
+        if (!(o instanceof OrderLineItemDto)) {
+            return false;
+        }
+        OrderLineItemDto orderLineItemDto = (OrderLineItemDto) o;
+        return Objects.equals(seq, orderLineItemDto.seq) && Objects.equals(orderId, orderLineItemDto.orderId) && Objects.equals(menuId, orderLineItemDto.menuId) && quantity == orderLineItemDto.quantity;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(seq, orderId, menuId, quantity);
+    }
+
 }

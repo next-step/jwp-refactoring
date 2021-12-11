@@ -76,15 +76,9 @@ public class MenuService {
     }
 
     public List<MenuDto> list() {
-        final List<Menu> menus = menuRepository.findAll();
-
-        for (final Menu menu : menus) {
-            menu.changeMenuProducts(menuProductRepository.findAllByMenuId(menu.getId()));
-        }
-
-        return menus.stream()
-                    .map(MenuDto::of)
-                    .collect(Collectors.toList());
+        return menuRepository.findAll().stream()
+                            .map(MenuDto::of)
+                            .collect(Collectors.toList());
     }
 
     public Menu findById(Long menuId) {

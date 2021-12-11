@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -77,12 +76,12 @@ public class OrderServiceTest {
 
         뿌링클콤보.changeMenuProducts(List.of(뿌링클콤보_뿌링클치킨, 뿌링클콤보_치킨무, 뿌링클콤보_코카콜라));
 
-        치킨_주문_단체테이블 = OrderTable.of(1L, null, 0);
+        치킨_주문_단체테이블 = OrderTable.of(1L, 0);
 
-        치킨_주문항목 = OrderLineItem.of(null, 뿌링클콤보, 1L);
+        치킨_주문항목 = OrderLineItem.of(뿌링클콤보, 1L);
 
 
-        치킨주문 = Orders.of(치킨_주문_단체테이블, null, LocalDateTime.now(), List.of(치킨_주문항목));
+        치킨주문 = Orders.of(치킨_주문_단체테이블, List.of(치킨_주문항목));
 
         치킨_주문항목.changeOrder(치킨주문);
 
@@ -158,13 +157,12 @@ public class OrderServiceTest {
     void search_order() {
         // given
         when(orderRepository.findAll()).thenReturn(List.of(this.치킨주문));
-        when(orderLineItemRepository.findAllByOrderId(this.치킨주문.getId())).thenReturn(List.of(this.치킨_주문항목));
-
+   
         // when
-        List<Orders> orders = orderService.list();
+        List<OrderDto> orders = orderService.list();
 
         // then
-        Assertions.assertThat(orders).isEqualTo(List.of(this.치킨주문));
+        Assertions.assertThat(orders).isEqualTo(List.of(OrderDto.of(this.치킨주문)));
     }
 
     @DisplayName("주문의 상태가 변경된다.")

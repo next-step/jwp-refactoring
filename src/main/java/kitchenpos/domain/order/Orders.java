@@ -3,7 +3,9 @@ package kitchenpos.domain.order;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
@@ -13,9 +15,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 import kitchenpos.domain.table.OrderTable;
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 public class Orders {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,27 +33,34 @@ public class Orders {
 
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
+
+    @CreatedDate
+    @Column(name = "ordered_time", updatable = false)
     private LocalDateTime orderedTime;
 
-    @OneToMany(mappedBy = "seq")
+    @OneToMany(mappedBy = "order")
     private List<OrderLineItem> orderLineItems;
 
     protected Orders() {
     }
 
-    private Orders(OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
+    private Orders(OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
+
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
-        this.orderedTime = orderedTime;
         this.orderLineItems = orderLineItems;
     }
 
-    public static Orders of(OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
-        return new Orders(orderTable, orderStatus, orderedTime, orderLineItems);
+    public static Orders of(OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
+        return new Orders(orderTable, orderStatus,  orderLineItems);
     }
 
-    public static Orders of(OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime) {
-        return new Orders(orderTable, orderStatus, orderedTime, null);
+    public static Orders of(OrderTable orderTable, OrderStatus orderStatus) {
+        return new Orders(orderTable, orderStatus, null);
+    }
+
+    public static Orders of(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
+        return new Orders(orderTable, null,  orderLineItems);
     }
 
     public Long getId() {

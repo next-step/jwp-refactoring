@@ -27,7 +27,7 @@ public class Menu {
     @JoinColumn(name = "menu_group_id")
     private MenuGroup menuGroup;
 
-    @OneToMany(mappedBy = "seq")
+    @OneToMany(mappedBy = "menu")
     private List<MenuProduct> menuProducts;
 
     protected Menu() {

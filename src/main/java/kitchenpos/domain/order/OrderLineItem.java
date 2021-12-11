@@ -39,6 +39,10 @@ public class OrderLineItem {
         return new OrderLineItem(order, menu, quantity);
     }
 
+    public static OrderLineItem of(Menu menu, long quantity) {
+        return new OrderLineItem(null, menu, quantity);
+    }
+
     public long getSeq() {
         return this.seq;
     }

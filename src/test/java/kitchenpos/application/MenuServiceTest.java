@@ -142,7 +142,6 @@ public class MenuServiceTest {
     void search_menu() {
         // given
         when(menuRepository.findAll()).thenReturn(List.of(this.뿌링클콤보));
-        when(menuProductRepository.findAllByMenuId(this.뿌링클콤보.getId())).thenReturn(this.뿌링클콤보.getMenuProducts());
 
         // when
         List<MenuDto> searchedMenu = menuService.list();

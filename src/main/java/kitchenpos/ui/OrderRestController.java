@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 public class OrderRestController {
@@ -29,10 +28,7 @@ public class OrderRestController {
 
     @GetMapping("/api/orders")
     public ResponseEntity<List<OrderDto>> list() {
-        return ResponseEntity.ok().body(orderService.list().stream()
-                                                    .map(OrderDto::of)
-                                                    .collect(Collectors.toList())
-                                        );
+        return ResponseEntity.ok().body(orderService.list());
     }
 
     @PutMapping("/api/orders/{orderId}/order-status")

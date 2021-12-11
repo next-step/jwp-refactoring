@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -48,7 +47,7 @@ public class OrderService {
 
         validationOfCreate(orderTable, orderLineItems);
 
-        final Orders savedOrder = orderRepository.save(Orders.of(orderTable, OrderStatus.COOKING, LocalDateTime.now()));
+        final Orders savedOrder = orderRepository.save(Orders.of(orderTable, OrderStatus.COOKING));
         final List<OrderLineItem> savedOrderLineItems = saveOrderLineItem(savedOrder, orderLineItems);
 
         savedOrder.changeOrderLineItems(savedOrderLineItems);
@@ -96,14 +95,10 @@ public class OrderService {
     }
 
     @Transactional(readOnly = true)
-    public List<Orders> list() {
-        final List<Orders> orders = orderRepository.findAll();
-
-        for (final Orders order : orders) {
-            order.changeOrderLineItems(orderLineItemRepository.findAllByOrderId(order.getId()));
-        }
-
-        return orders;
+    public List<OrderDto> list() {
+        return orderRepository.findAll().stream()
+                                .map(OrderDto::of)
+                                .collect(Collectors.toList());
     }
 
     @Transactional
