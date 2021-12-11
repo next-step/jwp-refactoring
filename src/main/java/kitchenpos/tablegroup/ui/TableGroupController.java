@@ -13,6 +13,7 @@ import java.net.URI;
 
 @RestController
 public class TableGroupController {
+
     private final TableGroupService tableGroupService;
 
     public TableGroupController(final TableGroupService tableGroupService) {
@@ -23,16 +24,12 @@ public class TableGroupController {
     public ResponseEntity<TableGroup> create(@RequestBody final TableGroup tableGroup) {
         final TableGroup created = tableGroupService.create(tableGroup);
         final URI uri = URI.create("/api/table-groups/" + created.getId());
-        return ResponseEntity.created(uri)
-                .body(created)
-                ;
+        return ResponseEntity.created(uri).body(created);
     }
 
     @DeleteMapping("/api/table-groups/{tableGroupId}")
     public ResponseEntity<Void> ungroup(@PathVariable final Long tableGroupId) {
         tableGroupService.ungroup(tableGroupId);
-        return ResponseEntity.noContent()
-                .build()
-                ;
+        return ResponseEntity.noContent().build();
     }
 }

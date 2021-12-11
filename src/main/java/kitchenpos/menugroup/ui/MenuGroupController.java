@@ -13,6 +13,7 @@ import java.util.List;
 
 @RestController
 public class MenuGroupController {
+
     private final MenuGroupService menuGroupService;
 
     public MenuGroupController(final MenuGroupService menuGroupService) {
@@ -23,15 +24,11 @@ public class MenuGroupController {
     public ResponseEntity<MenuGroup> create(@RequestBody final MenuGroup menuGroup) {
         final MenuGroup created = menuGroupService.create(menuGroup);
         final URI uri = URI.create("/api/menu-groups/" + created.getId());
-        return ResponseEntity.created(uri)
-                .body(created)
-                ;
+        return ResponseEntity.created(uri).body(created);
     }
 
     @GetMapping("/api/menu-groups")
     public ResponseEntity<List<MenuGroup>> list() {
-        return ResponseEntity.ok()
-                .body(menuGroupService.list())
-                ;
+        return ResponseEntity.ok().body(menuGroupService.list());
     }
 }

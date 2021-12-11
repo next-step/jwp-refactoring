@@ -13,6 +13,7 @@ import java.util.List;
 
 @RestController
 public class ProductController {
+
     private final ProductService productService;
 
     public ProductController(final ProductService productService) {
@@ -23,15 +24,11 @@ public class ProductController {
     public ResponseEntity<Product> create(@RequestBody final Product product) {
         final Product created = productService.create(product);
         final URI uri = URI.create("/api/products/" + created.getId());
-        return ResponseEntity.created(uri)
-                .body(created)
-                ;
+        return ResponseEntity.created(uri).body(created);
     }
 
     @GetMapping("/api/products")
     public ResponseEntity<List<Product>> list() {
-        return ResponseEntity.ok()
-                .body(productService.list())
-                ;
+        return ResponseEntity.ok().body(productService.list());
     }
 }

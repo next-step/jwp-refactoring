@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class TableGroup {
+
     private Long id;
     private LocalDateTime createdDate;
     private List<OrderTable> orderTables;

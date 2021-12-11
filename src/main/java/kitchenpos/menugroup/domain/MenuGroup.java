@@ -1,6 +1,7 @@
 package kitchenpos.menugroup.domain;
 
 public class MenuGroup {
+
     private Long id;
     private String name;
 
