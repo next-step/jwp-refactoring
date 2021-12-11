@@ -9,7 +9,6 @@ import io.restassured.mapper.TypeRef;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
-import kitchenpos.domain.OrderTable;
 import kitchenpos.table.ui.request.OrderTableRequest;
 import kitchenpos.table.ui.request.TableGuestsCountRequest;
 import kitchenpos.table.ui.request.TableStatusRequest;
@@ -36,9 +35,10 @@ public class TableAcceptanceStep {
         int expectedNumberOfGuests, boolean expectedEmpty) {
         assertAll(
             () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
-            () -> assertThat(response.as(OrderTable.class))
+            () -> assertThat(response.as(OrderTableResponse.class))
                 .extracting(
-                    OrderTable::getNumberOfGuests, OrderTable::isEmpty, OrderTable::getTableGroupId)
+                    OrderTableResponse::getNumberOfGuests,
+                    OrderTableResponse::isEmpty, OrderTableResponse::getTableGroupId)
                 .containsExactly(expectedNumberOfGuests, expectedEmpty, null)
         );
     }
@@ -53,13 +53,13 @@ public class TableAcceptanceStep {
 
     public static void 테이블_목록_조회됨(ExtractableResponse<Response> response,
         int expectedNumberOfGuests, boolean expectedEmpty) {
-        List<OrderTable> orderTables = response.as(new TypeRef<List<OrderTable>>() {
+        List<OrderTableResponse> orderTables = response.as(new TypeRef<List<OrderTableResponse>>() {
         });
         assertAll(
             () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
             () -> assertThat(orderTables)
                 .first()
-                .extracting(OrderTable::getNumberOfGuests, OrderTable::isEmpty)
+                .extracting(OrderTableResponse::getNumberOfGuests, OrderTableResponse::isEmpty)
                 .containsExactly(expectedNumberOfGuests, expectedEmpty)
         );
     }
@@ -77,8 +77,8 @@ public class TableAcceptanceStep {
     public static void 테이블_빈_상태_수정됨(ExtractableResponse<Response> response, boolean expectedEmpty) {
         assertAll(
             () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-            () -> assertThat(response.as(OrderTable.class))
-                .extracting(OrderTable::isEmpty)
+            () -> assertThat(response.as(OrderTableResponse.class))
+                .extracting(OrderTableResponse::isEmpty)
                 .isEqualTo(expectedEmpty)
         );
     }
@@ -97,8 +97,8 @@ public class TableAcceptanceStep {
         int expectedNumberOfGuests) {
         assertAll(
             () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-            () -> assertThat(response.as(OrderTable.class))
-                .extracting(OrderTable::getNumberOfGuests)
+            () -> assertThat(response.as(OrderTableResponse.class))
+                .extracting(OrderTableResponse::getNumberOfGuests)
                 .isEqualTo(expectedNumberOfGuests)
         );
     }

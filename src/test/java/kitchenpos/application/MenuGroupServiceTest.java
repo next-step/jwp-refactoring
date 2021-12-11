@@ -1,11 +1,15 @@
 package kitchenpos.application;
 
+import static kitchenpos.application.sample.MenuGroupSample.두마리메뉴;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.only;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.menu.ui.request.MenuGroupRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,7 +32,8 @@ class MenuGroupServiceTest {
     @DisplayName("메뉴 그룹을 등록할 수 있다.")
     void create() {
         //given
-        MenuGroup request = menuGroupCreateRequest("두마리메뉴");
+        MenuGroupRequest request = new MenuGroupRequest("두마리메뉴");
+        when(menuGroupDao.save(any())).thenReturn(두마리메뉴());
 
         //when
         menuGroupService.create(request);
@@ -49,11 +54,5 @@ class MenuGroupServiceTest {
 
         //then
         verify(menuGroupDao, only()).findAll();
-    }
-
-    private MenuGroup menuGroupCreateRequest(String name) {
-        MenuGroup menuGroup = new MenuGroup();
-        menuGroup.setName(name);
-        return menuGroup;
     }
 }

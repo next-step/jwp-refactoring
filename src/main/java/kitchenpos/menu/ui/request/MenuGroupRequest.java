@@ -3,6 +3,7 @@ package kitchenpos.menu.ui.request;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import kitchenpos.common.domain.Name;
+import kitchenpos.domain.MenuGroup;
 
 public final class MenuGroupRequest {
 
@@ -19,5 +20,11 @@ public final class MenuGroupRequest {
 
     public Name name() {
         return Name.from(name);
+    }
+
+    public MenuGroup toEntity() {
+        MenuGroup menuGroup = new MenuGroup();
+        menuGroup.setName(name);
+        return menuGroup;
     }
 }

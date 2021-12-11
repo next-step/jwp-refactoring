@@ -51,7 +51,7 @@ class MenuAcceptanceTest extends AcceptanceTest {
     void list() {
         //given
         MenuResponse menu = 메뉴_등록_되어_있음("후라이드치킨세트", BigDecimal.TEN,
-            두마리메뉴.getId(), 후라이드치킨.getId(), 2);
+            두마리메뉴.getId(), 후라이드치킨.getId(), 2L);
 
         //when
         ExtractableResponse<Response> response = 메뉴_목록_조회_요청();

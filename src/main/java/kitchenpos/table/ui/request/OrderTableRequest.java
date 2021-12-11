@@ -2,6 +2,7 @@ package kitchenpos.table.ui.request;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import kitchenpos.domain.OrderTable;
 import kitchenpos.table.domain.Headcount;
 import kitchenpos.table.domain.TableStatus;
 
@@ -32,5 +33,12 @@ public class OrderTableRequest {
 
     public TableStatus status() {
         return TableStatus.valueOf(empty);
+    }
+
+    public OrderTable toEntity() {
+        OrderTable orderTable = new OrderTable();
+        orderTable.setNumberOfGuests(numberOfGuests);
+        orderTable.setEmpty(empty);
+        return orderTable;
     }
 }

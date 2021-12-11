@@ -11,7 +11,6 @@ import io.restassured.response.Response;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
-import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.menu.ui.response.MenuResponse;
 import kitchenpos.order.ui.request.OrderLineItemRequest;
@@ -40,7 +39,7 @@ public class OrderAcceptanceStep {
 
     public static void 주문_등록_됨(ExtractableResponse<Response> response,
         int expectedQuantity, MenuResponse expectedMenu) {
-        Order order = response.as(Order.class);
+        OrderResponse order = response.as(OrderResponse.class);
         assertAll(
             () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
             () -> assertThat(order.getId()).isNotNull(),

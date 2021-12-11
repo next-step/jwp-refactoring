@@ -2,6 +2,9 @@ package kitchenpos.domain;
 
 import java.math.BigDecimal;
 import java.util.List;
+import javax.persistence.CascadeType;
+import javax.persistence.ForeignKey;
+import javax.persistence.JoinColumn;
 
 public class Menu {
     private Long id;
@@ -9,6 +12,14 @@ public class Menu {
     private BigDecimal price;
     private Long menuGroupId;
     private List<MenuProduct> menuProducts;
+
+//    @JoinColumn(name = "menu_group_id", updatable = false, nullable = false, foreignKey = @ForeignKey(name = "fk_menu_menu_group"))
+//    @ManyToOne(optional = false)
+//    private MenuGroup menuGroupId;
+//
+//    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "menu")
+//    private List<MenuProduct> menuProducts;
+
 
     public Long getId() {
         return id;

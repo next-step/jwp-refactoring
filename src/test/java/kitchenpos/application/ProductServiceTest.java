@@ -1,13 +1,17 @@
 package kitchenpos.application;
 
+import static kitchenpos.application.sample.ProductSample.후라이드치킨;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.only;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
+import kitchenpos.product.ui.request.ProductRequest;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,27 +35,28 @@ class ProductServiceTest {
     @DisplayName("상품을 등록할 수 있다.")
     void create() {
         //given
-        Product productRequest = productCreateRequest("후라이드치킨", BigDecimal.ONE);
+        ProductRequest request = new ProductRequest("후라이드치킨", BigDecimal.ONE);
+        when(productDao.save(any())).thenReturn(후라이드치킨());
 
         //when
-        productService.create(productRequest);
+        productService.create(request);
 
         //then
         ArgumentCaptor<Product> productCaptor = ArgumentCaptor.forClass(Product.class);
         verify(productDao, only()).save(productCaptor.capture());
         assertThat(productCaptor.getValue())
             .extracting(Product::getName, Product::getPrice)
-            .containsExactly(productRequest.getName(), productRequest.getPrice());
+            .containsExactly(request.getName(), request.getPrice());
     }
 
     @Test
     @DisplayName("등록하려는 상품의 가격은 반드시 존재해야 한다.")
     void create_nullPrice_thrownException() {
         //given
-        Product productRequest = productCreateRequest("후라이드치킨", null);
+        ProductRequest request = new ProductRequest("후라이드치킨", null);
 
         //when
-        ThrowingCallable createCallable = () -> productService.create(productRequest);
+        ThrowingCallable createCallable = () -> productService.create(request);
 
         //then
         assertThatExceptionOfType(IllegalArgumentException.class)
@@ -62,10 +67,10 @@ class ProductServiceTest {
     @DisplayName("등록하려는 상품의 가격은 0원 이상이어야 한다.")
     void create_priceLessThanZero_thrownException() {
         //given
-        Product productRequest = productCreateRequest("후라이드치킨", BigDecimal.valueOf(-1));
+        ProductRequest request = new ProductRequest("후라이드치킨", BigDecimal.valueOf(-1));
 
         //when
-        ThrowingCallable createCallable = () -> productService.create(productRequest);
+        ThrowingCallable createCallable = () -> productService.create(request);
 
         //then
         assertThatExceptionOfType(IllegalArgumentException.class)
@@ -82,10 +87,4 @@ class ProductServiceTest {
         verify(productDao, only()).findAll();
     }
 
-    private Product productCreateRequest(String name, BigDecimal price) {
-        Product product = new Product();
-        product.setName(name);
-        product.setPrice(price);
-        return product;
-    }
 }

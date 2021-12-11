@@ -10,7 +10,6 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.math.BigDecimal;
 import java.util.List;
-import kitchenpos.domain.Product;
 import kitchenpos.product.ui.request.ProductRequest;
 import kitchenpos.product.ui.response.ProductResponse;
 import org.springframework.http.HttpStatus;
@@ -35,7 +34,7 @@ public class ProductAcceptanceStep {
         String expectedName, BigDecimal expectedPrice) {
         assertAll(
             () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
-            () -> assertThat(response.as(Product.class))
+            () -> assertThat(response.as(ProductResponse.class))
                 .satisfies(product -> {
                     assertThat(product.getId()).isNotNull();
                     assertThat(product.getName()).isEqualTo(expectedName);

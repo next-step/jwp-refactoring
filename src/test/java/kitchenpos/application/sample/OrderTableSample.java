@@ -4,7 +4,7 @@ import kitchenpos.domain.OrderTable;
 
 public class OrderTableSample {
 
-    public static OrderTable notEmptyFiveGuestsOrderTable() {
+    public static OrderTable 채워진_다섯명_테이블() {
         OrderTable orderTable = new OrderTable();
         orderTable.setId(1L);
         orderTable.setNumberOfGuests(5);
@@ -12,7 +12,7 @@ public class OrderTableSample {
         return orderTable;
     }
 
-    public static OrderTable emptyTwoGuestsOrderTable() {
+    public static OrderTable 빈_두명_테이블() {
         OrderTable orderTable = new OrderTable();
         orderTable.setId(2L);
         orderTable.setNumberOfGuests(2);
@@ -20,7 +20,7 @@ public class OrderTableSample {
         return orderTable;
     }
 
-    public static OrderTable emptyThreeGuestsOrderTable() {
+    public static OrderTable 빈_세명_테이블() {
         OrderTable orderTable = new OrderTable();
         orderTable.setId(3L);
         orderTable.setNumberOfGuests(3);

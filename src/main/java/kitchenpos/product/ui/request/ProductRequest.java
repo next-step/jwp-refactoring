@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.math.BigDecimal;
 import kitchenpos.common.domain.Name;
 import kitchenpos.common.domain.Price;
+import kitchenpos.domain.Product;
 
 public final class ProductRequest {
 
@@ -32,5 +33,12 @@ public final class ProductRequest {
 
     public Price price() {
         return Price.from(price);
+    }
+
+    public Product toEntity() {
+        Product product = new Product();
+        product.setName(name);
+        product.setPrice(price);
+        return product;
     }
 }

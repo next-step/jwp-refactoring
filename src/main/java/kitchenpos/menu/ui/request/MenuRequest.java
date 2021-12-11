@@ -4,8 +4,10 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
 import kitchenpos.common.domain.Name;
 import kitchenpos.common.domain.Price;
+import kitchenpos.domain.Menu;
 
 public final class MenuRequest {
 
@@ -19,7 +21,7 @@ public final class MenuRequest {
         @JsonProperty("name") String name,
         @JsonProperty("price") BigDecimal price,
         @JsonProperty("menuGroupId") long menuGroupId,
-        List<MenuProductRequest> menuProducts) {
+        @JsonProperty("menuProducts") List<MenuProductRequest> menuProducts) {
         this.name = name;
         this.price = price;
         this.menuGroupId = menuGroupId;
@@ -48,5 +50,18 @@ public final class MenuRequest {
 
     public Price price() {
         return Price.from(price);
+    }
+
+    public Menu toEntity() {
+        Menu menu = new Menu();
+        menu.setPrice(price);
+        menu.setName(name);
+        menu.setMenuGroupId(menuGroupId);
+        menu.setMenuProducts(
+            menuProducts.stream()
+                .map(MenuProductRequest::toEntity)
+                .collect(Collectors.toList())
+        );
+        return menu;
     }
 }

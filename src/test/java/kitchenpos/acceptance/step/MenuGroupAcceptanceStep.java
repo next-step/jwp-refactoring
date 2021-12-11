@@ -9,7 +9,6 @@ import io.restassured.mapper.TypeRef;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
-import kitchenpos.domain.MenuGroup;
 import kitchenpos.menu.ui.request.MenuGroupRequest;
 import kitchenpos.menu.ui.response.MenuGroupResponse;
 import org.springframework.http.HttpStatus;

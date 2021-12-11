@@ -1,5 +1,7 @@
 package kitchenpos.order.ui.response;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import kitchenpos.domain.OrderLineItem;
 
 public final class OrderLineItemResponse {
@@ -19,8 +21,10 @@ public final class OrderLineItemResponse {
         this.quantity = quantity;
     }
 
-    public static OrderLineItemResponse from(OrderLineItem orderLineItem) {
-        return null;
+    static List<OrderLineItemResponse> listFrom(List<OrderLineItem> orderLineItems) {
+        return orderLineItems.stream()
+            .map(OrderLineItemResponse::from)
+            .collect(Collectors.toList());
     }
 
     public long getSeq() {
@@ -37,5 +41,14 @@ public final class OrderLineItemResponse {
 
     public long getQuantity() {
         return quantity;
+    }
+
+    private static OrderLineItemResponse from(OrderLineItem orderLineItem) {
+        return new OrderLineItemResponse(
+            orderLineItem.getSeq(),
+            orderLineItem.getOrderId(),
+            orderLineItem.getMenuId(),
+            orderLineItem.getQuantity()
+        );
     }
 }

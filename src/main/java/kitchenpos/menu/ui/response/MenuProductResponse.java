@@ -1,6 +1,7 @@
 package kitchenpos.menu.ui.response;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import kitchenpos.domain.MenuProduct;
 
 public final class MenuProductResponse {
@@ -13,23 +14,20 @@ public final class MenuProductResponse {
     private MenuProductResponse() {
     }
 
-    private MenuProductResponse(long seq, long menuId, long productId, long quantity) {
+    private MenuProductResponse(long seq, long productId, long quantity) {
         this.seq = seq;
-        this.menuId = menuId;
         this.productId = productId;
         this.quantity = quantity;
     }
 
-    public static List<MenuProductResponse> listFrom(List<MenuProduct> menuProducts) {
-        return null;
+    static List<MenuProductResponse> listFrom(List<MenuProduct> menuProducts) {
+        return menuProducts.stream()
+            .map(MenuProductResponse::from)
+            .collect(Collectors.toList());
     }
 
     public long getSeq() {
         return seq;
-    }
-
-    public long getMenuId() {
-        return menuId;
     }
 
     public long getProductId() {
@@ -38,5 +36,13 @@ public final class MenuProductResponse {
 
     public long getQuantity() {
         return quantity;
+    }
+
+    private static MenuProductResponse from(MenuProduct menuProduct) {
+        return new MenuProductResponse(
+            menuProduct.getSeq(),
+            menuProduct.getProductId(),
+            menuProduct.getQuantity()
+        );
     }
 }

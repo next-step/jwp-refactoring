@@ -13,8 +13,6 @@ import io.restassured.response.Response;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
 import kitchenpos.table.ui.request.TableGroupRequest;
 import kitchenpos.table.ui.request.TableGroupRequest.OrderTableIdRequest;
 import kitchenpos.table.ui.response.OrderTableResponse;
@@ -42,13 +40,13 @@ public class TableGroupAcceptanceStep {
         List<Long> expectedOrderTableIds) {
         assertAll(
             () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
-            () -> assertThat(response.as(TableGroup.class))
+            () -> assertThat(response.as(TableGroupResponse.class))
                 .satisfies(group -> {
                     assertThat(group.getId()).isNotNull();
                     assertThat(group.getCreatedDate())
                         .isEqualToIgnoringMinutes(LocalDateTime.now());
                     assertThat(group.getOrderTables())
-                        .extracting(OrderTable::getId, OrderTable::getTableGroupId)
+                        .extracting(OrderTableResponse::getId, OrderTableResponse::getTableGroupId)
                         .containsExactly(
                             expectedOrderTableIds
                                 .stream()

@@ -21,7 +21,11 @@ public final class TableGroupResponse {
     }
 
     public static TableGroupResponse from(TableGroup tableGroup) {
-        return null;
+        return new TableGroupResponse(
+            tableGroup.getId(),
+            tableGroup.getCreatedDate(),
+            OrderTableResponse.listFrom(tableGroup.getOrderTables())
+        );
     }
 
     public Long getId() {

@@ -21,13 +21,12 @@ import org.springframework.http.HttpStatus;
 public class MenuAcceptanceStep {
 
     public static MenuResponse 메뉴_등록_되어_있음(String name, BigDecimal price,
-        long menuGroupId, long productId, int quantity) {
+        long menuGroupId, long productId, long quantity) {
         return 메뉴_등록_요청(name, price, menuGroupId, productId, quantity).as(MenuResponse.class);
     }
 
     public static ExtractableResponse<Response> 메뉴_등록_요청(String name, BigDecimal price,
-        long menuGroupId,
-        long productId, int quantity) {
+        long menuGroupId, long productId, long quantity) {
         return RestAssured.given().log().all()
             .contentType(ContentType.JSON)
             .body(new MenuRequest(name, price, menuGroupId,
@@ -48,7 +47,6 @@ public class MenuAcceptanceStep {
             () -> assertThat(menu.getMenuGroupId()).isEqualTo(menuGroup.getId()),
             () -> assertThat(menu.getMenuProducts()).first()
                 .satisfies(menuProduct -> {
-                    assertThat(menuProduct.getSeq()).isNotNull();
                     assertThat(menuProduct.getProductId()).isEqualTo(product.getId());
                     assertThat(menuProduct.getQuantity()).isEqualTo(quantity);
                 })

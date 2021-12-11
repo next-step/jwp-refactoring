@@ -1,8 +1,8 @@
 package kitchenpos.application;
 
-import static kitchenpos.application.sample.OrderTableSample.emptyThreeGuestsOrderTable;
-import static kitchenpos.application.sample.OrderTableSample.emptyTwoGuestsOrderTable;
-import static kitchenpos.application.sample.OrderTableSample.notEmptyFiveGuestsOrderTable;
+import static kitchenpos.application.sample.OrderTableSample.빈_세명_테이블;
+import static kitchenpos.application.sample.OrderTableSample.빈_두명_테이블;
+import static kitchenpos.application.sample.OrderTableSample.채워진_다섯명_테이블;
 import static kitchenpos.application.sample.TableGroupSample.tableGroup;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -17,12 +17,13 @@ import static org.mockito.Mockito.when;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.table.ui.request.TableGroupRequest;
+import kitchenpos.table.ui.request.TableGroupRequest.OrderTableIdRequest;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -50,11 +51,11 @@ class TableGroupServiceTest {
     @DisplayName("단체 지정 할 수 있다.")
     void create() {
         //given
-        TableGroup request = tableGroupCreateRequest(
-            Arrays.asList(orderTableCreateRequest(1L), orderTableCreateRequest(2L)));
+        TableGroupRequest request = new TableGroupRequest(
+            Arrays.asList(new OrderTableIdRequest(1L), new OrderTableIdRequest(2L)));
 
         when(orderTableDao.findAllByIdIn(anyList()))
-            .thenReturn(Arrays.asList(emptyTwoGuestsOrderTable(), emptyThreeGuestsOrderTable()));
+            .thenReturn(Arrays.asList(빈_두명_테이블(), 빈_세명_테이블()));
 
         TableGroup savedTableGroup = tableGroup();
         when(tableGroupDao.save(any())).thenReturn(savedTableGroup);
@@ -73,8 +74,8 @@ class TableGroupServiceTest {
     @DisplayName("등록하려는 단체의 주문 테이블은 반드시 2개 이상이어야 한다.")
     void create_orderTableSizeLessThanTwo_thrownException() {
         //given
-        TableGroup request = tableGroupCreateRequest(
-            Collections.singletonList(orderTableCreateRequest(1L)));
+        TableGroupRequest request = new TableGroupRequest(
+            Collections.singletonList(new OrderTableIdRequest(1L)));
 
         //when
         ThrowingCallable createCallable = () -> tableGroupService.create(request);
@@ -88,11 +89,11 @@ class TableGroupServiceTest {
     @DisplayName("등록하려는 주문 테이블과 저장 되어있는 주문 테이블의 갯수는 일치해야 한다.")
     void create_differentOrderTableSize_thrownException() {
         //given
-        TableGroup request = tableGroupCreateRequest(
-            Arrays.asList(orderTableCreateRequest(1L), orderTableCreateRequest(2L)));
+        TableGroupRequest request = new TableGroupRequest(
+            Arrays.asList(new OrderTableIdRequest(1L), new OrderTableIdRequest(2L)));
 
         when(orderTableDao.findAllByIdIn(anyList()))
-            .thenReturn(Collections.singletonList(emptyTwoGuestsOrderTable()));
+            .thenReturn(Collections.singletonList(빈_두명_테이블()));
 
         //when
         ThrowingCallable createCallable = () -> tableGroupService.create(request);
@@ -106,11 +107,11 @@ class TableGroupServiceTest {
     @DisplayName("등록하려는 단체의 주문 테이블이 비어있지 않거나 단체가 지정되어 있으면 안된다.")
     void create_containNotEmptyOrderTable_thrownException() {
         //given
-        TableGroup request = tableGroupCreateRequest(
-            Arrays.asList(orderTableCreateRequest(1L), orderTableCreateRequest(2L)));
+        TableGroupRequest request = new TableGroupRequest(
+            Arrays.asList(new OrderTableIdRequest(1L), new OrderTableIdRequest(2L)));
 
         when(orderTableDao.findAllByIdIn(anyList()))
-            .thenReturn(Arrays.asList(emptyTwoGuestsOrderTable(), notEmptyFiveGuestsOrderTable()));
+            .thenReturn(Arrays.asList(빈_두명_테이블(), 채워진_다섯명_테이블()));
 
         //when
         ThrowingCallable createCallable = () -> tableGroupService.create(request);
@@ -126,7 +127,7 @@ class TableGroupServiceTest {
         //given
         long tableGroupId = 1L;
 
-        OrderTable orderTable = notEmptyFiveGuestsOrderTable();
+        OrderTable orderTable = 채워진_다섯명_테이블();
         orderTable.setTableGroupId(tableGroupId);
         when(orderTableDao.findAllByTableGroupId(tableGroupId))
             .thenReturn(Collections.singletonList(orderTable));
@@ -151,7 +152,7 @@ class TableGroupServiceTest {
         //given
         long tableGroupId = 1L;
 
-        OrderTable orderTable = notEmptyFiveGuestsOrderTable();
+        OrderTable orderTable = 채워진_다섯명_테이블();
         orderTable.setTableGroupId(tableGroupId);
         when(orderTableDao.findAllByTableGroupId(tableGroupId))
             .thenReturn(Collections.singletonList(orderTable));
@@ -183,17 +184,5 @@ class TableGroupServiceTest {
         verify(tableGroupDao, times(1)).save(tableGroupCaptor.capture());
         assertThat(tableGroupCaptor.getValue().getCreatedDate())
             .isEqualToIgnoringMinutes(LocalDateTime.now());
-    }
-
-    private TableGroup tableGroupCreateRequest(List<OrderTable> orderTableRequestList) {
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.setOrderTables(orderTableRequestList);
-        return tableGroup;
-    }
-
-    private OrderTable orderTableCreateRequest(long id) {
-        OrderTable orderTable = new OrderTable();
-        orderTable.setId(id);
-        return orderTable;
     }
 }
