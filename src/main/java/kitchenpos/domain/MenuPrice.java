@@ -1,17 +1,25 @@
 package kitchenpos.domain;
 
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
 import java.math.BigDecimal;
 import java.util.Objects;
 
+@Embeddable
 public class MenuPrice {
 
     private static final int MIN_PRICE = 0;
 
-    private final BigDecimal price;
+    @Column
+    private BigDecimal price;
 
     public MenuPrice(BigDecimal price) {
         check(price);
         this.price = price;
+    }
+
+    protected MenuPrice() {
+
     }
 
     private void check(BigDecimal price) {
@@ -20,13 +28,13 @@ public class MenuPrice {
         }
     }
 
-    public MenuPrice(int price) {
-        this(new BigDecimal(price));
-    }
-
     public void checkLessThan(BigDecimal price) {
         if (this.price.compareTo(price) > 0) {
             throw new IllegalArgumentException();
         }
+    }
+
+    public BigDecimal getPrice() {
+        return price;
     }
 }

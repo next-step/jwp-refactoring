@@ -3,7 +3,6 @@ package kitchenpos.domain;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 public class Menu {
@@ -12,7 +11,9 @@ public class Menu {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private BigDecimal price;
+
+    @Embedded
+    private MenuPrice price;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "menu_group_id")
@@ -25,11 +26,8 @@ public class Menu {
     }
 
     public Menu(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException();
-        }
         this.name = name;
-        this.price = price;
+        this.price = new MenuPrice(price);
         this.menuGroup = menuGroup;
         this.menuProducts = menuProducts;
     }
@@ -51,11 +49,11 @@ public class Menu {
     }
 
     public BigDecimal getPrice() {
-        return price;
+        return price.getPrice();
     }
 
     public void setPrice(final BigDecimal price) {
-        this.price = price;
+        this.price = new MenuPrice(price);
     }
 
     public Long getMenuGroupId() {
@@ -76,8 +74,6 @@ public class Menu {
             Product product = menuProduct.getProduct();
             sum = sum.add(product.getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
         }
-        if (price.compareTo(sum) > 0) {
-            throw new IllegalArgumentException();
-        }
+        price.checkLessThan(sum);
     }
 }
