@@ -4,13 +4,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import kitchenpos.application.order.OrderService;
-import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.domain.table.OrderTable;
 import kitchenpos.domain.table.OrderTableRepository;
 import kitchenpos.dto.OrderTableDto;
 
-import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class TableService {
@@ -28,12 +27,14 @@ public class TableService {
     }
 
     @Transactional(readOnly = true)
-    public List<OrderTable> list() {
-        return orderTableRepository.findAll();
+    public List<OrderTableDto> list() {
+        return orderTableRepository.findAll().stream()
+                                    .map(OrderTableDto::of)
+                                    .collect(Collectors.toList());
     }
 
     @Transactional
-    public OrderTable changeEmpty(final Long orderTableId, final OrderTableDto orderTable) {
+    public OrderTableDto changeEmpty(final Long orderTableId, final OrderTableDto orderTable) {
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                                                                 .orElseThrow(IllegalArgumentException::new);
 
@@ -41,7 +42,7 @@ public class TableService {
 
         savedOrderTable.changeEmpty(orderTable.isEmpty());
 
-        return orderTableRepository.save(savedOrderTable);
+        return OrderTableDto.of(orderTableRepository.save(savedOrderTable));
     }
 
     private void validationOfChangeEmpty(final Long orderTableId, final OrderTable savedOrderTable) {
@@ -50,9 +51,7 @@ public class TableService {
     }
 
     private void checkOrderStatusOfOrderTable(final Long orderTableId) {
-        
-        
-        if (orderService.existsByOrderTableIdAndOrderStatusIn(orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
+        if (orderService.isNotCompletionOrder(orderTableId)) {
             throw new IllegalArgumentException();
         }
     }
@@ -77,13 +76,13 @@ public class TableService {
         return orderTableRepository.save(savedOrderTable);
     }
 
-    private void validationOfChangeNumberOfGuests(final int numberOfGuests, final OrderTable savedOrderTable) {
+    private void validationOfChangeNumberOfGuests(final int numberOfGuests, final OrderTable orderTable) {
         checkPotiveOfNumberOfGuests(numberOfGuests);
-        checkEmptyTable(savedOrderTable);
+        checkEmptyTable(orderTable);
     }
 
-    private void checkEmptyTable(final OrderTable savedOrderTable) {
-        if (savedOrderTable.isEmpty()) {
+    private void checkEmptyTable(final OrderTable orderTable) {
+        if (orderTable.isEmpty()) {
             throw new IllegalArgumentException();
         }
     }

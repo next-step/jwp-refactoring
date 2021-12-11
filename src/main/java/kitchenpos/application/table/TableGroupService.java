@@ -1,7 +1,6 @@
 package kitchenpos.application.table;
 
 import kitchenpos.application.order.OrderService;
-import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.domain.table.OrderTable;
 import kitchenpos.domain.table.OrderTableRepository;
 import kitchenpos.domain.table.TableGroup;
@@ -13,8 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,17 +29,15 @@ public class TableGroupService {
 
     @Transactional
     public TableGroupDto create(final TableGroupDto tableGroup) {
-        
         final List<Long> orderTableIds = tableGroup.getOrderTables().stream()
                                                     .map(OrderTableDto::getId)
                                                     .collect(Collectors.toList());
-
 
         final List<OrderTable> savedOrderTables = orderTableRepository.findAllByIdIn(orderTableIds);
 
         validationOfCreate(tableGroup.getOrderTables(), savedOrderTables);
 
-        final TableGroup savedTableGroup = tableGroupRepository.save(TableGroup.of(LocalDateTime.now(), savedOrderTables));
+        final TableGroup savedTableGroup = tableGroupRepository.save(TableGroup.of(savedOrderTables));
 
         updateOrderTable(savedOrderTables, savedTableGroup);
 
@@ -62,17 +57,24 @@ public class TableGroupService {
     private void validationOfCreate(final List<OrderTableDto> orderTables, final List<OrderTable> savedOrderTables) {
         checkOrderTableSize(orderTables);
         checkAllExistOfOrderTables(orderTables, savedOrderTables);
-        checkHasTableGroupOfSavedOrderTable(savedOrderTables);
-    }
-
-    private void checkHasTableGroupOfSavedOrderTable(final List<OrderTable> savedOrderTables) {
-        for (final OrderTable savedOrderTable : savedOrderTables) {
-            if (!savedOrderTable.isEmpty() || savedOrderTable.hasTableGroup()) {
-                throw new IllegalArgumentException();
-            }
+        for (final OrderTable orderTable : savedOrderTables) {
+            checkHasTableGroup(orderTable);
+            checkNotEmptyTable(orderTable);
         }
     }
 
+    private void checkHasTableGroup(final OrderTable orderTable) {
+        if (orderTable.hasTableGroup()) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    private void checkNotEmptyTable(final OrderTable orderTable) {
+        if (!orderTable.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+    }
+    
     private void checkAllExistOfOrderTables(final List<OrderTableDto> orderTables, final List<OrderTable> savedOrderTables) {
         if (orderTables.size() != savedOrderTables.size()) {
             throw new IllegalArgumentException();
@@ -102,7 +104,7 @@ public class TableGroupService {
     }
 
     private void validationOfUpgroup(final List<Long> orderTableIds) {
-        if (orderService.existsByOrderTableIdInAndOrderStatusIn(orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
+        if (orderService.isExistNotCompletionOrder(orderTableIds)) {
             throw new IllegalArgumentException();
         }
     }

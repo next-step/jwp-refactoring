@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 public class TableRestController {
@@ -28,12 +27,12 @@ public class TableRestController {
 
     @GetMapping("/api/tables")
     public ResponseEntity<List<OrderTableDto>> list() {
-        return ResponseEntity.ok().body(tableService.list().stream().map(OrderTableDto::of).collect(Collectors.toList()));
+        return ResponseEntity.ok().body(tableService.list());
     }
 
     @PutMapping("/api/tables/{orderTableId}/empty")
     public ResponseEntity<OrderTableDto> changeEmpty(@PathVariable final Long orderTableId, @RequestBody final OrderTableDto orderTable) {
-        return ResponseEntity.ok().body(OrderTableDto.of(tableService.changeEmpty(orderTableId, orderTable)));
+        return ResponseEntity.ok().body(tableService.changeEmpty(orderTableId, orderTable));
     }
 
     @PutMapping("/api/tables/{orderTableId}/number-of-guests")

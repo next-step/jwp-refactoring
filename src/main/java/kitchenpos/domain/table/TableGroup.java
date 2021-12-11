@@ -28,12 +28,12 @@ public class TableGroup {
         this.orderTables = orderTables;
     }
 
-    public static TableGroup of(LocalDateTime createdDate, List<OrderTable> orderTables) {
-        return new TableGroup(null, createdDate, orderTables);
+    public static TableGroup of(List<OrderTable> orderTables) {
+        return new TableGroup(null, LocalDateTime.now(), orderTables);
     }
 
-    public static TableGroup of(Long id, LocalDateTime createdDate, List<OrderTable> orderTables) {
-        return new TableGroup(id, createdDate, orderTables);
+    public static TableGroup of(Long id, List<OrderTable> orderTables) {
+        return new TableGroup(id, LocalDateTime.now(), orderTables);
     }
 
     public Long getId() {

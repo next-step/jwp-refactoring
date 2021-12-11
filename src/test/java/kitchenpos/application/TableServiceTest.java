@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -49,7 +48,7 @@ public class TableServiceTest {
         치킨2_주문_단체테이블 = OrderTable.of(2L, 0);
         치킨_주문_개인테이블 =  OrderTable.of(3L, 0);
 
-        단체주문테이블 = TableGroup.of(LocalDateTime.now(), List.of(치킨_주문_단체테이블, 치킨2_주문_단체테이블));
+        단체주문테이블 = TableGroup.of(List.of(치킨_주문_단체테이블, 치킨2_주문_단체테이블));
     }
 
     @DisplayName("주문테이블이 생성된다.")
@@ -72,10 +71,10 @@ public class TableServiceTest {
         when(orderTableRepository.findAll()).thenReturn(List.of(this.치킨_주문_단체테이블, this.치킨2_주문_단체테이블));
 
         // when
-        List<OrderTable> searchedOrderTable = tableService.list();
+        List<OrderTableDto> searchedOrderTable = tableService.list();
 
         // then
-        Assertions.assertThat(searchedOrderTable).isEqualTo(List.of(this.치킨_주문_단체테이블, this.치킨2_주문_단체테이블));
+        Assertions.assertThat(searchedOrderTable).isEqualTo(List.of(OrderTableDto.of(this.치킨_주문_단체테이블), OrderTableDto.of(this.치킨2_주문_단체테이블)));
     }
 
     //Todo Exception
@@ -87,10 +86,10 @@ public class TableServiceTest {
         when(orderTableRepository.save(this.치킨_주문_개인테이블)).thenReturn(this.치킨_주문_개인테이블);
 
         // when
-        OrderTable changedOrderTable = tableService.changeEmpty(this.치킨_주문_개인테이블.getId(), OrderTableDto.of(this.치킨_주문_개인테이블));
+        OrderTableDto changedOrderTable = tableService.changeEmpty(this.치킨_주문_개인테이블.getId(), OrderTableDto.of(this.치킨_주문_개인테이블));
 
         // then
-        Assertions.assertThat(changedOrderTable).isEqualTo(this.치킨_주문_개인테이블);
+        Assertions.assertThat(changedOrderTable).isEqualTo(OrderTableDto.of(this.치킨_주문_개인테이블));
     }
 
     @DisplayName("단체지정된 주문테이블의 빈테이블 상태변경시 예외가 발생된다.")

@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -73,18 +74,18 @@ public class OrderServiceTest {
         뿌링클콤보_뿌링클치킨 = MenuProduct.of(뿌링클콤보, 뿌링클치킨, 1L);
         뿌링클콤보_치킨무 = MenuProduct.of(뿌링클콤보, 치킨무, 1L);
         뿌링클콤보_코카콜라 = MenuProduct.of(뿌링클콤보, 코카콜라, 1L);
-        
+
         뿌링클콤보.changeMenuProducts(List.of(뿌링클콤보_뿌링클치킨, 뿌링클콤보_치킨무, 뿌링클콤보_코카콜라));
 
         치킨_주문_단체테이블 = OrderTable.of(1L, null, 0);
 
         치킨_주문항목 = OrderLineItem.of(null, 뿌링클콤보, 1L);
-        
+
 
         치킨주문 = Orders.of(치킨_주문_단체테이블, null, LocalDateTime.now(), List.of(치킨_주문항목));
 
         치킨_주문항목.changeOrder(치킨주문);
-        
+
     }
 
     @DisplayName("주문이 저장된다.")
@@ -96,7 +97,7 @@ public class OrderServiceTest {
         when(orderTableRepository.findById(this.치킨_주문_단체테이블.getId())).thenReturn(Optional.of(this.치킨_주문_단체테이블));
         when(orderRepository.save(any(Orders.class))).thenReturn(this.치킨주문);
         when(orderLineItemRepository.save(any(OrderLineItem.class))).thenReturn(this.치킨_주문항목);
-        
+
         this.치킨주문.changeOrderLineItems(List.of(this.치킨_주문항목));
         this.치킨주문.changeOrderTable(this.치킨_주문_단체테이블);
         this.치킨_주문_단체테이블.changeEmpty(false);
@@ -171,6 +172,7 @@ public class OrderServiceTest {
     void update_orderStatus() {
         // given
         when(orderRepository.findById(this.치킨주문.getId())).thenReturn(Optional.of(this.치킨주문));
+        when(orderRepository.save(any(Orders.class))).thenReturn(this.치킨주문);
 
         this.치킨주문.changeOrderStatus(OrderStatus.MEAL);
 
@@ -178,7 +180,10 @@ public class OrderServiceTest {
         Orders chagedOrder = orderService.changeOrderStatus(this.치킨주문.getId(), OrderDto.of(this.치킨주문));
 
         // then
-        Assertions.assertThat(chagedOrder).isEqualTo(this.치킨주문);
+        assertAll(
+            () -> Assertions.assertThat(chagedOrder).isEqualTo(this.치킨주문),
+            () -> Assertions.assertThat(chagedOrder.getOrderStatus()).isEqualTo(OrderStatus.MEAL)
+        );
     }
 
     @DisplayName("계산이 완료된 주문의 상태를 변경시 예외가 발생된다.")

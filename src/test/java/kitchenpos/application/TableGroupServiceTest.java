@@ -6,7 +6,6 @@ import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import org.assertj.core.api.Assertions;
@@ -49,7 +48,7 @@ public class TableGroupServiceTest {
         치킨_주문_단체테이블 = OrderTable.of(1L, 0, true);
         치킨2_주문_단체테이블 = OrderTable.of(2L, 0, true);
 
-        단체주문테이블 = TableGroup.of(1L, LocalDateTime.now(), List.of(치킨_주문_단체테이블, 치킨2_주문_단체테이블));
+        단체주문테이블 = TableGroup.of(1L, List.of(치킨_주문_단체테이블, 치킨2_주문_단체테이블));
     }
 
     @DisplayName("단체지정이 저장된다.")
@@ -139,7 +138,7 @@ public class TableGroupServiceTest {
     @Test
     void exception_updateTableUnGroup_notCompletionOrderStatus() {
         // given
-        when(orderService.existsByOrderTableIdInAndOrderStatusIn(anyList(),anyList())).thenReturn(true);
+        when(orderService.isExistNotCompletionOrder(anyList())).thenReturn(true);
         when(orderTableRepository.findAllByTableGroupId(this.단체주문테이블.getId())).thenReturn(this.단체주문테이블.getOrderTables());
 
         // when

@@ -18,6 +18,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -114,11 +115,7 @@ public class OrderService {
 
         savedOrder.changeOrderStatus(OrderStatus.valueOf(order.getOrderStatus()));
 
-        orderRepository.save(savedOrder);
-
-        savedOrder.changeOrderLineItems(orderLineItemRepository.findAllByOrderId(orderId));
-
-        return savedOrder;
+        return orderRepository.save(savedOrder);
     }
 
     private void validateionOfChageOrderStatus(final Orders savedOrder) {
@@ -126,12 +123,13 @@ public class OrderService {
             throw new IllegalArgumentException();
         }
     }
-
-    public boolean existsByOrderTableIdAndOrderStatusIn(Long orderTableId, List<OrderStatus> orderStatuses) {
-        return orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTableId, orderStatuses);
+    
+    public boolean isExistNotCompletionOrder(List<Long> orderTableIds) {
+        return orderRepository.existsByOrderTableIdInAndOrderStatusIn(orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL));
     }
 
-    public boolean existsByOrderTableIdInAndOrderStatusIn(List<Long> orderTableIds, List<OrderStatus> orderStatuses) {
-        return orderRepository.existsByOrderTableIdInAndOrderStatusIn(orderTableIds, orderStatuses);
+    public boolean isNotCompletionOrder(Long orderTableId) {
+        return !orderRepository.existsByOrderTableIdAndOrderStatus(orderTableId, OrderStatus.COMPLETION) 
+                && orderRepository.existsByOrderTableId(orderTableId);
     }
 }
