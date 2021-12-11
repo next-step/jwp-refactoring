@@ -61,24 +61,12 @@ public class OrderTable {
         }
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public int getNumberOfGuests() {
         return numberOfGuests.getNumber();
     }
 
-    public void setNumberOfGuests(final int numberOfGuests) {
-        this.numberOfGuests = new NumberOfGuests(numberOfGuests);
-    }
-
     public boolean isEmpty() {
         return empty;
-    }
-
-    public void setEmpty(final boolean empty) {
-        this.empty = empty;
     }
 
     public TableGroup getTableGroup() {

@@ -37,23 +37,11 @@ public class TableGroup {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public LocalDateTime getCreatedDate() {
         return createdDate;
     }
 
-    public void setCreatedDate(final LocalDateTime createdDate) {
-        this.createdDate = createdDate;
-    }
-
     public List<OrderTable> getOrderTables() {
         return orderTables.getOrderTables();
-    }
-
-    public void setOrderTables(final List<OrderTable> orderTables) {
-        this.orderTables = new OrderTables(orderTables);
     }
 }
