@@ -61,6 +61,12 @@ public class OrderTable {
         }
     }
 
+    public void checkEmpty() {
+        if (empty) {
+            throw new IllegalArgumentException();
+        }
+    }
+
     public int getNumberOfGuests() {
         return numberOfGuests.getNumber();
     }
@@ -71,11 +77,5 @@ public class OrderTable {
 
     public TableGroup getTableGroup() {
         return tableGroup;
-    }
-
-    public void checkEmpty() {
-        if (empty) {
-            throw new IllegalArgumentException();
-        }
     }
 }

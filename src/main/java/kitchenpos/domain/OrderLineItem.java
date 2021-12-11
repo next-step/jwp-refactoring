@@ -27,13 +27,13 @@ public class OrderLineItem {
         this.quantity = quantity;
     }
 
-    public void addMenu(Order order) {
-        this.order = order;
-    }
-
     public OrderLineItem(Menu menu, int quantity) {
         this.menu = menu;
         this.quantity = quantity;
+    }
+
+    public void addMenu(Order order) {
+        this.order = order;
     }
 
     public Order getOrder() {
