@@ -40,6 +40,19 @@ class OrderTableTest {
                 .isThrownBy(() -> 채워진_테이블().changeNumberOfGuests(-10));
     }
 
+    @Test
+    void checkNonEmptyInGroup_빈_테이블이_아니면_에러를_발생한다() {
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> 채워진_테이블().checkNonEmptyInGroup());
+    }
+
+    @Test
+    void checkNonEmptyInGroup_테이블_그룹에_속하지_않으면_에러를_발생한다() {
+        OrderTable orderTable = new OrderTable(new TableGroup(), 10, false);
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> orderTable.checkNonEmptyInGroup());
+    }
+
     private OrderTable 채워진_테이블() {
         return new OrderTable(null, 5, false);
     }

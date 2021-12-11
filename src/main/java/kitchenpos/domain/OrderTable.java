@@ -55,6 +55,12 @@ public class OrderTable {
         this.numberOfGuests = new NumberOfGuests(numberOfGuests);
     }
 
+    public void checkNonEmptyInGroup() {
+        if (!empty || Objects.nonNull(tableGroup)) {
+            throw new IllegalArgumentException();
+        }
+    }
+
     public void setId(final Long id) {
         this.id = id;
     }

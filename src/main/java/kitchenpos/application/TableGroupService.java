@@ -33,7 +33,7 @@ public class TableGroupService {
         final List<Long> orderTableIds = request.getOrderTableIds();
         final OrderTables savedOrderTables = new OrderTables(orderTableDao.findAllByIdIn(orderTableIds));
 
-        savedOrderTables.check(orderTableIds);
+        savedOrderTables.checkOrderTables(orderTableIds);
 
         TableGroup tableGroup = new TableGroup(LocalDateTime.now());
         tableGroup.addOrderTables(savedOrderTables);

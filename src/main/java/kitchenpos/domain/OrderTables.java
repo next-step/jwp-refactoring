@@ -6,10 +6,11 @@ import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Embeddable
 public class OrderTables {
+
+    private static final int MIN_REQUEST_ORDER_TABLE_SIZE = 2;
 
     @OneToMany(mappedBy = "tableGroup")
     private List<OrderTable> orderTables = new ArrayList<>();
@@ -31,19 +32,21 @@ public class OrderTables {
         }
     }
 
-    public void check(List<Long> orderTableIds) {
-        if (CollectionUtils.isEmpty(orderTableIds) || orderTableIds.size() < 2) {
+    public void checkOrderTables(List<Long> orderTableIds) {
+        if (CollectionUtils.isEmpty(orderTableIds) || orderTableIds.size() < MIN_REQUEST_ORDER_TABLE_SIZE) {
             throw new IllegalArgumentException();
         }
 
-        if (orderTableIds.size() != orderTables.size()) {
+        if (!isSameSize(orderTableIds)) {
             throw new IllegalArgumentException();
         }
 
-        for (final OrderTable savedOrderTable : orderTables) {
-            if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroup())) {
-                throw new IllegalArgumentException();
-            }
+        for (final OrderTable orderTable : orderTables) {
+            orderTable.checkNonEmptyInGroup();
         }
+    }
+
+    private boolean isSameSize(List<Long> orderTableIds) {
+        return orderTables.size() == orderTableIds.size();
     }
 }
