@@ -11,6 +11,7 @@ import static org.mockito.Mockito.when;
 import java.math.BigDecimal;
 import kitchenpos.product.domain.ProductDao;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.ui.request.ProductRequest;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.DisplayName;
@@ -26,7 +27,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class ProductServiceTest {
 
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     @InjectMocks
     private ProductService productService;
@@ -36,14 +37,14 @@ class ProductServiceTest {
     void create() {
         //given
         ProductRequest request = new ProductRequest("후라이드치킨", BigDecimal.ONE);
-        when(productDao.save(any())).thenReturn(후라이드치킨());
+        when(productRepository.save(any())).thenReturn(후라이드치킨());
 
         //when
         productService.create(request);
 
         //then
         ArgumentCaptor<Product> productCaptor = ArgumentCaptor.forClass(Product.class);
-        verify(productDao, only()).save(productCaptor.capture());
+        verify(productRepository, only()).save(productCaptor.capture());
         assertThat(productCaptor.getValue())
             .extracting(Product::getName, Product::getPrice)
             .containsExactly(request.getName(), request.getPrice());
@@ -84,7 +85,7 @@ class ProductServiceTest {
         productService.list();
 
         //then
-        verify(productDao, only()).findAll();
+        verify(productRepository, only()).findAll();
     }
 
 }
