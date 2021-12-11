@@ -1,10 +1,7 @@
 package kitchenpos.application;
 
-import static kitchenpos.application.fixture.MenuFixture.*;
-import static kitchenpos.application.fixture.MenuGroupFixture.*;
-import static kitchenpos.application.fixture.ProductFixture.*;
 import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.BDDMockito.*;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -20,17 +17,21 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
+import kitchenpos.application.fixture.MenuFixtureFactory;
+import kitchenpos.application.fixture.MenuGroupFixtureFactory;
+import kitchenpos.application.fixture.MenuProductFixtureFactory;
+import kitchenpos.application.fixture.ProductFixtureFactory;
 import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
+import kitchenpos.domain.MenuGroup;
+import kitchenpos.domain.MenuProduct;
+import kitchenpos.domain.Product;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 class MenuServiceTest {
 
     @Mock
@@ -48,12 +49,23 @@ class MenuServiceTest {
     @InjectMocks
     private MenuService menuService;
 
+    private MenuGroup 고기_메뉴그룹;
+    private Product 돼지고기;
+    private Product 공기밥;
+    private Menu 불고기;
+    private MenuProduct 불고기_돼지고기;
+    private MenuProduct 불고기_공기밥;
+
     @BeforeEach
     void setUp() {
-        when(menuGroupDao.existsById(고기_메뉴그룹.getId())).thenReturn(true);
-        when(productDao.findById(불고기_돼지고기.getProductId())).thenReturn(Optional.ofNullable(돼지고기));
-        when(productDao.findById(불고기_공기밥.getProductId())).thenReturn(Optional.ofNullable(공기밥));
-        when(menuDao.save(any(Menu.class))).thenReturn(불고기);
+        고기_메뉴그룹 = MenuGroupFixtureFactory.create(1L, "고기 메뉴그룹");
+        돼지고기 = ProductFixtureFactory.create(1L, "돼지고기", 9_000);
+        공기밥 = ProductFixtureFactory.create(2L, "공기밥", 1_000);
+        불고기 = MenuFixtureFactory.create(1L, "불고기", 10_000, 고기_메뉴그룹.getId());
+
+        불고기_돼지고기 = MenuProductFixtureFactory.create(1L, 불고기.getId(), 돼지고기.getId(), 1L);
+        불고기_공기밥 = MenuProductFixtureFactory.create(2L, 불고기.getId(), 공기밥.getId(), 1L);
+        불고기.setMenuProducts(Arrays.asList(불고기_돼지고기, 불고기_공기밥));
     }
 
     @DisplayName("Menu 를 등록한다.")
@@ -65,6 +77,11 @@ class MenuServiceTest {
         menu.setPrice(BigDecimal.valueOf(10_000));
         menu.setMenuGroupId(고기_메뉴그룹.getId());
         menu.setMenuProducts(Arrays.asList(불고기_돼지고기, 불고기_공기밥));
+
+        given(menuGroupDao.existsById(고기_메뉴그룹.getId())).willReturn(true);
+        given(productDao.findById(불고기_돼지고기.getProductId())).willReturn(Optional.ofNullable(돼지고기));
+        given(productDao.findById(불고기_공기밥.getProductId())).willReturn(Optional.ofNullable(공기밥));
+        given(menuDao.save(any(Menu.class))).willReturn(불고기);
 
         // when
         Menu savedMenu = menuService.create(menu);
@@ -112,7 +129,7 @@ class MenuServiceTest {
         menu.setMenuGroupId(고기_메뉴그룹.getId());
         menu.setMenuProducts(Arrays.asList(불고기_돼지고기, 불고기_공기밥));
 
-        when(menuGroupDao.existsById(고기_메뉴그룹.getId())).thenReturn(false);
+        given(menuGroupDao.existsById(고기_메뉴그룹.getId())).willReturn(false);
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menu));
@@ -128,7 +145,9 @@ class MenuServiceTest {
         menu.setMenuGroupId(고기_메뉴그룹.getId());
         menu.setMenuProducts(Arrays.asList(불고기_돼지고기, 불고기_공기밥));
 
-        when(productDao.findById(돼지고기.getId())).thenThrow(IllegalArgumentException.class);
+        given(menuGroupDao.existsById(고기_메뉴그룹.getId())).willReturn(true);
+        given(productDao.findById(불고기_돼지고기.getProductId())).willReturn(Optional.ofNullable(돼지고기));
+        given(productDao.findById(돼지고기.getId())).willThrow(IllegalArgumentException.class);
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menu));
@@ -152,8 +171,8 @@ class MenuServiceTest {
     @Test
     void findList() {
         // given
-        when(menuDao.findAll()).thenReturn(Arrays.asList(불고기));
-        when(menuProductDao.findAllByMenuId(불고기.getId())).thenReturn(Arrays.asList(불고기_돼지고기, 불고기_공기밥));
+        given(menuDao.findAll()).willReturn(Arrays.asList(불고기));
+        given(menuProductDao.findAllByMenuId(불고기.getId())).willReturn(Arrays.asList(불고기_돼지고기, 불고기_공기밥));
 
         // when
         List<Menu> menus = menuService.list();

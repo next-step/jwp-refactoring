@@ -1,11 +1,7 @@
 package kitchenpos.application;
 
-import static kitchenpos.application.fixture.MenuFixture.*;
-import static kitchenpos.application.fixture.ProductFixture.*;
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.BDDMockito.*;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -20,14 +16,12 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
+import kitchenpos.application.fixture.ProductFixtureFactory;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 class ProductServiceTest {
 
     @Mock
@@ -36,9 +30,13 @@ class ProductServiceTest {
     @InjectMocks
     private ProductService productService;
 
+    private Product 돼지고기;
+    private Product 공기밥;
+
     @BeforeEach
     void setUp() {
-        when(productDao.save(any(Product.class))).thenReturn(돼지고기);
+        돼지고기 = ProductFixtureFactory.create(1L, "돼지고기", 9_000);
+        공기밥 = ProductFixtureFactory.create(2L, "공기밥", 1_000);
     }
 
     @DisplayName("Product 를 등록한다.")
@@ -48,6 +46,8 @@ class ProductServiceTest {
         Product product = new Product();
         product.setName("돼지고기");
         product.setPrice(BigDecimal.valueOf(9_000));
+
+        given(productDao.save(any(Product.class))).willReturn(돼지고기);
 
         // when
         Product savedProduct = productService.create(product);
@@ -85,7 +85,7 @@ class ProductServiceTest {
     @Test
     void findList() {
         // given
-        when(productDao.findAll()).thenReturn(Arrays.asList(돼지고기, 공기밥));
+        given(productDao.findAll()).willReturn(Arrays.asList(돼지고기, 공기밥));
 
         // when
         List<Product> products = productService.list();

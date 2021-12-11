@@ -1,17 +1,12 @@
 package kitchenpos.application;
 
-import static kitchenpos.application.fixture.OrderTableFixture.*;
-import static kitchenpos.application.fixture.TableGroupFixture.*;
 import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.BDDMockito.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Optional;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,11 +14,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
-import kitchenpos.application.fixture.OrderTableFixture;
-import kitchenpos.application.fixture.TableGroupFixture;
+import kitchenpos.application.fixture.OrderTableFixtureFactory;
+import kitchenpos.application.fixture.TableGroupFixtureFactory;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.TableGroupDao;
@@ -31,7 +24,6 @@ import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 class TableGroupServiceTest {
 
     @Mock
@@ -46,14 +38,19 @@ class TableGroupServiceTest {
     @InjectMocks
     private TableGroupService tableGroupService;
 
+    private TableGroup 단체_테이블그룹;
+    private OrderTable 주문1_단체테이블;
+    private OrderTable 주문2_단체테이블;
+    private OrderTable 손님_10명_개인테이블;
+
     @BeforeEach
     void setUp() {
-        OrderTableFixture.init();
-        TableGroupFixture.init();
+        주문1_단체테이블 = OrderTableFixtureFactory.create(1L, true);
+        주문2_단체테이블 = OrderTableFixtureFactory.create(2L, true);
+        손님_10명_개인테이블 = OrderTableFixtureFactory.createWithGuests(3L, true, 10);
+        단체_테이블그룹 = TableGroupFixtureFactory.create(1L);
 
-        when(orderTableDao.findAllByIdIn(Arrays.asList(주문1_단체테이블.getId(), 주문2_단체테이블.getId())))
-            .thenReturn(Arrays.asList(주문1_단체테이블, 주문2_단체테이블));
-        when(tableGroupDao.save(any(TableGroup.class))).thenReturn(단체_테이블그룹);
+        단체_테이블그룹.setOrderTables(Arrays.asList(주문1_단체테이블, 주문2_단체테이블));
     }
 
     @DisplayName("TableGroup 을 등록한다.")
@@ -63,6 +60,10 @@ class TableGroupServiceTest {
         TableGroup tableGroup = new TableGroup();
         tableGroup.setOrderTables(Arrays.asList(주문1_단체테이블, 주문2_단체테이블));
         tableGroup.setCreatedDate(LocalDateTime.now());
+
+        given(orderTableDao.findAllByIdIn(Arrays.asList(주문1_단체테이블.getId(), 주문2_단체테이블.getId())))
+            .willReturn(Arrays.asList(주문1_단체테이블, 주문2_단체테이블));
+        given(tableGroupDao.save(any(TableGroup.class))).willReturn(단체_테이블그룹);
 
         // when
         TableGroup savedTableGroup = tableGroupService.create(tableGroup);
@@ -103,8 +104,8 @@ class TableGroupServiceTest {
         tableGroup.setOrderTables(Arrays.asList(주문1_단체테이블, 주문2_단체테이블));
         tableGroup.setCreatedDate(LocalDateTime.now());
 
-        when(orderTableDao.findAllByIdIn(Arrays.asList(주문1_단체테이블.getId(), 주문2_단체테이블.getId())))
-            .thenReturn(Collections.emptyList());
+        given(orderTableDao.findAllByIdIn(Arrays.asList(주문1_단체테이블.getId(), 주문2_단체테이블.getId())))
+            .willReturn(Collections.emptyList());
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> tableGroupService.create(tableGroup));
@@ -143,9 +144,8 @@ class TableGroupServiceTest {
         주문1_단체테이블.setTableGroupId(단체_테이블그룹.getId());
         주문2_단체테이블.setTableGroupId(단체_테이블그룹.getId());
 
-        when(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).thenReturn(false);
-        when(orderTableDao.findAllByTableGroupId(단체_테이블그룹.getId()))
-            .thenReturn(Arrays.asList(주문1_단체테이블, 주문2_단체테이블));
+        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(false);
+        given(orderTableDao.findAllByTableGroupId(단체_테이블그룹.getId())).willReturn(Arrays.asList(주문1_단체테이블, 주문2_단체테이블));
 
         // when
         tableGroupService.ungroup(단체_테이블그룹.getId());
@@ -163,9 +163,9 @@ class TableGroupServiceTest {
         주문1_단체테이블.setTableGroupId(단체_테이블그룹.getId());
         주문2_단체테이블.setTableGroupId(단체_테이블그룹.getId());
 
-        when(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).thenReturn(true);
-        when(orderTableDao.findAllByTableGroupId(단체_테이블그룹.getId()))
-            .thenReturn(Arrays.asList(주문1_단체테이블, 주문2_단체테이블));
+        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(true);
+        given(orderTableDao.findAllByTableGroupId(단체_테이블그룹.getId()))
+            .willReturn(Arrays.asList(주문1_단체테이블, 주문2_단체테이블));
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> tableGroupService.ungroup(단체_테이블그룹.getId()));

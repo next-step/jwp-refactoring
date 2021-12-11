@@ -1,8 +1,7 @@
 package kitchenpos.application;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.BDDMockito.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -15,7 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.application.fixture.MenuGroupFixture;
+import kitchenpos.application.fixture.MenuGroupFixtureFactory;
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.MenuGroup;
 
@@ -28,6 +27,15 @@ class MenuGroupServiceTest {
     @InjectMocks
     private MenuGroupService menuGroupService;
 
+    private MenuGroup 고기_메뉴그룹;
+    private MenuGroup 야채_메뉴그룹;
+
+    @BeforeEach
+    void setUp() {
+        고기_메뉴그룹 = MenuGroupFixtureFactory.create(1L, "고기 메뉴그룹");
+        야채_메뉴그룹 = MenuGroupFixtureFactory.create(2L, "야채 메뉴그룹");
+    }
+
     @DisplayName("MenuGroup 을 등록한다.")
     @Test
     void create() {
@@ -35,25 +43,25 @@ class MenuGroupServiceTest {
         MenuGroup menuGroup = new MenuGroup();
         menuGroup.setName("고기 메뉴그룹");
 
-        when(menuGroupDao.save(menuGroup)).thenReturn(MenuGroupFixture.고기_메뉴그룹);
+        given(menuGroupDao.save(menuGroup)).willReturn(고기_메뉴그룹);
 
         // when
         MenuGroup savedMenuGroup = menuGroupService.create(menuGroup);
 
         // then
-        assertThat(savedMenuGroup).isEqualTo(MenuGroupFixture.고기_메뉴그룹);
+        assertThat(savedMenuGroup).isEqualTo(고기_메뉴그룹);
     }
 
     @DisplayName("MenuGroup 목록을 조회한다.")
     @Test
     void findList() {
         // given
-        when(menuGroupDao.findAll()).thenReturn(Arrays.asList(MenuGroupFixture.고기_메뉴그룹, MenuGroupFixture.야채_메뉴그룹));
+        given(menuGroupDao.findAll()).willReturn(Arrays.asList(고기_메뉴그룹, 야채_메뉴그룹));
 
         // when
         List<MenuGroup> menuGroups = menuGroupService.list();
 
         // then
-        assertThat(menuGroups).containsExactly(MenuGroupFixture.고기_메뉴그룹, MenuGroupFixture.야채_메뉴그룹);
+        assertThat(menuGroups).containsExactly(고기_메뉴그룹, 야채_메뉴그룹);
     }
 }
