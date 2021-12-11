@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -57,7 +58,7 @@ class TableGroupServiceTest {
         assertAll(
                 () -> assertThat(저장된_단체_지정.getOrderTables().size()).isEqualTo(2),
                 () -> assertThat(저장된_단체_지정.getOrderTables().get(0).isEmpty()).isFalse(),
-                () -> assertThat(저장된_단체_지정.getOrderTables().get(0).getTableGroupId()).isEqualTo(단체_지정.getId()),
+                () -> assertThat(저장된_단체_지정.getOrderTables().get(0).getTableGroup()).isEqualTo(단체_지정),
                 () -> assertThat(저장된_단체_지정.getCreatedDate()).isNotNull()
         );
     }
@@ -82,7 +83,7 @@ class TableGroupServiceTest {
 
     @Test
     void create_단체_지정의_주문_테이블이_올바르지_않으면_단체_지정을_저장할_수_없다() {
-        OrderTable 빈_주문_테이블 = orderTableDao.save(주문_테이블(0, 1L, true));
+        OrderTable 빈_주문_테이블 = orderTableDao.save(주문_테이블(0, new TableGroup(1L, null, null), true));
         OrderTable 채워진_주문_테이블 = orderTableDao.save(주문_테이블(2, null, false));
         TableGroup tableGroup = 단체_지정(Arrays.asList(빈_주문_테이블, 채워진_주문_테이블));
 
@@ -100,7 +101,7 @@ class TableGroupServiceTest {
         tableGroupService.ungroup(저장된_단체_지정.getId());
 
         저장된_단체_지정.getOrderTables()
-                .forEach(orderTable -> assertThat(orderTable.getTableGroupId()).isNull());
+                .forEach(orderTable -> assertThat(orderTable.getTableGroup()).isNull());
     }
 
     @ParameterizedTest
@@ -121,8 +122,6 @@ class TableGroupServiceTest {
     }
 
     private TableGroup 단체_지정(List<OrderTable> orderTables) {
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.setOrderTables(orderTables);
-        return tableGroup;
+        return new TableGroup(null, LocalDateTime.now(), orderTables);
     }
 }

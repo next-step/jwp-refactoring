@@ -47,7 +47,7 @@ public class TableGroupService {
         }
 
         for (final OrderTable savedOrderTable : savedOrderTables) {
-            if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroupId())) {
+            if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroup())) {
                 throw new IllegalArgumentException();
             }
         }
@@ -58,8 +58,7 @@ public class TableGroupService {
 
         final Long tableGroupId = savedTableGroup.getId();
         for (final OrderTable savedOrderTable : savedOrderTables) {
-            savedOrderTable.setTableGroupId(tableGroupId);
-            savedOrderTable.setEmpty(false);
+            savedOrderTable.group(savedTableGroup);
             orderTableDao.save(savedOrderTable);
         }
         savedTableGroup.setOrderTables(savedOrderTables);
@@ -81,7 +80,7 @@ public class TableGroupService {
         }
 
         for (final OrderTable orderTable : orderTables) {
-            orderTable.setTableGroupId(null);
+            orderTable.ungroup();
             orderTableDao.save(orderTable);
         }
     }
