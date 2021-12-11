@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.*;
 
-@DisplayName("상품 관리")
+@DisplayName("Mockito - 상품 관리")
 class ProductMockitoTest {
 
     private ProductRepository productRepository;

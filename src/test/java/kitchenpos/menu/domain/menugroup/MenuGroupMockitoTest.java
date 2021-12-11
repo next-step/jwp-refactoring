@@ -12,7 +12,7 @@ import static kitchenpos.fixture.MenuGroupDomainFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
-@DisplayName("메뉴 그룹 관리")
+@DisplayName("Mockito - 메뉴 그룹 관리")
 class MenuGroupMockitoTest {
 
     private MenuGroupRepository menuGroupRepository;
@@ -25,7 +25,7 @@ class MenuGroupMockitoTest {
 
     @Test
     @DisplayName("메뉴 그룹 생성")
-    public void createMenu() {
+    public void createMenuGroup() {
         //given
         setUpMock();
         when(menuGroupRepository.save(any(MenuGroup.class))).thenReturn(패밀리_세트);

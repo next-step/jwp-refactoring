@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.*;
 
-@DisplayName("메뉴 관리")
+@DisplayName("Mockito - 메뉴 관리")
 class MenuMockitoTest {
 
     private MenuRepository menuRepository;

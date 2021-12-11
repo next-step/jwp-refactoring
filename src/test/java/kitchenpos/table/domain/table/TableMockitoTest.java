@@ -19,7 +19,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@DisplayName("테이블 관리")
+@DisplayName("Mockito - 테이블 관리")
 class TableMockitoTest {
     private OrderRepository orderRepository;
     private OrderTableRepository orderTableRepository;

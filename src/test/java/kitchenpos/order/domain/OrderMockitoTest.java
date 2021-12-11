@@ -25,7 +25,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@DisplayName("주문 관리")
+@DisplayName("Mockito - 주문 관리")
 class OrderMockitoTest {
 
     private MenuRepository menuRepository;
