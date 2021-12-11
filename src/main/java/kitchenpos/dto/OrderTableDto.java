@@ -3,7 +3,6 @@ package kitchenpos.dto;
 import java.util.Objects;
 
 import kitchenpos.domain.table.OrderTable;
-import kitchenpos.domain.table.TableGroup;
 
 public class OrderTableDto {
     private Long id;
@@ -21,18 +20,6 @@ public class OrderTableDto {
         this.empty = empty;
     }
 
-    public static OrderTableDto of(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
-        return new OrderTableDto(id, tableGroupId, numberOfGuests, empty);
-    }
-
-    public static OrderTableDto of(Long tableGroupId, int numberOfGuests) {
-        if (numberOfGuests > 0) {
-            return new OrderTableDto(null, tableGroupId, numberOfGuests, false);
-        }
-
-        return new OrderTableDto(null, tableGroupId, numberOfGuests, true);
-    }
-
     public static OrderTableDto of(int numberOfGuests) {
         if (numberOfGuests > 0) {
             return new OrderTableDto(null, null, numberOfGuests, false);
@@ -41,24 +28,12 @@ public class OrderTableDto {
         return new OrderTableDto(null, null, numberOfGuests, true);
     }
 
-    public static OrderTableDto of(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
-        if (tableGroup == null ) {
-            return new OrderTableDto(id, null, numberOfGuests, empty);
-        }
-
-        return new OrderTableDto(id, tableGroup.getId(), numberOfGuests, empty);
-    }
-
     public static OrderTableDto of(OrderTable orderTable) {
         if (orderTable.getTableGroup() == null) {
             return new OrderTableDto(orderTable.getId(), null, orderTable.getNumberOfGuests(), orderTable.getEmpty());
         }
 
         return new OrderTableDto(orderTable.getId(), orderTable.getTableGroup().getId(), orderTable.getNumberOfGuests(), orderTable.getEmpty());
-    }
-
-    public static OrderTableDto of(int numberOfGuests, boolean empty) {
-        return new OrderTableDto(null, null, numberOfGuests, empty);
     }
 
     public Long getId() {

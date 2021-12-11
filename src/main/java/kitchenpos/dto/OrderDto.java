@@ -25,14 +25,6 @@ public class OrderDto {
         this.orderLineItems = orderLineItems;
     }
 
-    public static OrderDto of(Long id, Long orderTableId, String orderStatus, LocalDateTime orderedTime, List<OrderLineItemDto> orderLineItems) {
-        return new OrderDto(id, orderTableId, orderStatus, orderedTime, orderLineItems);
-    }
-
-    public static OrderDto of(Long orderTableId, String orderStatus, LocalDateTime orderedTime, List<OrderLineItemDto> orderLineItems) {
-        return new OrderDto(null, orderTableId, orderStatus, orderedTime, orderLineItems);
-    }
-
     public static OrderDto of(Long orderTableId, List<OrderLineItemDto> orderLineItems) {
         return new OrderDto(null, orderTableId, "", null, orderLineItems);
     }

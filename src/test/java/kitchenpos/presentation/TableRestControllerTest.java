@@ -43,7 +43,7 @@ public class TableRestControllerTest extends TestConfig {
     @Test
     void update_table() {
         // given
-        OrderTableDto orderTable = OrderTableDto.of(10, false);
+        OrderTableDto orderTable = OrderTableDto.of(10);
 
         // when
         OrderTableDto savedOrderTable = TableRestControllerTest.주문테이블_저장요청(orderTable).as(OrderTableDto.class);
@@ -63,7 +63,7 @@ public class TableRestControllerTest extends TestConfig {
     @Test
     void update_tableForNumberOfGuests() {
         // given
-        OrderTableDto orderTable = OrderTableDto.of(10, false);
+        OrderTableDto orderTable = OrderTableDto.of(10);
 
         // when
         OrderTableDto savedOrderTable = TableRestControllerTest.주문테이블_저장요청(orderTable).as(OrderTableDto.class);

@@ -28,10 +28,6 @@ public class TableGroupDto {
         this.orderTables = orderTables;
     }
 
-    public static TableGroupDto of(Long id, LocalDateTime createdDate, List<OrderTableDto> orderTables) {
-        return new TableGroupDto(id, createdDate, orderTables);
-    }
-
     public static TableGroupDto of(List<OrderTableDto> orderTables) {
         return new TableGroupDto(null, null, orderTables);
     }
@@ -42,7 +38,7 @@ public class TableGroupDto {
         }
         
         List<OrderTableDto> tempOrderTables = tableGroup.getOrderTables().stream()
-                                                        .map(item -> OrderTableDto.of(item.getId(), item.getTableGroup(), item.getNumberOfGuests(), item.getEmpty()))
+                                                        .map(OrderTableDto::of)
                                                         .collect(Collectors.toList());
 
         return new TableGroupDto(tableGroup.getId(), tableGroup.getCreatedDate(), tempOrderTables);

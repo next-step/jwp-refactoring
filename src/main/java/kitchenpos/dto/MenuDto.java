@@ -32,10 +32,6 @@ public class MenuDto {
         this.menuProducts = menuProducts;
     }
 
-    public static MenuDto of(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProductDto> menuProducts) {
-        return new MenuDto(id, name, price, menuGroupId, menuProducts);
-    }
-
     public static MenuDto of(String name, BigDecimal price, Long menuGroupId, List<MenuProductDto> menuProducts) {
         return new MenuDto(null, name, price, menuGroupId, menuProducts);
     }

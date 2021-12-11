@@ -76,7 +76,7 @@ public class MenuRestControllerTest extends TestConfig {
 
         MenuProductDto menuProduct = MenuProductDto.of(product.getId(), 2);
 
-        MenuDto menu = MenuDto.of(null, "후라이드+후라이드", BigDecimal.valueOf(19_000), menuGroup.getId(), List.of(menuProduct));
+        MenuDto menu = MenuDto.of("후라이드+후라이드", BigDecimal.valueOf(19_000), menuGroup.getId(), List.of(menuProduct));
         return menu;
     }
 }

@@ -2,9 +2,7 @@ package kitchenpos.dto;
 
 import java.util.Objects;
 
-import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menu.MenuProduct;
-import kitchenpos.domain.product.Product;
 
 public class MenuProductDto {
     private Long seq;
@@ -22,24 +20,8 @@ public class MenuProductDto {
         this.productId = productId;
     }
 
-    public static MenuProductDto of(Long seq, Menu menu, Product product, long quantity) {
-        if (product == null) {
-            return new MenuProductDto(seq, menu.getId(), null, quantity);
-        }
-        
-        return new MenuProductDto(seq, menu.getId(), product.getId(), quantity);
-    }
-
-    public static MenuProductDto of(Long menuId, Long productId, long quantity) {
-        return new MenuProductDto(null, menuId, productId, quantity);
-    }
-
     public static MenuProductDto of(Long productId, long quantity) {
         return new MenuProductDto(null, null, productId, quantity);
-    }
-
-    public static MenuProductDto of(Long seq, Long menuId, Long productId, long quantity) {
-        return new MenuProductDto(seq, menuId, productId, quantity);
     }
 
     public static MenuProductDto of(MenuProduct menuProduct) {

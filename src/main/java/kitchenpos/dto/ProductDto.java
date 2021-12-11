@@ -20,10 +20,6 @@ public class ProductDto {
         this.price = price;
     }
 
-    public static ProductDto of(Long id, String name, BigDecimal price) {
-        return new ProductDto(id, name, price);
-    }
-
     public static ProductDto of(String name, BigDecimal price) {
         return new ProductDto(null, name, price);
     }

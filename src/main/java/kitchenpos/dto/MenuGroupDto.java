@@ -16,10 +16,6 @@ public class MenuGroupDto {
         this.name = name;
     }
 
-    public static MenuGroupDto of(Long id, String name) {
-        return new MenuGroupDto(id, name);
-    }
-
     public static MenuGroupDto of(String name) {
         return new MenuGroupDto(null, name);
     }
