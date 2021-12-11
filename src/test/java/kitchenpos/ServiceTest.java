@@ -1,8 +1,9 @@
 package kitchenpos;
 
 import kitchenpos.menu.application.MenuService;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.application.MenuGroupService;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.order.application.OrderService;
@@ -53,13 +54,14 @@ public abstract class ServiceTest {
         return menuGroupService.create(new MenuGroup("세마리메뉴"));
     }
 
-    protected Menu 메뉴_저장() {
+    protected MenuResponse 메뉴_저장() {
         Product savedProduct = 상품_저장();
         MenuGroup savedMenuGroup = 메뉴_그룹_저장();
-        MenuProduct menuProduct = new MenuProduct(savedProduct.getId(), 1);
-        Menu menu = new Menu(
-                savedProduct.getName(), savedProduct.getPrice(), savedMenuGroup.getId(), Collections.singletonList(menuProduct));
-        return menuService.create(menu);
+        MenuProductRequest menuProductRequest = new MenuProductRequest(savedProduct.getId(), 1);
+        MenuRequest menuRequest = new MenuRequest(
+                savedProduct.getName(), savedProduct.getPrice(), savedMenuGroup.getId(),
+                Collections.singletonList(menuProductRequest));
+        return menuService.create(menuRequest);
     }
 
     protected OrderTable 테이블_저장(boolean empty) {
@@ -75,8 +77,8 @@ public abstract class ServiceTest {
 
     protected Order 주문_저장() {
         OrderTable orderTable = 테이블_저장(false);
-        Menu savedMenu = 메뉴_저장();
-        OrderLineItem orderLineItem = new OrderLineItem(savedMenu.getId(), 2);
+        MenuResponse savedMenuResponse = 메뉴_저장();
+        OrderLineItem orderLineItem = new OrderLineItem(savedMenuResponse.getId(), 2);
         Order order = new Order(
                 orderTable.getId(), OrderStatus.COOKING, LocalDateTime.now(), Collections.singletonList(orderLineItem));
         return orderService.create(order);
@@ -87,6 +89,7 @@ public abstract class ServiceTest {
         orderService.changeOrderStatus(orderId, order);
     }
 
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
     protected OrderTable 테이블_조회(Long orderTableId) {
         return orderTableService.list().stream()
                 .filter(it -> it.getId().equals(orderTableId))

@@ -2,7 +2,9 @@ package kitchenpos.menu.application;
 
 import kitchenpos.ServiceTest;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.DisplayName;
@@ -25,22 +27,23 @@ public class MenuServiceTest extends ServiceTest {
         Product savedProduct = 상품_저장();
         MenuGroup savedMenuGroup = 메뉴_그룹_저장();
 
-        MenuProduct menuProduct = new MenuProduct(savedProduct.getId(), 1);
-        Menu menu = new Menu(
-                savedProduct.getName(), savedProduct.getPrice(), savedMenuGroup.getId(), Collections.singletonList(menuProduct));
+        MenuProductRequest menuProductRequest = new MenuProductRequest(savedProduct.getId(), 1);
+        MenuRequest menuRequest = new MenuRequest(
+                savedProduct.getName(), savedProduct.getPrice(), savedMenuGroup.getId(),
+                Collections.singletonList(menuProductRequest));
 
         // when
-        Menu savedMenu = menuService.create(menu);
+        MenuResponse savedMenuResponse = menuService.create(menuRequest);
 
         // then
         assertAll(
-                () -> assertThat(savedMenu.getId()).isNotNull(),
-                () -> assertThat(savedMenu.getName()).isEqualTo(savedProduct.getName()),
-                () -> assertThat(savedMenu.getPrice().compareTo(menu.getPrice())).isZero(),
-                () -> assertThat(savedMenu.getMenuGroupId()).isEqualTo(savedMenuGroup.getId()),
-                () -> assertThat(savedMenu.getMenuProducts().get(0).getMenuId()).isNotNull(),
-                () -> assertThat(savedMenu.getMenuProducts().get(0).getProductId()).isEqualTo(savedProduct.getId()),
-                () -> assertThat(savedMenu.getMenuProducts().get(0).getQuantity()).isEqualTo(menuProduct.getQuantity())
+                () -> assertThat(savedMenuResponse.getId()).isNotNull(),
+                () -> assertThat(savedMenuResponse.getName()).isEqualTo(savedProduct.getName()),
+                () -> assertThat(savedMenuResponse.getPrice().compareTo(menuRequest.getPrice())).isZero(),
+                () -> assertThat(savedMenuResponse.getMenuGroupId()).isEqualTo(savedMenuGroup.getId()),
+                () -> assertThat(savedMenuResponse.getMenuProducts().get(0).getMenuId()).isNotNull(),
+                () -> assertThat(savedMenuResponse.getMenuProducts().get(0).getProductId()).isEqualTo(savedProduct.getId()),
+                () -> assertThat(savedMenuResponse.getMenuProducts().get(0).getQuantity()).isEqualTo(menuProductRequest.getQuantity())
         );
     }
 
@@ -51,11 +54,13 @@ public class MenuServiceTest extends ServiceTest {
         Product savedProduct = 상품_저장();
         MenuGroup savedMenuGroup = 메뉴_그룹_저장();
 
-        MenuProduct menuProduct = new MenuProduct(savedProduct.getId(), 1);
-        Menu menu = new Menu(savedProduct.getName(), -1, savedMenuGroup.getId(), Collections.singletonList(menuProduct));
+        MenuProductRequest menuProductRequest = new MenuProductRequest(savedProduct.getId(), 1);
+        MenuRequest menuRequest = new MenuRequest(
+                savedProduct.getName(), new BigDecimal(-1), savedMenuGroup.getId(),
+                Collections.singletonList(menuProductRequest));
 
         // when & then
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> menuService.create(menu));
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> menuService.create(menuRequest));
     }
 
     @Test
@@ -64,11 +69,13 @@ public class MenuServiceTest extends ServiceTest {
         // given
         Product savedProduct = 상품_저장();
 
-        MenuProduct menuProduct = new MenuProduct(savedProduct.getId(), 1);
-        Menu menu = new Menu(savedProduct.getName(), savedProduct.getPrice(), 0L, Collections.singletonList(menuProduct));
+        MenuProductRequest menuProductRequest = new MenuProductRequest(savedProduct.getId(), 1);
+        MenuRequest menuRequest = new MenuRequest(
+                savedProduct.getName(), savedProduct.getPrice(), 0L,
+                Collections.singletonList(menuProductRequest));
 
         // when & then
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> menuService.create(menu));
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> menuService.create(menuRequest));
     }
 
     @Test
@@ -78,12 +85,13 @@ public class MenuServiceTest extends ServiceTest {
         Product savedProduct = 상품_저장();
         MenuGroup savedMenuGroup = 메뉴_그룹_저장();
 
-        MenuProduct menuProduct = new MenuProduct(0L, 1);
-        Menu menu = new Menu(
-                savedProduct.getName(), savedProduct.getPrice(), savedMenuGroup.getId(), Collections.singletonList(menuProduct));
+        MenuProductRequest menuProductRequest = new MenuProductRequest(0L, 1);
+        MenuRequest menuRequest = new MenuRequest(
+                savedProduct.getName(), savedProduct.getPrice(), savedMenuGroup.getId(),
+                Collections.singletonList(menuProductRequest));
 
         // when & then
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> menuService.create(menu));
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> menuService.create(menuRequest));
     }
 
     @Test
@@ -93,13 +101,13 @@ public class MenuServiceTest extends ServiceTest {
         Product savedProduct = 상품_저장();
         MenuGroup savedMenuGroup = 메뉴_그룹_저장();
 
-        MenuProduct menuProduct = new MenuProduct(savedProduct.getId(), 1);
-        Menu menu = new Menu(
+        MenuProductRequest menuProductRequest = new MenuProductRequest(savedProduct.getId(), 1);
+        MenuRequest menuRequest = new MenuRequest(
                 savedProduct.getName(), savedProduct.getPrice().add(BigDecimal.ONE), savedMenuGroup.getId(),
-                Collections.singletonList(menuProduct));
+                Collections.singletonList(menuProductRequest));
 
         // when & then
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> menuService.create(menu));
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> menuService.create(menuRequest));
     }
 
     @Test

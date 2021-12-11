@@ -4,11 +4,13 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.*;
@@ -20,11 +22,12 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     @DisplayName("메뉴를 등록한다.")
     void create() {
         // given
-        MenuProduct menuProduct = new MenuProduct(1L, 1);
-        Menu menu = new Menu("후라이드치킨", 16_000, 2L, Collections.singletonList(menuProduct));
+        MenuProductRequest menuProductRequest = new MenuProductRequest(1L, 1);
+        MenuRequest menuRequest = new MenuRequest(
+                "후라이드치킨", new BigDecimal(16_000), 2L, Collections.singletonList(menuProductRequest));
 
         // when
-        ExtractableResponse<Response> response = 메뉴_등록_요청(menu);
+        ExtractableResponse<Response> response = 메뉴_등록_요청(menuRequest);
 
         // then
         메뉴_등록됨(response);
@@ -40,8 +43,8 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         메뉴_목록_조회됨(response);
     }
 
-    public static ExtractableResponse<Response> 메뉴_등록_요청(Menu menu) {
-        return post("/api/menus", menu);
+    public static ExtractableResponse<Response> 메뉴_등록_요청(MenuRequest menuRequest) {
+        return post("/api/menus", menuRequest);
     }
 
     public static ExtractableResponse<Response> 메뉴_목록_조회_요청() {

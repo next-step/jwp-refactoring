@@ -1,7 +1,7 @@
 package kitchenpos.order.application;
 
 import kitchenpos.ServiceTest;
-import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
@@ -24,9 +24,9 @@ class OrderServiceTest extends ServiceTest {
     void create() {
         // given
         OrderTable orderTable = 테이블_저장(false);
-        Menu savedMenu = 메뉴_저장();
+        MenuResponse savedMenuResponse = 메뉴_저장();
 
-        OrderLineItem orderLineItem = new OrderLineItem(savedMenu.getId(), 2);
+        OrderLineItem orderLineItem = new OrderLineItem(savedMenuResponse.getId(), 2);
         Order order = new Order(
                 orderTable.getId(), OrderStatus.COOKING, LocalDateTime.now(), Collections.singletonList(orderLineItem));
 
@@ -40,7 +40,7 @@ class OrderServiceTest extends ServiceTest {
                 () -> assertThat(savedOrder.getOrderedTime()).isNotNull(),
                 () -> assertThat(savedOrder.getOrderLineItems().get(0).getSeq()).isNotNull(),
                 () -> assertThat(savedOrder.getOrderLineItems().get(0).getOrderId()).isEqualTo(savedOrder.getId()),
-                () -> assertThat(savedOrder.getOrderLineItems().get(0).getMenuId()).isEqualTo(savedMenu.getId()),
+                () -> assertThat(savedOrder.getOrderLineItems().get(0).getMenuId()).isEqualTo(savedMenuResponse.getId()),
                 () -> assertThat(savedOrder.getOrderLineItems().get(0).getQuantity()).isEqualTo(orderLineItem.getQuantity())
         );
     }
@@ -73,8 +73,8 @@ class OrderServiceTest extends ServiceTest {
     @DisplayName("존재하지 않는 테이블로 주문을 등록하면 예외를 발생한다.")
     void createThrowException3() {
         // given
-        Menu savedMenu = 메뉴_저장();
-        OrderLineItem orderLineItem = new OrderLineItem(savedMenu.getId(), 2);
+        MenuResponse savedMenuResponse = 메뉴_저장();
+        OrderLineItem orderLineItem = new OrderLineItem(savedMenuResponse.getId(), 2);
         Order order = new Order(0L, OrderStatus.COOKING, LocalDateTime.now(), Collections.singletonList(orderLineItem));
 
         // when & then
@@ -86,8 +86,8 @@ class OrderServiceTest extends ServiceTest {
     void createThrowException4() {
         // given
         OrderTable orderTable = 테이블_저장(true);
-        Menu savedMenu = 메뉴_저장();
-        OrderLineItem orderLineItem = new OrderLineItem(savedMenu.getId(), 2);
+        MenuResponse savedMenuResponse = 메뉴_저장();
+        OrderLineItem orderLineItem = new OrderLineItem(savedMenuResponse.getId(), 2);
         Order order = new Order(
                 orderTable.getId(), OrderStatus.COOKING, LocalDateTime.now(), Collections.singletonList(orderLineItem));
 
