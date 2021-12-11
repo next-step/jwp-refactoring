@@ -12,7 +12,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.*;
 
 @DisplayName("테이블 서비스 Mock 테스트")
-class TableServiceMockTest extends ServiceTest {
+class OrderTableServiceMockTest extends ServiceTest {
 
     @MockBean
     private OrderDao orderDao;
@@ -28,6 +28,6 @@ class TableServiceMockTest extends ServiceTest {
 
         // when & then
         assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> tableService.changeEmpty(savedOrderTable.getId(), orderTable));
+                .isThrownBy(() -> orderTableService.changeEmpty(savedOrderTable.getId(), orderTable));
     }
 }

@@ -12,7 +12,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("테이블 서비스 테스트")
-class TableServiceTest extends ServiceTest {
+class OrderTableServiceTest extends ServiceTest {
 
     @Test
     @DisplayName("테이블을 등록한다.")
@@ -21,7 +21,7 @@ class TableServiceTest extends ServiceTest {
         OrderTable orderTable = new OrderTable(2, true);
 
         // when
-        OrderTable savedOrderTable = tableService.create(orderTable);
+        OrderTable savedOrderTable = orderTableService.create(orderTable);
 
         // then
         assertAll(
@@ -35,7 +35,7 @@ class TableServiceTest extends ServiceTest {
     @DisplayName("테이블의 목록을 조회한다.")
     void list() {
         // when
-        List<OrderTable> orderTables = tableService.list();
+        List<OrderTable> orderTables = orderTableService.list();
 
         // then
         assertThat(orderTables.size()).isPositive();
@@ -49,7 +49,7 @@ class TableServiceTest extends ServiceTest {
         OrderTable orderTable = new OrderTable(false);
 
         // when
-        OrderTable modifiedOrderTable = tableService.changeEmpty(savedOrderTable.getId(), orderTable);
+        OrderTable modifiedOrderTable = orderTableService.changeEmpty(savedOrderTable.getId(), orderTable);
 
         // then
         assertThat(modifiedOrderTable.isEmpty()).isEqualTo(orderTable.isEmpty());
@@ -63,7 +63,7 @@ class TableServiceTest extends ServiceTest {
 
         // when & then
         assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> tableService.changeEmpty(0L, orderTable));
+                .isThrownBy(() -> orderTableService.changeEmpty(0L, orderTable));
     }
 
     @Test
@@ -76,7 +76,7 @@ class TableServiceTest extends ServiceTest {
 
         // when & then
         assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> tableService.changeEmpty(savedOrderTable.getId(), orderTable));
+                .isThrownBy(() -> orderTableService.changeEmpty(savedOrderTable.getId(), orderTable));
     }
 
     @Test
@@ -87,7 +87,7 @@ class TableServiceTest extends ServiceTest {
         OrderTable orderTable = new OrderTable(4);
 
         // when
-        OrderTable modifiedOrderTable = tableService.changeNumberOfGuests(savedOrderTable.getId(), orderTable);
+        OrderTable modifiedOrderTable = orderTableService.changeNumberOfGuests(savedOrderTable.getId(), orderTable);
 
         // then
         assertThat(modifiedOrderTable.getNumberOfGuests()).isEqualTo(orderTable.getNumberOfGuests());
@@ -102,7 +102,7 @@ class TableServiceTest extends ServiceTest {
 
         // when & then
         assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> tableService.changeNumberOfGuests(savedOrderTable.getId(), orderTable));
+                .isThrownBy(() -> orderTableService.changeNumberOfGuests(savedOrderTable.getId(), orderTable));
     }
 
     @Test
@@ -113,7 +113,7 @@ class TableServiceTest extends ServiceTest {
 
         // when & then
         assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> tableService.changeNumberOfGuests(0L, orderTable));
+                .isThrownBy(() -> orderTableService.changeNumberOfGuests(0L, orderTable));
     }
 
     @Test
@@ -125,6 +125,6 @@ class TableServiceTest extends ServiceTest {
 
         // when & then
         assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> tableService.changeNumberOfGuests(savedOrderTable.getId(), orderTable));
+                .isThrownBy(() -> orderTableService.changeNumberOfGuests(savedOrderTable.getId(), orderTable));
     }
 }

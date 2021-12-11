@@ -9,7 +9,7 @@ import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.ordertable.application.TableService;
+import kitchenpos.ordertable.application.OrderTableService;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
@@ -37,7 +37,7 @@ public abstract class ServiceTest {
     protected MenuService menuService;
 
     @Autowired
-    protected TableService tableService;
+    protected OrderTableService orderTableService;
 
     @Autowired
     protected TableGroupService tableGroupService;
@@ -63,7 +63,7 @@ public abstract class ServiceTest {
     }
 
     protected OrderTable 테이블_저장(boolean empty) {
-        return tableService.create(new OrderTable(2, empty));
+        return orderTableService.create(new OrderTable(2, empty));
     }
 
     protected TableGroup 테이블_그룹_저장() {
@@ -88,7 +88,7 @@ public abstract class ServiceTest {
     }
 
     protected OrderTable 테이블_조회(Long orderTableId) {
-        return tableService.list().stream()
+        return orderTableService.list().stream()
                 .filter(it -> it.getId().equals(orderTableId))
                 .findFirst()
                 .get();

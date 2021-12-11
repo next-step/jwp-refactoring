@@ -12,10 +12,10 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
-public class MenuGroupRestController {
+public class MenuGroupController {
     private final MenuGroupService menuGroupService;
 
-    public MenuGroupRestController(final MenuGroupService menuGroupService) {
+    public MenuGroupController(final MenuGroupService menuGroupService) {
         this.menuGroupService = menuGroupService;
     }
 
