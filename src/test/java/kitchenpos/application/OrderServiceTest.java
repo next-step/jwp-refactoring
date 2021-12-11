@@ -15,8 +15,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 import kitchenpos.application.menu.MenuService;
 import kitchenpos.application.order.OrderService;
@@ -34,7 +32,6 @@ import kitchenpos.domain.order.OrdersRepository;
 import kitchenpos.domain.order.OrderStatus;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class OrderServiceTest {
     @Mock
     private MenuService menuService;
@@ -98,8 +95,8 @@ public class OrderServiceTest {
         when(menuService.findById(this.뿌링클콤보.getId())).thenReturn(this.뿌링클콤보);
         when(orderTableRepository.findById(this.치킨_주문_단체테이블.getId())).thenReturn(Optional.of(this.치킨_주문_단체테이블));
         when(orderRepository.save(any(Orders.class))).thenReturn(this.치킨주문);
-        when(orderLineItemRepository.save(this.치킨_주문항목)).thenReturn(this.치킨_주문항목);
-
+        when(orderLineItemRepository.save(any(OrderLineItem.class))).thenReturn(this.치킨_주문항목);
+        
         this.치킨주문.changeOrderLineItems(List.of(this.치킨_주문항목));
         this.치킨주문.changeOrderTable(this.치킨_주문_단체테이블);
         this.치킨_주문_단체테이블.changeEmpty(false);
@@ -115,8 +112,6 @@ public class OrderServiceTest {
     @Test
     void exception_createOrder_emptyOrderedMenu() {
         // given
-        when(menuService.countByIdIn(List.of(this.뿌링클콤보.getId()))).thenReturn(0L);
-
         this.치킨주문.changeOrderLineItems(List.of(this.치킨_주문항목));
 
         // when
@@ -129,7 +124,6 @@ public class OrderServiceTest {
     @Test
     void exception_createOrder_notExistedOrderTable() {
         // given
-        when(menuService.countByIdIn(List.of(this.뿌링클콤보.getId()))).thenReturn(1L);
         when(orderTableRepository.findById(this.치킨_주문_단체테이블.getId())).thenReturn(Optional.empty());
 
         this.치킨주문.changeOrderLineItems(List.of(this.치킨_주문항목));

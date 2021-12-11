@@ -15,8 +15,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 import kitchenpos.application.menu.MenuService;
 import kitchenpos.application.product.ProductService;
@@ -31,7 +29,6 @@ import kitchenpos.domain.menu.MenuProductRepository;
 import kitchenpos.domain.menu.MenuRepository;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class MenuServiceTest {
     @Mock
     private MenuRepository menuRepository;
@@ -118,7 +115,6 @@ public class MenuServiceTest {
         when(productService.findById(this.뿌링클콤보_뿌링클치킨.getProduct().getId())).thenReturn(this.뿌링클치킨);
         when(productService.findById(this.뿌링클콤보_치킨무.getProduct().getId())).thenReturn(this.치킨무);
         when(productService.findById(this.뿌링클콤보_코카콜라.getProduct().getId())).thenReturn(this.코카콜라);
-        when(menuGroupRepository.existsById(this.치킨_메뉴그룹.getId())).thenReturn(true);
         when(productService.findById(this.코카콜라.getId())).thenThrow(IllegalArgumentException.class);
 
         // when
@@ -131,7 +127,6 @@ public class MenuServiceTest {
     @Test
     void exception_createMenu_productPriceSumGreaterThanMenuPrice() {
         // given
-        when(menuGroupRepository.existsById(this.치킨_메뉴그룹.getId())).thenReturn(true);
         when(productService.findById(this.뿌링클콤보_뿌링클치킨.getProduct().getId())).thenReturn(this.뿌링클치킨);
         when(productService.findById(this.뿌링클콤보_치킨무.getProduct().getId())).thenReturn(this.치킨무);
         when(productService.findById(this.뿌링클콤보_코카콜라.getProduct().getId())).thenReturn(this.코카콜라);

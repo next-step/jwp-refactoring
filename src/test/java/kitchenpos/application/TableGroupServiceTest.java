@@ -17,8 +17,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 import kitchenpos.application.order.OrderService;
 import kitchenpos.application.table.TableGroupService;
@@ -29,7 +27,6 @@ import kitchenpos.domain.table.TableGroupRepository;
 import kitchenpos.dto.TableGroupDto;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class TableGroupServiceTest {
     @Mock
     private OrderService orderService;
@@ -74,9 +71,7 @@ public class TableGroupServiceTest {
     @Test
     void exception_createTableGoup_notExistOrderTable() {
         // given
-        when(orderTableRepository.findAllByIdIn(List.of(this.치킨_주문_단체테이블.getId(), this.치킨2_주문_단체테이블.getId()))).thenReturn(List.of(this.치킨_주문_단체테이블, this.치킨2_주문_단체테이블));
-        when(tableGroupRepository.save(any(TableGroup.class))).thenReturn(this.단체주문테이블);
-        when(orderTableRepository.save(any(OrderTable.class))).thenReturn(null);
+        when(orderTableRepository.findAllByIdIn(anyList())).thenReturn(List.of(this.치킨_주문_단체테이블, this.치킨2_주문_단체테이블));
 
         this.단체주문테이블.changeOrderTables(null);
 
@@ -90,9 +85,7 @@ public class TableGroupServiceTest {
     @Test
     void exception_createTableGoup_underTwoCountOrderTable() {
         // given
-        when(orderTableRepository.findAllByIdIn(List.of(this.치킨_주문_단체테이블.getId(), this.치킨2_주문_단체테이블.getId()))).thenReturn(List.of(this.치킨_주문_단체테이블, this.치킨2_주문_단체테이블));
-        when(tableGroupRepository.save(any(TableGroup.class))).thenReturn(this.단체주문테이블);
-        when(orderTableRepository.save(any(OrderTable.class))).thenReturn(null);
+        when(orderTableRepository.findAllByIdIn(anyList())).thenReturn(List.of(this.치킨_주문_단체테이블, this.치킨2_주문_단체테이블));
 
         this.단체주문테이블.changeOrderTables(List.of(this.치킨_주문_단체테이블));
 

@@ -13,8 +13,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 import kitchenpos.application.product.ProductService;
 import kitchenpos.domain.Price;
@@ -23,7 +21,6 @@ import kitchenpos.domain.product.ProductRepository;
 import kitchenpos.dto.ProductDto;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class ProductServiceTest {
     @Mock
     private ProductRepository productRepository;
