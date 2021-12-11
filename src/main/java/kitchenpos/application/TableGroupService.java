@@ -5,17 +5,15 @@ import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.OrderTables;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.TableGroupRequest;
-import kitchenpos.dto.TableRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,26 +30,10 @@ public class TableGroupService {
 
     @Transactional
     public TableGroup create(final TableGroupRequest request) {
+        final List<Long> orderTableIds = request.getOrderTableIds();
+        final OrderTables savedOrderTables = new OrderTables(orderTableDao.findAllByIdIn(orderTableIds));
 
-        List<Long> orderTableIds = request.getOrderTables().stream()
-                .map(TableRequest::getId)
-                .collect(Collectors.toList());
-
-        if (CollectionUtils.isEmpty(orderTableIds) || orderTableIds.size() < 2) {
-            throw new IllegalArgumentException();
-        }
-
-        final List<OrderTable> savedOrderTables = orderTableDao.findAllByIdIn(orderTableIds);
-
-        if (orderTableIds.size() != savedOrderTables.size()) {
-            throw new IllegalArgumentException();
-        }
-
-        for (final OrderTable savedOrderTable : savedOrderTables) {
-            if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroup())) {
-                throw new IllegalArgumentException();
-            }
-        }
+        savedOrderTables.check(orderTableIds);
 
         TableGroup tableGroup = new TableGroup(LocalDateTime.now());
         tableGroup.addOrderTables(savedOrderTables);
