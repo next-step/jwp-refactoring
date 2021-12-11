@@ -43,19 +43,6 @@ class OrderTableTest {
                 OrderTable orderTable = new OrderTable(guestNumber, orderTableEmpty);
             }).isInstanceOf(IllegalArgumentException.class);
         }
-
-        @Test
-        @DisplayName("실패 - 주문 테이블이 비어있지 않음")
-        public void failOrderTableNotEmpty() {
-            // given
-            final int guestNumber = 1;
-            final boolean orderTableEmpty = false;
-
-            // when
-            assertThatThrownBy(() -> {
-                OrderTable orderTable = new OrderTable(guestNumber, orderTableEmpty);
-            }).isInstanceOf(IllegalArgumentException.class);
-        }
     }
 
 }

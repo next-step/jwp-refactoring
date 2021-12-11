@@ -9,7 +9,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static kitchenpos.utils.AcceptanceFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -24,11 +26,11 @@ class MenuProductAcceptanceTest extends AcceptanceTest {
 
 
     public static ExtractableResponse<Response> 메뉴_그룹_생성_요청(MenuGroupRequest menuGroupRequest) {
-        return post("/new/api/menu-groups", menuGroupRequest);
+        return post("/api/menu-groups", menuGroupRequest);
     }
 
     public static ExtractableResponse<Response> 메뉴_그룹_조회_요청() {
-        return get("/new/api/menu-groups");
+        return get("/api/menu-groups");
     }
 
     private void 메뉴_그룹_생성됨(ExtractableResponse<Response> actual) {
@@ -38,8 +40,16 @@ class MenuProductAcceptanceTest extends AcceptanceTest {
 
     private void 메뉴_그룹_조회됨(ExtractableResponse<Response> actual, MenuGroupResponse... expected) {
         List<MenuGroupResponse> response = actual.jsonPath().getList(".",MenuGroupResponse.class);
-        assertThat(response).contains(expected);
 
+        List<Long> responseIds = response.stream()
+                .map(MenuGroupResponse::getId)
+                .collect(Collectors.toList());
+
+        List<Long> expectedIds = Arrays.stream(expected)
+                .map(MenuGroupResponse::getId)
+                .collect(Collectors.toList());
+
+        assertThat(responseIds).containsAll(expectedIds);
     }
 
     @Nested

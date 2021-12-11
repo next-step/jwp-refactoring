@@ -44,7 +44,7 @@ class TableGroupMockitoTest {
         when(tableGroupRepository.save(any(TableGroup.class))).thenReturn(한식_양식_합석);
 
         // when
-        final TableGroupResponse actual = tableGroupService.saveTableGroup(TableGroupRequest.from(anyList()));
+        final TableGroupResponse actual = tableGroupService.saveTableGroup(TableGroupRequest.from(Lists.newArrayList(1L, 2L)));
 
         assertThat(actual).isNotNull();
     }
