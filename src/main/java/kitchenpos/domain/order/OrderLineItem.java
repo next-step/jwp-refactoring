@@ -17,7 +17,7 @@ public class OrderLineItem {
 
     @ManyToOne
     @JoinColumn(name = "order_id")
-    private Order order;
+    private Orders order;
 
     @ManyToOne
     @JoinColumn(name = "menu_id")
@@ -29,13 +29,13 @@ public class OrderLineItem {
 
     }
 
-    private OrderLineItem(Order order, Menu menu, long quantity) {
+    private OrderLineItem(Orders order, Menu menu, long quantity) {
         this.order = order;
         this.menu = menu;
         this.quantity = quantity;
     }
 
-    public static OrderLineItem of(Order order, Menu menu, long quantity) {
+    public static OrderLineItem of(Orders order, Menu menu, long quantity) {
         return new OrderLineItem(order, menu, quantity);
     }
 
@@ -43,7 +43,7 @@ public class OrderLineItem {
         return this.seq;
     }
 
-    public Order getOrder() {
+    public Orders getOrder() {
         return this.order;
     }
     public Menu getMenu() {
@@ -54,7 +54,7 @@ public class OrderLineItem {
         return this.quantity;
     }
 
-    public void changeOrder(Order order) {
+    public void changeOrder(Orders order) {
         this.order = order;
     }
 }

@@ -1,5 +1,7 @@
 package kitchenpos.presentation;
 
+import java.math.BigDecimal;
+
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 
@@ -10,8 +12,7 @@ import org.springframework.http.MediaType;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.Price;
-import kitchenpos.domain.product.Product;
+import kitchenpos.dto.ProductDto;
 import kitchenpos.testassistance.config.TestConfig;
 
 @DisplayName("상품 API기능에 관한")
@@ -20,7 +21,7 @@ public class ProductRestControllerTest extends TestConfig {
     @Test
     void save_product() {
         // given
-        Product product = Product.of("강정치킨", Price.of(17_000));
+        ProductDto product = ProductDto.of("강정치킨", BigDecimal.valueOf(17_000));
 
         // when
         ExtractableResponse<Response> response = 상품_저장요청(product);
@@ -43,7 +44,7 @@ public class ProductRestControllerTest extends TestConfig {
         Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
-    public static ExtractableResponse<Response> 상품_저장요청(Product product) {
+    public static ExtractableResponse<Response> 상품_저장요청(ProductDto product) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)

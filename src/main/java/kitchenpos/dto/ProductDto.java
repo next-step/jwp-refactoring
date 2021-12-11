@@ -24,6 +24,10 @@ public class ProductDto {
         return new ProductDto(id, name, price);
     }
 
+    public static ProductDto of(String name, BigDecimal price) {
+        return new ProductDto(null, name, price);
+    }
+
     public static ProductDto of(Product product) {
         return new ProductDto(product.getId(), product.getName(), BigDecimal.valueOf(product.getPrice().value()));
     }

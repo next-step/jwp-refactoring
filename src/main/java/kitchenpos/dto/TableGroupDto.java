@@ -32,6 +32,10 @@ public class TableGroupDto {
         return new TableGroupDto(id, createdDate, orderTables);
     }
 
+    public static TableGroupDto of(List<OrderTableDto> orderTables) {
+        return new TableGroupDto(null, null, orderTables);
+    }
+
     public static TableGroupDto of(TableGroup tableGroup) {
         if (tableGroup.getOrderTables() == null) {
             return new TableGroupDto(tableGroup.getId(), tableGroup.getCreatedDate(), null);

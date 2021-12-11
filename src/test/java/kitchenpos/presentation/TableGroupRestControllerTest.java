@@ -12,8 +12,8 @@ import org.springframework.http.MediaType;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.order.OrderTable;
-import kitchenpos.domain.table.TableGroup;
+import kitchenpos.dto.OrderTableDto;
+import kitchenpos.dto.TableGroupDto;
 import kitchenpos.testassistance.config.TestConfig;
 
 @DisplayName("단체지정 API기능에 관한")
@@ -22,9 +22,9 @@ public class TableGroupRestControllerTest extends TestConfig {
     @Test
     void save_product() {
         // given
-        List<OrderTable> orderTables = 반테이블들_조회됨();
+        List<OrderTableDto> orderTables = 반테이블들_조회됨();
 
-        TableGroup tableGroup = TableGroup.of(null, List.of(orderTables.get(0), orderTables.get(1)));
+        TableGroupDto tableGroup = TableGroupDto.of(List.of(orderTables.get(0), orderTables.get(1)));
 
         // when
         ExtractableResponse<Response> response = 단체지정_저장요청(tableGroup);
@@ -37,7 +37,7 @@ public class TableGroupRestControllerTest extends TestConfig {
     @Test
     void delete_product() {
         // given
-        TableGroup deletingTableGroup = 단제치정_생성();
+        TableGroupDto deletingTableGroup = 단제치정_생성();
 
         // when
         ExtractableResponse<Response> response = 단체지정_삭제요청(deletingTableGroup.getId());
@@ -46,16 +46,16 @@ public class TableGroupRestControllerTest extends TestConfig {
         단체지정_삭제됨(response);
     }
 
-    private TableGroup 단제치정_생성() {
-        List<OrderTable> orderTables = 반테이블들_조회됨();
+    private TableGroupDto 단제치정_생성() {
+        List<OrderTableDto> orderTables = 반테이블들_조회됨();
 
-        TableGroup tableGroup = TableGroup.of(null, List.of(orderTables.get(0), orderTables.get(1)));
+        TableGroupDto tableGroup = TableGroupDto.of(List.of(orderTables.get(0), orderTables.get(1)));
 
-        return 단체지정_저장요청(tableGroup).as(TableGroup.class);
+        return 단체지정_저장요청(tableGroup).as(TableGroupDto.class);
     }
-    private List<OrderTable> 반테이블들_조회됨() {
-        return List.of(TableRestControllerTest.주문테이블_조회요청().as(OrderTable[].class)).stream()
-                                .filter(OrderTable::isEmpty)
+    private List<OrderTableDto> 반테이블들_조회됨() {
+        return List.of(TableRestControllerTest.주문테이블_조회요청().as(OrderTableDto[].class)).stream()
+                                .filter(OrderTableDto::isEmpty)
                                 .collect(Collectors.toList());
     }
 
@@ -63,7 +63,7 @@ public class TableGroupRestControllerTest extends TestConfig {
         Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
-    public static ExtractableResponse<Response> 단체지정_저장요청(TableGroup tableGroup) {
+    public static ExtractableResponse<Response> 단체지정_저장요청(TableGroupDto tableGroup) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)

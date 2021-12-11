@@ -16,7 +16,7 @@ public class OrderTableDto {
 
     private OrderTableDto(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
         this.id = id;
-        this.tableGroupId = tableGroupId; 
+        this.tableGroupId = tableGroupId;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
     }
@@ -25,9 +25,25 @@ public class OrderTableDto {
         return new OrderTableDto(id, tableGroupId, numberOfGuests, empty);
     }
 
+    public static OrderTableDto of(Long tableGroupId, int numberOfGuests) {
+        if (numberOfGuests > 0) {
+            return new OrderTableDto(null, tableGroupId, numberOfGuests, false);
+        }
+
+        return new OrderTableDto(null, tableGroupId, numberOfGuests, true);
+    }
+
+    public static OrderTableDto of(int numberOfGuests) {
+        if (numberOfGuests > 0) {
+            return new OrderTableDto(null, null, numberOfGuests, false);
+        }
+
+        return new OrderTableDto(null, null, numberOfGuests, true);
+    }
+
     public static OrderTableDto of(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
         if (tableGroup == null ) {
-            return new OrderTableDto(id, null, numberOfGuests, empty);    
+            return new OrderTableDto(id, null, numberOfGuests, empty);
         }
 
         return new OrderTableDto(id, tableGroup.getId(), numberOfGuests, empty);
@@ -35,10 +51,14 @@ public class OrderTableDto {
 
     public static OrderTableDto of(OrderTable orderTable) {
         if (orderTable.getTableGroup() == null) {
-            return new OrderTableDto(orderTable.getId(), null, orderTable.getNumberOfGuests(), orderTable.getEmpty());    
+            return new OrderTableDto(orderTable.getId(), null, orderTable.getNumberOfGuests(), orderTable.getEmpty());
         }
 
         return new OrderTableDto(orderTable.getId(), orderTable.getTableGroup().getId(), orderTable.getNumberOfGuests(), orderTable.getEmpty());
+    }
+
+    public static OrderTableDto of(int numberOfGuests, boolean empty) {
+        return new OrderTableDto(null, null, numberOfGuests, empty);
     }
 
     public Long getId() {
@@ -61,6 +81,21 @@ public class OrderTableDto {
         return this.empty;
     }
 
+    public void changeNumberOfGuests(int numberOfGuests) {
+        this.numberOfGuests = numberOfGuests;
+
+        if (numberOfGuests < 1) {
+           this.empty = true;
+           return;
+        }
+
+        this.empty = false;
+    }
+
+    public void changeEmpty(boolean empty) {
+        this.empty = empty;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == this)
@@ -76,5 +111,4 @@ public class OrderTableDto {
     public int hashCode() {
         return Objects.hash(id, tableGroupId, numberOfGuests, empty);
     }
-
 }

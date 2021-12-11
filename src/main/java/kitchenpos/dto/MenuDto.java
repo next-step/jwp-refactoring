@@ -36,7 +36,15 @@ public class MenuDto {
         return new MenuDto(id, name, price, menuGroupId, menuProducts);
     }
 
+    public static MenuDto of(String name, BigDecimal price, Long menuGroupId, List<MenuProductDto> menuProducts) {
+        return new MenuDto(null, name, price, menuGroupId, menuProducts);
+    }
+
     public static MenuDto of(Menu menu) {
+        if (menu.getMenuGroup() == null) {
+            return new MenuDto(menu.getId(), menu.getName(), BigDecimal.valueOf(menu.getPrice().value()), menu.getMenuGroup().getId(), null);
+        }
+
         if (menu.getMenuGroup() == null) {
             return new MenuDto(menu.getId(), menu.getName(), BigDecimal.valueOf(menu.getPrice().value()), null, menu.getMenuProducts().stream()
                                                                                                                     .map(MenuProductDto::of)
@@ -85,6 +93,14 @@ public class MenuDto {
     @Override
     public int hashCode() {
         return Objects.hash(id, name, price, menuGroupId, menuProducts);
+    }
+
+    public void chnageMenuGroup(MenuGroupDto menuGroupDto) {
+        this.menuGroupId = menuGroupDto.getId();
+    }
+
+    public void changeMenuProducts(List<MenuProductDto> menuProducts) {
+        this.menuProducts = menuProducts;
     }
 
 }

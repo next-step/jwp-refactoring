@@ -9,7 +9,7 @@ import org.springframework.http.MediaType;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.menu.MenuGroup;
+import kitchenpos.dto.MenuGroupDto;
 import kitchenpos.testassistance.config.TestConfig;
 
 @DisplayName("메뉴그룹 API기능에 관한")
@@ -28,7 +28,7 @@ public class MenuGroupRestControllerTest extends TestConfig {
     @Test
     void save_menuGroup() {
         // given
-        MenuGroup menuGroup = MenuGroup.of("테스트 메뉴");
+        MenuGroupDto menuGroup = MenuGroupDto.of("테스트 메뉴");
 
         // when
         ExtractableResponse<Response> response = 메뉴그룹_저장(menuGroup);
@@ -47,7 +47,7 @@ public class MenuGroupRestControllerTest extends TestConfig {
         Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
-    public static ExtractableResponse<Response> 메뉴그룹_저장(MenuGroup menuGroup) {
+    public static ExtractableResponse<Response> 메뉴그룹_저장(MenuGroupDto menuGroup) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)

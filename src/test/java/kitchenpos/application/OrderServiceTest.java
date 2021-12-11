@@ -24,10 +24,10 @@ import kitchenpos.dto.OrderDto;
 import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menu.MenuProduct;
 import kitchenpos.domain.menu.MenuRepository;
-import kitchenpos.domain.order.Order;
+import kitchenpos.domain.order.Orders;
 import kitchenpos.domain.order.OrderLineItem;
 import kitchenpos.domain.order.OrderLineItemRepository;
-import kitchenpos.domain.order.OrderRepository;
+import kitchenpos.domain.order.OrdersRepository;
 import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.domain.order.OrderTable;
 import kitchenpos.domain.order.OrderTableRepository;
@@ -39,7 +39,7 @@ public class OrderServiceTest {
     private MenuRepository menuRepository;
 
     @Mock
-    private OrderRepository orderRepository;
+    private OrdersRepository orderRepository;
 
     @Mock
     private OrderLineItemRepository orderLineItemRepository;
@@ -61,7 +61,7 @@ public class OrderServiceTest {
     private Product 코카콜라;
 
     private OrderTable 치킨_주문_단체테이블;
-    private Order 치킨주문;
+    private Orders 치킨주문;
     private OrderLineItem 치킨_주문항목;
 
     @BeforeEach
@@ -83,7 +83,7 @@ public class OrderServiceTest {
         치킨_주문항목 = OrderLineItem.of(null, 뿌링클콤보, 1L);
         
 
-        치킨주문 = Order.of(치킨_주문_단체테이블, null, LocalDateTime.now(), List.of(치킨_주문항목));
+        치킨주문 = Orders.of(치킨_주문_단체테이블, null, LocalDateTime.now(), List.of(치킨_주문항목));
 
         치킨_주문항목.changeOrder(치킨주문);
         
@@ -96,7 +96,7 @@ public class OrderServiceTest {
         when(menuRepository.countByIdIn(List.of(this.뿌링클콤보.getId()))).thenReturn(1L);
         when(menuRepository.findById(this.뿌링클콤보.getId())).thenReturn(Optional.of(this.뿌링클콤보));
         when(orderTableRepository.findById(this.치킨_주문_단체테이블.getId())).thenReturn(Optional.of(this.치킨_주문_단체테이블));
-        when(orderRepository.save(any(Order.class))).thenReturn(this.치킨주문);
+        when(orderRepository.save(any(Orders.class))).thenReturn(this.치킨주문);
         when(orderLineItemRepository.save(this.치킨_주문항목)).thenReturn(this.치킨_주문항목);
 
         this.치킨주문.changeOrderLineItems(List.of(this.치킨_주문항목));
@@ -104,7 +104,7 @@ public class OrderServiceTest {
         this.치킨_주문_단체테이블.changeEmpty(false);
 
         // when
-        Order savedOrder = orderService.create(OrderDto.of(this.치킨주문));
+        Orders savedOrder = orderService.create(OrderDto.of(this.치킨주문));
 
         // then
         Assertions.assertThat(savedOrder).isEqualTo(this.치킨주문);
@@ -165,7 +165,7 @@ public class OrderServiceTest {
         when(orderLineItemRepository.findAllByOrderId(this.치킨주문.getId())).thenReturn(List.of(this.치킨_주문항목));
 
         // when
-        List<Order> orders = orderService.list();
+        List<Orders> orders = orderService.list();
 
         // then
         Assertions.assertThat(orders).isEqualTo(List.of(this.치킨주문));
@@ -180,7 +180,7 @@ public class OrderServiceTest {
         this.치킨주문.changeOrderStatus(OrderStatus.MEAL);
 
         // when
-        Order chagedOrder = orderService.changeOrderStatus(this.치킨주문.getId(), OrderDto.of(this.치킨주문));
+        Orders chagedOrder = orderService.changeOrderStatus(this.치킨주문.getId(), OrderDto.of(this.치킨주문));
 
         // then
         Assertions.assertThat(chagedOrder).isEqualTo(this.치킨주문);

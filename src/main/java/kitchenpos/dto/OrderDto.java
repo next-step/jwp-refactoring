@@ -4,7 +4,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import kitchenpos.domain.order.Order;
+import kitchenpos.domain.order.Orders;
+import kitchenpos.domain.order.OrderStatus;
 
 public class OrderDto {
     private Long id;
@@ -28,7 +29,11 @@ public class OrderDto {
         return new OrderDto(id, orderTableId, orderStatus, orderedTime, orderLineItems);
     }
 
-    public static OrderDto of(Order order) {
+    public static OrderDto of(Long orderTableId, String orderStatus, LocalDateTime orderedTime, List<OrderLineItemDto> orderLineItems) {
+        return new OrderDto(null, orderTableId, orderStatus, orderedTime, orderLineItems);
+    }
+
+    public static OrderDto of(Orders order) {
         List<OrderLineItemDto> tempOrderLineItems = order.getOrderLineItems().stream()
                                                             .map(OrderLineItemDto::of)
                                                             .collect(Collectors.toList());
@@ -58,5 +63,9 @@ public class OrderDto {
 
     public List<OrderLineItemDto> getOrderLineItems() {
         return this.orderLineItems;
+    }
+
+    public void changeOrderStatus(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus.name();
     }
 }

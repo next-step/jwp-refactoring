@@ -2,9 +2,6 @@ package kitchenpos.presentation;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,7 +11,7 @@ import org.springframework.http.MediaType;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.order.OrderTable;
+import kitchenpos.dto.OrderTableDto;
 import kitchenpos.testassistance.config.TestConfig;
 
 @DisplayName("주문테이블 API기능에 관한")
@@ -23,7 +20,7 @@ public class TableRestControllerTest extends TestConfig {
     @Test
     void save_table() {
         // given
-        OrderTable orderTable = OrderTable.of(null, 2);
+        OrderTableDto orderTable = OrderTableDto.of(2);
 
         // when
         ExtractableResponse<Response> response = 주문테이블_저장요청(orderTable);
@@ -46,14 +43,14 @@ public class TableRestControllerTest extends TestConfig {
     @Test
     void update_table() {
         // given
-        OrderTable orderTable = OrderTable.of(null, 0);
-        orderTable.changeEmpty(false);
+        OrderTableDto orderTable = OrderTableDto.of(10, false);
 
         // when
-        OrderTable savedOrderTable = TableRestControllerTest.주문테이블_저장요청(orderTable).as(OrderTable.class);
+        OrderTableDto savedOrderTable = TableRestControllerTest.주문테이블_저장요청(orderTable).as(OrderTableDto.class);
 
         // given
-        savedOrderTable.changeNumberOfGuests(10);
+        savedOrderTable.changeNumberOfGuests(0);
+        savedOrderTable.changeEmpty(true);
 
         // when
         ExtractableResponse<Response> response = 주문테이블_빈테이블_변경요청(savedOrderTable);
@@ -66,31 +63,24 @@ public class TableRestControllerTest extends TestConfig {
     @Test
     void update_tableForNumberOfGuests() {
         // given
-        List<OrderTable> orderTables = 빈테이블_조회();
+        OrderTableDto orderTable = OrderTableDto.of(10, false);
 
         // when
-        OrderTable orderTable = orderTables.get(0);
-        
-        orderTable.changeNumberOfGuests(2);
-        ExtractableResponse<Response> response = 주문테이블_고객수_변경요청(orderTable);
+        OrderTableDto savedOrderTable = TableRestControllerTest.주문테이블_저장요청(orderTable).as(OrderTableDto.class);
+        savedOrderTable.changeNumberOfGuests(2);
+        ExtractableResponse<Response> response = 주문테이블_고객수_변경요청(savedOrderTable);
 
         // then
         주문테이블_고객수_변경됨(response);
     }
 
-    private List<OrderTable> 빈테이블_조회() {
-        return List.of(주문테이블_조회요청().as(OrderTable[].class)).stream()
-                    .filter(OrderTable::isEmpty)
-                    .collect(Collectors.toList());
-    }
-
     private void 주문테이블_저장됨(ExtractableResponse<Response> response) {
         Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-        Assertions.assertThat(response.as(OrderTable.class).getNumberOfGuests()).isEqualTo(2);
-        Assertions.assertThat(response.as(OrderTable.class).isEmpty()).isEqualTo(false);
+        Assertions.assertThat(response.as(OrderTableDto.class).getNumberOfGuests()).isEqualTo(2);
+        Assertions.assertThat(response.as(OrderTableDto.class).isEmpty()).isEqualTo(false);
     }
 
-    public static ExtractableResponse<Response> 주문테이블_저장요청(OrderTable orderTable) {
+    public static ExtractableResponse<Response> 주문테이블_저장요청(OrderTableDto orderTable) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -116,11 +106,11 @@ public class TableRestControllerTest extends TestConfig {
     private void 주문테이블_빈테이블_변경됨(ExtractableResponse<Response> response) {
         assertAll(
             () -> Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-            () -> Assertions.assertThat(response.as(OrderTable.class).isEmpty()).isTrue()
+            () -> Assertions.assertThat(response.as(OrderTableDto.class).isEmpty()).isTrue()
         );
     }
 
-    public static ExtractableResponse<Response> 주문테이블_빈테이블_변경요청(OrderTable orderTable) {
+    public static ExtractableResponse<Response> 주문테이블_빈테이블_변경요청(OrderTableDto orderTable) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -133,11 +123,11 @@ public class TableRestControllerTest extends TestConfig {
     private void 주문테이블_고객수_변경됨(ExtractableResponse<Response> response) {
         assertAll(
             () -> Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-            () -> Assertions.assertThat(response.as(OrderTable.class).getNumberOfGuests()).isEqualTo(2)
+            () -> Assertions.assertThat(response.as(OrderTableDto.class).getNumberOfGuests()).isEqualTo(2)
         );
     }
 
-    public static ExtractableResponse<Response> 주문테이블_고객수_변경요청(OrderTable orderTable) {
+    public static ExtractableResponse<Response> 주문테이블_고객수_변경요청(OrderTableDto orderTable) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)

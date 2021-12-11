@@ -44,6 +44,10 @@ public class OrderTable {
         return new OrderTable(id, tableGroup, numberOfGuests, empty);
     }
 
+    public static OrderTable of(int numberOfGuests, boolean empty) {
+        return new OrderTable(null, null, numberOfGuests, empty);
+    }
+
     public Long getId() {
         return this.id;
     }
@@ -78,4 +82,5 @@ public class OrderTable {
     public boolean hasTableGroup() {
         return tableGroup != null;
     }
+
 }

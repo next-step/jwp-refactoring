@@ -8,40 +8,50 @@ import kitchenpos.domain.product.Product;
 
 public class MenuProductDto {
     private Long seq;
-    private Menu menu;
+    private Long menuId;
     private Long productId;
     private long quantity;
 
     protected MenuProductDto() {
     }
 
-    private MenuProductDto(Long seq, Menu menu, Product product, long quantity) {
+    private MenuProductDto(Long seq, Long menuId, Long productId, long quantity) {
         this.seq = seq;
-        this.menu = menu;
+        this.menuId = menuId;
         this.quantity = quantity;
-        
-        if (product == null) {
-            this.productId = null;
-            return;
-        }
-
-        this.productId = product.getId();
+        this.productId = productId;
     }
 
     public static MenuProductDto of(Long seq, Menu menu, Product product, long quantity) {
-        return new MenuProductDto(seq, menu, product, quantity);
+        if (product == null) {
+            return new MenuProductDto(seq, menu.getId(), null, quantity);
+        }
+        
+        return new MenuProductDto(seq, menu.getId(), product.getId(), quantity);
+    }
+
+    public static MenuProductDto of(Long menuId, Long productId, long quantity) {
+        return new MenuProductDto(null, menuId, productId, quantity);
+    }
+
+    public static MenuProductDto of(Long seq, Long menuId, Long productId, long quantity) {
+        return new MenuProductDto(seq, menuId, productId, quantity);
     }
 
     public static MenuProductDto of(MenuProduct menuProduct) {
-        return new MenuProductDto(menuProduct.getSeq(), menuProduct.getMenu(), menuProduct.getProduct(), menuProduct.getQuantity());
+        if (menuProduct.getMenu() == null) {
+            return new MenuProductDto(menuProduct.getSeq(), null, menuProduct.getProduct().getId(), menuProduct.getQuantity());
+        }
+
+        return new MenuProductDto(menuProduct.getSeq(), menuProduct.getMenu().getId(), menuProduct.getProduct().getId(), menuProduct.getQuantity());
     }
     
     public Long getSeq() {
         return this.seq;
     }
 
-    public Menu getMenu() {
-        return this.menu;
+    public Long getMenuId() {
+        return this.menuId;
     }
 
     public Long getProductId() {
@@ -60,11 +70,12 @@ public class MenuProductDto {
             return false;
         }
         MenuProductDto menuProductDto = (MenuProductDto) o;
-        return Objects.equals(seq, menuProductDto.seq) && Objects.equals(menu, menuProductDto.menu) && Objects.equals(productId, menuProductDto.productId) && quantity == menuProductDto.quantity;
+        return Objects.equals(seq, menuProductDto.seq) && Objects.equals(menuId, menuProductDto.menuId) && Objects.equals(productId, menuProductDto.productId) && quantity == menuProductDto.quantity;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(seq, menu, productId, quantity);
+        return Objects.hash(seq, menuId, productId, quantity);
     }
+
 }

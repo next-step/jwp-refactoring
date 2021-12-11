@@ -3,7 +3,7 @@ package kitchenpos.application;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kitchenpos.domain.order.OrderRepository;
+import kitchenpos.domain.order.OrdersRepository;
 import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.domain.order.OrderTable;
 import kitchenpos.domain.order.OrderTableRepository;
@@ -14,17 +14,17 @@ import java.util.List;
 
 @Service
 public class TableService {
-    private final OrderRepository orderRepository;
+    private final OrdersRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
 
-    public TableService(final OrderRepository orderRepository, final OrderTableRepository orderTableRepository) {
+    public TableService(final OrdersRepository orderRepository, final OrderTableRepository orderTableRepository) {
         this.orderRepository = orderRepository;
         this.orderTableRepository = orderTableRepository;
     }
 
     @Transactional
     public OrderTableDto create(final OrderTableDto orderTable) {
-        return OrderTableDto.of(orderTableRepository.save(OrderTable.of(null, orderTable.getNumberOfGuests())));
+        return OrderTableDto.of(orderTableRepository.save(OrderTable.of(orderTable.getNumberOfGuests(), orderTable.getEmpty())));
     }
 
     @Transactional(readOnly = true)
@@ -50,7 +50,7 @@ public class TableService {
     }
 
     private void checkOrderStatusOfOrderTable(final Long orderTableId) {
-        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
+        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
             throw new IllegalArgumentException();
         }
     }

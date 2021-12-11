@@ -20,7 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
-import kitchenpos.domain.order.OrderRepository;
+import kitchenpos.domain.order.OrdersRepository;
 import kitchenpos.domain.order.OrderTable;
 import kitchenpos.domain.order.OrderTableRepository;
 import kitchenpos.domain.table.TableGroup;
@@ -31,7 +31,7 @@ import kitchenpos.dto.TableGroupDto;
 @MockitoSettings(strictness = Strictness.LENIENT)
 public class TableGroupServiceTest {
     @Mock
-    private OrderRepository orderRepository;
+    private OrdersRepository orderRepository;
 
     @Mock
     private OrderTableRepository orderTableRepository;

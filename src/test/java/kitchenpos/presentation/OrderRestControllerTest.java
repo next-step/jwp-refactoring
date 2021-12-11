@@ -13,11 +13,11 @@ import org.springframework.http.MediaType;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.menu.Menu;
-import kitchenpos.domain.order.Order;
-import kitchenpos.domain.order.OrderLineItem;
 import kitchenpos.domain.order.OrderStatus;
-import kitchenpos.domain.order.OrderTable;
+import kitchenpos.dto.MenuDto;
+import kitchenpos.dto.OrderDto;
+import kitchenpos.dto.OrderLineItemDto;
+import kitchenpos.dto.OrderTableDto;
 import kitchenpos.testassistance.config.TestConfig;
 
 @DisplayName("주문 API기능에 관한")
@@ -26,7 +26,7 @@ public class OrderRestControllerTest extends TestConfig {
     @Test
     void save_order() {
         // given
-        Order order = 저장될_주문생성();
+        OrderDto order = 저장될_주문생성();
 
         // when
         ExtractableResponse<Response> response = 주문_저장요청(order);
@@ -49,10 +49,10 @@ public class OrderRestControllerTest extends TestConfig {
     @Test
     void update_orderState() {
         // given
-        Order order = 저장될_주문생성();
+        OrderDto order = 저장될_주문생성();
 
         // when
-        Order createdOrder = 주문_저장요청(order).as(Order.class);
+        OrderDto createdOrder = 주문_저장요청(order).as(OrderDto.class);
 
         // given
         createdOrder.changeOrderStatus(OrderStatus.MEAL);
@@ -64,32 +64,32 @@ public class OrderRestControllerTest extends TestConfig {
         주문_상태변경됨(response);
     }
 
-    private Order 저장될_주문생성() {
-        OrderTable orderTable = 반테이블들_조회됨().get(0);
+    private OrderDto 저장될_주문생성() {
+        OrderTableDto orderTable = 반테이블들_조회됨().get(0);
         orderTable.changeNumberOfGuests(10);
 
-        OrderTable changedOrderTable = TableRestControllerTest.주문테이블_빈테이블_변경요청(orderTable).as(OrderTable.class);
+        OrderTableDto changedOrderTable = TableRestControllerTest.주문테이블_빈테이블_변경요청(orderTable).as(OrderTableDto.class);
 
-        Menu[] menus = MenuRestControllerTest.메뉴_조회요청().as(Menu[].class);
+        MenuDto[] menus = MenuRestControllerTest.메뉴_조회요청().as(MenuDto[].class);
 
-        List<OrderLineItem> orderLineItems = 주문명세서_생성(List.of(menus[0], menus[1]));
+        List<OrderLineItemDto> orderLineItems = 주문명세서_생성(List.of(menus[0], menus[1]));
 
-        return Order.of(changedOrderTable, null, null, orderLineItems);
+        return OrderDto.of(changedOrderTable.getId(), "", null, orderLineItems);
     }
 
-    private List<OrderLineItem> 주문명세서_생성(List<Menu> menus) {
-        List<OrderLineItem> orderLineItems = new ArrayList<>();
+    private List<OrderLineItemDto> 주문명세서_생성(List<MenuDto> menus) {
+        List<OrderLineItemDto> orderLineItems = new ArrayList<>();
 
-        for (final Menu menu : menus) {
-            orderLineItems.add(OrderLineItem.of(null, menu, 1L));
+        for (final MenuDto menu : menus) {
+            orderLineItems.add(OrderLineItemDto.of(null, menu.getId(), 1L));
         }
 
         return orderLineItems;
     }
 
-    private List<OrderTable> 반테이블들_조회됨() {
-        return List.of(TableRestControllerTest.주문테이블_조회요청().as(OrderTable[].class)).stream()
-                                .filter(OrderTable::isEmpty)
+    private List<OrderTableDto> 반테이블들_조회됨() {
+        return List.of(TableRestControllerTest.주문테이블_조회요청().as(OrderTableDto[].class)).stream()
+                                .filter(OrderTableDto::isEmpty)
                                 .collect(Collectors.toList());
     }
 
@@ -97,7 +97,7 @@ public class OrderRestControllerTest extends TestConfig {
         Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
-    public static ExtractableResponse<Response> 주문_저장요청(Order order) {
+    public static ExtractableResponse<Response> 주문_저장요청(OrderDto order) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -124,7 +124,7 @@ public class OrderRestControllerTest extends TestConfig {
         Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    public static ExtractableResponse<Response> 주문_상태변경요청(Order order) {
+    public static ExtractableResponse<Response> 주문_상태변경요청(OrderDto order) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
