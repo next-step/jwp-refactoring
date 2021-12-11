@@ -25,6 +25,17 @@ public class TableGroup {
         this.orderTables = orderTables;
     }
 
+    public TableGroup(LocalDateTime createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    public void addOrderTables(List<OrderTable> orderTables) {
+        for (final OrderTable savedOrderTable : orderTables) {
+            savedOrderTable.group(this);
+        }
+        this.orderTables = orderTables;
+    }
+
     public Long getId() {
         return id;
     }

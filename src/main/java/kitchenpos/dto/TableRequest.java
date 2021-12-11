@@ -4,6 +4,8 @@ import kitchenpos.domain.OrderTable;
 
 public class TableRequest {
 
+    private Long id;
+
     private int numberOfGuests;
 
     private boolean empty;
@@ -13,6 +15,10 @@ public class TableRequest {
     }
 
     public TableRequest() {
+    }
+
+    public TableRequest(Long id) {
+        this.id = id;
     }
 
     public TableRequest(int numberOfGuests, boolean empty) {
@@ -26,5 +32,9 @@ public class TableRequest {
 
     public boolean isEmpty() {
         return empty;
+    }
+
+    public Long getId() {
+        return id;
     }
 }
