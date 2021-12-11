@@ -74,7 +74,7 @@ public class MenuRestControllerTest extends TestConfig {
         ProductDto product = ProductRestControllerTest.상품_조회요청().as(ProductDto[].class)[0];
         MenuGroupDto menuGroup = MenuGroupRestControllerTest.메뉴그룹_조회().as(MenuGroupDto[].class)[0];
 
-        MenuProductDto menuProduct = MenuProductDto.of(null, null, product.getId(), 2);
+        MenuProductDto menuProduct = MenuProductDto.of(product.getId(), 2);
 
         MenuDto menu = MenuDto.of(null, "후라이드+후라이드", BigDecimal.valueOf(19_000), menuGroup.getId(), List.of(menuProduct));
         return menu;

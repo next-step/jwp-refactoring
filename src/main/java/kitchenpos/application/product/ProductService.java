@@ -1,7 +1,9 @@
 package kitchenpos.application.product;
 
+import kitchenpos.domain.Price;
 import kitchenpos.domain.product.Product;
 import kitchenpos.domain.product.ProductRepository;
+import kitchenpos.dto.MenuProductDto;
 import kitchenpos.dto.ProductDto;
 
 import org.springframework.stereotype.Service;
@@ -31,5 +33,17 @@ public class ProductService {
 
     public Product findById(Long productId) {
         return productRepository.findById(productId).orElseThrow(IllegalArgumentException::new);
+    }
+
+    public Price sumOfPrices(final List<MenuProductDto> menuProducts) {
+        Price sum = Price.of(0);
+
+        for (final MenuProductDto menuProduct : menuProducts) {
+            final Product product = productRepository.findById(menuProduct.getProductId()).orElseThrow(IllegalArgumentException::new);
+
+            sum = sum.add(product.getPrice().multiply(menuProduct.getQuantity()));
+        }
+
+        return sum;
     }
 }

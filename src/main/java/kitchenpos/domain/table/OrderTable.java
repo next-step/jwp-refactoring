@@ -31,15 +31,35 @@ public class OrderTable {
     }
 
     public static OrderTable of(TableGroup tableGroup, int numberOfGuests) {
+        if (numberOfGuests > 0) {
+            return new OrderTable(null, tableGroup, numberOfGuests, false);
+        }
+
         return new OrderTable(null, tableGroup, numberOfGuests, true);
     }
 
     public static OrderTable of(Long id, TableGroup tableGroup, int numberOfGuests) {
+        if (numberOfGuests > 0) {
+            return new OrderTable(id, tableGroup, numberOfGuests, false);
+        }
+
         return new OrderTable(id, tableGroup, numberOfGuests, true);
+    }
+
+    public static OrderTable of(Long id, int numberOfGuests) {
+        if (numberOfGuests > 0) {
+            return new OrderTable(id, null, numberOfGuests, false);
+        }
+
+        return new OrderTable(id, null, numberOfGuests, true);
     }
 
     public static OrderTable of(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
         return new OrderTable(id, tableGroup, numberOfGuests, empty);
+    }
+
+    public static OrderTable of(Long id, int numberOfGuests, boolean empty) {
+        return new OrderTable(id, null, numberOfGuests, empty);
     }
 
     public static OrderTable of(int numberOfGuests, boolean empty) {

@@ -45,9 +45,9 @@ public class TableServiceTest {
 
     @BeforeEach
     void setUp() {
-        치킨_주문_단체테이블 = OrderTable.of(1L, null, 0);
-        치킨2_주문_단체테이블 = OrderTable.of(2L, null, 0);
-        치킨_주문_개인테이블 =  OrderTable.of(3L, null, 0);
+        치킨_주문_단체테이블 = OrderTable.of(1L, 0);
+        치킨2_주문_단체테이블 = OrderTable.of(2L, 0);
+        치킨_주문_개인테이블 =  OrderTable.of(3L, 0);
 
         단체주문테이블 = TableGroup.of(LocalDateTime.now(), List.of(치킨_주문_단체테이블, 치킨2_주문_단체테이블));
     }

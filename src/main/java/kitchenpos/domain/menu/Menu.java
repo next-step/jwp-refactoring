@@ -44,9 +44,21 @@ public class Menu {
     public static Menu of(String name, Price price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
         return new Menu(null, name, price, menuGroup, menuProducts);
     }
+
+    public static Menu of(String name, Price price, MenuGroup menuGroup) {
+        return new Menu(null, name, price, menuGroup, null);
+    }
+
+    public static Menu of(String name, Price price) {
+        return new Menu(null, name, price, null, null);
+    }
     
     public static Menu of(Long id, String name, Price price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
         return new Menu(id, name, price, menuGroup, menuProducts);
+    }
+
+    public static Menu of(Long id, String name, Price price) {
+        return new Menu(id, name, price, null, null);
     }
 
     public Long getId() {

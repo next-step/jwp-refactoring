@@ -76,7 +76,7 @@ public class MenuDto {
     }
 
     public Menu toMenu() {
-        return Menu.of(this.id, this.name, Price.of(this.price), null, null);
+        return Menu.of(this.id, this.name, Price.of(this.price));
     }
 
     @Override

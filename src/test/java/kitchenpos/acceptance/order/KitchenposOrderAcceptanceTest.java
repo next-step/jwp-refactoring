@@ -113,7 +113,7 @@ public class KitchenposOrderAcceptanceTest extends TestConfig {
     }
 
     private OrderLineItemDto 주문항목_생성(final MenuDto menu) {
-        return OrderLineItemDto.of(null, menu.getId(), 1L);
+        return OrderLineItemDto.of(menu.getId(), 1L);
     }
 
     private OrderDto 테이블_주문요청(OrderTableDto orderTable, List<OrderLineItemDto> OrderSpecification) {
@@ -124,7 +124,7 @@ public class KitchenposOrderAcceptanceTest extends TestConfig {
     }
 
     private OrderDto 주문_생성(OrderTableDto orderTable, List<OrderLineItemDto> OrderSpecification) {
-        return OrderDto.of(orderTable.getId(), "", null, OrderSpecification);
+        return OrderDto.of(orderTable.getId(), OrderSpecification);
     }
 
     private OrderTableDto 테이블에_손님이앉음(int numberOfGuests) {

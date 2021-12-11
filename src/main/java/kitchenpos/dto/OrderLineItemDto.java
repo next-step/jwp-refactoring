@@ -29,6 +29,10 @@ public class OrderLineItemDto {
         return new OrderLineItemDto(null, orderId, menuId, quantity);
     }
 
+    public static OrderLineItemDto of(Long menuId, long quantity) {
+        return new OrderLineItemDto(null, null, menuId, quantity);
+    }
+
     public static OrderLineItemDto of(OrderLineItem orderLineItem) {
         return new OrderLineItemDto(orderLineItem.getSeq(), orderLineItem.getOrder().getId(), orderLineItem.getMenu().getId(), orderLineItem.getQuantity());
     }

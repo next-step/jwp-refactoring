@@ -44,7 +44,7 @@ public class MenuService {
 
         MenuGroup menuGroup = menuGroupRepository.findById(menu.getMenuGroupId()).orElseThrow(IllegalArgumentException::new);
         
-        final Menu savedMenu = menuRepository.save(Menu.of(menu.getName(), Price.of(menu.getPrice()), menuGroup, null));
+        final Menu savedMenu = menuRepository.save(Menu.of(menu.getName(), Price.of(menu.getPrice()), menuGroup));
         final List<MenuProduct> savedMenuProducts = saveMenuProduct(savedMenu, menu.getMenuProducts());
 
         savedMenu.changeMenuProducts(savedMenuProducts);
@@ -57,23 +57,11 @@ public class MenuService {
     }
 
     private void checkMenuPrice(final Price menuPrice, final List<MenuProductDto> menuProducts) {
-        Price sumOfProductsPrice = sumOfProductPrice(menuProducts);
+        Price sumOfProductsPrice = productService.sumOfPrices(menuProducts);
 
         if (menuPrice.compareTo(sumOfProductsPrice) > 0) {
             throw new IllegalArgumentException();
         }
-    }
-
-    private Price sumOfProductPrice(final List<MenuProductDto> menuProducts) {
-        Price sum = Price.of(0);
-
-        for (final MenuProductDto menuProduct : menuProducts) {
-            final Product product = productService.findById(menuProduct.getProductId());
-
-            sum = sum.add(product.getPrice().multiply(menuProduct.getQuantity()));
-        }
-
-        return sum;
     }
 
     private List<MenuProduct> saveMenuProduct(Menu savedMenu,  List<MenuProductDto> menuProducts) {

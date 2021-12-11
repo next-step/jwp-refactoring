@@ -47,7 +47,7 @@ public class OrderService {
 
         validationOfCreate(orderTable, orderLineItems);
 
-        final Orders savedOrder = orderRepository.save(Orders.of(orderTable, OrderStatus.COOKING, LocalDateTime.now(), null));
+        final Orders savedOrder = orderRepository.save(Orders.of(orderTable, OrderStatus.COOKING, LocalDateTime.now()));
         final List<OrderLineItem> savedOrderLineItems = saveOrderLineItem(savedOrder, orderLineItems);
 
         savedOrder.changeOrderLineItems(savedOrderLineItems);

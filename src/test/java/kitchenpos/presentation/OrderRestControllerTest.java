@@ -74,14 +74,14 @@ public class OrderRestControllerTest extends TestConfig {
 
         List<OrderLineItemDto> orderLineItems = 주문명세서_생성(List.of(menus[0], menus[1]));
 
-        return OrderDto.of(changedOrderTable.getId(), "", null, orderLineItems);
+        return OrderDto.of(changedOrderTable.getId(), orderLineItems);
     }
 
     private List<OrderLineItemDto> 주문명세서_생성(List<MenuDto> menus) {
         List<OrderLineItemDto> orderLineItems = new ArrayList<>();
 
         for (final MenuDto menu : menus) {
-            orderLineItems.add(OrderLineItemDto.of(null, menu.getId(), 1L));
+            orderLineItems.add(OrderLineItemDto.of(menu.getId(), 1L));
         }
 
         return orderLineItems;

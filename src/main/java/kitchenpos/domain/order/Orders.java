@@ -46,6 +46,10 @@ public class Orders {
         return new Orders(orderTable, orderStatus, orderedTime, orderLineItems);
     }
 
+    public static Orders of(OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime) {
+        return new Orders(orderTable, orderStatus, orderedTime, null);
+    }
+
     public Long getId() {
         return this.id;
     }

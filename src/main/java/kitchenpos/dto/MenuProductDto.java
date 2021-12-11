@@ -34,6 +34,10 @@ public class MenuProductDto {
         return new MenuProductDto(null, menuId, productId, quantity);
     }
 
+    public static MenuProductDto of(Long productId, long quantity) {
+        return new MenuProductDto(null, null, productId, quantity);
+    }
+
     public static MenuProductDto of(Long seq, Long menuId, Long productId, long quantity) {
         return new MenuProductDto(seq, menuId, productId, quantity);
     }

@@ -48,7 +48,7 @@ public class KitchenposManageAcceptanceTest extends TestConfig {
         참치맛감자튀김 = Product.of("참치맛감자튀김", Price.of(2_000));
         고등어맛감자튀김 =  Product.of("고등어맛감자튀김", Price.of(2_000));
 
-        신메뉴 = Menu.of("감튀세상", Price.of(3_000), null, null);
+        신메뉴 = Menu.of("감튀세상", Price.of(3_000));
     }
 
     @DisplayName("새로운 유형의 메뉴가 추가된다.")
@@ -79,7 +79,7 @@ public class KitchenposManageAcceptanceTest extends TestConfig {
     }
 
     private OrderTableDto 신규_주문테이블_생성() {
-        OrderTableDto 신규_주문테이블 = OrderTableDto.of(null, 0);
+        OrderTableDto 신규_주문테이블 = OrderTableDto.of(0);
         return 신규_주문테이블;
     }
 
@@ -110,7 +110,7 @@ public class KitchenposManageAcceptanceTest extends TestConfig {
         for (ProductDto product : products) {
             ProductDto createdProduct = ProductRestControllerTest.상품_저장요청(product).as(ProductDto.class);
 
-            MenuProductDto menuProduct = MenuProductDto.of(null, createdProduct.getId(), 1L);
+            MenuProductDto menuProduct = MenuProductDto.of(createdProduct.getId(), 1L);
             productPackage.add(menuProduct);
         }
 
