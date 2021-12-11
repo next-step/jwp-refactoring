@@ -33,6 +33,10 @@ public class OrderDto {
                                                             .map(OrderLineItemDto::of)
                                                             .collect(Collectors.toList());
 
+        if (order.getOrderStatus() == null) {
+            return new OrderDto(order.getId(), order.getOrderTable().getId(), "", order.getOrderedTime(), tempOrderLineItems);
+        }
+
         return new OrderDto(order.getId(), order.getOrderTable().getId(), order.getOrderStatus().name(), order.getOrderedTime(), tempOrderLineItems);
     }
 

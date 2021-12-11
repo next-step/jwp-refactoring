@@ -24,17 +24,14 @@ public class ProductRestController {
 
     @PostMapping("/api/products")
     public ResponseEntity<ProductDto> create(@RequestBody final ProductDto product) {
-        final Product created = productService.create(product);
+        final ProductDto created = productService.create(product);
         final URI uri = URI.create("/api/products/" + created.getId());
 
-        return ResponseEntity.created(uri).body(ProductDto.of(created));
+        return ResponseEntity.created(uri).body(created);
     }
 
     @GetMapping("/api/products")
     public ResponseEntity<List<ProductDto>> list() {
-        return ResponseEntity.ok().body(productService.list().stream()
-                                                        .map(ProductDto::of)
-                                                        .collect(Collectors.toList())
-                                        );
+        return ResponseEntity.ok().body(productService.list());
     }
 }

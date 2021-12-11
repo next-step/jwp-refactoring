@@ -1,5 +1,7 @@
 package kitchenpos.dto;
 
+import java.util.Objects;
+
 import kitchenpos.domain.menu.MenuGroup;
 
 public class MenuGroupDto {
@@ -37,4 +39,21 @@ public class MenuGroupDto {
     public String getName() {
         return this.name;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this)
+            return true;
+        if (!(o instanceof MenuGroupDto)) {
+            return false;
+        }
+        MenuGroupDto menuGroupDto = (MenuGroupDto) o;
+        return Objects.equals(id, menuGroupDto.id) && Objects.equals(name, menuGroupDto.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name);
+    }
+
 }

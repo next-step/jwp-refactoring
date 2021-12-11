@@ -61,8 +61,8 @@ public class MenuServiceTest {
 
     @BeforeEach
     void setUp() {
-        치킨_메뉴그룹 = MenuGroup.of("치킨");
-        사이드_메뉴그룹 = MenuGroup.of("사이드");
+        치킨_메뉴그룹 = MenuGroup.of(1L, "치킨");
+        사이드_메뉴그룹 = MenuGroup.of(2L, "사이드");
 
         뿌링클치킨 = Product.of(1L, "뿌링클치킨", Price.of(15_000));
         치킨무 = Product.of(2L, "치킨무", Price.of(1_000));
@@ -72,35 +72,28 @@ public class MenuServiceTest {
         뿌링클콤보_치킨무 = MenuProduct.of(2L, 뿌링클콤보, 치킨무, 1L);
         뿌링클콤보_코카콜라 = MenuProduct.of(3L, 뿌링클콤보, 코카콜라, 1L);
 
-        뿌링클콤보 = Menu.of("뿌링클콤보", Price.of(18_000), 치킨_메뉴그룹, List.of(뿌링클콤보_뿌링클치킨, 뿌링클콤보_치킨무, 뿌링클콤보_코카콜라));
+        뿌링클콤보 = Menu.of(1L, "뿌링클콤보", Price.of(18_000), 치킨_메뉴그룹, List.of(뿌링클콤보_뿌링클치킨, 뿌링클콤보_치킨무, 뿌링클콤보_코카콜라));
     }
 
     @DisplayName("메뉴가 저장된다.")
     @Test
     void craete_menu() {
         // when
-        when(menuGroupRepository.existsById(this.치킨_메뉴그룹.getId())).thenReturn(true);
+        when(menuGroupRepository.findById(this.뿌링클콤보.getMenuGroup().getId())).thenReturn(Optional.of(this.치킨_메뉴그룹));
         when(productRepository.findById(this.뿌링클콤보_뿌링클치킨.getProduct().getId())).thenReturn(Optional.of(this.뿌링클치킨));
         when(productRepository.findById(this.뿌링클콤보_치킨무.getProduct().getId())).thenReturn(Optional.of(this.치킨무));
         when(productRepository.findById(this.뿌링클콤보_코카콜라.getProduct().getId())).thenReturn(Optional.of(this.코카콜라));
+        when(menuProductRepository.save(any(MenuProduct.class))).thenReturn(MenuProduct.of(this.뿌링클콤보, this.뿌링클콤보_뿌링클치킨.getProduct(), this.뿌링클콤보_뿌링클치킨.getQuantity()),
+                                                                            MenuProduct.of(this.뿌링클콤보, this.뿌링클콤보_치킨무.getProduct(), 뿌링클콤보_치킨무.getQuantity()),
+                                                                            MenuProduct.of(this.뿌링클콤보, this.뿌링클콤보_코카콜라.getProduct(), 뿌링클콤보_코카콜라.getQuantity())
+                                                                            );
+
         when(menuRepository.save(any(Menu.class))).thenReturn(this.뿌링클콤보);
 
         MenuDto savedMenu = menuService.create(MenuDto.of(this.뿌링클콤보));
 
         // then
         Assertions.assertThat(savedMenu).isEqualTo(MenuDto.of(this.뿌링클콤보));
-    }
-
-    @DisplayName("메뉴가격이 없으면 예외가 발생한다.")
-    @Test
-    void exception_createMenu_nullPrice() {
-        // given
-        this.뿌링클콤보.changePrice(null);
-
-        // when
-        // then
-        Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
-                    .isThrownBy(() -> menuService.create(MenuDto.of(this.뿌링클콤보)));
     }
 
     @DisplayName("메뉴에대한 메뉴그룹이 없으면 예외가 발생한다.")

@@ -19,10 +19,10 @@ public class TableGroupRestController {
 
     @PostMapping("/api/table-groups")
     public ResponseEntity<TableGroupDto> create(@RequestBody final TableGroupDto tableGroup) {
-        final TableGroup created = tableGroupService.create(tableGroup);
+        final TableGroupDto created = tableGroupService.create(tableGroup);
         final URI uri = URI.create("/api/table-groups/" + created.getId());
         
-        return ResponseEntity.created(uri).body(TableGroupDto.of(created));
+        return ResponseEntity.created(uri).body(created);
     }
 
     @DeleteMapping("/api/table-groups/{tableGroupId}")

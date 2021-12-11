@@ -1,5 +1,7 @@
 package kitchenpos.dto;
 
+import java.util.Objects;
+
 import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menu.MenuProduct;
 import kitchenpos.domain.product.Product;
@@ -16,8 +18,14 @@ public class MenuProductDto {
     private MenuProductDto(Long seq, Menu menu, Product product, long quantity) {
         this.seq = seq;
         this.menu = menu;
-        this.productId = product.getId();
         this.quantity = quantity;
+        
+        if (product == null) {
+            this.productId = null;
+            return;
+        }
+
+        this.productId = product.getId();
     }
 
     public static MenuProductDto of(Long seq, Menu menu, Product product, long quantity) {
@@ -42,5 +50,21 @@ public class MenuProductDto {
 
     public long getQuantity() {
         return this.quantity;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this)
+            return true;
+        if (!(o instanceof MenuProductDto)) {
+            return false;
+        }
+        MenuProductDto menuProductDto = (MenuProductDto) o;
+        return Objects.equals(seq, menuProductDto.seq) && Objects.equals(menu, menuProductDto.menu) && Objects.equals(productId, menuProductDto.productId) && quantity == menuProductDto.quantity;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(seq, menu, productId, quantity);
     }
 }

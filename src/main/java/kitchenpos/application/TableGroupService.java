@@ -31,7 +31,8 @@ public class TableGroupService {
     }
 
     @Transactional
-    public TableGroup create(final TableGroupDto tableGroup) {
+    public TableGroupDto create(final TableGroupDto tableGroup) {
+        
         final List<Long> orderTableIds = tableGroup.getOrderTables().stream()
                                                     .map(OrderTableDto::getId)
                                                     .collect(Collectors.toList());
@@ -47,7 +48,7 @@ public class TableGroupService {
 
         savedTableGroup.changeOrderTables(savedOrderTables);
 
-        return savedTableGroup;
+        return TableGroupDto.of(savedTableGroup);
     }
 
     private void updateOrderTable(final List<OrderTable> savedOrderTables, final TableGroup savedTableGroup) {

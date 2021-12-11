@@ -94,6 +94,7 @@ public class OrderServiceTest {
     void create_order() {
         // given
         when(menuRepository.countByIdIn(List.of(this.뿌링클콤보.getId()))).thenReturn(1L);
+        when(menuRepository.findById(this.뿌링클콤보.getId())).thenReturn(Optional.of(this.뿌링클콤보));
         when(orderTableRepository.findById(this.치킨_주문_단체테이블.getId())).thenReturn(Optional.of(this.치킨_주문_단체테이블));
         when(orderRepository.save(any(Order.class))).thenReturn(this.치킨주문);
         when(orderLineItemRepository.save(this.치킨_주문항목)).thenReturn(this.치킨_주문항목);

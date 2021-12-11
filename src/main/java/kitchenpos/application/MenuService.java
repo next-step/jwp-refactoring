@@ -6,6 +6,7 @@ import kitchenpos.domain.product.ProductRepository;
 import kitchenpos.dto.MenuDto;
 import kitchenpos.dto.MenuProductDto;
 import kitchenpos.domain.menu.Menu;
+import kitchenpos.domain.menu.MenuGroup;
 import kitchenpos.domain.menu.MenuGroupRepository;
 import kitchenpos.domain.menu.MenuProduct;
 import kitchenpos.domain.menu.MenuProductRepository;
@@ -41,22 +42,18 @@ public class MenuService {
     public MenuDto create(final MenuDto menu) {
         validationOfCreate(menu);
 
-        final Menu savedMenu = menuRepository.save(menu.toMenu());
+        MenuGroup menuGroup = menuGroupRepository.findById(menu.getMenuGroupId()).orElseThrow(IllegalArgumentException::new);
+        
+        final Menu savedMenu = menuRepository.save(Menu.of(menu.getName(), Price.of(menu.getPrice()), menuGroup, null));
         final List<MenuProduct> savedMenuProducts = saveMenuProduct(savedMenu, menu.getMenuProducts());
+
         savedMenu.changeMenuProducts(savedMenuProducts);
 
         return MenuDto.of(savedMenu);
     }
 
     private void validationOfCreate(final MenuDto menu) {
-        checkExistOfMenuGroup(menu);
-        checkMenuPrice(menu.getPrice(), menu.getMenuProducts());
-    }
-
-    private void checkExistOfMenuGroup(final MenuDto menu) {
-        if (!menuGroupRepository.existsById(menu.getMenuGroupId())) {
-            throw new IllegalArgumentException();
-        }
+        checkMenuPrice(Price.of(menu.getPrice()), menu.getMenuProducts());
     }
 
     private void checkMenuPrice(final Price menuPrice, final List<MenuProductDto> menuProducts) {
@@ -81,14 +78,14 @@ public class MenuService {
     }
 
     private List<MenuProduct> saveMenuProduct(Menu savedMenu,  List<MenuProductDto> menuProducts) {
-        final List<MenuProduct> savedMenuProducts2 = new ArrayList<>();
+        final List<MenuProduct> savedMenuProducts = new ArrayList<>();
 
         for (MenuProductDto menuProductDto : menuProducts) {
             Product product = productRepository.findById(menuProductDto.getProductId()).orElseThrow(IllegalArgumentException::new);
-            savedMenuProducts2.add(menuProductRepository.save(MenuProduct.of(savedMenu, product, menuProductDto.getQuantity())));
+            savedMenuProducts.add(menuProductRepository.save(MenuProduct.of(savedMenu, product, menuProductDto.getQuantity())));
         }
 
-        return savedMenuProducts2;
+        return savedMenuProducts;
     }
 
     public List<MenuDto> list() {

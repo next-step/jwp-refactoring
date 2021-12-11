@@ -59,14 +59,14 @@ public class TableGroupServiceTest {
     void create_tableGroup() {
         // given
         when(orderTableRepository.findAllByIdIn(List.of(this.치킨_주문_단체테이블.getId(), this.치킨2_주문_단체테이블.getId()))).thenReturn(List.of(this.치킨_주문_단체테이블, this.치킨2_주문_단체테이블));
-        when(tableGroupRepository.save(this.단체주문테이블)).thenReturn(this.단체주문테이블);
+        when(tableGroupRepository.save(any(TableGroup.class))).thenReturn(this.단체주문테이블);
         when(orderTableRepository.save(any(OrderTable.class))).thenReturn(null);
 
         // when
-        TableGroup createdTableGroup = tableGroupService.create(TableGroupDto.of(this.단체주문테이블));
+        TableGroupDto createdTableGroup = tableGroupService.create(TableGroupDto.of(this.단체주문테이블));
 
         // then
-        Assertions.assertThat(createdTableGroup).isEqualTo(this.단체주문테이블);
+        Assertions.assertThat(createdTableGroup).isEqualTo(TableGroupDto.of(this.단체주문테이블));
     }
 
     @DisplayName("주문테이블이 없이 단체지정시 예외가 발생된다.")

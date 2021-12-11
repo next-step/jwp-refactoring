@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
@@ -30,14 +31,13 @@ public class MenuGroupServiceTest {
     @BeforeEach
     void setUp() {
         치킨_메뉴그룹 = MenuGroup.of("치킨");
-        //치킨_메뉴그룹.setId(1L);
     }
 
     @DisplayName("메뉴그룹이 저장된다.")
     @Test
     void create_menuGroup() {
         // given
-        when(menuGroupRepository.save(this.치킨_메뉴그룹)).thenReturn(this.치킨_메뉴그룹);
+        when(menuGroupRepository.save(any(MenuGroup.class))).thenReturn(this.치킨_메뉴그룹);
 
         // when
         MenuGroupDto savedMenuGroup = menuGroupService.create(MenuGroupDto.of(this.치킨_메뉴그룹));
@@ -60,6 +60,6 @@ public class MenuGroupServiceTest {
         List<MenuGroupDto> searchedMenuGroups = menuGroupService.list();
 
         // then
-        Assertions.assertThat(searchedMenuGroups).isEqualTo(List.of(this.치킨_메뉴그룹, 사이드_메뉴그룹));
+        Assertions.assertThat(searchedMenuGroups).isEqualTo(List.of(MenuGroupDto.of(this.치킨_메뉴그룹), MenuGroupDto.of(사이드_메뉴그룹)));
     }
 }

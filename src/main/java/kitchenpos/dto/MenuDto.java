@@ -1,6 +1,9 @@
 package kitchenpos.dto;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import kitchenpos.domain.Price;
@@ -9,30 +12,41 @@ import kitchenpos.domain.menu.Menu;
 public class MenuDto {
     private Long id;
     private String name;
-    private Price price;
+    private BigDecimal price;
     private Long menuGroupId;
     private List<MenuProductDto> menuProducts;
 
-    protected MenuDto() { 
+    protected MenuDto() {
     }
 
-    private MenuDto(Long id, String name, Price price, Long menuGroupId, List<MenuProductDto> menuProducts) { 
+    private MenuDto(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProductDto> menuProducts) {
         this.id = id;
-        this.name = name; 
+        this.name = name;
         this.price = price;
         this.menuGroupId = menuGroupId;
+
+        if (menuProducts == null) {
+            this.menuProducts = new ArrayList<>();
+        }
+
         this.menuProducts = menuProducts;
     }
 
-    public static MenuDto of(Long id, String name, Price price, Long menuGroupId, List<MenuProductDto> menuProducts) { 
+    public static MenuDto of(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProductDto> menuProducts) {
         return new MenuDto(id, name, price, menuGroupId, menuProducts);
     }
 
-    public static MenuDto of(Menu menu) {         
-        return new MenuDto(menu.getId(), menu.getName(), menu.getPrice(), menu.getMenuGroup().getId(), menu.getMenuProducts().stream()
-                                                                                                            .map(MenuProductDto::of)
-                                                                                                            .collect(Collectors.toList()));
-    }
+    public static MenuDto of(Menu menu) {
+        if (menu.getMenuGroup() == null) {
+            return new MenuDto(menu.getId(), menu.getName(), BigDecimal.valueOf(menu.getPrice().value()), null, menu.getMenuProducts().stream()
+                                                                                                                    .map(MenuProductDto::of)
+                                                                                                                    .collect(Collectors.toList()));
+        }
+
+        return new MenuDto(menu.getId(), menu.getName(), BigDecimal.valueOf(menu.getPrice().value()), menu.getMenuGroup().getId(), menu.getMenuProducts().stream()
+                                                                                                                                        .map(MenuProductDto::of)
+                                                                                                                                        .collect(Collectors.toList()));
+                                }
 
     public Long getId() {
         return this.id;
@@ -42,7 +56,7 @@ public class MenuDto {
         return this.name;
     }
 
-    public Price getPrice() {
+    public BigDecimal getPrice() {
         return this.price;
     }
 
@@ -54,6 +68,23 @@ public class MenuDto {
     }
 
     public Menu toMenu() {
-        return Menu.of(this.id, this.name, this.price, null, null);
+        return Menu.of(this.id, this.name, Price.of(this.price), null, null);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this)
+            return true;
+        if (!(o instanceof MenuDto)) {
+            return false;
+        }
+        MenuDto menuDto = (MenuDto) o;
+        return Objects.equals(id, menuDto.id) && Objects.equals(name, menuDto.name) && Objects.equals(price, menuDto.price) && Objects.equals(menuGroupId, menuDto.menuGroupId) && Objects.equals(menuProducts, menuDto.menuProducts);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, price, menuGroupId, menuProducts);
+    }
+
 }

@@ -23,8 +23,8 @@ public class TableService {
     }
 
     @Transactional
-    public OrderTable create(final OrderTableDto orderTable) {
-        return orderTableRepository.save(OrderTable.of(null, orderTable.getNumberOfGuests()));
+    public OrderTableDto create(final OrderTableDto orderTable) {
+        return OrderTableDto.of(orderTableRepository.save(OrderTable.of(null, orderTable.getNumberOfGuests())));
     }
 
     @Transactional(readOnly = true)

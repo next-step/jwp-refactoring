@@ -63,10 +63,10 @@ public class TableServiceTest {
         when(orderTableRepository.save(any(OrderTable.class))).thenReturn(this.치킨_주문_단체테이블);
 
         // when
-        OrderTable createdOrderTable = tableService.create(OrderTableDto.of(this.치킨_주문_단체테이블));
+        OrderTableDto createdOrderTable = tableService.create(OrderTableDto.of(this.치킨_주문_단체테이블));
 
         // then
-        Assertions.assertThat(createdOrderTable).isEqualTo(this.치킨_주문_단체테이블);
+        Assertions.assertThat(createdOrderTable).isEqualTo(OrderTableDto.of(this.치킨_주문_단체테이블));
     }
 
     @DisplayName("주문테이블이 조회된다.")

@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
@@ -44,13 +45,13 @@ public class ProductServiceTest {
     @Test
     void create_product() {
         // given
-        when(productRepository.save(this.뿌링클치킨)).thenReturn(this.뿌링클치킨);
+        when(productRepository.save(any(Product.class))).thenReturn(this.뿌링클치킨);
 
         // when
-        Product createdProduct = productService.create(ProductDto.of(this.뿌링클치킨));
+        ProductDto createdProduct = productService.create(ProductDto.of(this.뿌링클치킨));
 
         // then
-        Assertions.assertThat(createdProduct).isEqualTo(this.뿌링클치킨);
+        Assertions.assertThat(createdProduct).isEqualTo(ProductDto.of(this.뿌링클치킨));
     }
 
     @DisplayName("상품이 조회된다.")
@@ -60,9 +61,9 @@ public class ProductServiceTest {
         when(productRepository.findAll()).thenReturn(List.of(this.뿌링클치킨, this.치킨무, this.코카콜라));
 
         // when
-        List<Product> searchedProducts = productService.list();
+        List<ProductDto> searchedProducts = productService.list();
 
         // then
-        Assertions.assertThat(searchedProducts).isEqualTo(List.of(this.뿌링클치킨, this.치킨무, this.코카콜라));
+        Assertions.assertThat(searchedProducts).isEqualTo(List.of(ProductDto.of(this.뿌링클치킨), ProductDto.of(this.치킨무), ProductDto.of(this.코카콜라)));
     }
 }
