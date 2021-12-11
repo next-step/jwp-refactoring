@@ -11,10 +11,10 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static kitchenpos.menu.domain.fixture.MenuDomainFixture.후라이드_치킨;
-import static kitchenpos.menu.domain.fixture.MenuDomainFixture.후라이드_치킨_요청;
-import static kitchenpos.menu.domain.fixture.MenuGroupDomainFixture.일인_세트;
-import static kitchenpos.menu.domain.fixture.ProductDomainFixture.사이다;
+import static kitchenpos.fixture.MenuDomainFixture.후라이드_치킨;
+import static kitchenpos.fixture.MenuDomainFixture.후라이드_치킨_요청;
+import static kitchenpos.fixture.MenuGroupDomainFixture.일인_세트;
+import static kitchenpos.fixture.ProductDomainFixture.사이다;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.*;

@@ -11,9 +11,9 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 
-import static kitchenpos.menu.domain.fixture.OrderTableDomainFixture.양식_테이블;
-import static kitchenpos.menu.domain.fixture.OrderTableDomainFixture.한식_테이블;
-import static kitchenpos.menu.domain.fixture.TableGroupDomainFixture.한식_양식_합석;
+import static kitchenpos.fixture.OrderTableDomainFixture.양식_테이블;
+import static kitchenpos.fixture.OrderTableDomainFixture.한식_테이블;
+import static kitchenpos.fixture.TableGroupDomainFixture.한식_양식_합석;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.mock;

@@ -1,9 +1,8 @@
-package kitchenpos.menu.domain.fixture;
+package kitchenpos.fixture;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.table.domain.tablegroup.TableGroup;
-import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.utils.AcceptanceTest;
 

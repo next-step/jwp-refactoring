@@ -14,8 +14,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static kitchenpos.menu.domain.fixture.ProductDomainFixture.상품_생성_요청;
-import static kitchenpos.menu.domain.fixture.ProductDomainFixture.상품_조회_요청;
+import static kitchenpos.fixture.ProductDomainFixture.상품_생성_요청;
+import static kitchenpos.fixture.ProductDomainFixture.상품_조회_요청;
 import static kitchenpos.utils.AcceptanceFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 

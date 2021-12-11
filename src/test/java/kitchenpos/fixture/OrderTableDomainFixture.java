@@ -1,4 +1,4 @@
-package kitchenpos.menu.domain.fixture;
+package kitchenpos.fixture;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;

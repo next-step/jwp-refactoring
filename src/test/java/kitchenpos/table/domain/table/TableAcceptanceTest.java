@@ -13,7 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static kitchenpos.menu.domain.fixture.OrderTableDomainFixture.*;
+import static kitchenpos.fixture.OrderTableDomainFixture.*;
 import static kitchenpos.utils.AcceptanceFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 

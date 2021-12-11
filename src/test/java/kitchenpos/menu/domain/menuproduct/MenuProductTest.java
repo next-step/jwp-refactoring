@@ -1,14 +1,13 @@
 package kitchenpos.menu.domain.menuproduct;
 
-import kitchenpos.menu.domain.menu.Menu;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import static kitchenpos.menu.domain.fixture.MenuDomainFixture.후라이드_치킨;
-import static kitchenpos.menu.domain.fixture.MenuProductDomainFixture.menuProduct;
-import static kitchenpos.menu.domain.fixture.ProductDomainFixture.후라이드;
+import static kitchenpos.fixture.MenuDomainFixture.후라이드_치킨;
+import static kitchenpos.fixture.MenuProductDomainFixture.menuProduct;
+import static kitchenpos.fixture.ProductDomainFixture.후라이드;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 

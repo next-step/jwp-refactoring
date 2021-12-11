@@ -1,4 +1,4 @@
-package kitchenpos.menu.domain.fixture;
+package kitchenpos.fixture;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -10,7 +10,7 @@ import kitchenpos.utils.AcceptanceTest;
 
 import java.math.BigDecimal;
 
-import static kitchenpos.menu.domain.fixture.MenuGroupDomainFixture.일인_세트;
+import static kitchenpos.fixture.MenuGroupDomainFixture.일인_세트;
 import static kitchenpos.utils.AcceptanceFixture.get;
 import static kitchenpos.utils.AcceptanceFixture.post;
 

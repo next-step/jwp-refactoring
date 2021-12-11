@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static kitchenpos.menu.domain.fixture.MenuGroupDomainFixture.*;
+import static kitchenpos.fixture.MenuGroupDomainFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 

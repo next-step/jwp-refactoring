@@ -13,8 +13,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static kitchenpos.menu.domain.fixture.MenuGroupDomainFixture.메뉴_그룹_생성_요청;
-import static kitchenpos.menu.domain.fixture.MenuGroupDomainFixture.메뉴_그룹_조회_요청;
+import static kitchenpos.fixture.MenuGroupDomainFixture.메뉴_그룹_생성_요청;
+import static kitchenpos.fixture.MenuGroupDomainFixture.메뉴_그룹_조회_요청;
 import static kitchenpos.utils.AcceptanceFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 

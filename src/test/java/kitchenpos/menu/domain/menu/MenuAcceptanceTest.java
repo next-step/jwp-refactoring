@@ -2,10 +2,8 @@ package kitchenpos.menu.domain.menu;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.menu.domain.menugroup.MenuGroup;
 import kitchenpos.menu.dto.*;
 import kitchenpos.utils.AcceptanceTest;
-import org.assertj.core.api.Assertions;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -13,9 +11,9 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 
-import static kitchenpos.menu.domain.fixture.MenuDomainFixture.메뉴_생성_요청;
-import static kitchenpos.menu.domain.fixture.MenuGroupDomainFixture.*;
-import static kitchenpos.menu.domain.fixture.ProductDomainFixture.*;
+import static kitchenpos.fixture.MenuDomainFixture.메뉴_생성_요청;
+import static kitchenpos.fixture.MenuGroupDomainFixture.*;
+import static kitchenpos.fixture.ProductDomainFixture.*;
 import static kitchenpos.utils.AcceptanceFixture.응답_BAD_REQUEST;
 import static kitchenpos.utils.AcceptanceFixture.응답_CREATE;
 import static org.assertj.core.api.Assertions.assertThat;

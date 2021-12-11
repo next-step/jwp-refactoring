@@ -10,9 +10,9 @@ import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static kitchenpos.menu.domain.fixture.OrderTableDomainFixture.*;
-import static kitchenpos.menu.domain.fixture.TableGroupDomainFixture.테이블_그룹_생성_요청;
-import static kitchenpos.menu.domain.fixture.TableGroupDomainFixture.테이블_그룹_해제_요청;
+import static kitchenpos.fixture.OrderTableDomainFixture.*;
+import static kitchenpos.fixture.TableGroupDomainFixture.테이블_그룹_생성_요청;
+import static kitchenpos.fixture.TableGroupDomainFixture.테이블_그룹_해제_요청;
 import static kitchenpos.utils.AcceptanceFixture.응답_CREATE;
 import static kitchenpos.utils.AcceptanceFixture.응답_NO_CONTENT;
 import static org.assertj.core.api.Assertions.assertThat;

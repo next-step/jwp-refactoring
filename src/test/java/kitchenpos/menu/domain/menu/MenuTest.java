@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 
-import static kitchenpos.menu.domain.fixture.MenuGroupDomainFixture.menuGroup;
+import static kitchenpos.fixture.MenuGroupDomainFixture.menuGroup;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
