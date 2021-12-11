@@ -10,10 +10,17 @@ public class TableGroup {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private LocalDateTime createdDate;
 
     @Embedded
     private OrderTables orderTables = new OrderTables();
+
+    public static TableGroup create(OrderTables orderTables) {
+        TableGroup tableGroup = new TableGroup(LocalDateTime.now());
+        tableGroup.addOrderTables(orderTables);
+        return tableGroup;
+    }
 
     protected TableGroup() {
     }

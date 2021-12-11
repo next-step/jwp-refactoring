@@ -31,14 +31,11 @@ public class TableGroupService {
     @Transactional
     public TableGroup create(final TableGroupRequest request) {
         final List<Long> orderTableIds = request.getOrderTableIds();
-        final OrderTables savedOrderTables = new OrderTables(orderTableDao.findAllByIdIn(orderTableIds));
+        final OrderTables tables = new OrderTables(orderTableDao.findAllByIdIn(orderTableIds));
 
-        savedOrderTables.checkOrderTables(orderTableIds);
+        tables.checkOrderTables(orderTableIds);
 
-        TableGroup tableGroup = new TableGroup(LocalDateTime.now());
-        tableGroup.addOrderTables(savedOrderTables);
-
-        return tableGroupDao.save(tableGroup);
+        return tableGroupDao.save(TableGroup.create(tables));
     }
 
     @Transactional
