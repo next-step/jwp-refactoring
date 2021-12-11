@@ -8,12 +8,12 @@ import kitchenpos.order.domain.OrderLineItem;
 public final class OrderLineItemRequest {
 
     private final long menuId;
-    private final int quantity;
+    private final long quantity;
 
     @JsonCreator
     public OrderLineItemRequest(
         @JsonProperty("menuId") long menuId,
-        @JsonProperty("quantity") int quantity) {
+        @JsonProperty("quantity") long quantity) {
         this.menuId = menuId;
         this.quantity = quantity;
     }
@@ -22,7 +22,7 @@ public final class OrderLineItemRequest {
         return menuId;
     }
 
-    public int getQuantity() {
+    public long getQuantity() {
         return quantity;
     }
 

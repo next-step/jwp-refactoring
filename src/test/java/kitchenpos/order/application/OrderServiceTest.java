@@ -1,6 +1,5 @@
 package kitchenpos.order.application;
 
-import static kitchenpos.order.application.sample.OrderLineItemSample.후라이드치킨세트_두개;
 import static kitchenpos.order.application.sample.OrderSample.완료된_후라이트치킨세트_두개_주문;
 import static kitchenpos.order.application.sample.OrderSample.조리중인_후라이트치킨세트_두개_주문;
 import static kitchenpos.table.application.sample.OrderTableSample.빈_세명_테이블;
@@ -11,24 +10,27 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.only;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
+import kitchenpos.common.domain.Quantity;
 import kitchenpos.menu.domain.MenuDao;
-import kitchenpos.order.domain.OrderDao;
-import kitchenpos.order.domain.OrderLineItemDao;
-import kitchenpos.table.domain.OrderTableDao;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.ui.request.OrderLineItemRequest;
 import kitchenpos.order.ui.request.OrderRequest;
 import kitchenpos.order.ui.request.OrderStatusRequest;
+import kitchenpos.table.domain.OrderTableDao;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -45,9 +47,7 @@ class OrderServiceTest {
     @Mock
     private MenuDao menuDao;
     @Mock
-    private OrderDao orderDao;
-    @Mock
-    private OrderLineItemDao orderLineItemDao;
+    private OrderRepository orderRepository;
     @Mock
     private OrderTableDao orderTableDao;
 
@@ -60,26 +60,24 @@ class OrderServiceTest {
         //given
         long orderTableId = 1L;
         long menuId = 1L;
+        long quantity = 2L;
+        List<OrderLineItemRequest> orderLineItems = Collections
+            .singletonList(new OrderLineItemRequest(menuId, quantity));
         OrderRequest orderRequest = new OrderRequest(orderTableId,
-            Collections.singletonList(new OrderLineItemRequest(menuId, 2)));
+            orderLineItems);
 
         when(menuDao.countByIdIn(anyList())).thenReturn(1L);
         when(orderTableDao.findById(orderTableId))
             .thenReturn(Optional.of(채워진_다섯명_테이블()));
 
         Order order = 조리중인_후라이트치킨세트_두개_주문();
-        when(orderDao.save(any())).thenReturn(order);
-        OrderLineItem orderLineItem = 후라이드치킨세트_두개();
-        when(orderLineItemDao.save(any())).thenReturn(orderLineItem);
+        when(orderRepository.save(any())).thenReturn(order);
 
         //when
         orderService.create(orderRequest);
 
         //then
-        assertAll(
-            () -> requestedOrderSave(orderTableId),
-            () -> requestedOrderLineItemSave(menuId, order)
-        );
+        requestedOrderSave(orderTableId, menuId, quantity);
     }
 
     @Test
@@ -152,14 +150,13 @@ class OrderServiceTest {
     void list() {
         //given
         Order cookingOrder = 조리중인_후라이트치킨세트_두개_주문();
-        when(orderDao.findAll()).thenReturn(Collections.singletonList(cookingOrder));
+        when(orderRepository.findAll()).thenReturn(Collections.singletonList(cookingOrder));
 
         //when
         orderService.list();
 
         //then
-        verify(orderDao, only()).findAll();
-        verify(orderLineItemDao, only()).findAllByOrderId(cookingOrder.getId());
+        verify(orderRepository, only()).findAll();
     }
 
     @Test
@@ -169,14 +166,14 @@ class OrderServiceTest {
         OrderStatus updatedStatus = OrderStatus.MEAL;
         OrderStatusRequest orderRequest = new OrderStatusRequest(updatedStatus.name());
 
-        Order cookingOrder = 조리중인_후라이트치킨세트_두개_주문();
-        when(orderDao.findById(anyLong())).thenReturn(Optional.of(cookingOrder));
+        Order mockOrder = spy(조리중인_후라이트치킨세트_두개_주문());
+        when(orderRepository.findById(anyLong())).thenReturn(Optional.of(mockOrder));
 
         //when
         orderService.changeOrderStatus(1L, orderRequest);
 
         //then
-        requestedOrderUpdate(updatedStatus);
+        verify(mockOrder, times(1)).setOrderStatus(updatedStatus);
     }
 
     @Test
@@ -184,7 +181,7 @@ class OrderServiceTest {
     void changeOrderStatus_notExistOrder_thrownException() {
         //given
         OrderStatusRequest updateRequest = new OrderStatusRequest(OrderStatus.MEAL.name());
-        when(orderDao.findById(anyLong())).thenReturn(Optional.empty());
+        when(orderRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         //when
         ThrowingCallable changeCallable = () -> orderService.changeOrderStatus(1L, updateRequest);
@@ -199,7 +196,7 @@ class OrderServiceTest {
     void changeOrderStatus_completedOrder_thrownException() {
         //given
         OrderStatusRequest updateRequest = new OrderStatusRequest(OrderStatus.MEAL.name());
-        when(orderDao.findById(anyLong())).thenReturn(Optional.of(완료된_후라이트치킨세트_두개_주문()));
+        when(orderRepository.findById(anyLong())).thenReturn(Optional.of(완료된_후라이트치킨세트_두개_주문()));
 
         //when
         ThrowingCallable changeCallable = () -> orderService.changeOrderStatus(1L, updateRequest);
@@ -209,36 +206,17 @@ class OrderServiceTest {
             .isThrownBy(changeCallable);
     }
 
-    private void requestedOrderLineItemSave(long menuId, Order expectedOrder) {
-        ArgumentCaptor<OrderLineItem> orderLineItemCaptor = ArgumentCaptor
-            .forClass(OrderLineItem.class);
-        verify(orderLineItemDao, only()).save(orderLineItemCaptor.capture());
-        assertThat(orderLineItemCaptor.getValue())
-            .extracting(OrderLineItem::getMenuId, OrderLineItem::getOrderId)
-            .containsExactly(menuId, expectedOrder.getId());
-    }
-
-    private void requestedOrderSave(long orderTableId) {
+    private void requestedOrderSave(long orderTableId, long expectedMenuId, long expectedQuantity) {
         ArgumentCaptor<Order> orderCaptor = ArgumentCaptor.forClass(Order.class);
-        verify(orderDao, only()).save(orderCaptor.capture());
+        verify(orderRepository, only()).save(orderCaptor.capture());
         Order savedOrder = orderCaptor.getValue();
         assertAll(
             () -> assertThat(savedOrder)
                 .extracting(Order::getOrderStatus, Order::getOrderTableId)
                 .containsExactly(OrderStatus.COOKING.name(), orderTableId),
-            () -> assertThat(savedOrder.getOrderedTime())
-                .isEqualToIgnoringMinutes(LocalDateTime.now())
+            () -> assertThat(savedOrder.getOrderLineItems().list()).first()
+                .extracting(OrderLineItem::getMenuId, OrderLineItem::getQuantity)
+                .containsExactly(expectedMenuId, Quantity.from(expectedQuantity))
         );
     }
-
-    private void requestedOrderUpdate(OrderStatus updatedStatus) {
-        ArgumentCaptor<Order> orderCaptor = ArgumentCaptor.forClass(Order.class);
-        verify(orderDao, times(1)).save(orderCaptor.capture());
-        assertAll(
-            () -> assertThat(orderCaptor.getValue())
-                .extracting(Order::getOrderStatus)
-                .isEqualTo(updatedStatus.name())
-        );
-    }
-
 }

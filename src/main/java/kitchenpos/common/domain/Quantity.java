@@ -1,5 +1,6 @@
 package kitchenpos.common.domain;
 
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import org.springframework.util.Assert;
@@ -28,5 +29,27 @@ public class Quantity {
 
     private boolean isZeroOrPositive(long value) {
         return value >= 0;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(value);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Quantity quantity = (Quantity) o;
+        return value == quantity.value;
+    }
+
+    @Override
+    public String toString() {
+        return String.valueOf(value);
     }
 }

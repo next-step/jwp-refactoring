@@ -1,5 +1,6 @@
 package kitchenpos.order.domain;
 
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -62,12 +63,30 @@ public class OrderLineItem {
         this.menuId = menuId;
     }
 
-    public long getQuantity() {
-        return quantity.value();
+    public Quantity getQuantity() {
+        return quantity;
     }
 
     public void setQuantity(final long quantity) {
         this.quantity = Quantity.from(quantity);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(seq, quantity, menuId);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        OrderLineItem that = (OrderLineItem) o;
+        return seq == that.seq && menuId == that.menuId && Objects
+            .equals(quantity, that.quantity);
     }
 
     @Override
@@ -76,7 +95,6 @@ public class OrderLineItem {
             "seq=" + seq +
             ", quantity=" + quantity +
             ", menuId=" + menuId +
-            ", order=" + order +
             '}';
     }
 }
