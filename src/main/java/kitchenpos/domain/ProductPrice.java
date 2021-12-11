@@ -1,5 +1,6 @@
 package kitchenpos.domain;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -9,6 +10,7 @@ public class ProductPrice {
 
     private static final int MIN_PRICE = 0;
 
+    @Column
     private BigDecimal price;
 
     protected ProductPrice() {
@@ -27,6 +29,10 @@ public class ProductPrice {
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < MIN_PRICE) {
             throw new IllegalArgumentException();
         }
+    }
+
+    public BigDecimal multiply(long number) {
+        return price.multiply(new BigDecimal(number));
     }
 
     public BigDecimal getPrice() {

@@ -24,6 +24,10 @@ public class Product {
         this.price = price;
     }
 
+    public BigDecimal calculatePrice(long quantity) {
+        return price.multiply(quantity);
+    }
+
     public Product(String name, ProductPrice price) {
         this(null, name, price);
     }
