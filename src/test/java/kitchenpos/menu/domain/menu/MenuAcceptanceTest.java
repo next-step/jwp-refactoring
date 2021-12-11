@@ -19,7 +19,7 @@ import static kitchenpos.utils.AcceptanceFixture.응답_CREATE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-@DisplayName("메뉴 관리")
+@DisplayName("인수 테스트 - 메뉴 관리")
 class MenuAcceptanceTest extends AcceptanceTest {
 
     private void 메뉴_생성됨(ExtractableResponse<Response> actual, MenuRequest menuRequest) {
