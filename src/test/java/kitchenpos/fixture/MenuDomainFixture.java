@@ -20,10 +20,6 @@ public class MenuDomainFixture extends AcceptanceTest {
     public static MenuRequest 후라이드_치킨_요청 = MenuRequest.of(후라이드_치킨.getName(),
             후라이드_치킨.getMenuPrice().getPrice(), 1L);
 
-    public static MenuResponse 후라이드_치킨_생성됨(){
-        return 메뉴_생성_요청(후라이드_치킨_요청).as(MenuResponse.class);
-    }
-
     public static Menu menu(String name, BigDecimal price, MenuGroup menuGroup) {
         return new Menu(name, price, menuGroup);
     }
