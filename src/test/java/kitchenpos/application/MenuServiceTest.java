@@ -11,8 +11,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -22,6 +20,7 @@ import org.mockito.quality.Strictness;
 import kitchenpos.domain.Price;
 import kitchenpos.domain.product.Product;
 import kitchenpos.domain.product.ProductRepository;
+import kitchenpos.dto.MenuDto;
 import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menu.MenuGroup;
 import kitchenpos.domain.menu.MenuGroupRepository;
@@ -86,10 +85,10 @@ public class MenuServiceTest {
         when(productRepository.findById(this.뿌링클콤보_코카콜라.getProduct().getId())).thenReturn(Optional.of(this.코카콜라));
         when(menuRepository.save(any(Menu.class))).thenReturn(this.뿌링클콤보);
 
-        Menu savedMenu = menuService.create(this.뿌링클콤보);
+        MenuDto savedMenu = menuService.create(MenuDto.of(this.뿌링클콤보));
 
         // then
-        Assertions.assertThat(savedMenu).isEqualTo(this.뿌링클콤보);
+        Assertions.assertThat(savedMenu).isEqualTo(MenuDto.of(this.뿌링클콤보));
     }
 
     @DisplayName("메뉴가격이 없으면 예외가 발생한다.")
@@ -101,7 +100,7 @@ public class MenuServiceTest {
         // when
         // then
         Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
-                    .isThrownBy(() -> menuService.create(this.뿌링클콤보));
+                    .isThrownBy(() -> menuService.create(MenuDto.of(this.뿌링클콤보)));
     }
 
     @DisplayName("메뉴에대한 메뉴그룹이 없으면 예외가 발생한다.")
@@ -113,7 +112,7 @@ public class MenuServiceTest {
         // when
         // then
         Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
-                    .isThrownBy(() -> menuService.create(this.뿌링클콤보));
+                    .isThrownBy(() -> menuService.create(MenuDto.of(this.뿌링클콤보)));
     }
 
     @DisplayName("미등록 상품이 포함된 메뉴를 생성시 예외가 발생한다.")
@@ -126,7 +125,7 @@ public class MenuServiceTest {
         // when
         // then
         Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
-                    .isThrownBy(() -> menuService.create(this.뿌링클콤보));
+                    .isThrownBy(() -> menuService.create(MenuDto.of(this.뿌링클콤보)));
     }
 
     @DisplayName("메뉴 가격이 상품의 가격 총합이 보다 클 시 예외가 발생한다.")
@@ -143,7 +142,7 @@ public class MenuServiceTest {
         // when
         // then
         Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
-                    .isThrownBy(() -> menuService.create(this.뿌링클콤보));
+                    .isThrownBy(() -> menuService.create(MenuDto.of(this.뿌링클콤보)));
     }
 
     @DisplayName("메뉴가 조회된다.")
@@ -154,9 +153,9 @@ public class MenuServiceTest {
         when(menuProductRepository.findAllByMenuId(this.뿌링클콤보.getId())).thenReturn(this.뿌링클콤보.getMenuProducts());
 
         // when
-        List<Menu> searchedMenu = menuService.list();
+        List<MenuDto> searchedMenu = menuService.list();
 
         // then
-        Assertions.assertThat(searchedMenu).isEqualTo(List.of(this.뿌링클콤보));
+        Assertions.assertThat(searchedMenu).isEqualTo(List.of(MenuDto.of(this.뿌링클콤보)));
     }
 }

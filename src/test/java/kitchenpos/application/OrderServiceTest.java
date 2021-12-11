@@ -20,6 +20,7 @@ import org.mockito.quality.Strictness;
 
 import kitchenpos.domain.Price;
 import kitchenpos.domain.product.Product;
+import kitchenpos.dto.OrderDto;
 import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menu.MenuProduct;
 import kitchenpos.domain.menu.MenuRepository;
@@ -102,7 +103,7 @@ public class OrderServiceTest {
         this.치킨_주문_단체테이블.changeEmpty(false);
 
         // when
-        Order savedOrder = orderService.create(this.치킨주문);
+        Order savedOrder = orderService.create(OrderDto.of(this.치킨주문));
 
         // then
         Assertions.assertThat(savedOrder).isEqualTo(this.치킨주문);
@@ -119,7 +120,7 @@ public class OrderServiceTest {
         // when
         // then
         Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
-                    .isThrownBy(() -> orderService.create(this.치킨주문));
+                    .isThrownBy(() -> orderService.create(OrderDto.of(this.치킨주문)));
     }
 
     @DisplayName("미등록된 주문테이블에서 주문 시 예외가 발생된다.")
@@ -134,7 +135,7 @@ public class OrderServiceTest {
         // when
         // then
         Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
-                    .isThrownBy(() -> orderService.create(this.치킨주문));
+                    .isThrownBy(() -> orderService.create(OrderDto.of(this.치킨주문)));
     }
 
     @DisplayName("주문테이블이 빈테이블일 시 예외가 발생된다.")
@@ -152,7 +153,7 @@ public class OrderServiceTest {
         // when
         // then
         Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
-                    .isThrownBy(() -> orderService.create(this.치킨주문));
+                    .isThrownBy(() -> orderService.create(OrderDto.of(this.치킨주문)));
     }
 
     @DisplayName("주문이 조회된다.")
@@ -178,7 +179,7 @@ public class OrderServiceTest {
         this.치킨주문.changeOrderStatus(OrderStatus.MEAL);
 
         // when
-        Order chagedOrder = orderService.changeOrderStatus(this.치킨주문.getId(), this.치킨주문);
+        Order chagedOrder = orderService.changeOrderStatus(this.치킨주문.getId(), OrderDto.of(this.치킨주문));
 
         // then
         Assertions.assertThat(chagedOrder).isEqualTo(this.치킨주문);
@@ -195,6 +196,6 @@ public class OrderServiceTest {
         // when
         // then
         Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
-                    .isThrownBy(() -> orderService.changeOrderStatus(this.치킨주문.getId(), this.치킨주문));
+                    .isThrownBy(() -> orderService.changeOrderStatus(this.치킨주문.getId(), OrderDto.of(this.치킨주문)));
     }
 }

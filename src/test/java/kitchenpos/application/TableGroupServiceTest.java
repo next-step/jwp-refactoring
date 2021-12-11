@@ -25,6 +25,7 @@ import kitchenpos.domain.order.OrderTable;
 import kitchenpos.domain.order.OrderTableRepository;
 import kitchenpos.domain.table.TableGroup;
 import kitchenpos.domain.table.TableGroupRepository;
+import kitchenpos.dto.TableGroupDto;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
@@ -62,7 +63,7 @@ public class TableGroupServiceTest {
         when(orderTableRepository.save(any(OrderTable.class))).thenReturn(null);
 
         // when
-        TableGroup createdTableGroup = tableGroupService.create(this.단체주문테이블);
+        TableGroup createdTableGroup = tableGroupService.create(TableGroupDto.of(this.단체주문테이블));
 
         // then
         Assertions.assertThat(createdTableGroup).isEqualTo(this.단체주문테이블);
@@ -81,7 +82,7 @@ public class TableGroupServiceTest {
         // when
         // then
         Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
-                    .isThrownBy(() -> tableGroupService.create(this.단체주문테이블));
+                    .isThrownBy(() -> tableGroupService.create(TableGroupDto.of(this.단체주문테이블)));
     }
 
     @DisplayName("주문테이블의 개수가 2개 미만으로 단체지정시 예외가 발생된다.")
@@ -97,7 +98,7 @@ public class TableGroupServiceTest {
         // when
         // then
         Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
-                    .isThrownBy(() -> tableGroupService.create(this.단체주문테이블));
+                    .isThrownBy(() -> tableGroupService.create(TableGroupDto.of(this.단체주문테이블)));
     }
 
     @DisplayName("미존재 주문테이블가 포함된 단체지정으로 저장시 예외가 발생된다.")
@@ -111,7 +112,7 @@ public class TableGroupServiceTest {
         // when
         // then
         Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
-                    .isThrownBy(() -> tableGroupService.create(this.단체주문테이블));
+                    .isThrownBy(() -> tableGroupService.create(TableGroupDto.of(this.단체주문테이블)));
     }
 
     @DisplayName("단체지정이 될 주문테이블 다른 단체지정에 등록된 경우 예외가 발생된다.")
@@ -124,7 +125,7 @@ public class TableGroupServiceTest {
         // when
         // then
         Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
-                    .isThrownBy(() -> tableGroupService.create(this.단체주문테이블));
+                    .isThrownBy(() -> tableGroupService.create(TableGroupDto.of(this.단체주문테이블)));
     }
 
     @DisplayName("단체지정이 해제된다.")

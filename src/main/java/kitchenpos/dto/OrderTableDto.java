@@ -1,5 +1,7 @@
 package kitchenpos.dto;
 
+import kitchenpos.domain.order.OrderTable;
+
 public class OrderTableDto {
     private Long id;
     private Long tableGroupId;
@@ -18,6 +20,10 @@ public class OrderTableDto {
 
     public static OrderTableDto of(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
         return new OrderTableDto(id, tableGroupId, numberOfGuests, empty);
+    }
+
+    public static OrderTableDto of(OrderTable orderTable) {
+        return new OrderTableDto(orderTable.getId(), orderTable.getTableGroup().getId(), orderTable.getNumberOfGuests(), orderTable.getEmpty());
     }
 
     public Long getId() {

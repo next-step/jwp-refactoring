@@ -9,6 +9,8 @@ import kitchenpos.domain.order.OrderRepository;
 import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.domain.order.OrderTable;
 import kitchenpos.domain.order.OrderTableRepository;
+import kitchenpos.dto.OrderDto;
+import kitchenpos.dto.OrderLineItemDto;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,37 +41,33 @@ public class OrderService {
     }
 
     @Transactional
-    public Order create(final Order order) {
-        final OrderTable orderTable = orderTableRepository.findById(order.getOrderTable().getId()).orElseThrow(IllegalArgumentException::new);
-        final List<OrderLineItem> orderLineItems = order.getOrderLineItems();
+    public Order create(final OrderDto order) {
+        final OrderTable orderTable = orderTableRepository.findById(order.getOrderTableId()).orElseThrow(IllegalArgumentException::new);
+        final List<OrderLineItemDto> orderLineItems = order.getOrderLineItems();
 
         validationOfCreate(orderTable, orderLineItems);
 
-        order.changeOrderTable(orderTable);
-        order.changeOrderStatus(OrderStatus.COOKING);
-        order.changeOrderedTime(LocalDateTime.now());
-
-        final Order savedOrder = orderRepository.save(order);
-        final List<OrderLineItem> savedOrderLineItems = saveOrderLineItem(order, orderLineItems);
+        final Order savedOrder = orderRepository.save(Order.of(orderTable, OrderStatus.COOKING, LocalDateTime.now(), null));
+        final List<OrderLineItem> savedOrderLineItems = saveOrderLineItem(savedOrder, orderLineItems);
 
         savedOrder.changeOrderLineItems(savedOrderLineItems);
 
         return savedOrder;
     }
 
-    private List<OrderLineItem> saveOrderLineItem(final Order order, final List<OrderLineItem> orderLineItems) {
+    private List<OrderLineItem> saveOrderLineItem(final Order order, final List<OrderLineItemDto> orderLineItems) {
         final List<OrderLineItem> savedOrderLineItems = new ArrayList<>();
 
-        for (final OrderLineItem orderLineItem : orderLineItems) {
-            orderLineItem.changeOrder(order);
-            savedOrderLineItems.add(orderLineItemRepository.save(orderLineItem));
+        for (final OrderLineItemDto orderLineItem : orderLineItems) {
+            Menu menu = menuRepository.findById(orderLineItem.getMenuId()).orElseThrow(IllegalArgumentException::new);
+            savedOrderLineItems.add(orderLineItemRepository.save(OrderLineItem.of(order, menu, orderLineItem.getQuantity())));
         }
 
         return savedOrderLineItems;
     }
 
-    private void validationOfCreate(final OrderTable orderTable, final List<OrderLineItem> orderLineItems) {
-        checkEmptyOfOrderLineItem(orderLineItems);
+    private void validationOfCreate(final OrderTable orderTable, final List<OrderLineItemDto> orderLineItems) {
+        checkEmptyOfOrderLineItems(orderLineItems);
         checkExistOfMenu(orderLineItems);
         checkEmptyTable(orderTable);
     }
@@ -80,18 +78,17 @@ public class OrderService {
         }
     }
 
-    private void checkExistOfMenu(final List<OrderLineItem> orderLineItems) {
+    private void checkExistOfMenu(final List<OrderLineItemDto> orderLineItems) {
         final List<Long> menuIds = orderLineItems.stream()
-                .map(OrderLineItem::getMenu)
-                .map(Menu::getId)
-                .collect(Collectors.toList());
+                                                    .map(OrderLineItemDto::getMenuId)
+                                                    .collect(Collectors.toList());
 
         if (orderLineItems.size() != menuRepository.countByIdIn(menuIds)) {
             throw new IllegalArgumentException();
         }
     }
 
-    private void checkEmptyOfOrderLineItem(final List<OrderLineItem> orderLineItems) {
+    private void checkEmptyOfOrderLineItems(final List<OrderLineItemDto> orderLineItems) {
         if (CollectionUtils.isEmpty(orderLineItems)) {
             throw new IllegalArgumentException();
         }
@@ -109,13 +106,13 @@ public class OrderService {
     }
 
     @Transactional
-    public Order changeOrderStatus(final Long orderId, final Order order) {
+    public Order changeOrderStatus(final Long orderId, final OrderDto order) {
         final Order savedOrder = orderRepository.findById(orderId)
-                                                    .orElseThrow(IllegalArgumentException::new);
+                                                .orElseThrow(IllegalArgumentException::new);
 
         validateionOfChageOrderStatus(savedOrder);
 
-        savedOrder.changeOrderStatus(order.getOrderStatus());
+        savedOrder.changeOrderStatus(OrderStatus.valueOf(order.getOrderStatus()));
 
         orderRepository.save(savedOrder);
 

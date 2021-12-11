@@ -15,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.domain.menu.MenuGroup;
 import kitchenpos.domain.menu.MenuGroupRepository;
+import kitchenpos.dto.MenuGroupDto;
 
 @ExtendWith(MockitoExtension.class)
 public class MenuGroupServiceTest {
@@ -39,10 +40,10 @@ public class MenuGroupServiceTest {
         when(menuGroupRepository.save(this.치킨_메뉴그룹)).thenReturn(this.치킨_메뉴그룹);
 
         // when
-        MenuGroup savedMenuGroup = menuGroupService.create(this.치킨_메뉴그룹);
+        MenuGroupDto savedMenuGroup = menuGroupService.create(MenuGroupDto.of(this.치킨_메뉴그룹));
 
         // then
-        Assertions.assertThat(savedMenuGroup).isEqualTo(this.치킨_메뉴그룹);
+        Assertions.assertThat(savedMenuGroup).isEqualTo(MenuGroupDto.of(this.치킨_메뉴그룹));
     }
 
     @DisplayName("메뉴그룹들이 조회된다.")
@@ -56,7 +57,7 @@ public class MenuGroupServiceTest {
         when(menuGroupRepository.findAll()).thenReturn(List.of(this.치킨_메뉴그룹, 사이드_메뉴그룹));
 
         // when
-        List<MenuGroup> searchedMenuGroups = menuGroupService.list();
+        List<MenuGroupDto> searchedMenuGroups = menuGroupService.list();
 
         // then
         Assertions.assertThat(searchedMenuGroups).isEqualTo(List.of(this.치킨_메뉴그룹, 사이드_메뉴그룹));

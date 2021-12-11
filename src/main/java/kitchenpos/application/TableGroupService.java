@@ -6,6 +6,8 @@ import kitchenpos.domain.order.OrderTable;
 import kitchenpos.domain.order.OrderTableRepository;
 import kitchenpos.domain.table.TableGroup;
 import kitchenpos.domain.table.TableGroupRepository;
+import kitchenpos.dto.OrderTableDto;
+import kitchenpos.dto.TableGroupDto;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,18 +31,17 @@ public class TableGroupService {
     }
 
     @Transactional
-    public TableGroup create(final TableGroup tableGroup) {
-        final List<OrderTable> orderTables = tableGroup.getOrderTables();
-
-        final List<Long> orderTableIds = orderTables.stream()
-                                                    .map(OrderTable::getId)
+    public TableGroup create(final TableGroupDto tableGroup) {
+        final List<Long> orderTableIds = tableGroup.getOrderTables().stream()
+                                                    .map(OrderTableDto::getId)
                                                     .collect(Collectors.toList());
+
 
         final List<OrderTable> savedOrderTables = orderTableRepository.findAllByIdIn(orderTableIds);
 
-        validationOfCreate(orderTables, savedOrderTables);
+        validationOfCreate(tableGroup.getOrderTables(), savedOrderTables);
 
-        final TableGroup savedTableGroup = tableGroupRepository.save(TableGroup.of(LocalDateTime.now(), orderTables));
+        final TableGroup savedTableGroup = tableGroupRepository.save(TableGroup.of(LocalDateTime.now(), savedOrderTables));
 
         updateOrderTable(savedOrderTables, savedTableGroup);
 
@@ -57,7 +58,7 @@ public class TableGroupService {
         }
     }
 
-    private void validationOfCreate(final List<OrderTable> orderTables, final List<OrderTable> savedOrderTables) {
+    private void validationOfCreate(final List<OrderTableDto> orderTables, final List<OrderTable> savedOrderTables) {
         checkOrderTableSize(orderTables);
         checkAllExistOfOrderTables(orderTables, savedOrderTables);
         checkHasTableGroupOfSavedOrderTable(savedOrderTables);
@@ -71,13 +72,13 @@ public class TableGroupService {
         }
     }
 
-    private void checkAllExistOfOrderTables(final List<OrderTable> orderTables, final List<OrderTable> savedOrderTables) {
+    private void checkAllExistOfOrderTables(final List<OrderTableDto> orderTables, final List<OrderTable> savedOrderTables) {
         if (orderTables.size() != savedOrderTables.size()) {
             throw new IllegalArgumentException();
         }
     }
 
-    private void checkOrderTableSize(final List<OrderTable> orderTables) {
+    private void checkOrderTableSize(final List<OrderTableDto> orderTables) {
         if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
             throw new IllegalArgumentException();
         }

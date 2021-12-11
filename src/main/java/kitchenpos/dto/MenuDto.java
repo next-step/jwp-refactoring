@@ -1,8 +1,10 @@
 package kitchenpos.dto;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import kitchenpos.domain.Price;
+import kitchenpos.domain.menu.Menu;
 
 public class MenuDto {
     private Long id;
@@ -26,6 +28,12 @@ public class MenuDto {
         return new MenuDto(id, name, price, menuGroupId, menuProducts);
     }
 
+    public static MenuDto of(Menu menu) {         
+        return new MenuDto(menu.getId(), menu.getName(), menu.getPrice(), menu.getMenuGroup().getId(), menu.getMenuProducts().stream()
+                                                                                                            .map(MenuProductDto::of)
+                                                                                                            .collect(Collectors.toList()));
+    }
+
     public Long getId() {
         return this.id;
     }
@@ -43,5 +51,9 @@ public class MenuDto {
     }
     public List<MenuProductDto> getMenuProducts() {
         return this.menuProducts;
+    }
+
+    public Menu toMenu() {
+        return Menu.of(this.id, this.name, this.price, null, null);
     }
 }

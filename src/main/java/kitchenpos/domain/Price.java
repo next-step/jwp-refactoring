@@ -29,6 +29,10 @@ public class Price {
         return new Price(value);
     }
 
+    public static Price of(BigDecimal value) {
+        return new Price(value.intValue());
+    }
+
     public int value() {
         return this.value.intValue();
     }

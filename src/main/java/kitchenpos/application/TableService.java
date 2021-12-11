@@ -7,6 +7,7 @@ import kitchenpos.domain.order.OrderRepository;
 import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.domain.order.OrderTable;
 import kitchenpos.domain.order.OrderTableRepository;
+import kitchenpos.dto.OrderTableDto;
 
 import java.util.Arrays;
 import java.util.List;
@@ -22,10 +23,8 @@ public class TableService {
     }
 
     @Transactional
-    public OrderTable create(final OrderTable orderTable) {
-        orderTable.changeTableGroup(null);
-
-        return orderTableRepository.save(orderTable);
+    public OrderTable create(final OrderTableDto orderTable) {
+        return orderTableRepository.save(OrderTable.of(null, orderTable.getNumberOfGuests()));
     }
 
     @Transactional(readOnly = true)
@@ -34,7 +33,7 @@ public class TableService {
     }
 
     @Transactional
-    public OrderTable changeEmpty(final Long orderTableId, final OrderTable orderTable) {
+    public OrderTable changeEmpty(final Long orderTableId, final OrderTableDto orderTable) {
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                                                                 .orElseThrow(IllegalArgumentException::new);
 
@@ -63,7 +62,7 @@ public class TableService {
     }
 
     @Transactional
-    public OrderTable changeNumberOfGuests(final Long orderTableId, final OrderTable orderTable) {
+    public OrderTable changeNumberOfGuests(final Long orderTableId, final OrderTableDto orderTable) {
         final int numberOfGuests = orderTable.getNumberOfGuests();
 
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)

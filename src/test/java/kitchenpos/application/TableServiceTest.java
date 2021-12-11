@@ -27,6 +27,7 @@ import kitchenpos.domain.order.OrderRepository;
 import kitchenpos.domain.order.OrderTable;
 import kitchenpos.domain.order.OrderTableRepository;
 import kitchenpos.domain.table.TableGroup;
+import kitchenpos.dto.OrderTableDto;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
@@ -62,7 +63,7 @@ public class TableServiceTest {
         when(orderTableRepository.save(any(OrderTable.class))).thenReturn(this.치킨_주문_단체테이블);
 
         // when
-        OrderTable createdOrderTable = tableService.create(this.치킨_주문_단체테이블);
+        OrderTable createdOrderTable = tableService.create(OrderTableDto.of(this.치킨_주문_단체테이블));
 
         // then
         Assertions.assertThat(createdOrderTable).isEqualTo(this.치킨_주문_단체테이블);
@@ -90,7 +91,7 @@ public class TableServiceTest {
         when(orderTableRepository.save(this.치킨_주문_개인테이블)).thenReturn(this.치킨_주문_개인테이블);
 
         // when
-        OrderTable changedOrderTable = tableService.changeEmpty(this.치킨_주문_개인테이블.getId(), this.치킨_주문_개인테이블);
+        OrderTable changedOrderTable = tableService.changeEmpty(this.치킨_주문_개인테이블.getId(), OrderTableDto.of(this.치킨_주문_개인테이블));
 
         // then
         Assertions.assertThat(changedOrderTable).isEqualTo(this.치킨_주문_개인테이블);
@@ -107,7 +108,7 @@ public class TableServiceTest {
         // when
         // then
         Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
-                    .isThrownBy(() -> tableService.changeEmpty(this.치킨_주문_단체테이블.getId(), this.치킨_주문_단체테이블));
+                    .isThrownBy(() -> tableService.changeEmpty(this.치킨_주문_단체테이블.getId(), OrderTableDto.of(this.치킨_주문_단체테이블)));
     }
 
     @DisplayName("주문상태가 계산완료가 아닌 주문테이블의 빈테이블 상태변경시 예외가 발생된다.")
@@ -121,7 +122,7 @@ public class TableServiceTest {
         // when
         // then
         Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
-                      .isThrownBy(() -> tableService.changeEmpty(this.치킨_주문_단체테이블.getId(), this.치킨_주문_단체테이블));
+                      .isThrownBy(() -> tableService.changeEmpty(this.치킨_주문_단체테이블.getId(), OrderTableDto.of(this.치킨_주문_단체테이블)));
     }
 
     @DisplayName("주문테이블의 방문한 손님수가 변경된다.")
@@ -136,7 +137,7 @@ public class TableServiceTest {
         this.치킨_주문_단체테이블.changeEmpty(false);
 
         // when
-        OrderTable changedOrderTable = tableService.changeNumberOfGuests(this.치킨_주문_단체테이블.getId(), this.치킨_주문_단체테이블);
+        OrderTable changedOrderTable = tableService.changeNumberOfGuests(this.치킨_주문_단체테이블.getId(), OrderTableDto.of(this.치킨_주문_단체테이블));
 
         // then
         assertAll(
@@ -158,7 +159,7 @@ public class TableServiceTest {
         // when
         // then
         Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
-                    .isThrownBy(() -> tableService.changeNumberOfGuests(this.치킨_주문_단체테이블.getId(), this.치킨_주문_단체테이블));
+                    .isThrownBy(() -> tableService.changeNumberOfGuests(this.치킨_주문_단체테이블.getId(), OrderTableDto.of(this.치킨_주문_단체테이블)));
 
     }
 
@@ -174,6 +175,6 @@ public class TableServiceTest {
         // when
         // then
         Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
-                   .isThrownBy(() -> tableService.changeNumberOfGuests(this.치킨_주문_단체테이블.getId(), this.치킨_주문_단체테이블));
+                   .isThrownBy(() -> tableService.changeNumberOfGuests(this.치킨_주문_단체테이블.getId(), OrderTableDto.of(this.치킨_주문_단체테이블)));
     }
 }

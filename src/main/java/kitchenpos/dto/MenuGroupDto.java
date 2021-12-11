@@ -1,5 +1,7 @@
 package kitchenpos.dto;
 
+import kitchenpos.domain.menu.MenuGroup;
+
 public class MenuGroupDto {
     private Long id;
     private String name;
@@ -16,8 +18,20 @@ public class MenuGroupDto {
         return new MenuGroupDto(id, name);
     }
 
+    public static MenuGroupDto of(String name) {
+        return new MenuGroupDto(null, name);
+    }
+
+    public static MenuGroupDto of(MenuGroup menuGroup) {
+        return new MenuGroupDto(menuGroup.getId(), menuGroup.getName());
+    }
+
     public Long getId() {
         return this.id;
+    }
+
+    public MenuGroup toMenuGroup() {
+        return MenuGroup.of(this.name);
     }
 
     public String getName() {
