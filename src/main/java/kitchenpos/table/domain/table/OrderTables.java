@@ -17,8 +17,8 @@ public class OrderTables {
     }
 
     public void addOrderTable(TableGroup tableGroup, OrderTable orderTable) {
-        orderTables.add(orderTable);
         orderTable.changeTableGroup(tableGroup);
+        orderTables.add(orderTable);
     }
 
     public void ungroup() {

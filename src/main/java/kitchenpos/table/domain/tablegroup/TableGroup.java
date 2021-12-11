@@ -1,5 +1,6 @@
 package kitchenpos.table.domain.tablegroup;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import kitchenpos.table.domain.table.OrderTable;
 import kitchenpos.table.domain.table.OrderTables;
 import org.springframework.data.annotation.CreatedDate;
@@ -17,6 +18,7 @@ public class TableGroup {
     @CreatedDate
     private LocalDateTime createdDate = LocalDateTime.now();
 
+    @JsonIgnore
     @Embedded
     private OrderTables orderTables = new OrderTables();
 
@@ -28,10 +30,6 @@ public class TableGroup {
 
     public LocalDateTime getCreatedDate() {
         return createdDate;
-    }
-
-    public OrderTables getOrderTables() {
-        return orderTables;
     }
 
     public void addOrderTable(OrderTable orderTable) {
