@@ -2,7 +2,7 @@ package kitchenpos.dto;
 
 import java.util.Objects;
 
-import kitchenpos.domain.order.OrderTable;
+import kitchenpos.domain.table.OrderTable;
 import kitchenpos.domain.table.TableGroup;
 
 public class OrderTableDto {

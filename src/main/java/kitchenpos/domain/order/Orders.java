@@ -13,6 +13,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import kitchenpos.domain.table.OrderTable;
+
 @Entity
 public class Orders {
     @Id
