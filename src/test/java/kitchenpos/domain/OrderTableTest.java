@@ -15,10 +15,10 @@ class OrderTableTest {
     }
 
     @Test
-    void changeEmpty_테이블_그룹에_존재하면_에러를_발생한다() {
+    void checkInTableGroup_테이블_그룹에_존재하면_에러를_발생한다() {
         OrderTable orderTable = new OrderTable(new TableGroup(), 10, false);
         assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> orderTable.changeEmpty(true));
+                .isThrownBy(() -> orderTable.checkInTableGroup());
     }
 
     @Test
@@ -26,12 +26,6 @@ class OrderTableTest {
         OrderTable orderTable = 채워진_테이블();
         orderTable.changeNumberOfGuests(10);
         assertThat(orderTable.getNumberOfGuests()).isEqualTo(10);
-    }
-
-    @Test
-    void changeNumberOfGuests_비어있는_테이블의_테이블_손님_수를_변경하면_에러를_발생한다() {
-        assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> 빈_테이블().changeNumberOfGuests(10));
     }
 
     @Test

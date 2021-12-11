@@ -42,16 +42,16 @@ public class OrderTable {
     }
 
     public void changeEmpty(boolean empty) {
-        if (Objects.nonNull(tableGroup)) {
-            throw new IllegalArgumentException();
-        }
         this.empty = empty;
     }
 
-    public void changeNumberOfGuests(int numberOfGuests) {
-        if (empty) {
+    public void checkInTableGroup() {
+        if (Objects.nonNull(tableGroup)) {
             throw new IllegalArgumentException();
         }
+    }
+
+    public void changeNumberOfGuests(int numberOfGuests) {
         this.numberOfGuests = new NumberOfGuests(numberOfGuests);
     }
 

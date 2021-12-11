@@ -35,18 +35,20 @@ public class TableService {
     public OrderTable changeEmpty(final Long orderTableId, final TableRequest request) {
         checkCompleteTable(orderTableId);
 
-        final OrderTable savedOrderTable = getOrderTable(orderTableId);
-        savedOrderTable.changeEmpty(request.isEmpty());
+        final OrderTable table = getOrderTable(orderTableId);
+        table.checkInTableGroup();
+        table.changeEmpty(request.isEmpty());
 
-        return savedOrderTable;
+        return table;
     }
 
     @Transactional
     public OrderTable changeNumberOfGuests(final Long orderTableId, final TableRequest request) {
-        final OrderTable savedOrderTable = getOrderTable(orderTableId);
-        savedOrderTable.changeNumberOfGuests(request.getNumberOfGuests());
+        final OrderTable table = getOrderTable(orderTableId);
+        table.checkEmpty();
+        table.changeNumberOfGuests(request.getNumberOfGuests());
 
-        return savedOrderTable;
+        return table;
     }
 
     private void checkCompleteTable(Long orderTableId) {
