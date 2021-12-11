@@ -2,7 +2,6 @@ package kitchenpos.application;
 
 import kitchenpos.domain.Price;
 import kitchenpos.domain.product.Product;
-import kitchenpos.domain.product.ProductRepository;
 import kitchenpos.dto.MenuDto;
 import kitchenpos.dto.MenuProductDto;
 import kitchenpos.domain.menu.Menu;
@@ -24,18 +23,18 @@ public class MenuService {
     private final MenuRepository menuRepository;
     private final MenuGroupRepository menuGroupRepository;
     private final MenuProductRepository menuProductRepository;
-    private final ProductRepository productRepository;
+    private final ProductService productService;
 
     public MenuService(
         final MenuRepository menuRepository,
         final MenuGroupRepository menuGroupRepository,
         final MenuProductRepository menuProductRepository,
-        final ProductRepository productRepository
+        final ProductService productService
     ) {
         this.menuRepository = menuRepository;
         this.menuGroupRepository = menuGroupRepository;
         this.menuProductRepository = menuProductRepository;
-        this.productRepository = productRepository;
+        this.productService = productService;
     }
 
     @Transactional
@@ -68,8 +67,7 @@ public class MenuService {
         Price sum = Price.of(0);
 
         for (final MenuProductDto menuProduct : menuProducts) {
-            final Product product = productRepository.findById(menuProduct.getProductId())
-                                                        .orElseThrow(IllegalArgumentException::new);
+            final Product product = productService.findById(menuProduct.getProductId());
 
             sum = sum.add(product.getPrice().multiply(menuProduct.getQuantity()));
         }
@@ -81,7 +79,7 @@ public class MenuService {
         final List<MenuProduct> savedMenuProducts = new ArrayList<>();
 
         for (MenuProductDto menuProductDto : menuProducts) {
-            Product product = productRepository.findById(menuProductDto.getProductId()).orElseThrow(IllegalArgumentException::new);
+            Product product = productService.findById(menuProductDto.getProductId());
             savedMenuProducts.add(menuProductRepository.save(MenuProduct.of(savedMenu, product, menuProductDto.getQuantity())));
         }
 
@@ -98,5 +96,13 @@ public class MenuService {
         return menus.stream()
                     .map(MenuDto::of)
                     .collect(Collectors.toList());
+    }
+
+    public Menu findById(Long menuId) {
+        return menuRepository.findById(menuId).orElseThrow(IllegalArgumentException::new);
+    }
+
+    public long countByIdIn(List<Long> menuIds) {
+        return menuRepository.countByIdIn(menuIds);
     }
 }

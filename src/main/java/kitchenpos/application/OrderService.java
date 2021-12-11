@@ -1,7 +1,6 @@
 package kitchenpos.application;
 
 import kitchenpos.domain.menu.Menu;
-import kitchenpos.domain.menu.MenuRepository;
 import kitchenpos.domain.order.Orders;
 import kitchenpos.domain.order.OrderLineItem;
 import kitchenpos.domain.order.OrderLineItemRepository;
@@ -23,18 +22,18 @@ import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
-    private final MenuRepository menuRepository;
+    private final MenuService menuService;
     private final OrdersRepository orderRepository;
     private final OrderLineItemRepository orderLineItemRepository;
     private final OrderTableRepository orderTableRepository;
 
     public OrderService(
-            final MenuRepository menuRepository,
+            final MenuService menuService,
             final OrdersRepository orderRepository,
             final OrderLineItemRepository orderLineItemRepository,
             final OrderTableRepository orderTableRepository
     ) {
-        this.menuRepository = menuRepository;
+        this.menuService = menuService;
         this.orderRepository = orderRepository;
         this.orderLineItemRepository = orderLineItemRepository;
         this.orderTableRepository = orderTableRepository;
@@ -59,7 +58,7 @@ public class OrderService {
         final List<OrderLineItem> savedOrderLineItems = new ArrayList<>();
 
         for (final OrderLineItemDto orderLineItem : orderLineItems) {
-            Menu menu = menuRepository.findById(orderLineItem.getMenuId()).orElseThrow(IllegalArgumentException::new);
+            Menu menu = menuService.findById(orderLineItem.getMenuId());
             savedOrderLineItems.add(orderLineItemRepository.save(OrderLineItem.of(order, menu, orderLineItem.getQuantity())));
         }
 
@@ -83,7 +82,7 @@ public class OrderService {
                                                     .map(OrderLineItemDto::getMenuId)
                                                     .collect(Collectors.toList());
 
-        if (orderLineItems.size() != menuRepository.countByIdIn(menuIds)) {
+        if (orderLineItems.size() != menuService.countByIdIn(menuIds)) {
             throw new IllegalArgumentException();
         }
     }
@@ -125,5 +124,13 @@ public class OrderService {
         if (OrderStatus.COMPLETION.equals(savedOrder.getOrderStatus())) {
             throw new IllegalArgumentException();
         }
+    }
+
+    public boolean existsByOrderTableIdAndOrderStatusIn(Long orderTableId, List<OrderStatus> orderStatuses) {
+        return orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTableId, orderStatuses);
+    }
+
+    public boolean existsByOrderTableIdInAndOrderStatusIn(List<Long> orderTableIds, List<OrderStatus> orderStatuses) {
+        return orderRepository.existsByOrderTableIdInAndOrderStatusIn(orderTableIds, orderStatuses);
     }
 }

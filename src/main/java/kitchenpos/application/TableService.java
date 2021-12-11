@@ -3,7 +3,6 @@ package kitchenpos.application;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kitchenpos.domain.order.OrdersRepository;
 import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.domain.order.OrderTable;
 import kitchenpos.domain.order.OrderTableRepository;
@@ -14,11 +13,11 @@ import java.util.List;
 
 @Service
 public class TableService {
-    private final OrdersRepository orderRepository;
+    private final OrderService orderService;
     private final OrderTableRepository orderTableRepository;
 
-    public TableService(final OrdersRepository orderRepository, final OrderTableRepository orderTableRepository) {
-        this.orderRepository = orderRepository;
+    public TableService(final  OrderService orderService, final OrderTableRepository orderTableRepository) {
+        this.orderService = orderService;
         this.orderTableRepository = orderTableRepository;
     }
 
@@ -50,7 +49,9 @@ public class TableService {
     }
 
     private void checkOrderStatusOfOrderTable(final Long orderTableId) {
-        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
+        
+        
+        if (orderService.existsByOrderTableIdAndOrderStatusIn(orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
             throw new IllegalArgumentException();
         }
     }

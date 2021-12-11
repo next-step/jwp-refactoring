@@ -1,6 +1,5 @@
 package kitchenpos.application;
 
-import kitchenpos.domain.order.OrdersRepository;
 import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.domain.order.OrderTable;
 import kitchenpos.domain.order.OrderTableRepository;
@@ -20,12 +19,12 @@ import java.util.stream.Collectors;
 
 @Service
 public class TableGroupService {
-    private final OrdersRepository orderRepository;
+    private final OrderService orderService;
     private final OrderTableRepository orderTableRepository;
     private final TableGroupRepository tableGroupRepository;
 
-    public TableGroupService(final OrdersRepository orderRepository, final OrderTableRepository orderTableRepository, final TableGroupRepository tableGroupRepository) {
-        this.orderRepository = orderRepository;
+    public TableGroupService(final OrderService orderService, final OrderTableRepository orderTableRepository, final TableGroupRepository tableGroupRepository) {
+        this.orderService = orderService;
         this.orderTableRepository = orderTableRepository;
         this.tableGroupRepository = tableGroupRepository;
     }
@@ -102,8 +101,7 @@ public class TableGroupService {
     }
 
     private void validationOfUpgroup(final List<Long> orderTableIds) {
-        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
-                orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
+        if (orderService.existsByOrderTableIdInAndOrderStatusIn(orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
             throw new IllegalArgumentException();
         }
     }

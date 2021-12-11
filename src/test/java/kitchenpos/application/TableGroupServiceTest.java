@@ -20,7 +20,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
-import kitchenpos.domain.order.OrdersRepository;
 import kitchenpos.domain.order.OrderTable;
 import kitchenpos.domain.order.OrderTableRepository;
 import kitchenpos.domain.table.TableGroup;
@@ -31,7 +30,7 @@ import kitchenpos.dto.TableGroupDto;
 @MockitoSettings(strictness = Strictness.LENIENT)
 public class TableGroupServiceTest {
     @Mock
-    private OrdersRepository orderRepository;
+    private OrderService orderService;
 
     @Mock
     private OrderTableRepository orderTableRepository;
@@ -145,7 +144,7 @@ public class TableGroupServiceTest {
     @Test
     void exception_updateTableUnGroup_notCompletionOrderStatus() {
         // given
-        when(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(),anyList())).thenReturn(true);
+        when(orderService.existsByOrderTableIdInAndOrderStatusIn(anyList(),anyList())).thenReturn(true);
         when(orderTableRepository.findAllByTableGroupId(this.단체주문테이블.getId())).thenReturn(this.단체주문테이블.getOrderTables());
 
         // when

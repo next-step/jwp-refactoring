@@ -1,6 +1,7 @@
 package kitchenpos.application;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
@@ -19,7 +20,6 @@ import org.mockito.quality.Strictness;
 
 import kitchenpos.domain.Price;
 import kitchenpos.domain.product.Product;
-import kitchenpos.domain.product.ProductRepository;
 import kitchenpos.dto.MenuDto;
 import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menu.MenuGroup;
@@ -41,13 +41,12 @@ public class MenuServiceTest {
     private MenuProductRepository menuProductRepository;
 
     @Mock
-    private ProductRepository productRepository;
+    private ProductService productService;
 
     @InjectMocks
     private MenuService menuService;
 
     private MenuGroup 치킨_메뉴그룹;
-    private MenuGroup 사이드_메뉴그룹;
 
     private Menu 뿌링클콤보;
 
@@ -62,7 +61,6 @@ public class MenuServiceTest {
     @BeforeEach
     void setUp() {
         치킨_메뉴그룹 = MenuGroup.of(1L, "치킨");
-        사이드_메뉴그룹 = MenuGroup.of(2L, "사이드");
 
         뿌링클치킨 = Product.of(1L, "뿌링클치킨", Price.of(15_000));
         치킨무 = Product.of(2L, "치킨무", Price.of(1_000));
@@ -80,9 +78,9 @@ public class MenuServiceTest {
     void craete_menu() {
         // when
         when(menuGroupRepository.findById(this.뿌링클콤보.getMenuGroup().getId())).thenReturn(Optional.of(this.치킨_메뉴그룹));
-        when(productRepository.findById(this.뿌링클콤보_뿌링클치킨.getProduct().getId())).thenReturn(Optional.of(this.뿌링클치킨));
-        when(productRepository.findById(this.뿌링클콤보_치킨무.getProduct().getId())).thenReturn(Optional.of(this.치킨무));
-        when(productRepository.findById(this.뿌링클콤보_코카콜라.getProduct().getId())).thenReturn(Optional.of(this.코카콜라));
+        when(productService.findById(this.뿌링클콤보_뿌링클치킨.getProduct().getId())).thenReturn(this.뿌링클치킨);
+        when(productService.findById(this.뿌링클콤보_치킨무.getProduct().getId())).thenReturn(this.치킨무);
+        when(productService.findById(this.뿌링클콤보_코카콜라.getProduct().getId())).thenReturn(this.코카콜라);
         when(menuProductRepository.save(any(MenuProduct.class))).thenReturn(MenuProduct.of(this.뿌링클콤보, this.뿌링클콤보_뿌링클치킨.getProduct(), this.뿌링클콤보_뿌링클치킨.getQuantity()),
                                                                             MenuProduct.of(this.뿌링클콤보, this.뿌링클콤보_치킨무.getProduct(), 뿌링클콤보_치킨무.getQuantity()),
                                                                             MenuProduct.of(this.뿌링클콤보, this.뿌링클콤보_코카콜라.getProduct(), 뿌링클콤보_코카콜라.getQuantity())
@@ -100,7 +98,10 @@ public class MenuServiceTest {
     @Test
     void exception_createMenu_containNotExistMenuGroup() {
         // given
-        this.뿌링클콤보.changeMenuGroup(this.사이드_메뉴그룹);
+        when(productService.findById(this.뿌링클콤보_뿌링클치킨.getProduct().getId())).thenReturn(this.뿌링클치킨);
+        when(productService.findById(this.뿌링클콤보_치킨무.getProduct().getId())).thenReturn(this.치킨무);
+        when(productService.findById(this.뿌링클콤보_코카콜라.getProduct().getId())).thenReturn(this.코카콜라);
+        when(menuGroupRepository.findById(anyLong())).thenThrow(IllegalArgumentException.class);
 
         // when
         // then
@@ -112,8 +113,11 @@ public class MenuServiceTest {
     @Test
     void exception_createMenu_notExistProduct() {
         // given
+        when(productService.findById(this.뿌링클콤보_뿌링클치킨.getProduct().getId())).thenReturn(this.뿌링클치킨);
+        when(productService.findById(this.뿌링클콤보_치킨무.getProduct().getId())).thenReturn(this.치킨무);
+        when(productService.findById(this.뿌링클콤보_코카콜라.getProduct().getId())).thenReturn(this.코카콜라);
         when(menuGroupRepository.existsById(this.치킨_메뉴그룹.getId())).thenReturn(true);
-        when(productRepository.findById(this.코카콜라.getId())).thenThrow(IllegalArgumentException.class);
+        when(productService.findById(this.코카콜라.getId())).thenThrow(IllegalArgumentException.class);
 
         // when
         // then
@@ -126,10 +130,9 @@ public class MenuServiceTest {
     void exception_createMenu_productPriceSumGreaterThanMenuPrice() {
         // given
         when(menuGroupRepository.existsById(this.치킨_메뉴그룹.getId())).thenReturn(true);
-        when(productRepository.findById(this.뿌링클콤보_뿌링클치킨.getProduct().getId())).thenReturn(Optional.of(this.뿌링클치킨));
-        when(productRepository.findById(this.뿌링클콤보_치킨무.getProduct().getId())).thenReturn(Optional.of(this.치킨무));
-        when(productRepository.findById(this.뿌링클콤보_코카콜라.getProduct().getId())).thenReturn(Optional.of(this.코카콜라));
-
+        when(productService.findById(this.뿌링클콤보_뿌링클치킨.getProduct().getId())).thenReturn(this.뿌링클치킨);
+        when(productService.findById(this.뿌링클콤보_치킨무.getProduct().getId())).thenReturn(this.치킨무);
+        when(productService.findById(this.뿌링클콤보_코카콜라.getProduct().getId())).thenReturn(this.코카콜라);
         this.뿌링클콤보.changePrice(Price.of(20_000));
 
         // when
