@@ -44,9 +44,23 @@ public class Order {
         this.orderLineItems = orderLineItems;
     }
 
+    public Order(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
+    }
+
     public void addOrderLineItems(List<OrderLineItem> orderLineItems) {
         orderLineItems.forEach(orderLineItem -> orderLineItem.addMenu(this));
         this.orderLineItems = orderLineItems;
+    }
+
+    public void checkCompleteOrder() {
+        if (orderStatus.isComplete()) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    public void changeOrderStatus(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
     }
 
     public Long getId() {
@@ -75,9 +89,5 @@ public class Order {
 
     public List<OrderLineItem> getOrderLineItems() {
         return orderLineItems;
-    }
-
-    public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
-        this.orderLineItems = orderLineItems;
     }
 }

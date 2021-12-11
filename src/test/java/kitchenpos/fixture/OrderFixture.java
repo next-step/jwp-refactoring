@@ -6,6 +6,7 @@ import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.OrderLineItemRequest;
 import kitchenpos.dto.OrderRequest;
+import kitchenpos.dto.OrderStatusRequest;
 
 import java.util.Arrays;
 import java.util.List;
@@ -46,5 +47,9 @@ public class OrderFixture {
 
     public static OrderRequest 주문_요청(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
         return 주문_요청(orderTable.getId(), orderLineItems);
+    }
+
+    public static OrderStatusRequest 주문_상태_변경_요청(OrderStatus orderStatus) {
+        return new OrderStatusRequest(orderStatus);
     }
 }

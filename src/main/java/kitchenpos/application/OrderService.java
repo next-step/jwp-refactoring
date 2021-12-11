@@ -7,12 +7,12 @@ import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.*;
 import kitchenpos.dto.OrderLineItemRequest;
 import kitchenpos.dto.OrderRequest;
+import kitchenpos.dto.OrderStatusRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -47,6 +47,24 @@ public class OrderService {
         return orderDao.save(order);
     }
 
+    public List<Order> list() {
+        return orderDao.findAll();
+    }
+
+    @Transactional
+    public Order changeOrderStatus(final Long orderId, final OrderStatusRequest request) {
+        final Order savedOrder = getOrder(orderId);
+        savedOrder.checkCompleteOrder();
+        savedOrder.changeOrderStatus(request.getOrderStatus());
+
+        return savedOrder;
+    }
+
+    private Order getOrder(Long orderId) {
+        return orderDao.findById(orderId)
+                .orElseThrow(IllegalArgumentException::new);
+    }
+
     private void checkMenus(OrderRequest request) {
         final List<Long> menuIds = request.getMenuIds();
 
@@ -72,28 +90,5 @@ public class OrderService {
 
     private Menu getMenu(Long menuId) {
         return menuDao.findById(menuId).orElseThrow(IllegalArgumentException::new);
-    }
-
-    public List<Order> list() {
-        return orderDao.findAll();
-    }
-
-    @Transactional
-    public Order changeOrderStatus(final Long orderId, final Order order) {
-        final Order savedOrder = orderDao.findById(orderId)
-                .orElseThrow(IllegalArgumentException::new);
-
-        if (Objects.equals(OrderStatus.COMPLETION, savedOrder.getOrderStatus())) {
-            throw new IllegalArgumentException();
-        }
-
-        final OrderStatus orderStatus = order.getOrderStatus();
-        savedOrder.setOrderStatus(orderStatus);
-
-        orderDao.save(savedOrder);
-
-        savedOrder.setOrderLineItems(orderLineItemDao.findAllByOrderId(orderId));
-
-        return savedOrder;
     }
 }
