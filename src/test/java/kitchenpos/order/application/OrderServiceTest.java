@@ -28,7 +28,7 @@ import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.ui.request.OrderLineItemRequest;
 import kitchenpos.order.ui.request.OrderRequest;
 import kitchenpos.order.ui.request.OrderStatusRequest;
-import kitchenpos.table.domain.OrderTableDao;
+import kitchenpos.table.application.TableService;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -47,7 +47,7 @@ class OrderServiceTest {
     @Mock
     private OrderRepository orderRepository;
     @Mock
-    private OrderTableDao orderTableDao;
+    private TableService tableService;
 
     @InjectMocks
     private OrderService orderService;
@@ -65,7 +65,7 @@ class OrderServiceTest {
             orderLineItems);
 
         when(menuDao.countByIdIn(anyList())).thenReturn(1L);
-        when(orderTableDao.findById(orderTableId))
+        when(tableService.findById(orderTableId))
             .thenReturn(Optional.of(채워진_다섯명_테이블()));
 
         Order order = 조리중인_후라이트치킨세트_두개_주문();
@@ -115,7 +115,7 @@ class OrderServiceTest {
         OrderRequest orderRequest = new OrderRequest(1L,
             Collections.singletonList(new OrderLineItemRequest(1L, 2)));
         when(menuDao.countByIdIn(anyList())).thenReturn(1L);
-        when(orderTableDao.findById(anyLong())).thenReturn(Optional.empty());
+        when(tableService.findById(anyLong())).thenReturn(Optional.empty());
 
         //when
         ThrowingCallable createCallable = () -> orderService.create(orderRequest);
@@ -132,7 +132,7 @@ class OrderServiceTest {
         OrderRequest orderRequest = new OrderRequest(1L,
             Collections.singletonList(new OrderLineItemRequest(1L, 2)));
         when(menuDao.countByIdIn(anyList())).thenReturn(1L);
-        when(orderTableDao.findById(anyLong()))
+        when(tableService.findById(anyLong()))
             .thenReturn(Optional.of(빈_세명_테이블()));
 
         //when

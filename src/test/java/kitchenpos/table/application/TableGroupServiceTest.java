@@ -1,27 +1,24 @@
 package kitchenpos.table.application;
 
-import static kitchenpos.table.application.sample.OrderTableSample.빈_세명_테이블;
 import static kitchenpos.table.application.sample.OrderTableSample.빈_두명_테이블;
+import static kitchenpos.table.application.sample.OrderTableSample.빈_세명_테이블;
 import static kitchenpos.table.application.sample.OrderTableSample.채워진_다섯명_테이블;
 import static kitchenpos.table.application.sample.TableGroupSample.tableGroup;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.tuple;
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
-import kitchenpos.order.domain.OrderDao;
-import kitchenpos.table.domain.OrderTableDao;
-import kitchenpos.table.domain.TableGroupDao;
+import kitchenpos.order.application.OrderService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.domain.TableGroupRepository;
 import kitchenpos.table.ui.request.TableGroupRequest;
 import kitchenpos.table.ui.request.TableGroupRequest.OrderTableIdRequest;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
@@ -38,11 +35,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class TableGroupServiceTest {
 
     @Mock
-    private OrderDao orderDao;
+    private TableGroupRepository tableGroupRepository;
     @Mock
-    private OrderTableDao orderTableDao;
+    private TableService tableService;
     @Mock
-    private TableGroupDao tableGroupDao;
+    private OrderService orderService;
 
     @InjectMocks
     private TableGroupService tableGroupService;
@@ -54,20 +51,17 @@ class TableGroupServiceTest {
         TableGroupRequest request = new TableGroupRequest(
             Arrays.asList(new OrderTableIdRequest(1L), new OrderTableIdRequest(2L)));
 
-        when(orderTableDao.findAllByIdIn(anyList()))
+        when(tableService.findAllByIdIn(anyList()))
             .thenReturn(Arrays.asList(빈_두명_테이블(), 빈_세명_테이블()));
 
         TableGroup savedTableGroup = tableGroup();
-        when(tableGroupDao.save(any())).thenReturn(savedTableGroup);
+        when(tableGroupRepository.save(any())).thenReturn(savedTableGroup);
 
         //when
         tableGroupService.create(request);
 
         //then
-        assertAll(
-            this::requestedTableGroupSave,
-            () -> requestedOrderTableSave(savedTableGroup)
-        );
+        requestedTableGroupSave();
     }
 
     @Test
@@ -92,7 +86,7 @@ class TableGroupServiceTest {
         TableGroupRequest request = new TableGroupRequest(
             Arrays.asList(new OrderTableIdRequest(1L), new OrderTableIdRequest(2L)));
 
-        when(orderTableDao.findAllByIdIn(anyList()))
+        when(tableService.findAllByIdIn(anyList()))
             .thenReturn(Collections.singletonList(빈_두명_테이블()));
 
         //when
@@ -110,7 +104,7 @@ class TableGroupServiceTest {
         TableGroupRequest request = new TableGroupRequest(
             Arrays.asList(new OrderTableIdRequest(1L), new OrderTableIdRequest(2L)));
 
-        when(orderTableDao.findAllByIdIn(anyList()))
+        when(tableService.findAllByIdIn(anyList()))
             .thenReturn(Arrays.asList(빈_두명_테이블(), 채워진_다섯명_테이블()));
 
         //when
@@ -128,11 +122,11 @@ class TableGroupServiceTest {
         long tableGroupId = 1L;
 
         OrderTable orderTable = 채워진_다섯명_테이블();
-        orderTable.setTableGroupId(tableGroupId);
-        when(orderTableDao.findAllByTableGroupId(tableGroupId))
+        orderTable.setTableGroup(tableGroup());
+        when(tableService.findAllByTableGroupId(tableGroupId))
             .thenReturn(Collections.singletonList(orderTable));
 
-        when(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList()))
+        when(orderService.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList()))
             .thenReturn(false);
 
         //when
@@ -140,7 +134,6 @@ class TableGroupServiceTest {
 
         //then
         ArgumentCaptor<OrderTable> orderTableCaptor = ArgumentCaptor.forClass(OrderTable.class);
-        verify(orderTableDao, times(1)).save(orderTableCaptor.capture());
         assertThat(orderTableCaptor.getValue())
             .extracting(OrderTable::getTableGroupId)
             .isNull();
@@ -153,11 +146,11 @@ class TableGroupServiceTest {
         long tableGroupId = 1L;
 
         OrderTable orderTable = 채워진_다섯명_테이블();
-        orderTable.setTableGroupId(tableGroupId);
-        when(orderTableDao.findAllByTableGroupId(tableGroupId))
+        orderTable.setTableGroup(tableGroup());
+        when(tableService.findAllByTableGroupId(tableGroupId))
             .thenReturn(Collections.singletonList(orderTable));
 
-        when(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList()))
+        when(orderService.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList()))
             .thenReturn(true);
 
         //when
@@ -168,21 +161,15 @@ class TableGroupServiceTest {
             .isThrownBy(createCallable);
     }
 
-    private void requestedOrderTableSave(TableGroup tableGroup) {
-        ArgumentCaptor<OrderTable> orderTableCaptor = ArgumentCaptor.forClass(OrderTable.class);
-        verify(orderTableDao, times(2)).save(orderTableCaptor.capture());
-        assertThat(orderTableCaptor.getAllValues())
+    private void requestedTableGroupSave() {
+        ArgumentCaptor<TableGroup> tableGroupCaptor = ArgumentCaptor.forClass(TableGroup.class);
+        verify(tableGroupRepository, times(1)).save(tableGroupCaptor.capture());
+        TableGroup tableGroup = tableGroupCaptor.getValue();
+        assertThat(tableGroup.getOrderTables().list())
             .extracting(OrderTable::isEmpty, OrderTable::getTableGroupId)
             .containsExactly(
                 tuple(false, tableGroup.getId()),
                 tuple(false, tableGroup.getId())
             );
-    }
-
-    private void requestedTableGroupSave() {
-        ArgumentCaptor<TableGroup> tableGroupCaptor = ArgumentCaptor.forClass(TableGroup.class);
-        verify(tableGroupDao, times(1)).save(tableGroupCaptor.capture());
-        assertThat(tableGroupCaptor.getValue().getCreatedDate())
-            .isEqualToIgnoringMinutes(LocalDateTime.now());
     }
 }

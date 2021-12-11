@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.domain.TableGroup;
 
 public class TableGroupRequest {
@@ -25,9 +26,9 @@ public class TableGroupRequest {
     public TableGroup toEntity() {
         TableGroup tableGroup = new TableGroup();
         tableGroup.setCreatedDate(LocalDateTime.now());
-        tableGroup.setOrderTables(orderTables.stream()
+        tableGroup.setOrderTables(OrderTables.from(orderTables.stream()
             .map(OrderTableIdRequest::toEntity)
-            .collect(Collectors.toList()));
+            .collect(Collectors.toList())));
         return tableGroup;
     }
 

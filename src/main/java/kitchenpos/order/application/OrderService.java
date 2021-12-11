@@ -11,8 +11,8 @@ import kitchenpos.order.ui.request.OrderLineItemRequest;
 import kitchenpos.order.ui.request.OrderRequest;
 import kitchenpos.order.ui.request.OrderStatusRequest;
 import kitchenpos.order.ui.response.OrderResponse;
+import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableDao;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -22,14 +22,13 @@ public class OrderService {
 
     private final MenuDao menuDao;
     private final OrderRepository orderRepository;
-    private final OrderTableDao orderTableDao;
+    private final TableService tableService;
 
     public OrderService(MenuDao menuDao,
-        OrderRepository orderRepository,
-        OrderTableDao orderTableDao) {
+        OrderRepository orderRepository, TableService tableService) {
         this.menuDao = menuDao;
         this.orderRepository = orderRepository;
-        this.orderTableDao = orderTableDao;
+        this.tableService = tableService;
     }
 
     @Transactional
@@ -48,7 +47,7 @@ public class OrderService {
             throw new IllegalArgumentException();
         }
 
-        final OrderTable orderTable = orderTableDao.findById(request.getOrderTableId())
+        final OrderTable orderTable = tableService.findById(request.getOrderTableId())
             .orElseThrow(IllegalArgumentException::new);
 
         if (orderTable.isEmpty()) {
@@ -73,5 +72,14 @@ public class OrderService {
 
         savedOrder.setOrderStatus(request.status());
         return OrderResponse.from(savedOrder);
+    }
+
+    public boolean existsByOrderTableIdAndOrderStatusIn(long orderTableId, List<OrderStatus> asList) {
+        return orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTableId, asList);
+    }
+
+    public boolean existsByOrderTableIdInAndOrderStatusIn(List<Long> orderTableIds,
+        List<OrderStatus> asList) {
+        return orderRepository.existsByOrderTableIdInAndOrderStatusIn(orderTableIds, asList);
     }
 }

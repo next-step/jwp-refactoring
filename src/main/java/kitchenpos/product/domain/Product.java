@@ -15,7 +15,7 @@ public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private long id;
 
     @Embedded
     private Name name;
@@ -37,7 +37,7 @@ public class Product {
         return new Product(name, price);
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 

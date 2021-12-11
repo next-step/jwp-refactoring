@@ -1,8 +1,9 @@
 package kitchenpos.table.application;
 
-import static kitchenpos.table.application.sample.OrderTableSample.빈_세명_테이블;
 import static kitchenpos.table.application.sample.OrderTableSample.빈_두명_테이블;
+import static kitchenpos.table.application.sample.OrderTableSample.빈_세명_테이블;
 import static kitchenpos.table.application.sample.OrderTableSample.채워진_다섯명_테이블;
+import static kitchenpos.table.application.sample.TableGroupSample.tableGroup;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
@@ -14,9 +15,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
-import kitchenpos.order.domain.OrderDao;
-import kitchenpos.table.domain.OrderTableDao;
+import kitchenpos.order.application.OrderService;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.ui.request.OrderTableRequest;
 import kitchenpos.table.ui.request.TableGuestsCountRequest;
 import kitchenpos.table.ui.request.TableStatusRequest;
@@ -34,9 +35,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class TableServiceTest {
 
     @Mock
-    private OrderDao orderDao;
+    private OrderService orderService;
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @InjectMocks
     private TableService tableService;
@@ -46,14 +47,14 @@ class TableServiceTest {
     void create() {
         //given
         OrderTableRequest request = new OrderTableRequest(3, true);
-        when(orderTableDao.save(any())).thenReturn(빈_세명_테이블());
+        when(orderTableRepository.save(any())).thenReturn(빈_세명_테이블());
 
         //when
         tableService.create(request);
 
         //then
         ArgumentCaptor<OrderTable> orderTableCaptor = ArgumentCaptor.forClass(OrderTable.class);
-        verify(orderTableDao, only()).save(orderTableCaptor.capture());
+        verify(orderTableRepository, only()).save(orderTableCaptor.capture());
         assertThat(orderTableCaptor.getValue())
             .extracting(
                 OrderTable::getTableGroupId, OrderTable::getNumberOfGuests, OrderTable::isEmpty)
@@ -67,7 +68,7 @@ class TableServiceTest {
         tableService.list();
 
         //then
-        verify(orderTableDao, only()).findAll();
+        verify(orderTableRepository, only()).findAll();
     }
 
     @Test
@@ -76,17 +77,18 @@ class TableServiceTest {
         //given
         TableStatusRequest request = new TableStatusRequest(true);
 
-        when(orderTableDao.findById(anyLong()))
+        when(orderTableRepository.findById(anyLong()))
             .thenReturn(Optional.of(채워진_다섯명_테이블()));
-        when(orderDao.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).thenReturn(false);
-        when(orderTableDao.save(any())).thenReturn(채워진_다섯명_테이블());
+        when(orderService.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList()))
+            .thenReturn(false);
+        when(orderTableRepository.save(any())).thenReturn(채워진_다섯명_테이블());
 
         //when
         tableService.changeEmpty(1L, request);
 
         //then
         ArgumentCaptor<OrderTable> orderTableCaptor = ArgumentCaptor.forClass(OrderTable.class);
-        verify(orderTableDao, times(1)).save(orderTableCaptor.capture());
+        verify(orderTableRepository, times(1)).save(orderTableCaptor.capture());
         assertThat(orderTableCaptor.getValue())
             .extracting(OrderTable::isEmpty)
             .isEqualTo(request.isEmpty());
@@ -97,7 +99,7 @@ class TableServiceTest {
     void changeEmpty_notExistOrderTable_thrownException() {
         //given
         TableStatusRequest request = new TableStatusRequest(false);
-        when(orderTableDao.findById(anyLong())).thenReturn(Optional.empty());
+        when(orderTableRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         //when
         ThrowingCallable changeCallable = () -> tableService.changeEmpty(1L, request);
@@ -114,8 +116,8 @@ class TableServiceTest {
         TableStatusRequest request = new TableStatusRequest(false);
 
         OrderTable notEmptyOrderTable = 채워진_다섯명_테이블();
-        notEmptyOrderTable.setTableGroupId(1L);
-        when(orderTableDao.findById(anyLong())).thenReturn(Optional.of(notEmptyOrderTable));
+        notEmptyOrderTable.setTableGroup(tableGroup());
+        when(orderTableRepository.findById(anyLong())).thenReturn(Optional.of(notEmptyOrderTable));
 
         //when
         ThrowingCallable changeCallable = () -> tableService.changeEmpty(1L, request);
@@ -131,9 +133,10 @@ class TableServiceTest {
         //given
         TableStatusRequest request = new TableStatusRequest(false);
 
-        when(orderTableDao.findById(anyLong()))
+        when(orderTableRepository.findById(anyLong()))
             .thenReturn(Optional.of(채워진_다섯명_테이블()));
-        when(orderDao.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).thenReturn(true);
+        when(orderService.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList()))
+            .thenReturn(true);
 
         //when
         ThrowingCallable changeCallable = () -> tableService.changeEmpty(1L, request);
@@ -149,16 +152,16 @@ class TableServiceTest {
         //given
         TableGuestsCountRequest request = new TableGuestsCountRequest(3);
 
-        when(orderTableDao.findById(anyLong()))
+        when(orderTableRepository.findById(anyLong()))
             .thenReturn(Optional.of(채워진_다섯명_테이블()));
-        when(orderTableDao.save(any())).thenReturn(빈_세명_테이블());
+        when(orderTableRepository.save(any())).thenReturn(빈_세명_테이블());
 
         //when
         tableService.changeNumberOfGuests(1L, request);
 
         //then
         ArgumentCaptor<OrderTable> orderTableCaptor = ArgumentCaptor.forClass(OrderTable.class);
-        verify(orderTableDao, times(1)).save(orderTableCaptor.capture());
+        verify(orderTableRepository, times(1)).save(orderTableCaptor.capture());
         assertThat(orderTableCaptor.getValue())
             .extracting(OrderTable::getNumberOfGuests)
             .isEqualTo(request.getNumberOfGuests());
@@ -184,7 +187,7 @@ class TableServiceTest {
         //given
         TableGuestsCountRequest request = new TableGuestsCountRequest(3);
 
-        when(orderTableDao.findById(anyLong())).thenReturn(Optional.empty());
+        when(orderTableRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         //when
         ThrowingCallable changeCallable = () -> tableService.changeNumberOfGuests(1L, request);
@@ -200,7 +203,7 @@ class TableServiceTest {
         //given
         TableGuestsCountRequest request = new TableGuestsCountRequest(3);
 
-        when(orderTableDao.findById(anyLong())).thenReturn(Optional.of(빈_두명_테이블()));
+        when(orderTableRepository.findById(anyLong())).thenReturn(Optional.of(빈_두명_테이블()));
 
         //when
         ThrowingCallable changeCallable = () -> tableService.changeNumberOfGuests(1L, request);
