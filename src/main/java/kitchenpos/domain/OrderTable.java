@@ -72,4 +72,10 @@ public class OrderTable {
     public TableGroup getTableGroup() {
         return tableGroup;
     }
+
+    public void checkEmpty() {
+        if (empty) {
+            throw new IllegalArgumentException();
+        }
+    }
 }

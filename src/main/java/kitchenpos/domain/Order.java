@@ -23,6 +23,12 @@ public class Order {
     @OneToMany(mappedBy = "order", cascade = CascadeType.PERSIST)
     private List<OrderLineItem> orderLineItems;
 
+    public static Order create(OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
+        Order order = new Order(orderTable, orderStatus, LocalDateTime.now());
+        order.addOrderLineItems(orderLineItems);
+        return order;
+    }
+
     protected Order() {
     }
 
@@ -35,6 +41,11 @@ public class Order {
     public Order(OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
+        this.orderLineItems = orderLineItems;
+    }
+
+    public void addOrderLineItems(List<OrderLineItem> orderLineItems) {
+        orderLineItems.forEach(orderLineItem -> orderLineItem.addMenu(this));
         this.orderLineItems = orderLineItems;
     }
 
@@ -67,11 +78,6 @@ public class Order {
     }
 
     public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
-        this.orderLineItems = orderLineItems;
-    }
-
-    public void addOrderLineItems(List<OrderLineItem> orderLineItems) {
-        orderLineItems.forEach(orderLineItem -> orderLineItem.addMenu(this));
         this.orderLineItems = orderLineItems;
     }
 }

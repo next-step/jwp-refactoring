@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -37,8 +36,18 @@ public class OrderService {
 
     @Transactional
     public Order create(final OrderRequest request) {
-        final List<OrderLineItemRequest> orderLineItemRequests = request.getOrderLineItems();
+        checkMenus(request);
 
+        final OrderTable orderTable = getOrderTable(request.getOrderTableId());
+        final List<OrderLineItem> orderLineItems = getOrderLineItems(request.getOrderLineItems());
+
+        orderTable.checkEmpty();
+
+        final Order order = Order.create(orderTable, OrderStatus.COOKING, orderLineItems);
+        return orderDao.save(order);
+    }
+
+    private void checkMenus(OrderRequest request) {
         final List<Long> menuIds = request.getMenuIds();
 
         if (CollectionUtils.isEmpty(menuIds)) {
@@ -48,21 +57,17 @@ public class OrderService {
         if (menuIds.size() != menuDao.countByIdIn(menuIds)) {
             throw new IllegalArgumentException();
         }
+    }
 
-        final OrderTable orderTable = orderTableDao.findById(request.getOrderTableId())
+    private OrderTable getOrderTable(Long orderTableId) {
+        return orderTableDao.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
+    }
 
-        if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
-
-        Order order = new Order(orderTable, OrderStatus.COOKING, LocalDateTime.now());
-        List<OrderLineItem> orderLineItems = orderLineItemRequests.stream()
-                .map(orderLineItemRequest -> new OrderLineItem(order, getMenu(orderLineItemRequest.getMenuId()), orderLineItemRequest.getQuantity()))
+    private List<OrderLineItem> getOrderLineItems(List<OrderLineItemRequest> orderLineItemRequests) {
+        return orderLineItemRequests.stream()
+                .map(orderLineItemRequest -> new OrderLineItem(getMenu(orderLineItemRequest.getMenuId()), orderLineItemRequest.getQuantity()))
                 .collect(Collectors.toList());
-        order.addOrderLineItems(orderLineItems);
-
-        return orderDao.save(order);
     }
 
     private Menu getMenu(Long menuId) {
