@@ -12,7 +12,7 @@ import org.springframework.http.HttpStatus;
 import static org.assertj.core.api.Assertions.*;
 
 @DisplayName("테이블 인수 테스트")
-public class TableAcceptanceTest extends AcceptanceTest {
+public class OrderTableAcceptanceTest extends AcceptanceTest {
 
     private OrderTable orderTable;
 

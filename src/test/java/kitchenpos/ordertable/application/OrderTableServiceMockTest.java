@@ -2,7 +2,8 @@ package kitchenpos.ordertable.application;
 
 import kitchenpos.ServiceTest;
 import kitchenpos.order.dao.OrderDao;
-import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.dto.OrderTableRequest;
+import kitchenpos.ordertable.dto.OrderTableResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -21,13 +22,13 @@ class OrderTableServiceMockTest extends ServiceTest {
     @DisplayName("올바르지 않은 주문으로 테이블의 상태를 변경하면 예외를 발생한다.")
     void changeEmptyThrowException() {
         // given
-        OrderTable savedOrderTable = 테이블_저장(false);
-        OrderTable orderTable = new OrderTable(true);
+        OrderTableResponse savedOrderTableResponse = 테이블_저장(false);
+        OrderTableRequest orderTableRequest = new OrderTableRequest(true);
 
         given(orderDao.existsByOrderTableIdAndOrderStatusIn(any(), any())).willReturn(true);
 
         // when & then
         assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> orderTableService.changeEmpty(savedOrderTable.getId(), orderTable));
+                .isThrownBy(() -> orderTableService.changeEmpty(savedOrderTableResponse.getId(), orderTableRequest));
     }
 }

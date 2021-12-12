@@ -15,7 +15,7 @@ import org.springframework.http.HttpStatus;
 import java.time.LocalDateTime;
 import java.util.Collections;
 
-import static kitchenpos.ordertable.acceptance.TableAcceptanceTest.*;
+import static kitchenpos.ordertable.acceptance.OrderTableAcceptanceTest.*;
 import static org.assertj.core.api.Assertions.*;
 
 @DisplayName("주문 인수 테스트")

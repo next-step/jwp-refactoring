@@ -5,7 +5,7 @@ import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.dto.OrderTableResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -23,12 +23,12 @@ class OrderServiceTest extends ServiceTest {
     @DisplayName("주문을 등록한다.")
     void create() {
         // given
-        OrderTable orderTable = 테이블_저장(false);
+        OrderTableResponse savedOrderTableResponse = 테이블_저장(false);
         MenuResponse savedMenuResponse = 메뉴_저장();
 
         OrderLineItem orderLineItem = new OrderLineItem(savedMenuResponse.getId(), 2);
         Order order = new Order(
-                orderTable.getId(), OrderStatus.COOKING, LocalDateTime.now(), Collections.singletonList(orderLineItem));
+                savedOrderTableResponse.getId(), OrderStatus.COOKING, LocalDateTime.now(), Collections.singletonList(orderLineItem));
 
         // when
         Order savedOrder = orderService.create(order);
@@ -49,8 +49,8 @@ class OrderServiceTest extends ServiceTest {
     @DisplayName("주문 항목 없이 주문을 등록하면 예외를 발생한다.")
     void createThrowException1() {
         // given
-        OrderTable orderTable = 테이블_저장(false);
-        Order order = new Order(orderTable.getId(), OrderStatus.COOKING, LocalDateTime.now(), null);
+        OrderTableResponse savedOrderTableResponse = 테이블_저장(false);
+        Order order = new Order(savedOrderTableResponse.getId(), OrderStatus.COOKING, LocalDateTime.now(), null);
 
         // when & then
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> orderService.create(order));
@@ -60,10 +60,10 @@ class OrderServiceTest extends ServiceTest {
     @DisplayName("존재하지 않는 메뉴로 주문을 등록하면 예외를 발생한다.")
     void createThrowException2() {
         // given
-        OrderTable orderTable = 테이블_저장(false);
+        OrderTableResponse savedOrderTableResponse = 테이블_저장(false);
         OrderLineItem orderLineItem = new OrderLineItem(0L, 2);
         Order order = new Order(
-                orderTable.getId(), OrderStatus.COOKING, LocalDateTime.now(), Collections.singletonList(orderLineItem));
+                savedOrderTableResponse.getId(), OrderStatus.COOKING, LocalDateTime.now(), Collections.singletonList(orderLineItem));
 
         // when & then
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> orderService.create(order));
@@ -85,11 +85,11 @@ class OrderServiceTest extends ServiceTest {
     @DisplayName("비어있는 테이블로 주문을 등록하면 예외를 발생한다.")
     void createThrowException4() {
         // given
-        OrderTable orderTable = 테이블_저장(true);
+        OrderTableResponse savedOrderTableResponse = 테이블_저장(true);
         MenuResponse savedMenuResponse = 메뉴_저장();
         OrderLineItem orderLineItem = new OrderLineItem(savedMenuResponse.getId(), 2);
         Order order = new Order(
-                orderTable.getId(), OrderStatus.COOKING, LocalDateTime.now(), Collections.singletonList(orderLineItem));
+                savedOrderTableResponse.getId(), OrderStatus.COOKING, LocalDateTime.now(), Collections.singletonList(orderLineItem));
 
         // when & then
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> orderService.create(order));
