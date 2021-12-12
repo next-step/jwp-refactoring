@@ -5,7 +5,8 @@ import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.application.MenuGroupService;
-import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menugroup.dto.MenuGroupRequest;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
@@ -50,16 +51,16 @@ public abstract class ServiceTest {
         return productService.create(new Product("매운양념치킨", 18_000));
     }
 
-    protected MenuGroup 메뉴_그룹_저장() {
-        return menuGroupService.create(new MenuGroup("세마리메뉴"));
+    protected MenuGroupResponse 메뉴_그룹_저장() {
+        return menuGroupService.create(new MenuGroupRequest("세마리메뉴"));
     }
 
     protected MenuResponse 메뉴_저장() {
         Product savedProduct = 상품_저장();
-        MenuGroup savedMenuGroup = 메뉴_그룹_저장();
+        MenuGroupResponse savedMenuGroupResponse = 메뉴_그룹_저장();
         MenuProductRequest menuProductRequest = new MenuProductRequest(savedProduct.getId(), 1);
         MenuRequest menuRequest = new MenuRequest(
-                savedProduct.getName(), savedProduct.getPrice(), savedMenuGroup.getId(),
+                savedProduct.getName(), savedProduct.getPrice(), savedMenuGroupResponse.getId(),
                 Collections.singletonList(menuProductRequest));
         return menuService.create(menuRequest);
     }
