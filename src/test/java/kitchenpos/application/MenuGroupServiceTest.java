@@ -15,15 +15,15 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.application.fixture.MenuGroupFixtureFactory;
-import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.menugroup.application.MenuGroupService;
 import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menugroup.domain.MenuGroupRepository;
 
 @ExtendWith(MockitoExtension.class)
 class MenuGroupServiceTest {
 
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
 
     @InjectMocks
     private MenuGroupService menuGroupService;
@@ -42,7 +42,7 @@ class MenuGroupServiceTest {
     void create() {
         // given
         MenuGroup menuGroup = MenuGroup.from("고기 메뉴그룹");
-        given(menuGroupDao.save(menuGroup)).willReturn(고기_메뉴그룹);
+        given(menuGroupRepository.save(menuGroup)).willReturn(고기_메뉴그룹);
 
         // when
         MenuGroup savedMenuGroup = menuGroupService.create(menuGroup);
@@ -55,7 +55,7 @@ class MenuGroupServiceTest {
     @Test
     void findList() {
         // given
-        given(menuGroupDao.findAll()).willReturn(Arrays.asList(고기_메뉴그룹, 야채_메뉴그룹));
+        given(menuGroupRepository.findAll()).willReturn(Arrays.asList(고기_메뉴그룹, 야채_메뉴그룹));
 
         // when
         List<MenuGroup> menuGroups = menuGroupService.list();

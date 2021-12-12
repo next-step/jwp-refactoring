@@ -55,7 +55,7 @@ public class MenuProduct {
     }
 
     public void setMenuId(final Long menuId) {
-        this.menu = Menu.from(menuId);
+        menu = Menu.from(menuId);
     }
 
     public Long getProductId() {

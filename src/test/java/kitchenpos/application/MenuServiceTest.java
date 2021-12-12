@@ -22,30 +22,30 @@ import kitchenpos.application.fixture.MenuFixtureFactory;
 import kitchenpos.application.fixture.MenuGroupFixtureFactory;
 import kitchenpos.application.fixture.MenuProductFixtureFactory;
 import kitchenpos.application.fixture.ProductFixtureFactory;
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.dao.MenuProductDao;
-import kitchenpos.dao.ProductDao;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProductRepository;
+import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 
 @ExtendWith(MockitoExtension.class)
 class MenuServiceTest {
 
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
 
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
 
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     @Mock
-    private MenuProductDao menuProductDao;
+    private MenuProductRepository menuProductRepository;
 
     @InjectMocks
     private MenuService menuService;
@@ -75,10 +75,10 @@ class MenuServiceTest {
         // given
         Menu menu = Menu.of("불고기", BigDecimal.valueOf(10_000), 고기_메뉴그룹, Arrays.asList(불고기_돼지고기, 불고기_공기밥));
 
-        given(menuGroupDao.existsById(고기_메뉴그룹.getId())).willReturn(true);
-        given(productDao.findById(불고기_돼지고기.getProductId())).willReturn(Optional.ofNullable(돼지고기));
-        given(productDao.findById(불고기_공기밥.getProductId())).willReturn(Optional.ofNullable(공기밥));
-        given(menuDao.save(any(Menu.class))).willReturn(불고기);
+        given(menuGroupRepository.existsById(고기_메뉴그룹.getId())).willReturn(true);
+        given(productRepository.findById(불고기_돼지고기.getProductId())).willReturn(Optional.ofNullable(돼지고기));
+        given(productRepository.findById(불고기_공기밥.getProductId())).willReturn(Optional.ofNullable(공기밥));
+        given(menuRepository.save(any(Menu.class))).willReturn(불고기);
 
         // when
         Menu savedMenu = menuService.create(menu);
@@ -114,7 +114,7 @@ class MenuServiceTest {
         // given
         Menu menu = Menu.of("불고기", BigDecimal.valueOf(10_000), 고기_메뉴그룹, Arrays.asList(불고기_돼지고기, 불고기_공기밥));
 
-        given(menuGroupDao.existsById(고기_메뉴그룹.getId())).willReturn(false);
+        given(menuGroupRepository.existsById(고기_메뉴그룹.getId())).willReturn(false);
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menu));
@@ -126,9 +126,9 @@ class MenuServiceTest {
         // given
         Menu menu = Menu.of("불고기", BigDecimal.valueOf(10_000), 고기_메뉴그룹, Arrays.asList(불고기_돼지고기, 불고기_공기밥));
 
-        given(menuGroupDao.existsById(고기_메뉴그룹.getId())).willReturn(true);
-        given(productDao.findById(불고기_돼지고기.getProductId())).willReturn(Optional.ofNullable(돼지고기));
-        given(productDao.findById(돼지고기.getId())).willThrow(IllegalArgumentException.class);
+        given(menuGroupRepository.existsById(고기_메뉴그룹.getId())).willReturn(true);
+        given(productRepository.findById(불고기_돼지고기.getProductId())).willReturn(Optional.ofNullable(돼지고기));
+        given(productRepository.findById(돼지고기.getId())).willThrow(IllegalArgumentException.class);
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menu));
@@ -148,8 +148,8 @@ class MenuServiceTest {
     @Test
     void findList() {
         // given
-        given(menuDao.findAll()).willReturn(Arrays.asList(불고기));
-        given(menuProductDao.findAllByMenuId(불고기.getId())).willReturn(Arrays.asList(불고기_돼지고기, 불고기_공기밥));
+        given(menuRepository.findAll()).willReturn(Arrays.asList(불고기));
+        given(menuProductRepository.findAllByMenu(불고기.getId())).willReturn(Arrays.asList(불고기_돼지고기, 불고기_공기밥));
 
         // when
         List<Menu> menus = menuService.list();

@@ -16,24 +16,24 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.application.fixture.OrderTableFixtureFactory;
 import kitchenpos.application.fixture.TableGroupFixtureFactory;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.dao.TableGroupDao;
-import kitchenpos.tablegroup.application.TableGroupService;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.tablegroup.application.TableGroupService;
 import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.domain.TableGroupRepository;
 
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
 
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
 
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @Mock
-    private TableGroupDao tableGroupDao;
+    private TableGroupRepository tableGroupRepository;
 
     @InjectMocks
     private TableGroupService tableGroupService;
@@ -59,9 +59,9 @@ class TableGroupServiceTest {
         // given
         TableGroup tableGroup = TableGroup.from(Arrays.asList(주문1_단체테이블, 주문2_단체테이블));
 
-        given(orderTableDao.findAllByIdIn(Arrays.asList(주문1_단체테이블.getId(), 주문2_단체테이블.getId())))
+        given(orderTableRepository.findAllByIdIn(Arrays.asList(주문1_단체테이블.getId(), 주문2_단체테이블.getId())))
             .willReturn(Arrays.asList(주문1_단체테이블, 주문2_단체테이블));
-        given(tableGroupDao.save(any(TableGroup.class))).willReturn(단체_테이블그룹);
+        given(tableGroupRepository.save(any(TableGroup.class))).willReturn(단체_테이블그룹);
 
         // when
         TableGroup savedTableGroup = tableGroupService.create(tableGroup);
@@ -96,7 +96,7 @@ class TableGroupServiceTest {
         // given
         TableGroup tableGroup = TableGroup.from(Arrays.asList(주문1_단체테이블, 주문2_단체테이블));
 
-        given(orderTableDao.findAllByIdIn(Arrays.asList(주문1_단체테이블.getId(), 주문2_단체테이블.getId())))
+        given(orderTableRepository.findAllByIdIn(Arrays.asList(주문1_단체테이블.getId(), 주문2_단체테이블.getId())))
             .willReturn(Collections.emptyList());
 
         // when & then
@@ -131,14 +131,14 @@ class TableGroupServiceTest {
         주문1_단체테이블.setTableGroupId(단체_테이블그룹.getId());
         주문2_단체테이블.setTableGroupId(단체_테이블그룹.getId());
 
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(false);
-        given(orderTableDao.findAllByTableGroupId(단체_테이블그룹.getId())).willReturn(Arrays.asList(주문1_단체테이블, 주문2_단체테이블));
+        given(orderRepository.existsByOrderTableInAndOrderStatusIn(anyList(), anyList())).willReturn(false);
+        given(orderTableRepository.findAllByTableGroup(단체_테이블그룹.getId())).willReturn(Arrays.asList(주문1_단체테이블, 주문2_단체테이블));
 
         // when
         tableGroupService.ungroup(단체_테이블그룹.getId());
 
         // then
-        verify(orderTableDao, times(2)).save(any(OrderTable.class));
+        verify(orderTableRepository, times(2)).save(any(OrderTable.class));
         assertThat(주문1_단체테이블.getTableGroupId()).isNull();
         assertThat(주문2_단체테이블.getTableGroupId()).isNull();
     }
@@ -150,8 +150,8 @@ class TableGroupServiceTest {
         주문1_단체테이블.setTableGroupId(단체_테이블그룹.getId());
         주문2_단체테이블.setTableGroupId(단체_테이블그룹.getId());
 
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(true);
-        given(orderTableDao.findAllByTableGroupId(단체_테이블그룹.getId()))
+        given(orderRepository.existsByOrderTableInAndOrderStatusIn(anyList(), anyList())).willReturn(true);
+        given(orderTableRepository.findAllByTableGroup(단체_테이블그룹.getId()))
             .willReturn(Arrays.asList(주문1_단체테이블, 주문2_단체테이블));
 
         // when & then

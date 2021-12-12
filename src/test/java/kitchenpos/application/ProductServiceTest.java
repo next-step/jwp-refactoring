@@ -18,15 +18,15 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.application.fixture.ProductFixtureFactory;
-import kitchenpos.dao.ProductDao;
 import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
 
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     @InjectMocks
     private ProductService productService;
@@ -46,7 +46,7 @@ class ProductServiceTest {
         // given
         Product product = Product.of("돼지고기", BigDecimal.valueOf(9_000));
 
-        given(productDao.save(any(Product.class))).willReturn(돼지고기);
+        given(productRepository.save(any(Product.class))).willReturn(돼지고기);
 
         // when
         Product savedProduct = productService.create(product);
@@ -80,7 +80,7 @@ class ProductServiceTest {
     @Test
     void findList() {
         // given
-        given(productDao.findAll()).willReturn(Arrays.asList(돼지고기, 공기밥));
+        given(productRepository.findAll()).willReturn(Arrays.asList(돼지고기, 공기밥));
 
         // when
         List<Product> products = productService.list();
