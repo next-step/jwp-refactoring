@@ -21,8 +21,10 @@ public class ProductService {
     }
 
     @Transactional
-    public ProductDto create(final ProductDto product) {
-        return ProductDto.of(productRepository.save(product.toProduct()));
+    public ProductDto create(final ProductDto productDto) {
+        Product product = Product.of(productDto.getName(), Price.of(productDto.getPrice()));
+
+        return ProductDto.of(productRepository.save(product));
     }
 
     public List<ProductDto> list() {

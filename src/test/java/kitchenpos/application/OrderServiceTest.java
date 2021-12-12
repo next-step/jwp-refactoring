@@ -3,13 +3,13 @@ package kitchenpos.application;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.Optional;
 
 import org.assertj.core.api.Assertions;
-import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -66,15 +66,15 @@ public class OrderServiceTest {
 
     @BeforeEach
     void setUp() {
-        뿌링클치킨 = Product.of(1L, "뿌링클치킨", Price.of(15_000));
-        치킨무 = Product.of(2L, "치킨무", Price.of(1_000));
-        코카콜라 = Product.of(3L, "코카콜라", Price.of(3_000));
+        뿌링클치킨 = Product.of("뿌링클치킨", Price.of(15_000));
+        치킨무 = Product.of("치킨무", Price.of(1_000));
+        코카콜라 = Product.of("코카콜라", Price.of(3_000));
 
         뿌링클콤보 = Menu.of("뿌링클콤보", Price.of(18_000));
 
-        뿌링클콤보_뿌링클치킨 = MenuProduct.of(뿌링클콤보, 뿌링클치킨, 1L);
-        뿌링클콤보_치킨무 = MenuProduct.of(뿌링클콤보, 치킨무, 1L);
-        뿌링클콤보_코카콜라 = MenuProduct.of(뿌링클콤보, 코카콜라, 1L);
+        뿌링클콤보_뿌링클치킨 = MenuProduct.of(뿌링클치킨, 1L);
+        뿌링클콤보_치킨무 = MenuProduct.of(치킨무, 1L);
+        뿌링클콤보_코카콜라 = MenuProduct.of(코카콜라, 1L);
 
         뿌링클콤보_뿌링클치킨.acceptMenu(뿌링클콤보);
         뿌링클콤보_치킨무.acceptMenu(뿌링클콤보);
@@ -84,10 +84,8 @@ public class OrderServiceTest {
 
         치킨_주문항목 = OrderLineItem.of(뿌링클콤보, 1L);
 
-        치킨주문 = Orders.of(치킨_주문_단체테이블, Lists.newArrayList(치킨_주문항목));
-
+        치킨주문 = Orders.of(치킨_주문_단체테이블, OrderStatus.COOKING);
         치킨_주문항목.acceptOrder(치킨주문);
-
     }
 
     @DisplayName("주문이 저장된다.")
@@ -95,12 +93,12 @@ public class OrderServiceTest {
     void create_order() {
         // given
         when(menuService.countByIdIn(anyList())).thenReturn(1L);
-        when(menuService.findById(null)).thenReturn(this.뿌링클콤보);
-        when(orderTableRepository.findById(null)).thenReturn(Optional.of(this.치킨_주문_단체테이블));
-        
-        Orders 치킨주문_요청 = Orders.of(this.치킨_주문_단체테이블, List.of(this.치킨_주문항목));
-
+        when(menuService.findById(nullable(Long.class))).thenReturn(this.뿌링클콤보);
+        when(orderTableRepository.findById(nullable(Long.class))).thenReturn(Optional.of(this.치킨_주문_단체테이블));
         when(orderRepository.save(any(Orders.class))).thenReturn(this.치킨주문);
+
+        Orders 치킨주문_요청 = Orders.of(this.치킨_주문_단체테이블, OrderStatus.NONE);
+        치킨주문_요청.changeOrderLineItems(List.of(this.치킨_주문항목));
 
         // when
         OrderDto savedOrder = orderService.create(OrderDto.of(치킨주문_요청));
@@ -143,7 +141,7 @@ public class OrderServiceTest {
     void exception_createOrder_emptyOrderTable() {
         // given
         when(menuService.countByIdIn(anyList())).thenReturn(1L);
-        when(orderTableRepository.findById(null)).thenReturn(Optional.of(this.치킨_주문_단체테이블));
+        when(orderTableRepository.findById(nullable(Long.class))).thenReturn(Optional.of(this.치킨_주문_단체테이블));
 
         this.치킨주문.changeOrderLineItems(List.of(this.치킨_주문항목));
 
@@ -173,7 +171,6 @@ public class OrderServiceTest {
     void update_orderStatus() {
         // given
         when(orderRepository.findById(this.치킨주문.getId())).thenReturn(Optional.of(this.치킨주문));
-        when(orderRepository.save(any(Orders.class))).thenReturn(this.치킨주문);
 
         this.치킨주문.changeOrderStatus(OrderStatus.MEAL);
 

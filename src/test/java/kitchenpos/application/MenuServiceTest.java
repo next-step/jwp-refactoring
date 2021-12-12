@@ -2,7 +2,7 @@ package kitchenpos.application;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
@@ -62,23 +62,27 @@ public class MenuServiceTest {
     void setUp() {
         치킨_메뉴그룹 = MenuGroup.of("치킨");
 
-        뿌링클치킨 = Product.of(1L, "뿌링클치킨", Price.of(15_000));
-        치킨무 = Product.of(2L, "치킨무", Price.of(1_000));
-        코카콜라 = Product.of(3L, "코카콜라", Price.of(3_000));
+        뿌링클치킨 = Product.of("뿌링클치킨", Price.of(15_000));
+        치킨무 = Product.of("치킨무", Price.of(1_000));
+        코카콜라 = Product.of("코카콜라", Price.of(3_000));
 
-        뿌링클콤보_뿌링클치킨 = MenuProduct.of(뿌링클콤보, 뿌링클치킨, 1L);
-        뿌링클콤보_치킨무 = MenuProduct.of(뿌링클콤보, 치킨무, 1L);
-        뿌링클콤보_코카콜라 = MenuProduct.of(뿌링클콤보, 코카콜라, 1L);
+        뿌링클콤보_뿌링클치킨 = MenuProduct.of(뿌링클치킨, 1L);
+        뿌링클콤보_치킨무 = MenuProduct.of(치킨무, 1L);
+        뿌링클콤보_코카콜라 = MenuProduct.of(코카콜라, 1L);
 
         뿌링클콤보 = Menu.of("뿌링클콤보", Price.of(18_000), 치킨_메뉴그룹, List.of(뿌링클콤보_뿌링클치킨, 뿌링클콤보_치킨무, 뿌링클콤보_코카콜라));
+
+        뿌링클콤보_뿌링클치킨.acceptMenu(뿌링클콤보);
+        뿌링클콤보_치킨무.acceptMenu(뿌링클콤보);
+        뿌링클콤보_코카콜라.acceptMenu(뿌링클콤보);
     }
 
     @DisplayName("메뉴가 저장된다.")
     @Test
     void craete_menu() {
         // when
-        when(menuGroupRepository.findById(this.뿌링클콤보.getMenuGroup().getId())).thenReturn(Optional.of(this.치킨_메뉴그룹));
-        when(productService.findById(anyLong())).thenReturn(this.뿌링클치킨, this.치킨무, this.코카콜라);
+        when(menuGroupRepository.findById(nullable(Long.class))).thenReturn(Optional.of(this.치킨_메뉴그룹));
+        when(productService.findById(nullable(Long.class))).thenReturn(this.뿌링클치킨, this.치킨무, this.코카콜라);
         when(productService.sumOfPrices(anyList())).thenReturn(Price.of(19_000));
 
 
@@ -95,7 +99,7 @@ public class MenuServiceTest {
     void exception_createMenu_containNotExistMenuGroup() {
         // given
         when(productService.sumOfPrices(anyList())).thenReturn(Price.of(19_000));
-        when(menuGroupRepository.findById(null)).thenThrow(IllegalArgumentException.class);
+        when(menuGroupRepository.findById(nullable(Long.class))).thenThrow(IllegalArgumentException.class);
 
         // when
         // then

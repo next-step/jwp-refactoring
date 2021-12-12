@@ -8,8 +8,8 @@ import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menu.MenuGroup;
 import kitchenpos.domain.menu.MenuGroupRepository;
 import kitchenpos.domain.menu.MenuProduct;
-import kitchenpos.domain.menu.MenuProductRepository;
 import kitchenpos.domain.menu.MenuRepository;
+import kitchenpos.domain.product.Product;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +26,6 @@ public class MenuService {
     public MenuService(
         final MenuRepository menuRepository,
         final MenuGroupRepository menuGroupRepository,
-        final MenuProductRepository menuProductRepository,
         final ProductService productService
     ) {
         this.menuRepository = menuRepository;
@@ -41,17 +40,16 @@ public class MenuService {
         MenuGroup menuGroup = menuGroupRepository.findById(menu.getMenuGroupId()).orElseThrow(IllegalArgumentException::new);
         
         Menu newMenu = Menu.of(menu.getName(), Price.of(menu.getPrice()), menuGroup);
-
         mappingMenuProduct(newMenu, menu.getMenuProducts());
 
-        Menu savedMenu = menuRepository.save(newMenu);
-
-        return MenuDto.of(savedMenu);
+        return MenuDto.of(menuRepository.save(newMenu));
     }
 
     private void mappingMenuProduct(Menu newMenu, List<MenuProductDto> menuProductDtos) {
         for (MenuProductDto menuProductDto : menuProductDtos) {
-            MenuProduct menuProduct = MenuProduct.of(null, productService.findById(menuProductDto.getProductId()), menuProductDto.getQuantity());
+            Product product = productService.findById(menuProductDto.getProductId());
+            
+            MenuProduct menuProduct = MenuProduct.of(product, menuProductDto.getQuantity());
             menuProduct.acceptMenu(newMenu);
         }
     }

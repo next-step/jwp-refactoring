@@ -31,17 +31,12 @@ public class TableGroup {
     protected TableGroup() {
     }
 
-    private TableGroup(Long id, List<OrderTable> orderTables) {
-        this.id = id;
+    private TableGroup(List<OrderTable> orderTables) {
         this.orderTables = orderTables;
     }
 
-    public static TableGroup of(Long id) {
-        return new TableGroup(id, null);
-    }
-
     public static TableGroup of(List<OrderTable> orderTables) {
-        return new TableGroup(null, orderTables);
+        return new TableGroup(orderTables);
     }
 
 

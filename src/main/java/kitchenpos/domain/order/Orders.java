@@ -46,23 +46,14 @@ public class Orders {
     protected Orders() {
     }
 
-    private Orders(OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
+    private Orders(OrderTable orderTable, OrderStatus orderStatus) {
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
-        if (orderLineItems == null) {
-            this.orderLineItems = new ArrayList<>();
-            return;
-        }
-        
-        this.orderLineItems = orderLineItems;
+        this.orderLineItems = new ArrayList<>();
     }
 
     public static Orders of(OrderTable orderTable, OrderStatus orderStatus) {
-        return new Orders(orderTable, orderStatus, null);
-    }
-
-    public static Orders of(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
-        return new Orders(orderTable, null,  orderLineItems);
+        return new Orders(orderTable, orderStatus);
     }
 
     public Long getId() {

@@ -21,7 +21,11 @@ public class TableGroupService {
     private final OrderTableRepository orderTableRepository;
     private final TableGroupRepository tableGroupRepository;
 
-    public TableGroupService(final OrderService orderService, final OrderTableRepository orderTableRepository, final TableGroupRepository tableGroupRepository) {
+    public TableGroupService(
+        final OrderService orderService, 
+        final OrderTableRepository orderTableRepository, 
+        final TableGroupRepository tableGroupRepository
+    ) {
         this.orderService = orderService;
         this.orderTableRepository = orderTableRepository;
         this.tableGroupRepository = tableGroupRepository;
@@ -37,9 +41,7 @@ public class TableGroupService {
 
         validationOfCreate(tableGroup.getOrderTables(), savedOrderTables);
 
-        final TableGroup savedTableGroup = tableGroupRepository.save(TableGroup.of(savedOrderTables));
-
-        return TableGroupDto.of(savedTableGroup);
+        return TableGroupDto.of(tableGroupRepository.save(TableGroup.of(savedOrderTables)));
     }
 
     private void validationOfCreate(final List<OrderTableDto> orderTables, final List<OrderTable> savedOrderTables) {

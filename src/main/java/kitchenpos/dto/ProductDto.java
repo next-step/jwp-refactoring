@@ -3,7 +3,6 @@ package kitchenpos.dto;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-import kitchenpos.domain.Price;
 import kitchenpos.domain.product.Product;
 
 public class ProductDto {
@@ -38,10 +37,6 @@ public class ProductDto {
 
     public BigDecimal getPrice() {
         return this.price;
-    }
-
-    public Product toProduct() {
-        return Product.of(this.id, this.name, Price.of(this.price));
     }
 
     @Override

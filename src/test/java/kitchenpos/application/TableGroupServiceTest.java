@@ -3,9 +3,10 @@ package kitchenpos.application;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.assertj.core.api.Assertions;
@@ -53,7 +54,7 @@ public class TableGroupServiceTest {
         치킨2_주문_단체테이블 = OrderTable.of(0, true);
         치킨3_주문_단체테이블 =  OrderTable.of(0, true);
 
-        단체주문테이블 = TableGroup.of(1L);
+        단체주문테이블 = TableGroup.of(new ArrayList<OrderTable>());
     }
 
     @DisplayName("단체지정이 저장된다.")
@@ -148,7 +149,7 @@ public class TableGroupServiceTest {
         List<OrderTable> 조회된_주문테이블_리스트 = List.of(OrderTable.of(단체주문테이블, 0), OrderTable.of(단체주문테이블, 0));
 
         when(orderService.isExistNotCompletionOrder(anyList())).thenReturn(true);
-        when(orderTableRepository.findAllByTableGroupId(anyLong())).thenReturn(조회된_주문테이블_리스트);
+        when(orderTableRepository.findAllByTableGroupId(nullable(Long.class))).thenReturn(조회된_주문테이블_리스트);
 
         // when
         // then

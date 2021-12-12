@@ -54,10 +54,6 @@ public class OrderDto {
         return this.orderStatus;
     }
 
-    public LocalDateTime getOrderedTime() {
-        return this.orderedTime;
-    }
-
     public List<OrderLineItemDto> getOrderLineItems() {
         return this.orderLineItems;
     }

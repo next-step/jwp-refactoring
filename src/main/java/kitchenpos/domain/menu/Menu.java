@@ -35,8 +35,7 @@ public class Menu {
     protected Menu() {
     }
 
-    private Menu(Long id, String name, Price price, MenuGroup menuGroup) {
-        this.id = id;
+    private Menu(String name, Price price, MenuGroup menuGroup) {
         this.name = name;
         this.price = price;
         this.menuGroup = menuGroup;
@@ -44,15 +43,15 @@ public class Menu {
     }
 
     public static Menu of(String name, Price price, MenuGroup menuGroup) {
-        return new Menu(null, name, price, menuGroup);
+        return new Menu(name, price, menuGroup);
     }
 
     public static Menu of(String name, Price price) {
-        return new Menu(null, name, price, null);
+        return new Menu(name, price, null);
     }
     
     public static Menu of(String name, Price price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        Menu menu = new Menu(null, name, price, menuGroup);
+        Menu menu = new Menu(name, price, menuGroup);
         
         for (MenuProduct menuProduct : menuProducts) {
             menuProduct.acceptMenu(menu);

@@ -18,18 +18,13 @@ public class Product {
     protected Product() {
     }
 
-    private Product(Long id, String name, Price price) {
-        this.id = id;
+    private Product(String name, Price price) {
         this.name = name;
         this.price = price;
     }
 
     public static Product of(String name, Price price) {
-        return new Product(null, name, price);
-    }
-
-    public static Product of(Long id, String name, Price price) {
-        return new Product(id, name, price);
+        return new Product(name, price);
     }
 
     public Long getId() {
@@ -47,5 +42,8 @@ public class Product {
     public void changePrice(Price price) {
         this.price = price;
     }
-
+    
+    public void changeName(String name) {
+        this.name = name;
+    }
 }

@@ -15,13 +15,12 @@ public class MenuGroup {
     protected MenuGroup() {
     }
 
-    private MenuGroup(Long id, String name) {
-        this.id = id;
+    private MenuGroup(String name) {
         this.name = name;
     }
 
     public static MenuGroup of(String name) {
-        return new MenuGroup(null, name);
+        return new MenuGroup(name);
     }
 
     public Long getId() {

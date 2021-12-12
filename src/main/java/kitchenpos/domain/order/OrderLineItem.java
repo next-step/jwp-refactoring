@@ -28,14 +28,13 @@ public class OrderLineItem {
     protected OrderLineItem() {
     }
 
-    private OrderLineItem(Orders order, Menu menu, long quantity) {
-        this.order = order;
+    private OrderLineItem(Menu menu, long quantity) {
         this.menu = menu;
         this.quantity = quantity;
     }
 
     public static OrderLineItem of(Menu menu, long quantity) {
-        return new OrderLineItem(null, menu, quantity);
+        return new OrderLineItem(menu, quantity);
     }
 
     public Long getSeq() {

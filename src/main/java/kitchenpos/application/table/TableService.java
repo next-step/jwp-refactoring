@@ -16,7 +16,10 @@ public class TableService {
     private final OrderService orderService;
     private final OrderTableRepository orderTableRepository;
 
-    public TableService(final  OrderService orderService, final OrderTableRepository orderTableRepository) {
+    public TableService(
+        final OrderService orderService,
+        final OrderTableRepository orderTableRepository
+    ) {
         this.orderService = orderService;
         this.orderTableRepository = orderTableRepository;
     }
@@ -42,7 +45,7 @@ public class TableService {
 
         savedOrderTable.changeEmpty(orderTable.isEmpty());
 
-        return OrderTableDto.of(orderTableRepository.save(savedOrderTable));
+        return OrderTableDto.of(savedOrderTable);
     }
 
     private void validationOfChangeEmpty(final Long orderTableId, final OrderTable savedOrderTable) {

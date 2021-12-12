@@ -23,8 +23,7 @@ public class OrderTable {
     protected OrderTable() {
     }
 
-    private OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
-        this.id = id;
+    private OrderTable(TableGroup tableGroup, int numberOfGuests, boolean empty) {
         this.tableGroup = tableGroup;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
@@ -32,14 +31,14 @@ public class OrderTable {
 
     public static OrderTable of(TableGroup tableGroup, int numberOfGuests) {
         if (numberOfGuests > 0) {
-            return new OrderTable(null, tableGroup, numberOfGuests, false);
+            return new OrderTable(tableGroup, numberOfGuests, false);
         }
 
-        return new OrderTable(null, tableGroup, numberOfGuests, true);
+        return new OrderTable(tableGroup, numberOfGuests, true);
     }
 
     public static OrderTable of(int numberOfGuests, boolean empty) {
-        return new OrderTable(null, null, numberOfGuests, empty);
+        return new OrderTable(null, numberOfGuests, empty);
     }
 
     public Long getId() {

@@ -42,15 +42,13 @@ public class OrderService {
 
         validationOfCreate(orderTable, orderLineItems);
 
-        final Orders savedOrder = Orders.of(orderTable, OrderStatus.COOKING);
-        saveOrderLineItem(savedOrder, orderLineItems);
+        final Orders newOrder = Orders.of(orderTable, OrderStatus.COOKING);
+        mappingOrderLineItem(newOrder, orderLineItems);
 
-        orderRepository.save(savedOrder);
-
-        return OrderDto.of(savedOrder);
+        return OrderDto.of(orderRepository.save(newOrder));
     }
 
-    private void saveOrderLineItem(final Orders order, final List<OrderLineItemDto> orderLineItemDtos) {
+    private void mappingOrderLineItem(final Orders order, final List<OrderLineItemDto> orderLineItemDtos) {
         for (final OrderLineItemDto orderLineItemDto : orderLineItemDtos) {
             Menu menu = menuService.findById(orderLineItemDto.getMenuId());
 
@@ -103,7 +101,7 @@ public class OrderService {
 
         savedOrder.changeOrderStatus(OrderStatus.valueOf(order.getOrderStatus()));
 
-        return orderRepository.save(savedOrder);
+        return savedOrder;
     }
 
     private void validateionOfChageOrderStatus(final Orders savedOrder) {

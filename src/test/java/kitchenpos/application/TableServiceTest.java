@@ -84,7 +84,6 @@ public class TableServiceTest {
     void update_orderTable_emptyStatus() {
         // given
         when(orderTableRepository.findById(this.치킨_주문_개인테이블.getId())).thenReturn(Optional.of(this.치킨_주문_개인테이블));
-        when(orderTableRepository.save(this.치킨_주문_개인테이블)).thenReturn(this.치킨_주문_개인테이블);
 
         // when
         OrderTableDto changedOrderTable = tableService.changeEmpty(this.치킨_주문_개인테이블.getId(), OrderTableDto.of(this.치킨_주문_개인테이블));
