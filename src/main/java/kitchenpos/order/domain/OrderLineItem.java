@@ -26,7 +26,7 @@ public class OrderLineItem {
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_order_line_item_menu"))
     private long menuId;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "order_id", nullable = false, updatable = false,
         foreignKey = @ForeignKey(name = "fk_order_line_item_orders"))
     private Order order;

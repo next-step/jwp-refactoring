@@ -1,11 +1,9 @@
 package kitchenpos.menu.application;
 
-import static kitchenpos.menu.application.sample.MenuProductSample.후라이드치킨두마리;
 import static kitchenpos.menu.application.sample.MenuSample.후라이드치킨세트;
 import static kitchenpos.product.application.sample.ProductSample.후라이드치킨;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.only;
@@ -15,14 +13,13 @@ import static org.mockito.Mockito.when;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.Optional;
-import kitchenpos.menu.domain.MenuDao;
-import kitchenpos.menu.domain.MenuGroupDao;
-import kitchenpos.menu.domain.MenuProductDao;
-import kitchenpos.product.domain.ProductDao;
+import kitchenpos.common.domain.Quantity;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.ui.request.MenuProductRequest;
 import kitchenpos.menu.ui.request.MenuRequest;
+import kitchenpos.product.application.ProductService;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,13 +34,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class MenuServiceTest {
 
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupService menuGroupService;
     @Mock
-    private MenuProductDao menuProductDao;
-    @Mock
-    private ProductDao productDao;
+    private ProductService productService;
 
     @InjectMocks
     private MenuService menuService;
@@ -56,20 +51,16 @@ class MenuServiceTest {
         MenuRequest menuRequest = new MenuRequest("후라이드치킨세트", BigDecimal.ONE, 1L,
             Collections.singletonList(menuProductRequest));
 
-        when(menuGroupDao.existsById(menuRequest.getMenuGroupId())).thenReturn(true);
-        when(productDao.findById(menuProductRequest.getProductId()))
+        when(menuGroupService.existsById(menuRequest.getMenuGroupId())).thenReturn(true);
+        when(productService.findById(menuProductRequest.getProductId()))
             .thenReturn(Optional.of(후라이드치킨()));
-        when(menuDao.save(any())).thenReturn(후라이드치킨세트());
-        when(menuProductDao.save(any())).thenReturn(후라이드치킨두마리());
+        when(menuRepository.save(any())).thenReturn(후라이드치킨세트());
 
         //when
         menuService.create(menuRequest);
 
         //then
-        assertAll(
-            () -> requestedMenuSave(menuRequest),
-            () -> requestedMenuProductSave(menuProductRequest)
-        );
+        requestedMenuSave(menuRequest);
     }
 
     @Test
@@ -112,7 +103,7 @@ class MenuServiceTest {
         MenuRequest menuRequest = new MenuRequest("후라이드치킨세트", BigDecimal.TEN, 1L,
             Collections.singletonList(menuProductRequest));
 
-        when(menuGroupDao.existsById(anyLong())).thenReturn(false);
+        when(menuGroupService.existsById(anyLong())).thenReturn(false);
 
         //when
         ThrowingCallable createCallable = () -> menuService.create(menuRequest);
@@ -130,8 +121,8 @@ class MenuServiceTest {
         MenuRequest menuRequest = new MenuRequest("후라이드치킨세트", BigDecimal.TEN, 1L,
             Collections.singletonList(menuProductRequest));
 
-        when(menuGroupDao.existsById(anyLong())).thenReturn(true);
-        when(productDao.findById(anyLong())).thenReturn(Optional.empty());
+        when(menuGroupService.existsById(anyLong())).thenReturn(true);
+        when(productService.findById(anyLong())).thenReturn(Optional.empty());
 
         //when
         ThrowingCallable createCallable = () -> menuService.create(menuRequest);
@@ -149,8 +140,8 @@ class MenuServiceTest {
         MenuRequest menuRequest = new MenuRequest("후라이드치킨세트", BigDecimal.TEN, 1L,
             Collections.singletonList(menuProductRequest));
 
-        when(menuGroupDao.existsById(menuRequest.getMenuGroupId())).thenReturn(true);
-        when(productDao.findById(menuProductRequest.getProductId()))
+        when(menuGroupService.existsById(menuRequest.getMenuGroupId())).thenReturn(true);
+        when(productService.findById(menuProductRequest.getProductId()))
             .thenReturn(Optional.of(후라이드치킨()));
 
         //when
@@ -165,30 +156,28 @@ class MenuServiceTest {
     @DisplayName("메뉴들을 조회할 수 있다.")
     void list() {
         //given
-        Menu 후라이드치킨세트 = 후라이드치킨세트();
-        when(menuDao.findAll()).thenReturn(Collections.singletonList(후라이드치킨세트));
+        when(menuRepository.findAll()).thenReturn(Collections.singletonList(후라이드치킨세트()));
 
         //when
         menuService.list();
 
         //then
-        verify(menuDao, only()).findAll();
-        verify(menuProductDao, only()).findAllByMenuId(후라이드치킨세트.getId());
+        verify(menuRepository, only()).findAll();
     }
 
     private void requestedMenuSave(MenuRequest menuRequest) {
         ArgumentCaptor<Menu> menuCaptor = ArgumentCaptor.forClass(Menu.class);
-        verify(menuDao, only()).save(menuCaptor.capture());
-        assertThat(menuCaptor.getValue())
+        verify(menuRepository, only()).save(menuCaptor.capture());
+        Menu savedMenu = menuCaptor.getValue();
+        assertThat(savedMenu)
             .extracting(Menu::getName, Menu::getPrice)
             .containsExactly(menuRequest.getName(), menuRequest.getPrice());
-    }
 
-    private void requestedMenuProductSave(MenuProductRequest menuProductRequest) {
-        ArgumentCaptor<MenuProduct> menuProductCaptor = ArgumentCaptor.forClass(MenuProduct.class);
-        verify(menuProductDao, only()).save(menuProductCaptor.capture());
-        assertThat(menuProductCaptor.getValue())
+        assertThat(savedMenu.getMenuProducts().list())
             .extracting(MenuProduct::getQuantity)
-            .isEqualTo(menuProductRequest.getQuantity());
+            .containsExactly(menuRequest.getMenuProducts()
+                .stream()
+                .map(MenuProductRequest::quantity)
+                .toArray(Quantity[]::new));
     }
 }

@@ -3,6 +3,7 @@ package kitchenpos.menu.ui.response;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProducts;
 
 public final class MenuProductResponse {
 
@@ -20,8 +21,9 @@ public final class MenuProductResponse {
         this.quantity = quantity;
     }
 
-    static List<MenuProductResponse> listFrom(List<MenuProduct> menuProducts) {
-        return menuProducts.stream()
+    static List<MenuProductResponse> listFrom(MenuProducts menuProducts) {
+        return menuProducts.list()
+            .stream()
             .map(MenuProductResponse::from)
             .collect(Collectors.toList());
     }

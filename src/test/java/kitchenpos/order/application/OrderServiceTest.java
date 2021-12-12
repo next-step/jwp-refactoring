@@ -20,7 +20,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import kitchenpos.common.domain.Quantity;
-import kitchenpos.menu.domain.MenuDao;
+import kitchenpos.menu.application.MenuService;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
@@ -43,7 +43,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class OrderServiceTest {
 
     @Mock
-    private MenuDao menuDao;
+    private MenuService menuService;
     @Mock
     private OrderRepository orderRepository;
     @Mock
@@ -64,7 +64,7 @@ class OrderServiceTest {
         OrderRequest orderRequest = new OrderRequest(orderTableId,
             orderLineItems);
 
-        when(menuDao.countByIdIn(anyList())).thenReturn(1L);
+        when(menuService.countByIdIn(anyList())).thenReturn(1L);
         when(tableService.findById(orderTableId))
             .thenReturn(Optional.of(채워진_다섯명_테이블()));
 
@@ -98,7 +98,7 @@ class OrderServiceTest {
         //given
         OrderRequest orderRequest = new OrderRequest(1L,
             Collections.singletonList(new OrderLineItemRequest(1L, 2)));
-        when(menuDao.countByIdIn(anyList())).thenReturn(0L);
+        when(menuService.countByIdIn(anyList())).thenReturn(0L);
 
         //when
         ThrowingCallable createCallable = () -> orderService.create(orderRequest);
@@ -114,7 +114,7 @@ class OrderServiceTest {
         //given
         OrderRequest orderRequest = new OrderRequest(1L,
             Collections.singletonList(new OrderLineItemRequest(1L, 2)));
-        when(menuDao.countByIdIn(anyList())).thenReturn(1L);
+        when(menuService.countByIdIn(anyList())).thenReturn(1L);
         when(tableService.findById(anyLong())).thenReturn(Optional.empty());
 
         //when
@@ -131,7 +131,7 @@ class OrderServiceTest {
         //given
         OrderRequest orderRequest = new OrderRequest(1L,
             Collections.singletonList(new OrderLineItemRequest(1L, 2)));
-        when(menuDao.countByIdIn(anyList())).thenReturn(1L);
+        when(menuService.countByIdIn(anyList())).thenReturn(1L);
         when(tableService.findById(anyLong()))
             .thenReturn(Optional.of(빈_세명_테이블()));
 

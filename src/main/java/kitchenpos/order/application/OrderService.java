@@ -3,7 +3,7 @@ package kitchenpos.order.application;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import kitchenpos.menu.domain.MenuDao;
+import kitchenpos.menu.application.MenuService;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
@@ -20,14 +20,14 @@ import org.springframework.util.CollectionUtils;
 @Service
 public class OrderService {
 
-    private final MenuDao menuDao;
     private final OrderRepository orderRepository;
+    private final MenuService menuService;
     private final TableService tableService;
 
-    public OrderService(MenuDao menuDao,
-        OrderRepository orderRepository, TableService tableService) {
-        this.menuDao = menuDao;
+    public OrderService(OrderRepository orderRepository,
+        MenuService menuService, TableService tableService) {
         this.orderRepository = orderRepository;
+        this.menuService = menuService;
         this.tableService = tableService;
     }
 
@@ -43,7 +43,7 @@ public class OrderService {
             .map(OrderLineItemRequest::getMenuId)
             .collect(Collectors.toList());
 
-        if (orderLineItemRequests.size() != menuDao.countByIdIn(menuIds)) {
+        if (orderLineItemRequests.size() != menuService.countByIdIn(menuIds)) {
             throw new IllegalArgumentException();
         }
 
@@ -74,7 +74,8 @@ public class OrderService {
         return OrderResponse.from(savedOrder);
     }
 
-    public boolean existsByOrderTableIdAndOrderStatusIn(long orderTableId, List<OrderStatus> asList) {
+    public boolean existsByOrderTableIdAndOrderStatusIn(long orderTableId,
+        List<OrderStatus> asList) {
         return orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTableId, asList);
     }
 

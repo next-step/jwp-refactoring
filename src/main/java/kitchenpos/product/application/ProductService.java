@@ -3,6 +3,8 @@ package kitchenpos.product.application;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
+import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.ui.request.ProductRequest;
 import kitchenpos.product.ui.response.ProductResponse;
@@ -31,5 +33,9 @@ public class ProductService {
 
     public List<ProductResponse> list() {
         return ProductResponse.listFrom(productRepository.findAll());
+    }
+
+    public Optional<Product> findById(long productId) {
+        return productRepository.findById(productId);
     }
 }

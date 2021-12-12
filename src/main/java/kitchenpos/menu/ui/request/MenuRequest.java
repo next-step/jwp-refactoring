@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import kitchenpos.common.domain.Name;
 import kitchenpos.common.domain.Price;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProducts;
 
 public final class MenuRequest {
 
@@ -54,13 +55,13 @@ public final class MenuRequest {
 
     public Menu toEntity() {
         Menu menu = new Menu();
-        menu.setPrice(price);
-        menu.setName(name);
-        menu.setMenuGroupId(menuGroupId);
+        menu.setPrice(price());
+        menu.setName(name());
+//        menu.setMenuGroup(menuGroupId);
         menu.setMenuProducts(
-            menuProducts.stream()
+            MenuProducts.from(menuProducts.stream()
                 .map(MenuProductRequest::toEntity)
-                .collect(Collectors.toList())
+                .collect(Collectors.toList()))
         );
         return menu;
     }

@@ -33,7 +33,7 @@ public final class MenuProductRequest {
     public MenuProduct toEntity() {
         MenuProduct menuProduct = new MenuProduct();
         menuProduct.setProductId(productId);
-        menuProduct.setQuantity(quantity);
+        menuProduct.setQuantity(Quantity.from(quantity));
         return menuProduct;
     }
 }

@@ -7,8 +7,8 @@ import static org.mockito.Mockito.only;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import kitchenpos.menu.domain.MenuGroupDao;
 import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.ui.request.MenuGroupRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,7 +23,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class MenuGroupServiceTest {
 
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
 
     @InjectMocks
     private MenuGroupService menuGroupService;
@@ -33,17 +33,17 @@ class MenuGroupServiceTest {
     void create() {
         //given
         MenuGroupRequest request = new MenuGroupRequest("두마리메뉴");
-        when(menuGroupDao.save(any())).thenReturn(두마리메뉴());
+        when(menuGroupRepository.save(any())).thenReturn(두마리메뉴());
 
         //when
         menuGroupService.create(request);
 
         //then
         ArgumentCaptor<MenuGroup> captor = ArgumentCaptor.forClass(MenuGroup.class);
-        verify(menuGroupDao, only()).save(captor.capture());
+        verify(menuGroupRepository, only()).save(captor.capture());
         assertThat(captor.getValue())
             .extracting(MenuGroup::getName)
-            .isEqualTo(request.getName());
+            .isEqualTo(request.name());
     }
 
     @Test
@@ -53,6 +53,6 @@ class MenuGroupServiceTest {
         menuGroupService.list();
 
         //then
-        verify(menuGroupDao, only()).findAll();
+        verify(menuGroupRepository, only()).findAll();
     }
 }
