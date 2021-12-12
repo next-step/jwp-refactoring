@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 public class MenuService {
@@ -24,12 +25,10 @@ public class MenuService {
     private final MenuProductDao menuProductDao;
     private final ProductDao productDao;
 
-    public MenuService(
-            final MenuDao menuDao,
-            final MenuGroupDao menuGroupDao,
-            final MenuProductDao menuProductDao,
-            final ProductDao productDao
-    ) {
+    public MenuService(final MenuDao menuDao,
+                       final MenuGroupDao menuGroupDao,
+                       final MenuProductDao menuProductDao,
+                       final ProductDao productDao) {
         this.menuDao = menuDao;
         this.menuGroupDao = menuGroupDao;
         this.menuProductDao = menuProductDao;
@@ -66,13 +65,10 @@ public class MenuService {
         return MenuResponse.from(savedMenu);
     }
 
-    public List<Menu> list() {
-        final List<Menu> menus = menuDao.findAll();
-
-        for (final Menu menu : menus) {
-            menu.setMenuProducts(menuProductDao.findAllByMenuId(menu.getId()));
-        }
-
-        return menus;
+    public List<MenuResponse> list() {
+        return menuDao.findAll()
+                .stream()
+                .map(MenuResponse::from)
+                .collect(Collectors.toList());
     }
 }

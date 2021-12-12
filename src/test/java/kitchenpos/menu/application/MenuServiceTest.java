@@ -1,7 +1,6 @@
 package kitchenpos.menu.application;
 
 import kitchenpos.ServiceTest;
-import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
@@ -33,17 +32,17 @@ public class MenuServiceTest extends ServiceTest {
                 Collections.singletonList(menuProductRequest));
 
         // when
-        MenuResponse savedMenuResponse = menuService.create(menuRequest);
+        MenuResponse menuResponse = menuService.create(menuRequest);
 
         // then
         assertAll(
-                () -> assertThat(savedMenuResponse.getId()).isNotNull(),
-                () -> assertThat(savedMenuResponse.getName()).isEqualTo(savedProductResponse.getName()),
-                () -> assertThat(savedMenuResponse.getPrice().compareTo(menuRequest.getPrice())).isZero(),
-                () -> assertThat(savedMenuResponse.getMenuGroupId()).isEqualTo(savedMenuGroupResponse.getId()),
-                () -> assertThat(savedMenuResponse.getMenuProducts().get(0).getMenuId()).isNotNull(),
-                () -> assertThat(savedMenuResponse.getMenuProducts().get(0).getProductId()).isEqualTo(savedProductResponse.getId()),
-                () -> assertThat(savedMenuResponse.getMenuProducts().get(0).getQuantity()).isEqualTo(menuProductRequest.getQuantity())
+                () -> assertThat(menuResponse.getId()).isNotNull(),
+                () -> assertThat(menuResponse.getName()).isEqualTo(savedProductResponse.getName()),
+                () -> assertThat(menuResponse.getPrice().compareTo(menuRequest.getPrice())).isZero(),
+                () -> assertThat(menuResponse.getMenuGroupId()).isEqualTo(savedMenuGroupResponse.getId()),
+                () -> assertThat(menuResponse.getMenuProducts().get(0).getMenuId()).isNotNull(),
+                () -> assertThat(menuResponse.getMenuProducts().get(0).getProductId()).isEqualTo(savedProductResponse.getId()),
+                () -> assertThat(menuResponse.getMenuProducts().get(0).getQuantity()).isEqualTo(menuProductRequest.getQuantity())
         );
     }
 
@@ -114,9 +113,9 @@ public class MenuServiceTest extends ServiceTest {
     @DisplayName("메뉴의 목록을 조회한다.")
     void list() {
         // when
-        List<Menu> menus = menuService.list();
+        List<MenuResponse> menuResponses = menuService.list();
 
         // then
-        assertThat(menus.size()).isPositive();
+        assertThat(menuResponses.size()).isPositive();
     }
 }

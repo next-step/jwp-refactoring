@@ -22,13 +22,13 @@ class ProductServiceTest extends ServiceTest {
         ProductRequest productRequest = new ProductRequest("매운양념치킨", new BigDecimal(18_000));
 
         // when
-        ProductResponse savedProductResponse = productService.create(productRequest);
+        ProductResponse productResponse = productService.create(productRequest);
 
         // then
         assertAll(
-                () -> assertThat(savedProductResponse.getId()).isNotNull(),
-                () -> assertThat(savedProductResponse.getName()).isEqualTo(productRequest.getName()),
-                () -> assertThat(savedProductResponse.getPrice().compareTo(productRequest.getPrice())).isZero()
+                () -> assertThat(productResponse.getId()).isNotNull(),
+                () -> assertThat(productResponse.getName()).isEqualTo(productRequest.getName()),
+                () -> assertThat(productResponse.getPrice().compareTo(productRequest.getPrice())).isZero()
         );
     }
 

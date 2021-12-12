@@ -33,17 +33,17 @@ class OrderServiceTest extends ServiceTest {
                 Collections.singletonList(orderLineItemRequest));
 
         // when
-        OrderResponse savedOrderResponse = orderService.create(orderRequest);
+        OrderResponse orderResponse = orderService.create(orderRequest);
 
         // then
         assertAll(
-                () -> assertThat(savedOrderResponse.getId()).isNotNull(),
-                () -> assertThat(savedOrderResponse.getOrderStatus()).isEqualTo(orderRequest.getOrderStatus()),
-                () -> assertThat(savedOrderResponse.getOrderedTime()).isNotNull(),
-                () -> assertThat(savedOrderResponse.getOrderLineItems().get(0).getSeq()).isNotNull(),
-                () -> assertThat(savedOrderResponse.getOrderLineItems().get(0).getOrderId()).isEqualTo(savedOrderResponse.getId()),
-                () -> assertThat(savedOrderResponse.getOrderLineItems().get(0).getMenuId()).isEqualTo(savedMenuResponse.getId()),
-                () -> assertThat(savedOrderResponse.getOrderLineItems().get(0).getQuantity()).isEqualTo(orderLineItemRequest.getQuantity())
+                () -> assertThat(orderResponse.getId()).isNotNull(),
+                () -> assertThat(orderResponse.getOrderStatus()).isEqualTo(orderRequest.getOrderStatus()),
+                () -> assertThat(orderResponse.getOrderedTime()).isNotNull(),
+                () -> assertThat(orderResponse.getOrderLineItems().get(0).getSeq()).isNotNull(),
+                () -> assertThat(orderResponse.getOrderLineItems().get(0).getOrderId()).isEqualTo(orderResponse.getId()),
+                () -> assertThat(orderResponse.getOrderLineItems().get(0).getMenuId()).isEqualTo(savedMenuResponse.getId()),
+                () -> assertThat(orderResponse.getOrderLineItems().get(0).getQuantity()).isEqualTo(orderLineItemRequest.getQuantity())
         );
     }
 
@@ -52,11 +52,12 @@ class OrderServiceTest extends ServiceTest {
     void createThrowException1() {
         // given
         OrderTableResponse savedOrderTableResponse = 테이블_저장(false);
-        OrderRequest order = new OrderRequest(savedOrderTableResponse.getId(), OrderStatus.COOKING.name(),
+
+        OrderRequest orderRequest = new OrderRequest(savedOrderTableResponse.getId(), OrderStatus.COOKING.name(),
                 LocalDateTime.now(), null);
 
         // when & then
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> orderService.create(order));
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> orderService.create(orderRequest));
     }
 
     @Test
@@ -64,6 +65,7 @@ class OrderServiceTest extends ServiceTest {
     void createThrowException2() {
         // given
         OrderTableResponse savedOrderTableResponse = 테이블_저장(false);
+
         OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(0L, 2);
         OrderRequest orderRequest = new OrderRequest(
                 savedOrderTableResponse.getId(), OrderStatus.COOKING.name(), LocalDateTime.now(),
@@ -78,6 +80,7 @@ class OrderServiceTest extends ServiceTest {
     void createThrowException3() {
         // given
         MenuResponse savedMenuResponse = 메뉴_저장();
+
         OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(savedMenuResponse.getId(), 2);
         OrderRequest orderRequest = new OrderRequest(0L, OrderStatus.COOKING.name(), LocalDateTime.now(),
                 Collections.singletonList(orderLineItemRequest));
@@ -92,6 +95,7 @@ class OrderServiceTest extends ServiceTest {
         // given
         OrderTableResponse savedOrderTableResponse = 테이블_저장(true);
         MenuResponse savedMenuResponse = 메뉴_저장();
+
         OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(savedMenuResponse.getId(), 2);
         OrderRequest orderRequest = new OrderRequest(
                 savedOrderTableResponse.getId(), OrderStatus.COOKING.name(), LocalDateTime.now(),
@@ -119,13 +123,14 @@ class OrderServiceTest extends ServiceTest {
     void changeOrderStatus() {
         // given
         OrderResponse savedOrderResponse = 주문_저장();
+
         OrderRequest orderRequest = new OrderRequest(OrderStatus.MEAL.name());
 
         // when
-        OrderResponse modifiedOrderResponse = orderService.changeOrderStatus(savedOrderResponse.getId(), orderRequest);
+        OrderResponse orderResponse = orderService.changeOrderStatus(savedOrderResponse.getId(), orderRequest);
 
         // then
-        assertThat(modifiedOrderResponse.getOrderStatus()).isEqualTo(orderRequest.getOrderStatus());
+        assertThat(orderResponse.getOrderStatus()).isEqualTo(orderRequest.getOrderStatus());
     }
 
     @Test

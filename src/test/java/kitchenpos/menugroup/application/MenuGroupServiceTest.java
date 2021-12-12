@@ -21,12 +21,12 @@ class MenuGroupServiceTest extends ServiceTest {
         MenuGroupRequest menuGroupRequest = new MenuGroupRequest("세마리메뉴");
 
         // when
-        MenuGroupResponse savedMenuGroupResponse = menuGroupService.create(menuGroupRequest);
+        MenuGroupResponse menuGroupResponse = menuGroupService.create(menuGroupRequest);
 
         // then
         assertAll(
-                () -> assertThat(savedMenuGroupResponse.getId()).isNotNull(),
-                () -> assertThat(savedMenuGroupResponse.getName()).isEqualTo(menuGroupRequest.getName())
+                () -> assertThat(menuGroupResponse.getId()).isNotNull(),
+                () -> assertThat(menuGroupResponse.getName()).isEqualTo(menuGroupRequest.getName())
         );
     }
 
