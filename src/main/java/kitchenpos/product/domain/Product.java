@@ -49,10 +49,6 @@ public class Product {
         return price;
     }
 
-    public Price multiplyPrice() {
-        return null;
-    }
-
     @Override
     public int hashCode() {
         return Objects.hash(id, name, price);

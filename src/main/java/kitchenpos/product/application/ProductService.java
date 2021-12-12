@@ -1,8 +1,6 @@
 package kitchenpos.product.application;
 
-import java.math.BigDecimal;
 import java.util.List;
-import java.util.Objects;
 import kitchenpos.common.exception.NotFoundException;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
@@ -21,13 +19,7 @@ public class ProductService {
     }
 
     @Transactional
-    public ProductResponse create(final ProductRequest request) {
-        final BigDecimal price = request.getPrice();
-
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException();
-        }
-
+    public ProductResponse create(ProductRequest request) {
         return ProductResponse.from(productRepository.save(request.toEntity()));
     }
 
@@ -38,6 +30,6 @@ public class ProductService {
     public Product findById(long id) {
         return productRepository.findById(id)
             .orElseThrow(
-                () -> new NotFoundException(String.format("product id(%d) is not exist", id)));
+                () -> new NotFoundException(String.format("상품 id(%d)가 존재하지 않습니다.", id)));
     }
 }

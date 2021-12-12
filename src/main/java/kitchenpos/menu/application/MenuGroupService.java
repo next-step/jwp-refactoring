@@ -30,6 +30,6 @@ public class MenuGroupService {
     public MenuGroup findById(long id) {
         return menuGroupRepository.findById(id)
             .orElseThrow(
-                () -> new NotFoundException(String.format("menu group id(%d) is not exist", id)));
+                () -> new NotFoundException(String.format("메뉴 그룹 id(%d)가 존재하지 않습니다.", id)));
     }
 }
