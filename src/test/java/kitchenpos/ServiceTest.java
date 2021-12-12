@@ -8,9 +8,10 @@ import kitchenpos.menugroup.application.MenuGroupService;
 import kitchenpos.menugroup.dto.MenuGroupRequest;
 import kitchenpos.menugroup.dto.MenuGroupResponse;
 import kitchenpos.order.application.OrderService;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.ordertable.application.OrderTableService;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
@@ -81,17 +82,18 @@ public abstract class ServiceTest {
         return tableGroupService.create(tableGroupRequest);
     }
 
-    protected Order 주문_저장() {
+    protected OrderResponse 주문_저장() {
         OrderTableResponse savedOrderTableResponse = 테이블_저장(false);
         MenuResponse savedMenuResponse = 메뉴_저장();
-        OrderLineItem orderLineItem = new OrderLineItem(savedMenuResponse.getId(), 2);
-        Order order = new Order(
-                savedOrderTableResponse.getId(), OrderStatus.COOKING, LocalDateTime.now(), Collections.singletonList(orderLineItem));
-        return orderService.create(order);
+        OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(savedMenuResponse.getId(), 2);
+        OrderRequest orderRequest = new OrderRequest(
+                savedOrderTableResponse.getId(), OrderStatus.COOKING.name(), LocalDateTime.now(),
+                Collections.singletonList(orderLineItemRequest));
+        return orderService.create(orderRequest);
     }
 
     protected void 주문_상태를_COMPLETION_으로_상태_변경(Long orderId) {
-        Order order = new Order(OrderStatus.COMPLETION);
+        OrderRequest order = new OrderRequest(OrderStatus.COMPLETION.name());
         orderService.changeOrderStatus(orderId, order);
     }
 

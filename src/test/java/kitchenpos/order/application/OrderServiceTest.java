@@ -2,9 +2,10 @@ package kitchenpos.order.application;
 
 import kitchenpos.ServiceTest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.ordertable.dto.OrderTableResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,22 +27,23 @@ class OrderServiceTest extends ServiceTest {
         OrderTableResponse savedOrderTableResponse = 테이블_저장(false);
         MenuResponse savedMenuResponse = 메뉴_저장();
 
-        OrderLineItem orderLineItem = new OrderLineItem(savedMenuResponse.getId(), 2);
-        Order order = new Order(
-                savedOrderTableResponse.getId(), OrderStatus.COOKING, LocalDateTime.now(), Collections.singletonList(orderLineItem));
+        OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(savedMenuResponse.getId(), 2);
+        OrderRequest orderRequest = new OrderRequest(
+                savedOrderTableResponse.getId(), OrderStatus.COOKING.name(), LocalDateTime.now(),
+                Collections.singletonList(orderLineItemRequest));
 
         // when
-        Order savedOrder = orderService.create(order);
+        OrderResponse savedOrderResponse = orderService.create(orderRequest);
 
         // then
         assertAll(
-                () -> assertThat(savedOrder.getId()).isNotNull(),
-                () -> assertThat(savedOrder.getOrderStatus()).isEqualTo(order.getOrderStatus()),
-                () -> assertThat(savedOrder.getOrderedTime()).isNotNull(),
-                () -> assertThat(savedOrder.getOrderLineItems().get(0).getSeq()).isNotNull(),
-                () -> assertThat(savedOrder.getOrderLineItems().get(0).getOrderId()).isEqualTo(savedOrder.getId()),
-                () -> assertThat(savedOrder.getOrderLineItems().get(0).getMenuId()).isEqualTo(savedMenuResponse.getId()),
-                () -> assertThat(savedOrder.getOrderLineItems().get(0).getQuantity()).isEqualTo(orderLineItem.getQuantity())
+                () -> assertThat(savedOrderResponse.getId()).isNotNull(),
+                () -> assertThat(savedOrderResponse.getOrderStatus()).isEqualTo(orderRequest.getOrderStatus()),
+                () -> assertThat(savedOrderResponse.getOrderedTime()).isNotNull(),
+                () -> assertThat(savedOrderResponse.getOrderLineItems().get(0).getSeq()).isNotNull(),
+                () -> assertThat(savedOrderResponse.getOrderLineItems().get(0).getOrderId()).isEqualTo(savedOrderResponse.getId()),
+                () -> assertThat(savedOrderResponse.getOrderLineItems().get(0).getMenuId()).isEqualTo(savedMenuResponse.getId()),
+                () -> assertThat(savedOrderResponse.getOrderLineItems().get(0).getQuantity()).isEqualTo(orderLineItemRequest.getQuantity())
         );
     }
 
@@ -50,7 +52,8 @@ class OrderServiceTest extends ServiceTest {
     void createThrowException1() {
         // given
         OrderTableResponse savedOrderTableResponse = 테이블_저장(false);
-        Order order = new Order(savedOrderTableResponse.getId(), OrderStatus.COOKING, LocalDateTime.now(), null);
+        OrderRequest order = new OrderRequest(savedOrderTableResponse.getId(), OrderStatus.COOKING.name(),
+                LocalDateTime.now(), null);
 
         // when & then
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> orderService.create(order));
@@ -61,12 +64,13 @@ class OrderServiceTest extends ServiceTest {
     void createThrowException2() {
         // given
         OrderTableResponse savedOrderTableResponse = 테이블_저장(false);
-        OrderLineItem orderLineItem = new OrderLineItem(0L, 2);
-        Order order = new Order(
-                savedOrderTableResponse.getId(), OrderStatus.COOKING, LocalDateTime.now(), Collections.singletonList(orderLineItem));
+        OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(0L, 2);
+        OrderRequest orderRequest = new OrderRequest(
+                savedOrderTableResponse.getId(), OrderStatus.COOKING.name(), LocalDateTime.now(),
+                Collections.singletonList(orderLineItemRequest));
 
         // when & then
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> orderService.create(order));
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> orderService.create(orderRequest));
     }
 
     @Test
@@ -74,11 +78,12 @@ class OrderServiceTest extends ServiceTest {
     void createThrowException3() {
         // given
         MenuResponse savedMenuResponse = 메뉴_저장();
-        OrderLineItem orderLineItem = new OrderLineItem(savedMenuResponse.getId(), 2);
-        Order order = new Order(0L, OrderStatus.COOKING, LocalDateTime.now(), Collections.singletonList(orderLineItem));
+        OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(savedMenuResponse.getId(), 2);
+        OrderRequest orderRequest = new OrderRequest(0L, OrderStatus.COOKING.name(), LocalDateTime.now(),
+                Collections.singletonList(orderLineItemRequest));
 
         // when & then
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> orderService.create(order));
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> orderService.create(orderRequest));
     }
 
     @Test
@@ -87,12 +92,13 @@ class OrderServiceTest extends ServiceTest {
         // given
         OrderTableResponse savedOrderTableResponse = 테이블_저장(true);
         MenuResponse savedMenuResponse = 메뉴_저장();
-        OrderLineItem orderLineItem = new OrderLineItem(savedMenuResponse.getId(), 2);
-        Order order = new Order(
-                savedOrderTableResponse.getId(), OrderStatus.COOKING, LocalDateTime.now(), Collections.singletonList(orderLineItem));
+        OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(savedMenuResponse.getId(), 2);
+        OrderRequest orderRequest = new OrderRequest(
+                savedOrderTableResponse.getId(), OrderStatus.COOKING.name(), LocalDateTime.now(),
+                Collections.singletonList(orderLineItemRequest));
 
         // when & then
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> orderService.create(order));
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> orderService.create(orderRequest));
     }
 
     @Test
@@ -102,48 +108,48 @@ class OrderServiceTest extends ServiceTest {
         주문_저장();
 
         // when
-        List<Order> orders = orderService.list();
+        List<OrderResponse> orderResponses = orderService.list();
 
         // then
-        assertThat(orders.size()).isOne();
+        assertThat(orderResponses.size()).isOne();
     }
 
     @Test
     @DisplayName("주문의 주문 상태를 변경한다.")
     void changeOrderStatus() {
         // given
-        Order savedOrder = 주문_저장();
-        Order order = new Order(OrderStatus.MEAL);
+        OrderResponse savedOrderResponse = 주문_저장();
+        OrderRequest orderRequest = new OrderRequest(OrderStatus.MEAL.name());
 
         // when
-        Order modifiedOrder = orderService.changeOrderStatus(savedOrder.getId(), order);
+        OrderResponse modifiedOrderResponse = orderService.changeOrderStatus(savedOrderResponse.getId(), orderRequest);
 
         // then
-        assertThat(modifiedOrder.getOrderStatus()).isEqualTo(order.getOrderStatus());
+        assertThat(modifiedOrderResponse.getOrderStatus()).isEqualTo(orderRequest.getOrderStatus());
     }
 
     @Test
     @DisplayName("존재하지 않는 주문 ID로 주문의 주문 상태를 변경하면 예외를 발생한다.")
     void changeOrderStatusThrowException1() {
         // given
-        Order order = new Order(OrderStatus.MEAL);
+        OrderRequest orderRequest = new OrderRequest(OrderStatus.MEAL.name());
 
         // when & then
         assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> orderService.changeOrderStatus(0L, order));
+                .isThrownBy(() -> orderService.changeOrderStatus(0L, orderRequest));
     }
 
     @Test
     @DisplayName("주문 완료 상태로 주문의 주문 상태를 변경하면 예외를 발생한다.")
     void changeOrderStatusThrowException2() {
         // given
-        Order savedOrder = 주문_저장();
-        주문_상태를_COMPLETION_으로_상태_변경(savedOrder.getId());
+        OrderResponse savedOrderResponse = 주문_저장();
+        주문_상태를_COMPLETION_으로_상태_변경(savedOrderResponse.getId());
 
-        Order order = new Order(OrderStatus.MEAL);
+        OrderRequest orderRequest = new OrderRequest(OrderStatus.MEAL.name());
 
         // when & then
         assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> orderService.changeOrderStatus(savedOrder.getId(), order));
+                .isThrownBy(() -> orderService.changeOrderStatus(savedOrderResponse.getId(), orderRequest));
     }
 }
