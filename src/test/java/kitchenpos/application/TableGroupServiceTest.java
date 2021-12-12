@@ -3,8 +3,6 @@ package kitchenpos.application;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.Mockito.atLeast;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
@@ -47,7 +45,6 @@ public class TableGroupServiceTest {
     private OrderTable 치킨3_주문_단체테이블;
 
     private TableGroup 단체주문테이블;
-    private TableGroup 단체2주문테이블;
 
     @BeforeEach
     void setUp() {
@@ -56,7 +53,6 @@ public class TableGroupServiceTest {
         치킨3_주문_단체테이블 =  OrderTable.of(3L, 0, true);
 
         단체주문테이블 = TableGroup.of(1L);
-        단체2주문테이블 = TableGroup.of(2L);
     }
 
     @DisplayName("단체지정이 저장된다.")

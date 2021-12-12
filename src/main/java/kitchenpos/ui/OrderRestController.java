@@ -1,7 +1,6 @@
 package kitchenpos.ui;
 
 import kitchenpos.application.order.OrderService;
-import kitchenpos.domain.order.Orders;
 import kitchenpos.dto.OrderDto;
 
 import org.springframework.http.ResponseEntity;
@@ -20,10 +19,10 @@ public class OrderRestController {
 
     @PostMapping("/api/orders")
     public ResponseEntity<OrderDto> create(@RequestBody final OrderDto order) {
-        final Orders created = orderService.create(order);
+        final OrderDto created = orderService.create(order);
         final URI uri = URI.create("/api/orders/" + created.getId());
 
-        return ResponseEntity.created(uri).body(OrderDto.of(created));
+        return ResponseEntity.created(uri).body(created);
     }
 
     @GetMapping("/api/orders")

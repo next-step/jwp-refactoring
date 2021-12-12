@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.assertj.core.api.Assertions;
+import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -76,14 +77,13 @@ public class OrderServiceTest {
 
         뿌링클콤보.changeMenuProducts(List.of(뿌링클콤보_뿌링클치킨, 뿌링클콤보_치킨무, 뿌링클콤보_코카콜라));
 
-        치킨_주문_단체테이블 = OrderTable.of(1L, 0);
+        치킨_주문_단체테이블 = OrderTable.of(1L, 10);
 
-        치킨_주문항목 = OrderLineItem.of(뿌링클콤보, 1L);
+        치킨_주문항목 = OrderLineItem.of(치킨주문, 뿌링클콤보, 1L);
 
+        치킨주문 = Orders.of(치킨_주문_단체테이블, Lists.newArrayList(치킨_주문항목));
 
-        치킨주문 = Orders.of(치킨_주문_단체테이블, List.of(치킨_주문항목));
-
-        치킨_주문항목.changeOrder(치킨주문);
+        치킨_주문항목.acceptOrder(치킨주문);
 
     }
 
@@ -94,18 +94,19 @@ public class OrderServiceTest {
         when(menuService.countByIdIn(List.of(this.뿌링클콤보.getId()))).thenReturn(1L);
         when(menuService.findById(this.뿌링클콤보.getId())).thenReturn(this.뿌링클콤보);
         when(orderTableRepository.findById(this.치킨_주문_단체테이블.getId())).thenReturn(Optional.of(this.치킨_주문_단체테이블));
-        when(orderRepository.save(any(Orders.class))).thenReturn(this.치킨주문);
-        when(orderLineItemRepository.save(any(OrderLineItem.class))).thenReturn(this.치킨_주문항목);
+        
+        Orders 치킨주문_요청 = Orders.of(this.치킨_주문_단체테이블, List.of(this.치킨_주문항목));
 
-        this.치킨주문.changeOrderLineItems(List.of(this.치킨_주문항목));
-        this.치킨주문.changeOrderTable(this.치킨_주문_단체테이블);
-        this.치킨_주문_단체테이블.changeEmpty(false);
+        when(orderRepository.save(any(Orders.class))).thenReturn(this.치킨주문);
 
         // when
-        Orders savedOrder = orderService.create(OrderDto.of(this.치킨주문));
+        OrderDto savedOrder = orderService.create(OrderDto.of(치킨주문_요청));
 
         // then
-        Assertions.assertThat(savedOrder).isEqualTo(this.치킨주문);
+        assertAll(
+            () -> Assertions.assertThat(savedOrder.getOrderLineItems()).hasSize(1),
+            () -> Assertions.assertThat(savedOrder.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name())
+        );
     }
 
     @DisplayName("주문에속하는 수량있는 메뉴가 없는 주문은 예외가 발생된다.")

@@ -4,7 +4,6 @@ import kitchenpos.application.menu.MenuService;
 import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.order.Orders;
 import kitchenpos.domain.order.OrderLineItem;
-import kitchenpos.domain.order.OrderLineItemRepository;
 import kitchenpos.domain.order.OrdersRepository;
 import kitchenpos.domain.table.OrderTable;
 import kitchenpos.domain.table.OrderTableRepository;
@@ -25,42 +24,43 @@ import java.util.stream.Collectors;
 public class OrderService {
     private final MenuService menuService;
     private final OrdersRepository orderRepository;
-    private final OrderLineItemRepository orderLineItemRepository;
     private final OrderTableRepository orderTableRepository;
 
     public OrderService(
             final MenuService menuService,
             final OrdersRepository orderRepository,
-            final OrderLineItemRepository orderLineItemRepository,
             final OrderTableRepository orderTableRepository
     ) {
         this.menuService = menuService;
         this.orderRepository = orderRepository;
-        this.orderLineItemRepository = orderLineItemRepository;
         this.orderTableRepository = orderTableRepository;
     }
 
     @Transactional
-    public Orders create(final OrderDto order) {
+    public OrderDto create(final OrderDto order) {
         final OrderTable orderTable = orderTableRepository.findById(order.getOrderTableId()).orElseThrow(IllegalArgumentException::new);
         final List<OrderLineItemDto> orderLineItems = order.getOrderLineItems();
 
         validationOfCreate(orderTable, orderLineItems);
 
-        final Orders savedOrder = orderRepository.save(Orders.of(orderTable, OrderStatus.COOKING));
-        final List<OrderLineItem> savedOrderLineItems = saveOrderLineItem(savedOrder, orderLineItems);
+        final Orders savedOrder = Orders.of(orderTable, OrderStatus.COOKING);
+        saveOrderLineItem(savedOrder, orderLineItems);
 
-        savedOrder.changeOrderLineItems(savedOrderLineItems);
+        orderRepository.save(savedOrder);
 
-        return savedOrder;
+        return OrderDto.of(savedOrder);
     }
 
-    private List<OrderLineItem> saveOrderLineItem(final Orders order, final List<OrderLineItemDto> orderLineItems) {
+    private List<OrderLineItem> saveOrderLineItem(final Orders order, final List<OrderLineItemDto> orderLineItemDtos) {
         final List<OrderLineItem> savedOrderLineItems = new ArrayList<>();
 
-        for (final OrderLineItemDto orderLineItem : orderLineItems) {
-            Menu menu = menuService.findById(orderLineItem.getMenuId());
-            savedOrderLineItems.add(orderLineItemRepository.save(OrderLineItem.of(order, menu, orderLineItem.getQuantity())));
+        for (final OrderLineItemDto orderLineItemDto : orderLineItemDtos) {
+            Menu menu = menuService.findById(orderLineItemDto.getMenuId());
+
+            OrderLineItem orderLineItem = OrderLineItem.of(menu, orderLineItemDto.getQuantity());
+            orderLineItem.acceptOrder(order);
+
+            savedOrderLineItems.add(orderLineItem);
         }
 
         return savedOrderLineItems;

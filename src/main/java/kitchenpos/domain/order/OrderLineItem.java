@@ -13,7 +13,7 @@ import kitchenpos.domain.menu.Menu;
 public class OrderLineItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long seq;
+    private Long seq;
 
     @ManyToOne
     @JoinColumn(name = "order_id")
@@ -26,7 +26,6 @@ public class OrderLineItem {
     private long quantity;
 
     protected OrderLineItem() {
-
     }
 
     private OrderLineItem(Orders order, Menu menu, long quantity) {
@@ -43,7 +42,7 @@ public class OrderLineItem {
         return new OrderLineItem(null, menu, quantity);
     }
 
-    public long getSeq() {
+    public Long getSeq() {
         return this.seq;
     }
 
@@ -58,7 +57,12 @@ public class OrderLineItem {
         return this.quantity;
     }
 
-    public void changeOrder(Orders order) {
+    public void acceptOrder(Orders order) {
+        if (this.order != null) {
+            this.order.getOrderLineItems().remove(this);
+        }
+
         this.order = order;
+        this.order.getOrderLineItems().add(this);
     }
 }

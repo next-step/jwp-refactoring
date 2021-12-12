@@ -1,8 +1,10 @@
 package kitchenpos.domain.order;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -38,7 +40,7 @@ public class Orders {
     @Column(name = "ordered_time", updatable = false)
     private LocalDateTime orderedTime;
 
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderLineItem> orderLineItems;
 
     protected Orders() {
@@ -48,6 +50,11 @@ public class Orders {
 
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
+        if (orderLineItems == null) {
+            this.orderLineItems = new ArrayList<>();
+            return;
+        }
+        
         this.orderLineItems = orderLineItems;
     }
 
