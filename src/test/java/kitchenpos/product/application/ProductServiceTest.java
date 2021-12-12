@@ -45,7 +45,7 @@ class ProductServiceTest {
         ArgumentCaptor<Product> productCaptor = ArgumentCaptor.forClass(Product.class);
         verify(productRepository, only()).save(productCaptor.capture());
         assertThat(productCaptor.getValue())
-            .extracting(Product::getName, Product::getPrice)
+            .extracting(Product::name, Product::price)
             .containsExactly(request.getName(), request.getPrice());
     }
 

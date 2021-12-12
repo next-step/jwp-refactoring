@@ -20,9 +20,8 @@ public final class OrderLineItemResponse {
         this.quantity = quantity;
     }
 
-    static List<OrderLineItemResponse> listFrom(OrderLineItems orderLineItems) {
-        return orderLineItems.list()
-            .stream()
+    static List<OrderLineItemResponse> listFrom(List<OrderLineItem> orderLineItems) {
+        return orderLineItems.stream()
             .map(OrderLineItemResponse::from)
             .collect(Collectors.toList());
     }

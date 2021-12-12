@@ -52,7 +52,7 @@ public class OrderLineItem {
     }
 
     public Long getOrderId() {
-        return order.getId();
+        return order.id();
     }
 
     public Long getMenuId() {

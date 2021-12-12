@@ -10,10 +10,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import kitchenpos.common.domain.Name;
 import kitchenpos.common.domain.Price;
+import org.springframework.util.Assert;
 
 @Entity
 public class Menu {
 
+    private static final int MIN_PRODUCTS_SIZE = 1;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -31,13 +33,15 @@ public class Menu {
     @Embedded
     private MenuProducts menuProducts;
 
-    public Menu() {
+    protected Menu() {
     }
 
     private Menu(Name name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
+        validate(name, price, menuGroup, menuProducts);
         this.name = name;
         this.price = price;
         this.menuGroup = menuGroup;
+        menuProducts.changeMenu(this);
         this.menuProducts = menuProducts;
     }
 
@@ -45,43 +49,37 @@ public class Menu {
         return new Menu(name, price, menuGroup, menuProducts);
     }
 
-    public Long getId() {
+    public Long id() {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
-    public Name getName() {
+    public Name name() {
         return name;
     }
 
-    public void setName(Name name) {
-        this.name = name;
-    }
-
-    public Price getPrice() {
+    public Price price() {
         return price;
     }
 
-    public void setPrice(final Price price) {
-        this.price = price;
-    }
-
-    public MenuGroup getMenuGroup() {
+    public MenuGroup menuGroup() {
         return menuGroup;
     }
 
-    public void setMenuGroup(MenuGroup menuGroup) {
-        this.menuGroup = menuGroup;
-    }
-
-    public MenuProducts getMenuProducts() {
+    public MenuProducts menuProducts() {
         return menuProducts;
     }
 
-    public void setMenuProducts(MenuProducts menuProducts) {
-        this.menuProducts = menuProducts;
+    private void validate(Name name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
+        Assert.notNull(name, "이름은 필수입니다.");
+        Assert.notNull(price, "가격은 필수입니다.");
+        Assert.notNull(menuGroup, "메뉴 그룹은 필수입니다.");
+
+        Assert.notNull(menuProducts, "메뉴 상품들은 필수입니다.");
+        Assert.isTrue(menuProducts.size() >= MIN_PRODUCTS_SIZE,
+            String.format("메뉴 상품들(%s)은 적어도 %d개 이상이어야 합니다.", menuProducts, MIN_PRODUCTS_SIZE));
+        Price productsSumPrice = menuProducts.sumPrice();
+        Assert.isTrue(price.equalOrLessThan(productsSumPrice),
+            String.format("메뉴 가격(%s)은 메뉴 상품들(%s)의 가격보다 작거나 같아야 합니다.",
+                price, productsSumPrice));
     }
 }

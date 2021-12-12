@@ -19,7 +19,7 @@ public class MenuGroup {
     @Embedded
     private Name name;
 
-    public MenuGroup() {
+    protected MenuGroup() {
     }
 
     private MenuGroup(Name name) {
@@ -31,20 +31,12 @@ public class MenuGroup {
         return new MenuGroup(name);
     }
 
-    public Long getId() {
+    public Long id() {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
-    public Name getName() {
+    public Name name() {
         return name;
-    }
-
-    public void setName(Name name) {
-        this.name = name;
     }
 
     @Override

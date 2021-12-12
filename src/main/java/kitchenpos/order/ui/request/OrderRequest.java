@@ -25,11 +25,4 @@ public final class OrderRequest {
     public List<OrderLineItemRequest> getOrderLineItems() {
         return orderLineItems;
     }
-
-    public Order toEntity() {
-        return Order.of(orderTableId,
-            OrderLineItems.from(orderLineItems.stream()
-                .map(OrderLineItemRequest::toEntity)
-                .collect(Collectors.toList())));
-    }
 }

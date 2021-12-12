@@ -5,6 +5,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.ui.request.OrderLineItemRequest;
@@ -54,7 +55,10 @@ public class OrderService {
             throw new IllegalArgumentException();
         }
 
-        return OrderResponse.from(orderRepository.save(request.toEntity()));
+        Order of = Order.of(orderTable,
+            request.getOrderLineItems().stream().map(OrderLineItemRequest::toEntity).collect(
+                Collectors.toList()));
+        return OrderResponse.from(orderRepository.save(of));
     }
 
     public List<OrderResponse> list() {
@@ -66,11 +70,11 @@ public class OrderService {
         final Order savedOrder = orderRepository.findById(orderId)
             .orElseThrow(IllegalArgumentException::new);
 
-        if (Objects.equals(OrderStatus.COMPLETION.name(), savedOrder.getOrderStatus())) {
+        if (Objects.equals(OrderStatus.COMPLETION, savedOrder.status())) {
             throw new IllegalArgumentException();
         }
 
-        savedOrder.setOrderStatus(request.status());
+        savedOrder.changeStatus(request.status());
         return OrderResponse.from(savedOrder);
     }
 

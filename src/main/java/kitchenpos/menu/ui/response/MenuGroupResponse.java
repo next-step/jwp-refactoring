@@ -18,7 +18,7 @@ public final class MenuGroupResponse {
     }
 
     public static MenuGroupResponse from(MenuGroup menuGroup) {
-        return new MenuGroupResponse(menuGroup.getId(), menuGroup.getName());
+        return new MenuGroupResponse(menuGroup.id(), menuGroup.name().value());
     }
 
     public static List<MenuGroupResponse> listFrom(List<MenuGroup> menuGroups) {

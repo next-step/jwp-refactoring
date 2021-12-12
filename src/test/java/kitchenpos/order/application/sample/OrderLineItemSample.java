@@ -1,7 +1,17 @@
 package kitchenpos.order.application.sample;
 
-import static kitchenpos.menu.application.sample.MenuSample.후라이드치킨세트;
+import static kitchenpos.product.application.sample.ProductSample.후라이드치킨;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 
+import java.math.BigDecimal;
+import kitchenpos.common.domain.Name;
+import kitchenpos.common.domain.Price;
+import kitchenpos.common.domain.Quantity;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.order.domain.OrderLineItem;
 
 public class OrderLineItemSample {
@@ -10,7 +20,24 @@ public class OrderLineItemSample {
         OrderLineItem orderLineItem = new OrderLineItem();
         orderLineItem.setSeq(1L);
         orderLineItem.setQuantity(2);
-        orderLineItem.setMenuId(후라이드치킨세트().getId());
+
+        MenuGroup menuGroup = MenuGroup.from(Name.from("두마리메뉴"));
+        when(menuGroup.id()).thenReturn(1L);
+
+        Menu menu = spy(Menu.of(
+            Name.from("후라이드치킨세트"),
+            Price.from(BigDecimal.TEN),
+            menuGroup,
+            MenuProducts.singleton(후라이드치킨두마리())
+        ));
+        when(menu.id()).thenReturn(1L);
+        orderLineItem.setMenuId(menu.id());
         return orderLineItem;
+    }
+
+    public static MenuProduct 후라이드치킨두마리() {
+        MenuProduct menuProduct = spy(MenuProduct.of(후라이드치킨(), Quantity.from(2L)));
+        when(menuProduct.seq()).thenReturn(1L);
+        return menuProduct;
     }
 }

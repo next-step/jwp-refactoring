@@ -28,11 +28,11 @@ public final class OrderResponse {
 
     public static OrderResponse from(Order order) {
         return new OrderResponse(
-            order.getId(),
-            order.getOrderTableId(),
-            order.getOrderStatus(),
-            order.getOrderedTime(),
-            OrderLineItemResponse.listFrom(order.getOrderLineItems())
+            order.id(),
+            order.table().getId(),
+            order.status().name(),
+            order.orderedTime(),
+            OrderLineItemResponse.listFrom(order.lineItems())
         );
     }
 

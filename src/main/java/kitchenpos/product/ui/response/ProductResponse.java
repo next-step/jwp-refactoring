@@ -22,9 +22,9 @@ public final class ProductResponse {
 
     public static ProductResponse from(Product product) {
         return new ProductResponse(
-            product.getId(),
-            product.getName().value(),
-            product.getPrice().value()
+            product.id(),
+            product.name().value(),
+            product.price().value()
         );
     }
 

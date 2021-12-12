@@ -18,13 +18,7 @@ public final class MenuGroupRequest {
         return name;
     }
 
-    public Name name() {
-        return Name.from(name);
-    }
-
     public MenuGroup toEntity() {
-        MenuGroup menuGroup = new MenuGroup();
-        menuGroup.setName(name());
-        return menuGroup;
+        return MenuGroup.from(Name.from(name));
     }
 }

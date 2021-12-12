@@ -9,6 +9,8 @@ import org.springframework.util.Assert;
 @Embeddable
 public class Price {
 
+    public static final Price ZERO = Price.from(BigDecimal.ZERO);
+
     @Column(name = "price", nullable = false, updatable = false, precision = 19, scale = 2)
     private BigDecimal value;
 
@@ -27,6 +29,20 @@ public class Price {
 
     public BigDecimal value() {
         return value;
+    }
+
+    public Price sum(Price price) {
+        Assert.notNull(price, "더할 가격은 필수입니다.");
+        return from(value.add(price.value));
+    }
+
+    public boolean equalOrLessThan(Price price) {
+        Assert.notNull(price, "비교 가격은 필수입니다.");
+        return value.compareTo(price.value) <= 0;
+    }
+
+    public Price multiply(long value) {
+        return from(this.value.multiply(BigDecimal.valueOf(value)));
     }
 
     private boolean isZeroOrPositive(BigDecimal value) {

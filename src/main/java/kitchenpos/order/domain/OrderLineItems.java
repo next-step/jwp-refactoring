@@ -28,10 +28,6 @@ public class OrderLineItems {
         return new OrderLineItems(items);
     }
 
-    public static OrderLineItems singleton(OrderLineItem item) {
-        return new OrderLineItems(Collections.singletonList(item));
-    }
-
     public List<OrderLineItem> list() {
         return Collections.unmodifiableList(items);
     }

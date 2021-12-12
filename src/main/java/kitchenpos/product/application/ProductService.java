@@ -3,7 +3,7 @@ package kitchenpos.product.application;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
+import kitchenpos.common.exception.NotFoundException;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.ui.request.ProductRequest;
@@ -35,7 +35,9 @@ public class ProductService {
         return ProductResponse.listFrom(productRepository.findAll());
     }
 
-    public Optional<Product> findById(long productId) {
-        return productRepository.findById(productId);
+    public Product findById(long id) {
+        return productRepository.findById(id)
+            .orElseThrow(
+                () -> new NotFoundException(String.format("product id(%d) is not exist", id)));
     }
 }

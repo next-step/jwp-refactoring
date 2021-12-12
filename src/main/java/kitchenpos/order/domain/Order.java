@@ -1,21 +1,27 @@
 package kitchenpos.order.domain;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+import kitchenpos.table.domain.OrderTable;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.util.Assert;
 
 @Entity
+@Table(name = "orders")
 @EntityListeners(AuditingEntityListener.class)
 public class Order {
 
@@ -23,8 +29,9 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(nullable = false, updatable = false)
-    private long orderTableId;
+    @JoinColumn(name = "order_table_id", nullable = false, updatable = false, foreignKey = @ForeignKey(name = "fk_orders_order_table"))
+    @OneToOne(optional = false)
+    private OrderTable orderTable;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -40,85 +47,42 @@ public class Order {
     public Order() {
     }
 
-    private Order(long orderTableId, OrderLineItems orderLineItems) {
-        Assert.notNull(orderLineItems, "주문 항목들은 필수입니다.");
-        this.orderTableId = orderTableId;
-        this.orderLineItems = orderLineItems;
+    private Order(OrderTable orderTable, List<OrderLineItem> lineItems) {
+        Assert.notNull(orderTable, "주문 테이블은 필수입니다.");
+        Assert.notNull(lineItems, "주문 항목들은 필수입니다.");
+        this.orderTable = orderTable;
+        this.orderLineItems = OrderLineItems.from(lineItems);
     }
 
-    public static Order of(long tableId, OrderLineItems lineItems) {
-        return new Order(tableId, lineItems);
+    public static Order of(OrderTable orderTable, List<OrderLineItem> lineItems) {
+        return new Order(orderTable, lineItems);
     }
 
-    public Long getId() {
+    public Long id() {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
+    public OrderTable table() {
+        return orderTable;
     }
 
-    public Long getOrderTableId() {
-        return orderTableId;
+    public OrderStatus status() {
+        return orderStatus;
     }
 
-    public void setOrderTableId(final Long orderTableId) {
-        this.orderTableId = orderTableId;
-    }
-
-    public String getOrderStatus() {
-        return orderStatus.toString();
-    }
-
-    public void setOrderStatus(OrderStatus status) {
-        this.orderStatus = status;
-    }
-
-    public void setOrderStatus(final String orderStatus) {
-        this.orderStatus = OrderStatus.valueOf(orderStatus);
-    }
-
-    public LocalDateTime getOrderedTime() {
+    public LocalDateTime orderedTime() {
         return orderedTime;
     }
 
-    public void setOrderedTime(final LocalDateTime orderedTime) {
-        this.orderedTime = orderedTime;
+    public List<OrderLineItem> lineItems() {
+        return orderLineItems.list();
     }
 
-    public OrderLineItems getOrderLineItems() {
-        return orderLineItems;
+    public void changeStatus(OrderStatus status) {
+        this.orderStatus = status;
     }
 
-    public void setOrderLineItems(OrderLineItems orderLineItems) {
-        this.orderLineItems = orderLineItems;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, orderTableId);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        Order order = (Order) o;
-        return id == order.id && orderTableId == order.orderTableId;
-    }
-
-    @Override
-    public String toString() {
-        return "Order{" +
-            "id=" + id +
-            ", orderTableId=" + orderTableId +
-            ", orderStatus=" + orderStatus +
-            ", orderedTime=" + orderedTime +
-            ", orderLineItems=" + orderLineItems +
-            '}';
+    public boolean isCookingOrMeal() {
+        return orderStatus.isCooking() || orderStatus.isMeal();
     }
 }

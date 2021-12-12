@@ -27,18 +27,7 @@ public final class ProductRequest {
         return price;
     }
 
-    public Name name() {
-        return Name.from(name);
-    }
-
-    public Price price() {
-        return Price.from(price);
-    }
-
     public Product toEntity() {
-        Product product = new Product();
-        product.setName(name());
-        product.setPrice(price());
-        return product;
+        return Product.of(Name.from(name), Price.from(price));
     }
 }

@@ -27,11 +27,11 @@ public final class MenuResponse {
 
     public static MenuResponse from(Menu menu) {
         return new MenuResponse(
-            menu.getId(),
-            menu.getName().value(),
-            menu.getPrice().value(),
-            menu.getMenuGroup().getId(),
-            MenuProductResponse.listFrom(menu.getMenuProducts())
+            menu.id(),
+            menu.name().value(),
+            menu.price().value(),
+            menu.menuGroup().id(),
+            MenuProductResponse.listFrom(menu.menuProducts())
         );
     }
 

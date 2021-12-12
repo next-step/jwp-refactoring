@@ -123,8 +123,6 @@ class TableGroupServiceTest {
 
         OrderTable orderTable = 채워진_다섯명_테이블();
         orderTable.setTableGroup(tableGroup());
-        when(tableService.findAllByTableGroupId(tableGroupId))
-            .thenReturn(Collections.singletonList(orderTable));
 
         when(orderService.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList()))
             .thenReturn(false);
@@ -147,8 +145,6 @@ class TableGroupServiceTest {
 
         OrderTable orderTable = 채워진_다섯명_테이블();
         orderTable.setTableGroup(tableGroup());
-        when(tableService.findAllByTableGroupId(tableGroupId))
-            .thenReturn(Collections.singletonList(orderTable));
 
         when(orderService.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList()))
             .thenReturn(true);

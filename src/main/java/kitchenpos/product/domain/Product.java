@@ -23,7 +23,7 @@ public class Product {
     @Embedded
     private Price price;
 
-    public Product() {
+    protected Product() {
     }
 
     private Product(Name name, Price price) {
@@ -37,28 +37,20 @@ public class Product {
         return new Product(name, price);
     }
 
-    public long getId() {
+    public long id() {
         return id;
     }
 
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public Name getName() {
+    public Name name() {
         return name;
     }
 
-    public void setName(Name name) {
-        this.name = name;
-    }
-
-    public Price getPrice() {
+    public Price price() {
         return price;
     }
 
-    public void setPrice(Price price) {
-        this.price = price;
+    public Price multiplyPrice() {
+        return null;
     }
 
     @Override

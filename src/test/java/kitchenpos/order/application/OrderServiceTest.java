@@ -171,7 +171,7 @@ class OrderServiceTest {
         orderService.changeOrderStatus(1L, orderRequest);
 
         //then
-        verify(mockOrder, times(1)).setOrderStatus(updatedStatus);
+        verify(mockOrder, times(1)).changeStatus(updatedStatus);
     }
 
     @Test
@@ -210,9 +210,9 @@ class OrderServiceTest {
         Order savedOrder = orderCaptor.getValue();
         assertAll(
             () -> assertThat(savedOrder)
-                .extracting(Order::getOrderStatus, Order::getOrderTableId)
-                .containsExactly(OrderStatus.COOKING.name(), orderTableId),
-            () -> assertThat(savedOrder.getOrderLineItems().list()).first()
+                .extracting(Order::status, Order::table)
+                .containsExactly(OrderStatus.COOKING, orderTableId),
+            () -> assertThat(savedOrder.lineItems()).first()
                 .extracting(OrderLineItem::getMenuId, OrderLineItem::getQuantity)
                 .containsExactly(expectedMenuId, Quantity.from(expectedQuantity))
         );

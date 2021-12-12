@@ -3,7 +3,6 @@ package kitchenpos.menu.ui.request;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import kitchenpos.common.domain.Quantity;
-import kitchenpos.menu.domain.MenuProduct;
 
 public final class MenuProductRequest {
 
@@ -28,12 +27,5 @@ public final class MenuProductRequest {
 
     public Quantity quantity() {
         return Quantity.from(quantity);
-    }
-
-    public MenuProduct toEntity() {
-        MenuProduct menuProduct = new MenuProduct();
-        menuProduct.setProductId(productId);
-        menuProduct.setQuantity(Quantity.from(quantity));
-        return menuProduct;
     }
 }

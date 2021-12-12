@@ -14,7 +14,8 @@ class OrderLineItemsTest {
     @DisplayName("생성")
     void instance() {
         assertThatNoException()
-            .isThrownBy(() -> OrderLineItems.singleton(OrderLineItem.of(1L, 1L)));
+            .isThrownBy(() -> OrderLineItems.from(
+                Collections.singletonList(OrderLineItem.of(1L, 1L))));
     }
 
     @Test

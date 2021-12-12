@@ -27,18 +27,10 @@ public class OrderTableRequest {
         return empty;
     }
 
-    public Headcount numberOfGuests() {
-        return Headcount.from(numberOfGuests);
-    }
-
-    public TableStatus status() {
-        return TableStatus.valueOf(empty);
-    }
-
     public OrderTable toEntity() {
         OrderTable orderTable = new OrderTable();
         orderTable.setNumberOfGuests(Headcount.from(numberOfGuests));
-        orderTable.setEmpty(empty);
+        orderTable.setStatus(TableStatus.valueOf(empty));
         return orderTable;
     }
 }

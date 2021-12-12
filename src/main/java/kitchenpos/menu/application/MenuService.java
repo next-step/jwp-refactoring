@@ -1,8 +1,11 @@
 package kitchenpos.menu.application;
 
-import java.math.BigDecimal;
 import java.util.List;
-import java.util.Objects;
+import java.util.stream.Collectors;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.ui.request.MenuProductRequest;
 import kitchenpos.menu.ui.request.MenuRequest;
@@ -29,31 +32,7 @@ public class MenuService {
 
     @Transactional
     public MenuResponse create(final MenuRequest request) {
-        final BigDecimal price = request.getPrice();
-
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException();
-        }
-
-        if (!menuGroupService.existsById(request.getMenuGroupId())) {
-            throw new IllegalArgumentException();
-        }
-
-        final List<MenuProductRequest> menuProducts = request.getMenuProducts();
-
-        BigDecimal sum = BigDecimal.ZERO;
-        for (final MenuProductRequest menuProduct : menuProducts) {
-            final Product product = productService.findById(menuProduct.getProductId())
-                .orElseThrow(IllegalArgumentException::new);
-            sum = sum.add(
-                product.getPrice().value().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
-        }
-
-        if (price.compareTo(sum) > 0) {
-            throw new IllegalArgumentException();
-        }
-
-        return MenuResponse.from(menuRepository.save(request.toEntity()));
+        return MenuResponse.from(menuRepository.save(newMenu(request)));
     }
 
     public List<MenuResponse> list() {
@@ -62,5 +41,37 @@ public class MenuService {
 
     public long countByIdIn(List<Long> menuIds) {
         return menuRepository.countByIdIn(menuIds);
+    }
+
+    private Menu newMenu(MenuRequest request) {
+        return Menu.of(
+            request.name(),
+            request.price(),
+            menuGroup(request.getMenuGroupId()),
+            menuProducts(request.getMenuProducts())
+        );
+    }
+
+    private MenuProducts menuProducts(List<MenuProductRequest> menuProductRequests) {
+        return MenuProducts.from(
+            menuProductRequests.stream()
+                .map(this::menuProduct)
+                .collect(Collectors.toList())
+        );
+    }
+
+    private MenuProduct menuProduct(MenuProductRequest request) {
+        return MenuProduct.of(
+            product(request.getProductId()),
+            request.quantity()
+        );
+    }
+
+    private Product product(long productId) {
+        return productService.findById(productId);
+    }
+
+    private MenuGroup menuGroup(long menuGroupId) {
+        return menuGroupService.findById(menuGroupId);
     }
 }

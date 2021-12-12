@@ -1,10 +1,7 @@
 package kitchenpos.table.application;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.order.application.OrderService;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.Headcount;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
@@ -19,12 +16,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class TableService {
 
     private final OrderTableRepository orderTableRepository;
-    private final OrderService orderService;
 
-    public TableService(OrderTableRepository orderTableRepository,
-        OrderService orderService) {
+    public TableService(OrderTableRepository orderTableRepository) {
         this.orderTableRepository = orderTableRepository;
-        this.orderService = orderService;
     }
 
     @Transactional
@@ -46,8 +40,7 @@ public class TableService {
             throw new IllegalArgumentException();
         }
 
-        if (orderService.existsByOrderTableIdAndOrderStatusIn(
-            orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
+        if (savedOrderTable.isCookingOrMeal()) {
             throw new IllegalArgumentException();
         }
 

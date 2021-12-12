@@ -27,6 +27,10 @@ public class Quantity {
         return value;
     }
 
+    public Price multiply(Price price) {
+        return price.multiply(value);
+    }
+
     private boolean isZeroOrPositive(long value) {
         return value >= 0;
     }

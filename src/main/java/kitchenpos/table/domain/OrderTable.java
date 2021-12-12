@@ -12,6 +12,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+import kitchenpos.order.domain.Order;
 import org.springframework.util.Assert;
 
 @Entity
@@ -31,6 +33,9 @@ public class OrderTable {
     @Column(nullable = false, length = 10)
     @Enumerated(EnumType.STRING)
     private TableStatus status;
+
+    @OneToOne(mappedBy = "orderTable")
+    private Order order;
 
     public OrderTable() {
     }
@@ -84,6 +89,13 @@ public class OrderTable {
 
     public void setStatus(TableStatus status) {
         this.status = status;
+    }
+
+    public boolean isCookingOrMeal() {
+        if (status.isEmpty()) {
+            return false;
+        }
+        return order.isCookingOrMeal();
     }
 
     @Override

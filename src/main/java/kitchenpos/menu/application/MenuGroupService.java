@@ -1,6 +1,8 @@
 package kitchenpos.menu.application;
 
 import java.util.List;
+import kitchenpos.common.exception.NotFoundException;
+import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.ui.request.MenuGroupRequest;
 import kitchenpos.menu.ui.response.MenuGroupResponse;
@@ -25,7 +27,9 @@ public class MenuGroupService {
         return MenuGroupResponse.listFrom(menuGroupRepository.findAll());
     }
 
-    public boolean existsById(long id) {
-        return menuGroupRepository.existsById(id);
+    public MenuGroup findById(long id) {
+        return menuGroupRepository.findById(id)
+            .orElseThrow(
+                () -> new NotFoundException(String.format("menu group id(%d) is not exist", id)));
     }
 }

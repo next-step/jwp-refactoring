@@ -8,7 +8,6 @@ import kitchenpos.menu.domain.MenuProducts;
 public final class MenuProductResponse {
 
     private long seq;
-    private long menuId;
     private long productId;
     private long quantity;
 
@@ -42,9 +41,9 @@ public final class MenuProductResponse {
 
     private static MenuProductResponse from(MenuProduct menuProduct) {
         return new MenuProductResponse(
-            menuProduct.getSeq(),
-            menuProduct.getProductId(),
-            menuProduct.getQuantity()
+            menuProduct.seq(),
+            menuProduct.product().id(),
+            menuProduct.quantity().value()
         );
     }
 }

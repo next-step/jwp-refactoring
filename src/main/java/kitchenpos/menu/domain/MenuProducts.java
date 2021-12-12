@@ -5,6 +5,7 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
+import kitchenpos.common.domain.Price;
 import org.springframework.util.Assert;
 
 @Embeddable
@@ -33,6 +34,23 @@ public class MenuProducts {
 
     public List<MenuProduct> list() {
         return Collections.unmodifiableList(products);
+    }
+
+    public Price sumPrice() {
+        return products.stream()
+            .map(MenuProduct::price)
+            .reduce(Price::sum)
+            .orElse(Price.ZERO);
+    }
+
+    public int size() {
+        return products.size();
+    }
+
+    void changeMenu(Menu menu) {
+        Assert.notNull(menu, "변경하려는 메뉴는 필수입니다.");
+        products.forEach(menuProduct ->
+            menuProduct.changeMenu(menu));
     }
 
     @Override
