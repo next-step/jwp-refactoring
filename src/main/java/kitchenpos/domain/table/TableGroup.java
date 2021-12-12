@@ -1,7 +1,6 @@
 package kitchenpos.domain.table;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -45,9 +44,6 @@ public class TableGroup {
         return new TableGroup(null, orderTables);
     }
 
-    public static TableGroup of(Long id, List<OrderTable> orderTables) {
-        return new TableGroup(id, orderTables);
-    }
 
     public Long getId() {
         return this.id;

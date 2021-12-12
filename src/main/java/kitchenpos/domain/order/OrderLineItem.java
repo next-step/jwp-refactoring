@@ -34,10 +34,6 @@ public class OrderLineItem {
         this.quantity = quantity;
     }
 
-    public static OrderLineItem of(Orders order, Menu menu, long quantity) {
-        return new OrderLineItem(order, menu, quantity);
-    }
-
     public static OrderLineItem of(Menu menu, long quantity) {
         return new OrderLineItem(null, menu, quantity);
     }

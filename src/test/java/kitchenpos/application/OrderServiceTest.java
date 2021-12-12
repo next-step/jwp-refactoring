@@ -2,6 +2,7 @@ package kitchenpos.application;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
@@ -69,7 +70,7 @@ public class OrderServiceTest {
         치킨무 = Product.of(2L, "치킨무", Price.of(1_000));
         코카콜라 = Product.of(3L, "코카콜라", Price.of(3_000));
 
-        뿌링클콤보 = Menu.of(1L, "뿌링클콤보", Price.of(18_000));
+        뿌링클콤보 = Menu.of("뿌링클콤보", Price.of(18_000));
 
         뿌링클콤보_뿌링클치킨 = MenuProduct.of(뿌링클콤보, 뿌링클치킨, 1L);
         뿌링클콤보_치킨무 = MenuProduct.of(뿌링클콤보, 치킨무, 1L);
@@ -79,9 +80,9 @@ public class OrderServiceTest {
         뿌링클콤보_치킨무.acceptMenu(뿌링클콤보);
         뿌링클콤보_코카콜라.acceptMenu(뿌링클콤보);
 
-        치킨_주문_단체테이블 = OrderTable.of(1L, 10);
+        치킨_주문_단체테이블 = OrderTable.of(10, false);
 
-        치킨_주문항목 = OrderLineItem.of(치킨주문, 뿌링클콤보, 1L);
+        치킨_주문항목 = OrderLineItem.of(뿌링클콤보, 1L);
 
         치킨주문 = Orders.of(치킨_주문_단체테이블, Lists.newArrayList(치킨_주문항목));
 
@@ -93,9 +94,9 @@ public class OrderServiceTest {
     @Test
     void create_order() {
         // given
-        when(menuService.countByIdIn(List.of(this.뿌링클콤보.getId()))).thenReturn(1L);
-        when(menuService.findById(this.뿌링클콤보.getId())).thenReturn(this.뿌링클콤보);
-        when(orderTableRepository.findById(this.치킨_주문_단체테이블.getId())).thenReturn(Optional.of(this.치킨_주문_단체테이블));
+        when(menuService.countByIdIn(anyList())).thenReturn(1L);
+        when(menuService.findById(null)).thenReturn(this.뿌링클콤보);
+        when(orderTableRepository.findById(null)).thenReturn(Optional.of(this.치킨_주문_단체테이블));
         
         Orders 치킨주문_요청 = Orders.of(this.치킨_주문_단체테이블, List.of(this.치킨_주문항목));
 
@@ -141,11 +142,10 @@ public class OrderServiceTest {
     @Test
     void exception_createOrder_emptyOrderTable() {
         // given
-        when(menuService.countByIdIn(List.of(this.뿌링클콤보.getId()))).thenReturn(1L);
-        when(orderTableRepository.findById(this.치킨_주문_단체테이블.getId())).thenReturn(Optional.of(this.치킨_주문_단체테이블));
+        when(menuService.countByIdIn(anyList())).thenReturn(1L);
+        when(orderTableRepository.findById(null)).thenReturn(Optional.of(this.치킨_주문_단체테이블));
 
         this.치킨주문.changeOrderLineItems(List.of(this.치킨_주문항목));
-        this.치킨주문.changeOrderTable(this.치킨_주문_단체테이블);
 
         치킨_주문_단체테이블.changeEmpty(true);
 

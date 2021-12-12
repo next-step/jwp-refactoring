@@ -35,38 +35,30 @@ public class Menu {
     protected Menu() {
     }
 
-    private Menu(Long id, String name, Price price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+    private Menu(Long id, String name, Price price, MenuGroup menuGroup) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.menuGroup = menuGroup;
-        
-        if (menuProducts == null) {
-            this.menuProducts = new ArrayList<>();
-            return;
-        }
-
-        this.menuProducts = menuProducts;
-    }
-
-    public static Menu of(String name, Price price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        return new Menu(null, name, price, menuGroup, menuProducts);
+        this.menuProducts = new ArrayList<>();
     }
 
     public static Menu of(String name, Price price, MenuGroup menuGroup) {
-        return new Menu(null, name, price, menuGroup, null);
+        return new Menu(null, name, price, menuGroup);
     }
 
     public static Menu of(String name, Price price) {
-        return new Menu(null, name, price, null, null);
+        return new Menu(null, name, price, null);
     }
     
-    public static Menu of(Long id, String name, Price price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        return new Menu(id, name, price, menuGroup, menuProducts);
-    }
+    public static Menu of(String name, Price price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+        Menu menu = new Menu(null, name, price, menuGroup);
+        
+        for (MenuProduct menuProduct : menuProducts) {
+            menuProduct.acceptMenu(menu);
+        }
 
-    public static Menu of(Long id, String name, Price price) {
-        return new Menu(id, name, price, null, null);
+        return menu;
     }
 
     public Long getId() {
@@ -86,11 +78,6 @@ public class Menu {
     }
     public List<MenuProduct> getMenuProducts() {
         return this.menuProducts;
-    }
-
- 
-    public void chnageMenuGroup(MenuGroup menuGroup) {
-        this.menuGroup = menuGroup;
     }
 
     public void changePrice(Price price) {

@@ -2,7 +2,6 @@ package kitchenpos.application.menu;
 
 import kitchenpos.application.product.ProductService;
 import kitchenpos.domain.Price;
-import kitchenpos.domain.product.Product;
 import kitchenpos.dto.MenuDto;
 import kitchenpos.dto.MenuProductDto;
 import kitchenpos.domain.menu.Menu;

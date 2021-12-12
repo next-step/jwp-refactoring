@@ -60,17 +60,17 @@ public class MenuServiceTest {
 
     @BeforeEach
     void setUp() {
-        치킨_메뉴그룹 = MenuGroup.of(1L, "치킨");
+        치킨_메뉴그룹 = MenuGroup.of("치킨");
 
         뿌링클치킨 = Product.of(1L, "뿌링클치킨", Price.of(15_000));
         치킨무 = Product.of(2L, "치킨무", Price.of(1_000));
         코카콜라 = Product.of(3L, "코카콜라", Price.of(3_000));
 
-        뿌링클콤보_뿌링클치킨 = MenuProduct.of(1L, 뿌링클콤보, 뿌링클치킨, 1L);
-        뿌링클콤보_치킨무 = MenuProduct.of(2L, 뿌링클콤보, 치킨무, 1L);
-        뿌링클콤보_코카콜라 = MenuProduct.of(3L, 뿌링클콤보, 코카콜라, 1L);
+        뿌링클콤보_뿌링클치킨 = MenuProduct.of(뿌링클콤보, 뿌링클치킨, 1L);
+        뿌링클콤보_치킨무 = MenuProduct.of(뿌링클콤보, 치킨무, 1L);
+        뿌링클콤보_코카콜라 = MenuProduct.of(뿌링클콤보, 코카콜라, 1L);
 
-        뿌링클콤보 = Menu.of(1L, "뿌링클콤보", Price.of(18_000), 치킨_메뉴그룹, List.of(뿌링클콤보_뿌링클치킨, 뿌링클콤보_치킨무, 뿌링클콤보_코카콜라));
+        뿌링클콤보 = Menu.of("뿌링클콤보", Price.of(18_000), 치킨_메뉴그룹, List.of(뿌링클콤보_뿌링클치킨, 뿌링클콤보_치킨무, 뿌링클콤보_코카콜라));
     }
 
     @DisplayName("메뉴가 저장된다.")
@@ -78,9 +78,7 @@ public class MenuServiceTest {
     void craete_menu() {
         // when
         when(menuGroupRepository.findById(this.뿌링클콤보.getMenuGroup().getId())).thenReturn(Optional.of(this.치킨_메뉴그룹));
-        when(productService.findById(this.뿌링클콤보_뿌링클치킨.getProduct().getId())).thenReturn(this.뿌링클치킨);
-        when(productService.findById(this.뿌링클콤보_치킨무.getProduct().getId())).thenReturn(this.치킨무);
-        when(productService.findById(this.뿌링클콤보_코카콜라.getProduct().getId())).thenReturn(this.코카콜라);
+        when(productService.findById(anyLong())).thenReturn(this.뿌링클치킨, this.치킨무, this.코카콜라);
         when(productService.sumOfPrices(anyList())).thenReturn(Price.of(19_000));
 
 
@@ -97,7 +95,7 @@ public class MenuServiceTest {
     void exception_createMenu_containNotExistMenuGroup() {
         // given
         when(productService.sumOfPrices(anyList())).thenReturn(Price.of(19_000));
-        when(menuGroupRepository.findById(anyLong())).thenThrow(IllegalArgumentException.class);
+        when(menuGroupRepository.findById(null)).thenThrow(IllegalArgumentException.class);
 
         // when
         // then

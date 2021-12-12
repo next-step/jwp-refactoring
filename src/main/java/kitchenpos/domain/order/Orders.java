@@ -47,7 +47,6 @@ public class Orders {
     }
 
     private Orders(OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
-
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
         if (orderLineItems == null) {
@@ -56,10 +55,6 @@ public class Orders {
         }
         
         this.orderLineItems = orderLineItems;
-    }
-
-    public static Orders of(OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
-        return new Orders(orderTable, orderStatus,  orderLineItems);
     }
 
     public static Orders of(OrderTable orderTable, OrderStatus orderStatus) {
@@ -90,16 +85,8 @@ public class Orders {
         return this.orderLineItems;
     }
 
-    public void changeOrderTable(OrderTable orderTable) {
-        this.orderTable = orderTable;
-    }
-
     public void changeOrderStatus(OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
-    }
-
-    public void changeOrderedTime(LocalDateTime localDateTime) {
-        this.orderedTime = localDateTime;
     }
 
     public void changeOrderLineItems(List<OrderLineItem> orderLineItems) {

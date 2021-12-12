@@ -24,10 +24,6 @@ public class MenuGroup {
         return new MenuGroup(null, name);
     }
 
-    public static MenuGroup of(Long id, String name) {
-        return new MenuGroup(id, name);
-    }
-
     public Long getId() {
         return this.id;
     }
