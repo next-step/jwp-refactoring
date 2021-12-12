@@ -15,7 +15,8 @@ import kitchenpos.ordertable.application.OrderTableService;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
 import kitchenpos.product.application.ProductService;
-import kitchenpos.product.domain.Product;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 import kitchenpos.tablegroup.application.TableGroupService;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
@@ -23,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
@@ -49,8 +51,8 @@ public abstract class ServiceTest {
     @Autowired
     protected OrderService orderService;
 
-    protected Product 상품_저장() {
-        return productService.create(new Product("매운양념치킨", 18_000));
+    protected ProductResponse 상품_저장() {
+        return productService.create(new ProductRequest("매운양념치킨", new BigDecimal(18_000)));
     }
 
     protected MenuGroupResponse 메뉴_그룹_저장() {
@@ -58,11 +60,11 @@ public abstract class ServiceTest {
     }
 
     protected MenuResponse 메뉴_저장() {
-        Product savedProduct = 상품_저장();
+        ProductResponse savedProductResponse = 상품_저장();
         MenuGroupResponse savedMenuGroupResponse = 메뉴_그룹_저장();
-        MenuProductRequest menuProductRequest = new MenuProductRequest(savedProduct.getId(), 1);
+        MenuProductRequest menuProductRequest = new MenuProductRequest(savedProductResponse.getId(), 1);
         MenuRequest menuRequest = new MenuRequest(
-                savedProduct.getName(), savedProduct.getPrice(), savedMenuGroupResponse.getId(),
+                savedProductResponse.getName(), savedProductResponse.getPrice(), savedMenuGroupResponse.getId(),
                 Collections.singletonList(menuProductRequest));
         return menuService.create(menuRequest);
     }

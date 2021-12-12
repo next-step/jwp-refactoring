@@ -1,10 +1,12 @@
 package kitchenpos.product.application;
 
 import kitchenpos.ServiceTest;
-import kitchenpos.product.domain.Product;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
@@ -17,16 +19,16 @@ class ProductServiceTest extends ServiceTest {
     @DisplayName("상품을 등록한다.")
     void create() {
         // given
-        Product product = new Product("매운양념치킨", 18_000);
+        ProductRequest productRequest = new ProductRequest("매운양념치킨", new BigDecimal(18_000));
 
         // when
-        Product savedProduct = productService.create(product);
+        ProductResponse savedProductResponse = productService.create(productRequest);
 
         // then
         assertAll(
-                () -> assertThat(savedProduct.getId()).isNotNull(),
-                () -> assertThat(savedProduct.getName()).isEqualTo(product.getName()),
-                () -> assertThat(savedProduct.getPrice().compareTo(product.getPrice())).isZero()
+                () -> assertThat(savedProductResponse.getId()).isNotNull(),
+                () -> assertThat(savedProductResponse.getName()).isEqualTo(productRequest.getName()),
+                () -> assertThat(savedProductResponse.getPrice().compareTo(productRequest.getPrice())).isZero()
         );
     }
 
@@ -34,19 +36,19 @@ class ProductServiceTest extends ServiceTest {
     @DisplayName("0보다 작은 가격으로 상품을 등록하면 예외를 발생한다.")
     void createThrowException() {
         // given
-        Product product = new Product("매운양념치킨", -1);
+        ProductRequest productRequest = new ProductRequest("매운양념치킨", new BigDecimal(-1));
 
         // when & then
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> productService.create(product));
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> productService.create(productRequest));
     }
 
     @Test
     @DisplayName("상품의 목록을 조회한다.")
     void list() {
         // when
-        List<Product> products = productService.list();
+        List<ProductResponse> productResponses = productService.list();
 
         // then
-        assertThat(products.size()).isPositive();
+        assertThat(productResponses.size()).isPositive();
     }
 }
