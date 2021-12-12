@@ -1,21 +1,24 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.InMemoryOrderDao;
-import kitchenpos.dao.InMemoryOrderTableDao;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
+import kitchenpos.dao.*;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.TableGroup;
+import kitchenpos.dto.TableRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 
 import static kitchenpos.fixture.OrderFixture.주문;
 import static kitchenpos.fixture.OrderTableFixture.주문_테이블;
+import static kitchenpos.fixture.OrderTableFixture.테이블_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -38,7 +41,7 @@ class TableServiceTest {
 
     private static final int 손님_수 = 0;
     private static final boolean 빈_테이블 = true;
-    private static final OrderTable 빈_주문_테이블 = 주문_테이블(손님_수, 빈_테이블);
+    private static final TableRequest 빈_주문_테이블 = 테이블_요청(손님_수, 빈_테이블);
 
     private OrderDao orderDao;
     private OrderTableDao orderTableDao;
@@ -55,7 +58,7 @@ class TableServiceTest {
     void create_주문_테이블을_등록할_수_있다() {
         OrderTable 저장된_주문_테이블 = tableService.create(빈_주문_테이블);
         assertAll(
-                () -> assertThat(저장된_주문_테이블.getTableGroupId()).isNull(),
+                () -> assertThat(저장된_주문_테이블.getTableGroup()).isNull(),
                 () -> assertThat(저장된_주문_테이블.getNumberOfGuests()).isEqualTo(손님_수),
                 () -> assertThat(저장된_주문_테이블.isEmpty()).isTrue()
         );
@@ -67,7 +70,7 @@ class TableServiceTest {
         List<OrderTable> orderTables = tableService.list();
         assertAll(
                 () -> assertThat(orderTables.size()).isEqualTo(1),
-                () -> assertThat(orderTables.get(0).getTableGroupId()).isNull(),
+                () -> assertThat(orderTables.get(0).getTableGroup()).isNull(),
                 () -> assertThat(orderTables.get(0).getNumberOfGuests()).isEqualTo(손님_수),
                 () -> assertThat(orderTables.get(0).isEmpty()).isTrue()
         );
@@ -76,7 +79,7 @@ class TableServiceTest {
     @Test
     void changeEmpty_주문_테이블을_빈_테이블로_변경할_수_있다() {
         OrderTable 저장된_주문_테이블 = tableService.create(채워진_주문_테이블());
-        orderDao.save(주문(저장된_주문_테이블, null, OrderStatus.COMPLETION));
+        orderDao.save(주문(저장된_주문_테이블, Arrays.asList(), OrderStatus.COMPLETION));
 
         OrderTable 변경된_주문_테이블 = tableService.changeEmpty(저장된_주문_테이블.getId(), 빈_주문_테이블);
 
@@ -90,9 +93,9 @@ class TableServiceTest {
     }
 
     @ParameterizedTest
-    @ValueSource(longs = 1L)
+    @NullSource
     void changeEmpty_주문_테이블의_테이블_그룹_아이디가_올바르지_않으면_빈_테이블로_변경할_수_없다(Long 존재하는_테이블_그룹_아이디) {
-        OrderTable 저장된_주문_테이블 = orderTableDao.save(주문_테이블(손님_수, 존재하는_테이블_그룹_아이디, 빈_테이블));
+        OrderTable 저장된_주문_테이블 = orderTableDao.save(주문_테이블(손님_수, new TableGroup(1L, LocalDateTime.now(), null), 빈_테이블));
 
         assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> tableService.changeEmpty(저장된_주문_테이블.getId(), 빈_주문_테이블));
@@ -102,7 +105,7 @@ class TableServiceTest {
     @EnumSource(value = OrderStatus.class, names = {"COOKING", "MEAL"})
     void changeEmpty_주문_테이블_아이디와_주문_혹은_식사_주문_상태인_주문이_존재하면_빈_테이블_여부를_변경할_수_없다(OrderStatus 올바르지_않은_주문_상태) {
         OrderTable 저장된_주문_테이블 = tableService.create(채워진_주문_테이블());
-        orderDao.save(주문(저장된_주문_테이블, null, 올바르지_않은_주문_상태));
+        orderDao.save(주문(저장된_주문_테이블, Arrays.asList(), 올바르지_않은_주문_상태));
 
         assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> tableService.changeEmpty(저장된_주문_테이블.getId(), 빈_주문_테이블));
@@ -113,7 +116,7 @@ class TableServiceTest {
     void changeNumberOfGuests_주문_테이블의_방문한_손님_수를_변경할_수_있다(int 유효한_손님_수) {
         OrderTable 저장된_주문_테이블 = tableService.create(채워진_주문_테이블());
 
-        OrderTable 변경된_주문_테이블 = tableService.changeNumberOfGuests(저장된_주문_테이블.getId(), 주문_테이블(유효한_손님_수, true));
+        OrderTable 변경된_주문_테이블 = tableService.changeNumberOfGuests(저장된_주문_테이블.getId(), 테이블_요청(유효한_손님_수, true));
 
         assertThat(변경된_주문_테이블.getNumberOfGuests()).isEqualTo(유효한_손님_수);
     }
@@ -122,19 +125,19 @@ class TableServiceTest {
     @ValueSource(ints = {-1, 0})
     void changeNumberOfGuests_주문_테이블의_방문한_손님_수가_올바르지_않으면_방문한_손님_수를_변경할_수_없다(int 유효하지_않은_손님_수) {
         assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> tableService.changeNumberOfGuests(null, 주문_테이블(유효하지_않은_손님_수, true)));
+                .isThrownBy(() -> tableService.changeNumberOfGuests(null, 테이블_요청(유효하지_않은_손님_수, true)));
     }
 
     @ParameterizedTest
     @ValueSource(booleans = true)
     void changeNumberOfGuests_주문_테이블이_빈_테이블_여부가_올바르지_않으면_방문한_손님_수를_변경할_수_없다(boolean 빈_테이블) {
-        OrderTable 저장된_주문_테이블 = tableService.create(주문_테이블(손님_수, 빈_테이블));
+        OrderTable 저장된_주문_테이블 = tableService.create(테이블_요청(손님_수, 빈_테이블));
 
         assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> tableService.changeNumberOfGuests(저장된_주문_테이블.getId(), 채워진_주문_테이블()));
     }
 
-    private OrderTable 채워진_주문_테이블() {
-        return 주문_테이블(손님_수, false);
+    private TableRequest 채워진_주문_테이블() {
+        return 테이블_요청(손님_수, false);
     }
 }
