@@ -31,41 +31,36 @@ public class MenuProduct {
     @Column(name = "quantity", nullable = false)
     private long quantity;
 
-    public Long getSeq() {
-        return seq;
-    }
+    protected MenuProduct() {}
 
-    public void setSeq(final Long seq) {
+    private MenuProduct(Long seq, Menu menu, Product product, long quantity) {
+        this(menu, product, quantity);
         this.seq = seq;
     }
 
-    public Long getMenuId() {
-        return menu.getId();
+    private MenuProduct(Menu menu, Product product, long quantity) {
+        this.menu = menu;
+        this.product = product;
+        this.quantity = quantity;
+    }
+
+    public static MenuProduct of (Long seq, Menu menu, Product product, long quantity) {
+        return new MenuProduct(seq, menu, product, quantity);
+    }
+
+    public static MenuProduct of(Menu menu, Product product, long quantity) {
+        return new MenuProduct(menu, product, quantity);
     }
 
     public void setMenuId(final Long menuId) {
-        Menu menu = new Menu();
-        menu.setId(menuId);
-
-        this.menu = menu;
+        this.menu = Menu.from(menuId);
     }
 
     public Long getProductId() {
         return product.getId();
     }
 
-    public void setProductId(final Long productId) {
-        Product product = new Product();
-        product.setId(productId);
-
-        this.product = product;
-    }
-
     public long getQuantity() {
         return quantity;
-    }
-
-    public void setQuantity(final long quantity) {
-        this.quantity = quantity;
     }
 }

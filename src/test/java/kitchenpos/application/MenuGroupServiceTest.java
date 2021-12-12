@@ -40,9 +40,7 @@ class MenuGroupServiceTest {
     @Test
     void create() {
         // given
-        MenuGroup menuGroup = new MenuGroup();
-        menuGroup.setName("고기 메뉴그룹");
-
+        MenuGroup menuGroup = MenuGroup.from("고기 메뉴그룹");
         given(menuGroupDao.save(menuGroup)).willReturn(고기_메뉴그룹);
 
         // when

@@ -19,19 +19,34 @@ public class MenuGroup {
     @Column(name = "name", nullable = false)
     private String name;
 
-    public Long getId() {
-        return id;
-    }
+    protected MenuGroup() {}
 
-    public void setId(final Long id) {
+    private MenuGroup(Long id) {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    private MenuGroup(Long id, String name) {
+        this(name);
+        this.id = id;
     }
 
-    public void setName(final String name) {
+    private MenuGroup(String name) {
         this.name = name;
+    }
+
+    public static MenuGroup from(Long id) {
+        return new MenuGroup(id);
+    }
+
+    public static MenuGroup from(String name) {
+        return new MenuGroup(name);
+    }
+
+    public static MenuGroup of(Long id, String name) {
+        return new MenuGroup(id, name);
+    }
+
+    public Long getId() {
+        return id;
     }
 }

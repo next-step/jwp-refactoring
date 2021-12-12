@@ -1,6 +1,12 @@
 package kitchenpos.dao;
 
-import kitchenpos.domain.OrderLineItem;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Optional;
+
+import javax.sql.DataSource;
+
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -9,11 +15,9 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
-import javax.sql.DataSource;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.List;
-import java.util.Optional;
+import kitchenpos.domain.Menu;
+import kitchenpos.domain.Order;
+import kitchenpos.domain.OrderLineItem;
 
 @Repository
 public class JdbcTemplateOrderLineItemDao implements OrderLineItemDao {
@@ -69,11 +73,9 @@ public class JdbcTemplateOrderLineItemDao implements OrderLineItemDao {
     }
 
     private OrderLineItem toEntity(final ResultSet resultSet) throws SQLException {
-        final OrderLineItem entity = new OrderLineItem();
-        entity.setSeq(resultSet.getLong(KEY_COLUMN_NAME));
-        entity.setOrderId(resultSet.getLong("order_id"));
-        entity.setMenuId(resultSet.getLong("menu_id"));
-        entity.setQuantity(resultSet.getLong("quantity"));
-        return entity;
+        return OrderLineItem.of(resultSet.getLong(KEY_COLUMN_NAME),
+                                Order.from(resultSet.getLong("order_id")),
+                                Menu.from(resultSet.getLong("menu_id")),
+                                resultSet.getLong("quantity"));
     }
 }

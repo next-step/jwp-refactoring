@@ -31,41 +31,28 @@ public class OrderLineItem {
     @Column(name = "quantity", nullable = false)
     private long quantity;
 
-    public Long getSeq() {
-        return seq;
-    }
+    protected OrderLineItem() {}
 
-    public void setSeq(final Long seq) {
+    private OrderLineItem(Long seq, Order order, Menu menu, long quantity) {
+        this(order, menu, quantity);
         this.seq = seq;
     }
 
-    public Long getOrderId() {
-        return order.getId();
+    private OrderLineItem(Order order, Menu menu, long quantity) {
+        this.order = order;
+        this.menu = menu;
+        this.quantity = quantity;
+    }
+
+    public static OrderLineItem of(Long seq, Order order, Menu menu, long quantity) {
+        return new OrderLineItem(seq, order, menu, quantity);
     }
 
     public void setOrderId(final Long orderId) {
-        Order order = new Order();
-        order.setId(orderId);
-
-        this.order = order;
+        this.order = Order.from(orderId);
     }
 
     public Long getMenuId() {
         return menu.getId();
-    }
-
-    public void setMenuId(final Long menuId) {
-        Menu menu = new Menu();
-        menu.setId(menuId);
-
-        this.menu = menu;
-    }
-
-    public long getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(final long quantity) {
-        this.quantity = quantity;
     }
 }

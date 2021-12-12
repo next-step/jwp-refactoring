@@ -32,12 +32,54 @@ public class OrderTable {
     @Column(name = "empty", nullable = false)
     private boolean empty;
 
-    public Long getId() {
-        return id;
+    protected OrderTable() {}
+
+    private OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
+        this(tableGroup, numberOfGuests, empty);
+        this.id = id;
     }
 
-    public void setId(final Long id) {
+    private OrderTable(TableGroup tableGroup, int numberOfGuests, boolean empty) {
+        this(numberOfGuests, empty);
+        this.tableGroup = tableGroup;
+    }
+
+    private OrderTable(Long id) {
         this.id = id;
+    }
+
+    private OrderTable(Long id, int numberOfGuests, boolean empty) {
+        this(numberOfGuests, empty);
+        this.id = id;
+    }
+
+    private OrderTable(int numberOfGuests, boolean empty) {
+        this.numberOfGuests = numberOfGuests;
+        this.empty = empty;
+    }
+
+    public static OrderTable from(Long id) {
+        return new OrderTable(id);
+    }
+
+    public static OrderTable of(int numberOfGuests, boolean empty) {
+        return new OrderTable(numberOfGuests, empty);
+    }
+
+    public static OrderTable of (Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
+        return new OrderTable(id, tableGroup, numberOfGuests, empty);
+    }
+
+    public static OrderTable of (TableGroup tableGroup, int numberOfGuests, boolean empty) {
+        return new OrderTable(tableGroup, numberOfGuests, empty);
+    }
+
+    public static OrderTable of(Long id, int numberOfGuests, boolean empty) {
+        return new OrderTable(id, numberOfGuests, empty);
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public Long getTableGroupId() {
@@ -49,10 +91,7 @@ public class OrderTable {
     }
 
     public void setTableGroupId(final Long tableGroupId) {
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.setId(tableGroupId);
-
-        this.tableGroup = tableGroup;
+        this.tableGroup = TableGroup.from(tableGroupId);
     }
 
     public int getNumberOfGuests() {

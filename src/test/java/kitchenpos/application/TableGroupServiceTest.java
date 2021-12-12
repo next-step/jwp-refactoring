@@ -3,7 +3,6 @@ package kitchenpos.application;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -47,7 +46,7 @@ class TableGroupServiceTest {
     void setUp() {
         주문1_단체테이블 = OrderTableFixtureFactory.create(1L, true);
         주문2_단체테이블 = OrderTableFixtureFactory.create(2L, true);
-        손님_10명_개인테이블 = OrderTableFixtureFactory.createWithGuests(3L, true, 10);
+        손님_10명_개인테이블 = OrderTableFixtureFactory.createWithGuests(3L, 10, true);
         단체_테이블그룹 = TableGroupFixtureFactory.create(1L);
 
         단체_테이블그룹.setOrderTables(Arrays.asList(주문1_단체테이블, 주문2_단체테이블));
@@ -57,9 +56,7 @@ class TableGroupServiceTest {
     @Test
     void create1() {
         // given
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.setOrderTables(Arrays.asList(주문1_단체테이블, 주문2_단체테이블));
-        tableGroup.setCreatedDate(LocalDateTime.now());
+        TableGroup tableGroup = TableGroup.from(Arrays.asList(주문1_단체테이블, 주문2_단체테이블));
 
         given(orderTableDao.findAllByIdIn(Arrays.asList(주문1_단체테이블.getId(), 주문2_단체테이블.getId())))
             .willReturn(Arrays.asList(주문1_단체테이블, 주문2_단체테이블));
@@ -76,9 +73,7 @@ class TableGroupServiceTest {
     @Test
     void create2() {
         // given
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.setOrderTables(Collections.emptyList());
-        tableGroup.setCreatedDate(LocalDateTime.now());
+        TableGroup tableGroup = TableGroup.from(Collections.emptyList());
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> tableGroupService.create(tableGroup));
@@ -88,9 +83,7 @@ class TableGroupServiceTest {
     @Test
     void create3() {
         // given
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.setOrderTables(Arrays.asList(주문1_단체테이블));
-        tableGroup.setCreatedDate(LocalDateTime.now());
+        TableGroup tableGroup = TableGroup.from(Arrays.asList(주문1_단체테이블));
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> tableGroupService.create(tableGroup));
@@ -100,9 +93,7 @@ class TableGroupServiceTest {
     @Test
     void create4() {
         // given
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.setOrderTables(Arrays.asList(주문1_단체테이블, 주문2_단체테이블));
-        tableGroup.setCreatedDate(LocalDateTime.now());
+        TableGroup tableGroup = TableGroup.from(Arrays.asList(주문1_단체테이블, 주문2_단체테이블));
 
         given(orderTableDao.findAllByIdIn(Arrays.asList(주문1_단체테이블.getId(), 주문2_단체테이블.getId())))
             .willReturn(Collections.emptyList());
@@ -115,9 +106,7 @@ class TableGroupServiceTest {
     @Test
     void create5() {
         // given
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.setOrderTables(Arrays.asList(손님_10명_개인테이블, 주문2_단체테이블));
-        tableGroup.setCreatedDate(LocalDateTime.now());
+        TableGroup tableGroup = TableGroup.from(Arrays.asList(손님_10명_개인테이블, 주문2_단체테이블));
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> tableGroupService.create(tableGroup));
@@ -127,10 +116,7 @@ class TableGroupServiceTest {
     @Test
     void create6() {
         // given
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.setOrderTables(Arrays.asList(주문1_단체테이블, 주문2_단체테이블));
-        tableGroup.setCreatedDate(LocalDateTime.now());
-
+        TableGroup tableGroup = TableGroup.from(Arrays.asList(주문1_단체테이블, 주문2_단체테이블));
         주문1_단체테이블.setTableGroupId(단체_테이블그룹.getId());
 
         // when & then

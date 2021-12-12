@@ -27,16 +27,37 @@ public class TableGroup {
     @OneToMany(mappedBy = "tableGroup")
     private List<OrderTable> orderTables = new ArrayList<>();
 
+    protected TableGroup() {}
+
+    private TableGroup(Long id) {
+        this.id = id;
+        this.createdDate = LocalDateTime.now();
+    }
+
+    public TableGroup(Long id, LocalDateTime createdDate) {
+        this.id = id;
+        this.createdDate = createdDate;
+    }
+
+    private TableGroup(List<OrderTable> orderTables) {
+        this.orderTables = orderTables;
+        this.createdDate = LocalDateTime.now();
+    }
+
+    public static TableGroup from(Long id) {
+        return new TableGroup(id);
+    }
+
+    public static TableGroup from(List<OrderTable> orderTables) {
+        return new TableGroup(orderTables);
+    }
+
+    public static TableGroup of(Long id, LocalDateTime createdDate) {
+        return new TableGroup(id, createdDate);
+    }
+
     public Long getId() {
         return id;
-    }
-
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
-    public LocalDateTime getCreatedDate() {
-        return createdDate;
     }
 
     public void setCreatedDate(final LocalDateTime createdDate) {

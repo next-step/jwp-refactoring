@@ -2,7 +2,6 @@ package kitchenpos.application;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
-import static org.mockito.Mockito.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -49,7 +48,7 @@ class TableServiceTest {
         주문_개인테이블 = OrderTableFixtureFactory.create(1L, false);
         주문1_단체테이블 = OrderTableFixtureFactory.create(2L, true);
         빈_개인테이블 = OrderTableFixtureFactory.create(3L, true);
-        손님_10명_개인테이블 = OrderTableFixtureFactory.createWithGuests(3L, true, 10);
+        손님_10명_개인테이블 = OrderTableFixtureFactory.createWithGuests(3L, 10, true);
 
         단체_테이블그룹.setOrderTables(Arrays.asList(주문1_단체테이블));
         주문1_단체테이블.setTableGroupId(단체_테이블그룹.getId());
@@ -59,8 +58,7 @@ class TableServiceTest {
     @Test
     void create1() {
         // given
-        OrderTable orderTable = new OrderTable();
-        orderTable.setEmpty(true);
+        OrderTable orderTable = OrderTable.of(0, true);
 
         given(orderTableDao.save(any(OrderTable.class))).willReturn(주문_개인테이블);
 
@@ -156,7 +154,7 @@ class TableServiceTest {
     @ValueSource(ints = {-1, -2, -10})
     void changeNumberOfGuests2(int wrongNumberOfGuests) {
         // given
-        OrderTable 손님_음수_개인테이블 = new OrderTable();
+        OrderTable 손님_음수_개인테이블 = OrderTable.of(wrongNumberOfGuests, true);
         손님_음수_개인테이블.setNumberOfGuests(wrongNumberOfGuests);
 
         // when & then

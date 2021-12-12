@@ -43,9 +43,7 @@ class ProductServiceTest {
     @Test
     void create1() {
         // given
-        Product product = new Product();
-        product.setName("돼지고기");
-        product.setPrice(BigDecimal.valueOf(9_000));
+        Product product = Product.of("돼지고기", BigDecimal.valueOf(9_000));
 
         given(productDao.save(any(Product.class))).willReturn(돼지고기);
 
@@ -60,9 +58,7 @@ class ProductServiceTest {
     @Test
     void create2() {
         // given
-        Product product = new Product();
-        product.setName("돼지고기");
-        product.setPrice(null);
+        Product product = Product.of("돼지고기", null);
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> productService.create(product));
@@ -73,9 +69,7 @@ class ProductServiceTest {
     @ValueSource(ints = {-1, -2, -10, -100})
     void create3(int wrongPrice) {
         // given
-        Product product = new Product();
-        product.setName("돼지고기");
-        product.setPrice(BigDecimal.valueOf(wrongPrice));
+        Product product = Product.of("돼지고기", BigDecimal.valueOf(wrongPrice));
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> productService.create(product));

@@ -3,6 +3,7 @@ package kitchenpos.application;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -71,7 +72,7 @@ class OrderServiceTest {
         고기_메뉴그룹 = MenuGroupFixtureFactory.create(1L, "고기 메뉴그룹");
         돼지고기 = ProductFixtureFactory.create(1L, "돼지고기", 9_000);
         공기밥 = ProductFixtureFactory.create(2L, "공기밥", 1_000);
-        불고기 = MenuFixtureFactory.create(1L, "불고기", 10_000, 고기_메뉴그룹.getId());
+        불고기 = MenuFixtureFactory.create(1L, "불고기", 10_000, 고기_메뉴그룹);
 
         불고기_돼지고기 = MenuProductFixtureFactory.create(1L, 불고기.getId(), 돼지고기.getId(), 1L);
         불고기_공기밥 = MenuProductFixtureFactory.create(2L, 불고기.getId(), 공기밥.getId(), 1L);
@@ -91,9 +92,7 @@ class OrderServiceTest {
     @Test
     void create1() {
         // given
-        Order order = new Order();
-        order.setOrderTableId(주문_개인테이블.getId());
-        order.setOrderLineItems(Arrays.asList(불고기_주문항목));
+        Order order = Order.of(주문_개인테이블, OrderStatus.COOKING.name(), LocalDateTime.now(), Arrays.asList(불고기_주문항목));
 
         given(menuDao.countByIdIn(Arrays.asList(불고기.getId()))).willReturn(1L);
         given(orderTableDao.findById(주문_개인테이블.getId())).willReturn(Optional.ofNullable(주문_개인테이블));
@@ -111,9 +110,7 @@ class OrderServiceTest {
     @Test
     void create2() {
         // given
-        Order order = new Order();
-        order.setOrderTableId(주문_개인테이블.getId());
-        order.setOrderLineItems(Collections.emptyList());
+        Order order = Order.of(주문_개인테이블, OrderStatus.COOKING.name(), LocalDateTime.now(), Collections.emptyList());
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(order));
@@ -123,9 +120,7 @@ class OrderServiceTest {
     @Test
     void create3() {
         // given
-        Order order = new Order();
-        order.setOrderTableId(주문_개인테이블.getId());
-        order.setOrderLineItems(Arrays.asList(불고기_주문항목));
+        Order order = Order.of(주문_개인테이블, OrderStatus.COOKING.name(), LocalDateTime.now(), Arrays.asList(불고기_주문항목));
 
         given(menuDao.countByIdIn(Arrays.asList(불고기.getId()))).willReturn(0L);
 
@@ -137,9 +132,7 @@ class OrderServiceTest {
     @Test
     void create4() {
         // given
-        Order order = new Order();
-        order.setOrderTableId(주문_개인테이블.getId());
-        order.setOrderLineItems(Arrays.asList(불고기_주문항목));
+        Order order = Order.of(주문_개인테이블, OrderStatus.COOKING.name(), LocalDateTime.now(), Arrays.asList(불고기_주문항목));
 
         given(menuDao.countByIdIn(Arrays.asList(불고기.getId()))).willReturn(1L);
         given(orderTableDao.findById(주문_개인테이블.getId())).willReturn(Optional.ofNullable(주문_개인테이블));
@@ -153,9 +146,7 @@ class OrderServiceTest {
     @Test
     void create5() {
         // given
-        Order order = new Order();
-        order.setOrderTableId(빈_개인테이블.getId());
-        order.setOrderLineItems(Arrays.asList(불고기_주문항목));
+        Order order = Order.of(빈_개인테이블, OrderStatus.COOKING.name(), LocalDateTime.now(), Arrays.asList(불고기_주문항목));
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(order));
