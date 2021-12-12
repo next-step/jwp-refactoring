@@ -71,5 +71,4 @@ public class TableGroupDto {
     public int hashCode() {
         return Objects.hash(id, createdDate, orderTables);
     }
-
 }

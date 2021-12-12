@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.assertj.core.api.Assertions;
+import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -48,7 +49,7 @@ public class TableServiceTest {
         치킨2_주문_단체테이블 = OrderTable.of(2L, 0);
         치킨_주문_개인테이블 =  OrderTable.of(3L, 0);
 
-        단체주문테이블 = TableGroup.of(List.of(치킨_주문_단체테이블, 치킨2_주문_단체테이블));
+        단체주문테이블 = TableGroup.of(Lists.newArrayList(치킨_주문_단체테이블, 치킨2_주문_단체테이블));
     }
 
     @DisplayName("주문테이블이 생성된다.")
@@ -97,7 +98,7 @@ public class TableServiceTest {
     void exception_updateOrderTable_existOrderTableInTableGroup() {
         // given
         when(orderTableRepository.findById(this.치킨_주문_단체테이블.getId())).thenReturn(Optional.of(this.치킨_주문_단체테이블));
-        this.치킨_주문_단체테이블.changeTableGroup(this.단체주문테이블);
+        this.치킨_주문_단체테이블.groupingTable(this.단체주문테이블);
 
         // when
         // then
@@ -110,7 +111,7 @@ public class TableServiceTest {
     void exception_updateOrderTable_EmptyStatus() {
         // given
         when(orderTableRepository.findById(this.치킨_주문_단체테이블.getId())).thenReturn(Optional.of(this.치킨_주문_단체테이블));
-        this.치킨_주문_단체테이블.changeTableGroup(this.단체주문테이블);
+        this.치킨_주문_단체테이블.groupingTable(this.단체주문테이블);
 
         // when
         // then

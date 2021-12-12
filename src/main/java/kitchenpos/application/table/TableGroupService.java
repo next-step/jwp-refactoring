@@ -39,19 +39,7 @@ public class TableGroupService {
 
         final TableGroup savedTableGroup = tableGroupRepository.save(TableGroup.of(savedOrderTables));
 
-        updateOrderTable(savedOrderTables, savedTableGroup);
-
-        savedTableGroup.changeOrderTables(savedOrderTables);
-
         return TableGroupDto.of(savedTableGroup);
-    }
-
-    private void updateOrderTable(final List<OrderTable> savedOrderTables, final TableGroup savedTableGroup) {
-        for (final OrderTable savedOrderTable : savedOrderTables) {
-            savedOrderTable.changeTableGroup(savedTableGroup);
-            savedOrderTable.changeEmpty(false);
-            orderTableRepository.save(savedOrderTable);
-        }
     }
 
     private void validationOfCreate(final List<OrderTableDto> orderTables, final List<OrderTable> savedOrderTables) {
@@ -97,9 +85,8 @@ public class TableGroupService {
 
         validationOfUpgroup(orderTableIds);
 
-        for (final OrderTable orderTable : orderTables) {
-            orderTable.changeTableGroup(null);
-            orderTableRepository.save(orderTable);
+        for (OrderTable orderTable : orderTables) {
+            orderTable.unGroupTable();
         }
     }
 
