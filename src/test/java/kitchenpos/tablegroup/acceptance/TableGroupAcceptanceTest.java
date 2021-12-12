@@ -13,7 +13,7 @@ import org.springframework.http.HttpStatus;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
-import static kitchenpos.ordertable.acceptance.TableAcceptanceTest.*;
+import static kitchenpos.ordertable.acceptance.OrderTableAcceptanceTest.*;
 import static org.assertj.core.api.Assertions.*;
 
 @DisplayName("테이블 그룹 인수 테스트")

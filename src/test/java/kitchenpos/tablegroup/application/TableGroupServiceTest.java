@@ -1,8 +1,9 @@
 package kitchenpos.tablegroup.application;
 
 import kitchenpos.ServiceTest;
-import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.ordertable.dto.OrderTableResponse;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
+import kitchenpos.tablegroup.dto.TableGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -20,18 +21,19 @@ class TableGroupServiceTest extends ServiceTest {
     @DisplayName("테이블 그룹을 등록한다.")
     void create() {
         // given
-        OrderTable orderTable1 = 테이블_저장(true);
-        OrderTable orderTable2 = 테이블_저장(true);
-        TableGroup tableGroup = new TableGroup(LocalDateTime.now(), Arrays.asList(orderTable1, orderTable2));
+        OrderTableResponse savedOrderTableResponse1 = 테이블_저장(true);
+        OrderTableResponse savedOrderTableResponse2 = 테이블_저장(true);
+        TableGroupRequest tableGroupRequest = new TableGroupRequest(
+                LocalDateTime.now(), Arrays.asList(savedOrderTableResponse1.getId(), savedOrderTableResponse2.getId()));
 
         // when
-        TableGroup savedTableGroup = tableGroupService.create(tableGroup);
+        TableGroupResponse savedTableGroupResponse = tableGroupService.create(tableGroupRequest);
 
         // then
         assertAll(
-                () -> assertThat(savedTableGroup.getId()).isNotNull(),
-                () -> assertThat(savedTableGroup.getCreatedDate()).isNotNull(),
-                () -> assertThat(savedTableGroup.getOrderTables().size()).isEqualTo(2)
+                () -> assertThat(savedTableGroupResponse.getId()).isNotNull(),
+                () -> assertThat(savedTableGroupResponse.getCreatedDate()).isNotNull(),
+                () -> assertThat(savedTableGroupResponse.getOrderTables().size()).isEqualTo(2)
         );
     }
 
@@ -39,50 +41,52 @@ class TableGroupServiceTest extends ServiceTest {
     @DisplayName("1개 이하인 테이블 수로 테이블 그룹을 등록하면 예외가 발생한다.")
     void createThrowException1() {
         // given
-        OrderTable orderTable = 테이블_저장(true);
-        TableGroup tableGroup = new TableGroup(LocalDateTime.now(), Collections.singletonList(orderTable));
+        OrderTableResponse savedOrderTableResponse = 테이블_저장(true);
+        TableGroupRequest tableGroupRequest = new TableGroupRequest(
+                LocalDateTime.now(), Collections.singletonList(savedOrderTableResponse.getId()));
 
         // when & then
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> tableGroupService.create(tableGroup));
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> tableGroupService.create(tableGroupRequest));
     }
 
     @Test
     @DisplayName("존재하지 않는 테이블로 테이블 그룹을 등록하면 예외가 발생한다.")
     void createThrowException2() {
         // given
-        OrderTable orderTable1 = 테이블_저장(true);
-        OrderTable orderTable2 = new OrderTable(2, true);
-        TableGroup tableGroup = new TableGroup(LocalDateTime.now(), Arrays.asList(orderTable1, orderTable2));
+        OrderTableResponse savedOrderTableResponse = 테이블_저장(true);
+        TableGroupRequest tableGroupRequest = new TableGroupRequest(
+                LocalDateTime.now(), Arrays.asList(savedOrderTableResponse.getId(), 0L));
 
         // when & then
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> tableGroupService.create(tableGroup));
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> tableGroupService.create(tableGroupRequest));
     }
 
     @Test
     @DisplayName("비어있는 테이블로 테이블 그룹을 등록하면 예외가 발생한다.")
     void createThrowException3() {
         // given
-        OrderTable orderTable1 = 테이블_저장(true);
-        OrderTable orderTable2 = 테이블_저장(false);
-        TableGroup tableGroup = new TableGroup(LocalDateTime.now(), Arrays.asList(orderTable1, orderTable2));
+        OrderTableResponse savedOrderTableResponse1 = 테이블_저장(true);
+        OrderTableResponse savedOrderTableResponse2 = 테이블_저장(false);
+        TableGroupRequest tableGroupRequest = new TableGroupRequest(
+                LocalDateTime.now(), Arrays.asList(savedOrderTableResponse1.getId(), savedOrderTableResponse2.getId()));
 
         // when & then
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> tableGroupService.create(tableGroup));
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> tableGroupService.create(tableGroupRequest));
     }
 
     @Test
     @DisplayName("테이블 그룹에서 테이블을 제거한다.")
     void ungroup() {
         // given
-        TableGroup savedTableGroup = 테이블_그룹_저장();
+        TableGroupResponse savedTableGroupResponse = 테이블_그룹_저장();
 
         // when
-        tableGroupService.ungroup(savedTableGroup.getId());
+        tableGroupService.ungroup(savedTableGroupResponse.getId());
 
         // then
         assertAll(
-                () -> assertThat(테이블_조회(savedTableGroup.getOrderTables().get(0).getId()).getTableGroupId()).isNull(),
-                () -> assertThat(테이블_조회(savedTableGroup.getOrderTables().get(1).getId()).getTableGroupId()).isNull()
+                () -> assertThat(테이블_조회(savedTableGroupResponse.getOrderTables().get(0).getId()).getTableGroupId()).isNull(),
+                () -> assertThat(테이블_조회(savedTableGroupResponse.getOrderTables().get(1).getId()).getTableGroupId()).isNull()
         );
     }
 }

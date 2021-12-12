@@ -12,11 +12,13 @@ import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.ordertable.application.OrderTableService;
-import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.dto.OrderTableRequest;
+import kitchenpos.ordertable.dto.OrderTableResponse;
 import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
 import kitchenpos.tablegroup.application.TableGroupService;
-import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
+import kitchenpos.tablegroup.dto.TableGroupResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
@@ -65,23 +67,24 @@ public abstract class ServiceTest {
         return menuService.create(menuRequest);
     }
 
-    protected OrderTable 테이블_저장(boolean empty) {
-        return orderTableService.create(new OrderTable(2, empty));
+    protected OrderTableResponse 테이블_저장(boolean empty) {
+        return orderTableService.create(new OrderTableRequest(2, empty));
     }
 
-    protected TableGroup 테이블_그룹_저장() {
-        OrderTable orderTable1 = 테이블_저장(true);
-        OrderTable orderTable2 = 테이블_저장(true);
-        TableGroup tableGroup = new TableGroup(LocalDateTime.now(), Arrays.asList(orderTable1, orderTable2));
-        return tableGroupService.create(tableGroup);
+    protected TableGroupResponse 테이블_그룹_저장() {
+        OrderTableResponse savedOrderTableResponse1 = 테이블_저장(true);
+        OrderTableResponse savedOrderTableResponse2 = 테이블_저장(true);
+        TableGroupRequest tableGroupRequest = new TableGroupRequest(
+                LocalDateTime.now(), Arrays.asList(savedOrderTableResponse1.getId(), savedOrderTableResponse2.getId()));
+        return tableGroupService.create(tableGroupRequest);
     }
 
     protected Order 주문_저장() {
-        OrderTable orderTable = 테이블_저장(false);
+        OrderTableResponse savedOrderTableResponse = 테이블_저장(false);
         MenuResponse savedMenuResponse = 메뉴_저장();
         OrderLineItem orderLineItem = new OrderLineItem(savedMenuResponse.getId(), 2);
         Order order = new Order(
-                orderTable.getId(), OrderStatus.COOKING, LocalDateTime.now(), Collections.singletonList(orderLineItem));
+                savedOrderTableResponse.getId(), OrderStatus.COOKING, LocalDateTime.now(), Collections.singletonList(orderLineItem));
         return orderService.create(order);
     }
 
@@ -91,8 +94,9 @@ public abstract class ServiceTest {
     }
 
     @SuppressWarnings("OptionalGetWithoutIsPresent")
-    protected OrderTable 테이블_조회(Long orderTableId) {
-        return orderTableService.list().stream()
+    protected OrderTableResponse 테이블_조회(Long orderTableId) {
+        return orderTableService.list()
+                .stream()
                 .filter(it -> it.getId().equals(orderTableId))
                 .findFirst()
                 .get();
