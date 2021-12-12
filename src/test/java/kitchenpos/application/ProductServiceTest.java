@@ -19,7 +19,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.application.fixture.ProductFixtureFactory;
 import kitchenpos.dao.ProductDao;
-import kitchenpos.domain.Product;
+import kitchenpos.product.application.ProductService;
+import kitchenpos.product.domain.Product;
 
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {

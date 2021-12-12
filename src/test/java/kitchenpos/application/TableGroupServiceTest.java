@@ -19,8 +19,9 @@ import kitchenpos.application.fixture.TableGroupFixtureFactory;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.TableGroupDao;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.tablegroup.application.TableGroupService;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.tablegroup.domain.TableGroup;
 
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {

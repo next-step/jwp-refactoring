@@ -16,7 +16,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.application.fixture.MenuGroupFixtureFactory;
 import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.menugroup.application.MenuGroupService;
+import kitchenpos.menugroup.domain.MenuGroup;
 
 @ExtendWith(MockitoExtension.class)
 class MenuGroupServiceTest {

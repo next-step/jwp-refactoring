@@ -3,8 +3,8 @@ package kitchenpos.application.fixture;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menugroup.domain.MenuGroup;
 
 public class MenuFixtureFactory {
 
