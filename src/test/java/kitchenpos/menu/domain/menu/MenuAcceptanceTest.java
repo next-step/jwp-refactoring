@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 class MenuAcceptanceTest extends AcceptanceTest {
 
     private void 메뉴_생성됨(ExtractableResponse<Response> actual, MenuRequest menuRequest) {
-        MenuResponse response = actual.as(MenuResponse.class);
+        final MenuResponse response = actual.as(MenuResponse.class);
         assertAll(
                 () -> assertThat(response.getName()).isEqualTo(menuRequest.getName()),
                 () -> assertThat(response.getMenuPrice().getPrice()).isEqualTo(menuRequest.getPrice()),
@@ -39,13 +39,13 @@ class MenuAcceptanceTest extends AcceptanceTest {
         @DisplayName("성공")
         public void create() {
             // given
-            MenuProductRequest 사이다_한개 = MenuProductRequest.of(사이다_생성됨().getId(), 1);
-            MenuProductRequest 양념소스_두개 = MenuProductRequest.of(양념소스_생성됨().getId(), 2);
-            MenuRequest 후라이드_치킨 = MenuRequest.of("후라이드 치킨", BigDecimal.valueOf(15000),
+            final MenuProductRequest 사이다_한개 = MenuProductRequest.of(사이다_생성됨().getId(), 1);
+            final MenuProductRequest 양념소스_두개 = MenuProductRequest.of(양념소스_생성됨().getId(), 2);
+            final MenuRequest 후라이드_치킨 = MenuRequest.of("후라이드 치킨", BigDecimal.valueOf(15000),
                     일인_세트_생성됨().getId(), Lists.newArrayList(사이다_한개, 양념소스_두개));
 
             // when
-            ExtractableResponse<Response> actual = 메뉴_생성_요청(후라이드_치킨);
+            final ExtractableResponse<Response> actual = 메뉴_생성_요청(후라이드_치킨);
 
             // then
             응답_CREATE(actual);
@@ -56,13 +56,13 @@ class MenuAcceptanceTest extends AcceptanceTest {
         @DisplayName("실패 - 메뉴명 없음")
         public void failNameEmpty() {
             // given
-            MenuProductRequest 사이다_한개 = MenuProductRequest.of(사이다_생성됨().getId(), 1);
-            MenuProductRequest 양념소스_두개 = MenuProductRequest.of(양념소스_생성됨().getId(), 2);
-            MenuRequest 후라이드_치킨 = MenuRequest.of("", BigDecimal.valueOf(15000),
+            final MenuProductRequest 사이다_한개 = MenuProductRequest.of(사이다_생성됨().getId(), 1);
+            final MenuProductRequest 양념소스_두개 = MenuProductRequest.of(양념소스_생성됨().getId(), 2);
+            final MenuRequest 후라이드_치킨 = MenuRequest.of("", BigDecimal.valueOf(15000),
                     일인_세트_생성됨().getId(), Lists.newArrayList(사이다_한개, 양념소스_두개));
 
             // when
-            ExtractableResponse<Response> actual = 메뉴_생성_요청(후라이드_치킨);
+            final ExtractableResponse<Response> actual = 메뉴_생성_요청(후라이드_치킨);
 
             // then
             응답_BAD_REQUEST(actual);
@@ -72,13 +72,13 @@ class MenuAcceptanceTest extends AcceptanceTest {
         @DisplayName("실패 - 메뉴 그룹 없음")
         public void failMenuGroupEmpty() {
             // given
-            MenuProductRequest 사이다_한개 = MenuProductRequest.of(사이다_생성됨().getId(), 1);
-            MenuProductRequest 양념소스_두개 = MenuProductRequest.of(양념소스_생성됨().getId(), 2);
-            MenuRequest 후라이드_치킨 = MenuRequest.of("후라이드 치킨", BigDecimal.valueOf(15000),
+            final MenuProductRequest 사이다_한개 = MenuProductRequest.of(사이다_생성됨().getId(), 1);
+            final MenuProductRequest 양념소스_두개 = MenuProductRequest.of(양념소스_생성됨().getId(), 2);
+            final MenuRequest 후라이드_치킨 = MenuRequest.of("후라이드 치킨", BigDecimal.valueOf(15000),
                     null, Lists.newArrayList(사이다_한개, 양념소스_두개));
 
             // when
-            ExtractableResponse<Response> actual = 메뉴_생성_요청(후라이드_치킨);
+            final ExtractableResponse<Response> actual = 메뉴_생성_요청(후라이드_치킨);
 
             // then
             응답_BAD_REQUEST(actual);
@@ -88,13 +88,13 @@ class MenuAcceptanceTest extends AcceptanceTest {
         @DisplayName("실패 - 잘못된 메뉴 가격 입력")
         public void failPriceIllegal() {
             // given
-            MenuProductRequest 사이다_한개 = MenuProductRequest.of(사이다_생성됨().getId(), 1);
-            MenuProductRequest 양념소스_두개 = MenuProductRequest.of(양념소스_생성됨().getId(), 2);
-            MenuRequest 후라이드_치킨 = MenuRequest.of("후라이드 치킨", BigDecimal.valueOf(-1),
+            final MenuProductRequest 사이다_한개 = MenuProductRequest.of(사이다_생성됨().getId(), 1);
+            final MenuProductRequest 양념소스_두개 = MenuProductRequest.of(양념소스_생성됨().getId(), 2);
+            final MenuRequest 후라이드_치킨 = MenuRequest.of("후라이드 치킨", BigDecimal.valueOf(-1),
                     일인_세트_생성됨().getId(), Lists.newArrayList(사이다_한개, 양념소스_두개));
 
             // when
-            ExtractableResponse<Response> actual = 메뉴_생성_요청(후라이드_치킨);
+            final ExtractableResponse<Response> actual = 메뉴_생성_요청(후라이드_치킨);
 
             // then
             응답_BAD_REQUEST(actual);

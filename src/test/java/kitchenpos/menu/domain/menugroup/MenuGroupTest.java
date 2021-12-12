@@ -19,10 +19,10 @@ class MenuGroupTest {
         @DisplayName("성공")
         public void create() {
             // given
-            String expected = "치킨 세트";
+            final String expected = "치킨 세트";
 
             // when
-            MenuGroup actual = menuGroup(expected);
+            final MenuGroup actual = menuGroup(expected);
 
             // then
             assertThat(actual.getName()).isEqualTo(expected);
@@ -32,7 +32,7 @@ class MenuGroupTest {
         @DisplayName("실패 - 그룹 메뉴명 없음.")
         public void fail() {
             // given
-            String expected = "";
+            final String expected = "";
 
             // when
             assertThatThrownBy(() -> {

@@ -20,10 +20,10 @@ class OrderTest {
         @DisplayName("성공")
         public void create() {
             // given
-            OrderTable 한식테이블 = 한식_테이블;
+            final OrderTable 한식테이블 = 한식_테이블;
 
             // when
-            Order order = new Order(한식테이블);
+            final Order order = new Order(한식테이블);
 
             // then
             assertThat(order.getOrderTable()).isEqualTo(한식_테이블);
@@ -33,7 +33,7 @@ class OrderTest {
         @DisplayName("실패 - 주문 테이블 없음")
         public void failOrderTableEmpty() {
             // given
-            OrderTable 한식테이블 = null;
+            final OrderTable 한식테이블 = null;
 
             // when
             Assertions.assertThatThrownBy(() -> {

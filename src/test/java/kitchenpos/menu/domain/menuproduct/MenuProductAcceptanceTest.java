@@ -34,18 +34,18 @@ class MenuProductAcceptanceTest extends AcceptanceTest {
     }
 
     private void 메뉴_그룹_생성됨(ExtractableResponse<Response> actual) {
-        MenuGroupResponse response = actual.as(MenuGroupResponse.class);
+        final MenuGroupResponse response = actual.as(MenuGroupResponse.class);
         assertThat(response.getName()).isEqualTo(일인_세트.getName());
     }
 
     private void 메뉴_그룹_조회됨(ExtractableResponse<Response> actual, MenuGroupResponse... expected) {
-        List<MenuGroupResponse> response = actual.jsonPath().getList(".",MenuGroupResponse.class);
+        final List<MenuGroupResponse> response = actual.jsonPath().getList(".",MenuGroupResponse.class);
 
-        List<Long> responseIds = response.stream()
+        final List<Long> responseIds = response.stream()
                 .map(MenuGroupResponse::getId)
                 .collect(Collectors.toList());
 
-        List<Long> expectedIds = Arrays.stream(expected)
+        final List<Long> expectedIds = Arrays.stream(expected)
                 .map(MenuGroupResponse::getId)
                 .collect(Collectors.toList());
 
@@ -62,7 +62,7 @@ class MenuProductAcceptanceTest extends AcceptanceTest {
             일인_세트 = MenuGroupRequest.from("1인 세트");
 
             // when
-            ExtractableResponse<Response> actual = 메뉴_그룹_생성_요청(일인_세트);
+            final ExtractableResponse<Response> actual = 메뉴_그룹_생성_요청(일인_세트);
 
             // then
             응답_CREATE(actual);
@@ -76,7 +76,7 @@ class MenuProductAcceptanceTest extends AcceptanceTest {
             일인_세트 = MenuGroupRequest.from("");
 
             // when
-            ExtractableResponse<Response> actual = 메뉴_그룹_생성_요청(일인_세트);
+            final ExtractableResponse<Response> actual = 메뉴_그룹_생성_요청(일인_세트);
 
             // then
             응답_BAD_REQUEST(actual);

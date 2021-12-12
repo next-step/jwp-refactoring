@@ -31,7 +31,7 @@ class MenuGroupMockitoTest {
         when(menuGroupRepository.save(any(MenuGroup.class))).thenReturn(패밀리_세트);
 
         //when
-        MenuGroupResponse actual = menuGroupService.saveMenuGroup(패밀리_세트_요청);
+        final MenuGroupResponse actual = menuGroupService.saveMenuGroup(패밀리_세트_요청);
 
         //then
         assertThat(actual.getName()).isEqualTo(패밀리_세트.getName());
@@ -45,7 +45,7 @@ class MenuGroupMockitoTest {
         when(menuGroupRepository.findAll()).thenReturn(Lists.newArrayList(일인_세트, 패밀리_세트));
 
         //when
-        List<MenuGroupResponse> actual = menuGroupService.findAllMenuGroup();
+        final List<MenuGroupResponse> actual = menuGroupService.findAllMenuGroup();
 
         //then
         assertThat(actual).hasSize(2);

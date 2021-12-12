@@ -29,9 +29,9 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
     @DisplayName("테이블 그룹")
     public void group() {
         // given
-        OrderTableResponse 한식_테이블_등록됨 = 주문_테이블_생성_요청(한식_테이블_요청).as(OrderTableResponse.class);
-        OrderTableResponse 양식_테이블_등록됨 = 주문_테이블_생성_요청(양식_테이블_요청).as(OrderTableResponse.class);
-        TableGroupRequest 그룹_요청 = TableGroupRequest.from(Lists.newArrayList(한식_테이블_등록됨.getId(), 양식_테이블_등록됨.getId()));
+        final OrderTableResponse 한식_테이블_등록됨 = 주문_테이블_생성_요청(한식_테이블_요청).as(OrderTableResponse.class);
+        final OrderTableResponse 양식_테이블_등록됨 = 주문_테이블_생성_요청(양식_테이블_요청).as(OrderTableResponse.class);
+        final TableGroupRequest 그룹_요청 = TableGroupRequest.from(Lists.newArrayList(한식_테이블_등록됨.getId(), 양식_테이블_등록됨.getId()));
 
         // when
         final ExtractableResponse<Response> actual = 테이블_그룹_생성_요청(그룹_요청);
@@ -45,9 +45,9 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
     @DisplayName("그룹 해제")
     public void ungroup() {
         // given
-        OrderTableResponse 한식_테이블_등록됨 = 주문_테이블_생성_요청(한식_테이블_요청).as(OrderTableResponse.class);
-        OrderTableResponse 양식_테이블_등록됨 = 주문_테이블_생성_요청(양식_테이블_요청).as(OrderTableResponse.class);
-        TableGroupRequest 그룹_요청 = TableGroupRequest.from(Lists.newArrayList(한식_테이블_등록됨.getId(), 양식_테이블_등록됨.getId()));
+        final OrderTableResponse 한식_테이블_등록됨 = 주문_테이블_생성_요청(한식_테이블_요청).as(OrderTableResponse.class);
+        final OrderTableResponse 양식_테이블_등록됨 = 주문_테이블_생성_요청(양식_테이블_요청).as(OrderTableResponse.class);
+        final TableGroupRequest 그룹_요청 = TableGroupRequest.from(Lists.newArrayList(한식_테이블_등록됨.getId(), 양식_테이블_등록됨.getId()));
         final TableGroupResponse 그룹_등록됨 = 테이블_그룹_생성_요청(그룹_요청).as(TableGroupResponse.class);
 
         // when

@@ -46,7 +46,7 @@ class MenuMockitoTest {
         when(menuRepository.save(any(Menu.class))).thenReturn(후라이드_치킨);
 
         // when
-        MenuResponse actual = menuService.saveMenu(후라이드_치킨_요청);
+        final MenuResponse actual = menuService.saveMenu(후라이드_치킨_요청);
 
         // then
         assertAll(
@@ -62,7 +62,7 @@ class MenuMockitoTest {
         setUpMock();
         when(menuRepository.findAll()).thenReturn(Lists.newArrayList(후라이드_치킨));
 
-        List<MenuResponse> actual = menuService.findMenus();
+        final List<MenuResponse> actual = menuService.findMenus();
 
         assertAll(
                 () -> assertThat(actual.get(0).getName()).contains(후라이드_치킨.getName()),

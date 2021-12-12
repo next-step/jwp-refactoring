@@ -50,7 +50,7 @@ class OrderMockitoTest {
         when(orderRepository.findAll()).thenReturn(Lists.newArrayList(첫_주문));
 
         // when
-        List<OrderResponse> actual = orderService.findAllOrder();
+        final List<OrderResponse> actual = orderService.findAllOrder();
 
         // then
         assertThat(actual).hasSize(1);
@@ -68,7 +68,7 @@ class OrderMockitoTest {
         OrderRequest 첫_주문_요청 = OrderRequest.of(1L, Lists.newArrayList(주문_내역));
 
         // when
-        OrderResponse actual = orderService.saveOrder(첫_주문_요청);
+        final OrderResponse actual = orderService.saveOrder(첫_주문_요청);
 
         // then
         assertThat(actual).isNotNull();

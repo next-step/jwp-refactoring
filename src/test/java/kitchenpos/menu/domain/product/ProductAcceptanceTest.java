@@ -34,9 +34,9 @@ class ProductAcceptanceTest extends AcceptanceTest {
     }
 
     private void 상품_조회됨(ExtractableResponse<Response> actual, ProductResponse... expected) {
-        List<Long> expectedIds = Arrays.stream(expected).map(ProductResponse::getId).collect(Collectors.toList());
+        final List<Long> expectedIds = Arrays.stream(expected).map(ProductResponse::getId).collect(Collectors.toList());
 
-        List<Long> response = actual.jsonPath().getList(".", ProductResponse.class)
+        final List<Long> response = actual.jsonPath().getList(".", ProductResponse.class)
                 .stream().map(ProductResponse::getId).collect(Collectors.toList());
 
         assertThat(response).containsAll(expectedIds);

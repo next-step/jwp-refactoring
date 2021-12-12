@@ -21,11 +21,11 @@ class ProductTest {
         @DisplayName("성공")
         public void create() {
             // given
-            String name = "양념 치킨";
-            BigDecimal price = BigDecimal.valueOf(15000);
+            final String name = "양념 치킨";
+            final BigDecimal price = BigDecimal.valueOf(15000);
 
             // when
-            Product actual = product(name, price);
+            final Product actual = product(name, price);
 
             // then
             assertAll(
@@ -38,8 +38,8 @@ class ProductTest {
         @DisplayName("실패 - 상품명이 없음")
         public void failNameEmpty() {
             // given
-            String name = "";
-            BigDecimal price = BigDecimal.valueOf(15000);
+            final String name = "";
+            final BigDecimal price = BigDecimal.valueOf(15000);
 
             // when
             Assertions.assertThatThrownBy(() -> {
@@ -51,7 +51,7 @@ class ProductTest {
         @DisplayName("실패 - 금액이 없음")
         public void failPriceEmpty() {
             // given
-            String name = "양념 치킨";
+            final String name = "양념 치킨";
 
             // when
             Assertions.assertThatThrownBy(() -> {
@@ -63,8 +63,8 @@ class ProductTest {
         @DisplayName("실패 - 상품의 가격이 0보다 작음")
         public void failPriceIllegal() {
             // given
-            String name = "양념 치킨";
-            BigDecimal price = BigDecimal.valueOf(-1);
+            final String name = "양념 치킨";
+            final BigDecimal price = BigDecimal.valueOf(-1);
 
             // when
             Assertions.assertThatThrownBy(() -> {

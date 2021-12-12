@@ -46,13 +46,13 @@ class ProductMockitoTest {
         //given
         setUpMock();
         when(productRepository.findAll()).thenReturn(Lists.newArrayList(사이다, 양념소스));
-        List<String> expectedList = Lists.newArrayList(사이다, 양념소스).stream()
+        final List<String> expectedList = Lists.newArrayList(사이다, 양념소스).stream()
                 .map(Product::getName)
                 .collect(Collectors.toList());
 
         //when
         final List<ProductResponse> actual = productService.findAllProduct();
-        List<String> actualList = actual.stream()
+        final List<String> actualList = actual.stream()
                 .map(ProductResponse::getName)
                 .collect(Collectors.toList());
 

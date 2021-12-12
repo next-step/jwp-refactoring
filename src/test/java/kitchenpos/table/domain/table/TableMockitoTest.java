@@ -54,7 +54,7 @@ class TableMockitoTest {
         when(orderTableRepository.findAll()).thenReturn(new ArrayList<>(Arrays.asList(한식_테이블, 양식_테이블)));
 
         // when
-        List<OrderTableResponse> actual = tableService.findAllOrderTable();
+        final List<OrderTableResponse> actual = tableService.findAllOrderTable();
 
         // then
         assertThat(actual).hasSize(2);
@@ -71,7 +71,7 @@ class TableMockitoTest {
         when(orderTableRepository.save(any(OrderTable.class))).thenReturn(한식_테이블);
 
         // when
-        OrderTableResponse actual = tableService.changeNumberOfGuests(anyLong(), 신규_요청);
+        final OrderTableResponse actual = tableService.changeNumberOfGuests(anyLong(), 신규_요청);
 
         // then
         assertThat(actual.getNumberOfGuests()).isEqualTo(5);

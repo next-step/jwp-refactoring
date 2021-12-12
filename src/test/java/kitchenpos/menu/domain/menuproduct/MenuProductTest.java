@@ -22,10 +22,10 @@ class MenuProductTest {
         @DisplayName("성공")
         public void create() {
             // given
-            int quantity = 1;
+            final int quantity = 1;
 
             // when
-            MenuProduct actual = menuProduct(후라이드_치킨, 후라이드, quantity);
+            final MenuProduct actual = menuProduct(후라이드_치킨, 후라이드, quantity);
 
             // then
             assertAll(
@@ -39,7 +39,7 @@ class MenuProductTest {
         @DisplayName("실패 - 메뉴 없음")
         public void failMenuEmpty() {
             // given
-            int quantity = 1;
+            final int quantity = 1;
 
             // when
             Assertions.assertThatThrownBy(() -> {
@@ -51,7 +51,7 @@ class MenuProductTest {
         @DisplayName("실패 - 상품 없음")
         public void failProductEmpty() {
             // given
-            int quantity = 1;
+            final int quantity = 1;
 
             // when
             Assertions.assertThatThrownBy(() -> {

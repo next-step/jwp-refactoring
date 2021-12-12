@@ -37,16 +37,16 @@ class TableAcceptanceTest extends AcceptanceTest {
     }
 
     private void 주문_테이블_조회됨(ExtractableResponse<Response> actual, OrderTableResponse... expected) {
-        List<Long> expectedIds = Arrays.stream(expected).map(OrderTableResponse::getId).collect(Collectors.toList());
+        final List<Long> expectedIds = Arrays.stream(expected).map(OrderTableResponse::getId).collect(Collectors.toList());
 
-        List<Long> response = actual.jsonPath().getList(".", OrderTableResponse.class)
+        final List<Long> response = actual.jsonPath().getList(".", OrderTableResponse.class)
                 .stream().map(OrderTableResponse::getId).collect(Collectors.toList());
 
         assertThat(response).containsAll(expectedIds);
     }
 
     private void 주문_테이블_비우기됨(ExtractableResponse<Response> actual) {
-        OrderTableResponse response = actual.as(OrderTableResponse.class);
+        final OrderTableResponse response = actual.as(OrderTableResponse.class);
         assertThat(response.isEmpty()).isTrue();
     }
 

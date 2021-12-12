@@ -22,12 +22,12 @@ class MenuTest {
         @DisplayName("성공")
         public void create() {
             // given
-            String name = "후라이드 치킨";
-            BigDecimal price = BigDecimal.valueOf(15000);
-            MenuGroup menuGroup = menuGroup("치킨 세트");
+            final String name = "후라이드 치킨";
+            final BigDecimal price = BigDecimal.valueOf(15000);
+            final MenuGroup menuGroup = menuGroup("치킨 세트");
 
             // when
-            Menu actual = new Menu(name, price, menuGroup);
+            final Menu actual = new Menu(name, price, menuGroup);
 
             // then
             assertAll(
@@ -41,9 +41,9 @@ class MenuTest {
         @DisplayName("실패 - 메뉴명 없음")
         public void failNameEmpty() {
             // given
-            String name = "";
-            BigDecimal price = BigDecimal.valueOf(15000);
-            MenuGroup menuGroup = menuGroup("치킨 세트");
+            final String name = "";
+            final BigDecimal price = BigDecimal.valueOf(15000);
+            final MenuGroup menuGroup = menuGroup("치킨 세트");
 
             // when
             Assertions.assertThatThrownBy(() -> {
@@ -55,9 +55,9 @@ class MenuTest {
         @DisplayName("실패 - 메뉴 그룹 없음")
         public void failMenuGroupEmpty() {
             // given
-            String name = "후라이드 치킨";
-            BigDecimal price = BigDecimal.valueOf(15000);
-            MenuGroup menuGroup = null;
+            final String name = "후라이드 치킨";
+            final BigDecimal price = BigDecimal.valueOf(15000);
+            final MenuGroup menuGroup = null;
 
             // when
             Assertions.assertThatThrownBy(() -> {
@@ -69,9 +69,9 @@ class MenuTest {
         @DisplayName("실패 - 잘못된 메뉴 가격 입력")
         public void failPriceIllegal() {
             // given
-            String name = "후라이드 치킨";
-            BigDecimal price = BigDecimal.valueOf(-1);
-            MenuGroup menuGroup = menuGroup("치킨 세트");
+            final String name = "후라이드 치킨";
+            final BigDecimal price = BigDecimal.valueOf(-1);
+            final MenuGroup menuGroup = menuGroup("치킨 세트");
 
             // when
             Assertions.assertThatThrownBy(() -> {
