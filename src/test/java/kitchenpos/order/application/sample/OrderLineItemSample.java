@@ -5,13 +5,13 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import kitchenpos.common.domain.Name;
 import kitchenpos.common.domain.Price;
 import kitchenpos.common.domain.Quantity;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.order.domain.OrderLineItem;
 
 public class OrderLineItemSample {
@@ -28,7 +28,7 @@ public class OrderLineItemSample {
             Name.from("후라이드치킨세트"),
             Price.from(BigDecimal.TEN),
             menuGroup,
-            MenuProducts.singleton(후라이드치킨두마리())
+            Collections.singletonList(후라이드치킨두마리())
         ));
         when(menu.id()).thenReturn(1L);
         orderLineItem.setMenuId(menu.id());

@@ -1,5 +1,6 @@
 package kitchenpos.menu.domain;
 
+import java.util.List;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
@@ -36,7 +37,8 @@ public class Menu {
     protected Menu() {
     }
 
-    private Menu(Name name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
+    private Menu(Name name, Price price, MenuGroup menuGroup, List<MenuProduct> products) {
+        MenuProducts menuProducts = MenuProducts.from(products);
         validate(name, price, menuGroup, menuProducts);
         this.name = name;
         this.price = price;
@@ -45,8 +47,8 @@ public class Menu {
         this.menuProducts = menuProducts;
     }
 
-    public static Menu of(Name name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
-        return new Menu(name, price, menuGroup, menuProducts);
+    public static Menu of(Name name, Price price, MenuGroup menuGroup, List<MenuProduct> products) {
+        return new Menu(name, price, menuGroup, products);
     }
 
     public Long id() {
@@ -65,8 +67,8 @@ public class Menu {
         return menuGroup;
     }
 
-    public MenuProducts menuProducts() {
-        return menuProducts;
+    public List<MenuProduct> menuProducts() {
+        return menuProducts.list();
     }
 
     private void validate(Name name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {

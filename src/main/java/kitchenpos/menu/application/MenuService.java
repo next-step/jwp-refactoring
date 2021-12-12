@@ -5,7 +5,6 @@ import java.util.stream.Collectors;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.ui.request.MenuProductRequest;
 import kitchenpos.menu.ui.request.MenuRequest;
@@ -52,12 +51,10 @@ public class MenuService {
         );
     }
 
-    private MenuProducts menuProducts(List<MenuProductRequest> menuProductRequests) {
-        return MenuProducts.from(
-            menuProductRequests.stream()
-                .map(this::menuProduct)
-                .collect(Collectors.toList())
-        );
+    private List<MenuProduct> menuProducts(List<MenuProductRequest> menuProductRequests) {
+        return menuProductRequests.stream()
+            .map(this::menuProduct)
+            .collect(Collectors.toList());
     }
 
     private MenuProduct menuProduct(MenuProductRequest request) {

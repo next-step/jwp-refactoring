@@ -9,7 +9,7 @@ import kitchenpos.common.domain.Price;
 import org.springframework.util.Assert;
 
 @Embeddable
-public class MenuProducts {
+class MenuProducts {
 
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "menu")
     private List<MenuProduct> products;
@@ -24,26 +24,22 @@ public class MenuProducts {
         this.products = products;
     }
 
-    public static MenuProducts from(List<MenuProduct> products) {
+     static MenuProducts from(List<MenuProduct> products) {
         return new MenuProducts(products);
     }
 
-    public static MenuProducts singleton(MenuProduct product) {
-        return new MenuProducts(Collections.singletonList(product));
-    }
-
-    public List<MenuProduct> list() {
+     List<MenuProduct> list() {
         return Collections.unmodifiableList(products);
     }
 
-    public Price sumPrice() {
+     Price sumPrice() {
         return products.stream()
             .map(MenuProduct::price)
             .reduce(Price::sum)
             .orElse(Price.ZERO);
     }
 
-    public int size() {
+     int size() {
         return products.size();
     }
 

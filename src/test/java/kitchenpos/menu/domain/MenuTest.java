@@ -7,11 +7,11 @@ import static org.mockito.Mockito.mock;
 
 import java.math.BigDecimal;
 import java.util.Collections;
+import java.util.List;
 import java.util.stream.Stream;
 import kitchenpos.common.domain.Name;
 import kitchenpos.common.domain.Price;
 import kitchenpos.common.domain.Quantity;
-import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -37,7 +37,7 @@ class MenuTest {
     @DisplayName("이름, 가격, 메뉴 그룹, 메뉴 상품들은 필수")
     @MethodSource
     void instance_nullArguments_thrownIllegalArgumentException(
-        Name name, Price price, MenuGroup menuGroup, MenuProducts products) {
+        Name name, Price price, MenuGroup menuGroup, List<MenuProduct> products) {
         assertThatIllegalArgumentException()
             .isThrownBy(() -> Menu.of(name, price, menuGroup, products))
             .withMessageEndingWith("필수입니다.");
@@ -51,7 +51,7 @@ class MenuTest {
                 mock(Name.class),
                 Price.ZERO,
                 mock(MenuGroup.class),
-                MenuProducts.from(Collections.emptyList())))
+                Collections.emptyList()))
             .withMessageEndingWith("개 이상이어야 합니다.");
     }
 
@@ -77,9 +77,7 @@ class MenuTest {
 
     }
 
-    private static MenuProducts 치킨_메뉴_상품들() {
-        return MenuProducts.singleton(
-            MenuProduct.of(십원치킨(), Quantity.from(2L))
-        );
+    private static List<MenuProduct> 치킨_메뉴_상품들() {
+        return Collections.singletonList(MenuProduct.of(십원치킨(), Quantity.from(2L)));
     }
 }

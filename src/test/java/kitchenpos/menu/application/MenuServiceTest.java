@@ -19,7 +19,6 @@ import kitchenpos.common.domain.Quantity;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.ui.request.MenuProductRequest;
 import kitchenpos.menu.ui.request.MenuRequest;
@@ -160,13 +159,13 @@ class MenuServiceTest {
             () -> assertThat(savedMenu)
                 .extracting(Menu::name, Menu::price)
                 .containsExactly(menuRequest.name(), menuRequest.price()),
-            () -> assertThat(savedMenu.menuProducts().list())
+            () -> assertThat(savedMenu.menuProducts())
                 .extracting(MenuProduct::quantity)
                 .containsExactly(
                     menuRequest.getMenuProducts()
-                    .stream()
-                    .map(MenuProductRequest::quantity)
-                    .toArray(Quantity[]::new)
+                        .stream()
+                        .map(MenuProductRequest::quantity)
+                        .toArray(Quantity[]::new)
                 )
         );
     }
@@ -176,7 +175,7 @@ class MenuServiceTest {
             Name.from("후라이드치킨세트"),
             Price.from(BigDecimal.TEN),
             두마리메뉴(),
-            MenuProducts.singleton(십원치킨두마리())
+            Collections.singletonList(십원치킨두마리())
         ));
         when(menu.id()).thenReturn(1L);
         return menu;

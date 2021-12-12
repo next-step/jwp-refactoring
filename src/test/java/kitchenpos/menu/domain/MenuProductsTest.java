@@ -20,8 +20,8 @@ class MenuProductsTest {
     @DisplayName("생성")
     void instance() {
         assertThatNoException()
-            .isThrownBy(() -> MenuProducts.singleton(
-                MenuProduct.of(십원치킨(), Quantity.from(1L))
+            .isThrownBy(() -> MenuProducts.from(
+                Collections.singletonList(MenuProduct.of(십원치킨(), Quantity.from(1L)))
             ));
     }
 
