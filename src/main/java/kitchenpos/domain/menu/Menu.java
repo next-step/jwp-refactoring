@@ -1,7 +1,9 @@
 package kitchenpos.domain.menu;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -27,7 +29,7 @@ public class Menu {
     @JoinColumn(name = "menu_group_id")
     private MenuGroup menuGroup;
 
-    @OneToMany(mappedBy = "menu")
+    @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MenuProduct> menuProducts;
 
     protected Menu() {
@@ -38,6 +40,12 @@ public class Menu {
         this.name = name;
         this.price = price;
         this.menuGroup = menuGroup;
+        
+        if (menuProducts == null) {
+            this.menuProducts = new ArrayList<>();
+            return;
+        }
+
         this.menuProducts = menuProducts;
     }
 
@@ -80,10 +88,7 @@ public class Menu {
         return this.menuProducts;
     }
 
-    public void changeMenuProducts(List<MenuProduct> menuProducts) {
-        this.menuProducts = menuProducts;
-    }
-
+ 
     public void chnageMenuGroup(MenuGroup menuGroup) {
         this.menuGroup = menuGroup;
     }

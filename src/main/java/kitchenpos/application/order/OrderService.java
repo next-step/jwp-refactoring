@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -51,19 +50,13 @@ public class OrderService {
         return OrderDto.of(savedOrder);
     }
 
-    private List<OrderLineItem> saveOrderLineItem(final Orders order, final List<OrderLineItemDto> orderLineItemDtos) {
-        final List<OrderLineItem> savedOrderLineItems = new ArrayList<>();
-
+    private void saveOrderLineItem(final Orders order, final List<OrderLineItemDto> orderLineItemDtos) {
         for (final OrderLineItemDto orderLineItemDto : orderLineItemDtos) {
             Menu menu = menuService.findById(orderLineItemDto.getMenuId());
 
             OrderLineItem orderLineItem = OrderLineItem.of(menu, orderLineItemDto.getQuantity());
             orderLineItem.acceptOrder(order);
-
-            savedOrderLineItems.add(orderLineItem);
         }
-
-        return savedOrderLineItems;
     }
 
     private void validationOfCreate(final OrderTable orderTable, final List<OrderLineItemDto> orderLineItems) {

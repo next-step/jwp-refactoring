@@ -75,7 +75,9 @@ public class OrderServiceTest {
         뿌링클콤보_치킨무 = MenuProduct.of(뿌링클콤보, 치킨무, 1L);
         뿌링클콤보_코카콜라 = MenuProduct.of(뿌링클콤보, 코카콜라, 1L);
 
-        뿌링클콤보.changeMenuProducts(List.of(뿌링클콤보_뿌링클치킨, 뿌링클콤보_치킨무, 뿌링클콤보_코카콜라));
+        뿌링클콤보_뿌링클치킨.acceptMenu(뿌링클콤보);
+        뿌링클콤보_치킨무.acceptMenu(뿌링클콤보);
+        뿌링클콤보_코카콜라.acceptMenu(뿌링클콤보);
 
         치킨_주문_단체테이블 = OrderTable.of(1L, 10);
 

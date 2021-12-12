@@ -15,7 +15,6 @@ import kitchenpos.domain.menu.MenuRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,7 +22,6 @@ import java.util.stream.Collectors;
 public class MenuService {
     private final MenuRepository menuRepository;
     private final MenuGroupRepository menuGroupRepository;
-    private final MenuProductRepository menuProductRepository;
     private final ProductService productService;
 
     public MenuService(
@@ -34,7 +32,6 @@ public class MenuService {
     ) {
         this.menuRepository = menuRepository;
         this.menuGroupRepository = menuGroupRepository;
-        this.menuProductRepository = menuProductRepository;
         this.productService = productService;
     }
 
@@ -44,12 +41,20 @@ public class MenuService {
 
         MenuGroup menuGroup = menuGroupRepository.findById(menu.getMenuGroupId()).orElseThrow(IllegalArgumentException::new);
         
-        final Menu savedMenu = menuRepository.save(Menu.of(menu.getName(), Price.of(menu.getPrice()), menuGroup));
-        final List<MenuProduct> savedMenuProducts = saveMenuProduct(savedMenu, menu.getMenuProducts());
+        Menu newMenu = Menu.of(menu.getName(), Price.of(menu.getPrice()), menuGroup);
 
-        savedMenu.changeMenuProducts(savedMenuProducts);
+        mappingMenuProduct(newMenu, menu.getMenuProducts());
+
+        Menu savedMenu = menuRepository.save(newMenu);
 
         return MenuDto.of(savedMenu);
+    }
+
+    private void mappingMenuProduct(Menu newMenu, List<MenuProductDto> menuProductDtos) {
+        for (MenuProductDto menuProductDto : menuProductDtos) {
+            MenuProduct menuProduct = MenuProduct.of(null, productService.findById(menuProductDto.getProductId()), menuProductDto.getQuantity());
+            menuProduct.acceptMenu(newMenu);
+        }
     }
 
     private void validationOfCreate(final MenuDto menu) {
@@ -62,17 +67,6 @@ public class MenuService {
         if (menuPrice.compareTo(sumOfProductsPrice) > 0) {
             throw new IllegalArgumentException();
         }
-    }
-
-    private List<MenuProduct> saveMenuProduct(Menu savedMenu,  List<MenuProductDto> menuProducts) {
-        final List<MenuProduct> savedMenuProducts = new ArrayList<>();
-
-        for (MenuProductDto menuProductDto : menuProducts) {
-            Product product = productService.findById(menuProductDto.getProductId());
-            savedMenuProducts.add(menuProductRepository.save(MenuProduct.of(savedMenu, product, menuProductDto.getQuantity())));
-        }
-
-        return savedMenuProducts;
     }
 
     public List<MenuDto> list() {

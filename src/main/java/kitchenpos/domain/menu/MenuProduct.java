@@ -62,4 +62,9 @@ public class MenuProduct {
     public void changeMenu(Menu menu) {
         this.menu = menu;
     }
+
+    public void acceptMenu(Menu menu) {
+        this.menu = menu;
+        this.menu.getMenuProducts().add(this);
+    }
 }

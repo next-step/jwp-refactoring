@@ -82,10 +82,7 @@ public class MenuServiceTest {
         when(productService.findById(this.뿌링클콤보_치킨무.getProduct().getId())).thenReturn(this.치킨무);
         when(productService.findById(this.뿌링클콤보_코카콜라.getProduct().getId())).thenReturn(this.코카콜라);
         when(productService.sumOfPrices(anyList())).thenReturn(Price.of(19_000));
-        when(menuProductRepository.save(any(MenuProduct.class))).thenReturn(MenuProduct.of(this.뿌링클콤보, this.뿌링클콤보_뿌링클치킨.getProduct(), this.뿌링클콤보_뿌링클치킨.getQuantity()),
-                                                                            MenuProduct.of(this.뿌링클콤보, this.뿌링클콤보_치킨무.getProduct(), 뿌링클콤보_치킨무.getQuantity()),
-                                                                            MenuProduct.of(this.뿌링클콤보, this.뿌링클콤보_코카콜라.getProduct(), 뿌링클콤보_코카콜라.getQuantity())
-                                                                            );
+
 
         when(menuRepository.save(any(Menu.class))).thenReturn(this.뿌링클콤보);
 
