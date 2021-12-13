@@ -62,10 +62,10 @@ class TableGroupServiceTest extends ServiceTest {
     }
 
     @Test
-    @DisplayName("비어있는 테이블로 테이블 그룹을 등록하면 예외가 발생한다.")
+    @DisplayName("비어있지 않은 테이블로 테이블 그룹을 등록하면 예외가 발생한다.")
     void createThrowException3() {
         // given
-        OrderTableResponse savedOrderTableResponse1 = 테이블_저장(true);
+        OrderTableResponse savedOrderTableResponse1 = 테이블_저장(false);
         OrderTableResponse savedOrderTableResponse2 = 테이블_저장(false);
         TableGroupRequest tableGroupRequest = new TableGroupRequest(
                 LocalDateTime.now(), Arrays.asList(savedOrderTableResponse1.getId(), savedOrderTableResponse2.getId()));

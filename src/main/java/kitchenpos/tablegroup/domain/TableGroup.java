@@ -2,6 +2,7 @@ package kitchenpos.tablegroup.domain;
 
 import kitchenpos.ordertable.domain.OrderTable;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -11,6 +12,7 @@ import javax.persistence.OneToMany;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class TableGroup {
@@ -22,7 +24,7 @@ public class TableGroup {
     @Column(nullable = false)
     private LocalDateTime createdDate;
 
-    @OneToMany(mappedBy = "tableGroup")
+    @OneToMany(mappedBy = "tableGroup", cascade = CascadeType.PERSIST)
     private List<OrderTable> orderTables = new ArrayList<>();
 
     protected TableGroup() {
@@ -30,6 +32,13 @@ public class TableGroup {
 
     public TableGroup(LocalDateTime createdDate) {
         this.createdDate = createdDate;
+    }
+
+    public static TableGroup of(LocalDateTime createdDate, List<OrderTable> orderTables) {
+        validate(orderTables);
+        TableGroup tableGroup = new TableGroup(createdDate);
+        orderTables.forEach(it -> it.changeTableGroup(tableGroup));
+        return tableGroup;
     }
 
     public Long getId() {
@@ -42,5 +51,39 @@ public class TableGroup {
 
     public List<OrderTable> getOrderTables() {
         return orderTables;
+    }
+
+    public void ungroup() {
+        orderTables.forEach(this::validateChangable);
+        orderTables.forEach(OrderTable::ungroup);
+    }
+
+    private static void validate(List<OrderTable> orderTables) {
+        orderTables.forEach(TableGroup::validateOrderTable);
+    }
+
+    private static void validateOrderTable(OrderTable orderTable) {
+        if (!orderTable.isGroupable()) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    private void validateChangable(OrderTable orderTable) {
+        if (!orderTable.isChangable()) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TableGroup that = (TableGroup) o;
+        return Objects.equals(id, that.id) && Objects.equals(createdDate, that.createdDate) && Objects.equals(orderTables, that.orderTables);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, createdDate, orderTables);
     }
 }

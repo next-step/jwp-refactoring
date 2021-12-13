@@ -94,6 +94,10 @@ public class OrderTable {
         tableGroup = null;
     }
 
+    public boolean isGroupable() {
+        return empty && Objects.isNull(tableGroup);
+    }
+
     private void validateChangingEmpty() {
         if (Objects.nonNull(tableGroup)) {
             throw new IllegalArgumentException();
@@ -114,5 +118,23 @@ public class OrderTable {
         if (!order.isChangable()) {
             throw new IllegalArgumentException();
         }
+    }
+
+    public boolean isChangable() {
+        return orders.stream()
+                .allMatch(Order::isChangable);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OrderTable that = (OrderTable) o;
+        return numberOfGuests == that.numberOfGuests && empty == that.empty && Objects.equals(id, that.id) && Objects.equals(tableGroup, that.tableGroup) && Objects.equals(orders, that.orders);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, tableGroup, numberOfGuests, empty, orders);
     }
 }

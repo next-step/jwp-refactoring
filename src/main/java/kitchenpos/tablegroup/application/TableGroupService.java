@@ -1,7 +1,5 @@
 package kitchenpos.tablegroup.application;
 
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.tablegroup.domain.TableGroup;
@@ -12,23 +10,19 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import java.time.LocalDateTime;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Service
 public class TableGroupService {
 
-    private final OrderRepository orderRepository;
+    private static final int MIN_ORDER_TABLE_COUNT = 2;
+
     private final OrderTableRepository orderTableRepository;
     private final TableGroupRepository tableGroupRepository;
 
-    public TableGroupService(final OrderRepository orderRepository,
-                             final OrderTableRepository orderTableRepository,
+    public TableGroupService(final OrderTableRepository orderTableRepository,
                              final TableGroupRepository tableGroupRepository) {
-        this.orderRepository = orderRepository;
         this.orderTableRepository = orderTableRepository;
         this.tableGroupRepository = tableGroupRepository;
     }
@@ -36,46 +30,33 @@ public class TableGroupService {
     @Transactional
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
         final List<Long> orderTableIds = tableGroupRequest.getOrderTableIds();
+        validateOrderTableIds(orderTableIds);
 
-        if (CollectionUtils.isEmpty(orderTableIds) || orderTableIds.size() < 2) {
-            throw new IllegalArgumentException();
-        }
-
-        final List<OrderTable> savedOrderTables = orderTableRepository.findAllByIdIn(orderTableIds);
-
-        if (orderTableIds.size() != savedOrderTables.size()) {
-            throw new IllegalArgumentException();
-        }
-
-        for (final OrderTable savedOrderTable : savedOrderTables) {
-            if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroup())) {
-                throw new IllegalArgumentException();
-            }
-        }
-
-        TableGroup tableGroup = new TableGroup(LocalDateTime.now());
-        savedOrderTables.forEach(it -> it.changeTableGroup(tableGroup));
-
+        final TableGroup tableGroup = TableGroup.of(tableGroupRequest.getCreatedDate(), makeOrderTables(orderTableIds));
         final TableGroup savedTableGroup = tableGroupRepository.save(tableGroup);
         return TableGroupResponse.from(savedTableGroup);
     }
 
     @Transactional
-    public void ungroup(final Long tableGroupId) {
-        final List<OrderTable> orderTables = orderTableRepository.findAllByTableGroupId(tableGroupId);
+    public void ungroup(final Long id) {
+        TableGroup tableGroup = tableGroupRepository.findById(id)
+                .orElseThrow(IllegalArgumentException::new);
+        tableGroup.ungroup();
+    }
 
-        final List<Long> orderTableIds = orderTables.stream()
-                .map(OrderTable::getId)
-                .collect(Collectors.toList());
-
-        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
-                orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
+    private void validateOrderTableIds(List<Long> orderTableIds) {
+        if (CollectionUtils.isEmpty(orderTableIds) || orderTableIds.size() < MIN_ORDER_TABLE_COUNT) {
             throw new IllegalArgumentException();
         }
+    }
 
-        for (final OrderTable orderTable : orderTables) {
-            orderTable.ungroup();
-            orderTableRepository.save(orderTable);
+    private List<OrderTable> makeOrderTables(List<Long> orderTableIds) {
+        final List<OrderTable> orderTables = new ArrayList<>();
+        for (Long orderTableId : orderTableIds) {
+            OrderTable orderTable = orderTableRepository.findById(orderTableId)
+                    .orElseThrow(IllegalArgumentException::new);
+            orderTables.add(orderTable);
         }
+        return orderTables;
     }
 }
