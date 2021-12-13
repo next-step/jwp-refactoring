@@ -1,5 +1,6 @@
 package kitchenpos.ordertable.domain;
 
+import kitchenpos.order.domain.Order;
 import kitchenpos.tablegroup.domain.TableGroup;
 
 import javax.persistence.Column;
@@ -8,6 +9,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class OrderTable {
@@ -24,6 +29,9 @@ public class OrderTable {
 
     @Column(nullable = false)
     private boolean empty;
+
+    @OneToMany(mappedBy = "orderTable")
+    private List<Order> orders = new ArrayList<>();
 
     protected OrderTable() {
     }
@@ -63,20 +71,48 @@ public class OrderTable {
         return empty;
     }
 
+    public List<Order> getOrders() {
+        return orders;
+    }
+
     public void changeTableGroup(TableGroup tableGroup) {
         tableGroup.getOrderTables().add(this);
         this.tableGroup = tableGroup;
     }
 
     public void changeEmpty(boolean empty) {
+        validateChangingEmpty();
         this.empty = empty;
+    }
+
+    public void changeNumberOfGuests(int numberOfGuests) {
+        validateChangingNumberOfGuests(numberOfGuests);
+        this.numberOfGuests = numberOfGuests;
     }
 
     public void ungroup() {
         tableGroup = null;
     }
 
-    public void changeNumberOfGuests(int numberOfGuests) {
-        this.numberOfGuests = numberOfGuests;
+    private void validateChangingEmpty() {
+        if (Objects.nonNull(tableGroup)) {
+            throw new IllegalArgumentException();
+        }
+        orders.forEach(this::validateOrder);
+    }
+
+    private void validateChangingNumberOfGuests(int numberOfGuests) {
+        if (numberOfGuests < 0) {
+            throw new IllegalArgumentException();
+        }
+        if (empty) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    private void validateOrder(Order order) {
+        if (!order.isChangable()) {
+            throw new IllegalArgumentException();
+        }
     }
 }

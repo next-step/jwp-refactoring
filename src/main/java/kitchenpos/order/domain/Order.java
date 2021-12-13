@@ -41,8 +41,7 @@ public class Order {
     protected Order() {
     }
 
-    public Order(OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime) {
-        this.orderTable = orderTable;
+    public Order(OrderStatus orderStatus, LocalDateTime orderedTime) {
         this.orderStatus = orderStatus;
         this.orderedTime = LocalDateTime.now();
     }
@@ -67,7 +66,16 @@ public class Order {
         return orderLineItems;
     }
 
+    public void changeOrderTable(OrderTable orderTable) {
+        orderTable.getOrders().add(this);
+        this.orderTable = orderTable;
+    }
+
     public void changeOrderStatus(OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
+    }
+
+    public boolean isChangable() {
+        return orderStatus.equals(OrderStatus.COMPLETION);
     }
 }

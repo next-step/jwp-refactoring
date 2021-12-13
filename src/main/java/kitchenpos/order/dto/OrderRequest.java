@@ -2,7 +2,6 @@ package kitchenpos.order.dto;
 
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.ordertable.domain.OrderTable;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -57,7 +56,7 @@ public class OrderRequest {
         this.orderLineItems = orderLineItems;
     }
 
-    public Order toOrder(OrderTable orderTable) {
-        return new Order(orderTable, OrderStatus.valueOf(orderStatus), orderedTime);
+    public Order toOrder() {
+        return new Order(OrderStatus.valueOf(orderStatus), orderedTime);
     }
 }

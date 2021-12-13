@@ -57,7 +57,9 @@ public class OrderService {
             throw new IllegalArgumentException();
         }
 
-        Order order = orderRequest.toOrder(orderTable);
+        Order order = orderRequest.toOrder();
+        order.changeOrderTable(orderTable);
+
         for (OrderLineItemRequest orderLineItemRequest : orderRequest.getOrderLineItems()) {
             Menu menu = menuRepository.findById(orderLineItemRequest.getMenuId())
                     .orElseThrow(IllegalArgumentException::new);

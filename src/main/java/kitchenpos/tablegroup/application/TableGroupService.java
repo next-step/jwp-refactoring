@@ -55,7 +55,6 @@ public class TableGroupService {
 
         TableGroup tableGroup = new TableGroup(LocalDateTime.now());
         savedOrderTables.forEach(it -> it.changeTableGroup(tableGroup));
-        savedOrderTables.forEach(it -> it.changeEmpty(false));
 
         final TableGroup savedTableGroup = tableGroupRepository.save(tableGroup);
         return TableGroupResponse.from(savedTableGroup);
