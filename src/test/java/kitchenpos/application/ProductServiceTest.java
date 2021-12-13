@@ -20,6 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import kitchenpos.application.fixture.ProductFixtureFactory;
 import kitchenpos.domain.product.Product;
 import kitchenpos.domain.product.ProductRepository;
+import kitchenpos.dto.product.ProductRequest;
 import kitchenpos.dto.product.ProductResponse;
 
 @ExtendWith(MockitoExtension.class)
@@ -44,12 +45,12 @@ class ProductServiceTest {
     @Test
     void create1() {
         // given
-        Product product = Product.of("돼지고기", BigDecimal.valueOf(9_000));
+        ProductRequest productRequest = ProductRequest.of("돼지고기", BigDecimal.valueOf(9_000));
 
         given(productRepository.save(any(Product.class))).willReturn(돼지고기);
 
         // when
-        ProductResponse productResponse = productService.create(product);
+        ProductResponse productResponse = productService.create(productRequest);
 
         // then
         assertThat(productResponse).isEqualTo(ProductResponse.from(돼지고기));
@@ -59,10 +60,10 @@ class ProductServiceTest {
     @Test
     void create2() {
         // given
-        Product product = Product.of("돼지고기", null);
+        ProductRequest productRequest = ProductRequest.of("돼지고기", null);
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> productService.create(product));
+        assertThatIllegalArgumentException().isThrownBy(() -> productService.create(productRequest));
     }
 
     @DisplayName("Product 가격이 음수(0 미만) 이면 예외가 발생한다.")
@@ -70,10 +71,10 @@ class ProductServiceTest {
     @ValueSource(ints = {-1, -2, -10, -100})
     void create3(int wrongPrice) {
         // given
-        Product product = Product.of("돼지고기", BigDecimal.valueOf(wrongPrice));
+        ProductRequest productRequest = ProductRequest.of("돼지고기", BigDecimal.valueOf(wrongPrice));
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> productService.create(product));
+        assertThatIllegalArgumentException().isThrownBy(() -> productService.create(productRequest));
     }
 
     @DisplayName("")

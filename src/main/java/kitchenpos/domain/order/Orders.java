@@ -89,6 +89,11 @@ public class Orders {
         return orderStatus.isCompletion();
     }
 
+    public void changeOrderStatus(final OrderStatus orderStatus) {
+        validateChangeOrderStatus();
+        this.orderStatus = orderStatus;
+    }
+
     public Long getId() {
         return id;
     }
@@ -97,25 +102,12 @@ public class Orders {
         return orderTable;
     }
 
-    public void setOrderTableId(final Long orderTableId) {
-        this.orderTable = OrderTable.from(orderTableId);
-    }
-
     public OrderStatus getOrderStatus() {
         return orderStatus;
     }
 
-    public void changeOrderStatus(final OrderStatus orderStatus) {
-        validateChangeOrderStatus();
-        this.orderStatus = orderStatus;
-    }
-
     public LocalDateTime getOrderedTime() {
         return orderedTime;
-    }
-
-    public void setOrderedTime(final LocalDateTime orderedTime) {
-        this.orderedTime = orderedTime;
     }
 
     public List<OrderLineItem> getOrderLineItems() {

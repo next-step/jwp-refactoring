@@ -37,12 +37,8 @@ public class MenuProduct {
     protected MenuProduct() {}
 
     private MenuProduct(Long seq, Menu menu, Product product, long quantity) {
-        this(menu, product, quantity);
-        this.seq = seq;
-    }
-
-    private MenuProduct(Menu menu, Product product, long quantity) {
         this(product, quantity);
+        this.seq = seq;
         this.menu = menu;
     }
 
@@ -51,12 +47,8 @@ public class MenuProduct {
         this.quantity = quantity;
     }
 
-    public static MenuProduct of (Long seq, Menu menu, Product product, long quantity) {
+    public static MenuProduct of(Long seq, Menu menu, Product product, long quantity) {
         return new MenuProduct(seq, menu, product, quantity);
-    }
-
-    public static MenuProduct of(Menu menu, Product product, long quantity) {
-        return new MenuProduct(menu, product, quantity);
     }
 
     public static MenuProduct of(Product product, long quantity) {
@@ -68,7 +60,7 @@ public class MenuProduct {
     }
 
     public BigDecimal calculateTotalPrice() {
-        return product.getPrice().multiply(BigDecimal.valueOf(quantity));
+        return product.getPrice().getValue().multiply(BigDecimal.valueOf(quantity));
     }
 
     public Long getSeq() {
