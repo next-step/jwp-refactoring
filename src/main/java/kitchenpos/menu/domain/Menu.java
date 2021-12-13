@@ -1,5 +1,6 @@
 package kitchenpos.menu.domain;
 
+import common.domain.Price;
 import kitchenpos.menugroup.domain.MenuGroup;
 
 import javax.persistence.Column;
@@ -23,8 +24,9 @@ public class Menu {
     @Column(nullable = false)
     private String name;
 
+    @Embedded
     @Column(nullable = false)
-    private BigDecimal price;
+    private Price price;
 
     @ManyToOne
     private MenuGroup menuGroup;
@@ -36,10 +38,10 @@ public class Menu {
     }
 
     public Menu(String name, BigDecimal price, MenuGroup menuGroup, MenuProducts menuProducts) {
-        validatePrice(price, menuProducts);
+        validatePrice(new Price(price), menuProducts);
 
         this.name = name;
-        this.price = price;
+        this.price = new Price(price);
         this.menuGroup = menuGroup;
         this.menuProducts = menuProducts;
         menuProducts.changeMenu(this);
@@ -53,7 +55,7 @@ public class Menu {
         return name;
     }
 
-    public BigDecimal getPrice() {
+    public Price getPrice() {
         return price;
     }
 
@@ -65,8 +67,8 @@ public class Menu {
         return menuProducts.getMenuProducts();
     }
 
-    private void validatePrice(BigDecimal price, MenuProducts menuProducts) {
-        if (price.compareTo(menuProducts.calculateSum()) > 0) {
+    private void validatePrice(Price price, MenuProducts menuProducts) {
+        if (!price.isEqual(menuProducts.calculateSum())) {
             throw new IllegalArgumentException();
         }
     }

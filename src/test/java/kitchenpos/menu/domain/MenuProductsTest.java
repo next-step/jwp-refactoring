@@ -1,5 +1,6 @@
 package kitchenpos.menu.domain;
 
+import common.domain.Price;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,9 +24,9 @@ class MenuProductsTest {
         ));
 
         // when
-        BigDecimal sum = menuProducts.calculateSum();
+        Price sum = menuProducts.calculateSum();
 
         // then
-        assertThat(sum).isEqualTo(new BigDecimal(82_000));
+        assertThat(sum).isEqualTo(new Price(82_000));
     }
 }

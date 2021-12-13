@@ -1,9 +1,10 @@
 package kitchenpos.menu.domain;
 
+import common.domain.Price;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -29,8 +30,8 @@ public class MenuProducts {
         menuProducts.forEach(it -> it.changeMenu(menu));
     }
 
-    public BigDecimal calculateSum() {
-        BigDecimal sum = BigDecimal.ZERO;
+    public Price calculateSum() {
+        Price sum = Price.ZERO;
         for (final MenuProduct menuProduct : menuProducts) {
             sum = sum.add(menuProduct.calculateAmount());
         }
