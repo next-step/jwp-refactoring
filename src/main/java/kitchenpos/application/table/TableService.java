@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import kitchenpos.application.order.OrderService;
 import kitchenpos.domain.table.OrderTable;
 import kitchenpos.domain.table.OrderTableRepository;
-import kitchenpos.dto.OrderTableDto;
+import kitchenpos.dto.table.OrderTableDto;
 import kitchenpos.exception.order.HasNotCompletionOrderException;
 import kitchenpos.exception.table.EmptyOrderTableException;
 import kitchenpos.exception.table.HasOtherTableGroupException;

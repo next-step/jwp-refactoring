@@ -17,17 +17,17 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.domain.Price;
 import kitchenpos.domain.product.Product;
-import kitchenpos.dto.MenuDto;
-import kitchenpos.dto.MenuGroupDto;
-import kitchenpos.dto.MenuProductDto;
-import kitchenpos.dto.OrderTableDto;
-import kitchenpos.dto.ProductDto;
+import kitchenpos.dto.menu.MenuDto;
+import kitchenpos.dto.menu.MenuGroupDto;
+import kitchenpos.dto.menu.MenuProductDto;
+import kitchenpos.dto.product.ProductDto;
+import kitchenpos.dto.table.OrderTableDto;
 import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menu.MenuGroup;
-import kitchenpos.presentation.MenuGroupRestControllerTest;
-import kitchenpos.presentation.MenuRestControllerTest;
-import kitchenpos.presentation.ProductRestControllerTest;
-import kitchenpos.presentation.TableRestControllerTest;
+import kitchenpos.presentation.menu.MenuGroupRestControllerTest;
+import kitchenpos.presentation.menu.MenuRestControllerTest;
+import kitchenpos.presentation.product.ProductRestControllerTest;
+import kitchenpos.presentation.table.TableRestControllerTest;
 import kitchenpos.testassistance.config.TestConfig;
 
 public class KitchenposManageAcceptanceTest extends TestConfig {

@@ -2,8 +2,6 @@ package kitchenpos.application.menu;
 
 import kitchenpos.application.product.ProductService;
 import kitchenpos.domain.Price;
-import kitchenpos.dto.MenuDto;
-import kitchenpos.dto.MenuProductDto;
 import kitchenpos.exception.menu.NotCorrectMenuPriceException;
 import kitchenpos.exception.menu.NotFoundMenuException;
 import kitchenpos.exception.menu.NotFoundMenuGroupException;
@@ -13,6 +11,8 @@ import kitchenpos.domain.menu.MenuGroupRepository;
 import kitchenpos.domain.menu.MenuProduct;
 import kitchenpos.domain.menu.MenuRepository;
 import kitchenpos.domain.product.Product;
+import kitchenpos.dto.menu.MenuDto;
+import kitchenpos.dto.menu.MenuProductDto;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

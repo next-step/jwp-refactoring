@@ -3,8 +3,8 @@ package kitchenpos.application.product;
 import kitchenpos.domain.Price;
 import kitchenpos.domain.product.Product;
 import kitchenpos.domain.product.ProductRepository;
-import kitchenpos.dto.MenuProductDto;
-import kitchenpos.dto.ProductDto;
+import kitchenpos.dto.menu.MenuProductDto;
+import kitchenpos.dto.product.ProductDto;
 import kitchenpos.exception.product.NotFoundProductException;
 
 import org.springframework.stereotype.Service;
