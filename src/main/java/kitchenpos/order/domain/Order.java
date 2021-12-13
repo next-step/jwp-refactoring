@@ -15,6 +15,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import kitchenpos.common.exception.InvalidStatusException;
 import kitchenpos.table.domain.OrderTable;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -47,15 +48,15 @@ public class Order {
     public Order() {
     }
 
-    private Order(OrderTable orderTable, List<OrderLineItem> lineItems) {
-        Assert.notNull(orderTable, "주문 테이블은 필수입니다.");
-        Assert.notNull(lineItems, "주문 항목들은 필수입니다.");
+    private Order(OrderTable orderTable, OrderLineItems lineItems) {
+        validate(orderTable, lineItems);
+        this.orderTable.changeOrder(this);
         this.orderTable = orderTable;
-        this.orderLineItems = OrderLineItems.from(lineItems);
+        this.orderLineItems = lineItems;
     }
 
     public static Order of(OrderTable orderTable, List<OrderLineItem> lineItems) {
-        return new Order(orderTable, lineItems);
+        return new Order(orderTable, OrderLineItems.from(lineItems));
     }
 
     public Long id() {
@@ -79,10 +80,21 @@ public class Order {
     }
 
     public void changeStatus(OrderStatus status) {
+        if (status.isCompleted()) {
+            throw new InvalidStatusException(String.format("완료된 주문(%s)의 상태를 변경할 수 없습니다.", this));
+        }
         this.orderStatus = status;
     }
 
     public boolean isCookingOrMeal() {
         return orderStatus.isCooking() || orderStatus.isMeal();
+    }
+
+    private void validate(OrderTable orderTable, OrderLineItems lineItems) {
+        Assert.notNull(orderTable, "주문 테이블은 필수입니다.");
+        Assert.isTrue(orderTable.isFull(), "주문을 하는 테이블은 비어있을 수 없습니다.");
+
+        Assert.notNull(lineItems, "주문 항목들은 필수입니다.");
+        Assert.isTrue(lineItems.isNotEmpty(), "주문 항목들이 비어있을 수 없습니다.");
     }
 }

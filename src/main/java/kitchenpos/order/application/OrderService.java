@@ -1,13 +1,13 @@
 package kitchenpos.order.application;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
+import kitchenpos.common.exception.NotFoundException;
 import kitchenpos.menu.application.MenuService;
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItems;
+import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.ui.request.OrderLineItemRequest;
 import kitchenpos.order.ui.request.OrderRequest;
 import kitchenpos.order.ui.request.OrderStatusRequest;
@@ -16,7 +16,6 @@ import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 @Service
 public class OrderService {
@@ -34,30 +33,7 @@ public class OrderService {
 
     @Transactional
     public OrderResponse create(OrderRequest request) {
-        final List<OrderLineItemRequest> orderLineItemRequests = request.getOrderLineItems();
-
-        if (CollectionUtils.isEmpty(orderLineItemRequests)) {
-            throw new IllegalArgumentException();
-        }
-
-        final List<Long> menuIds = orderLineItemRequests.stream()
-            .map(OrderLineItemRequest::getMenuId)
-            .collect(Collectors.toList());
-
-        if (orderLineItemRequests.size() != menuService.countByIdIn(menuIds)) {
-            throw new IllegalArgumentException();
-        }
-
-        final OrderTable orderTable = tableService.findById(request.getOrderTableId());
-
-        if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
-
-        Order of = Order.of(orderTable,
-            request.getOrderLineItems().stream().map(OrderLineItemRequest::toEntity).collect(
-                Collectors.toList()));
-        return OrderResponse.from(orderRepository.save(of));
+        return OrderResponse.from(orderRepository.save(newOrder(request)));
     }
 
     public List<OrderResponse> list() {
@@ -65,25 +41,39 @@ public class OrderService {
     }
 
     @Transactional
-    public OrderResponse changeOrderStatus(long orderId, OrderStatusRequest request) {
-        final Order savedOrder = orderRepository.findById(orderId)
-            .orElseThrow(IllegalArgumentException::new);
-
-        if (Objects.equals(OrderStatus.COMPLETION, savedOrder.status())) {
-            throw new IllegalArgumentException();
-        }
-
-        savedOrder.changeStatus(request.status());
-        return OrderResponse.from(savedOrder);
+    public OrderResponse changeOrderStatus(long id, OrderStatusRequest request) {
+        Order order = order(id);
+        order.changeStatus(request.status());
+        return OrderResponse.from(order);
     }
 
-    public boolean existsByOrderTableIdAndOrderStatusIn(long orderTableId,
-        List<OrderStatus> asList) {
-        return orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTableId, asList);
+    private Order order(long id) {
+        return orderRepository.findById(id)
+            .orElseThrow(() -> new NotFoundException(String.format("주문 id(%d)를 찾을 수 없습니다.", id)));
     }
 
-    public boolean existsByOrderTableIdInAndOrderStatusIn(List<Long> orderTableIds,
-        List<OrderStatus> asList) {
-        return orderRepository.existsByOrderTableIdInAndOrderStatusIn(orderTableIds, asList);
+    private Order newOrder(OrderRequest request) {
+        return Order.of(
+            orderTable(request.getOrderTableId()),
+            orderLineItems(request.getOrderLineItems())
+        );
+    }
+
+    private List<OrderLineItem> orderLineItems(List<OrderLineItemRequest> requests) {
+        return requests.stream()
+            .map(this::orderLineItem)
+            .collect(Collectors.toList());
+    }
+
+    private OrderLineItem orderLineItem(OrderLineItemRequest request) {
+        return OrderLineItem.of(request.quantity(), menu(request.getMenuId()));
+    }
+
+    private Menu menu(long menuId) {
+        return menuService.findById(menuId);
+    }
+
+    private OrderTable orderTable(long orderTableId) {
+        return tableService.findById(orderTableId);
     }
 }

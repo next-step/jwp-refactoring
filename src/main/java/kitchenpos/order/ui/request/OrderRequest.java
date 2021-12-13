@@ -2,9 +2,6 @@ package kitchenpos.order.ui.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
-import java.util.stream.Collectors;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItems;
 
 public final class OrderRequest {
 

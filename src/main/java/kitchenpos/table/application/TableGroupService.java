@@ -37,7 +37,7 @@ public class TableGroupService {
     private TableGroup tableGroup(long id) {
         return tableGroupRepository.findById(id)
             .orElseThrow(() -> new NotFoundException(
-                String.format("단체 지정된 그룹 id(%d)가 존재하지 않습니다.", id)));
+                String.format("단체 지정된 그룹 id(%d)를 찾을 수 없습니다.", id)));
     }
 
     private TableGroup newTableGroup(TableGroupRequest request) {

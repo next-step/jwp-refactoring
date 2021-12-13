@@ -9,7 +9,7 @@ import javax.persistence.OneToMany;
 import org.springframework.util.Assert;
 
 @Embeddable
-public class OrderLineItems {
+class OrderLineItems {
 
     @OneToMany(mappedBy = "order", cascade = {CascadeType.PERSIST})
     private List<OrderLineItem> items;
@@ -19,17 +19,21 @@ public class OrderLineItems {
 
     private OrderLineItems(List<OrderLineItem> items) {
         Assert.notNull(items, "주문 항목 리스트는 필수입니다.");
-        Assert
-            .noNullElements(items, () -> String.format("주문 항목 리스트(%s)에 null이 포함될 수 없습니다.", items));
+        Assert.noNullElements(items,
+            () -> String.format("주문 항목 리스트(%s)에 null이 포함될 수 없습니다.", items));
         this.items = items;
     }
 
-    public static OrderLineItems from(List<OrderLineItem> items) {
+    static OrderLineItems from(List<OrderLineItem> items) {
         return new OrderLineItems(items);
     }
 
-    public List<OrderLineItem> list() {
+    List<OrderLineItem> list() {
         return Collections.unmodifiableList(items);
+    }
+
+    boolean isNotEmpty() {
+        return !items.isEmpty();
     }
 
     @Override

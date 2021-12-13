@@ -71,10 +71,6 @@ public class Menu {
     }
 
     private void validate(Name name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
-        Assert.notNull(name, "이름은 필수입니다.");
-        Assert.notNull(price, "가격은 필수입니다.");
-        Assert.notNull(menuGroup, "메뉴 그룹은 필수입니다.");
-
         Assert.notNull(menuProducts, "메뉴 상품들은 필수입니다.");
         Assert.isTrue(menuProducts.size() >= MIN_PRODUCTS_SIZE,
             String.format("메뉴 상품들(%s)은 적어도 %d개 이상이어야 합니다.", menuProducts, MIN_PRODUCTS_SIZE));

@@ -62,12 +62,12 @@ public class OrderTable {
         return tableGroup.id();
     }
 
-    public void setTableGroup(TableGroup tableGroup) {
-        this.tableGroup = tableGroup;
-    }
-
     public Headcount numberOfGuests() {
         return numberOfGuests;
+    }
+
+    public void changeOrder(Order order) {
+        this.order = order;
     }
 
     public void changeNumberOfGuests(Headcount numberOfGuests) {
@@ -76,6 +76,10 @@ public class OrderTable {
                 String.format("비어있는 주문 테이블(%s)의 방문한 손님 수를 변경할 수 없습니다.", this));
         }
         setNumberOfGuests(numberOfGuests);
+    }
+
+    public boolean isFull() {
+        return status.isFull();
     }
 
     public boolean isEmpty() {

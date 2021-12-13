@@ -2,6 +2,7 @@ package kitchenpos.menu.application;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import kitchenpos.common.exception.NotFoundException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
@@ -40,6 +41,12 @@ public class MenuService {
 
     public long countByIdIn(List<Long> menuIds) {
         return menuRepository.countByIdIn(menuIds);
+    }
+
+    public Menu findById(long id) {
+        return menuRepository.findById(id)
+            .orElseThrow(() -> new NotFoundException(
+                String.format("메뉴 id(%d)를 찾을 수 없습니다.", id)));
     }
 
     private Menu newMenu(MenuRequest request) {

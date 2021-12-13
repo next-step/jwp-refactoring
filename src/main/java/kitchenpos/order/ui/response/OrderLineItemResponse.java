@@ -3,7 +3,6 @@ package kitchenpos.order.ui.response;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderLineItems;
 
 public final class OrderLineItemResponse {
 
@@ -40,9 +39,9 @@ public final class OrderLineItemResponse {
 
     private static OrderLineItemResponse from(OrderLineItem orderLineItem) {
         return new OrderLineItemResponse(
-            orderLineItem.getSeq(),
-            orderLineItem.getMenuId(),
-            orderLineItem.getQuantity().value()
+            orderLineItem.seq(),
+            orderLineItem.menu(),
+            orderLineItem.quantity().value()
         );
     }
 }
