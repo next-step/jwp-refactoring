@@ -62,6 +62,10 @@ public class TableGroup {
         return id;
     }
 
+    public LocalDateTime getCreatedDate() {
+        return createdDate;
+    }
+
     public void setCreatedDate(final LocalDateTime createdDate) {
         this.createdDate = createdDate;
     }
