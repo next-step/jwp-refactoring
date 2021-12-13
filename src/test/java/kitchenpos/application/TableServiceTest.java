@@ -19,17 +19,18 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.application.fixture.OrderTableFixtureFactory;
 import kitchenpos.application.fixture.TableGroupFixtureFactory;
-import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.OrdersRepository;
 import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.tablegroup.domain.TableGroup;
 
 @ExtendWith(MockitoExtension.class)
 class TableServiceTest {
 
     @Mock
-    private OrderRepository orderRepository;
+    private OrdersRepository ordersRepository;
 
     @Mock
     private OrderTableRepository orderTableRepository;
@@ -64,10 +65,10 @@ class TableServiceTest {
         given(orderTableRepository.save(any(OrderTable.class))).willReturn(주문_개인테이블);
 
         // when
-        OrderTable savedOrderTable = tableService.create(orderTable);
+        OrderTableResponse orderTableResponse = tableService.create(orderTable);
 
         // then
-        assertThat(savedOrderTable).isEqualTo(주문_개인테이블);
+        assertThat(orderTableResponse).isEqualTo(OrderTableResponse.from(주문_개인테이블));
     }
 
     @DisplayName("OrderTable 목록을 조회한다.")
@@ -77,10 +78,10 @@ class TableServiceTest {
         given(orderTableRepository.findAll()).willReturn(Arrays.asList(주문_개인테이블));
 
         // when
-        List<OrderTable> orderTables = tableService.list();
+        List<OrderTableResponse> orderTableResponses = tableService.list();
 
         // then
-        assertThat(orderTables).containsExactly(주문_개인테이블);
+        assertThat(orderTableResponses).containsExactly(OrderTableResponse.from(주문_개인테이블));
     }
 
     @DisplayName("OrderTable 을 빈 테이블 상태로 변경한다.")
@@ -91,14 +92,13 @@ class TableServiceTest {
 
         given(orderTableRepository.findById(주문_개인테이블.getId())).willReturn(Optional.ofNullable(주문_개인테이블));
         given(orderTableRepository.findById(주문_개인테이블.getId())).willReturn(Optional.ofNullable(주문_개인테이블));
-        given(orderTableRepository.save(any(OrderTable.class))).willReturn(주문_개인테이블);
 
         // when
-        OrderTable changedEmptyTable = tableService.changeEmpty(주문_개인테이블.getId(), 빈_개인테이블);
+        OrderTableResponse orderTableResponse = tableService.changeEmpty(주문_개인테이블.getId(), 빈_개인테이블);
 
         // then
-        assertThat(changedEmptyTable).isEqualTo(주문_개인테이블);
-        assertThat(changedEmptyTable.isEmpty()).isTrue();
+        assertThat(orderTableResponse).isEqualTo(OrderTableResponse.from(주문_개인테이블));
+        assertThat(orderTableResponse.isEmpty()).isTrue();
     }
 
     @DisplayName("OrderTable 을 빈 테이블 상태로 변경 시, 테이블이 존재하지 않으면 예외가 발생한다.")
@@ -126,7 +126,7 @@ class TableServiceTest {
     @Test
     void changeEmpty4() {
         // given
-        given(orderRepository.existsByOrderTableAndOrderStatusIn(anyLong(), anyList())).willReturn(true);
+        given(ordersRepository.existsByOrderTableAndOrderStatusIn(any(OrderTable.class), anyList())).willReturn(true);
         given(orderTableRepository.findById(주문_개인테이블.getId())).willReturn(Optional.ofNullable(주문_개인테이블));
         given(orderTableRepository.findById(주문_개인테이블.getId())).willReturn(Optional.ofNullable(주문_개인테이블));
 
@@ -140,14 +140,13 @@ class TableServiceTest {
         // given
         given(orderTableRepository.findById(주문_개인테이블.getId())).willReturn(Optional.ofNullable(주문_개인테이블));
         given(orderTableRepository.findById(주문_개인테이블.getId())).willReturn(Optional.ofNullable(주문_개인테이블));
-        given(orderTableRepository.save(any(OrderTable.class))).willReturn(주문_개인테이블);
 
         // when
-        OrderTable changedOrderTable = tableService.changeNumberOfGuests(주문_개인테이블.getId(), 손님_10명_개인테이블);
+        OrderTableResponse orderTableResponse = tableService.changeNumberOfGuests(주문_개인테이블.getId(), 손님_10명_개인테이블);
 
         // then
-        assertThat(changedOrderTable).isEqualTo(주문_개인테이블);
-        assertThat(changedOrderTable.getNumberOfGuests()).isEqualTo(손님_10명_개인테이블.getNumberOfGuests());
+        assertThat(orderTableResponse).isEqualTo(OrderTableResponse.from(주문_개인테이블));
+        assertThat(orderTableResponse.getNumberOfGuests()).isEqualTo(손님_10명_개인테이블.getNumberOfGuests());
     }
 
     @DisplayName("OrderTable 의 손님 수를 변경 시, 손님의 수가 음수이면 예외가 발생한다.")

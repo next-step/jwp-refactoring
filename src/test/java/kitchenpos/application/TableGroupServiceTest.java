@@ -16,7 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.application.fixture.OrderTableFixtureFactory;
 import kitchenpos.application.fixture.TableGroupFixtureFactory;
-import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.OrdersRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.tablegroup.application.TableGroupService;
@@ -27,7 +27,7 @@ import kitchenpos.tablegroup.domain.TableGroupRepository;
 class TableGroupServiceTest {
 
     @Mock
-    private OrderRepository orderRepository;
+    private OrdersRepository ordersRepository;
 
     @Mock
     private OrderTableRepository orderTableRepository;
@@ -131,7 +131,7 @@ class TableGroupServiceTest {
         주문1_단체테이블.setTableGroupId(단체_테이블그룹.getId());
         주문2_단체테이블.setTableGroupId(단체_테이블그룹.getId());
 
-        given(orderRepository.existsByOrderTableInAndOrderStatusIn(anyList(), anyList())).willReturn(false);
+        given(ordersRepository.existsByOrderTableInAndOrderStatusIn(anyList(), anyList())).willReturn(false);
         given(orderTableRepository.findAllByTableGroup(단체_테이블그룹.getId())).willReturn(Arrays.asList(주문1_단체테이블, 주문2_단체테이블));
 
         // when
@@ -139,8 +139,8 @@ class TableGroupServiceTest {
 
         // then
         verify(orderTableRepository, times(2)).save(any(OrderTable.class));
-        assertThat(주문1_단체테이블.getTableGroupId()).isNull();
-        assertThat(주문2_단체테이블.getTableGroupId()).isNull();
+        assertThat(주문1_단체테이블.getTableGroup()).isNull();
+        assertThat(주문2_단체테이블.getTableGroup()).isNull();
     }
 
     @DisplayName("TableGroup 해제 시, 주문상태가 요리중(COOKING)이거나 식사중(MEAL) 이면 예외가 발생한다.")
@@ -150,7 +150,7 @@ class TableGroupServiceTest {
         주문1_단체테이블.setTableGroupId(단체_테이블그룹.getId());
         주문2_단체테이블.setTableGroupId(단체_테이블그룹.getId());
 
-        given(orderRepository.existsByOrderTableInAndOrderStatusIn(anyList(), anyList())).willReturn(true);
+        given(ordersRepository.existsByOrderTableInAndOrderStatusIn(anyList(), anyList())).willReturn(true);
         given(orderTableRepository.findAllByTableGroup(단체_테이블그룹.getId()))
             .willReturn(Arrays.asList(주문1_단체테이블, 주문2_단체테이블));
 

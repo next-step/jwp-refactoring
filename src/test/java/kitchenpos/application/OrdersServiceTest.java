@@ -29,23 +29,23 @@ import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.order.application.OrderService;
-import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.Orders;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderLineItemRepository;
-import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.OrdersRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.product.domain.Product;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 
 @ExtendWith(MockitoExtension.class)
-class OrderServiceTest {
+class OrdersServiceTest {
 
     @Mock
     private MenuRepository menuRepository;
 
     @Mock
-    private OrderRepository orderRepository;
+    private OrdersRepository ordersRepository;
 
     @Mock
     private OrderLineItemRepository orderLineItemRepository;
@@ -64,8 +64,8 @@ class OrderServiceTest {
     private MenuProduct 불고기_공기밥;
     private OrderTable 주문_개인테이블;
     private OrderTable 빈_개인테이블;
-    private Order 불고기_주문;
-    private Order 불고기_식사중_주문;
+    private Orders 불고기_주문;
+    private Orders 불고기_식사중_주문;
     private OrderLineItem 불고기_주문항목;
 
     @BeforeEach
@@ -93,74 +93,74 @@ class OrderServiceTest {
     @Test
     void create1() {
         // given
-        Order order = Order.of(주문_개인테이블, OrderStatus.COOKING.name(), LocalDateTime.now(), Arrays.asList(불고기_주문항목));
+        Orders orders = Orders.of(주문_개인테이블, OrderStatus.COOKING, LocalDateTime.now(), Arrays.asList(불고기_주문항목));
 
         given(menuRepository.countByIdIn(Arrays.asList(불고기.getId()))).willReturn(1L);
         given(orderTableRepository.findById(주문_개인테이블.getId())).willReturn(Optional.ofNullable(주문_개인테이블));
-        given(orderRepository.save(any(Order.class))).willReturn(불고기_주문);
+        given(ordersRepository.save(any(Orders.class))).willReturn(불고기_주문);
         given(orderLineItemRepository.save(불고기_주문항목)).willReturn(불고기_주문항목);
 
         // when
-        Order savedOrder = orderService.create(order);
+        Orders savedOrders = orderService.create(orders);
 
         // then
-        assertThat(savedOrder).isEqualTo(불고기_주문);
+        assertThat(savedOrders).isEqualTo(불고기_주문);
     }
 
     @DisplayName("Order 를 등록 시, OrderLineItem 이 없으면 예외가 발생한다.")
     @Test
     void create2() {
         // given
-        Order order = Order.of(주문_개인테이블, OrderStatus.COOKING.name(), LocalDateTime.now(), Collections.emptyList());
+        Orders orders = Orders.of(주문_개인테이블, OrderStatus.COOKING, LocalDateTime.now(), Collections.emptyList());
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(order));
+        assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(orders));
     }
 
     @DisplayName("Order 를 등록 시, OrderLineItem 의 Menu 가 메뉴에 존재하지 않으면 예외가 발생한다.")
     @Test
     void create3() {
         // given
-        Order order = Order.of(주문_개인테이블, OrderStatus.COOKING.name(), LocalDateTime.now(), Arrays.asList(불고기_주문항목));
+        Orders orders = Orders.of(주문_개인테이블, OrderStatus.COOKING, LocalDateTime.now(), Arrays.asList(불고기_주문항목));
 
         given(menuRepository.countByIdIn(Arrays.asList(불고기.getId()))).willReturn(0L);
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(order));
+        assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(orders));
     }
 
     @DisplayName("Order 를 등록 시, 주문을 한 OrderTable 이 존재하지 않으면 예외가 발생한다.")
     @Test
     void create4() {
         // given
-        Order order = Order.of(주문_개인테이블, OrderStatus.COOKING.name(), LocalDateTime.now(), Arrays.asList(불고기_주문항목));
+        Orders orders = Orders.of(주문_개인테이블, OrderStatus.COOKING, LocalDateTime.now(), Arrays.asList(불고기_주문항목));
 
         given(menuRepository.countByIdIn(Arrays.asList(불고기.getId()))).willReturn(1L);
         given(orderTableRepository.findById(주문_개인테이블.getId())).willReturn(Optional.ofNullable(주문_개인테이블));
         given(orderTableRepository.findById(주문_개인테이블.getId())).willReturn(Optional.empty());
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(order));
+        assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(orders));
     }
 
     @DisplayName("Order 를 등록 시, OrderTable 이 빈(empty) 상태면 예외가 발생한다.")
     @Test
     void create5() {
         // given
-        Order order = Order.of(빈_개인테이블, OrderStatus.COOKING.name(), LocalDateTime.now(), Arrays.asList(불고기_주문항목));
+        Orders orders = Orders.of(빈_개인테이블, OrderStatus.COOKING, LocalDateTime.now(), Arrays.asList(불고기_주문항목));
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(order));
+        assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(orders));
     }
 
     @DisplayName("Order 목록을 조회할 수 있다.")
     @Test
     void findList() {
         // given
-        given(orderRepository.findAll()).willReturn(Arrays.asList(불고기_주문));
+        given(ordersRepository.findAll()).willReturn(Arrays.asList(불고기_주문));
 
         // when
-        List<Order> orders = orderService.list();
+        List<Orders> orders = orderService.list();
 
         // then
         assertThat(orders).containsExactly(불고기_주문);
@@ -170,23 +170,23 @@ class OrderServiceTest {
     @Test
     void update1() {
         // given
-        불고기_주문.setOrderStatus(OrderStatus.COOKING.name());
-        given(orderRepository.findById(불고기_주문.getId())).willReturn(Optional.of(불고기_주문));
+        불고기_주문.setOrderStatus(OrderStatus.COOKING);
+        given(ordersRepository.findById(불고기_주문.getId())).willReturn(Optional.of(불고기_주문));
 
         // when
-        Order changedStatusOrder = orderService.changeOrderStatus(불고기_주문.getId(), 불고기_식사중_주문);
+        Orders changedStatusOrders = orderService.changeOrderStatus(불고기_주문.getId(), 불고기_식사중_주문);
 
         // then
-        assertThat(changedStatusOrder).isEqualTo(불고기_주문);
-        assertThat(changedStatusOrder.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name());
+        assertThat(changedStatusOrders).isEqualTo(불고기_주문);
+        assertThat(changedStatusOrders.getOrderStatus()).isEqualTo(OrderStatus.MEAL);
     }
 
     @DisplayName("완료된 Order 의 상태를 변경하면 예외가 발생한다.")
     @Test
     void update2() {
         // given
-        불고기_주문.setOrderStatus(OrderStatus.COMPLETION.name());
-        given(orderRepository.findById(불고기_주문.getId())).willReturn(Optional.of(불고기_주문));
+        불고기_주문.setOrderStatus(OrderStatus.COMPLETION);
+        given(ordersRepository.findById(불고기_주문.getId())).willReturn(Optional.of(불고기_주문));
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> orderService.changeOrderStatus(불고기_주문.getId(),

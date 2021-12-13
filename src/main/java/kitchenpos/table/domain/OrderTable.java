@@ -80,16 +80,16 @@ public class OrderTable {
         return new OrderTable(id, numberOfGuests, empty);
     }
 
+    public void ungroup() {
+        this.tableGroup = null;
+    }
+
     public Long getId() {
         return id;
     }
 
-    public Long getTableGroupId() {
-        if (Objects.isNull(tableGroup)) {
-            return null;
-        }
-
-        return tableGroup.getId();
+    public TableGroup getTableGroup() {
+        return tableGroup;
     }
 
     public void setTableGroupId(final Long tableGroupId) {

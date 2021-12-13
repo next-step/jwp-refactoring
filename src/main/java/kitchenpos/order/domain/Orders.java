@@ -4,9 +4,11 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -20,7 +22,7 @@ import kitchenpos.table.domain.OrderTable;
 
 @Entity
 @Table(name = "orders")
-public class Order {
+public class Orders {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,67 +33,71 @@ public class Order {
     @JoinColumn(name = "order_table_id", foreignKey = @ForeignKey(name = "fk_orders_order_table"), nullable = false)
     private OrderTable orderTable;
 
-    @Column(name = "order_status", nullable = false)
-    private String orderStatus;
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus;
 
     @Column(name = "ordered_time", nullable = false)
     private LocalDateTime orderedTime;
 
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "orders", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderLineItem> orderLineItems = new ArrayList<>();
 
-    protected Order() {}
+    protected Orders() {}
 
-    public Order(long id) {
+    public Orders(long id) {
         this.id = id;
     }
 
-    private Order(Long id, OrderTable orderTable, String orderStatus, LocalDateTime orderedTime) {
+    private Orders(Long id, OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime) {
         this(orderTable, orderStatus, orderedTime);
         this.id = id;
     }
 
-    private Order(OrderTable orderTable, String orderStatus, LocalDateTime orderedTime) {
+    private Orders(OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime) {
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
     }
 
-    private Order(OrderTable orderTable, String orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
+    private Orders(OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
         this(orderTable, orderStatus, orderedTime);
         this.orderLineItems = orderLineItems;
     }
 
-    public static Order of(Long id, OrderTable orderTable, String orderStatus, LocalDateTime orderedTime) {
-        return new Order(id, orderTable, orderStatus, orderedTime);
+    public static Orders of(Long id, OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime) {
+        return new Orders(id, orderTable, orderStatus, orderedTime);
     }
 
-    public static Order of(OrderTable orderTable, String orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
-        return new Order(orderTable, orderStatus, orderedTime, orderLineItems);
+    public static Orders of(OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
+        return new Orders(orderTable, orderStatus, orderedTime, orderLineItems);
     }
 
-    public static Order from(long id) {
-        return new Order(id);
+    public static Orders from(long id) {
+        return new Orders(id);
     }
 
     public Long getId() {
         return id;
     }
 
-    public Long getOrderTableId() {
-        return orderTable.getId();
+    public OrderTable getOrderTable() {
+        return orderTable;
     }
 
     public void setOrderTableId(final Long orderTableId) {
         this.orderTable = OrderTable.from(orderTableId);
     }
 
-    public String getOrderStatus() {
+    public OrderStatus getOrderStatus() {
         return orderStatus;
     }
 
-    public void setOrderStatus(final String orderStatus) {
+    public void setOrderStatus(final OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
+    }
+
+    public LocalDateTime getOrderedTime() {
+        return orderedTime;
     }
 
     public void setOrderedTime(final LocalDateTime orderedTime) {

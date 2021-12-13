@@ -21,6 +21,7 @@ import kitchenpos.application.fixture.ProductFixtureFactory;
 import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.product.dto.ProductResponse;
 
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
@@ -49,10 +50,10 @@ class ProductServiceTest {
         given(productRepository.save(any(Product.class))).willReturn(돼지고기);
 
         // when
-        Product savedProduct = productService.create(product);
+        ProductResponse productResponse = productService.create(product);
 
         // then
-        assertThat(savedProduct).isEqualTo(돼지고기);
+        assertThat(productResponse).isEqualTo(ProductResponse.from(돼지고기));
     }
 
     @DisplayName("Product 가격이 null 이면 예외가 발생한다.")
@@ -83,9 +84,9 @@ class ProductServiceTest {
         given(productRepository.findAll()).willReturn(Arrays.asList(돼지고기, 공기밥));
 
         // when
-        List<Product> products = productService.list();
+        List<ProductResponse> productResponses = productService.list();
 
         // then
-        assertThat(products).containsExactly(돼지고기, 공기밥);
+        assertThat(productResponses).containsExactly(ProductResponse.from(돼지고기), ProductResponse.from(공기밥));
     }
 }
