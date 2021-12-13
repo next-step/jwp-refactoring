@@ -1,7 +1,6 @@
 package kitchenpos.menu.application;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -10,40 +9,38 @@ import org.springframework.transaction.annotation.Transactional;
 
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuProductRepository;
 import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.utils.StreamUtils;
 
 @Service
 public class MenuService {
     private final MenuRepository menuRepository;
     private final MenuGroupRepository menuGroupRepository;
-    private final MenuProductRepository menuProductRepository;
     private final ProductRepository productRepository;
 
     public MenuService(
             final MenuRepository menuRepository,
             final MenuGroupRepository menuGroupRepository,
-            final MenuProductRepository menuProductRepository,
             final ProductRepository productRepository
     ) {
         this.menuRepository = menuRepository;
         this.menuGroupRepository = menuGroupRepository;
-        this.menuProductRepository = menuProductRepository;
         this.productRepository = productRepository;
     }
 
     @Transactional
-    public Menu create(final Menu menu) {
+    public MenuResponse create(final Menu menu) {
         final BigDecimal price = menu.getPrice();
 
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalArgumentException();
         }
 
-        if (!menuGroupRepository.existsById(menu.getMenuGroupId())) {
+        if (!menuGroupRepository.existsById(menu.getMenuGroup().getId())) {
             throw new IllegalArgumentException();
         }
 
@@ -51,7 +48,7 @@ public class MenuService {
 
         BigDecimal sum = BigDecimal.ZERO;
         for (final MenuProduct menuProduct : menuProducts) {
-            final Product product = productRepository.findById(menuProduct.getProductId())
+            final Product product = productRepository.findById(menuProduct.getProduct().getId())
                     .orElseThrow(IllegalArgumentException::new);
             sum = sum.add(product.getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
         }
@@ -62,24 +59,12 @@ public class MenuService {
 
         final Menu savedMenu = menuRepository.save(menu);
 
-        final Long menuId = savedMenu.getId();
-        final List<MenuProduct> savedMenuProducts = new ArrayList<>();
-        for (final MenuProduct menuProduct : menuProducts) {
-            menuProduct.setMenuId(menuId);
-            savedMenuProducts.add(menuProductRepository.save(menuProduct));
-        }
-        savedMenu.setMenuProducts(savedMenuProducts);
-
-        return savedMenu;
+        return MenuResponse.from(savedMenu);
     }
 
-    public List<Menu> list() {
+    @Transactional(readOnly = true)
+    public List<MenuResponse> list() {
         final List<Menu> menus = menuRepository.findAll();
-
-        for (final Menu menu : menus) {
-            menu.setMenuProducts(menuProductRepository.findAllByMenu(menu.getId()));
-        }
-
-        return menus;
+        return StreamUtils.mapToList(menus, MenuResponse::from);
     }
 }

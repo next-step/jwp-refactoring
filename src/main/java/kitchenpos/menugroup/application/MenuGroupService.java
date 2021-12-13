@@ -7,6 +7,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
+import kitchenpos.utils.StreamUtils;
 
 @Service
 public class MenuGroupService {
@@ -17,11 +19,14 @@ public class MenuGroupService {
     }
 
     @Transactional
-    public MenuGroup create(final MenuGroup menuGroup) {
-        return menuGroupRepository.save(menuGroup);
+    public MenuGroupResponse create(final MenuGroup menuGroup) {
+        MenuGroup savedMenuGroup = menuGroupRepository.save(menuGroup);
+        return MenuGroupResponse.from(savedMenuGroup);
     }
 
-    public List<MenuGroup> list() {
-        return menuGroupRepository.findAll();
+    @Transactional(readOnly = true)
+    public List<MenuGroupResponse> list() {
+        List<MenuGroup> menuGroups = menuGroupRepository.findAll();
+        return StreamUtils.mapToList(menuGroups, MenuGroupResponse::from);
     }
 }

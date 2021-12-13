@@ -4,9 +4,9 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -33,11 +33,11 @@ public class Menu {
     @Column(name = "price", nullable = false)
     private BigDecimal price;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "menu_group_id", foreignKey = @ForeignKey(name = "fk_menu_menu_group"), nullable = false)
     private MenuGroup menuGroup;
 
-    @OneToMany(mappedBy = "menu")
+    @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MenuProduct> menuProducts = new ArrayList<>();
 
     protected Menu() {}
@@ -62,12 +62,20 @@ public class Menu {
         return new Menu(id);
     }
 
+    public static Menu of(String name, BigDecimal price, MenuGroup menuGroup) {
+        return new Menu(name, price, menuGroup, new ArrayList<>());
+    }
+
     public static Menu of(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
         return new Menu(name, price, menuGroup, menuProducts);
     }
 
     public static Menu of(Long id, String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
         return new Menu(id, name, price, menuGroup, menuProducts);
+    }
+
+    public void addMenuProducts(final List<MenuProduct> menuProducts) {
+        this.menuProducts.addAll(menuProducts);
     }
 
     public Long getId() {
@@ -82,15 +90,11 @@ public class Menu {
         return price;
     }
 
-    public Long getMenuGroupId() {
-        return menuGroup.getId();
+    public MenuGroup getMenuGroup() {
+        return menuGroup;
     }
 
     public List<MenuProduct> getMenuProducts() {
         return menuProducts;
-    }
-
-    public void setMenuProducts(final List<MenuProduct> menuProducts) {
-        this.menuProducts = menuProducts;
     }
 }

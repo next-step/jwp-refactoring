@@ -22,11 +22,11 @@ public class MenuProduct {
     @Column(name = "seq")
     private Long seq;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "menu_id", foreignKey = @ForeignKey(name = "fk_menu_product_menu"), nullable = false)
     private Menu menu;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "product_id", foreignKey = @ForeignKey(name = "fk_menu_product_product"), nullable = false)
     private Product product;
 
@@ -54,12 +54,16 @@ public class MenuProduct {
         return new MenuProduct(menu, product, quantity);
     }
 
-    public void setMenuId(final Long menuId) {
-        menu = Menu.from(menuId);
+    public Long getSeq() {
+        return seq;
     }
 
-    public Long getProductId() {
-        return product.getId();
+    public Menu getMenu() {
+        return menu;
+    }
+
+    public Product getProduct() {
+        return product;
     }
 
     public long getQuantity() {

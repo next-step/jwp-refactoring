@@ -27,6 +27,7 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProductRepository;
 import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.product.domain.Product;
@@ -66,7 +67,7 @@ class MenuServiceTest {
 
         불고기_돼지고기 = MenuProductFixtureFactory.create(1L, 불고기.getId(), 돼지고기.getId(), 1L);
         불고기_공기밥 = MenuProductFixtureFactory.create(2L, 불고기.getId(), 공기밥.getId(), 1L);
-        불고기.setMenuProducts(Arrays.asList(불고기_돼지고기, 불고기_공기밥));
+        불고기.addMenuProducts(Arrays.asList(불고기_돼지고기, 불고기_공기밥));
     }
 
     @DisplayName("Menu 를 등록한다.")
@@ -76,15 +77,15 @@ class MenuServiceTest {
         Menu menu = Menu.of("불고기", BigDecimal.valueOf(10_000), 고기_메뉴그룹, Arrays.asList(불고기_돼지고기, 불고기_공기밥));
 
         given(menuGroupRepository.existsById(고기_메뉴그룹.getId())).willReturn(true);
-        given(productRepository.findById(불고기_돼지고기.getProductId())).willReturn(Optional.ofNullable(돼지고기));
-        given(productRepository.findById(불고기_공기밥.getProductId())).willReturn(Optional.ofNullable(공기밥));
+        given(productRepository.findById(불고기_돼지고기.getProduct().getId())).willReturn(Optional.ofNullable(돼지고기));
+        given(productRepository.findById(불고기_공기밥.getProduct().getId())).willReturn(Optional.ofNullable(공기밥));
         given(menuRepository.save(any(Menu.class))).willReturn(불고기);
 
         // when
-        Menu savedMenu = menuService.create(menu);
+        MenuResponse menuResponse = menuService.create(menu);
 
         // then
-        assertThat(savedMenu).isEqualTo(불고기);
+        assertThat(menuResponse).isEqualTo(MenuResponse.from(불고기));
     }
 
     @DisplayName("Menu 가격은 null 이면 예외가 발생한다.")
@@ -127,7 +128,7 @@ class MenuServiceTest {
         Menu menu = Menu.of("불고기", BigDecimal.valueOf(10_000), 고기_메뉴그룹, Arrays.asList(불고기_돼지고기, 불고기_공기밥));
 
         given(menuGroupRepository.existsById(고기_메뉴그룹.getId())).willReturn(true);
-        given(productRepository.findById(불고기_돼지고기.getProductId())).willReturn(Optional.ofNullable(돼지고기));
+        given(productRepository.findById(불고기_돼지고기.getProduct().getId())).willReturn(Optional.ofNullable(돼지고기));
         given(productRepository.findById(돼지고기.getId())).willThrow(IllegalArgumentException.class);
 
         // when & then
@@ -149,12 +150,11 @@ class MenuServiceTest {
     void findList() {
         // given
         given(menuRepository.findAll()).willReturn(Arrays.asList(불고기));
-        given(menuProductRepository.findAllByMenu(불고기.getId())).willReturn(Arrays.asList(불고기_돼지고기, 불고기_공기밥));
 
         // when
-        List<Menu> menus = menuService.list();
+        List<MenuResponse> menuResponses = menuService.list();
 
         // then
-        assertThat(menus).containsExactly(불고기);
+        assertThat(menuResponses).containsExactly(MenuResponse.from(불고기));
     }
 }
