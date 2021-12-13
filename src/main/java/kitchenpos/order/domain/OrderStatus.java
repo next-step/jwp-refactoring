@@ -10,4 +10,8 @@ public enum OrderStatus {
     public boolean isMeal() {
         return this == MEAL;
     }
+
+    public boolean isCompleted() {
+        return this == COMPLETION;
+    }
 }

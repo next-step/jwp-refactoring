@@ -49,6 +49,6 @@ public class TableService {
     public OrderTable findById(long id) {
         return orderTableRepository.findById(id)
             .orElseThrow(
-                () -> new NotFoundException(String.format("주문 테이블 id(%d)가 존재하지 않습니다.", id)));
+                () -> new NotFoundException(String.format("주문 테이블 id(%d)를 찾을 수 없습니다.", id)));
     }
 }

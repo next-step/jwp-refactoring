@@ -213,7 +213,7 @@ class OrderServiceTest {
                 .extracting(Order::status, Order::table)
                 .containsExactly(OrderStatus.COOKING, orderTableId),
             () -> assertThat(savedOrder.lineItems()).first()
-                .extracting(OrderLineItem::getMenuId, OrderLineItem::getQuantity)
+                .extracting(OrderLineItem::menu, OrderLineItem::quantity)
                 .containsExactly(expectedMenuId, Quantity.from(expectedQuantity))
         );
     }

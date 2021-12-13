@@ -14,4 +14,9 @@ public enum TableStatus {
     boolean isEmpty() {
         return this == EMPTY;
     }
+
+    boolean isFull() {
+        return this == FULL;
+    }
+
 }

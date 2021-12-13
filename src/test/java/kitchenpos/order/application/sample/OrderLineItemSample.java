@@ -19,7 +19,7 @@ public class OrderLineItemSample {
     public static OrderLineItem 후라이드치킨세트_두개() {
         OrderLineItem orderLineItem = new OrderLineItem();
         orderLineItem.setSeq(1L);
-        orderLineItem.setQuantity(2);
+        orderLineItem.quantity(2);
 
         MenuGroup menuGroup = MenuGroup.from(Name.from("두마리메뉴"));
         when(menuGroup.id()).thenReturn(1L);
