@@ -10,7 +10,7 @@ public class TableRequest {
 
     private boolean empty;
 
-    public OrderTable toEntity() {
+    public OrderTable toOrderTable() {
         return new OrderTable(null, numberOfGuests, empty);
     }
 

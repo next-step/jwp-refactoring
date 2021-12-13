@@ -16,7 +16,7 @@ public class ProductRequest {
         this.price = price;
     }
 
-    public Product toEntity() {
+    public Product toProduct() {
         return new Product(name, price);
     }
 
