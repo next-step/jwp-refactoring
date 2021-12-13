@@ -1,7 +1,6 @@
 package kitchenpos.order.application;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -11,22 +10,24 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.order.domain.Orders;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderLineItemRepository;
-import kitchenpos.order.domain.OrdersRepository;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.Orders;
+import kitchenpos.order.domain.OrdersRepository;
+import kitchenpos.order.dto.OrdersResponse;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.utils.StreamUtils;
 
 @Service
-public class OrderService {
+public class OrdersService {
     private final MenuRepository menuRepository;
     private final OrdersRepository ordersRepository;
     private final OrderLineItemRepository orderLineItemRepository;
     private final OrderTableRepository orderTableRepository;
 
-    public OrderService(
+    public OrdersService(
             final MenuRepository menuRepository,
             final OrdersRepository ordersRepository,
             final OrderLineItemRepository orderLineItemRepository,
@@ -39,7 +40,7 @@ public class OrderService {
     }
 
     @Transactional
-    public Orders create(final Orders orders) {
+    public OrdersResponse create(final Orders orders) {
         final List<OrderLineItem> orderLineItems = orders.getOrderLineItems();
 
         if (CollectionUtils.isEmpty(orderLineItems)) {
@@ -47,7 +48,7 @@ public class OrderService {
         }
 
         final List<Long> menuIds = orderLineItems.stream()
-                .map(OrderLineItem::getMenuId)
+                .map(item -> item.getMenu().getId())
                 .collect(Collectors.toList());
 
         if (orderLineItems.size() != menuRepository.countByIdIn(menuIds)) {
@@ -67,29 +68,17 @@ public class OrderService {
 
         final Orders savedOrders = ordersRepository.save(orders);
 
-        final Long orderId = savedOrders.getId();
-        final List<OrderLineItem> savedOrderLineItems = new ArrayList<>();
-        for (final OrderLineItem orderLineItem : orderLineItems) {
-            orderLineItem.setOrderId(orderId);
-            savedOrderLineItems.add(orderLineItemRepository.save(orderLineItem));
-        }
-        savedOrders.setOrderLineItems(savedOrderLineItems);
-
-        return savedOrders;
+        return OrdersResponse.from(savedOrders);
     }
 
-    public List<Orders> list() {
+    @Transactional(readOnly = true)
+    public List<OrdersResponse> list() {
         final List<Orders> orders = ordersRepository.findAll();
-
-        for (final Orders order : orders) {
-            order.setOrderLineItems(orderLineItemRepository.findAllByOrders(order.getId()));
-        }
-
-        return orders;
+        return StreamUtils.mapToList(orders, OrdersResponse::from);
     }
 
     @Transactional
-    public Orders changeOrderStatus(final Long orderId, final Orders orders) {
+    public OrdersResponse changeOrderStatus(final Long orderId, final Orders orders) {
         final Orders savedOrders = ordersRepository.findById(orderId)
                                                    .orElseThrow(IllegalArgumentException::new);
 
@@ -99,10 +88,6 @@ public class OrderService {
 
         savedOrders.setOrderStatus(orders.getOrderStatus());
 
-        ordersRepository.save(savedOrders);
-
-        savedOrders.setOrderLineItems(orderLineItemRepository.findAllByOrders(orderId));
-
-        return savedOrders;
+        return OrdersResponse.from(savedOrders);
     }
 }

@@ -28,12 +28,13 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.order.application.OrderService;
-import kitchenpos.order.domain.Orders;
+import kitchenpos.order.application.OrdersService;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderLineItemRepository;
-import kitchenpos.order.domain.OrdersRepository;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.Orders;
+import kitchenpos.order.domain.OrdersRepository;
+import kitchenpos.order.dto.OrdersResponse;
 import kitchenpos.product.domain.Product;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
@@ -54,7 +55,7 @@ class OrdersServiceTest {
     private OrderTableRepository orderTableRepository;
 
     @InjectMocks
-    private OrderService orderService;
+    private OrdersService ordersService;
 
     private MenuGroup 고기_메뉴그룹;
     private Product 돼지고기;
@@ -101,10 +102,10 @@ class OrdersServiceTest {
         given(orderLineItemRepository.save(불고기_주문항목)).willReturn(불고기_주문항목);
 
         // when
-        Orders savedOrders = orderService.create(orders);
+        OrdersResponse ordersResponse = ordersService.create(orders);
 
         // then
-        assertThat(savedOrders).isEqualTo(불고기_주문);
+        assertThat(ordersResponse).isEqualTo(OrdersResponse.from(불고기_주문));
     }
 
     @DisplayName("Order 를 등록 시, OrderLineItem 이 없으면 예외가 발생한다.")
@@ -114,7 +115,7 @@ class OrdersServiceTest {
         Orders orders = Orders.of(주문_개인테이블, OrderStatus.COOKING, LocalDateTime.now(), Collections.emptyList());
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(orders));
+        assertThatIllegalArgumentException().isThrownBy(() -> ordersService.create(orders));
     }
 
     @DisplayName("Order 를 등록 시, OrderLineItem 의 Menu 가 메뉴에 존재하지 않으면 예외가 발생한다.")
@@ -126,7 +127,7 @@ class OrdersServiceTest {
         given(menuRepository.countByIdIn(Arrays.asList(불고기.getId()))).willReturn(0L);
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(orders));
+        assertThatIllegalArgumentException().isThrownBy(() -> ordersService.create(orders));
     }
 
     @DisplayName("Order 를 등록 시, 주문을 한 OrderTable 이 존재하지 않으면 예외가 발생한다.")
@@ -140,7 +141,7 @@ class OrdersServiceTest {
         given(orderTableRepository.findById(주문_개인테이블.getId())).willReturn(Optional.empty());
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(orders));
+        assertThatIllegalArgumentException().isThrownBy(() -> ordersService.create(orders));
     }
 
     @DisplayName("Order 를 등록 시, OrderTable 이 빈(empty) 상태면 예외가 발생한다.")
@@ -150,7 +151,7 @@ class OrdersServiceTest {
         Orders orders = Orders.of(빈_개인테이블, OrderStatus.COOKING, LocalDateTime.now(), Arrays.asList(불고기_주문항목));
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(orders));
+        assertThatIllegalArgumentException().isThrownBy(() -> ordersService.create(orders));
     }
 
     @DisplayName("Order 목록을 조회할 수 있다.")
@@ -160,10 +161,10 @@ class OrdersServiceTest {
         given(ordersRepository.findAll()).willReturn(Arrays.asList(불고기_주문));
 
         // when
-        List<Orders> orders = orderService.list();
+        List<OrdersResponse> ordersResponses = ordersService.list();
 
         // then
-        assertThat(orders).containsExactly(불고기_주문);
+        assertThat(ordersResponses).containsExactly(OrdersResponse.from(불고기_주문));
     }
 
     @DisplayName("Order 의 상태를 변경한다.")
@@ -174,11 +175,11 @@ class OrdersServiceTest {
         given(ordersRepository.findById(불고기_주문.getId())).willReturn(Optional.of(불고기_주문));
 
         // when
-        Orders changedStatusOrders = orderService.changeOrderStatus(불고기_주문.getId(), 불고기_식사중_주문);
+        OrdersResponse ordersResponse = ordersService.changeOrderStatus(불고기_주문.getId(), 불고기_식사중_주문);
 
         // then
-        assertThat(changedStatusOrders).isEqualTo(불고기_주문);
-        assertThat(changedStatusOrders.getOrderStatus()).isEqualTo(OrderStatus.MEAL);
+        assertThat(ordersResponse).isEqualTo(OrdersResponse.from(불고기_주문));
+        assertThat(ordersResponse.getOrderStatus()).isEqualTo(OrderStatus.MEAL);
     }
 
     @DisplayName("완료된 Order 의 상태를 변경하면 예외가 발생한다.")
@@ -189,7 +190,7 @@ class OrdersServiceTest {
         given(ordersRepository.findById(불고기_주문.getId())).willReturn(Optional.of(불고기_주문));
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> orderService.changeOrderStatus(불고기_주문.getId(),
-                                                                                             불고기_식사중_주문));
+        assertThatIllegalArgumentException().isThrownBy(() -> ordersService.changeOrderStatus(불고기_주문.getId(),
+                                                                                              불고기_식사중_주문));
     }
 }

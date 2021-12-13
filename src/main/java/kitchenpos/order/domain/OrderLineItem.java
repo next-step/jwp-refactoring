@@ -49,11 +49,23 @@ public class OrderLineItem {
         return new OrderLineItem(seq, orders, menu, quantity);
     }
 
-    public void setOrderId(final Long orderId) {
-        this.orders = Orders.from(orderId);
+    public static OrderLineItem of(Orders orders, Menu menu, long quantity) {
+        return new OrderLineItem(orders, menu, quantity);
     }
 
-    public Long getMenuId() {
-        return menu.getId();
+    public Long getSeq() {
+        return seq;
+    }
+
+    public Orders getOrders() {
+        return orders;
+    }
+
+    public Menu getMenu() {
+        return menu;
+    }
+
+    public long getQuantity() {
+        return quantity;
     }
 }

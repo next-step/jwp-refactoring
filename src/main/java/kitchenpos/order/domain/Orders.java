@@ -64,16 +64,20 @@ public class Orders {
         this.orderLineItems = orderLineItems;
     }
 
+    public static Orders from(long id) {
+        return new Orders(id);
+    }
+
+    public static Orders of(OrderTable orderTable, OrderStatus orderStatus) {
+        return new Orders(orderTable, orderStatus, LocalDateTime.now(), new ArrayList<>());
+    }
+
     public static Orders of(Long id, OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime) {
         return new Orders(id, orderTable, orderStatus, orderedTime);
     }
 
     public static Orders of(OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
         return new Orders(orderTable, orderStatus, orderedTime, orderLineItems);
-    }
-
-    public static Orders from(long id) {
-        return new Orders(id);
     }
 
     public Long getId() {
