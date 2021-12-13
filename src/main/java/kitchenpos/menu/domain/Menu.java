@@ -1,6 +1,7 @@
 package kitchenpos.menu.domain;
 
 import java.util.List;
+import java.util.Objects;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
@@ -80,5 +81,33 @@ public class Menu {
         Assert.isTrue(price.equalOrLessThan(productsSumPrice),
             String.format("메뉴 가격(%s)은 메뉴 상품들(%s)의 가격보다 작거나 같아야 합니다.",
                 price, productsSumPrice));
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, price);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Menu menu = (Menu) o;
+        return id == menu.id && Objects.equals(name, menu.name) && Objects
+            .equals(price, menu.price);
+    }
+
+    @Override
+    public String toString() {
+        return "Menu{" +
+            "id=" + id +
+            ", name=" + name +
+            ", price=" + price +
+            ", menuGroup=" + menuGroup +
+            '}';
     }
 }

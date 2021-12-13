@@ -27,9 +27,13 @@ public class Headcount {
         return value;
     }
 
+    private boolean isZeroOrPositive(long value) {
+        return value >= 0;
+    }
+
     @Override
-    public String toString() {
-        return String.valueOf(value);
+    public int hashCode() {
+        return Objects.hash(value);
     }
 
     @Override
@@ -45,11 +49,7 @@ public class Headcount {
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(value);
-    }
-
-    private boolean isZeroOrPositive(long value) {
-        return value >= 0;
+    public String toString() {
+        return String.valueOf(value);
     }
 }
