@@ -1,8 +1,8 @@
 package kitchenpos.order.domain;
 
 import static kitchenpos.order.sample.OrderLineItemSample.이십원_후라이트치킨_두마리세트_한개_주문_항목;
-import static kitchenpos.table.sample.OrderTableSample.빈_두명_테이블;
-import static kitchenpos.table.sample.OrderTableSample.채워진_다섯명_테이블;
+import static kitchenpos.order.sample.OrderTableSample.빈_두명_테이블;
+import static kitchenpos.order.sample.OrderTableSample.채워진_다섯명_테이블;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
@@ -13,9 +13,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 import kitchenpos.common.exception.InvalidStatusException;
-import kitchenpos.table.domain.Headcount;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.TableStatus;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.menu.ui.response.MenuResponse;
+import kitchenpos.product.ui.response.MenuResponse;
 import kitchenpos.order.ui.request.OrderLineItemRequest;
 import kitchenpos.order.ui.request.OrderRequest;
 import kitchenpos.order.ui.request.OrderStatusRequest;

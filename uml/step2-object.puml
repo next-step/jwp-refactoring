@@ -1,0 +1,131 @@
+@startuml
+
+
+
+package common {
+
+    class Name {
+        - String value;
+    }
+
+    class Price {
+        - BigDecimal value;
+    }
+
+    class Quantity {
+        - long value;
+    }
+
+}
+
+package product {
+    Menu --> Name
+    Menu --> Price
+    Menu --> MenuGroup
+    Menu --> MenuProducts
+    MenuGroup --> Name
+    MenuProducts *-- "*" MenuProduct
+    MenuProduct --> Product
+    MenuProduct --> Quantity
+    MenuProduct "*" --> Menu
+
+    class Product {
+        - long id
+        - Name name
+        - Price price
+    }
+
+    class Menu {
+        - long id
+        - Name name
+        - Price price
+        - MenuGroup menuGroup
+        - MenuProducts menuProducts
+    }
+
+    class MenuGroup {
+        - long id
+        - Name name
+    }
+
+    class MenuProduct {
+        - long seq
+        - Menu menu
+        - Product product
+        - Quantity quantity
+    }
+
+    class MenuProducts {
+        - List<MenuProduct> products
+    }
+}
+
+
+package order {
+
+    OrderTable "*" --> TableGroup
+    OrderTable --> Headcount
+    OrderTable --> TableStatus
+    TableGroup --> OrderTables
+    OrderTables *-- "*" OrderTable
+    Order --> OrderTable
+    Order --> OrderStatus
+    Order --> OrderLineItems
+    OrderLineItems *-- "*" OrderLineItem
+    OrderLineItem --> Quantity
+    OrderLineItem --> Menu
+    OrderLineItem "*" --> Order
+    OrderTable --> Order
+
+    class Order {
+        - long id
+        - OrderTable orderTable
+        - OrderStatus orderStatus = OrderStatus.COOKING
+        - LocalDateTime orderedTime
+        - OrderLineItems orderLineItems
+    }
+
+    class OrderLineItem {
+        - long seq
+        - Quantity quantity
+        - Menu menu
+        - Order order
+    }
+
+    class OrderLineItems {
+        - List<OrderLineItem> items;
+    }
+
+    enum OrderStatus {
+        COOKING, MEAL, COMPLETION;
+    }
+
+    class Headcount {
+            - int value
+        }
+
+    class OrderTable {
+        - long id
+        - TableGroup tableGroup
+        - Headcount numberOfGuests
+        - TableStatus status
+        - Order order
+    }
+
+    class OrderTables {
+        - List<OrderTable> tables;
+    }
+
+    class TableGroup {
+        - long id
+        - OrderTables orderTables
+        - LocalDateTime createdDate
+    }
+
+    enum TableStatus {
+        EMPTY, FULL
+    }
+}
+
+
+@enduml

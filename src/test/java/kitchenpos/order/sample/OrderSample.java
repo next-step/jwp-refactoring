@@ -1,7 +1,7 @@
 package kitchenpos.order.sample;
 
 import static kitchenpos.order.sample.OrderLineItemSample.이십원_후라이트치킨_두마리세트_한개_주문_항목;
-import static kitchenpos.table.sample.OrderTableSample.채워진_다섯명_테이블;
+import static kitchenpos.order.sample.OrderTableSample.채워진_다섯명_테이블;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.spy;
 

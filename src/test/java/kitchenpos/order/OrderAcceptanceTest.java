@@ -1,7 +1,7 @@
 package kitchenpos.order;
 
-import static kitchenpos.menu.step.MenuAcceptanceStep.메뉴_등록_되어_있음;
-import static kitchenpos.menu.step.MenuGroupAcceptanceStep.메뉴_그룹_등록_되어_있음;
+import static kitchenpos.product.step.MenuAcceptanceStep.메뉴_등록_되어_있음;
+import static kitchenpos.product.step.MenuGroupAcceptanceStep.메뉴_그룹_등록_되어_있음;
 import static kitchenpos.order.step.OrderAcceptanceStep.주문_등록_되어_있음;
 import static kitchenpos.order.step.OrderAcceptanceStep.주문_등록_됨;
 import static kitchenpos.order.step.OrderAcceptanceStep.주문_등록_요청;
@@ -10,18 +10,18 @@ import static kitchenpos.order.step.OrderAcceptanceStep.주문_목록_조회_요
 import static kitchenpos.order.step.OrderAcceptanceStep.주문_상태_수정_됨;
 import static kitchenpos.order.step.OrderAcceptanceStep.주문_상태_수정_요청;
 import static kitchenpos.product.step.ProductAcceptanceStep.상품_등록_되어_있음;
-import static kitchenpos.table.step.TableAcceptanceStep.테이블_저장되어_있음;
+import static kitchenpos.order.step.TableAcceptanceStep.테이블_저장되어_있음;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.math.BigDecimal;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.menu.ui.response.MenuGroupResponse;
-import kitchenpos.menu.ui.response.MenuResponse;
+import kitchenpos.product.ui.response.MenuGroupResponse;
+import kitchenpos.product.ui.response.MenuResponse;
 import kitchenpos.order.ui.response.OrderResponse;
 import kitchenpos.product.ui.response.ProductResponse;
-import kitchenpos.table.ui.response.OrderTableResponse;
+import kitchenpos.order.ui.response.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

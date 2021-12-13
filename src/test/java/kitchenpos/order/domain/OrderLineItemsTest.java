@@ -1,6 +1,6 @@
 package kitchenpos.order.domain;
 
-import static kitchenpos.menu.sample.MenuSample.이십원_후라이드치킨_두마리세트;
+import static kitchenpos.product.sample.MenuSample.이십원_후라이드치킨_두마리세트;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 

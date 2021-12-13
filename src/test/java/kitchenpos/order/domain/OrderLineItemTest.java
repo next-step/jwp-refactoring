@@ -1,12 +1,12 @@
 package kitchenpos.order.domain;
 
-import static kitchenpos.menu.sample.MenuSample.이십원_후라이드치킨_두마리세트;
+import static kitchenpos.product.sample.MenuSample.이십원_후라이드치킨_두마리세트;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 
 import java.util.stream.Stream;
 import kitchenpos.common.domain.Quantity;
-import kitchenpos.menu.domain.Menu;
+import kitchenpos.product.domain.Menu;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

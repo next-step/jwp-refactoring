@@ -2,8 +2,15 @@
 
 ## uml
 
+### step1
+
 ![legacy-kichenpos](./uml/legacy-kichenpos.png)
 ![legacy-erd](./uml/legacy-erd.png)
+
+### step2
+
+![step2-object](./uml/step2-object.png)
+![step2-erd](./uml/step2-erd.png)
 
 ## 요구 사항
 
