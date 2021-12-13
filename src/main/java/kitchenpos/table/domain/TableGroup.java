@@ -1,6 +1,7 @@
 package kitchenpos.table.domain;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -9,6 +10,7 @@ import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import kitchenpos.common.exception.InvalidStatusException;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.util.Assert;
@@ -34,38 +36,45 @@ public class TableGroup {
     }
 
     private TableGroup(OrderTables orderTables) {
-        Assert.notNull(orderTables, "주문 테이블들은 필수입니다.");
-        Assert.isTrue(orderTables.hasSizeMoreThan(MIN_TABLES_SIZE), String
-            .format("단체 지정하려는 주문 테이블들(%s)은 적어도 %d개 이상 이어야 합니다.", orderTables, MIN_TABLES_SIZE));
+        validate(orderTables);
+        orderTables.changeGroup(this);
         this.orderTables = orderTables;
     }
 
-    public static TableGroup from(OrderTables orderTables) {
-        return new TableGroup(orderTables);
+    public static TableGroup from(List<OrderTable> orderTables) {
+        return new TableGroup(OrderTables.from(orderTables));
     }
 
-    public Long getId() {
+    public Long id() {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
-    public LocalDateTime getCreatedDate() {
+    public LocalDateTime createdDate() {
         return createdDate;
     }
 
-    public void setCreatedDate(final LocalDateTime createdDate) {
-        this.createdDate = createdDate;
-    }
-
-    public OrderTables getOrderTables() {
-        return orderTables;
+    public List<OrderTable> orderTables() {
+        return orderTables.list();
     }
 
     public void setOrderTables(final OrderTables orderTables) {
         this.orderTables = orderTables;
+    }
+
+    public void ungroup() {
+        if (orderTables.anyCookingOrMeal()) {
+            throw new InvalidStatusException(
+                String.format("조리중 또는 식사중인 주문 테이블들(%s)이 존재하여 단체 지정을 해제할 수 없습니다.", orderTables));
+        }
+        orderTables.ungroup();
+    }
+
+    private void validate(OrderTables orderTables) {
+        Assert.notNull(orderTables, "주문 테이블들은 필수입니다.");
+        Assert.isTrue(orderTables.size() >= MIN_TABLES_SIZE, String
+            .format("단체 지정하려는 주문 테이블들(%s)은 적어도 %d개 이상 이어야 합니다.", orderTables, MIN_TABLES_SIZE));
+        Assert.isTrue(orderTables.notHaveGroupAndEmpty(),
+            String.format("단체 지정하려는 주문 테이블들(%s)은 그룹이 없어나 비어있어야 합니다.", orderTables));
     }
 
     @Override

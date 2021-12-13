@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
+import kitchenpos.common.exception.InvalidStatusException;
 import kitchenpos.order.domain.Order;
 import org.springframework.util.Assert;
 
@@ -37,65 +38,102 @@ public class OrderTable {
     @OneToOne(mappedBy = "orderTable")
     private Order order;
 
-    public OrderTable() {
+    protected OrderTable() {
     }
 
     private OrderTable(Headcount numberOfGuests, TableStatus status) {
-        Assert.notNull(numberOfGuests, "방문한 손님 수는 필수입니다.");
-        Assert.notNull(status, "테이블 상태는 필수입니다.");
-        this.numberOfGuests = numberOfGuests;
-        this.status = status;
+        setNumberOfGuests(numberOfGuests);
+        setStatus(status);
     }
 
     public static OrderTable of(Headcount numberOfGuests, TableStatus status) {
         return new OrderTable(numberOfGuests, status);
     }
 
-    public Long getId() {
+    public Long id() {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public boolean hasTableGroup() {
-        return tableGroup == null;
+        return !notHaveGroup();
     }
 
-    public long getTableGroupId() {
-        return tableGroup.getId();
+    public long tableGroupId() {
+        return tableGroup.id();
     }
 
     public void setTableGroup(TableGroup tableGroup) {
         this.tableGroup = tableGroup;
     }
 
-    public Headcount getNumberOfGuests() {
+    public Headcount numberOfGuests() {
         return numberOfGuests;
     }
 
-    public void setNumberOfGuests(Headcount numberOfGuests) {
-        this.numberOfGuests = numberOfGuests;
+    public void changeNumberOfGuests(Headcount numberOfGuests) {
+        if (status.isEmpty()) {
+            throw new InvalidStatusException(
+                String.format("비어있는 주문 테이블(%s)의 방문한 손님 수를 변경할 수 없습니다.", this));
+        }
+        setNumberOfGuests(numberOfGuests);
     }
 
     public boolean isEmpty() {
         return status.isEmpty();
     }
 
-    public void changeEmpty() {
-        this.status = TableStatus.EMPTY;
-    }
-
-    public void setStatus(TableStatus status) {
+    public void changeStatus(TableStatus status) {
+        validateStatus();
         this.status = status;
     }
 
     public boolean isCookingOrMeal() {
-        if (status.isEmpty()) {
+        if (status.isEmpty() || notExistOrder()) {
             return false;
         }
         return order.isCookingOrMeal();
+    }
+
+    boolean notHaveGroupAndEmpty() {
+        return notHaveGroup() && status.isEmpty();
+    }
+
+    void changeGroup(TableGroup tableGroup) {
+        this.status = TableStatus.FULL;
+        this.tableGroup = tableGroup;
+    }
+
+    void ungroup() {
+        tableGroup = null;
+    }
+
+    private boolean notExistOrder() {
+        return order == null;
+    }
+
+    private void setNumberOfGuests(Headcount numberOfGuests) {
+        Assert.notNull(numberOfGuests, "방문한 손님 수는 필수입니다.");
+        this.numberOfGuests = numberOfGuests;
+    }
+
+    private void setStatus(TableStatus status) {
+        Assert.notNull(status, "테이블 상태는 필수입니다.");
+        this.status = status;
+    }
+
+    private boolean notHaveGroup() {
+        return tableGroup == null;
+    }
+
+    private void validateStatus() {
+        if (hasTableGroup()) {
+            throw new InvalidStatusException(
+                String.format("주문 테이블(%s)은 그룹이 있어서 상태를 변경할 수 없습니다.", this));
+        }
+        if (isCookingOrMeal()) {
+            throw new InvalidStatusException(
+                String.format("조리 중 또는 식사 중인 주문 테이블(%s)의 상태를 변경할 수 없습니다.", this));
+        }
     }
 
     @Override

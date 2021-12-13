@@ -22,9 +22,9 @@ public final class TableGroupResponse {
 
     public static TableGroupResponse from(TableGroup tableGroup) {
         return new TableGroupResponse(
-            tableGroup.getId(),
-            tableGroup.getCreatedDate(),
-            OrderTableResponse.listFrom(tableGroup.getOrderTables())
+            tableGroup.id(),
+            tableGroup.createdDate(),
+            OrderTableResponse.listFrom(tableGroup.orderTables())
         );
     }
 

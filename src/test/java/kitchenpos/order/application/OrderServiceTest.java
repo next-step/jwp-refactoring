@@ -66,7 +66,7 @@ class OrderServiceTest {
 
         when(menuService.countByIdIn(anyList())).thenReturn(1L);
         when(tableService.findById(orderTableId))
-            .thenReturn(Optional.of(채워진_다섯명_테이블()));
+            .thenReturn(채워진_다섯명_테이블());
 
         Order order = 조리중인_후라이트치킨세트_두개_주문();
         when(orderRepository.save(any())).thenReturn(order);
@@ -115,7 +115,7 @@ class OrderServiceTest {
         OrderRequest orderRequest = new OrderRequest(1L,
             Collections.singletonList(new OrderLineItemRequest(1L, 2)));
         when(menuService.countByIdIn(anyList())).thenReturn(1L);
-        when(tableService.findById(anyLong())).thenReturn(Optional.empty());
+//        when(tableService.findById(anyLong())).thenReturn(Optional.empty());
 
         //when
         ThrowingCallable createCallable = () -> orderService.create(orderRequest);
@@ -133,7 +133,7 @@ class OrderServiceTest {
             Collections.singletonList(new OrderLineItemRequest(1L, 2)));
         when(menuService.countByIdIn(anyList())).thenReturn(1L);
         when(tableService.findById(anyLong()))
-            .thenReturn(Optional.of(빈_세명_테이블()));
+            .thenReturn(빈_세명_테이블());
 
         //when
         ThrowingCallable createCallable = () -> orderService.create(orderRequest);

@@ -48,8 +48,7 @@ public class OrderService {
             throw new IllegalArgumentException();
         }
 
-        final OrderTable orderTable = tableService.findById(request.getOrderTableId())
-            .orElseThrow(IllegalArgumentException::new);
+        final OrderTable orderTable = tableService.findById(request.getOrderTableId());
 
         if (orderTable.isEmpty()) {
             throw new IllegalArgumentException();

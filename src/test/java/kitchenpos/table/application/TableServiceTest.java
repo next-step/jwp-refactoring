@@ -57,7 +57,7 @@ class TableServiceTest {
         verify(orderTableRepository, only()).save(orderTableCaptor.capture());
         assertThat(orderTableCaptor.getValue())
             .extracting(
-                OrderTable::getTableGroupId, OrderTable::getNumberOfGuests, OrderTable::isEmpty)
+                OrderTable::tableGroupId, OrderTable::numberOfGuests, OrderTable::isEmpty)
             .containsExactly(null, request.getNumberOfGuests(), request.isEmpty());
     }
 
@@ -163,7 +163,7 @@ class TableServiceTest {
         ArgumentCaptor<OrderTable> orderTableCaptor = ArgumentCaptor.forClass(OrderTable.class);
         verify(orderTableRepository, times(1)).save(orderTableCaptor.capture());
         assertThat(orderTableCaptor.getValue())
-            .extracting(OrderTable::getNumberOfGuests)
+            .extracting(OrderTable::numberOfGuests)
             .isEqualTo(request.getNumberOfGuests());
     }
 

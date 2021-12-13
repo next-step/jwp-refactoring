@@ -2,12 +2,7 @@ package kitchenpos.table.ui.request;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTables;
-import kitchenpos.table.domain.TableGroup;
 
 public class TableGroupRequest {
 
@@ -23,15 +18,6 @@ public class TableGroupRequest {
         return orderTables;
     }
 
-    public TableGroup toEntity() {
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.setCreatedDate(LocalDateTime.now());
-        tableGroup.setOrderTables(OrderTables.from(orderTables.stream()
-            .map(OrderTableIdRequest::toEntity)
-            .collect(Collectors.toList())));
-        return tableGroup;
-    }
-
     public static class OrderTableIdRequest {
 
         private final long id;
@@ -43,12 +29,6 @@ public class TableGroupRequest {
 
         public long getId() {
             return id;
-        }
-
-        public OrderTable toEntity() {
-            OrderTable orderTable = new OrderTable();
-            orderTable.setId(id);
-            return orderTable;
         }
     }
 }

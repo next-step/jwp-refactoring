@@ -1,8 +1,7 @@
 package kitchenpos.table.application;
 
 import java.util.List;
-import java.util.Optional;
-import kitchenpos.table.domain.Headcount;
+import kitchenpos.common.exception.NotFoundException;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.ui.request.OrderTableRequest;
@@ -13,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class TableService {
 
     private final OrderTableRepository orderTableRepository;
@@ -21,58 +21,34 @@ public class TableService {
         this.orderTableRepository = orderTableRepository;
     }
 
-    @Transactional
     public OrderTableResponse create(final OrderTableRequest request) {
         return OrderTableResponse.from(orderTableRepository.save(request.toEntity()));
     }
 
+    @Transactional(readOnly = true)
     public List<OrderTableResponse> list() {
         return OrderTableResponse.listFrom(orderTableRepository.findAll());
     }
 
-    @Transactional
-    public OrderTableResponse changeEmpty(final long orderTableId,
-        final TableStatusRequest request) {
-        final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-            .orElseThrow(IllegalArgumentException::new);
-
-        if (savedOrderTable.hasTableGroup()) {
-            throw new IllegalArgumentException();
-        }
-
-        if (savedOrderTable.isCookingOrMeal()) {
-            throw new IllegalArgumentException();
-        }
-
-        savedOrderTable.setStatus(request.status());
-        return OrderTableResponse.from(orderTableRepository.save(savedOrderTable));
+    public OrderTableResponse changeEmpty(long id, TableStatusRequest request) {
+        OrderTable orderTable = findById(id);
+        orderTable.changeStatus(request.status());
+        return OrderTableResponse.from(orderTable);
     }
 
-    @Transactional
-    public OrderTableResponse changeNumberOfGuests(final long orderTableId,
-        final TableGuestsCountRequest request) {
-        final int numberOfGuests = request.getNumberOfGuests();
-
-        if (numberOfGuests < 0) {
-            throw new IllegalArgumentException();
-        }
-
-        final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-            .orElseThrow(IllegalArgumentException::new);
-
-        if (savedOrderTable.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
-
-        savedOrderTable.setNumberOfGuests(Headcount.from(numberOfGuests));
-        return OrderTableResponse.from(orderTableRepository.save(savedOrderTable));
+    public OrderTableResponse changeNumberOfGuests(long id, TableGuestsCountRequest request) {
+        OrderTable orderTable = findById(id);
+        orderTable.changeNumberOfGuests(request.numberOfGuests());
+        return OrderTableResponse.from(orderTableRepository.save(orderTable));
     }
 
     public List<OrderTable> findAllByIdIn(List<Long> orderTableIds) {
         return orderTableRepository.findAllById(orderTableIds);
     }
 
-    public Optional<OrderTable> findById(long orderTableId) {
-        return orderTableRepository.findById(orderTableId);
+    public OrderTable findById(long id) {
+        return orderTableRepository.findById(id)
+            .orElseThrow(
+                () -> new NotFoundException(String.format("주문 테이블 id(%d)가 존재하지 않습니다.", id)));
     }
 }

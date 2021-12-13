@@ -3,7 +3,6 @@ package kitchenpos.table.ui.response;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTables;
 
 public final class OrderTableResponse {
 
@@ -28,14 +27,14 @@ public final class OrderTableResponse {
 
     public static OrderTableResponse from(OrderTable orderTable) {
         if (orderTable.hasTableGroup()) {
-            new OrderTableResponse(orderTable.getId(),
-                orderTable.getNumberOfGuests().value(),
+            new OrderTableResponse(orderTable.id(),
+                orderTable.numberOfGuests().value(),
                 orderTable.isEmpty(),
-                orderTable.getTableGroupId()
+                orderTable.tableGroupId()
             );
         }
-        return new OrderTableResponse(orderTable.getId(),
-            orderTable.getNumberOfGuests().value(),
+        return new OrderTableResponse(orderTable.id(),
+            orderTable.numberOfGuests().value(),
             orderTable.isEmpty()
         );
     }
@@ -44,10 +43,6 @@ public final class OrderTableResponse {
         return orderTables.stream()
             .map(OrderTableResponse::from)
             .collect(Collectors.toList());
-    }
-
-    public static List<OrderTableResponse> listFrom(OrderTables orderTables) {
-        return listFrom(orderTables.list());
     }
 
     public long getId() {

@@ -37,18 +37,17 @@ public class Menu {
     protected Menu() {
     }
 
-    private Menu(Name name, Price price, MenuGroup menuGroup, List<MenuProduct> products) {
-        MenuProducts menuProducts = MenuProducts.from(products);
-        validate(name, price, menuGroup, menuProducts);
+    private Menu(Name name, Price price, MenuGroup menuGroup, MenuProducts products) {
+        validate(name, price, menuGroup, products);
         this.name = name;
         this.price = price;
         this.menuGroup = menuGroup;
-        menuProducts.changeMenu(this);
-        this.menuProducts = menuProducts;
+        products.changeMenu(this);
+        this.menuProducts = products;
     }
 
     public static Menu of(Name name, Price price, MenuGroup menuGroup, List<MenuProduct> products) {
-        return new Menu(name, price, menuGroup, products);
+        return new Menu(name, price, menuGroup, MenuProducts.from(products));
     }
 
     public Long id() {

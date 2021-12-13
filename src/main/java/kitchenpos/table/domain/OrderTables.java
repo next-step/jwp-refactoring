@@ -9,9 +9,9 @@ import javax.persistence.OneToMany;
 import org.springframework.util.Assert;
 
 @Embeddable
-public class OrderTables {
+class OrderTables {
 
-    @OneToMany(cascade = CascadeType.MERGE, mappedBy = "tableGroup")
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "tableGroup")
     private List<OrderTable> tables;
 
     protected OrderTables() {
@@ -24,16 +24,32 @@ public class OrderTables {
         this.tables = tables;
     }
 
-    public static OrderTables from(List<OrderTable> tables) {
+    static OrderTables from(List<OrderTable> tables) {
         return new OrderTables(tables);
     }
 
-    public List<OrderTable> list() {
+    List<OrderTable> list() {
         return Collections.unmodifiableList(tables);
     }
 
-    boolean hasSizeMoreThan(int size) {
-        return tables.size() > size;
+    boolean notHaveGroupAndEmpty() {
+        return tables.stream().allMatch(OrderTable::notHaveGroupAndEmpty);
+    }
+
+    boolean anyCookingOrMeal() {
+        return tables.stream().anyMatch(OrderTable::isCookingOrMeal);
+    }
+
+    int size() {
+        return tables.size();
+    }
+
+    void changeGroup(TableGroup tableGroup) {
+        tables.forEach(table -> table.changeGroup(tableGroup));
+    }
+
+    public void ungroup() {
+        tables.forEach(OrderTable::ungroup);
     }
 
     @Override

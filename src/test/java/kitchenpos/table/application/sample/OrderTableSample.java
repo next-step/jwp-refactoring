@@ -1,5 +1,8 @@
 package kitchenpos.table.application.sample;
 
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.spy;
+
 import kitchenpos.table.domain.Headcount;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableStatus;
@@ -7,26 +10,23 @@ import kitchenpos.table.domain.TableStatus;
 public class OrderTableSample {
 
     public static OrderTable 채워진_다섯명_테이블() {
-        OrderTable orderTable = new OrderTable();
-        orderTable.setId(1L);
-        orderTable.setNumberOfGuests(Headcount.from(5));
-        orderTable.setStatus(TableStatus.FULL);
+        OrderTable orderTable = spy(OrderTable.of(Headcount.from(5), TableStatus.FULL));
+        lenient().when(orderTable.id())
+            .thenReturn(1L);
         return orderTable;
     }
 
     public static OrderTable 빈_두명_테이블() {
-        OrderTable orderTable = new OrderTable();
-        orderTable.setId(2L);
-        orderTable.setNumberOfGuests(Headcount.from(2));
-        orderTable.setStatus(TableStatus.EMPTY);
+        OrderTable orderTable = spy(OrderTable.of(Headcount.from(2), TableStatus.EMPTY));
+        lenient().when(orderTable.id())
+            .thenReturn(2L);
         return orderTable;
     }
 
     public static OrderTable 빈_세명_테이블() {
-        OrderTable orderTable = new OrderTable();
-        orderTable.setId(3L);
-        orderTable.setNumberOfGuests(Headcount.from(3));
-        orderTable.setStatus(TableStatus.EMPTY);
+        OrderTable orderTable = spy(OrderTable.of(Headcount.from(3), TableStatus.EMPTY));
+        lenient().when(orderTable.id())
+            .thenReturn(3L);
         return orderTable;
     }
 }

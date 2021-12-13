@@ -15,7 +15,6 @@ import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.Collections;
-import kitchenpos.order.application.OrderService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.domain.TableGroupRepository;
@@ -38,8 +37,6 @@ class TableGroupServiceTest {
     private TableGroupRepository tableGroupRepository;
     @Mock
     private TableService tableService;
-    @Mock
-    private OrderService orderService;
 
     @InjectMocks
     private TableGroupService tableGroupService;
@@ -124,16 +121,13 @@ class TableGroupServiceTest {
         OrderTable orderTable = 채워진_다섯명_테이블();
         orderTable.setTableGroup(tableGroup());
 
-        when(orderService.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList()))
-            .thenReturn(false);
-
         //when
         tableGroupService.ungroup(tableGroupId);
 
         //then
         ArgumentCaptor<OrderTable> orderTableCaptor = ArgumentCaptor.forClass(OrderTable.class);
         assertThat(orderTableCaptor.getValue())
-            .extracting(OrderTable::getTableGroupId)
+            .extracting(OrderTable::tableGroupId)
             .isNull();
     }
 
@@ -145,9 +139,6 @@ class TableGroupServiceTest {
 
         OrderTable orderTable = 채워진_다섯명_테이블();
         orderTable.setTableGroup(tableGroup());
-
-        when(orderService.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList()))
-            .thenReturn(true);
 
         //when
         ThrowingCallable createCallable = () -> tableGroupService.ungroup(tableGroupId);
@@ -161,11 +152,11 @@ class TableGroupServiceTest {
         ArgumentCaptor<TableGroup> tableGroupCaptor = ArgumentCaptor.forClass(TableGroup.class);
         verify(tableGroupRepository, times(1)).save(tableGroupCaptor.capture());
         TableGroup tableGroup = tableGroupCaptor.getValue();
-        assertThat(tableGroup.getOrderTables().list())
-            .extracting(OrderTable::isEmpty, OrderTable::getTableGroupId)
+        assertThat(tableGroup.orderTables())
+            .extracting(OrderTable::isEmpty, OrderTable::tableGroupId)
             .containsExactly(
-                tuple(false, tableGroup.getId()),
-                tuple(false, tableGroup.getId())
+                tuple(false, tableGroup.id()),
+                tuple(false, tableGroup.id())
             );
     }
 }

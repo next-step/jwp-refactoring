@@ -9,8 +9,7 @@ public class TableGuestsCountRequest {
     private final int numberOfGuests;
 
     @JsonCreator
-    public TableGuestsCountRequest(
-        @JsonProperty("numberOfGuests") int numberOfGuests) {
+    public TableGuestsCountRequest(@JsonProperty("numberOfGuests") int numberOfGuests) {
         this.numberOfGuests = numberOfGuests;
     }
 

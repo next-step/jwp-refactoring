@@ -29,7 +29,7 @@ public final class OrderResponse {
     public static OrderResponse from(Order order) {
         return new OrderResponse(
             order.id(),
-            order.table().getId(),
+            order.table().id(),
             order.status().name(),
             order.orderedTime(),
             OrderLineItemResponse.listFrom(order.lineItems())

@@ -28,9 +28,6 @@ public class OrderTableRequest {
     }
 
     public OrderTable toEntity() {
-        OrderTable orderTable = new OrderTable();
-        orderTable.setNumberOfGuests(Headcount.from(numberOfGuests));
-        orderTable.setStatus(TableStatus.valueOf(empty));
-        return orderTable;
+        return OrderTable.of(Headcount.from(numberOfGuests), TableStatus.valueOf(empty));
     }
 }
