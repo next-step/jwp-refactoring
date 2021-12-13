@@ -33,7 +33,7 @@ public class MenuService {
 
     @Transactional
     public Menu create(final MenuRequest request) {
-        final MenuGroup menuGroup = getMenuGroup(request);
+        final MenuGroup menuGroup = getMenuGroup(request.getMenuGroupId());
         final List<MenuProduct> menuProducts = getMenuProducts(request);
         final Menu menu = new Menu(request.getName(), request.getPrice(), menuGroup, menuProducts);
 
@@ -48,8 +48,8 @@ public class MenuService {
                 .collect(Collectors.toList());
     }
 
-    private MenuGroup getMenuGroup(MenuRequest request) {
-        return menuGroupDao.findById(request.getMenuGroupId())
+    private MenuGroup getMenuGroup(Long menuGroupId) {
+        return menuGroupDao.findById(menuGroupId)
                 .orElseThrow(IllegalArgumentException::new);
     }
 
