@@ -17,7 +17,6 @@ import kitchenpos.domain.table.OrderTableRepository;
 import kitchenpos.domain.tablegroup.TableGroup;
 import kitchenpos.domain.tablegroup.TableGroupRepository;
 import kitchenpos.dto.tablegroup.TableGroupResponse;
-import kitchenpos.utils.StreamUtils;
 
 @Service
 public class TableGroupService {
@@ -64,7 +63,7 @@ public class TableGroupService {
         final Long tableGroupId = savedTableGroup.getId();
         for (final OrderTable savedOrderTable : savedOrderTables) {
             savedOrderTable.setTableGroupId(tableGroupId);
-            savedOrderTable.setEmpty(false);
+            savedOrderTable.updateEmpty(false);
         }
         savedTableGroup.setOrderTables(savedOrderTables);
 
@@ -79,8 +78,8 @@ public class TableGroupService {
                 .map(OrderTable::getId)
                 .collect(Collectors.toList());
 
-        if (ordersRepository.existsByOrderTableInAndOrderStatusIn(
-            StreamUtils.mapToList(orderTableIds, OrderTable::from), Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
+        if (ordersRepository.existsByOrderTableIdInAndOrderStatusIn(
+            orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
             throw new IllegalArgumentException();
         }
 

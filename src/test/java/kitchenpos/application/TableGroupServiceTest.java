@@ -131,7 +131,7 @@ class TableGroupServiceTest {
         주문1_단체테이블.setTableGroupId(단체_테이블그룹.getId());
         주문2_단체테이블.setTableGroupId(단체_테이블그룹.getId());
 
-        given(ordersRepository.existsByOrderTableInAndOrderStatusIn(anyList(), anyList())).willReturn(false);
+        given(ordersRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(false);
         given(orderTableRepository.findAllByTableGroup(단체_테이블그룹.getId())).willReturn(Arrays.asList(주문1_단체테이블, 주문2_단체테이블));
 
         // when
@@ -150,7 +150,7 @@ class TableGroupServiceTest {
         주문1_단체테이블.setTableGroupId(단체_테이블그룹.getId());
         주문2_단체테이블.setTableGroupId(단체_테이블그룹.getId());
 
-        given(ordersRepository.existsByOrderTableInAndOrderStatusIn(anyList(), anyList())).willReturn(true);
+        given(ordersRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(true);
         given(orderTableRepository.findAllByTableGroup(단체_테이블그룹.getId()))
             .willReturn(Arrays.asList(주문1_단체테이블, 주문2_단체테이블));
 

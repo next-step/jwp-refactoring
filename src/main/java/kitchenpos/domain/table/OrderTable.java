@@ -33,16 +33,6 @@ public class OrderTable {
 
     protected OrderTable() {}
 
-    private OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
-        this(tableGroup, numberOfGuests, empty);
-        this.id = id;
-    }
-
-    private OrderTable(TableGroup tableGroup, int numberOfGuests, boolean empty) {
-        this(numberOfGuests, empty);
-        this.tableGroup = tableGroup;
-    }
-
     private OrderTable(Long id) {
         this.id = id;
     }
@@ -65,20 +55,21 @@ public class OrderTable {
         return new OrderTable(numberOfGuests, empty);
     }
 
-    public static OrderTable of (Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
-        return new OrderTable(id, tableGroup, numberOfGuests, empty);
-    }
-
-    public static OrderTable of (TableGroup tableGroup, int numberOfGuests, boolean empty) {
-        return new OrderTable(tableGroup, numberOfGuests, empty);
-    }
-
     public static OrderTable of(Long id, int numberOfGuests, boolean empty) {
         return new OrderTable(id, numberOfGuests, empty);
     }
 
     public void ungroup() {
         this.tableGroup = null;
+    }
+
+    public void updateEmpty(final boolean empty) {
+        this.empty = empty;
+    }
+
+    public void updateNumberOfGuests(final int numberOfGuests) {
+        validateNumberOfGuests(numberOfGuests);
+        this.numberOfGuests = numberOfGuests;
     }
 
     public Long getId() {
@@ -97,15 +88,13 @@ public class OrderTable {
         return numberOfGuests;
     }
 
-    public void setNumberOfGuests(final int numberOfGuests) {
-        this.numberOfGuests = numberOfGuests;
-    }
-
     public boolean isEmpty() {
         return empty;
     }
 
-    public void setEmpty(final boolean empty) {
-        this.empty = empty;
+    private void validateNumberOfGuests(int numberOfGuests) {
+        if (numberOfGuests < 0) {
+            throw new IllegalArgumentException();
+        }
     }
 }
