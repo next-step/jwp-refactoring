@@ -17,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import kitchenpos.application.fixture.MenuGroupFixtureFactory;
 import kitchenpos.domain.menugroup.MenuGroup;
 import kitchenpos.domain.menugroup.MenuGroupRepository;
+import kitchenpos.dto.menugroup.MenuGroupRequest;
 import kitchenpos.dto.menugroup.MenuGroupResponse;
 
 @ExtendWith(MockitoExtension.class)
@@ -41,14 +42,15 @@ class MenuGroupServiceTest {
     @Test
     void create() {
         // given
-        MenuGroup menuGroup = MenuGroup.from("고기 메뉴그룹");
-        given(menuGroupRepository.save(menuGroup)).willReturn(고기_메뉴그룹);
+        MenuGroupRequest menuGroupRequest = MenuGroupRequest.from("고기 메뉴그룹");
+
+        given(menuGroupRepository.save(any(MenuGroup.class))).willReturn(this.고기_메뉴그룹);
 
         // when
-        MenuGroupResponse menuGroupResponse = menuGroupService.create(menuGroup);
+        MenuGroupResponse menuGroupResponse = menuGroupService.create(menuGroupRequest);
 
         // then
-        assertThat(menuGroupResponse).isEqualTo(MenuGroupResponse.from(고기_메뉴그룹));
+        assertThat(menuGroupResponse).isEqualTo(MenuGroupResponse.from(this.고기_메뉴그룹));
     }
 
     @DisplayName("MenuGroup 목록을 조회한다.")
