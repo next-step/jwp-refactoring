@@ -27,6 +27,8 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProductRepository;
 import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
@@ -74,7 +76,14 @@ class MenuServiceTest {
     @Test
     void create1() {
         // given
-        Menu menu = Menu.of("불고기", BigDecimal.valueOf(10_000), 고기_메뉴그룹, Arrays.asList(불고기_돼지고기, 불고기_공기밥));
+        List<MenuProductRequest> menuProductRequests =
+            Arrays.asList(MenuProductRequest.of(불고기_돼지고기.getProduct().getId(), 불고기_돼지고기.getQuantity()),
+                          MenuProductRequest.of(불고기_공기밥.getProduct().getId(), 불고기_공기밥.getQuantity()));
+
+        MenuRequest menuRequest = new MenuRequest("불고기",
+                                                  BigDecimal.valueOf(10_000),
+                                                  고기_메뉴그룹.getId(),
+                                                  menuProductRequests);
 
         given(menuGroupRepository.existsById(고기_메뉴그룹.getId())).willReturn(true);
         given(productRepository.findById(불고기_돼지고기.getProduct().getId())).willReturn(Optional.ofNullable(돼지고기));
@@ -82,7 +91,7 @@ class MenuServiceTest {
         given(menuRepository.save(any(Menu.class))).willReturn(불고기);
 
         // when
-        MenuResponse menuResponse = menuService.create(menu);
+        MenuResponse menuResponse = menuService.create(menuRequest);
 
         // then
         assertThat(menuResponse).isEqualTo(MenuResponse.from(불고기));
@@ -92,10 +101,17 @@ class MenuServiceTest {
     @Test
     void create2() {
         // given
-        Menu menu = Menu.of("불고기", null, 고기_메뉴그룹, Arrays.asList(불고기_돼지고기, 불고기_공기밥));
+        List<MenuProductRequest> menuProductRequests =
+            Arrays.asList(MenuProductRequest.of(불고기_돼지고기.getProduct().getId(), 불고기_돼지고기.getQuantity()),
+                          MenuProductRequest.of(불고기_공기밥.getProduct().getId(), 불고기_공기밥.getQuantity()));
+
+        MenuRequest menuRequest = new MenuRequest("불고기",
+                                                  null,
+                                                  고기_메뉴그룹.getId(),
+                                                  menuProductRequests);
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menu));
+        assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menuRequest));
     }
 
     @DisplayName("Menu 가격은 음수(0원 미만)이면 예외가 발생한다.")
@@ -103,46 +119,74 @@ class MenuServiceTest {
     @ValueSource(ints = {-1, -2, -10, -100})
     void create3(int wrongPrice) {
         // given
-        Menu menu = Menu.of("불고기", BigDecimal.valueOf(wrongPrice), 고기_메뉴그룹, Arrays.asList(불고기_돼지고기, 불고기_공기밥));
+        List<MenuProductRequest> menuProductRequests =
+            Arrays.asList(MenuProductRequest.of(불고기_돼지고기.getProduct().getId(), 불고기_돼지고기.getQuantity()),
+                          MenuProductRequest.of(불고기_공기밥.getProduct().getId(), 불고기_공기밥.getQuantity()));
+
+        MenuRequest menuRequest = new MenuRequest("불고기",
+                                                  BigDecimal.valueOf(wrongPrice),
+                                                  고기_메뉴그룹.getId(),
+                                                  menuProductRequests);
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menu));
+        assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menuRequest));
     }
 
     @DisplayName("Menu 는 자신이 속할 MenuGroup 이 존재하지 않으면 예외가 발생한다.")
     @Test
     void create4() {
         // given
-        Menu menu = Menu.of("불고기", BigDecimal.valueOf(10_000), 고기_메뉴그룹, Arrays.asList(불고기_돼지고기, 불고기_공기밥));
+        List<MenuProductRequest> menuProductRequests =
+            Arrays.asList(MenuProductRequest.of(불고기_돼지고기.getProduct().getId(), 불고기_돼지고기.getQuantity()),
+                          MenuProductRequest.of(불고기_공기밥.getProduct().getId(), 불고기_공기밥.getQuantity()));
+
+        MenuRequest menuRequest = new MenuRequest("불고기",
+                                                  BigDecimal.valueOf(10_000),
+                                                  고기_메뉴그룹.getId(),
+                                                  menuProductRequests);
 
         given(menuGroupRepository.existsById(고기_메뉴그룹.getId())).willReturn(false);
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menu));
+        assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menuRequest));
     }
 
     @DisplayName("Menu 는 메뉴를 구성하는 Product 가 존재하지 않으면 예외가 발생한다.")
     @Test
     void create5() {
         // given
-        Menu menu = Menu.of("불고기", BigDecimal.valueOf(10_000), 고기_메뉴그룹, Arrays.asList(불고기_돼지고기, 불고기_공기밥));
+        List<MenuProductRequest> menuProductRequests =
+            Arrays.asList(MenuProductRequest.of(불고기_돼지고기.getProduct().getId(), 불고기_돼지고기.getQuantity()),
+                          MenuProductRequest.of(불고기_공기밥.getProduct().getId(), 불고기_공기밥.getQuantity()));
+
+        MenuRequest menuRequest = new MenuRequest("불고기",
+                                                  BigDecimal.valueOf(10_000),
+                                                  고기_메뉴그룹.getId(),
+                                                  menuProductRequests);
 
         given(menuGroupRepository.existsById(고기_메뉴그룹.getId())).willReturn(true);
         given(productRepository.findById(불고기_돼지고기.getProduct().getId())).willReturn(Optional.ofNullable(돼지고기));
         given(productRepository.findById(돼지고기.getId())).willThrow(IllegalArgumentException.class);
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menu));
+        assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menuRequest));
     }
 
     @DisplayName("Menu 의 총 가격이 메뉴를 구성하는 각 상품의 (가격 * 수량) 총합보다 크면 예외가 발생한다.")
     @Test
     void create6() {
         // given
-        Menu menu = Menu.of("불고기", BigDecimal.valueOf(1_000_000), 고기_메뉴그룹, Arrays.asList(불고기_돼지고기, 불고기_공기밥));
+        List<MenuProductRequest> menuProductRequests =
+            Arrays.asList(MenuProductRequest.of(불고기_돼지고기.getProduct().getId(), 불고기_돼지고기.getQuantity()),
+                          MenuProductRequest.of(불고기_공기밥.getProduct().getId(), 불고기_공기밥.getQuantity()));
+
+        MenuRequest menuRequest = new MenuRequest("불고기",
+                                                  BigDecimal.valueOf(1000_000),
+                                                  고기_메뉴그룹.getId(),
+                                                  menuProductRequests);
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menu));
+        assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menuRequest));
     }
 
     @DisplayName("Menu 목록을 조회한다.")
