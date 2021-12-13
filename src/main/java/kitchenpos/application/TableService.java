@@ -2,6 +2,7 @@ package kitchenpos.application;
 
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
+import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.TableRequest;
@@ -10,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TableService {
@@ -51,8 +53,12 @@ public class TableService {
     }
 
     private void checkCompleteTable(Long orderTableId) {
-        if (orderDao.existsByOrderTableIdAndOrderStatusIn(
-                orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
+        final Optional<Order> savedOrder = orderDao.findByOrderTableId(orderTableId);
+        if (!savedOrder.isPresent()) {
+            throw new IllegalArgumentException();
+        }
+        final Order order = savedOrder.get();
+        if (!order.isComplete()) {
             throw new IllegalArgumentException();
         }
     }

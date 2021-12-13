@@ -54,9 +54,13 @@ public class Order {
     }
 
     public void checkCompleteOrder() {
-        if (orderStatus.isComplete()) {
+        if (isComplete()) {
             throw new IllegalArgumentException();
         }
+    }
+
+    public boolean isComplete() {
+        return orderStatus.isComplete();
     }
 
     public void changeOrderStatus(OrderStatus orderStatus) {
