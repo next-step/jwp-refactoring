@@ -23,29 +23,32 @@ public class Order {
     @OneToMany(mappedBy = "order", cascade = CascadeType.PERSIST)
     private List<OrderLineItem> orderLineItems;
 
-    public static Order create(OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
-        Order order = new Order(orderTable, orderStatus, LocalDateTime.now());
-        order.addOrderLineItems(orderLineItems);
-        return order;
+    public Order(OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
+        this.orderTable = orderTable;
+        this.orderStatus = orderStatus;
+        this.orderedTime = orderedTime;
+        this.orderLineItems = orderLineItems;
+    }
+
+    public Order(OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime) {
+        this(orderTable, orderStatus, orderedTime, null);
+    }
+
+    public Order(OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
+        this(orderTable, orderStatus, null, orderLineItems);
+    }
+
+    public Order(OrderStatus orderStatus) {
+        this(null, orderStatus, null, null);
     }
 
     protected Order() {
     }
 
-    public Order(OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime) {
-        this.orderTable = orderTable;
-        this.orderStatus = orderStatus;
-        this.orderedTime = orderedTime;
-    }
-
-    public Order(OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
-        this.orderTable = orderTable;
-        this.orderStatus = orderStatus;
-        this.orderLineItems = orderLineItems;
-    }
-
-    public Order(OrderStatus orderStatus) {
-        this.orderStatus = orderStatus;
+    public static Order create(OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
+        Order order = new Order(orderTable, orderStatus, LocalDateTime.now());
+        order.addOrderLineItems(orderLineItems);
+        return order;
     }
 
     public void addOrderLineItems(List<OrderLineItem> orderLineItems) {
