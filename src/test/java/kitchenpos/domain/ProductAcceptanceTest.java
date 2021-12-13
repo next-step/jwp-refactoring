@@ -11,7 +11,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 
-@DisplayName("상품 관련 인수 테스트")
+@DisplayName("인수테스트 : 상품 관련")
 class ProductAcceptanceTest extends AcceptanceTest {
 
 	@Test
