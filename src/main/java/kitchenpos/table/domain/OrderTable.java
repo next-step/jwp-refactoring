@@ -58,8 +58,8 @@ public class OrderTable {
         return !notHaveGroup();
     }
 
-    public long tableGroupId() {
-        return tableGroup.id();
+    public TableGroup tableGroup() {
+        return tableGroup;
     }
 
     public Headcount numberOfGuests() {
@@ -132,7 +132,7 @@ public class OrderTable {
     private void validateStatus() {
         if (hasTableGroup()) {
             throw new InvalidStatusException(
-                String.format("주문 테이블(%s)은 그룹이 있어서 상태를 변경할 수 없습니다.", this));
+                String.format("주문 테이블(%s)은 그룹이 지정되어 있어서 상태를 변경할 수 없습니다.", this));
         }
         if (isCookingOrMeal()) {
             throw new InvalidStatusException(

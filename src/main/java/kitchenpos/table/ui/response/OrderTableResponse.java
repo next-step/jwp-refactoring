@@ -30,7 +30,7 @@ public final class OrderTableResponse {
             new OrderTableResponse(orderTable.id(),
                 orderTable.numberOfGuests().value(),
                 orderTable.isEmpty(),
-                orderTable.tableGroupId()
+                orderTable.tableGroup().id()
             );
         }
         return new OrderTableResponse(orderTable.id(),

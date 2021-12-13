@@ -1,5 +1,7 @@
 package kitchenpos.table.application;
 
+import static kitchenpos.order.application.sample.OrderLineItemSample.이십원_후라이트치킨_두마리세트_한개_주문_항목;
+import static kitchenpos.table.sample.OrderTableSample.빈_두명_테이블;
 import static kitchenpos.table.sample.OrderTableSample.빈_세명_테이블;
 import static kitchenpos.table.sample.OrderTableSample.채워진_다섯명_테이블;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -7,17 +9,23 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.only;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Optional;
-import kitchenpos.order.application.OrderService;
+import kitchenpos.common.exception.InvalidStatusException;
+import kitchenpos.common.exception.NotFoundException;
+import kitchenpos.order.domain.Order;
+import kitchenpos.table.domain.Headcount;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.ui.request.OrderTableRequest;
 import kitchenpos.table.ui.request.TableGuestsCountRequest;
 import kitchenpos.table.ui.request.TableStatusRequest;
+import kitchenpos.table.ui.response.OrderTableResponse;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,8 +40,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class TableServiceTest {
 
     @Mock
-    private OrderService orderService;
-    @Mock
     private OrderTableRepository orderTableRepository;
 
     @InjectMocks
@@ -44,7 +50,8 @@ class TableServiceTest {
     void create() {
         //given
         OrderTableRequest request = new OrderTableRequest(3, true);
-        when(orderTableRepository.save(any())).thenReturn(빈_세명_테이블());
+        OrderTable 빈_세명_테이블 = 빈_세명_테이블();
+        when(orderTableRepository.save(any())).thenReturn(빈_세명_테이블);
 
         //when
         tableService.create(request);
@@ -53,9 +60,8 @@ class TableServiceTest {
         ArgumentCaptor<OrderTable> orderTableCaptor = ArgumentCaptor.forClass(OrderTable.class);
         verify(orderTableRepository, only()).save(orderTableCaptor.capture());
         assertThat(orderTableCaptor.getValue())
-            .extracting(
-                OrderTable::tableGroupId, OrderTable::numberOfGuests, OrderTable::isEmpty)
-            .containsExactly(null, request.getNumberOfGuests(), request.isEmpty());
+            .extracting(OrderTable::hasTableGroup, OrderTable::isEmpty, OrderTable::numberOfGuests)
+            .containsExactly(false, request.isEmpty(), Headcount.from(request.getNumberOfGuests()));
     }
 
     @Test
@@ -69,25 +75,20 @@ class TableServiceTest {
     }
 
     @Test
-    @DisplayName("테이블의 상태를 변경할 수 있다.")
+    @DisplayName("테이블의 빈 상태를 변경할 수 있다.")
     void changeEmpty() {
         //given
         TableStatusRequest request = new TableStatusRequest(true);
 
-        when(orderTableRepository.findById(anyLong()))
-            .thenReturn(Optional.of(채워진_다섯명_테이블()));
-//        when(orderService.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList()))
-//            .thenReturn(false);
-        when(orderTableRepository.save(any())).thenReturn(채워진_다섯명_테이블());
+        OrderTable 채워진_다섯명_테이블 = 채워진_다섯명_테이블();
+        when(orderTableRepository.findById(anyLong())).thenReturn(Optional.of(채워진_다섯명_테이블));
 
         //when
-        tableService.changeEmpty(1L, request);
+        OrderTableResponse response = tableService.changeEmpty(1L, request);
 
         //then
-        ArgumentCaptor<OrderTable> orderTableCaptor = ArgumentCaptor.forClass(OrderTable.class);
-        verify(orderTableRepository, times(1)).save(orderTableCaptor.capture());
-        assertThat(orderTableCaptor.getValue())
-            .extracting(OrderTable::isEmpty)
+        assertThat(response)
+            .extracting(OrderTableResponse::isEmpty)
             .isEqualTo(request.isEmpty());
     }
 
@@ -102,8 +103,9 @@ class TableServiceTest {
         ThrowingCallable changeCallable = () -> tableService.changeEmpty(1L, request);
 
         //then
-        assertThatExceptionOfType(IllegalArgumentException.class)
-            .isThrownBy(changeCallable);
+        assertThatExceptionOfType(NotFoundException.class)
+            .isThrownBy(changeCallable)
+            .withMessageEndingWith("찾을 수 없습니다.");
     }
 
     @Test
@@ -112,16 +114,18 @@ class TableServiceTest {
         //given
         TableStatusRequest request = new TableStatusRequest(false);
 
-        OrderTable notEmptyOrderTable = 채워진_다섯명_테이블();
-//        notEmptyOrderTable.setTableGroup(한명_두명_테이블_그룹());
-        when(orderTableRepository.findById(anyLong())).thenReturn(Optional.of(notEmptyOrderTable));
+        OrderTable 빈_두명_테이블 = 빈_두명_테이블();
+        OrderTable 빈_세명_테이블 = 빈_세명_테이블();
+        TableGroup.from(Arrays.asList(빈_두명_테이블, 빈_세명_테이블));
+        when(orderTableRepository.findById(anyLong())).thenReturn(Optional.of(빈_두명_테이블));
 
         //when
         ThrowingCallable changeCallable = () -> tableService.changeEmpty(1L, request);
 
         //then
-        assertThatExceptionOfType(IllegalArgumentException.class)
-            .isThrownBy(changeCallable);
+        assertThatExceptionOfType(InvalidStatusException.class)
+            .isThrownBy(changeCallable)
+            .withMessageEndingWith("그룹이 지정되어 있어서 상태를 변경할 수 없습니다.");
     }
 
     @Test
@@ -130,38 +134,38 @@ class TableServiceTest {
         //given
         TableStatusRequest request = new TableStatusRequest(false);
 
+        OrderTable 채워진_다섯명_테이블 = 채워진_다섯명_테이블();
+        Order.of(채워진_다섯명_테이블, Collections.singletonList(이십원_후라이트치킨_두마리세트_한개_주문_항목()));
         when(orderTableRepository.findById(anyLong()))
-            .thenReturn(Optional.of(채워진_다섯명_테이블()));
-//        when(orderService.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList()))
-//            .thenReturn(true);
+            .thenReturn(Optional.of(채워진_다섯명_테이블));
 
         //when
         ThrowingCallable changeCallable = () -> tableService.changeEmpty(1L, request);
 
         //then
-        assertThatExceptionOfType(IllegalArgumentException.class)
-            .isThrownBy(changeCallable);
+        assertThatExceptionOfType(InvalidStatusException.class)
+            .isThrownBy(changeCallable)
+            .withMessageEndingWith("상태를 변경할 수 없습니다.");
     }
 
     @Test
     @DisplayName("방문한 손님 수를 변경할 수 있다.")
     void changeNumberOfGuests() {
         //given
-        TableGuestsCountRequest request = new TableGuestsCountRequest(3);
+        int numberOfGuests = 3;
+        TableGuestsCountRequest request = new TableGuestsCountRequest(numberOfGuests);
 
+        OrderTable 채워진_다섯명_테이블 = 채워진_다섯명_테이블();
         when(orderTableRepository.findById(anyLong()))
-            .thenReturn(Optional.of(채워진_다섯명_테이블()));
-        when(orderTableRepository.save(any())).thenReturn(빈_세명_테이블());
+            .thenReturn(Optional.of(채워진_다섯명_테이블));
 
         //when
-        tableService.changeNumberOfGuests(1L, request);
+        OrderTableResponse response = tableService.changeNumberOfGuests(1L, request);
 
         //then
-        ArgumentCaptor<OrderTable> orderTableCaptor = ArgumentCaptor.forClass(OrderTable.class);
-        verify(orderTableRepository, times(1)).save(orderTableCaptor.capture());
-        assertThat(orderTableCaptor.getValue())
-            .extracting(OrderTable::numberOfGuests)
-            .isEqualTo(request.getNumberOfGuests());
+        assertThat(response)
+            .extracting(OrderTableResponse::getNumberOfGuests)
+            .isEqualTo(numberOfGuests);
     }
 
     @Test
@@ -170,12 +174,17 @@ class TableServiceTest {
         //given
         TableGuestsCountRequest request = new TableGuestsCountRequest(-1);
 
+        OrderTable 채워진_다섯명_테이블 = 채워진_다섯명_테이블();
+        when(orderTableRepository.findById(anyLong()))
+            .thenReturn(Optional.of(채워진_다섯명_테이블));
+
         //when
         ThrowingCallable changeCallable = () -> tableService.changeNumberOfGuests(1L, request);
 
         //then
         assertThatExceptionOfType(IllegalArgumentException.class)
-            .isThrownBy(changeCallable);
+            .isThrownBy(changeCallable)
+            .withMessageEndingWith("이상 이어야 합니다.");
     }
 
     @Test
@@ -190,23 +199,26 @@ class TableServiceTest {
         ThrowingCallable changeCallable = () -> tableService.changeNumberOfGuests(1L, request);
 
         //then
-        assertThatExceptionOfType(IllegalArgumentException.class)
-            .isThrownBy(changeCallable);
+        assertThatExceptionOfType(NotFoundException.class)
+            .isThrownBy(changeCallable)
+            .withMessageEndingWith("찾을 수 없습니다.");
     }
 
     @Test
-    @DisplayName("변경하려는 테이블은 비어있지 않아야 한다.")
+    @DisplayName("방문한 손님 수를 변경하려는 테이블은 비어있지 않아야 한다.")
     void changeNumberOfGuests_empty_thrownException() {
         //given
         TableGuestsCountRequest request = new TableGuestsCountRequest(3);
 
-//        when(orderTableRepository.findById(anyLong())).thenReturn(Optional.of(빈_두명_테이블()));
+        OrderTable 빈_두명_테이블 = 빈_두명_테이블();
+        when(orderTableRepository.findById(anyLong())).thenReturn(Optional.of(빈_두명_테이블));
 
         //when
         ThrowingCallable changeCallable = () -> tableService.changeNumberOfGuests(1L, request);
 
         //then
-        assertThatExceptionOfType(IllegalArgumentException.class)
-            .isThrownBy(changeCallable);
+        assertThatExceptionOfType(InvalidStatusException.class)
+            .isThrownBy(changeCallable)
+            .withMessageEndingWith("방문한 손님 수를 변경할 수 없습니다.");
     }
 }

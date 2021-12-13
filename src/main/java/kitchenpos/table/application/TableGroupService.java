@@ -30,8 +30,7 @@ public class TableGroupService {
     }
 
     public void ungroup(long id) {
-        TableGroup tableGroup = tableGroup(id);
-        tableGroup.ungroup();
+        tableGroup(id).ungroup();
     }
 
     private TableGroup tableGroup(long id) {

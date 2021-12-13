@@ -11,7 +11,6 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.only;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -30,6 +29,7 @@ import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.ui.request.OrderLineItemRequest;
 import kitchenpos.order.ui.request.OrderRequest;
 import kitchenpos.order.ui.request.OrderStatusRequest;
+import kitchenpos.order.ui.response.OrderResponse;
 import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTable;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
@@ -161,10 +161,6 @@ class OrderServiceTest {
     @Test
     @DisplayName("주문들을 조회할 수 있다.")
     void list() {
-        //given
-        Order cookingOrder = 조리중인_후라이트치킨세트_두개_주문();
-        when(orderRepository.findAll()).thenReturn(Collections.singletonList(cookingOrder));
-
         //when
         orderService.list();
 
@@ -179,14 +175,16 @@ class OrderServiceTest {
         OrderStatus updatedStatus = OrderStatus.MEAL;
         OrderStatusRequest orderRequest = new OrderStatusRequest(updatedStatus.name());
 
-        Order mockOrder = 조리중인_후라이트치킨세트_두개_주문();
-        when(orderRepository.findById(anyLong())).thenReturn(Optional.of(mockOrder));
+        Order 조리중인_후라이트치킨세트_두개_주문 = 조리중인_후라이트치킨세트_두개_주문();
+        when(orderRepository.findById(anyLong())).thenReturn(Optional.of(조리중인_후라이트치킨세트_두개_주문));
 
         //when
-        orderService.changeOrderStatus(1L, orderRequest);
+        OrderResponse response = orderService.changeOrderStatus(1L, orderRequest);
 
         //then
-        verify(mockOrder, times(1)).changeStatus(updatedStatus);
+        assertThat(response)
+            .extracting(OrderResponse::getOrderStatus)
+            .isEqualTo(updatedStatus.name());
     }
 
     @Test
@@ -201,7 +199,8 @@ class OrderServiceTest {
 
         //then
         assertThatExceptionOfType(NotFoundException.class)
-            .isThrownBy(changeCallable);
+            .isThrownBy(changeCallable)
+            .withMessageEndingWith("찾을 수 없습니다.");
     }
 
     @Test

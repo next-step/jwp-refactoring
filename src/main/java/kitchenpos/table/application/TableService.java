@@ -39,7 +39,7 @@ public class TableService {
     public OrderTableResponse changeNumberOfGuests(long id, TableGuestsCountRequest request) {
         OrderTable orderTable = findById(id);
         orderTable.changeNumberOfGuests(request.numberOfGuests());
-        return OrderTableResponse.from(orderTableRepository.save(orderTable));
+        return OrderTableResponse.from(orderTable);
     }
 
     public List<OrderTable> findAllByIdIn(List<Long> orderTableIds) {
