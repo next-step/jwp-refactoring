@@ -45,6 +45,12 @@ public class MenuService {
                 String.format("메뉴 id(%d)를 찾을 수 없습니다.", id)));
     }
 
+    public Menu findById(long id) {
+        return menuRepository.findById(id)
+            .orElseThrow(() -> new NotFoundException(
+                String.format("메뉴 id(%d)를 찾을 수 없습니다.", id)));
+    }
+
     private Menu newMenu(MenuRequest request) {
         return Menu.of(
             request.name(),
