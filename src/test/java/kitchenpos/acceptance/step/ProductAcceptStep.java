@@ -6,6 +6,7 @@ import io.restassured.response.Response;
 import kitchenpos.domain.Product;
 import org.springframework.http.HttpStatus;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -19,6 +20,14 @@ public class ProductAcceptStep {
 
     public static ExtractableResponse<Response> 상품_등록_요청(Product 등록_요청_데이터) {
         return post(BASE_URL, 등록_요청_데이터);
+    }
+
+    public static Product 상품이_등록되어_있음(String name, int price) {
+        Product 등록_요청_데이터 = new Product();
+        등록_요청_데이터.setName(name);
+        등록_요청_데이터.setPrice(BigDecimal.valueOf(price));
+
+        return 상품_등록_요청(등록_요청_데이터).as(Product.class);
     }
 
     public static Product 상품_등록_확인(ExtractableResponse<Response> 상품_등록_응답, Product 등록_요청_데이터) {

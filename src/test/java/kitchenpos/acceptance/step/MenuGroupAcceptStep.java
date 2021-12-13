@@ -21,6 +21,13 @@ public class MenuGroupAcceptStep {
         return post(BASE_URL, 등록_요청_데이터);
     }
 
+    public static MenuGroup 메뉴_그룹이_등록되어_있음(String name) {
+        MenuGroup 등록_요청_데이터 = new MenuGroup();
+        등록_요청_데이터.setName(name);
+
+        return 메뉴_그룹_등록_요청(등록_요청_데이터).as(MenuGroup.class);
+    }
+
     public static MenuGroup 메뉴_그룹_등록_확인(ExtractableResponse<Response> 메뉴_그룹_등록_응답, MenuGroup 등록_요청_데이터) {
         MenuGroup 등록된_메뉴_그룹 = 메뉴_그룹_등록_응답.as(MenuGroup.class);
 
