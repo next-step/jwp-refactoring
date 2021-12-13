@@ -1,13 +1,9 @@
 package kitchenpos.tablegroup.domain;
 
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.ordertable.domain.OrderTable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -74,18 +70,5 @@ class TableGroupTest {
 
         // then
         assertThat(orderTable.getTableGroup()).isNull();
-    }
-
-    @ParameterizedTest(name = "{displayName} - [{index}] {argumentsWithNames}")
-    @CsvSource(value = {"COOKING", "MEAL"}, delimiter = ':')
-    @DisplayName("테이블 그룹에서 주문 완료 상태가 아닌 테이블을 제거하면 예외를 발생한다.")
-    void ungroupThrowException(OrderStatus orderStatus) {
-        // given
-        Order order = new Order(orderStatus, LocalDateTime.now());
-        order.changeOrderTable(orderTable);
-        TableGroup tableGroup = TableGroup.of(LocalDateTime.now(), Collections.singletonList(orderTable));
-
-        // when & then
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(tableGroup::ungroup);
     }
 }

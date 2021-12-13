@@ -90,7 +90,7 @@ class OrderServiceTest extends ServiceTest {
     }
 
     @Test
-    @DisplayName("비어있는 테이블로 주문을 등록하면 예외를 발생한다.")
+    @DisplayName("비어있는 테이블에 주문을 등록하면 예외를 발생한다.")
     void createThrowException4() {
         // given
         OrderTableResponse savedOrderTableResponse = 테이블_저장(true);

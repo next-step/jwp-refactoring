@@ -16,6 +16,7 @@ import javax.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "orders")
@@ -67,15 +68,29 @@ public class Order {
     }
 
     public void changeOrderTable(OrderTable orderTable) {
+        validateOrderTable(orderTable);
         orderTable.getOrders().add(this);
         this.orderTable = orderTable;
     }
 
     public void changeOrderStatus(OrderStatus orderStatus) {
+        validateOrderStatus();
         this.orderStatus = orderStatus;
     }
 
     public boolean isChangable() {
         return orderStatus.equals(OrderStatus.COMPLETION);
+    }
+
+    private void validateOrderTable(OrderTable orderTable) {
+        if (orderTable.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    private void validateOrderStatus() {
+        if (Objects.equals(OrderStatus.COMPLETION, orderStatus)) {
+            throw new IllegalArgumentException();
+        }
     }
 }
