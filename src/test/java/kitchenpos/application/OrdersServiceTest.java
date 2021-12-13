@@ -75,8 +75,8 @@ class OrdersServiceTest {
         공기밥 = ProductFixtureFactory.create(2L, "공기밥", 1_000);
         불고기 = MenuFixtureFactory.create(1L, "불고기", 10_000, 고기_메뉴그룹);
 
-        불고기_돼지고기 = MenuProductFixtureFactory.create(1L, 불고기.getId(), 돼지고기.getId(), 1L);
-        불고기_공기밥 = MenuProductFixtureFactory.create(2L, 불고기.getId(), 공기밥.getId(), 1L);
+        불고기_돼지고기 = MenuProductFixtureFactory.create(1L, 불고기, 돼지고기, 1L);
+        불고기_공기밥 = MenuProductFixtureFactory.create(2L, 불고기, 공기밥, 1L);
         불고기.addMenuProducts(Arrays.asList(불고기_돼지고기, 불고기_공기밥));
 
         주문_개인테이블 = OrderTableFixtureFactory.create(1L, false);

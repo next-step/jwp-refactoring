@@ -46,9 +46,6 @@ class MenuServiceTest {
     @Mock
     private ProductRepository productRepository;
 
-    @Mock
-    private MenuProductRepository menuProductRepository;
-
     @InjectMocks
     private MenuService menuService;
 
@@ -66,8 +63,8 @@ class MenuServiceTest {
         공기밥 = ProductFixtureFactory.create(2L, "공기밥", 1_000);
         불고기 = MenuFixtureFactory.create(1L, "불고기", 10_000, 고기_메뉴그룹);
 
-        불고기_돼지고기 = MenuProductFixtureFactory.create(1L, 불고기.getId(), 돼지고기.getId(), 1L);
-        불고기_공기밥 = MenuProductFixtureFactory.create(2L, 불고기.getId(), 공기밥.getId(), 1L);
+        불고기_돼지고기 = MenuProductFixtureFactory.create(1L, 불고기, 돼지고기, 1L);
+        불고기_공기밥 = MenuProductFixtureFactory.create(2L, 불고기, 공기밥, 1L);
         불고기.addMenuProducts(Arrays.asList(불고기_돼지고기, 불고기_공기밥));
     }
 
@@ -84,7 +81,7 @@ class MenuServiceTest {
                                                   고기_메뉴그룹.getId(),
                                                   menuProductRequests);
 
-        given(menuGroupRepository.existsById(고기_메뉴그룹.getId())).willReturn(true);
+        given(menuGroupRepository.findById(고기_메뉴그룹.getId())).willReturn(Optional.ofNullable(고기_메뉴그룹));
         given(productRepository.findById(불고기_돼지고기.getProduct().getId())).willReturn(Optional.ofNullable(돼지고기));
         given(productRepository.findById(불고기_공기밥.getProduct().getId())).willReturn(Optional.ofNullable(공기밥));
         given(menuRepository.save(any(Menu.class))).willReturn(불고기);
@@ -144,8 +141,6 @@ class MenuServiceTest {
                                                   고기_메뉴그룹.getId(),
                                                   menuProductRequests);
 
-        given(menuGroupRepository.existsById(고기_메뉴그룹.getId())).willReturn(false);
-
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menuRequest));
     }
@@ -162,10 +157,6 @@ class MenuServiceTest {
                                                   BigDecimal.valueOf(10_000),
                                                   고기_메뉴그룹.getId(),
                                                   menuProductRequests);
-
-        given(menuGroupRepository.existsById(고기_메뉴그룹.getId())).willReturn(true);
-        given(productRepository.findById(불고기_돼지고기.getProduct().getId())).willReturn(Optional.ofNullable(돼지고기));
-        given(productRepository.findById(돼지고기.getId())).willThrow(IllegalArgumentException.class);
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menuRequest));

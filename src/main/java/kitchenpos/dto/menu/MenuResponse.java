@@ -31,7 +31,7 @@ public class MenuResponse {
     public static MenuResponse from(Menu menu) {
         return new MenuResponse(menu.getId(),
                                 menu.getName(),
-                                menu.getPrice(),
+                                menu.getPrice().getValue(),
                                 menu.getMenuGroup().getId(),
                                 StreamUtils.mapToList(menu.getMenuProducts(), MenuProductResponse::from));
     }

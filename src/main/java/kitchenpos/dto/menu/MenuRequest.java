@@ -43,14 +43,4 @@ public class MenuRequest {
     public List<MenuProductRequest> getMenuProducts() {
         return menuProducts;
     }
-
-    public Menu toMenu() {
-        Menu menu = Menu.of(name, price, MenuGroup.from(menuGroupId));
-        menu.addMenuProducts(StreamUtils.mapToList(this.menuProducts,
-                                                   request -> MenuProduct.of(menu,
-                                                                             Product.from(request.getProductId()),
-                                                                             request.getQuantity())));
-
-        return menu;
-    }
 }

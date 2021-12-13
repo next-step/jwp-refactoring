@@ -8,7 +8,7 @@ public class MenuProductFixtureFactory {
 
     private MenuProductFixtureFactory() {}
 
-    public static MenuProduct create(long id, long menuId, long productId, long quantity) {
-        return MenuProduct.of(id, Menu.from(menuId), Product.from(productId), quantity);
+    public static MenuProduct create(long id, Menu menu, Product product, long quantity) {
+        return MenuProduct.of(id, menu, product, quantity);
     }
 }

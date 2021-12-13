@@ -2,6 +2,7 @@ package kitchenpos.utils;
 
 import static java.util.stream.Collectors.*;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -51,5 +52,11 @@ public class StreamUtils {
     public static <T> boolean anyMatch(Collection<T> collections, Predicate<T> predicate) {
         return collections.stream()
                           .anyMatch(predicate);
+    }
+
+    public static <T> BigDecimal sumToBigDecimal(Collection<T> collections, Function<T, BigDecimal> mapFunction) {
+        return collections.stream()
+                          .map(mapFunction)
+                          .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 }
