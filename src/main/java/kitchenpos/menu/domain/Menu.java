@@ -2,17 +2,16 @@ package kitchenpos.menu.domain;
 
 import kitchenpos.menugroup.domain.MenuGroup;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class Menu {
@@ -30,16 +29,20 @@ public class Menu {
     @ManyToOne
     private MenuGroup menuGroup;
 
-    @OneToMany(mappedBy = "menu", cascade = CascadeType.PERSIST)
-    private List<MenuProduct> menuProducts = new ArrayList<>();
+    @Embedded
+    private MenuProducts menuProducts;
 
     protected Menu() {
     }
 
-    public Menu(String name, BigDecimal price, MenuGroup menuGroup) {
+    public Menu(String name, BigDecimal price, MenuGroup menuGroup, MenuProducts menuProducts) {
+        validatePrice(price, menuProducts);
+
         this.name = name;
         this.price = price;
         this.menuGroup = menuGroup;
+        this.menuProducts = menuProducts;
+        menuProducts.changeMenu(this);
     }
 
     public Long getId() {
@@ -59,6 +62,25 @@ public class Menu {
     }
 
     public List<MenuProduct> getMenuProducts() {
-        return menuProducts;
+        return menuProducts.getMenuProducts();
+    }
+
+    private void validatePrice(BigDecimal price, MenuProducts menuProducts) {
+        if (price.compareTo(menuProducts.calculateSum()) > 0) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Menu menu = (Menu) o;
+        return Objects.equals(id, menu.id) && Objects.equals(name, menu.name) && Objects.equals(price, menu.price) && Objects.equals(menuGroup, menu.menuGroup) && Objects.equals(menuProducts, menu.menuProducts);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, price, menuGroup, menuProducts);
     }
 }
