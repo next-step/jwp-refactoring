@@ -23,6 +23,7 @@ import kitchenpos.domain.table.OrderTable;
 @Entity
 @Table(name = "orders")
 public class Orders {
+    private static final String CAN_NOT_CHANGE_ORDER_STATUS_MESSAGE = "완료된 Orders 는 상태를 바꿀 수 없습니다.";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -68,6 +69,10 @@ public class Orders {
         return new Orders(id);
     }
 
+    public static Orders from(OrderTable orderTable) {
+        return new Orders(orderTable, OrderStatus.COOKING, LocalDateTime.now());
+    }
+
     public static Orders of(OrderTable orderTable, OrderStatus orderStatus) {
         return new Orders(orderTable, orderStatus, LocalDateTime.now(), new ArrayList<>());
     }
@@ -78,6 +83,10 @@ public class Orders {
 
     public static Orders of(OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
         return new Orders(orderTable, orderStatus, orderedTime, orderLineItems);
+    }
+
+    public boolean isCompletion() {
+        return orderStatus.isCompletion();
     }
 
     public Long getId() {
@@ -96,7 +105,8 @@ public class Orders {
         return orderStatus;
     }
 
-    public void setOrderStatus(final OrderStatus orderStatus) {
+    public void changeOrderStatus(final OrderStatus orderStatus) {
+        validateChangeOrderStatus();
         this.orderStatus = orderStatus;
     }
 
@@ -112,7 +122,14 @@ public class Orders {
         return orderLineItems;
     }
 
-    public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
+    public void addOrderLineItems(final List<OrderLineItem> orderLineItems) {
         this.orderLineItems = orderLineItems;
+        orderLineItems.forEach(orderLineItem -> orderLineItem.assignOrders(this));
+    }
+
+    private void validateChangeOrderStatus() {
+        if (isCompletion()) {
+            throw new IllegalArgumentException(CAN_NOT_CHANGE_ORDER_STATUS_MESSAGE);
+        }
     }
 }
