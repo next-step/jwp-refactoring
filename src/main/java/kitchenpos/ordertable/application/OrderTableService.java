@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class OrderTableService {
 
     private final OrderTableRepository orderTableRepository;
@@ -19,12 +20,12 @@ public class OrderTableService {
         this.orderTableRepository = orderTableRepository;
     }
 
-    @Transactional
     public OrderTableResponse create(final OrderTableRequest orderTableRequest) {
         OrderTable orderTable = orderTableRepository.save(orderTableRequest.toOrderTable());
         return OrderTableResponse.from(orderTable);
     }
 
+    @Transactional(readOnly = true)
     public List<OrderTableResponse> list() {
         return orderTableRepository.findAll()
                 .stream()
@@ -32,21 +33,20 @@ public class OrderTableService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         final OrderTable orderTable = findById(orderTableId);
         orderTable.changeEmpty(orderTableRequest.isEmpty());
         return OrderTableResponse.from(orderTable);
     }
 
-    @Transactional
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         final OrderTable orderTable = findById(orderTableId);
         orderTable.changeNumberOfGuests(orderTableRequest.getNumberOfGuests());
         return OrderTableResponse.from(orderTable);
     }
 
-    private OrderTable findById(Long orderTableId) {
+    @Transactional(readOnly = true)
+    public OrderTable findById(Long orderTableId) {
         return orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
     }

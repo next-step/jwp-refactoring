@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class MenuGroupService {
 
     private final MenuGroupRepository menuGroupRepository;
@@ -19,16 +20,22 @@ public class MenuGroupService {
         this.menuGroupRepository = menuGroupRepository;
     }
 
-    @Transactional
     public MenuGroupResponse create(final MenuGroupRequest menuGroupRequest) {
         MenuGroup menuGroup = menuGroupRepository.save(menuGroupRequest.toMenuGroup());
         return MenuGroupResponse.from(menuGroup);
     }
 
+    @Transactional(readOnly = true)
     public List<MenuGroupResponse> list() {
         return menuGroupRepository.findAll()
                 .stream()
                 .map(MenuGroupResponse::from)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public MenuGroup findById(Long id) {
+        return menuGroupRepository.findById(id)
+                .orElseThrow(IllegalArgumentException::new);
     }
 }

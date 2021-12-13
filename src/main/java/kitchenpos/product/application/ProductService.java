@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class ProductService {
 
     private final ProductRepository productRepository;
@@ -19,16 +20,22 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-    @Transactional
     public ProductResponse create(final ProductRequest productRequest) {
         Product savedProduct = productRepository.save(productRequest.toProduct());
         return ProductResponse.from(savedProduct);
     }
 
+    @Transactional(readOnly = true)
     public List<ProductResponse> list() {
         return productRepository.findAll()
                 .stream()
                 .map(ProductResponse::from)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public Product findById(Long id) {
+        return productRepository.findById(id)
+                .orElseThrow(IllegalArgumentException::new);
     }
 }
