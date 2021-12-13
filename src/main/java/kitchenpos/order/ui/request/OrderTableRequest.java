@@ -6,7 +6,7 @@ import kitchenpos.order.domain.Headcount;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.TableStatus;
 
-public class OrderTableRequest {
+public final class OrderTableRequest {
 
     private final int numberOfGuests;
     private final boolean empty;

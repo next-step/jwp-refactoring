@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
-public class TableGroupRequest {
+public final class TableGroupRequest {
 
     private final List<OrderTableIdRequest> orderTables;
 

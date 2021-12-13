@@ -18,5 +18,4 @@ public enum TableStatus {
     boolean isFull() {
         return this == FULL;
     }
-
 }

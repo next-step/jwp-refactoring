@@ -1,6 +1,6 @@
 package kitchenpos.common.exception;
 
-public class NotFoundException extends RuntimeException {
+public final class NotFoundException extends RuntimeException {
 
     public NotFoundException(String message) {
         super(message);

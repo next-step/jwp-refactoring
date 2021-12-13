@@ -49,7 +49,7 @@ class OrderTables {
         tables.forEach(table -> table.changeGroup(tableGroup));
     }
 
-    public void ungroup() {
+    void ungroup() {
         tables.forEach(OrderTable::ungroup);
     }
 

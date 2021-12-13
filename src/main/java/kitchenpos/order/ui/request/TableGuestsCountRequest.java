@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import kitchenpos.order.domain.Headcount;
 
-public class TableGuestsCountRequest {
+public final class TableGuestsCountRequest {
 
     private final int numberOfGuests;
 

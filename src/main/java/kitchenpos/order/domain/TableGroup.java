@@ -32,7 +32,7 @@ public class TableGroup {
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdDate;
 
-    public TableGroup() {
+    protected TableGroup() {
     }
 
     private TableGroup(OrderTables orderTables) {
