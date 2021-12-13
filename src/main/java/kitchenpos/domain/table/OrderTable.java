@@ -85,5 +85,4 @@ public class OrderTable {
     public boolean hasTableGroup() {
         return tableGroup != null;
     }
-
 }

@@ -79,13 +79,4 @@ public class MenuDto {
     public int hashCode() {
         return Objects.hash(id, name, price, menuGroupId, menuProducts);
     }
-
-    public void chnageMenuGroup(MenuGroupDto menuGroupDto) {
-        this.menuGroupId = menuGroupDto.getId();
-    }
-
-    public void changeMenuProducts(List<MenuProductDto> menuProducts) {
-        this.menuProducts = menuProducts;
-    }
-
 }

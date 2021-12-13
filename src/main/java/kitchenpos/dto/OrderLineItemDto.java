@@ -10,7 +10,6 @@ public class OrderLineItemDto {
     private Long menuId;
     private long quantity;
 
-
     protected OrderLineItemDto() {
     }
 

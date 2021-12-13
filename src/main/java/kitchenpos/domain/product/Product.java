@@ -38,12 +38,4 @@ public class Product {
     public Price getPrice() {
         return this.price;
     }
-
-    public void changePrice(Price price) {
-        this.price = price;
-    }
-    
-    public void changeName(String name) {
-        this.name = name;
-    }
 }

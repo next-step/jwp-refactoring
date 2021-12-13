@@ -53,11 +53,11 @@ public class MenuProduct {
         return this.quantity;
     }
 
-    public void changeMenu(Menu menu) {
-        this.menu = menu;
-    }
-
     public void acceptMenu(Menu menu) {
+        if (this.menu != null) {
+            this.menu.getMenuProducts().remove(this);
+        }
+
         this.menu = menu;
         this.menu.getMenuProducts().add(this);
     }

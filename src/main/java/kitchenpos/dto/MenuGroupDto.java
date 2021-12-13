@@ -51,5 +51,4 @@ public class MenuGroupDto {
     public int hashCode() {
         return Objects.hash(id, name);
     }
-
 }

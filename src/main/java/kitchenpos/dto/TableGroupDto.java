@@ -48,10 +48,6 @@ public class TableGroupDto {
         return this.id;
     }
 
-    public LocalDateTime getCreatedDate() {
-        return this.createdDate;
-    }
-
     public List<OrderTableDto> getOrderTables() {        
         return this.orderTables;
     }
