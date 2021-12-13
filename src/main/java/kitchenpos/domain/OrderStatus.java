@@ -4,6 +4,6 @@ public enum OrderStatus {
     COOKING, MEAL, COMPLETION;
 
     public boolean isComplete() {
-        return this.equals(COMPLETION);
+        return this == COMPLETION;
     }
 }
