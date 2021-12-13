@@ -5,19 +5,19 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.lang.reflect.Field;
 import java.util.*;
 
-public class InMemoryDao<E> {
+public class InMemoryRepository<E> {
 
     protected final Map<Long, E> db;
     protected Long id;
     protected String keyColumnName;
 
-    public InMemoryDao(String keyColumnName) {
+    public InMemoryRepository(String keyColumnName) {
         this.db = new HashMap();
         this.keyColumnName = keyColumnName;
         this.id = 0L;
     }
 
-    public InMemoryDao() {
+    public InMemoryRepository() {
         this("id");
     }
 

@@ -1,35 +1,33 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
+import kitchenpos.dao.OrderRepository;
+import kitchenpos.dao.OrderTableRepository;
 import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.TableRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class TableService {
-    private final OrderDao orderDao;
-    private final OrderTableDao orderTableDao;
+    private final OrderRepository orderRepository;
+    private final OrderTableRepository orderTableRepository;
 
-    public TableService(final OrderDao orderDao, final OrderTableDao orderTableDao) {
-        this.orderDao = orderDao;
-        this.orderTableDao = orderTableDao;
+    public TableService(final OrderRepository orderRepository, final OrderTableRepository orderTableRepository) {
+        this.orderRepository = orderRepository;
+        this.orderTableRepository = orderTableRepository;
     }
 
     @Transactional
     public OrderTable create(final TableRequest request) {
-        return orderTableDao.save(request.toOrderTable());
+        return orderTableRepository.save(request.toOrderTable());
     }
 
     public List<OrderTable> list() {
-        return orderTableDao.findAll();
+        return orderTableRepository.findAll();
     }
 
     @Transactional
@@ -53,7 +51,7 @@ public class TableService {
     }
 
     private void checkCompleteTable(Long orderTableId) {
-        final Optional<Order> savedOrder = orderDao.findByOrderTableId(orderTableId);
+        final Optional<Order> savedOrder = orderRepository.findByOrderTableId(orderTableId);
         if (!savedOrder.isPresent()) {
             throw new IllegalArgumentException();
         }
@@ -64,7 +62,7 @@ public class TableService {
     }
 
     private OrderTable getOrderTable(Long orderTableId) {
-        return orderTableDao.findById(orderTableId)
+        return orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
     }
 }

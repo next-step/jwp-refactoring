@@ -5,9 +5,9 @@ import kitchenpos.domain.OrderLineItem;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class InMemoryOrderLineItemDao extends InMemoryDao<OrderLineItem> implements OrderLineItemDao {
+public class InMemoryOrderLineItemRepository extends InMemoryRepository<OrderLineItem> implements OrderLineItemRepository {
 
-    public InMemoryOrderLineItemDao() {
+    public InMemoryOrderLineItemRepository() {
         super("seq");
     }
 

@@ -5,16 +5,12 @@ import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.TableGroupRequest;
-import kitchenpos.dto.TableRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static kitchenpos.fixture.OrderFixture.주문;
 import static kitchenpos.fixture.OrderTableFixture.주문_테이블;
@@ -38,23 +34,23 @@ import static org.junit.jupiter.api.Assertions.assertAll;
  */
 class TableGroupServiceTest {
 
-    private OrderDao orderDao;
-    private OrderTableDao orderTableDao;
-    private TableGroupDao tableGroupDao;
+    private OrderRepository orderRepository;
+    private OrderTableRepository orderTableRepository;
+    private TableGroupRepository tableGroupRepository;
     private TableGroupService tableGroupService;
 
     @BeforeEach
     void setUp() {
-        orderDao = new InMemoryOrderDao();
-        orderTableDao = new InMemoryOrderTableDao();
-        tableGroupDao = new InMemoryTableGroupDao();
-        tableGroupService = new TableGroupService(orderDao, orderTableDao, tableGroupDao);
+        orderRepository = new InMemoryOrderRepository();
+        orderTableRepository = new InMemoryOrderTableRepository();
+        tableGroupRepository = new InMemoryTableGroupRepository();
+        tableGroupService = new TableGroupService(orderRepository, orderTableRepository, tableGroupRepository);
     }
 
     @Test
     void create_단체_지정을_저장할_수_있다() {
-        OrderTable 저장된_주문_테이블1 = orderTableDao.save(빈_주문_테이블());
-        OrderTable 저장된_주문_테이블2 = orderTableDao.save(빈_주문_테이블());
+        OrderTable 저장된_주문_테이블1 = orderTableRepository.save(빈_주문_테이블());
+        OrderTable 저장된_주문_테이블2 = orderTableRepository.save(빈_주문_테이블());
         TableGroupRequest 단체_지정 = 단체_지정_요청(Arrays.asList(저장된_주문_테이블1, 저장된_주문_테이블2));
 
         TableGroup 저장된_단체_지정 = tableGroupService.create(단체_지정);
@@ -69,7 +65,7 @@ class TableGroupServiceTest {
 
     @Test
     void create_단체_지정의_주문_테이블의_개수가_올바르지_않으면_단체_지정을_저장할_수_없다() {
-        OrderTable 저장된_주문_테이블1 = orderTableDao.save(빈_주문_테이블());
+        OrderTable 저장된_주문_테이블1 = orderTableRepository.save(빈_주문_테이블());
         TableGroupRequest tableGroup = 단체_지정_요청(Arrays.asList(저장된_주문_테이블1));
 
         assertThatExceptionOfType(IllegalArgumentException.class)
@@ -78,7 +74,7 @@ class TableGroupServiceTest {
 
     @Test
     void create_단체_지정의_저장된_주문_테이블이_올바르지_않으면_단체_지정을_저장할_수_없다() {
-        OrderTable 저장된_주문_테이블 = orderTableDao.save(빈_주문_테이블());
+        OrderTable 저장된_주문_테이블 = orderTableRepository.save(빈_주문_테이블());
         TableGroupRequest tableGroup = 단체_지정_요청(Arrays.asList(저장된_주문_테이블, 빈_주문_테이블()));
 
         assertThatExceptionOfType(IllegalArgumentException.class)
@@ -87,8 +83,8 @@ class TableGroupServiceTest {
 
     @Test
     void create_단체_지정의_주문_테이블이_올바르지_않으면_단체_지정을_저장할_수_없다() {
-        OrderTable 빈_주문_테이블 = orderTableDao.save(주문_테이블(0, new TableGroup(1L, null, null), true));
-        OrderTable 채워진_주문_테이블 = orderTableDao.save(주문_테이블(2, null, false));
+        OrderTable 빈_주문_테이블 = orderTableRepository.save(주문_테이블(0, new TableGroup(1L, null, null), true));
+        OrderTable 채워진_주문_테이블 = orderTableRepository.save(주문_테이블(2, null, false));
         TableGroupRequest tableGroup = 단체_지정_요청(Arrays.asList(빈_주문_테이블, 채워진_주문_테이블));
 
         assertThatExceptionOfType(IllegalArgumentException.class)
@@ -97,8 +93,8 @@ class TableGroupServiceTest {
 
     @Test
     void ungroup_단체_지정을_해제할_수_있다() {
-        OrderTable 저장된_주문_테이블1 = orderTableDao.save(빈_주문_테이블());
-        OrderTable 저장된_주문_테이블2 = orderTableDao.save(빈_주문_테이블());
+        OrderTable 저장된_주문_테이블1 = orderTableRepository.save(빈_주문_테이블());
+        OrderTable 저장된_주문_테이블2 = orderTableRepository.save(빈_주문_테이블());
         TableGroupRequest 단체_지정 = 단체_지정_요청(Arrays.asList(저장된_주문_테이블1, 저장된_주문_테이블2));
         TableGroup 저장된_단체_지정 = tableGroupService.create(단체_지정);
 
@@ -111,9 +107,9 @@ class TableGroupServiceTest {
     @ParameterizedTest
     @EnumSource(value = OrderStatus.class, names = {"COOKING","MEAL"})
     void ungroup_단체_지정의_주문_테이블_아이디와_주문_혹은_식사_주문_상태인_주문이_존재하면_단체_지정을_해제할_수_없다(OrderStatus 유효하지_않은_주문_상태) {
-        OrderTable 저장된_주문_테이블1 = orderTableDao.save(빈_주문_테이블());
-        OrderTable 저장된_주문_테이블2 = orderTableDao.save(빈_주문_테이블());
-        orderDao.save(주문(저장된_주문_테이블1, Arrays.asList(), 유효하지_않은_주문_상태));
+        OrderTable 저장된_주문_테이블1 = orderTableRepository.save(빈_주문_테이블());
+        OrderTable 저장된_주문_테이블2 = orderTableRepository.save(빈_주문_테이블());
+        orderRepository.save(주문(저장된_주문_테이블1, Arrays.asList(), 유효하지_않은_주문_상태));
         TableGroupRequest 단체_지정 = 단체_지정_요청(Arrays.asList(저장된_주문_테이블1, 저장된_주문_테이블2));
         TableGroup 저장된_단체_지정 = tableGroupService.create(단체_지정);
 

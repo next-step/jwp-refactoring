@@ -5,7 +5,7 @@ import kitchenpos.domain.OrderTable;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class InMemoryOrderTableDao extends InMemoryDao<OrderTable> implements OrderTableDao {
+public class InMemoryOrderTableRepository extends InMemoryRepository<OrderTable> implements OrderTableRepository {
 
     @Override
     public List<OrderTable> findAllByIdIn(List<Long> ids) {

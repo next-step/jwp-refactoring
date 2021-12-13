@@ -2,7 +2,7 @@ package kitchenpos.dao;
 
 import kitchenpos.domain.MenuGroup;
 
-public class InMemoryMenuGroupDao extends InMemoryDao<MenuGroup> implements MenuGroupDao {
+public class InMemoryMenuGroupRepository extends InMemoryRepository<MenuGroup> implements MenuGroupRepository {
 
     @Override
     public boolean existsById(Long id) {

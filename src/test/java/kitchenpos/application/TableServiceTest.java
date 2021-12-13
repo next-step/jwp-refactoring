@@ -43,15 +43,15 @@ class TableServiceTest {
     private static final boolean 빈_테이블 = true;
     private static final TableRequest 빈_주문_테이블 = 테이블_요청(손님_수, 빈_테이블);
 
-    private OrderDao orderDao;
-    private OrderTableDao orderTableDao;
+    private OrderRepository orderRepository;
+    private OrderTableRepository orderTableRepository;
     private TableService tableService;
 
     @BeforeEach
     void setUp() {
-        orderDao = new InMemoryOrderDao();
-        orderTableDao = new InMemoryOrderTableDao();
-        tableService = new TableService(orderDao, orderTableDao);
+        orderRepository = new InMemoryOrderRepository();
+        orderTableRepository = new InMemoryOrderTableRepository();
+        tableService = new TableService(orderRepository, orderTableRepository);
     }
 
     @Test
@@ -79,7 +79,7 @@ class TableServiceTest {
     @Test
     void changeEmpty_주문_테이블을_빈_테이블로_변경할_수_있다() {
         OrderTable 저장된_주문_테이블 = tableService.create(채워진_주문_테이블());
-        orderDao.save(주문(저장된_주문_테이블, Arrays.asList(), OrderStatus.COMPLETION));
+        orderRepository.save(주문(저장된_주문_테이블, Arrays.asList(), OrderStatus.COMPLETION));
 
         OrderTable 변경된_주문_테이블 = tableService.changeEmpty(저장된_주문_테이블.getId(), 빈_주문_테이블);
 
@@ -95,7 +95,7 @@ class TableServiceTest {
     @ParameterizedTest
     @NullSource
     void changeEmpty_주문_테이블의_테이블_그룹_아이디가_올바르지_않으면_빈_테이블로_변경할_수_없다(Long 존재하는_테이블_그룹_아이디) {
-        OrderTable 저장된_주문_테이블 = orderTableDao.save(주문_테이블(손님_수, new TableGroup(1L, LocalDateTime.now(), null), 빈_테이블));
+        OrderTable 저장된_주문_테이블 = orderTableRepository.save(주문_테이블(손님_수, new TableGroup(1L, LocalDateTime.now(), null), 빈_테이블));
 
         assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> tableService.changeEmpty(저장된_주문_테이블.getId(), 빈_주문_테이블));
@@ -105,7 +105,7 @@ class TableServiceTest {
     @EnumSource(value = OrderStatus.class, names = {"COOKING", "MEAL"})
     void changeEmpty_주문_테이블_아이디와_주문_혹은_식사_주문_상태인_주문이_존재하면_빈_테이블_여부를_변경할_수_없다(OrderStatus 올바르지_않은_주문_상태) {
         OrderTable 저장된_주문_테이블 = tableService.create(채워진_주문_테이블());
-        orderDao.save(주문(저장된_주문_테이블, Arrays.asList(), 올바르지_않은_주문_상태));
+        orderRepository.save(주문(저장된_주문_테이블, Arrays.asList(), 올바르지_않은_주문_상태));
 
         assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> tableService.changeEmpty(저장된_주문_테이블.getId(), 빈_주문_테이블));

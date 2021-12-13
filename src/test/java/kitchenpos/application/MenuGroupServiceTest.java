@@ -1,7 +1,7 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.InMemoryMenuGroupDao;
-import kitchenpos.dao.MenuGroupDao;
+import kitchenpos.dao.InMemoryMenuGroupRepository;
+import kitchenpos.dao.MenuGroupRepository;
 import kitchenpos.domain.MenuGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,13 +21,13 @@ class MenuGroupServiceTest {
     private static final String 메뉴_그룹_이름 = "추천메뉴";
     private static final MenuGroup 메뉴_그룹 = 메뉴_그룹(메뉴_그룹_이름);
 
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
     private MenuGroupService menuGroupService;
 
     @BeforeEach
     void setUp() {
-        menuGroupDao = new InMemoryMenuGroupDao();
-        menuGroupService = new MenuGroupService(menuGroupDao);
+        menuGroupRepository = new InMemoryMenuGroupRepository();
+        menuGroupService = new MenuGroupService(menuGroupRepository);
     }
 
     @Test

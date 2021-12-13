@@ -1,7 +1,7 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.InMemoryProductDao;
-import kitchenpos.dao.ProductDao;
+import kitchenpos.dao.InMemoryProductRepository;
+import kitchenpos.dao.ProductRepository;
 import kitchenpos.domain.Product;
 import kitchenpos.dto.ProductRequest;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,13 +28,13 @@ class ProductServiceTest {
     private static final int 상품_가격 = 17_000;
     private static final ProductRequest 상품_요청 = ProductRequest.of(상품_이름, 상품_가격);
 
-    ProductDao productDao;
+    ProductRepository productRepository;
     ProductService productService;
 
     @BeforeEach
     void setUp() {
-        productDao = new InMemoryProductDao();
-        productService = new ProductService(productDao);
+        productRepository = new InMemoryProductRepository();
+        productService = new ProductService(productRepository);
     }
 
     @Test

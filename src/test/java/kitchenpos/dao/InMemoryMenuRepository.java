@@ -4,7 +4,7 @@ import kitchenpos.domain.Menu;
 
 import java.util.List;
 
-public class InMemoryMenuDao extends InMemoryDao<Menu> implements MenuDao {
+public class InMemoryMenuRepository extends InMemoryRepository<Menu> implements MenuRepository {
 
     @Override
     public long countByIdIn(List<Long> ids) {

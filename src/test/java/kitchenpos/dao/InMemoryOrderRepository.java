@@ -6,7 +6,7 @@ import kitchenpos.domain.OrderStatus;
 import java.util.List;
 import java.util.Optional;
 
-public class InMemoryOrderDao extends InMemoryDao<Order> implements OrderDao {
+public class InMemoryOrderRepository extends InMemoryRepository<Order> implements OrderRepository {
 
     @Override
     public boolean existsByOrderTableIdInAndOrderStatusIn(List<Long> orderTableIds, List<OrderStatus> orderStatuses) {

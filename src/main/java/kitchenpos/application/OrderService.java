@@ -1,9 +1,9 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderLineItemDao;
-import kitchenpos.dao.OrderTableDao;
+import kitchenpos.dao.MenuRepository;
+import kitchenpos.dao.OrderRepository;
+import kitchenpos.dao.OrderLineItemRepository;
+import kitchenpos.dao.OrderTableRepository;
 import kitchenpos.domain.*;
 import kitchenpos.dto.OrderLineItemRequest;
 import kitchenpos.dto.OrderRequest;
@@ -17,21 +17,21 @@ import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
-    private final MenuDao menuDao;
-    private final OrderDao orderDao;
-    private final OrderLineItemDao orderLineItemDao;
-    private final OrderTableDao orderTableDao;
+    private final MenuRepository menuRepository;
+    private final OrderRepository orderRepository;
+    private final OrderLineItemRepository orderLineItemRepository;
+    private final OrderTableRepository orderTableRepository;
 
     public OrderService(
-            final MenuDao menuDao,
-            final OrderDao orderDao,
-            final OrderLineItemDao orderLineItemDao,
-            final OrderTableDao orderTableDao
+            final MenuRepository menuRepository,
+            final OrderRepository orderRepository,
+            final OrderLineItemRepository orderLineItemRepository,
+            final OrderTableRepository orderTableRepository
     ) {
-        this.menuDao = menuDao;
-        this.orderDao = orderDao;
-        this.orderLineItemDao = orderLineItemDao;
-        this.orderTableDao = orderTableDao;
+        this.menuRepository = menuRepository;
+        this.orderRepository = orderRepository;
+        this.orderLineItemRepository = orderLineItemRepository;
+        this.orderTableRepository = orderTableRepository;
     }
 
     @Transactional
@@ -44,11 +44,11 @@ public class OrderService {
         orderTable.checkEmpty();
 
         final Order order = Order.create(orderTable, OrderStatus.COOKING, orderLineItems);
-        return orderDao.save(order);
+        return orderRepository.save(order);
     }
 
     public List<Order> list() {
-        return orderDao.findAll();
+        return orderRepository.findAll();
     }
 
     @Transactional
@@ -61,7 +61,7 @@ public class OrderService {
     }
 
     private Order getOrder(Long orderId) {
-        return orderDao.findById(orderId)
+        return orderRepository.findById(orderId)
                 .orElseThrow(IllegalArgumentException::new);
     }
 
@@ -72,13 +72,13 @@ public class OrderService {
             throw new IllegalArgumentException();
         }
 
-        if (menuIds.size() != menuDao.countByIdIn(menuIds)) {
+        if (menuIds.size() != menuRepository.countByIdIn(menuIds)) {
             throw new IllegalArgumentException();
         }
     }
 
     private OrderTable getOrderTable(Long orderTableId) {
-        return orderTableDao.findById(orderTableId)
+        return orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
     }
 
@@ -89,6 +89,6 @@ public class OrderService {
     }
 
     private Menu getMenu(Long menuId) {
-        return menuDao.findById(menuId).orElseThrow(IllegalArgumentException::new);
+        return menuRepository.findById(menuId).orElseThrow(IllegalArgumentException::new);
     }
 }

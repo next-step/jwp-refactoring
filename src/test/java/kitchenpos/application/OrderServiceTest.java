@@ -43,24 +43,24 @@ class OrderServiceTest {
     private static final Menu 메뉴 = 메뉴(null, "후라이드", new BigDecimal(17_000), 메뉴_상품(null, 1));
     private static final OrderTable 주문_테이블 = 주문_테이블(2, false);
 
-    private MenuDao menuDao;
-    private OrderDao orderDao;
-    private OrderLineItemDao orderLineItemDao;
-    private OrderTableDao orderTableDao;
+    private MenuRepository menuRepository;
+    private OrderRepository orderRepository;
+    private OrderLineItemRepository orderLineItemRepository;
+    private OrderTableRepository orderTableRepository;
     private OrderService orderService;
     private Menu 저장된_메뉴;
     private OrderTable 저장된_주문_테이블;
 
     @BeforeEach
     void setUp() {
-        menuDao = new InMemoryMenuDao();
-        orderDao = new InMemoryOrderDao();
-        orderLineItemDao = new InMemoryOrderLineItemDao();
-        orderTableDao = new InMemoryOrderTableDao();
-        orderService = new OrderService(menuDao, orderDao, orderLineItemDao, orderTableDao);
+        menuRepository = new InMemoryMenuRepository();
+        orderRepository = new InMemoryOrderRepository();
+        orderLineItemRepository = new InMemoryOrderLineItemRepository();
+        orderTableRepository = new InMemoryOrderTableRepository();
+        orderService = new OrderService(menuRepository, orderRepository, orderLineItemRepository, orderTableRepository);
 
-        저장된_메뉴 = menuDao.save(메뉴);
-        저장된_주문_테이블 = orderTableDao.save(주문_테이블);
+        저장된_메뉴 = menuRepository.save(메뉴);
+        저장된_주문_테이블 = orderTableRepository.save(주문_테이블);
     }
 
     @Test
@@ -99,7 +99,7 @@ class OrderServiceTest {
 
     @Test
     void create_주문_테이블이_올바르지_않으면_주문을_등록할_수_없다() {
-        OrderTable 비어있는_주문_테이블 = orderTableDao.save(주문_테이블(2, true));
+        OrderTable 비어있는_주문_테이블 = orderTableRepository.save(주문_테이블(2, true));
         assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> orderService.create(주문_요청(비어있는_주문_테이블, 주문_항목(저장된_메뉴, 수량))));
     }

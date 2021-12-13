@@ -41,22 +41,22 @@ class MenuServiceTest {
     private static final MenuGroup 메뉴_그룹 = 메뉴_그룹();
     private static final Product 상품 = 상품("강정치킨", new BigDecimal(17_000));
 
-    private MenuDao menuDao;
-    private MenuGroupDao menuGroupDao;
-    private ProductDao productDao;
+    private MenuRepository menuRepository;
+    private MenuGroupRepository menuGroupRepository;
+    private ProductRepository productRepository;
     private MenuService menuService;
     private MenuGroup 저장된_메뉴_그룹;
     private Product 저장된_상품;
 
     @BeforeEach
     void setUp() {
-        menuDao = new InMemoryMenuDao();
-        menuGroupDao = new InMemoryMenuGroupDao();
-        productDao = new InMemoryProductDao();
-        menuService = new MenuService(menuDao, menuGroupDao, productDao);
+        menuRepository = new InMemoryMenuRepository();
+        menuGroupRepository = new InMemoryMenuGroupRepository();
+        productRepository = new InMemoryProductRepository();
+        menuService = new MenuService(menuRepository, menuGroupRepository, productRepository);
 
-        저장된_메뉴_그룹 = menuGroupDao.save(메뉴_그룹);
-        저장된_상품 = productDao.save(상품);
+        저장된_메뉴_그룹 = menuGroupRepository.save(메뉴_그룹);
+        저장된_상품 = productRepository.save(상품);
     }
 
     @Test

@@ -1,8 +1,8 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.dao.ProductDao;
+import kitchenpos.dao.MenuRepository;
+import kitchenpos.dao.MenuGroupRepository;
+import kitchenpos.dao.ProductRepository;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
@@ -17,18 +17,18 @@ import java.util.stream.Collectors;
 
 @Service
 public class MenuService {
-    private final MenuDao menuDao;
-    private final MenuGroupDao menuGroupDao;
-    private final ProductDao productDao;
+    private final MenuRepository menuRepository;
+    private final MenuGroupRepository menuGroupRepository;
+    private final ProductRepository productRepository;
 
     public MenuService(
-            final MenuDao menuDao,
-            final MenuGroupDao menuGroupDao,
-            final ProductDao productDao
+            final MenuRepository menuRepository,
+            final MenuGroupRepository menuGroupRepository,
+            final ProductRepository productRepository
     ) {
-        this.menuDao = menuDao;
-        this.menuGroupDao = menuGroupDao;
-        this.productDao = productDao;
+        this.menuRepository = menuRepository;
+        this.menuGroupRepository = menuGroupRepository;
+        this.productRepository = productRepository;
     }
 
     @Transactional
@@ -39,7 +39,7 @@ public class MenuService {
 
         menu.checkPrice();
 
-        return menuDao.save(menu);
+        return menuRepository.save(menu);
     }
 
     private List<MenuProduct> getMenuProducts(MenuRequest request) {
@@ -49,7 +49,7 @@ public class MenuService {
     }
 
     private MenuGroup getMenuGroup(Long menuGroupId) {
-        return menuGroupDao.findById(menuGroupId)
+        return menuGroupRepository.findById(menuGroupId)
                 .orElseThrow(IllegalArgumentException::new);
     }
 
@@ -58,11 +58,11 @@ public class MenuService {
     }
 
     private Product getProduct(MenuProductRequest menuProductRequest) {
-        return productDao.findById(menuProductRequest.getProductId())
+        return productRepository.findById(menuProductRequest.getProductId())
                 .orElseThrow(IllegalArgumentException::new);
     }
 
     public List<Menu> list() {
-        return menuDao.findAll();
+        return menuRepository.findAll();
     }
 }

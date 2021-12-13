@@ -5,9 +5,9 @@ import kitchenpos.domain.MenuProduct;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class InMemoryMenuProductDao extends InMemoryDao<MenuProduct> implements MenuProductDao {
+public class InMemoryMenuProductRepository extends InMemoryRepository<MenuProduct> implements MenuProductRepository {
 
-    public InMemoryMenuProductDao() {
+    public InMemoryMenuProductRepository() {
         super("seq");
     }
 
