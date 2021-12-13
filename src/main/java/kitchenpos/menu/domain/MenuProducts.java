@@ -24,23 +24,23 @@ class MenuProducts {
         this.products = products;
     }
 
-     static MenuProducts from(List<MenuProduct> products) {
+    static MenuProducts from(List<MenuProduct> products) {
         return new MenuProducts(products);
     }
 
-     List<MenuProduct> list() {
+    List<MenuProduct> list() {
         return Collections.unmodifiableList(products);
     }
 
-     Price sumPrice() {
+    Price sumPrice() {
         return products.stream()
             .map(MenuProduct::price)
             .reduce(Price::sum)
             .orElse(Price.ZERO);
     }
 
-     int size() {
-        return products.size();
+    boolean isNotEmpty() {
+        return !products.isEmpty();
     }
 
     void changeMenu(Menu menu) {

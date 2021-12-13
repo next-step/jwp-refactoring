@@ -18,19 +18,19 @@ public class TableGroupRestController {
 
     private final TableGroupService tableGroupService;
 
-    public TableGroupRestController(final TableGroupService tableGroupService) {
+    public TableGroupRestController(TableGroupService tableGroupService) {
         this.tableGroupService = tableGroupService;
     }
 
     @PostMapping
-    public ResponseEntity<TableGroupResponse> create(@RequestBody final TableGroupRequest request) {
-        final TableGroupResponse created = tableGroupService.create(request);
+    public ResponseEntity<TableGroupResponse> create(@RequestBody TableGroupRequest request) {
+        TableGroupResponse created = tableGroupService.create(request);
         return ResponseEntity.created(uri(created))
             .body(created);
     }
 
     @DeleteMapping("/{tableGroupId}")
-    public ResponseEntity<Void> ungroup(@PathVariable final long tableGroupId) {
+    public ResponseEntity<Void> ungroup(@PathVariable long tableGroupId) {
         tableGroupService.ungroup(tableGroupId);
         return ResponseEntity.noContent()
             .build();

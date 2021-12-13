@@ -18,13 +18,13 @@ public class MenuGroupRestController {
 
     private final MenuGroupService menuGroupService;
 
-    public MenuGroupRestController(final MenuGroupService menuGroupService) {
+    public MenuGroupRestController(MenuGroupService menuGroupService) {
         this.menuGroupService = menuGroupService;
     }
 
     @PostMapping
     public ResponseEntity<MenuGroupResponse> create(@RequestBody MenuGroupRequest request) {
-        final MenuGroupResponse created = menuGroupService.create(request);
+        MenuGroupResponse created = menuGroupService.create(request);
         return ResponseEntity.created(uri(created))
             .body(created);
     }

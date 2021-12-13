@@ -1,4 +1,4 @@
-package kitchenpos.order.application.sample;
+package kitchenpos.order.sample;
 
 import static kitchenpos.menu.sample.MenuSample.이십원_후라이드치킨_두마리세트;
 import static org.mockito.Mockito.lenient;

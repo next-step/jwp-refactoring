@@ -20,7 +20,7 @@ public class MenuProduct {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long seq;
+    private long seq;
 
     @JoinColumn(name = "menu_id", nullable = false, updatable = false, foreignKey = @ForeignKey(name = "fk_menu_product_menu"))
     @ManyToOne(optional = false)
@@ -47,7 +47,7 @@ public class MenuProduct {
         return new MenuProduct(product, quantity);
     }
 
-    public Long seq() {
+    public long seq() {
         return seq;
     }
 
@@ -64,6 +64,7 @@ public class MenuProduct {
     }
 
     void changeMenu(Menu menu) {
+        Assert.notNull(menu, "변경하려는 메뉴는 필수입니다.");
         this.menu = menu;
     }
 

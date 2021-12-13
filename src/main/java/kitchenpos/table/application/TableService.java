@@ -21,7 +21,7 @@ public class TableService {
         this.orderTableRepository = orderTableRepository;
     }
 
-    public OrderTableResponse create(final OrderTableRequest request) {
+    public OrderTableResponse create(OrderTableRequest request) {
         return OrderTableResponse.from(orderTableRepository.save(request.toEntity()));
     }
 
@@ -40,10 +40,6 @@ public class TableService {
         OrderTable orderTable = findById(id);
         orderTable.changeNumberOfGuests(request.numberOfGuests());
         return OrderTableResponse.from(orderTable);
-    }
-
-    public List<OrderTable> findAllByIdIn(List<Long> orderTableIds) {
-        return orderTableRepository.findAllById(orderTableIds);
     }
 
     public OrderTable findById(long id) {

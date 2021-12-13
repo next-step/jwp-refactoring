@@ -45,6 +45,7 @@ class OrderTables {
     }
 
     void changeGroup(TableGroup tableGroup) {
+        Assert.notNull(tableGroup, "변경하려는 그룹은 필수입니다.");
         tables.forEach(table -> table.changeGroup(tableGroup));
     }
 

@@ -46,7 +46,7 @@ public class OrderLineItem {
         return new OrderLineItem(quantity, menu);
     }
 
-    public Long seq() {
+    public long seq() {
         return seq;
     }
 

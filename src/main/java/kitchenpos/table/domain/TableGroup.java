@@ -23,7 +23,7 @@ public class TableGroup {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private long id;
 
     @Embedded
     private OrderTables orderTables;
@@ -45,7 +45,7 @@ public class TableGroup {
         return new TableGroup(OrderTables.from(orderTables));
     }
 
-    public Long id() {
+    public long id() {
         return id;
     }
 

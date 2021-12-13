@@ -14,7 +14,7 @@ public class MenuGroup {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private long id;
 
     @Embedded
     private Name name;
@@ -31,7 +31,7 @@ public class MenuGroup {
         return new MenuGroup(name);
     }
 
-    public Long id() {
+    public long id() {
         return id;
     }
 

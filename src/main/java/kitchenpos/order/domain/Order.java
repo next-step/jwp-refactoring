@@ -46,7 +46,7 @@ public class Order {
     @Embedded
     private OrderLineItems orderLineItems;
 
-    public Order() {
+    protected Order() {
     }
 
     private Order(OrderTable orderTable, OrderLineItems lineItems) {
@@ -61,7 +61,7 @@ public class Order {
         return new Order(orderTable, OrderLineItems.from(lineItems));
     }
 
-    public Long id() {
+    public long id() {
         return id;
     }
 

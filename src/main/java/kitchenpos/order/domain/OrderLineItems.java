@@ -37,6 +37,7 @@ class OrderLineItems {
     }
 
     void changeOrder(Order order) {
+        Assert.notNull(order, "변경하려는 주문은 필수입니다.");
         items.forEach(item -> item.changeOrder(order));
     }
 

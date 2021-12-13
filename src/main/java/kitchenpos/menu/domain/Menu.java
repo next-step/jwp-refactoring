@@ -16,10 +16,9 @@ import org.springframework.util.Assert;
 @Entity
 public class Menu {
 
-    private static final int MIN_PRODUCTS_SIZE = 1;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private long id;
 
     @Embedded
     private Name name;
@@ -50,7 +49,7 @@ public class Menu {
         return new Menu(name, price, menuGroup, MenuProducts.from(products));
     }
 
-    public Long id() {
+    public long id() {
         return id;
     }
 
@@ -71,9 +70,12 @@ public class Menu {
     }
 
     private void validate(Name name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
+        Assert.notNull(name, "이름은 필수입니다.");
+        Assert.notNull(price, "가격은 필수입니다.");
+        Assert.notNull(menuGroup, "메뉴 그룹은 필수입니다.");
         Assert.notNull(menuProducts, "메뉴 상품들은 필수입니다.");
-        Assert.isTrue(menuProducts.size() >= MIN_PRODUCTS_SIZE,
-            String.format("메뉴 상품들(%s)은 적어도 %d개 이상이어야 합니다.", menuProducts, MIN_PRODUCTS_SIZE));
+        Assert.isTrue(menuProducts.isNotEmpty(), "메뉴 상품들은 비어있을 수 없습니다.");
+
         Price productsSumPrice = menuProducts.sumPrice();
         Assert.isTrue(price.equalOrLessThan(productsSumPrice),
             String.format("메뉴 가격(%s)은 메뉴 상품들(%s)의 가격보다 작거나 같아야 합니다.",

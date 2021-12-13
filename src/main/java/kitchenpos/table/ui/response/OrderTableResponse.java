@@ -27,7 +27,7 @@ public final class OrderTableResponse {
 
     public static OrderTableResponse from(OrderTable orderTable) {
         if (orderTable.hasTableGroup()) {
-            new OrderTableResponse(orderTable.id(),
+            return new OrderTableResponse(orderTable.id(),
                 orderTable.numberOfGuests().value(),
                 orderTable.isEmpty(),
                 orderTable.tableGroup().id()

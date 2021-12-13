@@ -50,7 +50,7 @@ public class OrderTable {
         return new OrderTable(numberOfGuests, status);
     }
 
-    public Long id() {
+    public long id() {
         return id;
     }
 

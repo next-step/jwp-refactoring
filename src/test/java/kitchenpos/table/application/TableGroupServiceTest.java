@@ -1,6 +1,6 @@
 package kitchenpos.table.application;
 
-import static kitchenpos.order.application.sample.OrderLineItemSample.이십원_후라이트치킨_두마리세트_한개_주문_항목;
+import static kitchenpos.order.sample.OrderLineItemSample.이십원_후라이트치킨_두마리세트_한개_주문_항목;
 import static kitchenpos.table.sample.OrderTableSample.빈_두명_테이블;
 import static kitchenpos.table.sample.OrderTableSample.빈_세명_테이블;
 import static kitchenpos.table.sample.OrderTableSample.채워진_다섯명_테이블;

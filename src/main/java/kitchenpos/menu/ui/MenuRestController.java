@@ -18,13 +18,13 @@ public class MenuRestController {
 
     private final MenuService menuService;
 
-    public MenuRestController(final MenuService menuService) {
+    public MenuRestController(MenuService menuService) {
         this.menuService = menuService;
     }
 
     @PostMapping
     public ResponseEntity<MenuResponse> create(@RequestBody MenuRequest request) {
-        final MenuResponse created = menuService.create(request);
+        MenuResponse created = menuService.create(request);
         return ResponseEntity.created(uri(created))
             .body(created);
     }

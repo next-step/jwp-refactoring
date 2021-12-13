@@ -1,8 +1,8 @@
 package kitchenpos.order.application;
 
 import static kitchenpos.menu.sample.MenuSample.이십원_후라이드치킨_두마리세트;
-import static kitchenpos.order.application.sample.OrderSample.완료된_후라이트치킨세트_두개_주문;
-import static kitchenpos.order.application.sample.OrderSample.조리중인_후라이트치킨세트_두개_주문;
+import static kitchenpos.order.sample.OrderSample.완료된_후라이트치킨세트_두개_주문;
+import static kitchenpos.order.sample.OrderSample.조리중인_후라이트치킨세트_두개_주문;
 import static kitchenpos.table.sample.OrderTableSample.빈_세명_테이블;
 import static kitchenpos.table.sample.OrderTableSample.채워진_다섯명_테이블;
 import static org.assertj.core.api.Assertions.assertThat;
