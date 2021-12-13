@@ -63,5 +63,4 @@ public class MenuProductDto {
     public int hashCode() {
         return Objects.hash(seq, menuId, productId, quantity);
     }
-
 }

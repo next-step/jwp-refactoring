@@ -30,6 +30,10 @@ public class OrderDto {
         return new OrderDto(null, orderTableId, "", null, orderLineItems);
     }
 
+    public static OrderDto of(String orderStatus) {
+        return new OrderDto(null, null, orderStatus, null, null);
+    }
+
     public static OrderDto of(Orders order) {
         List<OrderLineItemDto> tempOrderLineItems = order.getOrderLineItems().stream()
                                                             .map(OrderLineItemDto::of)

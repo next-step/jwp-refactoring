@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,6 +24,7 @@ import kitchenpos.domain.product.Product;
 import kitchenpos.domain.table.OrderTable;
 import kitchenpos.domain.table.OrderTableRepository;
 import kitchenpos.dto.OrderDto;
+import kitchenpos.dto.OrderLineItemDto;
 import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menu.MenuProduct;
 import kitchenpos.domain.order.Orders;
@@ -50,58 +50,39 @@ public class OrderServiceTest {
     @InjectMocks
     private OrderService orderService;
 
-    private Menu 뿌링클콤보;
+    @DisplayName("주문이 저장된다.")
+    @Test
+    void create_order() {
+        // given
+        Product 뿌링클치킨 = Product.of("뿌링클치킨", Price.of(15_000));
+        Product 치킨무 = Product.of("치킨무", Price.of(1_000));
+        Product 코카콜라 = Product.of("코카콜라", Price.of(3_000));
 
-    private MenuProduct 뿌링클콤보_뿌링클치킨;
-    private MenuProduct 뿌링클콤보_치킨무;
-    private MenuProduct 뿌링클콤보_코카콜라;
+        MenuProduct 뿌링클콤보_뿌링클치킨 = MenuProduct.of(뿌링클치킨, 1L);
+        MenuProduct 뿌링클콤보_치킨무 = MenuProduct.of(치킨무, 1L);
+        MenuProduct 뿌링클콤보_코카콜라 = MenuProduct.of(코카콜라, 1L);
 
-    private Product 뿌링클치킨;
-    private Product 치킨무;
-    private Product 코카콜라;
-
-    private OrderTable 치킨_주문_단체테이블;
-    private Orders 치킨주문;
-    private OrderLineItem 치킨_주문항목;
-
-    @BeforeEach
-    void setUp() {
-        뿌링클치킨 = Product.of("뿌링클치킨", Price.of(15_000));
-        치킨무 = Product.of("치킨무", Price.of(1_000));
-        코카콜라 = Product.of("코카콜라", Price.of(3_000));
-
-        뿌링클콤보 = Menu.of("뿌링클콤보", Price.of(18_000));
-
-        뿌링클콤보_뿌링클치킨 = MenuProduct.of(뿌링클치킨, 1L);
-        뿌링클콤보_치킨무 = MenuProduct.of(치킨무, 1L);
-        뿌링클콤보_코카콜라 = MenuProduct.of(코카콜라, 1L);
+        Menu 뿌링클콤보 = Menu.of("뿌링클콤보", Price.of(18_000));
 
         뿌링클콤보_뿌링클치킨.acceptMenu(뿌링클콤보);
         뿌링클콤보_치킨무.acceptMenu(뿌링클콤보);
         뿌링클콤보_코카콜라.acceptMenu(뿌링클콤보);
 
-        치킨_주문_단체테이블 = OrderTable.of(10, false);
+        OrderTable 치킨_주문_단체테이블 = OrderTable.of(10, false);
 
-        치킨_주문항목 = OrderLineItem.of(뿌링클콤보, 1L);
-
-        치킨주문 = Orders.of(치킨_주문_단체테이블, OrderStatus.COOKING);
+        OrderLineItem 치킨_주문항목 = OrderLineItem.of(뿌링클콤보, 1L);
+        Orders 치킨주문 = Orders.of(치킨_주문_단체테이블, OrderStatus.COOKING);
         치킨_주문항목.acceptOrder(치킨주문);
-    }
 
-    @DisplayName("주문이 저장된다.")
-    @Test
-    void create_order() {
-        // given
         when(menuService.countByIdIn(anyList())).thenReturn(1L);
-        when(menuService.findById(nullable(Long.class))).thenReturn(this.뿌링클콤보);
-        when(orderTableRepository.findById(nullable(Long.class))).thenReturn(Optional.of(this.치킨_주문_단체테이블));
-        when(orderRepository.save(any(Orders.class))).thenReturn(this.치킨주문);
+        when(menuService.findById(nullable(Long.class))).thenReturn(뿌링클콤보);
+        when(orderTableRepository.findById(nullable(Long.class))).thenReturn(Optional.of(치킨_주문_단체테이블));
+        when(orderRepository.save(any(Orders.class))).thenReturn(치킨주문);
 
-        Orders 치킨주문_요청 = Orders.of(this.치킨_주문_단체테이블, OrderStatus.NONE);
-        치킨주문_요청.changeOrderLineItems(List.of(this.치킨_주문항목));
+        OrderDto 주문_요청전문 = OrderDto.of(1L, List.of(OrderLineItemDto.of(1L, 1L)));
 
         // when
-        OrderDto savedOrder = orderService.create(OrderDto.of(치킨주문_요청));
+        OrderDto savedOrder = orderService.create(주문_요청전문);
 
         // then
         assertAll(
@@ -114,72 +95,102 @@ public class OrderServiceTest {
     @Test
     void exception_createOrder_emptyOrderedMenu() {
         // given
-        this.치킨주문.changeOrderLineItems(List.of(this.치킨_주문항목));
+        Menu 뿌링클콤보 = Menu.of("뿌링클콤보", Price.of(18_000));
+        OrderLineItem 치킨_주문항목 = OrderLineItem.of(뿌링클콤보, 1L);
+
+        OrderTable 치킨_주문_단체테이블 = OrderTable.of(10, false);
+        Orders 치킨주문 = Orders.of(치킨_주문_단체테이블, OrderStatus.COOKING);
+        치킨_주문항목.acceptOrder(치킨주문);
 
         // when
         // then
         Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
-                    .isThrownBy(() -> orderService.create(OrderDto.of(this.치킨주문)));
+                    .isThrownBy(() -> orderService.create(OrderDto.of(치킨주문)));
     }
 
     @DisplayName("미등록된 주문테이블에서 주문 시 예외가 발생된다.")
     @Test
     void exception_createOrder_notExistedOrderTable() {
         // given
-        when(orderTableRepository.findById(this.치킨_주문_단체테이블.getId())).thenReturn(Optional.empty());
+        Menu 뿌링클콤보 = Menu.of("뿌링클콤보", Price.of(18_000));
+        OrderLineItem 치킨_주문항목 = OrderLineItem.of(뿌링클콤보, 1L);
 
-        this.치킨주문.changeOrderLineItems(List.of(this.치킨_주문항목));
+        OrderTable 치킨_주문_단체테이블 = OrderTable.of(10, false);
+        Orders 치킨주문 = Orders.of(치킨_주문_단체테이블, OrderStatus.COOKING);
+        치킨_주문항목.acceptOrder(치킨주문);
+
+        when(orderTableRepository.findById(nullable(Long.class))).thenReturn(Optional.empty());
 
         // when
         // then
         Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
-                    .isThrownBy(() -> orderService.create(OrderDto.of(this.치킨주문)));
+                    .isThrownBy(() -> orderService.create(OrderDto.of(치킨주문)));
     }
 
     @DisplayName("주문테이블이 빈테이블일 시 예외가 발생된다.")
     @Test
     void exception_createOrder_emptyOrderTable() {
         // given
+        Menu 뿌링클콤보 = Menu.of("뿌링클콤보", Price.of(18_000));
+
+        OrderTable 치킨_주문_단체테이블 = OrderTable.of(0, true);
+
+        OrderLineItem 치킨_주문항목 = OrderLineItem.of(뿌링클콤보, 1L);
+        Orders 치킨주문 = Orders.of(치킨_주문_단체테이블, OrderStatus.MEAL);
+        치킨_주문항목.acceptOrder(치킨주문);
+
         when(menuService.countByIdIn(anyList())).thenReturn(1L);
-        when(orderTableRepository.findById(nullable(Long.class))).thenReturn(Optional.of(this.치킨_주문_단체테이블));
-
-        this.치킨주문.changeOrderLineItems(List.of(this.치킨_주문항목));
-
-        치킨_주문_단체테이블.changeEmpty(true);
+        when(orderTableRepository.findById(nullable(Long.class))).thenReturn(Optional.of(치킨_주문_단체테이블));
 
         // when
         // then
         Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
-                    .isThrownBy(() -> orderService.create(OrderDto.of(this.치킨주문)));
+                    .isThrownBy(() -> orderService.create(OrderDto.of(치킨주문)));
     }
 
     @DisplayName("주문이 조회된다.")
     @Test
     void search_order() {
         // given
-        when(orderRepository.findAll()).thenReturn(List.of(this.치킨주문));
-   
+        Menu 뿌링클콤보 = Menu.of("뿌링클콤보", Price.of(18_000));
+
+        OrderTable 치킨_주문_단체테이블 = OrderTable.of(10, false);
+
+        OrderLineItem 치킨_주문항목 = OrderLineItem.of(뿌링클콤보, 1L);
+        Orders 치킨주문 = Orders.of(치킨_주문_단체테이블, OrderStatus.MEAL);
+        치킨_주문항목.acceptOrder(치킨주문);
+
+        when(orderRepository.findAll()).thenReturn(List.of(치킨주문));
+
         // when
         List<OrderDto> orders = orderService.list();
 
         // then
-        Assertions.assertThat(orders).isEqualTo(List.of(OrderDto.of(this.치킨주문)));
+        Assertions.assertThat(orders).isEqualTo(List.of(OrderDto.of(치킨주문)));
     }
 
     @DisplayName("주문의 상태가 변경된다.")
     @Test
     void update_orderStatus() {
         // given
-        when(orderRepository.findById(this.치킨주문.getId())).thenReturn(Optional.of(this.치킨주문));
+        Menu 뿌링클콤보 = Menu.of("뿌링클콤보", Price.of(18_000));
 
-        this.치킨주문.changeOrderStatus(OrderStatus.MEAL);
+        OrderTable 치킨_주문_단체테이블 = OrderTable.of(10, false);
+
+        OrderLineItem 치킨_주문항목 = OrderLineItem.of(뿌링클콤보, 1L);
+        Orders 치킨주문 = Orders.of(치킨_주문_단체테이블, OrderStatus.COOKING);
+        치킨_주문항목.acceptOrder(치킨주문);
+
+        when(orderRepository.findById(치킨주문.getId())).thenReturn(Optional.of(치킨주문));
+
+        OrderDto 상태변경_요청전문 = OrderDto.of(OrderStatus.MEAL.name());
 
         // when
-        Orders chagedOrder = orderService.changeOrderStatus(this.치킨주문.getId(), OrderDto.of(this.치킨주문));
+        Orders chagedOrder = orderService.changeOrderStatus(치킨주문.getId(), 상태변경_요청전문);
 
         // then
         assertAll(
-            () -> Assertions.assertThat(chagedOrder).isEqualTo(this.치킨주문),
+            () -> Assertions.assertThat(chagedOrder).isEqualTo(치킨주문),
             () -> Assertions.assertThat(chagedOrder.getOrderStatus()).isEqualTo(OrderStatus.MEAL)
         );
     }
@@ -188,13 +199,19 @@ public class OrderServiceTest {
     @Test
     void exception_updateOrderStatus_afterOrderStatusCompletion() {
         // given
-        when(orderRepository.findById(this.치킨주문.getId())).thenReturn(Optional.of(this.치킨주문));
+        Menu 뿌링클콤보 = Menu.of("뿌링클콤보", Price.of(18_000));
 
-        this.치킨주문.changeOrderStatus(OrderStatus.COMPLETION);
+        OrderTable 치킨_주문_단체테이블 = OrderTable.of(10, false);
+
+        OrderLineItem 치킨_주문항목 = OrderLineItem.of(뿌링클콤보, 1L);
+        Orders 치킨주문 = Orders.of(치킨_주문_단체테이블, OrderStatus.COMPLETION);
+        치킨_주문항목.acceptOrder(치킨주문);
+
+        when(orderRepository.findById(치킨주문.getId())).thenReturn(Optional.of(치킨주문));
 
         // when
         // then
         Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
-                    .isThrownBy(() -> orderService.changeOrderStatus(this.치킨주문.getId(), OrderDto.of(this.치킨주문)));
+                    .isThrownBy(() -> orderService.changeOrderStatus(치킨주문.getId(), OrderDto.of(치킨주문)));
     }
 }

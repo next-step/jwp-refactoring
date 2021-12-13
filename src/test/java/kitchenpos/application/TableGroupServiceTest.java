@@ -1,17 +1,14 @@
 package kitchenpos.application;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.assertj.core.api.Assertions;
 import org.assertj.core.util.Lists;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -42,34 +39,23 @@ public class TableGroupServiceTest {
     @InjectMocks
     private TableGroupService tableGroupService;
 
-    private OrderTable 치킨_주문_단체테이블;
-    private OrderTable 치킨2_주문_단체테이블;
-    private OrderTable 치킨3_주문_단체테이블;
-
-    private TableGroup 단체주문테이블;
-
-    @BeforeEach
-    void setUp() {
-        치킨_주문_단체테이블 = OrderTable.of(0, true);
-        치킨2_주문_단체테이블 = OrderTable.of(0, true);
-        치킨3_주문_단체테이블 =  OrderTable.of(0, true);
-
-        단체주문테이블 = TableGroup.of(new ArrayList<OrderTable>());
-    }
-
     @DisplayName("단체지정이 저장된다.")
     @Test
     void create_tableGroup() {
         // given
-        TableGroupDto 단체지정_요청정보 = TableGroupDto.of(List.of(OrderTableDto.of(this.치킨_주문_단체테이블), OrderTableDto.of(this.치킨2_주문_단체테이블)));
-        List<OrderTable> 조회된_주문테이블_리스트 = List.of(this.치킨_주문_단체테이블, this.치킨2_주문_단체테이블);
-        TableGroup 단체주문테이블 = TableGroup.of(List.of(this.치킨_주문_단체테이블, this.치킨2_주문_단체테이블));
+        OrderTable 치킨_주문_단체테이블 = OrderTable.of(0, true);
+        OrderTable 치킨2_주문_단체테이블 = OrderTable.of(0, true);
+        TableGroup 단체주문테이블 = TableGroup.of(List.of(치킨_주문_단체테이블, 치킨2_주문_단체테이블));
+
+        List<OrderTable> 조회된_주문테이블_리스트 = List.of(치킨_주문_단체테이블, 치킨2_주문_단체테이블);
 
         when(orderTableRepository.findAllByIdIn(anyList())).thenReturn(조회된_주문테이블_리스트);
         when(tableGroupRepository.save(any(TableGroup.class))).thenReturn(단체주문테이블);
 
+        TableGroupDto 단체지정_요청전문 = TableGroupDto.of(List.of(OrderTableDto.of(치킨_주문_단체테이블), OrderTableDto.of(치킨2_주문_단체테이블)));
+
         // when
-        TableGroupDto createdTableGroup = tableGroupService.create(단체지정_요청정보);
+        TableGroupDto createdTableGroup = tableGroupService.create(단체지정_요청전문);
 
         // then
         Assertions.assertThat(createdTableGroup).isNotNull();
@@ -79,8 +65,10 @@ public class TableGroupServiceTest {
     @Test
     void exception_createTableGoup_underTwoCountOrderTable() {
         // given
-        TableGroup 단체주문테이블 = TableGroup.of(List.of(this.치킨_주문_단체테이블));
-        List<OrderTable> 조회된_주문테이블_리스트 = List.of(this.치킨_주문_단체테이블);
+        OrderTable 치킨_주문_단체테이블 = OrderTable.of(0, true);
+        TableGroup 단체주문테이블 = TableGroup.of(List.of(치킨_주문_단체테이블));
+
+        List<OrderTable> 조회된_주문테이블_리스트 = List.of(치킨_주문_단체테이블);
 
         when(orderTableRepository.findAllByIdIn(anyList())).thenReturn(조회된_주문테이블_리스트);
 
@@ -94,8 +82,11 @@ public class TableGroupServiceTest {
     @Test
     void exception_createTableGoup_containNotExistOrderTable() {
         // given
-        TableGroup 단체주문테이블 = TableGroup.of(List.of(this.치킨_주문_단체테이블, this.치킨2_주문_단체테이블));
-        List<OrderTable> 조회된_주문테이블_리스트 = List.of(this.치킨_주문_단체테이블);
+        OrderTable 치킨_주문_단체테이블 = OrderTable.of(0, true);
+        OrderTable 치킨2_주문_단체테이블 = OrderTable.of(0, true);
+        TableGroup 단체주문테이블 = TableGroup.of(List.of(치킨_주문_단체테이블, 치킨2_주문_단체테이블));
+        
+        List<OrderTable> 조회된_주문테이블_리스트 = List.of(치킨_주문_단체테이블);
 
         when(orderTableRepository.findAllByIdIn(anyList())).thenReturn(조회된_주문테이블_리스트);
 
@@ -109,8 +100,12 @@ public class TableGroupServiceTest {
     @Test
     void exception_createTableGoup_existOrderTableInOtherTableGroup() {
         // given
-        TableGroup 단체주문테이블 = TableGroup.of(List.of(this.치킨_주문_단체테이블, this.치킨2_주문_단체테이블));
-        TableGroup 단체2주문테이블 = TableGroup.of(List.of(this.치킨2_주문_단체테이블, this.치킨3_주문_단체테이블));
+        OrderTable 치킨_주문_단체테이블 = OrderTable.of(0, true);
+        OrderTable 치킨2_주문_단체테이블 = OrderTable.of(0, true);
+        OrderTable 치킨3_주문_단체테이블 =  OrderTable.of(0, true);
+
+        TableGroup 단체주문테이블 = TableGroup.of(List.of(치킨_주문_단체테이블, 치킨2_주문_단체테이블));
+        TableGroup 단체2주문테이블 = TableGroup.of(List.of(치킨2_주문_단체테이블, 치킨3_주문_단체테이블));
 
         List<OrderTable> 조회된_주문테이블_리스트 = List.of(OrderTable.of(0, true), OrderTable.of(단체2주문테이블, 0));
 
@@ -126,26 +121,32 @@ public class TableGroupServiceTest {
     @Test
     void update_tableUnGroup() {
         // given
-        TableGroup 단체주문테이블 = TableGroup.of(Lists.newArrayList(this.치킨_주문_단체테이블, this.치킨2_주문_단체테이블));
-        List<OrderTable> 조회된_주문테이블_리스트 = List.of(OrderTable.of(단체주문테이블, 0), OrderTable.of(단체주문테이블, 0));
+        OrderTable 치킨_주문_단체테이블 = OrderTable.of(0, true);
+        OrderTable 치킨2_주문_단체테이블 = OrderTable.of(0, true);
 
-        when(orderTableRepository.findAllByTableGroupId(단체주문테이블.getId())).thenReturn(조회된_주문테이블_리스트);
+        TableGroup 단체주문테이블 = TableGroup.of(Lists.newArrayList());
+        치킨_주문_단체테이블.groupingTable(단체주문테이블);
+        치킨2_주문_단체테이블.groupingTable(단체주문테이블);
+
+        List<OrderTable> 조회된_주문테이블_리스트 = List.of(치킨_주문_단체테이블, 치킨2_주문_단체테이블);
+
+        when(orderTableRepository.findAllByTableGroupId(nullable(Long.class))).thenReturn(조회된_주문테이블_리스트);
 
         // when
         tableGroupService.ungroup(단체주문테이블.getId());
 
         // then
-        assertAll(
-            () -> Assertions.assertThat(this.치킨_주문_단체테이블.getTableGroup()).isNull(),
-            () -> Assertions.assertThat(this.치킨2_주문_단체테이블.getTableGroup()).isNull()
-        );
+        Assertions.assertThat(단체주문테이블.getOrderTables()).hasSize(0);
     }
 
     @DisplayName("주문테이블의 주문상태가 계산 단계가 아닐때 단체지정이 해제시 예외가 발생된다.")
     @Test
     void exception_updateTableUnGroup_notCompletionOrderStatus() {
         // given
-        TableGroup 단체주문테이블 = TableGroup.of(Lists.newArrayList(this.치킨_주문_단체테이블, this.치킨2_주문_단체테이블));
+        OrderTable 치킨_주문_단체테이블 = OrderTable.of(0, true);
+        OrderTable 치킨2_주문_단체테이블 = OrderTable.of(0, true);
+
+        TableGroup 단체주문테이블 = TableGroup.of(Lists.newArrayList(치킨_주문_단체테이블, 치킨2_주문_단체테이블));
         List<OrderTable> 조회된_주문테이블_리스트 = List.of(OrderTable.of(단체주문테이블, 0), OrderTable.of(단체주문테이블, 0));
 
         when(orderService.isExistNotCompletionOrder(anyList())).thenReturn(true);
@@ -154,6 +155,6 @@ public class TableGroupServiceTest {
         // when
         // then
         Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
-                    .isThrownBy(() -> tableGroupService.ungroup(this.단체주문테이블.getId()));
+                    .isThrownBy(() -> tableGroupService.ungroup(단체주문테이블.getId()));
     }
 }

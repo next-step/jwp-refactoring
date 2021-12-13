@@ -21,7 +21,7 @@ public class Menu {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    
+
     @Embedded
     private Price price;
 
@@ -49,16 +49,6 @@ public class Menu {
     public static Menu of(String name, Price price) {
         return new Menu(name, price, null);
     }
-    
-    public static Menu of(String name, Price price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        Menu menu = new Menu(name, price, menuGroup);
-        
-        for (MenuProduct menuProduct : menuProducts) {
-            menuProduct.acceptMenu(menu);
-        }
-
-        return menu;
-    }
 
     public Long getId() {
         return this.id;
@@ -78,13 +68,4 @@ public class Menu {
     public List<MenuProduct> getMenuProducts() {
         return this.menuProducts;
     }
-
-    public void changePrice(Price price) {
-        this.price = price;
-    }
-
-    public void changeMenuGroup(MenuGroup menuGroup) {
-        this.menuGroup = menuGroup;
-    }
-
 }

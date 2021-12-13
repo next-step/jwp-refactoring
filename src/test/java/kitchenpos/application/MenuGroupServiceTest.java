@@ -6,7 +6,6 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,40 +26,34 @@ public class MenuGroupServiceTest {
     @InjectMocks
     private MenuGroupService menuGroupService;
 
-    private MenuGroup 치킨_메뉴그룹;
-
-    @BeforeEach
-    void setUp() {
-        치킨_메뉴그룹 = MenuGroup.of("치킨");
-    }
-
     @DisplayName("메뉴그룹이 저장된다.")
     @Test
     void create_menuGroup() {
         // given
-        when(menuGroupRepository.save(any(MenuGroup.class))).thenReturn(this.치킨_메뉴그룹);
+        MenuGroup 치킨_메뉴그룹 = MenuGroup.of("치킨");
+        when(menuGroupRepository.save(any(MenuGroup.class))).thenReturn(치킨_메뉴그룹);
 
         // when
-        MenuGroupDto savedMenuGroup = menuGroupService.create(MenuGroupDto.of(this.치킨_메뉴그룹));
+        MenuGroupDto savedMenuGroup = menuGroupService.create(MenuGroupDto.of("치킨"));
 
         // then
-        Assertions.assertThat(savedMenuGroup).isEqualTo(MenuGroupDto.of(this.치킨_메뉴그룹));
+        Assertions.assertThat(savedMenuGroup).isEqualTo(MenuGroupDto.of("치킨"));
     }
 
     @DisplayName("메뉴그룹들이 조회된다.")
     @Test
     void search_menuGroup() {
         // given
+        MenuGroup 치킨_메뉴그룹 = MenuGroup.of("치킨");
         MenuGroup 사이드_메뉴그룹 = MenuGroup.of("사이드");
-        //사이드_메뉴그룹.setId(2L);
         
-
-        when(menuGroupRepository.findAll()).thenReturn(List.of(this.치킨_메뉴그룹, 사이드_메뉴그룹));
+        when(menuGroupRepository.findAll()).thenReturn(List.of(치킨_메뉴그룹, 사이드_메뉴그룹));
 
         // when
         List<MenuGroupDto> searchedMenuGroups = menuGroupService.list();
 
         // then
-        Assertions.assertThat(searchedMenuGroups).isEqualTo(List.of(MenuGroupDto.of(this.치킨_메뉴그룹), MenuGroupDto.of(사이드_메뉴그룹)));
+        Assertions.assertThat(searchedMenuGroups).hasSize(2)
+                                                    .contains(MenuGroupDto.of(치킨_메뉴그룹), MenuGroupDto.of(사이드_메뉴그룹));
     }
 }
