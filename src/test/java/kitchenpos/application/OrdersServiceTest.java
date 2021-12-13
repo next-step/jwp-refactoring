@@ -24,20 +24,19 @@ import kitchenpos.application.fixture.OrderFixtureFactory;
 import kitchenpos.application.fixture.OrderLineItemFixtureFactory;
 import kitchenpos.application.fixture.OrderTableFixtureFactory;
 import kitchenpos.application.fixture.ProductFixtureFactory;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.order.application.OrdersService;
-import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderLineItemRepository;
-import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.domain.Orders;
-import kitchenpos.order.domain.OrdersRepository;
-import kitchenpos.order.dto.OrdersResponse;
-import kitchenpos.product.domain.Product;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.domain.menu.Menu;
+import kitchenpos.domain.menu.MenuProduct;
+import kitchenpos.domain.menu.MenuRepository;
+import kitchenpos.domain.menugroup.MenuGroup;
+import kitchenpos.domain.order.OrderLineItem;
+import kitchenpos.domain.order.OrderLineItemRepository;
+import kitchenpos.domain.order.OrderStatus;
+import kitchenpos.domain.order.Orders;
+import kitchenpos.domain.order.OrdersRepository;
+import kitchenpos.dto.order.OrdersResponse;
+import kitchenpos.domain.product.Product;
+import kitchenpos.domain.table.OrderTable;
+import kitchenpos.domain.table.OrderTableRepository;
 
 @ExtendWith(MockitoExtension.class)
 class OrdersServiceTest {

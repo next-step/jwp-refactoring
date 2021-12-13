@@ -1,6 +1,6 @@
 package kitchenpos.application.fixture;
 
-import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.domain.tablegroup.TableGroup;
 
 public class TableGroupFixtureFactory {
 
