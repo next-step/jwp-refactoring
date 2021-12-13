@@ -32,8 +32,8 @@ public class OrderTableService {
     }
 
     public List<OrderTableResponse> list() {
-        List<OrderTable> orderTables = orderTableRepository.findAll();
-        return orderTables.stream()
+        return orderTableRepository.findAll()
+                .stream()
                 .map(OrderTableResponse::from)
                 .collect(Collectors.toList());
     }
@@ -52,7 +52,7 @@ public class OrderTableService {
             throw new IllegalArgumentException();
         }
 
-        savedOrderTable.setEmpty(orderTableRequest.isEmpty());
+        savedOrderTable.changeEmpty(orderTableRequest.isEmpty());
         OrderTable orderTable = orderTableRepository.save(savedOrderTable);
         return OrderTableResponse .from(orderTable);
     }
@@ -72,7 +72,7 @@ public class OrderTableService {
             throw new IllegalArgumentException();
         }
 
-        savedOrderTable.setNumberOfGuests(numberOfGuests);
+        savedOrderTable.changeNumberOfGuests(numberOfGuests);
         OrderTable orderTable = orderTableRepository.save(savedOrderTable);
         return OrderTableResponse .from(orderTable);
     }
