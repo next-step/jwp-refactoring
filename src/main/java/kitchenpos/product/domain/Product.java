@@ -56,6 +56,10 @@ public class Product {
         return id;
     }
 
+    public String getName() {
+        return name;
+    }
+
     public BigDecimal getPrice() {
         return price;
     }

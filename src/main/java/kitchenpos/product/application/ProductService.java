@@ -9,6 +9,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.product.dto.ProductResponse;
+import kitchenpos.utils.StreamUtils;
 
 @Service
 public class ProductService {
@@ -19,17 +21,20 @@ public class ProductService {
     }
 
     @Transactional
-    public Product create(final Product product) {
+    public ProductResponse create(final Product product) {
         final BigDecimal price = product.getPrice();
 
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalArgumentException();
         }
 
-        return productRepository.save(product);
+        Product savedProduct = productRepository.save(product);
+
+        return ProductResponse.from(savedProduct);
     }
 
-    public List<Product> list() {
-        return productRepository.findAll();
+    public List<ProductResponse> list() {
+        List<Product> products = productRepository.findAll();
+        return StreamUtils.mapToList(products, ProductResponse::from);
     }
 }
