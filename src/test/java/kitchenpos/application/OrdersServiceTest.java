@@ -99,7 +99,6 @@ class OrdersServiceTest {
         given(menuRepository.countByIdIn(Arrays.asList(불고기.getId()))).willReturn(1L);
         given(orderTableRepository.findById(주문_개인테이블.getId())).willReturn(Optional.ofNullable(주문_개인테이블));
         given(ordersRepository.save(any(Orders.class))).willReturn(불고기_주문);
-        given(orderLineItemRepository.save(불고기_주문항목)).willReturn(불고기_주문항목);
 
         // when
         OrdersResponse ordersResponse = ordersService.create(orders);

@@ -22,6 +22,7 @@ import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.tablegroup.application.TableGroupService;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
+import kitchenpos.tablegroup.dto.TableGroupResponse;
 
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
@@ -64,10 +65,10 @@ class TableGroupServiceTest {
         given(tableGroupRepository.save(any(TableGroup.class))).willReturn(단체_테이블그룹);
 
         // when
-        TableGroup savedTableGroup = tableGroupService.create(tableGroup);
+        TableGroupResponse tableGroupResponse = tableGroupService.create(tableGroup);
 
         // then
-        assertThat(savedTableGroup).isEqualTo(단체_테이블그룹);
+        assertThat(tableGroupResponse).isEqualTo(TableGroupResponse.from(단체_테이블그룹));
     }
 
     @DisplayName("TableGroup 을 등록 시, OrderTable 이 0개면 예외가 발생한다.")

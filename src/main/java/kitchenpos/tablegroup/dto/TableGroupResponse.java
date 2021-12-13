@@ -2,6 +2,7 @@ package kitchenpos.tablegroup.dto;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.tablegroup.domain.TableGroup;
@@ -36,5 +37,21 @@ public class TableGroupResponse {
 
     public List<OrderTableResponse> getOrderTables() {
         return orderTables;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        TableGroupResponse that = (TableGroupResponse)o;
+        return Objects.equals(id, that.id) && Objects.equals(createdDate, that.createdDate)
+            && Objects.equals(orderTables, that.orderTables);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, createdDate, orderTables);
     }
 }
