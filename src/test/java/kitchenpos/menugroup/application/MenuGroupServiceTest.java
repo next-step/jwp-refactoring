@@ -18,7 +18,7 @@ class MenuGroupServiceTest extends ServiceTest {
     @DisplayName("메뉴 그룹을 등록한다.")
     void create() {
         // given
-        MenuGroupRequest menuGroupRequest = new MenuGroupRequest("세마리메뉴");
+        MenuGroupRequest menuGroupRequest = new MenuGroupRequest("한마리메뉴");
 
         // when
         MenuGroupResponse menuGroupResponse = menuGroupService.create(menuGroupRequest);
@@ -33,10 +33,13 @@ class MenuGroupServiceTest extends ServiceTest {
     @Test
     @DisplayName("메뉴 그룹의 목록을 조회한다.")
     void list() {
+        // given
+        메뉴_그룹_저장();
+
         // when
         List<MenuGroupResponse> menuGroupResponses = menuGroupService.list();
 
         // then
-        assertThat(menuGroupResponses.size()).isPositive();
+        assertThat(menuGroupResponses.size()).isOne();
     }
 }

@@ -35,11 +35,14 @@ class OrderTableServiceTest extends ServiceTest {
     @Test
     @DisplayName("테이블의 목록을 조회한다.")
     void list() {
+        // given
+        테이블_저장(true);
+
         // when
         List<OrderTableResponse> orderTableResponses = orderTableService.list();
 
         // then
-        assertThat(orderTableResponses.size()).isPositive();
+        assertThat(orderTableResponses.size()).isOne();
     }
 
     @Test

@@ -28,8 +28,8 @@ public class OrderResponse {
     public static OrderResponse from(Order order) {
         return new OrderResponse(
                 order.getId(),
-                order.getOrderTableId(),
-                order.getOrderStatus(),
+                order.getOrderTable().getId(),
+                order.getOrderStatus().name(),
                 order.getOrderedTime(),
                 order.getOrderLineItems()
                         .stream()

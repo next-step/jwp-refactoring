@@ -1,42 +1,60 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.product.domain.Product;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+
+@Entity
 public class MenuProduct {
 
-    private Long seq;
-    private Long menuId;
-    private Long productId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne
+    private Menu menu;
+
+    @ManyToOne
+    private Product product;
+
+    @Column(nullable = false)
     private long quantity;
 
-    public MenuProduct() {
+    protected MenuProduct() {
     }
 
-    public MenuProduct(Long productId, long quantity) {
-        this.productId = productId;
+    public MenuProduct(Product product, long quantity) {
+        this.product = product;
         this.quantity = quantity;
     }
 
-    public Long getSeq() {
-        return seq;
+    public Long getId() {
+        return id;
     }
 
-    public void setSeq(final Long seq) {
-        this.seq = seq;
+    public void setId(final Long seq) {
+        this.id = seq;
     }
 
-    public Long getMenuId() {
-        return menuId;
+    public Menu getMenu() {
+        return menu;
     }
 
-    public void setMenuId(final Long menuId) {
-        this.menuId = menuId;
+    public void setMenu(final Menu menu) {
+        this.menu = menu;
     }
 
-    public Long getProductId() {
-        return productId;
+    public Product getProduct() {
+        return product;
     }
 
-    public void setProductId(final Long productId) {
-        this.productId = productId;
+    public void setProduct(final Product product) {
+        this.product = product;
     }
 
     public long getQuantity() {
@@ -45,5 +63,10 @@ public class MenuProduct {
 
     public void setQuantity(final long quantity) {
         this.quantity = quantity;
+    }
+
+    public void changeMenu(Menu menu) {
+        menu.getMenuProducts().add(this);
+        this.menu = menu;
     }
 }

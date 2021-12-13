@@ -1,7 +1,7 @@
 package kitchenpos.ordertable.application;
 
 import kitchenpos.ServiceTest;
-import kitchenpos.order.dao.OrderDao;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -16,7 +16,7 @@ import static org.mockito.BDDMockito.*;
 class OrderTableServiceMockTest extends ServiceTest {
 
     @MockBean
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
 
     @Test
     @DisplayName("올바르지 않은 주문으로 테이블의 상태를 변경하면 예외를 발생한다.")
@@ -25,7 +25,7 @@ class OrderTableServiceMockTest extends ServiceTest {
         OrderTableResponse savedOrderTableResponse = 테이블_저장(false);
         OrderTableRequest orderTableRequest = new OrderTableRequest(true);
 
-        given(orderDao.existsByOrderTableIdAndOrderStatusIn(any(), any())).willReturn(true);
+        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), any())).willReturn(true);
 
         // when & then
         assertThatExceptionOfType(IllegalArgumentException.class)

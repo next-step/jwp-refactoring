@@ -19,7 +19,7 @@ class ProductServiceTest extends ServiceTest {
     @DisplayName("상품을 등록한다.")
     void create() {
         // given
-        ProductRequest productRequest = new ProductRequest("매운양념치킨", new BigDecimal(18_000));
+        ProductRequest productRequest = new ProductRequest("후라이드치킨", new BigDecimal(16_000));
 
         // when
         ProductResponse productResponse = productService.create(productRequest);
@@ -36,7 +36,7 @@ class ProductServiceTest extends ServiceTest {
     @DisplayName("0보다 작은 가격으로 상품을 등록하면 예외를 발생한다.")
     void createThrowException() {
         // given
-        ProductRequest productRequest = new ProductRequest("매운양념치킨", new BigDecimal(-1));
+        ProductRequest productRequest = new ProductRequest("후라이드치킨", new BigDecimal(-1));
 
         // when & then
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> productService.create(productRequest));
@@ -45,10 +45,13 @@ class ProductServiceTest extends ServiceTest {
     @Test
     @DisplayName("상품의 목록을 조회한다.")
     void list() {
+        // given
+        상품_저장();
+
         // when
         List<ProductResponse> productResponses = productService.list();
 
         // then
-        assertThat(productResponses.size()).isPositive();
+        assertThat(productResponses.size()).isOne();
     }
 }

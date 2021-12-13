@@ -145,7 +145,7 @@ class OrderServiceTest extends ServiceTest {
     }
 
     @Test
-    @DisplayName("주문 완료 상태로 주문의 주문 상태를 변경하면 예외를 발생한다.")
+    @DisplayName("주문 완료 상태인 주문의 주문 상태를 변경하면 예외를 발생한다.")
     void changeOrderStatusThrowException2() {
         // given
         OrderResponse savedOrderResponse = 주문_저장();

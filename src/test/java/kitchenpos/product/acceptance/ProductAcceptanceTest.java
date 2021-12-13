@@ -5,6 +5,7 @@ import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -17,26 +18,26 @@ import static org.assertj.core.api.Assertions.*;
 public class ProductAcceptanceTest extends AcceptanceTest {
 
     @Test
-    @DisplayName("상품을 등록한다.")
-    void create() {
+    @DisplayName("상품을 관리한다.")
+    void manageProduct() {
         // given
-        ProductRequest productRequest = new ProductRequest("매운양념치킨", new BigDecimal(18_000));
+        ProductRequest productRequest = new ProductRequest("후라이드치킨", new BigDecimal(16_000));
 
         // when
-        ExtractableResponse<Response> response = 상품_등록_요청(productRequest);
+        ExtractableResponse<Response> createResponse = 상품_등록_요청(productRequest);
 
         // then
-        상품_등록됨(response);
+        상품_등록됨(createResponse);
+
+        // when
+        ExtractableResponse<Response> listResponse = 상품_목록_조회_요청();
+
+        // then
+        상품_목록_조회됨(listResponse);
     }
 
-    @Test
-    @DisplayName("상품의 목록을 조회한다.")
-    void list() {
-        // when
-        ExtractableResponse<Response> response = 상품_목록_조회_요청();
-
-        // then
-        상품_목록_조회됨(response);
+    public static ProductResponse 상품_등록되어_있음(ProductRequest productRequest) {
+        return 상품_등록_요청(productRequest).as(ProductResponse.class);
     }
 
     public static ExtractableResponse<Response> 상품_등록_요청(ProductRequest productRequest) {

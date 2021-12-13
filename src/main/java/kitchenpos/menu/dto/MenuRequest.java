@@ -1,10 +1,10 @@
 package kitchenpos.menu.dto;
 
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menugroup.domain.MenuGroup;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class MenuRequest {
 
@@ -55,14 +55,7 @@ public class MenuRequest {
         this.menuProducts = menuProducts;
     }
 
-    public Menu toMenu() {
-        return new Menu(
-                name,
-                price,
-                menuGroupId,
-                menuProducts.stream()
-                        .map(MenuProductRequest::toMenuProduct)
-                        .collect(Collectors.toList())
-        );
+    public Menu toMenu(MenuGroup menuGroup) {
+        return new Menu(name, price, menuGroup);
     }
 }

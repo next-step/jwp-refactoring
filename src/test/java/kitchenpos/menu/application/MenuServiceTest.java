@@ -40,7 +40,8 @@ public class MenuServiceTest extends ServiceTest {
                 () -> assertThat(menuResponse.getName()).isEqualTo(savedProductResponse.getName()),
                 () -> assertThat(menuResponse.getPrice().compareTo(menuRequest.getPrice())).isZero(),
                 () -> assertThat(menuResponse.getMenuGroupId()).isEqualTo(savedMenuGroupResponse.getId()),
-                () -> assertThat(menuResponse.getMenuProducts().get(0).getMenuId()).isNotNull(),
+                () -> assertThat(menuResponse.getMenuProducts().get(0).getSeq()).isNotNull(),
+                () -> assertThat(menuResponse.getMenuProducts().get(0).getMenuId()).isEqualTo(menuResponse.getId()),
                 () -> assertThat(menuResponse.getMenuProducts().get(0).getProductId()).isEqualTo(savedProductResponse.getId()),
                 () -> assertThat(menuResponse.getMenuProducts().get(0).getQuantity()).isEqualTo(menuProductRequest.getQuantity())
         );
@@ -112,10 +113,13 @@ public class MenuServiceTest extends ServiceTest {
     @Test
     @DisplayName("메뉴의 목록을 조회한다.")
     void list() {
+        // given
+        메뉴_저장();
+
         // when
         List<MenuResponse> menuResponses = menuService.list();
 
         // then
-        assertThat(menuResponses.size()).isPositive();
+        assertThat(menuResponses.size()).isOne();
     }
 }

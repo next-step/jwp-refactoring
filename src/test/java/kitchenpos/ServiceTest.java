@@ -23,6 +23,7 @@ import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
@@ -31,6 +32,7 @@ import java.util.Arrays;
 import java.util.Collections;
 
 @SpringBootTest
+@ActiveProfiles("test")
 @Transactional
 public abstract class ServiceTest {
 
@@ -53,11 +55,11 @@ public abstract class ServiceTest {
     protected OrderService orderService;
 
     protected ProductResponse 상품_저장() {
-        return productService.create(new ProductRequest("매운양념치킨", new BigDecimal(18_000)));
+        return productService.create(new ProductRequest("후라이드치킨", new BigDecimal(18_000)));
     }
 
     protected MenuGroupResponse 메뉴_그룹_저장() {
-        return menuGroupService.create(new MenuGroupRequest("세마리메뉴"));
+        return menuGroupService.create(new MenuGroupRequest("한마리메뉴"));
     }
 
     protected MenuResponse 메뉴_저장() {
