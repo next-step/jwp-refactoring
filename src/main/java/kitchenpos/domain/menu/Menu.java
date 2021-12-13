@@ -70,10 +70,6 @@ public class Menu {
         return new Menu(name, price, menuGroup, new ArrayList<>());
     }
 
-    public static Menu of(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        return new Menu(name, price, menuGroup, menuProducts);
-    }
-
     public static Menu of(Long id, String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
         return new Menu(id, name, price, menuGroup, menuProducts);
     }

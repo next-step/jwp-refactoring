@@ -21,10 +21,6 @@ public class MenuGroup {
 
     protected MenuGroup() {}
 
-    private MenuGroup(Long id) {
-        this.id = id;
-    }
-
     private MenuGroup(Long id, String name) {
         this(name);
         this.id = id;
@@ -32,10 +28,6 @@ public class MenuGroup {
 
     private MenuGroup(String name) {
         this.name = name;
-    }
-
-    public static MenuGroup from(Long id) {
-        return new MenuGroup(id);
     }
 
     public static MenuGroup from(String name) {
