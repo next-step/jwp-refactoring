@@ -1,9 +1,9 @@
 package kitchenpos.table.application;
 
-import static kitchenpos.table.application.sample.OrderTableSample.빈_두명_테이블;
-import static kitchenpos.table.application.sample.OrderTableSample.빈_세명_테이블;
-import static kitchenpos.table.application.sample.OrderTableSample.채워진_다섯명_테이블;
-import static kitchenpos.table.application.sample.TableGroupSample.tableGroup;
+import static kitchenpos.table.sample.OrderTableSample.빈_두명_테이블;
+import static kitchenpos.table.sample.OrderTableSample.빈_세명_테이블;
+import static kitchenpos.table.sample.OrderTableSample.채워진_다섯명_테이블;
+import static kitchenpos.table.sample.TableGroupSample.한명_두명_테이블_그룹;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.tuple;
@@ -51,7 +51,7 @@ class TableGroupServiceTest {
         when(tableService.findAllByIdIn(anyList()))
             .thenReturn(Arrays.asList(빈_두명_테이블(), 빈_세명_테이블()));
 
-        TableGroup savedTableGroup = tableGroup();
+        TableGroup savedTableGroup = 한명_두명_테이블_그룹();
         when(tableGroupRepository.save(any())).thenReturn(savedTableGroup);
 
         //when
@@ -119,7 +119,6 @@ class TableGroupServiceTest {
         long tableGroupId = 1L;
 
         OrderTable orderTable = 채워진_다섯명_테이블();
-        orderTable.setTableGroup(tableGroup());
 
         //when
         tableGroupService.ungroup(tableGroupId);
@@ -138,7 +137,6 @@ class TableGroupServiceTest {
         long tableGroupId = 1L;
 
         OrderTable orderTable = 채워진_다섯명_테이블();
-        orderTable.setTableGroup(tableGroup());
 
         //when
         ThrowingCallable createCallable = () -> tableGroupService.ungroup(tableGroupId);

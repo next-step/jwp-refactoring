@@ -39,10 +39,6 @@ public class MenuService {
         return MenuResponse.listFrom(menuRepository.findAll());
     }
 
-    public long countByIdIn(List<Long> menuIds) {
-        return menuRepository.countByIdIn(menuIds);
-    }
-
     public Menu findById(long id) {
         return menuRepository.findById(id)
             .orElseThrow(() -> new NotFoundException(

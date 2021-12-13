@@ -1,4 +1,4 @@
-package kitchenpos.menu.sample;
+package kitchenpos.product.sample;
 
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.spy;
@@ -16,5 +16,4 @@ public class ProductSample {
             .thenReturn(1L);
         return product;
     }
-
 }

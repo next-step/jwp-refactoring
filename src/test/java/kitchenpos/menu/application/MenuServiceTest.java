@@ -1,7 +1,7 @@
 package kitchenpos.menu.application;
 
 import static kitchenpos.menu.sample.MenuGroupSample.두마리메뉴;
-import static kitchenpos.menu.sample.ProductSample.십원치킨;
+import static kitchenpos.product.sample.ProductSample.십원치킨;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertAll;

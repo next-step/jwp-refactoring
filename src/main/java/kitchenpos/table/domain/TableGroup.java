@@ -57,10 +57,6 @@ public class TableGroup {
         return orderTables.list();
     }
 
-    public void setOrderTables(final OrderTables orderTables) {
-        this.orderTables = orderTables;
-    }
-
     public void ungroup() {
         if (orderTables.anyCookingOrMeal()) {
             throw new InvalidStatusException(

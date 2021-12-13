@@ -1,9 +1,11 @@
 package kitchenpos.order.domain;
 
+import static kitchenpos.menu.sample.MenuSample.이십원_후라이드치킨_두마리세트;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 
 import java.util.Collections;
+import kitchenpos.common.domain.Quantity;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -15,7 +17,8 @@ class OrderLineItemsTest {
     void instance() {
         assertThatNoException()
             .isThrownBy(() -> OrderLineItems.from(
-                Collections.singletonList(OrderLineItem.of(1L, 1L))));
+                Collections.singletonList(
+                    OrderLineItem.of(Quantity.from(1L), 이십원_후라이드치킨_두마리세트()))));
     }
 
     @Test

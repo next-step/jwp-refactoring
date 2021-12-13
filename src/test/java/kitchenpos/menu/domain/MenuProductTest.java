@@ -1,6 +1,6 @@
 package kitchenpos.menu.domain;
 
-import static kitchenpos.menu.sample.ProductSample.십원치킨;
+import static kitchenpos.product.sample.ProductSample.십원치킨;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatNoException;

@@ -36,6 +36,10 @@ class OrderLineItems {
         return !items.isEmpty();
     }
 
+    void changeOrder(Order order) {
+        items.forEach(item -> item.changeOrder(order));
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(items);

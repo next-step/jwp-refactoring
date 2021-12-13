@@ -1,13 +1,10 @@
 package kitchenpos.table.application;
 
-import static kitchenpos.table.application.sample.OrderTableSample.빈_두명_테이블;
-import static kitchenpos.table.application.sample.OrderTableSample.빈_세명_테이블;
-import static kitchenpos.table.application.sample.OrderTableSample.채워진_다섯명_테이블;
-import static kitchenpos.table.application.sample.TableGroupSample.tableGroup;
+import static kitchenpos.table.sample.OrderTableSample.빈_세명_테이블;
+import static kitchenpos.table.sample.OrderTableSample.채워진_다섯명_테이블;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.only;
 import static org.mockito.Mockito.times;
@@ -79,8 +76,8 @@ class TableServiceTest {
 
         when(orderTableRepository.findById(anyLong()))
             .thenReturn(Optional.of(채워진_다섯명_테이블()));
-        when(orderService.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList()))
-            .thenReturn(false);
+//        when(orderService.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList()))
+//            .thenReturn(false);
         when(orderTableRepository.save(any())).thenReturn(채워진_다섯명_테이블());
 
         //when
@@ -116,7 +113,7 @@ class TableServiceTest {
         TableStatusRequest request = new TableStatusRequest(false);
 
         OrderTable notEmptyOrderTable = 채워진_다섯명_테이블();
-        notEmptyOrderTable.setTableGroup(tableGroup());
+//        notEmptyOrderTable.setTableGroup(한명_두명_테이블_그룹());
         when(orderTableRepository.findById(anyLong())).thenReturn(Optional.of(notEmptyOrderTable));
 
         //when
@@ -135,8 +132,8 @@ class TableServiceTest {
 
         when(orderTableRepository.findById(anyLong()))
             .thenReturn(Optional.of(채워진_다섯명_테이블()));
-        when(orderService.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList()))
-            .thenReturn(true);
+//        when(orderService.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList()))
+//            .thenReturn(true);
 
         //when
         ThrowingCallable changeCallable = () -> tableService.changeEmpty(1L, request);
@@ -203,7 +200,7 @@ class TableServiceTest {
         //given
         TableGuestsCountRequest request = new TableGuestsCountRequest(3);
 
-        when(orderTableRepository.findById(anyLong())).thenReturn(Optional.of(빈_두명_테이블()));
+//        when(orderTableRepository.findById(anyLong())).thenReturn(Optional.of(빈_두명_테이블()));
 
         //when
         ThrowingCallable changeCallable = () -> tableService.changeNumberOfGuests(1L, request);

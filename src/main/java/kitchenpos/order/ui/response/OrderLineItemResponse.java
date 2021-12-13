@@ -40,7 +40,7 @@ public final class OrderLineItemResponse {
     private static OrderLineItemResponse from(OrderLineItem orderLineItem) {
         return new OrderLineItemResponse(
             orderLineItem.seq(),
-            orderLineItem.menu(),
+            orderLineItem.menu().id(),
             orderLineItem.quantity().value()
         );
     }

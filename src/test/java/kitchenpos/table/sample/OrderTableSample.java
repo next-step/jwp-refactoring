@@ -1,4 +1,4 @@
-package kitchenpos.table.application.sample;
+package kitchenpos.table.sample;
 
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.spy;

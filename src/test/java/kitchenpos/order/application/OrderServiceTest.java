@@ -1,17 +1,16 @@
 package kitchenpos.order.application;
 
+import static kitchenpos.menu.sample.MenuSample.이십원_후라이드치킨_두마리세트;
 import static kitchenpos.order.application.sample.OrderSample.완료된_후라이트치킨세트_두개_주문;
 import static kitchenpos.order.application.sample.OrderSample.조리중인_후라이트치킨세트_두개_주문;
-import static kitchenpos.table.application.sample.OrderTableSample.빈_세명_테이블;
-import static kitchenpos.table.application.sample.OrderTableSample.채워진_다섯명_테이블;
+import static kitchenpos.table.sample.OrderTableSample.빈_세명_테이블;
+import static kitchenpos.table.sample.OrderTableSample.채워진_다섯명_테이블;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.only;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -20,7 +19,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import kitchenpos.common.domain.Quantity;
+import kitchenpos.common.exception.InvalidStatusException;
+import kitchenpos.common.exception.NotFoundException;
 import kitchenpos.menu.application.MenuService;
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
@@ -29,6 +31,7 @@ import kitchenpos.order.ui.request.OrderLineItemRequest;
 import kitchenpos.order.ui.request.OrderRequest;
 import kitchenpos.order.ui.request.OrderStatusRequest;
 import kitchenpos.table.application.TableService;
+import kitchenpos.table.domain.OrderTable;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -45,9 +48,9 @@ class OrderServiceTest {
     @Mock
     private MenuService menuService;
     @Mock
-    private OrderRepository orderRepository;
-    @Mock
     private TableService tableService;
+    @Mock
+    private OrderRepository orderRepository;
 
     @InjectMocks
     private OrderService orderService;
@@ -59,14 +62,15 @@ class OrderServiceTest {
         long orderTableId = 1L;
         long menuId = 1L;
         long quantity = 2L;
-        List<OrderLineItemRequest> orderLineItems = Collections
-            .singletonList(new OrderLineItemRequest(menuId, quantity));
-        OrderRequest orderRequest = new OrderRequest(orderTableId,
-            orderLineItems);
+        List<OrderLineItemRequest> orderLineItems =
+            Collections.singletonList(new OrderLineItemRequest(menuId, quantity));
+        OrderRequest orderRequest = new OrderRequest(orderTableId, orderLineItems);
 
-        when(menuService.countByIdIn(anyList())).thenReturn(1L);
-        when(tableService.findById(orderTableId))
-            .thenReturn(채워진_다섯명_테이블());
+        Menu 이십원_후라이드치킨_두마리세트 = 이십원_후라이드치킨_두마리세트();
+        when(menuService.findById(anyLong())).thenReturn(이십원_후라이드치킨_두마리세트);
+
+        OrderTable 채워진_다섯명_테이블 = 채워진_다섯명_테이블();
+        when(tableService.findById(orderTableId)).thenReturn(채워진_다섯명_테이블);
 
         Order order = 조리중인_후라이트치킨세트_두개_주문();
         when(orderRepository.save(any())).thenReturn(order);
@@ -79,16 +83,19 @@ class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("등록하려는 주문의 상품 항목이 비어있으면 안된다.")
-    void create_emptyOrderLineItems_thrownException() {
+    @DisplayName("등록하려는 주문의 테이블 정보는 반드시 존재해야 한다.")
+    void create_notExistsOrderTable_thrownException() {
         //given
-        OrderRequest orderRequest = new OrderRequest(1L, Collections.emptyList());
+        long orderTableId = 1L;
+        OrderRequest orderRequest = new OrderRequest(orderTableId,
+            Collections.singletonList(new OrderLineItemRequest(1L, 2)));
+        when(tableService.findById(orderTableId)).thenThrow(new NotFoundException("no table"));
 
         //when
         ThrowingCallable createCallable = () -> orderService.create(orderRequest);
 
         //then
-        assertThatExceptionOfType(IllegalArgumentException.class)
+        assertThatExceptionOfType(NotFoundException.class)
             .isThrownBy(createCallable);
     }
 
@@ -96,26 +103,31 @@ class OrderServiceTest {
     @DisplayName("등록하려는 주문의 모든 메뉴는 등록되어 있어야 한다.")
     void create_notExistsMenu_thrownException() {
         //given
-        OrderRequest orderRequest = new OrderRequest(1L,
+        long orderTableId = 1L;
+        OrderRequest orderRequest = new OrderRequest(orderTableId,
             Collections.singletonList(new OrderLineItemRequest(1L, 2)));
-        when(menuService.countByIdIn(anyList())).thenReturn(0L);
+
+        OrderTable 채워진_다섯명_테이블 = 채워진_다섯명_테이블();
+        when(tableService.findById(orderTableId)).thenReturn(채워진_다섯명_테이블);
+        when(menuService.findById(anyLong())).thenThrow(new NotFoundException("no menu"));
 
         //when
         ThrowingCallable createCallable = () -> orderService.create(orderRequest);
 
         //then
-        assertThatExceptionOfType(IllegalArgumentException.class)
+        assertThatExceptionOfType(NotFoundException.class)
             .isThrownBy(createCallable);
     }
 
     @Test
-    @DisplayName("등록하려는 주문의 테이블 정보는 반드시 존재해야 한다.")
-    void create_notExistsOrderTable_thrownException() {
+    @DisplayName("등록하려는 주문의 상품 항목이 비어있으면 안된다.")
+    void create_emptyOrderLineItems_thrownException() {
         //given
-        OrderRequest orderRequest = new OrderRequest(1L,
-            Collections.singletonList(new OrderLineItemRequest(1L, 2)));
-        when(menuService.countByIdIn(anyList())).thenReturn(1L);
-//        when(tableService.findById(anyLong())).thenReturn(Optional.empty());
+        long orderTableId = 1L;
+        OrderRequest orderRequest = new OrderRequest(orderTableId, Collections.emptyList());
+
+        OrderTable 채워진_다섯명_테이블 = 채워진_다섯명_테이블();
+        when(tableService.findById(orderTableId)).thenReturn(채워진_다섯명_테이블);
 
         //when
         ThrowingCallable createCallable = () -> orderService.create(orderRequest);
@@ -131,9 +143,12 @@ class OrderServiceTest {
         //given
         OrderRequest orderRequest = new OrderRequest(1L,
             Collections.singletonList(new OrderLineItemRequest(1L, 2)));
-        when(menuService.countByIdIn(anyList())).thenReturn(1L);
-        when(tableService.findById(anyLong()))
-            .thenReturn(빈_세명_테이블());
+
+        Menu 이십원_후라이드치킨_두마리세트 = 이십원_후라이드치킨_두마리세트();
+        when(menuService.findById(anyLong())).thenReturn(이십원_후라이드치킨_두마리세트);
+
+        OrderTable 빈_세명_테이블 = 빈_세명_테이블();
+        when(tableService.findById(anyLong())).thenReturn(빈_세명_테이블);
 
         //when
         ThrowingCallable createCallable = () -> orderService.create(orderRequest);
@@ -164,7 +179,7 @@ class OrderServiceTest {
         OrderStatus updatedStatus = OrderStatus.MEAL;
         OrderStatusRequest orderRequest = new OrderStatusRequest(updatedStatus.name());
 
-        Order mockOrder = spy(조리중인_후라이트치킨세트_두개_주문());
+        Order mockOrder = 조리중인_후라이트치킨세트_두개_주문();
         when(orderRepository.findById(anyLong())).thenReturn(Optional.of(mockOrder));
 
         //when
@@ -185,7 +200,7 @@ class OrderServiceTest {
         ThrowingCallable changeCallable = () -> orderService.changeOrderStatus(1L, updateRequest);
 
         //then
-        assertThatExceptionOfType(IllegalArgumentException.class)
+        assertThatExceptionOfType(NotFoundException.class)
             .isThrownBy(changeCallable);
     }
 
@@ -194,13 +209,15 @@ class OrderServiceTest {
     void changeOrderStatus_completedOrder_thrownException() {
         //given
         OrderStatusRequest updateRequest = new OrderStatusRequest(OrderStatus.MEAL.name());
-        when(orderRepository.findById(anyLong())).thenReturn(Optional.of(완료된_후라이트치킨세트_두개_주문()));
+
+        Order 완료된_후라이트치킨세트_두개_주문 = 완료된_후라이트치킨세트_두개_주문();
+        when(orderRepository.findById(anyLong())).thenReturn(Optional.of(완료된_후라이트치킨세트_두개_주문));
 
         //when
         ThrowingCallable changeCallable = () -> orderService.changeOrderStatus(1L, updateRequest);
 
         //then
-        assertThatExceptionOfType(IllegalArgumentException.class)
+        assertThatExceptionOfType(InvalidStatusException.class)
             .isThrownBy(changeCallable);
     }
 
@@ -210,11 +227,11 @@ class OrderServiceTest {
         Order savedOrder = orderCaptor.getValue();
         assertAll(
             () -> assertThat(savedOrder)
-                .extracting(Order::status, Order::table)
+                .extracting(Order::status, order -> order.table().id())
                 .containsExactly(OrderStatus.COOKING, orderTableId),
             () -> assertThat(savedOrder.lineItems()).first()
-                .extracting(OrderLineItem::menu, OrderLineItem::quantity)
-                .containsExactly(expectedMenuId, Quantity.from(expectedQuantity))
+                .extracting(OrderLineItem::quantity, order -> order.menu().id())
+                .containsExactly(Quantity.from(expectedQuantity), expectedMenuId)
         );
     }
 }

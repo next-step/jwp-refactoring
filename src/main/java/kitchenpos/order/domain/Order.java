@@ -2,6 +2,7 @@ package kitchenpos.order.domain;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -50,8 +51,9 @@ public class Order {
 
     private Order(OrderTable orderTable, OrderLineItems lineItems) {
         validate(orderTable, lineItems);
-        this.orderTable.changeOrder(this);
+        orderTable.changeOrder(this);
         this.orderTable = orderTable;
+        lineItems.changeOrder(this);
         this.orderLineItems = lineItems;
     }
 
@@ -80,7 +82,8 @@ public class Order {
     }
 
     public void changeStatus(OrderStatus status) {
-        if (status.isCompleted()) {
+        Assert.notNull(status, "변경하려는 상태는 필수입니다.");
+        if (orderStatus.isCompleted()) {
             throw new InvalidStatusException(String.format("완료된 주문(%s)의 상태를 변경할 수 없습니다.", this));
         }
         this.orderStatus = status;
@@ -96,5 +99,32 @@ public class Order {
 
         Assert.notNull(lineItems, "주문 항목들은 필수입니다.");
         Assert.isTrue(lineItems.isNotEmpty(), "주문 항목들이 비어있을 수 없습니다.");
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Order order = (Order) o;
+        return id == order.id;
+    }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+            "id=" + id +
+            ", orderTable=" + orderTable +
+            ", orderStatus=" + orderStatus +
+            ", orderedTime=" + orderedTime +
+            '}';
     }
 }

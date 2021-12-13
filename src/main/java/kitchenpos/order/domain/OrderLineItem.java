@@ -11,6 +11,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import kitchenpos.common.domain.Quantity;
 import kitchenpos.menu.domain.Menu;
+import org.springframework.util.Assert;
 
 @Entity
 public class OrderLineItem {
@@ -35,6 +36,8 @@ public class OrderLineItem {
     }
 
     private OrderLineItem(Quantity quantity, Menu menu) {
+        Assert.notNull(quantity, "수량은 필수입니다.");
+        Assert.notNull(menu, "메뉴는 필수입니다.");
         this.quantity = quantity;
         this.menu = menu;
     }
@@ -47,16 +50,17 @@ public class OrderLineItem {
         return seq;
     }
 
-    public Long getOrderId() {
-        return order.id();
-    }
-
     public Menu menu() {
         return menu;
     }
 
     public Quantity quantity() {
         return quantity;
+    }
+
+    void changeOrder(Order order) {
+        Assert.notNull(order, "변경하려는 주문은 필수입니다.");
+        this.order = order;
     }
 
     @Override
