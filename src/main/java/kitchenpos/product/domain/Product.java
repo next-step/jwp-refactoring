@@ -1,6 +1,7 @@
 package kitchenpos.product.domain;
 
 import common.domain.Price;
+import common.domain.Quantity;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -45,7 +46,7 @@ public class Product {
         return price;
     }
 
-    public Price calculateAmount(long quantity) {
+    public Price calculateAmount(Quantity quantity) {
         return price.multiply(new Price(quantity));
     }
 

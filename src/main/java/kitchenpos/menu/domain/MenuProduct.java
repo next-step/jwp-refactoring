@@ -1,6 +1,7 @@
 package kitchenpos.menu.domain;
 
 import common.domain.Price;
+import common.domain.Quantity;
 import kitchenpos.product.domain.Product;
 
 import javax.persistence.Column;
@@ -24,14 +25,14 @@ public class MenuProduct {
     private Product product;
 
     @Column(nullable = false)
-    private long quantity;
+    private Quantity quantity;
 
     protected MenuProduct() {
     }
 
     public MenuProduct(Product product, long quantity) {
         this.product = product;
-        this.quantity = quantity;
+        this.quantity = new Quantity(quantity);
     }
 
     public Long getId() {
@@ -46,7 +47,7 @@ public class MenuProduct {
         return product;
     }
 
-    public long getQuantity() {
+    public Quantity getQuantity() {
         return quantity;
     }
 
