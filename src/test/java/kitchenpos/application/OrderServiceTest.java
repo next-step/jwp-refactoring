@@ -45,7 +45,6 @@ class OrderServiceTest {
 
     private MenuRepository menuRepository;
     private OrderRepository orderRepository;
-    private OrderLineItemRepository orderLineItemRepository;
     private OrderTableRepository orderTableRepository;
     private OrderService orderService;
     private Menu 저장된_메뉴;
@@ -55,9 +54,8 @@ class OrderServiceTest {
     void setUp() {
         menuRepository = new InMemoryMenuRepository();
         orderRepository = new InMemoryOrderRepository();
-        orderLineItemRepository = new InMemoryOrderLineItemRepository();
         orderTableRepository = new InMemoryOrderTableRepository();
-        orderService = new OrderService(menuRepository, orderRepository, orderLineItemRepository, orderTableRepository);
+        orderService = new OrderService(menuRepository, orderRepository, orderTableRepository);
 
         저장된_메뉴 = menuRepository.save(메뉴);
         저장된_주문_테이블 = orderTableRepository.save(주문_테이블);
