@@ -24,6 +24,9 @@ import kitchenpos.domain.Price;
 import kitchenpos.domain.product.Product;
 import kitchenpos.dto.MenuDto;
 import kitchenpos.dto.MenuProductDto;
+import kitchenpos.exception.menu.NotCorrectMenuPriceException;
+import kitchenpos.exception.menu.NotFoundMenuGroupException;
+import kitchenpos.exception.product.NotFoundProductException;
 import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menu.MenuGroup;
 import kitchenpos.domain.menu.MenuGroupRepository;
@@ -92,11 +95,11 @@ public class MenuServiceTest {
         Menu 뿌링클콤보 = Menu.of("뿌링클콤보", Price.of(18_000), 치킨_메뉴그룹);
 
         when(productService.sumOfPrices(anyList())).thenReturn(Price.of(19_000));
-        when(menuGroupRepository.findById(nullable(Long.class))).thenThrow(IllegalArgumentException.class);
+        when(menuGroupRepository.findById(nullable(Long.class))).thenThrow(NotFoundMenuGroupException.class);
 
         // when
         // then
-        Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
+        Assertions.assertThatExceptionOfType(NotFoundMenuGroupException.class)
                     .isThrownBy(() -> menuService.create(MenuDto.of(뿌링클콤보)));
     }
 
@@ -122,12 +125,12 @@ public class MenuServiceTest {
         when(menuGroupRepository.findById(뿌링클콤보.getMenuGroup().getId())).thenReturn(Optional.of(치킨_메뉴그룹));
         when(productService.findById(뿌링클콤보_뿌링클치킨.getProduct().getId())).thenReturn(뿌링클치킨);
         when(productService.findById(뿌링클콤보_치킨무.getProduct().getId())).thenReturn(치킨무);
-        when(productService.findById(뿌링클콤보_코카콜라.getProduct().getId())).thenThrow(IllegalArgumentException.class);
+        when(productService.findById(뿌링클콤보_코카콜라.getProduct().getId())).thenThrow(NotFoundProductException.class);
         when(productService.sumOfPrices(anyList())).thenReturn(Price.of(19_000));
 
         // when
         // then
-        Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
+        Assertions.assertThatExceptionOfType(NotFoundProductException.class)
                     .isThrownBy(() -> menuService.create(MenuDto.of(뿌링클콤보)));
     }
 
@@ -142,7 +145,7 @@ public class MenuServiceTest {
 
         // when
         // then
-        Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
+        Assertions.assertThatExceptionOfType(NotCorrectMenuPriceException.class)
                     .isThrownBy(() -> menuService.create(MenuDto.of(뿌링클콤보)));
     }
 

@@ -5,6 +5,8 @@ import java.math.BigDecimal;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+import kitchenpos.exception.InvalidPriceException;
+
 @Embeddable
 public class Price {
     @Column(name = "price")
@@ -21,7 +23,7 @@ public class Price {
 
     private void validate(int value) {
         if (value < 0) {
-            throw new IllegalArgumentException();
+            throw new InvalidPriceException();
         }
     }
 

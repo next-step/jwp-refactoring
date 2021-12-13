@@ -7,6 +7,11 @@ import kitchenpos.application.order.OrderService;
 import kitchenpos.domain.table.OrderTable;
 import kitchenpos.domain.table.OrderTableRepository;
 import kitchenpos.dto.OrderTableDto;
+import kitchenpos.exception.order.HasNotCompletionOrderException;
+import kitchenpos.exception.table.EmptyOrderTableException;
+import kitchenpos.exception.table.HasOtherTableGroupException;
+import kitchenpos.exception.table.NegativeOfNumberOfGuestsException;
+import kitchenpos.exception.table.NotFoundOrderTableException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -39,7 +44,7 @@ public class TableService {
     @Transactional
     public OrderTableDto changeEmpty(final Long orderTableId, final OrderTableDto orderTable) {
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-                                                                .orElseThrow(IllegalArgumentException::new);
+                                                                .orElseThrow(NotFoundOrderTableException::new);
 
         validationOfChangeEmpty(orderTableId, savedOrderTable);
 
@@ -55,13 +60,13 @@ public class TableService {
 
     private void checkOrderStatusOfOrderTable(final Long orderTableId) {
         if (orderService.isNotCompletionOrder(orderTableId)) {
-            throw new IllegalArgumentException();
+            throw new HasNotCompletionOrderException();
         }
     }
 
     private void checkHasTableGroup(final OrderTable savedOrderTable) {
         if (savedOrderTable.hasTableGroup()) {
-            throw new IllegalArgumentException();
+            throw new HasOtherTableGroupException();
         }
     }
 
@@ -70,7 +75,7 @@ public class TableService {
         final int numberOfGuests = orderTable.getNumberOfGuests();
 
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-                                                                .orElseThrow(IllegalArgumentException::new);
+                                                                .orElseThrow(NotFoundOrderTableException::new);
 
         validationOfChangeNumberOfGuests(numberOfGuests, savedOrderTable);
 
@@ -80,19 +85,19 @@ public class TableService {
     }
 
     private void validationOfChangeNumberOfGuests(final int numberOfGuests, final OrderTable orderTable) {
-        checkPotiveOfNumberOfGuests(numberOfGuests);
+        checkPositiveOfNumberOfGuests(numberOfGuests);
         checkEmptyTable(orderTable);
     }
 
     private void checkEmptyTable(final OrderTable orderTable) {
         if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException();
+            throw new EmptyOrderTableException();
         }
     }
 
-    private void checkPotiveOfNumberOfGuests(final int numberOfGuests) {
+    private void checkPositiveOfNumberOfGuests(final int numberOfGuests) {
         if (numberOfGuests < 0) {
-            throw new IllegalArgumentException();
+            throw new NegativeOfNumberOfGuestsException();
         }
     }
 }

@@ -10,6 +10,12 @@ import kitchenpos.domain.table.OrderTableRepository;
 import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.dto.OrderDto;
 import kitchenpos.dto.OrderLineItemDto;
+import kitchenpos.exception.order.EmptyOrderLineItemOrderException;
+import kitchenpos.exception.order.EmptyOrderTableOrderException;
+import kitchenpos.exception.order.NotChangableOrderStatusException;
+import kitchenpos.exception.order.NotFoundOrderException;
+import kitchenpos.exception.order.NotRegistedMenuOrderException;
+import kitchenpos.exception.table.NotFoundOrderTableException;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,7 +43,7 @@ public class OrderService {
 
     @Transactional
     public OrderDto create(final OrderDto order) {
-        final OrderTable orderTable = orderTableRepository.findById(order.getOrderTableId()).orElseThrow(IllegalArgumentException::new);
+        final OrderTable orderTable = orderTableRepository.findById(order.getOrderTableId()).orElseThrow(NotFoundOrderTableException::new);
         final List<OrderLineItemDto> orderLineItems = order.getOrderLineItems();
 
         validationOfCreate(orderTable, orderLineItems);
@@ -65,7 +71,7 @@ public class OrderService {
 
     private void checkEmptyTable(final OrderTable orderTable) {
         if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException();
+            throw new EmptyOrderTableOrderException();
         }
     }
 
@@ -75,13 +81,13 @@ public class OrderService {
                                                     .collect(Collectors.toList());
 
         if (orderLineItems.size() != menuService.countByIdIn(menuIds)) {
-            throw new IllegalArgumentException();
+            throw new NotRegistedMenuOrderException();
         }
     }
 
     private void checkEmptyOfOrderLineItems(final List<OrderLineItemDto> orderLineItems) {
         if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalArgumentException();
+            throw new EmptyOrderLineItemOrderException();
         }
     }
 
@@ -95,7 +101,7 @@ public class OrderService {
     @Transactional
     public Orders changeOrderStatus(final Long orderId, final OrderDto order) {
         final Orders savedOrder = orderRepository.findById(orderId)
-                                                .orElseThrow(IllegalArgumentException::new);
+                                                .orElseThrow(NotFoundOrderException::new);
 
         validateionOfChageOrderStatus(savedOrder);
 
@@ -106,7 +112,7 @@ public class OrderService {
 
     private void validateionOfChageOrderStatus(final Orders savedOrder) {
         if (OrderStatus.COMPLETION.equals(savedOrder.getOrderStatus())) {
-            throw new IllegalArgumentException();
+            throw new NotChangableOrderStatusException();
         }
     }
     

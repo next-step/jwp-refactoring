@@ -24,6 +24,10 @@ import kitchenpos.domain.table.TableGroup;
 import kitchenpos.domain.table.TableGroupRepository;
 import kitchenpos.dto.OrderTableDto;
 import kitchenpos.dto.TableGroupDto;
+import kitchenpos.exception.order.HasNotCompletionOrderException;
+import kitchenpos.exception.table.HasOtherTableGroupException;
+import kitchenpos.exception.table.NotGroupingOrderTableCountException;
+import kitchenpos.exception.table.NotRegistedMenuOrderTableException;
 
 @ExtendWith(MockitoExtension.class)
 public class TableGroupServiceTest {
@@ -74,7 +78,7 @@ public class TableGroupServiceTest {
 
         // when
         // then
-        Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
+        Assertions.assertThatExceptionOfType(NotGroupingOrderTableCountException.class)
                     .isThrownBy(() -> tableGroupService.create(TableGroupDto.of(단체주문테이블)));
     }
 
@@ -92,7 +96,7 @@ public class TableGroupServiceTest {
 
         // when
         // then
-        Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
+        Assertions.assertThatExceptionOfType(NotRegistedMenuOrderTableException.class)
                     .isThrownBy(() -> tableGroupService.create(TableGroupDto.of(단체주문테이블)));
     }
 
@@ -113,7 +117,7 @@ public class TableGroupServiceTest {
 
         // when
         // then
-        Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
+        Assertions.assertThatExceptionOfType(HasOtherTableGroupException.class)
                     .isThrownBy(() -> tableGroupService.create(TableGroupDto.of(단체주문테이블)));
     }
 
@@ -154,7 +158,7 @@ public class TableGroupServiceTest {
 
         // when
         // then
-        Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
+        Assertions.assertThatExceptionOfType(HasNotCompletionOrderException.class)
                     .isThrownBy(() -> tableGroupService.ungroup(단체주문테이블.getId()));
     }
 }

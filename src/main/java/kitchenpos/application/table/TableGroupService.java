@@ -7,6 +7,11 @@ import kitchenpos.domain.table.TableGroup;
 import kitchenpos.domain.table.TableGroupRepository;
 import kitchenpos.dto.OrderTableDto;
 import kitchenpos.dto.TableGroupDto;
+import kitchenpos.exception.order.HasNotCompletionOrderException;
+import kitchenpos.exception.table.HasOtherTableGroupException;
+import kitchenpos.exception.table.NotEmptyOrderTableException;
+import kitchenpos.exception.table.NotGroupingOrderTableCountException;
+import kitchenpos.exception.table.NotRegistedMenuOrderTableException;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -55,25 +60,25 @@ public class TableGroupService {
 
     private void checkHasTableGroup(final OrderTable orderTable) {
         if (orderTable.hasTableGroup()) {
-            throw new IllegalArgumentException();
+            throw new HasOtherTableGroupException();
         }
     }
 
     private void checkNotEmptyTable(final OrderTable orderTable) {
         if (!orderTable.isEmpty()) {
-            throw new IllegalArgumentException();
+            throw new NotEmptyOrderTableException();
         }
     }
     
     private void checkAllExistOfOrderTables(final List<OrderTableDto> orderTables, final List<OrderTable> savedOrderTables) {
         if (orderTables.size() != savedOrderTables.size()) {
-            throw new IllegalArgumentException();
+            throw new NotRegistedMenuOrderTableException();
         }
     }
 
     private void checkOrderTableSize(final List<OrderTableDto> orderTables) {
         if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
-            throw new IllegalArgumentException();
+            throw new NotGroupingOrderTableCountException();
         }
     }
 
@@ -94,7 +99,7 @@ public class TableGroupService {
 
     private void validationOfUpgroup(final List<Long> orderTableIds) {
         if (orderService.isExistNotCompletionOrder(orderTableIds)) {
-            throw new IllegalArgumentException();
+            throw new HasNotCompletionOrderException();
         }
     }
 }

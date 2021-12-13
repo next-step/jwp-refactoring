@@ -4,6 +4,8 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import kitchenpos.exception.InvalidPriceException;
+
 public class PriceDomainTest {
     @DisplayName("0보다 작은 값으로 가격을 생성시 예외가 발생된다.")
     @Test
@@ -13,7 +15,7 @@ public class PriceDomainTest {
 
         // when
         // then
-        Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
+        Assertions.assertThatExceptionOfType(InvalidPriceException.class)
                     .isThrownBy(() -> Price.of(number));
     }
 }

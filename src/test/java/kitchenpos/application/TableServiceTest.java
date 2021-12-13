@@ -25,6 +25,10 @@ import kitchenpos.domain.table.OrderTable;
 import kitchenpos.domain.table.OrderTableRepository;
 import kitchenpos.domain.table.TableGroup;
 import kitchenpos.dto.OrderTableDto;
+import kitchenpos.exception.order.HasNotCompletionOrderException;
+import kitchenpos.exception.table.EmptyOrderTableException;
+import kitchenpos.exception.table.HasOtherTableGroupException;
+import kitchenpos.exception.table.NegativeOfNumberOfGuestsException;
 
 @ExtendWith(MockitoExtension.class)
 public class TableServiceTest {
@@ -104,7 +108,7 @@ public class TableServiceTest {
         
         // when
         // then
-        Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
+        Assertions.assertThatExceptionOfType(HasOtherTableGroupException.class)
                     .isThrownBy(() -> tableService.changeEmpty(치킨_주문_단체테이블.getId(), OrderTableDto.of(치킨_주문_단체테이블)));
     }
 
@@ -113,14 +117,13 @@ public class TableServiceTest {
     void exception_updateOrderTable_EmptyStatus() {
         // given
         OrderTable 치킨_주문_단체테이블 = OrderTable.of(0, true);
-        TableGroup 단체주문테이블 = TableGroup.of(Lists.newArrayList());
-        치킨_주문_단체테이블.groupingTable(단체주문테이블);
 
         when(orderTableRepository.findById(nullable(Long.class))).thenReturn(Optional.of(치킨_주문_단체테이블));
-
+        when(orderService.isNotCompletionOrder(nullable(Long.class))).thenReturn(true);
+        
         // when
         // then
-        Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
+        Assertions.assertThatExceptionOfType(HasNotCompletionOrderException.class)
                       .isThrownBy(() -> tableService.changeEmpty(치킨_주문_단체테이블.getId(), OrderTableDto.of(치킨_주문_단체테이블)));
     }
 
@@ -158,7 +161,7 @@ public class TableServiceTest {
 
         // when
         // then
-        Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
+        Assertions.assertThatExceptionOfType(NegativeOfNumberOfGuestsException.class)
                     .isThrownBy(() -> tableService.changeNumberOfGuests(치킨_주문_단체테이블.getId(), OrderTableDto.of(치킨_주문_단체테이블)));
 
     }
@@ -175,7 +178,7 @@ public class TableServiceTest {
 
         // when
         // then
-        Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
+        Assertions.assertThatExceptionOfType(EmptyOrderTableException.class)
                    .isThrownBy(() -> tableService.changeNumberOfGuests(치킨_주문_단체테이블.getId(), OrderTableDto.of(치킨_주문_단체테이블)));
     }
 }

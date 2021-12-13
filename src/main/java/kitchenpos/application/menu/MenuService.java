@@ -4,6 +4,9 @@ import kitchenpos.application.product.ProductService;
 import kitchenpos.domain.Price;
 import kitchenpos.dto.MenuDto;
 import kitchenpos.dto.MenuProductDto;
+import kitchenpos.exception.menu.NotCorrectMenuPriceException;
+import kitchenpos.exception.menu.NotFoundMenuException;
+import kitchenpos.exception.menu.NotFoundMenuGroupException;
 import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menu.MenuGroup;
 import kitchenpos.domain.menu.MenuGroupRepository;
@@ -37,7 +40,7 @@ public class MenuService {
     public MenuDto create(final MenuDto menu) {
         validationOfCreate(menu);
 
-        MenuGroup menuGroup = menuGroupRepository.findById(menu.getMenuGroupId()).orElseThrow(IllegalArgumentException::new);
+        MenuGroup menuGroup = menuGroupRepository.findById(menu.getMenuGroupId()).orElseThrow(NotFoundMenuGroupException::new);
         
         Menu newMenu = Menu.of(menu.getName(), Price.of(menu.getPrice()), menuGroup);
         mappingMenuProduct(newMenu, menu.getMenuProducts());
@@ -62,7 +65,7 @@ public class MenuService {
         Price sumOfProductsPrice = productService.sumOfPrices(menuProducts);
 
         if (menuPrice.compareTo(sumOfProductsPrice) > 0) {
-            throw new IllegalArgumentException();
+            throw new NotCorrectMenuPriceException();
         }
     }
 
@@ -73,7 +76,7 @@ public class MenuService {
     }
 
     public Menu findById(Long menuId) {
-        return menuRepository.findById(menuId).orElseThrow(IllegalArgumentException::new);
+        return menuRepository.findById(menuId).orElseThrow(NotFoundMenuException::new);
     }
 
     public long countByIdIn(List<Long> menuIds) {

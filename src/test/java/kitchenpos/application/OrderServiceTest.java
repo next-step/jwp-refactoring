@@ -25,6 +25,10 @@ import kitchenpos.domain.table.OrderTable;
 import kitchenpos.domain.table.OrderTableRepository;
 import kitchenpos.dto.OrderDto;
 import kitchenpos.dto.OrderLineItemDto;
+import kitchenpos.exception.order.EmptyOrderLineItemOrderException;
+import kitchenpos.exception.order.EmptyOrderTableOrderException;
+import kitchenpos.exception.order.NotChangableOrderStatusException;
+import kitchenpos.exception.order.NotRegistedMenuOrderException;
 import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menu.MenuProduct;
 import kitchenpos.domain.order.Orders;
@@ -95,16 +99,14 @@ public class OrderServiceTest {
     @Test
     void exception_createOrder_emptyOrderedMenu() {
         // given
-        Menu 뿌링클콤보 = Menu.of("뿌링클콤보", Price.of(18_000));
-        OrderLineItem 치킨_주문항목 = OrderLineItem.of(뿌링클콤보, 1L);
-
         OrderTable 치킨_주문_단체테이블 = OrderTable.of(10, false);
         Orders 치킨주문 = Orders.of(치킨_주문_단체테이블, OrderStatus.COOKING);
-        치킨_주문항목.acceptOrder(치킨주문);
+
+        when(orderTableRepository.findById(nullable(Long.class))).thenReturn(Optional.of(치킨_주문_단체테이블));
 
         // when
         // then
-        Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
+        Assertions.assertThatExceptionOfType(EmptyOrderLineItemOrderException.class)
                     .isThrownBy(() -> orderService.create(OrderDto.of(치킨주문)));
     }
 
@@ -119,11 +121,12 @@ public class OrderServiceTest {
         Orders 치킨주문 = Orders.of(치킨_주문_단체테이블, OrderStatus.COOKING);
         치킨_주문항목.acceptOrder(치킨주문);
 
-        when(orderTableRepository.findById(nullable(Long.class))).thenReturn(Optional.empty());
+        when(orderTableRepository.findById(nullable(Long.class))).thenReturn(Optional.of(치킨_주문_단체테이블));
+        when(menuService.countByIdIn(anyList())).thenReturn(0L);
 
         // when
         // then
-        Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
+        Assertions.assertThatExceptionOfType(NotRegistedMenuOrderException.class)
                     .isThrownBy(() -> orderService.create(OrderDto.of(치킨주문)));
     }
 
@@ -139,12 +142,12 @@ public class OrderServiceTest {
         Orders 치킨주문 = Orders.of(치킨_주문_단체테이블, OrderStatus.MEAL);
         치킨_주문항목.acceptOrder(치킨주문);
 
-        when(menuService.countByIdIn(anyList())).thenReturn(1L);
         when(orderTableRepository.findById(nullable(Long.class))).thenReturn(Optional.of(치킨_주문_단체테이블));
+        when(menuService.countByIdIn(anyList())).thenReturn(1L);
 
         // when
         // then
-        Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
+        Assertions.assertThatExceptionOfType(EmptyOrderTableOrderException.class)
                     .isThrownBy(() -> orderService.create(OrderDto.of(치킨주문)));
     }
 
@@ -211,7 +214,7 @@ public class OrderServiceTest {
 
         // when
         // then
-        Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
+        Assertions.assertThatExceptionOfType(NotChangableOrderStatusException.class)
                     .isThrownBy(() -> orderService.changeOrderStatus(치킨주문.getId(), OrderDto.of(치킨주문)));
     }
 }
