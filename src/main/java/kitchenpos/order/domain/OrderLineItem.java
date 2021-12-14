@@ -50,7 +50,7 @@ public class OrderLineItem {
     }
 
     public void changeOrder(Order order) {
-        order.getOrderLineItems().add(this);
+        order.addToOrderLineItems(this);
         this.order = order;
     }
 }
