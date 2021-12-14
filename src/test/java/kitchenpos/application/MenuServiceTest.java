@@ -24,15 +24,14 @@ import kitchenpos.application.fixture.MenuProductFixtureFactory;
 import kitchenpos.application.fixture.ProductFixtureFactory;
 import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menu.MenuProduct;
-import kitchenpos.domain.menu.MenuProductRepository;
 import kitchenpos.domain.menu.MenuRepository;
-import kitchenpos.dto.menu.MenuProductRequest;
-import kitchenpos.dto.menu.MenuRequest;
-import kitchenpos.dto.menu.MenuResponse;
 import kitchenpos.domain.menugroup.MenuGroup;
 import kitchenpos.domain.menugroup.MenuGroupRepository;
 import kitchenpos.domain.product.Product;
 import kitchenpos.domain.product.ProductRepository;
+import kitchenpos.dto.menu.MenuProductRequest;
+import kitchenpos.dto.menu.MenuRequest;
+import kitchenpos.dto.menu.MenuResponse;
 
 @ExtendWith(MockitoExtension.class)
 class MenuServiceTest {
@@ -73,8 +72,8 @@ class MenuServiceTest {
     void create1() {
         // given
         List<MenuProductRequest> menuProductRequests =
-            Arrays.asList(MenuProductRequest.of(불고기_돼지고기.getProduct().getId(), 불고기_돼지고기.getQuantity()),
-                          MenuProductRequest.of(불고기_공기밥.getProduct().getId(), 불고기_공기밥.getQuantity()));
+            Arrays.asList(MenuProductRequest.of(불고기_돼지고기.getProduct().getId(), 불고기_돼지고기.getQuantity().getValue()),
+                          MenuProductRequest.of(불고기_공기밥.getProduct().getId(), 불고기_공기밥.getQuantity().getValue()));
 
         MenuRequest menuRequest = new MenuRequest("불고기",
                                                   BigDecimal.valueOf(10_000),
@@ -98,8 +97,8 @@ class MenuServiceTest {
     void create2() {
         // given
         List<MenuProductRequest> menuProductRequests =
-            Arrays.asList(MenuProductRequest.of(불고기_돼지고기.getProduct().getId(), 불고기_돼지고기.getQuantity()),
-                          MenuProductRequest.of(불고기_공기밥.getProduct().getId(), 불고기_공기밥.getQuantity()));
+            Arrays.asList(MenuProductRequest.of(불고기_돼지고기.getProduct().getId(), 불고기_돼지고기.getQuantity().getValue()),
+                          MenuProductRequest.of(불고기_공기밥.getProduct().getId(), 불고기_공기밥.getQuantity().getValue()));
 
         MenuRequest menuRequest = new MenuRequest("불고기",
                                                   null,
@@ -116,8 +115,8 @@ class MenuServiceTest {
     void create3(int wrongPrice) {
         // given
         List<MenuProductRequest> menuProductRequests =
-            Arrays.asList(MenuProductRequest.of(불고기_돼지고기.getProduct().getId(), 불고기_돼지고기.getQuantity()),
-                          MenuProductRequest.of(불고기_공기밥.getProduct().getId(), 불고기_공기밥.getQuantity()));
+            Arrays.asList(MenuProductRequest.of(불고기_돼지고기.getProduct().getId(), 불고기_돼지고기.getQuantity().getValue()),
+                          MenuProductRequest.of(불고기_공기밥.getProduct().getId(), 불고기_공기밥.getQuantity().getValue()));
 
         MenuRequest menuRequest = new MenuRequest("불고기",
                                                   BigDecimal.valueOf(wrongPrice),
@@ -133,8 +132,8 @@ class MenuServiceTest {
     void create4() {
         // given
         List<MenuProductRequest> menuProductRequests =
-            Arrays.asList(MenuProductRequest.of(불고기_돼지고기.getProduct().getId(), 불고기_돼지고기.getQuantity()),
-                          MenuProductRequest.of(불고기_공기밥.getProduct().getId(), 불고기_공기밥.getQuantity()));
+            Arrays.asList(MenuProductRequest.of(불고기_돼지고기.getProduct().getId(), 불고기_돼지고기.getQuantity().getValue()),
+                          MenuProductRequest.of(불고기_공기밥.getProduct().getId(), 불고기_공기밥.getQuantity().getValue()));
 
         MenuRequest menuRequest = new MenuRequest("불고기",
                                                   BigDecimal.valueOf(10_000),
@@ -150,8 +149,8 @@ class MenuServiceTest {
     void create5() {
         // given
         List<MenuProductRequest> menuProductRequests =
-            Arrays.asList(MenuProductRequest.of(불고기_돼지고기.getProduct().getId(), 불고기_돼지고기.getQuantity()),
-                          MenuProductRequest.of(불고기_공기밥.getProduct().getId(), 불고기_공기밥.getQuantity()));
+            Arrays.asList(MenuProductRequest.of(불고기_돼지고기.getProduct().getId(), 불고기_돼지고기.getQuantity().getValue()),
+                          MenuProductRequest.of(불고기_공기밥.getProduct().getId(), 불고기_공기밥.getQuantity().getValue()));
 
         MenuRequest menuRequest = new MenuRequest("불고기",
                                                   BigDecimal.valueOf(10_000),
@@ -167,8 +166,8 @@ class MenuServiceTest {
     void create6() {
         // given
         List<MenuProductRequest> menuProductRequests =
-            Arrays.asList(MenuProductRequest.of(불고기_돼지고기.getProduct().getId(), 불고기_돼지고기.getQuantity()),
-                          MenuProductRequest.of(불고기_공기밥.getProduct().getId(), 불고기_공기밥.getQuantity()));
+            Arrays.asList(MenuProductRequest.of(불고기_돼지고기.getProduct().getId(), 불고기_돼지고기.getQuantity().getValue()),
+                          MenuProductRequest.of(불고기_공기밥.getProduct().getId(), 불고기_공기밥.getQuantity().getValue()));
 
         MenuRequest menuRequest = new MenuRequest("불고기",
                                                   BigDecimal.valueOf(1000_000),

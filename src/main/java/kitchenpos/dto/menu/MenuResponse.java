@@ -30,10 +30,10 @@ public class MenuResponse {
 
     public static MenuResponse from(Menu menu) {
         return new MenuResponse(menu.getId(),
-                                menu.getName(),
+                                menu.getName().getValue(),
                                 menu.getPrice().getValue(),
                                 menu.getMenuGroup().getId(),
-                                StreamUtils.mapToList(menu.getMenuProducts(), MenuProductResponse::from));
+                                StreamUtils.mapToList(menu.getMenuProducts().getValues(), MenuProductResponse::from));
     }
 
     public Long getId() {
