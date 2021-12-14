@@ -37,17 +37,7 @@ public class OrderService {
 
     public OrderResponse create(final OrderRequest orderRequest) {
         validateOrderLineItems(orderRequest.getOrderLineItems());
-
-        Order order = orderRequest.toOrder();
-        order.changeOrderTable(findOrderTableById(orderRequest.getOrderTableId()));
-
-        for (OrderLineItemRequest orderLineItemRequest : orderRequest.getOrderLineItems()) {
-            final Menu menu = findMenuById(orderLineItemRequest.getMenuId());
-            OrderLineItem orderLineItem = new OrderLineItem(menu, orderLineItemRequest.getQuantity());
-            orderLineItem.changeOrder(order);
-        }
-
-        final Order savedOrder = orderRepository.save(order);
+        final Order savedOrder = orderRepository.save(makeOrder(orderRequest));
         return OrderResponse.from(savedOrder);
     }
 
@@ -70,6 +60,18 @@ public class OrderService {
         if (CollectionUtils.isEmpty(orderLineItemRequests)) {
             throw new IllegalArgumentException();
         }
+    }
+
+    private Order makeOrder(OrderRequest orderRequest) {
+        Order order = orderRequest.toOrder();
+        order.changeOrderTable(findOrderTableById(orderRequest.getOrderTableId()));
+
+        for (OrderLineItemRequest orderLineItemRequest : orderRequest.getOrderLineItems()) {
+            final Menu menu = findMenuById(orderLineItemRequest.getMenuId());
+            OrderLineItem orderLineItem = new OrderLineItem(menu, orderLineItemRequest.getQuantity());
+            orderLineItem.changeOrder(order);
+        }
+        return order;
     }
 
     private OrderTable findOrderTableById(Long orderTableId) {
