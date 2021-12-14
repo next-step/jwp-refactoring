@@ -4,9 +4,12 @@ import io.restassured.mapper.TypeRef;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.domain.Menu;
+import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import org.springframework.http.HttpStatus;
 
+import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -20,6 +23,16 @@ public class MenuAcceptStep {
 
     public static ExtractableResponse<Response> 메뉴_등록_요청(Menu 등록_요청_데이터) {
         return post(BASE_URL, 등록_요청_데이터);
+    }
+
+    public static Menu 메뉴가_등록되어_있음(String name, int price, MenuGroup menuGroup, MenuProduct menuProduct) {
+        Menu 등록_요청_데이터 = new Menu();
+        등록_요청_데이터.setName(name);
+        등록_요청_데이터.setPrice(BigDecimal.valueOf(price));
+        등록_요청_데이터.setMenuGroupId(menuGroup.getId());
+        등록_요청_데이터.setMenuProducts(Collections.singletonList(menuProduct));
+
+        return 메뉴_등록_요청(등록_요청_데이터).as(Menu.class);
     }
 
     public static Menu 메뉴_등록_확인(ExtractableResponse<Response> 메뉴_등록_응답, Menu 등록_요청_데이터) {
