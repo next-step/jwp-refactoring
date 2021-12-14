@@ -1,4 +1,4 @@
-package common.domain;
+package kitchenpos.common.domain;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
