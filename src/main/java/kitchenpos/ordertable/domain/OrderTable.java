@@ -4,14 +4,12 @@ import kitchenpos.order.domain.Order;
 import kitchenpos.tablegroup.domain.TableGroup;
 
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -30,8 +28,8 @@ public class OrderTable {
     @Column(nullable = false)
     private boolean empty;
 
-    @OneToMany(mappedBy = "orderTable")
-    private List<Order> orders = new ArrayList<>();
+    @Embedded
+    private Orders orders = new Orders();
 
     protected OrderTable() {
     }
@@ -71,7 +69,7 @@ public class OrderTable {
         return empty;
     }
 
-    public List<Order> getOrders() {
+    public Orders getOrders() {
         return orders;
     }
 
@@ -98,11 +96,15 @@ public class OrderTable {
         return empty && Objects.isNull(tableGroup);
     }
 
+    public void addToOrders(Order order) {
+        orders.add(order);
+    }
+
     private void validateChangingEmpty() {
         if (Objects.nonNull(tableGroup)) {
             throw new IllegalArgumentException();
         }
-        orders.forEach(this::validateOrder);
+        orders.validateChangingEmpty();
     }
 
     private void validateChangingNumberOfGuests(int numberOfGuests) {
@@ -114,15 +116,8 @@ public class OrderTable {
         }
     }
 
-    private void validateOrder(Order order) {
-        if (!order.isChangable()) {
-            throw new IllegalArgumentException();
-        }
-    }
-
     public boolean isChangable() {
-        return orders.stream()
-                .allMatch(Order::isChangable);
+        return orders.isChangable();
     }
 
     @Override

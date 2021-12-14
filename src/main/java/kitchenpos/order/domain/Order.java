@@ -66,7 +66,7 @@ public class Order {
 
     public void changeOrderTable(OrderTable orderTable) {
         validateOrderTable(orderTable);
-        orderTable.getOrders().add(this);
+        orderTable.addToOrders(this);
         this.orderTable = orderTable;
     }
 
