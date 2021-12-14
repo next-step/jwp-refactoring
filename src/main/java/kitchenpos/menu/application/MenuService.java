@@ -15,10 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -40,7 +38,6 @@ public class MenuService {
     }
 
     public MenuResponse create(final MenuRequest menuRequest) {
-        validatePrice(menuRequest.getPrice());
         final MenuGroup menuGroup = findMenuGroupById(menuRequest.getMenuGroupId());
         final MenuProducts menuProducts = new MenuProducts(makeMenuProducts(menuRequest));
         final Menu savedMenu = menuRepository.save(menuRequest.toMenu(menuGroup, menuProducts));
@@ -59,12 +56,6 @@ public class MenuService {
     public Menu findById(Long id) {
         return menuRepository.findById(id)
                 .orElseThrow(EntityNotFoundException::new);
-    }
-
-    private void validatePrice(BigDecimal price) {
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < MIN_PRICE) {
-            throw new IllegalArgumentException();
-        }
     }
 
     private MenuGroup findMenuGroupById(Long menuGroupId) {
