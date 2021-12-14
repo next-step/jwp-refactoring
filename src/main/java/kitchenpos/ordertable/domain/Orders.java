@@ -6,6 +6,7 @@ import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Embeddable
 public class Orders {
@@ -41,5 +42,18 @@ public class Orders {
         if (!order.isChangable()) {
             throw new IllegalArgumentException();
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Orders orders1 = (Orders) o;
+        return Objects.equals(orders, orders1.orders);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(orders);
     }
 }

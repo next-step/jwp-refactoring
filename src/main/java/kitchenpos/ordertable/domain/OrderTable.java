@@ -96,6 +96,10 @@ public class OrderTable {
         return empty && Objects.isNull(tableGroup);
     }
 
+    public boolean isChangable() {
+        return orders.isChangable();
+    }
+
     public void addToOrders(Order order) {
         orders.add(order);
     }
@@ -114,10 +118,6 @@ public class OrderTable {
         if (empty) {
             throw new IllegalArgumentException();
         }
-    }
-
-    public boolean isChangable() {
-        return orders.isChangable();
     }
 
     @Override
