@@ -73,4 +73,19 @@ class OrderTableTest {
         // when & then
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> orderTable.changeNumberOfGuests(1));
     }
+
+    @ParameterizedTest(name = "{displayName} - [{index}] {argumentsWithNames}")
+    @CsvSource(value = {"COOKING:false", "MEAL:false", "COMPLETION:true"}, delimiter = ':')
+    @DisplayName("변경 가능 여부를 반환한다.")
+    void isChangable(OrderStatus orderStatus, boolean expected) {
+        // given
+        orderTable.getOrders().add(new Order(OrderStatus.COMPLETION, LocalDateTime.now()));
+        orderTable.getOrders().add(new Order(orderStatus, LocalDateTime.now()));
+
+        // when
+        boolean changable = orderTable.isChangable();
+
+        // then
+        assertThat(changable).isEqualTo(expected);
+    }
 }

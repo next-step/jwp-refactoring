@@ -27,6 +27,7 @@ public class TableGroupResponse {
                 tableGroup.getId(),
                 tableGroup.getCreatedDate(),
                 tableGroup.getOrderTables()
+                        .getOrderTables()
                         .stream()
                         .map(OrderTableResponse::from)
                         .collect(Collectors.toList())

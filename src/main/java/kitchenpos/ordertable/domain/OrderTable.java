@@ -76,7 +76,7 @@ public class OrderTable {
     }
 
     public void changeTableGroup(TableGroup tableGroup) {
-        tableGroup.getOrderTables().add(this);
+        tableGroup.addToOrderTables(this);
         this.tableGroup = tableGroup;
     }
 

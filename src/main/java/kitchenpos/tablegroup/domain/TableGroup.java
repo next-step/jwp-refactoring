@@ -2,15 +2,13 @@ package kitchenpos.tablegroup.domain;
 
 import kitchenpos.ordertable.domain.OrderTable;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -24,8 +22,8 @@ public class TableGroup {
     @Column(nullable = false)
     private LocalDateTime createdDate;
 
-    @OneToMany(mappedBy = "tableGroup", cascade = CascadeType.PERSIST)
-    private List<OrderTable> orderTables = new ArrayList<>();
+    @Embedded
+    private OrderTables orderTables = new OrderTables();
 
     protected TableGroup() {
     }
@@ -49,13 +47,16 @@ public class TableGroup {
         return createdDate;
     }
 
-    public List<OrderTable> getOrderTables() {
+    public OrderTables getOrderTables() {
         return orderTables;
     }
 
     public void ungroup() {
-        orderTables.forEach(this::validateChangable);
-        orderTables.forEach(OrderTable::ungroup);
+        orderTables.ungroup();
+    }
+
+    public void addToOrderTables(OrderTable orderTable) {
+        orderTables.add(orderTable);
     }
 
     private static void validate(List<OrderTable> orderTables) {
@@ -64,12 +65,6 @@ public class TableGroup {
 
     private static void validateOrderTable(OrderTable orderTable) {
         if (!orderTable.isGroupable()) {
-            throw new IllegalArgumentException();
-        }
-    }
-
-    private void validateChangable(OrderTable orderTable) {
-        if (!orderTable.isChangable()) {
             throw new IllegalArgumentException();
         }
     }

@@ -33,7 +33,7 @@ class TableGroupTest {
         // then
         assertAll(
                 () -> assertThat(tableGroup.getCreatedDate()).isEqualTo(createdDate),
-                () -> assertThat(tableGroup.getOrderTables()).containsExactly(orderTable)
+                () -> assertThat(tableGroup.getOrderTables()).isEqualTo(new OrderTables(Collections.singletonList(orderTable)))
         );
     }
 
