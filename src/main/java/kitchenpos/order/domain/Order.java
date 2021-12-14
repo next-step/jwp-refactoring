@@ -16,7 +16,6 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 @Entity
 @Table(name = "orders")
@@ -80,7 +79,7 @@ public class Order {
     }
 
     public boolean isChangable() {
-        return orderStatus.equals(OrderStatus.COMPLETION);
+        return orderStatus.isCompletion();
     }
 
     void addToOrderLineItems(OrderLineItem orderLineItem) {
@@ -92,7 +91,7 @@ public class Order {
     }
 
     private void validateOrderStatus() {
-        if (Objects.equals(OrderStatus.COMPLETION, orderStatus)) {
+        if (orderStatus.isCompletion()) {
             throw new IllegalArgumentException();
         }
     }
