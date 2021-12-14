@@ -14,7 +14,8 @@ import org.springframework.http.HttpStatus;
 
 import java.util.Arrays;
 
-import static kitchenpos.ordertable.acceptance.OrderTableAcceptanceTest.*;
+import static kitchenpos.ordertable.OrderTableSteps.*;
+import static kitchenpos.tablegroup.TableGroupSteps.*;
 import static org.assertj.core.api.Assertions.*;
 
 @DisplayName("테이블 그룹 인수 테스트")
@@ -48,18 +49,6 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
 
         // then
         테이블_그룹에서_테이블_제거됨(ungroupResponse);
-    }
-
-    public static TableGroupResponse 테이블_그룹_등록되어_있음(TableGroupRequest tableGroupRequest) {
-        return post("/api/table-groups", tableGroupRequest).as(TableGroupResponse.class);
-    }
-
-    public static ExtractableResponse<Response> 테이블_그룹_등록_요청(TableGroupRequest tableGroupRequest) {
-        return post("/api/table-groups", tableGroupRequest);
-    }
-
-    public static ExtractableResponse<Response> 테이블_그룹에서_테이블_제거_요청(Long id) {
-        return delete("/api/table-groups/{tableGroupId}", id);
     }
 
     private Long extractId(ExtractableResponse<Response> createResponse) {

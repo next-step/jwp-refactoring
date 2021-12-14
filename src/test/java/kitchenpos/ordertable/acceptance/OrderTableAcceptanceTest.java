@@ -10,6 +10,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
+import static kitchenpos.ordertable.OrderTableSteps.*;
 import static org.assertj.core.api.Assertions.*;
 
 @DisplayName("테이블 인수 테스트")
@@ -67,26 +68,6 @@ public class OrderTableAcceptanceTest extends AcceptanceTest {
 
         // then
         테이블_방문한_손님_수_변경됨(response);
-    }
-
-    public static OrderTableResponse 테이블_등록되어_있음(OrderTableRequest orderTableRequest) {
-        return 테이블_등록_요청(orderTableRequest).as(OrderTableResponse.class);
-    }
-
-    public static ExtractableResponse<Response> 테이블_등록_요청(OrderTableRequest orderTableRequest) {
-        return post("/api/tables", orderTableRequest);
-    }
-
-    public static ExtractableResponse<Response> 테이블_목록_조회_요청() {
-        return get("/api/tables");
-    }
-
-    public static ExtractableResponse<Response> 테이블_주문_등록_가능_여부_변경_요청(Long orderTableId, OrderTableRequest orderTableRequest) {
-        return put("/api/tables/{orderTableId}/empty", orderTableRequest, orderTableId);
-    }
-
-    private ExtractableResponse<Response> 테이블_방문한_손님_수_변경_요청(long orderTableId, OrderTableRequest orderTableRequest) {
-        return put("/api/tables/{orderTableId}/number-of-guests", orderTableRequest, orderTableId);
     }
 
     private void 테이블_등록됨(ExtractableResponse<Response> response) {

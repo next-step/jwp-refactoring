@@ -24,10 +24,11 @@ import org.springframework.http.HttpStatus;
 import java.math.BigDecimal;
 import java.util.Collections;
 
-import static kitchenpos.menu.acceptance.MenuAcceptanceTest.*;
-import static kitchenpos.menugroup.acceptance.MenuGroupAcceptanceTest.*;
-import static kitchenpos.ordertable.acceptance.OrderTableAcceptanceTest.*;
-import static kitchenpos.product.acceptance.ProductAcceptanceTest.*;
+import static kitchenpos.menu.MenuSteps.*;
+import static kitchenpos.menugroup.MenuGroupSteps.*;
+import static kitchenpos.order.OrderSteps.*;
+import static kitchenpos.ordertable.OrderTableSteps.*;
+import static kitchenpos.product.ProductSteps.*;
 import static org.assertj.core.api.Assertions.*;
 
 @DisplayName("주문 인수 테스트")
@@ -35,22 +36,6 @@ public class OrderAcceptanceTest extends AcceptanceTest {
 
     private MenuResponse 후라이드치킨메뉴;
     private OrderResponse 후라이드치킨주문;
-
-    public static OrderResponse 주문_등록되어_있음(OrderRequest orderRequest) {
-        return 주문_등록_요청(orderRequest).as(OrderResponse.class);
-    }
-
-    public static ExtractableResponse<Response> 주문_등록_요청(OrderRequest orderRequest) {
-        return post("/api/orders", orderRequest);
-    }
-
-    public static ExtractableResponse<Response> 주문_목록_조회_요청() {
-        return get("/api/orders");
-    }
-
-    public static ExtractableResponse<Response> 주문의_주문_상태_변경_요청(Long id, OrderRequest orderRequest) {
-        return put("/api/orders/{orderId}/order-status", orderRequest, id);
-    }
 
     @Override
     @BeforeEach

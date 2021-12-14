@@ -18,8 +18,9 @@ import org.springframework.http.HttpStatus;
 import java.math.BigDecimal;
 import java.util.Collections;
 
-import static kitchenpos.menugroup.acceptance.MenuGroupAcceptanceTest.*;
-import static kitchenpos.product.acceptance.ProductAcceptanceTest.*;
+import static kitchenpos.menu.MenuSteps.*;
+import static kitchenpos.menugroup.MenuGroupSteps.*;
+import static kitchenpos.product.ProductSteps.*;
 import static org.assertj.core.api.Assertions.*;
 
 @DisplayName("메뉴 인수 테스트")
@@ -58,18 +59,6 @@ public class MenuAcceptanceTest extends AcceptanceTest {
 
         // then
         메뉴_목록_조회됨(listResponse);
-    }
-
-    public static MenuResponse 메뉴_등록되어_있음(MenuRequest menuRequest) {
-        return 메뉴_등록_요청(menuRequest).as(MenuResponse.class);
-    }
-
-    public static ExtractableResponse<Response> 메뉴_등록_요청(MenuRequest menuRequest) {
-        return post("/api/menus", menuRequest);
-    }
-
-    public static ExtractableResponse<Response> 메뉴_목록_조회_요청() {
-        return get("/api/menus");
     }
 
     private void 메뉴_등록됨(ExtractableResponse<Response> response) {
