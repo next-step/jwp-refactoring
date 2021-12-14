@@ -9,6 +9,7 @@ import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import javax.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
@@ -75,7 +76,7 @@ public class MenuServiceTest extends ServiceTest {
                 Collections.singletonList(menuProductRequest));
 
         // when & then
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> menuService.create(menuRequest));
+        assertThatExceptionOfType(EntityNotFoundException.class).isThrownBy(() -> menuService.create(menuRequest));
     }
 
     @Test
@@ -91,7 +92,7 @@ public class MenuServiceTest extends ServiceTest {
                 Collections.singletonList(menuProductRequest));
 
         // when & then
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> menuService.create(menuRequest));
+        assertThatExceptionOfType(EntityNotFoundException.class).isThrownBy(() -> menuService.create(menuRequest));
     }
 
     @Test

@@ -7,6 +7,7 @@ import kitchenpos.menugroup.dto.MenuGroupResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,6 +37,6 @@ public class MenuGroupService {
     @Transactional(readOnly = true)
     public MenuGroup findById(Long id) {
         return menuGroupRepository.findById(id)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(EntityNotFoundException::new);
     }
 }

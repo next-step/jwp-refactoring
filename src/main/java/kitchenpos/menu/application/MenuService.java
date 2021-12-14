@@ -14,6 +14,7 @@ import kitchenpos.product.domain.Product;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +58,7 @@ public class MenuService {
     @Transactional(readOnly = true)
     public Menu findById(Long id) {
         return menuRepository.findById(id)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(EntityNotFoundException::new);
     }
 
     private void validatePrice(BigDecimal price) {

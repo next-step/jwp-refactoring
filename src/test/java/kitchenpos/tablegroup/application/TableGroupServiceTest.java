@@ -7,6 +7,7 @@ import kitchenpos.tablegroup.dto.TableGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -57,7 +58,7 @@ class TableGroupServiceTest extends ServiceTest {
                 Arrays.asList(savedOrderTableResponse.getId(), 0L));
 
         // when & then
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> tableGroupService.create(tableGroupRequest));
+        assertThatExceptionOfType(EntityNotFoundException.class).isThrownBy(() -> tableGroupService.create(tableGroupRequest));
     }
 
     @Test

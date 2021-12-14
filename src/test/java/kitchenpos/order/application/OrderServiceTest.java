@@ -10,6 +10,7 @@ import kitchenpos.ordertable.dto.OrderTableResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.Collections;
 import java.util.List;
 
@@ -68,7 +69,7 @@ class OrderServiceTest extends ServiceTest {
                 savedOrderTableResponse.getId(), OrderStatus.COOKING.name(), Collections.singletonList(orderLineItemRequest));
 
         // when & then
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> orderService.create(orderRequest));
+        assertThatExceptionOfType(EntityNotFoundException.class).isThrownBy(() -> orderService.create(orderRequest));
     }
 
     @Test
@@ -81,7 +82,7 @@ class OrderServiceTest extends ServiceTest {
         OrderRequest orderRequest = new OrderRequest(0L, OrderStatus.COOKING.name(), Collections.singletonList(orderLineItemRequest));
 
         // when & then
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> orderService.create(orderRequest));
+        assertThatExceptionOfType(EntityNotFoundException.class).isThrownBy(() -> orderService.create(orderRequest));
     }
 
     @Test
@@ -134,7 +135,7 @@ class OrderServiceTest extends ServiceTest {
         OrderRequest orderRequest = new OrderRequest(OrderStatus.MEAL.name());
 
         // when & then
-        assertThatExceptionOfType(IllegalArgumentException.class)
+        assertThatExceptionOfType(EntityNotFoundException.class)
                 .isThrownBy(() -> orderService.changeOrderStatus(0L, orderRequest));
     }
 

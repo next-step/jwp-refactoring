@@ -7,6 +7,7 @@ import kitchenpos.tablegroup.dto.TableGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
@@ -67,7 +68,7 @@ class OrderTableServiceTest extends ServiceTest {
         OrderTableRequest orderTableRequest = new OrderTableRequest(true);
 
         // when & then
-        assertThatExceptionOfType(IllegalArgumentException.class)
+        assertThatExceptionOfType(EntityNotFoundException.class)
                 .isThrownBy(() -> orderTableService.changeEmpty(0L, orderTableRequest));
     }
 
@@ -119,7 +120,7 @@ class OrderTableServiceTest extends ServiceTest {
         OrderTableRequest orderTableRequest = new OrderTableRequest(4);
 
         // when & then
-        assertThatExceptionOfType(IllegalArgumentException.class)
+        assertThatExceptionOfType(EntityNotFoundException.class)
                 .isThrownBy(() -> orderTableService.changeNumberOfGuests(0L, orderTableRequest));
     }
 
