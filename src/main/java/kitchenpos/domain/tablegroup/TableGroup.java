@@ -12,11 +12,16 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.springframework.util.CollectionUtils;
+
 import kitchenpos.domain.table.OrderTable;
 
 @Entity
 @Table(name = "table_group")
 public class TableGroup {
+    private static final String INVALID_GROUP_ORDER_TABLE_COUNT = "TableGroup 은 최소 2개 이상의 OrderTable 이 존재해야합니다.";
+    private static final String INVALID_GROUP_ORDER_TABLE = "OrderTable 은 TableGroup 이 할당되지 않으면서 비어있어야 합니다.";
+    private static final int MIN_ORDER_TABLE_COUNT = 2;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,11 +41,6 @@ public class TableGroup {
         this.createdDate = LocalDateTime.now();
     }
 
-    public TableGroup(Long id, LocalDateTime createdDate) {
-        this.id = id;
-        this.createdDate = createdDate;
-    }
-
     private TableGroup(List<OrderTable> orderTables) {
         this.orderTables = orderTables;
         this.createdDate = LocalDateTime.now();
@@ -51,11 +51,13 @@ public class TableGroup {
     }
 
     public static TableGroup from(List<OrderTable> orderTables) {
+        validateDoGroupOrderTables(orderTables);
         return new TableGroup(orderTables);
     }
 
-    public static TableGroup of(Long id, LocalDateTime createdDate) {
-        return new TableGroup(id, createdDate);
+    public void addOrderTables(final List<OrderTable> orderTables) {
+        this.orderTables.addAll(orderTables);
+        orderTables.forEach(orderTable -> orderTable.alignTableGroup(this));
     }
 
     public Long getId() {
@@ -66,15 +68,23 @@ public class TableGroup {
         return createdDate;
     }
 
-    public void setCreatedDate(final LocalDateTime createdDate) {
-        this.createdDate = createdDate;
-    }
-
     public List<OrderTable> getOrderTables() {
         return orderTables;
     }
 
-    public void setOrderTables(final List<OrderTable> orderTables) {
-        this.orderTables = orderTables;
+    private static void validateDoGroupOrderTables(List<OrderTable> orderTables) {
+        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < MIN_ORDER_TABLE_COUNT) {
+            throw new IllegalArgumentException(INVALID_GROUP_ORDER_TABLE_COUNT);
+        }
+
+        for (final OrderTable orderTable : orderTables) {
+            validateDoGroupOrderTable(orderTable);
+        }
+    }
+
+    private static void validateDoGroupOrderTable(OrderTable orderTable) {
+        if (!orderTable.isEmpty() || orderTable.hasTableGroup()) {
+            throw new IllegalArgumentException(INVALID_GROUP_ORDER_TABLE);
+        }
     }
 }

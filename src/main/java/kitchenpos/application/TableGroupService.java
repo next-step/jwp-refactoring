@@ -1,14 +1,11 @@
 package kitchenpos.application;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import kitchenpos.domain.order.OrdersRepository;
 import kitchenpos.domain.order.OrderStatus;
@@ -16,7 +13,10 @@ import kitchenpos.domain.table.OrderTable;
 import kitchenpos.domain.table.OrderTableRepository;
 import kitchenpos.domain.tablegroup.TableGroup;
 import kitchenpos.domain.tablegroup.TableGroupRepository;
+import kitchenpos.dto.tablegroup.OrderTableIdRequest;
+import kitchenpos.dto.tablegroup.TableGroupRequest;
 import kitchenpos.dto.tablegroup.TableGroupResponse;
+import kitchenpos.utils.StreamUtils;
 
 @Service
 public class TableGroupService {
@@ -33,41 +33,21 @@ public class TableGroupService {
     }
 
     @Transactional
-    public TableGroupResponse create(final TableGroup tableGroup) {
-        final List<OrderTable> orderTables = tableGroup.getOrderTables();
+    public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
+        List<Long> orderTableIds = StreamUtils.mapToList(tableGroupRequest.getOrderTables(), OrderTableIdRequest::getId);
+        List<OrderTable> orderTables = orderTableRepository.findAllByIdIn(orderTableIds);
+        validateExistOrderTables(orderTableIds, orderTables);
 
-        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
+        TableGroup tableGroup = tableGroupRepository.save(TableGroup.from(orderTables));
+        tableGroup.addOrderTables(orderTables);
+
+        return TableGroupResponse.from(tableGroup);
+    }
+
+    private void validateExistOrderTables(List<Long> orderTableIds, List<OrderTable> orderTables) {
+        if (orderTableIds.size() != orderTables.size()) {
             throw new IllegalArgumentException();
         }
-
-        final List<Long> orderTableIds = orderTables.stream()
-                .map(OrderTable::getId)
-                .collect(Collectors.toList());
-
-        final List<OrderTable> savedOrderTables = orderTableRepository.findAllByIdIn(orderTableIds);
-
-        if (orderTables.size() != savedOrderTables.size()) {
-            throw new IllegalArgumentException();
-        }
-
-        for (final OrderTable savedOrderTable : savedOrderTables) {
-            if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroup())) {
-                throw new IllegalArgumentException();
-            }
-        }
-
-        tableGroup.setCreatedDate(LocalDateTime.now());
-
-        final TableGroup savedTableGroup = tableGroupRepository.save(tableGroup);
-
-        final Long tableGroupId = savedTableGroup.getId();
-        for (final OrderTable savedOrderTable : savedOrderTables) {
-            savedOrderTable.setTableGroupId(tableGroupId);
-            savedOrderTable.updateEmpty(false);
-        }
-        savedTableGroup.setOrderTables(savedOrderTables);
-
-        return TableGroupResponse.from(savedTableGroup);
     }
 
     @Transactional
