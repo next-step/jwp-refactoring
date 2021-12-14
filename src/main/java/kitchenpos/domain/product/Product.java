@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import kitchenpos.domain.Name;
 import kitchenpos.domain.Price;
 
 @Entity
@@ -21,8 +22,8 @@ public class Product {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "name", nullable = false)
-    private String name;
+    @Embedded
+    private Name name;
 
     @Embedded
     private Price price;
@@ -39,7 +40,7 @@ public class Product {
     }
 
     private Product(String name, BigDecimal price) {
-        this.name = name;
+        this.name = Name.from(name);
         this.price = Price.from(price);
     }
 
@@ -59,7 +60,7 @@ public class Product {
         return id;
     }
 
-    public String getName() {
+    public Name getName() {
         return name;
     }
 

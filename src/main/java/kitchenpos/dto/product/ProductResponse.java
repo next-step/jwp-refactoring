@@ -19,7 +19,7 @@ public class ProductResponse {
     }
 
     public static ProductResponse from(Product product) {
-        return new ProductResponse(product.getId(), product.getName(), product.getPrice().getValue());
+        return new ProductResponse(product.getId(), product.getName().getValue(), product.getPrice().getValue());
     }
 
     public Long getId() {
