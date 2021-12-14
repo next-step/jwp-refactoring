@@ -9,6 +9,7 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class Price {
     private static final String INVALID_PRICE = "Price 는 0 이상의 값을 가집니다.";
+    private static final int MIN_PRICE = 0;
 
     @Column(name = "price", nullable = false)
     private BigDecimal price;
@@ -33,7 +34,7 @@ public class Price {
     }
 
     private static void validatePrice(BigDecimal price) {
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
+        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < MIN_PRICE) {
             throw new IllegalArgumentException(INVALID_PRICE);
         }
     }

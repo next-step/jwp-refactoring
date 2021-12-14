@@ -8,6 +8,7 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class Quantity {
     private static final String INVALID_QUANTITY = "Quantity 는 0 이상의 숫자로 생성할 수 있습니다.";
+    private static final int MIN_QUANTITY = 0;
 
     @Column(name = "quantity", nullable = false)
     private long quantity;
@@ -28,7 +29,7 @@ public class Quantity {
     }
 
     private static void validateQuantity(long quantity) {
-        if (quantity < 0) {
+        if (quantity < MIN_QUANTITY) {
             throw new IllegalArgumentException(INVALID_QUANTITY);
         }
     }

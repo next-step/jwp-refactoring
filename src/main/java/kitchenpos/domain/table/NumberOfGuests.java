@@ -8,6 +8,7 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class NumberOfGuests {
     private static final String INVALID_NUMBER_OF_GUESTS = "NumberOfGuests 는 0 이상의 숫자로 생성할 수 있습니다.";
+    private static final int MIN_NUMBER_OF_GUESTS = 0;
 
     @Column(name = "number_of_guests", nullable = false)
     private int numberOfGuests;
@@ -24,7 +25,7 @@ public class NumberOfGuests {
     }
 
     private static void validateNumberOfGuests(int numberOfGuests) {
-        if (numberOfGuests < 0) {
+        if (numberOfGuests < MIN_NUMBER_OF_GUESTS) {
             throw new IllegalArgumentException(INVALID_NUMBER_OF_GUESTS);
         }
     }
