@@ -39,7 +39,8 @@ class TableServiceTest {
     @Test
     void createTable() {
         // given
-        OrderTable orderTable = new OrderTable(0, true);
+        OrderTable orderTable = 주문_테이블_생성(0, true);
+
         given(orderTableDao.save(any())).willReturn(orderTable);
 
         // when
@@ -54,7 +55,8 @@ class TableServiceTest {
     void getTables() {
         // given
         List<OrderTable> orderTables = Collections.singletonList(
-            new OrderTable(0, true));
+            주문_테이블_생성(0, true));
+
         given(orderTableDao.findAll()).willReturn(orderTables);
 
         // when
@@ -69,8 +71,9 @@ class TableServiceTest {
     @Test
     void changeEmpty() {
         // given
-        OrderTable orderTable = new OrderTable(1L, 0, false);
-        OrderTable findOrderTable = new OrderTable(1L, 0, true);
+        OrderTable orderTable = 주문_테이블_생성(1L, 0, false);
+        OrderTable findOrderTable = 주문_테이블_생성(1L, 0, true);
+
         given(orderTableDao.findById(any())).willReturn(Optional.of(findOrderTable));
         given(orderDao.existsByOrderTableIdAndOrderStatusIn(
             any(), any())).willReturn(false);
@@ -87,11 +90,12 @@ class TableServiceTest {
     @Test
     void changeEmptyExistTableGroup() {
         // given
-        OrderTable orderTable = new OrderTable(1L, 1L, 0, true);
-        given(orderTableDao.findById(any())).willReturn(Optional.of(orderTable));
+        OrderTable orderTable = 주문_테이블_생성(1L, 1L, 0, true);
         Long orderTableId = orderTable.getId();
 
-        // when & then
+        given(orderTableDao.findById(any())).willReturn(Optional.of(orderTable));
+
+        // when && then
         assertThrows(IllegalArgumentException.class, () -> tableService.changeEmpty(
             orderTableId, orderTable));
 
@@ -103,12 +107,13 @@ class TableServiceTest {
     @Test
     void changeEmptyOrderStatusIsNotCompletion() {
         // given
-        OrderTable orderTable = new OrderTable(1L, 0, true);
-        given(orderTableDao.findById(any())).willReturn(Optional.of(orderTable));
-        given(orderDao.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).willReturn(true);
+        OrderTable orderTable = 주문_테이블_생성(1L, 0, true);
         Long orderTableId = orderTable.getId();
 
-        // when & then
+        given(orderTableDao.findById(any())).willReturn(Optional.of(orderTable));
+        given(orderDao.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).willReturn(true);
+
+        // when && then
         assertThrows(IllegalArgumentException.class, () ->
             tableService.changeEmpty(orderTableId, orderTable));
 
@@ -120,8 +125,9 @@ class TableServiceTest {
     @Test
     void changeNumberOfGuests() {
         // given
-        OrderTable orderTable = new OrderTable(1L, 5, false);
-        OrderTable findOrderTable = new OrderTable(1L, 0, false);
+        OrderTable orderTable = 주문_테이블_생성(1L, 5, false);
+        OrderTable findOrderTable = 주문_테이블_생성(1L, 0, false);
+
         given(orderTableDao.findById(any())).willReturn(Optional.of(findOrderTable));
         given(orderTableDao.save(any())).willReturn(findOrderTable);
         // when
@@ -135,10 +141,10 @@ class TableServiceTest {
     @Test
     void changeNumberOfGuestsLessThanZero() {
         // given
-        OrderTable orderTable = new OrderTable(1L, -1, false);
+        OrderTable orderTable = 주문_테이블_생성(1L, -1, false);
         Long orderTableId = orderTable.getId();
 
-        // when & then
+        // when && then
         assertThrows(IllegalArgumentException.class, () ->
             tableService.changeNumberOfGuests(orderTableId, orderTable));
         verify(orderTableDao, times(0)).findById(any());
@@ -148,13 +154,26 @@ class TableServiceTest {
     @Test
     void changeNumberOfGuestsEmptyTable() {
         // given
-        OrderTable orderTable = new OrderTable(1L, 0, true);
+        OrderTable orderTable = 주문_테이블_생성(1L, 0, true);
         Long orderTableId = orderTable.getId();
+
         given(orderTableDao.findById(anyLong())).willReturn(Optional.of(orderTable));
 
-        // when & then
+        // when && then
         assertThrows(IllegalArgumentException.class, () ->
             tableService.changeNumberOfGuests(orderTableId, orderTable));
         verify(orderTableDao).findById(any());
+    }
+
+    static OrderTable 주문_테이블_생성(int numberOfGuests, boolean empty) {
+        return new OrderTable(numberOfGuests, empty);
+    }
+
+    static OrderTable 주문_테이블_생성(Long id, int numberOfGuests, boolean empty) {
+        return new OrderTable(id, numberOfGuests, empty);
+    }
+
+    static OrderTable 주문_테이블_생성(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
+        return new OrderTable(id, tableGroupId, numberOfGuests, empty);
     }
 }

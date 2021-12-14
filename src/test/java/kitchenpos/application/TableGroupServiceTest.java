@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import static kitchenpos.application.TableServiceTest.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
@@ -46,9 +47,10 @@ class TableGroupServiceTest {
     void createTableGroup() {
         // given
         List<OrderTable> orderTables = Arrays.asList(
-            new OrderTable(1L, 0, true),
-            new OrderTable(2L, 0, true));
-        TableGroup tableGroup = new TableGroup(orderTables);
+            주문_테이블_생성(1L, 0, true),
+            주문_테이블_생성(2L, 0, true));
+        TableGroup tableGroup = 주문_테이블_그룹_생성(orderTables);
+
         given(orderTableDao.findAllByIdIn(any()))
             .willReturn(orderTables);
         given(tableGroupDao.save(any())).willReturn(tableGroup);
@@ -68,10 +70,10 @@ class TableGroupServiceTest {
     void createTableGroupMinSize() {
         // given
         List<OrderTable> orderTables = Collections.singletonList(
-            new OrderTable(2L, 0, true));
-        TableGroup tableGroup = new TableGroup(orderTables);
+            주문_테이블_생성(2L, 0, true));
+        TableGroup tableGroup = 주문_테이블_그룹_생성(orderTables);
 
-        // when & then
+        // when && then
         assertThrows(IllegalArgumentException.class, () ->
             tableGroupService.create(tableGroup));
         verify(orderTableDao, times(0)).findAllByIdIn(any());
@@ -82,12 +84,13 @@ class TableGroupServiceTest {
     void createTableGroupNotFoundTable() {
         // given
         List<OrderTable> orderTables = Arrays.asList(
-            new OrderTable(1L, 0, true),
-            new OrderTable(2L, 0, true));
-        TableGroup tableGroup = new TableGroup(orderTables);
+            주문_테이블_생성(1L, 0, true),
+            주문_테이블_생성(2L, 0, true));
+        TableGroup tableGroup = 주문_테이블_그룹_생성(orderTables);
+
         given(orderTableDao.findAllByIdIn(any())).willReturn(Collections.emptyList());
 
-        // when & then
+        // when && then
         assertThrows(IllegalArgumentException.class, () ->
             tableGroupService.create(tableGroup));
         verify(orderTableDao).findAllByIdIn(any());
@@ -99,12 +102,13 @@ class TableGroupServiceTest {
     void createTableGroupNotEmptyTable() {
         // given
         List<OrderTable> orderTables = Arrays.asList(
-            new OrderTable(1L, 0, true),
-            new OrderTable(2L, 0, false));
-        TableGroup tableGroup = new TableGroup(orderTables);
+            주문_테이블_생성(1L, 0, true),
+            주문_테이블_생성(2L, 0, false));
+        TableGroup tableGroup = 주문_테이블_그룹_생성(orderTables);
+
         given(orderTableDao.findAllByIdIn(any())).willReturn(orderTables);
 
-        // when & then
+        // when && then
         assertThrows(IllegalArgumentException.class, () ->
             tableGroupService.create(tableGroup));
         verify(orderTableDao).findAllByIdIn(any());
@@ -116,12 +120,13 @@ class TableGroupServiceTest {
     void createTableGroupExistTableGroup() {
         // given
         List<OrderTable> orderTables = Arrays.asList(
-            new OrderTable(1L, 1L, 0, true),
-            new OrderTable(2L, 0, true));
-        TableGroup tableGroup = new TableGroup(orderTables);
+            주문_테이블_생성(1L, 1L, 0, true),
+            주문_테이블_생성(2L, 0, true));
+        TableGroup tableGroup = 주문_테이블_그룹_생성(orderTables);
+
         given(orderTableDao.findAllByIdIn(any())).willReturn(orderTables);
 
-        // when & then
+        // when && then
         assertThrows(IllegalArgumentException.class, () ->
             tableGroupService.create(tableGroup));
         verify(orderTableDao).findAllByIdIn(any());
@@ -134,8 +139,9 @@ class TableGroupServiceTest {
         // given
         Long tableGroupId = 1L;
         List<OrderTable> orderTables = Arrays.asList(
-            new OrderTable(1L, tableGroupId, 0, true),
-            new OrderTable(2L, tableGroupId, 0, true));
+            주문_테이블_생성(1L, tableGroupId, 0, true),
+            주문_테이블_생성(2L, tableGroupId, 0, true));
+
         given(orderTableDao.findAllByTableGroupId(any()))
             .willReturn(orderTables);
         given(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList()))
@@ -147,5 +153,9 @@ class TableGroupServiceTest {
         // then
         assertThat(orderTables).extracting("tableGroupId")
             .containsExactly(null, null);
+    }
+
+    private TableGroup 주문_테이블_그룹_생성(List<OrderTable> orderTables) {
+        return new TableGroup(orderTables);
     }
 }

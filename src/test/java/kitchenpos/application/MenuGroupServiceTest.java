@@ -34,7 +34,7 @@ class MenuGroupServiceTest {
     @Test
     void createMenuGroup() {
         // given
-        MenuGroup menuGroup = new MenuGroup("두마리메뉴");
+        MenuGroup menuGroup = 메뉴_그룹_생성("두마리메뉴");
         given(menuGroupDao.save(any()))
             .willReturn(menuGroup);
 
@@ -50,8 +50,8 @@ class MenuGroupServiceTest {
     void getMenuGroups() {
         // given
         List<MenuGroup> menuGroups = Arrays.asList(
-            new MenuGroup("두마리메뉴"),
-            new MenuGroup("한마리메뉴"));
+            메뉴_그룹_생성("두마리메뉴"),
+            메뉴_그룹_생성("한마리메뉴"));
         given(menuGroupDao.findAll())
             .willReturn(menuGroups);
 
@@ -61,5 +61,13 @@ class MenuGroupServiceTest {
         // then
         assertThat(findMenuGroups)
             .containsExactlyElementsOf(menuGroups);
+    }
+
+    static MenuGroup 메뉴_그룹_생성(String name) {
+        return new MenuGroup(name);
+    }
+
+    static MenuGroup 메뉴_그룹_생성(Long id, String name) {
+        return new MenuGroup(id, name);
     }
 }

@@ -35,7 +35,7 @@ class ProductServiceTest {
     @Test
     void createProduct() {
         // given
-        Product product = new Product("후라이드", BigDecimal.valueOf(16000));
+        Product product = 상품_생성("후라이드", 16000);
         given(productDao.save(any()))
             .willReturn(product);
 
@@ -50,8 +50,8 @@ class ProductServiceTest {
     @Test
     void createProductWrongPrice() {
         // given
-        Product zeroPriceProduct = new Product("후라이드", BigDecimal.valueOf(-1));
-        Product nullPriceProduct = new Product("후라이드", null);
+        Product zeroPriceProduct = 상품_생성("후라이드", -1);
+        Product nullPriceProduct = 상품_생성("후라이드");
 
         // when && then
         assertAll(
@@ -65,8 +65,8 @@ class ProductServiceTest {
     void getProducts() {
         // given
         List<Product> products = Arrays.asList(
-            new Product("후라이드", BigDecimal.valueOf(16000)),
-            new Product("양념치킨", BigDecimal.valueOf(16000)));
+            상품_생성("후라이드", 16000),
+            상품_생성("양념치킨", 16000));
         given(productDao.findAll())
             .willReturn(products);
 
@@ -78,4 +78,15 @@ class ProductServiceTest {
             .containsExactlyElementsOf(products);
     }
 
+    static Product 상품_생성(String name) {
+        return new Product(name, null);
+    }
+
+    static Product 상품_생성(String name, int price) {
+        return new Product(name, BigDecimal.valueOf(price));
+    }
+
+    static Product 상품_생성(Long id, String name, int price) {
+        return new Product(id, name, BigDecimal.valueOf(price));
+    }
 }

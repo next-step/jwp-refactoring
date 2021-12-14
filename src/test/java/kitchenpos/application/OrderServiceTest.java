@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import static kitchenpos.application.TableServiceTest.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
@@ -52,9 +53,10 @@ class OrderServiceTest {
     void createOrder() {
         // given
         Long orderId = 1L;
-        OrderLineItem orderLineItem = new OrderLineItem(1L, 1);
-        OrderTable orderTable = new OrderTable(1L, 0, false);
-        Order order = new Order(orderId, orderTable.getId(), Collections.singletonList(orderLineItem));
+        OrderLineItem orderLineItem = 주문_항목_생성(1L, 1);
+        OrderTable orderTable = 주문_테이블_생성(1L, 0, false);
+        Order order = 주문_생성(orderId, orderTable.getId(), Collections.singletonList(orderLineItem));
+
         given(menuDao.countByIdIn(any())).willReturn((long)order.getOrderLineItems().size());
         given(orderTableDao.findById(any())).willReturn(Optional.of(orderTable));
         given(orderDao.save(any())).willReturn(order);
@@ -75,9 +77,8 @@ class OrderServiceTest {
     void createOrderEmptyOrderLineItems() {
         // given
         Long orderId = 1L;
-        OrderLineItem orderLineItem = new OrderLineItem(1L, 1);
-        OrderTable orderTable = new OrderTable(1L, 0, false);
-        Order order = new Order(orderId, orderTable.getId(), Collections.emptyList());
+        OrderTable orderTable = 주문_테이블_생성(1L, 0, false);
+        Order order = 주문_생성(orderId, orderTable.getId(), Collections.emptyList());
 
         // when && then
         assertThrows(IllegalArgumentException.class, () -> orderService.create(order));
@@ -89,9 +90,10 @@ class OrderServiceTest {
     void createOrderNotMenuCount() {
         // given
         Long orderId = 1L;
-        OrderLineItem orderLineItem = new OrderLineItem(1L, 1);
-        OrderTable orderTable = new OrderTable(1L, 0, false);
-        Order order = new Order(orderId, orderTable.getId(), Collections.singletonList(orderLineItem));
+        OrderLineItem orderLineItem = 주문_항목_생성(1L, 1);
+        OrderTable orderTable = 주문_테이블_생성(1L, 0, false);
+        Order order = 주문_생성(orderId, orderTable.getId(), Collections.singletonList(orderLineItem));
+
         given(menuDao.countByIdIn(any())).willReturn(0L);
 
         // when && then
@@ -105,8 +107,9 @@ class OrderServiceTest {
     void createOrderNotFoundOrderTable() {
         // given
         Long orderId = 1L;
-        OrderLineItem orderLineItem = new OrderLineItem(1L, 1);
-        Order order = new Order(orderId, null, Collections.singletonList(orderLineItem));
+        OrderLineItem orderLineItem = 주문_항목_생성(1L, 1);
+        Order order = 주문_생성(orderId, null, Collections.singletonList(orderLineItem));
+
         given(menuDao.countByIdIn(any())).willReturn(0L);
 
         // when && then
@@ -119,9 +122,10 @@ class OrderServiceTest {
     void createOrderIsEmptyOrderTable() {
         // given
         Long orderId = 1L;
-        OrderLineItem orderLineItem = new OrderLineItem(1L, 1);
-        OrderTable orderTable = new OrderTable(1L, 0, true);
-        Order order = new Order(orderId, orderTable.getId(), Collections.singletonList(orderLineItem));
+        OrderLineItem orderLineItem = 주문_항목_생성(1L, 1);
+        OrderTable orderTable = 주문_테이블_생성(1L, 0, true);
+        Order order = 주문_생성(orderId, orderTable.getId(), Collections.singletonList(orderLineItem));
+
         given(menuDao.countByIdIn(any())).willReturn((long)order.getOrderLineItems().size());
         given(orderTableDao.findById(any())).willReturn(Optional.of(orderTable));
 
@@ -135,11 +139,12 @@ class OrderServiceTest {
     void getOrders() {
         // given
         Long orderId = 1L;
-        OrderLineItem orderLineItem = new OrderLineItem(1L, 1);
+        OrderLineItem orderLineItem = 주문_항목_생성(1L, 1);
         List<OrderLineItem> orderLineItems = Collections.singletonList(orderLineItem);
-        OrderTable orderTable = new OrderTable(1L, 0, false);
-        Order order = new Order(orderId, orderTable.getId(), orderLineItems);
+        OrderTable orderTable = 주문_테이블_생성(1L, 0, false);
+        Order order = 주문_생성(orderId, orderTable.getId(), orderLineItems);
         List<Order> orders = Collections.singletonList(order);
+
         given(orderDao.findAll()).willReturn(orders);
         given(orderLineItemDao.findAllByOrderId(orderId)).willReturn(orderLineItems);
 
@@ -154,12 +159,13 @@ class OrderServiceTest {
     void changeOrderStatus() {
         // given
         Long orderId = 1L;
-        OrderLineItem orderLineItem = new OrderLineItem(1L, 1);
-        OrderTable orderTable = new OrderTable(1L, 0, false);
-        Order order = new Order(orderId, orderTable.getId(),
+        OrderLineItem orderLineItem = 주문_항목_생성(1L, 1);
+        OrderTable orderTable = 주문_테이블_생성(1L, 0, false);
+        Order order = 주문_생성(orderId, orderTable.getId(),
             OrderStatus.MEAL.name(), Collections.singletonList(orderLineItem));
-        Order findOrder = new Order(orderId, orderTable.getId(),
+        Order findOrder = 주문_생성(orderId, orderTable.getId(),
             OrderStatus.COOKING.name(), Collections.singletonList(orderLineItem));
+
         given(orderDao.findById(any())).willReturn(Optional.of(findOrder));
         given(orderDao.save(any())).willReturn(null);
         given(orderLineItemDao.findAllByOrderId(any()))
@@ -177,15 +183,28 @@ class OrderServiceTest {
     void changeOrderStatusIsCompletion() {
         // given
         Long orderId = 1L;
-        OrderLineItem orderLineItem = new OrderLineItem(1L, 1);
-        OrderTable orderTable = new OrderTable(1L, 0, false);
-        Order order = new Order(orderId, orderTable.getId(),
+        OrderLineItem orderLineItem = 주문_항목_생성(1L, 1);
+        OrderTable orderTable = 주문_테이블_생성(1L, 0, false);
+        Order order = 주문_생성(orderId, orderTable.getId(),
             OrderStatus.COMPLETION.name(), Collections.singletonList(orderLineItem));
+
         given(orderDao.findById(any())).willReturn(Optional.of(order));
 
         // when && then
         assertThrows(IllegalArgumentException.class, () ->
             orderService.changeOrderStatus(orderId, order));
         verify(orderDao, times(0)).save(any());
+    }
+
+    private Order 주문_생성(Long orderId, Long orderTableId, List<OrderLineItem> orderLineItems) {
+        return new Order(orderId, orderTableId, orderLineItems);
+    }
+
+    private Order 주문_생성(Long orderId, Long orderTableId, String orderStatus, List<OrderLineItem> orderLineItems) {
+        return new Order(orderId, orderTableId, orderStatus, orderLineItems);
+    }
+
+    private OrderLineItem 주문_항목_생성(Long menuId, long quantity) {
+        return new OrderLineItem(menuId, quantity);
     }
 }
