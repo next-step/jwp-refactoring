@@ -3,6 +3,7 @@ package kitchenpos.tablegroup.domain;
 import kitchenpos.ordertable.domain.OrderTable;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.util.CollectionUtils;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -18,6 +19,8 @@ import java.util.Objects;
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 public class TableGroup {
+
+    private static final int MIN_ORDER_TABLE_COUNT = 2;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -61,6 +64,9 @@ public class TableGroup {
     }
 
     private static void validate(List<OrderTable> orderTables) {
+        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < MIN_ORDER_TABLE_COUNT) {
+            throw new IllegalArgumentException();
+        }
         orderTables.forEach(TableGroup::validateOrderTable);
     }
 
