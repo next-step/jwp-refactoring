@@ -50,7 +50,7 @@ public class Order {
 
     private Order(OrderTable orderTable, OrderLineItems lineItems) {
         validate(orderTable, lineItems);
-        orderTable.changeOrder(this);
+        orderTable.addOrder(this);
         this.orderTable = orderTable;
         lineItems.changeOrder(this);
         this.orderLineItems = lineItems;

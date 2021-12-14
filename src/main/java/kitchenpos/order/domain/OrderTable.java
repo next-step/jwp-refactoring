@@ -12,7 +12,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import kitchenpos.common.exception.InvalidStatusException;
 import org.springframework.util.Assert;
 
@@ -34,8 +33,8 @@ public class OrderTable {
     @Enumerated(EnumType.STRING)
     private TableStatus status;
 
-    @OneToOne(mappedBy = "orderTable")
-    private Order order;
+    @Embedded
+    private Orders orders = Orders.empty();
 
     protected OrderTable() {
     }
@@ -65,8 +64,8 @@ public class OrderTable {
         return numberOfGuests;
     }
 
-    public void changeOrder(Order order) {
-        this.order = order;
+    public void addOrder(Order order) {
+        this.orders.add(order);
     }
 
     public void changeNumberOfGuests(Headcount numberOfGuests) {
@@ -91,10 +90,10 @@ public class OrderTable {
     }
 
     public boolean isCookingOrMeal() {
-        if (status.isEmpty() || notExistOrder()) {
+        if (status.isEmpty() || orders.isEmpty()) {
             return false;
         }
-        return order.isCookingOrMeal();
+        return orders.anyCookingOrMeal();
     }
 
     boolean notHaveGroupAndEmpty() {
@@ -108,10 +107,6 @@ public class OrderTable {
 
     void ungroup() {
         tableGroup = null;
-    }
-
-    private boolean notExistOrder() {
-        return order == null;
     }
 
     private void setNumberOfGuests(Headcount numberOfGuests) {
