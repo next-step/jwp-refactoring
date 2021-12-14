@@ -68,6 +68,6 @@ public class MenuAcceptanceTest extends AcceptanceTest {
 
     private void 메뉴_목록_조회됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.jsonPath().getList(".", MenuResponse.class).size()).isOne();
+        assertThat(response.jsonPath().getList(".", MenuResponse.class).size()).isPositive();
     }
 }

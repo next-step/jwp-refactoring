@@ -43,6 +43,6 @@ public class ProductAcceptanceTest extends AcceptanceTest {
 
     private void 상품_목록_조회됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.jsonPath().getList(".", Product.class).size()).isPositive();
+        assertThat(response.jsonPath().getList(".", ProductResponse.class).size()).isPositive();
     }
 }

@@ -10,6 +10,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 import static org.assertj.core.api.Assertions.*;
 
+@DisplayName("테이블 도메인 테스트")
 class OrderTableTest {
 
     private OrderTable orderTable;

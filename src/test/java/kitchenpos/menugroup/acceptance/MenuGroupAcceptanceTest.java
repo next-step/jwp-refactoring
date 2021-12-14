@@ -41,6 +41,6 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
 
     private void 메뉴_그룹_목록_조회됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.jsonPath().getList(".", MenuGroup.class).size()).isPositive();
+        assertThat(response.jsonPath().getList(".", MenuGroupResponse.class).size()).isPositive();
     }
 }
