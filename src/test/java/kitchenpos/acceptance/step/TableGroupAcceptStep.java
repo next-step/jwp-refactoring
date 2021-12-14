@@ -4,7 +4,6 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
-import org.junit.jupiter.api.function.Executable;
 import org.springframework.http.HttpStatus;
 
 import java.util.List;
@@ -12,7 +11,6 @@ import java.util.stream.Collectors;
 
 import static kitchenpos.utils.RestAssuredUtil.delete;
 import static kitchenpos.utils.RestAssuredUtil.post;
-import static kitchenpos.utils.RestAssuredUtil.put;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -36,12 +34,12 @@ public class TableGroupAcceptStep {
     }
 
     private static void 단체에_등록된_테이블_확인(TableGroup 등록된_단체, TableGroup 등록_요청_데이터) {
-        List<Long> 등록된_테이블 =  등록된_단체.getOrderTables()
+        List<Long> 등록된_테이블 = 등록된_단체.getOrderTables()
                 .stream()
                 .map(OrderTable::getId)
                 .collect(Collectors.toList());
 
-        List<Long> 요청한_테이블 =  등록_요청_데이터.getOrderTables()
+        List<Long> 요청한_테이블 = 등록_요청_데이터.getOrderTables()
                 .stream()
                 .map(OrderTable::getId)
                 .collect(Collectors.toList());
