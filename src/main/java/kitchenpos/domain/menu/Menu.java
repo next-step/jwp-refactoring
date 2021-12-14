@@ -3,6 +3,7 @@ package kitchenpos.domain.menu;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -23,6 +24,8 @@ import kitchenpos.utils.StreamUtils;
 @Entity
 @Table(name = "menu")
 public class Menu {
+    private static final String NULL_MENU_GROUP_PRICE = "Menu 는 MenuGroup 가 필수값 입니다.";
+    private static final String NULL_MENU_PRICE = "Menu 는 Price 가 필수값 입니다.";
     private static final String INVALID_MENU_PRICE = "Menu Price 는 상품 가격 총합보다 작아야합니다.";
 
     @Id
@@ -66,6 +69,7 @@ public class Menu {
     }
 
     public static Menu of(String name, BigDecimal price, MenuGroup menuGroup) {
+        validateCreateMenu(price, menuGroup);
         return new Menu(name, price, menuGroup, new ArrayList<>());
     }
 
@@ -98,6 +102,16 @@ public class Menu {
 
     public MenuProducts getMenuProducts() {
         return menuProducts;
+    }
+
+    private static void validateCreateMenu(BigDecimal price, MenuGroup menuGroup) {
+        if (Objects.isNull(price)) {
+            throw new IllegalArgumentException(NULL_MENU_PRICE);
+        }
+
+        if (Objects.isNull(menuGroup)) {
+            throw new IllegalArgumentException(NULL_MENU_GROUP_PRICE);
+        }
     }
 
     private void validateMenuPrice(List<MenuProduct> menuProducts) {

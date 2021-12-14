@@ -1,6 +1,7 @@
 package kitchenpos.domain.menu;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -19,6 +20,8 @@ import kitchenpos.domain.product.Product;
 @Entity
 @Table(name = "menu_product")
 public class MenuProduct {
+    private static final String INVALID_MENU_ERROR_MESSAGE = "Menu 는 필수값 입니다.";
+    private static final String INVALID_PRODUCT_ERROR_MESSAGE = "Product 는 필수값 입니다.";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -50,10 +53,14 @@ public class MenuProduct {
     }
 
     public static MenuProduct of(Long seq, Menu menu, Product product, long quantity) {
+        validateMenu(menu);
+        validateProduct(product);
+
         return new MenuProduct(seq, menu, product, quantity);
     }
 
     public static MenuProduct of(Product product, long quantity) {
+        validateProduct(product);
         return new MenuProduct(product, quantity);
     }
 
@@ -80,5 +87,17 @@ public class MenuProduct {
 
     public Quantity getQuantity() {
         return quantity;
+    }
+
+    private static void validateMenu(Menu menu) {
+        if (Objects.isNull(menu)) {
+            throw new IllegalArgumentException(INVALID_MENU_ERROR_MESSAGE);
+        }
+    }
+
+    private static void validateProduct(Product product) {
+        if (Objects.isNull(product)) {
+            throw new IllegalArgumentException(INVALID_PRODUCT_ERROR_MESSAGE);
+        }
     }
 }
