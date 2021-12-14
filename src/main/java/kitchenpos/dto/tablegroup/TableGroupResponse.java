@@ -24,7 +24,7 @@ public class TableGroupResponse {
     public static TableGroupResponse from(TableGroup tableGroup) {
         return new TableGroupResponse(tableGroup.getId(),
                                       tableGroup.getCreatedDate(),
-                                      StreamUtils.mapToList(tableGroup.getOrderTables(), OrderTableResponse::from));
+                                      StreamUtils.mapToList(tableGroup.getOrderTables().getValues(), OrderTableResponse::from));
     }
 
     public Long getId() {

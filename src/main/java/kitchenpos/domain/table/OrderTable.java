@@ -52,7 +52,7 @@ public class OrderTable {
     }
 
     public static OrderTable from(Long id) {
-        return new OrderTable(id);
+        return new OrderTable(id, 0, true);
     }
 
     public static OrderTable from(int numberOfGuests) {
