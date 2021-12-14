@@ -10,6 +10,7 @@ public class Menu {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String name;
 
     @Embedded
@@ -50,7 +51,7 @@ public class Menu {
         return menuProducts.getMenuProducts();
     }
 
-    public void checkPrice() {
-        price.checkLessThan(menuProducts.calculateSum());
+    public void checkPrice(BigDecimal price) {
+        this.price.checkLessThan(price);
     }
 }

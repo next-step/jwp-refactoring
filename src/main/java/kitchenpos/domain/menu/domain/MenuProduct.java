@@ -1,7 +1,5 @@
 package kitchenpos.domain.menu.domain;
 
-import kitchenpos.domain.product.domain.Product;
-
 import javax.persistence.*;
 import java.math.BigDecimal;
 
@@ -16,37 +14,27 @@ public class MenuProduct {
     @JoinColumn(name = "menu_id")
     private Menu menu;
 
-    @ManyToOne
-    @JoinColumn(name = "product_id")
-    private Product product;
+    private Long productId;
 
     private long quantity;
 
     protected MenuProduct() {
     }
 
-    public MenuProduct(Product product, long quantity) {
-        this.product = product;
+    public MenuProduct(Long productId, long quantity) {
+        this.productId = productId;
         this.quantity = quantity;
     }
 
-    public Long getMenuId() {
-        return menu.getId();
-    }
-
-    public Product getProduct() {
-        return product;
-    }
-
     public Long getProductId() {
-        return product.getId();
+        return productId;
     }
 
     public long getQuantity() {
         return quantity;
     }
 
-    public BigDecimal calculatePrice() {
-        return product.calculatePrice(quantity);
+    public BigDecimal calculatePrice(BigDecimal price) {
+        return price.multiply(BigDecimal.valueOf(quantity));
     }
 }

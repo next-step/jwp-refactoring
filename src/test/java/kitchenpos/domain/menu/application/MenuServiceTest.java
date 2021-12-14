@@ -49,6 +49,7 @@ class MenuServiceTest {
     private MenuRepository menuRepository;
     private MenuGroupRepository menuGroupRepository;
     private ProductRepository productRepository;
+    private MenuValidator menuValidator;
     private MenuService menuService;
     private MenuGroup 저장된_메뉴_그룹;
     private Product 저장된_상품;
@@ -58,7 +59,8 @@ class MenuServiceTest {
         menuRepository = new InMemoryMenuRepository();
         menuGroupRepository = new InMemoryMenuGroupRepository();
         productRepository = new InMemoryProductRepository();
-        menuService = new MenuService(menuRepository, menuGroupRepository, productRepository);
+        menuValidator = new MenuValidator(menuGroupRepository, productRepository);
+        menuService = new MenuService(menuRepository, menuValidator);
 
         저장된_메뉴_그룹 = menuGroupRepository.save(메뉴_그룹);
         저장된_상품 = productRepository.save(상품);
