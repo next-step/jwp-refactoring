@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import kitchenpos.domain.Price;
 import kitchenpos.domain.menu.Menu;
+import kitchenpos.domain.menu.Menus;
 import kitchenpos.domain.order.OrderLineItem;
 import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.domain.order.Orders;
@@ -39,7 +40,7 @@ public class OrderLineItemDtosTest {
         OrderLineItemDtos orderLineItemDtos = OrderLineItemDtos.of(List.of(OrderLineItemDto.of(1L, 1L), OrderLineItemDto.of(2L, 2L)));        
 
         Orders order = Orders.of(OrderTable.of(2, false), OrderStatus.COOKING);
-        List<Menu> menus = List.of(Menu.of(1L, "메뉴1", Price.of(1_800)), Menu.of(2L, "메뉴2", Price.of(3_800)));
+        Menus menus = Menus.of(List.of(Menu.of(1L, "메뉴1", Price.of(1_800)), Menu.of(2L, "메뉴2", Price.of(3_800))));
 
         // when 
         List<OrderLineItem> orderLineItems = orderLineItemDtos.createOrderLineItem(order, menus);

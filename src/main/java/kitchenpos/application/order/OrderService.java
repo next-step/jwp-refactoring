@@ -1,7 +1,7 @@
 package kitchenpos.application.order;
 
 import kitchenpos.application.menu.MenuService;
-import kitchenpos.domain.menu.Menu;
+import kitchenpos.domain.menu.Menus;
 import kitchenpos.domain.order.Orders;
 import kitchenpos.domain.order.OrdersRepository;
 import kitchenpos.domain.table.OrderTable;
@@ -54,7 +54,7 @@ public class OrderService {
 
     private void mappingOrderLineItem(final Orders order, final OrderLineItemDtos orderLineItemDtos) {
         List<Long> menuIds = orderLineItemDtos.getMenuIds();
-        List<Menu> menus = menuService.findAllByIdIn(menuIds);
+        Menus menus = Menus.of(menuService.findAllByIdIn(menuIds));
 
         orderLineItemDtos.createOrderLineItem(order, menus);
     }

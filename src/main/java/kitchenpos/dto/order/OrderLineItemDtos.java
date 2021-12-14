@@ -8,9 +8,9 @@ import java.util.stream.Collectors;
 import org.springframework.util.CollectionUtils;
 
 import kitchenpos.domain.menu.Menu;
+import kitchenpos.domain.menu.Menus;
 import kitchenpos.domain.order.OrderLineItem;
 import kitchenpos.domain.order.Orders;
-import kitchenpos.exception.menu.NotFoundMenuException;
 
 public class OrderLineItemDtos {
     List<OrderLineItemDto> orderLineItemDtos;
@@ -40,15 +40,11 @@ public class OrderLineItemDtos {
         return this.orderLineItemDtos.size();
     }
 
-    public List<OrderLineItem> createOrderLineItem(Orders order, List<Menu> menus) {
+    public List<OrderLineItem> createOrderLineItem(Orders order, Menus menus) {
         List<OrderLineItem> orderLineItems = new ArrayList<>();
 
         for (OrderLineItemDto orderLineItemDto : this.orderLineItemDtos) {
-            Menu matchingMenu = menus.stream()
-                                        .filter(menu -> menu.isEqualMenuId(orderLineItemDto.getMenuId()))
-                                        .findFirst()
-                                        .orElseThrow(NotFoundMenuException::new);
-
+            Menu matchingMenu = menus.findById(orderLineItemDto.getMenuId());
             orderLineItems.add(OrderLineItem.of(order, matchingMenu, orderLineItemDto.getQuantity()));
         }
 

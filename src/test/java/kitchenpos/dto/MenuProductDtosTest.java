@@ -12,6 +12,7 @@ import kitchenpos.domain.Price;
 import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menu.MenuProduct;
 import kitchenpos.domain.product.Product;
+import kitchenpos.domain.product.Products;
 import kitchenpos.dto.menu.MenuProductDto;
 import kitchenpos.dto.menu.MenuProductDtos;
 
@@ -28,7 +29,7 @@ public class MenuProductDtosTest {
 
         // when
 
-        Price price = menuProductDtos.getSumProductPrice(List.of(상품1, 상품2));
+        Price price = menuProductDtos.getSumProductPrice(Products.of(List.of(상품1, 상품2)));
 
         // then
         Assertions.assertThat(price).isEqualTo(Price.of(5600));
@@ -59,7 +60,7 @@ public class MenuProductDtosTest {
         MenuProductDtos menuProductDtos = MenuProductDtos.of(List.of(MenuProductDto.of(1L, 1L), MenuProductDto.of(2L, 2L)));        
 
         // when 
-        List<MenuProduct> menuProducts = menuProductDtos.createMenuProduct(menu, List.of(상품1, 상품2));
+        List<MenuProduct> menuProducts = menuProductDtos.createMenuProduct(menu, Products.of(List.of(상품1, 상품2)));
 
         // then
         assertAll(

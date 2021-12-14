@@ -9,7 +9,7 @@ import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menu.MenuGroup;
 import kitchenpos.domain.menu.MenuGroupRepository;
 import kitchenpos.domain.menu.MenuRepository;
-import kitchenpos.domain.product.Product;
+import kitchenpos.domain.product.Products;
 import kitchenpos.dto.menu.MenuDto;
 import kitchenpos.dto.menu.MenuProductDtos;
 
@@ -49,7 +49,7 @@ public class MenuService {
 
     private void mappingMenuProduct(Menu newMenu, MenuProductDtos menuProductDtos) {
         List<Long> productIds = menuProductDtos.getProductIds();
-        List<Product> products = productService.findAllByIds(productIds);
+        Products products = Products.of(productService.findAllByIds(productIds));
         menuProductDtos.createMenuProduct(newMenu, products);
     }
 
@@ -59,7 +59,7 @@ public class MenuService {
 
     private void checkMenuPrice(final Price menuPrice, final MenuProductDtos menuProductDtos) {
         List<Long> productIds = menuProductDtos.getProductIds(); 
-        List<Product> products = productService.findAllByIds(productIds);
+        Products products = Products.of(productService.findAllByIds(productIds));
 
         Price sumOfProductsPrice = menuProductDtos.getSumProductPrice(products);
         
