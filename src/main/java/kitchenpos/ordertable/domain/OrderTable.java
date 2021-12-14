@@ -26,8 +26,9 @@ public class OrderTable {
     @Column(nullable = false)
     private NumberOfGuests numberOfGuests;
 
+    @Embedded
     @Column(nullable = false)
-    private boolean empty;
+    private Empty empty;
 
     @Embedded
     private Orders orders = new Orders();
@@ -38,16 +39,16 @@ public class OrderTable {
     public OrderTable(TableGroup tableGroup, int numberOfGuests, boolean empty) {
         this.tableGroup = tableGroup;
         this.numberOfGuests = new NumberOfGuests(numberOfGuests);
-        this.empty = empty;
+        this.empty = new Empty(empty);
     }
 
     public OrderTable(int numberOfGuests, boolean empty) {
         this.numberOfGuests = new NumberOfGuests(numberOfGuests);
-        this.empty = empty;
+        this.empty = new Empty(empty);
     }
 
     public OrderTable(boolean empty) {
-        this.empty = empty;
+        this.empty = new Empty(empty);
     }
 
     public OrderTable(int numberOfGuests) {
@@ -66,7 +67,7 @@ public class OrderTable {
         return numberOfGuests;
     }
 
-    public boolean isEmpty() {
+    public Empty isEmpty() {
         return empty;
     }
 
@@ -80,12 +81,12 @@ public class OrderTable {
     }
 
     public void changeEmpty(boolean empty) {
-        validateChangingEmpty();
-        this.empty = empty;
+        validateEmptyChangable();
+        this.empty = new Empty(empty);
     }
 
     public void changeNumberOfGuests(int numberOfGuests) {
-        validateChangingNumberOfGuests();
+        validateNumberOfGuestsChangable();
         this.numberOfGuests = new NumberOfGuests(numberOfGuests);
     }
 
@@ -94,7 +95,7 @@ public class OrderTable {
     }
 
     public boolean isGroupable() {
-        return empty && Objects.isNull(tableGroup);
+        return empty.isGroupable() && Objects.isNull(tableGroup);
     }
 
     public boolean isChangable() {
@@ -105,17 +106,21 @@ public class OrderTable {
         orders.add(order);
     }
 
-    private void validateChangingEmpty() {
+    public void validateOrderTableChangable() {
+        if (empty.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    private void validateEmptyChangable() {
         if (Objects.nonNull(tableGroup)) {
             throw new IllegalArgumentException();
         }
-        orders.validateChangingEmpty();
+        orders.validateEmptyChangable();
     }
 
-    private void validateChangingNumberOfGuests() {
-        if (empty) {
-            throw new IllegalArgumentException();
-        }
+    private void validateNumberOfGuestsChangable() {
+        empty.validateNumberOfGuestsChangable();
     }
 
     @Override
@@ -123,7 +128,7 @@ public class OrderTable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         OrderTable that = (OrderTable) o;
-        return numberOfGuests == that.numberOfGuests && empty == that.empty && Objects.equals(id, that.id) && Objects.equals(tableGroup, that.tableGroup) && Objects.equals(orders, that.orders);
+        return Objects.equals(id, that.id) && Objects.equals(tableGroup, that.tableGroup) && Objects.equals(numberOfGuests, that.numberOfGuests) && Objects.equals(empty, that.empty) && Objects.equals(orders, that.orders);
     }
 
     @Override

@@ -25,7 +25,7 @@ public class Orders {
         return orders;
     }
 
-    public void validateChangingEmpty() {
+    public void validateEmptyChangable() {
         orders.forEach(this::validateOrder);
     }
 

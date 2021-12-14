@@ -31,7 +31,7 @@ class OrderTableTest {
         orderTable.changeEmpty(true);
 
         // then
-        assertThat(orderTable.isEmpty()).isEqualTo(true);
+        assertThat(orderTable.isEmpty()).isEqualTo(new Empty(true));
     }
 
     @ParameterizedTest(name = "{displayName} - [{index}] {argumentsWithNames}")
