@@ -30,7 +30,7 @@ public class MenuProducts {
         menuProducts.forEach(it -> it.changeMenu(menu));
     }
 
-    public Price calculateSum() {
+    public Price totalPrice() {
         Price sum = Price.ZERO;
         for (final MenuProduct menuProduct : menuProducts) {
             sum = sum.add(menuProduct.calculateAmount());

@@ -68,7 +68,7 @@ public class Menu {
     }
 
     private void validatePrice(Price price, MenuProducts menuProducts) {
-        if (!price.isEqual(menuProducts.calculateSum())) {
+        if (!price.isEqual(menuProducts.totalPrice())) {
             throw new IllegalArgumentException();
         }
     }

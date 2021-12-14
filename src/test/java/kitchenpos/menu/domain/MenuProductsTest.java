@@ -14,8 +14,8 @@ import static org.assertj.core.api.Assertions.*;
 class MenuProductsTest {
 
     @Test
-    @DisplayName("합계 금액을 계산한다.")
-    void calculateSum() {
+    @DisplayName("합계 금액을 반환한다.")
+    void totalPrice() {
         // given
         Product product1 = new Product("후라이드치킨", new BigDecimal(16_000));
         Product product2 = new Product("양념치킨", new BigDecimal(17_000));
@@ -24,7 +24,7 @@ class MenuProductsTest {
         ));
 
         // when
-        Price sum = menuProducts.calculateSum();
+        Price sum = menuProducts.totalPrice();
 
         // then
         assertThat(sum).isEqualTo(new Price(82_000));
