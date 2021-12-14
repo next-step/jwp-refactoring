@@ -46,6 +46,7 @@ class MenuGroupServiceTest {
     }
 
     @DisplayName("메뉴 그룹 목록을 조회한다.")
+    @Test
     void getMenuGroups() {
         // given
         List<MenuGroup> menuGroups = Arrays.asList(
@@ -61,5 +62,4 @@ class MenuGroupServiceTest {
         assertThat(findMenuGroups)
             .containsExactlyElementsOf(menuGroups);
     }
-
 }
