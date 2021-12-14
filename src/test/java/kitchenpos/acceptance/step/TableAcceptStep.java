@@ -22,6 +22,14 @@ public class TableAcceptStep {
         return post(BASE_URL, 등록_요청_데이터);
     }
 
+    public static OrderTable 테이블이_등록되어_있음(int numberOfGuests, boolean empty) {
+        OrderTable 등록_요청_데이터 = new OrderTable();
+        등록_요청_데이터.setNumberOfGuests(numberOfGuests);
+        등록_요청_데이터.setEmpty(empty);
+
+        return 테이블_등록_요청(등록_요청_데이터).as(OrderTable.class);
+    }
+
     public static OrderTable 테이블_등록_확인(ExtractableResponse<Response> 테이블_등록_응답, OrderTable 등록_요청_데이터) {
         OrderTable 등록된_테이블 = 테이블_등록_응답.as(OrderTable.class);
 
