@@ -28,7 +28,7 @@ class MenuAcceptanceTest extends AcceptanceTest {
 		Product 불닭 = 상품이_생성_되어있음(상품_요청값_생성("불닭", 16000));
 		불닭_두마리_메뉴_상품_리스트 = 메뉴_상품_생성되어_있음(불닭);
 		존재하지_않는_상품 = new Product();
-		존재하지_않는_상품.setId(20L);
+		존재하지_않는_상품.setId(100L);
 	}
 
 	@Test
@@ -70,7 +70,7 @@ class MenuAcceptanceTest extends AcceptanceTest {
 	@Test
 	void 메뉴_그룹이_존재하지_않을_경우_생성_실패한다() {
 		// given
-		Menu 메뉴_그룹이_존재하지_않는_메뉴_생성_요청값 = 메뉴_생성_요청값_생성("불닭+불닭", 19000, 10L, 불닭_두마리_메뉴_상품_리스트);
+		Menu 메뉴_그룹이_존재하지_않는_메뉴_생성_요청값 = 메뉴_생성_요청값_생성("불닭+불닭", 19000, 100L, 불닭_두마리_메뉴_상품_리스트);
 
 		// when
 		ExtractableResponse<Response> response = 메뉴_생성_요청(메뉴_그룹이_존재하지_않는_메뉴_생성_요청값);
