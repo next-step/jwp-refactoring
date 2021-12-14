@@ -43,7 +43,9 @@ class OrderTableTest {
         order.changeOrderTable(orderTable);
 
         // when & then
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> orderTable.changeEmpty(true));
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> orderTable.changeEmpty(true))
+                .withMessageMatching(Orders.MESSAGE_VALIDATE_ORDER);
     }
 
     @Test
@@ -60,7 +62,9 @@ class OrderTableTest {
     @DisplayName("0명 이하의 손님 수로 테이블의 방문한 손님 수를 변경하면 예외를 발생한다.")
     void changeNumberOfGuestsThrowException1() {
         // when & then
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> orderTable.changeNumberOfGuests(-1));
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> orderTable.changeNumberOfGuests(-1))
+                .withMessageMatching(NumberOfGuests.MESSAGE_VALIDATE);
     }
 
     @Test
@@ -70,6 +74,8 @@ class OrderTableTest {
         orderTable.changeEmpty(true);
 
         // when & then
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> orderTable.changeNumberOfGuests(1));
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> orderTable.changeNumberOfGuests(1))
+                .withMessageMatching(Empty.MESSAGE_VALIDATE_CHANGABLE);
     }
 }

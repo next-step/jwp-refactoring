@@ -23,7 +23,8 @@ class QuantityTest {
     void createThrowException() {
         // when & then
         assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> new Quantity(-1));
+                .isThrownBy(() -> new Quantity(-1))
+                .withMessageMatching(Quantity.MESSAGE_VALIDATE);
     }
 
 }

@@ -16,12 +16,14 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 @Table(name = "orders")
 @EntityListeners(AuditingEntityListener.class)
 public class Order {
 
+    public static final String MESSAGE_VALIDATE_ORDER_STATUS = "주문 상태가 계산 완료여야 합니다.";
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -92,7 +94,20 @@ public class Order {
 
     private void validateOrderStatus() {
         if (orderStatus.isCompletion()) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(MESSAGE_VALIDATE_ORDER_STATUS);
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Order order = (Order) o;
+        return Objects.equals(id, order.id) && Objects.equals(orderTable, order.orderTable) && orderStatus == order.orderStatus && Objects.equals(orderedTime, order.orderedTime);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, orderTable, orderStatus, orderedTime);
     }
 }

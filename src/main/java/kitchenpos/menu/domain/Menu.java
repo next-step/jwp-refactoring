@@ -17,6 +17,8 @@ import java.util.Objects;
 @Entity
 public class Menu {
 
+    public static final String MESSAGE_VALIDATE_PRICE = "가격은 메뉴 상품들의 금액 합계와 같아야 합니다.";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -39,7 +41,6 @@ public class Menu {
 
     public Menu(String name, BigDecimal price, MenuGroup menuGroup, MenuProducts menuProducts) {
         validatePrice(new Price(price), menuProducts);
-
         this.name = name;
         this.price = new Price(price);
         this.menuGroup = menuGroup;
@@ -69,7 +70,7 @@ public class Menu {
 
     private void validatePrice(Price price, MenuProducts menuProducts) {
         if (!price.isEqual(menuProducts.totalPrice())) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(MESSAGE_VALIDATE_PRICE);
         }
     }
 
@@ -78,11 +79,11 @@ public class Menu {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Menu menu = (Menu) o;
-        return Objects.equals(id, menu.id) && Objects.equals(name, menu.name) && Objects.equals(price, menu.price) && Objects.equals(menuGroup, menu.menuGroup) && Objects.equals(menuProducts, menu.menuProducts);
+        return Objects.equals(id, menu.id) && Objects.equals(name, menu.name) && Objects.equals(price, menu.price) && Objects.equals(menuGroup, menu.menuGroup);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, price, menuGroup, menuProducts);
+        return Objects.hash(id, name, price, menuGroup);
     }
 }

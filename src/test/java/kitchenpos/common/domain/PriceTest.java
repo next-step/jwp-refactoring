@@ -25,6 +25,7 @@ class PriceTest {
     void createThrowException() {
         // when & then
         assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> new Price(new BigDecimal(-1)));
+                .isThrownBy(() -> new Price(new BigDecimal(-1)))
+                .withMessageMatching(Price.MESSAGE_VALIDATE);
     }
 }

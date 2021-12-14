@@ -11,6 +11,8 @@ import java.util.Objects;
 @Embeddable
 public class Orders {
 
+    public static final String MESSAGE_VALIDATE_ORDER = "주문이 변경 가능한 상태여야 합니다.";
+
     @OneToMany(mappedBy = "orderTable")
     private List<Order> orders = new ArrayList<>();
 
@@ -40,7 +42,7 @@ public class Orders {
 
     private void validateOrder(Order order) {
         if (!order.isChangable()) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(MESSAGE_VALIDATE_ORDER);
         }
     }
 

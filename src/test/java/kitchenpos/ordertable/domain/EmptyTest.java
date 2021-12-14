@@ -29,6 +29,7 @@ class EmptyTest {
 
         // when & then
         assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(empty::validateNumberOfGuestsChangable);
+                .isThrownBy(empty::validateNumberOfGuestsChangable)
+                .withMessageMatching(Empty.MESSAGE_VALIDATE_CHANGABLE);
     }
 }

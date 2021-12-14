@@ -7,6 +7,8 @@ import java.util.Objects;
 @Embeddable
 public class NumberOfGuests {
 
+    public static final String MESSAGE_VALIDATE = "0명 이상이어야 합니다.";
+
     @Column
     private int numberOfGuests;
 
@@ -24,7 +26,7 @@ public class NumberOfGuests {
 
     private void validate(int numberOfGuests) {
         if (numberOfGuests < 0) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(MESSAGE_VALIDATE);
         }
     }
 

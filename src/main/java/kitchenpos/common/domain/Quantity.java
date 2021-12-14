@@ -7,6 +7,8 @@ import java.util.Objects;
 @Embeddable
 public class Quantity {
 
+    public static final String MESSAGE_VALIDATE = "수량은 0개 이상이어야 합니다.";
+
     @Column
     private long quantity;
 
@@ -24,7 +26,7 @@ public class Quantity {
 
     private void validate(long quantity) {
         if (quantity < 0) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(MESSAGE_VALIDATE);
         }
     }
 

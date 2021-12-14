@@ -7,6 +7,8 @@ import java.util.Objects;
 @Embeddable
 public class Empty {
 
+    public static final String MESSAGE_VALIDATE_CHANGABLE = "비어있지 않은 상태여야 합니다.";
+
     @Column
     private boolean empty;
 
@@ -40,7 +42,7 @@ public class Empty {
 
     void validateNumberOfGuestsChangable() {
         if (empty) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(MESSAGE_VALIDATE_CHANGABLE);
         }
     }
 }

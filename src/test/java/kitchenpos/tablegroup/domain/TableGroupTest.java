@@ -38,7 +38,8 @@ class TableGroupTest {
     void ofThrowException1() {
         // when & then
         assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> TableGroup.of(Collections.singletonList(orderTable1)));
+                .isThrownBy(() -> TableGroup.of(Collections.singletonList(orderTable1)))
+                .withMessageMatching(TableGroup.MESSAGE_VALIDATE);
     }
 
     @Test
@@ -49,7 +50,8 @@ class TableGroupTest {
 
         // when & then
         assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> TableGroup.of(Arrays.asList(orderTable1, orderTable3)));
+                .isThrownBy(() -> TableGroup.of(Arrays.asList(orderTable1, orderTable3)))
+                .withMessageMatching(TableGroup.MESSAGE_VALIDATE_ORDER_TABLE);
     }
 
     @Test
@@ -60,7 +62,8 @@ class TableGroupTest {
 
         // when & then
         assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> TableGroup.of(Arrays.asList(orderTable1, orderTable2)));
+                .isThrownBy(() -> TableGroup.of(Arrays.asList(orderTable1, orderTable2)))
+                .withMessageMatching(TableGroup.MESSAGE_VALIDATE_ORDER_TABLE);
     }
 
     @Test

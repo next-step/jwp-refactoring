@@ -29,6 +29,6 @@ class MenuTest {
         // when & then
         assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> new Menu("치킨", new BigDecimal(50_000), new MenuGroup("두마리메뉴"), menuProducts))
-                .withMessageMatching(Menu.MESSAGE_VALIDATION_PRICE);
+                .withMessageMatching(Menu.MESSAGE_VALIDATE_PRICE);
     }
 }

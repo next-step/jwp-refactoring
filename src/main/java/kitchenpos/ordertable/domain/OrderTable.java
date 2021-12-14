@@ -15,6 +15,9 @@ import java.util.Objects;
 @Entity
 public class OrderTable {
 
+    public static final String MESSAGE_VALIDATE_ORDER_TABLE_CHANGABLE = "테이블이 비어있지 않아야 합니다.";
+    public static final String MESSAGE_VALIDATE_EMPTY_CHANGABLE = "테이블 그룹에 추가되어 있지 않아야 합니다.";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -108,13 +111,13 @@ public class OrderTable {
 
     public void validateOrderTableChangable() {
         if (empty.isEmpty()) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(MESSAGE_VALIDATE_ORDER_TABLE_CHANGABLE);
         }
     }
 
     private void validateEmptyChangable() {
         if (Objects.nonNull(tableGroup)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(MESSAGE_VALIDATE_EMPTY_CHANGABLE);
         }
         orders.validateEmptyChangable();
     }
@@ -128,11 +131,11 @@ public class OrderTable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         OrderTable that = (OrderTable) o;
-        return Objects.equals(id, that.id) && Objects.equals(tableGroup, that.tableGroup) && Objects.equals(numberOfGuests, that.numberOfGuests) && Objects.equals(empty, that.empty) && Objects.equals(orders, that.orders);
+        return Objects.equals(id, that.id) && Objects.equals(tableGroup, that.tableGroup) && Objects.equals(numberOfGuests, that.numberOfGuests) && Objects.equals(empty, that.empty);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, tableGroup, numberOfGuests, empty, orders);
+        return Objects.hash(id, tableGroup, numberOfGuests, empty);
     }
 }

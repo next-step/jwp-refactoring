@@ -23,6 +23,7 @@ class NumberOfGuestsTest {
     void createThrowException() {
         // when & then
         assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> new NumberOfGuests(-1));
+                .isThrownBy(() -> new NumberOfGuests(-1))
+                .withMessageMatching(NumberOfGuests.MESSAGE_VALIDATE);
     }
 }

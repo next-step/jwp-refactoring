@@ -26,5 +26,4 @@ class OrdersTest {
         // then
         assertThat(changable).isEqualTo(expected);
     }
-
 }

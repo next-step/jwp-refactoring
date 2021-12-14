@@ -20,6 +20,8 @@ import java.util.Objects;
 @EntityListeners(AuditingEntityListener.class)
 public class TableGroup {
 
+    public static final String MESSAGE_VALIDATE = "테이블이 2개 이상이어야 합니다.";
+    public static final String MESSAGE_VALIDATE_ORDER_TABLE = "테이블이 그룹에 등록 가능한 상태여야 합니다.";
     private static final int MIN_ORDER_TABLE_COUNT = 2;
 
     @Id
@@ -65,14 +67,14 @@ public class TableGroup {
 
     private static void validate(List<OrderTable> orderTables) {
         if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < MIN_ORDER_TABLE_COUNT) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(MESSAGE_VALIDATE);
         }
         orderTables.forEach(TableGroup::validateOrderTable);
     }
 
     private static void validateOrderTable(OrderTable orderTable) {
         if (!orderTable.isGroupable()) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(MESSAGE_VALIDATE_ORDER_TABLE);
         }
     }
 
@@ -81,11 +83,11 @@ public class TableGroup {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         TableGroup that = (TableGroup) o;
-        return Objects.equals(id, that.id) && Objects.equals(createdDate, that.createdDate) && Objects.equals(orderTables, that.orderTables);
+        return Objects.equals(id, that.id) && Objects.equals(createdDate, that.createdDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, createdDate, orderTables);
+        return Objects.hash(id, createdDate);
     }
 }

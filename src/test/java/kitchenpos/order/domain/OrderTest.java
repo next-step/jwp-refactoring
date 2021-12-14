@@ -37,13 +37,14 @@ class OrderTest {
     }
 
     @Test
-    @DisplayName("주문 완료 상인 주문의 주문 상태를 변경하면 예외를 발생한다.")
+    @DisplayName("계산 완료 상태인 주문의 주문 상태를 변경하면 예외를 발생한다.")
     void changeOrderStatusThrowException() {
         // given
         Order order = new Order(OrderStatus.COMPLETION);
 
         // when & then
         assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> order.changeOrderStatus(OrderStatus.MEAL));
+                .isThrownBy(() -> order.changeOrderStatus(OrderStatus.MEAL))
+                .withMessageMatching(Order.MESSAGE_VALIDATE_ORDER_STATUS);
     }
 }

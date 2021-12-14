@@ -12,6 +12,8 @@ import java.util.Objects;
 @Embeddable
 public class OrderTables {
 
+    public static final String MESSAGE_VALIDATE_CHANGABLE = "주문 테이블이 변경 가능해야 합니다.";
+
     @OneToMany(mappedBy = "tableGroup", cascade = CascadeType.PERSIST)
     private List<OrderTable> orderTables = new ArrayList<>();
 
@@ -37,7 +39,7 @@ public class OrderTables {
 
     private void validateChangable(OrderTable orderTable) {
         if (!orderTable.isChangable()) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(MESSAGE_VALIDATE_CHANGABLE);
         }
     }
 
