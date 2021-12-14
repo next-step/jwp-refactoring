@@ -35,7 +35,7 @@ public class MenuService {
     public Menu create(final MenuRequest request) {
         final MenuGroup menuGroup = getMenuGroup(request.getMenuGroupId());
         final List<MenuProduct> menuProducts = getMenuProducts(request);
-        final Menu menu = new Menu(request.getName(), request.getPrice(), menuGroup, menuProducts);
+        final Menu menu = new Menu(request.getName(), request.getPrice(), menuGroup.getId(), menuProducts);
 
         menu.checkPrice();
 

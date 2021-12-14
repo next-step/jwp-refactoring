@@ -11,8 +11,8 @@ import java.util.Arrays;
 
 public class MenuFixture {
 
-    public static Menu 메뉴(MenuGroup menuGroup, String name, BigDecimal price, MenuProduct menuProduct) {
-        return new Menu(name, price, menuGroup, Arrays.asList(menuProduct));
+    public static Menu 메뉴(Long menuGroupId, String name, BigDecimal price, MenuProduct menuProduct) {
+        return new Menu(name, price, menuGroupId, Arrays.asList(menuProduct));
     }
 
     public static MenuRequest 메뉴_요청(Long menuGroupId, String name, BigDecimal price, MenuProductRequest menuProductRequest) {

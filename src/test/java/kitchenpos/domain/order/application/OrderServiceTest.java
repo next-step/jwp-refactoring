@@ -45,7 +45,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 class OrderServiceTest {
 
     private static final int 수량 = 1;
-    private static final Menu 메뉴 = 메뉴(null, "후라이드", new BigDecimal(17_000), 메뉴_상품(null, 1));
+    private static final Menu 메뉴 = 메뉴(1L, "후라이드", new BigDecimal(17_000), 메뉴_상품(null, 1));
     private static final OrderTable 주문_테이블 = 주문_테이블(2, false);
 
     private MenuRepository menuRepository;
