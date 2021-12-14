@@ -7,7 +7,6 @@ import kitchenpos.tablegroup.dto.TableGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -24,7 +23,7 @@ class TableGroupServiceTest extends ServiceTest {
         OrderTableResponse savedOrderTableResponse1 = 테이블_저장(true);
         OrderTableResponse savedOrderTableResponse2 = 테이블_저장(true);
         TableGroupRequest tableGroupRequest = new TableGroupRequest(
-                LocalDateTime.now(), Arrays.asList(savedOrderTableResponse1.getId(), savedOrderTableResponse2.getId()));
+                Arrays.asList(savedOrderTableResponse1.getId(), savedOrderTableResponse2.getId()));
 
         // when
         TableGroupResponse savedTableGroupResponse = tableGroupService.create(tableGroupRequest);
@@ -43,7 +42,7 @@ class TableGroupServiceTest extends ServiceTest {
         // given
         OrderTableResponse savedOrderTableResponse = 테이블_저장(true);
         TableGroupRequest tableGroupRequest = new TableGroupRequest(
-                LocalDateTime.now(), Collections.singletonList(savedOrderTableResponse.getId()));
+                Collections.singletonList(savedOrderTableResponse.getId()));
 
         // when & then
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> tableGroupService.create(tableGroupRequest));
@@ -55,7 +54,7 @@ class TableGroupServiceTest extends ServiceTest {
         // given
         OrderTableResponse savedOrderTableResponse = 테이블_저장(true);
         TableGroupRequest tableGroupRequest = new TableGroupRequest(
-                LocalDateTime.now(), Arrays.asList(savedOrderTableResponse.getId(), 0L));
+                Arrays.asList(savedOrderTableResponse.getId(), 0L));
 
         // when & then
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> tableGroupService.create(tableGroupRequest));
@@ -68,7 +67,7 @@ class TableGroupServiceTest extends ServiceTest {
         OrderTableResponse savedOrderTableResponse1 = 테이블_저장(false);
         OrderTableResponse savedOrderTableResponse2 = 테이블_저장(false);
         TableGroupRequest tableGroupRequest = new TableGroupRequest(
-                LocalDateTime.now(), Arrays.asList(savedOrderTableResponse1.getId(), savedOrderTableResponse2.getId()));
+                Arrays.asList(savedOrderTableResponse1.getId(), savedOrderTableResponse2.getId()));
 
         // when & then
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> tableGroupService.create(tableGroupRequest));

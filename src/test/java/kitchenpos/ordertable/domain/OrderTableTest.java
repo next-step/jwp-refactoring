@@ -8,8 +8,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import java.time.LocalDateTime;
-
 import static org.assertj.core.api.Assertions.*;
 
 class OrderTableTest {
@@ -25,7 +23,7 @@ class OrderTableTest {
     @DisplayName("테이블의 상태를 변경한다.")
     void changeEmpty() {
         // given
-        Order order = new Order(OrderStatus.COMPLETION, LocalDateTime.now());
+        Order order = new Order(OrderStatus.COMPLETION);
         order.changeOrderTable(orderTable);
 
         // when
@@ -40,7 +38,7 @@ class OrderTableTest {
     @DisplayName("주문 완료 상태가 아닌 테이블의 상태를 변경하면 예외를 발생한다.")
     void changeEmptyThrowException(OrderStatus orderStatus) {
         // given
-        Order order = new Order(orderStatus, LocalDateTime.now());
+        Order order = new Order(orderStatus);
         order.changeOrderTable(orderTable);
 
         // when & then

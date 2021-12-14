@@ -1,10 +1,13 @@
 package kitchenpos.order.domain;
 
 import kitchenpos.ordertable.domain.OrderTable;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
@@ -17,6 +20,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "orders")
+@EntityListeners(AuditingEntityListener.class)
 public class Order {
 
     @Id
@@ -30,6 +34,7 @@ public class Order {
     @Column(nullable = false)
     private OrderStatus orderStatus;
 
+    @CreatedDate
     @Column(nullable = false)
     private LocalDateTime orderedTime;
 
@@ -39,9 +44,8 @@ public class Order {
     protected Order() {
     }
 
-    public Order(OrderStatus orderStatus, LocalDateTime orderedTime) {
+    public Order(OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
-        this.orderedTime = LocalDateTime.now();
     }
 
     public Long getId() {

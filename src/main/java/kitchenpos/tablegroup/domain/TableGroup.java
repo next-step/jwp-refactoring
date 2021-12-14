@@ -1,10 +1,13 @@
 package kitchenpos.tablegroup.domain;
 
 import kitchenpos.ordertable.domain.OrderTable;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -13,12 +16,14 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 public class TableGroup {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @CreatedDate
     @Column(nullable = false)
     private LocalDateTime createdDate;
 
@@ -28,13 +33,9 @@ public class TableGroup {
     protected TableGroup() {
     }
 
-    public TableGroup(LocalDateTime createdDate) {
-        this.createdDate = createdDate;
-    }
-
-    public static TableGroup of(LocalDateTime createdDate, List<OrderTable> orderTables) {
+    public static TableGroup of(List<OrderTable> orderTables) {
         validate(orderTables);
-        TableGroup tableGroup = new TableGroup(createdDate);
+        TableGroup tableGroup = new TableGroup();
         orderTables.forEach(it -> it.changeTableGroup(tableGroup));
         return tableGroup;
     }

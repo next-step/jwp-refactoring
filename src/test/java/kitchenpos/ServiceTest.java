@@ -23,15 +23,16 @@ import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 
 @SpringBootTest
+@EnableJpaAuditing
 @ActiveProfiles("test")
 @Transactional
 public abstract class ServiceTest {
@@ -41,7 +42,7 @@ public abstract class ServiceTest {
 
     @Autowired
     protected MenuGroupService menuGroupService;
-    
+
     @Autowired
     protected MenuService menuService;
 
@@ -80,7 +81,7 @@ public abstract class ServiceTest {
         OrderTableResponse savedOrderTableResponse1 = 테이블_저장(true);
         OrderTableResponse savedOrderTableResponse2 = 테이블_저장(true);
         TableGroupRequest tableGroupRequest = new TableGroupRequest(
-                LocalDateTime.now(), Arrays.asList(savedOrderTableResponse1.getId(), savedOrderTableResponse2.getId()));
+                Arrays.asList(savedOrderTableResponse1.getId(), savedOrderTableResponse2.getId()));
         return tableGroupService.create(tableGroupRequest);
     }
 
@@ -89,8 +90,7 @@ public abstract class ServiceTest {
         MenuResponse savedMenuResponse = 메뉴_저장();
         OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(savedMenuResponse.getId(), 2);
         OrderRequest orderRequest = new OrderRequest(
-                savedOrderTableResponse.getId(), OrderStatus.COOKING.name(), LocalDateTime.now(),
-                Collections.singletonList(orderLineItemRequest));
+                savedOrderTableResponse.getId(), OrderStatus.COOKING.name(), Collections.singletonList(orderLineItemRequest));
         return orderService.create(orderRequest);
     }
 

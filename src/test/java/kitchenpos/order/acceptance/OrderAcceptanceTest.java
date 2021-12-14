@@ -22,7 +22,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.Collections;
 
 import static kitchenpos.menu.acceptance.MenuAcceptanceTest.*;
@@ -107,8 +106,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     private OrderRequest makeOrderRequest() {
         OrderTableResponse 테이블 = 테이블_등록되어_있음(new OrderTableRequest(2, false));
         OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(후라이드치킨메뉴.getId(), 2);
-        return new OrderRequest(테이블.getId(), OrderStatus.COOKING.name(), LocalDateTime.now(),
-                Collections.singletonList(orderLineItemRequest));
+        return new OrderRequest(테이블.getId(), OrderStatus.COOKING.name(), Collections.singletonList(orderLineItemRequest));
     }
 
     private void 주문_등록됨(ExtractableResponse<Response> response) {

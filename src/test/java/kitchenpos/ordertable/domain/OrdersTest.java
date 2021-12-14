@@ -6,7 +6,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.*;
@@ -19,10 +18,7 @@ class OrdersTest {
     @DisplayName("변경 가능 여부를 반환한다.")
     void isChangable(OrderStatus orderStatus, boolean expected) {
         // given
-        Orders orders = new Orders(Arrays.asList(
-                new Order(OrderStatus.COMPLETION, LocalDateTime.now()),
-                new Order(orderStatus, LocalDateTime.now())
-        ));
+        Orders orders = new Orders(Arrays.asList(new Order(OrderStatus.COMPLETION), new Order(orderStatus)));
 
         // when
         boolean changable = orders.isChangable();

@@ -12,7 +12,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 
 import static kitchenpos.ordertable.acceptance.OrderTableAcceptanceTest.*;
@@ -36,8 +35,7 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
     @DisplayName("테이블 그룹을 관리한다.")
     void manageTableGroup() {
         // given
-        TableGroupRequest tableGroupRequest = new TableGroupRequest(
-                LocalDateTime.now(), Arrays.asList(테이블1.getId(), 테이블2.getId()));
+        TableGroupRequest tableGroupRequest = new TableGroupRequest(Arrays.asList(테이블1.getId(), 테이블2.getId()));
 
         // when
         ExtractableResponse<Response> createResponse = 테이블_그룹_등록_요청(tableGroupRequest);

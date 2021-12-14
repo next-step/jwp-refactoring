@@ -32,7 +32,7 @@ public class TableGroupService {
         final List<Long> orderTableIds = tableGroupRequest.getOrderTableIds();
         validateOrderTableIds(orderTableIds);
 
-        final TableGroup tableGroup = TableGroup.of(tableGroupRequest.getCreatedDate(), makeOrderTables(orderTableIds));
+        final TableGroup tableGroup = TableGroup.of(makeOrderTables(orderTableIds));
         final TableGroup savedTableGroup = tableGroupRepository.save(tableGroup);
         return TableGroupResponse.from(savedTableGroup);
     }

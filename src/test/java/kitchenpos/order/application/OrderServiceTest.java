@@ -10,7 +10,6 @@ import kitchenpos.ordertable.dto.OrderTableResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
@@ -29,8 +28,7 @@ class OrderServiceTest extends ServiceTest {
 
         OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(savedMenuResponse.getId(), 2);
         OrderRequest orderRequest = new OrderRequest(
-                savedOrderTableResponse.getId(), OrderStatus.COOKING.name(), LocalDateTime.now(),
-                Collections.singletonList(orderLineItemRequest));
+                savedOrderTableResponse.getId(), OrderStatus.COOKING.name(), Collections.singletonList(orderLineItemRequest));
 
         // when
         OrderResponse orderResponse = orderService.create(orderRequest);
@@ -53,8 +51,7 @@ class OrderServiceTest extends ServiceTest {
         // given
         OrderTableResponse savedOrderTableResponse = 테이블_저장(false);
 
-        OrderRequest orderRequest = new OrderRequest(savedOrderTableResponse.getId(), OrderStatus.COOKING.name(),
-                LocalDateTime.now(), null);
+        OrderRequest orderRequest = new OrderRequest(savedOrderTableResponse.getId(), OrderStatus.COOKING.name(), null);
 
         // when & then
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> orderService.create(orderRequest));
@@ -68,8 +65,7 @@ class OrderServiceTest extends ServiceTest {
 
         OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(0L, 2);
         OrderRequest orderRequest = new OrderRequest(
-                savedOrderTableResponse.getId(), OrderStatus.COOKING.name(), LocalDateTime.now(),
-                Collections.singletonList(orderLineItemRequest));
+                savedOrderTableResponse.getId(), OrderStatus.COOKING.name(), Collections.singletonList(orderLineItemRequest));
 
         // when & then
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> orderService.create(orderRequest));
@@ -82,8 +78,7 @@ class OrderServiceTest extends ServiceTest {
         MenuResponse savedMenuResponse = 메뉴_저장();
 
         OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(savedMenuResponse.getId(), 2);
-        OrderRequest orderRequest = new OrderRequest(0L, OrderStatus.COOKING.name(), LocalDateTime.now(),
-                Collections.singletonList(orderLineItemRequest));
+        OrderRequest orderRequest = new OrderRequest(0L, OrderStatus.COOKING.name(), Collections.singletonList(orderLineItemRequest));
 
         // when & then
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> orderService.create(orderRequest));
@@ -98,8 +93,7 @@ class OrderServiceTest extends ServiceTest {
 
         OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(savedMenuResponse.getId(), 2);
         OrderRequest orderRequest = new OrderRequest(
-                savedOrderTableResponse.getId(), OrderStatus.COOKING.name(), LocalDateTime.now(),
-                Collections.singletonList(orderLineItemRequest));
+                savedOrderTableResponse.getId(), OrderStatus.COOKING.name(), Collections.singletonList(orderLineItemRequest));
 
         // when & then
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> orderService.create(orderRequest));
