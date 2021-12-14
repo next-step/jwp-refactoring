@@ -34,7 +34,7 @@ public class OrdersResponse {
                                   orders.getOrderTable().getId(),
                                   orders.getOrderStatus(),
                                   orders.getOrderedTime(),
-                                  StreamUtils.mapToList(orders.getOrderLineItems(), OrderLineItemResponse::from));
+                                  StreamUtils.mapToList(orders.getOrderLineItems().getValues(), OrderLineItemResponse::from));
     }
 
     public Long getId() {

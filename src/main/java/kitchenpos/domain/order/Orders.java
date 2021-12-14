@@ -1,11 +1,11 @@
 package kitchenpos.domain.order;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -15,7 +15,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import kitchenpos.domain.table.OrderTable;
@@ -24,6 +23,7 @@ import kitchenpos.domain.table.OrderTable;
 @Table(name = "orders")
 public class Orders {
     private static final String CAN_NOT_CHANGE_ORDER_STATUS_MESSAGE = "완료된 Orders 는 상태를 바꿀 수 없습니다.";
+    private static final String NOT_EXIST_ORDER_TABLE = "OrderTable 이 존재하지 않습니다.";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,8 +40,8 @@ public class Orders {
     @Column(name = "ordered_time", nullable = false)
     private LocalDateTime orderedTime;
 
-    @OneToMany(mappedBy = "orders", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderLineItem> orderLineItems = new ArrayList<>();
+    @Embedded
+    private OrderLineItems orderLineItems = OrderLineItems.createEmpty();
 
     protected Orders() {}
 
@@ -60,29 +60,17 @@ public class Orders {
         this.orderedTime = orderedTime;
     }
 
-    private Orders(OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
-        this(orderTable, orderStatus, orderedTime);
-        this.orderLineItems = orderLineItems;
-    }
-
     public static Orders from(long id) {
         return new Orders(id);
     }
 
     public static Orders from(OrderTable orderTable) {
+        validateExistOrderTable(orderTable);
         return new Orders(orderTable, OrderStatus.COOKING, LocalDateTime.now());
-    }
-
-    public static Orders of(OrderTable orderTable, OrderStatus orderStatus) {
-        return new Orders(orderTable, orderStatus, LocalDateTime.now(), new ArrayList<>());
     }
 
     public static Orders of(Long id, OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime) {
         return new Orders(id, orderTable, orderStatus, orderedTime);
-    }
-
-    public static Orders of(OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
-        return new Orders(orderTable, orderStatus, orderedTime, orderLineItems);
     }
 
     public boolean isCompletion() {
@@ -110,18 +98,24 @@ public class Orders {
         return orderedTime;
     }
 
-    public List<OrderLineItem> getOrderLineItems() {
+    public OrderLineItems getOrderLineItems() {
         return orderLineItems;
     }
 
     public void addOrderLineItems(final List<OrderLineItem> orderLineItems) {
-        this.orderLineItems = orderLineItems;
+        this.orderLineItems.addAll(orderLineItems);
         orderLineItems.forEach(orderLineItem -> orderLineItem.assignOrders(this));
     }
 
     private void validateChangeOrderStatus() {
         if (isCompletion()) {
             throw new IllegalArgumentException(CAN_NOT_CHANGE_ORDER_STATUS_MESSAGE);
+        }
+    }
+
+    private static void validateExistOrderTable(OrderTable orderTable) {
+        if (Objects.isNull(orderTable)) {
+            throw new IllegalArgumentException(NOT_EXIST_ORDER_TABLE);
         }
     }
 }

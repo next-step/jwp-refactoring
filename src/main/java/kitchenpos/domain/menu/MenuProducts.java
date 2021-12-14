@@ -11,7 +11,7 @@ import javax.persistence.OneToMany;
 
 @Embeddable
 public class MenuProducts {
-    private static final String INVALID_MENU_PRODUCTS = "MenuProducts 이 유효하지 않습니다.";
+    private static final String NOT_EXIST_MENU_PRODUCTS = "MenuProducts 이 존재하지 않습니다.";
 
     @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MenuProduct> menuProducts = new ArrayList<>();
@@ -27,7 +27,7 @@ public class MenuProducts {
     }
 
     public static MenuProducts from(List<MenuProduct> menuProducts) {
-        validateMenuProducts(menuProducts);
+        validateExistMenuProducts(menuProducts);
         return new MenuProducts(menuProducts);
     }
 
@@ -39,9 +39,9 @@ public class MenuProducts {
         return Collections.unmodifiableList(menuProducts);
     }
 
-    private static void validateMenuProducts(List<MenuProduct> menuProducts) {
+    private static void validateExistMenuProducts(List<MenuProduct> menuProducts) {
         if (Objects.isNull(menuProducts)) {
-            throw new IllegalArgumentException(INVALID_MENU_PRODUCTS);
+            throw new IllegalArgumentException(NOT_EXIST_MENU_PRODUCTS);
         }
     }
 }

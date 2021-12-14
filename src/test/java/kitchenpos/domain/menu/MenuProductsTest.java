@@ -27,12 +27,12 @@ class MenuProductsTest {
         assertThatNoException().isThrownBy(() -> MenuProducts.from(menuProducts));
     }
 
-    @DisplayName("MenuProducts 생성 시, MenuProduct 리스트가 null 이면 예외가 발생한다.")
+    @DisplayName("MenuProducts 생성 시, MenuProduct 리스트가 존재하지 않으면 예외가 발생한다.")
     @ParameterizedTest
     @NullSource
     void create2(List<MenuProduct> menuProducts) {
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> MenuProducts.from(menuProducts))
-                                            .withMessageContaining("MenuProducts 이 유효하지 않습니다.");
+                                            .withMessageContaining("MenuProducts 이 존재하지 않습니다.");
     }
 }

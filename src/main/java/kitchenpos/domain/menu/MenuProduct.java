@@ -20,8 +20,8 @@ import kitchenpos.domain.product.Product;
 @Entity
 @Table(name = "menu_product")
 public class MenuProduct {
-    private static final String INVALID_MENU_ERROR_MESSAGE = "Menu 는 필수값 입니다.";
-    private static final String INVALID_PRODUCT_ERROR_MESSAGE = "Product 는 필수값 입니다.";
+    private static final String NOT_EXIST_MENU = "Menu 가 존재하지 않습니다.";
+    private static final String NOT_EXIST_PRODUCT = "Product 가 존재하지 않습니다.";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -53,7 +53,7 @@ public class MenuProduct {
     }
 
     public static MenuProduct of(Long seq, Menu menu, Product product, long quantity) {
-        validateMenu(menu);
+        validateExistMenu(menu);
         validateProduct(product);
 
         return new MenuProduct(seq, menu, product, quantity);
@@ -89,15 +89,15 @@ public class MenuProduct {
         return quantity;
     }
 
-    private static void validateMenu(Menu menu) {
+    private static void validateExistMenu(Menu menu) {
         if (Objects.isNull(menu)) {
-            throw new IllegalArgumentException(INVALID_MENU_ERROR_MESSAGE);
+            throw new IllegalArgumentException(NOT_EXIST_MENU);
         }
     }
 
     private static void validateProduct(Product product) {
         if (Objects.isNull(product)) {
-            throw new IllegalArgumentException(INVALID_PRODUCT_ERROR_MESSAGE);
+            throw new IllegalArgumentException(NOT_EXIST_PRODUCT);
         }
     }
 }
