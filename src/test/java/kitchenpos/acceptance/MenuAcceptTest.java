@@ -36,15 +36,15 @@ class MenuAcceptTest extends AcceptanceTest {
     @Test
     void 메뉴를_관리한다() {
         // given
-        MenuProduct 메뉴_등록_상품 = new MenuProduct();
-        메뉴_등록_상품.setProductId(강정치킨.getId());
-        메뉴_등록_상품.setQuantity(2);
+        MenuProduct 메뉴_상품 = new MenuProduct();
+        메뉴_상품.setProductId(강정치킨.getId());
+        메뉴_상품.setQuantity(2);
 
         Menu 메뉴_등록_요청_데이터 = new Menu();
         메뉴_등록_요청_데이터.setName("더블강정");
         메뉴_등록_요청_데이터.setPrice(BigDecimal.valueOf(32_000));
         메뉴_등록_요청_데이터.setMenuGroupId(추천메뉴.getId());
-        메뉴_등록_요청_데이터.setMenuProducts(Collections.singletonList(메뉴_등록_상품));
+        메뉴_등록_요청_데이터.setMenuProducts(Collections.singletonList(메뉴_상품));
 
         // when
         ExtractableResponse<Response> 메뉴_등록_응답 = 메뉴_등록_요청(메뉴_등록_요청_데이터);
