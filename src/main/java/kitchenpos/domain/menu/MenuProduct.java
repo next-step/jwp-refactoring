@@ -36,6 +36,13 @@ public class MenuProduct {
     public static MenuProduct of(Product product, long quantity) {
         return new MenuProduct(product, quantity);
     }
+
+    public static MenuProduct of(Menu menu, Product product, long quantity) {
+        MenuProduct menuProduct = new MenuProduct(product, quantity);
+        menuProduct.acceptMenu(menu);
+
+        return menuProduct;
+    }
     
     public Long getSeq() {
         return this.seq;

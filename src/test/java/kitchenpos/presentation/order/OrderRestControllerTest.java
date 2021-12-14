@@ -1,6 +1,5 @@
 package kitchenpos.presentation.order;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,6 +16,7 @@ import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.dto.menu.MenuDto;
 import kitchenpos.dto.order.OrderDto;
 import kitchenpos.dto.order.OrderLineItemDto;
+import kitchenpos.dto.order.OrderLineItemDtos;
 import kitchenpos.dto.table.OrderTableDto;
 import kitchenpos.presentation.menu.MenuRestControllerTest;
 import kitchenpos.presentation.table.TableRestControllerTest;
@@ -74,19 +74,15 @@ public class OrderRestControllerTest extends TestConfig {
 
         MenuDto[] menus = MenuRestControllerTest.메뉴_조회요청().as(MenuDto[].class);
 
-        List<OrderLineItemDto> orderLineItems = 주문명세서_생성(List.of(menus[0], menus[1]));
+        OrderLineItemDtos orderLineItems = 주문명세서_생성(List.of(menus[0], menus[1]));
 
-        return OrderDto.of(changedOrderTable.getId(), orderLineItems);
+        return OrderDto.of(changedOrderTable.getId(), orderLineItems.getOrderLineItemDtos());
     }
 
-    private List<OrderLineItemDto> 주문명세서_생성(List<MenuDto> menus) {
-        List<OrderLineItemDto> orderLineItems = new ArrayList<>();
-
-        for (final MenuDto menu : menus) {
-            orderLineItems.add(OrderLineItemDto.of(menu.getId(), 1L));
-        }
-
-        return orderLineItems;
+    private OrderLineItemDtos 주문명세서_생성(List<MenuDto> menus) {
+        return menus.stream()
+                    .map(menu -> OrderLineItemDto.of(menu.getId(), 1L))
+                    .collect(Collectors.collectingAndThen(Collectors.toList(), OrderLineItemDtos::of));
     }
 
     private List<OrderTableDto> 반테이블들_조회됨() {

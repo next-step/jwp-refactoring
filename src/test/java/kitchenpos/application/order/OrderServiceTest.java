@@ -32,7 +32,6 @@ import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menu.MenuProduct;
 import kitchenpos.domain.order.Orders;
 import kitchenpos.domain.order.OrderLineItem;
-import kitchenpos.domain.order.OrderLineItemRepository;
 import kitchenpos.domain.order.OrdersRepository;
 import kitchenpos.domain.order.OrderStatus;
 
@@ -43,9 +42,6 @@ public class OrderServiceTest {
 
     @Mock
     private OrdersRepository orderRepository;
-
-    @Mock
-    private OrderLineItemRepository orderLineItemRepository;
 
     @Mock
     private OrderTableRepository orderTableRepository;
@@ -65,7 +61,7 @@ public class OrderServiceTest {
         MenuProduct 뿌링클콤보_치킨무 = MenuProduct.of(치킨무, 1L);
         MenuProduct 뿌링클콤보_코카콜라 = MenuProduct.of(코카콜라, 1L);
 
-        Menu 뿌링클콤보 = Menu.of("뿌링클콤보", Price.of(18_000));
+        Menu 뿌링클콤보 = Menu.of(1L, "뿌링클콤보", Price.of(18_000));
 
         뿌링클콤보_뿌링클치킨.acceptMenu(뿌링클콤보);
         뿌링클콤보_치킨무.acceptMenu(뿌링클콤보);
@@ -78,9 +74,12 @@ public class OrderServiceTest {
         치킨_주문항목.acceptOrder(치킨주문);
 
         when(menuService.countByIdIn(anyList())).thenReturn(1L);
-        when(menuService.findById(nullable(Long.class))).thenReturn(뿌링클콤보);
         when(orderTableRepository.findById(nullable(Long.class))).thenReturn(Optional.of(치킨_주문_단체테이블));
+        when(menuService.findAllByIdIn(anyList())).thenReturn(List.of(뿌링클콤보));
+
         when(orderRepository.save(any(Orders.class))).thenReturn(치킨주문);
+        
+        
 
         OrderDto 주문_요청전문 = OrderDto.of(1L, List.of(OrderLineItemDto.of(1L, 1L)));
 
@@ -89,7 +88,7 @@ public class OrderServiceTest {
 
         // then
         assertAll(
-            () -> Assertions.assertThat(savedOrder.getOrderLineItems()).hasSize(1),
+            () -> Assertions.assertThat(savedOrder.getOrderLineItems().size()).isEqualTo(1),
             () -> Assertions.assertThat(savedOrder.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name())
         );
     }

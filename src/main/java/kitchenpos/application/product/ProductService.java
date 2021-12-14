@@ -3,7 +3,6 @@ package kitchenpos.application.product;
 import kitchenpos.domain.Price;
 import kitchenpos.domain.product.Product;
 import kitchenpos.domain.product.ProductRepository;
-import kitchenpos.dto.menu.MenuProductDto;
 import kitchenpos.dto.product.ProductDto;
 import kitchenpos.exception.product.NotFoundProductException;
 
@@ -38,15 +37,7 @@ public class ProductService {
         return productRepository.findById(productId).orElseThrow(NotFoundProductException::new);
     }
 
-    public Price sumOfPrices(final List<MenuProductDto> menuProducts) {
-        Price sum = Price.of(0);
-
-        for (final MenuProductDto menuProduct : menuProducts) {
-            final Product product = productRepository.findById(menuProduct.getProductId()).orElseThrow(NotFoundProductException::new);
-
-            sum = sum.add(product.getPrice().multiply(menuProduct.getQuantity()));
-        }
-
-        return sum;
+    public List<Product> findAllByIds(List<Long> productIds) {
+        return productRepository.findAllByIdIn(productIds);
     }
 }

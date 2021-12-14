@@ -3,12 +3,11 @@ package kitchenpos.application.order;
 import kitchenpos.application.menu.MenuService;
 import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.order.Orders;
-import kitchenpos.domain.order.OrderLineItem;
 import kitchenpos.domain.order.OrdersRepository;
 import kitchenpos.domain.table.OrderTable;
 import kitchenpos.domain.table.OrderTableRepository;
 import kitchenpos.dto.order.OrderDto;
-import kitchenpos.dto.order.OrderLineItemDto;
+import kitchenpos.dto.order.OrderLineItemDtos;
 import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.exception.order.EmptyOrderLineItemOrderException;
 import kitchenpos.exception.order.EmptyOrderTableOrderException;
@@ -19,7 +18,6 @@ import kitchenpos.exception.table.NotFoundOrderTableException;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import java.util.Arrays;
 import java.util.List;
@@ -44,7 +42,7 @@ public class OrderService {
     @Transactional
     public OrderDto create(final OrderDto order) {
         final OrderTable orderTable = orderTableRepository.findById(order.getOrderTableId()).orElseThrow(NotFoundOrderTableException::new);
-        final List<OrderLineItemDto> orderLineItems = order.getOrderLineItems();
+        final OrderLineItemDtos orderLineItems = OrderLineItemDtos.of(order.getOrderLineItems());
 
         validationOfCreate(orderTable, orderLineItems);
 
@@ -54,16 +52,14 @@ public class OrderService {
         return OrderDto.of(orderRepository.save(newOrder));
     }
 
-    private void mappingOrderLineItem(final Orders order, final List<OrderLineItemDto> orderLineItemDtos) {
-        for (final OrderLineItemDto orderLineItemDto : orderLineItemDtos) {
-            Menu menu = menuService.findById(orderLineItemDto.getMenuId());
+    private void mappingOrderLineItem(final Orders order, final OrderLineItemDtos orderLineItemDtos) {
+        List<Long> menuIds = orderLineItemDtos.getMenuIds();
+        List<Menu> menus = menuService.findAllByIdIn(menuIds);
 
-            OrderLineItem orderLineItem = OrderLineItem.of(menu, orderLineItemDto.getQuantity());
-            orderLineItem.acceptOrder(order);
-        }
+        orderLineItemDtos.createOrderLineItem(order, menus);
     }
 
-    private void validationOfCreate(final OrderTable orderTable, final List<OrderLineItemDto> orderLineItems) {
+    private void validationOfCreate(final OrderTable orderTable, final OrderLineItemDtos orderLineItems) {
         checkEmptyOfOrderLineItems(orderLineItems);
         checkExistOfMenu(orderLineItems);
         checkEmptyTable(orderTable);
@@ -75,18 +71,16 @@ public class OrderService {
         }
     }
 
-    private void checkExistOfMenu(final List<OrderLineItemDto> orderLineItems) {
-        final List<Long> menuIds = orderLineItems.stream()
-                                                    .map(OrderLineItemDto::getMenuId)
-                                                    .collect(Collectors.toList());
+    private void checkExistOfMenu(final OrderLineItemDtos OrderLineItemDtos) {
+        final List<Long> menuIds = OrderLineItemDtos.getMenuIds();
 
-        if (orderLineItems.size() != menuService.countByIdIn(menuIds)) {
+        if (OrderLineItemDtos.size() != menuService.countByIdIn(menuIds)) {
             throw new NotRegistedMenuOrderException();
         }
     }
 
-    private void checkEmptyOfOrderLineItems(final List<OrderLineItemDto> orderLineItems) {
-        if (CollectionUtils.isEmpty(orderLineItems)) {
+    private void checkEmptyOfOrderLineItems(final OrderLineItemDtos orderLineItems) {
+        if (orderLineItems.isEmpty()) {
             throw new EmptyOrderLineItemOrderException();
         }
     }
@@ -111,7 +105,7 @@ public class OrderService {
     }
 
     private void validateionOfChageOrderStatus(final Orders savedOrder) {
-        if (OrderStatus.COMPLETION.equals(savedOrder.getOrderStatus())) {
+        if (savedOrder.isCompletion()) {
             throw new NotChangableOrderStatusException();
         }
     }

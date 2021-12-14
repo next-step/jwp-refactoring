@@ -54,9 +54,9 @@ public class MenuServiceTest {
     @Test
     void craete_menu() {
         // given
-        Product 뿌링클치킨 = Product.of("뿌링클치킨", Price.of(15_000));
-        Product 치킨무 = Product.of("치킨무", Price.of(1_000));
-        Product 코카콜라 = Product.of("코카콜라", Price.of(3_000));
+        Product 뿌링클치킨 = Product.of(1L, "뿌링클치킨", Price.of(15_000));
+        Product 치킨무 = Product.of(2L, "치킨무", Price.of(1_000));
+        Product 코카콜라 = Product.of(3L, "코카콜라", Price.of(3_000));
 
         MenuGroup 치킨_메뉴그룹 = MenuGroup.of("치킨");
 
@@ -71,8 +71,7 @@ public class MenuServiceTest {
         뿌링클콤보_코카콜라.acceptMenu(뿌링클콤보);
 
         when(menuGroupRepository.findById(nullable(Long.class))).thenReturn(Optional.of(치킨_메뉴그룹));
-        when(productService.findById(nullable(Long.class))).thenReturn(뿌링클치킨, 치킨무, 코카콜라);
-        when(productService.sumOfPrices(anyList())).thenReturn(Price.of(19_000));
+        when(productService.findAllByIds(anyList())).thenReturn(List.of(뿌링클치킨, 치킨무, 코카콜라));
         when(menuRepository.save(any(Menu.class))).thenReturn(뿌링클콤보);
 
         MenuDto 메뉴생성_요청전문 = MenuDto.of("뿌링클콤보", BigDecimal.valueOf(18_000), 1L, List.of(MenuProductDto.of(1L, 1L), MenuProductDto.of(2L, 2L), MenuProductDto.of(3L, 3L)));
@@ -83,7 +82,7 @@ public class MenuServiceTest {
         // then
         Assertions.assertThat(savedMenu.getName()).isEqualTo("뿌링클콤보");
         Assertions.assertThat(savedMenu.getPrice()).isEqualTo(BigDecimal.valueOf(18_000));
-        Assertions.assertThat(savedMenu.getMenuProducts()).isEqualTo(List.of(MenuProductDto.of(null, 1L), MenuProductDto.of(null, 2L), MenuProductDto.of(null, 3L)));
+        Assertions.assertThat(savedMenu.getMenuProducts()).isEqualTo(List.of(MenuProductDto.of(1L, 1L), MenuProductDto.of(2L, 2L), MenuProductDto.of(3L, 3L)));
     }
 
     @DisplayName("메뉴에대한 메뉴그룹이 없으면 예외가 발생한다.")
@@ -93,22 +92,27 @@ public class MenuServiceTest {
         MenuGroup 치킨_메뉴그룹 = MenuGroup.of("치킨");
         Menu 뿌링클콤보 = Menu.of("뿌링클콤보", Price.of(18_000), 치킨_메뉴그룹);
 
-        when(productService.sumOfPrices(anyList())).thenReturn(Price.of(19_000));
+        Product 뿌링클치킨 = Product.of(1L, "뿌링클치킨", Price.of(15_000));
+        Product 치킨무 = Product.of(2L, "치킨무", Price.of(1_000));
+        Product 코카콜라 = Product.of(3L, "코카콜라", Price.of(3_000));
+
+        when(productService.findAllByIds(anyList())).thenReturn(List.of(뿌링클치킨, 치킨무, 코카콜라));
         when(menuGroupRepository.findById(nullable(Long.class))).thenThrow(NotFoundMenuGroupException.class);
 
+        
         // when
         // then
         Assertions.assertThatExceptionOfType(NotFoundMenuGroupException.class)
-                    .isThrownBy(() -> menuService.create(MenuDto.of(뿌링클콤보)));
+                    .isThrownBy(() -> menuService.create(MenuDto.of(뿌링클콤보.getName(), BigDecimal.valueOf(18_000), 치킨_메뉴그룹.getId(), List.of(MenuProductDto.of(1L, 1L), MenuProductDto.of(2L, 1L), MenuProductDto.of(3L, 1L)))));
     }
 
     @DisplayName("미등록 상품이 포함된 메뉴를 생성시 예외가 발생한다.")
     @Test
     void exception_createMenu_notExistProduct() {
         // given
-        Product 뿌링클치킨 = Product.of("뿌링클치킨", Price.of(15_000));
-        Product 치킨무 = Product.of("치킨무", Price.of(1_000));
-        Product 코카콜라 = Product.of("코카콜라", Price.of(3_000));
+        Product 뿌링클치킨 = Product.of(1L, "뿌링클치킨", Price.of(15_000));
+        Product 치킨무 = Product.of(2L, "치킨무", Price.of(1_000));
+        Product 코카콜라 = Product.of(3L, "코카콜라", Price.of(3_000));
         
         MenuProduct 뿌링클콤보_뿌링클치킨 = MenuProduct.of(뿌링클치킨, 1L);
         MenuProduct 뿌링클콤보_치킨무 = MenuProduct.of(치킨무, 1L);
@@ -121,16 +125,10 @@ public class MenuServiceTest {
         뿌링클콤보_치킨무.acceptMenu(뿌링클콤보);
         뿌링클콤보_코카콜라.acceptMenu(뿌링클콤보);
 
-        when(menuGroupRepository.findById(뿌링클콤보.getMenuGroup().getId())).thenReturn(Optional.of(치킨_메뉴그룹));
-        when(productService.findById(뿌링클콤보_뿌링클치킨.getProduct().getId())).thenReturn(뿌링클치킨);
-        when(productService.findById(뿌링클콤보_치킨무.getProduct().getId())).thenReturn(치킨무);
-        when(productService.findById(뿌링클콤보_코카콜라.getProduct().getId())).thenThrow(NotFoundProductException.class);
-        when(productService.sumOfPrices(anyList())).thenReturn(Price.of(19_000));
-
         // when
         // then
         Assertions.assertThatExceptionOfType(NotFoundProductException.class)
-                    .isThrownBy(() -> menuService.create(MenuDto.of(뿌링클콤보)));
+                    .isThrownBy(() -> menuService.create(MenuDto.of(뿌링클콤보.getName(), BigDecimal.valueOf(18_000), 치킨_메뉴그룹.getId(), List.of(MenuProductDto.of(1L, 1L), MenuProductDto.of(2L, 1L), MenuProductDto.of(3L, 1L)))));
     }
 
     @DisplayName("메뉴 가격이 상품의 가격 총합이 보다 클 시 예외가 발생한다.")
@@ -140,12 +138,16 @@ public class MenuServiceTest {
         MenuGroup 치킨_메뉴그룹 = MenuGroup.of("치킨");
         Menu 뿌링클콤보 = Menu.of("뿌링클콤보", Price.of(20_000), 치킨_메뉴그룹);
 
-        when(productService.sumOfPrices(anyList())).thenReturn(Price.of(19_000));
+        Product 뿌링클치킨 = Product.of(1L, "뿌링클치킨", Price.of(15_000));
+        Product 치킨무 = Product.of(2L, "치킨무", Price.of(1_000));
+        Product 코카콜라 = Product.of(3L, "코카콜라", Price.of(3_000));
+
+        when(productService.findAllByIds(anyList())).thenReturn(List.of(뿌링클치킨, 치킨무, 코카콜라));
 
         // when
         // then
         Assertions.assertThatExceptionOfType(NotCorrectMenuPriceException.class)
-                    .isThrownBy(() -> menuService.create(MenuDto.of(뿌링클콤보)));
+                    .isThrownBy(() -> menuService.create(MenuDto.of(뿌링클콤보.getName(), BigDecimal.valueOf(20_000), 치킨_메뉴그룹.getId(), List.of(MenuProductDto.of(1L, 1L), MenuProductDto.of(2L, 1L), MenuProductDto.of(3L, 1L)))));
     }
 
     @DisplayName("메뉴가 조회된다.")

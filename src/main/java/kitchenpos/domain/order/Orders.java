@@ -79,4 +79,8 @@ public class Orders {
     public void changeOrderStatus(OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
     }
+
+    public boolean isCompletion() {
+        return this.orderStatus.equals(OrderStatus.COMPLETION);
+    }
 }
