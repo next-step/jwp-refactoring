@@ -30,7 +30,7 @@ public class OrderTableResponse {
         }
 
         return new OrderTableResponse(
-                orderTable.getId(), tableGroupId, orderTable.getNumberOfGuests(), orderTable.isEmpty());
+                orderTable.getId(), tableGroupId, orderTable.getNumberOfGuests().getNumberOfGuests(), orderTable.isEmpty());
     }
 
     public Long getId() {

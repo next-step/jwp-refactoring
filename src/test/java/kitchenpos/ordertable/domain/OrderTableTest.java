@@ -52,7 +52,7 @@ class OrderTableTest {
         orderTable.changeNumberOfGuests(1);
 
         // then
-        assertThat(orderTable.getNumberOfGuests()).isEqualTo(1);
+        assertThat(orderTable.getNumberOfGuests()).isEqualTo(new NumberOfGuests(1));
     }
 
     @Test

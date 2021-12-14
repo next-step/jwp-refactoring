@@ -22,8 +22,9 @@ public class OrderTable {
     @ManyToOne
     private TableGroup tableGroup;
 
+    @Embedded
     @Column(nullable = false)
-    private int numberOfGuests;
+    private NumberOfGuests numberOfGuests;
 
     @Column(nullable = false)
     private boolean empty;
@@ -36,12 +37,12 @@ public class OrderTable {
 
     public OrderTable(TableGroup tableGroup, int numberOfGuests, boolean empty) {
         this.tableGroup = tableGroup;
-        this.numberOfGuests = numberOfGuests;
+        this.numberOfGuests = new NumberOfGuests(numberOfGuests);
         this.empty = empty;
     }
 
     public OrderTable(int numberOfGuests, boolean empty) {
-        this.numberOfGuests = numberOfGuests;
+        this.numberOfGuests = new NumberOfGuests(numberOfGuests);
         this.empty = empty;
     }
 
@@ -50,7 +51,7 @@ public class OrderTable {
     }
 
     public OrderTable(int numberOfGuests) {
-        this.numberOfGuests = numberOfGuests;
+        this.numberOfGuests = new NumberOfGuests(numberOfGuests);
     }
 
     public Long getId() {
@@ -61,7 +62,7 @@ public class OrderTable {
         return tableGroup;
     }
 
-    public int getNumberOfGuests() {
+    public NumberOfGuests getNumberOfGuests() {
         return numberOfGuests;
     }
 
@@ -84,8 +85,8 @@ public class OrderTable {
     }
 
     public void changeNumberOfGuests(int numberOfGuests) {
-        validateChangingNumberOfGuests(numberOfGuests);
-        this.numberOfGuests = numberOfGuests;
+        validateChangingNumberOfGuests();
+        this.numberOfGuests = new NumberOfGuests(numberOfGuests);
     }
 
     public void ungroup() {
@@ -111,10 +112,7 @@ public class OrderTable {
         orders.validateChangingEmpty();
     }
 
-    private void validateChangingNumberOfGuests(int numberOfGuests) {
-        if (numberOfGuests < 0) {
-            throw new IllegalArgumentException();
-        }
+    private void validateChangingNumberOfGuests() {
         if (empty) {
             throw new IllegalArgumentException();
         }
