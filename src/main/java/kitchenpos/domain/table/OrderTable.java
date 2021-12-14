@@ -3,6 +3,7 @@ package kitchenpos.domain.table;
 import java.util.Objects;
 
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
@@ -17,6 +18,7 @@ import kitchenpos.domain.tablegroup.TableGroup;
 @Entity
 @Table(name = "order_table")
 public class OrderTable {
+    private static final int MIN_NUMBER_OF_GUESTS = 0;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,8 +29,8 @@ public class OrderTable {
     @JoinColumn(name = "table_group_id", foreignKey = @ForeignKey(name = "fk_order_table_table_group"))
     private TableGroup tableGroup;
 
-    @Column(name = "number_of_guests", nullable = false)
-    private int numberOfGuests;
+    @Embedded
+    private NumberOfGuests numberOfGuests;
 
     @Column(name = "empty", nullable = false)
     private boolean empty;
@@ -45,12 +47,17 @@ public class OrderTable {
     }
 
     private OrderTable(int numberOfGuests, boolean empty) {
-        this.numberOfGuests = numberOfGuests;
+        this.numberOfGuests = NumberOfGuests.from(numberOfGuests);
         this.empty = empty;
     }
 
     public static OrderTable from(Long id) {
         return new OrderTable(id);
+    }
+
+    public static OrderTable from(int numberOfGuests) {
+        boolean isEmpty = numberOfGuests == MIN_NUMBER_OF_GUESTS;
+        return new OrderTable(numberOfGuests, isEmpty);
     }
 
     public static OrderTable of(int numberOfGuests, boolean empty) {
@@ -75,8 +82,7 @@ public class OrderTable {
     }
 
     public void updateNumberOfGuests(final int numberOfGuests) {
-        validateNumberOfGuests(numberOfGuests);
-        this.numberOfGuests = numberOfGuests;
+        this.numberOfGuests = NumberOfGuests.from(numberOfGuests);
     }
 
     public boolean hasTableGroup() {
@@ -91,17 +97,11 @@ public class OrderTable {
         return tableGroup;
     }
 
-    public int getNumberOfGuests() {
+    public NumberOfGuests getNumberOfGuests() {
         return numberOfGuests;
     }
 
     public boolean isEmpty() {
         return empty;
-    }
-
-    private void validateNumberOfGuests(int numberOfGuests) {
-        if (numberOfGuests < 0) {
-            throw new IllegalArgumentException();
-        }
     }
 }

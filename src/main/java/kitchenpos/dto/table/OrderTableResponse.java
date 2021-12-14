@@ -26,7 +26,7 @@ public class OrderTableResponse {
                                       Optional.ofNullable(orderTable.getTableGroup())
                                               .map(TableGroup::getId)
                                               .orElse(null),
-                                      orderTable.getNumberOfGuests(),
+                                      orderTable.getNumberOfGuests().getValue(),
                                       orderTable.isEmpty());
     }
 

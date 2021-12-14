@@ -88,7 +88,7 @@ class TableServiceTest {
     @Test
     void changeEmpty1() {
         // given
-        OrderTableRequest orderTableRequest = OrderTableRequest.of(빈_개인테이블.getNumberOfGuests(),
+        OrderTableRequest orderTableRequest = OrderTableRequest.of(빈_개인테이블.getNumberOfGuests().getValue(),
                                                                    빈_개인테이블.isEmpty());
         주문_개인테이블.updateEmpty(false);
 
@@ -107,7 +107,7 @@ class TableServiceTest {
     @Test
     void changeEmpty2() {
         // given
-        OrderTableRequest orderTableRequest = OrderTableRequest.of(빈_개인테이블.getNumberOfGuests(),
+        OrderTableRequest orderTableRequest = OrderTableRequest.of(빈_개인테이블.getNumberOfGuests().getValue(),
                                                                    빈_개인테이블.isEmpty());
 
         given(orderTableRepository.findById(주문_개인테이블.getId())).willReturn(Optional.empty());
@@ -121,7 +121,7 @@ class TableServiceTest {
     @Test
     void changeEmpty3() {
         // given
-        OrderTableRequest orderTableRequest = OrderTableRequest.of(빈_개인테이블.getNumberOfGuests(),
+        OrderTableRequest orderTableRequest = OrderTableRequest.of(빈_개인테이블.getNumberOfGuests().getValue(),
                                                                    빈_개인테이블.isEmpty());
         주문1_단체테이블.alignTableGroup(단체_테이블그룹);
 
@@ -133,7 +133,7 @@ class TableServiceTest {
     @Test
     void changeEmpty4() {
         // given
-        OrderTableRequest orderTableRequest = OrderTableRequest.of(빈_개인테이블.getNumberOfGuests(),
+        OrderTableRequest orderTableRequest = OrderTableRequest.of(빈_개인테이블.getNumberOfGuests().getValue(),
                                                                    빈_개인테이블.isEmpty());
 
         given(ordersRepository.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).willReturn(true);
@@ -148,7 +148,7 @@ class TableServiceTest {
     @Test
     void changeNumberOfGuests1() {
         // given
-        OrderTableRequest orderTableRequest = OrderTableRequest.of(손님_10명_개인테이블.getNumberOfGuests(),
+        OrderTableRequest orderTableRequest = OrderTableRequest.of(손님_10명_개인테이블.getNumberOfGuests().getValue(),
                                                                    손님_10명_개인테이블.isEmpty());
 
         given(orderTableRepository.findById(주문_개인테이블.getId())).willReturn(Optional.ofNullable(주문_개인테이블));
@@ -159,7 +159,7 @@ class TableServiceTest {
 
         // then
         assertThat(orderTableResponse).isEqualTo(OrderTableResponse.from(주문_개인테이블));
-        assertThat(orderTableResponse.getNumberOfGuests()).isEqualTo(손님_10명_개인테이블.getNumberOfGuests());
+        assertThat(orderTableResponse.getNumberOfGuests()).isEqualTo(손님_10명_개인테이블.getNumberOfGuests().getValue());
     }
 
     @DisplayName("OrderTable 의 손님 수를 변경 시, 손님의 수가 음수이면 예외가 발생한다.")
@@ -178,7 +178,7 @@ class TableServiceTest {
     @Test
     void changeNumberOfGuests3() {
         // given
-        OrderTableRequest orderTableRequest = OrderTableRequest.of(손님_10명_개인테이블.getNumberOfGuests(),
+        OrderTableRequest orderTableRequest = OrderTableRequest.of(손님_10명_개인테이블.getNumberOfGuests().getValue(),
                                                                    손님_10명_개인테이블.isEmpty());
 
         given(orderTableRepository.findById(주문_개인테이블.getId())).willReturn(Optional.empty());
@@ -192,7 +192,7 @@ class TableServiceTest {
     @Test
     void changeNumberOfGuests4() {
         // given
-        OrderTableRequest orderTableRequest = OrderTableRequest.of(손님_10명_개인테이블.getNumberOfGuests(),
+        OrderTableRequest orderTableRequest = OrderTableRequest.of(손님_10명_개인테이블.getNumberOfGuests().getValue(),
                                                                    손님_10명_개인테이블.isEmpty());
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> tableService.changeNumberOfGuests(빈_개인테이블.getId(),
