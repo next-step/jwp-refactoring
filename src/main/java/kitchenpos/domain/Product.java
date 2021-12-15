@@ -21,6 +21,11 @@ public class Product {
     public Product() {
     }
 
+    public Product(String name, BigDecimal price) {
+        this.name = name;
+        this.price = price;
+    }
+
     public Long getId() {
         return id;
     }
@@ -33,5 +38,7 @@ public class Product {
         return price;
     }
 
-
+    public static Product from(ProductRequest productRequest) {
+        return new Product(productRequest.getName(), productRequest.getPrice());
+    }
 }

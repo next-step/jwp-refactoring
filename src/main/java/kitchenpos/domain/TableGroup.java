@@ -20,6 +20,11 @@ public class TableGroup {
     public TableGroup() {
     }
 
+    public TableGroup(List<OrderTable> orderTables) {
+        this.orderTables = orderTables;
+        this.createdDate = LocalDateTime.now();
+    }
+
     public Long getId() {
         return id;
     }
@@ -30,6 +35,10 @@ public class TableGroup {
 
     public List<OrderTable> getOrderTables() {
         return orderTables;
+    }
+
+    public void setTableGroupToOrderTables(List<OrderTable> orderTables) {
+        orderTables.forEach(orderTable -> orderTable.addTableGroup(this));
     }
 
 }

@@ -28,6 +28,11 @@ public class Order {
     public Order() {
     }
 
+    public Order(OrderTable orderTable, OrderStatus orderStatus) {
+        this.orderTable = orderTable;
+        this.orderStatus = orderStatus;
+        this.orderedTime = LocalDateTime.now();
+    }
 
     public Long getId() {
         return id;
@@ -49,4 +54,11 @@ public class Order {
         return orderStatus;
     }
 
+    public void addOrderLineItems(OrderLineItem orderLineItem) {
+        this.orderLineItems.add(orderLineItem);
+    }
+
+    public void changeStatus(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
+    }
 }
