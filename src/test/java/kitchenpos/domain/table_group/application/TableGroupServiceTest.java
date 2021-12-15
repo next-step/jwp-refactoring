@@ -16,6 +16,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
 import java.util.Arrays;
+import java.util.List;
 
 import static kitchenpos.domain.order.fixture.OrderFixture.주문;
 import static kitchenpos.domain.table.fixture.OrderTableFixture.주문_테이블;
@@ -60,10 +61,11 @@ class TableGroupServiceTest {
 
         TableGroup 저장된_단체_지정 = tableGroupService.create(단체_지정);
 
+        List<OrderTable> 저장된_주문_테이블 = orderTableRepository.findAll();
         assertAll(
-                () -> assertThat(저장된_단체_지정.getOrderTables().size()).isEqualTo(2),
-                () -> assertThat(저장된_단체_지정.getOrderTables().get(0).isEmpty()).isFalse(),
-                () -> assertThat(저장된_단체_지정.getOrderTables().get(0).getTableGroupId()).isEqualTo(저장된_단체_지정.getId()),
+                () -> assertThat(저장된_주문_테이블.size()).isEqualTo(2),
+                () -> assertThat(저장된_주문_테이블.get(0).isEmpty()).isFalse(),
+                () -> assertThat(저장된_주문_테이블.get(0).getTableGroupId()).isEqualTo(저장된_단체_지정.getId()),
                 () -> assertThat(저장된_단체_지정.getCreatedDate()).isNotNull()
         );
     }
@@ -105,7 +107,8 @@ class TableGroupServiceTest {
 
         tableGroupService.ungroup(저장된_단체_지정.getId());
 
-        저장된_단체_지정.getOrderTables()
+        List<OrderTable> 저장된_주문_테이블 = orderTableRepository.findAll();
+        저장된_주문_테이블
                 .forEach(orderTable -> assertThat(orderTable.getTableGroupId()).isNull());
     }
 

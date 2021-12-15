@@ -4,7 +4,7 @@ import kitchenpos.domain.order.domain.OrderRepository;
 import kitchenpos.domain.table.domain.OrderTableRepository;
 import kitchenpos.domain.table_group.domain.TableGroupRepository;
 import kitchenpos.domain.order.domain.OrderStatus;
-import kitchenpos.domain.table_group.domain.OrderTables;
+import kitchenpos.domain.table.domain.OrderTables;
 import kitchenpos.domain.table_group.domain.TableGroup;
 import kitchenpos.domain.table_group.dto.TableGroupRequest;
 import org.springframework.stereotype.Service;
@@ -33,7 +33,7 @@ public class TableGroupService {
         tables.checkOrderTables(orderTableIds);
 
         TableGroup tableGroup = tableGroupRepository.save(TableGroup.create());
-        tableGroup.addOrderTables(tables);
+        tables.group(tableGroup.getId());
         return tableGroup;
     }
 

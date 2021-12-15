@@ -1,10 +1,10 @@
 package kitchenpos.domain.table_group.domain;
 
-import kitchenpos.domain.table.domain.OrderTable;
-
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 public class TableGroup {
@@ -15,9 +15,6 @@ public class TableGroup {
 
     private LocalDateTime createdDate;
 
-    @Embedded
-    private OrderTables orderTables = new OrderTables();
-
     public static TableGroup create() {
         return new TableGroup(LocalDateTime.now());
     }
@@ -25,19 +22,13 @@ public class TableGroup {
     protected TableGroup() {
     }
 
-    public TableGroup(Long id, LocalDateTime createdDate, List<OrderTable> orderTables) {
+    public TableGroup(Long id, LocalDateTime createdDate) {
         this.id = id;
         this.createdDate = createdDate;
-        this.orderTables = new OrderTables(orderTables);
     }
 
     public TableGroup(LocalDateTime createdDate) {
-        this(null, createdDate, null);
-    }
-
-    public void addOrderTables(OrderTables orderTables) {
-        orderTables.group(this);
-        this.orderTables = orderTables;
+        this(null, createdDate);
     }
 
     public Long getId() {
@@ -46,9 +37,5 @@ public class TableGroup {
 
     public LocalDateTime getCreatedDate() {
         return createdDate;
-    }
-
-    public List<OrderTable> getOrderTables() {
-        return orderTables.getOrderTables();
     }
 }

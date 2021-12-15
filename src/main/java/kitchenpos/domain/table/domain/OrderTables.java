@@ -1,36 +1,27 @@
-package kitchenpos.domain.table_group.domain;
+package kitchenpos.domain.table.domain;
 
-import kitchenpos.domain.table.domain.OrderTable;
 import org.springframework.util.CollectionUtils;
 
-import javax.persistence.Embeddable;
-import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Embeddable
 public class OrderTables {
 
     private static final int MIN_REQUEST_ORDER_TABLE_SIZE = 2;
 
-    @OneToMany(mappedBy = "tableGroup")
     private List<OrderTable> orderTables = new ArrayList<>();
 
-    protected OrderTables() {
+    public OrderTables() {
     }
 
     public OrderTables(List<OrderTable> orderTables) {
         this.orderTables = orderTables;
     }
 
-    public List<OrderTable> getOrderTables() {
-        return orderTables;
-    }
-
-    public void group(TableGroup tableGroup) {
+    public void group(Long tableGroupId) {
         for (final OrderTable orderTable : orderTables) {
-            orderTable.group(tableGroup.getId());
+            orderTable.group(tableGroupId);
         }
     }
 
