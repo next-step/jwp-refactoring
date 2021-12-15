@@ -1,20 +1,16 @@
 package kitchenpos.application.fixture;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 
-import kitchenpos.domain.Menu;
+import kitchenpos.domain.menu.Menu;
+import kitchenpos.domain.menugroup.MenuGroup;
 
 public class MenuFixtureFactory {
 
     private MenuFixtureFactory() {}
 
-    public static Menu create(long id, String name, long price, long menuGroupId) {
-        Menu menu = new Menu();
-        menu.setId(id);
-        menu.setName(name);
-        menu.setPrice(BigDecimal.valueOf(price));
-        menu.setMenuGroupId(menuGroupId);
-
-        return menu;
+    public static Menu create(long id, String name, long price, MenuGroup menuGroup) {
+        return Menu.of(id, name, BigDecimal.valueOf(price), menuGroup, new ArrayList<>());
     }
 }

@@ -18,14 +18,16 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.application.fixture.ProductFixtureFactory;
-import kitchenpos.dao.ProductDao;
-import kitchenpos.domain.Product;
+import kitchenpos.domain.product.Product;
+import kitchenpos.domain.product.ProductRepository;
+import kitchenpos.dto.product.ProductRequest;
+import kitchenpos.dto.product.ProductResponse;
 
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
 
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     @InjectMocks
     private ProductService productService;
@@ -43,29 +45,25 @@ class ProductServiceTest {
     @Test
     void create1() {
         // given
-        Product product = new Product();
-        product.setName("돼지고기");
-        product.setPrice(BigDecimal.valueOf(9_000));
+        ProductRequest productRequest = ProductRequest.of("돼지고기", BigDecimal.valueOf(9_000));
 
-        given(productDao.save(any(Product.class))).willReturn(돼지고기);
+        given(productRepository.save(any(Product.class))).willReturn(돼지고기);
 
         // when
-        Product savedProduct = productService.create(product);
+        ProductResponse productResponse = productService.create(productRequest);
 
         // then
-        assertThat(savedProduct).isEqualTo(돼지고기);
+        assertThat(productResponse).isEqualTo(ProductResponse.from(돼지고기));
     }
 
     @DisplayName("Product 가격이 null 이면 예외가 발생한다.")
     @Test
     void create2() {
         // given
-        Product product = new Product();
-        product.setName("돼지고기");
-        product.setPrice(null);
+        ProductRequest productRequest = ProductRequest.of("돼지고기", null);
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> productService.create(product));
+        assertThatIllegalArgumentException().isThrownBy(() -> productService.create(productRequest));
     }
 
     @DisplayName("Product 가격이 음수(0 미만) 이면 예외가 발생한다.")
@@ -73,24 +71,22 @@ class ProductServiceTest {
     @ValueSource(ints = {-1, -2, -10, -100})
     void create3(int wrongPrice) {
         // given
-        Product product = new Product();
-        product.setName("돼지고기");
-        product.setPrice(BigDecimal.valueOf(wrongPrice));
+        ProductRequest productRequest = ProductRequest.of("돼지고기", BigDecimal.valueOf(wrongPrice));
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> productService.create(product));
+        assertThatIllegalArgumentException().isThrownBy(() -> productService.create(productRequest));
     }
 
     @DisplayName("")
     @Test
     void findList() {
         // given
-        given(productDao.findAll()).willReturn(Arrays.asList(돼지고기, 공기밥));
+        given(productRepository.findAll()).willReturn(Arrays.asList(돼지고기, 공기밥));
 
         // when
-        List<Product> products = productService.list();
+        List<ProductResponse> productResponses = productService.list();
 
         // then
-        assertThat(products).containsExactly(돼지고기, 공기밥);
+        assertThat(productResponses).containsExactly(ProductResponse.from(돼지고기), ProductResponse.from(공기밥));
     }
 }

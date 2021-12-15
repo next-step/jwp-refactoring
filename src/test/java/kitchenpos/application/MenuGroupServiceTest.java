@@ -15,14 +15,16 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.application.fixture.MenuGroupFixtureFactory;
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.domain.menugroup.MenuGroup;
+import kitchenpos.domain.menugroup.MenuGroupRepository;
+import kitchenpos.dto.menugroup.MenuGroupRequest;
+import kitchenpos.dto.menugroup.MenuGroupResponse;
 
 @ExtendWith(MockitoExtension.class)
 class MenuGroupServiceTest {
 
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
 
     @InjectMocks
     private MenuGroupService menuGroupService;
@@ -40,28 +42,27 @@ class MenuGroupServiceTest {
     @Test
     void create() {
         // given
-        MenuGroup menuGroup = new MenuGroup();
-        menuGroup.setName("고기 메뉴그룹");
+        MenuGroupRequest menuGroupRequest = MenuGroupRequest.from("고기 메뉴그룹");
 
-        given(menuGroupDao.save(menuGroup)).willReturn(고기_메뉴그룹);
+        given(menuGroupRepository.save(any(MenuGroup.class))).willReturn(this.고기_메뉴그룹);
 
         // when
-        MenuGroup savedMenuGroup = menuGroupService.create(menuGroup);
+        MenuGroupResponse menuGroupResponse = menuGroupService.create(menuGroupRequest);
 
         // then
-        assertThat(savedMenuGroup).isEqualTo(고기_메뉴그룹);
+        assertThat(menuGroupResponse).isEqualTo(MenuGroupResponse.from(this.고기_메뉴그룹));
     }
 
     @DisplayName("MenuGroup 목록을 조회한다.")
     @Test
     void findList() {
         // given
-        given(menuGroupDao.findAll()).willReturn(Arrays.asList(고기_메뉴그룹, 야채_메뉴그룹));
+        given(menuGroupRepository.findAll()).willReturn(Arrays.asList(고기_메뉴그룹, 야채_메뉴그룹));
 
         // when
-        List<MenuGroup> menuGroups = menuGroupService.list();
+        List<MenuGroupResponse> menuGroupResponses = menuGroupService.list();
 
         // then
-        assertThat(menuGroups).containsExactly(고기_메뉴그룹, 야채_메뉴그룹);
+        assertThat(menuGroupResponses).containsExactly(MenuGroupResponse.from(고기_메뉴그룹), MenuGroupResponse.from(야채_메뉴그룹));
     }
 }

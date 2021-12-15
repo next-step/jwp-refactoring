@@ -1,23 +1,16 @@
 package kitchenpos.application.fixture;
 
-import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.table.OrderTable;
 
 public class OrderTableFixtureFactory {
 
     private OrderTableFixtureFactory() {}
 
     public static OrderTable create(long id, boolean isEmpty) {
-        OrderTable orderTable = new OrderTable();
-        orderTable.setId(id);
-        orderTable.setEmpty(isEmpty);
-
-        return orderTable;
+        return OrderTable.of(id, 0, isEmpty);
     }
 
-    public static OrderTable createWithGuests(long id, boolean isEmpty, int numberOfGuests) {
-        OrderTable orderTable = create(id, isEmpty);
-        orderTable.setNumberOfGuests(numberOfGuests);
-
-        return orderTable;
+    public static OrderTable createWithGuests(long id, int numberOfGuests, boolean isEmpty) {
+        return OrderTable.of(id, numberOfGuests, isEmpty);
     }
 }
