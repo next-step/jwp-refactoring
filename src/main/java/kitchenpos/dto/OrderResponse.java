@@ -1,5 +1,6 @@
 package kitchenpos.dto;
 
+import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
@@ -23,6 +24,10 @@ public class OrderResponse {
         this.orderLineItems = orderLineItems;
     }
 
+    public static OrderResponse from(Order order) {
+        return new OrderResponse(order.getId(), order.getOrderTable(), order.getOrderStatus(),
+                order.getOrderedTime(), order.getOrderLineItems());
+    }
 
     public Long getId() {
         return id;

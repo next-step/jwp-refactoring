@@ -1,5 +1,6 @@
 package kitchenpos.dto;
 
+import kitchenpos.domain.OrderTable;
 
 public class OrderTableResponse {
 
@@ -13,6 +14,9 @@ public class OrderTableResponse {
         this.empty = empty;
     }
 
+    public static OrderTableResponse from(OrderTable orderTable) {
+        return new OrderTableResponse(orderTable.getId(), orderTable.getNumberOfGuests(), orderTable.isEmpty());
+    }
 
     public Long getId() {
         return id;

@@ -1,5 +1,6 @@
 package kitchenpos.dto;
 
+import kitchenpos.domain.Product;
 
 import java.math.BigDecimal;
 
@@ -14,6 +15,11 @@ public class ProductResponse {
         this.name = name;
         this.price = price;
     }
+
+    public static ProductResponse from(Product product) {
+        return new ProductResponse(product.getId(), product.getName(), product.getPrice());
+    }
+
 
     public Long getId() {
         return id;

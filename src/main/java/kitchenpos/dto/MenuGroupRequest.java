@@ -1,5 +1,6 @@
 package kitchenpos.dto;
 
+import kitchenpos.domain.MenuGroup;
 
 public class MenuGroupRequest {
 
@@ -13,5 +14,8 @@ public class MenuGroupRequest {
         return name;
     }
 
+    public MenuGroup toEntity() {
+        return new MenuGroup(name);
+    }
 
 }
