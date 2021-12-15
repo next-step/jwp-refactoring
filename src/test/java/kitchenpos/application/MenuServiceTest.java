@@ -8,10 +8,10 @@ import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -33,13 +33,8 @@ public class MenuServiceTest {
     private MenuProductDao menuProductDao;
     @Mock
     private ProductDao productDao;
-
+    @InjectMocks
     private MenuService menuService;
-
-    @BeforeEach
-    void setUp() {
-        menuService = new MenuService(menuDao, menuGroupDao, menuProductDao, productDao);
-    }
 
     @DisplayName("메뉴를 생성한")
     @Test

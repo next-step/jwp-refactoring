@@ -2,10 +2,10 @@ package kitchenpos.application;
 
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.MenuGroup;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -20,12 +20,8 @@ import static org.mockito.BDDMockito.given;
 public class MenuGroupServiceTest {
     @Mock
     private MenuGroupDao menuGroupDao;
+    @InjectMocks
     private MenuGroupService menuGroupService;
-
-    @BeforeEach
-    void setUp() {
-        menuGroupService = new MenuGroupService(menuGroupDao);
-    }
 
     @DisplayName("메뉴 그룹을 저장한다")
     @Test
