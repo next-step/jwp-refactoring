@@ -8,7 +8,7 @@ import kitchenpos.order.domain.order.OrderRepository;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.sns.application.SnsComponent;
+import kitchenpos.sns.application.SnsEventHandler;
 import kitchenpos.sns.domain.KakaoSender;
 import kitchenpos.table.domain.table.OrderTable;
 import kitchenpos.table.domain.table.OrderTableRepository;
@@ -26,15 +26,15 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final OrderLineItemRepository orderLineItemRepository;
     private final OrderTableRepository orderTableRepository;
-    private final SnsComponent snsComponent;
+    private final SnsEventHandler snsEventHandler;
 
-    public OrderService(MenuRepository menuRepository, OrderRepository orderRepository, OrderLineItemRepository orderLineItemRepository,
-                        OrderTableRepository orderTableRepository, SnsComponent snsComponent) {
+    public OrderService(MenuRepository menuRepository, OrderRepository orderRepository,
+                        OrderLineItemRepository orderLineItemRepository, OrderTableRepository orderTableRepository, SnsEventHandler snsEventHandler) {
         this.menuRepository = menuRepository;
         this.orderRepository = orderRepository;
         this.orderLineItemRepository = orderLineItemRepository;
         this.orderTableRepository = orderTableRepository;
-        this.snsComponent = snsComponent;
+        this.snsEventHandler = snsEventHandler;
     }
 
     public OrderResponse saveOrder(final OrderRequest orderRequest) {
@@ -53,7 +53,7 @@ public class OrderService {
 
         String message = savedOrder.getOrderTable().getId() + "번 테이블 주문되었습니다.";
 
-        snsComponent.send(KakaoSender.from(message));
+        snsEventHandler.sns(KakaoSender.from(message));
         return savedOrder;
     }
 
