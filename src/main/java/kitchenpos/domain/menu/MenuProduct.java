@@ -6,6 +6,7 @@ import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EntityNotFoundException;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -97,7 +98,7 @@ public class MenuProduct {
 
     private static void validateProduct(Product product) {
         if (Objects.isNull(product)) {
-            throw new IllegalArgumentException(NOT_EXIST_PRODUCT);
+            throw new EntityNotFoundException(NOT_EXIST_PRODUCT);
         }
     }
 }

@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.math.BigDecimal;
 import java.util.Arrays;
 
+import javax.persistence.EntityNotFoundException;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -58,8 +60,7 @@ class MenuProductTest {
     @Test
     void create3() {
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> MenuProduct.of(null, 1L))
-                                            .withMessageContaining("Product 가 존재하지 않습니다.");
+        assertThrows(EntityNotFoundException.class, () -> MenuProduct.of(null, 1L));
     }
 
     @DisplayName("MenuProduct 는 자신의 총 합산 금액을 계산할 수 있다.")

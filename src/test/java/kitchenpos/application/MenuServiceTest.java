@@ -84,8 +84,7 @@ class MenuServiceTest {
                                                   menuProductRequests);
 
         given(menuGroupRepository.findById(고기_메뉴그룹.getId())).willReturn(Optional.ofNullable(고기_메뉴그룹));
-        given(productRepository.findById(불고기_돼지고기.getProduct().getId())).willReturn(Optional.ofNullable(돼지고기));
-        given(productRepository.findById(불고기_공기밥.getProduct().getId())).willReturn(Optional.ofNullable(공기밥));
+        given(productRepository.findAllById(anyList())).willReturn(Arrays.asList(돼지고기, 공기밥));
         given(menuRepository.save(any(Menu.class))).willReturn(불고기);
 
         // when
@@ -178,8 +177,7 @@ class MenuServiceTest {
                                                   menuProductRequests);
 
         given(menuGroupRepository.findById(고기_메뉴그룹.getId())).willReturn(Optional.ofNullable(고기_메뉴그룹));
-        given(productRepository.findById(돼지고기.getId())).willReturn(Optional.ofNullable(돼지고기));
-        given(productRepository.findById(공기밥.getId())).willReturn(Optional.ofNullable(공기밥));
+        given(productRepository.findAllById(anyList())).willReturn(Arrays.asList(돼지고기, 공기밥));
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menuRequest));

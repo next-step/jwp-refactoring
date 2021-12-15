@@ -2,6 +2,7 @@ package kitchenpos.application;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.EntityNotFoundException;
 
@@ -53,11 +54,12 @@ public class MenuService {
 
     private List<MenuProduct> createMenuProducts(MenuRequest menuRequest) {
         List<MenuProduct> menuProducts = new ArrayList<>();
-        for (MenuProductRequest menuProductRequest : menuRequest.getMenuProducts()) {
-            Product product = findProduct(menuProductRequest.getProductId());
-            MenuProduct menuProduct = MenuProduct.of(product, menuProductRequest.getQuantity());
+        List<Long> productIds = StreamUtils.mapToList(menuRequest.getMenuProducts(), MenuProductRequest::getProductId);
+        Map<Long, Product> productDict = StreamUtils.mapToIdentityMap(findProducts(productIds), Product::getId);
 
-            menuProducts.add(menuProduct);
+        for (MenuProductRequest menuProductRequest : menuRequest.getMenuProducts()) {
+            menuProducts.add(MenuProduct.of(productDict.get(menuProductRequest.getProductId()),
+                                            menuProductRequest.getQuantity()));
         }
 
         return menuProducts;
@@ -71,5 +73,9 @@ public class MenuService {
     private Product findProduct(Long productId) {
         return productRepository.findById(productId)
                                 .orElseThrow(EntityNotFoundException::new);
+    }
+
+    private List<Product> findProducts(List<Long> productIds) {
+        return productRepository.findAllById(productIds);
     }
 }

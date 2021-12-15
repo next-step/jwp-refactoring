@@ -5,6 +5,7 @@ import static java.util.stream.Collectors.*;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -19,6 +20,11 @@ public class StreamUtils {
         return collections.stream()
                           .map(mapFunction)
                           .collect(toList());
+    }
+
+    public static <T, R> Map<R, T> mapToIdentityMap(Collection<T> collections, Function<T, R> mapFunction) {
+        return collections.stream()
+                          .collect(toMap(mapFunction, Function.identity()));
     }
 
     public static <T> int mapToMaxInt(Collection<T> collections, ToIntFunction<T> mapFunction) {
