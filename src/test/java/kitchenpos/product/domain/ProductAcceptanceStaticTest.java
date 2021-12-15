@@ -1,8 +1,7 @@
-package kitchenpos.domain;
+package kitchenpos.product.domain;
 
 import static org.assertj.core.api.Assertions.*;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -12,6 +11,8 @@ import org.springframework.http.MediaType;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 
 public class ProductAcceptanceStaticTest {
 
@@ -21,9 +22,9 @@ public class ProductAcceptanceStaticTest {
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 
 		List<Long> responseIdList = response.body()
-			.jsonPath().getList(".", Product.class)
+			.jsonPath().getList(".", ProductResponse.class)
 			.stream()
-			.map(Product::getId)
+			.map(ProductResponse::getId)
 			.collect(Collectors.toList());
 
 		assertThat(responseIdList).containsAnyElementsOf(idList);
@@ -36,8 +37,8 @@ public class ProductAcceptanceStaticTest {
 			.extract();
 	}
 
-	public static Product 상품이_생성_되어있음(Product params) {
-		return 상품_생성_요청(params).as(Product.class);
+	public static ProductResponse 상품이_생성_되어있음(ProductRequest params) {
+		return 상품_생성_요청(params).as(ProductResponse.class);
 	}
 
 	public static void 상품_생성_실패됨(ExtractableResponse<Response> response) {
@@ -48,7 +49,7 @@ public class ProductAcceptanceStaticTest {
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
 	}
 
-	public static ExtractableResponse<Response> 상품_생성_요청(Product params) {
+	public static ExtractableResponse<Response> 상품_생성_요청(ProductRequest params) {
 		return RestAssured.given().log().all()
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
 			.body(params)
@@ -57,12 +58,7 @@ public class ProductAcceptanceStaticTest {
 			.extract();
 	}
 
-	public static Product 상품_요청값_생성(String name, Integer price) {
-		Product product = new Product();
-		product.setName(name);
-		if (price != null) {
-			product.setPrice(new BigDecimal(price));
-		}
-		return product;
+	public static ProductRequest 상품_요청값_생성(String name, Integer price) {
+		return ProductRequest.of(name, price);
 	}
 }
