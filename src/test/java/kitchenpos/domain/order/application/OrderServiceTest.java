@@ -52,6 +52,7 @@ class OrderServiceTest {
     private OrderRepository orderRepository;
     private OrderTableRepository orderTableRepository;
     private OrderService orderService;
+    private OrderValidator orderValidator;
     private Menu 저장된_메뉴;
     private OrderTable 저장된_주문_테이블;
 
@@ -60,7 +61,8 @@ class OrderServiceTest {
         menuRepository = new InMemoryMenuRepository();
         orderRepository = new InMemoryOrderRepository();
         orderTableRepository = new InMemoryOrderTableRepository();
-        orderService = new OrderService(menuRepository, orderRepository, orderTableRepository);
+        orderValidator = new OrderValidator(menuRepository, orderTableRepository);
+        orderService = new OrderService(orderRepository, orderValidator);
 
         저장된_메뉴 = menuRepository.save(메뉴);
         저장된_주문_테이블 = orderTableRepository.save(주문_테이블);

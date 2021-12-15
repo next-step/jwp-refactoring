@@ -43,8 +43,8 @@ public class Order {
     protected Order() {
     }
 
-    public static Order create(Long orderTableId, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
-        Order order = new Order(orderTableId, orderStatus, LocalDateTime.now());
+    public static Order create(Long orderTableId, List<OrderLineItem> orderLineItems) {
+        Order order = new Order(orderTableId, OrderStatus.COOKING, LocalDateTime.now());
         order.addOrderLineItems(orderLineItems);
         return order;
     }
@@ -54,7 +54,7 @@ public class Order {
         this.orderLineItems = orderLineItems;
     }
 
-    public void checkCompleteOrder() {
+    public void validateCompleteOrder() {
         if (isComplete()) {
             throw new IllegalArgumentException();
         }
@@ -65,6 +65,7 @@ public class Order {
     }
 
     public void changeOrderStatus(OrderStatus orderStatus) {
+        validateCompleteOrder();
         this.orderStatus = orderStatus;
     }
 
