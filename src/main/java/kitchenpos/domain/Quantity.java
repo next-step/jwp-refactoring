@@ -5,9 +5,10 @@ import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+import kitchenpos.exception.NegativeQuantityException;
+
 @Embeddable
 public class Quantity {
-    private static final String INVALID_QUANTITY = "Quantity 는 0 이상의 숫자로 생성할 수 있습니다.";
     private static final int MIN_QUANTITY = 0;
 
     @Column(name = "quantity", nullable = false)
@@ -30,7 +31,7 @@ public class Quantity {
 
     private static void validateQuantity(long quantity) {
         if (quantity < MIN_QUANTITY) {
-            throw new IllegalArgumentException(INVALID_QUANTITY);
+            throw new NegativeQuantityException();
         }
     }
 

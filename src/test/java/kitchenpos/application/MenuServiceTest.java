@@ -35,6 +35,7 @@ import kitchenpos.domain.product.ProductRepository;
 import kitchenpos.dto.menu.MenuProductRequest;
 import kitchenpos.dto.menu.MenuRequest;
 import kitchenpos.dto.menu.MenuResponse;
+import kitchenpos.exception.NegativePriceException;
 
 @ExtendWith(MockitoExtension.class)
 class MenuServiceTest {
@@ -127,7 +128,7 @@ class MenuServiceTest {
         given(menuGroupRepository.findById(anyLong())).willReturn(Optional.ofNullable(고기_메뉴그룹));
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menuRequest));
+        assertThrows(NegativePriceException.class, () -> menuService.create(menuRequest));
     }
 
     @DisplayName("Menu 는 자신이 속할 MenuGroup 이 존재하지 않으면 예외가 발생한다.")

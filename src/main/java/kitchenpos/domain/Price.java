@@ -6,9 +6,10 @@ import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+import kitchenpos.exception.NegativePriceException;
+
 @Embeddable
 public class Price {
-    private static final String INVALID_PRICE = "Price 는 0 이상의 값을 가집니다.";
     private static final Price MIN_PRICE = new Price(BigDecimal.ZERO);
 
     @Column(name = "price", nullable = false)
@@ -35,7 +36,7 @@ public class Price {
 
     private static void validatePrice(BigDecimal price) {
         if (Objects.isNull(price) || MIN_PRICE.isGreaterThan(price)) {
-            throw new IllegalArgumentException(INVALID_PRICE);
+            throw new NegativePriceException();
         }
     }
 

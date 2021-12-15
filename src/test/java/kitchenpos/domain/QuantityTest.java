@@ -8,6 +8,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import kitchenpos.exception.NegativeQuantityException;
+
 class QuantityTest {
 
     @DisplayName("Quantity 는 0 이상의 숫자로 생성한다.")
@@ -23,7 +25,6 @@ class QuantityTest {
     @ValueSource(ints = {-1, -2, -10, -100})
     void create2(int quantity) {
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> Quantity.from(quantity))
-                                            .withMessageContaining("Quantity 는 0 이상의 숫자로 생성할 수 있습니다.");
+        assertThrows(NegativeQuantityException.class, () -> Quantity.from(quantity));
     }
 }

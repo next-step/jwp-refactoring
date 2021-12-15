@@ -5,11 +5,11 @@ import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+import kitchenpos.exception.EmptyNameException;
 import kitchenpos.utils.StringUtils;
 
 @Embeddable
 public class Name {
-    private static final String EMPTY_NAME_ERROR_MESSAGE = "이름이 비어있습니다. name=%s";
 
     @Column(name = "name", nullable = false)
     private String name;
@@ -27,7 +27,7 @@ public class Name {
 
     private static void validateName(String name) {
         if (StringUtils.isEmpty(name)) {
-            throw new IllegalArgumentException(String.format(EMPTY_NAME_ERROR_MESSAGE, name));
+            throw new EmptyNameException(name);
         }
     }
 
