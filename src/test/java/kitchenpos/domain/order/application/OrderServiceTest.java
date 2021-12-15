@@ -57,7 +57,6 @@ class OrderServiceTest {
     private OrderTableRepository orderTableRepository;
     private OrderService orderService;
     private OrderValidator orderValidator;
-    private TableTranslator tableTranslator;
     private ApplicationEventPublisher eventPublisher;
     private Menu 저장된_메뉴;
     private OrderTable 저장된_주문_테이블;
@@ -67,9 +66,8 @@ class OrderServiceTest {
         menuRepository = new InMemoryMenuRepository();
         orderRepository = new InMemoryOrderRepository();
         orderTableRepository = new InMemoryOrderTableRepository();
-        tableTranslator = new OrderTableTranslator(orderTableRepository);
         eventPublisher = mock(ApplicationEventPublisher.class);
-        orderValidator = new OrderValidator(menuRepository, tableTranslator, eventPublisher);
+        orderValidator = new OrderValidator(menuRepository, eventPublisher);
         orderService = new OrderService(orderRepository, orderValidator);
         저장된_메뉴 = menuRepository.save(메뉴);
         저장된_주문_테이블 = orderTableRepository.save(주문_테이블);

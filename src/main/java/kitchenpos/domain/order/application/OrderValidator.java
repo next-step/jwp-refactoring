@@ -12,16 +12,13 @@ import java.util.List;
 public class OrderValidator {
 
     private final MenuRepository menuRepository;
-    private final TableTranslator tableTranslator;
     private final ApplicationEventPublisher eventPublisher;
 
     public OrderValidator(
             final MenuRepository menuRepository,
-            final TableTranslator tableTranslator,
             final ApplicationEventPublisher eventPublisher
     ) {
         this.menuRepository = menuRepository;
-        this.tableTranslator = tableTranslator;
         this.eventPublisher = eventPublisher;
     }
 
