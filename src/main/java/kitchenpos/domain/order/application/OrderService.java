@@ -3,7 +3,6 @@ package kitchenpos.domain.order.application;
 import kitchenpos.domain.menu.domain.MenuRepository;
 import kitchenpos.domain.order.domain.OrderRepository;
 import kitchenpos.domain.table.domain.OrderTableRepository;
-import kitchenpos.domain.menu.domain.Menu;
 import kitchenpos.domain.order.domain.Order;
 import kitchenpos.domain.order.domain.OrderLineItem;
 import kitchenpos.domain.order.domain.OrderStatus;
@@ -84,11 +83,7 @@ public class OrderService {
 
     private List<OrderLineItem> getOrderLineItems(List<OrderLineItemRequest> orderLineItemRequests) {
         return orderLineItemRequests.stream()
-                .map(orderLineItemRequest -> new OrderLineItem(getMenu(orderLineItemRequest.getMenuId()), orderLineItemRequest.getQuantity()))
+                .map(orderLineItemRequest -> new OrderLineItem(orderLineItemRequest.getMenuId(), orderLineItemRequest.getQuantity()))
                 .collect(Collectors.toList());
-    }
-
-    private Menu getMenu(Long menuId) {
-        return menuRepository.findById(menuId).orElseThrow(IllegalArgumentException::new);
     }
 }

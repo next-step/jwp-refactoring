@@ -75,7 +75,7 @@ class OrderServiceTest {
                 () -> assertThat(savedOrder.getOrderedTime()).isNotNull(),
                 () -> assertThat(savedOrder.getOrderLineItems().size()).isEqualTo(1),
                 () -> assertThat(savedOrder.getOrderLineItems().get(0).getOrder().getId()).isEqualTo(savedOrder.getId()),
-                () -> assertThat(savedOrder.getOrderLineItems().get(0).getMenu().getId()).isEqualTo(저장된_메뉴.getId()),
+                () -> assertThat(savedOrder.getOrderLineItems().get(0).getMenuId()).isEqualTo(저장된_메뉴.getId()),
                 () -> assertThat(savedOrder.getOrderLineItems().get(0).getQuantity()).isEqualTo(수량)
         );
     }
@@ -118,7 +118,7 @@ class OrderServiceTest {
                 () -> assertThat(orders.get(0).getOrderedTime()).isNotNull(),
                 () -> assertThat(orders.get(0).getOrderLineItems().size()).isEqualTo(1),
                 () -> assertThat(orders.get(0).getOrderLineItems().get(0).getOrder().getId()).isEqualTo(저장된_주문.getId()),
-                () -> assertThat(orders.get(0).getOrderLineItems().get(0).getMenu().getId()).isEqualTo(저장된_메뉴.getId()),
+                () -> assertThat(orders.get(0).getOrderLineItems().get(0).getMenuId()).isEqualTo(저장된_메뉴.getId()),
                 () -> assertThat(orders.get(0).getOrderLineItems().get(0).getQuantity()).isEqualTo(수량)
         );
     }

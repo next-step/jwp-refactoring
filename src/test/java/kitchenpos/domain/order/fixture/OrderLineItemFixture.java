@@ -7,7 +7,7 @@ import kitchenpos.domain.order.dto.OrderLineItemRequest;
 public class OrderLineItemFixture {
 
     public static OrderLineItem 주문_항목(Menu menu, int quantity) {
-        return new OrderLineItem(menu, quantity);
+        return new OrderLineItem(menu.getId(), quantity);
     }
 
     public static OrderLineItemRequest 주문_항목_요청(Long menuId, long quantity) {

@@ -33,7 +33,7 @@ public class OrderFixture {
 
     public static OrderRequest 주문_요청(Long orderTableId, List<OrderLineItem> orderLineItems) {
         return new OrderRequest(orderTableId, orderLineItems.stream()
-                .map(orderLineItem -> new OrderLineItemRequest(orderLineItem.getMenu().getId(), orderLineItem.getQuantity()))
+                .map(orderLineItem -> new OrderLineItemRequest(orderLineItem.getMenuId(), orderLineItem.getQuantity()))
                 .collect(Collectors.toList()));
     }
 
