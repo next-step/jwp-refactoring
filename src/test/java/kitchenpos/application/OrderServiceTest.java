@@ -165,6 +165,7 @@ class OrderServiceTest {
         OrderRequest orderRequest = OrderRequest.of(빈_개인테이블.getId(), OrderStatus.COOKING, orderLineItemRequests);
 
         given(orderTableRepository.findById(빈_개인테이블.getId())).willReturn(Optional.ofNullable(빈_개인테이블));
+        given(menuRepository.countByIdIn(anyList())).willReturn(1L);
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(orderRequest));

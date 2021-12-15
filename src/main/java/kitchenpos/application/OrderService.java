@@ -38,19 +38,13 @@ public class OrderService {
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
         OrderTable orderTable = findOrderTable(orderRequest.getOrderTableId());
-        validateCreateOrder(orderTable, orderRequest.getOrderLineItems());
+        validateExistMenus(orderRequest.getOrderLineItems());
 
         Order order = Order.from(orderTable);
         List<OrderLineItem> orderLineItems = createOrderLineItems(orderRequest);
         order.addOrderLineItems(orderLineItems);
 
         return OrderResponse.from(orderRepository.save(order));
-    }
-
-    private void validateCreateOrder(OrderTable orderTable, List<OrderLineItemRequest> orderLineItems) {
-        validateIsEmptyOrderTable(orderTable);
-        validateIsEmptyOrderLineItems(orderLineItems);
-        validateExistMenus(orderLineItems);
     }
 
     @Transactional(readOnly = true)
@@ -92,18 +86,6 @@ public class OrderService {
     private Menu findMenu(Long menuId) {
         return menuRepository.findById(menuId)
                              .orElseThrow(EntityNotFoundException::new);
-    }
-
-    private void validateIsEmptyOrderLineItems(List<OrderLineItemRequest> orderLineItems) {
-        if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalArgumentException();
-        }
-    }
-
-    private void validateIsEmptyOrderTable(OrderTable orderTable) {
-        if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
     }
 
     private void validateExistMenus(List<OrderLineItemRequest> orderLineItems) {

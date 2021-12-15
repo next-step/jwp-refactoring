@@ -16,7 +16,7 @@ class OrderTest {
 
     @BeforeEach
     void setUp() {
-        주문테이블 = OrderTableFixtureFactory.create(1L, true);
+        주문테이블 = OrderTableFixtureFactory.createWithGuests(1L, 1, false);
     }
 
     @DisplayName("Oders 는 OrderTable 로 생성된다.")

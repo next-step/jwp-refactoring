@@ -17,6 +17,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.springframework.util.CollectionUtils;
+
 import kitchenpos.domain.table.OrderTable;
 
 @Entity
@@ -24,6 +26,8 @@ import kitchenpos.domain.table.OrderTable;
 public class Order {
     private static final String CAN_NOT_CHANGE_ORDER_STATUS_MESSAGE = "완료된 Order 는 상태를 바꿀 수 없습니다.";
     private static final String NOT_EXIST_ORDER_TABLE = "OrderTable 이 존재하지 않습니다.";
+    private static final String EMPTY_ORDER_TABLE = "OrderTable 이 비어있습니다.";
+    private static final String EMPTY_ORDER_LINE_ITEMS = "OrderLineItems 가 비어있습니다.";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -65,7 +69,7 @@ public class Order {
     }
 
     public static Order from(OrderTable orderTable) {
-        validateExistOrderTable(orderTable);
+        validateOrderTable(orderTable);
         return new Order(orderTable, OrderStatus.COOKING, LocalDateTime.now());
     }
 
@@ -103,6 +107,8 @@ public class Order {
     }
 
     public void addOrderLineItems(final List<OrderLineItem> orderLineItems) {
+        validateIsEmptyOrderLineItems(orderLineItems);
+
         this.orderLineItems.addAll(orderLineItems);
         orderLineItems.forEach(orderLineItem -> orderLineItem.assignOrders(this));
     }
@@ -113,9 +119,19 @@ public class Order {
         }
     }
 
-    private static void validateExistOrderTable(OrderTable orderTable) {
+    private static void validateOrderTable(OrderTable orderTable) {
         if (Objects.isNull(orderTable)) {
             throw new IllegalArgumentException(NOT_EXIST_ORDER_TABLE);
+        }
+
+        if (orderTable.isEmpty()) {
+            throw new IllegalArgumentException(EMPTY_ORDER_TABLE);
+        }
+    }
+
+    private void validateIsEmptyOrderLineItems(List<OrderLineItem> orderLineItems) {
+        if (CollectionUtils.isEmpty(orderLineItems)) {
+            throw new IllegalArgumentException(EMPTY_ORDER_LINE_ITEMS);
         }
     }
 }
