@@ -16,7 +16,7 @@ public class OrderFixture {
 
 
     public static Order 주문(OrderTable orderTable, List<OrderLineItem> orderLineItems, OrderStatus orderStatus) {
-        return new Order(orderTable, orderStatus, orderLineItems);
+        return new Order(orderTable.getId(), orderStatus, orderLineItems);
     }
 
     public static Order 주문(OrderTable orderTable, OrderLineItem orderLineItem, OrderStatus orderStatus) {

@@ -10,14 +10,14 @@ public class InMemoryOrderRepository extends InMemoryRepository<Order> implement
     @Override
     public boolean existsByOrderTableIdInAndOrderStatusIn(List<Long> orderTableIds, List<OrderStatus> orderStatuses) {
         return db.values().stream()
-                .filter(order -> orderTableIds.contains(order.getOrderTable().getId()))
+                .filter(order -> orderTableIds.contains(order.getOrderTableId()))
                 .anyMatch(order -> orderStatuses.contains(order.getOrderStatus()));
     }
 
     @Override
     public Optional<Order> findByOrderTableId(Long orderTableId) {
         return db.values().stream()
-                .filter(order -> order.getOrderTable().getId() == orderTableId)
+                .filter(order -> order.getOrderTableId() == orderTableId)
                 .findFirst();
     }
 }

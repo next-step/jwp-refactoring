@@ -43,7 +43,7 @@ public class OrderService {
 
         orderTable.validateEmptyTable();
 
-        final Order order = Order.create(orderTable, OrderStatus.COOKING, orderLineItems);
+        final Order order = Order.create(request.getOrderTableId(), OrderStatus.COOKING, orderLineItems);
         return orderRepository.save(order);
     }
 

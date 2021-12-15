@@ -70,7 +70,7 @@ class OrderServiceTest {
     void create_주문을_등록할_수_있다() {
         Order savedOrder = orderService.create(주문_요청(저장된_주문_테이블, 주문_항목(저장된_메뉴, 수량)));
         assertAll(
-                () -> assertThat(savedOrder.getOrderTable().getId()).isEqualTo(저장된_주문_테이블.getId()),
+                () -> assertThat(savedOrder.getOrderTableId()).isEqualTo(저장된_주문_테이블.getId()),
                 () -> assertThat(savedOrder.getOrderStatus()).isEqualTo(OrderStatus.COOKING),
                 () -> assertThat(savedOrder.getOrderedTime()).isNotNull(),
                 () -> assertThat(savedOrder.getOrderLineItems().size()).isEqualTo(1),
@@ -114,7 +114,7 @@ class OrderServiceTest {
         assertAll(
                 () -> assertThat(orders.size()).isEqualTo(1),
                 () -> assertThat(orders.get(0).getOrderStatus()).isEqualTo(OrderStatus.COOKING),
-                () -> assertThat(orders.get(0).getOrderTable().getId()).isEqualTo(저장된_주문_테이블.getId()),
+                () -> assertThat(orders.get(0).getOrderTableId()).isEqualTo(저장된_주문_테이블.getId()),
                 () -> assertThat(orders.get(0).getOrderedTime()).isNotNull(),
                 () -> assertThat(orders.get(0).getOrderLineItems().size()).isEqualTo(1),
                 () -> assertThat(orders.get(0).getOrderLineItems().get(0).getOrder().getId()).isEqualTo(저장된_주문.getId()),

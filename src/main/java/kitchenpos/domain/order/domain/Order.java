@@ -1,7 +1,5 @@
 package kitchenpos.domain.order.domain;
 
-import kitchenpos.domain.table.domain.OrderTable;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -13,9 +11,7 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "order_table_id")
-    private OrderTable orderTable;
+    private Long orderTableId;
 
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
@@ -25,19 +21,19 @@ public class Order {
     @OneToMany(mappedBy = "order", cascade = CascadeType.PERSIST)
     private List<OrderLineItem> orderLineItems;
 
-    public Order(OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
-        this.orderTable = orderTable;
+    public Order(Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
+        this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
         this.orderLineItems = orderLineItems;
     }
 
-    public Order(OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime) {
-        this(orderTable, orderStatus, orderedTime, null);
+    public Order(Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime) {
+        this(orderTableId, orderStatus, orderedTime, null);
     }
 
-    public Order(OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
-        this(orderTable, orderStatus, null, orderLineItems);
+    public Order(Long orderTableId, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
+        this(orderTableId, orderStatus, null, orderLineItems);
     }
 
     public Order(OrderStatus orderStatus) {
@@ -47,8 +43,8 @@ public class Order {
     protected Order() {
     }
 
-    public static Order create(OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
-        Order order = new Order(orderTable, orderStatus, LocalDateTime.now());
+    public static Order create(Long orderTableId, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
+        Order order = new Order(orderTableId, orderStatus, LocalDateTime.now());
         order.addOrderLineItems(orderLineItems);
         return order;
     }
@@ -76,9 +72,7 @@ public class Order {
         return id;
     }
 
-    public OrderTable getOrderTable() {
-        return orderTable;
-    }
+    public Long getOrderTableId() {return orderTableId;}
 
     public OrderStatus getOrderStatus() {
         return orderStatus;
