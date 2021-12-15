@@ -17,7 +17,7 @@ public class InMemoryOrderTableRepository extends InMemoryRepository<OrderTable>
     @Override
     public List<OrderTable> findAllByTableGroupId(Long tableGroupId) {
         return db.values().stream()
-                .filter(orderTable -> orderTable.getTableGroup().getId() == tableGroupId)
+                .filter(orderTable -> orderTable.getTableGroupId() == tableGroupId)
                 .collect(Collectors.toList());
     }
 }

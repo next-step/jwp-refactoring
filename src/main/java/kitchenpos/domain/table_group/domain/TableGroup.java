@@ -18,10 +18,8 @@ public class TableGroup {
     @Embedded
     private OrderTables orderTables = new OrderTables();
 
-    public static TableGroup create(OrderTables orderTables) {
-        TableGroup tableGroup = new TableGroup(LocalDateTime.now());
-        tableGroup.addOrderTables(orderTables);
-        return tableGroup;
+    public static TableGroup create() {
+        return new TableGroup(LocalDateTime.now());
     }
 
     protected TableGroup() {
@@ -34,7 +32,7 @@ public class TableGroup {
     }
 
     public TableGroup(LocalDateTime createdDate) {
-        this.createdDate = createdDate;
+        this(null, createdDate, null);
     }
 
     public void addOrderTables(OrderTables orderTables) {

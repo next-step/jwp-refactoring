@@ -1,7 +1,5 @@
 package kitchenpos.domain.table.domain;
 
-import kitchenpos.domain.table_group.domain.TableGroup;
-
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -12,9 +10,7 @@ public class OrderTable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "table_group_id")
-    private TableGroup tableGroup;
+    private Long tableGroupId;
 
     @Embedded
     private NumberOfGuests numberOfGuests;
@@ -24,19 +20,19 @@ public class OrderTable {
     protected OrderTable() {
     }
 
-    public OrderTable(TableGroup tableGroup, int numberOfGuests, boolean empty) {
-        this.tableGroup = tableGroup;
+    public OrderTable(Long tableGroupId, int numberOfGuests, boolean empty) {
+        this.tableGroupId = tableGroupId;
         this.numberOfGuests = new NumberOfGuests(numberOfGuests);
         this.empty = empty;
     }
 
-    public void group(TableGroup tableGroup) {
-        this.tableGroup = tableGroup;
+    public void group(Long tableGroupId) {
+        this.tableGroupId = tableGroupId;
         this.empty = false;
     }
 
     public void ungroup() {
-        this.tableGroup = null;
+        this.tableGroupId = null;
     }
 
     public Long getId() {
@@ -48,7 +44,7 @@ public class OrderTable {
     }
 
     public void checkInTableGroup() {
-        if (Objects.nonNull(tableGroup)) {
+        if (Objects.nonNull(tableGroupId)) {
             throw new IllegalArgumentException();
         }
     }
@@ -58,7 +54,7 @@ public class OrderTable {
     }
 
     public void checkNonEmptyInGroup() {
-        if (!empty || Objects.nonNull(tableGroup)) {
+        if (!empty || Objects.nonNull(tableGroupId)) {
             throw new IllegalArgumentException();
         }
     }
@@ -77,7 +73,7 @@ public class OrderTable {
         return empty;
     }
 
-    public TableGroup getTableGroup() {
-        return tableGroup;
+    public Long getTableGroupId() {
+        return tableGroupId;
     }
 }

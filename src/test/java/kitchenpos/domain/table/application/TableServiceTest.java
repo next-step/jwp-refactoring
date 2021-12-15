@@ -61,7 +61,7 @@ class TableServiceTest {
     void create_주문_테이블을_등록할_수_있다() {
         OrderTable 저장된_주문_테이블 = tableService.create(빈_주문_테이블);
         assertAll(
-                () -> assertThat(저장된_주문_테이블.getTableGroup()).isNull(),
+                () -> assertThat(저장된_주문_테이블.getTableGroupId()).isNull(),
                 () -> assertThat(저장된_주문_테이블.getNumberOfGuests()).isEqualTo(손님_수),
                 () -> assertThat(저장된_주문_테이블.isEmpty()).isTrue()
         );
@@ -73,7 +73,7 @@ class TableServiceTest {
         List<OrderTable> orderTables = tableService.list();
         assertAll(
                 () -> assertThat(orderTables.size()).isEqualTo(1),
-                () -> assertThat(orderTables.get(0).getTableGroup()).isNull(),
+                () -> assertThat(orderTables.get(0).getTableGroupId()).isNull(),
                 () -> assertThat(orderTables.get(0).getNumberOfGuests()).isEqualTo(손님_수),
                 () -> assertThat(orderTables.get(0).isEmpty()).isTrue()
         );
@@ -98,7 +98,7 @@ class TableServiceTest {
     @ParameterizedTest
     @NullSource
     void changeEmpty_주문_테이블의_테이블_그룹_아이디가_올바르지_않으면_빈_테이블로_변경할_수_없다(Long 존재하는_테이블_그룹_아이디) {
-        OrderTable 저장된_주문_테이블 = orderTableRepository.save(주문_테이블(손님_수, new TableGroup(1L, LocalDateTime.now(), null), 빈_테이블));
+        OrderTable 저장된_주문_테이블 = orderTableRepository.save(주문_테이블(손님_수, 존재하는_테이블_그룹_아이디, 빈_테이블));
 
         assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> tableService.changeEmpty(저장된_주문_테이블.getId(), 빈_주문_테이블));

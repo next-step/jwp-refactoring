@@ -30,7 +30,7 @@ public class OrderTables {
 
     public void group(TableGroup tableGroup) {
         for (final OrderTable orderTable : orderTables) {
-            orderTable.group(tableGroup);
+            orderTable.group(tableGroup.getId());
         }
     }
 

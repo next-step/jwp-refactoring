@@ -63,7 +63,7 @@ class TableGroupServiceTest {
         assertAll(
                 () -> assertThat(저장된_단체_지정.getOrderTables().size()).isEqualTo(2),
                 () -> assertThat(저장된_단체_지정.getOrderTables().get(0).isEmpty()).isFalse(),
-                () -> assertThat(저장된_단체_지정.getOrderTables().get(0).getTableGroup()).isEqualTo(저장된_단체_지정),
+                () -> assertThat(저장된_단체_지정.getOrderTables().get(0).getTableGroupId()).isEqualTo(저장된_단체_지정.getId()),
                 () -> assertThat(저장된_단체_지정.getCreatedDate()).isNotNull()
         );
     }
@@ -88,7 +88,7 @@ class TableGroupServiceTest {
 
     @Test
     void create_단체_지정의_주문_테이블이_올바르지_않으면_단체_지정을_저장할_수_없다() {
-        OrderTable 빈_주문_테이블 = orderTableRepository.save(주문_테이블(0, new TableGroup(1L, null, null), true));
+        OrderTable 빈_주문_테이블 = orderTableRepository.save(주문_테이블(0, 1L, true));
         OrderTable 채워진_주문_테이블 = orderTableRepository.save(주문_테이블(2, null, false));
         TableGroupRequest tableGroup = 단체_지정_요청(Arrays.asList(빈_주문_테이블, 채워진_주문_테이블));
 
@@ -106,7 +106,7 @@ class TableGroupServiceTest {
         tableGroupService.ungroup(저장된_단체_지정.getId());
 
         저장된_단체_지정.getOrderTables()
-                .forEach(orderTable -> assertThat(orderTable.getTableGroup()).isNull());
+                .forEach(orderTable -> assertThat(orderTable.getTableGroupId()).isNull());
     }
 
     @ParameterizedTest

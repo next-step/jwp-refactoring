@@ -32,7 +32,9 @@ public class TableGroupService {
 
         tables.checkOrderTables(orderTableIds);
 
-        return tableGroupRepository.save(TableGroup.create(tables));
+        TableGroup tableGroup = tableGroupRepository.save(TableGroup.create());
+        tableGroup.addOrderTables(tables);
+        return tableGroup;
     }
 
     @Transactional

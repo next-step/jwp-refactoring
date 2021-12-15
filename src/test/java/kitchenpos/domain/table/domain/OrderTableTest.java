@@ -1,7 +1,5 @@
 package kitchenpos.domain.table.domain;
 
-import kitchenpos.domain.table.domain.OrderTable;
-import kitchenpos.domain.table_group.domain.TableGroup;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -18,7 +16,7 @@ class OrderTableTest {
 
     @Test
     void checkInTableGroup_테이블_그룹에_존재하면_에러를_발생한다() {
-        OrderTable orderTable = new OrderTable(new TableGroup(null), 10, false);
+        OrderTable orderTable = new OrderTable(1L, 10, false);
         assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> orderTable.checkInTableGroup());
     }
@@ -44,7 +42,7 @@ class OrderTableTest {
 
     @Test
     void checkNonEmptyInGroup_테이블_그룹에_속하지_않으면_에러를_발생한다() {
-        OrderTable orderTable = new OrderTable(new TableGroup(null), 10, false);
+        OrderTable orderTable = new OrderTable(1L, 10, false);
         assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> orderTable.checkNonEmptyInGroup());
     }
