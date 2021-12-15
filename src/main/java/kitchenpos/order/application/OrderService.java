@@ -8,6 +8,8 @@ import kitchenpos.order.domain.order.OrderRepository;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.sns.application.SnsEventHandler;
+import kitchenpos.sns.domain.KakaoSender;
 import kitchenpos.table.domain.table.OrderTable;
 import kitchenpos.table.domain.table.OrderTableRepository;
 import org.springframework.stereotype.Service;
@@ -24,13 +26,15 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final OrderLineItemRepository orderLineItemRepository;
     private final OrderTableRepository orderTableRepository;
+    private final SnsEventHandler snsEventHandler;
 
     public OrderService(MenuRepository menuRepository, OrderRepository orderRepository,
-                        OrderLineItemRepository orderLineItemRepository, OrderTableRepository orderTableRepository) {
+                        OrderLineItemRepository orderLineItemRepository, OrderTableRepository orderTableRepository, SnsEventHandler snsEventHandler) {
         this.menuRepository = menuRepository;
         this.orderRepository = orderRepository;
         this.orderLineItemRepository = orderLineItemRepository;
         this.orderTableRepository = orderTableRepository;
+        this.snsEventHandler = snsEventHandler;
     }
 
     public OrderResponse saveOrder(final OrderRequest orderRequest) {
@@ -38,11 +42,19 @@ public class OrderService {
         final OrderTable orderTable = orderTableRepository.findById(orderRequest.getOrderTableId())
                 .orElseThrow(() -> new IllegalArgumentException("주문 테이블이 없습니다."));
 
-        final Order saveOrder = new Order(orderTable);
+        final Order newOrder = new Order(orderTable);
+        setUpOrderLineItem(newOrder, orderRequest.getOrderLineItems());
 
-        setUpOrderLineItem(saveOrder, orderRequest.getOrderLineItems());
+        return OrderResponse.of(saveOrderAndSnsSend(newOrder));
+    }
 
-        return OrderResponse.of(orderRepository.save(saveOrder));
+    private Order saveOrderAndSnsSend(Order newOrder) {
+        Order savedOrder = orderRepository.save(newOrder);
+
+        String message = savedOrder.getOrderTable().getId() + "번 테이블 주문되었습니다.";
+
+        snsEventHandler.sns(KakaoSender.from(message));
+        return savedOrder;
     }
 
     private void setUpOrderLineItem(Order saveOrder, List<OrderLineItemRequest> orderLineItems) {

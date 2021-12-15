@@ -28,14 +28,13 @@ public class TableGroupService {
     public TableGroupResponse saveTableGroup(final TableGroupRequest tableGroupRequest) {
         final TableGroup saveTableGroup = new TableGroup();
 
-        final List<OrderTable> findOrderTables = orderTableRepository.findAllById(tableGroupRequest.getOrderTableIds());
+        final List<Long> orderTableIds = tableGroupRequest.getOrderTableIds();
 
-        if (tableGroupRequest.getOrderTableIds().size() != findOrderTables.size()) {
-            throw new IllegalArgumentException("존재하지 않는 주문 테이블이 있습니다.");
-        }
+        for (final Long orderTableId : orderTableIds) {
+            OrderTable findOrderTable = orderTableRepository.findById(orderTableId)
+                    .orElseThrow(() -> new IllegalArgumentException("주문 테이블이 존재하지 않습니다."));
 
-        for (final OrderTable savedOrderTable : findOrderTables) {
-            saveTableGroup.addOrderTable(savedOrderTable);
+            saveTableGroup.addOrderTable(findOrderTable);
         }
 
         return TableGroupResponse.of(tableGroupRepository.save(saveTableGroup));

@@ -8,6 +8,8 @@ import kitchenpos.order.domain.orderLineItem.OrderLineItemRepository;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.sns.application.SnsEventHandler;
+import kitchenpos.sns.application.SnsService;
 import kitchenpos.table.domain.table.OrderTableRepository;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.DisplayName;
@@ -33,13 +35,16 @@ class OrderMockitoTest {
     private OrderLineItemRepository orderLineItemRepository;
     private OrderTableRepository orderTableRepository;
     private OrderService orderService;
+    private SnsEventHandler snsEventHandler;
 
     private void setUpMock() {
         this.menuRepository = mock(MenuRepository.class);
         this.orderRepository = mock(OrderRepository.class);
         this.orderLineItemRepository = mock(OrderLineItemRepository.class);
         this.orderTableRepository = mock(OrderTableRepository.class);
-        this.orderService = new OrderService(menuRepository, orderRepository, orderLineItemRepository, orderTableRepository);
+        this.snsEventHandler = mock(SnsEventHandler.class);
+        this.orderService = new OrderService(menuRepository, orderRepository, orderLineItemRepository,
+                orderTableRepository, snsEventHandler);
     }
 
     @Test
