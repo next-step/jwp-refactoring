@@ -118,7 +118,7 @@ public class Menu {
     private void validateMenuPrice(List<MenuProduct> menuProducts) {
         BigDecimal sum = StreamUtils.sumToBigDecimal(menuProducts, MenuProduct::calculateTotalPrice);
 
-        if (price.compareTo(sum) > 0) {
+        if (price.isGreaterThan(sum)) {
             throw new IllegalArgumentException(INVALID_MENU_PRICE);
         }
     }

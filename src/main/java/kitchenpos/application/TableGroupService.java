@@ -34,7 +34,8 @@ public class TableGroupService {
 
     @Transactional
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
-        List<Long> orderTableIds = StreamUtils.mapToList(tableGroupRequest.getOrderTables(), OrderTableIdRequest::getId);
+        List<Long> orderTableIds = StreamUtils.mapToList(tableGroupRequest.getOrderTables(),
+                                                         OrderTableIdRequest::getId);
         List<OrderTable> orderTables = orderTableRepository.findAllByIdIn(orderTableIds);
         validateExistOrderTables(orderTableIds, orderTables);
 
@@ -52,11 +53,11 @@ public class TableGroupService {
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
-        final List<OrderTable> orderTables = orderTableRepository.findAllByTableGroup(tableGroupId);
+        List<OrderTable> orderTables = orderTableRepository.findAllByTableGroup(tableGroupId);
 
-        final List<Long> orderTableIds = orderTables.stream()
-                .map(OrderTable::getId)
-                .collect(Collectors.toList());
+        List<Long> orderTableIds = orderTables.stream()
+                                              .map(OrderTable::getId)
+                                              .collect(Collectors.toList());
 
         if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
             orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
