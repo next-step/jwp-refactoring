@@ -48,6 +48,10 @@ public class TableGroup {
         return new TableGroup(orderTables);
     }
 
+    public void ungroup() {
+        orderTables.ungroup();
+    }
+
     public void addOrderTables(final List<OrderTable> orderTables) {
         this.orderTables.addAll(orderTables);
         orderTables.forEach(orderTable -> orderTable.alignTableGroup(this));

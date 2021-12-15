@@ -52,6 +52,10 @@ public class OrderTables {
         }
     }
 
+    public void ungroup() {
+        orderTables.forEach(OrderTable::ungroup);
+    }
+
     public void addAll(List<OrderTable> orderTables) {
         this.orderTables.addAll(orderTables);
     }

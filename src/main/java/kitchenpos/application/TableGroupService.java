@@ -2,7 +2,8 @@ package kitchenpos.application;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
+
+import javax.persistence.EntityNotFoundException;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +17,7 @@ import kitchenpos.domain.tablegroup.TableGroupRepository;
 import kitchenpos.dto.tablegroup.OrderTableIdRequest;
 import kitchenpos.dto.tablegroup.TableGroupRequest;
 import kitchenpos.dto.tablegroup.TableGroupResponse;
+import kitchenpos.exception.NotCompletionOrderException;
 import kitchenpos.utils.StreamUtils;
 
 @Service
@@ -53,20 +55,21 @@ public class TableGroupService {
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
-        List<OrderTable> orderTables = orderTableRepository.findAllByTableGroup(tableGroupId);
+        TableGroup tableGroup = findTableGroup(tableGroupId);
+        List<Long> orderTableIds = StreamUtils.mapToList(tableGroup.getOrderTables().getValues(), OrderTable::getId);
+        validateNotCompletionOrder(orderTableIds);
 
-        List<Long> orderTableIds = orderTables.stream()
-                                              .map(OrderTable::getId)
-                                              .collect(Collectors.toList());
+        tableGroup.ungroup();
+    }
 
-        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
-            orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException();
-        }
+    private TableGroup findTableGroup(Long id) {
+        return tableGroupRepository.findById(id)
+                                   .orElseThrow(EntityNotFoundException::new);
+    }
 
-        for (final OrderTable orderTable : orderTables) {
-            orderTable.ungroup();
-            orderTableRepository.save(orderTable);
+    private void validateNotCompletionOrder(List<Long> orderTableIds) {
+        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
+            throw new NotCompletionOrderException();
         }
     }
 }

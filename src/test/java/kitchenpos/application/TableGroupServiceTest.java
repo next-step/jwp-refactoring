@@ -1,11 +1,13 @@
 package kitchenpos.application;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -25,6 +27,7 @@ import kitchenpos.domain.tablegroup.TableGroupRepository;
 import kitchenpos.dto.tablegroup.OrderTableIdRequest;
 import kitchenpos.dto.tablegroup.TableGroupRequest;
 import kitchenpos.dto.tablegroup.TableGroupResponse;
+import kitchenpos.exception.NotCompletionOrderException;
 
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
@@ -147,14 +150,13 @@ class TableGroupServiceTest {
         주문1_단체테이블.alignTableGroup(단체_테이블그룹);
         주문2_단체테이블.alignTableGroup(단체_테이블그룹);
 
+        given(tableGroupRepository.findById(anyLong())).willReturn(Optional.ofNullable(단체_테이블그룹));
         given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(false);
-        given(orderTableRepository.findAllByTableGroup(단체_테이블그룹.getId())).willReturn(Arrays.asList(주문1_단체테이블, 주문2_단체테이블));
 
         // when
         tableGroupService.ungroup(단체_테이블그룹.getId());
 
         // then
-        verify(orderTableRepository, times(2)).save(any(OrderTable.class));
         assertThat(주문1_단체테이블.getTableGroup()).isNull();
         assertThat(주문2_단체테이블.getTableGroup()).isNull();
     }
@@ -166,11 +168,10 @@ class TableGroupServiceTest {
         주문1_단체테이블.alignTableGroup(단체_테이블그룹);
         주문2_단체테이블.alignTableGroup(단체_테이블그룹);
 
+        given(tableGroupRepository.findById(anyLong())).willReturn(Optional.ofNullable(단체_테이블그룹));
         given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(true);
-        given(orderTableRepository.findAllByTableGroup(단체_테이블그룹.getId()))
-            .willReturn(Arrays.asList(주문1_단체테이블, 주문2_단체테이블));
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> tableGroupService.ungroup(단체_테이블그룹.getId()));
+        assertThrows(NotCompletionOrderException.class, () -> tableGroupService.ungroup(단체_테이블그룹.getId()));
     }
 }
