@@ -41,7 +41,7 @@ public class OrderService {
         final OrderTable orderTable = getOrderTable(request.getOrderTableId());
         final List<OrderLineItem> orderLineItems = getOrderLineItems(request.getOrderLineItems());
 
-        orderTable.checkEmpty();
+        orderTable.validateEmptyTable();
 
         final Order order = Order.create(orderTable, OrderStatus.COOKING, orderLineItems);
         return orderRepository.save(order);

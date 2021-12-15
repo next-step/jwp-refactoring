@@ -6,7 +6,6 @@ import kitchenpos.domain.order.domain.OrderStatus;
 import kitchenpos.domain.table.domain.InMemoryOrderTableRepository;
 import kitchenpos.domain.table.domain.OrderTable;
 import kitchenpos.domain.table.domain.OrderTableRepository;
-import kitchenpos.domain.table_group.domain.TableGroup;
 import kitchenpos.domain.table.dto.TableRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,7 +14,6 @@ import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -49,12 +47,14 @@ class TableServiceTest {
     private OrderRepository orderRepository;
     private OrderTableRepository orderTableRepository;
     private TableService tableService;
+    private OrderTableValidator orderTableValidator;
 
     @BeforeEach
     void setUp() {
         orderRepository = new InMemoryOrderRepository();
         orderTableRepository = new InMemoryOrderTableRepository();
-        tableService = new TableService(orderRepository, orderTableRepository);
+        orderTableValidator = new OrderTableValidator(orderRepository);
+        tableService = new TableService(orderTableRepository, orderTableValidator);
     }
 
     @Test

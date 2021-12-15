@@ -40,27 +40,29 @@ public class OrderTable {
     }
 
     public void changeEmpty(boolean empty) {
+        validateTableGroup();
         this.empty = empty;
     }
 
-    public void checkInTableGroup() {
+    public void validateTableGroup() {
         if (Objects.nonNull(tableGroupId)) {
             throw new IllegalArgumentException();
         }
     }
 
     public void changeNumberOfGuests(int numberOfGuests) {
+        validateEmptyTable();
         this.numberOfGuests = new NumberOfGuests(numberOfGuests);
     }
 
     public void checkNonEmptyInGroup() {
-        if (!empty || Objects.nonNull(tableGroupId)) {
+        if (!isEmpty() || hasTableGroup()) {
             throw new IllegalArgumentException();
         }
     }
 
-    public void checkEmpty() {
-        if (empty) {
+    public void validateEmptyTable() {
+        if (isEmpty()) {
             throw new IllegalArgumentException();
         }
     }
@@ -75,5 +77,9 @@ public class OrderTable {
 
     public Long getTableGroupId() {
         return tableGroupId;
+    }
+
+    public boolean hasTableGroup() {
+        return Objects.nonNull(tableGroupId);
     }
 }
