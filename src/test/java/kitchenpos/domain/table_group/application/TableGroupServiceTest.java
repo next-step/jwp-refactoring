@@ -44,13 +44,15 @@ class TableGroupServiceTest {
     private OrderTableRepository orderTableRepository;
     private TableGroupRepository tableGroupRepository;
     private TableGroupService tableGroupService;
+    private TableGroupValidator tableGroupValidator;
 
     @BeforeEach
     void setUp() {
         orderRepository = new InMemoryOrderRepository();
         orderTableRepository = new InMemoryOrderTableRepository();
         tableGroupRepository = new InMemoryTableGroupRepository();
-        tableGroupService = new TableGroupService(orderRepository, orderTableRepository, tableGroupRepository);
+        tableGroupValidator = new TableGroupValidator(orderRepository, orderTableRepository);
+        tableGroupService = new TableGroupService(tableGroupRepository, tableGroupValidator);
     }
 
     @Test
