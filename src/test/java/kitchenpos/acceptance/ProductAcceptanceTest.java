@@ -36,28 +36,35 @@ public class ProductAcceptanceTest extends AcceptanceTest {
     /**
      * 요청 관련
      */
-    private ExtractableResponse<Response> 모든_상품_조회_요청() {
+    private static ExtractableResponse<Response> 모든_상품_조회_요청() {
         return Http.get("/api/products");
     }
 
-    private ExtractableResponse<Response> 상품_생성_요청(Product product) {
+    private static ExtractableResponse<Response> 상품_생성_요청(Product product) {
         return Http.post("/api/products", product);
     }
 
     /**
      * 응답 관련
      */
-    private void 생성한_상품이_상품_목록에_포함됨(Product product, ExtractableResponse<Response> listResponse) {
+    private static void 생성한_상품이_상품_목록에_포함됨(Product product, ExtractableResponse<Response> listResponse) {
         List<Product> products = listResponse.jsonPath().getList(".", Product.class);
         assertThat(products).map(Product::getName)
                 .containsExactly(product.getName());
     }
 
-    private void 모든_상품_조회_응답(ExtractableResponse<Response> listResponse) {
+    private static void 모든_상품_조회_응답(ExtractableResponse<Response> listResponse) {
         assertThat(listResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    private void 상품_생성됨(ExtractableResponse<Response> createResponse) {
+    private static void 상품_생성됨(ExtractableResponse<Response> createResponse) {
         assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    }
+
+    /**
+     * 테스트 픽스처 관련
+     */
+    public static Product 상품_등록되어_있음(String name, long price) {
+        return 상품_생성_요청(new Product(name, price)).as(Product.class);
     }
 }
