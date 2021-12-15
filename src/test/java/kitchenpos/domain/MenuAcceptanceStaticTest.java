@@ -13,6 +13,7 @@ import org.springframework.http.MediaType;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import kitchenpos.product.dto.ProductResponse;
 
 public class MenuAcceptanceStaticTest {
 
@@ -70,7 +71,7 @@ public class MenuAcceptanceStaticTest {
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
 	}
 
-	public static List<MenuProduct> 메뉴_상품_생성되어_있음(Product product) {
+	public static List<MenuProduct> 메뉴_상품_생성되어_있음(ProductResponse product) {
 		MenuProduct menuProduct = new MenuProduct();
 		menuProduct.setProductId(product.getId());
 		menuProduct.setQuantity(2L);

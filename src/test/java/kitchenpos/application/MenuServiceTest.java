@@ -18,11 +18,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
-import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Product;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 
 @DisplayName("메뉴 : 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
@@ -38,7 +38,7 @@ public class MenuServiceTest {
 	MenuProductDao menuProductDao;
 
 	@Mock
-	ProductDao productDao;
+	ProductRepository productRepository;
 
 	@Mock
 	MenuProduct menuProduct;
@@ -68,7 +68,7 @@ public class MenuServiceTest {
 		given(menuGroup.getId()).willReturn(1L);
 		given(product.getPrice()).willReturn(BigDecimal.valueOf(16000));
 		given(menuGroupDao.existsById(menuGroup.getId())).willReturn(true);
-		given(productDao.findById(menuProduct.getProductId())).willReturn(Optional.of(product));
+		given(productRepository.findById(menuProduct.getProductId())).willReturn(Optional.of(product));
 		given(menuProductDao.save(menuProduct)).willReturn(menuProduct);
 
 		menu.setName("불닭메뉴");
@@ -151,7 +151,7 @@ public class MenuServiceTest {
 		given(menuGroup.getId()).willReturn(1L);
 		given(product.getPrice()).willReturn(BigDecimal.valueOf(16000));
 		given(menuGroupDao.existsById(menuGroup.getId())).willReturn(true);
-		given(productDao.findById(menuProduct.getProductId())).willReturn(Optional.of(product));
+		given(productRepository.findById(menuProduct.getProductId())).willReturn(Optional.of(product));
 
 		menu.setName("불닭메뉴");
 		menu.setMenuGroupId(menuGroup.getId());

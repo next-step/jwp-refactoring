@@ -3,8 +3,8 @@ package kitchenpos.domain;
 import static kitchenpos.domain.MenuAcceptanceStaticTest.*;
 import static kitchenpos.domain.MenuGroupAcceptanceStaticTest.*;
 import static kitchenpos.domain.OrderAcceptanceStaticTest.*;
-import static kitchenpos.domain.ProductAcceptanceStaticTest.*;
 import static kitchenpos.domain.TableAcceptanceStaticTest.*;
+import static kitchenpos.product.domain.ProductAcceptanceStaticTest.*;
 
 import java.util.Collections;
 import java.util.List;
@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
+import kitchenpos.product.dto.ProductResponse;
 
 @DisplayName("인수테스트 : 주문 관련")
 class OrderAcceptanceTest extends AcceptanceTest {
@@ -30,7 +31,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
 	@BeforeEach
 	void setup() {
 		MenuGroup 두마리_메뉴_그룹 = 메뉴_그룹_생성되어_있음(메뉴_그룹_생성_요청값_생성("두마리메뉴"));
-		Product 불닭 = 상품이_생성_되어있음(상품_요청값_생성("불닭", 16000));
+		ProductResponse 불닭 = 상품이_생성_되어있음(상품_요청값_생성("불닭", 16000));
 		List<MenuProduct> 불닭_두마리_메뉴_상품_리스트 = 메뉴_상품_생성되어_있음(불닭);
 		불닭_메뉴 = 메뉴가_생성_되어있음(메뉴_생성_요청값_생성("불닭 메뉴", 19000, 두마리_메뉴_그룹.getId(), 불닭_두마리_메뉴_상품_리스트));
 		없는_메뉴.setId(100L);
