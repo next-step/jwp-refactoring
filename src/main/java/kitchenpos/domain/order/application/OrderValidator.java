@@ -1,7 +1,8 @@
 package kitchenpos.domain.order.application;
 
 import kitchenpos.domain.menu.domain.MenuRepository;
-import kitchenpos.domain.order.domain.OrderTableVO;
+import kitchenpos.domain.order.domain.EmptyTableValidatedEvent;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
@@ -12,20 +13,20 @@ public class OrderValidator {
 
     private final MenuRepository menuRepository;
     private final TableTranslator tableTranslator;
+    private final ApplicationEventPublisher eventPublisher;
 
     public OrderValidator(
             final MenuRepository menuRepository,
-            final TableTranslator tableTranslator
+            final TableTranslator tableTranslator,
+            final ApplicationEventPublisher eventPublisher
     ) {
         this.menuRepository = menuRepository;
         this.tableTranslator = tableTranslator;
+        this.eventPublisher = eventPublisher;
     }
 
     public void validateEmptyTable(Long orderTableId) {
-        OrderTableVO orderTable = tableTranslator.getOrderTable(orderTableId);
-        if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
+        eventPublisher.publishEvent(new EmptyTableValidatedEvent(orderTableId));
     }
 
     public void validateMenus(List<Long> menuIds) {

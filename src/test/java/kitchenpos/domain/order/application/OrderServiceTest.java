@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -27,6 +28,9 @@ import static kitchenpos.domain.table.fixture.OrderTableFixture.주문_테이블
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 /**
  * - 주문을 등록할 수 있다
@@ -54,6 +58,7 @@ class OrderServiceTest {
     private OrderService orderService;
     private OrderValidator orderValidator;
     private TableTranslator tableTranslator;
+    private ApplicationEventPublisher eventPublisher;
     private Menu 저장된_메뉴;
     private OrderTable 저장된_주문_테이블;
 
@@ -63,9 +68,9 @@ class OrderServiceTest {
         orderRepository = new InMemoryOrderRepository();
         orderTableRepository = new InMemoryOrderTableRepository();
         tableTranslator = new OrderTableTranslator(orderTableRepository);
-        orderValidator = new OrderValidator(menuRepository, tableTranslator);
+        eventPublisher = mock(ApplicationEventPublisher.class);
+        orderValidator = new OrderValidator(menuRepository, tableTranslator, eventPublisher);
         orderService = new OrderService(orderRepository, orderValidator);
-
         저장된_메뉴 = menuRepository.save(메뉴);
         저장된_주문_테이블 = orderTableRepository.save(주문_테이블);
     }
@@ -73,6 +78,7 @@ class OrderServiceTest {
     @Test
     void create_주문을_등록할_수_있다() {
         Order savedOrder = orderService.create(주문_요청(저장된_주문_테이블, 주문_항목(저장된_메뉴, 수량)));
+        verify(eventPublisher).publishEvent(any(EmptyTableValidatedEvent.class));
         assertAll(
                 () -> assertThat(savedOrder.getOrderTableId()).isEqualTo(저장된_주문_테이블.getId()),
                 () -> assertThat(savedOrder.getOrderStatus()).isEqualTo(OrderStatus.COOKING),
@@ -95,20 +101,6 @@ class OrderServiceTest {
         List<OrderLineItem> 존재하는_메뉴_개수_이상의_주문_항목 = Arrays.asList(주문_항목(저장된_메뉴, 수량), 주문_항목(저장된_메뉴, 수량));
         assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> orderService.create(주문_요청(저장된_주문_테이블, 존재하는_메뉴_개수_이상의_주문_항목)));
-    }
-
-    @ParameterizedTest
-    @ValueSource(longs = {0L})
-    void create_주문_테이블이_존재하지_않으면_등록할_수_없다(Long 존재하지_않는_주문_테이블_아이디) {
-        assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> orderService.create(주문_요청(존재하지_않는_주문_테이블_아이디, 주문_항목(저장된_메뉴, 수량))));
-    }
-
-    @Test
-    void create_주문_테이블이_올바르지_않으면_주문을_등록할_수_없다() {
-        OrderTable 비어있는_주문_테이블 = orderTableRepository.save(주문_테이블(2, true));
-        assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> orderService.create(주문_요청(비어있는_주문_테이블, 주문_항목(저장된_메뉴, 수량))));
     }
 
     @Test
