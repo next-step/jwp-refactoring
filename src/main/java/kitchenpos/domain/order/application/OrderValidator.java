@@ -1,8 +1,7 @@
 package kitchenpos.domain.order.application;
 
 import kitchenpos.domain.menu.domain.MenuRepository;
-import kitchenpos.domain.table.domain.OrderTable;
-import kitchenpos.domain.table.domain.OrderTableRepository;
+import kitchenpos.domain.order.domain.OrderTableVO;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
@@ -12,19 +11,21 @@ import java.util.List;
 public class OrderValidator {
 
     private final MenuRepository menuRepository;
-    private final OrderTableRepository orderTableRepository;
+    private final TableTranslator tableTranslator;
 
     public OrderValidator(
             final MenuRepository menuRepository,
-            final OrderTableRepository orderTableRepository
+            final TableTranslator tableTranslator
     ) {
         this.menuRepository = menuRepository;
-        this.orderTableRepository = orderTableRepository;
+        this.tableTranslator = tableTranslator;
     }
 
     public void validateEmptyTable(Long orderTableId) {
-        OrderTable orderTable = getOrderTable(orderTableId);
-        orderTable.validateEmptyTable();
+        OrderTableVO orderTable = tableTranslator.getOrderTable(orderTableId);
+        if (orderTable.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
     }
 
     public void validateMenus(List<Long> menuIds) {
@@ -35,10 +36,5 @@ public class OrderValidator {
         if (menuIds.size() != menuRepository.countByIdIn(menuIds)) {
             throw new IllegalArgumentException();
         }
-    }
-
-    private OrderTable getOrderTable(Long orderTableId) {
-        return orderTableRepository.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
     }
 }
