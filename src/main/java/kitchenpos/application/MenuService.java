@@ -3,6 +3,8 @@ package kitchenpos.application;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.EntityNotFoundException;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -10,12 +12,12 @@ import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menu.MenuProduct;
 import kitchenpos.domain.menu.MenuRepository;
 import kitchenpos.domain.menugroup.MenuGroup;
-import kitchenpos.dto.menu.MenuProductRequest;
-import kitchenpos.dto.menu.MenuRequest;
-import kitchenpos.dto.menu.MenuResponse;
 import kitchenpos.domain.menugroup.MenuGroupRepository;
 import kitchenpos.domain.product.Product;
 import kitchenpos.domain.product.ProductRepository;
+import kitchenpos.dto.menu.MenuProductRequest;
+import kitchenpos.dto.menu.MenuRequest;
+import kitchenpos.dto.menu.MenuResponse;
 import kitchenpos.utils.StreamUtils;
 
 @Service
@@ -63,11 +65,11 @@ public class MenuService {
 
     private MenuGroup findMenuGroup(Long menuGroupId) {
         return menuGroupRepository.findById(menuGroupId)
-                                  .orElseThrow(IllegalArgumentException::new);
+                                  .orElseThrow(EntityNotFoundException::new);
     }
 
     private Product findProduct(Long productId) {
         return productRepository.findById(productId)
-                                .orElseThrow(IllegalArgumentException::new);
+                                .orElseThrow(EntityNotFoundException::new);
     }
 }

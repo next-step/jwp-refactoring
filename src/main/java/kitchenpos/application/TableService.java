@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+import javax.persistence.EntityNotFoundException;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -58,7 +60,7 @@ public class TableService {
 
     private OrderTable findOrderTable(Long orderTableId) {
         return orderTableRepository.findById(orderTableId)
-                                   .orElseThrow(IllegalArgumentException::new);
+                                   .orElseThrow(EntityNotFoundException::new);
     }
 
     private void validateChangeEmpty(Long orderTableId, OrderTable orderTable) {

@@ -1,12 +1,15 @@
 package kitchenpos.application;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+
+import javax.persistence.EntityNotFoundException;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -99,11 +102,12 @@ class MenuServiceTest {
         List<MenuProductRequest> menuProductRequests =
             Arrays.asList(MenuProductRequest.of(불고기_돼지고기.getProduct().getId(), 불고기_돼지고기.getQuantity().getValue()),
                           MenuProductRequest.of(불고기_공기밥.getProduct().getId(), 불고기_공기밥.getQuantity().getValue()));
-
         MenuRequest menuRequest = new MenuRequest("불고기",
                                                   null,
                                                   고기_메뉴그룹.getId(),
                                                   menuProductRequests);
+
+        given(menuGroupRepository.findById(anyLong())).willReturn(Optional.ofNullable(고기_메뉴그룹));
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menuRequest));
@@ -117,11 +121,11 @@ class MenuServiceTest {
         List<MenuProductRequest> menuProductRequests =
             Arrays.asList(MenuProductRequest.of(불고기_돼지고기.getProduct().getId(), 불고기_돼지고기.getQuantity().getValue()),
                           MenuProductRequest.of(불고기_공기밥.getProduct().getId(), 불고기_공기밥.getQuantity().getValue()));
-
         MenuRequest menuRequest = new MenuRequest("불고기",
                                                   BigDecimal.valueOf(wrongPrice),
                                                   고기_메뉴그룹.getId(),
                                                   menuProductRequests);
+        given(menuGroupRepository.findById(anyLong())).willReturn(Optional.ofNullable(고기_메뉴그룹));
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menuRequest));
@@ -134,14 +138,13 @@ class MenuServiceTest {
         List<MenuProductRequest> menuProductRequests =
             Arrays.asList(MenuProductRequest.of(불고기_돼지고기.getProduct().getId(), 불고기_돼지고기.getQuantity().getValue()),
                           MenuProductRequest.of(불고기_공기밥.getProduct().getId(), 불고기_공기밥.getQuantity().getValue()));
-
         MenuRequest menuRequest = new MenuRequest("불고기",
                                                   BigDecimal.valueOf(10_000),
                                                   고기_메뉴그룹.getId(),
                                                   menuProductRequests);
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menuRequest));
+        assertThrows(EntityNotFoundException.class, () -> menuService.create(menuRequest));
     }
 
     @DisplayName("Menu 는 메뉴를 구성하는 Product 가 존재하지 않으면 예외가 발생한다.")
@@ -151,14 +154,15 @@ class MenuServiceTest {
         List<MenuProductRequest> menuProductRequests =
             Arrays.asList(MenuProductRequest.of(불고기_돼지고기.getProduct().getId(), 불고기_돼지고기.getQuantity().getValue()),
                           MenuProductRequest.of(불고기_공기밥.getProduct().getId(), 불고기_공기밥.getQuantity().getValue()));
-
         MenuRequest menuRequest = new MenuRequest("불고기",
                                                   BigDecimal.valueOf(10_000),
                                                   고기_메뉴그룹.getId(),
                                                   menuProductRequests);
 
+        given(menuGroupRepository.findById(고기_메뉴그룹.getId())).willReturn(Optional.ofNullable(고기_메뉴그룹));
+
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menuRequest));
+        assertThrows(EntityNotFoundException.class, () -> menuService.create(menuRequest));
     }
 
     @DisplayName("Menu 의 총 가격이 메뉴를 구성하는 각 상품의 (가격 * 수량) 총합보다 크면 예외가 발생한다.")
@@ -168,11 +172,14 @@ class MenuServiceTest {
         List<MenuProductRequest> menuProductRequests =
             Arrays.asList(MenuProductRequest.of(불고기_돼지고기.getProduct().getId(), 불고기_돼지고기.getQuantity().getValue()),
                           MenuProductRequest.of(불고기_공기밥.getProduct().getId(), 불고기_공기밥.getQuantity().getValue()));
-
         MenuRequest menuRequest = new MenuRequest("불고기",
                                                   BigDecimal.valueOf(1000_000),
                                                   고기_메뉴그룹.getId(),
                                                   menuProductRequests);
+
+        given(menuGroupRepository.findById(고기_메뉴그룹.getId())).willReturn(Optional.ofNullable(고기_메뉴그룹));
+        given(productRepository.findById(돼지고기.getId())).willReturn(Optional.ofNullable(돼지고기));
+        given(productRepository.findById(공기밥.getId())).willReturn(Optional.ofNullable(공기밥));
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menuRequest));

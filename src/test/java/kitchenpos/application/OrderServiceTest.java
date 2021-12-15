@@ -1,12 +1,15 @@
 package kitchenpos.application;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+
+import javax.persistence.EntityNotFoundException;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -112,9 +115,9 @@ class OrderServiceTest {
     @Test
     void create2() {
         // given
-        OrderRequest orderRequest = OrderRequest.of(주문_개인테이블.getId(),
-                                                    OrderStatus.COOKING,
-                                                    Collections.emptyList());
+        OrderRequest orderRequest = OrderRequest.of(주문_개인테이블.getId(), OrderStatus.COOKING, Collections.emptyList());
+
+        given(orderTableRepository.findById(주문_개인테이블.getId())).willReturn(Optional.ofNullable(주문_개인테이블));
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(orderRequest));
@@ -130,8 +133,10 @@ class OrderServiceTest {
                                                     OrderStatus.COOKING,
                                                     orderLineItemRequests);
 
+        given(orderTableRepository.findById(주문_개인테이블.getId())).willReturn(Optional.ofNullable(주문_개인테이블));
+
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(orderRequest));
+        assertThrows(EntityNotFoundException.class, () -> orderService.create(orderRequest));
     }
 
     @DisplayName("Order 를 등록 시, 주문을 한 OrderTable 이 존재하지 않으면 예외가 발생한다.")
@@ -148,7 +153,7 @@ class OrderServiceTest {
         given(orderTableRepository.findById(주문_개인테이블.getId())).willReturn(Optional.empty());
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(orderRequest));
+        assertThrows(EntityNotFoundException.class, () -> orderService.create(orderRequest));
     }
 
     @DisplayName("Order 를 등록 시, OrderTable 이 빈(empty) 상태면 예외가 발생한다.")
@@ -157,9 +162,9 @@ class OrderServiceTest {
         // given
         List<OrderLineItemRequest> orderLineItemRequests =
             Arrays.asList(OrderLineItemRequest.of(불고기_주문항목.getMenu().getId(), 불고기_주문항목.getQuantity().getValue()));
-        OrderRequest orderRequest = OrderRequest.of(빈_개인테이블.getId(),
-                                                    OrderStatus.COOKING,
-                                                    orderLineItemRequests);
+        OrderRequest orderRequest = OrderRequest.of(빈_개인테이블.getId(), OrderStatus.COOKING, orderLineItemRequests);
+
+        given(orderTableRepository.findById(빈_개인테이블.getId())).willReturn(Optional.ofNullable(빈_개인테이블));
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(orderRequest));

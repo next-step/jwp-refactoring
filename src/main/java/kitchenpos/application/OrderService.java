@@ -3,6 +3,8 @@ package kitchenpos.application;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.EntityNotFoundException;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -12,11 +14,11 @@ import kitchenpos.domain.menu.MenuRepository;
 import kitchenpos.domain.order.Order;
 import kitchenpos.domain.order.OrderLineItem;
 import kitchenpos.domain.order.OrderRepository;
+import kitchenpos.domain.table.OrderTable;
+import kitchenpos.domain.table.OrderTableRepository;
 import kitchenpos.dto.order.OrderLineItemRequest;
 import kitchenpos.dto.order.OrderRequest;
 import kitchenpos.dto.order.OrderResponse;
-import kitchenpos.domain.table.OrderTable;
-import kitchenpos.domain.table.OrderTableRepository;
 import kitchenpos.utils.StreamUtils;
 
 @Service
@@ -79,17 +81,17 @@ public class OrderService {
 
     private Order findOrders(Long orderId) {
         return orderRepository.findById(orderId)
-                              .orElseThrow(IllegalArgumentException::new);
+                              .orElseThrow(EntityNotFoundException::new);
     }
 
     private OrderTable findOrderTable(Long orderTableId) {
         return orderTableRepository.findById(orderTableId)
-                                   .orElseThrow(IllegalArgumentException::new);
+                                   .orElseThrow(EntityNotFoundException::new);
     }
 
     private Menu findMenu(Long menuId) {
         return menuRepository.findById(menuId)
-                             .orElseThrow(IllegalArgumentException::new);
+                             .orElseThrow(EntityNotFoundException::new);
     }
 
     private void validateIsEmptyOrderLineItems(List<OrderLineItemRequest> orderLineItems) {
@@ -107,7 +109,7 @@ public class OrderService {
     private void validateExistMenus(List<OrderLineItemRequest> orderLineItems) {
         List<Long> menuIds = StreamUtils.mapToList(orderLineItems, OrderLineItemRequest::getMenuId);
         if (orderLineItems.size() != menuRepository.countByIdIn(menuIds)) {
-            throw new IllegalArgumentException();
+            throw new EntityNotFoundException();
         }
     }
 }
