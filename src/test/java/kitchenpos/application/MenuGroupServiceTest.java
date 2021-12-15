@@ -2,58 +2,54 @@ package kitchenpos.application;
 
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.MenuGroup;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Collections;
 import java.util.List;
 
+import static kitchenpos.domain.MenuGroupTest.와퍼_메뉴;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
 
-@DisplayName("메뉴 그룹 관리 테스트")
 @ExtendWith(MockitoExtension.class)
-class MenuGroupServiceTest {
-    public static final MenuGroup 패밀리_세트 = new MenuGroup("패밀리 세트");
-
-    private MenuGroupService menuGroupService;
+@DisplayName("메뉴 그룹 관리 테스트")
+public class MenuGroupServiceTest {
 
     @Mock
     private MenuGroupDao menuGroupDao;
 
-    @BeforeEach
-    void setUp() {
-        menuGroupService = new MenuGroupService(menuGroupDao);
-    }
+    @InjectMocks
+    private MenuGroupService menuGroupService;
 
-    @DisplayName("메뉴 그룹 생성")
     @Test
+    @DisplayName("메뉴 그룹 생성")
     void createTest() {
         // given
-        when(menuGroupService.create(패밀리_세트))
-                .thenReturn(패밀리_세트);
-
+        given(menuGroupDao.save(any())).willReturn(와퍼_메뉴);
         // when
-        MenuGroup actual = menuGroupService.create(패밀리_세트);
-
+        MenuGroup actual = menuGroupService.create(와퍼_메뉴);
         // then
-        assertThat(actual).isEqualTo(패밀리_세트);
+        assertThat(actual).isEqualTo(와퍼_메뉴);
     }
 
     @Test
-    void list() {
+    @DisplayName("메뉴 그룹 리스트 조회")
+    void listTest() {
         // given
-        when(menuGroupService.list()).thenReturn(Collections.singletonList(패밀리_세트));
-
+        given(menuGroupDao.findAll())
+                .willReturn(Collections.singletonList(와퍼_메뉴));
         // when
         List<MenuGroup> actual = menuGroupService.list();
-
         // then
         assertThat(actual).hasSize(1);
-        assertThat(actual).containsExactly(패밀리_세트);
+        assertThat(actual).containsExactly(와퍼_메뉴);
     }
+
 }
+
