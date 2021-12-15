@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class OrderService {
 
     private final OrderRepository orderRepository;
@@ -32,15 +32,16 @@ public class OrderService {
         this.tableRepository = tableRepository;
     }
 
+    @Transactional
     public OrderResponse create(OrderRequest request) {
         return OrderResponse.from(orderRepository.save(newOrder(request)));
     }
 
-    @Transactional(readOnly = true)
     public List<OrderResponse> list() {
         return OrderResponse.listFrom(orderRepository.findAll());
     }
 
+    @Transactional
     public OrderResponse changeOrderStatus(long id, OrderStatusRequest request) {
         Order order = order(id);
         order.changeStatus(request.status());

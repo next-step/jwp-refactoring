@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class TableGroupService {
 
     private final TableGroupRepository tableGroupRepository;
@@ -26,10 +26,12 @@ public class TableGroupService {
         this.tableRepository = tableRepository;
     }
 
+    @Transactional
     public TableGroupResponse create(TableGroupRequest request) {
         return TableGroupResponse.from(tableGroupRepository.save(newTableGroup(request)));
     }
 
+    @Transactional
     public void ungroup(long id) {
         tableGroup(id).ungroup();
     }
