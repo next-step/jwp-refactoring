@@ -14,8 +14,11 @@ import java.util.List;
 
 import static kitchenpos.domain.MenuGroupTest.와퍼_메뉴;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.only;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("메뉴 그룹 관리 테스트")
@@ -35,6 +38,7 @@ public class MenuGroupServiceTest {
         // when
         MenuGroup actual = menuGroupService.create(와퍼_메뉴);
         // then
+        verify(menuGroupDao, only()).save(any());
         assertThat(actual).isEqualTo(와퍼_메뉴);
     }
 
@@ -47,9 +51,10 @@ public class MenuGroupServiceTest {
         // when
         List<MenuGroup> actual = menuGroupService.list();
         // then
-        assertThat(actual).hasSize(1);
-        assertThat(actual).containsExactly(와퍼_메뉴);
+        assertAll(
+                () -> assertThat(actual).hasSize(1),
+                () -> assertThat(actual).containsExactly(와퍼_메뉴)
+        );
     }
-
 }
 

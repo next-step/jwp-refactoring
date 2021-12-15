@@ -5,6 +5,8 @@ import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
+import kitchenpos.domain.MenuProduct;
+import kitchenpos.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,11 +24,11 @@ import static kitchenpos.domain.ProductTest.콜라_상품;
 import static kitchenpos.domain.ProductTest.통새우와퍼_상품;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("메뉴 관리 테스트")
@@ -50,13 +52,19 @@ public class MenuServiceTest {
     void createTest() {
         // given
         given(menuGroupDao.existsById(anyLong())).willReturn(true);
-        given(productDao.findById(anyLong())).willReturn(Optional.of(통새우와퍼_상품), Optional.of(콜라_상품));
-        given(menuDao.save(any())).willReturn(통새우와퍼_세트);
+        Product product = mock(Product.class);
+        given(product.getPrice()).willReturn(BigDecimal.valueOf(5000));
+        MenuProduct menuProduct = mock(MenuProduct.class);
+        given(menuProduct.getQuantity()).willReturn(1L);
+        given(menu.getMenuProducts()).willReturn(Collections.singletonList(menuProduct));
+        given(menu.getPrice()).willReturn(BigDecimal.valueOf(4000));
+        given(productDao.findById(anyLong())).willReturn(Optional.of(product));
+        given(menuDao.save(any())).willReturn(menu);
         // when
-        Menu actual = menuService.create(통새우와퍼_세트);
+        Menu actual = menuService.create(menu);
         // then
-        assertThat(actual).isEqualTo(통새우와퍼_세트);
-        verify(menuProductDao, times(2)).save(any());
+        verify(menuProductDao, times(1)).save(any());
+        assertThat(actual).isEqualTo(menu);
     }
 
     @Test
@@ -115,7 +123,10 @@ public class MenuServiceTest {
         // when
         List<Menu> actual = menuService.list();
         // then
-        assertThat(actual).hasSize(1);
         verify(menuProductDao, times(1)).findAllByMenuId(any());
+        assertAll(
+                () -> assertThat(actual).hasSize(1),
+                () -> assertThat(actual).containsExactly(통새우와퍼_세트)
+        );
     }
 }
