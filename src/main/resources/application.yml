@@ -1,0 +1,8 @@
+spring:
+  profiles:
+    active: local
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true

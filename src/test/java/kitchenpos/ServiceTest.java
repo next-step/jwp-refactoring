@@ -1,29 +1,39 @@
 package kitchenpos;
 
-import kitchenpos.application.MenuGroupService;
-import kitchenpos.application.MenuService;
-import kitchenpos.application.OrderService;
-import kitchenpos.application.ProductService;
-import kitchenpos.application.TableGroupService;
-import kitchenpos.application.TableService;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
-import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.Product;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.menu.application.MenuService;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.menugroup.application.MenuGroupService;
+import kitchenpos.menugroup.dto.MenuGroupRequest;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
+import kitchenpos.order.application.OrderService;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.ordertable.application.OrderTableService;
+import kitchenpos.ordertable.dto.OrderTableRequest;
+import kitchenpos.ordertable.dto.OrderTableResponse;
+import kitchenpos.product.application.ProductService;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
+import kitchenpos.tablegroup.application.TableGroupService;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
+import kitchenpos.tablegroup.dto.TableGroupResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 
 @SpringBootTest
+@EnableJpaAuditing
+@ActiveProfiles("test")
 @Transactional
 public abstract class ServiceTest {
 
@@ -32,12 +42,12 @@ public abstract class ServiceTest {
 
     @Autowired
     protected MenuGroupService menuGroupService;
-    
+
     @Autowired
     protected MenuService menuService;
 
     @Autowired
-    protected TableService tableService;
+    protected OrderTableService orderTableService;
 
     @Autowired
     protected TableGroupService tableGroupService;
@@ -45,50 +55,54 @@ public abstract class ServiceTest {
     @Autowired
     protected OrderService orderService;
 
-    protected Product 상품_저장() {
-        return productService.create(new Product("매운양념치킨", 18_000));
+    protected ProductResponse 상품_저장() {
+        return productService.create(new ProductRequest("후라이드치킨", new BigDecimal(18_000)));
     }
 
-    protected MenuGroup 메뉴_그룹_저장() {
-        return menuGroupService.create(new MenuGroup("세마리메뉴"));
+    protected MenuGroupResponse 메뉴_그룹_저장() {
+        return menuGroupService.create(new MenuGroupRequest("한마리메뉴"));
     }
 
-    protected Menu 메뉴_저장() {
-        Product savedProduct = 상품_저장();
-        MenuGroup savedMenuGroup = 메뉴_그룹_저장();
-        MenuProduct menuProduct = new MenuProduct(savedProduct.getId(), 1);
-        Menu menu = new Menu(
-                savedProduct.getName(), savedProduct.getPrice(), savedMenuGroup.getId(), Collections.singletonList(menuProduct));
-        return menuService.create(menu);
+    protected MenuResponse 메뉴_저장() {
+        ProductResponse savedProductResponse = 상품_저장();
+        MenuGroupResponse savedMenuGroupResponse = 메뉴_그룹_저장();
+        MenuProductRequest menuProductRequest = new MenuProductRequest(savedProductResponse.getId(), 1);
+        MenuRequest menuRequest = new MenuRequest(
+                savedProductResponse.getName(), savedProductResponse.getPrice(), savedMenuGroupResponse.getId(),
+                Collections.singletonList(menuProductRequest));
+        return menuService.create(menuRequest);
     }
 
-    protected OrderTable 테이블_저장(boolean empty) {
-        return tableService.create(new OrderTable(2, empty));
+    protected OrderTableResponse 테이블_저장(boolean empty) {
+        return orderTableService.create(new OrderTableRequest(2, empty));
     }
 
-    protected TableGroup 테이블_그룹_저장() {
-        OrderTable orderTable1 = 테이블_저장(true);
-        OrderTable orderTable2 = 테이블_저장(true);
-        TableGroup tableGroup = new TableGroup(LocalDateTime.now(), Arrays.asList(orderTable1, orderTable2));
-        return tableGroupService.create(tableGroup);
+    protected TableGroupResponse 테이블_그룹_저장() {
+        OrderTableResponse savedOrderTableResponse1 = 테이블_저장(true);
+        OrderTableResponse savedOrderTableResponse2 = 테이블_저장(true);
+        TableGroupRequest tableGroupRequest = new TableGroupRequest(
+                Arrays.asList(savedOrderTableResponse1.getId(), savedOrderTableResponse2.getId()));
+        return tableGroupService.create(tableGroupRequest);
     }
 
-    protected Order 주문_저장() {
-        OrderTable orderTable = 테이블_저장(false);
-        Menu savedMenu = 메뉴_저장();
-        OrderLineItem orderLineItem = new OrderLineItem(savedMenu.getId(), 2);
-        Order order = new Order(
-                orderTable.getId(), OrderStatus.COOKING, LocalDateTime.now(), Collections.singletonList(orderLineItem));
-        return orderService.create(order);
+    protected OrderResponse 주문_저장() {
+        OrderTableResponse savedOrderTableResponse = 테이블_저장(false);
+        MenuResponse savedMenuResponse = 메뉴_저장();
+        OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(savedMenuResponse.getId(), 2);
+        OrderRequest orderRequest = new OrderRequest(
+                savedOrderTableResponse.getId(), OrderStatus.COOKING.name(), Collections.singletonList(orderLineItemRequest));
+        return orderService.create(orderRequest);
     }
 
     protected void 주문_상태를_COMPLETION_으로_상태_변경(Long orderId) {
-        Order order = new Order(OrderStatus.COMPLETION);
+        OrderRequest order = new OrderRequest(OrderStatus.COMPLETION.name());
         orderService.changeOrderStatus(orderId, order);
     }
 
-    protected OrderTable 테이블_조회(Long orderTableId) {
-        return tableService.list().stream()
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
+    protected OrderTableResponse 테이블_조회(Long orderTableId) {
+        return orderTableService.list()
+                .stream()
                 .filter(it -> it.getId().equals(orderTableId))
                 .findFirst()
                 .get();

@@ -1,0 +1,14 @@
+spring:
+  h2:
+    console:
+      enabled: true
+  jpa:
+    hibernate:
+      ddl-auto: create
+  flyway:
+    enabled: false
+
+logging:
+  level:
+    org.hibernate.type.descriptor.sql: TRACE
+
