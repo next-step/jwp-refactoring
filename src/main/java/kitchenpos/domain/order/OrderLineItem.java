@@ -20,7 +20,7 @@ import kitchenpos.domain.menu.Menu;
 @Table(name = "order_line_item")
 public class OrderLineItem {
     private static final String NOT_EXIST_MENU = "Menu 가 존재하지 않습니다.";
-    private static final String NOT_EXIST_ORDERS = "Orders 가 존재하지 않습니다.";
+    private static final String NOT_EXIST_ORDER = "Order 가 존재하지 않습니다.";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,7 +29,7 @@ public class OrderLineItem {
 
     @ManyToOne
     @JoinColumn(name = "order_id", foreignKey = @ForeignKey(name = "fk_order_line_item_orders"), nullable = false)
-    private Orders orders;
+    private Order order;
 
     @ManyToOne
     @JoinColumn(name = "menu_id", foreignKey = @ForeignKey(name = "fk_order_line_item_menu"), nullable = false)
@@ -40,10 +40,10 @@ public class OrderLineItem {
 
     protected OrderLineItem() {}
 
-    private OrderLineItem(Long seq, Orders orders, Menu menu, long quantity) {
+    private OrderLineItem(Long seq, Order order, Menu menu, long quantity) {
         this(menu, quantity);
         this.seq = seq;
-        this.orders = orders;
+        this.order = order;
     }
 
     private OrderLineItem(Menu menu, Long quantity) {
@@ -51,10 +51,10 @@ public class OrderLineItem {
         this.quantity = Quantity.from(quantity);
     }
 
-    public static OrderLineItem of(Long seq, Orders orders, Menu menu, long quantity) {
-        validateExistOrders(orders);
+    public static OrderLineItem of(Long seq, Order order, Menu menu, long quantity) {
+        validateExistOrders(order);
         validateExistMenu(menu);
-        return new OrderLineItem(seq, orders, menu, quantity);
+        return new OrderLineItem(seq, order, menu, quantity);
     }
 
     public static OrderLineItem of(Menu menu, Long quantity) {
@@ -62,16 +62,16 @@ public class OrderLineItem {
         return new OrderLineItem(menu, quantity);
     }
 
-    public void assignOrders(Orders orders) {
-        this.orders = orders;
+    public void assignOrders(Order order) {
+        this.order = order;
     }
 
     public Long getSeq() {
         return seq;
     }
 
-    public Orders getOrders() {
-        return orders;
+    public Order getOrders() {
+        return order;
     }
 
     public Menu getMenu() {
@@ -88,9 +88,9 @@ public class OrderLineItem {
         }
     }
 
-    private static void validateExistOrders(Orders orders) {
-        if (Objects.isNull(orders)) {
-            throw new IllegalArgumentException(NOT_EXIST_ORDERS);
+    private static void validateExistOrders(Order order) {
+        if (Objects.isNull(order)) {
+            throw new IllegalArgumentException(NOT_EXIST_ORDER);
         }
     }
 }

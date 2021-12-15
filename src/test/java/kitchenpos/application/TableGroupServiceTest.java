@@ -17,7 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.application.fixture.OrderTableFixtureFactory;
 import kitchenpos.application.fixture.TableGroupFixtureFactory;
-import kitchenpos.domain.order.OrdersRepository;
+import kitchenpos.domain.order.OrderRepository;
 import kitchenpos.domain.table.OrderTable;
 import kitchenpos.domain.table.OrderTableRepository;
 import kitchenpos.domain.tablegroup.TableGroup;
@@ -30,7 +30,7 @@ import kitchenpos.dto.tablegroup.TableGroupResponse;
 class TableGroupServiceTest {
 
     @Mock
-    private OrdersRepository ordersRepository;
+    private OrderRepository orderRepository;
 
     @Mock
     private OrderTableRepository orderTableRepository;
@@ -147,7 +147,7 @@ class TableGroupServiceTest {
         주문1_단체테이블.alignTableGroup(단체_테이블그룹);
         주문2_단체테이블.alignTableGroup(단체_테이블그룹);
 
-        given(ordersRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(false);
+        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(false);
         given(orderTableRepository.findAllByTableGroup(단체_테이블그룹.getId())).willReturn(Arrays.asList(주문1_단체테이블, 주문2_단체테이블));
 
         // when
@@ -166,7 +166,7 @@ class TableGroupServiceTest {
         주문1_단체테이블.alignTableGroup(단체_테이블그룹);
         주문2_단체테이블.alignTableGroup(단체_테이블그룹);
 
-        given(ordersRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(true);
+        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(true);
         given(orderTableRepository.findAllByTableGroup(단체_테이블그룹.getId()))
             .willReturn(Arrays.asList(주문1_단체테이블, 주문2_단체테이블));
 

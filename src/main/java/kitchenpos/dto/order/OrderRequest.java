@@ -5,25 +5,25 @@ import java.util.List;
 
 import kitchenpos.domain.order.OrderStatus;
 
-public class OrdersRequest {
+public class OrderRequest {
     private Long orderTableId;
     private OrderStatus orderStatus;
     private List<OrderLineItemRequest> orderLineItems = new ArrayList<>();
 
-    protected OrdersRequest() {}
+    protected OrderRequest() {}
 
-    public OrdersRequest(Long orderTableId, OrderStatus orderStatus, List<OrderLineItemRequest> orderLineItems) {
+    public OrderRequest(Long orderTableId, OrderStatus orderStatus, List<OrderLineItemRequest> orderLineItems) {
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
         this.orderLineItems = orderLineItems;
     }
 
-    public static OrdersRequest of(OrderStatus orderStatus, List<OrderLineItemRequest> orderLineItems) {
-        return new OrdersRequest(null, orderStatus, orderLineItems);
+    public static OrderRequest of(OrderStatus orderStatus, List<OrderLineItemRequest> orderLineItems) {
+        return new OrderRequest(null, orderStatus, orderLineItems);
     }
 
-    public static OrdersRequest of(Long orderTableId, OrderStatus orderStatus, List<OrderLineItemRequest> orderLineItems) {
-        return new OrdersRequest(orderTableId, orderStatus, orderLineItems);
+    public static OrderRequest of(Long orderTableId, OrderStatus orderStatus, List<OrderLineItemRequest> orderLineItems) {
+        return new OrderRequest(orderTableId, orderStatus, orderLineItems);
     }
 
     public Long getOrderTableId() {

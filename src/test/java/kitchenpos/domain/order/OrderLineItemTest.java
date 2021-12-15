@@ -31,7 +31,7 @@ class OrderLineItemTest {
     private MenuProduct 불고기_돼지고기;
     private MenuProduct 불고기_공기밥;
     private OrderTable 주문_개인테이블;
-    private Orders 불고기_주문;
+    private Order 불고기_주문;
 
     @BeforeEach
     void setUp() {
@@ -71,11 +71,11 @@ class OrderLineItemTest {
                                             .withMessageContaining("Menu 가 존재하지 않습니다.");
     }
 
-    @DisplayName("OrderLineItem 생성 시, Orders 가 존재하지 않으면 예외가 발생한다.")
+    @DisplayName("OrderLineItem 생성 시, Order 가 존재하지 않으면 예외가 발생한다.")
     @Test
     void creat3() {
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> OrderLineItem.of(1L, null, 불고기, 1L))
-                                            .withMessageContaining("Orders 가 존재하지 않습니다.");
+                                            .withMessageContaining("Order 가 존재하지 않습니다.");
     }
 }

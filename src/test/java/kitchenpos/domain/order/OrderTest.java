@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import kitchenpos.application.fixture.OrderTableFixtureFactory;
 import kitchenpos.domain.table.OrderTable;
 
-class OrdersTest {
+class OrderTest {
 
     private OrderTable 주문테이블;
 
@@ -23,39 +23,39 @@ class OrdersTest {
     @Test
     void create1() {
         // when & then
-        assertThatNoException().isThrownBy(() -> Orders.from(주문테이블));
+        assertThatNoException().isThrownBy(() -> Order.from(주문테이블));
     }
 
     @DisplayName("Oders 생성 시, 0OrderTable 이 존재하지 않으면 예외가 발생한다.")
     @Test
     void create2() {
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> Orders.from(null))
+        assertThatIllegalArgumentException().isThrownBy(() -> Order.from(null))
                                             .withMessageContaining("OrderTable 이 존재하지 않습니다.");
     }
 
-    @DisplayName("완료된 상태가 아니라면, Orders 의 상태를 바꿀 수 있다.")
+    @DisplayName("완료된 상태가 아니라면, Order 의 상태를 바꿀 수 있다.")
     @Test
     void changeOrderStatus1() {
         // given
-        Orders orders = Orders.from(주문테이블);
+        Order order = Order.from(주문테이블);
 
         // when
-        orders.changeOrderStatus(OrderStatus.MEAL);
+        order.changeOrderStatus(OrderStatus.MEAL);
 
         // then
-        assertTrue(orders.getOrderStatus().isMeal());
+        assertTrue(order.getOrderStatus().isMeal());
     }
 
-    @DisplayName("완료된 Orders 의 상태를 바꾸면 예외가 발생한다.")
+    @DisplayName("완료된 Order 의 상태를 바꾸면 예외가 발생한다.")
     @Test
     void changeOrderStatus2() {
         // given
-        Orders orders = Orders.from(주문테이블);
-        orders.changeOrderStatus(OrderStatus.COMPLETION);
+        Order order = Order.from(주문테이블);
+        order.changeOrderStatus(OrderStatus.COMPLETION);
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> orders.changeOrderStatus(OrderStatus.COOKING))
-                                            .withMessageContaining("완료된 Orders 는 상태를 바꿀 수 없습니다.");
+        assertThatIllegalArgumentException().isThrownBy(() -> order.changeOrderStatus(OrderStatus.COOKING))
+                                            .withMessageContaining("완료된 Order 는 상태를 바꿀 수 없습니다.");
     }
 }

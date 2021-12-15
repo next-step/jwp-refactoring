@@ -21,8 +21,8 @@ import kitchenpos.domain.table.OrderTable;
 
 @Entity
 @Table(name = "orders")
-public class Orders {
-    private static final String CAN_NOT_CHANGE_ORDER_STATUS_MESSAGE = "완료된 Orders 는 상태를 바꿀 수 없습니다.";
+public class Order {
+    private static final String CAN_NOT_CHANGE_ORDER_STATUS_MESSAGE = "완료된 Order 는 상태를 바꿀 수 없습니다.";
     private static final String NOT_EXIST_ORDER_TABLE = "OrderTable 이 존재하지 않습니다.";
 
     @Id
@@ -43,34 +43,34 @@ public class Orders {
     @Embedded
     private OrderLineItems orderLineItems = OrderLineItems.createEmpty();
 
-    protected Orders() {}
+    protected Order() {}
 
-    public Orders(long id) {
+    public Order(long id) {
         this.id = id;
     }
 
-    private Orders(Long id, OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime) {
+    private Order(Long id, OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime) {
         this(orderTable, orderStatus, orderedTime);
         this.id = id;
     }
 
-    private Orders(OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime) {
+    private Order(OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime) {
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
     }
 
-    public static Orders from(long id) {
-        return new Orders(id);
+    public static Order from(long id) {
+        return new Order(id);
     }
 
-    public static Orders from(OrderTable orderTable) {
+    public static Order from(OrderTable orderTable) {
         validateExistOrderTable(orderTable);
-        return new Orders(orderTable, OrderStatus.COOKING, LocalDateTime.now());
+        return new Order(orderTable, OrderStatus.COOKING, LocalDateTime.now());
     }
 
-    public static Orders of(Long id, OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime) {
-        return new Orders(id, orderTable, orderStatus, orderedTime);
+    public static Order of(Long id, OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime) {
+        return new Order(id, orderTable, orderStatus, orderedTime);
     }
 
     public boolean isCompletion() {
