@@ -1,10 +1,10 @@
 package kitchenpos.order.application;
 
-import static kitchenpos.product.sample.MenuSample.이십원_후라이드치킨_두마리세트;
 import static kitchenpos.order.sample.OrderSample.완료된_후라이트치킨세트_두개_주문;
 import static kitchenpos.order.sample.OrderSample.조리중인_후라이트치킨세트_두개_주문;
-import static kitchenpos.order.sample.OrderTableSample.빈_세명_테이블;
-import static kitchenpos.order.sample.OrderTableSample.채워진_다섯명_테이블;
+import static kitchenpos.product.sample.MenuSample.이십원_후라이드치킨_두마리세트;
+import static kitchenpos.table.sample.OrderTableSample.빈_세명_테이블;
+import static kitchenpos.table.sample.OrderTableSample.채워진_다섯명_테이블;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -20,8 +20,6 @@ import java.util.Optional;
 import kitchenpos.common.domain.Quantity;
 import kitchenpos.common.exception.InvalidStatusException;
 import kitchenpos.common.exception.NotFoundException;
-import kitchenpos.product.application.MenuService;
-import kitchenpos.product.domain.Menu;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
@@ -30,7 +28,10 @@ import kitchenpos.order.ui.request.OrderLineItemRequest;
 import kitchenpos.order.ui.request.OrderRequest;
 import kitchenpos.order.ui.request.OrderStatusRequest;
 import kitchenpos.order.ui.response.OrderResponse;
-import kitchenpos.order.domain.OrderTable;
+import kitchenpos.product.domain.Menu;
+import kitchenpos.product.domain.MenuRepository;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -45,9 +46,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class OrderServiceTest {
 
     @Mock
-    private MenuService menuService;
+    private MenuRepository menuRepository;
     @Mock
-    private TableService tableService;
+    private OrderTableRepository tableRepository;
     @Mock
     private OrderRepository orderRepository;
 
@@ -66,10 +67,10 @@ class OrderServiceTest {
         OrderRequest orderRequest = new OrderRequest(orderTableId, orderLineItems);
 
         Menu 이십원_후라이드치킨_두마리세트 = 이십원_후라이드치킨_두마리세트();
-        when(menuService.findById(anyLong())).thenReturn(이십원_후라이드치킨_두마리세트);
+        when(menuRepository.menu(anyLong())).thenReturn(이십원_후라이드치킨_두마리세트);
 
         OrderTable 채워진_다섯명_테이블 = 채워진_다섯명_테이블();
-        when(tableService.findById(orderTableId)).thenReturn(채워진_다섯명_테이블);
+        when(tableRepository.table(orderTableId)).thenReturn(채워진_다섯명_테이블);
 
         Order order = 조리중인_후라이트치킨세트_두개_주문();
         when(orderRepository.save(any())).thenReturn(order);
@@ -88,7 +89,7 @@ class OrderServiceTest {
         long orderTableId = 1L;
         OrderRequest orderRequest = new OrderRequest(orderTableId,
             Collections.singletonList(new OrderLineItemRequest(1L, 2)));
-        when(tableService.findById(orderTableId)).thenThrow(new NotFoundException("no table"));
+        when(tableRepository.table(orderTableId)).thenThrow(new NotFoundException("no table"));
 
         //when
         ThrowingCallable createCallable = () -> orderService.create(orderRequest);
@@ -107,8 +108,8 @@ class OrderServiceTest {
             Collections.singletonList(new OrderLineItemRequest(1L, 2)));
 
         OrderTable 채워진_다섯명_테이블 = 채워진_다섯명_테이블();
-        when(tableService.findById(orderTableId)).thenReturn(채워진_다섯명_테이블);
-        when(menuService.findById(anyLong())).thenThrow(new NotFoundException("no menu"));
+        when(tableRepository.table(orderTableId)).thenReturn(채워진_다섯명_테이블);
+        when(menuRepository.menu(anyLong())).thenThrow(new NotFoundException("no menu"));
 
         //when
         ThrowingCallable createCallable = () -> orderService.create(orderRequest);
@@ -126,7 +127,7 @@ class OrderServiceTest {
         OrderRequest orderRequest = new OrderRequest(orderTableId, Collections.emptyList());
 
         OrderTable 채워진_다섯명_테이블 = 채워진_다섯명_테이블();
-        when(tableService.findById(orderTableId)).thenReturn(채워진_다섯명_테이블);
+        when(tableRepository.table(orderTableId)).thenReturn(채워진_다섯명_테이블);
 
         //when
         ThrowingCallable createCallable = () -> orderService.create(orderRequest);
@@ -144,10 +145,10 @@ class OrderServiceTest {
             Collections.singletonList(new OrderLineItemRequest(1L, 2)));
 
         Menu 이십원_후라이드치킨_두마리세트 = 이십원_후라이드치킨_두마리세트();
-        when(menuService.findById(anyLong())).thenReturn(이십원_후라이드치킨_두마리세트);
+        when(menuRepository.menu(anyLong())).thenReturn(이십원_후라이드치킨_두마리세트);
 
         OrderTable 빈_세명_테이블 = 빈_세명_테이블();
-        when(tableService.findById(anyLong())).thenReturn(빈_세명_테이블);
+        when(tableRepository.table(anyLong())).thenReturn(빈_세명_테이블);
 
         //when
         ThrowingCallable createCallable = () -> orderService.create(orderRequest);

@@ -2,9 +2,9 @@ package kitchenpos.order.ui.request;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import kitchenpos.order.domain.Headcount;
-import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.domain.TableStatus;
+import kitchenpos.table.domain.Headcount;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.TableStatus;
 
 public final class OrderTableRequest {
 

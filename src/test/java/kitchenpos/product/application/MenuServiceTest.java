@@ -1,28 +1,28 @@
 package kitchenpos.product.application;
 
 import static kitchenpos.product.sample.MenuGroupSample.두마리메뉴;
+import static kitchenpos.product.sample.MenuSample.이십원_후라이드치킨_두마리세트;
 import static kitchenpos.product.sample.ProductSample.십원치킨;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.only;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import java.util.Collections;
-import kitchenpos.common.domain.Name;
-import kitchenpos.common.domain.Price;
 import kitchenpos.common.domain.Quantity;
 import kitchenpos.product.domain.Menu;
 import kitchenpos.product.domain.MenuGroup;
+import kitchenpos.product.domain.MenuGroupRepository;
 import kitchenpos.product.domain.MenuProduct;
 import kitchenpos.product.domain.MenuRepository;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.ui.request.MenuProductRequest;
 import kitchenpos.product.ui.request.MenuRequest;
-import kitchenpos.product.domain.Product;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -39,36 +39,30 @@ class MenuServiceTest {
     @Mock
     private MenuRepository menuRepository;
     @Mock
-    private MenuGroupService menuGroupService;
+    private MenuGroupRepository menuGroupRepository;
     @Mock
-    private ProductService productService;
+    private ProductRepository productRepository;
 
     @InjectMocks
     private MenuService menuService;
-
-    public static MenuProduct 십원치킨두마리() {
-        MenuProduct menuProduct = spy(MenuProduct.of(십원치킨(), Quantity.from(2L)));
-        when(menuProduct.seq()).thenReturn(1L);
-        return menuProduct;
-    }
 
     @Test
     @DisplayName("메뉴를 등록할 수 있다.")
     void create() {
         //given
         MenuProductRequest menuProductRequest = new MenuProductRequest(1L, 1);
-        MenuRequest menuRequest = new MenuRequest("후라이드치킨세트", BigDecimal.ONE, 1L,
+        MenuRequest menuRequest = new MenuRequest("이십원_후라이드치킨_두마리세트", BigDecimal.ONE, 1L,
             Collections.singletonList(menuProductRequest));
 
         MenuGroup 두마리메뉴 = 두마리메뉴();
-        when(menuGroupService.findById(menuRequest.getMenuGroupId())).thenReturn(두마리메뉴);
+        when(menuGroupRepository.menuGroup(menuRequest.getMenuGroupId())).thenReturn(두마리메뉴);
 
         Product 십원치킨 = 십원치킨();
-        when(productService.findById(menuProductRequest.getProductId()))
+        when(productRepository.product(menuProductRequest.getProductId()))
             .thenReturn(십원치킨);
 
-        Menu 후라이드치킨세트 = 후라이드치킨세트();
-        when(menuRepository.save(any())).thenReturn(후라이드치킨세트);
+        Menu 이십원_후라이드치킨_두마리세트 = 이십원_후라이드치킨_두마리세트();
+        when(menuRepository.save(any())).thenReturn(이십원_후라이드치킨_두마리세트);
 
         //when
         menuService.create(menuRequest);
@@ -82,7 +76,7 @@ class MenuServiceTest {
     void create_nullPrice_thrownException() {
         //given
         MenuProductRequest menuProductRequest = new MenuProductRequest(1L, 1);
-        MenuRequest menuRequest = new MenuRequest("후라이드치킨세트", null, 1L,
+        MenuRequest menuRequest = new MenuRequest("이십원_후라이드치킨_두마리세트", null, 1L,
             Collections.singletonList(menuProductRequest));
 
         //when
@@ -98,7 +92,7 @@ class MenuServiceTest {
     void create_priceLessThanZero_thrownException() {
         //given
         MenuProductRequest menuProductRequest = new MenuProductRequest(1L, 1);
-        MenuRequest menuRequest = new MenuRequest("후라이드치킨세트", BigDecimal.valueOf(-1), 1L,
+        MenuRequest menuRequest = new MenuRequest("이십원_후라이드치킨_두마리세트", BigDecimal.valueOf(-1), 1L,
             Collections.singletonList(menuProductRequest));
 
         //when
@@ -115,16 +109,16 @@ class MenuServiceTest {
         //given
         MenuProductRequest menuProductRequest = new MenuProductRequest(1L, 1);
         MenuRequest menuRequest = new MenuRequest(
-            "후라이드치킨세트",
+            "이십원_후라이드치킨_두마리세트",
             BigDecimal.valueOf(20),
             1L,
             Collections.singletonList(menuProductRequest));
 
         MenuGroup 두마리메뉴 = 두마리메뉴();
-        when(menuGroupService.findById(menuRequest.getMenuGroupId())).thenReturn(두마리메뉴);
+        when(menuGroupRepository.menuGroup(menuRequest.getMenuGroupId())).thenReturn(두마리메뉴);
 
         Product 십원치킨 = 십원치킨();
-        when(productService.findById(menuProductRequest.getProductId()))
+        when(productRepository.product(menuProductRequest.getProductId()))
             .thenReturn(십원치킨);
 
         //when
@@ -139,8 +133,8 @@ class MenuServiceTest {
     @DisplayName("메뉴들을 조회할 수 있다.")
     void list() {
         //given
-        Menu 후라이드치킨세트 = 후라이드치킨세트();
-        when(menuRepository.findAll()).thenReturn(Collections.singletonList(후라이드치킨세트));
+        Menu 이십원_후라이드치킨_두마리세트 = 이십원_후라이드치킨_두마리세트();
+        when(menuRepository.findAll()).thenReturn(Collections.singletonList(이십원_후라이드치킨_두마리세트));
 
         //when
         menuService.list();
@@ -167,16 +161,5 @@ class MenuServiceTest {
                         .toArray(Quantity[]::new)
                 )
         );
-    }
-
-    private Menu 후라이드치킨세트() {
-        Menu menu = spy(Menu.of(
-            Name.from("후라이드치킨세트"),
-            Price.from(BigDecimal.TEN),
-            두마리메뉴(),
-            Collections.singletonList(십원치킨두마리())
-        ));
-        when(menu.id()).thenReturn(1L);
-        return menu;
     }
 }

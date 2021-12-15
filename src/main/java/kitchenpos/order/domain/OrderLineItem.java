@@ -23,9 +23,8 @@ public class OrderLineItem {
     @Embedded
     private Quantity quantity;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "menu_id", foreignKey = @ForeignKey(name = "fk_order_line_item_menu"))
-    private Menu menu;
+    @Embedded
+    private OrderLineItemMenu menu;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "order_id", nullable = false, updatable = false,
@@ -35,14 +34,14 @@ public class OrderLineItem {
     protected OrderLineItem() {
     }
 
-    private OrderLineItem(Quantity quantity, Menu menu) {
+    private OrderLineItem(Quantity quantity, OrderLineItemMenu menu) {
         Assert.notNull(quantity, "수량은 필수입니다.");
         Assert.notNull(menu, "메뉴는 필수입니다.");
         this.quantity = quantity;
         this.menu = menu;
     }
 
-    public static OrderLineItem of(Quantity quantity, Menu menu) {
+    public static OrderLineItem of(Quantity quantity, OrderLineItemMenu menu) {
         return new OrderLineItem(quantity, menu);
     }
 
@@ -50,7 +49,7 @@ public class OrderLineItem {
         return seq;
     }
 
-    public Menu menu() {
+    public OrderLineItemMenu menu() {
         return menu;
     }
 

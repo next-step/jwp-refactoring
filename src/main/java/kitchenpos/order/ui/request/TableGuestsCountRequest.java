@@ -2,7 +2,7 @@ package kitchenpos.order.ui.request;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import kitchenpos.order.domain.Headcount;
+import kitchenpos.table.domain.Headcount;
 
 public final class TableGuestsCountRequest {
 

@@ -2,15 +2,14 @@ package kitchenpos.product.application;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.common.exception.NotFoundException;
 import kitchenpos.product.domain.Menu;
-import kitchenpos.product.domain.MenuGroup;
+import kitchenpos.product.domain.MenuGroupRepository;
 import kitchenpos.product.domain.MenuProduct;
 import kitchenpos.product.domain.MenuRepository;
+import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.ui.request.MenuProductRequest;
 import kitchenpos.product.ui.request.MenuRequest;
 import kitchenpos.product.ui.response.MenuResponse;
-import kitchenpos.product.domain.Product;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,15 +17,15 @@ import org.springframework.transaction.annotation.Transactional;
 public class MenuService {
 
     private final MenuRepository menuRepository;
-    private final MenuGroupService menuGroupService;
-    private final ProductService productService;
+    private final MenuGroupRepository menuGroupRepository;
+    private final ProductRepository productRepository;
 
     public MenuService(MenuRepository menuRepository,
-        MenuGroupService menuGroupService,
-        ProductService productService) {
+        MenuGroupRepository menuGroupRepository,
+        ProductRepository productRepository) {
         this.menuRepository = menuRepository;
-        this.menuGroupService = menuGroupService;
-        this.productService = productService;
+        this.menuGroupRepository = menuGroupRepository;
+        this.productRepository = productRepository;
     }
 
     @Transactional
@@ -38,17 +37,11 @@ public class MenuService {
         return MenuResponse.listFrom(menuRepository.findAll());
     }
 
-    public Menu findById(long id) {
-        return menuRepository.findById(id)
-            .orElseThrow(() -> new NotFoundException(
-                String.format("메뉴 id(%d)를 찾을 수 없습니다.", id)));
-    }
-
     private Menu newMenu(MenuRequest request) {
         return Menu.of(
             request.name(),
             request.price(),
-            menuGroup(request.getMenuGroupId()),
+            menuGroupRepository.menuGroup(request.getMenuGroupId()),
             menuProducts(request.getMenuProducts())
         );
     }
@@ -61,16 +54,8 @@ public class MenuService {
 
     private MenuProduct menuProduct(MenuProductRequest request) {
         return MenuProduct.of(
-            product(request.getProductId()),
+            productRepository.product(request.getProductId()),
             request.quantity()
         );
-    }
-
-    private Product product(long productId) {
-        return productService.findById(productId);
-    }
-
-    private MenuGroup menuGroup(long menuGroupId) {
-        return menuGroupService.findById(menuGroupId);
     }
 }

@@ -27,10 +27,4 @@ public class MenuGroupService {
     public List<MenuGroupResponse> list() {
         return MenuGroupResponse.listFrom(menuGroupRepository.findAll());
     }
-
-    public MenuGroup findById(long id) {
-        return menuGroupRepository.findById(id)
-            .orElseThrow(
-                () -> new NotFoundException(String.format("메뉴 그룹 id(%d)를 찾을 수 없습니다.", id)));
-    }
 }

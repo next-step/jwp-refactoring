@@ -3,16 +3,17 @@ package kitchenpos.order.application;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.common.exception.NotFoundException;
-import kitchenpos.product.application.MenuService;
-import kitchenpos.product.domain.Menu;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderLineItemMenu;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.ui.request.OrderLineItemRequest;
 import kitchenpos.order.ui.request.OrderRequest;
 import kitchenpos.order.ui.request.OrderStatusRequest;
 import kitchenpos.order.ui.response.OrderResponse;
-import kitchenpos.order.domain.OrderTable;
+import kitchenpos.product.domain.Menu;
+import kitchenpos.product.domain.MenuRepository;
+import kitchenpos.table.domain.OrderTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,14 +22,14 @@ import org.springframework.transaction.annotation.Transactional;
 public class OrderService {
 
     private final OrderRepository orderRepository;
-    private final MenuService menuService;
-    private final TableService tableService;
+    private final MenuRepository menuRepository;
+    private final OrderTableRepository tableRepository;
 
     public OrderService(OrderRepository orderRepository,
-        MenuService menuService, TableService tableService) {
+        MenuRepository menuRepository, OrderTableRepository tableRepository) {
         this.orderRepository = orderRepository;
-        this.menuService = menuService;
-        this.tableService = tableService;
+        this.menuRepository = menuRepository;
+        this.tableRepository = tableRepository;
     }
 
     public OrderResponse create(OrderRequest request) {
@@ -53,7 +54,7 @@ public class OrderService {
 
     private Order newOrder(OrderRequest request) {
         return Order.of(
-            orderTable(request.getOrderTableId()),
+            tableRepository.table(request.getOrderTableId()),
             orderLineItems(request.getOrderLineItems())
         );
     }
@@ -65,14 +66,9 @@ public class OrderService {
     }
 
     private OrderLineItem orderLineItem(OrderLineItemRequest request) {
-        return OrderLineItem.of(request.quantity(), menu(request.getMenuId()));
+        Menu menu = menuRepository.menu(request.getMenuId());
+        return OrderLineItem.of(
+            request.quantity(), OrderLineItemMenu.of(menu.id(), menu.name(), menu.price()));
     }
 
-    private Menu menu(long menuId) {
-        return menuService.findById(menuId);
-    }
-
-    private OrderTable orderTable(long orderTableId) {
-        return tableService.findById(orderTableId);
-    }
 }

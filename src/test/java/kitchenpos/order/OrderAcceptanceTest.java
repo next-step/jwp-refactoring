@@ -10,7 +10,7 @@ import static kitchenpos.order.step.OrderAcceptanceStep.주문_목록_조회_요
 import static kitchenpos.order.step.OrderAcceptanceStep.주문_상태_수정_됨;
 import static kitchenpos.order.step.OrderAcceptanceStep.주문_상태_수정_요청;
 import static kitchenpos.product.step.ProductAcceptanceStep.상품_등록_되어_있음;
-import static kitchenpos.order.step.TableAcceptanceStep.테이블_저장되어_있음;
+import static kitchenpos.table.step.TableAcceptanceStep.테이블_저장되어_있음;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
