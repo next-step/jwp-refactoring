@@ -12,17 +12,13 @@ import javax.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.stereotype.Component;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.transaction.annotation.Transactional;
 
 import kitchenpos.application.fixture.MenuFixtureFactory;
 import kitchenpos.application.fixture.MenuGroupFixtureFactory;
@@ -68,11 +64,9 @@ class MenuServiceTest {
         고기_메뉴그룹 = MenuGroupFixtureFactory.create(1L, "고기 메뉴그룹");
         돼지고기 = ProductFixtureFactory.create(1L, "돼지고기", 9_000);
         공기밥 = ProductFixtureFactory.create(2L, "공기밥", 1_000);
-        불고기 = MenuFixtureFactory.create(1L, "불고기", 10_000, 고기_메뉴그룹);
-
         불고기_돼지고기 = MenuProductFixtureFactory.create(1L, 불고기, 돼지고기, 1L);
         불고기_공기밥 = MenuProductFixtureFactory.create(2L, 불고기, 공기밥, 1L);
-        불고기.addMenuProducts(Arrays.asList(불고기_돼지고기, 불고기_공기밥));
+        불고기 = MenuFixtureFactory.create(1L, "불고기", 10_000, 고기_메뉴그룹, Arrays.asList(불고기_돼지고기, 불고기_공기밥));
 
         고기_메뉴그룹 = menuGroupRepository.save(고기_메뉴그룹);
         돼지고기 = productRepository.save(돼지고기);
@@ -152,8 +146,7 @@ class MenuServiceTest {
     void create5() {
         // given
         List<MenuProductRequest> menuProductRequests =
-            Arrays.asList(MenuProductRequest.of(0L, 불고기_돼지고기.getQuantity().getValue()),
-                          MenuProductRequest.of(0L, 불고기_공기밥.getQuantity().getValue()));
+            Arrays.asList(MenuProductRequest.of(0L, 1L), MenuProductRequest.of(공기밥.getId(), 1L));
         MenuRequest menuRequest = new MenuRequest("불고기",
                                                   BigDecimal.valueOf(10_000),
                                                   고기_메뉴그룹.getId(),

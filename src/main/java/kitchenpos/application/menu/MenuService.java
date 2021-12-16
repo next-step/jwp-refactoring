@@ -37,10 +37,10 @@ public class MenuService {
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
         MenuGroup menuGroup = findMenuGroup(menuRequest.getMenuGroupId());
+        List<MenuProduct> menuProducts = StreamUtils.mapToList(menuRequest.getMenuProducts(),
+                                                               MenuProductRequest::toMenuProduct);
+        Menu menu = Menu.of(menuRequest.getName(), menuRequest.getPrice(), menuGroup.getId(), menuProducts);
 
-        Menu menu = Menu.of(menuRequest.getName(), menuRequest.getPrice(), menuGroup.getId());
-        List<MenuProduct> menuProducts = createMenuProducts(menuRequest);
-        menu.addMenuProducts(menuProducts);
         menuValidator.validate(menu);
 
         return MenuResponse.from(menuRepository.save(menu));

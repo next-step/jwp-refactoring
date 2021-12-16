@@ -65,10 +65,9 @@ class MenuTest {
         BigDecimal price = BigDecimal.valueOf(9_000);
 
         // when
-        Menu menu = Menu.of("불고기", price, 고기_메뉴그룹.getId());
         List<MenuProduct> menuProducts = Arrays.asList(MenuProduct.of(돼지고기.getId(), 1L),
                                                        MenuProduct.of(공기밥.getId(), 1L));
-        menu.addMenuProducts(menuProducts);
+        Menu menu = Menu.of("불고기", price, 고기_메뉴그룹.getId(), menuProducts);
 
         // then
         assertAll(
@@ -82,7 +81,9 @@ class MenuTest {
     @Test
     void create2() {
         // given
-        Menu 불고기 = Menu.of("불고기", BigDecimal.valueOf(9_000), 0L);
+        List<MenuProduct> menuProducts = Arrays.asList(MenuProduct.of(돼지고기.getId(), 1L),
+                                                       MenuProduct.of(공기밥.getId(), 1L));
+        Menu 불고기 = Menu.of("불고기", BigDecimal.valueOf(9_000), 0L, menuProducts);
 
         // when & then
         assertThrows(EntityNotFoundException.class, () -> menuValidator.validate(불고기));
@@ -92,8 +93,12 @@ class MenuTest {
     @ParameterizedTest
     @NullSource
     void create2(BigDecimal price) {
+        // given
+        List<MenuProduct> menuProducts = Arrays.asList(MenuProduct.of(돼지고기.getId(), 1L),
+                                                       MenuProduct.of(공기밥.getId(), 1L));
+
         // when & then
-        assertThrows(NegativePriceException.class, () -> Menu.of("불고기", price, 고기_메뉴그룹.getId()));
+        assertThrows(NegativePriceException.class, () -> Menu.of("불고기", price, 고기_메뉴그룹.getId(), menuProducts));
     }
 
     @DisplayName("Menu 의 가격은 구성하는 상품의 총 가격의 합보다 크면 예외가 발생한다.")
@@ -101,10 +106,9 @@ class MenuTest {
     void validateMenuPrice() {
         // given
         BigDecimal price = BigDecimal.valueOf(1_000_000);
-        Menu menu = Menu.of("불고기", price, 고기_메뉴그룹.getId());
         List<MenuProduct> menuProducts = Arrays.asList(MenuProduct.of(돼지고기.getId(), 1L),
                                                        MenuProduct.of(공기밥.getId(), 1L));
-        menu.addMenuProducts(menuProducts);
+        Menu menu = Menu.of("불고기", price, 고기_메뉴그룹.getId(), menuProducts);
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> menuValidator.validate(menu))

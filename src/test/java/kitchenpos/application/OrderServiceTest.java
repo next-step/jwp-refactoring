@@ -80,11 +80,10 @@ class OrderServiceTest {
         고기_메뉴그룹 = MenuGroupFixtureFactory.create(1L, "고기 메뉴그룹");
         돼지고기 = ProductFixtureFactory.create(1L, "돼지고기", 9_000);
         공기밥 = ProductFixtureFactory.create(2L, "공기밥", 1_000);
-        불고기 = MenuFixtureFactory.create(1L, "불고기", 10_000, 고기_메뉴그룹);
 
         불고기_돼지고기 = MenuProductFixtureFactory.create(1L, 불고기, 돼지고기, 1L);
         불고기_공기밥 = MenuProductFixtureFactory.create(2L, 불고기, 공기밥, 1L);
-        불고기.addMenuProducts(Arrays.asList(불고기_돼지고기, 불고기_공기밥));
+        불고기 = MenuFixtureFactory.create(1L, "불고기", 10_000, 고기_메뉴그룹, Arrays.asList(불고기_돼지고기, 불고기_공기밥));
 
         주문_개인테이블 = OrderTableFixtureFactory.create(1L, false);
         빈_개인테이블 = OrderTableFixtureFactory.create(2L, true);

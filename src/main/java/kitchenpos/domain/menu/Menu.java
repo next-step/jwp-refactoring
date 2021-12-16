@@ -1,7 +1,6 @@
 package kitchenpos.domain.menu;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -40,10 +39,6 @@ public class Menu {
 
     protected Menu() {}
 
-    public Menu(Long id) {
-        this.id = id;
-    }
-
     private Menu(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
         this(name, price, menuGroupId, menuProducts);
         this.id = id;
@@ -54,23 +49,17 @@ public class Menu {
         this.price = Price.from(price);
         this.menuGroupId = menuGroupId;
         this.menuProducts = MenuProducts.from(menuProducts);
+
+        this.menuProducts.getValues().forEach(menuProduct -> menuProduct.assignMenu(this));
     }
 
-    public static Menu from(long id) {
-        return new Menu(id);
-    }
+    public static Menu of(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
 
-    public static Menu of(String name, BigDecimal price, Long menuGroupId) {
-        return new Menu(name, price, menuGroupId, new ArrayList<>());
+        return new Menu(name, price, menuGroupId, menuProducts);
     }
 
     public static Menu of(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
         return new Menu(id, name, price, menuGroupId, menuProducts);
-    }
-
-    public void addMenuProducts(final List<MenuProduct> menuProducts) {
-        this.menuProducts.addAll(menuProducts);
-        menuProducts.forEach(menuProduct -> menuProduct.assignMenu(this));
     }
 
     public Long getId() {

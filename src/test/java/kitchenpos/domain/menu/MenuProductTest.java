@@ -21,6 +21,7 @@ import org.springframework.stereotype.Component;
 
 import kitchenpos.application.fixture.MenuFixtureFactory;
 import kitchenpos.application.fixture.MenuGroupFixtureFactory;
+import kitchenpos.application.fixture.MenuProductFixtureFactory;
 import kitchenpos.application.fixture.ProductFixtureFactory;
 import kitchenpos.application.menu.MenuValidator;
 import kitchenpos.domain.Quantity;
@@ -46,13 +47,15 @@ class MenuProductTest {
 
     private MenuGroup 고기_메뉴그룹;
     private Product 돼지고기;
+    private MenuProduct 불고기_돼지고기;
     private Menu 불고기;
 
     @BeforeEach
     void setUp() {
         고기_메뉴그룹 = MenuGroupFixtureFactory.create(1L, "고기 메뉴그룹");
         돼지고기 = ProductFixtureFactory.create(1L, "돼지고기", 9_000);
-        불고기 = MenuFixtureFactory.create(1L, "불고기", 9_000, 고기_메뉴그룹);
+        불고기_돼지고기 = MenuProductFixtureFactory.create(1L, 불고기, 돼지고기, 1L);
+        불고기 = MenuFixtureFactory.create(1L, "불고기", 9_000, 고기_메뉴그룹, Arrays.asList(불고기_돼지고기));
 
         고기_메뉴그룹 = menuGroupRepository.save(고기_메뉴그룹);
         돼지고기 = productRepository.save(돼지고기);
@@ -63,8 +66,7 @@ class MenuProductTest {
     @Test
     void create1() {
         // when
-        MenuProduct 불고기_돼기고기 = MenuProduct.of(돼지고기.getId(), 1L);
-        불고기.addMenuProducts(Arrays.asList(불고기_돼기고기));
+        MenuProduct 불고기_돼기고기 = MenuProduct.of(0L, 불고기, 돼지고기.getId(), 1L);
 
         // then
         assertAll(
@@ -101,9 +103,8 @@ class MenuProductTest {
     void calculateTotalPrice(long quantity, long totalPrice) {
         // when
         MenuProduct 불고기_돼기고기 = MenuProduct.of(돼지고기.getId(), quantity);
-        불고기.addMenuProducts(Arrays.asList(불고기_돼기고기));
 
         // then
-        assertThat(불고기_돼기고기.calculateTotalPrice(불고기.getPrice())).isEqualTo(BigDecimal.valueOf(totalPrice));
+        assertThat(불고기_돼기고기.calculateTotalPrice(돼지고기.getPrice())).isEqualTo(BigDecimal.valueOf(totalPrice));
     }
 }
