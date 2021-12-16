@@ -6,7 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import kitchenpos.common.ErrorCode;
-import kitchenpos.product.exception.ProductException;
+import kitchenpos.common.PriceException;
 
 @DisplayName("단위 테스트 : 가격 도메인")
 class PriceTest {
@@ -33,7 +33,7 @@ class PriceTest {
 		// when // then
 		assertThatThrownBy(() -> {
 			Price.from(intValue);
-		}).isInstanceOf(ProductException.class)
+		}).isInstanceOf(PriceException.class)
 			.hasMessageContaining(ErrorCode.PRICE_NOT_NEGATIVE_NUMBER.getMessage());
 	}
 
@@ -42,8 +42,36 @@ class PriceTest {
 	void validateIsNullPrice() {
 		// given // when // then
 		assertThatThrownBy(() -> {
-			Price.from(null);
-		}).isInstanceOf(ProductException.class)
+			Price.from((Integer)null);
+		}).isInstanceOf(PriceException.class)
 			.hasMessageContaining(ErrorCode.PRICE_IS_NOT_NULL.getMessage());
 	}
+
+	@DisplayName("가격을 더하는 테스트")
+	@Test
+	void addPrice() {
+		// given
+		Price p1 = Price.from(1000);
+		Price p2 = Price.from(1000);
+		// when
+		Price sumPrice = p1.plus(p2);
+
+		// then
+		assertThat(sumPrice.getPrice().intValue()).isEqualTo(2000);
+	}
+
+	@DisplayName("가격을 비교하는 테스트")
+	@Test
+	void comparePrice() {
+		// given
+		Price p1 = Price.from(1001);
+		Price p2 = Price.from(1000);
+
+		// when
+		boolean result = p1.compare(p2);
+
+		// then
+		assertThat(result).isTrue();
+	}
+
 }
