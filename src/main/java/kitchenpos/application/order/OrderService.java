@@ -24,16 +24,13 @@ import kitchenpos.utils.StreamUtils;
 public class OrderService {
     private final MenuRepository menuRepository;
     private final OrderRepository orderRepository;
-    private final OrderTableRepository orderTableRepository;
     private final OrderValidator orderValidator;
 
     public OrderService(final MenuRepository menuRepository,
                         final OrderRepository orderRepository,
-                        final OrderTableRepository orderTableRepository,
                         final OrderValidator orderValidator) {
         this.menuRepository = menuRepository;
         this.orderRepository = orderRepository;
-        this.orderTableRepository = orderTableRepository;
         this.orderValidator = orderValidator;
     }
 
@@ -77,11 +74,6 @@ public class OrderService {
     private Order findOrders(Long orderId) {
         return orderRepository.findById(orderId)
                               .orElseThrow(EntityNotFoundException::new);
-    }
-
-    private OrderTable findOrderTable(Long orderTableId) {
-        return orderTableRepository.findById(orderTableId)
-                                   .orElseThrow(EntityNotFoundException::new);
     }
 
     private Menu findMenu(Long menuId) {
