@@ -7,13 +7,13 @@ import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderLineItemMenu;
 import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.OrderValidator;
 import kitchenpos.order.ui.request.OrderLineItemRequest;
 import kitchenpos.order.ui.request.OrderRequest;
 import kitchenpos.order.ui.request.OrderStatusRequest;
 import kitchenpos.order.ui.response.OrderResponse;
 import kitchenpos.product.domain.Menu;
 import kitchenpos.product.domain.MenuRepository;
-import kitchenpos.table.domain.OrderTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,13 +23,14 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final MenuRepository menuRepository;
-    private final OrderTableRepository tableRepository;
+    private final OrderValidator orderValidator;
 
     public OrderService(OrderRepository orderRepository,
-        MenuRepository menuRepository, OrderTableRepository tableRepository) {
+        MenuRepository menuRepository,
+        OrderValidator orderValidator) {
         this.orderRepository = orderRepository;
         this.menuRepository = menuRepository;
-        this.tableRepository = tableRepository;
+        this.orderValidator = orderValidator;
     }
 
     @Transactional
@@ -55,9 +56,9 @@ public class OrderService {
 
     private Order newOrder(OrderRequest request) {
         return Order.of(
-            tableRepository.table(request.getOrderTableId()),
+            request.getOrderTableId(),
             orderLineItems(request.getOrderLineItems())
-        );
+        ).get(orderValidator);
     }
 
     private List<OrderLineItem> orderLineItems(List<OrderLineItemRequest> requests) {
