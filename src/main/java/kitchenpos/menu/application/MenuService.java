@@ -8,7 +8,6 @@ import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.application.MenuGroupService;
-import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
 import org.springframework.stereotype.Service;
@@ -38,9 +37,9 @@ public class MenuService {
     }
 
     public MenuResponse create(final MenuRequest menuRequest) {
-        final MenuGroup menuGroup = findMenuGroupById(menuRequest.getMenuGroupId());
+        existsMenuGroupById(menuRequest.getMenuGroupId());
         final MenuProducts menuProducts = new MenuProducts(makeMenuProducts(menuRequest));
-        final Menu savedMenu = menuRepository.save(menuRequest.toMenu(menuGroup, menuProducts));
+        final Menu savedMenu = menuRepository.save(menuRequest.toMenu(menuProducts));
         return MenuResponse.from(savedMenu);
     }
 
@@ -58,8 +57,8 @@ public class MenuService {
                 .orElseThrow(EntityNotFoundException::new);
     }
 
-    private MenuGroup findMenuGroupById(Long menuGroupId) {
-        return menuGroupService.findById(menuGroupId);
+    private void existsMenuGroupById(Long menuGroupId) {
+        menuGroupService.findById(menuGroupId);
     }
 
     private List<MenuProduct> makeMenuProducts(MenuRequest menuRequest) {
