@@ -54,32 +54,11 @@ public class TableService {
 
     @Transactional
     public OrderTable changeNumberOfGuests(final Long orderTableId, final OrderTableDto orderTable) {
-        final int numberOfGuests = orderTable.getNumberOfGuests();
-
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                                                                 .orElseThrow(NotFoundOrderTableException::new);
 
-        validationOfChangeNumberOfGuests(numberOfGuests, savedOrderTable);
-
-        savedOrderTable.changeNumberOfGuests(numberOfGuests);
+        savedOrderTable.changeNumberOfGuests(orderTable.getNumberOfGuests());
 
         return orderTableRepository.save(savedOrderTable);
-    }
-
-    private void validationOfChangeNumberOfGuests(final int numberOfGuests, final OrderTable orderTable) {
-        checkPositiveOfNumberOfGuests(numberOfGuests);
-        checkEmptyTable(orderTable);
-    }
-
-    private void checkEmptyTable(final OrderTable orderTable) {
-        if (orderTable.isEmpty()) {
-            throw new EmptyOrderTableException();
-        }
-    }
-
-    private void checkPositiveOfNumberOfGuests(final int numberOfGuests) {
-        if (numberOfGuests < 0) {
-            throw new NegativeOfNumberOfGuestsException();
-        }
     }
 }

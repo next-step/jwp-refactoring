@@ -154,16 +154,14 @@ public class TableServiceTest {
     @ParameterizedTest(name ="[{index}] 방문한 손님수는 [{0}]")
     void exception_updateOrderTable_underZeroCountAboutNumberOfGuest(int numberOfGuests) {
         // given
-        OrderTable 치킨_주문_단체테이블 = OrderTable.of(0, true);
+        OrderTable 치킨_주문_단체테이블 = OrderTable.of(10, false);
 
         when(orderTableRepository.findById(nullable(Long.class))).thenReturn(Optional.of(치킨_주문_단체테이블));
-
-        치킨_주문_단체테이블.changeNumberOfGuests(numberOfGuests);
 
         // when
         // then
         Assertions.assertThatExceptionOfType(NegativeOfNumberOfGuestsException.class)
-                    .isThrownBy(() -> tableService.changeNumberOfGuests(치킨_주문_단체테이블.getId(), OrderTableDto.of(치킨_주문_단체테이블)));
+                    .isThrownBy(() -> tableService.changeNumberOfGuests(치킨_주문_단체테이블.getId(), OrderTableDto.of(numberOfGuests)));
 
     }
 
@@ -175,11 +173,9 @@ public class TableServiceTest {
 
         when(orderTableRepository.findById(nullable(Long.class))).thenReturn(Optional.of(치킨_주문_단체테이블));
 
-        치킨_주문_단체테이블.changeNumberOfGuests(3);
-
         // when
         // then
         Assertions.assertThatExceptionOfType(EmptyOrderTableException.class)
-                   .isThrownBy(() -> tableService.changeNumberOfGuests(치킨_주문_단체테이블.getId(), OrderTableDto.of(치킨_주문_단체테이블)));
+                   .isThrownBy(() -> tableService.changeNumberOfGuests(치킨_주문_단체테이블.getId(), OrderTableDto.of(3)));
     }
 }

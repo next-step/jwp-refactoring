@@ -9,7 +9,9 @@ import javax.persistence.ManyToOne;
 
 import kitchenpos.domain.order.Orders;
 import kitchenpos.exception.order.HasNotCompletionOrderException;
+import kitchenpos.exception.table.EmptyOrderTableException;
 import kitchenpos.exception.table.HasOtherTableGroupException;
+import kitchenpos.exception.table.NegativeOfNumberOfGuestsException;
 
 @Entity
 public class OrderTable {
@@ -75,6 +77,9 @@ public class OrderTable {
     }
 
     public void changeNumberOfGuests(int numberOfGuests) {
+        checkEmptyTable();
+        checkPositiveOfNumberOfGuests(numberOfGuests);
+
         this.numberOfGuests = numberOfGuests;
     }
 
@@ -96,5 +101,17 @@ public class OrderTable {
 
     public boolean hasTableGroup() {
         return tableGroup != null;
+    }
+
+    private void checkEmptyTable() {
+        if (this.empty) {
+            throw new EmptyOrderTableException();
+        }
+    }
+
+    private void checkPositiveOfNumberOfGuests(int numberOfGuests) {
+        if (numberOfGuests < 0) {
+            throw new NegativeOfNumberOfGuestsException();
+        }
     }
 }
