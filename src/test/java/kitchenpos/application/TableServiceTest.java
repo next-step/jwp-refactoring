@@ -1,9 +1,10 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.dto.OrderTableRequest;
+import kitchenpos.repository.OrderRepository;
+import kitchenpos.repository.OrderTableRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,9 +22,9 @@ import static org.mockito.Mockito.*;
 class TableServiceTest {
 
     @Mock
-    OrderDao orderDao;
+    OrderRepository orderRepository;
     @Mock
-    OrderTableDao orderTableDao;
+    OrderTableRepository orderTableRepository;
 
 
     @DisplayName("테이블을 생성한다.")
@@ -31,16 +32,16 @@ class TableServiceTest {
     void createTest() {
 
         // given
-        OrderTable orderTable = new OrderTable();
+        OrderTable orderTable = new OrderTable(4, false);
 
         OrderTable expectedOrderTable = mock(OrderTable.class);
         when(expectedOrderTable.getId()).thenReturn(1L);
-        when(orderTableDao.save(orderTable)).thenReturn(expectedOrderTable);
+        when(orderTableRepository.save(orderTable)).thenReturn(expectedOrderTable);
 
-        TableService tableService = new TableService(orderDao, orderTableDao);
+        TableService tableService = new TableService(orderRepository, orderTableRepository);
 
         // when
-        OrderTable createdOrderTable = tableService.create(orderTable);
+        OrderTable createdOrderTable = tableService.create(OrderTableRequest.from(orderTable));
 
         // then
         assertThat(createdOrderTable.getId()).isNotNull();
@@ -53,8 +54,8 @@ class TableServiceTest {
 
         // given
         OrderTable orderTable = new OrderTable();
-        when(orderTableDao.findAll()).thenReturn(Arrays.asList(orderTable));
-        TableService tableService = new TableService(orderDao, orderTableDao);
+        when(orderTableRepository.findAll()).thenReturn(Arrays.asList(orderTable));
+        TableService tableService = new TableService(orderRepository, orderTableRepository);
 
         // when
         List<OrderTable> orderTables = tableService.list();
@@ -71,20 +72,20 @@ class TableServiceTest {
         Long orderTableId = 1L;
 
         OrderTable orderTable  = mock(OrderTable.class);
-        when(orderTable .getTableGroupId()).thenReturn(null);
+        when(orderTable .getTableGroup()).thenReturn(null);
 
-        when(orderTableDao.findById(orderTableId)).thenReturn(Optional.of(orderTable ));
-        when(orderDao.existsByOrderTableIdAndOrderStatusIn(
-                orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).thenReturn(false);
+        when(orderTableRepository.findById(orderTableId)).thenReturn(Optional.of(orderTable ));
+        when(orderRepository.existsByOrderTableAndOrderStatusIn(
+                orderTable, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))).thenReturn(false);
 
         OrderTable savedOrderTable = mock(OrderTable.class);
         when(savedOrderTable.isEmpty()).thenReturn(true);
-        when(orderTableDao.save(orderTable )).thenReturn(savedOrderTable);
+        when(orderTableRepository.save(orderTable )).thenReturn(savedOrderTable);
 
-        TableService tableService = new TableService(orderDao, orderTableDao);
+        TableService tableService = new TableService(orderRepository, orderTableRepository);
 
         // when
-        OrderTable changedOrderTable = tableService.changeEmpty(orderTableId, orderTable);
+        OrderTable changedOrderTable = tableService.changeEmpty(orderTableId, OrderTableRequest.from(orderTable));
 
         // then
         assertThat(changedOrderTable.isEmpty()).isTrue();
@@ -97,15 +98,15 @@ class TableServiceTest {
         Long orderTableId = 1L;
         OrderTable orderTable = mock(OrderTable.class);
         when(orderTable.getNumberOfGuests()).thenReturn(3);
-        when(orderTableDao.findById(orderTableId)).thenReturn(Optional.of(orderTable));
+        when(orderTableRepository.findById(orderTableId)).thenReturn(Optional.of(orderTable));
 
         OrderTable savedOrderTable = mock(OrderTable.class);
         when(savedOrderTable.getNumberOfGuests()).thenReturn(3);
-        when(orderTableDao.save(orderTable)).thenReturn(savedOrderTable);
-        TableService tableService = new TableService(orderDao, orderTableDao);
+        when(orderTableRepository.save(orderTable)).thenReturn(savedOrderTable);
+        TableService tableService = new TableService(orderRepository, orderTableRepository);
 
         // when
-        OrderTable changedOrderTable = tableService.changeNumberOfGuests(orderTableId, orderTable);
+        OrderTable changedOrderTable = tableService.changeNumberOfGuests(orderTableId, OrderTableRequest.from(orderTable));
 
         // then
         assertThat(changedOrderTable.getNumberOfGuests()).isEqualTo(orderTable.getNumberOfGuests());

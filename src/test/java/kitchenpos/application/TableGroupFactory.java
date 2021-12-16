@@ -5,6 +5,8 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.dto.TableGroupRequest;
+import kitchenpos.dto.TableGroupResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -12,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class TableGroupFactory {
 
-    public static ExtractableResponse<Response> 주문그룹테이블_생성_요청(TableGroup params) {
+    public static ExtractableResponse<Response> 주문그룹테이블_생성_요청(TableGroupRequest params) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -31,8 +33,8 @@ public class TableGroupFactory {
                 extract();
     }
 
-    public static TableGroup 주문그룹테이블이_생성됨(ExtractableResponse<Response> response) {
+    public static TableGroupResponse 주문그룹테이블이_생성됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-        return response.as(TableGroup.class);
+        return response.as(TableGroupResponse.class);
     }
 }

@@ -1,11 +1,12 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.dto.TableGroupRequest;
+import kitchenpos.repository.OrderRepository;
+import kitchenpos.repository.OrderTableRepository;
+import kitchenpos.repository.TableGroupRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,6 +14,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -21,11 +23,11 @@ import static org.mockito.Mockito.*;
 class TableGroupServiceTest {
 
     @Mock
-    OrderDao orderDao;
+    OrderRepository orderRepository;
     @Mock
-    OrderTableDao orderTableDao;
+    OrderTableRepository orderTableRepository;
     @Mock
-    TableGroupDao tableGroupDao;
+    TableGroupRepository tableGroupRepository;
 
 
     @DisplayName("단체를 지정한다.")
@@ -34,38 +36,25 @@ class TableGroupServiceTest {
 
         // given
         OrderTable orderTable1 = mock(OrderTable.class);
-        when(orderTable1.getId()).thenReturn(1L);
         OrderTable orderTable2 = mock(OrderTable.class);
-        when(orderTable2.getId()).thenReturn(2L);
 
         TableGroup tableGroup = new TableGroup();
-        tableGroup.setOrderTables(Arrays.asList(orderTable1, orderTable2));
-
-        OrderTable savedOrderTable1 = mock(OrderTable.class);
-        when(savedOrderTable1.isEmpty()).thenReturn(true);
-        when(savedOrderTable1.getTableGroupId()).thenReturn(null);
-
-        OrderTable savedOrderTable2 = mock(OrderTable.class);
-        when(savedOrderTable2.isEmpty()).thenReturn(true);
-        when(savedOrderTable2.getTableGroupId()).thenReturn(null);
-
-        when(orderTableDao.findAllByIdIn(Arrays.asList(orderTable1.getId(), orderTable2.getId()))).thenReturn(Arrays.asList(savedOrderTable1, savedOrderTable2));
+        tableGroup.setTableGroupToOrderTables(Arrays.asList(orderTable1, orderTable2));
 
         TableGroup savedTableGroup = mock(TableGroup.class);
         when(savedTableGroup.getId()).thenReturn(1L);
 
-        when(tableGroupDao.save(tableGroup)).thenReturn(savedTableGroup);
+        when(tableGroupRepository.save(tableGroup)).thenReturn(savedTableGroup);
 
         OrderTable expectedOrderTable1 = mock(OrderTable.class);
         OrderTable expectedOrderTable2 = mock(OrderTable.class);
 
         when(savedTableGroup.getOrderTables()).thenReturn(Arrays.asList(expectedOrderTable1, expectedOrderTable2));
 
-
-        TableGroupService tableGroupService = new TableGroupService(orderDao, orderTableDao, tableGroupDao);
+        TableGroupService tableGroupService = new TableGroupService(orderRepository, orderTableRepository, tableGroupRepository);
 
         // when
-        TableGroup createdTableGroup = tableGroupService.create(tableGroup);
+        TableGroup createdTableGroup = tableGroupService.create(TableGroupRequest.from(tableGroup));
 
         // then
         assertThat(createdTableGroup.getId()).isNotNull();
@@ -86,28 +75,25 @@ class TableGroupServiceTest {
         when(orderTable2.getId()).thenReturn(2L);
 
         TableGroup tableGroup = mock(TableGroup.class);
-        when(tableGroup.getId()).thenReturn(tableGroupId);
 
-        when(orderTableDao.findAllByTableGroupId(tableGroup.getId())).thenReturn(Arrays.asList(orderTable1, orderTable2));
-        when(orderDao.existsByOrderTableIdInAndOrderStatusIn(Arrays.asList(orderTable1.getId(), orderTable2.getId()),
-                Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).thenReturn(false);
+        when(orderTableRepository.findAllByTableGroup(tableGroup)).thenReturn(Arrays.asList(orderTable1, orderTable2));
+        when(orderRepository.existsByOrderTableIdInAndOrderStatusIn(Arrays.asList(orderTable1.getId(), orderTable2.getId()),
+                Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))).thenReturn(false);
 
         OrderTable expectedOrderTable1 = mock(OrderTable.class);
-        when(expectedOrderTable1.getTableGroupId()).thenReturn(null);
+        when(expectedOrderTable1.getTableGroup()).thenReturn(null);
         OrderTable expectedOrderTable2 = mock(OrderTable.class);
-        when(expectedOrderTable2.getTableGroupId()).thenReturn(null);
+        when(expectedOrderTable2.getTableGroup()).thenReturn(null);
 
-        when(orderTableDao.save(orderTable1)).thenReturn(expectedOrderTable1);
-        when(orderTableDao.save(orderTable2)).thenReturn(expectedOrderTable2);
+        TableGroupService tableGroupService = new TableGroupService(orderRepository, orderTableRepository, tableGroupRepository);
 
-        TableGroupService tableGroupService = new TableGroupService(orderDao, orderTableDao, tableGroupDao);
-
+        when(tableGroupRepository.findById(tableGroupId)).thenReturn(Optional.of(tableGroup));
         // when
         tableGroupService.ungroup(tableGroupId);
 
         // then
-        assertThat(expectedOrderTable1.getTableGroupId()).isNull();
-        assertThat(expectedOrderTable2.getTableGroupId()).isNull();
+        assertThat(expectedOrderTable1.getTableGroup()).isNull();
+        assertThat(expectedOrderTable2.getTableGroup()).isNull();
 
     }
 }

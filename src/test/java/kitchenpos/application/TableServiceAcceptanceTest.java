@@ -4,6 +4,8 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.dto.OrderTableRequest;
+import kitchenpos.dto.OrderTableResponse;
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,12 +20,10 @@ class TableServiceAcceptanceTest extends AcceptanceTest {
     @Test
     void createTest() {
 
-        OrderTable orderTable = new OrderTable();
-        orderTable.setNumberOfGuests(4);
-        orderTable.setEmpty(false);
+        OrderTableRequest orderTableRequest = new OrderTableRequest(4, false);
 
-        ExtractableResponse<Response> createResponse = TableFactory.주문테이블_생성_요청(orderTable);
-        OrderTable createdOrderTable = TableFactory.주문테이블이_생성됨(createResponse);
+        ExtractableResponse<Response> createResponse = TableFactory.주문테이블_생성_요청(orderTableRequest);
+        OrderTableResponse createdOrderTable = TableFactory.주문테이블이_생성됨(createResponse);
         ExtractableResponse<Response> getResponse = TableFactory.주문테이블_조회_요청();
         assertThat(getResponse.statusCode()).isEqualTo(HttpStatus.SC_OK);
     }
@@ -32,15 +32,17 @@ class TableServiceAcceptanceTest extends AcceptanceTest {
     @Test
     void changeEmptyTest() {
 
-        OrderTable orderTable = new OrderTable();
-        orderTable.setNumberOfGuests(4);
-        orderTable.setEmpty(false);
+        OrderTableRequest orderTableRequest = new OrderTableRequest(4, false);
 
-        ExtractableResponse<Response> createResponse = TableFactory.주문테이블_생성_요청(orderTable);
-        OrderTable createdOrderTable = TableFactory.주문테이블이_생성됨(createResponse);
-        createdOrderTable.setEmpty(false);
+        ExtractableResponse<Response> createResponse = TableFactory.주문테이블_생성_요청(orderTableRequest);
+        OrderTableResponse createdOrderTable = TableFactory.주문테이블이_생성됨(createResponse);
 
-        ExtractableResponse<Response> changeStatusResponse = TableFactory.주문테이블_상태변경_요청(createdOrderTable.getId(), createdOrderTable);
+        OrderTable orderTable = new OrderTable(createdOrderTable.getId(), createdOrderTable.getNumberOfGuests(), createdOrderTable.isEmpty());
+        orderTable.changeNonEmptyOrderTable();
+
+        ExtractableResponse<Response> changeStatusResponse = TableFactory.주문테이블_상태변경_요청(
+                                                                                createdOrderTable.getId(),
+                                                                                new OrderTableRequest(orderTable.getNumberOfGuests(), orderTable.isEmpty()));
         assertThat(changeStatusResponse.as(OrderTable.class).isEmpty()).isFalse();
     }
 
@@ -48,16 +50,17 @@ class TableServiceAcceptanceTest extends AcceptanceTest {
     @Test
     void changeNumberOfGuestsTest() {
 
-        OrderTable orderTable = new OrderTable();
-        orderTable.setNumberOfGuests(4);
-        orderTable.setEmpty(false);
+        OrderTableRequest orderTableRequest = new OrderTableRequest(4, false);
 
-        ExtractableResponse<Response> createResponse = TableFactory.주문테이블_생성_요청(orderTable);
-        OrderTable createdOrderTable = TableFactory.주문테이블이_생성됨(createResponse);
-        createdOrderTable.setNumberOfGuests(3);
+        ExtractableResponse<Response> createResponse = TableFactory.주문테이블_생성_요청(orderTableRequest);
+        OrderTableResponse createdOrderTable = TableFactory.주문테이블이_생성됨(createResponse);
+        OrderTable orderTable = new OrderTable(createdOrderTable.getId(), createdOrderTable.getNumberOfGuests(), createdOrderTable.isEmpty());
+        orderTable.changeNumberOfGuests(3);
 
-        ExtractableResponse<Response> changeStatusResponse = TableFactory.주문테이블_게스트변경_요청(createdOrderTable.getId(), createdOrderTable);
-        assertThat(changeStatusResponse.as(OrderTable.class).getNumberOfGuests()).isEqualTo(3);
+        ExtractableResponse<Response> changeStatusResponse = TableFactory.주문테이블_게스트변경_요청(
+                                                                        createdOrderTable.getId(),
+                                                                        new OrderTableRequest(orderTable.getNumberOfGuests(), orderTable.isEmpty()));
+        assertThat(changeStatusResponse.as(OrderTableResponse.class).getNumberOfGuests()).isEqualTo(3);
     }
 
     

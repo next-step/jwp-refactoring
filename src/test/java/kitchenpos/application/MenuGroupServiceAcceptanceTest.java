@@ -5,6 +5,8 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.dto.MenuGroupRequest;
+import kitchenpos.dto.MenuGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -19,11 +21,9 @@ class MenuGroupServiceAcceptanceTest extends AcceptanceTest {
     @Test
     void createTest() {
 
-        MenuGroup menuGroup = new MenuGroup();
-        menuGroup.setId(1L);
-        menuGroup.setName("치킨");
-        ExtractableResponse<Response> createResponse = MenuGroupFactory.메뉴그룹_생성_요청(menuGroup);
-        MenuGroup createdMenuGroup = 메뉴그룹이_생성됨(createResponse);
+        MenuGroupRequest menuGroupRequest = new MenuGroupRequest("치킨");
+        ExtractableResponse<Response> createResponse = MenuGroupFactory.메뉴그룹_생성_요청(menuGroupRequest);
+        MenuGroupResponse createdMenuGroup = 메뉴그룹이_생성됨(createResponse);
 
     }
 
@@ -31,18 +31,15 @@ class MenuGroupServiceAcceptanceTest extends AcceptanceTest {
     @Test
     void getListTest() {
 
-        MenuGroup menuGroup = new MenuGroup();
-        menuGroup.setId(1L);
-        menuGroup.setName("치킨");
-
-        ExtractableResponse<Response> createResponse = MenuGroupFactory.메뉴그룹_생성_요청(menuGroup);
-        MenuGroup createdMenuGroup = 메뉴그룹이_생성됨(createResponse);
+        MenuGroupRequest menuGroupRequest = new MenuGroupRequest("치킨");
+        ExtractableResponse<Response> createResponse = MenuGroupFactory.메뉴그룹_생성_요청(menuGroupRequest);
+        MenuGroupResponse createdMenuGroup = 메뉴그룹이_생성됨(createResponse);
         ExtractableResponse<Response> getResponse = MenuGroupFactory.메뉴그룹_조회_요청();
         assertThat(getResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    public static MenuGroup 메뉴그룹이_생성됨(ExtractableResponse<Response> response) {
+    public static MenuGroupResponse 메뉴그룹이_생성됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-        return response.as(MenuGroup.class);
+        return response.as(MenuGroupResponse.class);
     }
 }

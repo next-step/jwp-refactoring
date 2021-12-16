@@ -1,7 +1,8 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.dto.MenuGroupRequest;
+import kitchenpos.repository.MenuGroupRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,24 +19,23 @@ import static org.mockito.Mockito.*;
 class MenuGroupServiceTest {
 
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
 
     @DisplayName("메뉴 그룹을 등록한다.")
     @Test
     void createTest() {
         // given
-        MenuGroup menuGroup = new MenuGroup();
-        menuGroup.setName("한식");
+        MenuGroup menuGroup = new MenuGroup("한식");
 
         MenuGroup expectedMenuGroup = mock(MenuGroup.class);
         when(expectedMenuGroup.getId()).thenReturn(1L);
         when(expectedMenuGroup.getName()).thenReturn("한식");
 
-        when(menuGroupDao.save(menuGroup)).thenReturn(expectedMenuGroup);
-        MenuGroupService menuGroupService = new MenuGroupService(menuGroupDao);
+        when(menuGroupRepository.save(menuGroup)).thenReturn(expectedMenuGroup);
+        MenuGroupService menuGroupService = new MenuGroupService(menuGroupRepository);
 
         // when
-        MenuGroup savedMenuGroup = menuGroupService.create(menuGroup);
+        MenuGroup savedMenuGroup = menuGroupService.create(MenuGroupRequest.from(menuGroup));
 
         // then
         assertThat(savedMenuGroup.getId()).isNotNull();
@@ -47,8 +47,8 @@ class MenuGroupServiceTest {
     void getListTest() {
         // given
         MenuGroup expectedMenuGroup = mock(MenuGroup.class);
-        when(menuGroupDao.findAll()).thenReturn(Arrays.asList(expectedMenuGroup));
-        MenuGroupService menuGroupService = new MenuGroupService(menuGroupDao);
+        when(menuGroupRepository.findAll()).thenReturn(Arrays.asList(expectedMenuGroup));
+        MenuGroupService menuGroupService = new MenuGroupService(menuGroupRepository);
 
         // when
         List<MenuGroup> menuGroups = menuGroupService.list();

@@ -1,7 +1,8 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
+import kitchenpos.dto.ProductRequest;
+import kitchenpos.repository.ProductRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,24 +22,22 @@ import static org.mockito.Mockito.*;
 class ProductServiceTest {
 
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     @DisplayName("상품을 등록한다.")
     @Test
     void createTest(){
 
-        Product product = new Product();
-        product.setName("후라이드치킨");
-        product.setPrice(BigDecimal.valueOf(18000));
+        Product product = new Product("후라이드치킨", BigDecimal.valueOf(18000));
 
         Product expectedProduct = mock(Product.class);
         when(expectedProduct.getId()).thenReturn(1L);
         when(expectedProduct.getName()).thenReturn("후라이드치킨");
 
-        when(productDao.save(product)).thenReturn(expectedProduct);
+        when(productRepository.save(product)).thenReturn(expectedProduct);
 
-        ProductService productService = new ProductService(productDao);
-        Product savedProduct = productService.create(product);
+        ProductService productService = new ProductService(productRepository);
+        Product savedProduct = productService.create(ProductRequest.from(product));
 
         assertThat(savedProduct.getId()).isNotNull();
         assertThat(savedProduct.getName()).isEqualTo(product.getName());
@@ -50,8 +49,8 @@ class ProductServiceTest {
     void list() {
         // given
         Product expectedProduct = mock(Product.class);
-        when(productDao.findAll()).thenReturn(Arrays.asList(expectedProduct));
-        ProductService productService = new ProductService(productDao);
+        when(productRepository.findAll()).thenReturn(Arrays.asList(expectedProduct));
+        ProductService productService = new ProductService(productRepository);
 
         //when
         List<Product> products = productService.list();

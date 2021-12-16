@@ -4,6 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.domain.Order;
+import kitchenpos.dto.OrderRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -11,7 +12,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class OrderFactory {
 
-    public static ExtractableResponse<Response> 주문_생성_요청(Order params) {
+    public static ExtractableResponse<Response> 주문_생성_요청(OrderRequest params) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -30,7 +31,7 @@ public class OrderFactory {
                 extract();
     }
 
-    public static ExtractableResponse<Response> 주문_상태변경_요청(Order params, Long orderId) {
+    public static ExtractableResponse<Response> 주문_상태변경_요청(OrderRequest params, Long orderId) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)

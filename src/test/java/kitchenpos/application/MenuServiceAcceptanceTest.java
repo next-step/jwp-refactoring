@@ -3,6 +3,7 @@ package kitchenpos.application;
 
 import kitchenpos.AcceptanceTest;
 import kitchenpos.domain.*;
+import kitchenpos.dto.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,8 +21,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DisplayName("메뉴 테스트")
 class MenuServiceAcceptanceTest extends AcceptanceTest {
 
-    MenuGroup createdMenuGroup;
-    Product createdProduct;
+    MenuGroupResponse createdMenuGroup;
+    ProductResponse createdProduct;
     Menu createdMenu;
 
     @BeforeEach
@@ -30,18 +31,15 @@ class MenuServiceAcceptanceTest extends AcceptanceTest {
 
         ExtractableResponse<Response> createdResponse;
 
-        Product product = new Product();
-        product.setName("후라이드치킨");
-        product.setPrice(BigDecimal.valueOf(18000));
+        ProductRequest productRequest = new ProductRequest("후라이드치킨", BigDecimal.valueOf(18000L));
 
-        createdResponse = ProductFactory.상품_생성_요청(product);
+        createdResponse = ProductFactory.상품_생성_요청(productRequest);
         createdProduct = ProductServiceAcceptanceTest.상품이_생성됨(createdResponse);
 
-        MenuGroup menuGroup = new MenuGroup();
-        menuGroup.setId(1L);
-        menuGroup.setName("치킨");
+        MenuGroupRequest menuGroupRequest = new MenuGroupRequest("치킨");
+        ExtractableResponse<Response> createResponse = MenuGroupFactory.메뉴그룹_생성_요청(menuGroupRequest);
 
-        createdResponse = MenuGroupFactory.메뉴그룹_생성_요청(menuGroup);
+        createdResponse = MenuGroupFactory.메뉴그룹_생성_요청(menuGroupRequest);
         createdMenuGroup = MenuGroupServiceAcceptanceTest.메뉴그룹이_생성됨(createdResponse);
 
     }
@@ -49,41 +47,21 @@ class MenuServiceAcceptanceTest extends AcceptanceTest {
     @DisplayName("메뉴를 등록한다")
     @Test
     void createTest() {
+        MenuProductRequest menuProductRequest = new MenuProductRequest(createdProduct.getId(), 2L);
+        MenuRequest menuRequest = new MenuRequest("후라이드치킨", BigDecimal.valueOf(18000L), createdMenuGroup.getId(), Arrays.asList(menuProductRequest));
 
-        Menu menu = new Menu();
-        menu.setName("후라이드치킨");
-        menu.setPrice(BigDecimal.valueOf(18000));
-        menu.setMenuGroupId(createdMenuGroup.getId());
-
-
-        MenuProduct menuProduct = new MenuProduct();
-        menuProduct.setMenuId(menu.getId());
-        menuProduct.setProductId(createdProduct.getId());
-        menuProduct.setQuantity(10L);
-
-        menu.setMenuProducts(Arrays.asList(menuProduct));
-
-        ExtractableResponse<Response> createResponse = MenuFactory.메뉴_생성_요청(menu);
+        ExtractableResponse<Response> createResponse = MenuFactory.메뉴_생성_요청(menuRequest);
         createdMenu = 메뉴가_생성됨(createResponse);
     }
 
     @DisplayName("메뉴를 조회한다")
     @Test
     void getListTest() {
+        MenuProductRequest menuProductRequest = new MenuProductRequest(createdProduct.getId(), 2L);
+        MenuRequest menuRequest = new MenuRequest("후라이드치킨", BigDecimal.valueOf(18000L), createdMenuGroup.getId(), Arrays.asList(menuProductRequest));
 
-        Menu menu = new Menu();
-        menu.setName("후라이드치킨");
-        menu.setPrice(BigDecimal.valueOf(18000));
-        menu.setMenuGroupId(createdMenuGroup.getId());
 
-        MenuProduct menuProduct = new MenuProduct();
-        menuProduct.setMenuId(menu.getId());
-        menuProduct.setProductId(createdProduct.getId());
-        menuProduct.setQuantity(10L);
-
-        menu.setMenuProducts(Arrays.asList(menuProduct));
-
-        ExtractableResponse<Response> createResponse = MenuFactory.메뉴_생성_요청(menu);
+        ExtractableResponse<Response> createResponse = MenuFactory.메뉴_생성_요청(menuRequest);
         createdMenu = 메뉴가_생성됨(createResponse);
 
         ExtractableResponse<Response> getResponse = MenuFactory.메뉴_조회_요청();

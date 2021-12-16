@@ -1,13 +1,10 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.dao.MenuProductDao;
-import kitchenpos.dao.ProductDao;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Product;
+import kitchenpos.domain.*;
+import kitchenpos.dto.MenuRequest;
+import kitchenpos.repository.MenuGroupRepository;
+import kitchenpos.repository.MenuRepository;
+import kitchenpos.repository.ProductRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,60 +23,43 @@ import static org.mockito.Mockito.*;
 class MenuServiceTest {
 
     @Mock
-    MenuDao menuDao;
+    MenuRepository menuRepository;
+
     @Mock
-    MenuGroupDao menuGroupDao;
+    MenuGroupRepository menuGroupRepository;
+
     @Mock
-    MenuProductDao menuProductDao;
-    @Mock
-    ProductDao productDao;
+    ProductService productService;
 
     @DisplayName("메뉴를 등록한다.")
     @Test
     void createTest() {
 
-        MenuGroup 한마리메뉴 = mock(MenuGroup.class);
-        Product 후라이드 = mock(Product.class);
+        MenuGroup 한마리메뉴 = new MenuGroup("한마리메뉴");
+        Product 후라이드 = new Product(1L, "후라이드", BigDecimal.valueOf(16000));
 
-        // given
-        Long 한마리메뉴_id = 2L;
-        when(한마리메뉴.getId()).thenReturn(한마리메뉴_id);
+        Menu 후라이드치킨 = new Menu("후라이드치킨", BigDecimal.valueOf(16000), 한마리메뉴);
 
-        Long 후라이드_id = 1L;
-        when(후라이드.getPrice()).thenReturn(BigDecimal.valueOf(16000));
+        MenuProduct 후라이드치킨_상품 = new MenuProduct(후라이드치킨, 후라이드, 1L);
+        후라이드치킨.addMenuProduct(후라이드치킨_상품);
 
-
-        Menu 후라이드치킨 = new Menu();
-        후라이드치킨.setName("후라이드치킨");
-        후라이드치킨.setPrice(BigDecimal.valueOf(16000));
-        후라이드치킨.setMenuGroupId(한마리메뉴.getId());
-
-        MenuProduct 후라이드치킨_상품 = new MenuProduct();
-        후라이드치킨_상품.setMenuId(후라이드치킨.getId());
-        후라이드치킨_상품.setProductId(후라이드_id);
-        후라이드치킨_상품.setQuantity(1L);
-
-        후라이드치킨.setMenuProducts(Arrays.asList(후라이드치킨_상품));
-
-        when(menuGroupDao.existsById(후라이드치킨.getMenuGroupId())).thenReturn(true);
-        when(productDao.findById(후라이드_id)).thenReturn(Optional.of(후라이드));
-        MenuService menuService = new MenuService(menuDao, menuGroupDao, menuProductDao, productDao);
+        when(menuGroupRepository.findById(후라이드치킨.getMenuGroup().getId())).thenReturn(Optional.of(한마리메뉴));
+        when(productService.getProduct(후라이드.getId())).thenReturn(후라이드);
+        MenuService menuService = new MenuService(menuRepository, menuGroupRepository, productService);
 
         Menu expectedMenu = mock(Menu.class);
         when(expectedMenu.getId()).thenReturn(1L);
         when(expectedMenu.getName()).thenReturn("후라이드치킨");
         when(expectedMenu.getPrice()).thenReturn(BigDecimal.valueOf(16000));
-        when(expectedMenu.getMenuGroupId()).thenReturn(한마리메뉴_id);
 
-        when(menuDao.save(후라이드치킨)).thenReturn(expectedMenu);
+        when(menuRepository.save(후라이드치킨)).thenReturn(expectedMenu);
 
         // when
-        Menu created_후라이드치킨 = menuService.create(후라이드치킨);
+        Menu created_후라이드치킨 = menuService.create(MenuRequest.from(후라이드치킨));
         // then
         assertThat(created_후라이드치킨.getId()).isNotNull();
         assertThat(created_후라이드치킨.getName()).isEqualTo(후라이드치킨.getName());
         assertThat(created_후라이드치킨.getPrice()).isEqualTo(후라이드치킨.getPrice());
-        assertThat(created_후라이드치킨.getMenuGroupId()).isEqualTo(후라이드치킨.getMenuGroupId());
     }
 
     @DisplayName("메뉴의 목록을 조회한다.")
@@ -87,13 +67,9 @@ class MenuServiceTest {
     void getListTest() {
         // given
         Menu menu = mock(Menu.class);
-        when(menu.getId()).thenReturn(1L);
 
-        MenuProduct menuProduct = mock(MenuProduct.class);
-
-        when(menuDao.findAll()).thenReturn(Arrays.asList(menu));
-        when(menuProductDao.findAllByMenuId(menu.getId())).thenReturn(Arrays.asList(menuProduct));
-        MenuService menuService = new MenuService(menuDao, menuGroupDao, menuProductDao, productDao);
+        when(menuRepository.findAll()).thenReturn(Arrays.asList(menu));
+        MenuService menuService = new MenuService(menuRepository, menuGroupRepository, productService);
 
         // when
         List<Menu> menus = menuService.list();
