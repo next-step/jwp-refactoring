@@ -70,3 +70,16 @@
 | 단체 지정 | table group | 통합 계산을 위해 개별 주문 테이블을 그룹화하는 기능 |
 | 주문 항목 | order line item | 주문에 속하는 수량이 있는 메뉴 |
 | 매장 식사 | eat in | 포장하지 않고 매장에서 식사하는 것 |
+
+---
+
+# 3단계 : 의존성 리팩토링
+
+### 1. Before 의존관계
+  ![](./src/main/resources/static/before.png)
+  - 도메인 클래스 간에 강한 의존성 결합이 존재
+  - table <-> tablegroup 패키지 사이클이 존재
+
+### 2. After 의존관계
+  - [ ] 도메인 간 의존관계 해체 -> 객체간 직접 참조가 아닌 Repository 를 통해 우회
+  - [ ] Event 방식을 통해 table <-> tablegroup 패키지 사이클 제거  
