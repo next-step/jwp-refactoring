@@ -9,6 +9,7 @@ import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.sns.application.SnsEventHandler;
+import kitchenpos.sns.strategy.SenderStrategy;
 import kitchenpos.table.domain.table.OrderTableRepository;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.DisplayName;
@@ -23,8 +24,7 @@ import static kitchenpos.fixture.OrderTableDomainFixture.한식_테이블;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @DisplayName("Mockito - 주문 관리")
 class OrderMockitoTest {
@@ -75,6 +75,7 @@ class OrderMockitoTest {
         final OrderResponse actual = orderService.saveOrder(첫_주문_요청);
 
         // then
+        verify(snsEventHandler).sns(any(SenderStrategy.class));
         assertThat(actual).isNotNull();
     }
 
