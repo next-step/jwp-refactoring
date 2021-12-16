@@ -20,9 +20,13 @@ public class Menu {
     private MenuGroup menuGroup;
 
     @Embedded
-    private MenuProducts menuProducts;
+    private MenuProducts menuProducts = new MenuProducts();
 
     public Menu() {
+    }
+
+    public Menu(Long id) {
+        this.id = id;
     }
 
     public Menu(String name, BigDecimal price, MenuGroup menuGroup) {
@@ -54,13 +58,34 @@ public class Menu {
         return menuProducts;
     }
 
-    public Long getMenuGroupId() {
-        return menuGroup.getId();
-    }
 
     public void addMenuProduct(MenuProduct menuProduct) {
         this.menuProducts.addMenuProduct(menuProduct);
         menuProduct.addMenu(this);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Menu menu = (Menu) o;
+        return Objects.equals(id, menu.id) && Objects.equals(name, menu.name) && Objects.equals(price, menu.price) && Objects.equals(menuGroup.getId(), menu.menuGroup.getId()) && Objects.equals(menuProducts, menu.menuProducts);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, price, menuGroup, menuProducts);
+    }
+
+
+    @Override
+    public String toString() {
+        return "Menu{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", price=" + price +
+                ", menuGroup=" + menuGroup.getId() +
+                ", menuProducts=" + menuProducts +
+                '}';
+    }
 }

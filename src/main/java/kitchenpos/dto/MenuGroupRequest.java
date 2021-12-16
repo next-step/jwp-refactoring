@@ -4,10 +4,18 @@ import kitchenpos.domain.MenuGroup;
 
 public class MenuGroupRequest {
 
-    private final String name;
+    private String name;
+
+    public MenuGroupRequest() {
+    }
 
     public MenuGroupRequest(String name) {
         this.name = name;
+    }
+
+
+    public static MenuGroupRequest from(MenuGroup menuGroup) {
+        return new MenuGroupRequest(menuGroup.getName());
     }
 
     public String getName() {

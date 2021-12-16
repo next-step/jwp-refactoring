@@ -1,7 +1,13 @@
 package kitchenpos.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import kitchenpos.dto.MenuProductRequest;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.Objects;
 
 @Entity
 public class MenuProduct {
@@ -29,6 +35,18 @@ public class MenuProduct {
         this.quantity = quantity;
     }
 
+    public static MenuProduct from(Menu menu, Product product, MenuProductRequest menuProductRequest) {
+        return new MenuProduct(menu, product, menuProductRequest.getQuantity());
+    }
+
+    public Menu getMenu() {
+        return menu;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
     public Long getSeq() {
         return seq;
     }
@@ -41,8 +59,30 @@ public class MenuProduct {
         this.menu = menu;
     }
 
-    public BigDecimal getProductPrice() {
+    public BigDecimal calculateProductPrice() {
         return product.getPrice().multiply(BigDecimal.valueOf(quantity));
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MenuProduct that = (MenuProduct) o;
+        return quantity == that.quantity && Objects.equals(seq, that.seq) && Objects.equals(menu.getId(), that.menu.getId()) && Objects.equals(product, that.product);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(seq, menu, product, quantity);
+    }
+
+    @Override
+    public String toString() {
+        return "MenuProduct{" +
+                "seq=" + seq +
+                ", menu=" + menu.getName() +
+                ", product=" + product.getId() +
+                ", quantity=" + quantity +
+                '}';
+    }
 }
