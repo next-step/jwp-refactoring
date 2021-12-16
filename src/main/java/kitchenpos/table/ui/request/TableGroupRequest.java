@@ -1,4 +1,4 @@
-package kitchenpos.order.ui.request;
+package kitchenpos.table.ui.request;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;

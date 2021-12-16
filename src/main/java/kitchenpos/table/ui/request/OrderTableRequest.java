@@ -1,10 +1,10 @@
-package kitchenpos.order.ui.request;
+package kitchenpos.table.ui.request;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import kitchenpos.table.domain.Headcount;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.TableStatus;
+import kitchenpos.table.domain.CustomerStatus;
 
 public final class OrderTableRequest {
 
@@ -28,6 +28,6 @@ public final class OrderTableRequest {
     }
 
     public OrderTable toEntity() {
-        return OrderTable.of(Headcount.from(numberOfGuests), TableStatus.valueOf(empty));
+        return OrderTable.of(Headcount.from(numberOfGuests), CustomerStatus.valueOf(empty));
     }
 }

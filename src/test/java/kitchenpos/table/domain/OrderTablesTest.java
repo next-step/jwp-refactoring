@@ -21,7 +21,7 @@ class OrderTablesTest {
     void instance() {
         assertThatNoException()
             .isThrownBy(() -> OrderTables.from(
-                Collections.singletonList(OrderTable.of(Headcount.from(1), TableStatus.EMPTY))
+                Collections.singletonList(OrderTable.of(Headcount.from(1), CustomerStatus.EMPTY))
             ));
     }
 

@@ -1,4 +1,4 @@
-package kitchenpos.order.ui.response;
+package kitchenpos.table.ui.response;
 
 import java.util.List;
 import java.util.stream.Collectors;

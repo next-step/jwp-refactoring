@@ -27,14 +27,14 @@ class OrderTableTest {
     @DisplayName("생성")
     void instance() {
         assertThatNoException()
-            .isThrownBy(() -> OrderTable.of(Headcount.from(1), TableStatus.EMPTY));
+            .isThrownBy(() -> OrderTable.of(Headcount.from(1), CustomerStatus.EMPTY));
     }
 
     @ParameterizedTest(name = "[{index}] {argumentsWithNames} 으로 생성 불가능")
     @DisplayName("손님 수와 상태는 필수")
     @MethodSource
     void instance_nullHeadcountOrStatus_thrownIllegalArgumentException(Headcount numberOfGuests,
-        TableStatus status) {
+        CustomerStatus status) {
         assertThatIllegalArgumentException()
             .isThrownBy(() -> OrderTable.of(numberOfGuests, status))
             .withMessageEndingWith("필수입니다.");
@@ -43,9 +43,9 @@ class OrderTableTest {
     @ParameterizedTest(name = "[{index}] 그룹과 주문이 없으면 {0} 상태로 변경 가능")
     @DisplayName("테이블 상태 변경")
     @CsvSource({"EMPTY,true", "FULL,false"})
-    void changeStatus(TableStatus changeStatus, boolean expected) {
+    void changeStatus(CustomerStatus changeStatus, boolean expected) {
         //given
-        OrderTable orderTable = OrderTable.of(Headcount.from(1), TableStatus.EMPTY);
+        OrderTable orderTable = OrderTable.of(Headcount.from(1), CustomerStatus.EMPTY);
 
         //when
         orderTable.changeStatus(changeStatus);
@@ -58,11 +58,11 @@ class OrderTableTest {
     @DisplayName("그룹이 있으면 테이블 상태 변경 불가능")
     void changeStatus_hasGroup_thrownInvalidStatusException() {
         //given
-        OrderTable orderTable = OrderTable.of(Headcount.from(1), TableStatus.EMPTY);
+        OrderTable orderTable = OrderTable.of(Headcount.from(1), CustomerStatus.EMPTY);
         TableGroup.from(Arrays.asList(orderTable, 빈_두명_테이블()));
 
         //when
-        ThrowingCallable changeStatusCallable = () -> orderTable.changeStatus(TableStatus.FULL);
+        ThrowingCallable changeStatusCallable = () -> orderTable.changeStatus(CustomerStatus.FULL);
 
         //then
         assertThatExceptionOfType(InvalidStatusException.class)
@@ -74,11 +74,11 @@ class OrderTableTest {
     @DisplayName("식사중이라면 테이블 상태 변경 불가능")
     void changeStatus_cooking_thrownInvalidStatusException() {
         //given
-        OrderTable orderTable = OrderTable.of(Headcount.from(1), TableStatus.FULL);
+        OrderTable orderTable = OrderTable.of(Headcount.from(1), CustomerStatus.FULL);
         Order.of(orderTable, Collections.singletonList(이십원_후라이트치킨_두마리세트_한개_주문_항목()));
 
         //when
-        ThrowingCallable changeStatusCallable = () -> orderTable.changeStatus(TableStatus.EMPTY);
+        ThrowingCallable changeStatusCallable = () -> orderTable.changeStatus(CustomerStatus.EMPTY);
 
         //then
         assertThatExceptionOfType(InvalidStatusException.class)
@@ -90,7 +90,7 @@ class OrderTableTest {
     @DisplayName("방문한 손님 수 변경")
     void changeNumberOfGuests() {
         //given
-        OrderTable orderTable = OrderTable.of(Headcount.from(1), TableStatus.FULL);
+        OrderTable orderTable = OrderTable.of(Headcount.from(1), CustomerStatus.FULL);
 
         //when
         orderTable.changeNumberOfGuests(Headcount.from(10));
@@ -103,7 +103,7 @@ class OrderTableTest {
     @DisplayName("빈 테이블의 방문한 손님 수 변경 불가능")
     void changeNumberOfGuests_empty_thrownInvalidStatusException() {
         //given
-        OrderTable orderTable = OrderTable.of(Headcount.from(1), TableStatus.EMPTY);
+        OrderTable orderTable = OrderTable.of(Headcount.from(1), CustomerStatus.EMPTY);
 
         //when
         ThrowingCallable changeCallable = () -> orderTable.changeNumberOfGuests(Headcount.from(10));
@@ -117,7 +117,7 @@ class OrderTableTest {
 
     private static Stream<Arguments> instance_nullHeadcountOrStatus_thrownIllegalArgumentException() {
         return Stream.of(
-            Arguments.of(null, TableStatus.EMPTY),
+            Arguments.of(null, CustomerStatus.EMPTY),
             Arguments.of(Headcount.from(1), null)
         );
     }

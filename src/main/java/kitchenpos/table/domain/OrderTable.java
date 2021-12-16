@@ -13,7 +13,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import kitchenpos.common.exception.InvalidStatusException;
-import kitchenpos.order.domain.Order;
 import org.springframework.util.Assert;
 
 @Entity
@@ -32,20 +31,17 @@ public class OrderTable {
 
     @Column(nullable = false, length = 10)
     @Enumerated(EnumType.STRING)
-    private TableStatus status;
-
-    @Embedded
-    private Orders orders = Orders.empty();
+    private CustomerStatus status;
 
     protected OrderTable() {
     }
 
-    private OrderTable(Headcount numberOfGuests, TableStatus status) {
+    private OrderTable(Headcount numberOfGuests, CustomerStatus status) {
         setNumberOfGuests(numberOfGuests);
         setStatus(status);
     }
 
-    public static OrderTable of(Headcount numberOfGuests, TableStatus status) {
+    public static OrderTable of(Headcount numberOfGuests, CustomerStatus status) {
         return new OrderTable(numberOfGuests, status);
     }
 
@@ -65,10 +61,6 @@ public class OrderTable {
         return numberOfGuests;
     }
 
-    public void addOrder(Order order) {
-        this.orders.add(order);
-    }
-
     public void changeNumberOfGuests(Headcount numberOfGuests) {
         if (status.isEmpty()) {
             throw new InvalidStatusException(
@@ -85,16 +77,13 @@ public class OrderTable {
         return status.isEmpty();
     }
 
-    public void changeStatus(TableStatus status) {
+    public void changeStatus(CustomerStatus status) {
         validateStatus();
         this.status = status;
     }
 
     public boolean isCookingOrMeal() {
-        if (status.isEmpty() || orders.isEmpty()) {
-            return false;
-        }
-        return orders.anyCookingOrMeal();
+        return status.isOrdered();
     }
 
     boolean notHaveGroupAndEmpty() {
@@ -102,7 +91,7 @@ public class OrderTable {
     }
 
     void changeGroup(TableGroup tableGroup) {
-        this.status = TableStatus.FULL;
+        this.status = CustomerStatus.PLACE;
         this.tableGroup = tableGroup;
     }
 
@@ -115,7 +104,7 @@ public class OrderTable {
         this.numberOfGuests = numberOfGuests;
     }
 
-    private void setStatus(TableStatus status) {
+    private void setStatus(CustomerStatus status) {
         Assert.notNull(status, "테이블 상태는 필수입니다.");
         this.status = status;
     }

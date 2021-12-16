@@ -2,10 +2,10 @@ package kitchenpos.table.application;
 
 import java.util.List;
 import kitchenpos.common.exception.NotFoundException;
-import kitchenpos.order.ui.request.OrderTableRequest;
-import kitchenpos.order.ui.request.TableGuestsCountRequest;
-import kitchenpos.order.ui.request.TableStatusRequest;
-import kitchenpos.order.ui.response.OrderTableResponse;
+import kitchenpos.table.ui.request.OrderTableRequest;
+import kitchenpos.table.ui.request.TableGuestsCountRequest;
+import kitchenpos.table.ui.request.TableStatusRequest;
+import kitchenpos.table.ui.response.OrderTableResponse;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import org.springframework.stereotype.Service;

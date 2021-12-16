@@ -25,8 +25,8 @@ class TableGroupTest {
     void instance() {
         assertThatNoException()
             .isThrownBy(() -> TableGroup.from(Arrays.asList(
-                OrderTable.of(Headcount.from(1), TableStatus.EMPTY),
-                OrderTable.of(Headcount.from(2), TableStatus.EMPTY)
+                OrderTable.of(Headcount.from(1), CustomerStatus.EMPTY),
+                OrderTable.of(Headcount.from(2), CustomerStatus.EMPTY)
             )));
     }
 
@@ -43,7 +43,7 @@ class TableGroupTest {
     void instance_containNull_thrownIllegalArgumentException() {
         assertThatIllegalArgumentException()
             .isThrownBy(() -> TableGroup.from(
-                Collections.singletonList(OrderTable.of(Headcount.from(2), TableStatus.EMPTY))))
+                Collections.singletonList(OrderTable.of(Headcount.from(2), CustomerStatus.EMPTY))))
             .withMessageEndingWith("개 이상 이어야 합니다.");
     }
 

@@ -13,7 +13,7 @@ import static kitchenpos.table.step.TableAcceptanceStep.테이블_저장되어_�
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.order.ui.response.OrderTableResponse;
+import kitchenpos.table.ui.response.OrderTableResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

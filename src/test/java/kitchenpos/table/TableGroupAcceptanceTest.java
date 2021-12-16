@@ -12,8 +12,8 @@ import io.restassured.response.Response;
 import java.util.Arrays;
 import java.util.List;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.order.ui.response.OrderTableResponse;
-import kitchenpos.order.ui.response.TableGroupResponse;
+import kitchenpos.table.ui.response.OrderTableResponse;
+import kitchenpos.table.ui.response.TableGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

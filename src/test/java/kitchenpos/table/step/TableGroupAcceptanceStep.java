@@ -13,10 +13,10 @@ import io.restassured.response.Response;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.order.ui.request.TableGroupRequest;
-import kitchenpos.order.ui.request.TableGroupRequest.OrderTableIdRequest;
-import kitchenpos.order.ui.response.OrderTableResponse;
-import kitchenpos.order.ui.response.TableGroupResponse;
+import kitchenpos.table.ui.request.TableGroupRequest;
+import kitchenpos.table.ui.request.TableGroupRequest.OrderTableIdRequest;
+import kitchenpos.table.ui.response.OrderTableResponse;
+import kitchenpos.table.ui.response.TableGroupResponse;
 import org.assertj.core.groups.Tuple;
 import org.springframework.http.HttpStatus;
 
