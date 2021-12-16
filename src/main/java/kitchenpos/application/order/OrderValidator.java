@@ -1,11 +1,14 @@
 package kitchenpos.application.order;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 import javax.persistence.EntityNotFoundException;
 
 import org.springframework.stereotype.Component;
 
+import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menu.MenuRepository;
 import kitchenpos.domain.order.Order;
 import kitchenpos.domain.order.OrderLineItem;
@@ -18,6 +21,8 @@ import kitchenpos.utils.StreamUtils;
 public class OrderValidator {
     private static final String EMPTY_ORDER_TABLE = "OrderTable 이 비어있습니다.";
     private static final String NOT_EXIST_ORDER_TABLE = "OrderTable 이 존재하지 않습니다.";
+    private static final String NOT_EXIST_MENU = "Menu 가 존재하지 않습니다.";
+    private static final String NOT_EXIST_ORDER = "Order 가 존재하지 않습니다.";
 
     private final MenuRepository menuRepository;
     private final OrderTableRepository orderTableRepository;
@@ -32,6 +37,11 @@ public class OrderValidator {
         validateOrderTable(order.getOrderTableId());
     }
 
+    public void validateOrderLineItem(OrderLineItem orderLineItem) {
+        validateExistOrders(orderLineItem.getOrder());
+        validateExistMenu(orderLineItem.getMenuId());
+    }
+
     private void validateExistMenus(OrderLineItems orderLineItems) {
         List<Long> menuIds = StreamUtils.mapToList(orderLineItems.getValues(), OrderLineItem::getMenuId);
         if (orderLineItems.size() != menuRepository.countByIdIn(menuIds)) {
@@ -44,6 +54,19 @@ public class OrderValidator {
 
         if (orderTable.isEmpty()) {
             throw new IllegalArgumentException(EMPTY_ORDER_TABLE);
+        }
+    }
+
+    private void validateExistMenu(Long menuId) {
+        Optional<Menu> menuOpt = menuRepository.findById(menuId);
+        if (!menuOpt.isPresent()) {
+            throw new EntityNotFoundException(NOT_EXIST_MENU);
+        }
+    }
+
+    private static void validateExistOrders(Order order) {
+        if (Objects.isNull(order)) {
+            throw new EntityNotFoundException(NOT_EXIST_ORDER);
         }
     }
 

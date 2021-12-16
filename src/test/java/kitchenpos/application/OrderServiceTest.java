@@ -108,7 +108,7 @@ class OrderServiceTest {
     void create1() {
         // given
         List<OrderLineItemRequest> orderLineItemRequests =
-            Arrays.asList(OrderLineItemRequest.of(불고기_주문항목.getMenu().getId(), 불고기_주문항목.getQuantity().getValue()));
+            Arrays.asList(OrderLineItemRequest.of(불고기_주문항목.getMenuId(), 불고기_주문항목.getQuantity().getValue()));
         OrderRequest orderRequest = OrderRequest.of(주문_개인테이블.getId(),
                                                     OrderStatus.COOKING,
                                                     orderLineItemRequests);
@@ -150,7 +150,7 @@ class OrderServiceTest {
     void create4() {
         // given
         List<OrderLineItemRequest> orderLineItemRequests =
-            Arrays.asList(OrderLineItemRequest.of(불고기_주문항목.getMenu().getId(), 불고기_주문항목.getQuantity().getValue()));
+            Arrays.asList(OrderLineItemRequest.of(불고기_주문항목.getMenuId(), 불고기_주문항목.getQuantity().getValue()));
         OrderRequest orderRequest = OrderRequest.of(0L,
                                                     OrderStatus.COOKING,
                                                     orderLineItemRequests);
@@ -164,7 +164,7 @@ class OrderServiceTest {
     void create5() {
         // given
         List<OrderLineItemRequest> orderLineItemRequests =
-            Arrays.asList(OrderLineItemRequest.of(불고기_주문항목.getMenu().getId(), 불고기_주문항목.getQuantity().getValue()));
+            Arrays.asList(OrderLineItemRequest.of(불고기_주문항목.getMenuId(), 불고기_주문항목.getQuantity().getValue()));
         OrderRequest orderRequest = OrderRequest.of(빈_개인테이블.getId(), OrderStatus.COOKING, orderLineItemRequests);
 
         // when & then

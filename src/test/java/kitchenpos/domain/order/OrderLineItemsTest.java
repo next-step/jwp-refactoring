@@ -20,8 +20,8 @@ class OrderLineItemsTest {
     void creat1() {
         // given
         List<OrderLineItem> orderLineItems = new ArrayList<>();
-        orderLineItems.add(OrderLineItem.of(Menu.from(1L), 1L));
-        orderLineItems.add(OrderLineItem.of(Menu.from(2L), 1L));
+        orderLineItems.add(OrderLineItem.of(1L, 1L));
+        orderLineItems.add(OrderLineItem.of(2L, 1L));
 
         // when & then
         assertThatNoException().isThrownBy(() -> OrderLineItems.from(orderLineItems));

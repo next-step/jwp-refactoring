@@ -66,7 +66,7 @@ public class OrderService {
         List<OrderLineItem> orderLineItems = new ArrayList<>();
         for (OrderLineItemRequest orderLineItemRequest : orderRequest.getOrderLineItems()) {
             Menu menu = findMenu(orderLineItemRequest.getMenuId());
-            OrderLineItem orderLineItem = OrderLineItem.of(menu, orderLineItemRequest.getQuantity());
+            OrderLineItem orderLineItem = OrderLineItem.of(menu.getId(), orderLineItemRequest.getQuantity());
 
             orderLineItems.add(orderLineItem);
         }
