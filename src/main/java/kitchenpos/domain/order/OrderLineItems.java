@@ -30,4 +30,11 @@ public final class OrderLineItems {
     public boolean isEmpty() {
         return this.orderLineItems.isEmpty();
     }
+
+    public void acceptOrder(Orders order) {
+        this.orderLineItems.stream().forEach(
+            orderLineItem -> orderLineItem.acceptOrder(order)
+        );
+    }
+
 }

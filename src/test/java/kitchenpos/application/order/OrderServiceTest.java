@@ -73,7 +73,6 @@ public class OrderServiceTest {
         Orders 치킨주문 = Orders.of(치킨_주문_단체테이블, OrderStatus.COOKING);
         치킨_주문항목.acceptOrder(치킨주문);
 
-        when(menuService.countByIdIn(anyList())).thenReturn(1L);
         when(orderTableRepository.findById(nullable(Long.class))).thenReturn(Optional.of(치킨_주문_단체테이블));
         when(menuService.findAllByIdIn(anyList())).thenReturn(List.of(뿌링클콤보));
 
@@ -108,11 +107,11 @@ public class OrderServiceTest {
                     .isThrownBy(() -> orderService.create(OrderDto.of(치킨주문)));
     }
 
-    @DisplayName("미등록된 주문테이블에서 주문 시 예외가 발생된다.")
+    @DisplayName("미등록된 주문에대한 오더시 예외가 발생된다.")
     @Test
     void exception_createOrder_notExistedOrderTable() {
         // given
-        Menu 뿌링클콤보 = Menu.of("뿌링클콤보", Price.of(18_000));
+        Menu 뿌링클콤보 = Menu.of(1L, "뿌링클콤보", Price.of(18_000));
         OrderLineItem 치킨_주문항목 = OrderLineItem.of(뿌링클콤보, 1L);
 
         OrderTable 치킨_주문_단체테이블 = OrderTable.of(10, false);
@@ -120,8 +119,8 @@ public class OrderServiceTest {
         치킨_주문항목.acceptOrder(치킨주문);
 
         when(orderTableRepository.findById(nullable(Long.class))).thenReturn(Optional.of(치킨_주문_단체테이블));
-        when(menuService.countByIdIn(anyList())).thenReturn(0L);
 
+        
         // when
         // then
         Assertions.assertThatExceptionOfType(NotRegistedMenuOrderException.class)
@@ -132,7 +131,7 @@ public class OrderServiceTest {
     @Test
     void exception_createOrder_emptyOrderTable() {
         // given
-        Menu 뿌링클콤보 = Menu.of("뿌링클콤보", Price.of(18_000));
+        Menu 뿌링클콤보 = Menu.of(1L, "뿌링클콤보", Price.of(18_000));
 
         OrderTable 치킨_주문_단체테이블 = OrderTable.of(0, true);
 
@@ -141,7 +140,7 @@ public class OrderServiceTest {
         치킨_주문항목.acceptOrder(치킨주문);
 
         when(orderTableRepository.findById(nullable(Long.class))).thenReturn(Optional.of(치킨_주문_단체테이블));
-        when(menuService.countByIdIn(anyList())).thenReturn(1L);
+        when(menuService.findAllByIdIn(anyList())).thenReturn(List.of(뿌링클콤보));
 
         // when
         // then

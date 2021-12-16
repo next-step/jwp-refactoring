@@ -10,9 +10,8 @@ import kitchenpos.domain.table.OrderTableRepository;
 import kitchenpos.dto.order.OrderDto;
 import kitchenpos.dto.order.OrderLineItemDto;
 import kitchenpos.domain.order.OrderLineItem;
+import kitchenpos.domain.order.OrderLineItems;
 import kitchenpos.domain.order.OrderStatus;
-import kitchenpos.exception.order.EmptyOrderLineItemOrderException;
-import kitchenpos.exception.order.EmptyOrderTableOrderException;
 import kitchenpos.exception.order.NotChangableOrderStatusException;
 import kitchenpos.exception.order.NotFoundOrderException;
 import kitchenpos.exception.order.NotRegistedMenuOrderException;
@@ -21,6 +20,7 @@ import kitchenpos.exception.table.NotFoundOrderTableException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -46,51 +46,30 @@ public class OrderService {
         final OrderTable orderTable = orderTableRepository.findById(order.getOrderTableId()).orElseThrow(NotFoundOrderTableException::new);
         final List<OrderLineItemDto> orderLineItemDtos = order.getOrderLineItems();
 
-        validationOfCreate(orderTable, orderLineItemDtos);
+        OrderLineItems orderLineItems = createOrderLineItems(orderLineItemDtos);
 
-        final Orders newOrder = Orders.of(orderTable, OrderStatus.COOKING);
+        if (orderLineItems.size() != orderLineItemDtos.size()) {
+            throw new NotRegistedMenuOrderException();
+        }
 
-        mappingOrderLineItem(newOrder, orderLineItemDtos);
+        final Orders newOrder = Orders.of(orderTable, OrderStatus.COOKING, orderLineItems);
 
         return OrderDto.of(orderRepository.save(newOrder));
     }
 
-    private void mappingOrderLineItem(final Orders order, final List<OrderLineItemDto> orderLineItemDtos) {
+
+    private OrderLineItems createOrderLineItems(final List<OrderLineItemDto> orderLineItemDtos) {
         List<Long> menuIds = orderLineItemDtos.stream().map(OrderLineItemDto::getMenuId).collect(Collectors.toList());
-        Menus menus = Menus.of(menuService.findAllByIdIn(menuIds));        
+        Menus menus = Menus.of(menuService.findAllByIdIn(menuIds));
+        
+        List<OrderLineItem> orderLineItems = new ArrayList<>();
         
         for (OrderLineItemDto orderLineItemDto : orderLineItemDtos) {
             Menu matchingMenu = menus.findById(orderLineItemDto.getMenuId());
 
-            OrderLineItem orderLineItem = OrderLineItem.of(order, matchingMenu, orderLineItemDto.getQuantity());
-            orderLineItem.acceptOrder(order);
+            orderLineItems.add(OrderLineItem.of(matchingMenu, orderLineItemDto.getQuantity()));
         }
-    }
-
-    private void validationOfCreate(final OrderTable orderTable, final List<OrderLineItemDto> orderLineItems) {
-        checkEmptyOfOrderLineItems(orderLineItems);
-        checkExistOfMenu(orderLineItems);
-        checkEmptyTable(orderTable);
-    }
-
-    private void checkEmptyTable(final OrderTable orderTable) {
-        if (orderTable.isEmpty()) {
-            throw new EmptyOrderTableOrderException();
-        }
-    }
-
-    private void checkExistOfMenu(final List<OrderLineItemDto> orderLineItemDtos) {
-        final List<Long> menuIds = orderLineItemDtos.stream().map(OrderLineItemDto::getMenuId).collect(Collectors.toList());
-
-        if (orderLineItemDtos.size() != menuService.countByIdIn(menuIds)) {
-            throw new NotRegistedMenuOrderException();
-        }
-    }
-
-    private void checkEmptyOfOrderLineItems(final List<OrderLineItemDto> orderLineItemDtos) {
-        if (orderLineItemDtos.isEmpty()) {
-            throw new EmptyOrderLineItemOrderException();
-        }
+        return OrderLineItems.of(orderLineItems);
     }
 
     @Transactional(readOnly = true)

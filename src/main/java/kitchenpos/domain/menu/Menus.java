@@ -2,7 +2,7 @@ package kitchenpos.domain.menu;
 
 import java.util.List;
 
-import kitchenpos.exception.menu.NotFoundMenuException;
+import kitchenpos.exception.order.NotRegistedMenuOrderException;
 
 public class Menus {
     List<Menu> menus;
@@ -19,7 +19,7 @@ public class Menus {
         return this.menus.stream()
                         .filter(menu -> menu.isEqualMenuId(menuId))
                         .findFirst()
-                        .orElseThrow(NotFoundMenuException::new);
+                        .orElseThrow(NotRegistedMenuOrderException::new);
     }
 
     public boolean contains(Menu menu) {

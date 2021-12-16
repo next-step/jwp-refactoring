@@ -21,6 +21,8 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import kitchenpos.domain.table.OrderTable;
+import kitchenpos.exception.order.EmptyOrderLineItemOrderException;
+import kitchenpos.exception.order.EmptyOrderTableOrderException;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
@@ -47,6 +49,8 @@ public class Orders {
     }
 
     private Orders(OrderTable orderTable, OrderStatus orderStatus) {
+        checkEmptyTable(orderTable);
+
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
         this.orderLineItems = new ArrayList<>();
@@ -54,6 +58,27 @@ public class Orders {
 
     public static Orders of(OrderTable orderTable, OrderStatus orderStatus) {
         return new Orders(orderTable, orderStatus);
+    }
+    
+    public static Orders of(OrderTable orderTable, OrderStatus orderStatus, OrderLineItems orderLineItems) {
+        checkEmptyOfOrderLineItems(orderLineItems);
+        
+        Orders order = new Orders(orderTable, orderStatus);
+        orderLineItems.acceptOrder(order);
+        
+        return order;
+    }
+
+    private static void checkEmptyOfOrderLineItems(final OrderLineItems orderLineItems) {
+        if (orderLineItems.isEmpty()) {
+            throw new EmptyOrderLineItemOrderException();
+        }
+    }
+    
+    private static void checkEmptyTable(final OrderTable orderTable) {
+        if (orderTable.isEmpty()) {
+            throw new EmptyOrderTableOrderException();
+        }
     }
 
     public Long getId() {
