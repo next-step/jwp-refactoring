@@ -13,7 +13,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.menu.domain.MenuDao;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderDao;
 import kitchenpos.order.domain.OrderLineItem;
@@ -27,7 +27,7 @@ import kitchenpos.table.domain.OrderTableDao;
 class OrderServiceTest {
 
 	@Mock
-	MenuDao menuDao;
+	MenuRepository menuRepository;
 
 	@Mock
 	OrderDao orderDao;
@@ -64,7 +64,7 @@ class OrderServiceTest {
 	void createOrderCompareMenuSize() {
 		// when
 		when(order.getOrderLineItems()).thenReturn(Collections.singletonList(new OrderLineItem()));
-		when(menuDao.countByIdIn(anyList())).thenReturn(3L);
+		when(menuRepository.countByIdIn(anyList())).thenReturn(3L);
 
 		// then
 		assertThatThrownBy(() -> {
@@ -77,7 +77,7 @@ class OrderServiceTest {
 	void createOrderUnknownOrderTable() {
 		// given
 		given(order.getOrderLineItems()).willReturn(Collections.singletonList(new OrderLineItem()));
-		given(menuDao.countByIdIn(anyList())).willReturn(1L);
+		given(menuRepository.countByIdIn(anyList())).willReturn(1L);
 
 		// when
 		when(orderTableDao.findById(order.getOrderTableId())).thenThrow(IllegalArgumentException.class);
@@ -93,7 +93,7 @@ class OrderServiceTest {
 	void createOrderEmptyOrderTable() {
 		// given
 		given(order.getOrderLineItems()).willReturn(Collections.singletonList(new OrderLineItem()));
-		given(menuDao.countByIdIn(anyList())).willReturn(1L);
+		given(menuRepository.countByIdIn(anyList())).willReturn(1L);
 		given(orderTableDao.findById(order.getOrderTableId())).willReturn(Optional.of(orderTable));
 
 		// when
@@ -110,7 +110,7 @@ class OrderServiceTest {
 	void createOrder() {
 		// given
 		given(order.getOrderLineItems()).willReturn(Collections.singletonList(new OrderLineItem()));
-		given(menuDao.countByIdIn(anyList())).willReturn(1L);
+		given(menuRepository.countByIdIn(anyList())).willReturn(1L);
 		given(orderTableDao.findById(order.getOrderTableId())).willReturn(Optional.of(orderTable));
 		given(orderTable.isEmpty()).willReturn(false);
 
