@@ -33,7 +33,7 @@ public class MenuService {
         final List<MenuProductRequest> menuProducts = menuRequest.getMenuProducts();
 
         menuProducts.stream()
-                    .map(menuProductRequest -> new MenuProduct(null, productService.getProduct(menuProductRequest.getProductId()), menuProductRequest.getQuantity()))
+                    .map(menuProductRequest -> new MenuProduct(menu, productService.getProduct(menuProductRequest.getProductId()), menuProductRequest.getQuantity()))
                     .forEach(menu::addMenuProduct);
 
         menu.getMenuProducts().checkOverPrice(menuRequest.getPrice());

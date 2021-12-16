@@ -41,14 +41,16 @@ public class OrderService {
             throw new IllegalArgumentException("주문 항목 리스트가 비어있습니다.");
         }
         Order order = new Order(orderTable, OrderStatus.COOKING);
+        Order savedOrder = orderRepository.save(order);
 
         for (OrderLineItemRequest orderLineItemRequest : orderRequest.getOrderLineItemRequests()) {
-            addOrderLineItemToOrder(order, orderLineItemRequest);
+            addOrderLineItemToOrder(savedOrder, orderLineItemRequest);
         }
-        return orderRepository.save(order);
+        return savedOrder;
     }
 
-    private void addOrderLineItemToOrder(Order order, OrderLineItemRequest orderLineItemRequest) {
+
+    void addOrderLineItemToOrder(Order order, OrderLineItemRequest orderLineItemRequest) {
         Menu menu =  menuRepository.findById(orderLineItemRequest.getMenuId()).orElseThrow(() -> new IllegalArgumentException("등록된 메뉴가 아닙니다."));
         OrderLineItem orderLineItem = new OrderLineItem(order, menu, orderLineItemRequest.getQuantity());
         orderLineItemRepository.save(orderLineItem);
