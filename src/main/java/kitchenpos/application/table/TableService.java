@@ -1,4 +1,4 @@
-package kitchenpos.application;
+package kitchenpos.application.table;
 
 import java.util.Arrays;
 import java.util.List;
