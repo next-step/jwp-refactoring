@@ -1,6 +1,7 @@
 package kitchenpos.domain.tablegroup;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,9 +10,14 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.springframework.data.domain.AbstractAggregateRoot;
+
+import kitchenpos.domain.table.event.OrderTableGroupedEvent;
+import kitchenpos.domain.table.event.OrderTableUngroupedEvent;
+
 @Entity
 @Table(name = "table_group")
-public class TableGroup {
+public class TableGroup extends AbstractAggregateRoot<TableGroup> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,8 +44,12 @@ public class TableGroup {
         return new TableGroup();
     }
 
+    public void group(List<Long> orderTableIds) {
+        registerEvent(new OrderTableGroupedEvent(this, orderTableIds));
+    }
+
     public void ungroup() {
-        // TODO : Ungrouped Event 발생
+        registerEvent(new OrderTableUngroupedEvent(this));
     }
 
     public Long getId() {

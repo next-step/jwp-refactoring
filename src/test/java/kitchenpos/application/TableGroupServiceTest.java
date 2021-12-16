@@ -14,6 +14,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.stereotype.Component;
@@ -40,6 +41,7 @@ import kitchenpos.domain.product.Product;
 import kitchenpos.domain.product.ProductRepository;
 import kitchenpos.domain.table.OrderTable;
 import kitchenpos.domain.table.OrderTableRepository;
+import kitchenpos.domain.table.event.OrderTableUngroupedEvent;
 import kitchenpos.domain.tablegroup.TableGroup;
 import kitchenpos.domain.tablegroup.TableGroupRepository;
 import kitchenpos.dto.tablegroup.OrderTableIdRequest;
@@ -70,6 +72,9 @@ class TableGroupServiceTest {
 
     @Autowired
     private TableGroupService tableGroupService;
+
+    @Autowired
+    private ApplicationEventPublisher publisher;
 
     private MenuGroup 고기_메뉴그룹;
     private Product 돼지고기;
@@ -209,12 +214,15 @@ class TableGroupServiceTest {
         주문2_단체테이블.alignTableGroup(단체_테이블그룹.getId());
         불고기_주문.changeOrderStatus(OrderStatus.COMPLETION);
 
-            // when
-        tableGroupService.ungroup(단체_테이블그룹.getId());
+        // when
+        publisher.publishEvent(new OrderTableUngroupedEvent(단체_테이블그룹));
 
         // then
-        assertThat(주문1_단체테이블.getTableGroupId()).isNull();
-        assertThat(주문2_단체테이블.getTableGroupId()).isNull();
+        OrderTable 그룹해제된_주문1_단체테이블 = orderTableRepository.findById(주문1_단체테이블.getId()).get();
+        OrderTable 그룹해제된_주문2_단체테이블 = orderTableRepository.findById(주문2_단체테이블.getId()).get();
+
+        assertFalse(그룹해제된_주문1_단체테이블.hasTableGroup());
+        assertFalse(그룹해제된_주문2_단체테이블.hasTableGroup());
     }
 
     @DisplayName("TableGroup 해제 시, 주문상태가 요리중(COOKING)이거나 식사중(MEAL) 이면 예외가 발생한다.")

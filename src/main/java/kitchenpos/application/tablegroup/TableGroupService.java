@@ -31,8 +31,7 @@ public class TableGroupService {
         List<Long> orderTableIds = StreamUtils.mapToList(tableGroupRequest.getOrderTables(), OrderTableIdRequest::getId);
         List<OrderTable> orderTables = tableGroupValidator.getValidGroupOrderTables(orderTableIds);
         TableGroup tableGroup = tableGroupRepository.save(TableGroup.create());
-
-        // Todo : group 처리
+        tableGroup.group(orderTableIds);
 
         return TableGroupResponse.from(tableGroup, orderTables);
     }
