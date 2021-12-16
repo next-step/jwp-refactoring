@@ -7,6 +7,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import kitchenpos.domain.order.Orders;
+import kitchenpos.exception.order.HasNotCompletionOrderException;
+import kitchenpos.exception.table.HasOtherTableGroupException;
+
 @Entity
 public class OrderTable {
     @Id
@@ -78,7 +82,15 @@ public class OrderTable {
         return this.empty;
     }
 
-    public void changeEmpty(boolean empty) {
+    public void changeEmpty(boolean empty, Orders order) {
+        if (tableGroup != null) {
+            throw new HasOtherTableGroupException();
+        }
+
+        if (order != null && !order.isCompletion()) {
+            throw new HasNotCompletionOrderException();
+        }
+
         this.empty = empty;
     }
 

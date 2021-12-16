@@ -77,8 +77,6 @@ public class OrderServiceTest {
         when(menuService.findAllByIdIn(anyList())).thenReturn(List.of(뿌링클콤보));
 
         when(orderRepository.save(any(Orders.class))).thenReturn(치킨주문);
-        
-        
 
         OrderDto 주문_요청전문 = OrderDto.of(1L, List.of(OrderLineItemDto.of(1L, 1L)));
 
@@ -120,7 +118,6 @@ public class OrderServiceTest {
 
         when(orderTableRepository.findById(nullable(Long.class))).thenReturn(Optional.of(치킨_주문_단체테이블));
 
-        
         // when
         // then
         Assertions.assertThatExceptionOfType(NotRegistedMenuOrderException.class)
@@ -135,17 +132,13 @@ public class OrderServiceTest {
 
         OrderTable 치킨_주문_단체테이블 = OrderTable.of(0, true);
 
-        OrderLineItem 치킨_주문항목 = OrderLineItem.of(뿌링클콤보, 1L);
-        Orders 치킨주문 = Orders.of(치킨_주문_단체테이블, OrderStatus.MEAL);
-        치킨_주문항목.acceptOrder(치킨주문);
-
         when(orderTableRepository.findById(nullable(Long.class))).thenReturn(Optional.of(치킨_주문_단체테이블));
         when(menuService.findAllByIdIn(anyList())).thenReturn(List.of(뿌링클콤보));
 
         // when
         // then
         Assertions.assertThatExceptionOfType(EmptyOrderTableOrderException.class)
-                    .isThrownBy(() -> orderService.create(OrderDto.of(치킨주문)));
+                    .isThrownBy(() -> orderService.create(OrderDto.of(치킨_주문_단체테이블.getId(), List.of(OrderLineItemDto.of(뿌링클콤보.getId(), 1L)))));
     }
 
     @DisplayName("주문이 조회된다.")

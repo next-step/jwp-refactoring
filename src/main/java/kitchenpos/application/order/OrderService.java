@@ -105,4 +105,8 @@ public class OrderService {
         return !orderRepository.existsByOrderTableIdAndOrderStatus(orderTableId, OrderStatus.COMPLETION) 
                 && orderRepository.existsByOrderTableId(orderTableId);
     }
+
+    public Orders findByOrderTableId(Long orderTableId) {
+        return orderRepository.findByOrderTableId(orderTableId);
+    }
 }

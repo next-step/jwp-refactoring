@@ -4,12 +4,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import kitchenpos.application.order.OrderService;
+import kitchenpos.domain.order.Orders;
 import kitchenpos.domain.table.OrderTable;
 import kitchenpos.domain.table.OrderTableRepository;
 import kitchenpos.dto.table.OrderTableDto;
-import kitchenpos.exception.order.HasNotCompletionOrderException;
 import kitchenpos.exception.table.EmptyOrderTableException;
-import kitchenpos.exception.table.HasOtherTableGroupException;
 import kitchenpos.exception.table.NegativeOfNumberOfGuestsException;
 import kitchenpos.exception.table.NotFoundOrderTableException;
 
@@ -46,29 +45,12 @@ public class TableService {
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                                                                 .orElseThrow(NotFoundOrderTableException::new);
 
-        validationOfChangeEmpty(orderTableId, savedOrderTable);
-
-        savedOrderTable.changeEmpty(orderTable.isEmpty());
+        savedOrderTable.changeEmpty(orderTable.isEmpty(), orderService.findByOrderTableId(orderTableId));
 
         return OrderTableDto.of(savedOrderTable);
     }
 
-    private void validationOfChangeEmpty(final Long orderTableId, final OrderTable savedOrderTable) {
-        checkHasTableGroup(savedOrderTable);
-        checkOrderStatusOfOrderTable(orderTableId);
-    }
 
-    private void checkOrderStatusOfOrderTable(final Long orderTableId) {
-        if (orderService.isNotCompletionOrder(orderTableId)) {
-            throw new HasNotCompletionOrderException();
-        }
-    }
-
-    private void checkHasTableGroup(final OrderTable savedOrderTable) {
-        if (savedOrderTable.hasTableGroup()) {
-            throw new HasOtherTableGroupException();
-        }
-    }
 
     @Transactional
     public OrderTable changeNumberOfGuests(final Long orderTableId, final OrderTableDto orderTable) {

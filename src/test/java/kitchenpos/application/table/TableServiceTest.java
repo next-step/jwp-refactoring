@@ -20,6 +20,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.application.order.OrderService;
+import kitchenpos.domain.order.OrderStatus;
+import kitchenpos.domain.order.Orders;
 import kitchenpos.domain.table.OrderTable;
 import kitchenpos.domain.table.OrderTableRepository;
 import kitchenpos.domain.table.TableGroup;
@@ -115,10 +117,10 @@ public class TableServiceTest {
     @Test
     void exception_updateOrderTable_EmptyStatus() {
         // given
-        OrderTable 치킨_주문_단체테이블 = OrderTable.of(0, true);
+        OrderTable 치킨_주문_단체테이블 = OrderTable.of(10, false);
 
         when(orderTableRepository.findById(nullable(Long.class))).thenReturn(Optional.of(치킨_주문_단체테이블));
-        when(orderService.isNotCompletionOrder(nullable(Long.class))).thenReturn(true);
+        when(orderService.findByOrderTableId(nullable(Long.class))).thenReturn(Orders.of(치킨_주문_단체테이블, OrderStatus.MEAL));
         
         // when
         // then
