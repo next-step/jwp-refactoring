@@ -33,39 +33,33 @@ public class Order {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public Long getOrderTableId() {
         return orderTableId;
-    }
-
-    public void setOrderTableId(final Long orderTableId) {
-        this.orderTableId = orderTableId;
     }
 
     public String getOrderStatus() {
         return orderStatus;
     }
 
-    public void setOrderStatus(final String orderStatus) {
-        this.orderStatus = orderStatus;
+    public void changeOrderStatus(final OrderStatus orderStatus) {
+        this.orderStatus = orderStatus.name();
     }
 
     public LocalDateTime getOrderedTime() {
         return orderedTime;
     }
 
-    public void setOrderedTime(final LocalDateTime orderedTime) {
-        this.orderedTime = orderedTime;
+    public void takeOrdered(final OrderTable orderTable) {
+        this.orderTableId = orderTable.getId();
+        this.orderStatus = OrderStatus.COOKING.name();
+        this.orderedTime = LocalDateTime.now();
     }
 
     public List<OrderLineItem> getOrderLineItems() {
         return orderLineItems;
     }
 
-    public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
+    public void initOrderLineItems(final List<OrderLineItem> orderLineItems) {
         this.orderLineItems = orderLineItems;
     }
 }

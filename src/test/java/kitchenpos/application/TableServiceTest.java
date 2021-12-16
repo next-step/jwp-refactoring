@@ -139,7 +139,7 @@ public class TableServiceTest {
         OrderTable actual = tableService.changeNumberOfGuests(1L, this.orderTable);
         // then
         assertThat(actual.getNumberOfGuests()).isEqualTo(2);
-        verify(orderTable, atMostOnce()).setNumberOfGuests(anyInt());
+        verify(orderTable, atMostOnce()).changeNumberOfGuests(anyInt());
     }
 
     @Test

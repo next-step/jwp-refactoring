@@ -44,7 +44,7 @@ public class TableService {
             throw new IllegalArgumentException();
         }
 
-        savedOrderTable.setEmpty(orderTable.isEmpty());
+        savedOrderTable.changeEmpty(orderTable.isEmpty());
 
         return orderTableDao.save(savedOrderTable);
     }
@@ -64,7 +64,7 @@ public class TableService {
             throw new IllegalArgumentException();
         }
 
-        savedOrderTable.setNumberOfGuests(numberOfGuests);
+        savedOrderTable.changeNumberOfGuests(numberOfGuests);
 
         return orderTableDao.save(savedOrderTable);
     }

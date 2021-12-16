@@ -30,39 +30,23 @@ public class Menu {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public void setName(final String name) {
-        this.name = name;
     }
 
     public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(final BigDecimal price) {
-        this.price = price;
-    }
-
     public Long getMenuGroupId() {
         return menuGroupId;
-    }
-
-    public void setMenuGroupId(final Long menuGroupId) {
-        this.menuGroupId = menuGroupId;
     }
 
     public List<MenuProduct> getMenuProducts() {
         return menuProducts;
     }
 
-    public void setMenuProducts(final List<MenuProduct> menuProducts) {
+    public void initMenuProducts(final List<MenuProduct> menuProducts) {
         this.menuProducts = menuProducts;
     }
 
@@ -71,7 +55,11 @@ public class Menu {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Menu menu = (Menu) o;
-        return Objects.equals(id, menu.id) && Objects.equals(name, menu.name) && Objects.equals(price, menu.price) && Objects.equals(menuGroupId, menu.menuGroupId) && Objects.equals(menuProducts, menu.menuProducts);
+        return Objects.equals(id, menu.id)
+                && Objects.equals(name, menu.name)
+                && Objects.equals(price, menu.price)
+                && Objects.equals(menuGroupId, menu.menuGroupId)
+                && Objects.equals(menuProducts, menu.menuProducts);
     }
 
     @Override
