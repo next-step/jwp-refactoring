@@ -81,5 +81,7 @@
   - table <-> tablegroup 패키지 사이클이 존재
 
 ### 2. After 의존관계
-  - [ ] 도메인 간 의존관계 해체 -> 객체간 직접 참조가 아닌 Repository 를 통해 우회
-  - [ ] Event 방식을 통해 table <-> tablegroup 패키지 사이클 제거  
+  ![](./src/main/resources/static/after.png)
+  - [X] 도메인 간 의존관계 해체 -> 객체간 직접 참조가 아닌 Repository 를 통해 우회
+  - [x] Package 간 단방향 참조가 되도록 수정
+  - [X] Event 방식을 통해 table <-> tablegroup 패키지 사이클 제거  
