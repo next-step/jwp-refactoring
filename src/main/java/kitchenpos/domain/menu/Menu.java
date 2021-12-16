@@ -1,9 +1,7 @@
 package kitchenpos.domain.menu;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -11,9 +9,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 
 import kitchenpos.domain.Price;
+import kitchenpos.exception.menu.NotCorrectMenuPriceException;
 
 @Entity
 public class Menu {
@@ -29,8 +27,8 @@ public class Menu {
     @JoinColumn(name = "menu_group_id")
     private MenuGroup menuGroup;
 
-    @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MenuProduct> menuProducts;
+    @Embedded
+    private MenuProducts menuProducts;
 
     protected Menu() {
     }
@@ -40,11 +38,24 @@ public class Menu {
         this.name = name;
         this.price = price;
         this.menuGroup = menuGroup;
-        this.menuProducts = new ArrayList<>();
+        this.menuProducts = MenuProducts.of(new ArrayList<>());
     }
 
     public static Menu of(String name, Price price, MenuGroup menuGroup) {
         return new Menu(null, name, price, menuGroup);
+    }
+
+    public static Menu of(String name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
+        Price sumOfProductsPrice = menuProducts.getSumProductPrice();
+
+        if (price.compareTo(sumOfProductsPrice) > 0) {
+            throw new NotCorrectMenuPriceException();
+        }
+
+        Menu menu = new Menu(null, name, price, menuGroup);
+        menuProducts.acceptMenu(menu);
+
+        return menu;
     }
 
     public static Menu of(String name, Price price) {
@@ -70,7 +81,8 @@ public class Menu {
     public MenuGroup getMenuGroup() {
         return this.menuGroup;
     }
-    public List<MenuProduct> getMenuProducts() {
+
+    public MenuProducts getMenuProducts() {
         return this.menuProducts;
     }
 

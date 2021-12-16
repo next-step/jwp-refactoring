@@ -4,9 +4,9 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import kitchenpos.domain.menu.Menu;
+import kitchenpos.domain.menu.MenuProduct;
 
 public class MenuDto {
     private Long id;
@@ -40,10 +40,15 @@ public class MenuDto {
             return new MenuDto(menu.getId(), menu.getName(), BigDecimal.valueOf(menu.getPrice().value()), menu.getMenuGroup().getId(), null);
         }
 
-        return new MenuDto(menu.getId(), menu.getName(), BigDecimal.valueOf(menu.getPrice().value()), menu.getMenuGroup().getId(), menu.getMenuProducts().stream()
-                                                                                                                                        .map(MenuProductDto::of)
-                                                                                                                                        .collect(Collectors.toList()));
-                            }
+        List<MenuProductDto> menuProductDtos = new ArrayList<>();
+
+        for (int i = 0; i < menu.getMenuProducts().size(); i++ ){
+            MenuProduct menuProduct = menu.getMenuProducts().get(i);
+            menuProductDtos.add(MenuProductDto.of(menuProduct.getSeq(), menuProduct.getMenu().getId(),  menuProduct.getProduct().getId(), menuProduct.getQuantity()));
+        }
+        
+        return new MenuDto(menu.getId(), menu.getName(), BigDecimal.valueOf(menu.getPrice().value()), menu.getMenuGroup().getId(), menuProductDtos);
+    }
 
     public Long getId() {
         return this.id;

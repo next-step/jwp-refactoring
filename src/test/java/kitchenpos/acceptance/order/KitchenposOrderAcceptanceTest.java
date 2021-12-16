@@ -14,7 +14,6 @@ import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.dto.menu.MenuDto;
 import kitchenpos.dto.order.OrderDto;
 import kitchenpos.dto.order.OrderLineItemDto;
-import kitchenpos.dto.order.OrderLineItemDtos;
 import kitchenpos.dto.table.OrderTableDto;
 import kitchenpos.dto.table.TableGroupDto;
 import kitchenpos.presentation.menu.MenuRestControllerTest;
@@ -32,7 +31,7 @@ public class KitchenposOrderAcceptanceTest extends TestConfig {
 
         // when
         MenuDto[] 메뉴들 = MenuRestControllerTest.메뉴_조회요청().as(MenuDto[].class);
-        OrderLineItemDtos 주문명세서 = 주문명세서_생성(List.of(메뉴들[0], 메뉴들[1]));
+        List<OrderLineItemDto> 주문명세서 = 주문명세서_생성(List.of(메뉴들[0], 메뉴들[1]));
         OrderDto 주문 = 테이블_주문요청(손님있는_테이블, 주문명세서);
 
         // then
@@ -52,7 +51,7 @@ public class KitchenposOrderAcceptanceTest extends TestConfig {
 
         MenuDto[] 메뉴들 = MenuRestControllerTest.메뉴_조회요청().as(MenuDto[].class);
 
-        OrderLineItemDtos 주문명세서 = 주문명세서_생성(List.of(메뉴들[0], 메뉴들[1]));
+        List<OrderLineItemDto> 주문명세서 = 주문명세서_생성(List.of(메뉴들[0], 메뉴들[1]));
 
         // then
         OrderDto 주문1 = 테이블_주문요청(손님있는_테이블1, 주문명세서);
@@ -71,7 +70,7 @@ public class KitchenposOrderAcceptanceTest extends TestConfig {
 
         // when
         MenuDto[] 메뉴들 = MenuRestControllerTest.메뉴_조회요청().as(MenuDto[].class);
-        OrderLineItemDtos 주문명세서 = 주문명세서_생성(List.of(메뉴들[0], 메뉴들[1]));
+        List<OrderLineItemDto> 주문명세서 = 주문명세서_생성(List.of(메뉴들[0], 메뉴들[1]));
         OrderDto 주문 = 테이블_주문요청(손님있는_테이블, 주문명세서);
 
         // then
@@ -85,43 +84,43 @@ public class KitchenposOrderAcceptanceTest extends TestConfig {
         Assertions.assertThat(결재된_주문.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION.name());
     }
 
-    private void 테이블_주문됨(OrderTableDto 손님있는_테이블, OrderLineItemDtos 주문명세서, OrderDto 주문) throws MultipleFailuresError {
+    private void 테이블_주문됨(OrderTableDto 손님있는_테이블, List<OrderLineItemDto> 주문명세서, OrderDto 주문) throws MultipleFailuresError {
         Assertions.assertThat(주문.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
         Assertions.assertThat(주문.getOrderTableId()).isEqualTo(손님있는_테이블.getId());
 
         
         assertAll(
             () -> Assertions.assertThat(주문.getOrderLineItems().get(0).getOrderId()).isEqualTo(주문.getId()),
-            () -> Assertions.assertThat(주문.getOrderLineItems().get(0).getMenuId()).isEqualTo(주문명세서.getMenuId(0)),
-            () -> Assertions.assertThat(주문.getOrderLineItems().get(0).getQuantity()).isEqualTo(주문명세서.getQuantity(0))
+            () -> Assertions.assertThat(주문.getOrderLineItems().get(0).getMenuId()).isEqualTo(주문명세서.get(0).getMenuId()),
+            () -> Assertions.assertThat(주문.getOrderLineItems().get(0).getQuantity()).isEqualTo(주문명세서.get(0).getQuantity())
         );
 
         assertAll(
             () -> Assertions.assertThat(주문.getOrderLineItems().get(1).getOrderId()).isEqualTo(주문.getId()),
-            () -> Assertions.assertThat(주문.getOrderLineItems().get(1).getMenuId()).isEqualTo(주문명세서.getMenuId(1)),
-            () -> Assertions.assertThat(주문.getOrderLineItems().get(1).getQuantity()).isEqualTo(주문명세서.getQuantity(1))
+            () -> Assertions.assertThat(주문.getOrderLineItems().get(1).getMenuId()).isEqualTo(주문명세서.get(1).getMenuId()),
+            () -> Assertions.assertThat(주문.getOrderLineItems().get(1).getQuantity()).isEqualTo(주문명세서.get(1).getQuantity())
         );
     }
 
-    private OrderLineItemDtos 주문명세서_생성(List<MenuDto> menus) {
+    private List<OrderLineItemDto> 주문명세서_생성(List<MenuDto> menus) {
         return menus.stream()
                     .map(menu -> 주문항목_생성(menu))
-                    .collect(Collectors.collectingAndThen(Collectors.toList(), OrderLineItemDtos::of));
+                    .collect(Collectors.toList());
     }
 
     private OrderLineItemDto 주문항목_생성(final MenuDto menu) {
         return OrderLineItemDto.of(menu.getId(), 1L);
     }
 
-    private OrderDto 테이블_주문요청(OrderTableDto orderTable, OrderLineItemDtos OrderSpecification) {
+    private OrderDto 테이블_주문요청(OrderTableDto orderTable, List<OrderLineItemDto> OrderSpecification) {
         // when
         OrderDto 주문 = 주문_생성(orderTable, OrderSpecification);
 
         return OrderRestControllerTest.주문_저장요청(주문).as(OrderDto.class);
     }
 
-    private OrderDto 주문_생성(OrderTableDto orderTable, OrderLineItemDtos OrderSpecification) {
-        return OrderDto.of(orderTable.getId(), OrderSpecification.getOrderLineItemDtos());
+    private OrderDto 주문_생성(OrderTableDto orderTable, List<OrderLineItemDto> OrderSpecification) {
+        return OrderDto.of(orderTable.getId(), OrderSpecification);
     }
 
     private OrderTableDto 테이블에_손님이앉음(int numberOfGuests) {

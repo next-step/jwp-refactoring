@@ -21,4 +21,8 @@ public class Menus {
                         .findFirst()
                         .orElseThrow(NotFoundMenuException::new);
     }
+
+    public boolean contains(Menu menu) {
+        return this.menus.contains(menu);
+    }
 }

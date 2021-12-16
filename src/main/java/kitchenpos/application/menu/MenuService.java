@@ -2,20 +2,23 @@ package kitchenpos.application.menu;
 
 import kitchenpos.application.product.ProductService;
 import kitchenpos.domain.Price;
-import kitchenpos.exception.menu.NotCorrectMenuPriceException;
 import kitchenpos.exception.menu.NotFoundMenuException;
 import kitchenpos.exception.menu.NotFoundMenuGroupException;
 import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menu.MenuGroup;
 import kitchenpos.domain.menu.MenuGroupRepository;
+import kitchenpos.domain.menu.MenuProduct;
+import kitchenpos.domain.menu.MenuProducts;
 import kitchenpos.domain.menu.MenuRepository;
+import kitchenpos.domain.product.Product;
 import kitchenpos.domain.product.Products;
 import kitchenpos.dto.menu.MenuDto;
-import kitchenpos.dto.menu.MenuProductDtos;
+import kitchenpos.dto.menu.MenuProductDto;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,35 +40,26 @@ public class MenuService {
 
     @Transactional
     public MenuDto create(final MenuDto menu) {
-        validationOfCreate(menu);
-
         MenuGroup menuGroup = menuGroupRepository.findById(menu.getMenuGroupId()).orElseThrow(NotFoundMenuGroupException::new);
+        MenuProducts menuProducts = createMenuProducts(menu.getMenuProducts());
+        Menu newMenu = Menu.of(menu.getName(), Price.of(menu.getPrice()), menuGroup, menuProducts);
         
-        Menu newMenu = Menu.of(menu.getName(), Price.of(menu.getPrice()), menuGroup);
-        mappingMenuProduct(newMenu, MenuProductDtos.of(menu.getMenuProducts()));
-
         return MenuDto.of(menuRepository.save(newMenu));
     }
 
-    private void mappingMenuProduct(Menu newMenu, MenuProductDtos menuProductDtos) {
-        List<Long> productIds = menuProductDtos.getProductIds();
-        Products products = Products.of(productService.findAllByIds(productIds));
-        menuProductDtos.createMenuProduct(newMenu, products);
-    }
+    private MenuProducts createMenuProducts(List<MenuProductDto> menuProductDtos) {
+        List<Long> productIds = menuProductDtos.stream().map(MenuProductDto::getProductId).collect(Collectors.toList());
 
-    private void validationOfCreate(final MenuDto menu) {
-        checkMenuPrice(Price.of(menu.getPrice()), MenuProductDtos.of(menu.getMenuProducts()));
-    }
-
-    private void checkMenuPrice(final Price menuPrice, final MenuProductDtos menuProductDtos) {
-        List<Long> productIds = menuProductDtos.getProductIds(); 
         Products products = Products.of(productService.findAllByIds(productIds));
 
-        Price sumOfProductsPrice = menuProductDtos.getSumProductPrice(products);
-        
-        if (menuPrice.compareTo(sumOfProductsPrice) > 0) {
-            throw new NotCorrectMenuPriceException();
+        List<MenuProduct> menuProducts = new ArrayList<>();
+         
+        for (MenuProductDto menuProductDto : menuProductDtos) {
+            Product matchingProduct = products.findById(menuProductDto.getProductId());
+            menuProducts.add(MenuProduct.of(matchingProduct, menuProductDto.getQuantity()));
         }
+
+        return MenuProducts.of(menuProducts);
     }
 
     public List<MenuDto> list() {

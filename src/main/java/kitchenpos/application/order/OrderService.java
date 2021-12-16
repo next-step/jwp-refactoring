@@ -1,13 +1,15 @@
 package kitchenpos.application.order;
 
 import kitchenpos.application.menu.MenuService;
+import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menu.Menus;
 import kitchenpos.domain.order.Orders;
 import kitchenpos.domain.order.OrdersRepository;
 import kitchenpos.domain.table.OrderTable;
 import kitchenpos.domain.table.OrderTableRepository;
 import kitchenpos.dto.order.OrderDto;
-import kitchenpos.dto.order.OrderLineItemDtos;
+import kitchenpos.dto.order.OrderLineItemDto;
+import kitchenpos.domain.order.OrderLineItem;
 import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.exception.order.EmptyOrderLineItemOrderException;
 import kitchenpos.exception.order.EmptyOrderTableOrderException;
@@ -42,24 +44,30 @@ public class OrderService {
     @Transactional
     public OrderDto create(final OrderDto order) {
         final OrderTable orderTable = orderTableRepository.findById(order.getOrderTableId()).orElseThrow(NotFoundOrderTableException::new);
-        final OrderLineItemDtos orderLineItems = OrderLineItemDtos.of(order.getOrderLineItems());
+        final List<OrderLineItemDto> orderLineItemDtos = order.getOrderLineItems();
 
-        validationOfCreate(orderTable, orderLineItems);
+        validationOfCreate(orderTable, orderLineItemDtos);
 
         final Orders newOrder = Orders.of(orderTable, OrderStatus.COOKING);
-        mappingOrderLineItem(newOrder, orderLineItems);
+
+        mappingOrderLineItem(newOrder, orderLineItemDtos);
 
         return OrderDto.of(orderRepository.save(newOrder));
     }
 
-    private void mappingOrderLineItem(final Orders order, final OrderLineItemDtos orderLineItemDtos) {
-        List<Long> menuIds = orderLineItemDtos.getMenuIds();
-        Menus menus = Menus.of(menuService.findAllByIdIn(menuIds));
+    private void mappingOrderLineItem(final Orders order, final List<OrderLineItemDto> orderLineItemDtos) {
+        List<Long> menuIds = orderLineItemDtos.stream().map(OrderLineItemDto::getMenuId).collect(Collectors.toList());
+        Menus menus = Menus.of(menuService.findAllByIdIn(menuIds));        
+        
+        for (OrderLineItemDto orderLineItemDto : orderLineItemDtos) {
+            Menu matchingMenu = menus.findById(orderLineItemDto.getMenuId());
 
-        orderLineItemDtos.createOrderLineItem(order, menus);
+            OrderLineItem orderLineItem = OrderLineItem.of(order, matchingMenu, orderLineItemDto.getQuantity());
+            orderLineItem.acceptOrder(order);
+        }
     }
 
-    private void validationOfCreate(final OrderTable orderTable, final OrderLineItemDtos orderLineItems) {
+    private void validationOfCreate(final OrderTable orderTable, final List<OrderLineItemDto> orderLineItems) {
         checkEmptyOfOrderLineItems(orderLineItems);
         checkExistOfMenu(orderLineItems);
         checkEmptyTable(orderTable);
@@ -71,16 +79,16 @@ public class OrderService {
         }
     }
 
-    private void checkExistOfMenu(final OrderLineItemDtos OrderLineItemDtos) {
-        final List<Long> menuIds = OrderLineItemDtos.getMenuIds();
+    private void checkExistOfMenu(final List<OrderLineItemDto> orderLineItemDtos) {
+        final List<Long> menuIds = orderLineItemDtos.stream().map(OrderLineItemDto::getMenuId).collect(Collectors.toList());
 
-        if (OrderLineItemDtos.size() != menuService.countByIdIn(menuIds)) {
+        if (orderLineItemDtos.size() != menuService.countByIdIn(menuIds)) {
             throw new NotRegistedMenuOrderException();
         }
     }
 
-    private void checkEmptyOfOrderLineItems(final OrderLineItemDtos orderLineItems) {
-        if (orderLineItems.isEmpty()) {
+    private void checkEmptyOfOrderLineItems(final List<OrderLineItemDto> orderLineItemDtos) {
+        if (orderLineItemDtos.isEmpty()) {
             throw new EmptyOrderLineItemOrderException();
         }
     }

@@ -31,6 +31,7 @@ import kitchenpos.domain.menu.MenuGroup;
 import kitchenpos.domain.menu.MenuGroupRepository;
 import kitchenpos.domain.menu.MenuProduct;
 import kitchenpos.domain.menu.MenuProductRepository;
+import kitchenpos.domain.menu.MenuProducts;
 import kitchenpos.domain.menu.MenuRepository;
 
 @ExtendWith(MockitoExtension.class)
@@ -60,15 +61,11 @@ public class MenuServiceTest {
 
         MenuGroup 치킨_메뉴그룹 = MenuGroup.of("치킨");
 
-        Menu 뿌링클콤보 = Menu.of("뿌링클콤보", Price.of(18_000), 치킨_메뉴그룹);
-
         MenuProduct 뿌링클콤보_뿌링클치킨 = MenuProduct.of(뿌링클치킨, 1L);
         MenuProduct 뿌링클콤보_치킨무 = MenuProduct.of(치킨무, 2L);
         MenuProduct 뿌링클콤보_코카콜라 = MenuProduct.of(코카콜라, 3L);
         
-        뿌링클콤보_뿌링클치킨.acceptMenu(뿌링클콤보);
-        뿌링클콤보_치킨무.acceptMenu(뿌링클콤보);
-        뿌링클콤보_코카콜라.acceptMenu(뿌링클콤보);
+        Menu 뿌링클콤보 = Menu.of("뿌링클콤보", Price.of(18_000), 치킨_메뉴그룹, MenuProducts.of(List.of(뿌링클콤보_뿌링클치킨, 뿌링클콤보_치킨무, 뿌링클콤보_코카콜라)));
 
         when(menuGroupRepository.findById(nullable(Long.class))).thenReturn(Optional.of(치킨_메뉴그룹));
         when(productService.findAllByIds(anyList())).thenReturn(List.of(뿌링클치킨, 치킨무, 코카콜라));
@@ -92,13 +89,7 @@ public class MenuServiceTest {
         MenuGroup 치킨_메뉴그룹 = MenuGroup.of("치킨");
         Menu 뿌링클콤보 = Menu.of("뿌링클콤보", Price.of(18_000), 치킨_메뉴그룹);
 
-        Product 뿌링클치킨 = Product.of(1L, "뿌링클치킨", Price.of(15_000));
-        Product 치킨무 = Product.of(2L, "치킨무", Price.of(1_000));
-        Product 코카콜라 = Product.of(3L, "코카콜라", Price.of(3_000));
-
-        when(productService.findAllByIds(anyList())).thenReturn(List.of(뿌링클치킨, 치킨무, 코카콜라));
         when(menuGroupRepository.findById(nullable(Long.class))).thenThrow(NotFoundMenuGroupException.class);
-
         
         // when
         // then
@@ -119,12 +110,11 @@ public class MenuServiceTest {
         MenuProduct 뿌링클콤보_코카콜라 = MenuProduct.of(코카콜라, 1L);
 
         MenuGroup 치킨_메뉴그룹 = MenuGroup.of("치킨");
-        Menu 뿌링클콤보 = Menu.of("뿌링클콤보", Price.of(18_000), 치킨_메뉴그룹);
         
-        뿌링클콤보_뿌링클치킨.acceptMenu(뿌링클콤보);
-        뿌링클콤보_치킨무.acceptMenu(뿌링클콤보);
-        뿌링클콤보_코카콜라.acceptMenu(뿌링클콤보);
+        Menu 뿌링클콤보 = Menu.of("뿌링클콤보", Price.of(18_000), 치킨_메뉴그룹, MenuProducts.of(List.of(뿌링클콤보_뿌링클치킨, 뿌링클콤보_치킨무, 뿌링클콤보_코카콜라)));
 
+        when(menuGroupRepository.findById(nullable(Long.class))).thenReturn(Optional.of(치킨_메뉴그룹));
+        
         // when
         // then
         Assertions.assertThatExceptionOfType(NotFoundProductException.class)
@@ -142,6 +132,7 @@ public class MenuServiceTest {
         Product 치킨무 = Product.of(2L, "치킨무", Price.of(1_000));
         Product 코카콜라 = Product.of(3L, "코카콜라", Price.of(3_000));
 
+        when(menuGroupRepository.findById(nullable(Long.class))).thenReturn(Optional.of(치킨_메뉴그룹));
         when(productService.findAllByIds(anyList())).thenReturn(List.of(뿌링클치킨, 치킨무, 코카콜라));
 
         // when
