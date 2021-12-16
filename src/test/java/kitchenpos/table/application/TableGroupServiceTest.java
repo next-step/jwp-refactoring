@@ -1,6 +1,5 @@
 package kitchenpos.table.application;
 
-import static kitchenpos.order.sample.OrderLineItemSample.이십원_후라이트치킨_두마리세트_한개_주문_항목;
 import static kitchenpos.table.sample.OrderTableSample.빈_두명_테이블;
 import static kitchenpos.table.sample.OrderTableSample.빈_세명_테이블;
 import static kitchenpos.table.sample.OrderTableSample.채워진_다섯명_테이블;
@@ -18,15 +17,13 @@ import java.util.Collections;
 import java.util.Optional;
 import kitchenpos.common.exception.InvalidStatusException;
 import kitchenpos.common.exception.NotFoundException;
-import kitchenpos.order.domain.Order;
-import kitchenpos.table.ui.request.TableGroupRequest;
-import kitchenpos.table.ui.request.TableGroupRequest.OrderTableIdRequest;
 import kitchenpos.table.domain.Headcount;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.domain.TableGroupRepository;
-import kitchenpos.table.domain.CustomerStatus;
+import kitchenpos.table.ui.request.TableGroupRequest;
+import kitchenpos.table.ui.request.TableGroupRequest.OrderTableIdRequest;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -194,6 +191,7 @@ class TableGroupServiceTest {
             orderTable,
             OrderTable.empty(Headcount.from(3))
         ));
+        orderTable.ordered();
 
         when(tableGroupRepository.findById(tableGroupId)).thenReturn(Optional.of(tableGroup));
 

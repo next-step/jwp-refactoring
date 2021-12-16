@@ -7,13 +7,11 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 import static org.assertj.core.api.Assertions.assertThatNoException;
 
 import java.util.Arrays;
-import java.util.stream.Stream;
 import kitchenpos.common.exception.InvalidStatusException;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
 
 @DisplayName("주문 테이블")
@@ -35,14 +33,14 @@ class OrderTableTest {
     }
 
     @ParameterizedTest(name = "[{index}] 그룹과 주문이 없으면 {0} 상태로 변경 가능")
-    @DisplayName("테이블 상태 변경")
-    @CsvSource({"EMPTY,true", "FULL,false"})
-    void changeStatus(CustomerStatus changeStatus, boolean expected) {
+    @DisplayName("테이블 자리 상태 변경")
+    @CsvSource({"true,true", "false,false"})
+    void changeStatus(boolean empty, boolean expected) {
         //given
         OrderTable orderTable = OrderTable.empty(Headcount.from(1));
 
         //when
-        orderTable.changeStatus(changeStatus);
+        orderTable.changeEmpty(empty);
 
         //then
         assertThat(orderTable.isEmpty()).isEqualTo(expected);
@@ -56,7 +54,7 @@ class OrderTableTest {
         TableGroup.from(Arrays.asList(orderTable, 빈_두명_테이블()));
 
         //when
-        ThrowingCallable changeStatusCallable = () -> orderTable.changeStatus(CustomerStatus.PLACE);
+        ThrowingCallable changeStatusCallable = () -> orderTable.changeStatus(CustomerStatus.SEATED);
 
         //then
         assertThatExceptionOfType(InvalidStatusException.class)
@@ -68,7 +66,8 @@ class OrderTableTest {
     @DisplayName("주문된 상태라면 테이블 상태 변경 불가능")
     void changeStatus_cooking_thrownInvalidStatusException() {
         //given
-        OrderTable orderTable = OrderTable.empty(Headcount.from(1));
+        OrderTable orderTable = OrderTable.seated(Headcount.from(1));
+        orderTable.ordered();
 
         //when
         ThrowingCallable changeStatusCallable = () -> orderTable.changeStatus(CustomerStatus.EMPTY);
@@ -83,7 +82,7 @@ class OrderTableTest {
     @DisplayName("방문한 손님 수 변경")
     void changeNumberOfGuests() {
         //given
-        OrderTable orderTable = OrderTable.place(Headcount.from(1));
+        OrderTable orderTable = OrderTable.seated(Headcount.from(1));
 
         //when
         orderTable.changeNumberOfGuests(Headcount.from(10));

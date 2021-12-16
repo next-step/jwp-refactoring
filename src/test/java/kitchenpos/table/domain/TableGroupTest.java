@@ -65,6 +65,7 @@ class TableGroupTest {
     void ungroup_anyCooking_thrownInvalidStatusException() {
         OrderTable 빈_두명_테이블 = 빈_두명_테이블();
         TableGroup tableGroup = TableGroup.from(Arrays.asList(빈_두명_테이블, 빈_세명_테이블()));
+        빈_두명_테이블.ordered();
 
         //when
         ThrowingCallable ungroupCallable = tableGroup::ungroup;

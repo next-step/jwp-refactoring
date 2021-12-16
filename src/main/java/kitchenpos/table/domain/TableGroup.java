@@ -58,7 +58,7 @@ public class TableGroup {
     }
 
     public void ungroup() {
-        if (orderTables.anyCookingOrMeal()) {
+        if (orderTables.anyOrdered()) {
             throw new InvalidStatusException(
                 String.format("조리중 또는 식사중인 주문 테이블들(%s)이 존재하여 단체 지정을 해제할 수 없습니다.", orderTables));
         }

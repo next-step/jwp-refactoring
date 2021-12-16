@@ -32,7 +32,7 @@ class OrderValidatorTest {
     void validate() {
         //given
         when(tableRepository.table(anyLong()))
-            .thenReturn(OrderTable.place(Headcount.from(5)));
+            .thenReturn(OrderTable.seated(Headcount.from(5)));
 
         //when
         ThrowingCallable validateCallable = () ->

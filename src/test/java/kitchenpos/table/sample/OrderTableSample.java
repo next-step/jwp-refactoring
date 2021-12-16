@@ -5,12 +5,11 @@ import static org.mockito.Mockito.spy;
 
 import kitchenpos.table.domain.Headcount;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.CustomerStatus;
 
 public class OrderTableSample {
 
     public static OrderTable 채워진_다섯명_테이블() {
-        OrderTable orderTable = spy(OrderTable.place(Headcount.from(5)));
+        OrderTable orderTable = spy(OrderTable.seated(Headcount.from(5)));
         lenient().when(orderTable.id())
             .thenReturn(1L);
         return orderTable;

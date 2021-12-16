@@ -36,8 +36,8 @@ class OrderTables {
         return tables.stream().allMatch(OrderTable::notHaveGroupAndEmpty);
     }
 
-    boolean anyCookingOrMeal() {
-        return tables.stream().anyMatch(OrderTable::isCookingOrMeal);
+    boolean anyOrdered() {
+        return tables.stream().anyMatch(OrderTable::isOrdered);
     }
 
     int size() {

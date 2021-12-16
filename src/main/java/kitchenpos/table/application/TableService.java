@@ -1,13 +1,12 @@
 package kitchenpos.table.application;
 
 import java.util.List;
-import kitchenpos.common.exception.NotFoundException;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.ui.request.OrderTableRequest;
 import kitchenpos.table.ui.request.TableGuestsCountRequest;
 import kitchenpos.table.ui.request.TableStatusRequest;
 import kitchenpos.table.ui.response.OrderTableResponse;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,21 +31,15 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse changeEmpty(long id, TableStatusRequest request) {
-        OrderTable orderTable = findById(id);
-        orderTable.changeStatus(request.status());
-        return OrderTableResponse.from(orderTable);
+        OrderTable table = orderTableRepository.table(id);
+        table.changeEmpty(request.isEmpty());
+        return OrderTableResponse.from(table);
     }
 
     @Transactional
     public OrderTableResponse changeNumberOfGuests(long id, TableGuestsCountRequest request) {
-        OrderTable orderTable = findById(id);
+        OrderTable orderTable = orderTableRepository.table(id);
         orderTable.changeNumberOfGuests(request.numberOfGuests());
         return OrderTableResponse.from(orderTable);
-    }
-
-    public OrderTable findById(long id) {
-        return orderTableRepository.findById(id)
-            .orElseThrow(
-                () -> new NotFoundException(String.format("주문 테이블 id(%d)를 찾을 수 없습니다.", id)));
     }
 }

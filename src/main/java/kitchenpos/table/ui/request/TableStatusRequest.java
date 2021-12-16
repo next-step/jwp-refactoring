@@ -2,7 +2,6 @@ package kitchenpos.table.ui.request;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import kitchenpos.table.domain.CustomerStatus;
 
 public final class TableStatusRequest {
 
@@ -15,9 +14,5 @@ public final class TableStatusRequest {
 
     public boolean isEmpty() {
         return empty;
-    }
-
-    public CustomerStatus status() {
-        return CustomerStatus.valueOf(empty);
     }
 }

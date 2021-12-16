@@ -7,13 +7,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.only;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
-import java.util.Optional;
 import kitchenpos.common.exception.InvalidStatusException;
 import kitchenpos.common.exception.NotFoundException;
 import kitchenpos.table.domain.Headcount;
@@ -79,7 +77,7 @@ class TableServiceTest {
         TableStatusRequest request = new TableStatusRequest(true);
 
         OrderTable 채워진_다섯명_테이블 = 채워진_다섯명_테이블();
-        when(orderTableRepository.findById(anyLong())).thenReturn(Optional.of(채워진_다섯명_테이블));
+        when(orderTableRepository.table(anyLong())).thenReturn(채워진_다섯명_테이블);
 
         //when
         OrderTableResponse response = tableService.changeEmpty(1L, request);
@@ -95,15 +93,14 @@ class TableServiceTest {
     void changeEmpty_notExistOrderTable_thrownException() {
         //given
         TableStatusRequest request = new TableStatusRequest(false);
-        when(orderTableRepository.findById(anyLong())).thenReturn(Optional.empty());
+        when(orderTableRepository.table(anyLong())).thenThrow(NotFoundException.class);
 
         //when
         ThrowingCallable changeCallable = () -> tableService.changeEmpty(1L, request);
 
         //then
         assertThatExceptionOfType(NotFoundException.class)
-            .isThrownBy(changeCallable)
-            .withMessageEndingWith("찾을 수 없습니다.");
+            .isThrownBy(changeCallable);
     }
 
     @Test
@@ -115,7 +112,7 @@ class TableServiceTest {
         OrderTable 빈_두명_테이블 = 빈_두명_테이블();
         OrderTable 빈_세명_테이블 = 빈_세명_테이블();
         TableGroup.from(Arrays.asList(빈_두명_테이블, 빈_세명_테이블));
-        when(orderTableRepository.findById(anyLong())).thenReturn(Optional.of(빈_두명_테이블));
+        when(orderTableRepository.table(anyLong())).thenReturn(빈_두명_테이블);
 
         //when
         ThrowingCallable changeCallable = () -> tableService.changeEmpty(1L, request);
@@ -132,10 +129,10 @@ class TableServiceTest {
         //given
         TableStatusRequest request = new TableStatusRequest(false);
 
-        OrderTable orderTable = mock(OrderTable.class);
-        when(orderTable.isCookingOrMeal()).thenReturn(true);
-        when(orderTableRepository.findById(anyLong()))
-            .thenReturn(Optional.of(orderTable));
+        OrderTable orderTable = 채워진_다섯명_테이블();
+        orderTable.ordered();
+        when(orderTableRepository.table(anyLong()))
+            .thenReturn(orderTable);
 
         //when
         ThrowingCallable changeCallable = () -> tableService.changeEmpty(1L, request);
@@ -154,8 +151,8 @@ class TableServiceTest {
         TableGuestsCountRequest request = new TableGuestsCountRequest(numberOfGuests);
 
         OrderTable 채워진_다섯명_테이블 = 채워진_다섯명_테이블();
-        when(orderTableRepository.findById(anyLong()))
-            .thenReturn(Optional.of(채워진_다섯명_테이블));
+        when(orderTableRepository.table(anyLong()))
+            .thenReturn(채워진_다섯명_테이블);
 
         //when
         OrderTableResponse response = tableService.changeNumberOfGuests(1L, request);
@@ -173,8 +170,8 @@ class TableServiceTest {
         TableGuestsCountRequest request = new TableGuestsCountRequest(-1);
 
         OrderTable 채워진_다섯명_테이블 = 채워진_다섯명_테이블();
-        when(orderTableRepository.findById(anyLong()))
-            .thenReturn(Optional.of(채워진_다섯명_테이블));
+        when(orderTableRepository.table(anyLong()))
+            .thenReturn(채워진_다섯명_테이블);
 
         //when
         ThrowingCallable changeCallable = () -> tableService.changeNumberOfGuests(1L, request);
@@ -191,15 +188,14 @@ class TableServiceTest {
         //given
         TableGuestsCountRequest request = new TableGuestsCountRequest(3);
 
-        when(orderTableRepository.findById(anyLong())).thenReturn(Optional.empty());
+        when(orderTableRepository.table(anyLong())).thenThrow(NotFoundException.class);
 
         //when
         ThrowingCallable changeCallable = () -> tableService.changeNumberOfGuests(1L, request);
 
         //then
         assertThatExceptionOfType(NotFoundException.class)
-            .isThrownBy(changeCallable)
-            .withMessageEndingWith("찾을 수 없습니다.");
+            .isThrownBy(changeCallable);
     }
 
     @Test
@@ -209,7 +205,7 @@ class TableServiceTest {
         TableGuestsCountRequest request = new TableGuestsCountRequest(3);
 
         OrderTable 빈_두명_테이블 = 빈_두명_테이블();
-        when(orderTableRepository.findById(anyLong())).thenReturn(Optional.of(빈_두명_테이블));
+        when(orderTableRepository.table(anyLong())).thenReturn(빈_두명_테이블);
 
         //when
         ThrowingCallable changeCallable = () -> tableService.changeNumberOfGuests(1L, request);

@@ -45,8 +45,8 @@ public class OrderTable {
         return new OrderTable(numberOfGuests, CustomerStatus.EMPTY);
     }
 
-    public static OrderTable place(Headcount numberOfGuests) {
-        return new OrderTable(numberOfGuests, CustomerStatus.PLACE);
+    public static OrderTable seated(Headcount numberOfGuests) {
+        return new OrderTable(numberOfGuests, CustomerStatus.SEATED);
     }
 
     public long id() {
@@ -78,11 +78,11 @@ public class OrderTable {
     }
 
     public void changeStatus(CustomerStatus status) {
-        validateStatus();
+        validateGroupAndOrdered();
         this.status = status;
     }
 
-    public boolean isCookingOrMeal() {
+    public boolean isOrdered() {
         return status.isOrdered();
     }
 
@@ -91,12 +91,40 @@ public class OrderTable {
     }
 
     void changeGroup(TableGroup tableGroup) {
-        this.status = CustomerStatus.PLACE;
+        this.status = CustomerStatus.SEATED;
         this.tableGroup = tableGroup;
     }
 
     void ungroup() {
         tableGroup = null;
+    }
+
+    public void changeEmpty(boolean empty) {
+        validateGroupAndOrdered();
+        if (empty) {
+            this.status = CustomerStatus.EMPTY;
+            return;
+        }
+        this.status = CustomerStatus.SEATED;
+    }
+
+    public void ordered() {
+        if (this.status.isEmpty()) {
+            throw new InvalidStatusException(String.format("비어있는 테이블(%s)에서 주문을 받을 수 없습니다.", this));
+        }
+        this.status = CustomerStatus.ORDERED;
+    }
+
+    public void finish() {
+        if (isNotOrdered()) {
+            throw new InvalidStatusException(
+                String.format("주문 받지 않은 테이블(%s)의 상태를 완료로 변경할 수 없습니다.", this));
+        }
+        this.status = CustomerStatus.FINISH;
+    }
+
+    private boolean isNotOrdered() {
+        return !isOrdered();
     }
 
     private void setNumberOfGuests(Headcount numberOfGuests) {
@@ -113,14 +141,14 @@ public class OrderTable {
         return tableGroup == null;
     }
 
-    private void validateStatus() {
+    private void validateGroupAndOrdered() {
         if (hasTableGroup()) {
             throw new InvalidStatusException(
                 String.format("주문 테이블(%s)은 그룹이 지정되어 있어서 상태를 변경할 수 없습니다.", this));
         }
-        if (isCookingOrMeal()) {
+        if (isOrdered()) {
             throw new InvalidStatusException(
-                String.format("조리 중 또는 식사 중인 주문 테이블(%s)의 상태를 변경할 수 없습니다.", this));
+                String.format("주문을 받은 테이블(%s)의 자리 상태를 변경할 수 없습니다.", this));
         }
     }
 

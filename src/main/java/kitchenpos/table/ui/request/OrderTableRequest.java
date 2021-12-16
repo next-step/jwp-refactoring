@@ -30,6 +30,6 @@ public final class OrderTableRequest {
         if (empty) {
             return OrderTable.empty(Headcount.from(numberOfGuests));
         }
-        return OrderTable.place(Headcount.from(numberOfGuests));
+        return OrderTable.seated(Headcount.from(numberOfGuests));
     }
 }
