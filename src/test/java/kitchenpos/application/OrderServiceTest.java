@@ -50,14 +50,15 @@ public class OrderServiceTest {
     @DisplayName("주문 등록")
     void orderCreateTest() {
         // given
+        given(order.getOrderLineItems()).willReturn(Arrays.asList(와퍼_세트_주문, 콜라_주문));
         given(menuDao.countByIdIn(anyList())).willReturn(2L);
         given(orderTableDao.findById(anyLong())).willReturn(Optional.of(이인석));
-        given(orderDao.save(any())).willReturn(주문통합);
+        given(orderDao.save(any())).willReturn(order);
         given(orderLineItemDao.save(any())).willReturn(와퍼_세트_주문, 콜라_주문);
         // when
-        Order actual = orderService.create(주문통합);
+        Order actual = orderService.create(order);
         // then
-        assertThat(actual).isEqualTo(주문통합);
+        assertThat(actual).isEqualTo(order);
         verify(orderLineItemDao, times(2)).save(any());
     }
 
@@ -76,10 +77,11 @@ public class OrderServiceTest {
     @DisplayName("등록이 안된 메뉴는 주문 할 수 없다.")
     void notFoundMenu() {
         // given
+        given(order.getOrderLineItems()).willReturn(Arrays.asList(와퍼_세트_주문, 콜라_주문));
         given(menuDao.countByIdIn(anyList())).willReturn(0L);
         // when
         // then
-        assertThatThrownBy(() -> orderService.create(주문통합))
+        assertThatThrownBy(() -> orderService.create(order))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -87,11 +89,13 @@ public class OrderServiceTest {
     @DisplayName("등록이 안된 주문 테이블에서는 주문을 할 수 없다.")
     void notFoundOrderTable() {
         // given
+        given(order.getOrderTableId()).willReturn(1L);
+        given(order.getOrderLineItems()).willReturn(Arrays.asList(와퍼_세트_주문, 콜라_주문));
         given(menuDao.countByIdIn(anyList())).willReturn(2L);
         given(orderTableDao.findById(anyLong())).willReturn(Optional.empty());
         // when
         // then
-        assertThatThrownBy(() -> orderService.create(주문통합))
+        assertThatThrownBy(() -> orderService.create(order))
                 .isInstanceOf(IllegalArgumentException.class);
         verify(orderTableDao, times(1)).findById(anyLong());
     }

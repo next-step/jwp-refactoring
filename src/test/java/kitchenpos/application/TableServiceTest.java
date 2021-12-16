@@ -40,7 +40,7 @@ public class TableServiceTest {
     @DisplayName("빈 테이블 등록")
     void createEmptyTable() {
         // given
-        when(orderTableDao.save(any())).thenReturn(빈자리);
+        given(orderTableDao.save(any())).willReturn(빈자리);
         // when
         OrderTable actual = tableService.create(빈자리);
         // then
@@ -133,8 +133,8 @@ public class TableServiceTest {
         // given
         given(orderTable.getNumberOfGuests()).willReturn(2);
         given(orderTable.isEmpty()).willReturn(false);
-        when(orderTableDao.findById(anyLong())).thenReturn(Optional.of(orderTable));
-        when(orderTableDao.save(any())).thenReturn(orderTable);
+        given(orderTableDao.findById(anyLong())).willReturn(Optional.of(orderTable));
+        given(orderTableDao.save(any())).willReturn(orderTable);
         // when
         OrderTable actual = tableService.changeNumberOfGuests(1L, this.orderTable);
         // then
@@ -158,7 +158,7 @@ public class TableServiceTest {
     void notFoundOrderTableToChangeNumberOfGuests() {
         // given
         given(orderTable.getNumberOfGuests()).willReturn(2);
-        when(orderTableDao.findById(anyLong())).thenReturn(Optional.empty());
+        given(orderTableDao.findById(anyLong())).willReturn(Optional.empty());
         // when
         // then
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, this.orderTable))
@@ -171,7 +171,7 @@ public class TableServiceTest {
         // given
         given(orderTable.getNumberOfGuests()).willReturn(2);
         given(orderTable.isEmpty()).willReturn(true);
-        when(orderTableDao.findById(anyLong())).thenReturn(Optional.of(orderTable));
+        given(orderTableDao.findById(anyLong())).willReturn(Optional.of(orderTable));
         // when
         // then
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, this.orderTable))

@@ -108,7 +108,8 @@ public class MenuServiceTest {
         given(menu.getMenuProducts()).willReturn(Arrays.asList(통새우와퍼, 콜라));
         given(menu.getPrice()).willReturn(BigDecimal.valueOf(7001));
         given(menuGroupDao.existsById(anyLong())).willReturn(true);
-        given(productDao.findById(anyLong())).willReturn(Optional.of(통새우와퍼_상품), Optional.of(콜라_상품));
+        given(productDao.findById(anyLong()))
+                .willReturn(Optional.of(통새우와퍼_상품), Optional.of(콜라_상품));
         // when
         // then
         assertThatThrownBy(() -> menuService.create(menu))

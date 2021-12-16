@@ -9,6 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -16,8 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.only;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("메뉴 그룹 관리 테스트")
@@ -38,8 +38,9 @@ public class MenuGroupServiceTest {
         // given
         given(menuGroupDao.save(any())).willReturn(menuGroup);
         // when
-        MenuGroup actual = menuGroupService.create(menuGroup);
+        when(menuGroupDao.save(any())).thenReturn(menuGroup);
         // then
+        assertThat(menuGroupService.create(menuGroup)).isEqualTo(menuGroup);
         verify(menuGroupDao, only()).save(any());
     }
 
@@ -50,6 +51,7 @@ public class MenuGroupServiceTest {
         given(menuGroupDao.findAll())
                 .willReturn(Collections.singletonList(menuGroup));
         // when
+        when(menuGroupService.list()).thenReturn(Collections.singletonList(menuGroup));
         List<MenuGroup> actual = menuGroupService.list();
         // then
         assertAll(
