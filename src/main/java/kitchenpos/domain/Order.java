@@ -14,8 +14,21 @@ public class Order {
     public Order() {
     }
 
+    public Order(Long id, Long orderTableId, String orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
+        this.id = id;
+        this.orderTableId = orderTableId;
+        this.orderStatus = orderStatus;
+        this.orderedTime = orderedTime;
+        this.orderLineItems = orderLineItems;
+    }
+
     public Order(OrderStatus orderStatus) {
         this.orderStatus = orderStatus.name();
+    }
+
+    public Order(Long id, OrderStatus orderStatus) {
+        this(orderStatus);
+        this.id = id;
     }
 
     public Order(Long orderTableId, List<OrderLineItem> orderLineItems) {
