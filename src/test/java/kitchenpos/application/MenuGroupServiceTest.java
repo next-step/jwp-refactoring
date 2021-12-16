@@ -29,7 +29,7 @@ public class MenuGroupServiceTest {
         // given
         MenuGroup menuGroup = new MenuGroup("식사류");
         MenuGroup expectedMenuGroup = new MenuGroup(1L, "식사류");
-        given(menuGroupDao.save(any())).willReturn(expectedMenuGroup);
+        given(menuGroupDao.save(any(MenuGroup.class))).willReturn(expectedMenuGroup);
         // when
         MenuGroup savedMenuGroup = menuGroupService.create(menuGroup);
         // then

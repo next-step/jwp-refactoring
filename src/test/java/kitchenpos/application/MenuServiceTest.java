@@ -8,6 +8,7 @@ import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
+import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -49,8 +50,8 @@ public class MenuServiceTest {
         menuProducts.add(new MenuProduct(2L, expectedMenu.getId(), 삼선짬뽕.getId(), 1));
         given(menuGroupDao.existsById(anyLong())).willReturn(true);
         given(productDao.findById(anyLong())).willReturn(Optional.of(볶음짜장면), Optional.of(삼선짬뽕));
-        given(menuDao.save(any())).willReturn(expectedMenu);
-        given(menuProductDao.save(any())).willReturn(new MenuProduct());
+        given(menuDao.save(any(Menu.class))).willReturn(expectedMenu);
+        given(menuProductDao.save(any(MenuProduct.class))).willReturn(new MenuProduct());
         // when
         Menu menu = menuService.create(expectedMenu);
         // then
@@ -68,8 +69,10 @@ public class MenuServiceTest {
         Menu expectedMenu = new Menu(1L, "대표메뉴", -1, menuGroup.getId(), menuProducts);
         menuProducts.add(new MenuProduct(1L, expectedMenu.getId(), 볶음짜장면.getId(), 1));
         menuProducts.add(new MenuProduct(2L, expectedMenu.getId(), 삼선짬뽕.getId(), 1));
-        // when, then
-        assertThatThrownBy(() -> menuService.create(expectedMenu))
+        // when
+        ThrowableAssert.ThrowingCallable callable = () -> menuService.create(expectedMenu);
+        // then
+        assertThatThrownBy(callable)
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -85,8 +88,10 @@ public class MenuServiceTest {
         menuProducts.add(new MenuProduct(1L, expectedMenu.getId(), 볶음짜장면.getId(), 1));
         menuProducts.add(new MenuProduct(2L, expectedMenu.getId(), 삼선짬뽕.getId(), 1));
         given(menuGroupDao.existsById(anyLong())).willReturn(false);
-        // when, then
-        assertThatThrownBy(() -> menuService.create(expectedMenu))
+        // when
+        ThrowableAssert.ThrowingCallable callable = () -> menuService.create(expectedMenu);
+        // then
+        assertThatThrownBy(callable)
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -103,8 +108,10 @@ public class MenuServiceTest {
         menuProducts.add(new MenuProduct(2L, expectedMenu.getId(), 삼선짬뽕.getId(), 1));
         given(menuGroupDao.existsById(anyLong())).willReturn(true);
         given(productDao.findById(anyLong())).willReturn(Optional.empty(), Optional.of(삼선짬뽕));
-        // when, then
-        assertThatThrownBy(() -> menuService.create(expectedMenu))
+        // when
+        ThrowableAssert.ThrowingCallable callable = () -> menuService.create(expectedMenu);
+        // then
+        assertThatThrownBy(callable)
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -121,8 +128,10 @@ public class MenuServiceTest {
         menuProducts.add(new MenuProduct(2L, expectedMenu.getId(), 삼선짬뽕.getId(), 1));
         given(menuGroupDao.existsById(anyLong())).willReturn(true);
         given(productDao.findById(anyLong())).willReturn(Optional.of(볶음짜장면), Optional.of(삼선짬뽕));
-        // when, then
-        assertThatThrownBy(() -> menuService.create(expectedMenu))
+        // when
+        ThrowableAssert.ThrowingCallable callable = () -> menuService.create(expectedMenu);
+        // then
+        assertThatThrownBy(callable)
                 .isInstanceOf(IllegalArgumentException.class);
     }
 

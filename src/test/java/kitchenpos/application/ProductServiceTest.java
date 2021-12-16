@@ -2,6 +2,7 @@ package kitchenpos.application;
 
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
+import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,7 +31,7 @@ public class ProductServiceTest {
         // given
         Product 볶음짜장면 = new Product("볶음짜장면", 8000L);
         Product expectedProduct = new Product(1L, "볶음짜장면", 8000L);
-        given(productDao.save(any())).willReturn(expectedProduct);
+        given(productDao.save(any(Product.class))).willReturn(expectedProduct);
         // when
         Product product = productService.create(볶음짜장면);
         // then
@@ -42,8 +43,10 @@ public class ProductServiceTest {
     void givenZeroPriceWhenSaveThenThrowException() {
         // given
         Product 볶음짜장면 = new Product("볶음짜장면", -1L);
-        // when, then
-        assertThatThrownBy(() -> productService.create(볶음짜장면))
+        // when
+        ThrowableAssert.ThrowingCallable callable = () -> productService.create(볶음짜장면);
+        // then
+        assertThatThrownBy(callable)
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
