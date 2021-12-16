@@ -12,7 +12,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Collections;
 import java.util.List;
 
-import static kitchenpos.domain.MenuGroupTest.와퍼_메뉴;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
@@ -30,16 +29,18 @@ public class MenuGroupServiceTest {
     @InjectMocks
     private MenuGroupService menuGroupService;
 
+    @Mock
+    private MenuGroup menuGroup;
+
     @Test
     @DisplayName("메뉴 그룹 생성")
     void createTest() {
         // given
-        given(menuGroupDao.save(any())).willReturn(와퍼_메뉴);
+        given(menuGroupDao.save(any())).willReturn(menuGroup);
         // when
-        MenuGroup actual = menuGroupService.create(와퍼_메뉴);
+        MenuGroup actual = menuGroupService.create(menuGroup);
         // then
         verify(menuGroupDao, only()).save(any());
-        assertThat(actual).isEqualTo(와퍼_메뉴);
     }
 
     @Test
@@ -47,13 +48,13 @@ public class MenuGroupServiceTest {
     void listTest() {
         // given
         given(menuGroupDao.findAll())
-                .willReturn(Collections.singletonList(와퍼_메뉴));
+                .willReturn(Collections.singletonList(menuGroup));
         // when
         List<MenuGroup> actual = menuGroupService.list();
         // then
         assertAll(
                 () -> assertThat(actual).hasSize(1),
-                () -> assertThat(actual).containsExactly(와퍼_메뉴)
+                () -> assertThat(actual).containsExactly(menuGroup)
         );
     }
 }
