@@ -24,16 +24,13 @@ import kitchenpos.utils.StreamUtils;
 public class MenuService {
     private final MenuRepository menuRepository;
     private final MenuGroupRepository menuGroupRepository;
-    private final ProductRepository productRepository;
     private final MenuValidator menuValidator;
 
     public MenuService(final MenuRepository menuRepository,
                        final MenuGroupRepository menuGroupRepository,
-                       final ProductRepository productRepository,
                        final MenuValidator menuValidator) {
         this.menuRepository = menuRepository;
         this.menuGroupRepository = menuGroupRepository;
-        this.productRepository = productRepository;
         this.menuValidator = menuValidator;
     }
 
@@ -68,9 +65,5 @@ public class MenuService {
     private MenuGroup findMenuGroup(Long menuGroupId) {
         return menuGroupRepository.findById(menuGroupId)
                                   .orElseThrow(EntityNotFoundException::new);
-    }
-
-    private List<Product> findProducts(List<Long> productIds) {
-        return productRepository.findAllById(productIds);
     }
 }

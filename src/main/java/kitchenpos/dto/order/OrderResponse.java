@@ -31,7 +31,7 @@ public class OrderResponse {
 
     public static OrderResponse from(Order order) {
         return new OrderResponse(order.getId(),
-                                 order.getOrderTable().getId(),
+                                 order.getOrderTableId(),
                                  order.getOrderStatus(),
                                  order.getOrderedTime(),
                                  StreamUtils.mapToList(order.getOrderLineItems().getValues(), OrderLineItemResponse::from));

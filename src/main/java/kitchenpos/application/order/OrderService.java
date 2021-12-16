@@ -7,7 +7,6 @@ import javax.persistence.EntityNotFoundException;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menu.MenuRepository;
@@ -26,30 +25,32 @@ public class OrderService {
     private final MenuRepository menuRepository;
     private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
+    private final OrderValidator orderValidator;
 
     public OrderService(final MenuRepository menuRepository,
                         final OrderRepository orderRepository,
-                        final OrderTableRepository orderTableRepository) {
+                        final OrderTableRepository orderTableRepository,
+                        final OrderValidator orderValidator) {
         this.menuRepository = menuRepository;
         this.orderRepository = orderRepository;
         this.orderTableRepository = orderTableRepository;
+        this.orderValidator = orderValidator;
     }
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
-        OrderTable orderTable = findOrderTable(orderRequest.getOrderTableId());
-        validateExistMenus(orderRequest.getOrderLineItems());
-
-        Order order = Order.from(orderTable);
+        Order order = Order.createFromOrderTable(orderRequest.getOrderTableId());
         List<OrderLineItem> orderLineItems = createOrderLineItems(orderRequest);
         order.addOrderLineItems(orderLineItems);
+
+        orderValidator.validateOrder(order);
 
         return OrderResponse.from(orderRepository.save(order));
     }
 
     @Transactional(readOnly = true)
     public List<OrderResponse> list() {
-        final List<Order> order = orderRepository.findAll();
+        List<Order> order = orderRepository.findAll();
         return StreamUtils.mapToList(order, OrderResponse::from);
     }
 
@@ -86,12 +87,5 @@ public class OrderService {
     private Menu findMenu(Long menuId) {
         return menuRepository.findById(menuId)
                              .orElseThrow(EntityNotFoundException::new);
-    }
-
-    private void validateExistMenus(List<OrderLineItemRequest> orderLineItems) {
-        List<Long> menuIds = StreamUtils.mapToList(orderLineItems, OrderLineItemRequest::getMenuId);
-        if (orderLineItems.size() != menuRepository.countByIdIn(menuIds)) {
-            throw new EntityNotFoundException();
-        }
     }
 }

@@ -2,22 +2,21 @@ package kitchenpos.application;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.BDDMockito.*;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import javax.persistence.EntityNotFoundException;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
+import org.springframework.stereotype.Component;
 
 import kitchenpos.application.fixture.MenuFixtureFactory;
 import kitchenpos.application.fixture.MenuGroupFixtureFactory;
@@ -31,30 +30,38 @@ import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menu.MenuProduct;
 import kitchenpos.domain.menu.MenuRepository;
 import kitchenpos.domain.menugroup.MenuGroup;
+import kitchenpos.domain.menugroup.MenuGroupRepository;
 import kitchenpos.domain.order.Order;
 import kitchenpos.domain.order.OrderLineItem;
-import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.domain.order.OrderRepository;
+import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.domain.product.Product;
+import kitchenpos.domain.product.ProductRepository;
 import kitchenpos.domain.table.OrderTable;
 import kitchenpos.domain.table.OrderTableRepository;
 import kitchenpos.dto.order.OrderLineItemRequest;
 import kitchenpos.dto.order.OrderRequest;
 import kitchenpos.dto.order.OrderResponse;
 
-@ExtendWith(MockitoExtension.class)
+@DataJpaTest(includeFilters = @ComponentScan.Filter(type = FilterType.ANNOTATION, classes = Component.class))
 class OrderServiceTest {
 
-    @Mock
+    @Autowired
     private MenuRepository menuRepository;
 
-    @Mock
+    @Autowired
+    private MenuGroupRepository menuGroupRepository;
+
+    @Autowired
+    private ProductRepository productRepository;
+
+    @Autowired
     private OrderRepository orderRepository;
 
-    @Mock
+    @Autowired
     private OrderTableRepository orderTableRepository;
 
-    @InjectMocks
+    @Autowired
     private OrderService orderService;
 
     private MenuGroup 고기_메뉴그룹;
@@ -66,7 +73,6 @@ class OrderServiceTest {
     private OrderTable 주문_개인테이블;
     private OrderTable 빈_개인테이블;
     private Order 불고기_주문;
-    private Order 불고기_식사중_주문;
     private OrderLineItem 불고기_주문항목;
 
     @BeforeEach
@@ -83,11 +89,18 @@ class OrderServiceTest {
         주문_개인테이블 = OrderTableFixtureFactory.create(1L, false);
         빈_개인테이블 = OrderTableFixtureFactory.create(2L, true);
         불고기_주문 = OrderFixtureFactory.create(1L, 주문_개인테이블.getId(), OrderStatus.COOKING);
-        불고기_식사중_주문 = OrderFixtureFactory.create(1L, 주문_개인테이블.getId(), OrderStatus.MEAL);
 
         불고기_주문항목 = OrderLineItemFixtureFactory.create(1L, 불고기_주문.getId(), 불고기.getId(), 1L);
         불고기_주문.addOrderLineItems(Arrays.asList(불고기_주문항목));
-        불고기_식사중_주문.addOrderLineItems(Arrays.asList(불고기_주문항목));
+
+        고기_메뉴그룹 = menuGroupRepository.save(고기_메뉴그룹);
+        돼지고기 = productRepository.save(돼지고기);
+        공기밥 = productRepository.save(공기밥);
+        불고기 = menuRepository.save(불고기);
+
+        주문_개인테이블 = orderTableRepository.save(주문_개인테이블);
+        빈_개인테이블 = orderTableRepository.save(빈_개인테이블);
+        불고기_주문 = orderRepository.save(불고기_주문);
     }
 
     @DisplayName("Order 를 등록한다.")
@@ -100,16 +113,12 @@ class OrderServiceTest {
                                                     OrderStatus.COOKING,
                                                     orderLineItemRequests);
 
-        given(menuRepository.findById(anyLong())).willReturn(Optional.ofNullable(불고기));
-        given(menuRepository.countByIdIn(Arrays.asList(불고기.getId()))).willReturn(1L);
-        given(orderTableRepository.findById(주문_개인테이블.getId())).willReturn(Optional.ofNullable(주문_개인테이블));
-        given(orderRepository.save(any(Order.class))).willReturn(불고기_주문);
-
         // when
         OrderResponse orderResponse = orderService.create(orderRequest);
 
         // then
-        assertThat(orderResponse).isEqualTo(OrderResponse.from(불고기_주문));
+        Order findOrder = orderRepository.findById(orderResponse.getId()).get();
+        assertThat(orderResponse).isEqualTo(OrderResponse.from(findOrder));
     }
 
     @DisplayName("Order 를 등록 시, OrderLineItem 이 없으면 예외가 발생한다.")
@@ -117,8 +126,6 @@ class OrderServiceTest {
     void create2() {
         // given
         OrderRequest orderRequest = OrderRequest.of(주문_개인테이블.getId(), OrderStatus.COOKING, Collections.emptyList());
-
-        given(orderTableRepository.findById(주문_개인테이블.getId())).willReturn(Optional.ofNullable(주문_개인테이블));
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(orderRequest));
@@ -129,12 +136,10 @@ class OrderServiceTest {
     void create3() {
         // given
         List<OrderLineItemRequest> orderLineItemRequests =
-            Arrays.asList(OrderLineItemRequest.of(불고기_주문항목.getMenu().getId(), 불고기_주문항목.getQuantity().getValue()));
+            Arrays.asList(OrderLineItemRequest.of(0L, 불고기_주문항목.getQuantity().getValue()));
         OrderRequest orderRequest = OrderRequest.of(주문_개인테이블.getId(),
                                                     OrderStatus.COOKING,
                                                     orderLineItemRequests);
-
-        given(orderTableRepository.findById(주문_개인테이블.getId())).willReturn(Optional.ofNullable(주문_개인테이블));
 
         // when & then
         assertThrows(EntityNotFoundException.class, () -> orderService.create(orderRequest));
@@ -146,12 +151,9 @@ class OrderServiceTest {
         // given
         List<OrderLineItemRequest> orderLineItemRequests =
             Arrays.asList(OrderLineItemRequest.of(불고기_주문항목.getMenu().getId(), 불고기_주문항목.getQuantity().getValue()));
-        OrderRequest orderRequest = OrderRequest.of(주문_개인테이블.getId(),
+        OrderRequest orderRequest = OrderRequest.of(0L,
                                                     OrderStatus.COOKING,
                                                     orderLineItemRequests);
-
-        given(orderTableRepository.findById(주문_개인테이블.getId())).willReturn(Optional.ofNullable(주문_개인테이블));
-        given(orderTableRepository.findById(주문_개인테이블.getId())).willReturn(Optional.empty());
 
         // when & then
         assertThrows(EntityNotFoundException.class, () -> orderService.create(orderRequest));
@@ -165,9 +167,6 @@ class OrderServiceTest {
             Arrays.asList(OrderLineItemRequest.of(불고기_주문항목.getMenu().getId(), 불고기_주문항목.getQuantity().getValue()));
         OrderRequest orderRequest = OrderRequest.of(빈_개인테이블.getId(), OrderStatus.COOKING, orderLineItemRequests);
 
-        given(orderTableRepository.findById(빈_개인테이블.getId())).willReturn(Optional.ofNullable(빈_개인테이블));
-        given(menuRepository.countByIdIn(anyList())).willReturn(1L);
-
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(orderRequest));
     }
@@ -175,14 +174,11 @@ class OrderServiceTest {
     @DisplayName("Order 목록을 조회할 수 있다.")
     @Test
     void findList() {
-        // given
-        given(orderRepository.findAll()).willReturn(Arrays.asList(불고기_주문));
-
         // when
         List<OrderResponse> orderResponses = orderService.list();
 
         // then
-        assertThat(orderResponses).containsExactly(OrderResponse.from(불고기_주문));
+        assertThat(orderResponses).contains(OrderResponse.from(불고기_주문));
     }
 
     @DisplayName("Order 의 상태를 변경한다.")
@@ -190,14 +186,11 @@ class OrderServiceTest {
     void update1() {
         // given
         OrderRequest orderRequest = OrderRequest.of(OrderStatus.MEAL, Collections.emptyList());
-        불고기_주문.changeOrderStatus(OrderStatus.COOKING);
-        given(orderRepository.findById(불고기_주문.getId())).willReturn(Optional.of(불고기_주문));
 
         // when
         OrderResponse orderResponse = orderService.changeOrderStatus(불고기_주문.getId(), orderRequest);
 
         // then
-        assertThat(orderResponse).isEqualTo(OrderResponse.from(불고기_주문));
         assertThat(orderResponse.getOrderStatus()).isEqualTo(OrderStatus.MEAL);
     }
 
@@ -207,7 +200,6 @@ class OrderServiceTest {
         // given
         OrderRequest orderRequest = OrderRequest.of(OrderStatus.MEAL, Collections.emptyList());
         불고기_주문.changeOrderStatus(OrderStatus.COMPLETION);
-        given(orderRepository.findById(불고기_주문.getId())).willReturn(Optional.of(불고기_주문));
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> orderService.changeOrderStatus(불고기_주문.getId(),

@@ -35,6 +35,10 @@ public class OrderLineItems {
         this.orderLineItems.addAll(orderLineItems);
     }
 
+    public int size() {
+        return orderLineItems.size();
+    }
+
     public List<OrderLineItem> getValues() {
         return Collections.unmodifiableList(orderLineItems);
     }

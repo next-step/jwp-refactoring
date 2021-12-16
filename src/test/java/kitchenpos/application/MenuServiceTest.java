@@ -41,7 +41,6 @@ import kitchenpos.dto.menu.MenuRequest;
 import kitchenpos.dto.menu.MenuResponse;
 import kitchenpos.exception.NegativePriceException;
 
-@ExtendWith(SpringExtension.class)
 @DataJpaTest(includeFilters = @ComponentScan.Filter(type = FilterType.ANNOTATION, classes = Component.class))
 class MenuServiceTest {
 
@@ -75,10 +74,10 @@ class MenuServiceTest {
         불고기_공기밥 = MenuProductFixtureFactory.create(2L, 불고기, 공기밥, 1L);
         불고기.addMenuProducts(Arrays.asList(불고기_돼지고기, 불고기_공기밥));
 
-        menuGroupRepository.save(고기_메뉴그룹);
-        productRepository.save(돼지고기);
-        productRepository.save(공기밥);
-        menuRepository.save(불고기);
+        고기_메뉴그룹 = menuGroupRepository.save(고기_메뉴그룹);
+        돼지고기 = productRepository.save(돼지고기);
+        공기밥 = productRepository.save(공기밥);
+        불고기 = menuRepository.save(불고기);
     }
 
     @DisplayName("Menu 를 등록한다.")
