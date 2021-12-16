@@ -12,10 +12,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import kitchenpos.common.ErrorCode;
+import kitchenpos.common.PriceException;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.dto.ProductRequest;
-import kitchenpos.product.exception.ProductException;
 
 @DisplayName("상품 : 서비스 테스트")
 @ExtendWith({MockitoExtension.class})
@@ -51,7 +52,8 @@ class ProductServiceTest {
 		// when // then
 		assertThatThrownBy(() -> {
 			productService.create(productRequest);
-		}).isInstanceOf(ProductException.class);
+		}).isInstanceOf(PriceException.class)
+			.hasMessageContaining(ErrorCode.PRICE_IS_NOT_NULL.getMessage());
 	}
 
 	@DisplayName("상품의 가격이 0보다 작은 경우 생성시 예외처리 테스트")
@@ -63,7 +65,8 @@ class ProductServiceTest {
 		// when // then
 		assertThatThrownBy(() -> {
 			productService.create(productRequest);
-		}).isInstanceOf(ProductException.class);
+		}).isInstanceOf(PriceException.class)
+			.hasMessageContaining(ErrorCode.PRICE_NOT_NEGATIVE_NUMBER.getMessage());
 	}
 
 	@DisplayName("상품 목록 조회 테스트")

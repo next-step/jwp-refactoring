@@ -6,6 +6,7 @@ import java.util.Arrays;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -37,7 +38,7 @@ class ProductAcceptanceTest extends AcceptanceTest {
 		ExtractableResponse<Response> response = 상품_생성_요청(가격이_0이하인_치킨_생성_요청값);
 
 		// then
-		상품_생성_실패됨(response);
+		상품_생성_실패됨(response, HttpStatus.BAD_REQUEST.value());
 	}
 
 	@Test
@@ -49,7 +50,7 @@ class ProductAcceptanceTest extends AcceptanceTest {
 		ExtractableResponse<Response> response = 상품_생성_요청(가격이_없는_치킨_생성_요청값);
 
 		// then
-		상품_생성_실패됨(response);
+		상품_생성_실패됨(response, HttpStatus.BAD_REQUEST.value());
 	}
 
 	@Test

@@ -41,8 +41,8 @@ public class ProductAcceptanceStaticTest {
 		return 상품_생성_요청(params).as(ProductResponse.class);
 	}
 
-	public static void 상품_생성_실패됨(ExtractableResponse<Response> response) {
-		assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+	public static void 상품_생성_실패됨(ExtractableResponse<Response> response, int status) {
+		assertThat(response.statusCode()).isEqualTo(status);
 	}
 
 	public static void 상품이_생성됨(ExtractableResponse<Response> response) {
