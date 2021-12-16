@@ -13,7 +13,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import kitchenpos.domain.Quantity;
-import kitchenpos.domain.menu.Menu;
 
 @Entity
 @Table(name = "order_line_item")

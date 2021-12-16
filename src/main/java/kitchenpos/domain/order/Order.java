@@ -2,7 +2,6 @@ package kitchenpos.domain.order;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -15,10 +14,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Table;
-
-import org.springframework.util.CollectionUtils;
-
-import kitchenpos.domain.table.OrderTable;
 
 @Entity
 @Table(name = "orders")
@@ -50,27 +45,30 @@ public class Order {
         this.id = id;
     }
 
-    private Order(Long id, Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime) {
-        this(orderTableId, orderStatus, orderedTime);
+    private Order(Long id, Long orderTableId, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
+        this(orderTableId, orderStatus, orderLineItems);
         this.id = id;
     }
 
-    private Order(Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime) {
+    private Order(Long orderTableId, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
-        this.orderedTime = orderedTime;
+        this.orderedTime = LocalDateTime.now();
+        this.orderLineItems = OrderLineItems.from(orderLineItems);
+
+        this.orderLineItems.getValues().forEach(orderLineItem -> orderLineItem.assignOrders(this));
     }
 
     public static Order from(long id) {
         return new Order(id);
     }
 
-    public static Order createFromOrderTable(Long orderTableId) {
-        return new Order(orderTableId, OrderStatus.COOKING, LocalDateTime.now());
+    public static Order of(Long orderTableId, List<OrderLineItem> orderLineItems) {
+        return new Order(orderTableId, OrderStatus.COOKING, orderLineItems);
     }
 
-    public static Order of(Long id, Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime) {
-        return new Order(id, orderTableId, orderStatus, orderedTime);
+    public static Order of(Long id, Long orderTableId, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
+        return new Order(id, orderTableId, orderStatus, orderLineItems);
     }
 
     public boolean isCompletion() {
@@ -102,22 +100,9 @@ public class Order {
         return orderLineItems;
     }
 
-    public void addOrderLineItems(final List<OrderLineItem> orderLineItems) {
-        validateIsEmptyOrderLineItems(orderLineItems);
-
-        this.orderLineItems.addAll(orderLineItems);
-        orderLineItems.forEach(orderLineItem -> orderLineItem.assignOrders(this));
-    }
-
     private void validateChangeOrderStatus() {
         if (isCompletion()) {
             throw new IllegalArgumentException(CAN_NOT_CHANGE_ORDER_STATUS_MESSAGE);
-        }
-    }
-
-    private void validateIsEmptyOrderLineItems(List<OrderLineItem> orderLineItems) {
-        if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalArgumentException(EMPTY_ORDER_LINE_ITEMS);
         }
     }
 }

@@ -20,6 +20,7 @@ import kitchenpos.application.fixture.MenuFixtureFactory;
 import kitchenpos.application.fixture.MenuGroupFixtureFactory;
 import kitchenpos.application.fixture.MenuProductFixtureFactory;
 import kitchenpos.application.fixture.OrderFixtureFactory;
+import kitchenpos.application.fixture.OrderLineItemFixtureFactory;
 import kitchenpos.application.fixture.OrderTableFixtureFactory;
 import kitchenpos.application.fixture.ProductFixtureFactory;
 import kitchenpos.application.order.OrderValidator;
@@ -62,6 +63,7 @@ class OrderLineItemTest {
     private MenuProduct 불고기_돼지고기;
     private MenuProduct 불고기_공기밥;
     private OrderTable 주문_개인테이블;
+    private OrderLineItem 불고기_주문항목;
     private Order 불고기_주문;
 
     @BeforeEach
@@ -75,7 +77,8 @@ class OrderLineItemTest {
         불고기 = MenuFixtureFactory.create(1L, "불고기", 10_000, 고기_메뉴그룹, Arrays.asList(불고기_돼지고기, 불고기_공기밥));
 
         주문_개인테이블 = OrderTableFixtureFactory.create(1L, false);
-        불고기_주문 = OrderFixtureFactory.create(1L, 주문_개인테이블.getId(), OrderStatus.COOKING);
+        불고기_주문항목 = OrderLineItemFixtureFactory.create(1L, 불고기_주문, 불고기.getId(), 1L);
+        불고기_주문 = OrderFixtureFactory.create(1L, 주문_개인테이블.getId(), OrderStatus.COOKING, Arrays.asList(불고기_주문항목));
 
         고기_메뉴그룹 = menuGroupRepository.save(고기_메뉴그룹);
         돼지고기 = productRepository.save(돼지고기);
@@ -90,8 +93,7 @@ class OrderLineItemTest {
     @Test
     void creat1() {
         // when
-        OrderLineItem 불고기_주문항목 = OrderLineItem.of(불고기.getId(), 1L);
-        불고기_주문.addOrderLineItems(Arrays.asList(불고기_주문항목));
+        OrderLineItem 불고기_주문항목 = OrderLineItem.of(0L,불고기_주문, 불고기.getId(), 1L);
 
         // then
         assertAll(
@@ -114,7 +116,7 @@ class OrderLineItemTest {
     @Test
     void creat3() {
         // given
-        OrderLineItem orderLineItem = OrderLineItem.of(1L, null, 불고기.getId(), 1L);
+        OrderLineItem orderLineItem = OrderLineItem.of(0L, null, 불고기.getId(), 1L);
 
         // when & then
         assertThrows(EntityNotFoundException.class, () -> orderValidator.validateOrderLineItem(orderLineItem));

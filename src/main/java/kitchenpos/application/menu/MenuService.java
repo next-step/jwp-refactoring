@@ -52,16 +52,6 @@ public class MenuService {
         return StreamUtils.mapToList(menus, MenuResponse::from);
     }
 
-    private List<MenuProduct> createMenuProducts(MenuRequest menuRequest) {
-        List<MenuProduct> menuProducts = new ArrayList<>();
-
-        for (MenuProductRequest menuProductRequest : menuRequest.getMenuProducts()) {
-            menuProducts.add(menuProductRequest.toMenuProduct());
-        }
-
-        return menuProducts;
-    }
-
     private MenuGroup findMenuGroup(Long menuGroupId) {
         return menuGroupRepository.findById(menuGroupId)
                                   .orElseThrow(EntityNotFoundException::new);

@@ -87,10 +87,9 @@ class OrderServiceTest {
 
         주문_개인테이블 = OrderTableFixtureFactory.create(1L, false);
         빈_개인테이블 = OrderTableFixtureFactory.create(2L, true);
-        불고기_주문 = OrderFixtureFactory.create(1L, 주문_개인테이블.getId(), OrderStatus.COOKING);
 
-        불고기_주문항목 = OrderLineItemFixtureFactory.create(1L, 불고기_주문.getId(), 불고기.getId(), 1L);
-        불고기_주문.addOrderLineItems(Arrays.asList(불고기_주문항목));
+        불고기_주문항목 = OrderLineItemFixtureFactory.create(1L, 불고기_주문, 불고기.getId(), 1L);
+        불고기_주문 = OrderFixtureFactory.create(1L, 주문_개인테이블.getId(), OrderStatus.COOKING, Arrays.asList(불고기_주문항목));
 
         고기_메뉴그룹 = menuGroupRepository.save(고기_메뉴그룹);
         돼지고기 = productRepository.save(돼지고기);

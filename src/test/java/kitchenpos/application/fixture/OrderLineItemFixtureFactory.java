@@ -8,7 +8,7 @@ public class OrderLineItemFixtureFactory {
 
     private OrderLineItemFixtureFactory() {}
 
-    public static OrderLineItem create(long seq, long orderId, long menuId, long quantity) {
-        return OrderLineItem.of(seq, Order.from(orderId), menuId, quantity);
+    public static OrderLineItem create(long seq, Order order, long menuId, long quantity) {
+        return OrderLineItem.of(seq, order, menuId, quantity);
     }
 }

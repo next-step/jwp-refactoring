@@ -1,6 +1,5 @@
 package kitchenpos.application.order;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityNotFoundException;
@@ -13,8 +12,6 @@ import kitchenpos.domain.menu.MenuRepository;
 import kitchenpos.domain.order.Order;
 import kitchenpos.domain.order.OrderLineItem;
 import kitchenpos.domain.order.OrderRepository;
-import kitchenpos.domain.table.OrderTable;
-import kitchenpos.domain.table.OrderTableRepository;
 import kitchenpos.dto.order.OrderLineItemRequest;
 import kitchenpos.dto.order.OrderRequest;
 import kitchenpos.dto.order.OrderResponse;
@@ -36,9 +33,9 @@ public class OrderService {
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
-        Order order = Order.createFromOrderTable(orderRequest.getOrderTableId());
-        List<OrderLineItem> orderLineItems = createOrderLineItems(orderRequest);
-        order.addOrderLineItems(orderLineItems);
+        List<OrderLineItem> orderLineItems = StreamUtils.mapToList(orderRequest.getOrderLineItems(),
+                                                                   OrderLineItemRequest::toOrderLineItem);
+        Order order = Order.of(orderRequest.getOrderTableId(), orderLineItems);
 
         orderValidator.validateOrder(order);
 
@@ -57,18 +54,6 @@ public class OrderService {
         order.changeOrderStatus(orderRequest.getOrderStatus());
 
         return OrderResponse.from(order);
-    }
-
-    private List<OrderLineItem> createOrderLineItems(OrderRequest orderRequest) {
-        List<OrderLineItem> orderLineItems = new ArrayList<>();
-        for (OrderLineItemRequest orderLineItemRequest : orderRequest.getOrderLineItems()) {
-            Menu menu = findMenu(orderLineItemRequest.getMenuId());
-            OrderLineItem orderLineItem = OrderLineItem.of(menu.getId(), orderLineItemRequest.getQuantity());
-
-            orderLineItems.add(orderLineItem);
-        }
-
-        return orderLineItems;
     }
 
     private Order findOrders(Long orderId) {

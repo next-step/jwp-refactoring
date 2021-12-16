@@ -31,10 +31,6 @@ public class OrderLineItems {
         return new OrderLineItems(orderLineItems);
     }
 
-    public void addAll(List<OrderLineItem> orderLineItems) {
-        this.orderLineItems.addAll(orderLineItems);
-    }
-
     public int size() {
         return orderLineItems.size();
     }
