@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import kitchenpos.domain.table.OrderTable;
+import kitchenpos.domain.table.OrderTables;
 
 @Entity
 @Table(name = "table_group")

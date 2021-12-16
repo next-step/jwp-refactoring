@@ -11,6 +11,6 @@ public class MenuFixtureFactory {
     private MenuFixtureFactory() {}
 
     public static Menu create(long id, String name, long price, MenuGroup menuGroup) {
-        return Menu.of(id, name, BigDecimal.valueOf(price), menuGroup, new ArrayList<>());
+        return Menu.of(id, name, BigDecimal.valueOf(price), menuGroup.getId(), new ArrayList<>());
     }
 }

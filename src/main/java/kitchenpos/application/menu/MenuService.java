@@ -1,8 +1,7 @@
-package kitchenpos.application;
+package kitchenpos.application.menu;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.persistence.EntityNotFoundException;
 
@@ -26,22 +25,26 @@ public class MenuService {
     private final MenuRepository menuRepository;
     private final MenuGroupRepository menuGroupRepository;
     private final ProductRepository productRepository;
+    private final MenuValidator menuValidator;
 
     public MenuService(final MenuRepository menuRepository,
                        final MenuGroupRepository menuGroupRepository,
-                       final ProductRepository productRepository) {
+                       final ProductRepository productRepository,
+                       final MenuValidator menuValidator) {
         this.menuRepository = menuRepository;
         this.menuGroupRepository = menuGroupRepository;
         this.productRepository = productRepository;
+        this.menuValidator = menuValidator;
     }
 
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
         MenuGroup menuGroup = findMenuGroup(menuRequest.getMenuGroupId());
-        Menu menu = Menu.of(menuRequest.getName(), menuRequest.getPrice(), menuGroup);
-        List<MenuProduct> menuProducts = createMenuProducts(menuRequest);
 
+        Menu menu = Menu.of(menuRequest.getName(), menuRequest.getPrice(), menuGroup.getId());
+        List<MenuProduct> menuProducts = createMenuProducts(menuRequest);
         menu.addMenuProducts(menuProducts);
+        menuValidator.validate(menu);
 
         return MenuResponse.from(menuRepository.save(menu));
     }
@@ -54,12 +57,9 @@ public class MenuService {
 
     private List<MenuProduct> createMenuProducts(MenuRequest menuRequest) {
         List<MenuProduct> menuProducts = new ArrayList<>();
-        List<Long> productIds = StreamUtils.mapToList(menuRequest.getMenuProducts(), MenuProductRequest::getProductId);
-        Map<Long, Product> productDict = StreamUtils.mapToIdentityMap(findProducts(productIds), Product::getId);
 
         for (MenuProductRequest menuProductRequest : menuRequest.getMenuProducts()) {
-            menuProducts.add(MenuProduct.of(productDict.get(menuProductRequest.getProductId()),
-                                            menuProductRequest.getQuantity()));
+            menuProducts.add(menuProductRequest.toMenuProduct());
         }
 
         return menuProducts;
@@ -68,11 +68,6 @@ public class MenuService {
     private MenuGroup findMenuGroup(Long menuGroupId) {
         return menuGroupRepository.findById(menuGroupId)
                                   .orElseThrow(EntityNotFoundException::new);
-    }
-
-    private Product findProduct(Long productId) {
-        return productRepository.findById(productId)
-                                .orElseThrow(EntityNotFoundException::new);
     }
 
     private List<Product> findProducts(List<Long> productIds) {

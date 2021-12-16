@@ -38,10 +38,6 @@ public class OrderTable {
 
     protected OrderTable() {}
 
-    private OrderTable(Long id) {
-        this.id = id;
-    }
-
     private OrderTable(Long id, int numberOfGuests, boolean empty) {
         this(numberOfGuests, empty);
         this.id = id;

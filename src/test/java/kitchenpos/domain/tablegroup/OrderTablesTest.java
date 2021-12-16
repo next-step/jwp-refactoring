@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 
 import kitchenpos.application.fixture.TableGroupFixtureFactory;
 import kitchenpos.domain.table.OrderTable;
+import kitchenpos.domain.table.OrderTables;
 
 class OrderTablesTest {
 

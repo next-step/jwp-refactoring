@@ -1,4 +1,4 @@
-package kitchenpos.domain.tablegroup;
+package kitchenpos.domain.table;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -8,8 +8,6 @@ import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 
 import org.springframework.util.CollectionUtils;
-
-import kitchenpos.domain.table.OrderTable;
 
 @Embeddable
 public class OrderTables {

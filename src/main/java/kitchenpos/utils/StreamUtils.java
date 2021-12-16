@@ -27,6 +27,14 @@ public class StreamUtils {
                           .collect(toMap(mapFunction, Function.identity()));
     }
 
+    public static <T, K, V> Map<K, V> mapToMap(Collection<T> collections,
+                                        Function<T, K> keyMapper,
+                                        Function<T, V> valueMapper) {
+        return collections.stream()
+                          .collect(toMap(keyMapper, valueMapper));
+
+    }
+
     public static <T> int mapToMaxInt(Collection<T> collections, ToIntFunction<T> mapFunction) {
         return collections.stream()
                           .mapToInt(mapFunction)
