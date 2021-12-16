@@ -3,7 +3,6 @@ package kitchenpos.menu.application;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
-import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.Optional;
 
@@ -15,160 +14,155 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import kitchenpos.common.ErrorCode;
+import kitchenpos.common.PriceException;
+import kitchenpos.domain.Price;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuDao;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuProductDao;
+import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.exception.MenuException;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.product.exception.ProductException;
 
 @DisplayName("메뉴 : 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
 public class MenuServiceTest {
 
 	@Mock
-	MenuDao menuDao;
+	MenuRepository menuRepository;
 
 	@Mock
 	MenuGroupRepository menuGroupRepository;
 
 	@Mock
-	MenuProductDao menuProductDao;
-
-	@Mock
 	ProductRepository productRepository;
-
-	@Mock
-	MenuProduct menuProduct;
-
-	@Mock
-	MenuGroup menuGroup;
-
-	@Mock
-	Product product;
 
 	@InjectMocks
 	private MenuService menuService;
 
+	private MenuProduct menuProduct;
+
+	private MenuGroup menuGroup;
+
+	private Product product;
+
 	private Menu menu;
+
+	private MenuRequest menuRequest;
 
 	@BeforeEach
 	void setup() {
-		menu = new Menu();
+		menuGroup = MenuGroup.from("두마리");
+		product = Product.of("불닭", 16000);
 	}
 
 	@DisplayName("메뉴 생성 테스트")
 	@Test
 	void createMenu() {
 		// given
-		given(menuProduct.getProductId()).willReturn(1L);
-		given(menuProduct.getQuantity()).willReturn(2L);
-		given(menuGroup.getId()).willReturn(1L);
-		given(product.getPrice()).willReturn(BigDecimal.valueOf(16000));
-		given(menuGroupRepository.existsById(menuGroup.getId())).willReturn(true);
-		given(productRepository.findById(menuProduct.getProductId())).willReturn(Optional.of(product));
-		given(menuProductDao.save(menuProduct)).willReturn(menuProduct);
+		menuRequest = MenuRequest.of("불닭메", 21000, 1L,
+			Collections.singletonList(MenuProductRequest.of(1L, 2L)));
 
-		menu.setName("불닭메뉴");
-		menu.setMenuGroupId(menuGroup.getId());
-		menu.setMenuProducts(Collections.singletonList(menuProduct));
-		menu.setPrice(new BigDecimal(21000));
+		given(menuGroupRepository.findById(anyLong())).willReturn(Optional.of(menuGroup));
+		given(productRepository.findById(anyLong())).willReturn(Optional.of(product));
 
 		// when
-		when(menuDao.save(menu)).thenReturn(menu);
+		Menu menu = menuService.create(menuRequest);
 
 		// then
-		assertThat(menuService.create(menu)).isEqualTo(menu);
+		assertThat(menuService.create(menuRequest)).isEqualTo(menu);
 	}
 
 	@DisplayName("메뉴의 가격이 존재하지 않을 경우 생성시 예외처리 테스트")
 	@Test
 	void createMenuNullPrice() {
 		// given
-		menu.setName("불닭메뉴");
+		menuRequest = MenuRequest.of("불닭메", (Integer)null, 1L,
+			Collections.singletonList(MenuProductRequest.of(1L, 2L)));
+
+		given(menuGroupRepository.findById(anyLong())).willReturn(Optional.of(menuGroup));
 
 		// when // then
 		assertThatThrownBy(() -> {
-			menuService.create(menu);
-		}).isInstanceOf(IllegalArgumentException.class);
+			menuService.create(menuRequest);
+		}).isInstanceOf(PriceException.class)
+			.hasMessageContaining(ErrorCode.PRICE_IS_NOT_NULL.getMessage());
 	}
 
 	@DisplayName("메뉴의 가격이 0이하일 경우 생성시 예외처리 테스트")
 	@Test
 	void createUnderZeroPrice() {
 		// given
-		menu.setName("불닭메뉴");
-		menu.setPrice(BigDecimal.valueOf(-1000));
+		menuRequest = MenuRequest.of("불닭메", -100, 1L,
+			Collections.singletonList(MenuProductRequest.of(1L, 2L)));
 
+		given(menuGroupRepository.findById(anyLong())).willReturn(Optional.of(menuGroup));
 		// when // then
 		assertThatThrownBy(() -> {
-			menuService.create(menu);
-		}).isInstanceOf(IllegalArgumentException.class);
+			menuService.create(menuRequest);
+		}).isInstanceOf(PriceException.class)
+			.hasMessageContaining(ErrorCode.PRICE_NOT_NEGATIVE_NUMBER.getMessage());
 	}
 
 	@DisplayName("메뉴에 등록할 메뉴 그룹이 존재하지 않을 경우 생성시 예외처리 테스트")
 	@Test
 	void createMenuUnknownMenuGroup() {
 		// given
-		given(menuGroup.getId()).willReturn(1L);
-		given(menuGroupRepository.existsById(menuGroup.getId())).willReturn(false);
-		menu.setName("불닭메뉴");
-		menu.setPrice(BigDecimal.valueOf(16000));
-		menu.setMenuGroupId(menuGroup.getId());
+		menuRequest = MenuRequest.of("불닭메", 160000, 1L,
+			Collections.singletonList(MenuProductRequest.of(1L, 2L)));
 
 		// when // then
 		assertThatThrownBy(() -> {
-			menuService.create(menu);
-		}).isInstanceOf(IllegalArgumentException.class);
+			menuService.create(menuRequest);
+		}).isInstanceOf(MenuException.class)
+			.hasMessageContaining(ErrorCode.MENU_GROUP_IS_NOT_NULL.getMessage());
 	}
 
 	@DisplayName("메뉴에 등록할 상품이 존재하지 않을 경우 생성시 예외처리 테스트")
 	@Test
 	void createMenuUnknownProduct() {
 		// given
-		given(menuGroup.getId()).willReturn(1L);
-		given(menuGroupRepository.existsById(menuGroup.getId())).willReturn(true);
+		menuRequest = MenuRequest.of("불닭메", 160000, 1L,
+			Collections.singletonList(MenuProductRequest.of(1L, 2L)));
 
-		menu.setName("불닭메뉴");
-		menu.setMenuGroupId(menuGroup.getId());
-		menu.setPrice(BigDecimal.valueOf(16000));
-		menu.setMenuProducts(Collections.singletonList(menuProduct));
+		given(menuGroupRepository.findById(anyLong())).willReturn(Optional.of(menuGroup));
 
 		// when // then
 		assertThatThrownBy(() -> {
-			menuService.create(menu);
-		}).isInstanceOf(IllegalArgumentException.class);
+			menuService.create(menuRequest);
+		}).isInstanceOf(ProductException.class)
+			.hasMessageContaining(ErrorCode.PRODUCT_IS_NULL.getMessage());
 	}
 
 	@DisplayName("메뉴의 가격이 메뉴 상품들의 가격을 모두 더한 값보다 클 경우 생성시 예외처리 테스트")
 	@Test
 	void createMenuPriceUnderSumPrice() {
 		// given
-		given(menuProduct.getProductId()).willReturn(1L);
-		given(menuProduct.getQuantity()).willReturn(2L);
-		given(menuGroup.getId()).willReturn(1L);
-		given(product.getPrice()).willReturn(BigDecimal.valueOf(16000));
-		given(menuGroupRepository.existsById(menuGroup.getId())).willReturn(true);
-		given(productRepository.findById(menuProduct.getProductId())).willReturn(Optional.of(product));
-
-		menu.setName("불닭메뉴");
-		menu.setMenuGroupId(menuGroup.getId());
-		menu.setPrice(BigDecimal.valueOf(50000));
-		menu.setMenuProducts(Collections.singletonList(menuProduct));
+		menuRequest = MenuRequest.of("불닭메", 80000, 1L,
+			Collections.singletonList(MenuProductRequest.of(1L, 2L)));
+		given(menuGroupRepository.findById(anyLong())).willReturn(Optional.of(menuGroup));
+		given(productRepository.findById(anyLong())).willReturn(Optional.of(product));
 
 		// when // then
 		assertThatThrownBy(() -> {
-			menuService.create(menu);
-		}).isInstanceOf(IllegalArgumentException.class);
+			menuService.create(menuRequest);
+		}).isInstanceOf(PriceException.class)
+			.hasMessageContaining(ErrorCode.PRODUCT_PRICE_IS_UNDER_SUM_PRICE.getMessage());
 	}
 
 	@DisplayName("메뉴 목록 조회 테스트")
 	@Test
 	void getList() {
-		// given // when
-		when(menuDao.findAll()).thenReturn(Collections.singletonList(menu));
+		// given
+		menu = Menu.of("불닭 메뉴", Price.from(16000), menuGroup, Collections.singletonList(menuProduct));
+
+		// when
+		when(menuRepository.findAll()).thenReturn(Collections.singletonList(menu));
 
 		// then
 		assertThat(menuService.list()).containsExactly(menu);
