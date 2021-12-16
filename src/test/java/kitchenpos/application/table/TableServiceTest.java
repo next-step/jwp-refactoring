@@ -24,6 +24,7 @@ import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.domain.order.Orders;
 import kitchenpos.domain.table.OrderTable;
 import kitchenpos.domain.table.OrderTableRepository;
+import kitchenpos.domain.table.OrderTables;
 import kitchenpos.domain.table.TableGroup;
 import kitchenpos.dto.table.OrderTableDto;
 import kitchenpos.exception.order.HasNotCompletionOrderException;
@@ -102,7 +103,7 @@ public class TableServiceTest {
         // given
         OrderTable 치킨_주문_단체테이블 = OrderTable.of(0, true);
         OrderTable 치킨2_주문_단체테이블 = OrderTable.of(0, true);
-        TableGroup 단체주문테이블 = TableGroup.of(Lists.newArrayList(치킨_주문_단체테이블, 치킨2_주문_단체테이블));
+        TableGroup 단체주문테이블 = TableGroup.of(OrderTables.of(Lists.newArrayList(치킨_주문_단체테이블, 치킨2_주문_단체테이블)));
         치킨_주문_단체테이블.groupingTable(단체주문테이블);
 
         when(orderTableRepository.findById(nullable(Long.class))).thenReturn(Optional.of(치킨_주문_단체테이블));

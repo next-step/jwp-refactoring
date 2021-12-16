@@ -19,6 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import kitchenpos.application.order.OrderService;
 import kitchenpos.domain.table.OrderTable;
 import kitchenpos.domain.table.OrderTableRepository;
+import kitchenpos.domain.table.OrderTables;
 import kitchenpos.domain.table.TableGroup;
 import kitchenpos.domain.table.TableGroupRepository;
 import kitchenpos.dto.table.OrderTableDto;
@@ -48,7 +49,7 @@ public class TableGroupServiceTest {
         // given
         OrderTable 치킨_주문_단체테이블 = OrderTable.of(0, true);
         OrderTable 치킨2_주문_단체테이블 = OrderTable.of(0, true);
-        TableGroup 단체주문테이블 = TableGroup.of(List.of(치킨_주문_단체테이블, 치킨2_주문_단체테이블));
+        TableGroup 단체주문테이블 = TableGroup.of(OrderTables.of(List.of(치킨_주문_단체테이블, 치킨2_주문_단체테이블)));
 
         List<OrderTable> 조회된_주문테이블_리스트 = List.of(치킨_주문_단체테이블, 치킨2_주문_단체테이블);
 
@@ -69,7 +70,7 @@ public class TableGroupServiceTest {
     void exception_createTableGoup_underTwoCountOrderTable() {
         // given
         OrderTable 치킨_주문_단체테이블 = OrderTable.of(0, true);
-        TableGroup 단체주문테이블 = TableGroup.of(List.of(치킨_주문_단체테이블));
+        TableGroup 단체주문테이블 = TableGroup.of(OrderTables.of(List.of(치킨_주문_단체테이블)));
 
         List<OrderTable> 조회된_주문테이블_리스트 = List.of(치킨_주문_단체테이블);
 
@@ -87,7 +88,7 @@ public class TableGroupServiceTest {
         // given
         OrderTable 치킨_주문_단체테이블 = OrderTable.of(0, true);
         OrderTable 치킨2_주문_단체테이블 = OrderTable.of(0, true);
-        TableGroup 단체주문테이블 = TableGroup.of(List.of(치킨_주문_단체테이블, 치킨2_주문_단체테이블));
+        TableGroup 단체주문테이블 = TableGroup.of(OrderTables.of(List.of(치킨_주문_단체테이블, 치킨2_주문_단체테이블)));
         
         List<OrderTable> 조회된_주문테이블_리스트 = List.of(치킨_주문_단체테이블);
 
@@ -107,10 +108,10 @@ public class TableGroupServiceTest {
         OrderTable 치킨2_주문_단체테이블 = OrderTable.of(0, true);
         OrderTable 치킨3_주문_단체테이블 =  OrderTable.of(0, true);
 
-        TableGroup 단체주문테이블 = TableGroup.of(List.of(치킨_주문_단체테이블, 치킨2_주문_단체테이블));
-        TableGroup 단체2주문테이블 = TableGroup.of(List.of(치킨2_주문_단체테이블, 치킨3_주문_단체테이블));
+        TableGroup 단체주문테이블 = TableGroup.of(OrderTables.of(List.of(치킨_주문_단체테이블, 치킨2_주문_단체테이블)));
+        TableGroup 단체2주문테이블 = TableGroup.of(OrderTables.of(List.of(치킨2_주문_단체테이블, 치킨3_주문_단체테이블)));
 
-        List<OrderTable> 조회된_주문테이블_리스트 = List.of(OrderTable.of(0, true), OrderTable.of(단체2주문테이블, 0));
+        List<OrderTable> 조회된_주문테이블_리스트 =List.of(OrderTable.of(0, true), OrderTable.of(단체2주문테이블, 0));
 
         when(orderTableRepository.findAllByIdIn(anyList())).thenReturn(조회된_주문테이블_리스트);
 
@@ -127,7 +128,7 @@ public class TableGroupServiceTest {
         OrderTable 치킨_주문_단체테이블 = OrderTable.of(0, true);
         OrderTable 치킨2_주문_단체테이블 = OrderTable.of(0, true);
 
-        TableGroup 단체주문테이블 = TableGroup.of(Lists.newArrayList());
+        TableGroup 단체주문테이블 = TableGroup.of(OrderTables.of(Lists.newArrayList()));
         치킨_주문_단체테이블.groupingTable(단체주문테이블);
         치킨2_주문_단체테이블.groupingTable(단체주문테이블);
 
@@ -139,7 +140,7 @@ public class TableGroupServiceTest {
         tableGroupService.ungroup(단체주문테이블.getId());
 
         // then
-        Assertions.assertThat(단체주문테이블.getOrderTables()).hasSize(0);
+        Assertions.assertThat(단체주문테이블.getOrderTables().size()).isEqualTo(0);
     }
 
     @DisplayName("주문테이블의 주문상태가 계산 단계가 아닐때 단체지정이 해제시 예외가 발생된다.")
@@ -149,7 +150,7 @@ public class TableGroupServiceTest {
         OrderTable 치킨_주문_단체테이블 = OrderTable.of(0, true);
         OrderTable 치킨2_주문_단체테이블 = OrderTable.of(0, true);
 
-        TableGroup 단체주문테이블 = TableGroup.of(Lists.newArrayList(치킨_주문_단체테이블, 치킨2_주문_단체테이블));
+        TableGroup 단체주문테이블 = TableGroup.of(OrderTables.of(Lists.newArrayList(치킨_주문_단체테이블, 치킨2_주문_단체테이블)));
         List<OrderTable> 조회된_주문테이블_리스트 = List.of(OrderTable.of(단체주문테이블, 0), OrderTable.of(단체주문테이블, 0));
 
         when(orderService.isExistNotCompletionOrder(anyList())).thenReturn(true);

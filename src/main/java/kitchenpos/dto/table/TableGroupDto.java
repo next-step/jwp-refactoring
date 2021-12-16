@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import kitchenpos.domain.table.TableGroup;
 
@@ -36,10 +35,12 @@ public class TableGroupDto {
         if (tableGroup.getOrderTables() == null) {
             return new TableGroupDto(tableGroup.getId(), tableGroup.getCreatedDate(), null);
         }
-        
-        List<OrderTableDto> tempOrderTables = tableGroup.getOrderTables().stream()
-                                                        .map(OrderTableDto::of)
-                                                        .collect(Collectors.toList());
+
+        List<OrderTableDto> tempOrderTables = new ArrayList<>();
+
+        for (int index = 0; index < tableGroup.getOrderTables().size(); index++ ) {
+            tempOrderTables.add(OrderTableDto.of(tableGroup.getOrderTables().get(index)));
+        }
 
         return new TableGroupDto(tableGroup.getId(), tableGroup.getCreatedDate(), tempOrderTables);
     }

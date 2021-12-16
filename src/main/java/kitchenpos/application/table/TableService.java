@@ -4,12 +4,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import kitchenpos.application.order.OrderService;
-import kitchenpos.domain.order.Orders;
 import kitchenpos.domain.table.OrderTable;
 import kitchenpos.domain.table.OrderTableRepository;
 import kitchenpos.dto.table.OrderTableDto;
-import kitchenpos.exception.table.EmptyOrderTableException;
-import kitchenpos.exception.table.NegativeOfNumberOfGuestsException;
 import kitchenpos.exception.table.NotFoundOrderTableException;
 
 import java.util.List;

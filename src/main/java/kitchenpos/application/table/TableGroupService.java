@@ -3,6 +3,7 @@ package kitchenpos.application.table;
 import kitchenpos.application.order.OrderService;
 import kitchenpos.domain.table.OrderTable;
 import kitchenpos.domain.table.OrderTableRepository;
+import kitchenpos.domain.table.OrderTables;
 import kitchenpos.domain.table.TableGroup;
 import kitchenpos.domain.table.TableGroupRepository;
 import kitchenpos.dto.table.OrderTableDto;
@@ -42,19 +43,20 @@ public class TableGroupService {
                                                     .map(OrderTableDto::getId)
                                                     .collect(Collectors.toList());
 
-        final List<OrderTable> savedOrderTables = orderTableRepository.findAllByIdIn(orderTableIds);
+        final OrderTables savedOrderTables = OrderTables.of(orderTableRepository.findAllByIdIn(orderTableIds));
 
         validationOfCreate(tableGroup.getOrderTables(), savedOrderTables);
 
         return TableGroupDto.of(tableGroupRepository.save(TableGroup.of(savedOrderTables)));
     }
 
-    private void validationOfCreate(final List<OrderTableDto> orderTables, final List<OrderTable> savedOrderTables) {
+    private void validationOfCreate(final List<OrderTableDto> orderTables, final OrderTables savedOrderTables) {
         checkOrderTableSize(orderTables);
         checkAllExistOfOrderTables(orderTables, savedOrderTables);
-        for (final OrderTable orderTable : savedOrderTables) {
-            checkHasTableGroup(orderTable);
-            checkNotEmptyTable(orderTable);
+
+        for (int index = 0; index < savedOrderTables.size(); index++) {
+            checkHasTableGroup(savedOrderTables.get(index));
+            checkNotEmptyTable(savedOrderTables.get(index));
         }
     }
 
@@ -70,7 +72,7 @@ public class TableGroupService {
         }
     }
     
-    private void checkAllExistOfOrderTables(final List<OrderTableDto> orderTables, final List<OrderTable> savedOrderTables) {
+    private void checkAllExistOfOrderTables(final List<OrderTableDto> orderTables, final OrderTables savedOrderTables) {
         if (orderTables.size() != savedOrderTables.size()) {
             throw new NotRegistedMenuOrderTableException();
         }
@@ -84,16 +86,14 @@ public class TableGroupService {
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
-        final List<OrderTable> orderTables = orderTableRepository.findAllByTableGroupId(tableGroupId);
+        final OrderTables orderTables = OrderTables.of(orderTableRepository.findAllByTableGroupId(tableGroupId));
 
-        final List<Long> orderTableIds = orderTables.stream()
-                                                    .map(OrderTable::getId)
-                                                    .collect(Collectors.toList());
+        final List<Long> orderTableIds = orderTables.getOrderTableIds();
 
         validationOfUpgroup(orderTableIds);
 
-        for (OrderTable orderTable : orderTables) {
-            orderTable.unGroupTable();
+        for (int index = 0; index < orderTables.size(); index++) {
+            orderTables.get(index).unGroupTable();
         }
     }
 
