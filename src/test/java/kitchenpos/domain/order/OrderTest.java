@@ -34,7 +34,7 @@ class OrderTest {
     void setUp() {
         주문테이블 = OrderTableFixtureFactory.createWithGuests(1L, 1, false);
 
-        orderTableRepository.save(주문테이블);
+        주문테이블 = orderTableRepository.save(주문테이블);
     }
 
     @DisplayName("Oders 는 OrderTable 로 생성된다.")

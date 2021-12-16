@@ -1,6 +1,5 @@
 package kitchenpos.application.tablegroup;
 
-import java.util.Arrays;
 import java.util.List;
 
 import javax.persistence.EntityNotFoundException;
@@ -8,56 +7,40 @@ import javax.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kitchenpos.domain.order.OrderRepository;
-import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.domain.table.OrderTable;
-import kitchenpos.domain.table.OrderTableRepository;
 import kitchenpos.domain.tablegroup.TableGroup;
 import kitchenpos.domain.tablegroup.TableGroupRepository;
 import kitchenpos.dto.tablegroup.OrderTableIdRequest;
 import kitchenpos.dto.tablegroup.TableGroupRequest;
 import kitchenpos.dto.tablegroup.TableGroupResponse;
-import kitchenpos.exception.NotCompletionOrderException;
 import kitchenpos.utils.StreamUtils;
 
 @Service
 public class TableGroupService {
-    private final OrderRepository orderRepository;
-    private final OrderTableRepository orderTableRepository;
     private final TableGroupRepository tableGroupRepository;
+    private final TableGroupValidator tableGroupValidator;
 
-    public TableGroupService(final OrderRepository orderRepository,
-                             final OrderTableRepository orderTableRepository,
-                             final TableGroupRepository tableGroupRepository) {
-        this.orderRepository = orderRepository;
-        this.orderTableRepository = orderTableRepository;
+    public TableGroupService(final TableGroupRepository tableGroupRepository,
+                             final TableGroupValidator tableGroupValidator) {
         this.tableGroupRepository = tableGroupRepository;
+        this.tableGroupValidator = tableGroupValidator;
     }
 
     @Transactional
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
-        List<Long> orderTableIds = StreamUtils.mapToList(tableGroupRequest.getOrderTables(),
-                                                         OrderTableIdRequest::getId);
-        List<OrderTable> orderTables = orderTableRepository.findAllByIdIn(orderTableIds);
-        validateExistOrderTables(orderTableIds, orderTables);
+        List<Long> orderTableIds = StreamUtils.mapToList(tableGroupRequest.getOrderTables(), OrderTableIdRequest::getId);
+        List<OrderTable> orderTables = tableGroupValidator.getValidGroupOrderTables(orderTableIds);
+        TableGroup tableGroup = tableGroupRepository.save(TableGroup.create());
 
-        TableGroup tableGroup = tableGroupRepository.save(TableGroup.from(orderTables));
-        tableGroup.addOrderTables(orderTables);
+        // Todo : group 처리
 
-        return TableGroupResponse.from(tableGroup);
-    }
-
-    private void validateExistOrderTables(List<Long> orderTableIds, List<OrderTable> orderTables) {
-        if (orderTableIds.size() != orderTables.size()) {
-            throw new IllegalArgumentException();
-        }
+        return TableGroupResponse.from(tableGroup, orderTables);
     }
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
         TableGroup tableGroup = findTableGroup(tableGroupId);
-        List<Long> orderTableIds = StreamUtils.mapToList(tableGroup.getOrderTables().getValues(), OrderTable::getId);
-        validateNotCompletionOrder(orderTableIds);
+        tableGroupValidator.validateNotCompletionOrder(tableGroup);
 
         tableGroup.ungroup();
     }
@@ -65,11 +48,5 @@ public class TableGroupService {
     private TableGroup findTableGroup(Long id) {
         return tableGroupRepository.findById(id)
                                    .orElseThrow(EntityNotFoundException::new);
-    }
-
-    private void validateNotCompletionOrder(List<Long> orderTableIds) {
-        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new NotCompletionOrderException();
-        }
     }
 }

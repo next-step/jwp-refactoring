@@ -65,7 +65,7 @@ class OrderTablesTest {
         // given
         OrderTable 단체_테이블 = OrderTable.from(1L);
         OrderTable 개인_테이블 = OrderTable.from(2L);
-        개인_테이블.alignTableGroup(단체_테이블그룹);
+        개인_테이블.alignTableGroup(단체_테이블그룹.getId());
 
         List<OrderTable> orderTables = new ArrayList<>();
         orderTables.add(단체_테이블);

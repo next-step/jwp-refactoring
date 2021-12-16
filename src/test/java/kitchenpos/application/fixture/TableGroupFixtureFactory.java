@@ -1,5 +1,7 @@
 package kitchenpos.application.fixture;
 
+import java.util.List;
+
 import kitchenpos.domain.tablegroup.TableGroup;
 
 public class TableGroupFixtureFactory {

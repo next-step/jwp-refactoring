@@ -64,7 +64,7 @@ public class TableService {
     }
 
     private void validateChangeEmpty(Long orderTableId, OrderTable orderTable) {
-        if (Objects.nonNull(orderTable.getTableGroup())) {
+        if (Objects.nonNull(orderTable.getTableGroupId())) {
             throw new IllegalArgumentException();
         }
 

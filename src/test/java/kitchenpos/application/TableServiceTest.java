@@ -56,8 +56,7 @@ class TableServiceTest {
         빈_개인테이블 = OrderTableFixtureFactory.create(3L, true);
         손님_10명_개인테이블 = OrderTableFixtureFactory.createWithGuests(3L, 10, true);
 
-        단체_테이블그룹.addOrderTables(Arrays.asList(주문1_단체테이블));
-        주문1_단체테이블.alignTableGroup(단체_테이블그룹);
+        주문1_단체테이블.alignTableGroup(단체_테이블그룹.getId());
     }
 
     @DisplayName("OrderTable 을 등록한다.")
@@ -126,7 +125,7 @@ class TableServiceTest {
         // given
         OrderTableRequest orderTableRequest = OrderTableRequest.of(빈_개인테이블.getNumberOfGuests().getValue(),
                                                                    빈_개인테이블.isEmpty());
-        주문1_단체테이블.alignTableGroup(단체_테이블그룹);
+        주문1_단체테이블.alignTableGroup(단체_테이블그룹.getId());
 
         given(orderTableRepository.findById(주문1_단체테이블.getId())).willReturn(Optional.ofNullable(주문1_단체테이블));
 

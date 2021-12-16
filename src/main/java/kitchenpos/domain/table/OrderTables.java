@@ -34,6 +34,7 @@ public class OrderTables {
         return new OrderTables(orderTables);
     }
 
+    /******************************************/
     private static void validateDoGroupOrderTables(List<OrderTable> orderTables) {
         if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < MIN_ORDER_TABLE_COUNT) {
             throw new IllegalArgumentException(INVALID_GROUP_ORDER_TABLE_COUNT);

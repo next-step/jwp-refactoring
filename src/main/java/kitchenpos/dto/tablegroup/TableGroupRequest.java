@@ -22,8 +22,4 @@ public class TableGroupRequest {
     public List<OrderTableIdRequest> getOrderTables() {
         return orderTables;
     }
-
-    public TableGroup toTableGroup() {
-        return TableGroup.from(StreamUtils.mapToList(orderTables, request -> OrderTable.from(request.getId())));
-    }
 }

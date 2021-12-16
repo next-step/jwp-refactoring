@@ -54,9 +54,9 @@ class MenuProductTest {
         돼지고기 = ProductFixtureFactory.create(1L, "돼지고기", 9_000);
         불고기 = MenuFixtureFactory.create(1L, "불고기", 9_000, 고기_메뉴그룹);
 
-        menuGroupRepository.save(고기_메뉴그룹);
-        productRepository.save(돼지고기);
-        menuRepository.save(불고기);
+        고기_메뉴그룹 = menuGroupRepository.save(고기_메뉴그룹);
+        돼지고기 = productRepository.save(돼지고기);
+        불고기 = menuRepository.save(불고기);
     }
 
     @DisplayName("MenuProduct 는 Menu, Product, Quantity 로 생성된다.")

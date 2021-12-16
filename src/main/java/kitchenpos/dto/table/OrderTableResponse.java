@@ -23,9 +23,7 @@ public class OrderTableResponse {
 
     public static OrderTableResponse from(OrderTable orderTable) {
         return new OrderTableResponse(orderTable.getId(),
-                                      Optional.ofNullable(orderTable.getTableGroup())
-                                              .map(TableGroup::getId)
-                                              .orElse(null),
+                                      orderTable.getTableGroupId(),
                                       orderTable.getNumberOfGuests().getValue(),
                                       orderTable.isEmpty());
     }

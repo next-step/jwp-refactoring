@@ -1,18 +1,13 @@
 package kitchenpos.domain.tablegroup;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 import javax.persistence.Column;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-
-import kitchenpos.domain.table.OrderTable;
-import kitchenpos.domain.table.OrderTables;
 
 @Entity
 @Table(name = "table_group")
@@ -26,18 +21,12 @@ public class TableGroup {
     @Column(name = "created_date", nullable = false)
     private LocalDateTime createdDate;
 
-    @Embedded
-    private OrderTables orderTables = OrderTables.createEmpty();
-
-    protected TableGroup() {}
-
-    private TableGroup(Long id) {
-        this.id = id;
+    protected TableGroup() {
         this.createdDate = LocalDateTime.now();
     }
 
-    private TableGroup(List<OrderTable> orderTables) {
-        this.orderTables = OrderTables.from(orderTables);
+    private TableGroup(Long id) {
+        this.id = id;
         this.createdDate = LocalDateTime.now();
     }
 
@@ -45,17 +34,12 @@ public class TableGroup {
         return new TableGroup(id);
     }
 
-    public static TableGroup from(List<OrderTable> orderTables) {
-        return new TableGroup(orderTables);
+    public static TableGroup create() {
+        return new TableGroup();
     }
 
     public void ungroup() {
-        orderTables.ungroup();
-    }
-
-    public void addOrderTables(final List<OrderTable> orderTables) {
-        this.orderTables.addAll(orderTables);
-        orderTables.forEach(orderTable -> orderTable.alignTableGroup(this));
+        // TODO : Ungrouped Event 발생
     }
 
     public Long getId() {
@@ -64,9 +48,5 @@ public class TableGroup {
 
     public LocalDateTime getCreatedDate() {
         return createdDate;
-    }
-
-    public OrderTables getOrderTables() {
-        return orderTables;
     }
 }
