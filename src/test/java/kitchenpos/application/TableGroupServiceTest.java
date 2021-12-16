@@ -16,7 +16,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static kitchenpos.domain.OrderTableTest.빈자리;
+import static kitchenpos.domain.OrderTableTest.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -85,14 +85,13 @@ public class TableGroupServiceTest {
     void notCreateAlreadyTableGroup() {
         // given
         OrderTable orderTable1 = new OrderTable(1L, 1L, 2, true);
-        OrderTable orderTable2 = new OrderTable(1L, 1L, 2, true);
+        OrderTable orderTable2 = new OrderTable(2L, 1L, 2, true);
         List<OrderTable> orderTables = Arrays.asList(orderTable1, orderTable2);
         given(tableGroup.getOrderTables()).willReturn(orderTables);
         given(orderTableDao.findAllByIdIn(anyList())).willReturn(orderTables);
         // when
         // then
-        assertThatThrownBy(() -> tableGroupService.create(this.tableGroup))
-                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> tableGroupService.create(this.tableGroup)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -100,7 +99,7 @@ public class TableGroupServiceTest {
     void notCreateNonEmpty() {
         // given
         OrderTable orderTable1 = new OrderTable(1L, null, 2, false);
-        OrderTable orderTable2 = new OrderTable(1L, null, 2, false);
+        OrderTable orderTable2 = new OrderTable(2L, null, 2, false);
         List<OrderTable> orderTables = Arrays.asList(orderTable1, orderTable2);
         given(tableGroup.getOrderTables()).willReturn(orderTables);
         given(orderTableDao.findAllByIdIn(anyList())).willReturn(orderTables);
