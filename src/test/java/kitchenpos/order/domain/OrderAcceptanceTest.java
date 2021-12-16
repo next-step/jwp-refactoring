@@ -16,17 +16,21 @@ import org.junit.jupiter.api.Test;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
+import kitchenpos.domain.Price;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.dto.MenuGroupResponse;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.product.dto.ProductResponse;
 import kitchenpos.table.domain.OrderTable;
 
 @DisplayName("인수테스트 : 주문 관련")
 class OrderAcceptanceTest extends AcceptanceTest {
 
-	private Menu 불닭_메뉴;
-	private Menu 없는_메뉴 = new Menu();
+	private MenuResponse 불닭_메뉴;
+	private MenuResponse 없는_메뉴;
 	private OrderTable 주문_테이블;
 	private OrderTable 존재하지_않는_테이블 = new OrderTable();
 	private OrderTable 빈_테이블 = new OrderTable();
@@ -36,9 +40,10 @@ class OrderAcceptanceTest extends AcceptanceTest {
 	void setup() {
 		MenuGroupResponse 두마리_메뉴_그룹 = 메뉴_그룹_생성되어_있음(메뉴_그룹_생성_요청값_생성("두마리메뉴"));
 		ProductResponse 불닭 = 상품이_생성_되어있음(상품_요청값_생성("불닭", 16000));
-		List<MenuProduct> 불닭_두마리_메뉴_상품_리스트 = 메뉴_상품_생성되어_있음(불닭);
+		List<MenuProductRequest> 불닭_두마리_메뉴_상품_리스트 = 메뉴_상품_요청_생성_되어_있음(불닭);
 		불닭_메뉴 = 메뉴가_생성_되어있음(메뉴_생성_요청값_생성("불닭 메뉴", 19000, 두마리_메뉴_그룹.getId(), 불닭_두마리_메뉴_상품_리스트));
-		없는_메뉴.setId(100L);
+		없는_메뉴 = Menu.of("name", Price.from(10000), MenuGroup.from("ss"),
+			MenuProducts.EMPTY_MENU_PRODUCTS.getMenuProducts()).toResDto();
 		주문_테이블 = 테이블이_생성_되어있음(테이블_요청값_생성(0, false));
 		빈_테이블 = 테이블이_생성_되어있음(테이블_요청값_생성(0, true));
 		존재하지_않는_테이블.setId(100L);

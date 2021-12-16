@@ -12,7 +12,7 @@ import org.springframework.http.MediaType;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.dto.MenuResponse;
 
 public class OrderAcceptanceStaticTest {
 
@@ -70,7 +70,7 @@ public class OrderAcceptanceStaticTest {
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
 	}
 
-	public static List<OrderLineItem> 주문_메뉴_생성(Menu menu, int quantity) {
+	public static List<OrderLineItem> 주문_메뉴_생성(MenuResponse menu, int quantity) {
 		OrderLineItem orderLineItem = new OrderLineItem();
 		orderLineItem.setMenuId(menu.getId());
 		orderLineItem.setQuantity(quantity);
