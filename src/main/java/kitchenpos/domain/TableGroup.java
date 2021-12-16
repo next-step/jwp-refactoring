@@ -1,5 +1,7 @@
 package kitchenpos.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -16,6 +18,7 @@ public class TableGroup {
     private LocalDateTime createdDate;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "tableGroup")
+    @JsonIgnoreProperties(value = {"tableGroup"} , allowSetters = true)
     private List<OrderTable> orderTables = new ArrayList<>();
 
     public TableGroup() {

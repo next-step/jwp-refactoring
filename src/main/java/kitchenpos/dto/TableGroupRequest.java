@@ -8,7 +8,10 @@ import java.util.stream.Collectors;
 
 public class TableGroupRequest {
 
-    private final List<Long> orderTables;
+    private  List<Long> orderTables;
+
+    public TableGroupRequest() {
+    }
 
     public TableGroupRequest(List<Long> orderTables) {
         this.orderTables = orderTables;
