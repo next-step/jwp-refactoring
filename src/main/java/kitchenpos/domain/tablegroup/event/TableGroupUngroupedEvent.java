@@ -1,12 +1,12 @@
-package kitchenpos.domain.table.event;
+package kitchenpos.domain.tablegroup.event;
 
 import kitchenpos.domain.tablegroup.TableGroup;
 
-public class OrderTableUngroupedEvent {
+public class TableGroupUngroupedEvent {
 
     private TableGroup tableGroup;
 
-    public OrderTableUngroupedEvent(TableGroup tableGroup) {
+    public TableGroupUngroupedEvent(TableGroup tableGroup) {
         this.tableGroup = tableGroup;
     }
 

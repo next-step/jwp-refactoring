@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import kitchenpos.domain.table.OrderTable;
 import kitchenpos.domain.table.OrderTableRepository;
-import kitchenpos.domain.table.event.OrderTableGroupedEvent;
+import kitchenpos.domain.tablegroup.event.TableGroupGroupedEvent;
 import kitchenpos.domain.tablegroup.TableGroup;
 
 @Component
@@ -24,7 +24,7 @@ public class OrderTableGroupedEventHandler {
     @Async
     @EventListener
     @Transactional
-    public void handle(OrderTableGroupedEvent event) {
+    public void handle(TableGroupGroupedEvent event) {
         TableGroup tableGroup = event.getTableGroup();
         List<OrderTable> orderTables = orderTableRepository.findAllByIdIn(event.getOrderTableIds());
 

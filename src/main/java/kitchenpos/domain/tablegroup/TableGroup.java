@@ -12,8 +12,8 @@ import javax.persistence.Table;
 
 import org.springframework.data.domain.AbstractAggregateRoot;
 
-import kitchenpos.domain.table.event.OrderTableGroupedEvent;
-import kitchenpos.domain.table.event.OrderTableUngroupedEvent;
+import kitchenpos.domain.tablegroup.event.TableGroupGroupedEvent;
+import kitchenpos.domain.tablegroup.event.TableGroupUngroupedEvent;
 
 @Entity
 @Table(name = "table_group")
@@ -45,11 +45,11 @@ public class TableGroup extends AbstractAggregateRoot<TableGroup> {
     }
 
     public void group(List<Long> orderTableIds) {
-        registerEvent(new OrderTableGroupedEvent(this, orderTableIds));
+        registerEvent(new TableGroupGroupedEvent(this, orderTableIds));
     }
 
     public void ungroup() {
-        registerEvent(new OrderTableUngroupedEvent(this));
+        registerEvent(new TableGroupUngroupedEvent(this));
     }
 
     public Long getId() {
