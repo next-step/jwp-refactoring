@@ -18,7 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuDao;
 import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuGroupDao;
+import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProductDao;
 import kitchenpos.product.domain.Product;
@@ -32,7 +32,7 @@ public class MenuServiceTest {
 	MenuDao menuDao;
 
 	@Mock
-	MenuGroupDao menuGroupDao;
+	MenuGroupRepository menuGroupRepository;
 
 	@Mock
 	MenuProductDao menuProductDao;
@@ -67,7 +67,7 @@ public class MenuServiceTest {
 		given(menuProduct.getQuantity()).willReturn(2L);
 		given(menuGroup.getId()).willReturn(1L);
 		given(product.getPrice()).willReturn(BigDecimal.valueOf(16000));
-		given(menuGroupDao.existsById(menuGroup.getId())).willReturn(true);
+		given(menuGroupRepository.existsById(menuGroup.getId())).willReturn(true);
 		given(productRepository.findById(menuProduct.getProductId())).willReturn(Optional.of(product));
 		given(menuProductDao.save(menuProduct)).willReturn(menuProduct);
 
@@ -113,7 +113,7 @@ public class MenuServiceTest {
 	void createMenuUnknownMenuGroup() {
 		// given
 		given(menuGroup.getId()).willReturn(1L);
-		given(menuGroupDao.existsById(menuGroup.getId())).willReturn(false);
+		given(menuGroupRepository.existsById(menuGroup.getId())).willReturn(false);
 		menu.setName("불닭메뉴");
 		menu.setPrice(BigDecimal.valueOf(16000));
 		menu.setMenuGroupId(menuGroup.getId());
@@ -129,7 +129,7 @@ public class MenuServiceTest {
 	void createMenuUnknownProduct() {
 		// given
 		given(menuGroup.getId()).willReturn(1L);
-		given(menuGroupDao.existsById(menuGroup.getId())).willReturn(true);
+		given(menuGroupRepository.existsById(menuGroup.getId())).willReturn(true);
 
 		menu.setName("불닭메뉴");
 		menu.setMenuGroupId(menuGroup.getId());
@@ -150,7 +150,7 @@ public class MenuServiceTest {
 		given(menuProduct.getQuantity()).willReturn(2L);
 		given(menuGroup.getId()).willReturn(1L);
 		given(product.getPrice()).willReturn(BigDecimal.valueOf(16000));
-		given(menuGroupDao.existsById(menuGroup.getId())).willReturn(true);
+		given(menuGroupRepository.existsById(menuGroup.getId())).willReturn(true);
 		given(productRepository.findById(menuProduct.getProductId())).willReturn(Optional.of(product));
 
 		menu.setName("불닭메뉴");

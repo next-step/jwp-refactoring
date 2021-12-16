@@ -17,8 +17,8 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.dto.MenuGroupResponse;
 import kitchenpos.product.dto.ProductResponse;
 import kitchenpos.table.domain.OrderTable;
 
@@ -34,7 +34,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
 
 	@BeforeEach
 	void setup() {
-		MenuGroup 두마리_메뉴_그룹 = 메뉴_그룹_생성되어_있음(메뉴_그룹_생성_요청값_생성("두마리메뉴"));
+		MenuGroupResponse 두마리_메뉴_그룹 = 메뉴_그룹_생성되어_있음(메뉴_그룹_생성_요청값_생성("두마리메뉴"));
 		ProductResponse 불닭 = 상품이_생성_되어있음(상품_요청값_생성("불닭", 16000));
 		List<MenuProduct> 불닭_두마리_메뉴_상품_리스트 = 메뉴_상품_생성되어_있음(불닭);
 		불닭_메뉴 = 메뉴가_생성_되어있음(메뉴_생성_요청값_생성("불닭 메뉴", 19000, 두마리_메뉴_그룹.getId(), 불닭_두마리_메뉴_상품_리스트));

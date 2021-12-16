@@ -14,12 +14,13 @@ import org.junit.jupiter.api.Test;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
+import kitchenpos.menu.dto.MenuGroupResponse;
 import kitchenpos.product.dto.ProductResponse;
 
 @DisplayName("인수테스트 : 메뉴 관련")
 class MenuAcceptanceTest extends AcceptanceTest {
 
-	private MenuGroup 두마리_메뉴_그룹;
+	private MenuGroupResponse 두마리_메뉴_그룹;
 	private List<MenuProduct> 불닭_두마리_메뉴_상품_리스트;
 	private ProductResponse 존재하지_않는_상품;
 
