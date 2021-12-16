@@ -1,6 +1,5 @@
 package kitchenpos.table.domain;
 
-import static kitchenpos.order.sample.OrderLineItemSample.이십원_후라이트치킨_두마리세트_한개_주문_항목;
 import static kitchenpos.table.sample.OrderTableSample.빈_두명_테이블;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -8,17 +7,14 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 import static org.assertj.core.api.Assertions.assertThatNoException;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.stream.Stream;
 import kitchenpos.common.exception.InvalidStatusException;
-import kitchenpos.order.domain.Order;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.jupiter.params.provider.MethodSource;
 
 @DisplayName("주문 테이블")
 class OrderTableTest {
@@ -27,16 +23,14 @@ class OrderTableTest {
     @DisplayName("생성")
     void instance() {
         assertThatNoException()
-            .isThrownBy(() -> OrderTable.of(Headcount.from(1), CustomerStatus.EMPTY));
+            .isThrownBy(() -> OrderTable.empty(Headcount.from(1)));
     }
 
-    @ParameterizedTest(name = "[{index}] {argumentsWithNames} 으로 생성 불가능")
-    @DisplayName("손님 수와 상태는 필수")
-    @MethodSource
-    void instance_nullHeadcountOrStatus_thrownIllegalArgumentException(Headcount numberOfGuests,
-        CustomerStatus status) {
+    @Test
+    @DisplayName("손님 수는 필수")
+    void instance_nullHeadcount_thrownIllegalArgumentException() {
         assertThatIllegalArgumentException()
-            .isThrownBy(() -> OrderTable.of(numberOfGuests, status))
+            .isThrownBy(() -> OrderTable.empty(null))
             .withMessageEndingWith("필수입니다.");
     }
 
@@ -45,7 +39,7 @@ class OrderTableTest {
     @CsvSource({"EMPTY,true", "FULL,false"})
     void changeStatus(CustomerStatus changeStatus, boolean expected) {
         //given
-        OrderTable orderTable = OrderTable.of(Headcount.from(1), CustomerStatus.EMPTY);
+        OrderTable orderTable = OrderTable.empty(Headcount.from(1));
 
         //when
         orderTable.changeStatus(changeStatus);
@@ -58,11 +52,11 @@ class OrderTableTest {
     @DisplayName("그룹이 있으면 테이블 상태 변경 불가능")
     void changeStatus_hasGroup_thrownInvalidStatusException() {
         //given
-        OrderTable orderTable = OrderTable.of(Headcount.from(1), CustomerStatus.EMPTY);
+        OrderTable orderTable = OrderTable.empty(Headcount.from(1));
         TableGroup.from(Arrays.asList(orderTable, 빈_두명_테이블()));
 
         //when
-        ThrowingCallable changeStatusCallable = () -> orderTable.changeStatus(CustomerStatus.FULL);
+        ThrowingCallable changeStatusCallable = () -> orderTable.changeStatus(CustomerStatus.PLACE);
 
         //then
         assertThatExceptionOfType(InvalidStatusException.class)
@@ -71,11 +65,10 @@ class OrderTableTest {
     }
 
     @Test
-    @DisplayName("식사중이라면 테이블 상태 변경 불가능")
+    @DisplayName("주문된 상태라면 테이블 상태 변경 불가능")
     void changeStatus_cooking_thrownInvalidStatusException() {
         //given
-        OrderTable orderTable = OrderTable.of(Headcount.from(1), CustomerStatus.FULL);
-        Order.of(orderTable, Collections.singletonList(이십원_후라이트치킨_두마리세트_한개_주문_항목()));
+        OrderTable orderTable = OrderTable.empty(Headcount.from(1));
 
         //when
         ThrowingCallable changeStatusCallable = () -> orderTable.changeStatus(CustomerStatus.EMPTY);
@@ -90,7 +83,7 @@ class OrderTableTest {
     @DisplayName("방문한 손님 수 변경")
     void changeNumberOfGuests() {
         //given
-        OrderTable orderTable = OrderTable.of(Headcount.from(1), CustomerStatus.FULL);
+        OrderTable orderTable = OrderTable.place(Headcount.from(1));
 
         //when
         orderTable.changeNumberOfGuests(Headcount.from(10));
@@ -103,7 +96,7 @@ class OrderTableTest {
     @DisplayName("빈 테이블의 방문한 손님 수 변경 불가능")
     void changeNumberOfGuests_empty_thrownInvalidStatusException() {
         //given
-        OrderTable orderTable = OrderTable.of(Headcount.from(1), CustomerStatus.EMPTY);
+        OrderTable orderTable = OrderTable.empty(Headcount.from(1));
 
         //when
         ThrowingCallable changeCallable = () -> orderTable.changeNumberOfGuests(Headcount.from(10));
@@ -112,13 +105,5 @@ class OrderTableTest {
         assertThatExceptionOfType(InvalidStatusException.class)
             .isThrownBy(changeCallable)
             .withMessageEndingWith("방문한 손님 수를 변경할 수 없습니다.");
-    }
-
-
-    private static Stream<Arguments> instance_nullHeadcountOrStatus_thrownIllegalArgumentException() {
-        return Stream.of(
-            Arguments.of(null, CustomerStatus.EMPTY),
-            Arguments.of(Headcount.from(1), null)
-        );
     }
 }

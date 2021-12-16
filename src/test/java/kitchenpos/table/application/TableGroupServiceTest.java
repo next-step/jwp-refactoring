@@ -189,12 +189,11 @@ class TableGroupServiceTest {
     void ungroup_cookOrMealStatus_thrownException() {
         //given
         long tableGroupId = 1L;
-        OrderTable orderTable = OrderTable.of(Headcount.from(2), CustomerStatus.EMPTY);
+        OrderTable orderTable = OrderTable.empty(Headcount.from(2));
         TableGroup tableGroup = TableGroup.from(Arrays.asList(
             orderTable,
-            OrderTable.of(Headcount.from(3), CustomerStatus.EMPTY)
+            OrderTable.empty(Headcount.from(3))
         ));
-        Order.of(1L, Collections.singletonList(이십원_후라이트치킨_두마리세트_한개_주문_항목()));
 
         when(tableGroupRepository.findById(tableGroupId)).thenReturn(Optional.of(tableGroup));
 

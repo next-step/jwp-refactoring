@@ -1,6 +1,5 @@
 package kitchenpos.table.application;
 
-import static kitchenpos.order.sample.OrderLineItemSample.이십원_후라이트치킨_두마리세트_한개_주문_항목;
 import static kitchenpos.table.sample.OrderTableSample.빈_두명_테이블;
 import static kitchenpos.table.sample.OrderTableSample.빈_세명_테이블;
 import static kitchenpos.table.sample.OrderTableSample.채워진_다섯명_테이블;
@@ -8,16 +7,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.only;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Optional;
 import kitchenpos.common.exception.InvalidStatusException;
 import kitchenpos.common.exception.NotFoundException;
-import kitchenpos.order.domain.Order;
 import kitchenpos.table.domain.Headcount;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
@@ -129,15 +127,15 @@ class TableServiceTest {
     }
 
     @Test
-    @DisplayName("빈테이블 여부를 변경하려면 주문 상태가 조리 또는 식사 중이라면 변경이 불가능하다.")
+    @DisplayName("빈테이블 여부를 변경하는데 테이블이 주문된 상태라면 변경이 불가능하다.")
     void changeEmpty_cookOrMealStatus_thrownException() {
         //given
         TableStatusRequest request = new TableStatusRequest(false);
 
-        OrderTable 채워진_다섯명_테이블 = 채워진_다섯명_테이블();
-        Order.of(채워진_다섯명_테이블, Collections.singletonList(이십원_후라이트치킨_두마리세트_한개_주문_항목()));
+        OrderTable orderTable = mock(OrderTable.class);
+        when(orderTable.isCookingOrMeal()).thenReturn(true);
         when(orderTableRepository.findById(anyLong()))
-            .thenReturn(Optional.of(채워진_다섯명_테이블));
+            .thenReturn(Optional.of(orderTable));
 
         //when
         ThrowingCallable changeCallable = () -> tableService.changeEmpty(1L, request);

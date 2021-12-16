@@ -10,21 +10,21 @@ import kitchenpos.table.domain.CustomerStatus;
 public class OrderTableSample {
 
     public static OrderTable 채워진_다섯명_테이블() {
-        OrderTable orderTable = spy(OrderTable.of(Headcount.from(5), CustomerStatus.FULL));
+        OrderTable orderTable = spy(OrderTable.place(Headcount.from(5)));
         lenient().when(orderTable.id())
             .thenReturn(1L);
         return orderTable;
     }
 
     public static OrderTable 빈_두명_테이블() {
-        OrderTable orderTable = spy(OrderTable.of(Headcount.from(2), CustomerStatus.EMPTY));
+        OrderTable orderTable = spy(OrderTable.empty(Headcount.from(2)));
         lenient().when(orderTable.id())
             .thenReturn(2L);
         return orderTable;
     }
 
     public static OrderTable 빈_세명_테이블() {
-        OrderTable orderTable = spy(OrderTable.of(Headcount.from(3), CustomerStatus.EMPTY));
+        OrderTable orderTable = spy(OrderTable.empty(Headcount.from(3)));
         lenient().when(orderTable.id())
             .thenReturn(3L);
         return orderTable;

@@ -21,7 +21,7 @@ import kitchenpos.product.ui.response.MenuGroupResponse;
 import kitchenpos.product.ui.response.MenuResponse;
 import kitchenpos.order.ui.response.OrderResponse;
 import kitchenpos.product.ui.response.ProductResponse;
-import kitchenpos.order.ui.response.OrderTableResponse;
+import kitchenpos.table.ui.response.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

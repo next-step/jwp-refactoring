@@ -1,6 +1,5 @@
 package kitchenpos.table.domain;
 
-import static kitchenpos.order.sample.OrderLineItemSample.이십원_후라이트치킨_두마리세트_한개_주문_항목;
 import static kitchenpos.table.sample.OrderTableSample.빈_두명_테이블;
 import static kitchenpos.table.sample.OrderTableSample.빈_세명_테이블;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -12,7 +11,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import kitchenpos.common.exception.InvalidStatusException;
-import kitchenpos.order.domain.Order;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,8 +23,8 @@ class TableGroupTest {
     void instance() {
         assertThatNoException()
             .isThrownBy(() -> TableGroup.from(Arrays.asList(
-                OrderTable.of(Headcount.from(1), CustomerStatus.EMPTY),
-                OrderTable.of(Headcount.from(2), CustomerStatus.EMPTY)
+                OrderTable.empty(Headcount.from(1)),
+                OrderTable.empty(Headcount.from(2))
             )));
     }
 
@@ -43,7 +41,7 @@ class TableGroupTest {
     void instance_containNull_thrownIllegalArgumentException() {
         assertThatIllegalArgumentException()
             .isThrownBy(() -> TableGroup.from(
-                Collections.singletonList(OrderTable.of(Headcount.from(2), CustomerStatus.EMPTY))))
+                Collections.singletonList(OrderTable.empty(Headcount.from(2)))))
             .withMessageEndingWith("개 이상 이어야 합니다.");
     }
 
@@ -63,11 +61,10 @@ class TableGroupTest {
     }
 
     @Test
-    @DisplayName("하나라도 조리중 또는 식사중이면 그룹 해제 불가능")
+    @DisplayName("하나라도 주문된 상태라면 그룹 해제 불가능")
     void ungroup_anyCooking_thrownInvalidStatusException() {
         OrderTable 빈_두명_테이블 = 빈_두명_테이블();
         TableGroup tableGroup = TableGroup.from(Arrays.asList(빈_두명_테이블, 빈_세명_테이블()));
-        Order.of(빈_두명_테이블, Collections.singletonList(이십원_후라이트치킨_두마리세트_한개_주문_항목()));
 
         //when
         ThrowingCallable ungroupCallable = tableGroup::ungroup;

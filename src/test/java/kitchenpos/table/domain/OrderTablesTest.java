@@ -21,7 +21,7 @@ class OrderTablesTest {
     void instance() {
         assertThatNoException()
             .isThrownBy(() -> OrderTables.from(
-                Collections.singletonList(OrderTable.of(Headcount.from(1), CustomerStatus.EMPTY))
+                Collections.singletonList(OrderTable.empty(Headcount.from(1)))
             ));
     }
 
@@ -41,17 +41,15 @@ class OrderTablesTest {
             .withMessageEndingWith("null이 포함될 수 없습니다.");
     }
 
-    @Test
-    @DisplayName("주문이 들어가면 조리중인 상태")
-    void anyCookingOrMeal() {
-        //given
-        OrderTable 채워진_다섯명_테이블 = 채워진_다섯명_테이블();
-        Order.of(채워진_다섯명_테이블, Collections.singletonList(이십원_후라이트치킨_두마리세트_한개_주문_항목()));
-        OrderTables orderTables = OrderTables.from(Arrays.asList(채워진_다섯명_테이블, 채워진_다섯명_테이블()));
-
-        //when, then
-        assertThat(orderTables.anyCookingOrMeal()).isTrue();
-    }
+//    @Test
+//    @DisplayName("주문이 들어가면 조리중인 상태")
+//    void anyCookingOrMeal() {
+//        //given
+//        OrderTables orderTables = OrderTables.from(Arrays.asList(채워진_다섯명_테이블, 채워진_다섯명_테이블()));
+//
+//        //when, then
+//        assertThat(orderTables.anyCookingOrMeal()).isTrue();
+//    }
 
     @Test
     @DisplayName("그룹이 없고 빈 상태")

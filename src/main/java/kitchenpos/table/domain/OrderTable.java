@@ -41,8 +41,12 @@ public class OrderTable {
         setStatus(status);
     }
 
-    public static OrderTable of(Headcount numberOfGuests, CustomerStatus status) {
-        return new OrderTable(numberOfGuests, status);
+    public static OrderTable empty(Headcount numberOfGuests) {
+        return new OrderTable(numberOfGuests, CustomerStatus.EMPTY);
+    }
+
+    public static OrderTable place(Headcount numberOfGuests) {
+        return new OrderTable(numberOfGuests, CustomerStatus.PLACE);
     }
 
     public long id() {
@@ -67,10 +71,6 @@ public class OrderTable {
                 String.format("비어있는 주문 테이블(%s)의 방문한 손님 수를 변경할 수 없습니다.", this));
         }
         setNumberOfGuests(numberOfGuests);
-    }
-
-    public boolean isFull() {
-        return status.isFull();
     }
 
     public boolean isEmpty() {
