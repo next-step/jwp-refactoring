@@ -22,4 +22,13 @@ public class Http {
                 .when().post(url)
                 .then().log().all().extract();
     }
+
+    public static ExtractableResponse<Response> put(String url, Object params) {
+        return RestAssured
+                .given().log().all()
+                .body(params)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().put(url)
+                .then().log().all().extract();
+    }
 }
