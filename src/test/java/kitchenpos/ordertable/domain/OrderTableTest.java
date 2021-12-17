@@ -12,7 +12,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
-@DisplayName("테이블 도메인 테스트")
+@DisplayName("테이블 테스트")
 class OrderTableTest {
 
     private OrderTable orderTable;

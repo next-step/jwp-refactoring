@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.*;
 
-@DisplayName("방문한 손님 수 도메인 테스트")
+@DisplayName("방문한 손님 수 테스트")
 class NumberOfGuestsTest {
 
     @Test

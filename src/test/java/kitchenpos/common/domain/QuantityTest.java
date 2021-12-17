@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.*;
 
-@DisplayName("수량 도메인 테스트")
+@DisplayName("수량 테스트")
 class QuantityTest {
 
     @Test

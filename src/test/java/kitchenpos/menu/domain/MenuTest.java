@@ -11,7 +11,7 @@ import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.*;
 
-@DisplayName("메뉴 도메인 테스트")
+@DisplayName("메뉴 테스트")
 class MenuTest {
 
     private MenuGroup menuGroup;

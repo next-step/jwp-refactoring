@@ -11,7 +11,7 @@ import java.util.Collections;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-@DisplayName("테이블 컬렉션 도메인 테스트")
+@DisplayName("테이블 컬렉션 테스트")
 class OrderTablesTest {
 
     private OrderTable orderTable1;
