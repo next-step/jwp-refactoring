@@ -6,6 +6,9 @@ import io.restassured.response.Response;
 import org.springframework.http.MediaType;
 
 public class Http {
+    private Http() {
+    }
+
     public static ExtractableResponse<Response> get(String url) {
         return RestAssured
                 .given().log().all()
