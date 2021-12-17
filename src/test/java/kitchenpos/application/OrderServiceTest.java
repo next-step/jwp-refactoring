@@ -1,7 +1,6 @@
 package kitchenpos.application;
 
 import kitchenpos.application.fixture.MenuFixture;
-import kitchenpos.application.fixture.MenuGroupFixture;
 import kitchenpos.application.fixture.MenuProductFixture;
 import kitchenpos.application.fixture.OrderFixture;
 import kitchenpos.application.fixture.OrderLineItemFixture;
@@ -11,11 +10,12 @@ import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.fixture.MenuGroupFixture;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.fixture.ProductFixture;
 import org.assertj.core.api.ThrowableAssert;

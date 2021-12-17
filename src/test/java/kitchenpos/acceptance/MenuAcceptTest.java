@@ -3,10 +3,10 @@ package kitchenpos.acceptance;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.acceptance.step.MenuGroupAcceptStep;
 import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
+import kitchenpos.menu.acceptance.step.MenuGroupAcceptStep;
+import kitchenpos.menu.dto.MenuGroupResponse;
 import kitchenpos.product.acceptance.step.ProductAcceptStep;
 import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,7 +23,7 @@ import static kitchenpos.acceptance.step.MenuAcceptStep.메뉴_목록_조회_확
 
 @DisplayName("메뉴 인수테스트")
 class MenuAcceptTest extends AcceptanceTest {
-    private MenuGroup 추천메뉴;
+    private MenuGroupResponse 추천메뉴;
     private ProductResponse 강정치킨;
 
     @BeforeEach

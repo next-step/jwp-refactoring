@@ -1,14 +1,14 @@
 package kitchenpos.application;
 
 import kitchenpos.application.fixture.MenuFixture;
-import kitchenpos.application.fixture.MenuGroupFixture;
 import kitchenpos.application.fixture.MenuProductFixture;
 import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
 import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuGroupRepository;
+import kitchenpos.menu.fixture.MenuGroupFixture;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.fixture.ProductFixture;
@@ -39,7 +39,7 @@ class MenuServiceTest {
     @Mock
     MenuDao menuDao;
     @Mock
-    MenuGroupDao menuGroupDao;
+    MenuGroupRepository menuGroupRepository;
     @Mock
     MenuProductDao menuProductDao;
     @Mock
@@ -80,7 +80,7 @@ class MenuServiceTest {
         메뉴_등록_요청_데이터.setMenuGroupId(추천메뉴.getId());
         메뉴_등록_요청_데이터.setMenuProducts(Collections.singletonList(메뉴_상품));
 
-        given(menuGroupDao.existsById(any(Long.TYPE))).willReturn(true);
+        given(menuGroupRepository.existsById(any(Long.TYPE))).willReturn(true);
         given(productRepository.findById(any(Long.TYPE))).willReturn(Optional.of(강정치킨));
         given(menuDao.save(any(Menu.class))).willReturn(더블강정);
         given(menuProductDao.save(any(MenuProduct.class))).willReturn(더블강정_메뉴_상품);
@@ -166,7 +166,7 @@ class MenuServiceTest {
             메뉴_등록_요청_데이터.setMenuGroupId(추천메뉴.getId());
             메뉴_등록_요청_데이터.setMenuProducts(Collections.singletonList(메뉴_상품));
 
-            given(menuGroupDao.existsById(any(Long.TYPE))).willReturn(false);
+            given(menuGroupRepository.existsById(any(Long.TYPE))).willReturn(false);
 
             // when
             ThrowableAssert.ThrowingCallable 등록_요청 = () -> menuService.create(메뉴_등록_요청_데이터);
@@ -185,7 +185,7 @@ class MenuServiceTest {
             메뉴_등록_요청_데이터.setMenuGroupId(추천메뉴.getId());
             메뉴_등록_요청_데이터.setMenuProducts(Collections.emptyList());
 
-            given(menuGroupDao.existsById(any(Long.TYPE))).willReturn(true);
+            given(menuGroupRepository.existsById(any(Long.TYPE))).willReturn(true);
 
             // when
             ThrowableAssert.ThrowingCallable 등록_요청 = () -> menuService.create(메뉴_등록_요청_데이터);
@@ -208,7 +208,7 @@ class MenuServiceTest {
             메뉴_등록_요청_데이터.setMenuGroupId(추천메뉴.getId());
             메뉴_등록_요청_데이터.setMenuProducts(Collections.singletonList(메뉴_상품));
 
-            given(menuGroupDao.existsById(any(Long.TYPE))).willReturn(true);
+            given(menuGroupRepository.existsById(any(Long.TYPE))).willReturn(true);
             given(productRepository.findById(any(Long.TYPE))).willReturn(Optional.empty());
 
             // when
@@ -232,7 +232,7 @@ class MenuServiceTest {
             메뉴_등록_요청_데이터.setMenuGroupId(추천메뉴.getId());
             메뉴_등록_요청_데이터.setMenuProducts(Collections.singletonList(메뉴_상품));
 
-            given(menuGroupDao.existsById(any(Long.TYPE))).willReturn(true);
+            given(menuGroupRepository.existsById(any(Long.TYPE))).willReturn(true);
             given(productRepository.findById(any(Long.TYPE))).willReturn(Optional.of(강정치킨));
 
             // when
