@@ -50,23 +50,28 @@ public class Orders {
     }
 
     private Orders(OrderTable orderTable, OrderStatus orderStatus) {
-        checkEmptyTable(orderTable);
-
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
         this.orderLineItems = new ArrayList<>();
     }
 
     public static Orders of(OrderTable orderTable, OrderStatus orderStatus) {
+        checkEmptyTable(orderTable);
         return new Orders(orderTable, orderStatus);
     }
     
+    public static Orders of(OrderStatus orderStatus) {
+        return new Orders(null, orderStatus);
+    }
+    
     public static Orders of(OrderTable orderTable, OrderStatus orderStatus, OrderLineItems orderLineItems) {
-        checkEmptyOfOrderLineItems(orderLineItems);
+        checkEmptyTable(orderTable);
         
         Orders order = new Orders(orderTable, orderStatus);
-        orderLineItems.acceptOrder(order);
         
+        checkEmptyOfOrderLineItems(orderLineItems);
+        orderLineItems.acceptOrder(order);
+    
         return order;
     }
 

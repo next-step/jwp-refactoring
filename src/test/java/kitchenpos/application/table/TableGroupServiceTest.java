@@ -26,7 +26,6 @@ import kitchenpos.domain.table.TableGroup;
 import kitchenpos.domain.table.TableGroupRepository;
 import kitchenpos.dto.table.OrderTableDto;
 import kitchenpos.dto.table.TableGroupDto;
-import kitchenpos.exception.order.HasNotCompletionOrderException;
 import kitchenpos.exception.table.HasOtherTableGroupException;
 import kitchenpos.exception.table.NotGroupingOrderTableCountException;
 import kitchenpos.exception.table.NotRegistedMenuOrderTableException;

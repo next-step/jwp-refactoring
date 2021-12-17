@@ -1,11 +1,11 @@
-package kitchenpos.domain;
+package kitchenpos.domain.product;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import kitchenpos.domain.product.Product;
+import kitchenpos.domain.Price;
 
 @DisplayName("주문도메인에 대한")
 public class ProdcutDomainTest {
