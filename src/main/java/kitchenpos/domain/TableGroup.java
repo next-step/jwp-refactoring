@@ -1,6 +1,7 @@
 package kitchenpos.domain;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class TableGroup {
@@ -8,27 +9,32 @@ public class TableGroup {
     private LocalDateTime createdDate;
     private List<OrderTable> orderTables;
 
-    public Long getId() {
-        return id;
+    protected TableGroup() {
     }
 
-    public void setId(final Long id) {
+    public TableGroup(long id, LocalDateTime createdDate) {
         this.id = id;
+        this.createdDate = createdDate;
+        this.orderTables = new ArrayList<>();
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public LocalDateTime getCreatedDate() {
         return createdDate;
     }
 
-    public void setCreatedDate(final LocalDateTime createdDate) {
-        this.createdDate = createdDate;
+    public void createdNow() {
+        this.createdDate = LocalDateTime.now();
     }
 
     public List<OrderTable> getOrderTables() {
         return orderTables;
     }
 
-    public void setOrderTables(final List<OrderTable> orderTables) {
+    public void initOrderTables(final List<OrderTable> orderTables) {
         this.orderTables = orderTables;
     }
 }

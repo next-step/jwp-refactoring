@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -60,19 +59,17 @@ public class OrderService {
             throw new IllegalArgumentException();
         }
 
-        order.setOrderTableId(orderTable.getId());
-        order.setOrderStatus(OrderStatus.COOKING.name());
-        order.setOrderedTime(LocalDateTime.now());
+        order.takeOrdered(orderTable);
 
         final Order savedOrder = orderDao.save(order);
 
         final Long orderId = savedOrder.getId();
         final List<OrderLineItem> savedOrderLineItems = new ArrayList<>();
         for (final OrderLineItem orderLineItem : orderLineItems) {
-            orderLineItem.setOrderId(orderId);
+            orderLineItem.assignOrder(orderId);
             savedOrderLineItems.add(orderLineItemDao.save(orderLineItem));
         }
-        savedOrder.setOrderLineItems(savedOrderLineItems);
+        savedOrder.initOrderLineItems(savedOrderLineItems);
 
         return savedOrder;
     }
@@ -81,7 +78,7 @@ public class OrderService {
         final List<Order> orders = orderDao.findAll();
 
         for (final Order order : orders) {
-            order.setOrderLineItems(orderLineItemDao.findAllByOrderId(order.getId()));
+            order.initOrderLineItems(orderLineItemDao.findAllByOrderId(order.getId()));
         }
 
         return orders;
@@ -97,11 +94,11 @@ public class OrderService {
         }
 
         final OrderStatus orderStatus = OrderStatus.valueOf(order.getOrderStatus());
-        savedOrder.setOrderStatus(orderStatus.name());
+        savedOrder.changeOrderStatus(orderStatus);
 
         orderDao.save(savedOrder);
 
-        savedOrder.setOrderLineItems(orderLineItemDao.findAllByOrderId(orderId));
+        savedOrder.initOrderLineItems(orderLineItemDao.findAllByOrderId(orderId));
 
         return savedOrder;
     }
