@@ -1,7 +1,7 @@
 ALTER TABLE order_line_item
-    ADD COLUMN name VARCHAR(255) NOT NULL;
+    ADD COLUMN name VARCHAR(255) NULL;
 ALTER TABLE order_line_item
-    ADD COLUMN price DECIMAL(19, 2) NOT NULL;
+    ADD COLUMN price DECIMAL(19, 2) NULL;
 
 UPDATE order_line_item oli
 SET name  = (SELECT name FROM menu m WHERE m.id = oli.menu_id),
