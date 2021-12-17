@@ -13,7 +13,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -24,12 +23,12 @@ import java.util.Objects;
 public class Order {
 
     public static final String MESSAGE_VALIDATE_ORDER_STATUS = "주문 상태가 계산 완료여야 합니다.";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    private OrderTable orderTable;
+    private Long orderTableId;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -53,8 +52,8 @@ public class Order {
         return id;
     }
 
-    public OrderTable getOrderTable() {
-        return orderTable;
+    public Long getOrderTableId() {
+        return orderTableId;
     }
 
     public OrderStatus getOrderStatus() {
@@ -69,10 +68,9 @@ public class Order {
         return orderLineItems;
     }
 
-    public void changeOrderTable(OrderTable orderTable) {
-        validateOrderTable(orderTable);
-        orderTable.addToOrders(this);
-        this.orderTable = orderTable;
+    public void changeOrderTable(Long orderTableId, OrderValidator orderValidator) {
+        orderValidator.validate(orderTableId);
+        this.orderTableId = orderTableId;
     }
 
     public void changeOrderStatus(OrderStatus orderStatus) {
@@ -103,11 +101,11 @@ public class Order {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Order order = (Order) o;
-        return Objects.equals(id, order.id) && Objects.equals(orderTable, order.orderTable) && orderStatus == order.orderStatus && Objects.equals(orderedTime, order.orderedTime);
+        return Objects.equals(id, order.id) && Objects.equals(orderTableId, order.orderTableId) && orderStatus == order.orderStatus && Objects.equals(orderedTime, order.orderedTime);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, orderTable, orderStatus, orderedTime);
+        return Objects.hash(id, orderTableId, orderStatus, orderedTime);
     }
 }

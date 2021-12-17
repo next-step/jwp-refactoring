@@ -1,5 +1,6 @@
 package kitchenpos.ordertable.domain;
 
+import kitchenpos.order.domain.OrderRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -8,6 +9,7 @@ import java.util.Arrays;
 import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @DisplayName("테이블 컬렉션 도메인 테스트")
 class OrderTablesTest {
@@ -73,7 +75,7 @@ class OrderTablesTest {
         OrderTables orderTables = new OrderTables(Arrays.asList(orderTable1, orderTable2));
 
         // when
-        orderTables.ungroup();
+        orderTables.ungroup(new OrderTableValidator(mock(OrderRepository.class)));
 
         // then
         assertThat(orderTable1.getTableGroupId()).isNull();

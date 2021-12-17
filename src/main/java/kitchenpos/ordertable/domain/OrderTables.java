@@ -10,7 +10,6 @@ public class OrderTables {
 
     public static final String MESSAGE_VALIDATE_MIN_COUNT = "테이블이 2개 이상이어야 합니다.";
     public static final String MESSAGE_VALIDATE_GROUPABLE = "테이블이 그룹에 등록 가능한 상태여야 합니다.";
-    public static final String MESSAGE_VALIDATE_UNGROUPABLE = "주문 테이블이 변경 가능해야 합니다.";
     private static final int MIN_ORDER_TABLE_COUNT = 2;
 
     private List<OrderTable> orderTables = new ArrayList<>();
@@ -32,8 +31,8 @@ public class OrderTables {
         orderTables.forEach(it -> it.group(tableGroupId));
     }
 
-    public void ungroup() {
-        orderTables.forEach(this::validateUngroupable);
+    public void ungroup(OrderTableValidator orderTableValidator) {
+        orderTables.forEach(orderTableValidator::validateOrderTableChangable);
         orderTables.forEach(OrderTable::ungroup);
     }
 
@@ -46,12 +45,6 @@ public class OrderTables {
     private void validateGroupable(OrderTable orderTable) {
         if (!orderTable.isGroupable()) {
             throw new IllegalArgumentException(MESSAGE_VALIDATE_GROUPABLE);
-        }
-    }
-
-    private void validateUngroupable(OrderTable orderTable) {
-        if (!orderTable.isChangable()) {
-            throw new IllegalArgumentException(MESSAGE_VALIDATE_UNGROUPABLE);
         }
     }
 

@@ -2,6 +2,7 @@ package kitchenpos.ordertable.application;
 
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
+import kitchenpos.ordertable.domain.OrderTableValidator;
 import kitchenpos.ordertable.domain.OrderTables;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
@@ -17,9 +18,11 @@ import java.util.stream.Collectors;
 public class OrderTableService {
 
     private final OrderTableRepository orderTableRepository;
+    private final OrderTableValidator orderTableValidator;
 
-    public OrderTableService(final OrderTableRepository orderTableRepository) {
+    public OrderTableService(final OrderTableRepository orderTableRepository, OrderTableValidator orderTableValidator) {
         this.orderTableRepository = orderTableRepository;
+        this.orderTableValidator = orderTableValidator;
     }
 
     public OrderTableResponse create(final OrderTableRequest orderTableRequest) {
@@ -37,13 +40,13 @@ public class OrderTableService {
 
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         final OrderTable orderTable = findById(orderTableId);
-        orderTable.changeEmpty(orderTableRequest.isEmpty());
+        orderTable.changeEmpty(orderTableRequest.isEmpty(), orderTableValidator);
         return OrderTableResponse.from(orderTable);
     }
 
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         final OrderTable orderTable = findById(orderTableId);
-        orderTable.changeNumberOfGuests(orderTableRequest.getNumberOfGuests());
+        orderTable.changeNumberOfGuests(orderTableRequest.getNumberOfGuests(), orderTableValidator);
         return OrderTableResponse.from(orderTable);
     }
 

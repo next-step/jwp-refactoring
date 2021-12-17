@@ -1,16 +1,14 @@
 package kitchenpos.order.application;
 
-import kitchenpos.menu.application.MenuService;
-import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.OrderValidator;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.ordertable.application.OrderTableService;
-import kitchenpos.ordertable.domain.OrderTable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -24,19 +22,19 @@ import java.util.stream.Collectors;
 public class OrderService {
 
     private final OrderRepository orderRepository;
-    private final OrderTableService orderTableService;
-    private final MenuService menuService;
+    private final OrderValidator orderValidator;
+    private final MenuRepository menuRepository;
 
     public OrderService(final OrderRepository orderRepository,
-                        final OrderTableService orderTableService,
-                        final MenuService menuService) {
+                        final OrderValidator orderValidator,
+                        final MenuRepository menuRepository) {
         this.orderRepository = orderRepository;
-        this.orderTableService = orderTableService;
-        this.menuService = menuService;
+        this.orderValidator = orderValidator;
+        this.menuRepository = menuRepository;
     }
 
     public OrderResponse create(final OrderRequest orderRequest) {
-        validateOrderLineItems(orderRequest.getOrderLineItems());
+        validate(orderRequest);
         final Order savedOrder = orderRepository.save(makeOrder(orderRequest));
         return OrderResponse.from(savedOrder);
     }
@@ -56,29 +54,28 @@ public class OrderService {
         return OrderResponse.from(savedOrder);
     }
 
-    private void validateOrderLineItems(List<OrderLineItemRequest> orderLineItemRequests) {
-        if (CollectionUtils.isEmpty(orderLineItemRequests)) {
+    private void validate(final OrderRequest orderRequest) {
+        if (CollectionUtils.isEmpty(orderRequest.getOrderLineItems())) {
             throw new IllegalArgumentException();
         }
+        orderRequest.getOrderLineItems()
+                .forEach(it -> validateMenu(it.getMenuId()));
     }
 
     private Order makeOrder(OrderRequest orderRequest) {
         Order order = orderRequest.toOrder();
-        order.changeOrderTable(findOrderTableById(orderRequest.getOrderTableId()));
+        order.changeOrderTable(orderRequest.getOrderTableId(), orderValidator);
 
         for (OrderLineItemRequest orderLineItemRequest : orderRequest.getOrderLineItems()) {
-            final Menu menu = findMenuById(orderLineItemRequest.getMenuId());
-            OrderLineItem orderLineItem = new OrderLineItem(menu, orderLineItemRequest.getQuantity());
+            OrderLineItem orderLineItem = orderLineItemRequest.toOrderLineItem();
             orderLineItem.changeOrder(order);
         }
         return order;
     }
 
-    private OrderTable findOrderTableById(Long orderTableId) {
-        return orderTableService.findById(orderTableId);
-    }
-
-    private Menu findMenuById(Long menuId) {
-        return menuService.findById(menuId);
+    private void validateMenu(Long menuId) {
+        if (!menuRepository.existsById(menuId)) {
+            throw new EntityNotFoundException();
+        }
     }
 }
