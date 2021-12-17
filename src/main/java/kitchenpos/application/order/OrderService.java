@@ -7,8 +7,6 @@ import javax.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kitchenpos.domain.menu.Menu;
-import kitchenpos.domain.menu.MenuRepository;
 import kitchenpos.domain.order.Order;
 import kitchenpos.domain.order.OrderLineItem;
 import kitchenpos.domain.order.OrderRepository;
@@ -19,14 +17,10 @@ import kitchenpos.utils.StreamUtils;
 
 @Service
 public class OrderService {
-    private final MenuRepository menuRepository;
     private final OrderRepository orderRepository;
     private final OrderValidator orderValidator;
 
-    public OrderService(final MenuRepository menuRepository,
-                        final OrderRepository orderRepository,
-                        final OrderValidator orderValidator) {
-        this.menuRepository = menuRepository;
+    public OrderService(final OrderRepository orderRepository, final OrderValidator orderValidator) {
         this.orderRepository = orderRepository;
         this.orderValidator = orderValidator;
     }
@@ -59,10 +53,5 @@ public class OrderService {
     private Order findOrders(Long orderId) {
         return orderRepository.findById(orderId)
                               .orElseThrow(EntityNotFoundException::new);
-    }
-
-    private Menu findMenu(Long menuId) {
-        return menuRepository.findById(menuId)
-                             .orElseThrow(EntityNotFoundException::new);
     }
 }
