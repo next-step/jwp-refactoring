@@ -1,6 +1,5 @@
 package kitchenpos.domain.order.application;
 
-import kitchenpos.domain.menu.domain.MenuRepository;
 import kitchenpos.domain.order.domain.EmptyTableValidatedEvent;
 import kitchenpos.exception.BusinessException;
 import kitchenpos.exception.ErrorCode;
@@ -13,14 +12,14 @@ import java.util.List;
 @Component
 public class OrderValidator {
 
-    private final MenuRepository menuRepository;
+    private final MenuClient menuClient;
     private final ApplicationEventPublisher eventPublisher;
 
     public OrderValidator(
-            final MenuRepository menuRepository,
+            final MenuClient menuClient,
             final ApplicationEventPublisher eventPublisher
     ) {
-        this.menuRepository = menuRepository;
+        this.menuClient = menuClient;
         this.eventPublisher = eventPublisher;
     }
 
@@ -32,9 +31,6 @@ public class OrderValidator {
         if (CollectionUtils.isEmpty(menuIds)) {
             throw new BusinessException(ErrorCode.EMPTY_MENUES);
         }
-
-        if (menuIds.size() != menuRepository.countByIdIn(menuIds)) {
-            throw new BusinessException(ErrorCode.MENU_NOT_EXIST);
-        }
+        menuClient.validateMenuExist(menuIds);
     }
 }
