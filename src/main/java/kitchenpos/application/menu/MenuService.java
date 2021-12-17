@@ -42,24 +42,31 @@ public class MenuService {
     public MenuDto create(final MenuDto menu) {
         MenuGroup menuGroup = menuGroupRepository.findById(menu.getMenuGroupId()).orElseThrow(NotFoundMenuGroupException::new);
         MenuProducts menuProducts = createMenuProducts(menu.getMenuProducts());
+
         Menu newMenu = Menu.of(menu.getName(), Price.of(menu.getPrice()), menuGroup, menuProducts);
         
         return MenuDto.of(menuRepository.save(newMenu));
     }
 
     private MenuProducts createMenuProducts(List<MenuProductDto> menuProductDtos) {
-        List<Long> productIds = menuProductDtos.stream().map(MenuProductDto::getProductId).collect(Collectors.toList());
+        List<Long> productIds = findProductIds(menuProductDtos);
 
         Products products = Products.of(productService.findAllByIds(productIds));
 
         List<MenuProduct> menuProducts = new ArrayList<>();
-         
+
         for (MenuProductDto menuProductDto : menuProductDtos) {
             Product matchingProduct = products.findById(menuProductDto.getProductId());
             menuProducts.add(MenuProduct.of(matchingProduct, menuProductDto.getQuantity()));
         }
 
         return MenuProducts.of(menuProducts);
+    }
+
+    private List<Long> findProductIds(List<MenuProductDto> menuProductDtos) {
+        return menuProductDtos.stream()
+                                .map(MenuProductDto::getProductId)
+                                .collect(Collectors.toList());
     }
 
     public List<MenuDto> list() {

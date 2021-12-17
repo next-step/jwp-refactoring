@@ -12,7 +12,6 @@ import kitchenpos.dto.order.OrderLineItemDto;
 import kitchenpos.domain.order.OrderLineItem;
 import kitchenpos.domain.order.OrderLineItems;
 import kitchenpos.domain.order.OrderStatus;
-import kitchenpos.exception.order.NotChangableOrderStatusException;
 import kitchenpos.exception.order.NotFoundOrderException;
 import kitchenpos.exception.order.NotRegistedMenuOrderException;
 import kitchenpos.exception.table.NotFoundOrderTableException;
@@ -47,18 +46,21 @@ public class OrderService {
 
         OrderLineItems orderLineItems = createOrderLineItems(orderLineItemDtos);
 
-        if (orderLineItems.size() != orderLineItemDtos.size()) {
-            throw new NotRegistedMenuOrderException();
-        }
+        checkExistOfMenu(orderLineItems, orderLineItemDtos);
 
         final Orders newOrder = Orders.of(orderTable, OrderStatus.COOKING, orderLineItems);
 
         return OrderDto.of(orderRepository.save(newOrder));
     }
 
+    private void checkExistOfMenu(final OrderLineItems orderLineItems, final List<OrderLineItemDto> orderLineItemDtos) {
+        if (orderLineItems.size() != orderLineItemDtos.size()) {
+            throw new NotRegistedMenuOrderException();
+        }
+    }
 
     private OrderLineItems createOrderLineItems(final List<OrderLineItemDto> orderLineItemDtos) {
-        List<Long> menuIds = orderLineItemDtos.stream().map(OrderLineItemDto::getMenuId).collect(Collectors.toList());
+        List<Long> menuIds = findMenuIds(orderLineItemDtos);
         Menus menus = Menus.of(menuService.findAllByIdIn(menuIds));
         
         List<OrderLineItem> orderLineItems = new ArrayList<>();
@@ -68,7 +70,12 @@ public class OrderService {
 
             orderLineItems.add(OrderLineItem.of(matchingMenu, orderLineItemDto.getQuantity()));
         }
+
         return OrderLineItems.of(orderLineItems);
+    }
+
+    private List<Long> findMenuIds(final List<OrderLineItemDto> orderLineItemDtos) {
+        return orderLineItemDtos.stream().map(OrderLineItemDto::getMenuId).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
@@ -83,17 +90,9 @@ public class OrderService {
         final Orders savedOrder = orderRepository.findById(orderId)
                                                 .orElseThrow(NotFoundOrderException::new);
 
-        validateionOfChageOrderStatus(savedOrder);
-
         savedOrder.changeOrderStatus(OrderStatus.valueOf(order.getOrderStatus()));
 
         return savedOrder;
-    }
-
-    private void validateionOfChageOrderStatus(final Orders savedOrder) {
-        if (savedOrder.isCompletion()) {
-            throw new NotChangableOrderStatusException();
-        }
     }
 
     public Orders findByOrderTableId(Long orderTableId) {

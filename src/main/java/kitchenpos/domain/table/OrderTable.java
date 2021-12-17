@@ -62,13 +62,17 @@ public class OrderTable {
         return empty;
     }
 
-    public void unGroupTable(Orders order) {
-        if (!order.isCompletion()) {
-            throw new HasNotCompletionOrderException();
-        }
+    public void unGroupTable(final Orders order) {
+        checkOrderStatusOfOrderTable(order);
 
         this.tableGroup.getOrderTables().remove(this);
         this.tableGroup = null;
+    }
+
+    private void checkOrderStatusOfOrderTable(final Orders order) {
+        if (order != null && !order.isCompletion()) {
+            throw new HasNotCompletionOrderException();
+        }
     }
 
     public void groupingTable(TableGroup tableGroup) {
@@ -92,15 +96,16 @@ public class OrderTable {
     }
 
     public void changeEmpty(boolean empty, Orders order) {
-        if (tableGroup != null) {
-            throw new HasOtherTableGroupException();
-        }
-
-        if (order != null && !order.isCompletion()) {
-            throw new HasNotCompletionOrderException();
-        }
+        checkHasTableGroup();
+        checkOrderStatusOfOrderTable(order);
 
         this.empty = empty;
+    }
+
+    private void checkHasTableGroup() {
+        if (this.tableGroup != null) {
+            throw new HasOtherTableGroupException();
+        }
     }
 
     public boolean hasTableGroup() {

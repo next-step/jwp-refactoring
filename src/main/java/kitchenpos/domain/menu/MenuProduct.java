@@ -7,6 +7,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import kitchenpos.domain.Price;
 import kitchenpos.domain.product.Product;
 
 @Entity
@@ -67,5 +68,9 @@ public class MenuProduct {
 
         this.menu = menu;
         this.menu.getMenuProducts().add(this);
+    }
+
+    public Price calculatePrice() {
+        return this.product.calculatePriceWithQuantity(this.quantity);
     }
 }

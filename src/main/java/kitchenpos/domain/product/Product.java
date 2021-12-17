@@ -50,6 +50,10 @@ public class Product {
         return this.price.multiply(quantity) ;
     }
 
+    public boolean isEqualId(Long productId) {
+        return this.id.equals(productId);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == this)

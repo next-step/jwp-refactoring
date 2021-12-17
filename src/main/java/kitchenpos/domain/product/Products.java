@@ -17,7 +17,7 @@ public class Products {
 
     public Product findById(Long productId) {
         return products.stream()
-                        .filter(product -> product.getId().equals(productId))
+                        .filter(product -> product.isEqualId(productId))
                         .findFirst()
                         .orElseThrow(NotFoundProductException::new);
     }

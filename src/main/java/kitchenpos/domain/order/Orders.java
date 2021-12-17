@@ -23,6 +23,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import kitchenpos.domain.table.OrderTable;
 import kitchenpos.exception.order.EmptyOrderLineItemOrderException;
 import kitchenpos.exception.order.EmptyOrderTableOrderException;
+import kitchenpos.exception.order.NotChangableOrderStatusException;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
@@ -102,7 +103,15 @@ public class Orders {
     }
 
     public void changeOrderStatus(OrderStatus orderStatus) {
+        validateionOfChageOrderStatus();
+
         this.orderStatus = orderStatus;
+    }
+
+    private void validateionOfChageOrderStatus() {
+        if (this.isCompletion()) {
+            throw new NotChangableOrderStatusException();
+        }
     }
 
     public boolean isCompletion() {

@@ -47,8 +47,6 @@ public class TableService {
         return OrderTableDto.of(savedOrderTable);
     }
 
-
-
     @Transactional
     public OrderTable changeNumberOfGuests(final Long orderTableId, final OrderTableDto orderTable) {
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)

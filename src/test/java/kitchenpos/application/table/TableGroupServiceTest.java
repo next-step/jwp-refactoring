@@ -146,31 +146,4 @@ public class TableGroupServiceTest {
         // then
         Assertions.assertThat(단체주문테이블.getOrderTables().size()).isEqualTo(0);
     }
-
-    @DisplayName("주문테이블의 주문상태가 계산 단계가 아닐때 단체지정이 해제시 예외가 발생된다.")
-    @Test
-    void exception_updateTableUnGroup_notCompletionOrderStatus() {
-        // given
-        OrderTable 치킨_주문_단체테이블 = OrderTable.of(10, false);
-        OrderTable 치킨2_주문_단체테이블 = OrderTable.of(10, false);
-
-        Orders 주문  = Orders.of(치킨_주문_단체테이블, OrderStatus.COMPLETION);
-        Orders 주문2  = Orders.of(치킨2_주문_단체테이블, OrderStatus.COMPLETION);
-
-        치킨_주문_단체테이블.changeEmpty(true, 주문);
-        치킨2_주문_단체테이블.changeEmpty(true, 주문2);
-
-        TableGroup 단체주문테이블 = TableGroup.of(OrderTables.of(Lists.newArrayList(치킨_주문_단체테이블, 치킨2_주문_단체테이블)));
-        List<OrderTable> 조회된_주문테이블_리스트 = List.of(치킨_주문_단체테이블, 치킨2_주문_단체테이블);
-
-        주문.changeOrderStatus(OrderStatus.MEAL);
-
-        when(orderTableRepository.findAllByTableGroupId(nullable(Long.class))).thenReturn(조회된_주문테이블_리스트);
-        when(orderService.findAllByOrderTableIdIn(anyList())).thenReturn(List.of(주문, 주문2));
-
-        // when
-        // then
-        Assertions.assertThatExceptionOfType(HasNotCompletionOrderException.class)
-                    .isThrownBy(() -> tableGroupService.ungroup(단체주문테이블.getId()));
-    }
 }

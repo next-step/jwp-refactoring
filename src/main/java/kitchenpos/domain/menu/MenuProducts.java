@@ -30,10 +30,7 @@ public class MenuProducts {
         Price sumOfProductsPrice = Price.of(0);
 
         for (MenuProduct menuProduct : this.menuProducts) {
-            Price productPrice = menuProduct.getProduct()
-                                            .calculatePriceWithQuantity(menuProduct.getQuantity());
-
-            sumOfProductsPrice = sumOfProductsPrice.add(productPrice);
+            sumOfProductsPrice = sumOfProductsPrice.add(menuProduct.calculatePrice());
         }
 
         return sumOfProductsPrice;
