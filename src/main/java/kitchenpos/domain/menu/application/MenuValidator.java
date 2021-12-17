@@ -5,6 +5,8 @@ import kitchenpos.domain.menu_group.domain.MenuGroup;
 import kitchenpos.domain.menu_group.domain.MenuGroupRepository;
 import kitchenpos.domain.product.domain.Product;
 import kitchenpos.domain.product.domain.ProductRepository;
+import kitchenpos.exception.BusinessException;
+import kitchenpos.exception.ErrorCode;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -41,11 +43,11 @@ public class MenuValidator {
 
     private Product getProduct(Long productId) {
         return productRepository.findById(productId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new BusinessException(ErrorCode.PRODUCT_NOT_FOUND));
     }
 
     private MenuGroup getMenuGroup(Menu menu) {
         return menuGroupRepository.findById(menu.getMenuGroupId())
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new BusinessException(ErrorCode.MENU_GROUP_NOT_FOUND));
     }
 }

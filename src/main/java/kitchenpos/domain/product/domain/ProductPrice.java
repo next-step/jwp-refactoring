@@ -1,5 +1,8 @@
 package kitchenpos.domain.product.domain;
 
+import kitchenpos.exception.BusinessException;
+import kitchenpos.exception.ErrorCode;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.math.BigDecimal;
@@ -27,7 +30,7 @@ public class ProductPrice {
 
     private void check(BigDecimal price) {
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < MIN_PRICE) {
-            throw new IllegalArgumentException();
+            throw new BusinessException(ErrorCode.INVALID_PRICE);
         }
     }
 

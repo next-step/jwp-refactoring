@@ -1,5 +1,8 @@
 package kitchenpos.domain.menu.domain;
 
+import kitchenpos.exception.BusinessException;
+import kitchenpos.exception.ErrorCode;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.math.BigDecimal;
@@ -24,13 +27,13 @@ public class MenuPrice {
 
     private void check(BigDecimal price) {
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < MIN_PRICE) {
-            throw new IllegalArgumentException();
+            throw new BusinessException(ErrorCode.INVALID_PRICE);
         }
     }
 
     public void checkLessThan(BigDecimal price) {
         if (this.price.compareTo(price) > 0) {
-            throw new IllegalArgumentException();
+            throw new BusinessException(ErrorCode.INVALID_PRICE);
         }
     }
 

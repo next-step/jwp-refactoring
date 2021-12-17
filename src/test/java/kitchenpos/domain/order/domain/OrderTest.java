@@ -1,5 +1,6 @@
 package kitchenpos.domain.order.domain;
 
+import kitchenpos.exception.BusinessException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
@@ -12,7 +13,7 @@ class OrderTest {
     @Test
     void checkCompleteOrder_완료_상태의_주문이면_에러를_발생한다() {
         Order order = new Order(OrderStatus.COMPLETION);
-        assertThatExceptionOfType(IllegalArgumentException.class)
+        assertThatExceptionOfType(BusinessException.class)
                 .isThrownBy(() -> order.validateCompleteOrder());
     }
 

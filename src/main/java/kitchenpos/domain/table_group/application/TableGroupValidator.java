@@ -4,6 +4,8 @@ import kitchenpos.domain.order.domain.OrderRepository;
 import kitchenpos.domain.order.domain.OrderStatus;
 import kitchenpos.domain.table.domain.OrderTableRepository;
 import kitchenpos.domain.table.domain.OrderTables;
+import kitchenpos.exception.BusinessException;
+import kitchenpos.exception.ErrorCode;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
@@ -38,7 +40,7 @@ public class TableGroupValidator {
     private void checkCompleteTable(List<Long> orderTableIds) {
         if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
                 orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException();
+            throw new BusinessException(ErrorCode.NOT_COMPLETE_ORDER);
         }
     }
 }

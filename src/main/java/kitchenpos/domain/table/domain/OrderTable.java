@@ -1,5 +1,8 @@
 package kitchenpos.domain.table.domain;
 
+import kitchenpos.exception.BusinessException;
+import kitchenpos.exception.ErrorCode;
+
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -46,7 +49,7 @@ public class OrderTable {
 
     public void validateTableGroup() {
         if (Objects.nonNull(tableGroupId)) {
-            throw new IllegalArgumentException();
+            throw new BusinessException(ErrorCode.NOT_IN_TABLE_GROUP);
         }
     }
 
@@ -57,13 +60,13 @@ public class OrderTable {
 
     public void checkNonEmptyInGroup() {
         if (!isEmpty() || hasTableGroup()) {
-            throw new IllegalArgumentException();
+            throw new BusinessException(ErrorCode.NON_EMPTY_TABLE);
         }
     }
 
     public void validateEmptyTable() {
         if (isEmpty()) {
-            throw new IllegalArgumentException();
+            throw new BusinessException(ErrorCode.EMPTY_TABLE);
         }
     }
 

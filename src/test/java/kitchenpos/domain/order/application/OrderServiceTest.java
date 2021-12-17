@@ -8,6 +8,7 @@ import kitchenpos.domain.table.domain.InMemoryOrderTableRepository;
 import kitchenpos.domain.table.domain.OrderTable;
 import kitchenpos.domain.table.domain.OrderTableRepository;
 import kitchenpos.domain.order.dto.OrderStatusRequest;
+import kitchenpos.exception.BusinessException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -90,14 +91,14 @@ class OrderServiceTest {
 
     @Test
     void create_주문_항목_목록이_올바르지_않으면_주문을_등록할_수_없다() {
-        assertThatExceptionOfType(IllegalArgumentException.class)
+        assertThatExceptionOfType(BusinessException.class)
                 .isThrownBy(() -> orderService.create(주문_요청(저장된_주문_테이블, Collections.emptyList())));
     }
 
     @Test
     void create_주문_항목_개수과_존재하는_메뉴_개수가_일치하지_않으면_등록할_수_없다() {
         List<OrderLineItem> 존재하는_메뉴_개수_이상의_주문_항목 = Arrays.asList(주문_항목(저장된_메뉴, 수량), 주문_항목(저장된_메뉴, 수량));
-        assertThatExceptionOfType(IllegalArgumentException.class)
+        assertThatExceptionOfType(BusinessException.class)
                 .isThrownBy(() -> orderService.create(주문_요청(저장된_주문_테이블, 존재하는_메뉴_개수_이상의_주문_항목)));
     }
 
@@ -133,7 +134,7 @@ class OrderServiceTest {
     void changeOrderStatus_주문이_존재하지_않으면_주문_상태를_변경할_수_없다(Long 존재하지_않는_주문_아이디) {
         OrderStatusRequest 변경될_주문 = 주문_상태_변경_요청(OrderStatus.MEAL);
 
-        assertThatExceptionOfType(IllegalArgumentException.class)
+        assertThatExceptionOfType(BusinessException.class)
                 .isThrownBy(() -> orderService.changeOrderStatus(존재하지_않는_주문_아이디, 변경될_주문));
     }
 
@@ -146,7 +147,7 @@ class OrderServiceTest {
         orderService.changeOrderStatus(저장된_주문.getId(), 완료_상태의_주문);
 
         OrderStatusRequest 식사_상태의_주문 = 주문_상태_변경_요청(OrderStatus.MEAL);
-        assertThatExceptionOfType(IllegalArgumentException.class)
+        assertThatExceptionOfType(BusinessException.class)
                 .isThrownBy(() -> orderService.changeOrderStatus(저장된_주문.getId(), 식사_상태의_주문));
     }
 }

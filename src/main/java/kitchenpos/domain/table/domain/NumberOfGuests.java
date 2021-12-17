@@ -1,5 +1,8 @@
 package kitchenpos.domain.table.domain;
 
+import kitchenpos.exception.BusinessException;
+import kitchenpos.exception.ErrorCode;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
@@ -21,7 +24,7 @@ public class NumberOfGuests {
 
     private void check(int number) {
         if (number < MIN_NUMBER_OF_GUESTS) {
-            throw new IllegalArgumentException();
+            throw new BusinessException(ErrorCode.INVALID_NUMBER_OF_GUESTS);
         }
     }
 

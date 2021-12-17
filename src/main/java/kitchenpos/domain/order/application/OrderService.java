@@ -4,6 +4,8 @@ import kitchenpos.domain.order.domain.Order;
 import kitchenpos.domain.order.domain.OrderRepository;
 import kitchenpos.domain.order.dto.OrderRequest;
 import kitchenpos.domain.order.dto.OrderStatusRequest;
+import kitchenpos.exception.BusinessException;
+import kitchenpos.exception.ErrorCode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,6 +46,6 @@ public class OrderService {
 
     private Order getOrder(Long orderId) {
         return orderRepository.findById(orderId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new BusinessException(ErrorCode.ORDER_NOT_FOUND));
     }
 }

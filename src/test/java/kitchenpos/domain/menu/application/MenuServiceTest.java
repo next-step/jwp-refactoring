@@ -9,6 +9,7 @@ import kitchenpos.domain.menu_group.domain.MenuGroupRepository;
 import kitchenpos.domain.product.domain.InMemoryProductRepository;
 import kitchenpos.domain.product.domain.Product;
 import kitchenpos.domain.product.domain.ProductRepository;
+import kitchenpos.exception.BusinessException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -83,28 +84,28 @@ class MenuServiceTest {
     @NullSource
     @ValueSource(strings = {"-1"})
     void create_메뉴의_가격이_올바르지_않으면_등록할_수_없다(BigDecimal 올바르지_않은_가격) {
-        assertThatExceptionOfType(IllegalArgumentException.class)
+        assertThatExceptionOfType(BusinessException.class)
                 .isThrownBy(() -> menuService.create(메뉴_요청(저장된_메뉴_그룹, 메뉴_이름, 올바르지_않은_가격, 메뉴_상품_요청(저장된_상품, 수량))));
     }
 
     @ParameterizedTest
     @ValueSource(longs = {0L})
     void create_메뉴의_메뉴_그룹이_존재하지_않으면_등록할_수_없다(Long 존재하지_않는_메뉴_그룹_아이디) {
-        assertThatExceptionOfType(IllegalArgumentException.class)
+        assertThatExceptionOfType(BusinessException.class)
                 .isThrownBy(() -> menuService.create(메뉴_요청(존재하지_않는_메뉴_그룹_아이디, 메뉴_이름, 메뉴_가격, 메뉴_상품_요청(저장된_상품, 수량))));
     }
 
     @ParameterizedTest
     @ValueSource(longs = {0L})
     void create_메뉴_상품의_상품이_존재하지_않으면_등록할_수_없다(Long 존재하지_않는_상품_아이디) {
-        assertThatExceptionOfType(IllegalArgumentException.class)
+        assertThatExceptionOfType(BusinessException.class)
                 .isThrownBy(() -> menuService.create(메뉴_요청(저장된_메뉴_그룹, 메뉴_이름, 메뉴_가격, 메뉴_상품_요청(존재하지_않는_상품_아이디, 수량))));
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"100000"})
     void create_메뉴의_가격이_올바르지_않으면_등록_할_수_없다(BigDecimal 올바르지_않은_메뉴_가격) {
-        assertThatExceptionOfType(IllegalArgumentException.class)
+        assertThatExceptionOfType(BusinessException.class)
                 .isThrownBy(() -> menuService.create(메뉴_요청(저장된_메뉴_그룹, 메뉴_이름, 올바르지_않은_메뉴_가격, 메뉴_상품_요청(저장된_상품, 수량))));
     }
 

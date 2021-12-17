@@ -1,5 +1,7 @@
 package kitchenpos.domain.table.domain;
 
+import kitchenpos.exception.BusinessException;
+import kitchenpos.exception.ErrorCode;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
@@ -27,11 +29,11 @@ public class OrderTables {
 
     public void checkOrderTables(List<Long> orderTableIds) {
         if (CollectionUtils.isEmpty(orderTableIds) || orderTableIds.size() < MIN_REQUEST_ORDER_TABLE_SIZE) {
-            throw new IllegalArgumentException();
+            throw new BusinessException(ErrorCode.INVALID_ORDER_TABLE_SIZE);
         }
 
         if (!isSameSize(orderTableIds)) {
-            throw new IllegalArgumentException();
+            throw new BusinessException(ErrorCode.NOT_SAME_TABLE_SIZE);
         }
 
         for (final OrderTable orderTable : orderTables) {

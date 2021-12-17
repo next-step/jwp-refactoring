@@ -1,5 +1,8 @@
 package kitchenpos.domain.order.domain;
 
+import kitchenpos.exception.BusinessException;
+import kitchenpos.exception.ErrorCode;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -56,7 +59,7 @@ public class Order {
 
     public void validateCompleteOrder() {
         if (isComplete()) {
-            throw new IllegalArgumentException();
+            throw new BusinessException(ErrorCode.COMPLETE_ORDER);
         }
     }
 

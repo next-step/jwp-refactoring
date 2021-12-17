@@ -4,6 +4,7 @@ import kitchenpos.domain.order.domain.EmptyTableValidatedEvent;
 import kitchenpos.domain.table.domain.InMemoryOrderTableRepository;
 import kitchenpos.domain.table.domain.OrderTable;
 import kitchenpos.domain.table.domain.OrderTableRepository;
+import kitchenpos.exception.BusinessException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -31,14 +32,14 @@ class EmptyTableValidatedHandlerTest {
     @Test
     void create_주문_테이블이_올바르지_않으면_주문을_등록할_수_없다() {
         OrderTable 비어있는_주문_테이블 = orderTableRepository.save(주문_테이블(2, true));
-        assertThatExceptionOfType(IllegalArgumentException.class)
+        assertThatExceptionOfType(BusinessException.class)
                 .isThrownBy(() -> eventHandler.handle(new EmptyTableValidatedEvent(비어있는_주문_테이블.getId())));
     }
 
     @ParameterizedTest
     @ValueSource(longs = {0L})
     void create_주문_테이블이_존재하지_않으면_등록할_수_없다(Long 존재하지_않는_주문_테이블_아이디) {
-        assertThatExceptionOfType(IllegalArgumentException.class)
+        assertThatExceptionOfType(BusinessException.class)
                 .isThrownBy(() -> eventHandler.handle(new EmptyTableValidatedEvent(존재하지_않는_주문_테이블_아이디)));
     }
 

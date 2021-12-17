@@ -1,6 +1,7 @@
 package kitchenpos.domain.menu.domain;
 
 import kitchenpos.domain.menu.domain.MenuPrice;
+import kitchenpos.exception.BusinessException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -20,7 +21,7 @@ class MenuPriceTest {
     @ValueSource(strings = {"-1","-10"})
     @DisplayName("메뉴의 가격은 0원 이상이어야한다.")
     void create(BigDecimal 올바르지_않은_가격) {
-        assertThatExceptionOfType(IllegalArgumentException.class)
+        assertThatExceptionOfType(BusinessException.class)
                 .isThrownBy(() -> new MenuPrice(올바르지_않은_가격));
     }
 
@@ -29,7 +30,7 @@ class MenuPriceTest {
     @DisplayName("메뉴의 가격은 메뉴 상품의 가격의 합보다 작아야 한다.")
     void checkLessThan(BigDecimal 메뉴가격, BigDecimal 메뉴상품_가격_합) {
         MenuPrice menuPrice = new MenuPrice(메뉴가격);
-        assertThatExceptionOfType(IllegalArgumentException.class)
+        assertThatExceptionOfType(BusinessException.class)
                 .isThrownBy(() -> menuPrice.checkLessThan(메뉴상품_가격_합));
     }
 }

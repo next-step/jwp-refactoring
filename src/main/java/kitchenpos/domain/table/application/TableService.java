@@ -3,9 +3,12 @@ package kitchenpos.domain.table.application;
 import kitchenpos.domain.table.domain.OrderTable;
 import kitchenpos.domain.table.domain.OrderTableRepository;
 import kitchenpos.domain.table.dto.TableRequest;
+import kitchenpos.exception.BusinessException;
+import kitchenpos.exception.ErrorCode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.net.HttpCookie;
 import java.util.List;
 
 @Service
@@ -49,6 +52,6 @@ public class TableService {
 
     private OrderTable getOrderTable(Long orderTableId) {
         return orderTableRepository.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new BusinessException(ErrorCode.ORDER_TABLE_NOT_FOUND));
     }
 }

@@ -2,6 +2,8 @@ package kitchenpos.domain.order.application;
 
 import kitchenpos.domain.menu.domain.MenuRepository;
 import kitchenpos.domain.order.domain.EmptyTableValidatedEvent;
+import kitchenpos.exception.BusinessException;
+import kitchenpos.exception.ErrorCode;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -28,11 +30,11 @@ public class OrderValidator {
 
     public void validateMenus(List<Long> menuIds) {
         if (CollectionUtils.isEmpty(menuIds)) {
-            throw new IllegalArgumentException();
+            throw new BusinessException(ErrorCode.EMPTY_MENUES);
         }
 
         if (menuIds.size() != menuRepository.countByIdIn(menuIds)) {
-            throw new IllegalArgumentException();
+            throw new BusinessException(ErrorCode.MENU_NOT_EXIST);
         }
     }
 }

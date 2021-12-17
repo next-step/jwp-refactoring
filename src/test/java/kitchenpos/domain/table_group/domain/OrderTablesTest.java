@@ -2,6 +2,7 @@ package kitchenpos.domain.table_group.domain;
 
 import kitchenpos.domain.table.domain.OrderTable;
 import kitchenpos.domain.table.domain.OrderTables;
+import kitchenpos.exception.BusinessException;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -14,31 +15,31 @@ class OrderTablesTest {
 
     @Test
     void checkOrderTables_요청한_주문_테이블_목록이_비어있으면_에러를_발생한다() {
-        assertThatExceptionOfType(IllegalArgumentException.class)
+        assertThatExceptionOfType(BusinessException.class)
                 .isThrownBy(() -> orderTables.checkOrderTables(Arrays.asList()));
     }
 
     @Test
     void checkOrderTables_요청한_주문_테이블_목록이_2개_미만이면_에러를_발생한다() {
-        assertThatExceptionOfType(IllegalArgumentException.class)
+        assertThatExceptionOfType(BusinessException.class)
                 .isThrownBy(() -> orderTables.checkOrderTables(Arrays.asList(1L)));
     }
 
     @Test
     void checkOrderTables_요청한_주문_테이블_목록과_저장된_주문_테이블_목록의_크기가_다르면_에러를_발생한다() {
-        assertThatExceptionOfType(IllegalArgumentException.class)
+        assertThatExceptionOfType(BusinessException.class)
                 .isThrownBy(() -> orderTables.checkOrderTables(Arrays.asList(1L, 2L)));
     }
 
     @Test
     void checkOrderTables_저장된_주문_테이블이_빈_테이블이면_에러를_발생한다() {
-        assertThatExceptionOfType(IllegalArgumentException.class)
+        assertThatExceptionOfType(BusinessException.class)
                 .isThrownBy(() -> orderTables.checkOrderTables(Arrays.asList(1L)));
     }
 
     @Test
     void checkOrderTables_저장된_주문_테이블의_테이블_그룹에_속하지_않으면_에러를_발생한다() {
-        assertThatExceptionOfType(IllegalArgumentException.class)
+        assertThatExceptionOfType(BusinessException.class)
                 .isThrownBy(() -> orderTables.checkOrderTables(Arrays.asList(1L)));
     }
 }

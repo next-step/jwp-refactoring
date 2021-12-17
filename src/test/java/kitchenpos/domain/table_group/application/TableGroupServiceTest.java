@@ -10,6 +10,7 @@ import kitchenpos.domain.table_group.domain.InMemoryTableGroupRepository;
 import kitchenpos.domain.table_group.domain.TableGroup;
 import kitchenpos.domain.table_group.domain.TableGroupRepository;
 import kitchenpos.domain.table_group.dto.TableGroupRequest;
+import kitchenpos.exception.BusinessException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -77,7 +78,7 @@ class TableGroupServiceTest {
         OrderTable 저장된_주문_테이블1 = orderTableRepository.save(빈_주문_테이블());
         TableGroupRequest tableGroup = 단체_지정_요청(Arrays.asList(저장된_주문_테이블1));
 
-        assertThatExceptionOfType(IllegalArgumentException.class)
+        assertThatExceptionOfType(BusinessException.class)
                 .isThrownBy(() -> tableGroupService.create(tableGroup));
     }
 
@@ -86,7 +87,7 @@ class TableGroupServiceTest {
         OrderTable 저장된_주문_테이블 = orderTableRepository.save(빈_주문_테이블());
         TableGroupRequest tableGroup = 단체_지정_요청(Arrays.asList(저장된_주문_테이블, 빈_주문_테이블()));
 
-        assertThatExceptionOfType(IllegalArgumentException.class)
+        assertThatExceptionOfType(BusinessException.class)
                 .isThrownBy(() -> tableGroupService.create(tableGroup));
     }
 
@@ -96,7 +97,7 @@ class TableGroupServiceTest {
         OrderTable 채워진_주문_테이블 = orderTableRepository.save(주문_테이블(2, null, false));
         TableGroupRequest tableGroup = 단체_지정_요청(Arrays.asList(빈_주문_테이블, 채워진_주문_테이블));
 
-        assertThatExceptionOfType(IllegalArgumentException.class)
+        assertThatExceptionOfType(BusinessException.class)
                 .isThrownBy(() -> tableGroupService.create(tableGroup));
     }
 
@@ -123,7 +124,7 @@ class TableGroupServiceTest {
         TableGroupRequest 단체_지정 = 단체_지정_요청(Arrays.asList(저장된_주문_테이블1, 저장된_주문_테이블2));
         TableGroup 저장된_단체_지정 = tableGroupService.create(단체_지정);
 
-        assertThatExceptionOfType(IllegalArgumentException.class)
+        assertThatExceptionOfType(BusinessException.class)
                 .isThrownBy(() -> tableGroupService.ungroup(저장된_단체_지정.getId()));
     }
 

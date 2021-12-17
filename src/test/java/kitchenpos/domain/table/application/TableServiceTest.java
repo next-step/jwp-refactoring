@@ -7,6 +7,7 @@ import kitchenpos.domain.table.domain.InMemoryOrderTableRepository;
 import kitchenpos.domain.table.domain.OrderTable;
 import kitchenpos.domain.table.domain.OrderTableRepository;
 import kitchenpos.domain.table.dto.TableRequest;
+import kitchenpos.exception.BusinessException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -91,7 +92,7 @@ class TableServiceTest {
     @ParameterizedTest
     @ValueSource(longs = 0L)
     void changeEmpty_주문_테이블이_존재하지_않으면_빈_테이블로_변경할_수_없다(Long 존재하지_않는_테이블_아이디) {
-        assertThatExceptionOfType(IllegalArgumentException.class)
+        assertThatExceptionOfType(BusinessException.class)
                 .isThrownBy(() -> tableService.changeEmpty(존재하지_않는_테이블_아이디, 빈_주문_테이블));
     }
 
@@ -100,7 +101,7 @@ class TableServiceTest {
     void changeEmpty_주문_테이블의_테이블_그룹_아이디가_올바르지_않으면_빈_테이블로_변경할_수_없다(Long 존재하는_테이블_그룹_아이디) {
         OrderTable 저장된_주문_테이블 = orderTableRepository.save(주문_테이블(손님_수, 존재하는_테이블_그룹_아이디, 빈_테이블));
 
-        assertThatExceptionOfType(IllegalArgumentException.class)
+        assertThatExceptionOfType(BusinessException.class)
                 .isThrownBy(() -> tableService.changeEmpty(저장된_주문_테이블.getId(), 빈_주문_테이블));
     }
 
@@ -110,7 +111,7 @@ class TableServiceTest {
         OrderTable 저장된_주문_테이블 = tableService.create(채워진_주문_테이블());
         orderRepository.save(주문(저장된_주문_테이블, Arrays.asList(), 올바르지_않은_주문_상태));
 
-        assertThatExceptionOfType(IllegalArgumentException.class)
+        assertThatExceptionOfType(BusinessException.class)
                 .isThrownBy(() -> tableService.changeEmpty(저장된_주문_테이블.getId(), 빈_주문_테이블));
     }
 
@@ -127,7 +128,7 @@ class TableServiceTest {
     @ParameterizedTest
     @ValueSource(ints = {-1, 0})
     void changeNumberOfGuests_주문_테이블의_방문한_손님_수가_올바르지_않으면_방문한_손님_수를_변경할_수_없다(int 유효하지_않은_손님_수) {
-        assertThatExceptionOfType(IllegalArgumentException.class)
+        assertThatExceptionOfType(BusinessException.class)
                 .isThrownBy(() -> tableService.changeNumberOfGuests(null, 테이블_요청(유효하지_않은_손님_수, true)));
     }
 
@@ -136,7 +137,7 @@ class TableServiceTest {
     void changeNumberOfGuests_주문_테이블이_빈_테이블_여부가_올바르지_않으면_방문한_손님_수를_변경할_수_없다(boolean 빈_테이블) {
         OrderTable 저장된_주문_테이블 = tableService.create(테이블_요청(손님_수, 빈_테이블));
 
-        assertThatExceptionOfType(IllegalArgumentException.class)
+        assertThatExceptionOfType(BusinessException.class)
                 .isThrownBy(() -> tableService.changeNumberOfGuests(저장된_주문_테이블.getId(), 채워진_주문_테이블()));
     }
 

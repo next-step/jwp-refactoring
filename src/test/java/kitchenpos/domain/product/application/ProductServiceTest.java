@@ -4,6 +4,7 @@ import kitchenpos.domain.product.domain.InMemoryProductRepository;
 import kitchenpos.domain.product.domain.ProductRepository;
 import kitchenpos.domain.product.domain.Product;
 import kitchenpos.domain.product.dto.ProductRequest;
+import kitchenpos.exception.BusinessException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -49,7 +50,7 @@ class ProductServiceTest {
     @ParameterizedTest
     @ValueSource(ints = {Integer.MIN_VALUE, -1})
     void create_상품의_가격이_올바르지_않으면_등록할_수_없다(int 유효하지_않은_상품_가격) {
-        assertThatExceptionOfType(IllegalArgumentException.class)
+        assertThatExceptionOfType(BusinessException.class)
                 .isThrownBy(() -> productService.create(ProductRequest.of(상품_이름, 유효하지_않은_상품_가격)));
     }
 

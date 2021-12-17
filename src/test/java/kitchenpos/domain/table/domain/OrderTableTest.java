@@ -1,5 +1,6 @@
 package kitchenpos.domain.table.domain;
 
+import kitchenpos.exception.BusinessException;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -17,7 +18,7 @@ class OrderTableTest {
     @Test
     void checkInTableGroup_테이블_그룹에_존재하면_에러를_발생한다() {
         OrderTable orderTable = new OrderTable(1L, 10, false);
-        assertThatExceptionOfType(IllegalArgumentException.class)
+        assertThatExceptionOfType(BusinessException.class)
                 .isThrownBy(() -> orderTable.validateTableGroup());
     }
 
@@ -30,20 +31,20 @@ class OrderTableTest {
 
     @Test
     void changeNumberOfGuests_음수_테이블_손님_수로_변경하면_에러를_발생한다() {
-        assertThatExceptionOfType(IllegalArgumentException.class)
+        assertThatExceptionOfType(BusinessException.class)
                 .isThrownBy(() -> 채워진_테이블().changeNumberOfGuests(-10));
     }
 
     @Test
     void checkNonEmptyInGroup_빈_테이블이_아니면_에러를_발생한다() {
-        assertThatExceptionOfType(IllegalArgumentException.class)
+        assertThatExceptionOfType(BusinessException.class)
                 .isThrownBy(() -> 채워진_테이블().checkNonEmptyInGroup());
     }
 
     @Test
     void checkNonEmptyInGroup_테이블_그룹에_속하지_않으면_에러를_발생한다() {
         OrderTable orderTable = new OrderTable(1L, 10, false);
-        assertThatExceptionOfType(IllegalArgumentException.class)
+        assertThatExceptionOfType(BusinessException.class)
                 .isThrownBy(() -> orderTable.checkNonEmptyInGroup());
     }
 
