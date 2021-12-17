@@ -4,11 +4,11 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.acceptance.step.MenuGroupAcceptStep;
-import kitchenpos.acceptance.step.ProductAcceptStep;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Product;
+import kitchenpos.product.acceptance.step.ProductAcceptStep;
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,12 +24,12 @@ import static kitchenpos.acceptance.step.MenuAcceptStep.메뉴_목록_조회_확
 @DisplayName("메뉴 인수테스트")
 class MenuAcceptTest extends AcceptanceTest {
     private MenuGroup 추천메뉴;
-    private Product 강정치킨;
+    private ProductResponse 강정치킨;
 
     @BeforeEach
     void setup() {
         추천메뉴 = MenuGroupAcceptStep.메뉴_그룹이_등록되어_있음("추천메뉴");
-        강정치킨 = ProductAcceptStep.상품이_등록되어_있음("강정치킨", 17_000);
+        강정치킨 = ProductAcceptStep.상품이_등록되어_있음("강정치킨", BigDecimal.valueOf(17_000));
     }
 
     @DisplayName("메뉴를 관리한다")

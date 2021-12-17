@@ -3,15 +3,15 @@ package kitchenpos.application;
 import kitchenpos.application.fixture.MenuFixture;
 import kitchenpos.application.fixture.MenuGroupFixture;
 import kitchenpos.application.fixture.MenuProductFixture;
-import kitchenpos.application.fixture.ProductFixture;
 import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
-import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Product;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.product.fixture.ProductFixture;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -43,7 +43,7 @@ class MenuServiceTest {
     @Mock
     MenuProductDao menuProductDao;
     @Mock
-    ProductDao productDao;
+    ProductRepository productRepository;
 
     @InjectMocks
     MenuService menuService;
@@ -81,7 +81,7 @@ class MenuServiceTest {
         메뉴_등록_요청_데이터.setMenuProducts(Collections.singletonList(메뉴_상품));
 
         given(menuGroupDao.existsById(any(Long.TYPE))).willReturn(true);
-        given(productDao.findById(any(Long.TYPE))).willReturn(Optional.of(강정치킨));
+        given(productRepository.findById(any(Long.TYPE))).willReturn(Optional.of(강정치킨));
         given(menuDao.save(any(Menu.class))).willReturn(더블강정);
         given(menuProductDao.save(any(MenuProduct.class))).willReturn(더블강정_메뉴_상품);
 
@@ -209,7 +209,7 @@ class MenuServiceTest {
             메뉴_등록_요청_데이터.setMenuProducts(Collections.singletonList(메뉴_상품));
 
             given(menuGroupDao.existsById(any(Long.TYPE))).willReturn(true);
-            given(productDao.findById(any(Long.TYPE))).willReturn(Optional.empty());
+            given(productRepository.findById(any(Long.TYPE))).willReturn(Optional.empty());
 
             // when
             ThrowableAssert.ThrowingCallable 등록_요청 = () -> menuService.create(메뉴_등록_요청_데이터);
@@ -233,7 +233,7 @@ class MenuServiceTest {
             메뉴_등록_요청_데이터.setMenuProducts(Collections.singletonList(메뉴_상품));
 
             given(menuGroupDao.existsById(any(Long.TYPE))).willReturn(true);
-            given(productDao.findById(any(Long.TYPE))).willReturn(Optional.of(강정치킨));
+            given(productRepository.findById(any(Long.TYPE))).willReturn(Optional.of(강정치킨));
 
             // when
             ThrowableAssert.ThrowingCallable 등록_요청 = () -> menuService.create(메뉴_등록_요청_데이터);
