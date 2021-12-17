@@ -2,7 +2,10 @@ package kitchenpos.domain.menu.application;
 
 import kitchenpos.domain.menu.domain.Menu;
 import kitchenpos.domain.menu.domain.MenuRepository;
+import kitchenpos.domain.menu.dto.MenuExistRequest;
 import kitchenpos.domain.menu.dto.MenuRequest;
+import kitchenpos.exception.BusinessException;
+import kitchenpos.exception.ErrorCode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,5 +34,11 @@ public class MenuService {
 
     public List<Menu> list() {
         return menuRepository.findAll();
+    }
+
+    public void validateMenuExist(MenuExistRequest request) {
+        if (request.getMenuIds().size() != menuRepository.countByIdIn(request.getMenuIds())) {
+            throw new BusinessException(ErrorCode.MENU_NOT_EXIST);
+        }
     }
 }

@@ -2,6 +2,7 @@ package kitchenpos.domain.menu.ui;
 
 import kitchenpos.domain.menu.application.MenuService;
 import kitchenpos.domain.menu.domain.Menu;
+import kitchenpos.domain.menu.dto.MenuExistRequest;
 import kitchenpos.domain.menu.dto.MenuRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,5 +35,11 @@ public class MenuRestController {
         return ResponseEntity.ok()
                 .body(menuService.list())
                 ;
+    }
+
+    @GetMapping("/api/menus/check")
+    public ResponseEntity validMenuExist(@RequestBody final MenuExistRequest request) {
+        menuService.validateMenuExist(request);
+        return ResponseEntity.ok().build();
     }
 }
