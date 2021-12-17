@@ -28,7 +28,7 @@ public class MenuService {
     @Transactional
     public Menu create(final MenuRequest request) {
         final Menu menu = request.toMenu();
-        menuValidator.validate(menu);
+        menuValidator.validatePrice(menu);
         return menuRepository.save(menu);
     }
 

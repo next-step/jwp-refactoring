@@ -15,10 +15,6 @@ public class TableGroup {
 
     private LocalDateTime createdDate;
 
-    public static TableGroup create() {
-        return new TableGroup(LocalDateTime.now());
-    }
-
     protected TableGroup() {
     }
 
@@ -29,6 +25,10 @@ public class TableGroup {
 
     public TableGroup(LocalDateTime createdDate) {
         this(null, createdDate);
+    }
+
+    public static TableGroup create() {
+        return new TableGroup(LocalDateTime.now());
     }
 
     public Long getId() {

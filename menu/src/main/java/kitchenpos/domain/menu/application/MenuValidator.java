@@ -25,11 +25,11 @@ public class MenuValidator {
         this.productRepository = productRepository;
     }
 
-    public void validate(Menu menu) {
-        validate(menu, getMenuGroup(menu));
+    public void validatePrice(Menu menu) {
+        validatePrice(menu, getMenuGroup(menu));
     }
 
-    private void validate(Menu menu, MenuGroup menuGroup) {
+    private void validatePrice(Menu menu, MenuGroup menuGroup) {
         menu.checkPrice(calculateSum(menu));
     }
 
