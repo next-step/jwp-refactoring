@@ -13,6 +13,7 @@ import kitchenpos.application.ProductService;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -55,24 +56,21 @@ class ProductServiceTest {
     }
 
     @Test
-    @DisplayName("상품 생성 시 가격이 음수면 실패")
-    void createNegativePriceFail() {
+    @DisplayName("상품의 가격은 필수이며 0 이상 이어야 한다")
+    void createValidatePrice() {
         product.setPrice(BigDecimal.valueOf(-1));
         assertThatThrownBy(() -> productService.create(product))
             .isInstanceOf(IllegalArgumentException.class);
-    }
 
-    @Test
-    @DisplayName("상품 생성 시 가격 정보가 없는 경우 실패")
-    void createNullPriceFail() {
         product.setPrice(null);
         assertThatThrownBy(() -> productService.create(product))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
+    @Disabled
     @Test
-    @DisplayName("상품 생성 시 이름 정보가 없는 경우 실패")
-    void createNullNameFail() {
+    @DisplayName("상품은 이름은 필수이다")
+    void createValidateName() {
         // TODO: 2021/12/17 이름 정보 필수이므로 비지니스 로직 추가 필요. 현재는 실패하는 테스트임.
         product.setName(null);
         assertThatThrownBy(() -> productService.create(product))

@@ -20,7 +20,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
 
     @Test
     @DisplayName("상품을 관리한다.")
-    void create() {
+    void manageProduct() {
         // 상품 등록 요청
         ExtractableResponse<Response> saveResponse = 상품_등록_요청("상품", BigDecimal.valueOf(10000));
         // 상품 등록 됨
@@ -64,5 +64,9 @@ public class ProductAcceptanceTest extends AcceptanceTest {
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(list).extracting(Product::getName).containsExactly(expected);
+    }
+
+    public static Product 상품_등록_되어있음(String name, BigDecimal price) {
+        return 상품_등록_요청(name, price).as(Product.class);
     }
 }
