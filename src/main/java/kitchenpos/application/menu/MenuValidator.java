@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 
 import javax.persistence.EntityNotFoundException;
 
@@ -41,11 +40,6 @@ public class MenuValidator {
         validateMenuGroup(findMenuGroup(menu.getMenuGroupId()));
         validateProducts(menu.getMenuProducts());
         validateMenuPrice(menu.getPrice(), menu.getMenuProducts());
-    }
-
-    public void validateMenuProduct(MenuProduct menuProduct) {
-        validateExistMenu(menuProduct.getMenu());
-        validateProduct(menuProduct.getProductId());
     }
 
     private void validateMenuGroup(MenuGroup menuGroup) {
@@ -88,14 +82,6 @@ public class MenuValidator {
 
         if (price.isGreaterThan(sum)) {
             throw new IllegalArgumentException(INVALID_MENU_PRICE);
-        }
-    }
-
-    private void validateProduct(Long productId) {
-        Optional<Product> productOpt = productRepository.findById(productId);
-
-        if (!productOpt.isPresent()) {
-            throw new EntityNotFoundException(NOT_EXIST_PRODUCT);
         }
     }
 

@@ -104,7 +104,7 @@ class OrderTest {
         Order order = Order.of(0L, Arrays.asList(불고기_주문항목));
 
         // when & then
-        assertThrows(EntityNotFoundException.class, () -> orderValidator.validateOrder(order));
+        assertThrows(EntityNotFoundException.class, () -> orderValidator.validate(order));
     }
 
     @DisplayName("완료된 상태가 아니라면, Order 의 상태를 바꿀 수 있다.")

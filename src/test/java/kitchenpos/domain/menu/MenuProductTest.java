@@ -23,8 +23,8 @@ import kitchenpos.application.fixture.MenuFixtureFactory;
 import kitchenpos.application.fixture.MenuGroupFixtureFactory;
 import kitchenpos.application.fixture.MenuProductFixtureFactory;
 import kitchenpos.application.fixture.ProductFixtureFactory;
-import kitchenpos.application.menu.MenuValidator;
 import kitchenpos.domain.Quantity;
+import kitchenpos.domain.menu.validator.MenuProductValidator;
 import kitchenpos.domain.menugroup.MenuGroup;
 import kitchenpos.domain.menugroup.MenuGroupRepository;
 import kitchenpos.domain.product.Product;
@@ -43,7 +43,7 @@ class MenuProductTest {
     private MenuRepository menuRepository;
 
     @Autowired
-    private MenuValidator menuValidator;
+    private MenuProductValidator menuProductValidator;
 
     private MenuGroup 고기_메뉴그룹;
     private Product 돼지고기;
@@ -83,7 +83,7 @@ class MenuProductTest {
         MenuProduct menuProduct = MenuProduct.of(1L, null, 돼지고기.getId(), 1L);
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> menuValidator.validateMenuProduct(menuProduct))
+        assertThatIllegalArgumentException().isThrownBy(() -> menuProductValidator.validateMenuProduct(menuProduct))
                                             .withMessageContaining("Menu 가 존재하지 않습니다.");
     }
 
@@ -94,7 +94,7 @@ class MenuProductTest {
         MenuProduct menuProduct = MenuProduct.of(1L, 불고기, 0L, 1L);
 
         // when & then
-        assertThrows(EntityNotFoundException.class, () -> menuValidator.validateMenuProduct(menuProduct));
+        assertThrows(EntityNotFoundException.class, () -> menuProductValidator.validateMenuProduct(menuProduct));
     }
 
     @DisplayName("MenuProduct 는 자신의 총 합산 금액을 계산할 수 있다.")

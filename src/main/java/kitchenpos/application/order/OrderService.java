@@ -37,7 +37,7 @@ public class OrderService {
                                                                    OrderLineItemRequest::toOrderLineItem);
         Order order = Order.of(orderRequest.getOrderTableId(), orderLineItems);
 
-        orderValidator.validateOrder(order);
+        orderValidator.validate(order);
 
         return OrderResponse.from(orderRepository.save(order));
     }

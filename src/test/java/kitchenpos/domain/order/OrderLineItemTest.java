@@ -1,6 +1,5 @@
 package kitchenpos.domain.order;
 
-import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Arrays;
@@ -23,13 +22,13 @@ import kitchenpos.application.fixture.OrderFixtureFactory;
 import kitchenpos.application.fixture.OrderLineItemFixtureFactory;
 import kitchenpos.application.fixture.OrderTableFixtureFactory;
 import kitchenpos.application.fixture.ProductFixtureFactory;
-import kitchenpos.application.order.OrderValidator;
 import kitchenpos.domain.Quantity;
 import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menu.MenuProduct;
 import kitchenpos.domain.menu.MenuRepository;
 import kitchenpos.domain.menugroup.MenuGroup;
 import kitchenpos.domain.menugroup.MenuGroupRepository;
+import kitchenpos.domain.order.validator.OrderLineItemValidator;
 import kitchenpos.domain.product.Product;
 import kitchenpos.domain.product.ProductRepository;
 import kitchenpos.domain.table.OrderTable;
@@ -54,7 +53,7 @@ class OrderLineItemTest {
     private OrderTableRepository orderTableRepository;
 
     @Autowired
-    private OrderValidator orderValidator;
+    private OrderLineItemValidator orderLineItemValidator;
 
     private MenuGroup 고기_메뉴그룹;
     private Product 돼지고기;
@@ -109,7 +108,7 @@ class OrderLineItemTest {
         // given
         OrderLineItem orderLineItem = OrderLineItem.of(0L, 1L);
         // when & then
-        assertThrows(EntityNotFoundException.class, () -> orderValidator.validateOrderLineItem(orderLineItem));
+        assertThrows(EntityNotFoundException.class, () -> orderLineItemValidator.validateOrderLineItem(orderLineItem));
     }
 
     @DisplayName("OrderLineItem 생성 시, Order 가 존재하지 않으면 예외가 발생한다.")
@@ -119,6 +118,6 @@ class OrderLineItemTest {
         OrderLineItem orderLineItem = OrderLineItem.of(0L, null, 불고기.getId(), 1L);
 
         // when & then
-        assertThrows(EntityNotFoundException.class, () -> orderValidator.validateOrderLineItem(orderLineItem));
+        assertThrows(EntityNotFoundException.class, () -> orderLineItemValidator.validateOrderLineItem(orderLineItem));
     }
 }
