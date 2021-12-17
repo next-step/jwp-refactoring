@@ -148,9 +148,11 @@ public class MenuServiceTest {
 
         List<Menu> menus = menuService.list();
 
-        assertThat(menus.size()).isEqualTo(1);
-        assertThat(menus).extracting(Menu::getName).containsExactly("메뉴");
-        assertThat(menus.get(0).getMenuProducts())
-            .extracting(MenuProduct::getMenuId).containsExactly(1L);
+        assertAll(() -> {
+            assertThat(menus.size()).isEqualTo(1);
+            assertThat(menus).extracting(Menu::getName).containsExactly("메뉴");
+            assertThat(menus.get(0).getMenuProducts())
+                .extracting(MenuProduct::getMenuId).containsExactly(1L);
+        });
     }
 }
