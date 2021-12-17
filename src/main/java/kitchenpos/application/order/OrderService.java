@@ -21,7 +21,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -96,17 +95,12 @@ public class OrderService {
             throw new NotChangableOrderStatusException();
         }
     }
-    
-    public boolean isExistNotCompletionOrder(List<Long> orderTableIds) {
-        return orderRepository.existsByOrderTableIdInAndOrderStatusIn(orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL));
-    }
-
-    public boolean isNotCompletionOrder(Long orderTableId) {
-        return !orderRepository.existsByOrderTableIdAndOrderStatus(orderTableId, OrderStatus.COMPLETION) 
-                && orderRepository.existsByOrderTableId(orderTableId);
-    }
 
     public Orders findByOrderTableId(Long orderTableId) {
         return orderRepository.findByOrderTableId(orderTableId);
+    }
+
+    public List<Orders> findAllByOrderTableIdIn(List<Long> orderTableIds) {
+        return orderRepository.findAllByOrderTableIdIn(orderTableIds);
     }
 }

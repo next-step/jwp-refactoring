@@ -62,7 +62,11 @@ public class OrderTable {
         return empty;
     }
 
-    public void unGroupTable() {
+    public void unGroupTable(Orders order) {
+        if (!order.isCompletion()) {
+            throw new HasNotCompletionOrderException();
+        }
+
         this.tableGroup.getOrderTables().remove(this);
         this.tableGroup = null;
     }
