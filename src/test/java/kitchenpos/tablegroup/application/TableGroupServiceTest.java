@@ -23,8 +23,7 @@ class TableGroupServiceTest extends ServiceTest {
         // given
         OrderTableResponse savedOrderTableResponse1 = 테이블_저장(true);
         OrderTableResponse savedOrderTableResponse2 = 테이블_저장(true);
-        TableGroupRequest tableGroupRequest = new TableGroupRequest(
-                Arrays.asList(savedOrderTableResponse1.getId(), savedOrderTableResponse2.getId()));
+        TableGroupRequest tableGroupRequest = new TableGroupRequest(Arrays.asList(savedOrderTableResponse1.getId(), savedOrderTableResponse2.getId()));
 
         // when
         TableGroupResponse savedTableGroupResponse = tableGroupService.create(tableGroupRequest);
@@ -33,7 +32,7 @@ class TableGroupServiceTest extends ServiceTest {
         assertAll(
                 () -> assertThat(savedTableGroupResponse.getId()).isNotNull(),
                 () -> assertThat(savedTableGroupResponse.getCreatedDate()).isNotNull(),
-                () -> assertThat(savedTableGroupResponse.getOrderTables().size()).isEqualTo(2)
+                () -> assertThat(savedTableGroupResponse.getOrderTableIds().size()).isEqualTo(2)
         );
     }
 
@@ -42,8 +41,7 @@ class TableGroupServiceTest extends ServiceTest {
     void createThrowException1() {
         // given
         OrderTableResponse savedOrderTableResponse = 테이블_저장(true);
-        TableGroupRequest tableGroupRequest = new TableGroupRequest(
-                Collections.singletonList(savedOrderTableResponse.getId()));
+        TableGroupRequest tableGroupRequest = new TableGroupRequest(Collections.singletonList(savedOrderTableResponse.getId()));
 
         // when & then
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> tableGroupService.create(tableGroupRequest));
@@ -54,8 +52,7 @@ class TableGroupServiceTest extends ServiceTest {
     void createThrowException2() {
         // given
         OrderTableResponse savedOrderTableResponse = 테이블_저장(true);
-        TableGroupRequest tableGroupRequest = new TableGroupRequest(
-                Arrays.asList(savedOrderTableResponse.getId(), 0L));
+        TableGroupRequest tableGroupRequest = new TableGroupRequest(Arrays.asList(savedOrderTableResponse.getId(), 0L));
 
         // when & then
         assertThatExceptionOfType(EntityNotFoundException.class).isThrownBy(() -> tableGroupService.create(tableGroupRequest));
@@ -85,8 +82,8 @@ class TableGroupServiceTest extends ServiceTest {
 
         // then
         assertAll(
-                () -> assertThat(테이블_조회(savedTableGroupResponse.getOrderTables().get(0).getId()).getTableGroupId()).isNull(),
-                () -> assertThat(테이블_조회(savedTableGroupResponse.getOrderTables().get(1).getId()).getTableGroupId()).isNull()
+                () -> assertThat(테이블_조회(savedTableGroupResponse.getOrderTableIds().get(0)).getTableGroupId()).isNull(),
+                () -> assertThat(테이블_조회(savedTableGroupResponse.getOrderTableIds().get(1)).getTableGroupId()).isNull()
         );
     }
 }

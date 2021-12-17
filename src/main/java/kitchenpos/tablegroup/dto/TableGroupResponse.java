@@ -1,6 +1,7 @@
 package kitchenpos.tablegroup.dto;
 
-import kitchenpos.ordertable.dto.OrderTableResponse;
+import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.domain.OrderTables;
 import kitchenpos.tablegroup.domain.TableGroup;
 
 import java.time.LocalDateTime;
@@ -11,25 +12,24 @@ public class TableGroupResponse {
 
     private Long id;
     private LocalDateTime createdDate;
-    private List<OrderTableResponse> orderTables;
+    private List<Long> orderTableIds;
 
     public TableGroupResponse() {
     }
 
-    public TableGroupResponse(Long id, LocalDateTime createdDate, List<OrderTableResponse> orderTables) {
+    public TableGroupResponse(Long id, LocalDateTime createdDate, List<Long> orderTableIds) {
         this.id = id;
         this.createdDate = createdDate;
-        this.orderTables = orderTables;
+        this.orderTableIds = orderTableIds;
     }
 
-    public static TableGroupResponse from(TableGroup tableGroup) {
+    public static TableGroupResponse from(TableGroup tableGroup, OrderTables orderTables) {
         return new TableGroupResponse(
                 tableGroup.getId(),
                 tableGroup.getCreatedDate(),
-                tableGroup.getOrderTables()
-                        .getOrderTables()
+                orderTables.getOrderTables()
                         .stream()
-                        .map(OrderTableResponse::from)
+                        .map(OrderTable::getId)
                         .collect(Collectors.toList())
         );
     }
@@ -50,11 +50,11 @@ public class TableGroupResponse {
         this.createdDate = createdDate;
     }
 
-    public List<OrderTableResponse> getOrderTables() {
-        return orderTables;
+    public List<Long> getOrderTableIds() {
+        return orderTableIds;
     }
 
-    public void setOrderTables(final List<OrderTableResponse> orderTables) {
-        this.orderTables = orderTables;
+    public void setOrderTableIds(List<Long> orderTableIds) {
+        this.orderTableIds = orderTableIds;
     }
 }

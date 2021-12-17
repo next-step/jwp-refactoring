@@ -1,7 +1,6 @@
 package kitchenpos.ordertable.domain;
 
 import kitchenpos.order.domain.Order;
-import kitchenpos.tablegroup.domain.TableGroup;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -9,7 +8,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import java.util.Objects;
 
 @Entity
@@ -22,8 +20,7 @@ public class OrderTable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    private TableGroup tableGroup;
+    private Long tableGroupId;
 
     @Embedded
     @Column(nullable = false)
@@ -39,8 +36,8 @@ public class OrderTable {
     protected OrderTable() {
     }
 
-    public OrderTable(TableGroup tableGroup, int numberOfGuests, boolean empty) {
-        this.tableGroup = tableGroup;
+    public OrderTable(Long tableGroupId, int numberOfGuests, boolean empty) {
+        this.tableGroupId = tableGroupId;
         this.numberOfGuests = new NumberOfGuests(numberOfGuests);
         this.empty = new Empty(empty);
     }
@@ -62,8 +59,8 @@ public class OrderTable {
         return id;
     }
 
-    public TableGroup getTableGroup() {
-        return tableGroup;
+    public Long getTableGroupId() {
+        return tableGroupId;
     }
 
     public NumberOfGuests getNumberOfGuests() {
@@ -78,11 +75,6 @@ public class OrderTable {
         return orders;
     }
 
-    public void changeTableGroup(TableGroup tableGroup) {
-        tableGroup.addToOrderTables(this);
-        this.tableGroup = tableGroup;
-    }
-
     public void changeEmpty(boolean empty) {
         validateEmptyChangable();
         this.empty = new Empty(empty);
@@ -93,12 +85,16 @@ public class OrderTable {
         this.numberOfGuests = new NumberOfGuests(numberOfGuests);
     }
 
+    public void group(Long tableGroupId) {
+        this.tableGroupId = tableGroupId;
+    }
+
     public void ungroup() {
-        tableGroup = null;
+        tableGroupId = null;
     }
 
     public boolean isGroupable() {
-        return empty.isGroupable() && Objects.isNull(tableGroup);
+        return empty.isGroupable() && Objects.isNull(tableGroupId);
     }
 
     public boolean isChangable() {
@@ -116,7 +112,7 @@ public class OrderTable {
     }
 
     private void validateEmptyChangable() {
-        if (Objects.nonNull(tableGroup)) {
+        if (Objects.nonNull(tableGroupId)) {
             throw new IllegalArgumentException(MESSAGE_VALIDATE_EMPTY_CHANGABLE);
         }
         orders.validateEmptyChangable();
@@ -131,11 +127,11 @@ public class OrderTable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         OrderTable that = (OrderTable) o;
-        return Objects.equals(id, that.id) && Objects.equals(tableGroup, that.tableGroup) && Objects.equals(numberOfGuests, that.numberOfGuests) && Objects.equals(empty, that.empty);
+        return Objects.equals(id, that.id) && Objects.equals(tableGroupId, that.tableGroupId) && Objects.equals(numberOfGuests, that.numberOfGuests) && Objects.equals(empty, that.empty);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, tableGroup, numberOfGuests, empty);
+        return Objects.hash(id, tableGroupId, numberOfGuests, empty);
     }
 }

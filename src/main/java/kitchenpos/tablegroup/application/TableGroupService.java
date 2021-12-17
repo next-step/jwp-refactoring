@@ -2,6 +2,7 @@ package kitchenpos.tablegroup.application;
 
 import kitchenpos.ordertable.application.OrderTableService;
 import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.domain.OrderTables;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
@@ -10,8 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
+
+import static java.util.stream.Collectors.*;
 
 @Service
 @Transactional
@@ -27,24 +28,25 @@ public class TableGroupService {
     }
 
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
-        final List<Long> orderTableIds = tableGroupRequest.getOrderTableIds();
-        final TableGroup tableGroup = TableGroup.of(makeOrderTables(orderTableIds));
-        final TableGroup savedTableGroup = tableGroupRepository.save(tableGroup);
-        return TableGroupResponse.from(savedTableGroup);
+        final TableGroup savedTableGroup = tableGroupRepository.save(TableGroup.newInstance());
+        final OrderTables orderTables = makeOrderTables(tableGroupRequest);
+        orderTables.group(savedTableGroup.getId());
+        return TableGroupResponse.from(savedTableGroup, orderTables);
     }
 
     public void ungroup(final Long id) {
-        TableGroup tableGroup = tableGroupRepository.findById(id)
-                .orElseThrow(EntityNotFoundException::new);
-        tableGroup.ungroup();
+        if (!tableGroupRepository.existsById(id)) {
+            throw new EntityNotFoundException();
+        }
+        final OrderTables orderTables = orderTableService.findAllByTableGroupId(id);
+        orderTables.ungroup();
     }
 
-    private List<OrderTable> makeOrderTables(List<Long> orderTableIds) {
-        final List<OrderTable> orderTables = new ArrayList<>();
-        for (Long orderTableId : orderTableIds) {
-            orderTables.add(getOrderTableById(orderTableId));
-        }
-        return orderTables;
+    private OrderTables makeOrderTables(TableGroupRequest tableGroupRequest) {
+        return tableGroupRequest.getOrderTableIds()
+                .stream()
+                .map(this::getOrderTableById)
+                .collect(collectingAndThen(toList(), OrderTables::new));
     }
 
     private OrderTable getOrderTableById(Long orderTableId) {
