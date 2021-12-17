@@ -1,6 +1,6 @@
 package kitchenpos.table.domain;
 
-public enum CustomerStatus {
+enum CustomerStatus {
 
     EMPTY, SEATED, ORDERED, FINISH;
 
@@ -8,7 +8,7 @@ public enum CustomerStatus {
         return this == EMPTY;
     }
 
-    public boolean isOrdered() {
+    boolean isOrdered() {
         return this == ORDERED;
     }
 }
