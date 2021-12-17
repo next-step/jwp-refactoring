@@ -37,9 +37,12 @@ public class TableServiceTest {
         // given
         OrderTable requestOrderTable = new OrderTable(4, false);
         OrderTable expectedOrderTable = new OrderTable(1L, null, 4, false);
+
         given(orderTableDao.save(any(OrderTable.class))).willReturn(expectedOrderTable);
+
         // when
         OrderTable orderTable = tableService.create(requestOrderTable);
+
         // then
         assertThat(orderTable).isEqualTo(expectedOrderTable);
     }
@@ -50,8 +53,10 @@ public class TableServiceTest {
         // given
         List<OrderTable> expectedOrderTables = Arrays.asList(new OrderTable(1L, null, 4, false));
         given(orderTableDao.findAll()).willReturn(expectedOrderTables);
+
         // when
         List<OrderTable> orderTables = tableService.list();
+
         // then
         assertThat(orderTables).isEqualTo(expectedOrderTables);
     }
@@ -65,11 +70,14 @@ public class TableServiceTest {
             // given
             OrderTable requestOrderTable = new OrderTable(4, true);
             OrderTable expectedOrderTable = new OrderTable(1L, null, 4, true);
+
             given(orderTableDao.findById(anyLong())).willReturn(Optional.of(expectedOrderTable));
             given(orderDao.existsByOrderTableIdAndOrderStatusIn(anyLong(), any(List.class))).willReturn(false);
             given(orderTableDao.save(any(OrderTable.class))).willReturn(expectedOrderTable);
+
             // when
             OrderTable orderTable = tableService.changeEmpty(expectedOrderTable.getId(), requestOrderTable);
+
             // then
             assertThat(orderTable).isEqualTo(expectedOrderTable);
         }
@@ -80,8 +88,10 @@ public class TableServiceTest {
             // given
             OrderTable requestOrderTable = new OrderTable(1L, null, 4, true);
             given(orderTableDao.findById(anyLong())).willReturn(Optional.empty());
+
             // when
             ThrowableAssert.ThrowingCallable callable = () -> tableService.changeEmpty(requestOrderTable.getId(), requestOrderTable);
+
             // then
             assertThatThrownBy(callable)
                     .isInstanceOf(IllegalArgumentException.class);
@@ -93,8 +103,10 @@ public class TableServiceTest {
             // given
             OrderTable requestOrderTable = new OrderTable(1L, 2L, 4, true);
             given(orderTableDao.findById(anyLong())).willReturn(Optional.of(requestOrderTable));
+
             // when
             ThrowableAssert.ThrowingCallable callable = () -> tableService.changeEmpty(requestOrderTable.getId(), requestOrderTable);
+
             // then
             assertThatThrownBy(callable)
                     .isInstanceOf(IllegalArgumentException.class);
@@ -106,10 +118,13 @@ public class TableServiceTest {
             // given
             OrderTable requestOrderTable = new OrderTable(4, true);
             OrderTable orderTable = new OrderTable(1L, null, 4, true);
+
             given(orderTableDao.findById(anyLong())).willReturn(Optional.of(orderTable));
             given(orderDao.existsByOrderTableIdAndOrderStatusIn(anyLong(), any(List.class))).willReturn(true);
+
             // when
             ThrowableAssert.ThrowingCallable callable = () -> tableService.changeEmpty(orderTable.getId(), requestOrderTable);
+
             // then
             assertThatThrownBy(callable)
                     .isInstanceOf(IllegalArgumentException.class);
@@ -125,10 +140,13 @@ public class TableServiceTest {
             // given
             OrderTable requestOrderTable = new OrderTable(4, false);
             OrderTable expectedOrderTable = new OrderTable(1L, null, 4, false);
+
             given(orderTableDao.findById(anyLong())).willReturn(Optional.of(expectedOrderTable));
             given(orderTableDao.save(any(OrderTable.class))).willReturn(expectedOrderTable);
+
             // when
             OrderTable orderTable = tableService.changeNumberOfGuests(expectedOrderTable.getId(), requestOrderTable);
+
             // then
             assertThat(orderTable.getNumberOfGuests()).isEqualTo(expectedOrderTable.getNumberOfGuests());
         }
@@ -138,8 +156,10 @@ public class TableServiceTest {
         void countOverZero() {
             // given
             OrderTable orderTable = new OrderTable(1L, null, 0, false);
+
             // when
             ThrowableAssert.ThrowingCallable callable = () -> tableService.changeNumberOfGuests(orderTable.getId(), orderTable);
+
             // then
             assertThatThrownBy(callable)
                     .isInstanceOf(IllegalArgumentException.class);
@@ -151,8 +171,10 @@ public class TableServiceTest {
             // given
             OrderTable orderTable = new OrderTable(1L, null, 4, false);
             given(orderTableDao.findById(anyLong())).willReturn(Optional.empty());
+
             // when
             ThrowableAssert.ThrowingCallable callable = () -> tableService.changeNumberOfGuests(orderTable.getId(), orderTable);
+
             // then
             assertThatThrownBy(callable)
                     .isInstanceOf(IllegalArgumentException.class);
@@ -164,8 +186,10 @@ public class TableServiceTest {
             // given
             OrderTable orderTable = new OrderTable(1L, null, 4, true);
             given(orderTableDao.findById(anyLong())).willReturn(Optional.of(orderTable));
+
             // when
             ThrowableAssert.ThrowingCallable callable = () -> tableService.changeNumberOfGuests(orderTable.getId(), orderTable);
+
             // then
             assertThatThrownBy(callable)
                     .isInstanceOf(IllegalArgumentException.class);

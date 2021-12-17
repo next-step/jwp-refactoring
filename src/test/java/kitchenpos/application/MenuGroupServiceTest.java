@@ -29,9 +29,12 @@ public class MenuGroupServiceTest {
         // given
         MenuGroup menuGroup = new MenuGroup("식사류");
         MenuGroup expectedMenuGroup = new MenuGroup(1L, "식사류");
+
         given(menuGroupDao.save(any(MenuGroup.class))).willReturn(expectedMenuGroup);
+
         // when
         MenuGroup savedMenuGroup = menuGroupService.create(menuGroup);
+
         // then
         assertThat(savedMenuGroup).isEqualTo(expectedMenuGroup);
     }
@@ -42,8 +45,10 @@ public class MenuGroupServiceTest {
         // given
         List<MenuGroup> expectedMenuGroups = Arrays.asList(new MenuGroup("식사류"), new MenuGroup("요리류"));
         given(menuGroupDao.findAll()).willReturn(expectedMenuGroups);
+
         // when
         List<MenuGroup> menuGroups = menuGroupService.list();
+
         // then
         assertThat(menuGroups).isEqualTo(expectedMenuGroups);
     }

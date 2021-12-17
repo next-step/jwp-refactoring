@@ -43,17 +43,21 @@ public class MenuServiceTest {
         // given
         Product 볶음짜장면 = new Product(1L, "볶음짜장면", 8000);
         Product 삼선짬뽕 = new Product(2L, "삼선짬뽕", 8000);
+
         List<MenuProduct> menuProducts = new ArrayList<>();
         MenuGroup menuGroup = new MenuGroup(1L, "식사류");
         Menu expectedMenu = new Menu(1L, "대표메뉴", 16000, menuGroup.getId(), menuProducts);
         menuProducts.add(new MenuProduct(1L, expectedMenu.getId(), 볶음짜장면.getId(), 1));
         menuProducts.add(new MenuProduct(2L, expectedMenu.getId(), 삼선짬뽕.getId(), 1));
+
         given(menuGroupDao.existsById(anyLong())).willReturn(true);
         given(productDao.findById(anyLong())).willReturn(Optional.of(볶음짜장면), Optional.of(삼선짬뽕));
         given(menuDao.save(any(Menu.class))).willReturn(expectedMenu);
         given(menuProductDao.save(any(MenuProduct.class))).willReturn(new MenuProduct());
+
         // when
         Menu menu = menuService.create(expectedMenu);
+
         // then
         assertThat(menu).isEqualTo(expectedMenu);
     }
@@ -64,13 +68,16 @@ public class MenuServiceTest {
         // given
         Product 볶음짜장면 = new Product(1L, "볶음짜장면", 8000);
         Product 삼선짬뽕 = new Product(2L, "삼선짬뽕", 8000);
+
         List<MenuProduct> menuProducts = new ArrayList<>();
         MenuGroup menuGroup = new MenuGroup(1L, "식사류");
         Menu expectedMenu = new Menu(1L, "대표메뉴", -1, menuGroup.getId(), menuProducts);
         menuProducts.add(new MenuProduct(1L, expectedMenu.getId(), 볶음짜장면.getId(), 1));
         menuProducts.add(new MenuProduct(2L, expectedMenu.getId(), 삼선짬뽕.getId(), 1));
+
         // when
         ThrowableAssert.ThrowingCallable callable = () -> menuService.create(expectedMenu);
+
         // then
         assertThatThrownBy(callable)
                 .isInstanceOf(IllegalArgumentException.class);
@@ -82,14 +89,18 @@ public class MenuServiceTest {
         // given
         Product 볶음짜장면 = new Product(1L, "볶음짜장면", 8000);
         Product 삼선짬뽕 = new Product(2L, "삼선짬뽕", 8000);
+
         List<MenuProduct> menuProducts = new ArrayList<>();
         MenuGroup menuGroup = new MenuGroup(1L, "식사류");
         Menu expectedMenu = new Menu(1L, "대표메뉴", 16000, menuGroup.getId(), menuProducts);
         menuProducts.add(new MenuProduct(1L, expectedMenu.getId(), 볶음짜장면.getId(), 1));
         menuProducts.add(new MenuProduct(2L, expectedMenu.getId(), 삼선짬뽕.getId(), 1));
+
         given(menuGroupDao.existsById(anyLong())).willReturn(false);
+
         // when
         ThrowableAssert.ThrowingCallable callable = () -> menuService.create(expectedMenu);
+
         // then
         assertThatThrownBy(callable)
                 .isInstanceOf(IllegalArgumentException.class);
@@ -101,15 +112,19 @@ public class MenuServiceTest {
         // given
         Product 볶음짜장면 = new Product(1L, "볶음짜장면", 8000);
         Product 삼선짬뽕 = new Product(2L, "삼선짬뽕", 8000);
+
         List<MenuProduct> menuProducts = new ArrayList<>();
         MenuGroup menuGroup = new MenuGroup(1L, "식사류");
         Menu expectedMenu = new Menu(1L, "대표메뉴", 16000, menuGroup.getId(), menuProducts);
         menuProducts.add(new MenuProduct(1L, expectedMenu.getId(), 볶음짜장면.getId(), 1));
         menuProducts.add(new MenuProduct(2L, expectedMenu.getId(), 삼선짬뽕.getId(), 1));
+
         given(menuGroupDao.existsById(anyLong())).willReturn(true);
         given(productDao.findById(anyLong())).willReturn(Optional.empty(), Optional.of(삼선짬뽕));
+
         // when
         ThrowableAssert.ThrowingCallable callable = () -> menuService.create(expectedMenu);
+
         // then
         assertThatThrownBy(callable)
                 .isInstanceOf(IllegalArgumentException.class);
@@ -121,15 +136,19 @@ public class MenuServiceTest {
         // given
         Product 볶음짜장면 = new Product(1L, "볶음짜장면", 8000);
         Product 삼선짬뽕 = new Product(2L, "삼선짬뽕", 8000);
+
         List<MenuProduct> menuProducts = new ArrayList<>();
         MenuGroup menuGroup = new MenuGroup(1L, "식사류");
         Menu expectedMenu = new Menu(1L, "대표메뉴", 17000, menuGroup.getId(), menuProducts);
         menuProducts.add(new MenuProduct(1L, expectedMenu.getId(), 볶음짜장면.getId(), 1));
         menuProducts.add(new MenuProduct(2L, expectedMenu.getId(), 삼선짬뽕.getId(), 1));
+
         given(menuGroupDao.existsById(anyLong())).willReturn(true);
         given(productDao.findById(anyLong())).willReturn(Optional.of(볶음짜장면), Optional.of(삼선짬뽕));
+
         // when
         ThrowableAssert.ThrowingCallable callable = () -> menuService.create(expectedMenu);
+
         // then
         assertThatThrownBy(callable)
                 .isInstanceOf(IllegalArgumentException.class);
@@ -141,8 +160,10 @@ public class MenuServiceTest {
         // given
         List<Menu> expectedMenus = Arrays.asList(new Menu(1L, "대표 메뉴", 16000, 1L, Collections.emptyList()));
         given(menuDao.findAll()).willReturn(expectedMenus);
+
         // when
         List<Menu> menus = menuService.list();
+
         // then
         assertThat(menus).isEqualTo(expectedMenus);
     }

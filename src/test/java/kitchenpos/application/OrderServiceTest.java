@@ -63,6 +63,7 @@ public class OrderServiceTest {
 
             // when
             Order order = orderService.create(expectedOrder);
+
             // then
             assertThat(order).isEqualTo(expectedOrder);
         }
@@ -76,6 +77,7 @@ public class OrderServiceTest {
 
             // when
             ThrowableAssert.ThrowingCallable callable = () -> orderService.create(expectedOrder);
+
             // then
             assertThatThrownBy(callable).isInstanceOf(IllegalArgumentException.class);
         }
@@ -94,6 +96,7 @@ public class OrderServiceTest {
 
             // when
             ThrowableAssert.ThrowingCallable callable = () -> orderService.create(expectedOrder);
+
             // then
             assertThatThrownBy(callable).isInstanceOf(IllegalArgumentException.class);
         }
@@ -112,6 +115,7 @@ public class OrderServiceTest {
 
             // when
             ThrowableAssert.ThrowingCallable callable = () -> orderService.create(expectedOrder);
+
             // then
             assertThatThrownBy(callable).isInstanceOf(IllegalArgumentException.class);
         }
@@ -131,6 +135,7 @@ public class OrderServiceTest {
 
             // when
             ThrowableAssert.ThrowingCallable callable = () -> orderService.create(expectedOrder);
+
             // then
             assertThatThrownBy(callable).isInstanceOf(IllegalArgumentException.class);
         }
@@ -152,6 +157,7 @@ public class OrderServiceTest {
 
             // when
             Order order = orderService.create(expectedOrder);
+
             // then
             assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
         }
@@ -166,10 +172,12 @@ public class OrderServiceTest {
             // given
             Order requestOrder = new Order(1L, OrderStatus.COMPLETION);
             Order savedOrder = new Order(1L, 1L, OrderStatus.COOKING.name(), TEST_CREATED_AT, Collections.emptyList());
+
             given(orderDao.findById(anyLong())).willReturn(Optional.of(savedOrder));
 
             // when
             Order order = orderService.changeOrderStatus(requestOrder.getId(), requestOrder);
+
             // then
             assertThat(order.getOrderStatus()).isEqualTo(requestOrder.getOrderStatus());
         }
@@ -180,10 +188,12 @@ public class OrderServiceTest {
             // given
             Order requestOrder = new Order(1L, OrderStatus.COMPLETION);
             Order savedOrder = new Order(1L, 1L, OrderStatus.COOKING.name(), TEST_CREATED_AT, Collections.emptyList());
+
             given(orderDao.findById(anyLong())).willReturn(Optional.empty());
 
             // when
             ThrowableAssert.ThrowingCallable callable = () -> orderService.changeOrderStatus(requestOrder.getId(), requestOrder);
+
             // then
             assertThatThrownBy(callable).isInstanceOf(IllegalArgumentException.class);
         }
@@ -197,6 +207,7 @@ public class OrderServiceTest {
 
             // when
             ThrowableAssert.ThrowingCallable callable = () -> orderService.changeOrderStatus(requestOrder.getId(), requestOrder);
+
             // then
             assertThatThrownBy(callable).isInstanceOf(IllegalArgumentException.class);
         }
@@ -209,10 +220,13 @@ public class OrderServiceTest {
         List<OrderLineItem> orderLineItems = Collections.emptyList();
         Order order = new Order(1L, 1L, OrderStatus.COOKING.name(), TEST_CREATED_AT, orderLineItems);
         List<Order> expectedOrders = Arrays.asList(order);
+
         given(orderDao.findAll()).willReturn(expectedOrders);
         given(orderLineItemDao.findAllByOrderId(anyLong())).willReturn(orderLineItems);
+
         // when
         List<Order> orders = orderService.list();
+
         // then
         assertThat(orders).isEqualTo(expectedOrders);
     }

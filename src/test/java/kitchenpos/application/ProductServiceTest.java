@@ -32,8 +32,10 @@ public class ProductServiceTest {
         Product 볶음짜장면 = new Product("볶음짜장면", 8000L);
         Product expectedProduct = new Product(1L, "볶음짜장면", 8000L);
         given(productDao.save(any(Product.class))).willReturn(expectedProduct);
+
         // when
         Product product = productService.create(볶음짜장면);
+
         // then
         assertThat(product).isEqualTo(expectedProduct);
     }
@@ -43,8 +45,10 @@ public class ProductServiceTest {
     void givenZeroPriceWhenSaveThenThrowException() {
         // given
         Product 볶음짜장면 = new Product("볶음짜장면", -1L);
+
         // when
         ThrowableAssert.ThrowingCallable callable = () -> productService.create(볶음짜장면);
+
         // then
         assertThatThrownBy(callable)
                 .isInstanceOf(IllegalArgumentException.class);
@@ -56,8 +60,10 @@ public class ProductServiceTest {
         // given
         List<Product> expectedProducts = Arrays.asList(new Product("볶음짜장면", 8000L));
         given(productDao.findAll()).willReturn(expectedProducts);
+
         // when
         List<Product> products = productService.list();
+
         // then
         assertThat(products).isEqualTo(expectedProducts);
     }
