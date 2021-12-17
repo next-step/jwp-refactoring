@@ -55,7 +55,7 @@ public class MenuService {
         for (final MenuProductRequest menuProductRequest : menuProducts) {
             final Product product = productDao.findById(menuProductRequest.getProductId())
                     .orElseThrow(IllegalArgumentException::new);
-            sum = sum.add(product.getPrice().multiply(BigDecimal.valueOf(menuProductRequest.getQuantity())));
+            sum = sum.add(BigDecimal.valueOf(product.getPrice()).multiply(BigDecimal.valueOf(menuProductRequest.getQuantity())));
         }
 
         if (price.compareTo(sum.longValue()) > 0) {

@@ -16,6 +16,12 @@ public class Product {
         this.id = id;
     }
 
+    public Product(Long id, String name, BigDecimal price) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+    }
+
     public Product(String name, long price) {
         this.name = name;
         this.price = BigDecimal.valueOf(price);
@@ -37,8 +43,8 @@ public class Product {
         this.name = name;
     }
 
-    public BigDecimal getPrice() {
-        return price;
+    public long getPrice() {
+        return price.longValue();
     }
 
     public void setPrice(final BigDecimal price) {

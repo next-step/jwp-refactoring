@@ -3,7 +3,6 @@ package kitchenpos.acceptance;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.MenuGroup;
 import kitchenpos.dto.MenuGroupRequest;
 import kitchenpos.dto.MenuGroupResponse;
 import kitchenpos.utils.Http;
@@ -66,7 +65,7 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
     /**
      * 테스트 픽스처 관련
      */
-    public static MenuGroup 메뉴_그룹_등록되어_있음(String name) {
-        return 메뉴_그룹_생성_요청(new MenuGroupRequest(name)).as(MenuGroup.class);
+    public static MenuGroupResponse 메뉴_그룹_등록되어_있음(String name) {
+        return 메뉴_그룹_생성_요청(new MenuGroupRequest(name)).as(MenuGroupResponse.class);
     }
 }

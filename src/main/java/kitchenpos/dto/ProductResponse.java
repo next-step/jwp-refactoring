@@ -1,18 +1,37 @@
 package kitchenpos.dto;
 
-import java.math.BigDecimal;
+import kitchenpos.domain.Product;
+
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class ProductResponse {
     private Long id;
     private String name;
-    private BigDecimal price;
+    private long price;
 
     public ProductResponse() {
     }
 
+    public ProductResponse(Long id, String name, long price) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+    }
+
     public ProductResponse(Long id) {
         this.id = id;
+    }
+
+    public static ProductResponse of(Product product) {
+        return new ProductResponse(product.getId(), product.getName(), product.getPrice());
+    }
+
+    public static List<ProductResponse> ofList(List<Product> products) {
+        return products.stream()
+                .map(ProductResponse::of)
+                .collect(Collectors.toList());
     }
 
     public Long getId() {
@@ -23,7 +42,7 @@ public class ProductResponse {
         return name;
     }
 
-    public BigDecimal getPrice() {
+    public long getPrice() {
         return price;
     }
 

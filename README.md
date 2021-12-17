@@ -13,7 +13,7 @@
     - 메뉴의 가격은 포함된 상품 가격의 합보다 작거나 같아야 한다
 - 모든 메뉴를 조회한다
 - 상품을 만든다
-    - 상품의 가격은 0원 이상 이어야 한다
+    - 상품 가격은 0원 보다 커야한다
 - 모든 상품을 조회한다
 
 ### 주문
@@ -84,7 +84,7 @@
 - [X] 상품 관리 기능 인수 테스트 작성
 - [X] 상품 서비스 테스트 작성
   - [X] 상품을 만든다
-  - [X] 상품의 가격은 0원 이상 이어야 한다
+  - [X] 상품 가격은 0원 보다 커야한다
   - [X] 모든 상품을 조회한다
 
 #### 주문
@@ -129,7 +129,8 @@
 - Domain과 DTO 분리
   - 메뉴
     - MenuRestController, MenuService
-    - MenuGroupController, MenuGroupService
+    - MenuGroupRestController, MenuGroupService
+    - ProductRestController, ProductService
 - JdbcTemplate -> JPA로 Persistance 변경
   - 상품
   - 메뉴

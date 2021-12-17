@@ -3,13 +3,7 @@ package kitchenpos.acceptance;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Product;
-import kitchenpos.dto.MenuProductRequest;
-import kitchenpos.dto.MenuRequest;
-import kitchenpos.dto.MenuResponse;
+import kitchenpos.dto.*;
 import kitchenpos.utils.Http;
 import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.DisplayName;
@@ -27,9 +21,9 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     @Test
     void testManagement() {
         // given
-        MenuGroup 식사류 = MenuGroupAcceptanceTest.메뉴_그룹_등록되어_있음("식사류");
-        Product 볶음짜장면 = ProductAcceptanceTest.상품_등록되어_있음("볶음짜장면", 8000);
-        Product 삼선짬뽕 = ProductAcceptanceTest.상품_등록되어_있음("삼선짬뽕", 8000);
+        MenuGroupResponse 식사류 = MenuGroupAcceptanceTest.메뉴_그룹_등록되어_있음("식사류");
+        ProductResponse 볶음짜장면 = ProductAcceptanceTest.상품_등록되어_있음("볶음짜장면", 8000);
+        ProductResponse 삼선짬뽕 = ProductAcceptanceTest.상품_등록되어_있음("삼선짬뽕", 8000);
         MenuProductRequest 볶음짜장면_하나 = new MenuProductRequest(볶음짜장면.getId(), 1);
         MenuProductRequest 삼성짬뽕_하나 = new MenuProductRequest(삼선짬뽕.getId(), 1);
         MenuRequest 대표메뉴 = new MenuRequest("대표 메뉴", 16000L, 식사류.getId(), Arrays.asList(볶음짜장면_하나, 삼성짬뽕_하나));
@@ -83,13 +77,13 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     /**
      * 테스트 픽스처 관련
      */
-    public static Menu 대표메뉴_등록되어_있음() {
-        MenuGroup 식사류 = MenuGroupAcceptanceTest.메뉴_그룹_등록되어_있음("식사류");
-        Product 볶음짜장면 = ProductAcceptanceTest.상품_등록되어_있음("볶음짜장면", 8000);
-        Product 삼선짬뽕 = ProductAcceptanceTest.상품_등록되어_있음("삼선짬뽕", 8000);
+    public static MenuResponse 대표메뉴_등록되어_있음() {
+        MenuGroupResponse 식사류 = MenuGroupAcceptanceTest.메뉴_그룹_등록되어_있음("식사류");
+        ProductResponse 볶음짜장면 = ProductAcceptanceTest.상품_등록되어_있음("볶음짜장면", 8000);
+        ProductResponse 삼선짬뽕 = ProductAcceptanceTest.상품_등록되어_있음("삼선짬뽕", 8000);
         MenuProductRequest 볶음짜장면_하나 = new MenuProductRequest(볶음짜장면.getId(), 1);
         MenuProductRequest 삼성짬뽕_하나 = new MenuProductRequest(삼선짬뽕.getId(), 1);
         MenuRequest 대표메뉴 = new MenuRequest("대표 메뉴", 16000L, 식사류.getId(), Arrays.asList(볶음짜장면_하나, 삼성짬뽕_하나));
-        return 메뉴_생성_요청(대표메뉴).as(Menu.class);
+        return 메뉴_생성_요청(대표메뉴).as(MenuResponse.class);
     }
 }
