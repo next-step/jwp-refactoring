@@ -2,7 +2,7 @@ package kitchenpos.application;
 
 import static common.OrderFixture.주문_첫번째;
 import static common.OrderFixture.주문_첫번째_완료;
-import static common.OrderTableFixture.주문_첫번째_1번_테이블;
+import static common.OrderTableFixture.첫번째_테이블;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -46,7 +46,7 @@ public class OrderServiceTest {
     @Test
     void 주문_생성() {
         // given
-        OrderTable 주문_첫번째_1번_테이블 = 주문_첫번째_1번_테이블();
+        OrderTable 주문_첫번째_1번_테이블 = 첫번째_테이블();
         Order 주문_첫번째 = 주문_첫번째();
 
         // mocking
