@@ -32,7 +32,7 @@ public class OrderTables {
     }
 
     public void ungroup(OrderTableValidator orderTableValidator) {
-        orderTables.forEach(orderTableValidator::validateOrderTableChangable);
+        orderTables.forEach(orderTableValidator::validateOrderTablUngroupable);
         orderTables.forEach(OrderTable::ungroup);
     }
 

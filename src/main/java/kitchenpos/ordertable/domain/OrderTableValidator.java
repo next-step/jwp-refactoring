@@ -33,12 +33,11 @@ public class OrderTableValidator {
         empty.validateNumberOfGuestsChangable();
     }
 
-
-    public void validateOrderTableChangable(OrderTable orderTable) {
-        validateOrderTableChangable(findOrderTables(orderTable));
+    public void validateOrderTablUngroupable(OrderTable orderTable) {
+        validateOrderTablUngroupable(findOrderTables(orderTable));
     }
 
-    void validateOrderTableChangable(Orders orders) {
+    void validateOrderTablUngroupable(Orders orders) {
         if (!orders.isChangable()) {
             throw new IllegalArgumentException(MESSAGE_VALIDATE_ORDER_TABLE_CHANGABLE);
         }
