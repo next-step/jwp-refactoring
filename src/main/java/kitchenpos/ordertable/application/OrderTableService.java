@@ -3,7 +3,6 @@ package kitchenpos.ordertable.application;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.ordertable.domain.OrderTableValidator;
-import kitchenpos.ordertable.domain.OrderTables;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
 import org.springframework.stereotype.Service;
@@ -50,14 +49,8 @@ public class OrderTableService {
         return OrderTableResponse.from(orderTable);
     }
 
-    @Transactional(readOnly = true)
-    public OrderTable findById(Long id) {
+    private OrderTable findById(Long id) {
         return orderTableRepository.findById(id)
                 .orElseThrow(EntityNotFoundException::new);
-    }
-
-    @Transactional(readOnly = true)
-    public OrderTables findAllByTableGroupId(Long TableGroupId) {
-        return new OrderTables(orderTableRepository.findAllByTableGroupId(TableGroupId));
     }
 }

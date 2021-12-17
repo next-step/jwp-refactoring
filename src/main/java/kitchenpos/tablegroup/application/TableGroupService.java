@@ -1,7 +1,7 @@
 package kitchenpos.tablegroup.application;
 
-import kitchenpos.ordertable.application.OrderTableService;
 import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.ordertable.domain.OrderTableValidator;
 import kitchenpos.ordertable.domain.OrderTables;
 import kitchenpos.tablegroup.domain.TableGroup;
@@ -20,14 +20,14 @@ import static java.util.stream.Collectors.*;
 public class TableGroupService {
 
     private final TableGroupRepository tableGroupRepository;
-    private final OrderTableService orderTableService;
+    private final OrderTableRepository orderTableRepository;
     private final OrderTableValidator orderTableValidator;
 
     public TableGroupService(final TableGroupRepository tableGroupRepository,
-                             final OrderTableService orderTableService,
+                             final OrderTableRepository orderTableRepository,
                              final OrderTableValidator orderTableValidator) {
         this.tableGroupRepository = tableGroupRepository;
-        this.orderTableService = orderTableService;
+        this.orderTableRepository = orderTableRepository;
         this.orderTableValidator = orderTableValidator;
     }
 
@@ -42,18 +42,23 @@ public class TableGroupService {
         if (!tableGroupRepository.existsById(id)) {
             throw new EntityNotFoundException();
         }
-        final OrderTables orderTables = orderTableService.findAllByTableGroupId(id);
+        final OrderTables orderTables = findOrderTables(id);
         orderTables.ungroup(orderTableValidator);
     }
 
     private OrderTables makeOrderTables(TableGroupRequest tableGroupRequest) {
         return tableGroupRequest.getOrderTableIds()
                 .stream()
-                .map(this::getOrderTableById)
+                .map(this::findOrderTableById)
                 .collect(collectingAndThen(toList(), OrderTables::new));
     }
 
-    private OrderTable getOrderTableById(Long orderTableId) {
-        return orderTableService.findById(orderTableId);
+    private OrderTables findOrderTables(Long tableGroupId) {
+        return new OrderTables(orderTableRepository.findAllByTableGroupId(tableGroupId));
+    }
+
+    private OrderTable findOrderTableById(Long orderTableId) {
+        return orderTableRepository.findById(orderTableId)
+                .orElseThrow(EntityNotFoundException::new);
     }
 }

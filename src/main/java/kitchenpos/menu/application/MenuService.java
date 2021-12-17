@@ -7,9 +7,9 @@ import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.menugroup.application.MenuGroupService;
-import kitchenpos.product.application.ProductService;
+import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,22 +22,20 @@ import java.util.stream.Collectors;
 @Transactional
 public class MenuService {
 
-    private static final int MIN_PRICE = 0;
-
     private final MenuRepository menuRepository;
-    private final MenuGroupService menuGroupService;
-    private final ProductService productService;
+    private final MenuGroupRepository menuGroupRepository;
+    private final ProductRepository productRepository;
 
     public MenuService(final MenuRepository menuRepository,
-                       final MenuGroupService menuGroupService,
-                       final ProductService productService) {
+                       final MenuGroupRepository menuGroupRepository,
+                       final ProductRepository productRepository) {
         this.menuRepository = menuRepository;
-        this.menuGroupService = menuGroupService;
-        this.productService = productService;
+        this.menuGroupRepository = menuGroupRepository;
+        this.productRepository = productRepository;
     }
 
     public MenuResponse create(final MenuRequest menuRequest) {
-        existsMenuGroupById(menuRequest.getMenuGroupId());
+        validateMenuGroup(menuRequest.getMenuGroupId());
         final MenuProducts menuProducts = new MenuProducts(makeMenuProducts(menuRequest));
         final Menu savedMenu = menuRepository.save(menuRequest.toMenu(menuProducts));
         return MenuResponse.from(savedMenu);
@@ -51,26 +49,23 @@ public class MenuService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional(readOnly = true)
-    public Menu findById(Long id) {
-        return menuRepository.findById(id)
-                .orElseThrow(EntityNotFoundException::new);
-    }
-
-    private void existsMenuGroupById(Long menuGroupId) {
-        menuGroupService.findById(menuGroupId);
+    private void validateMenuGroup(Long menuGroupId) {
+        if (!menuGroupRepository.existsById(menuGroupId)) {
+            throw new EntityNotFoundException();
+        }
     }
 
     private List<MenuProduct> makeMenuProducts(MenuRequest menuRequest) {
         List<MenuProduct> menuProducts = new ArrayList<>();
         for (MenuProductRequest menuProductRequest : menuRequest.getMenuProducts()) {
-            final Product product = getProductById(menuProductRequest.getProductId());
+            final Product product = findProductById(menuProductRequest.getProductId());
             menuProducts.add(new MenuProduct(product, menuProductRequest.getQuantity()));
         }
         return menuProducts;
     }
 
-    private Product getProductById(Long productId) {
-        return productService.findById(productId);
+    private Product findProductById(Long productId) {
+        return productRepository.findById(productId)
+                .orElseThrow(EntityNotFoundException::new);
     }
 }
