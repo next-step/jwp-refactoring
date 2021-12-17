@@ -1,21 +1,21 @@
 package kitchenpos.application;
 
-import kitchenpos.application.fixture.MenuFixture;
-import kitchenpos.application.fixture.MenuProductFixture;
 import kitchenpos.application.fixture.OrderFixture;
 import kitchenpos.application.fixture.OrderLineItemFixture;
 import kitchenpos.application.fixture.OrderTableFixture;
-import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.fixture.MenuFixture;
 import kitchenpos.menu.fixture.MenuGroupFixture;
+import kitchenpos.menu.fixture.MenuProductFixture;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.fixture.ProductFixture;
 import org.assertj.core.api.ThrowableAssert;
@@ -43,7 +43,7 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
     @Mock
-    MenuDao menuDao;
+    MenuRepository menuRepository;
     @Mock
     OrderDao orderDao;
     @Mock
@@ -66,7 +66,7 @@ class OrderServiceTest {
     void setup() {
         Product 강정치킨 = ProductFixture.create(1L, "강정치킨", BigDecimal.valueOf(17_000));
         MenuGroup 추천메뉴 = MenuGroupFixture.create(1L, "추천메뉴");
-        MenuProduct 메뉴_상품 = MenuProductFixture.create(강정치킨, 2);
+        MenuProduct 메뉴_상품 = MenuProductFixture.create(강정치킨, 2L);
 
         더블강정 = MenuFixture.create(1L, "더블강정", BigDecimal.valueOf(32_000), 추천메뉴, 메뉴_상품);
         테이블 = OrderTableFixture.create(1L, null, 4, false);
@@ -107,7 +107,7 @@ class OrderServiceTest {
             등록_요청_데이터.setOrderTableId(테이블.getId());
             등록_요청_데이터.setOrderLineItems(Collections.singletonList(주문_항목));
 
-            given(menuDao.countByIdIn(any())).willReturn(1L);
+            given(menuRepository.countByIdIn(any())).willReturn(1L);
             given(orderTableDao.findById(any())).willReturn(Optional.of(테이블));
             given(orderDao.save(any())).willReturn(생성된_주문);
             given(orderLineItemDao.save(any())).willReturn(생성된_주문_항목);
@@ -146,7 +146,7 @@ class OrderServiceTest {
             등록_요청_데이터.setOrderTableId(테이블.getId());
             등록_요청_데이터.setOrderLineItems(Arrays.asList(주문_상품, 주문_상품));
 
-            given(menuDao.countByIdIn(any())).willReturn(1L);
+            given(menuRepository.countByIdIn(any())).willReturn(1L);
 
             // when
             ThrowableAssert.ThrowingCallable 등록_요청 = () -> orderService.create(등록_요청_데이터);
@@ -167,7 +167,7 @@ class OrderServiceTest {
             등록_요청_데이터.setOrderTableId(테이블.getId());
             등록_요청_데이터.setOrderLineItems(Collections.singletonList(주문_상품));
 
-            given(menuDao.countByIdIn(any())).willReturn(1L);
+            given(menuRepository.countByIdIn(any())).willReturn(1L);
             given(orderTableDao.findById(any())).willReturn(Optional.empty());
 
             // when
@@ -189,7 +189,7 @@ class OrderServiceTest {
             등록_요청_데이터.setOrderTableId(빈_테이블.getId());
             등록_요청_데이터.setOrderLineItems(Collections.singletonList(주문_상품));
 
-            given(menuDao.countByIdIn(any())).willReturn(1L);
+            given(menuRepository.countByIdIn(any())).willReturn(1L);
             given(orderTableDao.findById(any())).willReturn(Optional.of(빈_테이블));
 
             // when
