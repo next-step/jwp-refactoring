@@ -12,6 +12,11 @@
 ![step2-object](./uml/step2-object.png)
 ![step2-erd](./uml/step2-erd.png)
 
+### step3
+
+![step3-object](./uml/step3-object.png)
+![step3-erd](./uml/step3-erd.png)
+
 ## 요구 사항
 
 ---
