@@ -17,4 +17,8 @@ public class ProductFixture {
         return new Product(3L, "반반치킨", new BigDecimal(-1));
     }
 
+    public static Product 반반치킨() {
+        return new Product(4L, "반반치킨", new BigDecimal(16500));
+    }
+
 }
