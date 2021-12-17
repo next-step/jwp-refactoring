@@ -1,7 +1,5 @@
-package kitchenpos.order.domain;
+package kitchenpos.ordertable.domain;
 
-import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.domain.OrderTableRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -16,7 +14,7 @@ class OrderValidatorTest {
     void validateThrowException() {
         // given
         OrderTable orderTable = new OrderTable(true);
-        OrderValidator orderValidator = new OrderValidator(mock(OrderTableRepository.class));
+        OrderValidatorImpl orderValidator = new OrderValidatorImpl(mock(OrderTableRepository.class));
 
         // when & then
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> orderValidator.validate(orderTable));

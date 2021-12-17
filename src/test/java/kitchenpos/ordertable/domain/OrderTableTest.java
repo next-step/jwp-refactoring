@@ -3,7 +3,6 @@ package kitchenpos.ordertable.domain;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.domain.OrderValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,7 +30,7 @@ class OrderTableTest {
         given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(orderTable));
 
         Order order = new Order(OrderStatus.COMPLETION);
-        order.changeOrderTable(1L, new OrderValidator(orderTableRepository));
+        order.changeOrderTable(1L, new OrderValidatorImpl(orderTableRepository));
 
         // when
         orderTable.changeEmpty(true, new OrderTableValidator(mock(OrderRepository.class)));

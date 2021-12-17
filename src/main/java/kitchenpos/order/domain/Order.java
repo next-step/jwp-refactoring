@@ -1,6 +1,5 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.ordertable.domain.OrderTable;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -84,10 +83,6 @@ public class Order {
 
     void addToOrderLineItems(OrderLineItem orderLineItem) {
         orderLineItems.add(orderLineItem);
-    }
-
-    private void validateOrderTable(OrderTable orderTable) {
-        orderTable.validateOrderTableChangable();
     }
 
     private void validateOrderStatus() {
