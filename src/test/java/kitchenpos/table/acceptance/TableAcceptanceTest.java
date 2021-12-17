@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.domain.OrderTable;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -20,6 +21,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
     private static final String URL = "/api/tables";
 
     @Test
+    @DisplayName("테이블을 관리한다.")
     void manageTable() {
         // 빈 테이블 등록 요청
         ExtractableResponse<Response> saveResponse = 빈_테이블_등록_요청();
@@ -152,6 +154,10 @@ public class TableAcceptanceTest extends AcceptanceTest {
 
     public static OrderTable 빈테이블_등록됨() {
         return 빈_테이블_등록_요청().as(OrderTable.class);
+    }
+
+    public static OrderTable 주문테이블_등록되어있음(int numberOfGuests) {
+        return 테이블_등록_요청(numberOfGuests, false).as(OrderTable.class);
     }
 
 }

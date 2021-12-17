@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -23,6 +24,7 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
     private static final String URL = "/api/table-groups";
 
     @Test
+    @DisplayName("단체를 지정/해제 할 수 있다.")
     void manageTableGroup() {
         // 빈 테이블 등록되어 있음
         OrderTable 테이블_1 = 빈테이블_등록됨();

@@ -90,7 +90,12 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         });
     }
 
-    private List<MenuProduct> getMenuProducts(List<Product> products, List<Long> productsQuantity) {
+    public static Menu 메뉴등록되어있음(String name, BigDecimal price, MenuGroup menuGroup, List<Product> products) {
+        List<MenuProduct> menuProducts = getMenuProducts(products, Arrays.asList(1L, 1L));
+        return 메뉴_등록_요청(name, price, menuGroup, menuProducts).as(Menu.class);
+    }
+
+    private static List<MenuProduct> getMenuProducts(List<Product> products, List<Long> productsQuantity) {
         List<MenuProduct> menuProducts = new ArrayList<>();
         for (int i = 0; i < products.size(); i++) {
             MenuProduct menuProduct = new MenuProduct();
