@@ -8,6 +8,9 @@ import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
+import kitchenpos.dto.MenuProductRequest;
+import kitchenpos.dto.MenuRequest;
+import kitchenpos.dto.MenuResponse;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -44,11 +47,12 @@ public class MenuServiceTest {
         Product 볶음짜장면 = new Product(1L, "볶음짜장면", 8000);
         Product 삼선짬뽕 = new Product(2L, "삼선짬뽕", 8000);
 
-        List<MenuProduct> menuProducts = new ArrayList<>();
+        List<MenuProductRequest> menuProducts = new ArrayList<>();
         MenuGroup menuGroup = new MenuGroup(1L, "식사류");
-        Menu expectedMenu = new Menu(1L, "대표메뉴", 16000, menuGroup.getId(), menuProducts);
-        menuProducts.add(new MenuProduct(1L, expectedMenu.getId(), 볶음짜장면.getId(), 1));
-        menuProducts.add(new MenuProduct(2L, expectedMenu.getId(), 삼선짬뽕.getId(), 1));
+        MenuRequest menuRequest = new MenuRequest(1L, "대표메뉴", 16000L, menuGroup.getId(), menuProducts);
+        Menu expectedMenu = menuRequest.toEntity();
+        menuProducts.add(new MenuProductRequest(1L, expectedMenu.getId(), 볶음짜장면.getId(), 1));
+        menuProducts.add(new MenuProductRequest(2L, expectedMenu.getId(), 삼선짬뽕.getId(), 1));
 
         given(menuGroupDao.existsById(anyLong())).willReturn(true);
         given(productDao.findById(anyLong())).willReturn(Optional.of(볶음짜장면), Optional.of(삼선짬뽕));
@@ -56,27 +60,28 @@ public class MenuServiceTest {
         given(menuProductDao.save(any(MenuProduct.class))).willReturn(new MenuProduct());
 
         // when
-        Menu menu = menuService.create(expectedMenu);
+        MenuResponse menu = menuService.create(menuRequest);
 
         // then
-        assertThat(menu).isEqualTo(expectedMenu);
+        assertThat(menu).isEqualTo(MenuResponse.of(expectedMenu));
     }
 
-    @DisplayName("메뉴의 가격은 0원 이상 이어야 한다")
+    @DisplayName("메뉴의 가격은 0원 보다 커야 한다")
     @Test
     void givenZeroPriceThenThrowException() {
         // given
         Product 볶음짜장면 = new Product(1L, "볶음짜장면", 8000);
         Product 삼선짬뽕 = new Product(2L, "삼선짬뽕", 8000);
 
-        List<MenuProduct> menuProducts = new ArrayList<>();
+        List<MenuProductRequest> menuProducts = new ArrayList<>();
         MenuGroup menuGroup = new MenuGroup(1L, "식사류");
-        Menu expectedMenu = new Menu(1L, "대표메뉴", -1, menuGroup.getId(), menuProducts);
-        menuProducts.add(new MenuProduct(1L, expectedMenu.getId(), 볶음짜장면.getId(), 1));
-        menuProducts.add(new MenuProduct(2L, expectedMenu.getId(), 삼선짬뽕.getId(), 1));
+        MenuRequest menuRequest = new MenuRequest(1L, "대표메뉴", 0L, menuGroup.getId(), menuProducts);
+        Menu expectedMenu = menuRequest.toEntity();
+        menuProducts.add(new MenuProductRequest(1L, expectedMenu.getId(), 볶음짜장면.getId(), 1));
+        menuProducts.add(new MenuProductRequest(2L, expectedMenu.getId(), 삼선짬뽕.getId(), 1));
 
         // when
-        ThrowableAssert.ThrowingCallable callable = () -> menuService.create(expectedMenu);
+        ThrowableAssert.ThrowingCallable callable = () -> menuService.create(menuRequest);
 
         // then
         assertThatThrownBy(callable)
@@ -90,16 +95,17 @@ public class MenuServiceTest {
         Product 볶음짜장면 = new Product(1L, "볶음짜장면", 8000);
         Product 삼선짬뽕 = new Product(2L, "삼선짬뽕", 8000);
 
-        List<MenuProduct> menuProducts = new ArrayList<>();
+        List<MenuProductRequest> menuProducts = new ArrayList<>();
         MenuGroup menuGroup = new MenuGroup(1L, "식사류");
-        Menu expectedMenu = new Menu(1L, "대표메뉴", 16000, menuGroup.getId(), menuProducts);
-        menuProducts.add(new MenuProduct(1L, expectedMenu.getId(), 볶음짜장면.getId(), 1));
-        menuProducts.add(new MenuProduct(2L, expectedMenu.getId(), 삼선짬뽕.getId(), 1));
+        MenuRequest menuRequest = new MenuRequest(1L, "대표메뉴", 16000L, menuGroup.getId(), menuProducts);
+        Menu expectedMenu = menuRequest.toEntity();
+        menuProducts.add(new MenuProductRequest(1L, expectedMenu.getId(), 볶음짜장면.getId(), 1));
+        menuProducts.add(new MenuProductRequest(2L, expectedMenu.getId(), 삼선짬뽕.getId(), 1));
 
         given(menuGroupDao.existsById(anyLong())).willReturn(false);
 
         // when
-        ThrowableAssert.ThrowingCallable callable = () -> menuService.create(expectedMenu);
+        ThrowableAssert.ThrowingCallable callable = () -> menuService.create(menuRequest);
 
         // then
         assertThatThrownBy(callable)
@@ -113,17 +119,18 @@ public class MenuServiceTest {
         Product 볶음짜장면 = new Product(1L, "볶음짜장면", 8000);
         Product 삼선짬뽕 = new Product(2L, "삼선짬뽕", 8000);
 
-        List<MenuProduct> menuProducts = new ArrayList<>();
+        List<MenuProductRequest> menuProducts = new ArrayList<>();
         MenuGroup menuGroup = new MenuGroup(1L, "식사류");
-        Menu expectedMenu = new Menu(1L, "대표메뉴", 16000, menuGroup.getId(), menuProducts);
-        menuProducts.add(new MenuProduct(1L, expectedMenu.getId(), 볶음짜장면.getId(), 1));
-        menuProducts.add(new MenuProduct(2L, expectedMenu.getId(), 삼선짬뽕.getId(), 1));
+        MenuRequest menuRequest = new MenuRequest(1L, "대표메뉴", 16000L, menuGroup.getId(), menuProducts);
+        Menu expectedMenu = menuRequest.toEntity();
+        menuProducts.add(new MenuProductRequest(1L, expectedMenu.getId(), 볶음짜장면.getId(), 1));
+        menuProducts.add(new MenuProductRequest(2L, expectedMenu.getId(), 삼선짬뽕.getId(), 1));
 
         given(menuGroupDao.existsById(anyLong())).willReturn(true);
         given(productDao.findById(anyLong())).willReturn(Optional.empty(), Optional.of(삼선짬뽕));
 
         // when
-        ThrowableAssert.ThrowingCallable callable = () -> menuService.create(expectedMenu);
+        ThrowableAssert.ThrowingCallable callable = () -> menuService.create(menuRequest);
 
         // then
         assertThatThrownBy(callable)
@@ -137,17 +144,18 @@ public class MenuServiceTest {
         Product 볶음짜장면 = new Product(1L, "볶음짜장면", 8000);
         Product 삼선짬뽕 = new Product(2L, "삼선짬뽕", 8000);
 
-        List<MenuProduct> menuProducts = new ArrayList<>();
+        List<MenuProductRequest> menuProducts = new ArrayList<>();
         MenuGroup menuGroup = new MenuGroup(1L, "식사류");
-        Menu expectedMenu = new Menu(1L, "대표메뉴", 17000, menuGroup.getId(), menuProducts);
-        menuProducts.add(new MenuProduct(1L, expectedMenu.getId(), 볶음짜장면.getId(), 1));
-        menuProducts.add(new MenuProduct(2L, expectedMenu.getId(), 삼선짬뽕.getId(), 1));
+        MenuRequest menuRequest = new MenuRequest(1L, "대표메뉴", 17000L, menuGroup.getId(), menuProducts);
+        Menu expectedMenu = menuRequest.toEntity();
+        menuProducts.add(new MenuProductRequest(1L, expectedMenu.getId(), 볶음짜장면.getId(), 1));
+        menuProducts.add(new MenuProductRequest(2L, expectedMenu.getId(), 삼선짬뽕.getId(), 1));
 
         given(menuGroupDao.existsById(anyLong())).willReturn(true);
         given(productDao.findById(anyLong())).willReturn(Optional.of(볶음짜장면), Optional.of(삼선짬뽕));
 
         // when
-        ThrowableAssert.ThrowingCallable callable = () -> menuService.create(expectedMenu);
+        ThrowableAssert.ThrowingCallable callable = () -> menuService.create(menuRequest);
 
         // then
         assertThatThrownBy(callable)
@@ -162,9 +170,9 @@ public class MenuServiceTest {
         given(menuDao.findAll()).willReturn(expectedMenus);
 
         // when
-        List<Menu> menus = menuService.list();
+        List<MenuResponse> menus = menuService.list();
 
         // then
-        assertThat(menus).isEqualTo(expectedMenus);
+        assertThat(menus).isEqualTo(MenuResponse.ofList(expectedMenus));
     }
 }

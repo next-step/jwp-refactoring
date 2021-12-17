@@ -7,6 +7,9 @@ import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
+import kitchenpos.dto.MenuProductRequest;
+import kitchenpos.dto.MenuRequest;
+import kitchenpos.dto.MenuResponse;
 import kitchenpos.utils.Http;
 import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.DisplayName;
@@ -27,9 +30,9 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         MenuGroup 식사류 = MenuGroupAcceptanceTest.메뉴_그룹_등록되어_있음("식사류");
         Product 볶음짜장면 = ProductAcceptanceTest.상품_등록되어_있음("볶음짜장면", 8000);
         Product 삼선짬뽕 = ProductAcceptanceTest.상품_등록되어_있음("삼선짬뽕", 8000);
-        MenuProduct 볶음짜장면_하나 = new MenuProduct(볶음짜장면.getId(), 1);
-        MenuProduct 삼성짬뽕_하나 = new MenuProduct(삼선짬뽕.getId(), 1);
-        Menu 대표메뉴 = new Menu("대표 메뉴", 16000, 식사류.getId(), Arrays.asList(볶음짜장면_하나, 삼성짬뽕_하나));
+        MenuProductRequest 볶음짜장면_하나 = new MenuProductRequest(볶음짜장면.getId(), 1);
+        MenuProductRequest 삼성짬뽕_하나 = new MenuProductRequest(삼선짬뽕.getId(), 1);
+        MenuRequest 대표메뉴 = new MenuRequest("대표 메뉴", 16000L, 식사류.getId(), Arrays.asList(볶음짜장면_하나, 삼성짬뽕_하나));
 
         // when
         ExtractableResponse<Response> createResponse = 메뉴_생성_요청(대표메뉴);
@@ -46,7 +49,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     /**
      * 요청 관련
      */
-    private static ExtractableResponse<Response> 메뉴_생성_요청(Menu menu) {
+    private static ExtractableResponse<Response> 메뉴_생성_요청(MenuRequest menu) {
         return Http.post("/api/menus", menu);
     }
 
@@ -65,16 +68,16 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         assertThat(listResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    private static void 생성된_메뉴가_포함됨(MenuProduct 볶음짜장면_하나, MenuProduct 삼성짬뽕_하나, Menu 대표메뉴, ExtractableResponse<Response> listResponse) {
-        List<Menu> menus = listResponse.jsonPath().getList(".", Menu.class);
+    private static void 생성된_메뉴가_포함됨(MenuProductRequest menuProductRequest1, MenuProductRequest menuProductRequest2, MenuRequest menuRequest, ExtractableResponse<Response> listResponse) {
+        List<MenuResponse> menus = listResponse.jsonPath().getList(".", MenuResponse.class);
         assertThat(menus).first()
                 .extracting(menu -> menu.getName(),
                         menu -> menu.getPrice().longValue())
-                .containsExactly(대표메뉴.getName(), 대표메뉴.getPrice().longValue());
+                .containsExactly(menuRequest.getName(), menuRequest.getPrice());
         assertThat(menus.get(0).getMenuProducts())
-                .extracting("productId", "quantity")
-                .contains(Tuple.tuple(볶음짜장면_하나.getProductId(), 볶음짜장면_하나.getQuantity()),
-                        Tuple.tuple(삼성짬뽕_하나.getProductId(), 삼성짬뽕_하나.getQuantity()));
+                .extracting("product.id", "quantity")
+                .contains(Tuple.tuple(menuProductRequest1.getProductId(), menuProductRequest1.getQuantity()),
+                        Tuple.tuple(menuProductRequest2.getProductId(), menuProductRequest2.getQuantity()));
     }
 
     /**
@@ -84,9 +87,9 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         MenuGroup 식사류 = MenuGroupAcceptanceTest.메뉴_그룹_등록되어_있음("식사류");
         Product 볶음짜장면 = ProductAcceptanceTest.상품_등록되어_있음("볶음짜장면", 8000);
         Product 삼선짬뽕 = ProductAcceptanceTest.상품_등록되어_있음("삼선짬뽕", 8000);
-        MenuProduct 볶음짜장면_하나 = new MenuProduct(볶음짜장면.getId(), 1);
-        MenuProduct 삼성짬뽕_하나 = new MenuProduct(삼선짬뽕.getId(), 1);
-        Menu 대표메뉴 = new Menu("대표 메뉴", 16000, 식사류.getId(), Arrays.asList(볶음짜장면_하나, 삼성짬뽕_하나));
+        MenuProductRequest 볶음짜장면_하나 = new MenuProductRequest(볶음짜장면.getId(), 1);
+        MenuProductRequest 삼성짬뽕_하나 = new MenuProductRequest(삼선짬뽕.getId(), 1);
+        MenuRequest 대표메뉴 = new MenuRequest("대표 메뉴", 16000L, 식사류.getId(), Arrays.asList(볶음짜장면_하나, 삼성짬뽕_하나));
         return 메뉴_생성_요청(대표메뉴).as(Menu.class);
     }
 }
