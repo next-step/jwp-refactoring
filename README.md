@@ -85,8 +85,8 @@
 ## 기능 구현 목록
 ### 미션 1 - 테스트를 통한 코드 보호
 - [x] 요구사항 1 - 키친포스의 요구 사항을 README.md에 작성한다.
-- [ ] 요구사항 2 - 요구사항을 토대로 테스트 코드를 작성한다.
-    - [ ] 모든 Business Object 에 대한 테스트 코드를 작성한다.
-    - [ ] `@SpringBootTest` 를 이용한 통합테스트 코드 또는 `@ExtendWith(MockitoExtension.class)` 를 활용한 단위 테스트 코드를 작성한다.
-    - [ ] 인수테스트는 권장하지만 필수는 아니다.
-    - [ ] Lombok은 사용하지 않는다!!
+- [x] 요구사항 2 - 요구사항을 토대로 테스트 코드를 작성한다.
+    - [x] 모든 Business Object 에 대한 테스트 코드를 작성한다.
+    - [x] `@SpringBootTest` 를 이용한 통합테스트 코드 또는 `@ExtendWith(MockitoExtension.class)` 를 활용한 단위 테스트 코드를 작성한다.
+    - [x] 인수테스트는 권장하지만 필수는 아니다.
+    - [x] Lombok은 사용하지 않는다!!
