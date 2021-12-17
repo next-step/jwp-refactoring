@@ -31,6 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * date : 2021/12/15
  * description :
  */
+@DisplayName("[CONTROLLER] 테이블 테스트")
 @WebMvcTest(TableRestController.class)
 class TableRestControllerTest {
     private OrderTable orderTable;

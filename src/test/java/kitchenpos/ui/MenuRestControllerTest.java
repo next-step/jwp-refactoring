@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.application.MenuService;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
+import kitchenpos.fixtures.MenuFixtures;
+import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,9 +16,11 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
+import static kitchenpos.fixtures.MenuFixtures.*;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
@@ -33,6 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * date : 2021-12-15
  * description :
  */
+@DisplayName("메뉴 컨트롤러 테스트")
 @WebMvcTest(MenuRestController.class)
 class MenuRestControllerTest {
     private Menu menu;
@@ -45,11 +50,7 @@ class MenuRestControllerTest {
 
     @BeforeEach
     void setUp() {
-        menu = new Menu();
-        menu.setId(1L);
-        menu.setName("양념치킨");
-        menu.setMenuGroupId(1L);
-        menu.setMenuProducts(Arrays.asList(new MenuProduct(), new MenuProduct()));
+        menu = createMenu(1L, "양념치킨", new BigDecimal(18_000), 1L, Lists.newArrayList(new MenuProduct(), new MenuProduct()));
     }
 
 

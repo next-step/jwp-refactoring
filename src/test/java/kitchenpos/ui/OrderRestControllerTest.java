@@ -33,6 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * date : 2021-12-15
  * description :
  */
+@DisplayName("주문 컨트롤러 테스트")
 @WebMvcTest(OrderRestController.class)
 class OrderRestControllerTest {
     private Order order;

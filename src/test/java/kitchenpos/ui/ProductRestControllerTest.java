@@ -3,6 +3,7 @@ package kitchenpos.ui;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.application.ProductService;
 import kitchenpos.domain.Product;
+import kitchenpos.fixtures.ProductFixtures;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,6 +21,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
+import static kitchenpos.fixtures.ProductFixtures.*;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
@@ -36,6 +38,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * date : 2021-12-15
  * description :
  */
+@DisplayName("상품 컨트롤러 테스트")
 @WebMvcTest(ProductRestController.class)
 class ProductRestControllerTest {
     private Product product;
@@ -46,24 +49,9 @@ class ProductRestControllerTest {
     @MockBean
     private ProductService productService;
 
-    @Autowired
-    private WebApplicationContext wac;
-
-    /**
-     * utf-8 설정
-     *
-     * @see <a href="https://stackoverflow.com/questions/55640629/how-to-make-spring-boot-default-to-application-jsoncharset-utf-8-instead-of-app">deprecated msg</a>
-     */
     @BeforeEach
     void setUp() {
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(wac)
-                .addFilter(new CharacterEncodingFilter("utf-8", true))
-                .build();
-
-        product = new Product();
-        product.setId(1L);
-        product.setName("고추바사삭치킨");
-        product.setPrice(new BigDecimal("18000"));
+        product = createProduct(1L, "고추바사삭치킨", new BigDecimal(18_000));
     }
 
     @Test

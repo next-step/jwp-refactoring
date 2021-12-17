@@ -31,6 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * date : 2021/12/15
  * description :
  */
+@DisplayName("[CONTROLLER] 태이블그룹 테스트")
 @WebMvcTest(TableGroupRestController.class)
 class TableGroupRestControllerTest {
     private TableGroup tableGroup;
