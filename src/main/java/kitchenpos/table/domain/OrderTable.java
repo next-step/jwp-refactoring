@@ -77,11 +77,6 @@ public class OrderTable {
         return status.isEmpty();
     }
 
-    public void changeStatus(CustomerStatus status) {
-        validateGroupAndOrdered();
-        this.status = status;
-    }
-
     public boolean isOrdered() {
         return status.isOrdered();
     }

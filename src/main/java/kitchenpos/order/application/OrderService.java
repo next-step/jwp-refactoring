@@ -1,13 +1,15 @@
 package kitchenpos.order.application;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import kitchenpos.common.exception.NotFoundException;
 import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderCreateService;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderLineItemMenu;
 import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderValidator;
+import kitchenpos.order.domain.OrderStatusChangeService;
 import kitchenpos.order.ui.request.OrderLineItemRequest;
 import kitchenpos.order.ui.request.OrderRequest;
 import kitchenpos.order.ui.request.OrderStatusRequest;
@@ -22,20 +24,24 @@ import org.springframework.transaction.annotation.Transactional;
 public class OrderService {
 
     private final OrderRepository orderRepository;
+    private final OrderCreateService createService;
+    private final OrderStatusChangeService statusChangeService;
     private final MenuRepository menuRepository;
-    private final OrderValidator orderValidator;
 
     public OrderService(OrderRepository orderRepository,
-        MenuRepository menuRepository,
-        OrderValidator orderValidator) {
+        OrderCreateService createService,
+        OrderStatusChangeService statusChangeService,
+        MenuRepository menuRepository) {
         this.orderRepository = orderRepository;
+        this.createService = createService;
+        this.statusChangeService = statusChangeService;
         this.menuRepository = menuRepository;
-        this.orderValidator = orderValidator;
     }
 
     @Transactional
     public OrderResponse create(OrderRequest request) {
-        return OrderResponse.from(orderRepository.save(newOrder(request)));
+        return OrderResponse.from(createService.create(
+            request.getOrderTableId(), orderLineItems(request)));
     }
 
     public List<OrderResponse> list() {
@@ -44,9 +50,8 @@ public class OrderService {
 
     @Transactional
     public OrderResponse changeOrderStatus(long id, OrderStatusRequest request) {
-        Order order = order(id);
-        order.changeStatus(request.status());
-        return OrderResponse.from(order);
+        statusChangeService.change(id, request.status());
+        return OrderResponse.from(order(id));
     }
 
     private Order order(long id) {
@@ -54,21 +59,26 @@ public class OrderService {
             .orElseThrow(() -> new NotFoundException(String.format("주문 id(%d)를 찾을 수 없습니다.", id)));
     }
 
-    private Order newOrder(OrderRequest request) {
-        return Order.of(
-            request.getOrderTableId(),
-            orderLineItems(request.getOrderLineItems())
-        ).get(orderValidator);
-    }
-
-    private List<OrderLineItem> orderLineItems(List<OrderLineItemRequest> requests) {
-        return requests.stream()
-            .map(this::orderLineItem)
+    private List<OrderLineItem> orderLineItems(OrderRequest request) {
+        Map<Long, Menu> idToMenu = idToMenuMap(request);
+        return request.getOrderLineItems()
+            .stream()
+            .map(itemRequest -> orderLineItem(idToMenu, itemRequest))
             .collect(Collectors.toList());
     }
 
-    private OrderLineItem orderLineItem(OrderLineItemRequest request) {
-        Menu menu = menuRepository.menu(request.getMenuId());
+    private Map<Long, Menu> idToMenuMap(OrderRequest request) {
+        return menuRepository.findAllById(request.menuIds())
+            .stream()
+            .collect(Collectors.toMap(Menu::id, menu -> menu));
+    }
+
+    private OrderLineItem orderLineItem(Map<Long, Menu> idToMenu, OrderLineItemRequest request) {
+        idToMenu.computeIfAbsent(request.getMenuId(), id -> {
+            throw new NotFoundException(String.format("메뉴 id(%d)를 찾을 수 없습니다.", id));
+        });
+
+        Menu menu = idToMenu.get(request.getMenuId());
         return OrderLineItem.of(
             request.quantity(), OrderLineItemMenu.of(menu.id(), menu.name(), menu.price()));
     }

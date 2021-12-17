@@ -1,5 +1,6 @@
 package kitchenpos.order.domain;
 
+import java.util.Objects;
 import javax.persistence.Embeddable;
 import javax.persistence.Embedded;
 import javax.persistence.ForeignKey;
@@ -39,11 +40,38 @@ public class OrderLineItemMenu {
         return menuId;
     }
 
-    public Price getPrice() {
+    public Price price() {
         return price;
     }
 
-    public Name getName() {
+    public Name name() {
         return name;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(menuId, price, name);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        OrderLineItemMenu that = (OrderLineItemMenu) o;
+        return menuId == that.menuId && Objects.equals(price, that.price) && Objects
+            .equals(name, that.name);
+    }
+
+    @Override
+    public String toString() {
+        return "OrderLineItemMenu{" +
+            "menuId=" + menuId +
+            ", price=" + price +
+            ", name=" + name +
+            '}';
     }
 }

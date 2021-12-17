@@ -78,10 +78,10 @@ class OrderTest {
             .withMessageEndingWith("상태를 변경할 수 없습니다.");
     }
 
-    @ParameterizedTest(name = "[{index}] 주문 상태가 {0} 라면 조리중 또는 식사중 여부는 {1}")
-    @DisplayName("조리중 또는 식사중 여부")
-    @CsvSource({"COOKING,true", "MEAL,true", "COMPLETION,false"})
-    void isCookingOrMeal(OrderStatus status, boolean expected) {
+    @ParameterizedTest(name = "[{index}] 주문 상태가 {0} 라면 완료 여부는 {1}")
+    @DisplayName("완료 상태 여부")
+    @CsvSource({"COOKING,false", "MEAL,false", "COMPLETION,true"})
+    void isCompleted(OrderStatus status, boolean expected) {
         //given
         Order order = Order.of(1L,
             Collections.singletonList(이십원_후라이트치킨_두마리세트_한개_주문_항목()))
@@ -89,7 +89,7 @@ class OrderTest {
         order.changeStatus(status);
 
         //when, then
-        assertThat(order.isCookingOrMeal())
+        assertThat(order.isCompleted())
             .isEqualTo(expected);
     }
 }

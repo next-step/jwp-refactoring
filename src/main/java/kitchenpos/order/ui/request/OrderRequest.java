@@ -2,6 +2,7 @@ package kitchenpos.order.ui.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public final class OrderRequest {
 
@@ -21,5 +22,11 @@ public final class OrderRequest {
 
     public List<OrderLineItemRequest> getOrderLineItems() {
         return orderLineItems;
+    }
+
+    public List<Long> menuIds() {
+        return orderLineItems.stream()
+            .map(OrderLineItemRequest::getMenuId)
+            .collect(Collectors.toList());
     }
 }

@@ -54,7 +54,7 @@ class OrderTableTest {
         TableGroup.from(Arrays.asList(orderTable, 빈_두명_테이블()));
 
         //when
-        ThrowingCallable changeStatusCallable = () -> orderTable.changeStatus(CustomerStatus.SEATED);
+        ThrowingCallable changeStatusCallable = () -> orderTable.changeEmpty(false);
 
         //then
         assertThatExceptionOfType(InvalidStatusException.class)
@@ -70,7 +70,7 @@ class OrderTableTest {
         orderTable.ordered();
 
         //when
-        ThrowingCallable changeStatusCallable = () -> orderTable.changeStatus(CustomerStatus.EMPTY);
+        ThrowingCallable changeStatusCallable = () -> orderTable.changeEmpty(true);
 
         //then
         assertThatExceptionOfType(InvalidStatusException.class)

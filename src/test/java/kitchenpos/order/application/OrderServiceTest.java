@@ -1,14 +1,14 @@
 package kitchenpos.order.application;
 
-import static kitchenpos.order.sample.OrderSample.완료된_후라이트치킨세트_두개_주문;
 import static kitchenpos.order.sample.OrderSample.조리중인_후라이트치킨세트_두개_주문;
 import static kitchenpos.product.sample.MenuSample.이십원_후라이드치킨_두마리세트;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyIterable;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.doThrow;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.only;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -17,19 +17,19 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import kitchenpos.common.domain.Quantity;
-import kitchenpos.common.exception.InvalidStatusException;
 import kitchenpos.common.exception.NotFoundException;
 import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderCreateService;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.domain.OrderValidator;
+import kitchenpos.order.domain.OrderStatusChangeService;
 import kitchenpos.order.ui.request.OrderLineItemRequest;
 import kitchenpos.order.ui.request.OrderRequest;
 import kitchenpos.order.ui.request.OrderStatusRequest;
-import kitchenpos.order.ui.response.OrderResponse;
 import kitchenpos.product.domain.Menu;
 import kitchenpos.product.domain.MenuRepository;
+import org.assertj.core.api.InstanceOfAssertFactories;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -46,7 +46,9 @@ class OrderServiceTest {
     @Mock
     private MenuRepository menuRepository;
     @Mock
-    private OrderValidator validator;
+    private OrderCreateService createService;
+    @Mock
+    private OrderStatusChangeService statusChangeService;
     @Mock
     private OrderRepository orderRepository;
 
@@ -65,38 +67,17 @@ class OrderServiceTest {
         OrderRequest orderRequest = new OrderRequest(orderTableId, orderLineItems);
 
         Menu 이십원_후라이드치킨_두마리세트 = 이십원_후라이드치킨_두마리세트();
-        when(menuRepository.menu(anyLong())).thenReturn(이십원_후라이드치킨_두마리세트);
+        when(menuRepository.findAllById(anyIterable()))
+            .thenReturn(Collections.singletonList(이십원_후라이드치킨_두마리세트));
 
         Order order = 조리중인_후라이트치킨세트_두개_주문();
-        when(orderRepository.save(any())).thenReturn(order);
+        when(createService.create(anyLong(), anyList())).thenReturn(order);
 
         //when
         orderService.create(orderRequest);
 
         //then
         requestedOrderSave(orderTableId, menuId, quantity);
-    }
-
-    @Test
-    @DisplayName("등록하려는 주문의 테이블 정보는 반드시 존재해야 한다.")
-    void create_notExistsOrderTable_thrownException() {
-        //given
-        long orderTableId = 1L;
-        OrderRequest orderRequest = new OrderRequest(orderTableId,
-            Collections.singletonList(new OrderLineItemRequest(1L, 2)));
-
-        Menu 이십원_후라이드치킨_두마리세트 = 이십원_후라이드치킨_두마리세트();
-        when(menuRepository.menu(anyLong())).thenReturn(이십원_후라이드치킨_두마리세트);
-
-        doThrow(NotFoundException.class).when(validator)
-            .validate(any(Order.class));
-
-        //when
-        ThrowingCallable createCallable = () -> orderService.create(orderRequest);
-
-        //then
-        assertThatExceptionOfType(NotFoundException.class)
-            .isThrownBy(createCallable);
     }
 
     @Test
@@ -107,49 +88,13 @@ class OrderServiceTest {
         OrderRequest orderRequest = new OrderRequest(orderTableId,
             Collections.singletonList(new OrderLineItemRequest(1L, 2)));
 
-        when(menuRepository.menu(anyLong())).thenThrow(new NotFoundException("no menu"));
+        when(menuRepository.findAllById(anyIterable())).thenReturn(Collections.emptyList());
 
         //when
         ThrowingCallable createCallable = () -> orderService.create(orderRequest);
 
         //then
         assertThatExceptionOfType(NotFoundException.class)
-            .isThrownBy(createCallable);
-    }
-
-    @Test
-    @DisplayName("등록하려는 주문의 상품 항목이 비어있으면 안된다.")
-    void create_emptyOrderLineItems_thrownException() {
-        //given
-        long orderTableId = 1L;
-        OrderRequest orderRequest = new OrderRequest(orderTableId, Collections.emptyList());
-
-        //when
-        ThrowingCallable createCallable = () -> orderService.create(orderRequest);
-
-        //then
-        assertThatExceptionOfType(IllegalArgumentException.class)
-            .isThrownBy(createCallable);
-    }
-
-    @Test
-    @DisplayName("등록하려는 주문의 테이블은 비어있지 않아야 한다.")
-    void create_emptyOrderTable_thrownException() {
-        //given
-        OrderRequest orderRequest = new OrderRequest(1L,
-            Collections.singletonList(new OrderLineItemRequest(1L, 2)));
-
-        Menu 이십원_후라이드치킨_두마리세트 = 이십원_후라이드치킨_두마리세트();
-        when(menuRepository.menu(anyLong())).thenReturn(이십원_후라이드치킨_두마리세트);
-
-        doThrow(IllegalArgumentException.class).when(validator)
-            .validate(any(Order.class));
-
-        //when
-        ThrowingCallable createCallable = () -> orderService.create(orderRequest);
-
-        //then
-        assertThatExceptionOfType(IllegalArgumentException.class)
             .isThrownBy(createCallable);
     }
 
@@ -174,57 +119,20 @@ class OrderServiceTest {
         when(orderRepository.findById(anyLong())).thenReturn(Optional.of(조리중인_후라이트치킨세트_두개_주문));
 
         //when
-        OrderResponse response = orderService.changeOrderStatus(1L, orderRequest);
+        orderService.changeOrderStatus(1L, orderRequest);
 
         //then
-        assertThat(response)
-            .extracting(OrderResponse::getOrderStatus)
-            .isEqualTo(updatedStatus.name());
-    }
-
-    @Test
-    @DisplayName("변경 요청한 주문 id 는 저장되어 있어야 한다.")
-    void changeOrderStatus_notExistOrder_thrownException() {
-        //given
-        OrderStatusRequest updateRequest = new OrderStatusRequest(OrderStatus.MEAL.name());
-        when(orderRepository.findById(anyLong())).thenReturn(Optional.empty());
-
-        //when
-        ThrowingCallable changeCallable = () -> orderService.changeOrderStatus(1L, updateRequest);
-
-        //then
-        assertThatExceptionOfType(NotFoundException.class)
-            .isThrownBy(changeCallable)
-            .withMessageEndingWith("찾을 수 없습니다.");
-    }
-
-    @Test
-    @DisplayName("완료된 주문의 상태를 변경할 수 없다.")
-    void changeOrderStatus_completedOrder_thrownException() {
-        //given
-        OrderStatusRequest updateRequest = new OrderStatusRequest(OrderStatus.MEAL.name());
-
-        Order 완료된_후라이트치킨세트_두개_주문 = 완료된_후라이트치킨세트_두개_주문();
-        when(orderRepository.findById(anyLong())).thenReturn(Optional.of(완료된_후라이트치킨세트_두개_주문));
-
-        //when
-        ThrowingCallable changeCallable = () -> orderService.changeOrderStatus(1L, updateRequest);
-
-        //then
-        assertThatExceptionOfType(InvalidStatusException.class)
-            .isThrownBy(changeCallable);
+        verify(statusChangeService, only()).change(1L, updatedStatus);
     }
 
     private void requestedOrderSave(long orderTableId, long expectedMenuId, long expectedQuantity) {
-        ArgumentCaptor<Order> orderCaptor = ArgumentCaptor.forClass(Order.class);
-        verify(orderRepository, only()).save(orderCaptor.capture());
-        Order savedOrder = orderCaptor.getValue();
+        @SuppressWarnings("unchecked")
+        ArgumentCaptor<List<OrderLineItem>> lineItemsCaptor = ArgumentCaptor.forClass(List.class);
+        verify(createService, only()).create(eq(orderTableId), lineItemsCaptor.capture());
         assertAll(
-            () -> assertThat(savedOrder)
-                .extracting(Order::status, Order::tableId)
-                .containsExactly(OrderStatus.COOKING, orderTableId),
-            () -> assertThat(savedOrder.lineItems()).first()
-                .extracting(OrderLineItem::quantity, order -> order.menu().id())
+            () -> assertThat(lineItemsCaptor.getValue())
+                .first(InstanceOfAssertFactories.type(OrderLineItem.class))
+                .extracting(OrderLineItem::quantity, lineItem -> lineItem.menu().id())
                 .containsExactly(Quantity.from(expectedQuantity), expectedMenuId)
         );
     }
