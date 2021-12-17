@@ -129,6 +129,7 @@
 - Domain과 DTO 분리
   - 메뉴
     - MenuRestController, MenuService
+    - MenuGroupController, MenuGroupService
 - JdbcTemplate -> JPA로 Persistance 변경
   - 상품
   - 메뉴

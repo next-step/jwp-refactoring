@@ -23,6 +23,7 @@ public class MenuResponse {
     }
 
     public static MenuResponse of(Menu menu) {
+        // TODO Menu에 MenuGroup 생성시 null 제거
         return new MenuResponse(menu.getId(), menu.getName(), menu.getPrice(), null, MenuProductResponse.ofList(menu.getMenuProducts()));
     }
 

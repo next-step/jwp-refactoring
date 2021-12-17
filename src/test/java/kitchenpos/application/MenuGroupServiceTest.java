@@ -2,6 +2,8 @@ package kitchenpos.application;
 
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.dto.MenuGroupRequest;
+import kitchenpos.dto.MenuGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,16 +29,16 @@ public class MenuGroupServiceTest {
     @Test
     void testCreate() {
         // given
-        MenuGroup menuGroup = new MenuGroup("식사류");
+        MenuGroupRequest menuGroupRequest = new MenuGroupRequest("식사류");
         MenuGroup expectedMenuGroup = new MenuGroup(1L, "식사류");
 
         given(menuGroupDao.save(any(MenuGroup.class))).willReturn(expectedMenuGroup);
 
         // when
-        MenuGroup savedMenuGroup = menuGroupService.create(menuGroup);
+        MenuGroupResponse savedMenuGroup = menuGroupService.create(menuGroupRequest);
 
         // then
-        assertThat(savedMenuGroup).isEqualTo(expectedMenuGroup);
+        assertThat(savedMenuGroup).isEqualTo(MenuGroupResponse.of(expectedMenuGroup));
     }
 
     @DisplayName("모든 메뉴 그룹을 가져온다")
@@ -47,9 +49,9 @@ public class MenuGroupServiceTest {
         given(menuGroupDao.findAll()).willReturn(expectedMenuGroups);
 
         // when
-        List<MenuGroup> menuGroups = menuGroupService.list();
+        List<MenuGroupResponse> menuGroups = menuGroupService.list();
 
         // then
-        assertThat(menuGroups).isEqualTo(expectedMenuGroups);
+        assertThat(menuGroups).isEqualTo(MenuGroupResponse.ofList(expectedMenuGroups));
     }
 }
