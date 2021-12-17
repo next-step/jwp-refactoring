@@ -1,16 +1,14 @@
 package kitchenpos.domain.tablegroup.event;
 
-import kitchenpos.domain.tablegroup.TableGroup;
-
 public class TableGroupUngroupedEvent {
 
-    private TableGroup tableGroup;
+    private Long tableGroupId;
 
-    public TableGroupUngroupedEvent(TableGroup tableGroup) {
-        this.tableGroup = tableGroup;
+    public TableGroupUngroupedEvent(Long tableGroupId) {
+        this.tableGroupId = tableGroupId;
     }
 
-    public TableGroup getTableGroup() {
-        return tableGroup;
+    public Long getTableGroupId() {
+        return tableGroupId;
     }
 }

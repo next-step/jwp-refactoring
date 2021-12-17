@@ -41,9 +41,9 @@ import kitchenpos.domain.product.Product;
 import kitchenpos.domain.product.ProductRepository;
 import kitchenpos.domain.table.OrderTable;
 import kitchenpos.domain.table.OrderTableRepository;
-import kitchenpos.domain.tablegroup.event.TableGroupUngroupedEvent;
 import kitchenpos.domain.tablegroup.TableGroup;
 import kitchenpos.domain.tablegroup.TableGroupRepository;
+import kitchenpos.domain.tablegroup.event.TableGroupUngroupedEvent;
 import kitchenpos.dto.tablegroup.OrderTableIdRequest;
 import kitchenpos.dto.tablegroup.TableGroupRequest;
 import kitchenpos.dto.tablegroup.TableGroupResponse;
@@ -213,7 +213,7 @@ class TableGroupServiceTest {
         불고기_주문.changeOrderStatus(OrderStatus.COMPLETION);
 
         // when
-        publisher.publishEvent(new TableGroupUngroupedEvent(단체_테이블그룹));
+        publisher.publishEvent(new TableGroupUngroupedEvent(단체_테이블그룹.getId()));
 
         // then
         OrderTable 그룹해제된_주문1_단체테이블 = orderTableRepository.findById(주문1_단체테이블.getId()).get();
