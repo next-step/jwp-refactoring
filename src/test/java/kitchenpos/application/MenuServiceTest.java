@@ -1,11 +1,11 @@
 package kitchenpos.application;
 
 import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuGroupDao;
+import kitchenpos.menuGroup.domain.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.menuGroup.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
@@ -86,7 +86,7 @@ public class MenuServiceTest {
         );
     }
 
-    @DisplayName("금액은 0원 이상이어야한고 금액이 있어야한다..")
+    @DisplayName("금액은 0원 이상이어야한고 금액이 있어야한다.")
     @Test
     void createPriceError() {
         Menu 금액_없는_세트 = new Menu();
@@ -102,7 +102,7 @@ public class MenuServiceTest {
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("각 메뉴 상품 수량 x 각 상품 목록 을 다 더하여 나온 금액 보다 등록한 금액이 더 작아야 한다.")
+    @DisplayName("가격 x 수량 = 금액 보다 등록한 금액이 더 작아야 한다.")
     @Test
     void createPriceLessError() {
         Menu 비싼_후라이드두마리세트 = new Menu();

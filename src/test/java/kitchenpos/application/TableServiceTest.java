@@ -114,7 +114,7 @@ public class TableServiceTest {
         assertThat(changeNumberOfGuests.getNumberOfGuests()).isEqualTo(10);
     }
 
-    @DisplayName("0명부터 가능하다.(음수 안됨)")
+    @DisplayName("0명부터 가능하다.")
     @Test
     void changeNumberOfGuestsError() {
         OrderTable 주문테이블_손님_수_변경 = new OrderTable();
