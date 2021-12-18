@@ -4,9 +4,7 @@ import static kitchenpos.menu.MenuGroupFixture.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.DisplayName;
@@ -24,11 +22,25 @@ import kitchenpos.menu.dto.MenuGroupDto;
 @DisplayName("메뉴 그룹 인수 테스트")
 public class MenuGroupAcceptanceTest extends AcceptanceTest {
 
+	private static ExtractableResponse<Response> 메뉴_그룹_등록_요청(MenuGroupCreateRequest request) {
+		return RestAssured
+			.given().log().all()
+			.contentType(MediaType.APPLICATION_JSON_VALUE)
+			.body(request)
+			.when().post("/api/menu-groups")
+			.then().log().all()
+			.extract();
+	}
+
+	public static ExtractableResponse<Response> 메뉴_그룹_등록되어_있음(MenuGroupCreateRequest request) {
+		return 메뉴_그룹_등록_요청(request);
+	}
+
 	@DisplayName("메뉴 그룹을 등록한다.")
 	@Test
 	void register() {
 		// when
-		ExtractableResponse<Response> response = 메뉴_그룹_등록_요청(추천메뉴());
+		ExtractableResponse<Response> response = 메뉴_그룹_등록_요청(추천_메뉴_그룹());
 
 		// then
 		메뉴_그룹_등록됨(response);
@@ -38,7 +50,7 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
 	@Test
 	void registerFailOnEmptyName() {
 		// when
-		ExtractableResponse<Response> response = 메뉴_그룹_등록_요청(이름없는메뉴그룹());
+		ExtractableResponse<Response> response = 메뉴_그룹_등록_요청(이름없는_메뉴_그룹());
 
 		// then
 		메뉴_그룹_등록되지_않음(response);
@@ -48,8 +60,8 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
 	@Test
 	void findAll() {
 		// given
-		MenuGroupDto 추천_메뉴_그룹 = 메뉴_그룹_등록되어_있음(추천메뉴()).as(MenuGroupDto.class);
-		MenuGroupDto 비추천_메뉴_그룹 = 메뉴_그룹_등록되어_있음(비추천메뉴()).as(MenuGroupDto.class);
+		MenuGroupDto 추천_메뉴_그룹 = 메뉴_그룹_등록되어_있음(추천_메뉴_그룹()).as(MenuGroupDto.class);
+		MenuGroupDto 비추천_메뉴_그룹 = 메뉴_그룹_등록되어_있음(비추천_메뉴_그룹()).as(MenuGroupDto.class);
 
 		// when
 		ExtractableResponse<Response> response = 메뉴_그룹_목록_조회_요청();
@@ -57,19 +69,6 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
 		// then
 		메뉴_그룹_목록_응답됨(response);
 		메뉴_그룹_목록_포함됨(response, Arrays.asList(추천_메뉴_그룹, 비추천_메뉴_그룹));
-	}
-
-	private ExtractableResponse<Response> 메뉴_그룹_등록_요청(MenuGroupCreateRequest request) {
-		Map<String, Object> body = new HashMap<>();
-		body.put("name", request.getName());
-
-		return RestAssured
-			.given().log().all()
-			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.body(body)
-			.when().post("/api/menu-groups")
-			.then().log().all()
-			.extract();
 	}
 
 	private void 메뉴_그룹_등록됨(ExtractableResponse<Response> response) {
@@ -80,10 +79,6 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
 
 	private void 메뉴_그룹_등록되지_않음(ExtractableResponse<Response> response) {
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
-	}
-
-	private ExtractableResponse<Response> 메뉴_그룹_등록되어_있음(MenuGroupCreateRequest request) {
-		return 메뉴_그룹_등록_요청(request);
 	}
 
 	private ExtractableResponse<Response> 메뉴_그룹_목록_조회_요청() {
