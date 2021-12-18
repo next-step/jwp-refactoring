@@ -1,7 +1,7 @@
 package kitchenpos.application;
 
-import static common.OrderTableFixture.두번째_테이블;
-import static common.OrderTableFixture.첫번째_테이블;
+import static common.OrderTableFixture.단체지정_두번째_주문테이블;
+import static common.OrderTableFixture.단체지정_첫번째_주문테이블;
 import static common.TableGroupFixture.단체테이블_첫번째_두번째;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -43,8 +43,8 @@ public class TableGroupServiceTest {
     void 단체그룹_생성() {
 
         TableGroup 단체테이블_첫번째_두번째 = 단체테이블_첫번째_두번째();
-        OrderTable 첫번째_테이블 = 첫번째_테이블();
-        OrderTable 두번째_테이블 = 두번째_테이블();
+        OrderTable 첫번째_테이블 = 단체지정_첫번째_주문테이블();
+        OrderTable 두번째_테이블 = 단체지정_두번째_주문테이블();
 
         when(orderTableDao.findAllByIdIn(anyList())).thenReturn(
             asList(첫번째_테이블, 두번째_테이블));
@@ -59,8 +59,8 @@ public class TableGroupServiceTest {
     void 단체그룹_취소() {
 
         TableGroup 단체테이블_첫번째_두번째 = 단체테이블_첫번째_두번째();
-        OrderTable 첫번째_테이블 = 첫번째_테이블();
-        OrderTable 두번째_테이블 = 두번째_테이블();
+        OrderTable 첫번째_테이블 = 단체지정_첫번째_주문테이블();
+        OrderTable 두번째_테이블 = 단체지정_두번째_주문테이블();
 
         when(orderTableDao.findAllByTableGroupId(anyLong())).thenReturn(asList(첫번째_테이블,
             두번째_테이블));
