@@ -1,4 +1,2 @@
 dependencies {
-    implementation project(':common')
-    testImplementation project(':common').sourceSets.test.output
 }

@@ -4,9 +4,6 @@ import org.springframework.http.HttpStatus;
 
 public enum ErrorCode {
 
-    PRODUCT_NOT_FOUND(HttpStatus.NOT_FOUND, "상품을 찾을 수 없습니다."),
-    MENU_GROUP_NOT_FOUND(HttpStatus.NOT_FOUND, "메뉴 그룹을 찾을 수 없습니다."),
-    INVALID_PRICE(HttpStatus.BAD_REQUEST, "올바르지 않은 가격입니다."),
     ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "주문을 찾을 수 없습니다."),
     EMPTY_MENUES(HttpStatus.BAD_REQUEST, "비어있는 메뉴 목록입니다."),
     MENU_NOT_EXIST(HttpStatus.BAD_REQUEST, "메뉴가 존재하지 않습니다."),
