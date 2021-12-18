@@ -1,7 +1,6 @@
 package kitchenpos.domain;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -15,16 +14,15 @@ public class OrderTable {
     @Embedded
     private NumberOfGuests numberOfGuests;
     private boolean empty;
-    @OneToMany
-    @JoinColumn(name = "orderTableId")
-    private List<Order> orders = new ArrayList<>();
+    @Embedded
+    private Orders orders = new Orders();
 
     public OrderTable() {
     }
 
     public OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty, List<Order> orders) {
         this(id, tableGroup, numberOfGuests, empty);
-        this.orders = orders;
+        this.orders = new Orders(orders);
     }
 
     public OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
@@ -70,13 +68,7 @@ public class OrderTable {
     }
 
     public boolean isOrderStarted() {
-        for (Order order : orders) {
-            if (order.isStarted()) {
-                return true;
-            }
-        }
-
-        return false;
+        return orders.isOrderStarted();
     }
 
     public void setTableGroup(TableGroup tableGroup) {
@@ -84,6 +76,16 @@ public class OrderTable {
             throw new IllegalArgumentException();
         }
         this.tableGroup = tableGroup;
+    }
+
+    public Order createOrder() {
+        if (isEmpty()) {
+            throw new IllegalArgumentException("테이블이 비어있는 상태에서는 주문을 생성할 수 없습니다");
+        }
+
+        Order order = new Order(this, OrderStatus.COOKING);
+        orders.add(order);
+        return order;
     }
 
     public void unsetTableGroup() {

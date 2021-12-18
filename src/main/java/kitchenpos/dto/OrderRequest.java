@@ -1,8 +1,11 @@
 package kitchenpos.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import kitchenpos.domain.OrderStatus;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class OrderRequest {
     private Long id;
@@ -20,6 +23,23 @@ public class OrderRequest {
     public OrderRequest(Long orderTableId, List<OrderLineItemRequest> orderLineItems) {
         this.orderTableId = orderTableId;
         this.orderLineItems = orderLineItems;
+    }
+
+    @JsonIgnore
+    public boolean isEmptyOrderLineItems() {
+        return CollectionUtils.isEmpty(orderLineItems);
+    }
+
+    @JsonIgnore
+    public int getOrderLineItemsSize() {
+        return orderLineItems.size();
+    }
+
+    @JsonIgnore
+    public List<Long> getMenuIds() {
+        return orderLineItems.stream()
+                .map(OrderLineItemRequest::getMenuId)
+                .collect(Collectors.toList());
     }
 
     public Long getId() {

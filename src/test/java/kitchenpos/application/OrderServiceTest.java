@@ -1,13 +1,7 @@
 package kitchenpos.application;
 
 import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderLineItemDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
-import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.*;
 import kitchenpos.dto.OrderLineItemRequest;
 import kitchenpos.dto.OrderRequest;
 import kitchenpos.dto.OrderResponse;
@@ -21,10 +15,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -38,11 +29,9 @@ public class OrderServiceTest {
     @Mock
     private MenuDao menuDao;
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
     @Mock
-    private OrderLineItemDao orderLineItemDao;
-    @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
     @InjectMocks
     private OrderService orderService;
 
@@ -60,15 +49,11 @@ public class OrderServiceTest {
             List<OrderLineItemRequest> orderLineItemRequests = Arrays.asList(orderLineItemRequest1, orderLineItemRequest2);
             OrderRequest orderRequest = new OrderRequest(orderTable.getId(), orderLineItemRequests);
 
-            OrderLineItem orderLineItem1 = new OrderLineItem(orderLineItemRequest1.getMenuId(), orderLineItemRequest1.getQuantity());
-            OrderLineItem orderLineItem2 = new OrderLineItem(orderLineItemRequest2.getMenuId(), orderLineItemRequest2.getQuantity());
-            List<OrderLineItem> orderLineItems = Arrays.asList(orderLineItem1, orderLineItem2);
-            Order expectedOrder = new Order(orderTable.getId(), orderLineItems);
+            Order expectedOrder = new Order(orderTable, new ArrayList<>());
 
-            given(menuDao.countByIdIn(any(List.class))).willReturn((long) orderLineItems.size());
-            given(orderTableDao.findById(anyLong())).willReturn(Optional.of(orderTable));
-            given(orderDao.save(any(Order.class))).willReturn(expectedOrder);
-            given(orderLineItemDao.save(any(OrderLineItem.class))).willReturn(orderLineItem1, orderLineItem2);
+            given(menuDao.countByIdIn(any(List.class))).willReturn((long) orderLineItemRequests.size());
+            given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(orderTable));
+            given(orderRepository.save(any(Order.class))).willReturn(expectedOrder);
 
             // when
             OrderResponse order = orderService.create(orderRequest);
@@ -121,7 +106,7 @@ public class OrderServiceTest {
             OrderRequest orderRequest = new OrderRequest(orderTable.getId(), orderLineItemRequests);
 
             given(menuDao.countByIdIn(any(List.class))).willReturn((long) orderLineItemRequests.size());
-            given(orderTableDao.findById(anyLong())).willReturn(Optional.empty());
+            given(orderTableRepository.findById(anyLong())).willReturn(Optional.empty());
 
             // when
             ThrowableAssert.ThrowingCallable callable = () -> orderService.create(orderRequest);
@@ -142,7 +127,7 @@ public class OrderServiceTest {
             OrderRequest orderRequest = new OrderRequest(orderTable.getId(), orderLineItemRequests);
 
             given(menuDao.countByIdIn(any(List.class))).willReturn((long) orderLineItemRequests.size());
-            given(orderTableDao.findById(anyLong())).willReturn(Optional.of(orderTable));
+            given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(orderTable));
 
             // when
             ThrowableAssert.ThrowingCallable callable = () -> orderService.create(orderRequest);
@@ -162,21 +147,17 @@ public class OrderServiceTest {
             List<OrderLineItemRequest> orderLineItemRequests = Arrays.asList(orderLineItemRequest1, orderLineItemRequest2);
             OrderRequest orderRequest = new OrderRequest(orderTable.getId(), orderLineItemRequests);
 
-            OrderLineItem orderLineItem1 = new OrderLineItem(orderLineItemRequest1.getMenuId(), orderLineItemRequest1.getQuantity());
-            OrderLineItem orderLineItem2 = new OrderLineItem(orderLineItemRequest2.getMenuId(), orderLineItemRequest2.getQuantity());
-            List<OrderLineItem> orderLineItems = Arrays.asList(orderLineItem1, orderLineItem2);
-            Order expectedOrder = new Order(1L, orderTable.getId(), OrderStatus.COOKING.name(), orderLineItems);
+            Order expectedOrder = new Order(1L, orderTable, OrderStatus.COOKING, new ArrayList<>());
 
-            given(menuDao.countByIdIn(any(List.class))).willReturn((long) orderLineItems.size());
-            given(orderTableDao.findById(anyLong())).willReturn(Optional.of(orderTable));
-            given(orderDao.save(any(Order.class))).willReturn(expectedOrder);
-            given(orderLineItemDao.save(any(OrderLineItem.class))).willReturn(orderLineItem1, orderLineItem2);
+            given(menuDao.countByIdIn(any(List.class))).willReturn((long) orderLineItemRequests.size());
+            given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(orderTable));
+            given(orderRepository.save(any(Order.class))).willReturn(expectedOrder);
 
             // when
             OrderResponse order = orderService.create(orderRequest);
 
             // then
-            assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
+            assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
         }
     }
 
@@ -188,15 +169,15 @@ public class OrderServiceTest {
         void testChangeOrderStatus() {
             // given
             OrderRequest requestOrder = new OrderRequest(OrderStatus.COMPLETION);
-            Order savedOrder = new Order(1L, 1L, OrderStatus.COOKING.name(), TEST_CREATED_AT, Collections.emptyList());
+            Order savedOrder = new Order(1L, new OrderTable(), OrderStatus.COOKING, TEST_CREATED_AT, Collections.emptyList());
 
-            given(orderDao.findById(anyLong())).willReturn(Optional.of(savedOrder));
+            given(orderRepository.findById(anyLong())).willReturn(Optional.of(savedOrder));
 
             // when
             OrderResponse order = orderService.changeOrderStatus(savedOrder.getId(), requestOrder);
 
             // then
-            assertThat(order.getOrderStatus()).isEqualTo(requestOrder.getOrderStatus());
+            assertThat(order.getOrderStatus().name()).isEqualTo(requestOrder.getOrderStatus());
         }
 
         @DisplayName("생성된 주문이 있어야 한다")
@@ -204,9 +185,9 @@ public class OrderServiceTest {
         void hasSavedOrder() {
             // given
             OrderRequest requestOrder = new OrderRequest(OrderStatus.COMPLETION);
-            Order savedOrder = new Order(1L, 1L, OrderStatus.COOKING.name(), TEST_CREATED_AT, Collections.emptyList());
+            Order savedOrder = new Order(1L, new OrderTable(), OrderStatus.COOKING, TEST_CREATED_AT, Collections.emptyList());
 
-            given(orderDao.findById(anyLong())).willReturn(Optional.empty());
+            given(orderRepository.findById(anyLong())).willReturn(Optional.empty());
 
             // when
             ThrowableAssert.ThrowingCallable callable = () -> orderService.changeOrderStatus(savedOrder.getId(), requestOrder);
@@ -220,7 +201,7 @@ public class OrderServiceTest {
         void canNotChangeWhenCompleteStatus() {
             // given
             OrderRequest requestOrder = new OrderRequest(OrderStatus.COMPLETION);
-            given(orderDao.findById(anyLong())).willReturn(Optional.empty());
+            given(orderRepository.findById(anyLong())).willReturn(Optional.empty());
 
             // when
             ThrowableAssert.ThrowingCallable callable = () -> orderService.changeOrderStatus(anyLong(), requestOrder);
@@ -235,11 +216,10 @@ public class OrderServiceTest {
     void testList() {
         // given
         List<OrderLineItem> orderLineItems = Collections.emptyList();
-        Order order = new Order(1L, 1L, OrderStatus.COOKING.name(), TEST_CREATED_AT, orderLineItems);
+        Order order = new Order(1L, new OrderTable(), OrderStatus.COOKING, TEST_CREATED_AT, orderLineItems);
         List<Order> expectedOrders = Arrays.asList(order);
 
-        given(orderDao.findAll()).willReturn(expectedOrders);
-        given(orderLineItemDao.findAllByOrderId(anyLong())).willReturn(orderLineItems);
+        given(orderRepository.findAll()).willReturn(expectedOrders);
 
         // when
         List<OrderResponse> orders = orderService.list();
