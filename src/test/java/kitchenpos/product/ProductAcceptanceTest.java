@@ -97,7 +97,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
 		return 상품_등록_요청(request);
 	}
 
-	public static ExtractableResponse<Response> 상품_목록_조회_요청() {
+	private ExtractableResponse<Response> 상품_목록_조회_요청() {
 		return RestAssured
 			.given().log().all()
 			.when().get("/api/products")
