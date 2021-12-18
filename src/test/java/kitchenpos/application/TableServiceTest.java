@@ -41,7 +41,7 @@ class TableServiceTest {
     @BeforeEach
     void setUp() {
         // given
-        주문테이블 = 주문테이블_생성();
+        주문테이블 = 주문테이블_생성(1L);
     }
 
     @Test
