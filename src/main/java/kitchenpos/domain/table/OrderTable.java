@@ -10,10 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
-import kitchenpos.domain.tablegroup.TableGroup;
 
 @Entity
 @Table(name = "order_table")
@@ -25,9 +22,8 @@ public class OrderTable {
     @Column(name = "id")
     private Long id;
 
-    @ManyToOne
     @JoinColumn(name = "table_group_id", foreignKey = @ForeignKey(name = "fk_order_table_table_group"))
-    private TableGroup tableGroup;
+    private Long tableGroupId;
 
     @Embedded
     private NumberOfGuests numberOfGuests;
@@ -36,10 +32,6 @@ public class OrderTable {
     private boolean empty;
 
     protected OrderTable() {}
-
-    private OrderTable(Long id) {
-        this.id = id;
-    }
 
     private OrderTable(Long id, int numberOfGuests, boolean empty) {
         this(numberOfGuests, empty);
@@ -68,13 +60,13 @@ public class OrderTable {
         return new OrderTable(id, numberOfGuests, empty);
     }
 
-    public void alignTableGroup(final TableGroup tableGroup) {
-        this.tableGroup = tableGroup;
+    public void alignTableGroup(final Long tableGroupId) {
+        this.tableGroupId = tableGroupId;
         updateEmpty(false);
     }
 
     public void ungroup() {
-        this.tableGroup = null;
+        this.tableGroupId = null;
     }
 
     public void updateEmpty(final boolean empty) {
@@ -86,15 +78,15 @@ public class OrderTable {
     }
 
     public boolean hasTableGroup() {
-        return Objects.nonNull(tableGroup);
+        return Objects.nonNull(tableGroupId);
     }
 
     public Long getId() {
         return id;
     }
 
-    public TableGroup getTableGroup() {
-        return tableGroup;
+    public Long getTableGroupId() {
+        return tableGroupId;
     }
 
     public NumberOfGuests getNumberOfGuests() {

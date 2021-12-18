@@ -1,6 +1,7 @@
 package kitchenpos.domain;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.math.BigDecimal;
 
@@ -9,6 +10,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
+
+import kitchenpos.exception.NegativePriceException;
 
 class PriceTest {
 
@@ -25,15 +28,14 @@ class PriceTest {
     @NullSource
     void creat2(BigDecimal price) {
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> Price.from(price))
-                                            .withMessage("Price 는 0 이상의 값을 가집니다.");
+        assertThrows(NegativePriceException.class, () -> Price.from(price));
     }
 
     @DisplayName("Price 를 0원 미만의 음수값으로 만들면 예외가 발생한다.")
     @ParameterizedTest
     @ValueSource(ints = {-1, -2, -10, -100})
     void create3(int price) {
-        assertThatIllegalArgumentException().isThrownBy(() -> Price.from(BigDecimal.valueOf(price)))
-                                            .withMessage("Price 는 0 이상의 값을 가집니다.");
+        // when & then
+        assertThrows(NegativePriceException.class, () -> Price.from(BigDecimal.valueOf(price)));
     }
 }

@@ -15,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.application.fixture.MenuGroupFixtureFactory;
+import kitchenpos.application.menugroup.MenuGroupService;
 import kitchenpos.domain.menugroup.MenuGroup;
 import kitchenpos.domain.menugroup.MenuGroupRepository;
 import kitchenpos.dto.menugroup.MenuGroupRequest;

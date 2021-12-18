@@ -1,5 +1,9 @@
 package kitchenpos.dto.order;
 
+import java.util.List;
+
+import kitchenpos.domain.order.OrderLineItem;
+
 public class OrderLineItemRequest {
     private Long menuId;
     private Long quantity;
@@ -21,5 +25,9 @@ public class OrderLineItemRequest {
 
     public Long getQuantity() {
         return quantity;
+    }
+
+    public OrderLineItem toOrderLineItem() {
+        return OrderLineItem.of(menuId, quantity);
     }
 }

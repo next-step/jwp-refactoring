@@ -1,6 +1,6 @@
 package kitchenpos.ui;
 
-import kitchenpos.application.ProductService;
+import kitchenpos.application.product.ProductService;
 import kitchenpos.dto.product.ProductRequest;
 import kitchenpos.dto.product.ProductResponse;
 

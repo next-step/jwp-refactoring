@@ -1,10 +1,9 @@
 package kitchenpos.domain.order;
 
-import java.util.Objects;
-
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -14,83 +13,64 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import kitchenpos.domain.Quantity;
-import kitchenpos.domain.menu.Menu;
 
 @Entity
 @Table(name = "order_line_item")
 public class OrderLineItem {
-    private static final String NOT_EXIST_MENU = "Menu 가 존재하지 않습니다.";
-    private static final String NOT_EXIST_ORDERS = "Orders 가 존재하지 않습니다.";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "seq")
     private Long seq;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", foreignKey = @ForeignKey(name = "fk_order_line_item_orders"), nullable = false)
-    private Orders orders;
+    private Order order;
 
-    @ManyToOne
     @JoinColumn(name = "menu_id", foreignKey = @ForeignKey(name = "fk_order_line_item_menu"), nullable = false)
-    private Menu menu;
+    private Long menuId;
 
     @Embedded
     private Quantity quantity;
 
     protected OrderLineItem() {}
 
-    private OrderLineItem(Long seq, Orders orders, Menu menu, long quantity) {
-        this(menu, quantity);
+    private OrderLineItem(Long seq, Order order, Long menuId, long quantity) {
+        this(menuId, quantity);
         this.seq = seq;
-        this.orders = orders;
+        this.order = order;
     }
 
-    private OrderLineItem(Menu menu, Long quantity) {
-        this.menu = menu;
+    private OrderLineItem(Long menuId, Long quantity) {
+        this.menuId = menuId;
         this.quantity = Quantity.from(quantity);
     }
 
-    public static OrderLineItem of(Long seq, Orders orders, Menu menu, long quantity) {
-        validateExistOrders(orders);
-        validateExistMenu(menu);
-        return new OrderLineItem(seq, orders, menu, quantity);
+    public static OrderLineItem of(Long seq, Order order, Long menuId, long quantity) {
+        return new OrderLineItem(seq, order, menuId, quantity);
     }
 
-    public static OrderLineItem of(Menu menu, Long quantity) {
-        validateExistMenu(menu);
-        return new OrderLineItem(menu, quantity);
+    public static OrderLineItem of(Long menuId, Long quantity) {
+        return new OrderLineItem(menuId, quantity);
     }
 
-    public void assignOrders(Orders orders) {
-        this.orders = orders;
+    public void assignOrders(Order order) {
+        this.order = order;
     }
 
     public Long getSeq() {
         return seq;
     }
 
-    public Orders getOrders() {
-        return orders;
+    public Order getOrder() {
+        return order;
     }
 
-    public Menu getMenu() {
-        return menu;
+    public Long getMenuId() {
+        return menuId;
     }
 
     public Quantity getQuantity() {
         return quantity;
-    }
-
-    private static void validateExistMenu(Menu menu) {
-        if (Objects.isNull(menu)) {
-            throw new IllegalArgumentException(NOT_EXIST_MENU);
-        }
-    }
-
-    private static void validateExistOrders(Orders orders) {
-        if (Objects.isNull(orders)) {
-            throw new IllegalArgumentException(NOT_EXIST_ORDERS);
-        }
     }
 }

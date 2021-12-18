@@ -1,11 +1,15 @@
 package kitchenpos.domain;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
+
+import kitchenpos.exception.EmptyNameException;
+import kitchenpos.exception.NegativePriceException;
 
 class NameTest {
 
@@ -22,7 +26,6 @@ class NameTest {
     @NullAndEmptySource
     void creat2(String name) {
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> Name.from(name))
-                                            .withMessage(String.format("이름이 비어있습니다. name=%s", name));
+        assertThrows(EmptyNameException.class, () -> Name.from(name));
     }
 }

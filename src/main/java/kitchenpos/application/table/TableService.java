@@ -1,13 +1,15 @@
-package kitchenpos.application;
+package kitchenpos.application.table;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+import javax.persistence.EntityNotFoundException;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kitchenpos.domain.order.OrdersRepository;
+import kitchenpos.domain.order.OrderRepository;
 import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.domain.table.OrderTable;
 import kitchenpos.domain.table.OrderTableRepository;
@@ -17,11 +19,11 @@ import kitchenpos.utils.StreamUtils;
 
 @Service
 public class TableService {
-    private final OrdersRepository ordersRepository;
+    private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
 
-    public TableService(final OrdersRepository ordersRepository, final OrderTableRepository orderTableRepository) {
-        this.ordersRepository = ordersRepository;
+    public TableService(final OrderRepository orderRepository, final OrderTableRepository orderTableRepository) {
+        this.orderRepository = orderRepository;
         this.orderTableRepository = orderTableRepository;
     }
 
@@ -58,15 +60,15 @@ public class TableService {
 
     private OrderTable findOrderTable(Long orderTableId) {
         return orderTableRepository.findById(orderTableId)
-                                   .orElseThrow(IllegalArgumentException::new);
+                                   .orElseThrow(EntityNotFoundException::new);
     }
 
     private void validateChangeEmpty(Long orderTableId, OrderTable orderTable) {
-        if (Objects.nonNull(orderTable.getTableGroup())) {
+        if (Objects.nonNull(orderTable.getTableGroupId())) {
             throw new IllegalArgumentException();
         }
 
-        if (ordersRepository.existsByOrderTableIdAndOrderStatusIn(
+        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
             orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
             throw new IllegalArgumentException();
         }

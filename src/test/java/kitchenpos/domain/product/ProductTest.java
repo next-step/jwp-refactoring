@@ -1,6 +1,5 @@
 package kitchenpos.domain.product;
 
-import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.math.BigDecimal;
@@ -10,6 +9,8 @@ import org.junit.jupiter.api.Test;
 
 import kitchenpos.domain.Name;
 import kitchenpos.domain.Price;
+import kitchenpos.exception.EmptyNameException;
+import kitchenpos.exception.NegativePriceException;
 
 class ProductTest {
 
@@ -37,8 +38,7 @@ class ProductTest {
         BigDecimal price = BigDecimal.valueOf(1_000);
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> Product.of(null, price))
-                                            .withMessageContaining("");
+        assertThrows(EmptyNameException.class, () -> Product.of(null, price));
     }
 
     @DisplayName("Product 생성 시, Price 가 존재하지 않으면 예외가 발생한다.")
@@ -48,7 +48,6 @@ class ProductTest {
         String name = "돼지고기";
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> Product.of(name, null))
-                                            .withMessageContaining("");
+        assertThrows(NegativePriceException.class, () -> Product.of(name, null));
     }
 }

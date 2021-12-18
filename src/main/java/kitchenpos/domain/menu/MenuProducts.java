@@ -31,10 +31,6 @@ public class MenuProducts {
         return new MenuProducts(menuProducts);
     }
 
-    public void addAll(List<MenuProduct> menuProducts) {
-        this.menuProducts.addAll(menuProducts);
-    }
-
     public List<MenuProduct> getValues() {
         return Collections.unmodifiableList(menuProducts);
     }

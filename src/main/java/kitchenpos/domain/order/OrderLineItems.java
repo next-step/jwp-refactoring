@@ -13,7 +13,7 @@ import javax.persistence.OneToMany;
 public class OrderLineItems {
     private static final String NOT_EXIST_ORDER_LINE_ITEMS = "OrderLineItems 가 존재하지 않습니다.";
 
-    @OneToMany(mappedBy = "orders", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderLineItem> orderLineItems = new ArrayList<>();
 
     protected OrderLineItems() {}
@@ -31,8 +31,8 @@ public class OrderLineItems {
         return new OrderLineItems(orderLineItems);
     }
 
-    public void addAll(List<OrderLineItem> orderLineItems) {
-        this.orderLineItems.addAll(orderLineItems);
+    public int size() {
+        return orderLineItems.size();
     }
 
     public List<OrderLineItem> getValues() {

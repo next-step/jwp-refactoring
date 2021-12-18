@@ -32,7 +32,7 @@ public class MenuResponse {
         return new MenuResponse(menu.getId(),
                                 menu.getName().getValue(),
                                 menu.getPrice().getValue(),
-                                menu.getMenuGroup().getId(),
+                                menu.getMenuGroupId(),
                                 StreamUtils.mapToList(menu.getMenuProducts().getValues(), MenuProductResponse::from));
     }
 

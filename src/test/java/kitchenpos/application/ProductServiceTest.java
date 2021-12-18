@@ -1,6 +1,7 @@
 package kitchenpos.application;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
 import java.math.BigDecimal;
@@ -18,10 +19,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.application.fixture.ProductFixtureFactory;
+import kitchenpos.application.product.ProductService;
 import kitchenpos.domain.product.Product;
 import kitchenpos.domain.product.ProductRepository;
 import kitchenpos.dto.product.ProductRequest;
 import kitchenpos.dto.product.ProductResponse;
+import kitchenpos.exception.NegativePriceException;
 
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
@@ -63,7 +66,7 @@ class ProductServiceTest {
         ProductRequest productRequest = ProductRequest.of("돼지고기", null);
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> productService.create(productRequest));
+        assertThrows(NegativePriceException.class, () -> productService.create(productRequest));
     }
 
     @DisplayName("Product 가격이 음수(0 미만) 이면 예외가 발생한다.")
@@ -74,7 +77,7 @@ class ProductServiceTest {
         ProductRequest productRequest = ProductRequest.of("돼지고기", BigDecimal.valueOf(wrongPrice));
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> productService.create(productRequest));
+        assertThrows(NegativePriceException.class, () -> productService.create(productRequest));
     }
 
     @DisplayName("")

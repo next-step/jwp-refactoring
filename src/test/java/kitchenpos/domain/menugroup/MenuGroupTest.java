@@ -1,11 +1,14 @@
 package kitchenpos.domain.menugroup;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
+
+import kitchenpos.exception.EmptyNameException;
 
 class MenuGroupTest {
 
@@ -22,7 +25,6 @@ class MenuGroupTest {
     @NullAndEmptySource
     void creat2(String name) {
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> MenuGroup.from(name))
-                                            .withMessageContaining("이름이 비어있습니다.");
+        assertThrows(EmptyNameException.class, () -> MenuGroup.from(name));
     }
 }

@@ -78,12 +78,12 @@ class OrderTableTest {
         OrderTable orderTable = OrderTable.from(0);
 
         // when
-        orderTable.alignTableGroup(단체_테이블그룹);
+        orderTable.alignTableGroup(단체_테이블그룹.getId());
 
         // then
         assertAll(
             () -> assertTrue(orderTable.hasTableGroup()),
-            () -> assertEquals(orderTable.getTableGroup(), 단체_테이블그룹)
+            () -> assertEquals(orderTable.getTableGroupId(), 단체_테이블그룹.getId())
         );
     }
 
@@ -92,7 +92,7 @@ class OrderTableTest {
     void ungroup() {
         // given
         OrderTable orderTable = OrderTable.from(0);
-        orderTable.alignTableGroup(단체_테이블그룹);
+        orderTable.alignTableGroup(단체_테이블그룹.getId());
 
         // when
         orderTable.ungroup();
