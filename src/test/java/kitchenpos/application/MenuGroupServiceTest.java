@@ -1,7 +1,7 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.domain.MenuGroupRepository;
 import kitchenpos.dto.MenuGroupRequest;
 import kitchenpos.dto.MenuGroupResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -21,7 +21,7 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 public class MenuGroupServiceTest {
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
     @InjectMocks
     private MenuGroupService menuGroupService;
 
@@ -32,7 +32,7 @@ public class MenuGroupServiceTest {
         MenuGroupRequest menuGroupRequest = new MenuGroupRequest("식사류");
         MenuGroup expectedMenuGroup = new MenuGroup(1L, "식사류");
 
-        given(menuGroupDao.save(any(MenuGroup.class))).willReturn(expectedMenuGroup);
+        given(menuGroupRepository.save(any(MenuGroup.class))).willReturn(expectedMenuGroup);
 
         // when
         MenuGroupResponse savedMenuGroup = menuGroupService.create(menuGroupRequest);
@@ -46,7 +46,7 @@ public class MenuGroupServiceTest {
     void testList() {
         // given
         List<MenuGroup> expectedMenuGroups = Arrays.asList(new MenuGroup("식사류"), new MenuGroup("요리류"));
-        given(menuGroupDao.findAll()).willReturn(expectedMenuGroups);
+        given(menuGroupRepository.findAll()).willReturn(expectedMenuGroups);
 
         // when
         List<MenuGroupResponse> menuGroups = menuGroupService.list();
