@@ -1,6 +1,8 @@
 package kitchenpos.domain;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -13,8 +15,16 @@ public class OrderTable {
     @Embedded
     private NumberOfGuests numberOfGuests;
     private boolean empty;
+    @OneToMany
+    @JoinColumn(name = "orderTableId")
+    private List<Order> orders = new ArrayList<>();
 
     public OrderTable() {
+    }
+
+    public OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty, List<Order> orders) {
+        this(id, tableGroup, numberOfGuests, empty);
+        this.orders = orders;
     }
 
     public OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
@@ -48,8 +58,33 @@ public class OrderTable {
         this.empty = empty;
     }
 
+    public void changeToNotEmpty() {
+        this.empty = false;
+    }
+
     public boolean hasTableGroup() {
         return tableGroup != null;
+    }
+
+    public boolean isOrderStarted() {
+        for (Order order : orders) {
+            if (order.isStarted()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public void setTableGroup(TableGroup tableGroup) {
+        if (!isEmpty() || hasTableGroup()) {
+            throw new IllegalArgumentException();
+        }
+        this.tableGroup = tableGroup;
+    }
+
+    public void unsetTableGroup() {
+        this.tableGroup = null;
     }
 
     public Long getId() {
@@ -66,10 +101,6 @@ public class OrderTable {
 
     public boolean isEmpty() {
         return empty;
-    }
-
-    public void setTableGroup(TableGroup tableGroup) {
-        this.tableGroup = tableGroup;
     }
 
     @Override

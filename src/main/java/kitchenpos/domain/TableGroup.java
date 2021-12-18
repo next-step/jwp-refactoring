@@ -10,9 +10,9 @@ public class TableGroup {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private LocalDateTime createdDate;
-    @OneToMany(mappedBy = "tableGroup", cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
-    private List<OrderTable> orderTables;
+    private LocalDateTime createdDate = LocalDateTime.now();
+    @Embedded
+    private OrderTables orderTables = new OrderTables();
 
     public TableGroup() {
     }
@@ -20,11 +20,20 @@ public class TableGroup {
     public TableGroup(Long id, LocalDateTime createdDate, List<OrderTable> orderTables) {
         this.id = id;
         this.createdDate = createdDate;
+        this.orderTables = new OrderTables(orderTables);
+    }
+
+    public TableGroup(final List<OrderTable> orderTables) {
+        this.orderTables = new OrderTables(orderTables);
+    }
+
+    public TableGroup(final OrderTables orderTables) {
+        orderTables.setTableGroupToOrderTables(this);
         this.orderTables = orderTables;
     }
 
-    public TableGroup(List<OrderTable> orderTables) {
-        this.orderTables = orderTables;
+    public void ungroup() {
+        orderTables.ungroup();
     }
 
     public Long getId() {
@@ -44,11 +53,11 @@ public class TableGroup {
     }
 
     public List<OrderTable> getOrderTables() {
-        return orderTables;
+        return orderTables.values();
     }
 
     public void setOrderTables(final List<OrderTable> orderTables) {
-        this.orderTables = orderTables;
+        this.orderTables = new OrderTables(orderTables);
     }
 
     @Override
@@ -56,11 +65,11 @@ public class TableGroup {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         TableGroup that = (TableGroup) o;
-        return Objects.equals(id, that.id) && Objects.equals(createdDate, that.createdDate) && Objects.equals(orderTables, that.orderTables);
+        return id.equals(that.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, createdDate, orderTables);
+        return Objects.hash(id);
     }
 }

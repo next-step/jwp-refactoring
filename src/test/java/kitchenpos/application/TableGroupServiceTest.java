@@ -1,10 +1,6 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.OrderTableRepository;
-import kitchenpos.domain.TableGroup;
-import kitchenpos.domain.TableGroupRepository;
+import kitchenpos.domain.*;
 import kitchenpos.dto.OrderTableRequest;
 import kitchenpos.dto.TableGroupRequest;
 import kitchenpos.dto.TableGroupResponse;
@@ -25,13 +21,9 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 public class TableGroupServiceTest {
-    @Mock
-    private OrderDao orderDao;
     @Mock
     private OrderTableRepository orderTableRepository;
     @Mock
@@ -58,7 +50,6 @@ public class TableGroupServiceTest {
 
             given(orderTableRepository.findAllById(any(List.class))).willReturn(orderTables);
             given(tableGroupRepository.save(any(TableGroup.class))).willReturn(expectedTableGroup);
-            given(orderTableRepository.save(any(OrderTable.class))).willReturn(firstOrderTable, secondOrderTable);
 
             // when
             TableGroupResponse tableGroup = tableGroupService.create(tableGroupRequest);
@@ -140,14 +131,13 @@ public class TableGroupServiceTest {
             orderTables.addAll(Arrays.asList(firstOrderTable, secondOrderTable));
 
             given(tableGroupRepository.findById(anyLong())).willReturn(Optional.of(tableGroup));
-            given(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(List.class), any(List.class))).willReturn(false);
-            given(orderTableRepository.save(any(OrderTable.class))).willReturn(firstOrderTable, secondOrderTable);
 
             // when
             tableGroupService.ungroup(tableGroup.getId());
 
             // then
-            verify(orderTableRepository, times(2)).save(any(OrderTable.class));
+            assertThat(orderTables).map(OrderTable::getTableGroup)
+                    .allMatch(Objects::isNull);
         }
 
         @DisplayName("아직 주문이 생성되지 않아야 한다")
@@ -156,12 +146,12 @@ public class TableGroupServiceTest {
             // given
             List<OrderTable> orderTables = new ArrayList<>();
             TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), orderTables);
-            OrderTable firstOrderTable = new OrderTable(1L, tableGroup, 4, false);
-            OrderTable secondOrderTable = new OrderTable(2L, tableGroup, 4, false);
+            List<Order> orders = Arrays.asList(new Order(OrderStatus.COOKING), new Order(OrderStatus.COOKING));
+            OrderTable firstOrderTable = new OrderTable(1L, tableGroup, 4, false, orders);
+            OrderTable secondOrderTable = new OrderTable(2L, tableGroup, 4, false, orders);
             orderTables.addAll(Arrays.asList(firstOrderTable, secondOrderTable));
 
             given(tableGroupRepository.findById(anyLong())).willReturn(Optional.of(tableGroup));
-            given(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(List.class), any(List.class))).willReturn(true);
 
             // when
             ThrowableAssert.ThrowingCallable callable = () -> tableGroupService.ungroup(tableGroup.getId());
