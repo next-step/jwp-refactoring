@@ -5,6 +5,7 @@ import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.dto.OrderTableResponse;
 import kitchenpos.utils.Http;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,11 +22,12 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
     @Test
     void testManagement() {
         // given
-        OrderTable 첫번째_테이블 = TableAcceptanceTest.주문_테이블_등록되어_있음(4, true);
-        OrderTable 두번째_테이블 = TableAcceptanceTest.주문_테이블_등록되어_있음(4, true);
+        OrderTableResponse 첫번째_테이블 = TableAcceptanceTest.주문_테이블_등록되어_있음(4, true);
+        OrderTableResponse 두번째_테이블 = TableAcceptanceTest.주문_테이블_등록되어_있음(4, true);
 
-        List<OrderTable> orderTables = Arrays.asList(첫번째_테이블, 두번째_테이블);
-        TableGroup 요청_단체테이블 = new TableGroup(orderTables);
+        List<OrderTableResponse> orderTables = Arrays.asList(첫번째_테이블, 두번째_테이블);
+        // TODO
+        TableGroup 요청_단체테이블 = null;// new TableGroup(orderTables);
 
         // when
         ExtractableResponse<Response> createResponse = 단체_지정_요청(요청_단체테이블);

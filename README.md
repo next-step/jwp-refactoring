@@ -131,6 +131,7 @@
     - MenuRestController, MenuService
     - MenuGroupRestController, MenuGroupService
     - ProductRestController, ProductService
+    - TableRestController, TableService
 - JdbcTemplate -> JPA로 Persistance 변경
   - 상품
   - 메뉴

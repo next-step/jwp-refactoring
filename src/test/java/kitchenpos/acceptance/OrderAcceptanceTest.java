@@ -5,6 +5,7 @@ import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.domain.*;
 import kitchenpos.dto.MenuResponse;
+import kitchenpos.dto.OrderTableResponse;
 import kitchenpos.utils.Http;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,7 +23,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     void testManagement() {
         // given
         MenuResponse 대표메뉴 = MenuAcceptanceTest.대표메뉴_등록되어_있음();
-        OrderTable 일번_테이블 = TableAcceptanceTest.주문_테이블_등록되어_있음(4, false);
+        OrderTableResponse 일번_테이블 = TableAcceptanceTest.주문_테이블_등록되어_있음(4, false);
         List<OrderLineItem> orderLineItems = Arrays.asList(new OrderLineItem(대표메뉴.getId(), 2));
         Order 주문 = new Order(일번_테이블.getId(), orderLineItems);
 

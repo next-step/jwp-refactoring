@@ -3,6 +3,8 @@ package kitchenpos.application;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.dto.OrderTableRequest;
+import kitchenpos.dto.OrderTableResponse;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -35,16 +37,16 @@ public class TableServiceTest {
     @Test
     void testCreate() {
         // given
-        OrderTable requestOrderTable = new OrderTable(4, false);
+        OrderTableRequest requestOrderTable = new OrderTableRequest(4, false);
         OrderTable expectedOrderTable = new OrderTable(1L, null, 4, false);
 
         given(orderTableDao.save(any(OrderTable.class))).willReturn(expectedOrderTable);
 
         // when
-        OrderTable orderTable = tableService.create(requestOrderTable);
+        OrderTableResponse orderTable = tableService.create(requestOrderTable);
 
         // then
-        assertThat(orderTable).isEqualTo(expectedOrderTable);
+        assertThat(orderTable).isEqualTo(OrderTableResponse.of(expectedOrderTable));
     }
 
     @DisplayName("모든 주문 테이블을 조회한다")
@@ -55,10 +57,10 @@ public class TableServiceTest {
         given(orderTableDao.findAll()).willReturn(expectedOrderTables);
 
         // when
-        List<OrderTable> orderTables = tableService.list();
+        List<OrderTableResponse> orderTables = tableService.list();
 
         // then
-        assertThat(orderTables).isEqualTo(expectedOrderTables);
+        assertThat(orderTables).isEqualTo(OrderTableResponse.ofList(expectedOrderTables));
     }
 
     @DisplayName("주문 테이블 비우기")
@@ -68,7 +70,7 @@ public class TableServiceTest {
         @Test
         void testEmpty() {
             // given
-            OrderTable requestOrderTable = new OrderTable(4, true);
+            OrderTableRequest requestOrderTable = new OrderTableRequest(4, true);
             OrderTable expectedOrderTable = new OrderTable(1L, null, 4, true);
 
             given(orderTableDao.findById(anyLong())).willReturn(Optional.of(expectedOrderTable));
@@ -76,21 +78,21 @@ public class TableServiceTest {
             given(orderTableDao.save(any(OrderTable.class))).willReturn(expectedOrderTable);
 
             // when
-            OrderTable orderTable = tableService.changeEmpty(expectedOrderTable.getId(), requestOrderTable);
+            OrderTableResponse orderTable = tableService.changeEmpty(expectedOrderTable.getId(), requestOrderTable);
 
             // then
-            assertThat(orderTable).isEqualTo(expectedOrderTable);
+            assertThat(orderTable).isEqualTo(OrderTableResponse.of(expectedOrderTable));
         }
 
         @DisplayName("존재 하는 주문 테이블을 요청해야한다")
         @Test
         void hasSavedOrderTable() {
             // given
-            OrderTable requestOrderTable = new OrderTable(1L, null, 4, true);
+            OrderTableRequest requestOrderTable = new OrderTableRequest( 4, true);
             given(orderTableDao.findById(anyLong())).willReturn(Optional.empty());
 
             // when
-            ThrowableAssert.ThrowingCallable callable = () -> tableService.changeEmpty(requestOrderTable.getId(), requestOrderTable);
+            ThrowableAssert.ThrowingCallable callable = () -> tableService.changeEmpty(anyLong(), requestOrderTable);
 
             // then
             assertThatThrownBy(callable)
@@ -101,11 +103,13 @@ public class TableServiceTest {
         @Test
         void notGrouping() {
             // given
-            OrderTable requestOrderTable = new OrderTable(1L, 2L, 4, true);
-            given(orderTableDao.findById(anyLong())).willReturn(Optional.of(requestOrderTable));
+            OrderTableRequest requestOrderTable = new OrderTableRequest( 4, true);
+            OrderTable expectedOrderTable = new OrderTable(1L, 2L, 4, true);
+
+            given(orderTableDao.findById(anyLong())).willReturn(Optional.of(expectedOrderTable));
 
             // when
-            ThrowableAssert.ThrowingCallable callable = () -> tableService.changeEmpty(requestOrderTable.getId(), requestOrderTable);
+            ThrowableAssert.ThrowingCallable callable = () -> tableService.changeEmpty(expectedOrderTable.getId(), requestOrderTable);
 
             // then
             assertThatThrownBy(callable)
@@ -116,7 +120,7 @@ public class TableServiceTest {
         @Test
         void validateOrderState() {
             // given
-            OrderTable requestOrderTable = new OrderTable(4, true);
+            OrderTableRequest requestOrderTable = new OrderTableRequest(4, true);
             OrderTable orderTable = new OrderTable(1L, null, 4, true);
 
             given(orderTableDao.findById(anyLong())).willReturn(Optional.of(orderTable));
@@ -138,14 +142,14 @@ public class TableServiceTest {
         @Test
         void testChangeCountOfGuests() {
             // given
-            OrderTable requestOrderTable = new OrderTable(4, false);
+            OrderTableRequest requestOrderTable = new OrderTableRequest(4, false);
             OrderTable expectedOrderTable = new OrderTable(1L, null, 4, false);
 
             given(orderTableDao.findById(anyLong())).willReturn(Optional.of(expectedOrderTable));
             given(orderTableDao.save(any(OrderTable.class))).willReturn(expectedOrderTable);
 
             // when
-            OrderTable orderTable = tableService.changeNumberOfGuests(expectedOrderTable.getId(), requestOrderTable);
+            OrderTableResponse orderTable = tableService.changeNumberOfGuests(expectedOrderTable.getId(), requestOrderTable);
 
             // then
             assertThat(orderTable.getNumberOfGuests()).isEqualTo(expectedOrderTable.getNumberOfGuests());
@@ -155,10 +159,10 @@ public class TableServiceTest {
         @Test
         void countOverZero() {
             // given
-            OrderTable orderTable = new OrderTable(1L, null, 0, false);
+            OrderTableRequest orderTable = new OrderTableRequest(0, false);
 
             // when
-            ThrowableAssert.ThrowingCallable callable = () -> tableService.changeNumberOfGuests(orderTable.getId(), orderTable);
+            ThrowableAssert.ThrowingCallable callable = () -> tableService.changeNumberOfGuests(anyLong(), orderTable);
 
             // then
             assertThatThrownBy(callable)
@@ -169,11 +173,11 @@ public class TableServiceTest {
         @Test
         void hasSavedOrderTable() {
             // given
-            OrderTable orderTable = new OrderTable(1L, null, 4, false);
+            OrderTableRequest orderTable = new OrderTableRequest(4, false);
             given(orderTableDao.findById(anyLong())).willReturn(Optional.empty());
 
             // when
-            ThrowableAssert.ThrowingCallable callable = () -> tableService.changeNumberOfGuests(orderTable.getId(), orderTable);
+            ThrowableAssert.ThrowingCallable callable = () -> tableService.changeNumberOfGuests(anyLong(), orderTable);
 
             // then
             assertThatThrownBy(callable)
@@ -184,11 +188,12 @@ public class TableServiceTest {
         @Test
         void notEmptyTable() {
             // given
+            OrderTableRequest orderTableRequest = new OrderTableRequest(4, false);
             OrderTable orderTable = new OrderTable(1L, null, 4, true);
             given(orderTableDao.findById(anyLong())).willReturn(Optional.of(orderTable));
 
             // when
-            ThrowableAssert.ThrowingCallable callable = () -> tableService.changeNumberOfGuests(orderTable.getId(), orderTable);
+            ThrowableAssert.ThrowingCallable callable = () -> tableService.changeNumberOfGuests(orderTable.getId(), orderTableRequest);
 
             // then
             assertThatThrownBy(callable)
