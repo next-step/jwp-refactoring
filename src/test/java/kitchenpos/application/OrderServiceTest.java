@@ -53,7 +53,7 @@ class OrderServiceTest {
         Order savedOrder = mock(Order.class);
         when(savedOrder.getId()).thenReturn(1L);
         when(orderRepository.save(any())).thenReturn(savedOrder);
-        OrderService orderService = new OrderService(menuRepository, orderRepository, orderLineItemRepository, orderTableRepository);
+        OrderService orderService = new OrderService(menuRepository, orderRepository,  orderTableRepository);
 
         // when
         Order createdOrder = orderService.create(orderRequest);
@@ -69,7 +69,7 @@ class OrderServiceTest {
         Order order = mock(Order.class);
         when(orderRepository.findAll()).thenReturn(Arrays.asList(order));
 
-        OrderService orderService = new OrderService(menuRepository, orderRepository, orderLineItemRepository, orderTableRepository);
+        OrderService orderService = new OrderService(menuRepository, orderRepository,  orderTableRepository);
 
         // when
         List<Order> orders = orderService.list();
@@ -91,7 +91,7 @@ class OrderServiceTest {
 
         when(orderRepository.findById(1L)).thenReturn(Optional.of(expectedOrder));
 
-        OrderService orderService = new OrderService(menuRepository, orderRepository, orderLineItemRepository, orderTableRepository);
+        OrderService orderService = new OrderService(menuRepository, orderRepository,  orderTableRepository);
         // when
         Order savedOrder = orderService.changeOrderStatus(1L, orderRequest);
         // then

@@ -71,7 +71,7 @@ class OrderServiceAcceptanceTest extends AcceptanceTest {
         OrderResponse createdOrder = OrderFactory.주문_생성_요청(orderRequest).as(OrderResponse.class);
 
         Order order = new Order(createdOrder.getId(), createdOrder.getOrderTable(), createdOrder.getOrderStatus(), createdOrder.getOrderedTime(), createdOrder.getOrderLineItems());
-        order.changeStatus(OrderStatus.MEAL);
+        order.changeOrderStatusMeal();
 
         ExtractableResponse<Response> response = OrderFactory.주문_상태변경_요청(new OrderRequest(order.getOrderTable().getId(), order.getOrderStatus(), orderLineItems), createdOrder.getId());
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());

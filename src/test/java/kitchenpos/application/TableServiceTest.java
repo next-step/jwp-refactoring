@@ -72,7 +72,7 @@ class TableServiceTest {
         Long orderTableId = 1L;
 
         OrderTable orderTable  = mock(OrderTable.class);
-        when(orderTable .getTableGroup()).thenReturn(null);
+        when(orderTable.isEmpty()).thenReturn(true);
 
         when(orderTableRepository.findById(orderTableId)).thenReturn(Optional.of(orderTable ));
         when(orderRepository.existsByOrderTableAndOrderStatusIn(
@@ -80,12 +80,10 @@ class TableServiceTest {
 
         OrderTable savedOrderTable = mock(OrderTable.class);
         when(savedOrderTable.isEmpty()).thenReturn(true);
-        when(orderTableRepository.save(orderTable )).thenReturn(savedOrderTable);
 
         TableService tableService = new TableService(orderRepository, orderTableRepository);
-
         // when
-        OrderTable changedOrderTable = tableService.changeEmpty(orderTableId, OrderTableRequest.from(orderTable));
+        OrderTable changedOrderTable = tableService.changeEmpty(orderTableId, OrderTableRequest.from(savedOrderTable));
 
         // then
         assertThat(changedOrderTable.isEmpty()).isTrue();
