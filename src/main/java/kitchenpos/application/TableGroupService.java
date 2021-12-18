@@ -33,13 +33,9 @@ public class TableGroupService {
         for (Long orderTableId : orderTableIds) {
             OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                                                             .orElseThrow(() -> new IllegalArgumentException("등록된 주문테이블이 아닙니다."));
-            savedOrderTable.checkAvailable();
-            savedOrderTable.changeNonEmptyOrderTable();
             orderTables.add(savedOrderTable);
         }
-        final TableGroup savedTableGroup = tableGroupRepository.save(new TableGroup(orderTables));
-        savedTableGroup.setTableGroupToOrderTables(orderTables);
-        return savedTableGroup;
+        return tableGroupRepository.save(new TableGroup(orderTables));
     }
 
     @Transactional

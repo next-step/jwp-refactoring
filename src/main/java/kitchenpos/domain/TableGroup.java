@@ -17,7 +17,7 @@ public class TableGroup {
 
     private LocalDateTime createdDate;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "tableGroup")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "tableGroup", cascade = CascadeType.PERSIST)
     @JsonIgnoreProperties(value = {"tableGroup"} , allowSetters = true)
     private List<OrderTable> orderTables = new ArrayList<>();
 
@@ -25,6 +25,11 @@ public class TableGroup {
     }
 
     public TableGroup(List<OrderTable> orderTables) {
+
+        for (final OrderTable orderTable : orderTables) {
+            orderTable.checkAvailable();
+            orderTable.changeNonEmptyOrderTable();
+        }
         this.orderTables = orderTables;
         this.createdDate = LocalDateTime.now();
     }
