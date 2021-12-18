@@ -9,6 +9,7 @@ import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menuGroup.domain.MenuGroup;
 import kitchenpos.testFixture.MenuGroupTestFixture;
+import kitchenpos.testFixture.MenuTestFixture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -47,6 +48,7 @@ public class OrderServiceTest {
     private OrderTable 테이블1번;
     private OrderLineItem 후라이드두마리세트_2개_주문함;
     private Order 총주문;
+    private MenuGroup 치킨류;
 
     @BeforeEach
     void setUp() {
@@ -59,11 +61,9 @@ public class OrderServiceTest {
         후라이드두마리구성.setProductId(1L);
         후라이드두마리구성.setQuantity(2L);
 
-        후라이드두마리세트 = new Menu();
-        후라이드두마리세트.setId(1L);
-        후라이드두마리세트.setMenuGroupId(1L);
-        후라이드두마리세트.setPrice(new BigDecimal("10000"));
-        후라이드두마리세트.setMenuProducts(Arrays.asList(후라이드두마리구성));
+        치킨류 = MenuGroupTestFixture.메뉴그룹생성(1L, "치킨");
+
+        후라이드두마리세트 = MenuTestFixture.메뉴생성(1L, "후라이드두마리세트", new BigDecimal("10000"), 치킨류, Arrays.asList(후라이드두마리구성));
 
         테이블1번 = new OrderTable();
         테이블1번.setId(1L);
@@ -91,8 +91,8 @@ public class OrderServiceTest {
 
         assertAll(
                 () -> assertThat(createOrder).isNotNull(),
-                () -> assertThat(createOrder. getOrderStatus()).isEqualTo("COOKING"),
-                () -> assertThat(createOrder. getOrderLineItems().contains(후라이드두마리세트_2개_주문함)).isTrue()
+                () -> assertThat(createOrder.getOrderStatus()).isEqualTo("COOKING"),
+                () -> assertThat(createOrder.getOrderLineItems().contains(후라이드두마리세트_2개_주문함)).isTrue()
         );
 
     }

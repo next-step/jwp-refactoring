@@ -7,6 +7,7 @@ import kitchenpos.menuGroup.domain.MenuGroup;
 import kitchenpos.domain.Product;
 import kitchenpos.menuGroup.domain.MenuGroupRepository;
 import kitchenpos.testFixture.MenuGroupTestFixture;
+import kitchenpos.testFixture.MenuTestFixture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,7 +32,7 @@ public class MenuServiceTest {
     @Mock
     private MenuGroupRepository menuGroupRepository;
     @Mock
-    private MenuProductDao menuProductDao;
+    private MenuProductRepository menuProductRepository;
     @Mock
     private ProductDao productDao;
 
@@ -56,13 +57,9 @@ public class MenuServiceTest {
         후라이드두마리구성.setProductId(1L);
         후라이드두마리구성.setQuantity(2L);
 
-        치킨류 = MenuGroupTestFixture.메뉴그룹생성(1L,"치킨");
+        치킨류 = MenuGroupTestFixture.메뉴그룹생성(1L, "치킨");
 
-        후라이드두마리세트 = new Menu();
-        후라이드두마리세트.setId(1L);
-        후라이드두마리세트.setMenuGroupId(1L);
-        후라이드두마리세트.setPrice(new BigDecimal("10000"));// 치킨이 너무 비싸..
-        후라이드두마리세트.setMenuProducts(Arrays.asList(후라이드두마리구성));
+        후라이드두마리세트 = MenuTestFixture.메뉴생성(1L, "후라이드두마리세트", new BigDecimal("10000"), 치킨류, Arrays.asList(후라이드두마리구성));
     }
 
     @DisplayName("메뉴 생성")
@@ -72,7 +69,7 @@ public class MenuServiceTest {
         given(menuGroupRepository.existsById(1L)).willReturn(true);
         given(productDao.findById(1L)).willReturn(java.util.Optional.ofNullable(후라이드));
         given(menuRepository.save(후라이드두마리세트)).willReturn(후라이드두마리세트);
-        given(menuProductDao.save(후라이드두마리구성)).willReturn(후라이드두마리구성);
+        given(menuProductRepository.save(후라이드두마리구성)).willReturn(후라이드두마리구성);
 
         Menu creatMenu = menuService.create(후라이드두마리세트);
 
@@ -101,11 +98,7 @@ public class MenuServiceTest {
     @DisplayName("가격 x 수량 = 금액 보다 등록한 금액이 더 작아야 한다.")
     @Test
     void createPriceLessError() {
-        Menu 비싼_후라이드두마리세트 = new Menu();
-        비싼_후라이드두마리세트.setId(2L);
-        비싼_후라이드두마리세트.setMenuGroupId(1L);
-        비싼_후라이드두마리세트.setPrice(new BigDecimal("100000"));
-        비싼_후라이드두마리세트.setMenuProducts(Arrays.asList(후라이드두마리구성));
+        Menu 비싼_후라이드두마리세트 = MenuTestFixture.메뉴생성(2L,"비싼_후라이드두마리세트",new BigDecimal("100000"),치킨류,Arrays.asList(후라이드두마리구성));
 
         assertThatThrownBy(() ->
                 menuService.create(비싼_후라이드두마리세트)
@@ -117,7 +110,7 @@ public class MenuServiceTest {
     @Test
     void list() {
         given(menuRepository.findAll()).willReturn(Arrays.asList(후라이드두마리세트));
-        given(menuProductDao.findAllByMenuId(후라이드두마리세트.getId())).willReturn(Arrays.asList(후라이드두마리구성));
+        given(menuProductRepository.findAllByMenuId(후라이드두마리세트.getId())).willReturn(Arrays.asList(후라이드두마리구성));
 
         List<Menu> menus = menuService.list();
 
