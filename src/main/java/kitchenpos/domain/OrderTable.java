@@ -36,26 +36,6 @@ public class OrderTable {
         this.empty = empty;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
-    public Long getTableGroupId() {
-        return tableGroupId;
-    }
-
-    public void setTableGroupId(final Long tableGroupId) {
-        this.tableGroupId = tableGroupId;
-    }
-
-    public int getNumberOfGuests() {
-        return numberOfGuests.value();
-    }
-
     public void changeNumberOfGuests(final int numberOfGuests) {
         if (isEmpty()) {
             throw new IllegalArgumentException();
@@ -63,12 +43,28 @@ public class OrderTable {
         this.numberOfGuests = NumberOfGuests.of(numberOfGuests);
     }
 
+    public void changeEmptyStatus(final boolean empty) {
+        this.empty = empty;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Long getTableGroupId() {
+        return tableGroupId;
+    }
+
+    public int getNumberOfGuests() {
+        return numberOfGuests.value();
+    }
+
     public boolean isEmpty() {
         return empty;
     }
 
-    public void setEmpty(final boolean empty) {
-        this.empty = empty;
+    public void setTableGroupId(Long tableGroupId) {
+        this.tableGroupId = tableGroupId;
     }
 
     @Override
