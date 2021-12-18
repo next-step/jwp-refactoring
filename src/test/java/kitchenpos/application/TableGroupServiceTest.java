@@ -38,7 +38,6 @@ public class TableGroupServiceTest {
 	@Test
 	void createTest() {
 		// given
-		TableGroup tableGroup = new TableGroup();
 		List<OrderTable> orderTableList = new ArrayList<>();
 		OrderTable orderTable1 = new OrderTable();
 		orderTable1.setId(1L);
@@ -48,32 +47,38 @@ public class TableGroupServiceTest {
 		orderTable2.setEmpty(true);
 		orderTableList.add(orderTable1);
 		orderTableList.add(orderTable2);
-		tableGroup.setOrderTables(orderTableList);
+
+		TableGroup request = new TableGroup();
+		request.setOrderTables(orderTableList);
+
+		TableGroup persist = new TableGroup();
+		persist.setOrderTables(orderTableList);
 
 		given(orderTableDao.findAllByIdIn(any())).willReturn(orderTableList);
-		given(tableGroupDao.save(any())).willReturn(tableGroup);
+		given(tableGroupDao.save(any())).willReturn(persist);
 
 		// when
-		tableGroup = tableGroupService.create(tableGroup);
+		request = tableGroupService.create(request);
 
 		// then
-		assertThat(tableGroup.getOrderTables().size()).isEqualTo(2);
+		assertThat(request.getOrderTables().size()).isEqualTo(persist.getOrderTables().size());
 	}
 
 	@DisplayName("생성 시, 주문 테이블 수가 2개 이상이어야 한다")
 	@Test
 	void createTest2() {
 		// given
-		TableGroup tableGroup = new TableGroup();
 		List<OrderTable> orderTableList = new ArrayList<>();
 		OrderTable orderTable1 = new OrderTable();
 		orderTable1.setId(1L);
 		orderTable1.setEmpty(true);
 		orderTableList.add(orderTable1);
-		tableGroup.setOrderTables(orderTableList);
+
+		TableGroup request = new TableGroup();
+		request.setOrderTables(orderTableList);
 
 		// when, then
-		assertThatThrownBy(() -> tableGroupService.create(tableGroup))
+		assertThatThrownBy(() -> tableGroupService.create(request))
 			.isInstanceOf(IllegalArgumentException.class);
 	}
 
@@ -81,7 +86,6 @@ public class TableGroupServiceTest {
 	@Test
 	void createTest3() {
 		// given
-		TableGroup tableGroup = new TableGroup();
 		List<OrderTable> orderTableList = new ArrayList<>();
 		OrderTable orderTable1 = new OrderTable();
 		orderTable1.setId(1L);
@@ -91,12 +95,14 @@ public class TableGroupServiceTest {
 		orderTable2.setEmpty(true);
 		orderTableList.add(orderTable1);
 		orderTableList.add(orderTable2);
-		tableGroup.setOrderTables(orderTableList);
+
+		TableGroup request = new TableGroup();
+		request.setOrderTables(orderTableList);
 
 		given(orderTableDao.findAllByIdIn(any())).willReturn(new ArrayList<>());
 
 		// when, then
-		assertThatThrownBy(() -> tableGroupService.create(tableGroup))
+		assertThatThrownBy(() -> tableGroupService.create(request))
 			.isInstanceOf(IllegalArgumentException.class);
 	}
 
@@ -104,7 +110,6 @@ public class TableGroupServiceTest {
 	@Test
 	void createTest4() {
 		// given
-		TableGroup tableGroup = new TableGroup();
 		List<OrderTable> orderTableList = new ArrayList<>();
 		OrderTable orderTable1 = new OrderTable();
 		orderTable1.setId(1L);
@@ -114,12 +119,13 @@ public class TableGroupServiceTest {
 		orderTable2.setEmpty(true);
 		orderTableList.add(orderTable1);
 		orderTableList.add(orderTable2);
-		tableGroup.setOrderTables(orderTableList);
+		TableGroup request = new TableGroup();
+		request.setOrderTables(orderTableList);
 
 		given(orderTableDao.findAllByIdIn(any())).willReturn(orderTableList);
 
 		// when, then
-		assertThatThrownBy(() -> tableGroupService.create(tableGroup))
+		assertThatThrownBy(() -> tableGroupService.create(request))
 			.isInstanceOf(IllegalArgumentException.class);
 	}
 

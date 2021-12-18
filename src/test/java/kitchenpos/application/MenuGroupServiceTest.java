@@ -30,8 +30,8 @@ public class MenuGroupServiceTest {
 	@Test
 	void createTest() {
 		// given
-		MenuGroup menuGroup = new MenuGroup();
-		menuGroup.setName("추천메뉴");
+		MenuGroup request = new MenuGroup();
+		request.setName("추천메뉴");
 
 		MenuGroup persist = new MenuGroup();
 		persist.setId(1L);
@@ -40,7 +40,7 @@ public class MenuGroupServiceTest {
 		given(menuGroupDao.save(any())).willReturn(persist);
 
 		// when
-		MenuGroup result = menuGroupService.create(menuGroup);
+		MenuGroup result = menuGroupService.create(request);
 
 		// then
 		assertThat(result.getId()).isEqualTo(persist.getId());
@@ -53,7 +53,7 @@ public class MenuGroupServiceTest {
 		// given
 		List<MenuGroup> persist = new ArrayList<>();
 		persist.add(MenuGroupTest.치킨류);
-		
+
 		given(menuGroupDao.findAll()).willReturn(persist);
 
 		// when

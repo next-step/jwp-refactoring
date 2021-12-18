@@ -1,6 +1,5 @@
 package kitchenpos.application;
 
-import static kitchenpos.domain.MenuProductTest.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
@@ -22,6 +21,8 @@ import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
+import kitchenpos.domain.MenuProduct;
+import kitchenpos.domain.Product;
 import kitchenpos.domain.ProductTest;
 
 @ExtendWith(MockitoExtension.class)
@@ -49,6 +50,7 @@ public class MenuServiceTest {
 		List<Menu> persist = new ArrayList<>();
 		Menu menu1 = new Menu();
 		persist.add(menu1);
+
 		given(menuDao.findAll()).willReturn(persist);
 		given(menuProductDao.findAllByMenuId(any()))
 			.willReturn(menu1.getMenuProducts());
@@ -64,22 +66,38 @@ public class MenuServiceTest {
 	@Test
 	void createTest() {
 		// given
-		Menu menu = new Menu(null, "후라이드+양념", new BigDecimal(10_000),
-			1L, Arrays.asList(후라이드_양념_세트_후라이드));
-		Menu persist = new Menu(1L, "후라이드+양념", new BigDecimal(10_000),
-			1L, Arrays.asList(후라이드_양념_세트_후라이드));
+		Product product1 = new Product();
+		product1.setId(1L);
+		product1.setPrice(new BigDecimal(10_000));
+		MenuProduct menuProduct1 = new MenuProduct();
+		menuProduct1.setSeq(1L);
+		menuProduct1.setMenuId(1L);
+		menuProduct1.setProductId(1L);
+		menuProduct1.setQuantity(1);
+		Menu persist = new Menu();
+		persist.setId(1L);
+		persist.setName("후라이드+양념");
+		persist.setPrice(new BigDecimal(10_000));
+		persist.setMenuGroupId(1L);
+		persist.setMenuProducts(Arrays.asList(menuProduct1));
+
+		Menu request = new Menu();
+		request.setName("후라이드+양념");
+		request.setPrice(new BigDecimal(10_000));
+		request.setMenuGroupId(1L);
+		request.setMenuProducts(Arrays.asList(menuProduct1));
 
 		given(menuGroupDao.existsById(any())).willReturn(true);
-		given(productDao.findById(ProductTest.후라이드.getId()))
-			.willReturn(Optional.of(ProductTest.후라이드));
+		given(productDao.findById(any()))
+			.willReturn(Optional.of(product1));
 		given(menuDao.save(any())).willReturn(persist);
-		given(menuProductDao.save(후라이드_양념_세트_후라이드)).willReturn(후라이드_양념_세트_후라이드);
+		given(menuProductDao.save(any())).willReturn(menuProduct1);
 
 		// when
-		Menu result = menuService.create(menu);
+		Menu result = menuService.create(request);
 
 		// then
-		assertThat(result.getName()).isEqualTo(menu.getName());
+		assertThat(result.getName()).isEqualTo(request.getName());
 
 	}
 
@@ -87,11 +105,13 @@ public class MenuServiceTest {
 	@Test
 	void createTest2() {
 		// given
-		Menu menu = new Menu(null, "후라이드+양념", new BigDecimal(-1),
-			1L, Arrays.asList(후라이드_양념_세트_후라이드));
+		Menu request = new Menu();
+		request.setName("후라이드+양념");
+		request.setPrice(new BigDecimal(-1));
+		request.setMenuGroupId(1L);
 
 		// when, then
-		assertThatThrownBy(() -> menuService.create(menu))
+		assertThatThrownBy(() -> menuService.create(request))
 			.isInstanceOf(IllegalArgumentException.class);
 	}
 
@@ -99,13 +119,14 @@ public class MenuServiceTest {
 	@Test
 	void createTest3() {
 		// given
-		Menu menu = new Menu(null, "후라이드+양념", new BigDecimal(10_000),
-			1L, Arrays.asList(후라이드_양념_세트_후라이드));
+		Menu request = new Menu();
+		request.setName("후라이드+양념");
+		request.setPrice(new BigDecimal(10_000));
 
 		given(menuGroupDao.existsById(any())).willReturn(false);
 
 		// when, then
-		assertThatThrownBy(() -> menuService.create(menu))
+		assertThatThrownBy(() -> menuService.create(request))
 			.isInstanceOf(IllegalArgumentException.class);
 	}
 
@@ -113,15 +134,24 @@ public class MenuServiceTest {
 	@Test
 	void createTest4() {
 		// given
-		Menu menu = new Menu(null, "후라이드+양념", new BigDecimal(10_000),
-			1L, Arrays.asList(후라이드_양념_세트_후라이드));
+		MenuProduct menuProduct1 = new MenuProduct();
+		menuProduct1.setSeq(1L);
+		menuProduct1.setMenuId(1L);
+		menuProduct1.setProductId(1L);
+		menuProduct1.setQuantity(1);
+
+		Menu request = new Menu();
+		request.setName("후라이드+양념");
+		request.setPrice(new BigDecimal(10_000));
+		request.setMenuGroupId(1L);
+		request.setMenuProducts(Arrays.asList(menuProduct1));
 
 		given(menuGroupDao.existsById(any())).willReturn(true);
 		given(productDao.findById(ProductTest.후라이드.getId()))
 			.willReturn(Optional.empty());
 
 		// when, then
-		assertThatThrownBy(() -> menuService.create(menu))
+		assertThatThrownBy(() -> menuService.create(request))
 			.isInstanceOf(IllegalArgumentException.class);
 	}
 
@@ -129,15 +159,24 @@ public class MenuServiceTest {
 	@Test
 	void createTest5() {
 		// given
-		Menu menu = new Menu(null, "후라이드+양념", new BigDecimal(90_000),
-			1L, Arrays.asList(후라이드_양념_세트_후라이드));
+		MenuProduct menuProduct1 = new MenuProduct();
+		menuProduct1.setSeq(1L);
+		menuProduct1.setMenuId(1L);
+		menuProduct1.setProductId(1L);
+		menuProduct1.setQuantity(1);
+
+		Menu request = new Menu();
+		request.setName("후라이드+양념");
+		request.setPrice(new BigDecimal(90_000));
+		request.setMenuGroupId(1L);
+		request.setMenuProducts(Arrays.asList(menuProduct1));
 
 		given(menuGroupDao.existsById(any())).willReturn(true);
 		given(productDao.findById(ProductTest.후라이드.getId()))
 			.willReturn(Optional.of(ProductTest.후라이드));
 
 		// when, then
-		assertThatThrownBy(() -> menuService.create(menu))
+		assertThatThrownBy(() -> menuService.create(request))
 			.isInstanceOf(IllegalArgumentException.class);
 	}
 
