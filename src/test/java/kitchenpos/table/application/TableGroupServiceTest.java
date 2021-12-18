@@ -1,6 +1,6 @@
 package kitchenpos.table.application;
 
-import kitchenpos.dao.OrderDao;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
@@ -35,7 +35,7 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 public class TableGroupServiceTest {
     @Mock
-    OrderDao orderDao;
+    OrderRepository orderRepository;
     @Mock
     OrderTableRepository orderTableRepository;
     @Mock
@@ -188,7 +188,7 @@ public class TableGroupServiceTest {
             // given
             given(tableGroupRepository.findById(any(Long.TYPE)))
                     .willReturn(Optional.of(등록된_단체));
-            given(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(), any()))
+            given(orderRepository.existsByOrderTableInAndOrderStatusIn(any(), any()))
                     .willReturn(false);
 
             // when
@@ -201,7 +201,7 @@ public class TableGroupServiceTest {
             // given
             given(tableGroupRepository.findById(any(Long.TYPE)))
                     .willReturn(Optional.of(등록된_단체));
-            given(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(), any()))
+            given(orderRepository.existsByOrderTableInAndOrderStatusIn(any(), any()))
                     .willReturn(true);
 
             // when
