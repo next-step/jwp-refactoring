@@ -98,6 +98,17 @@ class MenuServiceTest {
         assertThatThrownBy(() -> menuService.create(this.menu)).isInstanceOf(IllegalArgumentException.class);
     }
 
+    @DisplayName("메뉴는 메뉴 그룹에 속해있어야 한다")
+    @Test
+    void inMenuGroupTest() {
+        // when
+        this.menu.setMenuGroupId(null);
+        MenuService menuService = new MenuService(menuDao, menuGroupDao, menuProductDao, productDao);
+
+        // then
+        assertThatThrownBy(() -> menuService.create(this.menu)).isInstanceOf(IllegalArgumentException.class);
+    }
+
     @DisplayName("메뉴를 조회한다")
     @Test
     void list() {
