@@ -3,6 +3,7 @@ package kitchenpos.domain;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import kitchenpos.dto.OrderRequest;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -27,22 +28,17 @@ public class Order {
 
     private LocalDateTime orderedTime;
 
-    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JsonIgnoreProperties(value = {"order"} , allowSetters = true)
     private List<OrderLineItem> orderLineItems = new ArrayList<>();
 
     public Order() {
     }
 
-    public Order(OrderTable orderTable, OrderStatus orderStatus) {
+    public Order(OrderTable orderTable) {
         this.orderTable = orderTable;
-        this.orderStatus = orderStatus;
+        this.orderStatus = OrderStatus.COOKING;
         this.orderedTime = LocalDateTime.now();
-    }
-
-    public Order(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
-        this.orderTable = orderTable;
-        this.orderLineItems = orderLineItems;
     }
 
     public Order(Long id, OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
@@ -52,6 +48,7 @@ public class Order {
         this.orderedTime = orderedTime;
         this.orderLineItems = orderLineItems;
     }
+
 
     public Long getId() {
         return id;
@@ -78,8 +75,16 @@ public class Order {
         orderLineItem.addOrder(this);
     }
 
-    public void changeStatus(OrderStatus orderStatus) {
-        this.orderStatus = orderStatus;
+    public void changeStatus(OrderRequest orderRequest) {
+
+        if (Objects.equals(OrderStatus.COMPLETION, orderRequest.getOrderStatus())) {
+            throw new IllegalArgumentException("주문이 완료 상태입니다.");
+        }
+        this.orderStatus = orderRequest.getOrderStatus();
+    }
+
+    public void changeOrderStatusMeal() {
+        this.orderStatus = OrderStatus.MEAL;
     }
 
     @Override

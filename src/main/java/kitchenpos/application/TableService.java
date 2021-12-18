@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class TableService {
@@ -27,7 +26,7 @@ public class TableService {
 
         return orderTableRepository.save(new OrderTable(orderTableRequest.getNumberOfGuests(), orderTableRequest.isEmpty()));
     }
-
+    @Transactional(readOnly=true)
     public List<OrderTable> list() {
         return orderTableRepository.findAll();
     }
@@ -37,33 +36,24 @@ public class TableService {
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(() -> new IllegalArgumentException("등록된 주문테이블이 아닙니다."));
 
-        if (Objects.nonNull(savedOrderTable.getTableGroup())) {
-            throw new IllegalArgumentException("이미 단체지정으로 등록되어 있는 주문 테이블입니다.");
-        }
+        savedOrderTable.checkGroupedOrderTable();
 
         if (orderRepository.existsByOrderTableAndOrderStatusIn(
                 savedOrderTable, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
             throw new IllegalArgumentException();
         }
         savedOrderTable.changeEmpty(orderTableRequest.isEmpty());
-        return orderTableRepository.save(savedOrderTable);
+        return savedOrderTable;
     }
 
     @Transactional
     public OrderTable changeNumberOfGuests(final Long orderTableId, final OrderTableRequest orderTableRequest) {
 
-        final int numberOfGuests = orderTableRequest.getNumberOfGuests();
-        if (numberOfGuests < 0) {
-            throw new IllegalArgumentException("주문 테이블 손님 수는 0 명 이상으로 입력해야 합니다.");
-        }
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(() -> new IllegalArgumentException("등록된 주문테이블이 아닙니다."));
 
-        if (savedOrderTable.isEmpty()) {
-            throw new IllegalArgumentException("주문 테이블이 비어있습니다.");
-        }
-
-        savedOrderTable.changeNumberOfGuests(numberOfGuests);
+        savedOrderTable.checkIsEmpty();
+        savedOrderTable.changeNumberOfGuests(orderTableRequest.getNumberOfGuests());
         return orderTableRepository.save(savedOrderTable);
     }
 }

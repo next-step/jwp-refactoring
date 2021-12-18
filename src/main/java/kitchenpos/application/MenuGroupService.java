@@ -21,6 +21,7 @@ public class MenuGroupService {
         return menuGroupRepository.save(menuGroupRequest.toEntity());
     }
 
+    @Transactional(readOnly=true)
     public List<MenuGroup> list() {
         return menuGroupRepository.findAll();
     }

@@ -26,12 +26,14 @@ public class Product {
     public Product(String name, BigDecimal price) {
         this.name = name;
         this.price = price;
+        checkPriceOverZero();
     }
 
     public Product(Long id, String name, BigDecimal price) {
         this.id = id;
         this.name = name;
         this.price = price;
+        checkPriceOverZero();
     }
 
     public Long getId() {
@@ -48,6 +50,12 @@ public class Product {
 
     public static Product from(ProductRequest productRequest) {
         return new Product(productRequest.getName(), productRequest.getPrice());
+    }
+
+    public void checkPriceOverZero() {
+        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("가격은 0원 이상으로 입력해야 합니다.");
+        }
     }
 
     @Override

@@ -1,5 +1,7 @@
 package kitchenpos.domain;
 
+import kitchenpos.dto.OrderTableRequest;
+
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -32,6 +34,10 @@ public class OrderTable {
         this.empty = empty;
     }
 
+    public static OrderTable from(OrderTableRequest orderTableRequest) {
+        return new OrderTable(orderTableRequest.getNumberOfGuests(), orderTableRequest.isEmpty());
+    }
+
     public Long getId() {
         return id;
     }
@@ -56,8 +62,13 @@ public class OrderTable {
         this.empty = false;
     }
 
+    public void changeEmptyOrderTable() {
+        this.empty = true;
+    }
+
     public void changeNumberOfGuests(int numberOfGuests) {
         this.numberOfGuests = numberOfGuests;
+        checkNumberOfGuestsOverZero();
     }
 
     public void addTableGroup(TableGroup tableGroup) {
@@ -67,6 +78,24 @@ public class OrderTable {
     public void checkAvailable() {
         if (!this.isEmpty() || Objects.nonNull(this.getTableGroup())) {
             throw new IllegalArgumentException("주문테이블이 비어있지 않거나, 단체지정이 되어있습니다.");
+        }
+    }
+
+    public void checkIsEmpty() {
+        if (isEmpty()) {
+            throw new IllegalArgumentException("주문 테이블이 비어있습니다.");
+        }
+    }
+
+    public void checkNumberOfGuestsOverZero() {
+        if (numberOfGuests < 0) {
+            throw new IllegalArgumentException("주문 테이블 손님 수는 0 명 이상으로 입력해야 합니다.");
+        }
+    }
+
+    public void checkGroupedOrderTable() {
+        if (Objects.nonNull(getTableGroup())) {
+            throw new IllegalArgumentException("이미 단체지정으로 등록되어 있는 주문 테이블입니다.");
         }
     }
 
@@ -86,4 +115,6 @@ public class OrderTable {
     public int hashCode() {
         return Objects.hash(id, tableGroup, numberOfGuests, empty);
     }
+
+
 }
