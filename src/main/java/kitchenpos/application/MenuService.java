@@ -38,24 +38,24 @@ public class MenuService {
     public Menu create(final Menu menu) {
         final BigDecimal price = menu.getPrice();
 
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
+        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {    // TODO Menu 도메인 내부로 이동
             throw new IllegalArgumentException();
         }
 
-        if (!menuGroupDao.existsById(menu.getMenuGroupId())) {
+        if (!menuGroupDao.existsById(menu.getMenuGroupId())) {     // TODO 다대일 관계로
             throw new IllegalArgumentException();
         }
 
         final List<MenuProduct> menuProducts = menu.getMenuProducts();
 
         BigDecimal sum = BigDecimal.ZERO;
-        for (final MenuProduct menuProduct : menuProducts) {
+        for (final MenuProduct menuProduct : menuProducts) {    // TODO MenuProducts 내부로 이동
             final Product product = productDao.findById(menuProduct.getProductId())
                     .orElseThrow(IllegalArgumentException::new);
             sum = sum.add(product.getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
         }
 
-        if (price.compareTo(sum) > 0) {
+        if (price.compareTo(sum) > 0) {    // TODO MenuProducts 내부로 이동
             throw new IllegalArgumentException();
         }
 
@@ -63,7 +63,7 @@ public class MenuService {
 
         final Long menuId = savedMenu.getId();
         final List<MenuProduct> savedMenuProducts = new ArrayList<>();
-        for (final MenuProduct menuProduct : menuProducts) {
+        for (final MenuProduct menuProduct : menuProducts) {    // TODO Menu 도메인 내부로 이동
             menuProduct.setMenuId(menuId);
             savedMenuProducts.add(menuProductDao.save(menuProduct));
         }
@@ -72,7 +72,7 @@ public class MenuService {
         return savedMenu;
     }
 
-    public List<Menu> list() {
+    public List<Menu> list() {    // TODO MenuProducts 도메인 내부로 이동
         final List<Menu> menus = menuDao.findAll();
 
         for (final Menu menu : menus) {
