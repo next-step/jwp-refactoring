@@ -14,21 +14,21 @@ import java.util.Objects;
 @Service
 public class MenuService {
     private final MenuRepository menuRepository;
-    private final MenuGroupRepository menuGroups;
+    private final MenuGroupRepository menuGroupRepository;
     private final MenuProductRepository menuProductRepository;
     private final ProductRepository productRepository;
 
     public MenuService(
             final MenuRepository menuRepository,
-            final MenuGroupRepository menuGroups,
+            final MenuGroupRepository menuGroupRepository,
             final MenuProductRepository menuProductRepository,
-            final ProductRepository productRepository) {
+            final ProductRepository productRepository
+    ) {
         this.menuRepository = menuRepository;
-        this.menuGroups = menuGroups;
+        this.menuGroupRepository = menuGroupRepository;
         this.menuProductRepository = menuProductRepository;
         this.productRepository = productRepository;
     }
-
 
     @Transactional
     public Menu create(final Menu menu) {
@@ -38,7 +38,7 @@ public class MenuService {
             throw new IllegalArgumentException();
         }
 
-        if (!menuGroups.existsById(menu.getMenuGroupId())) {
+        if (!menuGroupRepository.existsById(menu.getMenuGroupId())) {
             throw new IllegalArgumentException();
         }
 

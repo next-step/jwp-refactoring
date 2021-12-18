@@ -24,7 +24,7 @@ import static org.mockito.Mockito.*;
 public class MenuGroupServiceTest {
 
     @Mock
-    private MenuGroupRepository menuGroups;
+    private MenuGroupRepository menuGroupRepository;
 
     @InjectMocks
     private MenuGroupService menuGroupService;
@@ -36,19 +36,19 @@ public class MenuGroupServiceTest {
     @DisplayName("메뉴 그룹 생성")
     void createTest() {
         // given
-        given(menuGroups.save(any())).willReturn(menuGroup);
+        given(menuGroupRepository.save(any())).willReturn(menuGroup);
         // when
-        when(menuGroups.save(any())).thenReturn(menuGroup);
+        when(menuGroupRepository.save(any())).thenReturn(menuGroup);
         // then
         assertThat(menuGroupService.create(menuGroup)).isEqualTo(menuGroup);
-        verify(menuGroups, only()).save(any());
+        verify(menuGroupRepository, only()).save(any());
     }
 
     @Test
     @DisplayName("메뉴 그룹 리스트 조회")
     void listTest() {
         // given
-        given(menuGroups.findAll())
+        given(menuGroupRepository.findAll())
                 .willReturn(Collections.singletonList(menuGroup));
         // when
         when(menuGroupService.list()).thenReturn(Collections.singletonList(menuGroup));

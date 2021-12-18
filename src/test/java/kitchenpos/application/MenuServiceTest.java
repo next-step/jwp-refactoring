@@ -1,13 +1,9 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.dao.MenuProductDao;
-import kitchenpos.dao.ProductDao;
 import kitchenpos.menu.application.MenuService;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.*;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,13 +31,13 @@ import static org.mockito.Mockito.*;
 @DisplayName("메뉴 관리 테스트")
 public class MenuServiceTest {
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
     @Mock
-    private MenuProductDao menuProductDao;
+    private MenuProductRepository menuProductRepository;
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
     @InjectMocks
     private MenuService menuService;
 
@@ -52,19 +48,19 @@ public class MenuServiceTest {
     @DisplayName("메뉴 등록")
     void createTest() {
         // given
-        given(menuGroupDao.existsById(anyLong())).willReturn(true);
+        given(menuGroupRepository.existsById(anyLong())).willReturn(true);
         Product product = mock(Product.class);
         given(product.getPrice()).willReturn(BigDecimal.valueOf(5000));
         MenuProduct menuProduct = mock(MenuProduct.class);
         given(menuProduct.getQuantity()).willReturn(1L);
         given(menu.getMenuProducts()).willReturn(Collections.singletonList(menuProduct));
         given(menu.getPrice()).willReturn(BigDecimal.valueOf(4000));
-        given(productDao.findById(anyLong())).willReturn(Optional.of(product));
-        given(menuDao.save(any())).willReturn(menu);
+        given(productRepository.findById(anyLong())).willReturn(Optional.of(product));
+        given(menuRepository.save(any())).willReturn(menu);
         // when
         Menu actual = menuService.create(menu);
         // then
-        verify(menuProductDao, times(1)).save(any());
+        verify(menuProductRepository, times(1)).save(any());
         assertThat(actual).isEqualTo(menu);
     }
 
@@ -83,7 +79,7 @@ public class MenuServiceTest {
     @DisplayName("메뉴 그룹이 존재하지 않으면 등록 할 수 없다.")
     void notFoundMenuGroup() {
         // given
-        given(menuGroupDao.existsById(anyLong())).willReturn(false);
+        given(menuGroupRepository.existsById(anyLong())).willReturn(false);
         // when
         // then
         assertThatThrownBy(() -> menuService.create(통새우와퍼_세트))
@@ -94,8 +90,8 @@ public class MenuServiceTest {
     @DisplayName("메뉴에 포함된 상품들이 존재하지 않으면 등록 할 수 없다.")
     void notFoundMenuProduct() {
         // given
-        given(menuGroupDao.existsById(anyLong())).willReturn(true);
-        given(productDao.findById(anyLong())).willReturn(Optional.empty());
+        given(menuGroupRepository.existsById(anyLong())).willReturn(true);
+        given(productRepository.findById(anyLong())).willReturn(Optional.empty());
         // when
         // then
         assertThatThrownBy(() -> menuService.create(통새우와퍼_세트))
@@ -108,8 +104,8 @@ public class MenuServiceTest {
         // given
         given(menu.getMenuProducts()).willReturn(Arrays.asList(통새우와퍼, 콜라));
         given(menu.getPrice()).willReturn(BigDecimal.valueOf(7001));
-        given(menuGroupDao.existsById(anyLong())).willReturn(true);
-        given(productDao.findById(anyLong()))
+        given(menuGroupRepository.existsById(anyLong())).willReturn(true);
+        given(productRepository.findById(anyLong()))
                 .willReturn(Optional.of(통새우와퍼_상품), Optional.of(콜라_상품));
         // when
         // then
@@ -121,11 +117,11 @@ public class MenuServiceTest {
     @DisplayName("메뉴 리스트 조회")
     void listTest() {
         // given
-        given(menuDao.findAll()).willReturn(Collections.singletonList(통새우와퍼_세트));
+        given(menuRepository.findAll()).willReturn(Collections.singletonList(통새우와퍼_세트));
         // when
         List<Menu> actual = menuService.list();
         // then
-        verify(menuProductDao, times(1)).findAllByMenuId(any());
+        verify(menuProductRepository, times(1)).findAllByMenuId(any());
         assertAll(
                 () -> assertThat(actual).hasSize(1),
                 () -> assertThat(actual).containsExactly(통새우와퍼_세트)

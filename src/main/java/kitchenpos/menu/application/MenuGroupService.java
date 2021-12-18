@@ -9,18 +9,18 @@ import java.util.List;
 
 @Service
 public class MenuGroupService {
-    private final MenuGroupRepository menuGroups;
+    private final MenuGroupRepository menuGroupRepository;
 
     public MenuGroupService(final MenuGroupRepository menuGroups) {
-        this.menuGroups = menuGroups;
+        this.menuGroupRepository = menuGroups;
     }
 
     @Transactional
     public MenuGroup create(final MenuGroup menuGroup) {
-        return menuGroups.save(menuGroup);
+        return menuGroupRepository.save(menuGroup);
     }
 
     public List<MenuGroup> list() {
-        return menuGroups.findAll();
+        return menuGroupRepository.findAll();
     }
 }
