@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static kitchenpos.domain.OrderTableTest.빈자리;
+import static kitchenpos.domain.TableGroupTest.테이블그룹;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -47,7 +48,7 @@ public class TableServiceTest {
         // then
         verify(orderTableRepository, only()).save(any());
         assertAll(
-                () -> assertThat(actual.getTableGroupId()).isNull(),
+                () -> assertThat(actual.getTableGroup()).isNull(),
                 () -> assertThat(actual.isEmpty()).isTrue()
         );
     }
@@ -74,7 +75,7 @@ public class TableServiceTest {
         given(orderTable.isEmpty()).willReturn(true);
 
         OrderTable savedOrderTable = mock(OrderTable.class);
-        given(savedOrderTable.getTableGroupId()).willReturn(null);
+        given(savedOrderTable.getTableGroup()).willReturn(null);
         given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(savedOrderTable));
         given(orderRepository.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).willReturn(false);
         given(orderTableRepository.save(any())).willReturn(orderTable);
@@ -103,13 +104,13 @@ public class TableServiceTest {
     void nonNullTableGroupId() {
         // given
         OrderTable savedOrderTable = mock(OrderTable.class);
-        given(savedOrderTable.getTableGroupId()).willReturn(1L);
+        given(savedOrderTable.getTableGroup()).willReturn(테이블그룹);
         given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(savedOrderTable));
         // when
         // then
         assertThatThrownBy(() -> tableService.changeEmpty(1L, orderTable))
                 .isInstanceOf(IllegalArgumentException.class);
-        verify(savedOrderTable, only()).getTableGroupId();
+        verify(savedOrderTable, only()).getTableGroup();
         verify(orderRepository, never()).existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList());
     }
 
@@ -118,7 +119,7 @@ public class TableServiceTest {
     void existsByOrderTableIdAndOrderStatusIn() {
         // given
         OrderTable savedOrderTable = mock(OrderTable.class);
-        given(savedOrderTable.getTableGroupId()).willReturn(null);
+        given(savedOrderTable.getTableGroup()).willReturn(null);
         given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(savedOrderTable));
         given(orderRepository.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).willReturn(true);
         // when

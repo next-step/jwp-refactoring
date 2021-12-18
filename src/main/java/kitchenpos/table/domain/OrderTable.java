@@ -38,8 +38,8 @@ public class OrderTable {
         return id;
     }
 
-    public Long getTableGroupId() {
-        return tableGroup.getId();
+    public TableGroup getTableGroup() {
+        return tableGroup;
     }
 
     public void assignTableGroup(final TableGroup tableGroup) {
