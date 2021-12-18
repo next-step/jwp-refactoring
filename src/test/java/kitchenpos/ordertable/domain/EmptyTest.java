@@ -7,7 +7,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 import static org.assertj.core.api.Assertions.*;
 
-@DisplayName("테이블 상태 도메인 테스트")
+@DisplayName("테이블 상태 테스트")
 class EmptyTest {
 
     @ParameterizedTest(name = "{displayName} - [{index}] {argumentsWithNames}")

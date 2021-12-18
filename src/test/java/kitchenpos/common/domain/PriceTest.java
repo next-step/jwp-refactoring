@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.*;
 
-@DisplayName("가격 도메인 테스트")
+@DisplayName("가격 테스트")
 class PriceTest {
 
     @Test

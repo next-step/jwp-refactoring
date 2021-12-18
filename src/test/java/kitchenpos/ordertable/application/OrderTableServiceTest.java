@@ -77,7 +77,7 @@ class OrderTableServiceTest extends ServiceTest {
     void changeEmptyThrowException2() {
         // given
         TableGroupResponse savedTableGroupResponse = 테이블_그룹_저장();
-        OrderTableResponse savedOrderTableResponse = 테이블_조회(savedTableGroupResponse.getOrderTables().get(0).getId());
+        OrderTableResponse savedOrderTableResponse = 테이블_조회(savedTableGroupResponse.getOrderTableIds().get(0));
         OrderTableRequest orderTableRequest = new OrderTableRequest(false);
 
         // when & then

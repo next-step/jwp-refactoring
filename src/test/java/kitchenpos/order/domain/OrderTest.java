@@ -1,6 +1,5 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.ordertable.domain.OrderTable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -8,7 +7,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 import static org.assertj.core.api.Assertions.*;
 
-@DisplayName("주문 도메인 테스트")
+@DisplayName("주문 테스트")
 class OrderTest {
 
     @ParameterizedTest(name = "{displayName} - [{index}] {argumentsWithNames}")
@@ -23,17 +22,6 @@ class OrderTest {
 
         // then
         assertThat(changable).isEqualTo(expected);
-    }
-
-    @Test
-    @DisplayName("비어있는 테이블로 주문의 테이블을 변경하면 예외를 발생한다.")
-    void changeOrderTableThrowException() {
-        // given
-        OrderTable orderTable = new OrderTable(true);
-        Order order = new Order(OrderStatus.MEAL);
-
-        // when & then
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> order.changeOrderTable(orderTable));
     }
 
     @Test

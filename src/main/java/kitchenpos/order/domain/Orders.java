@@ -1,19 +1,13 @@
-package kitchenpos.ordertable.domain;
+package kitchenpos.order.domain;
 
-import kitchenpos.order.domain.Order;
-
-import javax.persistence.Embeddable;
-import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-@Embeddable
 public class Orders {
 
-    public static final String MESSAGE_VALIDATE_ORDER = "주문이 변경 가능한 상태여야 합니다.";
+    public static final String MESSAGE_VALIDATE_EMPTY_CHANGABLE = "주문이 변경 가능한 상태여야 합니다.";
 
-    @OneToMany(mappedBy = "orderTable")
     private List<Order> orders = new ArrayList<>();
 
     protected Orders() {
@@ -31,18 +25,14 @@ public class Orders {
         orders.forEach(this::validateOrder);
     }
 
-    boolean isChangable() {
+    public boolean isChangable() {
         return orders.stream()
                 .allMatch(Order::isChangable);
     }
 
-    void add(Order order) {
-        orders.add(order);
-    }
-
     private void validateOrder(Order order) {
         if (!order.isChangable()) {
-            throw new IllegalArgumentException(MESSAGE_VALIDATE_ORDER);
+            throw new IllegalArgumentException(MESSAGE_VALIDATE_EMPTY_CHANGABLE);
         }
     }
 

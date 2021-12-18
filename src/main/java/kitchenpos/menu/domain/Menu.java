@@ -1,7 +1,6 @@
 package kitchenpos.menu.domain;
 
 import kitchenpos.common.domain.Price;
-import kitchenpos.menugroup.domain.MenuGroup;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -9,7 +8,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
@@ -30,8 +28,8 @@ public class Menu {
     @Column(nullable = false)
     private Price price;
 
-    @ManyToOne
-    private MenuGroup menuGroup;
+    @Column(nullable = false)
+    private Long menuGroupId;
 
     @Embedded
     private MenuProducts menuProducts;
@@ -39,11 +37,11 @@ public class Menu {
     protected Menu() {
     }
 
-    public Menu(String name, BigDecimal price, MenuGroup menuGroup, MenuProducts menuProducts) {
+    public Menu(String name, BigDecimal price, Long menuGroupId, MenuProducts menuProducts) {
         validatePrice(new Price(price), menuProducts);
         this.name = name;
         this.price = new Price(price);
-        this.menuGroup = menuGroup;
+        this.menuGroupId = menuGroupId;
         this.menuProducts = menuProducts;
         menuProducts.changeMenu(this);
     }
@@ -60,8 +58,8 @@ public class Menu {
         return price;
     }
 
-    public MenuGroup getMenuGroup() {
-        return menuGroup;
+    public Long getMenuGroupId() {
+        return menuGroupId;
     }
 
     public List<MenuProduct> getMenuProducts() {
@@ -79,11 +77,11 @@ public class Menu {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Menu menu = (Menu) o;
-        return Objects.equals(id, menu.id) && Objects.equals(name, menu.name) && Objects.equals(price, menu.price) && Objects.equals(menuGroup, menu.menuGroup);
+        return Objects.equals(id, menu.id) && Objects.equals(name, menu.name) && Objects.equals(price, menu.price) && Objects.equals(menuGroupId, menu.menuGroupId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, price, menuGroup);
+        return Objects.hash(id, name, price, menuGroupId);
     }
 }

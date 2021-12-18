@@ -1,7 +1,6 @@
 package kitchenpos.order.domain;
 
 import kitchenpos.common.domain.Quantity;
-import kitchenpos.menu.domain.Menu;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -21,8 +20,7 @@ public class OrderLineItem {
     @ManyToOne
     private Order order;
 
-    @ManyToOne
-    private Menu menu;
+    private Long menuId;
 
     @Column(nullable = false)
     private Quantity quantity;
@@ -30,8 +28,8 @@ public class OrderLineItem {
     protected OrderLineItem() {
     }
 
-    public OrderLineItem(Menu menu, long quantity) {
-        this.menu = menu;
+    public OrderLineItem(Long menuId, long quantity) {
+        this.menuId = menuId;
         this.quantity = new Quantity(quantity);
     }
 
@@ -43,8 +41,8 @@ public class OrderLineItem {
         return order;
     }
 
-    public Menu getMenu() {
-        return menu;
+    public Long getMenuId() {
+        return menuId;
     }
 
     public Quantity getQuantity() {
@@ -61,11 +59,11 @@ public class OrderLineItem {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         OrderLineItem that = (OrderLineItem) o;
-        return Objects.equals(id, that.id) && Objects.equals(order, that.order) && Objects.equals(menu, that.menu) && Objects.equals(quantity, that.quantity);
+        return Objects.equals(id, that.id) && Objects.equals(order, that.order) && Objects.equals(menuId, that.menuId) && Objects.equals(quantity, that.quantity);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, order, menu, quantity);
+        return Objects.hash(id, order, menuId, quantity);
     }
 }

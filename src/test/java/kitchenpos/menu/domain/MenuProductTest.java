@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.*;
 
-@DisplayName("메뉴 상품 도메인 테스트")
+@DisplayName("메뉴 상품 테스트")
 class MenuProductTest {
 
     @Test

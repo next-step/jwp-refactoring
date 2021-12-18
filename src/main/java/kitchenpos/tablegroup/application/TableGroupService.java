@@ -1,7 +1,9 @@
 package kitchenpos.tablegroup.application;
 
-import kitchenpos.ordertable.application.OrderTableService;
 import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.domain.OrderTableRepository;
+import kitchenpos.ordertable.domain.OrderTableValidator;
+import kitchenpos.ordertable.domain.OrderTables;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
@@ -10,44 +12,53 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
+
+import static java.util.stream.Collectors.*;
 
 @Service
 @Transactional
 public class TableGroupService {
 
     private final TableGroupRepository tableGroupRepository;
-    private final OrderTableService orderTableService;
+    private final OrderTableRepository orderTableRepository;
+    private final OrderTableValidator orderTableValidator;
 
     public TableGroupService(final TableGroupRepository tableGroupRepository,
-                             final OrderTableService orderTableService) {
+                             final OrderTableRepository orderTableRepository,
+                             final OrderTableValidator orderTableValidator) {
         this.tableGroupRepository = tableGroupRepository;
-        this.orderTableService = orderTableService;
+        this.orderTableRepository = orderTableRepository;
+        this.orderTableValidator = orderTableValidator;
     }
 
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
-        final List<Long> orderTableIds = tableGroupRequest.getOrderTableIds();
-        final TableGroup tableGroup = TableGroup.of(makeOrderTables(orderTableIds));
-        final TableGroup savedTableGroup = tableGroupRepository.save(tableGroup);
-        return TableGroupResponse.from(savedTableGroup);
+        final TableGroup savedTableGroup = tableGroupRepository.save(TableGroup.newInstance());
+        final OrderTables orderTables = makeOrderTables(tableGroupRequest);
+        orderTables.group(savedTableGroup.getId());
+        return TableGroupResponse.from(savedTableGroup, orderTables);
     }
 
     public void ungroup(final Long id) {
-        TableGroup tableGroup = tableGroupRepository.findById(id)
-                .orElseThrow(EntityNotFoundException::new);
-        tableGroup.ungroup();
-    }
-
-    private List<OrderTable> makeOrderTables(List<Long> orderTableIds) {
-        final List<OrderTable> orderTables = new ArrayList<>();
-        for (Long orderTableId : orderTableIds) {
-            orderTables.add(getOrderTableById(orderTableId));
+        if (!tableGroupRepository.existsById(id)) {
+            throw new EntityNotFoundException();
         }
-        return orderTables;
+        final OrderTables orderTables = findOrderTables(id);
+        orderTables.ungroup(orderTableValidator);
     }
 
-    private OrderTable getOrderTableById(Long orderTableId) {
-        return orderTableService.findById(orderTableId);
+    private OrderTables makeOrderTables(TableGroupRequest tableGroupRequest) {
+        return tableGroupRequest.getOrderTableIds()
+                .stream()
+                .map(this::findOrderTableById)
+                .collect(collectingAndThen(toList(), OrderTables::new));
+    }
+
+    private OrderTables findOrderTables(Long tableGroupId) {
+        return new OrderTables(orderTableRepository.findAllByTableGroupId(tableGroupId));
+    }
+
+    private OrderTable findOrderTableById(Long orderTableId) {
+        return orderTableRepository.findById(orderTableId)
+                .orElseThrow(EntityNotFoundException::new);
     }
 }
