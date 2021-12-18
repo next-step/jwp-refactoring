@@ -13,22 +13,27 @@ public class Menu {
     private Long id;
     private String name;
     private BigDecimal price;
-    private Long menuGroupId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "menu_group_id")
+    private MenuGroup menuGroup;
+
+    @OneToMany(mappedBy = "menu")
     private List<MenuProduct> menuProducts;
 
     protected Menu() {
     }
 
-    public Menu(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
-        this(id, name, price, menuGroupId);
+    public Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+        this(id, name, price, menuGroup);
         this.menuProducts = menuProducts;
     }
 
-    public Menu(long id, String name, BigDecimal price, Long menuGroupId) {
+    public Menu(long id, String name, BigDecimal price, MenuGroup menuGroup) {
         this.id = id;
         this.name = name;
         this.price = price;
-        this.menuGroupId = menuGroupId;
+        this.menuGroup = menuGroup;
     }
 
     public Long getId() {
@@ -44,7 +49,7 @@ public class Menu {
     }
 
     public Long getMenuGroupId() {
-        return menuGroupId;
+        return menuGroup.getId();
     }
 
     public List<MenuProduct> getMenuProducts() {
@@ -55,20 +60,5 @@ public class Menu {
         this.menuProducts = menuProducts;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Menu menu = (Menu) o;
-        return Objects.equals(id, menu.id)
-                && Objects.equals(name, menu.name)
-                && Objects.equals(price, menu.price)
-                && Objects.equals(menuGroupId, menu.menuGroupId)
-                && Objects.equals(menuProducts, menu.menuProducts);
-    }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, price, menuGroupId, menuProducts);
-    }
 }
