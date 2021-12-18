@@ -20,15 +20,17 @@ public class MenuFactory {
         MenuGroup menuGroup = menuGroupRepository.findById(menuRequest.getMenuGroupId())
                 .orElseThrow(IllegalArgumentException::new);
 
-        final List<MenuProductRequest> menuProducts = menuRequest.getMenuProducts();
-
         Menu menu = menuGroup.createMenu(menuRequest.getName(), menuRequest.getPrice());
+        addMenuProducts(menuRequest.getMenuProducts(), menu);
+
+        return menu;
+    }
+
+    private void addMenuProducts(final List<MenuProductRequest> menuProducts, final Menu menu) {
         for (final MenuProductRequest menuProductRequest : menuProducts) {
             Product product = productRepository.findById(menuProductRequest.getProductId())
                     .orElseThrow(IllegalArgumentException::new);
             menu.addProduct(product, menuProductRequest.getQuantity());
         }
-
-        return menu;
     }
 }
