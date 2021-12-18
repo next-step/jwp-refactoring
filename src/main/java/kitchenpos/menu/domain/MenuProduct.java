@@ -1,8 +1,13 @@
-package kitchenpos.domain;
+package kitchenpos.menu.domain;
 
+import javax.persistence.*;
 import java.util.Objects;
 
+@Entity
+@Table(name = "menu_product")
 public class MenuProduct {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
     private Long menuId;
     private Long productId;

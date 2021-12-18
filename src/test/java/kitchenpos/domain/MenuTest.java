@@ -1,5 +1,7 @@
 package kitchenpos.domain;
 
+import kitchenpos.menu.domain.Menu;
+
 import java.math.BigDecimal;
 import java.util.Arrays;
 
@@ -13,4 +15,11 @@ public class MenuTest {
             , BigDecimal.valueOf(6000)
             , 1L
             , Arrays.asList(통새우와퍼, 콜라));
+
+    public static final Menu 콜라_단품 = new Menu(
+            2L
+            ,"콜라 단품"
+            , BigDecimal.valueOf(1000)
+            , 1L
+            , Arrays.asList(콜라));
 }

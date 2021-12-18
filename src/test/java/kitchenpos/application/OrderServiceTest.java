@@ -4,8 +4,9 @@ import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.order.application.OrderService;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -153,7 +154,7 @@ public class OrderServiceTest {
     @DisplayName("`계산완료(COMPLETION)`상태인 주문은 변경할 수 없다.")
     void notChangeCompletionStatus() {
         // given
-        given(order.getOrderStatus()).willReturn(OrderStatus.COMPLETION.name());
+        given(order.getOrderStatus()).willReturn(OrderStatus.COMPLETION);
         given(orderDao.findById(anyLong())).willReturn(Optional.of(order));
         // when
         // then
