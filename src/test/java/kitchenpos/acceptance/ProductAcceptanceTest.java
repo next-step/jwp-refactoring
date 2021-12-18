@@ -21,7 +21,9 @@ public class ProductAcceptanceTest extends AcceptanceTest {
 	@DisplayName("상품을 등록한다")
 	@Test
 	void createTest() {
-		Product product = new Product(null, "상품1", new BigDecimal(1000));
+		Product product = new Product();
+		product.setName("상품1");
+		product.setPrice(new BigDecimal(1000));
 		ExtractableResponse<Response> response = RestAssured
 			.given().log().all()
 			.body(product)

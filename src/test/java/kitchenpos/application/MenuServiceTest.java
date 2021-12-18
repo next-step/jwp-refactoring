@@ -23,7 +23,6 @@ import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
-import kitchenpos.domain.ProductTest;
 
 @ExtendWith(MockitoExtension.class)
 public class MenuServiceTest {
@@ -147,7 +146,7 @@ public class MenuServiceTest {
 		request.setMenuProducts(Arrays.asList(menuProduct1));
 
 		given(menuGroupDao.existsById(any())).willReturn(true);
-		given(productDao.findById(ProductTest.후라이드.getId()))
+		given(productDao.findById(any()))
 			.willReturn(Optional.empty());
 
 		// when, then
@@ -159,6 +158,10 @@ public class MenuServiceTest {
 	@Test
 	void createTest5() {
 		// given
+		Product product1 = new Product();
+		product1.setId(1L);
+		product1.setPrice(new BigDecimal(10_000));
+
 		MenuProduct menuProduct1 = new MenuProduct();
 		menuProduct1.setSeq(1L);
 		menuProduct1.setMenuId(1L);
@@ -172,8 +175,8 @@ public class MenuServiceTest {
 		request.setMenuProducts(Arrays.asList(menuProduct1));
 
 		given(menuGroupDao.existsById(any())).willReturn(true);
-		given(productDao.findById(ProductTest.후라이드.getId()))
-			.willReturn(Optional.of(ProductTest.후라이드));
+		given(productDao.findById(any()))
+			.willReturn(Optional.of(product1));
 
 		// when, then
 		assertThatThrownBy(() -> menuService.create(request))

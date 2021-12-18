@@ -15,7 +15,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.MenuGroupTest;
 
 @ExtendWith(MockitoExtension.class)
 public class MenuGroupServiceTest {
@@ -51,8 +50,11 @@ public class MenuGroupServiceTest {
 	@Test
 	void listTest() {
 		// given
+		MenuGroup menuGroup1 = new MenuGroup();
+		menuGroup1.setId(1L);
+		menuGroup1.setName("추천메뉴");
 		List<MenuGroup> persist = new ArrayList<>();
-		persist.add(MenuGroupTest.치킨류);
+		persist.add(menuGroup1);
 
 		given(menuGroupDao.findAll()).willReturn(persist);
 
