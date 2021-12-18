@@ -2,10 +2,12 @@ package kitchenpos.acceptance.manage;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.opentest4j.MultipleFailuresError;
@@ -13,90 +15,102 @@ import org.springframework.http.HttpStatus;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.acceptance.fixture.Fixture;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.Product;
-import kitchenpos.presentation.MenuGroupTest;
-import kitchenpos.presentation.MenuTest;
-import kitchenpos.presentation.ProductTest;
-import kitchenpos.presentation.TableTest;
+import kitchenpos.domain.Price;
+import kitchenpos.domain.product.Product;
+import kitchenpos.dto.menu.MenuDto;
+import kitchenpos.dto.menu.MenuGroupDto;
+import kitchenpos.dto.menu.MenuProductDto;
+import kitchenpos.dto.product.ProductDto;
+import kitchenpos.dto.table.OrderTableDto;
+import kitchenpos.domain.menu.Menu;
+import kitchenpos.domain.menu.MenuGroup;
+import kitchenpos.presentation.menu.MenuGroupRestControllerTest;
+import kitchenpos.presentation.menu.MenuRestControllerTest;
+import kitchenpos.presentation.product.ProductRestControllerTest;
+import kitchenpos.presentation.table.TableRestControllerTest;
 import kitchenpos.testassistance.config.TestConfig;
 
 public class KitchenposManageAcceptanceTest extends TestConfig {
+    private MenuGroup 사이드메뉴;
+
+    private Product 참치맛감자튀김;
+    private Product 고등어맛감자튀김;
+
+    private Menu 신메뉴;
+
+    @BeforeEach
+
+    public void setUp() {
+        super.setUp();
+
+        사이드메뉴 = MenuGroup.of("사이드메뉴");
+
+        참치맛감자튀김 = Product.of("참치맛감자튀김", Price.of(2_000));
+        고등어맛감자튀김 =  Product.of("고등어맛감자튀김", Price.of(2_000));
+
+        신메뉴 = Menu.of("감튀세상", Price.of(3_000));
+    }
+
     @DisplayName("새로운 유형의 메뉴가 추가된다.")
     @Test
     void addMenu_newGroup() {
         // when
-        MenuGroup 신메뉴그룹 = MenuGroupTest.메뉴그룹_저장(Fixture.사이드메뉴).as(MenuGroup.class);
-        List<MenuProduct> 메뉴_상품패키지 = 제품팩키지_생성(List.of(Fixture.참치맛감자튀김, Fixture.고등어맛감자튀김));
-        Menu 신매뉴 = 신메뉴_생성(신메뉴그룹, 메뉴_상품패키지);
-        Menu 등록된_신메뉴 = MenuTest.메뉴_저장요청(신매뉴).as(Menu.class);
+        MenuGroupDto 신메뉴그룹 = MenuGroupRestControllerTest.메뉴그룹_저장(MenuGroupDto.of(this.사이드메뉴)).as(MenuGroupDto.class);
+        List<MenuProductDto> 메뉴_상품패키지 = 제품팩키지_생성(List.of(ProductDto.of(this.참치맛감자튀김), ProductDto.of(this.고등어맛감자튀김)));
+        
+        MenuDto 신매뉴 = MenuDto.of("감튀세상",  BigDecimal.valueOf(3_000), 신메뉴그룹.getId(), 메뉴_상품패키지);
+        MenuDto 등록된_신메뉴 = MenuRestControllerTest.메뉴_저장요청(신매뉴).as(MenuDto.class);
 
         // then
-        메뉴_저장됨(신메뉴그룹, 등록된_신메뉴);    
+        메뉴_저장됨(신메뉴그룹, 등록된_신메뉴);
     }
 
     @DisplayName("신규 주문테이블 생성")
     @Test
     void create_orderTable() {
         // given
-        OrderTable 신규_주문테이블 = 신규_주문테이블_생성();
+        OrderTableDto 신규_주문테이블 = 신규_주문테이블_생성();
 
         // when
-        ExtractableResponse<Response> response = TableTest.주문테이블_저장요청(신규_주문테이블);
+        ExtractableResponse<Response> response = TableRestControllerTest.주문테이블_저장요청(신규_주문테이블);
 
         // then
         신규_주문테이블_저장됨(response);
     }
 
-    private OrderTable 신규_주문테이블_생성() {
-        OrderTable 신규_주문테이블 = new OrderTable();
-        신규_주문테이블.setTableGroupId(null);
-        신규_주문테이블.setNumberOfGuests(0);
-        신규_주문테이블.setEmpty(true);
+    private OrderTableDto 신규_주문테이블_생성() {
+        OrderTableDto 신규_주문테이블 = OrderTableDto.of(0);
         return 신규_주문테이블;
     }
 
-    private void 신규_주문테이블_저장됨(ExtractableResponse<Response> response) { 
+    private void 신규_주문테이블_저장됨(ExtractableResponse<Response> response) {
         assertAll(
             () -> Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
-            () -> Assertions.assertThat(response.as(OrderTable.class).getTableGroupId()).isNull(),
-            () -> Assertions.assertThat(response.as(OrderTable.class).getNumberOfGuests()).isEqualTo(0),
-            () -> Assertions.assertThat(response.as(OrderTable.class).isEmpty()).isEqualTo(true)
+            () -> Assertions.assertThat(response.as(OrderTableDto.class).getTableGroupId()).isNull(),
+            () -> Assertions.assertThat(response.as(OrderTableDto.class).getNumberOfGuests()).isEqualTo(0),
+            () -> Assertions.assertThat(response.as(OrderTableDto.class).isEmpty()).isEqualTo(true)
         );
     }
 
-    private Menu 신메뉴_생성(MenuGroup 신메뉴그룹, List<MenuProduct> 메뉴_상품패키지) {
-        Menu 신매뉴 = Fixture.신메뉴;
-        신매뉴.setMenuGroupId(신메뉴그룹.getId());
-        신매뉴.setMenuProducts(메뉴_상품패키지);
-        return 신매뉴;
-    }
-
-    private void 메뉴_저장됨(MenuGroup 신메뉴그룹, Menu 등록된_신메뉴) throws MultipleFailuresError {
+    private void 메뉴_저장됨(MenuGroupDto 신메뉴그룹, MenuDto 등록된_신메뉴) throws MultipleFailuresError {
         assertAll(
-            () -> Assertions.assertThat(등록된_신메뉴.getName()).isEqualTo(Fixture.신메뉴.getName()),
-            () -> Assertions.assertThat(등록된_신메뉴.getPrice()).isEqualTo(Fixture.신메뉴.getPrice()),
+            () -> Assertions.assertThat(등록된_신메뉴.getName()).isEqualTo(this.신메뉴.getName()),
+            () -> Assertions.assertThat(등록된_신메뉴.getPrice()).isEqualTo(BigDecimal.valueOf(신메뉴.getPrice().value())),
             () -> Assertions.assertThat(등록된_신메뉴.getMenuGroupId()).isEqualTo(신메뉴그룹.getId())
         );
 
-        for (MenuProduct menuproduct : 등록된_신메뉴.getMenuProducts()) {
+        for (MenuProductDto menuproduct : 등록된_신메뉴.getMenuProducts()) {
             Assertions.assertThat(menuproduct.getMenuId()).isEqualTo(등록된_신메뉴.getId());
         }
     }
 
-    private List<MenuProduct> 제품팩키지_생성(List<Product> products) {
-        List<MenuProduct> productPackage = new ArrayList<>();
+    private List<MenuProductDto> 제품팩키지_생성(List<ProductDto> products) {
+        List<MenuProductDto> productPackage = new ArrayList<>();
 
-        for (Product product : products) {
-            Product createdProduct = ProductTest.상품_저장요청(product).as(Product.class);
-            
-            MenuProduct menuProduct = new MenuProduct();
-            menuProduct.setProductId(createdProduct.getId());
-            menuProduct.setQuantity(1L);
+        for (ProductDto product : products) {
+            ProductDto createdProduct = ProductRestControllerTest.상품_저장요청(product).as(ProductDto.class);
+
+            MenuProductDto menuProduct = MenuProductDto.of(createdProduct.getId(), 1L);
             productPackage.add(menuProduct);
         }
 
