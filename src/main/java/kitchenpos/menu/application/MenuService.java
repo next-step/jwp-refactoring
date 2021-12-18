@@ -14,17 +14,17 @@ import java.util.Objects;
 @Service
 public class MenuService {
     private final MenuRepository menuRepository;
-    private final MenuGroupRepository menuGroupRepository;
+    private final MenuGroupRepository menuGroups;
     private final MenuProductRepository menuProductRepository;
     private final ProductRepository productRepository;
 
     public MenuService(
             final MenuRepository menuRepository,
-            final MenuGroupRepository menuGroupRepository,
+            final MenuGroupRepository menuGroups,
             final MenuProductRepository menuProductRepository,
             final ProductRepository productRepository) {
         this.menuRepository = menuRepository;
-        this.menuGroupRepository = menuGroupRepository;
+        this.menuGroups = menuGroups;
         this.menuProductRepository = menuProductRepository;
         this.productRepository = productRepository;
     }
@@ -38,7 +38,7 @@ public class MenuService {
             throw new IllegalArgumentException();
         }
 
-        if (!menuGroupRepository.existsById(menu.getMenuGroupId())) {
+        if (!menuGroups.existsById(menu.getMenuGroupId())) {
             throw new IllegalArgumentException();
         }
 
