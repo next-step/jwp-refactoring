@@ -1,10 +1,12 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.*;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menuGroup.domain.MenuGroup;
 import kitchenpos.testFixture.MenuGroupTestFixture;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,7 +30,7 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 public class OrderServiceTest {
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
     @Mock
     private OrderDao orderDao;
     @Mock
@@ -41,7 +43,6 @@ public class OrderServiceTest {
 
     private Product 후라이드;
     private MenuProduct 후라이드두마리구성;
-    private MenuGroup 치킨류;
     private Menu 후라이드두마리세트;
     private OrderTable 테이블1번;
     private OrderLineItem 후라이드두마리세트_2개_주문함;
@@ -57,8 +58,6 @@ public class OrderServiceTest {
         후라이드두마리구성.setSeq(1L);
         후라이드두마리구성.setProductId(1L);
         후라이드두마리구성.setQuantity(2L);
-
-        치킨류 = MenuGroupTestFixture.메뉴그룹생성(1L,"치킨");
 
         후라이드두마리세트 = new Menu();
         후라이드두마리세트.setId(1L);
@@ -83,7 +82,7 @@ public class OrderServiceTest {
     @DisplayName("주문 생성")
     @Test
     void create() {
-        given(menuDao.countByIdIn(any())).willReturn(1L);
+        given(menuRepository.countByIdIn(any())).willReturn(1L);
         given(orderTableDao.findById(1L)).willReturn(java.util.Optional.ofNullable(테이블1번));
         given(orderDao.save(총주문)).willReturn(총주문);
         given(orderLineItemDao.save(후라이드두마리세트_2개_주문함)).willReturn(후라이드두마리세트_2개_주문함);

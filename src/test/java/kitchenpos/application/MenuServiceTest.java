@@ -1,11 +1,9 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuProductDao;
+import kitchenpos.menu.domain.*;
 import kitchenpos.dao.ProductDao;
-import kitchenpos.domain.Menu;
+import kitchenpos.menu.application.MenuService;
 import kitchenpos.menuGroup.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
 import kitchenpos.menuGroup.domain.MenuGroupRepository;
 import kitchenpos.testFixture.MenuGroupTestFixture;
@@ -29,7 +27,7 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 public class MenuServiceTest {
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
     @Mock
     private MenuGroupRepository menuGroupRepository;
     @Mock
@@ -73,7 +71,7 @@ public class MenuServiceTest {
         //given
         given(menuGroupRepository.existsById(1L)).willReturn(true);
         given(productDao.findById(1L)).willReturn(java.util.Optional.ofNullable(후라이드));
-        given(menuDao.save(후라이드두마리세트)).willReturn(후라이드두마리세트);
+        given(menuRepository.save(후라이드두마리세트)).willReturn(후라이드두마리세트);
         given(menuProductDao.save(후라이드두마리구성)).willReturn(후라이드두마리구성);
 
         Menu creatMenu = menuService.create(후라이드두마리세트);
@@ -118,7 +116,7 @@ public class MenuServiceTest {
     @DisplayName("메뉴 목록")
     @Test
     void list() {
-        given(menuDao.findAll()).willReturn(Arrays.asList(후라이드두마리세트));
+        given(menuRepository.findAll()).willReturn(Arrays.asList(후라이드두마리세트));
         given(menuProductDao.findAllByMenuId(후라이드두마리세트.getId())).willReturn(Arrays.asList(후라이드두마리구성));
 
         List<Menu> menus = menuService.list();
