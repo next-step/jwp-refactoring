@@ -3,10 +3,8 @@ package kitchenpos.acceptance;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.acceptance.step.TableAcceptStep;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
-import kitchenpos.domain.OrderTable;
 import kitchenpos.menu.acceptance.step.MenuAcceptStep;
 import kitchenpos.menu.acceptance.step.MenuGroupAcceptStep;
 import kitchenpos.menu.dto.MenuGroupResponse;
@@ -14,6 +12,8 @@ import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.product.acceptance.step.ProductAcceptStep;
 import kitchenpos.product.dto.ProductResponse;
+import kitchenpos.table.acceptance.step.TableAcceptStep;
+import kitchenpos.table.dto.TableResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,7 +32,7 @@ import static kitchenpos.acceptance.step.OrderAcceptStep.주문_상태_변경_�
 class OrderAcceptTest extends AcceptanceTest {
 
     private MenuResponse 더블강정;
-    private OrderTable 테이블;
+    private TableResponse 테이블;
 
     @BeforeEach
     void setup() {
