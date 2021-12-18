@@ -60,6 +60,7 @@ public class MenuAcceptStep {
         assertThat(menuProducts.size()).isOne();
         assertThat(menuProducts).first()
                 .satisfies(menuProductResponse -> {
+                    assertThat(menuProductResponse.getSeq()).isNotNull();
                     assertThat(menuProductResponse.getProductId()).isEqualTo(expectedMenuProduct.getProductId());
                     assertThat(menuProductResponse.getQuantity()).isEqualTo(expectedMenuProduct.getQuantity());
                 });
