@@ -1,6 +1,8 @@
 package kitchenpos.order;
 
 import static kitchenpos.order.OrderTableFixture.*;
+import static kitchenpos.order.OrderTableGroupAcceptanceTest.*;
+import static kitchenpos.order.OrderTableGroupFixture.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.Arrays;
@@ -79,7 +81,16 @@ public class OrderTableAcceptanceTest extends AcceptanceTest {
 	@DisplayName("주문 테이블 그룹에 속해 있는 경우 주문 테이블의 빈 상태를 변경할 수 없다.")
 	@Test
 	void changEmptyFailOnBelongToOrderTableGroup() {
-		// TODO
+		// given
+		OrderTableDto 빈_주문_테이블_1 = 주문_테이블_등록되어_있음(빈_주문_테이블()).as(OrderTableDto.class);
+		OrderTableDto 빈_주문_테이블_2 = 주문_테이블_등록되어_있음(빈_주문_테이블()).as(OrderTableDto.class);
+		주문_테이블_그룹_등록되어_있음(주문_테이블_그룹(Arrays.asList(빈_주문_테이블_1.getId(), 빈_주문_테이블_2.getId())));
+
+		// when
+		ExtractableResponse<Response> response = 주문_테이블_빈_상태_변경_요청(빈_주문_테이블_1.getId(), false);
+
+		// then
+		주문_테이블_빈_상태_변경되지_않음(response);
 	}
 
 	@DisplayName("주문 테이블에 완료되지 않은 주문이 있는 경우 주문 테이블의 빈 상태를 변경할 수 없다.")
@@ -173,6 +184,10 @@ public class OrderTableAcceptanceTest extends AcceptanceTest {
 
 	private void 주문_테이블_빈_상태_변경됨(ExtractableResponse<Response> response) {
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+	}
+
+	private void 주문_테이블_빈_상태_변경되지_않음(ExtractableResponse<Response> response) {
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
 	}
 
 	private void 주문_테이블_빈_상태_일치함(ExtractableResponse<Response> response, boolean empty) {
