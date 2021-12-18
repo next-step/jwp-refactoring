@@ -35,7 +35,7 @@ class MenuGroupServiceTest {
     void createMenuGroup() {
         // given
         MenuGroup menuGroup = 메뉴_그룹_생성("두마리메뉴");
-        given(menuGroupDao.save(any()))
+        given(menuGroupDao.save(menuGroup))
             .willReturn(menuGroup);
 
         // when

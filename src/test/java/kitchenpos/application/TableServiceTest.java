@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -17,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
+import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 
 @ExtendWith(MockitoExtension.class)
@@ -41,7 +43,7 @@ class TableServiceTest {
         // given
         OrderTable orderTable = 주문_테이블_생성(0, true);
 
-        given(orderTableDao.save(any())).willReturn(orderTable);
+        given(orderTableDao.save(orderTable)).willReturn(orderTable);
 
         // when
         OrderTable savedOrderTable = tableService.create(orderTable);
@@ -74,10 +76,11 @@ class TableServiceTest {
         OrderTable orderTable = 주문_테이블_생성(1L, 0, false);
         OrderTable findOrderTable = 주문_테이블_생성(1L, 0, true);
 
-        given(orderTableDao.findById(any())).willReturn(Optional.of(findOrderTable));
+        given(orderTableDao.findById(orderTable.getId())).willReturn(Optional.of(findOrderTable));
         given(orderDao.existsByOrderTableIdAndOrderStatusIn(
-            any(), any())).willReturn(false);
-        given(orderTableDao.save(any())).willReturn(findOrderTable);
+            orderTable.getId(), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name())))
+            .willReturn(false);
+        given(orderTableDao.save(findOrderTable)).willReturn(findOrderTable);
 
         // when
         OrderTable changeTable = tableService.changeEmpty(orderTable.getId(), orderTable);
@@ -93,14 +96,15 @@ class TableServiceTest {
         OrderTable orderTable = 주문_테이블_생성(1L, 1L, 0, true);
         Long orderTableId = orderTable.getId();
 
-        given(orderTableDao.findById(any())).willReturn(Optional.of(orderTable));
+        given(orderTableDao.findById(orderTableId))
+            .willReturn(Optional.of(orderTable));
 
         // when && then
         assertThrows(IllegalArgumentException.class, () -> tableService.changeEmpty(
             orderTableId, orderTable));
 
-        verify(orderTableDao).findById(any());
-        verify(orderTableDao, times(0)).save(any());
+        verify(orderTableDao).findById(orderTableId);
+        verify(orderTableDao, times(0)).save(orderTable);
     }
 
     @DisplayName("주문 상태가 계산 완료가 아니면 주문 테이블의 주문 등록 가능 여부를 변경할 수 없다.")
@@ -110,15 +114,16 @@ class TableServiceTest {
         OrderTable orderTable = 주문_테이블_생성(1L, 0, true);
         Long orderTableId = orderTable.getId();
 
-        given(orderTableDao.findById(any())).willReturn(Optional.of(orderTable));
-        given(orderDao.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).willReturn(true);
+        given(orderTableDao.findById(orderTableId)).willReturn(Optional.of(orderTable));
+        given(orderDao.existsByOrderTableIdAndOrderStatusIn(orderTableId,
+            Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).willReturn(true);
 
         // when && then
         assertThrows(IllegalArgumentException.class, () ->
             tableService.changeEmpty(orderTableId, orderTable));
 
-        verify(orderTableDao).findById(any());
-        verify(orderTableDao, times(0)).save(any());
+        verify(orderTableDao).findById(orderTableId);
+        verify(orderTableDao, times(0)).save(orderTable);
     }
 
     @DisplayName("방문한 손님 수를 갱신할 수 있다.")
@@ -128,8 +133,8 @@ class TableServiceTest {
         OrderTable orderTable = 주문_테이블_생성(1L, 5, false);
         OrderTable findOrderTable = 주문_테이블_생성(1L, 0, false);
 
-        given(orderTableDao.findById(any())).willReturn(Optional.of(findOrderTable));
-        given(orderTableDao.save(any())).willReturn(findOrderTable);
+        given(orderTableDao.findById(orderTable.getId())).willReturn(Optional.of(findOrderTable));
+        given(orderTableDao.save(findOrderTable)).willReturn(findOrderTable);
         // when
         OrderTable savedOrderTable = tableService.changeNumberOfGuests(orderTable.getId(), orderTable);
 
@@ -147,7 +152,7 @@ class TableServiceTest {
         // when && then
         assertThrows(IllegalArgumentException.class, () ->
             tableService.changeNumberOfGuests(orderTableId, orderTable));
-        verify(orderTableDao, times(0)).findById(any());
+        verify(orderTableDao, times(0)).findById(orderTableId);
     }
 
     @DisplayName("빈 테이블일 경우 방문한 손님 수를 갱신할 수 없다.")
@@ -157,12 +162,12 @@ class TableServiceTest {
         OrderTable orderTable = 주문_테이블_생성(1L, 0, true);
         Long orderTableId = orderTable.getId();
 
-        given(orderTableDao.findById(anyLong())).willReturn(Optional.of(orderTable));
+        given(orderTableDao.findById(orderTableId)).willReturn(Optional.of(orderTable));
 
         // when && then
         assertThrows(IllegalArgumentException.class, () ->
             tableService.changeNumberOfGuests(orderTableId, orderTable));
-        verify(orderTableDao).findById(any());
+        verify(orderTableDao).findById(orderTableId);
     }
 
     static OrderTable 주문_테이블_생성(int numberOfGuests, boolean empty) {

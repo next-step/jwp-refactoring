@@ -8,6 +8,7 @@ import static org.mockito.BDDMockito.*;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -53,14 +54,18 @@ class OrderServiceTest {
     void createOrder() {
         // given
         Long orderId = 1L;
-        OrderLineItem orderLineItem = 주문_항목_생성(1L, 1);
         OrderTable orderTable = 주문_테이블_생성(1L, 0, false);
-        Order order = 주문_생성(orderId, orderTable.getId(), Collections.singletonList(orderLineItem));
+        OrderLineItem orderLineItem = 주문_항목_생성(1L, 1);
+        List<OrderLineItem> orderLineItems = Collections.singletonList(orderLineItem);
+        List<Long> menuIds = orderLineItems.stream()
+            .map(OrderLineItem::getMenuId)
+            .collect(Collectors.toList());
+        Order order = 주문_생성(orderId, orderTable.getId(), orderLineItems);
 
-        given(menuDao.countByIdIn(any())).willReturn((long)order.getOrderLineItems().size());
-        given(orderTableDao.findById(any())).willReturn(Optional.of(orderTable));
-        given(orderDao.save(any())).willReturn(order);
-        given(orderLineItemDao.save(any())).willReturn(orderLineItem);
+        given(menuDao.countByIdIn(menuIds)).willReturn((long)order.getOrderLineItems().size());
+        given(orderTableDao.findById(order.getOrderTableId())).willReturn(Optional.of(orderTable));
+        given(orderDao.save(order)).willReturn(order);
+        given(orderLineItemDao.save(orderLineItem)).willReturn(orderLineItem);
 
         // when
         Order savedOrder = orderService.create(order);
@@ -82,7 +87,7 @@ class OrderServiceTest {
 
         // when && then
         assertThrows(IllegalArgumentException.class, () -> orderService.create(order));
-        verify(menuDao, times(0)).countByIdIn(any());
+        verify(menuDao, times(0)).countByIdIn(Collections.emptyList());
     }
 
     @DisplayName("주문 항목과 해당하는 메뉴의 숫자가 일치해야 한다.")
@@ -92,14 +97,18 @@ class OrderServiceTest {
         Long orderId = 1L;
         OrderLineItem orderLineItem = 주문_항목_생성(1L, 1);
         OrderTable orderTable = 주문_테이블_생성(1L, 0, false);
-        Order order = 주문_생성(orderId, orderTable.getId(), Collections.singletonList(orderLineItem));
+        List<OrderLineItem> orderLineItems = Collections.singletonList(orderLineItem);
+        List<Long> menuIds = orderLineItems.stream()
+            .map(OrderLineItem::getMenuId)
+            .collect(Collectors.toList());
+        Order order = 주문_생성(orderId, orderTable.getId(), orderLineItems);
 
-        given(menuDao.countByIdIn(any())).willReturn(0L);
+        given(menuDao.countByIdIn(menuIds)).willReturn(0L);
 
         // when && then
         assertThrows(IllegalArgumentException.class, () -> orderService.create(order));
-        verify(menuDao).countByIdIn(any());
-        verify(orderTableDao, times(0)).findById(any());
+        verify(menuDao).countByIdIn(menuIds);
+        verify(orderTableDao, times(0)).findById(order.getOrderTableId());
     }
 
     @DisplayName("주문 테이블이 존재해야 주문을 등록할 수 있다.")
@@ -108,13 +117,17 @@ class OrderServiceTest {
         // given
         Long orderId = 1L;
         OrderLineItem orderLineItem = 주문_항목_생성(1L, 1);
+        List<OrderLineItem> orderLineItems = Collections.singletonList(orderLineItem);
+        List<Long> menuIds = orderLineItems.stream()
+            .map(OrderLineItem::getMenuId)
+            .collect(Collectors.toList());
         Order order = 주문_생성(orderId, null, Collections.singletonList(orderLineItem));
 
-        given(menuDao.countByIdIn(any())).willReturn(0L);
+        given(menuDao.countByIdIn(menuIds)).willReturn((long)menuIds.size());
 
         // when && then
         assertThrows(IllegalArgumentException.class, () -> orderService.create(order));
-        verify(orderDao, times(0)).save(any());
+        verify(orderDao, times(0)).save(order);
     }
 
     @DisplayName("주문 테이블이 빈 테이블이면 주문을 등록할 수 없다.")
@@ -124,14 +137,18 @@ class OrderServiceTest {
         Long orderId = 1L;
         OrderLineItem orderLineItem = 주문_항목_생성(1L, 1);
         OrderTable orderTable = 주문_테이블_생성(1L, 0, true);
-        Order order = 주문_생성(orderId, orderTable.getId(), Collections.singletonList(orderLineItem));
+        List<OrderLineItem> orderLineItems = Collections.singletonList(orderLineItem);
+        List<Long> menuIds = orderLineItems.stream()
+            .map(OrderLineItem::getMenuId)
+            .collect(Collectors.toList());
+        Order order = 주문_생성(orderId, orderTable.getId(), orderLineItems);
 
-        given(menuDao.countByIdIn(any())).willReturn((long)order.getOrderLineItems().size());
-        given(orderTableDao.findById(any())).willReturn(Optional.of(orderTable));
+        given(menuDao.countByIdIn(menuIds)).willReturn((long)order.getOrderLineItems().size());
+        given(orderTableDao.findById(order.getOrderTableId())).willReturn(Optional.of(orderTable));
 
         // when && then
         assertThrows(IllegalArgumentException.class, () -> orderService.create(order));
-        verify(orderDao, times(0)).save(any());
+        verify(orderDao, times(0)).save(order);
     }
 
     @DisplayName("주문 목록을 조회한다.")
@@ -166,9 +183,9 @@ class OrderServiceTest {
         Order findOrder = 주문_생성(orderId, orderTable.getId(),
             OrderStatus.COOKING.name(), Collections.singletonList(orderLineItem));
 
-        given(orderDao.findById(any())).willReturn(Optional.of(findOrder));
-        given(orderDao.save(any())).willReturn(null);
-        given(orderLineItemDao.findAllByOrderId(any()))
+        given(orderDao.findById(orderId)).willReturn(Optional.of(findOrder));
+        given(orderDao.save(findOrder)).willReturn(null);
+        given(orderLineItemDao.findAllByOrderId(orderId))
             .willReturn(Collections.singletonList(orderLineItem));
 
         // when
@@ -188,12 +205,12 @@ class OrderServiceTest {
         Order order = 주문_생성(orderId, orderTable.getId(),
             OrderStatus.COMPLETION.name(), Collections.singletonList(orderLineItem));
 
-        given(orderDao.findById(any())).willReturn(Optional.of(order));
+        given(orderDao.findById(orderId)).willReturn(Optional.of(order));
 
         // when && then
         assertThrows(IllegalArgumentException.class, () ->
             orderService.changeOrderStatus(orderId, order));
-        verify(orderDao, times(0)).save(any());
+        verify(orderDao, times(0)).save(order);
     }
 
     private Order 주문_생성(Long orderId, Long orderTableId, List<OrderLineItem> orderLineItems) {

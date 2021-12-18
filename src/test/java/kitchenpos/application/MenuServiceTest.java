@@ -58,10 +58,10 @@ class MenuServiceTest {
         Menu menu = 메뉴_생성("후라이드 치킨", 16000, menuGroup.getId(),
             Collections.singletonList(menuProduct));
 
-        given(menuGroupDao.existsById(any())).willReturn(true);
-        given(productDao.findById(any())).willReturn(Optional.of(product));
-        given(menuDao.save(any())).willReturn(menu);
-        given(menuProductDao.save(any())).willReturn(menuProduct);
+        given(menuGroupDao.existsById(menu.getMenuGroupId())).willReturn(true);
+        given(productDao.findById(menuProduct.getProductId())).willReturn(Optional.of(product));
+        given(menuDao.save(menu)).willReturn(menu);
+        given(menuProductDao.save(menuProduct)).willReturn(menuProduct);
 
         // when
         Menu savedMenu = menuService.create(menu);
@@ -94,7 +94,7 @@ class MenuServiceTest {
         Menu menu = 메뉴_생성("후라이드 치킨", 16000, menuGroup.getId(),
             Collections.singletonList(menuProduct));
 
-        given(menuGroupDao.existsById(any())).willReturn(false);
+        given(menuGroupDao.existsById(menu.getMenuGroupId())).willReturn(false);
 
         // when && then
         assertThrows(IllegalArgumentException.class, () -> menuService.create(menu));
@@ -110,8 +110,8 @@ class MenuServiceTest {
         Menu menu = 메뉴_생성("후라이드 치킨", 16000, menuGroup.getId(),
             Collections.singletonList(menuProduct));
 
-        given(menuGroupDao.existsById(any())).willReturn(true);
-        given(productDao.findById(any())).willReturn(Optional.of(product));
+        given(menuGroupDao.existsById(menu.getMenuGroupId())).willReturn(true);
+        given(productDao.findById(menuProduct.getProductId())).willReturn(Optional.of(product));
 
         // when && then
         assertThrows(IllegalArgumentException.class, () -> menuService.create(menu));
@@ -127,8 +127,8 @@ class MenuServiceTest {
         Menu menu = 메뉴_생성("후라이드 치킨", 16000, menuGroup.getId(),
             Collections.singletonList(menuProduct));
 
-        given(menuGroupDao.existsById(any())).willReturn(true);
-        given(productDao.findById(any())).willReturn(Optional.empty());
+        given(menuGroupDao.existsById(menu.getMenuGroupId())).willReturn(true);
+        given(productDao.findById(menuProduct.getProductId())).willReturn(Optional.empty());
 
         // when && then
         assertThrows(IllegalArgumentException.class, () -> menuService.create(menu));
@@ -146,7 +146,7 @@ class MenuServiceTest {
         List<Menu> menus = Collections.singletonList(menu);
 
         given(menuDao.findAll()).willReturn(menus);
-        given(menuProductDao.findAllByMenuId(any()))
+        given(menuProductDao.findAllByMenuId(menu.getId()))
             .willReturn(Collections.singletonList(menuProduct));
 
         // when

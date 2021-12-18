@@ -8,6 +8,7 @@ import static org.mockito.BDDMockito.*;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -19,6 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.TableGroupDao;
+import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 
@@ -46,15 +48,18 @@ class TableGroupServiceTest {
     @Test
     void createTableGroup() {
         // given
+        OrderTable orderTable1 = 주문_테이블_생성(1L, 0, true);
         List<OrderTable> orderTables = Arrays.asList(
-            주문_테이블_생성(1L, 0, true),
+            orderTable1,
             주문_테이블_생성(2L, 0, true));
         TableGroup tableGroup = 주문_테이블_그룹_생성(orderTables);
 
-        given(orderTableDao.findAllByIdIn(any()))
+        given(orderTableDao.findAllByIdIn(orderTables.stream()
+            .map(OrderTable::getId)
+            .collect(Collectors.toList())))
             .willReturn(orderTables);
-        given(tableGroupDao.save(any())).willReturn(tableGroup);
-        given(orderTableDao.save(any())).willReturn(null);
+        given(tableGroupDao.save(tableGroup)).willReturn(tableGroup);
+        given(orderTableDao.save(orderTable1)).willReturn(null);
 
         // when
         TableGroup savedTableGroup = tableGroupService.create(tableGroup);
@@ -76,7 +81,9 @@ class TableGroupServiceTest {
         // when && then
         assertThrows(IllegalArgumentException.class, () ->
             tableGroupService.create(tableGroup));
-        verify(orderTableDao, times(0)).findAllByIdIn(any());
+        verify(orderTableDao, times(0)).findAllByIdIn(orderTables.stream()
+            .map(OrderTable::getId)
+            .collect(Collectors.toList()));
     }
 
     @DisplayName("조회 가능한 주문 테이블만 주문 테이블 그룹에 등록할 수 있다.")
@@ -86,15 +93,19 @@ class TableGroupServiceTest {
         List<OrderTable> orderTables = Arrays.asList(
             주문_테이블_생성(1L, 0, true),
             주문_테이블_생성(2L, 0, true));
+        List<Long> orderTableIds = orderTables.stream()
+            .map(OrderTable::getId)
+            .collect(Collectors.toList());
         TableGroup tableGroup = 주문_테이블_그룹_생성(orderTables);
 
-        given(orderTableDao.findAllByIdIn(any())).willReturn(Collections.emptyList());
+        given(orderTableDao.findAllByIdIn(orderTableIds))
+            .willReturn(Collections.emptyList());
 
         // when && then
         assertThrows(IllegalArgumentException.class, () ->
             tableGroupService.create(tableGroup));
-        verify(orderTableDao).findAllByIdIn(any());
-        verify(tableGroupDao, times(0)).save(any());
+        verify(orderTableDao).findAllByIdIn(orderTableIds);
+        verify(tableGroupDao, times(0)).save(tableGroup);
     }
 
     @DisplayName("빈 주문 테이블만 주문 테이블 그룹에 등록할 수 있다.")
@@ -104,15 +115,17 @@ class TableGroupServiceTest {
         List<OrderTable> orderTables = Arrays.asList(
             주문_테이블_생성(1L, 0, true),
             주문_테이블_생성(2L, 0, false));
+        List<Long> orderTableIds = orderTables.stream().map(OrderTable::getId)
+            .collect(Collectors.toList());
         TableGroup tableGroup = 주문_테이블_그룹_생성(orderTables);
 
-        given(orderTableDao.findAllByIdIn(any())).willReturn(orderTables);
+        given(orderTableDao.findAllByIdIn(orderTableIds)).willReturn(orderTables);
 
         // when && then
         assertThrows(IllegalArgumentException.class, () ->
             tableGroupService.create(tableGroup));
-        verify(orderTableDao).findAllByIdIn(any());
-        verify(tableGroupDao, times(0)).save(any());
+        verify(orderTableDao).findAllByIdIn(orderTableIds);
+        verify(tableGroupDao, times(0)).save(tableGroup);
     }
 
     @DisplayName("주문 테이블 그룹에 속해있지 않은 주문 테이블만 등록 가능하다.")
@@ -122,15 +135,17 @@ class TableGroupServiceTest {
         List<OrderTable> orderTables = Arrays.asList(
             주문_테이블_생성(1L, 1L, 0, true),
             주문_테이블_생성(2L, 0, true));
+        List<Long> orderTableIds = orderTables.stream().map(OrderTable::getId)
+            .collect(Collectors.toList());
         TableGroup tableGroup = 주문_테이블_그룹_생성(orderTables);
 
-        given(orderTableDao.findAllByIdIn(any())).willReturn(orderTables);
+        given(orderTableDao.findAllByIdIn(orderTableIds)).willReturn(orderTables);
 
         // when && then
         assertThrows(IllegalArgumentException.class, () ->
             tableGroupService.create(tableGroup));
-        verify(orderTableDao).findAllByIdIn(any());
-        verify(tableGroupDao, times(0)).save(any());
+        verify(orderTableDao).findAllByIdIn(orderTableIds);
+        verify(tableGroupDao, times(0)).save(tableGroup);
     }
 
     @DisplayName("주문 테이블 그룹에서 주문 테이블을 삭제할 수 있다.")
@@ -141,10 +156,14 @@ class TableGroupServiceTest {
         List<OrderTable> orderTables = Arrays.asList(
             주문_테이블_생성(1L, tableGroupId, 0, true),
             주문_테이블_생성(2L, tableGroupId, 0, true));
+        List<Long> orderTableIds = orderTables.stream()
+            .map(OrderTable::getId)
+            .collect(Collectors.toList());
 
-        given(orderTableDao.findAllByTableGroupId(any()))
+        given(orderTableDao.findAllByTableGroupId(tableGroupId))
             .willReturn(orderTables);
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList()))
+        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(orderTableIds,
+            Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name())))
             .willReturn(false);
 
         // when

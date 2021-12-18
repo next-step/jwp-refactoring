@@ -36,7 +36,7 @@ class ProductServiceTest {
     void createProduct() {
         // given
         Product product = 상품_생성("후라이드", 16000);
-        given(productDao.save(any()))
+        given(productDao.save(product))
             .willReturn(product);
 
         // when
