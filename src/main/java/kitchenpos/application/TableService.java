@@ -1,7 +1,5 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.OrderTableRepository;
 import kitchenpos.dto.OrderTableRequest;
@@ -9,18 +7,14 @@ import kitchenpos.dto.OrderTableResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class TableService {
     private final OrderTableRepository orderTableRepository;
-    private final OrderDao orderDao;
 
-    public TableService(final OrderTableRepository orderTableRepository, final OrderDao orderDao) {
+    public TableService(final OrderTableRepository orderTableRepository) {
         this.orderTableRepository = orderTableRepository;
-        this.orderDao = orderDao;
     }
 
     @Transactional
@@ -43,15 +37,8 @@ public class TableService {
             throw new IllegalArgumentException();
         }
 
-        if (orderDao.existsByOrderTableIdAndOrderStatusIn(
-                orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new IllegalArgumentException();
-        }
-
         savedOrderTable.changeEmptyStatus(orderTableRequest.isEmpty());
-
-        OrderTable changedOrderTable = orderTableRepository.save(savedOrderTable);
-        return OrderTableResponse.of(changedOrderTable);
+        return OrderTableResponse.of(savedOrderTable);
     }
 
     @Transactional

@@ -1,10 +1,6 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.OrderTableRepository;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.domain.*;
 import kitchenpos.dto.OrderTableRequest;
 import kitchenpos.dto.OrderTableResponse;
 import org.assertj.core.api.ThrowableAssert;
@@ -30,8 +26,6 @@ import static org.mockito.BDDMockito.given;
 public class TableServiceTest {
     @Mock
     private OrderTableRepository orderTableRepository;
-    @Mock
-    private OrderDao orderDao;
     @InjectMocks
     private TableService tableService;
 
@@ -76,8 +70,6 @@ public class TableServiceTest {
             OrderTable expectedOrderTable = new OrderTable(1L, null, 4, true);
 
             given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(expectedOrderTable));
-            given(orderDao.existsByOrderTableIdAndOrderStatusIn(anyLong(), any(List.class))).willReturn(false);
-            given(orderTableRepository.save(any(OrderTable.class))).willReturn(expectedOrderTable);
 
             // when
             OrderTableResponse orderTable = tableService.changeEmpty(expectedOrderTable.getId(), requestOrderTable);
@@ -123,10 +115,10 @@ public class TableServiceTest {
         void validateOrderState() {
             // given
             OrderTableRequest requestOrderTable = new OrderTableRequest(4, true);
-            OrderTable orderTable = new OrderTable(1L, null, 4, true);
+            List<Order> orders = Arrays.asList(new Order(OrderStatus.COOKING), new Order(OrderStatus.COOKING));
+            OrderTable orderTable = new OrderTable(1L, null, 4, true, orders);
 
             given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(orderTable));
-            given(orderDao.existsByOrderTableIdAndOrderStatusIn(anyLong(), any(List.class))).willReturn(true);
 
             // when
             ThrowableAssert.ThrowingCallable callable = () -> tableService.changeEmpty(orderTable.getId(), requestOrderTable);
