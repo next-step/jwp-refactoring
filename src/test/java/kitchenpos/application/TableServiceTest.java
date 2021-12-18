@@ -3,6 +3,7 @@ package kitchenpos.application;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.OrderTableRepository;
 import kitchenpos.dto.OrderTableRequest;
 import kitchenpos.dto.OrderTableResponse;
 import org.assertj.core.api.ThrowableAssert;
@@ -27,6 +28,8 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 public class TableServiceTest {
     @Mock
+    private OrderTableRepository orderTableRepository;
+    @Mock
     private OrderDao orderDao;
     @Mock
     private OrderTableDao orderTableDao;
@@ -40,7 +43,7 @@ public class TableServiceTest {
         OrderTableRequest requestOrderTable = new OrderTableRequest(4, false);
         OrderTable expectedOrderTable = new OrderTable(1L, null, 4, false);
 
-        given(orderTableDao.save(any(OrderTable.class))).willReturn(expectedOrderTable);
+        given(orderTableRepository.save(any(OrderTable.class))).willReturn(expectedOrderTable);
 
         // when
         OrderTableResponse orderTable = tableService.create(requestOrderTable);
@@ -54,7 +57,7 @@ public class TableServiceTest {
     void testList() {
         // given
         List<OrderTable> expectedOrderTables = Arrays.asList(new OrderTable(1L, null, 4, false));
-        given(orderTableDao.findAll()).willReturn(expectedOrderTables);
+        given(orderTableRepository.findAll()).willReturn(expectedOrderTables);
 
         // when
         List<OrderTableResponse> orderTables = tableService.list();
@@ -73,9 +76,9 @@ public class TableServiceTest {
             OrderTableRequest requestOrderTable = new OrderTableRequest(4, true);
             OrderTable expectedOrderTable = new OrderTable(1L, null, 4, true);
 
-            given(orderTableDao.findById(anyLong())).willReturn(Optional.of(expectedOrderTable));
+            given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(expectedOrderTable));
             given(orderDao.existsByOrderTableIdAndOrderStatusIn(anyLong(), any(List.class))).willReturn(false);
-            given(orderTableDao.save(any(OrderTable.class))).willReturn(expectedOrderTable);
+            given(orderTableRepository.save(any(OrderTable.class))).willReturn(expectedOrderTable);
 
             // when
             OrderTableResponse orderTable = tableService.changeEmpty(expectedOrderTable.getId(), requestOrderTable);
@@ -89,7 +92,7 @@ public class TableServiceTest {
         void hasSavedOrderTable() {
             // given
             OrderTableRequest requestOrderTable = new OrderTableRequest( 4, true);
-            given(orderTableDao.findById(anyLong())).willReturn(Optional.empty());
+            given(orderTableRepository.findById(anyLong())).willReturn(Optional.empty());
 
             // when
             ThrowableAssert.ThrowingCallable callable = () -> tableService.changeEmpty(anyLong(), requestOrderTable);
@@ -106,7 +109,7 @@ public class TableServiceTest {
             OrderTableRequest requestOrderTable = new OrderTableRequest( 4, true);
             OrderTable expectedOrderTable = new OrderTable(1L, 2L, 4, true);
 
-            given(orderTableDao.findById(anyLong())).willReturn(Optional.of(expectedOrderTable));
+            given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(expectedOrderTable));
 
             // when
             ThrowableAssert.ThrowingCallable callable = () -> tableService.changeEmpty(expectedOrderTable.getId(), requestOrderTable);
@@ -123,7 +126,7 @@ public class TableServiceTest {
             OrderTableRequest requestOrderTable = new OrderTableRequest(4, true);
             OrderTable orderTable = new OrderTable(1L, null, 4, true);
 
-            given(orderTableDao.findById(anyLong())).willReturn(Optional.of(orderTable));
+            given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(orderTable));
             given(orderDao.existsByOrderTableIdAndOrderStatusIn(anyLong(), any(List.class))).willReturn(true);
 
             // when
@@ -145,8 +148,8 @@ public class TableServiceTest {
             OrderTableRequest requestOrderTable = new OrderTableRequest(4, false);
             OrderTable expectedOrderTable = new OrderTable(1L, null, 4, false);
 
-            given(orderTableDao.findById(anyLong())).willReturn(Optional.of(expectedOrderTable));
-            given(orderTableDao.save(any(OrderTable.class))).willReturn(expectedOrderTable);
+            given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(expectedOrderTable));
+            given(orderTableRepository.save(any(OrderTable.class))).willReturn(expectedOrderTable);
 
             // when
             OrderTableResponse orderTable = tableService.changeNumberOfGuests(expectedOrderTable.getId(), requestOrderTable);
@@ -174,7 +177,7 @@ public class TableServiceTest {
         void hasSavedOrderTable() {
             // given
             OrderTableRequest orderTable = new OrderTableRequest(4, false);
-            given(orderTableDao.findById(anyLong())).willReturn(Optional.empty());
+            given(orderTableRepository.findById(anyLong())).willReturn(Optional.empty());
 
             // when
             ThrowableAssert.ThrowingCallable callable = () -> tableService.changeNumberOfGuests(anyLong(), orderTable);
@@ -190,7 +193,7 @@ public class TableServiceTest {
             // given
             OrderTableRequest orderTableRequest = new OrderTableRequest(4, false);
             OrderTable orderTable = new OrderTable(1L, null, 4, true);
-            given(orderTableDao.findById(anyLong())).willReturn(Optional.of(orderTable));
+            given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(orderTable));
 
             // when
             ThrowableAssert.ThrowingCallable callable = () -> tableService.changeNumberOfGuests(orderTable.getId(), orderTableRequest);
