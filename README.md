@@ -59,7 +59,7 @@
 ### step1 요구사항
 - [X] 키친포스 기능 요구사항 분석
 - [ ] 테스트 코드 작성
-  - [ ] ProductService
+  - [X] ProductService
   - [ ] MenuGroupService
   - [ ] MenuService
   - [ ] TableService
