@@ -134,8 +134,8 @@
     - [X] TableRestController, TableService
     - [X] TableGroupRestController, TableGroupService
     - [X] OrderRestController, OrderService
-- JdbcTemplate -> JPA로 Persistance 변경
-  - 상품
+- [ ] JdbcTemplate -> JPA로 Persistance 변경
+  - [X] 상품(Product)
   - 메뉴
   - 메뉴 상품
   - 메뉴 그룹
