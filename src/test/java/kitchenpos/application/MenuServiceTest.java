@@ -1,13 +1,13 @@
 package kitchenpos.application;
 
 import kitchenpos.dao.MenuDao;
-import kitchenpos.menuGroup.domain.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.menuGroup.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
+import kitchenpos.menuGroup.domain.MenuGroupRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,7 +23,6 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -31,7 +30,7 @@ public class MenuServiceTest {
     @Mock
     private MenuDao menuDao;
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
     @Mock
     private MenuProductDao menuProductDao;
     @Mock
@@ -73,7 +72,7 @@ public class MenuServiceTest {
     @Test
     void create() {
         //given
-        given(menuGroupDao.existsById(1L)).willReturn(true);
+        given(menuGroupRepository.existsById(1L)).willReturn(true);
         given(productDao.findById(1L)).willReturn(java.util.Optional.ofNullable(후라이드));
         given(menuDao.save(후라이드두마리세트)).willReturn(후라이드두마리세트);
         given(menuProductDao.save(후라이드두마리구성)).willReturn(후라이드두마리구성);
