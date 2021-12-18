@@ -6,6 +6,7 @@ import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.*;
 import kitchenpos.menuGroup.domain.MenuGroup;
+import kitchenpos.testFixture.MenuGroupTestFixture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -57,9 +58,7 @@ public class OrderServiceTest {
         후라이드두마리구성.setProductId(1L);
         후라이드두마리구성.setQuantity(2L);
 
-        치킨류 = new MenuGroup();
-        치킨류.setId(1L);
-        치킨류.setName("치킨");
+        치킨류 = MenuGroupTestFixture.메뉴그룹생성(1L,"치킨");
 
         후라이드두마리세트 = new Menu();
         후라이드두마리세트.setId(1L);
