@@ -5,6 +5,9 @@ import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.dto.OrderTableRequest;
+import kitchenpos.dto.TableGroupRequest;
+import kitchenpos.dto.TableGroupResponse;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -43,8 +46,13 @@ public class TableGroupServiceTest {
         @Test
         void testCreate() {
             // given
-            OrderTable firstOrderTable = new OrderTable(1L, null, 4, true);
-            OrderTable secondOrderTable = new OrderTable(2L, null, 4, true);
+            OrderTableRequest firstOrderTableRequest = new OrderTableRequest(1L, 4, true);
+            OrderTableRequest secondOrderTableRequest = new OrderTableRequest(2L, 4, true);
+            List<OrderTableRequest> orderTableRequests = Arrays.asList(firstOrderTableRequest, secondOrderTableRequest);
+            TableGroupRequest tableGroupRequest = new TableGroupRequest(orderTableRequests);
+
+            OrderTable firstOrderTable = new OrderTable(firstOrderTableRequest.getId(), null, firstOrderTableRequest.getNumberOfGuests(), firstOrderTableRequest.isEmpty());
+            OrderTable secondOrderTable = new OrderTable(secondOrderTableRequest.getId(), null, secondOrderTableRequest.getNumberOfGuests(), secondOrderTableRequest.isEmpty());
             List<OrderTable> orderTables = Arrays.asList(firstOrderTable, secondOrderTable);
             TableGroup expectedTableGroup = new TableGroup(1L, LocalDateTime.now(), orderTables);
 
@@ -53,22 +61,22 @@ public class TableGroupServiceTest {
             given(orderTableDao.save(any(OrderTable.class))).willReturn(firstOrderTable, secondOrderTable);
 
             // when
-            TableGroup tableGroup = tableGroupService.create(expectedTableGroup);
+            TableGroupResponse tableGroup = tableGroupService.create(tableGroupRequest);
 
             // then
-            assertThat(tableGroup).isEqualTo(expectedTableGroup);
+            assertThat(tableGroup).isEqualTo(TableGroupResponse.of(expectedTableGroup));
         }
 
         @DisplayName("주문 테이블을 2개 이상 지정해야 한다")
         @Test
         void assignTwoMoreTable() {
             // given
-            OrderTable firstOrderTable = new OrderTable(1L, null, 4, true);
-            List<OrderTable> orderTables = Arrays.asList(firstOrderTable);
-            TableGroup expectedTableGroup = new TableGroup(1L, LocalDateTime.now(), orderTables);
+            OrderTableRequest firstOrderTableRequest = new OrderTableRequest(1L, 4, true);
+            List<OrderTableRequest> orderTableRequests = Arrays.asList(firstOrderTableRequest);
+            TableGroupRequest tableGroupRequest = new TableGroupRequest(orderTableRequests);
 
             // when
-            ThrowableAssert.ThrowingCallable callable = () -> tableGroupService.create(expectedTableGroup);
+            ThrowableAssert.ThrowingCallable callable = () -> tableGroupService.create(tableGroupRequest);
 
             // then
             assertThatThrownBy(callable)
@@ -79,15 +87,15 @@ public class TableGroupServiceTest {
         @Test
         void hasSavedTable() {
             // given
-            OrderTable firstOrderTable = new OrderTable(1L, null, 4, true);
-            OrderTable secondOrderTable = new OrderTable(2L, null, 4, true);
-            List<OrderTable> orderTables = Arrays.asList(firstOrderTable, secondOrderTable);
-            TableGroup expectedTableGroup = new TableGroup(1L, LocalDateTime.now(), orderTables);
+            OrderTableRequest firstOrderTableRequest = new OrderTableRequest(1L, 4, true);
+            OrderTableRequest secondOrderTableRequest = new OrderTableRequest(2L, 4, true);
+            List<OrderTableRequest> orderTableRequests = Arrays.asList(firstOrderTableRequest, secondOrderTableRequest);
+            TableGroupRequest tableGroupRequest = new TableGroupRequest(orderTableRequests);
 
             given(orderTableDao.findAllByIdIn(any(List.class))).willReturn(Collections.emptyList());
 
             // when
-            ThrowableAssert.ThrowingCallable callable = () -> tableGroupService.create(expectedTableGroup);
+            ThrowableAssert.ThrowingCallable callable = () -> tableGroupService.create(tableGroupRequest);
 
             // then
             assertThatThrownBy(callable)
@@ -98,15 +106,19 @@ public class TableGroupServiceTest {
         @Test
         void mustEmptyTables() {
             // given
-            OrderTable firstOrderTable = new OrderTable(1L, null, 4, true);
-            OrderTable secondOrderTable = new OrderTable(2L, null, 4, false);
+            OrderTableRequest firstOrderTableRequest = new OrderTableRequest(1L, 4, true);
+            OrderTableRequest secondOrderTableRequest = new OrderTableRequest(2L, 4, true);
+            List<OrderTableRequest> orderTableRequests = Arrays.asList(firstOrderTableRequest, secondOrderTableRequest);
+            TableGroupRequest tableGroupRequest = new TableGroupRequest(orderTableRequests);
+
+            OrderTable firstOrderTable = new OrderTable(firstOrderTableRequest.getId(), null, firstOrderTableRequest.getNumberOfGuests(), firstOrderTableRequest.isEmpty());
+            OrderTable secondOrderTable = new OrderTable(secondOrderTableRequest.getId(), null, secondOrderTableRequest.getNumberOfGuests(), false);
             List<OrderTable> orderTables = Arrays.asList(firstOrderTable, secondOrderTable);
-            TableGroup expectedTableGroup = new TableGroup(1L, LocalDateTime.now(), orderTables);
 
             given(orderTableDao.findAllByIdIn(any(List.class))).willReturn(orderTables);
 
             // when
-            ThrowableAssert.ThrowingCallable callable = () -> tableGroupService.create(expectedTableGroup);
+            ThrowableAssert.ThrowingCallable callable = () -> tableGroupService.create(tableGroupRequest);
 
             // then
             assertThatThrownBy(callable)

@@ -3,9 +3,10 @@ package kitchenpos.acceptance;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.dto.OrderTableRequest;
 import kitchenpos.dto.OrderTableResponse;
+import kitchenpos.dto.TableGroupRequest;
+import kitchenpos.dto.TableGroupResponse;
 import kitchenpos.utils.Http;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,14 +26,13 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
         OrderTableResponse 첫번째_테이블 = TableAcceptanceTest.주문_테이블_등록되어_있음(4, true);
         OrderTableResponse 두번째_테이블 = TableAcceptanceTest.주문_테이블_등록되어_있음(4, true);
 
-        List<OrderTableResponse> orderTables = Arrays.asList(첫번째_테이블, 두번째_테이블);
-        // TODO
-        TableGroup 요청_단체테이블 = null;// new TableGroup(orderTables);
+        List<OrderTableRequest> orderTables = Arrays.asList(new OrderTableRequest(첫번째_테이블.getId()), new OrderTableRequest(두번째_테이블.getId()));
+        TableGroupRequest 요청_단체테이블 = new TableGroupRequest(orderTables);
 
         // when
         ExtractableResponse<Response> createResponse = 단체_지정_요청(요청_단체테이블);
         // then
-        TableGroup 생성된_단체테이블 = 단체_지정됨(createResponse);
+        TableGroupResponse 생성된_단체테이블 = 단체_지정됨(createResponse);
 
         // when
         ExtractableResponse<Response> unGroupResponse = 단체_지정_해제_요청(생성된_단체테이블);
@@ -43,20 +43,20 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
     /**
      * 요청 관련
      */
-    private ExtractableResponse<Response> 단체_지정_요청(TableGroup 요청_단체테이블) {
-        return Http.post("/api/table-groups", 요청_단체테이블);
+    private ExtractableResponse<Response> 단체_지정_요청(TableGroupRequest tableGroupRequest) {
+        return Http.post("/api/table-groups", tableGroupRequest);
     }
 
-    private ExtractableResponse<Response> 단체_지정_해제_요청(TableGroup 생성된_단체테이블) {
+    private ExtractableResponse<Response> 단체_지정_해제_요청(TableGroupResponse 생성된_단체테이블) {
         return Http.delete("/api/table-groups/" + 생성된_단체테이블.getId());
     }
 
     /**
      * 응답 관련
      */
-    private TableGroup 단체_지정됨(ExtractableResponse<Response> createResponse) {
+    private TableGroupResponse 단체_지정됨(ExtractableResponse<Response> createResponse) {
         assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-        return createResponse.as(TableGroup.class);
+        return createResponse.as(TableGroupResponse.class);
     }
 
     private void 단체_지정_해제됨(ExtractableResponse<Response> unGroupResponse) {
