@@ -4,6 +4,7 @@ import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.OrderTableRepository;
+import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.OrderTableRequest;
 import kitchenpos.dto.OrderTableResponse;
 import org.assertj.core.api.ThrowableAssert;
@@ -31,8 +32,6 @@ public class TableServiceTest {
     private OrderTableRepository orderTableRepository;
     @Mock
     private OrderDao orderDao;
-    @Mock
-    private OrderTableDao orderTableDao;
     @InjectMocks
     private TableService tableService;
 
@@ -107,7 +106,7 @@ public class TableServiceTest {
         void notGrouping() {
             // given
             OrderTableRequest requestOrderTable = new OrderTableRequest( 4, true);
-            OrderTable expectedOrderTable = new OrderTable(1L, 2L, 4, true);
+            OrderTable expectedOrderTable = new OrderTable(1L, new TableGroup(), 4, true);
 
             given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(expectedOrderTable));
 

@@ -1,10 +1,10 @@
 package kitchenpos.application;
 
 import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.OrderTableRepository;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.domain.TableGroupRepository;
 import kitchenpos.dto.OrderTableRequest;
 import kitchenpos.dto.TableGroupRequest;
 import kitchenpos.dto.TableGroupResponse;
@@ -33,9 +33,9 @@ public class TableGroupServiceTest {
     @Mock
     private OrderDao orderDao;
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
     @Mock
-    private TableGroupDao tableGroupDao;
+    private TableGroupRepository tableGroupRepository;
     @InjectMocks
     private TableGroupService tableGroupService;
 
@@ -56,9 +56,9 @@ public class TableGroupServiceTest {
             List<OrderTable> orderTables = Arrays.asList(firstOrderTable, secondOrderTable);
             TableGroup expectedTableGroup = new TableGroup(1L, LocalDateTime.now(), orderTables);
 
-            given(orderTableDao.findAllByIdIn(any(List.class))).willReturn(orderTables);
-            given(tableGroupDao.save(any(TableGroup.class))).willReturn(expectedTableGroup);
-            given(orderTableDao.save(any(OrderTable.class))).willReturn(firstOrderTable, secondOrderTable);
+            given(orderTableRepository.findAllById(any(List.class))).willReturn(orderTables);
+            given(tableGroupRepository.save(any(TableGroup.class))).willReturn(expectedTableGroup);
+            given(orderTableRepository.save(any(OrderTable.class))).willReturn(firstOrderTable, secondOrderTable);
 
             // when
             TableGroupResponse tableGroup = tableGroupService.create(tableGroupRequest);
@@ -92,7 +92,7 @@ public class TableGroupServiceTest {
             List<OrderTableRequest> orderTableRequests = Arrays.asList(firstOrderTableRequest, secondOrderTableRequest);
             TableGroupRequest tableGroupRequest = new TableGroupRequest(orderTableRequests);
 
-            given(orderTableDao.findAllByIdIn(any(List.class))).willReturn(Collections.emptyList());
+            given(orderTableRepository.findAllById(any(List.class))).willReturn(Collections.emptyList());
 
             // when
             ThrowableAssert.ThrowingCallable callable = () -> tableGroupService.create(tableGroupRequest);
@@ -115,7 +115,7 @@ public class TableGroupServiceTest {
             OrderTable secondOrderTable = new OrderTable(secondOrderTableRequest.getId(), null, secondOrderTableRequest.getNumberOfGuests(), false);
             List<OrderTable> orderTables = Arrays.asList(firstOrderTable, secondOrderTable);
 
-            given(orderTableDao.findAllByIdIn(any(List.class))).willReturn(orderTables);
+            given(orderTableRepository.findAllById(any(List.class))).willReturn(orderTables);
 
             // when
             ThrowableAssert.ThrowingCallable callable = () -> tableGroupService.create(tableGroupRequest);
@@ -135,19 +135,19 @@ public class TableGroupServiceTest {
             // given
             List<OrderTable> orderTables = new ArrayList<>();
             TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), orderTables);
-            OrderTable firstOrderTable = new OrderTable(1L, tableGroup.getId(), 4, false);
-            OrderTable secondOrderTable = new OrderTable(2L, tableGroup.getId(), 4, false);
+            OrderTable firstOrderTable = new OrderTable(1L, tableGroup, 4, false);
+            OrderTable secondOrderTable = new OrderTable(2L, tableGroup, 4, false);
             orderTables.addAll(Arrays.asList(firstOrderTable, secondOrderTable));
 
-            given(orderTableDao.findAllByTableGroupId(anyLong())).willReturn(orderTables);
+            given(tableGroupRepository.findById(anyLong())).willReturn(Optional.of(tableGroup));
             given(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(List.class), any(List.class))).willReturn(false);
-            given(orderTableDao.save(any(OrderTable.class))).willReturn(firstOrderTable, secondOrderTable);
+            given(orderTableRepository.save(any(OrderTable.class))).willReturn(firstOrderTable, secondOrderTable);
 
             // when
             tableGroupService.ungroup(tableGroup.getId());
 
             // then
-            verify(orderTableDao, times(2)).save(any(OrderTable.class));
+            verify(orderTableRepository, times(2)).save(any(OrderTable.class));
         }
 
         @DisplayName("아직 주문이 생성되지 않아야 한다")
@@ -156,11 +156,11 @@ public class TableGroupServiceTest {
             // given
             List<OrderTable> orderTables = new ArrayList<>();
             TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), orderTables);
-            OrderTable firstOrderTable = new OrderTable(1L, tableGroup.getId(), 4, false);
-            OrderTable secondOrderTable = new OrderTable(2L, tableGroup.getId(), 4, false);
+            OrderTable firstOrderTable = new OrderTable(1L, tableGroup, 4, false);
+            OrderTable secondOrderTable = new OrderTable(2L, tableGroup, 4, false);
             orderTables.addAll(Arrays.asList(firstOrderTable, secondOrderTable));
 
-            given(orderTableDao.findAllByTableGroupId(anyLong())).willReturn(orderTables);
+            given(tableGroupRepository.findById(anyLong())).willReturn(Optional.of(tableGroup));
             given(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(List.class), any(List.class))).willReturn(true);
 
             // when

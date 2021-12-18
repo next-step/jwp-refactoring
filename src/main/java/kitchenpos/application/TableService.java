@@ -1,7 +1,6 @@
 package kitchenpos.application;
 
 import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.OrderTableRepository;
@@ -18,12 +17,10 @@ import java.util.Objects;
 public class TableService {
     private final OrderTableRepository orderTableRepository;
     private final OrderDao orderDao;
-    private final OrderTableDao orderTableDao;
 
-    public TableService(final OrderTableRepository orderTableRepository, final OrderDao orderDao, final OrderTableDao orderTableDao) {
+    public TableService(final OrderTableRepository orderTableRepository, final OrderDao orderDao) {
         this.orderTableRepository = orderTableRepository;
         this.orderDao = orderDao;
-        this.orderTableDao = orderTableDao;
     }
 
     @Transactional
@@ -42,7 +39,7 @@ public class TableService {
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
 
-        if (Objects.nonNull(savedOrderTable.getTableGroupId())) {
+        if (savedOrderTable.hasTableGroup()) {
             throw new IllegalArgumentException();
         }
 
