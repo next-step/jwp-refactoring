@@ -134,10 +134,10 @@
     - [X] TableRestController, TableService
     - [X] TableGroupRestController, TableGroupService
     - [X] OrderRestController, OrderService
-- [ ] JdbcTemplate -> JPA로 Persistance 변경
+- [X] JdbcTemplate -> JPA로 Persistance 변경
   - [X] 상품(Product)
-  - [ ] 메뉴
-  - [ ] 메뉴 상품
+  - [X] 메뉴
+  - [X] 메뉴 상품
   - [X] 메뉴 그룹
   - [X] 주문 테이블
   - [X] 단체 지정
@@ -146,8 +146,8 @@
 - 메뉴 리팩터링
   - [X] 메뉴 그룹
     - [X] 도메인 계층으로 로직 이전
-  - [ ] 메뉴
-    - [ ] 도메인 계층으로 로직 이전
+  - [X] 메뉴
+    - [X] 도메인 계층으로 로직 이전
   - [X] 상품
     - [X] 도메인 계층으로 로직 이전
 - 주문 리팩터링

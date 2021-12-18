@@ -1,7 +1,5 @@
 package kitchenpos.dto;
 
-import kitchenpos.domain.Menu;
-
 import java.util.List;
 
 public class MenuRequest {
@@ -47,9 +45,5 @@ public class MenuRequest {
 
     public List<MenuProductRequest> getMenuProducts() {
         return menuProducts;
-    }
-
-    public Menu toEntity() {
-        return new Menu(id, name, price, menuGroupId, MenuProductRequest.toEntityList(menuProducts));
     }
 }

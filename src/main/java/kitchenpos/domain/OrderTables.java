@@ -6,6 +6,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Embeddable
@@ -49,7 +50,7 @@ public class OrderTables {
     }
 
     public List<OrderTable> values() {
-        return orderTables;
+        return Collections.unmodifiableList(orderTables);
     }
 
     public boolean isEmpty() {

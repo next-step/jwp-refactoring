@@ -10,11 +10,11 @@ import java.util.stream.Collectors;
 public class MenuResponse {
     private Long id;
     private String name;
-    private BigDecimal price;
+    private long price;
     private MenuGroupResponse menuGroup;
     private List<MenuProductResponse> menuProducts;
 
-    public MenuResponse(Long id, String name, BigDecimal price, MenuGroupResponse menuGroup, List<MenuProductResponse> menuProducts) {
+    public MenuResponse(Long id, String name, long price, MenuGroupResponse menuGroup, List<MenuProductResponse> menuProducts) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -41,7 +41,7 @@ public class MenuResponse {
         return name;
     }
 
-    public BigDecimal getPrice() {
+    public long getPrice() {
         return price;
     }
 

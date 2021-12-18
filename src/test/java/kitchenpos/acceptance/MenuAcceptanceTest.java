@@ -66,7 +66,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         List<MenuResponse> menus = listResponse.jsonPath().getList(".", MenuResponse.class);
         assertThat(menus).first()
                 .extracting(menu -> menu.getName(),
-                        menu -> menu.getPrice().longValue())
+                        menu -> menu.getPrice())
                 .containsExactly(menuRequest.getName(), menuRequest.getPrice());
         assertThat(menus.get(0).getMenuProducts())
                 .extracting("product.id", "quantity")
