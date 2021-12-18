@@ -126,13 +126,14 @@
 
 ### 기능목록
 
-- Domain과 DTO 분리
-  - 메뉴
-    - MenuRestController, MenuService
-    - MenuGroupRestController, MenuGroupService
-    - ProductRestController, ProductService
-    - TableRestController, TableService
-    - TableGroupRestController, TableGroupService
+- [X] Domain과 DTO 분리
+  - [X] 메뉴
+    - [X] MenuRestController, MenuService
+    - [X] MenuGroupRestController, MenuGroupService
+    - [X] ProductRestController, ProductService
+    - [X] TableRestController, TableService
+    - [X] TableGroupRestController, TableGroupService
+    - [X] OrderRestController, OrderService
 - JdbcTemplate -> JPA로 Persistance 변경
   - 상품
   - 메뉴
