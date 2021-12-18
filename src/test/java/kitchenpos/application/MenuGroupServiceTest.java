@@ -6,32 +6,29 @@ import static org.mockito.BDDMockito.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.domain.MenuGroupTest;
 
 @ExtendWith(MockitoExtension.class)
 public class MenuGroupServiceTest {
 
+	@InjectMocks
 	private MenuGroupService menuGroupService;
 
 	@Mock
 	private MenuGroupDao menuGroupDao;
 
-	@BeforeEach
-	public void setup(){
-		this.menuGroupService = new MenuGroupService(menuGroupDao);
-	}
-
 	@DisplayName("메뉴 그룹을 생성한다")
 	@Test
-	void createTest(){
+	void createTest() {
 		// given
 		MenuGroup menuGroup = new MenuGroup();
 		menuGroup.setName("추천메뉴");
@@ -52,19 +49,16 @@ public class MenuGroupServiceTest {
 
 	@DisplayName("메뉴 그룹 목록을 조회한다")
 	@Test
-	void listTest(){
+	void listTest() {
 		// given
 		List<MenuGroup> persist = new ArrayList<>();
-		MenuGroup menuGroup1 = new MenuGroup();
-		menuGroup1.setId(1L);
-		menuGroup1.setName("추천메뉴");
-		persist.add(menuGroup1);
+		persist.add(MenuGroupTest.치킨류);
 		
 		given(menuGroupDao.findAll()).willReturn(persist);
-		
+
 		// when
 		List<MenuGroup> result = menuGroupService.list();
-		
+
 		// then
 		assertThat(result).containsAll(persist);
 	}
