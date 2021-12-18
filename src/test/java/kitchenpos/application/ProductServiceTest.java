@@ -1,8 +1,8 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.ProductDao;
 import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,7 +26,7 @@ import static org.mockito.BDDMockito.given;
 @DisplayName("상품 관리 테스트")
 public class ProductServiceTest {
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     @InjectMocks
     private ProductService productService;
@@ -35,7 +35,7 @@ public class ProductServiceTest {
     @DisplayName("상품 등록 성공")
     void createProductTest() {
         // given
-        given(productDao.save(any())).willReturn(통새우와퍼_상품);
+        given(productRepository.save(any())).willReturn(통새우와퍼_상품);
         // when
         Product actual = productService.create(통새우와퍼_상품);
         // then
@@ -50,7 +50,7 @@ public class ProductServiceTest {
     void productPriceOverZero(int price) {
         // given
         Product product = new Product("양념치킨", BigDecimal.valueOf(price));
-        given(productDao.save(any())).willReturn(product);
+        given(productRepository.save(any())).willReturn(product);
         // when
         Product actual = productService.create(product);
         // then
@@ -72,7 +72,7 @@ public class ProductServiceTest {
     @DisplayName("상품 목록 조회")
     void findAllProduct() {
         // given
-        given(productDao.findAll())
+        given(productRepository.findAll())
                 .willReturn(Collections.singletonList(통새우와퍼_상품));
         // when
         List<Product> actual = productService.list();

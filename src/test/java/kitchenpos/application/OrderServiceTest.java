@@ -1,12 +1,12 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderLineItemDao;
-import kitchenpos.dao.OrderTableDao;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItemRepository;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.table.domain.OrderTableRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,13 +34,13 @@ import static org.mockito.Mockito.*;
 @DisplayName("주문 관리 테스트")
 public class OrderServiceTest {
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
     @Mock
-    private OrderLineItemDao orderLineItemDao;
+    private OrderLineItemRepository orderLineItemRepository;
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
     @InjectMocks
     private OrderService orderService;
 
@@ -52,15 +52,15 @@ public class OrderServiceTest {
     void orderCreateTest() {
         // given
         given(order.getOrderLineItems()).willReturn(Arrays.asList(와퍼_세트_주문, 콜라_주문));
-        given(menuDao.countByIdIn(anyList())).willReturn(2L);
-        given(orderTableDao.findById(anyLong())).willReturn(Optional.of(이인석));
-        given(orderDao.save(any())).willReturn(order);
-        given(orderLineItemDao.save(any())).willReturn(와퍼_세트_주문, 콜라_주문);
+        given(menuRepository.countByIdIn(anyList())).willReturn(2L);
+        given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(이인석));
+        given(orderRepository.save(any())).willReturn(order);
+        given(orderLineItemRepository.save(any())).willReturn(와퍼_세트_주문, 콜라_주문);
         // when
         Order actual = orderService.create(order);
         // then
         assertThat(actual).isEqualTo(order);
-        verify(orderLineItemDao, times(2)).save(any());
+        verify(orderLineItemRepository, times(2)).save(any());
     }
 
     @Test
@@ -79,7 +79,7 @@ public class OrderServiceTest {
     void notFoundMenu() {
         // given
         given(order.getOrderLineItems()).willReturn(Arrays.asList(와퍼_세트_주문, 콜라_주문));
-        given(menuDao.countByIdIn(anyList())).willReturn(0L);
+        given(menuRepository.countByIdIn(anyList())).willReturn(0L);
         // when
         // then
         assertThatThrownBy(() -> orderService.create(order))
@@ -92,21 +92,21 @@ public class OrderServiceTest {
         // given
         given(order.getOrderTableId()).willReturn(1L);
         given(order.getOrderLineItems()).willReturn(Arrays.asList(와퍼_세트_주문, 콜라_주문));
-        given(menuDao.countByIdIn(anyList())).willReturn(2L);
-        given(orderTableDao.findById(anyLong())).willReturn(Optional.empty());
+        given(menuRepository.countByIdIn(anyList())).willReturn(2L);
+        given(orderTableRepository.findById(anyLong())).willReturn(Optional.empty());
         // when
         // then
         assertThatThrownBy(() -> orderService.create(order))
                 .isInstanceOf(IllegalArgumentException.class);
-        verify(orderTableDao, times(1)).findById(anyLong());
+        verify(orderTableRepository, times(1)).findById(anyLong());
     }
 
     @Test
     @DisplayName("빈 테이블에서는 주문을 등록 할 수 없다.")
     void notOrderEmptyTable() {
         // given
-        given(menuDao.countByIdIn(anyList())).willReturn(2L);
-        given(orderTableDao.findById(anyLong())).willReturn(Optional.of(빈자리));
+        given(menuRepository.countByIdIn(anyList())).willReturn(2L);
+        given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(빈자리));
         // when
         // then
         assertThatThrownBy(() -> orderService.create(주문통합))
@@ -118,21 +118,21 @@ public class OrderServiceTest {
     void listTest() {
         // given
         given(order.getId()).willReturn(1L);
-        given(orderDao.findAll()).willReturn(Collections.singletonList(order));
-        given(orderLineItemDao.findAllByOrderId(anyLong())).willReturn(Arrays.asList(와퍼_세트_주문, 콜라_주문));
+        given(orderRepository.findAll()).willReturn(Collections.singletonList(order));
+        given(orderLineItemRepository.findAllByOrderId(anyLong())).willReturn(Arrays.asList(와퍼_세트_주문, 콜라_주문));
         // when
         List<Order> actual = orderService.list();
         // then
         assertThat(actual).hasSize(1);
-        verify(orderLineItemDao, times(1)).findAllByOrderId(anyLong());
+        verify(orderLineItemRepository, times(1)).findAllByOrderId(anyLong());
     }
 
     @Test
     @DisplayName("주문 상태 변경")
     void changeOrderStatus() {
         // given
-        given(orderDao.findById(anyLong())).willReturn(Optional.of(주문통합));
-        given(orderDao.save(any())).willReturn(주문통합);
+        given(orderRepository.findById(anyLong())).willReturn(Optional.of(주문통합));
+        given(orderRepository.save(any())).willReturn(주문통합);
         // when
         Order actual = orderService.changeOrderStatus(1L, 주문통합);
         // then
@@ -143,7 +143,7 @@ public class OrderServiceTest {
     @DisplayName("등록되지 않은 주문의 상태는 변경할 수 없다.")
     void notFoundOrder() {
         // given
-        given(orderDao.findById(anyLong())).willReturn(Optional.empty());
+        given(orderRepository.findById(anyLong())).willReturn(Optional.empty());
         // when
         // then
         assertThatThrownBy(() -> orderService.changeOrderStatus(1L, 주문통합))
@@ -155,7 +155,7 @@ public class OrderServiceTest {
     void notChangeCompletionStatus() {
         // given
         given(order.getOrderStatus()).willReturn(OrderStatus.COMPLETION);
-        given(orderDao.findById(anyLong())).willReturn(Optional.of(order));
+        given(orderRepository.findById(anyLong())).willReturn(Optional.of(order));
         // when
         // then
         assertThatThrownBy(() -> orderService.changeOrderStatus(1L, order))
