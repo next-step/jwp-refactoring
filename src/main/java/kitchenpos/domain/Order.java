@@ -52,8 +52,8 @@ public class Order {
         return orderStatus == OrderStatus.MEAL || orderStatus == OrderStatus.COOKING;
     }
 
-    public void addOrderLineItem(Long menuId, long quantity) {
-        orderLineItems.add(this, menuId, quantity);
+    public void addOrderLineItem(Menu menu, long quantity) {
+        orderLineItems.add(this, menu, quantity);
     }
 
     public boolean isComplete() {

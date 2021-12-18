@@ -10,20 +10,22 @@ public class OrderLineItem {
     private Long seq;
     @ManyToOne
     private Order order;
-    private Long menuId;
+    @ManyToOne
+    @JoinColumn(name = "menu_id")
+    private Menu menu;
     private long quantity;
 
     public OrderLineItem() {
     }
 
-    public OrderLineItem(Order order, Long menuId, long quantity) {
+    public OrderLineItem(Order order, Menu menu, long quantity) {
         this.order = order;
-        this.menuId = menuId;
+        this.menu = menu;
         this.quantity = quantity;
     }
 
-    public OrderLineItem(Long menuId, long quantity) {
-        this.menuId = menuId;
+    public OrderLineItem(Menu menu, long quantity) {
+        this.menu = menu;
         this.quantity = quantity;
     }
 
@@ -35,8 +37,8 @@ public class OrderLineItem {
         return order;
     }
 
-    public Long getMenuId() {
-        return menuId;
+    public Menu getMenu() {
+        return menu;
     }
 
     public long getQuantity() {

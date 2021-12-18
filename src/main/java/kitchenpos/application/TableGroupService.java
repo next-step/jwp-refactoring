@@ -1,6 +1,5 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderDao;
 import kitchenpos.domain.*;
 import kitchenpos.dto.TableGroupRequest;
 import kitchenpos.dto.TableGroupResponse;

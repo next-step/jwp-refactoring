@@ -1,8 +1,6 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuDao;
 import kitchenpos.domain.*;
-import kitchenpos.dto.OrderLineItemRequest;
 import kitchenpos.dto.OrderRequest;
 import kitchenpos.dto.OrderResponse;
 import org.springframework.stereotype.Service;
@@ -12,46 +10,21 @@ import java.util.List;
 
 @Service
 public class OrderService {
-    private final MenuDao menuDao;
+    private final OrderFactory orderFactory;
     private final OrderRepository orderRepository;
-    private final OrderTableRepository orderTableRepository;
 
-    public OrderService(
-            final MenuDao menuDao,
-            final OrderRepository orderRepository,
-            final OrderTableRepository orderTableRepository
-    ) {
-        this.menuDao = menuDao;
+    public OrderService(final OrderFactory orderFactory, final OrderRepository orderRepository) {
+        this.orderFactory = orderFactory;
         this.orderRepository = orderRepository;
-        this.orderTableRepository = orderTableRepository;
     }
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
-        validateOrderLineItems(orderRequest);
-
-        final OrderTable orderTable = orderTableRepository.findById(orderRequest.getOrderTableId())
-                .orElseThrow(IllegalArgumentException::new);
-
-        Order order = orderRepository.save(orderTable.createOrder());
-        final List<OrderLineItemRequest> orderLineItems = orderRequest.getOrderLineItems();
-        for (final OrderLineItemRequest orderLineItem : orderLineItems) {
-            order.addOrderLineItem(orderLineItem.getMenuId(), orderLineItem.getQuantity());
-        }
-
-        return OrderResponse.of(order);
+        Order order = orderFactory.create(orderRequest);
+        return OrderResponse.of(orderRepository.save(order));
     }
 
-    private void validateOrderLineItems(OrderRequest orderRequest) {
-        if (orderRequest.isEmptyOrderLineItems()) {
-            throw new IllegalArgumentException();
-        }
-
-        if (orderRequest.getOrderLineItemsSize() != menuDao.countByIdIn(orderRequest.getMenuIds())) {
-            throw new IllegalArgumentException();
-        }
-    }
-
+    @Transactional(readOnly = true)
     public List<OrderResponse> list() {
         final List<Order> orders = orderRepository.findAll();
         return OrderResponse.ofList(orders);
