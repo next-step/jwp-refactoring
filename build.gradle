@@ -35,7 +35,7 @@ subprojects {
     }
 }
 
-project(':kitchenpos-api') {
+project(':kitchenpos-application') {
     bootJar {
         enabled = false
     }
@@ -53,6 +53,6 @@ project(':kitchenpos-api') {
 project(':kitchenpos-web') {
     dependencies {
         implementation project(':kitchenpos-common')
-        implementation project(':kitchenpos-api')
+        implementation project(':kitchenpos-application')
     }
 }
