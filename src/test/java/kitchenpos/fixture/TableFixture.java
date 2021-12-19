@@ -12,6 +12,8 @@ public class TableFixture {
     public static final OrderTable 회사A_테이블1 = create(1L, 1L, 6, false);
     public static final OrderTable 회사A_테이블2 = create(2L, 1L, 4, false);
 
+    public static final OrderTable 일반_테이블 = create(1L, null, 4, false);
+
     private TableFixture() {
         throw new UnsupportedOperationException();
     }

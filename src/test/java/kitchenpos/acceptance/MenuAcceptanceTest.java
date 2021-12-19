@@ -16,6 +16,7 @@ import org.springframework.http.MediaType;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.List;
 
 import static kitchenpos.acceptance.MenuGroupAcceptanceTest.메뉴_그룹_등록되어_있음;
 import static kitchenpos.acceptance.ProductAcceptanceTest.상품_등록되어_있음;
@@ -62,7 +63,7 @@ class MenuAcceptanceTest extends AcceptanceTest {
         메뉴_목록_조회됨(메뉴_목록_조회_응답);
     }
 
-    private ExtractableResponse<Response> 메뉴_생성_요청(Menu params) {
+    private static ExtractableResponse<Response> 메뉴_생성_요청(Menu params) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -87,5 +88,16 @@ class MenuAcceptanceTest extends AcceptanceTest {
 
     private void 메뉴_목록_조회됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    public static Menu 메뉴_등록되어_있음(String name, long price, Long menuGroupId, List<MenuProduct> menuProducts) {
+        Menu menu = new Menu();
+        menu.setName(name);
+        menu.setPrice(BigDecimal.valueOf(price));
+        menu.setMenuGroupId(menuGroupId);
+        menu.setMenuProducts(menuProducts);
+
+        ExtractableResponse<Response> response = 메뉴_생성_요청(menu);
+        return response.as(Menu.class);
     }
 }
