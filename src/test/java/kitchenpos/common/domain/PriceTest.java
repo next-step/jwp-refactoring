@@ -8,12 +8,12 @@ import org.junit.jupiter.api.Test;
 import kitchenpos.common.exception.BadRequestException;
 import kitchenpos.common.exception.ExceptionMessage;
 
-class NameTest {
+class PriceTest {
 
+    @DisplayName("가격은 필수값이다.")
     @Test
-    @DisplayName("이름은 필수값이다.")
-    void validateName() {
-        assertThatThrownBy(() -> new Name(""))
+    void validatePrice() {
+        assertThatThrownBy(() -> new Price(null))
             .isInstanceOf(BadRequestException.class)
             .hasMessage(ExceptionMessage.REQUIRED.getMessage());
     }

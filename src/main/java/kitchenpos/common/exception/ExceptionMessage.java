@@ -2,7 +2,7 @@ package kitchenpos.common.exception;
 
 public enum ExceptionMessage {
 
-    REQUIRED_NAME("이름은 필수값 입니다.");
+    REQUIRED("필수값 입니다.");
 
     private final String message;
 

@@ -2,37 +2,36 @@ package kitchenpos.common.domain;
 
 import static kitchenpos.common.exception.ExceptionMessage.*;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
-import org.springframework.util.StringUtils;
-
 import kitchenpos.common.exception.BadRequestException;
 
 @Embeddable
-public class Name {
+public class Price {
 
     @Column
-    private String name;
+    private BigDecimal price;
 
-    protected Name() {
+    protected Price() {
     }
 
-    public Name(String name) {
-        validate(name);
-        this.name = name;
+    public Price(BigDecimal price) {
+        validate(price);
+        this.price = price;
     }
 
-    private void validate(String name) {
-        if (!StringUtils.hasText(name)) {
+    private void validate(BigDecimal price) {
+        if (Objects.isNull(price)) {
             throw new BadRequestException(REQUIRED);
         }
     }
 
-    public String getValue() {
-        return name;
+    public BigDecimal getValue() {
+        return price;
     }
 
     @Override
@@ -41,12 +40,12 @@ public class Name {
             return true;
         if (o == null || getClass() != o.getClass())
             return false;
-        Name name1 = (Name)o;
-        return Objects.equals(name, name1.name);
+        Price price1 = (Price)o;
+        return Objects.equals(price, price1.price);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name);
+        return Objects.hash(price);
     }
 }

@@ -63,7 +63,7 @@ class MenuServiceTest {
             Collections.singletonList(menuProduct));
 
         MenuRequest menuRequest = new MenuRequest(
-            menu.getName().getValue(), menu.getPrice(), menu.getMenuGroupId(),
+            menu.getName().getValue(), menu.getPrice().getValue(), menu.getMenuGroupId(),
             menu.getMenuProducts().stream().map(menuProductRequest -> new MenuProductRequest(
                 menuProductRequest.getProductId(), menuProductRequest.getQuantity())).collect(Collectors.toList()));
 
@@ -90,7 +90,8 @@ class MenuServiceTest {
         Menu menu = 메뉴_생성("후라이드 치킨", -1, menuGroup.getId(),
             menuProducts);
 
-        MenuRequest menuRequest = new MenuRequest(menu.getName().getValue(), menu.getPrice(), menu.getMenuGroupId(),
+        MenuRequest menuRequest = new MenuRequest(menu.getName().getValue(),
+            menu.getPrice().getValue(), menu.getMenuGroupId(),
             menuProducts.stream().map(menuProductRequest -> new MenuProductRequest(
                     menuProductRequest.getProductId(), menuProductRequest.getQuantity()))
                 .collect(Collectors.toList()));
@@ -109,7 +110,8 @@ class MenuServiceTest {
         Menu menu = 메뉴_생성("후라이드 치킨", 16000, menuGroup.getId(),
             menuProducts);
 
-        MenuRequest menuRequest = new MenuRequest(menu.getName().getValue(), menu.getPrice(), menu.getMenuGroupId(),
+        MenuRequest menuRequest = new MenuRequest(menu.getName().getValue(),
+            menu.getPrice().getValue(), menu.getMenuGroupId(),
             menuProducts.stream().map(menuProductRequest -> new MenuProductRequest(
                     menuProductRequest.getProductId(), menuProductRequest.getQuantity()))
                 .collect(Collectors.toList()));
@@ -131,7 +133,8 @@ class MenuServiceTest {
         Menu menu = 메뉴_생성("후라이드 치킨", 16000, menuGroup.getId(),
             menuProducts);
 
-        MenuRequest menuRequest = new MenuRequest(menu.getName().getValue(), menu.getPrice(), menu.getMenuGroupId(),
+        MenuRequest menuRequest = new MenuRequest(menu.getName().getValue(),
+            menu.getPrice().getValue(), menu.getMenuGroupId(),
             menuProducts.stream().map(menuProductRequest -> new MenuProductRequest(
                     menuProductRequest.getProductId(), menuProductRequest.getQuantity()))
                 .collect(Collectors.toList()));
@@ -154,7 +157,8 @@ class MenuServiceTest {
         Menu menu = 메뉴_생성("후라이드 치킨", 16000, menuGroup.getId(),
             menuProducts);
 
-        MenuRequest menuRequest = new MenuRequest(menu.getName().getValue(), menu.getPrice(), menu.getMenuGroupId(),
+        MenuRequest menuRequest = new MenuRequest(menu.getName().getValue(),
+            menu.getPrice().getValue(), menu.getMenuGroupId(),
             menuProducts.stream().map(menuProductRequest -> new MenuProductRequest(
                     menuProductRequest.getProductId(), menuProductRequest.getQuantity()))
                 .collect(Collectors.toList()));

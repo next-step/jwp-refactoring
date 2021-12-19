@@ -44,11 +44,11 @@ class ProductServiceTest {
 
         // when
         ProductResponse savedProduct = productService.create(
-            new ProductRequest(product.getName().getValue(), product.getPrice()));
+            new ProductRequest(product.getName().getValue(), product.getPrice().getValue()));
 
         // then
         assertEquals(product.getName().getValue(), savedProduct.getName());
-        assertEquals(product.getPrice(), savedProduct.getPrice());
+        assertEquals(product.getPrice().getValue(), savedProduct.getPrice());
     }
 
     @DisplayName("상품의 가격이 올바르지 않으면 등록할 수 없다.")
@@ -56,17 +56,13 @@ class ProductServiceTest {
     void createProductWrongPrice() {
         // given
         Product zeroPriceProduct = 상품_생성("후라이드", -1);
-        Product nullPriceProduct = 상품_생성("후라이드");
 
         ProductRequest zeroPriceProductRequest =
-            new ProductRequest(zeroPriceProduct.getName().getValue(), zeroPriceProduct.getPrice());
-        ProductRequest nullPriceProductRequest =
-            new ProductRequest(nullPriceProduct.getName().getValue(), null);
+            new ProductRequest(zeroPriceProduct.getName().getValue(), zeroPriceProduct.getPrice().getValue());
 
         // when && then
         assertAll(
-            () -> assertThrows(IllegalArgumentException.class, () -> productService.create(zeroPriceProductRequest)),
-            () -> assertThrows(IllegalArgumentException.class, () -> productService.create(nullPriceProductRequest))
+            () -> assertThrows(IllegalArgumentException.class, () -> productService.create(zeroPriceProductRequest))
         );
     }
 
@@ -90,12 +86,8 @@ class ProductServiceTest {
                 .collect(Collectors.toList()));
         assertThat(findProducts)
             .extracting("price")
-            .containsExactlyElementsOf(products.stream().map(Product::getPrice)
+            .containsExactlyElementsOf(products.stream().map(product -> product.getPrice().getValue())
                 .collect(Collectors.toList()));
-    }
-
-    static Product 상품_생성(String name) {
-        return new Product(name, null);
     }
 
     static Product 상품_생성(String name, int price) {

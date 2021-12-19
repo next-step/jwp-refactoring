@@ -14,6 +14,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 
 import kitchenpos.common.domain.Name;
+import kitchenpos.common.domain.Price;
 
 @Entity
 public class Menu {
@@ -24,7 +25,9 @@ public class Menu {
 
     @Embedded
     private Name name;
-    private BigDecimal price;
+
+    @Embedded
+    private Price price;
     private Long menuGroupId;
 
     @OneToMany
@@ -50,7 +53,7 @@ public class Menu {
         List<MenuProduct> menuProducts) {
         this.id = id;
         this.name = new Name(name);
-        this.price = price;
+        this.price = new Price(price);
         this.menuGroupId = menuGroupId;
         this.menuProducts = menuProducts;
     }
@@ -63,7 +66,7 @@ public class Menu {
         return name;
     }
 
-    public BigDecimal getPrice() {
+    public Price getPrice() {
         return price;
     }
 

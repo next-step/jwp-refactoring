@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import kitchenpos.common.domain.Name;
+import kitchenpos.common.domain.Price;
 
 @Entity
 public class Product {
@@ -20,7 +21,9 @@ public class Product {
 
     @Embedded
     private Name name;
-    private BigDecimal price;
+
+    @Embedded
+    private Price price;
 
     public Product() {
     }
@@ -32,7 +35,7 @@ public class Product {
     public Product(Long id, String name, BigDecimal price) {
         this.id = id;
         this.name = new Name(name);
-        this.price = price;
+        this.price = new Price(price);
     }
 
     public Long getId() {
@@ -43,7 +46,7 @@ public class Product {
         return name;
     }
 
-    public BigDecimal getPrice() {
+    public Price getPrice() {
         return price;
     }
 
