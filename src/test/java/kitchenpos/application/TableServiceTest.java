@@ -112,7 +112,7 @@ class TableServiceTest extends IntegrationTest {
 		OrderTable 비어있지않은_주문_테이블 = tableService.create(비어있지않은_주문_테이블().toOrderTable());
 		Product 후라이드치킨_상품 = productService.create(후라이드치킨_상품_요청().toProduct());
 		MenuGroup 추천_메뉴_그룹 = menuGroupService.create(추천_메뉴_그룹_요청().toMenuGroup());
-		Menu 후라이드후라이드_메뉴 = menuService.create(후라이드후라이드_메뉴(추천_메뉴_그룹.getId(), 후라이드치킨_상품.getId()).toMenu());
+		Menu 후라이드후라이드_메뉴 = menuService.create(후라이드후라이드_메뉴_요청(추천_메뉴_그룹.getId(), 후라이드치킨_상품.getId()).toMenu());
 		Order 주문 = orderService.create(주문(비어있지않은_주문_테이블.getId(), 후라이드후라이드_메뉴.getId(), 1).toOrder());
 		orderService.changeOrderStatus(주문.getId(), 주문_상태(OrderStatus.MEAL).toOrder());
 

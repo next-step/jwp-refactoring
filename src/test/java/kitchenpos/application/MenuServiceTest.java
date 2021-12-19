@@ -6,37 +6,51 @@ import static kitchenpos.product.ProductFixture.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.ThrowableAssert.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.BDDMockito.*;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.IntegrationTest;
+import kitchenpos.dao.MenuDao;
+import kitchenpos.dao.MenuGroupDao;
+import kitchenpos.dao.MenuProductDao;
+import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Product;
 
-@DisplayName("메뉴 통합 테스트")
-class MenuServiceTest extends IntegrationTest {
-	@Autowired
+@DisplayName("메뉴 단위 테스트")
+@ExtendWith(MockitoExtension.class)
+class MenuServiceTest {
+	@Mock
+	private MenuDao menuDao;
+	@Mock
+	private MenuGroupDao menuGroupDao;
+	@Mock
+	private MenuProductDao menuProductDao;
+	@Mock
+	private ProductDao productDao;
+	@InjectMocks
 	private MenuService menuService;
-	@Autowired
-	private MenuGroupService menuGroupService;
-	@Autowired
-	private ProductService productService;
 
 	@DisplayName("메뉴를 등록할 수 있다.")
 	@Test
 	void create() {
 		// given
-		MenuGroup 추천_메뉴_그룹 = menuGroupService.create(추천_메뉴_그룹_요청().toMenuGroup());
-		Product 후라이드치킨_상품 = productService.create(후라이드치킨_상품_요청().toProduct());
-		Menu request = 후라이드후라이드_메뉴(추천_메뉴_그룹.getId(), 후라이드치킨_상품.getId()).toMenu();
+		given(menuGroupDao.existsById(any())).willReturn(true);
+		given(productDao.findById(any())).willReturn(Optional.of(후라이드치킨_상품()));
+		given(menuDao.save(any())).willReturn(후라이드후라이드_메뉴());
+		given(menuProductDao.save(any())).willReturn(후라이드후라이드_메뉴_상품());
+		Menu request = 후라이드후라이드_메뉴_요청(추천_메뉴_그룹().getId(), 후라이드치킨_상품().getId()).toMenu();
 
 		// when
 		Menu actual = menuService.create(request);
@@ -63,9 +77,10 @@ class MenuServiceTest extends IntegrationTest {
 	@Test
 	void createFailOnEmptyName() {
 		// given
-		MenuGroup 추천_메뉴_그룹 = menuGroupService.create(추천_메뉴_그룹_요청().toMenuGroup());
-		Product 후라이드치킨_상품 = productService.create(후라이드치킨_상품_요청().toProduct());
-		Menu request = 이름없는_메뉴(추천_메뉴_그룹.getId(), 후라이드치킨_상품.getId()).toMenu();
+		given(menuGroupDao.existsById(any())).willReturn(true);
+		given(productDao.findById(any())).willReturn(Optional.of(후라이드치킨_상품()));
+		given(menuDao.save(any())).willThrow(RuntimeException.class);
+		Menu request = 이름없는_메뉴_요청(추천_메뉴_그룹().getId(), 후라이드치킨_상품().getId()).toMenu();
 
 		// when
 		ThrowingCallable throwingCallable = () -> menuService.create(request);
@@ -78,9 +93,7 @@ class MenuServiceTest extends IntegrationTest {
 	@Test
 	void createFailOnNegativePrice() {
 		// given
-		MenuGroup 추천_메뉴_그룹 = menuGroupService.create(추천_메뉴_그룹_요청().toMenuGroup());
-		Product 후라이드치킨_상품 = productService.create(후라이드치킨_상품_요청().toProduct());
-		Menu request = 음수가격_메뉴(추천_메뉴_그룹.getId(), 후라이드치킨_상품.getId()).toMenu();
+		Menu request = 음수가격_메뉴_요청(추천_메뉴_그룹().getId(), 후라이드치킨_상품().getId()).toMenu();
 
 		// when
 		ThrowingCallable throwingCallable = () -> menuService.create(request);
@@ -93,9 +106,9 @@ class MenuServiceTest extends IntegrationTest {
 	@Test
 	void createFailOnNotFoundMenuGroup() {
 		// given
+		given(menuGroupDao.existsById(any())).willReturn(false);
 		Long unknownMenuGroupId = 0L;
-		Product 후라이드치킨_상품 = productService.create(후라이드치킨_상품_요청().toProduct());
-		Menu request = 후라이드후라이드_메뉴(unknownMenuGroupId, 후라이드치킨_상품.getId()).toMenu();
+		Menu request = 후라이드후라이드_메뉴_요청(unknownMenuGroupId, 후라이드치킨_상품().getId()).toMenu();
 
 		// when
 		ThrowingCallable throwingCallable = () -> menuService.create(request);
@@ -108,9 +121,10 @@ class MenuServiceTest extends IntegrationTest {
 	@Test
 	void createFailOnNotFoundProduct() {
 		// given
-		MenuGroup 추천_메뉴_그룹 = menuGroupService.create(추천_메뉴_그룹_요청().toMenuGroup());
+		given(menuGroupDao.existsById(any())).willReturn(true);
+		given(productDao.findById(any())).willReturn(Optional.empty());
 		Long unknownProductId = 0L;
-		Menu request = 후라이드후라이드_메뉴(추천_메뉴_그룹.getId(), unknownProductId).toMenu();
+		Menu request = 후라이드후라이드_메뉴_요청(추천_메뉴_그룹().getId(), unknownProductId).toMenu();
 
 		// when
 		ThrowingCallable throwingCallable = () -> menuService.create(request);
@@ -123,9 +137,9 @@ class MenuServiceTest extends IntegrationTest {
 	@Test
 	void createFailOnInvalidPrice() {
 		// given
-		MenuGroup 추천_메뉴_그룹 = menuGroupService.create(추천_메뉴_그룹_요청().toMenuGroup());
-		Product 후라이드치킨_상품 = productService.create(후라이드치킨_상품_요청().toProduct());
-		Menu request = 너무비싼_메뉴(추천_메뉴_그룹.getId(), 후라이드치킨_상품.getId()).toMenu();
+		given(menuGroupDao.existsById(any())).willReturn(true);
+		given(productDao.findById(any())).willReturn(Optional.of(후라이드치킨_상품()));
+		Menu request = 너무비싼_메뉴_요청(추천_메뉴_그룹().getId(), 후라이드치킨_상품().getId()).toMenu();
 
 		// when
 		ThrowingCallable throwingCallable = () -> menuService.create(request);
@@ -138,11 +152,7 @@ class MenuServiceTest extends IntegrationTest {
 	@Test
 	void list() {
 		// given
-		MenuGroup 추천_메뉴_그룹 = menuGroupService.create(추천_메뉴_그룹_요청().toMenuGroup());
-		Product 후라이드치킨_상품 = productService.create(후라이드치킨_상품_요청().toProduct());
-		Product 양념치킨_상품 = productService.create(양념치킨_상품_요청().toProduct());
-		Menu 후라이드후라이드_메뉴 = menuService.create(후라이드후라이드_메뉴(추천_메뉴_그룹.getId(), 후라이드치킨_상품.getId()).toMenu());
-		Menu 양념양념_메뉴 = menuService.create(양념양념_메뉴(추천_메뉴_그룹.getId(), 양념치킨_상품.getId()).toMenu());
+		given(menuDao.findAll()).willReturn(Collections.singletonList(후라이드후라이드_메뉴()));
 
 		// when
 		List<Menu> actual = menuService.list();
@@ -152,7 +162,7 @@ class MenuServiceTest extends IntegrationTest {
 
 		assertAll(
 			() -> assertThat(actual).isNotEmpty(),
-			() -> assertThat(actualIds).containsAll(Arrays.asList(후라이드후라이드_메뉴.getId(), 양념양념_메뉴.getId())));
+			() -> assertThat(actualIds).containsAll(Collections.singletonList(후라이드후라이드_메뉴().getId())));
 	}
 }
 
