@@ -139,7 +139,6 @@ class TableServiceTest {
                 .isThrownBy(() -> tableService.changeNumberOfGuests(비어있지_않은_테이블.getId(), 요청_테이블));
     }
 
-
     @DisplayName("주문 테이블 손님 수 수정 실패 테스트 - 주문 테이블이 비어있음")
     @Test
     void changeNumberOfGuests_failure() {

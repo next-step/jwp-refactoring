@@ -20,7 +20,6 @@ public class TableGroupFixture {
 
     public static TableGroup create(Long id, LocalDateTime createdDate, List<OrderTable> orderTables) {
         TableGroup tableGroup = new TableGroup();
-
         tableGroup.setId(id);
         tableGroup.setCreatedDate(createdDate);
         tableGroup.setOrderTables(orderTables);
@@ -28,4 +27,3 @@ public class TableGroupFixture {
         return tableGroup;
     }
 }
-

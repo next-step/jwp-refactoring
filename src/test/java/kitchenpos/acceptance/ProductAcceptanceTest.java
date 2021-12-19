@@ -21,7 +21,7 @@ class ProductAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("상품을 관리한다.")
     @Test
-    void manageMenuGroup() {
+    void manageProduct() {
         // given
         Product product = new Product();
         product.setName("강정치킨");
