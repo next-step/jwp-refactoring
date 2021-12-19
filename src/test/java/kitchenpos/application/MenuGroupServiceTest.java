@@ -54,7 +54,7 @@ class MenuGroupServiceTest {
         assertThat(list).containsExactlyElementsOf(expected);
     }
 
-    private MenuGroup getMenuGroup(long id, String name) {
+    public static MenuGroup getMenuGroup(long id, String name) {
         final MenuGroup menuGroup = new MenuGroup();
         menuGroup.setName(name);
         menuGroup.setId(id);

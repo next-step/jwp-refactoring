@@ -89,7 +89,7 @@ class ProductServiceTest {
         assertThat(list).containsExactlyElementsOf(expected);
     }
 
-    private Product getProduct(Long id, String name, int price) {
+    public static Product getProduct(Long id, String name, int price) {
         final Product expected = new Product();
         expected.setId(id);
         expected.setName(name);
