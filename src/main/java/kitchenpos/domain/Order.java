@@ -62,7 +62,7 @@ public class Order {
 
     public void changeOrderStatus(OrderStatus orderStatus) {
         if (isComplete()) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("이미 주문이 계산완료 되었습니다");
         }
 
         this.orderStatus = orderStatus;

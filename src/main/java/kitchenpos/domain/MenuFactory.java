@@ -2,6 +2,8 @@ package kitchenpos.domain;
 
 import kitchenpos.dto.MenuProductRequest;
 import kitchenpos.dto.MenuRequest;
+import kitchenpos.exception.MenuGroupNotFoundException;
+import kitchenpos.exception.ProductNotFoundException;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -18,7 +20,7 @@ public class MenuFactory {
 
     public Menu create(final MenuRequest menuRequest) {
         MenuGroup menuGroup = menuGroupRepository.findById(menuRequest.getMenuGroupId())
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new MenuGroupNotFoundException(menuRequest.getMenuGroupId()));
 
         Menu menu = menuGroup.createMenu(menuRequest.getName(), menuRequest.getPrice());
         addMenuProducts(menuRequest.getMenuProducts(), menu);
@@ -29,7 +31,7 @@ public class MenuFactory {
     private void addMenuProducts(final List<MenuProductRequest> menuProducts, final Menu menu) {
         for (final MenuProductRequest menuProductRequest : menuProducts) {
             Product product = productRepository.findById(menuProductRequest.getProductId())
-                    .orElseThrow(IllegalArgumentException::new);
+                    .orElseThrow(() -> new ProductNotFoundException(menuProductRequest.getProductId()));
             menu.addProduct(product, menuProductRequest.getQuantity());
         }
     }

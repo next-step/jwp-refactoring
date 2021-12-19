@@ -2,6 +2,8 @@ package kitchenpos.domain;
 
 import kitchenpos.dto.MenuProductRequest;
 import kitchenpos.dto.MenuRequest;
+import kitchenpos.exception.MenuGroupNotFoundException;
+import kitchenpos.exception.ProductNotFoundException;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -75,6 +77,8 @@ public class MenuFactoryTest {
         menuProducts.add(new MenuProductRequest(1L, expectedMenu.getId(), 볶음짜장면.getId(), 1));
         menuProducts.add(new MenuProductRequest(2L, expectedMenu.getId(), 삼선짬뽕.getId(), 1));
 
+        given(menuGroupRepository.findById(anyLong())).willReturn(Optional.of(menuGroup));
+
         // when
         ThrowableAssert.ThrowingCallable callable = () -> menuFactory.create(menuRequest);
 
@@ -104,7 +108,7 @@ public class MenuFactoryTest {
 
         // then
         assertThatThrownBy(callable)
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(MenuGroupNotFoundException.class);
     }
 
     @DisplayName("등록된 상품이 포함되어야 한다")
@@ -129,6 +133,6 @@ public class MenuFactoryTest {
 
         // then
         assertThatThrownBy(callable)
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(ProductNotFoundException.class);
     }
 }

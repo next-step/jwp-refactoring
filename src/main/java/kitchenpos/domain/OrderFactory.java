@@ -2,6 +2,8 @@ package kitchenpos.domain;
 
 import kitchenpos.dto.OrderLineItemRequest;
 import kitchenpos.dto.OrderRequest;
+import kitchenpos.exception.MenuNotFoundException;
+import kitchenpos.exception.OrderTableNotFoundException;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -20,7 +22,7 @@ public class OrderFactory {
         validateOrderLineItems(orderRequest);
 
         final OrderTable orderTable = orderTableRepository.findById(orderRequest.getOrderTableId())
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new OrderTableNotFoundException(orderRequest.getOrderTableId()));
 
         Order order = orderTable.createOrder();
         addOrderLineItems(orderRequest.getOrderLineItems(), order);
@@ -31,14 +33,14 @@ public class OrderFactory {
     private void addOrderLineItems(final List<OrderLineItemRequest> orderLineItems, final Order order) {
         for (final OrderLineItemRequest orderLineItem : orderLineItems) {
             Menu menu = menuRepository.findById(orderLineItem.getMenuId())
-                    .orElseThrow(IllegalArgumentException::new);
+                    .orElseThrow(() -> new MenuNotFoundException(orderLineItem.getMenuId()));
             order.addOrderLineItem(menu, orderLineItem.getQuantity());
         }
     }
 
     private void validateOrderLineItems(final OrderRequest orderRequest) {
         if (orderRequest.isEmptyOrderLineItems()) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("요청한 주문 항목이 없습니다");
         }
     }
 }

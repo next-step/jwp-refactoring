@@ -72,8 +72,11 @@ public class OrderTable {
     }
 
     public void setTableGroup(TableGroup tableGroup) {
-        if (!isEmpty() || hasTableGroup()) {
-            throw new IllegalArgumentException("");
+        if (!isEmpty()) {
+            throw new IllegalArgumentException("모든 테이블이 비어 있어야 합니다");
+        }
+        if (hasTableGroup()) {
+            throw new IllegalArgumentException("이미 단체 지정이 되어 있습니다");
         }
         this.tableGroup = tableGroup;
     }

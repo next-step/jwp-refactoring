@@ -2,6 +2,8 @@ package kitchenpos.domain;
 
 import kitchenpos.dto.OrderLineItemRequest;
 import kitchenpos.dto.OrderRequest;
+import kitchenpos.exception.MenuNotFoundException;
+import kitchenpos.exception.OrderTableNotFoundException;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -82,7 +84,7 @@ public class OrderFactoryTest {
         ThrowableAssert.ThrowingCallable callable = () -> orderFactory.create(orderRequest);
 
         // then
-        assertThatThrownBy(callable).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(callable).isInstanceOf(MenuNotFoundException.class);
     }
 
     @DisplayName("주문 테이블이 있어야 한다")
@@ -101,7 +103,7 @@ public class OrderFactoryTest {
         ThrowableAssert.ThrowingCallable callable = () -> orderFactory.create(orderRequest);
 
         // then
-        assertThatThrownBy(callable).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(callable).isInstanceOf(OrderTableNotFoundException.class);
     }
 
     @DisplayName("주문 테이블이 비어있지 않아야 한다")
