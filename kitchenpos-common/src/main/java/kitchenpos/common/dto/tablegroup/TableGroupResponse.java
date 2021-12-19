@@ -1,31 +1,23 @@
 package kitchenpos.common.dto.tablegroup;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Objects;
 
-import kitchenpos.common.domain.table.OrderTable;
 import kitchenpos.common.domain.tablegroup.TableGroup;
-import kitchenpos.common.dto.table.OrderTableResponse;
-import kitchenpos.common.utils.StreamUtils;
 
 public class TableGroupResponse {
     private Long id;
     private LocalDateTime createdDate;
-    private List<OrderTableResponse> orderTables;
 
     protected TableGroupResponse() {}
 
-    private TableGroupResponse(Long id, LocalDateTime createdDate, List<OrderTableResponse> orderTables) {
+    private TableGroupResponse(Long id, LocalDateTime createdDate) {
         this.id = id;
         this.createdDate = createdDate;
-        this.orderTables = orderTables;
     }
 
-    public static TableGroupResponse from(TableGroup tableGroup, List<OrderTable> orderTables) {
-        return new TableGroupResponse(tableGroup.getId(),
-                                      tableGroup.getCreatedDate(),
-                                      StreamUtils.mapToList(orderTables, OrderTableResponse::from));
+    public static TableGroupResponse from(TableGroup tableGroup) {
+        return new TableGroupResponse(tableGroup.getId(), tableGroup.getCreatedDate());
     }
 
     public Long getId() {
@@ -36,10 +28,6 @@ public class TableGroupResponse {
         return createdDate;
     }
 
-    public List<OrderTableResponse> getOrderTables() {
-        return orderTables;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o)
@@ -47,12 +35,11 @@ public class TableGroupResponse {
         if (o == null || getClass() != o.getClass())
             return false;
         TableGroupResponse that = (TableGroupResponse)o;
-        return Objects.equals(id, that.id) && Objects.equals(createdDate, that.createdDate)
-            && Objects.equals(orderTables, that.orderTables);
+        return Objects.equals(id, that.id) && Objects.equals(createdDate, that.createdDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, createdDate, orderTables);
+        return Objects.hash(id, createdDate);
     }
 }

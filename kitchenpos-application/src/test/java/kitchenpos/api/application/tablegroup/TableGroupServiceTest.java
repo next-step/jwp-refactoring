@@ -34,6 +34,7 @@ import kitchenpos.common.domain.table.OrderTable;
 import kitchenpos.common.domain.table.OrderTableRepository;
 import kitchenpos.common.domain.tablegroup.TableGroup;
 import kitchenpos.common.domain.tablegroup.TableGroupRepository;
+import kitchenpos.common.domain.tablegroup.event.TableGroupGroupedEvent;
 import kitchenpos.common.domain.tablegroup.event.TableGroupUngroupedEvent;
 import kitchenpos.common.dto.tablegroup.OrderTableIdRequest;
 import kitchenpos.common.dto.tablegroup.TableGroupRequest;
@@ -141,66 +142,68 @@ class TableGroupServiceTest {
         // then
         TableGroup findTableGroup = tableGroupRepository.findById(tableGroupResponse.getId()).get();
 
-        assertThat(tableGroupResponse).isEqualTo(
-            TableGroupResponse.from(findTableGroup, Arrays.asList(개인1_단체테이블, 개인2_단체테이블)));
+        assertThat(tableGroupResponse).isEqualTo(TableGroupResponse.from(findTableGroup));
     }
 
     @DisplayName("TableGroup 을 등록 시, OrderTable 이 0개면 예외가 발생한다.")
     @Test
     void create2() {
         // given
-        TableGroupRequest tableGroupRequest = TableGroupRequest.from(Collections.emptyList());
+        List<Long> orderTableIds = Collections.emptyList();
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> tableGroupService.create(tableGroupRequest));
+        assertThatIllegalArgumentException().isThrownBy(
+            () -> publisher.publishEvent(new TableGroupGroupedEvent(단체_테이블그룹.getId(), orderTableIds)))
+            .withMessageContaining("최소 2개 이상의 OrderTable 이 존재해야합니다.");
     }
 
     @DisplayName("TableGroup 을 등록 시, OrderTable 이 1개면 예외가 발생한다.")
     @Test
     void create3() {
         // given
-        List<OrderTableIdRequest> orderTableIdRequests = Arrays.asList(OrderTableIdRequest.from(주문1_단체테이블.getId()));
-        TableGroupRequest tableGroupRequest = TableGroupRequest.from(orderTableIdRequests);
+        List<Long> orderTableIds = Arrays.asList(주문1_단체테이블.getId());
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> tableGroupService.create(tableGroupRequest));
+        assertThatIllegalArgumentException().isThrownBy(
+                                                () -> publisher.publishEvent(new TableGroupGroupedEvent(단체_테이블그룹.getId(), orderTableIds)))
+                                            .withMessageContaining("최소 2개 이상의 OrderTable 이 존재해야합니다.");
     }
 
     @DisplayName("TableGroup 을 등록 시, OrderTable 이 존재하지 않으면 예외가 발생한다.")
     @Test
     void create4() {
         // given
-        List<OrderTableIdRequest> orderTableIdRequests =
-            Arrays.asList(OrderTableIdRequest.from(0L), OrderTableIdRequest.from(주문2_단체테이블.getId()));
-        TableGroupRequest tableGroupRequest = TableGroupRequest.from(orderTableIdRequests);
+        List<Long> orderTableIds = Arrays.asList(0L, 주문2_단체테이블.getId());
 
         // when & then
-        assertThrows(EntityNotFoundException.class, () -> tableGroupService.create(tableGroupRequest));
+        assertThrows(EntityNotFoundException.class,
+                     () -> publisher.publishEvent(new TableGroupGroupedEvent(단체_테이블그룹.getId(), orderTableIds)));
     }
 
     @DisplayName("TableGroup 을 등록 시, OrderTable 이 빈 테이블이 아니면 예외가 발생한다.")
     @Test
     void create5() {
         // given
-        List<OrderTableIdRequest> orderTableIdRequests =
-            Arrays.asList(OrderTableIdRequest.from(손님_10명_개인테이블.getId()), OrderTableIdRequest.from(주문2_단체테이블.getId()));
-        TableGroupRequest tableGroupRequest = TableGroupRequest.from(orderTableIdRequests);
+        List<Long> orderTableIds =
+            Arrays.asList(손님_10명_개인테이블.getId(), 주문2_단체테이블.getId());
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> tableGroupService.create(tableGroupRequest));
+        assertThatIllegalArgumentException().isThrownBy(
+            () -> publisher.publishEvent(new TableGroupGroupedEvent(단체_테이블그룹.getId(), orderTableIds)));
     }
 
     @DisplayName("TableGroup 을 등록 시, OrderTable 이 이미 그룹에 속해있으면 예외가 발생한다.")
     @Test
     void create6() {
         // given
-        List<OrderTableIdRequest> orderTableIdRequests =
-            Arrays.asList(OrderTableIdRequest.from(주문1_단체테이블.getId()), OrderTableIdRequest.from(주문2_단체테이블.getId()));
-        TableGroupRequest tableGroupRequest = TableGroupRequest.from(orderTableIdRequests);
         주문1_단체테이블.alignTableGroup(단체_테이블그룹.getId());
 
+        List<Long> orderTableIds =
+            Arrays.asList(주문1_단체테이블.getId(), 주문2_단체테이블.getId());
+
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> tableGroupService.create(tableGroupRequest));
+        assertThatIllegalArgumentException().isThrownBy(
+            () -> publisher.publishEvent(new TableGroupGroupedEvent(단체_테이블그룹.getId(), orderTableIds)));
     }
 
     @DisplayName("TableGroup 을 해제한다.")
@@ -230,6 +233,6 @@ class TableGroupServiceTest {
         주문2_단체테이블.alignTableGroup(단체_테이블그룹.getId());
 
         // when & then
-        assertThrows(NotCompletionOrderException.class, () -> tableGroupService.ungroup(단체_테이블그룹.getId()));
+        assertThrows(NotCompletionOrderException.class, () -> publisher.publishEvent(new TableGroupUngroupedEvent(단체_테이블그룹.getId())));
     }
 }

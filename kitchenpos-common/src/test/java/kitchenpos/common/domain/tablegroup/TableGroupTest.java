@@ -15,6 +15,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.stereotype.Component;
 
+import kitchenpos.common.domain.table.OrderTableValidator;
 import kitchenpos.common.fixture.OrderTableFixtureFactory;
 import kitchenpos.common.fixture.TableGroupFixtureFactory;
 import kitchenpos.common.domain.table.OrderTable;
@@ -30,7 +31,7 @@ class TableGroupTest {
     private TableGroupRepository tableGroupRepository;
 
     @Autowired
-    private TableGroupValidator tableGroupValidator;
+    private OrderTableValidator otderTableValidator;
 
     private OrderTable 테이블1;
     private OrderTable 테이블2;
@@ -47,26 +48,26 @@ class TableGroupTest {
         단체_테이블그룹 = tableGroupRepository.save(단체_테이블그룹);
     }
 
-    @DisplayName("TableGroup 생성 시, 최소 2개 이상의 빈 OrderTables 을 그룹으로 만들 수 있다.")
+    @DisplayName("TableGroup 생성 시, 최소 2개 이상의 빈 OrderTables 이 필요하다.")
     @Test
     void create1() {
         // given
-        List<Long> orderTableIds = Arrays.asList(테이블1.getId(), 테이블2.getId());
+        List<OrderTable> orderTables = Arrays.asList(테이블1, 테이블2);
 
-        // when
-        List<OrderTable> orderTables = tableGroupValidator.getValidGroupOrderTables(orderTableIds);
-        // then
-        assertThat(orderTables).containsExactly(테이블1, 테이블2);
+        // when & then
+        otderTableValidator.validateGroupOrderTables(Arrays.asList(테이블1.getTableGroupId(), 테이블2.getId()), orderTables);
     }
 
     @DisplayName("TableGroup 생성 시, OrderTables 가 1개만 존재하면 예외가 발생한다.")
     @Test
     void create2() {
         // given
-        List<Long> orderTableIds = Arrays.asList(테이블1.getId());
+        List<OrderTable> orderTableIds = Arrays.asList(테이블1);
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> tableGroupValidator.getValidGroupOrderTables(orderTableIds))
+        assertThatIllegalArgumentException().isThrownBy(
+                                                () -> otderTableValidator.validateGroupOrderTables(Arrays.asList(테이블1.getId()),
+                                                                                                   orderTableIds))
                                             .withMessageContaining("최소 2개 이상의 OrderTable 이 존재해야합니다.");
     }
 
@@ -74,7 +75,9 @@ class TableGroupTest {
     @Test
     void create3() {
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> tableGroupValidator.getValidGroupOrderTables(Collections.emptyList()))
+        assertThatIllegalArgumentException().isThrownBy(
+                                                () -> otderTableValidator.validateGroupOrderTables(Collections.emptyList(),
+                                                                                                   Collections.emptyList()))
                                             .withMessageContaining("최소 2개 이상의 OrderTable 이 존재해야합니다.");
     }
 
@@ -83,10 +86,12 @@ class TableGroupTest {
     void create4() {
         // given
         테이블1.updateEmpty(false);
-        List<Long> orderTableIds = Arrays.asList(테이블1.getId(), 테이블2.getId());
+        List<OrderTable> orderTables = Arrays.asList(테이블1, 테이블2);
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> tableGroupValidator.getValidGroupOrderTables(orderTableIds))
+        assertThatIllegalArgumentException().isThrownBy(
+                                                () -> otderTableValidator.validateGroupOrderTables(Arrays.asList(테이블1.getTableGroupId(), 테이블2.getId()),
+                                                                                                   orderTables))
                                             .withMessageContaining("OrderTable 은 TableGroup 이 할당되지 않으면서 비어있어야 합니다.");
     }
 
@@ -95,10 +100,12 @@ class TableGroupTest {
     void create5() {
         // given
         테이블1.alignTableGroup(단체_테이블그룹.getId());
-        List<Long> orderTableIds = Arrays.asList(테이블1.getId(), 테이블2.getId());
+        List<OrderTable> orderTables = Arrays.asList(테이블1, 테이블2);
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> tableGroupValidator.getValidGroupOrderTables(orderTableIds))
+        assertThatIllegalArgumentException().isThrownBy(
+                                                () -> otderTableValidator.validateGroupOrderTables(Arrays.asList(테이블1.getTableGroupId(), 테이블2.getId()),
+                                                                                                   orderTables))
                                             .withMessageContaining("OrderTable 은 TableGroup 이 할당되지 않으면서 비어있어야 합니다.");
     }
 }
