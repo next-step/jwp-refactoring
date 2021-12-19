@@ -1,6 +1,6 @@
-package kitchenpos.application;
+package kitchenpos.menu.application;
 
-import static kitchenpos.application.ProductServiceTest.*;
+import static kitchenpos.menu.application.ProductServiceTest.*;
 import static kitchenpos.menu.application.MenuGroupServiceTest.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -23,7 +23,6 @@ import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
 import kitchenpos.dao.ProductDao;
-import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
