@@ -44,7 +44,7 @@ class OrderServiceTest extends IntegrationTest {
 		// given
 		OrderTable 비어있지않은_주문_테이블 = tableService.create(비어있지않은_주문_테이블().toOrderTable());
 		Product 후라이드치킨_상품 = productService.create(후라이드치킨_상품().toProduct());
-		MenuGroup 추천_메뉴_그룹 = menuGroupService.create(추천_메뉴_그룹().toMenuGroup());
+		MenuGroup 추천_메뉴_그룹 = menuGroupService.create(추천_메뉴_그룹_요청().toMenuGroup());
 		Menu 후라이드후라이드_메뉴 = menuService.create(후라이드후라이드_메뉴(추천_메뉴_그룹.getId(), 후라이드치킨_상품.getId()).toMenu());
 
 		// when
@@ -91,7 +91,7 @@ class OrderServiceTest extends IntegrationTest {
 		// given
 		OrderTable 빈_주문_테이블 = tableService.create(빈_주문_테이블().toOrderTable());
 		Product 후라이드치킨_상품 = productService.create(후라이드치킨_상품().toProduct());
-		MenuGroup 추천_메뉴_그룹 = menuGroupService.create(추천_메뉴_그룹().toMenuGroup());
+		MenuGroup 추천_메뉴_그룹 = menuGroupService.create(추천_메뉴_그룹_요청().toMenuGroup());
 		Menu 후라이드후라이드_메뉴 = menuService.create(후라이드후라이드_메뉴(추천_메뉴_그룹.getId(), 후라이드치킨_상품.getId()).toMenu());
 
 		// when
@@ -109,7 +109,7 @@ class OrderServiceTest extends IntegrationTest {
 		OrderTable 비어있지않은_주문_테이블_1 = tableService.create(비어있지않은_주문_테이블().toOrderTable());
 		OrderTable 비어있지않은_주문_테이블_2 = tableService.create(비어있지않은_주문_테이블().toOrderTable());
 		Product 후라이드치킨_상품 = productService.create(후라이드치킨_상품().toProduct());
-		MenuGroup 추천_메뉴_그룹 = menuGroupService.create(추천_메뉴_그룹().toMenuGroup());
+		MenuGroup 추천_메뉴_그룹 = menuGroupService.create(추천_메뉴_그룹_요청().toMenuGroup());
 		Menu 후라이드후라이드_메뉴 = menuService.create(후라이드후라이드_메뉴(추천_메뉴_그룹.getId(), 후라이드치킨_상품.getId()).toMenu());
 		Order 주문_1 = orderService.create(주문(비어있지않은_주문_테이블_1.getId(), 후라이드후라이드_메뉴.getId(), 1).toOrder());
 		Order 주문_2 = orderService.create(주문(비어있지않은_주문_테이블_2.getId(), 후라이드후라이드_메뉴.getId(), 2).toOrder());
@@ -133,7 +133,7 @@ class OrderServiceTest extends IntegrationTest {
 		// given
 		OrderTable 비어있지않은_주문_테이블 = tableService.create(비어있지않은_주문_테이블().toOrderTable());
 		Product 후라이드치킨_상품 = productService.create(후라이드치킨_상품().toProduct());
-		MenuGroup 추천_메뉴_그룹 = menuGroupService.create(추천_메뉴_그룹().toMenuGroup());
+		MenuGroup 추천_메뉴_그룹 = menuGroupService.create(추천_메뉴_그룹_요청().toMenuGroup());
 		Menu 후라이드후라이드_메뉴 = menuService.create(후라이드후라이드_메뉴(추천_메뉴_그룹.getId(), 후라이드치킨_상품.getId()).toMenu());
 		Order 주문 = orderService.create(주문(비어있지않은_주문_테이블.getId(), 후라이드후라이드_메뉴.getId(), 1).toOrder());
 		OrderStatus orderStatus = OrderStatus.MEAL;
@@ -151,7 +151,7 @@ class OrderServiceTest extends IntegrationTest {
 		// given
 		OrderTable 비어있지않은_주문_테이블 = tableService.create(비어있지않은_주문_테이블().toOrderTable());
 		Product 후라이드치킨_상품 = productService.create(후라이드치킨_상품().toProduct());
-		MenuGroup 추천_메뉴_그룹 = menuGroupService.create(추천_메뉴_그룹().toMenuGroup());
+		MenuGroup 추천_메뉴_그룹 = menuGroupService.create(추천_메뉴_그룹_요청().toMenuGroup());
 		Menu 후라이드후라이드_메뉴 = menuService.create(후라이드후라이드_메뉴(추천_메뉴_그룹.getId(), 후라이드치킨_상품.getId()).toMenu());
 		Order 주문 = orderService.create(주문(비어있지않은_주문_테이블.getId(), 후라이드후라이드_메뉴.getId(), 1).toOrder());
 		orderService.changeOrderStatus(주문.getId(), 주문_상태(OrderStatus.COMPLETION).toOrder());

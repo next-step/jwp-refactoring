@@ -152,7 +152,7 @@ public class OrderTableGroupAcceptanceTest extends AcceptanceTest {
 		OrderTableGroupDto 주문_테이블_그룹 = 주문_테이블_그룹_등록되어_있음(
 			주문_테이블_그룹(Arrays.asList(주문_테이블_1.getId(), 주문_테이블_2.getId()))).as(OrderTableGroupDto.class);
 		ProductDto 후라이드치킨_상품 = 상품_등록되어_있음(후라이드치킨_상품()).as(ProductDto.class);
-		MenuGroupDto 추천_메뉴_그룹 = 메뉴_그룹_등록되어_있음(추천_메뉴_그룹()).as(MenuGroupDto.class);
+		MenuGroupDto 추천_메뉴_그룹 = 메뉴_그룹_등록되어_있음(추천_메뉴_그룹_요청()).as(MenuGroupDto.class);
 		MenuDto 후라이드후라이드_메뉴 = 메뉴_등록되어_있음(후라이드후라이드_메뉴(추천_메뉴_그룹.getId(), 후라이드치킨_상품.getId())).as(MenuDto.class);
 		OrderDto 주문 = 주문_등록되어_있음(주문(주문_테이블_1.getId(), 후라이드후라이드_메뉴.getId(), 1)).as(OrderDto.class);
 		주문_상태_변경되어_있음(주문.getId(), OrderStatus.MEAL);

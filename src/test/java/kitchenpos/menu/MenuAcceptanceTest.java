@@ -50,7 +50,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
 	void register() {
 		// given
 		ProductDto 후라이드_치킨_상품 = 상품_등록되어_있음(후라이드치킨_상품()).as(ProductDto.class);
-		MenuGroupDto 추천_메뉴_그룹 = 메뉴_그룹_등록되어_있음(추천_메뉴_그룹()).as(MenuGroupDto.class);
+		MenuGroupDto 추천_메뉴_그룹 = 메뉴_그룹_등록되어_있음(추천_메뉴_그룹_요청()).as(MenuGroupDto.class);
 
 		// when
 		ExtractableResponse<Response> response = 메뉴_등록_요청(후라이드후라이드_메뉴(추천_메뉴_그룹.getId(), 후라이드_치킨_상품.getId()));
@@ -64,7 +64,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
 	void registerFailOnEmptyName() {
 		// given
 		ProductDto 후라이드_치킨_상품 = 상품_등록되어_있음(후라이드치킨_상품()).as(ProductDto.class);
-		MenuGroupDto 추천_메뉴_그룹 = 메뉴_그룹_등록되어_있음(추천_메뉴_그룹()).as(MenuGroupDto.class);
+		MenuGroupDto 추천_메뉴_그룹 = 메뉴_그룹_등록되어_있음(추천_메뉴_그룹_요청()).as(MenuGroupDto.class);
 
 		// when
 		ExtractableResponse<Response> response = 메뉴_등록_요청(new MenuCreateRequest(
@@ -84,7 +84,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
 	void registerFailOnNegativePrice() {
 		// given
 		ProductDto 후라이드_치킨_상품 = 상품_등록되어_있음(후라이드치킨_상품()).as(ProductDto.class);
-		MenuGroupDto 추천_메뉴_그룹 = 메뉴_그룹_등록되어_있음(추천_메뉴_그룹()).as(MenuGroupDto.class);
+		MenuGroupDto 추천_메뉴_그룹 = 메뉴_그룹_등록되어_있음(추천_메뉴_그룹_요청()).as(MenuGroupDto.class);
 
 		// when
 		ExtractableResponse<Response> response = 메뉴_등록_요청(new MenuCreateRequest(
@@ -124,7 +124,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
 	void registerFailOnNotFoundProduct() {
 		// given
 		Long unknownProductId = 0L;
-		MenuGroupDto 추천_메뉴_그룹 = 메뉴_그룹_등록되어_있음(추천_메뉴_그룹()).as(MenuGroupDto.class);
+		MenuGroupDto 추천_메뉴_그룹 = 메뉴_그룹_등록되어_있음(추천_메뉴_그룹_요청()).as(MenuGroupDto.class);
 
 		// when
 		ExtractableResponse<Response> response = 메뉴_등록_요청(new MenuCreateRequest(
@@ -144,7 +144,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
 	void registerFailOnPriceInvalid() {
 		// given
 		ProductDto 후라이드_치킨_상품 = 상품_등록되어_있음(후라이드치킨_상품()).as(ProductDto.class);
-		MenuGroupDto 추천_메뉴_그룹 = 메뉴_그룹_등록되어_있음(추천_메뉴_그룹()).as(MenuGroupDto.class);
+		MenuGroupDto 추천_메뉴_그룹 = 메뉴_그룹_등록되어_있음(추천_메뉴_그룹_요청()).as(MenuGroupDto.class);
 
 		// when
 		ExtractableResponse<Response> response = 메뉴_등록_요청(new MenuCreateRequest(
@@ -165,7 +165,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
 		// given
 		ProductDto 후라이드치킨_상품 = 상품_등록되어_있음(후라이드치킨_상품()).as(ProductDto.class);
 		ProductDto 양념치킨_상품 = 상품_등록되어_있음(양념치킨_상품()).as(ProductDto.class);
-		MenuGroupDto 추천_메뉴_그룹 = 메뉴_그룹_등록되어_있음(추천_메뉴_그룹()).as(MenuGroupDto.class);
+		MenuGroupDto 추천_메뉴_그룹 = 메뉴_그룹_등록되어_있음(추천_메뉴_그룹_요청()).as(MenuGroupDto.class);
 		MenuDto 후라이드후라이드_메뉴 = 메뉴_등록되어_있음(후라이드후라이드_메뉴(추천_메뉴_그룹.getId(), 후라이드치킨_상품.getId())).as(MenuDto.class);
 		MenuDto 양념양념_메뉴 = 메뉴_등록되어_있음(양념양념_메뉴(추천_메뉴_그룹.getId(), 양념치킨_상품.getId())).as(MenuDto.class);
 

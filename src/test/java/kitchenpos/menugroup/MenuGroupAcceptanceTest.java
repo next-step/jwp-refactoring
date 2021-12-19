@@ -40,7 +40,7 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
 	@Test
 	void register() {
 		// when
-		ExtractableResponse<Response> response = 메뉴_그룹_등록_요청(추천_메뉴_그룹());
+		ExtractableResponse<Response> response = 메뉴_그룹_등록_요청(추천_메뉴_그룹_요청());
 
 		// then
 		메뉴_그룹_등록됨(response);
@@ -50,7 +50,7 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
 	@Test
 	void registerFailOnEmptyName() {
 		// when
-		ExtractableResponse<Response> response = 메뉴_그룹_등록_요청(이름없는_메뉴_그룹());
+		ExtractableResponse<Response> response = 메뉴_그룹_등록_요청(이름없는_메뉴_그룹_요청());
 
 		// then
 		메뉴_그룹_등록되지_않음(response);
@@ -60,8 +60,8 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
 	@Test
 	void findAll() {
 		// given
-		MenuGroupDto 추천_메뉴_그룹 = 메뉴_그룹_등록되어_있음(추천_메뉴_그룹()).as(MenuGroupDto.class);
-		MenuGroupDto 비추천_메뉴_그룹 = 메뉴_그룹_등록되어_있음(비추천_메뉴_그룹()).as(MenuGroupDto.class);
+		MenuGroupDto 추천_메뉴_그룹 = 메뉴_그룹_등록되어_있음(추천_메뉴_그룹_요청()).as(MenuGroupDto.class);
+		MenuGroupDto 비추천_메뉴_그룹 = 메뉴_그룹_등록되어_있음(비추천_메뉴_그룹_요청()).as(MenuGroupDto.class);
 
 		// when
 		ExtractableResponse<Response> response = 메뉴_그룹_목록_조회_요청();
