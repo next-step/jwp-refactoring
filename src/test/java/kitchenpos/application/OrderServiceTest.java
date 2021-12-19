@@ -43,7 +43,7 @@ class OrderServiceTest extends IntegrationTest {
 	void register() {
 		// given
 		OrderTable 비어있지않은_주문_테이블 = tableService.create(비어있지않은_주문_테이블().toOrderTable());
-		Product 후라이드치킨_상품 = productService.create(후라이드치킨_상품().toProduct());
+		Product 후라이드치킨_상품 = productService.create(후라이드치킨_상품_요청().toProduct());
 		MenuGroup 추천_메뉴_그룹 = menuGroupService.create(추천_메뉴_그룹_요청().toMenuGroup());
 		Menu 후라이드후라이드_메뉴 = menuService.create(후라이드후라이드_메뉴(추천_메뉴_그룹.getId(), 후라이드치킨_상품.getId()).toMenu());
 
@@ -90,7 +90,7 @@ class OrderServiceTest extends IntegrationTest {
 	void registerFailOnEmptyOrderTable() {
 		// given
 		OrderTable 빈_주문_테이블 = tableService.create(빈_주문_테이블().toOrderTable());
-		Product 후라이드치킨_상품 = productService.create(후라이드치킨_상품().toProduct());
+		Product 후라이드치킨_상품 = productService.create(후라이드치킨_상품_요청().toProduct());
 		MenuGroup 추천_메뉴_그룹 = menuGroupService.create(추천_메뉴_그룹_요청().toMenuGroup());
 		Menu 후라이드후라이드_메뉴 = menuService.create(후라이드후라이드_메뉴(추천_메뉴_그룹.getId(), 후라이드치킨_상품.getId()).toMenu());
 
@@ -108,7 +108,7 @@ class OrderServiceTest extends IntegrationTest {
 		// given
 		OrderTable 비어있지않은_주문_테이블_1 = tableService.create(비어있지않은_주문_테이블().toOrderTable());
 		OrderTable 비어있지않은_주문_테이블_2 = tableService.create(비어있지않은_주문_테이블().toOrderTable());
-		Product 후라이드치킨_상품 = productService.create(후라이드치킨_상품().toProduct());
+		Product 후라이드치킨_상품 = productService.create(후라이드치킨_상품_요청().toProduct());
 		MenuGroup 추천_메뉴_그룹 = menuGroupService.create(추천_메뉴_그룹_요청().toMenuGroup());
 		Menu 후라이드후라이드_메뉴 = menuService.create(후라이드후라이드_메뉴(추천_메뉴_그룹.getId(), 후라이드치킨_상품.getId()).toMenu());
 		Order 주문_1 = orderService.create(주문(비어있지않은_주문_테이블_1.getId(), 후라이드후라이드_메뉴.getId(), 1).toOrder());
@@ -132,7 +132,7 @@ class OrderServiceTest extends IntegrationTest {
 	void changeOrderStatus() {
 		// given
 		OrderTable 비어있지않은_주문_테이블 = tableService.create(비어있지않은_주문_테이블().toOrderTable());
-		Product 후라이드치킨_상품 = productService.create(후라이드치킨_상품().toProduct());
+		Product 후라이드치킨_상품 = productService.create(후라이드치킨_상품_요청().toProduct());
 		MenuGroup 추천_메뉴_그룹 = menuGroupService.create(추천_메뉴_그룹_요청().toMenuGroup());
 		Menu 후라이드후라이드_메뉴 = menuService.create(후라이드후라이드_메뉴(추천_메뉴_그룹.getId(), 후라이드치킨_상품.getId()).toMenu());
 		Order 주문 = orderService.create(주문(비어있지않은_주문_테이블.getId(), 후라이드후라이드_메뉴.getId(), 1).toOrder());
@@ -150,7 +150,7 @@ class OrderServiceTest extends IntegrationTest {
 	void changeOrderStatusFailOnCompleted() {
 		// given
 		OrderTable 비어있지않은_주문_테이블 = tableService.create(비어있지않은_주문_테이블().toOrderTable());
-		Product 후라이드치킨_상품 = productService.create(후라이드치킨_상품().toProduct());
+		Product 후라이드치킨_상품 = productService.create(후라이드치킨_상품_요청().toProduct());
 		MenuGroup 추천_메뉴_그룹 = menuGroupService.create(추천_메뉴_그룹_요청().toMenuGroup());
 		Menu 후라이드후라이드_메뉴 = menuService.create(후라이드후라이드_메뉴(추천_메뉴_그룹.getId(), 후라이드치킨_상품.getId()).toMenu());
 		Order 주문 = orderService.create(주문(비어있지않은_주문_테이블.getId(), 후라이드후라이드_메뉴.getId(), 1).toOrder());

@@ -40,7 +40,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
 	@Test
 	void register() {
 		// when
-		ExtractableResponse<Response> response = 상품_등록_요청(강정치킨_상품());
+		ExtractableResponse<Response> response = 상품_등록_요청(강정치킨_상품_요청());
 
 		// then
 		상품_등록됨(response);
@@ -50,7 +50,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
 	@Test
 	void registerFailOnNegativePrice() {
 		// when
-		ExtractableResponse<Response> response = 상품_등록_요청(음수가격_상품());
+		ExtractableResponse<Response> response = 상품_등록_요청(음수가격_상품_요청());
 
 		// then
 		상품_등록되지_않음(response);
@@ -60,7 +60,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
 	@Test
 	void registerFailOnEmptyName() {
 		// when
-		ExtractableResponse<Response> response = 상품_등록_요청(이름없는_상품());
+		ExtractableResponse<Response> response = 상품_등록_요청(이름없는_상품_요청());
 
 		// then
 		상품_등록되지_않음(response);
@@ -70,8 +70,8 @@ public class ProductAcceptanceTest extends AcceptanceTest {
 	@Test
 	void findAll() {
 		// given
-		ProductDto 강정치킨_상품 = 상품_등록되어_있음(강정치킨_상품()).as(ProductDto.class);
-		ProductDto 양념치킨_상품 = 상품_등록되어_있음(양념치킨_상품()).as(ProductDto.class);
+		ProductDto 강정치킨_상품 = 상품_등록되어_있음(강정치킨_상품_요청()).as(ProductDto.class);
+		ProductDto 양념치킨_상품 = 상품_등록되어_있음(양념치킨_상품_요청()).as(ProductDto.class);
 
 		// when
 		ExtractableResponse<Response> response = 상품_목록_조회_요청();

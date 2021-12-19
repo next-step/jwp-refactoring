@@ -35,7 +35,7 @@ class MenuServiceTest extends IntegrationTest {
 	void create() {
 		// given
 		MenuGroup 추천_메뉴_그룹 = menuGroupService.create(추천_메뉴_그룹_요청().toMenuGroup());
-		Product 후라이드치킨_상품 = productService.create(후라이드치킨_상품().toProduct());
+		Product 후라이드치킨_상품 = productService.create(후라이드치킨_상품_요청().toProduct());
 		Menu request = 후라이드후라이드_메뉴(추천_메뉴_그룹.getId(), 후라이드치킨_상품.getId()).toMenu();
 
 		// when
@@ -64,7 +64,7 @@ class MenuServiceTest extends IntegrationTest {
 	void createFailOnEmptyName() {
 		// given
 		MenuGroup 추천_메뉴_그룹 = menuGroupService.create(추천_메뉴_그룹_요청().toMenuGroup());
-		Product 후라이드치킨_상품 = productService.create(후라이드치킨_상품().toProduct());
+		Product 후라이드치킨_상품 = productService.create(후라이드치킨_상품_요청().toProduct());
 		Menu request = 이름없는_메뉴(추천_메뉴_그룹.getId(), 후라이드치킨_상품.getId()).toMenu();
 
 		// when
@@ -79,7 +79,7 @@ class MenuServiceTest extends IntegrationTest {
 	void createFailOnNegativePrice() {
 		// given
 		MenuGroup 추천_메뉴_그룹 = menuGroupService.create(추천_메뉴_그룹_요청().toMenuGroup());
-		Product 후라이드치킨_상품 = productService.create(후라이드치킨_상품().toProduct());
+		Product 후라이드치킨_상품 = productService.create(후라이드치킨_상품_요청().toProduct());
 		Menu request = 음수가격_메뉴(추천_메뉴_그룹.getId(), 후라이드치킨_상품.getId()).toMenu();
 
 		// when
@@ -94,7 +94,7 @@ class MenuServiceTest extends IntegrationTest {
 	void createFailOnNotFoundMenuGroup() {
 		// given
 		Long unknownMenuGroupId = 0L;
-		Product 후라이드치킨_상품 = productService.create(후라이드치킨_상품().toProduct());
+		Product 후라이드치킨_상품 = productService.create(후라이드치킨_상품_요청().toProduct());
 		Menu request = 후라이드후라이드_메뉴(unknownMenuGroupId, 후라이드치킨_상품.getId()).toMenu();
 
 		// when
@@ -124,7 +124,7 @@ class MenuServiceTest extends IntegrationTest {
 	void createFailOnInvalidPrice() {
 		// given
 		MenuGroup 추천_메뉴_그룹 = menuGroupService.create(추천_메뉴_그룹_요청().toMenuGroup());
-		Product 후라이드치킨_상품 = productService.create(후라이드치킨_상품().toProduct());
+		Product 후라이드치킨_상품 = productService.create(후라이드치킨_상품_요청().toProduct());
 		Menu request = 너무비싼_메뉴(추천_메뉴_그룹.getId(), 후라이드치킨_상품.getId()).toMenu();
 
 		// when
@@ -139,8 +139,8 @@ class MenuServiceTest extends IntegrationTest {
 	void list() {
 		// given
 		MenuGroup 추천_메뉴_그룹 = menuGroupService.create(추천_메뉴_그룹_요청().toMenuGroup());
-		Product 후라이드치킨_상품 = productService.create(후라이드치킨_상품().toProduct());
-		Product 양념치킨_상품 = productService.create(양념치킨_상품().toProduct());
+		Product 후라이드치킨_상품 = productService.create(후라이드치킨_상품_요청().toProduct());
+		Product 양념치킨_상품 = productService.create(양념치킨_상품_요청().toProduct());
 		Menu 후라이드후라이드_메뉴 = menuService.create(후라이드후라이드_메뉴(추천_메뉴_그룹.getId(), 후라이드치킨_상품.getId()).toMenu());
 		Menu 양념양념_메뉴 = menuService.create(양념양념_메뉴(추천_메뉴_그룹.getId(), 양념치킨_상품.getId()).toMenu());
 
