@@ -6,6 +6,26 @@ public class MenuProduct {
     private Long productId;
     private long quantity;
 
+    public MenuProduct() {
+    }
+
+    private MenuProduct(Long menuId, Long productId, long quantity) {
+        this.menuId = menuId;
+        this.productId = productId;
+        this.quantity = quantity;
+    }
+
+    public MenuProduct(Long seq, Long menuId, Long productId, long quantity) {
+        this.seq = seq;
+        this.menuId = menuId;
+        this.productId = productId;
+        this.quantity = quantity;
+    }
+
+    public static MenuProduct of(Long menuId, Long productId, long quantity) {
+        return new MenuProduct(menuId, productId, quantity);
+    }
+
     public Long getSeq() {
         return seq;
     }

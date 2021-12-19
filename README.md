@@ -62,7 +62,7 @@
 - [ ] 테스트 코드 작성
   - [X] ProductService
   - [X] MenuGroupService
-  - [ ] MenuService
+  - [X] MenuService
   - [ ] TableService
   - [ ] TableGroupService
   - [ ] OrderService
