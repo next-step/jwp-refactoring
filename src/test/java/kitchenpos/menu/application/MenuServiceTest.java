@@ -1,4 +1,4 @@
-package kitchenpos.application;
+package kitchenpos.menu.application;
 
 import kitchenpos.menu.domain.*;
 import kitchenpos.dao.ProductDao;
@@ -6,8 +6,8 @@ import kitchenpos.menu.application.MenuService;
 import kitchenpos.menuGroup.domain.MenuGroup;
 import kitchenpos.domain.Product;
 import kitchenpos.menuGroup.domain.MenuGroupRepository;
-import kitchenpos.testFixture.MenuGroupTestFixture;
-import kitchenpos.testFixture.MenuTestFixture;
+import kitchenpos.fixture.MenuGroupTestFixture;
+import kitchenpos.fixture.MenuTestFixture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -69,7 +69,7 @@ public class MenuServiceTest {
         given(menuGroupRepository.existsById(1L)).willReturn(true);
         given(productDao.findById(1L)).willReturn(java.util.Optional.ofNullable(후라이드));
         given(menuRepository.save(후라이드두마리세트)).willReturn(후라이드두마리세트);
-        given(menuProductRepository.save(후라이드두마리구성)).willReturn(후라이드두마리구성);
+        //given(menuProductRepository.save(후라이드두마리구성)).willReturn(후라이드두마리구성);
 
         Menu creatMenu = menuService.create(후라이드두마리세트);
 
@@ -110,7 +110,6 @@ public class MenuServiceTest {
     @Test
     void list() {
         given(menuRepository.findAll()).willReturn(Arrays.asList(후라이드두마리세트));
-        given(menuProductRepository.findAllByMenuId(후라이드두마리세트.getId())).willReturn(Arrays.asList(후라이드두마리구성));
 
         List<Menu> menus = menuService.list();
 

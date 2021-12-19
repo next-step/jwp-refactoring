@@ -9,14 +9,24 @@ public class MenuProduct {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
 
-    @ManyToOne
-    @JoinColumn(name = "menu_id")
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "menu_id", foreignKey = @ForeignKey(name = "fk_menu_product_menu"))
     private Menu menu;
 
     private Long productId;
     private long quantity;
 
     public MenuProduct() {
+    }
+
+    public MenuProduct(Long seq, Long productId, long quantity) {
+        this.seq = seq;
+        this.productId = productId;
+        this.quantity = quantity;
+    }
+
+    public void setMenu(Menu menu) {
+        this.menu = menu;
     }
 
     public Long getSeq() {

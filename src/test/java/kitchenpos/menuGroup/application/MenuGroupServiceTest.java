@@ -1,9 +1,9 @@
-package kitchenpos.application;
+package kitchenpos.menuGroup.application;
 
 import kitchenpos.menuGroup.domain.MenuGroup;
 import kitchenpos.menuGroup.aplication.MenuGroupService;
 import kitchenpos.menuGroup.domain.MenuGroupRepository;
-import kitchenpos.testFixture.MenuGroupTestFixture;
+import kitchenpos.fixture.MenuGroupTestFixture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
