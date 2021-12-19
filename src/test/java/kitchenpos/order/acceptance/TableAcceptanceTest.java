@@ -87,7 +87,7 @@ class TableAcceptanceTest extends AcceptanceTest {
         주문_테이블_방문_손님수_갱신됨(response, numberOfGuests);
     }
 
-    private ExtractableResponse<Response> 주문_테이블_생성_요청(OrderTableRequest request) {
+    static ExtractableResponse<Response> 주문_테이블_생성_요청(OrderTableRequest request) {
         return RestAssured
             .given().log().all()
             .body(request)
