@@ -11,6 +11,7 @@ import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menuGroup.domain.MenuGroup;
 import kitchenpos.fixture.MenuGroupTestFixture;
 import kitchenpos.fixture.MenuTestFixture;
+import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

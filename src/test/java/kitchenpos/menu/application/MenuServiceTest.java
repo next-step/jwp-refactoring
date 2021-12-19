@@ -2,14 +2,14 @@ package kitchenpos.menu.application;
 
 import kitchenpos.fixture.MenuProductTextFixture;
 import kitchenpos.menu.domain.*;
-import kitchenpos.dao.ProductDao;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menuGroup.domain.MenuGroup;
-import kitchenpos.domain.Product;
+import kitchenpos.product.domain.Product;
 import kitchenpos.menuGroup.domain.MenuGroupRepository;
 import kitchenpos.fixture.MenuGroupTestFixture;
 import kitchenpos.fixture.MenuTestFixture;
+import kitchenpos.product.domain.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -35,9 +35,7 @@ public class MenuServiceTest {
     @Mock
     private MenuGroupRepository menuGroupRepository;
     @Mock
-    private MenuProductRepository menuProductRepository;
-    @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     @InjectMocks
     private MenuService menuService;
@@ -70,6 +68,7 @@ public class MenuServiceTest {
         //given
         given(menuGroupRepository.findById(1L)).willReturn(java.util.Optional.ofNullable(치킨류));
         given(menuRepository.save(any())).willReturn(후라이드두마리세트);
+        given(productRepository.findById(any())).willReturn(java.util.Optional.ofNullable(후라이드));
 
         Menu creatMenu = menuService.create(MenuRequest.of("후라이드두마리세트", new BigDecimal("10000"), 치킨류.getId(), Arrays.asList(후라이드두마리구성Request)));
 

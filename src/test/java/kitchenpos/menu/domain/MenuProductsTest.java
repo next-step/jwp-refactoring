@@ -1,9 +1,7 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.domain.Product;
-import kitchenpos.fixture.MenuGroupTestFixture;
+import kitchenpos.product.domain.Product;
 import kitchenpos.fixture.MenuProductTextFixture;
-import kitchenpos.menuGroup.domain.MenuGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

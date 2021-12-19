@@ -1,6 +1,6 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.domain.Product;
+import kitchenpos.product.domain.Product;
 import kitchenpos.fixture.MenuGroupTestFixture;
 import kitchenpos.fixture.MenuProductTextFixture;
 import kitchenpos.fixture.MenuTestFixture;
