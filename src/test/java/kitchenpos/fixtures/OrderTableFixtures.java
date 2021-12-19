@@ -1,9 +1,6 @@
 package kitchenpos.fixtures;
 
 import kitchenpos.domain.OrderTable;
-import org.assertj.core.util.Lists;
-
-import java.util.List;
 
 /**
  * packageName : kitchenpos.fixtures
@@ -20,9 +17,5 @@ public class OrderTableFixtures {
         orderTable.setNumberOfGuests(numberOfGuests);
         orderTable.setEmpty(empty);
         return orderTable;
-    }
-
-    public static List<OrderTable> createOrderTables(OrderTable... orderTables) {
-        return Lists.newArrayList(orderTables);
     }
 }

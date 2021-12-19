@@ -25,7 +25,7 @@ import static org.mockito.BDDMockito.given;
  * date : 2021/12/17
  * description :
  */
-@DisplayName("메뉴그룹 비즈니스 오브젝트 테스트")
+@DisplayName("메뉴그룹 통합 테스트")
 @ExtendWith(MockitoExtension.class)
 class MenuGroupServiceTest {
     private MenuGroup menuGroup;

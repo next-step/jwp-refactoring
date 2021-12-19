@@ -4,7 +4,6 @@ import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -24,9 +23,5 @@ public class MenuFixtures {
         menu.setMenuGroupId(menuGroupId);
         menu.setMenuProducts(menuProducts);
         return menu;
-    }
-
-    public static List<Menu> createMenus(Menu... menus) {
-        return Arrays.asList(menus);
     }
 }

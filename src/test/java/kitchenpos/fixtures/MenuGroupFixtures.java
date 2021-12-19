@@ -2,9 +2,6 @@ package kitchenpos.fixtures;
 
 import kitchenpos.domain.MenuGroup;
 
-import java.util.Arrays;
-import java.util.List;
-
 /**
  * packageName : kitchenpos.fixtures
  * fileName : MenuGroupFixtures
@@ -18,9 +15,5 @@ public class MenuGroupFixtures {
         menuGroup.setId(id);
         menuGroup.setName(name);
         return menuGroup;
-    }
-
-    public static List<MenuGroup> createMenuGroups(MenuGroup... menuGroups) {
-        return Arrays.asList(menuGroups);
     }
 }

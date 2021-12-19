@@ -21,9 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static kitchenpos.fixtures.MenuProductFixtures.createMenuProduct;
-import static kitchenpos.fixtures.MenuProductFixtures.createMenuProducts;
 import static kitchenpos.fixtures.OrderLineItemFixtures.createOrderLineItem;
-import static kitchenpos.fixtures.OrderLineItemFixtures.createOrderLineItems;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.*;
@@ -36,7 +34,7 @@ import static org.mockito.BDDMockito.given;
  * date : 2021/12/17
  * description :
  */
-@DisplayName("주문 비즈니스 오브젝트 테스트")
+@DisplayName("주문 통합 테스트")
 @ExtendWith(MockitoExtension.class)
 public class OrderServiceTest {
     private Order order;
@@ -77,7 +75,7 @@ public class OrderServiceTest {
                         "후라이드한마리",
                         new BigDecimal(16000),
                         한마리메뉴.getId(),
-                        createMenuProducts(후라이드한마리메뉴상품)
+                        Lists.newArrayList(후라이드한마리메뉴상품)
                 );
 
         Menu 양념치킨두마리메뉴 =
@@ -86,13 +84,13 @@ public class OrderServiceTest {
                         "양념치킨두마리",
                         new BigDecimal(32000),
                         두마리메뉴.getId(),
-                        createMenuProducts(양념치킨두마리메뉴상품)
+                        Lists.newArrayList(양념치킨두마리메뉴상품)
                 );
 
         OrderLineItem orderLineItem1 = createOrderLineItem(1L, 1L, 후라이드한마리메뉴.getId(), 1);
         OrderLineItem orderLineItem2 = createOrderLineItem(2L, 1L, 양념치킨두마리메뉴.getId(), 2);
         orderTable = OrderTableFixtures.createOrderTable(1L, null, 2, false);
-        order = OrderFixtures.createOrder(1L, orderTable.getId(), OrderStatus.COOKING.name(), LocalDateTime.now(), createOrderLineItems(orderLineItem1, orderLineItem2));
+        order = OrderFixtures.createOrder(1L, orderTable.getId(), OrderStatus.COOKING.name(), LocalDateTime.now(), Lists.newArrayList(orderLineItem1, orderLineItem2));
 
     }
 

@@ -30,7 +30,7 @@ import static org.mockito.BDDMockito.given;
  * date : 2021/12/17
  * description :
  */
-@DisplayName("테이블 비즈니스 오브젝트 테스트")
+@DisplayName("테이블 통합 테스트")
 @ExtendWith(MockitoExtension.class)
 class TableServiceTest {
     private OrderTable orderTable;

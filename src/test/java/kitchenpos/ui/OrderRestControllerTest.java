@@ -66,7 +66,7 @@ class OrderRestControllerTest {
     }
 
     @Test
-    @DisplayName("주믄을 조회한다.")
+    @DisplayName("주문을 조회한다.")
     public void getOrders() throws Exception {
         // given
         List<Order> orders = Arrays.asList(order);

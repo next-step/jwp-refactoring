@@ -1,9 +1,6 @@
 package kitchenpos.fixtures;
 
 import kitchenpos.domain.OrderLineItem;
-import org.assertj.core.util.Lists;
-
-import java.util.List;
 
 /**
  * packageName : kitchenpos.fixtures
@@ -20,9 +17,5 @@ public class OrderLineItemFixtures {
         orderLineItem.setMenuId(menuId);
         orderLineItem.setQuantity(quantity);
         return orderLineItem;
-    }
-
-    public static List<OrderLineItem> createOrderLineItems(OrderLineItem... orderLineItems) {
-        return Lists.newArrayList(orderLineItems);
     }
 }

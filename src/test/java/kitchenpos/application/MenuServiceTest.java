@@ -26,7 +26,6 @@ import java.util.Optional;
 
 import static kitchenpos.fixtures.MenuGroupFixtures.createMenuGroup;
 import static kitchenpos.fixtures.MenuProductFixtures.createMenuProduct;
-import static kitchenpos.fixtures.MenuProductFixtures.createMenuProducts;
 import static kitchenpos.fixtures.ProductFixtures.createProduct;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -42,7 +41,7 @@ import static org.mockito.BDDMockito.given;
  * date : 2021/12/17
  * description :
  */
-@DisplayName("메뉴 비즈니스 오브젝트 테스트")
+@DisplayName("메뉴 통합 테스트")
 @ExtendWith(MockitoExtension.class)
 public class MenuServiceTest {
     private Menu menu;
@@ -69,7 +68,7 @@ public class MenuServiceTest {
         MenuGroup menuGroup = createMenuGroup(1L, "두마리메뉴");
         product = createProduct(1L, "고추바사삭치킨", new BigDecimal(18_000));
         MenuProduct menuProduct = createMenuProduct(1L, null, product.getId(), 1L);
-        menuProducts = createMenuProducts(menuProduct, menuProduct);
+        menuProducts = Lists.newArrayList(menuProduct, menuProduct);
         menu = MenuFixtures.createMenu(1L, "두마리메뉴", new BigDecimal(36_000), menuGroup.getId(), menuProducts);
     }
 

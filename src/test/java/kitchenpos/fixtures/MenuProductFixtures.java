@@ -2,9 +2,6 @@ package kitchenpos.fixtures;
 
 import kitchenpos.domain.MenuProduct;
 
-import java.util.Arrays;
-import java.util.List;
-
 /**
  * packageName : kitchenpos.fixtures
  * fileName : MenuProductFixtures
@@ -20,9 +17,5 @@ public class MenuProductFixtures {
         menuProduct.setProductId(productId);
         menuProduct.setQuantity(quantity);
         return menuProduct;
-    }
-
-    public static List<MenuProduct> createMenuProducts(MenuProduct... menuProducts) {
-        return Arrays.asList(menuProducts);
     }
 }

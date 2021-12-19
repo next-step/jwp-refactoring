@@ -29,7 +29,7 @@ import static org.mockito.BDDMockito.given;
  * date : 2021/12/16
  * description :
  */
-@DisplayName("상품 비즈니스 오브젝트 테스트")
+@DisplayName("상품 통합 테스트")
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
     private Product product;

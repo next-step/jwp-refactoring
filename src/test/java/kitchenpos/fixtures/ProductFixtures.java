@@ -3,8 +3,6 @@ package kitchenpos.fixtures;
 import kitchenpos.domain.Product;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * packageName : kitchenpos.fixtures
@@ -20,11 +18,5 @@ public class ProductFixtures {
         product.setName(name);
         product.setPrice(price);
         return product;
-    }
-
-    public static List<Product> createProducts(Product... products) {
-        return Arrays.asList(
-                products
-        );
     }
 }

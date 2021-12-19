@@ -5,6 +5,7 @@ import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,7 +17,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDateTime;
 
 import static kitchenpos.fixtures.OrderTableFixtures.createOrderTable;
-import static kitchenpos.fixtures.OrderTableFixtures.createOrderTables;
 import static kitchenpos.fixtures.TableGroupFixtures.createTableGroup;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -32,7 +32,7 @@ import static org.mockito.Mockito.verify;
  * date : 2021/12/18
  * description :
  */
-@DisplayName("그룹 테이블 비즈니스 오브젝트 테스트")
+@DisplayName("그룹 테이블 통합 테스트")
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
     private TableGroup tableGroup;
@@ -56,7 +56,7 @@ class TableGroupServiceTest {
     void setUp() {
         orderTableFirst = createOrderTable(1L, null, 2, true);
         orderTableSecond = createOrderTable(2L, null, 3, true);
-        tableGroup = createTableGroup(1L, LocalDateTime.now(), createOrderTables(orderTableFirst, orderTableSecond));
+        tableGroup = createTableGroup(1L, LocalDateTime.now(), Lists.newArrayList(orderTableFirst, orderTableSecond));
     }
 
     @Test
@@ -80,7 +80,7 @@ class TableGroupServiceTest {
     @DisplayName("테이블 개수가 2개보다 작은 경우 등록할 수 없다.")
     public void createFailByTables() throws Exception {
         // given
-        tableGroup.setOrderTables(createOrderTables(orderTableFirst));
+        tableGroup.setOrderTables(Lists.newArrayList(orderTableFirst));
 
         // then
         assertThatThrownBy(() -> tableGroupService.create(tableGroup)).isInstanceOf(IllegalArgumentException.class);
