@@ -19,7 +19,7 @@ import kitchenpos.menu.dto.MenuGroupRequest;
 import kitchenpos.menu.dto.MenuGroupResponse;
 
 @DisplayName("메뉴 그룹 관련 기능")
-class MenuGroupAcceptanceTest extends AcceptanceTest {
+public class MenuGroupAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("메뉴 그룹을 등록한다.")
     @Test
@@ -47,7 +47,7 @@ class MenuGroupAcceptanceTest extends AcceptanceTest {
 
     }
 
-    static ExtractableResponse<Response> 메뉴_그룹_생성_요청(String name) {
+    public static ExtractableResponse<Response> 메뉴_그룹_생성_요청(String name) {
         MenuGroupRequest request = new MenuGroupRequest(name);
         return RestAssured
             .given().log().all()

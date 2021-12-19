@@ -29,7 +29,7 @@ import kitchenpos.menu.dto.ProductRequest;
 import kitchenpos.menu.dto.ProductResponse;
 
 @DisplayName("메뉴 관련 기능")
-class MenuAcceptanceTest extends AcceptanceTest {
+public class MenuAcceptanceTest extends AcceptanceTest {
 
     private ProductResponse 후라이드;
     private MenuGroupResponse 두마리메뉴;
@@ -80,7 +80,7 @@ class MenuAcceptanceTest extends AcceptanceTest {
         메뉴_목록_조회됨(response, menuResponses);
     }
 
-    private ExtractableResponse<Response> 메뉴_생성_요청(MenuRequest menuRequest) {
+    public static ExtractableResponse<Response> 메뉴_생성_요청(MenuRequest menuRequest) {
         return RestAssured
             .given().log().all()
             .body(menuRequest)

@@ -21,7 +21,7 @@ import kitchenpos.menu.dto.ProductRequest;
 import kitchenpos.menu.dto.ProductResponse;
 
 @DisplayName("상품 관련 기능")
-class ProductAcceptanceTest extends AcceptanceTest {
+public class ProductAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("상품을 등록한다.")
     @Test
@@ -55,7 +55,7 @@ class ProductAcceptanceTest extends AcceptanceTest {
 
     }
 
-    static ExtractableResponse<Response> 상품_생성_요청(ProductRequest request) {
+    public static ExtractableResponse<Response> 상품_생성_요청(ProductRequest request) {
         return RestAssured
             .given().log().all()
             .body(request)

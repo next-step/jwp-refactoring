@@ -1,4 +1,4 @@
-package kitchenpos.application;
+package kitchenpos.order.application;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -14,10 +14,14 @@ import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.order.dto.OrderStatusRequest;
 
 @Service
 public class OrderService {
@@ -39,15 +43,15 @@ public class OrderService {
     }
 
     @Transactional
-    public Order create(final Order order) {
-        final List<OrderLineItem> orderLineItems = order.getOrderLineItems();
+    public OrderResponse create(final OrderRequest order) {
+        final List<OrderLineItemRequest> orderLineItems = order.getOrderLineItems();
 
         if (CollectionUtils.isEmpty(orderLineItems)) {
             throw new IllegalArgumentException();
         }
 
         final List<Long> menuIds = orderLineItems.stream()
-            .map(OrderLineItem::getMenuId)
+            .map(OrderLineItemRequest::getMenuId)
             .collect(Collectors.toList());
 
         if (orderLineItems.size() != menuDao.countByIdIn(menuIds)) {
@@ -61,35 +65,33 @@ public class OrderService {
             throw new IllegalArgumentException();
         }
 
-        order.changeOrderTableId(orderTable.getId());
-        order.changeOrderStatus(OrderStatus.COOKING.name());
-        order.changeOrderedTime(LocalDateTime.now());
-
-        final Order savedOrder = orderDao.save(order);
+        final Order savedOrder = orderDao.save(order.toEntity(orderTable.getId(),
+            OrderStatus.COOKING.name(), LocalDateTime.now()));
 
         final Long orderId = savedOrder.getId();
         final List<OrderLineItem> savedOrderLineItems = new ArrayList<>();
-        for (final OrderLineItem orderLineItem : orderLineItems) {
-            orderLineItem.changeOrderId(orderId);
-            savedOrderLineItems.add(orderLineItemDao.save(orderLineItem));
+        for (final OrderLineItemRequest orderLineItem : orderLineItems) {
+            savedOrderLineItems.add(orderLineItemDao.save(orderLineItem.toEntity(orderId)));
         }
         savedOrder.changeOrderLineItems(savedOrderLineItems);
 
-        return savedOrder;
+        return new OrderResponse(savedOrder);
     }
 
-    public List<Order> list() {
+    public List<OrderResponse> list() {
         final List<Order> orders = orderDao.findAll();
 
         for (final Order order : orders) {
             order.changeOrderLineItems(orderLineItemDao.findAllByOrderId(order.getId()));
         }
 
-        return orders;
+        return orders.stream()
+            .map(OrderResponse::new)
+            .collect(Collectors.toList());
     }
 
     @Transactional
-    public Order changeOrderStatus(final Long orderId, final Order order) {
+    public Order changeOrderStatus(final Long orderId, final OrderStatusRequest orderStatusRequest) {
         final Order savedOrder = orderDao.findById(orderId)
             .orElseThrow(IllegalArgumentException::new);
 
@@ -97,7 +99,7 @@ public class OrderService {
             throw new IllegalArgumentException();
         }
 
-        final OrderStatus orderStatus = OrderStatus.valueOf(order.getOrderStatus());
+        final OrderStatus orderStatus = OrderStatus.valueOf(orderStatusRequest.getOrderStatus());
         savedOrder.changeOrderStatus(orderStatus.name());
 
         orderDao.save(savedOrder);

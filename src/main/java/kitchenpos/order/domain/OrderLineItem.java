@@ -1,4 +1,4 @@
-package kitchenpos.domain;
+package kitchenpos.order.domain;
 
 import java.util.Objects;
 
@@ -21,7 +21,11 @@ public class OrderLineItem {
     }
 
     public OrderLineItem(Long menuId, long quantity) {
-        this(null, null, menuId, quantity);
+        this(null, menuId, quantity);
+    }
+
+    public OrderLineItem(Long orderId, Long menuId, long quantity) {
+        this(null, orderId, menuId, quantity);
     }
 
     public OrderLineItem(Long id, Long orderId, Long menuId, long quantity) {
