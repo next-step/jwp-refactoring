@@ -1,6 +1,7 @@
 package kitchenpos.menu.application;
 
 import kitchenpos.fixture.MenuProductTextFixture;
+import kitchenpos.fixture.ProductTestFixture;
 import kitchenpos.menu.domain.*;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
@@ -50,9 +51,7 @@ public class MenuServiceTest {
 
     @BeforeEach
     void setUp() {
-        후라이드 = new Product();
-        후라이드.setId(1L);
-        후라이드.setPrice(new BigDecimal("5000"));
+        후라이드 = ProductTestFixture.생성("후라이드", new BigDecimal("5000"));
 
         후라이드두마리구성 = MenuProductTextFixture.생성(1L, 후라이드, 2L);
         후라이드두마리구성Request = MenuProductTextFixture.생성(후라이드.getId(), 2L);

@@ -5,6 +5,7 @@ import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.*;
 import kitchenpos.fixture.MenuProductTextFixture;
+import kitchenpos.fixture.ProductTestFixture;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
@@ -54,9 +55,7 @@ public class OrderServiceTest {
 
     @BeforeEach
     void setUp() {
-        후라이드 = new Product();
-        후라이드.setId(1L);
-        후라이드.setPrice(new BigDecimal("5000"));
+        후라이드 = ProductTestFixture.생성( "후라이드", new BigDecimal("5000"));
 
         후라이드두마리구성 = MenuProductTextFixture.생성(1L,후라이드,2L);
 

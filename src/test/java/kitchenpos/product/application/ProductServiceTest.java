@@ -1,5 +1,6 @@
-package kitchenpos.application;
+package kitchenpos.product.application;
 
+import kitchenpos.fixture.ProductTestFixture;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.ProductRepository;
@@ -25,14 +26,13 @@ public class ProductServiceTest {
 
     @InjectMocks
     private ProductService productService;
-    
+
     private Product 강정치킨;
 
     @BeforeEach
     void setUp() {
-        강정치킨 = new Product();
+        강정치킨 = ProductTestFixture.생성("강정치킨", new BigDecimal("7500"));
         강정치킨.setName("강정치킨");
-        강정치킨.setPrice(new BigDecimal("7500"));
     }
 
     @DisplayName("상품을 이름, 가격으로 등록")

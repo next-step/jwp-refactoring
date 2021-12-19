@@ -1,5 +1,6 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.fixture.ProductTestFixture;
 import kitchenpos.product.domain.Product;
 import kitchenpos.fixture.MenuGroupTestFixture;
 import kitchenpos.fixture.MenuProductTextFixture;
@@ -18,9 +19,7 @@ public class MenuTest {
     @DisplayName("메뉴에 메뉴 상품 추가")
     @Test
     void addMenuProducts() {
-        Product 후라이드 = new Product();
-        후라이드.setId(1L);
-        후라이드.setPrice(new BigDecimal("5000"));
+        Product 후라이드 = ProductTestFixture.생성("후라이드", new BigDecimal("5000"));
         MenuGroup 치킨류 = MenuGroupTestFixture.생성(1L, "치킨");
         MenuProduct 후라이드두마리구성 = MenuProductTextFixture.생성(1L, 후라이드, 2L);
         Menu 후라이드두마리세트 = MenuTestFixture.생성(1L, "후라이드두마리세트", new BigDecimal("10000"), 치킨류);
