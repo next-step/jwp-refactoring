@@ -3,6 +3,7 @@ package kitchenpos.application;
 import static kitchenpos.application.fixture.OrderTableFixture.주문테이블_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 
@@ -41,7 +42,7 @@ class TableServiceTest {
     @BeforeEach
     void setUp() {
         // given
-        주문테이블 = 주문테이블_생성(1L, null, false, 1);
+        주문테이블 = 주문테이블_생성(1L, null, true, 1);
     }
 
     @Test
@@ -55,7 +56,7 @@ class TableServiceTest {
 
         // then
         주문테이블_등록됨(등록된_주문테이블);
-        주문테이블_초기값_빈테이블_손임없음_그룹없음(등록된_주문테이블);
+        주문테이블_초기값_검증(등록된_주문테이블);
     }
 
     @Test
@@ -72,14 +73,14 @@ class TableServiceTest {
     }
 
     @Test
-    @DisplayName("`주문테이블`의 그룹설정이 되어 있으면 `빈테이블` 여부를 변경 할 수 없다.")
+    @DisplayName("`주문테이블`에 `단체 지정`이 되어 있으면 `빈 테이블` 여부를 변경 할 수 없다.")
     void changeEmpty_fail1() {
         // given
         주문테이블.setTableGroupId(1L);
+        given(orderTableDao.findById(any())).willReturn(Optional.of(주문테이블));
 
         // when
-        ThrowableAssert.ThrowingCallable actual = () -> tableService.changeEmpty(1L,
-            OrderTable.EMPTY_TABLE);
+        ThrowableAssert.ThrowingCallable actual = () -> tableService.changeEmpty(1L, 주문테이블);
 
         // then
         빈테이블_여부변경_실패(actual);
@@ -87,7 +88,7 @@ class TableServiceTest {
 
 
     @Test
-    @DisplayName("`주문 테이블`에서 `주문 항목`에서 `주문상태`가 `조리`,`식사`인 경우 `빈테이블` 여부를 변경 할 수 없다.")
+    @DisplayName("`주문 테이블`에서 `주문 항목`들의 `주문상태`가 `조리`,`식사`인 경우 `빈 테이블` 여부를 변경 할 수 없다.")
     void changeEmpty_fail2() {
         // given
         Long 주문번호 = 1L;
@@ -140,8 +141,8 @@ class TableServiceTest {
         assertThat(등록된_주문테이블).isNotNull();
     }
 
-    private void 주문테이블_초기값_빈테이블_손임없음_그룹없음(OrderTable 등록된_주문테이블) {
-        assertThat(등록된_주문테이블.isEmpty()).isFalse();
+    private void 주문테이블_초기값_검증(OrderTable 등록된_주문테이블) {
+        assertThat(등록된_주문테이블.isEmpty()).isTrue();
         assertThat(등록된_주문테이블.getTableGroupId()).isNull();
     }
 

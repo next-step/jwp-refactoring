@@ -55,7 +55,7 @@ class OrderServiceTest {
     @BeforeEach
     void setUp() {
         //given
-        손님_있는_주문테이블 = 주문테이블_생성(1L, null, false, 1);
+        손님_있는_주문테이블 = 주문테이블_생성(1L, 1L, false, 1);
         주문항목 = 주문항목_생성(1L, 1L);
         요청된_주문 = 주문_생성(1L, 1L, OrderStatus.COOKING, Collections.singletonList(주문항목));
         계산완료_주문 = 주문_생성(3L, 1L, OrderStatus.COMPLETION, Collections.singletonList(주문항목));
@@ -64,11 +64,8 @@ class OrderServiceTest {
     @Test
     @DisplayName("`주문 항목`은 필수 이다.")
     void create_fail1() {
-        // given
-        Order order = new Order();
-
         // when
-        ThrowableAssert.ThrowingCallable actual = () -> orderService.create(order);
+        ThrowableAssert.ThrowingCallable actual = () -> orderService.create(요청된_주문);
 
         // then
         assertThatThrownBy(actual).isInstanceOf(IllegalArgumentException.class);
@@ -77,11 +74,8 @@ class OrderServiceTest {
     @Test
     @DisplayName("`주문 항목` 모두 등록되어 있어야한다.")
     void 주문항목_미등록_실패() {
-        // given
-        Order 주문 = 주문_생성(1L, Collections.singletonList(주문항목));
-
         // when
-        ThrowableAssert.ThrowingCallable actual = () -> orderService.create(주문);
+        ThrowableAssert.ThrowingCallable actual = () -> orderService.create(요청된_주문);
 
         // then
         assertThatThrownBy(actual).isInstanceOf(IllegalArgumentException.class);
@@ -91,7 +85,7 @@ class OrderServiceTest {
     @DisplayName("`주문`이 속할 `주문 테이블`은 `빈 테이블`상태가 아니어야 한다.")
     void 주문테이블_빈테이블_상태면_실패() {
         // given
-        given(orderTableDao.findById(anyLong())).willReturn(Optional.of(OrderTable.EMPTY_TABLE));
+        given(orderTableDao.findById(anyLong())).willReturn(Optional.of(손님_있는_주문테이블));
         given(menuDao.countByIdIn(any())).willReturn(1L);
 
         // when
