@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -106,9 +107,13 @@ public class MenuAcceptanceTest extends AcceptanceTest {
 
     private void 메뉴_목록_조회됨(ExtractableResponse<Response> response,
         List<MenuResponse> responses) {
+        List<MenuResponse> menuResponses = response.as(new TypeRef<List<MenuResponse>>() {
+        });
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.as(new TypeRef<List<MenuResponse>>() {
-        }))
-            .containsExactlyElementsOf(responses);
+        assertThat(menuResponses)
+            .extracting("id")
+            .containsExactlyElementsOf(responses.stream()
+                .map(MenuResponse::getId)
+                .collect(Collectors.toList()));
     }
 }

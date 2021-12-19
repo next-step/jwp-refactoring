@@ -12,13 +12,14 @@ import kitchenpos.dao.ProductDao;
 import kitchenpos.menu.domain.Product;
 import kitchenpos.menu.dto.ProductRequest;
 import kitchenpos.menu.dto.ProductResponse;
+import kitchenpos.menu.repository.ProductRepository;
 
 @Service
 public class ProductService {
-    private final ProductDao productDao;
+    private final ProductRepository productRepository;
 
-    public ProductService(final ProductDao productDao) {
-        this.productDao = productDao;
+    public ProductService(ProductRepository productRepository) {
+        this.productRepository = productRepository;
     }
 
     @Transactional
@@ -29,12 +30,12 @@ public class ProductService {
             throw new IllegalArgumentException();
         }
 
-        Product savedProduct = productDao.save(product.toEntity());
+        Product savedProduct = productRepository.save(product.toEntity());
         return new ProductResponse(savedProduct);
     }
 
     public List<ProductResponse> list() {
-        List<Product> products = productDao.findAll();
+        List<Product> products = productRepository.findAll();
         return products.stream()
             .map(ProductResponse::new)
             .collect(Collectors.toList());

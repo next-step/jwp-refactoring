@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.*;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -82,8 +83,12 @@ public class ProductAcceptanceTest extends AcceptanceTest {
     private void 상품_목록_조회됨(ExtractableResponse<Response> response,
         List<ProductResponse> responses) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.as(new TypeRef<List<ProductResponse>>() {
-        }))
-            .containsExactlyElementsOf(responses);
+        List<ProductResponse> productResponses = response.as(new TypeRef<List<ProductResponse>>() {
+        });
+        assertThat(productResponses)
+            .extracting("id")
+            .containsExactlyElementsOf(responses.stream()
+                .map(ProductResponse::getId)
+                .collect(Collectors.toList()));
     }
 }

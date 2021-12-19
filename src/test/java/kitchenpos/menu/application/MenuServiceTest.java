@@ -30,26 +30,30 @@ import kitchenpos.menu.domain.Product;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.menu.repository.MenuGroupRepository;
+import kitchenpos.menu.repository.MenuProductRepository;
+import kitchenpos.menu.repository.MenuRepository;
+import kitchenpos.menu.repository.ProductRepository;
 
 @ExtendWith(MockitoExtension.class)
 class MenuServiceTest {
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
 
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
 
     @Mock
-    private MenuProductDao menuProductDao;
+    private MenuProductRepository menuProductRepository;
 
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     private MenuService menuService;
 
     @BeforeEach
     void setUp() {
-        menuService = new MenuService(menuDao, menuGroupDao, menuProductDao, productDao);
+        menuService = new MenuService(menuRepository, menuGroupRepository, menuProductRepository, productRepository);
     }
 
     @DisplayName("메뉴를 등록한다.")
@@ -67,10 +71,10 @@ class MenuServiceTest {
             menu.getMenuProducts().stream().map(menuProductRequest -> new MenuProductRequest(
                 menuProductRequest.getProductId(), menuProductRequest.getQuantity())).collect(Collectors.toList()));
 
-        given(menuGroupDao.existsById(menu.getMenuGroupId())).willReturn(true);
-        given(productDao.findById(menuProduct.getProductId())).willReturn(Optional.of(product));
-        given(menuDao.save(menuRequest.toEntity())).willReturn(menu);
-        given(menuProductDao.save(menuProduct)).willReturn(menuProduct);
+        given(menuGroupRepository.existsById(menu.getMenuGroupId())).willReturn(true);
+        given(productRepository.findById(menuProduct.getProductId())).willReturn(Optional.of(product));
+        given(menuRepository.save(menuRequest.toEntity())).willReturn(menu);
+        given(menuProductRepository.save(menuProduct)).willReturn(menuProduct);
 
         // when
         MenuResponse savedMenu = menuService.create(menuRequest);
@@ -114,7 +118,7 @@ class MenuServiceTest {
                     menuProductRequest.getProductId(), menuProductRequest.getQuantity()))
                 .collect(Collectors.toList()));
 
-        given(menuGroupDao.existsById(menu.getMenuGroupId())).willReturn(false);
+        given(menuGroupRepository.existsById(menu.getMenuGroupId())).willReturn(false);
 
         // when && then
         assertThrows(IllegalArgumentException.class, () -> menuService.create(menuRequest));
@@ -136,8 +140,8 @@ class MenuServiceTest {
                     menuProductRequest.getProductId(), menuProductRequest.getQuantity()))
                 .collect(Collectors.toList()));
 
-        given(menuGroupDao.existsById(menu.getMenuGroupId())).willReturn(true);
-        given(productDao.findById(menuProduct.getProductId())).willReturn(Optional.of(product));
+        given(menuGroupRepository.existsById(menu.getMenuGroupId())).willReturn(true);
+        given(productRepository.findById(menuProduct.getProductId())).willReturn(Optional.of(product));
 
         // when && then
         assertThrows(IllegalArgumentException.class, () -> menuService.create(menuRequest));
@@ -159,8 +163,8 @@ class MenuServiceTest {
                     menuProductRequest.getProductId(), menuProductRequest.getQuantity()))
                 .collect(Collectors.toList()));
 
-        given(menuGroupDao.existsById(menu.getMenuGroupId())).willReturn(true);
-        given(productDao.findById(menuProduct.getProductId())).willReturn(Optional.empty());
+        given(menuGroupRepository.existsById(menu.getMenuGroupId())).willReturn(true);
+        given(productRepository.findById(menuProduct.getProductId())).willReturn(Optional.empty());
 
         // when && then
         assertThrows(IllegalArgumentException.class, () -> menuService.create(menuRequest));
@@ -177,8 +181,8 @@ class MenuServiceTest {
             Collections.singletonList(menuProduct));
         List<Menu> menus = Collections.singletonList(menu);
 
-        given(menuDao.findAll()).willReturn(menus);
-        given(menuProductDao.findAllByMenuId(menu.getId()))
+        given(menuRepository.findAll()).willReturn(menus);
+        given(menuProductRepository.findAllByMenuId(menu.getId()))
             .willReturn(Collections.singletonList(menuProduct));
 
         // when

@@ -21,18 +21,19 @@ import kitchenpos.menu.application.ProductService;
 import kitchenpos.menu.domain.Product;
 import kitchenpos.menu.dto.ProductRequest;
 import kitchenpos.menu.dto.ProductResponse;
+import kitchenpos.menu.repository.ProductRepository;
 
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
 
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     private ProductService productService;
 
     @BeforeEach
     void setUp() {
-        productService = new ProductService(productDao);
+        productService = new ProductService(productRepository);
     }
 
     @DisplayName("상품을 등록한다.")
@@ -40,7 +41,7 @@ class ProductServiceTest {
     void createProduct() {
         // given
         Product product = 상품_생성("후라이드", 16000);
-        given(productDao.save(product))
+        given(productRepository.save(product))
             .willReturn(product);
 
         // when
@@ -78,7 +79,7 @@ class ProductServiceTest {
         List<Product> products = Arrays.asList(
             상품_생성("후라이드", 16000),
             상품_생성("양념치킨", 16000));
-        given(productDao.findAll())
+        given(productRepository.findAll())
             .willReturn(products);
 
         // when
