@@ -17,6 +17,7 @@ import kitchenpos.IntegrationTest;
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.MenuGroup;
 
+@DisplayName("메뉴 그룹 통합 테스트")
 class MenuGroupServiceTest extends IntegrationTest {
 	private static final String NAME = "추천메뉴";
 
