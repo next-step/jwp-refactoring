@@ -1,8 +1,9 @@
-package kitchenpos.menu;
+package kitchenpos.menu.service;
 
 import kitchenpos.application.ProductService;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
+import kitchenpos.menu.MenuFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -1,4 +1,4 @@
-package kitchenpos.menu;
+package kitchenpos.menu.service;
 
 import kitchenpos.application.MenuService;
 import kitchenpos.dao.MenuDao;
@@ -9,6 +9,7 @@ import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
+import kitchenpos.menu.MenuFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

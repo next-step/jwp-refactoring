@@ -1,4 +1,4 @@
-package kitchenpos.order;
+package kitchenpos.order.service;
 
 import kitchenpos.application.TableGroupService;
 import kitchenpos.dao.OrderDao;
@@ -7,6 +7,7 @@ import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.order.OrderFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
