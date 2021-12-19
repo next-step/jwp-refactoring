@@ -85,7 +85,7 @@ class OrderServiceTest {
     @DisplayName("`주문`이 속할 `주문 테이블`은 `빈 테이블`상태가 아니어야 한다.")
     void 주문테이블_빈테이블_상태면_실패() {
         // given
-        given(orderTableDao.findById(anyLong())).willReturn(Optional.of(손님_있는_주문테이블));
+        given(orderTableDao.findById(anyLong())).willReturn(Optional.of(OrderTable.EMPTY_TABLE));
         given(menuDao.countByIdIn(any())).willReturn(1L);
 
         // when
