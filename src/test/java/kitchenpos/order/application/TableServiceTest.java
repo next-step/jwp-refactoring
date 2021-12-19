@@ -46,14 +46,14 @@ public class TableServiceTest {
         // given
         OrderTable orderTable = 주문_테이블_생성(0, true);
 
-        given(orderTableRepository.save(orderTable)).willReturn(orderTable);
+        given(orderTableRepository.save(any())).willReturn(orderTable);
 
         // when
         OrderTableResponse savedOrderTable = tableService.create(new OrderTableRequest(
-            orderTable.getNumberOfGuests(), orderTable.isEmpty()));
+            orderTable.getNumberOfGuests().getValue(), orderTable.isEmpty()));
 
         // then
-        assertEquals(orderTable.getNumberOfGuests(), savedOrderTable.getNumberOfGuests());
+        assertEquals(orderTable.getNumberOfGuests().getValue(), savedOrderTable.getNumberOfGuests());
         assertEquals(orderTable.isEmpty(), savedOrderTable.isEmpty());
     }
 
@@ -70,10 +70,6 @@ public class TableServiceTest {
         List<OrderTableResponse> findOrderTables = tableService.list();
 
         // then
-        assertThat(orderTables)
-            .extracting("numberOfGuests")
-            .containsExactlyElementsOf(findOrderTables.stream().map(OrderTableResponse::getNumberOfGuests)
-                .collect(Collectors.toList()));
         assertThat(orderTables)
             .extracting("empty")
             .containsExactlyElementsOf(findOrderTables.stream().map(OrderTableResponse::isEmpty)
@@ -95,7 +91,7 @@ public class TableServiceTest {
 
         // when
         OrderTableResponse changeTable = tableService.changeEmpty(orderTable.getId(),
-            new OrderTableRequest(orderTable.getNumberOfGuests(), orderTable.isEmpty()));
+            new OrderTableRequest(orderTable.getNumberOfGuests().getValue(), orderTable.isEmpty()));
 
         // then
         assertFalse(changeTable.isEmpty());
@@ -107,7 +103,7 @@ public class TableServiceTest {
         // given
         OrderTable orderTable = 주문_테이블_생성(1L, 1L, 0, true);
         Long orderTableId = orderTable.getId();
-        OrderTableRequest orderTableRequest = new OrderTableRequest(orderTable.getNumberOfGuests(),
+        OrderTableRequest orderTableRequest = new OrderTableRequest(orderTable.getNumberOfGuests().getValue(),
             orderTable.isEmpty());
 
         given(orderTableRepository.findById(orderTableId))
@@ -127,7 +123,7 @@ public class TableServiceTest {
         // given
         OrderTable orderTable = 주문_테이블_생성(1L, 0, true);
         Long orderTableId = orderTable.getId();
-        OrderTableRequest orderTableRequest = new OrderTableRequest(orderTable.getNumberOfGuests(),
+        OrderTableRequest orderTableRequest = new OrderTableRequest(orderTable.getNumberOfGuests().getValue(),
             orderTable.isEmpty());
 
         given(orderTableRepository.findById(orderTableId)).willReturn(Optional.of(orderTable));
@@ -149,7 +145,7 @@ public class TableServiceTest {
         OrderTable orderTable = 주문_테이블_생성(1L, 5, false);
         OrderTable findOrderTable = 주문_테이블_생성(1L, 0, false);
 
-        OrderTableRequest orderTableRequest = new OrderTableRequest(orderTable.getNumberOfGuests(),
+        OrderTableRequest orderTableRequest = new OrderTableRequest(orderTable.getNumberOfGuests().getValue(),
             orderTable.isEmpty());
 
         given(orderTableRepository.findById(orderTable.getId())).willReturn(Optional.of(findOrderTable));
@@ -161,22 +157,6 @@ public class TableServiceTest {
         assertEquals(5, savedOrderTable.getNumberOfGuests());
     }
 
-    @DisplayName("0명 이하로는 방문한 손님 수를 갱신할 수 없다.")
-    @Test
-    void changeNumberOfGuestsLessThanZero() {
-        // given
-        OrderTable orderTable = 주문_테이블_생성(1L, -1, false);
-        Long orderTableId = orderTable.getId();
-
-        OrderTableRequest orderTableRequest = new OrderTableRequest(orderTable.getNumberOfGuests(),
-            orderTable.isEmpty());
-
-        // when && then
-        assertThrows(IllegalArgumentException.class, () ->
-            tableService.changeNumberOfGuests(orderTableId, orderTableRequest));
-        verify(orderTableRepository, times(0)).findById(orderTableId);
-    }
-
     @DisplayName("빈 테이블일 경우 방문한 손님 수를 갱신할 수 없다.")
     @Test
     void changeNumberOfGuestsEmptyTable() {
@@ -184,7 +164,7 @@ public class TableServiceTest {
         OrderTable orderTable = 주문_테이블_생성(1L, 0, true);
         Long orderTableId = orderTable.getId();
 
-        OrderTableRequest orderTableRequest = new OrderTableRequest(orderTable.getNumberOfGuests(),
+        OrderTableRequest orderTableRequest = new OrderTableRequest(orderTable.getNumberOfGuests().getValue(),
             orderTable.isEmpty());
 
         given(orderTableRepository.findById(orderTableId)).willReturn(Optional.of(orderTable));
