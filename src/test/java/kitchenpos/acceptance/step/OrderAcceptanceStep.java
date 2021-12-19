@@ -17,10 +17,10 @@ public class OrderAcceptanceStep {
     private OrderAcceptanceStep() {
     }
 
-    public static ExtractableResponse<Response> 주문_등록_요청(Order 등록요청_주문) {
+    public static ExtractableResponse<Response> 주문_등록_요청(Order order) {
         return RestAssured
             .given().log().all()
-            .body(등록요청_주문)
+            .body(order)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .when().post(ORDER_API_URL)
             .then().log().all()
@@ -37,37 +37,38 @@ public class OrderAcceptanceStep {
     }
 
 
-    public static ExtractableResponse<Response> 주문_상태변경_요청(Long 주문번호, Order 상태변경주문) {
+    public static ExtractableResponse<Response> 주문_상태변경_요청(Long orderId, Order changeOrder) {
         return RestAssured
             .given().log().all()
-            .body(상태변경주문)
+            .body(changeOrder)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when().put(ORDER_API_URL + "/" + 주문번호 + "/order-status")
+            .when().put(ORDER_API_URL + "/" + orderId + "/order-status")
             .then().log().all()
             .extract();
     }
 
-    public static Order 주문_등록_검증(ExtractableResponse<Response> 주문_등록_결과, Order 예상_주문) {
-        Order 등록된_주문 = 주문_등록_결과.as(Order.class);
+    public static Order 주문_등록_검증(ExtractableResponse<Response> response, Order expected) {
+        Order 등록된_주문 = response.as(Order.class);
 
         assertThat(등록된_주문.getId()).isNotNull();
-        assertThat(등록된_주문.getOrderLineItems().size()).isEqualTo(예상_주문.getOrderLineItems().size());
+        assertThat(등록된_주문.getOrderLineItems().size()).isEqualTo(
+            expected.getOrderLineItems().size());
 
         return 등록된_주문;
     }
 
-    public static List<Order> 주문_목록조회_검증(ExtractableResponse<Response> 주문_목록조회_결과, Order 등록된_주문) {
-        List<Order> 조회된_주문_목록 = 주문_목록조회_결과.as(new TypeRef<List<Order>>() {
+    public static List<Order> 주문_목록조회_검증(ExtractableResponse<Response> response, Order expected) {
+        List<Order> 조회된_주문_목록 = response.as(new TypeRef<List<Order>>() {
         });
-        assertThat(조회된_주문_목록).contains(등록된_주문);
+        assertThat(조회된_주문_목록).contains(expected);
 
         return 조회된_주문_목록;
     }
 
 
-    public static void 주문_상태변경_검증(ExtractableResponse<Response> 주문_상태변경_결과, String 예상_주문상태) {
-        Order 변경된_주문 = 주문_상태변경_결과.as(Order.class);
-        assertThat(변경된_주문.getOrderStatus()).isEqualTo(예상_주문상태);
+    public static void 주문_상태변경_검증(ExtractableResponse<Response> response, String expected) {
+        Order 변경된_주문 = response.as(Order.class);
+        assertThat(변경된_주문.getOrderStatus()).isEqualTo(expected);
     }
 
 }

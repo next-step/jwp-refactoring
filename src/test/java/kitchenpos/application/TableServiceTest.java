@@ -41,7 +41,7 @@ class TableServiceTest {
     @BeforeEach
     void setUp() {
         // given
-        주문테이블 = 주문테이블_생성(1L);
+        주문테이블 = 주문테이블_생성(1L, null, false, 1);
     }
 
     @Test
@@ -78,7 +78,8 @@ class TableServiceTest {
         주문테이블.setTableGroupId(1L);
 
         // when
-        ThrowableAssert.ThrowingCallable actual = () -> tableService.changeEmpty(1L, 주문테이블);
+        ThrowableAssert.ThrowingCallable actual = () -> tableService.changeEmpty(1L,
+            OrderTable.EMPTY_TABLE);
 
         // then
         빈테이블_여부변경_실패(actual);
@@ -117,12 +118,11 @@ class TableServiceTest {
     }
 
     @Test
-    @DisplayName("`주문 테이블`이 `빈 테이블`이면, 손님을 받을 수 없다.")
+    @DisplayName("`주문 테이블`이 `빈 테이블`이 아니어야, 손님 수 를 변경할 수 있다.")
     void changeNumberOfGuests_fail2() {
         // given
         Long 주문번호 = 1L;
-        주문테이블.setEmpty(true);
-        given(orderTableDao.findById(주문번호)).willReturn(Optional.ofNullable(주문테이블));
+        given(orderTableDao.findById(주문번호)).willReturn(Optional.of(OrderTable.EMPTY_TABLE));
 
         // when
         ThrowableAssert.ThrowingCallable actual = () -> tableService.changeNumberOfGuests(주문번호,
@@ -141,8 +141,7 @@ class TableServiceTest {
     }
 
     private void 주문테이블_초기값_빈테이블_손임없음_그룹없음(OrderTable 등록된_주문테이블) {
-        assertThat(등록된_주문테이블.isEmpty()).isTrue();
-        assertThat(등록된_주문테이블.getNumberOfGuests()).isZero();
+        assertThat(등록된_주문테이블.isEmpty()).isFalse();
         assertThat(등록된_주문테이블.getTableGroupId()).isNull();
     }
 

@@ -7,11 +7,13 @@ public class OrderTableFixture {
     private OrderTableFixture() {
     }
 
-    public static OrderTable 주문테이블_생성(Long id) {
+    public static OrderTable 주문테이블_생성(Long id, Long tableGroupId, boolean empty,
+        int numberOfGuests) {
         OrderTable orderTable = new OrderTable();
         orderTable.setId(id);
-        orderTable.setEmpty(true);
-        orderTable.setNumberOfGuests(0);
+        orderTable.setTableGroupId(tableGroupId);
+        orderTable.setEmpty(empty);
+        orderTable.setNumberOfGuests(numberOfGuests);
         return orderTable;
     }
 }

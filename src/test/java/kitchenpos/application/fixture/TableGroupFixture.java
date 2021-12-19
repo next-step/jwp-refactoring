@@ -11,10 +11,16 @@ public class TableGroupFixture {
 
     public static TableGroup 단체지정생성(Long id, List<OrderTable> 주문테이블목록) {
         TableGroup 단체지정 = new TableGroup();
-        단체지정.setId(1L);
+        단체지정.setId(id);
         단체지정.setOrderTables(주문테이블목록);
 
         return 단체지정;
     }
 
+    public static TableGroup 단체지정생성(Long id) {
+        TableGroup 단체지정 = new TableGroup();
+        단체지정.setId(id);
+
+        return 단체지정;
+    }
 }

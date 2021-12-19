@@ -18,16 +18,16 @@ public class MenuGroupAcceptanceStep {
     private MenuGroupAcceptanceStep() {
     }
 
-    public static MenuGroup 메뉴그룹_등록됨(MenuGroup 등록요청_메뉴그룹) {
-        ExtractableResponse<Response> 메뉴그룹_등록_결과 = 메뉴그룹_등록_요청(등록요청_메뉴그룹);
+    public static MenuGroup 메뉴그룹_등록됨(MenuGroup menuGroup) {
+        ExtractableResponse<Response> 메뉴그룹_등록_결과 = 메뉴그룹_등록_요청(menuGroup);
 
-        return 메뉴그룹_등록됨(메뉴그룹_등록_결과, 등록요청_메뉴그룹);
+        return 메뉴그룹_등록됨(메뉴그룹_등록_결과, menuGroup);
     }
 
-    public static ExtractableResponse<Response> 메뉴그룹_등록_요청(MenuGroup 등록요청_메뉴그룹) {
+    public static ExtractableResponse<Response> 메뉴그룹_등록_요청(MenuGroup menuGroup) {
         return RestAssured
             .given().log().all()
-            .body(등록요청_메뉴그룹)
+            .body(menuGroup)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .when().post(PRODUCT_API_URL)
             .then().log().all()
@@ -43,19 +43,19 @@ public class MenuGroupAcceptanceStep {
             .extract();
     }
 
-    public static MenuGroup 메뉴그룹_등록됨(ExtractableResponse<Response> 메뉴그룹_등록_결과, MenuGroup 예상_메뉴) {
-        MenuGroup 등록된_메뉴그룹 = 메뉴그룹_등록_결과.as(MenuGroup.class);
+    public static MenuGroup 메뉴그룹_등록됨(ExtractableResponse<Response> response, MenuGroup expected) {
+        MenuGroup 등록된_메뉴그룹 = response.as(MenuGroup.class);
         assertThat(등록된_메뉴그룹.getId()).isNotNull();
-        assertThat(등록된_메뉴그룹.getName()).isEqualTo(예상_메뉴.getName());
+        assertThat(등록된_메뉴그룹.getName()).isEqualTo(expected.getName());
 
         return 등록된_메뉴그룹;
     }
 
-    public static List<MenuGroup> 메뉴그룹_목록조회_됨(ExtractableResponse<Response> 메뉴그룹_목록조회_결과,
-        MenuGroup 등록된_메뉴그룹) {
-        List<MenuGroup> 조회된_메뉴그룹_목록 = 메뉴그룹_목록조회_결과.as(new TypeRef<List<MenuGroup>>() {
+    public static List<MenuGroup> 메뉴그룹_목록조회_됨(ExtractableResponse<Response> response,
+        MenuGroup expected) {
+        List<MenuGroup> 조회된_메뉴그룹_목록 = response.as(new TypeRef<List<MenuGroup>>() {
         });
-        assertThat(조회된_메뉴그룹_목록).contains(등록된_메뉴그룹);
+        assertThat(조회된_메뉴그룹_목록).contains(expected);
 
         return 조회된_메뉴그룹_목록;
     }

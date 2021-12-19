@@ -17,14 +17,14 @@ public class MenuAcceptanceStep {
     private MenuAcceptanceStep() {
     }
 
-    public static Menu 메뉴_등록됨(Menu 등록_파라미터) {
-        return 메뉴_등록_검증(메뉴_등록_요청(등록_파라미터), 등록_파라미터);
+    public static Menu 메뉴_등록됨(Menu menu) {
+        return 메뉴_등록_검증(메뉴_등록_요청(menu), menu);
     }
 
-    public static ExtractableResponse<Response> 메뉴_등록_요청(Menu 등록_파라미터) {
+    public static ExtractableResponse<Response> 메뉴_등록_요청(Menu menu) {
         return RestAssured
             .given().log().all()
-            .body(등록_파라미터)
+            .body(menu)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .when().post(PRODUCT_API_URL)
             .then().log().all()
@@ -40,19 +40,19 @@ public class MenuAcceptanceStep {
             .extract();
     }
 
-    public static Menu 메뉴_등록_검증(ExtractableResponse<Response> 메뉴_등록_결과, Menu 예상_메뉴) {
-        Menu 등록된_메뉴 = 메뉴_등록_결과.as(Menu.class);
+    public static Menu 메뉴_등록_검증(ExtractableResponse<Response> response, Menu expected) {
+        Menu 등록된_메뉴 = response.as(Menu.class);
         assertThat(등록된_메뉴.getId()).isNotNull();
-        assertThat(등록된_메뉴.getPrice()).isEqualByComparingTo(예상_메뉴.getPrice());
-        assertThat(등록된_메뉴.getMenuGroupId()).isEqualTo(예상_메뉴.getMenuGroupId());
+        assertThat(등록된_메뉴.getPrice()).isEqualByComparingTo(expected.getPrice());
+        assertThat(등록된_메뉴.getMenuGroupId()).isEqualTo(expected.getMenuGroupId());
 
         return 등록된_메뉴;
     }
 
-    public static List<Menu> 메뉴_목록조회_검증(ExtractableResponse<Response> 메뉴_목록조회_결과, Menu 등록된_메뉴) {
-        List<Menu> 조회된_메뉴_목록 = 메뉴_목록조회_결과.as(new TypeRef<List<Menu>>() {
+    public static List<Menu> 메뉴_목록조회_검증(ExtractableResponse<Response> response, Menu expected) {
+        List<Menu> 조회된_메뉴_목록 = response.as(new TypeRef<List<Menu>>() {
         });
-        assertThat(조회된_메뉴_목록).contains(등록된_메뉴);
+        assertThat(조회된_메뉴_목록).contains(expected);
 
         return 조회된_메뉴_목록;
     }

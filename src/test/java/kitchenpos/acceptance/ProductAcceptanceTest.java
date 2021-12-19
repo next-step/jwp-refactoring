@@ -38,6 +38,6 @@ class ProductAcceptanceTest extends AcceptanceTest {
         // then
         ExtractableResponse<Response> 상품_목록조회_결과 = 상품_목록조회_요청();
         // when
-        상품_목록조회_검증(등록된_상품, 상품_목록조회_결과);
+        상품_목록조회_검증(상품_목록조회_결과, 등록된_상품);
     }
 }
