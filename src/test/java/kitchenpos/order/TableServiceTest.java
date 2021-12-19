@@ -22,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.BDDMockito.given;
 
-@DisplayName("메뉴 그룹 서비스 테스트")
+@DisplayName("테이블 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
 public class TableServiceTest {
   @InjectMocks
