@@ -1,6 +1,6 @@
 package kitchenpos.application;
 
-import static kitchenpos.application.TableServiceTest.*;
+import static kitchenpos.order.application.TableServiceTest.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
@@ -21,11 +21,12 @@ import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.order.application.TableGroupService;
+import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.domain.TableGroup;
 
 @ExtendWith(MockitoExtension.class)
-class TableGroupServiceTest {
+public class TableGroupServiceTest {
 
     @Mock
     private OrderDao orderDao;

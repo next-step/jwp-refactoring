@@ -16,7 +16,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
-import kitchenpos.domain.OrderTable;
+ import kitchenpos.order.domain.OrderTable;
 
 @Repository
 public class JdbcTemplateOrderTableDao implements OrderTableDao {
