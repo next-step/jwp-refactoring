@@ -44,7 +44,7 @@ public class MenuGroupServiceTest {
         MenuGroupResponse savedMenuGroup = menuGroupService.create(menuGroup);
 
         // then
-        assertEquals(menuGroup.getName(), savedMenuGroup.getName());
+        assertEquals(menuGroup.getName().getValue(), savedMenuGroup.getName());
     }
 
     @DisplayName("메뉴 그룹 목록을 조회한다.")
@@ -64,7 +64,7 @@ public class MenuGroupServiceTest {
         assertThat(findMenuGroups)
             .extracting("name")
             .containsExactlyElementsOf(menuGroups.stream()
-                .map(MenuGroup::getName)
+                .map(menuGroup -> menuGroup.getName().getValue())
                 .collect(Collectors.toList())
             );
     }

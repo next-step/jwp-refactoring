@@ -15,7 +15,7 @@ public class ProductResponse {
     }
 
     public ProductResponse(Product product) {
-        this(product.getId(), product.getName(), product.getPrice());
+        this(product.getId(), product.getName().getValue(), product.getPrice());
     }
 
     public ProductResponse(Long id, String name, BigDecimal price) {

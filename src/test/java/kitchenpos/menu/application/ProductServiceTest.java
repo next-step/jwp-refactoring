@@ -16,8 +16,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.dao.ProductDao;
-import kitchenpos.menu.application.ProductService;
 import kitchenpos.menu.domain.Product;
 import kitchenpos.menu.dto.ProductRequest;
 import kitchenpos.menu.dto.ProductResponse;
@@ -46,10 +44,10 @@ class ProductServiceTest {
 
         // when
         ProductResponse savedProduct = productService.create(
-            new ProductRequest(product.getName(), product.getPrice()));
+            new ProductRequest(product.getName().getValue(), product.getPrice()));
 
         // then
-        assertEquals(product.getName(), savedProduct.getName());
+        assertEquals(product.getName().getValue(), savedProduct.getName());
         assertEquals(product.getPrice(), savedProduct.getPrice());
     }
 
@@ -61,9 +59,9 @@ class ProductServiceTest {
         Product nullPriceProduct = 상품_생성("후라이드");
 
         ProductRequest zeroPriceProductRequest =
-            new ProductRequest(zeroPriceProduct.getName(), zeroPriceProduct.getPrice());
+            new ProductRequest(zeroPriceProduct.getName().getValue(), zeroPriceProduct.getPrice());
         ProductRequest nullPriceProductRequest =
-            new ProductRequest(nullPriceProduct.getName(), null);
+            new ProductRequest(nullPriceProduct.getName().getValue(), null);
 
         // when && then
         assertAll(
@@ -88,10 +86,12 @@ class ProductServiceTest {
         // then
         assertThat(findProducts)
             .extracting("name")
-            .containsExactlyElementsOf(products.stream().map(Product::getName).collect(Collectors.toList()));
+            .containsExactlyElementsOf(products.stream().map(product -> product.getName().getValue())
+                .collect(Collectors.toList()));
         assertThat(findProducts)
             .extracting("price")
-            .containsExactlyElementsOf(products.stream().map(Product::getPrice).collect(Collectors.toList()));
+            .containsExactlyElementsOf(products.stream().map(Product::getPrice)
+                .collect(Collectors.toList()));
     }
 
     static Product 상품_생성(String name) {

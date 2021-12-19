@@ -13,7 +13,7 @@ public class MenuGroupResponse {
     }
 
     public MenuGroupResponse(MenuGroup menuGroup) {
-        this(menuGroup.getId(), menuGroup.getName());
+        this(menuGroup.getId(), menuGroup.getName().getValue());
     }
 
     public MenuGroupResponse(Long id, String name) {

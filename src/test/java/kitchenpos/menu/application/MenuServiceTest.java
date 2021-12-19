@@ -1,7 +1,7 @@
 package kitchenpos.menu.application;
 
-import static kitchenpos.menu.application.ProductServiceTest.*;
 import static kitchenpos.menu.application.MenuGroupServiceTest.*;
+import static kitchenpos.menu.application.ProductServiceTest.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
@@ -19,10 +19,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.dao.MenuProductDao;
-import kitchenpos.dao.ProductDao;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
@@ -67,7 +63,7 @@ class MenuServiceTest {
             Collections.singletonList(menuProduct));
 
         MenuRequest menuRequest = new MenuRequest(
-            menu.getName(), menu.getPrice(), menu.getMenuGroupId(),
+            menu.getName().getValue(), menu.getPrice(), menu.getMenuGroupId(),
             menu.getMenuProducts().stream().map(menuProductRequest -> new MenuProductRequest(
                 menuProductRequest.getProductId(), menuProductRequest.getQuantity())).collect(Collectors.toList()));
 
@@ -94,7 +90,7 @@ class MenuServiceTest {
         Menu menu = 메뉴_생성("후라이드 치킨", -1, menuGroup.getId(),
             menuProducts);
 
-        MenuRequest menuRequest = new MenuRequest(menu.getName(), menu.getPrice(), menu.getMenuGroupId(),
+        MenuRequest menuRequest = new MenuRequest(menu.getName().getValue(), menu.getPrice(), menu.getMenuGroupId(),
             menuProducts.stream().map(menuProductRequest -> new MenuProductRequest(
                     menuProductRequest.getProductId(), menuProductRequest.getQuantity()))
                 .collect(Collectors.toList()));
@@ -113,7 +109,7 @@ class MenuServiceTest {
         Menu menu = 메뉴_생성("후라이드 치킨", 16000, menuGroup.getId(),
             menuProducts);
 
-        MenuRequest menuRequest = new MenuRequest(menu.getName(), menu.getPrice(), menu.getMenuGroupId(),
+        MenuRequest menuRequest = new MenuRequest(menu.getName().getValue(), menu.getPrice(), menu.getMenuGroupId(),
             menuProducts.stream().map(menuProductRequest -> new MenuProductRequest(
                     menuProductRequest.getProductId(), menuProductRequest.getQuantity()))
                 .collect(Collectors.toList()));
@@ -135,7 +131,7 @@ class MenuServiceTest {
         Menu menu = 메뉴_생성("후라이드 치킨", 16000, menuGroup.getId(),
             menuProducts);
 
-        MenuRequest menuRequest = new MenuRequest(menu.getName(), menu.getPrice(), menu.getMenuGroupId(),
+        MenuRequest menuRequest = new MenuRequest(menu.getName().getValue(), menu.getPrice(), menu.getMenuGroupId(),
             menuProducts.stream().map(menuProductRequest -> new MenuProductRequest(
                     menuProductRequest.getProductId(), menuProductRequest.getQuantity()))
                 .collect(Collectors.toList()));
@@ -158,7 +154,7 @@ class MenuServiceTest {
         Menu menu = 메뉴_생성("후라이드 치킨", 16000, menuGroup.getId(),
             menuProducts);
 
-        MenuRequest menuRequest = new MenuRequest(menu.getName(), menu.getPrice(), menu.getMenuGroupId(),
+        MenuRequest menuRequest = new MenuRequest(menu.getName().getValue(), menu.getPrice(), menu.getMenuGroupId(),
             menuProducts.stream().map(menuProductRequest -> new MenuProductRequest(
                     menuProductRequest.getProductId(), menuProductRequest.getQuantity()))
                 .collect(Collectors.toList()));
