@@ -1,6 +1,7 @@
 package kitchenpos.product.appliation;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -8,6 +9,7 @@ import static org.mockito.Mockito.when;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
+import kitchenpos.exception.CannotCreateException;
 import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
@@ -65,5 +67,17 @@ class ProductServiceTest {
         List<ProductResponse> products = productService.list();
 
         assertThat(products.size()).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("상품 생성시 validate 체크")
+    void validate() {
+        assertThatThrownBy(() -> productService.create(new ProductRequest(null, PRODUCT_PRICE)))
+            .isInstanceOf(CannotCreateException.class)
+            .hasMessage("상품을 생성할 수 없습니다. 다시 입력해 주세요.");
+
+        assertThatThrownBy(() -> productService.create(new ProductRequest(PRODUCT_NAME, null)))
+            .isInstanceOf(CannotCreateException.class)
+            .hasMessage("상품을 생성할 수 없습니다. 다시 입력해 주세요.");
     }
 }

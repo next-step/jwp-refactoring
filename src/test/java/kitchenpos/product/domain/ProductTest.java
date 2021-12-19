@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
+import kitchenpos.exception.InvalidArgumentException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -17,17 +18,20 @@ class ProductTest {
     @DisplayName("상품의 가격은 필수이며 0 이상 이어야 한다")
     void createValidatePrice() {
         assertThatThrownBy(() -> Product.of(PRODUCT_NAME, -1))
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(InvalidArgumentException.class)
+            .hasMessageContaining("이상이어야 합니다.");
 
         assertThatThrownBy(() -> Product.of(PRODUCT_NAME, null))
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(InvalidArgumentException.class)
+            .hasMessage("가격은 필수입니다.");
     }
 
     @Test
     @DisplayName("상품은 이름은 필수이다")
     void createValidateName() {
         assertThatThrownBy(() -> Product.of(null, PRODUCT_PRICE))
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(InvalidArgumentException.class)
+            .hasMessage("이름은 필수입니다.");
     }
 
     @Test

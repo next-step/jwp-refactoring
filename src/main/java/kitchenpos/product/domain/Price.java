@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import kitchenpos.exception.InvalidArgumentException;
 
 @Embeddable
 public class Price {
@@ -31,10 +32,10 @@ public class Price {
      */
     private void validate(Integer price) {
         if (price == null) {
-            throw new IllegalArgumentException();
+            throw new InvalidArgumentException("가격은 필수입니다.");
         }
         if (price < MIN_PRICE) {
-            throw new IllegalArgumentException();
+            throw new InvalidArgumentException(String.format("가격은 %s 이상이어야 합니다.", MIN_PRICE));
         }
     }
 

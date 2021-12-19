@@ -1,5 +1,7 @@
 package kitchenpos.product.application;
 
+import kitchenpos.exception.CannotCreateException;
+import kitchenpos.exception.InvalidArgumentException;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.dto.ProductRequest;
@@ -22,8 +24,8 @@ public class ProductService {
         try {
             Product product = productRepository.save(productRequest.toEntity());
             return ProductResponse.of(product);
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException(e.getMessage());
+        } catch (InvalidArgumentException e) {
+            throw new CannotCreateException("상품을 생성할 수 없습니다. 다시 입력해 주세요.");
         }
     }
 

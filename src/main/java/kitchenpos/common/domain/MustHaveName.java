@@ -3,6 +3,7 @@ package kitchenpos.common.domain;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import kitchenpos.exception.InvalidArgumentException;
 
 @Embeddable
 public class MustHaveName {
@@ -28,7 +29,7 @@ public class MustHaveName {
      */
     private void validate(String name) {
         if (name == null) {
-            throw new IllegalArgumentException();
+            throw new InvalidArgumentException("이름은 필수입니다.");
         }
     }
 
