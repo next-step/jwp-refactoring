@@ -5,6 +5,7 @@ import kitchenpos.common.domain.Quantity;
 import kitchenpos.product.domain.Product;
 
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -25,6 +26,7 @@ public class MenuProduct {
     @ManyToOne
     private Product product;
 
+    @Embedded
     @Column(nullable = false)
     private Quantity quantity;
 

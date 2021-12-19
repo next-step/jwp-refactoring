@@ -14,5 +14,7 @@ dependencies {
     testImplementation 'io.rest-assured:rest-assured:3.3.0'
 
     // module
-    implementation project(':domain')
+    implementation project(':core-domain')
+    implementation project(':menu-domain')
+    implementation project(':order-domain')
 }
