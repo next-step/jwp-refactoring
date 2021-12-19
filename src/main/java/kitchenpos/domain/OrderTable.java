@@ -47,7 +47,7 @@ public class OrderTable {
 
     public void changeNumberOfGuests(final int numberOfGuests) {
         if (isEmpty()) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("비어 있는 테이블은 손님 수를 변경할 수 없습니다");
         }
         this.numberOfGuests = NumberOfGuests.of(numberOfGuests);
     }
@@ -73,7 +73,7 @@ public class OrderTable {
 
     public void setTableGroup(TableGroup tableGroup) {
         if (!isEmpty() || hasTableGroup()) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("");
         }
         this.tableGroup = tableGroup;
     }

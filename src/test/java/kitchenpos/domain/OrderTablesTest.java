@@ -31,10 +31,10 @@ public class OrderTablesTest {
     @Test
     void testExpectedSize() {
         // given
-        List<OrderTable> orderTables = Arrays.asList(new OrderTable(), new OrderTable(), new OrderTable());
+        List<OrderTable> orderTables = Arrays.asList(new OrderTable(4, true), new OrderTable(4, true), new OrderTable(4, true));
 
         // when
-        OrderTables result = OrderTables.of(orderTables, orderTables.size());
+        OrderTables result = OrderTables.of(new TableGroup(), orderTables, orderTables.size());
 
         // then
         assertThat(result.values()).isEqualTo(orderTables);
@@ -44,10 +44,10 @@ public class OrderTablesTest {
     @Test
     void testGivenDifferentExpectedSize() {
         // given
-        List<OrderTable> orderTables = Arrays.asList(new OrderTable(), new OrderTable(), new OrderTable());
+        List<OrderTable> orderTables = Arrays.asList(new OrderTable(4, true), new OrderTable(4, true), new OrderTable(4, true));
 
         // when
-        ThrowableAssert.ThrowingCallable callable = () -> OrderTables.of(orderTables, orderTables.size() + 1);
+        ThrowableAssert.ThrowingCallable callable = () -> OrderTables.of(new TableGroup(), orderTables, orderTables.size() + 1);
 
         // then
         assertThatThrownBy(callable).isInstanceOf(IllegalArgumentException.class);

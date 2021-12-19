@@ -21,14 +21,15 @@ public class OrderTables {
         this.orderTables = orderTables;
     }
 
-    public static OrderTables of(List<OrderTable> orderTables, int expectedSize) {
+    public static OrderTables of(TableGroup tableGroup, List<OrderTable> orderTables, int expectedSize) {
         if (expectedSize != orderTables.size()) {
             throw new IllegalArgumentException("올바른 주문 테이블을 입력하세요");
         }
+        setTableGroupToOrderTables(tableGroup, orderTables);
         return new OrderTables(orderTables);
     }
 
-    public void setTableGroupToOrderTables(TableGroup tableGroup) {
+    private static void setTableGroupToOrderTables(TableGroup tableGroup, List<OrderTable> orderTables) {
         for (final OrderTable orderTable : orderTables) {
             orderTable.setTableGroup(tableGroup);
             orderTable.changeToNotEmpty();
@@ -45,7 +46,7 @@ public class OrderTables {
 
     private void validateUngroupOrderStatus(OrderTable orderTable) {
         if (orderTable.containsStartedOrder()) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("주문이 있는 단체 지정은 해제할 수 없습니다");
         }
     }
 

@@ -7,6 +7,8 @@ import kitchenpos.exception.TableGroupNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 public class TableGroupService {
     private final OrderTableRepository orderTableRepository;
@@ -21,13 +23,9 @@ public class TableGroupService {
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
         validateOrderTablesSize(tableGroupRequest);
 
-        OrderTables orderTables = OrderTables.of(
-                orderTableRepository.findAllById(tableGroupRequest.getOrderTableIds()),
-                tableGroupRequest.getOrderTablesSize());
-
-        TableGroup savedTableGroup = tableGroupRepository.save(new TableGroup(orderTables));
-
-        return TableGroupResponse.of(savedTableGroup);
+        List<OrderTable> orderTables = orderTableRepository.findAllById(tableGroupRequest.getOrderTableIds());
+        TableGroup tableGroup = new TableGroup(orderTables, tableGroupRequest.getOrderTablesSize());
+        return TableGroupResponse.of(tableGroupRepository.save(tableGroup));
     }
 
     private void validateOrderTablesSize(TableGroupRequest tableGroupRequest) {

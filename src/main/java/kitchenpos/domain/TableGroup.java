@@ -27,9 +27,8 @@ public class TableGroup {
         this.orderTables = new OrderTables(orderTables);
     }
 
-    public TableGroup(final OrderTables orderTables) {
-        orderTables.setTableGroupToOrderTables(this);
-        this.orderTables = orderTables;
+    public TableGroup(List<OrderTable> orderTables, int orderTablesSize) {
+        this.orderTables = OrderTables.of(this, orderTables, orderTablesSize);
     }
 
     public void ungroup() {
@@ -40,24 +39,12 @@ public class TableGroup {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public LocalDateTime getCreatedDate() {
         return createdDate;
     }
 
-    public void setCreatedDate(final LocalDateTime createdDate) {
-        this.createdDate = createdDate;
-    }
-
     public List<OrderTable> getOrderTables() {
         return orderTables.values();
-    }
-
-    public void setOrderTables(final List<OrderTable> orderTables) {
-        this.orderTables = new OrderTables(orderTables);
     }
 
     @Override
