@@ -12,7 +12,7 @@ import java.util.Objects;
 
 @Service
 public class ProductService {
-	private final static String ERROR_MESSAGE_PRICE_VALUE="상품의 가격은 0원 이상이어야 합니다.";
+	private final static String ERROR_MESSAGE_PRODUCT_PRICE_VALUE ="상품의 가격은 0원 이상이어야 합니다.";
 	private final ProductDao productDao;
 
 	public ProductService(final ProductDao productDao) {
@@ -24,7 +24,7 @@ public class ProductService {
 		final BigDecimal price = product.getPrice();
 
 		if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-			throw new IllegalArgumentException(ERROR_MESSAGE_PRICE_VALUE);
+			throw new IllegalArgumentException(ERROR_MESSAGE_PRODUCT_PRICE_VALUE);
 		}
 		return productDao.save(product);
 	}
