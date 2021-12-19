@@ -3,6 +3,7 @@ package kitchenpos.application;
 import kitchenpos.domain.*;
 import kitchenpos.dto.TableGroupRequest;
 import kitchenpos.dto.TableGroupResponse;
+import kitchenpos.exception.TableGroupNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,7 +39,7 @@ public class TableGroupService {
     @Transactional
     public void ungroup(final Long tableGroupId) {
         TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new TableGroupNotFoundException(tableGroupId));
         tableGroup.ungroup();
     }
 }

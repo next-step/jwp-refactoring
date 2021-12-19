@@ -3,6 +3,7 @@ package kitchenpos.application;
 import kitchenpos.domain.*;
 import kitchenpos.dto.OrderRequest;
 import kitchenpos.dto.OrderResponse;
+import kitchenpos.exception.OrderNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,7 +34,7 @@ public class OrderService {
     @Transactional
     public OrderResponse changeOrderStatus(final Long orderId, final OrderRequest orderRequest) {
         final Order order = orderRepository.findById(orderId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new OrderNotFoundException(orderId));
 
         final OrderStatus orderStatus = OrderStatus.valueOf(orderRequest.getOrderStatus());
         order.changeOrderStatus(orderStatus);

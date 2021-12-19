@@ -4,6 +4,7 @@ import kitchenpos.domain.*;
 import kitchenpos.dto.OrderLineItemRequest;
 import kitchenpos.dto.OrderRequest;
 import kitchenpos.dto.OrderResponse;
+import kitchenpos.exception.OrderNotFoundException;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -91,15 +92,16 @@ public class OrderServiceTest {
             ThrowableAssert.ThrowingCallable callable = () -> orderService.changeOrderStatus(savedOrder.getId(), requestOrder);
 
             // then
-            assertThatThrownBy(callable).isInstanceOf(IllegalArgumentException.class);
+            assertThatThrownBy(callable).isInstanceOf(OrderNotFoundException.class);
         }
 
         @DisplayName("계산완료 상태에선 변경할 수 없다")
         @Test
         void canNotChangeWhenCompleteStatus() {
             // given
-            OrderRequest requestOrder = new OrderRequest(OrderStatus.COMPLETION);
-            given(orderRepository.findById(anyLong())).willReturn(Optional.empty());
+            OrderRequest requestOrder = new OrderRequest(OrderStatus.MEAL);
+            Order savedOrder = new Order(1L, new OrderTable(), OrderStatus.COMPLETION, TEST_CREATED_AT, Collections.emptyList());
+            given(orderRepository.findById(anyLong())).willReturn(Optional.of(savedOrder));
 
             // when
             ThrowableAssert.ThrowingCallable callable = () -> orderService.changeOrderStatus(anyLong(), requestOrder);
