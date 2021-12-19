@@ -22,6 +22,7 @@ import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.product.dto.ProductResponse;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,8 +44,8 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
         // 상품 등록 되어 있음
-        Product 후라이드치킨 = 상품_등록_되어있음("후라이드치킨", 10000);
-        Product 양념치킨 = 상품_등록_되어있음("양념치킨", 11000);
+        ProductResponse 후라이드치킨 = 상품_등록_되어있음("후라이드치킨", 10000);
+        ProductResponse 양념치킨 = 상품_등록_되어있음("양념치킨", 11000);
         // 메뉴그룹 등록 되어 있음
         MenuGroup 치킨 = 메뉴그룹_등록_되어있음("치킨");
         // 메뉴 등록되어 있음

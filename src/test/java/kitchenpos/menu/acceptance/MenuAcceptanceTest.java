@@ -18,6 +18,7 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -30,8 +31,8 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     @DisplayName("메뉴를 관리한다.")
     void manageMenu() {
         // 상품 등록 되어 있음
-        Product 후라이드치킨 = 상품_등록_되어있음("후라이드치킨", 10000);
-        Product 양념치킨 = 상품_등록_되어있음("양념치킨", 11000);
+        ProductResponse 후라이드치킨 = 상품_등록_되어있음("후라이드치킨", 10000);
+        ProductResponse 양념치킨 = 상품_등록_되어있음("양념치킨", 11000);
 
         // 메뉴그룹 등록 되어 있음
         MenuGroup 치킨 = 메뉴그룹_등록_되어있음("치킨");
@@ -90,12 +91,12 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         });
     }
 
-    public static Menu 메뉴등록되어있음(String name, BigDecimal price, MenuGroup menuGroup, List<Product> products) {
+    public static Menu 메뉴등록되어있음(String name, BigDecimal price, MenuGroup menuGroup, List<ProductResponse> products) {
         List<MenuProduct> menuProducts = createMenuProducts(products, Arrays.asList(1L, 1L));
         return 메뉴_등록_요청(name, price, menuGroup, menuProducts).as(Menu.class);
     }
 
-    private static List<MenuProduct> createMenuProducts(List<Product> products, List<Long> productsQuantity) {
+    private static List<MenuProduct> createMenuProducts(List<ProductResponse> products, List<Long> productsQuantity) {
         List<MenuProduct> menuProducts = new ArrayList<>();
         for (int i = 0; i < products.size(); i++) {
             MenuProduct menuProduct = new MenuProduct();

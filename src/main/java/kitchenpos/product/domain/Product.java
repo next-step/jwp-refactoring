@@ -2,6 +2,7 @@ package kitchenpos.product.domain;
 
 import java.math.BigDecimal;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -15,33 +16,52 @@ public class Product extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String name;
+    @Embedded
+    private ProductName name;
 
-    @Column(nullable = false)
-    private BigDecimal price;
+    @Embedded
+    private Price price;
+
+    public Product() {
+    }
+
+    private Product(String name, Integer price) {
+        this.name = ProductName.valueOf(name);
+        this.price = Price.valueOf(price);
+    }
+
+    public static Product of(String name, Integer price) {
+        return new Product(name, price);
+    }
 
     public Long getId() {
         return id;
     }
 
-    public void setId(final Long id) {
+    public String getName() {
+        return name.get();
+    }
+    public BigDecimal getPrice() {
+        return price.get();
+    }
+
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public void setName(String name) {
+        this.name = ProductName.valueOf(name);
     }
 
-    public void setName(final String name) {
-        this.name = name;
+    public void setPrice(Integer price) {
+        this.price = Price.valueOf(price);
     }
 
-    public BigDecimal getPrice() {
-        return price;
+    public boolean equalName(String name) {
+        return this.name.equals(name);
     }
 
-    public void setPrice(final BigDecimal price) {
-        this.price = price;
+    public boolean equalPrice(BigDecimal price) {
+        return this.price.equals(price);
     }
 }
