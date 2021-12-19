@@ -17,7 +17,7 @@ class MenuGroupAcceptanceTest extends AcceptanceTest {
 
     private static final String API_URL = "/api/menu-groups";
 
-    @DisplayName("메뉴 그룹을 관한다.")
+    @DisplayName("메뉴 그룹을 관리한다.")
     @Test
     void manageMenuGroup() {
         // given
@@ -35,7 +35,7 @@ class MenuGroupAcceptanceTest extends AcceptanceTest {
         메뉴_그룹_목록_조회됨(메뉴_그룹_목록_조회_응답);
     }
 
-    private ExtractableResponse<Response> 메뉴_그룹_생성_요청(MenuGroup params) {
+    private static ExtractableResponse<Response> 메뉴_그룹_생성_요청(MenuGroup params) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -60,5 +60,13 @@ class MenuGroupAcceptanceTest extends AcceptanceTest {
 
     private void 메뉴_그룹_목록_조회됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    public static MenuGroup 메뉴_그룹_등록되어_있음(String name) {
+        MenuGroup menuGroup = new MenuGroup();
+        menuGroup.setName(name);
+
+        ExtractableResponse<Response> response = 메뉴_그룹_생성_요청(menuGroup);
+        return response.as(MenuGroup.class);
     }
 }

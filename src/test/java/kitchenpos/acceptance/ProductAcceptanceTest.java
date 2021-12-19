@@ -38,7 +38,7 @@ class ProductAcceptanceTest extends AcceptanceTest {
         상품_목록_조회됨(상품_목록_조회_응답);
     }
 
-    private ExtractableResponse<Response> 상품_생성_요청(Product params) {
+    private static ExtractableResponse<Response> 상품_생성_요청(Product params) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -63,5 +63,14 @@ class ProductAcceptanceTest extends AcceptanceTest {
 
     private void 상품_목록_조회됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    public static Product 상품_등록되어_있음(String name, long price) {
+        Product product = new Product();
+        product.setName(name);
+        product.setPrice(BigDecimal.valueOf(price));
+
+        ExtractableResponse<Response> response = 상품_생성_요청(product);
+        return response.as(Product.class);
     }
 }
