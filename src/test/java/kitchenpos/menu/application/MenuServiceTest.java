@@ -65,7 +65,7 @@ class MenuServiceTest {
         MenuRequest menuRequest = new MenuRequest(
             menu.getName().getValue(), menu.getPrice().getValue(), menu.getMenuGroupId(),
             menu.getMenuProducts().stream().map(menuProductRequest -> new MenuProductRequest(
-                menuProductRequest.getProductId(), menuProductRequest.getQuantity().getValue()))
+                    menuProductRequest.getProductId(), menuProductRequest.getQuantity().getValue()))
                 .collect(Collectors.toList()));
 
         given(menuGroupRepository.existsById(menu.getMenuGroupId())).willReturn(true);
@@ -78,26 +78,6 @@ class MenuServiceTest {
 
         // then
         assertEquals(menu.getId(), savedMenu.getId());
-    }
-
-    @DisplayName("메뉴의 가격이 올바르지 않으면 등록할 수 없다.")
-    @Test
-    void createMenuWrongPrice() {
-        // given
-        MenuGroup menuGroup = 메뉴_그룹_생성(1L, "한마리메뉴");
-        Product product = 상품_생성(1L, "후라이드", 16000);
-        MenuProduct menuProduct = 메뉴_상품_등록(product.getId(), 1);
-        List<MenuProduct> menuProducts = Collections.singletonList(menuProduct);
-        Menu menu = 메뉴_생성("후라이드 치킨", -1, menuGroup.getId(),
-            menuProducts);
-
-        MenuRequest menuRequest = new MenuRequest(menu.getName().getValue(),
-            menu.getPrice().getValue(), menu.getMenuGroupId(),
-            menuProducts.stream().map(menuProductRequest -> new MenuProductRequest(
-                    menuProductRequest.getProductId(), menuProductRequest.getQuantity().getValue()))
-                .collect(Collectors.toList()));
-        // when && then
-        assertThrows(IllegalArgumentException.class, () -> menuService.create(menuRequest));
     }
 
     @DisplayName("메뉴그룹이 존재하지 않으면 메뉴를 등록할 수 없다.")

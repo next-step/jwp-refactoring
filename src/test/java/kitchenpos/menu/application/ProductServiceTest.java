@@ -51,21 +51,6 @@ class ProductServiceTest {
         assertEquals(product.getPrice().getValue(), savedProduct.getPrice());
     }
 
-    @DisplayName("상품의 가격이 올바르지 않으면 등록할 수 없다.")
-    @Test
-    void createProductWrongPrice() {
-        // given
-        Product zeroPriceProduct = 상품_생성("후라이드", -1);
-
-        ProductRequest zeroPriceProductRequest =
-            new ProductRequest(zeroPriceProduct.getName().getValue(), zeroPriceProduct.getPrice().getValue());
-
-        // when && then
-        assertAll(
-            () -> assertThrows(IllegalArgumentException.class, () -> productService.create(zeroPriceProductRequest))
-        );
-    }
-
     @DisplayName("상품의 목록을 가져온다.")
     @Test
     void getProducts() {
