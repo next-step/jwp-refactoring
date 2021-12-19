@@ -69,7 +69,7 @@
     - [X] TableGroupService
     - [X] OrderService
   - [ ] 인수테스트
-    - [ ] MenuGroupRestController
+    - [X] MenuGroupRestController
     - [ ] MenuRestController
     - [ ] OrderRestController
     - [ ] ProductRestController
