@@ -67,7 +67,7 @@ public class TableGroupServiceTest {
     @DisplayName("주문 테이블이 두 테이블 이상이어야 단체지정을 할 수 있다 - 예외처리")
     @Test
     void 단체지정_등록_두_테이블_이상만() {
-        // when
+        // given
         TableGroup 단체지정 = new TableGroup();
         단체지정.setId(1L);
         단체지정.setOrderTables(Arrays.asList(new OrderTable()));
@@ -89,7 +89,7 @@ public class TableGroupServiceTest {
         // when
         when(orderTableDao.findAllByIdIn(anyList())).thenReturn(Arrays.asList());
     
-        // when, then
+        // then
         assertThatThrownBy(() -> {
             tableGroupService.create(단체지정);
         }).isInstanceOf(IllegalArgumentException.class);

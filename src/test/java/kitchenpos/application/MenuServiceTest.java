@@ -150,7 +150,7 @@ public class MenuServiceTest {
         // when
         when(menuGroupDao.existsById(anyLong())).thenReturn(false);
 
-        // when, then
+        // then
         assertThatThrownBy(() -> {
             menuService.create(메뉴);
         }).isInstanceOf(IllegalArgumentException.class);
@@ -178,7 +178,7 @@ public class MenuServiceTest {
         // when
         when(productDao.findById(anyLong())).thenReturn(Optional.empty());
 
-        // when, then
+        // then
         assertThatThrownBy(() -> {
             menuService.create(메뉴);
         }).isInstanceOf(IllegalArgumentException.class);
