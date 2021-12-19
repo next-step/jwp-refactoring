@@ -28,6 +28,7 @@ import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.Product;
 import kitchenpos.domain.TableGroup;
 
+@DisplayName("주문 테이블 그룹 통합 테스트")
 class TableGroupServiceTest extends IntegrationTest {
 	@Autowired
 	private TableGroupService tableGroupService;
