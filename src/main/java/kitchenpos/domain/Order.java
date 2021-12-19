@@ -1,13 +1,12 @@
 package kitchenpos.domain;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import kitchenpos.dto.OrderRequest;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -19,7 +18,7 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "order_table_id")
     private OrderTable orderTable;
 
@@ -39,6 +38,7 @@ public class Order {
         this.orderTable = orderTable;
         this.orderStatus = OrderStatus.COOKING;
         this.orderedTime = LocalDateTime.now();
+        orderTable.checkIsEmpty();
     }
 
     public Order(Long id, OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
@@ -47,6 +47,7 @@ public class Order {
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
         this.orderLineItems = orderLineItems;
+        orderTable.checkIsEmpty();
     }
 
 
@@ -85,6 +86,12 @@ public class Order {
 
     public void changeOrderStatusMeal() {
         this.orderStatus = OrderStatus.MEAL;
+    }
+
+    public void checkOrderStatusCookingOrMeal() {
+        if(orderStatus == OrderStatus.COOKING || orderStatus == OrderStatus.MEAL){
+            throw new IllegalArgumentException("주문이 조리중이거나 식사중입니다.");
+        }
     }
 
     @Override

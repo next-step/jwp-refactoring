@@ -1,8 +1,11 @@
 package kitchenpos.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import kitchenpos.dto.OrderTableRequest;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -19,6 +22,10 @@ public class OrderTable {
     private int numberOfGuests;
 
     private boolean empty;
+
+    @OneToMany(mappedBy = "orderTable", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @JsonIgnoreProperties(value = {"orderTable"}, allowSetters = true)
+    private List<Order> orders = new ArrayList<>();
 
     public OrderTable() {
     }
@@ -54,16 +61,16 @@ public class OrderTable {
         return tableGroup;
     }
 
+    public List<Order> getOrders() {
+        return orders;
+    }
+
     public void changeEmpty(boolean empty) {
         this.empty = empty;
     }
 
     public void changeNonEmptyOrderTable() {
         this.empty = false;
-    }
-
-    public void changeEmptyOrderTable() {
-        this.empty = true;
     }
 
     public void changeNumberOfGuests(int numberOfGuests) {
