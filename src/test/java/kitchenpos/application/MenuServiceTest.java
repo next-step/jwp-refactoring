@@ -205,7 +205,16 @@ class MenuServiceTest {
 
     }
 
-    private Menu getMenu(long id, Menu createRequest) {
+
+    public static MenuProduct getMenuProduct(long id, Product product, int quantity) {
+        final MenuProduct menuProduct = new MenuProduct();
+        menuProduct.setProductId(product.getId());
+        menuProduct.setSeq(id);
+        menuProduct.setQuantity(quantity);
+        return menuProduct;
+    }
+
+    public static Menu getMenu(long id, Menu createRequest) {
         final Menu menu = new Menu();
         menu.setId(id);
         menu.setName(createRequest.getName());
@@ -215,7 +224,7 @@ class MenuServiceTest {
         return menu;
     }
 
-    private Menu getMenu(long id, String name, int price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+    public static Menu getMenu(long id, String name, int price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
         final Menu menu = new Menu();
         menu.setId(id);
         menu.setName(name);
@@ -238,11 +247,4 @@ class MenuServiceTest {
         return getCreateRequest(name, BigDecimal.valueOf(price), menuGroup, menuProducts);
     }
 
-    private MenuProduct getMenuProduct(long id, Product product, int quantity) {
-        final MenuProduct menuProduct = new MenuProduct();
-        menuProduct.setProductId(product.getId());
-        menuProduct.setSeq(id);
-        menuProduct.setQuantity(quantity);
-        return menuProduct;
-    }
 }
