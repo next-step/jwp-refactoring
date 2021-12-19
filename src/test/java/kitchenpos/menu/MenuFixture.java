@@ -28,4 +28,37 @@ public class MenuFixture {
 			)
 		);
 	}
+
+	public static MenuCreateRequest 이름없는_메뉴(Long menuGroupId, Long productId) {
+		return new MenuCreateRequest(
+			null,
+			BigDecimal.valueOf(19000L),
+			menuGroupId,
+			Collections.singletonList(
+				new MenuProductDto(null, null, productId, 2)
+			)
+		);
+	}
+
+	public static MenuCreateRequest 음수가격_메뉴(Long menuGroupId, Long productId) {
+		return new MenuCreateRequest(
+			"사시면+돈도드려요",
+			BigDecimal.valueOf(-19000L),
+			menuGroupId,
+			Collections.singletonList(
+				new MenuProductDto(null, null, productId, 2)
+			)
+		);
+	}
+
+	public static MenuCreateRequest 너무비싼_메뉴(Long menuGroupId, Long productId) {
+		return new MenuCreateRequest(
+			"사면+호구",
+			BigDecimal.valueOf(100000L),
+			menuGroupId,
+			Collections.singletonList(
+				new MenuProductDto(null, null, productId, 2)
+			)
+		);
+	}
 }

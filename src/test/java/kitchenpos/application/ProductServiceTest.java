@@ -43,7 +43,7 @@ class ProductServiceTest extends IntegrationTest {
 		assertAll(
 			() -> assertThat(product.getId()).isNotNull(),
 			() -> assertThat(product.getName()).isEqualTo(request.getName()),
-			() -> assertThat(product.getPrice().toBigInteger()).isEqualTo(request.getPrice().toBigInteger()));
+			() -> assertThat(product.getPrice().compareTo(request.getPrice())).isEqualTo(0));
 	}
 
 	@DisplayName("상품 이름이 빈 값이면 등록할 수 없다.")
