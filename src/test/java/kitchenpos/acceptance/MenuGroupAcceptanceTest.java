@@ -1,9 +1,6 @@
 package kitchenpos.acceptance;
 
-import static kitchenpos.acceptance.step.MenuGroupAcceptanceStep.메뉴그룹_등록_요청;
-import static kitchenpos.acceptance.step.MenuGroupAcceptanceStep.메뉴그룹_등록됨;
-import static kitchenpos.acceptance.step.MenuGroupAcceptanceStep.메뉴그룹_목록조회_됨;
-import static kitchenpos.acceptance.step.MenuGroupAcceptanceStep.메뉴그룹_조회_요청;
+import static kitchenpos.acceptance.step.MenuGroupAcceptanceStep.*;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;

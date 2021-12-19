@@ -1,14 +1,9 @@
 package kitchenpos.acceptance;
 
 
+import static kitchenpos.acceptance.step.OrderAcceptanceStep.*;
 import static kitchenpos.acceptance.step.MenuAcceptanceStep.메뉴_등록됨;
 import static kitchenpos.acceptance.step.MenuGroupAcceptanceStep.메뉴그룹_등록됨;
-import static kitchenpos.acceptance.step.OrderAcceptanceStep.주문_등록_검증;
-import static kitchenpos.acceptance.step.OrderAcceptanceStep.주문_등록_요청;
-import static kitchenpos.acceptance.step.OrderAcceptanceStep.주문_목록조회_검증;
-import static kitchenpos.acceptance.step.OrderAcceptanceStep.주문_목록조회_요청;
-import static kitchenpos.acceptance.step.OrderAcceptanceStep.주문_상태변경_검증;
-import static kitchenpos.acceptance.step.OrderAcceptanceStep.주문_상태변경_요청;
 import static kitchenpos.acceptance.step.TableAcceptanceStep.주문테이블_생성됨;
 
 import io.restassured.response.ExtractableResponse;

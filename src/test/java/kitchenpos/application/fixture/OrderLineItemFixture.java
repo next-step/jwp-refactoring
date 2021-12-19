@@ -1,9 +1,6 @@
 package kitchenpos.application.fixture;
 
-import java.util.Collections;
-import java.util.List;
 import kitchenpos.domain.OrderLineItem;
-import kitchenpos.domain.OrderStatus;
 
 public class OrderLineItemFixture {
 

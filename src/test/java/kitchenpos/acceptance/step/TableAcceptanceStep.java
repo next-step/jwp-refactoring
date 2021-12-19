@@ -12,7 +12,7 @@ import org.springframework.http.MediaType;
 
 public class TableAcceptanceStep {
 
-    private static final String TABLE_API_URL = "/api/tables";
+    private static final String API_URL = "/api/tables";
 
     private TableAcceptanceStep() {
     }
@@ -26,7 +26,7 @@ public class TableAcceptanceStep {
             .given().log().all()
             .body(orderTable)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when().post(TABLE_API_URL)
+            .when().post(API_URL)
             .then().log().all()
             .extract();
     }
@@ -35,7 +35,7 @@ public class TableAcceptanceStep {
         return RestAssured
             .given().log().all()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when().get(TABLE_API_URL)
+            .when().get(API_URL)
             .then().log().all()
             .extract();
     }
@@ -46,7 +46,7 @@ public class TableAcceptanceStep {
             .given().log().all()
             .body(changeOrderTable)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when().put(TABLE_API_URL + "/" + orderTableId + "/empty")
+            .when().put(API_URL + "/" + orderTableId + "/empty")
             .then().log().all()
             .extract();
     }
@@ -58,7 +58,7 @@ public class TableAcceptanceStep {
             .given().log().all()
             .body(변경요청테이블)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when().put(TABLE_API_URL + "/" + 주문테이블번호 + "/number-of-guests")
+            .when().put(API_URL + "/" + 주문테이블번호 + "/number-of-guests")
             .then().log().all()
             .extract();
     }

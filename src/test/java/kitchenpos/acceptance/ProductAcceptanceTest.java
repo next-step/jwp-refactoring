@@ -1,9 +1,6 @@
 package kitchenpos.acceptance;
 
-import static kitchenpos.acceptance.step.ProductAcceptanceStep.상품_등록_요청;
-import static kitchenpos.acceptance.step.ProductAcceptanceStep.상품_목록조회_검증;
-import static kitchenpos.acceptance.step.ProductAcceptanceStep.상품_목록조회_요청;
-import static kitchenpos.acceptance.step.ProductAcceptanceStep.상품등록_검증;
+import static kitchenpos.acceptance.step.ProductAcceptanceStep.*;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;

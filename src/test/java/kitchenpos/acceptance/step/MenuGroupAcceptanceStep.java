@@ -13,7 +13,7 @@ import org.springframework.http.MediaType;
 
 public class MenuGroupAcceptanceStep {
 
-    private static final String PRODUCT_API_URL = "/api/menu-groups";
+    private static final String API_URL = "/api/menu-groups";
 
     private MenuGroupAcceptanceStep() {
     }
@@ -29,7 +29,7 @@ public class MenuGroupAcceptanceStep {
             .given().log().all()
             .body(menuGroup)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when().post(PRODUCT_API_URL)
+            .when().post(API_URL)
             .then().log().all()
             .extract();
     }
@@ -38,7 +38,7 @@ public class MenuGroupAcceptanceStep {
         return RestAssured
             .given().log().all()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when().get(PRODUCT_API_URL)
+            .when().get(API_URL)
             .then().log().all()
             .extract();
     }

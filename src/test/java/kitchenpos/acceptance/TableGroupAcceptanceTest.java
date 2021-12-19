@@ -1,10 +1,7 @@
 package kitchenpos.acceptance;
 
 import static kitchenpos.acceptance.step.TableAcceptanceStep.주문테이블_생성됨;
-import static kitchenpos.acceptance.step.TableGroupAcceptanceStep.단체지정_등록_검증;
-import static kitchenpos.acceptance.step.TableGroupAcceptanceStep.단체지정_등록_요청;
-import static kitchenpos.acceptance.step.TableGroupAcceptanceStep.단체지정_해지_검증;
-import static kitchenpos.acceptance.step.TableGroupAcceptanceStep.단체지정_해지_요청;
+import static kitchenpos.acceptance.step.TableGroupAcceptanceStep.*;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;

@@ -11,14 +11,14 @@ import org.springframework.http.MediaType;
 
 public class TableGroupAcceptanceStep {
 
-    private static final String TABLE_GROUP_API_URL = "/api/table-groups";
+    private static final String API_URL = "/api/table-groups";
 
     public static ExtractableResponse<Response> 단체지정_등록_요청(TableGroup tableGroup) {
         return RestAssured
             .given().log().all()
             .body(tableGroup)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when().post(TABLE_GROUP_API_URL)
+            .when().post(API_URL)
             .then().log().all()
             .extract();
     }
@@ -27,7 +27,7 @@ public class TableGroupAcceptanceStep {
         return RestAssured
             .given().log().all()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when().delete(TABLE_GROUP_API_URL + "/" + tableGroupId)
+            .when().delete(API_URL + "/" + tableGroupId)
             .then().log().all()
             .extract();
     }

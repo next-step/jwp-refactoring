@@ -12,7 +12,7 @@ import org.springframework.http.MediaType;
 
 public class OrderAcceptanceStep {
 
-    private static final String ORDER_API_URL = "/api/orders";
+    private static final String API_URL = "/api/orders";
 
     private OrderAcceptanceStep() {
     }
@@ -22,7 +22,7 @@ public class OrderAcceptanceStep {
             .given().log().all()
             .body(order)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when().post(ORDER_API_URL)
+            .when().post(API_URL)
             .then().log().all()
             .extract();
     }
@@ -31,7 +31,7 @@ public class OrderAcceptanceStep {
         return RestAssured
             .given().log().all()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when().get(ORDER_API_URL)
+            .when().get(API_URL)
             .then().log().all()
             .extract();
     }
@@ -42,7 +42,7 @@ public class OrderAcceptanceStep {
             .given().log().all()
             .body(changeOrder)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when().put(ORDER_API_URL + "/" + orderId + "/order-status")
+            .when().put(API_URL + "/" + orderId + "/order-status")
             .then().log().all()
             .extract();
     }

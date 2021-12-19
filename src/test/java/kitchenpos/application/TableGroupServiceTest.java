@@ -1,7 +1,5 @@
 package kitchenpos.application;
 
-import static kitchenpos.application.fixture.OrderFixture.주문_생성;
-import static kitchenpos.application.fixture.OrderLineItemFixture.주문항목_생성;
 import static kitchenpos.application.fixture.OrderTableFixture.주문테이블_생성;
 import static kitchenpos.application.fixture.TableGroupFixture.단체지정생성;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -15,8 +13,6 @@ import java.util.List;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.TableGroupDao;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;

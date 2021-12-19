@@ -12,7 +12,7 @@ import org.springframework.http.MediaType;
 
 public class ProductAcceptanceStep {
 
-    private static final String PRODUCT_API_URL = "/api/products";
+    private static final String API_URL = "/api/products";
 
     private ProductAcceptanceStep() {
     }
@@ -28,7 +28,7 @@ public class ProductAcceptanceStep {
             .given().log().all()
             .body(product)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when().post(PRODUCT_API_URL)
+            .when().post(API_URL)
             .then().log().all()
             .extract();
     }
@@ -37,7 +37,7 @@ public class ProductAcceptanceStep {
         return RestAssured
             .given().log().all()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when().get(PRODUCT_API_URL)
+            .when().get(API_URL)
             .then().log().all()
             .extract();
     }
