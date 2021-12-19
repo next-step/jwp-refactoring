@@ -23,10 +23,10 @@ import kitchenpos.domain.Product;
 class ProductServiceTest {
 
 	@Mock
-	ProductDao productDao;
+	private ProductDao productDao;
 
 	@InjectMocks
-	ProductService productService;
+	private ProductService productService;
 
 	@DisplayName("상품을 등록할 수 있다.")
 	@Test
@@ -65,17 +65,17 @@ class ProductServiceTest {
 	@Test
 	void list() {
 		//given
-		List<Product> mockProducts = Arrays.asList(new Product("타코야끼", BigDecimal.valueOf(12000)),
+		List<Product> products = Arrays.asList(new Product("타코야끼", BigDecimal.valueOf(12000)),
 			new Product("뿌링클", BigDecimal.valueOf(22000)));
 		given(productDao.findAll())
-			.willReturn(mockProducts);
+			.willReturn(products);
 
 		//when
 		List<Product> findProducts = productService.list();
 
 		//then
-		assertThat(findProducts.size()).isEqualTo(mockProducts.size());
-		상품_목록_확인(findProducts, mockProducts);
+		assertThat(findProducts.size()).isEqualTo(products.size());
+		상품_목록_확인(findProducts, products);
 	}
 
 	private void 상품_목록_확인(List<Product> findProducts, List<Product> mockProducts) {
