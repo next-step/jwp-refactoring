@@ -24,7 +24,7 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.BDDMockito.given;
 
-@DisplayName("상품 서비스 테스트")
+@DisplayName("주문 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
 public class OrderServiceTest {
   @InjectMocks
