@@ -1,6 +1,6 @@
-package kitchenpos.menu;
+package kitchenpos.menugroup;
 
-import kitchenpos.menu.dto.MenuGroupCreateRequest;
+import kitchenpos.menugroup.dto.MenuGroupCreateRequest;
 
 public class MenuGroupFixture {
 	public static MenuGroupCreateRequest 추천_메뉴_그룹() {

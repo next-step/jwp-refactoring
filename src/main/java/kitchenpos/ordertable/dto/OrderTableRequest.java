@@ -1,4 +1,4 @@
-package kitchenpos.order.dto;
+package kitchenpos.ordertable.dto;
 
 public class OrderTableRequest {
 	private int numberOfGuests;

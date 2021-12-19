@@ -1,7 +1,9 @@
-package kitchenpos.order.dto;
+package kitchenpos.ordertablegroup.dto;
 
 import java.time.LocalDateTime;
 import java.util.List;
+
+import kitchenpos.ordertable.dto.OrderTableDto;
 
 public class OrderTableGroupDto {
 	private Long id;

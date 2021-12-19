@@ -1,6 +1,6 @@
-package kitchenpos.order;
+package kitchenpos.ordertable;
 
-import kitchenpos.order.dto.OrderTableRequest;
+import kitchenpos.ordertable.dto.OrderTableRequest;
 
 public class OrderTableFixture {
 	public static OrderTableRequest 빈_주문_테이블() {

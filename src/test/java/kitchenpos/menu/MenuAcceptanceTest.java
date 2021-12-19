@@ -1,8 +1,8 @@
 package kitchenpos.menu;
 
 import static kitchenpos.menu.MenuFixture.*;
-import static kitchenpos.menu.MenuGroupAcceptanceTest.*;
-import static kitchenpos.menu.MenuGroupFixture.*;
+import static kitchenpos.menugroup.MenuGroupAcceptanceTest.*;
+import static kitchenpos.menugroup.MenuGroupFixture.*;
 import static kitchenpos.product.ProductAcceptanceTest.*;
 import static kitchenpos.product.ProductFixture.*;
 import static org.assertj.core.api.Assertions.*;
@@ -24,8 +24,8 @@ import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.menu.dto.MenuCreateRequest;
 import kitchenpos.menu.dto.MenuDto;
-import kitchenpos.menu.dto.MenuGroupDto;
 import kitchenpos.menu.dto.MenuProductDto;
+import kitchenpos.menugroup.dto.MenuGroupDto;
 import kitchenpos.product.dto.ProductDto;
 
 @DisplayName("메뉴 인수 테스트")

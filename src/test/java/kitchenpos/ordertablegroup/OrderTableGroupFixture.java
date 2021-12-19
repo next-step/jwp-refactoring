@@ -1,8 +1,8 @@
-package kitchenpos.order;
+package kitchenpos.ordertablegroup;
 
 import java.util.List;
 
-import kitchenpos.order.dto.OrderTableGroupCreateRequest;
+import kitchenpos.ordertablegroup.dto.OrderTableGroupCreateRequest;
 
 public class OrderTableGroupFixture {
 	public static OrderTableGroupCreateRequest 주문_테이블_그룹(List<Long> orderTableIds) {

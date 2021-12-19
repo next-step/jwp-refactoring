@@ -2,11 +2,11 @@ package kitchenpos.order;
 
 import static kitchenpos.menu.MenuAcceptanceTest.*;
 import static kitchenpos.menu.MenuFixture.*;
-import static kitchenpos.menu.MenuGroupAcceptanceTest.*;
-import static kitchenpos.menu.MenuGroupFixture.*;
+import static kitchenpos.menugroup.MenuGroupAcceptanceTest.*;
+import static kitchenpos.menugroup.MenuGroupFixture.*;
 import static kitchenpos.order.OrderFixture.*;
-import static kitchenpos.order.OrderTableAcceptanceTest.*;
-import static kitchenpos.order.OrderTableFixture.*;
+import static kitchenpos.ordertable.OrderTableAcceptanceTest.*;
+import static kitchenpos.ordertable.OrderTableFixture.*;
 import static kitchenpos.product.ProductAcceptanceTest.*;
 import static kitchenpos.product.ProductFixture.*;
 import static org.assertj.core.api.Assertions.*;
@@ -26,10 +26,10 @@ import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.menu.dto.MenuDto;
-import kitchenpos.menu.dto.MenuGroupDto;
+import kitchenpos.menugroup.dto.MenuGroupDto;
 import kitchenpos.order.dto.OrderDto;
 import kitchenpos.order.dto.OrderRequest;
-import kitchenpos.order.dto.OrderTableDto;
+import kitchenpos.ordertable.dto.OrderTableDto;
 import kitchenpos.product.dto.ProductDto;
 
 public class OrderAcceptanceTest extends AcceptanceTest {

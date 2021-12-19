@@ -1,6 +1,6 @@
-package kitchenpos.menu;
+package kitchenpos.menugroup;
 
-import static kitchenpos.menu.MenuGroupFixture.*;
+import static kitchenpos.menugroup.MenuGroupFixture.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.Arrays;
@@ -16,8 +16,8 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.menu.dto.MenuGroupCreateRequest;
-import kitchenpos.menu.dto.MenuGroupDto;
+import kitchenpos.menugroup.dto.MenuGroupCreateRequest;
+import kitchenpos.menugroup.dto.MenuGroupDto;
 
 @DisplayName("메뉴 그룹 인수 테스트")
 public class MenuGroupAcceptanceTest extends AcceptanceTest {

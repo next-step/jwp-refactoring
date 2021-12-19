@@ -1,14 +1,14 @@
-package kitchenpos.order;
+package kitchenpos.ordertablegroup;
 
 import static kitchenpos.menu.MenuAcceptanceTest.*;
 import static kitchenpos.menu.MenuFixture.*;
-import static kitchenpos.menu.MenuGroupAcceptanceTest.*;
-import static kitchenpos.menu.MenuGroupFixture.*;
+import static kitchenpos.menugroup.MenuGroupAcceptanceTest.*;
+import static kitchenpos.menugroup.MenuGroupFixture.*;
 import static kitchenpos.order.OrderAcceptanceTest.*;
 import static kitchenpos.order.OrderFixture.*;
-import static kitchenpos.order.OrderTableAcceptanceTest.*;
-import static kitchenpos.order.OrderTableFixture.*;
-import static kitchenpos.order.OrderTableGroupFixture.*;
+import static kitchenpos.ordertable.OrderTableAcceptanceTest.*;
+import static kitchenpos.ordertable.OrderTableFixture.*;
+import static kitchenpos.ordertablegroup.OrderTableGroupFixture.*;
 import static kitchenpos.product.ProductAcceptanceTest.*;
 import static kitchenpos.product.ProductFixture.*;
 import static org.assertj.core.api.Assertions.*;
@@ -27,11 +27,11 @@ import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.menu.dto.MenuDto;
-import kitchenpos.menu.dto.MenuGroupDto;
+import kitchenpos.menugroup.dto.MenuGroupDto;
 import kitchenpos.order.dto.OrderDto;
-import kitchenpos.order.dto.OrderTableDto;
-import kitchenpos.order.dto.OrderTableGroupCreateRequest;
-import kitchenpos.order.dto.OrderTableGroupDto;
+import kitchenpos.ordertable.dto.OrderTableDto;
+import kitchenpos.ordertablegroup.dto.OrderTableGroupCreateRequest;
+import kitchenpos.ordertablegroup.dto.OrderTableGroupDto;
 import kitchenpos.product.dto.ProductDto;
 
 @DisplayName("주문 테이블 그룹 인수 테스트")
