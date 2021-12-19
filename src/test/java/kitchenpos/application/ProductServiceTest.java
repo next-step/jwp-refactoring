@@ -83,5 +83,4 @@ class ProductServiceTest extends IntegrationTest {
 			() -> assertThat(actualIds).contains(given.getId())
 		);
 	}
-
 }

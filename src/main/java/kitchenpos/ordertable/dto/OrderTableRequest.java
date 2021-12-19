@@ -1,5 +1,7 @@
 package kitchenpos.ordertable.dto;
 
+import kitchenpos.domain.OrderTable;
+
 public class OrderTableRequest {
 	private int numberOfGuests;
 	private boolean empty;
@@ -34,5 +36,12 @@ public class OrderTableRequest {
 
 	public void setEmpty(boolean empty) {
 		this.empty = empty;
+	}
+
+	public OrderTable toOrderTable() {
+		OrderTable orderTable = new OrderTable();
+		orderTable.setNumberOfGuests(numberOfGuests);
+		orderTable.setEmpty(empty);
+		return orderTable;
 	}
 }
