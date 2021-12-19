@@ -57,10 +57,10 @@ class MenuGroupServiceTest {
 
         List<MenuGroup> menuGroups = menuGroupService.list();
 
-        assertAll(() -> {
-            assertThat(menuGroups.size()).isEqualTo(1);
-            assertThat(menuGroups).extracting(MenuGroup::getName).containsExactly(MENU_GROUP_NAME);
-        });
+        assertAll(
+            () -> assertThat(menuGroups.size()).isEqualTo(1),
+            () -> assertThat(menuGroups).extracting(MenuGroup::getName).containsExactly(MENU_GROUP_NAME)
+        );
     }
 
     @Disabled

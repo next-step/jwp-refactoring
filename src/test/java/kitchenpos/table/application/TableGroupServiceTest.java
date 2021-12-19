@@ -66,12 +66,11 @@ class TableGroupServiceTest {
 
         TableGroup saved = tableGroupService.create(this.tableGroup);
 
-        assertAll(() -> {
-            assertNotNull(saved.getCreatedDate());
-            assertThat(saved.getOrderTables())
+        assertAll(
+            () -> assertNotNull(saved.getCreatedDate()),
+            () -> assertThat(saved.getOrderTables())
                 .extracting(OrderTable::getId)
-                .containsExactly(1L, 2L);
-        });
+                .containsExactly(1L, 2L));
     }
 
     @Test
@@ -120,10 +119,9 @@ class TableGroupServiceTest {
         orderTable_1.setTableGroupId(1L);
         orderTable_2.setTableGroupId(1L);
 
-        assertAll(() -> {
-            assertNotNull(orderTable_1.getTableGroupId());
-            assertNotNull(orderTable_2.getTableGroupId());
-        });
+        assertAll(
+            () -> assertNotNull(orderTable_1.getTableGroupId()),
+            () -> assertNotNull(orderTable_2.getTableGroupId()));
 
         when(orderTableDao.findAllByTableGroupId(anyLong()))
             .thenReturn(Arrays.asList(orderTable_1, orderTable_2));
@@ -136,10 +134,9 @@ class TableGroupServiceTest {
 
         tableGroupService.ungroup(1L);
 
-        assertAll(() -> {
-            assertNull(orderTable_1.getTableGroupId());
-            assertNull(orderTable_2.getTableGroupId());
-        });
+        assertAll(
+            () -> assertNull(orderTable_1.getTableGroupId()),
+            () -> assertNull(orderTable_2.getTableGroupId()));
     }
 
     @Test

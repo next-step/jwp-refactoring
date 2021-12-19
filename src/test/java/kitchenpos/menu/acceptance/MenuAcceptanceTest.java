@@ -30,14 +30,14 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     @DisplayName("메뉴를 관리한다.")
     void manageMenu() {
         // 상품 등록 되어 있음
-        Product 후라이드치킨 = 상품_등록_되어있음("후라이드치킨", BigDecimal.valueOf(10000));
-        Product 양념치킨 = 상품_등록_되어있음("양념치킨", BigDecimal.valueOf(11000));
+        Product 후라이드치킨 = 상품_등록_되어있음("후라이드치킨", 10000);
+        Product 양념치킨 = 상품_등록_되어있음("양념치킨", 11000);
 
         // 메뉴그룹 등록 되어 있음
         MenuGroup 치킨 = 메뉴그룹_등록_되어있음("치킨");
 
         // 메뉴 등록 요청
-        List<MenuProduct> menuProducts = getMenuProducts(Arrays.asList(후라이드치킨, 양념치킨), Arrays.asList(1L, 1L));
+        List<MenuProduct> menuProducts = createMenuProducts(Arrays.asList(후라이드치킨, 양념치킨), Arrays.asList(1L, 1L));
         ExtractableResponse<Response> saveResponse = 메뉴_등록_요청("두마리세트", BigDecimal.valueOf(20000), 치킨, menuProducts);
         // 메뉴 등록됨
         메뉴_등록_됨(saveResponse);
@@ -91,11 +91,11 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     }
 
     public static Menu 메뉴등록되어있음(String name, BigDecimal price, MenuGroup menuGroup, List<Product> products) {
-        List<MenuProduct> menuProducts = getMenuProducts(products, Arrays.asList(1L, 1L));
+        List<MenuProduct> menuProducts = createMenuProducts(products, Arrays.asList(1L, 1L));
         return 메뉴_등록_요청(name, price, menuGroup, menuProducts).as(Menu.class);
     }
 
-    private static List<MenuProduct> getMenuProducts(List<Product> products, List<Long> productsQuantity) {
+    private static List<MenuProduct> createMenuProducts(List<Product> products, List<Long> productsQuantity) {
         List<MenuProduct> menuProducts = new ArrayList<>();
         for (int i = 0; i < products.size(); i++) {
             MenuProduct menuProduct = new MenuProduct();

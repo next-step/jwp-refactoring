@@ -66,7 +66,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
         assertThat(list).extracting(Product::getName).containsExactly(expected);
     }
 
-    public static Product 상품_등록_되어있음(String name, BigDecimal price) {
-        return 상품_등록_요청(name, price).as(Product.class);
+    public static Product 상품_등록_되어있음(String name, int price) {
+        return 상품_등록_요청(name, BigDecimal.valueOf(price)).as(Product.class);
     }
 }

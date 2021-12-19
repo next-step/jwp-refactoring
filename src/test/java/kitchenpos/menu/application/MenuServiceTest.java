@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
@@ -45,21 +46,13 @@ public class MenuServiceTest {
     private MenuService menuService;
 
     private final BigDecimal price = BigDecimal.valueOf(10000);
-    private final Product product = new Product();
+    private final Product product = mock(Product.class);
     private final MenuProduct menuProduct = new MenuProduct();
     private final Menu menu = new Menu();
 
     @BeforeEach
     void setUp() {
-        product.setId(1L);
-        product.setName("상품");
-        product.setPrice(price);
-
-        menuProduct.setSeq(1L);
-        menuProduct.setQuantity(1L);
-        menuProduct.setMenuId(1L);
         menuProduct.setProductId(1L);
-
         menu.setId(1L);
         menu.setMenuGroupId(1L);
         menu.setName("메뉴");
@@ -70,6 +63,9 @@ public class MenuServiceTest {
     @Test
     @DisplayName("메뉴를 등록한다.")
     void create() {
+        menuProduct.setQuantity(1L);
+        when(product.getPrice())
+            .thenReturn(price);
         when(menuGroupDao.existsById(anyLong()))
             .thenReturn(true);
         when(productDao.findById(anyLong()))
@@ -81,12 +77,12 @@ public class MenuServiceTest {
 
         Menu saved = menuService.create(menu);
 
-        assertAll(() -> {
-            assertThat(saved.getName()).isEqualTo("메뉴");
-            assertThat(saved.getMenuProducts())
+        assertAll(
+            () -> assertThat(saved.getName()).isEqualTo("메뉴"),
+            () -> assertThat(saved.getMenuProducts())
                 .extracting(MenuProduct::getMenuId)
-                .containsExactly(saved.getId());
-        });
+                .containsExactly(saved.getId())
+        );
     }
 
     @Test
@@ -112,6 +108,8 @@ public class MenuServiceTest {
     @DisplayName("메뉴의 가격은 구성 상품의 총 합보다 작거나 같아야 한다.")
     void createValidateSumPrice() {
         menu.setPrice(BigDecimal.valueOf(20000));
+        when(product.getPrice())
+            .thenReturn(price);
         when(menuGroupDao.existsById(anyLong()))
             .thenReturn(true);
         when(productDao.findById(anyLong()))
@@ -147,11 +145,10 @@ public class MenuServiceTest {
 
         List<Menu> menus = menuService.list();
 
-        assertAll(() -> {
-            assertThat(menus.size()).isEqualTo(1);
-            assertThat(menus).extracting(Menu::getName).containsExactly("메뉴");
-            assertThat(menus.get(0).getMenuProducts())
-                .extracting(MenuProduct::getMenuId).containsExactly(1L);
-        });
+        assertAll(
+            () -> assertThat(menus.size()).isEqualTo(1),
+            () -> assertThat(menus).extracting(Menu::getName).containsExactly("메뉴"),
+            () -> assertThat(menus.get(0).getMenuProducts().size()).isEqualTo(1)
+        );
     }
 }

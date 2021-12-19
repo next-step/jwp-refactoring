@@ -3,6 +3,7 @@ package kitchenpos.table.acceptance;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -10,47 +11,58 @@ import io.restassured.response.Response;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.table.domain.OrderTable;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 public class TableAcceptanceTest extends AcceptanceTest {
     private static final String URL = "/api/tables";
 
-    @Test
     @DisplayName("테이블을 관리한다.")
-    void manageTable() {
-        // 빈 테이블 등록 요청
-        ExtractableResponse<Response> saveResponse = 빈_테이블_등록_요청();
-        // 빈 테이블 등록 됨
-        빈_테이블_등록됨(saveResponse);
+    @TestFactory
+    Stream<DynamicTest> manageTable() {
+        return Stream.of(
+            dynamicTest("빈 테이블을 등록한다.", () -> {
+                // 빈 테이블 등록 요청
+                ExtractableResponse<Response> saveResponse = 빈_테이블_등록_요청();
+                // 빈 테이블 등록 됨
+                빈_테이블_등록됨(saveResponse);
 
-        OrderTable savedOrderTable = saveResponse.as(OrderTable.class);
-        // 테이블 목록 조회 요청
-        ExtractableResponse<Response> response = 테이블_목록_조회_요청();
-        // 테이블 목록 조회됨
-        테이블_목록_조회됨(response, Arrays.asList(savedOrderTable));
+                // 테이블 목록 조회 요청
+                ExtractableResponse<Response> response = 테이블_목록_조회_요청();
+                // 테이블 목록 조회됨
+                테이블_목록_조회됨(response, Arrays.asList(saveResponse.as(OrderTable.class)));
+            }),
+            dynamicTest("테이블의 상태를 변경한다.", () -> {
+                // 테이블 목록 조회 요청
+                ExtractableResponse<Response> response = 테이블_목록_조회_요청();
+                List<OrderTable> orderTables = response.jsonPath().getList(".", OrderTable.class);
+                OrderTable orderTable = orderTables.get(0);
 
-        // 빈테이블 -> 주문 테이블 상태 변경 요청
-        ExtractableResponse<Response> emptyResponse = 테이블_상태변경_요청(savedOrderTable.getId(), false);
+                // 빈테이블 -> 주문 테이블 상태 변경 요청
+                ExtractableResponse<Response> emptyResponse = 테이블_상태변경_요청(orderTable.getId(), false);
 
-        // 상태 변경됨
-        테이블_상태변경_됨(emptyResponse, false);
+                // 상태 변경됨
+                테이블_상태변경_됨(emptyResponse, false);
 
-        // 테이블의 손님 수 변경 요청
-        ExtractableResponse<Response> numberResponse = 테이블_손님수_변경_요청(savedOrderTable.getId(), 3);
+                // 테이블의 손님 수 변경 요청
+                ExtractableResponse<Response> numberResponse = 테이블_손님수_변경_요청(orderTable.getId(), 3);
 
-        // 테이블의 손님 수 변경 됨
-        테이블_손님수_변경_됨(numberResponse, 3);
+                // 테이블의 손님 수 변경 됨
+                테이블_손님수_변경_됨(numberResponse, 3);
 
-        // 테이블 목록 조회 요청
-        response = 테이블_목록_조회_요청();
-        // 테이블 목록 조회됨
-        테이블_목록_조회됨(response, Arrays.asList(numberResponse.as(OrderTable.class)));
-
+                // 테이블 목록 조회 요청
+                response = 테이블_목록_조회_요청();
+                // 테이블 목록 조회됨
+                테이블_목록_조회됨(response, Arrays.asList(numberResponse.as(OrderTable.class)));
+            })
+        );
     }
 
     public static ExtractableResponse<Response> 테이블_등록_요청(int numberOfGuests, boolean isEmpty) {
