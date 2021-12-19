@@ -20,7 +20,7 @@ class TableAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("주문 테이블을 관리한다.")
     @Test
-    void manageMenuGroup() {
+    void manageTable() {
         // given
         OrderTable 비어있는_주문_테이블 = new OrderTable();
         비어있는_주문_테이블.setNumberOfGuests(0);
@@ -51,7 +51,7 @@ class TableAcceptanceTest extends AcceptanceTest {
         주문_테이블_손님_수_수정됨(주문_테이블_손님_수_수정_응답, numberOfGuests);
     }
 
-    private ExtractableResponse<Response> 주문_테이블_생성_요청(OrderTable params) {
+    private static ExtractableResponse<Response> 주문_테이블_생성_요청(OrderTable params) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -120,5 +120,14 @@ class TableAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value())
                 , () -> assertThat(response.jsonPath().getInt("numberOfGuests")).isEqualTo(expect)
         );
+    }
+
+    public static OrderTable 주문_테이블_등록되어_있음(int numberOfGuests, boolean empty) {
+        OrderTable orderTable = new OrderTable();
+        orderTable.setNumberOfGuests(numberOfGuests);
+        orderTable.setEmpty(empty);
+
+        ExtractableResponse<Response> response = 주문_테이블_생성_요청(orderTable);
+        return response.as(OrderTable.class);
     }
 }

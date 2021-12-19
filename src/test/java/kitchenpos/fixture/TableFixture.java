@@ -9,6 +9,9 @@ public class TableFixture {
     public static final OrderTable 비어있지_않은_테이블 = create(3L, null, 0, false);
     public static final OrderTable 비어있는_테이블 = create(4L, null, 0, true);
 
+    public static final OrderTable 회사A_테이블1 = create(1L, 1L, 6, false);
+    public static final OrderTable 회사A_테이블2 = create(2L, 1L, 4, false);
+
     private TableFixture() {
         throw new UnsupportedOperationException();
     }
