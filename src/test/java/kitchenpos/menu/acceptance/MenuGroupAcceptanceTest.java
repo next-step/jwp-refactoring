@@ -7,12 +7,14 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.dto.MenuGroupRequest;
+import kitchenpos.menu.dto.MenuGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+@DisplayName("메뉴 그룹 인수 테스트")
 public class MenuGroupAcceptanceTest extends AcceptanceTest {
     private static final String URL = "/api/menu-groups";
 
@@ -31,12 +33,11 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 메뉴그룹_등록_요청(String name) {
-        MenuGroup menuGroup = new MenuGroup();
-        menuGroup.setName(name);
+        MenuGroupRequest request = new MenuGroupRequest(name);
         return RestAssured
             .given().log().all()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .body(menuGroup)
+            .body(request)
             .when().post(URL)
             .then().log().all()
             .extract();
@@ -56,13 +57,13 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 메뉴그룹_목록_조회_됨(ExtractableResponse<Response> response, String... expected) {
-        List<MenuGroup> menuGroups = response.jsonPath().getList(".", MenuGroup.class);
+        List<MenuGroupResponse> menuGroups = response.jsonPath().getList(".", MenuGroupResponse.class);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(menuGroups).extracting(MenuGroup::getName).containsExactly(expected);
+        assertThat(menuGroups).extracting(MenuGroupResponse::getName).containsExactly(expected);
     }
 
-    public static MenuGroup 메뉴그룹_등록_되어있음(String name) {
-        return 메뉴그룹_등록_요청(name).as(MenuGroup.class);
+    public static MenuGroupResponse 메뉴그룹_등록_되어있음(String name) {
+        return 메뉴그룹_등록_요청(name).as(MenuGroupResponse.class);
     }
 }

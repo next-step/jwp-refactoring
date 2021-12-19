@@ -3,6 +3,7 @@ package kitchenpos.menu.domain;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import kitchenpos.exception.InvalidArgumentException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -14,7 +15,7 @@ class MenuGroupTest {
     @DisplayName("메뉴 그룹 이름은 필수이다")
     void createValidateName() {
         assertThatThrownBy(() -> MenuGroup.from(null))
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(InvalidArgumentException.class);
     }
 
     @Test

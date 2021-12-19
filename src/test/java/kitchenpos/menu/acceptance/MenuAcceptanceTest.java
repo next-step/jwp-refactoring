@@ -8,22 +8,23 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.product.domain.Product;
+import kitchenpos.menu.dto.MenuGroupResponse;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+@DisplayName("메뉴 관리 인수 테스트")
 public class MenuAcceptanceTest extends AcceptanceTest {
     private static final String URL = "/api/menus";
 
@@ -35,32 +36,29 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         ProductResponse 양념치킨 = 상품_등록_되어있음("양념치킨", 11000);
 
         // 메뉴그룹 등록 되어 있음
-        MenuGroup 치킨 = 메뉴그룹_등록_되어있음("치킨");
+        MenuGroupResponse 치킨 = 메뉴그룹_등록_되어있음("치킨");
 
         // 메뉴 등록 요청
-        List<MenuProduct> menuProducts = createMenuProducts(Arrays.asList(후라이드치킨, 양념치킨), Arrays.asList(1L, 1L));
-        ExtractableResponse<Response> saveResponse = 메뉴_등록_요청("두마리세트", BigDecimal.valueOf(20000), 치킨, menuProducts);
+        List<MenuProductRequest> menuProducts = createMenuProducts(Arrays.asList(후라이드치킨, 양념치킨), Arrays.asList(1L, 1L));
+        ExtractableResponse<Response> saveResponse = 메뉴_등록_요청("두마리세트", 20000, 치킨, menuProducts);
         // 메뉴 등록됨
         메뉴_등록_됨(saveResponse);
 
         // 메뉴 목록 조회 요청
         ExtractableResponse<Response> response = 메뉴_목록_조회_요청();
         // 메뉴 목록 조회됨
-        메뉴_목록_조회됨(response, Arrays.asList(saveResponse.as(Menu.class)));
+        메뉴_목록_조회됨(response, Arrays.asList(saveResponse.as(MenuResponse.class)));
 
     }
 
-    public static ExtractableResponse<Response> 메뉴_등록_요청(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        Menu menu = new Menu();
-        menu.setName(name);
-        menu.setPrice(price);
-        menu.setMenuProducts(menuProducts);
-        menu.setMenuGroupId(menuGroup.getId());
+    public static ExtractableResponse<Response> 메뉴_등록_요청(String name, Integer price,
+        MenuGroupResponse menuGroup, List<MenuProductRequest> menuProducts) {
+        MenuRequest menuRequest = new MenuRequest(name, price, menuGroup.getId(), menuProducts);
 
         return RestAssured
             .given().log().all()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .body(menu)
+            .body(menuRequest)
             .when().post(URL)
             .then().log().all()
             .extract();
@@ -79,33 +77,26 @@ public class MenuAcceptanceTest extends AcceptanceTest {
             .extract();
     }
 
-    public static void 메뉴_목록_조회됨(ExtractableResponse<Response> response, List<Menu> expected) {
-        List<Menu> list = response.jsonPath().getList(".", Menu.class);
+    public static void 메뉴_목록_조회됨(ExtractableResponse<Response> response, List<MenuResponse> expected) {
+        List<MenuResponse> list = response.jsonPath().getList(".", MenuResponse.class);
         List<String> expectedNames = expected.stream()
-            .map(Menu::getName)
+            .map(MenuResponse::getName)
             .collect(Collectors.toList());
 
         assertAll(() -> {
             assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-            assertThat(list).extracting(Menu::getName).containsAll(expectedNames);
+            assertThat(list).extracting(MenuResponse::getName).containsAll(expectedNames);
         });
     }
 
-    public static Menu 메뉴등록되어있음(String name, BigDecimal price, MenuGroup menuGroup, List<ProductResponse> products) {
-        List<MenuProduct> menuProducts = createMenuProducts(products, Arrays.asList(1L, 1L));
+    public static Menu 메뉴등록되어있음(String name, Integer price, MenuGroupResponse menuGroup, List<ProductResponse> products) {
+        List<MenuProductRequest> menuProducts = createMenuProducts(products, Arrays.asList(1L, 1L));
         return 메뉴_등록_요청(name, price, menuGroup, menuProducts).as(Menu.class);
     }
 
-    private static List<MenuProduct> createMenuProducts(List<ProductResponse> products, List<Long> productsQuantity) {
-        List<MenuProduct> menuProducts = new ArrayList<>();
-        for (int i = 0; i < products.size(); i++) {
-            MenuProduct menuProduct = new MenuProduct();
-            menuProduct.setSeq(Long.valueOf(i));
-            menuProduct.setProductId(products.get(i).getId());
-            menuProduct.setQuantity(productsQuantity.get(i));
-            menuProducts.add(menuProduct);
-        }
-
-        return menuProducts;
+    private static List<MenuProductRequest> createMenuProducts(List<ProductResponse> products, List<Long> productsQuantity) {
+        return IntStream.range(0, products.size())
+            .mapToObj(i -> new MenuProductRequest(products.get(i).getId(), productsQuantity.get(i)))
+            .collect(Collectors.toList());
     }
 }

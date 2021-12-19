@@ -5,149 +5,98 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.dao.MenuProductDao;
-import kitchenpos.dao.ProductDao;
+import kitchenpos.exception.NotFoundException;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuProductResponse;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.product.domain.Product;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
+import kitchenpos.product.domain.ProductRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 @DisplayName("메뉴 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
 public class MenuServiceTest {
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
 
     @Mock
-    private MenuProductDao menuProductDao;
-
-    @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     @InjectMocks
     private MenuService menuService;
 
-    private final BigDecimal price = BigDecimal.valueOf(10000);
-    private final Product product = mock(Product.class);
-    private final MenuProduct menuProduct = new MenuProduct();
-    private final Menu menu = new Menu();
-
-    @BeforeEach
-    void setUp() {
-        menuProduct.setProductId(1L);
-        menu.setId(1L);
-        menu.setMenuGroupId(1L);
-        menu.setName("메뉴");
-        menu.setPrice(price);
-        menu.setMenuProducts(Arrays.asList(menuProduct));
-    }
-
     @Test
     @DisplayName("메뉴를 등록한다.")
     void create() {
-        menuProduct.setQuantity(1L);
-        when(product.getPrice())
-            .thenReturn(price);
-        when(menuGroupDao.existsById(anyLong()))
-            .thenReturn(true);
-        when(productDao.findById(anyLong()))
-            .thenReturn(Optional.of(product));
-        when(menuDao.save(any(Menu.class)))
-            .thenReturn(menu);
-        when(menuProductDao.save(any(MenuProduct.class)))
-            .thenReturn(menuProduct);
+        MenuGroup menuGroup = MenuGroup.from("치킨류");
+        Product product = Product.of("후라이드치킨", 10000);
+        MenuProduct menuProduct = MenuProduct.of(product, 1L);
 
-        Menu saved = menuService.create(menu);
+        Menu menu = Menu.of("후라이드치킨", 10000, menuGroup);
+        menu.addMenuProducts(Arrays.asList(menuProduct));
+
+        ReflectionTestUtils.setField(menuProduct, "seq", 1L);
+        when(menuGroupRepository.findById(anyLong()))
+            .thenReturn(Optional.of(menuGroup));
+        when(productRepository.findById(anyLong()))
+            .thenReturn(Optional.of(product));
+        when(menuRepository.save(any(Menu.class)))
+            .thenReturn(menu);
+
+        MenuRequest menuRequest = new MenuRequest("후라이드치킨", 10000, 1L,
+            Arrays.asList(new MenuProductRequest(1L, 1L)));
+
+        MenuResponse saved = menuService.create(menuRequest);
 
         assertAll(
-            () -> assertThat(saved.getName()).isEqualTo("메뉴"),
+            () -> assertThat(saved.getName()).isEqualTo("후라이드치킨"),
             () -> assertThat(saved.getMenuProducts())
-                .extracting(MenuProduct::getMenuId)
-                .containsExactly(saved.getId())
+            .extracting(MenuProductResponse::getQuantity)
+            .containsExactly(1L)
         );
     }
 
     @Test
     @DisplayName("메뉴 등록 시 메뉴 그룹이 없는 경우 실패")
     void createValidateMenuGroup() {
-        assertThatThrownBy(() -> menuService.create(menu))
-            .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
-    @DisplayName("메뉴 가격 체크 실패")
-    void createValidatePrice() {
-        menu.setPrice(BigDecimal.valueOf(-1));
-        assertThatThrownBy(() -> menuService.create(menu))
-            .isInstanceOf(IllegalArgumentException.class);
-
-        menu.setPrice(null);
-        assertThatThrownBy(() -> menuService.create(menu))
-            .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
-    @DisplayName("메뉴의 가격은 구성 상품의 총 합보다 작거나 같아야 한다.")
-    void createValidateSumPrice() {
-        menu.setPrice(BigDecimal.valueOf(20000));
-        when(product.getPrice())
-            .thenReturn(price);
-        when(menuGroupDao.existsById(anyLong()))
-            .thenReturn(true);
-        when(productDao.findById(anyLong()))
-            .thenReturn(Optional.of(product));
-
-        assertThatThrownBy(() -> menuService.create(menu))
-            .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Disabled
-    @Test
-    @DisplayName("메뉴 이름 없는 경우 실패")
-    void createValidateName() {
-        // TODO: 2021/12/17 이름 정보 필수이므로 비지니스 로직 추가 필요. 현재는 실패하는 테스트임.
-        menu.setName(null);
-
-        when(menuGroupDao.existsById(anyLong()))
-            .thenReturn(true);
-        when(productDao.findById(anyLong()))
-            .thenReturn(Optional.of(product));
-
-        assertThatThrownBy(() -> menuService.create(menu))
-            .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> menuService.create(new MenuRequest("메뉴", 10000, null, null)))
+            .isInstanceOf(NotFoundException.class)
+            .hasMessage("해당하는 메뉴그룹을 찾을 수 없습니다.");
     }
 
     @Test
     @DisplayName("메뉴 목록을 조회한다.")
     void list() {
-        when(menuDao.findAll())
-            .thenReturn(Arrays.asList(menu));
-        when(menuProductDao.findAllByMenuId(anyLong()))
-            .thenReturn(Arrays.asList(menuProduct));
+        Menu menu = Menu.of("후라이드치킨", 10000, MenuGroup.from("치킨류"));
+        menu.addMenuProducts(Arrays.asList(MenuProduct.of(Product.of("후라이드치킨", 10000), 1L)));
 
-        List<Menu> menus = menuService.list();
+        when(menuRepository.findAll())
+            .thenReturn(Arrays.asList(menu));
+
+        List<MenuResponse> menus = menuService.list();
 
         assertAll(
             () -> assertThat(menus.size()).isEqualTo(1),
-            () -> assertThat(menus).extracting(Menu::getName).containsExactly("메뉴"),
+            () -> assertThat(menus).extracting(MenuResponse::getName).containsExactly("후라이드치킨"),
             () -> assertThat(menus.get(0).getMenuProducts().size()).isEqualTo(1)
         );
     }

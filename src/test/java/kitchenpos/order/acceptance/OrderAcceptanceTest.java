@@ -11,24 +11,21 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.dto.MenuGroupResponse;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.product.dto.ProductResponse;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -47,9 +44,9 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         ProductResponse 후라이드치킨 = 상품_등록_되어있음("후라이드치킨", 10000);
         ProductResponse 양념치킨 = 상품_등록_되어있음("양념치킨", 11000);
         // 메뉴그룹 등록 되어 있음
-        MenuGroup 치킨 = 메뉴그룹_등록_되어있음("치킨");
+        MenuGroupResponse 치킨 = 메뉴그룹_등록_되어있음("치킨");
         // 메뉴 등록되어 있음
-        세트_1 = 메뉴등록되어있음("세트1", BigDecimal.valueOf(20000), 치킨, Arrays.asList(후라이드치킨, 양념치킨));
+        세트_1 = 메뉴등록되어있음("세트1", 20000, 치킨, Arrays.asList(후라이드치킨, 양념치킨));
         // 주문 테이블 등록되어 있음
         orderTable = 주문테이블_등록되어있음(3);
     }
