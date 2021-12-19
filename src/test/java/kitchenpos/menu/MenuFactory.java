@@ -32,6 +32,10 @@ public class MenuFactory {
     return menu;
   }
 
+  public static Menu ofMenu(String name, Long menuGroupId, int price) {
+    return ofMenu(null, name, menuGroupId, price);
+  }
+
   public static Product ofProduct(Long id, String name, int price) {
     Product product = new Product();
     product.setId(id);

@@ -19,8 +19,8 @@ public class OrderFactory {
     return orderLineItem;
   }
 
-  public static OrderLineItem ofOrderLineItem(Long orderId, Long menuId, Long quantity) {
-    return ofOrderLineItem(null, orderId, menuId, quantity);
+  public static OrderLineItem ofOrderLineItem(Long menuId, Long quantity) {
+    return ofOrderLineItem(null, null, menuId, quantity);
   }
 
   public static Order ofOrder(Long id, Long orderTableId, String orderStatus, List<OrderLineItem> orderLineItems, LocalDateTime orderedTime) {
@@ -34,6 +34,10 @@ public class OrderFactory {
     return order;
   }
 
+  public static Order ofOrder(long orderTableId) {
+    return ofOrder(null, orderTableId, null, null, null);
+  }
+
   public static OrderTable ofOrderTable(Long id, Long tableGroupId, boolean empty, int numberOfGuests) {
     OrderTable orderTable = new OrderTable();
     orderTable.setId(id);
@@ -44,6 +48,10 @@ public class OrderFactory {
     return orderTable;
   }
 
+  public static OrderTable ofOrderTable(boolean empty, int numberOfGuests) {
+    return ofOrderTable(null, null, empty, numberOfGuests);
+  }
+
   public static TableGroup ofTableGroup(Long id, List<OrderTable> orderTables, LocalDateTime createdDate) {
     TableGroup tableGroup = new TableGroup();
     tableGroup.setId(id);
@@ -51,5 +59,9 @@ public class OrderFactory {
     tableGroup.setCreatedDate(createdDate);
 
     return tableGroup;
+  }
+
+  public static TableGroup ofTableGroup(List<OrderTable> orderTables) {
+    return ofTableGroup(null, orderTables, null);
   }
 }
