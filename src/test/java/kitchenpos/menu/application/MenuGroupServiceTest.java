@@ -1,4 +1,4 @@
-package kitchenpos.application;
+package kitchenpos.menu.application;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -6,6 +6,7 @@ import static org.mockito.BDDMockito.*;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -15,10 +16,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.dto.MenuGroupResponse;
 
 @ExtendWith(MockitoExtension.class)
-class MenuGroupServiceTest {
+public class MenuGroupServiceTest {
 
     @Mock
     private MenuGroupDao menuGroupDao;
@@ -39,10 +41,10 @@ class MenuGroupServiceTest {
             .willReturn(menuGroup);
 
         // when
-        MenuGroup savedMenuGroup = menuGroupService.create(menuGroup);
+        MenuGroupResponse savedMenuGroup = menuGroupService.create(menuGroup);
 
         // then
-        assertEquals(menuGroup, savedMenuGroup);
+        assertEquals(menuGroup.getName(), savedMenuGroup.getName());
     }
 
     @DisplayName("메뉴 그룹 목록을 조회한다.")
@@ -56,18 +58,22 @@ class MenuGroupServiceTest {
             .willReturn(menuGroups);
 
         // when
-        List<MenuGroup> findMenuGroups = menuGroupService.list();
+        List<MenuGroupResponse> findMenuGroups = menuGroupService.list();
 
         // then
         assertThat(findMenuGroups)
-            .containsExactlyElementsOf(menuGroups);
+            .extracting("name")
+            .containsExactlyElementsOf(menuGroups.stream()
+                .map(MenuGroup::getName)
+                .collect(Collectors.toList())
+            );
     }
 
-    static MenuGroup 메뉴_그룹_생성(String name) {
+    public static MenuGroup 메뉴_그룹_생성(String name) {
         return new MenuGroup(name);
     }
 
-    static MenuGroup 메뉴_그룹_생성(Long id, String name) {
+    public static MenuGroup 메뉴_그룹_생성(Long id, String name) {
         return new MenuGroup(id, name);
     }
 }

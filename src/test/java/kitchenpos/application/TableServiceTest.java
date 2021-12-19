@@ -170,15 +170,15 @@ class TableServiceTest {
         verify(orderTableDao).findById(orderTableId);
     }
 
-    static OrderTable 주문_테이블_생성(int numberOfGuests, boolean empty) {
+    public static OrderTable 주문_테이블_생성(int numberOfGuests, boolean empty) {
         return new OrderTable(numberOfGuests, empty);
     }
 
-    static OrderTable 주문_테이블_생성(Long id, int numberOfGuests, boolean empty) {
+    public static OrderTable 주문_테이블_생성(Long id, int numberOfGuests, boolean empty) {
         return new OrderTable(id, numberOfGuests, empty);
     }
 
-    static OrderTable 주문_테이블_생성(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
+    public static OrderTable 주문_테이블_생성(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
         return new OrderTable(id, tableGroupId, numberOfGuests, empty);
     }
 }

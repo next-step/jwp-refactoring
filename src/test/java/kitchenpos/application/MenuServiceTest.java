@@ -1,7 +1,7 @@
 package kitchenpos.application;
 
-import static kitchenpos.application.MenuGroupServiceTest.*;
 import static kitchenpos.application.ProductServiceTest.*;
+import static kitchenpos.menu.application.MenuGroupServiceTest.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
@@ -23,9 +23,9 @@ import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
+import kitchenpos.menu.domain.MenuGroup;
 
 @ExtendWith(MockitoExtension.class)
 class MenuServiceTest {
