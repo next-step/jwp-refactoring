@@ -25,7 +25,7 @@ public class MenuProduct {
         this.quantity = quantity;
     }
 
-    public void setMenu(Menu menu) {
+    public void updateMenu(Menu menu) {
         this.menu = menu;
     }
 

@@ -2,7 +2,7 @@ package kitchenpos.menu.application;
 
 import kitchenpos.menu.domain.*;
 import kitchenpos.dao.ProductDao;
-import kitchenpos.menu.application.MenuService;
+import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menuGroup.domain.MenuGroup;
 import kitchenpos.domain.Product;
 import kitchenpos.menuGroup.domain.MenuGroupRepository;
@@ -23,6 +23,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -57,21 +58,21 @@ public class MenuServiceTest {
         후라이드두마리구성.setProductId(1L);
         후라이드두마리구성.setQuantity(2L);
 
-        치킨류 = MenuGroupTestFixture.메뉴그룹생성(1L, "치킨");
+        치킨류 = MenuGroupTestFixture.생성(1L, "치킨");
 
-        후라이드두마리세트 = MenuTestFixture.메뉴생성(1L, "후라이드두마리세트", new BigDecimal("10000"), 치킨류, Arrays.asList(후라이드두마리구성));
+        후라이드두마리세트 = MenuTestFixture.생성(1L, "후라이드두마리세트", new BigDecimal("10000"), 치킨류);
+        후라이드두마리세트.addMenuProducts(Arrays.asList(후라이드두마리구성));
     }
 
     @DisplayName("메뉴 생성")
     @Test
     void create() {
         //given
-        given(menuGroupRepository.existsById(1L)).willReturn(true);
+        given(menuGroupRepository.findById(1L)).willReturn(java.util.Optional.ofNullable(치킨류));
         given(productDao.findById(1L)).willReturn(java.util.Optional.ofNullable(후라이드));
-        given(menuRepository.save(후라이드두마리세트)).willReturn(후라이드두마리세트);
-        //given(menuProductRepository.save(후라이드두마리구성)).willReturn(후라이드두마리구성);
+        given(menuRepository.save(any())).willReturn(후라이드두마리세트);
 
-        Menu creatMenu = menuService.create(후라이드두마리세트);
+        Menu creatMenu = menuService.create(MenuRequest.of("후라이드두마리세트", new BigDecimal("10000"), 치킨류.getId(), Arrays.asList(후라이드두마리구성)));
 
         assertAll(
                 () -> assertThat(creatMenu).isNotNull(),
@@ -82,8 +83,8 @@ public class MenuServiceTest {
     @DisplayName("금액은 0원 이상이어야한고 금액이 있어야한다.")
     @Test
     void createPriceError() {
-        Menu 금액_없는_세트 = new Menu();
-        Menu 금액이_음수인_세트 = new Menu();
+        MenuRequest 금액_없는_세트 = new MenuRequest();
+        MenuRequest 금액이_음수인_세트 = new MenuRequest();
         금액이_음수인_세트.setPrice(new BigDecimal("-1000"));
 
         assertThatThrownBy(() ->
@@ -98,7 +99,7 @@ public class MenuServiceTest {
     @DisplayName("가격 x 수량 = 금액 보다 등록한 금액이 더 작아야 한다.")
     @Test
     void createPriceLessError() {
-        Menu 비싼_후라이드두마리세트 = MenuTestFixture.메뉴생성(2L,"비싼_후라이드두마리세트",new BigDecimal("100000"),치킨류,Arrays.asList(후라이드두마리구성));
+        MenuRequest 비싼_후라이드두마리세트 = MenuRequest.of("비싼_후라이드두마리세트", new BigDecimal("100000"), 치킨류.getId(), Arrays.asList(후라이드두마리구성));
 
         assertThatThrownBy(() ->
                 menuService.create(비싼_후라이드두마리세트)

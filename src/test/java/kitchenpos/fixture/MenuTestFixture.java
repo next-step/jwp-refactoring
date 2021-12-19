@@ -9,7 +9,7 @@ import java.util.List;
 
 public class MenuTestFixture {
 
-    public static Menu 메뉴생성(Long id, String name, BigDecimal price, MenuGroup menuGroupId, List<MenuProduct> menuProducts) {
-        return new Menu(id,name,price,menuGroupId,menuProducts);
+    public static Menu 생성(Long id, String name, BigDecimal price, MenuGroup menuGroupId) {
+        return new Menu(id,name,price,menuGroupId);
     }
 }

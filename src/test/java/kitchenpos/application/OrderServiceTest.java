@@ -4,6 +4,7 @@ import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.*;
+import kitchenpos.fixture.MenuProductTextFixture;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
@@ -56,14 +57,12 @@ public class OrderServiceTest {
         후라이드.setId(1L);
         후라이드.setPrice(new BigDecimal("5000"));
 
-        후라이드두마리구성 = new MenuProduct();
-        후라이드두마리구성.setSeq(1L);
-        후라이드두마리구성.setProductId(1L);
-        후라이드두마리구성.setQuantity(2L);
+        후라이드두마리구성 = MenuProductTextFixture.생성(1L,1L,2L);
 
-        치킨류 = MenuGroupTestFixture.메뉴그룹생성(1L, "치킨");
+        치킨류 = MenuGroupTestFixture.생성(1L, "치킨");
 
-        후라이드두마리세트 = MenuTestFixture.메뉴생성(1L, "후라이드두마리세트", new BigDecimal("10000"), 치킨류, Arrays.asList(후라이드두마리구성));
+        후라이드두마리세트 = MenuTestFixture.생성(1L, "후라이드두마리세트", new BigDecimal("10000"), 치킨류);
+        후라이드두마리세트.addMenuProducts(Arrays.asList(후라이드두마리구성));
 
         테이블1번 = new OrderTable();
         테이블1번.setId(1L);

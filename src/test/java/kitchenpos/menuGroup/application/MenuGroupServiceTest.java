@@ -33,9 +33,9 @@ public class MenuGroupServiceTest {
 
     @BeforeEach
     void setUp() {
-        치킨 = MenuGroupTestFixture.메뉴그룹생성(1L,"치킨");
+        치킨 = MenuGroupTestFixture.생성(1L,"치킨");
 
-        피자 = MenuGroupTestFixture.메뉴그룹생성(2L,"피자");
+        피자 = MenuGroupTestFixture.생성(2L,"피자");
     }
 
     @DisplayName("메뉴 그룹 생성")
