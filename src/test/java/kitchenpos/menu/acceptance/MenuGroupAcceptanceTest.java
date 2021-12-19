@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.*;
 import java.util.Arrays;
 import java.util.List;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -61,7 +60,6 @@ class MenuGroupAcceptanceTest extends AcceptanceTest {
     }
 
     private ExtractableResponse<Response> 메뉴_그룹_목록_조회_요청() {
-        // when
         return RestAssured
             .given().log().all()
             .accept(MediaType.APPLICATION_JSON_VALUE)
@@ -77,7 +75,8 @@ class MenuGroupAcceptanceTest extends AcceptanceTest {
     private void 메뉴_그룹_목록_조회됨(ExtractableResponse<Response> response,
         List<MenuGroupResponse> responses) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.as(new TypeRef<List<MenuGroupResponse>>() {}))
+        assertThat(response.as(new TypeRef<List<MenuGroupResponse>>() {
+        }))
             .containsExactlyElementsOf(responses);
     }
 }

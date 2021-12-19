@@ -7,6 +7,7 @@ import static org.mockito.BDDMockito.*;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,7 +17,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.dao.ProductDao;
-import kitchenpos.domain.Product;
+import kitchenpos.menu.domain.Product;
+import kitchenpos.menu.dto.ProductRequest;
+import kitchenpos.menu.dto.ProductResponse;
 
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
@@ -40,10 +43,12 @@ class ProductServiceTest {
             .willReturn(product);
 
         // when
-        Product savedProduct = productService.create(product);
+        ProductResponse savedProduct = productService.create(
+            new ProductRequest(product.getName(), product.getPrice()));
 
         // then
-        assertEquals(product, savedProduct);
+        assertEquals(product.getName(), savedProduct.getName());
+        assertEquals(product.getPrice(), savedProduct.getPrice());
     }
 
     @DisplayName("상품의 가격이 올바르지 않으면 등록할 수 없다.")
@@ -53,10 +58,15 @@ class ProductServiceTest {
         Product zeroPriceProduct = 상품_생성("후라이드", -1);
         Product nullPriceProduct = 상품_생성("후라이드");
 
+        ProductRequest zeroPriceProductRequest =
+            new ProductRequest(zeroPriceProduct.getName(), zeroPriceProduct.getPrice());
+        ProductRequest nullPriceProductRequest =
+            new ProductRequest(nullPriceProduct.getName(), null);
+
         // when && then
         assertAll(
-            () -> assertThrows(IllegalArgumentException.class, () -> productService.create(zeroPriceProduct)),
-            () -> assertThrows(IllegalArgumentException.class, () -> productService.create(nullPriceProduct))
+            () -> assertThrows(IllegalArgumentException.class, () -> productService.create(zeroPriceProductRequest)),
+            () -> assertThrows(IllegalArgumentException.class, () -> productService.create(nullPriceProductRequest))
         );
     }
 
@@ -71,11 +81,15 @@ class ProductServiceTest {
             .willReturn(products);
 
         // when
-        List<Product> findProducts = productService.list();
+        List<ProductResponse> findProducts = productService.list();
 
         // then
         assertThat(findProducts)
-            .containsExactlyElementsOf(products);
+            .extracting("name")
+            .containsExactlyElementsOf(products.stream().map(Product::getName).collect(Collectors.toList()));
+        assertThat(findProducts)
+            .extracting("price")
+            .containsExactlyElementsOf(products.stream().map(Product::getPrice).collect(Collectors.toList()));
     }
 
     static Product 상품_생성(String name) {
