@@ -1,5 +1,7 @@
 package kitchenpos.domain;
 
+import java.util.Objects;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -10,7 +12,7 @@ public class OrderLineItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long seq;
+    private Long id;
     private Long orderId;
     private Long menuId;
     private long quantity;
@@ -22,15 +24,15 @@ public class OrderLineItem {
         this(null, null, menuId, quantity);
     }
 
-    public OrderLineItem(Long seq, Long orderId, Long menuId, long quantity) {
-        this.seq = seq;
+    public OrderLineItem(Long id, Long orderId, Long menuId, long quantity) {
+        this.id = id;
         this.orderId = orderId;
         this.menuId = menuId;
         this.quantity = quantity;
     }
 
-    public Long getSeq() {
-        return seq;
+    public Long getId() {
+        return id;
     }
 
     public Long getOrderId() {
@@ -47,5 +49,21 @@ public class OrderLineItem {
 
     public void changeOrderId(final Long orderId) {
         this.orderId = orderId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        OrderLineItem that = (OrderLineItem)o;
+        return quantity == that.quantity && Objects.equals(id, that.id) && Objects.equals(orderId,
+            that.orderId) && Objects.equals(menuId, that.menuId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, orderId, menuId, quantity);
     }
 }

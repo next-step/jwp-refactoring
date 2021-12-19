@@ -12,7 +12,7 @@ public class MenuProduct {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long seq;
+    private Long id;
     private Long menuId;
     private Long productId;
     private long quantity;
@@ -24,15 +24,15 @@ public class MenuProduct {
         this(null, null, productId, quantity);
     }
 
-    public MenuProduct(Long seq, Long menuId, Long productId, long quantity) {
-        this.seq = seq;
+    public MenuProduct(Long id, Long menuId, Long productId, long quantity) {
+        this.id = id;
         this.menuId = menuId;
         this.productId = productId;
         this.quantity = quantity;
     }
 
-    public Long getSeq() {
-        return seq;
+    public Long getId() {
+        return id;
     }
 
     public Long getMenuId() {
@@ -58,12 +58,12 @@ public class MenuProduct {
         if (o == null || getClass() != o.getClass())
             return false;
         MenuProduct that = (MenuProduct)o;
-        return quantity == that.quantity && Objects.equals(seq, that.seq) && Objects.equals(menuId,
+        return quantity == that.quantity && Objects.equals(id, that.id) && Objects.equals(menuId,
             that.menuId) && Objects.equals(productId, that.productId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(seq, menuId, productId, quantity);
+        return Objects.hash(id, menuId, productId, quantity);
     }
 }
