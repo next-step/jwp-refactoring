@@ -65,7 +65,8 @@ class MenuServiceTest {
         MenuRequest menuRequest = new MenuRequest(
             menu.getName().getValue(), menu.getPrice().getValue(), menu.getMenuGroupId(),
             menu.getMenuProducts().stream().map(menuProductRequest -> new MenuProductRequest(
-                menuProductRequest.getProductId(), menuProductRequest.getQuantity())).collect(Collectors.toList()));
+                menuProductRequest.getProductId(), menuProductRequest.getQuantity().getValue()))
+                .collect(Collectors.toList()));
 
         given(menuGroupRepository.existsById(menu.getMenuGroupId())).willReturn(true);
         given(productRepository.findById(menuProduct.getProductId())).willReturn(Optional.of(product));
@@ -93,7 +94,7 @@ class MenuServiceTest {
         MenuRequest menuRequest = new MenuRequest(menu.getName().getValue(),
             menu.getPrice().getValue(), menu.getMenuGroupId(),
             menuProducts.stream().map(menuProductRequest -> new MenuProductRequest(
-                    menuProductRequest.getProductId(), menuProductRequest.getQuantity()))
+                    menuProductRequest.getProductId(), menuProductRequest.getQuantity().getValue()))
                 .collect(Collectors.toList()));
         // when && then
         assertThrows(IllegalArgumentException.class, () -> menuService.create(menuRequest));
@@ -113,7 +114,7 @@ class MenuServiceTest {
         MenuRequest menuRequest = new MenuRequest(menu.getName().getValue(),
             menu.getPrice().getValue(), menu.getMenuGroupId(),
             menuProducts.stream().map(menuProductRequest -> new MenuProductRequest(
-                    menuProductRequest.getProductId(), menuProductRequest.getQuantity()))
+                    menuProductRequest.getProductId(), menuProductRequest.getQuantity().getValue()))
                 .collect(Collectors.toList()));
 
         given(menuGroupRepository.existsById(menu.getMenuGroupId())).willReturn(false);
@@ -136,7 +137,7 @@ class MenuServiceTest {
         MenuRequest menuRequest = new MenuRequest(menu.getName().getValue(),
             menu.getPrice().getValue(), menu.getMenuGroupId(),
             menuProducts.stream().map(menuProductRequest -> new MenuProductRequest(
-                    menuProductRequest.getProductId(), menuProductRequest.getQuantity()))
+                    menuProductRequest.getProductId(), menuProductRequest.getQuantity().getValue()))
                 .collect(Collectors.toList()));
 
         given(menuGroupRepository.existsById(menu.getMenuGroupId())).willReturn(true);
@@ -160,7 +161,7 @@ class MenuServiceTest {
         MenuRequest menuRequest = new MenuRequest(menu.getName().getValue(),
             menu.getPrice().getValue(), menu.getMenuGroupId(),
             menuProducts.stream().map(menuProductRequest -> new MenuProductRequest(
-                    menuProductRequest.getProductId(), menuProductRequest.getQuantity()))
+                    menuProductRequest.getProductId(), menuProductRequest.getQuantity().getValue()))
                 .collect(Collectors.toList()));
 
         given(menuGroupRepository.existsById(menu.getMenuGroupId())).willReturn(true);

@@ -66,7 +66,8 @@ class OrderServiceTest {
             .collect(Collectors.toList());
         OrderRequest orderRequest = new OrderRequest(orderTable.getId(), orderLineItems.stream().map(
                 orderLineItemRequest ->
-                    new OrderLineItemRequest(orderLineItemRequest.getMenuId(), orderLineItemRequest.getQuantity()))
+                    new OrderLineItemRequest(orderLineItemRequest.getMenuId(),
+                        orderLineItemRequest.getQuantity().getValue()))
             .collect(Collectors.toList()));
         Order order = new Order(orderId, orderTable.getId(), OrderStatus.COOKING.name(), orderLineItems);
 
@@ -112,7 +113,8 @@ class OrderServiceTest {
 
         OrderRequest orderRequest = new OrderRequest(order.getOrderTableId(), orderLineItems.stream().map(
                 orderLineItemRequest ->
-                    new OrderLineItemRequest(orderLineItemRequest.getMenuId(), orderLineItemRequest.getQuantity()))
+                    new OrderLineItemRequest(orderLineItemRequest.getMenuId(),
+                        orderLineItemRequest.getQuantity().getValue()))
             .collect(Collectors.toList()));
 
         given(menuRepository.countByIdIn(menuIds)).willReturn(0L);
@@ -137,7 +139,8 @@ class OrderServiceTest {
 
         OrderRequest orderRequest = new OrderRequest(order.getOrderTableId(), orderLineItems.stream().map(
                 orderLineItemRequest ->
-                    new OrderLineItemRequest(orderLineItemRequest.getMenuId(), orderLineItemRequest.getQuantity()))
+                    new OrderLineItemRequest(orderLineItemRequest.getMenuId(),
+                        orderLineItemRequest.getQuantity().getValue()))
             .collect(Collectors.toList()));
 
         given(menuRepository.countByIdIn(menuIds)).willReturn((long)menuIds.size());
@@ -162,7 +165,8 @@ class OrderServiceTest {
 
         OrderRequest orderRequest = new OrderRequest(order.getOrderTableId(), orderLineItems.stream().map(
                 orderLineItemRequest ->
-                    new OrderLineItemRequest(orderLineItemRequest.getMenuId(), orderLineItemRequest.getQuantity()))
+                    new OrderLineItemRequest(orderLineItemRequest.getMenuId(),
+                        orderLineItemRequest.getQuantity().getValue()))
             .collect(Collectors.toList()));
 
         given(menuRepository.countByIdIn(menuIds)).willReturn((long)order.getOrderLineItems().size());

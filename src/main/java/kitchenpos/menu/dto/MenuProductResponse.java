@@ -14,7 +14,8 @@ public class MenuProductResponse {
     }
 
     public MenuProductResponse(MenuProduct menuProduct) {
-        this(menuProduct.getId(), menuProduct.getMenuId(), menuProduct.getProductId(), menuProduct.getQuantity());
+        this(menuProduct.getId(), menuProduct.getMenuId(),
+            menuProduct.getProductId(), menuProduct.getQuantity().getValue());
     }
 
     public MenuProductResponse(Long id, Long menuId, Long productId, long quantity) {

@@ -2,10 +2,13 @@ package kitchenpos.order.domain;
 
 import java.util.Objects;
 
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+
+import kitchenpos.common.domain.Quantity;
 
 @Entity
 public class OrderLineItem {
@@ -15,7 +18,9 @@ public class OrderLineItem {
     private Long id;
     private Long orderId;
     private Long menuId;
-    private long quantity;
+
+    @Embedded
+    private Quantity quantity;
 
     public OrderLineItem() {
     }
@@ -32,7 +37,7 @@ public class OrderLineItem {
         this.id = id;
         this.orderId = orderId;
         this.menuId = menuId;
-        this.quantity = quantity;
+        this.quantity = new Quantity(quantity);
     }
 
     public Long getId() {
@@ -47,12 +52,8 @@ public class OrderLineItem {
         return menuId;
     }
 
-    public long getQuantity() {
+    public Quantity getQuantity() {
         return quantity;
-    }
-
-    public void changeOrderId(final Long orderId) {
-        this.orderId = orderId;
     }
 
     @Override
@@ -62,8 +63,8 @@ public class OrderLineItem {
         if (o == null || getClass() != o.getClass())
             return false;
         OrderLineItem that = (OrderLineItem)o;
-        return quantity == that.quantity && Objects.equals(id, that.id) && Objects.equals(orderId,
-            that.orderId) && Objects.equals(menuId, that.menuId);
+        return Objects.equals(id, that.id) && Objects.equals(orderId, that.orderId)
+            && Objects.equals(menuId, that.menuId) && Objects.equals(quantity, that.quantity);
     }
 
     @Override
