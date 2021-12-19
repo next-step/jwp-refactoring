@@ -4,11 +4,12 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.domain.Product;
+import kitchenpos.dto.ProductRequest;
 import org.springframework.http.MediaType;
 
 public class ProductFactory {
 
-    public static ExtractableResponse<Response> 상품_생성_요청(Product params) {
+    public static ExtractableResponse<Response> 상품_생성_요청(ProductRequest params) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)

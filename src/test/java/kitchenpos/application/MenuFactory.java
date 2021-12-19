@@ -4,11 +4,12 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.domain.Menu;
+import kitchenpos.dto.MenuRequest;
 import org.springframework.http.MediaType;
 
 public class MenuFactory {
 
-    public static ExtractableResponse<Response> 메뉴_생성_요청(Menu params) {
+    public static ExtractableResponse<Response> 메뉴_생성_요청(MenuRequest params) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
