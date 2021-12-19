@@ -31,6 +31,20 @@ import kitchenpos.product.dto.ProductDto;
 @DisplayName("메뉴 인수 테스트")
 public class MenuAcceptanceTest extends AcceptanceTest {
 
+	private static ExtractableResponse<Response> 메뉴_등록_요청(MenuCreateRequest request) {
+		return RestAssured
+			.given().log().all()
+			.contentType(MediaType.APPLICATION_JSON_VALUE)
+			.body(request)
+			.when().post("/api/menus")
+			.then().log().all()
+			.extract();
+	}
+
+	public static ExtractableResponse<Response> 메뉴_등록되어_있음(MenuCreateRequest request) {
+		return 메뉴_등록_요청(request);
+	}
+
 	@DisplayName("메뉴를 등록한다.")
 	@Test
 	void register() {
@@ -163,16 +177,6 @@ public class MenuAcceptanceTest extends AcceptanceTest {
 		메뉴_목록_포함됨(response, Arrays.asList(후라이드후라이드_메뉴, 양념양념_메뉴));
 	}
 
-	private ExtractableResponse<Response> 메뉴_등록_요청(MenuCreateRequest request) {
-		return RestAssured
-			.given().log().all()
-			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.body(request)
-			.when().post("/api/menus")
-			.then().log().all()
-			.extract();
-	}
-
 	private void 메뉴_등록됨(ExtractableResponse<Response> response) {
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
 		assertThat(response.header("Location")).isNotBlank();
@@ -181,10 +185,6 @@ public class MenuAcceptanceTest extends AcceptanceTest {
 
 	private void 메뉴_등록되지_않음(ExtractableResponse<Response> response) {
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
-	}
-
-	private ExtractableResponse<Response> 메뉴_등록되어_있음(MenuCreateRequest request) {
-		return 메뉴_등록_요청(request);
 	}
 
 	private ExtractableResponse<Response> 메뉴_목록_조회_요청() {

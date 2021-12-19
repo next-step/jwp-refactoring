@@ -1,8 +1,16 @@
 package kitchenpos.order;
 
+import static kitchenpos.menu.MenuAcceptanceTest.*;
+import static kitchenpos.menu.MenuFixture.*;
+import static kitchenpos.menu.MenuGroupAcceptanceTest.*;
+import static kitchenpos.menu.MenuGroupFixture.*;
+import static kitchenpos.order.OrderAcceptanceTest.*;
+import static kitchenpos.order.OrderFixture.*;
 import static kitchenpos.order.OrderTableFixture.*;
 import static kitchenpos.order.OrderTableGroupAcceptanceTest.*;
 import static kitchenpos.order.OrderTableGroupFixture.*;
+import static kitchenpos.product.ProductAcceptanceTest.*;
+import static kitchenpos.product.ProductFixture.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.Arrays;
@@ -18,8 +26,13 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
+import kitchenpos.domain.OrderStatus;
+import kitchenpos.menu.dto.MenuDto;
+import kitchenpos.menu.dto.MenuGroupDto;
+import kitchenpos.order.dto.OrderDto;
 import kitchenpos.order.dto.OrderTableDto;
 import kitchenpos.order.dto.OrderTableRequest;
+import kitchenpos.product.dto.ProductDto;
 
 @DisplayName("주문 테이블 인수 테스트")
 public class OrderTableAcceptanceTest extends AcceptanceTest {
@@ -96,7 +109,19 @@ public class OrderTableAcceptanceTest extends AcceptanceTest {
 	@DisplayName("주문 테이블에 완료되지 않은 주문이 있는 경우 주문 테이블의 빈 상태를 변경할 수 없다.")
 	@Test
 	void changEmptyFailOnNotCompletedOrderExist() {
-		// TODO
+		// given
+		OrderTableDto 비어있지않은_주문_테이블 = 주문_테이블_등록되어_있음(비어있지않은_주문_테이블()).as(OrderTableDto.class);
+		ProductDto 후라이드치킨_상품 = 상품_등록되어_있음(후라이드치킨_상품()).as(ProductDto.class);
+		MenuGroupDto 추천_메뉴_그룹 = 메뉴_그룹_등록되어_있음(추천_메뉴_그룹()).as(MenuGroupDto.class);
+		MenuDto 후라이드후라이드_메뉴 = 메뉴_등록되어_있음(후라이드후라이드_메뉴(추천_메뉴_그룹.getId(), 후라이드치킨_상품.getId())).as(MenuDto.class);
+		OrderDto 주문 = 주문_등록되어_있음(주문(비어있지않은_주문_테이블.getId(), 후라이드후라이드_메뉴.getId(), 1)).as(OrderDto.class);
+		주문_상태_변경되어_있음(주문.getId(), OrderStatus.MEAL);
+
+		// when
+		ExtractableResponse<Response> response = 주문_테이블_빈_상태_변경_요청(비어있지않은_주문_테이블.getId(), true);
+
+		// then
+		주문_테이블_빈_상태_변경되지_않음(response);
 	}
 
 	@DisplayName("주문 테이블에 손님 수를 변경할 수 있다")
