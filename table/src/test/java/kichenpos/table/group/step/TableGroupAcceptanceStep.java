@@ -1,5 +1,6 @@
 package kichenpos.table.group.step;
 
+import static kichenpos.table.table.step.TableAcceptanceStep.테이블_목록_조회_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.junit.jupiter.api.Assertions.assertAll;
