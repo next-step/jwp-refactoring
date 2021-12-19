@@ -53,7 +53,7 @@ public class OrderTable {
     }
 
     public void changeEmptyStatus(final boolean empty) {
-        if (isOrderStarted()) {
+        if (containsStartedOrder()) {
             throw new IllegalArgumentException("주문이 진행되어 테이블 비움 상태를 변경할 수 없습니다");
         }
         this.empty = empty;
@@ -67,8 +67,8 @@ public class OrderTable {
         return tableGroup != null;
     }
 
-    public boolean isOrderStarted() {
-        return orders.isOrderStarted();
+    public boolean containsStartedOrder() {
+        return orders.containsStartedOrder();
     }
 
     public void setTableGroup(TableGroup tableGroup) {

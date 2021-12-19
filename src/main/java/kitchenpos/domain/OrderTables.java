@@ -44,7 +44,7 @@ public class OrderTables {
     }
 
     private void validateUngroupOrderStatus(OrderTable orderTable) {
-        if (orderTable.isOrderStarted()) {
+        if (orderTable.containsStartedOrder()) {
             throw new IllegalArgumentException();
         }
     }

@@ -18,14 +18,9 @@ public class Orders {
         this.orders = orders;
     }
 
-    public boolean isOrderStarted() {
-        for (Order order : orders) {
-            if (order.isStarted()) {
-                return true;
-            }
-        }
-
-        return false;
+    public boolean containsStartedOrder() {
+        return orders.stream()
+                .anyMatch(Order::isStarted);
     }
 
     public void add(Order order) {
