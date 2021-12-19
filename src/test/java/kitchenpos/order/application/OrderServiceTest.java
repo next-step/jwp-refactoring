@@ -1,17 +1,18 @@
-package kitchenpos.application;
+package kitchenpos.order.application;
 
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
-import kitchenpos.domain.*;
-import kitchenpos.fixture.MenuProductTextFixture;
-import kitchenpos.fixture.ProductTestFixture;
+import kitchenpos.fixture.*;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menuGroup.domain.MenuGroup;
-import kitchenpos.fixture.MenuGroupTestFixture;
-import kitchenpos.fixture.MenuTestFixture;
+import kitchenpos.order.application.OrderService;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.OrderTable;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -67,10 +68,7 @@ public class OrderServiceTest {
         테이블1번 = new OrderTable();
         테이블1번.setId(1L);
 
-        후라이드두마리세트_2개_주문함 = new OrderLineItem();
-        후라이드두마리세트_2개_주문함.setSeq(1L);
-        후라이드두마리세트_2개_주문함.setMenuId(1L);
-        후라이드두마리세트_2개_주문함.setQuantity(2L);
+        후라이드두마리세트_2개_주문함 = OrderLineItemTestFixture.생성(총주문, 후라이드두마리세트, 2L);
 
         총주문 = new Order();
         총주문.setId(1L);
@@ -136,7 +134,7 @@ public class OrderServiceTest {
         Order 계산_완료_주문 = new Order();
         계산_완료_주문.setOrderStatus("COMPLETION");
         given(orderDao.findById(2L)).willReturn(java.util.Optional.ofNullable(주문));
-        given(orderLineItemDao.findAllByOrderId(2L)).willReturn(Arrays.asList(후라이드두마리세트_2개_주문함));
+        given(orderLineItemDao.findAllByOrderId(any())).willReturn(Arrays.asList(후라이드두마리세트_2개_주문함));
 
         orderService.changeOrderStatus(2L, 계산_완료_주문);
 
