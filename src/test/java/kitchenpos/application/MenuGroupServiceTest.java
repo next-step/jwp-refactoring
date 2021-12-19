@@ -14,7 +14,6 @@ import org.junit.jupiter.params.provider.NullSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import kitchenpos.IntegrationTest;
-import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.MenuGroup;
 
 @DisplayName("메뉴 그룹 통합 테스트")
@@ -23,8 +22,6 @@ class MenuGroupServiceTest extends IntegrationTest {
 
 	@Autowired
 	private MenuGroupService menuGroupService;
-	@Autowired
-	private MenuGroupDao menuGroupDao;
 
 	@DisplayName("메뉴 그룹을 등록할 수 있다.")
 	@Test
@@ -62,7 +59,7 @@ class MenuGroupServiceTest extends IntegrationTest {
 		// given
 		MenuGroup request = new MenuGroup();
 		request.setName(NAME);
-		MenuGroup given = menuGroupDao.save(request);
+		MenuGroup given = menuGroupService.create(request);
 
 		// when
 		List<MenuGroup> actual = menuGroupService.list();

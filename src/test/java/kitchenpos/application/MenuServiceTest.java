@@ -16,9 +16,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import kitchenpos.IntegrationTest;
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
@@ -29,18 +26,16 @@ class MenuServiceTest extends IntegrationTest {
 	@Autowired
 	private MenuService menuService;
 	@Autowired
-	private MenuDao menuDao;
+	private MenuGroupService menuGroupService;
 	@Autowired
-	private MenuGroupDao menuGroupDao;
-	@Autowired
-	private ProductDao productDao;
+	private ProductService productService;
 
 	@DisplayName("메뉴를 등록할 수 있다.")
 	@Test
 	void create() {
 		// given
-		MenuGroup 추천_메뉴_그룹 = menuGroupDao.save(추천_메뉴_그룹().toMenuGroup());
-		Product 후라이드치킨_상품 = productDao.save(후라이드치킨_상품().toProduct());
+		MenuGroup 추천_메뉴_그룹 = menuGroupService.create(추천_메뉴_그룹().toMenuGroup());
+		Product 후라이드치킨_상품 = productService.create(후라이드치킨_상품().toProduct());
 		Menu request = 후라이드후라이드_메뉴(추천_메뉴_그룹.getId(), 후라이드치킨_상품.getId()).toMenu();
 
 		// when
@@ -68,8 +63,8 @@ class MenuServiceTest extends IntegrationTest {
 	@Test
 	void createFailOnEmptyName() {
 		// given
-		MenuGroup 추천_메뉴_그룹 = menuGroupDao.save(추천_메뉴_그룹().toMenuGroup());
-		Product 후라이드치킨_상품 = productDao.save(후라이드치킨_상품().toProduct());
+		MenuGroup 추천_메뉴_그룹 = menuGroupService.create(추천_메뉴_그룹().toMenuGroup());
+		Product 후라이드치킨_상품 = productService.create(후라이드치킨_상품().toProduct());
 		Menu request = 이름없는_메뉴(추천_메뉴_그룹.getId(), 후라이드치킨_상품.getId()).toMenu();
 
 		// when
@@ -83,8 +78,8 @@ class MenuServiceTest extends IntegrationTest {
 	@Test
 	void createFailOnNegativePrice() {
 		// given
-		MenuGroup 추천_메뉴_그룹 = menuGroupDao.save(추천_메뉴_그룹().toMenuGroup());
-		Product 후라이드치킨_상품 = productDao.save(후라이드치킨_상품().toProduct());
+		MenuGroup 추천_메뉴_그룹 = menuGroupService.create(추천_메뉴_그룹().toMenuGroup());
+		Product 후라이드치킨_상품 = productService.create(후라이드치킨_상품().toProduct());
 		Menu request = 음수가격_메뉴(추천_메뉴_그룹.getId(), 후라이드치킨_상품.getId()).toMenu();
 
 		// when
@@ -99,7 +94,7 @@ class MenuServiceTest extends IntegrationTest {
 	void createFailOnNotFoundMenuGroup() {
 		// given
 		Long unknownMenuGroupId = 0L;
-		Product 후라이드치킨_상품 = productDao.save(후라이드치킨_상품().toProduct());
+		Product 후라이드치킨_상품 = productService.create(후라이드치킨_상품().toProduct());
 		Menu request = 후라이드후라이드_메뉴(unknownMenuGroupId, 후라이드치킨_상품.getId()).toMenu();
 
 		// when
@@ -113,7 +108,7 @@ class MenuServiceTest extends IntegrationTest {
 	@Test
 	void createFailOnNotFoundProduct() {
 		// given
-		MenuGroup 추천_메뉴_그룹 = menuGroupDao.save(추천_메뉴_그룹().toMenuGroup());
+		MenuGroup 추천_메뉴_그룹 = menuGroupService.create(추천_메뉴_그룹().toMenuGroup());
 		Long unknownProductId = 0L;
 		Menu request = 후라이드후라이드_메뉴(추천_메뉴_그룹.getId(), unknownProductId).toMenu();
 
@@ -128,8 +123,8 @@ class MenuServiceTest extends IntegrationTest {
 	@Test
 	void createFailOnInvalidPrice() {
 		// given
-		MenuGroup 추천_메뉴_그룹 = menuGroupDao.save(추천_메뉴_그룹().toMenuGroup());
-		Product 후라이드치킨_상품 = productDao.save(후라이드치킨_상품().toProduct());
+		MenuGroup 추천_메뉴_그룹 = menuGroupService.create(추천_메뉴_그룹().toMenuGroup());
+		Product 후라이드치킨_상품 = productService.create(후라이드치킨_상품().toProduct());
 		Menu request = 너무비싼_메뉴(추천_메뉴_그룹.getId(), 후라이드치킨_상품.getId()).toMenu();
 
 		// when
@@ -143,11 +138,11 @@ class MenuServiceTest extends IntegrationTest {
 	@Test
 	void list() {
 		// given
-		MenuGroup 추천_메뉴_그룹 = menuGroupDao.save(추천_메뉴_그룹().toMenuGroup());
-		Product 후라이드치킨_상품 = productDao.save(후라이드치킨_상품().toProduct());
-		Product 양념치킨_상품 = productDao.save(양념치킨_상품().toProduct());
-		Menu 후라이드후라이드_메뉴 = menuDao.save(후라이드후라이드_메뉴(추천_메뉴_그룹.getId(), 후라이드치킨_상품.getId()).toMenu());
-		Menu 양념양념_메뉴 = menuDao.save(양념양념_메뉴(추천_메뉴_그룹.getId(), 양념치킨_상품.getId()).toMenu());
+		MenuGroup 추천_메뉴_그룹 = menuGroupService.create(추천_메뉴_그룹().toMenuGroup());
+		Product 후라이드치킨_상품 = productService.create(후라이드치킨_상품().toProduct());
+		Product 양념치킨_상품 = productService.create(양념치킨_상품().toProduct());
+		Menu 후라이드후라이드_메뉴 = menuService.create(후라이드후라이드_메뉴(추천_메뉴_그룹.getId(), 후라이드치킨_상품.getId()).toMenu());
+		Menu 양념양념_메뉴 = menuService.create(양념양념_메뉴(추천_메뉴_그룹.getId(), 양념치킨_상품.getId()).toMenu());
 
 		// when
 		List<Menu> actual = menuService.list();

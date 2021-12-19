@@ -15,7 +15,6 @@ import org.junit.jupiter.params.provider.NullSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import kitchenpos.IntegrationTest;
-import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
 
 @DisplayName("상품 통합 테스트")
@@ -25,8 +24,6 @@ class ProductServiceTest extends IntegrationTest {
 
 	@Autowired
 	private ProductService productService;
-	@Autowired
-	private ProductDao productDao;
 
 	@DisplayName("상품을 등록할 수 있다.")
 	@Test
@@ -70,7 +67,7 @@ class ProductServiceTest extends IntegrationTest {
 		request.setName(NAME);
 		request.setPrice(PRICE);
 
-		Product given = productDao.save(request);
+		Product given = productService.create(request);
 
 		// when
 		List<Product> actual = productService.list();
