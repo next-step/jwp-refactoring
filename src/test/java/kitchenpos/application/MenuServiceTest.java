@@ -125,7 +125,7 @@ class MenuServiceTest {
     }
 
     @Test
-    @DisplayName("`메뉴`의 가격은 상품목록의 가격(상품가격 * 갯수)의 총합보다 작아야한다.")
+    @DisplayName("`메뉴`의 가격은 상품목록의 가격(상품가격 * 갯수)의 총합보다 클 수 없다.")
     void 메뉴가격은_상품_전체가격보다_크면_에러() {
         // given
         메뉴_치킨.setPrice(BigDecimal.valueOf(17000));
