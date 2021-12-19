@@ -47,7 +47,7 @@ class MenuGroupAcceptanceTest extends AcceptanceTest {
 
     }
 
-    private ExtractableResponse<Response> 메뉴_그룹_생성_요청(String name) {
+    static ExtractableResponse<Response> 메뉴_그룹_생성_요청(String name) {
         MenuGroupRequest request = new MenuGroupRequest(name);
         return RestAssured
             .given().log().all()

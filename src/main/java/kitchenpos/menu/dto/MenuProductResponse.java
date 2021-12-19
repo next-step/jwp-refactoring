@@ -1,30 +1,23 @@
-package kitchenpos.domain;
+package kitchenpos.menu.dto;
 
 import java.util.Objects;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import kitchenpos.menu.domain.MenuProduct;
 
-@Entity
-public class MenuProduct {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class MenuProductResponse {
     private Long id;
     private Long menuId;
     private Long productId;
     private long quantity;
 
-    public MenuProduct() {
+    public MenuProductResponse() {
     }
 
-    public MenuProduct(Long productId, long quantity) {
-        this(null, null, productId, quantity);
+    public MenuProductResponse(MenuProduct menuProduct) {
+        this(menuProduct.getId(), menuProduct.getMenuId(), menuProduct.getProductId(), menuProduct.getQuantity());
     }
 
-    public MenuProduct(Long id, Long menuId, Long productId, long quantity) {
+    public MenuProductResponse(Long id, Long menuId, Long productId, long quantity) {
         this.id = id;
         this.menuId = menuId;
         this.productId = productId;
@@ -47,17 +40,13 @@ public class MenuProduct {
         return quantity;
     }
 
-    public void changeMenuId(final Long menuId) {
-        this.menuId = menuId;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o)
             return true;
         if (o == null || getClass() != o.getClass())
             return false;
-        MenuProduct that = (MenuProduct)o;
+        MenuProductResponse that = (MenuProductResponse)o;
         return quantity == that.quantity && Objects.equals(id, that.id) && Objects.equals(menuId,
             that.menuId) && Objects.equals(productId, that.productId);
     }

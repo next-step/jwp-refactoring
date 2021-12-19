@@ -55,7 +55,7 @@ class ProductAcceptanceTest extends AcceptanceTest {
 
     }
 
-    private ExtractableResponse<Response> 상품_생성_요청(ProductRequest request) {
+    static ExtractableResponse<Response> 상품_생성_요청(ProductRequest request) {
         return RestAssured
             .given().log().all()
             .body(request)
@@ -75,7 +75,7 @@ class ProductAcceptanceTest extends AcceptanceTest {
             .then().log().all().extract();
     }
 
-    private void 상품_생성됨(ExtractableResponse<Response> response) {
+    static void 상품_생성됨(ExtractableResponse<Response> response) {
         Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
