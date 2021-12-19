@@ -1,16 +1,15 @@
 package kitchenpos.application;
 
+import static kitchenpos.menugroup.MenuGroupFixture.*;
 import static org.assertj.core.api.Assertions.*;
-import static org.assertj.core.api.ThrowableAssert.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.NullSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import kitchenpos.IntegrationTest;
@@ -18,36 +17,24 @@ import kitchenpos.domain.MenuGroup;
 
 @DisplayName("메뉴 그룹 통합 테스트")
 class MenuGroupServiceTest extends IntegrationTest {
-	private static final String NAME = "추천메뉴";
-
 	@Autowired
 	private MenuGroupService menuGroupService;
 
-	@DisplayName("메뉴 그룹을 등록할 수 있다.")
+	@DisplayName("메뉴 그룹을 등록한다.")
 	@Test
-	void create() {
-		// given
-		MenuGroup request = new MenuGroup();
-		request.setName(NAME);
-
+	void register() {
 		// when
-		MenuGroup menuGroup = menuGroupService.create(request);
+		MenuGroup menuGroup = menuGroupService.create(추천_메뉴_그룹().toMenuGroup());
 
 		// then
 		assertThat(menuGroup.getId()).isNotNull();
-		assertThat(menuGroup.getName()).isEqualTo(NAME);
 	}
 
-	@DisplayName("메뉴 그룹 이름이 빈 값이면 등록할 수 없다.")
-	@ParameterizedTest
-	@NullSource
-	void createFailOnEmptyName(String name) {
-		// given
-		MenuGroup request = new MenuGroup();
-		request.setName(name);
-
+	@DisplayName("메뉴 그룹 이름이 없는 경우 메뉴 그룹 등록에 실패한다.")
+	@Test
+	void registerFailOnEmptyName() {
 		// when
-		ThrowingCallable throwingCallable = () -> menuGroupService.create(request);
+		ThrowableAssert.ThrowingCallable throwingCallable = () -> menuGroupService.create(이름없는_메뉴_그룹().toMenuGroup());
 
 		// then
 		assertThatExceptionOfType(RuntimeException.class).isThrownBy(throwingCallable);
@@ -55,21 +42,21 @@ class MenuGroupServiceTest extends IntegrationTest {
 
 	@DisplayName("메뉴 그룹 목록을 조회할 수 있다.")
 	@Test
-	void list() {
+	void findAll() {
 		// given
-		MenuGroup request = new MenuGroup();
-		request.setName(NAME);
-		MenuGroup given = menuGroupService.create(request);
+		MenuGroup 추천_메뉴_그룹 = menuGroupService.create(추천_메뉴_그룹().toMenuGroup());
+		MenuGroup 비추천_메뉴_그룹 = menuGroupService.create(비추천_메뉴_그룹().toMenuGroup());
 
 		// when
-		List<MenuGroup> actual = menuGroupService.list();
+		List<MenuGroup> menuGroups = menuGroupService.list();
 
 		// then
-		List<Long> actualIds = actual.stream().map(MenuGroup::getId).collect(Collectors.toList());
-
-		assertAll(
-			() -> assertThat(actual).isNotEmpty(),
-			() -> assertThat(actualIds).contains(given.getId())
-		);
+		List<Long> actualIds = menuGroups.stream()
+			.map(MenuGroup::getId)
+			.collect(Collectors.toList());
+		List<Long> expectedIds = Stream.of(추천_메뉴_그룹, 비추천_메뉴_그룹)
+			.map(MenuGroup::getId)
+			.collect(Collectors.toList());
+		assertThat(actualIds).containsAll(expectedIds);
 	}
 }
