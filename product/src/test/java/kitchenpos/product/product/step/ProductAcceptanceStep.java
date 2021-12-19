@@ -1,4 +1,4 @@
-package kitchenpos.product.step;
+package kitchenpos.product.product.step;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -10,8 +10,8 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.math.BigDecimal;
 import java.util.List;
-import kitchenpos.product.ui.request.ProductRequest;
-import kitchenpos.product.ui.response.ProductResponse;
+import kitchenpos.product.product.ui.request.ProductRequest;
+import kitchenpos.product.product.ui.response.ProductResponse;
 import org.springframework.http.HttpStatus;
 
 public class ProductAcceptanceStep {

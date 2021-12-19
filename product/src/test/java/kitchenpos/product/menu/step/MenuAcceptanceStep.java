@@ -1,4 +1,4 @@
-package kitchenpos.product.step;
+package kitchenpos.product.menu.step;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -11,11 +11,11 @@ import io.restassured.response.Response;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
-import kitchenpos.product.ui.request.MenuProductRequest;
-import kitchenpos.product.ui.request.MenuRequest;
-import kitchenpos.product.ui.response.MenuGroupResponse;
-import kitchenpos.product.ui.response.MenuResponse;
-import kitchenpos.product.ui.response.ProductResponse;
+import kitchenpos.product.group.ui.response.MenuGroupResponse;
+import kitchenpos.product.menu.ui.request.MenuProductRequest;
+import kitchenpos.product.menu.ui.request.MenuRequest;
+import kitchenpos.product.menu.ui.response.MenuResponse;
+import kitchenpos.product.product.ui.response.ProductResponse;
 import org.springframework.http.HttpStatus;
 
 public class MenuAcceptanceStep {

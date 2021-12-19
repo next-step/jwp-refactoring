@@ -1,6 +1,6 @@
-package kitchenpos.product.domain;
+package kitchenpos.product.menu.domain;
 
-import static kitchenpos.product.sample.ProductSample.십원치킨;
+import static kitchenpos.product.product.sample.ProductSample.십원치킨;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.mockito.Mockito.mock;
@@ -9,12 +9,10 @@ import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
-import kitchenpos.common.domain.Name;
-import kitchenpos.common.domain.Price;
-import kitchenpos.common.domain.Quantity;
-import kitchenpos.product.domain.Menu;
-import kitchenpos.product.domain.MenuGroup;
-import kitchenpos.product.domain.MenuProduct;
+import kichenpos.common.domain.Name;
+import kichenpos.common.domain.Price;
+import kichenpos.common.domain.Quantity;
+import kitchenpos.product.group.domain.MenuGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

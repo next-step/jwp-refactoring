@@ -1,16 +1,16 @@
-package kitchenpos.product.application;
+package kitchenpos.product.group.application;
 
-import static kitchenpos.product.sample.MenuGroupSample.두마리메뉴;
+import static kitchenpos.product.group.sample.MenuGroupSample.두마리메뉴;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.only;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import kitchenpos.common.domain.Name;
-import kitchenpos.product.domain.MenuGroup;
-import kitchenpos.product.domain.MenuGroupRepository;
-import kitchenpos.product.ui.request.MenuGroupRequest;
+import kichenpos.common.domain.Name;
+import kitchenpos.product.group.domain.MenuGroup;
+import kitchenpos.product.group.domain.MenuGroupRepository;
+import kitchenpos.product.group.ui.request.MenuGroupRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

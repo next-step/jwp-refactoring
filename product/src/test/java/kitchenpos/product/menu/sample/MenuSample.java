@@ -1,17 +1,17 @@
-package kitchenpos.product.sample;
+package kitchenpos.product.menu.sample;
 
-import static kitchenpos.product.sample.MenuGroupSample.두마리메뉴;
-import static kitchenpos.product.sample.ProductSample.십원치킨;
+import static kitchenpos.product.group.sample.MenuGroupSample.두마리메뉴;
+import static kitchenpos.product.product.sample.ProductSample.십원치킨;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.spy;
 
 import java.math.BigDecimal;
 import java.util.Collections;
-import kitchenpos.common.domain.Name;
-import kitchenpos.common.domain.Price;
-import kitchenpos.common.domain.Quantity;
-import kitchenpos.product.domain.Menu;
-import kitchenpos.product.domain.MenuProduct;
+import kichenpos.common.domain.Name;
+import kichenpos.common.domain.Price;
+import kichenpos.common.domain.Quantity;
+import kitchenpos.product.menu.domain.Menu;
+import kitchenpos.product.menu.domain.MenuProduct;
 
 public class MenuSample {
 

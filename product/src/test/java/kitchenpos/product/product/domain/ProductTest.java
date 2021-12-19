@@ -1,12 +1,12 @@
-package kitchenpos.product.domain;
+package kitchenpos.product.product.domain;
 
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 
 import java.math.BigDecimal;
 import java.util.stream.Stream;
-import kitchenpos.common.domain.Name;
-import kitchenpos.common.domain.Price;
+import kichenpos.common.domain.Name;
+import kichenpos.common.domain.Price;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

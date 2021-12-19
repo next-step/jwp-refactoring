@@ -1,10 +1,10 @@
-package kitchenpos.product.sample;
+package kitchenpos.product.group.sample;
 
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.spy;
 
-import kitchenpos.common.domain.Name;
-import kitchenpos.product.domain.MenuGroup;
+import kichenpos.common.domain.Name;
+import kitchenpos.product.group.domain.MenuGroup;
 
 public class MenuGroupSample {
 

@@ -1,12 +1,12 @@
-package kitchenpos.product.sample;
+package kitchenpos.product.product.sample;
 
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.spy;
 
 import java.math.BigDecimal;
-import kitchenpos.common.domain.Name;
-import kitchenpos.common.domain.Price;
-import kitchenpos.product.domain.Product;
+import kichenpos.common.domain.Name;
+import kichenpos.common.domain.Price;
+import kitchenpos.product.product.domain.Product;
 
 public class ProductSample {
 

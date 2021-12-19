@@ -1,16 +1,17 @@
-package kitchenpos.product;
+package kitchenpos.product.product;
 
-import static kitchenpos.product.step.ProductAcceptanceStep.상품_등록_되어_있음;
-import static kitchenpos.product.step.ProductAcceptanceStep.상품_등록_됨;
-import static kitchenpos.product.step.ProductAcceptanceStep.상품_등록_요청;
-import static kitchenpos.product.step.ProductAcceptanceStep.상품_목록_조회_됨;
-import static kitchenpos.product.step.ProductAcceptanceStep.상품_목록_조회_요청;
+
+import static kitchenpos.product.product.step.ProductAcceptanceStep.상품_등록_되어_있음;
+import static kitchenpos.product.product.step.ProductAcceptanceStep.상품_등록_됨;
+import static kitchenpos.product.product.step.ProductAcceptanceStep.상품_등록_요청;
+import static kitchenpos.product.product.step.ProductAcceptanceStep.상품_목록_조회_됨;
+import static kitchenpos.product.product.step.ProductAcceptanceStep.상품_목록_조회_요청;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.math.BigDecimal;
-import kitchenpos.AcceptanceTest;
-import kitchenpos.product.ui.response.ProductResponse;
+import kitchenpos.product.AcceptanceTest;
+import kitchenpos.product.product.ui.response.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

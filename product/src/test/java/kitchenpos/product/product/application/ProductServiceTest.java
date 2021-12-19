@@ -1,19 +1,19 @@
-package kitchenpos.product.application;
+package kitchenpos.product.product.application;
 
+import static kitchenpos.product.product.sample.ProductSample.십원치킨;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.only;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
-import kitchenpos.common.domain.Name;
-import kitchenpos.common.domain.Price;
-import kitchenpos.product.domain.Product;
-import kitchenpos.product.domain.ProductRepository;
-import kitchenpos.product.ui.request.ProductRequest;
+import kichenpos.common.domain.Name;
+import kichenpos.common.domain.Price;
+import kitchenpos.product.product.domain.Product;
+import kitchenpos.product.product.domain.ProductRepository;
+import kitchenpos.product.product.ui.request.ProductRequest;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -89,11 +89,5 @@ class ProductServiceTest {
 
         //then
         verify(productRepository, only()).findAll();
-    }
-
-    public Product 십원치킨() {
-        Product product = spy(Product.of(Name.from("치킨"), Price.from(BigDecimal.TEN)));
-        when(product.id()).thenReturn(1L);
-        return product;
     }
 }

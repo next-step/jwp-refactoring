@@ -1,4 +1,4 @@
-package kitchenpos.product.step;
+package kitchenpos.product.group.step;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -9,8 +9,8 @@ import io.restassured.mapper.TypeRef;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
-import kitchenpos.product.ui.request.MenuGroupRequest;
-import kitchenpos.product.ui.response.MenuGroupResponse;
+import kitchenpos.product.group.ui.request.MenuGroupRequest;
+import kitchenpos.product.group.ui.response.MenuGroupResponse;
 import org.springframework.http.HttpStatus;
 
 public class MenuGroupAcceptanceStep {

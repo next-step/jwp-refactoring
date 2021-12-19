@@ -1,10 +1,9 @@
-package kitchenpos.product.domain;
+package kitchenpos.product.group.domain;
 
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 
-import kitchenpos.common.domain.Name;
-import kitchenpos.product.domain.MenuGroup;
+import kichenpos.common.domain.Name;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
