@@ -42,6 +42,7 @@ project(':kitchenpos-api') {
 
     dependencies {
         compile project(':kitchenpos-common')
+        testCompile project(':kitchenpos-common').sourceSets.test.output
     }
 }
 
