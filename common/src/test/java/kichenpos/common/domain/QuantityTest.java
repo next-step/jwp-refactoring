@@ -1,4 +1,4 @@
-package kitchenpos.common.domain;
+package kichenpos.common.domain;
 
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatNoException;
