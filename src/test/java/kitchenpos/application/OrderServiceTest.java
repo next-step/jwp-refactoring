@@ -1,54 +1,58 @@
 package kitchenpos.application;
 
 import static kitchenpos.menu.MenuFixture.*;
-import static kitchenpos.menugroup.MenuGroupFixture.*;
 import static kitchenpos.order.OrderFixture.*;
 import static kitchenpos.ordertable.OrderTableFixture.*;
-import static kitchenpos.product.ProductFixture.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.ThrowableAssert.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.BDDMockito.*;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.IntegrationTest;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.dao.MenuDao;
+import kitchenpos.dao.OrderDao;
+import kitchenpos.dao.OrderLineItemDao;
+import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.Product;
 
-@DisplayName("주문 통합 테스트")
-class OrderServiceTest extends IntegrationTest {
-	@Autowired
-	private TableService tableService;
-	@Autowired
-	private ProductService productService;
-	@Autowired
-	private MenuService menuService;
-	@Autowired
-	private MenuGroupService menuGroupService;
-	@Autowired
+@DisplayName("주문 단위 테스트")
+@ExtendWith(MockitoExtension.class)
+class OrderServiceTest {
+	@Mock
+	private MenuDao menuDao;
+	@Mock
+	private OrderDao orderDao;
+	@Mock
+	private OrderLineItemDao orderLineItemDao;
+	@Mock
+	private OrderTableDao orderTableDao;
+	@InjectMocks
 	private OrderService orderService;
 
 	@DisplayName("주문을 등록한다.")
 	@Test
 	void register() {
 		// given
-		OrderTable 비어있지않은_주문_테이블 = tableService.create(비어있지않은_주문_테이블_요청().toOrderTable());
-		Product 후라이드치킨_상품 = productService.create(후라이드치킨_상품_요청().toProduct());
-		MenuGroup 추천_메뉴_그룹 = menuGroupService.create(추천_메뉴_그룹_요청().toMenuGroup());
-		Menu 후라이드후라이드_메뉴 = menuService.create(후라이드후라이드_메뉴_요청(추천_메뉴_그룹.getId(), 후라이드치킨_상품.getId()).toMenu());
+		given(menuDao.countByIdIn(any())).willReturn((long)후라이드후라이드_주문().getOrderLineItems().size());
+		given(orderTableDao.findById(any())).willReturn(Optional.of(비어있지않은_주문_테이블()));
+		given(orderDao.save(any())).willReturn(후라이드후라이드_주문());
+		given(orderLineItemDao.save(any())).willReturn(후라이드후라이드_주문_항목());
 
 		// when
-		Order order = orderService.create(주문(비어있지않은_주문_테이블.getId(), 후라이드후라이드_메뉴.getId(), 1).toOrder());
+		Order order = orderService.create(주문_요청(비어있지않은_주문_테이블().getId(), 후라이드후라이드_메뉴().getId(), 1).toOrder());
 
 		// then
 		assertAll(
@@ -59,12 +63,9 @@ class OrderServiceTest extends IntegrationTest {
 	@DisplayName("주문 항목이 없는 경우 주문을 등록할 수 없다.")
 	@Test
 	void registerFailOnEmptyOrderLineItem() {
-		// given
-		OrderTable 비어있지않은_주문_테이블 = tableService.create(비어있지않은_주문_테이블_요청().toOrderTable());
-
 		// when
 		ThrowingCallable throwingCallable = () ->
-			orderService.create(주문_항목_없는_주문(비어있지않은_주문_테이블.getId()).toOrder());
+			orderService.create(주문_항목_없는_주문_요청(비어있지않은_주문_테이블().getId()).toOrder());
 
 		// then
 		assertThatExceptionOfType(RuntimeException.class).isThrownBy(throwingCallable);
@@ -74,12 +75,12 @@ class OrderServiceTest extends IntegrationTest {
 	@Test
 	void registerFailOnNotFoundMenu() {
 		// given
-		OrderTable 비어있지않은_주문_테이블 = tableService.create(비어있지않은_주문_테이블_요청().toOrderTable());
+		given(menuDao.countByIdIn(any())).willReturn(0L);
 		Long unknownMenuId = 0L;
 
 		// when
 		ThrowingCallable throwingCallable = () ->
-			orderService.create(주문(비어있지않은_주문_테이블.getId(), unknownMenuId, 1).toOrder());
+			orderService.create(주문_요청(비어있지않은_주문_테이블().getId(), unknownMenuId, 1).toOrder());
 
 		// then
 		assertThatExceptionOfType(RuntimeException.class).isThrownBy(throwingCallable);
@@ -89,14 +90,12 @@ class OrderServiceTest extends IntegrationTest {
 	@Test
 	void registerFailOnEmptyOrderTable() {
 		// given
-		OrderTable 빈_주문_테이블 = tableService.create(빈_주문_테이블_요청().toOrderTable());
-		Product 후라이드치킨_상품 = productService.create(후라이드치킨_상품_요청().toProduct());
-		MenuGroup 추천_메뉴_그룹 = menuGroupService.create(추천_메뉴_그룹_요청().toMenuGroup());
-		Menu 후라이드후라이드_메뉴 = menuService.create(후라이드후라이드_메뉴_요청(추천_메뉴_그룹.getId(), 후라이드치킨_상품.getId()).toMenu());
+		given(menuDao.countByIdIn(any())).willReturn((long)후라이드후라이드_주문().getOrderLineItems().size());
+		given(orderTableDao.findById(any())).willReturn(Optional.of(빈_주문_테이블()));
 
 		// when
 		ThrowingCallable throwingCallable = () ->
-			orderService.create(주문(빈_주문_테이블.getId(), 후라이드후라이드_메뉴.getId(), 1).toOrder());
+			orderService.create(주문_요청(빈_주문_테이블().getId(), 후라이드후라이드_메뉴().getId(), 1).toOrder());
 
 		// then
 		assertThatExceptionOfType(RuntimeException.class).isThrownBy(throwingCallable);
@@ -106,13 +105,8 @@ class OrderServiceTest extends IntegrationTest {
 	@Test
 	void findAll() {
 		// given
-		OrderTable 비어있지않은_주문_테이블_1 = tableService.create(비어있지않은_주문_테이블_요청().toOrderTable());
-		OrderTable 비어있지않은_주문_테이블_2 = tableService.create(비어있지않은_주문_테이블_요청().toOrderTable());
-		Product 후라이드치킨_상품 = productService.create(후라이드치킨_상품_요청().toProduct());
-		MenuGroup 추천_메뉴_그룹 = menuGroupService.create(추천_메뉴_그룹_요청().toMenuGroup());
-		Menu 후라이드후라이드_메뉴 = menuService.create(후라이드후라이드_메뉴_요청(추천_메뉴_그룹.getId(), 후라이드치킨_상품.getId()).toMenu());
-		Order 주문_1 = orderService.create(주문(비어있지않은_주문_테이블_1.getId(), 후라이드후라이드_메뉴.getId(), 1).toOrder());
-		Order 주문_2 = orderService.create(주문(비어있지않은_주문_테이블_2.getId(), 후라이드후라이드_메뉴.getId(), 2).toOrder());
+		given(orderDao.findAll()).willReturn(Collections.singletonList(후라이드후라이드_주문()));
+		given(orderLineItemDao.findAllByOrderId(any())).willReturn(Collections.singletonList(후라이드후라이드_주문_항목()));
 
 		// when
 		List<Order> orders = orderService.list();
@@ -121,7 +115,7 @@ class OrderServiceTest extends IntegrationTest {
 		List<Long> actualIds = orders.stream()
 			.map(Order::getId)
 			.collect(Collectors.toList());
-		List<Long> expectedIds = Stream.of(주문_1, 주문_1)
+		List<Long> expectedIds = Stream.of(후라이드후라이드_주문())
 			.map(Order::getId)
 			.collect(Collectors.toList());
 		assertThat(actualIds).containsAll(expectedIds);
@@ -131,15 +125,13 @@ class OrderServiceTest extends IntegrationTest {
 	@Test
 	void changeOrderStatus() {
 		// given
-		OrderTable 비어있지않은_주문_테이블 = tableService.create(비어있지않은_주문_테이블_요청().toOrderTable());
-		Product 후라이드치킨_상품 = productService.create(후라이드치킨_상품_요청().toProduct());
-		MenuGroup 추천_메뉴_그룹 = menuGroupService.create(추천_메뉴_그룹_요청().toMenuGroup());
-		Menu 후라이드후라이드_메뉴 = menuService.create(후라이드후라이드_메뉴_요청(추천_메뉴_그룹.getId(), 후라이드치킨_상품.getId()).toMenu());
-		Order 주문 = orderService.create(주문(비어있지않은_주문_테이블.getId(), 후라이드후라이드_메뉴.getId(), 1).toOrder());
 		OrderStatus orderStatus = OrderStatus.MEAL;
+		given(orderDao.findById(any())).willReturn(Optional.of(후라이드후라이드_주문()));
+		given(orderDao.save(any())).willReturn(후라이드후라이드_주문_상태_변경됨(orderStatus));
+		given(orderLineItemDao.findAllByOrderId(any())).willReturn(Collections.singletonList(후라이드후라이드_주문_항목()));
 
 		// when
-		Order order = orderService.changeOrderStatus(주문.getId(), 주문_상태(orderStatus).toOrder());
+		Order order = orderService.changeOrderStatus(후라이드후라이드_주문().getId(), 주문_상태_변경_요청(orderStatus).toOrder());
 
 		// then
 		assertThat(order.getOrderStatus()).isEqualTo(orderStatus.name());
@@ -149,16 +141,11 @@ class OrderServiceTest extends IntegrationTest {
 	@Test
 	void changeOrderStatusFailOnCompleted() {
 		// given
-		OrderTable 비어있지않은_주문_테이블 = tableService.create(비어있지않은_주문_테이블_요청().toOrderTable());
-		Product 후라이드치킨_상품 = productService.create(후라이드치킨_상품_요청().toProduct());
-		MenuGroup 추천_메뉴_그룹 = menuGroupService.create(추천_메뉴_그룹_요청().toMenuGroup());
-		Menu 후라이드후라이드_메뉴 = menuService.create(후라이드후라이드_메뉴_요청(추천_메뉴_그룹.getId(), 후라이드치킨_상품.getId()).toMenu());
-		Order 주문 = orderService.create(주문(비어있지않은_주문_테이블.getId(), 후라이드후라이드_메뉴.getId(), 1).toOrder());
-		orderService.changeOrderStatus(주문.getId(), 주문_상태(OrderStatus.COMPLETION).toOrder());
+		given(orderDao.findById(any())).willReturn(Optional.of(후라이드후라이드_주문_상태_변경됨(OrderStatus.COMPLETION)));
 
 		// when
 		ThrowingCallable throwingCallable = () ->
-			orderService.changeOrderStatus(주문.getId(), 주문_상태(OrderStatus.MEAL).toOrder());
+			orderService.changeOrderStatus(후라이드후라이드_주문().getId(), 주문_상태_변경_요청(OrderStatus.MEAL).toOrder());
 
 		// then
 		assertThatExceptionOfType(RuntimeException.class).isThrownBy(throwingCallable);
