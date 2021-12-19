@@ -246,5 +246,4 @@ class MenuServiceTest {
     private Menu getCreateRequest(String name, int price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
         return getCreateRequest(name, BigDecimal.valueOf(price), menuGroup, menuProducts);
     }
-
 }

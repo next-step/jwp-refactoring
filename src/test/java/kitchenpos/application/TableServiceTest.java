@@ -213,6 +213,4 @@ class TableServiceTest {
         orderTable.setTableGroupId(tableGroupId);
         return orderTable;
     }
-
-
 }

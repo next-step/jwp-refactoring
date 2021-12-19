@@ -154,5 +154,4 @@ class TableGroupServiceTest {
         expectedTableGroup.setOrderTables(orderTables);
         return expectedTableGroup;
     }
-
 }
