@@ -14,8 +14,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import kitchenpos.common.domain.RequireValidation;
 import kitchenpos.common.exception.InvalidStatusException;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -30,9 +30,8 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @JoinColumn(name = "order_table_id", nullable = false, updatable = false, foreignKey = @ForeignKey(name = "fk_orders_order_table"))
-    @OneToOne(optional = false)
-    private OrderTable orderTable;
+    @JoinColumn(nullable = false, updatable = false, foreignKey = @ForeignKey(name = "fk_orders_order_table"))
+    private long orderTableId;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -48,24 +47,24 @@ public class Order {
     protected Order() {
     }
 
-    private Order(OrderTable orderTable, OrderLineItems lineItems) {
-        validate(orderTable, lineItems);
-        orderTable.addOrder(this);
-        this.orderTable = orderTable;
+    private Order(long orderTableId, OrderLineItems lineItems) {
+        Assert.notNull(lineItems, "주문 항목들은 필수입니다.");
+        Assert.isTrue(lineItems.isNotEmpty(), "주문 항목들이 비어있을 수 없습니다.");
+        this.orderTableId = orderTableId;
         lineItems.changeOrder(this);
         this.orderLineItems = lineItems;
     }
 
-    public static Order of(OrderTable orderTable, List<OrderLineItem> lineItems) {
-        return new Order(orderTable, OrderLineItems.from(lineItems));
+    public static RequireValidation<Order> of(long orderTableId, List<OrderLineItem> lineItems) {
+        return RequireValidation.from(new Order(orderTableId, OrderLineItems.from(lineItems)));
     }
 
     public long id() {
         return id;
     }
 
-    public OrderTable table() {
-        return orderTable;
+    public long tableId() {
+        return orderTableId;
     }
 
     public OrderStatus status() {
@@ -82,22 +81,14 @@ public class Order {
 
     public void changeStatus(OrderStatus status) {
         Assert.notNull(status, "변경하려는 상태는 필수입니다.");
-        if (orderStatus.isCompleted()) {
+        if (isCompleted()) {
             throw new InvalidStatusException(String.format("완료된 주문(%s)의 상태를 변경할 수 없습니다.", this));
         }
         this.orderStatus = status;
     }
 
-    public boolean isCookingOrMeal() {
-        return orderStatus.isCooking() || orderStatus.isMeal();
-    }
-
-    private void validate(OrderTable orderTable, OrderLineItems lineItems) {
-        Assert.notNull(orderTable, "주문 테이블은 필수입니다.");
-        Assert.isTrue(orderTable.isFull(), "주문을 하는 테이블은 비어있을 수 없습니다.");
-
-        Assert.notNull(lineItems, "주문 항목들은 필수입니다.");
-        Assert.isTrue(lineItems.isNotEmpty(), "주문 항목들이 비어있을 수 없습니다.");
+    public boolean isCompleted() {
+        return orderStatus.isCompleted();
     }
 
     @Override
@@ -121,7 +112,7 @@ public class Order {
     public String toString() {
         return "Order{" +
             "id=" + id +
-            ", orderTable=" + orderTable +
+            ", orderTableId=" + orderTableId +
             ", orderStatus=" + orderStatus +
             ", orderedTime=" + orderedTime +
             '}';

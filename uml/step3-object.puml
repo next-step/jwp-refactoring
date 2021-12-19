@@ -1,0 +1,99 @@
+@startuml
+
+namespace common {
+
+    namespace domain {
+        RequireValidation ..> Validator
+
+        class Name
+        class Price
+        class Quantity
+        class RequireValidation
+        interface Validator
+    }
+
+    namespace exception {
+        class InvalidStatusException
+        class NotFoundException
+    }
+}
+
+namespace product {
+
+    namespace application {
+        class MenuGroupService
+        class MenuService
+        class ProductService
+    }
+
+    namespace domain {
+        Product -d-> common.domain.Name
+        Product -d-> common.domain.Price
+        Menu -d-> common.domain.Price
+        Menu -d-> common.domain.Name
+        MenuProduct -d-> common.domain.Quantity
+
+        class Product
+        class Menu
+        class MenuGroup
+        class MenuProduct
+        class MenuProducts
+        interface MenuGroupRepository
+        interface MenuRepository
+        interface ProductRepository
+    }
+}
+
+
+namespace table {
+
+    namespace application {
+        class TableGroupService
+        class TableService
+    }
+
+    namespace domain {
+        class Headcount
+        class OrderTable
+        class OrderTables
+        class TableGroup
+        enum CustomerStatus
+        interface OrderTableRepository
+        interface TableGroupRepository
+    }
+}
+
+namespace order {
+
+    namespace application {
+        OrderService -d-> product.domain.MenuRepository
+        OrderService .d.> product.domain.Menu
+
+        class OrderService
+    }
+
+    namespace domain {
+        Order .d.> common.domain.RequireValidation
+        OrderLineItem -d-> common.domain.Quantity
+        OrderLineItemMenu -d-> common.domain.Price
+        OrderLineItemMenu -d-> common.domain.Name
+        OrderValidator .d.|> common.domain.Validator
+        OrderValidator .l.> table.domain.OrderTable
+        OrderValidator -l-> table.domain.OrderTableRepository
+        OrderCreateService -l-> table.domain.OrderTableRepository
+        OrderStatusChangeService -l-> table.domain.OrderTableRepository
+        class Order
+             note bottom: orderTableId
+        class OrderCreateService
+        class OrderLineItem
+        class OrderLineItemMenu
+             note bottom: menuId
+        class OrderLineItems
+        enum OrderStatus
+        class OrderStatusChangeService
+        class OrderValidator
+        interface OrderRepository
+    }
+}
+
+@enduml

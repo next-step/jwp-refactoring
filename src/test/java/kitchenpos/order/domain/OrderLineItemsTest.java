@@ -1,5 +1,6 @@
 package kitchenpos.order.domain;
 
+import static kitchenpos.order.sample.OrderLineItemMenuSample.이십원_후라이트치킨_두마리세트_주문_메뉴;
 import static kitchenpos.product.sample.MenuSample.이십원_후라이드치킨_두마리세트;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatNoException;
@@ -18,7 +19,7 @@ class OrderLineItemsTest {
         assertThatNoException()
             .isThrownBy(() -> OrderLineItems.from(
                 Collections.singletonList(
-                    OrderLineItem.of(Quantity.from(1L), 이십원_후라이드치킨_두마리세트()))));
+                    OrderLineItem.of(Quantity.from(1L), 이십원_후라이트치킨_두마리세트_주문_메뉴()))));
     }
 
     @Test

@@ -18,7 +18,7 @@ public class MenuSample {
     public static Menu 이십원_후라이드치킨_두마리세트() {
         Menu menu = spy(Menu.of(
             Name.from("이십원_후라이드치킨_두마리세트"),
-            Price.from(BigDecimal.valueOf(2)),
+            Price.from(BigDecimal.valueOf(20)),
             두마리메뉴(),
             Collections.singletonList(MenuProduct.of(십원치킨(), Quantity.from(2L)))
         ));
