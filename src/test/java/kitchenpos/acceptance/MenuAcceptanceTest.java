@@ -40,6 +40,23 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         생성된_메뉴가_포함됨(볶음짜장면_하나, 삼성짬뽕_하나, 대표메뉴, listResponse);
     }
 
+    @DisplayName("메뉴의 가격은 포함된 상품 가격의 합보다 크면 안된다")
+    @Test
+    void test() {
+        // given
+        MenuGroupResponse 식사류 = MenuGroupAcceptanceTest.메뉴_그룹_등록되어_있음("식사류");
+        ProductResponse 볶음짜장면 = ProductAcceptanceTest.상품_등록되어_있음("볶음짜장면", 8000);
+        ProductResponse 삼선짬뽕 = ProductAcceptanceTest.상품_등록되어_있음("삼선짬뽕", 8000);
+        MenuProductRequest 볶음짜장면_하나 = new MenuProductRequest(볶음짜장면.getId(), 1);
+        MenuProductRequest 삼성짬뽕_하나 = new MenuProductRequest(삼선짬뽕.getId(), 1);
+        MenuRequest 대표메뉴 = new MenuRequest("대표 메뉴", 17000L, 식사류.getId(), Arrays.asList(볶음짜장면_하나, 삼성짬뽕_하나));
+
+        // when
+        ExtractableResponse<Response> createResponse = 메뉴_생성_요청(대표메뉴);
+        // then
+        assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
     /**
      * 요청 관련
      */
