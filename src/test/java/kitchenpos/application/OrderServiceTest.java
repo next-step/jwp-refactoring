@@ -57,7 +57,7 @@ public class OrderServiceTest {
         후라이드.setId(1L);
         후라이드.setPrice(new BigDecimal("5000"));
 
-        후라이드두마리구성 = MenuProductTextFixture.생성(1L,1L,2L);
+        후라이드두마리구성 = MenuProductTextFixture.생성(1L,후라이드,2L);
 
         치킨류 = MenuGroupTestFixture.생성(1L, "치킨");
 

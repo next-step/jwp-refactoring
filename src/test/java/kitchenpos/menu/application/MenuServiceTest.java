@@ -1,7 +1,9 @@
 package kitchenpos.menu.application;
 
+import kitchenpos.fixture.MenuProductTextFixture;
 import kitchenpos.menu.domain.*;
 import kitchenpos.dao.ProductDao;
+import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menuGroup.domain.MenuGroup;
 import kitchenpos.domain.Product;
@@ -42,6 +44,7 @@ public class MenuServiceTest {
 
     private Product 후라이드;
     private MenuProduct 후라이드두마리구성;
+    private MenuProductRequest 후라이드두마리구성Request;
     private MenuGroup 치킨류;
 
     private Menu 후라이드두마리세트;
@@ -53,11 +56,8 @@ public class MenuServiceTest {
         후라이드.setId(1L);
         후라이드.setPrice(new BigDecimal("5000"));
 
-        후라이드두마리구성 = new MenuProduct();
-        후라이드두마리구성.setSeq(1L);
-        후라이드두마리구성.setProductId(1L);
-        후라이드두마리구성.setQuantity(2L);
-
+        후라이드두마리구성 = MenuProductTextFixture.생성(1L, 후라이드, 2L);
+        후라이드두마리구성Request = MenuProductTextFixture.생성(후라이드.getId(), 2L);
         치킨류 = MenuGroupTestFixture.생성(1L, "치킨");
 
         후라이드두마리세트 = MenuTestFixture.생성(1L, "후라이드두마리세트", new BigDecimal("10000"), 치킨류);
@@ -69,10 +69,9 @@ public class MenuServiceTest {
     void create() {
         //given
         given(menuGroupRepository.findById(1L)).willReturn(java.util.Optional.ofNullable(치킨류));
-        given(productDao.findById(1L)).willReturn(java.util.Optional.ofNullable(후라이드));
         given(menuRepository.save(any())).willReturn(후라이드두마리세트);
 
-        Menu creatMenu = menuService.create(MenuRequest.of("후라이드두마리세트", new BigDecimal("10000"), 치킨류.getId(), Arrays.asList(후라이드두마리구성)));
+        Menu creatMenu = menuService.create(MenuRequest.of("후라이드두마리세트", new BigDecimal("10000"), 치킨류.getId(), Arrays.asList(후라이드두마리구성Request)));
 
         assertAll(
                 () -> assertThat(creatMenu).isNotNull(),
@@ -99,7 +98,7 @@ public class MenuServiceTest {
     @DisplayName("가격 x 수량 = 금액 보다 등록한 금액이 더 작아야 한다.")
     @Test
     void createPriceLessError() {
-        MenuRequest 비싼_후라이드두마리세트 = MenuRequest.of("비싼_후라이드두마리세트", new BigDecimal("100000"), 치킨류.getId(), Arrays.asList(후라이드두마리구성));
+        MenuRequest 비싼_후라이드두마리세트 = MenuRequest.of("비싼_후라이드두마리세트", new BigDecimal("100000"), 치킨류.getId(), Arrays.asList(후라이드두마리구성Request));
 
         assertThatThrownBy(() ->
                 menuService.create(비싼_후라이드두마리세트)

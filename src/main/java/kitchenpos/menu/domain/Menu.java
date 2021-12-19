@@ -18,7 +18,7 @@ public class Menu {
     private String name;
     private BigDecimal price;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "menu_group_id", foreignKey = @ForeignKey(name = "fk_menu_product_menu"))
     private MenuGroup menuGroup;
 
@@ -69,5 +69,7 @@ public class Menu {
                     menuProduct.updateMenu(this);
                     this.menuProducts.add(menuProduct);
                 });
+        this.menuProducts.validationOverPrice(this.price);
     }
+
 }
