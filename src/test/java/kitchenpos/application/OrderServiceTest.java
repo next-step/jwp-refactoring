@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static kitchenpos.application.TableServiceTest.getOrderTable;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -254,14 +255,4 @@ class OrderServiceTest {
         orderLineItem.setSeq(seq);
         return orderLineItem;
     }
-
-    private OrderTable getOrderTable(Long id, boolean empty, int numberOfGuests) {
-        final OrderTable orderTable = new OrderTable();
-        orderTable.setId(id);
-        orderTable.setEmpty(empty);
-        orderTable.setNumberOfGuests(numberOfGuests);
-        return orderTable;
-    }
-
-
 }
