@@ -1,6 +1,5 @@
 package kitchenpos.application;
 
-import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.OrderTableRequest;
 import kitchenpos.repository.OrderRepository;
@@ -75,8 +74,6 @@ class TableServiceTest {
         when(orderTable.isEmpty()).thenReturn(true);
 
         when(orderTableRepository.findById(orderTableId)).thenReturn(Optional.of(orderTable ));
-        when(orderRepository.existsByOrderTableAndOrderStatusIn(
-                orderTable, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))).thenReturn(false);
 
         OrderTable savedOrderTable = mock(OrderTable.class);
         when(savedOrderTable.isEmpty()).thenReturn(true);

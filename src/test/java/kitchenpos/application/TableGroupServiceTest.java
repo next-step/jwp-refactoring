@@ -1,6 +1,5 @@
 package kitchenpos.application;
 
-import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.TableGroupRequest;
@@ -22,8 +21,6 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
 
-    @Mock
-    OrderRepository orderRepository;
     @Mock
     OrderTableRepository orderTableRepository;
     @Mock
@@ -51,7 +48,7 @@ class TableGroupServiceTest {
 
         when(savedTableGroup.getOrderTables()).thenReturn(Arrays.asList(expectedOrderTable1, expectedOrderTable2));
 
-        TableGroupService tableGroupService = new TableGroupService(orderRepository, orderTableRepository, tableGroupRepository);
+        TableGroupService tableGroupService = new TableGroupService(orderTableRepository, tableGroupRepository);
 
         // when
         TableGroup createdTableGroup = tableGroupService.create(TableGroupRequest.from(tableGroup));
@@ -70,22 +67,17 @@ class TableGroupServiceTest {
         Long tableGroupId = 1L;
 
         OrderTable orderTable1 = mock(OrderTable.class);
-        when(orderTable1.getId()).thenReturn(1L);
         OrderTable orderTable2 = mock(OrderTable.class);
-        when(orderTable2.getId()).thenReturn(2L);
-
         TableGroup tableGroup = mock(TableGroup.class);
 
         when(orderTableRepository.findAllByTableGroup(tableGroup)).thenReturn(Arrays.asList(orderTable1, orderTable2));
-        when(orderRepository.existsByOrderTableIdInAndOrderStatusIn(Arrays.asList(orderTable1.getId(), orderTable2.getId()),
-                Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))).thenReturn(false);
 
         OrderTable expectedOrderTable1 = mock(OrderTable.class);
         when(expectedOrderTable1.getTableGroup()).thenReturn(null);
         OrderTable expectedOrderTable2 = mock(OrderTable.class);
         when(expectedOrderTable2.getTableGroup()).thenReturn(null);
 
-        TableGroupService tableGroupService = new TableGroupService(orderRepository, orderTableRepository, tableGroupRepository);
+        TableGroupService tableGroupService = new TableGroupService(orderTableRepository, tableGroupRepository);
 
         when(tableGroupRepository.findById(tableGroupId)).thenReturn(Optional.of(tableGroup));
         // when
