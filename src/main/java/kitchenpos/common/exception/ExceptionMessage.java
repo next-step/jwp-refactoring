@@ -2,7 +2,7 @@ package kitchenpos.common.exception;
 
 public enum ExceptionMessage {
 
-    REQUIRED("필수값 입니다.");
+    WRONG_VALUE("잘못된 값입니다.");
 
     private final String message;
 

@@ -26,7 +26,7 @@ public class Price {
 
     private void validate(BigDecimal price) {
         if (Objects.isNull(price)) {
-            throw new BadRequestException(REQUIRED);
+            throw new BadRequestException(WRONG_VALUE);
         }
     }
 

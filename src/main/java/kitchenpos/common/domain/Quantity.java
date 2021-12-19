@@ -1,9 +1,13 @@
 package kitchenpos.common.domain;
 
+import static kitchenpos.common.exception.ExceptionMessage.*;
+
 import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+
+import kitchenpos.common.exception.BadRequestException;
 
 @Embeddable
 public class Quantity {
@@ -15,7 +19,14 @@ public class Quantity {
     }
 
     public Quantity(long quantity) {
+        validate(quantity);
         this.quantity = quantity;
+    }
+
+    private void validate(long quantity) {
+        if (quantity < 0) {
+            throw new BadRequestException(WRONG_VALUE);
+        }
     }
 
     public long getValue() {

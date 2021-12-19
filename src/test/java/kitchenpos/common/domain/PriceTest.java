@@ -15,7 +15,7 @@ class PriceTest {
     void validatePrice() {
         assertThatThrownBy(() -> new Price(null))
             .isInstanceOf(BadRequestException.class)
-            .hasMessage(ExceptionMessage.REQUIRED.getMessage());
+            .hasMessage(ExceptionMessage.WRONG_VALUE.getMessage());
     }
 
 }

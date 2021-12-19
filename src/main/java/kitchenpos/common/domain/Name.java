@@ -27,7 +27,7 @@ public class Name {
 
     private void validate(String name) {
         if (!StringUtils.hasText(name)) {
-            throw new BadRequestException(REQUIRED);
+            throw new BadRequestException(WRONG_VALUE);
         }
     }
 

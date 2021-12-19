@@ -8,14 +8,13 @@ import org.junit.jupiter.api.Test;
 import kitchenpos.common.exception.BadRequestException;
 import kitchenpos.common.exception.ExceptionMessage;
 
-class NameTest {
+class QuantityTest {
 
+    @DisplayName("수량은 0보다 크거나 같아야 한다.")
     @Test
-    @DisplayName("이름은 필수값이다.")
-    void validateName() {
-        assertThatThrownBy(() -> new Name(""))
+    void validateQuantity() {
+        assertThatThrownBy(() -> new Quantity(-1))
             .isInstanceOf(BadRequestException.class)
             .hasMessage(ExceptionMessage.WRONG_VALUE.getMessage());
     }
-
 }
