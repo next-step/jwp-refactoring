@@ -1,24 +1,24 @@
-package kitchenpos.product.domain;
+package kitchenpos.common.domain;
 
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
-public class ProductName {
+public class MustHaveName {
     @Column(nullable = false)
     private String name;
 
-    protected ProductName() {
+    protected MustHaveName() {
     }
 
-    private ProductName(String name) {
+    private MustHaveName(String name) {
         validate(name);
         this.name = name;
     }
 
-    public static ProductName valueOf(String name) {
-        return new ProductName(name);
+    public static MustHaveName valueOf(String name) {
+        return new MustHaveName(name);
     }
 
     /**
@@ -47,7 +47,7 @@ public class ProductName {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        ProductName other = (ProductName) o;
+        MustHaveName other = (MustHaveName) o;
         return Objects.equals(name, other.name);
     }
 

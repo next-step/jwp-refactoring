@@ -1,8 +1,32 @@
 package kitchenpos.menu.domain;
 
-public class MenuGroup {
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import kitchenpos.common.domain.BaseEntity;
+import kitchenpos.common.domain.MustHaveName;
+
+@Entity
+public class MenuGroup extends BaseEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
+
+    @Embedded
+    private MustHaveName name;
+
+    public MenuGroup() {
+    }
+
+    private MenuGroup(String name) {
+        this.name = MustHaveName.valueOf(name);
+    }
+
+    public static MenuGroup from(String name) {
+        return new MenuGroup(name);
+    }
 
     public Long getId() {
         return id;
@@ -13,10 +37,14 @@ public class MenuGroup {
     }
 
     public String getName() {
-        return name;
+        return name.get();
     }
 
     public void setName(final String name) {
-        this.name = name;
+        this.name = MustHaveName.valueOf(name);
+    }
+
+    public boolean equalName(String menuGroupName) {
+        return this.name.equals(menuGroupName);
     }
 }

@@ -1,13 +1,13 @@
 package kitchenpos.product.domain;
 
 import java.math.BigDecimal;
-import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import kitchenpos.common.BaseEntity;
+import kitchenpos.common.domain.BaseEntity;
+import kitchenpos.common.domain.MustHaveName;
 
 @Entity
 public class Product extends BaseEntity {
@@ -17,7 +17,7 @@ public class Product extends BaseEntity {
     private Long id;
 
     @Embedded
-    private ProductName name;
+    private MustHaveName name;
 
     @Embedded
     private Price price;
@@ -26,7 +26,7 @@ public class Product extends BaseEntity {
     }
 
     private Product(String name, Integer price) {
-        this.name = ProductName.valueOf(name);
+        this.name = MustHaveName.valueOf(name);
         this.price = Price.valueOf(price);
     }
 
@@ -50,7 +50,7 @@ public class Product extends BaseEntity {
     }
 
     public void setName(String name) {
-        this.name = ProductName.valueOf(name);
+        this.name = MustHaveName.valueOf(name);
     }
 
     public void setPrice(Integer price) {
