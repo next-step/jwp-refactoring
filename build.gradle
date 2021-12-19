@@ -40,14 +40,19 @@ project(':kitchenpos-api') {
         enabled = false
     }
 
+    jar {
+        enabled = true
+    }
+
     dependencies {
-        compile project(':kitchenpos-common')
+        implementation project(':kitchenpos-common')
         testCompile project(':kitchenpos-common').sourceSets.test.output
     }
 }
 
 project(':kitchenpos-web') {
     dependencies {
-        compile project(':kitchenpos-api')
+        implementation project(':kitchenpos-common')
+        implementation project(':kitchenpos-api')
     }
 }

@@ -76,12 +76,12 @@
 # 3단계 : 의존성 리팩토링
 
 ### 1. Before 의존관계
-  ![](./src/main/resources/static/before.png)
+  ![](file/before.png)
   - 도메인 클래스 간에 강한 의존성 결합이 존재
   - table <-> tablegroup 패키지 사이클이 존재
 
 ### 2. After 의존관계
-  ![](./src/main/resources/static/after.png)
+  ![](file/after.png)
   - [X] 도메인 간 의존관계 해체 -> 객체간 직접 참조가 아닌 Repository 를 통해 우회
   - [x] Package 간 단방향 참조가 되도록 수정
   - [X] Event 방식을 통해 table <-> tablegroup 패키지 사이클 제거  
