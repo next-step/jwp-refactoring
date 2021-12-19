@@ -30,8 +30,6 @@ public class OrderService {
         final OrderTable orderTable = orderTableRepository.findById(orderRequest.getOrderTableId())
                 .orElseThrow(() -> new IllegalArgumentException("등록된 주문테이블이 아닙니다."));
 
-        orderTable.checkIsEmpty();
-
         if (CollectionUtils.isEmpty(orderRequest.getOrderLineItemRequests())) {
             throw new IllegalArgumentException("주문 항목 리스트가 비어있습니다.");
         }

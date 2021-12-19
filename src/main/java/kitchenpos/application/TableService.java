@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.OrderTableRequest;
@@ -37,11 +38,9 @@ public class TableService {
                 .orElseThrow(() -> new IllegalArgumentException("등록된 주문테이블이 아닙니다."));
 
         savedOrderTable.checkGroupedOrderTable();
+        savedOrderTable.getOrders()
+                        .forEach(Order::checkOrderStatusCookingOrMeal);
 
-        if (orderRepository.existsByOrderTableAndOrderStatusIn(
-                savedOrderTable, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException();
-        }
         savedOrderTable.changeEmpty(orderTableRequest.isEmpty());
         return savedOrderTable;
     }
