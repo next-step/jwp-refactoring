@@ -14,11 +14,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.math.BigDecimal;
 import java.util.*;
 
-import static kitchenpos.domain.MenuProductTest.콜라;
-import static kitchenpos.domain.MenuProductTest.통새우와퍼;
-import static kitchenpos.domain.MenuTest.통새우와퍼_세트;
-import static kitchenpos.domain.ProductTest.콜라_상품;
-import static kitchenpos.domain.ProductTest.통새우와퍼_상품;
+import static kitchenpos.domain.MenuProductTest.양념치킨;
+import static kitchenpos.domain.MenuProductTest.후라이드;
+import static kitchenpos.domain.MenuTest.치킨세트;
+import static kitchenpos.domain.ProductTest.양념치킨_상품;
+import static kitchenpos.domain.ProductTest.후라이드_상품;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -82,7 +82,7 @@ public class MenuServiceTest {
         given(menuGroupRepository.existsById(anyLong())).willReturn(false);
         // when
         // then
-        assertThatThrownBy(() -> menuService.create(통새우와퍼_세트))
+        assertThatThrownBy(() -> menuService.create(치킨세트))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -94,7 +94,7 @@ public class MenuServiceTest {
         given(productRepository.findById(anyLong())).willReturn(Optional.empty());
         // when
         // then
-        assertThatThrownBy(() -> menuService.create(통새우와퍼_세트))
+        assertThatThrownBy(() -> menuService.create(치킨세트))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -102,11 +102,11 @@ public class MenuServiceTest {
     @DisplayName("메뉴 가격은 [`상품 가격 * 메뉴에 속하는 상품 수량`]의 합보다 클 수 없다.")
     void menuPriceNotOverTotalProductPrice() {
         // given
-        given(menu.getMenuProducts()).willReturn(Arrays.asList(통새우와퍼, 콜라));
-        given(menu.getPrice()).willReturn(BigDecimal.valueOf(7001));
+        given(menu.getMenuProducts()).willReturn(Arrays.asList(후라이드, 양념치킨));
+        given(menu.getPrice()).willReturn(BigDecimal.valueOf(32_001));
         given(menuGroupRepository.existsById(anyLong())).willReturn(true);
         given(productRepository.findById(anyLong()))
-                .willReturn(Optional.of(통새우와퍼_상품), Optional.of(콜라_상품));
+                .willReturn(Optional.of(후라이드_상품), Optional.of(양념치킨_상품));
         // when
         // then
         assertThatThrownBy(() -> menuService.create(menu))
@@ -117,14 +117,14 @@ public class MenuServiceTest {
     @DisplayName("메뉴 리스트 조회")
     void listTest() {
         // given
-        given(menuRepository.findAll()).willReturn(Collections.singletonList(통새우와퍼_세트));
+        given(menuRepository.findAll()).willReturn(Collections.singletonList(치킨세트));
         // when
         List<Menu> actual = menuService.list();
         // then
         verify(menuProductRepository, times(1)).findAllByMenuId(any());
         assertAll(
                 () -> assertThat(actual).hasSize(1),
-                () -> assertThat(actual).containsExactly(통새우와퍼_세트)
+                () -> assertThat(actual).containsExactly(치킨세트)
         );
     }
 }

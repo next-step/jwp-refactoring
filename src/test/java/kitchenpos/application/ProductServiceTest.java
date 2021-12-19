@@ -16,7 +16,7 @@ import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 
-import static kitchenpos.domain.ProductTest.통새우와퍼_상품;
+import static kitchenpos.domain.ProductTest.후라이드_상품;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -35,11 +35,11 @@ public class ProductServiceTest {
     @DisplayName("상품 등록 성공")
     void createProductTest() {
         // given
-        given(productRepository.save(any())).willReturn(통새우와퍼_상품);
+        given(productRepository.save(any())).willReturn(후라이드_상품);
         // when
-        Product actual = productService.create(통새우와퍼_상품);
+        Product actual = productService.create(후라이드_상품);
         // then
-        assertThat(actual).isEqualTo(통새우와퍼_상품);
+        assertThat(actual).isEqualTo(후라이드_상품);
     }
 
     @ParameterizedTest
@@ -73,11 +73,11 @@ public class ProductServiceTest {
     void findAllProduct() {
         // given
         given(productRepository.findAll())
-                .willReturn(Collections.singletonList(통새우와퍼_상품));
+                .willReturn(Collections.singletonList(후라이드_상품));
         // when
         List<Product> actual = productService.list();
         // then
         assertThat(actual).hasSize(1);
-        assertThat(actual).containsExactly(통새우와퍼_상품);
+        assertThat(actual).containsExactly(후라이드_상품);
     }
 }
