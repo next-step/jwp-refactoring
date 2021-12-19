@@ -64,6 +64,6 @@
   - [X] ProductService
   - [X] MenuGroupService
   - [X] MenuService
-  - [ ] TableService
+  - [X] TableService
   - [ ] TableGroupService
   - [ ] OrderService
