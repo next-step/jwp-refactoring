@@ -84,10 +84,10 @@ class OrderServiceTest {
 
         Order saved = orderService.create(order);
 
-        assertAll(() -> {
-            assertNotNull(saved.getOrderedTime());
-            assertThat(saved.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
-        });
+        assertAll(
+            () -> assertNotNull(saved.getOrderedTime()),
+            () -> assertThat(saved.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name())
+        );
     }
 
     @Test
@@ -134,11 +134,11 @@ class OrderServiceTest {
 
         List<Order> orders = orderService.list();
 
-        assertAll(() -> {
-            assertThat(orders.size()).isEqualTo(1);
-            assertThat(orders.get(0).getOrderLineItems())
-                .extracting(OrderLineItem::getQuantity).containsExactly(2L);
-        });
+        assertAll(
+            () -> assertThat(orders.size()).isEqualTo(1),
+            () -> assertThat(orders.get(0).getOrderLineItems())
+                .extracting(OrderLineItem::getQuantity).containsExactly(2L)
+        );
     }
 
     @Test

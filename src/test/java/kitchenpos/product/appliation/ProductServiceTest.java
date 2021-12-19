@@ -49,10 +49,9 @@ class ProductServiceTest {
 
         Product saved = productService.create(product);
 
-        assertAll(() -> {
-            assertThat(saved.getPrice()).isEqualTo(PRODUCT_PRICE);
-            assertThat(saved.getName()).isEqualTo(PRODUCT_NAME);
-        });
+        assertAll(
+            () -> assertThat(saved.getPrice()).isEqualTo(PRODUCT_PRICE),
+            () -> assertThat(saved.getName()).isEqualTo(PRODUCT_NAME));
     }
 
     @Test

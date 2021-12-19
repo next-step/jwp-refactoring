@@ -35,8 +35,8 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     @DisplayName("테이블별 주문을 관리한다.")
     void manageOrder() {
         // 상품 등록 되어 있음
-        Product 후라이드치킨 = 상품_등록_되어있음("후라이드치킨", BigDecimal.valueOf(10000));
-        Product 양념치킨 = 상품_등록_되어있음("양념치킨", BigDecimal.valueOf(11000));
+        Product 후라이드치킨 = 상품_등록_되어있음("후라이드치킨", 10000);
+        Product 양념치킨 = 상품_등록_되어있음("양념치킨", 11000);
         // 메뉴그룹 등록 되어 있음
         MenuGroup 치킨 = 메뉴그룹_등록_되어있음("치킨");
         // 메뉴 등록되어 있음

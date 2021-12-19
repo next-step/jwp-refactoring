@@ -10,7 +10,6 @@ import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import kitchenpos.application.TableGroupService;
 import kitchenpos.dao.OrderDao;
@@ -24,7 +23,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @DisplayName("테이블 그룹 서비스 테스트")
@@ -69,12 +67,11 @@ class TableGroupServiceTest {
 
         TableGroup saved = tableGroupService.create(this.tableGroup);
 
-        assertAll(() -> {
-            assertNotNull(saved.getCreatedDate());
-            assertThat(saved.getOrderTables())
+        assertAll(
+            () -> assertNotNull(saved.getCreatedDate()),
+            () -> assertThat(saved.getOrderTables())
                 .extracting(OrderTable::getId)
-                .containsExactly(1L, 2L);
-        });
+                .containsExactly(1L, 2L));
     }
 
     @Test
@@ -123,10 +120,9 @@ class TableGroupServiceTest {
         orderTable_1.setTableGroupId(1L);
         orderTable_2.setTableGroupId(1L);
 
-        assertAll(() -> {
-            assertNotNull(orderTable_1.getTableGroupId());
-            assertNotNull(orderTable_2.getTableGroupId());
-        });
+        assertAll(
+            () -> assertNotNull(orderTable_1.getTableGroupId()),
+            () -> assertNotNull(orderTable_2.getTableGroupId()));
 
         when(orderTableDao.findAllByTableGroupId(anyLong()))
             .thenReturn(Arrays.asList(orderTable_1, orderTable_2));
@@ -139,10 +135,9 @@ class TableGroupServiceTest {
 
         tableGroupService.ungroup(1L);
 
-        assertAll(() -> {
-            assertNull(orderTable_1.getTableGroupId());
-            assertNull(orderTable_2.getTableGroupId());
-        });
+        assertAll(
+            () -> assertNull(orderTable_1.getTableGroupId()),
+            () -> assertNull(orderTable_2.getTableGroupId()));
     }
 
     @Test
