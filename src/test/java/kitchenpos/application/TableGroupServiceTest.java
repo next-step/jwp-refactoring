@@ -47,8 +47,8 @@ class TableGroupServiceTest extends IntegrationTest {
 	@Test
 	void register() {
 		// given
-		OrderTable 빈_주문_테이블_1 = tableService.create(빈_주문_테이블().toOrderTable());
-		OrderTable 빈_주문_테이블_2 = tableService.create(빈_주문_테이블().toOrderTable());
+		OrderTable 빈_주문_테이블_1 = tableService.create(빈_주문_테이블_요청().toOrderTable());
+		OrderTable 빈_주문_테이블_2 = tableService.create(빈_주문_테이블_요청().toOrderTable());
 
 		// when
 		TableGroup tableGroup = tableGroupService.create(
@@ -68,7 +68,7 @@ class TableGroupServiceTest extends IntegrationTest {
 	@Test
 	void registerFailOnLessThanTwo() {
 		// given
-		OrderTable 빈_주문_테이블_1 = tableService.create(빈_주문_테이블().toOrderTable());
+		OrderTable 빈_주문_테이블_1 = tableService.create(빈_주문_테이블_요청().toOrderTable());
 
 		// when
 		ThrowingCallable throwingCallable = () ->
@@ -82,7 +82,7 @@ class TableGroupServiceTest extends IntegrationTest {
 	@Test
 	void registerFailOnNotFoundOrderTable() {
 		// given
-		OrderTable 빈_주문_테이블_1 = tableService.create(빈_주문_테이블().toOrderTable());
+		OrderTable 빈_주문_테이블_1 = tableService.create(빈_주문_테이블_요청().toOrderTable());
 		Long unknownOrderTableId = 0L;
 
 		// when
@@ -98,8 +98,8 @@ class TableGroupServiceTest extends IntegrationTest {
 	@Test
 	void registerFailOnNotEmptyOrderTable() {
 		// given
-		OrderTable 빈_주문_테이블 = tableService.create(빈_주문_테이블().toOrderTable());
-		OrderTable 비어있지않은_주문_테이블 = tableService.create(비어있지않은_주문_테이블().toOrderTable());
+		OrderTable 빈_주문_테이블 = tableService.create(빈_주문_테이블_요청().toOrderTable());
+		OrderTable 비어있지않은_주문_테이블 = tableService.create(비어있지않은_주문_테이블_요청().toOrderTable());
 
 		// when
 		ThrowingCallable throwingCallable = () ->
@@ -114,9 +114,9 @@ class TableGroupServiceTest extends IntegrationTest {
 	@Test
 	void registerFailOnAlreadyBelongToOrderTableGroup() {
 		// given
-		OrderTable 빈_주문_테이블_1 = tableService.create(빈_주문_테이블().toOrderTable());
-		OrderTable 빈_주문_테이블_2 = tableService.create(빈_주문_테이블().toOrderTable());
-		OrderTable 빈_주문_테이블_3 = tableService.create(빈_주문_테이블().toOrderTable());
+		OrderTable 빈_주문_테이블_1 = tableService.create(빈_주문_테이블_요청().toOrderTable());
+		OrderTable 빈_주문_테이블_2 = tableService.create(빈_주문_테이블_요청().toOrderTable());
+		OrderTable 빈_주문_테이블_3 = tableService.create(빈_주문_테이블_요청().toOrderTable());
 		tableGroupService.create(주문_테이블_그룹(Arrays.asList(빈_주문_테이블_1.getId(), 빈_주문_테이블_2.getId())).toOrderTableGroup());
 
 		// when
@@ -132,8 +132,8 @@ class TableGroupServiceTest extends IntegrationTest {
 	@Test
 	void ungroup() {
 		// given
-		OrderTable 빈_주문_테이블_1 = tableService.create(빈_주문_테이블().toOrderTable());
-		OrderTable 빈_주문_테이블_2 = tableService.create(빈_주문_테이블().toOrderTable());
+		OrderTable 빈_주문_테이블_1 = tableService.create(빈_주문_테이블_요청().toOrderTable());
+		OrderTable 빈_주문_테이블_2 = tableService.create(빈_주문_테이블_요청().toOrderTable());
 		TableGroup 주문_테이블_그룹 = tableGroupService.create(
 			주문_테이블_그룹(Arrays.asList(빈_주문_테이블_1.getId(), 빈_주문_테이블_2.getId())).toOrderTableGroup());
 
@@ -147,8 +147,8 @@ class TableGroupServiceTest extends IntegrationTest {
 	@Test
 	void ungroupFailOnNotCompletedOrderExist() {
 		// given
-		OrderTable 주문_테이블_1 = tableService.create(빈_주문_테이블().toOrderTable());
-		OrderTable 주문_테이블_2 = tableService.create(빈_주문_테이블().toOrderTable());
+		OrderTable 주문_테이블_1 = tableService.create(빈_주문_테이블_요청().toOrderTable());
+		OrderTable 주문_테이블_2 = tableService.create(빈_주문_테이블_요청().toOrderTable());
 		TableGroup 주문_테이블_그룹 = tableGroupService.create(
 			주문_테이블_그룹(Arrays.asList(주문_테이블_1.getId(), 주문_테이블_2.getId())).toOrderTableGroup());
 		Product 후라이드치킨_상품 = productService.create(후라이드치킨_상품_요청().toProduct());

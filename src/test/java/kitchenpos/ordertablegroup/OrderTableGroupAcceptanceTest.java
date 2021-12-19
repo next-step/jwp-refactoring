@@ -55,8 +55,8 @@ public class OrderTableGroupAcceptanceTest extends AcceptanceTest {
 	@Test
 	void register() {
 		// given
-		OrderTableDto 빈_주문_테이블_1 = 주문_테이블_등록되어_있음(빈_주문_테이블()).as(OrderTableDto.class);
-		OrderTableDto 빈_주문_테이블_2 = 주문_테이블_등록되어_있음(빈_주문_테이블()).as(OrderTableDto.class);
+		OrderTableDto 빈_주문_테이블_1 = 주문_테이블_등록되어_있음(빈_주문_테이블_요청()).as(OrderTableDto.class);
+		OrderTableDto 빈_주문_테이블_2 = 주문_테이블_등록되어_있음(빈_주문_테이블_요청()).as(OrderTableDto.class);
 
 		// when
 		ExtractableResponse<Response> response = 주문_테이블_그룹_등록_요청(
@@ -70,7 +70,7 @@ public class OrderTableGroupAcceptanceTest extends AcceptanceTest {
 	@Test
 	void registerFailOnLessThanTwo() {
 		// given
-		OrderTableDto 빈_주문_테이블_1 = 주문_테이블_등록되어_있음(빈_주문_테이블()).as(OrderTableDto.class);
+		OrderTableDto 빈_주문_테이블_1 = 주문_테이블_등록되어_있음(빈_주문_테이블_요청()).as(OrderTableDto.class);
 
 		// when
 		ExtractableResponse<Response> response = 주문_테이블_그룹_등록_요청(
@@ -84,7 +84,7 @@ public class OrderTableGroupAcceptanceTest extends AcceptanceTest {
 	@Test
 	void registerFailOnNotFoundOrderTable() {
 		// given
-		OrderTableDto 빈_주문_테이블_1 = 주문_테이블_등록되어_있음(빈_주문_테이블()).as(OrderTableDto.class);
+		OrderTableDto 빈_주문_테이블_1 = 주문_테이블_등록되어_있음(빈_주문_테이블_요청()).as(OrderTableDto.class);
 		Long unknownOrderTableId = 0L;
 
 		// when
@@ -99,8 +99,8 @@ public class OrderTableGroupAcceptanceTest extends AcceptanceTest {
 	@Test
 	void registerFailOnNotEmptyOrderTable() {
 		// given
-		OrderTableDto 빈_주문_테이블 = 주문_테이블_등록되어_있음(빈_주문_테이블()).as(OrderTableDto.class);
-		OrderTableDto 비어있지않은_주문_테이블 = 주문_테이블_등록되어_있음(비어있지않은_주문_테이블()).as(OrderTableDto.class);
+		OrderTableDto 빈_주문_테이블 = 주문_테이블_등록되어_있음(빈_주문_테이블_요청()).as(OrderTableDto.class);
+		OrderTableDto 비어있지않은_주문_테이블 = 주문_테이블_등록되어_있음(비어있지않은_주문_테이블_요청()).as(OrderTableDto.class);
 
 		// when
 		ExtractableResponse<Response> response = 주문_테이블_그룹_등록_요청(
@@ -114,9 +114,9 @@ public class OrderTableGroupAcceptanceTest extends AcceptanceTest {
 	@Test
 	void registerFailOnAlreadyBelongToOrderTableGroup() {
 		// given
-		OrderTableDto 빈_주문_테이블_1 = 주문_테이블_등록되어_있음(빈_주문_테이블()).as(OrderTableDto.class);
-		OrderTableDto 빈_주문_테이블_2 = 주문_테이블_등록되어_있음(빈_주문_테이블()).as(OrderTableDto.class);
-		OrderTableDto 빈_주문_테이블_3 = 주문_테이블_등록되어_있음(빈_주문_테이블()).as(OrderTableDto.class);
+		OrderTableDto 빈_주문_테이블_1 = 주문_테이블_등록되어_있음(빈_주문_테이블_요청()).as(OrderTableDto.class);
+		OrderTableDto 빈_주문_테이블_2 = 주문_테이블_등록되어_있음(빈_주문_테이블_요청()).as(OrderTableDto.class);
+		OrderTableDto 빈_주문_테이블_3 = 주문_테이블_등록되어_있음(빈_주문_테이블_요청()).as(OrderTableDto.class);
 		주문_테이블_그룹_등록되어_있음(주문_테이블_그룹(Arrays.asList(빈_주문_테이블_1.getId(), 빈_주문_테이블_2.getId())));
 
 		// when
@@ -131,8 +131,8 @@ public class OrderTableGroupAcceptanceTest extends AcceptanceTest {
 	@Test
 	void ungroup() {
 		// given
-		OrderTableDto 빈_주문_테이블_1 = 주문_테이블_등록되어_있음(빈_주문_테이블()).as(OrderTableDto.class);
-		OrderTableDto 빈_주문_테이블_2 = 주문_테이블_등록되어_있음(빈_주문_테이블()).as(OrderTableDto.class);
+		OrderTableDto 빈_주문_테이블_1 = 주문_테이블_등록되어_있음(빈_주문_테이블_요청()).as(OrderTableDto.class);
+		OrderTableDto 빈_주문_테이블_2 = 주문_테이블_등록되어_있음(빈_주문_테이블_요청()).as(OrderTableDto.class);
 		OrderTableGroupDto 주문_테이블_그룹 = 주문_테이블_그룹_등록되어_있음(
 			주문_테이블_그룹(Arrays.asList(빈_주문_테이블_1.getId(), 빈_주문_테이블_2.getId()))).as(OrderTableGroupDto.class);
 
@@ -147,8 +147,8 @@ public class OrderTableGroupAcceptanceTest extends AcceptanceTest {
 	@Test
 	void ungroupFailOnNotCompletedOrderExist() {
 		// given
-		OrderTableDto 주문_테이블_1 = 주문_테이블_등록되어_있음(빈_주문_테이블()).as(OrderTableDto.class);
-		OrderTableDto 주문_테이블_2 = 주문_테이블_등록되어_있음(빈_주문_테이블()).as(OrderTableDto.class);
+		OrderTableDto 주문_테이블_1 = 주문_테이블_등록되어_있음(빈_주문_테이블_요청()).as(OrderTableDto.class);
+		OrderTableDto 주문_테이블_2 = 주문_테이블_등록되어_있음(빈_주문_테이블_요청()).as(OrderTableDto.class);
 		OrderTableGroupDto 주문_테이블_그룹 = 주문_테이블_그룹_등록되어_있음(
 			주문_테이블_그룹(Arrays.asList(주문_테이블_1.getId(), 주문_테이블_2.getId()))).as(OrderTableGroupDto.class);
 		ProductDto 후라이드치킨_상품 = 상품_등록되어_있음(후라이드치킨_상품_요청()).as(ProductDto.class);

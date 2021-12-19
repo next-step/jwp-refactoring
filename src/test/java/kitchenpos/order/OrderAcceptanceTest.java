@@ -66,7 +66,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
 	@Test
 	void register() {
 		// given
-		OrderTableDto 비어있지않은_주문_테이블 = 주문_테이블_등록되어_있음(비어있지않은_주문_테이블()).as(OrderTableDto.class);
+		OrderTableDto 비어있지않은_주문_테이블 = 주문_테이블_등록되어_있음(비어있지않은_주문_테이블_요청()).as(OrderTableDto.class);
 		ProductDto 후라이드치킨_상품 = 상품_등록되어_있음(후라이드치킨_상품_요청()).as(ProductDto.class);
 		MenuGroupDto 추천_메뉴_그룹 = 메뉴_그룹_등록되어_있음(추천_메뉴_그룹_요청()).as(MenuGroupDto.class);
 		MenuDto 후라이드후라이드_메뉴 = 메뉴_등록되어_있음(후라이드후라이드_메뉴_요청(추천_메뉴_그룹.getId(), 후라이드치킨_상품.getId())).as(MenuDto.class);
@@ -83,7 +83,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
 	@Test
 	void registerFailOnEmptyOrderLineItem() {
 		// given
-		OrderTableDto 비어있지않은_주문_테이블 = 주문_테이블_등록되어_있음(비어있지않은_주문_테이블()).as(OrderTableDto.class);
+		OrderTableDto 비어있지않은_주문_테이블 = 주문_테이블_등록되어_있음(비어있지않은_주문_테이블_요청()).as(OrderTableDto.class);
 
 		// when
 		ExtractableResponse<Response> response = 주문_등록_요청(주문_항목_없는_주문(비어있지않은_주문_테이블.getId()));
@@ -96,7 +96,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
 	@Test
 	void registerFailOnNotFoundMenu() {
 		// given
-		OrderTableDto 비어있지않은_주문_테이블 = 주문_테이블_등록되어_있음(비어있지않은_주문_테이블()).as(OrderTableDto.class);
+		OrderTableDto 비어있지않은_주문_테이블 = 주문_테이블_등록되어_있음(비어있지않은_주문_테이블_요청()).as(OrderTableDto.class);
 		Long unknownMenuId = 0L;
 
 		// when
@@ -110,7 +110,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
 	@Test
 	void registerFailOnEmptyOrderTable() {
 		// given
-		OrderTableDto 빈_주문_테이블 = 주문_테이블_등록되어_있음(빈_주문_테이블()).as(OrderTableDto.class);
+		OrderTableDto 빈_주문_테이블 = 주문_테이블_등록되어_있음(빈_주문_테이블_요청()).as(OrderTableDto.class);
 		ProductDto 후라이드치킨_상품 = 상품_등록되어_있음(후라이드치킨_상품_요청()).as(ProductDto.class);
 		MenuGroupDto 추천_메뉴_그룹 = 메뉴_그룹_등록되어_있음(추천_메뉴_그룹_요청()).as(MenuGroupDto.class);
 		MenuDto 후라이드후라이드_메뉴 = 메뉴_등록되어_있음(후라이드후라이드_메뉴_요청(추천_메뉴_그룹.getId(), 후라이드치킨_상품.getId())).as(MenuDto.class);
@@ -126,8 +126,8 @@ public class OrderAcceptanceTest extends AcceptanceTest {
 	@Test
 	void findAll() {
 		// given
-		OrderTableDto 비어있지않은_주문_테이블_1 = 주문_테이블_등록되어_있음(비어있지않은_주문_테이블()).as(OrderTableDto.class);
-		OrderTableDto 비어있지않은_주문_테이블_2 = 주문_테이블_등록되어_있음(비어있지않은_주문_테이블()).as(OrderTableDto.class);
+		OrderTableDto 비어있지않은_주문_테이블_1 = 주문_테이블_등록되어_있음(비어있지않은_주문_테이블_요청()).as(OrderTableDto.class);
+		OrderTableDto 비어있지않은_주문_테이블_2 = 주문_테이블_등록되어_있음(비어있지않은_주문_테이블_요청()).as(OrderTableDto.class);
 		ProductDto 후라이드치킨_상품 = 상품_등록되어_있음(후라이드치킨_상품_요청()).as(ProductDto.class);
 		MenuGroupDto 추천_메뉴_그룹 = 메뉴_그룹_등록되어_있음(추천_메뉴_그룹_요청()).as(MenuGroupDto.class);
 		MenuDto 후라이드후라이드_메뉴 = 메뉴_등록되어_있음(후라이드후라이드_메뉴_요청(추천_메뉴_그룹.getId(), 후라이드치킨_상품.getId())).as(MenuDto.class);
@@ -146,7 +146,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
 	@Test
 	void changeOrderStatus() {
 		// given
-		OrderTableDto 비어있지않은_주문_테이블 = 주문_테이블_등록되어_있음(비어있지않은_주문_테이블()).as(OrderTableDto.class);
+		OrderTableDto 비어있지않은_주문_테이블 = 주문_테이블_등록되어_있음(비어있지않은_주문_테이블_요청()).as(OrderTableDto.class);
 		ProductDto 후라이드치킨_상품 = 상품_등록되어_있음(후라이드치킨_상품_요청()).as(ProductDto.class);
 		MenuGroupDto 추천_메뉴_그룹 = 메뉴_그룹_등록되어_있음(추천_메뉴_그룹_요청()).as(MenuGroupDto.class);
 		MenuDto 후라이드후라이드_메뉴 = 메뉴_등록되어_있음(후라이드후라이드_메뉴_요청(추천_메뉴_그룹.getId(), 후라이드치킨_상품.getId())).as(MenuDto.class);
@@ -164,7 +164,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
 	@Test
 	void changeOrderStatusFailOnCompleted() {
 		// given
-		OrderTableDto 비어있지않은_주문_테이블 = 주문_테이블_등록되어_있음(비어있지않은_주문_테이블()).as(OrderTableDto.class);
+		OrderTableDto 비어있지않은_주문_테이블 = 주문_테이블_등록되어_있음(비어있지않은_주문_테이블_요청()).as(OrderTableDto.class);
 		ProductDto 후라이드치킨_상품 = 상품_등록되어_있음(후라이드치킨_상품_요청()).as(ProductDto.class);
 		MenuGroupDto 추천_메뉴_그룹 = 메뉴_그룹_등록되어_있음(추천_메뉴_그룹_요청()).as(MenuGroupDto.class);
 		MenuDto 후라이드후라이드_메뉴 = 메뉴_등록되어_있음(후라이드후라이드_메뉴_요청(추천_메뉴_그룹.getId(), 후라이드치킨_상품.getId())).as(MenuDto.class);

@@ -55,7 +55,7 @@ public class OrderTableAcceptanceTest extends AcceptanceTest {
 	@Test
 	void register() {
 		// when
-		ExtractableResponse<Response> response = 주문_테이블_등록_요청(빈_주문_테이블());
+		ExtractableResponse<Response> response = 주문_테이블_등록_요청(빈_주문_테이블_요청());
 
 		// then
 		주문_테이블_등록됨(response);
@@ -65,8 +65,8 @@ public class OrderTableAcceptanceTest extends AcceptanceTest {
 	@Test
 	void findAll() {
 		// given
-		OrderTableDto 빈_주문_테이블 = 주문_테이블_등록되어_있음(빈_주문_테이블()).as(OrderTableDto.class);
-		OrderTableDto 비어있지않은_주문_테이블 = 주문_테이블_등록되어_있음(비어있지않은_주문_테이블()).as(OrderTableDto.class);
+		OrderTableDto 빈_주문_테이블 = 주문_테이블_등록되어_있음(빈_주문_테이블_요청()).as(OrderTableDto.class);
+		OrderTableDto 비어있지않은_주문_테이블 = 주문_테이블_등록되어_있음(비어있지않은_주문_테이블_요청()).as(OrderTableDto.class);
 
 		// when
 		ExtractableResponse<Response> response = 주문_테이블_목록_조회_요청();
@@ -80,7 +80,7 @@ public class OrderTableAcceptanceTest extends AcceptanceTest {
 	@Test
 	void changEmpty() {
 		// given
-		OrderTableDto 빈_주문_테이블 = 주문_테이블_등록되어_있음(빈_주문_테이블()).as(OrderTableDto.class);
+		OrderTableDto 빈_주문_테이블 = 주문_테이블_등록되어_있음(빈_주문_테이블_요청()).as(OrderTableDto.class);
 		boolean empty = false;
 
 		// when
@@ -95,8 +95,8 @@ public class OrderTableAcceptanceTest extends AcceptanceTest {
 	@Test
 	void changEmptyFailOnBelongToOrderTableGroup() {
 		// given
-		OrderTableDto 빈_주문_테이블_1 = 주문_테이블_등록되어_있음(빈_주문_테이블()).as(OrderTableDto.class);
-		OrderTableDto 빈_주문_테이블_2 = 주문_테이블_등록되어_있음(빈_주문_테이블()).as(OrderTableDto.class);
+		OrderTableDto 빈_주문_테이블_1 = 주문_테이블_등록되어_있음(빈_주문_테이블_요청()).as(OrderTableDto.class);
+		OrderTableDto 빈_주문_테이블_2 = 주문_테이블_등록되어_있음(빈_주문_테이블_요청()).as(OrderTableDto.class);
 		주문_테이블_그룹_등록되어_있음(주문_테이블_그룹(Arrays.asList(빈_주문_테이블_1.getId(), 빈_주문_테이블_2.getId())));
 
 		// when
@@ -110,7 +110,7 @@ public class OrderTableAcceptanceTest extends AcceptanceTest {
 	@Test
 	void changEmptyFailOnNotCompletedOrderExist() {
 		// given
-		OrderTableDto 비어있지않은_주문_테이블 = 주문_테이블_등록되어_있음(비어있지않은_주문_테이블()).as(OrderTableDto.class);
+		OrderTableDto 비어있지않은_주문_테이블 = 주문_테이블_등록되어_있음(비어있지않은_주문_테이블_요청()).as(OrderTableDto.class);
 		ProductDto 후라이드치킨_상품 = 상품_등록되어_있음(후라이드치킨_상품_요청()).as(ProductDto.class);
 		MenuGroupDto 추천_메뉴_그룹 = 메뉴_그룹_등록되어_있음(추천_메뉴_그룹_요청()).as(MenuGroupDto.class);
 		MenuDto 후라이드후라이드_메뉴 = 메뉴_등록되어_있음(후라이드후라이드_메뉴_요청(추천_메뉴_그룹.getId(), 후라이드치킨_상품.getId())).as(MenuDto.class);
@@ -128,7 +128,7 @@ public class OrderTableAcceptanceTest extends AcceptanceTest {
 	@Test
 	void changeNumberOfGuests() {
 		// given
-		OrderTableDto 비어있지않은_주문_테이블 = 주문_테이블_등록되어_있음(비어있지않은_주문_테이블()).as(OrderTableDto.class);
+		OrderTableDto 비어있지않은_주문_테이블 = 주문_테이블_등록되어_있음(비어있지않은_주문_테이블_요청()).as(OrderTableDto.class);
 		int numberOfGuests = 6;
 
 		// when
@@ -143,7 +143,7 @@ public class OrderTableAcceptanceTest extends AcceptanceTest {
 	@Test
 	void changeNumberOfGuestsFailOnNegative() {
 		// given
-		OrderTableDto 비어있지않은_주문_테이블 = 주문_테이블_등록되어_있음(비어있지않은_주문_테이블()).as(OrderTableDto.class);
+		OrderTableDto 비어있지않은_주문_테이블 = 주문_테이블_등록되어_있음(비어있지않은_주문_테이블_요청()).as(OrderTableDto.class);
 		int numberOfGuests = -1;
 
 		// when
@@ -157,7 +157,7 @@ public class OrderTableAcceptanceTest extends AcceptanceTest {
 	@Test
 	void changeNumberOfGuestsFailOnEmpty() {
 		// given
-		OrderTableDto 빈_주문_테이블 = 주문_테이블_등록되어_있음(빈_주문_테이블()).as(OrderTableDto.class);
+		OrderTableDto 빈_주문_테이블 = 주문_테이블_등록되어_있음(빈_주문_테이블_요청()).as(OrderTableDto.class);
 		int numberOfGuests = 6;
 
 		// when
