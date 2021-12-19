@@ -1,7 +1,10 @@
 package kitchenpos.ordertable;
 
+import static kitchenpos.ordertablegroup.OrderTableGroupFixture.*;
+
 import kitchenpos.domain.OrderTable;
 import kitchenpos.ordertable.dto.OrderTableRequest;
+import kitchenpos.ordertablegroup.OrderTableGroupFixture;
 
 public class OrderTableFixture {
 	public static OrderTable 빈_주문_테이블() {
@@ -46,6 +49,42 @@ public class OrderTableFixture {
 		orderTable.setTableGroupId(1L);
 		orderTable.setNumberOfGuests(4);
 		orderTable.setEmpty(false);
+		return orderTable;
+	}
+
+	public static OrderTable 빈_주문_테이블_1() {
+		OrderTable orderTable = new OrderTable();
+		orderTable.setId(4L);
+		orderTable.setTableGroupId(null);
+		orderTable.setNumberOfGuests(4);
+		orderTable.setEmpty(true);
+		return orderTable;
+	}
+
+	public static OrderTable 빈_주문_테이블_1_그룹핑됨() {
+		OrderTable orderTable = new OrderTable();
+		orderTable.setId(4L);
+		orderTable.setTableGroupId(주문_테이블_그룹().getId());
+		orderTable.setNumberOfGuests(4);
+		orderTable.setEmpty(true);
+		return orderTable;
+	}
+
+	public static OrderTable 빈_주문_테이블_2() {
+		OrderTable orderTable = new OrderTable();
+		orderTable.setId(5L);
+		orderTable.setTableGroupId(null);
+		orderTable.setNumberOfGuests(4);
+		orderTable.setEmpty(true);
+		return orderTable;
+	}
+
+	public static OrderTable 빈_주문_테이블_2_그룹핑됨() {
+		OrderTable orderTable = new OrderTable();
+		orderTable.setId(5L);
+		orderTable.setTableGroupId(주문_테이블_그룹().getId());
+		orderTable.setNumberOfGuests(4);
+		orderTable.setEmpty(true);
 		return orderTable;
 	}
 

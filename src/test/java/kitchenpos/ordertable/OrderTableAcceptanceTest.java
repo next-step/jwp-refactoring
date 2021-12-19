@@ -97,7 +97,7 @@ public class OrderTableAcceptanceTest extends AcceptanceTest {
 		// given
 		OrderTableDto 빈_주문_테이블_1 = 주문_테이블_등록되어_있음(빈_주문_테이블_요청()).as(OrderTableDto.class);
 		OrderTableDto 빈_주문_테이블_2 = 주문_테이블_등록되어_있음(빈_주문_테이블_요청()).as(OrderTableDto.class);
-		주문_테이블_그룹_등록되어_있음(주문_테이블_그룹(Arrays.asList(빈_주문_테이블_1.getId(), 빈_주문_테이블_2.getId())));
+		주문_테이블_그룹_등록되어_있음(주문_테이블_그룹_요청(Arrays.asList(빈_주문_테이블_1.getId(), 빈_주문_테이블_2.getId())));
 
 		// when
 		ExtractableResponse<Response> response = 주문_테이블_빈_상태_변경_요청(빈_주문_테이블_1.getId(), false);

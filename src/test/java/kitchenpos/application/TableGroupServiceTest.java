@@ -1,63 +1,63 @@
 package kitchenpos.application;
 
-import static kitchenpos.menu.MenuFixture.*;
-import static kitchenpos.menugroup.MenuGroupFixture.*;
-import static kitchenpos.order.OrderFixture.*;
 import static kitchenpos.ordertable.OrderTableFixture.*;
 import static kitchenpos.ordertablegroup.OrderTableGroupFixture.*;
-import static kitchenpos.product.ProductFixture.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.ThrowableAssert.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.BDDMockito.*;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.IntegrationTest;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.dao.OrderDao;
+import kitchenpos.dao.OrderTableDao;
+import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.Product;
 import kitchenpos.domain.TableGroup;
 
-@DisplayName("주문 테이블 그룹 통합 테스트")
-class TableGroupServiceTest extends IntegrationTest {
-	@Autowired
+@DisplayName("주문 테이블 그룹 단위 테스트")
+@ExtendWith(MockitoExtension.class)
+class TableGroupServiceTest {
+	@Mock
+	private OrderDao orderDao;
+	@Mock
+	private OrderTableDao orderTableDao;
+	@Mock
+	private TableGroupDao tableGroupDao;
+	@InjectMocks
 	private TableGroupService tableGroupService;
-	@Autowired
-	private TableService tableService;
-	@Autowired
-	private ProductService productService;
-	@Autowired
-	private MenuService menuService;
-	@Autowired
-	private MenuGroupService menuGroupService;
-	@Autowired
-	private OrderService orderService;
 
 	@DisplayName("주문 테이블 그룹을 등록한다.")
 	@Test
 	void register() {
 		// given
-		OrderTable 빈_주문_테이블_1 = tableService.create(빈_주문_테이블_요청().toOrderTable());
-		OrderTable 빈_주문_테이블_2 = tableService.create(빈_주문_테이블_요청().toOrderTable());
+		given(orderTableDao.findAllByIdIn(any())).willReturn(Arrays.asList(빈_주문_테이블_1(), 빈_주문_테이블_2()));
+		given(tableGroupDao.save(any())).willReturn(주문_테이블_그룹());
+		given(orderTableDao.save(any())).willReturn(any());
 
 		// when
 		TableGroup tableGroup = tableGroupService.create(
-			주문_테이블_그룹(Arrays.asList(빈_주문_테이블_1.getId(), 빈_주문_테이블_2.getId())).toOrderTableGroup());
+			주문_테이블_그룹_요청(Arrays.asList(빈_주문_테이블_1().getId(), 빈_주문_테이블_2().getId())).toOrderTableGroup());
 
 		// then
-		List<Long> actualIds = tableGroup.getOrderTables().stream().map(OrderTable::getId).collect(Collectors.toList());
-		List<Long> expectIds = Arrays.asList(빈_주문_테이블_1.getId(), 빈_주문_테이블_2.getId());
-
+		List<Long> actualIds = tableGroup.getOrderTables()
+			.stream()
+			.map(OrderTable::getId)
+			.collect(Collectors.toList());
+		List<Long> expectIds = Stream.of(빈_주문_테이블_1(), 빈_주문_테이블_2())
+			.map(OrderTable::getId)
+			.collect(Collectors.toList());
 		assertAll(
 			() -> assertThat(tableGroup).isNotNull(),
 			() -> assertThat(tableGroup.getId()).isNotNull(),
@@ -68,11 +68,10 @@ class TableGroupServiceTest extends IntegrationTest {
 	@Test
 	void registerFailOnLessThanTwo() {
 		// given
-		OrderTable 빈_주문_테이블_1 = tableService.create(빈_주문_테이블_요청().toOrderTable());
 
 		// when
 		ThrowingCallable throwingCallable = () ->
-			tableGroupService.create(주문_테이블_그룹(Collections.singletonList(빈_주문_테이블_1.getId())).toOrderTableGroup());
+			tableGroupService.create(주문_테이블_그룹_요청(Collections.singletonList(빈_주문_테이블_1().getId())).toOrderTableGroup());
 
 		// then
 		assertThatExceptionOfType(RuntimeException.class).isThrownBy(throwingCallable);
@@ -82,13 +81,13 @@ class TableGroupServiceTest extends IntegrationTest {
 	@Test
 	void registerFailOnNotFoundOrderTable() {
 		// given
-		OrderTable 빈_주문_테이블_1 = tableService.create(빈_주문_테이블_요청().toOrderTable());
+		given(orderTableDao.findAllByIdIn(any())).willReturn(Collections.singletonList(빈_주문_테이블_1()));
 		Long unknownOrderTableId = 0L;
 
 		// when
 		ThrowingCallable throwingCallable = () ->
 			tableGroupService.create(
-				주문_테이블_그룹(Arrays.asList(빈_주문_테이블_1.getId(), unknownOrderTableId)).toOrderTableGroup());
+				주문_테이블_그룹_요청(Arrays.asList(빈_주문_테이블_1().getId(), unknownOrderTableId)).toOrderTableGroup());
 
 		// then
 		assertThatExceptionOfType(RuntimeException.class).isThrownBy(throwingCallable);
@@ -98,13 +97,12 @@ class TableGroupServiceTest extends IntegrationTest {
 	@Test
 	void registerFailOnNotEmptyOrderTable() {
 		// given
-		OrderTable 빈_주문_테이블 = tableService.create(빈_주문_테이블_요청().toOrderTable());
-		OrderTable 비어있지않은_주문_테이블 = tableService.create(비어있지않은_주문_테이블_요청().toOrderTable());
+		given(orderTableDao.findAllByIdIn(any())).willReturn(Arrays.asList(빈_주문_테이블(), 비어있지않은_주문_테이블()));
 
 		// when
 		ThrowingCallable throwingCallable = () ->
 			tableGroupService.create(
-				주문_테이블_그룹(Arrays.asList(빈_주문_테이블.getId(), 비어있지않은_주문_테이블.getId())).toOrderTableGroup());
+				주문_테이블_그룹_요청(Arrays.asList(빈_주문_테이블().getId(), 비어있지않은_주문_테이블().getId())).toOrderTableGroup());
 
 		// then
 		assertThatExceptionOfType(RuntimeException.class).isThrownBy(throwingCallable);
@@ -114,15 +112,12 @@ class TableGroupServiceTest extends IntegrationTest {
 	@Test
 	void registerFailOnAlreadyBelongToOrderTableGroup() {
 		// given
-		OrderTable 빈_주문_테이블_1 = tableService.create(빈_주문_테이블_요청().toOrderTable());
-		OrderTable 빈_주문_테이블_2 = tableService.create(빈_주문_테이블_요청().toOrderTable());
-		OrderTable 빈_주문_테이블_3 = tableService.create(빈_주문_테이블_요청().toOrderTable());
-		tableGroupService.create(주문_테이블_그룹(Arrays.asList(빈_주문_테이블_1.getId(), 빈_주문_테이블_2.getId())).toOrderTableGroup());
+		given(orderTableDao.findAllByIdIn(any())).willReturn(Arrays.asList(빈_주문_테이블_1_그룹핑됨(), 빈_주문_테이블_2_그룹핑됨()));
 
 		// when
 		ThrowingCallable throwingCallable = () ->
 			tableGroupService.create(
-				주문_테이블_그룹(Arrays.asList(빈_주문_테이블_1.getId(), 빈_주문_테이블_3.getId())).toOrderTableGroup());
+				주문_테이블_그룹_요청(Arrays.asList(빈_주문_테이블_1().getId(), 빈_주문_테이블_2().getId())).toOrderTableGroup());
 
 		// then
 		assertThatExceptionOfType(RuntimeException.class).isThrownBy(throwingCallable);
@@ -132,13 +127,13 @@ class TableGroupServiceTest extends IntegrationTest {
 	@Test
 	void ungroup() {
 		// given
-		OrderTable 빈_주문_테이블_1 = tableService.create(빈_주문_테이블_요청().toOrderTable());
-		OrderTable 빈_주문_테이블_2 = tableService.create(빈_주문_테이블_요청().toOrderTable());
-		TableGroup 주문_테이블_그룹 = tableGroupService.create(
-			주문_테이블_그룹(Arrays.asList(빈_주문_테이블_1.getId(), 빈_주문_테이블_2.getId())).toOrderTableGroup());
+		given(orderTableDao.findAllByTableGroupId(any())).willReturn(
+			Arrays.asList(빈_주문_테이블_1_그룹핑됨(), 빈_주문_테이블_2_그룹핑됨()));
+		given(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(), any())).willReturn(false);
+		given(orderTableDao.save(any())).willReturn(any());
 
 		// when
-		tableGroupService.ungroup(주문_테이블_그룹.getId());
+		tableGroupService.ungroup(주문_테이블_그룹().getId());
 
 		// then
 	}
@@ -147,18 +142,12 @@ class TableGroupServiceTest extends IntegrationTest {
 	@Test
 	void ungroupFailOnNotCompletedOrderExist() {
 		// given
-		OrderTable 주문_테이블_1 = tableService.create(빈_주문_테이블_요청().toOrderTable());
-		OrderTable 주문_테이블_2 = tableService.create(빈_주문_테이블_요청().toOrderTable());
-		TableGroup 주문_테이블_그룹 = tableGroupService.create(
-			주문_테이블_그룹(Arrays.asList(주문_테이블_1.getId(), 주문_테이블_2.getId())).toOrderTableGroup());
-		Product 후라이드치킨_상품 = productService.create(후라이드치킨_상품_요청().toProduct());
-		MenuGroup 추천_메뉴_그룹 = menuGroupService.create(추천_메뉴_그룹_요청().toMenuGroup());
-		Menu 후라이드후라이드_메뉴 = menuService.create(후라이드후라이드_메뉴_요청(추천_메뉴_그룹.getId(), 후라이드치킨_상품.getId()).toMenu());
-		Order 주문 = orderService.create(주문_요청(주문_테이블_1.getId(), 후라이드후라이드_메뉴.getId(), 1).toOrder());
-		orderService.changeOrderStatus(주문.getId(), 주문_상태_변경_요청(OrderStatus.MEAL).toOrder());
+		given(orderTableDao.findAllByTableGroupId(any())).willReturn(
+			Arrays.asList(빈_주문_테이블_1_그룹핑됨(), 빈_주문_테이블_2_그룹핑됨()));
+		given(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(), any())).willReturn(true);
 
 		// when
-		ThrowingCallable throwingCallable = () -> tableGroupService.ungroup(주문_테이블_그룹.getId());
+		ThrowingCallable throwingCallable = () -> tableGroupService.ungroup(주문_테이블_그룹().getId());
 
 		// then
 		assertThatExceptionOfType(RuntimeException.class).isThrownBy(throwingCallable);

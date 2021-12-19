@@ -60,7 +60,7 @@ public class OrderTableGroupAcceptanceTest extends AcceptanceTest {
 
 		// when
 		ExtractableResponse<Response> response = 주문_테이블_그룹_등록_요청(
-			주문_테이블_그룹(Arrays.asList(빈_주문_테이블_1.getId(), 빈_주문_테이블_2.getId())));
+			주문_테이블_그룹_요청(Arrays.asList(빈_주문_테이블_1.getId(), 빈_주문_테이블_2.getId())));
 
 		// then
 		주문_테이블_그룹_등록됨(response);
@@ -74,7 +74,7 @@ public class OrderTableGroupAcceptanceTest extends AcceptanceTest {
 
 		// when
 		ExtractableResponse<Response> response = 주문_테이블_그룹_등록_요청(
-			주문_테이블_그룹(Collections.singletonList(빈_주문_테이블_1.getId())));
+			주문_테이블_그룹_요청(Collections.singletonList(빈_주문_테이블_1.getId())));
 
 		// then
 		주문_테이블_그룹_등록되지_않음(response);
@@ -89,7 +89,7 @@ public class OrderTableGroupAcceptanceTest extends AcceptanceTest {
 
 		// when
 		ExtractableResponse<Response> response = 주문_테이블_그룹_등록_요청(
-			주문_테이블_그룹(Arrays.asList(빈_주문_테이블_1.getId(), unknownOrderTableId)));
+			주문_테이블_그룹_요청(Arrays.asList(빈_주문_테이블_1.getId(), unknownOrderTableId)));
 
 		// then
 		주문_테이블_그룹_등록되지_않음(response);
@@ -104,7 +104,7 @@ public class OrderTableGroupAcceptanceTest extends AcceptanceTest {
 
 		// when
 		ExtractableResponse<Response> response = 주문_테이블_그룹_등록_요청(
-			주문_테이블_그룹(Arrays.asList(빈_주문_테이블.getId(), 비어있지않은_주문_테이블.getId())));
+			주문_테이블_그룹_요청(Arrays.asList(빈_주문_테이블.getId(), 비어있지않은_주문_테이블.getId())));
 
 		// then
 		주문_테이블_그룹_등록되지_않음(response);
@@ -117,11 +117,11 @@ public class OrderTableGroupAcceptanceTest extends AcceptanceTest {
 		OrderTableDto 빈_주문_테이블_1 = 주문_테이블_등록되어_있음(빈_주문_테이블_요청()).as(OrderTableDto.class);
 		OrderTableDto 빈_주문_테이블_2 = 주문_테이블_등록되어_있음(빈_주문_테이블_요청()).as(OrderTableDto.class);
 		OrderTableDto 빈_주문_테이블_3 = 주문_테이블_등록되어_있음(빈_주문_테이블_요청()).as(OrderTableDto.class);
-		주문_테이블_그룹_등록되어_있음(주문_테이블_그룹(Arrays.asList(빈_주문_테이블_1.getId(), 빈_주문_테이블_2.getId())));
+		주문_테이블_그룹_등록되어_있음(주문_테이블_그룹_요청(Arrays.asList(빈_주문_테이블_1.getId(), 빈_주문_테이블_2.getId())));
 
 		// when
 		ExtractableResponse<Response> response = 주문_테이블_그룹_등록_요청(
-			주문_테이블_그룹(Arrays.asList(빈_주문_테이블_1.getId(), 빈_주문_테이블_3.getId())));
+			주문_테이블_그룹_요청(Arrays.asList(빈_주문_테이블_1.getId(), 빈_주문_테이블_3.getId())));
 
 		// then
 		주문_테이블_그룹_등록되지_않음(response);
@@ -134,7 +134,7 @@ public class OrderTableGroupAcceptanceTest extends AcceptanceTest {
 		OrderTableDto 빈_주문_테이블_1 = 주문_테이블_등록되어_있음(빈_주문_테이블_요청()).as(OrderTableDto.class);
 		OrderTableDto 빈_주문_테이블_2 = 주문_테이블_등록되어_있음(빈_주문_테이블_요청()).as(OrderTableDto.class);
 		OrderTableGroupDto 주문_테이블_그룹 = 주문_테이블_그룹_등록되어_있음(
-			주문_테이블_그룹(Arrays.asList(빈_주문_테이블_1.getId(), 빈_주문_테이블_2.getId()))).as(OrderTableGroupDto.class);
+			주문_테이블_그룹_요청(Arrays.asList(빈_주문_테이블_1.getId(), 빈_주문_테이블_2.getId()))).as(OrderTableGroupDto.class);
 
 		// when
 		ExtractableResponse<Response> response = 주문_테이블_그룹_해제_요청(주문_테이블_그룹.getId());
@@ -150,7 +150,7 @@ public class OrderTableGroupAcceptanceTest extends AcceptanceTest {
 		OrderTableDto 주문_테이블_1 = 주문_테이블_등록되어_있음(빈_주문_테이블_요청()).as(OrderTableDto.class);
 		OrderTableDto 주문_테이블_2 = 주문_테이블_등록되어_있음(빈_주문_테이블_요청()).as(OrderTableDto.class);
 		OrderTableGroupDto 주문_테이블_그룹 = 주문_테이블_그룹_등록되어_있음(
-			주문_테이블_그룹(Arrays.asList(주문_테이블_1.getId(), 주문_테이블_2.getId()))).as(OrderTableGroupDto.class);
+			주문_테이블_그룹_요청(Arrays.asList(주문_테이블_1.getId(), 주문_테이블_2.getId()))).as(OrderTableGroupDto.class);
 		ProductDto 후라이드치킨_상품 = 상품_등록되어_있음(후라이드치킨_상품_요청()).as(ProductDto.class);
 		MenuGroupDto 추천_메뉴_그룹 = 메뉴_그룹_등록되어_있음(추천_메뉴_그룹_요청()).as(MenuGroupDto.class);
 		MenuDto 후라이드후라이드_메뉴 = 메뉴_등록되어_있음(후라이드후라이드_메뉴_요청(추천_메뉴_그룹.getId(), 후라이드치킨_상품.getId())).as(MenuDto.class);
