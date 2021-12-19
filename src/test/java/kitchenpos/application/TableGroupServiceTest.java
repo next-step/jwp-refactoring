@@ -118,7 +118,7 @@ public class TableGroupServiceTest {
         OrderTable orderTable = mock(OrderTable.class);
         given(orderTableRepository.findAllByTableGroupId(anyLong()))
                 .willReturn(Collections.singletonList(orderTable));
-        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList()))
+        given(orderRepository.existsByOrderTableInAndOrderStatusIn(anyList(), anyList()))
                 .willReturn(false);
         given(orderTableRepository.save(any())).willReturn(orderTable);
         // when
@@ -134,7 +134,7 @@ public class TableGroupServiceTest {
         OrderTable orderTable = mock(OrderTable.class);
         given(orderTableRepository.findAllByTableGroupId(anyLong()))
                 .willReturn(Collections.singletonList(orderTable));
-        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList()))
+        given(orderRepository.existsByOrderTableInAndOrderStatusIn(anyList(), anyList()))
                 .willReturn(true);
         // when
         // then

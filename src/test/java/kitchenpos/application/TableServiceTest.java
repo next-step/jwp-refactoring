@@ -77,7 +77,7 @@ public class TableServiceTest {
         OrderTable savedOrderTable = mock(OrderTable.class);
         given(savedOrderTable.getTableGroup()).willReturn(null);
         given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(savedOrderTable));
-        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).willReturn(false);
+        given(orderRepository.existsByOrderTableAndOrderStatusIn(any(), anyList())).willReturn(false);
         given(orderTableRepository.save(any())).willReturn(orderTable);
         // when
         OrderTable actual = tableService.changeEmpty(1L, orderTable);
@@ -111,7 +111,7 @@ public class TableServiceTest {
         assertThatThrownBy(() -> tableService.changeEmpty(1L, orderTable))
                 .isInstanceOf(IllegalArgumentException.class);
         verify(savedOrderTable, only()).getTableGroup();
-        verify(orderRepository, never()).existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList());
+        verify(orderRepository, never()).existsByOrderTableAndOrderStatusIn(any(), anyList());
     }
 
     @Test
@@ -121,12 +121,12 @@ public class TableServiceTest {
         OrderTable savedOrderTable = mock(OrderTable.class);
         given(savedOrderTable.getTableGroup()).willReturn(null);
         given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(savedOrderTable));
-        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).willReturn(true);
+        given(orderRepository.existsByOrderTableAndOrderStatusIn(any(), anyList())).willReturn(true);
         // when
         // then
         assertThatThrownBy(() -> tableService.changeEmpty(1L, orderTable))
                 .isInstanceOf(IllegalArgumentException.class);
-        verify(orderRepository, only()).existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList());
+        verify(orderRepository, only()).existsByOrderTableAndOrderStatusIn(any(), anyList());
     }
 
     @Test

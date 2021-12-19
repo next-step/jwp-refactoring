@@ -19,7 +19,7 @@ public class TableGroup {
     @CreatedDate
     private LocalDateTime createdDate;
 
-    @OneToMany(mappedBy = "table_group")
+    @OneToMany(mappedBy = "tableGroup")
     private List<OrderTable> orderTables;
 
     protected TableGroup() {
