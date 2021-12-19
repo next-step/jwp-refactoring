@@ -18,33 +18,33 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.dao.TableGroupDao;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.TableGroup;
 import kitchenpos.order.dto.TableGroupRequest;
 import kitchenpos.order.dto.TableGroupResponse;
+import kitchenpos.order.repository.OrderRepository;
+import kitchenpos.order.repository.OrderTableRepository;
+import kitchenpos.order.repository.TableGroupRepository;
 
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
 
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
 
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @Mock
-    private TableGroupDao tableGroupDao;
+    private TableGroupRepository tableGroupRepository;
 
     private TableGroupService tableGroupService;
 
     @BeforeEach
     void setUp() {
         tableGroupService = new TableGroupService(
-            orderDao, orderTableDao, tableGroupDao);
+            orderRepository, orderTableRepository, tableGroupRepository);
     }
 
     @DisplayName("주문 테이블 그룹을 등록할 수 있다.")
@@ -59,10 +59,10 @@ class TableGroupServiceTest {
             orderTables.stream().map(OrderTable::getId).collect(Collectors.toList()));
         TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now());
 
-        given(orderTableDao.findAllByIdIn(tableGroupRequest.getOrderTables()))
+        given(orderTableRepository.findAllByIdIn(tableGroupRequest.getOrderTables()))
             .willReturn(orderTables);
-        given(tableGroupDao.save(any())).willReturn(tableGroup);
-        given(orderTableDao.save(orderTable1)).willReturn(null);
+        given(tableGroupRepository.save(any())).willReturn(tableGroup);
+        given(orderTableRepository.save(orderTable1)).willReturn(null);
 
         // when
         TableGroupResponse savedTableGroup = tableGroupService.create(tableGroupRequest);
@@ -84,7 +84,7 @@ class TableGroupServiceTest {
         // when && then
         assertThrows(IllegalArgumentException.class, () ->
             tableGroupService.create(tableGroupRequest));
-        verify(orderTableDao, times(0)).findAllByIdIn(tableGroupRequest.getOrderTables());
+        verify(orderTableRepository, times(0)).findAllByIdIn(tableGroupRequest.getOrderTables());
     }
 
     @DisplayName("조회 가능한 주문 테이블만 주문 테이블 그룹에 등록할 수 있다.")
@@ -101,14 +101,14 @@ class TableGroupServiceTest {
         TableGroupRequest tableGroupRequest = new TableGroupRequest(
             orderTables.stream().map(OrderTable::getId).collect(Collectors.toList()));
 
-        given(orderTableDao.findAllByIdIn(orderTableIds))
+        given(orderTableRepository.findAllByIdIn(orderTableIds))
             .willReturn(Collections.emptyList());
 
         // when && then
         assertThrows(IllegalArgumentException.class, () ->
             tableGroupService.create(tableGroupRequest));
-        verify(orderTableDao).findAllByIdIn(orderTableIds);
-        verify(tableGroupDao, times(0)).save(tableGroup);
+        verify(orderTableRepository).findAllByIdIn(orderTableIds);
+        verify(tableGroupRepository, times(0)).save(tableGroup);
     }
 
     @DisplayName("빈 주문 테이블만 주문 테이블 그룹에 등록할 수 있다.")
@@ -124,13 +124,13 @@ class TableGroupServiceTest {
         TableGroupRequest tableGroupRequest = new TableGroupRequest(
             orderTables.stream().map(OrderTable::getId).collect(Collectors.toList()));
 
-        given(orderTableDao.findAllByIdIn(orderTableIds)).willReturn(orderTables);
+        given(orderTableRepository.findAllByIdIn(orderTableIds)).willReturn(orderTables);
 
         // when && then
         assertThrows(IllegalArgumentException.class, () ->
             tableGroupService.create(tableGroupRequest));
-        verify(orderTableDao).findAllByIdIn(orderTableIds);
-        verify(tableGroupDao, times(0)).save(tableGroup);
+        verify(orderTableRepository).findAllByIdIn(orderTableIds);
+        verify(tableGroupRepository, times(0)).save(tableGroup);
     }
 
     @DisplayName("주문 테이블 그룹에 속해있지 않은 주문 테이블만 등록 가능하다.")
@@ -146,13 +146,13 @@ class TableGroupServiceTest {
         TableGroupRequest tableGroupRequest = new TableGroupRequest(
             orderTables.stream().map(OrderTable::getId).collect(Collectors.toList()));
 
-        given(orderTableDao.findAllByIdIn(orderTableIds)).willReturn(orderTables);
+        given(orderTableRepository.findAllByIdIn(orderTableIds)).willReturn(orderTables);
 
         // when && then
         assertThrows(IllegalArgumentException.class, () ->
             tableGroupService.create(tableGroupRequest));
-        verify(orderTableDao).findAllByIdIn(orderTableIds);
-        verify(tableGroupDao, times(0)).save(tableGroup);
+        verify(orderTableRepository).findAllByIdIn(orderTableIds);
+        verify(tableGroupRepository, times(0)).save(tableGroup);
     }
 
     @DisplayName("주문 테이블 그룹에서 주문 테이블을 삭제할 수 있다.")
@@ -167,9 +167,9 @@ class TableGroupServiceTest {
             .map(OrderTable::getId)
             .collect(Collectors.toList());
 
-        given(orderTableDao.findAllByTableGroupId(tableGroupId))
+        given(orderTableRepository.findAllByTableGroupId(tableGroupId))
             .willReturn(orderTables);
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(orderTableIds,
+        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(orderTableIds,
             Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name())))
             .willReturn(false);
 

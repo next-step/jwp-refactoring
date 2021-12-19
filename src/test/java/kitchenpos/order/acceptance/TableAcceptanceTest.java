@@ -62,6 +62,7 @@ class TableAcceptanceTest extends AcceptanceTest {
             .as(OrderTableResponse.class);
         OrderTableRequest orderTableRequest = new OrderTableRequest(orderTableResponse.getNumberOfGuests(),
             false);
+
         // when
         ExtractableResponse<Response> response = 주문_테이블_empty_갱신_요청(orderTableResponse.getId(),
             orderTableRequest);
