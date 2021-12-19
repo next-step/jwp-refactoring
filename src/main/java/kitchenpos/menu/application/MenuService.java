@@ -1,5 +1,6 @@
 package kitchenpos.menu.application;
 
+import kitchenpos.common.application.EntityNotFoundException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProducts;
@@ -13,7 +14,6 @@ import kitchenpos.product.domain.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -51,7 +51,7 @@ public class MenuService {
 
     private void validateMenuGroup(Long menuGroupId) {
         if (!menuGroupRepository.existsById(menuGroupId)) {
-            throw new EntityNotFoundException();
+            throw new EntityNotFoundException("MenuGroup");
         }
     }
 
@@ -66,6 +66,6 @@ public class MenuService {
 
     private Product findProductById(Long productId) {
         return productRepository.findById(productId)
-                .orElseThrow(EntityNotFoundException::new);
+                .orElseThrow(() -> new EntityNotFoundException("Product"));
     }
 }

@@ -1,13 +1,13 @@
 package kitchenpos.ordertable.application;
 
 import kitchenpos.ServiceTest;
+import kitchenpos.common.application.EntityNotFoundException;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
@@ -69,7 +69,8 @@ class OrderTableServiceTest extends ServiceTest {
 
         // when & then
         assertThatExceptionOfType(EntityNotFoundException.class)
-                .isThrownBy(() -> orderTableService.changeEmpty(0L, orderTableRequest));
+                .isThrownBy(() -> orderTableService.changeEmpty(0L, orderTableRequest))
+                .withMessageMatching(EntityNotFoundException.MESSAGE.replace("%s", "\\w+"));
     }
 
     @Test
@@ -121,7 +122,8 @@ class OrderTableServiceTest extends ServiceTest {
 
         // when & then
         assertThatExceptionOfType(EntityNotFoundException.class)
-                .isThrownBy(() -> orderTableService.changeNumberOfGuests(0L, orderTableRequest));
+                .isThrownBy(() -> orderTableService.changeNumberOfGuests(0L, orderTableRequest))
+                .withMessageMatching(EntityNotFoundException.MESSAGE.replace("%s", "\\w+"));
     }
 
     @Test

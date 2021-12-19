@@ -1,13 +1,13 @@
 package kitchenpos.tablegroup.application;
 
 import kitchenpos.ServiceTest;
+import kitchenpos.common.application.EntityNotFoundException;
 import kitchenpos.ordertable.dto.OrderTableResponse;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -55,7 +55,9 @@ class TableGroupServiceTest extends ServiceTest {
         TableGroupRequest tableGroupRequest = new TableGroupRequest(Arrays.asList(savedOrderTableResponse.getId(), 0L));
 
         // when & then
-        assertThatExceptionOfType(EntityNotFoundException.class).isThrownBy(() -> tableGroupService.create(tableGroupRequest));
+        assertThatExceptionOfType(EntityNotFoundException.class)
+                .isThrownBy(() -> tableGroupService.create(tableGroupRequest))
+                .withMessageMatching(EntityNotFoundException.MESSAGE.replace("%s", "\\w+"));
     }
 
     @Test

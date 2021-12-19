@@ -1,5 +1,6 @@
 package kitchenpos.tablegroup.application;
 
+import kitchenpos.common.application.EntityNotFoundException;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.ordertable.domain.OrderTableValidator;
@@ -10,8 +11,6 @@ import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.persistence.EntityNotFoundException;
 
 import static java.util.stream.Collectors.*;
 
@@ -40,7 +39,7 @@ public class TableGroupService {
 
     public void ungroup(final Long id) {
         if (!tableGroupRepository.existsById(id)) {
-            throw new EntityNotFoundException();
+            throw new EntityNotFoundException("TableGroup");
         }
         final OrderTables orderTables = findOrderTables(id);
         orderTables.ungroup(orderTableValidator);
@@ -59,6 +58,6 @@ public class TableGroupService {
 
     private OrderTable findOrderTableById(Long orderTableId) {
         return orderTableRepository.findById(orderTableId)
-                .orElseThrow(EntityNotFoundException::new);
+                .orElseThrow(() -> new EntityNotFoundException("OrderTable"));
     }
 }

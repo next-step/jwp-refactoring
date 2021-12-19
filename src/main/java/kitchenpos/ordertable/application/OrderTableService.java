@@ -1,5 +1,6 @@
 package kitchenpos.ordertable.application;
 
+import kitchenpos.common.application.EntityNotFoundException;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.ordertable.domain.OrderTableValidator;
@@ -8,7 +9,6 @@ import kitchenpos.ordertable.dto.OrderTableResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -51,6 +51,6 @@ public class OrderTableService {
 
     private OrderTable findById(Long id) {
         return orderTableRepository.findById(id)
-                .orElseThrow(EntityNotFoundException::new);
+                .orElseThrow(() -> new EntityNotFoundException("OrderTable"));
     }
 }

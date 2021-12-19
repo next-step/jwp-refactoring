@@ -1,6 +1,7 @@
 package kitchenpos.menu.application;
 
 import kitchenpos.ServiceTest;
+import kitchenpos.common.application.EntityNotFoundException;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
@@ -9,7 +10,6 @@ import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import javax.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
@@ -76,7 +76,9 @@ public class MenuServiceTest extends ServiceTest {
                 Collections.singletonList(menuProductRequest));
 
         // when & then
-        assertThatExceptionOfType(EntityNotFoundException.class).isThrownBy(() -> menuService.create(menuRequest));
+        assertThatExceptionOfType(EntityNotFoundException.class)
+                .isThrownBy(() -> menuService.create(menuRequest))
+                .withMessageMatching(EntityNotFoundException.MESSAGE.replace("%s", "\\w+"));
     }
 
     @Test

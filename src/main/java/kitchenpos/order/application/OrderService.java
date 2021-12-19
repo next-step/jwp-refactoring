@@ -1,5 +1,6 @@
 package kitchenpos.order.application;
 
+import kitchenpos.common.application.EntityNotFoundException;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
@@ -13,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -49,7 +49,7 @@ public class OrderService {
 
     public OrderResponse changeOrderStatus(final Long orderId, final OrderRequest orderRequest) {
         final Order savedOrder = orderRepository.findById(orderId)
-                .orElseThrow(EntityNotFoundException::new);
+                .orElseThrow(() -> new EntityNotFoundException("Order"));
         savedOrder.changeOrderStatus(OrderStatus.valueOf(orderRequest.getOrderStatus()));
         return OrderResponse.from(savedOrder);
     }
@@ -75,7 +75,7 @@ public class OrderService {
 
     private void validateMenu(Long menuId) {
         if (!menuRepository.existsById(menuId)) {
-            throw new EntityNotFoundException();
+            throw new EntityNotFoundException("Menu");
         }
     }
 }

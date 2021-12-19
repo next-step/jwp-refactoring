@@ -1,9 +1,8 @@
 package kitchenpos.ordertable.domain;
 
+import kitchenpos.common.application.EntityNotFoundException;
 import kitchenpos.order.domain.OrderValidator;
 import org.springframework.stereotype.Component;
-
-import javax.persistence.EntityNotFoundException;
 
 @Component
 public class OrderValidatorImpl implements OrderValidator {
@@ -24,6 +23,6 @@ public class OrderValidatorImpl implements OrderValidator {
 
     private OrderTable findOrderTableById(Long orderTableId) {
         return orderTableRepository.findById(orderTableId)
-                .orElseThrow(EntityNotFoundException::new);
+                .orElseThrow(() -> new EntityNotFoundException("OrderTable"));
     }
 }

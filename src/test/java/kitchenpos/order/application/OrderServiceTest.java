@@ -1,6 +1,7 @@
 package kitchenpos.order.application;
 
 import kitchenpos.ServiceTest;
+import kitchenpos.common.application.EntityNotFoundException;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
@@ -10,7 +11,6 @@ import kitchenpos.ordertable.dto.OrderTableResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.Collections;
 import java.util.List;
 
@@ -69,7 +69,9 @@ class OrderServiceTest extends ServiceTest {
                 savedOrderTableResponse.getId(), OrderStatus.COOKING.name(), Collections.singletonList(orderLineItemRequest));
 
         // when & then
-        assertThatExceptionOfType(EntityNotFoundException.class).isThrownBy(() -> orderService.create(orderRequest));
+        assertThatExceptionOfType(EntityNotFoundException.class)
+                .isThrownBy(() -> orderService.create(orderRequest))
+                .withMessageMatching(EntityNotFoundException.MESSAGE.replace("%s", "\\w+"));
     }
 
     @Test
@@ -82,7 +84,9 @@ class OrderServiceTest extends ServiceTest {
         OrderRequest orderRequest = new OrderRequest(0L, OrderStatus.COOKING.name(), Collections.singletonList(orderLineItemRequest));
 
         // when & then
-        assertThatExceptionOfType(EntityNotFoundException.class).isThrownBy(() -> orderService.create(orderRequest));
+        assertThatExceptionOfType(EntityNotFoundException.class)
+                .isThrownBy(() -> orderService.create(orderRequest))
+                .withMessageMatching(EntityNotFoundException.MESSAGE.replace("%s", "\\w+"));
     }
 
     @Test
@@ -136,7 +140,8 @@ class OrderServiceTest extends ServiceTest {
 
         // when & then
         assertThatExceptionOfType(EntityNotFoundException.class)
-                .isThrownBy(() -> orderService.changeOrderStatus(0L, orderRequest));
+                .isThrownBy(() -> orderService.changeOrderStatus(0L, orderRequest))
+                .withMessageMatching(EntityNotFoundException.MESSAGE.replace("%s", "\\w+"));
     }
 
     @Test
