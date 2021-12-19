@@ -41,6 +41,10 @@ public class MenuFactory {
     return product;
   }
 
+  public static Product ofProduct(String name, int price) {
+    return ofProduct(null, name, price);
+  }
+
   public static MenuProduct ofMenuProduct(Long seq, Long menuId, Long productId, int quantity) {
     MenuProduct menuProduct = new MenuProduct();
     menuProduct.setSeq(seq);

@@ -48,8 +48,8 @@ public class MenuServiceTest {
   private List<MenuProduct> 치킨세트_상품_리스트;
   private Product 치킨;
   private Product 맥주;
-  MenuProduct 치킨_상품메뉴;
-  MenuProduct 맥주_상품메뉴;
+  private MenuProduct 치킨_상품메뉴;
+  private MenuProduct 맥주_상품메뉴;
 
 
   @BeforeEach
@@ -100,7 +100,7 @@ public class MenuServiceTest {
 
   @DisplayName("메뉴 생성 가격이 null 이거나 0원보다 낮으면 안된다.")
   @Test
-  void 메뉴_생성_가격_0이하_예외() {
+  void 메뉴_생성_가격_0미만_예외() {
     // given
     치킨세트.setPrice(BigDecimal.valueOf(-1));
 
