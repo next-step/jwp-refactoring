@@ -2,8 +2,8 @@ package kitchenpos.domain;
 
 import kitchenpos.order.domain.OrderLineItem;
 
-import static kitchenpos.domain.MenuTest.양념치킨_단품;
-import static kitchenpos.domain.MenuTest.치킨세트;
+import static kitchenpos.menu.domain.MenuTest.양념치킨_단품;
+import static kitchenpos.menu.domain.MenuTest.치킨세트;
 import static kitchenpos.domain.OrderTest.주문통합;
 
 public class OrderLineItemTest {

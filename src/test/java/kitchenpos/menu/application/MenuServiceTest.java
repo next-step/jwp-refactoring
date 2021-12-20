@@ -3,13 +3,11 @@ package kitchenpos.menu.application;
 import kitchenpos.common.exception.NotFoundMenuGroupException;
 import kitchenpos.common.exception.NotFoundProductException;
 import kitchenpos.common.exception.OverMenuPriceException;
-import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.*;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.product.domain.ProductRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,9 +18,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.math.BigDecimal;
 import java.util.*;
 
-import static kitchenpos.domain.MenuGroupTest.두마리메뉴;
-import static kitchenpos.domain.MenuTest.양념치킨_단품;
-import static kitchenpos.domain.MenuTest.치킨세트;
+import static kitchenpos.menu.domain.MenuGroupTest.두마리메뉴;
+import static kitchenpos.menu.domain.MenuTest.양념치킨_단품;
+import static kitchenpos.menu.domain.MenuTest.치킨세트;
 import static kitchenpos.domain.ProductTest.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -42,9 +40,6 @@ public class MenuServiceTest {
     private ProductRepository productRepository;
     @InjectMocks
     private MenuService menuService;
-
-
-
 
     @Test
     @DisplayName("메뉴 등록")

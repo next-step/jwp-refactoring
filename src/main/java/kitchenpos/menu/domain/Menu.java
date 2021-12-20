@@ -4,6 +4,7 @@ import kitchenpos.common.domain.Price;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -22,7 +23,7 @@ public class Menu {
     private MenuGroup menuGroup;
 
     @Embedded
-    private MenuProducts menuProducts = new MenuProducts();
+    private final MenuProducts menuProducts = MenuProducts.ofEmpty();
 
     protected Menu() {
     }
@@ -30,7 +31,7 @@ public class Menu {
     public Menu(Long id, String name, Price price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
         this(name, price, menuGroup);
         this.id = id;
-        this.menuProducts = MenuProducts.of(menuProducts);
+        menuProducts.forEach(this.menuProducts::add);
     }
 
     public Menu(String name, Price price, MenuGroup menuGroup) {

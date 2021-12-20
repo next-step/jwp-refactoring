@@ -9,7 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 
-import static kitchenpos.domain.MenuGroupTest.*;
+import static kitchenpos.menu.domain.MenuGroupTest.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest

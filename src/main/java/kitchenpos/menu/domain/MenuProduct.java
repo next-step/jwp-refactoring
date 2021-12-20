@@ -65,14 +65,15 @@ public class MenuProduct {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof MenuProduct)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
         MenuProduct that = (MenuProduct) o;
         return quantity == that.quantity
-                && Objects.equals(seq, that.seq);
+                && Objects.equals(seq, that.seq)
+                && Objects.equals(product, that.product);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(seq, quantity);
+        return Objects.hash(seq, product, quantity);
     }
 }

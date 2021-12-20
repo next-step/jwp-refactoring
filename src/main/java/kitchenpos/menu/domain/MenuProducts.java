@@ -9,20 +9,24 @@ import javax.persistence.OneToMany;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Embeddable
 public class MenuProducts {
     @OneToMany(mappedBy = "menu", cascade = CascadeType.PERSIST)
     private final List<MenuProduct> menuProducts;
 
-    public MenuProducts() {
-        menuProducts = new ArrayList<>();
+    protected MenuProducts() {
+        this.menuProducts = new ArrayList<>();
     }
 
     public MenuProducts(List<MenuProduct> menuProducts) {
         this.menuProducts = menuProducts;
     }
 
+    public static MenuProducts ofEmpty() {
+        return new MenuProducts();
+    }
     public static MenuProducts of(List<MenuProduct> menuProducts) {
         return new MenuProducts(menuProducts);
     }
@@ -50,5 +54,18 @@ public class MenuProducts {
 
     public void initMenu(Menu menu) {
         menuProducts.forEach(menu::addMenuProduct);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MenuProducts that = (MenuProducts) o;
+        return Objects.equals(menuProducts, that.menuProducts);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(menuProducts);
     }
 }
