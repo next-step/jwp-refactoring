@@ -1,5 +1,6 @@
 package kitchenpos.ui;
 
+import static kitchenpos.ui.TableAcceptanceTest.주문테이블_생성;
 import static kitchenpos.utils.AcceptanceTestUtil.get;
 import static kitchenpos.utils.AcceptanceTestUtil.post;
 import static kitchenpos.utils.AcceptanceTestUtil.put;
@@ -86,10 +87,6 @@ class OrderAcceptanceTest extends AcceptanceTest {
 
         // then
         주문상태_변경됨(주문상태_변경_응답);
-    }
-
-    public static ExtractableResponse<Response> 주문테이블_생성(OrderTable orderTable) {
-        return post("/api/tables", orderTable);
     }
 
     private ExtractableResponse<Response> 주문_생성(Order order) {

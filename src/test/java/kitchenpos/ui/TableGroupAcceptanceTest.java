@@ -1,6 +1,6 @@
 package kitchenpos.ui;
 
-import static kitchenpos.ui.OrderAcceptanceTest.주문테이블_생성;
+import static kitchenpos.ui.TableAcceptanceTest.주문테이블_생성;
 import static kitchenpos.utils.AcceptanceTestUtil.delete;
 import static kitchenpos.utils.AcceptanceTestUtil.post;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -17,6 +17,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
 class TableGroupAcceptanceTest extends AcceptanceTest {
+
     private OrderTable 테이블1;
     private OrderTable 테이블2;
 
