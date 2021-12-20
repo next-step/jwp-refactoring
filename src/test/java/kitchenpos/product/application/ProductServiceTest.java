@@ -1,5 +1,6 @@
 package kitchenpos.product.application;
 
+import kitchenpos.common.domain.Price;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -48,7 +49,7 @@ public class ProductServiceTest {
     @DisplayName("상품 가격이 0원 이상인 상품 등록")
     void productPriceOverZero(int price) {
         // given
-        Product product = new Product("양념치킨", BigDecimal.valueOf(price));
+        Product product = new Product("양념치킨", new Price(BigDecimal.valueOf(price)));
         given(productRepository.save(any())).willReturn(product);
         // when
         Product actual = productService.create(product);
@@ -60,7 +61,7 @@ public class ProductServiceTest {
     @DisplayName("상품 가격은 0원 이상 이어야 한다.")
     void productPriceException() {
         // given
-        Product product = new Product("양념치킨", BigDecimal.valueOf(-1));
+        Product product = new Product("양념치킨", new Price(BigDecimal.valueOf(-1)));
         // when
         // then
         assertThatThrownBy(() -> productService.create(product))
