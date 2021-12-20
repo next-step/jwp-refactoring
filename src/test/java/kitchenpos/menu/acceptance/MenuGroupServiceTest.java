@@ -1,7 +1,6 @@
 package kitchenpos.menu.acceptance;
 
 import kitchenpos.menu.application.MenuGroupService;
-import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.dto.MenuGroupRequest;
 import kitchenpos.menu.dto.MenuGroupResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -11,7 +10,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 
-import static kitchenpos.menu.domain.MenuGroupTest.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
@@ -35,10 +33,10 @@ public class MenuGroupServiceTest {
         assertThat(savedMenuGroup.getName()).isEqualTo(반마리메뉴.getName());
 
         // when
-        // 메뉴 그룹을 조회한다.
+        // 메뉴 그룹 리스트를 조회한다.
         List<MenuGroupResponse> savedMenuGroups = menuGroupService.list();
         // then
-        // 메뉴 그룹이 정상적으로 조회된다.
+        // 메뉴 그룹 리스트가 정상적으로 조회된다.
         assertThat(savedMenuGroups).hasSize(5);
         assertThat(savedMenuGroups).contains(savedMenuGroup);
     }
