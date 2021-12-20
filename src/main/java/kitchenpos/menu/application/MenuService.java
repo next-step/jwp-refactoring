@@ -36,7 +36,7 @@ public class MenuService {
         final MenuGroup menuGroup = findMenuGroup(menuRequest.getMenuGroupId());
         final Menu menu = menuRequest.toEntity(menuGroup);
 
-        menu.addMenuProducts(createMenuProducts(menuRequest.getMenuProductRequests()));
+        menu.addMenuProducts(createMenuProducts(menuRequest.getMenuProducts()));
 
         final Menu savedMenu = menuRepository.save(menu);
         return MenuResponse.of(savedMenu);
