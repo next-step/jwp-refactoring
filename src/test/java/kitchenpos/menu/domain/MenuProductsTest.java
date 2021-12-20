@@ -16,9 +16,11 @@ class MenuProductsTest {
     @DisplayName("메뉴상품의 총 금액")
     void getTotalPrice() {
         MenuProducts menuProducts = new MenuProducts();
+
         Product 후라이드치킨 = Product.of("후라이드치킨", 10000);
         Product 양념치킨 = Product.of("양념치킨", 11000);
         Product 간장치킨 = Product.of("간장치킨", 12000);
+
         ReflectionTestUtils.setField(후라이드치킨, "id", 1L);
         ReflectionTestUtils.setField(양념치킨, "id", 2L);
         ReflectionTestUtils.setField(간장치킨, "id", 3L);

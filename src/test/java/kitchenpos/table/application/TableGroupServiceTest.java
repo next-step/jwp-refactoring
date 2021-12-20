@@ -75,17 +75,21 @@ class TableGroupServiceTest {
         TableGroup tableGroup = TableGroup.create();
         tableGroup.addOrderTables(Arrays.asList(orderTable_1, orderTable_2));
 
-        assertTrue(orderTable_1.isNotEmptyTableGroup());
-        assertTrue(orderTable_2.isNotEmptyTableGroup());
+        assertAll(
+            () -> assertTrue(orderTable_1.isNotEmptyTableGroup()),
+            () -> assertTrue(orderTable_2.isNotEmptyTableGroup())
+        );
 
         when(tableGroupRepository.findById(anyLong()))
             .thenReturn(Optional.of(tableGroup));
 
         tableGroupService.ungroup(1L);
 
-        assertFalse(orderTable_1.isNotEmptyTableGroup());
-        assertFalse(orderTable_2.isNotEmptyTableGroup());
-        assertTrue(tableGroup.isEmpty());
+        assertAll(
+            () -> assertFalse(orderTable_1.isNotEmptyTableGroup()),
+            () -> assertFalse(orderTable_2.isNotEmptyTableGroup()),
+            () -> assertTrue(tableGroup.isEmpty())
+        );
     }
 
 }

@@ -22,6 +22,7 @@ class OrderTableTest {
         assertTrue(orderTable.isEmpty());
     }
 
+    @DisplayName("단체 지정된 테이블의 상태는 변경 불가")
     @Test
     void validateUpdateEmpty() {
         OrderTable orderTable = OrderTable.of(1, false);

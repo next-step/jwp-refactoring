@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+@DisplayName("가격 클래스 테스트")
 class PriceTest {
 
     @DisplayName("곱하기 테스트")

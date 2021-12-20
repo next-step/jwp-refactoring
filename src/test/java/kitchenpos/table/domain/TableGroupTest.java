@@ -1,6 +1,7 @@
 package kitchenpos.table.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -25,9 +26,11 @@ class TableGroupTest {
 
         tableGroup.addOrderTables(Arrays.asList(orderTable_1, orderTable_2));
 
-        assertNotNull(tableGroup.getCreatedDate());
-        assertTrue(orderTable_1.equalTableGroup(tableGroup));
-        assertTrue(orderTable_2.equalTableGroup(tableGroup));
+        assertAll(
+            () -> assertNotNull(tableGroup.getCreatedDate()),
+            () -> assertTrue(orderTable_1.equalTableGroup(tableGroup)),
+            () -> assertTrue(orderTable_2.equalTableGroup(tableGroup))
+        );
 
     }
 
@@ -38,8 +41,11 @@ class TableGroupTest {
 
         tableGroup.clearOrderTable();
 
-        assertThat(tableGroup.getOrderTables().size()).isEqualTo(0);
-        assertFalse(orderTable_1.equalTableGroup(tableGroup));
-        assertFalse(orderTable_2.equalTableGroup(tableGroup));
+        assertAll(
+            () -> assertThat(tableGroup.getOrderTables().size()).isEqualTo(0),
+            () -> assertFalse(orderTable_1.equalTableGroup(tableGroup)),
+            () -> assertFalse(orderTable_2.equalTableGroup(tableGroup))
+        );
+
     }
 }
