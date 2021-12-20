@@ -61,7 +61,8 @@
 
 - [ ] 상품 관리 리팩토링
   - [ ] 모델 
-    - [ ] Product 엔티티 변환 
+    - [X] Product 엔티티 변환
+    - [X] Name 래핑 클래스 추가
   - [ ] ProductService
 - [ ] 메뉴 관리 리팩토링
   - [ ] 모델
