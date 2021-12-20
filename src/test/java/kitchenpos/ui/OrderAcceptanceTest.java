@@ -15,6 +15,7 @@ import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderTable;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -54,6 +55,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
         주문_생성됨(주문생성_응답);
     }
 
+    @Disabled
     @DisplayName("주문목록을 조회한다")
     @Test
     void readOrders() {
