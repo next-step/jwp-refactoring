@@ -28,8 +28,6 @@ public class MenuRestController {
 
     @GetMapping("/api/menus")
     public ResponseEntity<List<Menu>> list() {
-        return ResponseEntity.ok()
-                .body(menuService.list())
-                ;
+        return ResponseEntity.ok().body(menuService.list());
     }
 }

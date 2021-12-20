@@ -31,7 +31,7 @@ class JdbcTemplateMenuGroupDaoTest {
 
 	@Test
 	@DisplayName("메뉴그룹 저장 테스트")
-	public void saveProductTest() {
+	public void saveMenuGroupTest() {
 		//given
 		MenuGroup menuGroup = new MenuGroup(null, NAME);
 
