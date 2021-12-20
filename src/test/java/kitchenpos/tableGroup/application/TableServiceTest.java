@@ -1,9 +1,9 @@
-package kitchenpos.application;
+package kitchenpos.tableGroup.application;
 
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.order.application.TableService;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.domain.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,7 +27,7 @@ public class TableServiceTest {
     private OrderRepository orderRepository;
 
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @InjectMocks
     private TableService tableService;
@@ -45,7 +45,7 @@ public class TableServiceTest {
     @DisplayName("주문 테이블은 방문한 손님 수,빈 테이블 상태로 등록 할 수 있다.")
     @Test
     void create() {
-        given(orderTableDao.save(주문테이블)).willReturn(주문테이블);
+        given(orderTableRepository.save(주문테이블)).willReturn(주문테이블);
 
         OrderTable createOrderTable = tableService.create(주문테이블);
 
@@ -55,7 +55,7 @@ public class TableServiceTest {
     @DisplayName("주문 테이블 목록 조회")
     @Test
     void list() {
-        given(orderTableDao.findAll()).willReturn(Arrays.asList(주문테이블));
+        given(orderTableRepository.findAll()).willReturn(Arrays.asList(주문테이블));
 
         List<OrderTable> orderTables = tableService.list();
 
@@ -75,8 +75,8 @@ public class TableServiceTest {
         OrderTable 주문테이블_상태변경 = new OrderTable();
         주문테이블_상태변경.setEmpty(false);
 
-        given(orderTableDao.findById(1L)).willReturn(java.util.Optional.of(빈주문테이블));
-        given(orderTableDao.save(any())).willReturn(빈주문테이블);
+        given(orderTableRepository.findById(1L)).willReturn(java.util.Optional.of(빈주문테이블));
+        given(orderTableRepository.save(any())).willReturn(빈주문테이블);
 
         OrderTable changeOrderTable = tableService.changeEmpty(1L, 주문테이블_상태변경);
 
@@ -94,7 +94,7 @@ public class TableServiceTest {
         OrderTable 주문테이블_상태변경 = new OrderTable();
         주문테이블_상태변경.setEmpty(false);
 
-        given(orderTableDao.findById(2L)).willReturn(java.util.Optional.of(빈주문테이블));
+        given(orderTableRepository.findById(2L)).willReturn(java.util.Optional.of(빈주문테이블));
         given(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), any())).willReturn(true);
 
         assertThatThrownBy(
@@ -107,8 +107,8 @@ public class TableServiceTest {
     void changeNumberOfGuests() {
         OrderTable 주문테이블_손님_수_변경 = new OrderTable();
         주문테이블_손님_수_변경.setNumberOfGuests(10);
-        given(orderTableDao.findById(1L)).willReturn(java.util.Optional.ofNullable(주문테이블));
-        given(orderTableDao.save(주문테이블)).willReturn(주문테이블);
+        given(orderTableRepository.findById(1L)).willReturn(java.util.Optional.ofNullable(주문테이블));
+        given(orderTableRepository.save(주문테이블)).willReturn(주문테이블);
 
         OrderTable changeNumberOfGuests = tableService.changeNumberOfGuests(1L, 주문테이블_손님_수_변경);
 

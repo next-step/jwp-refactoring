@@ -1,10 +1,10 @@
-package kitchenpos.application;
+package kitchenpos.tableGroup.application;
 
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.dao.TableGroupDao;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.tableGroup.domain.TableGroup;
+import kitchenpos.order.domain.OrderTableRepository;
+import kitchenpos.tableGroup.domain.TableGroupRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,10 +27,10 @@ public class TableGroupServiceTest {
     private OrderRepository orderRepository;
 
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @Mock
-    private TableGroupDao tableGroupDao;
+    private TableGroupRepository tableGroupRepository;
 
     @InjectMocks
     TableGroupService tableGroupService;
@@ -57,10 +57,10 @@ public class TableGroupServiceTest {
     @DisplayName("단체 지정을 주문 테이블 목록 으로 등록 할 수 있다.")
     @Test
     void create() {
-        given(orderTableDao.findAllByIdIn(any())).willReturn(Arrays.asList(테이블1번, 테이블2번));
-        given(tableGroupDao.save(단체_지정)).willReturn(단체_지정);
-        given(orderTableDao.save(테이블1번)).willReturn(테이블1번);
-        given(orderTableDao.save(테이블2번)).willReturn(테이블2번);
+        given(orderTableRepository.findAllByIdIn(any())).willReturn(Arrays.asList(테이블1번, 테이블2번));
+        given(tableGroupRepository.save(단체_지정)).willReturn(단체_지정);
+        given(orderTableRepository.save(테이블1번)).willReturn(테이블1번);
+        given(orderTableRepository.save(테이블2번)).willReturn(테이블2번);
 
         TableGroup createTableGroup = tableGroupService.create(단체_지정);
 
@@ -99,7 +99,7 @@ public class TableGroupServiceTest {
         TableGroup 단체_지정 = new TableGroup();
         단체_지정.setId(2L);
         단체_지정.setOrderTables(Arrays.asList(손님이_채워진_테이블3번, 손님이_채워진_테이블4번));
-        given(orderTableDao.findAllByIdIn(any())).willReturn(Arrays.asList(손님이_채워진_테이블3번, 손님이_채워진_테이블4번));
+        given(orderTableRepository.findAllByIdIn(any())).willReturn(Arrays.asList(손님이_채워진_테이블3번, 손님이_채워진_테이블4번));
 
         assertThatThrownBy(
                 () -> tableGroupService.create(단체_지정)
@@ -118,14 +118,14 @@ public class TableGroupServiceTest {
         TableGroup 단체_지정 = new TableGroup();
         단체_지정.setId(2L);
         단체_지정.setOrderTables(Arrays.asList(테이블3번, 테이블4번));
-        given(orderTableDao.findAllByIdIn(any())).willReturn(Arrays.asList(테이블3번, 테이블4번));
-        given(tableGroupDao.save(단체_지정)).willReturn(단체_지정);
-        given(orderTableDao.save(테이블3번)).willReturn(테이블3번);
-        given(orderTableDao.save(테이블4번)).willReturn(테이블4번);
+        given(orderTableRepository.findAllByIdIn(any())).willReturn(Arrays.asList(테이블3번, 테이블4번));
+        given(tableGroupRepository.save(단체_지정)).willReturn(단체_지정);
+        given(orderTableRepository.save(테이블3번)).willReturn(테이블3번);
+        given(orderTableRepository.save(테이블4번)).willReturn(테이블4번);
         tableGroupService.create(단체_지정);
-        given(orderTableDao.findAllByTableGroupId(단체_지정.getId())).willReturn(Arrays.asList(테이블3번, 테이블4번));
-        given(orderTableDao.save(테이블3번)).willReturn(테이블3번);
-        given(orderTableDao.save(테이블4번)).willReturn(테이블4번);
+        given(orderTableRepository.findAllByTableGroupId(단체_지정.getId())).willReturn(Arrays.asList(테이블3번, 테이블4번));
+        given(orderTableRepository.save(테이블3번)).willReturn(테이블3번);
+        given(orderTableRepository.save(테이블4번)).willReturn(테이블4번);
 
         tableGroupService.ungroup(단체_지정.getId());
 
@@ -147,12 +147,12 @@ public class TableGroupServiceTest {
         TableGroup 단체_지정 = new TableGroup();
         단체_지정.setId(2L);
         단체_지정.setOrderTables(Arrays.asList(테이블3번, 테이블4번));
-        given(orderTableDao.findAllByIdIn(any())).willReturn(Arrays.asList(테이블3번, 테이블4번));
-        given(tableGroupDao.save(단체_지정)).willReturn(단체_지정);
-        given(orderTableDao.save(테이블3번)).willReturn(테이블3번);
-        given(orderTableDao.save(테이블4번)).willReturn(테이블4번);
+        given(orderTableRepository.findAllByIdIn(any())).willReturn(Arrays.asList(테이블3번, 테이블4번));
+        given(tableGroupRepository.save(단체_지정)).willReturn(단체_지정);
+        given(orderTableRepository.save(테이블3번)).willReturn(테이블3번);
+        given(orderTableRepository.save(테이블4번)).willReturn(테이블4번);
         tableGroupService.create(단체_지정);
-        given(orderTableDao.findAllByTableGroupId(단체_지정.getId())).willReturn(Arrays.asList(테이블3번, 테이블4번));
+        given(orderTableRepository.findAllByTableGroupId(단체_지정.getId())).willReturn(Arrays.asList(테이블3번, 테이블4번));
         given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any())).willReturn(true);
 
         assertThatThrownBy(
