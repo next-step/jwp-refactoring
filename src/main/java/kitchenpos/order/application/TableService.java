@@ -58,22 +58,9 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final OrderTableRequest orderTable) {
-        final int numberOfGuests = orderTable.getNumberOfGuests();
-
-        if (numberOfGuests < 0) {
-            throw new IllegalArgumentException();
-        }
-
         final OrderTable findOrderTable = orderTableRepository.findById(orderTableId)
-            .orElseThrow(IllegalArgumentException::new);
-
-        if (findOrderTable.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
-
-        findOrderTable.changeNumberOfGuests(numberOfGuests);
-
-        OrderTable savedOrderTable = orderTableRepository.save(findOrderTable);
-        return OrderTableResponse.of(savedOrderTable);
+            .orElseThrow(() -> new NotFoundException(NOT_FOUND_DATA));
+        findOrderTable.changeNumberOfGuests(orderTable.getNumberOfGuests());
+        return OrderTableResponse.of(findOrderTable);
     }
 }

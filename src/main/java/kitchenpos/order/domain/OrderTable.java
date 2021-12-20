@@ -75,12 +75,19 @@ public class OrderTable {
     }
 
     public void changeNumberOfGuests(final int numberOfGuests) {
+        validateChangeableNumberOfGuests();
         this.numberOfGuests = new NumberOfGuests(numberOfGuests);
     }
 
     public void changeEmpty(final boolean empty) {
         validateChangeableEmpty();
         this.empty = empty;
+    }
+
+    private void validateChangeableNumberOfGuests() {
+        if (empty) {
+            throw new BadRequestException(CANNOT_CHANGE_STATUS);
+        }
     }
 
     private void validateChangeableEmpty() {
