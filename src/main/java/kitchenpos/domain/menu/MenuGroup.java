@@ -1,30 +1,24 @@
-package kitchenpos.domain;
+package kitchenpos.domain.menu;
 
-import java.math.BigDecimal;
 import java.util.Objects;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
-public class Product {
+@Entity
+public class MenuGroup {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private BigDecimal price;
 
-    public Product() {
+    public MenuGroup() {
     }
 
-    public Product(Long id, String name, BigDecimal price) {
-        this.id = id;
+    public MenuGroup(String name) {
         this.name = name;
-        this.price = price;
-    }
-
-    public Product(String name, BigDecimal price) {
-        this.name = name;
-        this.price = price;
-    }
-
-    public static Product of(String name, int price) {
-        return new Product(name, BigDecimal.valueOf(price));
     }
 
     public Long getId() {
@@ -43,14 +37,6 @@ public class Product {
         this.name = name;
     }
 
-    public BigDecimal getPrice() {
-        return price;
-    }
-
-    public void setPrice(final BigDecimal price) {
-        this.price = price;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -64,8 +50,8 @@ public class Product {
             return false;
         }
 
-        Product product = (Product) o;
-        return Objects.equals(id, product.id);
+        MenuGroup menuGroup = (MenuGroup) o;
+        return Objects.equals(id, menuGroup.id);
     }
 
     @Override

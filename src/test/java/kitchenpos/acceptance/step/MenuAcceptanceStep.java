@@ -7,7 +7,7 @@ import io.restassured.mapper.TypeRef;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
-import kitchenpos.domain.Menu;
+import kitchenpos.domain.menu.Menu;
 import org.springframework.http.MediaType;
 
 public class MenuAcceptanceStep {

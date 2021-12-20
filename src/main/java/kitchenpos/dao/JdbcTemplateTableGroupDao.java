@@ -1,6 +1,6 @@
 package kitchenpos.dao;
 
-import kitchenpos.domain.TableGroup;
+import kitchenpos.domain.order.TableGroup;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -18,6 +18,7 @@ import java.util.Optional;
 
 @Repository
 public class JdbcTemplateTableGroupDao implements TableGroupDao {
+
     private static final String TABLE_NAME = "table_group";
     private static final String KEY_COLUMN_NAME = "id";
 
@@ -27,8 +28,8 @@ public class JdbcTemplateTableGroupDao implements TableGroupDao {
     public JdbcTemplateTableGroupDao(final DataSource dataSource) {
         jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
         jdbcInsert = new SimpleJdbcInsert(dataSource)
-                .withTableName(TABLE_NAME)
-                .usingGeneratedKeyColumns(KEY_COLUMN_NAME)
+            .withTableName(TABLE_NAME)
+            .usingGeneratedKeyColumns(KEY_COLUMN_NAME)
         ;
     }
 
@@ -57,8 +58,9 @@ public class JdbcTemplateTableGroupDao implements TableGroupDao {
     private TableGroup select(final Long id) {
         final String sql = "SELECT id, created_date FROM table_group WHERE id = (:id)";
         final SqlParameterSource parameters = new MapSqlParameterSource()
-                .addValue("id", id);
-        return jdbcTemplate.queryForObject(sql, parameters, (resultSet, rowNumber) -> toEntity(resultSet));
+            .addValue("id", id);
+        return jdbcTemplate.queryForObject(sql, parameters,
+            (resultSet, rowNumber) -> toEntity(resultSet));
     }
 
     private TableGroup toEntity(final ResultSet resultSet) throws SQLException {

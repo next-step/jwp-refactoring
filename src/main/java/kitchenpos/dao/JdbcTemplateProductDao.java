@@ -1,6 +1,6 @@
 package kitchenpos.dao;
 
-import kitchenpos.domain.Product;
+import kitchenpos.domain.product.Product;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -17,6 +17,7 @@ import java.util.Optional;
 
 @Repository
 public class JdbcTemplateProductDao implements ProductDao {
+
     private static final String TABLE_NAME = "product";
     private static final String KEY_COLUMN_NAME = "id";
 
@@ -26,8 +27,8 @@ public class JdbcTemplateProductDao implements ProductDao {
     public JdbcTemplateProductDao(final DataSource dataSource) {
         jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
         jdbcInsert = new SimpleJdbcInsert(dataSource)
-                .withTableName(TABLE_NAME)
-                .usingGeneratedKeyColumns(KEY_COLUMN_NAME)
+            .withTableName(TABLE_NAME)
+            .usingGeneratedKeyColumns(KEY_COLUMN_NAME)
         ;
     }
 
@@ -56,8 +57,9 @@ public class JdbcTemplateProductDao implements ProductDao {
     private Product select(final Long id) {
         final String sql = "SELECT id, name, price FROM product WHERE id = (:id)";
         final SqlParameterSource parameters = new MapSqlParameterSource()
-                .addValue("id", id);
-        return jdbcTemplate.queryForObject(sql, parameters, (resultSet, rowNumber) -> toEntity(resultSet));
+            .addValue("id", id);
+        return jdbcTemplate.queryForObject(sql, parameters,
+            (resultSet, rowNumber) -> toEntity(resultSet));
     }
 
     private Product toEntity(final ResultSet resultSet) throws SQLException {

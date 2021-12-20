@@ -7,7 +7,7 @@ import io.restassured.mapper.TypeRef;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
-import kitchenpos.domain.Product;
+import kitchenpos.domain.product.Product;
 import org.springframework.http.MediaType;
 
 public class ProductAcceptanceStep {
