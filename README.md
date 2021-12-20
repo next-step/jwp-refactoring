@@ -3,15 +3,16 @@
 ## 요구 사항
 * 상품 
   * 상품은 가격이 없거나, 0보다 작을 수 없다.
-* 메뉴
+* 메뉴 그룹
+* 메뉴 
   * 
 
 
 ## 리팩토링 예상목록
-* 상품
+* 공통 사항
+  * Domain Entity로 변경
+  * Controller 예외처리를 위한 ExceptionHandler 필요
   * 검증로직 Service -> Domain 이동
-  * Product Entity로 변경
-  * ProductController 예외처리를 위한 ExceptionHandler 필요
   * 요청과 응답에 사용할 DTO 생성
   * 메서드 네이밍 적절한지 확인
 
