@@ -24,7 +24,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
-import static kitchenpos.fixtures.MenuGroupFixtures.createMenuGroup;
+import static kitchenpos.fixtures.MenuGroupFixtures.두마리메뉴;
 import static kitchenpos.fixtures.MenuProductFixtures.createMenuProduct;
 import static kitchenpos.fixtures.ProductFixtures.양념치킨;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -65,7 +65,7 @@ public class MenuServiceTest {
 
     @BeforeEach
     void setUp() {
-        MenuGroup menuGroup = createMenuGroup(1L, "두마리메뉴");
+        MenuGroup menuGroup = 두마리메뉴().toEntity();
         product = 양념치킨().toEntity();
         MenuProduct menuProduct = createMenuProduct(1L, null, product.getId(), 1L);
         menuProducts = Lists.newArrayList(menuProduct, menuProduct);

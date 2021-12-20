@@ -1,6 +1,6 @@
 package kitchenpos.fixtures;
 
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.dto.MenuGroupRequest;
 
 /**
  * packageName : kitchenpos.fixtures
@@ -10,10 +10,16 @@ import kitchenpos.domain.MenuGroup;
  * description :
  */
 public class MenuGroupFixtures {
-    public static MenuGroup createMenuGroup(Long id, String name) {
-        MenuGroup menuGroup = new MenuGroup();
-        menuGroup.setId(id);
-        menuGroup.setName(name);
-        return menuGroup;
+    public static MenuGroupRequest 한마리메뉴() {
+        return MenuGroupRequest.of("한마리메뉴");
     }
+
+    public static MenuGroupRequest 두마리메뉴() {
+        return MenuGroupRequest.of("두마리메뉴");
+    }
+
+    public static MenuGroupRequest 반반메뉴() {
+        return MenuGroupRequest.of("반반메뉴");
+    }
+
 }

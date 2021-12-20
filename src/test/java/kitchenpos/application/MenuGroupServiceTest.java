@@ -14,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 
+import static kitchenpos.fixtures.MenuGroupFixtures.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -38,7 +39,7 @@ class MenuGroupServiceTest {
 
     @BeforeEach
     void setUp() {
-        menuGroup = MenuGroupFixtures.createMenuGroup(1L, "두마리메뉴");
+        menuGroup = 두마리메뉴().toEntity();
     }
 
     @Test

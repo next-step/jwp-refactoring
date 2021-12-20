@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import static kitchenpos.fixtures.MenuGroupFixtures.*;
 import static kitchenpos.fixtures.MenuProductFixtures.createMenuProduct;
 import static kitchenpos.fixtures.OrderLineItemFixtures.createOrderLineItem;
 import static kitchenpos.fixtures.ProductFixtures.*;
@@ -62,8 +63,8 @@ public class OrderServiceTest {
         Product 후라이드 = 후라이드().toEntity();
         Product 양념치킨 = 양념치킨().toEntity();
 
-        MenuGroup 두마리메뉴 = MenuGroupFixtures.createMenuGroup(1L, "두마리메뉴");
-        MenuGroup 한마리메뉴 = MenuGroupFixtures.createMenuGroup(2L, "두마리메뉴");
+        MenuGroup 두마리메뉴 = 두마리메뉴().toEntity();
+        MenuGroup 한마리메뉴 = 한마리메뉴().toEntity();
 
 
         MenuProduct 양념치킨두마리메뉴상품 = createMenuProduct(1L, 1L, 1L, 2);

@@ -48,7 +48,7 @@ class MenuGroupRestControllerTest {
 
     @BeforeEach
     void setUp() {
-        menuGroup = createMenuGroup(1L, "양념치킨");
+        menuGroup = 한마리메뉴().toEntity();
     }
 
     @Test
