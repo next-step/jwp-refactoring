@@ -46,21 +46,9 @@ class ProductServiceTest {
         assertThat(result.getPrice()).isEqualTo(BigDecimal.valueOf(17000));
     }
 
-    @DisplayName("가격이 없을 경우 예외 발생")
-    @Test
-    void 상품_생성_예외1() {
-        // given
-        Product product = Product.of("양념치킨", null);
-
-        // when, then
-        assertThatIllegalArgumentException().isThrownBy(
-            () -> productService.create(product)
-        );
-    }
-
     @DisplayName("가격이 음수인 경우 예외 발생")
     @Test
-    void 상품_생성_예외2() {
+    void 상품_생성_예외1() {
         // given
         Product product = Product.of("양념치킨", -1000);
 

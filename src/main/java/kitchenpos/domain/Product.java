@@ -22,6 +22,9 @@ public class Product {
     }
 
     public static Product of(String name, Integer price) {
+        if (price == null) {
+            throw new IllegalArgumentException();
+        }
         return new Product(name, BigDecimal.valueOf(price));
     }
 
