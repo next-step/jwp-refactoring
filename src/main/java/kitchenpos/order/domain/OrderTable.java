@@ -4,9 +4,13 @@ import java.util.Objects;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class OrderTable {
@@ -14,7 +18,10 @@ public class OrderTable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long tableGroupId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "table_group_id", foreignKey = @ForeignKey(name = "fk_order_table_table_group"))
+    private TableGroup tableGroup;
 
     @Embedded
     private NumberOfGuests numberOfGuests;
@@ -31,9 +38,9 @@ public class OrderTable {
         this(id, null, numberOfGuests, empty);
     }
 
-    public OrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
+    public OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
         this.id = id;
-        this.tableGroupId = tableGroupId;
+        this.tableGroup = tableGroup;
         this.numberOfGuests = new NumberOfGuests(numberOfGuests);
         this.empty = empty;
     }
@@ -42,8 +49,8 @@ public class OrderTable {
         return id;
     }
 
-    public Long getTableGroupId() {
-        return tableGroupId;
+    public TableGroup getTableGroup() {
+        return tableGroup;
     }
 
     public NumberOfGuests getNumberOfGuests() {
@@ -54,13 +61,13 @@ public class OrderTable {
         return empty;
     }
 
-    public void changeTableGroup(Long tableGroupId, boolean empty) {
-        changeTableGroupId(tableGroupId);
+    public void changeTableGroup(TableGroup tableGroup, boolean empty) {
+        changeTableGroupId(tableGroup);
         changeEmpty(empty);
     }
 
-    public void changeTableGroupId(Long tableGroupId) {
-        this.tableGroupId = tableGroupId;
+    public void changeTableGroupId(TableGroup tableGroup) {
+        this.tableGroup = tableGroup;
     }
 
     public void changeNumberOfGuests(final int numberOfGuests) {
@@ -78,12 +85,12 @@ public class OrderTable {
         if (o == null || getClass() != o.getClass())
             return false;
         OrderTable that = (OrderTable)o;
-        return numberOfGuests == that.numberOfGuests && empty == that.empty && Objects.equals(id, that.id)
-            && Objects.equals(tableGroupId, that.tableGroupId);
+        return empty == that.empty && Objects.equals(id, that.id) && Objects.equals(tableGroup,
+            that.tableGroup) && Objects.equals(numberOfGuests, that.numberOfGuests);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, tableGroupId, numberOfGuests, empty);
+        return Objects.hash(id, tableGroup, numberOfGuests, empty);
     }
 }

@@ -14,16 +14,20 @@ public class OrderTableResponse {
     public OrderTableResponse() {
     }
 
-    public OrderTableResponse(OrderTable orderTable) {
-        this(orderTable.getId(), orderTable.getTableGroupId(),
-            orderTable.getNumberOfGuests().getValue(), orderTable.isEmpty());
-    }
-
-    public OrderTableResponse(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
+    private OrderTableResponse(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
         this.id = id;
         this.tableGroupId = tableGroupId;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
+    }
+
+    public static OrderTableResponse of(OrderTable orderTable) {
+        Long tableGroupId = null;
+        if (Objects.nonNull(orderTable.getTableGroup())) {
+            tableGroupId = orderTable.getTableGroup().getId();
+        }
+        return new OrderTableResponse(orderTable.getId(), tableGroupId,
+            orderTable.getNumberOfGuests().getValue(), orderTable.isEmpty());
     }
 
     public Long getId() {

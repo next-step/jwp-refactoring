@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -19,6 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.domain.TableGroup;
 import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.order.dto.OrderTableResponse;
 import kitchenpos.order.repository.OrderRepository;
@@ -101,7 +103,8 @@ public class TableServiceTest {
     @Test
     void changeEmptyExistTableGroup() {
         // given
-        OrderTable orderTable = 주문_테이블_생성(1L, 1L, 0, true);
+        OrderTable orderTable = 주문_테이블_생성(1L, 0, true);
+        orderTable.changeTableGroupId(new TableGroup(1L, LocalDateTime.now()));
         Long orderTableId = orderTable.getId();
         OrderTableRequest orderTableRequest = new OrderTableRequest(orderTable.getNumberOfGuests().getValue(),
             orderTable.isEmpty());
@@ -181,9 +184,5 @@ public class TableServiceTest {
 
     public static OrderTable 주문_테이블_생성(Long id, int numberOfGuests, boolean empty) {
         return new OrderTable(id, numberOfGuests, empty);
-    }
-
-    public static OrderTable 주문_테이블_생성(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
-        return new OrderTable(id, tableGroupId, numberOfGuests, empty);
     }
 }
