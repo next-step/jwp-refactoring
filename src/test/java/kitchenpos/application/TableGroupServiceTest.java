@@ -149,7 +149,6 @@ class TableGroupServiceTest {
 		//when, then
 		assertThatThrownBy(() -> tableGroupService.ungroup(tableGroup.getId()))
 			.isInstanceOf(IllegalArgumentException.class);
-
 	}
 
 }

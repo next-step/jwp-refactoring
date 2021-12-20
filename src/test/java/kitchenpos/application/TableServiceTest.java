@@ -151,7 +151,6 @@ class TableServiceTest {
 		given(orderTableDao.findById(any()))
 			.willReturn(Optional.of(orderTable));
 
-
 		//when, then
 		OrderTable changeOrderTable = new OrderTable(6);
 		Assertions.assertThatThrownBy(()->tableService.changeNumberOfGuests(orderTable.getId(), changeOrderTable))
