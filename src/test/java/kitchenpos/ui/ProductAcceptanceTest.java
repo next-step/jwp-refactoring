@@ -9,6 +9,7 @@ import io.restassured.response.Response;
 import java.math.BigDecimal;
 import java.util.List;
 import kitchenpos.AcceptanceTest;
+import kitchenpos.product.domain.Name;
 import kitchenpos.product.domain.Product;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
@@ -64,7 +65,8 @@ class ProductAcceptanceTest extends AcceptanceTest {
         List<Product> products = Lists.newArrayList(response.as(Product[].class));
         assertThat(products).hasSize(6);
         assertThat(products).extracting(Product::getName)
-            .contains("후라이드", "양념치킨", "반반치킨", "통구이", "간장치킨", "순살치킨");
+            .contains(Name.of("후라이드"), Name.of("양념치킨"), Name.of("반반치킨"),
+                Name.of("통구이"), Name.of("간장치킨"), Name.of("순살치킨"));
     }
 
 }
