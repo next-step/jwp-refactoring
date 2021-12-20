@@ -10,7 +10,13 @@ import kitchenpos.domain.TableGroup;
 public class TableGroupFixture {
 
     public static TableGroup 단체테이블_첫번째_두번째() {
-        return new TableGroup(1L, LocalDateTime.now(), asList(단체지정_첫번째_주문테이블(), 단체지정_두번째_주문테이블()));
+
+        TableGroup tableGroup = new TableGroup();
+        tableGroup.setId(1L);
+        tableGroup.setOrderTables(asList(단체지정_첫번째_주문테이블(), 단체지정_두번째_주문테이블()));
+        tableGroup.setCreatedDate(LocalDateTime.now());
+
+        return tableGroup;
     }
 
 }

@@ -49,13 +49,18 @@ public class OrderServiceTest {
         OrderTable 첫번째_주문테이블 = 첫번째_주문테이블();
         Order 주문_첫번째 = 주문_첫번째();
 
+        OrderLineItem orderLineItem = new OrderLineItem();
+        orderLineItem.setOrderId(1L);
+        orderLineItem.setMenuId(1L);
+        orderLineItem.setQuantity(1L);
+
         // mocking
         when(menuDao.countByIdIn(any(List.class))).thenReturn(1L);
 
         when(orderTableDao.findById(any(Long.class))).thenReturn(Optional.of(첫번째_주문테이블));
         when(orderDao.save(주문_첫번째)).thenReturn(주문_첫번째);
         when(orderLineItemDao.save(any(OrderLineItem.class))).thenReturn(
-            new OrderLineItem(1L, 1L, 1L));
+            orderLineItem);
 
         // when
         Order 저장된주문 = orderService.create(주문_첫번째);
@@ -85,11 +90,16 @@ public class OrderServiceTest {
         Order 주문_첫번째 = 주문_첫번째();
         Order 주문_첫번째_완료 = 주문_첫번째_완료();
 
+        OrderLineItem orderLineItem = new OrderLineItem();
+        orderLineItem.setOrderId(1L);
+        orderLineItem.setMenuId(1L);
+        orderLineItem.setQuantity(1L);
+
         // mocking
         when(orderDao.findById(anyLong())).thenReturn(Optional.of(주문_첫번째));
         when(orderDao.save(주문_첫번째)).thenReturn(주문_첫번째);
         when(orderLineItemDao.findAllByOrderId(anyLong())).thenReturn(asList(
-            new OrderLineItem(1L, 1L, 1L)));
+            orderLineItem));
         // when
         Order order = orderService.changeOrderStatus(1L, 주문_첫번째_완료);
 

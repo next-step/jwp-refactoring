@@ -75,9 +75,10 @@ public class TableServiceTest {
         when(orderTableDao.save(첫번째_주문테이블)).thenReturn(첫번째_주문테이블);
 
         // when
-        OrderTable orderTable = new OrderTable(첫번째_주문테이블.getId(),
-            첫번째_주문테이블.getTableGroupId(),
-            첫번째_주문테이블.getNumberOfGuests(), true);
+        OrderTable orderTable = new OrderTable();
+        orderTable.setId(첫번째_주문테이블.getId());
+        orderTable.setTableGroupId(첫번째_주문테이블.getTableGroupId());
+        orderTable.setEmpty(true);
 
         OrderTable 저장된_주문_테이블 = tableService.changeEmpty(첫번째_주문테이블.getId(), orderTable);
 
@@ -88,20 +89,21 @@ public class TableServiceTest {
     @Test
     void 요리중이거나_식사중이면_빈테이블로_변경시_예외() {
         // given
-        OrderTable 주문_첫번째_1번_테이블 = 첫번째_주문테이블();
+        OrderTable 첫번째_주문테이블 = 첫번째_주문테이블();
 
         // mocking
-        when(orderTableDao.findById(anyLong())).thenReturn(Optional.of(주문_첫번째_1번_테이블));
+        when(orderTableDao.findById(anyLong())).thenReturn(Optional.of(첫번째_주문테이블));
         when(orderDao.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).thenReturn(true);
 
         // when
-        OrderTable orderTable = new OrderTable(주문_첫번째_1번_테이블.getId(),
-            주문_첫번째_1번_테이블.getTableGroupId(),
-            주문_첫번째_1번_테이블.getNumberOfGuests(), true);
+        OrderTable orderTable = new OrderTable();
+        orderTable.setId(첫번째_주문테이블.getId());
+        orderTable.setTableGroupId(첫번째_주문테이블.getTableGroupId());
+        orderTable.setEmpty(true);
 
         // then
         assertThatThrownBy(() -> {
-            tableService.changeEmpty(주문_첫번째_1번_테이블.getId(), orderTable);
+            tableService.changeEmpty(첫번째_주문테이블.getId(), orderTable);
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -109,14 +111,19 @@ public class TableServiceTest {
     void 해당_테이블에_방문한_손님수를_등록() {
         // given
         OrderTable 첫번째_주문테이블 = 첫번째_주문테이블();
-        OrderTable 방문자수_3명으로변경 = new OrderTable(3L, null, 3, false);
+        OrderTable 손님수_변경 = new OrderTable();
+        손님수_변경.setId(첫번째_주문테이블.getId());
+        손님수_변경.setTableGroupId(첫번째_주문테이블.getTableGroupId());
+        손님수_변경.setNumberOfGuests(3);
+        손님수_변경.setEmpty(첫번째_주문테이블.isEmpty());
+
         // mocking
         when(orderTableDao.findById(anyLong())).thenReturn(Optional.of(첫번째_주문테이블));
         when(orderTableDao.save(any(OrderTable.class))).thenReturn(첫번째_주문테이블);
 
         // when
         OrderTable orderTable = tableService.changeNumberOfGuests(첫번째_주문테이블.getId(),
-            방문자수_3명으로변경);
+            손님수_변경);
 
         Assertions.assertThat(orderTable).isEqualTo(첫번째_주문테이블);
     }
