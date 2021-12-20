@@ -3,6 +3,7 @@ package kitchenpos.menu.domain;
 import kitchenpos.product.domain.Product;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.Objects;
 
 @Entity
@@ -26,14 +27,26 @@ public class MenuProduct {
     }
 
     public MenuProduct(Long seq, Menu menu, Product product, long quantity) {
+        this(product, quantity);
         this.seq = seq;
         this.menu = menu;
+    }
+
+    public MenuProduct(Product product, long quantity) {
         this.product = product;
         this.quantity = quantity;
     }
 
     public void assignMenu(final Menu menu) {
         this.menu = menu;
+    }
+
+    public Long getSeq() {
+        return seq;
+    }
+
+    public Long getMenuId() {
+        return menu.getId();
     }
 
     public Long getProductId() {
@@ -44,4 +57,22 @@ public class MenuProduct {
         return quantity;
     }
 
+    public BigDecimal totalPrice() {
+        return product.getPrice()
+                .multiply(BigDecimal.valueOf(quantity));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof MenuProduct)) return false;
+        MenuProduct that = (MenuProduct) o;
+        return quantity == that.quantity
+                && Objects.equals(seq, that.seq);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(seq, quantity);
+    }
 }

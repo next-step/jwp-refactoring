@@ -1,5 +1,7 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.common.domain.Price;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
@@ -12,25 +14,26 @@ public class Menu {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private BigDecimal price;
+    @Embedded
+    private Price price;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "menu_group_id")
     private MenuGroup menuGroup;
 
-    @OneToMany(mappedBy = "menu")
-    private List<MenuProduct> menuProducts;
+    @Embedded
+    private MenuProducts menuProducts = new MenuProducts();
 
     protected Menu() {
     }
 
-    public Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        this(id, name, price, menuGroup);
-        this.menuProducts = menuProducts;
+    public Menu(Long id, String name, Price price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+        this(name, price, menuGroup);
+        this.id = id;
+        this.menuProducts = MenuProducts.of(menuProducts);
     }
 
-    public Menu(long id, String name, BigDecimal price, MenuGroup menuGroup) {
-        this.id = id;
+    public Menu(String name, Price price, MenuGroup menuGroup) {
         this.name = name;
         this.price = price;
         this.menuGroup = menuGroup;
@@ -45,7 +48,7 @@ public class Menu {
     }
 
     public BigDecimal getPrice() {
-        return price;
+        return price.getPrice();
     }
 
     public Long getMenuGroupId() {
@@ -53,12 +56,29 @@ public class Menu {
     }
 
     public List<MenuProduct> getMenuProducts() {
-        return menuProducts;
+        return menuProducts.getMenuProducts();
     }
 
-    public void initMenuProducts(final List<MenuProduct> menuProducts) {
-        this.menuProducts = menuProducts;
+    public void addMenuProduct(final MenuProduct menuProduct) {
+        menuProduct.assignMenu(this);
+        this.menuProducts
+                .add(menuProduct);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Menu)) return false;
+        Menu menu = (Menu) o;
+        return Objects.equals(id, menu.id)
+                && Objects.equals(name, menu.name)
+                && Objects.equals(price, menu.price)
+                && Objects.equals(menuGroup, menu.menuGroup)
+                && Objects.equals(menuProducts, menu.menuProducts);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, price, menuGroup, menuProducts);
+    }
 }

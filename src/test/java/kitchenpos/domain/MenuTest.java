@@ -1,5 +1,6 @@
 package kitchenpos.domain;
 
+import kitchenpos.common.domain.Price;
 import kitchenpos.menu.domain.Menu;
 
 import java.math.BigDecimal;
@@ -14,14 +15,14 @@ public class MenuTest {
     public static final Menu 치킨세트 = new Menu(
             1L
             , "치킨 세트"
-            , BigDecimal.valueOf(30000)
+            , new Price(BigDecimal.valueOf(30000))
             , 두마리메뉴
             , Arrays.asList(후라이드, 양념치킨));
 
-    public static final Menu 양념치킨_단품 =new Menu(
+    public static final Menu 양념치킨_단품 = new Menu(
             2L
             , "양념치킨 단품"
-            , BigDecimal.valueOf(16000)
+            , new Price(BigDecimal.valueOf(16000))
             , 한마리메뉴
             , Arrays.asList(양념치킨));
 }

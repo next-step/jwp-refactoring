@@ -27,17 +27,17 @@ public class MenuGroupServiceTest {
         MenuGroup 반마리메뉴 = new MenuGroup("반마리메뉴");
         // when
         // 메뉴 그룹을 등록한다.
-        MenuGroup menuGroup = menuGroupService.create(반마리메뉴);
+        MenuGroup savedMenuGroup = menuGroupService.create(반마리메뉴);
         // then
         // 메뉴 그룹이 정상적으로 등록된다.
-        assertThat(menuGroup).isEqualTo(반마리메뉴);
+        assertThat(savedMenuGroup).isEqualTo(반마리메뉴);
 
         // when
         // 메뉴 그룹을 조회한다.
-        List<MenuGroup> menuGroups = menuGroupService.list();
+        List<MenuGroup> savedMenuGroups = menuGroupService.list();
         // then
         // 메뉴 그룹이 정상적으로 조회된다.
-        assertThat(menuGroups).hasSize(5);
-        assertThat(menuGroups).containsExactly(두마리메뉴, 한마리메뉴, 순살파닭두마리메뉴, 신메뉴, 반마리메뉴);
+        assertThat(savedMenuGroups).hasSize(5);
+        assertThat(savedMenuGroups).containsExactly(두마리메뉴, 한마리메뉴, 순살파닭두마리메뉴, 신메뉴, 반마리메뉴);
     }
 }
