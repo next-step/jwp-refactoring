@@ -3,7 +3,7 @@ package kitchenpos.ui;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.application.MenuService;
 import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuProduct;
+import kitchenpos.domain.MenuGroup;
 import kitchenpos.fixtures.MenuFixtures;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,11 +16,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
-import static kitchenpos.fixtures.MenuFixtures.*;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
@@ -50,7 +48,7 @@ class MenuRestControllerTest {
 
     @BeforeEach
     void setUp() {
-        menu = createMenu(1L, "양념치킨", new BigDecimal(18_000), 1L, Lists.newArrayList(new MenuProduct(), new MenuProduct()));
+        menu = MenuFixtures.양념치킨두마리메뉴().toEntity(new MenuGroup(), Lists.newArrayList());
     }
 
 
@@ -78,7 +76,7 @@ class MenuRestControllerTest {
 
     @Test
     @DisplayName("메뉴를 등록한다.")
-    public void postMenu() throws Exception{
+    public void postMenu() throws Exception {
         // given
         ObjectMapper mapper = new ObjectMapper();
         given(menuService.create(any(Menu.class))).willReturn(menu);

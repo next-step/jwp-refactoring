@@ -8,7 +8,6 @@ import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
-import kitchenpos.fixtures.MenuFixtures;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -24,8 +23,10 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
+import static kitchenpos.fixtures.MenuFixtures.가격불일치메뉴;
+import static kitchenpos.fixtures.MenuFixtures.양념치킨두마리메뉴;
 import static kitchenpos.fixtures.MenuGroupFixtures.두마리메뉴;
-import static kitchenpos.fixtures.MenuProductFixtures.createMenuProduct;
+import static kitchenpos.fixtures.MenuProductFixtures.메뉴상품_한개;
 import static kitchenpos.fixtures.ProductFixtures.양념치킨;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -45,6 +46,7 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 public class MenuServiceTest {
     private Menu menu;
+    private MenuGroup menuGroup;
     private Product product;
     private List<MenuProduct> menuProducts;
 
@@ -65,11 +67,11 @@ public class MenuServiceTest {
 
     @BeforeEach
     void setUp() {
-        MenuGroup menuGroup = 두마리메뉴().toEntity();
+        menuGroup = 두마리메뉴().toEntity();
         product = 양념치킨().toEntity();
-        MenuProduct menuProduct = createMenuProduct(1L, null, product.getId(), 1L);
+        MenuProduct menuProduct = 메뉴상품_한개().toEntity(product);
         menuProducts = Lists.newArrayList(menuProduct, menuProduct);
-        menu = MenuFixtures.createMenu(1L, "두마리메뉴", new BigDecimal(36_000), menuGroup.getId(), menuProducts);
+        menu = 양념치킨두마리메뉴().toEntity(menuGroup, menuProducts);
     }
 
     @Test
@@ -101,8 +103,8 @@ public class MenuServiceTest {
         assertAll(
                 () -> assertThat(actual).isEqualTo(menu),
                 () -> assertThat(actual.getMenuProducts()).hasSize(2),
-                () -> assertThat(actual.getMenuProducts()).extracting(MenuProduct::getMenuId)
-                        .containsOnly(menu.getId())
+                () -> assertThat(actual.getMenuProducts()).extracting(MenuProduct::getMenu)
+                        .containsOnly(menu)
         );
     }
 
@@ -110,21 +112,16 @@ public class MenuServiceTest {
     @ValueSource(ints = {-10, -5, -1})
     @DisplayName("메뉴의 가격이 올바르지 않으면 등록할 수 없다: int")
     public void createFailByPrice(int candidate) {
-        // when
-        menu.setPrice(new BigDecimal(candidate));
 
         // then
-        assertThatThrownBy(() -> menuService.create(menu)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> new Menu("두마리메뉴", new BigDecimal(candidate), null, null)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     @DisplayName("메뉴의 가격이 올바르지 않으면 등록할 수 없다: null")
     public void createFailByPriceNull() {
-        //when
-        menu.setPrice(null);
-
         // then
-        assertThatThrownBy(() -> menuService.create(menu)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> new Menu("두마리메뉴", null, null, null)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -133,7 +130,7 @@ public class MenuServiceTest {
         // given
         given(productDao.findById(anyLong())).willReturn(Optional.ofNullable(product));
         given(menuGroupDao.existsById(anyLong())).willReturn(true);
-        menu.setPrice(new BigDecimal(37_000));
+        menu = 가격불일치메뉴().toEntity(menuGroup, menuProducts);
 
         // then
         assertThatThrownBy(() -> menuService.create(menu)).isInstanceOf(IllegalArgumentException.class);

@@ -11,7 +11,7 @@ import kitchenpos.domain.Price;
  */
 public class IllegalPriceException extends RuntimeException {
     private static final Long serialVersionUID = 1L;
-    public static final String message = "가격은 %d원 보다 커야 합니다.";
+    public static final String message = "가격은 %d원 보다 작을 수 없습니다.";
 
     public IllegalPriceException() {
         super(String.format(message, Price.MIN_PRICE.intValue()));

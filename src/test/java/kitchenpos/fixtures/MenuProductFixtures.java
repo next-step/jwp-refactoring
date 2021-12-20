@@ -1,6 +1,6 @@
 package kitchenpos.fixtures;
 
-import kitchenpos.domain.MenuProduct;
+import kitchenpos.dto.MenuProductRequest;
 
 /**
  * packageName : kitchenpos.fixtures
@@ -10,12 +10,15 @@ import kitchenpos.domain.MenuProduct;
  * description :
  */
 public class MenuProductFixtures {
-    public static MenuProduct createMenuProduct(Long seq, Long menuId, Long productId, long quantity) {
-        MenuProduct menuProduct = new MenuProduct();
-        menuProduct.setSeq(seq);
-        menuProduct.setMenuId(menuId);
-        menuProduct.setProductId(productId);
-        menuProduct.setQuantity(quantity);
-        return menuProduct;
+    public static MenuProductRequest 메뉴상품_한개() {
+        return MenuProductRequest.of(1L, 1L);
+    }
+
+    public static MenuProductRequest 메뉴상품_두개() {
+        return MenuProductRequest.of(2L, 2L);
+    }
+
+    public static MenuProductRequest 메뉴상품_세개() {
+        return MenuProductRequest.of(3L, 3L);
     }
 }

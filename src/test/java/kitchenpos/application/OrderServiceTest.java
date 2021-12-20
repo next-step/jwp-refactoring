@@ -20,8 +20,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import static kitchenpos.fixtures.MenuFixtures.*;
 import static kitchenpos.fixtures.MenuGroupFixtures.*;
-import static kitchenpos.fixtures.MenuProductFixtures.createMenuProduct;
+import static kitchenpos.fixtures.MenuProductFixtures.*;
 import static kitchenpos.fixtures.OrderLineItemFixtures.createOrderLineItem;
 import static kitchenpos.fixtures.ProductFixtures.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -67,27 +68,12 @@ public class OrderServiceTest {
         MenuGroup 한마리메뉴 = 한마리메뉴().toEntity();
 
 
-        MenuProduct 양념치킨두마리메뉴상품 = createMenuProduct(1L, 1L, 1L, 2);
-        MenuProduct 후라이드한마리메뉴상품 = createMenuProduct(4L, 1L, 2L, 1);
+        MenuProduct 양념치킨두마리메뉴상품 = 메뉴상품_두개().toEntity(양념치킨);
+        MenuProduct 후라이드한마리메뉴상품 = 메뉴상품_한개().toEntity(후라이드);
 
 
-        Menu 후라이드한마리메뉴 =
-                MenuFixtures.createMenu(
-                        1L,
-                        "후라이드한마리",
-                        new BigDecimal(16000),
-                        한마리메뉴.getId(),
-                        Lists.newArrayList(후라이드한마리메뉴상품)
-                );
-
-        Menu 양념치킨두마리메뉴 =
-                MenuFixtures.createMenu(
-                        2L,
-                        "양념치킨두마리",
-                        new BigDecimal(32000),
-                        두마리메뉴.getId(),
-                        Lists.newArrayList(양념치킨두마리메뉴상품)
-                );
+        Menu 후라이드한마리메뉴 = 후라이드한마리메뉴().toEntity(한마리메뉴, Lists.newArrayList(후라이드한마리메뉴상품));
+        Menu 양념치킨두마리메뉴 = 양념치킨두마리메뉴().toEntity(두마리메뉴, Lists.newArrayList(양념치킨두마리메뉴상품));
 
         OrderLineItem orderLineItem1 = createOrderLineItem(1L, 1L, 후라이드한마리메뉴.getId(), 1);
         OrderLineItem orderLineItem2 = createOrderLineItem(2L, 1L, 양념치킨두마리메뉴.getId(), 2);

@@ -1,7 +1,8 @@
 package kitchenpos.fixtures;
 
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuProduct;
+import kitchenpos.dto.MenuProductRequest;
+import kitchenpos.dto.MenuRequest;
+import org.assertj.core.util.Lists;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -14,14 +15,67 @@ import java.util.List;
  * description :
  */
 public class MenuFixtures {
+    public static MenuRequest 양념치킨두마리메뉴() {
+        return MenuRequest.of(
+                "양념치킨두마리메뉴",
+                new BigDecimal(32000),
+                1L,
+                Lists.newArrayList(new MenuProductRequest(2L, 2L))
+        );
+    }
 
-    public static Menu createMenu(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
-        Menu menu = new Menu();
-        menu.setId(id);
-        menu.setName(name);
-        menu.setPrice(price);
-        menu.setMenuGroupId(menuGroupId);
-        menu.setMenuProducts(menuProducts);
-        return menu;
+    public static MenuRequest 후라이드한마리메뉴() {
+        return MenuRequest.of(
+                "한마리메뉴",
+                new BigDecimal(16000),
+                2L,
+                Lists.newArrayList(new MenuProductRequest(1L, 1L))
+        );
+    }
+
+    public static MenuRequest 후라이드두마리메뉴() {
+        return MenuRequest.of(
+                "두마리메뉴",
+                new BigDecimal(32000),
+                3L,
+                Lists.newArrayList(new MenuProductRequest(1L, 2L))
+        );
+    }
+
+    public static MenuRequest 후라이드두마리메뉴(BigDecimal price, Long menuGroupId, List<MenuProductRequest> menuProductRequests) {
+        return MenuRequest.of(
+                "두마리메뉴",
+                price,
+                menuGroupId,
+                menuProductRequests
+        );
+    }
+
+    public static MenuRequest 후라이드반양념반메뉴() {
+        return MenuRequest.of(
+                "후라이드반양념반메뉴",
+                new BigDecimal(32000),
+                4L,
+                Lists.newArrayList(new MenuProductRequest(1L, 1L), new MenuProductRequest(2L, 1L))
+        );
+    }
+
+    public static MenuRequest 후라이드반양념반메뉴(BigDecimal price, Long menuGroupId, List<MenuProductRequest> menuProductRequests) {
+        return MenuRequest.of(
+                "후라이드반양념반메뉴",
+                price,
+                menuGroupId,
+                menuProductRequests
+        );
+    }
+
+    public static MenuRequest 가격불일치메뉴() {
+        return MenuRequest.of(
+                "가격불일치메뉴",
+                new BigDecimal(Math.random()),
+                5L,
+                Lists.newArrayList(new MenuProductRequest(1L, 1L), new MenuProductRequest(2L, 1L))
+        );
     }
 }
+
