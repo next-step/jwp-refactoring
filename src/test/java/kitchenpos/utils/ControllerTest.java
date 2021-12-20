@@ -1,10 +1,15 @@
 package kitchenpos.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import kitchenpos.application.*;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -16,18 +21,30 @@ import java.util.Map;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest
+@ExtendWith(SpringExtension.class)
 public class ControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+    protected MockMvc mockMvc;
+    private ObjectMapper objectMapper = new ObjectMapper();
 
-    private ObjectMapper objectMapper;
+    @MockBean
+    protected MenuGroupService menuGroupService;
 
-    @BeforeEach
-    public void setUp() {
-        objectMapper = new ObjectMapper();
-    }
+    @MockBean
+    private MenuService menuService;
+
+    @MockBean
+    private OrderService orderService;
+
+    @MockBean
+    private ProductService productService;
+
+    @MockBean
+    private TableGroupService tableGroupService;
+
+    @MockBean
+    private TableService tableService;
+
 
     protected ResultActions get(String url, MultiValueMap<String, String> params) throws Exception {
         return mockMvc.perform(MockMvcRequestBuilders.get(url)
@@ -35,7 +52,6 @@ public class ControllerTest {
                 .params(params)
                 .accept(MediaType.APPLICATION_JSON_VALUE))
                 .andDo(print())
-                .andExpect(status().isOk())
                 ;
     }
 
@@ -45,7 +61,6 @@ public class ControllerTest {
                 .content(objectMapper.writeValueAsString(body))
                 .accept(MediaType.APPLICATION_JSON_VALUE))
                 .andDo(print())
-                .andExpect(status().isCreated())
                 ;
     }
 
