@@ -51,7 +51,7 @@ class ProductRestControllerTest {
 
     @BeforeEach
     void setUp() {
-        product = createProduct(1L, "고추바사삭치킨", new BigDecimal(18_000));
+        product = 후라이드().toEntity();
     }
 
     @Test

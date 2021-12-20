@@ -1,6 +1,6 @@
 package kitchenpos.fixtures;
 
-import kitchenpos.domain.Product;
+import kitchenpos.dto.ProductRequest;
 
 import java.math.BigDecimal;
 
@@ -12,11 +12,10 @@ import java.math.BigDecimal;
  * description :
  */
 public class ProductFixtures {
-    public static Product createProduct(Long id, String name, BigDecimal price) {
-        Product product = new Product();
-        product.setId(id);
-        product.setName(name);
-        product.setPrice(price);
-        return product;
+    public static ProductRequest 양념치킨() {
+        return ProductRequest.of("양념치킨", new BigDecimal(16000));
+    }
+    public static ProductRequest 후라이드() {
+        return ProductRequest.of("후라이드", new BigDecimal(16000));
     }
 }

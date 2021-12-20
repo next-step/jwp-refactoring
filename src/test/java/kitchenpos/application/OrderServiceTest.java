@@ -22,6 +22,7 @@ import java.util.Optional;
 
 import static kitchenpos.fixtures.MenuProductFixtures.createMenuProduct;
 import static kitchenpos.fixtures.OrderLineItemFixtures.createOrderLineItem;
+import static kitchenpos.fixtures.ProductFixtures.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.*;
@@ -58,8 +59,8 @@ public class OrderServiceTest {
 
     @BeforeEach
     void setUp() {
-        Product 후라이드 = ProductFixtures.createProduct(1L, "후라이드", new BigDecimal(16000));
-        Product 양념치킨 = ProductFixtures.createProduct(2L, "양념치킨", new BigDecimal(16000));
+        Product 후라이드 = 후라이드().toEntity();
+        Product 양념치킨 = 양념치킨().toEntity();
 
         MenuGroup 두마리메뉴 = MenuGroupFixtures.createMenuGroup(1L, "두마리메뉴");
         MenuGroup 한마리메뉴 = MenuGroupFixtures.createMenuGroup(2L, "두마리메뉴");
