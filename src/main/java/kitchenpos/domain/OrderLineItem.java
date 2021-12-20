@@ -3,67 +3,68 @@ package kitchenpos.domain;
 import java.util.Objects;
 
 public class OrderLineItem {
-	private Long seq;
-	private Long orderId;
-	private Long menuId;
-	private long quantity;
 
-	public OrderLineItem() {
-	}
+    private Long seq;
+    private Long orderId;
+    private Long menuId;
+    private long quantity;
 
-	public OrderLineItem(Long menuId, long quantity) {
-		this.menuId = menuId;
-		this.quantity = quantity;
-	}
+    public OrderLineItem() {
+    }
 
-	public Long getSeq() {
-		return seq;
-	}
+    public OrderLineItem(Long menuId, long quantity) {
+        this.menuId = menuId;
+        this.quantity = quantity;
+    }
 
-	public void setSeq(final Long seq) {
-		this.seq = seq;
-	}
+    public Long getSeq() {
+        return seq;
+    }
 
-	public Long getOrderId() {
-		return orderId;
-	}
+    public void setSeq(final Long seq) {
+        this.seq = seq;
+    }
 
-	public void setOrderId(final Long orderId) {
-		this.orderId = orderId;
-	}
+    public Long getOrderId() {
+        return orderId;
+    }
 
-	public Long getMenuId() {
-		return menuId;
-	}
+    public void setOrderId(final Long orderId) {
+        this.orderId = orderId;
+    }
 
-	public void setMenuId(final Long menuId) {
-		this.menuId = menuId;
-	}
+    public Long getMenuId() {
+        return menuId;
+    }
 
-	public long getQuantity() {
-		return quantity;
-	}
+    public void setMenuId(final Long menuId) {
+        this.menuId = menuId;
+    }
 
-	public void setQuantity(final long quantity) {
-		this.quantity = quantity;
-	}
+    public long getQuantity() {
+        return quantity;
+    }
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) {
-			return true;
-		}
+    public void setQuantity(final long quantity) {
+        this.quantity = quantity;
+    }
 
-		if (!(o instanceof OrderLineItem)) {
-			return false;
-		}
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
 
-		OrderLineItem that = (OrderLineItem)o;
-		return Objects.equals(getSeq(), that.getSeq());
-	}
+        if (!(o instanceof OrderLineItem)) {
+            return false;
+        }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(getSeq());
-	}
+        OrderLineItem that = (OrderLineItem) o;
+        return Objects.equals(getSeq(), that.getSeq());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getSeq());
+    }
 }

@@ -1,5 +1,10 @@
 package kitchenpos.application;
 
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.TableGroupDao;
@@ -10,14 +15,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
 @Service
 public class TableGroupService {
+
     private static final String ERROR_MESSAGE_NOT_ENOUGH_TABLES = "주문 테이블이 2개 이상일때 그룹화 가능 합니다.";
     private static final String ERROR_MESSAGE_NOT_EMPTY_TABLE = "주문 테이블들은 빈 테이블이어야 합니다.";
     private static final String ERROR_MESSAGE_TABLE_ALREADY_IN_GROUP = "테이블 그룹에 속해있는 주문테이블이 포함되면 안된다.";
@@ -26,7 +26,8 @@ public class TableGroupService {
     private final OrderTableDao orderTableDao;
     private final TableGroupDao tableGroupDao;
 
-    public TableGroupService(final OrderDao orderDao, final OrderTableDao orderTableDao, final TableGroupDao tableGroupDao) {
+    public TableGroupService(final OrderDao orderDao, final OrderTableDao orderTableDao,
+        final TableGroupDao tableGroupDao) {
         this.orderDao = orderDao;
         this.orderTableDao = orderTableDao;
         this.tableGroupDao = tableGroupDao;
@@ -41,8 +42,8 @@ public class TableGroupService {
         }
 
         final List<Long> orderTableIds = orderTables.stream()
-                .map(OrderTable::getId)
-                .collect(Collectors.toList());
+            .map(OrderTable::getId)
+            .collect(Collectors.toList());
 
         final List<OrderTable> savedOrderTables = orderTableDao.findAllByIdIn(orderTableIds);
 
@@ -54,7 +55,7 @@ public class TableGroupService {
             if (!savedOrderTable.isEmpty()) {
                 throw new IllegalArgumentException(ERROR_MESSAGE_NOT_EMPTY_TABLE);
             }
-            if(Objects.nonNull(savedOrderTable.getTableGroupId())){
+            if (Objects.nonNull(savedOrderTable.getTableGroupId())) {
                 throw new IllegalArgumentException(ERROR_MESSAGE_TABLE_ALREADY_IN_GROUP);
             }
         }
@@ -79,11 +80,11 @@ public class TableGroupService {
         final List<OrderTable> orderTables = orderTableDao.findAllByTableGroupId(tableGroupId);
 
         final List<Long> orderTableIds = orderTables.stream()
-                .map(OrderTable::getId)
-                .collect(Collectors.toList());
+            .map(OrderTable::getId)
+            .collect(Collectors.toList());
 
         if (orderDao.existsByOrderTableIdInAndOrderStatusIn(
-                orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
+            orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
             throw new IllegalArgumentException(ERROR_MESSAGE_ORDER_NOT_COMPLETE);
         }
 

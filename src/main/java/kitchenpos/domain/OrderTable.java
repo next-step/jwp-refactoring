@@ -3,89 +3,90 @@ package kitchenpos.domain;
 import java.util.Objects;
 
 public class OrderTable {
-	private Long id;
-	private Long tableGroupId;
-	private int numberOfGuests;
-	private boolean empty;
 
-	public OrderTable() {
-	}
+    private Long id;
+    private Long tableGroupId;
+    private int numberOfGuests;
+    private boolean empty;
 
-	public OrderTable(Long id) {
-		this.id = id;
-	}
+    public OrderTable() {
+    }
 
-	public OrderTable(boolean empty) {
-		this(0, empty);
-	}
+    public OrderTable(Long id) {
+        this.id = id;
+    }
 
-	public OrderTable(int numberOfGuests) {
-		this(numberOfGuests, false);
-	}
+    public OrderTable(boolean empty) {
+        this(0, empty);
+    }
 
-	public OrderTable(int numberOfGuests, boolean empty) {
-		this(null, null, numberOfGuests, empty);
-	}
+    public OrderTable(int numberOfGuests) {
+        this(numberOfGuests, false);
+    }
 
-	public OrderTable(Long id, int numberOfGuests, boolean empty) {
-		this(id, null, numberOfGuests, empty);
-	}
+    public OrderTable(int numberOfGuests, boolean empty) {
+        this(null, null, numberOfGuests, empty);
+    }
 
-	public OrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
-		this.id = id;
-		this.tableGroupId = tableGroupId;
-		this.numberOfGuests = numberOfGuests;
-		this.empty = empty;
-	}
+    public OrderTable(Long id, int numberOfGuests, boolean empty) {
+        this(id, null, numberOfGuests, empty);
+    }
 
-	public Long getId() {
-		return id;
-	}
+    public OrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
+        this.id = id;
+        this.tableGroupId = tableGroupId;
+        this.numberOfGuests = numberOfGuests;
+        this.empty = empty;
+    }
 
-	public void setId(final Long id) {
-		this.id = id;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public Long getTableGroupId() {
-		return tableGroupId;
-	}
+    public void setId(final Long id) {
+        this.id = id;
+    }
 
-	public void setTableGroupId(final Long tableGroupId) {
-		this.tableGroupId = tableGroupId;
-	}
+    public Long getTableGroupId() {
+        return tableGroupId;
+    }
 
-	public int getNumberOfGuests() {
-		return numberOfGuests;
-	}
+    public void setTableGroupId(final Long tableGroupId) {
+        this.tableGroupId = tableGroupId;
+    }
 
-	public void setNumberOfGuests(final int numberOfGuests) {
-		this.numberOfGuests = numberOfGuests;
-	}
+    public int getNumberOfGuests() {
+        return numberOfGuests;
+    }
 
-	public boolean isEmpty() {
-		return empty;
-	}
+    public void setNumberOfGuests(final int numberOfGuests) {
+        this.numberOfGuests = numberOfGuests;
+    }
 
-	public void setEmpty(final boolean empty) {
-		this.empty = empty;
-	}
+    public boolean isEmpty() {
+        return empty;
+    }
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) {
-			return true;
-		}
+    public void setEmpty(final boolean empty) {
+        this.empty = empty;
+    }
 
-		if (!(o instanceof OrderTable)) {
-			return false;
-		}
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
 
-		OrderTable that = (OrderTable)o;
-		return Objects.equals(getId(), that.getId());
-	}
+        if (!(o instanceof OrderTable)) {
+            return false;
+        }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(getId());
-	}
+        OrderTable that = (OrderTable) o;
+        return Objects.equals(getId(), that.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId());
+    }
 }

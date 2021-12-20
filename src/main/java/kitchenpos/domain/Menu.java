@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class Menu {
+
     private Long id;
     private String name;
     private BigDecimal price;
@@ -80,7 +81,7 @@ public class Menu {
             return false;
         }
 
-        Menu menu = (Menu)o;
+        Menu menu = (Menu) o;
         return Objects.equals(getId(), menu.getId());
     }
 

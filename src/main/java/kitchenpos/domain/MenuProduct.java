@@ -3,72 +3,73 @@ package kitchenpos.domain;
 import java.util.Objects;
 
 public class MenuProduct {
-	private Long seq;
-	private Long menuId;
-	private Long productId;
-	private long quantity;
 
-	public MenuProduct() {
-	}
+    private Long seq;
+    private Long menuId;
+    private Long productId;
+    private long quantity;
 
-	public MenuProduct(Long productId, long quantity) {
-		this(null, null, productId, quantity);
-	}
+    public MenuProduct() {
+    }
 
-	public MenuProduct(Long seq, Long menuId, Long productId, long quantity) {
-		this.seq = seq;
-		this.menuId = menuId;
-		this.productId = productId;
-		this.quantity = quantity;
-	}
+    public MenuProduct(Long productId, long quantity) {
+        this(null, null, productId, quantity);
+    }
 
-	public Long getSeq() {
-		return seq;
-	}
+    public MenuProduct(Long seq, Long menuId, Long productId, long quantity) {
+        this.seq = seq;
+        this.menuId = menuId;
+        this.productId = productId;
+        this.quantity = quantity;
+    }
 
-	public void setSeq(final Long seq) {
-		this.seq = seq;
-	}
+    public Long getSeq() {
+        return seq;
+    }
 
-	public Long getMenuId() {
-		return menuId;
-	}
+    public void setSeq(final Long seq) {
+        this.seq = seq;
+    }
 
-	public void setMenuId(final Long menuId) {
-		this.menuId = menuId;
-	}
+    public Long getMenuId() {
+        return menuId;
+    }
 
-	public Long getProductId() {
-		return productId;
-	}
+    public void setMenuId(final Long menuId) {
+        this.menuId = menuId;
+    }
 
-	public void setProductId(final Long productId) {
-		this.productId = productId;
-	}
+    public Long getProductId() {
+        return productId;
+    }
 
-	public long getQuantity() {
-		return quantity;
-	}
+    public void setProductId(final Long productId) {
+        this.productId = productId;
+    }
 
-	public void setQuantity(final long quantity) {
-		this.quantity = quantity;
-	}
+    public long getQuantity() {
+        return quantity;
+    }
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) {
-			return true;
-		}
+    public void setQuantity(final long quantity) {
+        this.quantity = quantity;
+    }
 
-		if (!(o instanceof MenuProduct)) {
-			return false;
-		}
-		MenuProduct that = (MenuProduct)o;
-		return Objects.equals(getSeq(), that.getSeq());
-	}
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(getSeq());
-	}
+        if (!(o instanceof MenuProduct)) {
+            return false;
+        }
+        MenuProduct that = (MenuProduct) o;
+        return Objects.equals(getSeq(), that.getSeq());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getSeq());
+    }
 }

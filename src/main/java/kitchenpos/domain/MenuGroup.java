@@ -3,53 +3,54 @@ package kitchenpos.domain;
 import java.util.Objects;
 
 public class MenuGroup {
-	private Long id;
-	private String name;
 
-	public MenuGroup() {
-	}
+    private Long id;
+    private String name;
 
-	public MenuGroup(String name) {
-		this(null,name);
-	}
+    public MenuGroup() {
+    }
 
-	public MenuGroup(Long id, String name) {
-		this.id = id;
-		this.name = name;
-	}
+    public MenuGroup(String name) {
+        this(null, name);
+    }
 
-	public Long getId() {
-		return id;
-	}
+    public MenuGroup(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 
-	public void setId(final Long id) {
-		this.id = id;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public void setId(final Long id) {
+        this.id = id;
+    }
 
-	public void setName(final String name) {
-		this.name = name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) {
-			return true;
-		}
+    public void setName(final String name) {
+        this.name = name;
+    }
 
-		if (!(o instanceof MenuGroup)) {
-			return false;
-		}
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
 
-		MenuGroup menuGroup = (MenuGroup)o;
-		return Objects.equals(getId(), menuGroup.getId());
-	}
+        if (!(o instanceof MenuGroup)) {
+            return false;
+        }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(getId());
-	}
+        MenuGroup menuGroup = (MenuGroup) o;
+        return Objects.equals(getId(), menuGroup.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId());
+    }
 }
