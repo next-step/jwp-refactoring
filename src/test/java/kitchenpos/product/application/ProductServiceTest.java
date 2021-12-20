@@ -3,6 +3,8 @@ package kitchenpos.product.application;
 import kitchenpos.common.domain.Price;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,6 +23,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.only;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("상품 관리 테스트")
@@ -35,11 +39,12 @@ public class ProductServiceTest {
     @DisplayName("상품 등록 성공")
     void createProductTest() {
         // given
+        ProductRequest 후라이드_요청 = new ProductRequest("후라이드", BigDecimal.valueOf(16000));
         given(productRepository.save(any())).willReturn(후라이드_상품);
         // when
-        Product actual = productService.create(후라이드_상품);
+        ProductResponse actual = productService.create(후라이드_요청);
         // then
-        assertThat(actual).isEqualTo(후라이드_상품);
+        assertThat(actual).isEqualTo(new ProductResponse(actual.getId(), "후라이드", BigDecimal.valueOf(16000)));
     }
 
     @ParameterizedTest
@@ -49,22 +54,22 @@ public class ProductServiceTest {
     @DisplayName("상품 가격이 0원 이상인 상품 등록")
     void productPriceOverZero(int price) {
         // given
-        Product product = new Product("양념치킨", new Price(BigDecimal.valueOf(price)));
-        given(productRepository.save(any())).willReturn(product);
+        ProductRequest 양념치킨_요청 = new ProductRequest("양념치킨", BigDecimal.valueOf(price));
+        given(productRepository.save(any())).willReturn(양념치킨_요청.toProduct());
         // when
-        Product actual = productService.create(product);
+        ProductResponse actual = productService.create(양념치킨_요청);
         // then
-        assertThat(actual).isEqualTo(product);
+        assertThat(actual).isEqualTo(new ProductResponse(actual.getId(), "양념치킨", BigDecimal.valueOf(price)));
     }
 
     @Test
     @DisplayName("상품 가격은 0원 이상 이어야 한다.")
     void productPriceException() {
         // given
-        Product product = new Product("양념치킨", new Price(BigDecimal.valueOf(-1)));
+        ProductRequest 요청_데이터 = new ProductRequest("양념치킨", BigDecimal.valueOf(-1));
         // when
         // then
-        assertThatThrownBy(() -> productService.create(product))
+        assertThatThrownBy(() -> productService.create(요청_데이터))
                 .isInstanceOf(RuntimeException.class);
     }
 
@@ -72,12 +77,13 @@ public class ProductServiceTest {
     @DisplayName("상품 목록 조회")
     void findAllProduct() {
         // given
+        ProductResponse 상품_응답 = ProductResponse.of(후라이드_상품);
         given(productRepository.findAll())
                 .willReturn(Collections.singletonList(후라이드_상품));
         // when
-        List<Product> actual = productService.list();
+        List<ProductResponse> actual = productService.list();
         // then
         assertThat(actual).hasSize(1);
-        assertThat(actual).containsExactly(후라이드_상품);
+        assertThat(actual).containsExactly(상품_응답);
     }
 }

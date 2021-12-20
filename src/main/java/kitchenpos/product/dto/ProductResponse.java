@@ -23,6 +23,10 @@ public class ProductResponse {
         return new ProductResponse(product.getId(), product.getName(), product.getPrice());
     }
 
+    public Long getId() {
+        return id;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
