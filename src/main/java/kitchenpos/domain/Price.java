@@ -10,8 +10,7 @@ import kitchenpos.common.PriceException;
 
 @Embeddable
 public class Price {
-
-	private static final int ZERO = 0;
+	public static final int ZERO = 0;
 	public static Price ZERO_PRICE = Price.from(ZERO);
 
 	@Column(nullable = false)
@@ -22,10 +21,6 @@ public class Price {
 
 	private Price(BigDecimal price) {
 		this.price = price;
-	}
-
-	public static Price from(BigDecimal price) {
-		return new Price(price);
 	}
 
 	public static Price from(Integer intValue) {
@@ -44,7 +39,7 @@ public class Price {
 		}
 	}
 
-	private static void validateNegativePrice(int intValue) {
+	private static void validateNegativePrice(Integer intValue) {
 		if (intValue < ZERO) {
 			throw new PriceException(ErrorCode.PRICE_NOT_NEGATIVE_NUMBER);
 		}
@@ -55,7 +50,7 @@ public class Price {
 	}
 
 	public Price plus(Price addPrice) {
-		return Price.from(price.add(addPrice.getPrice()));
+		return Price.from(price.add(addPrice.getPrice()).intValue());
 	}
 
 	public boolean compare(Price comparePrice) {

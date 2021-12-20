@@ -76,6 +76,7 @@ public class MenuProduct {
 	public Price getTotalPrice() {
 		return Price.from(product
 			.getPrice()
-			.multiply(BigDecimal.valueOf(quantity)));
+			.multiply(BigDecimal.valueOf(quantity))
+			.intValue());
 	}
 }
