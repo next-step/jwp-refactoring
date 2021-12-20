@@ -6,22 +6,19 @@ import static kichenpos.table.table.sample.OrderTableSample.채워진_다섯명_
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.only;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.Arrays;
-import kichenpos.common.exception.InvalidStatusException;
-import kichenpos.common.exception.NotFoundException;
-import kichenpos.table.group.domain.TableGroup;
 import kichenpos.table.table.domain.Headcount;
 import kichenpos.table.table.domain.OrderTable;
-import kichenpos.table.table.domain.OrderTableRepository;
+import kichenpos.table.table.domain.TableCommandService;
+import kichenpos.table.table.domain.TableQueryService;
 import kichenpos.table.table.ui.request.OrderTableRequest;
 import kichenpos.table.table.ui.request.TableGuestsCountRequest;
 import kichenpos.table.table.ui.request.TableStatusRequest;
-import kichenpos.table.table.ui.response.OrderTableResponse;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,10 +30,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @DisplayName("테이블 서비스")
 @ExtendWith(MockitoExtension.class)
+@SuppressWarnings("NonAsciiCharacters")
 class TableServiceTest {
 
     @Mock
-    private OrderTableRepository orderTableRepository;
+    private TableCommandService commandService;
+    @Mock
+    private TableQueryService queryService;
 
     @InjectMocks
     private TableService tableService;
@@ -47,14 +47,14 @@ class TableServiceTest {
         //given
         OrderTableRequest request = new OrderTableRequest(3, true);
         OrderTable 빈_세명_테이블 = 빈_세명_테이블();
-        when(orderTableRepository.save(any())).thenReturn(빈_세명_테이블);
+        when(commandService.save(any())).thenReturn(빈_세명_테이블);
 
         //when
         tableService.create(request);
 
         //then
         ArgumentCaptor<OrderTable> orderTableCaptor = ArgumentCaptor.forClass(OrderTable.class);
-        verify(orderTableRepository, only()).save(orderTableCaptor.capture());
+        verify(commandService, only()).save(orderTableCaptor.capture());
         assertThat(orderTableCaptor.getValue())
             .extracting(OrderTable::hasTableGroup, OrderTable::isEmpty, OrderTable::numberOfGuests)
             .containsExactly(false, request.isEmpty(), Headcount.from(request.getNumberOfGuests()));
@@ -67,100 +67,42 @@ class TableServiceTest {
         tableService.list();
 
         //then
-        verify(orderTableRepository, only()).findAll();
+        verify(queryService, only()).findAll();
     }
 
     @Test
     @DisplayName("테이블의 빈 상태를 변경할 수 있다.")
     void changeEmpty() {
         //given
+        long tableId = 1L;
         TableStatusRequest request = new TableStatusRequest(true);
 
-        OrderTable 채워진_다섯명_테이블 = 채워진_다섯명_테이블();
-        when(orderTableRepository.table(anyLong())).thenReturn(채워진_다섯명_테이블);
-
-        //when
-        OrderTableResponse response = tableService.changeEmpty(1L, request);
-
-        //then
-        assertThat(response)
-            .extracting(OrderTableResponse::isEmpty)
-            .isEqualTo(request.isEmpty());
-    }
-
-    @Test
-    @DisplayName("빈테이블 여부를 변경하려면 변경하려는 테이블의 정보가 반드시 저장되어 있어야 한다.")
-    void changeEmpty_notExistOrderTable_thrownException() {
-        //given
-        TableStatusRequest request = new TableStatusRequest(false);
-        when(orderTableRepository.table(anyLong())).thenThrow(NotFoundException.class);
-
-        //when
-        ThrowingCallable changeCallable = () -> tableService.changeEmpty(1L, request);
-
-        //then
-        assertThatExceptionOfType(NotFoundException.class)
-            .isThrownBy(changeCallable);
-    }
-
-    @Test
-    @DisplayName("빈테이블 여부를 변경하려면 그룹이 지정되어 있지 않아야 한다.")
-    void changeEmpty_existTableGroupId_thrownException() {
-        //given
-        TableStatusRequest request = new TableStatusRequest(false);
-
         OrderTable 빈_두명_테이블 = 빈_두명_테이블();
-        OrderTable 빈_세명_테이블 = 빈_세명_테이블();
-        TableGroup.from(Arrays.asList(빈_두명_테이블, 빈_세명_테이블));
-        when(orderTableRepository.table(anyLong())).thenReturn(빈_두명_테이블);
+        when(commandService.changeEmpty(anyLong(), anyBoolean())).thenReturn(빈_두명_테이블);
 
         //when
-        ThrowingCallable changeCallable = () -> tableService.changeEmpty(1L, request);
+        tableService.changeEmpty(tableId, request);
 
         //then
-        assertThatExceptionOfType(InvalidStatusException.class)
-            .isThrownBy(changeCallable)
-            .withMessageEndingWith("그룹이 지정되어 있어서 상태를 변경할 수 없습니다.");
-    }
-
-    @Test
-    @DisplayName("빈테이블 여부를 변경하는데 테이블이 주문된 상태라면 변경이 불가능하다.")
-    void changeEmpty_cookOrMealStatus_thrownException() {
-        //given
-        TableStatusRequest request = new TableStatusRequest(false);
-
-        OrderTable orderTable = 채워진_다섯명_테이블();
-        orderTable.ordered();
-        when(orderTableRepository.table(anyLong()))
-            .thenReturn(orderTable);
-
-        //when
-        ThrowingCallable changeCallable = () -> tableService.changeEmpty(1L, request);
-
-        //then
-        assertThatExceptionOfType(InvalidStatusException.class)
-            .isThrownBy(changeCallable)
-            .withMessageEndingWith("상태를 변경할 수 없습니다.");
+        verify(commandService, only()).changeEmpty(tableId, request.isEmpty());
     }
 
     @Test
     @DisplayName("방문한 손님 수를 변경할 수 있다.")
     void changeNumberOfGuests() {
         //given
-        int numberOfGuests = 3;
-        TableGuestsCountRequest request = new TableGuestsCountRequest(numberOfGuests);
+        long tableId = 1L;
+        TableGuestsCountRequest request = new TableGuestsCountRequest(5);
 
         OrderTable 채워진_다섯명_테이블 = 채워진_다섯명_테이블();
-        when(orderTableRepository.table(anyLong()))
+        when(commandService.changeNumberOfGuests(anyLong(), any(Headcount.class)))
             .thenReturn(채워진_다섯명_테이블);
 
         //when
-        OrderTableResponse response = tableService.changeNumberOfGuests(1L, request);
+        tableService.changeNumberOfGuests(tableId, request);
 
         //then
-        assertThat(response)
-            .extracting(OrderTableResponse::getNumberOfGuests)
-            .isEqualTo(numberOfGuests);
+        verify(commandService, only()).changeNumberOfGuests(tableId, Headcount.from(3));
     }
 
     @Test
@@ -169,10 +111,6 @@ class TableServiceTest {
         //given
         TableGuestsCountRequest request = new TableGuestsCountRequest(-1);
 
-        OrderTable 채워진_다섯명_테이블 = 채워진_다섯명_테이블();
-        when(orderTableRepository.table(anyLong()))
-            .thenReturn(채워진_다섯명_테이블);
-
         //when
         ThrowingCallable changeCallable = () -> tableService.changeNumberOfGuests(1L, request);
 
@@ -180,39 +118,5 @@ class TableServiceTest {
         assertThatExceptionOfType(IllegalArgumentException.class)
             .isThrownBy(changeCallable)
             .withMessageEndingWith("이상 이어야 합니다.");
-    }
-
-    @Test
-    @DisplayName("변경하려는 테이블의 정보가 반드시 저장되어 있어야 한다.")
-    void changeNumberOfGuests_notExistOrderTable_thrownException() {
-        //given
-        TableGuestsCountRequest request = new TableGuestsCountRequest(3);
-
-        when(orderTableRepository.table(anyLong())).thenThrow(NotFoundException.class);
-
-        //when
-        ThrowingCallable changeCallable = () -> tableService.changeNumberOfGuests(1L, request);
-
-        //then
-        assertThatExceptionOfType(NotFoundException.class)
-            .isThrownBy(changeCallable);
-    }
-
-    @Test
-    @DisplayName("방문한 손님 수를 변경하려는 테이블은 비어있지 않아야 한다.")
-    void changeNumberOfGuests_empty_thrownException() {
-        //given
-        TableGuestsCountRequest request = new TableGuestsCountRequest(3);
-
-        OrderTable 빈_두명_테이블 = 빈_두명_테이블();
-        when(orderTableRepository.table(anyLong())).thenReturn(빈_두명_테이블);
-
-        //when
-        ThrowingCallable changeCallable = () -> tableService.changeNumberOfGuests(1L, request);
-
-        //then
-        assertThatExceptionOfType(InvalidStatusException.class)
-            .isThrownBy(changeCallable)
-            .withMessageEndingWith("방문한 손님 수를 변경할 수 없습니다.");
     }
 }

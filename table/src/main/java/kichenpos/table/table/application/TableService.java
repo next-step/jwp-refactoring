@@ -1,8 +1,8 @@
 package kichenpos.table.table.application;
 
 import java.util.List;
-import kichenpos.table.table.domain.OrderTable;
-import kichenpos.table.table.domain.OrderTableRepository;
+import kichenpos.table.table.domain.TableCommandService;
+import kichenpos.table.table.domain.TableQueryService;
 import kichenpos.table.table.ui.request.OrderTableRequest;
 import kichenpos.table.table.ui.request.TableGuestsCountRequest;
 import kichenpos.table.table.ui.request.TableStatusRequest;
@@ -14,32 +14,32 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class TableService {
 
-    private final OrderTableRepository orderTableRepository;
+    private final TableCommandService commandService;
+    private final TableQueryService queryService;
 
-    public TableService(OrderTableRepository orderTableRepository) {
-        this.orderTableRepository = orderTableRepository;
+    public TableService(TableCommandService commandService,
+        TableQueryService queryService) {
+        this.commandService = commandService;
+        this.queryService = queryService;
     }
 
     @Transactional
     public OrderTableResponse create(OrderTableRequest request) {
-        return OrderTableResponse.from(orderTableRepository.save(request.toEntity()));
+        return OrderTableResponse.from(commandService.save(request.toEntity()));
     }
 
     public List<OrderTableResponse> list() {
-        return OrderTableResponse.listFrom(orderTableRepository.findAll());
+        return OrderTableResponse.listFrom(queryService.findAll());
     }
 
     @Transactional
     public OrderTableResponse changeEmpty(long id, TableStatusRequest request) {
-        OrderTable table = orderTableRepository.table(id);
-        table.changeEmpty(request.isEmpty());
-        return OrderTableResponse.from(table);
+        return OrderTableResponse.from(commandService.changeEmpty(id, request.isEmpty()));
     }
 
     @Transactional
     public OrderTableResponse changeNumberOfGuests(long id, TableGuestsCountRequest request) {
-        OrderTable orderTable = orderTableRepository.table(id);
-        orderTable.changeNumberOfGuests(request.numberOfGuests());
-        return OrderTableResponse.from(orderTable);
+        return OrderTableResponse.from(
+            commandService.changeNumberOfGuests(id, request.numberOfGuests()));
     }
 }
