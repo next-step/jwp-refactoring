@@ -62,7 +62,7 @@ class OrderServiceTest {
         orderLineItem.setMenuId(menu.getId());
 
         orderTable.setId(1L);
-        orderTable.setEmpty(false);
+        orderTable.setEmptyOrg(false);
 
         order.setOrderLineItems(Arrays.asList(orderLineItem));
         order.setOrderTableId(orderTable.getId());
@@ -92,7 +92,7 @@ class OrderServiceTest {
     @Test
     @DisplayName("빈 테이블은 주문을 생성할 수 없다.")
     void createValidateEmptyTable() {
-        orderTable.setEmpty(true);
+        orderTable.setEmptyOrg(true);
 
         when(menuDao.countByIdIn(anyList()))
             .thenReturn(1L);

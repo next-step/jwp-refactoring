@@ -28,7 +28,7 @@ public final class Quantity {
     }
 
     private void validate(Long quantity) {
-        if (quantity == null) {
+        if (Objects.isNull(quantity)) {
             throw new InvalidArgumentException("수량은 필수입니다.");
         }
         if (quantity < MIN_QUANTITY) {

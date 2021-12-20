@@ -48,7 +48,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         // 메뉴 등록되어 있음
         세트_1 = 메뉴등록되어있음("세트1", 20000, 치킨, Arrays.asList(후라이드치킨, 양념치킨));
         // 주문 테이블 등록되어 있음
-        orderTable = 주문테이블_등록되어있음(3);
+//        orderTable = 주문테이블_등록되어있음(3);
     }
 
     @DisplayName("테이블별 주문을 관리한다.")

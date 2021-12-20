@@ -9,14 +9,17 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -37,13 +40,13 @@ public class TableAcceptanceTest extends AcceptanceTest {
                 // 테이블 목록 조회 요청
                 ExtractableResponse<Response> response = 테이블_목록_조회_요청();
                 // 테이블 목록 조회됨
-                테이블_목록_조회됨(response, Arrays.asList(saveResponse.as(OrderTable.class)));
+                테이블_목록_조회됨(response, Arrays.asList(saveResponse.as(OrderTableResponse.class)));
             }),
             dynamicTest("테이블의 상태를 변경한다.", () -> {
                 // 테이블 목록 조회 요청
                 ExtractableResponse<Response> response = 테이블_목록_조회_요청();
-                List<OrderTable> orderTables = response.jsonPath().getList(".", OrderTable.class);
-                OrderTable orderTable = orderTables.get(0);
+                List<OrderTableResponse> orderTables = response.jsonPath().getList(".", OrderTableResponse.class);
+                OrderTableResponse orderTable = orderTables.get(0);
 
                 // 빈테이블 -> 주문 테이블 상태 변경 요청
                 ExtractableResponse<Response> emptyResponse = 테이블_상태변경_요청(orderTable.getId(), false);
@@ -60,15 +63,13 @@ public class TableAcceptanceTest extends AcceptanceTest {
                 // 테이블 목록 조회 요청
                 response = 테이블_목록_조회_요청();
                 // 테이블 목록 조회됨
-                테이블_목록_조회됨(response, Arrays.asList(numberResponse.as(OrderTable.class)));
+                테이블_목록_조회됨(response, Arrays.asList(numberResponse.as(OrderTableResponse.class)));
             })
         );
     }
 
     public static ExtractableResponse<Response> 테이블_등록_요청(int numberOfGuests, boolean isEmpty) {
-        OrderTable orderTable = new OrderTable();
-        orderTable.setNumberOfGuests(numberOfGuests);
-        orderTable.setEmpty(isEmpty);
+        OrderTableRequest orderTable = new OrderTableRequest(numberOfGuests, isEmpty);
 
         return RestAssured
             .given().log().all()
@@ -88,12 +89,12 @@ public class TableAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 빈_테이블_등록됨(ExtractableResponse<Response> response) {
-        OrderTable orderTable = response.as(OrderTable.class);
+        OrderTableResponse orderTable = response.as(OrderTableResponse.class);
 
         assertAll(() -> {
             테이블_등록됨(response);
             assertThat(orderTable.getNumberOfGuests()).isEqualTo(0);
-            assertTrue(orderTable.isEmpty());
+            assertTrue(orderTable.getEmpty());
         });
     }
 
@@ -106,57 +107,52 @@ public class TableAcceptanceTest extends AcceptanceTest {
             .extract();
     }
 
-    public static void 테이블_목록_조회됨(ExtractableResponse<Response> response, List<OrderTable> expected) {
-        List<OrderTable> orderTables = response.jsonPath().getList(".", OrderTable.class);
+    public static void 테이블_목록_조회됨(ExtractableResponse<Response> response, List<OrderTableResponse> expected) {
+        List<OrderTableResponse> orderTables = response.jsonPath().getList(".", OrderTableResponse.class);
         List<Long> expectedIds = expected.stream()
-            .map(OrderTable::getId)
+            .map(OrderTableResponse::getId)
             .collect(Collectors.toList());
 
         assertAll(() -> {
             assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
             assertThat(orderTables)
-                .extracting(OrderTable::getId)
+                .extracting(OrderTableResponse::getId)
                 .containsAll(expectedIds);
         });
     }
 
     public static ExtractableResponse<Response> 테이블_상태변경_요청(Long tableId, boolean isEmpty) {
-        OrderTable request = new OrderTable();
-        request.setEmpty(isEmpty);
-
         return RestAssured
             .given().log().all()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .body(request)
+            .param("empty", isEmpty)
             .when().put(URL+"/{orderTableId}/empty", tableId)
             .then().log().all()
             .extract();
     }
 
     public static void 테이블_상태변경_됨(ExtractableResponse<Response> response, boolean expected) {
-        OrderTable orderTable = response.as(OrderTable.class);
+        OrderTableResponse orderTable = response.as(OrderTableResponse.class);
 
         assertAll(() ->{
             assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-            assertThat(orderTable.isEmpty()).isEqualTo(expected);
+            assertThat(orderTable.getEmpty()).isEqualTo(expected);
         });
     }
 
     public static ExtractableResponse<Response> 테이블_손님수_변경_요청(Long tableId, int numberOfGuests) {
-        OrderTable request = new OrderTable();
-        request.setNumberOfGuests(numberOfGuests);
 
         return RestAssured
             .given().log().all()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .body(request)
+            .param("numberOfGuests", numberOfGuests)
             .when().put(URL+"/{orderTableId}/number-of-guests", tableId)
             .then().log().all()
             .extract();
     }
 
     public static void 테이블_손님수_변경_됨(ExtractableResponse<Response> response, int expected) {
-        OrderTable orderTable = response.as(OrderTable.class);
+        OrderTableResponse orderTable = response.as(OrderTableResponse.class);
 
         assertAll(() ->{
             assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -164,12 +160,12 @@ public class TableAcceptanceTest extends AcceptanceTest {
         });
     }
 
-    public static OrderTable 빈테이블_등록됨() {
-        return 빈_테이블_등록_요청().as(OrderTable.class);
+    public static OrderTableResponse 빈테이블_등록됨() {
+        return 빈_테이블_등록_요청().as(OrderTableResponse.class);
     }
 
-    public static OrderTable 주문테이블_등록되어있음(int numberOfGuests) {
-        return 테이블_등록_요청(numberOfGuests, false).as(OrderTable.class);
+    public static OrderTableResponse 주문테이블_등록되어있음(int numberOfGuests) {
+        return 테이블_등록_요청(numberOfGuests, false).as(OrderTableResponse.class);
     }
 
 }

@@ -39,7 +39,7 @@ public class Price {
      * 가격은 필수이다.
      */
     private void validate(BigDecimal price) {
-        if (!Objects.nonNull(price)) {
+        if (Objects.isNull(price)) {
             throw new InvalidArgumentException("가격은 필수입니다.");
         }
         if (price.compareTo(MIN_PRICE) < 0) {

@@ -10,3 +10,7 @@ ALTER TABLE menu ADD modified_date DATETIME;
 ALTER TABLE menu_product ADD created_date DATETIME;
 ALTER TABLE menu_product ADD modified_date DATETIME;
 
+ALTER TABLE order_table ADD created_date DATETIME;
+ALTER TABLE order_table ADD modified_date DATETIME;
+
+

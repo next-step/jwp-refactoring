@@ -28,7 +28,7 @@ public class MustHaveName {
      * @param name
      */
     private void validate(String name) {
-        if (name == null) {
+        if (Objects.isNull(name)) {
             throw new InvalidArgumentException("이름은 필수입니다.");
         }
     }
