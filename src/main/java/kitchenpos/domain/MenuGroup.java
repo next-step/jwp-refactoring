@@ -8,7 +8,7 @@ public class MenuGroup {
 	}
 
 	public MenuGroup(String name) {
-		this.name = name;
+		this(null,name);
 	}
 
 	public MenuGroup(Long id, String name) {
