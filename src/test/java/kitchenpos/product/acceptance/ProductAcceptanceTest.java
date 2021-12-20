@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+@DisplayName("상품 인수 테스트")
 public class ProductAcceptanceTest extends AcceptanceTest {
 
     private static final String PRODUCT_URL = "/api/products";
