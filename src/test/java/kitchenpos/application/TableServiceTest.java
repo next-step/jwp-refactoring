@@ -50,8 +50,8 @@ class TableServiceTest {
 	@Test
 	void list() {
 		//given
-		List<OrderTable> orderTables = Arrays.asList(new OrderTable(0, true),
-			new OrderTable(6, false));
+		List<OrderTable> orderTables = Arrays.asList(new OrderTable(1L,0, true),
+			new OrderTable(2L,6, false));
 		given(tableService.list())
 			.willReturn(orderTables);
 
@@ -86,8 +86,7 @@ class TableServiceTest {
 	@Test
 	void changeEmpty_exception1() {
 		//given
-		OrderTable orderTable = new OrderTable(1L, 0, true);
-		orderTable.setTableGroupId(1L);
+		OrderTable orderTable = new OrderTable(1L, 1L,0, true);
 		given(orderTableDao.findById(any()))
 			.willReturn(Optional.of(orderTable));
 

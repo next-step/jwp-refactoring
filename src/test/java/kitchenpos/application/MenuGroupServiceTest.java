@@ -6,7 +6,6 @@ import static org.mockito.BDDMockito.*;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -49,8 +48,8 @@ class MenuGroupServiceTest {
 	void list() {
 		// given
 		List<MenuGroup> menuGroups = Arrays.asList(
-			new MenuGroup("추천메뉴"),
-			new MenuGroup("베스트메뉴")
+			new MenuGroup(1L, "추천메뉴"),
+			new MenuGroup(2L,"베스트메뉴")
 		);
 
 		given(menuGroupDao.findAll())
@@ -61,18 +60,6 @@ class MenuGroupServiceTest {
 
 		//then
 		assertThat(findMenuGroups.size()).isEqualTo(menuGroups.size());
-		메뉴_그룹_목록_확인(findMenuGroups, menuGroups);
+		assertThat(findMenuGroups).containsAll(menuGroups);
 	}
-
-	private void 메뉴_그룹_목록_확인(List<MenuGroup> findMenuGroups, List<MenuGroup> menuGroups) {
-		List<String> findProductNames = findMenuGroups.stream()
-			.map(MenuGroup::getName)
-			.collect(Collectors.toList());
-
-		List<String> mockProductNames = menuGroups.stream()
-			.map(MenuGroup::getName)
-			.collect(Collectors.toList());
-		assertThat(findProductNames).containsAll(mockProductNames);
-	}
-
 }
