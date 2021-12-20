@@ -14,11 +14,11 @@ public class TableQueryService {
         this.orderTableRepository = orderTableRepository;
     }
 
-    public List<OrderTable> findAll() {
-        return orderTableRepository.findAll();
-    }
-
     public OrderTable table(long id) {
         return orderTableRepository.table(id);
+    }
+
+    public List<OrderTable> findAll() {
+        return orderTableRepository.findAll();
     }
 }

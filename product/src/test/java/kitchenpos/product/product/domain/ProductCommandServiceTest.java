@@ -34,5 +34,4 @@ class ProductCommandServiceTest {
         //then
         verify(productRepository, only()).save(십원치킨);
     }
-
 }

@@ -15,6 +15,10 @@ public class MenuGroupQueryService {
         this.menuGroupRepository = menuGroupRepository;
     }
 
+    public MenuGroup menuGroup(long id) {
+        return menuGroupRepository.menuGroup(id);
+    }
+
     public List<MenuGroup> findAll() {
         return menuGroupRepository.findAll();
     }

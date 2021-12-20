@@ -21,6 +21,19 @@ class MenuGroupQueryServiceTest {
     private MenuGroupQueryService queryService;
 
     @Test
+    @DisplayName("메뉴 그룹 데이터 가져오기")
+    void menuGroup() {
+        //given
+        long menuGroupId = 1L;
+
+        //when
+        queryService.menuGroup(menuGroupId);
+
+        //then
+        verify(menuGroupRepository, only()).menuGroup(menuGroupId);
+    }
+
+    @Test
     @DisplayName("메뉴 그룹들 데이터 가져오기")
     void findAll() {
         //when

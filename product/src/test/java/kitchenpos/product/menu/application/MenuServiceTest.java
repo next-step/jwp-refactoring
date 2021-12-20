@@ -15,14 +15,15 @@ import java.math.BigDecimal;
 import java.util.Collections;
 import kichenpos.common.domain.Quantity;
 import kitchenpos.product.group.domain.MenuGroup;
-import kitchenpos.product.group.domain.MenuGroupRepository;
+import kitchenpos.product.group.domain.MenuGroupQueryService;
 import kitchenpos.product.menu.domain.Menu;
+import kitchenpos.product.menu.domain.MenuCommandService;
 import kitchenpos.product.menu.domain.MenuProduct;
-import kitchenpos.product.menu.domain.MenuRepository;
+import kitchenpos.product.menu.domain.MenuQueryService;
 import kitchenpos.product.menu.ui.request.MenuProductRequest;
 import kitchenpos.product.menu.ui.request.MenuRequest;
 import kitchenpos.product.product.domain.Product;
-import kitchenpos.product.product.domain.ProductRepository;
+import kitchenpos.product.product.domain.ProductQueryService;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,14 +35,17 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @DisplayName("메뉴 서비스")
 @ExtendWith(MockitoExtension.class)
+@SuppressWarnings("NonAsciiCharacters")
 class MenuServiceTest {
 
     @Mock
-    private MenuRepository menuRepository;
+    private MenuCommandService menuCommandService;
     @Mock
-    private MenuGroupRepository menuGroupRepository;
+    private MenuQueryService menuQueryService;
     @Mock
-    private ProductRepository productRepository;
+    private MenuGroupQueryService menuGroupQueryService;
+    @Mock
+    private ProductQueryService productQueryService;
 
     @InjectMocks
     private MenuService menuService;
@@ -55,14 +59,14 @@ class MenuServiceTest {
             Collections.singletonList(menuProductRequest));
 
         MenuGroup 두마리메뉴 = 두마리메뉴();
-        when(menuGroupRepository.menuGroup(menuRequest.getMenuGroupId())).thenReturn(두마리메뉴);
+        when(menuGroupQueryService.menuGroup(menuRequest.getMenuGroupId())).thenReturn(두마리메뉴);
 
         Product 십원치킨 = 십원치킨();
-        when(productRepository.product(menuProductRequest.getProductId()))
+        when(productQueryService.product(menuProductRequest.getProductId()))
             .thenReturn(십원치킨);
 
         Menu 이십원_후라이드치킨_두마리세트 = 이십원_후라이드치킨_두마리세트();
-        when(menuRepository.save(any())).thenReturn(이십원_후라이드치킨_두마리세트);
+        when(menuCommandService.save(any())).thenReturn(이십원_후라이드치킨_두마리세트);
 
         //when
         menuService.create(menuRequest);
@@ -115,10 +119,10 @@ class MenuServiceTest {
             Collections.singletonList(menuProductRequest));
 
         MenuGroup 두마리메뉴 = 두마리메뉴();
-        when(menuGroupRepository.menuGroup(menuRequest.getMenuGroupId())).thenReturn(두마리메뉴);
+        when(menuGroupQueryService.menuGroup(menuRequest.getMenuGroupId())).thenReturn(두마리메뉴);
 
         Product 십원치킨 = 십원치킨();
-        when(productRepository.product(menuProductRequest.getProductId()))
+        when(productQueryService.product(menuProductRequest.getProductId()))
             .thenReturn(십원치킨);
 
         //when
@@ -134,18 +138,18 @@ class MenuServiceTest {
     void list() {
         //given
         Menu 이십원_후라이드치킨_두마리세트 = 이십원_후라이드치킨_두마리세트();
-        when(menuRepository.findAll()).thenReturn(Collections.singletonList(이십원_후라이드치킨_두마리세트));
+        when(menuQueryService.findAll()).thenReturn(Collections.singletonList(이십원_후라이드치킨_두마리세트));
 
         //when
         menuService.list();
 
         //then
-        verify(menuRepository, only()).findAll();
+        verify(menuQueryService, only()).findAll();
     }
 
     private void requestedMenuSave(MenuRequest menuRequest) {
         ArgumentCaptor<Menu> menuCaptor = ArgumentCaptor.forClass(Menu.class);
-        verify(menuRepository, only()).save(menuCaptor.capture());
+        verify(menuCommandService, only()).save(menuCaptor.capture());
         Menu savedMenu = menuCaptor.getValue();
 
         assertAll(

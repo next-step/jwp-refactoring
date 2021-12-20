@@ -22,6 +22,19 @@ class ProductQueryServiceTest {
     private ProductQueryService queryService;
 
     @Test
+    @DisplayName("상품 데이터 가져오기")
+    void product() {
+        //given
+        long productId = 1L;
+
+        //when
+        queryService.product(productId);
+
+        //then
+        verify(productRepository, only()).product(productId);
+    }
+
+    @Test
     @DisplayName("상품들 데이터 가져오기")
     void findAll() {
         //when

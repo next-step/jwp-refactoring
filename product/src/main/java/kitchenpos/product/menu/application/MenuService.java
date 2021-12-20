@@ -2,14 +2,15 @@ package kitchenpos.product.menu.application;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.product.group.domain.MenuGroupRepository;
+import kitchenpos.product.group.domain.MenuGroupQueryService;
 import kitchenpos.product.menu.domain.Menu;
+import kitchenpos.product.menu.domain.MenuCommandService;
 import kitchenpos.product.menu.domain.MenuProduct;
-import kitchenpos.product.menu.domain.MenuRepository;
+import kitchenpos.product.menu.domain.MenuQueryService;
 import kitchenpos.product.menu.ui.request.MenuProductRequest;
 import kitchenpos.product.menu.ui.request.MenuRequest;
 import kitchenpos.product.menu.ui.response.MenuResponse;
-import kitchenpos.product.product.domain.ProductRepository;
+import kitchenpos.product.product.domain.ProductQueryService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,32 +18,35 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class MenuService {
 
-    private final MenuRepository menuRepository;
-    private final MenuGroupRepository menuGroupRepository;
-    private final ProductRepository productRepository;
+    private final MenuCommandService menuCommandService;
+    private final MenuQueryService menuQueryService;
+    private final MenuGroupQueryService menuGroupQueryService;
+    private final ProductQueryService productQueryService;
 
-    public MenuService(MenuRepository menuRepository,
-        MenuGroupRepository menuGroupRepository,
-        ProductRepository productRepository) {
-        this.menuRepository = menuRepository;
-        this.menuGroupRepository = menuGroupRepository;
-        this.productRepository = productRepository;
+    public MenuService(MenuCommandService menuCommandService,
+        MenuQueryService menuQueryService,
+        MenuGroupQueryService menuGroupQueryService,
+        ProductQueryService productQueryService) {
+        this.menuCommandService = menuCommandService;
+        this.menuQueryService = menuQueryService;
+        this.menuGroupQueryService = menuGroupQueryService;
+        this.productQueryService = productQueryService;
     }
 
     @Transactional
     public MenuResponse create(final MenuRequest request) {
-        return MenuResponse.from(menuRepository.save(newMenu(request)));
+        return MenuResponse.from(menuCommandService.save(newMenu(request)));
     }
 
     public List<MenuResponse> list() {
-        return MenuResponse.listFrom(menuRepository.findAll());
+        return MenuResponse.listFrom(menuQueryService.findAll());
     }
 
     private Menu newMenu(MenuRequest request) {
         return Menu.of(
             request.name(),
             request.price(),
-            menuGroupRepository.menuGroup(request.getMenuGroupId()),
+            menuGroupQueryService.menuGroup(request.getMenuGroupId()),
             menuProducts(request.getMenuProducts())
         );
     }
@@ -55,7 +59,7 @@ public class MenuService {
 
     private MenuProduct menuProduct(MenuProductRequest request) {
         return MenuProduct.of(
-            productRepository.product(request.getProductId()),
+            productQueryService.product(request.getProductId()),
             request.quantity()
         );
     }
