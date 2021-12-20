@@ -1,4 +1,4 @@
-package kitchenpos.product.group.domain;
+package kitchenpos.product.product.domain;
 
 import static org.mockito.Mockito.only;
 import static org.mockito.Mockito.verify;
@@ -10,23 +10,24 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-@DisplayName("메뉴 그룹 쿼리 서비스")
+
+@DisplayName("상품 쿼리 서비스")
 @ExtendWith(MockitoExtension.class)
-class MenuGroupQueryServiceTest {
+class ProductQueryServiceTest {
 
     @Mock
-    private MenuGroupRepository menuGroupRepository;
+    private ProductRepository productRepository;
 
     @InjectMocks
-    private MenuGroupQueryService queryService;
+    private ProductQueryService queryService;
 
     @Test
-    @DisplayName("메뉴 그룹들 데이터 가져오기")
+    @DisplayName("상품들 데이터 가져오기")
     void findAll() {
         //when
         queryService.findAll();
 
         //then
-        verify(menuGroupRepository, only()).findAll();
+        verify(productRepository, only()).findAll();
     }
 }

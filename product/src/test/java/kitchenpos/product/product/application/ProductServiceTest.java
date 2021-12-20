@@ -12,7 +12,8 @@ import java.math.BigDecimal;
 import kichenpos.common.domain.Name;
 import kichenpos.common.domain.Price;
 import kitchenpos.product.product.domain.Product;
-import kitchenpos.product.product.domain.ProductRepository;
+import kitchenpos.product.product.domain.ProductCommandService;
+import kitchenpos.product.product.domain.ProductQueryService;
 import kitchenpos.product.product.ui.request.ProductRequest;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.DisplayName;
@@ -25,10 +26,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @DisplayName("상품 서비스")
 @ExtendWith(MockitoExtension.class)
+@SuppressWarnings("NonAsciiCharacters")
 class ProductServiceTest {
 
     @Mock
-    private ProductRepository productRepository;
+    private ProductCommandService commandService;
+    @Mock
+    private ProductQueryService queryService;
 
     @InjectMocks
     private ProductService productService;
@@ -40,14 +44,14 @@ class ProductServiceTest {
         ProductRequest request = new ProductRequest("치킨", BigDecimal.ONE);
 
         Product 십원치킨 = 십원치킨();
-        when(productRepository.save(any())).thenReturn(십원치킨);
+        when(commandService.save(any())).thenReturn(십원치킨);
 
         //when
         productService.create(request);
 
         //then
         ArgumentCaptor<Product> productCaptor = ArgumentCaptor.forClass(Product.class);
-        verify(productRepository, only()).save(productCaptor.capture());
+        verify(commandService, only()).save(productCaptor.capture());
         assertThat(productCaptor.getValue())
             .extracting(Product::name, Product::price)
             .containsExactly(Name.from(request.getName()), Price.from(request.getPrice()));
@@ -88,6 +92,6 @@ class ProductServiceTest {
         productService.list();
 
         //then
-        verify(productRepository, only()).findAll();
+        verify(queryService, only()).findAll();
     }
 }
