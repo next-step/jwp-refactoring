@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -23,9 +24,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.application.MenuGroupService;
 import kitchenpos.domain.MenuGroup;
 
-class MenuGroupRestControllerTest extends IntegrationTest{
+class MenuGroupRestControllerTest extends IntegrationTest {
 
-	private static final String BASE_PATH="/api/menu-groups";
+	private static final String BASE_PATH = "/api/menu-groups";
 
 	@Autowired
 	private ObjectMapper objectMapper;
@@ -36,11 +37,12 @@ class MenuGroupRestControllerTest extends IntegrationTest{
 	@MockBean
 	private MenuGroupService service;
 
+	@DisplayName("메뉴 그룹 생성")
 	@Test
 	void create() throws Exception {
 		//given
-		Map<String,String> menuGroup = 메뉴그룹_정보_생성("추천메뉴");
-		MenuGroup expectedMenuGroup = new MenuGroup(1L,menuGroup.get("name"));
+		Map<String, String> menuGroup = 메뉴그룹_정보_생성("추천메뉴");
+		MenuGroup expectedMenuGroup = new MenuGroup(1L, menuGroup.get("name"));
 		given(service.create(any(MenuGroup.class)))
 			.willReturn(expectedMenuGroup);
 
@@ -56,15 +58,13 @@ class MenuGroupRestControllerTest extends IntegrationTest{
 		assertThat(savedMenuGroup).isEqualTo(expectedMenuGroup);
 	}
 
+	@DisplayName("메뉴 그룹 조회")
 	@Test
 	void list() throws Exception {
 		//given
-		Map<String,String> menuGroup = 메뉴그룹_정보_생성("추천메뉴");
-
 		List<MenuGroup> expectedMenuGroups = Arrays.asList(
-			new MenuGroup(1L,menuGroup.get("추천메뉴")),
-			new MenuGroup(2L,menuGroup.get("베스트메뉴"))
-		);
+			new MenuGroup(1L, "추천메뉴"),
+			new MenuGroup(2L, "베스트메뉴"));
 		given(service.list())
 			.willReturn(expectedMenuGroups);
 
@@ -74,13 +74,15 @@ class MenuGroupRestControllerTest extends IntegrationTest{
 
 		//then
 		assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-		List<MenuGroup> findMenuGroups = objectMapper.readValue(response.getContentAsString(), new TypeReference<List<MenuGroup>>(){});
+		List<MenuGroup> findMenuGroups = objectMapper.readValue(response.getContentAsString(),
+			new TypeReference<List<MenuGroup>>() {
+			});
 		assertThat(findMenuGroups).containsAll(expectedMenuGroups);
 	}
 
 	private Map<String, String> 메뉴그룹_정보_생성(String name) {
-		Map<String,String> params = new HashMap<>();
-		params.put("name",name);
+		Map<String, String> params = new HashMap<>();
+		params.put("name", name);
 		return params;
 	}
 }
