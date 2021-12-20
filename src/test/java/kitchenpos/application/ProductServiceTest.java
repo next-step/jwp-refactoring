@@ -34,8 +34,8 @@ public class ProductServiceTest {
     @Test
     void create() {
         // given
-        final Product request = createProductRequest("후라이드", BigDecimal.valueOf(16_000));
-        final Product expected = createProduct(1L, "후라이드", BigDecimal.valueOf(16_000));
+        final Product request = ProductFixture.ofRequest("후라이드", BigDecimal.valueOf(16_000));
+        final Product expected = ProductFixture.of(1L, "후라이드", BigDecimal.valueOf(16_000));
         given(productDao.save(request)).willReturn(expected);
 
         // when
@@ -51,7 +51,7 @@ public class ProductServiceTest {
     @ValueSource(strings = {"-16000"})
     void create_fail_invalidPrice(final BigDecimal price) {
         // given
-        final Product request = createProductRequest("후라이드", price);
+        final Product request = ProductFixture.ofRequest("후라이드", price);
 
         // when
         ThrowableAssert.ThrowingCallable actual = () -> productService.create(request);
@@ -65,8 +65,8 @@ public class ProductServiceTest {
     void list() {
         // given
         final List<Product> expected = Arrays.asList(
-            createProduct(1L, "후라이드", BigDecimal.valueOf(16_000)),
-            createProduct(2L, "양념치킨", BigDecimal.valueOf(16_000))
+            ProductFixture.of(1L, "후라이드", BigDecimal.valueOf(16_000)),
+            ProductFixture.of(2L, "양념치킨", BigDecimal.valueOf(16_000))
         );
         given(productDao.findAll()).willReturn(expected);
 
@@ -75,20 +75,5 @@ public class ProductServiceTest {
 
         // then
         assertThat(actual).containsExactlyElementsOf(expected);
-    }
-
-    private Product createProductRequest(final String name, final BigDecimal price) {
-        final Product product = new Product();
-        product.setName(name);
-        product.setPrice(price);
-        return product;
-    }
-
-    private Product createProduct(final Long id, final String name, final BigDecimal price) {
-        final Product product = new Product();
-        product.setId(id);
-        product.setName(name);
-        product.setPrice(price);
-        return product;
     }
 }

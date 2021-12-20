@@ -53,8 +53,8 @@ public class MenuServiceTest {
     @Test
     void create() {
         // given
-        final Product 후라이드 = createProduct(1L, "후라이드", BigDecimal.valueOf(8_000));
-        final Product 양념치킨 = createProduct(2L, "양념치킨", BigDecimal.valueOf(8_000));
+        final Product 후라이드 = ProductFixture.of(1L, "후라이드", BigDecimal.valueOf(8_000));
+        final Product 양념치킨 = ProductFixture.of(2L, "양념치킨", BigDecimal.valueOf(8_000));
         final List<MenuProduct> menuProducts = Arrays.asList(
             createMenuProduct(1L, 1L, 1L),
             createMenuProduct(2L, 2L, 1L)
@@ -151,8 +151,8 @@ public class MenuServiceTest {
         @Test
         void create_fail_invalidTotalPrice() {
             // given
-            final Product 후라이드 = createProduct(1L, "후라이드", BigDecimal.valueOf(8_000));
-            final Product 양념치킨 = createProduct(2L, "양념치킨", BigDecimal.valueOf(8_000));
+            final Product 후라이드 = ProductFixture.of(1L, "후라이드", BigDecimal.valueOf(8_000));
+            final Product 양념치킨 = ProductFixture.of(2L, "양념치킨", BigDecimal.valueOf(8_000));
             final List<MenuProduct> menuProducts = Arrays.asList(
                 createMenuProduct(1L, 1L, 1L),
                 createMenuProduct(2L, 2L, 1L)
@@ -233,13 +233,5 @@ public class MenuServiceTest {
         menuProduct.setProductId(productId);
         menuProduct.setQuantity(quantity);
         return menuProduct;
-    }
-
-    private Product createProduct(final Long id, final String name, final BigDecimal price) {
-        final Product product = new Product();
-        product.setId(id);
-        product.setName(name);
-        product.setPrice(price);
-        return product;
     }
 }
