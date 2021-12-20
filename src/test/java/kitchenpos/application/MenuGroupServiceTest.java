@@ -26,32 +26,32 @@ class MenuGroupServiceTest {
     @InjectMocks
     private MenuGroupService menuGroupService;
 
-    private MenuGroup 메뉴그룹1;
-    private MenuGroup 메뉴그룹2;
+    private MenuGroup 두마리_메뉴그룹;
+    private MenuGroup 한마리_메뉴그룹;
 
     @BeforeEach
     void setUp() {
-        메뉴그룹1 = MenuGroupFixture.create(1L, "두마리메뉴");
-        메뉴그룹2 = MenuGroupFixture.create(2L, "한마리메뉴");
+        두마리_메뉴그룹 = MenuGroupFixture.create(1L, "두마리메뉴");
+        한마리_메뉴그룹 = MenuGroupFixture.create(2L, "한마리메뉴");
     }
 
     @DisplayName("메뉴 그룹을 등록한다.")
     @Test
     void create() {
-        given(menuGroupDao.save(메뉴그룹1)).willReturn(메뉴그룹1);
+        given(menuGroupDao.save(두마리_메뉴그룹)).willReturn(두마리_메뉴그룹);
 
-        MenuGroup savedMenuGroup = menuGroupService.create(메뉴그룹1);
+        MenuGroup savedMenuGroup = menuGroupService.create(두마리_메뉴그룹);
 
-        assertThat(savedMenuGroup).isEqualTo(메뉴그룹1);
+        assertThat(savedMenuGroup).isEqualTo(두마리_메뉴그룹);
     }
 
     @DisplayName("메뉴 그룹 목록을 조회한다.")
     @Test
     void list() {
-        given(menuGroupDao.findAll()).willReturn(Arrays.asList(메뉴그룹1, 메뉴그룹2));
+        given(menuGroupDao.findAll()).willReturn(Arrays.asList(두마리_메뉴그룹, 한마리_메뉴그룹));
 
         List<MenuGroup> menuGroups = menuGroupService.list();
 
-        assertThat(menuGroups).containsExactly(메뉴그룹1, 메뉴그룹2);
+        assertThat(menuGroups).containsExactly(두마리_메뉴그룹, 한마리_메뉴그룹);
     }
 }
