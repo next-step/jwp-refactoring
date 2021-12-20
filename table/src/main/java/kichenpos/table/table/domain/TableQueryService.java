@@ -17,4 +17,8 @@ public class TableQueryService {
     public List<OrderTable> findAll() {
         return orderTableRepository.findAll();
     }
+
+    public OrderTable table(long id) {
+        return orderTableRepository.table(id);
+    }
 }

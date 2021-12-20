@@ -102,7 +102,7 @@ class TableServiceTest {
         tableService.changeNumberOfGuests(tableId, request);
 
         //then
-        verify(commandService, only()).changeNumberOfGuests(tableId, Headcount.from(3));
+        verify(commandService, only()).changeNumberOfGuests(tableId, Headcount.from(5));
     }
 
     @Test

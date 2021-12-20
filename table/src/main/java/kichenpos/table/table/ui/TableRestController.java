@@ -34,6 +34,12 @@ public class TableRestController {
             .body(created);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<OrderTableResponse> find(@PathVariable long id) {
+        return ResponseEntity.ok()
+            .body(tableService.findById(id));
+    }
+
     @GetMapping
     public ResponseEntity<List<OrderTableResponse>> list() {
         return ResponseEntity.ok()

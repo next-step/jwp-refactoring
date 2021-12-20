@@ -21,6 +21,19 @@ class TableQueryServiceTest {
     private TableQueryService queryService;
 
     @Test
+    @DisplayName("테이블 데이터 가져오기")
+    void table() {
+        //given
+        long tableId = 1L;
+
+        //when
+        queryService.table(tableId);
+
+        //then
+        verify(orderTableRepository, only()).table(tableId);
+    }
+
+    @Test
     @DisplayName("테이블들 데이터 가져오기")
     void findAll() {
         //when

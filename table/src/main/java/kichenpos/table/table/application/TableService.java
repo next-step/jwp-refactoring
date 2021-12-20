@@ -32,6 +32,10 @@ public class TableService {
         return OrderTableResponse.listFrom(queryService.findAll());
     }
 
+    public OrderTableResponse findById(long id) {
+        return OrderTableResponse.from(queryService.table(id));
+    }
+
     @Transactional
     public OrderTableResponse changeEmpty(long id, TableStatusRequest request) {
         return OrderTableResponse.from(commandService.changeEmpty(id, request.isEmpty()));
