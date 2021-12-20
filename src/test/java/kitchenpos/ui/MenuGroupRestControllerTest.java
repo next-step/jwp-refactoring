@@ -37,11 +37,11 @@ class MenuGroupRestControllerTest extends IntegrationTest {
 	@MockBean
 	private MenuGroupService service;
 
-	@DisplayName("메뉴 그룹 생성")
+	@DisplayName("메뉴 그룹 등록")
 	@Test
 	void create() throws Exception {
 		//given
-		Map<String, String> menuGroup = 메뉴그룹_정보_생성("추천메뉴");
+		Map<String, String> menuGroup = 메뉴그룹_정보_등록("추천메뉴");
 		MenuGroup expectedMenuGroup = new MenuGroup(1L, menuGroup.get("name"));
 		given(service.create(any(MenuGroup.class)))
 			.willReturn(expectedMenuGroup);
@@ -80,7 +80,7 @@ class MenuGroupRestControllerTest extends IntegrationTest {
 		assertThat(findMenuGroups).containsAll(expectedMenuGroups);
 	}
 
-	private Map<String, String> 메뉴그룹_정보_생성(String name) {
+	private Map<String, String> 메뉴그룹_정보_등록(String name) {
 		Map<String, String> params = new HashMap<>();
 		params.put("name", name);
 		return params;

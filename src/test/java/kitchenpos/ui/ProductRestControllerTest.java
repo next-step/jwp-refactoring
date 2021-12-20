@@ -41,7 +41,7 @@ class ProductRestControllerTest extends IntegrationTest {
 	@MockBean
 	private ProductService productService;
 
-	@DisplayName("상품 생성")
+	@DisplayName("상품 등록")
 	@Test
 	void create() throws Exception {
 		//given

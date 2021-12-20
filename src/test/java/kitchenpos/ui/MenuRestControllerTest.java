@@ -39,7 +39,7 @@ class MenuRestControllerTest extends IntegrationTest {
 	@MockBean
 	private MenuService menuService;
 
-	@DisplayName("메뉴 생성")
+	@DisplayName("메뉴 등록")
 	@Test
 	void create() throws Exception {
 		//given
@@ -47,11 +47,11 @@ class MenuRestControllerTest extends IntegrationTest {
 			new MenuProduct(1L, 2),
 			new MenuProduct(2L, 1)
 		);
-		String menuName ="후라이드+후라이드";
+		String menuName = "후라이드+후라이드";
 		BigDecimal price = BigDecimal.valueOf(19000);
 		Long menuGroupId = 1L;
-		Map<String, Object> menu = 메뉴_정보_생성(menuName, price, menuGroupId, menuProducts);
-		Menu expectedMenu = new Menu(1L,menuName,price,menuGroupId,menuProducts);
+		Map<String, Object> menu = 메뉴_정보(menuName, price, menuGroupId, menuProducts);
+		Menu expectedMenu = new Menu(1L, menuName, price, menuGroupId, menuProducts);
 		given(menuService.create(any()))
 			.willReturn(expectedMenu);
 
@@ -93,18 +93,12 @@ class MenuRestControllerTest extends IntegrationTest {
 		//then
 		assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
 		List<Menu> findMenus = objectMapper.readValue(response.getContentAsString(),
-			new TypeReference<List<Menu>>() {});
+			new TypeReference<List<Menu>>() {
+			});
 		assertThat(findMenus).containsAll(expectedMenus);
 	}
 
-	private Menu 메뉴_생성(Long id, Map<String, Object> menu, List<MenuProduct> menuProducts) {
-		return new Menu(id, String.valueOf(menu.get("name")),
-			BigDecimal.valueOf(Long.parseLong(String.valueOf(menu.get("price")))),
-			Long.parseLong(String.valueOf(menu.get("menuGroupId"))), menuProducts);
-
-	}
-
-	private Map<String, Object> 메뉴_정보_생성(String name, BigDecimal price, Long menuGroupId,
+	private Map<String, Object> 메뉴_정보(String name, BigDecimal price, Long menuGroupId,
 		List<MenuProduct> menuProducts) {
 
 		Map<String, Object> params = new HashMap<>();

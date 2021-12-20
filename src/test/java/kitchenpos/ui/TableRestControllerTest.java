@@ -38,7 +38,7 @@ class TableRestControllerTest extends IntegrationTest {
 	@MockBean
 	private TableService tableService;
 
-	@DisplayName("주문 테이블 생성")
+	@DisplayName("주문 테이블 등록")
 	@Test
 	void create() throws Exception {
 		//given
@@ -126,8 +126,8 @@ class TableRestControllerTest extends IntegrationTest {
 
 		//then
 		assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-		OrderTable changedTableOrder = objectMapper.readValue(response.getContentAsString(), OrderTable.class);
-		assertThat(changedTableOrder).isEqualTo(expectedOrderTable);
+		OrderTable changedOrderTable = objectMapper.readValue(response.getContentAsString(), OrderTable.class);
+		assertThat(changedOrderTable).isEqualTo(expectedOrderTable);
 	}
 
 	private Map<String, String> 테이블_정보(int numOfGuests, boolean empty) {

@@ -39,7 +39,7 @@ class TableGroupRestControllerTest extends IntegrationTest {
 	@MockBean
 	private TableGroupService tableGroupService;
 
-	@DisplayName("테이블 그룹 생성")
+	@DisplayName("테이블 그룹 등록")
 	@Test
 	void create() throws Exception {
 		//given
