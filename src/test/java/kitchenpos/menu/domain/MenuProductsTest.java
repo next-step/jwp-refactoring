@@ -1,6 +1,5 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.common.exception.InvalidPriceException;
 import kitchenpos.common.exception.OverMenuPriceException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -12,7 +11,6 @@ import java.math.BigDecimal;
 import java.util.Collections;
 
 import static kitchenpos.domain.ProductTest.양념치킨_상품;
-import static kitchenpos.domain.ProductTest.후라이드_상품;
 import static kitchenpos.menu.domain.MenuProductTest.양념치킨;
 import static kitchenpos.menu.domain.MenuProductTest.후라이드;
 import static kitchenpos.menu.domain.MenuTest.치킨세트;
