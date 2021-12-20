@@ -4,9 +4,13 @@ import java.util.Objects;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 import kitchenpos.common.domain.Quantity;
 
@@ -16,27 +20,33 @@ public class MenuProduct {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long menuId;
-    private Long productId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "menu_id", foreignKey = @ForeignKey(name = "fk_menu_product_menu"))
+    private Menu menu;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id", foreignKey = @ForeignKey(name = "fk_menu_product_product"))
+    private Product product;
 
     @Embedded
     private Quantity quantity;
 
-    public MenuProduct() {
+    protected MenuProduct() {
     }
 
-    public MenuProduct(Long productId, long quantity) {
-        this(null, null, productId, quantity);
+    public MenuProduct(Product product, long quantity) {
+        this(null, null, product, quantity);
     }
 
-    public MenuProduct(Long menuId, Long productId, long quantity) {
-        this(null, menuId, productId, quantity);
+    public MenuProduct(Menu menu, Product product, long quantity) {
+        this(null, menu, product, quantity);
     }
 
-    public MenuProduct(Long id, Long menuId, Long productId, long quantity) {
+    public MenuProduct(Long id, Menu menu, Product product, long quantity) {
         this.id = id;
-        this.menuId = menuId;
-        this.productId = productId;
+        this.menu = menu;
+        this.product = product;
         this.quantity = new Quantity(quantity);
     }
 
@@ -44,16 +54,20 @@ public class MenuProduct {
         return id;
     }
 
-    public Long getMenuId() {
-        return menuId;
+    public Menu getMenu() {
+        return menu;
     }
 
-    public Long getProductId() {
-        return productId;
+    public Product getProduct() {
+        return product;
     }
 
     public Quantity getQuantity() {
         return quantity;
+    }
+
+    public void changeMenu(Menu menu) {
+        this.menu = menu;
     }
 
     @Override
@@ -63,12 +77,12 @@ public class MenuProduct {
         if (o == null || getClass() != o.getClass())
             return false;
         MenuProduct that = (MenuProduct)o;
-        return Objects.equals(id, that.id) && Objects.equals(menuId, that.menuId)
-            && Objects.equals(productId, that.productId) && Objects.equals(quantity, that.quantity);
+        return Objects.equals(id, that.id) && Objects.equals(menu, that.menu)
+            && Objects.equals(product, that.product) && Objects.equals(quantity, that.quantity);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, menuId, productId, quantity);
+        return Objects.hash(id, menu, product, quantity);
     }
 }
