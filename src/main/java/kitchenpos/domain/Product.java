@@ -1,7 +1,6 @@
 package kitchenpos.domain;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
 import java.util.Objects;
 
 @Entity
@@ -9,7 +8,8 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
+    @Embedded
+    private Name name;
     @Embedded
     private Price price;
 
@@ -18,7 +18,7 @@ public class Product {
 
     public Product(Long id, String name, long price) {
         this.id = id;
-        this.name = name;
+        this.name = Name.of(name);
         this.price = Price.of(price);
     }
 
@@ -27,7 +27,7 @@ public class Product {
     }
 
     public String getName() {
-        return name;
+        return name.value();
     }
 
     public long getPrice() {

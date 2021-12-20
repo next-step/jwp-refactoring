@@ -1,8 +1,6 @@
 package kitchenpos.domain;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -11,8 +9,6 @@ public class MenuGroup {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    @OneToMany(mappedBy = "menuGroup", cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
-    private List<Menu> menus = new ArrayList<>();
 
     public MenuGroup() {
     }
@@ -24,12 +20,6 @@ public class MenuGroup {
 
     public MenuGroup(String name) {
         this.name = name;
-    }
-
-    public Menu createMenu(String name, Long price) {
-        Menu menu = new Menu(name, price, this);
-        menus.add(menu);
-        return menu;
     }
 
     public Long getId() {

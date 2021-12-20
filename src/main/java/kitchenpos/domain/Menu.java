@@ -10,7 +10,8 @@ public class Menu {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
+    @Embedded
+    private Name name;
     @Embedded
     private Price price;
     @ManyToOne
@@ -32,7 +33,7 @@ public class Menu {
     }
 
     public Menu(String name, long price, MenuGroup menuGroup) {
-        this.name = name;
+        this.name = Name.of(name);
         this.price = Price.of(price);
         this.menuGroup = menuGroup;
     }
@@ -50,7 +51,7 @@ public class Menu {
     }
 
     public String getName() {
-        return name;
+        return name.value();
     }
 
     public long getPrice() {
