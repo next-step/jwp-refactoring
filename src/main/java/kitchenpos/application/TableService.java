@@ -37,10 +37,6 @@ public class TableService {
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(() -> new IllegalArgumentException("등록된 주문테이블이 아닙니다."));
 
-        savedOrderTable.checkGroupedOrderTable();
-        savedOrderTable.getOrders()
-                        .forEach(Order::checkOrderStatusCookingOrMeal);
-
         savedOrderTable.changeEmpty(orderTableRequest.isEmpty());
         return savedOrderTable;
     }

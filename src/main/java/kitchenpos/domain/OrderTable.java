@@ -66,6 +66,10 @@ public class OrderTable {
     }
 
     public void changeEmpty(boolean empty) {
+        checkGroupedOrderTable();
+        getOrders()
+                .forEach(Order::checkOrderStatusCookingOrMeal);
+
         this.empty = empty;
     }
 
@@ -107,6 +111,7 @@ public class OrderTable {
     }
 
     public void unGroup() {
+        orders.forEach(Order::checkOrderStatusCookingOrMeal);
         this.tableGroup = null;
     }
 

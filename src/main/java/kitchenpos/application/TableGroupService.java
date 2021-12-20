@@ -41,10 +41,6 @@ public class TableGroupService {
         TableGroup tableGroup = tableGroupRepository.findById(tableGroupId).orElseThrow(() -> new IllegalArgumentException("해당 단체지정이 등록되어 있지 않습니다."));
         final List<OrderTable> orderTables = orderTableRepository.findAllByTableGroup(tableGroup);
 
-        orderTables.stream()
-                    .map(OrderTable::getOrders)
-                    .forEach(orders -> orders.forEach(Order::checkOrderStatusCookingOrMeal));
-
         orderTables.forEach(OrderTable::unGroup);
     }
 }
