@@ -22,8 +22,8 @@ class JdbcTemplateProductDaoTest {
 		.addScript("classpath:db/migration/V1__Initialize_project_tables.sql")
 		.addScript("classpath:db/migration/V2__Insert_default_data.sql")
 		.build();
-
 	private static JdbcTemplateProductDao jdbcTemplateProductDao = new JdbcTemplateProductDao(dataSource);
+
 
 	@Test
 	@DisplayName("상품 저장 테스트")
@@ -39,7 +39,6 @@ class JdbcTemplateProductDaoTest {
 		assertThat(save.getName()).isEqualTo(NAME);
 	}
 
-
 	@Test
 	@DisplayName("상품 목록 조회 테스트")
 	public void findAllProductListTest() {
@@ -49,7 +48,7 @@ class JdbcTemplateProductDaoTest {
 		List<Product> productList = jdbcTemplateProductDao.findAll();
 
 		//then
-		assertThat(productList).hasSize(6);
+		assertThat(productList).hasSizeGreaterThanOrEqualTo(6);
 	}
 
 }
