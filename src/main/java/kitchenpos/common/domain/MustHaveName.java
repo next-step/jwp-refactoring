@@ -28,7 +28,7 @@ public class MustHaveName {
      * @param name
      */
     private void validate(String name) {
-        if (Objects.isNull(name)) {
+        if (Objects.isNull(name) || name.isEmpty()) {
             throw new InvalidArgumentException("이름은 필수입니다.");
         }
     }
@@ -42,7 +42,7 @@ public class MustHaveName {
         if (this == o) {
             return true;
         }
-        if (o.getClass().equals(String.class)) {
+        if (o instanceof String) {
             return name.equals(o);
         }
         if (o == null || getClass() != o.getClass()) {

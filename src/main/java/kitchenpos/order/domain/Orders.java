@@ -32,6 +32,5 @@ public final class Orders {
     public boolean isOnGoing() {
         return orders.stream()
             .anyMatch(Order::isOnGoing);
-
     }
 }

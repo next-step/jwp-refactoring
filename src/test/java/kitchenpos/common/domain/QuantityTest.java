@@ -1,4 +1,4 @@
-package kitchenpos.menu.domain;
+package kitchenpos.common.domain;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
