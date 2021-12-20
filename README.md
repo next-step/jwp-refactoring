@@ -60,7 +60,7 @@
 
 ### step1 요구사항
 - [X] 키친포스 기능 요구사항 분석
-- [ ] 테스트 코드 작성
+- [X] 테스트 코드 작성
   - [X] service 테스트
     - [X] ProductService
     - [X] MenuGroupService
@@ -68,10 +68,10 @@
     - [X] TableService
     - [X] TableGroupService
     - [X] OrderService
-  - [ ] 인수테스트
+  - [X] 인수테스트
     - [X] MenuGroupRestController
     - [X] MenuRestController
     - [X] ProductRestController
     - [X] OrderRestController
     - [X] TableGroupRestController
-    - [ ] TableRestController
+    - [X] TableRestController
