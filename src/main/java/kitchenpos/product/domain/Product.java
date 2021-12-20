@@ -6,6 +6,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import kitchenpos.common.Price;
+
 @Entity
 public class Product {
 	@Id
@@ -16,12 +18,12 @@ public class Product {
 	private ProductName name;
 
 	@Embedded
-	private ProductPrice price;
+	private Price price;
 
 	protected Product() {
 	}
 
-	public static Product of(ProductName name, ProductPrice price) {
+	public static Product of(ProductName name, Price price) {
 		Product product = new Product();
 		product.name = name;
 		product.price = price;
@@ -36,7 +38,7 @@ public class Product {
 		return name;
 	}
 
-	public ProductPrice getPrice() {
+	public Price getPrice() {
 		return price;
 	}
 }

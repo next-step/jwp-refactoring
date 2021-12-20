@@ -37,7 +37,7 @@ public class MenuFixture {
 			BigDecimal.valueOf(19000L),
 			menuGroupId,
 			Collections.singletonList(
-				new MenuProductDto(null, null, productId, 2)
+				new MenuProductDto(null, productId, 2)
 			)
 		);
 	}
@@ -48,7 +48,7 @@ public class MenuFixture {
 			BigDecimal.valueOf(25000L),
 			menuGroupId,
 			Collections.singletonList(
-				new MenuProductDto(null, null, productId, 2)
+				new MenuProductDto(null, productId, 2)
 			)
 		);
 	}
@@ -59,7 +59,7 @@ public class MenuFixture {
 			BigDecimal.valueOf(19000L),
 			menuGroupId,
 			Collections.singletonList(
-				new MenuProductDto(null, null, productId, 2)
+				new MenuProductDto(null, productId, 2)
 			)
 		);
 	}
@@ -70,7 +70,7 @@ public class MenuFixture {
 			BigDecimal.valueOf(-19000L),
 			menuGroupId,
 			Collections.singletonList(
-				new MenuProductDto(null, null, productId, 2)
+				new MenuProductDto(null, productId, 2)
 			)
 		);
 	}
@@ -81,7 +81,7 @@ public class MenuFixture {
 			BigDecimal.valueOf(100000L),
 			menuGroupId,
 			Collections.singletonList(
-				new MenuProductDto(null, null, productId, 2)
+				new MenuProductDto(null, productId, 2)
 			)
 		);
 	}

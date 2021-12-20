@@ -7,7 +7,7 @@ import kitchenpos.common.Value;
 
 @Embeddable
 public class ProductName extends Value<ProductName> {
-	@Column(name = "name")
+	@Column(name = "name", nullable = false)
 	private String value;
 
 	protected ProductName() {

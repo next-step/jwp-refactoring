@@ -7,6 +7,8 @@ import java.math.BigDecimal;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import kitchenpos.common.Price;
+
 @DisplayName("상품")
 class ProductTest {
 
@@ -15,7 +17,7 @@ class ProductTest {
 	void of() {
 		// given
 		ProductName name = ProductName.of("강정치킨");
-		ProductPrice price = ProductPrice.of(BigDecimal.valueOf(17000));
+		Price price = Price.of(BigDecimal.valueOf(17000));
 
 		// when
 		Product product = Product.of(name, price);

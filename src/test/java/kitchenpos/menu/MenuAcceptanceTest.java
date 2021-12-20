@@ -72,7 +72,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
 			BigDecimal.valueOf(19000L),
 			추천_메뉴_그룹.getId(),
 			Collections.singletonList(
-				new MenuProductDto(null, null, 후라이드_치킨_상품.getId(), 2)
+				new MenuProductDto(null, 후라이드_치킨_상품.getId(), 2)
 			)));
 
 		// then
@@ -92,7 +92,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
 			BigDecimal.valueOf(-19000L),
 			추천_메뉴_그룹.getId(),
 			Collections.singletonList(
-				new MenuProductDto(null, null, 후라이드_치킨_상품.getId(), 2)
+				new MenuProductDto(null, 후라이드_치킨_상품.getId(), 2)
 			)));
 
 		// then
@@ -112,7 +112,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
 			BigDecimal.valueOf(19000L),
 			unknownMenuGroupId,
 			Collections.singletonList(
-				new MenuProductDto(null, null, 후라이드_치킨_상품.getId(), 2)
+				new MenuProductDto(null, 후라이드_치킨_상품.getId(), 2)
 			)));
 
 		// then
@@ -132,7 +132,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
 			BigDecimal.valueOf(19000L),
 			추천_메뉴_그룹.getId(),
 			Collections.singletonList(
-				new MenuProductDto(null, null, unknownProductId, 2)
+				new MenuProductDto(null, unknownProductId, 2)
 			)));
 
 		// then
@@ -152,7 +152,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
 			BigDecimal.valueOf(100000L),
 			추천_메뉴_그룹.getId(),
 			Collections.singletonList(
-				new MenuProductDto(null, null, 후라이드_치킨_상품.getId(), 2)
+				new MenuProductDto(null, 후라이드_치킨_상품.getId(), 2)
 			)));
 
 		// then

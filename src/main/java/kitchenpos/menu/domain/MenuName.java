@@ -1,4 +1,4 @@
-package kitchenpos.menugroup.domain;
+package kitchenpos.menu.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -6,21 +6,21 @@ import javax.persistence.Embeddable;
 import kitchenpos.common.Value;
 
 @Embeddable
-public class MenuGroupName extends Value<MenuGroupName> {
+public class MenuName extends Value<MenuName> {
 	@Column(name = "name", nullable = false)
 	private String value;
 
-	protected MenuGroupName() {
+	protected MenuName() {
 	}
 
-	public static MenuGroupName of(String name) {
+	public static MenuName of(String name) {
 		if (name == null || name.isEmpty()) {
 			throw new IllegalArgumentException("이름은 빈 값일 수 없습니다.");
 		}
 
-		MenuGroupName menuGroupName = new MenuGroupName();
-		menuGroupName.value = name;
-		return menuGroupName;
+		MenuName menuName = new MenuName();
+		menuName.value = name;
+		return menuName;
 	}
 
 	public String getValue() {

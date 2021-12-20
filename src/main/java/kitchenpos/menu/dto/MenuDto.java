@@ -2,6 +2,9 @@ package kitchenpos.menu.dto;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import kitchenpos.menu.domain.Menu;
 
 public class MenuDto {
 	private Long id;
@@ -39,5 +42,19 @@ public class MenuDto {
 
 	public List<MenuProductDto> getMenuProducts() {
 		return menuProducts;
+	}
+
+	public static MenuDto of(Menu menu) {
+		MenuDto dto = new MenuDto();
+		dto.id = menu.getId();
+		dto.name = menu.getName().getValue();
+		dto.price = menu.getPrice().getValue();
+		dto.menuGroupId = menu.getMenuGroup().getId();
+		dto.menuProducts = menu.getMenuProducts()
+			.getValues()
+			.stream()
+			.map(MenuProductDto::of)
+			.collect(Collectors.toList());
+		return dto;
 	}
 }

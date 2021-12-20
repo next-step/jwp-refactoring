@@ -1,4 +1,4 @@
-package kitchenpos.product.domain;
+package kitchenpos.common;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.ThrowableAssert.*;
@@ -11,31 +11,30 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-@DisplayName("상품 가격")
-class ProductPriceTest {
-
+@DisplayName("가격")
+class PriceTest {
 	@DisplayName("생성")
-	@Test
-	void of() {
+	@ParameterizedTest
+	@ValueSource(strings = {"0", "17000"})
+	void of(BigDecimal value) {
 		// given
-		BigDecimal price = BigDecimal.valueOf(17000L);
 
 		// when
-		ProductPrice productPrice = ProductPrice.of(price);
+		Price price = Price.of(value);
 
 		// then
-		assertThat(productPrice.getValue()).isEqualTo(price);
+		assertThat(price.getValue()).isEqualTo(value);
 	}
 
 	@DisplayName("생성 실패 - 가격이 없거나 음수인 경우")
 	@ParameterizedTest
 	@NullSource
 	@ValueSource(strings = {"-10000"})
-	void ofFailOnNullOrNegativePrice(BigDecimal price) {
+	void ofFailOnNullOrNegativePrice(BigDecimal value) {
 		// given
 
 		// when
-		ThrowingCallable throwingCallable = () -> ProductPrice.of(price);
+		ThrowingCallable throwingCallable = () -> Price.of(value);
 
 		// then
 		assertThatThrownBy(throwingCallable).isInstanceOf(IllegalArgumentException.class);
@@ -45,13 +44,13 @@ class ProductPriceTest {
 	@Test
 	void equals() {
 		// given
-		BigDecimal price = BigDecimal.valueOf(17000L);
+		BigDecimal value = BigDecimal.valueOf(10000);
 
 		// when
-		ProductPrice actual = ProductPrice.of(price);
-		ProductPrice expected = ProductPrice.of(price);
+		Price aPrice = Price.of(value);
+		Price bPrice = Price.of(value);
 
 		// then
-		assertThat(actual).isEqualTo(expected);
+		assertThat(aPrice).isEqualTo(bPrice);
 	}
 }
