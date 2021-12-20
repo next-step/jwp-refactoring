@@ -98,11 +98,11 @@ class MenuServiceTest {
 
         //when, then
         assertThatThrownBy(() -> {
-            Menu savedMenu = menuService.create(menu);
+            menuService.create(menu);
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("메뉴 가격은 상품 리스트의 합보다 작아야 한다.")
+    @DisplayName("메뉴 가격은 상품 리스트의 합보다 작거나 같아야 한다.")
     @Test
     void create_exception2() {
         //given
@@ -121,7 +121,7 @@ class MenuServiceTest {
 
         //when, then
         assertThatThrownBy(() -> {
-            Menu savedMenu = menuService.create(menu);
+            menuService.create(menu);
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
