@@ -71,7 +71,7 @@
   - [ ] 인수테스트
     - [X] MenuGroupRestController
     - [X] MenuRestController
+    - [X] ProductRestController
     - [ ] OrderRestController
-    - [ ] ProductRestController
     - [ ] TableGroupRestController
     - [ ] TableRestController

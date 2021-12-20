@@ -30,7 +30,7 @@ class ProductServiceTest {
     @Test
     void 상품_생성() {
         // given
-        Product product = Product.of("양념치킨", BigDecimal.valueOf(17000));
+        Product product = Product.of("양념치킨", 17000);
         Product savedProduct = new Product(1L, "양념치킨", BigDecimal.valueOf(17000));
 
         given(productDao.save(any()))
@@ -62,7 +62,7 @@ class ProductServiceTest {
     @Test
     void 상품_생성_예외2() {
         // given
-        Product product = Product.of("양념치킨", BigDecimal.valueOf(-1000L));
+        Product product = Product.of("양념치킨", -1000);
 
         // when, then
         assertThatIllegalArgumentException().isThrownBy(

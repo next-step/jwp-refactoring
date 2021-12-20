@@ -21,8 +21,8 @@ public class Product {
         this.price = price;
     }
 
-    public static Product of(String name, BigDecimal price) {
-        return new Product(name, price);
+    public static Product of(String name, Integer price) {
+        return new Product(name, BigDecimal.valueOf(price));
     }
 
     public Long getId() {
