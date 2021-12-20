@@ -52,11 +52,9 @@ class ProductServiceTest {
 		//given
 		String name = "타코야끼";
 		BigDecimal price = BigDecimal.valueOf(-1);
-
-		//when
 		Product product = new Product(name, price);
 
-		//then
+		//when, then
 		assertThatThrownBy(() -> productService.create(product))
 			.isInstanceOf(IllegalArgumentException.class);
 	}
