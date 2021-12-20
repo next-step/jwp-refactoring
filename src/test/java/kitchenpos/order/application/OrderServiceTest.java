@@ -1,18 +1,12 @@
 package kitchenpos.order.application;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.fixture.*;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menuGroup.domain.MenuGroup;
-import kitchenpos.order.application.OrderService;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.domain.*;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -37,9 +31,9 @@ public class OrderServiceTest {
     @Mock
     private MenuRepository menuRepository;
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
     @Mock
-    private OrderLineItemDao orderLineItemDao;
+    private OrderLineItemRepository orderLineItemRepository;
     @Mock
     private OrderTableDao orderTableDao;
 
@@ -56,9 +50,9 @@ public class OrderServiceTest {
 
     @BeforeEach
     void setUp() {
-        후라이드 = ProductTestFixture.생성( "후라이드", new BigDecimal("5000"));
+        후라이드 = ProductTestFixture.생성("후라이드", new BigDecimal("5000"));
 
-        후라이드두마리구성 = MenuProductTextFixture.생성(1L,후라이드,2L);
+        후라이드두마리구성 = MenuProductTextFixture.생성(1L, 후라이드, 2L);
 
         치킨류 = MenuGroupTestFixture.생성(1L, "치킨");
 
@@ -70,9 +64,7 @@ public class OrderServiceTest {
 
         후라이드두마리세트_2개_주문함 = OrderLineItemTestFixture.생성(총주문, 후라이드두마리세트, 2L);
 
-        총주문 = new Order();
-        총주문.setId(1L);
-        총주문.setOrderTableId(테이블1번.getId());
+        총주문 = OrderTestFixture.생성(테이블1번);
         총주문.setOrderLineItems(Arrays.asList(후라이드두마리세트_2개_주문함));
     }
 
@@ -81,14 +73,14 @@ public class OrderServiceTest {
     void create() {
         given(menuRepository.countByIdIn(any())).willReturn(1L);
         given(orderTableDao.findById(1L)).willReturn(java.util.Optional.ofNullable(테이블1번));
-        given(orderDao.save(총주문)).willReturn(총주문);
-        given(orderLineItemDao.save(후라이드두마리세트_2개_주문함)).willReturn(후라이드두마리세트_2개_주문함);
+        given(orderRepository.save(총주문)).willReturn(총주문);
+        given(orderLineItemRepository.save(후라이드두마리세트_2개_주문함)).willReturn(후라이드두마리세트_2개_주문함);
 
         Order createOrder = orderService.create(총주문);
 
         assertAll(
                 () -> assertThat(createOrder).isNotNull(),
-                () -> assertThat(createOrder.getOrderStatus()).isEqualTo("COOKING"),
+                () -> assertThat(createOrder.getOrderStatus()).isEqualTo(OrderStatus.COOKING),
                 () -> assertThat(createOrder.getOrderLineItems().contains(후라이드두마리세트_2개_주문함)).isTrue()
         );
 
@@ -97,7 +89,7 @@ public class OrderServiceTest {
     @DisplayName("주문 목록 조회")
     @Test
     void list() {
-        given(orderDao.findAll()).willReturn(Arrays.asList(총주문));
+        given(orderRepository.findAll()).willReturn(Arrays.asList(총주문));
 
         List<Order> orders = orderService.list();
 
@@ -110,14 +102,12 @@ public class OrderServiceTest {
     @DisplayName("주문 상태를 식사로 변경 할 수 있다.")
     @Test
     void changeMealStatus() {
-        Order 주문 = new Order();
-        주문.setId(2L);
-        주문.setOrderTableId(테이블1번.getId());
+        Order 주문 = OrderTestFixture.생성(테이블1번);
         주문.setOrderLineItems(Arrays.asList(후라이드두마리세트_2개_주문함));
-        Order 식사_상태_주문 = new Order();
-        식사_상태_주문.setOrderStatus("MEAL");
-        given(orderDao.findById(2L)).willReturn(java.util.Optional.ofNullable(주문));
-        given(orderLineItemDao.findAllByOrderId(2L)).willReturn(Arrays.asList(후라이드두마리세트_2개_주문함));
+        Order 식사_상태_주문 = OrderTestFixture.생성(테이블1번);
+        식사_상태_주문.setOrderStatus(OrderStatus.MEAL);
+        given(orderRepository.findById(any())).willReturn(java.util.Optional.ofNullable(주문));
+        given(orderLineItemRepository.findAllByOrderId(any())).willReturn(Arrays.asList(후라이드두마리세트_2개_주문함));
 
         orderService.changeOrderStatus(2L, 식사_상태_주문);
 
@@ -127,14 +117,12 @@ public class OrderServiceTest {
     @DisplayName("주문 상태를 계산 완료로 변경 할 수 있다.")
     @Test
     void changeCompletionStatus() {
-        Order 주문 = new Order();
-        주문.setId(2L);
-        주문.setOrderTableId(테이블1번.getId());
+        Order 주문 = OrderTestFixture.생성(테이블1번);
         주문.setOrderLineItems(Arrays.asList(후라이드두마리세트_2개_주문함));
-        Order 계산_완료_주문 = new Order();
-        계산_완료_주문.setOrderStatus("COMPLETION");
-        given(orderDao.findById(2L)).willReturn(java.util.Optional.ofNullable(주문));
-        given(orderLineItemDao.findAllByOrderId(any())).willReturn(Arrays.asList(후라이드두마리세트_2개_주문함));
+        Order 계산_완료_주문 = OrderTestFixture.생성(테이블1번);
+        계산_완료_주문.setOrderStatus(OrderStatus.COMPLETION);
+        given(orderRepository.findById(any())).willReturn(java.util.Optional.ofNullable(주문));
+        given(orderLineItemRepository.findAllByOrderId(any())).willReturn(Arrays.asList(후라이드두마리세트_2개_주문함));
 
         orderService.changeOrderStatus(2L, 계산_완료_주문);
 
@@ -144,14 +132,13 @@ public class OrderServiceTest {
     @DisplayName("주문 완료 상태가 아닌 주문만 변경 가능하다.")
     @Test
     void changeStatusError() {
-        Order 주문 = new Order();
-        주문.setId(2L);
-        주문.setOrderTableId(테이블1번.getId());
+        Order 주문 = OrderTestFixture.생성(테이블1번);
+
         주문.setOrderLineItems(Arrays.asList(후라이드두마리세트_2개_주문함));
-        주문.setOrderStatus("COMPLETION");
-        Order 계산_완료_주문 = new Order();
-        계산_완료_주문.setOrderStatus("COMPLETION");
-        given(orderDao.findById(2L)).willReturn(java.util.Optional.ofNullable(주문));
+        주문.setOrderStatus(OrderStatus.COMPLETION);
+        Order 계산_완료_주문 = OrderTestFixture.생성(테이블1번);
+        계산_완료_주문.setOrderStatus(OrderStatus.COMPLETION);
+        given(orderRepository.findById(any())).willReturn(java.util.Optional.ofNullable(주문));
 
         assertThatThrownBy(
                 () -> orderService.changeOrderStatus(2L, 계산_완료_주문)
