@@ -1,4 +1,4 @@
-package kitchenpos.application;
+package kitchenpos.ui;
 
 import static kitchenpos.utils.AcceptanceTestUtil.get;
 import static kitchenpos.utils.AcceptanceTestUtil.post;

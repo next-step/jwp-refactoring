@@ -1,17 +1,14 @@
-package kitchenpos.application;
+package kitchenpos.ui;
 
 import static kitchenpos.utils.AcceptanceTestUtil.get;
 import static kitchenpos.utils.AcceptanceTestUtil.post;
-import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import java.util.ArrayList;
 import java.util.List;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.domain.MenuGroup;
-import kitchenpos.utils.AcceptanceTestUtil;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
