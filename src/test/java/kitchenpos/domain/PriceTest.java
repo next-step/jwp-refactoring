@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import kitchenpos.common.ErrorCode;
 import kitchenpos.common.PriceException;
 
-@DisplayName("단위 테스트 : 가격 도메인")
+@DisplayName("가격 : 단위 테스트")
 class PriceTest {
 
 	@DisplayName("가격 생성 테스트")

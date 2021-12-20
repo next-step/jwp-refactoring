@@ -14,7 +14,7 @@ import kitchenpos.AcceptanceTest;
 import kitchenpos.menu.dto.MenuGroupRequest;
 import kitchenpos.menu.dto.MenuGroupResponse;
 
-@DisplayName("인수테스트 : 메뉴 그룹 관련")
+@DisplayName("메뉴 그룹 : 인수 테스트")
 class MenuGroupAcceptanceTest extends AcceptanceTest {
 
 	private MenuGroupRequest 두마리메뉴_그룹_생성_요청값;

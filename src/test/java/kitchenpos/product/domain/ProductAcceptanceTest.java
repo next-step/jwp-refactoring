@@ -14,7 +14,7 @@ import kitchenpos.AcceptanceTest;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
 
-@DisplayName("인수테스트 : 상품 관련")
+@DisplayName("상품 : 인수 테스트")
 class ProductAcceptanceTest extends AcceptanceTest {
 
 	@Test

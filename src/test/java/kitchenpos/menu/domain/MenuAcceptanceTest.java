@@ -21,7 +21,7 @@ import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.product.dto.ProductResponse;
 
-@DisplayName("인수테스트 : 메뉴 관련")
+@DisplayName("메뉴 : 인수 테스트")
 class MenuAcceptanceTest extends AcceptanceTest {
 
 	private MenuGroupResponse 두마리_메뉴_그룹;

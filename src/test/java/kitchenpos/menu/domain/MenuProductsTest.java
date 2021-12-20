@@ -13,7 +13,7 @@ import kitchenpos.common.PriceException;
 import kitchenpos.domain.Price;
 import kitchenpos.product.domain.Product;
 
-@DisplayName("단위 테스트 : 메뉴 상품 일급 컬렉션 관련")
+@DisplayName("메뉴 상품 일급 컬렉션 : 단위 테스트")
 class MenuProductsTest {
 
 	private Product product1;

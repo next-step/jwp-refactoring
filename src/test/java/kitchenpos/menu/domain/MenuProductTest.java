@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import kitchenpos.domain.Price;
 import kitchenpos.product.domain.Product;
 
-@DisplayName("단위 테스트 : 메뉴 상품 관")
+@DisplayName("메뉴 상품 : 단위 테스트")
 public class MenuProductTest {
 
 	private Product product;
