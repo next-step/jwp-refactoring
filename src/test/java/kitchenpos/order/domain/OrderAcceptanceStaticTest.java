@@ -12,7 +12,10 @@ import org.springframework.http.MediaType;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.order.dto.OrderStatusRequest;
 
 public class OrderAcceptanceStaticTest {
 
@@ -20,21 +23,20 @@ public class OrderAcceptanceStaticTest {
 	public static final String SLASH = "/";
 	public static final String ORDER_STATUS = "/order-status";
 
-	public static Order 주문_상태가_변경_되어_있음(Order order, String orderStatus) {
-		order.setOrderStatus(orderStatus);
-		return 주문_상태_변경_요청(order).as(Order.class);
+	public static OrderResponse 주문_상태가_변경_되어_있음(Long id, OrderStatus orderStatus) {
+		return 주문_상태_변경_요청(id, OrderStatusRequest.from(orderStatus)).as(OrderResponse.class);
 	}
 
-	public static void 주문_상태_변경에_실패함(ExtractableResponse<Response> response) {
-		assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+	public static void 주문_상태_변경에_실패함(ExtractableResponse<Response> response, int status) {
+		assertThat(response.statusCode()).isEqualTo(status);
 	}
 
-	public static ExtractableResponse<Response> 주문_상태_변경_요청(Order params) {
+	public static ExtractableResponse<Response> 주문_상태_변경_요청(Long id, OrderStatusRequest params) {
 		return RestAssured.given().log().all()
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
 			.body(params)
 			.when()
-			.put(ORDER_PATH + SLASH + params.getId() + ORDER_STATUS)
+			.put(ORDER_PATH + SLASH + id + ORDER_STATUS)
 			.then().log().all()
 			.extract();
 	}
@@ -43,8 +45,8 @@ public class OrderAcceptanceStaticTest {
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 	}
 
-	public static Order 주문이_생성_되어_있음(Order params) {
-		return 주문_요청(params).as(Order.class);
+	public static OrderResponse 주문이_생성_되어_있음(OrderRequest params) {
+		return 주문_요청(params).as(OrderResponse.class);
 	}
 
 	public static ExtractableResponse<Response> 주문_목록_조회_요청() {
@@ -57,34 +59,28 @@ public class OrderAcceptanceStaticTest {
 
 	public static void 주문_목록이_조회됨(ExtractableResponse<Response> response, List<Long> idList) {
 		List<Long> responseIdList = response.body()
-			.jsonPath().getList(".", Order.class)
+			.jsonPath().getList(".", OrderResponse.class)
 			.stream()
-			.map(Order::getId)
+			.map(OrderResponse::getId)
 			.collect(Collectors.toList());
 
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 		assertThat(responseIdList).containsAnyElementsOf(idList);
 	}
 
-	public static void 주문_생성에_실패함(ExtractableResponse<Response> response) {
-		assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+	public static void 주문_생성에_실패함(ExtractableResponse<Response> response, int status) {
+		assertThat(response.statusCode()).isEqualTo(status);
 	}
 
-	public static List<OrderLineItem> 주문_메뉴_생성(MenuResponse menu, int quantity) {
-		OrderLineItem orderLineItem = new OrderLineItem();
-		orderLineItem.setMenuId(menu.getId());
-		orderLineItem.setQuantity(quantity);
-		return Collections.singletonList(orderLineItem);
+	public static List<OrderLineItemRequest> 주문_메뉴_생성(Long menuId, Long quantity) {
+		return Collections.singletonList(OrderLineItemRequest.of(menuId, quantity));
 	}
 
-	public static Order 주문_요청값_생성(Long id, List<OrderLineItem> orderLineItems) {
-		Order order = new Order();
-		order.setOrderTableId(id);
-		order.setOrderLineItems(orderLineItems);
-		return order;
+	public static OrderRequest 주문_요청값_생성(Long id, List<OrderLineItemRequest> orderLineItems) {
+		return OrderRequest.of(id, orderLineItems);
 	}
 
-	public static ExtractableResponse<Response> 주문_요청(Order params) {
+	public static ExtractableResponse<Response> 주문_요청(OrderRequest params) {
 		return RestAssured.given().log().all()
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
 			.body(params)
