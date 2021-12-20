@@ -9,7 +9,7 @@ import io.restassured.response.Response;
 import java.math.BigDecimal;
 import java.util.List;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.Product;
+import kitchenpos.product.domain.Product;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
