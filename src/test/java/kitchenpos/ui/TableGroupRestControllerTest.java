@@ -47,7 +47,7 @@ class TableGroupRestControllerTest extends IntegrationTest {
 			new OrderTable(1L),
 			new OrderTable(2L));
 		Map<String, Object> params = 테이블_그룹_정보(orderTables);
-		TableGroup expectedTableGroup = new TableGroup(LocalDateTime.now(), orderTables);
+		TableGroup expectedTableGroup = new TableGroup(1L, LocalDateTime.now(), orderTables);
 		given(tableGroupService.create(any()))
 			.willReturn(expectedTableGroup);
 
