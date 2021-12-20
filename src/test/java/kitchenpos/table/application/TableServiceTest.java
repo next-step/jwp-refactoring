@@ -1,7 +1,6 @@
-package kitchenpos.application;
+package kitchenpos.table.application;
 
 import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -15,8 +14,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static kitchenpos.domain.OrderTableTest.빈자리;
-import static kitchenpos.domain.TableGroupTest.테이블그룹;
+import static kitchenpos.table.domain.OrderTableTest.빈자리;
+import static kitchenpos.table.domain.TableGroupTest.테이블그룹;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;

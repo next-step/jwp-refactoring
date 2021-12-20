@@ -1,7 +1,6 @@
-package kitchenpos.application;
+package kitchenpos.table.application;
 
 import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.table.application.TableGroupService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
@@ -17,8 +16,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static kitchenpos.domain.OrderTableTest.*;
-import static kitchenpos.domain.TableGroupTest.테이블그룹;
+import static kitchenpos.table.domain.OrderTableTest.*;
+import static kitchenpos.table.domain.TableGroupTest.테이블그룹;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;

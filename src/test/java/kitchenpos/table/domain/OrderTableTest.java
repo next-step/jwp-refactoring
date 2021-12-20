@@ -1,8 +1,6 @@
-package kitchenpos.domain;
+package kitchenpos.table.domain;
 
-import kitchenpos.table.domain.OrderTable;
-
-import static kitchenpos.domain.TableGroupTest.테이블그룹;
+import static kitchenpos.table.domain.TableGroupTest.테이블그룹;
 
 public class OrderTableTest {
     public static final OrderTable 빈자리 = OrderTable.ofEmptyTable(2);

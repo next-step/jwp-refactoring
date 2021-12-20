@@ -21,8 +21,8 @@ import java.util.Optional;
 
 import static kitchenpos.domain.OrderLineItemTest.와퍼_세트_주문;
 import static kitchenpos.domain.OrderLineItemTest.콜라_주문;
-import static kitchenpos.domain.OrderTableTest.빈자리;
-import static kitchenpos.domain.OrderTableTest.이인석;
+import static kitchenpos.table.domain.OrderTableTest.빈자리;
+import static kitchenpos.table.domain.OrderTableTest.이인석;
 import static kitchenpos.domain.OrderTest.주문통합;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
