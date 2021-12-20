@@ -1,6 +1,5 @@
-package kitchenpos.application;
+package kitchenpos.product.application;
 
-import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -16,7 +15,7 @@ import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 
-import static kitchenpos.domain.ProductTest.후라이드_상품;
+import static kitchenpos.product.domain.ProductTest.후라이드_상품;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;

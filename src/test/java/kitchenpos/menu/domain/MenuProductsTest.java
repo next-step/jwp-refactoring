@@ -10,7 +10,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import java.math.BigDecimal;
 import java.util.Collections;
 
-import static kitchenpos.domain.ProductTest.양념치킨_상품;
+import static kitchenpos.product.domain.ProductTest.양념치킨_상품;
 import static kitchenpos.menu.domain.MenuProductTest.양념치킨;
 import static kitchenpos.menu.domain.MenuProductTest.후라이드;
 import static kitchenpos.menu.domain.MenuTest.치킨세트;

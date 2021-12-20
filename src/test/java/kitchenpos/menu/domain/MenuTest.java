@@ -8,7 +8,6 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
-import static kitchenpos.domain.ProductTest.후라이드_상품;
 import static kitchenpos.menu.domain.MenuGroupTest.두마리메뉴;
 import static kitchenpos.menu.domain.MenuGroupTest.한마리메뉴;
 import static kitchenpos.menu.domain.MenuProductTest.양념치킨;

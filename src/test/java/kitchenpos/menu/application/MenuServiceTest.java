@@ -21,7 +21,7 @@ import java.util.*;
 import static kitchenpos.menu.domain.MenuGroupTest.두마리메뉴;
 import static kitchenpos.menu.domain.MenuTest.양념치킨_단품;
 import static kitchenpos.menu.domain.MenuTest.치킨세트;
-import static kitchenpos.domain.ProductTest.*;
+import static kitchenpos.product.domain.ProductTest.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
