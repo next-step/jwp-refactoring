@@ -1,5 +1,7 @@
 package kitchenpos.domain;
 
+import java.util.Objects;
+
 public class OrderTable {
 	private Long id;
 	private Long tableGroupId;
@@ -10,19 +12,19 @@ public class OrderTable {
 	}
 
 	public OrderTable(boolean empty) {
-		this(0,empty);
+		this(0, empty);
 	}
 
 	public OrderTable(int numberOfGuests) {
-		this(numberOfGuests,false);
+		this(numberOfGuests, false);
 	}
 
 	public OrderTable(int numberOfGuests, boolean empty) {
-		this(null,null,numberOfGuests,empty);
+		this(null, null, numberOfGuests, empty);
 	}
 
 	public OrderTable(Long id, int numberOfGuests, boolean empty) {
-		this(id,null,numberOfGuests,empty);
+		this(id, null, numberOfGuests, empty);
 	}
 
 	public OrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
@@ -62,5 +64,24 @@ public class OrderTable {
 
 	public void setEmpty(final boolean empty) {
 		this.empty = empty;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+
+		if (!(o instanceof OrderTable)) {
+			return false;
+		}
+
+		OrderTable that = (OrderTable)o;
+		return Objects.equals(getId(), that.getId());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(getId());
 	}
 }
