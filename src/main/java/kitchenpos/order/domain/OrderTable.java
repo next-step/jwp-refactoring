@@ -1,5 +1,7 @@
 package kitchenpos.order.domain;
 
+import static kitchenpos.common.exception.ExceptionMessage.*;
+
 import java.util.Objects;
 
 import javax.persistence.Embedded;
@@ -11,6 +13,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+
+import kitchenpos.common.exception.BadRequestException;
 
 @Entity
 public class OrderTable {
@@ -62,8 +66,8 @@ public class OrderTable {
     }
 
     public void changeTableGroup(TableGroup tableGroup, boolean empty) {
-        changeTableGroupId(tableGroup);
         changeEmpty(empty);
+        changeTableGroupId(tableGroup);
     }
 
     public void changeTableGroupId(TableGroup tableGroup) {
@@ -75,7 +79,14 @@ public class OrderTable {
     }
 
     public void changeEmpty(final boolean empty) {
+        validateChangeableEmpty();
         this.empty = empty;
+    }
+
+    private void validateChangeableEmpty() {
+        if (Objects.nonNull(tableGroup)) {
+            throw new BadRequestException(CANNOT_CHANGE_STATUS);
+        }
     }
 
     @Override

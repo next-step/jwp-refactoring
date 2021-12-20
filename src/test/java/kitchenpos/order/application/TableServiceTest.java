@@ -18,6 +18,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import kitchenpos.common.exception.BadRequestException;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.TableGroup;
@@ -89,7 +90,6 @@ public class TableServiceTest {
         given(orderRepository.existsByOrderTableIdAndOrderStatusIn(
             orderTable.getId(), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name())))
             .willReturn(false);
-        given(orderTableRepository.save(findOrderTable)).willReturn(findOrderTable);
 
         // when
         OrderTableResponse changeTable = tableService.changeEmpty(orderTable.getId(),
@@ -113,7 +113,7 @@ public class TableServiceTest {
             .willReturn(Optional.of(orderTable));
 
         // when && then
-        assertThrows(IllegalArgumentException.class, () -> tableService.changeEmpty(
+        assertThrows(BadRequestException.class, () -> tableService.changeEmpty(
             orderTableId, orderTableRequest));
 
         verify(orderTableRepository).findById(orderTableId);

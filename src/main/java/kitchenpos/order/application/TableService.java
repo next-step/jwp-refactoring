@@ -4,7 +4,6 @@ import static kitchenpos.common.exception.ExceptionMessage.*;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -31,11 +30,11 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse create(final OrderTableRequest orderTableRequest) {
-        OrderTable orderTable = orderTableRequest.toEntity();
-        OrderTable savedOrderTable = orderTableRepository.save(orderTable);
+        OrderTable savedOrderTable = orderTableRepository.save(orderTableRequest.toEntity());
         return OrderTableResponse.of(savedOrderTable);
     }
 
+    @Transactional(readOnly = true)
     public List<OrderTableResponse> list() {
         List<OrderTable> orderTables = orderTableRepository.findAll();
         return orderTables.stream()
@@ -48,19 +47,13 @@ public class TableService {
         final OrderTable findOrderTable = orderTableRepository.findById(orderTableId)
             .orElseThrow(() -> new NotFoundException(NOT_FOUND_DATA));
 
-        if (Objects.nonNull(findOrderTable.getTableGroup())) {
-            throw new IllegalArgumentException();
-        }
-
         if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
             orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
             throw new IllegalArgumentException();
         }
 
         findOrderTable.changeEmpty(orderTableRequest.isEmpty());
-
-        OrderTable savedOrderTable = orderTableRepository.save(findOrderTable);
-        return OrderTableResponse.of(savedOrderTable);
+        return OrderTableResponse.of(findOrderTable);
     }
 
     @Transactional
