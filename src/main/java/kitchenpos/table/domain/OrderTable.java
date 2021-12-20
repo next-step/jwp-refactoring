@@ -48,7 +48,7 @@ public class OrderTable extends BaseEntity {
         return new OrderTable(numberOfGuests, empty);
     }
 
-    public void setTableGroup(TableGroup tableGroup) {
+    public void relateTableGroup(TableGroup tableGroup) {
         if (Objects.nonNull(this.tableGroup)) {
             this.tableGroup.removeOrderTable(this);
         }

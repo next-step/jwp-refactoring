@@ -67,7 +67,7 @@ public class TableGroup {
         orderTables.add(orderTable);
 
         if (!orderTable.equalTableGroup(this)) {
-            orderTable.setTableGroup(this);
+            orderTable.relateTableGroup(this);
         }
     }
 

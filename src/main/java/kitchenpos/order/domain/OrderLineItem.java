@@ -44,7 +44,7 @@ public class OrderLineItem extends BaseEntity {
         return new OrderLineItem(menu, quantity);
     }
 
-    public void setOrder(Order order) {
+    public void relateOrder(Order order) {
         if (this.order != null) {
             this.order.removeOrderLineItem(this);
         }

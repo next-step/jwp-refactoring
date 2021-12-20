@@ -44,7 +44,7 @@ public class Order extends BaseEntity {
 
     private Order(OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
         initOrderStatus(orderStatus);
-        setOrderTable(orderTable);
+        relateOrderTable(orderTable);
         addOrderLineItems(orderLineItems);
     }
 
@@ -68,7 +68,7 @@ public class Order extends BaseEntity {
         orderLineItems.remove(orderLineItem);
     }
 
-    public void setOrderTable(OrderTable orderTable) {
+    public void relateOrderTable(OrderTable orderTable) {
         validateOrderTable(orderTable);
         if (this.orderTable != null) {
             this.orderTable.removeOrder(this);
@@ -86,7 +86,7 @@ public class Order extends BaseEntity {
         orderLineItems.add(orderLineItem);
 
         if (!orderLineItem.equalsOrder(this)) {
-            orderLineItem.setOrder(this);
+            orderLineItem.relateOrder(this);
         }
     }
 

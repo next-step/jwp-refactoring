@@ -37,7 +37,7 @@ class OrderTablesTest {
     void validateAddOtherTableGroup() {
         OrderTable orderTable_1 = OrderTable.of(0, true);
         OrderTable orderTable_2 = OrderTable.of(2, true);
-        orderTable_2.setTableGroup(TableGroup.create());
+        orderTable_2.relateTableGroup(TableGroup.create());
 
         OrderTables orderTables = new OrderTables();
 

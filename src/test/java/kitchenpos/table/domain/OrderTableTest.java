@@ -4,10 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import kitchenpos.exception.CannotUpdatedException;
-import kitchenpos.exception.InvalidArgumentException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.order.domain.Order;
@@ -33,7 +31,7 @@ class OrderTableTest {
     @Test
     void validateUpdateEmpty() {
         OrderTable orderTable = OrderTable.of(1, false);
-        orderTable.setTableGroup(TableGroup.create());
+        orderTable.relateTableGroup(TableGroup.create());
 
         assertThatThrownBy(() -> orderTable.updateEmpty(Boolean.TRUE))
             .isInstanceOf(CannotUpdatedException.class)

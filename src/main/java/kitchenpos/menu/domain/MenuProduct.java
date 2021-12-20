@@ -45,7 +45,7 @@ public class MenuProduct extends BaseEntity {
         return new MenuProduct(product, quantity);
     }
 
-    public void setMenu(Menu menu) {
+    public void relateMenu(Menu menu) {
         validateMenu(menu);
         if (this.menu != null) {
             this.menu.removeMenuProduct(this);

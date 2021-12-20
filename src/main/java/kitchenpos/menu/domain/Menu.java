@@ -70,7 +70,7 @@ public class Menu extends BaseEntity {
         menuProducts.add(menuProduct);
 
         if (!menuProduct.equalMenu(this)) {
-            menuProduct.setMenu(this);
+            menuProduct.relateMenu(this);
         }
     }
 
