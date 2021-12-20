@@ -38,8 +38,8 @@ public class TableServiceTest {
     @Test
     void create() {
         // given
-        final OrderTable request = createOrderTableRequest(4);
-        final OrderTable expected = createOrderTable(1L, null, 4, true);
+        final OrderTable request = OrderTableFixture.ofCreateRequest(4);
+        final OrderTable expected = OrderTableFixture.of(1L, null, 4, true);
         given(orderTableDao.save(any(OrderTable.class))).willReturn(expected);
 
         // when
@@ -54,8 +54,8 @@ public class TableServiceTest {
     void list() {
         // given
         final List<OrderTable> expected = Arrays.asList(
-            createOrderTable(1L, null, 4, true),
-            createOrderTable(2L, null, 4, true)
+            OrderTableFixture.of(1L, null, 4, true),
+            OrderTableFixture.of(2L, null, 4, true)
         );
         given(orderTableDao.findAll()).willReturn(expected);
 
@@ -70,9 +70,9 @@ public class TableServiceTest {
     @Test
     void changeEmpty() {
         // given
-        final OrderTable request = createChangeEmptyRequest(true);
-        final OrderTable before = createOrderTable(1L, null, 4, false);
-        final OrderTable after = createOrderTable(
+        final OrderTable request = OrderTableFixture.ofChangeEmptyRequest(true);
+        final OrderTable before = OrderTableFixture.of(1L, null, 4, false);
+        final OrderTable after = OrderTableFixture.of(
             before.getId(),
             before.getTableGroupId(),
             before.getNumberOfGuests(),
@@ -96,8 +96,8 @@ public class TableServiceTest {
     @Test
     void changeEmpty_fail_noSuchOrderTable() {
         // given
-        final OrderTable request = createChangeEmptyRequest(true);
-        final OrderTable table = createOrderTable(1L, null, 4, false);
+        final OrderTable request = OrderTableFixture.ofChangeEmptyRequest(true);
+        final OrderTable table = OrderTableFixture.of(1L, null, 4, false);
 
         // when
         ThrowableAssert.ThrowingCallable actual = () ->
@@ -111,8 +111,8 @@ public class TableServiceTest {
     @Test
     void changeEmpty_fail_orderTableInGroup() {
         // given
-        final OrderTable request = createChangeEmptyRequest(true);
-        final OrderTable table = createOrderTable(1L, 1L, 4, false);
+        final OrderTable request = OrderTableFixture.ofChangeEmptyRequest(true);
+        final OrderTable table = OrderTableFixture.of(1L, 1L, 4, false);
         given(orderTableDao.findById(anyLong())).willReturn(Optional.of(table));
 
         // when
@@ -127,8 +127,8 @@ public class TableServiceTest {
     @Test
     void changeEmpty_fail_hasCookingOrder() {
         // given
-        final OrderTable request = createChangeEmptyRequest(true);
-        final OrderTable table = createOrderTable(1L, null, 4, false);
+        final OrderTable request = OrderTableFixture.ofChangeEmptyRequest(true);
+        final OrderTable table = OrderTableFixture.of(1L, null, 4, false);
         given(orderTableDao.findById(anyLong()))
             .willReturn(Optional.of(table));
         given(orderDao.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList()))
@@ -146,9 +146,9 @@ public class TableServiceTest {
     @Test
     void changeNumberOfGuests() {
         // given
-        final OrderTable request = createChangeNumberOfGuestsRequest(2);
-        final OrderTable before = createOrderTable(1L, null, 4, false);
-        final OrderTable after = createOrderTable(
+        final OrderTable request = OrderTableFixture.ofChangeNumberOfGuestsRequest(2);
+        final OrderTable before = OrderTableFixture.of(1L, null, 4, false);
+        final OrderTable after = OrderTableFixture.of(
             before.getId(),
             before.getTableGroupId(),
             request.getNumberOfGuests(),
@@ -168,8 +168,8 @@ public class TableServiceTest {
     @Test
     void changeNumberOfGuests_fail_invalidNumberOfGuests() {
         // given
-        final OrderTable request = createChangeNumberOfGuestsRequest(-1);
-        final OrderTable table = createOrderTable(1L, null, 4, false);
+        final OrderTable request = OrderTableFixture.ofChangeNumberOfGuestsRequest(-1);
+        final OrderTable table = OrderTableFixture.of(1L, null, 4, false);
 
         // when
         ThrowableAssert.ThrowingCallable actual = () ->
@@ -183,8 +183,8 @@ public class TableServiceTest {
     @Test
     void changeNumberOfGuests_fail_noSuchOrderTable() {
         // given
-        final OrderTable request = createChangeNumberOfGuestsRequest(2);
-        final OrderTable table = createOrderTable(1L, null, 4, false);
+        final OrderTable request = OrderTableFixture.ofChangeNumberOfGuestsRequest(2);
+        final OrderTable table = OrderTableFixture.of(1L, null, 4, false);
 
         // when
         ThrowableAssert.ThrowingCallable actual = () ->
@@ -198,48 +198,15 @@ public class TableServiceTest {
     @Test
     void changeNumberOfGuests_fail_emptyOrderTable() {
         // given
-        final OrderTable request = createChangeNumberOfGuestsRequest(2);
-        final OrderTable table = createOrderTable(1L, null, 4, true);
+        final OrderTable request = OrderTableFixture.ofChangeNumberOfGuestsRequest(2);
+        final OrderTable table = OrderTableFixture.of(1L, null, 4, true);
         given(orderTableDao.findById(anyLong())).willReturn(Optional.of(table));
-        
+
         // when
         ThrowableAssert.ThrowingCallable actual = () ->
             tableService.changeNumberOfGuests(table.getId(), request);
 
         // then
         assertThatThrownBy(actual).isInstanceOf(IllegalArgumentException.class);
-    }
-
-    private OrderTable createOrderTableRequest(final int numberOfGuests) {
-        final OrderTable orderTable = new OrderTable();
-        orderTable.setNumberOfGuests(numberOfGuests);
-        orderTable.setEmpty(true);
-        return orderTable;
-    }
-
-    private OrderTable createOrderTable(
-        final Long id,
-        final Long tableGroupId,
-        final int numberOfGuests,
-        final boolean empty
-    ) {
-        final OrderTable orderTable = new OrderTable();
-        orderTable.setId(id);
-        orderTable.setTableGroupId(tableGroupId);
-        orderTable.setNumberOfGuests(numberOfGuests);
-        orderTable.setEmpty(empty);
-        return orderTable;
-    }
-
-    private OrderTable createChangeEmptyRequest(final boolean empty) {
-        final OrderTable orderTable = new OrderTable();
-        orderTable.setEmpty(empty);
-        return orderTable;
-    }
-
-    private OrderTable createChangeNumberOfGuestsRequest(final int numberOfGuests) {
-        final OrderTable orderTable = new OrderTable();
-        orderTable.setNumberOfGuests(numberOfGuests);
-        return orderTable;
     }
 }
