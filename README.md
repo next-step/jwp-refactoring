@@ -57,6 +57,27 @@
 | 주문 항목 | order line item | 주문에 속하는 수량이 있는 메뉴 |
 | 매장 식사 | eat in | 포장하지 않고 매장에서 식사하는 것 |
 
+### step2 요구사항
+
+- [ ] 상품 관리 리팩토링
+  - [ ] 모델 
+    - [ ] Product 엔티티 변환 
+  - [ ] ProductService
+- [ ] 메뉴 관리 리팩토링
+  - [ ] 모델
+    - [ ] MenuGroup 엔티티 변환
+    - [ ] Menu 엔티티 변환
+  - [ ] MenuGroupService
+  - [ ] MenuService
+- [ ] 테이블 관리 리팩토링
+  - [ ] 모델
+    - [ ] TableGroup 엔티티 변환
+  - [ ] TableGroupService
+  - [ ] TableService
+- [ ] 주문 관리 리팩토링
+  - [ ] 모델
+    - [ ] Order 엔티티 변환
+  - [ ] OrderService
 
 ### step1 요구사항
 - [X] 키친포스 기능 요구사항 분석
