@@ -43,6 +43,25 @@ public class TableAcceptanceStep {
         );
     }
 
+    public static ExtractableResponse<Response> 테이블_조회_요청(long id) {
+        return RestAssured.given().log().all()
+            .when()
+            .get("/api/tables/{id}", id)
+            .then().log().all()
+            .extract();
+    }
+
+    public static void 테이블_조회됨(ExtractableResponse<Response> response,
+        int expectedNumberOfGuests, boolean expectedEmpty) {
+        OrderTableResponse orderTableResponse = response.as(OrderTableResponse.class);
+        assertAll(
+            () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+            () -> assertThat(orderTableResponse)
+                .extracting(OrderTableResponse::getNumberOfGuests, OrderTableResponse::isEmpty)
+                .containsExactly(expectedNumberOfGuests, expectedEmpty)
+        );
+    }
+
     public static ExtractableResponse<Response> 테이블_목록_조회_요청() {
         return RestAssured.given().log().all()
             .when()

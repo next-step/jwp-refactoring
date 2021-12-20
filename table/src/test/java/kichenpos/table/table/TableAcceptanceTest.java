@@ -10,6 +10,8 @@ import static kichenpos.table.table.step.TableAcceptanceStep.테이블_생성됨
 import static kichenpos.table.table.step.TableAcceptanceStep.테이블_손님_수_수정_요청;
 import static kichenpos.table.table.step.TableAcceptanceStep.테이블_손님_수_수정됨;
 import static kichenpos.table.table.step.TableAcceptanceStep.테이블_저장되어_있음;
+import static kichenpos.table.table.step.TableAcceptanceStep.테이블_조회_요청;
+import static kichenpos.table.table.step.TableAcceptanceStep.테이블_조회됨;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -33,6 +35,21 @@ class TableAcceptanceTest extends AcceptanceTest {
 
         //then
         테이블_생성됨(response, numberOfGuests, empty);
+    }
+
+    @Test
+    @DisplayName("테이블을 조회할 수 있다.")
+    void find() {
+        //given
+        final int numberOfGuests = 5;
+        final boolean empty = true;
+        OrderTableResponse tableResponse = 테이블_저장되어_있음(numberOfGuests, empty);
+
+        //when
+        ExtractableResponse<Response> response = 테이블_조회_요청(tableResponse.getId());
+
+        //then
+        테이블_조회됨(response, numberOfGuests, empty);
     }
 
     @Test
