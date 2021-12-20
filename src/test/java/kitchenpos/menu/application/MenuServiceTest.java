@@ -1,4 +1,4 @@
-package kitchenpos.application;
+package kitchenpos.menu.application;
 
 import kitchenpos.common.exception.NotFoundMenuGroupException;
 import kitchenpos.common.exception.NotFoundProductException;
@@ -9,6 +9,7 @@ import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.product.domain.ProductRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -41,6 +42,9 @@ public class MenuServiceTest {
     private ProductRepository productRepository;
     @InjectMocks
     private MenuService menuService;
+
+
+
 
     @Test
     @DisplayName("메뉴 등록")
@@ -123,7 +127,7 @@ public class MenuServiceTest {
         MenuProductRequest 간장치킨_요청 = new MenuProductRequest(간장치킨_상품.getId(), 1L);
         MenuProductRequest 순살치킨_요청 = new MenuProductRequest(순살치킨_상품.getId(), 1L);
         MenuRequest 요청_데이터 = new MenuRequest(
-                "간장 두마리 세트"
+                "치킨 두마리 세트"
                 , BigDecimal.valueOf(34_001)
                 , 두마리메뉴.getId()
                 , Arrays.asList(간장치킨_요청, 순살치킨_요청));
