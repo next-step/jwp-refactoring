@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -38,6 +39,7 @@ class MenuRestControllerTest extends IntegrationTest {
 	@MockBean
 	private MenuService menuService;
 
+	@DisplayName("메뉴 생성")
 	@Test
 	void create() throws Exception {
 		//given
@@ -63,6 +65,7 @@ class MenuRestControllerTest extends IntegrationTest {
 		assertThat(response.getStatus()).isEqualTo(HttpStatus.CREATED.value());
 	}
 
+	@DisplayName("메뉴 조회")
 	@Test
 	void list() throws Exception {
 		//given
@@ -90,8 +93,7 @@ class MenuRestControllerTest extends IntegrationTest {
 		//then
 		assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
 		List<Menu> findMenus = objectMapper.readValue(response.getContentAsString(),
-			new TypeReference<List<Menu>>() {
-			});
+			new TypeReference<List<Menu>>() {});
 		assertThat(findMenus).containsAll(expectedMenus);
 	}
 
