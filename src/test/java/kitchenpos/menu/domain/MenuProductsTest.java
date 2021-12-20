@@ -35,7 +35,7 @@ class MenuProductsTest {
 	@Test
 	void calculateSum() {
 		// when
-		Price sum = menuProducts.getSum();
+		Price sum = menuProducts.totalPrice();
 
 		// then
 		assertThat(sum.getPrice().intValue()).isEqualTo(30000);

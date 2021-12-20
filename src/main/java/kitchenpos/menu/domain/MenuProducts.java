@@ -44,14 +44,14 @@ public class MenuProducts {
 		validateMenuPrice(menuPrice);
 	}
 
-	public Price getSum() {
+	public Price totalPrice() {
 		return menuProducts.stream()
 			.map(MenuProduct::getTotalPrice)
 			.reduce(Price.ZERO_PRICE, Price::plus);
 	}
 
 	public boolean comparePrice(Price menuPrice) {
-		return menuPrice.compare(getSum());
+		return menuPrice.compare(totalPrice());
 	}
 
 	public void validateMenuPrice(Price menuPrice) {
