@@ -134,7 +134,7 @@ class MenuServiceTest {
 		List<MenuProduct> menuProducts = Arrays.asList(
 			new MenuProduct(타코야끼.getId(), 3L),
 			new MenuProduct(뿌링클.getId(), 1L));
-		List<Menu> menus = Arrays.asList(new Menu("타코야끼와 뿌링클", BigDecimal.valueOf(51000),
+		List<Menu> menus = Arrays.asList(new Menu(1L,"타코야끼와 뿌링클", BigDecimal.valueOf(51000),
 			추천메뉴.getId(), menuProducts));
 		given(menuDao.findAll())
 			.willReturn(menus);
@@ -146,18 +146,6 @@ class MenuServiceTest {
 
 		//then
 		assertThat(findMenus.size()).isEqualTo(menus.size());
-		메뉴_목록_확인(findMenus, menus);
-	}
-
-	private void 메뉴_목록_확인(List<Menu> findMenus, List<Menu> menus) {
-		List<String> findProductNames = findMenus.stream()
-			.map(Menu::getName)
-			.collect(Collectors.toList());
-
-		List<String> mockProductNames = menus.stream()
-			.map(Menu::getName)
-			.collect(Collectors.toList());
-
-		assertThat(findProductNames).containsAll(mockProductNames);
+		assertThat(findMenus).containsAll(menus);
 	}
 }
