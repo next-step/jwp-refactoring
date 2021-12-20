@@ -13,12 +13,12 @@ import kitchenpos.application.fixture.MenuProductFixture;
 import kitchenpos.application.fixture.ProductFixture;
 import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.MenuProductDao;
-import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuGroupRepository;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
+import kitchenpos.domain.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -41,7 +41,7 @@ class MenuServiceTest {
     private MenuProductDao menuProductDao;
 
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     @InjectMocks
     private MenuService menuService;
@@ -71,7 +71,7 @@ class MenuServiceTest {
     @Test
     void create() {
         given(menuGroupRepository.existsById(후라이드치킨.getMenuGroupId())).willReturn(true);
-        given(productDao.findById(메뉴상품1.getProductId())).willReturn(Optional.of(상품_후라이드));
+        given(productRepository.findById(메뉴상품1.getProductId())).willReturn(Optional.of(상품_후라이드));
         given(menuDao.save(후라이드치킨)).willReturn(후라이드치킨);
 
         Menu savedMenu = menuService.create(후라이드치킨);
@@ -111,7 +111,7 @@ class MenuServiceTest {
     @Test
     void createImpossible4() {
         given(menuGroupRepository.existsById(후라이드치킨.getMenuGroupId())).willReturn(true);
-        given(productDao.findById(메뉴상품1.getProductId())).willReturn(Optional.empty());
+        given(productRepository.findById(메뉴상품1.getProductId())).willReturn(Optional.empty());
 
         assertThatThrownBy(() -> menuService.create(후라이드치킨))
             .isInstanceOf(IllegalArgumentException.class);
@@ -122,7 +122,7 @@ class MenuServiceTest {
     void createImpossible5() {
         Menu 가격이_총합보다_큰_메뉴 = MenuFixture.createMenu(1L, "후라이드치킨", 100_000L, 한마리_메뉴그룹, Arrays.asList(메뉴상품1));
         given(menuGroupRepository.existsById(가격이_총합보다_큰_메뉴.getMenuGroupId())).willReturn(true);
-        given(productDao.findById(메뉴상품1.getProductId())).willReturn(Optional.of(상품_후라이드));
+        given(productRepository.findById(메뉴상품1.getProductId())).willReturn(Optional.of(상품_후라이드));
 
         assertThatThrownBy(() -> menuService.create(가격이_총합보다_큰_메뉴))
             .isInstanceOf(IllegalArgumentException.class);
