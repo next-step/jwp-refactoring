@@ -8,9 +8,6 @@ public class MenuGroupFixture {
     }
 
     public static MenuGroup create(final Long id, final String menuGroupName) {
-        MenuGroup menuGroup = new MenuGroup();
-        menuGroup.setId(id);
-        menuGroup.setName(menuGroupName);
-        return menuGroup;
+        return new MenuGroup(id, menuGroupName);
     }
 }
