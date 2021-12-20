@@ -56,16 +56,16 @@ public class MenuServiceTest {
         final Product 후라이드 = ProductFixture.of(1L, "후라이드", BigDecimal.valueOf(8_000));
         final Product 양념치킨 = ProductFixture.of(2L, "양념치킨", BigDecimal.valueOf(8_000));
         final List<MenuProduct> menuProducts = Arrays.asList(
-            createMenuProduct(1L, 1L, 1L),
-            createMenuProduct(2L, 2L, 1L)
+            MenuFixture.ofMenuProduct(1L, 1L, 1L),
+            MenuFixture.ofMenuProduct(2L, 2L, 1L)
         );
-        final Menu request = createMenuRequest(
+        final Menu request = MenuFixture.ofCreateRequest(
             "반반치킨",
             BigDecimal.valueOf(16_000),
             2L,
             menuProducts
         );
-        final Menu expected = createMenu(
+        final Menu expected = MenuFixture.of(
             1L,
             "반반치킨",
             BigDecimal.valueOf(16_000),
@@ -96,7 +96,7 @@ public class MenuServiceTest {
         @ValueSource(strings = {"-16000"})
         void create_fail_invalidPrice(final BigDecimal price) {
             // given
-            final Menu request = createMenuRequest(
+            final Menu request = MenuFixture.ofCreateRequest(
                 "후라이드치킨",
                 price,
                 1L,
@@ -114,7 +114,7 @@ public class MenuServiceTest {
         @Test
         void create_fail_noSuchMenuGroup() {
             // given
-            final Menu request = createMenuRequest(
+            final Menu request = MenuFixture.ofCreateRequest(
                 "후라이드치킨",
                 BigDecimal.valueOf(16_000),
                 2L,
@@ -132,7 +132,7 @@ public class MenuServiceTest {
         @Test
         void create_fail_noSuchMenuProduct() {
             // given
-            final Menu request = createMenuRequest(
+            final Menu request = MenuFixture.ofCreateRequest(
                 "후라이드치킨",
                 BigDecimal.valueOf(16_000),
                 2L,
@@ -154,10 +154,10 @@ public class MenuServiceTest {
             final Product 후라이드 = ProductFixture.of(1L, "후라이드", BigDecimal.valueOf(8_000));
             final Product 양념치킨 = ProductFixture.of(2L, "양념치킨", BigDecimal.valueOf(8_000));
             final List<MenuProduct> menuProducts = Arrays.asList(
-                createMenuProduct(1L, 1L, 1L),
-                createMenuProduct(2L, 2L, 1L)
+                MenuFixture.ofMenuProduct(1L, 1L, 1L),
+                MenuFixture.ofMenuProduct(2L, 2L, 1L)
             );
-            final Menu request = createMenuRequest(
+            final Menu request = MenuFixture.ofCreateRequest(
                 "반반치킨",
                 BigDecimal.valueOf(160_000),
                 2L,
@@ -181,8 +181,8 @@ public class MenuServiceTest {
     void list() {
         // given
         final List<Menu> expected = Arrays.asList(
-            createMenu(1L, "후라이드치킨", BigDecimal.valueOf(16_000), 2L, Collections.emptyList()),
-            createMenu(2L, "양념치킨", BigDecimal.valueOf(16_000), 2L, Collections.emptyList())
+            MenuFixture.of(1L, "후라이드치킨", BigDecimal.valueOf(16_000), 2L, Collections.emptyList()),
+            MenuFixture.of(2L, "양념치킨", BigDecimal.valueOf(16_000), 2L, Collections.emptyList())
         );
         given(menuDao.findAll()).willReturn(expected);
 
@@ -191,47 +191,5 @@ public class MenuServiceTest {
 
         // then
         assertThat(actual).containsExactlyElementsOf(expected);
-    }
-
-    private Menu createMenuRequest(
-        final String name,
-        final BigDecimal price,
-        final Long menuGroupId,
-        final List<MenuProduct> menuProducts
-    ) {
-        final Menu menu = new Menu();
-        menu.setName(name);
-        menu.setPrice(price);
-        menu.setMenuGroupId(menuGroupId);
-        menu.setMenuProducts(menuProducts);
-        return menu;
-    }
-
-    private Menu createMenu(
-        final Long id,
-        final String name,
-        final BigDecimal price,
-        final Long menuGroupId,
-        final List<MenuProduct> menuProducts
-    ) {
-        final Menu menu = new Menu();
-        menu.setId(id);
-        menu.setName(name);
-        menu.setPrice(price);
-        menu.setMenuGroupId(menuGroupId);
-        menu.setMenuProducts(menuProducts);
-        return menu;
-    }
-
-    private MenuProduct createMenuProduct(
-        final Long seq,
-        final Long productId,
-        final Long quantity
-    ) {
-        final MenuProduct menuProduct = new MenuProduct();
-        menuProduct.setSeq(seq);
-        menuProduct.setProductId(productId);
-        menuProduct.setQuantity(quantity);
-        return menuProduct;
     }
 }
