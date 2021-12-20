@@ -9,7 +9,15 @@ import java.util.stream.Collectors;
 
 public class OrderRequest {
     private Long orderTableId;
-    private List<OrderLineItemRequest> orderLineItemRequests;
+    private List<OrderLineItemRequest> orderLineItems;
+
+    public OrderRequest() {
+    }
+
+    public OrderRequest(Long orderTableId, List<OrderLineItemRequest> orderLineItems) {
+        this.orderTableId = orderTableId;
+        this.orderLineItems = orderLineItems;
+    }
 
     public Long getOrderTableId() {
         return orderTableId;
@@ -19,16 +27,16 @@ public class OrderRequest {
         this.orderTableId = orderTableId;
     }
 
-    public List<OrderLineItemRequest> getOrderLineItemRequests() {
-        return orderLineItemRequests;
+    public List<OrderLineItemRequest> getOrderLineItems() {
+        return orderLineItems;
     }
 
-    public void setOrderLineItemRequests(List<OrderLineItemRequest> orderLineItemRequests) {
-        this.orderLineItemRequests = orderLineItemRequests;
+    public void setOrderLineItems(List<OrderLineItemRequest> orderLineItems) {
+        this.orderLineItems = orderLineItems;
     }
 
     public List<OrderLineItem> toOrderLineItem(Order order, Menu menu) {
-        return orderLineItemRequests.stream()
+        return orderLineItems.stream()
                 .map(orderLineItemRequest -> orderLineItemRequest.toOrderLineItem(order, menu))
                 .collect(Collectors.toList());
     }

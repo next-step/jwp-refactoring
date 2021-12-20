@@ -54,7 +54,7 @@ public class MenuServiceTest {
         후라이드 = ProductTestFixture.생성("후라이드", new BigDecimal("5000"));
 
         후라이드두마리구성 = MenuProductTextFixture.생성(1L, 후라이드, 2L);
-        후라이드두마리구성Request = MenuProductTextFixture.생성(후라이드.getId(), 2L);
+        후라이드두마리구성Request = MenuProductTextFixture.request생성(후라이드.getId(), 2L);
         치킨류 = MenuGroupTestFixture.생성(1L, "치킨");
 
         후라이드두마리세트 = MenuTestFixture.생성(1L, "후라이드두마리세트", new BigDecimal("10000"), 치킨류);

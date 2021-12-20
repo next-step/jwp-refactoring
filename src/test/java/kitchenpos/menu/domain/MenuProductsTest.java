@@ -15,7 +15,7 @@ public class MenuProductsTest {
     @DisplayName("메뉴상품목록 생성")
     @Test
     void create() {
-        MenuProducts menuProducts = MenuProducts.empty();
+        MenuProducts menuProducts = new MenuProducts();
 
         assertThat(menuProducts).isNotNull();
     }
@@ -24,9 +24,11 @@ public class MenuProductsTest {
     @Test
     void addMenuProduct() {
         Product 후라이드 = ProductTestFixture.생성("후라이드", new BigDecimal("5000"));
+        MenuProduct 후라이드두마리= MenuProductTextFixture.생성(1L,후라이드,2L);
         MenuProducts menuProducts = new MenuProducts();
-        menuProducts.add(MenuProductTextFixture.생성(1L,후라이드,2L));
 
-        assertThat(menuProducts.size()).isEqualTo(1);
+        menuProducts.add(후라이드두마리);
+
+        assertThat(menuProducts.getList().contains(후라이드두마리)).isTrue();
     }
 }

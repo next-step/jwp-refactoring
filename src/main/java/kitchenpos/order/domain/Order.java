@@ -6,6 +6,7 @@ import org.springframework.data.annotation.CreatedDate;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "orders")
@@ -16,7 +17,6 @@ public class Order {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_table_id", foreignKey = @ForeignKey(name = "fk_orders_order_table"))
-    @Column(nullable = false)
     private OrderTable orderTable;
 
     @Enumerated(EnumType.STRING)
@@ -24,17 +24,23 @@ public class Order {
     private OrderStatus orderStatus;
 
     @CreatedDate
-    private LocalDateTime orderedTime;
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime orderedTime = LocalDateTime.now();
 
-    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    private List<OrderLineItem> orderLineItems;
+    @Embedded
+    private OrderLineItems orderLineItems;
 
     protected Order() {
     }
 
-    public Order(OrderTable orderTable) {
+    private Order(OrderTable orderTable) {
         this.orderTable = orderTable;
         this.orderStatus = OrderStatus.COOKING;
+        this.orderLineItems = new OrderLineItems();
+    }
+
+    public static Order of(OrderTable orderTable){
+        return new Order(orderTable);
     }
 
     public Long getId() {
@@ -53,15 +59,22 @@ public class Order {
         return orderStatus;
     }
 
-    public void setOrderStatus(OrderStatus orderStatus) {
+    public void updateOrderStatus(OrderStatus orderStatus) {
+        if(this.orderStatus.isCompletion()){
+            throw new IllegalArgumentException();
+        }
         this.orderStatus = orderStatus;
     }
 
     public List<OrderLineItem> getOrderLineItems() {
-        return orderLineItems;
+        return orderLineItems.getOrderLineItems();
     }
 
-    public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
-        this.orderLineItems = orderLineItems;
+    public void addLineItems(List<OrderLineItem> orderLineItems) {
+        orderLineItems.stream()
+                .forEach(orderLineItem -> {
+                    orderLineItem.updateOrder(this);
+                    this.orderLineItems.add(orderLineItem);
+                });
     }
 }

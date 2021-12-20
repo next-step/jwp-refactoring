@@ -17,20 +17,12 @@ public class MenuProducts {
     protected MenuProducts() {
     }
 
-    public static MenuProducts empty() {
-        return new MenuProducts();
-    }
-
     public List<MenuProduct> getList() {
         return Collections.unmodifiableList(menuProducts);
     }
 
     public void add(MenuProduct addMenuProduct) {
         menuProducts.add(addMenuProduct);
-    }
-
-    public int size() {
-        return menuProducts.size();
     }
 
     public void validationOverPrice(BigDecimal price) {

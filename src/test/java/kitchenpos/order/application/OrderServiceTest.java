@@ -1,12 +1,13 @@
 package kitchenpos.order.application;
 
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.fixture.*;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menuGroup.domain.MenuGroup;
 import kitchenpos.order.domain.*;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -33,9 +34,7 @@ public class OrderServiceTest {
     @Mock
     private OrderRepository orderRepository;
     @Mock
-    private OrderLineItemRepository orderLineItemRepository;
-    @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @InjectMocks
     private OrderService orderService;
@@ -45,7 +44,9 @@ public class OrderServiceTest {
     private Menu 후라이드두마리세트;
     private OrderTable 테이블1번;
     private OrderLineItem 후라이드두마리세트_2개_주문함;
+    private OrderLineItemRequest 후라이드두마리세트_2개_주문_Request;
     private Order 총주문;
+    private OrderRequest 총주문Request;
     private MenuGroup 치킨류;
 
     @BeforeEach
@@ -65,18 +66,20 @@ public class OrderServiceTest {
         후라이드두마리세트_2개_주문함 = OrderLineItemTestFixture.생성(총주문, 후라이드두마리세트, 2L);
 
         총주문 = OrderTestFixture.생성(테이블1번);
-        총주문.setOrderLineItems(Arrays.asList(후라이드두마리세트_2개_주문함));
+        총주문.addLineItems(Arrays.asList(후라이드두마리세트_2개_주문함));
+
+        후라이드두마리세트_2개_주문_Request =OrderLineItemTestFixture.request생성(1L, 2L);
+        총주문Request = OrderTestFixture.request생성(테이블1번.getId(),Arrays.asList(후라이드두마리세트_2개_주문_Request));
     }
 
     @DisplayName("주문 생성")
     @Test
     void create() {
-        given(menuRepository.countByIdIn(any())).willReturn(1L);
-        given(orderTableDao.findById(1L)).willReturn(java.util.Optional.ofNullable(테이블1번));
-        given(orderRepository.save(총주문)).willReturn(총주문);
-        given(orderLineItemRepository.save(후라이드두마리세트_2개_주문함)).willReturn(후라이드두마리세트_2개_주문함);
+        given(orderTableRepository.findById(any())).willReturn(java.util.Optional.ofNullable(테이블1번));
+        given(orderRepository.save(any())).willReturn(총주문);
+        given(menuRepository.findById(any())).willReturn(java.util.Optional.ofNullable(후라이드두마리세트));
 
-        Order createOrder = orderService.create(총주문);
+        Order createOrder = orderService.create(총주문Request);
 
         assertAll(
                 () -> assertThat(createOrder).isNotNull(),
@@ -103,30 +106,26 @@ public class OrderServiceTest {
     @Test
     void changeMealStatus() {
         Order 주문 = OrderTestFixture.생성(테이블1번);
-        주문.setOrderLineItems(Arrays.asList(후라이드두마리세트_2개_주문함));
         Order 식사_상태_주문 = OrderTestFixture.생성(테이블1번);
-        식사_상태_주문.setOrderStatus(OrderStatus.MEAL);
+        식사_상태_주문.updateOrderStatus(OrderStatus.MEAL);
         given(orderRepository.findById(any())).willReturn(java.util.Optional.ofNullable(주문));
-        given(orderLineItemRepository.findAllByOrderId(any())).willReturn(Arrays.asList(후라이드두마리세트_2개_주문함));
 
         orderService.changeOrderStatus(2L, 식사_상태_주문);
 
-        assertThat(주문.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name());
+        assertThat(주문.getOrderStatus()).isEqualTo(OrderStatus.MEAL);
     }
 
     @DisplayName("주문 상태를 계산 완료로 변경 할 수 있다.")
     @Test
     void changeCompletionStatus() {
         Order 주문 = OrderTestFixture.생성(테이블1번);
-        주문.setOrderLineItems(Arrays.asList(후라이드두마리세트_2개_주문함));
         Order 계산_완료_주문 = OrderTestFixture.생성(테이블1번);
-        계산_완료_주문.setOrderStatus(OrderStatus.COMPLETION);
+        계산_완료_주문.updateOrderStatus(OrderStatus.COMPLETION);
         given(orderRepository.findById(any())).willReturn(java.util.Optional.ofNullable(주문));
-        given(orderLineItemRepository.findAllByOrderId(any())).willReturn(Arrays.asList(후라이드두마리세트_2개_주문함));
 
         orderService.changeOrderStatus(2L, 계산_완료_주문);
 
-        assertThat(주문.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION.name());
+        assertThat(주문.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION);
     }
 
     @DisplayName("주문 완료 상태가 아닌 주문만 변경 가능하다.")
@@ -134,10 +133,9 @@ public class OrderServiceTest {
     void changeStatusError() {
         Order 주문 = OrderTestFixture.생성(테이블1번);
 
-        주문.setOrderLineItems(Arrays.asList(후라이드두마리세트_2개_주문함));
-        주문.setOrderStatus(OrderStatus.COMPLETION);
+        주문.updateOrderStatus(OrderStatus.COMPLETION);
         Order 계산_완료_주문 = OrderTestFixture.생성(테이블1번);
-        계산_완료_주문.setOrderStatus(OrderStatus.COMPLETION);
+        계산_완료_주문.updateOrderStatus(OrderStatus.COMPLETION);
         given(orderRepository.findById(any())).willReturn(java.util.Optional.ofNullable(주문));
 
         assertThatThrownBy(
