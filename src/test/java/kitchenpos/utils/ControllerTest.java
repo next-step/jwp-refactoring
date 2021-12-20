@@ -31,7 +31,7 @@ public class ControllerTest {
     protected MenuGroupService menuGroupService;
 
     @MockBean
-    private MenuService menuService;
+    protected MenuService menuService;
 
     @MockBean
     private OrderService orderService;

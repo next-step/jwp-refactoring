@@ -5,6 +5,7 @@ import kitchenpos.application.MenuService;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.ui.MenuGroupRestController;
 import kitchenpos.utils.ControllerTest;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,6 +22,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.util.LinkedMultiValueMap;
 
+import javax.annotation.PostConstruct;
 import java.util.Arrays;
 import java.util.List;
 
@@ -30,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 public class MenuGroupControllerTest extends ControllerTest {
 
-    @BeforeEach
+    @PostConstruct
     public void setUp() {
         this.mockMvc = MockMvcBuilders.standaloneSetup(new MenuGroupRestController(menuGroupService)).build();
     }
