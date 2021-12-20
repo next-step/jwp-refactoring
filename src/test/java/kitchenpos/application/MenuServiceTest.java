@@ -12,11 +12,11 @@ import kitchenpos.application.fixture.MenuGroupFixture;
 import kitchenpos.application.fixture.MenuProductFixture;
 import kitchenpos.application.fixture.ProductFixture;
 import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.domain.MenuGroupRepository;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,7 +35,7 @@ class MenuServiceTest {
     private MenuDao menuDao;
 
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
 
     @Mock
     private MenuProductDao menuProductDao;
@@ -70,7 +70,7 @@ class MenuServiceTest {
     @DisplayName("메뉴를 등록한다.")
     @Test
     void create() {
-        given(menuGroupDao.existsById(후라이드치킨.getMenuGroupId())).willReturn(true);
+        given(menuGroupRepository.existsById(후라이드치킨.getMenuGroupId())).willReturn(true);
         given(productDao.findById(메뉴상품1.getProductId())).willReturn(Optional.of(상품_후라이드));
         given(menuDao.save(후라이드치킨)).willReturn(후라이드치킨);
 
@@ -101,7 +101,7 @@ class MenuServiceTest {
     @DisplayName("메뉴를 등록할 때, 메뉴 그룹에 포함되어 있지 않으면 예외가 발생한다.")
     @Test
     void createImpossible3() {
-        given(menuGroupDao.existsById(후라이드치킨.getMenuGroupId())).willReturn(false);
+        given(menuGroupRepository.existsById(후라이드치킨.getMenuGroupId())).willReturn(false);
 
         assertThatThrownBy(() -> menuService.create(후라이드치킨))
             .isInstanceOf(IllegalArgumentException.class);
@@ -110,7 +110,7 @@ class MenuServiceTest {
     @DisplayName("메뉴를 등록할 때, 메뉴에 포함된 상품이 등록되어 있지 않으면 예외가 발생한다.")
     @Test
     void createImpossible4() {
-        given(menuGroupDao.existsById(후라이드치킨.getMenuGroupId())).willReturn(true);
+        given(menuGroupRepository.existsById(후라이드치킨.getMenuGroupId())).willReturn(true);
         given(productDao.findById(메뉴상품1.getProductId())).willReturn(Optional.empty());
 
         assertThatThrownBy(() -> menuService.create(후라이드치킨))
@@ -121,7 +121,7 @@ class MenuServiceTest {
     @Test
     void createImpossible5() {
         Menu 가격이_총합보다_큰_메뉴 = MenuFixture.createMenu(1L, "후라이드치킨", 100_000L, 한마리_메뉴그룹, Arrays.asList(메뉴상품1));
-        given(menuGroupDao.existsById(가격이_총합보다_큰_메뉴.getMenuGroupId())).willReturn(true);
+        given(menuGroupRepository.existsById(가격이_총합보다_큰_메뉴.getMenuGroupId())).willReturn(true);
         given(productDao.findById(메뉴상품1.getProductId())).willReturn(Optional.of(상품_후라이드));
 
         assertThatThrownBy(() -> menuService.create(가격이_총합보다_큰_메뉴))
