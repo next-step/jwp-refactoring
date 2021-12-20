@@ -1,0 +1,42 @@
+package kitchenpos.product.domain;
+
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+@Entity
+public class Product {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+
+	@Embedded
+	private ProductName name;
+
+	@Embedded
+	private ProductPrice price;
+
+	protected Product() {
+	}
+
+	public static Product of(ProductName name, ProductPrice price) {
+		Product product = new Product();
+		product.name = name;
+		product.price = price;
+		return product;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public ProductName getName() {
+		return name;
+	}
+
+	public ProductPrice getPrice() {
+		return price;
+	}
+}

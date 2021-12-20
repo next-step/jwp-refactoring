@@ -3,6 +3,8 @@ package kitchenpos.product.dto;
 import java.math.BigDecimal;
 
 import kitchenpos.domain.Product;
+import kitchenpos.product.domain.ProductName;
+import kitchenpos.product.domain.ProductPrice;
 
 public class ProductCreateRequest {
 	private String name;
@@ -37,5 +39,9 @@ public class ProductCreateRequest {
 		product.setName(name);
 		product.setPrice(price);
 		return product;
+	}
+
+	public kitchenpos.product.domain.Product toToBeProduct() {
+		return kitchenpos.product.domain.Product.of(ProductName.of(name), ProductPrice.of(price));
 	}
 }

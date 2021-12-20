@@ -2,6 +2,8 @@ package kitchenpos.product.dto;
 
 import java.math.BigDecimal;
 
+import kitchenpos.product.domain.Product;
+
 public class ProductDto {
 	private Long id;
 	private String name;
@@ -14,6 +16,14 @@ public class ProductDto {
 		this.id = id;
 		this.name = name;
 		this.price = price;
+	}
+
+	public static ProductDto of(Product product) {
+		ProductDto dto = new ProductDto();
+		dto.id = product.getId();
+		dto.name = product.getName().getValue();
+		dto.price = product.getPrice().getValue();
+		return dto;
 	}
 
 	public Long getId() {
