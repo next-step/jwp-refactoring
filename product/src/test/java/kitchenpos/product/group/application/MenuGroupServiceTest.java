@@ -9,7 +9,8 @@ import static org.mockito.Mockito.when;
 
 import kichenpos.common.domain.Name;
 import kitchenpos.product.group.domain.MenuGroup;
-import kitchenpos.product.group.domain.MenuGroupRepository;
+import kitchenpos.product.group.domain.MenuGroupCommandService;
+import kitchenpos.product.group.domain.MenuGroupQueryService;
 import kitchenpos.product.group.ui.request.MenuGroupRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,10 +22,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @DisplayName("메뉴 그룹 서비스")
 @ExtendWith(MockitoExtension.class)
+@SuppressWarnings("NonAsciiCharacters")
 class MenuGroupServiceTest {
 
     @Mock
-    private MenuGroupRepository menuGroupRepository;
+    private MenuGroupCommandService commandService;
+    @Mock
+    private MenuGroupQueryService queryService;
 
     @InjectMocks
     private MenuGroupService menuGroupService;
@@ -36,14 +40,14 @@ class MenuGroupServiceTest {
         MenuGroupRequest request = new MenuGroupRequest("두마리메뉴");
 
         MenuGroup 두마리메뉴 = 두마리메뉴();
-        when(menuGroupRepository.save(any())).thenReturn(두마리메뉴);
+        when(commandService.save(any())).thenReturn(두마리메뉴);
 
         //when
         menuGroupService.create(request);
 
         //then
         ArgumentCaptor<MenuGroup> captor = ArgumentCaptor.forClass(MenuGroup.class);
-        verify(menuGroupRepository, only()).save(captor.capture());
+        verify(commandService, only()).save(captor.capture());
         assertThat(captor.getValue())
             .extracting(MenuGroup::name)
             .isEqualTo(Name.from(request.getName()));
@@ -56,6 +60,6 @@ class MenuGroupServiceTest {
         menuGroupService.list();
 
         //then
-        verify(menuGroupRepository, only()).findAll();
+        verify(queryService, only()).findAll();
     }
 }
