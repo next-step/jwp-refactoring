@@ -13,6 +13,14 @@ public class Order {
     public Order() {
     }
 
+    private Order(Long orderTableId, String orderStatus, LocalDateTime orderedTime,
+        List<OrderLineItem> orderLineItems) {
+        this.orderTableId = orderTableId;
+        this.orderStatus = orderStatus;
+        this.orderedTime = orderedTime;
+        this.orderLineItems = orderLineItems;
+    }
+
     public Order(Long id, Long orderTableId, String orderStatus, LocalDateTime orderedTime,
         List<OrderLineItem> orderLineItems) {
         this.id = id;
@@ -20,6 +28,10 @@ public class Order {
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
         this.orderLineItems = orderLineItems;
+    }
+
+    public static Order of(Long orderTableId, String orderStatus, List<OrderLineItem> orderLineItems) {
+        return new Order(orderTableId, orderStatus, LocalDateTime.now(), orderLineItems);
     }
 
     public Long getId() {
