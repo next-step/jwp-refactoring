@@ -12,7 +12,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import kichenpos.common.domain.Quantity;
 import kitchenpos.product.group.domain.MenuGroup;
 import kitchenpos.product.group.domain.MenuGroupQueryService;
@@ -136,15 +138,24 @@ class MenuServiceTest {
     @Test
     @DisplayName("메뉴들을 조회할 수 있다.")
     void list() {
-        //given
-        Menu 이십원_후라이드치킨_두마리세트 = 이십원_후라이드치킨_두마리세트();
-        when(menuQueryService.findAll()).thenReturn(Collections.singletonList(이십원_후라이드치킨_두마리세트));
-
         //when
         menuService.list();
 
         //then
         verify(menuQueryService, only()).findAll();
+    }
+
+    @Test
+    @DisplayName("ids 목록으로 메뉴들을 조회할 수 있다.")
+    void listByIds() {
+        //given
+        List<Long> ids = Arrays.asList(1L, 2L);
+
+        //when
+        menuService.listByIds(ids);
+
+        //then
+        verify(menuQueryService, only()).findAllById(ids);
     }
 
     private void requestedMenuSave(MenuRequest menuRequest) {

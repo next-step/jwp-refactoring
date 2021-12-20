@@ -3,6 +3,8 @@ package kitchenpos.product.menu.domain;
 import static org.mockito.Mockito.only;
 import static org.mockito.Mockito.verify;
 
+import java.util.Arrays;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,5 +30,18 @@ class MenuQueryServiceTest {
 
         //then
         verify(menuRepository, only()).findAll();
+    }
+
+    @Test
+    @DisplayName("id 목록으로 메뉴들 데이터 가져오기")
+    void findAllById() {
+        //given
+        List<Long> ids = Arrays.asList(1L, 2L);
+
+        //when
+        queryService.findAllById(ids);
+
+        //then
+        verify(menuRepository, only()).findAllById(ids);
     }
 }

@@ -54,22 +54,31 @@ public class MenuAcceptanceStep {
     }
 
     public static ExtractableResponse<Response> 메뉴_목록_조회_요청() {
+        return 메뉴_목록_조회_요청(Collections.emptyList());
+    }
+
+    public static ExtractableResponse<Response> 메뉴_목록_조회_요청(List<Long> ids) {
         return RestAssured.given().log().all()
+            .param("ids", ids)
             .when()
             .get("/api/menus")
             .then().log().all()
             .extract();
     }
 
-    public static void 메뉴_목록_조회_됨(ExtractableResponse<Response> response, MenuResponse menu) {
+    public static void 메뉴_목록_조회_됨(
+        ExtractableResponse<Response> response, List<MenuResponse> expectedMenus) {
         List<MenuResponse> menus = response.as(new TypeRef<List<MenuResponse>>() {
         });
         assertAll(
             () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
             () -> assertThat(menus)
-                .first()
+                .hasSize(expectedMenus.size())
                 .extracting(MenuResponse::getId)
-                .isEqualTo(menu.getId())
+                .containsExactly(
+                    expectedMenus.stream()
+                        .map(MenuResponse::getId)
+                        .toArray(Long[]::new))
         );
     }
 }

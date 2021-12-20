@@ -17,4 +17,8 @@ public class MenuQueryService {
     public List<Menu> findAll() {
         return menuRepository.findAll();
     }
+
+    public List<Menu> findAllById(List<Long> ids) {
+        return menuRepository.findAllById(ids);
+    }
 }

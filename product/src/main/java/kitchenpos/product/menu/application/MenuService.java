@@ -42,6 +42,10 @@ public class MenuService {
         return MenuResponse.listFrom(menuQueryService.findAll());
     }
 
+    public List<MenuResponse> listByIds(List<Long> ids) {
+        return MenuResponse.listFrom(menuQueryService.findAllById(ids));
+    }
+
     private Menu newMenu(MenuRequest request) {
         return Menu.of(
             request.name(),

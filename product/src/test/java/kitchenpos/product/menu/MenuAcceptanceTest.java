@@ -12,6 +12,8 @@ import static kitchenpos.product.product.step.ProductAcceptanceStep.상품_등�
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.Collections;
 import kitchenpos.product.AcceptanceTest;
 import kitchenpos.product.group.ui.response.MenuGroupResponse;
 import kitchenpos.product.menu.ui.response.MenuResponse;
@@ -59,6 +61,26 @@ class MenuAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 메뉴_목록_조회_요청();
 
         //then
-        메뉴_목록_조회_됨(response, menu);
+        메뉴_목록_조회_됨(response, Collections.singletonList(menu));
+    }
+
+    @Test
+    @DisplayName("id 목록으로 원하는 메뉴들을 조회할 수 있다.")
+    void list_ids() {
+        //given
+        MenuResponse firstMenu = 메뉴_등록_되어_있음("첫번째메뉴", BigDecimal.TEN,
+            두마리메뉴.getId(), 후라이드치킨.getId(), 3L);
+        MenuResponse secondMenu = 메뉴_등록_되어_있음("두번째메뉴", BigDecimal.TEN,
+            두마리메뉴.getId(), 후라이드치킨.getId(), 3L);
+
+        메뉴_등록_되어_있음("세번째메뉴", BigDecimal.TEN,
+            두마리메뉴.getId(), 후라이드치킨.getId(), 3L);
+
+        //when
+        ExtractableResponse<Response> response =
+            메뉴_목록_조회_요청(Arrays.asList(firstMenu.getId(), secondMenu.getId()));
+
+        //then
+        메뉴_목록_조회_됨(response, Arrays.asList(firstMenu, secondMenu));
     }
 }
