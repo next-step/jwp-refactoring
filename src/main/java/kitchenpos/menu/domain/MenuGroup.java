@@ -28,6 +28,11 @@ public class MenuGroup extends BaseEntity {
         return new MenuGroup(name);
     }
 
+    public boolean equalName(String menuGroupName) {
+        return this.name.equals(menuGroupName);
+    }
+
+
     public Long getId() {
         return id;
     }
@@ -44,7 +49,4 @@ public class MenuGroup extends BaseEntity {
         this.name = MustHaveName.valueOf(name);
     }
 
-    public boolean equalName(String menuGroupName) {
-        return this.name.equals(menuGroupName);
-    }
 }

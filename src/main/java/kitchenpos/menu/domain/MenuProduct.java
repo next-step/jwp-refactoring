@@ -111,6 +111,10 @@ public class MenuProduct extends BaseEntity {
         return Objects.hash(seq);
     }
 
+
+
+
+
     public Long getSeq() {
         return seq;
     }

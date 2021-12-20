@@ -23,7 +23,7 @@ public class MenuGroupResponse {
 
     public static List<MenuGroupResponse> ofList(List<MenuGroup> menuGroups) {
         return menuGroups.stream()
-            .map(it -> MenuGroupResponse.of(it))
+            .map(MenuGroupResponse::of)
             .collect(Collectors.toList());
     }
 

@@ -72,25 +72,6 @@ public class OrderTable extends BaseEntity {
         removeTableGroup();
     }
 
-    private void validateUpdateEmpty() {
-        if (Objects.nonNull(tableGroup)) {
-            throw new CannotUpdatedException("단체지정된 테이블은 변경할 수 없습니다.");
-        }
-        // TODO: 2021/12/20 orders와 양방향 매핑후 주문이 진행중인(조리,식사) 테이블은 상태를 변경할 수 없다.
-        // validation check
-//        if (orderDao.existsByOrderTableIdAndOrderStatusIn(
-//            orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-//            throw new IllegalArgumentException();
-//        }
-
-    }
-    
-    private void validateUpdateNumberOfGuests() {
-        if (empty.isEmpty()) {
-            throw new CannotUpdatedException("빈 테이블의 손님수는 변경 할 수 없습니다.");
-        }
-    }
-
     public void setEmpty(Boolean empty) {
         this.empty = EmptyTable.valueOf(empty);
     }
@@ -114,6 +95,24 @@ public class OrderTable extends BaseEntity {
         return empty.equals(Boolean.FALSE);
     }
 
+    private void validateUpdateEmpty() {
+        if (Objects.nonNull(tableGroup)) {
+            throw new CannotUpdatedException("단체지정된 테이블은 변경할 수 없습니다.");
+        }
+        // TODO: 2021/12/20 orders와 양방향 매핑후 주문이 진행중인(조리,식사) 테이블은 상태를 변경할 수 없다.
+        // validation check
+//        if (orderDao.existsByOrderTableIdAndOrderStatusIn(
+//            orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
+//            throw new IllegalArgumentException();
+//        }
+
+    }
+
+    private void validateUpdateNumberOfGuests() {
+        if (empty.isEmpty()) {
+            throw new CannotUpdatedException("빈 테이블의 손님수는 변경 할 수 없습니다.");
+        }
+    }
 
 
 

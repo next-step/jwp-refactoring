@@ -25,7 +25,7 @@ public class ProductResponse {
 
     public static List<ProductResponse> ofList(List<Product> entities) {
         return entities.stream()
-            .map(it -> ProductResponse.of(it))
+            .map(ProductResponse::of)
             .collect(Collectors.toList());
     }
 

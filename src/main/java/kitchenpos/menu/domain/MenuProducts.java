@@ -16,17 +16,6 @@ public class MenuProducts {
     protected MenuProducts() {
     }
 
-    public void add(MenuProduct menuProduct) {
-        if (!contains(menuProduct)) {
-            menuProducts.add(menuProduct);
-        }
-    }
-
-    public void remove(MenuProduct menuProduct) {
-        menuProduct.removeMenu();
-        this.menuProducts.remove(menuProduct);
-    }
-
     public List<MenuProduct> get() {
         return this.menuProducts;
     }
@@ -36,6 +25,17 @@ public class MenuProducts {
             .map(it -> it.getPrice().get())
             .reduce(BigDecimal.ZERO, BigDecimal::add);
         return Price.valueOf(sum);
+    }
+
+    protected void add(MenuProduct menuProduct) {
+        if (!contains(menuProduct)) {
+            menuProducts.add(menuProduct);
+        }
+    }
+
+    protected void remove(MenuProduct menuProduct) {
+        menuProduct.removeMenu();
+        this.menuProducts.remove(menuProduct);
     }
 
     private boolean contains(MenuProduct menuProduct) {

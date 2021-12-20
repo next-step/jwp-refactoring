@@ -31,7 +31,7 @@ public class MenuResponse {
 
     public static List<MenuResponse> ofList(List<Menu> menus) {
         return menus.stream()
-            .map(it -> MenuResponse.of(it))
+            .map(MenuResponse::of)
             .collect(Collectors.toList());
     }
 

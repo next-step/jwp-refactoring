@@ -1,7 +1,6 @@
 package kitchenpos.table.domain;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.Column;
@@ -10,8 +9,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import kitchenpos.exception.InvalidArgumentException;
 
 @Entity
 public class TableGroup {
@@ -61,10 +58,6 @@ public class TableGroup {
             orderTable.setTableGroup(this);
         }
     }
-
-
-
-
 
     @Override
     public boolean equals(Object o) {

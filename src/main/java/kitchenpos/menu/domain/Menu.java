@@ -54,14 +54,6 @@ public class Menu extends BaseEntity {
         this.menuProducts.remove(menuProduct);
     }
 
-    protected void addMenuProduct(MenuProduct menuProduct) {
-        menuProducts.add(menuProduct);
-
-        if (!menuProduct.equalMenu(this)) {
-            menuProduct.setMenu(this);
-        }
-    }
-
     public void addMenuProducts(List<MenuProduct> menuProducts) {
         for (MenuProduct menuProduct: menuProducts) {
             addMenuProduct(menuProduct);
@@ -71,6 +63,15 @@ public class Menu extends BaseEntity {
 
     public MenuGroup getMenuGroup() {
         return this.menuGroup;
+    }
+
+
+    protected void addMenuProduct(MenuProduct menuProduct) {
+        menuProducts.add(menuProduct);
+
+        if (!menuProduct.equalMenu(this)) {
+            menuProduct.setMenu(this);
+        }
     }
 
     private void validatePrice() {
@@ -84,6 +85,10 @@ public class Menu extends BaseEntity {
             throw new InvalidArgumentException("메뉴그룹은 필수입니다.");
         }
     }
+
+
+
+
 
     public Long getId() {
         return id;

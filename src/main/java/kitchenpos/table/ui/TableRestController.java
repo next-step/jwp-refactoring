@@ -23,16 +23,12 @@ public class TableRestController {
     public ResponseEntity<OrderTableResponse> create(@RequestBody final OrderTableRequest orderTable) {
         final OrderTableResponse created = tableService.create(orderTable);
         final URI uri = URI.create("/api/tables/" + created.getId());
-        return ResponseEntity.created(uri)
-                .body(created)
-                ;
+        return ResponseEntity.created(uri).body(created);
     }
 
     @GetMapping("/api/tables")
     public ResponseEntity<List<OrderTableResponse>> list() {
-        return ResponseEntity.ok()
-                .body(tableService.list())
-                ;
+        return ResponseEntity.ok().body(tableService.list());
     }
 
     @PutMapping("/api/tables/{orderTableId}/empty")
@@ -48,8 +44,6 @@ public class TableRestController {
             @PathVariable final Long orderTableId,
             @RequestParam final Integer numberOfGuests
     ) {
-        return ResponseEntity.ok()
-                .body(tableService.changeNumberOfGuests(orderTableId, numberOfGuests))
-                ;
+        return ResponseEntity.ok().body(tableService.changeNumberOfGuests(orderTableId, numberOfGuests));
     }
 }

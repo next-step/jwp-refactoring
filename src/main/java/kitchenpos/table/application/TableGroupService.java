@@ -38,12 +38,6 @@ public class TableGroupService {
         return TableGroupResponse.of(persist);
     }
 
-    private void validateTableSize(List<Long> ids, List<OrderTable> orderTables) {
-        if (ids.size() != orderTables.size()) {
-            throw new CannotCreateException("등록되어 있는 테이블만 단체지정이 가능합니다.");
-        }
-    }
-
     @Transactional
     public void ungroup(final Long tableGroupId) {
         final TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
@@ -53,5 +47,11 @@ public class TableGroupService {
 
     private List<OrderTable> findOrderTables(List<Long> ids) {
         return orderTableRepository.findAllByIdIn(ids);
+    }
+
+    private void validateTableSize(List<Long> ids, List<OrderTable> orderTables) {
+        if (ids.size() != orderTables.size()) {
+            throw new CannotCreateException("등록되어 있는 테이블만 단체지정이 가능합니다.");
+        }
     }
 }

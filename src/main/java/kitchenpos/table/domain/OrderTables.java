@@ -45,6 +45,10 @@ public class OrderTables {
         validateTableGroup(orderTables);
     }
 
+    public boolean isEmpty() {
+        return orderTables.isEmpty();
+    }
+
     private void validateTableSize(List<OrderTable> orderTables) {
         if (orderTables.size() < MIN_SIZE) {
             throw new InvalidArgumentException("두 테이블 이상이어야 단체지정이 가능합니다.");
@@ -63,9 +67,5 @@ public class OrderTables {
             .anyMatch(OrderTable::isNotEmptyTableGroup)) {
             throw new InvalidArgumentException("다른 단체에 속한 테이블이 있습니다.");
         }
-    }
-
-    public boolean isEmpty() {
-        return orderTables.isEmpty();
     }
 }

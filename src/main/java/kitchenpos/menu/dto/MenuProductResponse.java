@@ -26,7 +26,7 @@ public class MenuProductResponse {
 
     public static List<MenuProductResponse> ofList(List<MenuProduct> menuProducts) {
         return menuProducts.stream()
-            .map(it -> MenuProductResponse.of(it))
+            .map(MenuProductResponse::of)
             .collect(Collectors.toList());
     }
 
