@@ -79,7 +79,7 @@ public class TableServiceTest {
 
         assertThat(emptyTable.getNumberOfGuests()).isEqualTo(0);
 
-        emptyTable.setEmpty(Boolean.FALSE);
+        emptyTable.updateEmpty(Boolean.FALSE);
         when(orderTableRepository.findById(anyLong()))
             .thenReturn(Optional.of(emptyTable));
 

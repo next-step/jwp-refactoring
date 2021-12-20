@@ -84,14 +84,6 @@ public class OrderTable extends BaseEntity {
         removeTableGroup();
     }
 
-    public void setEmpty(Boolean empty) {
-        this.empty = EmptyTable.valueOf(empty);
-    }
-
-    public void setNumberOfGuests(Integer numberOfGuests) {
-        this.numberOfGuests = GuestNumber.valueOf(numberOfGuests);
-    }
-
     public boolean equalTableGroup(TableGroup tableGroup) {
         if (Objects.isNull(this.tableGroup)) {
             return false;

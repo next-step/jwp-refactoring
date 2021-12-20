@@ -36,7 +36,7 @@ public class TableService {
     public OrderTableResponse changeEmpty(final Long orderTableId, final Boolean emptyTable) {
         final OrderTable savedOrderTable = findOrderTable(orderTableId);
 
-        savedOrderTable.setEmpty(emptyTable);
+        savedOrderTable.updateEmpty(emptyTable);
 
         return OrderTableResponse.of(savedOrderTable);
     }
@@ -46,7 +46,7 @@ public class TableService {
 
         final OrderTable savedOrderTable = findOrderTable(orderTableId);
 
-        savedOrderTable.setNumberOfGuests(guestNumber);
+        savedOrderTable.updateNumberOfGuests(guestNumber);
 
         return OrderTableResponse.of(savedOrderTable);
     }
