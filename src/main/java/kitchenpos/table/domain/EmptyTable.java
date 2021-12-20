@@ -10,7 +10,7 @@ public final class EmptyTable {
     @Column(nullable = false)
     private Boolean empty;
 
-    public EmptyTable() {
+    protected EmptyTable() {
     }
 
     private EmptyTable(Boolean empty) {
@@ -23,7 +23,7 @@ public final class EmptyTable {
     }
 
     public Boolean isEmpty() {
-        return empty;
+        return empty.booleanValue();
     }
 
     private void validate(Boolean empty) {

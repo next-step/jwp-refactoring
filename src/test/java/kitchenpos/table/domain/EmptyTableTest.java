@@ -7,6 +7,7 @@ import kitchenpos.exception.InvalidArgumentException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+@DisplayName("테이블 상태 테스트")
 class EmptyTableTest {
 
     @Test

@@ -9,7 +9,7 @@ import java.util.Arrays;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;
-
+@DisplayName("테이블 그룹 도메인 테스트")
 class TableGroupTest {
 
     final TableGroup tableGroup = TableGroup.create();

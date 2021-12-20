@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 
+@DisplayName("손님 수 클래스 테스트")
 class GuestNumberTest {
 
     @DisplayName("손님의 수는 0 이상 이다.")

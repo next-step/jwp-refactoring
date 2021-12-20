@@ -1,7 +1,6 @@
 package kitchenpos.table.acceptance;
 
 import static kitchenpos.table.acceptance.TableAcceptanceTest.빈테이블_등록됨;
-import static kitchenpos.table.acceptance.TableAcceptanceTest.테이블_목록_조회_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -20,6 +19,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+@DisplayName("테이블 그룹 인수 테스트")
 public class TableGroupAcceptanceTest extends AcceptanceTest {
     private static final String URL = "/api/table-groups";
 
@@ -36,22 +36,10 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
         // 단체지정 됨
         단체지정됨(saveResponse, orderTables);
 
-        // 테이블 목록 조회 요청
-        ExtractableResponse<Response> response = 테이블_목록_조회_요청();
-        // 테이블 목록 조회됨
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.jsonPath().getList(".", OrderTableResponse.class).size()).isEqualTo(2);
-
-
         // 단체지정 해제(삭제)
         ExtractableResponse<Response> deleteResponse = 단제지정_해제_요청(saveResponse.jsonPath().getLong("id"));
         // 단제지정 해제됨
         단체지정_해제됨(deleteResponse);
-
-        // 테이블 목록 조회 요청
-        ExtractableResponse<Response> tableResponse = 테이블_목록_조회_요청();
-        // 테이블 목록 조회됨
-//        테이블_단체지정_해제_확인(tableResponse.jsonPath().getList(".", OrderTableResponse.class));
 
     }
 
@@ -97,11 +85,4 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
-//    private void 테이블_단체지정_해제_확인(List<OrderTableResponse> tables) {
-//        long count = tables.stream()
-//            .filter(it -> it.getTableGroupId() != null)
-//            .count();
-//
-//        assertThat(count).isEqualTo(0);
-//    }
 }

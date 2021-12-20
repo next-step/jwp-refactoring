@@ -9,13 +9,10 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -24,6 +21,7 @@ import org.junit.jupiter.api.TestFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+@DisplayName("테이블 인수 테스트")
 public class TableAcceptanceTest extends AcceptanceTest {
     private static final String URL = "/api/tables";
 
