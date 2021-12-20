@@ -1,5 +1,7 @@
 package kitchenpos.ordertable.dto;
 
+import kitchenpos.ordertable.domain.OrderTable;
+
 public class OrderTableDto {
 	private Long id;
 	private Long tableGroupId;
@@ -14,6 +16,15 @@ public class OrderTableDto {
 		this.tableGroupId = tableGroupId;
 		this.numberOfGuests = numberOfGuests;
 		this.empty = empty;
+	}
+
+	public static OrderTableDto of(OrderTable orderTable) {
+		OrderTableDto dto = new OrderTableDto();
+		dto.id = orderTable.getId();
+		dto.tableGroupId = orderTable.getOrderTableGroupId();
+		dto.numberOfGuests = orderTable.getNumberOfGuests().getValue();
+		dto.empty = orderTable.isEmpty();
+		return dto;
 	}
 
 	public Long getId() {

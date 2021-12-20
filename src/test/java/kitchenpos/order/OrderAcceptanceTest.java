@@ -32,6 +32,7 @@ import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.ordertable.dto.OrderTableDto;
 import kitchenpos.product.dto.ProductDto;
 
+@DisplayName("주문 인수 테스트")
 public class OrderAcceptanceTest extends AcceptanceTest {
 
 	private static ExtractableResponse<Response> 주문_등록_요청(OrderRequest request) {

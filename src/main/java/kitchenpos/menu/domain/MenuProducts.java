@@ -1,6 +1,7 @@
 package kitchenpos.menu.domain;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -14,7 +15,7 @@ import kitchenpos.common.Price;
 public class MenuProducts {
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name = "menu_id", nullable = false)
-	private List<MenuProduct> values;
+	private List<MenuProduct> values = new ArrayList<>();
 
 	protected MenuProducts() {
 	}
