@@ -48,6 +48,13 @@ public class Order {
         this.orderStatus = orderStatus;
     }
 
+    public static Order create(OrderTable orderTable) {
+        if (orderTable.isEmpty()) {
+            throw new IllegalArgumentException("테이블이 비어있는 상태에서는 주문을 생성할 수 없습니다");
+        }
+        return new Order(orderTable, OrderStatus.COOKING);
+    }
+
     public boolean isStarted() {
         return orderStatus == OrderStatus.MEAL || orderStatus == OrderStatus.COOKING;
     }

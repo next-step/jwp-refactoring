@@ -81,16 +81,6 @@ public class OrderTable {
         this.tableGroup = tableGroup;
     }
 
-    public Order createOrder() {
-        if (isEmpty()) {
-            throw new IllegalArgumentException("테이블이 비어있는 상태에서는 주문을 생성할 수 없습니다");
-        }
-
-        Order order = new Order(this, OrderStatus.COOKING);
-        orders.add(order);
-        return order;
-    }
-
     public void unsetTableGroup() {
         this.tableGroup = null;
     }
