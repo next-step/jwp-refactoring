@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import kitchenpos.application.fixture.ProductFixture;
@@ -33,9 +34,9 @@ class ProductServiceTest {
 
     @BeforeEach
     void setUp() {
-        상품_후라이드 = ProductFixture.create(1L, "후라이드", 15_000L);
-        상품_치킨무 = ProductFixture.create(2L, "치킨무", 500L);
-        상품_양념소스 = ProductFixture.create(3L, "양념소스", 500L);
+        상품_후라이드 = ProductFixture.create(1L, "후라이드", BigDecimal.valueOf(15000L));
+        상품_치킨무 = ProductFixture.create(2L, "치킨무", BigDecimal.valueOf(500L));
+        상품_양념소스 = ProductFixture.create(3L, "양념소스", BigDecimal.valueOf(500L));
     }
 
     @DisplayName("상품을 등록한다.")
@@ -51,8 +52,7 @@ class ProductServiceTest {
     @DisplayName("상품을 등록할 때 가격이 null이면 예외가 발생한다.")
     @Test
     void createInvalidPrice1() {
-        Product nullPriceProduct = 상품_후라이드;
-        nullPriceProduct.setPrice(null);
+        Product nullPriceProduct = ProductFixture.create(1L, "후라이드", null);
 
         assertThatThrownBy(() -> productService.create(nullPriceProduct))
             .isInstanceOf(IllegalArgumentException.class);
@@ -61,7 +61,7 @@ class ProductServiceTest {
     @DisplayName("상품을 등록할 때 가격이 0보다 작으면 예외가 발생한다.")
     @Test
     void createInvalidPrice2() {
-        Product wrongPriceProduct = ProductFixture.create(1L, "생닭", -1000L);
+        Product wrongPriceProduct = ProductFixture.create(1L, "생닭", BigDecimal.valueOf(-1000L));
 
         assertThatThrownBy(() -> productService.create(wrongPriceProduct))
             .isInstanceOf(IllegalArgumentException.class);

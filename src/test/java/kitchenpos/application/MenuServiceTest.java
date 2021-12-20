@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -57,7 +58,7 @@ class MenuServiceTest {
 
     @BeforeEach
     void setUp() {
-        상품_후라이드 = ProductFixture.create(1L, "후라이드", 16_000L);
+        상품_후라이드 = ProductFixture.create(1L, "후라이드", BigDecimal.valueOf(16_000L));
 
         한마리_메뉴그룹 = MenuGroupFixture.create(1L, "한마리 메뉴");
         메뉴상품1 = MenuProductFixture.createMenuProduct(1L, 1L, 1L);
