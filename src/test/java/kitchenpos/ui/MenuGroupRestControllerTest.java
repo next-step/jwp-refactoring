@@ -3,7 +3,7 @@ package kitchenpos.ui;
 import kitchenpos.menuGroup.aplication.MenuGroupService;
 import kitchenpos.menuGroup.domain.MenuGroup;
 import kitchenpos.menuGroup.ui.MenuGroupRestController;
-import kitchenpos.fixture.MenuGroupTestFixture;
+import kitchenpos.fixture.MenuGroupFixture;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,8 +30,8 @@ public class MenuGroupRestControllerTest {
     @DisplayName("메뉴 그룹 목록을 가져옴")
     @Test
     public void list() throws Exception {
-        MenuGroup 치킨류 = MenuGroupTestFixture.생성(1L,"치킨류");
-        MenuGroup 피자류 = MenuGroupTestFixture.생성(1L,"피자류");
+        MenuGroup 치킨류 = MenuGroupFixture.생성(1L,"치킨류");
+        MenuGroup 피자류 = MenuGroupFixture.생성(1L,"피자류");
         given(menuGroupService.list()).willReturn(Arrays.asList(치킨류, 피자류));
 
         mockMvc.perform(get("/api/menu-groups"))

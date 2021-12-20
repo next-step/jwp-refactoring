@@ -32,7 +32,7 @@ public class OrderService {
     public Order create(final OrderRequest orderRequest) {
         final OrderTable orderTable = findOrderTable(orderRequest.getOrderTableId());
         final Order order = Order.of(orderTable);
-        final List<OrderLineItem> orderLineItems = toOrderLineItem(orderRequest.getOrderLineItems(), order);
+        final List<OrderLineItem> orderLineItems = toOrderLineItems(orderRequest.getOrderLineItems(), order);
         order.addLineItems(orderLineItems);
 
         final Order savedOrder = orderRepository.save(order);
@@ -50,8 +50,6 @@ public class OrderService {
 
         savedOrder.updateOrderStatus(order.getOrderStatus());
 
-        //orderRepository.save(savedOrder);
-
         return savedOrder;
     }
 
@@ -61,7 +59,7 @@ public class OrderService {
         return result;
     }
 
-    private List<OrderLineItem> toOrderLineItem(List<OrderLineItemRequest> orderLineItemRequests, Order order) {
+    private List<OrderLineItem> toOrderLineItems(List<OrderLineItemRequest> orderLineItemRequests, Order order) {
         if (CollectionUtils.isEmpty(orderLineItemRequests)) {
             throw new IllegalArgumentException();
         }

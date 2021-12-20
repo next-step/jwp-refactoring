@@ -3,7 +3,7 @@ package kitchenpos.menuGroup.application;
 import kitchenpos.menuGroup.domain.MenuGroup;
 import kitchenpos.menuGroup.aplication.MenuGroupService;
 import kitchenpos.menuGroup.domain.MenuGroupRepository;
-import kitchenpos.fixture.MenuGroupTestFixture;
+import kitchenpos.fixture.MenuGroupFixture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,9 +33,9 @@ public class MenuGroupServiceTest {
 
     @BeforeEach
     void setUp() {
-        치킨 = MenuGroupTestFixture.생성(1L,"치킨");
+        치킨 = MenuGroupFixture.생성(1L,"치킨");
 
-        피자 = MenuGroupTestFixture.생성(2L,"피자");
+        피자 = MenuGroupFixture.생성(2L,"피자");
     }
 
     @DisplayName("메뉴 그룹 생성")

@@ -1,8 +1,7 @@
 package kitchenpos.product.application;
 
-import kitchenpos.fixture.ProductTestFixture;
+import kitchenpos.fixture.ProductFixture;
 import kitchenpos.product.domain.Product;
-import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -31,7 +30,7 @@ public class ProductServiceTest {
 
     @BeforeEach
     void setUp() {
-        강정치킨 = ProductTestFixture.생성("강정치킨", new BigDecimal("7500"));
+        강정치킨 = ProductFixture.생성("강정치킨", new BigDecimal("7500"));
         강정치킨.setName("강정치킨");
     }
 

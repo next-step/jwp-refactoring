@@ -7,7 +7,7 @@ import kitchenpos.order.dto.OrderRequest;
 
 import java.util.List;
 
-public class OrderTestFixture {
+public class OrderFixture {
     public static Order 생성(OrderTable orderTable){
         return Order.of(orderTable);
     }

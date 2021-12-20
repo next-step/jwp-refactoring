@@ -1,9 +1,10 @@
 package kitchenpos.order.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import kitchenpos.tableGroup.domain.TableGroup;
+
+import javax.persistence.*;
+import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class OrderTable {
@@ -11,9 +12,22 @@ public class OrderTable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long tableGroupId;
+    @ManyToOne
+    private TableGroup tableGroup;
+
+    @Column(nullable = false)
     private int numberOfGuests;
+
+    @Column(nullable = false)
     private boolean empty;
+
+    protected OrderTable() {
+    }
+
+    public OrderTable(int numberOfGuests, boolean empty) {
+        this.numberOfGuests = numberOfGuests;
+        this.empty = empty;
+    }
 
     public Long getId() {
         return id;
@@ -23,12 +37,12 @@ public class OrderTable {
         this.id = id;
     }
 
-    public Long getTableGroupId() {
-        return tableGroupId;
+    public TableGroup getTableGroup() {
+        return tableGroup;
     }
 
-    public void setTableGroupId(final Long tableGroupId) {
-        this.tableGroupId = tableGroupId;
+    public void setTableGroup(TableGroup tableGroup) {
+        this.tableGroup = tableGroup;
     }
 
     public int getNumberOfGuests() {
@@ -36,6 +50,13 @@ public class OrderTable {
     }
 
     public void setNumberOfGuests(final int numberOfGuests) {
+        if (numberOfGuests < 0) {
+            throw new IllegalArgumentException();
+        }
+        if (empty) {
+            throw new IllegalArgumentException();
+        }
+
         this.numberOfGuests = numberOfGuests;
     }
 
@@ -43,7 +64,10 @@ public class OrderTable {
         return empty;
     }
 
-    public void setEmpty(final boolean empty) {
-        this.empty = empty;
+    public void changeEmpty(final boolean empty) {
+        if(Objects.nonNull(tableGroup)){
+            throw new IllegalArgumentException();
+        }
+        this.empty = false;
     }
 }

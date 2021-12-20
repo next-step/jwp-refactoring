@@ -1,5 +1,6 @@
 package kitchenpos.tableGroup.application;
 
+import kitchenpos.fixture.OrderTableFixture;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.tableGroup.domain.TableGroup;
@@ -41,13 +42,9 @@ public class TableGroupServiceTest {
 
     @BeforeEach
     void setUp() {
-        테이블1번 = new OrderTable();
-        테이블1번.setId(1L);
-        테이블1번.setEmpty(true);
+        테이블1번 = OrderTableFixture.생성(0,true);
 
-        테이블2번 = new OrderTable();
-        테이블2번.setId(2L);
-        테이블2번.setEmpty(true);
+        테이블2번 = OrderTableFixture.생성(0,true);
 
         단체_지정 = new TableGroup();
         단체_지정.setId(1L);
@@ -58,9 +55,9 @@ public class TableGroupServiceTest {
     @Test
     void create() {
         given(orderTableRepository.findAllByIdIn(any())).willReturn(Arrays.asList(테이블1번, 테이블2번));
-        given(tableGroupRepository.save(단체_지정)).willReturn(단체_지정);
-        given(orderTableRepository.save(테이블1번)).willReturn(테이블1번);
-        given(orderTableRepository.save(테이블2번)).willReturn(테이블2번);
+        given(tableGroupRepository.save(any())).willReturn(단체_지정);
+        given(orderTableRepository.save(any())).willReturn(테이블1번);
+        given(orderTableRepository.save(any())).willReturn(테이블2번);
 
         TableGroup createTableGroup = tableGroupService.create(단체_지정);
 
@@ -74,9 +71,7 @@ public class TableGroupServiceTest {
     @DisplayName("단체 지정 할 때 주문 테이블이 2개 이상이여야 한다.")
     @Test
     void createOrderTableSizeError() {
-        OrderTable 테이블 = new OrderTable();
-        테이블.setId(3L);
-        테이블.setEmpty(true);
+        OrderTable 테이블 = OrderTableFixture.생성(0,true);
 
         TableGroup 단체_지정_주문_테이블이_1개 = new TableGroup();
         단체_지정_주문_테이블이_1개.setId(2L);
@@ -90,12 +85,8 @@ public class TableGroupServiceTest {
     @DisplayName("단체 지정 할때 주문 테이블은 빈 테이블이어야한다.")
     @Test
     void shouldBeEmptyTable() {
-        OrderTable 손님이_채워진_테이블3번 = new OrderTable();
-        손님이_채워진_테이블3번.setId(3L);
-        손님이_채워진_테이블3번.setEmpty(false);
-        OrderTable 손님이_채워진_테이블4번 = new OrderTable();
-        손님이_채워진_테이블4번.setId(4L);
-        손님이_채워진_테이블4번.setEmpty(false);
+        OrderTable 손님이_채워진_테이블3번 = OrderTableFixture.생성(0,false);
+        OrderTable 손님이_채워진_테이블4번 = OrderTableFixture.생성(0,false);
         TableGroup 단체_지정 = new TableGroup();
         단체_지정.setId(2L);
         단체_지정.setOrderTables(Arrays.asList(손님이_채워진_테이블3번, 손님이_채워진_테이블4번));
@@ -109,48 +100,40 @@ public class TableGroupServiceTest {
     @DisplayName("단체 지정 해체 할 수 있다.")
     @Test
     void ungroup() {
-        OrderTable 테이블3번 = new OrderTable();
-        테이블3번.setId(3L);
-        테이블3번.setEmpty(true);
-        OrderTable 테이블4번 = new OrderTable();
-        테이블4번.setId(4L);
-        테이블4번.setEmpty(true);
+        OrderTable 테이블3번 = OrderTableFixture.생성(0,true);
+        OrderTable 테이블4번 = OrderTableFixture.생성(0,true);
         TableGroup 단체_지정 = new TableGroup();
         단체_지정.setId(2L);
         단체_지정.setOrderTables(Arrays.asList(테이블3번, 테이블4번));
         given(orderTableRepository.findAllByIdIn(any())).willReturn(Arrays.asList(테이블3번, 테이블4번));
         given(tableGroupRepository.save(단체_지정)).willReturn(단체_지정);
-        given(orderTableRepository.save(테이블3번)).willReturn(테이블3번);
-        given(orderTableRepository.save(테이블4번)).willReturn(테이블4번);
+        given(orderTableRepository.save(any())).willReturn(테이블3번);
+        given(orderTableRepository.save(any())).willReturn(테이블4번);
         tableGroupService.create(단체_지정);
         given(orderTableRepository.findAllByTableGroupId(단체_지정.getId())).willReturn(Arrays.asList(테이블3번, 테이블4번));
-        given(orderTableRepository.save(테이블3번)).willReturn(테이블3번);
-        given(orderTableRepository.save(테이블4번)).willReturn(테이블4번);
+        given(orderTableRepository.save(any())).willReturn(테이블3번);
+        given(orderTableRepository.save(any())).willReturn(테이블4번);
 
         tableGroupService.ungroup(단체_지정.getId());
 
         assertAll(
-                () -> assertThat(테이블3번.getTableGroupId()).isEqualTo(null),
-                () -> assertThat(테이블4번.getTableGroupId()).isEqualTo(null)
+                () -> assertThat(테이블3번.getTableGroup()).isEqualTo(null),
+                () -> assertThat(테이블4번.getTableGroup()).isEqualTo(null)
         );
     }
 
     @DisplayName("단체지정 해제는 주문 테이블 계산 완료일때만 가능하다.")
     @Test
     void shouldBeCompletionStatus() {
-        OrderTable 테이블3번 = new OrderTable();
-        테이블3번.setId(3L);
-        테이블3번.setEmpty(true);
-        OrderTable 테이블4번 = new OrderTable();
-        테이블4번.setId(4L);
-        테이블4번.setEmpty(true);
+        OrderTable 테이블3번 = OrderTableFixture.생성(0,true);
+        OrderTable 테이블4번 = OrderTableFixture.생성(0,true);
         TableGroup 단체_지정 = new TableGroup();
         단체_지정.setId(2L);
         단체_지정.setOrderTables(Arrays.asList(테이블3번, 테이블4번));
         given(orderTableRepository.findAllByIdIn(any())).willReturn(Arrays.asList(테이블3번, 테이블4번));
         given(tableGroupRepository.save(단체_지정)).willReturn(단체_지정);
-        given(orderTableRepository.save(테이블3번)).willReturn(테이블3번);
-        given(orderTableRepository.save(테이블4번)).willReturn(테이블4번);
+        given(orderTableRepository.save(any())).willReturn(테이블3번);
+        given(orderTableRepository.save(any())).willReturn(테이블4번);
         tableGroupService.create(단체_지정);
         given(orderTableRepository.findAllByTableGroupId(단체_지정.getId())).willReturn(Arrays.asList(테이블3번, 테이블4번));
         given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any())).willReturn(true);

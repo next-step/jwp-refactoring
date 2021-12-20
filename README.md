@@ -81,7 +81,11 @@
 ### 2단계 - 서비스 리팩터링
 * [ ] 단위 테스트하기 어려운 코드와 단위 테스트 가능한 코드를 분리해 단위 테스트 가능한 코드에 대해 단위 테스트를 구현
 * [ ] 서비스계층의 비즈니스 로직을 도메인 계층으로 변경
-
-#### 개인적으로 하고 싶은거
+* [x] menuService 리팩토링
+* [x] menuGroupService 리팩토링
+* [x] orderService 리팩토링
+* [x] productService 리팩토링
+* [x] tableService 리팩토링
+* [ ] tableGroupService 리팩토링
 * [ ] DTO 를 이용하여 Response, Request 분리
 * [ ] 인수테스트 작성

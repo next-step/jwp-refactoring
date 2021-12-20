@@ -1,9 +1,11 @@
 package kitchenpos.tableGroup.application;
 
+import kitchenpos.fixture.OrderTableFixture;
 import kitchenpos.order.application.TableService;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.OrderTableRepository;
+import kitchenpos.order.dto.OrderTableRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,21 +35,20 @@ public class TableServiceTest {
     private TableService tableService;
 
     private OrderTable 주문테이블;
+    private OrderTableRequest 주문테이블_Request;
 
     @BeforeEach
     void setUp() {
-        주문테이블 = new OrderTable();
-        주문테이블.setId(1L);
-        주문테이블.setEmpty(false);
-        주문테이블.setNumberOfGuests(0);
+        주문테이블 = OrderTableFixture.생성(0,false);
+        주문테이블_Request =OrderTableFixture.샘플_Request();
     }
 
     @DisplayName("주문 테이블은 방문한 손님 수,빈 테이블 상태로 등록 할 수 있다.")
     @Test
     void create() {
-        given(orderTableRepository.save(주문테이블)).willReturn(주문테이블);
+        given(orderTableRepository.save(any())).willReturn(주문테이블);
 
-        OrderTable createOrderTable = tableService.create(주문테이블);
+        OrderTable createOrderTable = tableService.create(주문테이블_Request);
 
         assertThat(createOrderTable).isNotNull();
     }
@@ -68,17 +69,12 @@ public class TableServiceTest {
     @DisplayName("주문 테이블 상태를 변경한다.")
     @Test
     void changeEmpty() {
-        OrderTable 빈주문테이블 = new OrderTable();
-        빈주문테이블.setId(1L);
-        빈주문테이블.setEmpty(true);
-        빈주문테이블.setNumberOfGuests(0);
-        OrderTable 주문테이블_상태변경 = new OrderTable();
-        주문테이블_상태변경.setEmpty(false);
+        OrderTable 빈주문테이블 = OrderTableFixture.생성(0,true);
 
-        given(orderTableRepository.findById(1L)).willReturn(java.util.Optional.of(빈주문테이블));
+        given(orderTableRepository.findById(any())).willReturn(java.util.Optional.of(빈주문테이블));
         given(orderTableRepository.save(any())).willReturn(빈주문테이블);
 
-        OrderTable changeOrderTable = tableService.changeEmpty(1L, 주문테이블_상태변경);
+        OrderTable changeOrderTable = tableService.changeEmpty(any(), OrderTableFixture.생성_Request(0,false));
 
         assertThat(changeOrderTable.isEmpty()).isFalse();
 
@@ -87,30 +83,23 @@ public class TableServiceTest {
     @DisplayName("주문 테이블 상태를 요리중이거나 식사중일땐 바꿀 수 없다.")
     @Test
     void changeError() {
-        OrderTable 빈주문테이블 = new OrderTable();
-        빈주문테이블.setId(2L);
-        빈주문테이블.setEmpty(true);
-        빈주문테이블.setNumberOfGuests(0);
-        OrderTable 주문테이블_상태변경 = new OrderTable();
-        주문테이블_상태변경.setEmpty(false);
+        OrderTable 빈주문테이블 = OrderTableFixture.생성(0,true);
 
-        given(orderTableRepository.findById(2L)).willReturn(java.util.Optional.of(빈주문테이블));
+        given(orderTableRepository.findById(any())).willReturn(java.util.Optional.of(빈주문테이블));
         given(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), any())).willReturn(true);
 
         assertThatThrownBy(
-                () -> tableService.changeEmpty(2L, 주문테이블_상태변경)
+                () -> tableService.changeEmpty(any(), OrderTableFixture.생성_Request(0,false))
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("방문한 손님 수를 변경 할 수 있다.")
     @Test
     void changeNumberOfGuests() {
-        OrderTable 주문테이블_손님_수_변경 = new OrderTable();
-        주문테이블_손님_수_변경.setNumberOfGuests(10);
-        given(orderTableRepository.findById(1L)).willReturn(java.util.Optional.ofNullable(주문테이블));
-        given(orderTableRepository.save(주문테이블)).willReturn(주문테이블);
+        given(orderTableRepository.findById(any())).willReturn(java.util.Optional.ofNullable(주문테이블));
+        given(orderTableRepository.save(any())).willReturn(주문테이블);
 
-        OrderTable changeNumberOfGuests = tableService.changeNumberOfGuests(1L, 주문테이블_손님_수_변경);
+        OrderTable changeNumberOfGuests = tableService.changeNumberOfGuests(any(), OrderTableFixture.생성_Request(10,true));
 
         assertThat(changeNumberOfGuests.getNumberOfGuests()).isEqualTo(10);
     }
@@ -118,11 +107,10 @@ public class TableServiceTest {
     @DisplayName("0명부터 가능하다.")
     @Test
     void changeNumberOfGuestsError() {
-        OrderTable 주문테이블_손님_수_변경 = new OrderTable();
-        주문테이블_손님_수_변경.setNumberOfGuests(-10);
+        OrderTable 주문테이블_손님_수_변경 = OrderTableFixture.생성(-10,true);
 
         assertThatThrownBy(
-                () -> tableService.changeNumberOfGuests(1L, 주문테이블_손님_수_변경)
+                () -> tableService.changeNumberOfGuests(any(), OrderTableFixture.생성_Request(-10,true))
          ).isInstanceOf(IllegalArgumentException.class);
     }
 }

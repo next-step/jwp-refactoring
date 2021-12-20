@@ -1,8 +1,8 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.fixture.ProductTestFixture;
+import kitchenpos.fixture.ProductFixture;
 import kitchenpos.product.domain.Product;
-import kitchenpos.fixture.MenuProductTextFixture;
+import kitchenpos.fixture.MenuProductFixture;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -23,8 +23,8 @@ public class MenuProductsTest {
     @DisplayName("메뉴상품 추가")
     @Test
     void addMenuProduct() {
-        Product 후라이드 = ProductTestFixture.생성("후라이드", new BigDecimal("5000"));
-        MenuProduct 후라이드두마리= MenuProductTextFixture.생성(1L,후라이드,2L);
+        Product 후라이드 = ProductFixture.생성("후라이드", new BigDecimal("5000"));
+        MenuProduct 후라이드두마리= MenuProductFixture.생성(1L,후라이드,2L);
         MenuProducts menuProducts = new MenuProducts();
 
         menuProducts.add(후라이드두마리);

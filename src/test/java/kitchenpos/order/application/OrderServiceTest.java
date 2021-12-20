@@ -51,25 +51,24 @@ public class OrderServiceTest {
 
     @BeforeEach
     void setUp() {
-        후라이드 = ProductTestFixture.생성("후라이드", new BigDecimal("5000"));
+        후라이드 = ProductFixture.생성("후라이드", new BigDecimal("5000"));
 
-        후라이드두마리구성 = MenuProductTextFixture.생성(1L, 후라이드, 2L);
+        후라이드두마리구성 = MenuProductFixture.생성(1L, 후라이드, 2L);
 
-        치킨류 = MenuGroupTestFixture.생성(1L, "치킨");
+        치킨류 = MenuGroupFixture.생성(1L, "치킨");
 
-        후라이드두마리세트 = MenuTestFixture.생성(1L, "후라이드두마리세트", new BigDecimal("10000"), 치킨류);
+        후라이드두마리세트 = MenuFixture.생성(1L, "후라이드두마리세트", new BigDecimal("10000"), 치킨류);
         후라이드두마리세트.addMenuProducts(Arrays.asList(후라이드두마리구성));
 
-        테이블1번 = new OrderTable();
-        테이블1번.setId(1L);
+        테이블1번 = OrderTableFixture.생성(0,true);
 
-        후라이드두마리세트_2개_주문함 = OrderLineItemTestFixture.생성(총주문, 후라이드두마리세트, 2L);
+        후라이드두마리세트_2개_주문함 = OrderLineItemFixture.생성(총주문, 후라이드두마리세트, 2L);
 
-        총주문 = OrderTestFixture.생성(테이블1번);
+        총주문 = OrderFixture.생성(테이블1번);
         총주문.addLineItems(Arrays.asList(후라이드두마리세트_2개_주문함));
 
-        후라이드두마리세트_2개_주문_Request =OrderLineItemTestFixture.request생성(1L, 2L);
-        총주문Request = OrderTestFixture.request생성(테이블1번.getId(),Arrays.asList(후라이드두마리세트_2개_주문_Request));
+        후라이드두마리세트_2개_주문_Request = OrderLineItemFixture.request생성(1L, 2L);
+        총주문Request = OrderFixture.request생성(테이블1번.getId(),Arrays.asList(후라이드두마리세트_2개_주문_Request));
     }
 
     @DisplayName("주문 생성")
@@ -105,8 +104,8 @@ public class OrderServiceTest {
     @DisplayName("주문 상태를 식사로 변경 할 수 있다.")
     @Test
     void changeMealStatus() {
-        Order 주문 = OrderTestFixture.생성(테이블1번);
-        Order 식사_상태_주문 = OrderTestFixture.생성(테이블1번);
+        Order 주문 = OrderFixture.생성(테이블1번);
+        Order 식사_상태_주문 = OrderFixture.생성(테이블1번);
         식사_상태_주문.updateOrderStatus(OrderStatus.MEAL);
         given(orderRepository.findById(any())).willReturn(java.util.Optional.ofNullable(주문));
 
@@ -118,8 +117,8 @@ public class OrderServiceTest {
     @DisplayName("주문 상태를 계산 완료로 변경 할 수 있다.")
     @Test
     void changeCompletionStatus() {
-        Order 주문 = OrderTestFixture.생성(테이블1번);
-        Order 계산_완료_주문 = OrderTestFixture.생성(테이블1번);
+        Order 주문 = OrderFixture.생성(테이블1번);
+        Order 계산_완료_주문 = OrderFixture.생성(테이블1번);
         계산_완료_주문.updateOrderStatus(OrderStatus.COMPLETION);
         given(orderRepository.findById(any())).willReturn(java.util.Optional.ofNullable(주문));
 
@@ -131,10 +130,10 @@ public class OrderServiceTest {
     @DisplayName("주문 완료 상태가 아닌 주문만 변경 가능하다.")
     @Test
     void changeStatusError() {
-        Order 주문 = OrderTestFixture.생성(테이블1번);
+        Order 주문 = OrderFixture.생성(테이블1번);
 
         주문.updateOrderStatus(OrderStatus.COMPLETION);
-        Order 계산_완료_주문 = OrderTestFixture.생성(테이블1번);
+        Order 계산_완료_주문 = OrderFixture.생성(테이블1번);
         계산_완료_주문.updateOrderStatus(OrderStatus.COMPLETION);
         given(orderRepository.findById(any())).willReturn(java.util.Optional.ofNullable(주문));
 

@@ -4,7 +4,7 @@ import kitchenpos.product.domain.Product;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuProductRequest;
 
-public class MenuProductTextFixture {
+public class MenuProductFixture {
     public static MenuProduct 생성(Long seq, Product product, long quantity) {
         return new MenuProduct(seq, product, quantity);
     }

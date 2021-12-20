@@ -7,7 +7,7 @@ import kitchenpos.menuGroup.domain.MenuGroup;
 import java.math.BigDecimal;
 import java.util.List;
 
-public class MenuTestFixture {
+public class MenuFixture {
 
     public static Menu 생성(Long id, String name, BigDecimal price, MenuGroup menuGroupId) {
         return new Menu(id,name,price,menuGroupId);
