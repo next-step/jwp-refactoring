@@ -36,7 +36,7 @@ public class Menu extends BaseEntity {
     @Embedded
     private MenuProducts menuProducts = new MenuProducts();
 
-    public Menu() {
+    protected Menu() {
     }
 
     private Menu(String name, Integer price, MenuGroup menuGroup) {
@@ -86,48 +86,20 @@ public class Menu extends BaseEntity {
         }
     }
 
-
-
-
-
     public Long getId() {
         return id;
-    }
-
-    public void setId(final Long id) {
-        this.id = id;
     }
 
     public String getName() {
         return name.get();
     }
 
-    public void setName(final String name) {
-//        this.name = name;
-    }
-
     public BigDecimal getPrice() {
         return price.get();
     }
 
-    public void setPrice(final BigDecimal price) {
-//        this.price = price;
-    }
-
-    public Long getMenuGroupId() {
-        return menuGroup.getId();
-    }
-
-    public void setMenuGroupId(final Long menuGroupId) {
-//        this.menuGroupId = menuGroupId;
-    }
-
     public List<MenuProduct> getMenuProducts() {
         return menuProducts.get();
-    }
-
-    public void setMenuProducts(final List<MenuProduct> menuProducts) {
-//        this.menuProducts = menuProducts;
     }
 
 

@@ -1,29 +1,31 @@
 package kitchenpos.order.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderLineItemDao;
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderLineItemResponse;
+import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.order.dto.OrderStatusRequest;
 import kitchenpos.table.domain.OrderTable;
-import org.junit.jupiter.api.BeforeEach;
+import kitchenpos.table.domain.OrderTableRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,52 +38,31 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class OrderServiceTest {
 
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
     @Mock
-    private OrderLineItemDao orderLineItemDao;
-    @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @InjectMocks
     private OrderService orderService;
 
-    private final Menu menu = new Menu();
-    private final OrderLineItem orderLineItem = new OrderLineItem();
-    private final OrderTable orderTable = new OrderTable();
-    private final Order order = new Order();
-
-    @BeforeEach
-    void setUp() {
-        menu.setId(1L);
-        menu.setName("후라이드치킨");
-        menu.setPrice(BigDecimal.valueOf(10000));
-
-        orderLineItem.setQuantity(2);
-        orderLineItem.setMenuId(menu.getId());
-
-        orderTable.setId(1L);
-        orderTable.setEmptyOrg(false);
-
-        order.setOrderLineItems(Arrays.asList(orderLineItem));
-        order.setOrderTableId(orderTable.getId());
-    }
+    private final OrderRequest orderRequest = new OrderRequest(1L, Arrays.asList(new OrderLineItemRequest(1L, 1L)));
+    private final Menu menu = Menu.of("후라이드치킨", 10000, MenuGroup.from("치킨"));
+    private final OrderTable orderTable = OrderTable.of(2, false);
+    private final Order order = orderRequest.toEntity(orderTable, Arrays.asList(OrderLineItem.of(menu, 2L)));
 
     @Test
     @DisplayName("주문을 등록한다.")
     void create() {
-
-        when(menuDao.countByIdIn(anyList()))
-            .thenReturn(1L);
-        when(orderTableDao.findById(anyLong()))
+        when(menuRepository.findById(anyLong()))
+            .thenReturn(Optional.of(menu));
+        when(orderTableRepository.findById(anyLong()))
             .thenReturn(Optional.of(orderTable));
-        when(orderDao.save(any(Order.class)))
+        when(orderRepository.save(any(Order.class)))
             .thenReturn(order);
-        when(orderLineItemDao.save(any(OrderLineItem.class)))
-            .thenReturn(orderLineItem);
 
-        Order saved = orderService.create(order);
+        OrderResponse saved = orderService.create(orderRequest);
 
         assertAll(
             () -> assertNotNull(saved.getOrderedTime()),
@@ -90,83 +71,34 @@ class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("빈 테이블은 주문을 생성할 수 없다.")
-    void createValidateEmptyTable() {
-        orderTable.setEmptyOrg(true);
-
-        when(menuDao.countByIdIn(anyList()))
-            .thenReturn(1L);
-        when(orderTableDao.findById(anyLong()))
-            .thenReturn(Optional.of(orderTable));
-
-        assertThatThrownBy(() -> orderService.create(order))
-            .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
-    @DisplayName("메뉴로 등록된 메뉴만 선택할 수 있다.")
-    void createValidateMenu() {
-        when(menuDao.countByIdIn(anyList()))
-            .thenReturn(0L);
-
-        assertThatThrownBy(() -> orderService.create(order))
-            .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
-    @DisplayName("메뉴는 하나 이상 선택해야 한다.")
-    void createValidateOrderLineItems() {
-        order.setOrderLineItems(new ArrayList<>());
-
-        assertThatThrownBy(() -> orderService.create(order))
-            .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
     @DisplayName("주문 목록을 조회한다.")
     void list() {
-        order.setId(1L);
-        when(orderDao.findAll())
-            .thenReturn(Arrays.asList(order));
-        when(orderLineItemDao.findAllByOrderId(anyLong()))
-            .thenReturn(Arrays.asList(orderLineItem));
 
-        List<Order> orders = orderService.list();
+        when(orderRepository.findAll())
+            .thenReturn(Arrays.asList(order));
+
+        List<OrderResponse> orders = orderService.list();
 
         assertAll(
             () -> assertThat(orders.size()).isEqualTo(1),
             () -> assertThat(orders.get(0).getOrderLineItems())
-                .extracting(OrderLineItem::getQuantity).containsExactly(2L)
+                .extracting(OrderLineItemResponse::getQuantity).containsExactly(2L)
         );
     }
 
     @Test
     @DisplayName("주문의 상태를 관리한다")
     void changeOrderStatus() {
-        order.setId(1L);
-        when(orderDao.findById(anyLong()))
+
+        assertTrue(order.isOnGoing());
+
+        when(orderRepository.findById(anyLong()))
             .thenReturn(Optional.of(order));
-        when(orderLineItemDao.findAllByOrderId(anyLong()))
-            .thenReturn(Arrays.asList(orderLineItem));
 
-        Order request = new Order();
-        request.setOrderStatusorg(OrderStatus.COMPLETION.name());
-        Order changed = orderService.changeOrderStatus(1L, request);
+        OrderResponse changed = orderService.changeOrderStatus(1L, new OrderStatusRequest(OrderStatus.COMPLETION.name()));
 
+        assertFalse(order.isOnGoing());
         assertThat(changed.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION.name());
     }
 
-    @Test
-    @DisplayName("이미 계산완료된 주문은 상태를 변경할 수 없다.")
-    void changeOrderStatusValidate() {
-        order.setOrderStatusorg(OrderStatus.COMPLETION.name());
-        when(orderDao.findById(anyLong()))
-            .thenReturn(Optional.of(order));
-
-        Order request = new Order();
-        request.setOrderStatusorg(OrderStatus.MEAL.name());
-
-        assertThatThrownBy(() -> orderService.changeOrderStatus(1L, request))
-            .isInstanceOf(IllegalArgumentException.class);
-    }
 }

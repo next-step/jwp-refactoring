@@ -89,9 +89,9 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         });
     }
 
-    public static Menu 메뉴등록되어있음(String name, Integer price, MenuGroupResponse menuGroup, List<ProductResponse> products) {
+    public static MenuResponse 메뉴등록되어있음(String name, Integer price, MenuGroupResponse menuGroup, List<ProductResponse> products) {
         List<MenuProductRequest> menuProducts = createMenuProducts(products, Arrays.asList(1L, 1L));
-        return 메뉴_등록_요청(name, price, menuGroup, menuProducts).as(Menu.class);
+        return 메뉴_등록_요청(name, price, menuGroup, menuProducts).as(MenuResponse.class);
     }
 
     private static List<MenuProductRequest> createMenuProducts(List<ProductResponse> products, List<Long> productsQuantity) {

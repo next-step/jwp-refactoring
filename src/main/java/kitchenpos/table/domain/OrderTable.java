@@ -36,7 +36,7 @@ public class OrderTable extends BaseEntity {
     @Embedded
     private Orders orders = Orders.create();
 
-    public OrderTable() {
+    protected OrderTable() {
     }
 
     private OrderTable(Integer numberOfGuests, boolean empty) {
@@ -107,6 +107,18 @@ public class OrderTable extends BaseEntity {
         return empty.equals(Boolean.FALSE);
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public Integer getNumberOfGuests() {
+        return numberOfGuests.get();
+    }
+
+    public Boolean isEmpty() {
+        return empty.isEmpty();
+    }
+
     private void validateUpdateEmpty() {
         if (Objects.nonNull(tableGroup)) {
             throw new CannotUpdatedException("단체지정된 테이블은 변경할 수 없습니다.");
@@ -125,42 +137,6 @@ public class OrderTable extends BaseEntity {
         if (orders.isOnGoing()) {
             throw new CannotUpdatedException("주문이 완료되지 않은 테이블이 있습니다.");
         }
-    }
-
-
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
-    public Long getTableGroupId() {
-        return tableGroup.getId();
-    }
-
-    public void setTableGroupId(final Long tableGroupId) {
-//        this.tableGroupId = tableGroupId;
-    }
-
-    public Integer getNumberOfGuests() {
-        return numberOfGuests.get();
-    }
-
-    public void setNumberOfGuestsOrg(final int numberOfGuests) {
-//        this.numberOfGuests = numberOfGuests;
-    }
-
-    public Boolean isEmpty() {
-        return empty.isEmpty();
-    }
-
-
-
-    public void setEmptyOrg(final boolean empty) {
-//        this.empty = empty;
     }
 
     @Override

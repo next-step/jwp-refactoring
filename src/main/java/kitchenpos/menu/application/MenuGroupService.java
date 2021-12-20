@@ -1,7 +1,6 @@
 package kitchenpos.menu.application;
 
 import java.util.List;
-import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.dto.MenuGroupRequest;
@@ -11,12 +10,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class MenuGroupService {
-    private final MenuGroupDao menuGroupDao;
     private final MenuGroupRepository menuGroupRepository;
 
-    public MenuGroupService(final MenuGroupDao menuGroupDao,
-        MenuGroupRepository menuGroupRepository) {
-        this.menuGroupDao = menuGroupDao;
+    public MenuGroupService(final MenuGroupRepository menuGroupRepository) {
         this.menuGroupRepository = menuGroupRepository;
     }
 

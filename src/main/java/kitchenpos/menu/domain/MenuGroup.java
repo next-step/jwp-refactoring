@@ -17,7 +17,7 @@ public class MenuGroup extends BaseEntity {
     @Embedded
     private MustHaveName name;
 
-    public MenuGroup() {
+    protected MenuGroup() {
     }
 
     private MenuGroup(String name) {
@@ -32,21 +32,12 @@ public class MenuGroup extends BaseEntity {
         return this.name.equals(menuGroupName);
     }
 
-
     public Long getId() {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public String getName() {
         return name.get();
-    }
-
-    public void setName(final String name) {
-        this.name = MustHaveName.valueOf(name);
     }
 
 }

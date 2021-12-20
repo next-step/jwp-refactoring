@@ -11,7 +11,6 @@ import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.dto.MenuGroupRequest;
 import kitchenpos.menu.dto.MenuGroupResponse;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,7 +23,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class MenuGroupServiceTest {
 
     private static final String MENU_GROUP_NAME = "메뉴그룹";
-    private final MenuGroup menuGroup = new MenuGroup();
+    private final MenuGroup menuGroup = MenuGroup.from(MENU_GROUP_NAME);
 
     @Mock
     private MenuGroupRepository menuGroupRepository;
@@ -32,11 +31,6 @@ class MenuGroupServiceTest {
     @InjectMocks
     private MenuGroupService menuGroupService;
 
-    @BeforeEach
-    void setUp() {
-        menuGroup.setId(1L);
-        menuGroup.setName(MENU_GROUP_NAME);
-    }
 
     @Test
     @DisplayName("메뉴 그룹을 등록한다.")

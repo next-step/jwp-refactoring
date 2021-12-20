@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
-import javax.persistence.Embedded;
 import javax.persistence.OneToMany;
 
 @Embeddable
@@ -30,7 +29,6 @@ public final class Orders {
         orders.remove(order);
     }
 
-    //주문이 진행중인(조리,식사) 테이블은 상태를 변경할 수 없다
     public boolean isOnGoing() {
         return orders.stream()
             .anyMatch(Order::isOnGoing);

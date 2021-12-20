@@ -33,7 +33,7 @@ public class MenuProduct extends BaseEntity {
     @Embedded
     private Quantity quantity;
 
-    public MenuProduct() {
+    protected MenuProduct() {
     }
 
     private MenuProduct(Product product, Long quantity) {
@@ -77,6 +77,14 @@ public class MenuProduct extends BaseEntity {
         return this.product;
     }
 
+    public Long getSeq() {
+        return seq;
+    }
+
+    public long getQuantity() {
+        return quantity.getQuantity();
+    }
+
     private void setProduct(Product product) {
         validateProduct(product);
         this.product = product;
@@ -111,43 +119,5 @@ public class MenuProduct extends BaseEntity {
     public int hashCode() {
         return Objects.hash(seq);
     }
-
-
-
-
-
-    public Long getSeq() {
-        return seq;
-    }
-
-    public void setSeq(final Long seq) {
-        this.seq = seq;
-    }
-
-    public Long getMenuId() {
-        return menu.getId();
-    }
-
-    public void setMenuId(final Long menuId) {
-//        this.menuId = menuId;
-    }
-
-    public Long getProductId() {
-        return product.getId();
-    }
-
-    public void setProductId(final Long productId) {
-//        this.productId = productId;
-    }
-
-    public long getQuantity() {
-        return quantity.getQuantity();
-    }
-
-    public void setQuantity(final long quantity) {
-//        this.quantity = quantity;
-    }
-
-
 
 }

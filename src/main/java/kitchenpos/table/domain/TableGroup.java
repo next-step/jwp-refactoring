@@ -23,11 +23,23 @@ public class TableGroup {
     @Embedded
     private OrderTables orderTables = new OrderTables();
 
-    public TableGroup() {
+    protected TableGroup() {
     }
 
     public static TableGroup create() {
         return new TableGroup();
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public LocalDateTime getCreatedDate() {
+        return createdDate;
+    }
+
+    public List<OrderTable> getOrderTables() {
+        return orderTables.get();
     }
 
     public void addOrderTables(List<OrderTable> orderTables) {
@@ -77,31 +89,4 @@ public class TableGroup {
     }
 
 
-
-
-
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
-    public LocalDateTime getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(final LocalDateTime createdDate) {
-        this.createdDate = createdDate;
-    }
-
-    public List<OrderTable> getOrderTables() {
-        return orderTables.get();
-    }
-
-    public void setOrderTables(final List<OrderTable> orderTables) {
-//        this.orderTables = orderTables;
-    }
 }

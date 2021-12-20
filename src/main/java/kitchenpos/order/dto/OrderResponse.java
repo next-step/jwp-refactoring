@@ -2,6 +2,7 @@ package kitchenpos.order.dto;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 import kitchenpos.order.domain.Order;
 
 public class OrderResponse {
@@ -28,6 +29,12 @@ public class OrderResponse {
     public static OrderResponse of(Order order) {
         return new OrderResponse(order.getId(), order.getOrderTableId(), order.getOrderStatus(),
             order.getOrderedTime(), OrderLineItemResponse.ofList(order.getOrderLineItems()));
+    }
+
+    public static List<OrderResponse> ofList(List<Order> orders) {
+        return orders.stream()
+            .map(OrderResponse::of)
+            .collect(Collectors.toList());
     }
 
     public Long getId() {

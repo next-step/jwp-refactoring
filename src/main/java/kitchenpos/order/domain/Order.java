@@ -3,7 +3,7 @@ package kitchenpos.order.domain;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
-import javax.persistence.CascadeType;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -14,13 +14,15 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import kitchenpos.common.domain.BaseEntity;
+import kitchenpos.exception.CannotUpdatedException;
 import kitchenpos.exception.InvalidArgumentException;
 import kitchenpos.table.domain.OrderTable;
 
 @Entity(name = "orders")
 public class Order extends BaseEntity {
+    private static final Integer MIN_SIZE = 1;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -34,28 +36,36 @@ public class Order extends BaseEntity {
 
     private LocalDateTime orderedTime = LocalDateTime.now();
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderLineItem> orderLineItems;
+    @Embedded
+    private OrderLineItems orderLineItems = new OrderLineItems();
 
-    public Order() {
+    protected Order() {
     }
 
     private Order(OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
         initOrderStatus(orderStatus);
         setOrderTable(orderTable);
-
-        this.orderLineItems = orderLineItems;
+        addOrderLineItems(orderLineItems);
     }
 
     public static Order of(OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
         return new Order(orderTable, orderStatus, orderLineItems);
     }
 
-    private void initOrderStatus(OrderStatus orderStatus) {
-        if (Objects.isNull(orderStatus)) {
-            orderStatus = OrderStatus.COOKING;
+    public void addOrderLineItems(List<OrderLineItem> orderLineItems) {
+        validateAddOrderLineItem(orderLineItems);
+
+        for (OrderLineItem orderLineItem: orderLineItems) {
+            addOrderLineItem(orderLineItem);
         }
-        this.orderStatus = orderStatus;
+    }
+
+    public boolean isOnGoing() {
+        return OrderStatus.COOKING.equals(orderStatus) || OrderStatus.MEAL.equals(orderStatus);
+    }
+
+    public void removeOrderLineItem(OrderLineItem orderLineItem) {
+        orderLineItems.remove(orderLineItem);
     }
 
     public void setOrderTable(OrderTable orderTable) {
@@ -65,6 +75,32 @@ public class Order extends BaseEntity {
         }
         this.orderTable = orderTable;
         orderTable.addOrder(this);
+    }
+
+    public void updateOrderStatus(OrderStatus orderStatus) {
+        validateUpdateOrderStatus();
+        this.orderStatus = orderStatus;
+    }
+
+    protected void addOrderLineItem(OrderLineItem orderLineItem) {
+        orderLineItems.add(orderLineItem);
+
+        if (!orderLineItem.equalsOrder(this)) {
+            orderLineItem.setOrder(this);
+        }
+    }
+
+    private void initOrderStatus(OrderStatus orderStatus) {
+        if (Objects.isNull(orderStatus)) {
+            orderStatus = OrderStatus.COOKING;
+        }
+        this.orderStatus = orderStatus;
+    }
+
+    private void validateUpdateOrderStatus() {
+        if (OrderStatus.COMPLETION.equals(orderStatus)) {
+            throw new CannotUpdatedException("계산완료된 주문은 변경할 수 없습니다.");
+        }
     }
 
     private void validateOrderTable(OrderTable orderTable) {
@@ -77,51 +113,30 @@ public class Order extends BaseEntity {
         }
     }
 
-
-
+    private void validateAddOrderLineItem(List<OrderLineItem> orderLineItems) {
+        if (orderLineItems.size() < MIN_SIZE) {
+            throw new InvalidArgumentException("메뉴는 하나 이상 선택해야 합니다.");
+        }
+    }
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(final Long id) {
-        this.id = id;
     }
 
     public Long getOrderTableId() {
         return orderTable.getId();
     }
 
-    public void setOrderTableId(final Long orderTableId) {
-//        this.orderTableId = orderTableId;
-    }
-
     public String getOrderStatus() {
         return orderStatus.name();
-    }
-
-    public void setOrderStatusorg(final String orderStatus) {
-//        this.orderStatus = orderStatus;
     }
 
     public LocalDateTime getOrderedTime() {
         return orderedTime;
     }
 
-    public void setOrderedTime(final LocalDateTime orderedTime) {
-        this.orderedTime = orderedTime;
-    }
-
     public List<OrderLineItem> getOrderLineItems() {
-        return orderLineItems;
+        return orderLineItems.get();
     }
 
-    public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
-        this.orderLineItems = orderLineItems;
-    }
-
-    public boolean isOnGoing() {
-        return OrderStatus.COOKING.equals(orderStatus) || OrderStatus.MEAL.equals(orderStatus);
-
-    }
 }
