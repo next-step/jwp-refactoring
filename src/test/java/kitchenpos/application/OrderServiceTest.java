@@ -50,8 +50,7 @@ class OrderServiceTest {
 		OrderTable orderTable = new OrderTable(1L, 6, false);
 		List<OrderLineItem> orderLineItems = Arrays.asList(
 			new OrderLineItem(1L, 1),
-			new OrderLineItem(2L, 3)
-		);
+			new OrderLineItem(2L, 3));
 		Order order = new Order(orderTable.getId(), LocalDateTime.now(), orderLineItems);
 
 		given(menuDao.countByIdIn(any()))
@@ -78,9 +77,7 @@ class OrderServiceTest {
 	void create_exception1() {
 		//given
 		OrderTable orderTable = new OrderTable(1L, 6, false);
-		List<OrderLineItem> orderLineItems = Arrays.asList(
-			new OrderLineItem(1L, 1)
-		);
+		List<OrderLineItem> orderLineItems = Arrays.asList(new OrderLineItem(1L, 1));
 		Order order = new Order(orderTable.getId(), LocalDateTime.now(), orderLineItems);
 
 		// when, then
@@ -95,8 +92,7 @@ class OrderServiceTest {
 		OrderTable orderTable = new OrderTable(1L, 6, true);
 		List<OrderLineItem> orderLineItems = Arrays.asList(
 			new OrderLineItem(1L, 1),
-			new OrderLineItem(1L, 3)
-		);
+			new OrderLineItem(1L, 3));
 		Order order = new Order(orderTable.getId(), LocalDateTime.now(), orderLineItems);
 
 		given(menuDao.countByIdIn(any()))
@@ -112,9 +108,7 @@ class OrderServiceTest {
 	void create_exception3() {
 		//given
 		OrderTable orderTable = new OrderTable(1L, 6, true);
-		List<OrderLineItem> orderLineItems = Arrays.asList(
-			new OrderLineItem(1L, 1)
-		);
+		List<OrderLineItem> orderLineItems = Arrays.asList(new OrderLineItem(1L, 1));
 		Order order = new Order(orderTable.getId(), LocalDateTime.now(), orderLineItems);
 
 		given(menuDao.countByIdIn(any()))
@@ -172,7 +166,7 @@ class OrderServiceTest {
 
 		//when
 		Order changeOrder = new Order(OrderStatus.COMPLETION.name());
-		Order savedOrder = orderService.changeOrderStatus(order.getId(),changeOrder);
+		Order savedOrder = orderService.changeOrderStatus(order.getId(), changeOrder);
 
 		//then
 		assertThat(savedOrder.getOrderStatus()).isEqualTo(changeOrder.getOrderStatus());
@@ -194,7 +188,7 @@ class OrderServiceTest {
 
 		//when
 		Order changeOrder = new Order(OrderStatus.MEAL.name());
-		assertThatThrownBy(()->orderService.changeOrderStatus(order.getId(),changeOrder))
+		assertThatThrownBy(() -> orderService.changeOrderStatus(order.getId(), changeOrder))
 			.isInstanceOf(IllegalArgumentException.class);
 	}
 }

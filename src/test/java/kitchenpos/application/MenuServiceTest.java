@@ -71,8 +71,7 @@ class MenuServiceTest {
 
 		List<MenuProduct> menuProducts = Arrays.asList(
 			new MenuProduct(타코야끼.getId(), 3L),
-			new MenuProduct(뿌링클.getId(), 1L)
-		);
+			new MenuProduct(뿌링클.getId(), 1L));
 
 		menuProducts.stream()
 			.forEach(menuProduct -> given(menuProductDao.save(menuProduct))
@@ -95,8 +94,7 @@ class MenuServiceTest {
 		//given
 		List<MenuProduct> menuProducts = Arrays.asList(
 			new MenuProduct(타코야끼.getId(), 3L),
-			new MenuProduct(뿌링클.getId(), 1L)
-		);
+			new MenuProduct(뿌링클.getId(), 1L));
 
 		Menu menu = new Menu("타코야끼와 뿌링클", BigDecimal.valueOf(-1), 추천메뉴.getId(), menuProducts);
 
@@ -119,8 +117,7 @@ class MenuServiceTest {
 
 		List<MenuProduct> menuProducts = Arrays.asList(
 			new MenuProduct(타코야끼.getId(), 3L),
-			new MenuProduct(뿌링클.getId(), 1L)
-		);
+			new MenuProduct(뿌링클.getId(), 1L));
 
 		Menu menu = new Menu("타코야끼와 뿌링클", BigDecimal.valueOf(51001), 추천메뉴.getId(), menuProducts);
 
@@ -136,8 +133,7 @@ class MenuServiceTest {
 		// given
 		List<MenuProduct> menuProducts = Arrays.asList(
 			new MenuProduct(타코야끼.getId(), 3L),
-			new MenuProduct(뿌링클.getId(), 1L)
-		);
+			new MenuProduct(뿌링클.getId(), 1L));
 		List<Menu> menus = Arrays.asList(new Menu("타코야끼와 뿌링클", BigDecimal.valueOf(51000),
 			추천메뉴.getId(), menuProducts));
 		given(menuDao.findAll())
@@ -161,6 +157,7 @@ class MenuServiceTest {
 		List<String> mockProductNames = menus.stream()
 			.map(Menu::getName)
 			.collect(Collectors.toList());
+
 		assertThat(findProductNames).containsAll(mockProductNames);
 	}
 }
