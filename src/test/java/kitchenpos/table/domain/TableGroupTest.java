@@ -10,7 +10,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.ArrayList;
 import java.util.Arrays;
 import kitchenpos.exception.CannotUpdatedException;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -57,8 +60,12 @@ class TableGroupTest {
     @DisplayName("주문이 진행중인 테이블이 있는 경우 단체 지정 해제 불가")
     void clearOrderTableOnGoingOrder() {
         addOrderTables();
-        Order.of(orderTable_1, OrderStatus.MEAL, new ArrayList<>());
-        Order.of(orderTable_2, OrderStatus.COMPLETION, new ArrayList<>());
+
+        final Menu menu = Menu.of("후라이드치킨", 10000, MenuGroup.from("치킨"));
+        final OrderLineItem orderLineItem = OrderLineItem.of(menu, 2L);
+
+        Order.of(orderTable_1, OrderStatus.MEAL, Arrays.asList(orderLineItem));
+        Order.of(orderTable_2, OrderStatus.COMPLETION, Arrays.asList(orderLineItem));
 
         assertThatThrownBy(() -> tableGroup.clearOrderTable())
             .isInstanceOf(CannotUpdatedException.class)

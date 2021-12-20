@@ -5,9 +5,13 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import kitchenpos.exception.CannotUpdatedException;
 import kitchenpos.exception.InvalidArgumentException;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -39,8 +43,11 @@ class OrderTableTest {
     @DisplayName("주문 진행중인 테이블의 상태는 변경 불가")
     @Test
     void validateUpdateEmptyOnGoingOrder() {
-        OrderTable orderTable = OrderTable.of(1, false);
-        Order.of(orderTable, OrderStatus.COOKING, new ArrayList<>());
+        final OrderTable orderTable = OrderTable.of(1, false);
+        final Menu menu = Menu.of("후라이드치킨", 10000, MenuGroup.from("치킨"));
+        final OrderLineItem orderLineItem = OrderLineItem.of(menu, 2L);
+
+        Order.of(orderTable, OrderStatus.COOKING, Arrays.asList(orderLineItem));
 
         assertThatThrownBy(() -> orderTable.updateEmpty(Boolean.TRUE))
             .isInstanceOf(CannotUpdatedException.class)
