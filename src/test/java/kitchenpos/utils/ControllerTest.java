@@ -34,17 +34,16 @@ public class ControllerTest {
     protected MenuService menuService;
 
     @MockBean
-    private OrderService orderService;
+    protected OrderService orderService;
 
     @MockBean
-    private ProductService productService;
+    protected ProductService productService;
 
     @MockBean
-    private TableGroupService tableGroupService;
+    protected TableGroupService tableGroupService;
 
     @MockBean
-    private TableService tableService;
-
+    protected TableService tableService;
 
     protected ResultActions get(String url, MultiValueMap<String, String> params) throws Exception {
         return mockMvc.perform(MockMvcRequestBuilders.get(url)

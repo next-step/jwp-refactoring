@@ -75,8 +75,8 @@ public class MenuControllerTest extends ControllerTest {
         //then
         resultActions.andExpect(status().isOk());
         resultActions.andExpect(jsonPath("$").isArray());
-        resultActions.andExpect(jsonPath("$[0]['name']").value("후라이드_후라이드"));
-        resultActions.andExpect(jsonPath("$[0]['price']").value(new BigDecimal("19000")));
+        resultActions.andExpect(jsonPath("$[0]['name']").value(후라이드_후라이드.getName()));
+        resultActions.andExpect(jsonPath("$[0]['price']").value(후라이드_후라이드.getPrice()));
     }
 
 
