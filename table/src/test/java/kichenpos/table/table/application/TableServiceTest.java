@@ -16,9 +16,9 @@ import kichenpos.table.table.domain.Headcount;
 import kichenpos.table.table.domain.OrderTable;
 import kichenpos.table.table.domain.TableCommandService;
 import kichenpos.table.table.domain.TableQueryService;
+import kichenpos.table.table.ui.request.EmptyRequest;
 import kichenpos.table.table.ui.request.OrderTableRequest;
 import kichenpos.table.table.ui.request.TableGuestsCountRequest;
-import kichenpos.table.table.ui.request.TableStatusRequest;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -75,7 +75,7 @@ class TableServiceTest {
     void changeEmpty() {
         //given
         long tableId = 1L;
-        TableStatusRequest request = new TableStatusRequest(true);
+        EmptyRequest request = new EmptyRequest(true);
 
         OrderTable 빈_두명_테이블 = 빈_두명_테이블();
         when(commandService.changeEmpty(anyLong(), anyBoolean())).thenReturn(빈_두명_테이블);
@@ -118,5 +118,31 @@ class TableServiceTest {
         assertThatExceptionOfType(IllegalArgumentException.class)
             .isThrownBy(changeCallable)
             .withMessageEndingWith("이상 이어야 합니다.");
+    }
+
+    @Test
+    @DisplayName("주문 받은 상태 변경될 수 있다.")
+    void changeOrdered() {
+        //given
+        long orderTableId = 1L;
+
+        //when
+        tableService.changeOrdered(orderTableId);
+
+        //then
+        verify(commandService, only()).changeOrdered(orderTableId);
+    }
+
+    @Test
+    @DisplayName("완료된 상태 변경될 수 있다.")
+    void changeFinish() {
+        //given
+        long orderTableId = 1L;
+
+        //when
+        tableService.changeFinish(orderTableId);
+
+        //then
+        verify(commandService, only()).changeFinish(orderTableId);
     }
 }

@@ -6,6 +6,7 @@ import static kichenpos.table.table.sample.OrderTableSample.채워진_다섯명_
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.only;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -163,4 +164,31 @@ class TableCommandServiceTest {
             .withMessageEndingWith("방문한 손님 수를 변경할 수 없습니다.");
     }
 
+    @Test
+    @DisplayName("주문 받은 상태 변경")
+    void changeOrdered() {
+        //given
+        OrderTable orderTable = mock(OrderTable.class);
+        when(orderTableRepository.table(anyLong())).thenReturn(orderTable);
+
+        //when
+        commandService.changeOrdered(1L);
+
+        //then
+        verify(orderTable, only()).ordered();
+    }
+
+    @Test
+    @DisplayName("주문 받은 상태 변경")
+    void changeFinish() {
+        //given
+        OrderTable orderTable = mock(OrderTable.class);
+        when(orderTableRepository.table(anyLong())).thenReturn(orderTable);
+
+        //when
+        commandService.changeFinish(1L);
+
+        //then
+        verify(orderTable, only()).finish();
+    }
 }

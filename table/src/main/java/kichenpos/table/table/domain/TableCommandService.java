@@ -28,4 +28,14 @@ public class TableCommandService {
         orderTable.changeNumberOfGuests(numberOfGuests);
         return orderTable;
     }
+
+    public void changeOrdered(long orderTableId) {
+        orderTableRepository.table(orderTableId)
+            .ordered();
+    }
+
+    public void changeFinish(long orderTableId) {
+        orderTableRepository.table(orderTableId)
+            .finish();
+    }
 }

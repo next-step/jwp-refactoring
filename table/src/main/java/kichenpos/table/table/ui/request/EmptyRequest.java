@@ -3,12 +3,12 @@ package kichenpos.table.table.ui.request;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public final class TableStatusRequest {
+public final class EmptyRequest {
 
     private final boolean empty;
 
     @JsonCreator
-    public TableStatusRequest(@JsonProperty("empty") boolean empty) {
+    public EmptyRequest(@JsonProperty("empty") boolean empty) {
         this.empty = empty;
     }
 

@@ -9,9 +9,9 @@ import io.restassured.mapper.TypeRef;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
+import kichenpos.table.table.ui.request.EmptyRequest;
 import kichenpos.table.table.ui.request.OrderTableRequest;
 import kichenpos.table.table.ui.request.TableGuestsCountRequest;
-import kichenpos.table.table.ui.request.TableStatusRequest;
 import kichenpos.table.table.ui.response.OrderTableResponse;
 import org.springframework.http.HttpStatus;
 
@@ -86,7 +86,7 @@ public class TableAcceptanceStep {
     public static ExtractableResponse<Response> 테이블_빈_상태_수정_요청(long id, boolean empty) {
         return RestAssured.given().log().all()
             .contentType(ContentType.JSON)
-            .body(new TableStatusRequest(empty))
+            .body(new EmptyRequest(empty))
             .when()
             .put("/api/tables/{orderTableId}/empty", id)
             .then().log().all()
@@ -120,5 +120,31 @@ public class TableAcceptanceStep {
                 .extracting(OrderTableResponse::getNumberOfGuests)
                 .isEqualTo(expectedNumberOfGuests)
         );
+    }
+
+    public static ExtractableResponse<Response> 테이블_주문_받은_상태_수정_요청(long id) {
+        return RestAssured.given().log().all()
+            .contentType(ContentType.JSON)
+            .when()
+            .post("/api/tables/{orderTableId}/order", id)
+            .then().log().all()
+            .extract();
+    }
+
+    public static void 테이블_주문_받은_상태_되어_있음(long id) {
+        테이블_주문_받은_상태_수정_요청(id);
+    }
+
+    public static ExtractableResponse<Response> 테이블_완료된_상태_수정_요청(long id) {
+        return RestAssured.given().log().all()
+            .contentType(ContentType.JSON)
+            .when()
+            .post("/api/tables/{orderTableId}/finish", id)
+            .then().log().all()
+            .extract();
+    }
+
+    public static void 테이블_상태_수정됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 }

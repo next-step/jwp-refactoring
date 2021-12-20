@@ -3,9 +3,9 @@ package kichenpos.table.table.application;
 import java.util.List;
 import kichenpos.table.table.domain.TableCommandService;
 import kichenpos.table.table.domain.TableQueryService;
+import kichenpos.table.table.ui.request.EmptyRequest;
 import kichenpos.table.table.ui.request.OrderTableRequest;
 import kichenpos.table.table.ui.request.TableGuestsCountRequest;
-import kichenpos.table.table.ui.request.TableStatusRequest;
 import kichenpos.table.table.ui.response.OrderTableResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,7 +37,7 @@ public class TableService {
     }
 
     @Transactional
-    public OrderTableResponse changeEmpty(long id, TableStatusRequest request) {
+    public OrderTableResponse changeEmpty(long id, EmptyRequest request) {
         return OrderTableResponse.from(commandService.changeEmpty(id, request.isEmpty()));
     }
 
@@ -45,5 +45,15 @@ public class TableService {
     public OrderTableResponse changeNumberOfGuests(long id, TableGuestsCountRequest request) {
         return OrderTableResponse.from(
             commandService.changeNumberOfGuests(id, request.numberOfGuests()));
+    }
+
+    @Transactional
+    public void changeOrdered(long orderTableId) {
+        commandService.changeOrdered(orderTableId);
+    }
+
+    @Transactional
+    public void changeFinish(long orderTableId) {
+        commandService.changeFinish(orderTableId);
     }
 }

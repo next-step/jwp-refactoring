@@ -3,9 +3,9 @@ package kichenpos.table.table.ui;
 import java.net.URI;
 import java.util.List;
 import kichenpos.table.table.application.TableService;
+import kichenpos.table.table.ui.request.EmptyRequest;
 import kichenpos.table.table.ui.request.OrderTableRequest;
 import kichenpos.table.table.ui.request.TableGuestsCountRequest;
-import kichenpos.table.table.ui.request.TableStatusRequest;
 import kichenpos.table.table.ui.response.OrderTableResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -48,8 +48,7 @@ public class TableRestController {
 
     @PutMapping("/{orderTableId}/empty")
     public ResponseEntity<OrderTableResponse> changeEmpty(
-        @PathVariable long orderTableId,
-        @RequestBody TableStatusRequest request) {
+        @PathVariable long orderTableId, @RequestBody EmptyRequest request) {
         return ResponseEntity.ok()
             .body(tableService.changeEmpty(orderTableId, request));
     }
@@ -60,5 +59,17 @@ public class TableRestController {
         @RequestBody TableGuestsCountRequest request) {
         return ResponseEntity.ok()
             .body(tableService.changeNumberOfGuests(orderTableId, request));
+    }
+
+    @PostMapping("/{orderTableId}/order")
+    public ResponseEntity<Void> changeOrdered(@PathVariable long orderTableId) {
+        tableService.changeOrdered(orderTableId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{orderTableId}/finish")
+    public ResponseEntity<Void> changeFinish(@PathVariable long orderTableId) {
+        tableService.changeFinish(orderTableId);
+        return ResponseEntity.noContent().build();
     }
 }

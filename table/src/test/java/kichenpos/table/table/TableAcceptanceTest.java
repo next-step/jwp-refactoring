@@ -5,13 +5,17 @@ import static kichenpos.table.table.step.TableAcceptanceStep.테이블_목록_�
 import static kichenpos.table.table.step.TableAcceptanceStep.테이블_목록_조회됨;
 import static kichenpos.table.table.step.TableAcceptanceStep.테이블_빈_상태_수정_요청;
 import static kichenpos.table.table.step.TableAcceptanceStep.테이블_빈_상태_수정됨;
+import static kichenpos.table.table.step.TableAcceptanceStep.테이블_상태_수정됨;
 import static kichenpos.table.table.step.TableAcceptanceStep.테이블_생성_요청;
 import static kichenpos.table.table.step.TableAcceptanceStep.테이블_생성됨;
 import static kichenpos.table.table.step.TableAcceptanceStep.테이블_손님_수_수정_요청;
 import static kichenpos.table.table.step.TableAcceptanceStep.테이블_손님_수_수정됨;
+import static kichenpos.table.table.step.TableAcceptanceStep.테이블_완료된_상태_수정_요청;
 import static kichenpos.table.table.step.TableAcceptanceStep.테이블_저장되어_있음;
 import static kichenpos.table.table.step.TableAcceptanceStep.테이블_조회_요청;
 import static kichenpos.table.table.step.TableAcceptanceStep.테이블_조회됨;
+import static kichenpos.table.table.step.TableAcceptanceStep.테이블_주문_받은_상태_되어_있음;
+import static kichenpos.table.table.step.TableAcceptanceStep.테이블_주문_받은_상태_수정_요청;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -93,5 +97,32 @@ class TableAcceptanceTest extends AcceptanceTest {
 
         //then
         테이블_손님_수_수정됨(response, expectedNumber);
+    }
+
+    @Test
+    @DisplayName("주문 받은 상태로 변경할 수 있다.")
+    void changeOrdered() {
+        //given
+        OrderTableResponse orderTable = 테이블_저장되어_있음(5, false);
+
+        //when
+        ExtractableResponse<Response> response = 테이블_주문_받은_상태_수정_요청(orderTable.getId());
+
+        //then
+        테이블_상태_수정됨(response);
+    }
+
+    @Test
+    @DisplayName("완료된 상태로 변경할 수 있다.")
+    void changeFinish() {
+        //given
+        OrderTableResponse orderTable = 테이블_저장되어_있음(5, false);
+        테이블_주문_받은_상태_되어_있음(orderTable.getId());
+
+        //when
+        ExtractableResponse<Response> response = 테이블_완료된_상태_수정_요청(orderTable.getId());
+
+        //then
+        테이블_상태_수정됨(response);
     }
 }
