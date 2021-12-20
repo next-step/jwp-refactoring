@@ -1,12 +1,17 @@
 package kitchenpos.table.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import kitchenpos.exception.CannotUpdatedException;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -46,6 +51,17 @@ class TableGroupTest {
             () -> assertFalse(orderTable_1.equalTableGroup(tableGroup)),
             () -> assertFalse(orderTable_2.equalTableGroup(tableGroup))
         );
+    }
 
+    @Test
+    @DisplayName("주문이 진행중인 테이블이 있는 경우 단체 지정 해제 불가")
+    void clearOrderTableOnGoingOrder() {
+        addOrderTables();
+        Order.of(orderTable_1, OrderStatus.MEAL, new ArrayList<>());
+        Order.of(orderTable_2, OrderStatus.COMPLETION, new ArrayList<>());
+
+        assertThatThrownBy(() -> tableGroup.clearOrderTable())
+            .isInstanceOf(CannotUpdatedException.class)
+            .hasMessage("주문이 완료되지 않은 테이블이 있습니다.");
     }
 }

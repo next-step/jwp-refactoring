@@ -10,7 +10,7 @@ import javax.persistence.Id;
 import kitchenpos.common.domain.BaseEntity;
 import kitchenpos.common.domain.MustHaveName;
 import kitchenpos.common.domain.Price;
-import kitchenpos.menu.domain.Quantity;
+import kitchenpos.common.domain.Quantity;
 
 @Entity
 public class Product extends BaseEntity {

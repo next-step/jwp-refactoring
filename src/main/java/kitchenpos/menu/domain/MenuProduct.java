@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import kitchenpos.common.domain.BaseEntity;
+import kitchenpos.common.domain.Quantity;
 import kitchenpos.exception.InvalidArgumentException;
 import kitchenpos.common.domain.Price;
 import kitchenpos.product.domain.Product;

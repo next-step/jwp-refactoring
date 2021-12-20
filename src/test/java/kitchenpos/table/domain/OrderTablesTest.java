@@ -45,4 +45,5 @@ class OrderTablesTest {
             .isInstanceOf(InvalidArgumentException.class)
             .hasMessage("다른 단체에 속한 테이블이 있습니다.");
     }
+
 }

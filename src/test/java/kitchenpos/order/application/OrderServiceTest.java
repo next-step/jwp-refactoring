@@ -150,7 +150,7 @@ class OrderServiceTest {
             .thenReturn(Arrays.asList(orderLineItem));
 
         Order request = new Order();
-        request.setOrderStatus(OrderStatus.COMPLETION.name());
+        request.setOrderStatusorg(OrderStatus.COMPLETION.name());
         Order changed = orderService.changeOrderStatus(1L, request);
 
         assertThat(changed.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION.name());
@@ -159,12 +159,12 @@ class OrderServiceTest {
     @Test
     @DisplayName("이미 계산완료된 주문은 상태를 변경할 수 없다.")
     void changeOrderStatusValidate() {
-        order.setOrderStatus(OrderStatus.COMPLETION.name());
+        order.setOrderStatusorg(OrderStatus.COMPLETION.name());
         when(orderDao.findById(anyLong()))
             .thenReturn(Optional.of(order));
 
         Order request = new Order();
-        request.setOrderStatus(OrderStatus.MEAL.name());
+        request.setOrderStatusorg(OrderStatus.MEAL.name());
 
         assertThatThrownBy(() -> orderService.changeOrderStatus(1L, request))
             .isInstanceOf(IllegalArgumentException.class);

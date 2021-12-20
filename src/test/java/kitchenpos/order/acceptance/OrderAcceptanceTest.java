@@ -3,7 +3,6 @@ package kitchenpos.order.acceptance;
 import static kitchenpos.menu.acceptance.MenuAcceptanceTest.메뉴등록되어있음;
 import static kitchenpos.menu.acceptance.MenuGroupAcceptanceTest.메뉴그룹_등록_되어있음;
 import static kitchenpos.product.acceptance.ProductAcceptanceTest.상품_등록_되어있음;
-import static kitchenpos.table.acceptance.TableAcceptanceTest.주문테이블_등록되어있음;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -141,7 +140,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
 
     public static ExtractableResponse<Response> 주문_상태변경_요청(Long orderId, String status) {
         Order request = new Order();
-        request.setOrderStatus(status);
+        request.setOrderStatusorg(status);
 
         return RestAssured
             .given().log().all()

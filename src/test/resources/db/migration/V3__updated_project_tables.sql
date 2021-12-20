@@ -13,4 +13,10 @@ ALTER TABLE menu_product ADD modified_date DATETIME;
 ALTER TABLE order_table ADD created_date DATETIME;
 ALTER TABLE order_table ADD modified_date DATETIME;
 
+ALTER TABLE orders ADD created_date DATETIME;
+ALTER TABLE orders ADD modified_date DATETIME;
+
+ALTER TABLE order_line_item ADD created_date DATETIME;
+ALTER TABLE order_line_item ADD modified_date DATETIME;
+
 

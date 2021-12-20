@@ -32,7 +32,6 @@ public class OrderTables {
     }
 
     public void clearOrderTable() {
-        // TODO: 2021/12/20 주문이 진행중인(조리,식사) 테이블은 상태를 변경할 수 없다.
         for (OrderTable orderTable: orderTables) {
             orderTable.clearTableGroup();
         }

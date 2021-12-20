@@ -14,6 +14,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import kitchenpos.common.domain.BaseEntity;
 import kitchenpos.exception.CannotUpdatedException;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.Orders;
 
 @Entity
 public class OrderTable extends BaseEntity {
@@ -31,7 +33,8 @@ public class OrderTable extends BaseEntity {
     @Embedded
     private EmptyTable empty;
 
-    // TODO: 2021/12/20 orders와 양방향 매핑 
+    @Embedded
+    private Orders orders = Orders.create();
 
     public OrderTable() {
     }
@@ -57,6 +60,14 @@ public class OrderTable extends BaseEntity {
         this.tableGroup = null;
     }
 
+    public void addOrder(Order order) {
+        orders.add(order);
+    }
+
+    public void removeOrder(Order order) {
+        this.orders.remove(order);
+    }
+
     public void updateEmpty(Boolean empty) {
         validateUpdateEmpty();
         this.empty = EmptyTable.valueOf(empty);
@@ -68,6 +79,7 @@ public class OrderTable extends BaseEntity {
     }
 
     public void clearTableGroup() {
+        validateOnGoingOrder();
         this.empty = EmptyTable.valueOf(Boolean.TRUE);
         removeTableGroup();
     }
@@ -99,18 +111,19 @@ public class OrderTable extends BaseEntity {
         if (Objects.nonNull(tableGroup)) {
             throw new CannotUpdatedException("단체지정된 테이블은 변경할 수 없습니다.");
         }
-        // TODO: 2021/12/20 orders와 양방향 매핑후 주문이 진행중인(조리,식사) 테이블은 상태를 변경할 수 없다.
-        // validation check
-//        if (orderDao.existsByOrderTableIdAndOrderStatusIn(
-//            orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-//            throw new IllegalArgumentException();
-//        }
 
+        validateOnGoingOrder();
     }
 
     private void validateUpdateNumberOfGuests() {
         if (empty.isEmpty()) {
             throw new CannotUpdatedException("빈 테이블의 손님수는 변경 할 수 없습니다.");
+        }
+    }
+
+    private void validateOnGoingOrder() {
+        if (orders.isOnGoing()) {
+            throw new CannotUpdatedException("주문이 완료되지 않은 테이블이 있습니다.");
         }
     }
 
@@ -167,13 +180,4 @@ public class OrderTable extends BaseEntity {
         return Objects.hash(id);
     }
 
-    @Override
-    public String toString() {
-        return "OrderTable{" +
-            "id=" + id +
-            ", tableGroup=" + tableGroup +
-            ", numberOfGuests=" + numberOfGuests +
-            ", empty=" + empty +
-            '}';
-    }
 }

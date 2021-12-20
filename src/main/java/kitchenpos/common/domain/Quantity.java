@@ -1,4 +1,4 @@
-package kitchenpos.menu.domain;
+package kitchenpos.common.domain;
 
 import java.util.Objects;
 import javax.persistence.Column;
@@ -42,7 +42,7 @@ public final class Quantity {
         if (this == o) {
             return true;
         }
-        if (o.getClass().equals(Long.class)) {
+        if (o instanceof Long) {
             return quantity.equals(o);
         }
         if (o == null || getClass() != o.getClass()) {
