@@ -26,6 +26,10 @@ public class OrderTable {
         return new OrderTable(null, numberOfGuests, false);
     }
 
+    public static OrderTable ofWithEmpty(int numberOfGuests) {
+        return new OrderTable(null, numberOfGuests, true);
+    }
+
     public Long getId() {
         return id;
     }

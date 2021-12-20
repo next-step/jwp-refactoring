@@ -88,7 +88,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
         주문상태_변경됨(주문상태_변경_응답);
     }
 
-    private ExtractableResponse<Response> 주문테이블_생성(OrderTable orderTable) {
+    public static ExtractableResponse<Response> 주문테이블_생성(OrderTable orderTable) {
         return post("/api/tables", orderTable);
     }
 

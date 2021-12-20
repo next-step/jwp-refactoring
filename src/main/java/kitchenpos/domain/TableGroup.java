@@ -11,10 +11,20 @@ public class TableGroup {
     public TableGroup() {
     }
 
+    private TableGroup(LocalDateTime createdDate,
+        List<OrderTable> orderTables) {
+        this.createdDate = createdDate;
+        this.orderTables = orderTables;
+    }
+
     public TableGroup(Long id, LocalDateTime createdDate, List<OrderTable> orderTables) {
         this.id = id;
         this.createdDate = createdDate;
         this.orderTables = orderTables;
+    }
+
+    public static TableGroup of(List<OrderTable> orderTables) {
+        return new TableGroup(LocalDateTime.now(), orderTables);
     }
 
     public Long getId() {

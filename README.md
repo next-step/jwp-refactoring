@@ -72,6 +72,6 @@
     - [X] MenuGroupRestController
     - [X] MenuRestController
     - [X] ProductRestController
-    - [ ] OrderRestController
-    - [ ] TableGroupRestController
+    - [X] OrderRestController
+    - [X] TableGroupRestController
     - [ ] TableRestController
