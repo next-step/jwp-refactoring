@@ -3,6 +3,7 @@ package kitchenpos.domain;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 
@@ -29,6 +30,12 @@ public class OrderTables {
 
     public List<OrderTable> getOrderTables() {
         return Collections.unmodifiableList(orderTables);
+    }
+
+    public List<Long> getOrderTableIds() {
+        return orderTables.stream()
+            .map(OrderTable::getId)
+            .collect(Collectors.toList());
     }
 
     private void validateGreaterOrEqualsMinimum(List<OrderTable> orderTables) {

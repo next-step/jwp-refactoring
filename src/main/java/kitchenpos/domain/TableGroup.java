@@ -55,4 +55,8 @@ public class TableGroup {
     public void setOrderTables(final List<OrderTable> orderTables) {
         this.orderTables = OrderTables.of(orderTables);
     }
+
+    public List<Long> getOrderTableIds() {
+        return orderTables.getOrderTableIds();
+    }
 }
