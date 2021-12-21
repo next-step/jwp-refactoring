@@ -14,7 +14,6 @@ public class OrderCommandService {
     private final OrderValidator orderValidator;
     private final ApplicationEventPublisher eventPublisher;
 
-
     public OrderCommandService(OrderRepository orderRepository, OrderValidator orderValidator,
         ApplicationEventPublisher eventPublisher) {
         this.orderRepository = orderRepository;
@@ -35,5 +34,4 @@ public class OrderCommandService {
         eventPublisher.publishEvent(OrderStatusChangedEvent.from(order));
         return order;
     }
-
 }

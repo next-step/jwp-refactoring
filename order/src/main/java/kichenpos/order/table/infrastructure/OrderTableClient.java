@@ -12,9 +12,9 @@ public interface OrderTableClient {
     @GetMapping("/{id}")
     OrderTableDto getTable(@PathVariable("id") long id);
 
-    @PostMapping("/{orderTableId}/order")
-    void changeOrdered(@PathVariable long orderTableId);
+    @PostMapping("/{id}/order")
+    void changeOrdered(@PathVariable("id") long id);
 
-    @PostMapping("/{orderTableId}/finish")
-    void changeFinish(@PathVariable long orderTableId);
+    @PostMapping("/{id}/finish")
+    void changeFinish(@PathVariable("id") long id);
 }
