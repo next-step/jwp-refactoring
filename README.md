@@ -69,17 +69,21 @@
     - [X] MenuGroup 엔티티 변환
     - [X] Menu 엔티티 변환
     - [X] MenuProduct 엔티티 변환
-  - [ ] MenuGroupService
-  - [ ] MenuService
+  - [ ] MenuGroupRepository 사용하도록 수정
+  - [ ] MenuRepository 사용하도록 수정
+  - [ ] MenuProductRepository 사용하도록 수정
 - [ ] 테이블 관리 리팩토링
   - [ ] 모델
     - [ ] TableGroup 엔티티 변환
-  - [ ] TableGroupService
-  - [ ] TableService
+  - [ ] TableGroupRepository 사용하도록 수정
 - [ ] 주문 관리 리팩토링
   - [ ] 모델
     - [ ] Order 엔티티 변환
-  - [ ] OrderService
+    - [ ] OrderLineItem 엔티티 변환
+    - [ ] OrderTable 엔티티 변환
+  - [ ] OrderRepository 사용하도록 수정
+  - [ ] OrderLineItemRepository 사용하도록 수정
+  - [ ] OrderTableRepository 사용하도록 수정
 
 ### step1 요구사항
 - [X] 키친포스 기능 요구사항 분석
