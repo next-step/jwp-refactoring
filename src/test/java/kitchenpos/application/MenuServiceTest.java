@@ -12,12 +12,12 @@ import kitchenpos.application.fixture.MenuFixture;
 import kitchenpos.application.fixture.MenuGroupFixture;
 import kitchenpos.application.fixture.MenuProductFixture;
 import kitchenpos.application.fixture.ProductFixture;
-import kitchenpos.dao.MenuDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuGroupRepository;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.MenuProductRepository;
+import kitchenpos.domain.MenuRepository;
 import kitchenpos.domain.Product;
 import kitchenpos.domain.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,7 +33,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class MenuServiceTest {
 
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
 
     @Mock
     private MenuGroupRepository menuGroupRepository;
@@ -73,7 +73,7 @@ class MenuServiceTest {
     void create() {
         given(menuGroupRepository.existsById(후라이드치킨.getMenuGroupId())).willReturn(true);
         given(productRepository.findById(메뉴상품1.getProductId())).willReturn(Optional.of(상품_후라이드));
-        given(menuDao.save(후라이드치킨)).willReturn(후라이드치킨);
+        given(menuRepository.save(후라이드치킨)).willReturn(후라이드치킨);
 
         Menu savedMenu = menuService.create(후라이드치킨);
 
@@ -132,7 +132,7 @@ class MenuServiceTest {
     @DisplayName("메뉴 목록을 조회할 수 있다.")
     @Test
     void list() {
-        given(menuDao.findAll()).willReturn(Arrays.asList(후라이드치킨, 양념치킨));
+        given(menuRepository.findAll()).willReturn(Arrays.asList(후라이드치킨, 양념치킨));
         given(menuProductRepository.findAllByMenuId(후라이드치킨.getId())).willReturn(Arrays.asList(메뉴상품1));
         given(menuProductRepository.findAllByMenuId(양념치킨.getId())).willReturn(Arrays.asList(메뉴상품2));
 
