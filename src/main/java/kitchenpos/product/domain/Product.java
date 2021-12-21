@@ -1,9 +1,11 @@
-package kitchenpos.domain;
+package kitchenpos.product.domain;
 
 import java.math.BigDecimal;
 import java.util.Objects;
 
 public class Product {
+
+    private final static String ERROR_MESSAGE_PRODUCT_PRICE_VALUE = "상품의 가격은 0원 이상이어야 합니다.";
 
     private Long id;
     private String name;
@@ -17,11 +19,12 @@ public class Product {
     }
 
     public Product(Long id, String name, BigDecimal price) {
+        validatePrice(price);
         this.id = id;
         this.name = name;
         this.price = price;
     }
-
+    
     public Long getId() {
         return id;
     }
@@ -44,6 +47,12 @@ public class Product {
 
     public void setPrice(final BigDecimal price) {
         this.price = price;
+    }
+
+    private void validatePrice(BigDecimal price) {
+        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException(ERROR_MESSAGE_PRODUCT_PRICE_VALUE);
+        }
     }
 
     @Override

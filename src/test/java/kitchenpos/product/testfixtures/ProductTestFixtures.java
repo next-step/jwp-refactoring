@@ -1,12 +1,12 @@
-package kitchenpos.application.testfixtures;
+package kitchenpos.product.testfixtures;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.dao.ProductDao;
-import kitchenpos.domain.Product;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductDao;
 
 public class ProductTestFixtures {
 
