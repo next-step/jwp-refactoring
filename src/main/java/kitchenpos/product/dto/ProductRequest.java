@@ -1,14 +1,15 @@
 package kitchenpos.product.dto;
 
-import java.math.BigDecimal;
+import kitchenpos.product.domain.Amount;
+import kitchenpos.product.domain.Product;
 
 public class ProductRequest {
 
     private Long id;
     private String name;
-    private BigDecimal price;
+    private Long price;
 
-    public ProductRequest(Long id, String name, BigDecimal price) {
+    public ProductRequest(Long id, String name, Long price) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -22,7 +23,11 @@ public class ProductRequest {
         return name;
     }
 
-    public BigDecimal getPrice() {
+    public Long getPrice() {
         return price;
+    }
+
+    public Product toProduct() {
+        return Product.of(name, price);
     }
 }
