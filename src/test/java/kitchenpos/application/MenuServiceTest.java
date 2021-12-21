@@ -2,6 +2,7 @@ package kitchenpos.application;
 
 import kitchenpos.domain.*;
 import kitchenpos.dto.MenuRequest;
+import kitchenpos.event.MenuCreatedEvent;
 import kitchenpos.repository.MenuGroupRepository;
 import kitchenpos.repository.MenuRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -28,7 +30,7 @@ class MenuServiceTest {
     MenuGroupRepository menuGroupRepository;
 
     @Mock
-    ProductService productService;
+    ApplicationEventPublisher eventPublisher;
 
     @DisplayName("메뉴를 등록한다.")
     @Test
@@ -43,8 +45,7 @@ class MenuServiceTest {
         후라이드치킨.addMenuProduct(후라이드치킨_상품);
 
         when(menuGroupRepository.findById(후라이드치킨.getMenuGroup().getId())).thenReturn(Optional.of(한마리메뉴));
-        when(productService.getProduct(후라이드.getId())).thenReturn(후라이드);
-        MenuService menuService = new MenuService(menuRepository, menuGroupRepository, productService, eventPublisher);
+        MenuService menuService = new MenuService(menuRepository, menuGroupRepository, eventPublisher);
 
         Menu expectedMenu = mock(Menu.class);
         when(expectedMenu.getId()).thenReturn(1L);
@@ -56,6 +57,7 @@ class MenuServiceTest {
         // when
         Menu created_후라이드치킨 = menuService.create(MenuRequest.from(후라이드치킨));
         // then
+        verify(eventPublisher).publishEvent(any(MenuCreatedEvent.class));
         assertThat(created_후라이드치킨.getId()).isNotNull();
         assertThat(created_후라이드치킨.getName()).isEqualTo(후라이드치킨.getName());
         assertThat(created_후라이드치킨.getPrice()).isEqualTo(후라이드치킨.getPrice());
@@ -68,7 +70,7 @@ class MenuServiceTest {
         Menu menu = mock(Menu.class);
 
         when(menuRepository.findAll()).thenReturn(Arrays.asList(menu));
-        MenuService menuService = new MenuService(menuRepository, menuGroupRepository, productService, eventPublisher);
+        MenuService menuService = new MenuService(menuRepository, menuGroupRepository, eventPublisher);
 
         // when
         List<Menu> menus = menuService.list();
