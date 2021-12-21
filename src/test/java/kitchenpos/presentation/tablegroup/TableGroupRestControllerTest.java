@@ -1,4 +1,4 @@
-package kitchenpos.presentation.table;
+package kitchenpos.presentation.tablegroup;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,7 +13,8 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.dto.table.OrderTableDto;
-import kitchenpos.dto.table.TableGroupDto;
+import kitchenpos.dto.tablegroup.TableGroupDto;
+import kitchenpos.presentation.table.TableRestControllerTest;
 import kitchenpos.testassistance.config.TestConfig;
 
 @DisplayName("단체지정 API기능에 관한")

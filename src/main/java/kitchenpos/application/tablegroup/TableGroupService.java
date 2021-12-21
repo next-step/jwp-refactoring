@@ -1,13 +1,13 @@
-package kitchenpos.application.table;
+package kitchenpos.application.tablegroup;
 
 import kitchenpos.application.order.OrderService;
 import kitchenpos.domain.order.Orders;
 import kitchenpos.domain.table.OrderTableRepository;
 import kitchenpos.domain.table.OrderTables;
-import kitchenpos.domain.table.TableGroup;
-import kitchenpos.domain.table.TableGroupRepository;
+import kitchenpos.domain.tablegroup.TableGroup;
+import kitchenpos.domain.tablegroup.TableGroupRepository;
 import kitchenpos.dto.table.OrderTableDto;
-import kitchenpos.dto.table.TableGroupDto;
+import kitchenpos.dto.tablegroup.TableGroupDto;
 import kitchenpos.exception.table.NotRegistedMenuOrderTableException;
 
 import org.springframework.stereotype.Service;

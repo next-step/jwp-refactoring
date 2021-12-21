@@ -12,6 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import kitchenpos.domain.Price;
+import kitchenpos.domain.menugroup.MenuGroup;
 import kitchenpos.vo.ProductId;
 
 @Entity

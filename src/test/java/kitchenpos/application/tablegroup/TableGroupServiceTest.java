@@ -1,4 +1,4 @@
-package kitchenpos.application.table;
+package kitchenpos.application.tablegroup;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
@@ -22,10 +22,10 @@ import kitchenpos.domain.order.Orders;
 import kitchenpos.domain.table.OrderTable;
 import kitchenpos.domain.table.OrderTableRepository;
 import kitchenpos.domain.table.OrderTables;
-import kitchenpos.domain.table.TableGroup;
-import kitchenpos.domain.table.TableGroupRepository;
+import kitchenpos.domain.tablegroup.TableGroup;
+import kitchenpos.domain.tablegroup.TableGroupRepository;
 import kitchenpos.dto.table.OrderTableDto;
-import kitchenpos.dto.table.TableGroupDto;
+import kitchenpos.dto.tablegroup.TableGroupDto;
 import kitchenpos.exception.table.HasOtherTableGroupException;
 import kitchenpos.exception.table.NotGroupingOrderTableCountException;
 import kitchenpos.exception.table.NotRegistedMenuOrderTableException;

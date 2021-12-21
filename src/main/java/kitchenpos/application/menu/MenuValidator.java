@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 import kitchenpos.application.product.ProductService;
 import kitchenpos.domain.Price;
 import kitchenpos.domain.menu.Menu;
-import kitchenpos.domain.menu.MenuGroupRepository;
 import kitchenpos.domain.menu.MenuProduct;
 import kitchenpos.domain.product.Product;
 import kitchenpos.domain.product.Products;
@@ -18,14 +17,11 @@ import kitchenpos.vo.ProductId;
 
 @Component
 public class MenuValidator {
-    private final MenuGroupRepository menuGroupRepository;
     private final ProductService productService;
 
     public MenuValidator(
-            final MenuGroupRepository menuGroupRepository,
             final ProductService productService
     ) {
-        this.menuGroupRepository = menuGroupRepository;
         this.productService = productService;
     }
 

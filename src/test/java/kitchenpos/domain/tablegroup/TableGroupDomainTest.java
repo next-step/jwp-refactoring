@@ -1,4 +1,4 @@
-package kitchenpos.domain.table;
+package kitchenpos.domain.tablegroup;
 
 import java.util.List;
 
@@ -6,6 +6,8 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import kitchenpos.domain.table.OrderTable;
+import kitchenpos.domain.table.OrderTables;
 import kitchenpos.exception.table.HasOtherTableGroupException;
 import kitchenpos.exception.table.NotEmptyOrderTableException;
 import kitchenpos.exception.table.NotGroupingOrderTableCountException;

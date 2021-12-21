@@ -1,4 +1,4 @@
-package kitchenpos.domain.table;
+package kitchenpos.domain.tablegroup;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -14,6 +14,8 @@ import javax.persistence.Id;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import kitchenpos.domain.table.OrderTable;
+import kitchenpos.domain.table.OrderTables;
 import kitchenpos.exception.table.HasOtherTableGroupException;
 import kitchenpos.exception.table.NotEmptyOrderTableException;
 import kitchenpos.exception.table.NotGroupingOrderTableCountException;

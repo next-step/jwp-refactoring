@@ -1,4 +1,4 @@
-package kitchenpos.presentation.menu;
+package kitchenpos.presentation.menugroup;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -9,7 +9,7 @@ import org.springframework.http.MediaType;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.dto.menu.MenuGroupDto;
+import kitchenpos.dto.menugroup.MenuGroupDto;
 import kitchenpos.testassistance.config.TestConfig;
 
 @DisplayName("메뉴그룹 API기능에 관한")

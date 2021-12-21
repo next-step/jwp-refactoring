@@ -25,7 +25,7 @@ import kitchenpos.domain.order.Orders;
 import kitchenpos.domain.table.OrderTable;
 import kitchenpos.domain.table.OrderTableRepository;
 import kitchenpos.domain.table.OrderTables;
-import kitchenpos.domain.table.TableGroup;
+import kitchenpos.domain.tablegroup.TableGroup;
 import kitchenpos.dto.table.OrderTableDto;
 import kitchenpos.exception.order.HasNotCompletionOrderException;
 import kitchenpos.exception.table.EmptyOrderTableException;

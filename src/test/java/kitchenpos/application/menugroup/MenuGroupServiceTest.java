@@ -1,4 +1,4 @@
-package kitchenpos.application.menu;
+package kitchenpos.application.menugroup;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -13,9 +13,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.domain.menu.MenuGroup;
-import kitchenpos.domain.menu.MenuGroupRepository;
-import kitchenpos.dto.menu.MenuGroupDto;
+import kitchenpos.domain.menugroup.MenuGroup;
+import kitchenpos.domain.menugroup.MenuGroupRepository;
+import kitchenpos.dto.menugroup.MenuGroupDto;
 
 @ExtendWith(MockitoExtension.class)
 public class MenuGroupServiceTest {

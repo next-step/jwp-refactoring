@@ -13,9 +13,10 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.dto.menu.MenuDto;
-import kitchenpos.dto.menu.MenuGroupDto;
 import kitchenpos.dto.menu.MenuProductDto;
+import kitchenpos.dto.menugroup.MenuGroupDto;
 import kitchenpos.dto.product.ProductDto;
+import kitchenpos.presentation.menugroup.MenuGroupRestControllerTest;
 import kitchenpos.presentation.product.ProductRestControllerTest;
 import kitchenpos.testassistance.config.TestConfig;
 

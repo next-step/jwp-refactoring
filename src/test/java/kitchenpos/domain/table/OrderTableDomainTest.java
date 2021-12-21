@@ -10,6 +10,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.domain.order.Orders;
+import kitchenpos.domain.tablegroup.TableGroup;
 import kitchenpos.exception.order.HasNotCompletionOrderException;
 import kitchenpos.exception.table.EmptyOrderTableException;
 import kitchenpos.exception.table.HasOtherTableGroupException;
