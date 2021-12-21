@@ -17,7 +17,7 @@ public class TableGroupValidator {
     }
 
     public void validateForUnGroup(OrderTables orderTables) {
-        if (!orderService.isAllComplate(orderTables.getOrderTableIds())) {
+        if (orderService.hasNotComplateStatus(orderTables.getOrderTableIds())) {
             throw new HasNotCompletionOrderException();
         }
     }

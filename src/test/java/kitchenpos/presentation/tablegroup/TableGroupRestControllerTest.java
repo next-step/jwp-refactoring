@@ -14,6 +14,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.dto.table.OrderTableDto;
 import kitchenpos.dto.tablegroup.TableGroupDto;
+import kitchenpos.presentation.order.OrderRestControllerTest;
 import kitchenpos.presentation.table.TableRestControllerTest;
 import kitchenpos.testassistance.config.TestConfig;
 

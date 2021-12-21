@@ -32,7 +32,7 @@ public class TableGroupValidatorTest {
         // given
         OrderTables 주문테이블들 = OrderTables.of(List.of(OrderTable.of(0, true), OrderTable.of(10, false)));
 
-        when(orderService.isAllComplate(anyList())).thenReturn(false);
+        when(orderService.hasNotComplateStatus(anyList())).thenReturn(true);
 
         // when
         // then

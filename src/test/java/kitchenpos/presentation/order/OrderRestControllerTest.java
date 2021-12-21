@@ -65,7 +65,7 @@ public class OrderRestControllerTest extends TestConfig {
         주문_상태변경됨(response);
     }
 
-    private OrderDto 저장될_주문생성() {
+    public static OrderDto 저장될_주문생성() {
         OrderTableDto orderTable = 반테이블들_조회됨().get(0);
         orderTable.changeNumberOfGuests(10);
 
@@ -78,13 +78,13 @@ public class OrderRestControllerTest extends TestConfig {
         return OrderDto.of(changedOrderTable.getId(), orderLineItems);
     }
 
-    private List<OrderLineItemDto> 주문명세서_생성(List<MenuDto> menus) {
+    public static List<OrderLineItemDto> 주문명세서_생성(List<MenuDto> menus) {
         return menus.stream()
                     .map(menu -> OrderLineItemDto.of(menu.getId(), 1L))
                     .collect(Collectors.toList());
     }
 
-    private List<OrderTableDto> 반테이블들_조회됨() {
+    public static List<OrderTableDto> 반테이블들_조회됨() {
         return List.of(TableRestControllerTest.주문테이블_조회요청().as(OrderTableDto[].class)).stream()
                                 .filter(OrderTableDto::isEmpty)
                                 .collect(Collectors.toList());

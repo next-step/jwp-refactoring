@@ -16,6 +16,7 @@ import kitchenpos.vo.OrderTableId;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -75,7 +76,7 @@ public class OrderService {
         return orderRepository.findAllByOrderTableIdIn(orderTableIds.stream().map(OrderTableId::of).collect(Collectors.toList()));
     }
 
-    public boolean isAllComplate(List<Long> orderTableIds) {
-        return orderRepository.existsByOrderTableIdInAndOrderStatusNot(orderTableIds.stream().map(OrderTableId::of).collect(Collectors.toList()), OrderStatus.COMPLETION);
+    public boolean hasNotComplateStatus(List<Long> orderTableIds) {
+        return orderRepository.existsByOrderTableIdInAndOrderStatusIn(orderTableIds.stream().map(OrderTableId::of).collect(Collectors.toList()), Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL));
     }
 }
