@@ -6,7 +6,9 @@ import kitchenpos.dao.MenuProductRepository;
 import kitchenpos.dao.ProductRepository;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
+import kitchenpos.domain.Price;
 import kitchenpos.domain.Product;
+import kitchenpos.exception.NegativePriceException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -43,8 +45,8 @@ class MenuServiceTest {
 
     @BeforeEach
     void setUp() {
-        후라이드치킨 = new Product(1L, "후라이드치킨", new BigDecimal(16_000));
-        menu = new Menu(1L, "후라이드치킨", new BigDecimal(16_000), 1L, new ArrayList<MenuProduct>(Collections.singleton(new MenuProduct(1L, menu, 1L, 1))));
+        후라이드치킨 = new Product(1L, "후라이드치킨", Price.from(16_000));
+        menu = new Menu(1L, "후라이드치킨", Price.from(16_000), 1L, new ArrayList<MenuProduct>(Collections.singleton(new MenuProduct(1L, menu, 1L, 1))));
     }
 
     @DisplayName("메뉴를 생성한다")
@@ -67,11 +69,11 @@ class MenuServiceTest {
     @Test
     void minusMenuPriceTest() {
         // when
-        this.menu.setPrice(new BigDecimal(-1000));
+        this.menu.setPrice(Price.from(-1000));
         MenuService menuService = new MenuService(menuRepository, menuGroupRepository, menuProductRepository, productRepository);
 
         // then
-        assertThatThrownBy(() -> menuService.create(this.menu)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> menuService.create(this.menu)).isInstanceOf(NegativePriceException.class);
     }
 
     @DisplayName("메뉴의 가격이 존재해야 한다")
@@ -82,14 +84,14 @@ class MenuServiceTest {
         MenuService menuService = new MenuService(menuRepository, menuGroupRepository, menuProductRepository, productRepository);
 
         // then
-        assertThatThrownBy(() -> menuService.create(this.menu)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> menuService.create(this.menu)).isInstanceOf(NegativePriceException.class);
     }
 
     @DisplayName("메뉴의 가격이 메뉴 상품의 총합보다 작아야 한다")
     @Test
     void menuPriceLimitTest() {
         // when
-        this.menu.setPrice(new BigDecimal(19_000));
+        this.menu.setPrice(Price.from(19_000));
         MenuService menuService = new MenuService(menuRepository, menuGroupRepository, menuProductRepository, productRepository);
 
         // then

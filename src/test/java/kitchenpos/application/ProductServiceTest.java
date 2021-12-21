@@ -1,6 +1,7 @@
 package kitchenpos.application;
 
 import kitchenpos.dao.ProductRepository;
+import kitchenpos.domain.Price;
 import kitchenpos.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -32,10 +33,10 @@ class ProductServiceTest {
     void setUp() {
         양념치킨 = new Product();
         양념치킨.setName("양념치킨");
-        양념치킨.setPrice(new BigDecimal(16_000));
+        양념치킨.setPrice(Price.from(16_000));
         순살치킨 = new Product();
         순살치킨.setName("순살치킨");
-        순살치킨.setPrice(new BigDecimal(-15_000));
+        순살치킨.setPrice(Price.from(-15_000));
         list = new ArrayList<>();
         list.add(양념치킨);
         list.add(순살치킨);

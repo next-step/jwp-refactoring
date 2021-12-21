@@ -6,7 +6,9 @@ import kitchenpos.dao.MenuProductRepository;
 import kitchenpos.dao.ProductRepository;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
+import kitchenpos.domain.Price;
 import kitchenpos.domain.Product;
+import kitchenpos.exception.NegativePriceException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,11 +38,7 @@ public class MenuService {
 
     @Transactional
     public Menu create(final Menu menu) {
-        final BigDecimal price = menu.getPrice();
-
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {    // TODO Menu 도메인 내부로 이동
-            throw new IllegalArgumentException();
-        }
+        final Price price = menu.getPrice();
 
         if (!menuGroupRepository.existsById(menu.getMenuGroupId())) {     // TODO 다대일 관계로
             throw new IllegalArgumentException();
