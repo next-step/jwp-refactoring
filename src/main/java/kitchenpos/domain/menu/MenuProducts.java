@@ -2,12 +2,13 @@ package kitchenpos.domain.menu;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 
-import kitchenpos.domain.Price;
+import kitchenpos.vo.ProductId;
 
 @Embeddable
 public class MenuProducts {
@@ -24,16 +25,6 @@ public class MenuProducts {
 
     public static MenuProducts of(List<MenuProduct> menuProducts) {
         return new MenuProducts(menuProducts);
-    }
-
-    public Price getSumProductPrice() {
-        Price sumOfProductsPrice = Price.of(0);
-
-        for (MenuProduct menuProduct : this.menuProducts) {
-            sumOfProductsPrice = sumOfProductsPrice.add(menuProduct.calculatePrice());
-        }
-
-        return sumOfProductsPrice;
     }
 
     public boolean remove(MenuProduct menuProduct) {
@@ -56,5 +47,11 @@ public class MenuProducts {
 
     public MenuProduct get(int index) {
         return this.menuProducts.get(index);
+    }
+
+    public List<ProductId> getProductIds() {
+        return this.menuProducts.stream()
+                                .map(menuProduct -> menuProduct.getProductId())
+                                .collect(Collectors.toList());
     }
 }

@@ -1,6 +1,7 @@
 package kitchenpos.domain.menu;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -11,7 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import kitchenpos.domain.Price;
-import kitchenpos.exception.menu.NotCorrectMenuPriceException;
+import kitchenpos.vo.ProductId;
 
 @Entity
 public class Menu {
@@ -46,12 +47,6 @@ public class Menu {
     }
 
     public static Menu of(String name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
-        Price sumOfProductsPrice = menuProducts.getSumProductPrice();
-
-        if (price.compareTo(sumOfProductsPrice) > 0) {
-            throw new NotCorrectMenuPriceException();
-        }
-
         Menu menu = new Menu(null, name, price, menuGroup);
         menuProducts.acceptMenu(menu);
 
@@ -88,5 +83,9 @@ public class Menu {
 
     public boolean isEqualMenuId(Long menuId) {
         return this.id.equals(menuId);
+    }
+
+    public List<ProductId> getProductIds() {
+        return this.menuProducts.getProductIds();
     }
 }

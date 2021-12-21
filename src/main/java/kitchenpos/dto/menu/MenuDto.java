@@ -44,7 +44,7 @@ public class MenuDto {
 
         for (int i = 0; i < menu.getMenuProducts().size(); i++ ){
             MenuProduct menuProduct = menu.getMenuProducts().get(i);
-            menuProductDtos.add(MenuProductDto.of(menuProduct.getSeq(), menuProduct.getMenu().getId(),  menuProduct.getProduct().getId(), menuProduct.getQuantity()));
+            menuProductDtos.add(MenuProductDto.of(menuProduct.getSeq(), menuProduct.getMenu().getId(),  menuProduct.getProductId().value(), menuProduct.getQuantity()));
         }
         
         return new MenuDto(menu.getId(), menu.getName(), BigDecimal.valueOf(menu.getPrice().value()), menu.getMenuGroup().getId(), menuProductDtos);

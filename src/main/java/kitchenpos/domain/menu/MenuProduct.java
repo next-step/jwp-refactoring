@@ -1,5 +1,6 @@
 package kitchenpos.domain.menu;
 
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -7,8 +8,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import kitchenpos.domain.Price;
 import kitchenpos.domain.product.Product;
+import kitchenpos.vo.ProductId;
 
 @Entity
 public class MenuProduct {
@@ -20,26 +21,29 @@ public class MenuProduct {
     @JoinColumn(name = "menu_id")
     private Menu menu;
 
-    @ManyToOne
-    @JoinColumn(name = "product_id")
-    private Product product;
+    @Embedded
+    private ProductId productId;
 
     private long quantity;
 
     protected MenuProduct() {
     }
 
-    private MenuProduct(Product product, long quantity) {
-        this.product = product;
+    private MenuProduct(ProductId productId, long quantity) {
+        this.productId = productId;
         this.quantity = quantity;
     }
 
-    public static MenuProduct of(Product product, long quantity) {
-        return new MenuProduct(product, quantity);
+    public static MenuProduct of(ProductId productId, long quantity) {
+        return new MenuProduct(productId, quantity);
     }
 
-    public static MenuProduct of(Menu menu, Product product, long quantity) {
-        MenuProduct menuProduct = new MenuProduct(product, quantity);
+    public static MenuProduct of(Product product, long quantity) {
+        return new MenuProduct(ProductId.of(product.getId()), quantity);
+    }
+
+    public static MenuProduct of(Menu menu, ProductId productId, long quantity) {
+        MenuProduct menuProduct = new MenuProduct(productId, quantity);
         menuProduct.acceptMenu(menu);
 
         return menuProduct;
@@ -53,8 +57,8 @@ public class MenuProduct {
         return this.menu;
     }
 
-    public Product getProduct() {
-        return this.product;
+    public ProductId getProductId() {
+        return this.productId;
     }
 
     public long getQuantity() {
@@ -68,9 +72,5 @@ public class MenuProduct {
 
         this.menu = menu;
         this.menu.getMenuProducts().add(this);
-    }
-
-    public Price calculatePrice() {
-        return this.product.calculatePriceWithQuantity(this.quantity);
     }
 }

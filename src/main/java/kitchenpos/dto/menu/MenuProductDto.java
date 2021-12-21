@@ -30,10 +30,10 @@ public class MenuProductDto {
 
     public static MenuProductDto of(MenuProduct menuProduct) {
         if (menuProduct.getMenu() == null) {
-            return new MenuProductDto(menuProduct.getSeq(), null, menuProduct.getProduct().getId(), menuProduct.getQuantity());
+            return new MenuProductDto(menuProduct.getSeq(), null, menuProduct.getProductId().value(), menuProduct.getQuantity());
         }
 
-        return new MenuProductDto(menuProduct.getSeq(), menuProduct.getMenu().getId(), menuProduct.getProduct().getId(), menuProduct.getQuantity());
+        return new MenuProductDto(menuProduct.getSeq(), menuProduct.getMenu().getId(), menuProduct.getProductId().value(), menuProduct.getQuantity());
     }
     
     public Long getSeq() {
