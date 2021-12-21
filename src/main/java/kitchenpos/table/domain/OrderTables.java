@@ -48,7 +48,7 @@ public class OrderTables {
     }
 
     public void initTableGroup(final TableGroup tableGroup) {
-        orderTables.forEach(tableGroup::initOrderTables);
+        orderTables.forEach(orderTable -> orderTable.initTableGroup(tableGroup));
     }
 
     public int size() {

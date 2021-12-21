@@ -74,6 +74,15 @@ public class OrderTable {
         return !Objects.isNull(tableGroup);
     }
 
+    public void initTableGroup(TableGroup tableGroup) {
+        assignTableGroup(tableGroup);
+        changeEmpty(false);
+    }
+
+    public void unTableGroup() {
+        tableGroup = null;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -88,9 +97,5 @@ public class OrderTable {
     @Override
     public int hashCode() {
         return Objects.hash(id, tableGroup, numberOfGuests, empty);
-    }
-
-    public void unTableGroup() {
-        tableGroup = null;
     }
 }

@@ -48,11 +48,6 @@ public class TableGroup {
         return orderTables.getOrderTables();
     }
 
-    public void initOrderTables(OrderTable orderTable) {
-        orderTable.assignTableGroup(this);
-        orderTable.changeEmpty(false);
-    }
-
     public void ungroup() {
         orderTables.ungroup();
         orderTables = new OrderTables();
@@ -68,6 +63,6 @@ public class TableGroup {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, createdDate, orderTables);
+        return Objects.hash(id);
     }
 }

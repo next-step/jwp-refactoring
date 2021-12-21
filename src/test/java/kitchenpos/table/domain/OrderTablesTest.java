@@ -78,7 +78,7 @@ public class OrderTablesTest {
         // when
         orderTables.ungroup();
         // then
-        assertThat(orderTables.getOrderTables()).contains(빈자리);
+        assertThat(orderTables.getOrderTables()).contains(OrderTable.ofEmptyTable());
     }
 
 }

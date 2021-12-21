@@ -5,7 +5,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.stream.Stream;
@@ -31,7 +30,7 @@ public class OrderTableTest {
         // given
         // when
         // then
-        assertThat(임시자리).isEqualTo(빈자리);
+        assertThat(임시자리).isEqualTo(OrderTable.ofEmptyTable());
     }
 
     @Test
