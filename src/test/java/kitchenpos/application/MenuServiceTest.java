@@ -8,13 +8,13 @@ import static org.mockito.BDDMockito.given;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.dao.ProductDao;
 import kitchenpos.menu.Menu;
 import kitchenpos.menu.MenuGroupRepository;
 import kitchenpos.menu.MenuProduct;
 import kitchenpos.menu.MenuProductRepository;
 import kitchenpos.menu.MenuRepository;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -37,7 +37,7 @@ public class MenuServiceTest {
     private MenuProductRepository menuProductRepository;
 
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     @InjectMocks
     private MenuService menuService;
@@ -63,8 +63,8 @@ public class MenuServiceTest {
             Lists.newArrayList(menuProduct1, menuProduct2));
 
         given(menuGroupRepository.existsById(any())).willReturn(true);
-        given(productDao.findById(1L)).willReturn(Optional.of(product1));
-        given(productDao.findById(2L)).willReturn(Optional.of(product2));
+        given(productRepository.findById(1L)).willReturn(Optional.of(product1));
+        given(productRepository.findById(2L)).willReturn(Optional.of(product2));
         given(menuRepository.save(menu)).willReturn(menu);
         given(menuProductRepository.save(menuProduct1)).willReturn(menuProduct1);
         given(menuProductRepository.save(menuProduct2)).willReturn(menuProduct2);
@@ -116,8 +116,8 @@ public class MenuServiceTest {
             Lists.newArrayList(menuProduct1, menuProduct2));
 
         given(menuGroupRepository.existsById(any())).willReturn(true);
-        given(productDao.findById(1L)).willReturn(Optional.of(product1));
-        given(productDao.findById(2L)).willReturn(Optional.of(product2));
+        given(productRepository.findById(1L)).willReturn(Optional.of(product1));
+        given(productRepository.findById(2L)).willReturn(Optional.of(product2));
 
         // when, then
         assertThatIllegalArgumentException().isThrownBy(
