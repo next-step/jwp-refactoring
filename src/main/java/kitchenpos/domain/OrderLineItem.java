@@ -1,18 +1,31 @@
 package kitchenpos.domain;
 
+import javax.persistence.*;
 import java.util.Objects;
 
+@Entity
 public class OrderLineItem {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
-    private Long orderId;
-    private Long menuId;
+    @ManyToOne
+    private Order order;
+    @ManyToOne
+    @JoinColumn(name = "menu_id")
+    private Menu menu;
     private long quantity;
 
     public OrderLineItem() {
     }
 
-    public OrderLineItem(Long menuId, long quantity) {
-        this.menuId = menuId;
+    public OrderLineItem(Order order, Menu menu, long quantity) {
+        this.order = order;
+        this.menu = menu;
+        this.quantity = quantity;
+    }
+
+    public OrderLineItem(Menu menu, long quantity) {
+        this.menu = menu;
         this.quantity = quantity;
     }
 
@@ -20,32 +33,16 @@ public class OrderLineItem {
         return seq;
     }
 
-    public void setSeq(final Long seq) {
-        this.seq = seq;
+    public Order getOrder() {
+        return order;
     }
 
-    public Long getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(final Long orderId) {
-        this.orderId = orderId;
-    }
-
-    public Long getMenuId() {
-        return menuId;
-    }
-
-    public void setMenuId(final Long menuId) {
-        this.menuId = menuId;
+    public Menu getMenu() {
+        return menu;
     }
 
     public long getQuantity() {
         return quantity;
-    }
-
-    public void setQuantity(final long quantity) {
-        this.quantity = quantity;
     }
 
     @Override
@@ -53,21 +50,11 @@ public class OrderLineItem {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         OrderLineItem that = (OrderLineItem) o;
-        return quantity == that.quantity && Objects.equals(seq, that.seq) && Objects.equals(orderId, that.orderId) && Objects.equals(menuId, that.menuId);
+        return seq.equals(that.seq);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(seq, orderId, menuId, quantity);
-    }
-
-    @Override
-    public String toString() {
-        return "OrderLineItem{" +
-                "seq=" + seq +
-                ", orderId=" + orderId +
-                ", menuId=" + menuId +
-                ", quantity=" + quantity +
-                '}';
+        return Objects.hash(seq);
     }
 }

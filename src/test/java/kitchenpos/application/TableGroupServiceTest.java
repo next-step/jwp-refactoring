@@ -1,10 +1,9 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.dao.TableGroupDao;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.domain.*;
+import kitchenpos.dto.OrderTableRequest;
+import kitchenpos.dto.TableGroupRequest;
+import kitchenpos.dto.TableGroupResponse;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -22,17 +21,13 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 public class TableGroupServiceTest {
     @Mock
-    private OrderDao orderDao;
+    private OrderTableRepository orderTableRepository;
     @Mock
-    private OrderTableDao orderTableDao;
-    @Mock
-    private TableGroupDao tableGroupDao;
+    private TableGroupRepository tableGroupRepository;
     @InjectMocks
     private TableGroupService tableGroupService;
 
@@ -43,29 +38,37 @@ public class TableGroupServiceTest {
         @Test
         void testCreate() {
             // given
-            OrderTable firstOrderTable = new OrderTable(1L, null, 4, true);
-            OrderTable secondOrderTable = new OrderTable(2L, null, 4, true);
+            OrderTableRequest firstOrderTableRequest = new OrderTableRequest(1L, 4, true);
+            OrderTableRequest secondOrderTableRequest = new OrderTableRequest(2L, 4, true);
+            List<OrderTableRequest> orderTableRequests = Arrays.asList(firstOrderTableRequest, secondOrderTableRequest);
+            TableGroupRequest tableGroupRequest = new TableGroupRequest(orderTableRequests);
+
+            OrderTable firstOrderTable = new OrderTable(firstOrderTableRequest.getId(), null, firstOrderTableRequest.getNumberOfGuests(), firstOrderTableRequest.isEmpty());
+            OrderTable secondOrderTable = new OrderTable(secondOrderTableRequest.getId(), null, secondOrderTableRequest.getNumberOfGuests(), secondOrderTableRequest.isEmpty());
             List<OrderTable> orderTables = Arrays.asList(firstOrderTable, secondOrderTable);
             TableGroup expectedTableGroup = new TableGroup(1L, LocalDateTime.now(), orderTables);
 
-            given(orderTableDao.findAllByIdIn(any(List.class))).willReturn(orderTables);
-            given(tableGroupDao.save(any(TableGroup.class))).willReturn(expectedTableGroup);
-            given(orderTableDao.save(any(OrderTable.class))).willReturn(firstOrderTable, secondOrderTable);
+            given(orderTableRepository.findAllById(any(List.class))).willReturn(orderTables);
+            given(tableGroupRepository.save(any(TableGroup.class))).willReturn(expectedTableGroup);
+
             // when
-            TableGroup tableGroup = tableGroupService.create(expectedTableGroup);
+            TableGroupResponse tableGroup = tableGroupService.create(tableGroupRequest);
+
             // then
-            assertThat(tableGroup).isEqualTo(expectedTableGroup);
+            assertThat(tableGroup).isEqualTo(TableGroupResponse.of(expectedTableGroup));
         }
 
         @DisplayName("주문 테이블을 2개 이상 지정해야 한다")
         @Test
         void assignTwoMoreTable() {
             // given
-            OrderTable firstOrderTable = new OrderTable(1L, null, 4, true);
-            List<OrderTable> orderTables = Arrays.asList(firstOrderTable);
-            TableGroup expectedTableGroup = new TableGroup(1L, LocalDateTime.now(), orderTables);
+            OrderTableRequest firstOrderTableRequest = new OrderTableRequest(1L, 4, true);
+            List<OrderTableRequest> orderTableRequests = Arrays.asList(firstOrderTableRequest);
+            TableGroupRequest tableGroupRequest = new TableGroupRequest(orderTableRequests);
+
             // when
-            ThrowableAssert.ThrowingCallable callable = () -> tableGroupService.create(expectedTableGroup);
+            ThrowableAssert.ThrowingCallable callable = () -> tableGroupService.create(tableGroupRequest);
+
             // then
             assertThatThrownBy(callable)
                     .isInstanceOf(IllegalArgumentException.class);
@@ -75,14 +78,16 @@ public class TableGroupServiceTest {
         @Test
         void hasSavedTable() {
             // given
-            OrderTable firstOrderTable = new OrderTable(1L, null, 4, true);
-            OrderTable secondOrderTable = new OrderTable(2L, null, 4, true);
-            List<OrderTable> orderTables = Arrays.asList(firstOrderTable, secondOrderTable);
-            TableGroup expectedTableGroup = new TableGroup(1L, LocalDateTime.now(), orderTables);
+            OrderTableRequest firstOrderTableRequest = new OrderTableRequest(1L, 4, true);
+            OrderTableRequest secondOrderTableRequest = new OrderTableRequest(2L, 4, true);
+            List<OrderTableRequest> orderTableRequests = Arrays.asList(firstOrderTableRequest, secondOrderTableRequest);
+            TableGroupRequest tableGroupRequest = new TableGroupRequest(orderTableRequests);
 
-            given(orderTableDao.findAllByIdIn(any(List.class))).willReturn(Collections.emptyList());
+            given(orderTableRepository.findAllById(any(List.class))).willReturn(Collections.emptyList());
+
             // when
-            ThrowableAssert.ThrowingCallable callable = () -> tableGroupService.create(expectedTableGroup);
+            ThrowableAssert.ThrowingCallable callable = () -> tableGroupService.create(tableGroupRequest);
+
             // then
             assertThatThrownBy(callable)
                     .isInstanceOf(IllegalArgumentException.class);
@@ -92,14 +97,20 @@ public class TableGroupServiceTest {
         @Test
         void mustEmptyTables() {
             // given
-            OrderTable firstOrderTable = new OrderTable(1L, null, 4, true);
-            OrderTable secondOrderTable = new OrderTable(2L, null, 4, false);
-            List<OrderTable> orderTables = Arrays.asList(firstOrderTable, secondOrderTable);
-            TableGroup expectedTableGroup = new TableGroup(1L, LocalDateTime.now(), orderTables);
+            OrderTableRequest firstOrderTableRequest = new OrderTableRequest(1L, 4, true);
+            OrderTableRequest secondOrderTableRequest = new OrderTableRequest(2L, 4, true);
+            List<OrderTableRequest> orderTableRequests = Arrays.asList(firstOrderTableRequest, secondOrderTableRequest);
+            TableGroupRequest tableGroupRequest = new TableGroupRequest(orderTableRequests);
 
-            given(orderTableDao.findAllByIdIn(any(List.class))).willReturn(orderTables);
+            OrderTable firstOrderTable = new OrderTable(firstOrderTableRequest.getId(), null, firstOrderTableRequest.getNumberOfGuests(), firstOrderTableRequest.isEmpty());
+            OrderTable secondOrderTable = new OrderTable(secondOrderTableRequest.getId(), null, secondOrderTableRequest.getNumberOfGuests(), false);
+            List<OrderTable> orderTables = Arrays.asList(firstOrderTable, secondOrderTable);
+
+            given(orderTableRepository.findAllById(any(List.class))).willReturn(orderTables);
+
             // when
-            ThrowableAssert.ThrowingCallable callable = () -> tableGroupService.create(expectedTableGroup);
+            ThrowableAssert.ThrowingCallable callable = () -> tableGroupService.create(tableGroupRequest);
+
             // then
             assertThatThrownBy(callable)
                     .isInstanceOf(IllegalArgumentException.class);
@@ -115,16 +126,18 @@ public class TableGroupServiceTest {
             // given
             List<OrderTable> orderTables = new ArrayList<>();
             TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), orderTables);
-            OrderTable firstOrderTable = new OrderTable(1L, tableGroup.getId(), 4, false);
-            OrderTable secondOrderTable = new OrderTable(2L, tableGroup.getId(), 4, false);
+            OrderTable firstOrderTable = new OrderTable(1L, tableGroup, 4, false);
+            OrderTable secondOrderTable = new OrderTable(2L, tableGroup, 4, false);
             orderTables.addAll(Arrays.asList(firstOrderTable, secondOrderTable));
-            given(orderTableDao.findAllByTableGroupId(anyLong())).willReturn(orderTables);
-            given(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(List.class), any(List.class))).willReturn(false);
-            given(orderTableDao.save(any(OrderTable.class))).willReturn(firstOrderTable, secondOrderTable);
+
+            given(tableGroupRepository.findById(anyLong())).willReturn(Optional.of(tableGroup));
+
             // when
             tableGroupService.ungroup(tableGroup.getId());
+
             // then
-            verify(orderTableDao, times(2)).save(any(OrderTable.class));
+            assertThat(orderTables).map(OrderTable::getTableGroup)
+                    .allMatch(Objects::isNull);
         }
 
         @DisplayName("아직 주문이 생성되지 않아야 한다")
@@ -133,13 +146,16 @@ public class TableGroupServiceTest {
             // given
             List<OrderTable> orderTables = new ArrayList<>();
             TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), orderTables);
-            OrderTable firstOrderTable = new OrderTable(1L, tableGroup.getId(), 4, false);
-            OrderTable secondOrderTable = new OrderTable(2L, tableGroup.getId(), 4, false);
+            List<Order> orders = Arrays.asList(new Order(OrderStatus.COOKING), new Order(OrderStatus.COOKING));
+            OrderTable firstOrderTable = new OrderTable(1L, tableGroup, 4, false, orders);
+            OrderTable secondOrderTable = new OrderTable(2L, tableGroup, 4, false, orders);
             orderTables.addAll(Arrays.asList(firstOrderTable, secondOrderTable));
-            given(orderTableDao.findAllByTableGroupId(anyLong())).willReturn(orderTables);
-            given(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(List.class), any(List.class))).willReturn(true);
+
+            given(tableGroupRepository.findById(anyLong())).willReturn(Optional.of(tableGroup));
+
             // when
             ThrowableAssert.ThrowingCallable callable = () -> tableGroupService.ungroup(tableGroup.getId());
+
             // then
             assertThatThrownBy(callable)
                     .isInstanceOf(IllegalArgumentException.class);

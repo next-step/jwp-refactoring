@@ -1,8 +1,12 @@
 package kitchenpos.domain;
 
+import javax.persistence.*;
 import java.util.Objects;
 
+@Entity
 public class MenuGroup {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
 
@@ -22,16 +26,8 @@ public class MenuGroup {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public void setName(final String name) {
-        this.name = name;
     }
 
     @Override
@@ -39,11 +35,11 @@ public class MenuGroup {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         MenuGroup menuGroup = (MenuGroup) o;
-        return Objects.equals(id, menuGroup.id) && Objects.equals(name, menuGroup.name);
+        return id.equals(menuGroup.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name);
+        return Objects.hash(id);
     }
 }

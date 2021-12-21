@@ -1,7 +1,9 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.domain.MenuGroupRepository;
+import kitchenpos.dto.MenuGroupRequest;
+import kitchenpos.dto.MenuGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,7 +21,7 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 public class MenuGroupServiceTest {
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
     @InjectMocks
     private MenuGroupService menuGroupService;
 
@@ -27,13 +29,16 @@ public class MenuGroupServiceTest {
     @Test
     void testCreate() {
         // given
-        MenuGroup menuGroup = new MenuGroup("식사류");
+        MenuGroupRequest menuGroupRequest = new MenuGroupRequest("식사류");
         MenuGroup expectedMenuGroup = new MenuGroup(1L, "식사류");
-        given(menuGroupDao.save(any(MenuGroup.class))).willReturn(expectedMenuGroup);
+
+        given(menuGroupRepository.save(any(MenuGroup.class))).willReturn(expectedMenuGroup);
+
         // when
-        MenuGroup savedMenuGroup = menuGroupService.create(menuGroup);
+        MenuGroupResponse savedMenuGroup = menuGroupService.create(menuGroupRequest);
+
         // then
-        assertThat(savedMenuGroup).isEqualTo(expectedMenuGroup);
+        assertThat(savedMenuGroup).isEqualTo(MenuGroupResponse.of(expectedMenuGroup));
     }
 
     @DisplayName("모든 메뉴 그룹을 가져온다")
@@ -41,10 +46,12 @@ public class MenuGroupServiceTest {
     void testList() {
         // given
         List<MenuGroup> expectedMenuGroups = Arrays.asList(new MenuGroup("식사류"), new MenuGroup("요리류"));
-        given(menuGroupDao.findAll()).willReturn(expectedMenuGroups);
+        given(menuGroupRepository.findAll()).willReturn(expectedMenuGroups);
+
         // when
-        List<MenuGroup> menuGroups = menuGroupService.list();
+        List<MenuGroupResponse> menuGroups = menuGroupService.list();
+
         // then
-        assertThat(menuGroups).isEqualTo(expectedMenuGroups);
+        assertThat(menuGroups).isEqualTo(MenuGroupResponse.ofList(expectedMenuGroups));
     }
 }

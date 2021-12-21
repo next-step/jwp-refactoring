@@ -3,7 +3,8 @@ package kitchenpos.acceptance;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.dto.OrderTableRequest;
+import kitchenpos.dto.OrderTableResponse;
 import kitchenpos.utils.Http;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,22 +22,21 @@ public class TableAcceptanceTest extends AcceptanceTest {
         // when
         ExtractableResponse<Response> createResponse = 주문_테이블_생성_요청(4, false);
         // then
-        주문_테이블_생성됨(createResponse);
+        OrderTableResponse 주문_테이블 = 주문_테이블_생성됨(createResponse);
 
         // when
-        OrderTable savedOrderTable = createResponse.as(OrderTable.class);
-        ExtractableResponse<Response> changeResponse = 주문_테이블_인원_변경_요청(savedOrderTable.getId(), 4);
+        ExtractableResponse<Response> changeResponse = 주문_테이블_인원_변경_요청(주문_테이블.getId(), 4);
         // then
-        주문_테이블_인원_변경됨(changeResponse);
+        OrderTableResponse 인원_변경된_주문_테이블 = 주문_테이블_인원_변경됨(changeResponse);
 
         // when
         ExtractableResponse<Response> listResponse = 모든_주문_테이블_조회_요청();
         // then
         모든_주문_테이블_조회_응답됨(listResponse);
-        모든_주문_테이블이_포함됨(listResponse, changeResponse.as(OrderTable.class));
+        모든_주문_테이블이_포함됨(listResponse, 인원_변경된_주문_테이블);
 
         // when
-        ExtractableResponse<Response> emptyResponse = 주문_테이블_비우기_요청(savedOrderTable.getId());
+        ExtractableResponse<Response> emptyResponse = 주문_테이블_비우기_요청(주문_테이블.getId());
         // then
         주문_테이블_비워짐(emptyResponse);
     }
@@ -45,11 +45,11 @@ public class TableAcceptanceTest extends AcceptanceTest {
      * 요청 관련
      */
     private static ExtractableResponse<Response> 주문_테이블_생성_요청(int numberOfGuest, boolean isEmpty) {
-        return Http.post("/api/tables/", new OrderTable(numberOfGuest, isEmpty));
+        return Http.post("/api/tables/", new OrderTableRequest(numberOfGuest, isEmpty));
     }
 
     private static ExtractableResponse<Response> 주문_테이블_인원_변경_요청(long tableId, int numberOfGuests) {
-        return Http.put("/api/tables/" + tableId + "/number-of-guests", new OrderTable(numberOfGuests));
+        return Http.put("/api/tables/" + tableId + "/number-of-guests", new OrderTableRequest(numberOfGuests, false));
     }
 
     private static ExtractableResponse<Response> 모든_주문_테이블_조회_요청() {
@@ -57,7 +57,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
     }
 
     private static ExtractableResponse<Response> 주문_테이블_비우기_요청(long tableId) {
-        return Http.put("/api/tables/" + tableId + "/empty", new OrderTable(true));
+        return Http.put("/api/tables/" + tableId + "/empty", new OrderTableRequest(0, true));
     }
 
     /**
@@ -71,16 +71,18 @@ public class TableAcceptanceTest extends AcceptanceTest {
         assertThat(listResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    private static void 주문_테이블_인원_변경됨(ExtractableResponse<Response> changeResponse) {
+    private static OrderTableResponse 주문_테이블_인원_변경됨(ExtractableResponse<Response> changeResponse) {
         모든_주문_테이블_조회_응답됨(changeResponse);
+        return changeResponse.as(OrderTableResponse.class);
     }
 
-    private void 주문_테이블_생성됨(ExtractableResponse<Response> createResponse) {
+    private OrderTableResponse 주문_테이블_생성됨(ExtractableResponse<Response> createResponse) {
         assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        return createResponse.as(OrderTableResponse.class);
     }
 
-    private static void 모든_주문_테이블이_포함됨(ExtractableResponse<Response> listResponse, OrderTable changedOrderTable) {
-        List<OrderTable> orderTables = listResponse.jsonPath().getList(".", OrderTable.class);
+    private static void 모든_주문_테이블이_포함됨(ExtractableResponse<Response> listResponse, OrderTableResponse changedOrderTable) {
+        List<OrderTableResponse> orderTables = listResponse.jsonPath().getList(".", OrderTableResponse.class);
         assertThat(orderTables).first()
                 .isEqualTo(changedOrderTable);
     }
@@ -88,7 +90,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
     /**
      * 테스트 픽스처 관련
      */
-    public static OrderTable 주문_테이블_등록되어_있음(int numberOfGuests, boolean isEmpty) {
-        return 주문_테이블_생성_요청(numberOfGuests, isEmpty).as(OrderTable.class);
+    public static OrderTableResponse 주문_테이블_등록되어_있음(int numberOfGuests, boolean isEmpty) {
+        return 주문_테이블_생성_요청(numberOfGuests, isEmpty).as(OrderTableResponse.class);
     }
 }

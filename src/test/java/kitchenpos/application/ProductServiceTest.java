@@ -1,7 +1,9 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
+import kitchenpos.domain.ProductRepository;
+import kitchenpos.dto.ProductRequest;
+import kitchenpos.dto.ProductResponse;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,7 +23,7 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 public class ProductServiceTest {
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
     @InjectMocks
     private ProductService productService;
 
@@ -29,22 +31,26 @@ public class ProductServiceTest {
     @Test
     void testCreate() {
         // given
-        Product 볶음짜장면 = new Product("볶음짜장면", 8000L);
+        ProductRequest 볶음짜장면 = new ProductRequest("볶음짜장면", 8000L);
         Product expectedProduct = new Product(1L, "볶음짜장면", 8000L);
-        given(productDao.save(any(Product.class))).willReturn(expectedProduct);
+        given(productRepository.save(any(Product.class))).willReturn(expectedProduct);
+
         // when
-        Product product = productService.create(볶음짜장면);
+        ProductResponse product = productService.create(볶음짜장면);
+
         // then
-        assertThat(product).isEqualTo(expectedProduct);
+        assertThat(product).isEqualTo(ProductResponse.of(expectedProduct));
     }
 
-    @DisplayName("상품 가격은 0원 이상 이어야 한다")
+    @DisplayName("상품 가격은 0원 보다 커야한다")
     @Test
     void givenZeroPriceWhenSaveThenThrowException() {
         // given
-        Product 볶음짜장면 = new Product("볶음짜장면", -1L);
+        ProductRequest 볶음짜장면 = new ProductRequest("볶음짜장면", 0L);
+
         // when
         ThrowableAssert.ThrowingCallable callable = () -> productService.create(볶음짜장면);
+
         // then
         assertThatThrownBy(callable)
                 .isInstanceOf(IllegalArgumentException.class);
@@ -54,11 +60,13 @@ public class ProductServiceTest {
     @Test
     void testFindAll() {
         // given
-        List<Product> expectedProducts = Arrays.asList(new Product("볶음짜장면", 8000L));
-        given(productDao.findAll()).willReturn(expectedProducts);
+        List<Product> expectedProducts = Arrays.asList(new Product(1L, "볶음짜장면", 8000L));
+        given(productRepository.findAll()).willReturn(expectedProducts);
+
         // when
-        List<Product> products = productService.list();
+        List<ProductResponse> products = productService.list();
+
         // then
-        assertThat(products).isEqualTo(expectedProducts);
+        assertThat(products).isEqualTo(ProductResponse.ofList(expectedProducts));
     }
 }
