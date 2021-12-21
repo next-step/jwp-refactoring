@@ -1,6 +1,7 @@
 package kitchenpos.domain.menu;
 
 import java.math.BigDecimal;
+import java.security.InvalidParameterException;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.Column;
@@ -13,7 +14,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import kitchenpos.domain.product.Price;
 
 @Entity
 public class Menu {
@@ -22,7 +22,7 @@ public class Menu {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     private String name;
 
     @Embedded
@@ -33,81 +33,67 @@ public class Menu {
     private MenuGroup menuGroup;
 
     @Embedded
-    private MenuProducts menuProducts = new MenuProducts();
+    private MenuProducts menuProducts;
 
-    public Menu() {
+    protected Menu() {
     }
 
-    public Menu(Long id) {
-        this.id = id;
-    }
-
-    public Menu(String name, int price, MenuGroup menuGroup) {
+    private Menu(String name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
+        validEmpty(name, menuGroup);
+        validPrice(price, menuProducts.getSumPrice());
         this.name = name;
         this.menuGroup = menuGroup;
-        this.price = Price.of(price);
+        this.price = price;
+        this.menuProducts = menuProducts.mapMenu(this);
     }
 
-    public Menu(String name, int price, MenuGroup menuGroup, MenuProducts menuProducts) {
-        this.name = name;
-        this.menuGroup = menuGroup;
-        this.price = Price.of(BigDecimal.valueOf(price), menuProducts.getSumPrice());
-        this.menuProducts.add(menuProducts.mapMenu(this));
+    public static Menu of(String name, int price, MenuGroup menuGroup,
+        List<MenuProduct> menuProducts) {
+        return new Menu(name, Price.of(BigDecimal.valueOf(price)), menuGroup,
+            MenuProducts.of(menuProducts));
     }
 
-    public void setMenuProducts(MenuProducts menuProducts) {
-        this.menuProducts = menuProducts;
+    public void addMenuProducts(List<MenuProduct> menuProducts) {
+        this.menuProducts.add(menuProducts);
+        price.validPriceGreaterThanMin(this.menuProducts.getSumPrice());
     }
 
-    public Long getId() {
-        return id;
-    }
+    private void validEmpty(String name, MenuGroup menuGroup) {
+        if (Objects.isNull(name)) {
+            throw new InvalidParameterException("메뉴이름이 비어 있을 수 없습니다.");
+        }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(final String name) {
-        this.name = name;
-    }
-
-    public BigDecimal getPrice() {
-        return price.value();
-    }
-
-    public void setPrice(final int price) {
-        this.price = Price.of(price);
-    }
-
-    @Deprecated
-    public Long getMenuGroupId() {
-        return this.menuGroup.getId();
-    }
-
-    @Deprecated
-    public void setMenuGroupId(final Long menuGroupId) {
-        this.menuGroup.setId(menuGroupId);
-    }
-
-
-    public void setMenuProducts(final List<MenuProduct> menuProducts) {
-        this.menuProducts = MenuProducts.of(menuProducts);
+        if (Objects.isNull(menuGroup)) {
+            throw new InvalidParameterException("메뉴그룹이 비어 있을 수 없습니다.");
+        }
     }
 
     public boolean isSame(Long menuId) {
         return this.id.equals(menuId);
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public BigDecimal getPrice() {
+        return price.value();
+    }
+
     public List<MenuProduct> getMenuProducts() {
         return menuProducts.getMenuProducts();
     }
 
-    public MenuGroup getMenuGroup() {
-        return menuGroup;
+    public Long getMenuGroupId() {
+        return menuGroup.getId();
+    }
+
+    private void validPrice(Price price, BigDecimal sumPrice) {
+        price.validPriceGreaterThanMin(sumPrice);
     }
 
     @Override
@@ -118,7 +104,6 @@ public class Menu {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-
         if (Objects.isNull(id)) {
             return false;
         }

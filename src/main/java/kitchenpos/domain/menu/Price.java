@@ -1,0 +1,45 @@
+package kitchenpos.domain.menu;
+
+import java.math.BigDecimal;
+import java.security.InvalidParameterException;
+import java.util.Objects;
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+
+@Embeddable
+public class Price {
+
+    private static final BigDecimal MIN = BigDecimal.ZERO;
+
+    @Column(name = "price", nullable = false)
+    private BigDecimal price;
+
+    protected Price() {
+    }
+
+    private Price(BigDecimal price) {
+        validMin(price);
+        this.price = price;
+    }
+
+    public static Price of(BigDecimal price) {
+        return new Price(price);
+    }
+
+    public BigDecimal value() {
+        return price;
+    }
+
+    protected void validPriceGreaterThanMin(BigDecimal lessThanPrice) {
+        if (price.compareTo(lessThanPrice) > 0) {
+            throw new InvalidParameterException("메뉴가격이 상품 총 가격 보다 클 수 없습니다.");
+        }
+    }
+
+    private void validMin(BigDecimal price) {
+        if (Objects.isNull(price) || price.compareTo(MIN) < 0) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+}

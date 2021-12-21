@@ -1,6 +1,7 @@
 package kitchenpos.domain.menu;
 
 import java.util.Objects;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -12,29 +13,27 @@ public class MenuGroup {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "name", nullable = false)
     private String name;
 
     public MenuGroup() {
     }
 
-    public MenuGroup(String name) {
+    private MenuGroup(String name) {
         this.name = name;
+    }
+
+    public static MenuGroup of(String name) {
+        return new MenuGroup(name);
     }
 
     public Long getId() {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public void setName(final String name) {
-        this.name = name;
     }
 
     @Override
@@ -45,7 +44,6 @@ public class MenuGroup {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-
         if (Objects.isNull(id)) {
             return false;
         }

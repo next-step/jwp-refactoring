@@ -14,10 +14,6 @@ public class MenuProducts {
     @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MenuProduct> menuProducts = new ArrayList<>();
 
-    public static MenuProducts of(List<MenuProduct> menuProducts) {
-        return new MenuProducts(menuProducts);
-    }
-
     protected MenuProducts() {
     }
 
@@ -25,14 +21,18 @@ public class MenuProducts {
         this.menuProducts = menuProducts;
     }
 
+    public static MenuProducts of(List<MenuProduct> menuProducts) {
+        return new MenuProducts(menuProducts);
+    }
+
     public void add(List<MenuProduct> menuProducts) {
         this.menuProducts.addAll(menuProducts);
     }
 
-    public List<MenuProduct> mapMenu(Menu menu) {
+    public MenuProducts mapMenu(Menu menu) {
         return menuProducts.stream()
-            .map(menuProduct -> menuProduct.mapMaenu(menu))
-            .collect(Collectors.toList());
+            .map(menuProduct -> menuProduct.mapMenu(menu))
+            .collect(Collectors.collectingAndThen(Collectors.toList(), MenuProducts::of));
     }
 
     public BigDecimal getSumPrice() {

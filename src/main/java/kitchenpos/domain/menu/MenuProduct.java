@@ -1,6 +1,7 @@
 package kitchenpos.domain.menu;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -30,67 +31,54 @@ public class MenuProduct {
     @Column(name = "quantity")
     private Long quantity;
 
-    public MenuProduct() {
+    protected MenuProduct() {
     }
 
-    public MenuProduct(Product product, Long quantity) {
+    private MenuProduct(Product product, Long quantity) {
         this.product = product;
         this.quantity = quantity;
     }
 
-    public MenuProduct(Menu menu, Product product, long quantity) {
+    public static MenuProduct of(Product product, Long quantity) {
+        return new MenuProduct(product, quantity);
+    }
+
+    public MenuProduct mapMenu(Menu menu) {
         this.menu = menu;
-        this.product = product;
-        this.quantity = quantity;
-    }
-
-    public Long getSeq() {
-        return seq;
-    }
-
-    @Deprecated
-    public void setSeq(final Long seq) {
-        this.seq = seq;
-    }
-
-    @Deprecated
-    public Long getMenuId() {
-        return this.menu.getId();
-    }
-
-    @Deprecated
-    public void setMenuId(final Long menuId) {
-        this.menu.setId(menuId);
+        return this;
     }
 
     public Long getProductId() {
         return product.getId();
     }
 
-    @Deprecated
-    public void setProductId(final Long productId) {
-        this.product.setId(productId);
-    }
-
     public long getQuantity() {
         return quantity;
-    }
-
-    @Deprecated
-    public void setQuantity(final long quantity) {
-        this.quantity = quantity;
     }
 
     public BigDecimal getPrice() {
         return product.calculatePrice(quantity);
     }
 
-    public void setMenu(Menu menu) {
-        this.menu = menu;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (Objects.isNull(seq)) {
+            return false;
+        }
+
+        MenuProduct that = (MenuProduct) o;
+
+        return Objects.equals(seq, that.seq);
     }
 
-    public MenuProduct mapMaenu(Menu menu) {
-        this.setMenu(menu);
-        return this;
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
     }
 }
