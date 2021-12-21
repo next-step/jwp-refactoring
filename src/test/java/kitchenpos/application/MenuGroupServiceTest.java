@@ -1,6 +1,6 @@
 package kitchenpos.application;
 
-import static kitchenpos.application.fixture.MenuGroupFixture.메뉴그룹_치킨류;
+import static kitchenpos.application.fixture.MenuGroupFixture.요청_메뉴그룹_치킨류;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -31,7 +31,7 @@ class MenuGroupServiceTest {
     @DisplayName("`메뉴그룹`을 등록할 수 있다.")
     void 메뉴그룹_등록() {
         // given
-        MenuGroupRequest 메뉴그룹_치킨류 = 메뉴그룹_치킨류();
+        MenuGroupRequest 메뉴그룹_치킨류 = 요청_메뉴그룹_치킨류();
         given(menuGroupDao.save(any())).willReturn(메뉴그룹_치킨류.toMenuGroup());
 
         // when
@@ -45,7 +45,7 @@ class MenuGroupServiceTest {
     @DisplayName("`메뉴그룹`목록을 조회할 수 있다.")
     void 메뉴그룹_목록_조회() {
         // given
-        MenuGroupRequest 메뉴그룹_치킨류 = 메뉴그룹_치킨류();
+        MenuGroupRequest 메뉴그룹_치킨류 = 요청_메뉴그룹_치킨류();
         given(menuGroupDao.findAll()).willReturn(Collections.singletonList(메뉴그룹_치킨류.toMenuGroup()));
 
         // when
