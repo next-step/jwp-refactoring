@@ -20,7 +20,7 @@ public class MenuValidator {
     private final ProductService productService;
 
     public MenuValidator(
-            final ProductService productService
+        final ProductService productService
     ) {
         this.productService = productService;
     }

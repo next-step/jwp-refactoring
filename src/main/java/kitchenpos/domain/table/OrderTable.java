@@ -63,10 +63,8 @@ public class OrderTable {
         return empty;
     }
 
-    public void unGroupTable(final Orders order) {
-        checkOrderStatusOfOrderTable(order);
-
-        this.tableGroup.getOrderTables().remove(this);
+    public void unGroupTable() {
+       // this.tableGroup.getOrderTables().remove(this);
         this.tableGroup = null;
     }
 

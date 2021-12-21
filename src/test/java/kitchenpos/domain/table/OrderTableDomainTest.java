@@ -25,10 +25,8 @@ public class OrderTableDomainTest {
         OrderTable 주문테이블2 = OrderTable.of(0, true);
         TableGroup.of(OrderTables.of(List.of(주문테이블1, 주문테이블2)));
         
-        Orders 주문 = Orders.of(OrderStatus.COMPLETION);
-        
         // when
-        주문테이블1.unGroupTable(주문);
+        주문테이블1.unGroupTable();
 
         // then
         Assertions.assertThat(주문테이블1.getTableGroup()).isNull();
@@ -90,17 +88,6 @@ public class OrderTableDomainTest {
                       .isThrownBy(() -> 주문테이블.changeEmpty(true, Orders.of(OrderStatus.COOKING)));
     }
 
-    @DisplayName("주문상태가 계산완료가 아닌 주문테이블의 그룹해제시 예외가 발생된다.")
-    @Test
-    void exception_unGroup_notCompletionOrderStatus() {
-        // given
-        OrderTable 주문테이블 = OrderTable.of(10, false);
-        
-        // when
-        // then
-        Assertions.assertThatExceptionOfType(HasNotCompletionOrderException.class)
-                    .isThrownBy(() -> 주문테이블.unGroupTable(Orders.of(OrderStatus.COOKING)));
-    }
 
     @DisplayName("빈테이블여부 변경시 단체지정이 된 주문테이블일 경우 예외가 발생된다.")
     @Test

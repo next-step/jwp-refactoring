@@ -1,7 +1,7 @@
 package kitchenpos.application.tablegroup;
 
 import kitchenpos.application.order.OrderService;
-import kitchenpos.domain.order.Orders;
+import kitchenpos.application.table.TableService;
 import kitchenpos.domain.table.OrderTableRepository;
 import kitchenpos.domain.table.OrderTables;
 import kitchenpos.domain.tablegroup.TableGroup;
@@ -18,18 +18,17 @@ import java.util.stream.Collectors;
 
 @Service
 public class TableGroupService {
-    private final OrderService orderService;
-    private final OrderTableRepository orderTableRepository;
     private final TableGroupRepository tableGroupRepository;
-
+    private final TableService tableService;
+    private final TableGroupValidator tableGroupValidator;
     public TableGroupService(
-        final OrderService orderService, 
-        final OrderTableRepository orderTableRepository, 
-        final TableGroupRepository tableGroupRepository
+        final TableGroupRepository tableGroupRepository,
+        final TableService tableService,
+        final TableGroupValidator tableGroupValidator
     ) {
-        this.orderService = orderService;
-        this.orderTableRepository = orderTableRepository;
         this.tableGroupRepository = tableGroupRepository;
+        this.tableService = tableService;
+        this.tableGroupValidator = tableGroupValidator;
     }
 
     @Transactional
@@ -38,7 +37,7 @@ public class TableGroupService {
                                                     .map(OrderTableDto::getId)
                                                     .collect(Collectors.toList());
 
-        final OrderTables savedOrderTables = OrderTables.of(orderTableRepository.findAllByIdIn(orderTableIds));
+        final OrderTables savedOrderTables = OrderTables.of(tableService.findAllByIdIn(orderTableIds));
 
         checkAllExistOfOrderTables(tableGroup.getOrderTables(), savedOrderTables);
 
@@ -53,11 +52,14 @@ public class TableGroupService {
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
-        final OrderTables orderTables = OrderTables.of(orderTableRepository.findAllByTableGroupId(tableGroupId));
-        final List<Orders> order = orderService.findAllByOrderTableIdIn(orderTables.getOrderTableIds());
+        TableGroup tableGroup = tableGroupRepository.findById(tableGroupId).orElseThrow();
 
-        for (int index = 0; index < order.size(); index++) {
-            order.get(index).getOrderTable().unGroupTable(order.get(index));
-        }
+        final OrderTables orderTables = tableGroup.getOrderTables();
+
+        tableGroupValidator.validateForUnGroup(orderTables);
+
+        do {
+            orderTables.remove(0).unGroupTable();
+        } while(!orderTables.isEmpty());
     }
 }

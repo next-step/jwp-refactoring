@@ -4,8 +4,12 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface OrdersRepository extends JpaRepository<Orders, Long> {
-    Orders findByOrderTableId(Long orderTableId);
+import kitchenpos.vo.OrderTableId;
 
-    List<Orders> findAllByOrderTableIdIn(List<Long> orderTableIds);
+public interface OrdersRepository extends JpaRepository<Orders, Long> {
+    Orders findByOrderTableId(OrderTableId orderTableId);
+
+    List<Orders> findAllByOrderTableIdIn(List<OrderTableId> orderTableIds);
+
+    boolean existsByOrderTableIdInAndOrderStatusNot(List<OrderTableId> id, OrderStatus orderStatus);
 }

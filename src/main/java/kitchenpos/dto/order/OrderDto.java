@@ -40,10 +40,10 @@ public class OrderDto {
                                                             .collect(Collectors.toList());
 
         if (order.getOrderStatus() == null) {
-            return new OrderDto(order.getId(), order.getOrderTable().getId(), "", order.getOrderedTime(), tempOrderLineItems);
+            return new OrderDto(order.getId(), order.getOrderTableId().value(), "", order.getOrderedTime(), tempOrderLineItems);
         }
 
-        return new OrderDto(order.getId(), order.getOrderTable().getId(), order.getOrderStatus().name(), order.getOrderedTime(), tempOrderLineItems);
+        return new OrderDto(order.getId(), order.getOrderTableId().value(), order.getOrderStatus().name(), order.getOrderedTime(), tempOrderLineItems);
     }
 
     public Long getId() {

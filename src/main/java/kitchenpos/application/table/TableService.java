@@ -8,6 +8,7 @@ import kitchenpos.domain.table.OrderTable;
 import kitchenpos.domain.table.OrderTableRepository;
 import kitchenpos.dto.table.OrderTableDto;
 import kitchenpos.exception.table.NotFoundOrderTableException;
+import kitchenpos.vo.OrderTableId;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -55,5 +56,13 @@ public class TableService {
         savedOrderTable.changeNumberOfGuests(orderTable.getNumberOfGuests());
 
         return orderTableRepository.save(savedOrderTable);
+    }
+
+    public OrderTable findById(OrderTableId orderTableId) {
+        return orderTableRepository.findById(orderTableId.value()).orElseThrow(NotFoundOrderTableException::new);
+    }
+
+    public List<OrderTable> findAllByIdIn(List<Long> orderTableIds) {
+        return orderTableRepository.findAllByIdIn(orderTableIds);
     }
 }

@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.assertj.core.api.Assertions;
 import org.assertj.core.util.Lists;
@@ -16,11 +17,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.application.order.OrderService;
+import kitchenpos.application.table.TableService;
 import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.domain.order.Orders;
 import kitchenpos.domain.table.OrderTable;
-import kitchenpos.domain.table.OrderTableRepository;
 import kitchenpos.domain.table.OrderTables;
 import kitchenpos.domain.tablegroup.TableGroup;
 import kitchenpos.domain.tablegroup.TableGroupRepository;
@@ -29,17 +29,18 @@ import kitchenpos.dto.tablegroup.TableGroupDto;
 import kitchenpos.exception.table.HasOtherTableGroupException;
 import kitchenpos.exception.table.NotGroupingOrderTableCountException;
 import kitchenpos.exception.table.NotRegistedMenuOrderTableException;
+import kitchenpos.vo.OrderTableId;
 
 @ExtendWith(MockitoExtension.class)
 public class TableGroupServiceTest {
     @Mock
-    private OrderService orderService;
-
-    @Mock
-    private OrderTableRepository orderTableRepository;
+    private TableService tableService;
 
     @Mock
     private TableGroupRepository tableGroupRepository;
+
+    @Mock
+    private TableGroupValidator tableGroupValidator;
 
     @InjectMocks
     private TableGroupService tableGroupService;
@@ -53,7 +54,7 @@ public class TableGroupServiceTest {
 
         List<OrderTable> 조회된_주문테이블_리스트 = List.of(치킨_주문_단체테이블, 치킨2_주문_단체테이블);
 
-        when(orderTableRepository.findAllByIdIn(anyList())).thenReturn(조회된_주문테이블_리스트);
+        when(tableService.findAllByIdIn(anyList())).thenReturn(조회된_주문테이블_리스트);
         when(tableGroupRepository.save(any(TableGroup.class))).thenReturn(TableGroup.of(OrderTables.of(List.of(OrderTable.of(0, true), OrderTable.of(0, true)))));
 
         TableGroupDto 단체지정_요청전문 = TableGroupDto.of(List.of(OrderTableDto.of(치킨_주문_단체테이블), OrderTableDto.of(치킨2_주문_단체테이블)));
@@ -74,7 +75,7 @@ public class TableGroupServiceTest {
 
         List<OrderTable> 조회된_주문테이블_리스트 = List.of(치킨_주문_단체테이블);
 
-        when(orderTableRepository.findAllByIdIn(anyList())).thenReturn(조회된_주문테이블_리스트);
+        when(tableService.findAllByIdIn(anyList())).thenReturn(조회된_주문테이블_리스트);
 
         // when
         // then
@@ -92,7 +93,7 @@ public class TableGroupServiceTest {
         
         List<OrderTable> 조회된_주문테이블_리스트 = List.of(치킨_주문_단체테이블);
 
-        when(orderTableRepository.findAllByIdIn(anyList())).thenReturn(조회된_주문테이블_리스트);
+        when(tableService.findAllByIdIn(anyList())).thenReturn(조회된_주문테이블_리스트);
 
         // when
         // then
@@ -112,7 +113,7 @@ public class TableGroupServiceTest {
 
         List<OrderTable> 조회된_주문테이블_리스트 = List.of(치킨2_주문_단체테이블, 치킨3_주문_단체테이블);
 
-        when(orderTableRepository.findAllByIdIn(anyList())).thenReturn(조회된_주문테이블_리스트);
+        when(tableService.findAllByIdIn(anyList())).thenReturn(조회된_주문테이블_리스트);
 
         // when
         // then
@@ -127,17 +128,15 @@ public class TableGroupServiceTest {
         OrderTable 치킨_주문_단체테이블 = OrderTable.of(10, false);
         OrderTable 치킨2_주문_단체테이블 = OrderTable.of(10, false);
 
-        Orders 주문  = Orders.of(치킨_주문_단체테이블, OrderStatus.COMPLETION);
-        Orders 주문2  = Orders.of(치킨2_주문_단체테이블, OrderStatus.COMPLETION);
+        Orders 주문  = Orders.of(OrderTableId.of(치킨_주문_단체테이블), OrderStatus.COMPLETION);
+        Orders 주문2  = Orders.of(OrderTableId.of(치킨2_주문_단체테이블), OrderStatus.COMPLETION);
 
         치킨_주문_단체테이블.changeEmpty(true, 주문);
         치킨2_주문_단체테이블.changeEmpty(true, 주문2);
 
         TableGroup 단체주문테이블 = TableGroup.of(OrderTables.of(Lists.newArrayList(치킨_주문_단체테이블, 치킨2_주문_단체테이블)));
-        List<OrderTable> 조회된_주문테이블_리스트 = List.of(치킨_주문_단체테이블, 치킨2_주문_단체테이블);
 
-        when(orderTableRepository.findAllByTableGroupId(nullable(Long.class))).thenReturn(조회된_주문테이블_리스트);
-        when(orderService.findAllByOrderTableIdIn(anyList())).thenReturn(List.of(주문, 주문2));
+        when(tableGroupRepository.findById(nullable(Long.class))).thenReturn(Optional.of(단체주문테이블));
         
         // when
         tableGroupService.ungroup(단체주문테이블.getId());

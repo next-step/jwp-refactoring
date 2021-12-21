@@ -2,10 +2,13 @@ package kitchenpos.domain.table;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
+
+import kitchenpos.domain.tablegroup.TableGroup;
 
 @Embeddable
 public final class OrderTables {
@@ -28,6 +31,10 @@ public final class OrderTables {
         return this.orderTables.remove(orderTable);
     }
     
+    public OrderTable remove(int index) {
+        return this.orderTables.remove(index);
+    }
+    
     public boolean add(OrderTable orderTable) {
         return this.orderTables.add(orderTable);
     }
@@ -44,5 +51,9 @@ public final class OrderTables {
         return this.orderTables.stream()
                                 .map(OrderTable::getId)
                                 .collect(Collectors.toList());
+    }
+
+    public boolean isEmpty() {
+        return this.orderTables.isEmpty();
     }
 }

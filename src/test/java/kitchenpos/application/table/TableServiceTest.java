@@ -31,6 +31,7 @@ import kitchenpos.exception.order.HasNotCompletionOrderException;
 import kitchenpos.exception.table.EmptyOrderTableException;
 import kitchenpos.exception.table.HasOtherTableGroupException;
 import kitchenpos.exception.table.NegativeOfNumberOfGuestsException;
+import kitchenpos.vo.OrderTableId;
 
 @ExtendWith(MockitoExtension.class)
 public class TableServiceTest {
@@ -121,7 +122,7 @@ public class TableServiceTest {
         OrderTable 치킨_주문_단체테이블 = OrderTable.of(10, false);
 
         when(orderTableRepository.findById(nullable(Long.class))).thenReturn(Optional.of(치킨_주문_단체테이블));
-        when(orderService.findByOrderTableId(nullable(Long.class))).thenReturn(Orders.of(치킨_주문_단체테이블, OrderStatus.MEAL));
+        when(orderService.findByOrderTableId(nullable(Long.class))).thenReturn(Orders.of(OrderTableId.of(치킨_주문_단체테이블), OrderStatus.MEAL));
         
         // when
         // then
