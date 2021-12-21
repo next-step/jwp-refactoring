@@ -15,9 +15,9 @@ import kitchenpos.application.fixture.TableFixture;
 import kitchenpos.application.fixture.TableGroupFixture;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
-import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.domain.TableGroupRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,7 +37,7 @@ class TableGroupServiceTest {
     private OrderTableDao orderTableDao;
 
     @Mock
-    private TableGroupDao tableGroupDao;
+    private TableGroupRepository tableGroupRepository;
 
     @InjectMocks
     private TableGroupService tableGroupService;
@@ -58,7 +58,7 @@ class TableGroupServiceTest {
         given(orderTableDao.findAllByIdIn(anyList())).willReturn(orderTables);
 
         TableGroup tableGroup = TableGroupFixture.createTableGroup(1L, orderTables);
-        given(tableGroupDao.save(tableGroup)).willReturn(tableGroup);
+        given(tableGroupRepository.save(tableGroup)).willReturn(tableGroup);
 
         assertThat(tableGroupService.create(tableGroup)).isEqualTo(tableGroup);
     }
