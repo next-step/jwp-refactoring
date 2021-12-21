@@ -18,7 +18,10 @@ import kitchenpos.application.order.OrderService;
 import kitchenpos.application.table.TableService;
 import kitchenpos.domain.table.OrderTable;
 import kitchenpos.domain.table.OrderTables;
+import kitchenpos.dto.table.OrderTableDto;
+import kitchenpos.dto.tablegroup.TableGroupDto;
 import kitchenpos.exception.order.HasNotCompletionOrderException;
+import kitchenpos.exception.table.NotRegistedMenuOrderTableException;
 
 @ExtendWith(MockitoExtension.class)
 public class TableGroupValidatorTest {
@@ -59,5 +62,21 @@ public class TableGroupValidatorTest {
         // when
         // then
         Assertions.assertThat(조회된_주문테이블들).isEqualTo(주문테이블들);
+    }
+
+    @DisplayName("미존재 주문테이블가 포함된 단체지정으로 저장시 예외가 발생된다.")
+    @Test
+    void exception_createTableGoup_containNotExistOrderTable() {
+        // given
+        OrderTable 치킨_주문_단체테이블 = OrderTable.of(0, true);
+        
+        List<OrderTable> 조회된_주문테이블_리스트 = List.of(치킨_주문_단체테이블);
+
+        when(tableService.findAllByIdIn(anyList())).thenReturn(조회된_주문테이블_리스트);
+
+        // when
+        // then
+        Assertions.assertThatExceptionOfType(NotRegistedMenuOrderTableException.class)
+                    .isThrownBy(() -> tableGroupValidator.getValidatedOrderTables(TableGroupDto.of(List.of(OrderTableDto.of(2), OrderTableDto.of(3)))));
     }
 }

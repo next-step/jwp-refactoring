@@ -1,7 +1,6 @@
 package kitchenpos.application.tablegroup;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.Mockito.when;
 
@@ -25,9 +24,6 @@ import kitchenpos.domain.tablegroup.TableGroup;
 import kitchenpos.domain.tablegroup.TableGroupRepository;
 import kitchenpos.dto.table.OrderTableDto;
 import kitchenpos.dto.tablegroup.TableGroupDto;
-import kitchenpos.exception.table.HasOtherTableGroupException;
-import kitchenpos.exception.table.NotGroupingOrderTableCountException;
-import kitchenpos.exception.table.NotRegistedMenuOrderTableException;
 import kitchenpos.vo.OrderTableId;
 
 @ExtendWith(MockitoExtension.class)
@@ -53,7 +49,7 @@ public class TableGroupServiceTest {
 
         List<OrderTable> 조회된_주문테이블_리스트 = List.of(치킨_주문_단체테이블, 치킨2_주문_단체테이블);
 
-        when(tableService.findAllByIdIn(anyList())).thenReturn(조회된_주문테이블_리스트);
+        when(tableGroupValidator.getValidatedOrderTables(any(TableGroupDto.class))).thenReturn(OrderTables.of(조회된_주문테이블_리스트));
         when(tableGroupRepository.save(any(TableGroup.class))).thenReturn(TableGroup.of(OrderTables.of(List.of(OrderTable.of(0, true), OrderTable.of(0, true)))));
 
         TableGroupDto 단체지정_요청전문 = TableGroupDto.of(List.of(OrderTableDto.of(치킨_주문_단체테이블), OrderTableDto.of(치킨2_주문_단체테이블)));
@@ -63,61 +59,6 @@ public class TableGroupServiceTest {
 
         // then
         Assertions.assertThat(createdTableGroup).isNotNull();
-    }
-
-    @DisplayName("주문테이블의 개수가 2개 미만으로 단체지정시 예외가 발생된다.")
-    @Test
-    void exception_createTableGoup_underTwoCountOrderTable() {
-        // given
-        OrderTable 치킨_주문_단체테이블 = OrderTable.of(0, true);
-        
-
-        List<OrderTable> 조회된_주문테이블_리스트 = List.of(치킨_주문_단체테이블);
-
-        when(tableService.findAllByIdIn(anyList())).thenReturn(조회된_주문테이블_리스트);
-
-        // when
-        // then
-        Assertions.assertThatExceptionOfType(NotGroupingOrderTableCountException.class)
-                    .isThrownBy(() -> tableGroupService.create(TableGroupDto.of(List.of(OrderTableDto.of(2)))));
-    }
-
-    @DisplayName("미존재 주문테이블가 포함된 단체지정으로 저장시 예외가 발생된다.")
-    @Test
-    void exception_createTableGoup_containNotExistOrderTable() {
-        // given
-        OrderTable 치킨_주문_단체테이블 = OrderTable.of(0, true);
-        OrderTable 치킨2_주문_단체테이블 = OrderTable.of(0, true);
-        TableGroup 단체주문테이블 = TableGroup.of(OrderTables.of(List.of(치킨_주문_단체테이블, 치킨2_주문_단체테이블)));
-        
-        List<OrderTable> 조회된_주문테이블_리스트 = List.of(치킨_주문_단체테이블);
-
-        when(tableService.findAllByIdIn(anyList())).thenReturn(조회된_주문테이블_리스트);
-
-        // when
-        // then
-        Assertions.assertThatExceptionOfType(NotRegistedMenuOrderTableException.class)
-                    .isThrownBy(() -> tableGroupService.create(TableGroupDto.of(단체주문테이블, OrderTables.of(List.of(치킨_주문_단체테이블, 치킨2_주문_단체테이블)))));
-    }
-
-    @DisplayName("단체지정 될 주문테이블이 이미 단체지정에 등록된 경우 예외가 발생된다.")
-    @Test
-    void exception_createTableGoup_existOrderTableInOtherTableGroup() {
-        // given
-        OrderTable 치킨_주문_단체테이블 = OrderTable.of(0, true);
-        OrderTable 치킨2_주문_단체테이블 = OrderTable.of(0, true);
-        OrderTable 치킨3_주문_단체테이블 =  OrderTable.of(0, true);
-
-        TableGroup 단체주문테이블 = TableGroup.of(OrderTables.of(List.of(치킨_주문_단체테이블, 치킨2_주문_단체테이블)));
-
-        List<OrderTable> 조회된_주문테이블_리스트 = List.of(치킨2_주문_단체테이블, 치킨3_주문_단체테이블);
-
-        when(tableService.findAllByIdIn(anyList())).thenReturn(조회된_주문테이블_리스트);
-
-        // when
-        // then
-        Assertions.assertThatExceptionOfType(HasOtherTableGroupException.class)
-                    .isThrownBy(() -> tableGroupService.create(TableGroupDto.of(단체주문테이블, OrderTables.of(List.of(치킨_주문_단체테이블, 치킨2_주문_단체테이블)))));
     }
 
     @DisplayName("단체지정이 해제된다.")
