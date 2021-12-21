@@ -1,6 +1,7 @@
 package kitchenpos.order.acceptance;
 
 import io.restassured.RestAssured;
+import io.restassured.http.Method;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
@@ -39,23 +40,11 @@ public class TableAcceptanceTest extends AcceptanceTest {
   }
 
   private static ExtractableResponse<Response> 주문_테이블_생성_요청(OrderTable orderTable) {
-    return RestAssured
-            .given().log().all()
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .body(orderTable)
-            .when()
-            .post("/api/tables")
-            .then().log().all()
-            .extract();
+    return ofRequest(Method.POST, "/api/tables", orderTable);
   }
 
   private ExtractableResponse<Response> 주문_테이블_목록_조회_요청() {
-    return RestAssured
-            .given().log().all()
-            .when()
-            .get("/api/tables")
-            .then().log().all()
-            .extract();
+    return ofRequest(Method.GET, "/api/tables");
   }
 
   public static OrderTable 주문_테이블_생성됨(OrderTable orderTable) {

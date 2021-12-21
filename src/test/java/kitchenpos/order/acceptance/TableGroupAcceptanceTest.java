@@ -1,6 +1,7 @@
 package kitchenpos.order.acceptance;
 
 import io.restassured.RestAssured;
+import io.restassured.http.Method;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
@@ -13,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -51,23 +54,12 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
   }
 
   private ExtractableResponse<Response> 테이블_그룹_생성_요청(TableGroup tableGroup) {
-    return RestAssured
-            .given().log().all()
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .body(tableGroup)
-            .when()
-            .post("/api/table-groups")
-            .then().log().all()
-            .extract();
+    return ofRequest(Method.POST, "/api/table-groups", tableGroup);
   }
 
   private ExtractableResponse<Response> 테이블_그룹_해제_요청(Long tableGroupId) {
-    return RestAssured
-            .given().log().all()
-            .pathParam("tableGroupId", tableGroupId)
-            .when()
-            .delete("/api/table-groups/{tableGroupId}")
-            .then().log().all()
-            .extract();
+    Map<String, Object> pathParams = new HashMap<>();
+    pathParams.put("tableGroupId", tableGroupId);
+    return ofRequest(Method.DELETE, "/api/table-groups/{tableGroupId}", pathParams);
   }
 }

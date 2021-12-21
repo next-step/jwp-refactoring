@@ -1,6 +1,7 @@
 package kitchenpos.menu.acceptance;
 
 import io.restassured.RestAssured;
+import io.restassured.http.Method;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
@@ -31,30 +32,18 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
   @Test
   void findAllProduct() {
     // when
-    ExtractableResponse<Response> response = 메뉴_목록_조회됨();
+    ExtractableResponse<Response> response = 메뉴_목록_조회_요청();
 
     // then
     assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
   }
 
   private ExtractableResponse<Response> 메뉴_그룹_생성_요청(MenuGroup menuGroup) {
-    return RestAssured
-            .given().log().all()
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .body(menuGroup)
-            .when()
-            .post("/api/menu-groups")
-            .then().log().all()
-            .extract();
+    return ofRequest(Method.POST, "/api/menu-groups", menuGroup);
   }
 
-  private ExtractableResponse<Response> 메뉴_목록_조회됨() {
-    return RestAssured
-            .given().log().all()
-            .when()
-            .get("/api/menu-groups")
-            .then().log().all()
-            .extract();
+  private ExtractableResponse<Response> 메뉴_목록_조회_요청() {
+    return ofRequest(Method.GET, "/api/menu-groups");
   }
 
   public static MenuGroup 메뉴_그룹_생성됨(MenuGroup menuGroup) {

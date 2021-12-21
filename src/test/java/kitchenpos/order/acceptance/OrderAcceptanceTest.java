@@ -1,6 +1,7 @@
 package kitchenpos.order.acceptance;
 
 import io.restassured.RestAssured;
+import io.restassured.http.Method;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
@@ -19,6 +20,8 @@ import org.springframework.http.MediaType;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -71,35 +74,17 @@ public class OrderAcceptanceTest extends AcceptanceTest {
   }
 
   private ExtractableResponse<Response> 주문_상태_변경_요청(Order order) {
-    return RestAssured
-            .given().log().all()
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .body(order)
-            .pathParam("orderId", order.getId())
-            .when()
-            .put("/api/orders/{orderId}/order-status")
-            .then().log().all()
-            .extract();
+    Map<String, Object> pathParams = new HashMap<>();
+    pathParams.put("orderId", order.getId());
+    return ofRequest(Method.PUT, "/api/orders/{orderId}/order-status", pathParams, order);
   }
 
   private ExtractableResponse<Response> 주문_생성_요청(Order order) {
-    return RestAssured
-            .given().log().all()
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .body(order)
-            .when()
-            .post("/api/orders")
-            .then().log().all()
-            .extract();
+    return ofRequest(Method.POST, "/api/orders", order);
   }
 
   private ExtractableResponse<Response> 주문_목록_조회_요청() {
-    return RestAssured
-            .given().log().all()
-            .when()
-            .get("/api/orders")
-            .then().log().all()
-            .extract();
+    return ofRequest(Method.GET, "/api/orders");
   }
 
   private Order 주문_메뉴_등록됨(Menu 치킨세트) {

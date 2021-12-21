@@ -1,6 +1,7 @@
 package kitchenpos.menu.acceptance;
 
 import io.restassured.RestAssured;
+import io.restassured.http.Method;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
@@ -40,22 +41,10 @@ public class ProductAcceptanceTest extends AcceptanceTest {
   }
 
   private ExtractableResponse<Response> 상품_생성_요청(Product product) {
-    return RestAssured
-            .given().log().all()
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .body(product)
-            .when()
-            .post("/api/products")
-            .then().log().all()
-            .extract();
+    return ofRequest(Method.POST, "/api/products", product);
   }
 
   private ExtractableResponse<Response> 상품_목록_조회됨() {
-    return RestAssured
-            .given().log().all()
-            .when()
-            .get("/api/products")
-            .then().log().all()
-            .extract();
+    return ofRequest(Method.GET, "/api/products");
   }
 }
