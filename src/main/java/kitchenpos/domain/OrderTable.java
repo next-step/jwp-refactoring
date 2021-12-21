@@ -2,9 +2,13 @@ package kitchenpos.domain;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class OrderTable {
@@ -13,7 +17,9 @@ public class OrderTable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long tableGroupId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "table_group_id", foreignKey = @ForeignKey(name = "fk_order_table_table_group"))
+    private TableGroup tableGroup;
 
     @Embedded
     private NumberOfGuests numberOfGuests;
@@ -24,16 +30,22 @@ public class OrderTable {
     public OrderTable() {
     }
 
-    public OrderTable(final Long tableGroupId, final int numberOfGuests, final boolean empty) {
-        this.tableGroupId = tableGroupId;
+    public OrderTable(final Long id, final int numberOfGuests, final boolean empty) {
+        this.id = id;
         this.numberOfGuests = NumberOfGuests.of(numberOfGuests);
         this.empty = Empty.of(empty);
     }
 
-    public OrderTable(final Long id, final Long tableGroupId, final int numberOfGuests,
+    public OrderTable(final TableGroup tableGroup, final int numberOfGuests, final boolean empty) {
+        this.tableGroup = tableGroup;
+        this.numberOfGuests = NumberOfGuests.of(numberOfGuests);
+        this.empty = Empty.of(empty);
+    }
+
+    public OrderTable(final Long id, final TableGroup tableGroup, final int numberOfGuests,
         final boolean empty) {
         this.id = id;
-        this.tableGroupId = tableGroupId;
+        this.tableGroup = tableGroup;
         this.numberOfGuests = NumberOfGuests.of(numberOfGuests);
         this.empty = Empty.of(empty);
     }
@@ -42,12 +54,12 @@ public class OrderTable {
         return id;
     }
 
-    public Long getTableGroupId() {
-        return tableGroupId;
+    public TableGroup getTableGroup() {
+        return tableGroup;
     }
 
-    public void setTableGroupId(final Long tableGroupId) {
-        this.tableGroupId = tableGroupId;
+    public void setTableGroup(final TableGroup tableGroup) {
+        this.tableGroup = tableGroup;
     }
 
     public NumberOfGuests getNumberOfGuests() {
