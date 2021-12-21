@@ -9,7 +9,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import kitchenpos.common.Quantity;
+import kitchenpos.common.domain.Quantity;
 import kitchenpos.product.domain.Product;
 
 @Table(name = "menu_product")

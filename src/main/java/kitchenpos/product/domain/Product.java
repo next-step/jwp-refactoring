@@ -7,7 +7,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import kitchenpos.common.Price;
+import kitchenpos.common.domain.Price;
 
 @Table(name = "product")
 @Entity

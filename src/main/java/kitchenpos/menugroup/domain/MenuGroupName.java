@@ -3,7 +3,7 @@ package kitchenpos.menugroup.domain;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
-import kitchenpos.common.Value;
+import kitchenpos.common.domain.Value;
 
 @Embeddable
 public class MenuGroupName extends Value<MenuGroupName> {

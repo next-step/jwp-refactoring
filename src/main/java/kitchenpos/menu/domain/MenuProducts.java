@@ -9,7 +9,7 @@ import javax.persistence.Embeddable;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 
-import kitchenpos.common.Price;
+import kitchenpos.common.domain.Price;
 
 @Embeddable
 public class MenuProducts {
