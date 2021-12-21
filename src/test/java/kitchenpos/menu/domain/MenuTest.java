@@ -30,6 +30,25 @@ class MenuTest {
                 .hasMessageContaining(InputMenuDataErrorCode.IT_CAN_NOT_INPUT_MENU_PRICE_LESS_THAN_ZERO.errorMessage());
     }
 
+    @Test
+    @DisplayName("메뉴그룹 아이디를 입력하지 않으면 에러 처리")
+    void saveEmptyMenuGroupIdMenuTest() {
+        Assertions.assertThatThrownBy(() -> {
+                    new Menu(1L, "스페셜치킨", new BigDecimal(10000), null);
+                }).isInstanceOf(InputMenuDataException.class)
+                .hasMessageContaining(InputMenuDataErrorCode.YOU_MUST_INPUT_MENU_GROUP_ID.errorMessage());
+    }
+
+    @Test
+    @DisplayName("메뉴그룹 아이디가 0보다 작을 때 에러 처리")
+    void saveWrongMenuGroupIdMenuTest() {
+        Assertions.assertThatThrownBy(() -> {
+                    new Menu(1L, "스페셜치킨", new BigDecimal(10000), -1L);
+                }).isInstanceOf(InputMenuDataException.class)
+                .hasMessageContaining(InputMenuDataErrorCode.YOU_MUST_INPUT_MENU_GROUP_ID.errorMessage());
+    }
+
+
     private void checkValidMenu(Menu menu) {
         assertAll(
                 () -> assertThat(menu.getId()).isEqualTo(1L),
