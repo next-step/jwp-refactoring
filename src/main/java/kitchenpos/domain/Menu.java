@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-@EntityListeners(value = MenuPricePolicyListener.class)
 public class Menu {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,8 +37,19 @@ public class Menu {
         this.menuGroup = menuGroup;
     }
 
-    public void addProduct(Product product, long quantity) {
-        menuProducts.add(this, product, quantity);
+    public Menu(Name name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
+        this.name = name;
+        this.price = price;
+        this.menuGroup = menuGroup;
+        this.menuProducts = menuProducts;
+    }
+
+    public void setMenuProducts(MenuProducts menuProducts) {
+        long totalProductPrice = menuProducts.getTotalPrice();
+        if (price.longValue() > totalProductPrice) {
+            throw new IllegalArgumentException("메뉴의 가격이 상품 가격의 총 합보다 클 수 없습니다");
+        }
+        this.menuProducts = menuProducts;
     }
 
     public long getTotalProductPrice() {

@@ -9,6 +9,7 @@ import kitchenpos.exception.ProductNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -29,16 +30,19 @@ public class MenuService {
                 .orElseThrow(() -> new MenuGroupNotFoundException(menuRequest.getMenuGroupId()));
 
         Menu menu = new Menu(menuRequest.getName(), menuRequest.getPrice(), menuGroup);
-        addMenuProducts(menuRequest.getMenuProducts(), menu);
+        MenuProducts menuProducts = createMenuProducts(menuRequest.getMenuProducts(), menu);
+        menu.setMenuProducts(menuProducts);
         return MenuResponse.of(menuRepository.save(menu));
     }
 
-    private void addMenuProducts(final List<MenuProductRequest> menuProducts, final Menu menu) {
-        for (final MenuProductRequest menuProductRequest : menuProducts) {
+    private MenuProducts createMenuProducts(final List<MenuProductRequest> menuProductRequests, Menu menu) {
+        List<MenuProduct> menuProducts = new ArrayList<>();
+        for (final MenuProductRequest menuProductRequest : menuProductRequests) {
             Product product = productRepository.findById(menuProductRequest.getProductId())
                     .orElseThrow(() -> new ProductNotFoundException(menuProductRequest.getProductId()));
-            menu.addProduct(product, menuProductRequest.getQuantity());
+            menuProducts.add(new MenuProduct(menu, product, menuProductRequest.getQuantity()));
         }
+        return new MenuProducts(menuProducts);
     }
 
     public List<MenuResponse> list() {
