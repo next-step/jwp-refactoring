@@ -13,7 +13,7 @@ import java.util.Collections;
 import java.util.List;
 import kitchenpos.application.fixture.TableFixture;
 import kitchenpos.application.fixture.TableGroupFixture;
-import kitchenpos.dao.OrderDao;
+import kitchenpos.domain.OrderRepository;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.OrderTableRepository;
 import kitchenpos.domain.TableGroup;
@@ -31,7 +31,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class TableGroupServiceTest {
 
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
 
     @Mock
     private OrderTableRepository orderTableRepository;
@@ -116,7 +116,7 @@ class TableGroupServiceTest {
         List<OrderTable> orderTables = Arrays.asList(단체로_지정된_테이블1, 단체로_지정된_테이블2);
         given(orderTableRepository.findAllByTableGroupId(1L)).willReturn(orderTables);
 
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(
+        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(
             false);
 
         tableGroupService.ungroup(1L);
@@ -135,7 +135,7 @@ class TableGroupServiceTest {
         List<OrderTable> orderTables = Arrays.asList(단체로_지정된_테이블1, 단체로_지정된_테이블2);
         given(orderTableRepository.findAllByTableGroupId(1L)).willReturn(orderTables);
 
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(
+        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(
             true);
 
         assertThatThrownBy(() -> tableGroupService.ungroup(1L))

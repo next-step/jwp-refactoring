@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import kitchenpos.application.fixture.TableFixture;
-import kitchenpos.dao.OrderDao;
+import kitchenpos.domain.OrderRepository;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,7 +26,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class TableServiceTest {
 
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
 
     @Mock
     private OrderTableRepository orderTableRepository;
@@ -71,7 +71,7 @@ class TableServiceTest {
     void changeEmpty() {
         OrderTable 변경할_테이블 = TableFixture.create(1L, null, 0, true);
 
-        given(orderDao.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).willReturn(false);
+        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).willReturn(false);
         given(orderTableRepository.findById(변경할_테이블.getId())).willReturn(Optional.of(변경할_테이블));
         given(orderTableRepository.save(변경할_테이블)).willReturn(변경할_테이블);
 
@@ -103,7 +103,7 @@ class TableServiceTest {
     @Test
     void changeEmptyImpossible3() {
         OrderTable 변경할_테이블 = TableFixture.create(1L, null, 2, false);
-        given(orderDao.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).willReturn(true);
+        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).willReturn(true);
         given(orderTableRepository.findById(변경할_테이블.getId())).willReturn(Optional.of(변경할_테이블));
 
         assertThatThrownBy(() -> tableService.changeEmpty(1L, 변경할_테이블))
