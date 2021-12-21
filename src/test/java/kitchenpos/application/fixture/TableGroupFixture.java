@@ -10,8 +10,8 @@ public class TableGroupFixture {
     private TableGroupFixture() {
     }
 
-    public static TableGroup createTableGroup(final Long id) {
-        return new TableGroup(id, Collections.emptyList());
+    public static TableGroup createTableGroup() {
+        return new TableGroup();
     }
 
     public static TableGroup createTableGroup(final Long id, final List<OrderTable> orderTables) {

@@ -63,16 +63,6 @@ class TableGroupServiceTest {
         assertThat(tableGroupService.create(tableGroup)).isEqualTo(tableGroup);
     }
 
-    @DisplayName("단체 지정을 할 때, 지정하려는 테이블 수가 2개 이하인 예외가 발생한다.")
-    @Test
-    void createImpossible1() {
-        List<OrderTable> orderTables = Arrays.asList(단체_테이블1);
-        TableGroup tableGroup = TableGroupFixture.createTableGroup(1L, orderTables);
-
-        assertThatThrownBy(() -> tableGroupService.create(tableGroup))
-            .isInstanceOf(IllegalArgumentException.class);
-    }
-
     @DisplayName("단체 지정을 할 때, 대상 테이블들이 모두 등록되어 있지 않으면 예외가 발생한다.")
     @Test
     void createImpossible2() {
@@ -104,7 +94,7 @@ class TableGroupServiceTest {
     @DisplayName("단체 지정을 할 때, 대상 테이블들이 이미 단체로 지정된 테이블이면 예외가 발생한다.")
     @Test
     void createImpossible4() {
-        TableGroup 단체_테이블_그룹 = TableGroupFixture.createTableGroup(1L);
+        TableGroup 단체_테이블_그룹 = TableGroupFixture.createTableGroup();
         OrderTable 단체로_지정된_테이블1 = TableFixture.create(1L, 단체_테이블_그룹, 3, true);
         OrderTable 단체로_지정된_테이블2 = TableFixture.create(2L, 단체_테이블_그룹, 3, true);
 
