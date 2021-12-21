@@ -1,5 +1,7 @@
 package kitchenpos.menu.domain;
 
+import static kitchenpos.common.exception.ExceptionMessage.*;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +19,7 @@ import javax.persistence.ManyToOne;
 
 import kitchenpos.common.domain.Name;
 import kitchenpos.common.domain.Price;
+import kitchenpos.common.exception.BadRequestException;
 
 @Entity
 public class Menu {
@@ -38,28 +41,27 @@ public class Menu {
     @Embedded
     private MenuProducts menuProducts;
 
-    public Menu() {
+    protected Menu() {
     }
 
-    public Menu(String name, BigDecimal price, MenuGroup menuGroup) {
-        this(name, price, menuGroup, new ArrayList<>());
-    }
-
-    public Menu(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        this(null, name, price, menuGroup, menuProducts);
-    }
-
-    public Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup) {
-        this(id, name, price, menuGroup, new ArrayList<>());
-    }
-
-    public Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup,
+    private Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup,
         List<MenuProduct> menuProducts) {
+        validate(menuGroup);
         this.id = id;
         this.name = new Name(name);
         this.price = new Price(price);
         this.menuGroup = menuGroup;
         this.menuProducts = new MenuProducts(menuProducts);
+    }
+
+    public static Menu of(String name, BigDecimal price, MenuGroup menuGroup) {
+        return new Menu(null, name, price, menuGroup, new ArrayList<>());
+    }
+
+    private void validate(MenuGroup menuGroup) {
+        if (Objects.isNull(menuGroup)) {
+            throw new BadRequestException(WRONG_VALUE);
+        }
     }
 
     public Long getId() {

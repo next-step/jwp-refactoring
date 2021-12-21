@@ -41,6 +41,6 @@ public class MenuRequest {
     }
 
     public Menu toEntity(MenuGroup menuGroup) {
-        return new Menu(name, price, menuGroup);
+        return Menu.of(name, price, menuGroup);
     }
 }

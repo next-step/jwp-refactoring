@@ -16,7 +16,6 @@ import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.repository.MenuGroupRepository;
-import kitchenpos.menu.repository.MenuProductRepository;
 import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.menu.repository.ProductRepository;
 
@@ -24,14 +23,12 @@ import kitchenpos.menu.repository.ProductRepository;
 public class MenuService {
     private final MenuRepository menuRepository;
     private final MenuGroupRepository menuGroupRepository;
-    private final MenuProductRepository menuProductRepository;
     private final ProductRepository productRepository;
 
     public MenuService(MenuRepository menuRepository, MenuGroupRepository menuGroupRepository,
-        MenuProductRepository menuProductRepository, ProductRepository productRepository) {
+        ProductRepository productRepository) {
         this.menuRepository = menuRepository;
         this.menuGroupRepository = menuGroupRepository;
-        this.menuProductRepository = menuProductRepository;
         this.productRepository = productRepository;
     }
 
@@ -41,16 +38,21 @@ public class MenuService {
             .orElseThrow(() -> new NotFoundException(NOT_FOUND_DATA));
 
         Menu menu = menuRequest.toEntity(findMenuGroup);
-        for (final MenuProductRequest menuProduct : menuRequest.getMenuProducts()) {
-            final Product product = productRepository.findById(menuProduct.getProductId())
-                .orElseThrow(() -> new NotFoundException(NOT_FOUND_DATA));
-            menu.addMenuProduct(menuProduct.toEntity(menu, product));
-        }
+        addMenuProduct(menuRequest.getMenuProducts(), menu);
         menu.validateMenuPrice();
 
         return new MenuResponse(menuRepository.save(menu));
     }
 
+    private void addMenuProduct(List<MenuProductRequest> menuProducts, Menu menu) {
+        for (final MenuProductRequest menuProduct : menuProducts) {
+            final Product product = productRepository.findById(menuProduct.getProductId())
+                .orElseThrow(() -> new NotFoundException(NOT_FOUND_DATA));
+            menu.addMenuProduct(menuProduct.toEntity(menu, product));
+        }
+    }
+
+    @Transactional(readOnly = true)
     public List<MenuResponse> list() {
         final List<Menu> menus = menuRepository.findAll();
         return menus.stream()
