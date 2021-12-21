@@ -30,16 +30,9 @@ public class MenuProduct {
     }
 
     public MenuProduct(Product product, Long quantity) {
-//        validate(product);
         this.product = product;
         this.quantity = Quantity.of(quantity);
     }
-
-//    private void validate(Product product) {
-//        if (Objects.isNull(product)) {
-//            throw new ProductNotFoundException();
-//        }
-//    }
 
     public BigDecimal price() {
         return product.getPrice()

@@ -86,12 +86,12 @@ public class ProductAcceptanceTest extends AcceptanceTest {
                 .then().log().all().extract();
     }
 
-    private ProductResponse 상품_등록되어_있음(ProductRequest request) {
+    public static ProductResponse 상품_등록되어_있음(ProductRequest request) {
         final ExtractableResponse<Response> response = 상품_등록_요청함(request);
         return response.jsonPath().getObject("", ProductResponse.class);
     }
 
-    private ExtractableResponse<Response> 상품_등록_요청함(ProductRequest request) {
+    public static ExtractableResponse<Response> 상품_등록_요청함(ProductRequest request) {
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(request)

@@ -69,6 +69,16 @@ class MenuRepositoryTest {
     }
 
     @Test
+    @DisplayName("메뉴 조회 시 메뉴그룹과 메뉴상품을 조회할 수 있다.")
+    public void listWithMenuGroupAndMenuProducts() throws Exception {
+        //when
+        final List<Menu> menus = menuRepository.findAllJoinFetch();
+
+        //then
+        assertThat(menus.size()).isGreaterThanOrEqualTo(0);
+    }
+
+    @Test
     @DisplayName("메뉴를 등록할 수 있다.")
     public void create() throws Exception {
         //when
@@ -107,28 +117,4 @@ class MenuRepositoryTest {
         assertThatThrownBy(() -> new Menu("가격불일치메뉴", new BigDecimal(Long.MAX_VALUE), 메뉴그룹, Lists.newArrayList(양념치킨메뉴상품, 후라이드메뉴상품)))
                 .isInstanceOf(MismatchPriceException.class);
     }
-//
-//    @Test
-//    @DisplayName("메뉴그룹이 등록되어 있어야 한다.")
-//    public void createFail() {
-//        //when
-//        Menu 메뉴_존재하지않은_메뉴그룹 = new Menu("한마리메뉴", 메뉴가격, new MenuGroup(), Lists.newArrayList(양념치킨메뉴상품, 후라이드메뉴상품));
-//
-//        //then
-//        assertThatThrownBy(() -> menuRepository.save(메뉴_존재하지않은_메뉴그룹))
-//                .isInstanceOf(DataIntegrityViolationException.class);
-//    }
-//
-//    @Test
-//    @DisplayName("메뉴상품은 상품이 등록되어 있어야 한다.")
-//    public void createFailByMenuProduct() {
-//        //when
-//        Menu 메뉴_존재하지않은_메뉴상품 = new Menu("한마리메뉴", 메뉴가격, 메뉴그룹, Lists.newArrayList(new MenuProduct(), new MenuProduct()));
-//
-//        //then
-//        assertThatThrownBy(() -> menuRepository.save(메뉴_존재하지않은_메뉴상품))
-//                .isInstanceOf(DataIntegrityViolationException.class);
-//    }
-
-
 }

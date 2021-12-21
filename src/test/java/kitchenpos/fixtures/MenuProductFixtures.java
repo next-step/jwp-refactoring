@@ -18,6 +18,10 @@ public class MenuProductFixtures {
         return MenuProductRequest.of(2L, 2L);
     }
 
+    public static MenuProductRequest 메뉴상품등록요청(Long productId, Long quantity) {
+        return MenuProductRequest.of(productId, quantity);
+    }
+
     public static MenuProductRequest 메뉴상품_세개() {
         return MenuProductRequest.of(3L, 3L);
     }

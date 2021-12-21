@@ -51,30 +51,12 @@ public class MenuFixtures {
         );
     }
 
-    public static MenuRequest 후라이드반양념반메뉴() {
-        return MenuRequest.of(
-                "후라이드반양념반메뉴",
-                new BigDecimal(32000),
-                4L,
-                Lists.newArrayList(new MenuProductRequest(1L, 1L), new MenuProductRequest(2L, 1L))
-        );
-    }
-
     public static MenuRequest 후라이드반양념반메뉴(BigDecimal price, Long menuGroupId, List<MenuProductRequest> menuProductRequests) {
         return MenuRequest.of(
                 "후라이드반양념반메뉴",
                 price,
                 menuGroupId,
                 menuProductRequests
-        );
-    }
-
-    public static MenuRequest 가격불일치메뉴() {
-        return MenuRequest.of(
-                "가격불일치메뉴",
-                new BigDecimal(Math.random()),
-                5L,
-                Lists.newArrayList(new MenuProductRequest(1L, 1L), new MenuProductRequest(2L, 1L))
         );
     }
 }

@@ -1,16 +1,13 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.dao.MenuProductDao;
-import kitchenpos.dao.ProductDao;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Product;
+import kitchenpos.domain.*;
+import kitchenpos.dto.*;
+import kitchenpos.exception.IllegalPriceException;
+import kitchenpos.exception.MenuGroupNotFoundException;
+import kitchenpos.exception.MismatchPriceException;
+import kitchenpos.exception.ProductNotFoundException;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,10 +21,10 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
-import static kitchenpos.fixtures.MenuFixtures.가격불일치메뉴;
 import static kitchenpos.fixtures.MenuFixtures.양념치킨두마리메뉴;
+import static kitchenpos.fixtures.MenuFixtures.후라이드두마리메뉴;
 import static kitchenpos.fixtures.MenuGroupFixtures.두마리메뉴;
-import static kitchenpos.fixtures.MenuProductFixtures.메뉴상품_한개;
+import static kitchenpos.fixtures.MenuProductFixtures.*;
 import static kitchenpos.fixtures.ProductFixtures.양념치킨;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -43,47 +40,40 @@ import static org.mockito.BDDMockito.given;
  * date : 2021/12/17
  * description :
  */
-@Disabled
 @DisplayName("메뉴 통합 테스트")
 @ExtendWith(MockitoExtension.class)
 public class MenuServiceTest {
-    private Menu menu;
-    private MenuGroup menuGroup;
-    private Product product;
-    private List<MenuProduct> menuProducts;
+    private Menu 양념치킨두마리메뉴;
+    private final Product 양념치킨 = 양념치킨().toEntity();
+    private final MenuGroup 두마리메뉴그룹 = 두마리메뉴().toEntity();
 
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
 
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private ProductRepository productRepository;
 
     @Mock
-    private MenuProductDao menuProductDao;
-
-    @Mock
-    private ProductDao productDao;
+    private MenuGroupRepository menuGroupRepository;
 
     @InjectMocks
     private MenuService menuService;
 
     @BeforeEach
     void setUp() {
-        menuGroup = 두마리메뉴().toEntity();
-        product = 양념치킨().toEntity();
-        MenuProduct menuProduct = 메뉴상품_한개().toEntity(product);
-        menuProducts = Lists.newArrayList(menuProduct, menuProduct);
-        menu = 양념치킨두마리메뉴().toEntity(menuGroup, menuProducts);
+        MenuProduct menuProduct = 메뉴상품_두개().toEntity(양념치킨);
+        List<MenuProduct> menuProducts = Lists.newArrayList(menuProduct);
+        양념치킨두마리메뉴 = 양념치킨두마리메뉴().toEntity(두마리메뉴그룹, menuProducts);
     }
 
     @Test
     @DisplayName("메뉴를 조회할 수 있다.")
     public void list() {
         // given
-        given(menuDao.findAll()).willReturn(Lists.newArrayList(menu));
+        given(menuRepository.findAllJoinFetch()).willReturn(Lists.newArrayList(양념치킨두마리메뉴));
 
         // when
-        List<Menu> menus = menuService.list();
+        List<MenuResponse> menus = menuService.list();
 
         // then
         assertThat(menus).hasSize(1);
@@ -93,20 +83,16 @@ public class MenuServiceTest {
     @DisplayName("메뉴를 등록할 수 있다.")
     public void create() {
         // given
-        given(menuGroupDao.existsById(anyLong())).willReturn(true);
-        given(productDao.findById(anyLong())).willReturn(Optional.ofNullable(product));
-        given(menuDao.save(menu)).willReturn(menu);
-        given(menuProductDao.save(any(MenuProduct.class))).willReturn(menuProducts.get(0), menuProducts.get(1));
+        given(menuGroupRepository.findById(any())).willReturn(Optional.of(두마리메뉴그룹));
+        given(productRepository.findById(anyLong())).willReturn(Optional.of(양념치킨));
+        given(menuRepository.save(any(Menu.class))).willReturn(양념치킨두마리메뉴);
 
         // when
-        Menu actual = menuService.create(menu);
+        MenuResponse actual = menuService.create(양념치킨두마리메뉴());
 
         // then
         assertAll(
-                () -> assertThat(actual).isEqualTo(menu),
-                () -> assertThat(actual.getMenuProducts()).hasSize(2),
-                () -> assertThat(actual.getMenuProducts()).extracting(MenuProduct::getMenu)
-                        .containsOnly(menu)
+                () -> assertThat(actual.getMenuProducts()).hasSize(1)
         );
     }
 
@@ -114,47 +100,46 @@ public class MenuServiceTest {
     @ValueSource(ints = {-10, -5, -1})
     @DisplayName("메뉴의 가격이 올바르지 않으면 등록할 수 없다: int")
     public void createFailByPrice(int candidate) {
-
         // then
-        assertThatThrownBy(() -> new Menu("두마리메뉴", new BigDecimal(candidate), null, null)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> new Menu("두마리메뉴", new BigDecimal(candidate), 두마리메뉴그룹, Lists.newArrayList(new MenuProduct(양념치킨, 2L))))
+                .isInstanceOf(IllegalPriceException.class);
     }
 
     @Test
     @DisplayName("메뉴의 가격이 올바르지 않으면 등록할 수 없다: null")
     public void createFailByPriceNull() {
         // then
-        assertThatThrownBy(() -> new Menu("두마리메뉴", null, null, null)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> new Menu("두마리메뉴", null, null, null))
+                .isInstanceOf(IllegalPriceException.class);
     }
 
     @Test
     @DisplayName("메뉴의 가격은 메뉴상품들의 수량과 가격의 합과 일치하여야 한다.")
     public void createFailByMenusPrices() {
-        // given
-        given(productDao.findById(anyLong())).willReturn(Optional.ofNullable(product));
-        given(menuGroupDao.existsById(anyLong())).willReturn(true);
-        menu = 가격불일치메뉴().toEntity(menuGroup, menuProducts);
-
         // then
-        assertThatThrownBy(() -> menuService.create(menu)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> new Menu("가격불일치메뉴",
+                new BigDecimal(Long.MAX_VALUE),
+                두마리메뉴그룹,
+                Lists.newArrayList(new MenuProduct(양념치킨, 2L))
+        )).isInstanceOf(MismatchPriceException.class);
     }
 
     @Test
     @DisplayName("메뉴그룹이 등록되어 있어야 한다.")
     public void createFail() {
-        // given
-        given(menuGroupDao.existsById(anyLong())).willReturn(false);
+        given(menuGroupRepository.findById(any())).willThrow(MenuGroupNotFoundException.class);
 
         // then
-        assertThatThrownBy(() -> menuService.create(menu)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> menuService.create(양념치킨두마리메뉴())).isInstanceOf(MenuGroupNotFoundException.class);
     }
 
     @Test
     @DisplayName("메뉴상품은 상품이 등록되어 있어야 한다.")
     public void createFailByMenuProduct() {
-        // given
-        given(menuGroupDao.existsById(anyLong())).willReturn(true);
+        given(menuGroupRepository.findById(any())).willReturn(Optional.of(두마리메뉴그룹));
+        given(productRepository.findById(anyLong())).willThrow(ProductNotFoundException.class);
 
         // then
-        assertThatThrownBy(() -> menuService.create(menu)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> menuService.create(양념치킨두마리메뉴())).isInstanceOf(ProductNotFoundException.class);
     }
 }

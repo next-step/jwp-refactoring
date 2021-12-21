@@ -31,7 +31,7 @@ public class MenuProductRequest {
         return productId;
     }
 
-    public long getQuantity() {
+    public Long getQuantity() {
         return quantity;
     }
 

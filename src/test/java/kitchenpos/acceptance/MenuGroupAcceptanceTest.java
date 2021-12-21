@@ -29,7 +29,7 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
     @Test
     void create() {
         // given
-        final MenuGroupRequest request = new MenuGroupRequest("두마리메뉴");
+        final MenuGroupRequest request = MenuGroupRequest.of("두마리메뉴");
 
         // when
         final ExtractableResponse<Response> response = 메뉴그룹_등록_요청함(request);
@@ -42,8 +42,8 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
     @Test
     void list() {
         // given
-        메뉴그룹_등록되어있음(new MenuGroupRequest("한마리메뉴"));
-        메뉴그룹_등록되어있음(new MenuGroupRequest("두마리메뉴"));
+        메뉴그룹_등록되어있음(MenuGroupRequest.of("한마리메뉴"));
+        메뉴그룹_등록되어있음(MenuGroupRequest.of("두마리메뉴"));
 
         // when
         final ExtractableResponse<Response> response = 메뉴그룹_리스트_요청함();
@@ -61,12 +61,12 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
                 .then().log().all().extract();
     }
 
-    private MenuGroupResponse 메뉴그룹_등록되어있음(MenuGroupRequest request) {
+    public static MenuGroupResponse 메뉴그룹_등록되어있음(MenuGroupRequest request) {
         final ExtractableResponse<Response> response = 메뉴그룹_등록_요청함(request);
         return response.jsonPath().getObject("", MenuGroupResponse.class);
     }
 
-    private ExtractableResponse<Response> 메뉴그룹_등록_요청함(MenuGroupRequest request) {
+    public static ExtractableResponse<Response> 메뉴그룹_등록_요청함(MenuGroupRequest request) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
