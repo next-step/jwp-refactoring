@@ -50,11 +50,10 @@ class ProductTest {
     @DisplayName("상품을 등록할 수 있다.")
     void createProduct() {
         // given
-        Product product = new Product("후라이드", BigDecimal.valueOf(17000));
-        when(productDao.save(any())).thenReturn(product);
+        when(productDao.save(any())).thenReturn(new Product(1L, "후라이드", BigDecimal.valueOf(17000)));
 
         // when
-        Product savedProduct = productService.create(product);
+        Product savedProduct = productService.create(new Product("후라이드", BigDecimal.valueOf(17000)));
 
         // then
         assertAll(
@@ -67,13 +66,17 @@ class ProductTest {
     @DisplayName("상품 목록을 조회할 수 있다.")
     void findProduct() {
         // given
-        List<Product> products = Arrays.asList(new Product("후라이드", BigDecimal.valueOf(17000)), new Product("양념치킨", BigDecimal.valueOf(17000)));
+        List<Product> products = Arrays.asList(new Product(1L, "후라이드", BigDecimal.valueOf(17000)),
+                new Product(2L, "양념치킨", BigDecimal.valueOf(17000)));
         when(productDao.findAll()).thenReturn(products);
 
         // when
         List<Product> findByProducts = productService.list();
 
         // then
-        assertThat(findByProducts.size()).isEqualTo(2);
+        assertAll(
+                () -> assertThat(findByProducts).extracting("id").isNotNull(),
+                () -> assertThat(findByProducts.size()).isEqualTo(2)
+        );
     }
 }

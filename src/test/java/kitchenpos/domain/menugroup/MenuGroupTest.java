@@ -13,9 +13,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.anyOf;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -41,11 +41,10 @@ class MenuGroupTest {
     @DisplayName("메뉴 그룹을 등록할 수 있다.")
     void createMenuGroup() {
         // given
-        MenuGroup menuGroup = new MenuGroup(1L, "추천메뉴");
-        when(menuGroupDao.save(any())).thenReturn(menuGroup);
+        when(menuGroupDao.save(any())).thenReturn(new MenuGroup(1L, "추천메뉴"));
 
         // when
-        MenuGroup savedMenuGroup = menuGroupService.create(menuGroup);
+        MenuGroup savedMenuGroup = menuGroupService.create(new MenuGroup("추천메뉴"));
 
         // then
         assertThat(savedMenuGroup.getId()).isEqualTo(1L);
@@ -56,13 +55,17 @@ class MenuGroupTest {
     @DisplayName("메뉴 그룹을 조회할 수 있다.")
     void findMenuGroup() {
         // given
-        List<MenuGroup> menuGroups = Arrays.asList(new MenuGroup(1L, "추천메뉴1"), new MenuGroup(2L, "추천메뉴2"));
+        List<MenuGroup> menuGroups = Arrays.asList(new MenuGroup(1L, "추천메뉴1"),
+                new MenuGroup(2L, "추천메뉴2"));
         when(menuGroupDao.findAll()).thenReturn(menuGroups);
 
         // when
         List<MenuGroup> findByMenuGroups = menuGroupService.list();
 
         // then
-        assertThat(findByMenuGroups.size()).isEqualTo(2);
+        assertAll(
+                () -> assertThat(findByMenuGroups.size()).isEqualTo(2),
+                () -> assertThat(findByMenuGroups).extracting("id").contains(1L,2L)
+        );
     }
 }
