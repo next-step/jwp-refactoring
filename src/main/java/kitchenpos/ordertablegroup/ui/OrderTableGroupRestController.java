@@ -13,7 +13,7 @@ import kitchenpos.ordertablegroup.application.OrderTableGroupService;
 import kitchenpos.ordertablegroup.dto.OrderTableGroupCreateRequest;
 import kitchenpos.ordertablegroup.dto.OrderTableGroupDto;
 
-@RestController(value = "ToBeOrderTableGroupRestController")
+@RestController
 public class OrderTableGroupRestController {
     private final OrderTableGroupService orderTableGroupService;
 

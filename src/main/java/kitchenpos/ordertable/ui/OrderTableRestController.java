@@ -15,7 +15,7 @@ import kitchenpos.ordertable.application.OrderTableService;
 import kitchenpos.ordertable.dto.OrderTableDto;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 
-@RestController(value = "ToBeOrderTableRestController")
+@RestController
 public class OrderTableRestController {
 	private final OrderTableService orderTableService;
 

@@ -13,7 +13,7 @@ import kitchenpos.menugroup.application.MenuGroupService;
 import kitchenpos.menugroup.dto.MenuGroupCreateRequest;
 import kitchenpos.menugroup.dto.MenuGroupDto;
 
-@RestController(value = "ToBeMenuGroupRestController")
+@RestController
 public class MenuGroupRestController {
 	private final MenuGroupService menuGroupService;
 

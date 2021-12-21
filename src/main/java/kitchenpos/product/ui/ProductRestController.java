@@ -13,7 +13,7 @@ import kitchenpos.product.application.ProductService;
 import kitchenpos.product.dto.ProductCreateRequest;
 import kitchenpos.product.dto.ProductDto;
 
-@RestController(value = "ToBeProductRestController")
+@RestController
 public class ProductRestController {
 	private final ProductService productService;
 

@@ -13,7 +13,7 @@ import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.dto.MenuCreateRequest;
 import kitchenpos.menu.dto.MenuDto;
 
-@RestController(value = "ToBeMenuRestController")
+@RestController
 public class MenuRestController {
 	private final MenuService menuService;
 
