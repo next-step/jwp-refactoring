@@ -26,6 +26,6 @@ public class MenuProductRequest {
     }
 
     public MenuProduct toEntity(Menu menu, Product product) {
-        return new MenuProduct(menu, product, quantity);
+        return MenuProduct.of(menu, product, quantity);
     }
 }

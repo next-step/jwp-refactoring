@@ -23,8 +23,8 @@ class MenuProductsTest {
     @BeforeEach
     void setUp() {
         menuProducts = new MenuProducts(Arrays.asList(
-            new MenuProduct(new Product("후라이드", new BigDecimal(10000)), 2),
-            new MenuProduct(new Product("양념치킨", new BigDecimal(10000)), 1)
+            MenuProduct.of(null, new Product("후라이드", new BigDecimal(10000)), 2),
+            MenuProduct.of(null, new Product("양념치킨", new BigDecimal(10000)), 1)
         ));
     }
 

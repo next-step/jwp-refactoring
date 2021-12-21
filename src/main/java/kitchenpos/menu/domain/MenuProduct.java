@@ -35,19 +35,15 @@ public class MenuProduct {
     protected MenuProduct() {
     }
 
-    public MenuProduct(Product product, long quantity) {
-        this(null, null, product, quantity);
-    }
-
-    public MenuProduct(Menu menu, Product product, long quantity) {
-        this(null, menu, product, quantity);
-    }
-
-    public MenuProduct(Long id, Menu menu, Product product, long quantity) {
+    private MenuProduct(Long id, Menu menu, Product product, long quantity) {
         this.id = id;
         this.menu = menu;
         this.product = product;
         this.quantity = new Quantity(quantity);
+    }
+
+    public static MenuProduct of(Menu menu, Product product, long quantity) {
+        return new MenuProduct(null, menu, product, quantity);
     }
 
     public Long getId() {
