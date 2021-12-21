@@ -80,7 +80,84 @@
 
 
 
-
+# 인수테스트 
+```integrationperformancetest
+   Feature 상품 관리
+   
+      Scenario 상품을 생성한다.
+          When 상품을 생성을 요청
+          Then 상품 생성됨
+          
+       Scenario 전체 상품을 조회한다.
+          given 상품이 등록됨 
+          When 전체 상품을 조회한다.
+          Then 전체 상품 조회됨
+       
+   Feature 메뉴그룹 관리  
+   
+      Scenario `메뉴그룹`을 생성한다.
+          When `메뉴그룹`을 생성요청
+          Then 메뉴그룹 생성됨
+          
+       Scenario `메뉴그룹`을 조회한다.
+          given 메뉴그룹 생성됨
+          When  메뉴그룹 전체조회 
+          Then  메뉴그룹 조회됨
+       
+   Feature 메뉴 관리
+   
+      Scenario `메뉴`를 생성한다.
+          When 메뉴 생성을 요청
+          Then 메뉴 생성됨
+          
+       Scenario `메뉴`을 조회한다.
+          given 메뉴 생성됨
+          When  메뉴 전체조회 
+          Then  메뉴 조회됨
+       
+   Feature 주문을 할 수 있다 
+   
+      Scenario `주문`을 생성한다.
+          When 주문 생성을 요청
+          Then 주문 생성됨
+          
+       Scenario 전체 `주문`을 조회한다.
+          given 주문 생성됨
+          When  주문 전체조회 요청 
+          Then  주문 조회됨
+   
+   
+   Feature `주문테이블` 관리
+   
+      Scenario `주문테이블`을 생성한다.
+          When 주문테이블 생성 요청
+          Then 주문테이블 생성됨
+      
+      Scenario `주문테이블`을 `빈테이블` 변경한다.
+         given 주문테이블 생성됨
+          When 주문테이블 변경 요청
+          Then 주문테이블 변경 됨
+          
+      Scenario `주문테이블`에 `손님 수` 변경한다..
+         given 주문테이블 생성됨
+          When 주문테이블 손님 수 변경 요청
+          Then 주문테이블 손님 수 변경됨
+          
+   Feature `단체지정` 관리
+   
+      Secnario `주문테이블` 단체지정 생성
+         given 주문테이블 생성됨
+         given 주문테이블 생성됨
+          when `단체지정` 생성을 요청 
+          then 단체지정 생성됨
+          
+      Secnario `단체지정`을 취소할 수 있다.
+         given 주문테이블 생성됨
+         given 주문테이블 생성됨
+         given 단체지정됨
+          when 단체지정 취소 요청
+          then 단체지정 취소됨 
+```
 
 
 
