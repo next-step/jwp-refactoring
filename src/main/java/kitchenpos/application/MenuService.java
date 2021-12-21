@@ -9,6 +9,7 @@ import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -36,6 +37,10 @@ public class MenuService {
 
     @Transactional
     public Menu create(final Menu menu) {
+        if (!StringUtils.hasText(menu.getName())) {
+            throw new IllegalArgumentException();
+        }
+
         final BigDecimal price = menu.getPrice();
 
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
