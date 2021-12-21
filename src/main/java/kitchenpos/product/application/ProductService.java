@@ -1,5 +1,7 @@
 package kitchenpos.product.application;
 
+import static java.util.stream.Collectors.toList;
+
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
@@ -29,7 +31,10 @@ public class ProductService {
         return ProductResponse.from(productRepository.save(product));
     }
 
-    public List<Product> list() {
-        return productRepository.findAll();
+    public List<ProductResponse> list() {
+        return productRepository.findAll()
+            .stream()
+            .map(ProductResponse::from)
+            .collect(toList());
     }
 }

@@ -73,18 +73,18 @@ class ProductServiceTest {
             .willReturn(Lists.newArrayList(savedProduct1, savedProduct2, savedProduct3));
 
         // when
-        List<Product> result = productService.list();
+        List<ProductResponse> result = productService.list();
 
         // then
         assertThat(result).hasSize(3);
         assertThat(result.get(0).getId()).isEqualTo(1L);
-        assertThat(result.get(0).getName()).isEqualTo(Name.of("양념치킨"));
+        assertThat(result.get(0).getName()).isEqualTo("양념치킨");
         assertThat(result.get(0).getPrice()).isEqualTo(BigDecimal.valueOf(17000));
         assertThat(result.get(1).getId()).isEqualTo(2L);
-        assertThat(result.get(1).getName()).isEqualTo(Name.of("후라이드치킨"));
+        assertThat(result.get(1).getName()).isEqualTo("후라이드치킨");
         assertThat(result.get(1).getPrice()).isEqualTo(BigDecimal.valueOf(16000));
         assertThat(result.get(2).getId()).isEqualTo(3L);
-        assertThat(result.get(2).getName()).isEqualTo(Name.of("간장치킨"));
+        assertThat(result.get(2).getName()).isEqualTo("간장치킨");
         assertThat(result.get(2).getPrice()).isEqualTo(BigDecimal.valueOf(17000));
     }
 }

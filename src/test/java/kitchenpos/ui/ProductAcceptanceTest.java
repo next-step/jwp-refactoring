@@ -12,6 +12,7 @@ import kitchenpos.AcceptanceTest;
 import kitchenpos.product.domain.Name;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -38,6 +39,10 @@ class ProductAcceptanceTest extends AcceptanceTest {
     @DisplayName("상품 목록을 조회한다")
     @Test
     void readProducts() {
+        // given
+        상품_생성(new ProductRequest("양념치킨", 18000));
+        상품_생성(new ProductRequest("후라이드치킨", 17000));
+
         // when
         ExtractableResponse<Response> 상품목록_조회_응답 = 상품목록_조회();
 
@@ -63,11 +68,10 @@ class ProductAcceptanceTest extends AcceptanceTest {
 
     private void 상품목록_조회됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        List<Product> products = Lists.newArrayList(response.as(Product[].class));
-        assertThat(products).hasSize(6);
-        assertThat(products).extracting(Product::getName)
-            .contains(Name.of("후라이드"), Name.of("양념치킨"), Name.of("반반치킨"),
-                Name.of("통구이"), Name.of("간장치킨"), Name.of("순살치킨"));
+        List<ProductResponse> products = Lists.newArrayList(response.as(ProductResponse[].class));
+        assertThat(products).hasSize(2);
+        assertThat(products).extracting(ProductResponse::getName)
+            .contains("후라이드치킨", "양념치킨");
     }
 
 }
