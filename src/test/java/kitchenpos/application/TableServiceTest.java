@@ -1,9 +1,10 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
+import kitchenpos.dao.OrderRepository;
+import kitchenpos.dao.OrderTableRepository;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.TableGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,26 +22,26 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class TableServiceTest {
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
 
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     private OrderTable orderTable;
 
     @BeforeEach
     void setUp() {
-         orderTable = new OrderTable(1L, 1L, 1, false);
+         orderTable = new OrderTable(1L, new TableGroup(), 1, false);
     }
 
     @DisplayName("주문 테이블을 생성한다")
     @Test
     void createTest() {
         // given
-        when(orderTableDao.save(orderTable)).thenReturn(orderTable);
+        when(orderTableRepository.save(orderTable)).thenReturn(orderTable);
 
         // when
-        TableService tableService = new TableService(orderDao, orderTableDao);
+        TableService tableService = new TableService(orderRepository, orderTableRepository);
         OrderTable retunredOrderTable = tableService.create(orderTable);
 
         // then
@@ -51,14 +52,14 @@ class TableServiceTest {
     @Test
     void changeEmptyTableTest() {
         // given
-        orderTable.setTableGroupId(null);
+        orderTable.setTableGroup(null);
         orderTable.setEmpty(true);
-        when(orderTableDao.save(orderTable)).thenReturn(orderTable);
-        when(orderTableDao.findById(1L)).thenReturn(java.util.Optional.ofNullable(orderTable));
-        when(orderDao.existsByOrderTableIdAndOrderStatusIn(1L, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).thenReturn(false);
+        when(orderTableRepository.save(orderTable)).thenReturn(orderTable);
+        when(orderTableRepository.findById(1L)).thenReturn(java.util.Optional.ofNullable(orderTable));
+        when(orderRepository.existsByOrderTableIdAndOrderStatusIn(1L, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).thenReturn(false);
 
         // when
-        TableService tableService = new TableService(orderDao, orderTableDao);
+        TableService tableService = new TableService(orderRepository, orderTableRepository);
         OrderTable retunredOrderTable = tableService.changeEmpty(orderTable.getId(), orderTable);
 
         assertThat(retunredOrderTable.isEmpty()).isTrue();
@@ -69,10 +70,10 @@ class TableServiceTest {
     void changeEmptyTableInTableGroupTest() {
         // given
         orderTable.setEmpty(true);
-        when(orderTableDao.findById(1L)).thenReturn(java.util.Optional.ofNullable(orderTable));
+        when(orderTableRepository.findById(1L)).thenReturn(java.util.Optional.ofNullable(orderTable));
 
         // when
-        TableService tableService = new TableService(orderDao, orderTableDao);
+        TableService tableService = new TableService(orderRepository, orderTableRepository);
 
         // then
         assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), orderTable)).isInstanceOf(IllegalArgumentException.class);
@@ -83,12 +84,12 @@ class TableServiceTest {
     void changeEmptyTableInCookingOrMeal() {
         // given
         orderTable.setEmpty(true);
-        orderTable.setTableGroupId(null);
-        when(orderTableDao.findById(1L)).thenReturn(java.util.Optional.ofNullable(orderTable));
-        when(orderDao.existsByOrderTableIdAndOrderStatusIn(1L, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).thenReturn(true);
+        orderTable.setTableGroup(null);
+        when(orderTableRepository.findById(1L)).thenReturn(java.util.Optional.ofNullable(orderTable));
+        when(orderRepository.existsByOrderTableIdAndOrderStatusIn(1L, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).thenReturn(true);
 
         // when
-        TableService tableService = new TableService(orderDao, orderTableDao);
+        TableService tableService = new TableService(orderRepository, orderTableRepository);
 
         // then
         assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), orderTable)).isInstanceOf(IllegalArgumentException.class);
@@ -99,10 +100,10 @@ class TableServiceTest {
     void changeNumberOfGuestsTest() {
         // given
         orderTable.setNumberOfGuests(10);
-        when(orderTableDao.findById(1L)).thenReturn(java.util.Optional.ofNullable(orderTable));
-        when(orderTableDao.save(orderTable)).thenReturn(orderTable);
+        when(orderTableRepository.findById(1L)).thenReturn(java.util.Optional.ofNullable(orderTable));
+        when(orderTableRepository.save(orderTable)).thenReturn(orderTable);
         // when
-        TableService tableService = new TableService(orderDao, orderTableDao);
+        TableService tableService = new TableService(orderRepository, orderTableRepository);
         OrderTable returnedOrderTable = tableService.changeNumberOfGuests(1L, orderTable);
 
         // then
@@ -115,7 +116,7 @@ class TableServiceTest {
         // given
         orderTable.setNumberOfGuests(-1);
         // when
-        TableService tableService = new TableService(orderDao, orderTableDao);
+        TableService tableService = new TableService(orderRepository, orderTableRepository);
 
         // then
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, this.orderTable)).isInstanceOf(IllegalArgumentException.class);
@@ -128,7 +129,7 @@ class TableServiceTest {
         orderTable.setEmpty(true);
         orderTable.setNumberOfGuests(10);
         // when
-        TableService tableService = new TableService(orderDao, orderTableDao);
+        TableService tableService = new TableService(orderRepository, orderTableRepository);
 
         // then
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, this.orderTable)).isInstanceOf(IllegalArgumentException.class);
@@ -138,9 +139,9 @@ class TableServiceTest {
     @Test
     void listTest() {
         // given
-        when(orderTableDao.save(orderTable)).thenReturn(orderTable);
-        when(orderTableDao.findAll()).thenReturn(Collections.singletonList(orderTable));
-        TableService tableService = new TableService(orderDao, orderTableDao);
+        when(orderTableRepository.save(orderTable)).thenReturn(orderTable);
+        when(orderTableRepository.findAll()).thenReturn(Collections.singletonList(orderTable));
+        TableService tableService = new TableService(orderRepository, orderTableRepository);
         tableService.create(orderTable);
 
         // when

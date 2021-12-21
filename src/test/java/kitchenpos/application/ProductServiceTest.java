@@ -1,6 +1,6 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.ProductDao;
+import kitchenpos.dao.ProductRepository;
 import kitchenpos.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -26,13 +26,13 @@ class ProductServiceTest {
     private List<Product> list;
 
     @Mock
-    private ProductDao mockDao;
+    private ProductRepository mockDao;
 
     @BeforeEach
     void setUp() {
         양념치킨 = new Product();
         양념치킨.setName("양념치킨");
-        양념치킨.setPrice(new BigDecimal(-16_000));
+        양념치킨.setPrice(new BigDecimal(16_000));
         순살치킨 = new Product();
         순살치킨.setName("순살치킨");
         순살치킨.setPrice(new BigDecimal(-15_000));
@@ -74,7 +74,7 @@ class ProductServiceTest {
         // when
         ProductService productService = new ProductService(mockDao);
 
-        assertThatThrownBy(() -> productService.create(양념치킨)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> productService.create(순살치킨)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("상품을 조회한다")
