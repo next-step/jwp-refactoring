@@ -2,14 +2,13 @@ package kitchenpos.domain.table;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.persistence.Embeddable;
-import javax.persistence.OneToMany;
 
 @Embeddable
 public final class OrderTables {
-    @OneToMany(mappedBy = "tableGroup")
     private final List<OrderTable> orderTables;
 
     protected OrderTables() {
@@ -52,5 +51,21 @@ public final class OrderTables {
 
     public boolean isEmpty() {
         return this.orderTables.isEmpty();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this)
+            return true;
+        if (!(o instanceof OrderTables)) {
+            return false;
+        }
+        OrderTables orderTables = (OrderTables) o;
+        return Objects.equals(this.orderTables, orderTables.orderTables);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(orderTables);
     }
 }

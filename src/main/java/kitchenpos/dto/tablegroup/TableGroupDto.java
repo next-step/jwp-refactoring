@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import kitchenpos.domain.table.OrderTables;
 import kitchenpos.domain.tablegroup.TableGroup;
 import kitchenpos.dto.table.OrderTableDto;
 
@@ -32,15 +33,15 @@ public class TableGroupDto {
         return new TableGroupDto(null, null, orderTables);
     }
 
-    public static TableGroupDto of(TableGroup tableGroup) {
-        if (tableGroup.getOrderTables() == null) {
+    public static TableGroupDto of(TableGroup tableGroup, OrderTables orderTables) {
+        if (orderTables == null) {
             return new TableGroupDto(tableGroup.getId(), tableGroup.getCreatedDate(), null);
         }
 
         List<OrderTableDto> tempOrderTables = new ArrayList<>();
 
-        for (int index = 0; index < tableGroup.getOrderTables().size(); index++ ) {
-            tempOrderTables.add(OrderTableDto.of(tableGroup.getOrderTables().get(index)));
+        for (int index = 0; index < orderTables.size(); index++ ) {
+            tempOrderTables.add(OrderTableDto.of(orderTables.get(index)));
         }
 
         return new TableGroupDto(tableGroup.getId(), tableGroup.getCreatedDate(), tempOrderTables);

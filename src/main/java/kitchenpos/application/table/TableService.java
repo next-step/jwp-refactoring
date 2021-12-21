@@ -9,6 +9,7 @@ import kitchenpos.domain.table.OrderTableRepository;
 import kitchenpos.dto.table.OrderTableDto;
 import kitchenpos.exception.table.NotFoundOrderTableException;
 import kitchenpos.vo.OrderTableId;
+import kitchenpos.vo.TableGroupId;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -64,5 +65,9 @@ public class TableService {
 
     public List<OrderTable> findAllByIdIn(List<Long> orderTableIds) {
         return orderTableRepository.findAllByIdIn(orderTableIds);
+    }
+
+    public List<OrderTable> findByTableGroupId(Long tableGroupId) {
+        return orderTableRepository.findAllByTableGroupId(TableGroupId.of(tableGroupId));
     }
 }

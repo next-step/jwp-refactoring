@@ -29,11 +29,11 @@ public class OrderTableDto {
     }
 
     public static OrderTableDto of(OrderTable orderTable) {
-        if (orderTable.getTableGroup() == null) {
+        if (orderTable.getTableGroupId() == null) {
             return new OrderTableDto(orderTable.getId(), null, orderTable.getNumberOfGuests(), orderTable.getEmpty());
         }
 
-        return new OrderTableDto(orderTable.getId(), orderTable.getTableGroup().getId(), orderTable.getNumberOfGuests(), orderTable.getEmpty());
+        return new OrderTableDto(orderTable.getId(), orderTable.getTableGroupId().value(), orderTable.getNumberOfGuests(), orderTable.getEmpty());
     }
 
     public Long getId() {

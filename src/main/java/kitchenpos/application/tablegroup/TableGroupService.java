@@ -39,7 +39,7 @@ public class TableGroupService {
 
         checkAllExistOfOrderTables(tableGroup.getOrderTables(), savedOrderTables);
 
-        return TableGroupDto.of(tableGroupRepository.save(TableGroup.of(savedOrderTables)));
+        return TableGroupDto.of(tableGroupRepository.save(TableGroup.of(savedOrderTables)), savedOrderTables);
     }
 
     private void checkAllExistOfOrderTables(final List<OrderTableDto> orderTables, final OrderTables savedOrderTables) {
@@ -50,14 +50,10 @@ public class TableGroupService {
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
-        TableGroup tableGroup = tableGroupRepository.findById(tableGroupId).orElseThrow();
-
-        final OrderTables orderTables = tableGroup.getOrderTables();
-
-        tableGroupValidator.validateForUnGroup(orderTables);
-
-        do {
-            orderTables.remove(0).unGroupTable();
-        } while(!orderTables.isEmpty());
+        OrderTables orderTables = tableGroupValidator.getComplateOrderTable(tableGroupId);
+        
+        for (int index = 0; index < orderTables.size(); index++){
+            orderTables.get(index).unGroupTable();
+        }            
     }
 }

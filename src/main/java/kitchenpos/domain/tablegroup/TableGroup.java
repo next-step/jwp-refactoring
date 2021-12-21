@@ -1,10 +1,8 @@
 package kitchenpos.domain.tablegroup;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 
 import javax.persistence.Column;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
@@ -19,6 +17,7 @@ import kitchenpos.domain.table.OrderTables;
 import kitchenpos.exception.table.HasOtherTableGroupException;
 import kitchenpos.exception.table.NotEmptyOrderTableException;
 import kitchenpos.exception.table.NotGroupingOrderTableCountException;
+import kitchenpos.vo.TableGroupId;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
@@ -31,15 +30,11 @@ public class TableGroup {
     @Column(name = "created_date", updatable = false)
     private LocalDateTime createdDate;
 
-    @Embedded
-    private OrderTables orderTables;
-
     protected TableGroup() {
     }
 
     private TableGroup(Long id) {
         this.id = id;
-        this.orderTables = OrderTables.of(new ArrayList<>());
     }
 
     public static TableGroup of(Long id, OrderTables orderTables) {
@@ -53,7 +48,7 @@ public class TableGroup {
         TableGroup tableGroup = new TableGroup(id);
 
         for (int index = 0; index < orderTables.size(); index++) {
-            orderTables.get(index).groupingTable(tableGroup);
+            orderTables.get(index).groupingTable(TableGroupId.of(tableGroup));
         }
 
         return tableGroup;
@@ -69,10 +64,6 @@ public class TableGroup {
 
     public LocalDateTime getCreatedDate() {
         return this.createdDate;
-    }
-
-    public OrderTables getOrderTables() {
-        return this.orderTables;
     }
 
     private static void checkHasTableGroup(final OrderTable orderTable) {

@@ -6,7 +6,6 @@ import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.assertj.core.api.Assertions;
 import org.assertj.core.util.Lists;
@@ -98,7 +97,7 @@ public class TableGroupServiceTest {
         // when
         // then
         Assertions.assertThatExceptionOfType(NotRegistedMenuOrderTableException.class)
-                    .isThrownBy(() -> tableGroupService.create(TableGroupDto.of(단체주문테이블)));
+                    .isThrownBy(() -> tableGroupService.create(TableGroupDto.of(단체주문테이블, OrderTables.of(List.of(치킨_주문_단체테이블, 치킨2_주문_단체테이블)))));
     }
 
     @DisplayName("단체지정 될 주문테이블이 이미 단체지정에 등록된 경우 예외가 발생된다.")
@@ -118,7 +117,7 @@ public class TableGroupServiceTest {
         // when
         // then
         Assertions.assertThatExceptionOfType(HasOtherTableGroupException.class)
-                    .isThrownBy(() -> tableGroupService.create(TableGroupDto.of(단체주문테이블)));
+                    .isThrownBy(() -> tableGroupService.create(TableGroupDto.of(단체주문테이블, OrderTables.of(List.of(치킨_주문_단체테이블, 치킨2_주문_단체테이블)))));
     }
 
     @DisplayName("단체지정이 해제된다.")
@@ -136,12 +135,13 @@ public class TableGroupServiceTest {
 
         TableGroup 단체주문테이블 = TableGroup.of(OrderTables.of(Lists.newArrayList(치킨_주문_단체테이블, 치킨2_주문_단체테이블)));
 
-        when(tableGroupRepository.findById(nullable(Long.class))).thenReturn(Optional.of(단체주문테이블));
+        when(tableGroupValidator.getComplateOrderTable(nullable(Long.class))).thenReturn(OrderTables.of(Lists.newArrayList(치킨_주문_단체테이블, 치킨2_주문_단체테이블)));
         
         // when
         tableGroupService.ungroup(단체주문테이블.getId());
 
         // then
-        Assertions.assertThat(단체주문테이블.getOrderTables().size()).isEqualTo(0);
+        Assertions.assertThat(치킨_주문_단체테이블.getTableGroupId()).isNull();
+        Assertions.assertThat(치킨2_주문_단체테이블.getTableGroupId()).isNull();
     }
 }
