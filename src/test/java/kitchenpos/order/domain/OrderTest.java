@@ -44,4 +44,21 @@ class OrderTest {
             .extracting("order")
             .containsExactlyElementsOf(Arrays.asList(order, order));
     }
+
+    @DisplayName("주문 상태 갱신은 계산 완료가 아니어야 가능하다.")
+    @Test
+    void changeOrderStatusCompletion() {
+        // given
+        OrderTable orderTable = new OrderTable(0, false);
+        List<OrderLineItem> orderLineItems = Arrays.asList(
+            OrderLineItem.of(null, 1),
+            OrderLineItem.of(null, 2));
+        Order order = Order.of(orderTable, orderLineItems);
+        order.changeOrderStatus(OrderStatus.COMPLETION);
+
+        // when && then
+        assertThatThrownBy(() -> order.changeOrderStatus(OrderStatus.COOKING))
+            .isInstanceOf(BadRequestException.class)
+            .hasMessage(CANNOT_CHANGE_STATUS.getMessage());
+    }
 }

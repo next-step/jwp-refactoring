@@ -89,11 +89,10 @@ public class Order {
     }
 
     public void changeOrderStatus(final OrderStatus orderStatus) {
+        if (Objects.equals(OrderStatus.COMPLETION, this.orderStatus)) {
+            throw new BadRequestException(CANNOT_CHANGE_STATUS);
+        }
         this.orderStatus = orderStatus;
-    }
-
-    public void changeOrderLineItems(final List<OrderLineItem> orderLineItems) {
-        this.orderLineItems = new OrderLineItems(orderLineItems);
     }
 
     @Override

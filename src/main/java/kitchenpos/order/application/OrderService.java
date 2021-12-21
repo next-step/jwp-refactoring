@@ -3,7 +3,6 @@ package kitchenpos.order.application;
 import static kitchenpos.common.exception.ExceptionMessage.*;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -14,7 +13,6 @@ import kitchenpos.common.exception.NotFoundException;
 import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
@@ -71,17 +69,8 @@ public class OrderService {
     @Transactional
     public OrderResponse changeOrderStatus(final Long orderId, final OrderStatusRequest orderStatusRequest) {
         final Order savedOrder = orderRepository.findById(orderId)
-            .orElseThrow(IllegalArgumentException::new);
-
-        if (Objects.equals(OrderStatus.COMPLETION, savedOrder.getOrderStatus())) {
-            throw new IllegalArgumentException();
-        }
-
+            .orElseThrow(() -> new NotFoundException(NOT_FOUND_DATA));
         savedOrder.changeOrderStatus(orderStatusRequest.getOrderStatus());
-
-        orderRepository.save(savedOrder);
-        savedOrder.changeOrderLineItems(orderLineItemRepository.findAllByOrderId(orderId));
-
         return new OrderResponse(savedOrder);
     }
 }
