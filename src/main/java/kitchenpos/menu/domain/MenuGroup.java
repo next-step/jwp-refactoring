@@ -20,16 +20,7 @@ public class MenuGroup {
     @Embedded
     private Name name;
 
-    public MenuGroup() {
-    }
-
-    public MenuGroup(String name) {
-        this(null, name);
-    }
-
-    public MenuGroup(Long id, String name) {
-        this.id = id;
-        this.name = new Name(name);
+    protected MenuGroup() {
     }
 
     public Long getId() {
