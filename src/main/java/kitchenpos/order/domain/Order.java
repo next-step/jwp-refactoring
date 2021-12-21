@@ -40,7 +40,7 @@ public class Order {
         this.orderedTime = orderedTime;
     }
 
-    private Order(OrderTable orderTable, OrderStatus orderStatus) {
+    public Order(OrderTable orderTable, OrderStatus orderStatus) {
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
     }
@@ -80,5 +80,22 @@ public class Order {
 
     public boolean isCompletion() {
         return Objects.equals(OrderStatus.COMPLETION, orderStatus);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Order order = (Order) o;
+        return Objects.equals(id, order.id)
+                && Objects.equals(orderTable, order.orderTable)
+                && orderStatus == order.orderStatus
+                && Objects.equals(orderedTime, order.orderedTime)
+                && Objects.equals(orderLineItems, order.orderLineItems);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, orderTable, orderStatus, orderedTime, orderLineItems);
     }
 }
