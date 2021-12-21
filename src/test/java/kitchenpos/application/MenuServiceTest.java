@@ -8,12 +8,12 @@ import static org.mockito.BDDMockito.given;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.menu.Menu;
 import kitchenpos.menu.MenuProduct;
+import kitchenpos.menu.MenuRepository;
 import kitchenpos.product.domain.Product;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,7 +28,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class MenuServiceTest {
 
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
 
     @Mock
     private MenuGroupDao menuGroupDao;
@@ -65,7 +65,7 @@ public class MenuServiceTest {
         given(menuGroupDao.existsById(any())).willReturn(true);
         given(productDao.findById(1L)).willReturn(Optional.of(product1));
         given(productDao.findById(2L)).willReturn(Optional.of(product2));
-        given(menuDao.save(menu)).willReturn(menu);
+        given(menuRepository.save(menu)).willReturn(menu);
         given(menuProductDao.save(menuProduct1)).willReturn(menuProduct1);
         given(menuProductDao.save(menuProduct2)).willReturn(menuProduct2);
 
@@ -136,7 +136,7 @@ public class MenuServiceTest {
         Menu menu2 = Menu.of("후라이드+후라이드", BigDecimal.valueOf(33000), 1L,
             Lists.newArrayList(menuProduct3));
 
-        given(menuDao.findAll()).willReturn(Lists.newArrayList(menu1, menu2));
+        given(menuRepository.findAll()).willReturn(Lists.newArrayList(menu1, menu2));
         given(menuProductDao.findAllByMenuId(any())).willReturn(
             Lists.newArrayList(menuProduct1, menuProduct2),
             Lists.newArrayList(menuProduct3));
