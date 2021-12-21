@@ -9,6 +9,8 @@ import java.util.Objects;
 
 @Embeddable
 public class Price {
+    private static final int ZERO = 0;
+
     @Column
     private BigDecimal price;
 
@@ -23,7 +25,7 @@ public class Price {
     }
 
     private boolean isGreaterThanZero(BigDecimal price) {
-        return price.compareTo(BigDecimal.ZERO) >= 0;
+        return price.compareTo(BigDecimal.ZERO) >= ZERO;
     }
 
     public static Price of(BigDecimal price) {
