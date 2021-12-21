@@ -33,11 +33,8 @@ public class TableGroupService {
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
         final List<Long> orderTableIds = tableGroupRequest.getOrderTableIds();
         final OrderTables savedOrderTables = new OrderTables(orderTableRepository.findAllByIdIn(orderTableIds));
-        savedOrderTables.validateOrderTable();
         final TableGroup tableGroup = tableGroupRequest.toTableGroup(savedOrderTables);
-        savedOrderTables.initTableGroup(tableGroup);
-        final TableGroup savedTableGroup = tableGroupRepository.save(tableGroup);
-        return TableGroupResponse.of(savedTableGroup);
+        return TableGroupResponse.of(tableGroupRepository.save(tableGroup));
     }
 
     @Transactional

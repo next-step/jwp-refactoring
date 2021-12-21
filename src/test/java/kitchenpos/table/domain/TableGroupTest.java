@@ -26,7 +26,8 @@ public class TableGroupTest {
     @DisplayName("단체 지정 해제")
     public void ungroupTest() {
         // given
-        OrderTables orderTables = new OrderTables(Arrays.asList(빈자리, 빈자리));
+        OrderTable 단체자리 = new OrderTable(4, true);
+        OrderTables orderTables = new OrderTables(Arrays.asList(단체자리, 단체자리));
         TableGroup 단체테이블 = new TableGroup(orderTables);
         // when
         단체테이블.ungroup();

@@ -22,23 +22,24 @@ public class OrderTables {
     }
 
     public OrderTables(final List<OrderTable> orderTables) {
+        validateOrderTable(orderTables);
         this.orderTables = orderTables;
     }
 
-    public void validateOrderTable() {
-        if (isInvalidTableSize()) {
+    public void validateOrderTable(final List<OrderTable> orderTables) {
+        if (isInvalidTableSize(orderTables)) {
             throw new InvalidTableGroupSizeException();
         }
-        if (validateOrderTables()) {
+        if (validateOrderTables(orderTables)) {
             throw new InvalidOrderTableException();
         }
     }
 
-    private boolean isInvalidTableSize() {
+    private boolean isInvalidTableSize(final List<OrderTable> orderTables) {
         return CollectionUtils.isEmpty(orderTables) || orderTables.size() < MIN_TABLE_SIZE;
     }
 
-    private boolean validateOrderTables() {
+    private boolean validateOrderTables(final List<OrderTable> orderTables) {
         return orderTables.stream()
                 .anyMatch(this::isNotEmptyOrNonNullTableGroup);
     }

@@ -34,6 +34,7 @@ public class TableGroup {
     public TableGroup(OrderTables orderTables) {
         this.createdDate = LocalDateTime.now();
         this.orderTables = orderTables;
+        orderTables.initTableGroup(this);
     }
 
     public Long getId() {

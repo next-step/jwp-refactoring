@@ -41,7 +41,7 @@ public class TableIntegratedTest {
         // then
         // 테이블 리스트가 정상적으로 조회된다.
         assertAll(
-                () -> assertThat(savedTables).hasSize(9),
+                () -> assertThat(savedTables).hasSize(10),
                 () -> assertThat(savedTables).contains(savedTable)
         );
 
