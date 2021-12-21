@@ -4,8 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 
 import java.util.List;
-import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.menu.MenuGroup;
+import kitchenpos.menu.MenuGroupRepository;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,7 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class MenuGroupServiceTest {
 
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
 
     @InjectMocks
     private MenuGroupService menuGroupService;
@@ -30,7 +30,7 @@ class MenuGroupServiceTest {
         MenuGroup menuGroup = MenuGroup.of("추천메뉴");
         MenuGroup savedMenuGroup = new MenuGroup(1L, "추천메뉴");
 
-        given(menuGroupDao.save(menuGroup))
+        given(menuGroupRepository.save(menuGroup))
             .willReturn(savedMenuGroup);
 
         // when
@@ -48,7 +48,7 @@ class MenuGroupServiceTest {
         MenuGroup savedMenuGroup1 = new MenuGroup(1L, "추천메뉴");
         MenuGroup savedMenuGroup2 = new MenuGroup(2L, "세트메뉴");
 
-        given(menuGroupDao.findAll())
+        given(menuGroupRepository.findAll())
             .willReturn(Lists.newArrayList(savedMenuGroup1, savedMenuGroup2));
 
         // when

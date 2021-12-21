@@ -69,7 +69,7 @@
     - [X] MenuGroup 엔티티 변환
     - [X] Menu 엔티티 변환
     - [X] MenuProduct 엔티티 변환
-  - [ ] MenuGroupRepository 사용하도록 수정
+  - [X] MenuGroupRepository 사용하도록 수정
   - [ ] MenuRepository 사용하도록 수정
   - [ ] MenuProductRepository 사용하도록 수정
 - [ ] 테이블 관리 리팩토링

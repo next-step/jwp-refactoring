@@ -8,10 +8,10 @@ import static org.mockito.BDDMockito.given;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.menu.Menu;
+import kitchenpos.menu.MenuGroupRepository;
 import kitchenpos.menu.MenuProduct;
 import kitchenpos.menu.MenuRepository;
 import kitchenpos.product.domain.Product;
@@ -31,7 +31,7 @@ public class MenuServiceTest {
     private MenuRepository menuRepository;
 
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
 
     @Mock
     private MenuProductDao menuProductDao;
@@ -62,7 +62,7 @@ public class MenuServiceTest {
         Menu menu = Menu.of("후라이드+양념", BigDecimal.valueOf(34000), 1L,
             Lists.newArrayList(menuProduct1, menuProduct2));
 
-        given(menuGroupDao.existsById(any())).willReturn(true);
+        given(menuGroupRepository.existsById(any())).willReturn(true);
         given(productDao.findById(1L)).willReturn(Optional.of(product1));
         given(productDao.findById(2L)).willReturn(Optional.of(product2));
         given(menuRepository.save(menu)).willReturn(menu);
@@ -115,7 +115,7 @@ public class MenuServiceTest {
         Menu menu = Menu.of("후라이드+양념", BigDecimal.valueOf(36000), 1L,
             Lists.newArrayList(menuProduct1, menuProduct2));
 
-        given(menuGroupDao.existsById(any())).willReturn(true);
+        given(menuGroupRepository.existsById(any())).willReturn(true);
         given(productDao.findById(1L)).willReturn(Optional.of(product1));
         given(productDao.findById(2L)).willReturn(Optional.of(product2));
 
