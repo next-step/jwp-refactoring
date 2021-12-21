@@ -1,40 +1,39 @@
 package kitchenpos.domain;
 
+import javax.persistence.*;
+
+@Entity
 public class OrderTable {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long tableGroupId;
-    private int numberOfGuests;
-    private boolean empty;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "table_group_id", foreignKey = @ForeignKey(name = "fk_order_table_table_group"))
+    private TableGroup tableGroup;
+
+    @Column(nullable = false)
+    private Integer numberOfGuests;
+
+    @Column(nullable = false)
+    private Boolean empty;
+
+    protected OrderTable() {
+    }
 
     public Long getId() {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
+    public TableGroup getTableGroup() {
+        return tableGroup;
     }
 
-    public Long getTableGroupId() {
-        return tableGroupId;
-    }
-
-    public void setTableGroupId(final Long tableGroupId) {
-        this.tableGroupId = tableGroupId;
-    }
-
-    public int getNumberOfGuests() {
+    public Integer getNumberOfGuests() {
         return numberOfGuests;
     }
 
-    public void setNumberOfGuests(final int numberOfGuests) {
-        this.numberOfGuests = numberOfGuests;
-    }
-
-    public boolean isEmpty() {
+    public Boolean isEmpty() {
         return empty;
-    }
-
-    public void setEmpty(final boolean empty) {
-        this.empty = empty;
     }
 }

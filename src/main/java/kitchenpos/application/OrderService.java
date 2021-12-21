@@ -46,33 +46,34 @@ public class OrderService {
         }
 
         final List<Long> menuIds = orderLineItems.stream()
-                .map(OrderLineItem::getMenuId)
+                .map(it -> it.getMenu().getId())
                 .collect(Collectors.toList());
 
         if (orderLineItems.size() != menuDao.countByIdIn(menuIds)) {
             throw new IllegalArgumentException();
         }
 
-        final OrderTable orderTable = orderTableDao.findById(order.getOrderTableId())
+        final OrderTable orderTable = orderTableDao.findById(order.getOrderTable().getId())
                 .orElseThrow(IllegalArgumentException::new);
 
         if (orderTable.isEmpty()) {
             throw new IllegalArgumentException();
         }
 
-        order.setOrderTableId(orderTable.getId());
-        order.setOrderStatus(OrderStatus.COOKING.name());
-        order.setOrderedTime(LocalDateTime.now());
+
+//        order.setOrderTableId(orderTable.getId());
+//        order.setOrderStatus(OrderStatus.COOKING.name());
+//        order.setOrderedTime(LocalDateTime.now());
 
         final Order savedOrder = orderDao.save(order);
 
         final Long orderId = savedOrder.getId();
         final List<OrderLineItem> savedOrderLineItems = new ArrayList<>();
         for (final OrderLineItem orderLineItem : orderLineItems) {
-            orderLineItem.setOrderId(orderId);
+            //orderLineItem.setOrderId(orderId);
             savedOrderLineItems.add(orderLineItemDao.save(orderLineItem));
         }
-        savedOrder.setOrderLineItems(savedOrderLineItems);
+       // savedOrder.setOrderLineItems(savedOrderLineItems);
 
         return savedOrder;
     }
@@ -80,9 +81,9 @@ public class OrderService {
     public List<Order> list() {
         final List<Order> orders = orderDao.findAll();
 
-        for (final Order order : orders) {
-            order.setOrderLineItems(orderLineItemDao.findAllByOrderId(order.getId()));
-        }
+//        for (final Order order : orders) {
+//            order.setOrderLineItems(orderLineItemDao.findAllByOrderId(order.getId()));
+//        }
 
         return orders;
     }
@@ -92,16 +93,16 @@ public class OrderService {
         final Order savedOrder = orderDao.findById(orderId)
                 .orElseThrow(IllegalArgumentException::new);
 
-        if (Objects.equals(OrderStatus.COMPLETION.name(), savedOrder.getOrderStatus())) {
-            throw new IllegalArgumentException();
-        }
-
-        final OrderStatus orderStatus = OrderStatus.valueOf(order.getOrderStatus());
-        savedOrder.setOrderStatus(orderStatus.name());
-
-        orderDao.save(savedOrder);
-
-        savedOrder.setOrderLineItems(orderLineItemDao.findAllByOrderId(orderId));
+//        if (Objects.equals(OrderStatus.COMPLETION.name(), savedOrder.getOrderStatus())) {
+//            throw new IllegalArgumentException();
+//        }
+//
+//        final OrderStatus orderStatus = OrderStatus.valueOf(order.getOrderStatus());
+//        savedOrder.setOrderStatus(orderStatus.name());
+//
+//        orderDao.save(savedOrder);
+//
+//        savedOrder.setOrderLineItems(orderLineItemDao.findAllByOrderId(orderId));
 
         return savedOrder;
     }

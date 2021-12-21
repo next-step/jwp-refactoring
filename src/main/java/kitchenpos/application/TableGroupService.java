@@ -46,23 +46,23 @@ public class TableGroupService {
             throw new IllegalArgumentException();
         }
 
-        for (final OrderTable savedOrderTable : savedOrderTables) {
-            if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroupId())) {
-                throw new IllegalArgumentException();
-            }
-        }
+//        for (final OrderTable savedOrderTable : savedOrderTables) {
+//            if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroupId())) {
+//                throw new IllegalArgumentException();
+//            }
+//        }
 
-        tableGroup.setCreatedDate(LocalDateTime.now());
+//        tableGroup.setCreatedDate(LocalDateTime.now());
 
         final TableGroup savedTableGroup = tableGroupDao.save(tableGroup);
 
-        final Long tableGroupId = savedTableGroup.getId();
-        for (final OrderTable savedOrderTable : savedOrderTables) {
-            savedOrderTable.setTableGroupId(tableGroupId);
-            savedOrderTable.setEmpty(false);
-            orderTableDao.save(savedOrderTable);
-        }
-        savedTableGroup.setOrderTables(savedOrderTables);
+//        final Long tableGroupId = savedTableGroup.getId();
+//        for (final OrderTable savedOrderTable : savedOrderTables) {
+//            savedOrderTable.setTableGroupId(tableGroupId);
+//            savedOrderTable.setEmpty(false);
+//            orderTableDao.save(savedOrderTable);
+//        }
+//        savedTableGroup.setOrderTables(savedOrderTables);
 
         return savedTableGroup;
     }
@@ -80,9 +80,9 @@ public class TableGroupService {
             throw new IllegalArgumentException();
         }
 
-        for (final OrderTable orderTable : orderTables) {
-            orderTable.setTableGroupId(null);
-            orderTableDao.save(orderTable);
-        }
+//        for (final OrderTable orderTable : orderTables) {
+//            orderTable.setTableGroupId(null);
+//            orderTableDao.save(orderTable);
+//        }
     }
 }

@@ -1,40 +1,42 @@
 package kitchenpos.domain;
 
+
+import javax.persistence.*;
+
+import static javax.persistence.FetchType.LAZY;
+
+@Entity
 public class OrderLineItem {
-    private Long seq;
-    private Long orderId;
-    private Long menuId;
-    private long quantity;
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    public Long getSeq() {
-        return seq;
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "order_id", foreignKey = @ForeignKey(name = "fk_order_line_item_orders"))
+    private Order order;
+
+    @OneToOne(fetch = LAZY)
+    @JoinColumn(name = "menu_id", foreignKey = @ForeignKey(name = "fk_order_line_item_menu"))
+    private Menu menu;
+
+    @Embedded
+    private Quantity quantity;
+
+    protected OrderLineItem() {
     }
 
-    public void setSeq(final Long seq) {
-        this.seq = seq;
+    public Long getId() {
+        return id;
     }
 
-    public Long getOrderId() {
-        return orderId;
+    public Order getOrder() {
+        return order;
     }
 
-    public void setOrderId(final Long orderId) {
-        this.orderId = orderId;
+    public Menu getMenu() {
+        return menu;
     }
 
-    public Long getMenuId() {
-        return menuId;
-    }
-
-    public void setMenuId(final Long menuId) {
-        this.menuId = menuId;
-    }
-
-    public long getQuantity() {
+    public Quantity getQuantity() {
         return quantity;
-    }
-
-    public void setQuantity(final long quantity) {
-        this.quantity = quantity;
     }
 }

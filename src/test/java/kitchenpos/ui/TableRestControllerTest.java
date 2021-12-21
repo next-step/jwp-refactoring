@@ -44,11 +44,11 @@ class TableRestControllerTest {
 
     @BeforeEach
     void setUp() {
-        orderTable = new OrderTable();
-        orderTable.setId(1L);
-        orderTable.setEmpty(false);
-        orderTable.setTableGroupId(1L);
-        orderTable.setNumberOfGuests(2);
+//        orderTable = new OrderTable();
+//        orderTable.setId(1L);
+//        orderTable.setEmpty(false);
+//        orderTable.setTableGroupId(1L);
+//        orderTable.setNumberOfGuests(2);
     }
 
     @Test
@@ -96,7 +96,7 @@ class TableRestControllerTest {
     public void putOrderTableEmpty() throws Exception {
         // given
         ObjectMapper mapper = new ObjectMapper();
-        orderTable.setEmpty(true);
+        //orderTable.setEmpty(true);
         given(tableService.changeEmpty(anyLong(), any(OrderTable.class))).willReturn(orderTable);
 
         // when
@@ -117,7 +117,7 @@ class TableRestControllerTest {
         // given
         final int CHANGED_GUEST_NUMBERS = 10;
         ObjectMapper mapper = new ObjectMapper();
-        orderTable.setNumberOfGuests(CHANGED_GUEST_NUMBERS);
+        //orderTable.setNumberOfGuests(CHANGED_GUEST_NUMBERS);
         given(tableService.changeNumberOfGuests(anyLong(), any(OrderTable.class))).willReturn(orderTable);
 
         // when

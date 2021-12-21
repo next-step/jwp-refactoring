@@ -44,22 +44,22 @@ class TableGroupRestControllerTest {
 
     @BeforeEach
     void setUp() {
-        tableGroup = new TableGroup();
-        tableGroup.setId(1L);
-
-        OrderTable orderTable1 = new OrderTable();
-        orderTable1.setId(1L);
-        orderTable1.setEmpty(false);
-        orderTable1.setTableGroupId(tableGroup.getId());
-        orderTable1.setNumberOfGuests(2);
-
-        OrderTable orderTable2 = new OrderTable();
-        orderTable2.setId(2L);
-        orderTable2.setEmpty(false);
-        orderTable2.setTableGroupId(tableGroup.getId());
-        orderTable2.setNumberOfGuests(4);
-
-        tableGroup.setOrderTables(Arrays.asList(orderTable1, orderTable2));
+//        tableGroup = new TableGroup();
+//        tableGroup.setId(1L);
+//
+//        OrderTable orderTable1 = new OrderTable();
+//        orderTable1.setId(1L);
+//        orderTable1.setEmpty(false);
+//        orderTable1.setTableGroupId(tableGroup.getId());
+//        orderTable1.setNumberOfGuests(2);
+//
+//        OrderTable orderTable2 = new OrderTable();
+//        orderTable2.setId(2L);
+//        orderTable2.setEmpty(false);
+//        orderTable2.setTableGroupId(tableGroup.getId());
+//        orderTable2.setNumberOfGuests(4);
+//
+//        tableGroup.setOrderTables(Arrays.asList(orderTable1, orderTable2));
     }
 
     @Test

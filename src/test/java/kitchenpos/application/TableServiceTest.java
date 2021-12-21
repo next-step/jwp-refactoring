@@ -78,7 +78,7 @@ class TableServiceTest {
     public void changeTableStatus() {
         // given
         boolean before = orderTable.isEmpty();
-        orderTable.setEmpty(!before);
+//        orderTable.setEmpty(!before);
         given(orderTableDao.findById(anyLong())).willReturn(Optional.of(orderTable));
         given(orderDao.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).willReturn(false);
         given(orderTableDao.save(any(OrderTable.class))).willReturn(orderTable);
@@ -101,7 +101,7 @@ class TableServiceTest {
     @DisplayName("테이블이 그룹 테이블인 경우 상태를 변경할 수 없다.")
     public void changeTableStatusFailByGroupTable() throws Exception {
         // given
-        orderTable.setTableGroupId(1L);
+//        orderTable.setTableGroupId(1L);
         given(orderTableDao.findById(anyLong())).willReturn(Optional.of(orderTable));
 
         // then
@@ -124,7 +124,7 @@ class TableServiceTest {
     public void changeNumberOfGuests() throws Exception {
         // given
         int before = orderTable.getNumberOfGuests();
-        orderTable.setNumberOfGuests(before + 1);
+//        orderTable.setNumberOfGuests(before + 1);
         given(orderTableDao.findById(anyLong())).willReturn(Optional.of(orderTable));
         given(orderTableDao.save(any(OrderTable.class))).willReturn(orderTable);
 
@@ -141,7 +141,7 @@ class TableServiceTest {
     @ValueSource(ints = {Integer.MIN_VALUE, -10, -5, -1})
     public void changeNumberOfGuestsByInvalidNumber(int candidate) {
         //given
-        orderTable.setNumberOfGuests(candidate);
+//        orderTable.setNumberOfGuests(candidate);
 
         //then
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTable.getId(), orderTable)).isInstanceOf(IllegalArgumentException.class);
@@ -161,7 +161,7 @@ class TableServiceTest {
     @DisplayName("빈 테이블의 사용자 수를 변경할 수 없다.")
     public void changeNumberOfGuestsByEmptyTable() throws Exception {
         // given
-        orderTable.setEmpty(true);
+//        orderTable.setEmpty(true);
         given(orderTableDao.findById(anyLong())).willReturn(Optional.of(orderTable));
 
         // then

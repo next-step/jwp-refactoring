@@ -46,23 +46,23 @@ class OrderRestControllerTest {
 
     @BeforeEach
     void setUp() {
-        OrderLineItem orderLineItem1 = new OrderLineItem();
-        orderLineItem1.setSeq(1L);
-        orderLineItem1.setOrderId(1L);
-        orderLineItem1.setMenuId(1L);
-        orderLineItem1.setQuantity(1);
-
-        OrderLineItem orderLineItem2 = new OrderLineItem();
-        orderLineItem2.setSeq(2L);
-        orderLineItem2.setOrderId(2L);
-        orderLineItem2.setMenuId(2L);
-        orderLineItem2.setQuantity(2);
-        List<OrderLineItem> orderLineItems = Arrays.asList(orderLineItem1, orderLineItem2);
-        order = new Order();
-        order.setId(1L);
-        order.setOrderStatus("COOKING");
-        order.setOrderLineItems(orderLineItems);
-        order.setOrderTableId(2L);
+//        OrderLineItem orderLineItem1 = new OrderLineItem();
+//        orderLineItem1.setSeq(1L);
+//        orderLineItem1.setOrderId(1L);
+//        orderLineItem1.setMenuId(1L);
+//        orderLineItem1.setQuantity(1);
+//
+//        OrderLineItem orderLineItem2 = new OrderLineItem();
+//        orderLineItem2.setSeq(2L);
+//        orderLineItem2.setOrderId(2L);
+//        orderLineItem2.setMenuId(2L);
+//        orderLineItem2.setQuantity(2);
+//        List<OrderLineItem> orderLineItems = Arrays.asList(orderLineItem1, orderLineItem2);
+//        order = new Order();
+//        order.setId(1L);
+//        order.setOrderStatus("COOKING");
+//        order.setOrderLineItems(orderLineItems);
+//        order.setOrderTableId(2L);
     }
 
     @Test
@@ -116,7 +116,7 @@ class OrderRestControllerTest {
         // given
         ObjectMapper mapper = new ObjectMapper();
         given(orderService.changeOrderStatus(anyLong(), any(Order.class))).willReturn(order);
-        order.setOrderStatus("CHANGE_STATUS");
+//        order.setOrderStatus("CHANGE_STATUS");
 
         // when
         ResultActions actions = mockMvc.perform(

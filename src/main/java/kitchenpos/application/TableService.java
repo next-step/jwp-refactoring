@@ -23,7 +23,7 @@ public class TableService {
 
     @Transactional
     public OrderTable create(final OrderTable orderTable) {
-        orderTable.setTableGroupId(null);
+        //orderTable.setTableGroupId(null);
 
         return orderTableDao.save(orderTable);
     }
@@ -37,16 +37,16 @@ public class TableService {
         final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
 
-        if (Objects.nonNull(savedOrderTable.getTableGroupId())) {
-            throw new IllegalArgumentException();
-        }
+//        if (Objects.nonNull(savedOrderTable.getTableGroupId())) {
+//            throw new IllegalArgumentException();
+//        }
 
         if (orderDao.existsByOrderTableIdAndOrderStatusIn(
                 orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
             throw new IllegalArgumentException();
         }
 
-        savedOrderTable.setEmpty(orderTable.isEmpty());
+//        savedOrderTable.setEmpty(orderTable.isEmpty());
 
         return orderTableDao.save(savedOrderTable);
     }
@@ -66,7 +66,7 @@ public class TableService {
             throw new IllegalArgumentException();
         }
 
-        savedOrderTable.setNumberOfGuests(numberOfGuests);
+//        savedOrderTable.setNumberOfGuests(numberOfGuests);
 
         return orderTableDao.save(savedOrderTable);
     }

@@ -11,11 +11,11 @@ import kitchenpos.domain.OrderLineItem;
  */
 public class OrderLineItemFixtures {
     public static OrderLineItem createOrderLineItem(Long seq, Long orderId, Long menuId, long quantity) {
-        OrderLineItem orderLineItem = new OrderLineItem();
-        orderLineItem.setSeq(seq);
-        orderLineItem.setOrderId(orderId);
-        orderLineItem.setMenuId(menuId);
-        orderLineItem.setQuantity(quantity);
-        return orderLineItem;
+//        OrderLineItem orderLineItem = new OrderLineItem();
+//        orderLineItem.setSeq(seq);
+//        orderLineItem.setOrderId(orderId);
+//        orderLineItem.setMenuId(menuId);
+//        orderLineItem.setQuantity(quantity);
+        return null;
     }
 }

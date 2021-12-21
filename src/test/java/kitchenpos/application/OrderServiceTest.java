@@ -116,7 +116,7 @@ public class OrderServiceTest {
     @DisplayName("주문정보가 있지 않은 경우 등록할 수 없다.")
     public void createFailByNotExistOrderLineItem() throws Exception {
         // given
-        order.setOrderLineItems(null);
+//        order.setOrderLineItems(null);
 
         // then
         assertThatThrownBy(() -> orderService.create(order)).isInstanceOf(IllegalArgumentException.class);
@@ -142,7 +142,7 @@ public class OrderServiceTest {
     @DisplayName("빈 테이블인 경우 등록할 수 없다.")
     public void createFailByEmptyTable() throws Exception {
         // given
-        orderTable.setEmpty(true);
+//        orderTable.setEmpty(true);
         given(menuDao.countByIdIn(anyList())).willReturn((long) order.getOrderLineItems().size());
         given(orderTableDao.findById(anyLong())).willReturn(Optional.of(orderTable));
 
@@ -154,7 +154,7 @@ public class OrderServiceTest {
     @DisplayName("주문 상태를 변경할 수 있다")
     public void changeOrderStatus() throws Exception {
         // given
-        order.setOrderStatus(OrderStatus.MEAL.name());
+//        order.setOrderStatus(OrderStatus.MEAL.name());
         given(orderDao.findById(anyLong())).willReturn(Optional.of(order));
         given(orderDao.save(any(Order.class))).willReturn(order);
 
@@ -170,7 +170,7 @@ public class OrderServiceTest {
     @DisplayName("주문이 존재하지 않은 경우 주문 상태를 변경할 수 없다.")
     public void changeOrderStatusFailByUnknownOrder() throws Exception {
         // given
-        order.setOrderStatus(OrderStatus.MEAL.name());
+//        order.setOrderStatus(OrderStatus.MEAL.name());
 
         // then
         assertThatThrownBy(() -> orderService.changeOrderStatus(this.order.getId(), this.order)).isInstanceOf(IllegalArgumentException.class);
@@ -180,7 +180,7 @@ public class OrderServiceTest {
     @DisplayName("주문상태가 완료인 경우 변경할 수 없다.")
     public void changeOrderStatusFailByOrderStatus() throws Exception {
         // given
-        order.setOrderStatus(OrderStatus.COMPLETION.name());
+//        order.setOrderStatus(OrderStatus.COMPLETION.name());
         given(orderDao.findById(anyLong())).willReturn(Optional.of(order));
 
         // then

@@ -15,10 +15,10 @@ import java.util.List;
  */
 public class TableGroupFixtures {
     public static TableGroup createTableGroup(Long id, LocalDateTime createdDate, List<OrderTable> orderTables) {
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.setId(id);
-        tableGroup.setCreatedDate(createdDate);
-        tableGroup.setOrderTables(orderTables);
-        return tableGroup;
+//        TableGroup tableGroup = new TableGroup();
+//        tableGroup.setId(id);
+//        tableGroup.setCreatedDate(createdDate);
+//        tableGroup.setOrderTables(orderTables);
+        return null;
     }
 }

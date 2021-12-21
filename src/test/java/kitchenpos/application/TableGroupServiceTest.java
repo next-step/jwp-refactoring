@@ -80,7 +80,7 @@ class TableGroupServiceTest {
     @DisplayName("테이블 개수가 2개보다 작은 경우 등록할 수 없다.")
     public void createFailByTables() throws Exception {
         // given
-        tableGroup.setOrderTables(Lists.newArrayList(orderTableFirst));
+//        tableGroup.setOrderTables(Lists.newArrayList(orderTableFirst));
 
         // then
         assertThatThrownBy(() -> tableGroupService.create(tableGroup)).isInstanceOf(IllegalArgumentException.class);
@@ -96,7 +96,7 @@ class TableGroupServiceTest {
     @Test
     @DisplayName("테이블이 비워있지 않으면 등록할 수 없다.")
     public void createFailByUsingTable() throws Exception {
-        orderTableFirst.setEmpty(false);
+//        orderTableFirst.setEmpty(false);
         given(orderTableDao.findAllByIdIn(anyList())).willReturn(tableGroup.getOrderTables());
         // then
         assertThatThrownBy(() -> tableGroupService.create(tableGroup)).isInstanceOf(IllegalArgumentException.class);
@@ -106,7 +106,7 @@ class TableGroupServiceTest {
     @DisplayName("테이블이 비워있지 않으면 등록할 수 없다.")
     public void createFailByAlreadyGrouped() throws Exception {
         // given
-        orderTableFirst.setTableGroupId(tableGroup.getId());
+//        orderTableFirst.setTableGroupId(tableGroup.getId());
         given(orderTableDao.findAllByIdIn(anyList())).willReturn(tableGroup.getOrderTables());
 
         // then
