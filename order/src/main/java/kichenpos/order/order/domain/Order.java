@@ -77,7 +77,7 @@ public class Order {
         return orderLineItems.list();
     }
 
-    public void changeStatus(OrderStatus status) {
+    void changeStatus(OrderStatus status) {
         Assert.notNull(status, "변경하려는 상태는 필수입니다.");
         if (isCompleted()) {
             throw new InvalidStatusException(String.format("완료된 주문(%s)의 상태를 변경할 수 없습니다.", this));

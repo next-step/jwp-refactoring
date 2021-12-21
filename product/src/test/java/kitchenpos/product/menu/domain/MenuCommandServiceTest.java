@@ -35,5 +35,4 @@ class MenuCommandServiceTest {
         //then
         verify(menuRepository, only()).save(이십원_후라이드치킨_두마리세트);
     }
-
 }

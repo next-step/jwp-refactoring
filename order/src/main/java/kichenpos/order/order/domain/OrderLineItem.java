@@ -86,7 +86,7 @@ public class OrderLineItem {
         return "OrderLineItem{" +
             "seq=" + seq +
             ", quantity=" + quantity +
-            ", kitchenpos.product.menu=" + menu +
+            ", menu=" + menu +
             '}';
     }
 }

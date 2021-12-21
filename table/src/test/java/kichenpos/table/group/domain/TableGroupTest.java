@@ -6,6 +6,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatNoException;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -65,9 +67,9 @@ class TableGroupTest {
     @Test
     @DisplayName("하나라도 주문된 상태라면 그룹 해제 불가능")
     void ungroup_anyCooking_thrownInvalidStatusException() {
-        OrderTable 빈_두명_테이블 = 빈_두명_테이블();
+        OrderTable 빈_두명_테이블 = spy(빈_두명_테이블());
         TableGroup tableGroup = TableGroup.from(Arrays.asList(빈_두명_테이블, 빈_세명_테이블()));
-        빈_두명_테이블.ordered();
+        when(빈_두명_테이블.isOrdered()).thenReturn(true);
 
         //when
         ThrowingCallable ungroupCallable = tableGroup::ungroup;

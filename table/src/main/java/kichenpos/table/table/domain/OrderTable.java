@@ -66,7 +66,7 @@ public class OrderTable {
         return numberOfGuests;
     }
 
-    public void changeNumberOfGuests(Headcount numberOfGuests) {
+    void changeNumberOfGuests(Headcount numberOfGuests) {
         if (status.isEmpty()) {
             throw new InvalidStatusException(
                 String.format("비어있는 주문 테이블(%s)의 방문한 손님 수를 변경할 수 없습니다.", this));
@@ -95,7 +95,7 @@ public class OrderTable {
         tableGroup = null;
     }
 
-    public void changeEmpty(boolean empty) {
+    void changeEmpty(boolean empty) {
         validateGroupAndOrdered();
         if (empty) {
             this.status = CustomerStatus.EMPTY;
@@ -104,14 +104,14 @@ public class OrderTable {
         this.status = CustomerStatus.SEATED;
     }
 
-    public void ordered() {
+    void ordered() {
         if (this.status.isEmpty()) {
             throw new InvalidStatusException(String.format("비어있는 테이블(%s)에서 주문을 받을 수 없습니다.", this));
         }
         this.status = CustomerStatus.ORDERED;
     }
 
-    public void finish() {
+    void finish() {
         if (isNotOrdered()) {
             throw new InvalidStatusException(
                 String.format("주문 받지 않은 테이블(%s)의 상태를 완료로 변경할 수 없습니다.", this));

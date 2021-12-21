@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class ProductService {
 
-
     private final ProductCommandService commandService;
     private final ProductQueryService queryService;
 
