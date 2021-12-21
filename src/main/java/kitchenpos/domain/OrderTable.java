@@ -18,12 +18,21 @@ public class OrderTable {
     @Column(nullable = false)
     private boolean empty;
 
+    @OneToOne(mappedBy = "orderTable")
+    private Order order;
+
+
     protected OrderTable() {
     }
 
     public OrderTable(Integer numberOfGuests, boolean empty) {
         this.numberOfGuests = NumberOfGuests.of(numberOfGuests);
         this.empty = empty;
+    }
+
+    public OrderTable addOrder(Order order) {
+        this.order = order;
+        return this;
     }
 
     public Long getId() {
@@ -40,5 +49,13 @@ public class OrderTable {
 
     public boolean isEmpty() {
         return empty;
+    }
+
+    public Order getOrder() {
+        return order;
+    }
+
+    public boolean isOrderFinished() {
+        return order.isCompleted();
     }
 }

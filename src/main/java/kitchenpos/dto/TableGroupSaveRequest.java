@@ -1,5 +1,7 @@
 package kitchenpos.dto;
 
+import java.util.List;
+
 /**
  * packageName : kitchenpos.dto
  * fileName : TableGroupSaveRequest
@@ -8,4 +10,16 @@ package kitchenpos.dto;
  * description :
  */
 public class TableGroupSaveRequest {
+    private List<OrderTableRequest> orderTables;
+
+    public TableGroupSaveRequest() {
+    }
+
+    public TableGroupSaveRequest(List<OrderTableRequest> orderTables) {
+        this.orderTables = orderTables;
+    }
+
+    public List<OrderTableRequest> getOrderTables() {
+        return orderTables;
+    }
 }

@@ -2,6 +2,7 @@ package kitchenpos.domain;
 
 import kitchenpos.exception.InvalidTableException;
 import kitchenpos.exception.OrderLineItemNotFoundException;
+import kitchenpos.exception.OrderStatusUpdateException;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -35,7 +36,7 @@ public class Order {
     public Order(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
         validate(orderTable, orderLineItems);
         addOrderLineItems(orderLineItems);
-        this.orderTable = orderTable;
+        this.orderTable = orderTable.addOrder(this);
     }
 
     private void addOrderLineItems(List<OrderLineItem> orderLineItems) {
@@ -50,6 +51,10 @@ public class Order {
         if (orderLineItems.isEmpty()) {
             throw new OrderLineItemNotFoundException();
         }
+    }
+
+    public boolean isCompleted() {
+        return orderStatus.isCompletion();
     }
 
     public Long getId() {
@@ -70,5 +75,12 @@ public class Order {
 
     public List<OrderLineItem> getOrderLineItems() {
         return orderLineItems;
+    }
+
+    public void changeStatus(OrderStatus changeStatus) {
+        if( orderStatus.isCompletion()) {
+            throw new OrderStatusUpdateException();
+        }
+        this.orderStatus = changeStatus;
     }
 }
