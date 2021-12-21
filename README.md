@@ -65,8 +65,6 @@
     - [X] Name 래핑 클래스 추가
   - [X] ProductRepository 사용하도록 수정
   - [X] dto 모델 추가
-  - [X] controller 패키지 이동
-  - [X] service 패키지 이동
 - [ ] 메뉴 관리 리팩토링
   - [ ] 모델
     - [X] MenuGroup 엔티티 변환
@@ -75,10 +73,12 @@
   - [X] MenuRepository 사용하도록 수정
   - [X] MenuGroupRepository 사용하도록 수정
   - [X] MenuProductRepository 사용하도록 수정
+  - [ ] dto 모델 추가
 - [ ] 테이블 관리 리팩토링
   - [ ] 모델
     - [ ] TableGroup 엔티티 변환
   - [ ] TableGroupRepository 사용하도록 수정
+  - [ ] dto 모델 추가
 - [ ] 주문 관리 리팩토링
   - [ ] 모델
     - [ ] Order 엔티티 변환
@@ -87,6 +87,7 @@
   - [ ] OrderRepository 사용하도록 수정
   - [ ] OrderLineItemRepository 사용하도록 수정
   - [ ] OrderTableRepository 사용하도록 수정
+  - [ ] dto 모델 추가
 
 ### step1 요구사항
 - [X] 키친포스 기능 요구사항 분석
