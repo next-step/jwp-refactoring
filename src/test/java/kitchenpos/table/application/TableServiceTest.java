@@ -1,9 +1,8 @@
 package kitchenpos.table.application;
 
-import kitchenpos.common.exception.GuestsNumberOverException;
+import kitchenpos.common.exception.GuestsNumberNegativeException;
 import kitchenpos.common.exception.NotFoundOrderTableException;
 import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.table.domain.NumberOfGuests;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.ChangeEmptyRequest;
@@ -21,7 +20,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import static kitchenpos.table.domain.OrderTableTest.빈자리;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -159,7 +157,7 @@ public class TableServiceTest {
         // when
         // then
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, changeGuestsRequest))
-                .isInstanceOf(GuestsNumberOverException.class);
+                .isInstanceOf(GuestsNumberNegativeException.class);
     }
 
     @Test

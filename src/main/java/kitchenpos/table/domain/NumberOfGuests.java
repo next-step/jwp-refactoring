@@ -1,9 +1,10 @@
 package kitchenpos.table.domain;
 
-import kitchenpos.common.exception.GuestsNumberOverException;
+import kitchenpos.common.exception.GuestsNumberNegativeException;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import java.util.Objects;
 
 @Embeddable
 public class NumberOfGuests {
@@ -21,11 +22,24 @@ public class NumberOfGuests {
 
     private void validateNumber() {
         if(numberOfGuests < MIN_NUMBER){
-            throw new GuestsNumberOverException();
+            throw new GuestsNumberNegativeException();
         }
     }
 
     public int getNumber() {
         return numberOfGuests;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        NumberOfGuests that = (NumberOfGuests) o;
+        return numberOfGuests == that.numberOfGuests;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(numberOfGuests);
     }
 }
