@@ -1,18 +1,15 @@
 package kitchenpos.acceptance;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
 import java.math.BigDecimal;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static kitchenpos.fixture.RestAssuredFixture.*;
 
 @DisplayName("상품 관련 기능")
 class ProductAcceptanceTest extends AcceptanceTest {
@@ -39,30 +36,19 @@ class ProductAcceptanceTest extends AcceptanceTest {
     }
 
     private static ExtractableResponse<Response> 상품_생성_요청(Product params) {
-        return RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
-                .when().post(API_URL)
-                .then().log().all()
-                .extract();
+        return 생성_요청(API_URL, params);
     }
 
     private void 상품_생성됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        생성됨_201_CREATED(response);
     }
 
     private ExtractableResponse<Response> 상품_목록_조회_요청() {
-        return RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().get(API_URL)
-                .then().log().all()
-                .extract();
+        return 목록_조회_요청(API_URL);
     }
 
     private void 상품_목록_조회됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        성공_200_OK(response);
     }
 
     public static Product 상품_등록되어_있음(String name, long price) {
@@ -70,7 +56,6 @@ class ProductAcceptanceTest extends AcceptanceTest {
         product.setName(name);
         product.setPrice(BigDecimal.valueOf(price));
 
-        ExtractableResponse<Response> response = 상품_생성_요청(product);
-        return response.as(Product.class);
+        return 상품_생성_요청(product).as(Product.class);
     }
 }

@@ -1,6 +1,5 @@
 package kitchenpos.acceptance;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
@@ -9,13 +8,11 @@ import kitchenpos.domain.TableGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
 import java.util.Arrays;
 
 import static kitchenpos.acceptance.TableAcceptanceTest.주문_테이블_등록되어_있음;
-import static org.assertj.core.api.Assertions.assertThat;
+import static kitchenpos.fixture.RestAssuredFixture.*;
 
 @DisplayName("테이블 그룹 관련 기능")
 class TableGroupAcceptanceTest extends AcceptanceTest {
@@ -53,17 +50,11 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
     }
 
     private ExtractableResponse<Response> 테이블_그룹_생성_요청(TableGroup params) {
-        return RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
-                .when().post(API_URL)
-                .then().log().all()
-                .extract();
+        return 생성_요청(API_URL, params);
     }
 
     private void 테이블_그룹_생성됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        생성됨_201_CREATED(response);
     }
 
     private Long 테이블_그룹_ID_조회(ExtractableResponse<Response> response) {
@@ -71,15 +62,12 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
     }
 
     private ExtractableResponse<Response> 테이블_그룹_해제_요청(Long tableGroupId) {
-        return RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().delete(String.format("%s/{tableGroupId}", API_URL), tableGroupId)
-                .then().log().all()
-                .extract();
+        String path = String.format("%s/%s", API_URL, tableGroupId);
+
+        return 삭제_요청(path);
     }
 
     private void 테이블_그룹_해제됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        콘텐츠_없음_204_NO_CONTENT(response);
     }
 }

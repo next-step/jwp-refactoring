@@ -1,15 +1,13 @@
 package kitchenpos.acceptance;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.domain.OrderTable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
+import static kitchenpos.fixture.RestAssuredFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -39,85 +37,64 @@ class TableAcceptanceTest extends AcceptanceTest {
         boolean empty = false;
         // when
         Long 주문_테이블_ID = 주문_테이블_ID_조회(주문_테이블_생성_응답);
-        ExtractableResponse<Response> 주문_테이블_수정_응답 = 주문_테이블_수정(주문_테이블_ID, empty);
+        ExtractableResponse<Response> 주문_테이블_수정_응답 = 주문_테이블_수정_요청(주문_테이블_ID, empty);
         // then
         주문_테이블_수정됨(주문_테이블_수정_응답, empty);
 
         // given
         int numberOfGuests = 4;
         // when
-        ExtractableResponse<Response> 주문_테이블_손님_수_수정_응답 = 주문_테이블_손님_수_수정(주문_테이블_ID, numberOfGuests);
+        ExtractableResponse<Response> 주문_테이블_손님_수_수정_응답 = 주문_테이블_손님_수_수정_요청(주문_테이블_ID, numberOfGuests);
         // then
         주문_테이블_손님_수_수정됨(주문_테이블_손님_수_수정_응답, numberOfGuests);
     }
 
     private static ExtractableResponse<Response> 주문_테이블_생성_요청(OrderTable params) {
-        return RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
-                .when().post(API_URL)
-                .then().log().all()
-                .extract();
+        return 생성_요청(API_URL, params);
     }
 
     private void 주문_테이블_생성됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        생성됨_201_CREATED(response);
     }
 
     private ExtractableResponse<Response> 주문_테이블_목록_조회_요청() {
-        return RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().get(API_URL)
-                .then().log().all()
-                .extract();
+        return 목록_조회_요청(API_URL);
     }
 
     private void 주문_테이블_목록_조회됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        성공_200_OK(response);
     }
 
     private Long 주문_테이블_ID_조회(ExtractableResponse<Response> response) {
         return response.jsonPath().getLong("id");
     }
 
-    private ExtractableResponse<Response> 주문_테이블_수정(Long orderTableId, boolean empty) {
+    private ExtractableResponse<Response> 주문_테이블_수정_요청(Long orderTableId, boolean empty) {
+        String path = String.format("%s/%s/empty", API_URL, orderTableId);
         OrderTable params = new OrderTable();
         params.setEmpty(empty);
 
-        return RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
-                .when().put(String.format("%s/{orderTableId}/empty", API_URL), orderTableId)
-                .then().log().all()
-                .extract();
+        return 수정_요청(path, params);
     }
 
     private void 주문_테이블_수정됨(ExtractableResponse<Response> response, boolean expect) {
         assertAll(
-                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value())
+                () -> 성공_200_OK(response)
                 , () -> assertThat(response.jsonPath().getBoolean("empty")).isEqualTo(expect)
         );
     }
 
-    private ExtractableResponse<Response> 주문_테이블_손님_수_수정(Long orderTableId, int numberOfGuests) {
+    private ExtractableResponse<Response> 주문_테이블_손님_수_수정_요청(Long orderTableId, int numberOfGuests) {
+        String path = String.format("%s/%s/number-of-guests", API_URL, orderTableId);
         OrderTable params = new OrderTable();
         params.setNumberOfGuests(numberOfGuests);
 
-        return RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
-                .when().put(String.format("%s/{orderTableId}/number-of-guests", API_URL), orderTableId)
-                .then().log().all()
-                .extract();
+        return 수정_요청(path, params);
     }
 
     private void 주문_테이블_손님_수_수정됨(ExtractableResponse<Response> response, int expect) {
         assertAll(
-                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value())
+                () -> 성공_200_OK(response)
                 , () -> assertThat(response.jsonPath().getInt("numberOfGuests")).isEqualTo(expect)
         );
     }
