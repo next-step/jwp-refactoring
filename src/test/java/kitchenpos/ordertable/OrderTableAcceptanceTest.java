@@ -26,7 +26,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.menu.dto.MenuDto;
 import kitchenpos.menugroup.dto.MenuGroupDto;
 import kitchenpos.order.dto.OrderDto;

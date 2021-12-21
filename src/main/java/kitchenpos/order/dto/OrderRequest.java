@@ -3,7 +3,7 @@ package kitchenpos.order.dto;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.order.domain.OrderStatus;
 
 public class OrderRequest {
 	private Long orderTableId;

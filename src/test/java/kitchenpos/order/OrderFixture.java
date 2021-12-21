@@ -2,7 +2,7 @@ package kitchenpos.order;
 
 import java.util.Collections;
 
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemDto;
 import kitchenpos.order.dto.OrderRequest;
 
