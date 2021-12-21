@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("메뉴 그룹 관련 기능")
 public class MenuGroupAcceptanceTest extends AcceptanceTest {
@@ -29,8 +30,10 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
 
     private void 메뉴_그룹_등록됨(ExtractableResponse<Response> response) {
         MenuGroup 등록된_메뉴_그룹 = response.as(MenuGroup.class);
-        assertThat(등록된_메뉴_그룹.getId()).isNotNull();
-        assertThat(등록된_메뉴_그룹.getName()).isEqualTo("추천메뉴");
+        assertAll(
+                () -> assertThat(등록된_메뉴_그룹.getId()).isNotNull(),
+                () -> assertThat(등록된_메뉴_그룹.getName()).isEqualTo("추천메뉴")
+        );
     }
 
     public ExtractableResponse<Response> 메뉴_그룹_등록을_요청(MenuGroup menuGroup) {

@@ -12,6 +12,7 @@ import org.springframework.http.MediaType;
 import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("상품 관련 기능")
 public class ProductAcceptanceTest extends AcceptanceTest {
@@ -32,9 +33,11 @@ public class ProductAcceptanceTest extends AcceptanceTest {
 
     private void 상품_등록됨(ExtractableResponse<Response> 상품_등록_요청_응답) {
         Product 등록된_상품 = 상품_등록_요청_응답.as(Product.class);
-        assertThat(등록된_상품.getId()).isNotNull();
-        assertThat(등록된_상품.getName()).isEqualTo("후라이드");
-        assertThat(등록된_상품.getPrice()).isEqualByComparingTo(BigDecimal.valueOf(17000));
+        assertAll(
+                () -> assertThat(등록된_상품.getId()).isNotNull(),
+                () -> assertThat(등록된_상품.getName()).isEqualTo("후라이드"),
+                () -> assertThat(등록된_상품.getPrice()).isEqualByComparingTo(BigDecimal.valueOf(17000))
+        );
     }
 
     public ExtractableResponse<Response> 상품_등록을_요청(Product product) {
