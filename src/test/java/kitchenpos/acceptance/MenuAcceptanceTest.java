@@ -137,7 +137,6 @@ public class MenuAcceptanceTest extends AcceptanceTest {
                 .then().log().all().extract();
     }
 
-
     private ExtractableResponse<Response> 메뉴_등록_요청함(MenuRequest request) {
         return RestAssured
                 .given().log().all()

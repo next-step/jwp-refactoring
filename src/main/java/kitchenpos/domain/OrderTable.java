@@ -1,6 +1,9 @@
 package kitchenpos.domain;
 
+import kitchenpos.exception.TableEmptyUpdateException;
+
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 public class OrderTable {
@@ -21,7 +24,6 @@ public class OrderTable {
     @OneToOne(mappedBy = "orderTable")
     private Order order;
 
-
     protected OrderTable() {
     }
 
@@ -30,9 +32,15 @@ public class OrderTable {
         this.empty = empty;
     }
 
-    public OrderTable addOrder(Order order) {
-        this.order = order;
-        return this;
+    public void changeEmpty(boolean changeEmpty) {
+        if (Objects.nonNull(tableGroup)) {
+            throw new TableEmptyUpdateException();
+        }
+
+        if (Objects.nonNull(order) && !order.isCompleted()) {
+            throw new TableEmptyUpdateException();
+        }
+        this.empty = changeEmpty;
     }
 
     public Long getId() {
@@ -57,5 +65,13 @@ public class OrderTable {
 
     public boolean isOrderFinished() {
         return order.isCompleted();
+    }
+
+    public void updateNumberOfGuests(Integer newNumberOfGuests) {
+        if (empty) {
+            throw new TableEmptyUpdateException();
+        }
+
+        this.numberOfGuests = NumberOfGuests.of(newNumberOfGuests);
     }
 }
