@@ -120,17 +120,7 @@ class TableServiceTest {
 
         OrderTable 변경된_테이블 = tableService.changeNumberOfGuests(변경할_테이블.getId(), 변경할_테이블);
 
-        assertThat(변경된_테이블.getNumberOfGuests()).isEqualTo(2);
-    }
-
-    @DisplayName("테이블에 방문한 손님 수를 변경할 때, 손님 수가 0보다 작으면 예외가 발생한다.")
-    @Test
-    void changeNumberOfGuestsImpossible1() {
-        int wrongNumberOfGuests = -1;
-        OrderTable 손님수_비정상_테이블 = TableFixture.create(1L, null, wrongNumberOfGuests, false);
-
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, 손님수_비정상_테이블))
-            .isInstanceOf(IllegalArgumentException.class);
+        assertThat(변경된_테이블.getNumberOfGuests().getNumberOfGuests()).isEqualTo(2);
     }
 
     @DisplayName("테이블에 방문한 손님 수를 변경할 때, 등록되지 않은 테이블이면 예외가 발생한다.")

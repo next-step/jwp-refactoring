@@ -53,7 +53,7 @@ public class TableService {
 
     @Transactional
     public OrderTable changeNumberOfGuests(final Long orderTableId, final OrderTable orderTable) {
-        final int numberOfGuests = orderTable.getNumberOfGuests();
+        final int numberOfGuests = orderTable.getNumberOfGuests().getNumberOfGuests();
 
         if (numberOfGuests < 0) {
             throw new IllegalArgumentException();
