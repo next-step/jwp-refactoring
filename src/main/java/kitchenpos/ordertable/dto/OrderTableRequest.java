@@ -1,7 +1,7 @@
 package kitchenpos.ordertable.dto;
 
-import kitchenpos.domain.OrderTable;
 import kitchenpos.ordertable.domain.NumberOfGuests;
+import kitchenpos.ordertable.domain.OrderTable;
 
 public class OrderTableRequest {
 	private int numberOfGuests;
@@ -40,13 +40,6 @@ public class OrderTableRequest {
 	}
 
 	public OrderTable toOrderTable() {
-		OrderTable orderTable = new OrderTable();
-		orderTable.setNumberOfGuests(numberOfGuests);
-		orderTable.setEmpty(empty);
-		return orderTable;
-	}
-
-	public kitchenpos.ordertable.domain.OrderTable toToBeOrderTable() {
-		return kitchenpos.ordertable.domain.OrderTable.of(NumberOfGuests.of(numberOfGuests), empty);
+		return OrderTable.of(NumberOfGuests.of(numberOfGuests), empty);
 	}
 }

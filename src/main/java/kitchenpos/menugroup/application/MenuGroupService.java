@@ -22,7 +22,7 @@ public class MenuGroupService {
 
 	@Transactional
 	public MenuGroupDto create(MenuGroupCreateRequest request) {
-		MenuGroup menuGroup = menuGroupRepository.save(request.toToBeMenuGroup());
+		MenuGroup menuGroup = menuGroupRepository.save(request.toMenuGroup());
 		return MenuGroupDto.of(menuGroup);
 	}
 

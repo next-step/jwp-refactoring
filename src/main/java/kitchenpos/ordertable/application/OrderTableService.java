@@ -23,7 +23,7 @@ public class OrderTableService {
 
 	@Transactional
 	public OrderTableDto create(OrderTableRequest request) {
-		OrderTable orderTable = orderTableRepository.save(request.toToBeOrderTable());
+		OrderTable orderTable = orderTableRepository.save(request.toOrderTable());
 		return OrderTableDto.of(orderTable);
 	}
 

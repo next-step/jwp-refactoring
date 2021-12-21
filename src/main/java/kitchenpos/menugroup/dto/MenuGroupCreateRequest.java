@@ -1,6 +1,6 @@
 package kitchenpos.menugroup.dto;
 
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.domain.MenuGroupName;
 
 public class MenuGroupCreateRequest {
@@ -22,13 +22,7 @@ public class MenuGroupCreateRequest {
 	}
 
 	public MenuGroup toMenuGroup() {
-		MenuGroup menuGroup = new MenuGroup();
-		menuGroup.setName(name);
-		return menuGroup;
-	}
-
-	public kitchenpos.menugroup.domain.MenuGroup toToBeMenuGroup() {
 		MenuGroupName name = MenuGroupName.of(this.name);
-		return kitchenpos.menugroup.domain.MenuGroup.of(name);
+		return MenuGroup.of(name);
 	}
 }
