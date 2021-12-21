@@ -1,12 +1,10 @@
 package kitchenpos.product.acceptance;
 
 import kitchenpos.product.application.ProductService;
-import kitchenpos.product.domain.JdbcTemplateProductDao;
 import kitchenpos.product.domain.Product;
-import kitchenpos.product.domain.ProductDao;
+import kitchenpos.product.dao.ProductDao;
 import kitchenpos.product.exception.InputProductDataErrorCode;
 import kitchenpos.product.exception.InputProductDataException;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

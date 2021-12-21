@@ -1,6 +1,6 @@
 package kitchenpos.product.application;
 
-import kitchenpos.product.domain.ProductDao;
+import kitchenpos.product.dao.ProductDao;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.exception.InputProductDataErrorCode;
 import kitchenpos.product.exception.InputProductDataException;
