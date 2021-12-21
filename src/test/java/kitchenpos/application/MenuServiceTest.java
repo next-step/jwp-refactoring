@@ -48,6 +48,7 @@ class MenuServiceTest {
     private MenuService menuService;
 
     Product 상품_후라이드;
+    Product 상품_양념치킨;
 
     MenuGroup 한마리_메뉴그룹;
     MenuProduct 메뉴상품1;
@@ -59,11 +60,12 @@ class MenuServiceTest {
     @BeforeEach
     void setUp() {
         상품_후라이드 = ProductFixture.create(1L, "후라이드", BigDecimal.valueOf(16_000L));
+        상품_양념치킨 = ProductFixture.create(1L, "후라이드", BigDecimal.valueOf(16_000L));
 
         한마리_메뉴그룹 = MenuGroupFixture.create(1L, "한마리 메뉴");
 
-        메뉴상품1 = MenuProductFixture.createMenuProduct(1L, 1L);
-        메뉴상품2 = MenuProductFixture.createMenuProduct(2L, 2L);
+        메뉴상품1 = MenuProductFixture.createMenuProduct(상품_후라이드, 1L);
+        메뉴상품2 = MenuProductFixture.createMenuProduct(상품_양념치킨, 2L);
 
         후라이드치킨 = MenuFixture.createMenu(1L, "후라이드치킨", 16_000L, 한마리_메뉴그룹, Arrays.asList(메뉴상품1));
         양념치킨 = MenuFixture.createMenu(2L, "양념치킨", 16_000L, 한마리_메뉴그룹, Arrays.asList(메뉴상품2));
@@ -73,7 +75,7 @@ class MenuServiceTest {
     @Test
     void create() {
         given(menuGroupRepository.existsById(후라이드치킨.getMenuGroup().getId())).willReturn(true);
-        given(productRepository.findById(메뉴상품1.getProductId())).willReturn(Optional.of(상품_후라이드));
+        given(productRepository.findById(메뉴상품1.getProduct().getId())).willReturn(Optional.of(상품_후라이드));
         given(menuRepository.save(후라이드치킨)).willReturn(후라이드치킨);
 
         Menu savedMenu = menuService.create(후라이드치킨);
@@ -94,7 +96,7 @@ class MenuServiceTest {
     @Test
     void createImpossible4() {
         given(menuGroupRepository.existsById(후라이드치킨.getMenuGroup().getId())).willReturn(true);
-        given(productRepository.findById(메뉴상품1.getProductId())).willReturn(Optional.empty());
+        given(productRepository.findById(메뉴상품1.getProduct().getId())).willReturn(Optional.empty());
 
         assertThatThrownBy(() -> menuService.create(후라이드치킨))
             .isInstanceOf(IllegalArgumentException.class);
@@ -106,7 +108,7 @@ class MenuServiceTest {
         Menu 가격이_총합보다_큰_메뉴 = MenuFixture.createMenu(1L, "후라이드치킨", 100_000L, 한마리_메뉴그룹,
             Arrays.asList(메뉴상품1));
         given(menuGroupRepository.existsById(가격이_총합보다_큰_메뉴.getMenuGroup().getId())).willReturn(true);
-        given(productRepository.findById(메뉴상품1.getProductId())).willReturn(Optional.of(상품_후라이드));
+        given(productRepository.findById(메뉴상품1.getProduct().getId())).willReturn(Optional.of(상품_후라이드));
 
         assertThatThrownBy(() -> menuService.create(가격이_총합보다_큰_메뉴))
             .isInstanceOf(IllegalArgumentException.class);
