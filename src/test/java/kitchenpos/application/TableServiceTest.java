@@ -3,7 +3,6 @@ package kitchenpos.application;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.OrderTable;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,9 +16,10 @@ import java.util.Optional;
 
 import static kitchenpos.fixture.TableFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.Mockito.when;
+import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 class TableServiceTest {
@@ -41,7 +41,7 @@ class TableServiceTest {
         요청_테이블.setNumberOfGuests(0);
         요청_테이블.setEmpty(true);
 
-        when(orderTableDao.save(any(OrderTable.class))).thenReturn(테이블_그룹에_속해있지_않은_테이블);
+        given(orderTableDao.save(any(OrderTable.class))).willReturn(테이블_그룹에_속해있지_않은_테이블);
 
         // when
         OrderTable 생성된_테이블 = tableService.create(요청_테이블);
@@ -54,7 +54,7 @@ class TableServiceTest {
     @Test
     void list() {
         // given
-        when(orderTableDao.findAll()).thenReturn(Arrays.asList(테이블_그룹에_속해있지_않은_테이블));
+        given(orderTableDao.findAll()).willReturn(Arrays.asList(테이블_그룹에_속해있지_않은_테이블));
 
         // when
         List<OrderTable> 조회된_테이블_목록 = tableService.list();
@@ -70,9 +70,9 @@ class TableServiceTest {
         OrderTable 요청_테이블 = new OrderTable();
         요청_테이블.setEmpty(false);
 
-        when(orderTableDao.findById(any(Long.class))).thenReturn(Optional.of(테이블_그룹에_속해있지_않은_테이블));
-        when(orderDao.existsByOrderTableIdAndOrderStatusIn(any(Long.class), anyList())).thenReturn(false);
-        when(orderTableDao.save(any(OrderTable.class))).thenReturn(테이블_그룹에_속해있지_않은_테이블);
+        given(orderTableDao.findById(any(Long.class))).willReturn(Optional.of(테이블_그룹에_속해있지_않은_테이블));
+        given(orderDao.existsByOrderTableIdAndOrderStatusIn(any(Long.class), anyList())).willReturn(false);
+        given(orderTableDao.save(any(OrderTable.class))).willReturn(테이블_그룹에_속해있지_않은_테이블);
 
         // when
         OrderTable 수정된_테이블 = tableService.changeEmpty(테이블_그룹에_속해있지_않은_테이블.getId(), 요청_테이블);
@@ -88,10 +88,10 @@ class TableServiceTest {
         OrderTable 요청_테이블 = new OrderTable();
         요청_테이블.setEmpty(false);
 
-        when(orderTableDao.findById(any(Long.class))).thenReturn(Optional.of(테이블_그룹에_속해있는_테이블));
+        given(orderTableDao.findById(any(Long.class))).willReturn(Optional.of(테이블_그룹에_속해있는_테이블));
 
         // when & then
-        Assertions.assertThatIllegalArgumentException()
+        assertThatIllegalArgumentException()
                 .isThrownBy(() -> tableService.changeEmpty(테이블_그룹에_속해있는_테이블.getId(), 요청_테이블));
     }
 
@@ -102,11 +102,11 @@ class TableServiceTest {
         OrderTable 요청_테이블 = new OrderTable();
         요청_테이블.setEmpty(false);
 
-        when(orderTableDao.findById(any(Long.class))).thenReturn(Optional.of(테이블_그룹에_속해있지_않은_테이블));
-        when(orderDao.existsByOrderTableIdAndOrderStatusIn(any(Long.class), anyList())).thenReturn(true);
+        given(orderTableDao.findById(any(Long.class))).willReturn(Optional.of(테이블_그룹에_속해있지_않은_테이블));
+        given(orderDao.existsByOrderTableIdAndOrderStatusIn(any(Long.class), anyList())).willReturn(true);
 
         // when & then
-        Assertions.assertThatIllegalArgumentException()
+        assertThatIllegalArgumentException()
                 .isThrownBy(() -> tableService.changeEmpty(테이블_그룹에_속해있는_테이블.getId(), 요청_테이블));
     }
 
@@ -117,8 +117,8 @@ class TableServiceTest {
         OrderTable 요청_테이블 = new OrderTable();
         요청_테이블.setNumberOfGuests(4);
 
-        when(orderTableDao.findById(any(Long.class))).thenReturn(Optional.of(비어있지_않은_테이블));
-        when(orderTableDao.save(any(OrderTable.class))).thenReturn(비어있지_않은_테이블);
+        given(orderTableDao.findById(any(Long.class))).willReturn(Optional.of(비어있지_않은_테이블));
+        given(orderTableDao.save(any(OrderTable.class))).willReturn(비어있지_않은_테이블);
 
         // when
         OrderTable 수정된_테이블 = tableService.changeNumberOfGuests(비어있지_않은_테이블.getId(), 요청_테이블);
@@ -135,7 +135,7 @@ class TableServiceTest {
         요청_테이블.setNumberOfGuests(-1);
 
         // when & then
-        Assertions.assertThatIllegalArgumentException()
+        assertThatIllegalArgumentException()
                 .isThrownBy(() -> tableService.changeNumberOfGuests(비어있지_않은_테이블.getId(), 요청_테이블));
     }
 
@@ -146,10 +146,10 @@ class TableServiceTest {
         OrderTable 요청_테이블 = new OrderTable();
         요청_테이블.setNumberOfGuests(4);
 
-        when(orderTableDao.findById(any(Long.class))).thenReturn(Optional.of(비어있는_테이블));
+        given(orderTableDao.findById(any(Long.class))).willReturn(Optional.of(비어있는_테이블));
 
         // when & then
-        Assertions.assertThatIllegalArgumentException()
+        assertThatIllegalArgumentException()
                 .isThrownBy(() -> tableService.changeNumberOfGuests(비어있는_테이블.getId(), 요청_테이블));
     }
 }

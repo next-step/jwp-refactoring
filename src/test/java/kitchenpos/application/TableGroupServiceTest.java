@@ -22,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.Mockito.when;
+import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
@@ -54,10 +54,10 @@ class TableGroupServiceTest {
         TableGroup 요청_테이블_그룹 = new TableGroup();
         요청_테이블_그룹.setOrderTables(Arrays.asList(테이블1, 테이블2));
 
-        when(orderTableDao.findAllByIdIn(anyList())).thenReturn(Arrays.asList(테이블1, 테이블2));
-        when(tableGroupDao.save(any(TableGroup.class))).thenReturn(회사A_단체_테이블);
-        when(orderTableDao.save(테이블1)).thenReturn(회사A_테이블1);
-        when(orderTableDao.save(테이블2)).thenReturn(회사A_테이블2);
+        given(orderTableDao.findAllByIdIn(anyList())).willReturn(Arrays.asList(테이블1, 테이블2));
+        given(tableGroupDao.save(any(TableGroup.class))).willReturn(회사A_단체_테이블);
+        given(orderTableDao.save(테이블1)).willReturn(회사A_테이블1);
+        given(orderTableDao.save(테이블2)).willReturn(회사A_테이블2);
 
         // when
         TableGroup 생성된_테이블_그룹 = tableGroupService.create(요청_테이블_그룹);
@@ -97,7 +97,7 @@ class TableGroupServiceTest {
         TableGroup 요청_테이블_그룹 = new TableGroup();
         요청_테이블_그룹.setOrderTables(Arrays.asList(테이블1, 테이블2));
 
-        when(orderTableDao.findAllByIdIn(anyList())).thenReturn(Arrays.asList(테이블1));
+        given(orderTableDao.findAllByIdIn(anyList())).willReturn(Arrays.asList(테이블1));
 
         // when & then
         assertThatIllegalArgumentException()
@@ -121,7 +121,7 @@ class TableGroupServiceTest {
         TableGroup 요청_테이블_그룹 = new TableGroup();
         요청_테이블_그룹.setOrderTables(Arrays.asList(테이블1, 테이블2));
 
-        when(orderTableDao.findAllByIdIn(anyList())).thenReturn(Arrays.asList(테이블1, 테이블2));
+        given(orderTableDao.findAllByIdIn(anyList())).willReturn(Arrays.asList(테이블1, 테이블2));
 
         // when & then
         assertThatIllegalArgumentException()
@@ -143,7 +143,7 @@ class TableGroupServiceTest {
         TableGroup 요청_테이블_그룹 = new TableGroup();
         요청_테이블_그룹.setOrderTables(Arrays.asList(테이블1, 테이블2));
 
-        when(orderTableDao.findAllByIdIn(anyList())).thenReturn(Arrays.asList(테이블1, 테이블2));
+        given(orderTableDao.findAllByIdIn(anyList())).willReturn(Arrays.asList(테이블1, 테이블2));
 
         // when & then
         assertThatIllegalArgumentException()
@@ -154,8 +154,8 @@ class TableGroupServiceTest {
     @Test
     void ungroup_success() {
         // given
-        when(orderTableDao.findAllByTableGroupId(any(Long.class))).thenReturn(Arrays.asList(회사A_테이블1, 회사A_테이블2));
-        when(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).thenReturn(false);
+        given(orderTableDao.findAllByTableGroupId(any(Long.class))).willReturn(Arrays.asList(회사A_테이블1, 회사A_테이블2));
+        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(false);
 
         // when
         tableGroupService.ungroup(회사A_단체_테이블.getId());
@@ -171,8 +171,8 @@ class TableGroupServiceTest {
     @Test
     void ungroup_failure_orderStatus() {
         // given
-        when(orderTableDao.findAllByTableGroupId(any(Long.class))).thenReturn(Arrays.asList(회사A_테이블1, 회사A_테이블2));
-        when(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).thenReturn(true);
+        given(orderTableDao.findAllByTableGroupId(any(Long.class))).willReturn(Arrays.asList(회사A_테이블1, 회사A_테이블2));
+        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(true);
 
         // when & then
         assertThatIllegalArgumentException()

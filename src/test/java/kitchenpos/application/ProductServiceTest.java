@@ -2,7 +2,6 @@ package kitchenpos.application;
 
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,8 +16,9 @@ import java.util.List;
 import static kitchenpos.fixture.ProductFixture.강정치킨;
 import static kitchenpos.fixture.ProductFixture.페퍼로니피자;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
@@ -37,7 +37,7 @@ class ProductServiceTest {
         요청_상품.setName("강정치킨");
         요청_상품.setPrice(BigDecimal.valueOf(17_000));
 
-        when(productDao.save(any(Product.class))).thenReturn(강정치킨);
+        given(productDao.save(any(Product.class))).willReturn(강정치킨);
 
         // when
         Product 생성된_상품 = productService.create(요청_상품);
@@ -55,7 +55,7 @@ class ProductServiceTest {
         요청_상품.setPrice(BigDecimal.valueOf(-1));
 
         // when & then
-        Assertions.assertThatIllegalArgumentException()
+        assertThatIllegalArgumentException()
                 .isThrownBy(() -> productService.create(요청_상품));
     }
 
@@ -63,7 +63,7 @@ class ProductServiceTest {
     @Test
     void list() {
         // given
-        when(productDao.findAll()).thenReturn(Arrays.asList(강정치킨, 페퍼로니피자));
+        given(productDao.findAll()).willReturn(Arrays.asList(강정치킨, 페퍼로니피자));
 
         // when
         List<Product> 조회된_상품_목록 = productService.list();

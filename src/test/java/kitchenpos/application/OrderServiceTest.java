@@ -28,7 +28,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.Mockito.when;
+import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
@@ -56,10 +56,10 @@ class OrderServiceTest {
         order.setOrderTableId(일반_테이블.getId());
         order.setOrderLineItems(Arrays.asList(주문_항목));
 
-        when(menuDao.countByIdIn(anyList())).thenReturn(Long.valueOf(order.getOrderLineItems().size()));
-        when(orderTableDao.findById(any(Long.class))).thenReturn(Optional.of(일반_테이블));
-        when(orderDao.save(any(Order.class))).thenReturn(신규_주문);
-        when(orderLineItemDao.save(any(OrderLineItem.class))).thenReturn(주문_항목);
+        given(menuDao.countByIdIn(anyList())).willReturn(Long.valueOf(order.getOrderLineItems().size()));
+        given(orderTableDao.findById(any(Long.class))).willReturn(Optional.of(일반_테이블));
+        given(orderDao.save(any(Order.class))).willReturn(신규_주문);
+        given(orderLineItemDao.save(any(OrderLineItem.class))).willReturn(주문_항목);
 
         // when
         Order 생성된_주문 = orderService.create(order);
@@ -89,7 +89,7 @@ class OrderServiceTest {
         order.setOrderTableId(일반_테이블.getId());
         order.setOrderLineItems(Arrays.asList(주문_항목));
 
-        when(menuDao.countByIdIn(anyList())).thenReturn(0L);
+        given(menuDao.countByIdIn(anyList())).willReturn(0L);
 
         // when & then
         assertThatIllegalArgumentException()
@@ -104,8 +104,8 @@ class OrderServiceTest {
         order.setOrderTableId(일반_테이블.getId());
         order.setOrderLineItems(Arrays.asList(주문_항목));
 
-        when(menuDao.countByIdIn(anyList())).thenReturn(Long.valueOf(order.getOrderLineItems().size()));
-        when(orderTableDao.findById(any(Long.class))).thenReturn(Optional.empty());
+        given(menuDao.countByIdIn(anyList())).willReturn(Long.valueOf(order.getOrderLineItems().size()));
+        given(orderTableDao.findById(any(Long.class))).willReturn(Optional.empty());
 
         // when & then
         assertThatIllegalArgumentException()
@@ -120,8 +120,8 @@ class OrderServiceTest {
         order.setOrderTableId(비어있는_테이블.getId());
         order.setOrderLineItems(Arrays.asList(주문_항목));
 
-        when(menuDao.countByIdIn(anyList())).thenReturn(Long.valueOf(order.getOrderLineItems().size()));
-        when(orderTableDao.findById(any(Long.class))).thenReturn(Optional.of(비어있는_테이블));
+        given(menuDao.countByIdIn(anyList())).willReturn(Long.valueOf(order.getOrderLineItems().size()));
+        given(orderTableDao.findById(any(Long.class))).willReturn(Optional.of(비어있는_테이블));
 
         // when & then
         assertThatIllegalArgumentException()
@@ -132,7 +132,7 @@ class OrderServiceTest {
     @Test
     void list() {
         // given
-        when(orderDao.findAll()).thenReturn(Arrays.asList(신규_주문));
+        given(orderDao.findAll()).willReturn(Arrays.asList(신규_주문));
 
         // when
         List<Order> 조회된_주문_목록 = orderService.list();
@@ -148,9 +148,9 @@ class OrderServiceTest {
         Order order = new Order();
         order.setOrderStatus(OrderStatus.MEAL.name());
 
-        when(orderDao.findById(any(Long.class))).thenReturn(Optional.of(신규_주문));
-        when(orderDao.save(any(Order.class))).thenReturn(신규_주문);
-        when(orderLineItemDao.findAllByOrderId(any(Long.class))).thenReturn(신규_주문.getOrderLineItems());
+        given(orderDao.findById(any(Long.class))).willReturn(Optional.of(신규_주문));
+        given(orderDao.save(any(Order.class))).willReturn(신규_주문);
+        given(orderLineItemDao.findAllByOrderId(any(Long.class))).willReturn(신규_주문.getOrderLineItems());
 
         // when
         Order 수정된_주문 = orderService.changeOrderStatus(신규_주문.getId(), order);
@@ -166,7 +166,7 @@ class OrderServiceTest {
         Order order = new Order();
         order.setOrderStatus(OrderStatus.MEAL.name());
 
-        when(orderDao.findById(any(Long.class))).thenReturn(Optional.of(완료_주문));
+        given(orderDao.findById(any(Long.class))).willReturn(Optional.of(완료_주문));
 
         // when & then
         assertThatIllegalArgumentException()

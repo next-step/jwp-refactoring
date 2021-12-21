@@ -16,7 +16,7 @@ import static kitchenpos.fixture.MenuGroupFixture.시즌_메뉴_그룹;
 import static kitchenpos.fixture.MenuGroupFixture.추천_메뉴_그룹;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 class MenuGroupServiceTest {
@@ -34,7 +34,7 @@ class MenuGroupServiceTest {
         MenuGroup 요청_메뉴_그룹 = new MenuGroup();
         요청_메뉴_그룹.setName("추천_메뉴_그룹");
 
-        when(menuGroupDao.save(any(MenuGroup.class))).thenReturn(추천_메뉴_그룹);
+        given(menuGroupDao.save(any(MenuGroup.class))).willReturn(추천_메뉴_그룹);
 
         // when
         MenuGroup 생성된_메뉴_그룹 = menuGroupService.create(요청_메뉴_그룹);
@@ -47,7 +47,7 @@ class MenuGroupServiceTest {
     @Test
     void list() {
         // given
-        when(menuGroupDao.findAll()).thenReturn(Arrays.asList(추천_메뉴_그룹, 시즌_메뉴_그룹));
+        given(menuGroupDao.findAll()).willReturn(Arrays.asList(추천_메뉴_그룹, 시즌_메뉴_그룹));
 
         // when
         List<MenuGroup> 조회된_메뉴_그룹_목록 = menuGroupService.list();

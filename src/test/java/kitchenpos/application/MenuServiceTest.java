@@ -6,7 +6,6 @@ import kitchenpos.dao.MenuProductDao;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,9 +23,10 @@ import static kitchenpos.fixture.MenuGroupFixture.추천_메뉴_그룹;
 import static kitchenpos.fixture.MenuProductFixture.강정치킨_두마리;
 import static kitchenpos.fixture.ProductFixture.강정치킨;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 class MenuServiceTest {
@@ -60,10 +60,10 @@ class MenuServiceTest {
         요청_메뉴.setMenuGroupId(추천_메뉴_그룹.getId());
         요청_메뉴.setMenuProducts(Arrays.asList(요청_메뉴_상품));
 
-        when(menuGroupDao.existsById(추천_메뉴_그룹.getId())).thenReturn(true);
-        when(productDao.findById(강정치킨.getId())).thenReturn(Optional.of(강정치킨));
-        when(menuDao.save(any(Menu.class))).thenReturn(강정치킨_두마리_셋트);
-        when(menuProductDao.save(any(MenuProduct.class))).thenReturn(강정치킨_두마리);
+        given(menuGroupDao.existsById(추천_메뉴_그룹.getId())).willReturn(true);
+        given(productDao.findById(강정치킨.getId())).willReturn(Optional.of(강정치킨));
+        given(menuDao.save(any(Menu.class))).willReturn(강정치킨_두마리_셋트);
+        given(menuProductDao.save(any(MenuProduct.class))).willReturn(강정치킨_두마리);
 
         // when
         Menu 생성된_메뉴 = menuService.create(요청_메뉴);
@@ -90,7 +90,7 @@ class MenuServiceTest {
         요청_메뉴.setMenuProducts(Arrays.asList(요청_메뉴_상품));
 
         // when & then
-        Assertions.assertThatIllegalArgumentException()
+        assertThatIllegalArgumentException()
                 .isThrownBy(() -> menuService.create(요청_메뉴));
     }
 
@@ -108,10 +108,10 @@ class MenuServiceTest {
         요청_메뉴.setMenuGroupId(추천_메뉴_그룹.getId());
         요청_메뉴.setMenuProducts(Arrays.asList(요청_메뉴_상품));
 
-        when(menuGroupDao.existsById(추천_메뉴_그룹.getId())).thenReturn(true);
+        given(menuGroupDao.existsById(추천_메뉴_그룹.getId())).willReturn(true);
 
         // when & then
-        Assertions.assertThatIllegalArgumentException()
+        assertThatIllegalArgumentException()
                 .isThrownBy(() -> menuService.create(요청_메뉴));
     }
 
@@ -129,10 +129,10 @@ class MenuServiceTest {
         요청_메뉴.setMenuGroupId(추천_메뉴_그룹.getId());
         요청_메뉴.setMenuProducts(Arrays.asList(요청_메뉴_상품));
 
-        when(menuGroupDao.existsById(추천_메뉴_그룹.getId())).thenReturn(false);
+        given(menuGroupDao.existsById(추천_메뉴_그룹.getId())).willReturn(false);
 
         // when & then
-        Assertions.assertThatIllegalArgumentException()
+        assertThatIllegalArgumentException()
                 .isThrownBy(() -> menuService.create(요청_메뉴));
     }
 
@@ -150,11 +150,11 @@ class MenuServiceTest {
         요청_메뉴.setMenuGroupId(추천_메뉴_그룹.getId());
         요청_메뉴.setMenuProducts(Arrays.asList(요청_메뉴_상품));
 
-        when(menuGroupDao.existsById(추천_메뉴_그룹.getId())).thenReturn(true);
-        when(productDao.findById(강정치킨.getId())).thenReturn(Optional.of(강정치킨));
+        given(menuGroupDao.existsById(추천_메뉴_그룹.getId())).willReturn(true);
+        given(productDao.findById(강정치킨.getId())).willReturn(Optional.of(강정치킨));
 
         // when & then
-        Assertions.assertThatIllegalArgumentException()
+        assertThatIllegalArgumentException()
                 .isThrownBy(() -> menuService.create(요청_메뉴));
     }
 
@@ -162,7 +162,7 @@ class MenuServiceTest {
     @Test
     void list() {
         // given
-        when(menuDao.findAll()).thenReturn(Arrays.asList(강정치킨_두마리_셋트));
+        given(menuDao.findAll()).willReturn(Arrays.asList(강정치킨_두마리_셋트));
 
         // when
         List<Menu> 조회된_메뉴_목록 = menuService.list();
