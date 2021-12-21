@@ -1,6 +1,5 @@
 package kitchenpos.domain;
 
-import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -19,8 +18,8 @@ public class OrderTable {
     @Embedded
     private NumberOfGuests numberOfGuests;
 
-    @Column(nullable = false)
-    private boolean empty;
+    @Embedded
+    private Empty empty;
 
     public OrderTable() {
     }
@@ -28,7 +27,7 @@ public class OrderTable {
     public OrderTable(final Long tableGroupId, final int numberOfGuests, final boolean empty) {
         this.tableGroupId = tableGroupId;
         this.numberOfGuests = NumberOfGuests.of(numberOfGuests);
-        this.empty = empty;
+        this.empty = Empty.of(empty);
     }
 
     public OrderTable(final Long id, final Long tableGroupId, final int numberOfGuests,
@@ -36,7 +35,7 @@ public class OrderTable {
         this.id = id;
         this.tableGroupId = tableGroupId;
         this.numberOfGuests = NumberOfGuests.of(numberOfGuests);
-        this.empty = empty;
+        this.empty = Empty.of(empty);
     }
 
     public Long getId() {
@@ -60,10 +59,10 @@ public class OrderTable {
     }
 
     public boolean isEmpty() {
-        return empty;
+        return empty.isEmpty();
     }
 
     public void setEmpty(final boolean empty) {
-        this.empty = empty;
+        this.empty = Empty.of(empty);
     }
 }
