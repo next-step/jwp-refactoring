@@ -58,10 +58,13 @@ public class Menu {
         return menuProducts;
     }
 
-
     public void addMenuProduct(MenuProduct menuProduct) {
         this.menuProducts.addMenuProduct(menuProduct);
         menuProduct.addMenu(this);
+    }
+
+    public void clearMenuProducts() {
+        this.menuProducts = new MenuProducts();
     }
 
     @Override
@@ -85,7 +88,7 @@ public class Menu {
                 ", name='" + name + '\'' +
                 ", price=" + price +
                 ", menuGroup=" + menuGroup.getId() +
-                ", menuProducts=" + menuProducts +
+                ", menuProducts=" + menuProducts.getMenuProducts() +
                 '}';
     }
 }

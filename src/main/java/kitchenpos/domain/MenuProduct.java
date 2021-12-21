@@ -32,6 +32,12 @@ public class MenuProduct {
         this.quantity = quantity;
     }
 
+    public MenuProduct(Menu menu, Long productId, long quantity) {
+        this.menu = menu;
+        this.product = new Product(productId);
+        this.quantity = quantity;
+    }
+
     public static MenuProduct from(Menu menu, Product product, MenuProductRequest menuProductRequest) {
         return new MenuProduct(menu, product, menuProductRequest.getQuantity());
     }
@@ -65,7 +71,7 @@ public class MenuProduct {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         MenuProduct that = (MenuProduct) o;
-        return quantity == that.quantity && Objects.equals(seq, that.seq) && Objects.equals(menu.getId(), that.menu.getId()) && Objects.equals(product, that.product);
+        return quantity == that.quantity && Objects.equals(seq, that.seq) && Objects.equals(menu.getId(), that.menu.getId()) && Objects.equals(product.getId(), that.product.getId());
     }
 
     @Override

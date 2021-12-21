@@ -3,8 +3,10 @@ package kitchenpos.application;
 import kitchenpos.domain.*;
 import kitchenpos.dto.MenuProductRequest;
 import kitchenpos.dto.MenuRequest;
+import kitchenpos.event.MenuCreatedEvent;
 import kitchenpos.repository.MenuGroupRepository;
 import kitchenpos.repository.MenuRepository;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,12 +16,13 @@ import java.util.List;
 public class MenuService {
     private final MenuRepository menuRepository;
     private final MenuGroupRepository menuGroupRepository;
-    private final  ProductService productService;
+    private final ApplicationEventPublisher eventPublisher;
 
-    public MenuService(MenuRepository menuRepository, MenuGroupRepository menuGroupRepository, ProductService productService) {
+
+    public MenuService(MenuRepository menuRepository, MenuGroupRepository menuGroupRepository, ApplicationEventPublisher eventPublisher) {
         this.menuRepository = menuRepository;
         this.menuGroupRepository = menuGroupRepository;
-        this.productService = productService;
+        this.eventPublisher = eventPublisher;
     }
 
     @Transactional
@@ -33,11 +36,10 @@ public class MenuService {
         final List<MenuProductRequest> menuProducts = menuRequest.getMenuProducts();
 
         menuProducts.stream()
-                    .map(menuProductRequest -> new MenuProduct(menu, productService.getProduct(menuProductRequest.getProductId()), menuProductRequest.getQuantity()))
+                    .map(menuProductRequest -> new MenuProduct(menu, new Product(menuProductRequest.getProductId()), menuProductRequest.getQuantity()))
                     .forEach(menu::addMenuProduct);
 
-        menu.getMenuProducts().checkOverPrice(menuRequest.getPrice());
-
+        eventPublisher.publishEvent(new MenuCreatedEvent(menu));
         return menuRepository.save(menu);
     }
     @Transactional(readOnly=true)
