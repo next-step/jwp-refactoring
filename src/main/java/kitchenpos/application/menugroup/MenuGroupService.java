@@ -3,8 +3,10 @@ package kitchenpos.application.menugroup;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import kitchenpos.domain.menugroup.MenuGroup;
 import kitchenpos.domain.menugroup.MenuGroupRepository;
 import kitchenpos.dto.menugroup.MenuGroupDto;
+import kitchenpos.exception.menu.NotFoundMenuGroupException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,5 +28,9 @@ public class MenuGroupService {
         return menuGroupRepository.findAll().stream()
                                     .map(MenuGroupDto::of)
                                     .collect(Collectors.toList());
+    }
+
+    public MenuGroup findById(Long menuGroupId) {
+        return menuGroupRepository.findById(menuGroupId).orElseThrow(NotFoundMenuGroupException::new);
     }
 }

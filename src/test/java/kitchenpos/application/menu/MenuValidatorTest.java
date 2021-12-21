@@ -1,8 +1,10 @@
 package kitchenpos.application.menu;
 
 import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.Mockito.when;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.assertj.core.api.Assertions;
@@ -13,22 +15,25 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import kitchenpos.application.menugroup.MenuGroupService;
 import kitchenpos.application.product.ProductService;
 import kitchenpos.domain.Price;
 import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menu.MenuProduct;
 import kitchenpos.domain.menu.MenuProducts;
 import kitchenpos.domain.menugroup.MenuGroup;
-import kitchenpos.domain.menugroup.MenuGroupRepository;
 import kitchenpos.domain.product.Product;
+import kitchenpos.dto.menu.MenuDto;
+import kitchenpos.dto.menu.MenuProductDto;
 import kitchenpos.exception.menu.NotCorrectMenuPriceException;
+import kitchenpos.exception.menu.NotFoundMenuGroupException;
 import kitchenpos.exception.product.NotFoundProductException;
 import kitchenpos.vo.MenuGroupId;
 
 @ExtendWith(MockitoExtension.class)
 public class MenuValidatorTest {
     @Mock
-    private MenuGroupRepository menuGroupRepository;
+    private MenuGroupService menuGroupService;
 
     @Mock
     private ProductService productService;
@@ -53,11 +58,12 @@ public class MenuValidatorTest {
         Menu 뿌링클콤보 = Menu.of("뿌링클콤보", Price.of(18_000), MenuGroupId.of(치킨_메뉴그룹), MenuProducts.of(List.of(뿌링클콤보_뿌링클치킨, 뿌링클콤보_치킨무, 뿌링클콤보_코카콜라)));
 
         when(productService.findAllByIds(anyList())).thenReturn(List.of(뿌링클치킨, 치킨무));
-
+        when(menuGroupService.findById(nullable(Long.class))).thenReturn(치킨_메뉴그룹);
+        
         // when
         // then
         Assertions.assertThatExceptionOfType(NotFoundProductException.class)
-                    .isThrownBy(() -> menuValidator.validateForCreate(뿌링클콤보));
+                    .isThrownBy(() -> menuValidator.getValidatedMenu(MenuDto.of(뿌링클콤보)));
     }
 
     @DisplayName("메뉴등록시 메뉴 가격이 상품의 가격 총합이 보다 클 시 예외가 발생된다.")
@@ -77,10 +83,27 @@ public class MenuValidatorTest {
         Menu 뿌링클콤보 = Menu.of("뿌링클콤보", Price.of(28_000), MenuGroupId.of(치킨_메뉴그룹), MenuProducts.of(List.of(뿌링클콤보_뿌링클치킨, 뿌링클콤보_치킨무, 뿌링클콤보_코카콜라)));
 
         when(productService.findAllByIds(anyList())).thenReturn(List.of(뿌링클치킨, 치킨무, 코카콜라));
+        when(menuGroupService.findById(nullable(Long.class))).thenReturn(치킨_메뉴그룹);
 
         // when
         // then
         Assertions.assertThatExceptionOfType(NotCorrectMenuPriceException.class)
-                    .isThrownBy(() -> menuValidator.validateForCreate(뿌링클콤보));
+                    .isThrownBy(() -> menuValidator.getValidatedMenu(MenuDto.of(뿌링클콤보)));
+    }
+
+
+    @DisplayName("메뉴에대한 메뉴그룹이 없으면 예외가 발생한다.")
+    @Test
+    void exception_createMenu_containNotExistMenuGroup() {
+        // given
+        MenuGroup 치킨_메뉴그룹 = MenuGroup.of("치킨");
+        Menu 뿌링클콤보 = Menu.of("뿌링클콤보", Price.of(18_000), MenuGroupId.of(치킨_메뉴그룹));
+
+        when(menuGroupService.findById(nullable(Long.class))).thenThrow(NotFoundMenuGroupException.class);
+
+        // when
+        // then
+        Assertions.assertThatExceptionOfType(NotFoundMenuGroupException.class)
+                    .isThrownBy(() -> menuValidator.getValidatedMenu(MenuDto.of(뿌링클콤보.getName(), BigDecimal.valueOf(18_000), 치킨_메뉴그룹.getId(), List.of(MenuProductDto.of(1L, 1L), MenuProductDto.of(2L, 1L), MenuProductDto.of(3L, 1L)))));
     }
 }
