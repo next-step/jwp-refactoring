@@ -3,7 +3,7 @@ package kitchenpos.menu.fixture;
 import kitchenpos.common.domain.fixture.NameFixture;
 import kitchenpos.common.domain.fixture.PriceFixture;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu_group.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProducts;
 

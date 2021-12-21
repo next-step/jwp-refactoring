@@ -1,6 +1,6 @@
-package kitchenpos.menu.dto;
+package kitchenpos.menu_group.dto;
 
-import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu_group.domain.MenuGroup;
 
 public class MenuGroupResponse {
     private Long id;

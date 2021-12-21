@@ -1,11 +1,11 @@
 package kitchenpos.order.application;
 
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu_group.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.fixture.MenuFixture;
-import kitchenpos.menu.fixture.MenuGroupFixture;
+import kitchenpos.menu_group.fixture.MenuGroupFixture;
 import kitchenpos.menu.fixture.MenuProductFixture;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;

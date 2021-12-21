@@ -1,4 +1,4 @@
-package kitchenpos.menu.domain;
+package kitchenpos.menu_group.domain;
 
 import kitchenpos.common.domain.Name;
 import org.springframework.util.Assert;

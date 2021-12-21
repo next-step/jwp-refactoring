@@ -1,10 +1,10 @@
-package kitchenpos.menu.acceptance.step;
+package kitchenpos.menu_group.acceptance.step;
 
 import io.restassured.mapper.TypeRef;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.menu.dto.MenuGroupRequest;
-import kitchenpos.menu.dto.MenuGroupResponse;
+import kitchenpos.menu_group.dto.MenuGroupRequest;
+import kitchenpos.menu_group.dto.MenuGroupResponse;
 import org.springframework.http.HttpStatus;
 
 import java.util.List;
