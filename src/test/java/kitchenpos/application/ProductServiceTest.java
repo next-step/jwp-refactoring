@@ -94,9 +94,7 @@ class ProductServiceTest {
     }
 
     public static Product getProduct(Long id, String name, int price) {
-        final Product expected = Product.of(name, price);
-        expected.setId(id);
-        expected.setPrice(BigDecimal.valueOf(price));
+        final Product expected = Product.generate(id, name, price);
         return expected;
     }
 

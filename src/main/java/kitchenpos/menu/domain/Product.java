@@ -25,6 +25,12 @@ public class Product {
         this.price = ProductPrice.of(price);
     }
 
+    public Product(Long id, String name, int price) {
+        this.id = id;
+        this.name = ProductName.of(name);
+        this.price = ProductPrice.of(price);
+    }
+
     public static Product of(String name, int price) {
         return new Product(name, BigDecimal.valueOf(price));
     }
@@ -33,28 +39,20 @@ public class Product {
         return new Product(name, price);
     }
 
-    public Long getId() {
-        return id;
+    public static Product generate(Long id, String name, int price) {
+        return new Product(id, name, price);
     }
 
-    public void setId(final Long id) {
-        this.id = id;
+    public Long getId() {
+        return id;
     }
 
     public String getName() {
         return name.getName();
     }
 
-    public void setName(final String name) {
-        this.name = ProductName.of(name);
-    }
-
     public BigDecimal getPrice() {
         return price.getPrice();
-    }
-
-    public void setPrice(final BigDecimal price) {
-        this.price = ProductPrice.of(price);
     }
 
     public boolean matchName(String targetName) {

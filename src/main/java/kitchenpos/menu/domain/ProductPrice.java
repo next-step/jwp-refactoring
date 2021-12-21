@@ -26,6 +26,9 @@ public class ProductPrice {
     public static ProductPrice of(BigDecimal price) {
         return new ProductPrice(price);
     }
+    public static ProductPrice of(int price) {
+        return new ProductPrice(BigDecimal.valueOf(price));
+    }
 
     public boolean matchPrice(BigDecimal targetPrice) {
         return price.compareTo(targetPrice) == 0;
