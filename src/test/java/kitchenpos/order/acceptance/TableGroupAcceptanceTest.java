@@ -65,7 +65,7 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
         테이블_그룹의_테이블_제거됨(response);
     }
 
-    private ExtractableResponse<Response> 테이블_그룹_생성_요청(TableGroupRequest request) {
+    public static ExtractableResponse<Response> 테이블_그룹_생성_요청(TableGroupRequest request) {
         return RestAssured
             .given().log().all()
             .body(request)

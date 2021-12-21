@@ -1,10 +1,12 @@
 package kitchenpos.order.acceptance;
 
+import static kitchenpos.order.acceptance.TableGroupAcceptanceTest.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -19,6 +21,7 @@ import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.order.dto.OrderTableResponse;
+import kitchenpos.order.dto.TableGroupRequest;
 
 @DisplayName("주문 테이블 관련 기능")
 class TableAcceptanceTest extends AcceptanceTest {
@@ -46,6 +49,10 @@ class TableAcceptanceTest extends AcceptanceTest {
             주문_테이블_생성_요청(new OrderTableRequest(2, true))
                 .as(OrderTableResponse.class)
         );
+
+        테이블_그룹_생성_요청(new TableGroupRequest(orderTableResponses.stream()
+            .map(OrderTableResponse::getId)
+            .collect(Collectors.toList())));
 
         // when
         ExtractableResponse<Response> response = 주문_테이블_목록_조회_요청();
@@ -141,7 +148,9 @@ class TableAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.as(new TypeRef<List<OrderTableResponse>>() {
         }))
-            .containsExactlyElementsOf(responses);
+            .extracting("id")
+            .containsExactlyElementsOf(responses.stream().map(OrderTableResponse::getId)
+                .collect(Collectors.toList()));
     }
 
     private void 주문_테이블_empty_갱신됨(ExtractableResponse<Response> response, boolean empty) {
