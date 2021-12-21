@@ -10,6 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -46,6 +47,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
     private void 테이블_생성_됨(ExtractableResponse<Response> response) {
         OrderTable 생성된_테이블 = response.as(OrderTable.class);
         assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
                 () -> assertThat(생성된_테이블.getId()).isNotNull(),
                 () -> assertThat(생성된_테이블.getTableGroupId()).isNull(),
                 () -> assertThat(생성된_테이블.getNumberOfGuests()).isZero(),
@@ -78,7 +80,11 @@ public class TableAcceptanceTest extends AcceptanceTest {
 
     private void 테이블_사용여부_변경됨(ExtractableResponse<Response> response) {
         OrderTable 사용여부_변경된_테이블 = response.as(OrderTable.class);
-        assertThat(사용여부_변경된_테이블.isEmpty()).isFalse();
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(사용여부_변경된_테이블.isEmpty()).isFalse()
+        );
+
     }
 
     public ExtractableResponse<Response> 테이블_사용여부_변경_요청(OrderTable savedOrderTable, OrderTable orderTable) {
@@ -105,7 +111,10 @@ public class TableAcceptanceTest extends AcceptanceTest {
 
     private void 방문한_손님_수_변경됨(ExtractableResponse<Response> response) {
         OrderTable 변경된_손님_수 = response.as(OrderTable.class);
-        assertThat(변경된_손님_수.getNumberOfGuests()).isOne();
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(변경된_손님_수.getNumberOfGuests()).isOne()
+        );
     }
 
     public ExtractableResponse<Response> 방문한_손님_수_변경_요청(OrderTable orderTable) {

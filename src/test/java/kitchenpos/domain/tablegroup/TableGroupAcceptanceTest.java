@@ -53,6 +53,7 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
     private void 단체_지정_됨(final ExtractableResponse<Response> response) {
         final TableGroup 생성된_단체 = response.as(TableGroup.class);
         assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
                 () -> assertThat(생성된_단체.getId()).isNotNull(),
                 () -> assertThat(생성된_단체.getOrderTables()).extracting("tableGroupId").contains(생성된_단체.getId()),
                 () -> assertThat(생성된_단체.getOrderTables()).extracting("empty").contains(false)

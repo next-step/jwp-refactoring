@@ -7,6 +7,7 @@ import kitchenpos.AcceptanceTest;
 import kitchenpos.domain.MenuGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -31,6 +32,7 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
     private void 메뉴_그룹_등록됨(ExtractableResponse<Response> response) {
         MenuGroup 등록된_메뉴_그룹 = response.as(MenuGroup.class);
         assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
                 () -> assertThat(등록된_메뉴_그룹.getId()).isNotNull(),
                 () -> assertThat(등록된_메뉴_그룹.getName()).isEqualTo("추천메뉴")
         );

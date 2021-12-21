@@ -14,6 +14,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.math.BigDecimal;
@@ -59,6 +60,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     private void 메뉴_등록됨(ExtractableResponse<Response> response) {
         Menu 등록된_메뉴 = response.as(Menu.class);
         assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
                 () -> assertThat(등록된_메뉴.getId()).isNotNull(),
                 () -> assertThat(등록된_메뉴.getName()).isEqualTo("후라이드+후라이드"),
                 () -> assertThat(등록된_메뉴.getPrice()).isEqualByComparingTo(BigDecimal.valueOf(19000)),

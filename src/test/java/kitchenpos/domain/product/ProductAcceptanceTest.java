@@ -7,6 +7,7 @@ import kitchenpos.AcceptanceTest;
 import kitchenpos.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.math.BigDecimal;
@@ -31,9 +32,10 @@ public class ProductAcceptanceTest extends AcceptanceTest {
 
     }
 
-    private void 상품_등록됨(ExtractableResponse<Response> 상품_등록_요청_응답) {
-        Product 등록된_상품 = 상품_등록_요청_응답.as(Product.class);
+    private void 상품_등록됨(ExtractableResponse<Response> response) {
+        Product 등록된_상품 = response.as(Product.class);
         assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
                 () -> assertThat(등록된_상품.getId()).isNotNull(),
                 () -> assertThat(등록된_상품.getName()).isEqualTo("후라이드"),
                 () -> assertThat(등록된_상품.getPrice()).isEqualByComparingTo(BigDecimal.valueOf(17000))

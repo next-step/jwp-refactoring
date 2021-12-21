@@ -12,6 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.math.BigDecimal;
@@ -58,9 +59,10 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         주문_완료_됨(주문_요청_응답);
     }
 
-    private void 주문_완료_됨(final ExtractableResponse<Response> 주문_요청_응답) {
-        final Order 완료된_주문 = 주문_요청_응답.as(Order.class);
+    private void 주문_완료_됨(final ExtractableResponse<Response> response) {
+        final Order 완료된_주문 = response.as(Order.class);
         assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
                 () -> assertThat(완료된_주문.getId()).isNotNull(),
                 () -> assertThat(완료된_주문.getOrderTableId()).isEqualTo(orderTable.getId()),
                 () -> assertThat(완료된_주문.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name()),
@@ -92,7 +94,10 @@ public class OrderAcceptanceTest extends AcceptanceTest {
 
     private void 주문_상태_변경_됨(final ExtractableResponse<Response> response) {
         final Order 변경된_주문_상태 = response.as(Order.class);
-        assertThat(변경된_주문_상태.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION.name());
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(변경된_주문_상태.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION.name())
+        );
     }
 
     public ExtractableResponse<Response> 주문_상태_변경_요청(final Order order) {
