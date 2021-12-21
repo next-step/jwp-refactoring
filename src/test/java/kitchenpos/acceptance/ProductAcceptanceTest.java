@@ -3,7 +3,7 @@ package kitchenpos.acceptance;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.Product;
+import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -20,9 +20,7 @@ class ProductAcceptanceTest extends AcceptanceTest {
     @Test
     void manageProduct() {
         // given
-        Product product = new Product();
-        product.setName("강정치킨");
-        product.setPrice(BigDecimal.valueOf(17_000));
+        Product product = Product.of("강정치킨", BigDecimal.valueOf(17_000));
 
         // when
         ExtractableResponse<Response> 상품_생성_응답 = 상품_생성_요청(product);
@@ -52,9 +50,7 @@ class ProductAcceptanceTest extends AcceptanceTest {
     }
 
     public static Product 상품_등록되어_있음(String name, long price) {
-        Product product = new Product();
-        product.setName(name);
-        product.setPrice(BigDecimal.valueOf(price));
+        Product product = Product.of(name, BigDecimal.valueOf(price));
 
         return 상품_생성_요청(product).as(Product.class);
     }

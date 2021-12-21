@@ -1,7 +1,9 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.ProductDao;
-import kitchenpos.domain.Product;
+import kitchenpos.product.application.ProductService;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductDao;
+import kitchenpos.product.dto.ProductRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,9 +35,7 @@ class ProductServiceTest {
     @Test
     void create_success() {
         // given
-        Product 요청_상품 = new Product();
-        요청_상품.setName("강정치킨");
-        요청_상품.setPrice(BigDecimal.valueOf(17_000));
+        ProductRequest 요청_상품 = ProductRequest.of("강정치킨", BigDecimal.valueOf(17_000));
 
         given(productDao.save(any(Product.class))).willReturn(강정치킨);
 
@@ -50,9 +50,7 @@ class ProductServiceTest {
     @Test
     void create_failure_invalidPrice() {
         // given
-        Product 요청_상품 = new Product();
-        요청_상품.setName("강정치킨");
-        요청_상품.setPrice(BigDecimal.valueOf(-1));
+        ProductRequest 요청_상품 = ProductRequest.of("강정치킨", BigDecimal.valueOf(-1));
 
         // when & then
         assertThatIllegalArgumentException()
