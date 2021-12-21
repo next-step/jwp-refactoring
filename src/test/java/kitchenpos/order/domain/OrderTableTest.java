@@ -3,7 +3,6 @@ package kitchenpos.order.domain;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -36,8 +35,7 @@ class OrderTableTest {
             new OrderTable(0, true));
 
         OrderTable orderTable = new OrderTable(
-            1L, new TableGroup(1L, LocalDateTime.now(), new OrderTables(orderTables)),
-            0, true);
+            1L, TableGroup.of(orderTables), 0, true);
 
         // when && then
         assertThatThrownBy(() -> orderTable.changeEmpty(false))

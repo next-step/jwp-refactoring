@@ -36,14 +36,19 @@ public class TableGroupService {
     @Transactional
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
         final List<Long> orderTableIds = tableGroupRequest.getOrderTables();
-        final List<OrderTable> savedOrderTables = orderTableRepository.findAllByIdIn(orderTableIds);
+        final List<OrderTable> findOrderTables = findOrderTablesByOrderTableIds(orderTableIds);
 
-        if (orderTableIds.size() != savedOrderTables.size()) {
+        final TableGroup savedTableGroup = tableGroupRepository.save(TableGroup.of(findOrderTables));
+        return new TableGroupResponse(savedTableGroup);
+    }
+
+    private List<OrderTable> findOrderTablesByOrderTableIds(List<Long> orderTableIds) {
+        final List<OrderTable> findOrderTables = orderTableRepository.findAllByIdIn(orderTableIds);
+
+        if (orderTableIds.size() != findOrderTables.size()) {
             throw new BadRequestException(WRONG_VALUE);
         }
-
-        final TableGroup savedTableGroup = tableGroupRepository.save(new TableGroup(savedOrderTables));
-        return new TableGroupResponse(savedTableGroup);
+        return findOrderTables;
     }
 
     @Transactional
@@ -51,6 +56,13 @@ public class TableGroupService {
         TableGroup findTableGroup = tableGroupRepository.findById(tableGroupId)
             .orElseThrow(() -> new NotFoundException(NOT_FOUND_DATA));
 
+        validateOrderStatus(findTableGroup);
+
+        findTableGroup.ungroup();
+        tableGroupRepository.delete(findTableGroup);
+    }
+
+    private void validateOrderStatus(TableGroup findTableGroup) {
         List<Long> orderIds = findTableGroup.getOrderTables().getValue().stream()
             .map(OrderTable::getId)
             .collect(Collectors.toList());
@@ -59,8 +71,5 @@ public class TableGroupService {
             orderIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
             throw new BadRequestException(CANNOT_CHANGE_STATUS);
         }
-
-        findTableGroup.ungroup();
-        tableGroupRepository.delete(findTableGroup);
     }
 }

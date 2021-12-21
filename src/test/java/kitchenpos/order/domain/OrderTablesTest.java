@@ -56,7 +56,7 @@ class OrderTablesTest {
     @Test
     void validateOrderTableEmptyAndNonExistGroupTable() {
         List<OrderTable> existTableGroup = Arrays.asList(
-            new OrderTable(1L, new TableGroup(this.orderTables), 0, true),
+            new OrderTable(1L, TableGroup.of(this.orderTables), 0, true),
             new OrderTable(0, true));
 
         List<OrderTable> emptyOrderTables = Arrays.asList(
