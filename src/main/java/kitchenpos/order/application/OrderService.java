@@ -14,6 +14,7 @@ import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.dto.OrderDto;
+import kitchenpos.order.dto.OrderLineItemDto;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
@@ -36,17 +37,21 @@ public class OrderService {
 	public OrderDto create(OrderRequest request) {
 		OrderTable orderTable = orderTableRepository.findById(request.getOrderTableId())
 			.orElseThrow(IllegalArgumentException::new);
-		OrderLineItems orderLineItems = OrderLineItems.of(
-			request.getOrderLineItems()
+		OrderLineItems orderLineItems = findOrderLineItems(request.getOrderLineItems());
+		Order order = orderRepository.save(Order.of(orderTable, orderLineItems));
+		return OrderDto.of(order);
+	}
+
+	private OrderLineItems findOrderLineItems(List<OrderLineItemDto> orderLineItems) {
+		return OrderLineItems.of(
+			orderLineItems
 				.stream()
 				.map(ol -> {
 					Menu menu = menuRepository.findById(ol.getMenuId()).orElseThrow(IllegalArgumentException::new);
 					Quantity quantity = Quantity.of(ol.getQuantity());
 					return OrderLineItem.of(menu, quantity);
-				}).collect(Collectors.toList()));
-
-		Order order = orderRepository.save(Order.of(orderTable, orderLineItems));
-		return OrderDto.of(order);
+				})
+				.collect(Collectors.toList()));
 	}
 
 	public List<OrderDto> list() {
