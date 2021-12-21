@@ -7,7 +7,6 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 import static org.assertj.core.api.Assertions.assertThatNoException;
 
 import java.util.Collections;
-import kichenpos.common.domain.Validator;
 import kichenpos.common.exception.InvalidStatusException;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.DisplayName;
@@ -50,8 +49,7 @@ class OrderTest {
     void changeStatus(OrderStatus updatedStatus) {
         //given
         Order order = Order.of(1L,
-            Collections.singletonList(이십원_후라이트치킨_두마리세트_한개_주문_항목()))
-            .get(Validator.fake());
+            Collections.singletonList(이십원_후라이트치킨_두마리세트_한개_주문_항목()));
 
         //when
         order.changeStatus(updatedStatus);
@@ -65,8 +63,7 @@ class OrderTest {
     void changeStatus_completedOrder_thrownInvalidStatusException() {
         //given
         Order order = Order.of(1L,
-            Collections.singletonList(이십원_후라이트치킨_두마리세트_한개_주문_항목()))
-            .get(Validator.fake());
+            Collections.singletonList(이십원_후라이트치킨_두마리세트_한개_주문_항목()));
         order.changeStatus(OrderStatus.COMPLETION);
 
         //when
@@ -84,8 +81,7 @@ class OrderTest {
     void isCompleted(OrderStatus status, boolean expected) {
         //given
         Order order = Order.of(1L,
-            Collections.singletonList(이십원_후라이트치킨_두마리세트_한개_주문_항목()))
-            .get(Validator.fake());
+            Collections.singletonList(이십원_후라이트치킨_두마리세트_한개_주문_항목()));
         order.changeStatus(status);
 
         //when, then

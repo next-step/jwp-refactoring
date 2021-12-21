@@ -15,7 +15,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Table;
-import kichenpos.common.domain.RequireValidation;
 import kichenpos.common.exception.InvalidStatusException;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -55,8 +54,8 @@ public class Order {
         this.orderLineItems = lineItems;
     }
 
-    public static RequireValidation<Order> of(long orderTableId, List<OrderLineItem> lineItems) {
-        return RequireValidation.from(new Order(orderTableId, OrderLineItems.from(lineItems)));
+    public static Order of(long orderTableId, List<OrderLineItem> lineItems) {
+        return new Order(orderTableId, OrderLineItems.from(lineItems));
     }
 
     public long id() {
