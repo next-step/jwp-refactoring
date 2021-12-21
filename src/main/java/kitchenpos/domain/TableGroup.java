@@ -26,10 +26,7 @@ public class TableGroup {
 
     public TableGroup(List<OrderTable> orderTables) {
 
-        for (final OrderTable orderTable : orderTables) {
-            orderTable.checkAvailable();
-            orderTable.changeNonEmptyOrderTable();
-        }
+
         this.orderTables = orderTables;
         this.createdDate = LocalDateTime.now();
     }

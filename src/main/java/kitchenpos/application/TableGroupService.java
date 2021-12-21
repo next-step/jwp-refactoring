@@ -1,46 +1,54 @@
 package kitchenpos.application;
 
-import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.TableGroupRequest;
-import kitchenpos.repository.OrderTableRepository;
+import kitchenpos.event.TableGroupCreatedEvent;
+import kitchenpos.event.TableGroupUnGroupEvent;
 import kitchenpos.repository.TableGroupRepository;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class TableGroupService {
 
-    private final OrderTableRepository orderTableRepository;
     private final TableGroupRepository tableGroupRepository;
+    private final TableService tableService;
 
-    public TableGroupService(OrderTableRepository orderTableRepository, TableGroupRepository tableGroupRepository) {
-        this.orderTableRepository = orderTableRepository;
+    private final ApplicationEventPublisher publisher;
+
+
+    public TableGroupService(TableGroupRepository tableGroupRepository, TableService tableService, ApplicationEventPublisher publisher) {
         this.tableGroupRepository = tableGroupRepository;
+        this.tableService = tableService;
+        this.publisher = publisher;
     }
 
     @Transactional
     public TableGroup create(final TableGroupRequest tableGroupRequest) {
 
         final List<Long> orderTableIds = tableGroupRequest.getOrderTables();
-        List<OrderTable> orderTables = new ArrayList<>();
+        List<OrderTable> orderTables = orderTableIds.stream()
+                                                    .map(tableService::getOrderTable)
+                                                    .collect(Collectors.toList());
 
-        for (Long orderTableId : orderTableIds) {
-            OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-                                                            .orElseThrow(() -> new IllegalArgumentException("등록된 주문테이블이 아닙니다."));
-            orderTables.add(savedOrderTable);
-        }
-        return tableGroupRepository.save(new TableGroup(orderTables));
+        TableGroup tableGroup = new TableGroup(orderTables);
+        publisher.publishEvent(new TableGroupCreatedEvent(tableGroup));
+
+        return tableGroupRepository.save(tableGroup);
     }
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
 
-        TableGroup tableGroup = tableGroupRepository.findById(tableGroupId).orElseThrow(() -> new IllegalArgumentException("해당 단체지정이 등록되어 있지 않습니다."));
-        final List<OrderTable> orderTables = orderTableRepository.findAllByTableGroup(tableGroup);
+        TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
+                                                    .orElseThrow(() -> new IllegalArgumentException("해당 단체지정이 등록되어 있지 않습니다."));
 
-        orderTables.forEach(OrderTable::unGroup);
+        final List<OrderTable> orderTables = tableService.getOrderTablesByTableGroup(tableGroup);
+        publisher.publishEvent(new TableGroupUnGroupEvent(orderTables));
+
     }
 }

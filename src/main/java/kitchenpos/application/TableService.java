@@ -1,24 +1,20 @@
 package kitchenpos.application;
 
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.OrderTableRequest;
-import kitchenpos.repository.OrderRepository;
 import kitchenpos.repository.OrderTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.List;
 
 @Service
 public class TableService {
-    private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
 
-    public TableService(OrderRepository orderRepository, OrderTableRepository orderTableRepository) {
-        this.orderRepository = orderRepository;
+
+    public TableService(OrderTableRepository orderTableRepository) {
         this.orderTableRepository = orderTableRepository;
     }
 
@@ -50,5 +46,14 @@ public class TableService {
         savedOrderTable.checkIsEmpty();
         savedOrderTable.changeNumberOfGuests(orderTableRequest.getNumberOfGuests());
         return orderTableRepository.save(savedOrderTable);
+    }
+
+    public OrderTable getOrderTable(Long id) {
+        return orderTableRepository.findById(id)
+                                    .orElseThrow(() -> new IllegalArgumentException("등록된 주문테이블이 아닙니다."));
+    }
+
+    public List<OrderTable> getOrderTablesByTableGroup(TableGroup tableGroup) {
+        return orderTableRepository.findAllByTableGroup(tableGroup);
     }
 }
