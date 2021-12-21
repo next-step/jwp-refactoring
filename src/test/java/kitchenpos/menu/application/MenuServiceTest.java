@@ -5,6 +5,7 @@ import kitchenpos.fixture.ProductFixture;
 import kitchenpos.menu.domain.*;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menuGroup.domain.MenuGroup;
 import kitchenpos.product.domain.Product;
 import kitchenpos.menuGroup.domain.MenuGroupRepository;
@@ -69,7 +70,7 @@ public class MenuServiceTest {
         given(menuRepository.save(any())).willReturn(후라이드두마리세트);
         given(productRepository.findById(any())).willReturn(java.util.Optional.ofNullable(후라이드));
 
-        Menu creatMenu = menuService.create(MenuRequest.of("후라이드두마리세트", new BigDecimal("10000"), 치킨류.getId(), Arrays.asList(후라이드두마리구성Request)));
+        MenuResponse creatMenu = menuService.create(MenuRequest.of("후라이드두마리세트", new BigDecimal("10000"), 치킨류.getId(), Arrays.asList(후라이드두마리구성Request)));
 
         assertAll(
                 () -> assertThat(creatMenu).isNotNull(),
@@ -109,11 +110,11 @@ public class MenuServiceTest {
     void list() {
         given(menuRepository.findAll()).willReturn(Arrays.asList(후라이드두마리세트));
 
-        List<Menu> menus = menuService.list();
+        List<MenuResponse> menus = menuService.list();
 
         assertAll(
                 () -> assertThat(menus.size()).isEqualTo(1),
-                () -> assertThat(menus.contains(후라이드두마리세트)).isTrue()
+                () -> assertThat(menus.get(0).getName()).isEqualTo("후라이드두마리세트")
         );
     }
 }

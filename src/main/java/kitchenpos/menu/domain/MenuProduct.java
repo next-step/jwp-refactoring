@@ -39,6 +39,14 @@ public class MenuProduct {
         return productPrice.multiply(BigDecimal.valueOf(this.quantity));
     }
 
+    public Long getSeq() {
+        return seq;
+    }
+
+    public Long getMenuId(){
+        return menu.getId();
+    }
+
     public Product getProduct() {
         return product;
     }

@@ -31,8 +31,11 @@ public class OrderTable {
         return id;
     }
 
-    public TableGroup getTableGroup() {
-        return tableGroup;
+    public Long getTableGroupId() {
+        if (tableGroup == null) {
+            return null;
+        }
+        return tableGroup.getId();
     }
 
     public int getNumberOfGuests() {
@@ -61,4 +64,6 @@ public class OrderTable {
     public void updateTableGroup(TableGroup tableGroup) {
         this.tableGroup = tableGroup;
     }
+
+
 }

@@ -53,13 +53,15 @@ public class Menu {
         return price;
     }
 
-    public Long getMenuGroup() {
+    public Long getMenuGroupId() {
         return menuGroup.getId();
     }
 
     public List<MenuProduct> getMenuProducts() {
         return menuProducts.getList();
     }
+
+
 
     public void addMenuProducts(List<MenuProduct> menuProducts) {
         menuProducts.stream()

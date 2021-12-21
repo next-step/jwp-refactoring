@@ -6,6 +6,7 @@ import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -66,12 +67,12 @@ public class OrderServiceTest {
         given(orderRepository.save(any())).willReturn(총주문);
         given(menuRepository.findById(any())).willReturn(java.util.Optional.ofNullable(후라이드두마리세트));
 
-        Order createOrder = orderService.create(총주문Request);
+        OrderResponse createOrder = orderService.create(총주문Request);
 
         assertAll(
                 () -> assertThat(createOrder).isNotNull(),
-                () -> assertThat(createOrder.getOrderStatus()).isEqualTo(OrderStatus.COOKING),
-                () -> assertThat(createOrder.getOrderLineItems().contains(후라이드두마리세트_2개_주문함)).isTrue()
+                () -> assertThat(createOrder.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name()),
+                () -> assertThat(createOrder.getOrderLineItems().get(0).getQuantity()).isEqualTo(2)
         );
 
     }
@@ -81,12 +82,9 @@ public class OrderServiceTest {
     void list() {
         given(orderRepository.findAll()).willReturn(Arrays.asList(총주문));
 
-        List<Order> orders = orderService.list();
+        List<OrderResponse> orders = orderService.list();
 
-        assertAll(
-                () -> assertThat(orders.size()).isEqualTo(1),
-                () -> assertThat(orders.contains(총주문)).isTrue()
-        );
+        assertThat(orders.size()).isEqualTo(1);
     }
 
     @DisplayName("주문 상태를 식사로 변경 할 수 있다.")

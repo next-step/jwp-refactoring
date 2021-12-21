@@ -30,7 +30,7 @@ public class TableGroupTest {
 
         assertAll(
                 () -> assertThat(tableGroup.getOrderTables().contains(orderTable)).isFalse(),
-                () -> assertThat(orderTable.getTableGroup()).isNull()
+                () -> assertThat(orderTable.getTableGroupId()).isNull()
         );
     }
 }

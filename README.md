@@ -87,6 +87,5 @@
 * [x] productService 리팩토링
 * [x] tableService 리팩토링
 * [x] tableGroupService 리팩토링
-* [ ] DTO 를 이용하여 Response, Request 분리
-* [x] fixture 정의
-* [ ] 에러 처리
+* [x] DTO 를 이용하여 Response, Request 분리
+* [x] fixture 사용

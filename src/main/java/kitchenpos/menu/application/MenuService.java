@@ -1,6 +1,7 @@
 package kitchenpos.menu.application;
 
 import kitchenpos.menu.domain.*;
+import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.product.domain.Product;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
@@ -12,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -31,7 +33,7 @@ public class MenuService {
     }
 
     @Transactional
-    public Menu create(final MenuRequest menuRequest) {
+    public MenuResponse create(final MenuRequest menuRequest) {
         final MenuGroup menuGroup = getMenuGroup(menuRequest.getMenuGroupId());
         final Menu menu = menuRequest.toMenu(menuGroup);
         final List<MenuProduct> menuProducts = getMenuProducts(menuRequest.getMenuProducts());
@@ -40,11 +42,14 @@ public class MenuService {
 
         final Menu savedMenu = menuRepository.save(menu);
 
-        return savedMenu;
+        return MenuResponse.from(savedMenu);
     }
 
-    public List<Menu> list() {
-        return menuRepository.findAll();
+    public List<MenuResponse> list() {
+        return menuRepository.findAll()
+                .stream()
+                .map(MenuResponse::from)
+                .collect(Collectors.toList());
     }
 
     private List<MenuProduct> getMenuProducts(List<MenuProductRequest> menuProducts) {

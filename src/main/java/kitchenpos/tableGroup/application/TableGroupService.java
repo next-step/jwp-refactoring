@@ -9,6 +9,7 @@ import kitchenpos.order.domain.OrderTableRepository;
 import kitchenpos.tableGroup.domain.TableGroupRepository;
 import kitchenpos.tableGroup.dto.OrderTableIdRequest;
 import kitchenpos.tableGroup.dto.TableGroupRequest;
+import kitchenpos.tableGroup.dto.TableGroupResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -31,11 +32,11 @@ public class TableGroupService {
     }
 
     @Transactional
-    public TableGroup create(TableGroupRequest request) {
+    public TableGroupResponse create(TableGroupRequest request) {
         final List<OrderTable> orderTables = getOrderTable(request.getOrderTables());
         final TableGroup tableGroup = new TableGroup(orderTables);
         final TableGroup savedTableGroup = tableGroupRepository.save(tableGroup);
-        return savedTableGroup;
+        return TableGroupResponse.from(savedTableGroup);
     }
 
     @Transactional

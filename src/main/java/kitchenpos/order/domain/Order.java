@@ -35,22 +35,18 @@ public class Order {
     protected Order() {
     }
 
-    private Order(OrderTable orderTable) {
+    public Order(OrderTable orderTable) {
         this.orderTable = orderTable;
         this.orderStatus = OrderStatus.COOKING;
         this.orderLineItems = new OrderLineItems();
-    }
-
-    public static Order of(OrderTable orderTable){
-        return new Order(orderTable);
     }
 
     public Long getId() {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
+    public Long getOrderTableId() {
+        return orderTable.getId();
     }
 
     public LocalDateTime getOrderedTime() {
@@ -62,7 +58,7 @@ public class Order {
     }
 
     public void updateOrderStatus(OrderStatus orderStatus) {
-        if(this.orderStatus.isCompletion()){
+        if (this.orderStatus.isCompletion()) {
             throw new IllegalArgumentException();
         }
         this.orderStatus = orderStatus;
@@ -79,4 +75,5 @@ public class Order {
                     this.orderLineItems.add(orderLineItem);
                 });
     }
+
 }

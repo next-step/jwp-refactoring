@@ -1,15 +1,13 @@
 package kitchenpos.tableGroup.application;
 
-import kitchenpos.fixture.OrderFixture;
 import kitchenpos.fixture.OrderTableFixture;
 import kitchenpos.fixture.TableGroupFixture;
 import kitchenpos.order.domain.*;
-import kitchenpos.order.dto.OrderRequest;
-import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.tableGroup.domain.TableGroup;
 import kitchenpos.tableGroup.domain.TableGroupRepository;
 import kitchenpos.tableGroup.dto.OrderTableIdRequest;
 import kitchenpos.tableGroup.dto.TableGroupRequest;
+import kitchenpos.tableGroup.dto.TableGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -59,10 +57,10 @@ public class TableGroupServiceTest {
         given(orderTableRepository.findAllByIdIn(any())).willReturn(Arrays.asList(테이블1번, 테이블2번));
         given(tableGroupRepository.save(any())).willReturn(단체_지정);
 
-        TableGroup createTableGroup = tableGroupService.create(TableGroupFixture.샘플_Request());
+        TableGroupResponse create = tableGroupService.create(TableGroupFixture.샘플_Request());
 
         assertAll(
-                () -> assertThat(createTableGroup).isNotNull(),
+                () -> assertThat(create).isNotNull(),
                 () -> assertThat(테이블1번.isEmpty()).isFalse(),
                 () -> assertThat(테이블2번.isEmpty()).isFalse()
         );
@@ -102,8 +100,8 @@ public class TableGroupServiceTest {
         tableGroupService.ungroup(단체_지정.getId());
 
         assertAll(
-                () -> assertThat(테이블3번.getTableGroup()).isEqualTo(null),
-                () -> assertThat(테이블4번.getTableGroup()).isEqualTo(null)
+                () -> assertThat(테이블3번.getTableGroupId()).isEqualTo(null),
+                () -> assertThat(테이블4번.getTableGroupId()).isEqualTo(null)
         );
     }
 

@@ -10,7 +10,7 @@ import java.util.List;
 
 public class OrderFixture {
     public static Order 생성(OrderTable orderTable) {
-        return Order.of(orderTable);
+        return new Order(orderTable);
     }
 
     public static OrderRequest request생성(Long orderTableId, List<OrderLineItemRequest> orderLineItemRequests) {

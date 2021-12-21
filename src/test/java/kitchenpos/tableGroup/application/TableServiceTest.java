@@ -6,6 +6,7 @@ import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.OrderTableRepository;
 import kitchenpos.order.dto.OrderTableRequest;
+import kitchenpos.order.dto.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -48,7 +49,7 @@ public class TableServiceTest {
     void create() {
         given(orderTableRepository.save(any())).willReturn(주문테이블);
 
-        OrderTable createOrderTable = tableService.create(주문테이블_Request);
+        OrderTableResponse createOrderTable = tableService.create(주문테이블_Request);
 
         assertThat(createOrderTable).isNotNull();
     }
@@ -58,11 +59,11 @@ public class TableServiceTest {
     void list() {
         given(orderTableRepository.findAll()).willReturn(Arrays.asList(주문테이블));
 
-        List<OrderTable> orderTables = tableService.list();
+        List<OrderTableResponse> orderTables = tableService.list();
 
         assertAll(
                 () -> assertThat(orderTables.size()).isEqualTo(1),
-                () -> assertThat(orderTables.contains(주문테이블)).isTrue()
+                () -> assertThat(orderTables.get(0).getNumberOfGuests()).isEqualTo(0)
         );
     }
 
@@ -74,7 +75,7 @@ public class TableServiceTest {
         given(orderTableRepository.findById(any())).willReturn(java.util.Optional.of(빈주문테이블));
         given(orderTableRepository.save(any())).willReturn(빈주문테이블);
 
-        OrderTable changeOrderTable = tableService.changeEmpty(any(), OrderTableFixture.생성_Request(0,false));
+        OrderTableResponse changeOrderTable = tableService.changeEmpty(any(), OrderTableFixture.생성_Request(0,false));
 
         assertThat(changeOrderTable.isEmpty()).isFalse();
 
@@ -99,7 +100,7 @@ public class TableServiceTest {
         given(orderTableRepository.findById(any())).willReturn(java.util.Optional.ofNullable(주문테이블));
         given(orderTableRepository.save(any())).willReturn(주문테이블);
 
-        OrderTable changeNumberOfGuests = tableService.changeNumberOfGuests(any(), OrderTableFixture.생성_Request(10,true));
+        OrderTableResponse changeNumberOfGuests = tableService.changeNumberOfGuests(any(), OrderTableFixture.생성_Request(10,true));
 
         assertThat(changeNumberOfGuests.getNumberOfGuests()).isEqualTo(10);
     }
