@@ -1,13 +1,14 @@
 package kitchenpos.domain.order;
 
 import javax.persistence.Entity;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import kitchenpos.domain.menu.Menu;
+import kitchenpos.vo.MenuId;
 
 @Entity
 public class OrderLineItem {
@@ -19,22 +20,21 @@ public class OrderLineItem {
     @JoinColumn(name = "order_id")
     private Orders order;
 
-    @ManyToOne
-    @JoinColumn(name = "menu_id")
-    private Menu menu;
+    @Enumerated
+    private MenuId menuId;
 
     private long quantity;
 
     protected OrderLineItem() {
     }
 
-    private OrderLineItem(Menu menu, long quantity) {
-        this.menu = menu;
+    private OrderLineItem(MenuId menuId, long quantity) {
+        this.menuId = menuId;
         this.quantity = quantity;
     }
 
-    public static OrderLineItem of(Menu menu, long quantity) {
-        return new OrderLineItem(menu, quantity);
+    public static OrderLineItem of(MenuId menuId, long quantity) {
+        return new OrderLineItem(menuId, quantity);
     }
 
     public Long getSeq() {
@@ -44,8 +44,8 @@ public class OrderLineItem {
     public Orders getOrder() {
         return this.order;
     }
-    public Menu getMenu() {
-        return this.menu;
+    public MenuId getMenuId() {
+        return this.menuId;
     }
 
     public long getQuantity() {

@@ -6,12 +6,11 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import kitchenpos.domain.Price;
-import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.table.OrderTable;
 import kitchenpos.exception.order.EmptyOrderLineItemOrderException;
 import kitchenpos.exception.order.EmptyOrderTableOrderException;
 import kitchenpos.exception.order.NotChangableOrderStatusException;
+import kitchenpos.vo.MenuId;
 
 public class OrdersDomainTest {
     @DisplayName("빈테이블로 주문 생성시 시 예외가 발생된다.")
@@ -19,7 +18,7 @@ public class OrdersDomainTest {
     void exception_createOrder_emptyOrderTable() {
         // given
         OrderTable 주문테이블 = OrderTable.of(0, true);
-        OrderLineItems 주문항목 = OrderLineItems.of(List.of(OrderLineItem.of(Menu.of("메뉴", Price.of(2_000)), 1L)));
+        OrderLineItems 주문항목 = OrderLineItems.of(List.of(OrderLineItem.of(MenuId.of(1L), 1L)));
 
         // when
         // then
@@ -44,7 +43,7 @@ public class OrdersDomainTest {
     void update_orderStatus() {
         // given
         OrderTable 주문테이블 = OrderTable.of(3, false);
-        OrderLineItems 주문항목 = OrderLineItems.of(List.of(OrderLineItem.of(Menu.of("메뉴", Price.of(2_000)), 1L)));
+        OrderLineItems 주문항목 = OrderLineItems.of(List.of(OrderLineItem.of(MenuId.of(1L), 1L)));
         Orders 주문 = Orders.of(주문테이블, OrderStatus.MEAL, 주문항목);
 
         // when
@@ -59,7 +58,7 @@ public class OrdersDomainTest {
     void exception_updateOrderStatus_() {
         // given
         OrderTable 주문테이블 = OrderTable.of(3, false);
-        OrderLineItems 주문항목 = OrderLineItems.of(List.of(OrderLineItem.of(Menu.of("메뉴", Price.of(2_000)), 1L)));
+        OrderLineItems 주문항목 = OrderLineItems.of(List.of(OrderLineItem.of(MenuId.of(1L), 1L)));
         Orders 주문 = Orders.of(주문테이블, OrderStatus.COMPLETION, 주문항목);
 
         // when

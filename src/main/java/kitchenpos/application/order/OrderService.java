@@ -15,6 +15,7 @@ import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.exception.order.NotFoundOrderException;
 import kitchenpos.exception.order.NotRegistedMenuOrderException;
 import kitchenpos.exception.table.NotFoundOrderTableException;
+import kitchenpos.vo.MenuId;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -68,7 +69,7 @@ public class OrderService {
         for (OrderLineItemDto orderLineItemDto : orderLineItemDtos) {
             Menu matchingMenu = menus.findById(orderLineItemDto.getMenuId());
 
-            orderLineItems.add(OrderLineItem.of(matchingMenu, orderLineItemDto.getQuantity()));
+            orderLineItems.add(OrderLineItem.of(MenuId.of(matchingMenu.getId()), orderLineItemDto.getQuantity()));
         }
 
         return OrderLineItems.of(orderLineItems);
