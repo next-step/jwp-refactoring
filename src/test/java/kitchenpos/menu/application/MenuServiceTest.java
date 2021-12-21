@@ -53,11 +53,11 @@ public class MenuServiceTest {
     void setUp() {
         후라이드 = ProductFixture.생성("후라이드", new BigDecimal("5000"));
 
-        후라이드두마리구성 = MenuProductFixture.생성(1L, 후라이드, 2L);
+        후라이드두마리구성 = MenuProductFixture.생성(후라이드, 2L);
         후라이드두마리구성Request = MenuProductFixture.request생성(후라이드.getId(), 2L);
         치킨류 = MenuGroupFixture.생성(1L, "치킨");
 
-        후라이드두마리세트 = MenuFixture.생성(1L, "후라이드두마리세트", new BigDecimal("10000"), 치킨류);
+        후라이드두마리세트 = MenuFixture.생성("후라이드두마리세트", new BigDecimal("10000"), 치킨류);
         후라이드두마리세트.addMenuProducts(Arrays.asList(후라이드두마리구성));
     }
 
@@ -65,7 +65,7 @@ public class MenuServiceTest {
     @Test
     void create() {
         //given
-        given(menuGroupRepository.findById(1L)).willReturn(java.util.Optional.ofNullable(치킨류));
+        given(menuGroupRepository.findById(any())).willReturn(java.util.Optional.ofNullable(치킨류));
         given(menuRepository.save(any())).willReturn(후라이드두마리세트);
         given(productRepository.findById(any())).willReturn(java.util.Optional.ofNullable(후라이드));
 

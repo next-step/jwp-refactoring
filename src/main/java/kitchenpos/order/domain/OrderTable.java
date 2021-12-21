@@ -3,8 +3,6 @@ package kitchenpos.order.domain;
 import kitchenpos.tableGroup.domain.TableGroup;
 
 import javax.persistence.*;
-import java.util.List;
-import java.util.Objects;
 
 @Entity
 public class OrderTable {
@@ -33,31 +31,23 @@ public class OrderTable {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public TableGroup getTableGroup() {
         return tableGroup;
-    }
-
-    public void setTableGroup(TableGroup tableGroup) {
-        this.tableGroup = tableGroup;
     }
 
     public int getNumberOfGuests() {
         return numberOfGuests;
     }
 
-    public void setNumberOfGuests(final int numberOfGuests) {
-        if (numberOfGuests < 0) {
-            throw new IllegalArgumentException();
-        }
-        if (empty) {
-            throw new IllegalArgumentException();
-        }
-
+    public void updateNumberOfGuests(final int numberOfGuests) {
+        validationNumber(numberOfGuests);
         this.numberOfGuests = numberOfGuests;
+    }
+
+    private void validationNumber(int numberOfGuests) {
+        if (numberOfGuests < 0 || empty) {
+            throw new IllegalArgumentException();
+        }
     }
 
     public boolean isEmpty() {

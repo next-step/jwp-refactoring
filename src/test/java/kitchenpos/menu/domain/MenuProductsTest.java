@@ -24,7 +24,7 @@ public class MenuProductsTest {
     @Test
     void addMenuProduct() {
         Product 후라이드 = ProductFixture.생성("후라이드", new BigDecimal("5000"));
-        MenuProduct 후라이드두마리= MenuProductFixture.생성(1L,후라이드,2L);
+        MenuProduct 후라이드두마리= MenuProductFixture.생성(후라이드,2L);
         MenuProducts menuProducts = new MenuProducts();
 
         menuProducts.add(후라이드두마리);

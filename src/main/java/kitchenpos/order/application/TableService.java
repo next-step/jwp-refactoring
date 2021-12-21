@@ -45,7 +45,7 @@ public class TableService {
 
         final OrderTable savedOrderTable = findOrderTable(orderTableId);
 
-        savedOrderTable.setNumberOfGuests(request.getNumberOfGuests());
+        savedOrderTable.updateNumberOfGuests(request.getNumberOfGuests());
 
         return orderTableRepository.save(savedOrderTable);
     }

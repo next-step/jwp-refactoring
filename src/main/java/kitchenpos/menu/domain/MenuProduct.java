@@ -25,12 +25,6 @@ public class MenuProduct {
     protected MenuProduct() {
     }
 
-    public MenuProduct(Long seq, Product product, long quantity) {
-        this.seq = seq;
-        this.product = product;
-        this.quantity = quantity;
-    }
-
     public MenuProduct(Product product, long quantity) {
         this.product = product;
         this.quantity = quantity;
@@ -40,7 +34,7 @@ public class MenuProduct {
         this.menu = menu;
     }
 
-    public BigDecimal calculatePriceQuantity(){
+    public BigDecimal calculatePriceQuantity() {
         BigDecimal productPrice = product.getPrice();
         return productPrice.multiply(BigDecimal.valueOf(this.quantity));
     }
@@ -57,7 +51,4 @@ public class MenuProduct {
         return product.getId();
     }
 
-    public void setProduct(Product product) {
-        this.product = product;
-    }
 }

@@ -53,11 +53,11 @@ public class OrderServiceTest {
     void setUp() {
         후라이드 = ProductFixture.생성("후라이드", new BigDecimal("5000"));
 
-        후라이드두마리구성 = MenuProductFixture.생성(1L, 후라이드, 2L);
+        후라이드두마리구성 = MenuProductFixture.생성(후라이드, 2L);
 
         치킨류 = MenuGroupFixture.생성(1L, "치킨");
 
-        후라이드두마리세트 = MenuFixture.생성(1L, "후라이드두마리세트", new BigDecimal("10000"), 치킨류);
+        후라이드두마리세트 = MenuFixture.생성("후라이드두마리세트", new BigDecimal("10000"), 치킨류);
         후라이드두마리세트.addMenuProducts(Arrays.asList(후라이드두마리구성));
 
         테이블1번 = OrderTableFixture.생성(0,true);

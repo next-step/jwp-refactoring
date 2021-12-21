@@ -20,11 +20,15 @@ public class Product {
     }
 
     public Product(String name, BigDecimal price) {
+        validationPrice(price);
+        this.name = name;
+        this.price = price;
+    }
+
+    private void validationPrice(BigDecimal price) {
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalArgumentException();
         }
-        this.name = name;
-        this.price = price;
     }
 
     public Long getId() {

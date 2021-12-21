@@ -29,9 +29,6 @@ public class OrderTables {
     public void ungroup() {
         orderTables.stream()
                 .forEach(orderTable -> orderTable.updateTableGroup(null));
-    }
-
-    public void clear() {
         orderTables.clear();
     }
 }

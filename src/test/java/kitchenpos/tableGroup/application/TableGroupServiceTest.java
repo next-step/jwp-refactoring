@@ -95,9 +95,7 @@ public class TableGroupServiceTest {
     void ungroup() {
         OrderTable 테이블3번 = OrderTableFixture.생성(0,true);
         OrderTable 테이블4번 = OrderTableFixture.생성(0,true);
-        TableGroup 단체_지정 = new TableGroup();
-        단체_지정.setId(2L);
-        단체_지정.addOrderTables(Arrays.asList(테이블3번, 테이블4번));
+        TableGroup 단체_지정 = new TableGroup(Arrays.asList(테이블3번, 테이블4번));
         given(tableGroupRepository.findById(any())).willReturn(java.util.Optional.of(단체_지정));
         given(orderRepository.existsByOrderTableInAndOrderStatusIn(any(),any())).willReturn(false);
 
@@ -114,9 +112,7 @@ public class TableGroupServiceTest {
     void shouldBeCompletionStatus() {
         OrderTable 테이블3번 = OrderTableFixture.생성(0,true);
         OrderTable 테이블4번 = OrderTableFixture.생성(0,true);
-        TableGroup 단체_지정 = new TableGroup();
-        단체_지정.setId(2L);
-        단체_지정.addOrderTables(Arrays.asList(테이블3번, 테이블4번));
+        TableGroup 단체_지정 = new TableGroup(Arrays.asList(테이블3번, 테이블4번));
 
         given(tableGroupRepository.findById(any())).willReturn(java.util.Optional.of(단체_지정));
         given(orderRepository.existsByOrderTableInAndOrderStatusIn(any(),any())).willReturn(true);

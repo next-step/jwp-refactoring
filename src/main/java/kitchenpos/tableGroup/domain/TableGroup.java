@@ -23,7 +23,7 @@ public class TableGroup {
     @Embedded
     private OrderTables orderTables;
 
-    public TableGroup() {
+    protected TableGroup() {
         this.orderTables = new OrderTables();
     }
 
@@ -32,12 +32,17 @@ public class TableGroup {
         addOrderTables(orderTables);
     }
 
-    public Long getId() {
-        return id;
+    private void addOrderTables(final List<OrderTable> orderTables) {
+        orderTables.stream()
+                .forEach(orderTable -> {
+                    orderTable.changeEmpty(false);
+                    orderTable.updateTableGroup(this);
+                    this.orderTables.add(orderTable);
+                });
     }
 
-    public void setId(final Long id) {
-        this.id = id;
+    public Long getId() {
+        return id;
     }
 
     public LocalDateTime getCreatedDate() {
@@ -48,17 +53,7 @@ public class TableGroup {
         return orderTables.getOrderTables();
     }
 
-    public void addOrderTables(final List<OrderTable> orderTables) {
-        orderTables.stream()
-                .forEach(orderTable -> {
-                    orderTable.changeEmpty(false);
-                    orderTable.updateTableGroup(this);
-                    this.orderTables.add(orderTable);
-                });
-    }
-
     public void ungroup() {
         this.orderTables.ungroup();
-        this.orderTables.clear();
     }
 }

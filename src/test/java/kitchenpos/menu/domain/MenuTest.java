@@ -1,7 +1,5 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.fixture.ProductFixture;
-import kitchenpos.product.domain.Product;
 import kitchenpos.fixture.MenuGroupFixture;
 import kitchenpos.fixture.MenuProductFixture;
 import kitchenpos.fixture.MenuFixture;
@@ -13,19 +11,28 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class MenuTest {
+
+    @DisplayName("메뉴 생성시 가격은 0보다 커야 한다.")
+    @Test
+    void validationPrice() {
+        MenuGroup 치킨류 = MenuGroupFixture.생성(1L, "치킨");
+
+        assertThatThrownBy(
+                () -> MenuFixture.생성("후라이드두마리세트", new BigDecimal("-10"), 치킨류)
+        ).isInstanceOf(IllegalArgumentException.class);
+    }
 
     @DisplayName("메뉴에 메뉴 상품 추가")
     @Test
     void addMenuProducts() {
-        Product 후라이드 = ProductFixture.생성("후라이드", new BigDecimal("5000"));
-        MenuGroup 치킨류 = MenuGroupFixture.생성(1L, "치킨");
-        MenuProduct 후라이드두마리구성 = MenuProductFixture.생성(1L, 후라이드, 2L);
-        Menu 후라이드두마리세트 = MenuFixture.생성(1L, "후라이드두마리세트", new BigDecimal("10000"), 치킨류);
+        MenuProduct 메뉴상품 = MenuProductFixture.샘플();
+        Menu 후라이드두마리세트 = MenuFixture.샘플();
 
-        후라이드두마리세트.addMenuProducts(Arrays.asList(후라이드두마리구성));
+        후라이드두마리세트.addMenuProducts(Arrays.asList(메뉴상품));
 
-        assertThat(후라이드두마리세트.getMenuProducts()).isEqualTo(Arrays.asList(후라이드두마리구성));
+        assertThat(후라이드두마리세트.getMenuProducts()).isEqualTo(Arrays.asList(메뉴상품));
     }
 }

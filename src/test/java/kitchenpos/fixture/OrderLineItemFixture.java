@@ -10,6 +10,10 @@ public class OrderLineItemFixture {
         return new OrderLineItem(order, menu, quantity);
     }
 
+    public static OrderLineItem 샘플(){
+        return null;
+    }
+
     public static OrderLineItemRequest 생성_Request(Long menuId, Long quantity) {
         return new OrderLineItemRequest(menuId, quantity);
     }

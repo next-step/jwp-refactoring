@@ -86,10 +86,7 @@
 * [x] orderService 리팩토링
 * [x] productService 리팩토링
 * [x] tableService 리팩토링
-* [ ] tableGroupService 리팩토링
+* [x] tableGroupService 리팩토링
 * [ ] DTO 를 이용하여 Response, Request 분리
-* [ ] 인수테스트 작성
-
-* 도메인 테스트
-* fixture 정의
+* [ ] fixture 정의
 * 에러 처리
