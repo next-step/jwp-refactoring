@@ -9,7 +9,9 @@ import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.List;
-import kitchenpos.product.infra.ProductDao;
+import kitchenpos.common.exception.Message;
+import kitchenpos.product.application.ProductService;
+import kitchenpos.product.domain.ProductDao;
 import kitchenpos.product.domain.Product;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -42,13 +44,13 @@ class ProductServiceTest {
 
     @Test
     void 가격이_없는경우_생성할수_없다() {
-        // given
-        Product 가격이없는_반반치킨 = 가격이없는_반반치킨();
 
         // then
         assertThatThrownBy(() -> {
+            Product 가격이없는_반반치킨 = 가격이없는_반반치킨();
             productService.create(가격이없는_반반치킨);
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(IllegalArgumentException.class)
+            .hasMessage(Message.AMOUNT_IS_NOT_LESS_THAN_ZERO.getMessage());
     }
 
     @Test

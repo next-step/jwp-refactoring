@@ -24,8 +24,8 @@ public class ProductAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        후라이드  = new ProductRequest(1L, "후라이드", new BigDecimal(16000));
-        양념치킨  = new ProductRequest(2L, "양념치킨", new BigDecimal(16000));
+        후라이드  = new ProductRequest(1L, "후라이드", 16000L);
+        양념치킨  = new ProductRequest(2L, "양념치킨", 16000L);
     }
 
     @Test
