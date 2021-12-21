@@ -12,7 +12,7 @@ import kitchenpos.product.domain.Product;
 public class MenuProduct {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long seq;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "menu_id")
@@ -33,8 +33,8 @@ public class MenuProduct {
         this.quantity = quantity;
     }
 
-    public MenuProduct(Long seq, Long menuId, Long productId, long quantity) {
-        this.seq = seq;
+    public MenuProduct(Long id, Long menuId, Long productId, long quantity) {
+        this.id = id;
         this.menu = Menu.of(menuId);
         this.product = Product.of(productId);
         this.quantity = quantity;
@@ -44,12 +44,12 @@ public class MenuProduct {
         return new MenuProduct(menuId, productId, quantity);
     }
 
-    public Long getSeq() {
-        return seq;
+    public Long getId() {
+        return id;
     }
 
-    public void setSeq(final Long seq) {
-        this.seq = seq;
+    public void setId(final Long id) {
+        this.id = id;
     }
 
     public Long getMenuId() {

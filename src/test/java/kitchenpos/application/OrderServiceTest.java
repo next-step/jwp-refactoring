@@ -96,14 +96,14 @@ class OrderServiceTest {
         assertThat(result.get(0).getOrderTableId()).isEqualTo(1L);
         assertThat(result.get(0).getOrderStatus()).isEqualTo("COOKING");
         assertThat(result.get(0).getOrderLineItems()).hasSize(2);
-        assertThat(result.get(0).getOrderLineItems().get(0).getSeq()).isEqualTo(1L);
-        assertThat(result.get(0).getOrderLineItems().get(1).getSeq()).isEqualTo(2L);
+        assertThat(result.get(0).getOrderLineItems().get(0).getId()).isEqualTo(1L);
+        assertThat(result.get(0).getOrderLineItems().get(1).getId()).isEqualTo(2L);
         assertThat(result.get(1).getId()).isEqualTo(2L);
         assertThat(result.get(1).getOrderTableId()).isEqualTo(2L);
         assertThat(result.get(1).getOrderStatus()).isEqualTo("MEAL");
         assertThat(result.get(1).getOrderLineItems()).hasSize(2);
-        assertThat(result.get(1).getOrderLineItems().get(0).getSeq()).isEqualTo(3L);
-        assertThat(result.get(1).getOrderLineItems().get(1).getSeq()).isEqualTo(4L);
+        assertThat(result.get(1).getOrderLineItems().get(0).getId()).isEqualTo(3L);
+        assertThat(result.get(1).getOrderLineItems().get(1).getId()).isEqualTo(4L);
 
     }
 
