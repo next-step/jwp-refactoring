@@ -100,3 +100,6 @@
     - [ ] `JdbcTemplateTableGroupDao` -> `TableGroupRepository`
     - [ ] `JdbcTemplateOrderDao` -> `OrderRepository`
     - [ ] `JdbcTemplateOrderLineItemDao` -> `OrderLineItemRepository`
+- [X] 서비스 레이어로직 도메인으로 분리
+- [X] 인수 테스트 리팩토링
+- [X] `Request`, `Response` DTO 분리 
