@@ -9,8 +9,6 @@ import java.util.Optional;
 public interface OrderTableRepository extends JpaRepository<OrderTable, Long> {
     List<OrderTable> findAllByIdIn(List<Long> orderTableIds);
 
-    List<OrderTable> findAllByTableGroupId(Long tableGroupId);
-
     default OrderTable findByIdElseThrow(Long id){
         return this.findById(id)
                 .orElseThrow(NotFoundOrderTableException::new);

@@ -1,7 +1,6 @@
 package kitchenpos.table.application;
 
-import kitchenpos.common.exception.GuestsNumberNegativeException;
-import kitchenpos.common.exception.NotFoundOrderTableException;
+import kitchenpos.common.exception.*;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
@@ -114,7 +113,7 @@ public class TableServiceTest {
         // when
         // then
         assertThatThrownBy(() -> tableService.changeEmpty(1L, any()))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IsNotNullTableGroupException.class);
         verify(orderRepository, never()).existsByOrderTableAndOrderStatusIn(any(), anyList());
     }
 
@@ -128,7 +127,7 @@ public class TableServiceTest {
         // when
         // then
         assertThatThrownBy(() -> tableService.changeEmpty(1L, any()))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(InvalidOrderStatusException.class);
         verify(orderRepository, only()).existsByOrderTableAndOrderStatusIn(any(), anyList());
     }
 
@@ -181,6 +180,6 @@ public class TableServiceTest {
         // when
         // then
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, any()))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IsEmptyTableException.class);
     }
 }

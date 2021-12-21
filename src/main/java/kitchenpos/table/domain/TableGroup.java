@@ -56,4 +56,9 @@ public class TableGroup {
         orderTable.assignTableGroup(this);
         orderTable.changeEmpty(false);
     }
+
+    public void ungroup() {
+        orderTables.ungroup();
+        orderTables = new OrderTables();
+    }
 }

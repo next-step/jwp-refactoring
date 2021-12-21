@@ -21,12 +21,11 @@ public class OrderTables {
         this.orderTables = new ArrayList<>();
     }
 
-    public OrderTables(List<OrderTable> orderTables) {
+    public OrderTables(final List<OrderTable> orderTables) {
         this.orderTables = orderTables;
-        validate();
     }
 
-    private void validate() {
+    public void validateOrderTable() {
         if (isInvalidTableSize()) {
             throw new InvalidTableGroupSizeException();
         }
@@ -44,16 +43,20 @@ public class OrderTables {
                 .anyMatch(this::isNotEmptyOrNonNullTableGroup);
     }
 
-    private boolean isNotEmptyOrNonNullTableGroup(OrderTable orderTable) {
+    private boolean isNotEmptyOrNonNullTableGroup(final OrderTable orderTable) {
         return !orderTable.isEmpty() || Objects.nonNull(orderTable.getTableGroup());
     }
 
-    public void initTableGroup(TableGroup tableGroup) {
+    public void initTableGroup(final TableGroup tableGroup) {
         orderTables.forEach(tableGroup::initOrderTables);
     }
 
     public int size() {
         return orderTables.size();
+    }
+
+    public void ungroup() {
+        orderTables.forEach(OrderTable::unTableGroup);
     }
 
     public List<OrderTable> getOrderTables() {

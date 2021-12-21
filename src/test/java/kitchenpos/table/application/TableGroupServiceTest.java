@@ -117,30 +117,28 @@ public class TableGroupServiceTest {
     @DisplayName("테이블 그룹 해제")
     void ungroupTestTest() {
         // given
-        OrderTable orderTable = mock(OrderTable.class);
-        given(orderTableRepository.findAllByTableGroupId(anyLong()))
-                .willReturn(Collections.singletonList(orderTable));
+        given(tableGroup.getOrderTables()).willReturn(Collections.emptyList());
+        given(tableGroupRepository.findByIdElseThrow(anyLong()))
+                .willReturn(tableGroup);
         given(orderRepository.existsByOrderTableInAndOrderStatusIn(anyList(), anyList()))
                 .willReturn(false);
-        given(orderTableRepository.save(any())).willReturn(orderTable);
         // when
         tableGroupService.ungroup(1L);
         // then
-        verify(orderTableRepository, times(1)).save(any());
+        assertThat(tableGroup.getOrderTables()).hasSize(0);
     }
 
     @Test
     @DisplayName("주문 상태가 `조리(COOKING)`, `식사(MEAL)`상태이면 해제 할 수 없다.")
     void notUngroupOrderStatusTest() {
         // given
-        OrderTable orderTable = mock(OrderTable.class);
-        given(orderTableRepository.findAllByTableGroupId(anyLong()))
-                .willReturn(Collections.singletonList(orderTable));
+        given(tableGroupRepository.findByIdElseThrow(anyLong()))
+                .willReturn(tableGroup);
         given(orderRepository.existsByOrderTableInAndOrderStatusIn(anyList(), anyList()))
                 .willReturn(true);
         // when
         // then
         assertThatThrownBy(() -> tableGroupService.ungroup(1L))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(InvalidOrderTableException.class);
     }
 }

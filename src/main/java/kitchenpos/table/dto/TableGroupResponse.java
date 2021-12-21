@@ -31,4 +31,8 @@ public class TableGroupResponse {
     public Long getId() {
         return id;
     }
+
+    public List<OrderTableResponse> getOrderTables() {
+        return orderTables;
+    }
 }

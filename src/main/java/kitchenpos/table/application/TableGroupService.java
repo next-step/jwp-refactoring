@@ -1,5 +1,6 @@
 package kitchenpos.table.application;
 
+import kitchenpos.common.exception.InvalidOrderTableException;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.*;
@@ -7,14 +8,12 @@ import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 public class TableGroupService {
     private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
@@ -34,6 +33,7 @@ public class TableGroupService {
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
         final List<Long> orderTableIds = tableGroupRequest.getOrderTableIds();
         final OrderTables savedOrderTables = new OrderTables(orderTableRepository.findAllByIdIn(orderTableIds));
+        savedOrderTables.validateOrderTable();
         final TableGroup tableGroup = tableGroupRequest.toTableGroup(savedOrderTables);
         savedOrderTables.initTableGroup(tableGroup);
         final TableGroup savedTableGroup = tableGroupRepository.save(tableGroup);
@@ -42,20 +42,20 @@ public class TableGroupService {
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
-        final List<OrderTable> orderTables = orderTableRepository.findAllByTableGroupId(tableGroupId);
+        final TableGroup tableGroup = tableGroupRepository.findByIdElseThrow(tableGroupId);
+        checkTablesOrderStatus(tableGroup.getOrderTables());
+        tableGroup.ungroup();
+        tableGroupRepository.delete(tableGroup);
+    }
 
-        final List<Long> orderTableIds = orderTables.stream()
-                .map(OrderTable::getId)
-                .collect(Collectors.toList());
+    public int countById(final Long tableGroupId) {
+        return tableGroupRepository.countById(tableGroupId);
+    }
 
+    private void checkTablesOrderStatus(List<OrderTable> orderTables) {
         if (orderRepository.existsByOrderTableInAndOrderStatusIn(
                 orderTables, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException();
-        }
-
-        for (final OrderTable orderTable : orderTables) {
-            orderTable.assignTableGroup(null);
-            orderTableRepository.save(orderTable);
+            throw new InvalidOrderTableException();
         }
     }
 }

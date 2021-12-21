@@ -1,5 +1,6 @@
 package kitchenpos.product.application;
 
+import kitchenpos.common.exception.InvalidPriceException;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
@@ -66,7 +67,7 @@ public class ProductServiceTest {
         // when
         // then
         assertThatThrownBy(() -> productService.create(요청_데이터))
-                .isInstanceOf(RuntimeException.class);
+                .isInstanceOf(InvalidPriceException.class);
     }
 
     @Test

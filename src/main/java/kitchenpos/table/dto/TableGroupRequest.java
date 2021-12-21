@@ -1,7 +1,6 @@
 package kitchenpos.table.dto;
 
 import kitchenpos.common.exception.NotFoundOrderTableException;
-import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.domain.TableGroup;
 

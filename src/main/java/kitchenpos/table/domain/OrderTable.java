@@ -90,4 +90,7 @@ public class OrderTable {
         return Objects.hash(id, tableGroup, numberOfGuests, empty);
     }
 
+    public void unTableGroup() {
+        tableGroup = null;
+    }
 }

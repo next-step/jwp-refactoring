@@ -1,5 +1,8 @@
 package kitchenpos.table.application;
 
+import kitchenpos.common.exception.InvalidOrderStatusException;
+import kitchenpos.common.exception.IsEmptyTableException;
+import kitchenpos.common.exception.IsNotNullTableGroupException;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
@@ -57,13 +60,13 @@ public class TableService {
     private void checkTableOrderStatus(OrderTable orderTable) {
         if (orderRepository.existsByOrderTableAndOrderStatusIn(
                 orderTable, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException();
+            throw new InvalidOrderStatusException();
         }
     }
 
     private void checkTableGroupIsNull(OrderTable orderTable) {
         if (orderTable.isNotNullTableGroup()) {
-            throw new IllegalArgumentException();
+            throw new IsNotNullTableGroupException();
         }
     }
 
@@ -79,7 +82,7 @@ public class TableService {
 
     private void checkEmptyOrderTable(OrderTable savedOrderTable) {
         if (savedOrderTable.isEmpty()) {
-            throw new IllegalArgumentException();
+            throw new IsEmptyTableException();
         }
     }
 }
