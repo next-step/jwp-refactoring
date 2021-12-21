@@ -48,11 +48,6 @@ public class OrderService {
 
     private Order getCookingOrder(OrderRequest orderRequest) {
         final OrderTable orderTable = orderTableRepository.findByIdElseThrow(orderRequest.getOrderTableId());
-
-        if (orderTable.isEmpty()) {
-            throw new NotOrderedEmptyTableException();
-        }
-
         return Order.CookingOrder(orderTable);
     }
 
@@ -81,10 +76,6 @@ public class OrderService {
     @Transactional
     public OrderResponse changeOrderStatus(final Long orderId, final OrderStatusRequest orderStatusRequest) {
         final Order savedOrder = orderRepository.findByIdElseThrow(orderId);
-
-        if (savedOrder.isCompletion()) {
-            throw new NotChangeCompletionOrderException();
-        }
 
         savedOrder.changeOrderStatus(orderStatusRequest.toOrderStatus());
 

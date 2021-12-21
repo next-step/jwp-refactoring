@@ -154,12 +154,13 @@ public class OrderServiceTest {
     @DisplayName("`계산완료(COMPLETION)`상태인 주문은 변경할 수 없다.")
     void notChangeCompletionStatus() {
         // given
-        given(order.isCompletion()).willReturn(true);
         given(orderRepository.findByIdElseThrow(anyLong())).willReturn(order);
+        doThrow(new NotChangeCompletionOrderException()).when(order).changeOrderStatus(any());
         // when
         // then
-        assertThatThrownBy(() -> orderService.changeOrderStatus(1L, orderStatusRequest))
-                .isInstanceOf(NotChangeCompletionOrderException.class);
+        assertThatThrownBy(() -> orderService.changeOrderStatus(
+                1L, orderStatusRequest)
+        ).isInstanceOf(NotChangeCompletionOrderException.class);
         verify(orderRepository, only()).findByIdElseThrow(anyLong());
     }
 }

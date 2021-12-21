@@ -1,5 +1,6 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.common.exception.NotChangeCompletionOrderException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,6 +16,7 @@ import static kitchenpos.order.domain.OrderLineItemTest.와퍼_세트_주문;
 import static kitchenpos.order.domain.OrderLineItemTest.콜라_주문;
 import static kitchenpos.table.domain.OrderTableTest.이인석;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class OrderTest {
@@ -58,6 +60,17 @@ public class OrderTest {
         이인석주문.changeOrderStatus(meal);
         // then
         assertThat(이인석주문.getOrderStatus()).isEqualTo(meal);
+    }
+
+    @Test
+    @DisplayName("주문 상태가 완료인 경우 변경 할 수 없다.")
+    public void changeOrderStatusExceptionTest() {
+        // given
+        Order 완료된_주문 = new Order(이인석, OrderStatus.COMPLETION);
+        // when
+        // then
+        assertThatThrownBy(() -> 완료된_주문.changeOrderStatus(OrderStatus.MEAL))
+                .isInstanceOf(NotChangeCompletionOrderException.class);
     }
 
     @Test

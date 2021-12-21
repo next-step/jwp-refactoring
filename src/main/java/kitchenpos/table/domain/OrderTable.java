@@ -1,6 +1,11 @@
 package kitchenpos.table.domain;
 
+import kitchenpos.common.exception.InvalidOrderStatusException;
+import kitchenpos.common.exception.IsNotNullTableGroupException;
+import kitchenpos.order.domain.OrderStatus;
+
 import javax.persistence.*;
+import java.util.Arrays;
 import java.util.Objects;
 
 @Entity
@@ -67,7 +72,14 @@ public class OrderTable {
     }
 
     public void changeEmpty(final boolean empty) {
+        checkTableGroupIsNull();
         this.empty = new EmptyStatus(empty);
+    }
+
+    private void checkTableGroupIsNull() {
+        if (isNotNullTableGroup()) {
+            throw new IsNotNullTableGroupException();
+        }
     }
 
     public boolean isNotNullTableGroup() {
@@ -76,7 +88,7 @@ public class OrderTable {
 
     public void initTableGroup(TableGroup tableGroup) {
         assignTableGroup(tableGroup);
-        changeEmpty(false);
+        this.empty = EmptyStatus.ofFalse();
     }
 
     public void unTableGroup() {

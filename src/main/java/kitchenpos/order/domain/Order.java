@@ -1,5 +1,7 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.common.exception.NotChangeCompletionOrderException;
+import kitchenpos.common.exception.NotOrderedEmptyTableException;
 import kitchenpos.table.domain.OrderTable;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -46,6 +48,9 @@ public class Order {
     }
 
     public static Order CookingOrder(OrderTable orderTable) {
+        if (orderTable.isEmpty()) {
+            throw new NotOrderedEmptyTableException();
+        }
         return new Order(orderTable, OrderStatus.COOKING);
     }
 
@@ -62,6 +67,9 @@ public class Order {
     }
 
     public void changeOrderStatus(final OrderStatus orderStatus) {
+        if (isCompletion()) {
+            throw new NotChangeCompletionOrderException();
+        }
         this.orderStatus = orderStatus;
     }
 

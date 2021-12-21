@@ -12,6 +12,10 @@ public class EmptyStatus {
         this.empty = empty;
     }
 
+    public static EmptyStatus ofFalse() {
+        return new EmptyStatus(false);
+    }
+
     public boolean getStatus() {
         return empty;
     }

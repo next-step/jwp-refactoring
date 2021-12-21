@@ -49,9 +49,7 @@ public class TableService {
     public OrderTableResponse changeEmpty(final Long orderTableId, final ChangeEmptyRequest changeEmptyRequest) {
         final OrderTable savedOrderTable = orderTableRepository.findByIdElseThrow(orderTableId);
 
-        checkTableGroupIsNull(savedOrderTable);
         checkTableOrderStatus(savedOrderTable);
-
         savedOrderTable.changeEmpty(changeEmptyRequest.isEmpty());
 
         return OrderTableResponse.of(savedOrderTable);
@@ -61,12 +59,6 @@ public class TableService {
         if (orderRepository.existsByOrderTableAndOrderStatusIn(
                 orderTable, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
             throw new InvalidOrderStatusException();
-        }
-    }
-
-    private void checkTableGroupIsNull(OrderTable orderTable) {
-        if (orderTable.isNotNullTableGroup()) {
-            throw new IsNotNullTableGroupException();
         }
     }
 
