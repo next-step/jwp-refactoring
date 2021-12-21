@@ -36,7 +36,7 @@ public class MenuService {
 
     public MenuResponse create(final MenuRequest menuRequest) {
         final MenuGroup menuGroup = getMenuGroup(menuRequest);
-        final Menu menu = menuRequest.toMenu(menuGroup);
+        final Menu menu = menuRequest.toMenu();
         final List<MenuProduct> menuProducts = getMenuProducts(menuRequest.getMenuProducts());
 
         for (MenuProduct menuProduct : menuProducts) {

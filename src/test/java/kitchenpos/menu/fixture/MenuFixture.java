@@ -16,6 +16,6 @@ public class MenuFixture {
     }
 
     public static Menu create(Long id, String name, BigDecimal price, MenuGroup menuGroup, MenuProduct menuProduct) {
-        return Menu.of(id, NameFixture.of(name), PriceFixture.of(price), menuGroup, MenuProducts.of(Collections.singletonList(menuProduct)));
+        return Menu.of(id, NameFixture.of(name), PriceFixture.of(price), menuGroup.getId(), MenuProducts.of(Collections.singletonList(menuProduct)));
     }
 }

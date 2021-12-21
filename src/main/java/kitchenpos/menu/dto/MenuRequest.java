@@ -3,7 +3,6 @@ package kitchenpos.menu.dto;
 import kitchenpos.common.domain.Name;
 import kitchenpos.common.domain.Price;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -44,7 +43,7 @@ public class MenuRequest {
         return menuProducts;
     }
 
-    public Menu toMenu(MenuGroup menuGroup) {
-        return Menu.of(Name.of(name), Price.of(price), menuGroup);
+    public Menu toMenu() {
+        return Menu.of(Name.of(name), Price.of(price), menuGroupId);
     }
 }

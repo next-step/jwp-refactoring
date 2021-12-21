@@ -4,15 +4,12 @@ import kitchenpos.common.domain.Name;
 import kitchenpos.common.domain.Price;
 import org.springframework.util.Assert;
 
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -28,9 +25,8 @@ public class Menu {
     @Embedded
     private Price price;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "menu_group_id", foreignKey = @ForeignKey(name = "fk_menu_menu_group"))
-    private MenuGroup menuGroup;
+    @Column
+    private Long menuGroupId;
 
     @Embedded
     private MenuProducts menuProducts;
@@ -38,25 +34,25 @@ public class Menu {
     protected Menu() {
     }
 
-    private Menu(Long id, Name name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
+    private Menu(Long id, Name name, Price price, Long menuGroupId, MenuProducts menuProducts) {
         Assert.notNull(name, "이름은 비어있을 수 없습니다.");
         Assert.notNull(price, "가격은 비어있을 수 없습니다.");
-        Assert.notNull(menuGroup, "메뉴 그룹은 비어있을 수 없습니다.");
+        Assert.notNull(menuGroupId, "메뉴 그룹 ID는 비어있을 수 없습니다.");
         Assert.notNull(menuProducts, "메뉴 상품 목록은 비어있을 수 없습니다.");
 
         this.id = id;
         this.name = name;
         this.price = price;
-        this.menuGroup = menuGroup;
+        this.menuGroupId = menuGroupId;
         this.menuProducts = menuProducts;
     }
 
-    public static Menu of(Long id, Name name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
-        return new Menu(id, name, price, menuGroup, menuProducts);
+    public static Menu of(Long id, Name name, Price price, Long menuGroupId, MenuProducts menuProducts) {
+        return new Menu(id, name, price, menuGroupId, menuProducts);
     }
 
-    public static Menu of(Name name, Price price, MenuGroup menuGroup) {
-        return new Menu(null, name, price, menuGroup, new MenuProducts());
+    public static Menu of(Name name, Price price, Long menuGroupId) {
+        return new Menu(null, name, price, menuGroupId, new MenuProducts());
     }
 
     public void addMenuProduct(MenuProduct menuProduct) {
@@ -83,7 +79,7 @@ public class Menu {
     }
 
     public Long getMenuGroupId() {
-        return menuGroup.getId();
+        return menuGroupId;
     }
 
     public List<MenuProduct> getMenuProducts() {
