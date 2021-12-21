@@ -17,7 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 
-import static kitchenpos.fixtures.ProductFixtures.양념치킨;
+import static kitchenpos.fixtures.ProductFixtures.양념치킨요청;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -43,7 +43,7 @@ class ProductServiceTest {
 
     @BeforeEach
     void setUp() {
-        request = 양념치킨();
+        request = 양념치킨요청();
     }
 
     @Test

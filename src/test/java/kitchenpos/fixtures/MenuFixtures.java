@@ -1,5 +1,8 @@
 package kitchenpos.fixtures;
 
+import kitchenpos.domain.Menu;
+import kitchenpos.domain.MenuGroup;
+import kitchenpos.domain.MenuProduct;
 import kitchenpos.dto.MenuProductRequest;
 import kitchenpos.dto.MenuRequest;
 import org.assertj.core.util.Lists;
@@ -15,7 +18,7 @@ import java.util.List;
  * description :
  */
 public class MenuFixtures {
-    public static MenuRequest 양념치킨두마리메뉴() {
+    public static MenuRequest 양념치킨두마리메뉴요청() {
         return MenuRequest.of(
                 "양념치킨두마리메뉴",
                 new BigDecimal(32000),
@@ -24,7 +27,7 @@ public class MenuFixtures {
         );
     }
 
-    public static MenuRequest 후라이드한마리메뉴() {
+    public static MenuRequest 후라이드한마리메뉴요청() {
         return MenuRequest.of(
                 "한마리메뉴",
                 new BigDecimal(16000),
@@ -33,7 +36,7 @@ public class MenuFixtures {
         );
     }
 
-    public static MenuRequest 후라이드두마리메뉴() {
+    public static MenuRequest 후라이드두마리메뉴요청() {
         return MenuRequest.of(
                 "두마리메뉴",
                 new BigDecimal(32000),
@@ -42,7 +45,11 @@ public class MenuFixtures {
         );
     }
 
-    public static MenuRequest 후라이드두마리메뉴(BigDecimal price, Long menuGroupId, List<MenuProductRequest> menuProductRequests) {
+    public static Menu 메뉴(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+        return new Menu(name, price, menuGroup, menuProducts);
+    }
+
+    public static MenuRequest 후라이드두마리메뉴요청(BigDecimal price, Long menuGroupId, List<MenuProductRequest> menuProductRequests) {
         return MenuRequest.of(
                 "두마리메뉴",
                 price,
@@ -51,7 +58,7 @@ public class MenuFixtures {
         );
     }
 
-    public static MenuRequest 후라이드반양념반메뉴(BigDecimal price, Long menuGroupId, List<MenuProductRequest> menuProductRequests) {
+    public static MenuRequest 후라이드반양념반메뉴요청(BigDecimal price, Long menuGroupId, List<MenuProductRequest> menuProductRequests) {
         return MenuRequest.of(
                 "후라이드반양념반메뉴",
                 price,

@@ -25,7 +25,7 @@ public class Order {
     private OrderStatus orderStatus = OrderStatus.COOKING;
 
     @Column(nullable = false)
-    private LocalDateTime orderedTime = LocalDateTime.now();
+    private final LocalDateTime orderedTime = LocalDateTime.now();
 
     @OneToMany(mappedBy = "order", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     private final List<OrderLineItem> orderLineItems = new ArrayList<>();
@@ -36,8 +36,7 @@ public class Order {
     public Order(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
         validate(orderTable, orderLineItems);
         addOrderLineItems(orderLineItems);
-        //this.orderTable = orderTable.addOrder(this);
-        this.orderTable = orderTable;
+        this.orderTable = orderTable.addOrder(this);
     }
 
     private void addOrderLineItems(List<OrderLineItem> orderLineItems) {

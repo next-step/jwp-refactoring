@@ -21,8 +21,8 @@ import java.math.BigDecimal;
 
 import static kitchenpos.acceptance.MenuGroupAcceptanceTest.메뉴그룹_등록되어있음;
 import static kitchenpos.acceptance.ProductAcceptanceTest.상품_등록되어_있음;
-import static kitchenpos.fixtures.MenuFixtures.후라이드두마리메뉴;
-import static kitchenpos.fixtures.MenuFixtures.후라이드반양념반메뉴;
+import static kitchenpos.fixtures.MenuFixtures.후라이드두마리메뉴요청;
+import static kitchenpos.fixtures.MenuFixtures.후라이드반양념반메뉴요청;
 import static kitchenpos.fixtures.MenuProductFixtures.메뉴상품등록요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -44,20 +44,20 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
 
-        MenuGroupResponse 두마리메뉴그룹 = 메뉴그룹_등록되어있음(MenuGroupFixtures.두마리메뉴());
-        ProductResponse 후라이드 = 상품_등록되어_있음(ProductFixtures.후라이드());
-        ProductResponse 양념치킨 = 상품_등록되어_있음(ProductFixtures.양념치킨());
+        MenuGroupResponse 두마리메뉴그룹 = 메뉴그룹_등록되어있음(MenuGroupFixtures.두마리메뉴그룹요청());
+        ProductResponse 후라이드 = 상품_등록되어_있음(ProductFixtures.후라이드요청());
+        ProductResponse 양념치킨 = 상품_등록되어_있음(ProductFixtures.양념치킨요청());
         BigDecimal 후라이드두마리가격 = 후라이드.getPrice().multiply(new BigDecimal(2L));
         BigDecimal 후라이드반양념반가격 = 후라이드.getPrice().add(양념치킨.getPrice());
 
-        후라이드두마리등록요청 = 후라이드두마리메뉴(
+        후라이드두마리등록요청 = 후라이드두마리메뉴요청(
                 후라이드두마리가격,
                 두마리메뉴그룹.getId(),
                 Lists.newArrayList(메뉴상품등록요청(후라이드.getId(), 2L)
                 )
         );
 
-        양념반후라이드반등록요청 = 후라이드반양념반메뉴(
+        양념반후라이드반등록요청 = 후라이드반양념반메뉴요청(
                 후라이드반양념반가격,
                 두마리메뉴그룹.getId(),
                 Lists.newArrayList(
@@ -66,7 +66,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
                 )
         );
 
-        등록요청_등록되지않은메뉴그룹 = 후라이드반양념반메뉴(
+        등록요청_등록되지않은메뉴그룹 = 후라이드반양념반메뉴요청(
                 후라이드반양념반가격,
                 Long.MAX_VALUE,
                 Lists.newArrayList(
@@ -75,7 +75,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
                 )
         );
 
-        등록요청_존재하지않는상품 = 후라이드반양념반메뉴(
+        등록요청_존재하지않는상품 = 후라이드반양념반메뉴요청(
                 후라이드반양념반가격,
                 두마리메뉴그룹.getId(),
                 Lists.newArrayList(

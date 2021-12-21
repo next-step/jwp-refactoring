@@ -23,5 +23,5 @@ public interface OrderTableRepository extends JpaRepository<OrderTable, Long> {
             " left join fetch ot.tableGroup tg " +
             " left join fetch ot.order o " +
             " where ot.id = ?1")
-    Optional<OrderTable> findByIdJoinFetch(Long id);
+    Optional<OrderTable> findOneWithOrderByIdJoinFetch(Long id);
 }

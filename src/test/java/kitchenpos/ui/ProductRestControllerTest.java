@@ -18,7 +18,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import java.util.Arrays;
 import java.util.List;
 
-import static kitchenpos.fixtures.ProductFixtures.후라이드;
+import static kitchenpos.fixtures.ProductFixtures.후라이드요청;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
@@ -50,7 +50,7 @@ class ProductRestControllerTest {
 
     @BeforeEach
     void setUp() {
-        request = 후라이드();
+        request = 후라이드요청();
         response = ProductResponse.of(request.toEntity());
     }
 

@@ -17,14 +17,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 import java.util.Optional;
 
-import static kitchenpos.fixtures.MenuFixtures.양념치킨두마리메뉴;
-import static kitchenpos.fixtures.MenuFixtures.후라이드한마리메뉴;
-import static kitchenpos.fixtures.MenuGroupFixtures.두마리메뉴;
-import static kitchenpos.fixtures.MenuGroupFixtures.한마리메뉴;
-import static kitchenpos.fixtures.MenuProductFixtures.메뉴상품_두개;
-import static kitchenpos.fixtures.MenuProductFixtures.메뉴상품_한개;
-import static kitchenpos.fixtures.ProductFixtures.양념치킨;
-import static kitchenpos.fixtures.ProductFixtures.후라이드;
+import static kitchenpos.fixtures.MenuFixtures.양념치킨두마리메뉴요청;
+import static kitchenpos.fixtures.MenuFixtures.후라이드한마리메뉴요청;
+import static kitchenpos.fixtures.MenuGroupFixtures.두마리메뉴그룹요청;
+import static kitchenpos.fixtures.MenuGroupFixtures.한마리메뉴그룹요청;
+import static kitchenpos.fixtures.MenuProductFixtures.메뉴상품_두개요청;
+import static kitchenpos.fixtures.MenuProductFixtures.메뉴상품_한개요청;
+import static kitchenpos.fixtures.ProductFixtures.양념치킨요청;
+import static kitchenpos.fixtures.ProductFixtures.후라이드요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.*;
@@ -61,19 +61,19 @@ public class OrderServiceTest {
 
     @BeforeEach
     void setUp() {
-        Product 후라이드 = 후라이드().toEntity();
-        Product 양념치킨 = 양념치킨().toEntity();
+        Product 후라이드 = 후라이드요청().toEntity();
+        Product 양념치킨 = 양념치킨요청().toEntity();
 
-        MenuGroup 두마리메뉴 = 두마리메뉴().toEntity();
-        MenuGroup 한마리메뉴 = 한마리메뉴().toEntity();
-
-
-        MenuProduct 양념치킨두마리메뉴상품 = 메뉴상품_두개().toEntity(양념치킨);
-        MenuProduct 후라이드한마리메뉴상품 = 메뉴상품_한개().toEntity(후라이드);
+        MenuGroup 두마리메뉴 = 두마리메뉴그룹요청().toEntity();
+        MenuGroup 한마리메뉴 = 한마리메뉴그룹요청().toEntity();
 
 
-        Menu 후라이드한마리메뉴 = 후라이드한마리메뉴().toEntity(한마리메뉴, Lists.newArrayList(후라이드한마리메뉴상품));
-        Menu 양념치킨두마리메뉴 = 양념치킨두마리메뉴().toEntity(두마리메뉴, Lists.newArrayList(양념치킨두마리메뉴상품));
+        MenuProduct 양념치킨두마리메뉴상품 = 메뉴상품_두개요청().toEntity(양념치킨);
+        MenuProduct 후라이드한마리메뉴상품 = 메뉴상품_한개요청().toEntity(후라이드);
+
+
+        Menu 후라이드한마리메뉴 = 후라이드한마리메뉴요청().toEntity(한마리메뉴, Lists.newArrayList(후라이드한마리메뉴상품));
+        Menu 양념치킨두마리메뉴 = 양념치킨두마리메뉴요청().toEntity(두마리메뉴, Lists.newArrayList(양념치킨두마리메뉴상품));
 
 //        OrderLineItem orderLineItem1 = createOrderLineItem(1L, 1L, 후라이드한마리메뉴.getId(), 1);
 //        OrderLineItem orderLineItem2 = createOrderLineItem(2L, 1L, 양념치킨두마리메뉴.getId(), 2);

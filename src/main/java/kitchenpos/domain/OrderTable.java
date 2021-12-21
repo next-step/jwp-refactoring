@@ -21,7 +21,7 @@ public class OrderTable {
     @Column(nullable = false)
     private boolean empty;
 
-    @OneToOne(mappedBy = "orderTable")
+    @OneToOne(mappedBy = "orderTable", cascade = {CascadeType.ALL})
     private Order order;
 
     protected OrderTable() {
@@ -73,5 +73,10 @@ public class OrderTable {
         }
 
         this.numberOfGuests = NumberOfGuests.of(newNumberOfGuests);
+    }
+
+    public OrderTable addOrder(Order order) {
+        this.order = order;
+        return this;
     }
 }

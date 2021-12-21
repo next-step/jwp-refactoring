@@ -12,7 +12,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import java.math.BigDecimal;
 import java.util.List;
 
-import static kitchenpos.fixtures.ProductFixtures.양념치킨;
+import static kitchenpos.fixtures.ProductFixtures.양념치킨요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
@@ -44,7 +44,7 @@ class ProductRepositoryTest {
     @DisplayName("상품을 등록할 수 있다.")
     public void create() throws Exception {
         //given
-        final ProductRequest 양념치킨 = 양념치킨(); //16000
+        final ProductRequest 양념치킨 = 양념치킨요청(); //16000
 
         //when
         final Product actual = productRepository.save(양념치킨.toEntity());

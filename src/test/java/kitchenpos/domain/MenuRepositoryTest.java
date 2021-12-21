@@ -10,14 +10,13 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.dao.DataIntegrityViolationException;
 
 import java.math.BigDecimal;
 import java.util.List;
 
-import static kitchenpos.fixtures.MenuGroupFixtures.반반메뉴;
-import static kitchenpos.fixtures.ProductFixtures.양념치킨;
-import static kitchenpos.fixtures.ProductFixtures.후라이드;
+import static kitchenpos.fixtures.MenuGroupFixtures.반반메뉴그룹요청;
+import static kitchenpos.fixtures.ProductFixtures.양념치킨요청;
+import static kitchenpos.fixtures.ProductFixtures.후라이드요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -50,9 +49,9 @@ class MenuRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        양념치킨 = productRepository.save(양념치킨().toEntity());
-        후라이드 = productRepository.save(후라이드().toEntity());
-        메뉴그룹 = menuGroupRepository.save(반반메뉴().toEntity());
+        양념치킨 = productRepository.save(양념치킨요청().toEntity());
+        후라이드 = productRepository.save(후라이드요청().toEntity());
+        메뉴그룹 = menuGroupRepository.save(반반메뉴그룹요청().toEntity());
         양념치킨메뉴상품 = new MenuProduct(양념치킨, 1L);
         후라이드메뉴상품 = new MenuProduct(후라이드, 1L);
         menu = new Menu("후라이드반양념반메뉴", 메뉴가격, 메뉴그룹, Lists.newArrayList(양념치킨메뉴상품, 후라이드메뉴상품));

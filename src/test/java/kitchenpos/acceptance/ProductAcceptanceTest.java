@@ -7,7 +7,6 @@ import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.dto.ProductRequest;
 import kitchenpos.dto.ProductResponse;
-import kitchenpos.fixtures.ProductFixtures;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -32,7 +31,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
     @DisplayName("상품을 등록한다.")
     public void create() throws Exception {
         //when
-        final ExtractableResponse<Response> response = 상품_등록_요청함(양념치킨());
+        final ExtractableResponse<Response> response = 상품_등록_요청함(양념치킨요청());
 
         //then
         상품_등록됨(response);

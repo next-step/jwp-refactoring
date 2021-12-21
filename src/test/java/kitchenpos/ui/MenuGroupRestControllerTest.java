@@ -51,7 +51,7 @@ class MenuGroupRestControllerTest {
 
     @BeforeEach
     void setUp() {
-        request = 한마리메뉴();
+        request = 한마리메뉴그룹요청();
         response = MenuGroupResponse.of(request.toEntity());
     }
 

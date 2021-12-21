@@ -15,11 +15,9 @@ import java.util.List;
 
 @Service
 public class TableService {
-    private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
 
-    public TableService(OrderRepository orderRepository, OrderTableRepository orderTableRepository) {
-        this.orderRepository = orderRepository;
+    public TableService(OrderTableRepository orderTableRepository) {
         this.orderTableRepository = orderTableRepository;
     }
 
@@ -35,7 +33,7 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, final ChangeEmptyRequest request) {
-        OrderTable orderTable = orderTableRepository.findByIdJoinFetch(orderTableId)
+        OrderTable orderTable = orderTableRepository.findOneWithOrderByIdJoinFetch(orderTableId)
                 .orElseThrow(OrderTableNotFoundException::new);
         orderTable.changeEmpty(request.isEmpty());
         return OrderTableResponse.of(orderTable);

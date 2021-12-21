@@ -1,15 +1,13 @@
 package kitchenpos.domain;
 
-import kitchenpos.fixtures.MenuGroupFixtures;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import java.math.BigDecimal;
 import java.util.List;
 
-import static kitchenpos.fixtures.MenuGroupFixtures.한마리메뉴;
+import static kitchenpos.fixtures.MenuGroupFixtures.한마리메뉴그룹요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -40,7 +38,7 @@ class MenuGroupRepositoryTest {
     @DisplayName("메뉴 그룹을 등록할 수 있다.")
     public void create() throws Exception {
         //given
-        MenuGroup 한마리메뉴 = 한마리메뉴().toEntity();
+        MenuGroup 한마리메뉴 = 한마리메뉴그룹요청().toEntity();
 
         //when
         final MenuGroup actual = menuGroupRepository.save(한마리메뉴);

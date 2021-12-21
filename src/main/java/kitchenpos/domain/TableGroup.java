@@ -28,15 +28,12 @@ public class TableGroup {
     }
 
     private void validate(List<OrderTable> orderTables) {
+        // 테이블이 존재하지않거나 2개보다 작은 경우 예외처리
         if (orderTables.isEmpty() || orderTables.size() < 2) {
             throw new IllegalOrderTableException();
         }
-
+        //테이블이 사용가능 테이블인경우 예외처리
         if (!targetTablesEmpty(orderTables)) {
-            throw new IllegalOrderTableException();
-        }
-
-        if(!targetTablesOrderFinished(orderTables)) {
             throw new IllegalOrderTableException();
         }
     }

@@ -21,11 +21,10 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
-import static kitchenpos.fixtures.MenuFixtures.양념치킨두마리메뉴;
-import static kitchenpos.fixtures.MenuFixtures.후라이드두마리메뉴;
-import static kitchenpos.fixtures.MenuGroupFixtures.두마리메뉴;
+import static kitchenpos.fixtures.MenuFixtures.양념치킨두마리메뉴요청;
+import static kitchenpos.fixtures.MenuGroupFixtures.두마리메뉴그룹요청;
 import static kitchenpos.fixtures.MenuProductFixtures.*;
-import static kitchenpos.fixtures.ProductFixtures.양념치킨;
+import static kitchenpos.fixtures.ProductFixtures.양념치킨요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -44,8 +43,8 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 public class MenuServiceTest {
     private Menu 양념치킨두마리메뉴;
-    private final Product 양념치킨 = 양념치킨().toEntity();
-    private final MenuGroup 두마리메뉴그룹 = 두마리메뉴().toEntity();
+    private final Product 양념치킨 = 양념치킨요청().toEntity();
+    private final MenuGroup 두마리메뉴그룹 = 두마리메뉴그룹요청().toEntity();
 
     @Mock
     private MenuRepository menuRepository;
@@ -61,9 +60,9 @@ public class MenuServiceTest {
 
     @BeforeEach
     void setUp() {
-        MenuProduct menuProduct = 메뉴상품_두개().toEntity(양념치킨);
+        MenuProduct menuProduct = 메뉴상품_두개요청().toEntity(양념치킨);
         List<MenuProduct> menuProducts = Lists.newArrayList(menuProduct);
-        양념치킨두마리메뉴 = 양념치킨두마리메뉴().toEntity(두마리메뉴그룹, menuProducts);
+        양념치킨두마리메뉴 = 양념치킨두마리메뉴요청().toEntity(두마리메뉴그룹, menuProducts);
     }
 
     @Test
@@ -88,7 +87,7 @@ public class MenuServiceTest {
         given(menuRepository.save(any(Menu.class))).willReturn(양념치킨두마리메뉴);
 
         // when
-        MenuResponse actual = menuService.create(양념치킨두마리메뉴());
+        MenuResponse actual = menuService.create(양념치킨두마리메뉴요청());
 
         // then
         assertAll(
@@ -130,7 +129,7 @@ public class MenuServiceTest {
         given(menuGroupRepository.findById(any())).willThrow(MenuGroupNotFoundException.class);
 
         // then
-        assertThatThrownBy(() -> menuService.create(양념치킨두마리메뉴())).isInstanceOf(MenuGroupNotFoundException.class);
+        assertThatThrownBy(() -> menuService.create(양념치킨두마리메뉴요청())).isInstanceOf(MenuGroupNotFoundException.class);
     }
 
     @Test
@@ -140,6 +139,6 @@ public class MenuServiceTest {
         given(productRepository.findById(anyLong())).willThrow(ProductNotFoundException.class);
 
         // then
-        assertThatThrownBy(() -> menuService.create(양념치킨두마리메뉴())).isInstanceOf(ProductNotFoundException.class);
+        assertThatThrownBy(() -> menuService.create(양념치킨두마리메뉴요청())).isInstanceOf(ProductNotFoundException.class);
     }
 }

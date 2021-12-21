@@ -14,7 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 
-import static kitchenpos.fixtures.MenuGroupFixtures.두마리메뉴;
+import static kitchenpos.fixtures.MenuGroupFixtures.두마리메뉴그룹요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -29,7 +29,7 @@ import static org.mockito.BDDMockito.given;
 @DisplayName("메뉴그룹 통합 테스트")
 @ExtendWith(MockitoExtension.class)
 class MenuGroupServiceTest {
-    private final MenuGroupRequest request = 두마리메뉴();
+    private final MenuGroupRequest request = 두마리메뉴그룹요청();
 
     @Mock
     MenuGroupRepository menuGroupRepository;
