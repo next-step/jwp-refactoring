@@ -184,7 +184,7 @@ class OrderServiceTest {
 
     @DisplayName("주문 상태를 변경할 수 없는 경우")
     @Nested
-    class changeOrderStatusFail {
+    class ChangeOrderStatusFail {
         @DisplayName("주문 아이디를 따른 주문이 존재하지 않는 경우")
         @Test
         void changeOrderStatusByEmptyOrder() {

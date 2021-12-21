@@ -86,7 +86,7 @@ class TableServiceTest {
 
     @DisplayName("빈 테이블 유무를 변경하지 못하는 경우")
     @Nested
-    class changeEmptyFail {
+    class ChangeEmptyFail {
         @DisplayName("주문 테이블 아이디를 따른 주문 테이블이 존재하지 않는 경우")
         @Test
         void changeEmptyByEmptyByNotExistOrderTable() {
@@ -148,7 +148,7 @@ class TableServiceTest {
 
     @DisplayName("손님의 수를 변경하지 못하는 경우")
     @Nested
-    class changeNumberOfGuestsFail {
+    class ChangeNumberOfGuestsFail {
 
         @DisplayName("주문 테이블 아이디를 따른 주문 테이블이 존재하지 않는 경우")
         @Test

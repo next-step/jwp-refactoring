@@ -62,7 +62,7 @@ class TableGroupServiceTest {
 
     @DisplayName("단체 지정을 못하는 경우")
     @Nested
-    class createFail {
+    class CreateFail {
 
         @DisplayName("주문 테이블은 2개 미만 인경우")
         @Test
