@@ -1,14 +1,10 @@
 package kitchenpos.table.domain;
 
-import kitchenpos.common.exception.InvalidOrderTableException;
-import kitchenpos.common.exception.InvalidTableGroupSizeException;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import org.springframework.util.CollectionUtils;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -60,5 +56,18 @@ public class TableGroup {
     public void ungroup() {
         orderTables.ungroup();
         orderTables = new OrderTables();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TableGroup that = (TableGroup) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, createdDate, orderTables);
     }
 }

@@ -1,5 +1,7 @@
 package kitchenpos.table.domain;
 
+import java.util.Objects;
+
 public class EmptyStatus {
     private boolean empty;
 
@@ -12,5 +14,18 @@ public class EmptyStatus {
 
     public boolean getStatus() {
         return empty;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        EmptyStatus that = (EmptyStatus) o;
+        return empty == that.empty;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(empty);
     }
 }

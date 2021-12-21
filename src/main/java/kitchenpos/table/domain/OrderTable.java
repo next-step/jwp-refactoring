@@ -79,10 +79,10 @@ public class OrderTable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         OrderTable that = (OrderTable) o;
-        return numberOfGuests == that.numberOfGuests
-                && empty == that.empty
-                && Objects.equals(id, that.id)
-                && Objects.equals(tableGroup, that.tableGroup);
+        return Objects.equals(id, that.id)
+                && Objects.equals(tableGroup, that.tableGroup)
+                && Objects.equals(numberOfGuests, that.numberOfGuests)
+                && Objects.equals(empty, that.empty);
     }
 
     @Override
