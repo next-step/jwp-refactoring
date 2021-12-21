@@ -55,7 +55,11 @@ public class OrderTable {
 	}
 
 	public Long getOrderTableGroupId() {
-		return orderTableGroup != null ? orderTableGroup.getId() : null;
+		if (orderTableGroup != null) {
+			return orderTableGroup.getId();
+		}
+
+		return null;
 	}
 
 	public NumberOfGuests getNumberOfGuests() {
