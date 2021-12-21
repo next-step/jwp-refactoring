@@ -46,7 +46,7 @@ class TableServiceTest {
 
     @BeforeEach
     void setUp() {
-        orderTable = OrderTableFixtures.createOrderTable(1L, null, 2, false);
+//        orderTable = OrderTableFixtures.createOrderTable(1L, null, 2, false);
     }
 
     @Test

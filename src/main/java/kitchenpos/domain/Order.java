@@ -1,6 +1,7 @@
 package kitchenpos.domain;
 
-import org.springframework.context.annotation.EnableLoadTimeWeaving;
+import kitchenpos.exception.InvalidTableException;
+import kitchenpos.exception.OrderLineItemNotFoundException;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -11,7 +12,8 @@ import java.util.List;
 @Table(name = "orders")
 public class Order {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @OneToOne(fetch = FetchType.LAZY)
@@ -25,9 +27,29 @@ public class Order {
     private LocalDateTime orderedTime = LocalDateTime.now();
 
     @OneToMany(mappedBy = "order", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
-    private List<OrderLineItem> orderLineItems = new ArrayList<>();
+    private final List<OrderLineItem> orderLineItems = new ArrayList<>();
 
     protected Order() {
+    }
+
+    public Order(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
+        validate(orderTable, orderLineItems);
+        addOrderLineItems(orderLineItems);
+        this.orderTable = orderTable;
+    }
+
+    private void addOrderLineItems(List<OrderLineItem> orderLineItems) {
+        orderLineItems.forEach(it -> this.orderLineItems.add(it.include(this)));
+    }
+
+    private void validate(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
+        if (orderTable.isEmpty()) {
+            throw new InvalidTableException();
+        }
+
+        if (orderLineItems.isEmpty()) {
+            throw new OrderLineItemNotFoundException();
+        }
     }
 
     public Long getId() {

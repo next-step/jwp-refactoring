@@ -24,6 +24,16 @@ public class OrderLineItem {
     protected OrderLineItem() {
     }
 
+    public OrderLineItem(Menu menu, Long quantity) {
+        this.menu = menu;
+        this.quantity = Quantity.of(quantity);
+    }
+
+    public OrderLineItem include(Order order) {
+        this.order = order;
+        return this;
+    }
+
     public Long getId() {
         return id;
     }

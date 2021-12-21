@@ -1,6 +1,6 @@
 package kitchenpos.fixtures;
 
-import kitchenpos.domain.OrderTable;
+import kitchenpos.dto.OrderTableSaveRequest;
 
 /**
  * packageName : kitchenpos.fixtures
@@ -10,12 +10,11 @@ import kitchenpos.domain.OrderTable;
  * description :
  */
 public class OrderTableFixtures {
-    public static OrderTable createOrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
-//        OrderTable orderTable = new OrderTable();
-//        orderTable.setId(id);
-//        orderTable.setTableGroupId(tableGroupId);
-//        orderTable.setNumberOfGuests(numberOfGuests);
-//        orderTable.setEmpty(empty);
-        return null;
+    public static OrderTableSaveRequest 사용불가_다섯명테이블() {
+        return OrderTableSaveRequest.of(5, true);
+    }
+
+    public static OrderTableSaveRequest 사용가능_다섯명테이블() {
+        return OrderTableSaveRequest.of(5, false);
     }
 }

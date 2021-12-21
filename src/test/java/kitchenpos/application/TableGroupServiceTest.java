@@ -16,7 +16,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
 
-import static kitchenpos.fixtures.OrderTableFixtures.createOrderTable;
 import static kitchenpos.fixtures.TableGroupFixtures.createTableGroup;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -54,14 +53,14 @@ class TableGroupServiceTest {
 
     @BeforeEach
     void setUp() {
-        orderTableFirst = createOrderTable(1L, null, 2, true);
-        orderTableSecond = createOrderTable(2L, null, 3, true);
+//        orderTableFirst = createOrderTable(1L, null, 2, true);
+//        orderTableSecond = createOrderTable(2L, null, 3, true);
         tableGroup = createTableGroup(1L, LocalDateTime.now(), Lists.newArrayList(orderTableFirst, orderTableSecond));
     }
 
     @Test
     @DisplayName("테이블을 그룹화할 수 있다.")
-    public void group() throws Exception {
+    public void group() {
         // given
         given(tableGroupDao.save(any(TableGroup.class))).willReturn(tableGroup);
         given(orderTableDao.findAllByIdIn(anyList())).willReturn(tableGroup.getOrderTables());
@@ -78,7 +77,7 @@ class TableGroupServiceTest {
 
     @Test
     @DisplayName("테이블 개수가 2개보다 작은 경우 등록할 수 없다.")
-    public void createFailByTables() throws Exception {
+    public void createFailByTables() {
         // given
 //        tableGroup.setOrderTables(Lists.newArrayList(orderTableFirst));
 
@@ -88,14 +87,14 @@ class TableGroupServiceTest {
 
     @Test
     @DisplayName("등록되지 않은 테이블인 경우 그룹화 할 수 없다.")
-    public void createFailByUnknownTable() throws Exception {
+    public void createFailByUnknownTable() {
         // then
         assertThatThrownBy(() -> tableGroupService.create(tableGroup)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     @DisplayName("테이블이 비워있지 않으면 등록할 수 없다.")
-    public void createFailByUsingTable() throws Exception {
+    public void createFailByUsingTable() {
 //        orderTableFirst.setEmpty(false);
         given(orderTableDao.findAllByIdIn(anyList())).willReturn(tableGroup.getOrderTables());
         // then
@@ -104,7 +103,7 @@ class TableGroupServiceTest {
 
     @Test
     @DisplayName("테이블이 비워있지 않으면 등록할 수 없다.")
-    public void createFailByAlreadyGrouped() throws Exception {
+    public void createFailByAlreadyGrouped() {
         // given
 //        orderTableFirst.setTableGroupId(tableGroup.getId());
         given(orderTableDao.findAllByIdIn(anyList())).willReturn(tableGroup.getOrderTables());
@@ -115,7 +114,7 @@ class TableGroupServiceTest {
 
     @Test
     @DisplayName("테이블 그룹화를 해제할 수 있다.")
-    public void ungroup() throws Exception {
+    public void ungroup() {
         // given
         given(orderTableDao.findAllByTableGroupId(anyLong())).willReturn(tableGroup.getOrderTables());
         given(orderTableDao.save(any(OrderTable.class))).willReturn(orderTableFirst, orderTableSecond);
@@ -130,7 +129,7 @@ class TableGroupServiceTest {
 
     @Test
     @DisplayName("테이블의 주문 상태가 조리, 식사중인 경우 그룹화를 해제할 수 없다.")
-    public void ungroupFail() throws Exception {
+    public void ungroupFail() {
         // given
         given(orderTableDao.findAllByTableGroupId(anyLong())).willReturn(tableGroup.getOrderTables());
         given(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(true);

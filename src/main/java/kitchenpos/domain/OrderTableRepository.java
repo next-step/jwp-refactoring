@@ -7,13 +7,13 @@ import java.util.List;
 
 /**
  * packageName : kitchenpos.domain
- * fileName : OrderRepository
+ * fileName : OrderTableRepository
  * author : haedoang
  * date : 2021-12-21
  * description :
  */
-public interface OrderRepository extends JpaRepository<Order, Long> {
-    @Query(value = "select distinct o from Order o " +
-            "left join fetch o.orderLineItems oli")
-    List<Order> findAllJoinFetch();
+public interface OrderTableRepository extends JpaRepository<OrderTable, Long> {
+    @Query(value = "select distinct ot from OrderTable ot" +
+            " left join fetch ot.tableGroup tg")
+    List<OrderTable> findAllJoinFetch();
 }

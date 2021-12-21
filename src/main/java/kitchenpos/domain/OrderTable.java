@@ -12,13 +12,18 @@ public class OrderTable {
     @JoinColumn(name = "table_group_id", foreignKey = @ForeignKey(name = "fk_order_table_table_group"))
     private TableGroup tableGroup;
 
-    @Column(nullable = false)
-    private Integer numberOfGuests;
+    @Embedded
+    private NumberOfGuests numberOfGuests;
 
     @Column(nullable = false)
-    private Boolean empty;
+    private boolean empty;
 
     protected OrderTable() {
+    }
+
+    public OrderTable(Integer numberOfGuests, boolean empty) {
+        this.numberOfGuests = NumberOfGuests.of(numberOfGuests);
+        this.empty = empty;
     }
 
     public Long getId() {
@@ -30,10 +35,10 @@ public class OrderTable {
     }
 
     public Integer getNumberOfGuests() {
-        return numberOfGuests;
+        return numberOfGuests.value();
     }
 
-    public Boolean isEmpty() {
+    public boolean isEmpty() {
         return empty;
     }
 }
