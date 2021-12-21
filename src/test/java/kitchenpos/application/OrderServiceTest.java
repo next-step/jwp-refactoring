@@ -58,7 +58,7 @@ class OrderServiceTest {
         order.setOrderLineItems(orderLineItems);
     }
 
-    @DisplayName("create메서드에 생성을 원하는 Order 객체를 인자로 하여 호출하면, 생성된 객체를 반환한다.")
+    @DisplayName("주문 생성하기")
     @Test
     void createTest() {
         when(menuDao.countByIdIn(Lists.newArrayList(menu.getId()))).thenReturn(1L);
@@ -68,7 +68,7 @@ class OrderServiceTest {
         assertThat(orderService.create(order)).isEqualTo(order);
     }
 
-    @DisplayName("create메서드 호출시, Order객체에 등록된 OrderLineItems가 하나도 등록되어 있지 않다면, 예외를 던진다.")
+    @DisplayName("주문 생성시 주문 항목 없으면 예외 던지기")
     @Test
     void exceptionTest1() {
         order.setOrderLineItems(new ArrayList<>());
@@ -77,7 +77,7 @@ class OrderServiceTest {
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("create메서드 호출시, OrderLineItems의 개수와 Menu식별자로 조회된 개수가 일치하지 않는다면, 예외를 던진다.")
+    @DisplayName("주문 항목의 개수와 해당하는 메뉴의 개수가 다르면 예외 발생")
     @Test
     void exceptionTest2() {
         List<Long> menuIds = orderLineItems.stream()
@@ -91,7 +91,7 @@ class OrderServiceTest {
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("create메서드 호출시, Order에 등록된 OrderTable이 존재하지 않는다면, 예외를 던진다.")
+    @DisplayName("주문에 등록된 주문 테이블이 없다면 예외 발생")
     @Test
     void exceptionTest3() {
         Long wrongOrderTableId = 100L;
@@ -104,14 +104,14 @@ class OrderServiceTest {
 
 
 
-    @DisplayName("list메서드를 호출하면, 기 생성된 Order 목록을 반환한다.")
+    @DisplayName("주문 목록 조회시 저장된 주문 목록 얻기")
     @Test
     void listTest() {
         when(orderDao.findAll()).thenReturn(Lists.newArrayList(order));
         assertThat(orderService.list()).isEqualTo(Lists.newArrayList(order));
     }
 
-    @DisplayName("changeOrderStatus메서드에 주문식별자와 상태변환을 원하는 Order객체를 인자로 받아 호출하면, 상태값이 변경된다.")
+    @DisplayName("주문 상태 변경")
     @Test
     void changeOrderStatusTest() {
         when(orderDao.findById(order.getId())).thenReturn(Optional.of(order));
@@ -122,7 +122,7 @@ class OrderServiceTest {
         );
     }
 
-    @DisplayName("changeOrderStatus메서드를 호출하는 Order객체의 OrderStatus필드 값이 COMPLETION이면, 예외를 던진다.")
+    @DisplayName("주문 상태 변경시, 계산 완료이면 예외 발생")
     @Test
     void exceptionTest4() {
         Order targetOrder = Order.of(2L, order.getOrderTableId(), OrderStatus.MEAL.name(), LocalDateTime.now(), order.getOrderLineItems());

@@ -49,7 +49,7 @@ class MenuServiceTest {
         menu2.setMenuProducts(menuProducts2);
     }
 
-    @DisplayName("create메서드에 생성을 원하는 Menu 객체를 인자로 하여 호출하면, 생성된 객체를 반환한다.")
+    @DisplayName("메뉴 생성하기")
     @Test
     void createTest() {
         when(menuGroupDao.existsById(2L)).thenReturn(true);
@@ -58,7 +58,7 @@ class MenuServiceTest {
         assertThat(menuService.create(menu1)).isEqualTo(menu1);
     }
 
-    @DisplayName("메뉴의 가격이 0원 미만인 상품을 포함하는 메뉴를 생성시도 하면 예외를 던진다.")
+    @DisplayName("메뉴 가격이 0원 미만시 예외 발생")
     @Test
     void exceptionTest1() {
         BigDecimal wrongPrice = BigDecimal.valueOf(-16000L);
@@ -66,7 +66,7 @@ class MenuServiceTest {
         assertThatThrownBy(() -> menuService.create(wrongMenu)).isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("메뉴의 메뉴그룹 식별자가 없는 메뉴를 생성시도 하면 예외를 던진다.")
+    @DisplayName("메뉴의 메뉴그룹 없을 때, 예외 발생")
     @Test
     void exceptionTest2() {
         Long wrongId = 100L;
@@ -74,27 +74,27 @@ class MenuServiceTest {
         assertThatThrownBy(() -> menuService.create(wrongMenu)).isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("메뉴상품 목록의 메뉴상품 식별자가 없는 메뉴를 생성시도 하면 예외를 던진다.")
+    @DisplayName("저장되지 않은 메뉴상품을 가진 메뉴 생성시 예외 발생")
     @Test
     void exceptionTest3() {
         Long wrongId = 100L;
         Menu wrongMenu = Menu.of(3L, product1.getName(), product1.getPrice(), menuGroup.getId(), null);
-        List<MenuProduct> menuProducts = Lists.newArrayList(MenuProduct.of(1L, wrongMenu.getId(), wrongId, 1L));
-        wrongMenu.setMenuProducts(menuProducts);
+        List<MenuProduct> wrongMenuProducts = Lists.newArrayList(MenuProduct.of(1L, wrongMenu.getId(), wrongId, 1L));
+        wrongMenu.setMenuProducts(wrongMenuProducts);
 
         assertThatThrownBy(
             () -> menuService.create(wrongMenu)
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("메뉴상품 목록의 메뉴상품 금액의 합이 메뉴 금액보다 작은 메뉴를 생성시도 하면 예외를 던진다.")
+    @DisplayName("메뉴상품 목록의 금액의 총합보다 작은 메뉴를 생성시 예외 발생")
     @Test
     void exceptionTest4() {
         Menu wrongMenu = Menu.of(3L, product1.getName(), product1.getPrice().add(BigDecimal.ONE), menuGroup.getId(), menuProducts1);
         assertThatThrownBy(() -> menuService.create(wrongMenu)).isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("list메서드를 호출하면, 기 생성된 MenuGroup 목록을 반환한다.")
+    @DisplayName("목록 조회시, 저장된 메뉴그룹 목록 얻기")
     @Test
     void listTest() {
         when(menuDao.findAll()).thenReturn(Lists.newArrayList(menu1, menu2));

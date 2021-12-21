@@ -14,7 +14,7 @@ import org.junit.jupiter.api.*;
 import kitchenpos.dao.*;
 import kitchenpos.domain.*;
 
-@DisplayName("테이블그룹 관련 테스트")
+@DisplayName("단체 지정 관련 테스트")
 class TableGroupServiceTest {
     private OrderDao orderDao;
     private OrderTableDao orderTableDao;
@@ -41,7 +41,7 @@ class TableGroupServiceTest {
         tableGroup = TableGroup.of(1L, LocalDateTime.now(), orderTables);
     }
 
-    @DisplayName("create메서드에 생성을 원하는 TableGroup 객체를 인자로 하여 호출하면, 생성된 객체를 반환한다.")
+    @DisplayName("단체 지정 생성하기")
     @Test
     void createTest() {
         when(tableGroupDao.save(tableGroup)).thenReturn(tableGroup);
@@ -49,7 +49,7 @@ class TableGroupServiceTest {
         assertThat(tableGroupService.create(tableGroup)).isEqualTo(tableGroup);
     }
 
-    @DisplayName("create메서드에 생성을 원하는 TableGroup 객체에 등록된 OrderTable의 개수가 1개 이하이면, 예외를 던진다.")
+    @DisplayName("단체 지정 생성시 등록된 주문 테이블 개수가 1개이하면 예외 발생")
     @Test
     void exceptionTest1() {
         orderTables = Lists.newArrayList(OrderTable.of(1L, null, 4, true));
@@ -59,7 +59,7 @@ class TableGroupServiceTest {
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("create메서드에 생성을 원하는 TableGroup 객체에 등록된 OrderTable의 개수와 저장된 OrderTable의 개수가 일치하지 않으면, 예외를 던진다.")
+    @DisplayName("단체 지정에 등록된 주문 테이블의 개수와 저장된 주문 테이블의 개수가 일치하지 않으면, 예외 발생")
     @Test
     void exceptionTest2() {
         List<OrderTable> threeOrderTables = Lists.newArrayList(
@@ -74,7 +74,7 @@ class TableGroupServiceTest {
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("create메서드 호출시, 저장된 OrderTable의 객체가 빈 객체이거나 널이면, 예외를 던진다.")
+    @DisplayName("저장된 주문 테이블의 객체가 없으면 예외 발생")
     @Test
     void exceptionTest3() {
         when(orderTableDao.findAllByIdIn(Lists.newArrayList(1L, 2L))).thenReturn(
@@ -89,7 +89,7 @@ class TableGroupServiceTest {
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("upgroup메서드에 TableGroup 객체의 식별자를 인자로 하여 호출하면, 저장된 TableGroup을 삭제(null 세팅)한다.")
+    @DisplayName("단체 지정 해제")
     @Test
     void ungroupTest() {
         List<OrderTable> threeOrderTables = Lists.newArrayList(
@@ -101,7 +101,7 @@ class TableGroupServiceTest {
         tableGroupService.ungroup(tableGroup.getId());
     }
 
-    @DisplayName("upgroup메서드를 호출할 때, OrderTable의 상태가 조리 또는 식사중이면, 예외를 던진다.")
+    @DisplayName("단체 지정 해제시, 주분 테이블 상태가 조리 또는 식사중이면 예외 발생")
     @Test
     void exceptionTest4() {
         orderTables = Lists.newArrayList(

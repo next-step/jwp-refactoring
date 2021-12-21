@@ -12,7 +12,7 @@ import org.junit.jupiter.api.*;
 import kitchenpos.dao.*;
 import kitchenpos.domain.*;
 
-@DisplayName("주문테이블 관련 테스트")
+@DisplayName("주문 테이블 관련 테스트")
 class TableServiceTest {
     private OrderDao orderDao;
     private OrderTableDao orderTableDao;
@@ -25,7 +25,7 @@ class TableServiceTest {
         tableService = new TableService(orderDao, orderTableDao);
     }
 
-    @DisplayName("create메서드에 생성을 원하는 OrderTable 객체를 인자로 하여 호출하면, 생성된 객체를 반환한다.")
+    @DisplayName("주문 테이블 생성하기")
     @Test
     void createTest() {
         OrderTable orderTable = OrderTable.of(1L, null, 4, true);
@@ -33,7 +33,7 @@ class TableServiceTest {
         assertThat(tableService.create(orderTable)).isEqualTo(orderTable);
     }
 
-    @DisplayName("list메서드를 호출하면, OrderTable 목록을 반환한다.")
+    @DisplayName("주문 테이블 조회시 저장된 주문 테이블 목록 얻기")
     @Test
     void listTest() {
         OrderTable orderTable1 = OrderTable.of(1L, 1L, 4, true);
@@ -43,7 +43,7 @@ class TableServiceTest {
         assertThat(tableService.list()).isEqualTo(Lists.newArrayList(orderTable1, orderTable2));
     }
 
-    @DisplayName("changeEmpty메서드를 호출하면, 테이블의 비어 있음 여부를 변경할 수 있다.")
+    @DisplayName("주문 테이블 공백 상태 변경")
     @Test
     void changeEmptyTest() {
         OrderTable orderTable = OrderTable.of(1L, null, 4, false);
@@ -55,7 +55,7 @@ class TableServiceTest {
         assertThat(tableService.changeEmpty(orderTable.getId(), targetOrderTable).isEmpty()).isEqualTo(targetOrderTable.isEmpty());
     }
 
-    @DisplayName("changeEmpty메서드를 호출시, OrderTable객체에 TableGroupId가 할당되어 있다면, 예외를 던진다.")
+    @DisplayName("주문 테이블 공백 상태 변경시 주문 테이블에 단체 지정이 되어 있다면 예외 발생")
     @Test
     void exceptionTest1() {
         OrderTable orderTable = OrderTable.of(1L, 1L, 4, false);
@@ -69,7 +69,7 @@ class TableServiceTest {
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("changeEmpty메서드를 호출시, OrderTable의 식별자로 조회된 주문이 조리 또는 식사중이면, 예외를 던진다.")
+    @DisplayName("주문 테이블 공백 상태 변경시 주문테이블의 상태가 조리 또는 식사중이면 예외 발생")
     @Test
     void exceptionTest2() {
         OrderTable orderTable = OrderTable.of(1L, null, 4, false);
@@ -85,7 +85,7 @@ class TableServiceTest {
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("changeNumberOfGuests메서드를 호출하면, 테이블의 인원을 변경할 수 있다.")
+    @DisplayName("방문한 손님 수 변경")
     @Test
     void changeNumberOfGuestsTest() {
         OrderTable orderTable = OrderTable.of(1L, null, 4, true);
@@ -99,7 +99,7 @@ class TableServiceTest {
         );
     }
 
-    @DisplayName("changeNumberOfGuests메서드를 호출시, 변경하려는 OrderTable객체의 손님수가 음수라면, 예외를 던진다.")
+    @DisplayName("방문한 손님 수 변경시 음수이면 예외 발생")
     @Test
     void exceptionTest3() {
         OrderTable orderTable = OrderTable.of(1L, 1L, 4, true);
@@ -112,7 +112,7 @@ class TableServiceTest {
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("changeNumberOfGuests메서드를 호출시, 저장된 OrderTable객체가 없다면, 예외를 던진다.")
+    @DisplayName("방문한 손님 수 변경시 저장된 주문 테이블이 없다면 예외 발생")
     @Test
     void exceptionTest4() {
         OrderTable orderTable = OrderTable.of(1L, 1L, 4, true);
@@ -125,7 +125,7 @@ class TableServiceTest {
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("changeNumberOfGuests메서드를 호출시, OrderTable의 식별자로 조회된 주문이 조리 또는 식사중이면, 예외를 던진다.")
+    @DisplayName("방문한 손님 수 변경시 주문 테이블의 주문이 조리 또는 식사중이면 예외 발생")
     @Test
     void exceptionTest5() {
         OrderTable orderTable = OrderTable.of(1L, 1L, 4, true);

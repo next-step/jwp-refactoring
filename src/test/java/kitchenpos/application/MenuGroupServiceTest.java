@@ -26,14 +26,14 @@ class MenuGroupServiceTest {
         menuGroup3 = MenuGroup.of(3L, "순살파닭두마리메뉴");
     }
 
-    @DisplayName("create메서드에 생성을 원하는 MenuGroup 객체를 인자로 하여 호출하면, 생성된 객체를 반환한다.")
+    @DisplayName("메뉴그룹 생성하기")
     @Test
     void createTest() {
         when(menuGroupDao.save(menuGroup1)).thenReturn(menuGroup1);
         assertThat(menuGroupService.create(menuGroup1)).isEqualTo(menuGroup1);
     }
 
-    @DisplayName("list메서드를 호출하면, 기 생성된 MenuGroup 목록을 반환한다.")
+    @DisplayName("메뉴그룹 목록 반환하기")
     @Test
     void listTest() {
         when(menuGroupDao.findAll()).thenReturn(Lists.newArrayList(menuGroup1, menuGroup2, menuGroup3));
