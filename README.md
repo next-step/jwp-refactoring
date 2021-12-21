@@ -63,7 +63,7 @@
   - [ ] 모델 
     - [X] Product 엔티티 변환
     - [X] Name 래핑 클래스 추가
-  - [ ] ProductService
+  - [X] ProductRepository 사용하도록 수정
 - [ ] 메뉴 관리 리팩토링
   - [ ] 모델
     - [ ] MenuGroup 엔티티 변환
