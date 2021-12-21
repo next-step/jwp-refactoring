@@ -14,6 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import kitchenpos.common.domain.Empty;
 import kitchenpos.common.exception.BadRequestException;
 
 @Entity
@@ -29,7 +30,9 @@ public class OrderTable {
 
     @Embedded
     private NumberOfGuests numberOfGuests;
-    private boolean empty;
+
+    @Embedded
+    private Empty empty;
 
     protected OrderTable() {
     }
@@ -38,7 +41,7 @@ public class OrderTable {
         this.id = id;
         this.tableGroup = tableGroup;
         this.numberOfGuests = new NumberOfGuests(numberOfGuests);
-        this.empty = empty;
+        this.empty = new Empty(empty);
     }
 
     public static OrderTable of(int numberOfGuests, boolean empty) {
@@ -61,13 +64,13 @@ public class OrderTable {
         return numberOfGuests;
     }
 
-    public boolean isEmpty() {
+    public Empty isEmpty() {
         return empty;
     }
 
     public void changeTableGroup(TableGroup tableGroup) {
         this.tableGroup = tableGroup;
-        this.empty = false;
+        this.empty.changeEmpty(false);
     }
 
     public void ungroup() {
@@ -81,15 +84,15 @@ public class OrderTable {
 
     public void changeEmpty(final boolean empty) {
         validateChangeableEmpty();
-        this.empty = empty;
+        this.empty.changeEmpty(empty);
     }
 
     public boolean isPossibleIntoTableGroup() {
-        return empty && Objects.isNull(tableGroup);
+        return empty.getValue() && Objects.isNull(tableGroup);
     }
 
     private void validateChangeableNumberOfGuests() {
-        if (empty) {
+        if (empty.getValue()) {
             throw new BadRequestException(CANNOT_CHANGE_STATUS);
         }
     }

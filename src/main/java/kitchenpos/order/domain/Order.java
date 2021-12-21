@@ -58,7 +58,7 @@ public class Order {
     }
 
     private void validate(OrderTable orderTable) {
-        if (orderTable.isEmpty()) {
+        if (orderTable.isEmpty().getValue()) {
             throw new BadRequestException(WRONG_VALUE);
         }
     }
