@@ -11,7 +11,7 @@ import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.dto.ProductCreateRequest;
 import kitchenpos.product.dto.ProductDto;
 
-@Service(value = "ToBeProductService")
+@Service
 @Transactional(readOnly = true)
 public class ProductService {
 	private final ProductRepository productRepository;

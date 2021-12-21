@@ -12,7 +12,7 @@ import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.ordertable.dto.OrderTableDto;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 
-@Service(value = "ToBeOrderTableService")
+@Service
 @Transactional(readOnly = true)
 public class OrderTableService {
 	private final OrderTableRepository orderTableRepository;

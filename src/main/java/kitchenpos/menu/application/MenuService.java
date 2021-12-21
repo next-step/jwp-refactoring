@@ -21,7 +21,7 @@ import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 
-@Service(value = "ToBeMenuService")
+@Service
 @Transactional(readOnly = true)
 public class MenuService {
 	private final MenuRepository menuRepository;
