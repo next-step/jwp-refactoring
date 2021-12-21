@@ -11,8 +11,8 @@ import java.util.List;
 import java.util.Optional;
 import kitchenpos.application.fixture.TableFixture;
 import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,7 +29,7 @@ class TableServiceTest {
     private OrderDao orderDao;
 
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @InjectMocks
     private TableService tableService;
@@ -48,7 +48,7 @@ class TableServiceTest {
     @DisplayName("테이블을 등록한다.")
     @Test
     void create() {
-        given(orderTableDao.save(빈_테이블)).willReturn(빈_테이블);
+        given(orderTableRepository.save(빈_테이블)).willReturn(빈_테이블);
 
         OrderTable savedTable = tableService.create(빈_테이블);
 
@@ -59,7 +59,7 @@ class TableServiceTest {
     @DisplayName("테이블 목록을 조회한다.")
     @Test
     void list() {
-        given(orderTableDao.findAll()).willReturn(Arrays.asList(빈_테이블, 단체_테이블1, 단체_테이블2));
+        given(orderTableRepository.findAll()).willReturn(Arrays.asList(빈_테이블, 단체_테이블1, 단체_테이블2));
 
         List<OrderTable> tables = tableService.list();
 
@@ -72,8 +72,8 @@ class TableServiceTest {
         OrderTable 변경할_테이블 = TableFixture.create(1L, null, 0, true);
 
         given(orderDao.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).willReturn(false);
-        given(orderTableDao.findById(변경할_테이블.getId())).willReturn(Optional.of(변경할_테이블));
-        given(orderTableDao.save(변경할_테이블)).willReturn(변경할_테이블);
+        given(orderTableRepository.findById(변경할_테이블.getId())).willReturn(Optional.of(변경할_테이블));
+        given(orderTableRepository.save(변경할_테이블)).willReturn(변경할_테이블);
 
         OrderTable changedTable = tableService.changeEmpty(변경할_테이블.getId(), 변경할_테이블);
 
@@ -84,7 +84,7 @@ class TableServiceTest {
     @Test
     void changeEmptyImpossible1() {
         OrderTable 등록안된_테이블 = TableFixture.create(1L, null, 2, false);
-        given(orderTableDao.findById(1L)).willReturn(Optional.empty());
+        given(orderTableRepository.findById(1L)).willReturn(Optional.empty());
 
         assertThatThrownBy(() -> tableService.changeEmpty(1L, 등록안된_테이블))
             .isInstanceOf(IllegalArgumentException.class);
@@ -104,7 +104,7 @@ class TableServiceTest {
     void changeEmptyImpossible3() {
         OrderTable 변경할_테이블 = TableFixture.create(1L, null, 2, false);
         given(orderDao.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).willReturn(true);
-        given(orderTableDao.findById(변경할_테이블.getId())).willReturn(Optional.of(변경할_테이블));
+        given(orderTableRepository.findById(변경할_테이블.getId())).willReturn(Optional.of(변경할_테이블));
 
         assertThatThrownBy(() -> tableService.changeEmpty(1L, 변경할_테이블))
             .isInstanceOf(IllegalArgumentException.class);
@@ -114,8 +114,8 @@ class TableServiceTest {
     @Test
     void changeNumberOfGuests() {
         OrderTable 변경할_테이블 = TableFixture.create(1L, null, 1, false);
-        given(orderTableDao.findById(변경할_테이블.getId())).willReturn(Optional.of(변경할_테이블));
-        given(orderTableDao.save(변경할_테이블)).willReturn(변경할_테이블);
+        given(orderTableRepository.findById(변경할_테이블.getId())).willReturn(Optional.of(변경할_테이블));
+        given(orderTableRepository.save(변경할_테이블)).willReturn(변경할_테이블);
         변경할_테이블.setNumberOfGuests(2);
 
         OrderTable 변경된_테이블 = tableService.changeNumberOfGuests(변경할_테이블.getId(), 변경할_테이블);
@@ -137,7 +137,7 @@ class TableServiceTest {
     @Test
     void changeNumberOfGuestsImpossible2() {
         OrderTable 등록안된_테이블 = TableFixture.create(1L, null, 2, false);
-        given(orderTableDao.findById(1L)).willReturn(Optional.empty());
+        given(orderTableRepository.findById(1L)).willReturn(Optional.empty());
 
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, 등록안된_테이블))
             .isInstanceOf(IllegalArgumentException.class);

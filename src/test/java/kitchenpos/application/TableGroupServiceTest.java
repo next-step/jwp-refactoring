@@ -14,8 +14,8 @@ import java.util.List;
 import kitchenpos.application.fixture.TableFixture;
 import kitchenpos.application.fixture.TableGroupFixture;
 import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.OrderTableRepository;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.domain.TableGroupRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,7 +34,7 @@ class TableGroupServiceTest {
     private OrderDao orderDao;
 
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @Mock
     private TableGroupRepository tableGroupRepository;
@@ -55,7 +55,7 @@ class TableGroupServiceTest {
     @Test
     void create() {
         List<OrderTable> orderTables = Arrays.asList(단체_테이블1, 단체_테이블2);
-        given(orderTableDao.findAllByIdIn(anyList())).willReturn(orderTables);
+        given(orderTableRepository.findAllByIdIn(anyList())).willReturn(orderTables);
 
         TableGroup tableGroup = TableGroupFixture.createTableGroup(1L, orderTables);
         given(tableGroupRepository.save(tableGroup)).willReturn(tableGroup);
@@ -78,7 +78,7 @@ class TableGroupServiceTest {
     void createImpossible2() {
         List<OrderTable> orderTables = Arrays.asList(단체_테이블1, 단체_테이블2);
 
-        given(orderTableDao.findAllByIdIn(anyList())).willReturn(Collections.emptyList());
+        given(orderTableRepository.findAllByIdIn(anyList())).willReturn(Collections.emptyList());
 
         TableGroup tableGroup = TableGroupFixture.createTableGroup(1L, orderTables);
 
@@ -93,7 +93,7 @@ class TableGroupServiceTest {
         OrderTable 비어있지않은_테이블2 = TableFixture.create(2L, null, 3, false);
 
         List<OrderTable> orderTables = Arrays.asList(비어있지않은_테이블1, 비어있지않은_테이블2);
-        given(orderTableDao.findAllByIdIn(anyList())).willReturn(orderTables);
+        given(orderTableRepository.findAllByIdIn(anyList())).willReturn(orderTables);
 
         TableGroup tableGroup = TableGroupFixture.createTableGroup(1L, orderTables);
 
@@ -108,7 +108,7 @@ class TableGroupServiceTest {
         OrderTable 단체로_지정된_테이블2 = TableFixture.create(2L, 1L, 3, true);
 
         List<OrderTable> orderTables = Arrays.asList(단체로_지정된_테이블1, 단체로_지정된_테이블2);
-        given(orderTableDao.findAllByIdIn(anyList())).willReturn(orderTables);
+        given(orderTableRepository.findAllByIdIn(anyList())).willReturn(orderTables);
 
         TableGroup tableGroup = TableGroupFixture.createTableGroup(1L, orderTables);
 
@@ -123,13 +123,13 @@ class TableGroupServiceTest {
         OrderTable 단체로_지정된_테이블2 = TableFixture.create(2L, 1L, 3, true);
 
         List<OrderTable> orderTables = Arrays.asList(단체로_지정된_테이블1, 단체로_지정된_테이블2);
-        given(orderTableDao.findAllByTableGroupId(1L)).willReturn(orderTables);
+        given(orderTableRepository.findAllByTableGroupId(1L)).willReturn(orderTables);
 
         given(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(false);
 
         tableGroupService.ungroup(1L);
 
-        verify(orderTableDao, times(2)).save(any(OrderTable.class));
+        verify(orderTableRepository, times(2)).save(any(OrderTable.class));
         assertThat(단체로_지정된_테이블1.getTableGroupId()).isNull();
         assertThat(단체로_지정된_테이블2.getTableGroupId()).isNull();
     }
@@ -141,7 +141,7 @@ class TableGroupServiceTest {
         OrderTable 단체로_지정된_테이블2 = TableFixture.create(2L, 1L, 3, true);
 
         List<OrderTable> orderTables = Arrays.asList(단체로_지정된_테이블1, 단체로_지정된_테이블2);
-        given(orderTableDao.findAllByTableGroupId(1L)).willReturn(orderTables);
+        given(orderTableRepository.findAllByTableGroupId(1L)).willReturn(orderTables);
 
         given(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(true);
 
