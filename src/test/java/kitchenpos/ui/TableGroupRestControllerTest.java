@@ -1,36 +1,29 @@
 package kitchenpos.ui;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import kitchenpos.application.TableGroupService;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.ui.testfixture.CommonTestFixtures;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 
 class TableGroupRestControllerTest extends IntegrationTest {
 
     private static final String BASE_PATH = "/api/table-groups";
-
-    @Autowired
-    private ObjectMapper objectMapper;
 
     @Autowired
     private MockMvc mockMvc;
@@ -45,22 +38,17 @@ class TableGroupRestControllerTest extends IntegrationTest {
         List<OrderTable> orderTables = Arrays.asList(
             new OrderTable(1L),
             new OrderTable(2L));
-        Map<String, Object> params = 테이블_그룹_정보(orderTables);
+        TableGroup requestTableGroup = new TableGroup(orderTables);
         TableGroup expectedTableGroup = new TableGroup(1L, LocalDateTime.now(), orderTables);
         given(tableGroupService.create(any()))
             .willReturn(expectedTableGroup);
 
-        //when
-        MockHttpServletResponse response = mockMvc.perform(post(BASE_PATH)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(params))
-        ).andReturn().getResponse();
-
-        //then
-        assertThat(response.getStatus()).isEqualTo(HttpStatus.CREATED.value());
-        TableGroup savedTableGroup = objectMapper.readValue(response.getContentAsString(),
-            TableGroup.class);
-        assertThat(savedTableGroup).isEqualTo(expectedTableGroup);
+        //when, then
+        mockMvc.perform(post(BASE_PATH)
+                .content(CommonTestFixtures.asJsonString(requestTableGroup))
+                .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isCreated())
+            .andExpect(jsonPath("$.id").value(expectedTableGroup.getId()));
     }
 
     @DisplayName("테이블 그룹 해제")
@@ -71,13 +59,7 @@ class TableGroupRestControllerTest extends IntegrationTest {
 
         //when,then
         mockMvc.perform(delete(BASE_PATH + "/{tableGroupId}", tableGroupId)
-            .contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(status().isNoContent());
-    }
-
-    private Map<String, Object> 테이블_그룹_정보(List<OrderTable> orderTables) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("orderTables", orderTables);
-        return params;
+                .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isNoContent());
     }
 }

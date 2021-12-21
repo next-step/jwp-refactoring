@@ -1,34 +1,29 @@
 package kitchenpos.ui;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.BDDMockito.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import kitchenpos.application.MenuGroupService;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.ui.testfixture.CommonTestFixtures;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 
 class MenuGroupRestControllerTest extends IntegrationTest {
 
     private static final String BASE_PATH = "/api/menu-groups";
-
-    @Autowired
-    private ObjectMapper objectMapper;
 
     @Autowired
     private MockMvc mockMvc;
@@ -40,22 +35,19 @@ class MenuGroupRestControllerTest extends IntegrationTest {
     @Test
     void create() throws Exception {
         //given
-        Map<String, String> menuGroup = 메뉴그룹_정보_등록("추천메뉴");
-        MenuGroup expectedMenuGroup = new MenuGroup(1L, menuGroup.get("name"));
+        String menuGroupName = "추천메뉴";
+        MenuGroup requestMenuGroup = new MenuGroup(menuGroupName);
+        MenuGroup expectedMenuGroup = new MenuGroup(1L, menuGroupName);
         given(service.create(any(MenuGroup.class)))
             .willReturn(expectedMenuGroup);
 
         //when
-        MockHttpServletResponse response = mockMvc.perform(post(BASE_PATH)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(menuGroup))
-        ).andReturn().getResponse();
-
-        //then
-        assertThat(response.getStatus()).isEqualTo(HttpStatus.CREATED.value());
-        MenuGroup savedMenuGroup = objectMapper.readValue(response.getContentAsString(),
-            MenuGroup.class);
-        assertThat(savedMenuGroup).isEqualTo(expectedMenuGroup);
+        mockMvc.perform(post(BASE_PATH)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(CommonTestFixtures.asJsonString(requestMenuGroup)))
+            .andExpect(status().isCreated())
+            .andExpect(jsonPath("$.id").value(expectedMenuGroup.getId()))
+            .andExpect(jsonPath("$.name").value(expectedMenuGroup.getName()));
     }
 
     @DisplayName("메뉴 그룹 조회")
@@ -68,21 +60,14 @@ class MenuGroupRestControllerTest extends IntegrationTest {
         given(service.list())
             .willReturn(expectedMenuGroups);
 
-        //when
-        MockHttpServletResponse response = mockMvc.perform(get(BASE_PATH)
-        ).andReturn().getResponse();
-
-        //then
-        assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        List<MenuGroup> findMenuGroups = objectMapper.readValue(response.getContentAsString(),
-            new TypeReference<List<MenuGroup>>() {
-            });
-        assertThat(findMenuGroups).containsAll(expectedMenuGroups);
-    }
-
-    private Map<String, String> 메뉴그룹_정보_등록(String name) {
-        Map<String, String> params = new HashMap<>();
-        params.put("name", name);
-        return params;
+        //when, then
+        mockMvc.perform(get(BASE_PATH))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", hasSize(2)))
+            .andExpect(jsonPath("$[*]['id']",
+                containsInAnyOrder(
+                    expectedMenuGroups.stream()
+                        .mapToInt(menuGroup -> menuGroup.getId().intValue()).boxed()
+                        .toArray(Integer[]::new))));
     }
 }
