@@ -25,27 +25,27 @@ public class Menu {
     private MenuGroup menuGroup;
 
     @OneToMany(mappedBy = "menu", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
-    private List<MenuProduct> menuProducts = new ArrayList<>();
+    private final List<MenuProduct> menuProducts = new ArrayList<>();
 
     public Menu() {
     }
 
     public Menu(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        comparePrice(price, menuProducts);
-        addMenuProducts(menuProducts);
         this.name = name;
         this.price = Price.of(price);
         this.menuGroup = menuGroup;
+        addMenuProducts(menuProducts);
     }
 
     private void addMenuProducts(List<MenuProduct> newMenuProducts) {
+        comparePrice(newMenuProducts);
         newMenuProducts.forEach(
             menuProduct -> menuProducts.add(menuProduct.by(this))
         );
     }
 
-    private void comparePrice(BigDecimal price, List<MenuProduct> menuProducts) {
-        if (price.compareTo(totalPrice(menuProducts)) != 0) {
+    private void comparePrice(List<MenuProduct> menuProducts) {
+        if (this.price.value().compareTo(totalPrice(menuProducts)) != 0) {
             throw new MismatchPriceException();
         }
     }

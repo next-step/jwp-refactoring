@@ -1,11 +1,15 @@
 package kitchenpos.domain;
 
+import kitchenpos.exception.IllegalPriceException;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -14,6 +18,7 @@ import static kitchenpos.fixtures.MenuGroupFixtures.반반메뉴;
 import static kitchenpos.fixtures.ProductFixtures.양념치킨;
 import static kitchenpos.fixtures.ProductFixtures.후라이드;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 /**
@@ -25,7 +30,13 @@ import static org.junit.jupiter.api.Assertions.assertAll;
  */
 @DataJpaTest
 class MenuRepositoryTest {
+    private final BigDecimal 메뉴가격 = new BigDecimal(32000);
     private Menu menu;
+    private Product 양념치킨;
+    private Product 후라이드;
+    private MenuGroup 메뉴그룹;
+    private MenuProduct 양념치킨메뉴상품;
+    private MenuProduct 후라이드메뉴상품;
 
     @Autowired
     MenuGroupRepository menuGroupRepository;
@@ -38,9 +49,9 @@ class MenuRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        final Product 양념치킨 = productRepository.save(양념치킨().toEntity());
-        final Product 후라이드 = productRepository.save(후라이드().toEntity());
-        final MenuGroup 메뉴그룹 = menuGroupRepository.save(반반메뉴().toEntity());
+        양념치킨 = productRepository.save(양념치킨().toEntity());
+        후라이드 = productRepository.save(후라이드().toEntity());
+        메뉴그룹 = menuGroupRepository.save(반반메뉴().toEntity());
 
 //  엔드포인트 테스트 데이터
 //        final ArrayList<MenuProductRequest> menuProductRequests = Lists.newArrayList(
@@ -50,9 +61,9 @@ class MenuRepositoryTest {
 //
 //        후라이드반양념반메뉴 = 후라이드반양념반메뉴(new BigDecimal(32000), 메뉴그룹.getId(), menuProductRequests);
 
-        final MenuProduct 양념치킨메뉴상품 = new MenuProduct(양념치킨, 1L);
-        final MenuProduct 후라이드메뉴상품 = new MenuProduct(후라이드, 1L);
-        menu = new Menu("후라이드반양념반메뉴", new BigDecimal(32000), 메뉴그룹, Lists.newArrayList(양념치킨메뉴상품, 후라이드메뉴상품));
+        양념치킨메뉴상품 = new MenuProduct(양념치킨, 1L);
+        후라이드메뉴상품 = new MenuProduct(후라이드, 1L);
+        menu = new Menu("후라이드반양념반메뉴", 메뉴가격, 메뉴그룹, Lists.newArrayList(양념치킨메뉴상품, 후라이드메뉴상품));
     }
 
     @Test
@@ -77,7 +88,55 @@ class MenuRepositoryTest {
         );
     }
 
+    @ParameterizedTest(name = "value: " + ParameterizedTest.ARGUMENTS_PLACEHOLDER)
+    @ValueSource(ints = {-10, -5, -1})
+    @DisplayName("메뉴의 가격이 올바르지 않으면 등록할 수 없다: int")
+    public void createFailByPrice(int candidate) {
+        //given
+        BigDecimal illegalPrice = new BigDecimal(candidate);
 
-    //TODO 메뉴테스트 추가
+        //when
+        assertThatThrownBy(() -> new Menu("가격불일치메뉴", illegalPrice, 메뉴그룹, Lists.newArrayList(양념치킨메뉴상품, 후라이드메뉴상품)))
+                .isInstanceOf(IllegalPriceException.class);
+    }
+
+    @Test
+    @DisplayName("메뉴의 가격이 올바르지 않으면 등록할 수 없다: null")
+    public void createFailByPriceNull() {
+        //then
+        assertThatThrownBy(() -> new Menu("가격불일치메뉴", null, 메뉴그룹, Lists.newArrayList(양념치킨메뉴상품, 후라이드메뉴상품)))
+                .isInstanceOf(IllegalPriceException.class);
+    }
+
+    @Test
+    @DisplayName("메뉴의 가격은 메뉴상품들의 수량과 가격의 합과 일치하여야 한다.")
+    public void createFailByMenusPrices() {
+        //then
+        assertThatThrownBy(() -> new Menu("가격불일치메뉴", new BigDecimal(Long.MAX_VALUE), 메뉴그룹, Lists.newArrayList(양념치킨메뉴상품, 후라이드메뉴상품)))
+                .isInstanceOf(IllegalPriceException.class);
+    }
+//
+//    @Test
+//    @DisplayName("메뉴그룹이 등록되어 있어야 한다.")
+//    public void createFail() {
+//        //when
+//        Menu 메뉴_존재하지않은_메뉴그룹 = new Menu("한마리메뉴", 메뉴가격, new MenuGroup(), Lists.newArrayList(양념치킨메뉴상품, 후라이드메뉴상품));
+//
+//        //then
+//        assertThatThrownBy(() -> menuRepository.save(메뉴_존재하지않은_메뉴그룹))
+//                .isInstanceOf(DataIntegrityViolationException.class);
+//    }
+//
+//    @Test
+//    @DisplayName("메뉴상품은 상품이 등록되어 있어야 한다.")
+//    public void createFailByMenuProduct() {
+//        //when
+//        Menu 메뉴_존재하지않은_메뉴상품 = new Menu("한마리메뉴", 메뉴가격, 메뉴그룹, Lists.newArrayList(new MenuProduct(), new MenuProduct()));
+//
+//        //then
+//        assertThatThrownBy(() -> menuRepository.save(메뉴_존재하지않은_메뉴상품))
+//                .isInstanceOf(DataIntegrityViolationException.class);
+//    }
+
 
 }

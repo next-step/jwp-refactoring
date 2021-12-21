@@ -5,6 +5,7 @@ import kitchenpos.application.MenuService;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.fixtures.MenuFixtures;
+import kitchenpos.fixtures.MenuGroupFixtures;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -48,7 +49,7 @@ class MenuRestControllerTest {
 
     @BeforeEach
     void setUp() {
-        menu = MenuFixtures.양념치킨두마리메뉴().toEntity(new MenuGroup(), Lists.newArrayList());
+        menu = MenuFixtures.양념치킨두마리메뉴().toEntity(MenuGroupFixtures.두마리메뉴().toEntity(), Lists.newArrayList());
     }
 
 

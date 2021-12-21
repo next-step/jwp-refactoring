@@ -1,15 +1,18 @@
 package kitchenpos.domain;
 
+import kitchenpos.exception.ProductNotFoundException;
+
 import javax.persistence.*;
-
 import java.math.BigDecimal;
+import java.util.Objects;
 
-import static javax.persistence.FetchType.*;
+import static javax.persistence.FetchType.LAZY;
 
 @Entity
 public class MenuProduct {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = LAZY)
@@ -23,13 +26,20 @@ public class MenuProduct {
     @Embedded
     private Quantity quantity;
 
-    public MenuProduct() {
+    protected MenuProduct() {
     }
 
     public MenuProduct(Product product, Long quantity) {
+//        validate(product);
         this.product = product;
         this.quantity = Quantity.of(quantity);
     }
+
+//    private void validate(Product product) {
+//        if (Objects.isNull(product)) {
+//            throw new ProductNotFoundException();
+//        }
+//    }
 
     public BigDecimal price() {
         return product.getPrice()
