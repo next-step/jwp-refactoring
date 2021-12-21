@@ -2,10 +2,6 @@ package kitchenpos.domain;
 
 
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -35,6 +31,12 @@ public class OrderLineItem {
         this.quantity = quantity;
     }
 
+    public OrderLineItem(Order order, Long menuId, long quantity) {
+        this.order = order;
+        this.menu = new Menu(menuId);
+        this.quantity = quantity;
+    }
+
     public OrderLineItem(Menu menu, long quantity) {
         this.menu = menu;
         this.quantity = quantity;
@@ -60,6 +62,10 @@ public class OrderLineItem {
         this.order = order;
     }
 
+    public void addMenu(Menu menu) {
+        this.menu = menu;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -78,7 +84,7 @@ public class OrderLineItem {
         return "OrderLineItem{" +
                 "seq=" + seq +
                 ", order=" + order.getId() +
-                ", menu=" + menu.getName() +
+                ", menu="  +
                 ", quantity=" + quantity +
                 '}';
     }
