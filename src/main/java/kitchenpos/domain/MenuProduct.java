@@ -24,12 +24,12 @@ public class MenuProduct {
     @JoinColumn(name = "product_id", foreignKey = @ForeignKey(name = "fk_menu_product_product"))
     private Product product;
 
-    private long quantity;
+    private Quantity quantity;
 
     public MenuProduct() {
     }
 
-    public MenuProduct(Product product, Long quantity) {
+    public MenuProduct(Product product, Quantity quantity) {
         this.product = product;
         this.quantity = quantity;
     }
@@ -50,11 +50,7 @@ public class MenuProduct {
         return product;
     }
 
-    public long getQuantity() {
+    public Quantity getQuantity() {
         return quantity;
-    }
-
-    public void setQuantity(final long quantity) {
-        this.quantity = quantity;
     }
 }

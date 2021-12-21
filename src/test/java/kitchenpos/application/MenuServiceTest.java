@@ -20,6 +20,7 @@ import kitchenpos.domain.MenuProductRepository;
 import kitchenpos.domain.MenuRepository;
 import kitchenpos.domain.Product;
 import kitchenpos.domain.ProductRepository;
+import kitchenpos.domain.Quantity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -64,8 +65,8 @@ class MenuServiceTest {
 
         한마리_메뉴그룹 = MenuGroupFixture.create(1L, "한마리 메뉴");
 
-        메뉴상품1 = MenuProductFixture.createMenuProduct(상품_후라이드, 1L);
-        메뉴상품2 = MenuProductFixture.createMenuProduct(상품_양념치킨, 2L);
+        메뉴상품1 = MenuProductFixture.createMenuProduct(상품_후라이드, Quantity.of(1L));
+        메뉴상품2 = MenuProductFixture.createMenuProduct(상품_양념치킨, Quantity.of(2L));
 
         후라이드치킨 = MenuFixture.createMenu(1L, "후라이드치킨", 16_000L, 한마리_메뉴그룹, Arrays.asList(메뉴상품1));
         양념치킨 = MenuFixture.createMenu(2L, "양념치킨", 16_000L, 한마리_메뉴그룹, Arrays.asList(메뉴상품2));
@@ -75,7 +76,8 @@ class MenuServiceTest {
     @Test
     void create() {
         given(menuGroupRepository.existsById(후라이드치킨.getMenuGroup().getId())).willReturn(true);
-        given(productRepository.findById(메뉴상품1.getProduct().getId())).willReturn(Optional.of(상품_후라이드));
+        given(productRepository.findById(메뉴상품1.getProduct().getId())).willReturn(
+            Optional.of(상품_후라이드));
         given(menuRepository.save(후라이드치킨)).willReturn(후라이드치킨);
 
         Menu savedMenu = menuService.create(후라이드치킨);
@@ -107,8 +109,10 @@ class MenuServiceTest {
     void createImpossible5() {
         Menu 가격이_총합보다_큰_메뉴 = MenuFixture.createMenu(1L, "후라이드치킨", 100_000L, 한마리_메뉴그룹,
             Arrays.asList(메뉴상품1));
-        given(menuGroupRepository.existsById(가격이_총합보다_큰_메뉴.getMenuGroup().getId())).willReturn(true);
-        given(productRepository.findById(메뉴상품1.getProduct().getId())).willReturn(Optional.of(상품_후라이드));
+        given(menuGroupRepository.existsById(가격이_총합보다_큰_메뉴.getMenuGroup().getId())).willReturn(
+            true);
+        given(productRepository.findById(메뉴상품1.getProduct().getId())).willReturn(
+            Optional.of(상품_후라이드));
 
         assertThatThrownBy(() -> menuService.create(가격이_총합보다_큰_메뉴))
             .isInstanceOf(IllegalArgumentException.class);
