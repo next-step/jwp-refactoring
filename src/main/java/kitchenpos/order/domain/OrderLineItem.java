@@ -4,11 +4,16 @@ import java.util.Objects;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 import kitchenpos.common.domain.Quantity;
+import kitchenpos.menu.domain.Menu;
 
 @Entity
 public class OrderLineItem {
@@ -16,8 +21,14 @@ public class OrderLineItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long orderId;
-    private Long menuId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id", foreignKey = @ForeignKey(name = "fk_order_line_item_orders"))
+    private Order order;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "menu_id", foreignKey = @ForeignKey(name = "fk_order_line_item_menu"))
+    private Menu menu;
 
     @Embedded
     private Quantity quantity;
@@ -25,18 +36,18 @@ public class OrderLineItem {
     public OrderLineItem() {
     }
 
-    public OrderLineItem(Long menuId, long quantity) {
-        this(null, menuId, quantity);
+    public OrderLineItem(Menu menu, long quantity) {
+        this(null, menu, quantity);
     }
 
-    public OrderLineItem(Long orderId, Long menuId, long quantity) {
-        this(null, orderId, menuId, quantity);
+    public OrderLineItem(Order order, Menu menu, long quantity) {
+        this(null, order, menu, quantity);
     }
 
-    public OrderLineItem(Long id, Long orderId, Long menuId, long quantity) {
+    public OrderLineItem(Long id, Order order, Menu menu, long quantity) {
         this.id = id;
-        this.orderId = orderId;
-        this.menuId = menuId;
+        this.order = order;
+        this.menu = menu;
         this.quantity = new Quantity(quantity);
     }
 
@@ -44,16 +55,22 @@ public class OrderLineItem {
         return id;
     }
 
-    public Long getOrderId() {
-        return orderId;
+    public Order getOrder() {
+        return order;
     }
 
-    public Long getMenuId() {
-        return menuId;
+    public Menu getMenu() {
+        return menu;
     }
 
     public Quantity getQuantity() {
         return quantity;
+    }
+
+    public void changeOrder(Order order) {
+        if (this.order != order) {
+            this.order = order;
+        }
     }
 
     @Override
@@ -63,12 +80,12 @@ public class OrderLineItem {
         if (o == null || getClass() != o.getClass())
             return false;
         OrderLineItem that = (OrderLineItem)o;
-        return Objects.equals(id, that.id) && Objects.equals(orderId, that.orderId)
-            && Objects.equals(menuId, that.menuId) && Objects.equals(quantity, that.quantity);
+        return Objects.equals(id, that.id) && Objects.equals(order, that.order)
+            && Objects.equals(menu, that.menu) && Objects.equals(quantity, that.quantity);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, orderId, menuId, quantity);
+        return Objects.hash(id, order, menu, quantity);
     }
 }

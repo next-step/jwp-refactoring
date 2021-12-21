@@ -1,16 +1,26 @@
 package kitchenpos.order.domain;
 
+import static kitchenpos.common.exception.ExceptionMessage.*;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
+import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import kitchenpos.common.exception.BadRequestException;
 
 @Entity
 @Table(name = "orders")
@@ -19,51 +29,54 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long orderTableId;
-    private String orderStatus;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_orders_order_table"))
+    private OrderTable orderTable;
+
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus;
+
+    @Column(updatable = false)
     private LocalDateTime orderedTime;
 
-    @OneToMany
-    @JoinColumn(name = "orderId")
-    private List<OrderLineItem> orderLineItems;
+    @Embedded
+    private OrderLineItems orderLineItems;
 
-    public Order() {
+    protected Order() {
     }
 
-    public Order(Long orderTableId, String orderStatus, LocalDateTime orderedTime) {
-        this(null, orderTableId, orderStatus, orderedTime);
-    }
-
-    public Order(Long id, Long orderTableId, List<OrderLineItem> orderLineItems) {
+    private Order(Long id, OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime,
+        OrderLineItems orderLineItems) {
+        validate(orderTable);
         this.id = id;
-        this.orderTableId = orderTableId;
-        this.orderLineItems = orderLineItems;
-    }
-
-    public Order(Long id, Long orderTableId, String orderStatus,
-        List<OrderLineItem> orderLineItems) {
-        this.id = id;
-        this.orderTableId = orderTableId;
-        this.orderStatus = orderStatus;
-        this.orderLineItems = orderLineItems;
-    }
-
-    public Order(Long id, Long orderTableId, String orderStatus, LocalDateTime orderedTime) {
-        this.id = id;
-        this.orderTableId = orderTableId;
+        this.orderTable = orderTable;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
+        this.orderLineItems = orderLineItems;
+        orderLineItems.changeOrder(this);
+    }
+
+    private void validate(OrderTable orderTable) {
+        if (orderTable.isEmpty()) {
+            throw new BadRequestException(WRONG_VALUE);
+        }
+    }
+
+    public static Order of(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
+        return new Order(null, orderTable, OrderStatus.COOKING,
+            LocalDateTime.now(), new OrderLineItems(orderLineItems));
     }
 
     public Long getId() {
         return id;
     }
 
-    public Long getOrderTableId() {
-        return orderTableId;
+    public OrderTable getOrderTable() {
+        return orderTable;
     }
 
-    public String getOrderStatus() {
+    public OrderStatus getOrderStatus() {
         return orderStatus;
     }
 
@@ -71,16 +84,16 @@ public class Order {
         return orderedTime;
     }
 
-    public List<OrderLineItem> getOrderLineItems() {
+    public OrderLineItems getOrderLineItems() {
         return orderLineItems;
     }
 
-    public void changeOrderStatus(final String orderStatus) {
+    public void changeOrderStatus(final OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
     }
 
     public void changeOrderLineItems(final List<OrderLineItem> orderLineItems) {
-        this.orderLineItems = orderLineItems;
+        this.orderLineItems = new OrderLineItems(orderLineItems);
     }
 
     @Override
@@ -90,13 +103,12 @@ public class Order {
         if (o == null || getClass() != o.getClass())
             return false;
         Order order = (Order)o;
-        return Objects.equals(id, order.id) && Objects.equals(orderTableId, order.orderTableId)
-            && Objects.equals(orderStatus, order.orderStatus) && Objects.equals(orderedTime,
-            order.orderedTime) && Objects.equals(orderLineItems, order.orderLineItems);
+        return Objects.equals(id, order.id) && Objects.equals(orderTable, order.orderTable)
+            && orderStatus == order.orderStatus && Objects.equals(orderedTime, order.orderedTime);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, orderTableId, orderStatus, orderedTime, orderLineItems);
+        return Objects.hash(id, orderTable, orderStatus, orderedTime);
     }
 }

@@ -66,16 +66,12 @@ public class OrderTable {
     }
 
     public void changeTableGroup(TableGroup tableGroup) {
-        changeTableGroupId(tableGroup);
+        this.tableGroup = tableGroup;
         this.empty = false;
     }
 
     public void ungroup() {
         tableGroup = null;
-    }
-
-    public void changeTableGroupId(TableGroup tableGroup) {
-        this.tableGroup = tableGroup;
     }
 
     public void changeNumberOfGuests(final int numberOfGuests) {
@@ -119,5 +115,4 @@ public class OrderTable {
     public int hashCode() {
         return Objects.hash(id, numberOfGuests, empty);
     }
-
 }

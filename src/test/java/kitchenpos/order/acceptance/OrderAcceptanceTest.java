@@ -95,7 +95,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
 
         // when
         ExtractableResponse<Response> response = 주문_상태_갱신_요청(orderResponse.getId(),
-            new OrderStatusRequest(OrderStatus.MEAL.name()));
+            new OrderStatusRequest(OrderStatus.MEAL));
 
         주문_상태_갱신됨(response);
     }

@@ -1,15 +1,16 @@
 package kitchenpos.order.application;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
+import static kitchenpos.common.exception.ExceptionMessage.*;
+
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
+import kitchenpos.common.exception.ExceptionMessage;
+import kitchenpos.common.exception.NotFoundException;
 import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
@@ -40,39 +41,22 @@ public class OrderService {
     }
 
     @Transactional
-    public OrderResponse create(final OrderRequest order) {
-        final List<OrderLineItemRequest> orderLineItems = order.getOrderLineItems();
+    public OrderResponse create(final OrderRequest orderRequest) {
+        final OrderTable orderTable = orderTableRepository.findById(orderRequest.getOrderTableId())
+            .orElseThrow(() -> new NotFoundException(NOT_FOUND_DATA));
 
-        if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalArgumentException();
-        }
-
-        final List<Long> menuIds = orderLineItems.stream()
-            .map(OrderLineItemRequest::getMenuId)
-            .collect(Collectors.toList());
-
-        if (orderLineItems.size() != menuRepository.countByIdIn(menuIds)) {
-            throw new IllegalArgumentException();
-        }
-
-        final OrderTable orderTable = orderTableRepository.findById(order.getOrderTableId())
-            .orElseThrow(IllegalArgumentException::new);
-
-        if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
-
-        final Order savedOrder = orderRepository.save(order.toEntity(orderTable.getId(),
-            OrderStatus.COOKING.name(), LocalDateTime.now()));
-
-        final Long orderId = savedOrder.getId();
-        final List<OrderLineItem> savedOrderLineItems = new ArrayList<>();
-        for (final OrderLineItemRequest orderLineItem : orderLineItems) {
-            savedOrderLineItems.add(orderLineItemRepository.save(orderLineItem.toEntity(orderId)));
-        }
-        savedOrder.changeOrderLineItems(savedOrderLineItems);
+        final Order savedOrder = orderRepository.save(Order.of(
+            orderTable, makeOrderLineItems(orderRequest.getOrderLineItems())));
 
         return new OrderResponse(savedOrder);
+    }
+
+    private List<OrderLineItem> makeOrderLineItems(List<OrderLineItemRequest> orderLineItems) {
+        return orderLineItems.stream().map(
+            orderLineItemRequest -> orderLineItemRequest.toEntity(
+                menuRepository.findById(orderLineItemRequest.getMenuId()).orElseThrow(() -> new NotFoundException(
+                    ExceptionMessage.NOT_FOUND_DATA)))
+        ).collect(Collectors.toList());
     }
 
     public List<OrderResponse> list() {
@@ -88,21 +72,19 @@ public class OrderService {
     }
 
     @Transactional
-    public Order changeOrderStatus(final Long orderId, final OrderStatusRequest orderStatusRequest) {
+    public OrderResponse changeOrderStatus(final Long orderId, final OrderStatusRequest orderStatusRequest) {
         final Order savedOrder = orderRepository.findById(orderId)
             .orElseThrow(IllegalArgumentException::new);
 
-        if (Objects.equals(OrderStatus.COMPLETION.name(), savedOrder.getOrderStatus())) {
+        if (Objects.equals(OrderStatus.COMPLETION, savedOrder.getOrderStatus())) {
             throw new IllegalArgumentException();
         }
 
-        final OrderStatus orderStatus = OrderStatus.valueOf(orderStatusRequest.getOrderStatus());
-        savedOrder.changeOrderStatus(orderStatus.name());
+        savedOrder.changeOrderStatus(orderStatusRequest.getOrderStatus());
 
         orderRepository.save(savedOrder);
-
         savedOrder.changeOrderLineItems(orderLineItemRepository.findAllByOrderId(orderId));
 
-        return savedOrder;
+        return new OrderResponse(savedOrder);
     }
 }

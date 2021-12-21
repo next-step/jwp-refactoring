@@ -85,7 +85,7 @@ public class TableServiceTest {
 
         given(orderTableRepository.findById(orderTable.getId())).willReturn(Optional.of(findOrderTable));
         given(orderRepository.existsByOrderTableIdAndOrderStatusIn(
-            orderTable.getId(), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name())))
+            orderTable.getId(), Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL)))
             .willReturn(false);
 
         // when
@@ -107,7 +107,7 @@ public class TableServiceTest {
 
         given(orderTableRepository.findById(orderTableId)).willReturn(Optional.of(orderTable));
         given(orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTableId,
-            Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).willReturn(true);
+            Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))).willReturn(true);
 
         // when && then
         assertThrows(IllegalArgumentException.class, () ->

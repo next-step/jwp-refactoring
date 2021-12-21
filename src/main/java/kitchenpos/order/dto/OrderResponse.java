@@ -6,12 +6,13 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderStatus;
 
 public class OrderResponse {
 
     private Long id;
     private Long orderTableId;
-    private String orderStatus;
+    private OrderStatus orderStatus;
     private LocalDateTime orderedTime;
 
     private List<OrderLineItemResponse> orderLineItems;
@@ -20,13 +21,13 @@ public class OrderResponse {
     }
 
     public OrderResponse(Order order) {
-        this(order.getId(), order.getOrderTableId(), order.getOrderStatus(), order.getOrderedTime(),
-            order.getOrderLineItems().stream().map(
+        this(order.getId(), order.getOrderTable().getId(), order.getOrderStatus(), order.getOrderedTime(),
+            order.getOrderLineItems().getValue().stream().map(
                     OrderLineItemResponse::new)
                 .collect(Collectors.toList()));
     }
 
-    public OrderResponse(Long id, Long orderTableId, String orderStatus, LocalDateTime orderedTime,
+    public OrderResponse(Long id, Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime,
         List<OrderLineItemResponse> orderLineItems) {
         this.id = id;
         this.orderTableId = orderTableId;
@@ -43,7 +44,7 @@ public class OrderResponse {
         return orderTableId;
     }
 
-    public String getOrderStatus() {
+    public OrderStatus getOrderStatus() {
         return orderStatus;
     }
 
@@ -63,8 +64,8 @@ public class OrderResponse {
             return false;
         OrderResponse that = (OrderResponse)o;
         return Objects.equals(id, that.id) && Objects.equals(orderTableId, that.orderTableId)
-            && Objects.equals(orderStatus, that.orderStatus) && Objects.equals(orderedTime,
-            that.orderedTime) && Objects.equals(orderLineItems, that.orderLineItems);
+            && orderStatus == that.orderStatus && Objects.equals(orderedTime, that.orderedTime)
+            && Objects.equals(orderLineItems, that.orderLineItems);
     }
 
     @Override

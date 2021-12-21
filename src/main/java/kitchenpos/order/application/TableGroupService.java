@@ -56,7 +56,7 @@ public class TableGroupService {
             .collect(Collectors.toList());
 
         if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
-            orderIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
+            orderIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
             throw new BadRequestException(CANNOT_CHANGE_STATUS);
         }
 
