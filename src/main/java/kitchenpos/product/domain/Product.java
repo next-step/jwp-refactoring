@@ -1,11 +1,14 @@
 package kitchenpos.product.domain;
 
 import java.math.BigDecimal;
+import java.util.List;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import kitchenpos.menu.MenuProduct;
 
 @Entity
 public class Product {
@@ -16,6 +19,9 @@ public class Product {
     @Embedded
     private Name name;
     private BigDecimal price;
+
+    @OneToMany(mappedBy = "product")
+    private List<MenuProduct> menuProducts;
 
     public Product() {
     }
@@ -31,11 +37,19 @@ public class Product {
         this.price = price;
     }
 
+    private Product(Long id) {
+        this.id = id;
+    }
+
     public static Product of(String name, Integer price) {
         if (price == null) {
             throw new IllegalArgumentException();
         }
         return new Product(name, BigDecimal.valueOf(price));
+    }
+
+    public static Product of(Long id) {
+        return new Product(id);
     }
 
     public Long getId() {

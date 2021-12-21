@@ -60,14 +60,15 @@
 ### step2 요구사항
 
 - [ ] 상품 관리 리팩토링
-  - [ ] 모델 
+  - [X] 모델 
     - [X] Product 엔티티 변환
     - [X] Name 래핑 클래스 추가
   - [X] ProductRepository 사용하도록 수정
 - [ ] 메뉴 관리 리팩토링
   - [ ] 모델
-    - [ ] MenuGroup 엔티티 변환
-    - [ ] Menu 엔티티 변환
+    - [X] MenuGroup 엔티티 변환
+    - [X] Menu 엔티티 변환
+    - [X] MenuProduct 엔티티 변환
   - [ ] MenuGroupService
   - [ ] MenuService
 - [ ] 테이블 관리 리팩토링
