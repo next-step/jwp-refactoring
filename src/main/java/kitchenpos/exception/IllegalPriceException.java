@@ -1,5 +1,6 @@
 package kitchenpos.exception;
 
+import kitchenpos.common.exception.ServiceException;
 import kitchenpos.domain.Price;
 
 /**
@@ -9,7 +10,7 @@ import kitchenpos.domain.Price;
  * date : 2021/12/20
  * description :
  */
-public class IllegalPriceException extends RuntimeException {
+public class IllegalPriceException extends ServiceException {
     private static final Long serialVersionUID = 1L;
     public static final String message = "가격은 %d원 보다 작을 수 없습니다.";
 

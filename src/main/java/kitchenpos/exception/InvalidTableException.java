@@ -1,5 +1,7 @@
 package kitchenpos.exception;
 
+import kitchenpos.common.exception.ServiceException;
+
 /**
  * packageName : kitchenpos.exception
  * fileName : InvalidTableException
@@ -7,7 +9,7 @@ package kitchenpos.exception;
  * date : 2021-12-21
  * description :
  */
-public class InvalidTableException extends RuntimeException {
+public class InvalidTableException extends ServiceException {
     private static final Long serialVersionUID = 1L;
     public static final String message = "테이블을 사용할 수 없습니다.";
 

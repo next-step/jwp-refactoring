@@ -1,5 +1,6 @@
 package kitchenpos.exception;
 
+import kitchenpos.common.exception.ServiceException;
 import kitchenpos.domain.Quantity;
 
 /**
@@ -9,7 +10,7 @@ import kitchenpos.domain.Quantity;
  * date : 2021/12/21
  * description :
  */
-public class IllegalQuantityException extends RuntimeException {
+public class IllegalQuantityException extends ServiceException {
     private static final Long serialVersionUID = 1L;
     public static final String message = "수량은 %d개 보다 작을 수 없습니다.";
 
