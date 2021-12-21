@@ -26,15 +26,12 @@ import kitchenpos.order.repository.OrderTableRepository;
 public class OrderService {
     private final MenuRepository menuRepository;
     private final OrderRepository orderRepository;
-    private final OrderLineItemRepository orderLineItemRepository;
     private final OrderTableRepository orderTableRepository;
 
     public OrderService(MenuRepository menuRepository, OrderRepository orderRepository,
-        OrderLineItemRepository orderLineItemRepository,
         OrderTableRepository orderTableRepository) {
         this.menuRepository = menuRepository;
         this.orderRepository = orderRepository;
-        this.orderLineItemRepository = orderLineItemRepository;
         this.orderTableRepository = orderTableRepository;
     }
 
