@@ -4,10 +4,7 @@ import kitchenpos.dao.MenuRepository;
 import kitchenpos.dao.MenuGroupRepository;
 import kitchenpos.dao.MenuProductRepository;
 import kitchenpos.dao.ProductRepository;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Price;
-import kitchenpos.domain.Product;
+import kitchenpos.domain.*;
 import kitchenpos.exception.NegativePriceException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -46,14 +43,13 @@ class MenuServiceTest {
     @BeforeEach
     void setUp() {
         후라이드치킨 = new Product(1L, "후라이드치킨", Price.from(16_000));
-        menu = new Menu(1L, "후라이드치킨", Price.from(16_000), 1L, new ArrayList<MenuProduct>(Collections.singleton(new MenuProduct(1L, menu, 1L, 1))));
+        menu = new Menu(1L, "후라이드치킨", Price.from(16_000), new MenuGroup(), new MenuProducts(Collections.singletonList(new MenuProduct(1L, menu, 1L, 1))));
     }
 
     @DisplayName("메뉴를 생성한다")
     @Test
     void createTest() {
         // given
-        when(menuGroupRepository.existsById(1L)).thenReturn(true);
         when(productRepository.findById(1L)).thenReturn(java.util.Optional.of(후라이드치킨));
         when(menuRepository.save(menu)).thenReturn(menu);
 
@@ -68,23 +64,8 @@ class MenuServiceTest {
     @DisplayName("메뉴의 가격이 0원 이상이어야 한다")
     @Test
     void minusMenuPriceTest() {
-        // when
-        this.menu.setPrice(Price.from(-1000));
-        MenuService menuService = new MenuService(menuRepository, menuGroupRepository, menuProductRepository, productRepository);
-
         // then
-        assertThatThrownBy(() -> menuService.create(this.menu)).isInstanceOf(NegativePriceException.class);
-    }
-
-    @DisplayName("메뉴의 가격이 존재해야 한다")
-    @Test
-    void nullPriceTest() {
-        // when
-        this.menu.setPrice(null);
-        MenuService menuService = new MenuService(menuRepository, menuGroupRepository, menuProductRepository, productRepository);
-
-        // then
-        assertThatThrownBy(() -> menuService.create(this.menu)).isInstanceOf(NegativePriceException.class);
+        assertThatThrownBy(() -> this.menu.setPrice(Price.from(-1000))).isInstanceOf(NegativePriceException.class);
     }
 
     @DisplayName("메뉴의 가격이 메뉴 상품의 총합보다 작아야 한다")
@@ -102,7 +83,7 @@ class MenuServiceTest {
     @Test
     void inMenuGroupTest() {
         // when
-        this.menu.setMenuGroupId(null);
+        this.menu.setMenuGroup(null);
         MenuService menuService = new MenuService(menuRepository, menuGroupRepository, menuProductRepository, productRepository);
 
         // then
@@ -113,7 +94,6 @@ class MenuServiceTest {
     @Test
     void list() {
         // given
-        when(menuGroupRepository.existsById(1L)).thenReturn(true);
         when(productRepository.findById(1L)).thenReturn(java.util.Optional.of(후라이드치킨));
         when(menuRepository.save(menu)).thenReturn(menu);
         when(menuRepository.findAll()).thenReturn(Collections.singletonList(menu));

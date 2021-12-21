@@ -3,6 +3,7 @@ package kitchenpos.application;
 import kitchenpos.dao.ProductRepository;
 import kitchenpos.domain.Price;
 import kitchenpos.domain.Product;
+import kitchenpos.exception.NegativePriceException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,12 +35,8 @@ class ProductServiceTest {
         양념치킨 = new Product();
         양념치킨.setName("양념치킨");
         양념치킨.setPrice(Price.from(16_000));
-        순살치킨 = new Product();
-        순살치킨.setName("순살치킨");
-        순살치킨.setPrice(Price.from(-15_000));
         list = new ArrayList<>();
         list.add(양념치킨);
-        list.add(순살치킨);
     }
 
     @DisplayName("상품을 생성한다")
@@ -72,10 +69,12 @@ class ProductServiceTest {
     @DisplayName("가격이 음수인 상품을 생성한다")
     @Test
     public void createMinusProceProductTest() {
-        // when
-        ProductService productService = new ProductService(mockDao);
+        // given
+        순살치킨 = new Product();
+        순살치킨.setName("순살치킨");
 
-        assertThatThrownBy(() -> productService.create(순살치킨)).isInstanceOf(IllegalArgumentException.class);
+        // then
+        assertThatThrownBy(() -> 순살치킨.setPrice(Price.from(-15_000))).isInstanceOf(NegativePriceException.class);
     }
 
     @DisplayName("상품을 조회한다")
@@ -83,6 +82,10 @@ class ProductServiceTest {
     public void listTest() {
         // given
         when(mockDao.findAll()).thenReturn(list);
+        순살치킨 = new Product();
+        순살치킨.setName("순살치킨");
+        순살치킨.setPrice(Price.from(15_000));
+        list.add(순살치킨);
 
         // when
         ProductService productService = new ProductService(mockDao);

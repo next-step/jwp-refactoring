@@ -4,11 +4,9 @@ import kitchenpos.dao.MenuRepository;
 import kitchenpos.dao.MenuGroupRepository;
 import kitchenpos.dao.MenuProductRepository;
 import kitchenpos.dao.ProductRepository;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Price;
-import kitchenpos.domain.Product;
+import kitchenpos.domain.*;
 import kitchenpos.exception.NegativePriceException;
+import kitchenpos.exception.NoMenuGroupException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,14 +38,10 @@ public class MenuService {
     public Menu create(final Menu menu) {
         final Price price = menu.getPrice();
 
-        if (!menuGroupRepository.existsById(menu.getMenuGroupId())) {     // TODO 다대일 관계로
-            throw new IllegalArgumentException();
-        }
-
-        final List<MenuProduct> menuProducts = menu.getMenuProducts();
+        final MenuProducts menuProducts = menu.getMenuProducts();
 
         BigDecimal sum = BigDecimal.ZERO;
-        for (final MenuProduct menuProduct : menuProducts) {    // TODO MenuProducts 내부로 이동
+        for (final MenuProduct menuProduct : menuProducts.getMenuProducts()) {    // TODO MenuProducts 내부로 이동
             final Product product = productRepository.findById(menuProduct.getProductId())
                     .orElseThrow(IllegalArgumentException::new);
             sum = sum.add(product.getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
@@ -61,11 +55,11 @@ public class MenuService {
 
         final Long menuId = savedMenu.getId();
         final List<MenuProduct> savedMenuProducts = new ArrayList<>();
-        for (final MenuProduct menuProduct : menuProducts) {    // TODO Menu 도메인 내부로 이동
+        for (final MenuProduct menuProduct : menuProducts.getMenuProducts()) {    // TODO Menu 도메인 내부로 이동
             menuProduct.setMenu(menu);
             savedMenuProducts.add(menuProductRepository.save(menuProduct));
         }
-        savedMenu.setMenuProducts(savedMenuProducts);
+        savedMenu.setMenuProducts(new MenuProducts(savedMenuProducts));
 
         return savedMenu;
     }
@@ -74,7 +68,7 @@ public class MenuService {
         final List<Menu> menus = menuRepository.findAll();
 
         for (final Menu menu : menus) {
-            menu.setMenuProducts(menuProductRepository.findAllByMenuId(menu.getId()));
+            menu.setMenuProducts(new MenuProducts(menuProductRepository.findAllByMenuId(menu.getId())));
         }
 
         return menus;
