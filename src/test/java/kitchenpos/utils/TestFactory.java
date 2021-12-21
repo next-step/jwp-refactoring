@@ -14,18 +14,19 @@ import io.restassured.specification.RequestSpecification;
 public class TestFactory {
 
     public static final String ID = "id";
+    public static final String prefix = "api";
 
     public static ExtractableResponse<Response> get(String url, Long id) {
         return givenLog()
             .pathParam(ID, id)
-            .get(url)
+            .get(prefix + url)
             .then().log().all()
             .extract();
     }
 
     public static ExtractableResponse<Response> get(String url) {
         return givenLog()
-            .get(url)
+            .get(prefix + url)
             .then().log().all()
             .extract();
     }
@@ -33,7 +34,7 @@ public class TestFactory {
     public static ExtractableResponse<Response> get(String url, Param param) {
         return givenLog()
             .queryParams(param.result())
-            .get(url)
+            .get(prefix + url)
             .then().log().all()
             .extract();
     }
@@ -42,7 +43,7 @@ public class TestFactory {
         return givenLog()
             .when()
             .body(obj)
-            .post(url)
+            .post(prefix + url)
             .then().log().all()
             .extract();
     }
@@ -52,7 +53,7 @@ public class TestFactory {
             .pathParams(param.result())
             .when()
             .body(obj)
-            .post(url)
+            .post(prefix + url)
             .then().log().all()
             .extract();
     }
@@ -62,7 +63,7 @@ public class TestFactory {
             .pathParam(ID, id)
             .when()
             .body(obj)
-            .patch(url)
+            .patch(prefix + url)
             .then().log().all()
             .extract();
     }
@@ -71,7 +72,7 @@ public class TestFactory {
         return given()
             .pathParam(ID, id)
             .when()
-            .delete(url)
+            .delete(prefix + url)
             .then().log().all().extract();
     }
 
@@ -79,7 +80,7 @@ public class TestFactory {
         return givenLog()
             .pathParams("lineId", id)
             .queryParams(param.result())
-            .delete(url)
+            .delete(prefix + url)
             .then().log().all()
             .extract();
     }
