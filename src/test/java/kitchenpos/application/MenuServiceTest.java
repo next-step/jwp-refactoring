@@ -137,7 +137,7 @@ public class MenuServiceTest {
             Lists.newArrayList(menuProduct3));
 
         given(menuRepository.findAll()).willReturn(Lists.newArrayList(menu1, menu2));
-        given(menuProductRepository.findAllByMenuId(any())).willReturn(
+        given(menuProductRepository.findAllByMenu(any())).willReturn(
             Lists.newArrayList(menuProduct1, menuProduct2),
             Lists.newArrayList(menuProduct3));
 
