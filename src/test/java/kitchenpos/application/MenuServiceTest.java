@@ -94,6 +94,27 @@ class MenuServiceTest {
                 .isThrownBy(() -> menuService.create(요청_메뉴));
     }
 
+    @DisplayName("메뉴 생성 실패 테스트 - 메뉴의 상품이 존재하지 않음")
+    @Test
+    void create_failure_notFoundProduct() {
+        // given
+        MenuProduct 요청_메뉴_상품 = new MenuProduct();
+        요청_메뉴_상품.setProductId(강정치킨.getId());
+        요청_메뉴_상품.setQuantity(2);
+
+        Menu 요청_메뉴 = new Menu();
+        요청_메뉴.setName("강정치킨_두마리_셋트");
+        요청_메뉴.setPrice(BigDecimal.valueOf(30_000));
+        요청_메뉴.setMenuGroupId(추천_메뉴_그룹.getId());
+        요청_메뉴.setMenuProducts(Arrays.asList(요청_메뉴_상품));
+
+        when(menuGroupDao.existsById(추천_메뉴_그룹.getId())).thenReturn(true);
+
+        // when & then
+        Assertions.assertThatIllegalArgumentException()
+                .isThrownBy(() -> menuService.create(요청_메뉴));
+    }
+
     @DisplayName("메뉴 생성 실패 테스트 - 메뉴가 메뉴 그룹에 속하지 않음")
     @Test
     void create_failure_notExistsMenuGroup() {
