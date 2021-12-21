@@ -164,3 +164,10 @@
 | changeNumberOfGuests | **테이블 게스트 숫자를 변경한다.** |
 | changeNumberOfGuests | 테이블 게스트 숫자는 0 이하일 수 없다. |
 | changeNumberOfGuests | 주문 테이블이 반드시 존재해야 한다. |
+
+## 관계도
+
+- 관계도 그림
+  
+
+  ![image](https://user-images.githubusercontent.com/17772475/146971725-05a656c6-22ca-48ab-923f-7ee8180344fa.png)
