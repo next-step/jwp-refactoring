@@ -2,13 +2,10 @@ package kitchenpos.domain.table;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
-
-import kitchenpos.domain.tablegroup.TableGroup;
 
 @Embeddable
 public final class OrderTables {

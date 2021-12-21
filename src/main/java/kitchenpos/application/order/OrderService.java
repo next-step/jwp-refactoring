@@ -8,7 +8,6 @@ import kitchenpos.dto.order.OrderLineItemDto;
 import kitchenpos.domain.order.OrderLineItem;
 import kitchenpos.domain.order.OrderLineItems;
 import kitchenpos.domain.order.OrderStatus;
-import kitchenpos.exception.order.HasNotCompletionOrderException;
 import kitchenpos.exception.order.NotFoundOrderException;
 import kitchenpos.vo.MenuId;
 import kitchenpos.vo.OrderTableId;
