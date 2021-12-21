@@ -1,5 +1,7 @@
 package kitchenpos.ui;
 
+import static kitchenpos.ui.MenuGroupAcceptanceTest.메뉴그룹_생성;
+import static kitchenpos.ui.ProductAcceptanceTest.상품_생성;
 import static kitchenpos.utils.AcceptanceTestUtil.get;
 import static kitchenpos.utils.AcceptanceTestUtil.post;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -10,7 +12,13 @@ import java.math.BigDecimal;
 import java.util.List;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.dto.MenuGroupRequest;
+import kitchenpos.menu.dto.MenuGroupResponse;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -19,19 +27,28 @@ import org.springframework.http.HttpStatus;
 
 public class MenuAcceptanceTest extends AcceptanceTest {
 
+    private MenuGroupResponse 추천메뉴;
+    private ProductResponse 후라이드치킨;
+    private ProductResponse 양념치킨;
+    private MenuProductRequest menuProduct1;
+    private MenuProductRequest menuProduct2;
+
     @BeforeEach
     public void setUp() {
         super.setUp();
+        후라이드치킨 = 상품_생성(new ProductRequest("후라이드치킨", 17000)).as(ProductResponse.class);
+        양념치킨 = 상품_생성(new ProductRequest("양념치킨", 18000)).as(ProductResponse.class);
+        menuProduct1 = new MenuProductRequest(후라이드치킨.getId(), 1);
+        menuProduct2 = new MenuProductRequest(양념치킨.getId(), 1);
+        추천메뉴 = 메뉴그룹_생성(new MenuGroupRequest("추천메뉴")).as(MenuGroupResponse.class);
     }
 
     @DisplayName("메뉴를 생성한다")
     @Test
     void createMenu() {
         // given
-        MenuProduct menuProduct1 = MenuProduct.of(1L, 1L, 1);
-        MenuProduct menuProduct2 = MenuProduct.of(2L, 2L, 1);
-        List<MenuProduct> menuProducts = Lists.newArrayList(menuProduct1, menuProduct2);
-        Menu menu = Menu.of("양념치킨", BigDecimal.valueOf(18000), 1L, menuProducts);
+        List<MenuProductRequest> menuProducts = Lists.newArrayList(menuProduct1, menuProduct2);
+        MenuRequest menu = new MenuRequest("후라이드+양념치킨", 34000, 추천메뉴.getId(), menuProducts);
 
         // when
         ExtractableResponse<Response> 메뉴_생성_응답 = 메뉴_생성(menu);
@@ -43,6 +60,12 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     @DisplayName("메뉴 목록을 조회한다")
     @Test
     void readMenus() {
+        // given
+        List<MenuProductRequest> menuProductRequests1 = Lists.newArrayList(menuProduct1);
+        List<MenuProductRequest> menuProductRequests2 = Lists.newArrayList(menuProduct2);
+        MenuRequest 후라이드 = new MenuRequest("후라이드", 17000, 추천메뉴.getId(), menuProductRequests1);
+        MenuRequest 양념 = new MenuRequest("양념", 18000, 추천메뉴.getId(), menuProductRequests2);
+
         // when
         ExtractableResponse<Response> 메뉴목록_응답 = 메뉴목록_조회();
 
@@ -50,16 +73,16 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         메뉴목록_조회됨(메뉴목록_응답);
     }
 
-    private ExtractableResponse<Response> 메뉴_생성(Menu menu) {
+    private ExtractableResponse<Response> 메뉴_생성(MenuRequest menu) {
         return post("/api/menus", menu);
     }
 
     private void 메뉴_생성됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.header("Location")).isNotBlank();
-        Menu menu = response.as(Menu.class);
-        assertThat(menu.getName()).isEqualTo("양념치킨");
-        assertThat(menu.getPrice()).isEqualByComparingTo(BigDecimal.valueOf(18000));
+        MenuResponse menu = response.as(MenuResponse.class);
+        assertThat(menu.getName()).isEqualTo("후라이드+양념치킨");
+        assertThat(menu.getPrice()).isEqualByComparingTo(BigDecimal.valueOf(34000));
     }
 
     private ExtractableResponse<Response> 메뉴목록_조회() {

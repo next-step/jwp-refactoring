@@ -19,6 +19,14 @@ public class MenuRequest {
     public MenuRequest() {
     }
 
+    public MenuRequest(String name, Integer price, Long menuGroupId,
+        List<MenuProductRequest> menuProducts) {
+        this.name = name;
+        this.price = price;
+        this.menuGroupId = menuGroupId;
+        this.menuProducts = menuProducts;
+    }
+
     public Menu toEntity() {
         return Menu.of(name, BigDecimal.valueOf(price), menuGroupId, menuProducts.stream()
             .map(MenuProductRequest::toEntity)
@@ -31,5 +39,13 @@ public class MenuRequest {
 
     public Integer getPrice() {
         return price;
+    }
+
+    public Long getMenuGroupId() {
+        return menuGroupId;
+    }
+
+    public List<MenuProductRequest> getMenuProducts() {
+        return menuProducts;
     }
 }

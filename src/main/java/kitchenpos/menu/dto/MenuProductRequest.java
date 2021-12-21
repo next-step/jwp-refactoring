@@ -11,6 +11,11 @@ public class MenuProductRequest {
     public MenuProductRequest() {
     }
 
+    public MenuProductRequest(Long productId, long quantity) {
+        this.productId = productId;
+        this.quantity = quantity;
+    }
+
     public MenuProduct toEntity() {
         return MenuProduct.of(productId, quantity);
     }

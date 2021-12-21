@@ -50,7 +50,7 @@ class ProductAcceptanceTest extends AcceptanceTest {
         상품목록_조회됨(상품목록_조회_응답);
     }
 
-    private ExtractableResponse<Response> 상품_생성(ProductRequest product) {
+    public static ExtractableResponse<Response> 상품_생성(ProductRequest product) {
         return post("/api/products", product);
     }
 

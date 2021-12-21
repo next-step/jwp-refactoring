@@ -9,6 +9,7 @@ import io.restassured.response.Response;
 import java.util.List;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.dto.MenuGroupRequest;
 import kitchenpos.menu.dto.MenuGroupResponse;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,7 +28,7 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
     @Test
     void createMenuGroup() {
         // when
-        ExtractableResponse<Response> 메뉴그룹_응답 = 메뉴그룹_생성(MenuGroup.of("추천메뉴"));
+        ExtractableResponse<Response> 메뉴그룹_응답 = 메뉴그룹_생성(new MenuGroupRequest("추천메뉴"));
 
         // then
         메뉴그룹_생성됨(메뉴그룹_응답);
@@ -37,8 +38,8 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
     @Test
     void readMenuGroups() {
         // given
-        메뉴그룹_생성(MenuGroup.of("추천메뉴"));
-        메뉴그룹_생성(MenuGroup.of("신메뉴"));
+        메뉴그룹_생성(new MenuGroupRequest("추천메뉴"));
+        메뉴그룹_생성(new MenuGroupRequest("신메뉴"));
 
         // when
         ExtractableResponse<Response> 메뉴그룹_조회_응답 = 메뉴그룹_조회();
@@ -47,14 +48,14 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
         메뉴그룹_목록_조회됨(메뉴그룹_조회_응답);
     }
 
-    private ExtractableResponse<Response> 메뉴그룹_생성(MenuGroup menuGroup) {
+    public static ExtractableResponse<Response> 메뉴그룹_생성(MenuGroupRequest menuGroup) {
         return post("/api/menu-groups", menuGroup);
     }
 
     private void 메뉴그룹_생성됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.header("Location")).isNotBlank();
-        assertThat(response.as(MenuGroup.class).getName()).isEqualTo("추천메뉴");
+        assertThat(response.as(MenuGroupResponse.class).getName()).isEqualTo("추천메뉴");
     }
 
     private ExtractableResponse<Response> 메뉴그룹_조회() {
