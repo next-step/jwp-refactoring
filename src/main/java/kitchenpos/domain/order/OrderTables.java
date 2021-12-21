@@ -2,13 +2,14 @@ package kitchenpos.domain.order;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 
 @Embeddable
 public class OrderTables {
 
-    @OneToMany(mappedBy = "tableGroupId")
+    @OneToMany(mappedBy = "tableGroup")
     private List<OrderTable> orderTables = new ArrayList<>();
 
     public static OrderTables of(List<OrderTable> orderTables) {
@@ -25,4 +26,21 @@ public class OrderTables {
     public List<OrderTable> getOrderTables() {
         return orderTables;
     }
+
+
+    public void changeTableGroup(TableGroup tableGroup) {
+        orderTables.forEach(orderTable -> orderTable.changeTableGroup(tableGroup));
+    }
+
+    public void ungroup(List<Order> orders) {
+        orderTables.forEach(
+            orderTable -> orderTable.ungroup(getMatchOrders(orders, orderTable)));
+    }
+
+    private List<Order> getMatchOrders(List<Order> orders, OrderTable orderTable) {
+        return orders.stream()
+            .filter(order -> order.isMatchOrderTable(orderTable))
+            .collect(Collectors.toList());
+    }
+
 }

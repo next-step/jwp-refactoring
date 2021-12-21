@@ -1,13 +1,16 @@
 package kitchenpos.acceptance.step;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import io.restassured.RestAssured;
 import io.restassured.mapper.TypeRef;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.math.BigDecimal;
 import java.util.List;
-import kitchenpos.domain.menu.Menu;
+import kitchenpos.dto.menu.MenuRequest;
+import kitchenpos.dto.menu.MenuResponse;
 import org.springframework.http.MediaType;
 
 public class MenuAcceptanceStep {
@@ -17,11 +20,11 @@ public class MenuAcceptanceStep {
     private MenuAcceptanceStep() {
     }
 
-    public static Menu 메뉴_등록됨(Menu menu) {
+    public static Long 메뉴_등록됨(MenuRequest menu) {
         return 메뉴_등록_검증(메뉴_등록_요청(menu), menu);
     }
 
-    public static ExtractableResponse<Response> 메뉴_등록_요청(Menu menu) {
+    public static ExtractableResponse<Response> 메뉴_등록_요청(MenuRequest menu) {
         return RestAssured
             .given().log().all()
             .body(menu)
@@ -40,20 +43,25 @@ public class MenuAcceptanceStep {
             .extract();
     }
 
-    public static Menu 메뉴_등록_검증(ExtractableResponse<Response> response, Menu expected) {
-        Menu 등록된_메뉴 = response.as(Menu.class);
-        assertThat(등록된_메뉴.getId()).isNotNull();
-        assertThat(등록된_메뉴.getPrice()).isEqualByComparingTo(expected.getPrice());
-        assertThat(등록된_메뉴.getMenuGroupId()).isEqualTo(expected.getMenuGroupId());
+    public static Long 메뉴_등록_검증(ExtractableResponse<Response> response,
+        MenuRequest expected) {
+        MenuResponse 등록된_메뉴 = response.as(MenuResponse.class);
+        assertAll(
+            () -> assertThat(등록된_메뉴.getId()).isNotNull(),
+            () -> assertThat(등록된_메뉴.getPrice()).isEqualByComparingTo(
+                BigDecimal.valueOf(expected.getPrice())),
+            () -> assertThat(등록된_메뉴.getMenuGroupId()).isEqualTo(expected.getMenuGroupId())
+        );
 
-        return 등록된_메뉴;
+        return 등록된_메뉴.getId();
     }
 
-    public static List<Menu> 메뉴_목록조회_검증(ExtractableResponse<Response> response, Menu expected) {
-        List<Menu> 조회된_메뉴_목록 = response.as(new TypeRef<List<Menu>>() {
+    public static List<MenuResponse> 메뉴_목록조회_검증(ExtractableResponse<Response> response,
+        Long expected) {
+        List<MenuResponse> 조회된_메뉴_목록 = response.as(new TypeRef<List<MenuResponse>>() {
         });
-        assertThat(조회된_메뉴_목록).contains(expected);
 
+        assertThat(조회된_메뉴_목록).extracting("id").contains(expected);
         return 조회된_메뉴_목록;
     }
 }
