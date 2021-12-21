@@ -1,7 +1,8 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
+import kitchenpos.domain.ProductRepository;
+import kitchenpos.dto.ProductRequest;
 import kitchenpos.exception.IllegalPriceException;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,13 +16,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 import static kitchenpos.fixtures.ProductFixtures.양념치킨;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 
 /**
  * packageName : kitchenpos.application
@@ -33,30 +33,30 @@ import static org.mockito.BDDMockito.given;
 @DisplayName("상품 통합 테스트")
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
-    private Product product;
+    private ProductRequest request;
 
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     @InjectMocks
     private ProductService productService;
 
     @BeforeEach
     void setUp() {
-        product = 양념치킨().toEntity();
+        request = 양념치킨();
     }
 
     @Test
     @DisplayName("상품을 등록할 수 있다.")
     public void create() {
         // given
-        given(productDao.save(any(Product.class))).willReturn(product);
+        given(productRepository.save(any(Product.class))).willReturn(request.toEntity());
 
         // when
-        Product actual = productService.create(product);
+        productService.create(request);
 
         // then
-        assertThat(actual).isEqualTo(product);
+        verify(productRepository).save(any(Product.class));
     }
 
     @ParameterizedTest(name = "value: " + ParameterizedTest.ARGUMENTS_PLACEHOLDER)
@@ -80,12 +80,12 @@ class ProductServiceTest {
     @DisplayName("상품의 목록을 조회할 수 있다.")
     public void list() {
         // given
-        given(productDao.findAll()).willReturn(Lists.newArrayList(product));
+        given(productRepository.findAll()).willReturn(Lists.newArrayList(request.toEntity()));
 
         // when
-        List<Product> products = productService.list();
+        productService.list();
 
-        // then사
-        assertThat(products).hasSize(1);
+        // then
+        verify(productRepository).findAll();
     }
 }

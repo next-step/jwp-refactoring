@@ -23,8 +23,6 @@ import static org.junit.jupiter.api.Assertions.*;
 class TableGroupRepositoryTest {
     private OrderTable 사용가능테이블1;
     private OrderTable 사용가능테이블2;
-    private OrderTable 사용불가테이블1;
-
 
     @Autowired
     private OrderTableRepository orderTableRepository;
@@ -37,7 +35,6 @@ class TableGroupRepositoryTest {
     void setUp() {
         사용가능테이블1 = orderTableRepository.save(사용가능_다섯명테이블().toEntity());
         사용가능테이블2 = orderTableRepository.save(사용가능_다섯명테이블().toEntity());
-        사용불가테이블1 = orderTableRepository.save(사용불가_다섯명테이블().toEntity());
     }
 
     @Test
