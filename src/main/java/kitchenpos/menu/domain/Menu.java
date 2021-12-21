@@ -9,6 +9,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import kitchenpos.common.domain.Name;
 import kitchenpos.common.domain.Price;
 import kitchenpos.menugroup.domain.MenuGroup;
 
@@ -20,7 +21,7 @@ public class Menu {
 	private Long id;
 
 	@Embedded
-	private MenuName name;
+	private Name name;
 
 	@Embedded
 	private Price price;
@@ -35,7 +36,7 @@ public class Menu {
 	protected Menu() {
 	}
 
-	public static Menu of(MenuName name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
+	public static Menu of(Name name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
 		throwOnPriceInvalid(price, menuProducts);
 
 		Menu menu = new Menu();
@@ -56,7 +57,7 @@ public class Menu {
 		return id;
 	}
 
-	public MenuName getName() {
+	public Name getName() {
 		return name;
 	}
 

@@ -7,6 +7,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import kitchenpos.common.domain.Name;
+
 @Table(name = "menu_group")
 @Entity
 public class MenuGroup {
@@ -15,12 +17,12 @@ public class MenuGroup {
 	private Long id;
 
 	@Embedded
-	private MenuGroupName name;
+	private Name name;
 
 	protected MenuGroup() {
 	}
 
-	public static MenuGroup of(MenuGroupName name) {
+	public static MenuGroup of(Name name) {
 		MenuGroup menuGroup = new MenuGroup();
 		menuGroup.name = name;
 		return menuGroup;
@@ -30,7 +32,7 @@ public class MenuGroup {
 		return id;
 	}
 
-	public MenuGroupName getName() {
+	public Name getName() {
 		return name;
 	}
 }

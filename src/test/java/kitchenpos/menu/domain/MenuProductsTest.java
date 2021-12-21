@@ -11,10 +11,10 @@ import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import kitchenpos.common.domain.Name;
 import kitchenpos.common.domain.Price;
 import kitchenpos.common.domain.Quantity;
 import kitchenpos.product.domain.Product;
-import kitchenpos.product.domain.ProductName;
 
 @DisplayName("메뉴 상품들")
 class MenuProductsTest {
@@ -25,12 +25,12 @@ class MenuProductsTest {
 		// given
 		MenuProduct menuProduct1 = MenuProduct.of(
 			Product.of(
-				ProductName.of("강정치킨"),
+				Name.of("강정치킨"),
 				Price.of(BigDecimal.valueOf(17000))),
 			Quantity.of(1L));
 		MenuProduct menuProduct2 = MenuProduct.of(
 			Product.of(
-				ProductName.of("양념치킨"),
+				Name.of("양념치킨"),
 				Price.of(BigDecimal.valueOf(18000))),
 			Quantity.of(2L));
 
@@ -58,12 +58,12 @@ class MenuProductsTest {
 		MenuProducts menuProducts = MenuProducts.of(Arrays.asList(
 			MenuProduct.of(
 				Product.of(
-					ProductName.of("강정치킨"),
+					Name.of("강정치킨"),
 					Price.of(BigDecimal.valueOf(17000))),
 				Quantity.of(1L)),
 			MenuProduct.of(
 				Product.of(
-					ProductName.of("양념치킨"),
+					Name.of("양념치킨"),
 					Price.of(BigDecimal.valueOf(18000))),
 				Quantity.of(2L))));
 

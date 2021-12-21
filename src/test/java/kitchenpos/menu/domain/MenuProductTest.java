@@ -7,10 +7,10 @@ import java.math.BigDecimal;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import kitchenpos.common.domain.Name;
 import kitchenpos.common.domain.Price;
 import kitchenpos.common.domain.Quantity;
 import kitchenpos.product.domain.Product;
-import kitchenpos.product.domain.ProductName;
 
 @DisplayName("메뉴 상품")
 public class MenuProductTest {
@@ -19,7 +19,7 @@ public class MenuProductTest {
 	@Test
 	void of() {
 		// given
-		Product product = Product.of(ProductName.of("강정치킨"), Price.of(BigDecimal.valueOf(17000)));
+		Product product = Product.of(Name.of("강정치킨"), Price.of(BigDecimal.valueOf(17000)));
 		Quantity quantity = Quantity.of(2L);
 
 		// when

@@ -1,4 +1,4 @@
-package kitchenpos.menu.domain;
+package kitchenpos.common.domain;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.ThrowableAssert.*;
@@ -8,30 +8,29 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 
-@DisplayName("메뉴 이름")
-public class MenuNameTest {
-
+@DisplayName("이름")
+class NameTest {
 	@DisplayName("생성")
 	@Test
 	void of() {
 		// given
-		String name = "후라이드+후라이드";
+		String value = "이름";
 
 		// when
-		MenuName menuGroupName = MenuName.of(name);
+		Name name = Name.of(value);
 
 		// then
-		assertThat(menuGroupName.getValue()).isEqualTo(name);
+		assertThat(name.getValue()).isEqualTo(value);
 	}
 
 	@DisplayName("생성 실패 - 이름이 없거나 빈 값인 경우")
 	@ParameterizedTest
 	@NullAndEmptySource
-	void ofFailOnNullOrEmptyName(String name) {
+	void ofFailOnNullOrEmptyName(String value) {
 		// given
 
 		// when
-		ThrowingCallable throwingCallable = () -> MenuName.of(name);
+		ThrowingCallable throwingCallable = () -> Name.of(value);
 
 		// then
 		assertThatThrownBy(throwingCallable).isInstanceOf(IllegalArgumentException.class);
@@ -41,13 +40,14 @@ public class MenuNameTest {
 	@Test
 	void equals() {
 		// given
-		String name = "후라이드+후라이드";
+		String name = "이름";
 
 		// when
-		MenuName actual = MenuName.of(name);
-		MenuName expected = MenuName.of(name);
+		Name actual = Name.of(name);
+		Name expected = Name.of(name);
 
 		// then
 		assertThat(actual).isEqualTo(expected);
 	}
+
 }

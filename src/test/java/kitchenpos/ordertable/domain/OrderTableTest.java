@@ -11,20 +11,18 @@ import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import kitchenpos.common.domain.Name;
 import kitchenpos.common.domain.Price;
 import kitchenpos.common.domain.Quantity;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuName;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.menugroup.domain.MenuGroupName;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.ordertablegroup.domain.OrderTableGroup;
 import kitchenpos.product.domain.Product;
-import kitchenpos.product.domain.ProductName;
 
 @DisplayName("주문 테이블")
 class OrderTableTest {
@@ -80,12 +78,12 @@ class OrderTableTest {
 		OrderTable orderTable = OrderTable.of(NumberOfGuests.of(4), false);
 		OrderLineItems orderLineItems = OrderLineItems.of(Collections.singletonList(OrderLineItem.of(
 			Menu.of(
-				MenuName.of("후라이드+후라이드"),
+				Name.of("후라이드+후라이드"),
 				Price.of(BigDecimal.valueOf(25000)),
-				MenuGroup.of(MenuGroupName.of("추천메뉴")),
+				MenuGroup.of(Name.of("추천메뉴")),
 				MenuProducts.of(Collections.singletonList(
 					MenuProduct.of(
-						Product.of(ProductName.of("후라이드치킨"), Price.of(BigDecimal.valueOf(17000))),
+						Product.of(Name.of("후라이드치킨"), Price.of(BigDecimal.valueOf(17000))),
 						Quantity.of(2L))))),
 			Quantity.of(1L))));
 

@@ -10,12 +10,11 @@ import java.util.Collections;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import kitchenpos.common.domain.Name;
 import kitchenpos.common.domain.Price;
 import kitchenpos.common.domain.Quantity;
 import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.menugroup.domain.MenuGroupName;
 import kitchenpos.product.domain.Product;
-import kitchenpos.product.domain.ProductName;
 
 @DisplayName("메뉴")
 class MenuTest {
@@ -24,13 +23,13 @@ class MenuTest {
 	@Test
 	void of() {
 		// given
-		MenuName name = MenuName.of("후라이드+후라이드");
+		Name name = Name.of("후라이드+후라이드");
 		Price price = Price.of(BigDecimal.valueOf(25000));
-		MenuGroup menuGroup = MenuGroup.of(MenuGroupName.of("추천메뉴"));
+		MenuGroup menuGroup = MenuGroup.of(Name.of("추천메뉴"));
 		MenuProducts menuProducts = MenuProducts.of(Collections.singletonList(
 			MenuProduct.of(
 				Product.of(
-					ProductName.of("후라이드치킨"),
+					Name.of("후라이드치킨"),
 					Price.of(BigDecimal.valueOf(17000))),
 				Quantity.of(2L))));
 
@@ -51,13 +50,13 @@ class MenuTest {
 	@Test
 	void ofFailOnPriceInvalid() {
 		// given
-		MenuName name = MenuName.of("후라이드+후라이드");
+		Name name = Name.of("후라이드+후라이드");
 		Price price = Price.of(BigDecimal.valueOf(100000));
-		MenuGroup menuGroup = MenuGroup.of(MenuGroupName.of("추천메뉴"));
+		MenuGroup menuGroup = MenuGroup.of(Name.of("추천메뉴"));
 		MenuProducts menuProducts = MenuProducts.of(Collections.singletonList(
 			MenuProduct.of(
 				Product.of(
-					ProductName.of("후라이드치킨"),
+					Name.of("후라이드치킨"),
 					Price.of(BigDecimal.valueOf(17000))),
 				Quantity.of(2L))));
 

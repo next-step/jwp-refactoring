@@ -6,9 +6,9 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import kitchenpos.common.domain.Name;
 import kitchenpos.common.domain.Price;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuName;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.common.domain.Quantity;
 import kitchenpos.menu.domain.MenuProducts;
@@ -40,7 +40,7 @@ public class MenuService {
 
 	@Transactional
 	public MenuDto create(final MenuCreateRequest request) {
-		MenuName name = MenuName.of(request.getName());
+		Name name = Name.of(request.getName());
 		Price price = Price.of(request.getPrice());
 		MenuGroup menuGroup = menuGroupRepository.findById(request.getMenuGroupId())
 			.orElseThrow(IllegalArgumentException::new);

@@ -7,6 +7,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import kitchenpos.common.domain.Name;
 import kitchenpos.common.domain.Price;
 
 @Table(name = "product")
@@ -17,7 +18,7 @@ public class Product {
 	private Long id;
 
 	@Embedded
-	private ProductName name;
+	private Name name;
 
 	@Embedded
 	private Price price;
@@ -25,7 +26,7 @@ public class Product {
 	protected Product() {
 	}
 
-	public static Product of(ProductName name, Price price) {
+	public static Product of(Name name, Price price) {
 		Product product = new Product();
 		product.name = name;
 		product.price = price;
@@ -36,7 +37,7 @@ public class Product {
 		return id;
 	}
 
-	public ProductName getName() {
+	public Name getName() {
 		return name;
 	}
 
