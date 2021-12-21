@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static kitchenpos.fixtures.MenuGroupFixtures.*;
@@ -36,7 +37,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * date : 2021-12-15
  * description :
  */
-@Disabled
 @DisplayName("메뉴그룹 컨트롤러 테스트")
 @WebMvcTest(MenuGroupRestController.class)
 class MenuGroupRestControllerTest {
@@ -59,7 +59,7 @@ class MenuGroupRestControllerTest {
     @DisplayName("메뉴 그룹을 조회한다.")
     public void getMenuGroup() throws Exception {
         // given
-        List<MenuGroupResponse> menuGroups = Arrays.asList(response);
+        List<MenuGroupResponse> menuGroups = Collections.singletonList(response);
         given(menuGroupService.list()).willReturn(menuGroups);
 
         // when

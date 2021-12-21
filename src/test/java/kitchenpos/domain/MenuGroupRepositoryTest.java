@@ -19,6 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * description :
  */
 @DataJpaTest
+@DisplayName("메뉴그룹 리파지토리 테스트")
 class MenuGroupRepositoryTest {
 
     @Autowired
@@ -37,16 +38,13 @@ class MenuGroupRepositoryTest {
     @Test
     @DisplayName("메뉴 그룹을 등록할 수 있다.")
     public void create() throws Exception {
-        //given
-        MenuGroup 한마리메뉴 = 한마리메뉴그룹요청().toEntity();
-
         //when
-        final MenuGroup actual = menuGroupRepository.save(한마리메뉴);
+        final MenuGroup actual = menuGroupRepository.save(한마리메뉴그룹요청().toEntity());
 
         //then
         assertAll(
                 () -> assertThat(actual.getId()).isNotNull(),
-                () -> assertThat(actual.getName()).isEqualTo("한마리메뉴")
+                () -> assertThat(actual.getName()).isEqualTo("한마리메뉴그룹요청")
         );
     }
 }

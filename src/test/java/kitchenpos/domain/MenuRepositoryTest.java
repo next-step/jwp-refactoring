@@ -29,6 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
  * description :
  */
 @DataJpaTest
+@DisplayName("메뉴 리파지토리 테스트")
 class MenuRepositoryTest {
     private final BigDecimal 메뉴가격 = new BigDecimal(32000);
     private Menu menu;

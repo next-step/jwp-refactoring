@@ -12,8 +12,8 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import static kitchenpos.fixtures.MenuGroupFixtures.반반메뉴그룹요청;
-import static kitchenpos.fixtures.OrderTableFixtures.주문가능_다섯명테이블;
-import static kitchenpos.fixtures.OrderTableFixtures.주문불가_다섯명테이블;
+import static kitchenpos.fixtures.OrderTableFixtures.주문가능_다섯명테이블요청;
+import static kitchenpos.fixtures.OrderTableFixtures.주문불가_다섯명테이블요청;
 import static kitchenpos.fixtures.ProductFixtures.양념치킨요청;
 import static kitchenpos.fixtures.ProductFixtures.후라이드요청;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -27,6 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
  * description :
  */
 @DataJpaTest
+@DisplayName("주문테이블 리파지토리 테스트")
 class OrderTableRepositoryTest {
     private OrderTable savedTable;
 
@@ -54,7 +55,7 @@ class OrderTableRepositoryTest {
         MenuProduct 양념치킨메뉴상품 = new MenuProduct(양념치킨, 1L);
         MenuProduct 후라이드메뉴상품 = new MenuProduct(후라이드, 1L);
         Menu 후라이드반양념반메뉴 = menuRepository.save(new Menu("후라이드반양념반메뉴", 메뉴가격, 메뉴그룹, Lists.newArrayList(양념치킨메뉴상품, 후라이드메뉴상품)));
-        savedTable = orderTableRepository.save(주문가능_다섯명테이블().toEntity());
+        savedTable = orderTableRepository.save(주문가능_다섯명테이블요청().toEntity());
 
         OrderLineItem 후라이드양념반두개 = new OrderLineItem(후라이드반양념반메뉴, 2L);
         orderRepository.save(new Order(savedTable, Lists.newArrayList(후라이드양념반두개)));
@@ -64,7 +65,7 @@ class OrderTableRepositoryTest {
     @DisplayName("사용불가 테이블을 생성할 수 있다.")
     public void createEmptyTable() {
         // when
-        OrderTable actual = orderTableRepository.save(주문불가_다섯명테이블().toEntity());
+        OrderTable actual = orderTableRepository.save(주문불가_다섯명테이블요청().toEntity());
 
         // then
         assertAll(
@@ -78,7 +79,7 @@ class OrderTableRepositoryTest {
     @DisplayName("사용가능 주문 테이블을 생성할 수 있다.")
     public void createNotEmptyTable() {
         // when
-        OrderTable actual = orderTableRepository.save(주문가능_다섯명테이블().toEntity());
+        OrderTable actual = orderTableRepository.save(주문가능_다섯명테이블요청().toEntity());
 
         // then
         assertAll(

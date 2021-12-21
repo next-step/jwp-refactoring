@@ -35,7 +35,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * date : 2021-12-15
  * description :
  */
-@Disabled
 @DisplayName("상품 컨트롤러 테스트")
 @WebMvcTest(ProductRestController.class)
 class ProductRestControllerTest {

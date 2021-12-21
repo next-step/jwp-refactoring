@@ -2,7 +2,7 @@ package kitchenpos.ui;
 
 import kitchenpos.application.TableService;
 import kitchenpos.dto.ChangeEmptyRequest;
-import kitchenpos.dto.ChangeNumberRequest;
+import kitchenpos.dto.ChangeGuestNumberRequest;
 import kitchenpos.dto.OrderTableResponse;
 import kitchenpos.dto.OrderTableSaveRequest;
 import org.springframework.http.ResponseEntity;
@@ -48,7 +48,7 @@ public class TableRestController {
     @PutMapping("/api/tables/{orderTableId}/number-of-guests")
     public ResponseEntity<OrderTableResponse> changeNumberOfGuests(
             @PathVariable final Long orderTableId,
-            @RequestBody final ChangeNumberRequest request
+            @RequestBody final ChangeGuestNumberRequest request
     ) {
         return ResponseEntity.ok()
                 .body(tableService.changeNumberOfGuests(orderTableId, request))

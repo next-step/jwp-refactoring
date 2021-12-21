@@ -17,7 +17,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
 
-import static kitchenpos.fixtures.TableGroupFixtures.createTableGroup;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -57,7 +56,7 @@ class TableGroupServiceTest {
     void setUp() {
 //        orderTableFirst = createOrderTable(1L, null, 2, true);
 //        orderTableSecond = createOrderTable(2L, null, 3, true);
-        tableGroup = createTableGroup(1L, LocalDateTime.now(), Lists.newArrayList(orderTableFirst, orderTableSecond));
+//        tableGroup = createTableGroup(1L, LocalDateTime.now(), Lists.newArrayList(orderTableFirst, orderTableSecond));
     }
 
     @Test

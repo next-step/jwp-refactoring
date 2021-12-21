@@ -7,13 +7,13 @@ package kitchenpos.dto;
  * date : 2021-12-21
  * description :
  */
-public class ChangeNumberRequest {
+public class ChangeGuestNumberRequest {
     private Integer numberOfGuests;
 
-    public ChangeNumberRequest() {
+    public ChangeGuestNumberRequest() {
     }
 
-    public ChangeNumberRequest(Integer numberOfGuests) {
+    public ChangeGuestNumberRequest(Integer numberOfGuests) {
         this.numberOfGuests = numberOfGuests;
     }
 

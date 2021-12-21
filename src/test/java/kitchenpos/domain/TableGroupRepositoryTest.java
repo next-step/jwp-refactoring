@@ -3,7 +3,6 @@ package kitchenpos.domain;
 import kitchenpos.exception.IllegalOrderTableException;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,12 +21,12 @@ import static org.junit.jupiter.api.Assertions.*;
  * description :
  */
 @DataJpaTest
+@DisplayName("그룹테이블 리파지토리 테스트")
 class TableGroupRepositoryTest {
     private OrderTable 주문가능_다섯명테이블;
     private OrderTable 주문가능_두명테이블;
     private OrderTable 주문불가_다섯명테이블;
     private OrderTable 주문불가_두명테이블;
-
 
     @Autowired
     private OrderTableRepository orderTableRepository;
@@ -37,12 +36,13 @@ class TableGroupRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        // save
-        주문가능_다섯명테이블 = orderTableRepository.save(주문가능_다섯명테이블().toEntity());
-        주문가능_두명테이블 = orderTableRepository.save(주문가능_두명테이블().toEntity());
+        // not working
+        주문가능_다섯명테이블 = orderTableRepository.save(주문가능_다섯명테이블요청().toEntity());
+        주문가능_두명테이블 = orderTableRepository.save(주문가능_두명테이블요청().toEntity());
 
-        주문불가_다섯명테이블 = orderTableRepository.save(주문불가_다섯명테이블().toEntity());
-        주문불가_두명테이블 = orderTableRepository.save(주문불가_두명테이블().toEntity());
+        // working
+        주문불가_다섯명테이블 = orderTableRepository.save(주문불가_다섯명테이블요청().toEntity());
+        주문불가_두명테이블 = orderTableRepository.save(주문불가_두명테이블요청().toEntity());
     }
 
     @Test

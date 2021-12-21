@@ -25,6 +25,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * description :
  */
 @DataJpaTest
+@DisplayName("상품 리파지토리 테스트")
 class ProductRepositoryTest {
 
     @Autowired

@@ -25,6 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
  * description :
  */
 @DataJpaTest
+@DisplayName("주문 리파지토리 테스트")
 class OrderRepositoryTest {
     private Order 후라이드반양념반두개주세요;
 
@@ -52,7 +53,7 @@ class OrderRepositoryTest {
         MenuProduct 양념치킨메뉴상품 = new MenuProduct(양념치킨, 1L);
         MenuProduct 후라이드메뉴상품 = new MenuProduct(후라이드, 1L);
         Menu 후라이드반양념반메뉴 = menuRepository.save(new Menu("후라이드반양념반메뉴", 메뉴가격, 메뉴그룹, Lists.newArrayList(양념치킨메뉴상품, 후라이드메뉴상품)));
-        OrderTable 사용가능_다섯명테이블 = orderTableRepository.save(OrderTableFixtures.주문가능_다섯명테이블().toEntity());
+        OrderTable 사용가능_다섯명테이블 = orderTableRepository.save(OrderTableFixtures.주문가능_다섯명테이블요청().toEntity());
 
         OrderLineItem 후라이드양념반두개 = new OrderLineItem(후라이드반양념반메뉴, 2L);
         후라이드반양념반두개주세요 = new Order(사용가능_다섯명테이블, Lists.newArrayList(후라이드양념반두개));

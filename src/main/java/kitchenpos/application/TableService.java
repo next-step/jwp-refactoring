@@ -1,10 +1,9 @@
 package kitchenpos.application;
 
-import kitchenpos.domain.OrderRepository;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.OrderTableRepository;
 import kitchenpos.dto.ChangeEmptyRequest;
-import kitchenpos.dto.ChangeNumberRequest;
+import kitchenpos.dto.ChangeGuestNumberRequest;
 import kitchenpos.dto.OrderTableResponse;
 import kitchenpos.dto.OrderTableSaveRequest;
 import kitchenpos.exception.OrderTableNotFoundException;
@@ -40,7 +39,7 @@ public class TableService {
     }
 
     @Transactional
-    public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final ChangeNumberRequest request) {
+    public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final ChangeGuestNumberRequest request) {
         OrderTable orderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(OrderTableNotFoundException::new);
 
