@@ -1,10 +1,13 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.dao.TableGroupDao;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.domain.*;
+import kitchenpos.dto.OrderTableResponse;
+import kitchenpos.dto.TableGroupResponse;
+import kitchenpos.exception.IllegalOrderTableException;
+import kitchenpos.exception.NotSupportUngroupException;
+import kitchenpos.exception.OrderTableNotFoundException;
+import kitchenpos.fixtures.MenuFixtures;
+import kitchenpos.fixtures.MenuProductFixtures;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -15,12 +18,18 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
 
+import static kitchenpos.fixtures.MenuGroupFixtures.메뉴그룹;
+import static kitchenpos.fixtures.OrderTableFixtures.*;
+import static kitchenpos.fixtures.ProductFixtures.양념치킨;
+import static kitchenpos.fixtures.TableGroupFixtures.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
@@ -31,48 +40,48 @@ import static org.mockito.Mockito.verify;
  * date : 2021/12/18
  * description :
  */
-@Disabled
 @DisplayName("그룹 테이블 통합 테스트")
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
-    private TableGroup tableGroup;
-    private OrderTable orderTableFirst;
-    private OrderTable orderTableSecond;
+    private TableGroup 그룹테이블;
+    private Menu 메뉴;
 
     @Mock
-    private OrderDao orderDao;
+    private OrderTableRepository orderTableRepository;
 
     @Mock
-    private OrderTableDao orderTableDao;
-
-    @Mock
-    private TableGroupDao tableGroupDao;
+    private TableGroupRepository tableGroupRepository;
 
     @InjectMocks
     private TableGroupService tableGroupService;
 
-
     @BeforeEach
     void setUp() {
-//        orderTableFirst = createOrderTable(1L, null, 2, true);
-//        orderTableSecond = createOrderTable(2L, null, 3, true);
-//        tableGroup = createTableGroup(1L, LocalDateTime.now(), Lists.newArrayList(orderTableFirst, orderTableSecond));
+        final Product 양념치킨 = 양념치킨();
+        final MenuGroup 메뉴그룹 = 메뉴그룹("메뉴그룹");
+        final MenuProduct 메뉴상품 = MenuProductFixtures.메뉴상품(양념치킨, 1L);
+        메뉴 = MenuFixtures.메뉴("양념하나", 양념치킨.getPrice(), 메뉴그룹, Lists.newArrayList(메뉴상품));
+
+        final OrderTable 주문불가_다섯명테이블 = 주문불가_다섯명테이블();
+        final OrderTable 주문불가_두명테이블 = 주문불가_두명테이블();
+
+        그룹테이블 = new TableGroup(Lists.newArrayList(주문불가_다섯명테이블, 주문불가_두명테이블));
     }
 
     @Test
     @DisplayName("테이블을 그룹화할 수 있다.")
     public void group() {
-        // given
-        given(tableGroupDao.save(any(TableGroup.class))).willReturn(tableGroup);
-        given(orderTableDao.findAllByIdIn(anyList())).willReturn(tableGroup.getOrderTables());
+        //given
+        given(orderTableRepository.findById(any())).willReturn(Optional.ofNullable(주문불가_다섯명테이블()), Optional.of(주문불가_두명테이블()));
+        given(tableGroupRepository.save(any(TableGroup.class))).willReturn(주문불가_5인_2인_그룹테이블());
 
         // when
-        TableGroup actual = tableGroupService.create(tableGroup);
+        TableGroupResponse actual = tableGroupService.create(그룹테이블_그룹요청());
 
         // then
         assertAll(
-                () -> assertThat(actual).isEqualTo(tableGroup),
-                () -> assertThat(actual.getOrderTables()).extracting(OrderTable::isEmpty).containsOnly(false)
+                () -> assertThat(actual.getOrderTables()).hasSize(2),
+                () -> assertThat(actual.getOrderTables()).extracting(OrderTableResponse::isEmpty).containsOnly(false)
         );
     }
 
@@ -80,62 +89,61 @@ class TableGroupServiceTest {
     @DisplayName("테이블 개수가 2개보다 작은 경우 등록할 수 없다.")
     public void createFailByTables() {
         // given
-//        tableGroup.setOrderTables(Lists.newArrayList(orderTableFirst));
+        given(orderTableRepository.findById(any())).willReturn(Optional.ofNullable(주문불가_다섯명테이블()));
 
         // then
-        assertThatThrownBy(() -> tableGroupService.create(tableGroup)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> tableGroupService.create(그룹테이블_그룹요청_예외_테이블한개())).isInstanceOf(IllegalOrderTableException.class);
     }
 
     @Test
     @DisplayName("등록되지 않은 테이블인 경우 그룹화 할 수 없다.")
     public void createFailByUnknownTable() {
         // then
-        assertThatThrownBy(() -> tableGroupService.create(tableGroup)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> tableGroupService.create(그룹테이블_그룹요청())).isInstanceOf(OrderTableNotFoundException.class);
     }
 
     @Test
     @DisplayName("테이블이 비워있지 않으면 등록할 수 없다.")
     public void createFailByUsingTable() {
-//        orderTableFirst.setEmpty(false);
-        given(orderTableDao.findAllByIdIn(anyList())).willReturn(tableGroup.getOrderTables());
-        // then
-        assertThatThrownBy(() -> tableGroupService.create(tableGroup)).isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
-    @DisplayName("테이블이 비워있지 않으면 등록할 수 없다.")
-    public void createFailByAlreadyGrouped() {
-        // given
-//        orderTableFirst.setTableGroupId(tableGroup.getId());
-        given(orderTableDao.findAllByIdIn(anyList())).willReturn(tableGroup.getOrderTables());
+        given(orderTableRepository.findById(any())).willReturn(Optional.ofNullable(주문가능_다섯명테이블()), Optional.of(주문불가_두명테이블()));
 
         // then
-        assertThatThrownBy(() -> tableGroupService.create(tableGroup)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> tableGroupService.create(그룹테이블_그룹요청())).isInstanceOf(IllegalOrderTableException.class);
     }
 
     @Test
     @DisplayName("테이블 그룹화를 해제할 수 있다.")
     public void ungroup() {
         // given
-        given(orderTableDao.findAllByTableGroupId(anyLong())).willReturn(tableGroup.getOrderTables());
-        given(orderTableDao.save(any(OrderTable.class))).willReturn(orderTableFirst, orderTableSecond);
+        final OrderTable 주문불가_다섯명테이블 = 주문불가_다섯명테이블();
+        final OrderTable 주문불가_두명테이블 = 주문불가_두명테이블();
+        List<OrderTable> orderTables = Lists.newArrayList(주문불가_다섯명테이블, 주문불가_두명테이블);
+        final TableGroup tableGroup = new TableGroup(orderTables);
+        given(tableGroupRepository.findById(anyLong())).willReturn(Optional.of(tableGroup));
 
         // when
-        tableGroupService.ungroup(tableGroup.getId());
+        tableGroupService.ungroup(1L);
 
         // then
-        verify(orderTableDao).save(orderTableFirst);
-        verify(orderTableDao).save(orderTableSecond);
+        verify(tableGroupRepository).delete(tableGroup);
+
     }
 
     @Test
     @DisplayName("테이블의 주문 상태가 조리, 식사중인 경우 그룹화를 해제할 수 없다.")
     public void ungroupFail() {
         // given
-        given(orderTableDao.findAllByTableGroupId(anyLong())).willReturn(tableGroup.getOrderTables());
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(true);
+        final OrderTable 주문불가_다섯명테이블 = 주문불가_다섯명테이블();
+        final OrderTable 주문불가_두명테이블 = 주문불가_두명테이블();
+        List<OrderTable> 그룹화테이블리스트 = Lists.newArrayList(주문불가_다섯명테이블, 주문불가_두명테이블);
+        final TableGroup 그룹테이블 = new TableGroup(그룹화테이블리스트);
+
+        final OrderLineItem 주문정보 = new OrderLineItem(메뉴, 1L);
+        Order order = new Order(주문불가_다섯명테이블, Lists.newArrayList(주문정보));
+
+        given(tableGroupRepository.findById(anyLong())).willReturn(Optional.of(그룹테이블));
 
         // then
-        assertThatThrownBy(() -> tableGroupService.ungroup(tableGroup.getId())).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> tableGroupService.ungroup(1L)).isInstanceOf(NotSupportUngroupException.class);
     }
 }

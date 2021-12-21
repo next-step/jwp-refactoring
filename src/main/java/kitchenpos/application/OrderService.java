@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 public class OrderService {
     private final MenuRepository menuRepository;
     private final OrderTableRepository orderTableRepository;
@@ -29,7 +30,6 @@ public class OrderService {
         List<OrderLineItem> orderLineItems = toOrderLineItems(request);
         OrderTable orderTable = toOrderTable(request);
         Order order = orderRepository.save(new Order(orderTable, orderLineItems));
-
         return OrderResponse.of(order);
     }
 
@@ -54,9 +54,9 @@ public class OrderService {
 
     @Transactional
     public OrderResponse changeOrderStatus(final Long orderId, final OrderStatusUpdateRequest request) {
-        final Order order = orderRepository.findById(orderId).orElseThrow(OrderNotFoundException::new);
+        final Order order = orderRepository.findById(orderId)
+                .orElseThrow(OrderNotFoundException::new);
         order.changeStatus(request.getOrderStatus());
-
         return OrderResponse.of(order);
     }
 }

@@ -3,6 +3,7 @@ package kitchenpos.fixtures;
 import kitchenpos.domain.*;
 import kitchenpos.dto.ChangeEmptyRequest;
 import kitchenpos.dto.ChangeGuestNumberRequest;
+import kitchenpos.dto.OrderTableRequest;
 import kitchenpos.dto.OrderTableSaveRequest;
 import org.assertj.core.util.Lists;
 
@@ -54,7 +55,8 @@ public class OrderTableFixtures {
     }
 
     public static OrderTable 그룹화된_테이블() {
-        return 주문불가_다섯명테이블요청().toEntity().groupBy(주문불가_5인_2인_그룹테이블());
+        return 주문불가_다섯명테이블요청().toEntity()
+                .groupBy(주문불가_5인_2인_그룹테이블());
     }
 
     public static OrderTable 주문이_완료되지_않은_테이블() {
@@ -65,7 +67,8 @@ public class OrderTableFixtures {
         OrderLineItem 후라이드양념반두개 = new OrderLineItem(후라이드반양념반메뉴, 2L);
         Order order = new Order(주문가능_다섯명테이블(), Lists.newArrayList(후라이드양념반두개));
 
-        return 주문불가_다섯명테이블요청().toEntity().addOrder(order);
+        return 주문불가_다섯명테이블요청().toEntity()
+                .addOrder(order);
     }
 
     public static ChangeEmptyRequest 주문불가로_변경요청() {
@@ -86,6 +89,10 @@ public class OrderTableFixtures {
 
     public static ChangeGuestNumberRequest 사용자수_변경요청(Integer numberOfGuests) {
         return new ChangeGuestNumberRequest(numberOfGuests);
+    }
+
+    public static OrderTableRequest 테이블_그룹요청() {
+        return new OrderTableRequest();
     }
 }
 

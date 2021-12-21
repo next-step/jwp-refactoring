@@ -90,7 +90,7 @@ public class OrderTableAcceptanceTest extends AcceptanceTest {
         주문_상태_변경_실패함(response);
     }
 
-    //TODO
+    //TODO 그룹테이블 인수테스트 작성 시 추가할 것.
     @Test
     @DisplayName("주문 테이블이 그룹테이블인 경우 상태를 변경할 수 없다.")
     public void changeEmptyFailByGroupTable() {
@@ -105,7 +105,7 @@ public class OrderTableAcceptanceTest extends AcceptanceTest {
         // then
     }
 
-    //TODO
+    //TODO 그룹테이블 인수테스트 작성 시 추가할 것.
     @Test
     @DisplayName("주문 테이블의 상태가 주문 완료가 아닌 경우 상태를 변경할 수 없다.")
     public void changeEmptyFailByOrderStatus() {

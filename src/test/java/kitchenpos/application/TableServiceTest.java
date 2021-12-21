@@ -9,8 +9,6 @@ import kitchenpos.exception.IllegalQuantityException;
 import kitchenpos.exception.OrderTableNotFoundException;
 import kitchenpos.exception.TableEmptyUpdateException;
 import kitchenpos.exception.TableGuestNumberUpdateException;
-import kitchenpos.fixtures.OrderTableFixtures;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,8 +22,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static kitchenpos.fixtures.OrderTableFixtures.*;
-import static kitchenpos.fixtures.OrderTableFixtures.주문가능_다섯명테이블;
-import static kitchenpos.fixtures.OrderTableFixtures.주문가능_다섯명테이블요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -51,7 +47,6 @@ class TableServiceTest {
 
     @InjectMocks
     private TableService tableService;
-
 
     @Test
     @DisplayName("테이블 목록을 조회할 수 있다.")

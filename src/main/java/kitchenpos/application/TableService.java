@@ -43,7 +43,6 @@ public class TableService {
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final ChangeGuestNumberRequest request) {
         OrderTable orderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(OrderTableNotFoundException::new);
-
         orderTable.updateNumberOfGuests(request.getNumberOfGuests());
         return OrderTableResponse.of(orderTable);
     }

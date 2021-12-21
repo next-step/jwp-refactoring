@@ -12,10 +12,6 @@ import kitchenpos.dto.MenuProductRequest;
  * description :
  */
 public class MenuProductFixtures {
-    public static MenuProductRequest 메뉴상품_한개요청() {
-        return MenuProductRequest.of(1L, 1L);
-    }
-
     public static MenuProductRequest 메뉴상품_두개요청() {
         return MenuProductRequest.of(2L, 2L);
     }

@@ -1,5 +1,6 @@
 package kitchenpos.domain;
 
+import kitchenpos.exception.NotSupportUngroupException;
 import kitchenpos.exception.TableEmptyUpdateException;
 import kitchenpos.exception.TableGuestNumberUpdateException;
 
@@ -34,15 +35,44 @@ public class OrderTable {
     }
 
     public void changeEmpty(boolean changeEmpty) {
-        // 테이블 그룹이 있으면 예외처리
         if (Objects.nonNull(tableGroup)) {
             throw new TableEmptyUpdateException();
         }
-        // 주문 상태가 완료가 아닌 경우 예외처리
+
         if (Objects.nonNull(order) && !order.isCompleted()) {
             throw new TableEmptyUpdateException();
         }
         this.empty = changeEmpty;
+    }
+
+    public boolean isOrderFinished() {
+        return order.isCompleted();
+    }
+
+    public void updateNumberOfGuests(Integer newNumberOfGuests) {
+        if (empty) {
+            throw new TableGuestNumberUpdateException();
+        }
+
+        this.numberOfGuests = NumberOfGuests.of(newNumberOfGuests);
+    }
+
+    public OrderTable addOrder(Order order) {
+        this.order = order;
+        return this;
+    }
+
+    public OrderTable groupBy(TableGroup tableGroup) {
+        this.tableGroup = tableGroup;
+        this.empty = false;
+        return this;
+    }
+
+    public void ungroup() {
+        if (Objects.nonNull(order) && !isOrderFinished()) {
+            throw new NotSupportUngroupException();
+        }
+        this.tableGroup = new TableGroup();
     }
 
     public Long getId() {
@@ -65,25 +95,5 @@ public class OrderTable {
         return order;
     }
 
-    public boolean isOrderFinished() {
-        return order.isCompleted();
-    }
 
-    public void updateNumberOfGuests(Integer newNumberOfGuests) {
-        if (empty) {
-            throw new TableGuestNumberUpdateException();
-        }
-
-        this.numberOfGuests = NumberOfGuests.of(newNumberOfGuests);
-    }
-
-    public OrderTable addOrder(Order order) {
-        this.order = order;
-        return this;
-    }
-
-    public OrderTable groupBy(TableGroup tableGroup) {
-        this.tableGroup = tableGroup;
-        return this;
-    }
 }

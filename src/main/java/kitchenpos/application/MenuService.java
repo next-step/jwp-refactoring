@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 public class MenuService {
     private final MenuRepository menuRepository;
     private final ProductRepository productRepository;
@@ -25,9 +26,15 @@ public class MenuService {
 
     @Transactional
     public MenuResponse create(final MenuRequest request) {
-        MenuGroup menuGroup = menuGroupRepository.findById(request.getMenuGroupId()).orElseThrow(MenuGroupNotFoundException::new);
+        final MenuGroup menuGroup = menuGroupRepository.findById(request.getMenuGroupId())
+                .orElseThrow(MenuGroupNotFoundException::new);
+        final List<MenuProduct> menuProducts = toMenuProducts(request);
+        final Menu menu = menuRepository.save(request.toEntity(menuGroup, menuProducts));
+        return MenuResponse.of(menu);
+    }
 
-        final List<MenuProduct> menuProducts = request.getMenuProducts()
+    private List<MenuProduct> toMenuProducts(MenuRequest request) {
+        return request.getMenuProducts()
                 .stream()
                 .map(it -> {
                     final Product product = productRepository.findById(it.getProductId())
@@ -35,9 +42,6 @@ public class MenuService {
                     return new MenuProduct(product, it.getQuantity());
                 })
                 .collect(Collectors.toList());
-
-        final Menu menu = menuRepository.save(request.toEntity(menuGroup, menuProducts));
-        return MenuResponse.of(menu);
     }
 
     public List<MenuResponse> list() {
