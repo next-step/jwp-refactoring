@@ -68,9 +68,6 @@ public class Price {
         if (this == o) {
             return true;
         }
-        if (o instanceof BigDecimal) {
-            return price.equals(o);
-        }
         if (o == null || getClass() != o.getClass()) {
             return false;
         }

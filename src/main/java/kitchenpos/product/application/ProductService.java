@@ -21,12 +21,14 @@ public class ProductService {
 
     @Transactional
     public ProductResponse create(final ProductRequest productRequest) {
+        Product product;
         try {
-            Product product = productRepository.save(productRequest.toEntity());
-            return ProductResponse.of(product);
+            product = productRequest.toEntity();
         } catch (InvalidArgumentException e) {
             throw new CannotCreateException("상품을 생성할 수 없습니다. 다시 입력해 주세요.");
         }
+        Product persist = productRepository.save(product);
+        return ProductResponse.of(persist);
     }
 
     public List<ProductResponse> list() {

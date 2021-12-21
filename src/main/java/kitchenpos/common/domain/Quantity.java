@@ -43,9 +43,6 @@ public final class Quantity {
         if (this == o) {
             return true;
         }
-        if (o instanceof Long) {
-            return quantity.equals(o);
-        }
         if (o == null || getClass() != o.getClass()) {
             return false;
         }

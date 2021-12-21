@@ -49,9 +49,6 @@ public final class GuestNumber {
         if (this == o) {
             return true;
         }
-        if (o instanceof Integer) {
-            return numberOfGuests.equals(o);
-        }
         if (o == null || getClass() != o.getClass()) {
             return false;
         }

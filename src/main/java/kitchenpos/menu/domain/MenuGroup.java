@@ -30,7 +30,7 @@ public class MenuGroup extends BaseEntity {
     }
 
     public boolean equalName(String menuGroupName) {
-        return this.name.equals(menuGroupName);
+        return this.name.equals(MustHaveName.valueOf(menuGroupName));
     }
 
     public Long getId() {

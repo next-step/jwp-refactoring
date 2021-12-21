@@ -19,7 +19,7 @@ class QuantityTest {
         Quantity quantity = Quantity.valueOf(100L);
 
         assertAll(
-            () -> assertTrue(quantity.equals(100L)),
+            () -> assertFalse(quantity.equals(100L)),
             () -> assertTrue(quantity.equals(Quantity.valueOf(100L))),
             () -> assertFalse(quantity.equals(101))
         );

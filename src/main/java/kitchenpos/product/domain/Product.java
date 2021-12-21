@@ -54,24 +54,16 @@ public class Product extends BaseEntity {
         return name.get();
     }
 
-    public void setName(String name) {
-        this.name = MustHaveName.valueOf(name);
-    }
-
     public BigDecimal getPrice() {
         return price.get();
     }
 
-    public void setPrice(Integer price) {
-        this.price = Price.fromInteger(price);
-    }
-
     public boolean equalName(String name) {
-        return this.name.equals(name);
+        return this.name.equals(MustHaveName.valueOf(name));
     }
 
     public boolean equalPrice(BigDecimal price) {
-        return this.price.equals(price);
+        return this.price.equals(Price.valueOf(price));
     }
 
     @Override

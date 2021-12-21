@@ -97,7 +97,7 @@ public class OrderTable extends BaseEntity {
     }
 
     public boolean isNotEmpty() {
-        return empty.equals(Boolean.FALSE);
+        return empty.equals(EmptyTable.valueOf(Boolean.FALSE));
     }
 
     public Long getId() {

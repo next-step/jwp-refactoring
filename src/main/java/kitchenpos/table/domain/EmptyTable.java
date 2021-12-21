@@ -38,9 +38,6 @@ public final class EmptyTable {
         if (this == o) {
             return true;
         }
-        if (o instanceof Boolean) {
-            return empty.equals(o);
-        }
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
