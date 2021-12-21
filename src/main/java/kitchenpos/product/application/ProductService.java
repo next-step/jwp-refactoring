@@ -2,6 +2,8 @@ package kitchenpos.product.application;
 
 import kitchenpos.product.domain.ProductDao;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.exception.InputProductDataErrorCode;
+import kitchenpos.product.exception.InputProductDataException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,7 +24,7 @@ public class ProductService {
         final BigDecimal price = product.getPrice();
 
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException();
+            throw new InputProductDataException(InputProductDataErrorCode.IT_CAN_NOT_INPUT_PRICE_LESS_THAN_ZERO);
         }
 
         return productDao.save(product);
