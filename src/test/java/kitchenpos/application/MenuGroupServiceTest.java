@@ -7,6 +7,7 @@ import java.util.List;
 import kitchenpos.menu.application.MenuGroupService;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuGroupRepository;
+import kitchenpos.menu.dto.MenuGroupResponse;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -35,7 +36,7 @@ class MenuGroupServiceTest {
             .willReturn(savedMenuGroup);
 
         // when
-        MenuGroup result = menuGroupService.create(menuGroup);
+        MenuGroupResponse result = menuGroupService.create(menuGroup);
 
         // then
         assertThat(result.getId()).isEqualTo(1L);
@@ -53,7 +54,7 @@ class MenuGroupServiceTest {
             .willReturn(Lists.newArrayList(savedMenuGroup1, savedMenuGroup2));
 
         // when
-        List<MenuGroup> result = menuGroupService.list();
+        List<MenuGroupResponse> result = menuGroupService.list();
 
         // then
         assertThat(result).hasSize(2);
