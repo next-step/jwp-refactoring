@@ -78,7 +78,8 @@ class OrderAcceptanceTest extends AcceptanceTest {
     @Test
     void findAllOrder() {
         // given
-        List<OrderResponse> orderResponses = Arrays.asList(주문_생성_요청(orderRequest).as(OrderResponse.class));
+        List<OrderResponse> orderResponses = Collections.singletonList(
+            주문_생성_요청(orderRequest).as(OrderResponse.class));
 
         // when
         ExtractableResponse<Response> response = 주문_목록_조회_요청();
