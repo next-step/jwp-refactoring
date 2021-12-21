@@ -21,7 +21,6 @@ import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertSame;
 
 @DisplayName("메뉴 관련 기능")
 public class MenuAcceptanceTest extends AcceptanceTest {
