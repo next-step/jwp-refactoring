@@ -12,7 +12,6 @@ import kitchenpos.domain.TableGroup;
 import kitchenpos.domain.TableGroupRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 @Service
 public class TableGroupService {
@@ -31,11 +30,7 @@ public class TableGroupService {
 
     @Transactional
     public TableGroup create(final TableGroup tableGroup) {
-        final List<OrderTable> orderTables = tableGroup.getOrderTables();
-
-        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
-            throw new IllegalArgumentException();
-        }
+        final List<OrderTable> orderTables = tableGroup.getOrderTables().getOrderTables();
 
         final List<Long> orderTableIds = orderTables.stream()
             .map(OrderTable::getId)

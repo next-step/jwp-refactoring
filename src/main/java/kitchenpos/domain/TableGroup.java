@@ -1,13 +1,12 @@
 package kitchenpos.domain;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import org.springframework.data.annotation.CreatedDate;
 
 @Entity
@@ -20,21 +19,21 @@ public class TableGroup {
     @CreatedDate
     private LocalDateTime createdDate;
 
-    @OneToMany(mappedBy = "order_table", orphanRemoval = true)
-    private List<OrderTable> orderTables = new ArrayList<>();
+    @Embedded
+    private OrderTables orderTables = new OrderTables();
 
     public TableGroup() {
     }
 
     public TableGroup(final List<OrderTable> orderTables) {
         this.createdDate = LocalDateTime.now();
-        this.orderTables = orderTables;
+        this.orderTables = OrderTables.of(orderTables);
     }
 
     public TableGroup(final Long id, final List<OrderTable> orderTables) {
         this.id = id;
         this.createdDate = LocalDateTime.now();
-        this.orderTables = orderTables;
+        this.orderTables = OrderTables.of(orderTables);
     }
 
     public Long getId() {
@@ -49,11 +48,11 @@ public class TableGroup {
         this.createdDate = createdDate;
     }
 
-    public List<OrderTable> getOrderTables() {
+    public OrderTables getOrderTables() {
         return orderTables;
     }
 
     public void setOrderTables(final List<OrderTable> orderTables) {
-        this.orderTables = orderTables;
+        this.orderTables = OrderTables.of(orderTables);
     }
 }
