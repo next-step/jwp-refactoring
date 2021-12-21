@@ -12,40 +12,34 @@ import javax.persistence.Id;
 @Entity
 public class TableGroup {
 
-    private static final int ORDER_TABLES_MIN_SIZE = 2;
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private LocalDateTime createdDate;
 
     @Embedded
     private OrderTables orderTables;
 
-    public TableGroup() {
+    private LocalDateTime createdDate;
+
+    protected TableGroup() {
     }
 
-    public TableGroup(List<OrderTable> orderTables) {
-        validOrderTablesSize(orderTables.size());
+    private TableGroup(List<OrderTable> orderTables, LocalDateTime createdDate) {
         this.orderTables = OrderTables.of(orderTables);
         this.orderTables.changeTableGroup(this);
-        this.createdDate = LocalDateTime.now();
+        this.createdDate = createdDate;
     }
 
     public static TableGroup of(List<OrderTable> orderTables) {
-        return new TableGroup(orderTables);
+        return new TableGroup(orderTables, LocalDateTime.now());
     }
 
-    public void ungroup(List<Order> orders) {
+    public void ungroup(Orders orders) {
         orderTables.ungroup(orders);
     }
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(final Long id) {
-        this.id = id;
     }
 
     public LocalDateTime getCreatedDate() {
@@ -54,17 +48,6 @@ public class TableGroup {
 
     public List<OrderTable> getOrderTables() {
         return orderTables.getOrderTables();
-    }
-
-    public void setOrderTables(final List<OrderTable> orderTables) {
-        this.orderTables = OrderTables.of(orderTables);
-    }
-
-    private void validOrderTablesSize(int size) {
-        if (size < ORDER_TABLES_MIN_SIZE) {
-            throw new IllegalArgumentException(
-                String.format("단체 지정에 속하는 주문테이블은 %s개 이상이어야 합니다.", ORDER_TABLES_MIN_SIZE));
-        }
     }
 
     @Override

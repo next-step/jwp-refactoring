@@ -1,6 +1,7 @@
 package kitchenpos.acceptance.step;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -36,10 +37,13 @@ public class TableGroupAcceptanceStep {
     public static Long 단체지정_등록_검증(ExtractableResponse<Response> response,
         TableGroupRequest expected) {
         TableGroupResponse 등록된_단체지정 = response.as(TableGroupResponse.class);
-        assertThat(등록된_단체지정.getId()).isNotNull();
-        assertThat(등록된_단체지정.getOrderTables()).extracting("id")
-            .containsExactlyElementsOf(expected.getOrderTableIds());
 
+        assertAll(
+            () -> assertThat(등록된_단체지정.getId()).isNotNull(),
+            () -> assertThat(등록된_단체지정.getOrderTables()).extracting("id")
+                .containsExactlyElementsOf(expected.getOrderTableIds())
+        );
+        
         return 등록된_단체지정.getId();
     }
 

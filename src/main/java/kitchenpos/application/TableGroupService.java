@@ -4,8 +4,8 @@ import java.security.InvalidParameterException;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.TableGroupDao;
-import kitchenpos.domain.order.Order;
 import kitchenpos.domain.order.OrderTable;
+import kitchenpos.domain.order.Orders;
 import kitchenpos.domain.order.TableGroup;
 import kitchenpos.dto.order.TableGroupRequest;
 import kitchenpos.dto.order.TableGroupResponse;
@@ -46,7 +46,7 @@ public class TableGroupService {
         TableGroup tableGroup = tableGroupDao.findById(tableGroupId)
             .orElseThrow(InvalidParameterException::new);
 
-        List<Order> orders = orderDao.findAllByOrderTableIn(tableGroup.getOrderTables());
+        Orders orders = Orders.of(orderDao.findAllByOrderTableIn(tableGroup.getOrderTables()));
         tableGroup.ungroup(orders);
     }
 }

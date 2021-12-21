@@ -20,7 +20,7 @@ public class TableGroupRequest {
     }
 
     public TableGroup toTableGroup(List<OrderTable> orderTables) {
-        return new TableGroup(orderTables);
+        return TableGroup.of(orderTables);
     }
 
     public int getOrderTableSize() {
