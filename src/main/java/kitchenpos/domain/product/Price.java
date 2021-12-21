@@ -10,42 +10,33 @@ import javax.persistence.Embeddable;
 public class Price {
 
     private static final BigDecimal MIN = BigDecimal.ZERO;
-    public static final Price ZERO = new Price(BigDecimal.ZERO);
 
-    @Column(name = "price")
+    @Column(name = "price", nullable = false)
     private BigDecimal price;
-
-    public static Price of(int price) {
-        return new Price(BigDecimal.valueOf(price));
-    }
-
-    public static Price of(BigDecimal price, BigDecimal lessThanPrice) {
-        checkPriceGreaterThanMin(price, lessThanPrice);
-        return new Price(price);
-    }
 
     protected Price() {
     }
 
     public Price(BigDecimal price) {
         validMin(price);
-
         this.price = price;
+    }
+
+    public static Price of(BigDecimal price) {
+        return new Price(price);
     }
 
     public BigDecimal value() {
         return price;
     }
 
+    public BigDecimal calculatePrice(Long quantity) {
+        return price.multiply(BigDecimal.valueOf(quantity));
+    }
+
     private void validMin(BigDecimal price) {
         if (Objects.isNull(price) || price.compareTo(MIN) < 0) {
             throw new IllegalArgumentException();
-        }
-    }
-
-    private static void checkPriceGreaterThanMin(BigDecimal price, BigDecimal lessThanPrice) {
-        if (price.compareTo(lessThanPrice) > 0) {
-            throw new InvalidParameterException("가격이 큼");
         }
     }
 }
