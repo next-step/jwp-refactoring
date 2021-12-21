@@ -1,5 +1,7 @@
 package kitchenpos.product.domain;
 
+import kitchenpos.product.exception.InputProductDataErrorCode;
+import kitchenpos.product.exception.InputProductDataException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -23,8 +25,8 @@ class ProductTest {
     void createWrongPriceProductTest() {
         assertThatThrownBy(() -> {
             new Product("대파치킨", new BigDecimal(-10000));
-        }).isInstanceOf(RuntimeException.class)
-                .hasMessageContaining("입력된 가격은 음수입니다.");
+        }).isInstanceOf(InputProductDataException.class)
+                .hasMessageContaining(InputProductDataErrorCode.IT_CAN_NOT_INPUT_PRICE_LESS_THAN_ZERO.errorMessage());
     }
 
     private void checkValidProduct(Product product, String name, BigDecimal price) {

@@ -1,5 +1,8 @@
 package kitchenpos.product.domain;
 
+import kitchenpos.product.exception.InputProductDataErrorCode;
+import kitchenpos.product.exception.InputProductDataException;
+
 import java.math.BigDecimal;
 
 public class Product {
@@ -32,7 +35,7 @@ public class Product {
 
     private void checkValidPrice(BigDecimal price) {
         if (price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new RuntimeException("입력된 가격은 음수입니다.");
+            throw new InputProductDataException(InputProductDataErrorCode.IT_CAN_NOT_INPUT_PRICE_LESS_THAN_ZERO);
         }
     }
 }
