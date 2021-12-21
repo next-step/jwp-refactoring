@@ -1,9 +1,10 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.ProductDao;
 import kitchenpos.menu.application.ProductService;
 import kitchenpos.menu.domain.Product;
 import kitchenpos.menu.dto.ProductCreateRequest;
+import kitchenpos.menu.dto.ProductResponse;
+import kitchenpos.menu.infra.ProductRepository;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -28,7 +29,7 @@ import static org.mockito.BDDMockito.given;
 class ProductServiceTest {
 
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
     @InjectMocks
     private ProductService productService;
 
@@ -38,13 +39,13 @@ class ProductServiceTest {
         // given
         ProductCreateRequest request = getCreateRequest("눈내리는치킨", 17_000);
         Product expected = getProduct(1L, "눈내리는치킨", 17_000);
-        given(productDao.save(any(Product.class))).willReturn(expected);
+        given(productRepository.save(any(Product.class))).willReturn(expected);
         // when
-        Product actual = productService.create(request);
+        ProductResponse actual = productService.create(request);
         // then
         assertAll(
                 () -> assertThat(actual.getId()).isEqualTo(expected.getId()),
-                () -> assertThat(actual.getPrice()).isEqualTo(expected.getPrice()),
+                () -> assertThat(actual.getPrice()).isEqualTo(expected.getPrice().intValue()),
                 () -> assertThat(actual.getName()).isEqualTo(expected.getName())
         );
     }
@@ -85,11 +86,11 @@ class ProductServiceTest {
         final Product 눈내리는치킨 = getProduct(1L, "눈내리는치킨", 17_000);
         final Product 쌀국수 = getProduct(2L, "쌀국수", 7_000);
         final List<Product> expected = Arrays.asList(눈내리는치킨, 쌀국수);
-        given(productDao.findAll()).willReturn(expected);
+        given(productRepository.findAll()).willReturn(expected);
         // when
-        List<Product> list = productService.list();
+        List<ProductResponse> list = productService.list();
         // then
-        assertThat(list).containsExactlyElementsOf(expected);
+        assertThat(list).containsExactlyElementsOf(Arrays.asList(ProductResponse.of(눈내리는치킨), ProductResponse.of(쌀국수)));
     }
 
     public static Product getProduct(Long id, String name, int price) {
