@@ -47,8 +47,10 @@ class MenuGroupTest {
         MenuGroup savedMenuGroup = menuGroupService.create(new MenuGroup("추천메뉴"));
 
         // then
-        assertThat(savedMenuGroup.getId()).isEqualTo(1L);
-        assertThat(savedMenuGroup.getName()).isEqualTo("추천메뉴");
+        assertAll(
+                () -> assertThat(savedMenuGroup.getId()).isEqualTo(1L),
+                () -> assertThat(savedMenuGroup.getName()).isEqualTo("추천메뉴")
+        );
     }
 
     @Test
