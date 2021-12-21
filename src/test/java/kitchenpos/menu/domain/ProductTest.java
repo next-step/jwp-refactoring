@@ -6,6 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EmptySource;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
@@ -54,8 +55,8 @@ class ProductTest {
         assertThatThrownBy(createCall).isInstanceOf(IllegalArgumentException.class);
     }
 
-    @ParameterizedTest(name = "이름은 빈 값일 수 없다.")
-    @EmptySource
+    @ParameterizedTest(name = "이름은 빈값이 될 수 없다. \"{0}\"")
+    @NullAndEmptySource
     void nameEmpty(String name) {
         // given, when
         ThrowableAssert.ThrowingCallable createCall = () -> Product.of(name, null);

@@ -1,8 +1,10 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.menu.application.MenuGroupService;
 import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.dto.MenuGroupRequest;
+import kitchenpos.menu.dto.MenuGroupResponse;
+import kitchenpos.menu.infra.MenuGroupRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,13 +17,14 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 @DisplayName("메뉴 그룹 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
 class MenuGroupServiceTest {
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
     @InjectMocks
     private MenuGroupService menuGroupService;
 
@@ -29,11 +32,11 @@ class MenuGroupServiceTest {
     @Test
     void create() {
         // given
-        MenuGroup request = getCreateRequest("점심메뉴");
+        MenuGroupRequest request = getCreateRequest("점심메뉴");
         MenuGroup expected = getMenuGroup(1L, "점심메뉴");
-        given(menuGroupDao.save(request)).willReturn(expected);
+        given(menuGroupRepository.save(any(MenuGroup.class))).willReturn(expected);
         // when
-        MenuGroup actual = menuGroupService.create(request);
+        MenuGroupResponse actual = menuGroupService.create(request);
         // then
         assertAll(
                 () -> assertThat(actual.getId()).isEqualTo(expected.getId()),
@@ -48,23 +51,20 @@ class MenuGroupServiceTest {
         final MenuGroup 점심메뉴 = getMenuGroup(1L, "점심메뉴");
         final MenuGroup 저녁메뉴 = getMenuGroup(2L, "저녁메뉴");
         final List<MenuGroup> expected = Arrays.asList(점심메뉴, 저녁메뉴);
-        given(menuGroupDao.findAll()).willReturn(expected);
+        given(menuGroupRepository.findAll()).willReturn(expected);
         // when
-        List<MenuGroup> list = menuGroupService.list();
+        List<MenuGroupResponse> list = menuGroupService.list();
         // then
-        assertThat(list).containsExactlyElementsOf(expected);
+        assertThat(list).containsExactlyElementsOf(Arrays.asList(
+                MenuGroupResponse.of(점심메뉴), MenuGroupResponse.of(저녁메뉴))
+        );
     }
 
     public static MenuGroup getMenuGroup(long id, String name) {
-        final MenuGroup menuGroup = new MenuGroup();
-        menuGroup.setName(name);
-        menuGroup.setId(id);
-        return menuGroup;
+        return MenuGroup.generate(id, name);
     }
 
-    private MenuGroup getCreateRequest(String name) {
-        final MenuGroup menuGroup = new MenuGroup();
-        menuGroup.setName(name);
-        return menuGroup;
+    private MenuGroupRequest getCreateRequest(String name) {
+        return new MenuGroupRequest(name);
     }
 }

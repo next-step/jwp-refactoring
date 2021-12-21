@@ -1,13 +1,13 @@
 package kitchenpos.application;
 
 import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.Product;
+import kitchenpos.menu.infra.MenuGroupRepository;
 import kitchenpos.menu.infra.ProductRepository;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,7 +39,7 @@ class MenuServiceTest {
     @Mock
     private MenuDao menuDao;
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
     @Mock
     private MenuProductDao menuProductDao;
     @Mock
@@ -71,7 +71,7 @@ class MenuServiceTest {
         );
         Menu expected = getMenu(1L, createRequest);
 
-        given(menuGroupDao.existsById(anyLong())).willReturn(true);
+        given(menuGroupRepository.existsById(anyLong())).willReturn(true);
         given(productRepository.findById(분짜.getId())).willReturn(Optional.of(분짜));
         given(productRepository.findById(양지쌀국수.getId())).willReturn(Optional.of(양지쌀국수));
         given(menuDao.save(any(Menu.class))).willReturn(expected);
@@ -120,7 +120,7 @@ class MenuServiceTest {
                             getMenuProduct(2L, 분짜, 6)
                     )
             );
-            given(menuGroupDao.existsById(any(Long.TYPE))).willReturn(false);
+            given(menuGroupRepository.existsById(any(Long.TYPE))).willReturn(false);
             // when
             ThrowableAssert.ThrowingCallable createCall = () -> menuService.create(createRequest);
             // then
@@ -140,7 +140,7 @@ class MenuServiceTest {
                             getMenuProduct(2L, 분짜, 6)
                     )
             );
-            given(menuGroupDao.existsById(any(Long.TYPE))).willReturn(false);
+            given(menuGroupRepository.existsById(any(Long.TYPE))).willReturn(false);
             // when
             ThrowableAssert.ThrowingCallable createCall = () -> menuService.create(createRequest);
             // then
@@ -167,7 +167,7 @@ class MenuServiceTest {
                     )
             );
 
-            given(menuGroupDao.existsById(anyLong())).willReturn(true);
+            given(menuGroupRepository.existsById(anyLong())).willReturn(true);
             given(productRepository.findById(분짜.getId())).willReturn(Optional.of(분짜));
             given(productRepository.findById(양지쌀국수.getId())).willReturn(Optional.of(양지쌀국수));
             // when
