@@ -104,13 +104,14 @@ class TableGroupServiceTest {
     @DisplayName("단체 지정을 할 때, 대상 테이블들이 이미 단체로 지정된 테이블이면 예외가 발생한다.")
     @Test
     void createImpossible4() {
-        OrderTable 단체로_지정된_테이블1 = TableFixture.create(1L, 1L, 3, true);
-        OrderTable 단체로_지정된_테이블2 = TableFixture.create(2L, 1L, 3, true);
+        TableGroup 단체_테이블_그룹 = TableGroupFixture.createTableGroup(1L);
+        OrderTable 단체로_지정된_테이블1 = TableFixture.create(1L, 단체_테이블_그룹, 3, true);
+        OrderTable 단체로_지정된_테이블2 = TableFixture.create(2L, 단체_테이블_그룹, 3, true);
 
         List<OrderTable> orderTables = Arrays.asList(단체로_지정된_테이블1, 단체로_지정된_테이블2);
         given(orderTableRepository.findAllByIdIn(anyList())).willReturn(orderTables);
 
-        TableGroup tableGroup = TableGroupFixture.createTableGroup(1L, orderTables);
+        TableGroup tableGroup = TableGroupFixture.createTableGroup(2L, orderTables);
 
         assertThatThrownBy(() -> tableGroupService.create(tableGroup))
             .isInstanceOf(IllegalArgumentException.class);
@@ -119,31 +120,33 @@ class TableGroupServiceTest {
     @DisplayName("단체 지정을 해제 할 수 있다.")
     @Test
     void ungroup() {
-        OrderTable 단체로_지정된_테이블1 = TableFixture.create(1L, 1L, 3, true);
-        OrderTable 단체로_지정된_테이블2 = TableFixture.create(2L, 1L, 3, true);
+        OrderTable 단체로_지정된_테이블1 = TableFixture.create(1L, 3, true);
+        OrderTable 단체로_지정된_테이블2 = TableFixture.create(2L, 13, true);
 
         List<OrderTable> orderTables = Arrays.asList(단체로_지정된_테이블1, 단체로_지정된_테이블2);
         given(orderTableRepository.findAllByTableGroupId(1L)).willReturn(orderTables);
 
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(false);
+        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(
+            false);
 
         tableGroupService.ungroup(1L);
 
         verify(orderTableRepository, times(2)).save(any(OrderTable.class));
-        assertThat(단체로_지정된_테이블1.getTableGroupId()).isNull();
-        assertThat(단체로_지정된_테이블2.getTableGroupId()).isNull();
+        assertThat(단체로_지정된_테이블1.getTableGroup()).isNull();
+        assertThat(단체로_지정된_테이블2.getTableGroup()).isNull();
     }
 
     @DisplayName("단체 지정을 해제 할 때, 테이블의 상태가 조리나 식사중이면 예외가 발생한다.")
     @Test
     void ungroupImpossible1() {
-        OrderTable 단체로_지정된_테이블1 = TableFixture.create(1L, 1L, 3, true);
-        OrderTable 단체로_지정된_테이블2 = TableFixture.create(2L, 1L, 3, true);
+        OrderTable 단체로_지정된_테이블1 = TableFixture.create(1L, 3, true);
+        OrderTable 단체로_지정된_테이블2 = TableFixture.create(2L, 3, true);
 
         List<OrderTable> orderTables = Arrays.asList(단체로_지정된_테이블1, 단체로_지정된_테이블2);
         given(orderTableRepository.findAllByTableGroupId(1L)).willReturn(orderTables);
 
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(true);
+        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(
+            true);
 
         assertThatThrownBy(() -> tableGroupService.ungroup(1L))
             .isInstanceOf(IllegalArgumentException.class);

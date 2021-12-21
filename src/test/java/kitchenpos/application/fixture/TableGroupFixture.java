@@ -1,17 +1,20 @@
 package kitchenpos.application.fixture;
 
+import java.util.Collections;
 import java.util.List;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 
 public class TableGroupFixture {
+
     private TableGroupFixture() {
     }
 
-    public static TableGroup createTableGroup(final long id, final List<OrderTable> orderTables) {
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.setId(id);
-        tableGroup.setOrderTables(orderTables);
-        return tableGroup;
+    public static TableGroup createTableGroup(final Long id) {
+        return new TableGroup(id, Collections.emptyList());
+    }
+
+    public static TableGroup createTableGroup(final Long id, final List<OrderTable> orderTables) {
+        return new TableGroup(id, orderTables);
     }
 }

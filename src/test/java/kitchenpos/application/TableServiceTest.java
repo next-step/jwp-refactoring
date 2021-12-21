@@ -41,8 +41,8 @@ class TableServiceTest {
     @BeforeEach
     void setUp() {
         빈_테이블 = TableFixture.create(1L, null, 0, true);
-        단체_테이블1 = TableFixture.create(2L, 1L, 3, false);
-        단체_테이블2 = TableFixture.create(3L, 1L, 4, false);
+        단체_테이블1 = TableFixture.create(2L, 3, false);
+        단체_테이블2 = TableFixture.create(3L, 4, false);
     }
 
     @DisplayName("테이블을 등록한다.")
@@ -53,7 +53,7 @@ class TableServiceTest {
         OrderTable savedTable = tableService.create(빈_테이블);
 
         assertThat(savedTable).isEqualTo(빈_테이블);
-        assertThat(savedTable.getTableGroupId()).isNull();
+        assertThat(savedTable.getTableGroup()).isNull();
     }
 
     @DisplayName("테이블 목록을 조회한다.")
