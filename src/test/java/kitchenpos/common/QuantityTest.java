@@ -1,4 +1,4 @@
-package kitchenpos.menu.domain;
+package kitchenpos.common;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -10,7 +10,7 @@ import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 @DisplayName("수량")
-class MenuProductQuantityTest {
+class QuantityTest {
 
 	@DisplayName("생성")
 	@Test
@@ -19,7 +19,7 @@ class MenuProductQuantityTest {
 		long quantity = 2;
 
 		// when
-		MenuProductQuantity menuProductQuantity = MenuProductQuantity.of(quantity);
+		Quantity menuProductQuantity = Quantity.of(quantity);
 
 		// then
 		assertThat(menuProductQuantity.getValue()).isEqualTo(quantity);
@@ -33,7 +33,7 @@ class MenuProductQuantityTest {
 		// given
 
 		// when
-		ThrowingCallable throwingCallable = () -> MenuProductQuantity.of(quantity);
+		ThrowingCallable throwingCallable = () -> Quantity.of(quantity);
 
 		// then
 		assertThatThrownBy(throwingCallable).isInstanceOf(IllegalArgumentException.class);
@@ -46,8 +46,8 @@ class MenuProductQuantityTest {
 		long quantity = 2;
 
 		// when
-		MenuProductQuantity actual = MenuProductQuantity.of(quantity);
-		MenuProductQuantity expected = MenuProductQuantity.of(quantity);
+		Quantity actual = Quantity.of(quantity);
+		Quantity expected = Quantity.of(quantity);
 
 		// then
 		assertThat(actual).isEqualTo(expected);

@@ -8,6 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import kitchenpos.common.Price;
+import kitchenpos.common.Quantity;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductName;
 
@@ -19,7 +20,7 @@ public class MenuProductTest {
 	void of() {
 		// given
 		Product product = Product.of(ProductName.of("강정치킨"), Price.of(BigDecimal.valueOf(17000)));
-		MenuProductQuantity quantity = MenuProductQuantity.of(2L);
+		Quantity quantity = Quantity.of(2L);
 
 		// when
 		MenuProduct menuProduct = MenuProduct.of(product, quantity);

@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
-// TODO : JPA 로 변경시 EntityManager 사용하도록 변경
 @Service
 @ActiveProfiles("test")
 public class DatabaseCleanup {

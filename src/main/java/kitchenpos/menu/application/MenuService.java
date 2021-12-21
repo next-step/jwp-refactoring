@@ -10,7 +10,7 @@ import kitchenpos.common.Price;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuName;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuProductQuantity;
+import kitchenpos.common.Quantity;
 import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuCreateRequest;
@@ -62,7 +62,7 @@ public class MenuService {
 	private MenuProduct findMenuProduct(MenuProductDto menuProductDto) {
 		Product product = productRepository.findById(menuProductDto.getProductId())
 			.orElseThrow(IllegalArgumentException::new);
-		MenuProductQuantity quantity = MenuProductQuantity.of(menuProductDto.getQuantity());
+		Quantity quantity = Quantity.of(menuProductDto.getQuantity());
 		return MenuProduct.of(product, quantity);
 	}
 }

@@ -7,8 +7,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import kitchenpos.order.domain.Order;
 import kitchenpos.ordertablegroup.domain.OrderTableGroup;
 
 @Table(name = "order_table")
@@ -21,6 +23,9 @@ public class OrderTable {
 	@ManyToOne
 	@JoinColumn(name = "table_group_id")
 	private OrderTableGroup orderTableGroup;
+
+	@OneToOne(mappedBy = "orderTable")
+	private Order order;
 
 	@Embedded
 	private NumberOfGuests numberOfGuests;
@@ -45,6 +50,10 @@ public class OrderTable {
 		return orderTableGroup;
 	}
 
+	public Order getOrder() {
+		return order;
+	}
+
 	public Long getOrderTableGroupId() {
 		return orderTableGroup != null ? orderTableGroup.getId() : null;
 	}
@@ -66,6 +75,10 @@ public class OrderTable {
 			throw new IllegalStateException("주문 테이블 그룹에 속해 있으면 빈 상태를 변경할 수 없습니다.");
 		}
 
+		if (order != null && !order.isCompleted()) {
+			throw new IllegalStateException("완료되지 않은 주문이 남아 있는 경우 빈 상태를 변경할 수 없습니다.");
+		}
+
 		this.empty = empty;
 	}
 
@@ -79,5 +92,9 @@ public class OrderTable {
 
 	public void setOrderTableGroup(OrderTableGroup orderTableGroup) {
 		this.orderTableGroup = orderTableGroup;
+	}
+
+	public void setOrder(Order order) {
+		this.order = order;
 	}
 }

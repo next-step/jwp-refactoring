@@ -37,7 +37,6 @@ public class OrderTableService {
 	@Transactional
 	public OrderTableDto changeEmpty(Long id, OrderTableRequest request) {
 		OrderTable orderTable = orderTableRepository.findById(id).orElseThrow(IllegalArgumentException::new);
-		// TODO : 주문 테이블에 완료되지 않은 주문이 남아 있는 경우 변경할 수 없음
 		orderTable.changeEmpty(request.isEmpty());
 		return OrderTableDto.of(orderTable);
 	}

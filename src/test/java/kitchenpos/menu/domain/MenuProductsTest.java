@@ -12,6 +12,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import kitchenpos.common.Price;
+import kitchenpos.common.Quantity;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductName;
 
@@ -26,12 +27,12 @@ class MenuProductsTest {
 			Product.of(
 				ProductName.of("강정치킨"),
 				Price.of(BigDecimal.valueOf(17000))),
-			MenuProductQuantity.of(1L));
+			Quantity.of(1L));
 		MenuProduct menuProduct2 = MenuProduct.of(
 			Product.of(
 				ProductName.of("양념치킨"),
 				Price.of(BigDecimal.valueOf(18000))),
-			MenuProductQuantity.of(2L));
+			Quantity.of(2L));
 
 		// when
 		MenuProducts.of(Arrays.asList(menuProduct1, menuProduct2));
@@ -59,12 +60,12 @@ class MenuProductsTest {
 				Product.of(
 					ProductName.of("강정치킨"),
 					Price.of(BigDecimal.valueOf(17000))),
-				MenuProductQuantity.of(1L)),
+				Quantity.of(1L)),
 			MenuProduct.of(
 				Product.of(
 					ProductName.of("양념치킨"),
 					Price.of(BigDecimal.valueOf(18000))),
-				MenuProductQuantity.of(2L))));
+				Quantity.of(2L))));
 
 		// when
 		Price actual = menuProducts.getTotalPrice();

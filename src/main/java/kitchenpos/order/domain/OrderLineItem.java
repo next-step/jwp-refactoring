@@ -1,4 +1,4 @@
-package kitchenpos.menu.domain;
+package kitchenpos.order.domain;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -10,38 +10,38 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import kitchenpos.common.Quantity;
-import kitchenpos.product.domain.Product;
+import kitchenpos.menu.domain.Menu;
 
-@Table(name = "menu_product")
+@Table(name = "order_line_item")
 @Entity
-public class MenuProduct {
+public class OrderLineItem {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Id
 	private Long seq;
 
 	@ManyToOne(optional = false)
-	@JoinColumn(name = "product_id")
-	private Product product;
+	@JoinColumn(name = "menu_id")
+	private Menu menu;
 
 	@Embedded
 	private Quantity quantity;
 
-	protected MenuProduct() {
+	protected OrderLineItem() {
 	}
 
-	public static MenuProduct of(Product product, Quantity quantity) {
-		MenuProduct menuProduct = new MenuProduct();
-		menuProduct.product = product;
-		menuProduct.quantity = quantity;
-		return menuProduct;
+	public static OrderLineItem of(Menu menu, Quantity quantity) {
+		OrderLineItem orderLineItem = new OrderLineItem();
+		orderLineItem.menu = menu;
+		orderLineItem.quantity = quantity;
+		return orderLineItem;
 	}
 
 	public Long getSeq() {
 		return seq;
 	}
 
-	public Product getProduct() {
-		return product;
+	public Menu getMenu() {
+		return menu;
 	}
 
 	public Quantity getQuantity() {

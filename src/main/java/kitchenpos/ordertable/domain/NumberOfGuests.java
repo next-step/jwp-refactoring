@@ -7,7 +7,7 @@ import kitchenpos.common.Value;
 
 @Embeddable
 public class NumberOfGuests extends Value<NumberOfGuests> {
-	@Column(name = "number_of_guests")
+	@Column(name = "number_of_guests", nullable = false)
 	private int value;
 
 	protected NumberOfGuests() {

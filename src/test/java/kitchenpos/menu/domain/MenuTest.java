@@ -11,6 +11,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import kitchenpos.common.Price;
+import kitchenpos.common.Quantity;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.domain.MenuGroupName;
 import kitchenpos.product.domain.Product;
@@ -31,7 +32,7 @@ class MenuTest {
 				Product.of(
 					ProductName.of("후라이드치킨"),
 					Price.of(BigDecimal.valueOf(17000))),
-				MenuProductQuantity.of(2L))));
+				Quantity.of(2L))));
 
 		// when
 		Menu menu = Menu.of(name, price, menuGroup, menuProducts);
@@ -58,7 +59,7 @@ class MenuTest {
 				Product.of(
 					ProductName.of("후라이드치킨"),
 					Price.of(BigDecimal.valueOf(17000))),
-				MenuProductQuantity.of(2L))));
+				Quantity.of(2L))));
 
 		// when
 		ThrowingCallable throwingCallable = () -> Menu.of(name, price, menuGroup, menuProducts);

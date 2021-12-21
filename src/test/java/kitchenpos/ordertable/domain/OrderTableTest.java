@@ -3,13 +3,28 @@ package kitchenpos.ordertable.domain;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Collections;
 
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import kitchenpos.common.Price;
+import kitchenpos.common.Quantity;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuName;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProducts;
+import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menugroup.domain.MenuGroupName;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.ordertablegroup.domain.OrderTableGroup;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductName;
 
 @DisplayName("주문 테이블")
 class OrderTableTest {
@@ -43,16 +58,41 @@ class OrderTableTest {
 		assertThat(orderTable.isEmpty()).isEqualTo(true);
 	}
 
-	@DisplayName("빈 상태 변경 - 주문 테이블 그룹에 속해 있는 경우")
+	@DisplayName("빈 상태 변경 실패 - 주문 테이블 그룹에 속해 있는 경우")
 	@Test
 	void changeEmptyFailOnBelongToOrderTableGroup() {
 		// given
 		OrderTable orderTable1 = OrderTable.of(NumberOfGuests.of(4), false);
 		OrderTable orderTable2 = OrderTable.of(NumberOfGuests.of(4), false);
-		OrderTableGroup orderTableGroup = OrderTableGroup.of(Arrays.asList(orderTable1, orderTable2));
+		OrderTableGroup.of(Arrays.asList(orderTable1, orderTable2));
 
 		// when
 		ThrowingCallable throwingCallable = () -> orderTable1.changeEmpty(true);
+
+		// then
+		assertThatThrownBy(throwingCallable).isInstanceOf(IllegalStateException.class);
+	}
+
+	@DisplayName("빈 상태 변경 실패 - 완료되지 않은 주문이 남아 있는 경우")
+	@Test
+	void changeEmptyFailOnOrderNotCompleted() {
+		// given
+		OrderTable orderTable = OrderTable.of(NumberOfGuests.of(4), false);
+		OrderLineItems orderLineItems = OrderLineItems.of(Collections.singletonList(OrderLineItem.of(
+			Menu.of(
+				MenuName.of("후라이드+후라이드"),
+				Price.of(BigDecimal.valueOf(25000)),
+				MenuGroup.of(MenuGroupName.of("추천메뉴")),
+				MenuProducts.of(Collections.singletonList(
+					MenuProduct.of(
+						Product.of(ProductName.of("후라이드치킨"), Price.of(BigDecimal.valueOf(17000))),
+						Quantity.of(2L))))),
+			Quantity.of(1L))));
+
+		Order.of(orderTable, orderLineItems);
+
+		// when
+		ThrowingCallable throwingCallable = () -> orderTable.changeEmpty(true);
 
 		// then
 		assertThatThrownBy(throwingCallable).isInstanceOf(IllegalStateException.class);
