@@ -18,7 +18,6 @@ import kitchenpos.domain.MenuGroupRepository;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.MenuProductRepository;
 import kitchenpos.domain.MenuRepository;
-import kitchenpos.domain.Price;
 import kitchenpos.domain.Product;
 import kitchenpos.domain.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -73,7 +72,7 @@ class MenuServiceTest {
     @DisplayName("메뉴를 등록한다.")
     @Test
     void create() {
-        given(menuGroupRepository.existsById(후라이드치킨.getMenuGroupId())).willReturn(true);
+        given(menuGroupRepository.existsById(후라이드치킨.getMenuGroup().getId())).willReturn(true);
         given(productRepository.findById(메뉴상품1.getProductId())).willReturn(Optional.of(상품_후라이드));
         given(menuRepository.save(후라이드치킨)).willReturn(후라이드치킨);
 
@@ -85,7 +84,7 @@ class MenuServiceTest {
     @DisplayName("메뉴를 등록할 때, 메뉴 그룹에 포함되어 있지 않으면 예외가 발생한다.")
     @Test
     void createImpossible3() {
-        given(menuGroupRepository.existsById(후라이드치킨.getMenuGroupId())).willReturn(false);
+        given(menuGroupRepository.existsById(후라이드치킨.getMenuGroup().getId())).willReturn(false);
 
         assertThatThrownBy(() -> menuService.create(후라이드치킨))
             .isInstanceOf(IllegalArgumentException.class);
@@ -94,7 +93,7 @@ class MenuServiceTest {
     @DisplayName("메뉴를 등록할 때, 메뉴에 포함된 상품이 등록되어 있지 않으면 예외가 발생한다.")
     @Test
     void createImpossible4() {
-        given(menuGroupRepository.existsById(후라이드치킨.getMenuGroupId())).willReturn(true);
+        given(menuGroupRepository.existsById(후라이드치킨.getMenuGroup().getId())).willReturn(true);
         given(productRepository.findById(메뉴상품1.getProductId())).willReturn(Optional.empty());
 
         assertThatThrownBy(() -> menuService.create(후라이드치킨))
@@ -106,7 +105,7 @@ class MenuServiceTest {
     void createImpossible5() {
         Menu 가격이_총합보다_큰_메뉴 = MenuFixture.createMenu(1L, "후라이드치킨", 100_000L, 한마리_메뉴그룹,
             Arrays.asList(메뉴상품1));
-        given(menuGroupRepository.existsById(가격이_총합보다_큰_메뉴.getMenuGroupId())).willReturn(true);
+        given(menuGroupRepository.existsById(가격이_총합보다_큰_메뉴.getMenuGroup().getId())).willReturn(true);
         given(productRepository.findById(메뉴상품1.getProductId())).willReturn(Optional.of(상품_후라이드));
 
         assertThatThrownBy(() -> menuService.create(가격이_총합보다_큰_메뉴))

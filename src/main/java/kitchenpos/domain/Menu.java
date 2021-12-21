@@ -4,9 +4,13 @@ import java.math.BigDecimal;
 import java.util.List;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 @Entity
@@ -22,7 +26,9 @@ public class Menu {
     @Embedded
     private Price price;
 
-    private Long menuGroupId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "menu_group_id", foreignKey = @ForeignKey(name = "fk_menu_group"))
+    private MenuGroup menuGroup;
 
     @OneToMany(mappedBy = "menu_product", orphanRemoval = true)
     private List<MenuProduct> menuProducts;
@@ -35,7 +41,7 @@ public class Menu {
         this.id = id;
         this.name = Name.of(name);
         this.price = Price.of(BigDecimal.valueOf(price));
-        this.menuGroupId = menuGroup.getId();
+        this.menuGroup = menuGroup;
         this.menuProducts = menuProducts;
     }
 
@@ -55,12 +61,8 @@ public class Menu {
         return price;
     }
 
-    public Long getMenuGroupId() {
-        return menuGroupId;
-    }
-
-    public void setMenuGroupId(final Long menuGroupId) {
-        this.menuGroupId = menuGroupId;
+    public MenuGroup getMenuGroup() {
+        return menuGroup;
     }
 
     public List<MenuProduct> getMenuProducts() {

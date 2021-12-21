@@ -37,7 +37,7 @@ public class MenuService {
     public Menu create(final Menu menu) {
         final BigDecimal price = menu.getPrice().getPrice();
 
-        if (!menuGroupRepository.existsById(menu.getMenuGroupId())) {
+        if (!menuGroupRepository.existsById(menu.getMenuGroup().getId())) {
             throw new IllegalArgumentException();
         }
 
