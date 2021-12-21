@@ -34,7 +34,7 @@ class JdbcTemplateOrderTableDaoTest {
 
 		//then
 		assertThat(save).isNotNull();
-		assertThat(save.getId()).isEqualTo(9L);
+		assertThat(save.getId()).isEqualTo(10L);
 	}
 
 	@Test
@@ -67,7 +67,7 @@ class JdbcTemplateOrderTableDaoTest {
 		//given
 
 		//when
-		OrderTable orderTable = templateOrderTableDao.findById(10L).orElse(new OrderTable());
+		OrderTable orderTable = templateOrderTableDao.findById(15L).orElse(new OrderTable());
 
 		//then
 		assertThat(orderTable.getId()).isNull();

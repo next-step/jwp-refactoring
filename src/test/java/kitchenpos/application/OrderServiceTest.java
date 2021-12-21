@@ -43,7 +43,7 @@ class OrderServiceTest {
 		//given
 		OrderLineItem orderLineItem = new OrderLineItem(null, null, 1L, 1L);
 		Order order = new Order(null, 1L, null, null, Lists.newArrayList(orderLineItem));
-		OrderTable orderTable = new OrderTable(1L, 1L, 0, true);
+		OrderTable orderTable = new OrderTable(1L, 1L, 0, false);
 		when(menuDao.countByIdIn(Lists.newArrayList(1L))).thenReturn(1L);
 		when(orderTableDao.findById(1L)).thenReturn(Optional.of(orderTable));
 		when(orderDao.save(order)).thenReturn(new Order(1L, 1L, OrderStatus.COOKING.name(), LocalDateTime.now(), null));
@@ -107,12 +107,12 @@ class OrderServiceTest {
 	}
 
 	@Test
-	@DisplayName("주문이 할당 된 테이블이 비어있지 않아서 실패")
-	public void createOrderFailNotEmptyTableTest() {
+	@DisplayName("주문이 할당 된 테이블이 비어있어서 실패")
+	public void createOrderFailEmptyTableTest() {
 		//given
 		OrderLineItem orderLineItem = new OrderLineItem(null, null, 1L, 1L);
 		Order order = new Order(null, 1L, null, null, Lists.newArrayList(orderLineItem));
-		OrderTable orderTable = new OrderTable(1L, 1L, 0, false);
+		OrderTable orderTable = new OrderTable(1L, 1L, 0, true);
 		when(menuDao.countByIdIn(Lists.newArrayList(1L))).thenReturn(1L);
 		when(orderTableDao.findById(1L)).thenReturn(Optional.of(orderTable));
 		OrderService orderService = new OrderService(menuDao, orderDao, orderLineItemDao, orderTableDao);
@@ -121,7 +121,7 @@ class OrderServiceTest {
 		//then
 		assertThatThrownBy(() -> orderService.create(order))
 			.isInstanceOf(IllegalArgumentException.class)
-			.hasMessage("테이블에 사람이 있습니다");
+			.hasMessage("주문 할 테이블이 비어있습니다");
 	}
 
 	@Test

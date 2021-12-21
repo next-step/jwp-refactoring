@@ -17,7 +17,6 @@ import org.springframework.test.annotation.Rollback;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
 
-@Rollback
 class JdbcTemplateMenuProductDaoTest {
 
 	private static DataSource dataSource = new EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.H2)

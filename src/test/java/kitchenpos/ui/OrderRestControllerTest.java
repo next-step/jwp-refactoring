@@ -29,13 +29,13 @@ class OrderRestControllerTest {
 	public void createOrderTest() {
 		//given
 		OrderLineItem orderLineItem = new OrderLineItem(null, null, 1L, 1L);
-		Order order = new Order(null, 1L, null, null, Lists.newArrayList(orderLineItem));
+		Order order = new Order(null, 4L, null, null, Lists.newArrayList(orderLineItem));
 		//when
 		ResponseEntity<Order> responseEntity = orderRestController.create(order);
 
 		//then
 		assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-		assertThat(responseEntity.getHeaders().getLocation().toString()).isEqualTo("/api/orders/4");
+		assertThat(responseEntity.getHeaders().getLocation().toString()).isEqualTo("/api/orders/8");
 	}
 
 	@Test
@@ -47,7 +47,7 @@ class OrderRestControllerTest {
 
 		//then
 		assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-		assertThat(responseEntity.getBody()).hasSize(3);
+		assertThat(responseEntity.getBody()).hasSize(7);
 	}
 
 

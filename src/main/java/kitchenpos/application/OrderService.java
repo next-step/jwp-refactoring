@@ -56,8 +56,8 @@ public class OrderService {
         final OrderTable orderTable = orderTableDao.findById(order.getOrderTableId())
                 .orElseThrow(() -> new IllegalArgumentException("주문을 받을 테이블이 존재하지 않습니다"));
 
-        if (!orderTable.isEmpty()) {
-            throw new IllegalArgumentException("테이블에 사람이 있습니다");
+        if (orderTable.isEmpty()) {
+            throw new IllegalArgumentException("주문 할 테이블이 비어있습니다");
         }
 
         order.setOrderTableId(orderTable.getId());

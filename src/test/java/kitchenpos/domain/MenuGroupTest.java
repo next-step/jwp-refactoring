@@ -9,7 +9,7 @@ class MenuGroupTest {
 
 	@Test
 	@DisplayName("메뉴 그룹 생성 테스트")
-	public void createProductTest() {
+	public void createMenuGroupTest() {
 		//when
 		MenuGroup menuGroup = new MenuGroup(1L, "후라이드+양념");
 

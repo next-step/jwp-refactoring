@@ -2,7 +2,6 @@ package kitchenpos.dao;
 
 import static org.assertj.core.api.Assertions.*;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +39,7 @@ class JdbcTemplateOrderDaoTest {
 
 		//then
 		assertThat(save).isNotNull();
-		assertThat(save.getId()).isEqualTo(3L);
+		assertThat(save.getId()).isEqualTo(8L);
 		assertThat(save.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
 	}
 
@@ -81,7 +80,7 @@ class JdbcTemplateOrderDaoTest {
 	}
 
 	@ParameterizedTest
-	@CsvSource(value = {"1:true", "2:false"}, delimiter = ':')
+	@CsvSource(value = {"4:true", "5:false"}, delimiter = ':')
 	@DisplayName("주문테이블 ID 1개, 주문상태 1개이상으로 주문 존재 여부 테스트")
 	public void existsByOrderTableIdAndOrderStatusInTest(long id, boolean expected) {
 		//given
@@ -94,7 +93,7 @@ class JdbcTemplateOrderDaoTest {
 	}
 
 	@ParameterizedTest
-	@CsvSource(value = {"1,3:false", "2,3:true"}, delimiter = ':')
+	@CsvSource(value = {"4,6:false", "5,7:true"}, delimiter = ':')
 	@DisplayName("주문테이블 ID, 주문상태 1개 이상으로 주문 존재 여부 테스트")
 	public void existsByOrderTableIdInAndOrderStatusInTest(String ids, boolean expected) {
 		//given

@@ -24,21 +24,29 @@ INSERT INTO menu_product (menu_id, product_id, quantity) VALUES (4, 4, 1);
 INSERT INTO menu_product (menu_id, product_id, quantity) VALUES (5, 5, 1);
 INSERT INTO menu_product (menu_id, product_id, quantity) VALUES (6, 6, 1);
 
+INSERT INTO table_group (id, created_date) VALUES (1, SYSDATE);
+
 INSERT INTO order_table (id, number_of_guests, empty) VALUES (1, 0, true);
 INSERT INTO order_table (id, number_of_guests, empty) VALUES (2, 0, true);
 INSERT INTO order_table (id, number_of_guests, empty) VALUES (3, 0, true);
-INSERT INTO order_table (id, number_of_guests, empty) VALUES (4, 0, true);
-INSERT INTO order_table (id, number_of_guests, empty) VALUES (5, 0, true);
-INSERT INTO order_table (id, number_of_guests, empty) VALUES (6, 0, true);
+INSERT INTO order_table (id, number_of_guests, empty) VALUES (4, 0, false);
+INSERT INTO order_table (id, number_of_guests, empty) VALUES (5, 0, false);
+INSERT INTO order_table (id, number_of_guests, empty) VALUES (6, 0, false);
 INSERT INTO order_table (id, number_of_guests, empty) VALUES (7, 0, true);
-INSERT INTO order_table (id, number_of_guests, empty) VALUES (8, 0, true);
+INSERT INTO order_table (id, table_group_id, number_of_guests, empty) VALUES (8, 1, 0, true);
+INSERT INTO order_table (id, table_group_id, number_of_guests, empty) VALUES (9, 1, 0, true);
 
-INSERT INTO orders (id, order_table_id, order_status,ordered_time) VALUES (1, 1, 'MEAL', SYSDATE);
-INSERT INTO orders (id, order_table_id, order_status,ordered_time) VALUES (2, 2, 'COOKING', SYSDATE);
-INSERT INTO orders (id, order_table_id, order_status,ordered_time) VALUES (3, 3, 'MEAL', SYSDATE);
+
+INSERT INTO orders (id, order_table_id, order_status,ordered_time) VALUES (1, 4, 'MEAL', SYSDATE);
+INSERT INTO orders (id, order_table_id, order_status,ordered_time) VALUES (2, 5, 'COOKING', SYSDATE);
+INSERT INTO orders (id, order_table_id, order_status,ordered_time) VALUES (3, 6, 'MEAL', SYSDATE);
+INSERT INTO orders (id, order_table_id, order_status,ordered_time) VALUES (4, 7, 'COOKING', SYSDATE);
+INSERT INTO orders (id, order_table_id, order_status,ordered_time) VALUES (5, 8, 'COMPLETION', SYSDATE);
+INSERT INTO orders (id, order_table_id, order_status,ordered_time) VALUES (6, 9, 'COMPLETION', SYSDATE);
+INSERT INTO orders (id, order_table_id, order_status,ordered_time) VALUES (7, 3, 'COMPLETION', SYSDATE);
 
 INSERT INTO order_line_item (seq, order_id, menu_id,quantity) VALUES (1, 1, 1, 1);
 INSERT INTO order_line_item (seq, order_id, menu_id,quantity) VALUES (2, 2, 2, 2);
 INSERT INTO order_line_item (seq, order_id, menu_id,quantity) VALUES (3, 3, 3, 3);
 
-INSERT INTO table_group (id, created_date) VALUES (1, SYSDATE);
+
