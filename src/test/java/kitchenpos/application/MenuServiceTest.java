@@ -13,11 +13,11 @@ import kitchenpos.application.fixture.MenuGroupFixture;
 import kitchenpos.application.fixture.MenuProductFixture;
 import kitchenpos.application.fixture.ProductFixture;
 import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuProductDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuGroupRepository;
 import kitchenpos.domain.MenuProduct;
+import kitchenpos.domain.MenuProductRepository;
 import kitchenpos.domain.Product;
 import kitchenpos.domain.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,7 +39,7 @@ class MenuServiceTest {
     private MenuGroupRepository menuGroupRepository;
 
     @Mock
-    private MenuProductDao menuProductDao;
+    private MenuProductRepository menuProductRepository;
 
     @Mock
     private ProductRepository productRepository;
@@ -133,8 +133,8 @@ class MenuServiceTest {
     @Test
     void list() {
         given(menuDao.findAll()).willReturn(Arrays.asList(후라이드치킨, 양념치킨));
-        given(menuProductDao.findAllByMenuId(후라이드치킨.getId())).willReturn(Arrays.asList(메뉴상품1));
-        given(menuProductDao.findAllByMenuId(양념치킨.getId())).willReturn(Arrays.asList(메뉴상품2));
+        given(menuProductRepository.findAllByMenuId(후라이드치킨.getId())).willReturn(Arrays.asList(메뉴상품1));
+        given(menuProductRepository.findAllByMenuId(양념치킨.getId())).willReturn(Arrays.asList(메뉴상품2));
 
         List<Menu> menus = menuService.list();
 

@@ -5,10 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuProductDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroupRepository;
 import kitchenpos.domain.MenuProduct;
+import kitchenpos.domain.MenuProductRepository;
 import kitchenpos.domain.Product;
 import kitchenpos.domain.ProductRepository;
 import org.springframework.stereotype.Service;
@@ -19,18 +19,18 @@ public class MenuService {
 
     private final MenuDao menuDao;
     private final MenuGroupRepository menuGroupRepository;
-    private final MenuProductDao menuProductDao;
+    private final MenuProductRepository menuProductRepository;
     private final ProductRepository productRepository;
 
     public MenuService(
         final MenuDao menuDao,
         final MenuGroupRepository menuGroupRepository,
-        final MenuProductDao menuProductDao,
+        final MenuProductRepository menuProductRepository,
         final ProductRepository productRepository
     ) {
         this.menuDao = menuDao;
         this.menuGroupRepository = menuGroupRepository;
-        this.menuProductDao = menuProductDao;
+        this.menuProductRepository = menuProductRepository;
         this.productRepository = productRepository;
     }
 
@@ -67,7 +67,7 @@ public class MenuService {
         final List<MenuProduct> savedMenuProducts = new ArrayList<>();
         for (final MenuProduct menuProduct : menuProducts) {
             menuProduct.setMenuId(menuId);
-            savedMenuProducts.add(menuProductDao.save(menuProduct));
+            savedMenuProducts.add(menuProductRepository.save(menuProduct));
         }
         savedMenu.setMenuProducts(savedMenuProducts);
 
@@ -78,7 +78,7 @@ public class MenuService {
         final List<Menu> menus = menuDao.findAll();
 
         for (final Menu menu : menus) {
-            menu.setMenuProducts(menuProductDao.findAllByMenuId(menu.getId()));
+            menu.setMenuProducts(menuProductRepository.findAllByMenuId(menu.getId()));
         }
 
         return menus;
