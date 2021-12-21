@@ -11,6 +11,7 @@ import java.util.List;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.product.domain.Name;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.dto.ProductRequest;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -28,7 +29,7 @@ class ProductAcceptanceTest extends AcceptanceTest {
     @Test
     void createProduct() {
         // when
-        ExtractableResponse<Response> 상품생성_응답 = 상품_생성(Product.of("양념치킨", 18000));
+        ExtractableResponse<Response> 상품생성_응답 = 상품_생성(new ProductRequest("양념치킨", 18000));
 
         // then
         상품_생성됨(상품생성_응답);
@@ -44,7 +45,7 @@ class ProductAcceptanceTest extends AcceptanceTest {
         상품목록_조회됨(상품목록_조회_응답);
     }
 
-    private ExtractableResponse<Response> 상품_생성(Product product) {
+    private ExtractableResponse<Response> 상품_생성(ProductRequest product) {
         return post("/api/products", product);
     }
 
@@ -52,7 +53,7 @@ class ProductAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.header("Location")).isNotBlank();
         Product product = response.as(Product.class);
-        assertThat(product.getName()).isEqualTo("양념치킨");
+        assertThat(product.getName()).isEqualTo(Name.of("양념치킨"));
         assertThat(product.getPrice()).isEqualByComparingTo(BigDecimal.valueOf(18000));
     }
 

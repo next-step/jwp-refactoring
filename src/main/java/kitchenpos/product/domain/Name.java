@@ -1,12 +1,14 @@
 package kitchenpos.product.domain;
 
 import java.util.Objects;
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import org.springframework.util.StringUtils;
 
 @Embeddable
 public class Name {
 
+    @Column
     private String name;
 
     protected Name() {
@@ -17,6 +19,10 @@ public class Name {
             throw new IllegalArgumentException("이름이 null 또는 공백입니다.");
         }
         this.name = name;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public static Name of(String name) {

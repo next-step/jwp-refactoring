@@ -7,9 +7,11 @@ import static org.mockito.BDDMockito.given;
 
 import java.math.BigDecimal;
 import java.util.List;
+import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Name;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.product.dto.ProductResponse;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -38,7 +40,7 @@ class ProductServiceTest {
             .willReturn(savedProduct);
 
         // when
-        Product result = productService.create(product);
+        ProductResponse result = productService.create(product);
 
         // then
         assertThat(result).isNotNull();
