@@ -54,6 +54,10 @@ public class TableGroup {
         orderTables.changeTableGroup(this);
     }
 
+    public void ungroup() {
+        orderTables.ungroup();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o)

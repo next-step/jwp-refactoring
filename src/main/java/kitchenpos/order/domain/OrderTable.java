@@ -70,6 +70,10 @@ public class OrderTable {
         this.empty = false;
     }
 
+    public void ungroup() {
+        tableGroup = null;
+    }
+
     public void changeTableGroupId(TableGroup tableGroup) {
         this.tableGroup = tableGroup;
     }
@@ -115,4 +119,5 @@ public class OrderTable {
     public int hashCode() {
         return Objects.hash(id, numberOfGuests, empty);
     }
+
 }

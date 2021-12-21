@@ -53,6 +53,12 @@ public class OrderTables {
         }
     }
 
+    public void ungroup() {
+        for (OrderTable orderTable : orderTables) {
+            orderTable.ungroup();
+        }
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o)
@@ -67,4 +73,5 @@ public class OrderTables {
     public int hashCode() {
         return Objects.hash(orderTables);
     }
+
 }

@@ -1,7 +1,6 @@
 package kitchenpos.order.application;
 
 import static kitchenpos.order.application.TableServiceTest.*;
-import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
@@ -19,7 +18,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.common.exception.BadRequestException;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.TableGroup;
 import kitchenpos.order.dto.TableGroupRequest;
@@ -92,32 +90,6 @@ class TableGroupServiceTest {
             tableGroupService.create(tableGroupRequest));
         verify(orderTableRepository).findAllByIdIn(orderTableIds);
         verify(tableGroupRepository, times(0)).save(tableGroup);
-    }
-
-    @DisplayName("주문 테이블 그룹에서 주문 테이블을 삭제할 수 있다.")
-    @Test
-    void ungroup() {
-        // given
-        Long tableGroupId = 1L;
-        List<OrderTable> orderTables = Arrays.asList(
-            주문_테이블_생성(1L, 0, true),
-            주문_테이블_생성(2L, 0, true));
-        List<Long> orderTableIds = orderTables.stream()
-            .map(OrderTable::getId)
-            .collect(Collectors.toList());
-
-        given(orderTableRepository.findAllByTableGroupId(tableGroupId))
-            .willReturn(orderTables);
-        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(orderTableIds,
-            Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name())))
-            .willReturn(false);
-
-        // when
-        tableGroupService.ungroup(tableGroupId);
-
-        // then
-        assertThat(orderTables).extracting("tableGroup")
-            .containsExactly(null, null);
     }
 
     private TableGroup 주문_테이블_그룹_생성(List<OrderTable> orderTables) {

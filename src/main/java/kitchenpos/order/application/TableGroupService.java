@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import kitchenpos.common.exception.BadRequestException;
+import kitchenpos.common.exception.NotFoundException;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.TableGroup;
@@ -47,20 +48,19 @@ public class TableGroupService {
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
-        final List<OrderTable> orderTables = orderTableRepository.findAllByTableGroupId(tableGroupId);
+        TableGroup findTableGroup = tableGroupRepository.findById(tableGroupId)
+            .orElseThrow(() -> new NotFoundException(NOT_FOUND_DATA));
 
-        final List<Long> orderTableIds = orderTables.stream()
+        List<Long> orderIds = findTableGroup.getOrderTables().getValue().stream()
             .map(OrderTable::getId)
             .collect(Collectors.toList());
 
         if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
-            orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new IllegalArgumentException();
+            orderIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
+            throw new BadRequestException(CANNOT_CHANGE_STATUS);
         }
 
-        for (final OrderTable orderTable : orderTables) {
-            orderTable.changeTableGroupId(null);
-            orderTableRepository.save(orderTable);
-        }
+        findTableGroup.ungroup();
+        tableGroupRepository.delete(findTableGroup);
     }
 }
