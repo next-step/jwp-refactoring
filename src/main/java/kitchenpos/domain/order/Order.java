@@ -1,36 +1,66 @@
 package kitchenpos.domain.order;
 
+import java.security.InvalidParameterException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 @Entity
+@Table(name = "orders")
 public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long orderTableId;
-    private String orderStatus;
-    private LocalDateTime orderedTime;
+
+    @ManyToOne
+    @JoinColumn(name = "order_table_id", foreignKey = @ForeignKey(name = "fk_orders_order_table"), nullable = false)
+    private OrderTable orderTable;
+
     @Embedded
     private OrderLineItems orderLineItems;
+
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus;
+
+    private LocalDateTime orderedTime;
+
 
     public Order() {
     }
 
-    public Order(Long orderTableId, List<OrderLineItem> orderLineItems) {
-        this.orderTableId = orderTableId;
+    public Order(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
+        this.orderTable = orderTable;
         this.orderLineItems = OrderLineItems.of(orderLineItems);
+        this.orderLineItems.mapOrder(this);
+        this.orderStatus = OrderStatus.COOKING;
     }
 
-    public static Order of(Long orderTableId, List<OrderLineItem> orderLineItems) {
-        return new Order(orderTableId, orderLineItems);
+    public boolean isMatchOrderTable(OrderTable orderTable) {
+        return this.orderTable.equals(orderTable);
+    }
+
+    public boolean isComplete() {
+        return orderStatus.isComplete();
+    }
+
+    public void changeOrderStatus(OrderStatus orderStatus) {
+        if (isComplete()) {
+            throw new InvalidParameterException("결제완료 상태에서는 주문 상태를 변경 할 수 없습니다.");
+        }
+
+        this.orderStatus = orderStatus;
     }
 
     public Long getId() {
@@ -42,19 +72,22 @@ public class Order {
     }
 
     public Long getOrderTableId() {
-        return orderTableId;
+        return orderTable.getId();
     }
 
+    @Deprecated
     public void setOrderTableId(final Long orderTableId) {
-        this.orderTableId = orderTableId;
+        this.orderTable.setId(orderTableId);
     }
 
     public String getOrderStatus() {
-        return orderStatus;
+        return orderStatus.name();
     }
 
+
+    @Deprecated
     public void setOrderStatus(final String orderStatus) {
-        this.orderStatus = orderStatus;
+        this.orderStatus = OrderStatus.valueOf(orderStatus);
     }
 
     public LocalDateTime getOrderedTime() {

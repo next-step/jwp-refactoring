@@ -9,7 +9,7 @@ import javax.persistence.OneToMany;
 @Embeddable
 public class OrderLineItems {
 
-    @OneToMany(mappedBy = "orderId", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.PERSIST)
     private List<OrderLineItem> orderLineItems = new ArrayList<>();
 
     public static OrderLineItems of(List<OrderLineItem> orderLineItems) {
@@ -35,5 +35,9 @@ public class OrderLineItems {
 
     public List<OrderLineItem> getOrderLineItems() {
         return orderLineItems;
+    }
+
+    public void mapOrder(Order order) {
+        orderLineItems.forEach(orderLineItem -> orderLineItem.orderedBy(order));
     }
 }
