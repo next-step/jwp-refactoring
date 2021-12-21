@@ -1,7 +1,9 @@
 package kitchenpos.application;
 
 import kitchenpos.dao.ProductDao;
-import kitchenpos.domain.Product;
+import kitchenpos.menu.application.ProductService;
+import kitchenpos.menu.domain.Product;
+import kitchenpos.menu.dto.ProductCreateRequest;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -18,6 +20,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 @DisplayName("상품 서비스 테스트")
@@ -33,9 +36,9 @@ class ProductServiceTest {
     @Test
     void create() {
         // given
-        Product request = getCreateRequest("눈내리는치킨", 17_000);
+        ProductCreateRequest request = getCreateRequest("눈내리는치킨", 17_000);
         Product expected = getProduct(1L, "눈내리는치킨", 17_000);
-        given(productDao.save(request)).willReturn(expected);
+        given(productDao.save(any(Product.class))).willReturn(expected);
         // when
         Product actual = productService.create(request);
         // then
@@ -55,7 +58,7 @@ class ProductServiceTest {
         @Test
         void createByEmptyPrice() {
             // given
-            Product request = getCreateRequest("쌀국수", null);
+            ProductCreateRequest request = getCreateRequest("쌀국수", null);
             // when
             ThrowableAssert.ThrowingCallable createCall = () -> productService.create(request);
             // then
@@ -67,7 +70,7 @@ class ProductServiceTest {
         @Test
         void createByZeroMoreLessPrice() {
             // given
-            Product request = getCreateRequest("쌀국수", -121);
+            ProductCreateRequest request = getCreateRequest("쌀국수", -121);
             // when
             ThrowableAssert.ThrowingCallable createCall = () -> productService.create(request);
             // then
@@ -90,21 +93,17 @@ class ProductServiceTest {
     }
 
     public static Product getProduct(Long id, String name, int price) {
-        final Product expected = new Product();
+        final Product expected = Product.of(name, price);
         expected.setId(id);
-        expected.setName(name);
         expected.setPrice(BigDecimal.valueOf(price));
         return expected;
     }
 
-    private Product getCreateRequest(String name, int price) {
+    private ProductCreateRequest getCreateRequest(String name, int price) {
         return getCreateRequest(name, BigDecimal.valueOf(price));
     }
 
-    private Product getCreateRequest(String name, BigDecimal price) {
-        final Product request = new Product();
-        request.setName(name);
-        request.setPrice(price);
-        return request;
+    private ProductCreateRequest getCreateRequest(String name, BigDecimal price) {
+        return new ProductCreateRequest(name, price);
     }
 }
