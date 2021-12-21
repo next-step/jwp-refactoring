@@ -22,8 +22,8 @@ class OrderTablesTest {
     @BeforeEach
     void setUp() {
         orderTables = Arrays.asList(
-            new OrderTable(0, true),
-            new OrderTable(1, true));
+            OrderTable.of(0, true),
+            OrderTable.of(1, true));
     }
 
     @DisplayName("단체 지정은 주문테이블이 2개 이상일 경우 가능하다")
@@ -39,7 +39,7 @@ class OrderTablesTest {
         // given
         List<OrderTable> emptyOrderTables = Collections.emptyList();
         List<OrderTable> singleOrderTables = Collections.singletonList(
-            new OrderTable(0, true));
+            OrderTable.of(0, true));
 
         // when && then
         assertAll(
@@ -56,12 +56,12 @@ class OrderTablesTest {
     @Test
     void validateOrderTableEmptyAndNonExistGroupTable() {
         List<OrderTable> existTableGroup = Arrays.asList(
-            new OrderTable(1L, TableGroup.of(this.orderTables), 0, true),
-            new OrderTable(0, true));
+            OrderTable.of(1L, TableGroup.of(this.orderTables), 0, true),
+            OrderTable.of(0, true));
 
         List<OrderTable> emptyOrderTables = Arrays.asList(
-            new OrderTable(0, false),
-            new OrderTable(0, true));
+            OrderTable.of(0, false),
+            OrderTable.of(0, true));
 
         assertAll(
             () -> assertThatThrownBy(() -> new OrderTables(existTableGroup))

@@ -31,22 +31,22 @@ public class OrderTable {
     private NumberOfGuests numberOfGuests;
     private boolean empty;
 
-    public OrderTable() {
+    protected OrderTable() {
     }
 
-    public OrderTable(int numberOfGuests, boolean empty) {
-        this(null, numberOfGuests, empty);
-    }
-
-    public OrderTable(Long id, int numberOfGuests, boolean empty) {
-        this(id, null, numberOfGuests, empty);
-    }
-
-    public OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
+    private OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
         this.id = id;
         this.tableGroup = tableGroup;
         this.numberOfGuests = new NumberOfGuests(numberOfGuests);
         this.empty = empty;
+    }
+
+    public static OrderTable of(int numberOfGuests, boolean empty) {
+        return new OrderTable(null, null, numberOfGuests, empty);
+    }
+
+    public static OrderTable of(long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
+        return new OrderTable(id, tableGroup, numberOfGuests, empty);
     }
 
     public Long getId() {

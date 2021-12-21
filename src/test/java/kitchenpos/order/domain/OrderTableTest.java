@@ -20,7 +20,7 @@ class OrderTableTest {
     @Test
     void changeEmpty() {
         // given
-        OrderTable orderTable = new OrderTable(0, true);
+        OrderTable orderTable = OrderTable.of(0, true);
 
         // when && then
         assertDoesNotThrow(() -> orderTable.changeEmpty(false));
@@ -31,10 +31,10 @@ class OrderTableTest {
     void changeEmptyException() {
         // given
         List<OrderTable> orderTables = Arrays.asList(
-            new OrderTable(0, true),
-            new OrderTable(0, true));
+            OrderTable.of(0, true),
+            OrderTable.of(0, true));
 
-        OrderTable orderTable = new OrderTable(
+        OrderTable orderTable = OrderTable.of(
             1L, TableGroup.of(orderTables), 0, true);
 
         // when && then
@@ -48,7 +48,7 @@ class OrderTableTest {
     @ValueSource(ints = {0, 1})
     void changeNumberOfGuests(int numberOfGuests) {
         // given
-        OrderTable orderTable = new OrderTable(5, false);
+        OrderTable orderTable = OrderTable.of(5, false);
 
         // when && then
         assertDoesNotThrow(() -> orderTable.changeNumberOfGuests(numberOfGuests));
@@ -58,7 +58,7 @@ class OrderTableTest {
     @Test
     void changeNumberOfGuestsLessThanZero() {
         // given
-        OrderTable orderTable = new OrderTable(5, false);
+        OrderTable orderTable = OrderTable.of(5, false);
 
         // when && then
         assertThatThrownBy(() -> orderTable.changeNumberOfGuests(-1))
@@ -70,7 +70,7 @@ class OrderTableTest {
     @Test
     void changeNumberOfGuestsEmptyTable() {
         // given
-        OrderTable orderTable = new OrderTable(5, true);
+        OrderTable orderTable = OrderTable.of(5, true);
 
         // when && then
         assertThatThrownBy(() -> orderTable.changeNumberOfGuests(3))

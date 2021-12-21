@@ -47,13 +47,17 @@ public class TableService {
         final OrderTable findOrderTable = orderTableRepository.findById(orderTableId)
             .orElseThrow(() -> new NotFoundException(NOT_FOUND_DATA));
 
+        validateOrderStatus(orderTableId);
+
+        findOrderTable.changeEmpty(orderTableRequest.isEmpty());
+        return OrderTableResponse.of(findOrderTable);
+    }
+
+    private void validateOrderStatus(Long orderTableId) {
         if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
             orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
             throw new IllegalArgumentException();
         }
-
-        findOrderTable.changeEmpty(orderTableRequest.isEmpty());
-        return OrderTableResponse.of(findOrderTable);
     }
 
     @Transactional

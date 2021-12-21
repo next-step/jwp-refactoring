@@ -18,7 +18,7 @@ class OrderTest {
     @Test
     void createOrderEmptyOrderTable() {
         // given
-        OrderTable orderTable = new OrderTable(0, true);
+        OrderTable orderTable = OrderTable.of(0, true);
         List<OrderLineItem> orderLineItems = Collections.emptyList();
 
         // when && then
@@ -31,7 +31,7 @@ class OrderTest {
     @Test
     void createOrderAddToOrderLineItems() {
         // given
-        OrderTable orderTable = new OrderTable(0, false);
+        OrderTable orderTable = OrderTable.of(0, false);
         List<OrderLineItem> orderLineItems = Arrays.asList(
             OrderLineItem.of(null, 1),
             OrderLineItem.of(null, 2));
@@ -49,7 +49,7 @@ class OrderTest {
     @Test
     void changeOrderStatusCompletion() {
         // given
-        OrderTable orderTable = new OrderTable(0, false);
+        OrderTable orderTable = OrderTable.of(0, false);
         List<OrderLineItem> orderLineItems = Arrays.asList(
             OrderLineItem.of(null, 1),
             OrderLineItem.of(null, 2));
