@@ -37,10 +37,10 @@ public class OrderTables {
             orderTable -> orderTable.ungroup(getMatchOrders(orders, orderTable)));
     }
 
-    private List<Order> getMatchOrders(List<Order> orders, OrderTable orderTable) {
+    private Orders getMatchOrders(List<Order> orders, OrderTable orderTable) {
         return orders.stream()
             .filter(order -> order.isMatchOrderTable(orderTable))
-            .collect(Collectors.toList());
+            .collect(Collectors.collectingAndThen(Collectors.toList(), Orders::of));
     }
 
 }

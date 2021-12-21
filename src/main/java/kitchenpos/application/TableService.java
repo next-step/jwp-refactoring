@@ -4,6 +4,7 @@ import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.order.Order;
 import kitchenpos.domain.order.OrderTable;
+import kitchenpos.domain.order.Orders;
 import kitchenpos.dto.order.OrderTableRequest;
 import kitchenpos.dto.order.OrderTableResponse;
 import org.springframework.stereotype.Service;
@@ -34,7 +35,7 @@ public class TableService {
 
         List<Order> orders = orderDao.findAllByOrderTable(savedOrderTable);
 
-        savedOrderTable.changeEmpty(orders, orderTable.isEmpty());
+        savedOrderTable.changeEmpty(Orders.of(orders), orderTable.isEmpty());
 
         return OrderTableResponse.of(savedOrderTable);
     }

@@ -37,7 +37,15 @@ public class Order {
     private LocalDateTime orderedTime;
 
 
-    public Order() {
+    protected Order() {
+    }
+
+    public Order(OrderTable orderTable, OrderLineItems orderLineItems, OrderStatus orderStatus,
+        LocalDateTime orderedTime) {
+        this.orderTable = orderTable;
+        this.orderLineItems = orderLineItems;
+        this.orderStatus = orderStatus;
+        this.orderedTime = orderedTime;
     }
 
     public Order(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
@@ -45,6 +53,10 @@ public class Order {
         this.orderLineItems = OrderLineItems.of(orderLineItems);
         this.orderLineItems.mapOrder(this);
         this.orderStatus = OrderStatus.COOKING;
+    }
+
+    public static Order of(OrderStatus orderStatus) {
+        return new Order(null, null, orderStatus, LocalDateTime.now());
     }
 
     public boolean isMatchOrderTable(OrderTable orderTable) {
@@ -75,19 +87,8 @@ public class Order {
         return orderTable.getId();
     }
 
-    @Deprecated
-    public void setOrderTableId(final Long orderTableId) {
-        this.orderTable.setId(orderTableId);
-    }
-
     public String getOrderStatus() {
         return orderStatus.name();
-    }
-
-
-    @Deprecated
-    public void setOrderStatus(final String orderStatus) {
-        this.orderStatus = OrderStatus.valueOf(orderStatus);
     }
 
     public LocalDateTime getOrderedTime() {
