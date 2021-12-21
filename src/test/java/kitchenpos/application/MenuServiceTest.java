@@ -44,7 +44,7 @@ class MenuServiceTest {
 
         when(menuGroupRepository.findById(후라이드치킨.getMenuGroup().getId())).thenReturn(Optional.of(한마리메뉴));
         when(productService.getProduct(후라이드.getId())).thenReturn(후라이드);
-        MenuService menuService = new MenuService(menuRepository, menuGroupRepository, productService);
+        MenuService menuService = new MenuService(menuRepository, menuGroupRepository, productService, eventPublisher);
 
         Menu expectedMenu = mock(Menu.class);
         when(expectedMenu.getId()).thenReturn(1L);
@@ -68,7 +68,7 @@ class MenuServiceTest {
         Menu menu = mock(Menu.class);
 
         when(menuRepository.findAll()).thenReturn(Arrays.asList(menu));
-        MenuService menuService = new MenuService(menuRepository, menuGroupRepository, productService);
+        MenuService menuService = new MenuService(menuRepository, menuGroupRepository, productService, eventPublisher);
 
         // when
         List<Menu> menus = menuService.list();

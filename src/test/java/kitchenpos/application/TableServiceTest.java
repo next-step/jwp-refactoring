@@ -2,7 +2,6 @@ package kitchenpos.application;
 
 import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.OrderTableRequest;
-import kitchenpos.repository.OrderRepository;
 import kitchenpos.repository.OrderTableRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,8 +20,6 @@ import static org.mockito.Mockito.*;
 class TableServiceTest {
 
     @Mock
-    OrderRepository orderRepository;
-    @Mock
     OrderTableRepository orderTableRepository;
 
 
@@ -37,7 +34,7 @@ class TableServiceTest {
         when(expectedOrderTable.getId()).thenReturn(1L);
         when(orderTableRepository.save(orderTable)).thenReturn(expectedOrderTable);
 
-        TableService tableService = new TableService(orderRepository, orderTableRepository);
+        TableService tableService = new TableService(orderTableRepository);
 
         // when
         OrderTable createdOrderTable = tableService.create(OrderTableRequest.from(orderTable));
@@ -54,7 +51,7 @@ class TableServiceTest {
         // given
         OrderTable orderTable = new OrderTable();
         when(orderTableRepository.findAll()).thenReturn(Arrays.asList(orderTable));
-        TableService tableService = new TableService(orderRepository, orderTableRepository);
+        TableService tableService = new TableService(orderTableRepository);
 
         // when
         List<OrderTable> orderTables = tableService.list();
@@ -78,7 +75,7 @@ class TableServiceTest {
         OrderTable savedOrderTable = mock(OrderTable.class);
         when(savedOrderTable.isEmpty()).thenReturn(true);
 
-        TableService tableService = new TableService(orderRepository, orderTableRepository);
+        TableService tableService = new TableService(orderTableRepository);
         // when
         OrderTable changedOrderTable = tableService.changeEmpty(orderTableId, OrderTableRequest.from(savedOrderTable));
 
@@ -98,7 +95,7 @@ class TableServiceTest {
         OrderTable savedOrderTable = mock(OrderTable.class);
         when(savedOrderTable.getNumberOfGuests()).thenReturn(3);
         when(orderTableRepository.save(orderTable)).thenReturn(savedOrderTable);
-        TableService tableService = new TableService(orderRepository, orderTableRepository);
+        TableService tableService = new TableService(orderTableRepository);
 
         // when
         OrderTable changedOrderTable = tableService.changeNumberOfGuests(orderTableId, OrderTableRequest.from(orderTable));
