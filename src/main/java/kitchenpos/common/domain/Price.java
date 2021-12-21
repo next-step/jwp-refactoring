@@ -26,10 +26,6 @@ public class Price {
         }
     }
 
-    public static Price zeroPrice() {
-        return new Price(BigDecimal.ZERO);
-    }
-
     public BigDecimal getPrice() {
         return price;
     }

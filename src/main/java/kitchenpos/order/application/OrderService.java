@@ -1,6 +1,5 @@
 package kitchenpos.order.application;
 
-import kitchenpos.common.exception.IsEmptyTableException;
 import kitchenpos.common.exception.NotChangeCompletionOrderException;
 import kitchenpos.common.exception.NotOrderedEmptyTableException;
 import kitchenpos.common.exception.OrderLineItemEmptyException;

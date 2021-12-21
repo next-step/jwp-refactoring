@@ -31,6 +31,10 @@ public class OrderResponse {
         return id;
     }
 
+    public OrderStatus getOrderStatus() {
+        return orderStatus;
+    }
+
     public static OrderResponse of(Order order) {
         List<OrderLineItemResponse> orderLineItemResponses = order.getOrderLineItems()
                 .stream()

@@ -12,10 +12,6 @@ public class ChangeGuestsRequest {
         this.numberOfGuests = numberOfGuests;
     }
 
-    public int getNumberOfGuests() {
-        return numberOfGuests;
-    }
-
     public NumberOfGuests toNumberOfGuests() {
         return new NumberOfGuests(numberOfGuests);
     }
