@@ -4,7 +4,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 
+import static kitchenpos.table.domain.OrderTableTest.빈자리;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class TableGroupTest {
@@ -20,5 +22,15 @@ public class TableGroupTest {
         assertThat(actual).isEqualTo(테이블그룹);
     }
 
-
+    @Test
+    @DisplayName("단체 지정 해제")
+    public void ungroupTest() {
+        // given
+        OrderTables orderTables = new OrderTables(Arrays.asList(빈자리, 빈자리));
+        TableGroup 단체테이블 = new TableGroup(orderTables);
+        // when
+        단체테이블.ungroup();
+        // then
+        assertThat(단체테이블.getOrderTables()).hasSize(0);
+    }
 }
