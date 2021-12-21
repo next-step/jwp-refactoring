@@ -1,10 +1,21 @@
 package kitchenpos.domain;
 
+import java.util.Objects;
+
 public class OrderLineItem {
+
     private Long seq;
     private Long orderId;
     private Long menuId;
     private long quantity;
+
+    public OrderLineItem() {
+    }
+
+    public OrderLineItem(Long menuId, long quantity) {
+        this.menuId = menuId;
+        this.quantity = quantity;
+    }
 
     public Long getSeq() {
         return seq;
@@ -36,5 +47,24 @@ public class OrderLineItem {
 
     public void setQuantity(final long quantity) {
         this.quantity = quantity;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+
+        if (!(o instanceof OrderLineItem)) {
+            return false;
+        }
+
+        OrderLineItem that = (OrderLineItem) o;
+        return Objects.equals(getSeq(), that.getSeq());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getSeq());
     }
 }
