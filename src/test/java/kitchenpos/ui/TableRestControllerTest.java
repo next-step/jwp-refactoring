@@ -2,7 +2,7 @@ package kitchenpos.ui;
 
 import kitchenpos.application.TableService;
 import kitchenpos.domain.OrderTable;
-import kitchenpos.ui.fixtrue.OrderTableFixture;
+import kitchenpos.common.fixtrue.OrderTableFixture;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;

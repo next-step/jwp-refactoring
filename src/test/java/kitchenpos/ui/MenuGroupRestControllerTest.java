@@ -2,7 +2,7 @@ package kitchenpos.ui;
 
 import kitchenpos.application.MenuGroupService;
 import kitchenpos.domain.MenuGroup;
-import kitchenpos.ui.fixtrue.MenuGroupFixture;
+import kitchenpos.common.fixtrue.MenuGroupFixture;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;

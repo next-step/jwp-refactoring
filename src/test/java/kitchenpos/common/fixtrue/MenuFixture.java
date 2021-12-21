@@ -1,4 +1,4 @@
-package kitchenpos.ui.fixtrue;
+package kitchenpos.common.fixtrue;
 
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
