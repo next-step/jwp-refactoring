@@ -39,7 +39,6 @@ import static org.mockito.BDDMockito.given;
  * date : 2021/12/17
  * description :
  */
-@Disabled
 @DisplayName("테이블 통합 테스트")
 @ExtendWith(MockitoExtension.class)
 class TableServiceTest {

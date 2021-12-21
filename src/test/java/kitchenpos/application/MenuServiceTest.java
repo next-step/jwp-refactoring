@@ -6,6 +6,8 @@ import kitchenpos.exception.IllegalPriceException;
 import kitchenpos.exception.MenuGroupNotFoundException;
 import kitchenpos.exception.MismatchPriceException;
 import kitchenpos.exception.ProductNotFoundException;
+import kitchenpos.fixtures.MenuGroupFixtures;
+import kitchenpos.fixtures.ProductFixtures;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -22,8 +24,10 @@ import java.util.List;
 import java.util.Optional;
 
 import static kitchenpos.fixtures.MenuFixtures.양념치킨두마리메뉴요청;
+import static kitchenpos.fixtures.MenuGroupFixtures.*;
 import static kitchenpos.fixtures.MenuGroupFixtures.두마리메뉴그룹요청;
 import static kitchenpos.fixtures.MenuProductFixtures.*;
+import static kitchenpos.fixtures.ProductFixtures.*;
 import static kitchenpos.fixtures.ProductFixtures.양념치킨요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -43,8 +47,8 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 public class MenuServiceTest {
     private Menu 양념치킨두마리메뉴;
-    private final Product 양념치킨 = 양념치킨요청().toEntity();
-    private final MenuGroup 두마리메뉴그룹 = 두마리메뉴그룹요청().toEntity();
+    private final Product 양념치킨 = 양념치킨();
+    private final MenuGroup 두마리메뉴그룹 = 메뉴그룹("두마리메뉴그룹");
 
     @Mock
     private MenuRepository menuRepository;

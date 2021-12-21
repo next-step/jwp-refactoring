@@ -40,17 +40,23 @@ public class Order {
     }
 
     private void addOrderLineItems(List<OrderLineItem> orderLineItems) {
-        orderLineItems.forEach(it -> this.orderLineItems.add(it.include(this)));
+        orderLineItems.forEach(orderLineItem -> this.orderLineItems.add(orderLineItem.in(this)));
     }
 
     private void validate(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
         if (orderTable.isEmpty()) {
             throw new InvalidTableException();
         }
-
         if (orderLineItems.isEmpty()) {
             throw new OrderLineItemNotFoundException();
         }
+    }
+
+    public void changeStatus(OrderStatus changeStatus) {
+        if (orderStatus.isCompletion()) {
+            throw new OrderStatusUpdateException();
+        }
+        this.orderStatus = changeStatus;
     }
 
     public boolean isCompleted() {
@@ -77,10 +83,4 @@ public class Order {
         return orderLineItems;
     }
 
-    public void changeStatus(OrderStatus changeStatus) {
-        if( orderStatus.isCompletion()) {
-            throw new OrderStatusUpdateException();
-        }
-        this.orderStatus = changeStatus;
-    }
 }

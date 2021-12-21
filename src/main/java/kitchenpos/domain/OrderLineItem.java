@@ -29,7 +29,7 @@ public class OrderLineItem {
         this.quantity = Quantity.of(quantity);
     }
 
-    public OrderLineItem include(Order order) {
+    public OrderLineItem in(Order order) {
         this.order = order;
         return this;
     }
