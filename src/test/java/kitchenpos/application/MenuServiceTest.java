@@ -61,11 +61,12 @@ class MenuServiceTest {
         상품_후라이드 = ProductFixture.create(1L, "후라이드", BigDecimal.valueOf(16_000L));
 
         한마리_메뉴그룹 = MenuGroupFixture.create(1L, "한마리 메뉴");
-        메뉴상품1 = MenuProductFixture.createMenuProduct(1L, 1L, 1L);
-        메뉴상품2 = MenuProductFixture.createMenuProduct(2L, 2L, 1L);
+
+        메뉴상품1 = MenuProductFixture.createMenuProduct(1L, 1L);
+        메뉴상품2 = MenuProductFixture.createMenuProduct(2L, 2L);
 
         후라이드치킨 = MenuFixture.createMenu(1L, "후라이드치킨", 16_000L, 한마리_메뉴그룹, Arrays.asList(메뉴상품1));
-        양념치킨 = MenuFixture.createMenu(2L, "양념치킨", 16_000L, 한마리_메뉴그룹, Arrays.asList(메뉴상품1));
+        양념치킨 = MenuFixture.createMenu(2L, "양념치킨", 16_000L, 한마리_메뉴그룹, Arrays.asList(메뉴상품2));
     }
 
     @DisplayName("메뉴를 등록한다.")
@@ -93,7 +94,8 @@ class MenuServiceTest {
     @DisplayName("메뉴를 등록할 때, 가격이 0보다 작으면 예외가 발생한다.")
     @Test
     void createImpossible2() {
-        Menu 가격이_0보다_작은메뉴 = MenuFixture.createMenu(1L, "후라이드치킨", -1_000L, 한마리_메뉴그룹, Arrays.asList(메뉴상품1));
+        Menu 가격이_0보다_작은메뉴 = MenuFixture.createMenu(1L, "후라이드치킨", -1_000L, 한마리_메뉴그룹,
+            Arrays.asList(메뉴상품1));
 
         assertThatThrownBy(() -> menuService.create(가격이_0보다_작은메뉴))
             .isInstanceOf(IllegalArgumentException.class);
@@ -121,7 +123,8 @@ class MenuServiceTest {
     @DisplayName("메뉴를 등록할 때, 메뉴의 가격이 포함된 상품들 가격의 총합보다 크면 예외가 발생한다. ")
     @Test
     void createImpossible5() {
-        Menu 가격이_총합보다_큰_메뉴 = MenuFixture.createMenu(1L, "후라이드치킨", 100_000L, 한마리_메뉴그룹, Arrays.asList(메뉴상품1));
+        Menu 가격이_총합보다_큰_메뉴 = MenuFixture.createMenu(1L, "후라이드치킨", 100_000L, 한마리_메뉴그룹,
+            Arrays.asList(메뉴상품1));
         given(menuGroupRepository.existsById(가격이_총합보다_큰_메뉴.getMenuGroupId())).willReturn(true);
         given(productRepository.findById(메뉴상품1.getProductId())).willReturn(Optional.of(상품_후라이드));
 
@@ -133,7 +136,8 @@ class MenuServiceTest {
     @Test
     void list() {
         given(menuRepository.findAll()).willReturn(Arrays.asList(후라이드치킨, 양념치킨));
-        given(menuProductRepository.findAllByMenuId(후라이드치킨.getId())).willReturn(Arrays.asList(메뉴상품1));
+        given(menuProductRepository.findAllByMenuId(후라이드치킨.getId())).willReturn(
+            Arrays.asList(메뉴상품1));
         given(menuProductRepository.findAllByMenuId(양념치킨.getId())).willReturn(Arrays.asList(메뉴상품2));
 
         List<Menu> menus = menuService.list();
