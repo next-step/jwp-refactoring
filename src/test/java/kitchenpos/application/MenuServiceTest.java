@@ -18,6 +18,7 @@ import kitchenpos.domain.MenuGroupRepository;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.MenuProductRepository;
 import kitchenpos.domain.MenuRepository;
+import kitchenpos.domain.Price;
 import kitchenpos.domain.Product;
 import kitchenpos.domain.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -79,26 +80,6 @@ class MenuServiceTest {
         Menu savedMenu = menuService.create(후라이드치킨);
 
         assertThat(savedMenu).isEqualTo(후라이드치킨);
-    }
-
-    @DisplayName("메뉴를 등록할 때, 가격이 null이면 예외가 발생한다.")
-    @Test
-    void createImpossible1() {
-        Menu 가격이_null인_메뉴 = 후라이드치킨;
-        가격이_null인_메뉴.setPrice(null);
-
-        assertThatThrownBy(() -> menuService.create(가격이_null인_메뉴))
-            .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("메뉴를 등록할 때, 가격이 0보다 작으면 예외가 발생한다.")
-    @Test
-    void createImpossible2() {
-        Menu 가격이_0보다_작은메뉴 = MenuFixture.createMenu(1L, "후라이드치킨", -1_000L, 한마리_메뉴그룹,
-            Arrays.asList(메뉴상품1));
-
-        assertThatThrownBy(() -> menuService.create(가격이_0보다_작은메뉴))
-            .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("메뉴를 등록할 때, 메뉴 그룹에 포함되어 있지 않으면 예외가 발생한다.")

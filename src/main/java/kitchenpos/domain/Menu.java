@@ -19,7 +19,8 @@ public class Menu {
     @Embedded
     private Name name;
 
-    private BigDecimal price;
+    @Embedded
+    private Price price;
 
     private Long menuGroupId;
 
@@ -33,7 +34,7 @@ public class Menu {
         final List<MenuProduct> menuProducts) {
         this.id = id;
         this.name = Name.of(name);
-        this.price = BigDecimal.valueOf(price);
+        this.price = Price.of(BigDecimal.valueOf(price));
         this.menuGroupId = menuGroup.getId();
         this.menuProducts = menuProducts;
     }
@@ -50,12 +51,8 @@ public class Menu {
         return name;
     }
 
-    public BigDecimal getPrice() {
+    public Price getPrice() {
         return price;
-    }
-
-    public void setPrice(final BigDecimal price) {
-        this.price = price;
     }
 
     public Long getMenuGroupId() {
