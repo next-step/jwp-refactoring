@@ -1,167 +1,95 @@
 package kitchenpos.table.application;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import kitchenpos.application.TableGroupService;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.dao.TableGroupDao;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
+import java.util.Optional;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.domain.TableGroupRepository;
+import kitchenpos.table.dto.TableGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 @DisplayName("테이블 그룹 서비스 테스트")
 @ExtendWith({MockitoExtension.class})
 class TableGroupServiceTest {
 
     @Mock
-    private OrderDao orderDao;
+    private OrderTableRepository orderTableRepository;
 
     @Mock
-    private OrderTableDao orderTableDao;
-
-    @Mock
-    private TableGroupDao tableGroupDao;
+    private TableGroupRepository tableGroupRepository;
 
     @InjectMocks
     private TableGroupService tableGroupService;
 
-    private final TableGroup tableGroup = new TableGroup();
-    private final OrderTable orderTable_1 = new OrderTable();
-    private final OrderTable orderTable_2 = new OrderTable();
+    private final OrderTable orderTable_1 = OrderTable.of(0, true);
+    private final OrderTable orderTable_2 = OrderTable.of(0, true);
 
     @BeforeEach
     void setUp() {
-        orderTable_1.setId(1L);
-        orderTable_1.setEmpty(true);
-        orderTable_2.setId(2L);
-        orderTable_2.setEmpty(true);
+        ReflectionTestUtils.setField(orderTable_1, "id", 1L);
+        ReflectionTestUtils.setField(orderTable_2, "id", 2L);
     }
 
     @Test
     @DisplayName("단체를 지정할 수 있다.")
     void create() {
-        tableGroup.setOrderTables(Arrays.asList(orderTable_1, orderTable_2));
 
-        assertNull(tableGroup.getCreatedDate());
+        assertAll(
+            () -> assertFalse(orderTable_1.isNotEmptyTableGroup()),
+            () -> assertFalse(orderTable_2.isNotEmptyTableGroup())
+        );
 
-        when(orderTableDao.findAllByIdIn(any()))
+        when(orderTableRepository.findAllByIdIn(any()))
             .thenReturn(Arrays.asList(orderTable_1, orderTable_2));
-        when(tableGroupDao.save(any(TableGroup.class)))
-            .thenReturn(tableGroup);
+        when(tableGroupRepository.save(any(TableGroup.class)))
+            .thenReturn(TableGroup.create());
 
-        TableGroup saved = tableGroupService.create(this.tableGroup);
+        TableGroupResponse saved = tableGroupService.create(Arrays.asList(1L, 2L));
 
-        assertAll(() -> {
-            assertNotNull(saved.getCreatedDate());
-            assertThat(saved.getOrderTables())
-                .extracting(OrderTable::getId)
-                .containsExactly(1L, 2L);
-        });
-    }
-
-    @Test
-    @DisplayName("단체 지정은 테이블이 2개 이상이어야 한다.")
-    void createValidateTableSize() {
-        assertNull(tableGroup.getOrderTables());
-
-        assertThatThrownBy(() -> tableGroupService.create(tableGroup))
-            .isInstanceOf(IllegalArgumentException.class);
-
-        tableGroup.setOrderTables(Arrays.asList(orderTable_1));
-        assertThat(tableGroup.getOrderTables().size()).isEqualTo(1);
-
-        assertThatThrownBy(() -> tableGroupService.create(tableGroup))
-            .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
-    @DisplayName("등록되어 있는 테이블만 단체 지정이 가능하다.")
-    void createValidateRegisteredTable() {
-        tableGroup.setOrderTables(Arrays.asList(orderTable_1, orderTable_2));
-
-        when(orderTableDao.findAllByIdIn(any()))
-            .thenReturn(Arrays.asList(orderTable_1));
-
-        assertThatThrownBy(() -> tableGroupService.create(tableGroup))
-            .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
-    @DisplayName("빈 테이블만 단체 지정이 가능하다.")
-    void createValidateEmptyTable() {
-        orderTable_1.setEmpty(false);
-        tableGroup.setOrderTables(Arrays.asList(orderTable_1, orderTable_2));
-
-        when(orderTableDao.findAllByIdIn(any()))
-            .thenReturn(Arrays.asList(orderTable_1, orderTable_2));
-
-        assertThatThrownBy(() -> tableGroupService.create(tableGroup))
-            .isInstanceOf(IllegalArgumentException.class);
+        assertAll(
+            () -> assertNotNull(saved.getCreatedDate()),
+            () -> assertTrue(orderTable_1.isNotEmptyTableGroup()),
+            () -> assertTrue(orderTable_2.isNotEmptyTableGroup())
+        );
     }
 
     @Test
     @DisplayName("단체 지정을 해제한다.(삭제한다)")
     void upgroup() {
-        orderTable_1.setTableGroupId(1L);
-        orderTable_2.setTableGroupId(1L);
+        TableGroup tableGroup = TableGroup.create();
+        tableGroup.addOrderTables(Arrays.asList(orderTable_1, orderTable_2));
 
-        assertAll(() -> {
-            assertNotNull(orderTable_1.getTableGroupId());
-            assertNotNull(orderTable_2.getTableGroupId());
-        });
+        assertAll(
+            () -> assertTrue(orderTable_1.isNotEmptyTableGroup()),
+            () -> assertTrue(orderTable_2.isNotEmptyTableGroup())
+        );
 
-        when(orderTableDao.findAllByTableGroupId(anyLong()))
-            .thenReturn(Arrays.asList(orderTable_1, orderTable_2));
-        when(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList()))
-            .thenReturn(false);
-        when(orderTableDao.save(orderTable_1))
-            .thenReturn(orderTable_1);
-        when(orderTableDao.save(orderTable_2))
-            .thenReturn(orderTable_2);
+        when(tableGroupRepository.findById(anyLong()))
+            .thenReturn(Optional.of(tableGroup));
 
         tableGroupService.ungroup(1L);
 
-        assertAll(() -> {
-            assertNull(orderTable_1.getTableGroupId());
-            assertNull(orderTable_2.getTableGroupId());
-        });
+        assertAll(
+            () -> assertFalse(orderTable_1.isNotEmptyTableGroup()),
+            () -> assertFalse(orderTable_2.isNotEmptyTableGroup()),
+            () -> assertTrue(tableGroup.isEmpty())
+        );
     }
 
-    @Test
-    @DisplayName("주문 진행중인 테이블이 있으면 단체 지정을 해제할 수 없다.")
-    void upgroupValidate() {
-        orderTable_1.setTableGroupId(1L);
-        orderTable_2.setTableGroupId(1L);
-
-        assertAll(() -> {
-            assertNotNull(orderTable_1.getTableGroupId());
-            assertNotNull(orderTable_2.getTableGroupId());
-        });
-
-        when(orderTableDao.findAllByTableGroupId(anyLong()))
-            .thenReturn(Arrays.asList(orderTable_1, orderTable_2));
-        when(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList()))
-            .thenReturn(true);
-
-        assertThatThrownBy(() -> tableGroupService.ungroup(1L))
-            .isInstanceOf(IllegalArgumentException.class);
-    }
 }
