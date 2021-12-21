@@ -22,7 +22,7 @@ public class Menu {
     private MenuGroup menuGroup;
 
     @Embedded
-    private final MenuProducts menuProducts = MenuProducts.ofEmpty();
+    private MenuProducts menuProducts;
 
     protected Menu() {
     }
@@ -30,10 +30,16 @@ public class Menu {
     public Menu(Long id, String name, Price price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
         this(name, price, menuGroup);
         this.id = id;
-        menuProducts.forEach(this.menuProducts::add);
+        this.menuProducts = new MenuProducts(menuProducts);
     }
 
-    public Menu(String name, Price price, MenuGroup menuGroup) {
+    public Menu(String name, Price price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+        this(name, price, menuGroup);
+        this.menuProducts = new MenuProducts(menuProducts);
+        this.menuProducts.initMenu(this);
+    }
+
+    private Menu(String name, Price price, MenuGroup menuGroup) {
         this.name = name;
         this.price = price;
         this.menuGroup = menuGroup;
@@ -57,12 +63,6 @@ public class Menu {
 
     public List<MenuProduct> getMenuProducts() {
         return menuProducts.getMenuProducts();
-    }
-
-    public void addMenuProduct(final MenuProduct menuProduct) {
-        menuProduct.assignMenu(this);
-        this.menuProducts
-                .add(menuProduct);
     }
 
     @Override

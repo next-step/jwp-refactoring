@@ -9,6 +9,8 @@ import java.util.Objects;
 
 @Embeddable
 public class Price {
+    private static final int COMPARE_NUMBER = 0;
+
     @Column
     private BigDecimal price;
 
@@ -16,12 +18,12 @@ public class Price {
     }
 
     public Price(BigDecimal price) {
+        validate(price);
         this.price = price;
-        validate();
     }
 
-    private void validate() {
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
+    private void validate(BigDecimal price) {
+        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < COMPARE_NUMBER) {
             throw new InvalidPriceException();
         }
     }

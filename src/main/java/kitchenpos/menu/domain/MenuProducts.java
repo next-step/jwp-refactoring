@@ -13,6 +13,8 @@ import java.util.Objects;
 
 @Embeddable
 public class MenuProducts {
+    private static final int MIN_PRICE = 0;
+
     @OneToMany(mappedBy = "menu", cascade = CascadeType.PERSIST)
     private final List<MenuProduct> menuProducts;
 
@@ -47,13 +49,14 @@ public class MenuProducts {
     }
 
     public void validateOverPrice(BigDecimal price) {
-        if (price.compareTo(totalPrice()) > 0) {
+        if (price.compareTo(totalPrice()) > MIN_PRICE) {
             throw new OverMenuPriceException();
         }
     }
 
     public void initMenu(Menu menu) {
-        menuProducts.forEach(menu::addMenuProduct);
+        validateOverPrice(menu.getPrice());
+        menuProducts.forEach(menuProduct -> menuProduct.assignMenu(menu));
     }
 
     @Override

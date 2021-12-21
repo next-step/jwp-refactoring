@@ -22,7 +22,7 @@ public class MenuProductsTest {
 
     @BeforeEach
     void setUp() {
-        메뉴_상품_리스트 = MenuProducts.ofEmpty();
+        메뉴_상품_리스트 = new MenuProducts();
         메뉴_상품_리스트.add(후라이드);
     }
 

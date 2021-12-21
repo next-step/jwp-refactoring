@@ -27,9 +27,6 @@ public class ProductService {
     }
 
     public List<ProductResponse> list() {
-        return productRepository.findAll()
-                .stream()
-                .map(ProductResponse::of)
-                .collect(Collectors.toList());
+        return ProductResponse.ofList(productRepository.findAll());
     }
 }

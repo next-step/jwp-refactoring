@@ -31,12 +31,9 @@ public class MenuService {
 
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
-        Menu menu = menuRequest.toMenu(getMenuGroup(menuRequest));
-        MenuProducts menuProducts = getMenuProducts(menuRequest.getMenuProducts());
+        List<MenuProduct> menuProducts = getMenuProducts(menuRequest.getMenuProducts());
+        Menu menu = menuRequest.toMenu(getMenuGroup(menuRequest), menuProducts);
 
-        menuProducts.validateOverPrice(menu.getPrice());
-
-        menuProducts.initMenu(menu);
         Menu savedMenu = menuRepository.save(menu);
         return MenuResponse.of(savedMenu);
     }
@@ -45,10 +42,10 @@ public class MenuService {
         return menuGroupRepository.findByIdElseThrow(menuRequest.getMenuGroupId());
     }
 
-    private MenuProducts getMenuProducts(List<MenuProductRequest> menuProductRequests) {
-        return MenuProducts.of(menuProductRequests.stream()
+    private List<MenuProduct> getMenuProducts(List<MenuProductRequest> menuProductRequests) {
+        return menuProductRequests.stream()
                 .map(this::getMenuProduct)
-                .collect(Collectors.toList()));
+                .collect(Collectors.toList());
     }
 
     private MenuProduct getMenuProduct(MenuProductRequest menuProductRequest) {
