@@ -60,11 +60,7 @@ public class OrderService {
             throw new IllegalArgumentException();
         }
 
-        order.setOrderTableId(orderTable.getId());
-        order.setOrderStatus(OrderStatus.COOKING.name());
-        order.setOrderedTime(LocalDateTime.now());
-
-        final Order savedOrder = orderDao.save(order);
+        final Order savedOrder = orderDao.save(new Order(order.getId(), orderTable.getId(), OrderStatus.COOKING.name(), LocalDateTime.now()));
 
         final Long orderId = savedOrder.getId();
         final List<OrderLineItem> savedOrderLineItems = new ArrayList<>();
@@ -72,19 +68,17 @@ public class OrderService {
             orderLineItem.setOrderId(orderId);
             savedOrderLineItems.add(orderLineItemDao.save(orderLineItem));
         }
-        savedOrder.setOrderLineItems(savedOrderLineItems);
 
-        return savedOrder;
+        return Order.of(savedOrder.getId(), savedOrder.getOrderTableId(), savedOrder.getOrderStatus(), savedOrder.getOrderedTime(), savedOrderLineItems);
     }
 
     public List<Order> list() {
         final List<Order> orders = orderDao.findAll();
-
+        List<Order> foundOrders = new ArrayList<>();
         for (final Order order : orders) {
-            order.setOrderLineItems(orderLineItemDao.findAllByOrderId(order.getId()));
+            foundOrders.add(Order.of(order.getId(), order.getOrderTableId(), order.getOrderStatus(), order.getOrderedTime(), orderLineItemDao.findAllByOrderId(order.getId())));
         }
-
-        return orders;
+        return foundOrders;
     }
 
     @Transactional
@@ -97,12 +91,8 @@ public class OrderService {
         }
 
         final OrderStatus orderStatus = OrderStatus.valueOf(order.getOrderStatus());
-        savedOrder.setOrderStatus(orderStatus.name());
 
         orderDao.save(savedOrder);
-
-        savedOrder.setOrderLineItems(orderLineItemDao.findAllByOrderId(orderId));
-
-        return savedOrder;
+        return Order.of(savedOrder.getId(),order.getOrderTableId(),orderStatus.name(),order.getOrderedTime(),orderLineItemDao.findAllByOrderId(orderId));
     }
 }

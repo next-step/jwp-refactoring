@@ -45,7 +45,7 @@ class MenuTest {
         Assertions.assertThatThrownBy(() -> {
                     new Menu(1L, "스페셜치킨", new BigDecimal(10000), -1L);
                 }).isInstanceOf(InputMenuDataException.class)
-                .hasMessageContaining(InputMenuDataErrorCode.YOU_MUST_INPUT_MENU_GROUP_ID.errorMessage());
+                .hasMessageContaining(InputMenuDataErrorCode.THE_MENU_GROUP_ID_IS_LESS_THAN_ZERO.errorMessage());
     }
 
 
