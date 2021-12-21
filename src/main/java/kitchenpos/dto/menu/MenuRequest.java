@@ -1,22 +1,24 @@
 package kitchenpos.dto.menu;
 
+import java.security.InvalidParameterException;
 import java.util.List;
+import java.util.stream.Collectors;
 import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menu.MenuGroup;
-import kitchenpos.domain.product.Product;
+import kitchenpos.domain.menu.MenuProduct;
 
 public class MenuRequest {
 
     private String name;
     private Integer price;
     private Long menuGroupId;
-    private MenuProductRequests menuProducts;
+    private List<MenuProductRequest> menuProducts;
 
     public MenuRequest() {
     }
 
     public MenuRequest(String name, Integer price, Long menuGroupId,
-        MenuProductRequests menuProducts) {
+        List<MenuProductRequest> menuProducts) {
         this.name = name;
         this.price = price;
         this.menuGroupId = menuGroupId;
@@ -35,18 +37,26 @@ public class MenuRequest {
         return menuGroupId;
     }
 
-    public MenuProductRequests getMenuProducts() {
+    public List<MenuProductRequest> getMenuProducts() {
         return menuProducts;
     }
 
     public List<Long> getProductIds() {
-        return menuProducts.getProductIds();
+        return menuProducts.stream()
+            .map(MenuProductRequest::getProductId)
+            .collect(Collectors.toList());
     }
 
-    public Menu toMenu(MenuGroup menuGroup, List<Product> menuProducts) {
-        return new Menu(name
-            , price
-            , menuGroup
-            , this.menuProducts.toMenuProducts(menuProducts));
+    public Menu toMenu(MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+        return Menu.of(name, price, menuGroup, menuProducts);
+    }
+
+    public Long getProductQuantity(Long productId) {
+        MenuProductRequest menuProductRequest = menuProducts.stream()
+            .filter(menuProductRequestTarget -> menuProductRequestTarget.isSameProductId(productId))
+            .findFirst()
+            .orElseThrow(() -> new InvalidParameterException("상품을 찾을 수 없습니다."));
+
+        return menuProductRequest.getQuantity();
     }
 }

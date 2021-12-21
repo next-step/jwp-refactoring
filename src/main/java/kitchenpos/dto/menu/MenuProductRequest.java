@@ -1,9 +1,6 @@
 package kitchenpos.dto.menu;
 
-import java.security.InvalidParameterException;
-import java.util.List;
-import kitchenpos.domain.menu.MenuProduct;
-import kitchenpos.domain.product.Product;
+import java.util.Objects;
 
 public class MenuProductRequest {
 
@@ -26,11 +23,7 @@ public class MenuProductRequest {
         return quantity;
     }
 
-    public MenuProduct toMenuProduct(List<Product> products) {
-        Product product = products.stream()
-            .filter(it -> it.isSame(productId))
-            .findFirst()
-            .orElseThrow(() -> new InvalidParameterException("주문 항목이 존재하지 않습니다."));
-        return new MenuProduct(product, quantity);
+    public boolean isSameProductId(Long productId) {
+        return Objects.equals(this.productId, productId);
     }
 }

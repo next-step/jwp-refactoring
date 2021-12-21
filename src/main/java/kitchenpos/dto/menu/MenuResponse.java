@@ -13,11 +13,9 @@ public class MenuResponse {
     private Long menuGroupId;
     private List<MenuProductResponse> menuProductResponses;
 
-
     public static MenuResponse of(Menu menu) {
         return new MenuResponse(menu.getId(), menu.getName(), menu.getPrice(),
-            menu.getMenuGroup().getId(),
-            collectorMenuProductResponses(menu));
+            menu.getMenuGroupId(), collectorMenuProductResponses(menu));
     }
 
     public static List<MenuResponse> toList(List<Menu> menus) {
