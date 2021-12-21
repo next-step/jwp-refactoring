@@ -1,6 +1,8 @@
 package kitchenpos.domain;
 
 import com.sun.istack.NotNull;
+import kitchenpos.exception.IllegalMenuPriceException;
+import kitchenpos.exception.NoMenuGroupException;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -29,6 +31,21 @@ public class Menu {
         this.price = price;
         this.menuGroup = menuGroup;
         this.menuProducts = menuProducts;
+        validateMenuGroup();
+        validateMenuPrice();
+        menuProducts.changeMenu(this);
+    }
+
+    private void validateMenuGroup() {
+        if (this.menuGroup == null) {    // TODO MenuProducts 내부로 이동
+            throw new NoMenuGroupException();
+        }
+    }
+
+    private void validateMenuPrice() {
+        if (price.compareTo(menuProducts.getSumPrice()) > 0) {    // TODO MenuProducts 내부로 이동
+            throw new IllegalMenuPriceException();
+        }
     }
 
     public Long getId() {

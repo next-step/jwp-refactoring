@@ -36,41 +36,12 @@ public class MenuService {
 
     @Transactional
     public Menu create(final Menu menu) {
-        final Price price = menu.getPrice();
-
-        final MenuProducts menuProducts = menu.getMenuProducts();
-
-        BigDecimal sum = BigDecimal.ZERO;
-        for (final MenuProduct menuProduct : menuProducts.getMenuProducts()) {    // TODO MenuProducts 내부로 이동
-            final Product product = productRepository.findById(menuProduct.getProductId())
-                    .orElseThrow(IllegalArgumentException::new);
-            sum = sum.add(product.getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
-        }
-
-        if (price.compareTo(sum) > 0) {    // TODO MenuProducts 내부로 이동
-            throw new IllegalArgumentException();
-        }
-
         final Menu savedMenu = menuRepository.save(menu);
-
-        final Long menuId = savedMenu.getId();
-        final List<MenuProduct> savedMenuProducts = new ArrayList<>();
-        for (final MenuProduct menuProduct : menuProducts.getMenuProducts()) {    // TODO Menu 도메인 내부로 이동
-            menuProduct.setMenu(menu);
-            savedMenuProducts.add(menuProductRepository.save(menuProduct));
-        }
-        savedMenu.setMenuProducts(new MenuProducts(savedMenuProducts));
-
         return savedMenu;
     }
 
     public List<Menu> list() {    // TODO MenuProducts 도메인 내부로 이동
         final List<Menu> menus = menuRepository.findAll();
-
-        for (final Menu menu : menus) {
-            menu.setMenuProducts(new MenuProducts(menuProductRepository.findAllByMenuId(menu.getId())));
-        }
-
         return menus;
     }
 }
