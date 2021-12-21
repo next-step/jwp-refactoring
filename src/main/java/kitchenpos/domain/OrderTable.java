@@ -6,6 +6,32 @@ public class OrderTable {
     private int numberOfGuests;
     private boolean empty;
 
+    public OrderTable() {
+    }
+
+    public OrderTable(boolean empty) {
+        this.empty = empty;
+    }
+
+    public OrderTable(int numberOfGuests) {
+        this.numberOfGuests = numberOfGuests;
+    }
+
+    public OrderTable(int numberOfGuests, boolean empty) {
+        this(numberOfGuests);
+        this.empty = empty;
+    }
+
+    public OrderTable(Long tableGroupId, int numberOfGuests, boolean empty) {
+        this(numberOfGuests, empty);
+        this.tableGroupId = tableGroupId;
+    }
+
+    public OrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
+        this(tableGroupId, numberOfGuests, empty);
+        this.id = id;
+    }
+
     public Long getId() {
         return id;
     }
