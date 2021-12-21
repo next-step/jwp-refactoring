@@ -75,11 +75,15 @@ public class OrderTable {
 			throw new IllegalStateException("주문 테이블 그룹에 속해 있으면 빈 상태를 변경할 수 없습니다.");
 		}
 
-		if (order != null && !order.isCompleted()) {
+		if (hasNotCompletedOrder()) {
 			throw new IllegalStateException("완료되지 않은 주문이 남아 있는 경우 빈 상태를 변경할 수 없습니다.");
 		}
 
 		this.empty = empty;
+	}
+
+	public boolean hasNotCompletedOrder() {
+		return order != null && !order.isCompleted();
 	}
 
 	public void changeNumberOfGuests(NumberOfGuests numberOfGuests) {
@@ -90,11 +94,16 @@ public class OrderTable {
 		this.numberOfGuests = numberOfGuests;
 	}
 
-	public void setOrderTableGroup(OrderTableGroup orderTableGroup) {
-		this.orderTableGroup = orderTableGroup;
-	}
-
 	public void setOrder(Order order) {
 		this.order = order;
+	}
+
+	public void groupedBy(OrderTableGroup orderTableGroup) {
+		this.orderTableGroup = orderTableGroup;
+		this.empty = false;
+	}
+
+	public void ungrouped() {
+		this.orderTableGroup = null;
 	}
 }

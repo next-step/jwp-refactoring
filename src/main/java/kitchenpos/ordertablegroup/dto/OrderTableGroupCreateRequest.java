@@ -23,6 +23,12 @@ public class OrderTableGroupCreateRequest {
 		return orderTables;
 	}
 
+	public List<Long> getOrderTableIds() {
+		return orderTables.stream()
+			.map(OrderTableDto::getId)
+			.collect(Collectors.toList());
+	}
+
 	public void setOrderTables(List<OrderTableDto> orderTables) {
 		this.orderTables = orderTables;
 	}

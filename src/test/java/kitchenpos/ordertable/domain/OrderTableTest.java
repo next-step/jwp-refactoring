@@ -62,8 +62,8 @@ class OrderTableTest {
 	@Test
 	void changeEmptyFailOnBelongToOrderTableGroup() {
 		// given
-		OrderTable orderTable1 = OrderTable.of(NumberOfGuests.of(4), false);
-		OrderTable orderTable2 = OrderTable.of(NumberOfGuests.of(4), false);
+		OrderTable orderTable1 = OrderTable.of(NumberOfGuests.of(4), true);
+		OrderTable orderTable2 = OrderTable.of(NumberOfGuests.of(4), true);
 		OrderTableGroup.of(Arrays.asList(orderTable1, orderTable2));
 
 		// when
