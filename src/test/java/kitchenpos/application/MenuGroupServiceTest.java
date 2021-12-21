@@ -1,7 +1,9 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.menugroup.domain.MenuGroupDao;
+import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menugroup.dto.MenuGroupRequest;
+import kitchenpos.menugroup.application.MenuGroupService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,8 +33,7 @@ class MenuGroupServiceTest {
     @Test
     void create() {
         // given
-        MenuGroup 요청_메뉴_그룹 = new MenuGroup();
-        요청_메뉴_그룹.setName("추천_메뉴_그룹");
+        MenuGroupRequest 요청_메뉴_그룹 = MenuGroupRequest.of("추천_메뉴_그룹");
 
         given(menuGroupDao.save(any(MenuGroup.class))).willReturn(추천_메뉴_그룹);
 

@@ -1,6 +1,6 @@
 package kitchenpos.fixture;
 
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.menugroup.domain.MenuGroup;
 
 public class MenuGroupFixture {
 
@@ -12,10 +12,6 @@ public class MenuGroupFixture {
     }
 
     public static MenuGroup create(Long id, String name) {
-        MenuGroup menuGroup = new MenuGroup();
-        menuGroup.setId(id);
-        menuGroup.setName(name);
-
-        return menuGroup;
+        return MenuGroup.of(id, name);
     }
 }

@@ -3,7 +3,7 @@ package kitchenpos.acceptance;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.menugroup.domain.MenuGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -18,8 +18,7 @@ class MenuGroupAcceptanceTest extends AcceptanceTest {
     @Test
     void manageMenuGroup() {
         // given
-        MenuGroup menuGroup = new MenuGroup();
-        menuGroup.setName("추천_메뉴_그룹");
+        MenuGroup menuGroup = MenuGroup.of("추천_메뉴_그룹");
 
         // when
         ExtractableResponse<Response> 메뉴_그룹_생성_응답 = 메뉴_그룹_생성_요청(menuGroup);
@@ -49,8 +48,7 @@ class MenuGroupAcceptanceTest extends AcceptanceTest {
     }
 
     public static MenuGroup 메뉴_그룹_등록되어_있음(String name) {
-        MenuGroup menuGroup = new MenuGroup();
-        menuGroup.setName(name);
+        MenuGroup menuGroup = MenuGroup.of(name);
 
         return 메뉴_그룹_생성_요청(menuGroup).as(MenuGroup.class);
     }
