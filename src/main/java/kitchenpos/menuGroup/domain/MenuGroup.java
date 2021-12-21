@@ -15,8 +15,7 @@ public class MenuGroup {
 
     }
 
-    public MenuGroup(Long id, String name) {
-        this.id = id;
+    public MenuGroup(String name) {
         this.name = name;
     }
 

@@ -31,7 +31,6 @@ public class ProductServiceTest {
     @BeforeEach
     void setUp() {
         강정치킨 = ProductFixture.생성("강정치킨", new BigDecimal("7500"));
-        강정치킨.setName("강정치킨");
     }
 
     @DisplayName("상품을 이름, 가격으로 등록")

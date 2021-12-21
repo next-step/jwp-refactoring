@@ -33,9 +33,8 @@ public class MenuGroupServiceTest {
 
     @BeforeEach
     void setUp() {
-        치킨 = MenuGroupFixture.생성(1L,"치킨");
-
-        피자 = MenuGroupFixture.생성(2L,"피자");
+        치킨 = MenuGroupFixture.치킨류();
+        피자 = MenuGroupFixture.피자류();
     }
 
     @DisplayName("메뉴 그룹 생성")
@@ -52,6 +51,7 @@ public class MenuGroupServiceTest {
     @Test
     void list() {
         given(menuGroupRepository.findAll()).willReturn(Arrays.asList(치킨, 피자));
+
         List<MenuGroup> menuGroups = menuGroupService.list();
 
         assertThat(menuGroups.size()).isEqualTo(2);

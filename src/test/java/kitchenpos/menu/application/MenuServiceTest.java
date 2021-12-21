@@ -55,7 +55,7 @@ public class MenuServiceTest {
 
         후라이드두마리구성 = MenuProductFixture.생성(후라이드, 2L);
         후라이드두마리구성Request = MenuProductFixture.request생성(후라이드.getId(), 2L);
-        치킨류 = MenuGroupFixture.생성(1L, "치킨");
+        치킨류 = MenuGroupFixture.치킨류();
 
         후라이드두마리세트 = MenuFixture.생성("후라이드두마리세트", new BigDecimal("10000"), 치킨류);
         후라이드두마리세트.addMenuProducts(Arrays.asList(후라이드두마리구성));

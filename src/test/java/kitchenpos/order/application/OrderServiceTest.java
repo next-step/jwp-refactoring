@@ -2,13 +2,10 @@ package kitchenpos.order.application;
 
 import kitchenpos.fixture.*;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.menuGroup.domain.MenuGroup;
 import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
-import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -39,26 +36,17 @@ public class OrderServiceTest {
     @InjectMocks
     private OrderService orderService;
 
-    private Product 후라이드;
-    private MenuProduct 후라이드두마리구성;
     private Menu 후라이드두마리세트;
     private OrderTable 테이블1번;
     private OrderLineItem 후라이드두마리세트_2개_주문함;
     private OrderLineItemRequest 후라이드두마리세트_2개_주문_Request;
     private Order 총주문;
     private OrderRequest 총주문Request;
-    private MenuGroup 치킨류;
 
     @BeforeEach
     void setUp() {
-        후라이드 = ProductFixture.생성("후라이드", new BigDecimal("5000"));
-
-        후라이드두마리구성 = MenuProductFixture.생성(후라이드, 2L);
-
-        치킨류 = MenuGroupFixture.생성(1L, "치킨");
-
-        후라이드두마리세트 = MenuFixture.생성("후라이드두마리세트", new BigDecimal("10000"), 치킨류);
-        후라이드두마리세트.addMenuProducts(Arrays.asList(후라이드두마리구성));
+        후라이드두마리세트 = MenuFixture.생성("후라이드두마리세트", new BigDecimal("10000"), MenuGroupFixture.치킨류());
+        후라이드두마리세트.addMenuProducts(Arrays.asList(MenuProductFixture.후라이드두마리()));
 
         테이블1번 = OrderTableFixture.생성(0,true);
 

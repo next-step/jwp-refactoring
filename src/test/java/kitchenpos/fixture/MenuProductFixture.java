@@ -12,7 +12,7 @@ public class MenuProductFixture {
         return new MenuProduct(product, quantity);
     }
 
-    public static MenuProduct 샘플(){
+    public static MenuProduct 후라이드두마리(){
         Product 후라이드 = ProductFixture.생성("후라이드", new BigDecimal("5000"));
         return new MenuProduct(후라이드, 2L);
     }

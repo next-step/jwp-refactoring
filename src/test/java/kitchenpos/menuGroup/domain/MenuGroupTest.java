@@ -11,7 +11,7 @@ public class MenuGroupTest {
     @DisplayName("생성")
     @Test
     void create() {
-        MenuGroup menuGroup = new MenuGroup(1L,"추천메뉴");
+        MenuGroup menuGroup = new MenuGroup("추천메뉴");
 
         assertThat(menuGroup).isNotNull();
     }

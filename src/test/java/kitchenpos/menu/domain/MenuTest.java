@@ -18,7 +18,7 @@ public class MenuTest {
     @DisplayName("메뉴 생성시 가격은 0보다 커야 한다.")
     @Test
     void validationPrice() {
-        MenuGroup 치킨류 = MenuGroupFixture.생성(1L, "치킨");
+        MenuGroup 치킨류 = MenuGroupFixture.생성("치킨");
 
         assertThatThrownBy(
                 () -> MenuFixture.생성("후라이드두마리세트", new BigDecimal("-10"), 치킨류)
@@ -28,7 +28,7 @@ public class MenuTest {
     @DisplayName("메뉴에 메뉴 상품 추가")
     @Test
     void addMenuProducts() {
-        MenuProduct 메뉴상품 = MenuProductFixture.샘플();
+        MenuProduct 메뉴상품 = MenuProductFixture.후라이드두마리();
         Menu 후라이드두마리세트 = MenuFixture.샘플();
 
         후라이드두마리세트.addMenuProducts(Arrays.asList(메뉴상품));

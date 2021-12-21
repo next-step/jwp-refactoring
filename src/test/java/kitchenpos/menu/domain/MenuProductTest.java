@@ -13,7 +13,7 @@ public class MenuProductTest {
     @DisplayName("가격 x 수량 금액 계산한다.")
     @Test
     void calculatePriceQuantity() {
-        MenuProduct 오천원후라이드2개 = MenuProductFixture.샘플();
+        MenuProduct 오천원후라이드2개 = MenuProductFixture.후라이드두마리();
 
         BigDecimal 금액 = 오천원후라이드2개.calculatePriceQuantity();
 

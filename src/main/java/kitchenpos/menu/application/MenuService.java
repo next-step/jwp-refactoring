@@ -43,6 +43,10 @@ public class MenuService {
         return savedMenu;
     }
 
+    public List<Menu> list() {
+        return menuRepository.findAll();
+    }
+
     private List<MenuProduct> getMenuProducts(List<MenuProductRequest> menuProducts) {
         List<MenuProduct> result = new ArrayList<>();
         for (final MenuProductRequest menuProductRequest : menuProducts) {
@@ -56,9 +60,5 @@ public class MenuService {
     private MenuGroup getMenuGroup(Long menuGroupId) {
         return menuGroupRepository.findById(menuGroupId)
                 .orElseThrow(IllegalArgumentException::new);
-    }
-
-    public List<Menu> list() {
-        return menuRepository.findAll();
     }
 }
