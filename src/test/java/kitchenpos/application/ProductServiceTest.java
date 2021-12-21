@@ -7,8 +7,9 @@ import static org.mockito.BDDMockito.given;
 
 import java.math.BigDecimal;
 import java.util.List;
-import kitchenpos.dao.ProductDao;
+import kitchenpos.product.domain.Name;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,7 +22,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class ProductServiceTest {
 
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     @InjectMocks
     private ProductService productService;
@@ -33,7 +34,7 @@ class ProductServiceTest {
         Product product = Product.of("양념치킨", 17000);
         Product savedProduct = new Product(1L, "양념치킨", BigDecimal.valueOf(17000));
 
-        given(productDao.save(any()))
+        given(productRepository.save(any()))
             .willReturn(savedProduct);
 
         // when
@@ -42,7 +43,7 @@ class ProductServiceTest {
         // then
         assertThat(result).isNotNull();
         assertThat(result.getId()).isEqualTo(1L);
-        assertThat(result.getName()).isEqualTo("양념치킨");
+        assertThat(result.getName()).isEqualTo(Name.of("양념치킨"));
         assertThat(result.getPrice()).isEqualTo(BigDecimal.valueOf(17000));
     }
 
@@ -66,7 +67,7 @@ class ProductServiceTest {
         Product savedProduct2 = new Product(2L, "후라이드치킨", BigDecimal.valueOf(16000));
         Product savedProduct3 = new Product(3L, "간장치킨", BigDecimal.valueOf(17000));
 
-        given(productDao.findAll())
+        given(productRepository.findAll())
             .willReturn(Lists.newArrayList(savedProduct1, savedProduct2, savedProduct3));
 
         // when
@@ -75,13 +76,13 @@ class ProductServiceTest {
         // then
         assertThat(result).hasSize(3);
         assertThat(result.get(0).getId()).isEqualTo(1L);
-        assertThat(result.get(0).getName()).isEqualTo("양념치킨");
+        assertThat(result.get(0).getName()).isEqualTo(Name.of("양념치킨"));
         assertThat(result.get(0).getPrice()).isEqualTo(BigDecimal.valueOf(17000));
         assertThat(result.get(1).getId()).isEqualTo(2L);
-        assertThat(result.get(1).getName()).isEqualTo("후라이드치킨");
+        assertThat(result.get(1).getName()).isEqualTo(Name.of("후라이드치킨"));
         assertThat(result.get(1).getPrice()).isEqualTo(BigDecimal.valueOf(16000));
         assertThat(result.get(2).getId()).isEqualTo(3L);
-        assertThat(result.get(2).getName()).isEqualTo("간장치킨");
+        assertThat(result.get(2).getName()).isEqualTo(Name.of("간장치킨"));
         assertThat(result.get(2).getPrice()).isEqualTo(BigDecimal.valueOf(17000));
     }
 }
