@@ -25,17 +25,17 @@ public class Product {
     @Embedded
     private Price price;
 
-    public Product() {
+    protected Product() {
     }
 
-    public Product(String name, BigDecimal price) {
-        this(null, name, price);
-    }
-
-    public Product(Long id, String name, BigDecimal price) {
+    private Product(Long id, String name, BigDecimal price) {
         this.id = id;
         this.name = new Name(name);
         this.price = new Price(price);
+    }
+
+    public static Product of(String name, BigDecimal price) {
+        return new Product(null, name, price);
     }
 
     public Long getId() {
