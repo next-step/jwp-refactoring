@@ -121,10 +121,9 @@ public class TableServiceTest {
     @Test
     void changeNumberOfGuestsTest() {
         // given
-        final OrderTable orderTable = new OrderTable();
-        orderTable.setNumberOfGuests(7);
-        when(orderTableDao.findById(any()).orElseThrow(IllegalArgumentException::new))
-                .thenReturn(orderTable);
+        final OrderTable orderTable = new OrderTable(1L, 1L, 7, false);
+        when(orderTableDao.findById(anyLong())).thenReturn(Optional.of(orderTable));
+        when(orderTableDao.save(any())).thenReturn(orderTable);
 
         // when
         OrderTable changedOrderTable = tableService.changeNumberOfGuests(1L, orderTable);
@@ -146,12 +145,4 @@ public class TableServiceTest {
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
-//    @DisplayName("주문 테이블이 반드시 존재해야 한다.")
-//    @Test
-//    void changeNumberOfGuestsTest() {
-//        final OrderTable orderTable = new OrderTable();
-//        orderTable.setNumberOfGuests(7);
-//
-//        assertThat(orderTable.getNumberOfGuests()).isEqualTo(7);
-//    }
 }
