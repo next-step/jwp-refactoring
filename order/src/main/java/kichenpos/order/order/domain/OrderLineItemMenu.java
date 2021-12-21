@@ -1,10 +1,9 @@
 package kichenpos.order.order.domain;
 
 import java.util.Objects;
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.Embedded;
-import javax.persistence.ForeignKey;
-import javax.persistence.JoinColumn;
 import kichenpos.common.domain.Name;
 import kichenpos.common.domain.Price;
 import org.springframework.util.Assert;
@@ -12,7 +11,7 @@ import org.springframework.util.Assert;
 @Embeddable
 public class OrderLineItemMenu {
 
-    @JoinColumn(foreignKey = @ForeignKey(name = "fk_order_line_item_menu"))
+    @Column(nullable = false, updatable = false)
     private long menuId;
 
     @Embedded

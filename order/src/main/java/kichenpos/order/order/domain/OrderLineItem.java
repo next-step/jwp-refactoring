@@ -7,12 +7,15 @@ import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import kichenpos.common.domain.Quantity;
 import org.springframework.util.Assert;
 
 @Entity
+@Table(indexes = @Index(name = "order_line_item_menu_id_index", columnList = "menuId"))
 public class OrderLineItem {
 
     @Id

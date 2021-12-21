@@ -18,6 +18,7 @@ import kichenpos.order.order.ui.request.OrderStatusRequest;
 import kichenpos.order.order.ui.response.OrderResponse;
 import org.springframework.http.HttpStatus;
 
+@SuppressWarnings("NonAsciiCharacters")
 public class OrderAcceptanceStep {
 
     public static OrderResponse 주문_등록_되어_있음(long tableId, long menuId, int quantity) {
@@ -36,20 +37,16 @@ public class OrderAcceptanceStep {
             .extract();
     }
 
-    public static void 주문_등록_됨(ExtractableResponse<Response> response,
-        int expectedQuantity
-//        MenuResponse expectedMenu
-    ) {
+    public static void 주문_등록_됨(
+        ExtractableResponse<Response> response, int expectedQuantity, long expectedMenuId) {
         OrderResponse order = response.as(OrderResponse.class);
         assertAll(
             () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
-            () -> assertThat(order.getId()).isNotNull(),
             () -> assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name()),
             () -> assertThat(order.getOrderedTime()).isEqualToIgnoringMinutes(LocalDateTime.now()),
             () -> assertThat(order.getOrderLineItems()).first()
                 .satisfies(orderLineItem -> {
-                    assertThat(orderLineItem.getSeq()).isNotNull();
-//                    assertThat(orderLineItem.getMenuId()).isEqualTo(expectedMenu.getId());
+                    assertThat(orderLineItem.getMenuId()).isEqualTo(expectedMenuId);
                     assertThat(orderLineItem.getQuantity()).isEqualTo(expectedQuantity);
                 })
         );

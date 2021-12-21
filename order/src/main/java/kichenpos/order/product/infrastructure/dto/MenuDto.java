@@ -7,16 +7,16 @@ import java.math.BigDecimal;
 public final class MenuDto {
 
     private final long id;
-    private final BigDecimal price;
     private final String name;
+    private final BigDecimal price;
 
     @JsonCreator
     public MenuDto(@JsonProperty("id") long id,
-        @JsonProperty("price") BigDecimal price,
-        @JsonProperty("name") String name) {
+        @JsonProperty("name") String name,
+        @JsonProperty("price") BigDecimal price) {
         this.id = id;
-        this.price = price;
         this.name = name;
+        this.price = price;
     }
 
     public long getId() {

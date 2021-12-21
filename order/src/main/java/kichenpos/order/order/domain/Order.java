@@ -9,11 +9,10 @@ import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
+import javax.persistence.Index;
 import javax.persistence.Table;
 import kichenpos.common.exception.InvalidStatusException;
 import org.springframework.data.annotation.CreatedDate;
@@ -21,7 +20,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.util.Assert;
 
 @Entity
-@Table(name = "orders")
+@Table(name = "orders", indexes = @Index(name = "orders_order_table_id_index", columnList = "orderTableId"))
 @EntityListeners(AuditingEntityListener.class)
 public class Order {
 
@@ -29,7 +28,7 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @JoinColumn(nullable = false, updatable = false, foreignKey = @ForeignKey(name = "fk_orders_order_table"))
+    @Column(nullable = false, updatable = false)
     private long orderTableId;
 
     @Column(nullable = false)

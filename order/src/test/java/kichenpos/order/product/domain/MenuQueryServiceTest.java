@@ -37,14 +37,14 @@ class MenuQueryServiceTest {
         BigDecimal 십원 = BigDecimal.TEN;
         String 치킨세트 = "치킨세트";
         when(menuClient.list(anyList()))
-            .thenReturn(Collections.singletonList(new MenuDto(menuId, 십원, 치킨세트)));
+            .thenReturn(Collections.singletonList(new MenuDto(menuId, 치킨세트, 십원)));
 
         //when
         List<Menu> menus = menuQueryService.findAllById(Collections.singletonList(1L));
 
         //then
         assertThat(menus).first()
-            .extracting(Menu::id, Menu::price, Menu::name)
-            .containsExactly(menuId, Price.from(십원), Name.from(치킨세트));
+            .extracting(Menu::id, Menu::name, Menu::price)
+            .containsExactly(menuId, Name.from(치킨세트), Price.from(십원));
     }
 }
