@@ -16,7 +16,6 @@ import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.dto.menu.MenuGroupRequest;
 import kitchenpos.dto.menu.MenuGroupResponse;
 import kitchenpos.dto.menu.MenuProductRequest;
-import kitchenpos.dto.menu.MenuProductRequests;
 import kitchenpos.dto.menu.MenuRequest;
 import kitchenpos.dto.order.OrderLineItemRequest;
 import kitchenpos.dto.order.OrderRequest;
@@ -62,8 +61,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
     private Long 치킨메뉴_등록됨(Long 상품_번호) {
         MenuGroupResponse 치킨류 = 메뉴그룹_등록됨(new MenuGroupRequest("치킨류"));
         MenuRequest 메뉴등록_요청_파라미터 = new MenuRequest("치킨메뉴", 16000, 치킨류.getId(),
-            new MenuProductRequests(
-                Collections.singletonList(new MenuProductRequest(상품_번호, 1L))));
+            Collections.singletonList(new MenuProductRequest(상품_번호, 1L)));
         return 메뉴_등록됨(메뉴등록_요청_파라미터);
     }
 

@@ -12,7 +12,6 @@ import kitchenpos.AcceptanceTest;
 import kitchenpos.dto.menu.MenuGroupRequest;
 import kitchenpos.dto.menu.MenuGroupResponse;
 import kitchenpos.dto.menu.MenuProductRequest;
-import kitchenpos.dto.menu.MenuProductRequests;
 import kitchenpos.dto.menu.MenuRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -42,7 +41,7 @@ class MenuAcceptanceTest extends AcceptanceTest {
         Long 치킨번호 = 상품_등록됨(양념치킨());
         MenuGroupResponse 치킨류 = 메뉴그룹_등록됨(new MenuGroupRequest("치킨류"));
 
-        return new MenuRequest("치킨메뉴", 16000, 치킨류.getId(), new MenuProductRequests(
-            Collections.singletonList(new MenuProductRequest(치킨번호, 1L))));
+        return new MenuRequest("치킨메뉴", 16000, 치킨류.getId(),
+            Collections.singletonList(new MenuProductRequest(치킨번호, 1L)));
     }
 }

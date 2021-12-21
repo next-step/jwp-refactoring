@@ -1,15 +1,17 @@
 package kitchenpos.application;
 
 
-import static kitchenpos.application.fixture.MenuFixture.메뉴생성;
-import static kitchenpos.application.fixture.MenuProductFixture.메뉴상품생성;
-import static kitchenpos.application.fixture.ProductFixture.상품생성;
+import static kitchenpos.application.fixture.MenuFixture.요청_메뉴;
+import static kitchenpos.application.fixture.MenuGroupFixture.메뉴그룹_치킨류;
+import static kitchenpos.application.fixture.MenuProductFixture.메뉴상품;
+import static kitchenpos.application.fixture.MenuProductFixture.요청_메뉴상품_치킨;
+import static kitchenpos.application.fixture.ProductFixture.후리이드치킨;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
 
-import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -18,10 +20,13 @@ import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.menu.Menu;
+import kitchenpos.domain.menu.MenuGroup;
+import kitchenpos.domain.menu.MenuProduct;
 import kitchenpos.domain.product.Product;
+import kitchenpos.dto.menu.MenuRequest;
+import kitchenpos.dto.menu.MenuResponse;
 import org.assertj.core.api.ThrowableAssert;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -45,109 +50,67 @@ class MenuServiceTest {
     @InjectMocks
     private MenuService menuService;
 
-    private Product 양념치킨;
-    private Menu 메뉴_치킨;
-
-    @BeforeEach
-    void setUp() {
-        // given
-        양념치킨 = 상품생성(1L, "양념치킨", 16000);
-        메뉴_치킨 = 메뉴생성(1L, "치킨메뉴", 16000, 1L, 메뉴상품생성(1L, 1L, 1L));
-    }
-
     @Test
     @DisplayName("`메뉴`를 등록할 수 있다.")
     void create() {
         // given
-        given(menuGroupDao.existsById(any())).willReturn(true);
-        given(productDao.findById(any())).willReturn(Optional.of(양념치킨));
-        given(menuDao.save(메뉴_치킨)).willReturn(메뉴_치킨);
+        Product 치킨 = 후리이드치킨(1L);
+        MenuProduct 메뉴_치킨 = 메뉴상품(치킨);
+        MenuGroup 메뉴_그룹 = 메뉴그룹_치킨류();
+        MenuRequest menuRequest = 요청_메뉴("메뉴이름", 14000, 1L, Collections.singletonList(요청_메뉴상품_치킨()));
+        Menu 등록_메뉴 = menuRequest.toMenu(메뉴_그룹, Collections.singletonList(메뉴_치킨));
+
+        given(menuGroupDao.findById(any())).willReturn(Optional.of(메뉴_그룹));
+        given(productDao.findAllById(anyList())).willReturn(Collections.singletonList(치킨));
+        given(menuDao.save(any())).willReturn(등록_메뉴);
 
         // when
-        Menu 메뉴등록됨 = menuService.create(메뉴_치킨);
+        MenuResponse 등록된_메뉴 = menuService.create(menuRequest);
 
         // then
-        메뉴등록_됨(메뉴등록됨);
+        메뉴등록_됨(등록된_메뉴);
     }
 
     @Test
     @DisplayName("`메뉴`의 목록을 조회할 수 있다.")
     void 메뉴_목록_조회() {
         // given
-        given(menuDao.findAll()).willReturn(Collections.singletonList(메뉴_치킨));
+        Product 치킨 = 후리이드치킨(1L);
+        MenuProduct 메뉴_치킨 = 메뉴상품(치킨);
+        MenuGroup 메뉴_그룹 = 메뉴그룹_치킨류();
+        Menu 등록_메뉴 = Menu.of("메뉴", 14000, 메뉴_그룹, Collections.singletonList(메뉴_치킨));
+        given(menuDao.findAll()).willReturn(Collections.singletonList(등록_메뉴));
 
         // when
-        List<Menu> 메뉴목록 = menuService.list();
+        List<MenuResponse> 메뉴목록 = menuService.list();
 
         // then
         메뉴목록_조회됨(메뉴목록);
     }
 
-
     @Test
     @DisplayName("`메뉴`가 속할 `메뉴그룹`이 필수로 있어야 한다.")
     void 메뉴는_메뉴그룹이_없으면_에러() {
         // given
-        메뉴_치킨.setPrice(BigDecimal.valueOf(17000));
-        given(menuGroupDao.existsById(any())).willReturn(false);
+        MenuRequest menuRequest = 요청_메뉴("메뉴이름", 14000, 1L, Collections.singletonList(요청_메뉴상품_치킨()));
+        given(menuGroupDao.findById(any())).willReturn(Optional.empty());
 
         // when
-        ThrowableAssert.ThrowingCallable actual = () -> menuService.create(메뉴_치킨);
+        ThrowableAssert.ThrowingCallable actual = () -> menuService.create(menuRequest);
 
         // then
         메뉴생성_실패(actual);
     }
 
-    @Test
-    @DisplayName("가격은 무조건 있어야한다.")
-    void 메뉴가격이_없는_경우_에러() {
-        // given
-        메뉴_치킨.setPrice(null);
-
-        // when
-        ThrowableAssert.ThrowingCallable actual = () -> menuService.create(메뉴_치킨);
-
-        // then
-        메뉴생성_실패(actual);
-    }
-
-    @Test
-    @DisplayName("메뉴의 가격은 0원 이상 이어야 한다.")
-    void 메뉴가격_음수일_경우_에러() {
-        // given
-        메뉴_치킨.setPrice(BigDecimal.valueOf(-1000));
-
-        // when
-        ThrowableAssert.ThrowingCallable actual = () -> menuService.create(메뉴_치킨);
-
-        // then
-        메뉴생성_실패(actual);
-    }
-
-    @Test
-    @DisplayName("`메뉴`의 가격은 상품목록의 가격(상품가격 * 갯수)의 총합보다 클 수 없다.")
-    void 메뉴가격은_상품_전체가격보다_크면_에러() {
-        // given
-        메뉴_치킨.setPrice(BigDecimal.valueOf(17000));
-        given(menuGroupDao.existsById(any())).willReturn(true);
-        given(productDao.findById(any())).willReturn(Optional.of(양념치킨));
-
-        // when
-        ThrowableAssert.ThrowingCallable actual = () -> menuService.create(메뉴_치킨);
-
-        // then
-        메뉴생성_실패(actual);
-    }
-
-    private void 메뉴등록_됨(Menu 메뉴등록됨) {
-        assertThat(메뉴등록됨).isNotNull();
+    private void 메뉴등록_됨(MenuResponse menuResponse) {
+        assertThat(menuResponse).isNotNull();
     }
 
     private void 메뉴생성_실패(ThrowingCallable actual) {
         assertThatThrownBy(actual).isInstanceOf(IllegalArgumentException.class);
     }
 
-    private void 메뉴목록_조회됨(List<Menu> 메뉴목록) {
+    private void 메뉴목록_조회됨(List<MenuResponse> 메뉴목록) {
         assertThat(메뉴목록).isNotEmpty();
     }
 }
