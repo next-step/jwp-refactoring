@@ -6,6 +6,7 @@ import kitchenpos.order.domain.OrderTable;
 import kitchenpos.tableGroup.domain.TableGroup;
 import kitchenpos.order.domain.OrderTableRepository;
 import kitchenpos.tableGroup.domain.TableGroupRepository;
+import kitchenpos.tableGroup.dto.TableGroupRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -62,6 +63,9 @@ public class TableGroupService {
 
         return savedTableGroup;
     }
+    public TableGroup create(TableGroupRequest request) {
+        return null;
+    }
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
@@ -81,4 +85,6 @@ public class TableGroupService {
             orderTableRepository.save(orderTable);
         }
     }
+
+
 }

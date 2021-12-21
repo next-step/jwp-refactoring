@@ -10,7 +10,8 @@ public class OrderLineItemFixture {
         return new OrderLineItem(order, menu, quantity);
     }
 
-    public static OrderLineItemRequest request생성(Long menuId, Long quantity) {
+    public static OrderLineItemRequest 생성_Request(Long menuId, Long quantity) {
         return new OrderLineItemRequest(menuId, quantity);
     }
+
 }

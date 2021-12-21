@@ -2,6 +2,7 @@ package kitchenpos.tableGroup.ui;
 
 import kitchenpos.tableGroup.application.TableGroupService;
 import kitchenpos.tableGroup.domain.TableGroup;
+import kitchenpos.tableGroup.dto.TableGroupRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +19,15 @@ public class TableGroupRestController {
     @PostMapping("/api/table-groups")
     public ResponseEntity<TableGroup> create(@RequestBody final TableGroup tableGroup) {
         final TableGroup created = tableGroupService.create(tableGroup);
+        final URI uri = URI.create("/api/table-groups/" + created.getId());
+        return ResponseEntity.created(uri)
+                .body(created)
+                ;
+    }
+
+    @PostMapping("/api/table-groups")
+    public ResponseEntity<TableGroup> create(@RequestBody final TableGroupRequest request) {
+        final TableGroup created = tableGroupService.create(request);
         final URI uri = URI.create("/api/table-groups/" + created.getId());
         return ResponseEntity.created(uri)
                 .body(created)

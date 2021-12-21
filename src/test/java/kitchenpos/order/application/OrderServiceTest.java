@@ -67,7 +67,7 @@ public class OrderServiceTest {
         총주문 = OrderFixture.생성(테이블1번);
         총주문.addLineItems(Arrays.asList(후라이드두마리세트_2개_주문함));
 
-        후라이드두마리세트_2개_주문_Request = OrderLineItemFixture.request생성(1L, 2L);
+        후라이드두마리세트_2개_주문_Request = OrderLineItemFixture.생성_Request(1L, 2L);
         총주문Request = OrderFixture.request생성(테이블1번.getId(),Arrays.asList(후라이드두마리세트_2개_주문_Request));
     }
 
