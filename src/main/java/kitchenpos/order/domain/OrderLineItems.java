@@ -1,5 +1,8 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.common.exception.OrderLineItemEmptyException;
+import org.springframework.util.CollectionUtils;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -19,6 +22,9 @@ public class OrderLineItems {
     }
 
     public OrderLineItems(List<OrderLineItem> orderLineItems) {
+        if (CollectionUtils.isEmpty(orderLineItems)) {
+            throw new OrderLineItemEmptyException();
+        }
         this.orderLineItems = orderLineItems;
     }
 

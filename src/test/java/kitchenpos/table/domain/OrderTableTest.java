@@ -1,5 +1,6 @@
 package kitchenpos.table.domain;
 
+import kitchenpos.common.exception.IsEmptyTableException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,6 +12,7 @@ import java.util.stream.Stream;
 
 import static kitchenpos.table.domain.TableGroupTest.테이블그룹;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class OrderTableTest {
     public static final OrderTable 빈자리 = OrderTable.ofEmptyTable();
@@ -47,10 +49,21 @@ public class OrderTableTest {
     @DisplayName("테이블 인원 변경")
     public void changeNumberOfGuestsTest() {
         // given
+        OrderTable 예약석 = new OrderTable(2, false);
         // when
-        임시자리.changeNumberOfGuests(new NumberOfGuests(1));
+        예약석.changeNumberOfGuests(new NumberOfGuests(1));
         // then
-        assertThat(임시자리.getNumberOfGuests()).isEqualTo(1);
+        assertThat(예약석.getNumberOfGuests()).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("빈 테이블의 인원은 변경 할 수 없습니다.")
+    public void isEmptyTableExceptionTest() {
+        // given
+        // when
+        // then
+        assertThatThrownBy(() -> 임시자리.changeNumberOfGuests(new NumberOfGuests(1)))
+                .isInstanceOf(IsEmptyTableException.class);
     }
 
     @Test

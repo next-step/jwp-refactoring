@@ -1,6 +1,7 @@
 package kitchenpos.table.domain;
 
 import kitchenpos.common.exception.InvalidOrderStatusException;
+import kitchenpos.common.exception.IsEmptyTableException;
 import kitchenpos.common.exception.IsNotNullTableGroupException;
 import kitchenpos.order.domain.OrderStatus;
 
@@ -64,7 +65,14 @@ public class OrderTable {
     }
 
     public void changeNumberOfGuests(final NumberOfGuests numberOfGuests) {
+        checkEmptyOrderTable();
         this.numberOfGuests = numberOfGuests;
+    }
+
+    private void checkEmptyOrderTable() {
+        if (isEmpty()) {
+            throw new IsEmptyTableException();
+        }
     }
 
     public boolean isEmpty() {

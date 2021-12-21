@@ -52,10 +52,6 @@ public class OrderService {
     }
 
     private OrderLineItems getOrderLineItems(List<OrderLineItemRequest> orderLineItemRequests) {
-        if (CollectionUtils.isEmpty(orderLineItemRequests)) {
-            throw new OrderLineItemEmptyException();
-        }
-
         return new OrderLineItems(orderLineItemRequests.stream()
                 .map(this::getOrderLineItem)
                 .collect(Collectors.toList()));

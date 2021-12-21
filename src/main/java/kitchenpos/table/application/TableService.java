@@ -65,16 +65,7 @@ public class TableService {
     @Transactional
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final ChangeGuestsRequest changeGuestsRequest) {
         final OrderTable savedOrderTable = orderTableRepository.findByIdElseThrow(orderTableId);
-        checkEmptyOrderTable(savedOrderTable);
-
         savedOrderTable.changeNumberOfGuests(changeGuestsRequest.toNumberOfGuests());
-
         return OrderTableResponse.of(savedOrderTable);
-    }
-
-    private void checkEmptyOrderTable(OrderTable savedOrderTable) {
-        if (savedOrderTable.isEmpty()) {
-            throw new IsEmptyTableException();
-        }
     }
 }

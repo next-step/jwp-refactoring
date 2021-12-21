@@ -155,7 +155,7 @@ public class OrderServiceTest {
     void notChangeCompletionStatus() {
         // given
         given(orderRepository.findByIdElseThrow(anyLong())).willReturn(order);
-        doThrow(new NotChangeCompletionOrderException()).when(order).changeOrderStatus(any());
+        doThrow(NotChangeCompletionOrderException.class).when(order).changeOrderStatus(any());
         // when
         // then
         assertThatThrownBy(() -> orderService.changeOrderStatus(

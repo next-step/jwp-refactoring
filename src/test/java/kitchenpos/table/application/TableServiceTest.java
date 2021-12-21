@@ -108,13 +108,13 @@ public class TableServiceTest {
     void nonNullTableGroupIdTest() {
         // given
         OrderTable savedOrderTable = mock(OrderTable.class);
-        given(savedOrderTable.isNotNullTableGroup()).willReturn(true);
         given(orderTableRepository.findByIdElseThrow(anyLong())).willReturn(savedOrderTable);
+        given(orderRepository.existsByOrderTableAndOrderStatusIn(any(), anyList())).willReturn(false);
+        doThrow(IsNotNullTableGroupException.class).when(savedOrderTable).changeEmpty(anyBoolean());
         // when
         // then
-        assertThatThrownBy(() -> tableService.changeEmpty(1L, any()))
+        assertThatThrownBy(() -> tableService.changeEmpty(1L, new ChangeEmptyRequest(true)))
                 .isInstanceOf(IsNotNullTableGroupException.class);
-        verify(orderRepository, never()).existsByOrderTableAndOrderStatusIn(any(), anyList());
     }
 
     @Test
@@ -176,10 +176,11 @@ public class TableServiceTest {
         // given
         OrderTable savedOrderTable = mock(OrderTable.class);
         given(orderTableRepository.findByIdElseThrow(anyLong())).willReturn(savedOrderTable);
-        given(savedOrderTable.isEmpty()).willReturn(true);
+        doThrow(IsEmptyTableException.class).when(savedOrderTable).changeNumberOfGuests(any());
         // when
         // then
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, any()))
-                .isInstanceOf(IsEmptyTableException.class);
+        assertThatThrownBy(() -> tableService.changeNumberOfGuests(
+                1L, new ChangeGuestsRequest(1))
+        ).isInstanceOf(IsEmptyTableException.class);
     }
 }
