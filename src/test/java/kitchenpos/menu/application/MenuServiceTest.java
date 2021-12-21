@@ -1,5 +1,6 @@
 package kitchenpos.menu.application;
 
+import kitchenpos.common.exception.InvalidPriceException;
 import kitchenpos.common.exception.NotFoundMenuGroupException;
 import kitchenpos.common.exception.NotFoundProductException;
 import kitchenpos.common.exception.OverMenuPriceException;
@@ -44,6 +45,7 @@ public class MenuServiceTest {
     @Test
     @DisplayName("메뉴 등록")
     void createTest() {
+        // given
         MenuProductRequest 간장치킨_요청 = new MenuProductRequest(간장치킨_상품.getId(), 2L);
         MenuRequest 요청_데이터 = new MenuRequest(
                 "간장 두마리 세트"
@@ -51,8 +53,6 @@ public class MenuServiceTest {
                 , 두마리메뉴.getId()
                 , Collections.singletonList(간장치킨_요청));
         Menu 간장_두마리_세트 = 요청_데이터.toMenu(두마리메뉴);
-
-        // given
         given(menuGroupRepository.findByIdElseThrow(anyLong())).willReturn(두마리메뉴);
         given(productRepository.findByIdElseThrow(anyLong())).willReturn(간장치킨_상품);
         given(menuRepository.save(any(Menu.class))).willReturn(간장_두마리_세트);
@@ -65,32 +65,31 @@ public class MenuServiceTest {
 
     @Test
     @DisplayName("메뉴 가격은 0원 이상 이어야 한다.")
-    void menuPriceOverZero() {
+    void menuPriceOverZeroException() {
+        // given
         MenuProductRequest 간장치킨_요청 = new MenuProductRequest(간장치킨_상품.getId(), 2L);
         MenuRequest 요청_데이터 = new MenuRequest(
                 "간장 두마리 세트"
                 , BigDecimal.valueOf(-1)
                 , 두마리메뉴.getId()
                 , Collections.singletonList(간장치킨_요청));
-
-        // given
         given(menuGroupRepository.findByIdElseThrow(anyLong())).willReturn(두마리메뉴);
         // when
         // then
         assertThatThrownBy(() -> menuService.create(요청_데이터))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(InvalidPriceException.class);
     }
 
     @Test
     @DisplayName("메뉴 그룹이 존재하지 않으면 등록 할 수 없다.")
-    void notFoundMenuGroup() {
+    void notFoundMenuGroupException() {
+        // given
         MenuProductRequest 간장치킨_요청 = new MenuProductRequest(간장치킨_상품.getId(), 2L);
         MenuRequest 요청_데이터 = new MenuRequest(
                 "간장 두마리 세트"
                 , BigDecimal.valueOf(32_000)
                 , 7L
                 , Collections.singletonList(간장치킨_요청));
-        // given
         given(menuGroupRepository.findByIdElseThrow(anyLong())).willThrow(NotFoundMenuGroupException.class);
         // when
         // then
@@ -101,13 +100,13 @@ public class MenuServiceTest {
     @Test
     @DisplayName("메뉴에 포함된 상품들이 존재하지 않으면 등록 할 수 없다.")
     void notFoundMenuProduct() {
+        // given
         MenuProductRequest 간장치킨_요청 = new MenuProductRequest(간장치킨_상품.getId(), 2L);
         MenuRequest 요청_데이터 = new MenuRequest(
                 "간장 두마리 세트"
                 , BigDecimal.valueOf(32_000)
                 , 두마리메뉴.getId()
                 , Collections.singletonList(간장치킨_요청));
-        // given
         given(menuGroupRepository.findByIdElseThrow(anyLong())).willReturn(두마리메뉴);
         given(productRepository.findByIdElseThrow(anyLong())).willThrow(NotFoundProductException.class);
         // when
@@ -119,6 +118,7 @@ public class MenuServiceTest {
     @Test
     @DisplayName("메뉴 가격은 [`상품 가격 * 메뉴에 속하는 상품 수량`]의 합보다 클 수 없다.")
     void menuPriceNotOverTotalProductPrice() {
+        // given
         MenuProductRequest 간장치킨_요청 = new MenuProductRequest(간장치킨_상품.getId(), 1L);
         MenuProductRequest 순살치킨_요청 = new MenuProductRequest(순살치킨_상품.getId(), 1L);
         MenuRequest 요청_데이터 = new MenuRequest(
@@ -126,7 +126,6 @@ public class MenuServiceTest {
                 , BigDecimal.valueOf(34_001)
                 , 두마리메뉴.getId()
                 , Arrays.asList(간장치킨_요청, 순살치킨_요청));
-        // given
         given(menuGroupRepository.findByIdElseThrow(anyLong())).willReturn(두마리메뉴);
         given(productRepository.findByIdElseThrow(anyLong())).willReturn(간장치킨_상품, 순살치킨_상품);
         // when

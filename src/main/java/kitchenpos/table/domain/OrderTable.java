@@ -13,8 +13,12 @@ public class OrderTable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "table_group_id")
     private TableGroup tableGroup;
-    private int numberOfGuests;
-    private boolean empty;
+
+    @Embedded
+    private NumberOfGuests numberOfGuests;
+
+    @Embedded
+    private EmptyStatus empty;
 
     protected OrderTable() {
     }
@@ -25,13 +29,17 @@ public class OrderTable {
     }
 
     public OrderTable(TableGroup tableGroup, int numberOfGuests, boolean empty) {
+        this(numberOfGuests, empty);
         this.tableGroup = tableGroup;
-        this.numberOfGuests = numberOfGuests;
-        this.empty = empty;
     }
 
-    public static OrderTable ofEmptyTable(int numberOfGuests) {
-        return new OrderTable(null, numberOfGuests, true);
+    public OrderTable(int numberOfGuests, boolean empty) {
+        this.numberOfGuests = new NumberOfGuests(numberOfGuests);
+        this.empty = new EmptyStatus(empty);
+    }
+
+    public static OrderTable ofEmptyTable() {
+        return new OrderTable(0, true);
     }
 
     public Long getId() {
@@ -47,19 +55,23 @@ public class OrderTable {
     }
 
     public int getNumberOfGuests() {
-        return numberOfGuests;
+        return numberOfGuests.getNumber();
     }
 
-    public void changeNumberOfGuests(final int numberOfGuests) {
+    public void changeNumberOfGuests(final NumberOfGuests numberOfGuests) {
         this.numberOfGuests = numberOfGuests;
     }
 
     public boolean isEmpty() {
-        return empty;
+        return empty.getStatus();
     }
 
     public void changeEmpty(final boolean empty) {
-        this.empty = empty;
+        this.empty = new EmptyStatus(empty);
+    }
+
+    public boolean isNotNullTableGroup() {
+        return !Objects.isNull(tableGroup);
     }
 
     @Override
@@ -77,4 +89,5 @@ public class OrderTable {
     public int hashCode() {
         return Objects.hash(id, tableGroup, numberOfGuests, empty);
     }
+
 }
