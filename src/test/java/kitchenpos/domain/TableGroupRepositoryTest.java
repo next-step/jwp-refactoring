@@ -2,6 +2,7 @@ package kitchenpos.domain;
 
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,8 @@ class TableGroupRepositoryTest {
         사용가능테이블2 = orderTableRepository.save(사용가능_다섯명테이블().toEntity());
     }
 
+
+    @Disabled
     @Test
     @DisplayName("그룹 테이블을 생성한다.")
     public void create() {

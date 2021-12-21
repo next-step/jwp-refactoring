@@ -51,5 +51,4 @@ class MenuGroupRepositoryTest {
                 () -> assertThat(actual.getName()).isEqualTo("한마리메뉴")
         );
     }
-
 }

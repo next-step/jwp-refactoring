@@ -10,6 +10,7 @@ import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -42,6 +43,7 @@ import static org.mockito.BDDMockito.given;
  * date : 2021/12/17
  * description :
  */
+@Disabled
 @DisplayName("메뉴 통합 테스트")
 @ExtendWith(MockitoExtension.class)
 public class MenuServiceTest {

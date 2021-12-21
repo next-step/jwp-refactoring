@@ -5,6 +5,7 @@ import kitchenpos.application.ProductService;
 import kitchenpos.dto.ProductRequest;
 import kitchenpos.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * date : 2021-12-15
  * description :
  */
+@Disabled
 @DisplayName("상품 컨트롤러 테스트")
 @WebMvcTest(ProductRestController.class)
 class ProductRestControllerTest {

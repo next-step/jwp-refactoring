@@ -5,6 +5,7 @@ import kitchenpos.application.OrderService;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * date : 2021-12-15
  * description :
  */
+@Disabled
 @DisplayName("주문 컨트롤러 테스트")
 @WebMvcTest(OrderRestController.class)
 class OrderRestControllerTest {

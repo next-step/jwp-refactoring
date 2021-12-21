@@ -7,6 +7,7 @@ import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,6 +32,7 @@ import static org.mockito.Mockito.verify;
  * date : 2021/12/18
  * description :
  */
+@Disabled
 @DisplayName("그룹 테이블 통합 테스트")
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {

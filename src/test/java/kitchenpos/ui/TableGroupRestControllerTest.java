@@ -5,6 +5,7 @@ import kitchenpos.application.TableGroupService;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * date : 2021/12/15
  * description :
  */
+@Disabled
 @DisplayName("태이블그룹 컨트롤러 테스트")
 @WebMvcTest(TableGroupRestController.class)
 class TableGroupRestControllerTest {

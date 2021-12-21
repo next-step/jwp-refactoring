@@ -36,7 +36,8 @@ public class Order {
     public Order(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
         validate(orderTable, orderLineItems);
         addOrderLineItems(orderLineItems);
-        this.orderTable = orderTable.addOrder(this);
+        //this.orderTable = orderTable.addOrder(this);
+        this.orderTable = orderTable;
     }
 
     private void addOrderLineItems(List<OrderLineItem> orderLineItems) {

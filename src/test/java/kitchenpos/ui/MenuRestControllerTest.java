@@ -8,6 +8,7 @@ import kitchenpos.fixtures.MenuFixtures;
 import kitchenpos.fixtures.MenuGroupFixtures;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * date : 2021-12-15
  * description :
  */
+@Disabled
 @DisplayName("메뉴 컨트롤러 테스트")
 @WebMvcTest(MenuRestController.class)
 class MenuRestControllerTest {

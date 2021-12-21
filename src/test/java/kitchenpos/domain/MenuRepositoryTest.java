@@ -1,6 +1,7 @@
 package kitchenpos.domain;
 
 import kitchenpos.exception.IllegalPriceException;
+import kitchenpos.exception.MismatchPriceException;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -52,15 +53,6 @@ class MenuRepositoryTest {
         양념치킨 = productRepository.save(양념치킨().toEntity());
         후라이드 = productRepository.save(후라이드().toEntity());
         메뉴그룹 = menuGroupRepository.save(반반메뉴().toEntity());
-
-//  엔드포인트 테스트 데이터
-//        final ArrayList<MenuProductRequest> menuProductRequests = Lists.newArrayList(
-//                MenuProductRequest.of(양념치킨.getId(), 1L),
-//                MenuProductRequest.of(후라이드.getId(), 1L)
-//        );
-//
-//        후라이드반양념반메뉴 = 후라이드반양념반메뉴(new BigDecimal(32000), 메뉴그룹.getId(), menuProductRequests);
-
         양념치킨메뉴상품 = new MenuProduct(양념치킨, 1L);
         후라이드메뉴상품 = new MenuProduct(후라이드, 1L);
         menu = new Menu("후라이드반양념반메뉴", 메뉴가격, 메뉴그룹, Lists.newArrayList(양념치킨메뉴상품, 후라이드메뉴상품));
@@ -113,7 +105,7 @@ class MenuRepositoryTest {
     public void createFailByMenusPrices() {
         //then
         assertThatThrownBy(() -> new Menu("가격불일치메뉴", new BigDecimal(Long.MAX_VALUE), 메뉴그룹, Lists.newArrayList(양념치킨메뉴상품, 후라이드메뉴상품)))
-                .isInstanceOf(IllegalPriceException.class);
+                .isInstanceOf(MismatchPriceException.class);
     }
 //
 //    @Test

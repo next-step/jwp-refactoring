@@ -1,10 +1,10 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.MenuGroup;
-import kitchenpos.fixtures.MenuGroupFixtures;
+import kitchenpos.domain.MenuGroupRepository;
+import kitchenpos.dto.MenuGroupRequest;
+import kitchenpos.dto.MenuGroupResponse;
 import org.assertj.core.util.Lists;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,7 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 
-import static kitchenpos.fixtures.MenuGroupFixtures.*;
+import static kitchenpos.fixtures.MenuGroupFixtures.두마리메뉴;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -29,42 +29,37 @@ import static org.mockito.BDDMockito.given;
 @DisplayName("메뉴그룹 통합 테스트")
 @ExtendWith(MockitoExtension.class)
 class MenuGroupServiceTest {
-    private MenuGroup menuGroup;
+    private final MenuGroupRequest request = 두마리메뉴();
 
     @Mock
-    MenuGroupDao menuGroupDao;
+    MenuGroupRepository menuGroupRepository;
 
     @InjectMocks
     MenuGroupService menuGroupService;
-
-    @BeforeEach
-    void setUp() {
-        menuGroup = 두마리메뉴().toEntity();
-    }
 
     @Test
     @DisplayName("메뉴 그룹을 조회할 수 있다.")
     public void list() {
         // given
-        given(menuGroupDao.findAll()).willReturn(Lists.newArrayList(menuGroup, menuGroup));
+        given(menuGroupRepository.findAll()).willReturn(Lists.newArrayList(request.toEntity()));
 
         // when
-        List<MenuGroup> menuGroups = menuGroupService.list();
+        List<MenuGroupResponse> menuGroups = menuGroupService.list();
 
         // then
-        assertThat(menuGroups).hasSize(2);
+        assertThat(menuGroups).hasSize(1);
     }
 
     @Test
     @DisplayName("메뉴 그룹을 등록할 수 있다.")
     public void create() {
         // given
-        given(menuGroupDao.save(any(MenuGroup.class))).willReturn(menuGroup);
+        given(menuGroupRepository.save(any(MenuGroup.class))).willReturn(request.toEntity());
 
         // when
-        MenuGroup actual = menuGroupService.create(menuGroup);
+        MenuGroupResponse actual = menuGroupService.create(request);
 
         // then
-        assertThat(actual).isEqualTo(menuGroup);
+        assertThat(actual.getName()).isEqualTo(request.getName());
     }
 }

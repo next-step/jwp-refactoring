@@ -1,6 +1,5 @@
 package kitchenpos.domain;
 
-import kitchenpos.exception.OrderStatusUpdateException;
 import kitchenpos.fixtures.OrderTableFixtures;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,12 +12,9 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import static kitchenpos.fixtures.MenuGroupFixtures.반반메뉴;
-import static kitchenpos.fixtures.OrderLineItemFixtures.주문정보_1개_수량_1개;
-import static kitchenpos.fixtures.OrderTableFixtures.사용가능_다섯명테이블;
 import static kitchenpos.fixtures.ProductFixtures.양념치킨;
 import static kitchenpos.fixtures.ProductFixtures.후라이드;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 /**
