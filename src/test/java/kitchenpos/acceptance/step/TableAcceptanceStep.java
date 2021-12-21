@@ -1,13 +1,15 @@
 package kitchenpos.acceptance.step;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import io.restassured.RestAssured;
 import io.restassured.mapper.TypeRef;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
-import kitchenpos.domain.order.OrderTable;
+import kitchenpos.dto.order.OrderTableRequest;
+import kitchenpos.dto.order.OrderTableResponse;
 import org.springframework.http.MediaType;
 
 public class TableAcceptanceStep {
@@ -17,14 +19,15 @@ public class TableAcceptanceStep {
     private TableAcceptanceStep() {
     }
 
-    public static OrderTable 주문테이블_생성됨(OrderTable orderTable) {
-        return 주문테이블_등록_검증(주문테이블_등록_요청(orderTable));
+    public static Long 주문테이블_생성됨(int numberOfGuests, boolean empty) {
+        return 주문테이블_등록_검증(주문테이블_등록_요청(numberOfGuests, empty));
     }
 
-    public static ExtractableResponse<Response> 주문테이블_등록_요청(OrderTable orderTable) {
+    public static ExtractableResponse<Response> 주문테이블_등록_요청(int numberOfGuests, boolean empty) {
+        OrderTableRequest 요청_데이터 = OrderTableRequest.of(numberOfGuests, empty);
         return RestAssured
             .given().log().all()
-            .body(orderTable)
+            .body(요청_데이터)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .when().post(API_URL)
             .then().log().all()
@@ -40,8 +43,9 @@ public class TableAcceptanceStep {
             .extract();
     }
 
+
     public static ExtractableResponse<Response> 주문테이블_빈테이블_상태_변경_요청(Long orderTableId,
-        OrderTable changeOrderTable) {
+        OrderTableRequest changeOrderTable) {
         return RestAssured
             .given().log().all()
             .body(changeOrderTable)
@@ -52,48 +56,49 @@ public class TableAcceptanceStep {
     }
 
 
-    public static ExtractableResponse<Response> 주문테이블_방문손님수_변경_요청(Long 주문테이블번호,
-        OrderTable 변경요청테이블) {
+    public static ExtractableResponse<Response> 주문테이블_방문손님수_변경_요청(Long orderTableId,
+        OrderTableRequest orderTableRequest) {
         return RestAssured
             .given().log().all()
-            .body(변경요청테이블)
+            .body(orderTableRequest)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when().put(API_URL + "/" + 주문테이블번호 + "/number-of-guests")
+            .when().put(API_URL + "/" + orderTableId + "/number-of-guests")
             .then().log().all()
             .extract();
     }
 
-    public static OrderTable 주문테이블_등록_검증(ExtractableResponse<Response> 주문테이블_등록_결과) {
-        OrderTable 등록된_주문테이블 = 주문테이블_등록_결과.as(OrderTable.class);
+    public static Long 주문테이블_등록_검증(ExtractableResponse<Response> response) {
+        OrderTableResponse 등록된_주문테이블 = response.as(OrderTableResponse.class);
 
-        assertThat(등록된_주문테이블.getId()).isNotNull();
-        assertThat(등록된_주문테이블.getTableGroupId()).isNull();
-
-        return 등록된_주문테이블;
+        assertAll(
+            () -> assertThat(등록된_주문테이블.getId()).isNotNull(),
+            () -> assertThat(등록된_주문테이블.getTableGroupId()).isNull()
+        );
+        return 등록된_주문테이블.getId();
     }
 
-    public static OrderTable 빈테이블_변경_검증(ExtractableResponse<Response> 빈테이블_변경_결과, boolean 빈테이블유무) {
-        OrderTable 변경된_테이블 = 빈테이블_변경_결과.as(OrderTable.class);
 
-        assertThat(변경된_테이블.isEmpty()).isEqualTo(빈테이블유무);
+    public static OrderTableResponse 빈테이블_변경_검증(ExtractableResponse<Response> response,
+        OrderTableRequest expected) {
+        OrderTableResponse 변경된_테이블 = response.as(OrderTableResponse.class);
+
+        assertThat(변경된_테이블.isEmpty()).isEqualTo(expected.isEmpty());
 
         return 변경된_테이블;
     }
 
-    public static void 주문테이블_목록조회_검증(ExtractableResponse<Response> 주문테이블_목록조회_결과,
-        OrderTable 등록된_주문테이블) {
-        List<OrderTable> 조회된_메뉴그룹_목록 = 주문테이블_목록조회_결과.as(new TypeRef<List<OrderTable>>() {
+    public static void 주문테이블_목록조회_검증(ExtractableResponse<Response> response, Long orderTableId) {
+        List<OrderTableResponse> 조회된_메뉴그룹_목록 = response.as(new TypeRef<List<OrderTableResponse>>() {
         });
 
-        assertThat(조회된_메뉴그룹_목록).contains(등록된_주문테이블);
+        assertThat(조회된_메뉴그룹_목록).extracting("id").contains(orderTableId);
     }
 
-    public static void 방문한_손님_수_변경_검증(ExtractableResponse<Response> 방문한_손님_수_변경_결과,
-        OrderTable 예상_주문테이블) {
-        OrderTable 변경된_주문테이블 = 방문한_손님_수_변경_결과.as(OrderTable.class);
+    public static void 방문한_손님_수_변경_검증(ExtractableResponse<Response> response,
+        OrderTableRequest expected) {
+        OrderTableResponse 주문테이블_결과 = response.as(OrderTableResponse.class);
 
-        assertThat(변경된_주문테이블.getId()).isEqualTo(예상_주문테이블.getId());
-        assertThat(변경된_주문테이블.getNumberOfGuests()).isEqualTo(예상_주문테이블.getNumberOfGuests());
+        assertThat(주문테이블_결과.getNumberOfGuests()).isEqualTo(expected.getNumberOfGuests());
     }
 
 }
