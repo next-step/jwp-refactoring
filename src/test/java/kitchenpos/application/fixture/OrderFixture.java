@@ -17,6 +17,9 @@ public class OrderFixture {
         return 주문;
     }
 
+    public static Order 식사중_주문() {
+        return Order.of(OrderStatus.MEAL);
+    }
 
     public static Order 주문_생성(Long id, Long orderTableId, OrderStatus orderStatus,
         List<OrderLineItem> orderLineItems) {
