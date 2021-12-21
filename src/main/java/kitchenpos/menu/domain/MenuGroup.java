@@ -23,6 +23,10 @@ public class MenuGroup {
     protected MenuGroup() {
     }
 
+    public MenuGroup(String name) {
+        this.name = new Name(name);
+    }
+
     public Long getId() {
         return id;
     }
