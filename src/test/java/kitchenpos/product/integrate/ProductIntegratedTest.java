@@ -1,4 +1,4 @@
-package kitchenpos.product.acceptance;
+package kitchenpos.product.integrate;
 
 import kitchenpos.product.application.ProductService;
 import kitchenpos.product.dto.ProductRequest;
@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @DisplayName("상품 통합테스트")
-public class ProductServiceTest {
+public class ProductIntegratedTest {
 
     @Autowired
     private ProductService productService;

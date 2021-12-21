@@ -1,4 +1,4 @@
-package kitchenpos.table.acceptance;
+package kitchenpos.table.integrate;
 
 import kitchenpos.table.application.TableService;
 import kitchenpos.table.dto.*;
@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 @SpringBootTest
 @DisplayName("주문 테이블 통합테스트")
-public class TableServiceTest {
+public class TableIntegratedTest {
 
     @Autowired
     private TableService tableService;

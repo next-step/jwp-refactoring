@@ -1,12 +1,16 @@
 package kitchenpos.table.domain;
 
+import kitchenpos.common.exception.InvalidOrderTableException;
+import kitchenpos.common.exception.InvalidTableGroupSizeException;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.util.CollectionUtils;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "table_group")
@@ -19,8 +23,8 @@ public class TableGroup {
     @CreatedDate
     private LocalDateTime createdDate;
 
-    @OneToMany(mappedBy = "tableGroup")
-    private List<OrderTable> orderTables;
+    @Embedded
+    private OrderTables orderTables;
 
     protected TableGroup() {
     }
@@ -28,7 +32,12 @@ public class TableGroup {
     public TableGroup(long id, LocalDateTime createdDate) {
         this.id = id;
         this.createdDate = createdDate;
-        this.orderTables = new ArrayList<>();
+        this.orderTables = new OrderTables();
+    }
+
+    public TableGroup(OrderTables orderTables) {
+        this.createdDate = LocalDateTime.now();
+        this.orderTables = orderTables;
     }
 
     public Long getId() {
@@ -39,15 +48,12 @@ public class TableGroup {
         return createdDate;
     }
 
-    public void createdNow() {
-        this.createdDate = LocalDateTime.now();
-    }
-
     public List<OrderTable> getOrderTables() {
-        return orderTables;
+        return orderTables.getOrderTables();
     }
 
-    public void initOrderTables(final List<OrderTable> orderTables) {
-        this.orderTables = orderTables;
+    public void initOrderTables(OrderTable orderTable) {
+        orderTable.assignTableGroup(this);
+        orderTable.changeEmpty(false);
     }
 }

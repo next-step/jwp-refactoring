@@ -1,4 +1,4 @@
-package kitchenpos.menu.acceptance;
+package kitchenpos.menu.integrate;
 
 import kitchenpos.menu.application.MenuGroupService;
 import kitchenpos.menu.dto.MenuGroupRequest;
@@ -14,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @DisplayName("메뉴 그룹 통합테스트")
-public class MenuGroupServiceTest {
+public class MenuGroupIntegratedTest {
 
     @Autowired
     private MenuGroupService menuGroupService;

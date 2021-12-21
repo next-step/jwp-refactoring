@@ -65,7 +65,7 @@ public class MenuServiceTest {
 
     @Test
     @DisplayName("메뉴 가격은 0원 이상 이어야 한다.")
-    void menuPriceOverZeroException() {
+    void menuPriceOverZeroExceptionTest() {
         // given
         MenuProductRequest 간장치킨_요청 = new MenuProductRequest(간장치킨_상품.getId(), 2L);
         MenuRequest 요청_데이터 = new MenuRequest(
@@ -82,7 +82,7 @@ public class MenuServiceTest {
 
     @Test
     @DisplayName("메뉴 그룹이 존재하지 않으면 등록 할 수 없다.")
-    void notFoundMenuGroupException() {
+    void notFoundMenuGroupExceptionTest() {
         // given
         MenuProductRequest 간장치킨_요청 = new MenuProductRequest(간장치킨_상품.getId(), 2L);
         MenuRequest 요청_데이터 = new MenuRequest(
@@ -99,7 +99,7 @@ public class MenuServiceTest {
 
     @Test
     @DisplayName("메뉴에 포함된 상품들이 존재하지 않으면 등록 할 수 없다.")
-    void notFoundMenuProduct() {
+    void notFoundMenuProductTest() {
         // given
         MenuProductRequest 간장치킨_요청 = new MenuProductRequest(간장치킨_상품.getId(), 2L);
         MenuRequest 요청_데이터 = new MenuRequest(
@@ -117,7 +117,7 @@ public class MenuServiceTest {
 
     @Test
     @DisplayName("메뉴 가격은 [`상품 가격 * 메뉴에 속하는 상품 수량`]의 합보다 클 수 없다.")
-    void menuPriceNotOverTotalProductPrice() {
+    void menuPriceNotOverTotalProductPriceTest() {
         // given
         MenuProductRequest 간장치킨_요청 = new MenuProductRequest(간장치킨_상품.getId(), 1L);
         MenuProductRequest 순살치킨_요청 = new MenuProductRequest(순살치킨_상품.getId(), 1L);

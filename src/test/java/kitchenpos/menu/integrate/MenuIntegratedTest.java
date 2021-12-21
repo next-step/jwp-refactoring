@@ -1,4 +1,4 @@
-package kitchenpos.menu.acceptance;
+package kitchenpos.menu.integrate;
 
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.dto.MenuProductRequest;
@@ -17,7 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @DisplayName("메뉴 통합 테스트")
-public class MenuServiceTest {
+public class MenuIntegratedTest {
 
     @Autowired
     private MenuService menuService;
@@ -27,29 +27,37 @@ public class MenuServiceTest {
     public void menuManage() {
         // given
         // 메뉴 생성
-        MenuProductRequest 간장치킨_세트 = new MenuProductRequest(5L, 1L);
-        MenuProductRequest 순살치킨_세트 = new MenuProductRequest(6L, 1L);
-        MenuRequest menuRequest = new MenuRequest(
+        MenuProductRequest 간장치킨_세트 = 메뉴_상품_요청(5L, 1L);
+        MenuProductRequest 순살치킨_세트 = 메뉴_상품_요청(6L, 1L);
+        MenuRequest menuRequest = 메뉴_요청(
                 "간장 순살 세트"
                 , BigDecimal.valueOf(32_000)
                 , 1L
                 , Arrays.asList(간장치킨_세트, 순살치킨_세트));
 
         // when
-        // 메뉴 등록
+        // 메뉴를 등록한다.
         MenuResponse menuResponse = menuService.create(menuRequest);
         // then
-        // 메뉴 등록됨
+        // 메뉴가 정상적으로 등록된다.
         assertThat(menuResponse.getId()).isNotNull();
         assertThat(menuResponse.getMenuProductResponses()).hasSize(2);
 
         // when
-        // 메뉴 리스트 조회
+        // 메뉴 리스트를 조회한다.
         List<MenuResponse> savedMenus = menuService.list();
 
         // then
-        // 메뉴 리스트 조회됨
+        // 메뉴 리스트가 정상적으로 조회된다.
         assertThat(savedMenus).hasSize(7);
         assertThat(savedMenus).contains(menuResponse);
+    }
+
+    private MenuProductRequest 메뉴_상품_요청(Long productId, Long quantity) {
+        return new MenuProductRequest(productId, quantity);
+    }
+
+    private MenuRequest 메뉴_요청(String name, BigDecimal price, Long menuGroupId, List<MenuProductRequest> productRequests) {
+        return new MenuRequest(name, price, menuGroupId, productRequests);
     }
 }

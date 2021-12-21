@@ -17,7 +17,7 @@ import static kitchenpos.menu.domain.MenuTest.치킨세트;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class MenuProductsTest {
+public class MenuProductsTest {
     private MenuProducts 메뉴_상품_리스트;
 
     @BeforeEach

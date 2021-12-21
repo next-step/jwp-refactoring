@@ -47,7 +47,7 @@ public class TableServiceTest {
 
     @Test
     @DisplayName("빈 테이블 등록")
-    void createEmptyTable() {
+    void createEmptyTableTest() {
         // given
         given(orderTableRepository.save(any())).willReturn(빈자리);
         // when
@@ -59,7 +59,7 @@ public class TableServiceTest {
 
     @Test
     @DisplayName("주문 테이블 리스트 조회")
-    void orderTableList() {
+    void orderTableListTest() {
         // given
         given(orderTableRepository.findAll()).willReturn(Collections.singletonList(빈자리));
         // when
@@ -77,7 +77,7 @@ public class TableServiceTest {
             "true", "false"
     })
     @DisplayName("테이블 상태 변경")
-    void changeEmpty(boolean empty) {
+    void changeEmptyTest(boolean empty) {
         // given
         ChangeEmptyRequest 요청_데이터 = new ChangeEmptyRequest(empty);
 
@@ -94,7 +94,7 @@ public class TableServiceTest {
 
     @Test
     @DisplayName("등록되지 않은 주문 테이블은 변경 할 수 없다.")
-    void notFoundOrderTableToChangeEmpty() {
+    void notFoundOrderTableToChangeEmptyTest() {
         // given
         given(orderTableRepository.findByIdElseThrow(anyLong()))
                 .willThrow(NotFoundOrderTableException.class);
@@ -106,7 +106,7 @@ public class TableServiceTest {
 
     @Test
     @DisplayName("테이블 그룹이 지정된 주문 테이블은 변경 할 수 없다.")
-    void nonNullTableGroupId() {
+    void nonNullTableGroupIdTest() {
         // given
         OrderTable savedOrderTable = mock(OrderTable.class);
         given(savedOrderTable.isNotNullTableGroup()).willReturn(true);
@@ -120,7 +120,7 @@ public class TableServiceTest {
 
     @Test
     @DisplayName("주문 테이블이 존재하고, 주문 상태가 `조리(COOKING)`, `식사(MEAL)`상태이면 변경 할 수 없다.")
-    void existsByOrderTableIdAndOrderStatusIn() {
+    void existsByOrderTableIdAndOrderStatusInTest() {
         // given
         OrderTable savedOrderTable = mock(OrderTable.class);
         given(orderTableRepository.findByIdElseThrow(anyLong())).willReturn(savedOrderTable);
@@ -134,7 +134,7 @@ public class TableServiceTest {
 
     @Test
     @DisplayName("방문한 인원 변경")
-    void changeNumberOfGuests() {
+    void changeNumberOfGuestsTest() {
         // given
         OrderTable savedOrderTable = mock(OrderTable.class);
         given(orderTableRepository.findByIdElseThrow(anyLong())).willReturn(savedOrderTable);
@@ -149,7 +149,7 @@ public class TableServiceTest {
 
     @Test
     @DisplayName("방문한 인원은 0명 이상이어야 한다.")
-    void guestsIsOverZero() {
+    void guestsIsOverZeroTest() {
         // given
         ChangeGuestsRequest changeGuestsRequest = new ChangeGuestsRequest(-1);
         OrderTable savedOrderTable = mock(OrderTable.class);
@@ -162,7 +162,7 @@ public class TableServiceTest {
 
     @Test
     @DisplayName("등록되지 않은 주문 테이블은 변경 할 수 없다.")
-    void notFoundOrderTableToChangeNumberOfGuests() {
+    void notFoundOrderTableToChangeNumberOfGuestsTest() {
         // given
         given(orderTableRepository.findByIdElseThrow(anyLong())).willThrow(NotFoundOrderTableException.class);
         // when
@@ -173,7 +173,7 @@ public class TableServiceTest {
 
     @Test
     @DisplayName("빈 테이블의 인원은 변경 할 수 없다.")
-    void notChangeEmptyTable() {
+    void notChangeEmptyTableTest() {
         // given
         OrderTable savedOrderTable = mock(OrderTable.class);
         given(orderTableRepository.findByIdElseThrow(anyLong())).willReturn(savedOrderTable);

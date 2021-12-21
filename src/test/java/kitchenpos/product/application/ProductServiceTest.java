@@ -48,7 +48,7 @@ public class ProductServiceTest {
             1, 0
     })
     @DisplayName("상품 가격이 0원 이상인 상품 등록")
-    void productPriceOverZero(int price) {
+    void productPriceOverZeroTest(int price) {
         // given
         ProductRequest 양념치킨_요청 = new ProductRequest("양념치킨", BigDecimal.valueOf(price));
         given(productRepository.save(any())).willReturn(양념치킨_요청.toProduct());
@@ -60,7 +60,7 @@ public class ProductServiceTest {
 
     @Test
     @DisplayName("상품 가격은 0원 이상 이어야 한다.")
-    void productPriceException() {
+    void productPriceExceptionTest() {
         // given
         ProductRequest 요청_데이터 = new ProductRequest("양념치킨", BigDecimal.valueOf(-1));
         // when
@@ -71,7 +71,7 @@ public class ProductServiceTest {
 
     @Test
     @DisplayName("상품 목록 조회")
-    void findAllProduct() {
+    void findAllProductTest() {
         // given
         ProductResponse 상품_응답 = ProductResponse.of(후라이드_상품);
         given(productRepository.findAll())
