@@ -33,11 +33,20 @@ public class MenuProduct {
         this.quantity = quantity;
     }
 
+    public MenuProduct(Long productId, long quantity) {
+        this.product = Product.of(productId);
+        this.quantity = quantity;
+    }
+
     public MenuProduct(Long id, Long menuId, Long productId, long quantity) {
         this.id = id;
         this.menu = Menu.of(menuId);
         this.product = Product.of(productId);
         this.quantity = quantity;
+    }
+
+    public static MenuProduct of(Long productId, long quantity) {
+        return new MenuProduct(productId, quantity);
     }
 
     public static MenuProduct of(Long menuId, Long productId, long quantity) {

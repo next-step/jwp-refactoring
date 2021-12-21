@@ -14,6 +14,7 @@ import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProductRepository;
 import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import org.assertj.core.util.Lists;
@@ -71,7 +72,7 @@ public class MenuServiceTest {
         given(menuProductRepository.save(menuProduct2)).willReturn(menuProduct2);
 
         // when
-        Menu result = menuService.create(menu);
+        MenuResponse result = menuService.create(menu);
 
         // then
         assertThat(result.getName()).isEqualTo("후라이드+양념");
@@ -143,7 +144,7 @@ public class MenuServiceTest {
             Lists.newArrayList(menuProduct3));
 
         // when
-        List<Menu> result = menuService.list();
+        List<MenuResponse> result = menuService.list();
 
         // then
         assertThat(result).hasSize(2);

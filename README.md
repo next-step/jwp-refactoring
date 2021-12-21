@@ -74,7 +74,8 @@
   - [X] MenuGroupRepository 사용하도록 수정
   - [X] MenuProductRepository 사용하도록 수정
   - [X] 메뉴 그룹 dto 모델 추가
-  - [ ] 메뉴 dto 모델 추가
+  - [X] 메뉴 dto 모델 추가
+  - [X] 메뉴 상품 dto 모델 추가
 - [ ] 테이블 관리 리팩토링
   - [ ] 모델
     - [ ] TableGroup 엔티티 변환
