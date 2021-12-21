@@ -26,6 +26,7 @@ public class Product {
     }
 
     public Product(String name, BigDecimal price) {
+        validPrice(price);
         this.name = name;
         this.price = price;
     }
@@ -56,6 +57,20 @@ public class Product {
 
     public void setPrice(final BigDecimal price) {
         this.price = price;
+    }
+
+    public BigDecimal calculatePrice(Long quantity) {
+        return price.multiply(BigDecimal.valueOf(quantity));
+    }
+
+    public boolean isSame(Long productId) {
+        return Objects.equals(id, productId);
+    }
+
+    private void validPrice(BigDecimal price) {
+        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException();
+        }
     }
 
     @Override
