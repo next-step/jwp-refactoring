@@ -1,14 +1,15 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuProductDao;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.NotFoundMenuGroupValidator;
 import kitchenpos.menu.domain.Product;
-import kitchenpos.menu.infra.MenuGroupRepository;
-import kitchenpos.menu.infra.ProductRepository;
+import kitchenpos.menu.domain.MenuPriceValidator;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.menu.infra.MenuRepository;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -22,28 +23,26 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
-import static kitchenpos.application.MenuGroupServiceTest.getMenuGroup;
 import static kitchenpos.application.ProductServiceTest.getProduct;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 
 
 @DisplayName("메뉴 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
 class MenuServiceTest {
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
     @Mock
-    private MenuGroupRepository menuGroupRepository;
+    private NotFoundMenuGroupValidator notFoundMenuGroupValidator;
     @Mock
-    private MenuProductDao menuProductDao;
-    @Mock
-    private ProductRepository productRepository;
+    private MenuPriceValidator menuPriceValidator;
     @InjectMocks
     private MenuService menuService;
 
@@ -60,27 +59,32 @@ class MenuServiceTest {
     @Test
     void create() {
         // given
-        Menu createRequest = getCreateRequest(
+        MenuRequest createRequest = getCreateRequest(
                 "대표메뉴",
                 17_000,
-                getMenuGroup(1L, "쌀국수류"),
+                1L,
+                Arrays.asList(
+                        new MenuProductRequest(양지쌀국수.getId(), 10),
+                        new MenuProductRequest(분짜.getId(), 6)
+                )
+        );
+
+        Menu expected = getMenu(1L, "추천메뉴",
+                17_000,
+                1L,
                 Arrays.asList(
                         getMenuProduct(1L, 양지쌀국수, 10),
                         getMenuProduct(2L, 분짜, 6)
-                )
-        );
-        Menu expected = getMenu(1L, createRequest);
+                ));
 
-        given(menuGroupRepository.existsById(anyLong())).willReturn(true);
-        given(productRepository.findById(분짜.getId())).willReturn(Optional.of(분짜));
-        given(productRepository.findById(양지쌀국수.getId())).willReturn(Optional.of(양지쌀국수));
-        given(menuDao.save(any(Menu.class))).willReturn(expected);
-        given(menuProductDao.save(any(MenuProduct.class))).willReturn(new MenuProduct());
+
+        doNothing().when(notFoundMenuGroupValidator).validate(anyLong());
+        given(menuRepository.save(any(Menu.class))).willReturn(expected);
 
         // when
-        Menu actual = menuService.create(createRequest);
+        MenuResponse actual = menuService.create(createRequest);
         // then
-        assertThat(actual).isEqualTo(expected);
+        assertThat(actual).isEqualTo(MenuResponse.of(expected));
     }
 
 
@@ -92,13 +96,13 @@ class MenuServiceTest {
         @Test
         void createByZeroMoreLessPrice() {
             // given
-            Menu createRequest = getCreateRequest(
+            MenuRequest createRequest = getCreateRequest(
                     "대표메뉴",
                     -10,
-                    getMenuGroup(1L, "쌀국수류"),
+                    1L,
                     Arrays.asList(
-                            getMenuProduct(1L, 양지쌀국수, 10),
-                            getMenuProduct(2L, 분짜, 6)
+                            new MenuProductRequest(양지쌀국수.getId(), 10),
+                            new MenuProductRequest(분짜.getId(), 6)
                     )
             );
             // when
@@ -111,65 +115,38 @@ class MenuServiceTest {
         @Test
         void createByNotExistMenuGroup() {
             // given
-            Menu createRequest = getCreateRequest(
+            MenuRequest createRequest = getCreateRequest(
                     "대표메뉴",
                     19_000,
-                    getMenuGroup(1L, "쌀국수류"),
+                    1L,
                     Arrays.asList(
-                            getMenuProduct(1L, 양지쌀국수, 10),
-                            getMenuProduct(2L, 분짜, 6)
+                            new MenuProductRequest(양지쌀국수.getId(), 10),
+                            new MenuProductRequest(분짜.getId(), 6)
                     )
             );
-            given(menuGroupRepository.existsById(any(Long.TYPE))).willReturn(false);
+            doThrow(new IllegalArgumentException()).when(notFoundMenuGroupValidator).validate(anyLong());
             // when
             ThrowableAssert.ThrowingCallable createCall = () -> menuService.create(createRequest);
             // then
             assertThatThrownBy(createCall).isInstanceOf(IllegalArgumentException.class);
         }
 
-        @DisplayName("메뉴상품그룹의 메뉴 아이디에 따른 메뉴 상품의 상품이 존재하지 않을 경우")
-        @Test
-        void createByNotExistProduct() {
-            // given
-            Menu createRequest = getCreateRequest(
-                    "대표메뉴",
-                    19_000,
-                    getMenuGroup(1L, "쌀국수류"),
-                    Arrays.asList(
-                            getMenuProduct(1L, 양지쌀국수, 10),
-                            getMenuProduct(2L, 분짜, 6)
-                    )
-            );
-            given(menuGroupRepository.existsById(any(Long.TYPE))).willReturn(false);
-            // when
-            ThrowableAssert.ThrowingCallable createCall = () -> menuService.create(createRequest);
-            // then
-            assertThatThrownBy(createCall).isInstanceOf(IllegalArgumentException.class);
-        }
-
-        @DisplayName("메뉴의 가격은 포함된 상품들의 금액의 합 보다 클 경우")
+        @DisplayName("메뉴 가격의 유효성 검사가 통과하지 않았을 경우")
         @Test
         void createByIllegalPrice() {
             // given
-            final MenuProduct 메뉴로_등록된_양지쌀국수 = getMenuProduct(1L, 양지쌀국수, 10);
-            final MenuProduct 메뉴로_등록된_분짜 = getMenuProduct(2L, 분짜, 6);
-            final BigDecimal 포함된_상품들의_총_가격보다_1큰_가격 = 양지쌀국수.getPrice().multiply(BigDecimal.valueOf(메뉴로_등록된_양지쌀국수.getQuantity()))
-                    .add(분짜.getPrice().multiply(BigDecimal.valueOf(메뉴로_등록된_분짜.getQuantity())))
-                    .add(BigDecimal.ONE);
-
-            Menu createRequest = getCreateRequest(
+            MenuRequest createRequest = getCreateRequest(
                     "대표메뉴",
-                    포함된_상품들의_총_가격보다_1큰_가격,
-                    getMenuGroup(1L, "쌀국수류"),
+                    1212,
+                    1L,
                     Arrays.asList(
-                            메뉴로_등록된_양지쌀국수,
-                            메뉴로_등록된_분짜
+                            new MenuProductRequest(1L, 10),
+                            new MenuProductRequest(2L, 13)
                     )
             );
 
-            given(menuGroupRepository.existsById(anyLong())).willReturn(true);
-            given(productRepository.findById(분짜.getId())).willReturn(Optional.of(분짜));
-            given(productRepository.findById(양지쌀국수.getId())).willReturn(Optional.of(양지쌀국수));
+            // given
+            doThrow(new IllegalArgumentException()).when(menuPriceValidator).validate(any(), any());
             // when
             ThrowableAssert.ThrowingCallable createCall = () -> menuService.create(createRequest);
             // then
@@ -183,7 +160,7 @@ class MenuServiceTest {
         // given
         Menu 대표메뉴 = getMenu(1L, "대표메뉴",
                 17_000,
-                getMenuGroup(1L, "쌀국수류"),
+                1L,
                 Arrays.asList(
                         getMenuProduct(1L, 양지쌀국수, 10),
                         getMenuProduct(2L, 분짜, 6)
@@ -191,60 +168,34 @@ class MenuServiceTest {
 
         Menu 추천메뉴 = getMenu(1L, "추천메뉴",
                 17_000,
-                getMenuGroup(1L, "쌀국수류"),
+                1L,
                 Arrays.asList(
                         getMenuProduct(1L, 양지쌀국수, 10),
                         getMenuProduct(2L, 분짜, 6)
                 ));
 
         final List<Menu> expected = Arrays.asList(대표메뉴, 추천메뉴);
-        given(menuDao.findAll()).willReturn(expected);
+        given(menuRepository.findAll()).willReturn(expected);
         // when
-        List<Menu> list = menuService.list();
+        List<MenuResponse> list = menuService.list();
         // then
-        assertThat(list).containsExactlyElementsOf(expected);
+        assertThat(list).containsExactlyElementsOf(Arrays.asList(MenuResponse.of(대표메뉴), MenuResponse.of(추천메뉴)));
 
     }
 
 
-    public static MenuProduct getMenuProduct(long id, Product product, int quantity) {
-        final MenuProduct menuProduct = new MenuProduct();
-        menuProduct.setProductId(product.getId());
-        menuProduct.setSeq(id);
-        menuProduct.setQuantity(quantity);
-        return menuProduct;
+    public static MenuProduct getMenuProduct(Long id, Product product, int quantity) {
+        return MenuProduct.generate(id, product.getId(), quantity);
     }
 
-    public static Menu getMenu(long id, Menu createRequest) {
-        final Menu menu = new Menu();
-        menu.setId(id);
-        menu.setName(createRequest.getName());
-        menu.setMenuProducts(createRequest.getMenuProducts());
-        menu.setMenuGroupId(createRequest.getMenuGroupId());
-        menu.setPrice(createRequest.getPrice());
-        return menu;
+
+    public static Menu getMenu(long id, String name, int price, Long menuGroupId, List<MenuProduct> menuProducts) {
+        return Menu.generate(id, name, menuProducts, menuGroupId, BigDecimal.valueOf(price));
+
     }
 
-    public static Menu getMenu(long id, String name, int price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        final Menu menu = new Menu();
-        menu.setId(id);
-        menu.setName(name);
-        menu.setMenuProducts(menuProducts);
-        menu.setMenuGroupId(menuGroup.getId());
-        menu.setPrice(BigDecimal.valueOf(price));
-        return menu;
+    private MenuRequest getCreateRequest(String name, int price, Long menuGroupId, List<MenuProductRequest> menuProducts) {
+        return new MenuRequest(name, price, menuGroupId, menuProducts);
     }
 
-    private Menu getCreateRequest(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        final Menu menu = new Menu();
-        menu.setName(name);
-        menu.setMenuProducts(menuProducts);
-        menu.setMenuGroupId(menuGroup.getId());
-        menu.setPrice(price);
-        return menu;
-    }
-
-    private Menu getCreateRequest(String name, int price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        return getCreateRequest(name, BigDecimal.valueOf(price), menuGroup, menuProducts);
-    }
 }
