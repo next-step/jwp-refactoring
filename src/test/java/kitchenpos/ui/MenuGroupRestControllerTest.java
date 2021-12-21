@@ -42,8 +42,8 @@ class MenuGroupRestControllerTest extends RestControllerTest {
 
         // when
         ResultActions actions = mockMvc.perform(post(API_MENU_GROUP_ROOT)
-                .content(asJsonString(두마리메뉴))
-                .contentType(MediaType.APPLICATION_JSON))
+                        .content(asJsonString(두마리메뉴))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print());
 
         // then
@@ -64,7 +64,7 @@ class MenuGroupRestControllerTest extends RestControllerTest {
 
         // when
         ResultActions actions = mockMvc.perform(get(API_MENU_GROUP_ROOT)
-                .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print());
 
         // then
