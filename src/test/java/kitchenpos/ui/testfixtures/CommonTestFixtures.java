@@ -1,4 +1,4 @@
-package kitchenpos.ui.testfixture;
+package kitchenpos.ui.testfixtures;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 

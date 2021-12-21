@@ -2,13 +2,11 @@ package kitchenpos.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.BDDMockito.any;
-import static org.mockito.BDDMockito.given;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
+import kitchenpos.application.testfixtures.ProductTestFixtures;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
 import org.junit.jupiter.api.DisplayName;
@@ -34,9 +32,7 @@ class ProductServiceTest {
         String name = "타코야끼";
         BigDecimal price = BigDecimal.valueOf(12000);
         Product product = new Product(name, price);
-
-        given(productDao.save(any()))
-            .willReturn(product);
+        ProductTestFixtures.상품_생성_결과_모킹(productDao, product);
 
         //when
         Product savedProduct = productService.create(product);
@@ -62,27 +58,16 @@ class ProductServiceTest {
     @Test
     void list() {
         //given
-        List<Product> products = Arrays.asList(new Product("타코야끼", BigDecimal.valueOf(12000)),
+        List<Product> products = Arrays.asList(
+            new Product("타코야끼", BigDecimal.valueOf(12000)),
             new Product("뿌링클", BigDecimal.valueOf(22000)));
-        given(productDao.findAll())
-            .willReturn(products);
+        ProductTestFixtures.상품_전체_조회_모킹(productDao, products);
 
         //when
         List<Product> findProducts = productService.list();
 
         //then
         assertThat(findProducts.size()).isEqualTo(products.size());
-        상품_목록_확인(findProducts, products);
-    }
-
-    private void 상품_목록_확인(List<Product> findProducts, List<Product> mockProducts) {
-        List<String> findProductNames = findProducts.stream()
-            .map(Product::getName)
-            .collect(Collectors.toList());
-
-        List<String> mockProductNames = mockProducts.stream()
-            .map(Product::getName)
-            .collect(Collectors.toList());
-        assertThat(findProductNames).containsAll(mockProductNames);
+        assertThat(findProducts).containsAll(products);
     }
 }

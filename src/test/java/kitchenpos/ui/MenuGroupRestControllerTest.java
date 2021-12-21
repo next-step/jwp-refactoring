@@ -13,7 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 import kitchenpos.application.MenuGroupService;
 import kitchenpos.domain.MenuGroup;
-import kitchenpos.ui.testfixture.CommonTestFixtures;
+import kitchenpos.ui.testfixtures.CommonTestFixtures;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

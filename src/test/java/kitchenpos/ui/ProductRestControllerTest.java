@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 import kitchenpos.application.ProductService;
 import kitchenpos.domain.Product;
-import kitchenpos.ui.testfixture.CommonTestFixtures;
+import kitchenpos.ui.testfixtures.CommonTestFixtures;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +23,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-@WebMvcTest(ProductRestControllerTest.class)
+@WebMvcTest(ProductRestController.class)
 class ProductRestControllerTest {
 
     private static final String BASE_PATH = "/api/products";

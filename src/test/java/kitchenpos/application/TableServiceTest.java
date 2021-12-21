@@ -2,13 +2,11 @@ package kitchenpos.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.BDDMockito.any;
-import static org.mockito.BDDMockito.anyList;
-import static org.mockito.BDDMockito.given;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
+import kitchenpos.application.testfixtures.OrderTestFixtures;
+import kitchenpos.application.testfixtures.TableTestFixtures;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.OrderTable;
@@ -37,8 +35,7 @@ class TableServiceTest {
     void create() {
         //given
         OrderTable orderTable = new OrderTable(0, true);
-        given(orderTableDao.save(orderTable))
-            .willReturn(orderTable);
+        TableTestFixtures.주문테이블_저장_결과_모킹(orderTableDao, orderTable);
 
         //when
         OrderTable savedOrderTable = tableService.create(orderTable);
@@ -51,10 +48,11 @@ class TableServiceTest {
     @Test
     void list() {
         //given
-        List<OrderTable> orderTables = Arrays.asList(new OrderTable(1L, 0, true),
+        List<OrderTable> orderTables = Arrays.asList(
+            new OrderTable(1L, 0, true),
             new OrderTable(2L, 6, false));
-        given(tableService.list())
-            .willReturn(orderTables);
+
+        TableTestFixtures.주문테이블_전체_조회_모킹(orderTableDao, orderTables);
 
         //when
         List<OrderTable> findOrderTables = tableService.list();
@@ -69,11 +67,8 @@ class TableServiceTest {
     void changeEmpty() {
         //given
         OrderTable orderTable = new OrderTable(1L, 0, true);
-        given(orderTableDao.findById(any()))
-            .willReturn(Optional.of(orderTable));
-
-        given(orderTableDao.save(orderTable))
-            .willReturn(orderTable);
+        TableTestFixtures.특정_주문테이블_조회_모킹(orderTableDao, orderTable);
+        TableTestFixtures.주문테이블_저장_결과_모킹(orderTableDao, orderTable);
 
         //when
         OrderTable changeOrderTable = new OrderTable(false);
@@ -88,8 +83,7 @@ class TableServiceTest {
     void changeEmpty_exception1() {
         //given
         OrderTable orderTable = new OrderTable(1L, 1L, 0, true);
-        given(orderTableDao.findById(any()))
-            .willReturn(Optional.of(orderTable));
+        TableTestFixtures.특정_주문테이블_조회_모킹(orderTableDao, orderTable);
 
         //when, then
         OrderTable changeOrderTable = new OrderTable(false);
@@ -102,10 +96,8 @@ class TableServiceTest {
     void changeEmpty_exception2() {
         //given
         OrderTable orderTable = new OrderTable(1L, 0, true);
-        given(orderTableDao.findById(any()))
-            .willReturn(Optional.of(orderTable));
-        given(orderDao.existsByOrderTableIdAndOrderStatusIn(any(), anyList()))
-            .willReturn(true);
+        TableTestFixtures.특정_주문테이블_조회_모킹(orderTableDao, orderTable);
+        OrderTestFixtures.특정_테이블이_특정_상태인지_조회_모킹(orderDao, true);
 
         //when, then
         OrderTable changeOrderTable = new OrderTable(false);
@@ -118,11 +110,8 @@ class TableServiceTest {
     void changeNumberOfGuests() {
         //given
         OrderTable orderTable = new OrderTable(1L, 0, false);
-        given(orderTableDao.findById(any()))
-            .willReturn(Optional.of(orderTable));
-
-        given(orderTableDao.save(orderTable))
-            .willReturn(orderTable);
+        TableTestFixtures.특정_주문테이블_조회_모킹(orderTableDao, orderTable);
+        TableTestFixtures.주문테이블_저장_결과_모킹(orderTableDao, orderTable);
 
         //when
         OrderTable changeOrderTable = new OrderTable(6);
@@ -152,8 +141,7 @@ class TableServiceTest {
     void changeNumberOfGuests_exception2() {
         //given
         OrderTable orderTable = new OrderTable(1L, 0, true);
-        given(orderTableDao.findById(any()))
-            .willReturn(Optional.of(orderTable));
+        TableTestFixtures.특정_주문테이블_조회_모킹(orderTableDao, orderTable);
 
         //when, then
         OrderTable changeOrderTable = new OrderTable(6);

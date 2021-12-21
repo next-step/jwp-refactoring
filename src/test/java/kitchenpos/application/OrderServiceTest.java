@@ -2,13 +2,13 @@ package kitchenpos.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.BDDMockito.any;
-import static org.mockito.BDDMockito.given;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
+import kitchenpos.application.testfixtures.MenuTestFixtures;
+import kitchenpos.application.testfixtures.OrderTestFixtures;
+import kitchenpos.application.testfixtures.TableTestFixtures;
 import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
@@ -52,15 +52,10 @@ class OrderServiceTest {
             new OrderLineItem(2L, 3));
         Order order = new Order(orderTable.getId(), LocalDateTime.now(), orderLineItems);
 
-        given(menuDao.countByIdIn(any()))
-            .willReturn((long) orderLineItems.size());
-        given(orderTableDao.findById(any()))
-            .willReturn(Optional.of(orderTable));
-        given(orderDao.save(any()))
-            .willReturn(order);
-        orderLineItems.stream()
-            .forEach(orderLineItem -> given(orderLineItemDao.save(orderLineItem))
-                .willReturn(orderLineItem));
+        MenuTestFixtures.특정_리스트에_해당하는_메뉴_개수_조회_모킹(menuDao, orderLineItems.size());
+        TableTestFixtures.특정_주문테이블_조회_모킹(orderTableDao, orderTable);
+        OrderTestFixtures.주문_저장_결과_모킹(orderDao, order);
+        OrderTestFixtures.주문항목리스트_저장_결과_모킹(orderLineItemDao, orderLineItems);
 
         // when
         Order savedOrder = orderService.create(order);
@@ -94,8 +89,7 @@ class OrderServiceTest {
             new OrderLineItem(1L, 3));
         Order order = new Order(orderTable.getId(), LocalDateTime.now(), orderLineItems);
 
-        given(menuDao.countByIdIn(any()))
-            .willReturn((long) orderLineItems.size());
+        MenuTestFixtures.특정_리스트에_해당하는_메뉴_개수_조회_모킹(menuDao, orderLineItems.size());
 
         // when, then
         assertThatThrownBy(() -> orderService.create(order))
@@ -110,10 +104,8 @@ class OrderServiceTest {
         List<OrderLineItem> orderLineItems = Arrays.asList(new OrderLineItem(1L, 1));
         Order order = new Order(orderTable.getId(), LocalDateTime.now(), orderLineItems);
 
-        given(menuDao.countByIdIn(any()))
-            .willReturn((long) orderLineItems.size());
-        given(orderTableDao.findById(any()))
-            .willReturn(Optional.of(orderTable));
+        MenuTestFixtures.특정_리스트에_해당하는_메뉴_개수_조회_모킹(menuDao, orderLineItems.size());
+        TableTestFixtures.특정_주문테이블_조회_모킹(orderTableDao, orderTable);
 
         // when, then
         assertThatThrownBy(() -> orderService.create(order))
@@ -137,10 +129,8 @@ class OrderServiceTest {
             new Order(2L, orderTable.getId(), OrderStatus.COMPLETION.name(), LocalDateTime.now(),
                 orderLineItems2));
 
-        given(orderDao.findAll())
-            .willReturn(orders);
-        orders.stream().forEach(order -> given(orderLineItemDao.findAllByOrderId(order.getId()))
-            .willReturn(order.getOrderLineItems()));
+        OrderTestFixtures.주문_전체_조회_모킹(orderDao, orders);
+        OrderTestFixtures.특정_주문에_해당하는_주문항목_조회_모킹(orderLineItemDao, orders);
 
         //when
         List<Order> findOrders = orderService.list();
@@ -158,12 +148,9 @@ class OrderServiceTest {
         List<OrderLineItem> orderLineItems = Arrays.asList(
             new OrderLineItem(1L, 1),
             new OrderLineItem(2L, 3));
-
         Order order = new Order(1L, orderTable.getId(), OrderStatus.MEAL.name(),
             LocalDateTime.now(), orderLineItems);
-
-        given(orderDao.findById(any()))
-            .willReturn(Optional.of(order));
+        OrderTestFixtures.특정_주문_조회_모킹(orderDao, order);
 
         //when
         Order changeOrder = new Order(OrderStatus.COMPLETION.name());
@@ -183,9 +170,7 @@ class OrderServiceTest {
 
         Order order = new Order(1L, orderTable.getId(), OrderStatus.COMPLETION.name(),
             LocalDateTime.now(), orderLineItems);
-
-        given(orderDao.findById(any()))
-            .willReturn(Optional.of(order));
+        OrderTestFixtures.특정_주문_조회_모킹(orderDao, order);
 
         //when
         Order changeOrder = new Order(OrderStatus.MEAL.name());

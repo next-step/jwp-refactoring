@@ -1,11 +1,10 @@
 package kitchenpos.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
 
 import java.util.Arrays;
 import java.util.List;
+import kitchenpos.application.testfixtures.MenuGroupTestFixtures;
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.MenuGroup;
 import org.junit.jupiter.api.DisplayName;
@@ -30,8 +29,7 @@ class MenuGroupServiceTest {
         // given
         String name = "추천메뉴";
         MenuGroup menuGroup = new MenuGroup(name);
-
-        given(menuGroupDao.save(any())).willReturn(menuGroup);
+        MenuGroupTestFixtures.메뉴그룹_생성_결과_모킹(menuGroupDao, menuGroup);
 
         //when
         MenuGroup savedMenuGroup = menuGroupService.create(menuGroup);
@@ -44,10 +42,10 @@ class MenuGroupServiceTest {
     @Test
     void list() {
         // given
-        List<MenuGroup> menuGroups = Arrays.asList(new MenuGroup(1L, "추천메뉴"),
+        List<MenuGroup> menuGroups = Arrays.asList(
+            new MenuGroup(1L, "추천메뉴"),
             new MenuGroup(2L, "베스트메뉴"));
-
-        given(menuGroupDao.findAll()).willReturn(menuGroups);
+        MenuGroupTestFixtures.메뉴그룹_전체조회_모킹(menuGroupDao, menuGroups);
 
         //when
         List<MenuGroup> findMenuGroups = menuGroupService.list();

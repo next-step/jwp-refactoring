@@ -2,13 +2,13 @@ package kitchenpos.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.BDDMockito.any;
-import static org.mockito.BDDMockito.anyList;
-import static org.mockito.BDDMockito.given;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import kitchenpos.application.testfixtures.OrderTestFixtures;
+import kitchenpos.application.testfixtures.TableGroupTestFixtures;
+import kitchenpos.application.testfixtures.TableTestFixtures;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.TableGroupDao;
@@ -46,10 +46,8 @@ class TableGroupServiceTest {
             new OrderTable(2L, 3, true));
         TableGroup tableGroup = new TableGroup(createdDate, orderTables);
 
-        given(orderTableDao.findAllByIdIn(anyList()))
-            .willReturn(orderTables);
-        given(tableGroupDao.save(any()))
-            .willReturn(tableGroup);
+        TableTestFixtures.주문테이블_특정_리스트_조회_모킹(orderTableDao, orderTables);
+        TableGroupTestFixtures.테이블그룹_저장_결과_모킹(tableGroupDao, tableGroup);
 
         //when
         TableGroup savedTableGroup = tableGroupService.create(tableGroup);
@@ -83,8 +81,7 @@ class TableGroupServiceTest {
             new OrderTable(2L, 3, false));
         TableGroup tableGroup = new TableGroup(createdDate, orderTables);
 
-        given(orderTableDao.findAllByIdIn(anyList()))
-            .willReturn(orderTables);
+        TableTestFixtures.주문테이블_특정_리스트_조회_모킹(orderTableDao, orderTables);
 
         //when, then
         assertThatThrownBy(() -> tableGroupService.create(tableGroup))
@@ -101,8 +98,7 @@ class TableGroupServiceTest {
             new OrderTable(2L, 5L, 3, true));
         TableGroup tableGroup = new TableGroup(createdDate, orderTables);
 
-        given(orderTableDao.findAllByIdIn(anyList()))
-            .willReturn(orderTables);
+        TableTestFixtures.주문테이블_특정_리스트_조회_모킹(orderTableDao, orderTables);
 
         //when, then
         assertThatThrownBy(() -> tableGroupService.create(tableGroup))
@@ -118,11 +114,8 @@ class TableGroupServiceTest {
             new OrderTable(1L, 1L, 6, true),
             new OrderTable(2L, 1L, 3, true));
         TableGroup tableGroup = new TableGroup(1L, createdDate, orderTables);
-
-        given(orderTableDao.findAllByTableGroupId(any()))
-            .willReturn(orderTables);
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(), anyList()))
-            .willReturn(false);
+        TableTestFixtures.특정_테이블_그룹에_속하는_테이블리스트_조회_모킹(orderTableDao, orderTables);
+        OrderTestFixtures.특정_테이블들이_특정상태인지_조회_모킹(orderDao, false);
 
         //when
         tableGroupService.ungroup(tableGroup.getId());
@@ -144,10 +137,8 @@ class TableGroupServiceTest {
             new OrderTable(2L, 1L, 3, true));
         TableGroup tableGroup = new TableGroup(1L, createdDate, orderTables);
 
-        given(orderTableDao.findAllByTableGroupId(any()))
-            .willReturn(orderTables);
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(), anyList()))
-            .willReturn(true);
+        TableTestFixtures.특정_테이블_그룹에_속하는_테이블리스트_조회_모킹(orderTableDao, orderTables);
+        OrderTestFixtures.특정_테이블들이_특정상태인지_조회_모킹(orderDao, true);
 
         //when, then
         assertThatThrownBy(() -> tableGroupService.ungroup(tableGroup.getId()))
