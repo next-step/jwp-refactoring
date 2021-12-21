@@ -58,7 +58,6 @@ class OrderAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 주문_등록_요청(TABLE_ID, MENU_ID, quantity);
 
         //then
-
         assertAll(
             () -> 주문_등록_됨(response, quantity, MENU_ID),
             this::테이블_주문됨_상태_변경_요청됨
