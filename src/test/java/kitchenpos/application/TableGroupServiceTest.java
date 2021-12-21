@@ -62,7 +62,7 @@ public class TableGroupServiceTest {
 
         // then
         assertAll(
-            () -> assertThat(actual).isEqualTo(expected),
+            () -> assertThat(actual.getId()).isEqualTo(expected.getId()),
             () -> assertThat(orderTables.get(0).isEmpty()).isFalse(),
             () -> assertThat(orderTables.get(0).getTableGroupId()).isEqualTo(expected.getId()),
             () -> assertThat(orderTables.get(1).isEmpty()).isFalse(),

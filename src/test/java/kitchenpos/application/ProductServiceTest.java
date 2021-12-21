@@ -2,6 +2,7 @@ package kitchenpos.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.BDDMockito.given;
 
 import java.math.BigDecimal;
@@ -43,7 +44,11 @@ public class ProductServiceTest {
         final Product actual = productService.create(request);
 
         // then
-        assertThat(actual).isEqualTo(expected);
+        assertAll(
+            () -> assertThat(actual.getId()).isEqualTo(expected.getId()),
+            () -> assertThat(actual.getName()).isEqualTo(expected.getName()),
+            () -> assertThat(actual.getPrice()).isEqualTo(expected.getPrice())
+        );
     }
 
     @DisplayName("상품 가격이 null 이거나 0보다 작은 경우 상품을 등록할 수 없다.")

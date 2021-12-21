@@ -2,6 +2,7 @@ package kitchenpos.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -56,7 +57,7 @@ public class OrderServiceTest {
         // given
         final OrderTable table = OrderTableFixture.of(1L, null, 4, false);
         final OrderLineItem item = createOrderLineItem(1L, 1L, 1);
-        final Order order = createOrder(
+        final Order expected = createOrder(
             1L,
             table.getId(),
             OrderStatus.COOKING.name(),
@@ -74,14 +75,21 @@ public class OrderServiceTest {
 
         given(menuDao.countByIdIn(any())).willReturn(1L);
         given(orderTableDao.findById(anyLong())).willReturn(Optional.of(table));
-        given(orderDao.save(any(Order.class))).willReturn(order);
+        given(orderDao.save(any(Order.class))).willReturn(expected);
         given(orderLineItemDao.save(any(OrderLineItem.class))).willReturn(item);
 
         // when
         final Order actual = orderService.create(orderRequest);
 
         // then
-        assertThat(actual).isEqualTo(order);
+        assertAll(
+            () -> assertThat(actual.getId()).isEqualTo(expected.getId()),
+            () -> assertThat(actual.getOrderTableId()).isEqualTo(expected.getOrderTableId()),
+            () -> assertThat(actual.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name()),
+            () -> assertThat(actual.getOrderedTime()).isNotNull(),
+            () -> assertThat(actual.getOrderLineItems())
+                .containsExactlyElementsOf(expected.getOrderLineItems())
+        );
     }
 
     @DisplayName("주문을 요청할 수 없다.")

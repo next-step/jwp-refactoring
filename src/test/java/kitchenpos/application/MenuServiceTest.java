@@ -2,6 +2,7 @@ package kitchenpos.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
@@ -84,7 +85,14 @@ public class MenuServiceTest {
         final Menu actual = menuService.create(request);
 
         // then
-        assertThat(actual).isEqualTo(expected);
+        assertAll(
+            () -> assertThat(actual.getId()).isEqualTo(expected.getId()),
+            () -> assertThat(actual.getName()).isEqualTo(expected.getName()),
+            () -> assertThat(actual.getPrice()).isEqualTo(expected.getPrice()),
+            () -> assertThat(actual.getMenuGroupId()).isEqualTo(expected.getMenuGroupId()),
+            () -> assertThat(actual.getMenuProducts())
+                .containsExactlyElementsOf(expected.getMenuProducts())
+        );
     }
 
 

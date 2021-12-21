@@ -2,6 +2,7 @@ package kitchenpos.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -47,7 +48,12 @@ public class TableServiceTest {
         final OrderTable actual = tableService.create(request);
 
         // then
-        assertThat(actual).isEqualTo(expected);
+        assertAll(
+            () -> assertThat(actual.getId()).isEqualTo(expected.getId()),
+            () -> assertThat(actual.getTableGroupId()).isEqualTo(expected.getTableGroupId()),
+            () -> assertThat(actual.getNumberOfGuests()).isEqualTo(expected.getNumberOfGuests()),
+            () -> assertThat(actual.isEmpty()).isTrue()
+        );
     }
 
     @DisplayName("주문 테이블 목록을 조회할 수 있다.")

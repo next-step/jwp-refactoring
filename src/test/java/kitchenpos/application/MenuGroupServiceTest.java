@@ -1,6 +1,7 @@
 package kitchenpos.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.BDDMockito.given;
 
 import java.util.Arrays;
@@ -36,7 +37,10 @@ public class MenuGroupServiceTest {
         final MenuGroup actual = menuGroupService.create(request);
 
         // then
-        assertThat(actual).isEqualTo(expected);
+        assertAll(
+            () -> assertThat(actual.getId()).isEqualTo(expected.getId()),
+            () -> assertThat(actual.getName()).isEqualTo(expected.getName())
+        );
     }
 
     @DisplayName("메뉴 그룹 목록을 조회할 수 있다.")
