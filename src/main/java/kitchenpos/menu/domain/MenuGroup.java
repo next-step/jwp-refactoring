@@ -1,8 +1,9 @@
-package kitchenpos.domain;
+package kitchenpos.menu.domain;
 
 public class MenuGroup {
     private Long id;
     private String name;
+
 
     public Long getId() {
         return id;
