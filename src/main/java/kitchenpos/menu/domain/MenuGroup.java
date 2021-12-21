@@ -10,6 +10,7 @@ import kitchenpos.common.domain.MustHaveName;
 
 @Entity
 public class MenuGroup extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

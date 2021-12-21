@@ -8,6 +8,7 @@ import javax.persistence.OneToMany;
 
 @Embeddable
 public final class OrderLineItems {
+
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<OrderLineItem> orderLineItems = new ArrayList<>();
 

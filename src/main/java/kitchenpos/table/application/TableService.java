@@ -42,7 +42,8 @@ public class TableService {
     }
 
     @Transactional
-    public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final Integer guestNumber) {
+    public OrderTableResponse changeNumberOfGuests(final Long orderTableId,
+        final Integer guestNumber) {
 
         final OrderTable savedOrderTable = findOrderTable(orderTableId);
 

@@ -21,7 +21,8 @@ public class OrderLineItemResponse {
     }
 
     public static OrderLineItemResponse of(OrderLineItem orderLineItem) {
-        return new OrderLineItemResponse(orderLineItem.getSeq(), MenuResponse.of(orderLineItem.getMenu()),
+        return new OrderLineItemResponse(orderLineItem.getSeq(),
+            MenuResponse.of(orderLineItem.getMenu()),
             orderLineItem.getQuantity());
     }
 

@@ -19,6 +19,7 @@ import kitchenpos.order.domain.Orders;
 
 @Entity
 public class OrderTable extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -34,7 +35,7 @@ public class OrderTable extends BaseEntity {
     private EmptyTable empty;
 
     @Embedded
-    private Orders orders = Orders.create();
+    private final Orders orders = Orders.create();
 
     protected OrderTable() {
     }

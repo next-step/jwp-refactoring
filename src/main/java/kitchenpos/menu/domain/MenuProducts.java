@@ -10,6 +10,7 @@ import kitchenpos.common.domain.Price;
 
 @Embeddable
 public class MenuProducts {
+
     @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<MenuProduct> menuProducts = new ArrayList<>();
 

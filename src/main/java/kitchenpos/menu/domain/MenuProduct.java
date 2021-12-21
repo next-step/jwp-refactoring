@@ -11,13 +11,14 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import kitchenpos.common.domain.BaseEntity;
+import kitchenpos.common.domain.Price;
 import kitchenpos.common.domain.Quantity;
 import kitchenpos.exception.InvalidArgumentException;
-import kitchenpos.common.domain.Price;
 import kitchenpos.product.domain.Product;
 
 @Entity
 public class MenuProduct extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
@@ -62,19 +63,25 @@ public class MenuProduct extends BaseEntity {
     }
 
     public boolean equalMenuProduct(MenuProduct other) {
-        return equalMenu(other.menu) && product.equals(other.product) && quantity.equals(other.quantity);
+        return equalMenu(other.menu) && product.equals(other.product) && quantity
+            .equals(other.quantity);
     }
 
     public void removeMenu() {
         this.menu = null;
     }
 
-    public Price getPrice(){
+    public Price getPrice() {
         return product.multiplyQuantity(quantity);
     }
 
     public Product getProduct() {
         return this.product;
+    }
+
+    private void setProduct(Product product) {
+        validateProduct(product);
+        this.product = product;
     }
 
     public Long getSeq() {
@@ -83,11 +90,6 @@ public class MenuProduct extends BaseEntity {
 
     public long getQuantity() {
         return quantity.getQuantity();
-    }
-
-    private void setProduct(Product product) {
-        validateProduct(product);
-        this.product = product;
     }
 
     private void validateMenu(Menu menu) {

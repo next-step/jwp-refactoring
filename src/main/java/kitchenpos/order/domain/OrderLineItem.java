@@ -17,6 +17,7 @@ import kitchenpos.menu.domain.Menu;
 
 @Entity
 public class OrderLineItem extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
@@ -53,7 +54,8 @@ public class OrderLineItem extends BaseEntity {
     }
 
     public boolean equalsOrderLineItem(OrderLineItem other) {
-        return equalsOrder(other.order) && menu.equals(other.menu) && quantity.equals(other.quantity);
+        return equalsOrder(other.order) && menu.equals(other.menu) && quantity
+            .equals(other.quantity);
     }
 
     public boolean equalsOrder(Order order) {
@@ -65,11 +67,6 @@ public class OrderLineItem extends BaseEntity {
 
     public void removeOrder() {
         this.order = null;
-    }
-
-    private void setMenu(Menu menu) {
-        validateMenu(menu);
-        this.menu = menu;
     }
 
     private void validateMenu(Menu menu) {
@@ -88,6 +85,11 @@ public class OrderLineItem extends BaseEntity {
 
     public Menu getMenu() {
         return menu;
+    }
+
+    private void setMenu(Menu menu) {
+        validateMenu(menu);
+        this.menu = menu;
     }
 
     @Override

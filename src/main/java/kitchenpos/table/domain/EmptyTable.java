@@ -7,6 +7,7 @@ import kitchenpos.exception.InvalidArgumentException;
 
 @Embeddable
 public final class EmptyTable {
+
     @Column(nullable = false)
     private Boolean empty;
 

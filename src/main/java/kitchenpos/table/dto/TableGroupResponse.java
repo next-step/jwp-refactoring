@@ -21,7 +21,8 @@ public class TableGroupResponse {
     }
 
     public static TableGroupResponse of(TableGroup tableGroup) {
-        return new TableGroupResponse(tableGroup.getId(), tableGroup.getCreatedDate(), OrderTableResponse.ofList(tableGroup.getOrderTables()));
+        return new TableGroupResponse(tableGroup.getId(), tableGroup.getCreatedDate(),
+            OrderTableResponse.ofList(tableGroup.getOrderTables()));
     }
 
     public Long getId() {

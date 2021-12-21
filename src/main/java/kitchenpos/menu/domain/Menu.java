@@ -14,11 +14,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import kitchenpos.common.domain.BaseEntity;
 import kitchenpos.common.domain.MustHaveName;
-import kitchenpos.exception.InvalidArgumentException;
 import kitchenpos.common.domain.Price;
+import kitchenpos.exception.InvalidArgumentException;
 
 @Entity
 public class Menu extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -34,7 +35,7 @@ public class Menu extends BaseEntity {
     private MenuGroup menuGroup;
 
     @Embedded
-    private MenuProducts menuProducts = new MenuProducts();
+    private final MenuProducts menuProducts = new MenuProducts();
 
     protected Menu() {
     }
@@ -55,7 +56,7 @@ public class Menu extends BaseEntity {
     }
 
     public void addMenuProducts(List<MenuProduct> menuProducts) {
-        for (MenuProduct menuProduct: menuProducts) {
+        for (MenuProduct menuProduct : menuProducts) {
             addMenuProduct(menuProduct);
         }
         validatePrice();

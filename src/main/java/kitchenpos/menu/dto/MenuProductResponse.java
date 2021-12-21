@@ -7,9 +7,9 @@ import kitchenpos.product.dto.ProductResponse;
 
 public class MenuProductResponse {
 
-    private Long seq;
-    private Long quantity;
-    private ProductResponse product;
+    private final Long seq;
+    private final Long quantity;
+    private final ProductResponse product;
 
     private MenuProductResponse(Long seq, Long quantity, ProductResponse product) {
         this.seq = seq;

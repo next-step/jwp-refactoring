@@ -21,6 +21,7 @@ import kitchenpos.table.domain.OrderTable;
 
 @Entity(name = "orders")
 public class Order extends BaseEntity {
+
     private static final Integer MIN_SIZE = 1;
 
     @Id
@@ -34,10 +35,10 @@ public class Order extends BaseEntity {
     @Enumerated(value = EnumType.STRING)
     private OrderStatus orderStatus;
 
-    private LocalDateTime orderedTime = LocalDateTime.now();
+    private final LocalDateTime orderedTime = LocalDateTime.now();
 
     @Embedded
-    private OrderLineItems orderLineItems = new OrderLineItems();
+    private final OrderLineItems orderLineItems = new OrderLineItems();
 
     protected Order() {
     }
@@ -55,7 +56,7 @@ public class Order extends BaseEntity {
     public void addOrderLineItems(List<OrderLineItem> orderLineItems) {
         validateAddOrderLineItem(orderLineItems);
 
-        for (OrderLineItem orderLineItem: orderLineItems) {
+        for (OrderLineItem orderLineItem : orderLineItems) {
             addOrderLineItem(orderLineItem);
         }
     }

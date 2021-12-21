@@ -7,6 +7,7 @@ import kitchenpos.exception.InvalidArgumentException;
 
 @Embeddable
 public class MustHaveName {
+
     @Column(nullable = false)
     private String name;
 

@@ -1,6 +1,7 @@
 package kitchenpos.exception.dto;
 
 public class ErrorResponse {
+
     private final String message;
 
     private ErrorResponse(String message) {

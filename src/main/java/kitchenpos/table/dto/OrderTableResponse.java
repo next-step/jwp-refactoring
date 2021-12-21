@@ -20,7 +20,8 @@ public class OrderTableResponse {
     }
 
     public static OrderTableResponse of(OrderTable orderTable) {
-        return new OrderTableResponse(orderTable.getId(), orderTable.getNumberOfGuests(), orderTable.isEmpty());
+        return new OrderTableResponse(orderTable.getId(), orderTable.getNumberOfGuests(),
+            orderTable.isEmpty());
     }
 
     public static List<OrderTableResponse> ofList(List<OrderTable> orderTables) {

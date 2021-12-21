@@ -8,7 +8,6 @@ import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusRequest;
@@ -19,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class OrderService {
+
     private final OrderRepository orderRepository;
     private final MenuRepository menuRepository;
     private final OrderTableRepository orderTableRepository;
@@ -35,13 +35,15 @@ public class OrderService {
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
 
-        final List<OrderLineItem> orderLineItems = orderRequest.getOrderLineItems().stream()
+        final List<OrderLineItem> orderLineItems = orderRequest.getOrderLineItems()
+            .stream()
             .map(it -> it.toEntity(findMenu(it.getMenuId())))
             .collect(Collectors.toList());
 
         final OrderTable orderTable = findOrderTable(orderRequest.getOrderTableId());
 
-        final Order persist = orderRepository.save(orderRequest.toEntity(orderTable, orderLineItems));
+        final Order persist = orderRepository
+            .save(orderRequest.toEntity(orderTable, orderLineItems));
 
         return OrderResponse.of(persist);
     }
@@ -52,7 +54,8 @@ public class OrderService {
     }
 
     @Transactional
-    public OrderResponse changeOrderStatus(final Long orderId, final OrderStatusRequest orderStatus) {
+    public OrderResponse changeOrderStatus(final Long orderId,
+        final OrderStatusRequest orderStatus) {
 
         final Order savedOrder = findOrder(orderId);
 

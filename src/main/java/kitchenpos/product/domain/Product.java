@@ -42,31 +42,24 @@ public class Product extends BaseEntity {
     }
 
 
-
-
-
-
-
-
-
-
     public Long getId() {
         return id;
-    }
-
-    public String getName() {
-        return name.get();
-    }
-    public BigDecimal getPrice() {
-        return price.get();
     }
 
     public void setId(Long id) {
         this.id = id;
     }
 
+    public String getName() {
+        return name.get();
+    }
+
     public void setName(String name) {
         this.name = MustHaveName.valueOf(name);
+    }
+
+    public BigDecimal getPrice() {
+        return price.get();
     }
 
     public void setPrice(Integer price) {

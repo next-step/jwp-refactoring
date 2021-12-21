@@ -4,8 +4,8 @@ import kitchenpos.product.domain.Product;
 
 public class ProductRequest {
 
-    private String name;
-    private Integer price;
+    private final String name;
+    private final Integer price;
 
     public ProductRequest(String name, Integer price) {
         this.name = name;

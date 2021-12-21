@@ -9,6 +9,7 @@ import kitchenpos.exception.InvalidArgumentException;
 
 @Embeddable
 public class OrderTables {
+
     private static final Integer MIN_SIZE = 2;
 
     @OneToMany(mappedBy = "tableGroup", cascade = CascadeType.PERSIST)
@@ -32,7 +33,7 @@ public class OrderTables {
     }
 
     public void clearOrderTable() {
-        for (OrderTable orderTable: orderTables) {
+        for (OrderTable orderTable : orderTables) {
             orderTable.clearTableGroup();
         }
         orderTables = new ArrayList<>();

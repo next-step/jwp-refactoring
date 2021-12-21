@@ -7,6 +7,7 @@ import kitchenpos.exception.InvalidArgumentException;
 
 @Embeddable
 public final class Quantity {
+
     private static final Long MIN_QUANTITY = 1L;
 
     @Column(nullable = false)

@@ -18,10 +18,10 @@ public class TableGroup {
     private Long id;
 
     @Column(nullable = false)
-    private LocalDateTime createdDate = LocalDateTime.now();
+    private final LocalDateTime createdDate = LocalDateTime.now();
 
     @Embedded
-    private OrderTables orderTables = new OrderTables();
+    private final OrderTables orderTables = new OrderTables();
 
     protected TableGroup() {
     }
@@ -45,7 +45,7 @@ public class TableGroup {
     public void addOrderTables(List<OrderTable> orderTables) {
         this.orderTables.validateAddTables(orderTables);
 
-        for (OrderTable orderTable: orderTables) {
+        for (OrderTable orderTable : orderTables) {
             orderTable.updateEmpty(Boolean.FALSE);
             addOrderTable(orderTable);
         }
