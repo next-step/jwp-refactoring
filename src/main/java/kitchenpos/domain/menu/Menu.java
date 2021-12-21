@@ -3,11 +3,17 @@ package kitchenpos.domain.menu;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import kitchenpos.domain.product.Price;
 
 @Entity
 public class Menu {
@@ -15,27 +21,42 @@ public class Menu {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "name")
     private String name;
-    private BigDecimal price;
-    private Long menuGroupId;
 
     @Embedded
-    private MenuProducts menuProducts;
+    private Price price;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "menu_group_id", foreignKey = @ForeignKey(name = "fk_menu_menu_group"))
+    private MenuGroup menuGroup;
+
+    @Embedded
+    private MenuProducts menuProducts = new MenuProducts();
 
     public Menu() {
     }
 
-    public Menu(String name, BigDecimal price, Long menuGroupId,
-        List<MenuProduct> menuProducts) {
-        this.name = name;
-        this.price = price;
-        this.menuGroupId = menuGroupId;
-        this.menuProducts = MenuProducts.of(menuProducts);
+    public Menu(Long id) {
+        this.id = id;
     }
 
-    public static Menu of(String name, int price, Long menuGroupId,
-        List<MenuProduct> menuProducts) {
-        return new Menu(name, BigDecimal.valueOf(price), menuGroupId, menuProducts);
+    public Menu(String name, int price, MenuGroup menuGroup) {
+        this.name = name;
+        this.menuGroup = menuGroup;
+        this.price = Price.of(price);
+    }
+
+    public Menu(String name, int price, MenuGroup menuGroup, MenuProducts menuProducts) {
+        this.name = name;
+        this.menuGroup = menuGroup;
+        this.price = Price.of(BigDecimal.valueOf(price), menuProducts.getSumPrice());
+        this.menuProducts.add(menuProducts.mapMenu(this));
+    }
+
+    public void setMenuProducts(MenuProducts menuProducts) {
+        this.menuProducts = menuProducts;
     }
 
     public Long getId() {
@@ -55,27 +76,38 @@ public class Menu {
     }
 
     public BigDecimal getPrice() {
-        return price;
+        return price.value();
     }
 
-    public void setPrice(final BigDecimal price) {
-        this.price = price;
+    public void setPrice(final int price) {
+        this.price = Price.of(price);
     }
 
+    @Deprecated
     public Long getMenuGroupId() {
-        return menuGroupId;
+        return this.menuGroup.getId();
     }
 
+    @Deprecated
     public void setMenuGroupId(final Long menuGroupId) {
-        this.menuGroupId = menuGroupId;
+        this.menuGroup.setId(menuGroupId);
+    }
+
+
+    public void setMenuProducts(final List<MenuProduct> menuProducts) {
+        this.menuProducts = MenuProducts.of(menuProducts);
+    }
+
+    public boolean isSame(Long menuId) {
+        return this.id.equals(menuId);
     }
 
     public List<MenuProduct> getMenuProducts() {
         return menuProducts.getMenuProducts();
     }
 
-    public void setMenuProducts(final List<MenuProduct> menuProducts) {
-        this.menuProducts = MenuProducts.of(menuProducts);
+    public MenuGroup getMenuGroup() {
+        return menuGroup;
     }
 
     @Override
