@@ -3,6 +3,7 @@ package kitchenpos.application.menu;
 import kitchenpos.domain.Price;
 import kitchenpos.exception.menu.NotFoundMenuException;
 import kitchenpos.exception.menu.NotFoundMenuGroupException;
+import kitchenpos.vo.MenuGroupId;
 import kitchenpos.vo.ProductId;
 import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menu.MenuProduct;
@@ -40,7 +41,7 @@ public class MenuService {
         MenuGroup menuGroup = menuGroupRepository.findById(menuDto.getMenuGroupId()).orElseThrow(NotFoundMenuGroupException::new);
         MenuProducts menuProducts = createMenuProducts(menuDto.getMenuProducts());
 
-        Menu newMenu = Menu.of(menuDto.getName(), Price.of(menuDto.getPrice()), menuGroup, menuProducts);
+        Menu newMenu = Menu.of(menuDto.getName(), Price.of(menuDto.getPrice()), MenuGroupId.of(menuGroup), menuProducts);
 
         menuValidator.validateForCreate(newMenu);
 

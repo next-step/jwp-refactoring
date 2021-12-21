@@ -36,8 +36,8 @@ public class MenuDto {
     }
 
     public static MenuDto of(Menu menu) {
-        if (menu.getMenuGroup() == null) {
-            return new MenuDto(menu.getId(), menu.getName(), BigDecimal.valueOf(menu.getPrice().value()), menu.getMenuGroup().getId(), null);
+        if (menu.getMenuGroupId() == null) {
+            return new MenuDto(menu.getId(), menu.getName(), BigDecimal.valueOf(menu.getPrice().value()), menu.getMenuGroupId().value(), null);
         }
 
         List<MenuProductDto> menuProductDtos = new ArrayList<>();
@@ -47,7 +47,7 @@ public class MenuDto {
             menuProductDtos.add(MenuProductDto.of(menuProduct.getSeq(), menuProduct.getMenu().getId(),  menuProduct.getProductId().value(), menuProduct.getQuantity()));
         }
         
-        return new MenuDto(menu.getId(), menu.getName(), BigDecimal.valueOf(menu.getPrice().value()), menu.getMenuGroup().getId(), menuProductDtos);
+        return new MenuDto(menu.getId(), menu.getName(), BigDecimal.valueOf(menu.getPrice().value()), menu.getMenuGroupId().value(), menuProductDtos);
     }
 
     public Long getId() {

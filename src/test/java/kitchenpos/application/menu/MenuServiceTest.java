@@ -22,6 +22,7 @@ import kitchenpos.domain.product.Product;
 import kitchenpos.dto.menu.MenuDto;
 import kitchenpos.dto.menu.MenuProductDto;
 import kitchenpos.exception.menu.NotFoundMenuGroupException;
+import kitchenpos.vo.MenuGroupId;
 import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menu.MenuProduct;
 import kitchenpos.domain.menu.MenuProducts;
@@ -57,7 +58,7 @@ public class MenuServiceTest {
         MenuProduct 뿌링클콤보_치킨무 = MenuProduct.of(치킨무, 2L);
         MenuProduct 뿌링클콤보_코카콜라 = MenuProduct.of(코카콜라, 3L);
 
-        Menu 뿌링클콤보 = Menu.of("뿌링클콤보", Price.of(18_000), 치킨_메뉴그룹, MenuProducts.of(List.of(뿌링클콤보_뿌링클치킨, 뿌링클콤보_치킨무, 뿌링클콤보_코카콜라)));
+        Menu 뿌링클콤보 = Menu.of("뿌링클콤보", Price.of(18_000), MenuGroupId.of(치킨_메뉴그룹), MenuProducts.of(List.of(뿌링클콤보_뿌링클치킨, 뿌링클콤보_치킨무, 뿌링클콤보_코카콜라)));
 
         when(menuGroupRepository.findById(nullable(Long.class))).thenReturn(Optional.of(치킨_메뉴그룹));
         when(menuRepository.save(any(Menu.class))).thenReturn(뿌링클콤보);
@@ -78,7 +79,7 @@ public class MenuServiceTest {
     void exception_createMenu_containNotExistMenuGroup() {
         // given
         MenuGroup 치킨_메뉴그룹 = MenuGroup.of("치킨");
-        Menu 뿌링클콤보 = Menu.of("뿌링클콤보", Price.of(18_000), 치킨_메뉴그룹);
+        Menu 뿌링클콤보 = Menu.of("뿌링클콤보", Price.of(18_000), MenuGroupId.of(치킨_메뉴그룹));
 
         when(menuGroupRepository.findById(nullable(Long.class))).thenThrow(NotFoundMenuGroupException.class);
 
@@ -93,7 +94,7 @@ public class MenuServiceTest {
     void search_menu() {
         // given
         MenuGroup 치킨_메뉴그룹 = MenuGroup.of("치킨");
-        Menu 뿌링클콤보 = Menu.of("뿌링클콤보", Price.of(18_000), 치킨_메뉴그룹);
+        Menu 뿌링클콤보 = Menu.of("뿌링클콤보", Price.of(18_000), MenuGroupId.of(치킨_메뉴그룹));
 
         when(menuRepository.findAll()).thenReturn(List.of(뿌링클콤보));
 

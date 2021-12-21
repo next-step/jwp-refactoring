@@ -23,6 +23,7 @@ import kitchenpos.domain.menugroup.MenuGroupRepository;
 import kitchenpos.domain.product.Product;
 import kitchenpos.exception.menu.NotCorrectMenuPriceException;
 import kitchenpos.exception.product.NotFoundProductException;
+import kitchenpos.vo.MenuGroupId;
 
 @ExtendWith(MockitoExtension.class)
 public class MenuValidatorTest {
@@ -49,7 +50,7 @@ public class MenuValidatorTest {
 
         MenuGroup 치킨_메뉴그룹 = MenuGroup.of("치킨");
 
-        Menu 뿌링클콤보 = Menu.of("뿌링클콤보", Price.of(18_000), 치킨_메뉴그룹, MenuProducts.of(List.of(뿌링클콤보_뿌링클치킨, 뿌링클콤보_치킨무, 뿌링클콤보_코카콜라)));
+        Menu 뿌링클콤보 = Menu.of("뿌링클콤보", Price.of(18_000), MenuGroupId.of(치킨_메뉴그룹), MenuProducts.of(List.of(뿌링클콤보_뿌링클치킨, 뿌링클콤보_치킨무, 뿌링클콤보_코카콜라)));
 
         when(productService.findAllByIds(anyList())).thenReturn(List.of(뿌링클치킨, 치킨무));
 
@@ -73,7 +74,7 @@ public class MenuValidatorTest {
 
         MenuGroup 치킨_메뉴그룹 = MenuGroup.of("치킨");
 
-        Menu 뿌링클콤보 = Menu.of("뿌링클콤보", Price.of(28_000), 치킨_메뉴그룹, MenuProducts.of(List.of(뿌링클콤보_뿌링클치킨, 뿌링클콤보_치킨무, 뿌링클콤보_코카콜라)));
+        Menu 뿌링클콤보 = Menu.of("뿌링클콤보", Price.of(28_000), MenuGroupId.of(치킨_메뉴그룹), MenuProducts.of(List.of(뿌링클콤보_뿌링클치킨, 뿌링클콤보_치킨무, 뿌링클콤보_코카콜라)));
 
         when(productService.findAllByIds(anyList())).thenReturn(List.of(뿌링클치킨, 치킨무, 코카콜라));
 

@@ -8,11 +8,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 
 import kitchenpos.domain.Price;
-import kitchenpos.domain.menugroup.MenuGroup;
+import kitchenpos.vo.MenuGroupId;
 import kitchenpos.vo.ProductId;
 
 @Entity
@@ -25,9 +23,8 @@ public class Menu {
     @Embedded
     private Price price;
 
-    @ManyToOne
-    @JoinColumn(name = "menu_group_id")
-    private MenuGroup menuGroup;
+    @Embedded
+    private MenuGroupId menuGroupId;
 
     @Embedded
     private MenuProducts menuProducts;
@@ -35,20 +32,20 @@ public class Menu {
     protected Menu() {
     }
 
-    private Menu(Long id, String name, Price price, MenuGroup menuGroup) {
+    private Menu(Long id, String name, Price price, MenuGroupId menuGroupId) {
         this.id = id;
         this.name = name;
         this.price = price;
-        this.menuGroup = menuGroup;
+        this.menuGroupId = menuGroupId;
         this.menuProducts = MenuProducts.of(new ArrayList<>());
     }
 
-    public static Menu of(String name, Price price, MenuGroup menuGroup) {
-        return new Menu(null, name, price, menuGroup);
+    public static Menu of(String name, Price price, MenuGroupId menuGroupId) {
+        return new Menu(null, name, price, menuGroupId);
     }
 
-    public static Menu of(String name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
-        Menu menu = new Menu(null, name, price, menuGroup);
+    public static Menu of(String name, Price price, MenuGroupId menuGroupId, MenuProducts menuProducts) {
+        Menu menu = new Menu(null, name, price, menuGroupId);
         menuProducts.acceptMenu(menu);
 
         return menu;
@@ -74,8 +71,8 @@ public class Menu {
         return this.price;
     }
 
-    public MenuGroup getMenuGroup() {
-        return this.menuGroup;
+    public MenuGroupId getMenuGroupId() {
+        return this.menuGroupId;
     }
 
     public MenuProducts getMenuProducts() {
