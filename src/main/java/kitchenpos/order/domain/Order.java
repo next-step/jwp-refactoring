@@ -2,6 +2,7 @@ package kitchenpos.order.domain;
 
 
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -10,6 +11,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "orders")
+@EntityListeners(AuditingEntityListener.class)
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,7 +27,7 @@ public class Order {
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
-    private LocalDateTime orderedTime = LocalDateTime.now();
+    private LocalDateTime orderedTime;
 
     @Embedded
     private OrderLineItems orderLineItems;

@@ -1,11 +1,15 @@
 package kitchenpos.tableGroup.application;
 
+import kitchenpos.fixture.OrderFixture;
 import kitchenpos.fixture.OrderTableFixture;
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderTable;
+import kitchenpos.fixture.TableGroupFixture;
+import kitchenpos.order.domain.*;
+import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.tableGroup.domain.TableGroup;
-import kitchenpos.order.domain.OrderTableRepository;
 import kitchenpos.tableGroup.domain.TableGroupRepository;
+import kitchenpos.tableGroup.dto.OrderTableIdRequest;
+import kitchenpos.tableGroup.dto.TableGroupRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -40,15 +44,13 @@ public class TableGroupServiceTest {
     private OrderTable 테이블2번;
     private TableGroup 단체_지정;
 
+
     @BeforeEach
     void setUp() {
         테이블1번 = OrderTableFixture.생성(0,true);
-
         테이블2번 = OrderTableFixture.생성(0,true);
 
-        단체_지정 = new TableGroup();
-        단체_지정.setId(1L);
-        단체_지정.setOrderTables(Arrays.asList(테이블1번, 테이블2번));
+        단체_지정 = new TableGroup(Arrays.asList(테이블1번, 테이블2번));
     }
 
     @DisplayName("단체 지정을 주문 테이블 목록 으로 등록 할 수 있다.")
@@ -56,10 +58,8 @@ public class TableGroupServiceTest {
     void create() {
         given(orderTableRepository.findAllByIdIn(any())).willReturn(Arrays.asList(테이블1번, 테이블2번));
         given(tableGroupRepository.save(any())).willReturn(단체_지정);
-        given(orderTableRepository.save(any())).willReturn(테이블1번);
-        given(orderTableRepository.save(any())).willReturn(테이블2번);
 
-        TableGroup createTableGroup = tableGroupService.create(단체_지정);
+        TableGroup createTableGroup = tableGroupService.create(TableGroupFixture.샘플_Request());
 
         assertAll(
                 () -> assertThat(createTableGroup).isNotNull(),
@@ -71,29 +71,22 @@ public class TableGroupServiceTest {
     @DisplayName("단체 지정 할 때 주문 테이블이 2개 이상이여야 한다.")
     @Test
     void createOrderTableSizeError() {
-        OrderTable 테이블 = OrderTableFixture.생성(0,true);
-
-        TableGroup 단체_지정_주문_테이블이_1개 = new TableGroup();
-        단체_지정_주문_테이블이_1개.setId(2L);
-        단체_지정_주문_테이블이_1개.setOrderTables(Arrays.asList(테이블));
-
+        OrderTableIdRequest 테이블1 = new OrderTableIdRequest(1L);
+        TableGroupRequest 단체_지정_주문테이블1개_Request = TableGroupFixture.생성_Request(Arrays.asList(테이블1));
         assertThatThrownBy(
-                () -> tableGroupService.create(단체_지정_주문_테이블이_1개)
+                () -> tableGroupService.create(단체_지정_주문테이블1개_Request)
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("단체 지정 할때 주문 테이블은 빈 테이블이어야한다.")
     @Test
     void shouldBeEmptyTable() {
-        OrderTable 손님이_채워진_테이블3번 = OrderTableFixture.생성(0,false);
-        OrderTable 손님이_채워진_테이블4번 = OrderTableFixture.생성(0,false);
-        TableGroup 단체_지정 = new TableGroup();
-        단체_지정.setId(2L);
-        단체_지정.setOrderTables(Arrays.asList(손님이_채워진_테이블3번, 손님이_채워진_테이블4번));
-        given(orderTableRepository.findAllByIdIn(any())).willReturn(Arrays.asList(손님이_채워진_테이블3번, 손님이_채워진_테이블4번));
+        OrderTableIdRequest 테이블1 = new OrderTableIdRequest(1L);
+        OrderTableIdRequest 테이블2 = new OrderTableIdRequest(2L);
+        TableGroupRequest 단체_지정_Request = TableGroupFixture.생성_Request(Arrays.asList(테이블1, 테이블2));
 
         assertThatThrownBy(
-                () -> tableGroupService.create(단체_지정)
+                () -> tableGroupService.create(단체_지정_Request)
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -104,15 +97,9 @@ public class TableGroupServiceTest {
         OrderTable 테이블4번 = OrderTableFixture.생성(0,true);
         TableGroup 단체_지정 = new TableGroup();
         단체_지정.setId(2L);
-        단체_지정.setOrderTables(Arrays.asList(테이블3번, 테이블4번));
-        given(orderTableRepository.findAllByIdIn(any())).willReturn(Arrays.asList(테이블3번, 테이블4번));
-        given(tableGroupRepository.save(단체_지정)).willReturn(단체_지정);
-        given(orderTableRepository.save(any())).willReturn(테이블3번);
-        given(orderTableRepository.save(any())).willReturn(테이블4번);
-        tableGroupService.create(단체_지정);
-        given(orderTableRepository.findAllByTableGroupId(단체_지정.getId())).willReturn(Arrays.asList(테이블3번, 테이블4번));
-        given(orderTableRepository.save(any())).willReturn(테이블3번);
-        given(orderTableRepository.save(any())).willReturn(테이블4번);
+        단체_지정.addOrderTables(Arrays.asList(테이블3번, 테이블4번));
+        given(tableGroupRepository.findById(any())).willReturn(java.util.Optional.of(단체_지정));
+        given(orderRepository.existsByOrderTableInAndOrderStatusIn(any(),any())).willReturn(false);
 
         tableGroupService.ungroup(단체_지정.getId());
 
@@ -129,14 +116,10 @@ public class TableGroupServiceTest {
         OrderTable 테이블4번 = OrderTableFixture.생성(0,true);
         TableGroup 단체_지정 = new TableGroup();
         단체_지정.setId(2L);
-        단체_지정.setOrderTables(Arrays.asList(테이블3번, 테이블4번));
-        given(orderTableRepository.findAllByIdIn(any())).willReturn(Arrays.asList(테이블3번, 테이블4번));
-        given(tableGroupRepository.save(단체_지정)).willReturn(단체_지정);
-        given(orderTableRepository.save(any())).willReturn(테이블3번);
-        given(orderTableRepository.save(any())).willReturn(테이블4번);
-        tableGroupService.create(단체_지정);
-        given(orderTableRepository.findAllByTableGroupId(단체_지정.getId())).willReturn(Arrays.asList(테이블3번, 테이블4번));
-        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any())).willReturn(true);
+        단체_지정.addOrderTables(Arrays.asList(테이블3번, 테이블4번));
+
+        given(tableGroupRepository.findById(any())).willReturn(java.util.Optional.of(단체_지정));
+        given(orderRepository.existsByOrderTableInAndOrderStatusIn(any(),any())).willReturn(true);
 
         assertThatThrownBy(
                 () -> tableGroupService.ungroup(단체_지정.getId())

@@ -14,4 +14,15 @@ public class OrderTablesTest {
 
         assertThat(orderTables).isNotNull();
     }
+
+    @DisplayName("주문테이블 추가")
+    @Test
+    void add() {
+        OrderTable orderTable = new OrderTable(7,true);
+        OrderTables orderTables = new OrderTables();
+
+        orderTables.add(orderTable);
+
+        assertThat(orderTables.getOrderTables().contains(orderTable)).isTrue();
+    }
 }

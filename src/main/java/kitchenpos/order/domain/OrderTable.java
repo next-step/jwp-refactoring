@@ -65,9 +65,10 @@ public class OrderTable {
     }
 
     public void changeEmpty(final boolean empty) {
-        if(Objects.nonNull(tableGroup)){
-            throw new IllegalArgumentException();
-        }
-        this.empty = false;
+        this.empty = empty;
+    }
+
+    public void updateTableGroup(TableGroup tableGroup) {
+        this.tableGroup = tableGroup;
     }
 }
