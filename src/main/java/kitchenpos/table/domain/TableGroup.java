@@ -25,7 +25,7 @@ public class TableGroup {
     protected TableGroup() {
     }
 
-    public TableGroup(long id, LocalDateTime createdDate) {
+    public TableGroup(Long id, LocalDateTime createdDate) {
         this.id = id;
         this.createdDate = createdDate;
         this.orderTables = new OrderTables();

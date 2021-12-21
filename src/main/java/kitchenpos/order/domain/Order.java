@@ -6,8 +6,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "orders")
@@ -28,25 +28,25 @@ public class Order {
     @CreatedDate
     private LocalDateTime orderedTime;
 
-    @OneToMany(mappedBy = "order")
-    private List<OrderLineItem> orderLineItems;
+    @Embedded
+    private final OrderLineItems orderLineItems = new OrderLineItems();
 
     protected Order() {
     }
 
-    public Order(Long id, OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
+    public Order(Long id, OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime) {
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
-        this.orderLineItems = orderLineItems;
     }
 
-    public Order(Long id, OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime) {
-        this.id = id;
+    private Order(OrderTable orderTable, OrderStatus orderStatus) {
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
-        this.orderedTime = orderedTime;
-        this.orderLineItems = new ArrayList<>();
+    }
+
+    public static Order CookingOrder(OrderTable orderTable) {
+        return new Order(orderTable, OrderStatus.COOKING);
     }
 
     public Long getId() {
@@ -69,17 +69,16 @@ public class Order {
         return orderedTime;
     }
 
-    public void takeOrdered(final OrderTable orderTable) {
-        this.orderTable = orderTable;
-        this.orderStatus = OrderStatus.COOKING;
-        this.orderedTime = LocalDateTime.now();
-    }
-
     public List<OrderLineItem> getOrderLineItems() {
-        return orderLineItems;
+        return orderLineItems.getOrderLineItems();
     }
 
-    public void initOrderLineItems(final List<OrderLineItem> orderLineItems) {
-        this.orderLineItems = orderLineItems;
+    public void addOrderItem(OrderLineItem orderLineItem) {
+        this.orderLineItems.add(orderLineItem);
+        orderLineItem.assignOrder(this);
+    }
+
+    public boolean isCompletion() {
+        return Objects.equals(OrderStatus.COMPLETION, orderStatus);
     }
 }

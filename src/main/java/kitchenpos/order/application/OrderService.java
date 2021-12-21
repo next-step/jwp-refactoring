@@ -1,16 +1,23 @@
 package kitchenpos.order.application;
 
+import kitchenpos.common.exception.IsEmptyTableException;
+import kitchenpos.common.exception.NotChangeCompletionOrderException;
+import kitchenpos.common.exception.NotOrderedEmptyTableException;
+import kitchenpos.common.exception.OrderLineItemEmptyException;
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.*;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.order.dto.OrderStatusRequest;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -19,82 +26,69 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final MenuRepository menuRepository;
     private final OrderTableRepository orderTableRepository;
-    private final OrderLineItemRepository orderLineItemRepository;
 
     public OrderService(
             final OrderRepository orderRepository,
             final MenuRepository menuRepository,
-            final OrderTableRepository orderTableRepository,
-            final OrderLineItemRepository orderLineItemRepository) {
+            final OrderTableRepository orderTableRepository) {
         this.orderRepository = orderRepository;
         this.menuRepository = menuRepository;
         this.orderTableRepository = orderTableRepository;
-        this.orderLineItemRepository = orderLineItemRepository;
     }
 
     @Transactional
-    public Order create(final Order order) {
-        final List<OrderLineItem> orderLineItems = order.getOrderLineItems();
-
-        if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalArgumentException();
-        }
-
-        final List<Long> menuIds = orderLineItems.stream()
-                .map(OrderLineItem::getMenuId)
-                .collect(Collectors.toList());
-
-        if (orderLineItems.size() != menuRepository.countByIdIn(menuIds)) {
-            throw new IllegalArgumentException();
-        }
-
-        final OrderTable orderTable = orderTableRepository.findById(order.getOrderTableId())
-                .orElseThrow(IllegalArgumentException::new);
-
-        if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
-
-        order.takeOrdered(orderTable);
+    public OrderResponse create(final OrderRequest orderRequest) {
+        Order order = getCookingOrder(orderRequest);
+        OrderLineItems orderLineItems = getOrderLineItems(orderRequest.getOrderLineItems());
+        orderLineItems.initOrder(order);
 
         final Order savedOrder = orderRepository.save(order);
 
-        final List<OrderLineItem> savedOrderLineItems = new ArrayList<>();
-        for (final OrderLineItem orderLineItem : orderLineItems) {
-            orderLineItem.assignOrder(savedOrder);
-            savedOrderLineItems.add(orderLineItemRepository.save(orderLineItem));
-        }
-        savedOrder.initOrderLineItems(savedOrderLineItems);
-
-        return savedOrder;
+        return OrderResponse.of(savedOrder);
     }
 
-    public List<Order> list() {
-        final List<Order> orders = orderRepository.findAll();
+    private Order getCookingOrder(OrderRequest orderRequest) {
+        final OrderTable orderTable = orderTableRepository.findByIdElseThrow(orderRequest.getOrderTableId());
 
-        for (final Order order : orders) {
-            order.initOrderLineItems(orderLineItemRepository.findAllByOrderId(order.getId()));
+        if (orderTable.isEmpty()) {
+            throw new NotOrderedEmptyTableException();
         }
 
-        return orders;
+        return Order.CookingOrder(orderTable);
+    }
+
+    private OrderLineItems getOrderLineItems(List<OrderLineItemRequest> orderLineItemRequests) {
+        if (CollectionUtils.isEmpty(orderLineItemRequests)) {
+            throw new OrderLineItemEmptyException();
+        }
+
+        return new OrderLineItems(orderLineItemRequests.stream()
+                .map(this::getOrderLineItem)
+                .collect(Collectors.toList()));
+    }
+
+    private OrderLineItem getOrderLineItem(OrderLineItemRequest request) {
+        Menu menu = menuRepository.findByIdElseThrow(request.getMenuId());
+        return new OrderLineItem(menu, request.getQuantity());
+    }
+
+    public List<OrderResponse> list() {
+        return orderRepository.findAll()
+                .stream()
+                .map(OrderResponse::of)
+                .collect(Collectors.toList());
     }
 
     @Transactional
-    public Order changeOrderStatus(final Long orderId, final Order order) {
-        final Order savedOrder = orderRepository.findById(orderId)
-                .orElseThrow(IllegalArgumentException::new);
+    public OrderResponse changeOrderStatus(final Long orderId, final OrderStatusRequest orderStatusRequest) {
+        final Order savedOrder = orderRepository.findByIdElseThrow(orderId);
 
-        if (Objects.equals(OrderStatus.COMPLETION, savedOrder.getOrderStatus())) {
-            throw new IllegalArgumentException();
+        if (savedOrder.isCompletion()) {
+            throw new NotChangeCompletionOrderException();
         }
 
-        final OrderStatus orderStatus = order.getOrderStatus();
-        savedOrder.changeOrderStatus(orderStatus);
+        savedOrder.changeOrderStatus(orderStatusRequest.toOrderStatus());
 
-        orderRepository.save(savedOrder);
-
-        savedOrder.initOrderLineItems(orderLineItemRepository.findAllByOrderId(orderId));
-
-        return savedOrder;
+        return OrderResponse.of(savedOrder);
     }
 }
