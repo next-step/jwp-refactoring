@@ -45,14 +45,14 @@ public class TableGroupService {
         tableGroupRepository.delete(tableGroup);
     }
 
-    public int countById(final Long tableGroupId) {
-        return tableGroupRepository.countById(tableGroupId);
-    }
-
     private void checkTablesOrderStatus(List<OrderTable> orderTables) {
         if (orderRepository.existsByOrderTableInAndOrderStatusIn(
                 orderTables, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
             throw new InvalidOrderTableException();
         }
+    }
+
+    public int countById(final Long tableGroupId) {
+        return tableGroupRepository.countById(tableGroupId);
     }
 }
