@@ -7,7 +7,7 @@ import static common.MenuProductFixture.후라이드_1개;
 import static java.util.Arrays.asList;
 
 import java.math.BigDecimal;
-import kitchenpos.domain.Menu;
+import kitchenpos.menu.domain.Menu;
 
 public class MenuFixture {
 

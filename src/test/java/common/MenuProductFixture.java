@@ -1,6 +1,6 @@
 package common;
 
-import kitchenpos.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProduct;
 
 public class MenuProductFixture {
     public static MenuProduct 후라이드_1개() {
