@@ -65,9 +65,9 @@ public class OrderTable {
         return empty;
     }
 
-    public void changeTableGroup(TableGroup tableGroup, boolean empty) {
-        changeEmpty(empty);
+    public void changeTableGroup(TableGroup tableGroup) {
         changeTableGroupId(tableGroup);
+        this.empty = false;
     }
 
     public void changeTableGroupId(TableGroup tableGroup) {
@@ -82,6 +82,10 @@ public class OrderTable {
     public void changeEmpty(final boolean empty) {
         validateChangeableEmpty();
         this.empty = empty;
+    }
+
+    public boolean isPossibleIntoTableGroup() {
+        return empty && Objects.isNull(tableGroup);
     }
 
     private void validateChangeableNumberOfGuests() {
@@ -103,12 +107,12 @@ public class OrderTable {
         if (o == null || getClass() != o.getClass())
             return false;
         OrderTable that = (OrderTable)o;
-        return empty == that.empty && Objects.equals(id, that.id) && Objects.equals(tableGroup,
-            that.tableGroup) && Objects.equals(numberOfGuests, that.numberOfGuests);
+        return empty == that.empty && Objects.equals(id, that.id) && Objects.equals(numberOfGuests,
+            that.numberOfGuests);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, tableGroup, numberOfGuests, empty);
+        return Objects.hash(id, numberOfGuests, empty);
     }
 }

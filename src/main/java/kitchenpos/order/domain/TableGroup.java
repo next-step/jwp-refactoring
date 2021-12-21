@@ -4,11 +4,12 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
+import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 
 @Entity
 public class TableGroup {
@@ -16,21 +17,25 @@ public class TableGroup {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(updatable = false)
     private LocalDateTime createdDate;
 
-    @OneToMany(mappedBy = "tableGroup")
-    private List<OrderTable> orderTables;
+    @Embedded
+    private OrderTables orderTables;
 
-    public TableGroup() {
+    protected TableGroup() {
     }
 
     public TableGroup(List<OrderTable> orderTables) {
-        this.orderTables = orderTables;
+        this(null, LocalDateTime.now(), new OrderTables(orderTables));
     }
 
-    public TableGroup(Long id, LocalDateTime createdDate) {
+    public TableGroup(Long id, LocalDateTime createdDate, OrderTables orderTables) {
         this.id = id;
         this.createdDate = createdDate;
+        this.orderTables = orderTables;
+        changeTableGroupOfOrderTables();
     }
 
     public Long getId() {
@@ -41,16 +46,12 @@ public class TableGroup {
         return createdDate;
     }
 
-    public List<OrderTable> getOrderTables() {
+    public OrderTables getOrderTables() {
         return orderTables;
     }
 
-    public void updateCreatedDate(final LocalDateTime createdDate) {
-        this.createdDate = createdDate;
-    }
-
-    public void changeOrderTables(final List<OrderTable> orderTables) {
-        this.orderTables = orderTables;
+    private void changeTableGroupOfOrderTables() {
+        orderTables.changeTableGroup(this);
     }
 
     @Override
@@ -60,12 +61,11 @@ public class TableGroup {
         if (o == null || getClass() != o.getClass())
             return false;
         TableGroup that = (TableGroup)o;
-        return Objects.equals(id, that.id) && Objects.equals(createdDate, that.createdDate)
-            && Objects.equals(orderTables, that.orderTables);
+        return Objects.equals(id, that.id) && Objects.equals(createdDate, that.createdDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, createdDate, orderTables);
+        return Objects.hash(id, createdDate);
     }
 }

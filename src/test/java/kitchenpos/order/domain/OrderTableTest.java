@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,8 +31,13 @@ class OrderTableTest {
     @Test
     void changeEmptyException() {
         // given
+        List<OrderTable> orderTables = Arrays.asList(
+            new OrderTable(0, true),
+            new OrderTable(0, true));
+
         OrderTable orderTable = new OrderTable(
-            1L, new TableGroup(1L, LocalDateTime.now()), 0, true);
+            1L, new TableGroup(1L, LocalDateTime.now(), new OrderTables(orderTables)),
+            0, true);
 
         // when && then
         assertThatThrownBy(() -> orderTable.changeEmpty(false))

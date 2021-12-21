@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -19,11 +18,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import kitchenpos.common.exception.BadRequestException;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.TableGroup;
 import kitchenpos.order.dto.TableGroupRequest;
-import kitchenpos.order.dto.TableGroupResponse;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.order.repository.OrderTableRepository;
 import kitchenpos.order.repository.TableGroupRepository;
@@ -48,46 +47,6 @@ class TableGroupServiceTest {
             orderRepository, orderTableRepository, tableGroupRepository);
     }
 
-    @DisplayName("주문 테이블 그룹을 등록할 수 있다.")
-    @Test
-    void createTableGroup() {
-        // given
-        OrderTable orderTable1 = 주문_테이블_생성(1L, 0, true);
-        List<OrderTable> orderTables = Arrays.asList(
-            orderTable1,
-            주문_테이블_생성(2L, 0, true));
-        TableGroupRequest tableGroupRequest = new TableGroupRequest(
-            orderTables.stream().map(OrderTable::getId).collect(Collectors.toList()));
-        TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now());
-
-        given(orderTableRepository.findAllByIdIn(tableGroupRequest.getOrderTables()))
-            .willReturn(orderTables);
-        given(tableGroupRepository.save(any())).willReturn(tableGroup);
-        given(orderTableRepository.save(orderTable1)).willReturn(null);
-
-        // when
-        TableGroupResponse savedTableGroup = tableGroupService.create(tableGroupRequest);
-
-        // then
-        assertThat(savedTableGroup.getOrderTables())
-            .extracting("empty")
-            .containsExactly(false, false);
-    }
-
-    @DisplayName("주문 테이블 그룹은 2 테이블 이상이어야 등록할 수 있다.")
-    @Test
-    void createTableGroupMinSize() {
-        // given
-        List<OrderTable> orderTables = Collections.singletonList(
-            주문_테이블_생성(2L, 0, true));
-        TableGroupRequest tableGroupRequest = new TableGroupRequest(Collections.singletonList(2L));
-
-        // when && then
-        assertThrows(IllegalArgumentException.class, () ->
-            tableGroupService.create(tableGroupRequest));
-        verify(orderTableRepository, times(0)).findAllByIdIn(tableGroupRequest.getOrderTables());
-    }
-
     @DisplayName("조회 가능한 주문 테이블만 주문 테이블 그룹에 등록할 수 있다.")
     @Test
     void createTableGroupNotFoundTable() {
@@ -106,29 +65,7 @@ class TableGroupServiceTest {
             .willReturn(Collections.emptyList());
 
         // when && then
-        assertThrows(IllegalArgumentException.class, () ->
-            tableGroupService.create(tableGroupRequest));
-        verify(orderTableRepository).findAllByIdIn(orderTableIds);
-        verify(tableGroupRepository, times(0)).save(tableGroup);
-    }
-
-    @DisplayName("빈 주문 테이블만 주문 테이블 그룹에 등록할 수 있다.")
-    @Test
-    void createTableGroupNotEmptyTable() {
-        // given
-        List<OrderTable> orderTables = Arrays.asList(
-            주문_테이블_생성(1L, 0, true),
-            주문_테이블_생성(2L, 0, false));
-        List<Long> orderTableIds = orderTables.stream().map(OrderTable::getId)
-            .collect(Collectors.toList());
-        TableGroup tableGroup = 주문_테이블_그룹_생성(orderTables);
-        TableGroupRequest tableGroupRequest = new TableGroupRequest(
-            orderTables.stream().map(OrderTable::getId).collect(Collectors.toList()));
-
-        given(orderTableRepository.findAllByIdIn(orderTableIds)).willReturn(orderTables);
-
-        // when && then
-        assertThrows(IllegalArgumentException.class, () ->
+        assertThrows(BadRequestException.class, () ->
             tableGroupService.create(tableGroupRequest));
         verify(orderTableRepository).findAllByIdIn(orderTableIds);
         verify(tableGroupRepository, times(0)).save(tableGroup);

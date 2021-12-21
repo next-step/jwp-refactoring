@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -18,10 +17,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.common.exception.BadRequestException;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.domain.TableGroup;
 import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.order.dto.OrderTableResponse;
 import kitchenpos.order.repository.OrderRepository;
@@ -99,27 +96,6 @@ public class TableServiceTest {
         assertFalse(changeTable.isEmpty());
     }
 
-    @DisplayName("주문 테이블이 테이블 그룹에 속해있다면 주문 등록 가능 여부를 변경할 수 없다.")
-    @Test
-    void changeEmptyExistTableGroup() {
-        // given
-        OrderTable orderTable = 주문_테이블_생성(1L, 0, true);
-        orderTable.changeTableGroupId(new TableGroup(1L, LocalDateTime.now()));
-        Long orderTableId = orderTable.getId();
-        OrderTableRequest orderTableRequest = new OrderTableRequest(orderTable.getNumberOfGuests().getValue(),
-            orderTable.isEmpty());
-
-        given(orderTableRepository.findById(orderTableId))
-            .willReturn(Optional.of(orderTable));
-
-        // when && then
-        assertThrows(BadRequestException.class, () -> tableService.changeEmpty(
-            orderTableId, orderTableRequest));
-
-        verify(orderTableRepository).findById(orderTableId);
-        verify(orderTableRepository, times(0)).save(orderTable);
-    }
-
     @DisplayName("주문 상태가 계산 완료가 아니면 주문 테이블의 주문 등록 가능 여부를 변경할 수 없다.")
     @Test
     void changeEmptyOrderStatusIsNotCompletion() {
@@ -139,43 +115,6 @@ public class TableServiceTest {
 
         verify(orderTableRepository).findById(orderTableId);
         verify(orderTableRepository, times(0)).save(orderTable);
-    }
-
-    @DisplayName("방문한 손님 수를 갱신할 수 있다.")
-    @Test
-    void changeNumberOfGuests() {
-        // given
-        OrderTable orderTable = 주문_테이블_생성(1L, 5, false);
-        OrderTable findOrderTable = 주문_테이블_생성(1L, 0, false);
-
-        OrderTableRequest orderTableRequest = new OrderTableRequest(orderTable.getNumberOfGuests().getValue(),
-            orderTable.isEmpty());
-
-        given(orderTableRepository.findById(orderTable.getId())).willReturn(Optional.of(findOrderTable));
-        given(orderTableRepository.save(findOrderTable)).willReturn(findOrderTable);
-        // when
-        OrderTableResponse savedOrderTable = tableService.changeNumberOfGuests(orderTable.getId(), orderTableRequest);
-
-        // then
-        assertEquals(5, savedOrderTable.getNumberOfGuests());
-    }
-
-    @DisplayName("빈 테이블일 경우 방문한 손님 수를 갱신할 수 없다.")
-    @Test
-    void changeNumberOfGuestsEmptyTable() {
-        // given
-        OrderTable orderTable = 주문_테이블_생성(1L, 0, true);
-        Long orderTableId = orderTable.getId();
-
-        OrderTableRequest orderTableRequest = new OrderTableRequest(orderTable.getNumberOfGuests().getValue(),
-            orderTable.isEmpty());
-
-        given(orderTableRepository.findById(orderTableId)).willReturn(Optional.of(orderTable));
-
-        // when && then
-        assertThrows(IllegalArgumentException.class, () ->
-            tableService.changeNumberOfGuests(orderTableId, orderTableRequest));
-        verify(orderTableRepository).findById(orderTableId);
     }
 
     public static OrderTable 주문_테이블_생성(int numberOfGuests, boolean empty) {

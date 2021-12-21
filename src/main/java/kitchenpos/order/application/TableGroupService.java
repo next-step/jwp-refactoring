@@ -1,15 +1,15 @@
 package kitchenpos.order.application;
 
-import java.time.LocalDateTime;
+import static kitchenpos.common.exception.ExceptionMessage.*;
+
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
+import kitchenpos.common.exception.BadRequestException;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.TableGroup;
@@ -35,34 +35,13 @@ public class TableGroupService {
     @Transactional
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
         final List<Long> orderTableIds = tableGroupRequest.getOrderTables();
-
-        if (CollectionUtils.isEmpty(orderTableIds) || orderTableIds.size() < 2) {
-            throw new IllegalArgumentException();
-        }
-
         final List<OrderTable> savedOrderTables = orderTableRepository.findAllByIdIn(orderTableIds);
 
         if (orderTableIds.size() != savedOrderTables.size()) {
-            throw new IllegalArgumentException();
+            throw new BadRequestException(WRONG_VALUE);
         }
 
-        for (final OrderTable savedOrderTable : savedOrderTables) {
-            if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroup())) {
-                throw new IllegalArgumentException();
-            }
-        }
-
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.updateCreatedDate(LocalDateTime.now());
-
-        final TableGroup savedTableGroup = tableGroupRepository.save(tableGroup);
-
-        for (final OrderTable savedOrderTable : savedOrderTables) {
-            savedOrderTable.changeTableGroup(savedTableGroup, false);
-            orderTableRepository.save(savedOrderTable);
-        }
-        savedTableGroup.changeOrderTables(savedOrderTables);
-
+        final TableGroup savedTableGroup = tableGroupRepository.save(new TableGroup(savedOrderTables));
         return new TableGroupResponse(savedTableGroup);
     }
 
