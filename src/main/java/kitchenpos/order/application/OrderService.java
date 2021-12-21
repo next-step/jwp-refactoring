@@ -59,12 +59,9 @@ public class OrderService {
         ).collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public List<OrderResponse> list() {
         final List<Order> orders = orderRepository.findAll();
-
-        for (final Order order : orders) {
-            order.changeOrderLineItems(orderLineItemRepository.findAllByOrderId(order.getId()));
-        }
 
         return orders.stream()
             .map(OrderResponse::new)

@@ -24,11 +24,7 @@ public class OrderLineItemRequest {
         return quantity;
     }
 
-    // public OrderLineItem toEntity(Order order, Menu menu) {
-    //     return new OrderLineItem(order, menu, quantity);
-    // }
-
     public OrderLineItem toEntity(Menu menu) {
-        return new OrderLineItem(menu, quantity);
+        return OrderLineItem.of(menu, quantity);
     }
 }

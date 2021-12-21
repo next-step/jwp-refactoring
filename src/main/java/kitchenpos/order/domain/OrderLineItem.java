@@ -36,19 +36,15 @@ public class OrderLineItem {
     public OrderLineItem() {
     }
 
-    public OrderLineItem(Menu menu, long quantity) {
-        this(null, menu, quantity);
-    }
-
-    public OrderLineItem(Order order, Menu menu, long quantity) {
-        this(null, order, menu, quantity);
-    }
-
-    public OrderLineItem(Long id, Order order, Menu menu, long quantity) {
+    private OrderLineItem(Long id, Order order, Menu menu, long quantity) {
         this.id = id;
         this.order = order;
         this.menu = menu;
         this.quantity = new Quantity(quantity);
+    }
+
+    public static OrderLineItem of(Menu menu, long quantity) {
+        return new OrderLineItem(null, null, menu, quantity);
     }
 
     public Long getId() {
