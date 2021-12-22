@@ -1,4 +1,4 @@
-package kitchenpos.acceptance;
+package kitchenpos.product.acceptance;
 
 import static common.ProductFixture.양념치킨;
 import static kitchenpos.utils.TestFactory.*;

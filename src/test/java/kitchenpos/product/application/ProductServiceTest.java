@@ -1,4 +1,4 @@
-package kitchenpos.application;
+package kitchenpos.product.application;
 
 import static common.ProductFixture.가격이없는_반반치킨;
 import static common.ProductFixture.양념치킨;

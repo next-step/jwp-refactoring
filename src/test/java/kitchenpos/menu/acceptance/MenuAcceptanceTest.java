@@ -1,9 +1,8 @@
-package kitchenpos.acceptance;
+package kitchenpos.menu.acceptance;
 
 import static java.util.Arrays.asList;
-import static kitchenpos.acceptance.MenuGroupAcceptanceTest.메뉴그룹_생성_요청;
-import static kitchenpos.acceptance.ProductAcceptanceTest.상품_생성_요청;
-import static kitchenpos.acceptance.ProductAcceptanceTest.상품_생성됨;
+import static kitchenpos.menu.acceptance.MenuGroupAcceptanceTest.메뉴그룹_생성_요청;
+import static kitchenpos.product.acceptance.ProductAcceptanceTest.상품_생성_요청;
 import static kitchenpos.utils.StatusValidation.생성됨;
 import static kitchenpos.utils.StatusValidation.조회됨;
 import static kitchenpos.utils.TestFactory.get;

@@ -1,7 +1,7 @@
-package kitchenpos.acceptance;
+package kitchenpos.table.acceptance;
 
 import static java.util.Arrays.asList;
-import static kitchenpos.acceptance.OrderTableAcceptanceTest.주문테이블_생성_요청;
+import static kitchenpos.table.acceptance.OrderTableAcceptanceTest.주문테이블_생성_요청;
 import static kitchenpos.utils.StatusValidation.삭제됨;
 import static kitchenpos.utils.StatusValidation.생성됨;
 import static kitchenpos.utils.TestFactory.delete;
@@ -9,7 +9,6 @@ import static kitchenpos.utils.TestFactory.post;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import java.time.LocalDateTime;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;

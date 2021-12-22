@@ -1,4 +1,4 @@
-package kitchenpos.application;
+package kitchenpos.menu.application;
 
 import static common.MenuGroupFixture.from;
 import static common.MenuGroupFixture.메뉴그룹_두마리;

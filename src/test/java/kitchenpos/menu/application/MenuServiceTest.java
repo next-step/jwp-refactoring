@@ -1,4 +1,4 @@
-package kitchenpos.application;
+package kitchenpos.menu.application;
 
 import static common.MenuFixture.메뉴_양념치킨;
 import static common.MenuFixture.메뉴_후라이드;

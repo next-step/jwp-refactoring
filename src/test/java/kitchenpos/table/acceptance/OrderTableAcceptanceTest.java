@@ -1,4 +1,4 @@
-package kitchenpos.acceptance;
+package kitchenpos.table.acceptance;
 
 import static kitchenpos.utils.StatusValidation.변경됨;
 import static kitchenpos.utils.StatusValidation.생성됨;

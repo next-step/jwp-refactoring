@@ -1,4 +1,4 @@
-package kitchenpos.application;
+package kitchenpos.table.application;
 
 import static common.OrderTableFixture.두번째_주문테이블;
 import static common.OrderTableFixture.첫번째_주문테이블;
