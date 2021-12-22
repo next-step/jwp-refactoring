@@ -1,4 +1,4 @@
-package kitchenpos.product.testfixtures.ui;
+package kitchenpos.menu.ui;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasSize;
@@ -15,8 +15,10 @@ import java.util.List;
 import kitchenpos.common.CommonTestFixtures;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.ui.MenuRestController;
+import kitchenpos.product.domain.Product;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,17 +38,29 @@ class MenuRestControllerTest {
     @MockBean
     private MenuService menuService;
 
+    private Product 타코야끼;
+    private Product 뿌링클;
+    private MenuGroup 추천메뉴그룹;
+
+    @BeforeEach
+    void setUp() {
+        타코야끼 = new Product("타코야끼", BigDecimal.valueOf(12000));
+        뿌링클 = new Product("뿌링클", BigDecimal.valueOf(22000));
+        추천메뉴그룹 = new MenuGroup("추천메뉴");
+    }
+
     @DisplayName("메뉴 등록")
     @Test
     void create() throws Exception {
         //given
-        List<MenuProduct> menuProducts = Arrays.asList(new MenuProduct(1L, 2),
-            new MenuProduct(2L, 1));
+        List<MenuProduct> menuProducts = Arrays.asList(
+            new MenuProduct(타코야끼, 2),
+            new MenuProduct(뿌링클, 1));
         String menuName = "후라이드+후라이드";
         BigDecimal price = BigDecimal.valueOf(19000);
         Long menuGroupId = 1L;
-        Menu requestMenu = new Menu(menuName, price, menuGroupId, menuProducts);
-        Menu expectedMenu = new Menu(1L, menuName, price, menuGroupId, menuProducts);
+        Menu requestMenu = new Menu(menuName, price, 추천메뉴그룹, menuProducts);
+        Menu expectedMenu = new Menu(1L, menuName, price, 추천메뉴그룹, menuProducts);
         given(menuService.create(any())).willReturn(expectedMenu);
 
         //when, then
@@ -62,13 +76,16 @@ class MenuRestControllerTest {
     @Test
     void list() throws Exception {
         //given
-        List<MenuProduct> menuProducts1 = Arrays.asList(new MenuProduct(1L, 1L, 1L, 2),
-            new MenuProduct(2L, 1L, 2L, 3));
-        List<MenuProduct> menuProducts2 = Arrays.asList(new MenuProduct(3L, 2L, 1L, 1),
-            new MenuProduct(4L, 2L, 2L, 2));
+        List<MenuProduct> menuProducts1 = Arrays.asList(
+            new MenuProduct(타코야끼, 2),
+            new MenuProduct(뿌링클, 3));
+        List<MenuProduct> menuProducts2 = Arrays.asList(
+            new MenuProduct(타코야끼, 1),
+            new MenuProduct(뿌링클, 2));
+
         List<Menu> expectedMenus = Arrays.asList(
-            new Menu(1L, "후라이드+후라이드", BigDecimal.valueOf(19000), 1L, menuProducts1),
-            new Menu(2L, "오븐구이+순살강정", BigDecimal.valueOf(23000), 2L, menuProducts2));
+            new Menu(1L, "후라이드+후라이드", BigDecimal.valueOf(19000), 추천메뉴그룹, menuProducts1),
+            new Menu(2L, "오븐구이+순살강정", BigDecimal.valueOf(23000), 추천메뉴그룹, menuProducts2));
         given(menuService.list()).willReturn(expectedMenus);
 
         //when, then

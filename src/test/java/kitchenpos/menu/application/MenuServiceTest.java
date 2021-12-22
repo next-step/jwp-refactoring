@@ -64,11 +64,11 @@ class MenuServiceTest {
         MenuGroupTestFixtures.메뉴_그룹_존재여부_조회시_응답_모킹(menuGroupDao, 추천메뉴, true);
 
         List<MenuProduct> menuProducts = Arrays.asList(
-            new MenuProduct(타코야끼.getId(), 3L),
-            new MenuProduct(뿌링클.getId(), 1L));
+            new MenuProduct(타코야끼, 3L),
+            new MenuProduct(뿌링클, 1L));
         MenuTestFixtures.메뉴상품_저장_결과_모킹(menuProductDao, menuProducts);
 
-        Menu menu = new Menu("타코야끼와 뿌링클", BigDecimal.valueOf(51000), 추천메뉴.getId(),
+        Menu menu = new Menu("타코야끼와 뿌링클", BigDecimal.valueOf(51000), 추천메뉴,
             menuProducts);
         MenuTestFixtures.메뉴_저장_결과_모킹(menuDao, menu);
 
@@ -84,10 +84,10 @@ class MenuServiceTest {
     void create_exception1() {
         //given
         List<MenuProduct> menuProducts = Arrays.asList(
-            new MenuProduct(타코야끼.getId(), 3L),
-            new MenuProduct(뿌링클.getId(), 1L));
+            new MenuProduct(타코야끼, 3L),
+            new MenuProduct(뿌링클, 1L));
 
-        Menu menu = new Menu("타코야끼와 뿌링클", BigDecimal.valueOf(-1), 추천메뉴.getId(),
+        Menu menu = new Menu("타코야끼와 뿌링클", BigDecimal.valueOf(-1), 추천메뉴,
             menuProducts);
 
         //when, then
@@ -104,11 +104,11 @@ class MenuServiceTest {
         MenuGroupTestFixtures.메뉴_그룹_존재여부_조회시_응답_모킹(menuGroupDao, 추천메뉴, true);
 
         List<MenuProduct> menuProducts = Arrays.asList(
-            new MenuProduct(타코야끼.getId(), 3L),
-            new MenuProduct(뿌링클.getId(), 1L));
+            new MenuProduct(타코야끼, 3L),
+            new MenuProduct(뿌링클, 1L));
 
         Menu menu = new Menu("타코야끼와 뿌링클", BigDecimal.valueOf(51001),
-            추천메뉴.getId(), menuProducts);
+            추천메뉴, menuProducts);
 
         //when, then
         assertThatThrownBy(() -> menuService.create(menu))
@@ -120,10 +120,10 @@ class MenuServiceTest {
     void list() {
         // given
         List<MenuProduct> menuProducts = Arrays.asList(
-            new MenuProduct(타코야끼.getId(), 3L),
-            new MenuProduct(뿌링클.getId(), 1L));
+            new MenuProduct(타코야끼, 3L),
+            new MenuProduct(뿌링클, 1L));
         List<Menu> menus = Arrays.asList(
-            new Menu(1L, "타코야끼와 뿌링클", BigDecimal.valueOf(51000), 추천메뉴.getId(),
+            new Menu(1L, "타코야끼와 뿌링클", BigDecimal.valueOf(51000), 추천메뉴,
                 menuProducts));
         MenuTestFixtures.메뉴_전체조회_모킹(menuDao, menus);
         MenuTestFixtures.특정_메뉴상품_조회_결과_모킹(menuProductDao, menuProducts);
