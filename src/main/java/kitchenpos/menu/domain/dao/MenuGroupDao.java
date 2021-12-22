@@ -1,7 +1,8 @@
-package kitchenpos.menu.domain;
+package kitchenpos.menu.domain.dao;
 
 import java.util.List;
 import java.util.Optional;
+import kitchenpos.menu.domain.MenuGroup;
 
 public interface MenuGroupDao {
 

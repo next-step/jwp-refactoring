@@ -1,9 +1,12 @@
-package kitchenpos.menu.domain;
+package kitchenpos.menu.domain.dao;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigDecimal;
 import java.util.List;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductDao;
 import org.junit.jupiter.api.BeforeEach;

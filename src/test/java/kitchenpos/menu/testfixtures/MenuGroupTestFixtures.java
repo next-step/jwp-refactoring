@@ -5,7 +5,7 @@ import static org.mockito.BDDMockito.given;
 
 import java.util.List;
 import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuGroupDao;
+import kitchenpos.menu.domain.dao.MenuGroupDao;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
