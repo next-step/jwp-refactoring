@@ -1,6 +1,5 @@
-package kitchenpos.application;
+package kitchenpos.order.application;
 
-import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.MenuCountOrderValidator;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
@@ -24,9 +23,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static kitchenpos.order.application.OrderServiceFixture.*;
 import static kitchenpos.ordertable.application.OrderTableServiceTest.getOrderTable;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -166,88 +165,4 @@ class OrderServiceTest {
         assertThat(list).containsExactlyElementsOf(Arrays.asList(OrderResponse.of(order), OrderResponse.of(order2)));
     }
 
-    @DisplayName("주문 아이디를 통해 주문 상태를 변경할 수 있다.")
-    @Test
-    void changeOrderStatus() {
-        // given
-        OrderRequest changeRequest = getChangeRequest(OrderStatus.COMPLETION.name());
-        final Order expected = getOrder(1L, 1L, OrderStatus.MEAL, getOrderLineItems(
-                getOrderLineItem(1L, 3), getOrderLineItem(2L, 4))
-        );
-
-        given(orderRepository.findById(anyLong())).willReturn(Optional.of(expected));
-        // when
-        final OrderResponse actual = orderService.changeOrderStatus(1L, changeRequest);
-        // then
-        assertThat(actual.getOrderStatus()).isEqualTo(expected.getOrderStatus());
-    }
-
-
-    @DisplayName("주문 상태를 변경할 수 없는 경우")
-    @Nested
-    class ChangeOrderStatusFail {
-        @DisplayName("주문 아이디를 따른 주문이 존재하지 않는 경우")
-        @Test
-        void changeOrderStatusByEmptyOrder() {
-            // given
-            OrderRequest changeRequest = getChangeRequest(OrderStatus.COOKING.name());
-            given(orderRepository.findById(anyLong())).willReturn(Optional.empty());
-            // when
-            ThrowableAssert.ThrowingCallable callable = () -> orderService.changeOrderStatus(1L, changeRequest);
-            // then
-            assertThatThrownBy(callable).isInstanceOf(IllegalArgumentException.class);
-        }
-
-        @DisplayName("주문 상태가 계산완료인 경우")
-        @Test
-        void changeOrderStatusByCompletionStatus() {
-            // given
-            final OrderRequest changeRequest = getChangeRequest(OrderStatus.COOKING.name());
-            final Order expected = getOrder(1L, 1L, OrderStatus.COMPLETION, getOrderLineItems(
-                    getOrderLineItem(1L, 3), getOrderLineItem(2L, 4))
-            );
-            given(orderRepository.findById(anyLong())).willReturn(Optional.of(expected));
-
-            // when
-            ThrowableAssert.ThrowingCallable callable = () -> orderService.changeOrderStatus(1L, changeRequest);
-            // then
-            assertThatThrownBy(callable).isInstanceOf(IllegalArgumentException.class);
-        }
-    }
-
-
-    private List<OrderLineItem> getOrderLineItems(OrderLineItem... orderLineItems) {
-        return Arrays.stream(orderLineItems)
-                .collect(Collectors.toList());
-    }
-
-    private List<OrderLineItemRequest> getOrderLineRequests(OrderLineItem... orderLineItems) {
-        return Arrays.stream(orderLineItems)
-                .map(this::getOrderLineRequest)
-                .collect(Collectors.toList());
-    }
-
-    private OrderLineItemRequest getOrderLineRequest(OrderLineItem orderLineItem) {
-        return new OrderLineItemRequest(orderLineItem.getMenuId(), orderLineItem.getQuantity());
-    }
-
-    private OrderLineItem getOrderLineItem(long menuId, int quantity) {
-        return OrderLineItem.of(menuId, quantity);
-    }
-
-    private Order getOrder(long id, long orderTableId, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
-        return Order.generate(id, orderTableId, orderStatus, orderLineItems);
-    }
-
-    private Order getOrder(long id, long orderTableId, List<OrderLineItem> orderLineItems) {
-        return Order.generate(id, orderTableId, orderLineItems);
-    }
-
-    private OrderRequest getChangeRequest(String status) {
-        return new OrderRequest(status);
-    }
-
-    private OrderRequest getCreateRequest(Long orderTableId, List<OrderLineItemRequest> orderLineItems) {
-        return new OrderRequest(orderTableId, orderLineItems);
-    }
 }

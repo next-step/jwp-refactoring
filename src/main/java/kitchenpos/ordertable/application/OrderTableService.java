@@ -1,7 +1,7 @@
 package kitchenpos.ordertable.application;
 
-import kitchenpos.order.application.OrderService;
 import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.dto.ChangeEmptyOrderTableValidator;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
 import kitchenpos.ordertable.infra.OrderTableRepository;
@@ -14,11 +14,12 @@ import java.util.stream.Collectors;
 
 @Service
 public class OrderTableService {
-    private final OrderService orderService;
+    private final ChangeEmptyOrderTableValidator changeEmptyOrderTableValidator;
     private final OrderTableRepository orderTableRepository;
 
-    public OrderTableService(final OrderService orderService, final OrderTableRepository orderTableRepository) {
-        this.orderService = orderService;
+    public OrderTableService(final ChangeEmptyOrderTableValidator changeEmptyOrderTableValidator,
+                             final OrderTableRepository orderTableRepository) {
+        this.changeEmptyOrderTableValidator = changeEmptyOrderTableValidator;
         this.orderTableRepository = orderTableRepository;
     }
 
@@ -37,15 +38,9 @@ public class OrderTableService {
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest request) {
         final OrderTable orderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
-        validateChangeEmpty(orderTableId);
+        changeEmptyOrderTableValidator.validate(orderTableId);
         orderTable.changeEmpty(request.isEmpty());
         return OrderTableResponse.of(orderTableRepository.save(orderTable));
-    }
-
-    private void validateChangeEmpty(Long orderTableId) {
-        if (orderService.isCookingOrMealStateByOrderTableId(orderTableId)) {
-            throw new IllegalArgumentException("주문 테이블의 주문 상태가 조리나 식사일 경우에만 테이블의 빈 유무를 변경할 수 있습니다.");
-        }
     }
 
     @Transactional

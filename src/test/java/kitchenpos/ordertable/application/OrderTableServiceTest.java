@@ -1,7 +1,8 @@
 package kitchenpos.ordertable.application;
 
-import kitchenpos.order.application.OrderService;
+import kitchenpos.order.application.OrderStatusService;
 import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.dto.ChangeEmptyOrderTableValidator;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
 import kitchenpos.ordertable.infra.OrderTableRepository;
@@ -23,6 +24,8 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 
 @DisplayName("주문 테이블 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
@@ -31,7 +34,7 @@ class OrderTableServiceTest {
     @Mock
     private OrderTableRepository orderTableRepository;
     @Mock
-    private OrderService orderService;
+    private ChangeEmptyOrderTableValidator changeEmptyOrderTableValidator;
     @InjectMocks
     private OrderTableService tableService;
 
@@ -80,7 +83,7 @@ class OrderTableServiceTest {
         final OrderTable expected = getOrderTable(1L, true, 13);
 
         given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(expected));
-        given(orderService.isCookingOrMealStateByOrderTableId(anyLong())).willReturn(false);
+        doNothing().when(changeEmptyOrderTableValidator).validate(anyLong());
         given(orderTableRepository.save(any(OrderTable.class))).willReturn(expected);
         // when
         OrderTableResponse orderTable = tableService.changeEmpty(expected.getId(), request);
@@ -112,7 +115,7 @@ class OrderTableServiceTest {
             final OrderTable expected = getOrderTable(1L, true, 13);
 
             given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(expected));
-            given(orderService.isCookingOrMealStateByOrderTableId(anyLong())).willReturn(true);
+            doThrow(new IllegalArgumentException()).when(changeEmptyOrderTableValidator).validate(anyLong());
 
             // when
             ThrowableAssert.ThrowingCallable callable = () -> tableService.changeEmpty(expected.getId(), changeEmptyRequest);

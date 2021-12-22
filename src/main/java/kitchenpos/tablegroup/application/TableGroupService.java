@@ -1,6 +1,6 @@
 package kitchenpos.tablegroup.application;
 
-import kitchenpos.order.application.OrderService;
+import kitchenpos.order.application.OrderStatusService;
 import kitchenpos.tablegroup.domain.OrderTableIdsTableGroupValidator;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.dto.TableGroupCreateRequest;
@@ -13,13 +13,14 @@ import java.util.List;
 
 @Service
 public class TableGroupService {
-    private final OrderService orderService;
+    private final OrderStatusService orderStatusService;
     private final TableGroupRepository tableGroupRepository;
     private final OrderTableIdsTableGroupValidator orderTableIdsTableGroupValidator;
 
-    public TableGroupService(OrderService orderService, TableGroupRepository tableGroupRepository,
+    public TableGroupService(OrderStatusService orderStatusService,
+                             TableGroupRepository tableGroupRepository,
                              OrderTableIdsTableGroupValidator orderTableIdsTableGroupValidator) {
-        this.orderService = orderService;
+        this.orderStatusService = orderStatusService;
         this.tableGroupRepository = tableGroupRepository;
         this.orderTableIdsTableGroupValidator = orderTableIdsTableGroupValidator;
     }
@@ -39,7 +40,7 @@ public class TableGroupService {
                     throw new IllegalArgumentException("해당 단체 지정을 찾지 못하였습니다.");
                 });
 
-        if (orderService.isCookingOrMealStateByOrderTableIds(tableGroup.getOrderTableIds())) {
+        if (orderStatusService.isCookingOrMealStateByOrderTableIds(tableGroup.getOrderTableIds())) {
             throw new IllegalArgumentException();
         }
 

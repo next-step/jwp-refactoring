@@ -1,6 +1,6 @@
 package kitchenpos.tablegroup.application;
 
-import kitchenpos.order.application.OrderService;
+import kitchenpos.order.application.OrderStatusService;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.tablegroup.domain.OrderTableIdsTableGroupValidator;
 import kitchenpos.tablegroup.domain.TableGroup;
@@ -37,7 +37,7 @@ import static org.mockito.Mockito.doThrow;
 class TableGroupServiceTest {
 
     @Mock
-    private OrderService orderService;
+    private OrderStatusService orderStatusService;
     @Mock
     private OrderTableIdsTableGroupValidator orderTableIdsTableGroupValidator;
     @Mock
@@ -105,7 +105,7 @@ class TableGroupServiceTest {
         TableGroup tableGroup = getTableGroup(1L, orderTableIds);
 
         given(tableGroupRepository.findById(any())).willReturn(Optional.of(tableGroup));
-        given(orderService.isCookingOrMealStateByOrderTableIds(anyList())).willReturn(false);
+        given(orderStatusService.isCookingOrMealStateByOrderTableIds(anyList())).willReturn(false);
         // when
         final Executable executable = () -> tableGroupService.ungroup(tableGroup.getId());
         // then
@@ -123,7 +123,7 @@ class TableGroupServiceTest {
         TableGroup tableGroup = getTableGroup(1L, orderTableIds);
 
         given(tableGroupRepository.findById(any())).willReturn(Optional.of(tableGroup));
-        given(orderService.isCookingOrMealStateByOrderTableIds(anyList())).willReturn(true);
+        given(orderStatusService.isCookingOrMealStateByOrderTableIds(anyList())).willReturn(true);
 
         // when
         ThrowableAssert.ThrowingCallable callable = () -> tableGroupService.ungroup(tableGroup.getId());

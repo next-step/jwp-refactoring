@@ -1,6 +1,8 @@
 package kitchenpos.order.ui;
 
 import kitchenpos.order.application.OrderService;
+import kitchenpos.order.application.OrderStatusService;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import org.springframework.http.ResponseEntity;
@@ -17,9 +19,11 @@ import java.util.List;
 @RestController
 public class OrderRestController {
     private final OrderService orderService;
+    private final OrderStatusService orderStatusService;
 
-    public OrderRestController(final OrderService orderService) {
+    public OrderRestController(OrderService orderService, OrderStatusService orderStatusService) {
         this.orderService = orderService;
+        this.orderStatusService = orderStatusService;
     }
 
     @PostMapping("/api/orders")
@@ -41,6 +45,6 @@ public class OrderRestController {
             @PathVariable final Long orderId,
             @RequestBody final OrderRequest request
     ) {
-        return ResponseEntity.ok(orderService.changeOrderStatus(orderId, request));
+        return ResponseEntity.ok(orderStatusService.changeOrderStatus(orderId, request));
     }
 }
