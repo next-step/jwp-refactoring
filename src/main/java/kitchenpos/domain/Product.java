@@ -24,27 +24,28 @@ public class Product {
     @Column(name = "price", nullable = false)
     private BigDecimal price;
 
-    public Long getId() {
-        return id;
+    protected Product() {
     }
 
-    public void setId(final Long id) {
+    private Product(Long id, String name, BigDecimal price) {
         this.id = id;
+        this.name = name;
+        this.price = price;
+    }
+
+    public static Product of(Long id, String name, BigDecimal price) {
+        return new Product(id, name, price);
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(final String name) {
-        this.name = name;
-    }
-
     public BigDecimal getPrice() {
         return price;
-    }
-
-    public void setPrice(final BigDecimal price) {
-        this.price = price;
     }
 }

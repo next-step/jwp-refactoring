@@ -14,11 +14,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.dao.TableGroupDao;
+import kitchenpos.domain.OrderRepository;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.OrderTableRepository;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.domain.TableGroupRepository;
 
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
@@ -27,11 +27,11 @@ class TableGroupServiceTest {
 	private TableGroupService tableGroupService;
 
 	@Mock
-	private OrderDao orderDao;
+	private OrderRepository orderRepository;
 	@Mock
-	private OrderTableDao orderTableDao;
+	private OrderTableRepository orderTableRepository;
 	@Mock
-	private TableGroupDao tableGroupDao;
+	private TableGroupRepository tableGroupRepository;
 
 	@Test
 	void create() {
@@ -41,11 +41,11 @@ class TableGroupServiceTest {
 		);
 		final TableGroup tableGroup = tableGroup(1L, orderTables);
 
-		given(orderTableDao.findAllByIdIn(any())).willReturn(orderTables);
-		given(tableGroupDao.save(any())).willReturn(tableGroup);
-		given(orderTableDao.save(any()))
-			.willReturn(orderTable(1L, 1L, 4, false))
-			.willReturn(orderTable(2L, 1L, 6, false));
+		given(orderTableRepository.findAllById(any())).willReturn(orderTables);
+		given(tableGroupRepository.save(any())).willReturn(tableGroup);
+		given(orderTableRepository.save(any()))
+			.willReturn(orderTable(1L, tableGroup, 4, false))
+			.willReturn(orderTable(2L, tableGroup, 6, false));
 
 		final TableGroup createdTableGroup = tableGroupService.create(tableGroup(null, orderTables));
 
@@ -74,7 +74,7 @@ class TableGroupServiceTest {
 
 	@Test
 	void create_not_found_order_table() {
-		given(orderTableDao.findAllByIdIn(any())).willReturn(Arrays.asList(
+		given(orderTableRepository.findAllById(any())).willReturn(Arrays.asList(
 			orderTable(1L, null, 3, true)
 		));
 
@@ -91,7 +91,7 @@ class TableGroupServiceTest {
 			orderTable(1L, null, 3, false),
 			orderTable(2L, null, 2, true)
 		);
-		given(orderTableDao.findAllByIdIn(any())).willReturn(orderTables);
+		given(orderTableRepository.findAllById(any())).willReturn(orderTables);
 
 		assertThatIllegalArgumentException()
 			.isThrownBy(() -> tableGroupService.create(tableGroup(null, orderTables)));
@@ -99,11 +99,12 @@ class TableGroupServiceTest {
 
 	@Test
 	void create_order_table_having_table_group_id_already() {
+		final TableGroup tableGroup = tableGroup(1L, null);
 		final List<OrderTable> orderTables = Arrays.asList(
-			orderTable(1L, 1L, 4, true),
+			orderTable(1L, tableGroup, 4, true),
 			orderTable(2L, null, 4, true)
 		);
-		given(orderTableDao.findAllByIdIn(any())).willReturn(orderTables);
+		given(orderTableRepository.findAllById(any())).willReturn(orderTables);
 
 		assertThatIllegalArgumentException()
 			.isThrownBy(() -> tableGroupService.create(tableGroup(null, orderTables)));
@@ -111,30 +112,30 @@ class TableGroupServiceTest {
 
 	@Test
 	void ungroup() {
-		final Long tableGroupId = 1L;
-		final OrderTable orderTable1 = orderTable(1L, tableGroupId, 4, false);
-		final OrderTable orderTable2 = orderTable(2L, tableGroupId, 4, false);
+		final TableGroup tableGroup = tableGroup(1L, null);
+		final OrderTable orderTable1 = orderTable(1L, tableGroup, 4, false);
+		final OrderTable orderTable2 = orderTable(2L, tableGroup, 4, false);
 
-		given(orderTableDao.findAllByTableGroupId(any())).willReturn(Arrays.asList(orderTable1, orderTable2));
-		given(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(), anyList())).willReturn(false);
+		given(orderTableRepository.findAllByTableGroupId(any())).willReturn(Arrays.asList(orderTable1, orderTable2));
+		given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), anyList())).willReturn(false);
 
-		tableGroupService.ungroup(tableGroupId);
+		tableGroupService.ungroup(tableGroup.getId());
 
-		verify(orderTableDao, times(2)).save(any(OrderTable.class));
+		verify(orderTableRepository, times(2)).save(any(OrderTable.class));
 		assertThat(orderTable1.getTableGroupId()).isNull();
 		assertThat(orderTable2.getTableGroupId()).isNull();
 	}
 
 	@Test
 	void ungroup_order_table_status_cooking_or_meal() {
-		final Long tableGroupId = 1L;
-		final OrderTable orderTable1 = orderTable(1L, tableGroupId, 4, false);
-		final OrderTable orderTable2 = orderTable(2L, tableGroupId, 4, false);
+		final TableGroup tableGroup = tableGroup(1L, null);
+		final OrderTable orderTable1 = orderTable(1L, tableGroup, 4, false);
+		final OrderTable orderTable2 = orderTable(2L, tableGroup, 4, false);
 
-		given(orderTableDao.findAllByTableGroupId(any())).willReturn(Arrays.asList(orderTable1, orderTable2));
-		given(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(), anyList())).willReturn(true);
+		given(orderTableRepository.findAllByTableGroupId(any())).willReturn(Arrays.asList(orderTable1, orderTable2));
+		given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), anyList())).willReturn(true);
 
 		assertThatIllegalArgumentException()
-			.isThrownBy(() -> tableGroupService.ungroup(tableGroupId));
+			.isThrownBy(() -> tableGroupService.ungroup(tableGroup.getId()));
 	}
 }

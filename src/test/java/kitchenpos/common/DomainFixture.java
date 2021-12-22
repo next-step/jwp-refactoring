@@ -1,7 +1,6 @@
 package kitchenpos.common;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import kitchenpos.domain.Menu;
@@ -17,81 +16,48 @@ import kitchenpos.domain.TableGroup;
 public class DomainFixture {
 
 	public static TableGroup tableGroup(Long id, List<OrderTable> orderTables) {
-		final TableGroup tableGroup = new TableGroup();
-		tableGroup.setId(id);
-		tableGroup.setCreatedDate(LocalDateTime.now());
-		tableGroup.setOrderTables(orderTables);
-		return tableGroup;
+		return TableGroup.of(id, orderTables);
 	}
 
 	public static Order order(Long id, OrderStatus status) {
-		return order(id, null, status, null, null);
+		return order(id, null, status, null);
 	}
 
-	public static Order order(Long orderTableId, List<OrderLineItem> orderLineItems) {
-		return order(null, orderTableId, OrderStatus.COOKING, LocalDateTime.now(), orderLineItems);
+	public static Order order(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
+		return order(null, orderTable, OrderStatus.COOKING, orderLineItems);
 	}
 
-	public static Order order(Long id, Long orderTableId, OrderStatus status, LocalDateTime orderedAt,
+	public static Order order(Long id, OrderTable orderTable, OrderStatus status,
 		List<OrderLineItem> orderLineItems) {
-		final Order order = new Order();
-		order.setId(id);
-		order.setOrderTableId(orderTableId);
-		order.setOrderStatus(status.name());
-		order.setOrderedTime(orderedAt);
-		order.setOrderLineItems(orderLineItems);
-		return order;
+		return Order.of(id, orderTable, status, orderLineItems);
 	}
 
-	public static OrderTable orderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
-		final OrderTable orderTable = new OrderTable();
-		orderTable.setId(id);
-		orderTable.setTableGroupId(tableGroupId);
-		orderTable.setNumberOfGuests(numberOfGuests);
-		orderTable.setEmpty(empty);
-		return orderTable;
+	public static OrderTable orderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
+		return OrderTable.of(id, tableGroup, numberOfGuests, empty);
 	}
 
-	public static OrderLineItem orderLineItem(Long menuId, long quantity) {
-		return orderLineItem(null, null, menuId, quantity);
+	public static OrderLineItem orderLineItem(Menu menu, long quantity) {
+		return orderLineItem(null, null, menu, quantity);
 	}
 
-	public static OrderLineItem orderLineItem(Long seq, Long orderId, Long menuId, long quantity) {
-		final OrderLineItem orderLineItem = new OrderLineItem();
-		orderLineItem.setSeq(seq);
-		orderLineItem.setOrderId(orderId);
-		orderLineItem.setMenuId(menuId);
-		orderLineItem.setQuantity(quantity);
-		return orderLineItem;
+	public static OrderLineItem orderLineItem(Long seq, Order order, Menu menu, long quantity) {
+		return OrderLineItem.of(seq, order, menu, quantity);
 	}
 
-	public static Menu menu(Long id, String name, long price, Long menuGroupId, List<MenuProduct> menuProducts) {
-		return menu(id, name, BigDecimal.valueOf(price), menuGroupId, menuProducts);
+	public static Menu menu(Long id, String name, long price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+		return menu(id, name, BigDecimal.valueOf(price), menuGroup, menuProducts);
 	}
 
-	public static Menu menu(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
-		final Menu menu = new Menu();
-		menu.setId(id);
-		menu.setName(name);
-		menu.setPrice(price);
-		menu.setMenuGroupId(menuGroupId);
-		menu.setMenuProducts(menuProducts);
-		return menu;
+	public static Menu menu(Long id, String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+		return Menu.of(id, name, price, menuGroup, menuProducts);
 	}
 
 	public static MenuGroup menuGroup(Long id, String name) {
-		final MenuGroup menuGroup = new MenuGroup();
-		menuGroup.setId(id);
-		menuGroup.setName(name);
-		return menuGroup;
+		return MenuGroup.of(id, name);
 	}
 
-	public static MenuProduct menuProduct(Long seq, Long productId, long quantity) {
-		final MenuProduct menuProduct = new MenuProduct();
-		menuProduct.setSeq(seq);
-		menuProduct.setProductId(productId);
-		menuProduct.setQuantity(quantity);
-		return menuProduct;
+	public static MenuProduct menuProduct(Long seq, Menu menu, Product product, long quantity) {
+		return MenuProduct.of(seq, menu, product, quantity);
 	}
 
 	public static Product product(Long id, String name, long price) {
@@ -99,10 +65,6 @@ public class DomainFixture {
 	}
 
 	public static Product product(Long id, String name, BigDecimal price) {
-		final Product product = new Product();
-		product.setId(id);
-		product.setName(name);
-		product.setPrice(price);
-		return product;
+		return Product.of(id, name, price);
 	}
 }

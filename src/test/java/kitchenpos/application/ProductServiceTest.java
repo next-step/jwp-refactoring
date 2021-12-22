@@ -13,8 +13,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
+import kitchenpos.domain.ProductRepository;
 
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
@@ -23,12 +23,12 @@ class ProductServiceTest {
 	private ProductService productService;
 
 	@Mock
-	private ProductDao productDao;
+	private ProductRepository productRepository;
 
 	@Test
 	void create() {
 		final Product 딤섬 = product(1L, "딤섬", 5_000);
-		given(productDao.save(any())).willReturn(딤섬);
+		given(productRepository.save(any())).willReturn(딤섬);
 
 		final Product createdProduct = productService.create(product(null, "딤섬", 5_000));
 
@@ -50,7 +50,7 @@ class ProductServiceTest {
 	void list() {
 		final Product 짜장 = product(1L, "짜장", 7_000);
 		final Product 짬뽕 = product(2L, "짬뽕", 9_000);
-		given(productDao.findAll()).willReturn(Arrays.asList(짜장, 짬뽕));
+		given(productRepository.findAll()).willReturn(Arrays.asList(짜장, 짬뽕));
 
 		assertThat(productService.list()).containsExactly(짜장, 짬뽕);
 	}

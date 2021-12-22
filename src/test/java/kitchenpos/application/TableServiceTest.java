@@ -13,9 +13,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
+import kitchenpos.domain.OrderRepository;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.OrderTableRepository;
+import kitchenpos.domain.TableGroup;
 
 @ExtendWith(MockitoExtension.class)
 public class TableServiceTest {
@@ -24,13 +25,13 @@ public class TableServiceTest {
 	private TableService tableService;
 
 	@Mock
-	private OrderDao orderDao;
+	private OrderRepository orderRepository;
 	@Mock
-	private OrderTableDao orderTableDao;
+	private OrderTableRepository orderTableRepository;
 
 	@Test
 	void create() {
-		given(orderTableDao.save(any())).willReturn(orderTable(1L, null, 3, true));
+		given(orderTableRepository.save(any())).willReturn(orderTable(1L, null, 3, true));
 
 		final OrderTable createdOrderTable = tableService.create(orderTable(null, null, 3, true));
 
@@ -42,7 +43,7 @@ public class TableServiceTest {
 	void list() {
 		final OrderTable orderTable1 = orderTable(1L, null, 4, false);
 		final OrderTable orderTable2 = orderTable(2L, null, 3, true);
-		given(orderTableDao.findAll()).willReturn(Arrays.asList(orderTable1, orderTable2));
+		given(orderTableRepository.findAll()).willReturn(Arrays.asList(orderTable1, orderTable2));
 
 		assertThat(tableService.list()).containsExactly(orderTable1, orderTable2);
 	}
@@ -50,11 +51,11 @@ public class TableServiceTest {
 	@Test
 	void changeEmpty() {
 		final OrderTable 비어있지않은_테이블 = orderTable(1L, null, 2, false);
-		given(orderTableDao.findById(any())).willReturn(Optional.of(비어있지않은_테이블));
-		given(orderDao.existsByOrderTableIdAndOrderStatusIn(any(), anyList())).willReturn(false);
+		given(orderTableRepository.findById(any())).willReturn(Optional.of(비어있지않은_테이블));
+		given(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), anyList())).willReturn(false);
 
 		final OrderTable 빈_테이블 = orderTable(비어있지않은_테이블.getId(), null, 2, true);
-		given(orderTableDao.save(any())).willReturn(빈_테이블);
+		given(orderTableRepository.save(any())).willReturn(빈_테이블);
 
 		final OrderTable changedOrderTable = tableService.changeEmpty(비어있지않은_테이블.getId(), 빈_테이블);
 
@@ -64,7 +65,7 @@ public class TableServiceTest {
 	@Test
 	void changeEmpty_not_found_order_table() {
 		final Long orderTableId = 1L;
-		given(orderTableDao.findById(any())).willReturn(Optional.empty());
+		given(orderTableRepository.findById(any())).willReturn(Optional.empty());
 
 		assertThatIllegalArgumentException()
 			.isThrownBy(() -> tableService.changeEmpty(orderTableId,
@@ -74,20 +75,21 @@ public class TableServiceTest {
 
 	@Test
 	void changeEmpty_order_table_having_table_group_id() {
-		final OrderTable 빈_테이블 = orderTable(1L, 2L, 2, true);
-		given(orderTableDao.findById(any())).willReturn(Optional.of(빈_테이블));
+		final TableGroup tableGroup = tableGroup(2L, null);
+		final OrderTable 빈_테이블 = orderTable(1L, tableGroup, 2, true);
+		given(orderTableRepository.findById(any())).willReturn(Optional.of(빈_테이블));
 
 		assertThatIllegalArgumentException()
 			.isThrownBy(() -> tableService.changeEmpty(빈_테이블.getId(),
-				orderTable(빈_테이블.getId(), 빈_테이블.getTableGroupId(), 2, false)
+				orderTable(빈_테이블.getId(), tableGroup, 2, false)
 			));
 	}
 
 	@Test
 	void changeEmpty_order_table_status_cooking_or_meal() {
 		final OrderTable 만석_테이블 = orderTable(1L, null, 2, false);
-		given(orderTableDao.findById(any())).willReturn(Optional.of(만석_테이블));
-		given(orderDao.existsByOrderTableIdAndOrderStatusIn(any(), anyList())).willReturn(true);
+		given(orderTableRepository.findById(any())).willReturn(Optional.of(만석_테이블));
+		given(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), anyList())).willReturn(true);
 
 		assertThatIllegalArgumentException()
 			.isThrownBy(() -> tableService.changeEmpty(만석_테이블.getId(),
@@ -99,9 +101,9 @@ public class TableServiceTest {
 	void changeNumberOfGuests() {
 		final Long orderTableId = 1L;
 		final OrderTable 손님_1명_테이블 = orderTable(orderTableId, null, 1, false);
-		given(orderTableDao.findById(any())).willReturn(Optional.of(손님_1명_테이블));
+		given(orderTableRepository.findById(any())).willReturn(Optional.of(손님_1명_테이블));
 		final OrderTable 손님_2명_테이블 = orderTable(orderTableId, null, 2, false);
-		given(orderTableDao.save(any())).willReturn(손님_2명_테이블);
+		given(orderTableRepository.save(any())).willReturn(손님_2명_테이블);
 
 		final OrderTable changedOrderTable = tableService.changeNumberOfGuests(orderTableId, 손님_2명_테이블);
 
@@ -121,7 +123,7 @@ public class TableServiceTest {
 	@Test
 	void changeNumberOfGuests_not_found_order_table() {
 		final Long orderTableId = 1L;
-		given(orderTableDao.findById(any())).willReturn(Optional.empty());
+		given(orderTableRepository.findById(any())).willReturn(Optional.empty());
 
 		assertThatIllegalArgumentException()
 			.isThrownBy(() -> tableService.changeNumberOfGuests(orderTableId,
@@ -132,7 +134,7 @@ public class TableServiceTest {
 	@Test
 	void changeNumberOfGuests_empty_order_table() {
 		final OrderTable 빈_테이블 = orderTable(1L, null, 2, true);
-		given(orderTableDao.findById(any())).willReturn(Optional.of(빈_테이블));
+		given(orderTableRepository.findById(any())).willReturn(Optional.of(빈_테이블));
 
 		assertThatIllegalArgumentException()
 			.isThrownBy(() -> tableService.changeNumberOfGuests(빈_테이블.getId(),

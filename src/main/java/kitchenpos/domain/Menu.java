@@ -37,43 +37,44 @@ public class Menu {
     @OneToMany(mappedBy = "menu")
     private List<MenuProduct> menuProducts;
 
-    public Long getId() {
-        return id;
+    protected Menu() {
     }
 
-    public void setId(final Long id) {
+    private Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup,
+        List<MenuProduct> menuProducts) {
         this.id = id;
+        this.name = name;
+        this.price = price;
+        this.menuGroup = menuGroup;
+        this.menuProducts = menuProducts;
+    }
+
+    public static Menu of(Long id, String name, BigDecimal price, MenuGroup menuGroup,
+        List<MenuProduct> menuProducts) {
+        return new Menu(id, name, price, menuGroup, menuProducts);
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(final String name) {
-        this.name = name;
-    }
-
     public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(final BigDecimal price) {
-        this.price = price;
-    }
-
     public Long getMenuGroupId() {
-        return menuGroup.getId();
-    }
-
-    public void setMenuGroupId(final Long menuGroupId) {
-        menuGroup.setId(menuGroupId);
+        return null == menuGroup ? null : menuGroup.getId();
     }
 
     public List<MenuProduct> getMenuProducts() {
         return menuProducts;
     }
 
-    public void setMenuProducts(final List<MenuProduct> menuProducts) {
+    public void setMenuProducts(List<MenuProduct> menuProducts) {
         this.menuProducts = menuProducts;
     }
 }
