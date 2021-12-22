@@ -25,7 +25,7 @@ import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderStatusRequest;
 import kitchenpos.order.exception.OrderException;
-import kitchenpos.tableGroup.exception.TableException;
+import kitchenpos.tablegroup.exception.TableException;
 
 @DisplayName("주문 : 서비스 테스트")
 @ExtendWith(MockitoExtension.class)

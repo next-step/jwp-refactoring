@@ -9,7 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import kitchenpos.tableGroup.domain.TableGroup;
+import kitchenpos.tablegroup.domain.TableGroup;
 
 @DisplayName("주문 테이블 일급 컬렉션 : 단위 테스트")
 class OrderTablesTest {

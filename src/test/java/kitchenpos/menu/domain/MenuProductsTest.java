@@ -10,7 +10,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import kitchenpos.common.PriceException;
-import kitchenpos.domain.Price;
+import kitchenpos.common.domain.Price;
 import kitchenpos.product.domain.Product;
 
 @DisplayName("메뉴 상품 일급 컬렉션 : 단위 테스트")

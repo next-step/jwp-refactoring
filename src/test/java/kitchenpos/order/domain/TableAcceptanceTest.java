@@ -1,11 +1,11 @@
 package kitchenpos.order.domain;
 
 import static kitchenpos.menu.domain.MenuAcceptanceStaticTest.*;
-import static kitchenpos.menu.domain.MenuGroupAcceptanceStaticTest.*;
+import static kitchenpos.menugroup.domain.MenuGroupAcceptanceStaticTest.*;
 import static kitchenpos.order.domain.OrderAcceptanceStaticTest.*;
 import static kitchenpos.order.domain.TableAcceptanceStaticTest.*;
 import static kitchenpos.product.domain.ProductAcceptanceStaticTest.*;
-import static kitchenpos.tableGroup.domain.TableGroupAcceptanceStaticTest.*;
+import static kitchenpos.tablegroup.domain.TableGroupAcceptanceStaticTest.*;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -19,14 +19,14 @@ import org.springframework.http.HttpStatus;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.menu.dto.MenuGroupResponse;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.order.dto.OrderTableResponse;
 import kitchenpos.product.dto.ProductResponse;
-import kitchenpos.tableGroup.dto.TableGroupRequest;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
 
 @DisplayName("주문 테이블 : 인수 테스트")
 class TableAcceptanceTest extends AcceptanceTest {

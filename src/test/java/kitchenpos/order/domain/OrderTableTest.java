@@ -10,8 +10,8 @@ import org.junit.jupiter.api.Test;
 
 import kitchenpos.common.ErrorCode;
 import kitchenpos.order.exception.OrderException;
-import kitchenpos.tableGroup.domain.TableGroup;
-import kitchenpos.tableGroup.exception.TableException;
+import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.exception.TableException;
 
 @DisplayName("주문 테이블 : 단위 테스트")
 class OrderTableTest {

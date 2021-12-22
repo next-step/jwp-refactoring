@@ -7,7 +7,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 
-import kitchenpos.tableGroup.domain.TableGroup;
+import kitchenpos.tablegroup.domain.TableGroup;
 
 @Embeddable
 public class OrderTables {

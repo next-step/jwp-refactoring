@@ -10,7 +10,7 @@ import javax.persistence.OneToMany;
 
 import kitchenpos.common.ErrorCode;
 import kitchenpos.common.PriceException;
-import kitchenpos.domain.Price;
+import kitchenpos.common.domain.Price;
 
 @Embeddable
 public class MenuProducts {

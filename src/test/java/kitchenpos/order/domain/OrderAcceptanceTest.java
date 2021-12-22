@@ -1,7 +1,7 @@
 package kitchenpos.order.domain;
 
 import static kitchenpos.menu.domain.MenuAcceptanceStaticTest.*;
-import static kitchenpos.menu.domain.MenuGroupAcceptanceStaticTest.*;
+import static kitchenpos.menugroup.domain.MenuGroupAcceptanceStaticTest.*;
 import static kitchenpos.order.domain.OrderAcceptanceStaticTest.*;
 import static kitchenpos.order.domain.TableAcceptanceStaticTest.*;
 import static kitchenpos.product.domain.ProductAcceptanceStaticTest.*;
@@ -17,9 +17,9 @@ import org.springframework.http.HttpStatus;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.menu.dto.MenuGroupResponse;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusRequest;

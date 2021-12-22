@@ -16,8 +16,8 @@ import javax.persistence.ManyToOne;
 import kitchenpos.common.ErrorCode;
 import kitchenpos.order.dto.OrderTableResponse;
 import kitchenpos.order.exception.OrderException;
-import kitchenpos.tableGroup.domain.TableGroup;
-import kitchenpos.tableGroup.exception.TableException;
+import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.exception.TableException;
 
 @Entity
 public class OrderTable {
