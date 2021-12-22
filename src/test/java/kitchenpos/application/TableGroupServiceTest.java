@@ -11,9 +11,9 @@ import static org.mockito.Mockito.verify;
 import java.util.List;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
-import kitchenpos.dao.TableGroupDao;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.domain.TableGroupRepository;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,7 +32,7 @@ class TableGroupServiceTest {
     private OrderTableDao orderTableDao;
 
     @Mock
-    private TableGroupDao tableGroupDao;
+    private TableGroupRepository tableGroupRepository;
 
     @InjectMocks
     private TableGroupService tableGroupService;
@@ -48,7 +48,7 @@ class TableGroupServiceTest {
         TableGroup tableGroup = new TableGroup(1L, null, orderTables);
 
         given(orderTableDao.findAllByIdIn(anyList())).willReturn(orderTables);
-        given(tableGroupDao.save(any())).willReturn(tableGroup);
+        given(tableGroupRepository.save(any())).willReturn(tableGroup);
         given(orderTableDao.save(any())).willReturn(orderTable1, orderTable2);
 
         // when
