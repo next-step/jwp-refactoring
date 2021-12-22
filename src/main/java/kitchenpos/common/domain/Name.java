@@ -7,8 +7,6 @@ import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
-import org.springframework.util.StringUtils;
-
 import kitchenpos.common.exception.BadRequestException;
 
 @Embeddable
@@ -26,7 +24,7 @@ public class Name {
     }
 
     private void validate(String name) {
-        if (!StringUtils.hasText(name)) {
+        if (name == null || name.trim().isEmpty()) {
             throw new BadRequestException(WRONG_VALUE);
         }
     }

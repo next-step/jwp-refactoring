@@ -31,17 +31,16 @@ public class MenuProducts {
         return menuProducts;
     }
 
-    public void compareMenuPriceToProductSumPrice(Price menuPrice) {
+    public void validateMenuPrice(Price menuPrice) {
         BigDecimal sumPrice = sumProductsPrice();
-        if (menuPrice.getValue().compareTo(sumPrice) > 0) {
+        if (menuPrice.isGreaterThanSumPrice(sumPrice)) {
             throw new BadRequestException(WRONG_VALUE);
         }
     }
 
     private BigDecimal sumProductsPrice() {
         return menuProducts.stream().map(
-                menuProduct -> menuProduct.getProduct().getPrice().getValue()
-                    .multiply(BigDecimal.valueOf(menuProduct.getQuantity().getValue())))
+                MenuProduct::multiplyQuantityToPrice)
             .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 

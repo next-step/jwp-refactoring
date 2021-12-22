@@ -92,7 +92,7 @@ public class Menu {
     }
 
     public void validateMenuPrice() {
-        menuProducts.compareMenuPriceToProductSumPrice(price);
+        menuProducts.validateMenuPrice(price);
     }
 
     @Override

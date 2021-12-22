@@ -1,5 +1,6 @@
 package kitchenpos.menu.domain;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 
 import javax.persistence.Embedded;
@@ -64,6 +65,10 @@ public class MenuProduct {
 
     public void changeMenu(Menu menu) {
         this.menu = menu;
+    }
+
+    public BigDecimal multiplyQuantityToPrice() {
+        return product.getPrice().multiplyQuantity(quantity);
     }
 
     @Override

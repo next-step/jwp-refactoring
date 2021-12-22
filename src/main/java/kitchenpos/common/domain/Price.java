@@ -34,6 +34,14 @@ public class Price {
         return price;
     }
 
+    public boolean isGreaterThanSumPrice(BigDecimal sumPrice) {
+        return price.compareTo(sumPrice) > 0;
+    }
+
+    public BigDecimal multiplyQuantity(Quantity quantity) {
+        return price.multiply(BigDecimal.valueOf(quantity.getValue()));
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o)

@@ -36,7 +36,7 @@ class MenuProductsTest {
         Price menuPrice = new Price(new BigDecimal(price));
 
         // when && then
-        assertDoesNotThrow(() -> menuProducts.compareMenuPriceToProductSumPrice(menuPrice));
+        assertDoesNotThrow(() -> menuProducts.validateMenuPrice(menuPrice));
     }
 
     @DisplayName("메뉴가격은 상품의 총 금액보다 클 수 없다.")
@@ -46,7 +46,7 @@ class MenuProductsTest {
         Price menuPrice = new Price(new BigDecimal(30001));
 
         // when && then
-        assertThatThrownBy(() -> menuProducts.compareMenuPriceToProductSumPrice(menuPrice))
+        assertThatThrownBy(() -> menuProducts.validateMenuPrice(menuPrice))
             .isInstanceOf(BadRequestException.class)
             .hasMessage(WRONG_VALUE.getMessage());
     }
