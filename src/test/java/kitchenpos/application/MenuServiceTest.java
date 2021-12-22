@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,23 +42,23 @@ class MenuServiceTest {
     @Test
     void create() {
         // given
-        MenuProduct menuProduct = createMenuProduct(null, 1L, 2, null);
+        MenuProduct menuProduct = new MenuProduct(1L, 2);
         Mockito.when(menuGroupDao.existsById(Mockito.anyLong()))
             .thenReturn(true);
 
-        Product product = ProductServiceTestHelper.makeProduct(1L, "name", BigDecimal.TEN);
+        Product product = new Product(1L, "name", BigDecimal.TEN);
         Mockito.when(productDao.findById(Mockito.anyLong()))
             .thenReturn(Optional.of(product));
 
-        MenuProduct expectedMenuProduct = createMenuProduct(null, 1L, 2, null);
+        MenuProduct expectedMenuProduct = new MenuProduct(2L, 2);
         Mockito.when(menuProductDao.save(Mockito.any()))
             .thenReturn(expectedMenuProduct);
 
-        Menu expectedMenu = createMenu(1L, "name", BigDecimal.ONE, 1L, Arrays.asList(expectedMenuProduct));
+        Menu expectedMenu = new Menu(1L, "name", BigDecimal.ONE, 1L, Collections.emptyList());
         Mockito.when(menuDao.save(Mockito.any()))
             .thenReturn(expectedMenu);
 
-        Menu menu = createMenu(null, "name", BigDecimal.ONE, 1L, Arrays.asList(menuProduct));
+        Menu menu = new Menu( "name", BigDecimal.ONE, 1L, Arrays.asList(menuProduct));
 
         // when
         Menu actual = menuService.create(menu);
@@ -70,15 +71,15 @@ class MenuServiceTest {
     @Test
     void createErrorWhenPriceIsBiggerThanSum() {
         // given
-        MenuProduct menuProduct = createMenuProduct(null, 1L, 2, null);
+        MenuProduct menuProduct = new MenuProduct(1L, 2);
         Mockito.when(menuGroupDao.existsById(Mockito.anyLong()))
             .thenReturn(true);
 
-        Product product = ProductServiceTestHelper.makeProduct(1L, "name", BigDecimal.TEN);
+        Product product = new Product(1L, "name", BigDecimal.TEN);
         Mockito.when(productDao.findById(Mockito.anyLong()))
             .thenReturn(Optional.of(product));
 
-        Menu menu = createMenu(null, "name", BigDecimal.valueOf(21), 1L, Arrays.asList(menuProduct));
+        Menu menu = new Menu( "name", BigDecimal.valueOf(21), 1L, Arrays.asList(menuProduct));
 
         // when and then
         assertThatExceptionOfType(IllegalArgumentException.class)
@@ -89,14 +90,14 @@ class MenuServiceTest {
     @Test
     void createErrorWhenProductNotExists() {
         // given
-        MenuProduct menuProduct = createMenuProduct(null, 1L, 2, null);
+        MenuProduct menuProduct = new MenuProduct(1L, 2);
         Mockito.when(menuGroupDao.existsById(Mockito.anyLong()))
             .thenReturn(true);
 
         Mockito.when(productDao.findById(Mockito.anyLong()))
             .thenReturn(Optional.empty());
 
-        Menu menu = createMenu(null, "name", BigDecimal.ONE, 1L, Arrays.asList(menuProduct));
+        Menu menu = new Menu( "name", BigDecimal.ONE, 1L, Arrays.asList(menuProduct));
 
         // when and then
         assertThatExceptionOfType(IllegalArgumentException.class)
@@ -106,8 +107,8 @@ class MenuServiceTest {
     @DisplayName("메뉴 상품 가격이 null이면 에러")
     @Test
     void createErrorWhenPriceIsNull() {
-        MenuProduct menuProduct = createMenuProduct(null, 1L, 2, null);
-        Menu menu = createMenu(null, "name", null, 1L, Arrays.asList(menuProduct));
+        MenuProduct menuProduct = new MenuProduct(1L, 2);
+        Menu menu = new Menu( "name", null, 1L, Arrays.asList(menuProduct));
 
         // when and then
         assertThatExceptionOfType(IllegalArgumentException.class)
@@ -117,8 +118,8 @@ class MenuServiceTest {
     @DisplayName("메뉴 상품 가격이 0 미만이면 에러")
     @Test
     void createErrorWhenPriceIsLessThanZero() {
-        MenuProduct menuProduct = createMenuProduct(null, 1L, 2, null);
-        Menu menu = createMenu(null, "name", BigDecimal.valueOf(-1), 1L, Arrays.asList(menuProduct));
+        MenuProduct menuProduct = new MenuProduct(1L, 2);
+        Menu menu = new Menu( "name", BigDecimal.valueOf(-1), 1L, Arrays.asList(menuProduct));
 
         // when and then
         assertThatExceptionOfType(IllegalArgumentException.class)
@@ -129,11 +130,11 @@ class MenuServiceTest {
     @Test
     void createErrorWhenMenuGroupNotExists() {
         // given
-        MenuProduct menuProduct = createMenuProduct(null, 1L, 2, null);
+        MenuProduct menuProduct = new MenuProduct(1L, 2);
         Mockito.when(menuGroupDao.existsById(Mockito.anyLong()))
             .thenReturn(false);
 
-        Menu menu = createMenu(null, "name", BigDecimal.ONE, 1L, Arrays.asList(menuProduct));
+        Menu menu = new Menu( "name", BigDecimal.ONE, 1L, Arrays.asList(menuProduct));
 
         // when and then
         assertThatExceptionOfType(IllegalArgumentException.class)
@@ -143,10 +144,10 @@ class MenuServiceTest {
     @Test
     void list() {
         // given
-        MenuProduct menuProduct = createMenuProduct(null, 1L, 2, null);
+        MenuProduct menuProduct = new MenuProduct(1L, 2);
 
-        Menu menu1 = createMenu(1L, "name1", BigDecimal.ONE, 1L, Arrays.asList(menuProduct));
-        Menu menu2 = createMenu(2L, "name2", BigDecimal.TEN, 1L, Arrays.asList(menuProduct));
+        Menu menu1 = new Menu(1L, "name1", BigDecimal.ONE, 1L, Arrays.asList(menuProduct));
+        Menu menu2 = new Menu(2L, "name2", BigDecimal.TEN, 1L, Arrays.asList(menuProduct));
         List<Menu> menus = Arrays.asList(menu1, menu2);
         Mockito.when(menuDao.findAll())
             .thenReturn(menus);
@@ -157,30 +158,7 @@ class MenuServiceTest {
         // when
         List<Menu> actual = menuService.list();
 
-        // givne
+        // given
         assertThat(actual).isEqualTo(menus);
-    }
-
-    private Menu createMenu(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
-        Menu menu = new Menu();
-
-        menu.setId(id);
-        menu.setName(name);
-        menu.setPrice(price);
-        menu.setMenuGroupId(menuGroupId);
-        menu.setMenuProducts(menuProducts);
-
-        return menu;
-    }
-
-    private MenuProduct createMenuProduct(Long seq, Long productId, long quantity, Long menuId) {
-        MenuProduct menuProduct = new MenuProduct();
-        menuProduct.setSeq(seq);
-        menuProduct.setProductId(productId);
-        menuProduct.setQuantity(quantity);
-        menuProduct.setMenuId(menuId);
-
-        return menuProduct;
-
     }
 }

@@ -29,8 +29,8 @@ class ProductServiceTest {
     @Test
     void create() {
         // given
-        Product product = ProductServiceTestHelper.makeProduct(null, "name", BigDecimal.valueOf(10000));
-        Product expected = ProductServiceTestHelper.makeProduct(1L, "name", BigDecimal.valueOf(10000));
+        Product product = new Product("name", BigDecimal.valueOf(10000));
+        Product expected = new Product(1L, "name", BigDecimal.valueOf(10000));
 
         Mockito.when(productDao.save(Mockito.any()))
             .thenReturn(expected);
@@ -39,14 +39,14 @@ class ProductServiceTest {
         Product result = productService.create(product);
 
         // then
-        assertThat(result).isSameAs(expected);
+        assertThat(result).isEqualTo(expected);
     }
 
     @DisplayName("가격이 null인 상품 생성시 에러")
     @Test
     void createErrorWhenPriceNull() {
         // given
-        Product product = ProductServiceTestHelper.makeProduct(null, "name", null);
+        Product product = new Product("name", null);
 
         // when and then
         assertThatExceptionOfType(IllegalArgumentException.class)
@@ -57,7 +57,7 @@ class ProductServiceTest {
     @Test
     void createErrorWhenPriceLessThanZero() {
         // given
-        Product product = ProductServiceTestHelper.makeProduct(null, "name", BigDecimal.valueOf(-1));
+        Product product = new Product("name", BigDecimal.valueOf(-1));
 
         // when and then
         assertThatExceptionOfType(IllegalArgumentException.class)
@@ -68,8 +68,8 @@ class ProductServiceTest {
     @Test
     void list() {
         // given
-        Product product1 = ProductServiceTestHelper.makeProduct(1L, "name1", BigDecimal.valueOf(10000));
-        Product product2 = ProductServiceTestHelper.makeProduct(2L, "name2", BigDecimal.valueOf(20000));
+        Product product1 = new Product(1L, "name1", BigDecimal.valueOf(10000));
+        Product product2 = new Product(2L, "name2", BigDecimal.valueOf(20000));
         List<Product> expected = Arrays.asList(product1, product2);
 
         Mockito.when(productDao.findAll())
@@ -79,6 +79,6 @@ class ProductServiceTest {
         List<Product> actual = productService.list();
 
         // then
-        assertThat(actual).isSameAs(expected);
+        assertThat(actual).isEqualTo(expected);
     }
 }

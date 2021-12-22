@@ -28,8 +28,8 @@ class MenuGroupServiceTest {
     @Test
     void create() {
         // given
-        MenuGroup menuGroup = createMenuGroup(null, "name");
-        MenuGroup expected = createMenuGroup(1L, "name");
+        MenuGroup menuGroup = new MenuGroup("name");
+        MenuGroup expected = new MenuGroup(1L, "name");
         Mockito.when(menuGroupDao.save(Mockito.any()))
             .thenReturn(expected);
 
@@ -37,15 +37,15 @@ class MenuGroupServiceTest {
         MenuGroup actual = menuGroupService.create(menuGroup);
 
         // then
-        assertThat(actual).isSameAs(expected);
+        assertThat(actual).isEqualTo(expected);
     }
 
     @DisplayName("메뉴 그룹 목록 조회")
     @Test
     void list() {
         // given
-        MenuGroup menuGroup1 = createMenuGroup(1L, "name1");
-        MenuGroup menuGroup2 = createMenuGroup(2L, "name2");
+        MenuGroup menuGroup1 = new MenuGroup(1L, "name1");
+        MenuGroup menuGroup2 = new MenuGroup(2L, "name2");
         List<MenuGroup> expected = Arrays.asList(menuGroup1, menuGroup2);
         Mockito.when(menuGroupDao.findAll())
             .thenReturn(expected);
@@ -54,14 +54,6 @@ class MenuGroupServiceTest {
         List<MenuGroup> actual = menuGroupService.list();
 
         // then
-        assertThat(actual).isSameAs(expected);
-    }
-
-    private MenuGroup createMenuGroup(Long id, String name) {
-        MenuGroup menuGroup = new MenuGroup();
-        menuGroup.setId(id);
-        menuGroup.setName(name);
-
-        return menuGroup;
+        assertThat(actual).isEqualTo(expected);
     }
 }
