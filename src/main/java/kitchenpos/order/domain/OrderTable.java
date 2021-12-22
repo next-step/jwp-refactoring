@@ -13,7 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import kitchenpos.common.ErrorCode;
+import kitchenpos.common.exception.ErrorCode;
 import kitchenpos.order.dto.OrderTableResponse;
 import kitchenpos.order.exception.OrderException;
 import kitchenpos.tablegroup.domain.TableGroup;

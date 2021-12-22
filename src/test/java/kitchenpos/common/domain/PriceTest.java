@@ -1,12 +1,12 @@
-package kitchenpos.domain;
+package kitchenpos.common.domain;
 
 import static org.assertj.core.api.Assertions.*;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import kitchenpos.common.ErrorCode;
-import kitchenpos.common.PriceException;
+import kitchenpos.common.exception.ErrorCode;
+import kitchenpos.common.exception.PriceException;
 
 @DisplayName("가격 : 단위 테스트")
 class PriceTest {

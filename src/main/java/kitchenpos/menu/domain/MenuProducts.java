@@ -8,9 +8,9 @@ import javax.persistence.Embeddable;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 
-import kitchenpos.common.ErrorCode;
-import kitchenpos.common.PriceException;
 import kitchenpos.common.domain.Price;
+import kitchenpos.common.exception.ErrorCode;
+import kitchenpos.common.exception.PriceException;
 
 @Embeddable
 public class MenuProducts {

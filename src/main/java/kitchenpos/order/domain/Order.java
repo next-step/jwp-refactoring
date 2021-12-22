@@ -19,7 +19,7 @@ import javax.persistence.OneToOne;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import kitchenpos.common.ErrorCode;
+import kitchenpos.common.exception.ErrorCode;
 import kitchenpos.order.dto.OrderLineItemResponse;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.exception.OrderException;

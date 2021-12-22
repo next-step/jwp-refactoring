@@ -15,7 +15,7 @@ import javax.persistence.Id;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import kitchenpos.common.ErrorCode;
+import kitchenpos.common.exception.ErrorCode;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.OrderTables;
 import kitchenpos.tablegroup.exception.TableException;

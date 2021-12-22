@@ -8,7 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import kitchenpos.common.ErrorCode;
+import kitchenpos.common.exception.ErrorCode;
 import kitchenpos.order.exception.OrderException;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.exception.TableException;

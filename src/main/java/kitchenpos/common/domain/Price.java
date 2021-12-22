@@ -1,12 +1,12 @@
-package kitchenpos.domain;
+package kitchenpos.common.domain;
 
 import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
-import kitchenpos.common.ErrorCode;
-import kitchenpos.common.PriceException;
+import kitchenpos.common.exception.ErrorCode;
+import kitchenpos.common.exception.PriceException;
 
 @Embeddable
 public class Price {

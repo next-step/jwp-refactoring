@@ -1,4 +1,4 @@
-package kitchenpos.common;
+package kitchenpos.common.exception;
 
 public class BusinessException extends RuntimeException {
 

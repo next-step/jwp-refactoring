@@ -7,7 +7,7 @@ import java.util.Collections;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import kitchenpos.common.ErrorCode;
+import kitchenpos.common.exception.ErrorCode;
 import kitchenpos.order.exception.OrderException;
 
 @DisplayName("주문 상품 일급 콜렉션 : 단위 테스트")
