@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import kitchenpos.common.exception.ExceptionMessage;
 import kitchenpos.common.exception.NotFoundException;
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
@@ -47,10 +48,13 @@ public class OrderService {
 
     private List<OrderLineItem> makeOrderLineItems(List<OrderLineItemRequest> orderLineItems) {
         return orderLineItems.stream().map(
-            orderLineItemRequest -> orderLineItemRequest.toEntity(
-                menuRepository.findById(orderLineItemRequest.getMenuId()).orElseThrow(() -> new NotFoundException(
-                    ExceptionMessage.NOT_FOUND_DATA)))
+            orderLineItemRequest -> orderLineItemRequest.toEntity(findMenu(orderLineItemRequest.getMenuId()))
         ).collect(Collectors.toList());
+    }
+
+    private Menu findMenu(Long menuId) {
+        return menuRepository.findById(menuId).orElseThrow(() -> new NotFoundException(
+            ExceptionMessage.NOT_FOUND_DATA));
     }
 
     @Transactional(readOnly = true)
