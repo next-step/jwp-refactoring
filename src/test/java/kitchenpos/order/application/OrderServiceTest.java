@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
@@ -14,18 +13,16 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.common.exception.ErrorCode;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.domain.OrderTableRepository;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderStatusRequest;
 import kitchenpos.order.exception.OrderException;
-import kitchenpos.tablegroup.exception.TableException;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.exception.TableException;
 
 @DisplayName("주문 : 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
@@ -35,25 +32,16 @@ class OrderServiceTest {
 	OrderRepository orderRepository;
 
 	@Mock
-	OrderTableRepository orderTableRepository;
-
-	@Mock
-	MenuRepository menuRepository;
+	OrderValidator orderValidator;
 
 	@Mock
 	Order order;
-
-	@Mock
-	Menu menu;
 
 	@Mock
 	OrderTable orderTable;
 
 	@Mock
 	OrderLineItemRequest orderLineItemRequest;
-
-	@Mock
-	List<OrderLineItemRequest> orderLineItemRequests;
 
 	private OrderRequest orderRequest;
 
@@ -66,10 +54,14 @@ class OrderServiceTest {
 	@Test
 	void createOrderEmptyOrderLineItems() {
 		// given
-		given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(orderTable));
 		orderRequest = OrderRequest.of(orderTable.getId(), Collections.emptyList());
 
-		// when // then
+		// when
+		doThrow(new OrderException(ErrorCode.MENU_IS_NULL))
+			.when(orderValidator)
+			.validate(orderRequest);
+
+		// then
 		assertThatThrownBy(() -> {
 			orderService.create(orderRequest);
 		}).isInstanceOf(OrderException.class);
@@ -82,25 +74,29 @@ class OrderServiceTest {
 		orderRequest = OrderRequest.of(orderTable.getId(), Collections.singletonList(orderLineItemRequest));
 
 		// when
-		when(orderTableRepository.findById(anyLong())).thenThrow(TableException.class);
+		doThrow(new TableException(ErrorCode.ORDER_TABLE_IS_NULL))
+			.when(orderValidator)
+			.validate(orderRequest);
 
 		// then
 		assertThatThrownBy(() -> {
 			orderService.create(orderRequest);
-		}).isInstanceOf(TableException.class);
+		}).isInstanceOf(TableException.class)
+			.hasMessageContaining(ErrorCode.ORDER_TABLE_IS_NULL.getMessage());
 	}
 
 	@DisplayName("주문 생성 테스트")
 	@Test
 	void createOrder() {
 		// given
-		given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(orderTable));
-		given(menuRepository.findById(anyLong())).willReturn(Optional.of(menu));
 		given(orderLineItemRequest.getMenuId()).willReturn(1L);
 		given(orderLineItemRequest.getQuantity()).willReturn(2L);
 		orderRequest = OrderRequest.of(orderTable.getId(), Collections.singletonList(orderLineItemRequest));
 
 		// when
+		doNothing()
+			.when(orderValidator)
+			.validate(orderRequest);
 		when(orderRepository.save(any(Order.class))).thenReturn(order);
 
 		// then

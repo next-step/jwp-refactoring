@@ -1,4 +1,4 @@
-package kitchenpos.order.domain;
+package kitchenpos.table.domain;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import kitchenpos.common.exception.ErrorCode;
 import kitchenpos.order.exception.OrderException;
 import kitchenpos.tablegroup.domain.TableGroup;
-import kitchenpos.tablegroup.exception.TableException;
+import kitchenpos.tablegroup.exception.TableGroupException;
 
 @DisplayName("주문 테이블 : 단위 테스트")
 class OrderTableTest {
@@ -33,7 +33,7 @@ class OrderTableTest {
 		// when // then
 		assertThatThrownBy(() -> {
 			orderTable.empty(true);
-		}).isInstanceOf(TableException.class)
+		}).isInstanceOf(TableGroupException.class)
 			.hasMessageContaining(ErrorCode.ALREADY_HAS_TABLE_GROUP.getMessage());
 	}
 
@@ -48,33 +48,6 @@ class OrderTableTest {
 
 		// then
 		assertThat(orderTable.getTableGroup()).isEqualTo(tableGroup);
-	}
-
-	@DisplayName("주문 테이블에 주문을 추가하는 메소드 테스트")
-	@Test
-	void addOrder() {
-		// given
-		OrderTable orderTable = OrderTable.of(100, tableGroup, false);
-		Order order = Order.of(orderTable, OrderStatus.COOKING);
-
-		// when
-		orderTable.addOrder(order);
-
-		// then
-		assertThat(orderTable.getOrders().getOrders()).contains(order);
-	}
-
-	@DisplayName("주문 테이블을 비울 때 주문이 완료되지 않은 경우 예외처리 테스트")
-	@Test
-	void changeEmptyIsNotCompletion() {
-		// given
-		OrderTable orderTable = OrderTable.of(100, false);
-		orderTable.addOrder(Order.of(orderTable, OrderStatus.COOKING));
-
-		// when // then
-		assertThatThrownBy(() -> {
-			orderTable.empty(true);
-		}).isInstanceOf(OrderException.class);
 	}
 
 	@DisplayName("주문 테이블의 인원을 변경할 때 음수의 인원일 경우 예외처리 테스트")
@@ -114,20 +87,6 @@ class OrderTableTest {
 		assertThat(orderTable.getNumberOfGuests()).isEqualTo(10);
 	}
 
-	@DisplayName("주문 테이블의 테이블 그룹을 해제할 때 주문이 완료되지 않은 경우 예외처리 테스트")
-	@Test
-	void unGroupIsNotCompletionStatus() {
-		// given
-		OrderTable orderTable = OrderTable.of(100, tableGroup, false);
-		orderTable.addOrder(Order.of(orderTable, OrderStatus.COMPLETION));
-		orderTable.addOrder(Order.of(orderTable, OrderStatus.COOKING));
-
-		// when // then
-		assertThatThrownBy(() -> {
-			orderTable.unGroup();
-		}).isInstanceOf(OrderException.class);
-	}
-
 	@DisplayName("주문 테이블의 테이블 그룹을 해제하는 메소드 테스트")
 	@Test
 	void unGroup() {
@@ -135,11 +94,6 @@ class OrderTableTest {
 		OrderTable orderTable1 = OrderTable.of(1000, true);
 		TableGroup tableGroup1 = TableGroup.from(Arrays.asList(orderTable1, orderTable1));
 		orderTable1.changeTableGroup(tableGroup1);
-		orderTable1.addOrder(Order.of(orderTable1, OrderStatus.COMPLETION));
-		orderTable1.addOrder(Order.of(orderTable1, OrderStatus.COMPLETION));
-
-		orderTable1.getOrders().getOrders()
-			.forEach(it -> System.out.println(it.getOrderStatus()));
 
 		// when
 		orderTable1.unGroup();

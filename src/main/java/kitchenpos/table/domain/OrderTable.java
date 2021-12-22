@@ -1,9 +1,8 @@
-package kitchenpos.order.domain;
+package kitchenpos.table.domain;
 
 import java.util.Objects;
 
 import javax.persistence.Column;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
@@ -14,10 +13,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import kitchenpos.common.exception.ErrorCode;
-import kitchenpos.order.dto.OrderTableResponse;
 import kitchenpos.order.exception.OrderException;
+import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.tablegroup.domain.TableGroup;
-import kitchenpos.tablegroup.exception.TableException;
+import kitchenpos.tablegroup.exception.TableGroupException;
 
 @Entity
 public class OrderTable {
@@ -35,9 +34,6 @@ public class OrderTable {
 
 	@Column(nullable = false)
 	private Boolean empty;
-
-	@Embedded
-	private Orders orders = new Orders();
 
 	protected OrderTable() {
 	}
@@ -68,10 +64,6 @@ public class OrderTable {
 		return numberOfGuests;
 	}
 
-	public Orders getOrders() {
-		return orders;
-	}
-
 	public Boolean isEmpty() {
 		return empty;
 	}
@@ -79,23 +71,18 @@ public class OrderTable {
 	public void empty(Boolean empty) {
 		if (empty) {
 			validateNonNullTableGroup();
-			orders.hasNotCompletionOrder();
 		}
 		this.empty = empty;
 	}
 
 	private void validateNonNullTableGroup() {
 		if (Objects.nonNull(tableGroup)) {
-			throw new TableException(ErrorCode.ALREADY_HAS_TABLE_GROUP);
+			throw new TableGroupException(ErrorCode.ALREADY_HAS_TABLE_GROUP);
 		}
 	}
 
 	public void changeTableGroup(TableGroup tableGroup) {
 		this.tableGroup = tableGroup;
-	}
-
-	public void addOrder(Order order) {
-		orders.addOrder(order);
 	}
 
 	public void changeNumberOfGuests(Integer numberOfGuests) {
@@ -124,7 +111,6 @@ public class OrderTable {
 	}
 
 	public void unGroup() {
-		orders.hasNotCompletionOrder();
 		changeTableGroup(null);
 	}
 }

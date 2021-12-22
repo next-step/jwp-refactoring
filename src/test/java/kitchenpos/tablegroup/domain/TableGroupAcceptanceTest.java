@@ -3,8 +3,8 @@ package kitchenpos.tablegroup.domain;
 import static kitchenpos.menu.domain.MenuAcceptanceStaticTest.*;
 import static kitchenpos.menugroup.domain.MenuGroupAcceptanceStaticTest.*;
 import static kitchenpos.order.domain.OrderAcceptanceStaticTest.*;
-import static kitchenpos.order.domain.TableAcceptanceStaticTest.*;
 import static kitchenpos.product.domain.ProductAcceptanceStaticTest.*;
+import static kitchenpos.table.domain.TableAcceptanceStaticTest.*;
 import static kitchenpos.tablegroup.domain.TableGroupAcceptanceStaticTest.*;
 
 import java.util.Arrays;
@@ -24,9 +24,9 @@ import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.dto.MenuGroupResponse;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.order.dto.OrderTableRequest;
-import kitchenpos.order.dto.OrderTableResponse;
 import kitchenpos.product.dto.ProductResponse;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
 

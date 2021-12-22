@@ -15,12 +15,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.common.exception.ErrorCode;
-import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.domain.OrderTableRepository;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
-import kitchenpos.tablegroup.exception.TableException;
+import kitchenpos.tablegroup.exception.TableGroupException;
 
 @DisplayName("테이블 그룹(단체지정) : 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
@@ -52,7 +52,7 @@ class TableGroupServiceTest {
 		// when // then
 		assertThatThrownBy(() -> {
 			tableGroupService.create(tableGroupRequest);
-		}).isInstanceOf(TableException.class)
+		}).isInstanceOf(TableGroupException.class)
 			.hasMessageContaining(ErrorCode.ORDER_TABLE_IS_NULL.getMessage());
 	}
 
@@ -66,7 +66,7 @@ class TableGroupServiceTest {
 		// when // then
 		assertThatThrownBy(() -> {
 			tableGroupService.create(tableGroupRequest);
-		}).isInstanceOf(TableException.class)
+		}).isInstanceOf(TableGroupException.class)
 			.hasMessageContaining(ErrorCode.NEED_MORE_ORDER_TABLES.getMessage());
 	}
 
@@ -83,7 +83,7 @@ class TableGroupServiceTest {
 		// then
 		assertThatThrownBy(() -> {
 			tableGroupService.create(tableGroupRequest);
-		}).isInstanceOf(TableException.class)
+		}).isInstanceOf(TableGroupException.class)
 			.hasMessageContaining(ErrorCode.ORDER_TABLE_IS_EMPTY.getMessage());
 	}
 

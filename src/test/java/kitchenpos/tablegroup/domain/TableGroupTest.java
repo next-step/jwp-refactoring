@@ -9,8 +9,8 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import kitchenpos.order.domain.OrderTable;
-import kitchenpos.tablegroup.exception.TableException;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.tablegroup.exception.TableGroupException;
 
 @DisplayName("테이블 그룹 : 단위 테스트")
 class TableGroupTest {
@@ -24,7 +24,7 @@ class TableGroupTest {
 		// when // then
 		assertThatThrownBy(() -> {
 			TableGroup.from(orderTables);
-		}).isInstanceOf(TableException.class);
+		}).isInstanceOf(TableGroupException.class);
 	}
 
 	@DisplayName("테이블 그룹 생성시 주문 테이블이 하나인 경우 예외처리 테스트")
@@ -37,7 +37,7 @@ class TableGroupTest {
 		// when // then우
 		assertThatThrownBy(() -> {
 			TableGroup.from(orderTables);
-		}).isInstanceOf(TableException.class);
+		}).isInstanceOf(TableGroupException.class);
 	}
 
 	@DisplayName("테이블 그룹 생성시 주문 테이블이 비어있지 않은 경 예외처리 테스트")
@@ -50,6 +50,6 @@ class TableGroupTest {
 		// when // then
 		assertThatThrownBy(() -> {
 			TableGroup.from(Arrays.asList(orderTable1, orderTable2));
-		}).isInstanceOf(TableException.class);
+		}).isInstanceOf(TableGroupException.class);
 	}
 }

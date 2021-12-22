@@ -7,42 +7,32 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import kitchenpos.common.exception.ErrorCode;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.menu.exception.MenuException;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.domain.OrderTableRepository;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderStatusRequest;
 import kitchenpos.order.exception.OrderException;
-import kitchenpos.tablegroup.exception.TableException;
 
 @Service
 @Transactional(readOnly = true)
 public class OrderService {
-	private final MenuRepository menuRepository;
 	private final OrderRepository orderRepository;
-	private final OrderTableRepository orderTableRepository;
+	private final OrderValidator orderValidator;
 
 	public OrderService(
-		final MenuRepository menuRepository,
 		final OrderRepository orderRepository,
-		final OrderTableRepository orderTableRepository
-	) {
-		this.menuRepository = menuRepository;
+		final OrderValidator orderValidator) {
 		this.orderRepository = orderRepository;
-		this.orderTableRepository = orderTableRepository;
+		this.orderValidator = orderValidator;
 	}
 
 	@Transactional
 	public Order create(final OrderRequest orderRequest) {
-		final OrderTable orderTable = orderTableFindById(orderRequest.getOrderTableId());
-		final Order savedOrder = Order.of(orderTable, OrderStatus.COOKING);
+		orderValidator.validate(orderRequest);
+		final Order savedOrder = Order.of(orderRequest.getOrderTableId(), OrderStatus.COOKING);
 		savedOrder.addOrderLineItems(savedOrderLineItems(orderRequest.getOrderLineItems(), savedOrder));
 		return orderRepository.save(savedOrder);
 	}
@@ -61,22 +51,8 @@ public class OrderService {
 	List<OrderLineItem> savedOrderLineItems(List<OrderLineItemRequest> orderLineItemRequests,
 		Order savedOrder) {
 		return orderLineItemRequests.stream()
-			.map(it -> (OrderLineItem.of(savedOrder, menuFindById(it.getMenuId()), it.getQuantity())))
+			.map(it -> (OrderLineItem.of(savedOrder, it.getMenuId(), it.getQuantity())))
 			.collect(Collectors.toList());
-	}
-
-	private OrderTable orderTableFindById(Long id) {
-		return orderTableRepository.findById(id)
-			.orElseThrow(() -> {
-				throw new TableException(ErrorCode.ORDER_TABLE_IS_NULL);
-			});
-	}
-
-	private Menu menuFindById(Long menuId) {
-		return menuRepository.findById(menuId)
-			.orElseThrow(() -> {
-				throw new MenuException(ErrorCode.MENU_IS_NULL);
-			});
 	}
 
 	private Order orderFindById(Long id) {

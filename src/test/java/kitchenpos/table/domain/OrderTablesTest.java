@@ -1,4 +1,4 @@
-package kitchenpos.order.domain;
+package kitchenpos.table.domain;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -9,6 +9,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.tablegroup.domain.TableGroup;
 
 @DisplayName("주문 테이블 일급 컬렉션 : 단위 테스트")
@@ -70,10 +72,8 @@ class OrderTablesTest {
 		OrderTable orderTable1 = OrderTable.of(10, true);
 		OrderTable orderTable2 = OrderTable.of(10, true);
 		TableGroup tableGroup = TableGroup.from(Arrays.asList(orderTable1, orderTable2));
-		Order order1 = Order.of(orderTable1, OrderStatus.COMPLETION);
-		Order order2 = Order.of(orderTable2, OrderStatus.COMPLETION);
-		orderTable1.addOrder(order1);
-		orderTable2.addOrder(order2);
+		Order order1 = Order.of(1L, OrderStatus.COMPLETION);
+		Order order2 = Order.of(2L, OrderStatus.COMPLETION);
 		OrderTables orderTables1 = OrderTables.from(Arrays.asList(orderTable1, orderTable2));
 		orderTables1.changeTableGroup(tableGroup);
 

@@ -10,7 +10,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.dto.OrderLineItemResponse;
 
 @Entity
@@ -24,59 +23,42 @@ public class OrderLineItem {
 	@JoinColumn(name = "order_id", foreignKey = @ForeignKey(name = "fk_order_line_item_orders"))
 	private Order order;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "menu_id", foreignKey = @ForeignKey(name = "fk_order_line_item_menu"))
-	private Menu menu;
+	@Column(nullable = false)
+	private Long menuId;
 
-	@Column
+	@Column(nullable = false)
 	private Long quantity;
 
 	protected OrderLineItem() {
 	}
 
-	private OrderLineItem(Order order, Menu menu, Long quantity) {
+	private OrderLineItem(Order order, Long menuId, Long quantity) {
 		this.order = order;
-		this.menu = menu;
+		this.menuId = menuId;
 		this.quantity = quantity;
 	}
 
-	public static OrderLineItem of(Order order, Menu menu, Long quantity) {
-		return new OrderLineItem(order, menu, quantity);
+	public static OrderLineItem of(Order order, Long menuId, Long quantity) {
+		return new OrderLineItem(order, menuId, quantity);
 	}
 
 	public Long getSeq() {
 		return seq;
 	}
 
-	public void setSeq(final Long seq) {
-		this.seq = seq;
-	}
-
-	public Menu getMenu() {
-		return menu;
-	}
-
-	public void setMenu(Menu menu) {
-		this.menu = menu;
-	}
-
 	public Order getOrder() {
 		return order;
 	}
 
-	public void setOrder(Order order) {
-		this.order = order;
+	public Long getMenuId() {
+		return menuId;
 	}
 
 	public Long getQuantity() {
 		return quantity;
 	}
 
-	public void setQuantity(final Long quantity) {
-		this.quantity = quantity;
-	}
-
 	public OrderLineItemResponse toResDto() {
-		return OrderLineItemResponse.of(seq, menu.toResDto(), quantity);
+		return OrderLineItemResponse.of(seq, menuId, quantity);
 	}
 }

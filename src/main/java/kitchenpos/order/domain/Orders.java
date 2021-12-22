@@ -4,13 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Embeddable;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
 
 @Embeddable
 public class Orders {
 
-	@OneToMany(mappedBy = "orderTable", fetch = FetchType.LAZY)
 	List<Order> orders = new ArrayList<>();
 
 	protected Orders() {

@@ -7,13 +7,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import kitchenpos.common.exception.ErrorCode;
-import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.domain.OrderTableRepository;
 import kitchenpos.order.exception.OrderException;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
-import kitchenpos.tablegroup.exception.TableException;
+import kitchenpos.tablegroup.exception.TableGroupException;
 
 @Service
 @Transactional(readOnly = true)
@@ -43,7 +43,7 @@ public class TableGroupService {
 	private TableGroup tableGroupFindById(Long id) {
 		return tableGroupRepository.findById(id)
 			.orElseThrow(() -> {
-				throw new TableException(ErrorCode.TABLE_GROUP_IS_NULL);
+				throw new TableGroupException(ErrorCode.TABLE_GROUP_IS_NULL);
 			});
 	}
 

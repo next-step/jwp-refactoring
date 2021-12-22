@@ -16,9 +16,9 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import kitchenpos.common.exception.ErrorCode;
-import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.domain.OrderTables;
-import kitchenpos.tablegroup.exception.TableException;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTables;
+import kitchenpos.tablegroup.exception.TableGroupException;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
@@ -56,19 +56,19 @@ public class TableGroup {
 
 	private void validateNullOrderTables(OrderTables orderTables) {
 		if (orderTables.isEmpty()) {
-			throw new TableException(ErrorCode.ORDER_TABLE_IS_NULL);
+			throw new TableGroupException(ErrorCode.ORDER_TABLE_IS_NULL);
 		}
 	}
 
 	private void validateNotEmptyOrderTable(OrderTables orderTables) {
 		if (orderTables.findAnyNotEmptyTable()) {
-			throw new TableException(ErrorCode.ORDER_TABLE_IS_EMPTY);
+			throw new TableGroupException(ErrorCode.ORDER_TABLE_IS_EMPTY);
 		}
 	}
 
 	private void validateOneTable(OrderTables orderTables) {
 		if (orderTables.isOneTable()) {
-			throw new TableException(ErrorCode.NEED_MORE_ORDER_TABLES);
+			throw new TableGroupException(ErrorCode.NEED_MORE_ORDER_TABLES);
 		}
 	}
 

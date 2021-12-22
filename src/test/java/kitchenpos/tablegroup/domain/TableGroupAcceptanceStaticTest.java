@@ -1,6 +1,6 @@
 package kitchenpos.tablegroup.domain;
 
-import static kitchenpos.order.domain.TableAcceptanceStaticTest.*;
+import static kitchenpos.table.domain.TableAcceptanceStaticTest.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.List;
@@ -12,7 +12,7 @@ import org.springframework.http.MediaType;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.order.dto.OrderTableResponse;
+import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
 
