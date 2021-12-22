@@ -5,6 +5,7 @@ import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.domain.TableState;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -40,8 +41,8 @@ class TableGroupServiceTest {
 
     @BeforeEach
     void setUp() {
-        주문테이블1 = new OrderTable(1L, 3, true);
-        주문테이블2 = new OrderTable(2L, 3, true);
+        주문테이블1 = new OrderTable(1L, 3, new TableState(true));
+        주문테이블2 = new OrderTable(2L, 3, new TableState(true));
         테이블그룹 = crateTableGroup(1L, LocalDateTime.now(), Arrays.asList(주문테이블1, 주문테이블2));
     }
 
@@ -94,7 +95,7 @@ class TableGroupServiceTest {
     @Test
     @DisplayName("주문 테이블이 빈 테이블이 아닌(사용중) 경우 예외가 발생한다.")
     void validateOrderTableEmpty() {
-        주문테이블1.setEmpty(false);
+        주문테이블1.changeSit();
         when(orderTableDao.findAllByIdIn(anyList()))
                 .thenReturn(Arrays.asList(주문테이블1, 주문테이블2));
 

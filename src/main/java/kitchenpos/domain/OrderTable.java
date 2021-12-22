@@ -14,24 +14,28 @@ public class OrderTable {
     @JoinColumn(name = "table_group_id", foreignKey = @ForeignKey(name = "fk_order_table_table_group"))
     private TableGroup tableGroup;
     private int numberOfGuests;
-    private boolean empty;
+    @Embedded
+    private TableState tableState;
 
     public OrderTable() {
     }
 
-    public OrderTable(Long id, int numberOfGuests, boolean empty) {
+    public OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, TableState tableState) {
         this.id = id;
+        this.tableGroup = tableGroup;
         this.numberOfGuests = numberOfGuests;
-        this.empty = empty;
+        this.tableState = tableState;
     }
 
-    public OrderTable(int numberOfGuests, boolean empty) {
+    public OrderTable(Long id, int numberOfGuests, TableState tableState) {
+        this.id = id;
         this.numberOfGuests = numberOfGuests;
-        this.empty = empty;
+        this.tableState = tableState;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public OrderTable(int numberOfGuests, TableState tableState) {
+        this.numberOfGuests = numberOfGuests;
+        this.tableState = tableState;
     }
 
     public void setTableGroup(TableGroup tableGroup) {
@@ -42,12 +46,16 @@ public class OrderTable {
         tableGroup.getOrderTables().add(this);
     }
 
-    public void setNumberOfGuests(final int numberOfGuests) {
-        this.numberOfGuests = numberOfGuests;
+    public void changeEmpty() {
+        this.tableState = new TableState(true);
     }
 
-    public void setEmpty(final boolean empty) {
-        this.empty = empty;
+    public void changeSit() {
+        this.tableState = new TableState(false);
+    }
+
+    public void setNumberOfGuests(final int numberOfGuests) {
+        this.numberOfGuests = numberOfGuests;
     }
 
     public Long getId() {
@@ -62,7 +70,11 @@ public class OrderTable {
         return numberOfGuests;
     }
 
+    public TableState getTableState() {
+        return tableState;
+    }
+
     public boolean isEmpty() {
-        return empty;
+        return tableState.isEmpty();
     }
 }

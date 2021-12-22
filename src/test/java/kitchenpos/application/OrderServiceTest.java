@@ -4,10 +4,7 @@ import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
-import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -45,7 +42,7 @@ class OrderServiceTest {
 
     @BeforeEach
     void setUp() {
-        주문테이블 = new OrderTable(1L, 2, false);
+        주문테이블 = new OrderTable(1L, 2, new TableState(false));
         주문 = createOrder(1L, 주문테이블.getId(), COOKING, LocalDateTime.now());
         주문항목 = createOrderLineItem(주문.getId(), 1L, 1L);
         주문.setOrderLineItems(Collections.singletonList(주문항목));
@@ -105,7 +102,7 @@ class OrderServiceTest {
     @Test
     @DisplayName("주문 테이블이 빈 테이블인 경우 예외가 발생한다.")
     void validateOrderTableEmpty() {
-        OrderTable 빈테이블 = new OrderTable(2L, 0, true);
+        OrderTable 빈테이블 = new OrderTable(2L, 0, new TableState(true));
         Order 빈테이블주문 = createOrder(2L, 빈테이블.getId(), COOKING, LocalDateTime.now());
         빈테이블주문.setOrderLineItems(Collections.singletonList(주문항목));
 

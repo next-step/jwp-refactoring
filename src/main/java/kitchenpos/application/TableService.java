@@ -5,6 +5,8 @@ import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.OrderTableRepository;
+import kitchenpos.domain.dto.OrderTableRequest;
+import kitchenpos.domain.dto.OrderTableResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,20 +26,22 @@ public class TableService {
     }
 
     @Transactional
-    public OrderTable create(final OrderTable orderTable) {
-        return orderTableRepository.save(orderTable);
+    public OrderTableResponse create(final OrderTableRequest request) {
+        OrderTable save = orderTableRepository.save(request.toEntity());
+        return OrderTableResponse.of(save);
     }
 
-    public List<OrderTable> list() {
-        return orderTableRepository.findAll();
+    public List<OrderTableResponse> list() {
+        List<OrderTable> orderTables = orderTableRepository.findAll();
+        return OrderTableResponse.ofList(orderTables);
     }
 
     @Transactional
-    public OrderTable changeEmpty(final Long orderTableId, final OrderTable orderTable) {
-        final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
+    public OrderTableResponse changeEmpty(final Long orderTableId) {
+        final OrderTable orderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
 
-        if (Objects.nonNull(savedOrderTable.getTableGroup())) {
+        if (Objects.nonNull(orderTable.getTableGroup())) {
             throw new IllegalArgumentException();
         }
 
@@ -46,14 +50,14 @@ public class TableService {
             throw new IllegalArgumentException();
         }
 
-        savedOrderTable.setEmpty(orderTable.isEmpty());
+        orderTable.changeEmpty();
 
-        return orderTableRepository.save(savedOrderTable);
+        return OrderTableResponse.of(orderTable);
     }
 
     @Transactional
-    public OrderTable changeNumberOfGuests(final Long orderTableId, final OrderTable orderTable) {
-        final int numberOfGuests = orderTable.getNumberOfGuests();
+    public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final OrderTableRequest request) {
+        final int numberOfGuests = request.getNumberOfGuests();
 
         if (numberOfGuests < 0) {
             throw new IllegalArgumentException();
@@ -68,6 +72,6 @@ public class TableService {
 
         savedOrderTable.setNumberOfGuests(numberOfGuests);
 
-        return orderTableRepository.save(savedOrderTable);
+        return OrderTableResponse.of(savedOrderTable);
     }
 }

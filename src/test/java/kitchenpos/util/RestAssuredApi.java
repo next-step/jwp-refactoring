@@ -35,6 +35,15 @@ public class RestAssuredApi {
                 .extract();
     }
 
+    public static <T> ExtractableResponse<Response> put(String uri) {
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .put(uri).then().log().all()
+                .extract();
+    }
+
     public static <T> ExtractableResponse<Response> put(String uri, T request) {
         return RestAssured
                 .given().log().all()
