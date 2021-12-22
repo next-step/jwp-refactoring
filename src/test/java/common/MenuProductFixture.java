@@ -4,6 +4,7 @@ import static common.MenuFixture.메뉴_가격이없는_반반치킨;
 import static common.MenuFixture.메뉴_반반치킨;
 import static common.MenuFixture.메뉴_양념치킨;
 import static common.MenuFixture.메뉴_후라이드;
+import static common.ProductFixture.떡볶이;
 import static common.ProductFixture.반반치킨;
 import static common.ProductFixture.양념치킨;
 import static common.ProductFixture.콜라;
@@ -22,6 +23,15 @@ public class MenuProductFixture {
     public static MenuProduct 양념치킨_1개(Menu menu) {
         return MenuProduct.of(menu, 양념치킨(), 1L);
     }
+    
+    public static MenuProduct 후라이드_1개(Menu menu) {
+        return MenuProduct.of(menu, 후라이드(), 1L);
+    }
+
+    public static MenuProduct 떡볶이_1개(Menu menu) {
+        return MenuProduct.of(menu, 떡볶이(), 1L);
+    }
+
 
     public static MenuProduct 가격이없는_반반치킨_1개(Menu menu) {
         return MenuProduct.of(menu, 반반치킨(), 1L);

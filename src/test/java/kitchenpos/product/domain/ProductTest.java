@@ -15,7 +15,6 @@ class ProductTest {
         assertThat(후라이드).isEqualTo(후라이드);
     }
 
-
     @Test
     void 상품등록시_이름이_없다면_예외() {
         assertThatThrownBy(() -> {

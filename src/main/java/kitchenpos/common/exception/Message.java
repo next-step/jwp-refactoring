@@ -4,7 +4,8 @@ public enum Message {
 
     PRODUCT_NAME_IS_NOT_EMPTY("상품 이름은 빈 값일 수 없습니다."),
     AMOUNT_PRICE_IS_NOT_EMPTY("금액은 빈 값일 수 없습니다."),
-    AMOUNT_IS_NOT_LESS_THAN_ZERO("금액은 0보다 작을 수 없습니다.")
+    AMOUNT_IS_NOT_LESS_THAN_ZERO("금액은 0보다 작을 수 없습니다."),
+    MENU_AMOUNT_IS_TOO_LAGE("입력한 금액이 음식 총 합보다 큽니다.")
 
     ;
 

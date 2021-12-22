@@ -2,7 +2,6 @@ package kitchenpos.product.domain;
 
 import static kitchenpos.common.exception.Message.PRODUCT_NAME_IS_NOT_EMPTY;
 
-import java.math.BigDecimal;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -47,7 +46,11 @@ public class Product {
         this.price = price;
     }
 
-    public Product() {
+    protected Product() {
+    }
+
+    public Amount multiply(Long quantity) {
+        return price.multiply(quantity);
     }
 
     public Long getId() {
@@ -66,10 +69,6 @@ public class Product {
         this.name = name;
     }
 
-    public BigDecimal getPrice() {
-        return price.getPrice();
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -86,4 +85,5 @@ public class Product {
     public int hashCode() {
         return Objects.hash(id);
     }
+
 }

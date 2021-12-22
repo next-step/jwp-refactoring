@@ -24,5 +24,8 @@ public class ProductFixture {
     public static Product 콜라() {
         return Product.of(5L, "콜라", 2000L);
     }
+    public static Product 떡볶이() {
+        return Product.of(6L, "떡볶이", 6000L);
+    }
 
 }

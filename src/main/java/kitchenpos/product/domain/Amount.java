@@ -20,10 +20,6 @@ public class Amount implements Serializable {
     @Column(nullable = false)
     private BigDecimal price;
 
-    public Amount getZERO() {
-        return ZERO;
-    }
-
     public static <T extends Number> Amount of(T price) {
         validPriceIsNotEmpty(price);
         validPriceIsNotLessThanZero(price);
@@ -53,9 +49,18 @@ public class Amount implements Serializable {
     protected Amount() {
     }
 
-    public Amount add(Amount amount) {
-        return new Amount(this.price.add(amount.price));
+    public static Amount add(Amount x1, Amount x2) {
+        return new Amount(x1.price.add(new BigDecimal(valueOf(x2.price))));
     }
+
+    public Amount multiply(Long quantity) {
+        return new Amount(this.price.multiply(new BigDecimal(valueOf(quantity))));
+    }
+
+    public boolean grateThan(Amount menuPriceSum) {
+        return price.compareTo(new BigDecimal(valueOf(menuPriceSum.price))) > 0;
+    }
+
 
     @Override
     public boolean equals(Object o) {
@@ -77,4 +82,5 @@ public class Amount implements Serializable {
     public BigDecimal getPrice() {
         return this.price;
     }
+
 }

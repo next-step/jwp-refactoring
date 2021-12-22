@@ -1,24 +1,28 @@
 package kitchenpos.application;
 
-import static common.MenuProductFixture.*;
+import static common.MenuFixture.메뉴_양념치킨;
+import static common.MenuFixture.메뉴_후라이드;
+import static common.MenuGroupFixture.메뉴그룹_한마리;
+import static common.MenuProductFixture.양념치킨_1개;
 import static common.ProductFixture.양념치킨;
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.atMost;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import common.MenuFixture;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import kitchenpos.menu.application.MenuService;
-import kitchenpos.menu.domain.MenuDao;
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.menu.domain.MenuProductDao;
-import kitchenpos.product.domain.ProductDao;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuDao;
+import kitchenpos.menu.domain.MenuGroupDao;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.product.domain.Product;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.product.domain.ProductDao;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -35,64 +39,50 @@ public class MenuServiceTest {
     private MenuGroupDao menuGroupDao;
 
     @Mock
-    private MenuProductDao menuProductDao;
-
-    @Mock
     private ProductDao productDao;
 
     @InjectMocks
     private MenuService menuService;
 
-
-    @Test
-    void 메뉴그룹이_존재여부_확인() {
-        // given
-        Menu 메뉴_양념치킨 = MenuFixture.메뉴_양념치킨();
-
-        when(menuGroupDao.existsById(메뉴_양념치킨.getId())).thenReturn(false);
-
-        // then
-        assertThatThrownBy(() -> {
-            menuService.create(메뉴_양념치킨);
-        }).isInstanceOf(IllegalArgumentException.class);
-    }
-
     @Test
     void 메뉴_저장() {
         // given
-        Menu 메뉴_양념치킨 = MenuFixture.메뉴_양념치킨();
-        Product 양념치킨 = 양념치킨();
-        MenuProduct 양념치킨_1개 = 양념치킨_1개();
+        Menu menu = 메뉴_양념치킨();
+        MenuProduct menuProduct1EA = 양념치킨_1개(menu);
+        menu.withMenuProducts(asList(menuProduct1EA));
+
+        MenuRequest menuRequest = new MenuRequest(
+            menu.getName(),
+            16000L,
+            menu.getMenuGroup().getId(),
+            asList(new MenuProductRequest(menuProduct1EA.getId(), menuProduct1EA.getQuantity())
+            ));
 
         // mocking
-        when(menuGroupDao.existsById(메뉴_양념치킨.getId())).thenReturn(true);
-        when(productDao.findById(any())).thenReturn(Optional.of(양념치킨));
-        when(menuDao.save(메뉴_양념치킨)).thenReturn(메뉴_양념치킨);
-        when(menuProductDao.save(any(MenuProduct.class))).thenReturn(양념치킨_1개);
+        when(menuGroupDao.findById(anyLong())).thenReturn(Optional.of(메뉴그룹_한마리()));
+        when(productDao.findById(anyLong())).thenReturn(Optional.of(양념치킨()));
 
         // when
-        Menu 저장된_메뉴_양념치킨 = menuService.create(메뉴_양념치킨);
+        menuService.create(menuRequest);
 
         // then
-        assertThat(저장된_메뉴_양념치킨).isEqualTo(메뉴_양념치킨);
-        assertThat(저장된_메뉴_양념치킨.getMenuProducts()).containsExactly(양념치킨_1개);
+        verify(menuDao, atMost(1)).save(menu);
     }
 
     @Test
     void 메뉴_조회() {
         // given
-        Menu 메뉴_양념치킨 = MenuFixture.메뉴_양념치킨();
-        Menu 메뉴_후라이드 = MenuFixture.메뉴_후라이드();
+        Menu 메뉴_양념치킨 = 메뉴_양념치킨();
+        Menu 메뉴_후라이드 = 메뉴_후라이드();
 
         // mocking
-        when(menuDao.findAll()).thenReturn(Arrays.asList(메뉴_양념치킨, 메뉴_후라이드));
-        when(menuProductDao.findAllByMenuId(any(Long.class))).thenReturn(Arrays.asList(양념치킨_1개(), 후라이드_1개()));
+        when(menuDao.findAll()).thenReturn(asList(메뉴_양념치킨, 메뉴_후라이드));
 
         // when
-        List<Menu> list = menuService.list();
+        List<MenuResponse> list = menuService.list();
 
         // then
-        assertThat(list).containsExactly(메뉴_양념치킨, 메뉴_후라이드);
+        assertThat(list.size()).isEqualTo(2);
     }
 
 }
