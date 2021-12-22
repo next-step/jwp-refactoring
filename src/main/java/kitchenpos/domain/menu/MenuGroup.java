@@ -17,7 +17,7 @@ public class MenuGroup {
     @Column(name = "name", nullable = false)
     private String name;
 
-    public MenuGroup() {
+    protected MenuGroup() {
     }
 
     private MenuGroup(String name) {

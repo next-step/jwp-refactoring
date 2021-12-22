@@ -56,7 +56,7 @@ public class TableService {
     }
 
     @Transactional(readOnly = true)
-    public OrderTable findOrderTableById(Long orderTableId) {
+    public OrderTable findOrderTableById(final Long orderTableId) {
         return orderTableRepository.findById(orderTableId)
             .orElseThrow(InvalidParameterException::new);
     }

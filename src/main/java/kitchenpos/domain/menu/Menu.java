@@ -53,25 +53,6 @@ public class Menu {
             MenuProducts.of(menuProducts));
     }
 
-    public void addMenuProducts(List<MenuProduct> menuProducts) {
-        this.menuProducts.add(menuProducts);
-        price.validPriceGreaterThanMin(this.menuProducts.getSumPrice());
-    }
-
-    private void validEmpty(String name, MenuGroup menuGroup) {
-        if (Objects.isNull(name)) {
-            throw new InvalidParameterException("메뉴이름이 비어 있을 수 없습니다.");
-        }
-
-        if (Objects.isNull(menuGroup)) {
-            throw new InvalidParameterException("메뉴그룹이 비어 있을 수 없습니다.");
-        }
-    }
-
-    public boolean isSame(Long menuId) {
-        return this.id.equals(menuId);
-    }
-
     public Long getId() {
         return id;
     }
@@ -94,6 +75,16 @@ public class Menu {
 
     private void validPrice(Price price, BigDecimal sumPrice) {
         price.validPriceGreaterThanMin(sumPrice);
+    }
+
+    private void validEmpty(String name, MenuGroup menuGroup) {
+        if (Objects.isNull(name)) {
+            throw new InvalidParameterException("메뉴이름이 비어 있을 수 없습니다.");
+        }
+
+        if (Objects.isNull(menuGroup)) {
+            throw new InvalidParameterException("메뉴그룹이 비어 있을 수 없습니다.");
+        }
     }
 
     @Override

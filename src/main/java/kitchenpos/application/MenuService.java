@@ -55,7 +55,7 @@ public class MenuService {
     }
 
     @Transactional(readOnly = true)
-    public List<MenuProduct> getMenuProducts(MenuRequest menuRequest) {
+    public List<MenuProduct> getMenuProducts(final MenuRequest menuRequest) {
         List<Long> productIds = menuRequest.getProductIds();
         List<Product> products = productRepository.findAllById(productIds);
 

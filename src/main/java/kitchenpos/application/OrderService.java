@@ -35,7 +35,7 @@ public class OrderService {
     }
 
     @Transactional
-    public OrderResponse create(OrderRequest orderRequest) {
+    public OrderResponse create(final OrderRequest orderRequest) {
         OrderTable orderTable = orderTableRepository.findById(orderRequest.getOrderTableId())
             .orElseThrow(InvalidParameterException::new);
 
@@ -61,7 +61,7 @@ public class OrderService {
     }
 
     @Transactional(readOnly = true)
-    public List<OrderLineItem> getOrderLineItems(OrderRequest orderRequest) {
+    public List<OrderLineItem> getOrderLineItems(final OrderRequest orderRequest) {
         List<Long> menuIds = orderRequest.getMenuIds();
         List<Menu> menus = menuRepository.findAllById(menuIds);
 
