@@ -11,7 +11,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 
 @Entity
 public class Menu {
@@ -30,8 +29,8 @@ public class Menu {
     @JoinColumn(name = "menu_group_id", foreignKey = @ForeignKey(name = "fk_menu_group"))
     private MenuGroup menuGroup;
 
-    @OneToMany(mappedBy = "menu_product", orphanRemoval = true)
-    private List<MenuProduct> menuProducts;
+    @Embedded
+    private MenuProducts menuProducts = new MenuProducts();
 
     public Menu() {
     }
@@ -42,7 +41,7 @@ public class Menu {
         this.name = Name.of(name);
         this.price = Price.of(BigDecimal.valueOf(price));
         this.menuGroup = menuGroup;
-        this.menuProducts = menuProducts;
+        this.menuProducts = MenuProducts.of(menuProducts);
     }
 
     public Long getId() {
@@ -65,11 +64,11 @@ public class Menu {
         return menuGroup;
     }
 
-    public List<MenuProduct> getMenuProducts() {
+    public MenuProducts getMenuProducts() {
         return menuProducts;
     }
 
     public void setMenuProducts(final List<MenuProduct> menuProducts) {
-        this.menuProducts = menuProducts;
+        this.menuProducts = MenuProducts.of(menuProducts);
     }
 }
