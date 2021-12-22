@@ -7,7 +7,7 @@ import javax.persistence.Embeddable;
 public class NumberOfGuests {
     private static final int MIN_VALUE = 1;
 
-    @Column
+    @Column(nullable = false)
     private int numberOfGuests;
 
     public NumberOfGuests() {

@@ -5,7 +5,7 @@ import javax.persistence.Embeddable;
 
 @Embeddable
 public class MenuProductQuantity {
-    @Column
+    @Column(nullable = false)
     private long quantity;
 
     protected MenuProductQuantity() {

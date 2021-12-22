@@ -18,7 +18,10 @@ public class TableGroupOrderTableIds {
 
     @ElementCollection
     @CollectionTable(name = "table_group_order_table",
-            joinColumns = @JoinColumn(name = "table_group_id", foreignKey = @ForeignKey(name = "fk_table_group_order_table"), nullable = false, updatable = false))
+            joinColumns = @JoinColumn(
+                    name = "table_group_id",
+                    foreignKey = @ForeignKey(name = "fk_table_group_order_table"),
+                    nullable = false, updatable = false))
     @Column(nullable = false, name = "order_table_id")
     private final List<Long> orderTableIds = new ArrayList<>();
 

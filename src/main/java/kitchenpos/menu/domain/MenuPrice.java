@@ -6,7 +6,6 @@ import java.math.BigDecimal;
 
 @Embeddable
 public class MenuPrice {
-
     @Column(nullable = false)
     private BigDecimal price;
 

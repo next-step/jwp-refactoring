@@ -5,7 +5,7 @@ import javax.persistence.Embeddable;
 
 @Embeddable
 public class OrderTableEmpty {
-    @Column
+    @Column(nullable = false)
     private boolean empty;
 
     public OrderTableEmpty() {

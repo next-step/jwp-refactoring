@@ -7,7 +7,7 @@ import javax.persistence.Embeddable;
 
 @Embeddable
 public class MenuGroupName {
-    @Column
+    @Column(nullable = false)
     private String name;
 
     protected MenuGroupName() {
