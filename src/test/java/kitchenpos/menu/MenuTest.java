@@ -1,4 +1,4 @@
-package kitchenpos.domain.menu;
+package kitchenpos.menu;
 
 import kitchenpos.application.MenuService;
 import kitchenpos.dao.MenuDao;

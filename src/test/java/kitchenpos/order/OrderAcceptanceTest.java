@@ -1,4 +1,4 @@
-package kitchenpos.domain.order;
+package kitchenpos.order;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;

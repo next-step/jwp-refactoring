@@ -1,4 +1,4 @@
-package kitchenpos.domain.table;
+package kitchenpos.table;
 
 import kitchenpos.application.TableService;
 import kitchenpos.dao.OrderDao;
