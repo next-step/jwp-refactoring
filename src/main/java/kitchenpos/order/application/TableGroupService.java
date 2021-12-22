@@ -12,19 +12,16 @@ import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.TableGroup;
 import kitchenpos.order.dto.TableGroupRequest;
 import kitchenpos.order.dto.TableGroupResponse;
-import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.order.repository.TableGroupRepository;
 
 @Service
 public class TableGroupService {
     private final TableService tableService;
-    private final OrderRepository orderRepository;
     private final TableGroupRepository tableGroupRepository;
 
-    public TableGroupService(TableService tableService, OrderRepository orderRepository,
+    public TableGroupService(TableService tableService,
         TableGroupRepository tableGroupRepository) {
         this.tableService = tableService;
-        this.orderRepository = orderRepository;
         this.tableGroupRepository = tableGroupRepository;
     }
 

@@ -18,10 +18,6 @@ public class Orders {
         this.orders = orders;
     }
 
-    public List<Order> getValue() {
-        return orders;
-    }
-
     public void add(Order order) {
         if (!orders.contains(order)) {
             orders.add(order);
