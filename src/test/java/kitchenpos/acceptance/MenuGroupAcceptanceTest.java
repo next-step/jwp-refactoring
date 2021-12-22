@@ -21,8 +21,8 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        세트메뉴 = new MenuGroupRequest(5L, "세트메뉴");
-        일반메뉴 = new MenuGroupRequest(6L, "일반메뉴");
+        세트메뉴 = new MenuGroupRequest("세트메뉴");
+        일반메뉴 = new MenuGroupRequest("일반메뉴");
     }
 
     @Test
