@@ -9,11 +9,11 @@ import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.Optional;
-import kitchenpos.table.domain.EmptyTable;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.domain.TableGroupRepository;
+import kitchenpos.table.domain.TableStatus;
 import kitchenpos.table.dto.TableGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -52,8 +52,8 @@ class TableGroupServiceTest {
         when(tableGroupRepository.save(any(TableGroup.class)))
             .thenReturn(TableGroup.fromOrderTables(Arrays.asList(orderTable_1, orderTable_2)));
 
-        ReflectionTestUtils.setField(orderTable_1, "empty", EmptyTable.valueOf(Boolean.TRUE));
-        ReflectionTestUtils.setField(orderTable_2, "empty", EmptyTable.valueOf(Boolean.TRUE));
+        ReflectionTestUtils.setField(orderTable_1, "tableStatus", TableStatus.EMPTY);
+        ReflectionTestUtils.setField(orderTable_2, "tableStatus", TableStatus.EMPTY);
 
         TableGroupResponse saved = tableGroupService.create(Arrays.asList(1L, 2L));
 

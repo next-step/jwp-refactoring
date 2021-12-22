@@ -40,7 +40,7 @@ class OrderTablesTest {
     void validateAddOtherTableGroup() {
         OrderTable orderTable_1 = OrderTable.of(0, true);
         OrderTable orderTable_2 = OrderTable.of(2, true);
-        ReflectionTestUtils.setField(orderTable_2, "table_group_id", 1L);
+        ReflectionTestUtils.setField(orderTable_2, "tableGroupId", 1L);
 
         OrderTables orderTables = new OrderTables();
 

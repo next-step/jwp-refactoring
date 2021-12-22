@@ -46,7 +46,7 @@ public class OrderTables {
         validateAddTables(orderTables);
 
         for (OrderTable orderTable : orderTables) {
-            this.orderTables.add(orderTable.updateEmpty(Boolean.FALSE));
+            this.orderTables.add(orderTable.changeEmpty(false));
         }
     }
 

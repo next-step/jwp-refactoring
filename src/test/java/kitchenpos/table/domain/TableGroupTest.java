@@ -54,11 +54,8 @@ class TableGroupTest {
     void clearOrderTableOnGoingOrder() {
         addOrderTables();
 
-        final Menu menu = Menu.of("후라이드치킨", 10000, MenuGroup.from("치킨"));
-        final OrderLineItem orderLineItem = OrderLineItem.of(menu, 2L);
-
-        Order.of(orderTable_1, OrderStatus.MEAL, Arrays.asList(orderLineItem));
-        Order.of(orderTable_2, OrderStatus.COMPLETION, Arrays.asList(orderLineItem));
+        orderTable_1.changeTableStatus(TableStatus.ORDERED);
+        orderTable_2.changeTableStatus(TableStatus.SEATED);
 
         assertThatThrownBy(() -> tableGroup.clearOrderTable())
             .isInstanceOf(CannotUpdatedException.class)

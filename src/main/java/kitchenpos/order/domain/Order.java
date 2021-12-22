@@ -69,10 +69,10 @@ public class Order extends BaseEntity {
     public void relateOrderTable(OrderTable orderTable) {
         validateOrderTable(orderTable);
         if (this.orderTable != null) {
-            this.orderTable.removeOrder(this);
+//            this.orderTable.removeOrder(this);
         }
         this.orderTable = orderTable;
-        orderTable.addOrder(this);
+//        orderTable.addOrder(this);
     }
 
     public void updateOrderStatus(OrderStatus orderStatus) {

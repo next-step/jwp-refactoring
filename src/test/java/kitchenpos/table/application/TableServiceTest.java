@@ -67,7 +67,7 @@ public class TableServiceTest {
         when(orderTableRepository.findById(anyLong()))
             .thenReturn(Optional.of(emptyTable));
 
-        OrderTableResponse orderTable = tableService.changeEmpty(1L, Boolean.FALSE);
+        OrderTableResponse orderTable = tableService.changeEmpty(1L, false);
 
         assertFalse(orderTable.getEmpty());
     }
@@ -78,7 +78,7 @@ public class TableServiceTest {
 
         assertThat(emptyTable.getNumberOfGuests()).isEqualTo(0);
 
-        emptyTable.updateEmpty(Boolean.FALSE);
+        emptyTable.changeEmpty(false);
         when(orderTableRepository.findById(anyLong()))
             .thenReturn(Optional.of(emptyTable));
 

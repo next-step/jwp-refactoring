@@ -2,67 +2,76 @@ package kitchenpos.table.domain;
 
 
 import java.util.Objects;
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import kitchenpos.common.domain.BaseEntity;
 import kitchenpos.exception.CannotUpdatedException;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.Orders;
 
 @Entity
 public class OrderTable extends BaseEntity {
 
-    @Embedded
-    private final Orders orders = Orders.create();
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long table_group_id;
+
+    @Column(name = "table_group_id")
+    private Long tableGroupId;
+
+    private Long orderId;
+
+    @Enumerated(EnumType.STRING)
+    private TableStatus tableStatus = TableStatus.EMPTY;
+
     @Embedded
     private GuestNumber numberOfGuests;
-    @Embedded
-    private EmptyTable empty;
 
     protected OrderTable() {
     }
 
-    private OrderTable(Integer numberOfGuests, boolean empty) {
+    private OrderTable(Integer numberOfGuests, Boolean empty) {
         this.numberOfGuests = GuestNumber.valueOf(numberOfGuests);
-        this.empty = EmptyTable.valueOf(empty);
+        this.tableStatus = TableStatus.valueOfEmpty(empty);
     }
 
-    public static OrderTable of(Integer numberOfGuests, boolean empty) {
+    public static OrderTable of(Integer numberOfGuests, Boolean empty) {
         return new OrderTable(numberOfGuests, empty);
     }
 
-    public void addOrder(Order order) {
-        orders.add(order);
+//    public void addOrder(Order order) {
+//        orders.add(order);
+//    }
+
+//    public void removeOrder(Order order) {
+//        this.orders.remove(order);
+//    }
+
+    public void changeTableStatus(TableStatus tableStatus) {
+        this.tableStatus = tableStatus;
     }
 
-    public void removeOrder(Order order) {
-        this.orders.remove(order);
-    }
-
-    public OrderTable updateEmpty(Boolean empty) {
-        validateUpdateEmpty();
-        this.empty = EmptyTable.valueOf(empty);
+    public OrderTable changeEmpty(Boolean empty) {
+        validateChangeEmpty();
+        this.tableStatus = TableStatus.valueOfEmpty(empty);
         return this;
     }
 
-    public void updateNumberOfGuests(Integer numberOfGuests) {
-        validateUpdateNumberOfGuests();
+    public void changeNumberOfGuests(Integer numberOfGuests) {
+        validateChangeNumberOfGuests();
         this.numberOfGuests = GuestNumber.valueOf(numberOfGuests);
     }
 
     public boolean isNotEmptyTableGroup() {
-        return Objects.nonNull(table_group_id);
+        return Objects.nonNull(tableGroupId);
     }
 
     public boolean isNotEmpty() {
-        return empty.equals(EmptyTable.valueOf(Boolean.FALSE));
+        return !isEmpty();
     }
 
     public Long getId() {
@@ -74,25 +83,24 @@ public class OrderTable extends BaseEntity {
     }
 
     public Boolean isEmpty() {
-        return empty.isEmpty();
+        return TableStatus.EMPTY.equals(this.tableStatus);
     }
 
-    private void validateUpdateEmpty() {
-        if (Objects.nonNull(table_group_id)) {
+    private void validateChangeEmpty() {
+        if (Objects.nonNull(tableGroupId)) {
             throw new CannotUpdatedException("단체지정된 테이블은 변경할 수 없습니다.");
         }
-
         validateOnGoingOrder();
     }
 
-    private void validateUpdateNumberOfGuests() {
-        if (empty.isEmpty()) {
+    private void validateChangeNumberOfGuests() {
+        if (TableStatus.EMPTY.equals(this.tableStatus)) {
             throw new CannotUpdatedException("빈 테이블의 손님수는 변경 할 수 없습니다.");
         }
     }
 
-    public void validateOnGoingOrder() {
-        if (orders.isOnGoing()) {
+    protected void validateOnGoingOrder() {
+        if (TableStatus.ORDERED.equals(this.tableStatus)) {
             throw new CannotUpdatedException("주문이 완료되지 않은 테이블이 있습니다.");
         }
     }
