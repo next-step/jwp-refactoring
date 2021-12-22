@@ -155,3 +155,11 @@
     - 손님의 숫자가 0보다 작으면 예외처리
     - 저장된 orderTable이 없으면 예외처리
     - orderTable에 손님 숫자를 입력한 후 저장한다.
+
+    
+## 3단계 - 의존성 리팩터링
+- 의존성 변경전 도메인 관계
+![before-class-diagram](http://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/LuneChaser/jwp-refactoring/step3/uml/step3_afterDomainRelation.pu)
+
+- 의존성 변경후 도메인 관계
+![after-class-diagram](http://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/LuneChaser/jwp-refactoring/step3/uml/step3_beforeDomainRelation.pu)
