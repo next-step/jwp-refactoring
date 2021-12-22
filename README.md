@@ -159,7 +159,7 @@
     
 ## 3단계 - 의존성 리팩터링
 - 의존성 변경전 도메인 관계
-![before-class-diagram](http://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/LuneChaser/jwp-refactoring/step3/uml/step3_afterDomainRelation.pu)
+![before-class-diagram](http://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/LuneChaser/jwp-refactoring/step3/uml/step3_beforeDomainRelation.pu)
 
 - 의존성 변경후 도메인 관계
-![after-class-diagram](http://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/LuneChaser/jwp-refactoring/step3/uml/step3_beforeDomainRelation.pu)
+![after-class-diagram](http://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/LuneChaser/jwp-refactoring/step3/uml/step3_afterDomainRelation.pu)
