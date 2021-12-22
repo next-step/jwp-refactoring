@@ -39,11 +39,6 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
     }
 
     public ExtractableResponse<Response> 메뉴_그룹_등록을_요청(MenuGroup menuGroup) {
-        return RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(menuGroup)
-                .when().post("/api/menu-groups")
-                .then().log().all()
-                .extract();
+        return post("/api/menu-groups", menuGroup);
     }
 }

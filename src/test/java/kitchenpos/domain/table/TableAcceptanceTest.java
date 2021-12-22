@@ -56,12 +56,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
     }
 
     public ExtractableResponse<Response> 테이블_생성_요청(OrderTable orderTable) {
-        return RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(orderTable)
-                .when().post("/api/tables")
-                .then().log().all()
-                .extract();
+        return post("/api/tables", orderTable);
     }
 
     @Test
@@ -88,12 +83,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
     }
 
     public ExtractableResponse<Response> 테이블_사용여부_변경_요청(OrderTable savedOrderTable, OrderTable orderTable) {
-        return RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(orderTable)
-                .when().put("/api/tables/{orderTableId}/empty", savedOrderTable.getId())
-                .then().log().all()
-                .extract();
+        return put("/api/tables/{orderTableId}/empty", orderTable, savedOrderTable.getId());
     }
 
     @Test
@@ -118,11 +108,6 @@ public class TableAcceptanceTest extends AcceptanceTest {
     }
 
     public ExtractableResponse<Response> 방문한_손님_수_변경_요청(OrderTable orderTable) {
-        return RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(orderTable)
-                .when().put("/api/tables/{orderTableId}/number-of-guests", savedOrderTable.getId())
-                .then().log().all()
-                .extract();
+        return put("/api/tables/{orderTableId}/number-of-guests", orderTable, savedOrderTable.getId());
     }
 }

@@ -71,12 +71,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     }
 
     public ExtractableResponse<Response> 주문_요청(final Order order) {
-        return RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(order)
-                .when().post("/api/orders")
-                .then().log().all()
-                .extract();
+        return post("/api/orders", order);
     }
 
     @Test
@@ -101,12 +96,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     }
 
     public ExtractableResponse<Response> 주문_상태_변경_요청(final Order order) {
-        return RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new Order(OrderStatus.COMPLETION.name()))
-                .when().put("/api/orders/{orderId}/order-status", order.getId())
-                .then().log().all()
-                .extract();
+        return put("/api/orders/{orderId}/order-status", new Order(OrderStatus.COMPLETION.name()), order.getId());
     }
 
     private Order 주문(final Order order) {

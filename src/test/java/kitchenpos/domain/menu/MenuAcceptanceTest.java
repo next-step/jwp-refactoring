@@ -70,11 +70,6 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     }
 
     public ExtractableResponse<Response> 메뉴_등록을_요청(Menu menu) {
-        return RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(menu)
-                .when().post("/api/menus")
-                .then().log().all()
-                .extract();
+        return post("/api/menus", menu);
     }
 }
