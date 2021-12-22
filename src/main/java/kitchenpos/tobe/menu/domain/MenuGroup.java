@@ -28,4 +28,12 @@ public class MenuGroup {
     public MenuGroup(final Name name) {
         this(null, name);
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name.asString();
+    }
 }
