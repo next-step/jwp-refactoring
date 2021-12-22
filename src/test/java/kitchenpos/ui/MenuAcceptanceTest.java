@@ -84,7 +84,7 @@ class MenuAcceptanceTest extends AcceptanceTest {
         MenuAcceptanceTestHelper.메뉴_생성_실패(createResponse);
     }
 
-    @DisplayName("메뉴 상품 가격이 null 이면 에러가 발샌한다.")
+    @DisplayName("메뉴 상품 가격이 null 이면 에러가 발생한다.")
     @Test
     void createMenuFailWhenPriceIsNull() {
         // given

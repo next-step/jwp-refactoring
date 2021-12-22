@@ -29,8 +29,8 @@ class ProductServiceTest {
     @Test
     void create() {
         // given
-        Product product = makeProduct(null, "name", BigDecimal.valueOf(10000));
-        Product expected = makeProduct(1L, "name", BigDecimal.valueOf(10000));
+        Product product = ProductServiceTestHelper.makeProduct(null, "name", BigDecimal.valueOf(10000));
+        Product expected = ProductServiceTestHelper.makeProduct(1L, "name", BigDecimal.valueOf(10000));
 
         Mockito.when(productDao.save(Mockito.any()))
             .thenReturn(expected);
@@ -46,7 +46,7 @@ class ProductServiceTest {
     @Test
     void createErrorWhenPriceNull() {
         // given
-        Product product = makeProduct(null, "name", null);
+        Product product = ProductServiceTestHelper.makeProduct(null, "name", null);
 
         // when and then
         assertThatExceptionOfType(IllegalArgumentException.class)
@@ -57,7 +57,7 @@ class ProductServiceTest {
     @Test
     void createErrorWhenPriceLessThanZero() {
         // given
-        Product product = makeProduct(null, "name", BigDecimal.valueOf(-1));
+        Product product = ProductServiceTestHelper.makeProduct(null, "name", BigDecimal.valueOf(-1));
 
         // when and then
         assertThatExceptionOfType(IllegalArgumentException.class)
@@ -68,8 +68,8 @@ class ProductServiceTest {
     @Test
     void list() {
         // given
-        Product product1 = makeProduct(1L, "name1", BigDecimal.valueOf(10000));
-        Product product2 = makeProduct(2L, "name2", BigDecimal.valueOf(20000));
+        Product product1 = ProductServiceTestHelper.makeProduct(1L, "name1", BigDecimal.valueOf(10000));
+        Product product2 = ProductServiceTestHelper.makeProduct(2L, "name2", BigDecimal.valueOf(20000));
         List<Product> expected = Arrays.asList(product1, product2);
 
         Mockito.when(productDao.findAll())
@@ -80,15 +80,5 @@ class ProductServiceTest {
 
         // then
         assertThat(actual).isSameAs(expected);
-    }
-
-    private Product makeProduct(Long id, String name, BigDecimal price) {
-        Product product = new Product();
-
-        product.setId(id);
-        product.setName(name);
-        product.setPrice(price);
-
-        return product;
     }
 }
