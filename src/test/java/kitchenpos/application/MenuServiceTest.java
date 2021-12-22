@@ -1,12 +1,8 @@
 package kitchenpos.application;
 
 import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
-import kitchenpos.dao.ProductDao;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Product;
+import kitchenpos.domain.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,7 +17,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static kitchenpos.application.ProductServiceTest.createProduct;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.ArgumentMatchers.any;
@@ -31,13 +26,13 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class MenuServiceTest {
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
     @Mock
     private MenuDao menuDao;
     @Mock
     private MenuProductDao menuProductDao;
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
     @InjectMocks
     private MenuService menuService;
 
@@ -53,11 +48,11 @@ class MenuServiceTest {
         매콤치킨단품 = createMenu(1L, "매콤치킨단품", BigDecimal.valueOf(13000), 1L);
         매콤치즈볼세트 = createMenu(2L, "매콤치즈볼세트", BigDecimal.valueOf(15000), 1L);
 
-        매콤치킨 = createProduct(1L, "매콤치킨", BigDecimal.valueOf(13000));
-        치즈볼 = createProduct(2L, "치즈볼", BigDecimal.valueOf(2000));
+        매콤치킨 = new Product("매콤치킨", BigDecimal.valueOf(13000));
+        치즈볼 = new Product("치즈볼", BigDecimal.valueOf(2000));
 
-        매콤치킨구성 = createMenuProduct(매콤치킨.getId(), 1L);
-        치즈볼구성 = createMenuProduct(치즈볼.getId(), 2L);
+        매콤치킨구성 = createMenuProduct(1L, 1L);
+        치즈볼구성 = createMenuProduct(2L, 2L);
 
         매콤치킨단품.setMenuProducts(Collections.singletonList(매콤치킨구성));
         매콤치즈볼세트.setMenuProducts(Arrays.asList(매콤치킨구성, 치즈볼구성));
@@ -66,15 +61,15 @@ class MenuServiceTest {
     @Test
     @DisplayName("메뉴를 등록한다.")
     void create() {
-        when(menuGroupDao.existsById(anyLong())).thenReturn(true);
-        when(productDao.findById(anyLong())).thenReturn(Optional.of(매콤치킨));
+        when(menuGroupRepository.existsById(anyLong())).thenReturn(true);
+        when(productRepository.findById(anyLong())).thenReturn(Optional.of(매콤치킨));
         when(menuDao.save(any())).thenReturn(매콤치킨단품);
         when(menuProductDao.save(any())).thenReturn(매콤치킨구성);
 
         Menu menu = menuService.create(매콤치킨단품);
 
-        verify(menuGroupDao, times(1)).existsById(anyLong());
-        verify(productDao, times(1)).findById(anyLong());
+        verify(menuGroupRepository, times(1)).existsById(anyLong());
+        verify(productRepository, times(1)).findById(anyLong());
         verify(menuDao, times(1)).save(any(Menu.class));
         verify(menuProductDao, times(1)).save(any(MenuProduct.class));
         assertThat(menu)
@@ -89,9 +84,9 @@ class MenuServiceTest {
         Menu 비싼매콤치즈볼세트 = createMenu(3L, "비싼매콤치즈볼세트", overPriceSum, 1L);
         비싼매콤치즈볼세트.setMenuProducts(Arrays.asList(매콤치킨구성, 치즈볼구성)); // 13000 + 2000
 
-        when(menuGroupDao.existsById(anyLong())).thenReturn(true);
-        when(productDao.findById(anyLong())).thenReturn(Optional.of(매콤치킨));
-        when(productDao.findById(anyLong())).thenReturn(Optional.of(치즈볼));
+        when(menuGroupRepository.existsById(anyLong())).thenReturn(true);
+        when(productRepository.findById(anyLong())).thenReturn(Optional.of(매콤치킨));
+        when(productRepository.findById(anyLong())).thenReturn(Optional.of(치즈볼));
 
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> menuService.create(비싼매콤치즈볼세트));
@@ -123,7 +118,7 @@ class MenuServiceTest {
 
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> menuService.create(menu));
-        verify(menuGroupDao, times(1)).existsById(anyLong());
+        verify(menuGroupRepository, times(1)).existsById(anyLong());
     }
 
     @Test
@@ -133,11 +128,11 @@ class MenuServiceTest {
         MenuProduct menuProduct = createMenuProduct(1L, 1L);
         menu.setMenuProducts(Collections.singletonList(menuProduct));
 
-        when(menuGroupDao.existsById(anyLong())).thenReturn(true);
+        when(menuGroupRepository.existsById(anyLong())).thenReturn(true);
 
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> menuService.create(menu));
-        verify(menuGroupDao, times(1)).existsById(anyLong());
+        verify(menuGroupRepository, times(1)).existsById(anyLong());
     }
 
     @Test
