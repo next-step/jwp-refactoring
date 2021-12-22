@@ -76,7 +76,11 @@ public class ProductServiceTest {
         assertThat(findProducts).isNotEmpty();
         assertThat(findProducts.size()).isEqualTo(products.size());
         assertThat(findProducts).extracting(Product::getName).containsExactly("후라이드", "치즈버거");
-        assertThat(findProducts.stream().map(Product::getPrice).reduce((a, b) -> a.add(b)).orElse(BigDecimal.ZERO)).isEqualTo(new BigDecimal("24000"));
+        assertThat(findProducts.stream()
+                .map(Product::getPrice)
+                .reduce((a, b) -> a.add(b))
+                .orElse(BigDecimal.ZERO))
+                .isEqualTo(new BigDecimal("24000"));
     }
 
 
