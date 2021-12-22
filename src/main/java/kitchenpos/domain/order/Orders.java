@@ -20,7 +20,6 @@ import javax.persistence.OneToMany;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import kitchenpos.exception.order.NotChangableOrderStatusException;
 import kitchenpos.vo.OrderTableId;
 
 @Entity
@@ -88,15 +87,7 @@ public class Orders {
     }
 
     public void changeOrderStatus(OrderStatus orderStatus) {
-        validateionOfChageOrderStatus();
-
         this.orderStatus = orderStatus;
-    }
-
-    private void validateionOfChageOrderStatus() {
-        if (this.isCompletion()) {
-            throw new NotChangableOrderStatusException();
-        }
     }
 
     public boolean isCompletion() {

@@ -2,10 +2,12 @@ package kitchenpos.application.order;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -25,10 +27,12 @@ import kitchenpos.domain.order.OrderLineItem;
 import kitchenpos.domain.order.OrderLineItems;
 import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.domain.order.Orders;
+import kitchenpos.domain.order.OrdersRepository;
 import kitchenpos.domain.table.OrderTable;
 import kitchenpos.dto.order.OrderDto;
 import kitchenpos.event.orders.ValidateEmptyTableEvent;
 import kitchenpos.exception.order.EmptyOrderLineItemOrderException;
+import kitchenpos.exception.order.NotChangableOrderStatusException;
 import kitchenpos.exception.order.NotRegistedMenuOrderException;
 import kitchenpos.vo.MenuId;
 import kitchenpos.vo.OrderTableId;
@@ -40,6 +44,9 @@ public class OrderValidatorTest {
 
     @Mock
     private MenuService menuService;
+    
+    @Mock
+    private OrdersRepository ordersRepository;
 
     @InjectMocks
     private OrdersValidator ordersValidator;
@@ -116,5 +123,44 @@ public class OrderValidatorTest {
         // when
         // then
         verify(eventPublisher).publishEvent(any(ValidateEmptyTableEvent.class));
+    }
+
+    @DisplayName("주문 유효성검사자는 주문 상태변경시 유효성여부를 확인 후 정합시 주문이 생성된다.")
+    @Test
+    void generate_order_forChangeOrderStatus() {
+        // given
+        Menu 뿌링클콤보 = Menu.of(1L, "뿌링클콤보", Price.of(18_000));
+        OrderLineItem 치킨_주문항목 = OrderLineItem.of(MenuId.of(뿌링클콤보), 1L);
+
+        OrderTable 치킨_주문_단체테이블 = OrderTable.of(0, true);
+        Orders 치킨주문 = Orders.of(OrderTableId.of(치킨_주문_단체테이블), OrderStatus.COOKING);
+        치킨_주문항목.acceptOrder(치킨주문);
+
+        when(ordersRepository.findById(nullable(Long.class))).thenReturn(Optional.of(치킨주문));
+        
+        // when
+        Orders validatedOrder = ordersValidator.getValidatedOrdersForChangeOrderStatus(치킨주문.getId());
+
+        // then
+        Assertions.assertThat(validatedOrder).isEqualTo(치킨주문);
+    }
+
+    @DisplayName("계산완료된 주문의 상태를 변경시 예외가 발생된다.")
+    @Test
+    void exception_updateOrderStatus_() {
+        // given
+        Menu 뿌링클콤보 = Menu.of(1L, "뿌링클콤보", Price.of(18_000));
+        OrderLineItem 치킨_주문항목 = OrderLineItem.of(MenuId.of(뿌링클콤보), 1L);
+
+        OrderTable 치킨_주문_단체테이블 = OrderTable.of(0, true);
+        Orders 치킨주문 = Orders.of(OrderTableId.of(치킨_주문_단체테이블), OrderStatus.COMPLETION);
+        치킨_주문항목.acceptOrder(치킨주문);
+
+        when(ordersRepository.findById(nullable(Long.class))).thenReturn(Optional.of(치킨주문));
+
+        // when
+        // then
+        Assertions.assertThatExceptionOfType(NotChangableOrderStatusException.class)
+                    .isThrownBy(() -> ordersValidator.getValidatedOrdersForChangeOrderStatus(치킨주문.getId()));
     }
 }

@@ -4,7 +4,6 @@ import kitchenpos.domain.order.Orders;
 import kitchenpos.domain.order.OrdersRepository;
 import kitchenpos.dto.order.OrderDto;
 import kitchenpos.domain.order.OrderStatus;
-import kitchenpos.exception.order.NotFoundOrderException;
 import kitchenpos.vo.OrderTableId;
 
 import org.springframework.stereotype.Service;
@@ -41,13 +40,12 @@ public class OrderService {
     }
 
     @Transactional
-    public Orders changeOrderStatus(final Long orderId, final OrderDto order) {
-        final Orders savedOrder = orderRepository.findById(orderId)
-                                                .orElseThrow(NotFoundOrderException::new);
+    public OrderDto changeOrderStatus(final Long orderId, final OrderDto order) {
+        final Orders validatedOrder = ordersValidator.getValidatedOrdersForChangeOrderStatus(orderId);
 
-        savedOrder.changeOrderStatus(OrderStatus.valueOf(order.getOrderStatus()));
+        validatedOrder.changeOrderStatus(OrderStatus.valueOf(order.getOrderStatus()));
 
-        return savedOrder;
+        return OrderDto.of(validatedOrder);
     }
 
     public Orders findByOrderTableId(Long orderTableId) {

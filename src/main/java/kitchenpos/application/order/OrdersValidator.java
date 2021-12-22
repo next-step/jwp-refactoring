@@ -12,23 +12,29 @@ import kitchenpos.domain.order.OrderLineItem;
 import kitchenpos.domain.order.OrderLineItems;
 import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.domain.order.Orders;
+import kitchenpos.domain.order.OrdersRepository;
 import kitchenpos.dto.order.OrderDto;
 import kitchenpos.dto.order.OrderLineItemDto;
 import kitchenpos.event.orders.ValidateEmptyTableEvent;
 import kitchenpos.exception.order.EmptyOrderLineItemOrderException;
+import kitchenpos.exception.order.NotChangableOrderStatusException;
+import kitchenpos.exception.order.NotFoundOrderException;
 import kitchenpos.exception.order.NotRegistedMenuOrderException;
 import kitchenpos.vo.MenuId;
 import kitchenpos.vo.OrderTableId;
 
 @Component
 public class OrdersValidator {
+    private final OrdersRepository ordersRepository;
     private final MenuService menuService;
     private final ApplicationEventPublisher eventPublisher;
 
     public OrdersValidator (
+        final OrdersRepository ordersRepository,
         final MenuService menuService,
         final ApplicationEventPublisher eventPublisher
     ) {
+        this.ordersRepository = ordersRepository;
         this.menuService = menuService;
         this.eventPublisher = eventPublisher;
     }
@@ -72,6 +78,21 @@ public class OrdersValidator {
     private static void checkEmptyOfOrderLineItems(final List<OrderLineItem> orderLineItems) {
         if (orderLineItems.isEmpty()) {
             throw new EmptyOrderLineItemOrderException();
+        }
+    }
+
+    public Orders getValidatedOrdersForChangeOrderStatus(Long orderId) {
+        final Orders savedOrder = ordersRepository.findById(orderId)
+                                                    .orElseThrow(NotFoundOrderException::new);
+
+        validateionOfChageOrderStatus(savedOrder);
+
+        return savedOrder;
+    }
+
+    private void validateionOfChageOrderStatus(Orders order) {
+        if (order.isCompletion()) {
+            throw new NotChangableOrderStatusException();
         }
     }
 }
