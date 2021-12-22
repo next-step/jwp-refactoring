@@ -32,7 +32,7 @@ INSERT INTO order_table (id, number_of_guests, empty) VALUES (3, 0, true);
 INSERT INTO order_table (id, number_of_guests, empty) VALUES (4, 0, false);
 INSERT INTO order_table (id, number_of_guests, empty) VALUES (5, 0, false);
 INSERT INTO order_table (id, number_of_guests, empty) VALUES (6, 0, false);
-INSERT INTO order_table (id, number_of_guests, empty) VALUES (7, 0, true);
+INSERT INTO order_table (id, number_of_guests, empty) VALUES (7, 0, false);
 INSERT INTO order_table (id, table_group_id, number_of_guests, empty) VALUES (8, 1, 0, true);
 INSERT INTO order_table (id, table_group_id, number_of_guests, empty) VALUES (9, 1, 0, true);
 

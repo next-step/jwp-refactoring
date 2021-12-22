@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
-import kitchenpos.domain.Product;
+import kitchenpos.product.domain.Product;
 
 class JdbcTemplateProductDaoTest {
 	private static final String NAME = "로제치킨";
