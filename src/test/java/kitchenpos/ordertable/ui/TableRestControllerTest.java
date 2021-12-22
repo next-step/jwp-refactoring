@@ -1,4 +1,4 @@
-package kitchenpos.product.testfixtures.ui;
+package kitchenpos.ordertable.ui;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasSize;
@@ -15,7 +15,6 @@ import java.util.List;
 import kitchenpos.common.CommonTestFixtures;
 import kitchenpos.ordertable.application.TableService;
 import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.ui.TableRestController;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

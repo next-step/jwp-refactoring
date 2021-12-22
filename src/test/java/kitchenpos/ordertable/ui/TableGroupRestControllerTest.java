@@ -1,4 +1,4 @@
-package kitchenpos.product.testfixtures.ui;
+package kitchenpos.ordertable.ui;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -14,7 +14,6 @@ import kitchenpos.common.CommonTestFixtures;
 import kitchenpos.ordertable.application.TableGroupService;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.TableGroup;
-import kitchenpos.ordertable.ui.TableGroupRestController;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
