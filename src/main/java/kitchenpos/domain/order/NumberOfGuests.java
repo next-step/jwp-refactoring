@@ -10,7 +10,7 @@ public class NumberOfGuests {
 
     public static final int MIN = 0;
 
-    @Column(name = "numberOfGuests")
+    @Column(name = "numberOfGuests", nullable = false)
     private int numberOfGuests;
 
     protected NumberOfGuests() {

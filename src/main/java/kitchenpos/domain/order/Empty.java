@@ -8,7 +8,7 @@ import kitchenpos.common.exception.InvalidParameterException;
 @Embeddable
 public class Empty {
 
-    @Column(name = "empty")
+    @Column(name = "empty", nullable = false)
     private boolean empty;
 
     protected Empty() {

@@ -28,7 +28,7 @@ public class MenuProduct {
     @JoinColumn(name = "productId", foreignKey = @ForeignKey(name = "fk_menu_product_product"))
     private Product product;
 
-    @Column(name = "quantity")
+    @Column(name = "quantity", nullable = false)
     private Long quantity;
 
     protected MenuProduct() {
