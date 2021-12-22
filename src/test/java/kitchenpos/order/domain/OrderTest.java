@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
+import kitchenpos.common.domain.MustHaveName;
+import kitchenpos.common.domain.Price;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import org.junit.jupiter.api.DisplayName;
@@ -14,7 +16,9 @@ import org.junit.jupiter.api.Test;
 class OrderTest {
 
     final Menu menu = Menu.of("후라이드치킨", 10000, MenuGroup.from("치킨"));
-    final OrderLineItem orderLineItem = OrderLineItem.of(menu, 2L);
+    final OrderLineItem orderLineItem = OrderLineItem.of(OrderMenu.of(1L,
+        MustHaveName.valueOf("후라이드치킨"),
+        Price.fromInteger(10000)), 2L);
 
     @Test
     @DisplayName("주문 진행중 여부")

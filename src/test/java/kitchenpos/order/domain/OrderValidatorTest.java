@@ -8,11 +8,11 @@ import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.Optional;
+import kitchenpos.common.domain.MustHaveName;
+import kitchenpos.common.domain.Price;
 import kitchenpos.exception.CannotUpdatedException;
 import kitchenpos.exception.InvalidArgumentException;
 import kitchenpos.exception.NotFoundException;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -32,8 +32,9 @@ class OrderValidatorTest {
     @InjectMocks
     private OrderValidator orderValidator;
 
-    final Menu menu = Menu.of("후라이드치킨", 10000, MenuGroup.from("치킨"));
-    final OrderLineItem orderLineItem = OrderLineItem.of(menu, 2L);
+    final OrderLineItem orderLineItem = OrderLineItem.of(OrderMenu.of(1L,
+        MustHaveName.valueOf("후라이드치킨"),
+        Price.fromInteger(10000)), 2L);
 
     @Test
     @DisplayName("주문 생성 validate 체크: 테이블 정보는 필수, 빈 테이블인 경우 주문을 생성할 수 없다.")

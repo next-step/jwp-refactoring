@@ -47,7 +47,7 @@ public class Price {
         }
     }
 
-    public BigDecimal get() {
+    public BigDecimal getPrice() {
         return price;
     }
 

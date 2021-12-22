@@ -51,11 +51,11 @@ public class Product extends BaseEntity {
     }
 
     public String getName() {
-        return name.get();
+        return name.getName();
     }
 
     public BigDecimal getPrice() {
-        return price.get();
+        return price.getPrice();
     }
 
     public boolean equalName(String name) {

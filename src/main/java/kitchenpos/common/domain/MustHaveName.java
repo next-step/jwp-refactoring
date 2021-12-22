@@ -38,7 +38,7 @@ public class MustHaveName {
         }
     }
 
-    public String get() {
+    public String getName() {
         return name;
     }
 
@@ -58,4 +58,5 @@ public class MustHaveName {
     public int hashCode() {
         return Objects.hash(name);
     }
+
 }

@@ -4,17 +4,18 @@ import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderMenu;
 
 public class OrderLineItemResponse {
 
     private Long seq;
-    private MenuResponse menu;
+    private OrderMenu menu;
     private long quantity;
 
     public OrderLineItemResponse() {
     }
 
-    private OrderLineItemResponse(Long seq, MenuResponse menu, long quantity) {
+    private OrderLineItemResponse(Long seq, OrderMenu menu, long quantity) {
         this.seq = seq;
         this.menu = menu;
         this.quantity = quantity;
@@ -22,7 +23,7 @@ public class OrderLineItemResponse {
 
     public static OrderLineItemResponse of(OrderLineItem orderLineItem) {
         return new OrderLineItemResponse(orderLineItem.getSeq(),
-            MenuResponse.of(orderLineItem.getMenu()),
+            orderLineItem.getOrderMenu(),
             orderLineItem.getQuantity());
     }
 
@@ -36,7 +37,7 @@ public class OrderLineItemResponse {
         return seq;
     }
 
-    public MenuResponse getMenu() {
+    public OrderMenu getMenu() {
         return menu;
     }
 

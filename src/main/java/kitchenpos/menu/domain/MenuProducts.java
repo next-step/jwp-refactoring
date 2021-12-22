@@ -39,7 +39,7 @@ public class MenuProducts {
 
     protected Price getTotalPrice() {
         BigDecimal sum = menuProducts.stream()
-            .map(it -> it.getPrice().get())
+            .map(it -> it.getPrice().getPrice())
             .reduce(BigDecimal.ZERO, BigDecimal::add);
         return Price.valueOf(sum);
     }

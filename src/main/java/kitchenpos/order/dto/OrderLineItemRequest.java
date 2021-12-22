@@ -2,6 +2,7 @@ package kitchenpos.order.dto;
 
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderMenu;
 
 public class OrderLineItemRequest {
 
@@ -25,6 +26,6 @@ public class OrderLineItemRequest {
     }
 
     public OrderLineItem toEntity(Menu menu) {
-        return OrderLineItem.of(menu, quantity);
+        return OrderLineItem.of(OrderMenu.of(menu.getId(), menu.getName(), menu.getPrice()), quantity);
     }
 }

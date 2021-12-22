@@ -29,7 +29,7 @@ public class OrderRepositoryTest {
     @DisplayName("주문 저장 시 주문 항목도 저장")
     void save() {
         Menu menu = menuRepository.findById(1L).get();
-        OrderLineItem orderLineItem = OrderLineItem.of(menu, 2L);
+        OrderLineItem orderLineItem = OrderLineItem.of(OrderMenu.of(menu.getId(), menu.getName(), menu.getPrice()), 2L);
 
         Order persist = orderRepository.save(Order.of(1L, null, Arrays.asList(orderLineItem)));
 

@@ -68,12 +68,12 @@ public class Menu extends BaseEntity {
         return id;
     }
 
-    public String getName() {
-        return name.get();
+    public MustHaveName getName() {
+        return name;
     }
 
-    public BigDecimal getPrice() {
-        return price.get();
+    public Price getPrice() {
+        return price;
     }
 
     public List<MenuProduct> getMenuProducts() {

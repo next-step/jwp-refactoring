@@ -13,11 +13,14 @@ import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import kitchenpos.common.domain.MustHaveName;
+import kitchenpos.common.domain.Price;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderMenu;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderValidator;
@@ -34,6 +37,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.test.util.ReflectionTestUtils;
 
 @DisplayName("주문 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
@@ -41,9 +45,10 @@ class OrderServiceTest {
 
     private final OrderRequest orderRequest = new OrderRequest(1L,
         Arrays.asList(new OrderLineItemRequest(1L, 1L)));
-    private final Menu menu = Menu.of("후라이드치킨", 10000, MenuGroup.from("치킨"));
-    private final OrderTable orderTable = OrderTable.of(2, false);
-    private final Order order = orderRequest.toEntity( Arrays.asList(OrderLineItem.of(menu, 2L)));
+    private final OrderLineItem orderLineItem = OrderLineItem.of(OrderMenu.of(1L,
+        MustHaveName.valueOf("후라이드치킨"),
+        Price.fromInteger(10000)), 2L);
+    private final Order order = orderRequest.toEntity( Arrays.asList(orderLineItem));
     @Mock
     private MenuRepository menuRepository;
     @Mock
@@ -59,10 +64,13 @@ class OrderServiceTest {
     @Test
     @DisplayName("주문을 등록한다.")
     void create() {
+        Menu menu = Menu.of("후라이드치킨", 10000, MenuGroup.from("치킨"));
         when(menuRepository.findById(anyLong()))
             .thenReturn(Optional.of(menu));
         when(orderRepository.save(any(Order.class)))
             .thenReturn(order);
+
+        ReflectionTestUtils.setField(menu, "id", 1L);
 
         OrderResponse saved = orderService.create(orderRequest);
 
