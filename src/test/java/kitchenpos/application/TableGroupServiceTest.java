@@ -18,7 +18,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static kitchenpos.application.TableServiceTest.createOrderTable;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.Mockito.*;
@@ -41,8 +40,8 @@ class TableGroupServiceTest {
 
     @BeforeEach
     void setUp() {
-        주문테이블1 = createOrderTable(1L, 3, true);
-        주문테이블2 = createOrderTable(2L, 3, true);
+        주문테이블1 = new OrderTable(1L, 3, true);
+        주문테이블2 = new OrderTable(2L, 3, true);
         테이블그룹 = crateTableGroup(1L, LocalDateTime.now(), Arrays.asList(주문테이블1, 주문테이블2));
     }
 
@@ -107,7 +106,7 @@ class TableGroupServiceTest {
     @Test
     @DisplayName("다른 테이블 그룹에 등록되어 있는 주문 테이블인 경우 예외가 발생한다.")
     void validateExistTableGroup() {
-        주문테이블2.setTableGroupId(2L);
+        주문테이블2.setTableGroup(new TableGroup(LocalDateTime.now()));
         when(orderTableDao.findAllByIdIn(anyList()))
                 .thenReturn(Arrays.asList(주문테이블1, 주문테이블2));
 
@@ -124,9 +123,8 @@ class TableGroupServiceTest {
         tableGroupService.ungroup(테이블그룹.getId());
 
         verify(orderTableDao, times(1)).findAllByTableGroupId(anyLong());
-        verify(orderTableDao, times(2)).save(any());
-        assertThat(주문테이블1.getTableGroupId()).isNull();
-        assertThat(주문테이블2.getTableGroupId()).isNull();
+        assertThat(주문테이블1.getTableGroup()).isNull();
+        assertThat(주문테이블2.getTableGroup()).isNull();
     }
 
     @Test

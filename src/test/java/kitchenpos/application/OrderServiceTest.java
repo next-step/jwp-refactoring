@@ -21,7 +21,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static kitchenpos.application.TableServiceTest.createOrderTable;
 import static kitchenpos.domain.OrderStatus.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -46,7 +45,7 @@ class OrderServiceTest {
 
     @BeforeEach
     void setUp() {
-        주문테이블 = createOrderTable(1L, 2, false);
+        주문테이블 = new OrderTable(1L, 2, false);
         주문 = createOrder(1L, 주문테이블.getId(), COOKING, LocalDateTime.now());
         주문항목 = createOrderLineItem(주문.getId(), 1L, 1L);
         주문.setOrderLineItems(Collections.singletonList(주문항목));
@@ -106,7 +105,7 @@ class OrderServiceTest {
     @Test
     @DisplayName("주문 테이블이 빈 테이블인 경우 예외가 발생한다.")
     void validateOrderTableEmpty() {
-        OrderTable 빈테이블 = createOrderTable(2L, 0, true);
+        OrderTable 빈테이블 = new OrderTable(2L, 0, true);
         Order 빈테이블주문 = createOrder(2L, 빈테이블.getId(), COOKING, LocalDateTime.now());
         빈테이블주문.setOrderLineItems(Collections.singletonList(주문항목));
 
