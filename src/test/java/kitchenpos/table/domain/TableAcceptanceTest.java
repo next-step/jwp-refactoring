@@ -33,12 +33,13 @@ import kitchenpos.tablegroup.dto.TableGroupRequest;
 class TableAcceptanceTest extends AcceptanceTest {
 
 	private MenuResponse 불닭_메뉴;
+	private List<MenuProductRequest> 불닭_두마리_메뉴_상품_리스트;
 
 	@BeforeEach
 	void setup() {
 		MenuGroupResponse 두마리_메뉴_그룹 = 메뉴_그룹_생성되어_있음(메뉴_그룹_생성_요청값_생성("두마리메뉴"));
 		ProductResponse 불닭 = 상품이_생성_되어있음(상품_요청값_생성("불닭", 16000));
-		List<MenuProductRequest> 불닭_두마리_메뉴_상품_리스트 = 메뉴_상품_요청_생성_되어_있음(불닭);
+		불닭_두마리_메뉴_상품_리스트 = 메뉴_상품_요청_생성_되어_있음(불닭);
 		불닭_메뉴 = 메뉴가_생성_되어있음(메뉴_생성_요청값_생성("불닭 메뉴", 19000, 두마리_메뉴_그룹.getId(), 불닭_두마리_메뉴_상품_리스트));
 
 	}
@@ -71,6 +72,8 @@ class TableAcceptanceTest extends AcceptanceTest {
 	void 테이블의_상태를_변경한다() {
 		// given
 		OrderTableResponse 생성된_테이블 = 테이블이_생성_되어있음(테이블_요청값_생성(1, false));
+		OrderResponse 조리_중인_주문 = 주문이_생성_되어_있음(주문_요청값_생성(생성된_테이블.getId(), 주문_메뉴_생성(불닭_메뉴.getId(), 2L)));
+		주문_상태가_변경_되어_있음(조리_중인_주문.getId(), OrderStatus.COMPLETION);
 		OrderTableRequest 변경할_상태 = 테이블_요청값_생성(1, true);
 
 		// when

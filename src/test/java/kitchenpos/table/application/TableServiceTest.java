@@ -27,6 +27,9 @@ public class TableServiceTest {
 	OrderTableRepository orderTableRepository;
 
 	@Mock
+	TableValidator tableValidator;
+
+	@Mock
 	OrderTable orderTable;
 
 	@InjectMocks
@@ -77,6 +80,9 @@ public class TableServiceTest {
 		given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(orderTable));
 		given(orderTable.isEmpty()).willReturn(true);
 		orderTableRequest = OrderTableRequest.of(10, true);
+		doNothing()
+			.when(tableValidator)
+			.validate(orderTable);
 
 		// when
 		when(orderTableRepository.save(orderTable)).thenReturn(orderTable);
