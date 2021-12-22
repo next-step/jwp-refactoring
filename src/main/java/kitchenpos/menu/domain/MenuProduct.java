@@ -24,10 +24,6 @@ public class MenuProduct extends BaseEntity {
     private Long seq;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "menu_id", foreignKey = @ForeignKey(name = "fk_menu_product_menu"))
-    private Menu menu;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "product_id", foreignKey = @ForeignKey(name = "fk_menu_product_product"))
     private Product product;
 
@@ -46,29 +42,8 @@ public class MenuProduct extends BaseEntity {
         return new MenuProduct(product, quantity);
     }
 
-    public void relateMenu(Menu menu) {
-        validateMenu(menu);
-        if (this.menu != null) {
-            this.menu.removeMenuProduct(this);
-        }
-        this.menu = menu;
-        menu.addMenuProduct(this);
-    }
-
-    public boolean equalMenu(Menu menu) {
-        if (this.menu == null) {
-            return null == menu;
-        }
-        return this.menu.equals(menu);
-    }
-
     public boolean equalMenuProduct(MenuProduct other) {
-        return equalMenu(other.menu) && product.equals(other.product) && quantity
-            .equals(other.quantity);
-    }
-
-    public void removeMenu() {
-        this.menu = null;
+        return product.equals(other.product) && quantity.equals(other.quantity);
     }
 
     public Price getPrice() {
@@ -92,18 +67,11 @@ public class MenuProduct extends BaseEntity {
         return quantity.getQuantity();
     }
 
-    private void validateMenu(Menu menu) {
-        if (menu == null) {
-            throw new InvalidArgumentException("메뉴는 필수입니다.");
-        }
-    }
-
     private void validateProduct(Product product) {
         if (product == null) {
             throw new InvalidArgumentException("상품은 필수입니다.");
         }
     }
-
 
     @Override
     public boolean equals(Object o) {
@@ -121,5 +89,4 @@ public class MenuProduct extends BaseEntity {
     public int hashCode() {
         return Objects.hash(seq);
     }
-
 }

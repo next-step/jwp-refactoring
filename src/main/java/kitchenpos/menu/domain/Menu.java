@@ -51,34 +51,15 @@ public class Menu extends BaseEntity {
         return new Menu(name, price, menuGroup);
     }
 
-    public void removeMenuProduct(MenuProduct menuProduct) {
-        this.menuProducts.remove(menuProduct);
-    }
-
     public void addMenuProducts(List<MenuProduct> menuProducts) {
         for (MenuProduct menuProduct : menuProducts) {
-            addMenuProduct(menuProduct);
+            this.menuProducts.add(menuProduct);
         }
-        validatePrice();
+        this.menuProducts.validatePrice(price);
     }
 
     public MenuGroup getMenuGroup() {
         return this.menuGroup;
-    }
-
-
-    protected void addMenuProduct(MenuProduct menuProduct) {
-        menuProducts.add(menuProduct);
-
-        if (!menuProduct.equalMenu(this)) {
-            menuProduct.relateMenu(this);
-        }
-    }
-
-    private void validatePrice() {
-        if (price.isGreaterThan(this.menuProducts.getTotalPrice())) {
-            throw new InvalidArgumentException("메뉴의 총 가격은 구성하는 상품의 총가격보다 작거나 같아야 합니다.");
-        }
     }
 
     private void validateMenuGroup(MenuGroup menuGroup) {
@@ -120,5 +101,4 @@ public class Menu extends BaseEntity {
     public int hashCode() {
         return Objects.hash(id);
     }
-
 }
