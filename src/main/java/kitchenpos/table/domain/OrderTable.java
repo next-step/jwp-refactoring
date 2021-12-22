@@ -39,12 +39,20 @@ public class OrderTable {
         this.empty = empty;
     }
 
+    public static OrderTable of(Long id) {
+        return new OrderTable(id, 0, false);
+    }
+
     public static OrderTable of(int numberOfGuests) {
         return new OrderTable(null, numberOfGuests, false);
     }
 
     public static OrderTable ofWithEmpty(int numberOfGuests) {
         return new OrderTable(null, numberOfGuests, true);
+    }
+
+    public static OrderTable of(int numberOfGuests, boolean empty) {
+        return new OrderTable(null, numberOfGuests, empty);
     }
 
     public Long getId() {

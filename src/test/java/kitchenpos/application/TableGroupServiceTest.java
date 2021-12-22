@@ -14,6 +14,7 @@ import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.domain.TableGroupRepository;
+import kitchenpos.table.dto.TableGroupResponse;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -52,17 +53,17 @@ class TableGroupServiceTest {
         given(orderTableRepository.save(any())).willReturn(orderTable1, orderTable2);
 
         // when
-        TableGroup result = tableGroupService.create(tableGroup);
+        TableGroupResponse result = tableGroupService.create(tableGroup);
 
         // then
         assertThat(result.getCreatedDate()).isNotNull();
         assertThat(result.getOrderTables()).hasSize(2);
         assertThat(result.getOrderTables().get(0).getId()).isEqualTo(1L);
-        assertThat(result.getOrderTables().get(0).getTableGroupId()).isEqualTo(1L);
+        assertThat(result.getOrderTables().get(0).getId()).isEqualTo(1L);
         assertThat(result.getOrderTables().get(0).getNumberOfGuests()).isEqualTo(4);
         assertThat(result.getOrderTables().get(0).isEmpty()).isFalse();
         assertThat(result.getOrderTables().get(1).getId()).isEqualTo(2L);
-        assertThat(result.getOrderTables().get(1).getTableGroupId()).isEqualTo(1L);
+        assertThat(result.getOrderTables().get(1).getId()).isEqualTo(1L);
         assertThat(result.getOrderTables().get(1).getNumberOfGuests()).isEqualTo(3);
         assertThat(result.getOrderTables().get(1).isEmpty()).isFalse();
     }

@@ -10,6 +10,7 @@ import java.util.Optional;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.dto.OrderTableResponse;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -40,7 +41,7 @@ class TableServiceTest {
         given(orderTableRepository.save(orderTable)).willReturn(savedOrderTable);
 
         // when
-        OrderTable result = tableService.create(orderTable);
+        OrderTableResponse result = tableService.create(orderTable);
 
         // then
         assertThat(result.getId()).isEqualTo(1L);
@@ -59,7 +60,7 @@ class TableServiceTest {
             Lists.newArrayList(orderTable1, orderTable2));
 
         // when
-        List<OrderTable> result = tableService.list();
+        List<OrderTableResponse> result = tableService.list();
 
         // then
         assertThat(result).hasSize(2);
@@ -82,7 +83,7 @@ class TableServiceTest {
         given(orderTableRepository.save(any())).willReturn(orderTableForUpdate);
 
         // when
-        OrderTable result = tableService.changeEmpty(1L, orderTableForUpdate);
+        OrderTableResponse result = tableService.changeEmpty(1L, orderTableForUpdate);
 
         // then
         assertThat(result.getId()).isEqualTo(1L);
@@ -131,7 +132,7 @@ class TableServiceTest {
         given(orderTableRepository.save(orderTable)).willReturn(orderTableForUpdate);
 
         // when
-        OrderTable result = tableService.changeNumberOfGuests(1L, orderTableForUpdate);
+        OrderTableResponse result = tableService.changeNumberOfGuests(1L, orderTableForUpdate);
 
         // then
         assertThat(result.getId()).isEqualTo(1L);
