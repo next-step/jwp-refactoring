@@ -77,8 +77,9 @@ public class OrderLineItem {
     public int hashCode() {
         return Objects.hash(getSeq());
     }
+    
 
-    public void setOrder(Order savedOrder) {
-        order = savedOrder;
+    public void assignOrder(Order order) {
+        this.order = order;
     }
 }

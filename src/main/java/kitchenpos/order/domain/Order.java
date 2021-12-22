@@ -21,6 +21,10 @@ import kitchenpos.ordertable.domain.OrderTable;
 @Entity
 public class Order {
 
+    private static final String ERROR_MESSAGE_EMPTY_TABLE_CANNOT_ORDER = "빈 테이블은 주문할 수 없습니다.";
+    private static final String ERROR_MESSAGE_DUPLICATE_MENU = "주문항목들 중에 중복된 메뉴가 존재합니다.";
+    private static final String ERROR_MESSAGE_COMPLETE_ORDER_CANNOT_CHANGE = "계산 완료된 주문 상태는 변경할 수 없습니다.";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -67,10 +71,30 @@ public class Order {
     public Order(Long id, OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime,
         List<OrderLineItem> orderLineItems) {
         this.id = id;
-        this.orderTable = orderTable;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
-        this.orderLineItems = orderLineItems;
+
+        assignOrderLineItems(orderLineItems);
+        assignTable(orderTable);
+    }
+
+    private void assignOrderLineItems(List<OrderLineItem> orderLineItems) {
+        validateNoDuplicateMenu(orderLineItems);
+        this.orderLineItems.addAll(orderLineItems);
+        orderLineItems.stream()
+            .forEach(orderLineItem -> orderLineItem.assignOrder(this));
+    }
+
+    private void validateNoDuplicateMenu(List<OrderLineItem> orderLineItems) {
+        int inputSize = orderLineItems.size();
+        long distinctSize = orderLineItems.stream()
+            .map(orderLineItem -> orderLineItem.getMenu())
+            .distinct()
+            .count();
+
+        if (distinctSize != inputSize) {
+            throw new IllegalArgumentException(ERROR_MESSAGE_DUPLICATE_MENU);
+        }
     }
 
     public OrderTable getOrderTable() {
@@ -85,16 +109,32 @@ public class Order {
         return orderedTime;
     }
 
-    public void setOrderedTime(final LocalDateTime orderedTime) {
-        this.orderedTime = orderedTime;
-    }
-
     public List<OrderLineItem> getOrderLineItems() {
         return orderLineItems;
     }
 
-    public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
-        this.orderLineItems = orderLineItems;
+    public boolean isCompleteStatus() {
+        return orderStatus == OrderStatus.COMPLETION;
+    }
+
+    public void changeOrderStatus(OrderStatus changeStatus) {
+        if (this.orderStatus == OrderStatus.COMPLETION) {
+            throw new IllegalArgumentException(ERROR_MESSAGE_COMPLETE_ORDER_CANNOT_CHANGE);
+        }
+
+        this.orderStatus = changeStatus;
+    }
+
+    public void assignTable(OrderTable orderTable) {
+        validateNotEmptyTable(orderTable);
+        this.orderTable = orderTable;
+        orderTable.addOrder(this);
+    }
+
+    private void validateNotEmptyTable(OrderTable orderTable) {
+        if (orderTable.isEmpty()) {
+            throw new IllegalArgumentException(ERROR_MESSAGE_EMPTY_TABLE_CANNOT_ORDER);
+        }
     }
 
     @Override
@@ -114,18 +154,5 @@ public class Order {
     @Override
     public int hashCode() {
         return Objects.hash(getId());
-    }
-
-    public boolean isCompleteStatus() {
-        return orderStatus == OrderStatus.COMPLETION;
-    }
-
-    public void changeOrderStatus(OrderStatus orderStatus) {
-        this.orderStatus = orderStatus;
-    }
-
-    public void assignTable(OrderTable orderTable) {
-        this.orderTable = orderTable;
-        orderTable.addOrder(this);
     }
 }
