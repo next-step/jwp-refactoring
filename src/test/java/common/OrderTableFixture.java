@@ -1,50 +1,29 @@
 package common;
 
-import kitchenpos.domain.OrderTable;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableStatus;
+import kitchenpos.table.dto.OrderTableRequest;
 
 public class OrderTableFixture {
 
     public static OrderTable 첫번째_주문테이블() {
-
-        OrderTable orderTable = new OrderTable();
-        orderTable.setId(1L);
-        orderTable.setTableGroupId(null);
-        orderTable.setNumberOfGuests(1);
-        orderTable.setEmpty(false);
-
-        return orderTable;
+        return OrderTable.of(1L, 1, OrderTableStatus.USE);
     }
 
     public static OrderTable 두번째_주문테이블() {
-
-        OrderTable orderTable = new OrderTable();
-        orderTable.setId(2L);
-        orderTable.setTableGroupId(null);
-        orderTable.setNumberOfGuests(2);
-        orderTable.setEmpty(false);
-
-        return orderTable;
+        return OrderTable.of(2L, 2, OrderTableStatus.USE);
     }
 
     public static OrderTable 단체지정_첫번째_주문테이블() {
-
-        OrderTable orderTable = new OrderTable();
-        orderTable.setId(1L);
-        orderTable.setTableGroupId(null);
-        orderTable.setNumberOfGuests(1);
-        orderTable.setEmpty(true);
-
-        return orderTable;
+        return OrderTable.of(1L, 1, OrderTableStatus.EMPTY);
     }
 
     public static OrderTable 단체지정_두번째_주문테이블() {
+        return OrderTable.of(2L, 2, OrderTableStatus.EMPTY);
+    }
 
-        OrderTable orderTable = new OrderTable();
-        orderTable.setId(2L);
-        orderTable.setTableGroupId(null);
-        orderTable.setNumberOfGuests(2);
-        orderTable.setEmpty(true);
-
-        return orderTable;
+    public static OrderTableRequest from(OrderTable orderTable) {
+        return new OrderTableRequest(orderTable.getNumberOfGuests(),
+            orderTable.getOrderTableStatus().isEmpty());
     }
 }

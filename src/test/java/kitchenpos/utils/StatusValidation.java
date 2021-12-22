@@ -15,4 +15,12 @@ public class StatusValidation {
     public static void 조회됨(ExtractableResponse<Response> response){
         assertThat(response.statusCode()).isEqualTo(HttpStatus.SC_OK);
     }
+
+    public static void 변경됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.SC_OK);
+    }
+
+    public static void 삭제됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.SC_NO_CONTENT);
+    }
 }

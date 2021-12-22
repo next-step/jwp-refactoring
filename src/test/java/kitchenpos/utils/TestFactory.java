@@ -68,6 +68,16 @@ public class TestFactory {
             .extract();
     }
 
+    public static ExtractableResponse<Response> put(String url, String pathParam, Long id, Object obj) {
+        return givenLog()
+            .pathParam(pathParam, id)
+            .when()
+            .body(obj)
+            .put(prefix + url)
+            .then().log().all()
+            .extract();
+    }
+
     public static ExtractableResponse<Response> delete(String url, Long id) {
         return given()
             .pathParam(ID, id)

@@ -1,20 +1,27 @@
 package kitchenpos.application;
 
-import static common.OrderTableFixture.*;
+import static common.OrderTableFixture.두번째_주문테이블;
 import static common.OrderTableFixture.첫번째_주문테이블;
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.atMostOnce;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.domain.OrderTable;
-import org.assertj.core.api.Assertions;
+import kitchenpos.table.application.TableValidation;
+import kitchenpos.table.domain.OrderTableDao;
+import kitchenpos.table.application.TableService;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.dto.ChangeNumberOfGuestRequest;
+import kitchenpos.table.dto.ChangeEmptyRequest;
+import kitchenpos.table.dto.OrderTableRequest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -26,12 +33,15 @@ public class TableServiceTest {
 
     @Mock
     private OrderDao orderDao;
-    
+
     @Mock
     private OrderTableDao orderTableDao;
 
     @InjectMocks
     private TableService tableService;
+
+    @Mock
+    TableValidation tableValidator;
 
     @Test
     void 주문가능_테이블생성() {
@@ -40,12 +50,12 @@ public class TableServiceTest {
 
         // mocking
         when(orderTableDao.save(any(OrderTable.class))).thenReturn(첫번째_테이블);
-        
+
         // when
-        OrderTable orderTable = tableService.create(첫번째_테이블);
-        
+        tableService.create(new OrderTableRequest(5, true));
+
         // then 
-        assertThat(orderTable).isEqualTo(첫번째_테이블);
+        verify(orderTableDao, atMostOnce()).save(any());
     }
 
     @Test
@@ -75,15 +85,9 @@ public class TableServiceTest {
         when(orderTableDao.save(첫번째_주문테이블)).thenReturn(첫번째_주문테이블);
 
         // when
-        OrderTable orderTable = new OrderTable();
-        orderTable.setId(첫번째_주문테이블.getId());
-        orderTable.setTableGroupId(첫번째_주문테이블.getTableGroupId());
-        orderTable.setEmpty(true);
+        tableService.changeEmpty(첫번째_주문테이블.getId(), new ChangeEmptyRequest(true));
 
-        OrderTable 저장된_주문_테이블 = tableService.changeEmpty(첫번째_주문테이블.getId(), orderTable);
-
-        Assertions.assertThat(저장된_주문_테이블).isEqualTo(첫번째_주문테이블);
-
+        verify(orderTableDao, atMostOnce()).save(any());
     }
 
     @Test
@@ -95,15 +99,9 @@ public class TableServiceTest {
         when(orderTableDao.findById(anyLong())).thenReturn(Optional.of(첫번째_주문테이블));
         when(orderDao.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).thenReturn(true);
 
-        // when
-        OrderTable orderTable = new OrderTable();
-        orderTable.setId(첫번째_주문테이블.getId());
-        orderTable.setTableGroupId(첫번째_주문테이블.getTableGroupId());
-        orderTable.setEmpty(true);
-
         // then
         assertThatThrownBy(() -> {
-            tableService.changeEmpty(첫번째_주문테이블.getId(), orderTable);
+            tableService.changeEmpty(첫번째_주문테이블.getId(), new ChangeEmptyRequest(true));
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -111,20 +109,14 @@ public class TableServiceTest {
     void 해당_테이블에_방문한_손님수를_등록() {
         // given
         OrderTable 첫번째_주문테이블 = 첫번째_주문테이블();
-        OrderTable 손님수_변경 = new OrderTable();
-        손님수_변경.setId(첫번째_주문테이블.getId());
-        손님수_변경.setTableGroupId(첫번째_주문테이블.getTableGroupId());
-        손님수_변경.setNumberOfGuests(3);
-        손님수_변경.setEmpty(첫번째_주문테이블.isEmpty());
 
         // mocking
         when(orderTableDao.findById(anyLong())).thenReturn(Optional.of(첫번째_주문테이블));
         when(orderTableDao.save(any(OrderTable.class))).thenReturn(첫번째_주문테이블);
 
         // when
-        OrderTable orderTable = tableService.changeNumberOfGuests(첫번째_주문테이블.getId(),
-            손님수_변경);
+        tableService.changeNumberOfGuests(첫번째_주문테이블.getId(), new ChangeNumberOfGuestRequest(3));
 
-        Assertions.assertThat(orderTable).isEqualTo(첫번째_주문테이블);
+        verify(orderTableDao, atMostOnce()).save(any());
     }
 }
