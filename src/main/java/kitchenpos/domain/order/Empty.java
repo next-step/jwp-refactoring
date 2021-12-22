@@ -1,8 +1,9 @@
 package kitchenpos.domain.order;
 
-import java.security.InvalidParameterException;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import kitchenpos.common.exception.CommonErrorCode;
+import kitchenpos.common.exception.InvalidParameterException;
 
 @Embeddable
 public class Empty {
@@ -31,7 +32,7 @@ public class Empty {
 
     public void validNotEmpty() {
         if (!isEmpty()) {
-            throw new InvalidParameterException("빈 테이블이 아닙니다.");
+            throw new InvalidParameterException(CommonErrorCode.TABLE_NOT_EMPTY_EXCEPTION);
         }
     }
 }

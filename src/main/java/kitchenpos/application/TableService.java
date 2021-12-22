@@ -1,6 +1,7 @@
 package kitchenpos.application;
 
-import java.security.InvalidParameterException;
+import kitchenpos.common.exception.CommonErrorCode;
+import kitchenpos.common.exception.NotFoundException;
 import kitchenpos.domain.order.OrderRepository;
 import kitchenpos.domain.order.OrderTableRepository;
 import kitchenpos.domain.order.Order;
@@ -58,6 +59,6 @@ public class TableService {
     @Transactional(readOnly = true)
     public OrderTable findOrderTableById(final Long orderTableId) {
         return orderTableRepository.findById(orderTableId)
-            .orElseThrow(InvalidParameterException::new);
+            .orElseThrow(() -> new NotFoundException(CommonErrorCode.ORDER_NOT_FOUND_EXCEPTION));
     }
 }

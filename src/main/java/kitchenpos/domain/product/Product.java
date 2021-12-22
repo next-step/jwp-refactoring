@@ -43,10 +43,6 @@ public class Product {
         return price.calculatePrice(quantity);
     }
 
-    public boolean isSameOf(Long productId) {
-        return Objects.equals(id, productId);
-    }
-
     public Long getId() {
         return id;
     }

@@ -1,10 +1,11 @@
 package kitchenpos.domain.menu;
 
 import java.math.BigDecimal;
-import java.security.InvalidParameterException;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import kitchenpos.common.exception.CommonErrorCode;
+import kitchenpos.common.exception.InvalidParameterException;
 
 @Embeddable
 public class Price {
@@ -32,13 +33,15 @@ public class Price {
 
     protected void validPriceGreaterThanMin(BigDecimal lessThanPrice) {
         if (price.compareTo(lessThanPrice) > 0) {
-            throw new InvalidParameterException("메뉴가격이 상품 총 가격 보다 클 수 없습니다.");
+            throw new InvalidParameterException(
+                CommonErrorCode.MENU_PRICE_OVER_RANGE_EXCEPTION);
         }
     }
 
     private void validMin(BigDecimal price) {
         if (Objects.isNull(price) || price.compareTo(MIN) < 0) {
-            throw new InvalidParameterException();
+            throw new InvalidParameterException(
+                CommonErrorCode.MENU_PRICE_MIN_UNDER_EXCEPTION);
         }
     }
 

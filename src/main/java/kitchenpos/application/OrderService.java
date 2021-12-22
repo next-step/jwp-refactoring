@@ -2,6 +2,8 @@ package kitchenpos.application;
 
 import java.security.InvalidParameterException;
 import java.util.stream.Collectors;
+import kitchenpos.common.exception.CommonErrorCode;
+import kitchenpos.common.exception.NotFoundException;
 import kitchenpos.domain.menu.MenuRepository;
 import kitchenpos.domain.order.OrderRepository;
 import kitchenpos.domain.order.OrderTableRepository;
@@ -37,7 +39,8 @@ public class OrderService {
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
         OrderTable orderTable = orderTableRepository.findById(orderRequest.getOrderTableId())
-            .orElseThrow(InvalidParameterException::new);
+            .orElseThrow(
+                () -> new NotFoundException(CommonErrorCode.ORDER_TABLE_NOT_FOUND_EXCEPTION));
 
         List<OrderLineItem> orderLineItems = getOrderLineItems(orderRequest);
 
@@ -54,7 +57,7 @@ public class OrderService {
     public OrderResponse changeOrderStatus(final Long orderId,
         OrderStatusRequest orderStatusRequest) {
         final Order savedOrder = orderRepository.findById(orderId)
-            .orElseThrow(InvalidParameterException::new);
+            .orElseThrow(() -> new NotFoundException(CommonErrorCode.ORDER_NOT_FOUND_EXCEPTION));
 
         savedOrder.changeOrderStatus(orderStatusRequest.getOrderStatus());
         return OrderResponse.of(savedOrder);
@@ -65,9 +68,14 @@ public class OrderService {
         List<Long> menuIds = orderRequest.getMenuIds();
         List<Menu> menus = menuRepository.findAllById(menuIds);
 
+        if (menus.size() != menuIds.size()) {
+            throw new NotFoundException(CommonErrorCode.MENU_NOT_FOUND_EXCEPTION);
+        }
+
         return menus.stream()
             .map(
                 menu -> OrderLineItem.of(menu, orderRequest.getOrderLineItemQuantity(menu.getId())))
             .collect(Collectors.toList());
     }
+
 }

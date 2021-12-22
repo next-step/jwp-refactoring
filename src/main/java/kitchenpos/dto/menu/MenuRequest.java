@@ -1,8 +1,9 @@
 package kitchenpos.dto.menu;
 
-import java.security.InvalidParameterException;
 import java.util.List;
 import java.util.stream.Collectors;
+import kitchenpos.common.exception.CommonErrorCode;
+import kitchenpos.common.exception.InvalidParameterException;
 import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menu.MenuGroup;
 import kitchenpos.domain.menu.MenuProduct;
@@ -55,7 +56,7 @@ public class MenuRequest {
         MenuProductRequest menuProductRequest = menuProducts.stream()
             .filter(menuProductRequestTarget -> menuProductRequestTarget.isSameProductId(productId))
             .findFirst()
-            .orElseThrow(() -> new InvalidParameterException("상품을 찾을 수 없습니다."));
+            .orElseThrow(() -> new InvalidParameterException(CommonErrorCode.PRODUCT_NOT_FOUND));
 
         return menuProductRequest.getQuantity();
     }

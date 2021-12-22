@@ -4,8 +4,8 @@ import static kitchenpos.application.fixture.OrderFixture.요리중_주문_of;
 import static kitchenpos.application.fixture.OrderTableFixture.단체지정된_주문테이블;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import java.security.InvalidParameterException;
 import java.util.Collections;
+import kitchenpos.common.exception.InvalidParameterException;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

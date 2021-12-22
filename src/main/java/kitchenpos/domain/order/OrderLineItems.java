@@ -1,11 +1,12 @@
 package kitchenpos.domain.order;
 
-import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
+import kitchenpos.common.exception.CommonErrorCode;
+import kitchenpos.common.exception.InvalidParameterException;
 import org.springframework.util.CollectionUtils;
 
 @Embeddable
@@ -36,7 +37,7 @@ public class OrderLineItems {
 
     private void validEmpty(List<OrderLineItem> orderLineItems) {
         if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new InvalidParameterException();
+            throw new InvalidParameterException(CommonErrorCode.NOT_EMPTY);
         }
     }
 }

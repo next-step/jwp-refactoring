@@ -1,7 +1,6 @@
 package kitchenpos.domain.menu;
 
 import java.math.BigDecimal;
-import java.security.InvalidParameterException;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.Column;
@@ -14,6 +13,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import kitchenpos.common.exception.CommonErrorCode;
+import kitchenpos.common.exception.InvalidParameterException;
 
 @Entity
 public class Menu {
@@ -79,11 +80,11 @@ public class Menu {
 
     private void validEmpty(String name, MenuGroup menuGroup) {
         if (Objects.isNull(name)) {
-            throw new InvalidParameterException("메뉴이름이 비어 있을 수 없습니다.");
+            throw new InvalidParameterException(CommonErrorCode.NOT_EMPTY);
         }
 
         if (Objects.isNull(menuGroup)) {
-            throw new InvalidParameterException("메뉴그룹이 비어 있을 수 없습니다.");
+            throw new InvalidParameterException(CommonErrorCode.NOT_EMPTY);
         }
     }
 

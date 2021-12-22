@@ -1,7 +1,8 @@
 package kitchenpos.application;
 
-import java.security.InvalidParameterException;
 import java.util.stream.Collectors;
+import kitchenpos.common.exception.CommonErrorCode;
+import kitchenpos.common.exception.NotFoundException;
 import kitchenpos.domain.menu.MenuRepository;
 import kitchenpos.domain.menu.MenuGroupRepository;
 import kitchenpos.domain.product.ProductRepository;
@@ -51,7 +52,8 @@ public class MenuService {
     @Transactional(readOnly = true)
     public MenuGroup findMenuGroup(Long menuGroupId) {
         return menuGroupRepository.findById(menuGroupId)
-            .orElseThrow(() -> new InvalidParameterException("없는 메뉴그룹입니다."));
+            .orElseThrow(
+                () -> new NotFoundException(CommonErrorCode.MENU_GROUP_NOT_FOUND_EXCEPTION));
     }
 
     @Transactional(readOnly = true)
@@ -60,7 +62,7 @@ public class MenuService {
         List<Product> products = productRepository.findAllById(productIds);
 
         if (products.size() != productIds.size()) {
-            throw new InvalidParameterException("존재하지 않는 상품이 있습니다.");
+            throw new NotFoundException(CommonErrorCode.MENU_PRODUCT_NOT_FOUND);
         }
 
         return products.stream()

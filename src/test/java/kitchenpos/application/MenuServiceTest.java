@@ -12,10 +12,11 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
 
-import java.security.InvalidParameterException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import kitchenpos.common.exception.InvalidParameterException;
+import kitchenpos.common.exception.NotFoundException;
 import kitchenpos.domain.menu.MenuRepository;
 import kitchenpos.domain.menu.MenuGroupRepository;
 import kitchenpos.domain.menu.MenuProductRepository;
@@ -100,15 +101,15 @@ class MenuServiceTest {
         ThrowableAssert.ThrowingCallable actual = () -> menuService.create(menuRequest);
 
         // then
-        메뉴생성_실패(actual);
+        메뉴생성_메뉴그룹_없음_실패(actual);
+    }
+
+    private void 메뉴생성_메뉴그룹_없음_실패(ThrowingCallable actual) {
+        assertThatThrownBy(actual).isInstanceOf(NotFoundException.class);
     }
 
     private void 메뉴등록_됨(MenuResponse menuResponse) {
         assertThat(menuResponse).isNotNull();
-    }
-
-    private void 메뉴생성_실패(ThrowingCallable actual) {
-        assertThatThrownBy(actual).isInstanceOf(InvalidParameterException.class);
     }
 
     private void 메뉴목록_조회됨(List<MenuResponse> 메뉴목록) {

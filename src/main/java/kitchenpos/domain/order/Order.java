@@ -1,6 +1,5 @@
 package kitchenpos.domain.order;
 
-import java.security.InvalidParameterException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -15,6 +14,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import kitchenpos.common.exception.CommonErrorCode;
+import kitchenpos.common.exception.InvalidParameterException;
 
 @Entity
 @Table(name = "orders")
@@ -64,7 +65,8 @@ public class Order {
 
     public void changeOrderStatus(OrderStatus orderStatus) {
         if (isComplete()) {
-            throw new InvalidParameterException("결제완료 상태에서는 주문 상태를 변경 할 수 없습니다.");
+            throw new InvalidParameterException(
+                CommonErrorCode.ORDER_STATUS_COMPLETE_NOT_CHANGE_STATUS_EXCEPTION);
         }
 
         this.orderStatus = orderStatus;
@@ -96,7 +98,7 @@ public class Order {
 
     private void validOrderTableNotEmpty(OrderTable orderTable) {
         if (orderTable.isEmpty()) {
-            throw new InvalidParameterException("주문할 테이블은 빈테이블일 수 없습니다.");
+            throw new InvalidParameterException(CommonErrorCode.ORDER_IN_TABLE_EMPTY_EXCEPTION);
         }
     }
 

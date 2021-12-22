@@ -1,15 +1,16 @@
 package kitchenpos.domain.order;
 
-import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
+import kitchenpos.common.exception.CommonErrorCode;
+import kitchenpos.common.exception.InvalidParameterException;
 
 @Embeddable
 public class OrderTables {
 
-    private static final int ORDER_TABLES_MIN_SIZE = 2;
+    public static final int ORDER_TABLES_MIN_SIZE = 2;
 
     @OneToMany(mappedBy = "tableGroup")
     private List<OrderTable> orderTables = new ArrayList<>();
@@ -45,8 +46,7 @@ public class OrderTables {
 
     private void validOrderTablesSize(int size) {
         if (size < ORDER_TABLES_MIN_SIZE) {
-            throw new InvalidParameterException(
-                String.format("단체 지정에 속하는 주문테이블은 %s개 이상이어야 합니다.", ORDER_TABLES_MIN_SIZE));
+            throw new InvalidParameterException(CommonErrorCode.ORDER_TABLES_MIN_UNDER_EXCEPTION);
         }
     }
 }

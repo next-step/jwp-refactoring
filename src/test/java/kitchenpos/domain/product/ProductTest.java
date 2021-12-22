@@ -3,7 +3,7 @@ package kitchenpos.domain.product;
 import static kitchenpos.application.fixture.ProductFixture.마이너스_가격_상품;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import java.security.InvalidParameterException;
+import kitchenpos.common.exception.InvalidParameterException;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

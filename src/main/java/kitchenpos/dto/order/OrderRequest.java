@@ -1,8 +1,9 @@
 package kitchenpos.dto.order;
 
-import java.security.InvalidParameterException;
 import java.util.List;
 import java.util.stream.Collectors;
+import kitchenpos.common.exception.CommonErrorCode;
+import kitchenpos.common.exception.InvalidParameterException;
 
 public class OrderRequest {
 
@@ -36,7 +37,8 @@ public class OrderRequest {
         OrderLineItemRequest orderLineItemRequest = orderLineItems.stream()
             .filter(orderLineItemRequestTarget -> orderLineItemRequestTarget.isSameMenuId(menuId))
             .findFirst()
-            .orElseThrow(() -> new InvalidParameterException("메뉴를 찾을 수 없습니다."));
+            .orElseThrow(
+                () -> new InvalidParameterException(CommonErrorCode.MENU_NOT_FOUND_EXCEPTION));
 
         return orderLineItemRequest.getQuantity();
     }

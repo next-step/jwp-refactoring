@@ -1,6 +1,5 @@
 package kitchenpos.domain.order;
 
-import java.security.InvalidParameterException;
 import java.util.Objects;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -11,6 +10,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import kitchenpos.common.exception.CommonErrorCode;
+import kitchenpos.common.exception.InvalidParameterException;
 
 @Entity
 public class OrderTable {
@@ -54,7 +55,8 @@ public class OrderTable {
         validTableGroupNotInclude();
 
         if (!orders.isOrdersAllCompleted()) {
-            throw new InvalidParameterException("계산 완료 상태가 아니면 빈테이블 상태를 변경 할 수 없습니다.");
+            throw new InvalidParameterException(
+                CommonErrorCode.ORDER_TABLE_CHANGE_EMPTY_NOT_COMPLETE_EXCEPTION);
         }
 
         this.empty.changeEmpty(empty);
@@ -69,7 +71,8 @@ public class OrderTable {
 
     public void ungroup(Orders orders) {
         if (!orders.isOrdersAllCompleted()) {
-            throw new InvalidParameterException("계산 완료 상태가 아니면 단체지정을 해지 할 수 없습니다.");
+            throw new InvalidParameterException(
+                CommonErrorCode.ORDER_TABLE_UNGROUP_NOT_COMPLETE_EXCEPTION);
         }
         tableGroup = null;
     }
@@ -95,7 +98,8 @@ public class OrderTable {
 
     private void validTableGroupNotInclude() {
         if (Objects.nonNull(tableGroup)) {
-            throw new InvalidParameterException("단체지정이 되어있는 테이블입니다.");
+            throw new InvalidParameterException(
+                CommonErrorCode.ORDER_TABLE_EXISTS_TABLE_GROUP_EXCEPTION);
         }
     }
 

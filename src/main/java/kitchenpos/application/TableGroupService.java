@@ -1,6 +1,8 @@
 package kitchenpos.application;
 
-import java.security.InvalidParameterException;
+import kitchenpos.common.exception.CommonErrorCode;
+import kitchenpos.common.exception.InvalidParameterException;
+import kitchenpos.common.exception.NotFoundException;
 import kitchenpos.domain.order.OrderRepository;
 import kitchenpos.domain.order.OrderTableRepository;
 import kitchenpos.domain.order.TableGroupRepository;
@@ -34,7 +36,7 @@ public class TableGroupService {
             tableGroup.getOrderTableIds());
 
         if (tableGroup.getOrderTableSize() != orderTables.size()) {
-            throw new InvalidParameterException("단체 지정에 속하는 주문테이블은 모두 등록되어있어야합니다.");
+            throw new InvalidParameterException(CommonErrorCode.TABLE_NOT_CREATED_EXCEPTION);
         }
 
         return TableGroupResponse.of(
@@ -44,7 +46,8 @@ public class TableGroupService {
     @Transactional
     public void ungroup(final Long tableGroupId) {
         TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
-            .orElseThrow(InvalidParameterException::new);
+            .orElseThrow(
+                () -> new NotFoundException(CommonErrorCode.TABLE_GROUP_NOT_FOUND_EXCEPTION));
 
         Orders orders = Orders.of(
             orderRepository.findAllByOrderTableIn(tableGroup.getOrderTables()));

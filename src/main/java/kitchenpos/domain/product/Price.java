@@ -1,10 +1,11 @@
 package kitchenpos.domain.product;
 
 import java.math.BigDecimal;
-import java.security.InvalidParameterException;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import kitchenpos.common.exception.CommonErrorCode;
+import kitchenpos.common.exception.InvalidParameterException;
 
 @Embeddable
 public class Price {
@@ -36,7 +37,7 @@ public class Price {
 
     private void validMin(BigDecimal price) {
         if (Objects.isNull(price) || price.compareTo(MIN) < 0) {
-            throw new InvalidParameterException();
+            throw new InvalidParameterException(CommonErrorCode.NOT_EMPTY);
         }
     }
 }

@@ -7,10 +7,10 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
-import java.security.InvalidParameterException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
+import kitchenpos.common.exception.InvalidParameterException;
 import kitchenpos.domain.order.OrderRepository;
 import kitchenpos.domain.order.OrderTableRepository;
 import kitchenpos.domain.order.TableGroupRepository;
