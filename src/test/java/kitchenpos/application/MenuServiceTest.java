@@ -15,10 +15,13 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import kitchenpos.IntegrationServiceTest;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Product;
+import kitchenpos.dto.MenuGroupRequest;
+import kitchenpos.dto.MenuGroupResponse;
+import kitchenpos.dto.MenuProductRequest;
+import kitchenpos.dto.MenuRequest;
+import kitchenpos.dto.MenuResponse;
+import kitchenpos.dto.ProductRequest;
+import kitchenpos.dto.ProductResponse;
 
 class MenuServiceTest extends IntegrationServiceTest {
     @Autowired
@@ -28,8 +31,8 @@ class MenuServiceTest extends IntegrationServiceTest {
     @Autowired
     private ProductService productService;
 
-    private static Product savedProduct;
-    private static MenuGroup savedMenuGroup;
+    private static ProductResponse savedProduct;
+    private static MenuGroupResponse savedMenuGroup;
 
     @Override
     @BeforeEach
@@ -37,21 +40,22 @@ class MenuServiceTest extends IntegrationServiceTest {
         super.setUp();
 
         // given
-        final Product product = ProductServiceTest.makeProduct("후라이드", new BigDecimal(16000));
+        final ProductRequest product = ProductServiceTest.makeProductRequest("후라이드", new BigDecimal(16000));
         savedProduct = productService.create(product);
 
         // given
-        final MenuGroup menuGroup = MenuGroupServiceTest.makeMenuGroup("한마리메뉴");
+        final MenuGroupRequest menuGroup = MenuGroupServiceTest.makeMenuGroupRequest("한마리메뉴");
         savedMenuGroup = menuGroupService.create(menuGroup);
     }
 
     @Test
     void create() {
         // given
-        final Menu menu = makeMenu("후라이드치킨", new BigDecimal(16000), savedMenuGroup.getId(), savedProduct.getId(), 1);
+        final MenuRequest menu = makeMenuRequest("후라이드치킨", new BigDecimal(16000), savedMenuGroup.getId(),
+            savedProduct.getId(), 1);
 
         // when
-        final Menu savedMenu = menuService.create(menu);
+        final MenuResponse savedMenu = menuService.create(menu);
 
         // then
         assertThat(savedMenu.getId()).isNotNull();
@@ -59,7 +63,6 @@ class MenuServiceTest extends IntegrationServiceTest {
         assertThat(savedMenu.getMenuGroupId()).isEqualTo(savedMenuGroup.getId());
         assertThat(savedMenu.getMenuProducts()).isNotEmpty();
         assertThat(savedMenu.getMenuProducts().get(0).getSeq()).isNotNull();
-        assertThat(savedMenu.getMenuProducts().get(0).getMenuId()).isEqualTo(savedMenu.getId());
         assertThat(savedMenu.getMenuProducts().get(0).getProductId()).isEqualTo(savedProduct.getId());
         assertThat(savedMenu.getMenuProducts().get(0).getQuantity()).isEqualTo(1);
     }
@@ -69,7 +72,7 @@ class MenuServiceTest extends IntegrationServiceTest {
     @MethodSource("provideInvalidPrice")
     void createByInvalidPrice(final BigDecimal price) {
         // given
-        final Menu menu = makeMenu("후라이드치킨", price, savedMenuGroup.getId(), savedProduct.getId(), 1);
+        final MenuRequest menu = makeMenuRequest("후라이드치킨", price, savedMenuGroup.getId(), savedProduct.getId(), 1);
 
         // when, then
         assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menu));
@@ -82,11 +85,12 @@ class MenuServiceTest extends IntegrationServiceTest {
     @Test
     void list() {
         // given
-        final Menu menu = makeMenu("후라이드치킨", new BigDecimal(16000), savedMenuGroup.getId(), savedProduct.getId(), 1);
-        final Menu savedMenu = menuService.create(menu);
+        final MenuRequest menu = makeMenuRequest("후라이드치킨", new BigDecimal(16000), savedMenuGroup.getId(),
+            savedProduct.getId(), 1);
+        final MenuResponse savedMenu = menuService.create(menu);
 
         // when
-        final List<Menu> menus = menuService.list();
+        final List<MenuResponse> menus = menuService.list();
 
         // then
         assertThat(menus.get(0).getId()).isNotNull();
@@ -94,23 +98,14 @@ class MenuServiceTest extends IntegrationServiceTest {
         assertThat(menus.get(0).getMenuGroupId()).isEqualTo(savedMenuGroup.getId());
         assertThat(menus.get(0).getMenuProducts()).isNotEmpty();
         assertThat(menus.get(0).getMenuProducts().get(0).getSeq()).isNotNull();
-        assertThat(menus.get(0).getMenuProducts().get(0).getMenuId()).isEqualTo(savedMenu.getId());
         assertThat(menus.get(0).getMenuProducts().get(0).getProductId()).isEqualTo(savedProduct.getId());
         assertThat(menus.get(0).getMenuProducts().get(0).getQuantity()).isEqualTo(1);
     }
 
-    public static Menu makeMenu(
+    public static MenuRequest makeMenuRequest(
         final String name, final BigDecimal price, final Long menuGroupId, final Long productId, final int quantity
     ) {
-        final Menu menu = new Menu();
-        menu.setName(name);
-        menu.setPrice(price);
-        menu.setMenuGroupId(menuGroupId);
-
-        final MenuProduct menuProduct = new MenuProduct();
-        menuProduct.setProductId(productId);
-        menuProduct.setQuantity(quantity);
-        menu.setMenuProducts(Collections.singletonList(menuProduct));
-        return menu;
+        final MenuProductRequest menuProductRequest = new MenuProductRequest(productId, quantity);
+        return new MenuRequest(name, price, menuGroupId, Collections.singletonList(menuProductRequest));
     }
 }

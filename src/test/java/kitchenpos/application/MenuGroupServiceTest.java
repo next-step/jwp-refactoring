@@ -8,7 +8,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import kitchenpos.IntegrationServiceTest;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.dto.MenuGroupRequest;
+import kitchenpos.dto.MenuGroupResponse;
 
 class MenuGroupServiceTest extends IntegrationServiceTest {
     @Autowired
@@ -17,10 +18,10 @@ class MenuGroupServiceTest extends IntegrationServiceTest {
     @Test
     void create() {
         // given
-        final MenuGroup menuGroup = makeMenuGroup("두마리메뉴");
+        final MenuGroupRequest menuGroup = makeMenuGroupRequest("두마리메뉴");
 
         // when
-        final MenuGroup savedMenuGroup = menuGroupService.create(menuGroup);
+        final MenuGroupResponse savedMenuGroup = menuGroupService.create(menuGroup);
 
         // then
         assertThat(savedMenuGroup.getId()).isNotNull();
@@ -30,20 +31,18 @@ class MenuGroupServiceTest extends IntegrationServiceTest {
     @Test
     void list() {
         // given
-        final MenuGroup menuGroup = makeMenuGroup("두마리메뉴");
+        final MenuGroupRequest menuGroup = makeMenuGroupRequest("두마리메뉴");
         menuGroupService.create(menuGroup);
 
         // when
-        final List<MenuGroup> menuGroups = menuGroupService.list();
+        final List<MenuGroupResponse> menuGroups = menuGroupService.list();
 
         // then
         assertThat(menuGroups).isNotEmpty();
         assertThat(menuGroups.get(0).getName()).isEqualTo("두마리메뉴");
     }
 
-    public static MenuGroup makeMenuGroup(final String name) {
-        final MenuGroup menuGroup = new MenuGroup();
-        menuGroup.setName(name);
-        return menuGroup;
+    public static MenuGroupRequest makeMenuGroupRequest(final String name) {
+        return new MenuGroupRequest(name);
     }
 }
