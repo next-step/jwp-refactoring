@@ -2,8 +2,9 @@ package kitchenpos.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.TableState;
 import kitchenpos.domain.dto.OrderTableRequest;
+import kitchenpos.domain.dto.OrderTableResponse;
+import kitchenpos.domain.dto.TableGroupRequest;
 import kitchenpos.util.RestAssuredApi;
 import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import java.util.Arrays;
 import java.util.List;
 
+import static kitchenpos.acceptance.TableGroupAcceptanceTest.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("주문 테이블 인수 테스트")
@@ -42,10 +44,20 @@ class OrderTableAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("주문 테이블 예외 시나리오")
     void exceptionScenario() {
-        
+        ExtractableResponse<Response> response1 = 주문_테이블_등록_요청(OrderTableRequest.of(2));
+        ExtractableResponse<Response> response2 = 주문_테이블_등록_요청(OrderTableRequest.of(4));
+
+        String createdLocationUri1 = 주문_테이블_등록됨(response1);
+        String createdLocationUri2 = 주문_테이블_등록됨(response2);
+
+        주문_테이블_비움(createdLocationUri1);
+        주문_테이블_비움(createdLocationUri2);
+        테이블_변경_실패됨(테이블_손님수_변경(createdLocationUri2, OrderTableRequest.of(3)));
+
+        // TODO 주문 상태 확인
     }
 
-    private ExtractableResponse<Response> 주문_테이블_등록_요청(OrderTableRequest request) {
+    public static ExtractableResponse<Response> 주문_테이블_등록_요청(OrderTableRequest request) {
         return RestAssuredApi.post("/api/tables", request);
     }
 
@@ -80,7 +92,14 @@ class OrderTableAcceptanceTest extends AcceptanceTest {
                 .isEqualTo(excepted);
     }
 
-    public static void 주문_테이블_등록_실패됨(ExtractableResponse<Response> response) {
+    public static void 테이블_변경_실패됨(ExtractableResponse<Response> response) {
         AssertionsForClassTypes.assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+    }
+
+    private void 테이블_그룹_등록됨(ExtractableResponse<Response> response1, ExtractableResponse<Response> response2) {
+        OrderTableResponse 테이블1 = response1.as(OrderTableResponse.class);
+        OrderTableResponse 테이블2 = response2.as(OrderTableResponse.class);
+        TableGroupRequest request = new TableGroupRequest(Arrays.asList(테이블1.getId(), 테이블2.getId()));
+        테이블_그룹_등록_요청(request);
     }
 }

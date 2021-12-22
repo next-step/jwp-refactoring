@@ -30,6 +30,10 @@ public class OrderTableRequest {
         return new OrderTableRequest(0, true);
     }
 
+    public static OrderTableRequest group(int numberOfGuests) {
+        return new OrderTableRequest(numberOfGuests, true);
+    }
+
     public OrderTable toEntity() {
         return new OrderTable(id, numberOfGuests, new TableState(empty));
     }

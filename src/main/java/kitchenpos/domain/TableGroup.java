@@ -13,15 +13,26 @@ public class TableGroup {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
     private LocalDateTime createdDate;
-    @OneToMany(mappedBy = "tableGroup")
+    @OneToMany(mappedBy = "tableGroup", cascade = CascadeType.ALL)
     private List<OrderTable> orderTables;
 
     public TableGroup() {
     }
 
+    public TableGroup(Long id, LocalDateTime createdDate, List<OrderTable> orderTables) {
+        this.id = id;
+        this.createdDate = createdDate;
+        this.orderTables = orderTables;
+    }
+
     public TableGroup(LocalDateTime createdDate) {
         this.createdDate = createdDate;
         this.orderTables = new ArrayList<>();
+    }
+
+    public TableGroup(LocalDateTime createdDate, List<OrderTable> orderTables) {
+        this.createdDate = createdDate;
+        this.orderTables = orderTables;
     }
 
     public void setId(final Long id) {
