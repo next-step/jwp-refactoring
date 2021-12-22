@@ -1,7 +1,5 @@
 package kitchenpos.menu.dto;
 
-import kitchenpos.common.domain.Name;
-import kitchenpos.common.domain.Price;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 
@@ -46,7 +44,7 @@ public class MenuRequest {
     }
 
     public Menu toMenu() {
-        return Menu.of(Name.of(name), Price.of(price), menuGroupId, toMenuProducts());
+        return Menu.of(name, price, menuGroupId, toMenuProducts());
     }
 
     private List<MenuProduct> toMenuProducts() {

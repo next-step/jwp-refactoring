@@ -57,8 +57,8 @@ class MenuServiceTest {
         MenuProduct 더블강정_메뉴_상품 = MenuProductFixture.create(강정치킨.getId(), 2L);
         MenuProduct 트리플강정_메뉴_상품 = MenuProductFixture.create(강정치킨.getId(), 3L);
 
-        더블강정 = MenuFixture.create(1L, "더블강정", BigDecimal.valueOf(32_000), 추천메뉴, 더블강정_메뉴_상품);
-        트리플강정 = MenuFixture.create(2L, "트리플강정", BigDecimal.valueOf(45_000), 추천메뉴, 트리플강정_메뉴_상품);
+        더블강정 = MenuFixture.create(1L, "더블강정", BigDecimal.valueOf(32_000), 추천메뉴.getId(), 더블강정_메뉴_상품);
+        트리플강정 = MenuFixture.create(2L, "트리플강정", BigDecimal.valueOf(45_000), 추천메뉴.getId(), 트리플강정_메뉴_상품);
 
         더블강정_메뉴_상품.updateMenu(더블강정);
         트리플강정_메뉴_상품.updateMenu(트리플강정);

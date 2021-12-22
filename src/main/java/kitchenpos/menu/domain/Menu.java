@@ -34,7 +34,7 @@ public class Menu {
     protected Menu() {
     }
 
-    private Menu(Long id, Name name, Price price, Long menuGroupId, List<MenuProduct> menuProducts) {
+    private Menu(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
         Assert.notNull(name, "이름은 비어있을 수 없습니다.");
         Assert.notNull(price, "가격은 비어있을 수 없습니다.");
         Assert.notNull(menuGroupId, "메뉴 그룹 ID는 비어있을 수 없습니다.");
@@ -43,17 +43,17 @@ public class Menu {
         menuProducts.forEach(menuProduct -> menuProduct.updateMenu(this));
 
         this.id = id;
-        this.name = name;
-        this.price = price;
+        this.name = Name.of(name);
+        this.price = Price.of(price);
         this.menuGroupId = menuGroupId;
         this.menuProducts = MenuProducts.of(menuProducts);
     }
 
-    public static Menu of(Long id, Name name, Price price, Long menuGroupId, List<MenuProduct> menuProducts) {
+    public static Menu of(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
         return new Menu(id, name, price, menuGroupId, menuProducts);
     }
 
-    public static Menu of(Name name, Price price, Long menuGroupId, List<MenuProduct> menuProducts) {
+    public static Menu of(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
         return new Menu(null, name, price, menuGroupId, menuProducts);
     }
 

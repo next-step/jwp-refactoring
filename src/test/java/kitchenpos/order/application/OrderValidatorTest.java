@@ -54,7 +54,7 @@ class OrderValidatorTest {
         MenuGroup 추천메뉴 = MenuGroupFixture.create(1L, "추천메뉴");
         MenuProduct 메뉴_상품 = MenuProductFixture.create(강정치킨.getId(), 2L);
 
-        더블강정 = MenuFixture.create(1L, "더블강정", BigDecimal.valueOf(32_000), 추천메뉴, 메뉴_상품);
+        더블강정 = MenuFixture.create(1L, "더블강정", BigDecimal.valueOf(32_000), 추천메뉴.getId(), 메뉴_상품);
         테이블 = OrderTableFixture.create(1L, 4, false);
         빈_테이블 = OrderTableFixture.create(2L, 4, true);
     }
