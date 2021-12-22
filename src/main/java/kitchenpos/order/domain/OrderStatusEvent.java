@@ -5,16 +5,18 @@ import org.springframework.context.ApplicationEvent;
 
 public class OrderStatusEvent extends ApplicationEvent {
     private Long orderTableId;
+    private Long orderId;
     private OrderStatus orderStatus;
 
-    public OrderStatusEvent(Object source, Long orderTableId, OrderStatus orderStatus) {
+    public OrderStatusEvent(Object source, Order order) {
         super(source);
-        this.orderTableId = orderTableId;
-        this.orderStatus = orderStatus;
+        this.orderTableId = order.getOrderTableId();
+        this.orderId = order.getId();
+        this.orderStatus = order.getOrderStatus();
     }
 
-    public static OrderStatusEvent of(Object source, Long orderTableId, OrderStatus orderStatus) {
-        return new OrderStatusEvent(source, orderTableId, orderStatus);
+    public static OrderStatusEvent of(Object source, Order order) {
+        return new OrderStatusEvent(source, order);
     }
 
     public Long getOrderTableId() {
@@ -23,8 +25,12 @@ public class OrderStatusEvent extends ApplicationEvent {
 
     public TableStatus getStatus() {
         if (OrderStatus.COMPLETION.equals(this.orderStatus)) {
-            return TableStatus.EMPTY;
+            return TableStatus.COMPLETION;
         }
         return TableStatus.ORDERED;
+    }
+
+    public Long getOrderId() {
+        return this.orderId;
     }
 }

@@ -43,13 +43,10 @@ public class OrderTable extends BaseEntity {
         return new OrderTable(numberOfGuests, empty);
     }
 
-//    public void addOrder(Order order) {
-//        orders.add(order);
-//    }
-
-//    public void removeOrder(Order order) {
-//        this.orders.remove(order);
-//    }
+    public void updateOrderInfo(Long orderId, TableStatus tableStatus) {
+        changeTableStatus(tableStatus);
+        updateOrderId(orderId);
+    }
 
     public void changeTableStatus(TableStatus tableStatus) {
         this.tableStatus = tableStatus;
@@ -84,6 +81,14 @@ public class OrderTable extends BaseEntity {
 
     public Boolean isEmpty() {
         return TableStatus.EMPTY.equals(this.tableStatus);
+    }
+
+    private void updateOrderId(Long orderId) {
+        if (TableStatus.ORDERED.equals(this.tableStatus)) {
+            this.orderId = orderId;
+            return;
+        }
+        this.orderId = null;
     }
 
     private void validateChangeEmpty() {
@@ -124,5 +129,9 @@ public class OrderTable extends BaseEntity {
 
     public String getTableStatus() {
         return tableStatus.name();
+    }
+
+    public Long getOrderId() {
+        return this.orderId;
     }
 }

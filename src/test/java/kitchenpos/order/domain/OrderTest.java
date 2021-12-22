@@ -1,13 +1,10 @@
 package kitchenpos.order.domain;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
-import kitchenpos.exception.CannotUpdatedException;
-import kitchenpos.exception.InvalidArgumentException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import org.junit.jupiter.api.DisplayName;
@@ -38,20 +35,5 @@ class OrderTest {
     void create() {
         Order order = Order.of(1L, null, Arrays.asList(orderLineItem));
         assertTrue(order.isOnGoing());
-    }
-
-    @Test
-    @DisplayName("주문 상태 변경")
-    void updateOrderStatus() {
-        Order order = Order.of(1L, null, Arrays.asList(orderLineItem));
-        assertTrue(order.isOnGoing());
-
-        order.updateOrderStatus(OrderStatus.COMPLETION);
-
-        assertFalse(order.isOnGoing());
-
-        assertThatThrownBy(() -> order.updateOrderStatus(OrderStatus.MEAL))
-            .isInstanceOf(CannotUpdatedException.class)
-            .hasMessage("계산완료된 주문은 변경할 수 없습니다.");
     }
 }

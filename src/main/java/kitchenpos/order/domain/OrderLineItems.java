@@ -4,12 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
+import javax.persistence.ForeignKey;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 
 @Embeddable
 public final class OrderLineItems {
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "order_id", foreignKey = @ForeignKey(name = "fk_order_line_item_orders"))
     private final List<OrderLineItem> orderLineItems = new ArrayList<>();
 
     protected OrderLineItems() {
@@ -24,11 +27,6 @@ public final class OrderLineItems {
     private boolean contains(OrderLineItem orderLineItem) {
         return orderLineItems.stream()
             .anyMatch(it -> it.equalsOrderLineItem(orderLineItem));
-    }
-
-    public void remove(OrderLineItem orderLineItem) {
-        orderLineItem.removeOrder();
-        this.orderLineItems.remove(orderLineItem);
     }
 
     public List<OrderLineItem> get() {

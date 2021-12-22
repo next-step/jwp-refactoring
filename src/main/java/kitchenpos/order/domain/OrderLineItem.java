@@ -23,10 +23,6 @@ public class OrderLineItem extends BaseEntity {
     private Long seq;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "order_id", foreignKey = @ForeignKey(name = "fk_order_line_item_orders"))
-    private Order order;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "menu_id", foreignKey = @ForeignKey(name = "fk_order_line_item_menu"))
     private Menu menu;
 
@@ -45,28 +41,9 @@ public class OrderLineItem extends BaseEntity {
         return new OrderLineItem(menu, quantity);
     }
 
-    public void relateOrder(Order order) {
-        if (this.order != null) {
-            this.order.removeOrderLineItem(this);
-        }
-        this.order = order;
-        order.addOrderLineItem(this);
-    }
-
-    public boolean equalsOrderLineItem(OrderLineItem other) {
-        return equalsOrder(other.order) && menu.equals(other.menu) && quantity
-            .equals(other.quantity);
-    }
-
-    public boolean equalsOrder(Order order) {
-        if (Objects.isNull(this.order)) {
-            return false;
-        }
-        return this.order.equals(order);
-    }
-
-    public void removeOrder() {
-        this.order = null;
+    public boolean equalsOrderLineItem(OrderLineItem orderLineItem) {
+        return this.menu.equals(orderLineItem.menu) &&
+            this.quantity.equals(orderLineItem.quantity);
     }
 
     private void validateMenu(Menu menu) {
@@ -108,4 +85,5 @@ public class OrderLineItem extends BaseEntity {
     public int hashCode() {
         return Objects.hash(seq);
     }
+
 }

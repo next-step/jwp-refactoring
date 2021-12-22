@@ -9,19 +9,21 @@ public class OrderTableResponse {
     private Long id;
     private Integer numberOfGuests;
     private String tableStatus;
+    private Long orderId;
 
     public OrderTableResponse() {
     }
 
-    private OrderTableResponse(Long id, Integer numberOfGuests, String tableStatus) {
+    private OrderTableResponse(Long id, Integer numberOfGuests, String tableStatus, Long orderId) {
         this.id = id;
         this.numberOfGuests = numberOfGuests;
         this.tableStatus = tableStatus;
+        this.orderId = orderId;
     }
 
     public static OrderTableResponse of(OrderTable orderTable) {
         return new OrderTableResponse(orderTable.getId(), orderTable.getNumberOfGuests(),
-            orderTable.getTableStatus());
+            orderTable.getTableStatus(), orderTable.getOrderId());
     }
 
     public static List<OrderTableResponse> ofList(List<OrderTable> orderTables) {
@@ -42,12 +44,7 @@ public class OrderTableResponse {
         return tableStatus;
     }
 
-    @Override
-    public String toString() {
-        return "OrderTableResponse{" +
-            "id=" + id +
-            ", numberOfGuests=" + numberOfGuests +
-            ", tableStatus='" + tableStatus + '\'' +
-            '}';
+    public Long getOrderId() {
+        return orderId;
     }
 }

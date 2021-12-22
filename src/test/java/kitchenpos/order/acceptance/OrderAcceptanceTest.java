@@ -87,7 +87,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
                 테이블_상태변경_됨(changedTableResponse, "ORDERED");
 
             }),
-            DynamicTest.dynamicTest("주문의 상태를 변경한다.", () -> {
+            DynamicTest.dynamicTest("주문의 상태를 식사로 변경한다.", () -> {
                 // Given 주문 목록 조회
                 ExtractableResponse<Response> listResponse = 주문_목록_조회_요청();
                 List<OrderResponse> orders = listResponse.jsonPath().getList(".", OrderResponse.class);
@@ -99,11 +99,26 @@ public class OrderAcceptanceTest extends AcceptanceTest {
                 // 주문 상태 변경됨
                 주문_상태_변경됨(mealResponse, OrderStatus.MEAL.name());
 
+                // 테이블 목록 조회 요청
+                ExtractableResponse<Response> tableResponse = 테이블_조회_요청(orderTable.getId());
+                // 테이블 상태 주문으로 변경됨
+                테이블_상태변경_됨(tableResponse, "ORDERED");
+            }),
+            DynamicTest.dynamicTest("주문의 상태를 계산완료로 변경한다.", () -> {
+                ExtractableResponse<Response> listResponse = 주문_목록_조회_요청();
+                List<OrderResponse> orders = listResponse.jsonPath().getList(".", OrderResponse.class);
+                OrderResponse order = orders.get(0);
+
                 // 주문 상태 변경 (식사 -> 계산완료)
                 ExtractableResponse<Response> completionResponse = 주문_상태변경_요청(order.getId(), OrderStatus.COMPLETION.name());
 
                 // 주문 상태 변경됨
                 주문_상태_변경됨(completionResponse, OrderStatus.COMPLETION.name());
+
+                // 테이블 목록 조회 요청
+                ExtractableResponse<Response> changedTableResponse = 테이블_조회_요청(orderTable.getId());
+                // 테이블 상태 주문으로 변경됨
+                테이블_상태변경_됨(changedTableResponse, "COMPLETION");
             })
         );
     }

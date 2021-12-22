@@ -66,8 +66,6 @@ class OrderServiceTest {
 
         OrderResponse saved = orderService.create(orderRequest);
 
-        verify(orderValidator).validateCreateOrder(orderRequest.getOrderTableId());
-
         assertAll(
             () -> assertNotNull(saved.getOrderedTime()),
             () -> assertThat(saved.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name())

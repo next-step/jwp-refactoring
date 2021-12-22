@@ -43,12 +43,11 @@ public class OrderService {
             .map(it -> it.toEntity(findMenu(it.getMenuId())))
             .collect(Collectors.toList());
 
-        orderValidator.validateCreateOrder(orderRequest.getOrderTableId());
+        orderValidator.validateCreateOrder(orderRequest.getOrderTableId(), orderLineItems);
 
         final Order persist = orderRepository.save(orderRequest.toEntity(orderLineItems));
 
-        System.out.println(this);
-        publisher.publishEvent(OrderStatusEvent.of(this, persist.getOrderTableId(), persist.getOrderStatus()));
+        publishOrderStatus(persist);
 
         return OrderResponse.of(persist);
     }
@@ -64,7 +63,10 @@ public class OrderService {
 
         final Order savedOrder = findOrder(orderId);
 
+        orderValidator.validateUpdateOrderStatus(savedOrder);
         savedOrder.updateOrderStatus(orderStatus.toStatus());
+
+        publishOrderStatus(savedOrder);
 
         return OrderResponse.of(savedOrder);
     }
@@ -77,5 +79,9 @@ public class OrderService {
     private Order findOrder(Long orderId) {
         return orderRepository.findById(orderId)
             .orElseThrow(() -> new NotFoundException("해당하는 주문이 없습니다."));
+    }
+
+    private void publishOrderStatus(Order order) {
+        publisher.publishEvent(OrderStatusEvent.of(this, order));
     }
 }

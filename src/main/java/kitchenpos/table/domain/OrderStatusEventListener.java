@@ -22,7 +22,7 @@ public class OrderStatusEventListener {
     @Transactional
     public void listen(OrderStatusEvent event) {
         OrderTable orderTable = findOrderTable(event.getOrderTableId());
-        orderTable.changeTableStatus(event.getStatus());
+        orderTable.updateOrderInfo(event.getOrderId(), event.getStatus());
     }
 
     private OrderTable findOrderTable(Long orderTableId) {

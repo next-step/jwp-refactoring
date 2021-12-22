@@ -1,7 +1,7 @@
 package kitchenpos.table.domain;
 
 public enum TableStatus {
-    EMPTY,SEATED,ORDERED;
+    EMPTY,SEATED,ORDERED,COMPLETION;
 
     public static TableStatus valueOfEmpty(Boolean empty) {
         if (Boolean.TRUE.equals(empty)) {
