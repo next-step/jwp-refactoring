@@ -37,6 +37,6 @@ public class TableRestController {
 
     @PutMapping("/api/tables/{orderTableId}/number-of-guests")
     public ResponseEntity<OrderTableDto> changeNumberOfGuests(@PathVariable final Long orderTableId, @RequestBody final OrderTableDto orderTable) {
-        return ResponseEntity.ok().body(OrderTableDto.of(tableService.changeNumberOfGuests(orderTableId, orderTable)));
+        return ResponseEntity.ok().body(tableService.changeNumberOfGuests(orderTableId, orderTable));
     }
 }

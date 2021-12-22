@@ -8,11 +8,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-import kitchenpos.domain.order.Orders;
-import kitchenpos.exception.order.HasNotCompletionOrderException;
-import kitchenpos.exception.table.EmptyOrderTableException;
-import kitchenpos.exception.table.HasOtherTableGroupException;
-import kitchenpos.exception.table.NegativeOfNumberOfGuestsException;
 import kitchenpos.vo.TableGroupId;
 
 @Entity
@@ -67,20 +62,11 @@ public class OrderTable {
         this.tableGroupId = null;
     }
 
-    private void checkOrderStatusOfOrderTable(final Orders order) {
-        if (order != null && !order.isCompletion()) {
-            throw new HasNotCompletionOrderException();
-        }
-    }
-
     public void groupingTable(TableGroupId tableGroupId) {
         this.tableGroupId = tableGroupId;
     }
 
     public void changeNumberOfGuests(int numberOfGuests) {
-        checkEmptyTable();
-        checkPositiveOfNumberOfGuests(numberOfGuests);
-
         this.numberOfGuests = numberOfGuests;
     }
 
@@ -88,35 +74,13 @@ public class OrderTable {
         return this.empty;
     }
 
-    public void changeEmpty(boolean empty, Orders order) {
-        checkHasTableGroup();
-        checkOrderStatusOfOrderTable(order);
-
+    public void changeEmpty(boolean empty) {
         this.empty = empty;
-    }
-
-    private void checkHasTableGroup() {
-        if (this.tableGroupId != null) {
-            throw new HasOtherTableGroupException();
-        }
     }
 
     public boolean hasTableGroup() {
         return tableGroupId != null;
     }
-
-    private void checkEmptyTable() {
-        if (this.empty) {
-            throw new EmptyOrderTableException();
-        }
-    }
-
-    private void checkPositiveOfNumberOfGuests(int numberOfGuests) {
-        if (numberOfGuests < 0) {
-            throw new NegativeOfNumberOfGuestsException();
-        }
-    }
-
 
     @Override
     public boolean equals(Object o) {
@@ -133,5 +97,4 @@ public class OrderTable {
     public int hashCode() {
         return Objects.hash(id, tableGroupId, numberOfGuests, empty);
     }
-
 }

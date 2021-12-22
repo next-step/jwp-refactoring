@@ -16,15 +16,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.application.table.TableService;
-import kitchenpos.domain.order.OrderStatus;
-import kitchenpos.domain.order.Orders;
 import kitchenpos.domain.table.OrderTable;
 import kitchenpos.domain.table.OrderTables;
 import kitchenpos.domain.tablegroup.TableGroup;
 import kitchenpos.domain.tablegroup.TableGroupRepository;
 import kitchenpos.dto.table.OrderTableDto;
 import kitchenpos.dto.tablegroup.TableGroupDto;
-import kitchenpos.vo.OrderTableId;
 
 @ExtendWith(MockitoExtension.class)
 public class TableGroupServiceTest {
@@ -68,11 +65,8 @@ public class TableGroupServiceTest {
         OrderTable 치킨_주문_단체테이블 = OrderTable.of(10, false);
         OrderTable 치킨2_주문_단체테이블 = OrderTable.of(10, false);
 
-        Orders 주문  = Orders.of(OrderTableId.of(치킨_주문_단체테이블), OrderStatus.COMPLETION);
-        Orders 주문2  = Orders.of(OrderTableId.of(치킨2_주문_단체테이블), OrderStatus.COMPLETION);
-
-        치킨_주문_단체테이블.changeEmpty(true, 주문);
-        치킨2_주문_단체테이블.changeEmpty(true, 주문2);
+        치킨_주문_단체테이블.changeEmpty(true);
+        치킨2_주문_단체테이블.changeEmpty(true);
 
         TableGroup 단체주문테이블 = TableGroup.of(OrderTables.of(Lists.newArrayList(치킨_주문_단체테이블, 치킨2_주문_단체테이블)));
 

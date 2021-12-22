@@ -26,7 +26,7 @@ public class MenuValidator {
     private final ProductService productService;
     private final MenuGroupService menuGroupService;
 
-    public MenuValidator(
+    public MenuValidator (
         final ProductService productService,
         final MenuGroupService menuGroupService
     ) {
@@ -70,17 +70,23 @@ public class MenuValidator {
         List<Long> productIds = menu.getProductIds().stream().map(ProductId::value).collect(Collectors.toList());
         Products products = Products.of(productService.findAllByIds(productIds));
 
+        Price sumOfProductsPrice = getSumOfProductsPrice(menu.getMenuProducts(), products);
+
+        if (menu.getPrice().compareTo(sumOfProductsPrice) > 0) {
+            throw new NotCorrectMenuPriceException();
+        }
+    }
+
+    private Price getSumOfProductsPrice(MenuProducts menuProducts, Products products) {
         Price sumOfProductsPrice = Price.of(0);
 
-        for (int index = 0; index < menu.getMenuProducts().size(); index++) {
-            MenuProduct menuProduct = menu.getMenuProducts().get(index);
+        for (int index = 0; index < menuProducts.size(); index++) {
+            MenuProduct menuProduct = menuProducts.get(index);
             Product product = products.findById(menuProduct.getProductId().value());
 
             sumOfProductsPrice = sumOfProductsPrice.add(product.getPrice().multiply(menuProduct.getQuantity()));
         }
 
-        if (menu.getPrice().compareTo(sumOfProductsPrice) > 0) {
-            throw new NotCorrectMenuPriceException();
-        }
+        return sumOfProductsPrice;
     }
 }
