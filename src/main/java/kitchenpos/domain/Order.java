@@ -26,16 +26,12 @@ public class Order {
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
         this.orderedTime = localDateTime;
+        this.orderLineItems = new OrderLineItems();
+        validateOrderTable();
     }
 
-    public Order(Long id, OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime, OrderLineItems orderLineItems) {
-        this.id = id;
-        this.orderTable = orderTable;
-        this.orderStatus = orderStatus;
-        this.orderedTime = orderedTime;
-        this.orderLineItems = orderLineItems;
-        validateOrderLineItemsExists();
-        validateOrderTable();
+    public Order() {
+
     }
 
     public static Order of(OrderTable orderTable, OrderStatus orderStatus) {
@@ -43,14 +39,8 @@ public class Order {
     }
 
     private void validateOrderTable() {
-        if (orderTable.isEmpty()) {
+        if (orderTable == null) {
             throw new NoOrderTableException();
-        }
-    }
-
-    private void validateOrderLineItemsExists() {
-        if (this.orderLineItems.empty()) {
-            throw new NoOrderLineItemException();
         }
     }
 
@@ -66,15 +56,11 @@ public class Order {
         return orderTable;
     }
 
-    public void setOrderTable(final OrderTable orderTable) {
-        this.orderTable = orderTable;
-    }
-
     public OrderStatus getOrderStatus() {
         return orderStatus;
     }
 
-    public void setOrderStatus(final OrderStatus orderStatus) {
+    public void makeOrderStatus(final OrderStatus orderStatus) {
         if (Objects.equals(OrderStatus.COMPLETION, this.getOrderStatus())) {
             throw new CannotProgressException();
         }
@@ -85,16 +71,8 @@ public class Order {
         return orderedTime;
     }
 
-    public void setOrderedTime(final LocalDateTime orderedTime) {
-        this.orderedTime = orderedTime;
-    }
-
     public OrderLineItems getOrderLineItems() {
         return orderLineItems;
-    }
-
-    public void setOrderLineItems(final OrderLineItems orderLineItems) {
-        this.orderLineItems = orderLineItems;
     }
 
     public void addOrderLineItem(OrderLineItem orderLineItem) {

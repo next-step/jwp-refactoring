@@ -22,7 +22,7 @@ public class OrderResponse {
     }
 
     public static OrderResponse from(Order order) {
-        return new OrderResponse(order.getId(), order.getOrderTable().getId(), order.getOrderStatus(), order.getOrderedTime(), OrderLineItemResponse.fromList(order.getOrderLineItems());
+        return new OrderResponse(order.getId(), order.getOrderTable().getId(), order.getOrderStatus(), order.getOrderedTime(), OrderLineItemResponse.fromList(order.getOrderLineItems()));
     }
 
     public Long getId() {

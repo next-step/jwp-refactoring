@@ -5,6 +5,7 @@ import kitchenpos.domain.OrderLineItems;
 import kitchenpos.domain.OrderStatus;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class OrderLineItemResponse {
     private Long seq;
@@ -18,22 +19,10 @@ public class OrderLineItemResponse {
     }
 
     public static List<OrderLineItemResponse> fromList(OrderLineItems orderLineItems) {
-        orderLineItems.getOrderLineItems().stream().map(OrderLineItemResponse::from);
+        return orderLineItems.getOrderLineItems().stream().map(OrderLineItemResponse::from).collect(Collectors.toList());
     }
 
     private static OrderLineItemResponse from(OrderLineItem orderLineItem) {
         return new OrderLineItemResponse(orderLineItem.getSeq(), orderLineItem.getMenu().getId(), orderLineItem.getQuantity());
-    }
-
-    public Long getOrderTableId() {
-        return orderTableId;
-    }
-
-    public OrderStatus getOrderStatus() {
-        return orderStatus;
-    }
-
-    public List<OrderLineItemRequest> getOrderLineItems() {
-        return orderLineItems;
     }
 }

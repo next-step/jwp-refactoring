@@ -1,19 +1,17 @@
 package kitchenpos.application;
 
 import kitchenpos.dao.OrderRepository;
-import kitchenpos.dao.OrderLineItemRepository;
-import kitchenpos.dao.OrderTableRepository;
 import kitchenpos.domain.*;
 import kitchenpos.dto.OrderLineItemRequest;
 import kitchenpos.dto.OrderRequest;
 import kitchenpos.dto.OrderResponse;
 import kitchenpos.exception.NoOrderException;
-import kitchenpos.exception.NoOrderTableException;
+import kitchenpos.exception.NoOrderLineItemException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,7 +32,7 @@ public class OrderService {
     public OrderResponse create(final OrderRequest orderRequest) {
         OrderTable orderTable = tableService.findById(orderRequest.getOrderTableId());
         Order order = Order.of(orderTable, orderRequest.getOrderStatus());
-
+        validateOrderLineItemsExists(orderRequest.getOrderLineItemRequests());
         for (OrderLineItemRequest orderLineItemRequest : orderRequest.getOrderLineItemRequests()) {
             Menu menu = menuService.findById(orderLineItemRequest.getMenuId());
             OrderLineItem orderLineItem = new OrderLineItem(menu, orderLineItemRequest.getQuantity());
@@ -52,9 +50,19 @@ public class OrderService {
 
     @Transactional
     public OrderResponse changeOrderStatus(final Long orderId, final OrderRequest orderRequest) {
-        final Order order = orderRepository.findById(orderId)
-                .orElseThrow(NoOrderException::new);
-        order.setOrderStatus(orderRequest.getOrderStatus());
+        final Order order = findById(orderId);
+        order.makeOrderStatus(orderRequest.getOrderStatus());
         return OrderResponse.from(orderRepository.save(order));
+    }
+
+    private Order findById(Long orderId) {
+        return orderRepository.findById(orderId)
+                .orElseThrow(NoOrderException::new);
+    }
+
+    private void validateOrderLineItemsExists(List<OrderLineItemRequest> orderLineItemRequests) {
+        if (CollectionUtils.isEmpty(orderLineItemRequests)) {
+            throw new NoOrderLineItemException();
+        }
     }
 }

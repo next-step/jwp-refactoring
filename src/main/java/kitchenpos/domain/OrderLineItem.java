@@ -25,6 +25,10 @@ public class OrderLineItem {
         this.quantity = quantity;
     }
 
+    public OrderLineItem() {
+
+    }
+
     public Long getSeq() {
         return seq;
     }
