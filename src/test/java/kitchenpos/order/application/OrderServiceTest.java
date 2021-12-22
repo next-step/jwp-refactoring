@@ -1,9 +1,6 @@
 package kitchenpos.order.application;
 
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuProducts;
-import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.domain.*;
 import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderLineItemResponse;
@@ -51,8 +48,14 @@ public class OrderServiceTest {
             // given
             OrderTable orderTable = new OrderTable(1L, null, 4, false);
 
-            Menu 커플세트 = Menu.create(1L, "커플세트", 16000, new MenuGroup(), new MenuProducts(Collections.emptyList()));
-            Menu 혼밥세트 = Menu.create(2L, "혼밥세트", 16000, new MenuGroup(), new MenuProducts(Collections.emptyList()));
+            Product 볶음짜장면 = new Product(1L, "볶음짜장면", 8000);
+            Product 삼선짬뽕 = new Product(2L, "삼선짬뽕", 8000);
+            List<MenuProduct> menuProducts = new ArrayList<>();
+            menuProducts.add(new MenuProduct(볶음짜장면, 1));
+            menuProducts.add(new MenuProduct(삼선짬뽕, 1));
+            Menu 커플세트 = Menu.create(1L, "커플세트", 16000, new MenuGroup(), new MenuProducts(menuProducts));
+            Menu 혼밥세트 = Menu.create(2L, "혼밥세트", 16000, new MenuGroup(), new MenuProducts(menuProducts));
+
             OrderLineItemRequest orderLineItemRequest1 = new OrderLineItemRequest(커플세트.getId(), 1);
             OrderLineItemRequest orderLineItemRequest2 = new OrderLineItemRequest(혼밥세트.getId(), 1);
             List<OrderLineItemRequest> orderLineItemRequests = Arrays.asList(orderLineItemRequest1, orderLineItemRequest2);
@@ -60,8 +63,8 @@ public class OrderServiceTest {
 
             List<OrderLineItem> orderLineItems = new ArrayList<>();
             Order expectedOrder = new Order(1L, orderTable, OrderStatus.COOKING, orderLineItems);
-            orderLineItems.add(new OrderLineItem(expectedOrder, 커플세트, orderLineItemRequest1.getQuantity()));
-            orderLineItems.add(new OrderLineItem(expectedOrder, 혼밥세트, orderLineItemRequest2.getQuantity()));
+            orderLineItems.add(new OrderLineItem(expectedOrder, 커플세트.getId(), orderLineItemRequest1.getQuantity()));
+            orderLineItems.add(new OrderLineItem(expectedOrder, 혼밥세트.getId(), orderLineItemRequest2.getQuantity()));
 
             given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(orderTable));
             given(menuRepository.findById(anyLong())).willReturn(Optional.of(커플세트), Optional.of(혼밥세트));
