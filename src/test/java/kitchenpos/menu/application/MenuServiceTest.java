@@ -4,9 +4,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
 import java.util.Collections;
-import java.util.Optional;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,20 +12,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.common.domain.Price;
 import kitchenpos.common.exception.ErrorCode;
 import kitchenpos.common.exception.PriceException;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.exception.MenuException;
-import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.menugroup.domain.MenuGroupRepository;
-import kitchenpos.product.domain.Product;
-import kitchenpos.product.domain.ProductRepository;
-import kitchenpos.product.exception.ProductException;
 
 @DisplayName("메뉴 : 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
@@ -37,42 +28,30 @@ public class MenuServiceTest {
 	MenuRepository menuRepository;
 
 	@Mock
-	MenuGroupRepository menuGroupRepository;
+	MenuValidator menuValidator;
 
 	@Mock
-	ProductRepository productRepository;
+	Menu menu;
 
 	@InjectMocks
 	private MenuService menuService;
 
-	private MenuProduct menuProduct;
-
-	private MenuGroup menuGroup;
-
-	private Product product;
-
-	private Menu menu;
-
 	private MenuRequest menuRequest;
-
-	@BeforeEach
-	void setup() {
-		menuGroup = MenuGroup.from("두마리");
-		product = Product.of("불닭", 16000);
-	}
 
 	@DisplayName("메뉴 생성 테스트")
 	@Test
 	void createMenu() {
 		// given
-		menuRequest = MenuRequest.of("불닭메", 21000, 1L,
+		menuRequest = MenuRequest.of("불닭메뉴", 21000, 1L,
 			Collections.singletonList(MenuProductRequest.of(1L, 2L)));
 
-		given(menuGroupRepository.findById(anyLong())).willReturn(Optional.of(menuGroup));
-		given(productRepository.findById(anyLong())).willReturn(Optional.of(product));
-
 		// when
-		Menu menu = menuService.create(menuRequest);
+		doNothing()
+			.when(menuValidator)
+			.validate(menuRequest);
+		doReturn(menu)
+			.when(menuRepository)
+			.save(any(Menu.class));
 
 		// then
 		assertThat(menuService.create(menuRequest)).isEqualTo(menu);
@@ -85,12 +64,15 @@ public class MenuServiceTest {
 		menuRequest = MenuRequest.of("불닭메", (Integer)null, 1L,
 			Collections.singletonList(MenuProductRequest.of(1L, 2L)));
 
-		given(menuGroupRepository.findById(anyLong())).willReturn(Optional.of(menuGroup));
+		// when
+		doThrow(new MenuException(ErrorCode.PRICE_IS_NOT_NULL))
+			.when(menuValidator)
+			.validate(menuRequest);
 
-		// when // then
+		// then
 		assertThatThrownBy(() -> {
 			menuService.create(menuRequest);
-		}).isInstanceOf(PriceException.class)
+		}).isInstanceOf(MenuException.class)
 			.hasMessageContaining(ErrorCode.PRICE_IS_NOT_NULL.getMessage());
 	}
 
@@ -101,7 +83,6 @@ public class MenuServiceTest {
 		menuRequest = MenuRequest.of("불닭메", -100, 1L,
 			Collections.singletonList(MenuProductRequest.of(1L, 2L)));
 
-		given(menuGroupRepository.findById(anyLong())).willReturn(Optional.of(menuGroup));
 		// when // then
 		assertThatThrownBy(() -> {
 			menuService.create(menuRequest);
@@ -116,7 +97,12 @@ public class MenuServiceTest {
 		menuRequest = MenuRequest.of("불닭메", 160000, 1L,
 			Collections.singletonList(MenuProductRequest.of(1L, 2L)));
 
-		// when // then
+		// when
+		doThrow(new MenuException(ErrorCode.MENU_GROUP_IS_NOT_NULL))
+			.when(menuValidator)
+			.validate(menuRequest);
+
+		// then
 		assertThatThrownBy(() -> {
 			menuService.create(menuRequest);
 		}).isInstanceOf(MenuException.class)
@@ -130,12 +116,15 @@ public class MenuServiceTest {
 		menuRequest = MenuRequest.of("불닭메", 160000, 1L,
 			Collections.singletonList(MenuProductRequest.of(1L, 2L)));
 
-		given(menuGroupRepository.findById(anyLong())).willReturn(Optional.of(menuGroup));
+		// when
+		doThrow(new MenuException(ErrorCode.PRODUCT_IS_NULL))
+			.when(menuValidator)
+			.validate(menuRequest);
 
-		// when // then
+		// then
 		assertThatThrownBy(() -> {
 			menuService.create(menuRequest);
-		}).isInstanceOf(ProductException.class)
+		}).isInstanceOf(MenuException.class)
 			.hasMessageContaining(ErrorCode.PRODUCT_IS_NULL.getMessage());
 	}
 
@@ -145,22 +134,22 @@ public class MenuServiceTest {
 		// given
 		menuRequest = MenuRequest.of("불닭메", 80000, 1L,
 			Collections.singletonList(MenuProductRequest.of(1L, 2L)));
-		given(menuGroupRepository.findById(anyLong())).willReturn(Optional.of(menuGroup));
-		given(productRepository.findById(anyLong())).willReturn(Optional.of(product));
+
+		// when
+		doThrow(new MenuException(ErrorCode.PRODUCT_PRICE_IS_UNDER_SUM_PRICE))
+			.when(menuValidator)
+			.validate(menuRequest);
 
 		// when // then
 		assertThatThrownBy(() -> {
 			menuService.create(menuRequest);
-		}).isInstanceOf(PriceException.class)
+		}).isInstanceOf(MenuException.class)
 			.hasMessageContaining(ErrorCode.PRODUCT_PRICE_IS_UNDER_SUM_PRICE.getMessage());
 	}
 
 	@DisplayName("메뉴 목록 조회 테스트")
 	@Test
 	void getList() {
-		// given
-		menu = Menu.of("불닭 메뉴", Price.from(16000), menuGroup, Collections.singletonList(menuProduct));
-
 		// when
 		when(menuRepository.findAll()).thenReturn(Collections.singletonList(menu));
 
