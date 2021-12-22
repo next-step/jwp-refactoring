@@ -2,7 +2,7 @@ package kitchenpos.order.fixture;
 
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.domain.Quantity;
+import kitchenpos.common.domain.Quantity;
 
 public class OrderLineItemFixture {
     private OrderLineItemFixture() {
