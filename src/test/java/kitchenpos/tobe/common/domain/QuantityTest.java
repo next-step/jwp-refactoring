@@ -25,10 +25,10 @@ public class QuantityTest {
         assertThatNoException().isThrownBy(request);
     }
 
-    @DisplayName("수량은 0개 이상이어야 한다.")
+    @DisplayName("수량은 1개 이상이어야 한다.")
     @ParameterizedTest(name = "{displayName} [{index}] {argumentsWithNames}")
     @ValueSource(longs = {0L, Long.MIN_VALUE})
-    void createFailQuantityNegative(final long quantity) {
+    void createFailQuantityNotPositive(final long quantity) {
         // when
         final ThrowableAssert.ThrowingCallable request = () -> new Quantity(quantity);
 

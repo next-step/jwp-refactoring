@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import kitchenpos.tobe.common.domain.Price;
 import kitchenpos.tobe.common.domain.Quantity;
 import kitchenpos.tobe.menu.domain.MenuProduct;
+import kitchenpos.tobe.menu.dto.MenuProductRequest;
 
 public class MenuProductFixture {
 
@@ -30,5 +31,13 @@ public class MenuProductFixture {
         final long quantity
     ) {
         return of(null, productId, price, quantity);
+    }
+
+    public static MenuProductRequest ofRequest(
+        final Long productId,
+        final long price,
+        final long quantity
+    ) {
+        return new MenuProductRequest(productId, BigDecimal.valueOf(price), quantity);
     }
 }

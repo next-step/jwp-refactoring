@@ -1,5 +1,6 @@
 package kitchenpos.tobe.menu.domain;
 
+import java.math.BigDecimal;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -50,5 +51,21 @@ public class MenuProduct {
 
     public Price calculateTotalPrice() {
         return price.multiply(quantity);
+    }
+
+    public Long getSeq() {
+        return seq;
+    }
+
+    public Long getProductId() {
+        return productId;
+    }
+
+    public BigDecimal getPrice() {
+        return price.asBigDecimal();
+    }
+
+    public long getQuantity() {
+        return quantity.asLong();
     }
 }

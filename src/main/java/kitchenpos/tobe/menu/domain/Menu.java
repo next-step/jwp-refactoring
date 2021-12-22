@@ -1,5 +1,7 @@
 package kitchenpos.tobe.menu.domain;
 
+import java.math.BigDecimal;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -62,5 +64,29 @@ public class Menu {
 
     public boolean isOverpriced() {
         return price.compareTo(menuProducts.calculateTotalPrice()) > COMPARISON_EQUAL_TO;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name.asString();
+    }
+
+    public BigDecimal getPrice() {
+        return price.asBigDecimal();
+    }
+
+    public List<MenuProduct> getMenuProducts() {
+        return menuProducts.asList();
+    }
+
+    public Long getMenuGroupId() {
+        return menuGroupId;
+    }
+
+    public List<Long> getProductIds() {
+        return menuProducts.getProductIds();
     }
 }

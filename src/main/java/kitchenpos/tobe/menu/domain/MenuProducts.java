@@ -1,6 +1,8 @@
 package kitchenpos.tobe.menu.domain;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.ForeignKey;
@@ -37,5 +39,17 @@ public class MenuProducts {
         return menuProducts.stream()
             .map(MenuProduct::calculateTotalPrice)
             .reduce(Price.ZERO, Price::add);
+    }
+
+    public List<MenuProduct> asList() {
+        return Collections.unmodifiableList(menuProducts);
+    }
+
+    public List<Long> getProductIds() {
+        final List<Long> productIds = menuProducts
+            .stream()
+            .map(MenuProduct::getProductId)
+            .collect(Collectors.toList());
+        return Collections.unmodifiableList(productIds);
     }
 }
