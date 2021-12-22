@@ -6,8 +6,14 @@ import kitchenpos.dao.MenuProductDao;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.domain.MenuGroupRepository;
 import kitchenpos.domain.MenuProduct;
+import kitchenpos.domain.MenuProductRepository;
+import kitchenpos.domain.MenuRepository;
 import kitchenpos.domain.Product;
+import kitchenpos.domain.ProductRepository;
+import kitchenpos.dto.MenuRequest;
+import kitchenpos.dto.MenuResponse;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -33,39 +39,40 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class MenuServiceTest {
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
 
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
 
     @Mock
-    private MenuProductDao menuProductDao;
+    private MenuProductRepository menuProductRepository;
 
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     private MenuService menuService;
     private Menu menu;
+    private MenuRequest menuRequest;
     private MenuProduct menuProduct;
     private MenuProduct menuProduct2;
 
     @BeforeEach
     void setUp() {
-        menuService = new MenuService(menuDao, menuGroupDao, menuProductDao, productDao);
-        menuProduct = new MenuProduct(1L, 1L, 2L, 1);
-        menuProduct2 = new MenuProduct(1L, 1L, 3L, 2);
+        menuService = new MenuService(menuRepository, menuGroupRepository, menuProductRepository, productRepository);
+        menuProduct = new MenuProduct(1L, new Menu(), 2L, 1);
+        menuProduct2 = new MenuProduct(1L, new Menu(), 3L, 2);
         menu = new Menu(1L, "메뉴이름1", 1000, 1L, Lists.newArrayList(menuProduct, menuProduct2));
+        menuRequest = new MenuRequest(1L, "메뉴이름1", 1000, 1L, Lists.newArrayList(menuProduct, menuProduct2));
     }
 
     @DisplayName("메뉴를 등록할 수 있다.")
     @Test
     void createMenuTest() {
-        when(menuGroupDao.existsById(anyLong())).thenReturn(true);
-        when(productDao.findById(any())).thenReturn(Optional.of(new Product(1L, "돈까스", 1000)));
-        when(menuDao.save(any())).thenReturn(menu);
+        when(menuGroupRepository.existsById(anyLong())).thenReturn(true);
+        when(menuRepository.save(any())).thenReturn(menu);
 
         // when
-        Menu createdMenu = menuService.create(menu);
+        MenuResponse createdMenu = menuService.create(menuRequest);
 
         // then
         assertAll(
@@ -79,7 +86,7 @@ class MenuServiceTest {
     void createMenuPriceNegativeExceptionTest() {
         assertThatThrownBy(() -> {
             // given
-            final Menu menuPriceNegative = new Menu(1L, "메뉴 가격 -", -100, null, null);
+            final MenuRequest menuPriceNegative = new MenuRequest(1L, "메뉴 가격 -", -100, null, null);
 
             // when
             menuService.create(menuPriceNegative);
@@ -93,7 +100,7 @@ class MenuServiceTest {
     void createMenuHasMenuGroupExceptionTest() {
         assertThatThrownBy(() -> {
             //given
-            final Menu MenuGroupNull = new Menu(1L, "테스트 메뉴", 0, null, null);
+            final MenuRequest MenuGroupNull = new MenuRequest(1L, "테스트 메뉴", 0, null, null);
 
             // when
             menuService.create(MenuGroupNull);
@@ -106,10 +113,10 @@ class MenuServiceTest {
     @Test
     void createMenuSumBiggerThanPriceExceptionTest() {
         assertThatThrownBy(() -> {
-            when(menuGroupDao.existsById(anyLong())).thenReturn(true);
+            when(menuGroupRepository.existsById(anyLong())).thenReturn(true);
 
             // given
-            final Menu MenuSumZero = new Menu(1L, "메뉴이름1", 1000, 1L, new ArrayList<>());
+            final MenuRequest MenuSumZero = new MenuRequest(1L, "메뉴이름1", 1000, 1L, new ArrayList<>());
 
             // when
             menuService.create(MenuSumZero);
@@ -121,10 +128,10 @@ class MenuServiceTest {
     @DisplayName("메뉴 목록을 조회한다.")
     @Test
     void getMenusTest() {
-        when(menuDao.findAll()).thenReturn(Lists.newArrayList(menu));
+        when(menuRepository.findAll()).thenReturn(Lists.newArrayList(menu));
 
         // when
-        List<Menu> menus = menuService.list();
+        List<MenuResponse> menus = menuService.list();
 
         // then
         assertThat(menus.get(0).getName()).isEqualTo("메뉴이름1");
