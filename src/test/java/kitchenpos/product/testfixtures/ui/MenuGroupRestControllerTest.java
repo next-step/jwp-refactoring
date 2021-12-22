@@ -14,6 +14,8 @@ import java.util.List;
 import kitchenpos.common.CommonTestFixtures;
 import kitchenpos.menu.application.MenuGroupService;
 import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.dto.MenuGroupRequest;
+import kitchenpos.menu.dto.MenuGroupResponse;
 import kitchenpos.menu.ui.MenuGroupRestController;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -39,9 +41,10 @@ class MenuGroupRestControllerTest {
     void create() throws Exception {
         //given
         String menuGroupName = "추천메뉴";
-        MenuGroup requestMenuGroup = new MenuGroup(menuGroupName);
-        MenuGroup expectedMenuGroup = new MenuGroup(1L, menuGroupName);
-        given(service.create(any(MenuGroup.class)))
+        MenuGroupRequest requestMenuGroup = new MenuGroupRequest(menuGroupName);
+        MenuGroupResponse expectedMenuGroup = MenuGroupResponse.from(
+            new MenuGroup(1L, menuGroupName));
+        given(service.create(any(MenuGroupRequest.class)))
             .willReturn(expectedMenuGroup);
 
         //when
@@ -57,9 +60,9 @@ class MenuGroupRestControllerTest {
     @Test
     void list() throws Exception {
         //given
-        List<MenuGroup> expectedMenuGroups = Arrays.asList(
-            new MenuGroup(1L, "추천메뉴"),
-            new MenuGroup(2L, "베스트메뉴"));
+        List<MenuGroupResponse> expectedMenuGroups = Arrays.asList(
+            MenuGroupResponse.from(new MenuGroup(1L, "추천메뉴")),
+            MenuGroupResponse.from(new MenuGroup(2L, "베스트메뉴")));
         given(service.list())
             .willReturn(expectedMenuGroups);
 

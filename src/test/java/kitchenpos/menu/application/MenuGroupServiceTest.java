@@ -4,8 +4,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuGroupDao;
+import kitchenpos.menu.dto.MenuGroupRequest;
+import kitchenpos.menu.dto.MenuGroupResponse;
 import kitchenpos.menu.testfixtures.MenuGroupTestFixtures;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,7 +35,7 @@ class MenuGroupServiceTest {
         MenuGroupTestFixtures.메뉴그룹_생성_결과_모킹(menuGroupDao, menuGroup);
 
         //when
-        MenuGroup savedMenuGroup = menuGroupService.create(menuGroup);
+        MenuGroupResponse savedMenuGroup = menuGroupService.create(new MenuGroupRequest(name));
 
         //then
         assertThat(savedMenuGroup.getName()).isEqualTo(menuGroup.getName());
@@ -48,10 +51,20 @@ class MenuGroupServiceTest {
         MenuGroupTestFixtures.메뉴그룹_전체조회_모킹(menuGroupDao, menuGroups);
 
         //when
-        List<MenuGroup> findMenuGroups = menuGroupService.list();
+        List<MenuGroupResponse> findMenuGroups = menuGroupService.list();
 
         //then
         assertThat(findMenuGroups.size()).isEqualTo(menuGroups.size());
-        assertThat(findMenuGroups).containsAll(menuGroups);
+        메뉴그룹_목록_검증(findMenuGroups, menuGroups);
+    }
+
+    private void 메뉴그룹_목록_검증(List<MenuGroupResponse> findMenuGroups, List<MenuGroup> menuGroups) {
+        List<Long> findProductIds = findMenuGroups.stream()
+            .map(MenuGroupResponse::getId)
+            .collect(Collectors.toList());
+        List<Long> expectProductIds = menuGroups.stream()
+            .map(MenuGroup::getId)
+            .collect(Collectors.toList());
+        assertThat(findProductIds).containsAll(expectProductIds);
     }
 }
