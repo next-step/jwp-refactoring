@@ -11,6 +11,7 @@ import java.util.List;
 
 @Component
 public class MenuPriceValidator {
+    private static final String ILLEGAL_PRICE_ERROR_MESSAGE = "가격은 포함된 구성된 상품들의 금액 보다 작거나 같아야 한다.";
     private final ProductService productService;
 
     public MenuPriceValidator(ProductService productService) {
@@ -19,9 +20,13 @@ public class MenuPriceValidator {
 
     public void validate(BigDecimal price, List<MenuProductRequest> menuProductRequests) {
         final BigDecimal totalPrice = calcTotalPrice(menuProductRequests);
-        if (price.compareTo(totalPrice) > 0) {
-            throw new IllegalMenuPriceException("가격은 포함된 구성된 상품들의 금액 보다 작거나 같아야 한다.");
+        if (isLessThenZero(price, totalPrice)) {
+            throw new IllegalMenuPriceException(ILLEGAL_PRICE_ERROR_MESSAGE);
         }
+    }
+
+    private boolean isLessThenZero(BigDecimal price, BigDecimal totalPrice) {
+        return price.compareTo(totalPrice) > 0;
     }
 
     private BigDecimal calcTotalPrice(List<MenuProductRequest> menuProductRequests) {

@@ -13,6 +13,7 @@ import java.util.Objects;
 
 @Embeddable
 public class MenuProductGroup {
+    private static final String EMPTY_ERROR_MESSAGE = "상품 메뉴는 비어있을 수 없습니다.";
     @OneToMany(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "menu_id", nullable = false, updatable = false)
     private final List<MenuProduct> menuProducts = new ArrayList<>();
@@ -27,7 +28,7 @@ public class MenuProductGroup {
 
     private void validate(List<MenuProduct> menuProducts) {
         if (Objects.isNull(menuProducts) || menuProducts.isEmpty()) {
-            throw new IllegalMenuProductException("상품 메뉴는 비어있을 수 없습니다.");
+            throw new IllegalMenuProductException(EMPTY_ERROR_MESSAGE);
         }
     }
 

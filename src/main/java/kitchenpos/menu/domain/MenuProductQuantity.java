@@ -7,6 +7,7 @@ import javax.persistence.Embeddable;
 
 @Embeddable
 public class MenuProductQuantity {
+    private static final String MIN_VALUE_ERROR_MESSAGE = "메뉴 상품 갯수는 최소 1개 이상 이어야 합니다.";
     private static final int MIN_VALUE = 1;
     @Column(nullable = false)
     private long quantity;
@@ -21,7 +22,7 @@ public class MenuProductQuantity {
 
     private void validate(long quantity) {
         if (quantity < MIN_VALUE) {
-            throw new IllegalMenuProductException("메뉴 상품 갯수는 최소 1개 이상 이어야 합니다.");
+            throw new IllegalMenuProductException(MIN_VALUE_ERROR_MESSAGE);
         }
     }
 

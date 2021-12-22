@@ -9,6 +9,7 @@ import java.util.List;
 
 @Component
 public class OrderTableIdsTableGroupValidator {
+    private static final String IS_NOT_EMPTY_ERROR_MESSAGE = "주문 테이블이 빈상태일 떄만 단체지정을 생성할 수 있습니다.";
     private final OrderTableService orderTableService;
 
     public OrderTableIdsTableGroupValidator(OrderTableService orderTableService) {
@@ -19,7 +20,7 @@ public class OrderTableIdsTableGroupValidator {
         final List<OrderTable> savedOrderTables = orderTableService.getOrderTablesByIdIn(orderTableIds);
         for (final OrderTable savedOrderTable : savedOrderTables) {
             if (!savedOrderTable.isEmpty()) {
-                throw new CanNotGroupException("주문 테이블이 빈상태일 떄만 단체지정을 생성할 수 있습니다.");
+                throw new CanNotGroupException(IS_NOT_EMPTY_ERROR_MESSAGE);
             }
         }
     }

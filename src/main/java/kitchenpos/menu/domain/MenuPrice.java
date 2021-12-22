@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 
 @Embeddable
 public class MenuPrice {
+    private static final String MIN_VALUE_ERROR_MESSAGE = "0보다 작을 수 없습니다.";
     @Column(nullable = false)
     private BigDecimal price;
 
@@ -21,7 +22,7 @@ public class MenuPrice {
 
     private void validate(BigDecimal price) {
         if (isLessThenZero(price)) {
-            throw new IllegalMenuPriceException("0보다 작을 수 없습니다.");
+            throw new IllegalMenuPriceException(MIN_VALUE_ERROR_MESSAGE);
         }
     }
 

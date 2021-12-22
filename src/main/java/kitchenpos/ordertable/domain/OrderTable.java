@@ -1,5 +1,7 @@
 package kitchenpos.ordertable.domain;
 
+import kitchenpos.ordertable.exception.CanNotChangeOrderTableException;
+
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,6 +11,7 @@ import java.util.Objects;
 
 @Entity
 public class OrderTable {
+    private static final String CAN_NOT_CHANGE_NUMBER_OF_GUESTS = "빈 테이블일 경우 방문한 손님 수를 변경할 수 없습니다.";
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -56,7 +59,7 @@ public class OrderTable {
 
     public void changeNumberOfGuests(int targetNumberOfGuests) {
         if (isEmpty()) {
-            throw new IllegalArgumentException("빈 테이블일 경우 방문한 손님 수를 변경할 수 없습니다.");
+            throw new CanNotChangeOrderTableException(CAN_NOT_CHANGE_NUMBER_OF_GUESTS);
         }
         this.numberOfGuests = NumberOfGuests.of(targetNumberOfGuests);
     }

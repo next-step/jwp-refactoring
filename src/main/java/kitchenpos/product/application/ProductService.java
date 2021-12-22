@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
+    private static final String NOT_FOUND_PRODUCT_ERROR_MESSAGE = "해당 상품을 찾지 못하였습니다.";
     private final ProductRepository productRepository;
 
     public ProductService(ProductRepository productRepository) {
@@ -35,7 +36,7 @@ public class ProductService {
     @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
     public Product getProduct(long productId) {
         return productRepository.findById(productId).orElseThrow(() -> {
-            throw new IllegalArgumentException("해당 상품을 찾지 못하였습니다.");
+            throw new IllegalArgumentException(NOT_FOUND_PRODUCT_ERROR_MESSAGE);
         });
     }
 }

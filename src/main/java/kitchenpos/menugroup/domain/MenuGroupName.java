@@ -8,6 +8,7 @@ import javax.persistence.Embeddable;
 
 @Embeddable
 public class MenuGroupName {
+    private static final String EMPTY_ERROR_MESSAGE = "이름은 빈값이 될 수 없습니다.";
     @Column(nullable = false)
     private String name;
 
@@ -25,7 +26,7 @@ public class MenuGroupName {
 
     private void validate(String name) {
         if (!StringUtils.hasText(name)) {
-            throw new IllegalMenuGroupNameException("이름은 빈값이 될 수 없습니다.");
+            throw new IllegalMenuGroupNameException(EMPTY_ERROR_MESSAGE);
         }
     }
 

@@ -1,10 +1,13 @@
 package kitchenpos.ordertable.domain;
 
+import kitchenpos.ordertable.exception.IllegalOrderTableIdsException;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
 public class NumberOfGuests {
+    private static final String MIN_NUMBER_OF_GUEST_ERROR_MESSAGE = "방문한 손님 수는 1명 이상이어야 한다.";
     private static final int MIN_VALUE = 1;
 
     @Column(nullable = false)
@@ -20,7 +23,7 @@ public class NumberOfGuests {
 
     private void validate(int numberOfGuests) {
         if (numberOfGuests < MIN_VALUE) {
-            throw new IllegalArgumentException("방문한 손님 수는 1명 이상이어야 한다.");
+            throw new IllegalOrderTableIdsException(MIN_NUMBER_OF_GUEST_ERROR_MESSAGE);
         }
     }
 

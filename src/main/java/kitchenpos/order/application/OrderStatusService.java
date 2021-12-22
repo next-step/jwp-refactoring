@@ -15,6 +15,8 @@ import java.util.List;
 
 @Service
 public class OrderStatusService {
+    private static final String COMPLETION_CHANGE_ORDER_STATUS_ERROR_MESSAGE = "완료된 주문은 주문상태를 변경할 수 없습니다.";
+    private static final String CHANGE_ORDER_STATUS_ERROR_MESSAGE = "존재하지 않는 주문은 주문 상태를 변경할 수 없습니다.";
     private final OrderRepository orderRepository;
 
     public OrderStatusService(OrderRepository orderRepository) {
@@ -25,7 +27,7 @@ public class OrderStatusService {
     public OrderResponse changeOrderStatus(final Long orderId, final OrderRequest request) {
         final Order savedOrder = orderRepository.findById(orderId)
                 .orElseThrow(() -> {
-                    throw new CanNotChangeOrderStatusException("존재하지 않는 주문은 주문 상태를 변경할 수 없습니다.");
+                    throw new CanNotChangeOrderStatusException(CHANGE_ORDER_STATUS_ERROR_MESSAGE);
                 });
         validateChangeOrderStatus(savedOrder);
         savedOrder.updateOrderStatus(request.getOrderStatus());
@@ -34,7 +36,7 @@ public class OrderStatusService {
 
     private void validateChangeOrderStatus(Order order) {
         if (order.isCompletion()) {
-            throw new CanNotChangeOrderStatusException("완료된 주문은 주문상태를 변경할 수 없습니다.");
+            throw new CanNotChangeOrderStatusException(COMPLETION_CHANGE_ORDER_STATUS_ERROR_MESSAGE);
         }
     }
 

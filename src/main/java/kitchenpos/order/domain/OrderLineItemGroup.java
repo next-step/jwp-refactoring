@@ -14,6 +14,7 @@ import java.util.Objects;
 
 @Embeddable
 public class OrderLineItemGroup {
+    private static final String EMPTY_ERROR_MESSAGE = "주문 항목은 비어있을 수 없습니다.";
     @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "order_id", nullable = false, updatable = false)
     private final List<OrderLineItem> orderLineItems = new ArrayList<>();
@@ -32,7 +33,7 @@ public class OrderLineItemGroup {
 
     private void validate(List<OrderLineItem> orderLineItems) {
         if (Objects.isNull(orderLineItems) || orderLineItems.isEmpty()) {
-            throw new IllegalOrderLineItemException("주문 항목은 비어있을 수 없습니다.");
+            throw new IllegalOrderLineItemException(EMPTY_ERROR_MESSAGE);
         }
 
     }

@@ -6,8 +6,8 @@ import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.exception.CanNotOrderException;
 import kitchenpos.order.infra.OrderRepository;
-import kitchenpos.ordertable.exception.OrderTableService;
 import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.exception.OrderTableService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
+    private static final String EMPTY_ERROR_MESSAGE = "테이블이 비어있을 경우 주문을 할 수 없습니다.";
     private final OrderTableService orderTableService;
     private final OrderRepository orderRepository;
     private final MenuCountOrderValidator menuCountOrderValidator;
@@ -39,7 +40,7 @@ public class OrderService {
         final OrderTable orderTable = orderTableService.getOrderTable(request.getOrderTableId());
 
         if (orderTable.isEmpty()) {
-            throw new CanNotOrderException("테이블이 비어있을 경우 주문을 할 수 없습니다.");
+            throw new CanNotOrderException(EMPTY_ERROR_MESSAGE);
         }
     }
 

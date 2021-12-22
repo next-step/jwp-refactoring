@@ -7,6 +7,7 @@ import javax.persistence.Embeddable;
 
 @Embeddable
 public class OrderLineItemQuantity {
+    private static final String MIN_QUANTITY_ERROR_MESSAGE = "주문 항목의 수량은 0 이하 일 수 없습니다.";
     private static final int MIN_VALUE = 1;
 
     @Column(nullable = false)
@@ -22,7 +23,7 @@ public class OrderLineItemQuantity {
 
     private void validate(long quantity) {
         if (quantity < MIN_VALUE) {
-            throw new IllegalOrderLineItemException("주문 항목의 수량은 0 이하 일 수 없습니다.");
+            throw new IllegalOrderLineItemException(MIN_QUANTITY_ERROR_MESSAGE);
         }
     }
 

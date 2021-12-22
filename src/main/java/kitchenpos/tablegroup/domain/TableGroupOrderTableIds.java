@@ -15,6 +15,7 @@ import java.util.List;
 
 @Embeddable
 public class TableGroupOrderTableIds {
+    private static final String MIN_ORDER_TABLE_SIZE_ERROR_MESSAGE = "2개 이상의 주문 테이블로 구성되어야 한다.";
     private static final int MIN_SIZE = 2;
 
     @ElementCollection
@@ -36,7 +37,7 @@ public class TableGroupOrderTableIds {
 
     private void validate(List<Long> orderTableIds) {
         if (CollectionUtils.isEmpty(orderTableIds) || orderTableIds.size() < MIN_SIZE) {
-            throw new IllegalOrderTableIdsException("2개 이상의 주문 테이블로 구성되어야 한다.");
+            throw new IllegalOrderTableIdsException(MIN_ORDER_TABLE_SIZE_ERROR_MESSAGE);
         }
     }
 
