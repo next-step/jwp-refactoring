@@ -10,8 +10,6 @@ import kitchenpos.order.dto.ChangeOrderStatusRequest;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -24,20 +22,21 @@ import java.util.stream.Collectors;
 public class OrderService {
     private final MenuRepository menuRepository;
     private final OrderRepository orderRepository;
-    private final OrderTableRepository orderTableRepository;
+    private final OrderValidator orderValidator;
 
     public OrderService(
             final MenuRepository menuRepository,
             final OrderRepository orderRepository,
-            final OrderTableRepository orderTableRepository
+            final OrderValidator orderValidator
     ) {
         this.menuRepository = menuRepository;
         this.orderRepository = orderRepository;
-        this.orderTableRepository = orderTableRepository;
+        this.orderValidator = orderValidator;
     }
 
     public OrderResponse create(final OrderRequest orderRequest) {
         Order order = Order.of(orderRequest.getOrderTableId());
+        orderValidator.validateCreateOrder(orderRequest);
 
         List<OrderLineItem> orderLineItems = getOrderLineItems(orderRequest.getOrderLineItems());
 
@@ -46,17 +45,6 @@ public class OrderService {
         }
 
         return OrderResponse.from(orderRepository.save(order));
-    }
-
-    private OrderTable getOrderTable(OrderRequest orderRequest) {
-        OrderTable orderTable = orderTableRepository.findById(orderRequest.getOrderTableId())
-                .orElseThrow(IllegalArgumentException::new);
-
-        if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
-
-        return orderTable;
     }
 
     private List<OrderLineItem> getOrderLineItems(List<OrderLineItemRequest> orderLineItemRequests) {
