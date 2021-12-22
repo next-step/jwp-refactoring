@@ -4,12 +4,15 @@ import java.time.LocalDateTime;
 import java.util.List;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 public class TableGroup {
 
     @Id
@@ -26,13 +29,11 @@ public class TableGroup {
     }
 
     public TableGroup(final List<OrderTable> orderTables) {
-        this.createdDate = LocalDateTime.now();
         this.orderTables = OrderTables.of(orderTables);
     }
 
     public TableGroup(final Long id, final List<OrderTable> orderTables) {
         this.id = id;
-        this.createdDate = LocalDateTime.now();
         this.orderTables = OrderTables.of(orderTables);
     }
 
@@ -60,3 +61,4 @@ public class TableGroup {
         return orderTables.getOrderTableIds();
     }
 }
+
