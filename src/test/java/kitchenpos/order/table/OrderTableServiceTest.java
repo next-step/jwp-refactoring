@@ -95,7 +95,7 @@ public class OrderTableServiceTest {
         assertThat(emptyOrderTable.isEmpty()).isTrue();
     }
 
-    @DisplayName("주문 테이블 비우기")
+    @DisplayName("주문 테이블 비울 시 table group id가 존재할 경우")
     @Test
     void emptyTableByExistedTableGroupId() {
 
@@ -112,18 +112,18 @@ public class OrderTableServiceTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("주문 테이블 비우기")
+    @DisplayName("주문 테이블 비울 시 주문상태가 Cooking이거나 Meal 단계가 있을경우")
     @Test
-    void emptyTableBy() {
+    void emptyTableByOrderStatusCookingAndMeal() {
 
         //given
-        final boolean tableOrderStatus = true;
+        final boolean existTableOrderStatus = true;
         OrderTable originOrderTable = new OrderTable();
         originOrderTable.setId(1L);
         originOrderTable.setTableGroupId(null);
 
         when(orderTableDao.findById(anyLong())).thenReturn(Optional.ofNullable(originOrderTable));
-        when(orderDao.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).thenReturn(tableOrderStatus);
+        when(orderDao.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).thenReturn(existTableOrderStatus);
 
         //when
         assertThatThrownBy(() -> tableService.changeEmpty(originOrderTable.getId(), originOrderTable))

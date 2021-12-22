@@ -63,7 +63,7 @@ public class OrderControllerTest extends ControllerTest {
         resultActions.andExpect(status().isCreated());
     }
 
-    @DisplayName("주문을 조회한다.")
+    @DisplayName("주문 리스트를 조회한다.")
     @Test
     void getOrders() throws Exception {
 
