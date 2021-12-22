@@ -7,11 +7,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import kitchenpos.exception.PriceValueNotAcceptableException;
 
 @Entity
 public class Product {
-
-    private final static String ERROR_MESSAGE_PRODUCT_PRICE_VALUE = "상품의 가격은 0원 이상이어야 합니다.";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -51,7 +50,7 @@ public class Product {
 
     private void validatePrice(BigDecimal price) {
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException(ERROR_MESSAGE_PRODUCT_PRICE_VALUE);
+            throw new PriceValueNotAcceptableException();
         }
     }
 

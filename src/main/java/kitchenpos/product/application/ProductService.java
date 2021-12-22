@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class ProductService {
 
+    private static final String ERROR_MESSAGE_NOT_EXIST_PRODUCT = "상품 정보가 존재하지 않습니다.";
     private final ProductDao productDao;
 
     public ProductService(final ProductDao productDao) {
@@ -28,5 +29,10 @@ public class ProductService {
         return productDao.findAll()
             .stream().map(ProductResponse::from)
             .collect(Collectors.toList());
+    }
+
+    public Product findProduct(long productId) {
+        return productDao.findById(productId)
+            .orElseThrow(() -> new IllegalArgumentException(ERROR_MESSAGE_NOT_EXIST_PRODUCT));
     }
 }

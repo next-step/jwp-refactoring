@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.math.BigDecimal;
+import kitchenpos.exception.PriceValueNotAcceptableException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -25,13 +26,13 @@ class ProductTest {
     @Test
     void construct_exception1() {
         assertThatThrownBy(() -> new Product("잘못된상품", BigDecimal.valueOf(-10000)))
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(PriceValueNotAcceptableException.class);
     }
 
     @DisplayName("상품 가격은 필수값이다.")
     @Test
     void construct_exception2() {
         assertThatThrownBy(() -> new Product("가격미정 상품", null))
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(PriceValueNotAcceptableException.class);
     }
 }
