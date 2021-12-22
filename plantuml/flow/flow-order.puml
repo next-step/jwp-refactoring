@@ -1,0 +1,35 @@
+@startuml
+    partition OrderService {
+        if (주문 항목) then (empty)
+            fork
+                :예외 발생;
+                detach
+            end fork
+            else (not empty)
+        endif
+        if (테이블) then (empty)
+            fork
+                :예외 발생;
+                detach
+            end fork
+            else (not empty)
+                :테이블 ID 지정\n주문 상태(준비중)\n주문 일시(현재시간);
+        endif
+        :주문 등록;
+    }
+@enduml
+
+@startuml
+    partition OrderService {
+       if (주문 상태) then (완료)
+           fork
+               :예외 발생;
+               detach
+           end fork
+           else (준비중 or 식사중)
+           :준비중 ➔ 식사중;
+           :식사중 ➔ 완료;
+       endif
+       :주문 상태 변경;
+    }
+@enduml

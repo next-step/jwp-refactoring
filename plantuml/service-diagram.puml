@@ -1,0 +1,136 @@
+@startuml
+
+MenuGroupDao <-- MenuGroupService
+
+MenuDao <-- MenuService
+MenuGroupDao <-- MenuService
+MenuProductDao <-- MenuService
+ProductDao <-- MenuService
+
+ProductDao <-- ProductService
+
+MenuDao <-- OrderService
+OrderDao <-- OrderService
+OrderLineItemDao <-- OrderService
+OrderTableDao <-- OrderService
+
+OrderDao <-- TableGroupService
+OrderTableDao <-- TableGroupService
+TableGroupDao <-- TableGroupService
+
+
+OrderDao <-- TableService
+OrderTableDao <-- TableService
+
+
+class MenuGroupService {
+    - MenuGroupDao menuGroupDao
+
+    + create(menuGroup)
+    + list()
+}
+
+class MenuService {
+    - MenuDao menuDao
+    - MenuGroupDao menuGroupDao
+    - MenuProductDao menuProductDao
+    - ProductDao productDao
+
+    + create(menu)
+    + list()
+}
+
+class ProductService {
+    - ProductDao productDao
+
+    + create(product)
+    + list()
+}
+
+class OrderService {
+    - MenuDao menuDao
+    - OrderDao orderDao
+    - OrderLineItemDao orderLineItemDao
+    - OrderTableDao orderTableDao
+
+    + create(order)
+    + list()
+    + changeOrderStatus(orderId, order)
+}
+
+class TableGroupService {
+    - OrderDao orderDao
+    - OrderTableDao orderTableDao
+    - TableGroupDao tableGroupDao
+
+    + create(tableGroup)
+    + ungroup(tableGroupId)
+}
+
+class TableService {
+    - OrderDao orderDao
+    - OrderTableDao orderTableDao
+
+    + create(orderTable)
+    + changeEmpty(orderTableId,orderTable)
+    + changeNumberOfGuests(orderTableId, orderTable)
+}
+
+
+interface MenuGroupDao {
+    + MenuGroup save(menuGroup)
+    + Optional<MenuGroup> findById(id)
+    + List<MenuGroup> findAll()
+    + boolean existsById(id)
+}
+
+interface MenuDao {
+    + Menu save(menu)
+    + Optional<Menu> findById(id)
+    + List<Menu> findAll()
+    + long countByIdIn(ids)
+}
+
+interface MenuProductDao {
+    + MenuProduct save(menuProduct)
+    + Optional<MenuProduct> findById(id)
+    + List<MenuProduct> findAll()
+    + List<MenuProduct> findAllByMenuId(menuId)
+}
+
+interface ProductDao {
+    + Product save(product)
+    + Optional<Product> findById(id)
+    + List<Product> findAll()
+}
+
+interface OrderDao {
+    + Order save(order)
+    + Optional<Order> findById(id)
+    + List<Order> findAll()
+    + boolean existsByOrderTableIdAndOrderStatusIn(orderTableId, orderStatuses)
+    + boolean existsByOrderTableIdInAndOrderStatusIn(orderTableIds, orderStatuses)
+}
+
+interface OrderLineItemDao {
+    + OrderLineItem save(orderLineItem)
+    + Optional<OrderLineItem> findById(id)
+    + List<OrderLineItem> findAll()
+    + List<OrderLineItem> findAllByOrderId(orderId)
+}
+
+interface OrderTableDao {
+    + OrderTable save(orderTable)
+    + Optional<OrderTable> findById(id)
+    + List<OrderTable> findAll()
+    + List<OrderTable> findAllByIdIn(ids)
+    + List<OrderTable> findAllByTableGroupId(tableGroupId)
+}
+
+interface TableGroupDao {
+    + TableGroup save(tableGroup)
+    + Optional<TableGroup> findById(id)
+    + List<TableGroup> findAll()
+}
+
+@enduml
