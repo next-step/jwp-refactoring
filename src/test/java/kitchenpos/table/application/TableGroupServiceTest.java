@@ -13,7 +13,7 @@ import java.util.Collections;
 import java.util.List;
 import kitchenpos.table.fixture.TableFixture;
 import kitchenpos.table.fixture.TableGroupFixture;
-import kitchenpos.domain.OrderRepository;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
