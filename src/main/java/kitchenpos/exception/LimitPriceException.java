@@ -9,11 +9,11 @@ import kitchenpos.common.exception.ServiceException;
  * date : 2021/12/21
  * description :
  */
-public class MismatchPriceException extends ServiceException {
+public class LimitPriceException extends ServiceException {
     private static final Long serialVersionUID = 1L;
-    public static final String message = "가격이 일치하지 않습니다.";
+    public static final String message = "메뉴가격이 올바르지 않습니다.";
 
-    public MismatchPriceException() {
+    public LimitPriceException() {
         super(message);
     }
 }

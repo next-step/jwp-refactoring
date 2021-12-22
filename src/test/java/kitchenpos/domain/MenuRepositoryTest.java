@@ -1,7 +1,7 @@
 package kitchenpos.domain;
 
 import kitchenpos.exception.IllegalPriceException;
-import kitchenpos.exception.MismatchPriceException;
+import kitchenpos.exception.LimitPriceException;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -115,6 +115,6 @@ class MenuRepositoryTest {
     public void createFailByMenusPrices() {
         //then
         assertThatThrownBy(() -> new Menu("가격불일치메뉴", new BigDecimal(Long.MAX_VALUE), 메뉴그룹, Lists.newArrayList(양념치킨메뉴상품, 후라이드메뉴상품)))
-                .isInstanceOf(MismatchPriceException.class);
+                .isInstanceOf(LimitPriceException.class);
     }
 }

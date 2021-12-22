@@ -1,6 +1,6 @@
 package kitchenpos.domain;
 
-import kitchenpos.exception.MismatchPriceException;
+import kitchenpos.exception.LimitPriceException;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -43,10 +43,10 @@ public class Menu {
             menuProduct -> menuProducts.add(menuProduct.by(this))
         );
     }
-
+    
     private void comparePrice(List<MenuProduct> menuProducts) {
-        if (this.price.value().compareTo(totalPrice(menuProducts)) != 0) {
-            throw new MismatchPriceException();
+        if (price.value().compareTo(totalPrice(menuProducts)) > 0) {
+            throw new LimitPriceException();
         }
     }
 
