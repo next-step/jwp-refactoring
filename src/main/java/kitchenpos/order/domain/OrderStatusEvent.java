@@ -4,6 +4,7 @@ import kitchenpos.table.domain.TableStatus;
 import org.springframework.context.ApplicationEvent;
 
 public class OrderStatusEvent extends ApplicationEvent {
+
     private Long orderTableId;
     private Long orderId;
     private OrderStatus orderStatus;
