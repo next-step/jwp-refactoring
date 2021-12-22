@@ -96,6 +96,12 @@ public class Order {
         this.orderStatus = orderStatus;
     }
 
+    public void validateOrderStatusForUngroup() {
+        if (!orderStatus.isCompletion()) {
+            throw new BadRequestException(CANNOT_CHANGE_STATUS);
+        }
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o)

@@ -111,6 +111,10 @@ public class OrderTable {
         }
     }
 
+    public void validateUngroup() {
+        orders.validateOrderStatusForUngroup();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o)

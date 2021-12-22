@@ -54,6 +54,10 @@ public class TableGroup {
         orderTables.changeTableGroup(this);
     }
 
+    public void validateUngroup() {
+        orderTables.validateUngroup();
+    }
+
     public void ungroup() {
         orderTables.ungroup();
     }

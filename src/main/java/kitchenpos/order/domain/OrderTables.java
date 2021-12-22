@@ -43,6 +43,12 @@ public class OrderTables {
         }
     }
 
+    public void validateUngroup() {
+        for (OrderTable orderTable : orderTables) {
+            orderTable.validateUngroup();
+        }
+    }
+
     public List<OrderTable> getValue() {
         return orderTables;
     }
@@ -73,5 +79,4 @@ public class OrderTables {
     public int hashCode() {
         return Objects.hash(orderTables);
     }
-
 }

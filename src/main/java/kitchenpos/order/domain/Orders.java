@@ -27,4 +27,10 @@ public class Orders {
             orders.add(order);
         }
     }
+
+    public void validateOrderStatusForUngroup() {
+        for (Order order : orders) {
+            order.validateOrderStatusForUngroup();
+        }
+    }
 }

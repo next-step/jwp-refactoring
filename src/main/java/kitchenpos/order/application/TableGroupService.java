@@ -2,16 +2,12 @@ package kitchenpos.order.application;
 
 import static kitchenpos.common.exception.ExceptionMessage.*;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kitchenpos.common.exception.BadRequestException;
 import kitchenpos.common.exception.NotFoundException;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.TableGroup;
 import kitchenpos.order.dto.TableGroupRequest;
@@ -46,20 +42,8 @@ public class TableGroupService {
         TableGroup findTableGroup = tableGroupRepository.findById(tableGroupId)
             .orElseThrow(() -> new NotFoundException(NOT_FOUND_DATA));
 
-        validateOrderStatus(findTableGroup);
-
+        findTableGroup.validateUngroup();
         findTableGroup.ungroup();
         tableGroupRepository.delete(findTableGroup);
-    }
-
-    private void validateOrderStatus(TableGroup findTableGroup) {
-        List<Long> orderIds = findTableGroup.getOrderTables().getValue().stream()
-            .map(OrderTable::getId)
-            .collect(Collectors.toList());
-
-        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
-            orderIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new BadRequestException(CANNOT_CHANGE_STATUS);
-        }
     }
 }
