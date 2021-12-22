@@ -68,8 +68,12 @@ public class OrderTable {
         return numberOfGuests;
     }
 
-    public OrderTableStatus getOrderTableStatus() {
-        return orderTableStatus;
+    public boolean isEmpty() {
+        return orderTableStatus.isEmpty();
+    }
+
+    public void withTableGroup(TableGroup tableGroup) {
+        this.tableGroup = tableGroup;
     }
 
 }

@@ -24,6 +24,6 @@ public class OrderTableFixture {
 
     public static OrderTableRequest from(OrderTable orderTable) {
         return new OrderTableRequest(orderTable.getNumberOfGuests(),
-            orderTable.getOrderTableStatus().isEmpty());
+            orderTable.isEmpty());
     }
 }

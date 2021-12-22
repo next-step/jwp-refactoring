@@ -18,6 +18,10 @@ public enum OrderTableStatus {
             .orElseThrow(IllegalArgumentException::new);
     }
 
+    public static boolean isEmpty(OrderTable orderTable) {
+        return !EMPTY.equals(valueOf(orderTable.isEmpty()));
+    }
+
     public boolean isEmpty() {
         return empty;
     }
