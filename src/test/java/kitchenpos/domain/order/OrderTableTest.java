@@ -1,6 +1,6 @@
 package kitchenpos.domain.order;
 
-import static kitchenpos.application.fixture.OrderFixture.식사중_주문;
+import static kitchenpos.application.fixture.OrderFixture.요리중_주문_of;
 import static kitchenpos.application.fixture.OrderTableFixture.단체지정된_주문테이블;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -30,7 +30,7 @@ class OrderTableTest {
     void 결제완료_아닌_주문_빈테이블_변경_실패() {
         // given
         OrderTable 단체지정된_주문테이블 = 단체지정된_주문테이블();
-        Orders orders = Orders.of(Collections.singletonList(식사중_주문()));
+        Orders orders = Orders.of(Collections.singletonList(요리중_주문_of(단체지정된_주문테이블)));
 
         // when
         ThrowableAssert.ThrowingCallable actual = () -> 단체지정된_주문테이블.changeEmpty(orders, true);
