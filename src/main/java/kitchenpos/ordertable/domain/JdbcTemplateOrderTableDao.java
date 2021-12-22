@@ -12,9 +12,8 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.stereotype.Repository;
 
-@Repository
+//@Repository
 public class JdbcTemplateOrderTableDao implements OrderTableDao {
 
     private static final String TABLE_NAME = "order_table";
