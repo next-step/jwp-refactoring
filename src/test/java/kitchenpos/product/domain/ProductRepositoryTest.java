@@ -11,7 +11,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 class ProductRepositoryTest {
 
     @Autowired
-    ProductDao productDao;
+    private ProductDao productDao;
 
     @Test
     void save() {
