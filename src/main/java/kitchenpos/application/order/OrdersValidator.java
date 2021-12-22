@@ -1,4 +1,4 @@
-package kitchenpos.domain.order;
+package kitchenpos.application.order;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -8,6 +8,8 @@ import org.springframework.stereotype.Component;
 
 import kitchenpos.application.menu.MenuService;
 import kitchenpos.domain.menu.Menus;
+import kitchenpos.domain.order.OrderLineItem;
+import kitchenpos.domain.order.Orders;
 import kitchenpos.event.orders.ValidateEmptyTableEvent;
 import kitchenpos.exception.order.EmptyOrderLineItemOrderException;
 import kitchenpos.exception.order.NotRegistedMenuOrderException;

@@ -24,7 +24,6 @@ import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.order.OrderLineItem;
 import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.domain.order.Orders;
-import kitchenpos.domain.order.OrdersValidator;
 import kitchenpos.domain.table.OrderTable;
 import kitchenpos.event.orders.ValidateEmptyTableEvent;
 import kitchenpos.exception.order.EmptyOrderLineItemOrderException;

@@ -29,7 +29,6 @@ import kitchenpos.domain.menu.MenuProduct;
 import kitchenpos.domain.order.Orders;
 import kitchenpos.domain.order.OrderLineItem;
 import kitchenpos.domain.order.OrdersRepository;
-import kitchenpos.domain.order.OrdersValidator;
 import kitchenpos.domain.order.OrderStatus;
 
 @ExtendWith(MockitoExtension.class)
