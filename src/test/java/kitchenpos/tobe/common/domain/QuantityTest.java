@@ -8,45 +8,45 @@ import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.junit.jupiter.params.provider.ValueSource;
 
-public class NameTest {
+public class QuantityTest {
 
-    @DisplayName("이름을 생성할 수 있다.")
+    @DisplayName("수량을 생성할 수 있다.")
     @Test
     void create() {
         // given
-        final String name = "치킨";
+        final long quantity = 1L;
 
         // when
-        final ThrowableAssert.ThrowingCallable request = () -> new Name(name);
+        final ThrowableAssert.ThrowingCallable request = () -> new Quantity(quantity);
 
         // then
         assertThatNoException().isThrownBy(request);
     }
 
-    @DisplayName("이름은 null 또는 \"\"이 될 수 없다.")
+    @DisplayName("수량은 0개 이상이어야 한다.")
     @ParameterizedTest(name = "{displayName} [{index}] {argumentsWithNames}")
-    @NullAndEmptySource
-    void createFailInvalidName(final String name) {
+    @ValueSource(longs = {0L, Long.MIN_VALUE})
+    void createFailQuantityNegative(final long quantity) {
         // when
-        final ThrowableAssert.ThrowingCallable request = () -> new Name(name);
+        final ThrowableAssert.ThrowingCallable request = () -> new Quantity(quantity);
 
         // then
         assertThatThrownBy(request).isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("이름 간 동등성을 비교할 수 있다.")
+    @DisplayName("수량 간 동등성을 비교할 수 있다.")
     @Test
     void equals() {
         // given
-        final String name = "치킨";
+        final long quantity = 1L;
 
         // when
-        final Name name1 = new Name(name);
-        final Name name2 = new Name(name);
+        final Quantity quantity1 = new Quantity(quantity);
+        final Quantity quantity2 = new Quantity(quantity);
 
         // then
-        assertThat(name1).isEqualTo(name2);
+        assertThat(quantity1).isEqualTo(quantity2);
     }
 }

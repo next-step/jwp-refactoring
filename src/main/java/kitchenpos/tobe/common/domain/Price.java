@@ -4,12 +4,16 @@ import java.math.BigDecimal;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.persistence.Transient;
 
 @Embeddable
-public class Price {
+public class Price implements Comparable<Price> {
 
-    private static final BigDecimal LOWER_BOUND = BigDecimal.ZERO;
-    private static final int ZERO = 0;
+    private static final BigDecimal MIN_PRICE = BigDecimal.ZERO;
+    private static final int COMPARISON_EQUAL_TO = 0;
+
+    @Transient
+    public static final Price ZERO = new Price(BigDecimal.ZERO);
 
     @Column(name = "price", nullable = false)
     private BigDecimal price;
@@ -28,12 +32,24 @@ public class Price {
         }
 
         if (isLessThanLowerBound(price)) {
-            throw new IllegalArgumentException("상품의 가격은 " + LOWER_BOUND + "원 이상이어야 합니다.");
+            throw new IllegalArgumentException("상품의 가격은 " + MIN_PRICE + "원 이상이어야 합니다.");
         }
     }
 
     private boolean isLessThanLowerBound(final BigDecimal price) {
-        return price.compareTo(LOWER_BOUND) < ZERO;
+        return price.compareTo(MIN_PRICE) < COMPARISON_EQUAL_TO;
+    }
+
+    public Price add(final Price o) {
+        final BigDecimal augend = o.price;
+        final BigDecimal addedValue = price.add(augend);
+        return new Price(addedValue);
+    }
+
+    public Price multiply(final Quantity quantity) {
+        final BigDecimal qty = quantity.asBigDecimal();
+        final BigDecimal multipliedValue = this.price.multiply(qty);
+        return new Price(multipliedValue);
     }
 
     public BigDecimal asBigDecimal() {
@@ -55,5 +71,11 @@ public class Price {
     @Override
     public int hashCode() {
         return Objects.hash(price);
+    }
+
+    @Override
+    public int compareTo(final Price o) {
+        final BigDecimal val = o.price;
+        return price.compareTo(val);
     }
 }
