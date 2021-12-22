@@ -1,13 +1,15 @@
 package kitchenpos.product.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductDao;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 import kitchenpos.product.testfixtures.ProductTestFixtures;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,27 +33,14 @@ class ProductServiceTest {
         // given
         String name = "타코야끼";
         BigDecimal price = BigDecimal.valueOf(12000);
-        Product product = new Product(name, price);
+        Product product = new Product(1L, name, price);
         ProductTestFixtures.상품_생성_결과_모킹(productDao, product);
 
         //when
-        Product savedProduct = productService.create(product);
+        ProductResponse savedProduct = productService.create(new ProductRequest(name, price));
 
         //then
-        assertThat(product.getName()).isEqualTo(savedProduct.getName());
-    }
-
-    @DisplayName("상품 가격은 0원 이상이어야 한다.")
-    @Test
-    void create_exception() {
-        //given
-        String name = "타코야끼";
-        BigDecimal price = BigDecimal.valueOf(-1);
-        Product product = new Product(name, price);
-
-        //when, then
-        assertThatThrownBy(() -> productService.create(product))
-            .isInstanceOf(IllegalArgumentException.class);
+        assertThat(product.getId()).isEqualTo(savedProduct.getId());
     }
 
     @DisplayName("상품 목록을 조회할 수 있다.")
@@ -64,10 +53,20 @@ class ProductServiceTest {
         ProductTestFixtures.상품_전체_조회_모킹(productDao, products);
 
         //when
-        List<Product> findProducts = productService.list();
+        List<ProductResponse> findProducts = productService.list();
 
         //then
         assertThat(findProducts.size()).isEqualTo(products.size());
-        assertThat(findProducts).containsAll(products);
+        상품목록_검증(findProducts, products);
+    }
+
+    private void 상품목록_검증(List<ProductResponse> findProducts, List<Product> products) {
+        List<Long> findProductIds = findProducts.stream()
+            .map(ProductResponse::getId)
+            .collect(Collectors.toList());
+        List<Long> expectProductIds = products.stream()
+            .map(Product::getId)
+            .collect(Collectors.toList());
+        assertThat(findProductIds).containsAll(expectProductIds);
     }
 }

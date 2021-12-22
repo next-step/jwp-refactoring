@@ -15,6 +15,7 @@ import java.util.List;
 import kitchenpos.common.CommonTestFixtures;
 import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +42,7 @@ class ProductRestControllerTest {
         String productName = "육개장";
         BigDecimal price = BigDecimal.valueOf(9000);
         Product requestProduct = new Product(productName, price);
-        Product expectedProduct = new Product(1L, productName, price);
+        ProductResponse expectedProduct = ProductResponse.from(new Product(1L, productName, price));
         given(productService.create(any())).willReturn(expectedProduct);
 
         //when, then
@@ -55,9 +56,9 @@ class ProductRestControllerTest {
     @Test
     void list() throws Exception {
         //given
-        List<Product> expectedProducts = Arrays.asList(
-            new Product(1L, "육개장", BigDecimal.valueOf(9000)),
-            new Product(1L, "과메기", BigDecimal.valueOf(22000)));
+        List<ProductResponse> expectedProducts = Arrays.asList(
+            ProductResponse.from(new Product(1L, "육개장", BigDecimal.valueOf(9000))),
+            ProductResponse.from(new Product(1L, "과메기", BigDecimal.valueOf(22000))));
         given(productService.list()).willReturn(expectedProducts);
 
         //when, then
