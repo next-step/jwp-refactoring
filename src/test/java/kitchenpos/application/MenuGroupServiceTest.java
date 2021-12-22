@@ -2,7 +2,10 @@ package kitchenpos.application;
 
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.domain.MenuGroupRepository;
 import kitchenpos.domain.Product;
+import kitchenpos.dto.MenuGroupRequest;
+import kitchenpos.dto.MenuGroupResponse;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -24,25 +27,33 @@ import static org.mockito.Mockito.when;
 class MenuGroupServiceTest {
     @Mock
     private MenuGroupDao menuGroupDao;
+    @Mock
+    private MenuGroupRepository menuGroupRepository;
 
     private MenuGroupService menuGroupService;
     private MenuGroup exampleMenuGroup;
     private MenuGroup exampleMenuGroup2;
 
+    private MenuGroupRequest exampleMenuGroupRequest;
+    private MenuGroupRequest exampleMenuGroupRequest2;
+
     @BeforeEach
     void setUp() {
-        menuGroupService = new MenuGroupService(menuGroupDao);
+        menuGroupService = new MenuGroupService(menuGroupRepository);
         exampleMenuGroup = new MenuGroup(1L, "메뉴 이름");
         exampleMenuGroup2 = new MenuGroup(2L, "메뉴 이름2");
+
+        exampleMenuGroupRequest = new MenuGroupRequest(1L, "메뉴 이름");
+        exampleMenuGroupRequest2 = new MenuGroupRequest(2L, "메뉴 이름2");
     }
 
     @DisplayName("메뉴 그룹 생성 테스트")
     @Test
     void createMenuGroupTest() {
-        when(menuGroupDao.save(any())).thenReturn(exampleMenuGroup);
+        when(menuGroupRepository.save(any())).thenReturn(exampleMenuGroup);
 
         // when
-        final MenuGroup createdMenuGroup = menuGroupService.create(new MenuGroup());
+        final MenuGroupResponse createdMenuGroup = menuGroupService.create(exampleMenuGroupRequest);
 
         // then
         assertAll(
@@ -54,11 +65,11 @@ class MenuGroupServiceTest {
     @DisplayName("메뉴 그룹 목록 조회 테스트")
     @Test
     void getListMenuGroupTest() {
-        when(menuGroupDao.findAll())
+        when(menuGroupRepository.findAll())
                 .thenReturn(Lists.newArrayList(exampleMenuGroup, exampleMenuGroup2));
 
         // when
-        final List<MenuGroup> createdMenuGroups = menuGroupService.list();
+        final List<MenuGroupResponse> createdMenuGroups = menuGroupService.list();
 
         // then
         assertAll(
