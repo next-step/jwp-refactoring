@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/table-groups")
 public class TableGroupRestController {
+
     private static final String MAPPING_URL = "/api/table-groups/";
     private final TableGroupService tableGroupService;
 

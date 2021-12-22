@@ -6,6 +6,7 @@ import java.util.Arrays;
 import kitchenpos.exception.InvalidArgumentException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.util.ReflectionTestUtils;
 
 @DisplayName("테이블 목록 일급 컬렉션 테스트")
 class OrderTablesTest {
@@ -18,7 +19,8 @@ class OrderTablesTest {
 
         OrderTables orderTables = new OrderTables();
 
-        assertThatThrownBy(() -> orderTables.validateAddTables(Arrays.asList(orderTable_1, orderTable_2)))
+        assertThatThrownBy(
+            () -> orderTables.validateAddTables(Arrays.asList(orderTable_1, orderTable_2)))
             .isInstanceOf(InvalidArgumentException.class)
             .hasMessage("빈 테이블만 단체지정이 가능합니다.");
     }
@@ -27,7 +29,8 @@ class OrderTablesTest {
     @Test
     void validateAddMinSizeTable() {
         OrderTables orderTables = new OrderTables();
-        assertThatThrownBy(() -> orderTables.validateAddTables(Arrays.asList(OrderTable.of(0, true))))
+        assertThatThrownBy(
+            () -> orderTables.validateAddTables(Arrays.asList(OrderTable.of(0, true))))
             .isInstanceOf(InvalidArgumentException.class)
             .hasMessage("두 테이블 이상이어야 단체지정이 가능합니다.");
     }
@@ -37,11 +40,12 @@ class OrderTablesTest {
     void validateAddOtherTableGroup() {
         OrderTable orderTable_1 = OrderTable.of(0, true);
         OrderTable orderTable_2 = OrderTable.of(2, true);
-        orderTable_2.relateTableGroup(TableGroup.create());
+        ReflectionTestUtils.setField(orderTable_2, "table_group_id", 1L);
 
         OrderTables orderTables = new OrderTables();
 
-        assertThatThrownBy(() -> orderTables.validateAddTables(Arrays.asList(orderTable_1, orderTable_2)))
+        assertThatThrownBy(
+            () -> orderTables.validateAddTables(Arrays.asList(orderTable_1, orderTable_2)))
             .isInstanceOf(InvalidArgumentException.class)
             .hasMessage("다른 단체에 속한 테이블이 있습니다.");
     }

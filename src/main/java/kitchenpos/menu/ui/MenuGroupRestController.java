@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/menu-groups")
 public class MenuGroupRestController {
+
     private static final String MAPPING_URL = "/api/menu-groups/";
     private final MenuGroupService menuGroupService;
 

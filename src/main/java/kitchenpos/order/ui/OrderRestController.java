@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/orders")
 public class OrderRestController {
+
     private static final String MAPPING_URL = "/api/orders/";
     private final OrderService orderService;
 

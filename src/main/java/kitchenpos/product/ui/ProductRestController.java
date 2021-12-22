@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/products")
 public class ProductRestController {
+
     private static final String MAPPING_URL = "/api/products/";
     private final ProductService productService;
 

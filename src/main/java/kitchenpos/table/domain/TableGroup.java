@@ -13,21 +13,23 @@ import javax.persistence.Id;
 @Entity
 public class TableGroup {
 
+    @Column(nullable = false)
+    private final LocalDateTime createdDate = LocalDateTime.now();
+    @Embedded
+    private final OrderTables orderTables = new OrderTables();
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private final LocalDateTime createdDate = LocalDateTime.now();
-
-    @Embedded
-    private final OrderTables orderTables = new OrderTables();
-
     protected TableGroup() {
     }
 
-    public static TableGroup create() {
-        return new TableGroup();
+    private TableGroup(List<OrderTable> orderTables) {
+        this.orderTables.addOrderTables(orderTables);
+    }
+
+    public static TableGroup fromOrderTables(List<OrderTable> orderTables) {
+        return new TableGroup(orderTables);
     }
 
     public Long getId() {
@@ -42,33 +44,12 @@ public class TableGroup {
         return orderTables.get();
     }
 
-    public void addOrderTables(List<OrderTable> orderTables) {
-        this.orderTables.validateAddTables(orderTables);
-
-        for (OrderTable orderTable : orderTables) {
-            orderTable.updateEmpty(Boolean.FALSE);
-            addOrderTable(orderTable);
-        }
-    }
-
     public void clearOrderTable() {
         orderTables.clearOrderTable();
     }
 
     public boolean isEmpty() {
         return orderTables.isEmpty();
-    }
-
-    protected void removeOrderTable(OrderTable orderTable) {
-        this.orderTables.remove(orderTable);
-    }
-
-    protected void addOrderTable(OrderTable orderTable) {
-        orderTables.add(orderTable);
-
-        if (!orderTable.equalTableGroup(this)) {
-            orderTable.relateTableGroup(this);
-        }
     }
 
     @Override

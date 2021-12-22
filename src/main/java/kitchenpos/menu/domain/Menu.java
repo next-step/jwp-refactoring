@@ -20,22 +20,18 @@ import kitchenpos.exception.InvalidArgumentException;
 @Entity
 public class Menu extends BaseEntity {
 
+    @Embedded
+    private final MenuProducts menuProducts = new MenuProducts();
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @Embedded
     private MustHaveName name;
-
     @Embedded
     private Price price;
-
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "menu_group_id", foreignKey = @ForeignKey(name = "fk_menu_menu_group"))
     private MenuGroup menuGroup;
-
-    @Embedded
-    private final MenuProducts menuProducts = new MenuProducts();
 
     protected Menu() {
     }

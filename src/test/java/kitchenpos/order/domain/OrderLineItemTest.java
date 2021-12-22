@@ -25,7 +25,8 @@ class OrderLineItemTest {
 
         assertFalse(orderLineItem_1.equalsOrderLineItem(orderLineItem_2));
 
-        Order order = Order.of(orderTable, OrderStatus.COOKING, Arrays.asList(orderLineItem_1, orderLineItem_2));
+        Order order = Order
+            .of(orderTable, OrderStatus.COOKING, Arrays.asList(orderLineItem_1, orderLineItem_2));
         ReflectionTestUtils.setField(order, "id", 1L);
 
         assertTrue(orderLineItem_1.equalsOrderLineItem(orderLineItem_2));

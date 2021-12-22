@@ -37,20 +37,20 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
 
+    private final OrderRequest orderRequest = new OrderRequest(1L,
+        Arrays.asList(new OrderLineItemRequest(1L, 1L)));
+    private final Menu menu = Menu.of("후라이드치킨", 10000, MenuGroup.from("치킨"));
+    private final OrderTable orderTable = OrderTable.of(2, false);
+    private final Order order = orderRequest
+        .toEntity(orderTable, Arrays.asList(OrderLineItem.of(menu, 2L)));
     @Mock
     private MenuRepository menuRepository;
     @Mock
     private OrderRepository orderRepository;
     @Mock
     private OrderTableRepository orderTableRepository;
-
     @InjectMocks
     private OrderService orderService;
-
-    private final OrderRequest orderRequest = new OrderRequest(1L, Arrays.asList(new OrderLineItemRequest(1L, 1L)));
-    private final Menu menu = Menu.of("후라이드치킨", 10000, MenuGroup.from("치킨"));
-    private final OrderTable orderTable = OrderTable.of(2, false);
-    private final Order order = orderRequest.toEntity(orderTable, Arrays.asList(OrderLineItem.of(menu, 2L)));
 
     @Test
     @DisplayName("주문을 등록한다.")
@@ -95,7 +95,8 @@ class OrderServiceTest {
         when(orderRepository.findById(anyLong()))
             .thenReturn(Optional.of(order));
 
-        OrderResponse changed = orderService.changeOrderStatus(1L, new OrderStatusRequest(OrderStatus.COMPLETION.name()));
+        OrderResponse changed = orderService
+            .changeOrderStatus(1L, new OrderStatusRequest(OrderStatus.COMPLETION.name()));
 
         assertFalse(order.isOnGoing());
         assertThat(changed.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION.name());

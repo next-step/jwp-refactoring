@@ -53,7 +53,8 @@ class MenuGroupServiceTest {
 
         assertAll(
             () -> assertThat(menuGroups.size()).isEqualTo(1),
-            () -> assertThat(menuGroups).extracting(MenuGroupResponse::getName).containsExactly(MENU_GROUP_NAME)
+            () -> assertThat(menuGroups).extracting(MenuGroupResponse::getName)
+                .containsExactly(MENU_GROUP_NAME)
         );
     }
 

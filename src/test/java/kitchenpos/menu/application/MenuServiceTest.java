@@ -33,6 +33,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 @DisplayName("메뉴 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
 public class MenuServiceTest {
+
     @Mock
     private MenuRepository menuRepository;
     @Mock
@@ -70,8 +71,8 @@ public class MenuServiceTest {
         assertAll(
             () -> assertThat(saved.getName()).isEqualTo("후라이드치킨"),
             () -> assertThat(saved.getMenuProducts())
-            .extracting(MenuProductResponse::getQuantity)
-            .containsExactly(1L)
+                .extracting(MenuProductResponse::getQuantity)
+                .containsExactly(1L)
         );
     }
 

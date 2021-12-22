@@ -20,6 +20,7 @@ class OrderTest {
     final OrderTable orderTable = OrderTable.of(2, false);
     final Menu menu = Menu.of("후라이드치킨", 10000, MenuGroup.from("치킨"));
     final OrderLineItem orderLineItem = OrderLineItem.of(menu, 2L);
+
     @Test
     @DisplayName("주문 진행중 여부")
     void isOnGoing() {
@@ -48,7 +49,8 @@ class OrderTest {
             .isInstanceOf(InvalidArgumentException.class)
             .hasMessage("테이블은 필수입니다.");
 
-        assertThatThrownBy(() -> Order.of(OrderTable.of(0, true), null, Arrays.asList(orderLineItem)))
+        assertThatThrownBy(
+            () -> Order.of(OrderTable.of(0, true), null, Arrays.asList(orderLineItem)))
             .isInstanceOf(InvalidArgumentException.class)
             .hasMessage("빈 테이블은 주문을 할 수 없습니다.");
 

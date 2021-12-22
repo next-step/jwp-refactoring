@@ -2,7 +2,8 @@ package kitchenpos.table.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 import kitchenpos.exception.CannotUpdatedException;
@@ -13,6 +14,7 @@ import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.util.ReflectionTestUtils;
 
 @DisplayName("테이블 도메인 테스트")
 class OrderTableTest {
@@ -31,7 +33,7 @@ class OrderTableTest {
     @Test
     void validateUpdateEmpty() {
         OrderTable orderTable = OrderTable.of(1, false);
-        orderTable.relateTableGroup(TableGroup.create());
+        ReflectionTestUtils.setField(orderTable, "table_group_id", 1L);
 
         assertThatThrownBy(() -> orderTable.updateEmpty(Boolean.TRUE))
             .isInstanceOf(CannotUpdatedException.class)

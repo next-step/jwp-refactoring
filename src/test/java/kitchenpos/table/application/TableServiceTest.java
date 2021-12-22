@@ -25,13 +25,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @DisplayName("테이블 서비스 테스트")
 @ExtendWith({MockitoExtension.class})
 public class TableServiceTest {
-    @Mock
-    private OrderTableRepository orderTableRepository;
-
-    @InjectMocks
-    private TableService tableService;
 
     private final OrderTable emptyTable = OrderTable.of(0, true);
+    @Mock
+    private OrderTableRepository orderTableRepository;
+    @InjectMocks
+    private TableService tableService;
 
     @Test
     @DisplayName("빈 테이블을 등록한다.")

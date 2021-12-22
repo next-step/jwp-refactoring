@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/menus")
 public class MenuRestController {
+
     private static final String MAPPING_URL = "/api/menus/";
     private final MenuService menuService;
 

@@ -26,6 +26,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @DisplayName("상품 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
+
     private static final Integer PRODUCT_PRICE = 10000;
     private static final String PRODUCT_NAME = "상품";
     private Product product;

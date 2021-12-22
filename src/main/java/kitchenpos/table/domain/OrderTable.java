@@ -2,16 +2,11 @@ package kitchenpos.table.domain;
 
 
 import java.util.Objects;
-import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import kitchenpos.common.domain.BaseEntity;
 import kitchenpos.exception.CannotUpdatedException;
 import kitchenpos.order.domain.Order;
@@ -20,22 +15,16 @@ import kitchenpos.order.domain.Orders;
 @Entity
 public class OrderTable extends BaseEntity {
 
+    @Embedded
+    private final Orders orders = Orders.create();
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "table_group_id", foreignKey = @ForeignKey(name = "fk_order_table_table_group"))
-    private TableGroup tableGroup;
-
+    private Long table_group_id;
     @Embedded
     private GuestNumber numberOfGuests;
-
     @Embedded
     private EmptyTable empty;
-
-    @Embedded
-    private final Orders orders = Orders.create();
 
     protected OrderTable() {
     }
@@ -49,18 +38,6 @@ public class OrderTable extends BaseEntity {
         return new OrderTable(numberOfGuests, empty);
     }
 
-    public void relateTableGroup(TableGroup tableGroup) {
-        if (Objects.nonNull(this.tableGroup)) {
-            this.tableGroup.removeOrderTable(this);
-        }
-        this.tableGroup = tableGroup;
-        tableGroup.addOrderTable(this);
-    }
-
-    public void removeTableGroup() {
-        this.tableGroup = null;
-    }
-
     public void addOrder(Order order) {
         orders.add(order);
     }
@@ -69,9 +46,10 @@ public class OrderTable extends BaseEntity {
         this.orders.remove(order);
     }
 
-    public void updateEmpty(Boolean empty) {
+    public OrderTable updateEmpty(Boolean empty) {
         validateUpdateEmpty();
         this.empty = EmptyTable.valueOf(empty);
+        return this;
     }
 
     public void updateNumberOfGuests(Integer numberOfGuests) {
@@ -79,21 +57,8 @@ public class OrderTable extends BaseEntity {
         this.numberOfGuests = GuestNumber.valueOf(numberOfGuests);
     }
 
-    public void clearTableGroup() {
-        validateOnGoingOrder();
-        this.empty = EmptyTable.valueOf(Boolean.TRUE);
-        removeTableGroup();
-    }
-
-    public boolean equalTableGroup(TableGroup tableGroup) {
-        if (Objects.isNull(this.tableGroup)) {
-            return false;
-        }
-        return this.tableGroup.equals(tableGroup);
-    }
-
     public boolean isNotEmptyTableGroup() {
-        return Objects.nonNull(this.tableGroup);
+        return Objects.nonNull(table_group_id);
     }
 
     public boolean isNotEmpty() {
@@ -113,7 +78,7 @@ public class OrderTable extends BaseEntity {
     }
 
     private void validateUpdateEmpty() {
-        if (Objects.nonNull(tableGroup)) {
+        if (Objects.nonNull(table_group_id)) {
             throw new CannotUpdatedException("단체지정된 테이블은 변경할 수 없습니다.");
         }
 
@@ -126,7 +91,7 @@ public class OrderTable extends BaseEntity {
         }
     }
 
-    private void validateOnGoingOrder() {
+    public void validateOnGoingOrder() {
         if (orders.isOnGoing()) {
             throw new CannotUpdatedException("주문이 완료되지 않은 테이블이 있습니다.");
         }

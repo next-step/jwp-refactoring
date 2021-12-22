@@ -16,21 +16,8 @@ import org.springframework.http.MediaType;
 
 @DisplayName("메뉴 그룹 인수 테스트")
 public class MenuGroupAcceptanceTest extends AcceptanceTest {
+
     private static final String URL = "/api/menu-groups";
-
-    @Test
-    @DisplayName("메뉴 그룹을 관리한다.")
-    void manageMenuGroup() {
-        // 메뉴 그룹 등록 요청
-        ExtractableResponse<Response> saveResponse = 메뉴그룹_등록_요청("메뉴그룹");
-        // 메뉴 그룹 등록 됨
-        메뉴그룹_등록_됨(saveResponse);
-
-        // 메뉴 그룹 조회 요청
-        ExtractableResponse<Response> response = 메뉴그룹_목록_조회_요청();
-        // 메뉴 그룹 조회 됨
-        메뉴그룹_목록_조회_됨(response, "메뉴그룹");
-    }
 
     public static ExtractableResponse<Response> 메뉴그룹_등록_요청(String name) {
         MenuGroupRequest request = new MenuGroupRequest(name);
@@ -57,7 +44,8 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 메뉴그룹_목록_조회_됨(ExtractableResponse<Response> response, String... expected) {
-        List<MenuGroupResponse> menuGroups = response.jsonPath().getList(".", MenuGroupResponse.class);
+        List<MenuGroupResponse> menuGroups = response.jsonPath()
+            .getList(".", MenuGroupResponse.class);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(menuGroups).extracting(MenuGroupResponse::getName).containsExactly(expected);
@@ -65,5 +53,19 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
 
     public static MenuGroupResponse 메뉴그룹_등록_되어있음(String name) {
         return 메뉴그룹_등록_요청(name).as(MenuGroupResponse.class);
+    }
+
+    @Test
+    @DisplayName("메뉴 그룹을 관리한다.")
+    void manageMenuGroup() {
+        // 메뉴 그룹 등록 요청
+        ExtractableResponse<Response> saveResponse = 메뉴그룹_등록_요청("메뉴그룹");
+        // 메뉴 그룹 등록 됨
+        메뉴그룹_등록_됨(saveResponse);
+
+        // 메뉴 그룹 조회 요청
+        ExtractableResponse<Response> response = 메뉴그룹_목록_조회_요청();
+        // 메뉴 그룹 조회 됨
+        메뉴그룹_목록_조회_됨(response, "메뉴그룹");
     }
 }

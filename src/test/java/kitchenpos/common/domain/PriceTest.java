@@ -49,7 +49,8 @@ class PriceTest {
             () -> assertFalse(price.equals(200), "integer"),
             () -> assertFalse(price.equals(BigDecimal.valueOf(200)), "bigdecimal"),
             () -> assertTrue(price.equals(Price.fromInteger(200)), "price from integer"),
-            () -> assertTrue(price.equals(Price.valueOf(BigDecimal.valueOf(200))), "price from bigdecimal")
+            () -> assertTrue(price.equals(Price.valueOf(BigDecimal.valueOf(200))),
+                "price from bigdecimal")
         );
     }
 

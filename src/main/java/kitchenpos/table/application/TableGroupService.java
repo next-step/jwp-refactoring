@@ -30,19 +30,20 @@ public class TableGroupService {
 
         validateTableSize(ids, orderTables);
 
-        TableGroup tableGroup = TableGroup.create();
-        tableGroup.addOrderTables(orderTables);
-
-        TableGroup persist = tableGroupRepository.save(tableGroup);
+        TableGroup persist = tableGroupRepository.save(TableGroup.fromOrderTables(orderTables));
 
         return TableGroupResponse.of(persist);
     }
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
-        final TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
-            .orElseThrow(() -> new NotFoundException("해당하는 단체를 찾을 수 없습니다."));
+        final TableGroup tableGroup = findTableGroup(tableGroupId);
         tableGroup.clearOrderTable();
+    }
+
+    private TableGroup findTableGroup(final Long tableGroupId) {
+        return tableGroupRepository.findById(tableGroupId)
+            .orElseThrow(() -> new NotFoundException("해당하는 단체를 찾을 수 없습니다."));
     }
 
     private List<OrderTable> findOrderTables(List<Long> ids) {

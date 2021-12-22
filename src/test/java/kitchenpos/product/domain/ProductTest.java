@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 
 @DisplayName("상품 도메인 테스트")
 class ProductTest {
+
     private static final Integer PRODUCT_PRICE = 10000;
     private static final String PRODUCT_NAME = "상품";
 

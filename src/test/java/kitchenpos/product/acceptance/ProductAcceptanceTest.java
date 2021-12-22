@@ -19,21 +19,6 @@ public class ProductAcceptanceTest extends AcceptanceTest {
 
     private static final String PRODUCT_URL = "/api/products";
 
-    @Test
-    @DisplayName("상품을 관리한다.")
-    void manageProduct() {
-        // 상품 등록 요청
-        ExtractableResponse<Response> saveResponse = 상품_등록_요청("상품", 10000);
-        // 상품 등록 됨
-        상품_등록_됨(saveResponse);
-
-        // 상품 목록 조회 요청
-        ExtractableResponse<Response> response = 상품_목록_조회_요청();
-        // 상품 목록 조회 됨
-        상품_목록_조회_됨(response, "상품");
-
-    }
-
     public static ExtractableResponse<Response> 상품_등록_요청(String name, Integer price) {
         ProductRequest productRequest = new ProductRequest(name, price);
 
@@ -67,5 +52,20 @@ public class ProductAcceptanceTest extends AcceptanceTest {
 
     public static ProductResponse 상품_등록_되어있음(String name, int price) {
         return 상품_등록_요청(name, price).as(ProductResponse.class);
+    }
+
+    @Test
+    @DisplayName("상품을 관리한다.")
+    void manageProduct() {
+        // 상품 등록 요청
+        ExtractableResponse<Response> saveResponse = 상품_등록_요청("상품", 10000);
+        // 상품 등록 됨
+        상품_등록_됨(saveResponse);
+
+        // 상품 목록 조회 요청
+        ExtractableResponse<Response> response = 상품_목록_조회_요청();
+        // 상품 목록 조회 됨
+        상품_목록_조회_됨(response, "상품");
+
     }
 }

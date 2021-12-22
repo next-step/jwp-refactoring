@@ -23,33 +23,30 @@ import kitchenpos.table.domain.OrderTable;
 public class Order extends BaseEntity {
 
     private static final Integer MIN_SIZE = 1;
-
+    private final LocalDateTime orderedTime = LocalDateTime.now();
+    @Embedded
+    private final OrderLineItems orderLineItems = new OrderLineItems();
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "order_table_id", foreignKey = @ForeignKey(name = "fk_orders_order_table"))
     private OrderTable orderTable;
-
     @Enumerated(value = EnumType.STRING)
     private OrderStatus orderStatus;
-
-    private final LocalDateTime orderedTime = LocalDateTime.now();
-
-    @Embedded
-    private final OrderLineItems orderLineItems = new OrderLineItems();
 
     protected Order() {
     }
 
-    private Order(OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
+    private Order(OrderTable orderTable, OrderStatus orderStatus,
+        List<OrderLineItem> orderLineItems) {
         initOrderStatus(orderStatus);
         relateOrderTable(orderTable);
         addOrderLineItems(orderLineItems);
     }
 
-    public static Order of(OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
+    public static Order of(OrderTable orderTable, OrderStatus orderStatus,
+        List<OrderLineItem> orderLineItems) {
         return new Order(orderTable, orderStatus, orderLineItems);
     }
 
