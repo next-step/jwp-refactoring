@@ -1,5 +1,6 @@
 package kitchenpos.order.fixtures;
 
+import kitchenpos.order.domain.Order;
 import kitchenpos.order.dto.OrderLineItemSaveRequest;
 import kitchenpos.order.dto.OrderSaveRequest;
 import kitchenpos.order.dto.OrderStatusUpdateRequest;

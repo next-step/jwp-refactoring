@@ -7,7 +7,6 @@ import kitchenpos.table.exception.InvalidTableException;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 import static javax.persistence.FetchType.LAZY;
@@ -30,8 +29,8 @@ public class Order {
     @Column(nullable = false)
     private final LocalDateTime orderedTime = LocalDateTime.now();
 
-    @OneToMany(mappedBy = "order", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
-    private final List<OrderLineItem> orderLineItems = new ArrayList<>();
+    @Embedded
+    private final OrderLineItems orderLineItems = new OrderLineItems();
 
     protected Order() {
     }
@@ -43,7 +42,7 @@ public class Order {
     }
 
     private void addOrderLineItems(List<OrderLineItem> orderLineItems) {
-        orderLineItems.forEach(orderLineItem -> this.orderLineItems.add(orderLineItem.in(this)));
+        this.orderLineItems.add(this, orderLineItems);
     }
 
     private void validate(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
@@ -83,7 +82,7 @@ public class Order {
     }
 
     public List<OrderLineItem> getOrderLineItems() {
-        return orderLineItems;
+        return orderLineItems.value();
     }
 
 }

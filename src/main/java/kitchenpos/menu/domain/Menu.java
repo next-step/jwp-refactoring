@@ -4,7 +4,6 @@ import kitchenpos.menu.exception.LimitPriceException;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -24,8 +23,8 @@ public class Menu {
     @JoinColumn(name = "menu_group_id")
     private MenuGroup menuGroup;
 
-    @OneToMany(mappedBy = "menu", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
-    private final List<MenuProduct> menuProducts = new ArrayList<>();
+    @Embedded
+    private final MenuProducts menuProducts = new MenuProducts();
 
     protected Menu() {
     }
@@ -39,9 +38,7 @@ public class Menu {
 
     private void addMenuProducts(List<MenuProduct> newMenuProducts) {
         comparePrice(newMenuProducts);
-        newMenuProducts.forEach(
-                menuProduct -> menuProducts.add(menuProduct.by(this))
-        );
+        menuProducts.add(this, newMenuProducts);
     }
 
     private void comparePrice(List<MenuProduct> menuProducts) {
@@ -72,6 +69,6 @@ public class Menu {
     }
 
     public List<MenuProduct> getMenuProducts() {
-        return menuProducts;
+        return menuProducts.value();
     }
 }

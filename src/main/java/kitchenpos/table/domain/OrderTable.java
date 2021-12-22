@@ -1,13 +1,12 @@
 package kitchenpos.table.domain;
 
 import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.Orders;
 import kitchenpos.table.exception.NotSupportUngroupException;
 import kitchenpos.table.exception.TableEmptyUpdateException;
 import kitchenpos.table.exception.TableGuestNumberUpdateException;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 import static javax.persistence.FetchType.LAZY;
@@ -23,13 +22,13 @@ public class OrderTable {
     private TableGroup tableGroup;
 
     @Embedded
-    private NumberOfGuests numberOfGuests;
+    private NumberOfGuests numberOfGuests = new NumberOfGuests();
 
     @Column(nullable = false)
     private boolean empty;
 
-    @OneToMany(mappedBy = "orderTable", cascade = {CascadeType.ALL})
-    private final List<Order> orders = new ArrayList<>();
+    @Embedded
+    private final Orders orders = new Orders();
 
     protected OrderTable() {
     }
@@ -40,22 +39,14 @@ public class OrderTable {
     }
 
     public void changeEmpty(boolean changeEmpty) {
-        if (checkTableGroup() || checkOrders()) {
+        if (checkTableGroup() || orders.checkOccupied()) {
             throw new TableEmptyUpdateException();
         }
         this.empty = changeEmpty;
     }
 
-    private boolean checkOrders() {
-        return !orders.isEmpty() && !orderCompleted();
-    }
-
     private boolean checkTableGroup() {
         return Objects.nonNull(tableGroup);
-    }
-
-    private boolean orderCompleted() {
-        return orders.stream().allMatch(Order::isCompleted);
     }
 
     public void updateNumberOfGuests(Integer newNumberOfGuests) {
@@ -67,7 +58,7 @@ public class OrderTable {
     }
 
     public OrderTable addOrder(Order order) {
-        this.orders.add(order);
+        orders.add(order);
         return this;
     }
 
@@ -78,10 +69,10 @@ public class OrderTable {
     }
 
     public void ungroup() {
-        if (checkOrders()) {
+        if (orders.checkOccupied()) {
             throw new NotSupportUngroupException();
         }
-        this.tableGroup = null;
+        tableGroup = null;
     }
 
     public Long getId() {
@@ -98,9 +89,5 @@ public class OrderTable {
 
     public boolean isEmpty() {
         return empty;
-    }
-
-    public List<Order> getOrders() {
-        return orders;
     }
 }

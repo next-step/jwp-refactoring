@@ -121,15 +121,4 @@ class OrderTableRepositoryTest {
         // then
         assertThat(orderTables.size()).isGreaterThanOrEqualTo(0);
     }
-
-    @Test
-    @DisplayName("테이블에 있는 주문 정보를 조회할 수 있다.")
-    public void listWithOrder() {
-        // given
-        final OrderTable orderTable = orderTableRepository.findOneWithOrderByIdJoinFetch(savedTable.getId())
-                .orElseThrow(OrderTableNotFoundException::new);
-
-        // then
-        assertThat(orderTable.getOrders()).isNotNull();
-    }
 }
