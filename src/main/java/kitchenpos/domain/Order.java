@@ -2,13 +2,51 @@ package kitchenpos.domain;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import org.springframework.data.annotation.CreatedDate;
 
+@Entity
+@Table(name = "orders")
 public class Order {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long orderTableId;
-    private String orderStatus;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_table_id", foreignKey = @ForeignKey(name = "fk_orders_order_table"))
+    private OrderTable orderTable;
+
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus;
+
+    @CreatedDate
     private LocalDateTime orderedTime;
+
+    @OneToMany(mappedBy = "order", orphanRemoval = true)
     private List<OrderLineItem> orderLineItems;
+
+    public Order() {
+    }
+
+    public Order(final Long id, final OrderTable orderTable, final OrderStatus orderStatus,
+        final List<OrderLineItem> orderLineItems) {
+        this.id = id;
+        this.orderTable = orderTable;
+        this.orderStatus = orderStatus;
+        this.orderLineItems = orderLineItems;
+    }
 
     public Long getId() {
         return id;
@@ -18,19 +56,19 @@ public class Order {
         this.id = id;
     }
 
-    public Long getOrderTableId() {
-        return orderTableId;
+    public OrderTable getOrderTable() {
+        return orderTable;
     }
 
-    public void setOrderTableId(final Long orderTableId) {
-        this.orderTableId = orderTableId;
+    public void setOrderTable(final OrderTable orderTableId) {
+        this.orderTable = orderTableId;
     }
 
-    public String getOrderStatus() {
+    public OrderStatus getOrderStatus() {
         return orderStatus;
     }
 
-    public void setOrderStatus(final String orderStatus) {
+    public void setOrderStatus(final OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
     }
 
