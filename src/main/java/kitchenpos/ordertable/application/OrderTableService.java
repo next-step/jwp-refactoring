@@ -1,7 +1,6 @@
 package kitchenpos.ordertable.application;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.order.application.OrderService;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
@@ -10,17 +9,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class OrderTableService {
-    private final OrderDao orderDao;
+    private final OrderService orderService;
     private final OrderTableRepository orderTableRepository;
 
-    public OrderTableService(final OrderDao orderDao, final OrderTableRepository orderTableRepository) {
-        this.orderDao = orderDao;
+    public OrderTableService(final OrderService orderService, final OrderTableRepository orderTableRepository) {
+        this.orderService = orderService;
         this.orderTableRepository = orderTableRepository;
     }
 
@@ -37,28 +35,23 @@ public class OrderTableService {
 
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest request) {
-        final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
+        final OrderTable orderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
+        validateChangeEmpty(orderTableId);
+        orderTable.changeEmpty(request.isEmpty());
+        return OrderTableResponse.of(orderTableRepository.save(orderTable));
+    }
 
-        /**
-         *     @DisplayName("주문 테이블의 주문 상태가 조리나 식사 상태일 경우가 아닐 경우 빈 테이블로 변경 가능하다.")
-         *     @Test
-         *     void orderState() {
-         *     }*/
-        if (orderDao.existsByOrderTableIdAndOrderStatusIn(
-                orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new IllegalArgumentException();
+    private void validateChangeEmpty(Long orderTableId) {
+        if (orderService.isCookingOrMealStateByOrderTableId(orderTableId)) {
+            throw new IllegalArgumentException("주문 테이블의 주문 상태가 조리나 식사일 경우에만 테이블의 빈 유무를 변경할 수 있습니다.");
         }
-
-        savedOrderTable.changeEmpty(request.isEmpty());
-
-        return OrderTableResponse.of(orderTableRepository.save(savedOrderTable));
     }
 
     @Transactional
-    public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final OrderTableRequest request) {
+    public OrderTableResponse changeNumberOfGuests(final Long id, final OrderTableRequest request) {
         final int numberOfGuests = request.getNumberOfGuests();
-        final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
+        final OrderTable savedOrderTable = orderTableRepository.findById(id)
                 .orElseThrow(IllegalArgumentException::new);
         savedOrderTable.changeNumberOfGuests(numberOfGuests);
         return OrderTableResponse.of(savedOrderTable);
@@ -71,5 +64,11 @@ public class OrderTableService {
             throw new IllegalArgumentException("올바르지 않는 아이디 목록 입니다.");
         }
         return savedOrderTables;
+    }
+
+    @Transactional(readOnly = true)
+    public OrderTable getOrderTable(Long id) {
+        return orderTableRepository.findById(id)
+                .orElseThrow(IllegalArgumentException::new);
     }
 }

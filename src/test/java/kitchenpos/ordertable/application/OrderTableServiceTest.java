@@ -1,7 +1,6 @@
 package kitchenpos.ordertable.application;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.ordertable.application.OrderTableService;
+import kitchenpos.order.application.OrderService;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
@@ -32,7 +31,7 @@ class OrderTableServiceTest {
     @Mock
     private OrderTableRepository orderTableRepository;
     @Mock
-    private OrderDao orderDao;
+    private OrderService orderService;
     @InjectMocks
     private OrderTableService tableService;
 
@@ -81,7 +80,7 @@ class OrderTableServiceTest {
         final OrderTable expected = getOrderTable(1L, true, 13);
 
         given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(expected));
-        given(orderDao.existsByOrderTableIdAndOrderStatusIn(anyLong(), any())).willReturn(false);
+        given(orderService.isCookingOrMealStateByOrderTableId(anyLong())).willReturn(false);
         given(orderTableRepository.save(any(OrderTable.class))).willReturn(expected);
         // when
         OrderTableResponse orderTable = tableService.changeEmpty(expected.getId(), request);
@@ -113,7 +112,7 @@ class OrderTableServiceTest {
             final OrderTable expected = getOrderTable(1L, true, 13);
 
             given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(expected));
-            given(orderDao.existsByOrderTableIdAndOrderStatusIn(anyLong(), any())).willReturn(true);
+            given(orderService.isCookingOrMealStateByOrderTableId(anyLong())).willReturn(true);
 
             // when
             ThrowableAssert.ThrowingCallable callable = () -> tableService.changeEmpty(expected.getId(), changeEmptyRequest);

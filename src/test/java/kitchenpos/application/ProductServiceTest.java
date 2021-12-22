@@ -1,10 +1,10 @@
 package kitchenpos.application;
 
-import kitchenpos.menu.application.ProductService;
-import kitchenpos.menu.domain.Product;
-import kitchenpos.menu.dto.ProductCreateRequest;
-import kitchenpos.menu.dto.ProductResponse;
-import kitchenpos.menu.infra.ProductRepository;
+import kitchenpos.product.application.ProductService;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
+import kitchenpos.product.infra.ProductRepository;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -37,7 +37,7 @@ class ProductServiceTest {
     @Test
     void create() {
         // given
-        ProductCreateRequest request = getCreateRequest("눈내리는치킨", 17_000);
+        ProductRequest request = getCreateRequest("눈내리는치킨", 17_000);
         Product expected = getProduct(1L, "눈내리는치킨", 17_000);
         given(productRepository.save(any(Product.class))).willReturn(expected);
         // when
@@ -59,7 +59,7 @@ class ProductServiceTest {
         @Test
         void createByEmptyPrice() {
             // given
-            ProductCreateRequest request = getCreateRequest("쌀국수", null);
+            ProductRequest request = getCreateRequest("쌀국수", null);
             // when
             ThrowableAssert.ThrowingCallable createCall = () -> productService.create(request);
             // then
@@ -71,7 +71,7 @@ class ProductServiceTest {
         @Test
         void createByZeroMoreLessPrice() {
             // given
-            ProductCreateRequest request = getCreateRequest("쌀국수", -121);
+            ProductRequest request = getCreateRequest("쌀국수", -121);
             // when
             ThrowableAssert.ThrowingCallable createCall = () -> productService.create(request);
             // then
@@ -98,11 +98,11 @@ class ProductServiceTest {
         return expected;
     }
 
-    private ProductCreateRequest getCreateRequest(String name, int price) {
+    private ProductRequest getCreateRequest(String name, int price) {
         return getCreateRequest(name, BigDecimal.valueOf(price));
     }
 
-    private ProductCreateRequest getCreateRequest(String name, BigDecimal price) {
-        return new ProductCreateRequest(name, price);
+    private ProductRequest getCreateRequest(String name, BigDecimal price) {
+        return new ProductRequest(name, price);
     }
 }

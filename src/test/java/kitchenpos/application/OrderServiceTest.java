@@ -1,14 +1,18 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderLineItemDao;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
-import kitchenpos.domain.OrderStatus;
-import kitchenpos.menu.infra.MenuRepository;
+import kitchenpos.order.application.OrderService;
+import kitchenpos.order.domain.MenuCountOrderValidator;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.order.infra.OrderRepository;
+import kitchenpos.ordertable.application.OrderTableService;
 import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.infra.OrderTableRepository;
 import org.assertj.core.api.ThrowableAssert;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -21,52 +25,57 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static kitchenpos.ordertable.application.OrderTableServiceTest.getOrderTable;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 
 @DisplayName("주문 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
-
     @Mock
-    private MenuRepository menuRepository;
+    private OrderTableService orderTableService;
     @Mock
-    private OrderTableRepository orderTableRepository;
+    private OrderRepository orderRepository;
     @Mock
-    private OrderDao orderDao;
-    @Mock
-    private OrderLineItemDao orderLineItemDao;
+    private MenuCountOrderValidator menuCountOrderValidator;
     @InjectMocks
     private OrderService orderService;
+
+    private OrderTable 빈_주문_테이블;
+    private OrderTable 주문_테이블;
+
+
+    @BeforeEach
+    void setUp() {
+        주문_테이블 = getOrderTable(1L, false, 7);
+        빈_주문_테이블 = getOrderTable(1L, true, 7);
+    }
 
     @DisplayName("주문테이블의 아이디, 주문 항목 목록을 통해 주문을 생성 할 수 있다.")
     @Test
     void create() {
         // given
-        final OrderTable orderTable = getOrderTable(1L, false, 7);
         final OrderLineItem orderLineItem1 = getOrderLineItem(1L, 3);
         final OrderLineItem orderLineItem2 = getOrderLineItem(2L, 4);
-        final Order createRequest = getCreateRequest(orderTable.getId(), Arrays.asList(
-                orderLineItem1,
-                orderLineItem2)
-        );
-        final Order order = getOrder(1L, createRequest);
+        final Order expected = Order.of(1L,
+                getOrderLineItems(orderLineItem1, orderLineItem2));
+        final OrderRequest createRequest = getCreateRequest(주문_테이블.getId(),
+                getOrderLineRequests(orderLineItem1, orderLineItem2));
 
-        given(menuRepository.countByIdIn(any())).willReturn(2L);
-        given(orderTableRepository.findById(any())).willReturn(Optional.of(orderTable));
-        given(orderDao.save(any())).willReturn(order);
-        given(orderLineItemDao.save(orderLineItem1)).willReturn(orderLineItem1);
-        given(orderLineItemDao.save(orderLineItem2)).willReturn(orderLineItem2);
+        given(orderTableService.getOrderTable(anyLong())).willReturn(주문_테이블);
+        doNothing().when(menuCountOrderValidator).validate(any());
+        given(orderRepository.save(any())).willReturn(expected);
 
         // when
-        Order actual = orderService.create(createRequest);
+        OrderResponse actual = orderService.create(createRequest);
         // then
-        assertThat(order).isEqualTo(actual);
+        assertThat(actual).isEqualTo(OrderResponse.of(expected));
     }
 
 
@@ -79,7 +88,8 @@ class OrderServiceTest {
         void orderByEmptyOrderLines() {
             // given
             final OrderTable orderTable = getOrderTable(1L, false, 7);
-            final Order createRequest = getCreateRequest(orderTable.getId(), Collections.emptyList());
+            final OrderRequest createRequest = getCreateRequest(orderTable.getId(), Collections.emptyList());
+            given(orderTableService.getOrderTable(anyLong())).willReturn(주문_테이블);
             // when
             ThrowableAssert.ThrowingCallable callable = () -> orderService.create(createRequest);
             // then
@@ -90,14 +100,12 @@ class OrderServiceTest {
         @Test
         void orderByNotEqualsMenuIds() {
             // given
-            final OrderTable orderTable = getOrderTable(1L, false, 7);
             final OrderLineItem orderLineItem1 = getOrderLineItem(1L, 3);
             final OrderLineItem orderLineItem2 = getOrderLineItem(2L, 4);
-            final Order createRequest = getCreateRequest(orderTable.getId(), Arrays.asList(
-                    orderLineItem1,
-                    orderLineItem2)
-            );
-            given(menuRepository.countByIdIn(any())).willReturn(1L);
+            final OrderRequest createRequest = getCreateRequest(주문_테이블.getId(),
+                    getOrderLineRequests(orderLineItem1, orderLineItem2));
+
+            doThrow(new IllegalArgumentException()).when(menuCountOrderValidator).validate(anyList());
             // when
             ThrowableAssert.ThrowingCallable callable = () -> orderService.create(createRequest);
             // then
@@ -110,13 +118,10 @@ class OrderServiceTest {
             // given
             final OrderLineItem orderLineItem1 = getOrderLineItem(1L, 3);
             final OrderLineItem orderLineItem2 = getOrderLineItem(2L, 4);
-            final Order createRequest = getCreateRequest(null, Arrays.asList(
-                    orderLineItem1,
-                    orderLineItem2)
-            );
+            final OrderRequest createRequest = getCreateRequest(주문_테이블.getId(),
+                    getOrderLineRequests(orderLineItem1, orderLineItem2));
 
-            given(menuRepository.countByIdIn(any())).willReturn(2L);
-            given(orderTableRepository.findById(any())).willReturn(Optional.empty());
+            doThrow(new IllegalArgumentException()).when(orderTableService).getOrderTable(anyLong());
             // when
             ThrowableAssert.ThrowingCallable callable = () -> orderService.create(createRequest);
             // then
@@ -127,17 +132,13 @@ class OrderServiceTest {
         @Test
         void orderByNotExistOrderTable() {
             // given
-            final OrderTable orderTable = getOrderTable(1L, true, 7);
             final OrderLineItem orderLineItem1 = getOrderLineItem(1L, 3);
             final OrderLineItem orderLineItem2 = getOrderLineItem(2L, 4);
-            final Order createRequest = getCreateRequest(1L, Arrays.asList(
-                    orderLineItem1,
-                    orderLineItem2)
-            );
+            final OrderRequest createRequest = getCreateRequest(빈_주문_테이블.getId(),
+                    getOrderLineRequests(orderLineItem1, orderLineItem2));
 
-            given(menuRepository.countByIdIn(any())).willReturn(2L);
-            given(orderTableRepository.findById(any())).willReturn(Optional.of(orderTable));
-
+            given(orderTableService.getOrderTable(anyLong())).willReturn(빈_주문_테이블);
+            doNothing().when(menuCountOrderValidator).validate(any());
             // when
             ThrowableAssert.ThrowingCallable callable = () -> orderService.create(createRequest);
             // then
@@ -146,41 +147,41 @@ class OrderServiceTest {
 
     }
 
-
     @DisplayName("주문 목록을 조회 할 수 있다.")
     @Test
     void list() {
         // given
-        final Order order = getOrder(1L, 1L, Arrays.asList(
-                getOrderLineItem(1L, 3),
-                getOrderLineItem(2L, 4)
-        ));
-        final Order order2 = getOrder(2L, 2L, Arrays.asList(
-                getOrderLineItem(3L, 3),
-                getOrderLineItem(4L, 4)
-        ));
+        final Order order = getOrder(1L, 1L, getOrderLineItems(
+                getOrderLineItem(1L, 3), getOrderLineItem(2L, 4))
+        );
+        final Order order2 = getOrder(2L, 2L, getOrderLineItems(
+                getOrderLineItem(3L, 3), getOrderLineItem(4L, 4))
+        );
         final List<Order> expected = Arrays.asList(order, order2);
 
-        given(orderDao.findAll()).willReturn(expected);
+        given(orderRepository.findAll()).willReturn(expected);
         // when
-        List<Order> list = orderService.list();
+        List<OrderResponse> list = orderService.list();
         // then
-        assertThat(list).containsExactlyElementsOf(expected);
+        assertThat(list).containsExactlyElementsOf(Arrays.asList(OrderResponse.of(order), OrderResponse.of(order2)));
     }
 
     @DisplayName("주문 아이디를 통해 주문 상태를 변경할 수 있다.")
     @Test
     void changeOrderStatus() {
         // given
-        Order changeRequest = getChangeRequest(1L, OrderStatus.COMPLETION.name());
-        final Order expected = getChangeExpectedResult(OrderStatus.COOKING.name());
+        OrderRequest changeRequest = getChangeRequest(OrderStatus.COMPLETION.name());
+        final Order expected = getOrder(1L, 1L, OrderStatus.MEAL, getOrderLineItems(
+                getOrderLineItem(1L, 3), getOrderLineItem(2L, 4))
+        );
 
-        given(orderDao.findById(anyLong())).willReturn(Optional.of(expected));
+        given(orderRepository.findById(anyLong())).willReturn(Optional.of(expected));
         // when
-        final Order actual = orderService.changeOrderStatus(changeRequest.getId(), changeRequest);
+        final OrderResponse actual = orderService.changeOrderStatus(1L, changeRequest);
         // then
         assertThat(actual.getOrderStatus()).isEqualTo(expected.getOrderStatus());
     }
+
 
     @DisplayName("주문 상태를 변경할 수 없는 경우")
     @Nested
@@ -189,10 +190,10 @@ class OrderServiceTest {
         @Test
         void changeOrderStatusByEmptyOrder() {
             // given
-            Order changeRequest = getChangeRequest(1L, OrderStatus.COOKING.name());
-            given(orderDao.findById(anyLong())).willReturn(Optional.empty());
+            OrderRequest changeRequest = getChangeRequest(OrderStatus.COOKING.name());
+            given(orderRepository.findById(anyLong())).willReturn(Optional.empty());
             // when
-            ThrowableAssert.ThrowingCallable callable = () -> orderService.changeOrderStatus(changeRequest.getId(), changeRequest);
+            ThrowableAssert.ThrowingCallable callable = () -> orderService.changeOrderStatus(1L, changeRequest);
             // then
             assertThatThrownBy(callable).isInstanceOf(IllegalArgumentException.class);
         }
@@ -201,58 +202,52 @@ class OrderServiceTest {
         @Test
         void changeOrderStatusByCompletionStatus() {
             // given
-            final Order changeRequest = getChangeRequest(1L, OrderStatus.COMPLETION.name());
-            final Order expected = getChangeExpectedResult(OrderStatus.COMPLETION.name());
-            given(orderDao.findById(anyLong())).willReturn(Optional.of(expected));
+            final OrderRequest changeRequest = getChangeRequest(OrderStatus.COOKING.name());
+            final Order expected = getOrder(1L, 1L, OrderStatus.COMPLETION, getOrderLineItems(
+                    getOrderLineItem(1L, 3), getOrderLineItem(2L, 4))
+            );
+            given(orderRepository.findById(anyLong())).willReturn(Optional.of(expected));
 
             // when
-            ThrowableAssert.ThrowingCallable callable = () -> orderService.changeOrderStatus(changeRequest.getId(), changeRequest);
+            ThrowableAssert.ThrowingCallable callable = () -> orderService.changeOrderStatus(1L, changeRequest);
             // then
             assertThatThrownBy(callable).isInstanceOf(IllegalArgumentException.class);
         }
     }
 
 
-    private Order getChangeExpectedResult(String status) {
-        final Order expected = new Order();
-        expected.setOrderStatus(status);
-        return expected;
+    private List<OrderLineItem> getOrderLineItems(OrderLineItem... orderLineItems) {
+        return Arrays.stream(orderLineItems)
+                .collect(Collectors.toList());
     }
 
-    private Order getChangeRequest(Long id, String status) {
-        Order request = new Order();
-        request.setId(id);
-        request.setOrderStatus(status);
-        return request;
+    private List<OrderLineItemRequest> getOrderLineRequests(OrderLineItem... orderLineItems) {
+        return Arrays.stream(orderLineItems)
+                .map(this::getOrderLineRequest)
+                .collect(Collectors.toList());
     }
 
-    private Order getOrder(long id, Order createRequest) {
-        final Order order = new Order();
-        order.setId(id);
-        order.setOrderTableId(createRequest.getOrderTableId());
-        order.setOrderLineItems(createRequest.getOrderLineItems());
-        return order;
+    private OrderLineItemRequest getOrderLineRequest(OrderLineItem orderLineItem) {
+        return new OrderLineItemRequest(orderLineItem.getMenuId(), orderLineItem.getQuantity());
+    }
+
+    private OrderLineItem getOrderLineItem(long menuId, int quantity) {
+        return OrderLineItem.of(menuId, quantity);
+    }
+
+    private Order getOrder(long id, long orderTableId, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
+        return Order.generate(id, orderTableId, orderStatus, orderLineItems);
     }
 
     private Order getOrder(long id, long orderTableId, List<OrderLineItem> orderLineItems) {
-        final Order order = new Order();
-        order.setId(id);
-        order.setOrderTableId(orderTableId);
-        order.setOrderLineItems(orderLineItems);
-        return order;
+        return Order.generate(id, orderTableId, orderLineItems);
     }
 
-    private Order getCreateRequest(Long orderTableId, List<OrderLineItem> orderLineItems) {
-        final Order order = new Order();
-        order.setOrderTableId(orderTableId);
-        order.setOrderLineItems(orderLineItems);
-        return order;
+    private OrderRequest getChangeRequest(String status) {
+        return new OrderRequest(status);
     }
 
-    private OrderLineItem getOrderLineItem(long seq, int quantity) {
-        final OrderLineItem orderLineItem = new OrderLineItem();
-        orderLineItem.setQuantity(quantity);
-        orderLineItem.setSeq(seq);
-        return orderLineItem;
+    private OrderRequest getCreateRequest(Long orderTableId, List<OrderLineItemRequest> orderLineItems) {
+        return new OrderRequest(orderTableId, orderLineItems);
     }
 }

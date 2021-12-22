@@ -1,5 +1,6 @@
 package kitchenpos.menu.domain;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
@@ -9,8 +10,8 @@ import java.util.List;
 
 @Embeddable
 public class MenuProductGroup {
-    @OneToMany
-    @JoinColumn(name = "menuId")
+    @OneToMany(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "menu_id", nullable = false, updatable = false)
     private final List<MenuProduct> menuProducts = new ArrayList<>();
 
     protected MenuProductGroup() {
@@ -23,7 +24,6 @@ public class MenuProductGroup {
     public static MenuProductGroup of(List<MenuProduct> menuProducts) {
         return new MenuProductGroup(menuProducts);
     }
-
 
     public List<MenuProduct> getMenuProducts() {
         return Collections.unmodifiableList(menuProducts);

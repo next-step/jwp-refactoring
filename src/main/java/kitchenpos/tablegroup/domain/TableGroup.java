@@ -3,6 +3,7 @@ package kitchenpos.tablegroup.domain;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -23,6 +24,7 @@ public class TableGroup {
     private TableGroupOrderTableIds tableGroupOrderTableIds;
 
     @CreatedDate
+    @Column(nullable = false, updatable = false)
     private LocalDateTime createdDate;
 
     protected TableGroup() {

@@ -1,11 +1,11 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.menu.infra.ProductRepository;
+import kitchenpos.product.infra.ProductRepository;
+import kitchenpos.product.domain.Product;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EmptySource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;

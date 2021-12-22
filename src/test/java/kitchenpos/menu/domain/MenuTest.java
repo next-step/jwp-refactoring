@@ -2,7 +2,8 @@ package kitchenpos.menu.domain;
 
 import kitchenpos.menu.infra.MenuGroupRepository;
 import kitchenpos.menu.infra.MenuRepository;
-import kitchenpos.menu.infra.ProductRepository;
+import kitchenpos.product.infra.ProductRepository;
+import kitchenpos.product.domain.Product;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -20,14 +21,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataJpaTest
 class MenuTest {
-
     @Autowired
     private MenuRepository menuRepository;
-
     @Autowired
     private MenuGroupRepository menuGroupRepository;
     @Autowired
     private ProductRepository productRepository;
+
     private Long 추천메뉴_아이디;
     private Long 짬뽕_아이디;
 
