@@ -46,7 +46,8 @@ public class OrderResponse {
     }
 
     public static OrderResponse from(Order order) {
-        return new OrderResponse(order.getId(), OrderTableResponse.from(order.getOrderTable()),
+        return new OrderResponse(order.getId(),
+            OrderTableResponse.from(order.getOrderTable()),
             order.getOrderStatus(), order.getOrderedTime(),
             order.getOrderLineItems()
                 .stream()

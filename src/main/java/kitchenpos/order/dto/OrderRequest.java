@@ -9,11 +9,14 @@ public class OrderRequest {
     private OrderStatus orderStatus;
     private List<OrderLineItemRequest> orderLineItems;
 
-    public OrderRequest(Long orderTableId, OrderStatus orderStatus,
+    public OrderRequest(Long orderTableId,
         List<OrderLineItemRequest> orderLineItems) {
         this.orderTableId = orderTableId;
-        this.orderStatus = orderStatus;
         this.orderLineItems = orderLineItems;
+    }
+
+    public OrderRequest(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
     }
 
     public Long getOrderTableId() {

@@ -6,10 +6,13 @@ import static org.mockito.BDDMockito.given;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderDao;
 import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderLineItemDao;
+import kitchenpos.order.domain.dao.OrderDao;
+import kitchenpos.order.domain.dao.OrderLineItemDao;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderRequest;
 
 public class OrderTestFixtures {
 
@@ -50,4 +53,23 @@ public class OrderTestFixtures {
         given(orderDao.findById(any()))
             .willReturn(Optional.of(order));
     }
+
+    public static OrderRequest convertToOrderRequest(Order order) {
+        return new OrderRequest(order.getOrderTable().getId(),
+            convertToOrderLineItemRequests(order.getOrderLineItems()));
+    }
+
+    public static List<OrderLineItemRequest> convertToOrderLineItemRequests(
+        List<OrderLineItem> orderLineItems) {
+        return orderLineItems.stream()
+            .map(orderLineItem -> convertToOrderLineItemRequest(orderLineItem))
+            .collect(Collectors.toList());
+    }
+
+    private static OrderLineItemRequest convertToOrderLineItemRequest(OrderLineItem orderLineItem) {
+        return new OrderLineItemRequest(orderLineItem.getMenu().getId(),
+            orderLineItem.getQuantity());
+    }
+
+
 }
