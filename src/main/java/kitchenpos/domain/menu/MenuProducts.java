@@ -25,10 +25,6 @@ public class MenuProducts {
         return new MenuProducts(menuProducts);
     }
 
-    public void add(List<MenuProduct> menuProducts) {
-        this.menuProducts.addAll(menuProducts);
-    }
-
     public MenuProducts mapMenu(Menu menu) {
         return menuProducts.stream()
             .map(menuProduct -> menuProduct.mapMenu(menu))
