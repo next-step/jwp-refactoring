@@ -43,6 +43,10 @@ public class Order {
     public Order() {
     }
 
+    public Order(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
+    }
+
     public Order(final Long id, final OrderTable orderTable, final OrderStatus orderStatus,
         final List<OrderLineItem> orderLineItems) {
         this.id = id;
