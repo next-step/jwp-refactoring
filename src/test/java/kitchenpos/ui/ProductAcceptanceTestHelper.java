@@ -50,6 +50,6 @@ public class ProductAcceptanceTestHelper {
 
     public static void 상품갯수_예상과_일치(ExtractableResponse<Response> getResponse, int expectedLength) {
         List<Product> actual = getResponse.jsonPath().getList(".");
-        assertThat(actual.size()).isEqualTo(expectedLength);
+        assertThat(actual).hasSize(expectedLength);
     }
 }
