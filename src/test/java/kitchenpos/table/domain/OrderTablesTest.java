@@ -1,11 +1,9 @@
-package kitchenpos.domain;
+package kitchenpos.table.domain;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.ArrayList;
 import java.util.List;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTables;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -17,7 +15,7 @@ class OrderTablesTest {
     void createLessThanMinimumTables() {
         List<OrderTable> orderTables = new ArrayList<>();
 
-        for (int i = 0; i < OrderTables.MINIMUM_TABLES - 1; i++){
+        for (int i = 0; i < OrderTables.MINIMUM_TABLES - 1; i++) {
             orderTables.add(new OrderTable());
         }
 
