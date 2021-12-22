@@ -3,14 +3,15 @@ package kitchenpos.acceptance;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.fixture.MenuProductFixture;
 import kitchenpos.fixture.OrderLineItemFixture;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.Assertions;
@@ -38,7 +39,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
     private MenuProduct 메뉴_상품;
     private OrderTable 주문_테이블;
     private MenuGroup 메뉴_그룹;
-    private Menu 메뉴;
+    private MenuResponse 메뉴;
     private OrderLineItem 주문_항목;
 
     @BeforeEach
@@ -47,9 +48,9 @@ class OrderAcceptanceTest extends AcceptanceTest {
 
         // given
         상품 = 상품_등록되어_있음("강정치킨", 17_000);
-        메뉴_상품 = MenuProductFixture.create(null, 상품.getId(), 2);
+        메뉴_상품 = MenuProductFixture.create(null, 상품, 2);
         메뉴_그룹 = 메뉴_그룹_등록되어_있음("추천_메뉴_그룹");
-        메뉴 = 메뉴_등록되어_있음("강정치킨_두마리_셋트", 30_000, 메뉴_그룹.getId(), Arrays.asList(메뉴_상품));
+        메뉴 = 메뉴_등록되어_있음("강정치킨_두마리_세트_메뉴", 30_000, 메뉴_그룹.getId(), Arrays.asList(MenuProductRequest.of(상품.getId(), 메뉴_상품.getQuantity())));
         주문_테이블 = 주문_테이블_등록되어_있음(4, false);
         주문_항목 = OrderLineItemFixture.create(null, null, 메뉴.getId(), 1L);
     }

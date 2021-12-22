@@ -3,8 +3,9 @@ package kitchenpos.acceptance;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuProduct;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,18 +40,15 @@ class MenuAcceptanceTest extends AcceptanceTest {
     @Test
     void manageMenu() {
         // given
-        MenuProduct menuProduct = new MenuProduct();
-        menuProduct.setProductId(강정치킨.getId());
-        menuProduct.setQuantity(2);
-
-        Menu menu = new Menu();
-        menu.setName("강정치킨_두마리_셋트");
-        menu.setPrice(BigDecimal.valueOf(30_000));
-        menu.setMenuGroupId(추천_메뉴_그룹.getId());
-        menu.setMenuProducts(Arrays.asList(menuProduct));
+        MenuProductRequest menuProductRequest = MenuProductRequest.of(강정치킨.getId(), 2);
+        MenuRequest menuRequest = MenuRequest.of(
+                "강정치킨_두마리_세트_메뉴"
+                , BigDecimal.valueOf(30_000)
+                , 추천_메뉴_그룹.getId()
+                , Arrays.asList(menuProductRequest));
 
         // when
-        ExtractableResponse<Response> 메뉴_생성_응답 = 메뉴_생성_요청(menu);
+        ExtractableResponse<Response> 메뉴_생성_응답 = 메뉴_생성_요청(menuRequest);
         // then
         메뉴_생성됨(메뉴_생성_응답);
 
@@ -60,7 +58,7 @@ class MenuAcceptanceTest extends AcceptanceTest {
         메뉴_목록_조회됨(메뉴_목록_조회_응답);
     }
 
-    private static ExtractableResponse<Response> 메뉴_생성_요청(Menu params) {
+    private static ExtractableResponse<Response> 메뉴_생성_요청(MenuRequest params) {
         return 생성_요청(API_URL, params);
     }
 
@@ -76,13 +74,9 @@ class MenuAcceptanceTest extends AcceptanceTest {
         성공_200_OK(response);
     }
 
-    public static Menu 메뉴_등록되어_있음(String name, long price, Long menuGroupId, List<MenuProduct> menuProducts) {
-        Menu menu = new Menu();
-        menu.setName(name);
-        menu.setPrice(BigDecimal.valueOf(price));
-        menu.setMenuGroupId(menuGroupId);
-        menu.setMenuProducts(menuProducts);
+    public static MenuResponse 메뉴_등록되어_있음(String name, long price, Long menuGroupId, List<MenuProductRequest> menuProductRequests) {
+        MenuRequest menuRequest = MenuRequest.of(name, BigDecimal.valueOf(price), menuGroupId, menuProductRequests);
 
-        return 메뉴_생성_요청(menu).as(Menu.class);
+        return 메뉴_생성_요청(menuRequest).as(MenuResponse.class);
     }
 }

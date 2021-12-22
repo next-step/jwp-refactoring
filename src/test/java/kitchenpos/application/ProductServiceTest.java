@@ -4,6 +4,7 @@ import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductDao;
 import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -40,10 +41,10 @@ class ProductServiceTest {
         given(productDao.save(any(Product.class))).willReturn(강정치킨);
 
         // when
-        Product 생성된_상품 = productService.create(요청_상품);
+        ProductResponse 생성된_상품 = productService.create(요청_상품);
 
         // then
-        assertThat(생성된_상품).isEqualTo(강정치킨);
+        assertThat(생성된_상품).isEqualTo(ProductResponse.of(강정치킨));
     }
 
     @DisplayName("상품 생성 실패 테스트 - 상품 가격이 0보다 작음")
@@ -64,9 +65,9 @@ class ProductServiceTest {
         given(productDao.findAll()).willReturn(Arrays.asList(강정치킨, 페퍼로니피자));
 
         // when
-        List<Product> 조회된_상품_목록 = productService.list();
+        List<ProductResponse> 조회된_상품_목록 = productService.list();
 
         // then
-        assertThat(조회된_상품_목록).containsExactly(강정치킨, 페퍼로니피자);
+        assertThat(조회된_상품_목록).containsExactly(ProductResponse.of(강정치킨), ProductResponse.of(페퍼로니피자));
     }
 }

@@ -1,11 +1,18 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuProductDao;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.menugroup.domain.MenuGroupDao;
-import kitchenpos.product.domain.ProductDao;
+import kitchenpos.fixture.MenuFixture;
+import kitchenpos.fixture.MenuProductFixture;
+import kitchenpos.menu.application.MenuService;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuDao;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuProductResponse;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.menugroup.application.MenuGroupService;
+import kitchenpos.product.application.ProductService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,14 +23,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
+import java.util.NoSuchElementException;
 
-import static kitchenpos.fixture.MenuFixture.강정치킨_두마리_셋트;
 import static kitchenpos.fixture.MenuGroupFixture.추천_메뉴_그룹;
-import static kitchenpos.fixture.MenuProductFixture.강정치킨_두마리;
 import static kitchenpos.fixture.ProductFixture.강정치킨;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -38,40 +42,40 @@ class MenuServiceTest {
     private MenuDao menuDao;
 
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupService menuGroupService;
 
     @Mock
-    private MenuProductDao menuProductDao;
+    private ProductService productService;
 
-    @Mock
-    private ProductDao productDao;
+    private MenuProduct 강정치킨_두마리;
+    private Menu 강정치킨_두마리_세트_메뉴;
+
+    @BeforeEach
+    public void setUp() {
+        강정치킨_두마리 = MenuProductFixture.create(1L, 강정치킨, 2);
+        강정치킨_두마리_세트_메뉴 = MenuFixture.create(1L, "강정치킨_두마리_세트_메뉴", BigDecimal.valueOf(30_000), 추천_메뉴_그룹, Arrays.asList(강정치킨_두마리));
+
+        강정치킨_두마리.setMenu(강정치킨_두마리_세트_메뉴);
+    }
 
     @DisplayName("메뉴 생성 성공 테스트")
     @Test
     void create_success() {
         // given
-        MenuProduct 요청_메뉴_상품 = new MenuProduct();
-        요청_메뉴_상품.setProductId(강정치킨.getId());
-        요청_메뉴_상품.setQuantity(2);
+        MenuProductRequest 요청_메뉴_상품 = MenuProductRequest.of(강정치킨.getId(), 2);
+        MenuRequest 요청_메뉴 = MenuRequest.of("강정치킨_두마리_세트_메뉴", BigDecimal.valueOf(30_000), 추천_메뉴_그룹.getId(), Arrays.asList(요청_메뉴_상품));
 
-        Menu 요청_메뉴 = new Menu();
-        요청_메뉴.setName("강정치킨_두마리_셋트");
-        요청_메뉴.setPrice(BigDecimal.valueOf(30_000));
-        요청_메뉴.setMenuGroupId(추천_메뉴_그룹.getId());
-        요청_메뉴.setMenuProducts(Arrays.asList(요청_메뉴_상품));
-
-        given(menuGroupDao.existsById(추천_메뉴_그룹.getId())).willReturn(true);
-        given(productDao.findById(강정치킨.getId())).willReturn(Optional.of(강정치킨));
-        given(menuDao.save(any(Menu.class))).willReturn(강정치킨_두마리_셋트);
-        given(menuProductDao.save(any(MenuProduct.class))).willReturn(강정치킨_두마리);
+        given(menuGroupService.findById(any(Long.class))).willReturn(추천_메뉴_그룹);
+        given(productService.findById(any(Long.class))).willReturn(강정치킨);
+        given(menuDao.save(any(Menu.class))).willReturn(강정치킨_두마리_세트_메뉴);
 
         // when
-        Menu 생성된_메뉴 = menuService.create(요청_메뉴);
+        MenuResponse 생성된_메뉴 = menuService.create(요청_메뉴);
 
         // then
         assertAll(
-                () -> assertThat(생성된_메뉴).isEqualTo(강정치킨_두마리_셋트)
-                , () -> assertThat(생성된_메뉴.getMenuProducts()).containsExactly(강정치킨_두마리)
+                () -> assertThat(생성된_메뉴).isEqualTo(MenuResponse.of(강정치킨_두마리_세트_메뉴))
+                , () -> assertThat(생성된_메뉴.getMenuProducts()).containsExactly(MenuProductResponse.of(강정치킨_두마리))
         );
     }
 
@@ -79,15 +83,8 @@ class MenuServiceTest {
     @Test
     void create_failure_invalidPrice() {
         // given
-        MenuProduct 요청_메뉴_상품 = new MenuProduct();
-        요청_메뉴_상품.setProductId(강정치킨.getId());
-        요청_메뉴_상품.setQuantity(2);
-
-        Menu 요청_메뉴 = new Menu();
-        요청_메뉴.setName("강정치킨_두마리_셋트");
-        요청_메뉴.setPrice(BigDecimal.valueOf(-1));
-        요청_메뉴.setMenuGroupId(추천_메뉴_그룹.getId());
-        요청_메뉴.setMenuProducts(Arrays.asList(요청_메뉴_상품));
+        MenuProductRequest 요청_메뉴_상품 = MenuProductRequest.of(강정치킨.getId(), 2);
+        MenuRequest 요청_메뉴 = MenuRequest.of("강정치킨_두마리_세트_메뉴", BigDecimal.valueOf(-1), 추천_메뉴_그룹.getId(), Arrays.asList(요청_메뉴_상품));
 
         // when & then
         assertThatIllegalArgumentException()
@@ -98,60 +95,40 @@ class MenuServiceTest {
     @Test
     void create_failure_notFoundProduct() {
         // given
-        MenuProduct 요청_메뉴_상품 = new MenuProduct();
-        요청_메뉴_상품.setProductId(강정치킨.getId());
-        요청_메뉴_상품.setQuantity(2);
+        MenuProductRequest 요청_메뉴_상품 = MenuProductRequest.of(강정치킨.getId(), 2);
+        MenuRequest 요청_메뉴 = MenuRequest.of("강정치킨_두마리_세트_메뉴", BigDecimal.valueOf(30_000), 추천_메뉴_그룹.getId(), Arrays.asList(요청_메뉴_상품));
 
-        Menu 요청_메뉴 = new Menu();
-        요청_메뉴.setName("강정치킨_두마리_셋트");
-        요청_메뉴.setPrice(BigDecimal.valueOf(30_000));
-        요청_메뉴.setMenuGroupId(추천_메뉴_그룹.getId());
-        요청_메뉴.setMenuProducts(Arrays.asList(요청_메뉴_상품));
-
-        given(menuGroupDao.existsById(추천_메뉴_그룹.getId())).willReturn(true);
+        given(menuGroupService.findById(추천_메뉴_그룹.getId())).willReturn(추천_메뉴_그룹);
+        given(productService.findById(강정치킨.getId())).willThrow(new NoSuchElementException());
 
         // when & then
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> menuService.create(요청_메뉴));
+        assertThatThrownBy(() -> menuService.create(요청_메뉴))
+                .isInstanceOf(NoSuchElementException.class);
     }
 
     @DisplayName("메뉴 생성 실패 테스트 - 메뉴가 메뉴 그룹에 속하지 않음")
     @Test
     void create_failure_notExistsMenuGroup() {
         // given
-        MenuProduct 요청_메뉴_상품 = new MenuProduct();
-        요청_메뉴_상품.setProductId(강정치킨.getId());
-        요청_메뉴_상품.setQuantity(2);
+        MenuProductRequest 요청_메뉴_상품 = MenuProductRequest.of(강정치킨.getId(), 2);
+        MenuRequest 요청_메뉴 = MenuRequest.of("강정치킨_두마리_세트_메뉴", BigDecimal.valueOf(30_000), 추천_메뉴_그룹.getId(), Arrays.asList(요청_메뉴_상품));
 
-        Menu 요청_메뉴 = new Menu();
-        요청_메뉴.setName("강정치킨_두마리_셋트");
-        요청_메뉴.setPrice(BigDecimal.valueOf(30_000));
-        요청_메뉴.setMenuGroupId(추천_메뉴_그룹.getId());
-        요청_메뉴.setMenuProducts(Arrays.asList(요청_메뉴_상품));
-
-        given(menuGroupDao.existsById(추천_메뉴_그룹.getId())).willReturn(false);
+        given(menuGroupService.findById(추천_메뉴_그룹.getId())).willThrow(new NoSuchElementException());
 
         // when & then
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> menuService.create(요청_메뉴));
+        assertThatThrownBy(() -> menuService.create(요청_메뉴))
+                .isInstanceOf(NoSuchElementException.class);
     }
 
     @DisplayName("메뉴 생성 실패 테스트 - 메뉴 가격이 각 메뉴 상품들 가격에 상품 수량을 곱해서 더한 금액을 초과")
     @Test
     void create_failure_exceedMenuPrice() {
         // given
-        MenuProduct 요청_메뉴_상품 = new MenuProduct();
-        요청_메뉴_상품.setProductId(강정치킨.getId());
-        요청_메뉴_상품.setQuantity(2);
+        MenuProductRequest 요청_메뉴_상품 = MenuProductRequest.of(강정치킨.getId(), 2);
+        MenuRequest 요청_메뉴 = MenuRequest.of("강정치킨_두마리_세트_메뉴", BigDecimal.valueOf(51_000), 추천_메뉴_그룹.getId(), Arrays.asList(요청_메뉴_상품));
 
-        Menu 요청_메뉴 = new Menu();
-        요청_메뉴.setName("강정치킨_두마리_셋트");
-        요청_메뉴.setPrice(BigDecimal.valueOf(51_000)); // 세마리 가격
-        요청_메뉴.setMenuGroupId(추천_메뉴_그룹.getId());
-        요청_메뉴.setMenuProducts(Arrays.asList(요청_메뉴_상품));
-
-        given(menuGroupDao.existsById(추천_메뉴_그룹.getId())).willReturn(true);
-        given(productDao.findById(강정치킨.getId())).willReturn(Optional.of(강정치킨));
+        given(menuGroupService.findById(추천_메뉴_그룹.getId())).willReturn(추천_메뉴_그룹);
+        given(productService.findById(강정치킨.getId())).willReturn(강정치킨);
 
         // when & then
         assertThatIllegalArgumentException()
@@ -162,12 +139,12 @@ class MenuServiceTest {
     @Test
     void list() {
         // given
-        given(menuDao.findAll()).willReturn(Arrays.asList(강정치킨_두마리_셋트));
+        given(menuDao.findAll()).willReturn(Arrays.asList(강정치킨_두마리_세트_메뉴));
 
         // when
-        List<Menu> 조회된_메뉴_목록 = menuService.list();
+        List<MenuResponse> 조회된_메뉴_목록 = menuService.list();
 
         // then
-        assertThat(조회된_메뉴_목록).containsExactly(강정치킨_두마리_셋트);
+        assertThat(조회된_메뉴_목록).containsExactly(MenuResponse.of(강정치킨_두마리_세트_메뉴));
     }
 }
