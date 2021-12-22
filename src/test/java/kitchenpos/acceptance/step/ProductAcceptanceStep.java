@@ -1,17 +1,15 @@
 package kitchenpos.acceptance.step;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
-import io.restassured.RestAssured;
 import io.restassured.mapper.TypeRef;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.math.BigDecimal;
 import java.util.List;
-import kitchenpos.domain.product.Product;
 import kitchenpos.dto.product.ProductRequest;
 import kitchenpos.dto.product.ProductResponse;
-import org.springframework.http.MediaType;
 
 public class ProductAcceptanceStep {
 
@@ -27,22 +25,11 @@ public class ProductAcceptanceStep {
     }
 
     public static ExtractableResponse<Response> 상품_등록_요청(ProductRequest request) {
-        return RestAssured
-            .given().log().all()
-            .body(request)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when().post(API_URL)
-            .then().log().all()
-            .extract();
+        return HttpUtil.post(API_URL, request);
     }
 
     public static ExtractableResponse<Response> 상품_목록조회_요청() {
-        return RestAssured
-            .given().log().all()
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when().get(API_URL)
-            .then().log().all()
-            .extract();
+        return HttpUtil.get(API_URL);
     }
 
 
@@ -60,9 +47,12 @@ public class ProductAcceptanceStep {
     public static Long 상품등록_검증(ExtractableResponse<Response> response,
         ProductRequest expected) {
         ProductResponse 등록된_상품 = response.as(ProductResponse.class);
-        assertThat(등록된_상품.getId()).isNotNull();
-        assertThat(등록된_상품.getName()).isEqualTo(expected.getName());
-        assertThat(등록된_상품.getPrice()).isEqualByComparingTo(expected.getPrice());
+
+        assertAll(
+            () -> assertThat(등록된_상품.getId()).isNotNull(),
+            () -> assertThat(등록된_상품.getName()).isEqualTo(expected.getName()),
+            () -> assertThat(등록된_상품.getPrice()).isEqualByComparingTo(expected.getPrice())
+        );
 
         return 등록된_상품.getId();
     }

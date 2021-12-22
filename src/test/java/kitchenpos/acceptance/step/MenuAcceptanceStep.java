@@ -3,7 +3,6 @@ package kitchenpos.acceptance.step;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import io.restassured.RestAssured;
 import io.restassured.mapper.TypeRef;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -11,7 +10,6 @@ import java.math.BigDecimal;
 import java.util.List;
 import kitchenpos.dto.menu.MenuRequest;
 import kitchenpos.dto.menu.MenuResponse;
-import org.springframework.http.MediaType;
 
 public class MenuAcceptanceStep {
 
@@ -25,22 +23,11 @@ public class MenuAcceptanceStep {
     }
 
     public static ExtractableResponse<Response> 메뉴_등록_요청(MenuRequest menu) {
-        return RestAssured
-            .given().log().all()
-            .body(menu)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when().post(API_URL)
-            .then().log().all()
-            .extract();
+        return HttpUtil.post(API_URL, menu);
     }
 
     public static ExtractableResponse<Response> 메뉴_목록조회_요청() {
-        return RestAssured
-            .given().log().all()
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when().get(API_URL)
-            .then().log().all()
-            .extract();
+        return HttpUtil.get(API_URL);
     }
 
     public static Long 메뉴_등록_검증(ExtractableResponse<Response> response,

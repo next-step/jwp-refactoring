@@ -3,14 +3,12 @@ package kitchenpos.acceptance.step;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import io.restassured.RestAssured;
 import io.restassured.mapper.TypeRef;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
 import kitchenpos.dto.order.OrderTableRequest;
 import kitchenpos.dto.order.OrderTableResponse;
-import org.springframework.http.MediaType;
 
 public class TableAcceptanceStep {
 
@@ -25,46 +23,25 @@ public class TableAcceptanceStep {
 
     public static ExtractableResponse<Response> 주문테이블_등록_요청(int numberOfGuests, boolean empty) {
         OrderTableRequest 요청_데이터 = OrderTableRequest.of(numberOfGuests, empty);
-        return RestAssured
-            .given().log().all()
-            .body(요청_데이터)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when().post(API_URL)
-            .then().log().all()
-            .extract();
+        return HttpUtil.post(API_URL, 요청_데이터);
     }
 
     public static ExtractableResponse<Response> 주문테이블_목록조회() {
-        return RestAssured
-            .given().log().all()
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when().get(API_URL)
-            .then().log().all()
-            .extract();
+        return HttpUtil.get(API_URL);
     }
 
 
     public static ExtractableResponse<Response> 주문테이블_빈테이블_상태_변경_요청(Long orderTableId,
-        OrderTableRequest changeOrderTable) {
-        return RestAssured
-            .given().log().all()
-            .body(changeOrderTable)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when().put(API_URL + "/" + orderTableId + "/empty")
-            .then().log().all()
-            .extract();
+        OrderTableRequest orderTableRequest) {
+        String url = API_URL + "/" + orderTableId + "/empty";
+        return HttpUtil.put(url, orderTableRequest);
     }
 
 
     public static ExtractableResponse<Response> 주문테이블_방문손님수_변경_요청(Long orderTableId,
         OrderTableRequest orderTableRequest) {
-        return RestAssured
-            .given().log().all()
-            .body(orderTableRequest)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when().put(API_URL + "/" + orderTableId + "/number-of-guests")
-            .then().log().all()
-            .extract();
+        String url = API_URL + "/" + orderTableId + "/number-of-guests";
+        return HttpUtil.put(url, orderTableRequest);
     }
 
     public static Long 주문테이블_등록_검증(ExtractableResponse<Response> response) {
