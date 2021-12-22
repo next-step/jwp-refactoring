@@ -91,15 +91,16 @@
     - 단위 테스트 가능한 코드에 대해 단위 테스트를 구현하기
 - 데이터 베이스 스키마 변경 및 마이그레이션 활용하기
 - 모델에 `setter` 넣지 않기
+- 객체지향 체조원칙 지향하기
 - `JPA`로 리팩토링 하기
-    - [ ] `JdbcTemplateProductDao` -> `ProductRepository`
-    - [ ] `JdbcTemplateMenuGroupDao` -> `MenuGroupRepository`
-    - [ ] `JdbcTemplateMenuDao` -> `MenuRepository`
-    - [ ] `JdbcTemplateMenuProductDao` -> `MenuProductRepository`
-    - [ ] `JdbcTemplateOrderTableDao` -> `OrderTableRepository`
-    - [ ] `JdbcTemplateTableGroupDao` -> `TableGroupRepository`
-    - [ ] `JdbcTemplateOrderDao` -> `OrderRepository`
-    - [ ] `JdbcTemplateOrderLineItemDao` -> `OrderLineItemRepository`
+    - [X] `JdbcTemplateProductDao` -> `ProductRepository`
+    - [X] `JdbcTemplateMenuGroupDao` -> `MenuGroupRepository`
+    - [X] `JdbcTemplateMenuDao` -> `MenuRepository`
+    - [X] `JdbcTemplateMenuProductDao` -> `MenuProductRepository`
+    - [X] `JdbcTemplateOrderTableDao` -> `OrderTableRepository`
+    - [X] `JdbcTemplateTableGroupDao` -> `TableGroupRepository`
+    - [X] `JdbcTemplateOrderDao` -> `OrderRepository`
+    - [X] `JdbcTemplateOrderLineItemDao` -> `OrderLineItemRepository`
 - [X] 서비스 레이어로직 도메인으로 분리
 - [X] 인수 테스트 리팩토링
 - [X] `Request`, `Response` DTO 분리 
