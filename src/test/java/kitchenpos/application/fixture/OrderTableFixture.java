@@ -19,7 +19,6 @@ public class OrderTableFixture {
         return OrderTable.of(1, false);
     }
 
-
     public static OrderTable 단체지정된_주문테이블() {
         OrderTable orderTable = OrderTable.of(0, true);
         orderTable.changeTableGroup(단체지정(Arrays.asList(빈_테이블(), 빈_테이블())));

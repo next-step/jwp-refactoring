@@ -68,12 +68,12 @@ class TableServiceTest {
     @DisplayName("`주문 테이블` 빈테이블로 변경한다.")
     void changeEmpty() {
         // given
-        OrderTableRequest orderTableRequest = OrderTableRequest.of(0, true);
-        OrderTable 요청_주문테이블 = 한명_주문테이블();
-        given(orderTableRepository.findById(any())).willReturn(Optional.of(요청_주문테이블));
+        OrderTableRequest 요청_주문테이블 = OrderTableRequest.of(0, true);
+        OrderTable 주문테이블 = 한명_주문테이블();
+        given(orderTableRepository.findById(any())).willReturn(Optional.of(주문테이블));
 
         // when
-        OrderTableResponse 빈테이블_변경_결과 = tableService.changeEmpty(1L, orderTableRequest);
+        OrderTableResponse 빈테이블_변경_결과 = tableService.changeEmpty(1L, 요청_주문테이블);
 
         // then
         빈테이블_변경_검증(빈테이블_변경_결과);
@@ -84,11 +84,11 @@ class TableServiceTest {
     void changeNumberOfGuests() {
         // given
         int 방문손님수 = 3;
-        OrderTableRequest orderTableRequest = OrderTableRequest.of(방문손님수, false);
+        OrderTableRequest 요청_주문테이블 = OrderTableRequest.of(방문손님수, false);
         given(orderTableRepository.findById(any())).willReturn(Optional.of(빈_테이블()));
 
         // when
-        OrderTableResponse 빈테이블_변경_결과 = tableService.changeNumberOfGuests(1L, orderTableRequest);
+        OrderTableResponse 빈테이블_변경_결과 = tableService.changeNumberOfGuests(1L, 요청_주문테이블);
 
         방문손님수_변경_검증(방문손님수, 빈테이블_변경_결과);
     }

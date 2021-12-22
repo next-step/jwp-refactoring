@@ -45,9 +45,6 @@ class OrderServiceTest {
     @Mock
     private OrderTableRepository orderTableRepository;
 
-    private final long 주문테이블번호 = 1L;
-    private final long 주문수량 = 1L;
-
     @InjectMocks
     private OrderService orderService;
 
@@ -98,9 +95,8 @@ class OrderServiceTest {
 
     private OrderRequest 요청_주문() {
         List<OrderLineItemRequest> orderLineItemRequests = Collections.singletonList(
-            new OrderLineItemRequest(null, 주문수량));
-        OrderRequest 요청_주문 = new OrderRequest(주문테이블번호, orderLineItemRequests);
-        return 요청_주문;
+            new OrderLineItemRequest(null, 1L));
+        return new OrderRequest(1L, orderLineItemRequests);
     }
 
     private Order 주문() {
