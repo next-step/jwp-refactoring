@@ -23,10 +23,6 @@ public class MustHaveName {
         return new MustHaveName(name);
     }
 
-    public boolean equalsName(String name) {
-        return this.name.equals(name);
-    }
-
     /**
      * 이름은 not null
      *

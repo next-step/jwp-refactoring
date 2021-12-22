@@ -15,7 +15,6 @@ import kitchenpos.common.domain.BaseEntity;
 @Entity(name = "orders")
 public class Order extends BaseEntity {
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -92,5 +91,16 @@ public class Order extends BaseEntity {
 
     public boolean isCompletion() {
         return OrderStatus.COMPLETION.equals(this.orderStatus);
+    }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+            "id=" + id +
+            ", orderTableId=" + orderTableId +
+            ", orderedTime=" + orderedTime +
+            ", orderStatus=" + orderStatus +
+            ", orderLineItems=" + orderLineItems +
+            '}';
     }
 }

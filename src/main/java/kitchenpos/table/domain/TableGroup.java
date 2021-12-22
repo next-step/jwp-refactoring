@@ -13,13 +13,15 @@ import javax.persistence.Id;
 @Entity
 public class TableGroup {
 
-    @Column(nullable = false)
-    private final LocalDateTime createdDate = LocalDateTime.now();
-    @Embedded
-    private final OrderTables orderTables = new OrderTables();
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false)
+    private final LocalDateTime createdDate = LocalDateTime.now();
+
+    @Embedded
+    private final OrderTables orderTables = new OrderTables();
 
     protected TableGroup() {
     }

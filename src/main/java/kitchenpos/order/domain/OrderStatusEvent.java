@@ -1,36 +1,38 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.table.domain.OrderTableStatusEvent;
 import kitchenpos.table.domain.TableStatus;
-import org.springframework.context.ApplicationEvent;
 
-public class OrderStatusEvent extends ApplicationEvent {
+public class OrderStatusEvent extends OrderTableStatusEvent {
 
-    private Long orderTableId;
-    private Long orderId;
-    private OrderStatus orderStatus;
-
-    public OrderStatusEvent(Object source, Order order) {
-        super(source);
-        this.orderTableId = order.getOrderTableId();
-        this.orderId = order.getId();
-        this.orderStatus = order.getOrderStatus();
+    private OrderStatusEvent(Object source, Long orderTableId, Long orderId,
+        TableStatus tableStatus) {
+        super(source, orderTableId, orderId, tableStatus);
     }
 
     public static OrderStatusEvent of(Object source, Order order) {
-        return new OrderStatusEvent(source, order);
+        return new OrderStatusEvent(source, order.getOrderTableId(), order.getId(),
+            convertTableStatus(order.getOrderStatus()));
     }
 
-    public Long getOrderTableId() {
-        return this.orderTableId;
-    }
-
-    public TableStatus getStatus() {
-        if (OrderStatus.COMPLETION.equals(this.orderStatus)) {
+    private static TableStatus convertTableStatus(OrderStatus orderStatus) {
+        if (OrderStatus.COMPLETION.equals(orderStatus)) {
             return TableStatus.COMPLETION;
         }
         return TableStatus.ORDERED;
     }
 
+    @Override
+    public Long getOrderTableId() {
+        return this.orderTableId;
+    }
+
+    @Override
+    public TableStatus getTableStatus() {
+        return this.tableStatus;
+    }
+
+    @Override
     public Long getOrderId() {
         return this.orderId;
     }

@@ -15,7 +15,6 @@ import org.junit.jupiter.api.Test;
 @DisplayName("주문 도메인 테스트")
 class OrderTest {
 
-    final Menu menu = Menu.of("후라이드치킨", 10000, MenuGroup.from("치킨"));
     final OrderLineItem orderLineItem = OrderLineItem.of(OrderMenu.of(1L,
         MustHaveName.valueOf("후라이드치킨"),
         Price.fromInteger(10000)), 2L);

@@ -26,9 +26,7 @@ class MustHaveNameTest {
     @DisplayName("동등성 비교")
     void equals() {
         String name = "shinmj";
-        assertTrue(MustHaveName.valueOf(name).equalsName(name));
         assertTrue(MustHaveName.valueOf(name).equals(MustHaveName.valueOf(name)));
         assertFalse(MustHaveName.valueOf(name).equals(MustHaveName.valueOf("shin")));
-        assertFalse(name.equals(MustHaveName.valueOf(name)));
     }
 }
