@@ -1,0 +1,51 @@
+package kitchenpos.tablegroup.application;
+
+import kitchenpos.dao.OrderDao;
+import kitchenpos.domain.OrderStatus;
+import kitchenpos.tablegroup.domain.OrderTableIdsTableGroupValidator;
+import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.dto.TableGroupCreateRequest;
+import kitchenpos.tablegroup.dto.TableGroupResponse;
+import kitchenpos.tablegroup.infra.TableGroupRepository;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Arrays;
+import java.util.List;
+
+@Service
+public class TableGroupService {
+    private final OrderDao orderDao;
+    private final TableGroupRepository tableGroupRepository;
+    private final OrderTableIdsTableGroupValidator orderTableIdsTableGroupValidator;
+
+    public TableGroupService(OrderDao orderDao, TableGroupRepository tableGroupRepository,
+                             OrderTableIdsTableGroupValidator orderTableIdsTableGroupValidator) {
+        this.orderDao = orderDao;
+        this.tableGroupRepository = tableGroupRepository;
+        this.orderTableIdsTableGroupValidator = orderTableIdsTableGroupValidator;
+    }
+
+    @Transactional
+    public TableGroupResponse create(final TableGroupCreateRequest request) {
+
+        final List<Long> orderTableIds = request.getOrderTableIds();
+        orderTableIdsTableGroupValidator.validate(orderTableIds);
+        return TableGroupResponse.of(tableGroupRepository.save(request.toEntity()));
+    }
+
+    @Transactional
+    public void ungroup(final Long tableGroupId) {
+        final TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
+                .orElseThrow(() -> {
+                    throw new IllegalArgumentException("해당 단체 지정을 찾지 못하였습니다.");
+                });
+
+        if (orderDao.existsByOrderTableIdInAndOrderStatusIn(
+                tableGroup.getOrderTableIds(), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
+            throw new IllegalArgumentException();
+        }
+
+        tableGroupRepository.deleteById(tableGroupId);
+    }
+}

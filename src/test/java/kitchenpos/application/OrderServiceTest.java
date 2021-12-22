@@ -2,12 +2,12 @@ package kitchenpos.application;
 
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
 import kitchenpos.menu.infra.MenuRepository;
+import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.infra.OrderTableRepository;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -22,7 +22,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static kitchenpos.application.TableServiceTest.getOrderTable;
+import static kitchenpos.ordertable.application.OrderTableServiceTest.getOrderTable;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -36,7 +36,7 @@ class OrderServiceTest {
     @Mock
     private MenuRepository menuRepository;
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
     @Mock
     private OrderDao orderDao;
     @Mock
@@ -58,7 +58,7 @@ class OrderServiceTest {
         final Order order = getOrder(1L, createRequest);
 
         given(menuRepository.countByIdIn(any())).willReturn(2L);
-        given(orderTableDao.findById(any())).willReturn(Optional.of(orderTable));
+        given(orderTableRepository.findById(any())).willReturn(Optional.of(orderTable));
         given(orderDao.save(any())).willReturn(order);
         given(orderLineItemDao.save(orderLineItem1)).willReturn(orderLineItem1);
         given(orderLineItemDao.save(orderLineItem2)).willReturn(orderLineItem2);
@@ -116,7 +116,7 @@ class OrderServiceTest {
             );
 
             given(menuRepository.countByIdIn(any())).willReturn(2L);
-            given(orderTableDao.findById(any())).willReturn(Optional.empty());
+            given(orderTableRepository.findById(any())).willReturn(Optional.empty());
             // when
             ThrowableAssert.ThrowingCallable callable = () -> orderService.create(createRequest);
             // then
@@ -136,7 +136,7 @@ class OrderServiceTest {
             );
 
             given(menuRepository.countByIdIn(any())).willReturn(2L);
-            given(orderTableDao.findById(any())).willReturn(Optional.of(orderTable));
+            given(orderTableRepository.findById(any())).willReturn(Optional.of(orderTable));
 
             // when
             ThrowableAssert.ThrowingCallable callable = () -> orderService.create(createRequest);
