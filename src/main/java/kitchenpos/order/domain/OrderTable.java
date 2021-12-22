@@ -118,8 +118,8 @@ public class OrderTable {
         }
     }
 
-    public void validateUngroup() {
-        orders.validateOrderStatusForUngroup();
+    public void validateNotCompletionOrderStatus() {
+        orders.validateNotCompletionOrderStatus();
     }
 
     @Override

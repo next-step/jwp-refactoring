@@ -2,7 +2,6 @@ package kitchenpos.order.application;
 
 import static kitchenpos.common.exception.ExceptionMessage.*;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -11,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import kitchenpos.common.exception.BadRequestException;
 import kitchenpos.common.exception.NotFoundException;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.order.dto.OrderTableResponse;
@@ -48,17 +46,9 @@ public class TableService {
         final OrderTable findOrderTable = orderTableRepository.findById(orderTableId)
             .orElseThrow(() -> new NotFoundException(NOT_FOUND_DATA));
 
-        validateOrderStatus(orderTableId);
-
+        findOrderTable.validateNotCompletionOrderStatus();
         findOrderTable.changeEmpty(orderTableRequest.isEmpty());
         return OrderTableResponse.of(findOrderTable);
-    }
-
-    private void validateOrderStatus(Long orderTableId) {
-        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
-            orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new BadRequestException(WRONG_VALUE);
-        }
     }
 
     @Transactional

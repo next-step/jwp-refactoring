@@ -55,7 +55,7 @@ public class TableGroup {
     }
 
     public void validateUngroup() {
-        orderTables.validateUngroup();
+        orderTables.validateNotCompletionOrderStatus();
     }
 
     public void ungroup() {

@@ -96,7 +96,7 @@ public class Order {
         this.orderStatus = orderStatus;
     }
 
-    public void validateOrderStatusForUngroup() {
+    public void validateNotCompletionOrderStatus() {
         if (!orderStatus.isCompletion()) {
             throw new BadRequestException(CANNOT_CHANGE_STATUS);
         }

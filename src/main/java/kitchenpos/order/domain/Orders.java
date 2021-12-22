@@ -28,9 +28,9 @@ public class Orders {
         }
     }
 
-    public void validateOrderStatusForUngroup() {
+    public void validateNotCompletionOrderStatus() {
         for (Order order : orders) {
-            order.validateOrderStatusForUngroup();
+            order.validateNotCompletionOrderStatus();
         }
     }
 }

@@ -51,9 +51,9 @@ public class OrderTables {
         }
     }
 
-    public void validateUngroup() {
+    public void validateNotCompletionOrderStatus() {
         for (OrderTable orderTable : orderTables) {
-            orderTable.validateUngroup();
+            orderTable.validateNotCompletionOrderStatus();
         }
     }
 
