@@ -5,9 +5,11 @@ import kitchenpos.exception.TableEmptyUpdateException;
 import kitchenpos.exception.TableGuestNumberUpdateException;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
-import static javax.persistence.FetchType.*;
+import static javax.persistence.FetchType.LAZY;
 
 @Entity
 public class OrderTable {
@@ -25,8 +27,8 @@ public class OrderTable {
     @Column(nullable = false)
     private boolean empty;
 
-    @OneToOne(mappedBy = "orderTable", cascade = {CascadeType.ALL})
-    private Order order;
+    @OneToMany(mappedBy = "orderTable", cascade = {CascadeType.ALL})
+    private final List<Order> orders = new ArrayList<>();
 
     protected OrderTable() {
     }
@@ -37,18 +39,22 @@ public class OrderTable {
     }
 
     public void changeEmpty(boolean changeEmpty) {
-        if (Objects.nonNull(tableGroup)) {
-            throw new TableEmptyUpdateException();
-        }
-
-        if (Objects.nonNull(order) && !order.isCompleted()) {
+        if (checkTableGroup() || checkOrders()) {
             throw new TableEmptyUpdateException();
         }
         this.empty = changeEmpty;
     }
 
-    public boolean isOrderFinished() {
-        return order.isCompleted();
+    private boolean checkOrders() {
+        return !orders.isEmpty() && !orderCompleted();
+    }
+
+    private boolean checkTableGroup() {
+        return Objects.nonNull(tableGroup);
+    }
+
+    private boolean orderCompleted() {
+        return orders.stream().allMatch(Order::isCompleted);
     }
 
     public void updateNumberOfGuests(Integer newNumberOfGuests) {
@@ -60,7 +66,7 @@ public class OrderTable {
     }
 
     public OrderTable addOrder(Order order) {
-        this.order = order;
+        this.orders.add(order);
         return this;
     }
 
@@ -71,7 +77,7 @@ public class OrderTable {
     }
 
     public void ungroup() {
-        if (Objects.nonNull(order) && !isOrderFinished()) {
+        if (checkOrders()) {
             throw new NotSupportUngroupException();
         }
         this.tableGroup = null;
@@ -93,7 +99,7 @@ public class OrderTable {
         return empty;
     }
 
-    public Order getOrder() {
-        return order;
+    public List<Order> getOrders() {
+        return orders;
     }
 }

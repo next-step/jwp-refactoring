@@ -117,6 +117,6 @@ class OrderTableRepositoryTest {
                 .orElseThrow(OrderTableNotFoundException::new);
 
         // then
-        assertThat(orderTable.getOrder()).isNotNull();
+        assertThat(orderTable.getOrders()).isNotNull();
     }
 }

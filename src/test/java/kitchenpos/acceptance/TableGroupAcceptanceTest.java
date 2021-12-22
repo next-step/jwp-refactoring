@@ -38,6 +38,7 @@ import static org.assertj.core.util.Lists.newArrayList;
  * date : 2021/12/22
  * description :
  */
+@DisplayName("테이블 그룹 인수테스트")
 public class TableGroupAcceptanceTest extends AcceptanceTest {
     private Long 빈_테이블1_ID;
     private Long 빈_테이블2_ID;

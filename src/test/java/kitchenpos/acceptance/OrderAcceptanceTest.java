@@ -34,6 +34,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * date : 2021/12/22
  * description :
  */
+@DisplayName("주문 인수테스트")
 public class OrderAcceptanceTest extends AcceptanceTest {
     private Long 주문가능_5인테이블_ID;
     private Long 주문불가_5인테이블_ID;
