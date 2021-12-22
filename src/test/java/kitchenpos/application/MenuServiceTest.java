@@ -55,7 +55,7 @@ class MenuServiceTest {
         when(menuRepository.save(menu)).thenReturn(menu);
 
         // when
-        MenuService menuService = new MenuService(menuRepository, menuGroupRepository, menuProductRepository, productRepository);
+        MenuService menuService = new MenuService(menuRepository);
         Menu returnedMenu = menuService.create(this.menu);
 
         // then
@@ -70,7 +70,7 @@ class MenuServiceTest {
         when(menuRepository.findAll()).thenReturn(Collections.singletonList(menu));
 
         // when
-        MenuService menuService = new MenuService(menuRepository, menuGroupRepository, menuProductRepository, productRepository);
+        MenuService menuService = new MenuService(menuRepository);
         Menu returnedMenu = menuService.create(this.menu);
         List<Menu> list = menuService.list();
 
