@@ -1,6 +1,5 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuRepository;
 import kitchenpos.dao.OrderRepository;
 import kitchenpos.dao.OrderLineItemRepository;
 import kitchenpos.dao.OrderTableRepository;
@@ -8,35 +7,32 @@ import kitchenpos.domain.*;
 import kitchenpos.dto.OrderLineItemRequest;
 import kitchenpos.dto.OrderRequest;
 import kitchenpos.dto.OrderResponse;
+import kitchenpos.exception.NoOrderException;
 import kitchenpos.exception.NoOrderTableException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
     private final OrderRepository orderRepository;
-    private final OrderLineItemRepository orderLineItemRepository;
-    private final OrderTableRepository orderTableRepository;
+    private final TableService tableService;
     private final MenuService menuService;
 
     public OrderService(
             final OrderRepository orderRepository,
-            final OrderLineItemRepository orderLineItemRepository,
-            final OrderTableRepository orderTableRepository,
-            MenuService menuService) {
+            final TableService tableService, final MenuService menuService) {
+        this.tableService = tableService;
         this.menuService = menuService;
         this.orderRepository = orderRepository;
-        this.orderLineItemRepository = orderLineItemRepository;
-        this.orderTableRepository = orderTableRepository;
     }
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
-        OrderTable orderTable = orderTableRepository.findById(orderRequest.getOrderTableId()).orElseThrow(NoOrderTableException::new);
+        OrderTable orderTable = tableService.findById(orderRequest.getOrderTableId());
         Order order = Order.of(orderTable, orderRequest.getOrderStatus());
 
         for (OrderLineItemRequest orderLineItemRequest : orderRequest.getOrderLineItemRequests()) {
@@ -49,30 +45,16 @@ public class OrderService {
 
     public List<OrderResponse> list() {
         final List<Order> orders = orderRepository.findAll();
-
-        for (final Order order : orders) {
-            order.setOrderLineItems(orderLineItemRepository.findAllByOrderId(order.getId()));
-        }
-
-        return orders;
+        return orders.stream()
+                .map(OrderResponse::from)
+                .collect(Collectors.toList());
     }
 
     @Transactional
     public OrderResponse changeOrderStatus(final Long orderId, final OrderRequest orderRequest) {
-        final Order savedOrder = orderRepository.findById(orderId)
-                .orElseThrow(IllegalArgumentException::new);
-
-        if (Objects.equals(OrderStatus.COMPLETION.name(), savedOrder.getOrderStatus())) {
-            throw new IllegalArgumentException();
-        }
-
-        final OrderStatus orderStatus = OrderStatus.valueOf(orderRequest.getOrderStatus());
-        savedOrder.setOrderStatus(orderStatus.name());
-
-        orderRepository.save(savedOrder);
-
-        savedOrder.setOrderLineItems(orderLineItemRepository.findAllByOrderId(orderId));
-
-        return savedOrder;
+        final Order order = orderRepository.findById(orderId)
+                .orElseThrow(NoOrderException::new);
+        order.setOrderStatus(orderRequest.getOrderStatus());
+        return OrderResponse.from(orderRepository.save(order));
     }
 }

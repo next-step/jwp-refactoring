@@ -4,12 +4,14 @@ import kitchenpos.dao.OrderRepository;
 import kitchenpos.dao.OrderTableRepository;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.exception.NoOrderTableException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class TableService {
@@ -69,5 +71,9 @@ public class TableService {
         savedOrderTable.setNumberOfGuests(numberOfGuests);
 
         return orderTableRepository.save(savedOrderTable);
+    }
+
+    public OrderTable findById(Long orderTableId) {
+        return orderTableRepository.findById(orderTableId).orElseThrow(NoOrderTableException::new);
     }
 }
