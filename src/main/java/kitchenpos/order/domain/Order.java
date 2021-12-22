@@ -1,16 +1,44 @@
 package kitchenpos.order.domain;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import kitchenpos.ordertable.domain.OrderTable;
 
+@Entity
 public class Order {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long orderTableId;
-    private String orderStatus;
+
+    @JoinColumn(name = "order_table_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    private OrderTable orderTable;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus;
+
+    @Column(nullable = false, updatable = false)
     private LocalDateTime orderedTime;
-    private List<OrderLineItem> orderLineItems;
+
+    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY, cascade = {
+        CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    private List<OrderLineItem> orderLineItems = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -23,41 +51,34 @@ public class Order {
     public Order() {
     }
 
-    public Order(String orderStatus) {
+    public Order(OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
     }
 
-    public Order(Long orderTableId, List<OrderLineItem> orderLineItems) {
-        this(orderTableId, null, orderLineItems);
+    public Order(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
+        this(orderTable, null, orderLineItems);
     }
 
-    public Order(Long orderTableId, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
-        this(null, orderTableId, OrderStatus.COOKING.name(), orderedTime, orderLineItems);
+    public Order(OrderTable orderTable, LocalDateTime orderedTime,
+        List<OrderLineItem> orderLineItems) {
+        this(null, orderTable, OrderStatus.COOKING, orderedTime, orderLineItems);
     }
 
-    public Order(Long id, Long orderTableId, String orderStatus, LocalDateTime orderedTime,
+    public Order(Long id, OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime,
         List<OrderLineItem> orderLineItems) {
         this.id = id;
-        this.orderTableId = orderTableId;
+        this.orderTable = orderTable;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
         this.orderLineItems = orderLineItems;
     }
 
-    public Long getOrderTableId() {
-        return orderTableId;
+    public OrderTable getOrderTable() {
+        return orderTable;
     }
 
-    public void setOrderTableId(final Long orderTableId) {
-        this.orderTableId = orderTableId;
-    }
-
-    public String getOrderStatus() {
+    public OrderStatus getOrderStatus() {
         return orderStatus;
-    }
-
-    public void setOrderStatus(final String orderStatus) {
-        this.orderStatus = orderStatus;
     }
 
     public LocalDateTime getOrderedTime() {
@@ -93,5 +114,18 @@ public class Order {
     @Override
     public int hashCode() {
         return Objects.hash(getId());
+    }
+
+    public boolean isCompleteStatus() {
+        return orderStatus == OrderStatus.COMPLETION;
+    }
+
+    public void changeOrderStatus(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
+    }
+
+    public void assignTable(OrderTable orderTable) {
+        this.orderTable = orderTable;
+        orderTable.addOrder(this);
     }
 }

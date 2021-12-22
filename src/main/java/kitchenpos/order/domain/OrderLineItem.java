@@ -1,19 +1,36 @@
 package kitchenpos.order.domain;
 
 import java.util.Objects;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import kitchenpos.menu.domain.Menu;
 
+@Entity
 public class OrderLineItem {
 
+    @Id
     private Long seq;
-    private Long orderId;
-    private Long menuId;
+
+    @JoinColumn(name = "order_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Order order;
+
+    @JoinColumn(name = "menu_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Menu menu;
+
+    @Column(nullable = false)
     private long quantity;
 
     public OrderLineItem() {
     }
 
-    public OrderLineItem(Long menuId, long quantity) {
-        this.menuId = menuId;
+    public OrderLineItem(Menu menu, long quantity) {
+        this.menu = menu;
         this.quantity = quantity;
     }
 
@@ -25,20 +42,13 @@ public class OrderLineItem {
         this.seq = seq;
     }
 
-    public Long getOrderId() {
-        return orderId;
+
+    public Order getOrder() {
+        return order;
     }
 
-    public void setOrderId(final Long orderId) {
-        this.orderId = orderId;
-    }
-
-    public Long getMenuId() {
-        return menuId;
-    }
-
-    public void setMenuId(final Long menuId) {
-        this.menuId = menuId;
+    public Menu getMenu() {
+        return menu;
     }
 
     public long getQuantity() {
@@ -66,5 +76,9 @@ public class OrderLineItem {
     @Override
     public int hashCode() {
         return Objects.hash(getSeq());
+    }
+
+    public void setOrder(Order savedOrder) {
+        order = savedOrder;
     }
 }
