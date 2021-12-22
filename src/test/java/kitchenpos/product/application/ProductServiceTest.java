@@ -1,4 +1,4 @@
-package kitchenpos.application;
+package kitchenpos.product.application;
 
 import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
@@ -26,7 +26,7 @@ import static org.mockito.BDDMockito.given;
 
 @DisplayName("상품 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
-class ProductServiceTest {
+public class ProductServiceTest {
 
     @Mock
     private ProductRepository productRepository;
