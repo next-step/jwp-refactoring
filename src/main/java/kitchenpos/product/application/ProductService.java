@@ -3,6 +3,8 @@ package kitchenpos.product.application;
 import java.util.List;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,11 +18,14 @@ public class ProductService {
     }
 
     @Transactional
-    public Product create(final Product product) {
-        return productRepository.save(product);
+    public ProductResponse create(final ProductRequest productRequest) {
+        Product persistProduct = productRepository.save(productRequest.toProduct());
+        return ProductResponse.of(persistProduct);
     }
 
-    public List<Product> list() {
-        return productRepository.findAll();
+    @Transactional(readOnly = true)
+    public List<ProductResponse> list() {
+        List<Product> persistLines = productRepository.findAll();
+        return ProductResponse.ofList(persistLines);
     }
 }
