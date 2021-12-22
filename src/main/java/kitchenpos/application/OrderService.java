@@ -1,6 +1,5 @@
 package kitchenpos.application;
 
-import java.security.InvalidParameterException;
 import java.util.stream.Collectors;
 import kitchenpos.common.exception.CommonErrorCode;
 import kitchenpos.common.exception.NotFoundException;
