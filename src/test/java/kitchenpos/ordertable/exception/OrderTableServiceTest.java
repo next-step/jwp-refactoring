@@ -1,4 +1,4 @@
-package kitchenpos.ordertable.application;
+package kitchenpos.ordertable.exception;
 
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.dto.ChangeEmptyOrderTableValidator;
@@ -188,7 +188,7 @@ class OrderTableServiceTest {
         given(orderTableRepository.findAllByIdIn(orderTableIds)).willReturn(expected);
 
         // when
-        final List<OrderTable> actual = tableService.findAllByIdIn(orderTableIds);
+        final List<OrderTable> actual = tableService.getOrderTablesByIdIn(orderTableIds);
 
         // then
         assertThat(actual).containsExactlyElementsOf(expected);
@@ -203,7 +203,7 @@ class OrderTableServiceTest {
         given(orderTableRepository.findAllByIdIn(orderTableIds)).willReturn(expected);
 
         // when
-        final ThrowableAssert.ThrowingCallable throwingCallable = () -> tableService.findAllByIdIn(orderTableIds);
+        final ThrowableAssert.ThrowingCallable throwingCallable = () -> tableService.getOrderTablesByIdIn(orderTableIds);
         // then
         assertThatIllegalArgumentException().isThrownBy(throwingCallable);
     }

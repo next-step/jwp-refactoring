@@ -1,5 +1,6 @@
 package kitchenpos.menugroup.domain;
 
+import kitchenpos.menugroup.exception.IllegalMenuGroupNameException;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.Column;
@@ -24,7 +25,7 @@ public class MenuGroupName {
 
     private void validate(String name) {
         if (!StringUtils.hasText(name)) {
-            throw new IllegalArgumentException("이름은 빈값이 될 수 없습니다.");
+            throw new IllegalMenuGroupNameException("이름은 빈값이 될 수 없습니다.");
         }
     }
 

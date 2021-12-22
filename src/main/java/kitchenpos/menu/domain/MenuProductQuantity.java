@@ -1,10 +1,13 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.menu.exception.IllegalMenuProductException;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
 public class MenuProductQuantity {
+    private static final int MIN_VALUE = 1;
     @Column(nullable = false)
     private long quantity;
 
@@ -12,7 +15,14 @@ public class MenuProductQuantity {
     }
 
     protected MenuProductQuantity(long quantity) {
+        validate(quantity);
         this.quantity = quantity;
+    }
+
+    private void validate(long quantity) {
+        if (quantity < MIN_VALUE) {
+            throw new IllegalMenuProductException("메뉴 상품 갯수는 최소 1개 이상 이어야 합니다.");
+        }
     }
 
     public static MenuProductQuantity of(long quantity) {

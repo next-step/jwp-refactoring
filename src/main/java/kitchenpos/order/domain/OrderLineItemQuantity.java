@@ -1,5 +1,7 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.order.exception.IllegalOrderLineItemException;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
@@ -20,7 +22,7 @@ public class OrderLineItemQuantity {
 
     private void validate(long quantity) {
         if (quantity < MIN_VALUE) {
-            throw new IllegalArgumentException("주문 항목의 수량은 0 이하 일 수 없습니다.");
+            throw new IllegalOrderLineItemException("주문 항목의 수량은 0 이하 일 수 없습니다.");
         }
     }
 

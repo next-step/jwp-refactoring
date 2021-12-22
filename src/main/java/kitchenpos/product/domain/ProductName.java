@@ -1,5 +1,6 @@
 package kitchenpos.product.domain;
 
+import kitchenpos.product.exception.IllegalProductNameException;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.Column;
@@ -20,7 +21,7 @@ public class ProductName {
 
     private void validate(String name) {
         if (!StringUtils.hasText(name)) {
-            throw new IllegalArgumentException("이름은 빈값일 수 없습니다.");
+            throw new IllegalProductNameException("이름은 빈값일 수 없습니다.");
         }
     }
 

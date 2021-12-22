@@ -4,6 +4,7 @@ import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.order.exception.CanNotChangeOrderStatusException;
 import kitchenpos.order.infra.OrderRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -23,7 +24,9 @@ public class OrderStatusService {
     @Transactional
     public OrderResponse changeOrderStatus(final Long orderId, final OrderRequest request) {
         final Order savedOrder = orderRepository.findById(orderId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> {
+                    throw new CanNotChangeOrderStatusException("존재하지 않는 주문은 주문 상태를 변경할 수 없습니다.");
+                });
         validateChangeOrderStatus(savedOrder);
         savedOrder.updateOrderStatus(request.getOrderStatus());
         return OrderResponse.of(savedOrder);
@@ -31,7 +34,7 @@ public class OrderStatusService {
 
     private void validateChangeOrderStatus(Order order) {
         if (order.isCompletion()) {
-            throw new IllegalArgumentException();
+            throw new CanNotChangeOrderStatusException("완료된 주문은 주문상태를 변경할 수 없습니다.");
         }
     }
 

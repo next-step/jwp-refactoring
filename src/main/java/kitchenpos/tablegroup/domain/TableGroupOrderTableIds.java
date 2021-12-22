@@ -1,5 +1,6 @@
 package kitchenpos.tablegroup.domain;
 
+import kitchenpos.ordertable.exception.IllegalOrderTableIdsException;
 import org.springframework.util.CollectionUtils;
 
 import javax.persistence.CollectionTable;
@@ -35,7 +36,7 @@ public class TableGroupOrderTableIds {
 
     private void validate(List<Long> orderTableIds) {
         if (CollectionUtils.isEmpty(orderTableIds) || orderTableIds.size() < MIN_SIZE) {
-            throw new IllegalArgumentException("2개 이상의 주문 테이블로 구성되어야 한다.");
+            throw new IllegalOrderTableIdsException("2개 이상의 주문 테이블로 구성되어야 한다.");
         }
     }
 

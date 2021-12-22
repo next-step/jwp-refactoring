@@ -1,5 +1,6 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.menu.exception.IllegalMenuNameException;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.Column;
@@ -20,7 +21,7 @@ public class MenuName {
 
     private void validate(String name) {
         if (!StringUtils.hasText(name)) {
-            throw new IllegalArgumentException("메뉴 이름은 빈 값이 될 수 없습니디.");
+            throw new IllegalMenuNameException("메뉴 이름은 빈 값이 될 수 없습니디.");
         }
     }
 

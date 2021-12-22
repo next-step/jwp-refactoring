@@ -1,5 +1,7 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.menu.exception.IllegalMenuPriceException;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.math.BigDecimal;
@@ -18,9 +20,13 @@ public class MenuPrice {
     }
 
     private void validate(BigDecimal price) {
-        if (price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException("0보다 작을 수 없습니다.");
+        if (isLessThenZero(price)) {
+            throw new IllegalMenuPriceException("0보다 작을 수 없습니다.");
         }
+    }
+
+    private boolean isLessThenZero(BigDecimal price) {
+        return price.compareTo(BigDecimal.ZERO) < 0;
     }
 
     public static MenuPrice of(int price) {

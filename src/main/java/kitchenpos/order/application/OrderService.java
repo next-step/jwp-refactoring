@@ -4,8 +4,9 @@ import kitchenpos.order.domain.MenuCountOrderValidator;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.order.exception.CanNotOrderException;
 import kitchenpos.order.infra.OrderRepository;
-import kitchenpos.ordertable.application.OrderTableService;
+import kitchenpos.ordertable.exception.OrderTableService;
 import kitchenpos.ordertable.domain.OrderTable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,7 +39,7 @@ public class OrderService {
         final OrderTable orderTable = orderTableService.getOrderTable(request.getOrderTableId());
 
         if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException("테이블이 비어있을 경우 주문을 할 수 없습니다.");
+            throw new CanNotOrderException("테이블이 비어있을 경우 주문을 할 수 없습니다.");
         }
     }
 

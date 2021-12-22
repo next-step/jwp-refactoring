@@ -1,4 +1,4 @@
-package kitchenpos.ordertable.application;
+package kitchenpos.ordertable.exception;
 
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.dto.ChangeEmptyOrderTableValidator;
@@ -37,7 +37,9 @@ public class OrderTableService {
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest request) {
         final OrderTable orderTable = orderTableRepository.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> {
+                    throw new CanNotChangeOrderTableException("존재하는 주문 테이블만 빈 테이블 유무를 변경할 수 있습니다.");
+                });
         changeEmptyOrderTableValidator.validate(orderTableId);
         orderTable.changeEmpty(request.isEmpty());
         return OrderTableResponse.of(orderTableRepository.save(orderTable));
@@ -47,16 +49,18 @@ public class OrderTableService {
     public OrderTableResponse changeNumberOfGuests(final Long id, final OrderTableRequest request) {
         final int numberOfGuests = request.getNumberOfGuests();
         final OrderTable savedOrderTable = orderTableRepository.findById(id)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> {
+                    throw new CanNotChangeOrderTableException("존재하는 주문 테이블만 방문자 수를 변경 할 수 있습니다.");
+                });
         savedOrderTable.changeNumberOfGuests(numberOfGuests);
         return OrderTableResponse.of(savedOrderTable);
     }
 
     @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
-    public List<OrderTable> findAllByIdIn(List<Long> orderTableIds) {
+    public List<OrderTable> getOrderTablesByIdIn(List<Long> orderTableIds) {
         final List<OrderTable> savedOrderTables = orderTableRepository.findAllByIdIn(orderTableIds);
         if (orderTableIds.size() != savedOrderTables.size()) {
-            throw new IllegalArgumentException("올바르지 않는 아이디 목록 입니다.");
+            throw new IllegalOrderTableIdsException("올바르지 않는 아이디 목록 입니다.");
         }
         return savedOrderTables;
     }
@@ -64,6 +68,8 @@ public class OrderTableService {
     @Transactional(readOnly = true)
     public OrderTable getOrderTable(Long id) {
         return orderTableRepository.findById(id)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> {
+                    throw new NotFoundOrderTableException("주문 테이블이 존재하지 않습니다.");
+                });
     }
 }

@@ -1,6 +1,6 @@
 package kitchenpos.tablegroup.domain;
 
-import kitchenpos.ordertable.application.OrderTableService;
+import kitchenpos.ordertable.exception.OrderTableService;
 import kitchenpos.ordertable.domain.OrderTable;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
@@ -35,7 +35,7 @@ class OrderTableIdsTableGroupValidatorTest {
         final List<OrderTable> expected = Arrays.asList(
                 OrderTable.of(3, false), OrderTable.of(3, true)
         );
-        given(orderTableService.findAllByIdIn(orderTableIds)).willReturn(expected);
+        given(orderTableService.getOrderTablesByIdIn(orderTableIds)).willReturn(expected);
         // when
         final ThrowableAssert.ThrowingCallable throwingCallable = () -> validator.validate(orderTableIds);
         // then
@@ -50,7 +50,7 @@ class OrderTableIdsTableGroupValidatorTest {
         final List<OrderTable> expected = Arrays.asList(
                 OrderTable.of(3, true), OrderTable.of(3, true)
         );
-        given(orderTableService.findAllByIdIn(orderTableIds)).willReturn(expected);
+        given(orderTableService.getOrderTablesByIdIn(orderTableIds)).willReturn(expected);
         // when
         final Executable executable = () -> validator.validate(orderTableIds);
         // then

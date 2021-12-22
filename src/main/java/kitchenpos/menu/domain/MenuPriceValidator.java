@@ -1,7 +1,8 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.product.application.ProductService;
 import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.exception.IllegalMenuPriceException;
+import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
 import org.springframework.stereotype.Component;
 
@@ -19,7 +20,7 @@ public class MenuPriceValidator {
     public void validate(BigDecimal price, List<MenuProductRequest> menuProductRequests) {
         final BigDecimal totalPrice = calcTotalPrice(menuProductRequests);
         if (price.compareTo(totalPrice) > 0) {
-            throw new IllegalArgumentException();
+            throw new IllegalMenuPriceException("가격은 포함된 구성된 상품들의 금액 보다 작거나 같아야 한다.");
         }
     }
 

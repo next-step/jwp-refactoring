@@ -1,5 +1,7 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.order.exception.IllegalOrderLineItemException;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.FetchType;
@@ -8,6 +10,7 @@ import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 @Embeddable
 public class OrderLineItemGroup {
@@ -19,11 +22,19 @@ public class OrderLineItemGroup {
     }
 
     private OrderLineItemGroup(List<OrderLineItem> orderLineItems) {
+        validate(orderLineItems);
         this.orderLineItems.addAll(orderLineItems);
     }
 
     public static OrderLineItemGroup of(List<OrderLineItem> orderLineItems) {
         return new OrderLineItemGroup(orderLineItems);
+    }
+
+    private void validate(List<OrderLineItem> orderLineItems) {
+        if (Objects.isNull(orderLineItems) || orderLineItems.isEmpty()) {
+            throw new IllegalOrderLineItemException("주문 항목은 비어있을 수 없습니다.");
+        }
+
     }
 
     public List<OrderLineItem> getOrderLineItems() {
