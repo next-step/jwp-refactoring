@@ -3,7 +3,7 @@ package kitchenpos.application;
 
 import static kitchenpos.application.fixture.MenuGroupFixture.메뉴그룹_치킨류;
 import static kitchenpos.application.fixture.MenuProductFixture.메뉴상품;
-import static kitchenpos.application.fixture.OrderTableFixture.빈_테이블;
+import static kitchenpos.application.fixture.OrderTableFixture.한명_주문테이블;
 import static kitchenpos.application.fixture.ProductFixture.후리이드치킨;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -56,7 +56,7 @@ class OrderServiceTest {
     void 주문_등록() {
         // given
         OrderRequest 요청_주문 = 요청_주문();
-        given(orderTableDao.findById(any())).willReturn(Optional.of(빈_테이블()));
+        given(orderTableDao.findById(any())).willReturn(Optional.of(한명_주문테이블()));
         given(menuDao.findAllById(any())).willReturn(Collections.singletonList(메뉴()));
         given(orderDao.save(any())).willReturn(주문());
 
@@ -105,7 +105,7 @@ class OrderServiceTest {
 
     private Order 주문() {
         Menu 메뉴 = 메뉴();
-        OrderTable 주문테이블 = 빈_테이블();
+        OrderTable 주문테이블 = 한명_주문테이블();
         OrderLineItemRequest 주문항목 = new OrderLineItemRequest(메뉴.getId(), 1);
 
         return Order.of(주문테이블, Collections.singletonList(OrderLineItem.of(메뉴, 1L)));

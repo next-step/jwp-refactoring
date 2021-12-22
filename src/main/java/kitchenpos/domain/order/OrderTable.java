@@ -68,7 +68,7 @@ public class OrderTable {
     }
 
     public void ungroup(Orders orders) {
-        if (orders.isOrdersAllCompleted()) {
+        if (!orders.isOrdersAllCompleted()) {
             throw new InvalidParameterException("계산 완료 상태가 아니면 단체지정을 해지 할 수 없습니다.");
         }
         tableGroup = null;
@@ -87,6 +87,10 @@ public class OrderTable {
 
     public int getNumberOfGuests() {
         return numberOfGuests.value();
+    }
+
+    public TableGroup getTableGroup() {
+        return tableGroup;
     }
 
     private void validTableGroupNotInclude() {

@@ -29,39 +29,26 @@ public class OrderLineItem {
     @JoinColumn(name = "menu_id", foreignKey = @ForeignKey(name = "fk_order_line_item_menu"), nullable = false)
     private Menu menu;
 
-    @Column(name = "quantity")
+    @Column(name = "quantity", nullable = false)
     private Long quantity;
 
-    public static OrderLineItem of(Menu menu, Long quantity) {
-        return new OrderLineItem(null, menu, quantity);
+
+    protected OrderLineItem() {
     }
 
-    public OrderLineItem() {
-    }
-
-    public OrderLineItem(Long seq, Menu menu, Long quantity) {
-        this.seq = seq;
+    private OrderLineItem(Menu menu, Long quantity) {
         this.menu = menu;
         this.quantity = quantity;
+    }
+
+    public static OrderLineItem of(Menu menu, Long quantity) {
+        return new OrderLineItem(menu, quantity);
     }
 
     public void orderedBy(Order order) {
         this.order = order;
     }
 
-    @Deprecated
-    public void setOrderId(final Long orderId) {
-        this.order.setId(orderId);
-    }
-
-    public Long getMenuId() {
-        return this.menu.getId();
-    }
-
-    @Deprecated
-    public void setQuantity(final long quantity) {
-        this.quantity = quantity;
-    }
 
     public Long getSeq() {
         return seq;
@@ -73,6 +60,10 @@ public class OrderLineItem {
 
     public Menu getMenu() {
         return menu;
+    }
+
+    public Long getMenuId() {
+        return this.menu.getId();
     }
 
     public Long getQuantity() {
@@ -87,7 +78,6 @@ public class OrderLineItem {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-
         if (Objects.isNull(seq)) {
             return false;
         }

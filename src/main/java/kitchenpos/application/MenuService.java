@@ -51,7 +51,7 @@ public class MenuService {
     @Transactional(readOnly = true)
     public MenuGroup findMenuGroup(Long menuGroupId) {
         return menuGroupDao.findById(menuGroupId)
-            .orElseThrow(() -> new IllegalArgumentException("없는 메뉴그룹입니다."));
+            .orElseThrow(() -> new InvalidParameterException("없는 메뉴그룹입니다."));
     }
 
     @Transactional(readOnly = true)

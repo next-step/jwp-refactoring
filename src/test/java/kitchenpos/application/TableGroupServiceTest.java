@@ -7,6 +7,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
+import java.security.InvalidParameterException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
@@ -83,6 +84,6 @@ class TableGroupServiceTest {
         ThrowableAssert.ThrowingCallable actual = () -> tableGroupService.create(요청_파라미터);
 
         // then
-        assertThatThrownBy(actual).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(actual).isInstanceOf(InvalidParameterException.class);
     }
 }

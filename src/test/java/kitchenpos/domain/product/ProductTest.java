@@ -3,6 +3,7 @@ package kitchenpos.domain.product;
 import static kitchenpos.application.fixture.ProductFixture.마이너스_가격_상품;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.security.InvalidParameterException;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,6 +17,6 @@ class ProductTest {
         ThrowableAssert.ThrowingCallable actual = () -> 마이너스_가격_상품();
 
         // then
-        assertThatThrownBy(actual).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(actual).isInstanceOf(InvalidParameterException.class);
     }
 }

@@ -1,5 +1,6 @@
 package kitchenpos.domain.order;
 
+import java.security.InvalidParameterException;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
@@ -25,7 +26,7 @@ public class NumberOfGuests {
 
     private void valid(int numberOfGuests) {
         if (numberOfGuests < MIN) {
-            throw new IllegalArgumentException(String.format("%s명 이하의 손님을 설정 할 수 없습니다.", MIN));
+            throw new InvalidParameterException(String.format("%s명 이하의 손님을 설정 할 수 없습니다.", MIN));
         }
     }
 

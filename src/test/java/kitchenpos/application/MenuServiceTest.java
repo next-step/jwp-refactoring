@@ -12,6 +12,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
 
+import java.security.InvalidParameterException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -107,7 +108,7 @@ class MenuServiceTest {
     }
 
     private void 메뉴생성_실패(ThrowingCallable actual) {
-        assertThatThrownBy(actual).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(actual).isInstanceOf(InvalidParameterException.class);
     }
 
     private void 메뉴목록_조회됨(List<MenuResponse> 메뉴목록) {

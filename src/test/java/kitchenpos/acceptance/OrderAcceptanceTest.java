@@ -52,7 +52,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
     private OrderRequest 치킨_주문_파라미터() {
         Long 치킨상품_번호 = 상품_등록됨(양념치킨());
         Long 치킨메뉴_번호 = 치킨메뉴_등록됨(치킨상품_번호);
-        Long 주문테이블_번호 = 주문테이블_생성됨(0, true);
+        Long 주문테이블_번호 = 주문테이블_생성됨(1, false);
         OrderLineItemRequest 주문항목 = new OrderLineItemRequest(치킨메뉴_번호, 1);
 
         return new OrderRequest(주문테이블_번호, Collections.singletonList(주문항목));

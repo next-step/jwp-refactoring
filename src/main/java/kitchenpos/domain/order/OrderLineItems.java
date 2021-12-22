@@ -1,10 +1,12 @@
 package kitchenpos.domain.order;
 
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
+import org.springframework.util.CollectionUtils;
 
 @Embeddable
 public class OrderLineItems {
@@ -12,25 +14,16 @@ public class OrderLineItems {
     @OneToMany(mappedBy = "order", cascade = CascadeType.PERSIST)
     private List<OrderLineItem> orderLineItems = new ArrayList<>();
 
+    protected OrderLineItems() {
+    }
+
+    private OrderLineItems(List<OrderLineItem> orderLineItems) {
+        validEmpty(orderLineItems);
+        this.orderLineItems = orderLineItems;
+    }
+
     public static OrderLineItems of(List<OrderLineItem> orderLineItems) {
         return new OrderLineItems(orderLineItems);
-    }
-
-    public OrderLineItems() {
-    }
-
-    public OrderLineItems(List<OrderLineItem> orderLineItems) {
-        this.orderLineItems = new ArrayList<>(orderLineItems);
-    }
-
-    public List<OrderLineItem> orderLineItems() {
-        return orderLineItems;
-    }
-
-    public void addOrderLineItem(OrderLineItem orderLineItem) {
-        if (!orderLineItems.contains(orderLineItem)) {
-            orderLineItems.add(orderLineItem);
-        }
     }
 
     public List<OrderLineItem> getOrderLineItems() {
@@ -39,5 +32,11 @@ public class OrderLineItems {
 
     public void mapOrder(Order order) {
         orderLineItems.forEach(orderLineItem -> orderLineItem.orderedBy(order));
+    }
+
+    private void validEmpty(List<OrderLineItem> orderLineItems) {
+        if (CollectionUtils.isEmpty(orderLineItems)) {
+            throw new InvalidParameterException();
+        }
     }
 }

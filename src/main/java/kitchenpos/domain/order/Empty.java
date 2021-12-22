@@ -1,5 +1,6 @@
 package kitchenpos.domain.order;
 
+import java.security.InvalidParameterException;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
@@ -30,7 +31,7 @@ public class Empty {
 
     public void validNotEmpty() {
         if (!isEmpty()) {
-            throw new IllegalArgumentException("빈 테이블이 아닙니다.");
+            throw new InvalidParameterException("빈 테이블이 아닙니다.");
         }
     }
 }

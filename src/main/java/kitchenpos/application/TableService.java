@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import java.security.InvalidParameterException;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.order.Order;
@@ -57,6 +58,6 @@ public class TableService {
     @Transactional(readOnly = true)
     public OrderTable findOrderTableById(Long orderTableId) {
         return orderTableDao.findById(orderTableId)
-            .orElseThrow(IllegalArgumentException::new);
+            .orElseThrow(InvalidParameterException::new);
     }
 }

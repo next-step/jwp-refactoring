@@ -1,6 +1,7 @@
 package kitchenpos.domain.order;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Orders {
 
@@ -17,5 +18,17 @@ public class Orders {
     public boolean isOrdersAllCompleted() {
         return orders.stream()
             .allMatch(Order::isComplete);
+    }
+
+    public Orders matchedBy(OrderTable orderTable) {
+        return orders.stream()
+            .filter(order -> order.isMatchOrderTable(orderTable))
+            .collect(Collectors.collectingAndThen(Collectors.toList(), Orders::of));
+    }
+
+    public List<OrderTable> getOrderTables() {
+        return orders.stream()
+            .map(Order::getOrderTable)
+            .collect(Collectors.toList());
     }
 }

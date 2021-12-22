@@ -4,11 +4,13 @@ import static kitchenpos.application.fixture.OrderFixture.요리중_주문_of;
 import static kitchenpos.application.fixture.OrderTableFixture.단체지정된_주문테이블;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.security.InvalidParameterException;
 import java.util.Collections;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+@DisplayName("OrderTable 클래스")
 class OrderTableTest {
 
     @Test
@@ -22,7 +24,7 @@ class OrderTableTest {
         ThrowableAssert.ThrowingCallable actual = () -> 단체지정된_주문테이블.changeEmpty(orders, true);
 
         // then
-        assertThatThrownBy(actual).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(actual).isInstanceOf(InvalidParameterException.class);
     }
 
     @Test
@@ -36,7 +38,7 @@ class OrderTableTest {
         ThrowableAssert.ThrowingCallable actual = () -> 단체지정된_주문테이블.changeEmpty(orders, true);
 
         // then
-        assertThatThrownBy(actual).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(actual).isInstanceOf(InvalidParameterException.class);
     }
 
     @Test
@@ -49,7 +51,7 @@ class OrderTableTest {
         ThrowableAssert.ThrowingCallable actual = () -> 단체지정된_주문테이블.changeNumberOfGuests(-1);
 
         // then
-        assertThatThrownBy(actual).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(actual).isInstanceOf(InvalidParameterException.class);
     }
 
     @Test
@@ -62,6 +64,6 @@ class OrderTableTest {
         ThrowableAssert.ThrowingCallable actual = () -> 단체지정된_주문테이블.changeNumberOfGuests(1);
 
         // then
-        assertThatThrownBy(actual).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(actual).isInstanceOf(InvalidParameterException.class);
     }
 }

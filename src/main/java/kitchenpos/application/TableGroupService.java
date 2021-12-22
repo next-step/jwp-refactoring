@@ -34,7 +34,7 @@ public class TableGroupService {
             tableGroup.getOrderTableIds());
 
         if (tableGroup.getOrderTableSize() != orderTables.size()) {
-            throw new IllegalArgumentException("단체 지정에 속하는 주문테이블은 모두 등록되어있어야합니다.");
+            throw new InvalidParameterException("단체 지정에 속하는 주문테이블은 모두 등록되어있어야합니다.");
         }
 
         return TableGroupResponse.of(

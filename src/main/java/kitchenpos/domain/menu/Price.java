@@ -38,7 +38,7 @@ public class Price {
 
     private void validMin(BigDecimal price) {
         if (Objects.isNull(price) || price.compareTo(MIN) < 0) {
-            throw new IllegalArgumentException();
+            throw new InvalidParameterException();
         }
     }
 

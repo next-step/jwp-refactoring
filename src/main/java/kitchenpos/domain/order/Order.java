@@ -36,27 +36,22 @@ public class Order {
 
     private LocalDateTime orderedTime;
 
-
     protected Order() {
     }
 
-    public Order(OrderTable orderTable, OrderLineItems orderLineItems, OrderStatus orderStatus,
+    private Order(OrderTable orderTable, OrderLineItems orderLineItems, OrderStatus orderStatus,
         LocalDateTime orderedTime) {
+        validOrderTableNotEmpty(orderTable);
         this.orderTable = orderTable;
         this.orderLineItems = orderLineItems;
+        this.orderLineItems.mapOrder(this);
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
     }
 
-    public Order(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
-        this.orderTable = orderTable;
-        this.orderLineItems = OrderLineItems.of(orderLineItems);
-        this.orderLineItems.mapOrder(this);
-        this.orderStatus = OrderStatus.COOKING;
-    }
-
-    public static Order of(OrderStatus orderStatus) {
-        return new Order(null, null, orderStatus, LocalDateTime.now());
+    public static Order of(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
+        return new Order(orderTable, OrderLineItems.of(orderLineItems), OrderStatus.COOKING,
+            LocalDateTime.now());
     }
 
     public boolean isMatchOrderTable(OrderTable orderTable) {
@@ -79,10 +74,6 @@ public class Order {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public Long getOrderTableId() {
         return orderTable.getId();
     }
@@ -95,16 +86,18 @@ public class Order {
         return orderedTime;
     }
 
-    public void setOrderedTime(final LocalDateTime orderedTime) {
-        this.orderedTime = orderedTime;
-    }
-
     public List<OrderLineItem> getOrderLineItems() {
         return orderLineItems.getOrderLineItems();
     }
 
-    public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
-        this.orderLineItems = OrderLineItems.of(orderLineItems);
+    public OrderTable getOrderTable() {
+        return orderTable;
+    }
+
+    private void validOrderTableNotEmpty(OrderTable orderTable) {
+        if (orderTable.isEmpty()) {
+            throw new InvalidParameterException("주문할 테이블은 빈테이블일 수 없습니다.");
+        }
     }
 
     @Override
@@ -115,7 +108,6 @@ public class Order {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-
         if (Objects.isNull(id)) {
             return false;
         }

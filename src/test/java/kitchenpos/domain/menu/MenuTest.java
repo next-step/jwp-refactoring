@@ -4,6 +4,7 @@ import static kitchenpos.application.fixture.MenuGroupFixture.메뉴그룹_치�
 import static kitchenpos.application.fixture.MenuProductFixture.메뉴상품_치킨_리스트;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.security.InvalidParameterException;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -23,12 +24,12 @@ class MenuTest {
             private final int minusPrice = -15000;
 
             @Test
-            @DisplayName("`IllegalArgumentException` 에러가 발생한다.")
+            @DisplayName("`InvalidParameterException` 에러가 발생한다.")
             void it_return_exception() {
                 ThrowableAssert.ThrowingCallable actual = () -> Menu.of("메뉴", minusPrice,
                     메뉴그룹_치킨류(), 메뉴상품_치킨_리스트());
 
-                assertThatThrownBy(actual).isInstanceOf(IllegalArgumentException.class);
+                assertThatThrownBy(actual).isInstanceOf(InvalidParameterException.class);
             }
         }
 
@@ -39,12 +40,12 @@ class MenuTest {
             private final int largePrice = 1500000000;
 
             @Test
-            @DisplayName("`IllegalArgumentException` 에러가 발생한다.")
+            @DisplayName("`InvalidParameterException` 에러가 발생한다.")
             void it_return_exception() {
                 ThrowableAssert.ThrowingCallable actual = () -> Menu.of("메뉴", largePrice,
                     메뉴그룹_치킨류(), 메뉴상품_치킨_리스트());
 
-                assertThatThrownBy(actual).isInstanceOf(IllegalArgumentException.class);
+                assertThatThrownBy(actual).isInstanceOf(InvalidParameterException.class);
             }
         }
 
@@ -55,12 +56,12 @@ class MenuTest {
             MenuGroup menuGroup = null;
 
             @Test
-            @DisplayName("`IllegalArgumentException` 에러가 발생한다.")
+            @DisplayName("`InvalidParameterException` 에러가 발생한다.")
             void it_return_exception() {
                 ThrowableAssert.ThrowingCallable actual = () -> Menu.of("메뉴", 15000,
                     menuGroup, 메뉴상품_치킨_리스트());
 
-                assertThatThrownBy(actual).isInstanceOf(IllegalArgumentException.class);
+                assertThatThrownBy(actual).isInstanceOf(InvalidParameterException.class);
             }
         }
     }

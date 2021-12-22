@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import java.security.InvalidParameterException;
 import java.util.stream.Collectors;
 import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.OrderDao;
@@ -36,7 +37,7 @@ public class OrderService {
     @Transactional
     public OrderResponse create(OrderRequest orderRequest) {
         OrderTable orderTable = orderTableDao.findById(orderRequest.getOrderTableId())
-            .orElseThrow(IllegalArgumentException::new);
+            .orElseThrow(InvalidParameterException::new);
 
         List<OrderLineItem> orderLineItems = getOrderLineItems(orderRequest);
 
@@ -53,7 +54,7 @@ public class OrderService {
     public OrderResponse changeOrderStatus(final Long orderId,
         OrderStatusRequest orderStatusRequest) {
         final Order savedOrder = orderDao.findById(orderId)
-            .orElseThrow(IllegalArgumentException::new);
+            .orElseThrow(InvalidParameterException::new);
 
         savedOrder.changeOrderStatus(orderStatusRequest.getOrderStatus());
         return OrderResponse.of(savedOrder);

@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import static kitchenpos.application.fixture.OrderTableFixture.빈_테이블;
 import static kitchenpos.application.fixture.OrderTableFixture.한명_주문테이블;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -84,8 +85,7 @@ class TableServiceTest {
         // given
         int 방문손님수 = 3;
         OrderTableRequest orderTableRequest = OrderTableRequest.of(방문손님수, false);
-        OrderTable 요청_주문테이블 = 한명_주문테이블();
-        given(orderTableDao.findById(any())).willReturn(Optional.of(요청_주문테이블));
+        given(orderTableDao.findById(any())).willReturn(Optional.of(빈_테이블()));
 
         // when
         OrderTableResponse 빈테이블_변경_결과 = tableService.changeNumberOfGuests(1L, orderTableRequest);
