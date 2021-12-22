@@ -52,6 +52,11 @@ public class TableService {
         return OrderTableResponse.of(savedOrderTable);
     }
 
+    public OrderTableResponse findOrderTableResponseById(Long orderTableId) {
+        OrderTable orderTable = findOrderTable(orderTableId);
+        return OrderTableResponse.of(orderTable);
+    }
+
     private OrderTable findOrderTable(Long id) {
         return orderTableRepository.findById(id)
             .orElseThrow(() -> new NotFoundException("해당하는 테이블을 찾을 수 없습니다."));

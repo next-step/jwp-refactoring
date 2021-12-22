@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
@@ -19,19 +20,20 @@ import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.OrderValidator;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderLineItemResponse;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusRequest;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 
 @DisplayName("주문 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
@@ -41,14 +43,16 @@ class OrderServiceTest {
         Arrays.asList(new OrderLineItemRequest(1L, 1L)));
     private final Menu menu = Menu.of("후라이드치킨", 10000, MenuGroup.from("치킨"));
     private final OrderTable orderTable = OrderTable.of(2, false);
-    private final Order order = orderRequest
-        .toEntity(orderTable, Arrays.asList(OrderLineItem.of(menu, 2L)));
+    private final Order order = orderRequest.toEntity( Arrays.asList(OrderLineItem.of(menu, 2L)));
     @Mock
     private MenuRepository menuRepository;
     @Mock
     private OrderRepository orderRepository;
     @Mock
-    private OrderTableRepository orderTableRepository;
+    private OrderValidator orderValidator;
+    @Mock
+    private ApplicationEventPublisher publisher;
+
     @InjectMocks
     private OrderService orderService;
 
@@ -57,12 +61,12 @@ class OrderServiceTest {
     void create() {
         when(menuRepository.findById(anyLong()))
             .thenReturn(Optional.of(menu));
-        when(orderTableRepository.findById(anyLong()))
-            .thenReturn(Optional.of(orderTable));
         when(orderRepository.save(any(Order.class)))
             .thenReturn(order);
 
         OrderResponse saved = orderService.create(orderRequest);
+
+        verify(orderValidator).validateCreateOrder(orderRequest.getOrderTableId());
 
         assertAll(
             () -> assertNotNull(saved.getOrderedTime()),

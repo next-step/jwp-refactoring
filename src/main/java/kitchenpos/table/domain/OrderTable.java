@@ -122,4 +122,7 @@ public class OrderTable extends BaseEntity {
         return Objects.hash(id);
     }
 
+    public String getTableStatus() {
+        return tableStatus.name();
+    }
 }

@@ -13,6 +13,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 
+@DisplayName("주문 항목 도메인 테스트")
 class OrderLineItemTest {
 
     @Test
@@ -25,8 +26,7 @@ class OrderLineItemTest {
 
         assertFalse(orderLineItem_1.equalsOrderLineItem(orderLineItem_2));
 
-        Order order = Order
-            .of(orderTable, OrderStatus.COOKING, Arrays.asList(orderLineItem_1, orderLineItem_2));
+        Order order = Order.of(1L, OrderStatus.COOKING, Arrays.asList(orderLineItem_1, orderLineItem_2));
         ReflectionTestUtils.setField(order, "id", 1L);
 
         assertTrue(orderLineItem_1.equalsOrderLineItem(orderLineItem_2));

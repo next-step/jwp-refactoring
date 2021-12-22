@@ -27,8 +27,8 @@ public class OrderRequest {
         return orderLineItems;
     }
 
-    public Order toEntity(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
-        return Order.of(orderTable, OrderStatus.COOKING, orderLineItems);
+    public Order toEntity(List<OrderLineItem> orderLineItems) {
+        return Order.of(orderTableId, OrderStatus.COOKING, orderLineItems);
     }
 
 }

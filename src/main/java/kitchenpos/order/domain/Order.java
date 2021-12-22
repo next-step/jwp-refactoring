@@ -7,47 +7,43 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import kitchenpos.common.domain.BaseEntity;
 import kitchenpos.exception.CannotUpdatedException;
 import kitchenpos.exception.InvalidArgumentException;
-import kitchenpos.table.domain.OrderTable;
 
 @Entity(name = "orders")
 public class Order extends BaseEntity {
 
     private static final Integer MIN_SIZE = 1;
-    private final LocalDateTime orderedTime = LocalDateTime.now();
-    @Embedded
-    private final OrderLineItems orderLineItems = new OrderLineItems();
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "order_table_id", foreignKey = @ForeignKey(name = "fk_orders_order_table"))
-    private OrderTable orderTable;
+
+    private Long orderTableId;
+
+    private final LocalDateTime orderedTime = LocalDateTime.now();
+
     @Enumerated(value = EnumType.STRING)
     private OrderStatus orderStatus;
+
+    @Embedded
+    private final OrderLineItems orderLineItems = new OrderLineItems();
 
     protected Order() {
     }
 
-    private Order(OrderTable orderTable, OrderStatus orderStatus,
-        List<OrderLineItem> orderLineItems) {
+    private Order(Long orderTableId, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
+        this.orderTableId = orderTableId;
         initOrderStatus(orderStatus);
-        relateOrderTable(orderTable);
         addOrderLineItems(orderLineItems);
     }
 
-    public static Order of(OrderTable orderTable, OrderStatus orderStatus,
-        List<OrderLineItem> orderLineItems) {
-        return new Order(orderTable, orderStatus, orderLineItems);
+    public static Order of(Long orderTableId, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
+        return new Order(orderTableId, orderStatus, orderLineItems);
     }
 
     public void addOrderLineItems(List<OrderLineItem> orderLineItems) {
@@ -66,18 +62,10 @@ public class Order extends BaseEntity {
         orderLineItems.remove(orderLineItem);
     }
 
-    public void relateOrderTable(OrderTable orderTable) {
-        validateOrderTable(orderTable);
-        if (this.orderTable != null) {
-//            this.orderTable.removeOrder(this);
-        }
-        this.orderTable = orderTable;
-//        orderTable.addOrder(this);
-    }
-
     public void updateOrderStatus(OrderStatus orderStatus) {
         validateUpdateOrderStatus();
         this.orderStatus = orderStatus;
+
     }
 
     protected void addOrderLineItem(OrderLineItem orderLineItem) {
@@ -101,15 +89,6 @@ public class Order extends BaseEntity {
         }
     }
 
-    private void validateOrderTable(OrderTable orderTable) {
-        if (Objects.isNull(orderTable)) {
-            throw new InvalidArgumentException("테이블은 필수입니다.");
-        }
-
-        if (orderTable.isEmpty()) {
-            throw new InvalidArgumentException("빈 테이블은 주문을 할 수 없습니다.");
-        }
-    }
 
     private void validateAddOrderLineItem(List<OrderLineItem> orderLineItems) {
         if (orderLineItems.size() < MIN_SIZE) {
@@ -122,11 +101,15 @@ public class Order extends BaseEntity {
     }
 
     public Long getOrderTableId() {
-        return orderTable.getId();
+        return orderTableId;
     }
 
-    public String getOrderStatus() {
+    public String getOrderStatusName() {
         return orderStatus.name();
+    }
+
+    public OrderStatus getOrderStatus() {
+        return orderStatus;
     }
 
     public LocalDateTime getOrderedTime() {

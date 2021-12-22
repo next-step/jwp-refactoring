@@ -39,6 +39,11 @@ public class TableRestController {
         return ResponseEntity.ok().body(tableService.list());
     }
 
+    @GetMapping("/{orderTableId}")
+    public ResponseEntity<OrderTableResponse> findById(@PathVariable Long orderTableId) {
+        return ResponseEntity.ok().body(tableService.findOrderTableResponseById(orderTableId));
+    }
+
     @PutMapping("/{orderTableId}/empty")
     public ResponseEntity<OrderTableResponse> changeEmpty(
         @PathVariable final Long orderTableId,

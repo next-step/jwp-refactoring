@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import kitchenpos.AcceptanceTest;
+import kitchenpos.table.domain.TableStatus;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -25,6 +26,48 @@ import org.springframework.http.MediaType;
 public class TableAcceptanceTest extends AcceptanceTest {
 
     private static final String URL = "/api/tables";
+
+    @DisplayName("테이블을 관리한다.")
+    @TestFactory
+    Stream<DynamicTest> manageTable() {
+        return Stream.of(
+            dynamicTest("빈 테이블을 등록한다.", () -> {
+                // 빈 테이블 등록 요청
+                ExtractableResponse<Response> saveResponse = 빈_테이블_등록_요청();
+                // 빈 테이블 등록 됨
+                빈_테이블_등록됨(saveResponse);
+
+                // 테이블 목록 조회 요청
+                ExtractableResponse<Response> response = 테이블_목록_조회_요청();
+                // 테이블 목록 조회됨
+                테이블_목록_조회됨(response, Arrays.asList(saveResponse.as(OrderTableResponse.class)));
+            }),
+            dynamicTest("테이블의 상태를 변경한다.", () -> {
+                // 테이블 목록 조회 요청
+                ExtractableResponse<Response> response = 테이블_목록_조회_요청();
+                List<OrderTableResponse> orderTables = response.jsonPath()
+                    .getList(".", OrderTableResponse.class);
+                OrderTableResponse orderTable = orderTables.get(0);
+
+                // 빈테이블 -> 주문 테이블 상태 변경 요청
+                ExtractableResponse<Response> emptyResponse = 테이블_상태변경_요청(orderTable.getId(), false);
+
+                // 상태 변경됨
+                테이블_상태변경_됨(emptyResponse, TableStatus.SEATED.name());
+
+                // 테이블의 손님 수 변경 요청
+                ExtractableResponse<Response> numberResponse = 테이블_손님수_변경_요청(orderTable.getId(), 3);
+
+                // 테이블의 손님 수 변경 됨
+                테이블_손님수_변경_됨(numberResponse, 3);
+
+                // 테이블 목록 조회 요청
+                response = 테이블_목록_조회_요청();
+                // 테이블 목록 조회됨
+                테이블_목록_조회됨(response, Arrays.asList(numberResponse.as(OrderTableResponse.class)));
+            })
+        );
+    }
 
     public static ExtractableResponse<Response> 테이블_등록_요청(int numberOfGuests, boolean isEmpty) {
         OrderTableRequest orderTable = new OrderTableRequest(numberOfGuests, isEmpty);
@@ -49,11 +92,11 @@ public class TableAcceptanceTest extends AcceptanceTest {
     public static void 빈_테이블_등록됨(ExtractableResponse<Response> response) {
         OrderTableResponse orderTable = response.as(OrderTableResponse.class);
 
-        assertAll(() -> {
-            테이블_등록됨(response);
-            assertThat(orderTable.getNumberOfGuests()).isEqualTo(0);
-            assertTrue(orderTable.getEmpty());
-        });
+        assertAll(
+            () -> 테이블_등록됨(response),
+            () -> assertThat(orderTable.getNumberOfGuests()).isEqualTo(0),
+            () -> assertThat(orderTable.getTableStatus()).isEqualTo("EMPTY")
+        );
     }
 
     public static ExtractableResponse<Response> 테이블_목록_조회_요청() {
@@ -73,12 +116,12 @@ public class TableAcceptanceTest extends AcceptanceTest {
             .map(OrderTableResponse::getId)
             .collect(Collectors.toList());
 
-        assertAll(() -> {
-            assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-            assertThat(orderTables)
+        assertAll(
+            () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+            () -> assertThat(orderTables)
                 .extracting(OrderTableResponse::getId)
-                .containsAll(expectedIds);
-        });
+                .containsAll(expectedIds)
+        );
     }
 
     public static ExtractableResponse<Response> 테이블_상태변경_요청(Long tableId, boolean isEmpty) {
@@ -91,13 +134,13 @@ public class TableAcceptanceTest extends AcceptanceTest {
             .extract();
     }
 
-    public static void 테이블_상태변경_됨(ExtractableResponse<Response> response, boolean expected) {
+    public static void 테이블_상태변경_됨(ExtractableResponse<Response> response, String expected) {
         OrderTableResponse orderTable = response.as(OrderTableResponse.class);
 
-        assertAll(() -> {
-            assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-            assertThat(orderTable.getEmpty()).isEqualTo(expected);
-        });
+        assertAll(
+            () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+            () -> assertThat(orderTable.getTableStatus()).isEqualTo(expected)
+        );
     }
 
     public static ExtractableResponse<Response> 테이블_손님수_변경_요청(Long tableId, int numberOfGuests) {
@@ -128,47 +171,14 @@ public class TableAcceptanceTest extends AcceptanceTest {
         return 테이블_등록_요청(numberOfGuests, false).as(OrderTableResponse.class);
     }
 
-    @DisplayName("테이블을 관리한다.")
-    @TestFactory
-    Stream<DynamicTest> manageTable() {
-        return Stream.of(
-            dynamicTest("빈 테이블을 등록한다.", () -> {
-                // 빈 테이블 등록 요청
-                ExtractableResponse<Response> saveResponse = 빈_테이블_등록_요청();
-                // 빈 테이블 등록 됨
-                빈_테이블_등록됨(saveResponse);
-
-                // 테이블 목록 조회 요청
-                ExtractableResponse<Response> response = 테이블_목록_조회_요청();
-                // 테이블 목록 조회됨
-                테이블_목록_조회됨(response, Arrays.asList(saveResponse.as(OrderTableResponse.class)));
-            }),
-            dynamicTest("테이블의 상태를 변경한다.", () -> {
-                // 테이블 목록 조회 요청
-                ExtractableResponse<Response> response = 테이블_목록_조회_요청();
-                List<OrderTableResponse> orderTables = response.jsonPath()
-                    .getList(".", OrderTableResponse.class);
-                OrderTableResponse orderTable = orderTables.get(0);
-
-                // 빈테이블 -> 주문 테이블 상태 변경 요청
-                ExtractableResponse<Response> emptyResponse = 테이블_상태변경_요청(orderTable.getId(),
-                    false);
-
-                // 상태 변경됨
-                테이블_상태변경_됨(emptyResponse, false);
-
-                // 테이블의 손님 수 변경 요청
-                ExtractableResponse<Response> numberResponse = 테이블_손님수_변경_요청(orderTable.getId(), 3);
-
-                // 테이블의 손님 수 변경 됨
-                테이블_손님수_변경_됨(numberResponse, 3);
-
-                // 테이블 목록 조회 요청
-                response = 테이블_목록_조회_요청();
-                // 테이블 목록 조회됨
-                테이블_목록_조회됨(response, Arrays.asList(numberResponse.as(OrderTableResponse.class)));
-            })
-        );
+    public static ExtractableResponse<Response> 테이블_조회_요청(Long orderTableId) {
+        return RestAssured
+            .given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when().get(URL+"/{orderTableId}", orderTableId)
+            .then().log().all()
+            .extract();
     }
+
 
 }

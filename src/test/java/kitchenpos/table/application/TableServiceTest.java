@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Optional;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.domain.TableStatus;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -44,7 +45,7 @@ public class TableServiceTest {
 
         assertAll(
             () -> assertThat(saved.getNumberOfGuests()).isEqualTo(0),
-            () -> assertTrue(saved.getEmpty())
+            () -> assertThat(saved.getTableStatus()).isEqualTo(TableStatus.EMPTY.name())
         );
     }
 
@@ -69,7 +70,7 @@ public class TableServiceTest {
 
         OrderTableResponse orderTable = tableService.changeEmpty(1L, false);
 
-        assertFalse(orderTable.getEmpty());
+        assertFalse(orderTable.getTableStatus().equals(TableStatus.EMPTY));
     }
 
     @Test
