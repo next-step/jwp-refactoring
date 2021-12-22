@@ -25,18 +25,13 @@ public class Product {
     protected Product() {
     }
 
-    private Product(Long id, String name, BigDecimal price) {
-        this.id = id;
+    private Product(String name, BigDecimal price) {
         this.name = name;
         this.price = Price.of(price);
     }
 
-    public static Product of(Long id, String name, int price) {
-        return new Product(id, name, BigDecimal.valueOf(price));
-    }
-
     public static Product of(String name, int price) {
-        return new Product(null, name, BigDecimal.valueOf(price));
+        return new Product(name, BigDecimal.valueOf(price));
     }
 
     public BigDecimal calculatePrice(Long quantity) {

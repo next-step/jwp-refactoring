@@ -14,11 +14,11 @@ public class MenuProductFixture {
     }
 
     public static MenuProductRequest 요청_메뉴상품_치킨() {
-        return new MenuProductRequest(1L, 1L);
+        return new MenuProductRequest(null, 1L);
     }
 
     public static List<MenuProduct> 메뉴상품_치킨_리스트() {
-        return Collections.singletonList(MenuProduct.of(후리이드치킨(1L), 1L));
+        return Collections.singletonList(MenuProduct.of(후리이드치킨(), 1L));
     }
 
     public static MenuProduct 메뉴상품(Product product) {

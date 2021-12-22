@@ -55,7 +55,7 @@ class MenuServiceTest {
     @DisplayName("`메뉴`를 등록할 수 있다.")
     void create() {
         // given
-        Product 치킨 = 후리이드치킨(1L);
+        Product 치킨 = 후리이드치킨();
         MenuProduct 메뉴_치킨 = 메뉴상품(치킨);
         MenuGroup 메뉴_그룹 = 메뉴그룹_치킨류();
         MenuRequest menuRequest = 요청_메뉴("메뉴이름", 14000, 1L, Collections.singletonList(요청_메뉴상품_치킨()));
@@ -76,7 +76,7 @@ class MenuServiceTest {
     @DisplayName("`메뉴`의 목록을 조회할 수 있다.")
     void 메뉴_목록_조회() {
         // given
-        Product 치킨 = 후리이드치킨(1L);
+        Product 치킨 = 후리이드치킨();
         MenuProduct 메뉴_치킨 = 메뉴상품(치킨);
         MenuGroup 메뉴_그룹 = 메뉴그룹_치킨류();
         Menu 등록_메뉴 = Menu.of("메뉴", 14000, 메뉴_그룹, Collections.singletonList(메뉴_치킨));

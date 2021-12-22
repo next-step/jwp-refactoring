@@ -108,7 +108,7 @@ class OrderServiceTest {
     }
 
     private Menu 메뉴() {
-        Product 치킨 = 후리이드치킨(1L);
+        Product 치킨 = 후리이드치킨();
         MenuProduct 메뉴_치킨 = 메뉴상품(치킨);
         MenuGroup 메뉴_그룹 = 메뉴그룹_치킨류();
         return Menu.of("메뉴이름", 14000, 메뉴_그룹, Collections.singletonList(메뉴_치킨));
