@@ -1,4 +1,4 @@
-package kitchenpos.domain;
+package kitchenpos.table.domain;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -9,6 +9,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import kitchenpos.domain.Empty;
+import kitchenpos.domain.NumberOfGuests;
+import kitchenpos.table.domain.TableGroup;
 
 @Entity
 public class OrderTable {

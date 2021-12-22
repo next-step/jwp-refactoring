@@ -1,4 +1,4 @@
-package kitchenpos.application;
+package kitchenpos.table.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -11,13 +11,13 @@ import static org.mockito.Mockito.verify;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import kitchenpos.application.fixture.TableFixture;
-import kitchenpos.application.fixture.TableGroupFixture;
+import kitchenpos.table.fixture.TableFixture;
+import kitchenpos.table.fixture.TableGroupFixture;
 import kitchenpos.domain.OrderRepository;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.OrderTableRepository;
-import kitchenpos.domain.TableGroup;
-import kitchenpos.domain.TableGroupRepository;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.domain.TableGroupRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
