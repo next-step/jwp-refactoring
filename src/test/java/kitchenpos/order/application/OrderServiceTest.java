@@ -2,8 +2,8 @@ package kitchenpos.order.application;
 
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderLineItemResponse;
@@ -51,8 +51,8 @@ public class OrderServiceTest {
             // given
             OrderTable orderTable = new OrderTable(1L, null, 4, false);
 
-            Menu 커플세트 = new Menu(1L, "커플세트", 16000, new MenuGroup(), Collections.emptyList());
-            Menu 혼밥세트 = new Menu(2L, "혼밥세트", 16000, new MenuGroup(), Collections.emptyList());
+            Menu 커플세트 = Menu.create(1L, "커플세트", 16000, new MenuGroup(), new MenuProducts(Collections.emptyList()));
+            Menu 혼밥세트 = Menu.create(2L, "혼밥세트", 16000, new MenuGroup(), new MenuProducts(Collections.emptyList()));
             OrderLineItemRequest orderLineItemRequest1 = new OrderLineItemRequest(커플세트.getId(), 1);
             OrderLineItemRequest orderLineItemRequest2 = new OrderLineItemRequest(혼밥세트.getId(), 1);
             List<OrderLineItemRequest> orderLineItemRequests = Arrays.asList(orderLineItemRequest1, orderLineItemRequest2);

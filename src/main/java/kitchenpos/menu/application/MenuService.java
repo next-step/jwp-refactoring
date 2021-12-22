@@ -29,18 +29,17 @@ public class MenuService {
         MenuGroup menuGroup = menuGroupRepository.findById(menuRequest.getMenuGroupId())
                 .orElseThrow(() -> new MenuGroupNotFoundException(menuRequest.getMenuGroupId()));
 
-        Menu menu = new Menu(menuRequest.getName(), menuRequest.getPrice(), menuGroup);
-        MenuProducts menuProducts = createMenuProducts(menuRequest.getMenuProducts(), menu);
-        menu.setMenuProducts(menuProducts);
+        MenuProducts menuProducts = createMenuProducts(menuRequest.getMenuProducts());
+        Menu menu = Menu.create(menuRequest.getName(), menuRequest.getPrice(), menuGroup, menuProducts);
         return MenuResponse.of(menuRepository.save(menu));
     }
 
-    private MenuProducts createMenuProducts(final List<MenuProductRequest> menuProductRequests, Menu menu) {
+    private MenuProducts createMenuProducts(final List<MenuProductRequest> menuProductRequests) {
         List<MenuProduct> menuProducts = new ArrayList<>();
         for (final MenuProductRequest menuProductRequest : menuProductRequests) {
             Product product = productRepository.findById(menuProductRequest.getProductId())
                     .orElseThrow(() -> new ProductNotFoundException(menuProductRequest.getProductId()));
-            menuProducts.add(new MenuProduct(menu, product, menuProductRequest.getQuantity()));
+            menuProducts.add(new MenuProduct(product, menuProductRequest.getQuantity()));
         }
         return new MenuProducts(menuProducts);
     }

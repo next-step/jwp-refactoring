@@ -17,8 +17,10 @@ public class MenuProducts {
         this.menuProducts = menuProducts;
     }
 
-    public void add(Menu menu, Product product, long quantity) {
-        menuProducts.add(new MenuProduct(menu, product, quantity));
+    public void updateMenu(Menu menu) {
+        for (MenuProduct menuProduct : menuProducts) {
+            menuProduct.updateMenu(menu);
+        }
     }
 
     public List<MenuProduct> values() {
@@ -30,5 +32,18 @@ public class MenuProducts {
                 .map(MenuProduct::getTotalPrice)
                 .reduce(Long::sum)
                 .orElse(0L);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MenuProducts that = (MenuProducts) o;
+        return Objects.equals(menuProducts, that.menuProducts);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(menuProducts);
     }
 }

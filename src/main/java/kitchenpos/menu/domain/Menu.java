@@ -18,42 +18,45 @@ public class Menu {
     @Embedded
     private MenuProducts menuProducts = new MenuProducts();
 
-    public Menu() {
+    protected Menu() {
     }
 
-    public Menu(Long id, String name, long price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        this(name, price, menuGroup, menuProducts);
+    private Menu(Long id, Name name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
         this.id = id;
-    }
-
-    public Menu(String name, long price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        this(name, price, menuGroup);
-        this.menuProducts = new MenuProducts(menuProducts);
-    }
-
-    public Menu(String name, long price, MenuGroup menuGroup) {
-        this.name = Name.of(name);
-        this.price = Price.of(price);
-        this.menuGroup = menuGroup;
-    }
-
-    public Menu(Name name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
         this.name = name;
         this.price = price;
         this.menuGroup = menuGroup;
         this.menuProducts = menuProducts;
     }
 
-    public void setMenuProducts(MenuProducts menuProducts) {
-        long totalProductPrice = menuProducts.getTotalPrice();
-        if (price.longValue() > totalProductPrice) {
-            throw new IllegalArgumentException("메뉴의 가격이 상품 가격의 총 합보다 클 수 없습니다");
-        }
+    private Menu(Name name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
+        this.name = name;
+        this.price = price;
+        this.menuGroup = menuGroup;
         this.menuProducts = menuProducts;
     }
 
-    public long getTotalProductPrice() {
-        return menuProducts.getTotalPrice();
+    public static Menu create(Long id, String name, long price, MenuGroup menuGroup, MenuProducts menuProducts) {
+        Menu menu = new Menu(id, Name.of(name), Price.of(price), menuGroup, menuProducts);
+        return create(price, menuProducts, menu);
+    }
+
+    public static Menu create(String name, long price, MenuGroup menuGroup, MenuProducts menuProducts) {
+        Menu menu = new Menu(Name.of(name), Price.of(price), menuGroup, menuProducts);
+        return create(price, menuProducts, menu);
+    }
+
+    private static Menu create(long price, MenuProducts menuProducts, Menu menu) {
+        validateMenuPrice(price, menuProducts);
+        menuProducts.updateMenu(menu);
+        return menu;
+    }
+
+    private static void validateMenuPrice(long price, MenuProducts menuProducts) {
+        long totalProductPrice = menuProducts.getTotalPrice();
+        if (price > totalProductPrice) {
+            throw new IllegalArgumentException("메뉴의 가격이 상품 가격의 총 합보다 클 수 없습니다");
+        }
     }
 
     public Long getId() {
