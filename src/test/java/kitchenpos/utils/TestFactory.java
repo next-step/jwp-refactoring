@@ -78,21 +78,12 @@ public class TestFactory {
             .extract();
     }
 
-    public static ExtractableResponse<Response> delete(String url, Long id) {
+    public static ExtractableResponse<Response> delete(String url,String pathParam, Long id) {
         return given()
-            .pathParam(ID, id)
+            .pathParam(pathParam, id)
             .when()
             .delete(prefix + url)
             .then().log().all().extract();
-    }
-
-    public static ExtractableResponse<Response> delete(String url, Long id, Param param) {
-        return givenLog()
-            .pathParams("lineId", id)
-            .queryParams(param.result())
-            .delete(prefix + url)
-            .then().log().all()
-            .extract();
     }
 
     public static <T> T toResponseData(ExtractableResponse<Response> resource, Class<T> clazz) {
