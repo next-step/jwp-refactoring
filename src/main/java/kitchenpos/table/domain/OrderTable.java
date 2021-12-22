@@ -4,18 +4,13 @@ import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 
 import kitchenpos.common.exception.ErrorCode;
 import kitchenpos.order.exception.OrderException;
 import kitchenpos.table.dto.OrderTableResponse;
-import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.exception.TableGroupException;
 
 @Entity
@@ -25,9 +20,7 @@ public class OrderTable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "table_group_id", foreignKey = @ForeignKey(name = "fk_order_table_table_group"))
-	private TableGroup tableGroup;
+	private Long tableGroupId;
 
 	@Column(nullable = false)
 	private Integer numberOfGuests;
@@ -38,9 +31,9 @@ public class OrderTable {
 	protected OrderTable() {
 	}
 
-	private OrderTable(Integer numberOfGuests, TableGroup tableGroup, Boolean empty) {
+	private OrderTable(Integer numberOfGuests, Long tableGroupId, Boolean empty) {
 		this.numberOfGuests = numberOfGuests;
-		this.tableGroup = tableGroup;
+		this.tableGroupId = tableGroupId;
 		this.empty = empty;
 	}
 
@@ -48,16 +41,16 @@ public class OrderTable {
 		return new OrderTable(numberOfGuests, null, empty);
 	}
 
-	public static OrderTable of(Integer numberOfGuests, TableGroup tableGroup, Boolean empty) {
-		return new OrderTable(numberOfGuests, tableGroup, empty);
+	public static OrderTable of(Integer numberOfGuests, Long tableGroupId, Boolean empty) {
+		return new OrderTable(numberOfGuests, tableGroupId, empty);
 	}
 
 	public Long getId() {
 		return id;
 	}
 
-	public TableGroup getTableGroup() {
-		return tableGroup;
+	public Long getTableGroupId() {
+		return tableGroupId;
 	}
 
 	public int getNumberOfGuests() {
@@ -76,13 +69,14 @@ public class OrderTable {
 	}
 
 	private void validateNonNullTableGroup() {
-		if (Objects.nonNull(tableGroup)) {
+		if (Objects.nonNull(tableGroupId)) {
 			throw new TableGroupException(ErrorCode.ALREADY_HAS_TABLE_GROUP);
 		}
 	}
 
-	public void changeTableGroup(TableGroup tableGroup) {
-		this.tableGroup = tableGroup;
+	public void changeTableGroup(Long tableGroupId) {
+		this.tableGroupId = tableGroupId;
+		this.empty = false;
 	}
 
 	public void changeNumberOfGuests(Integer numberOfGuests) {
@@ -104,10 +98,10 @@ public class OrderTable {
 	}
 
 	public OrderTableResponse toResDto() {
-		if (tableGroup == null) {
+		if (tableGroupId == null) {
 			return OrderTableResponse.of(id, null, numberOfGuests, empty);
 		}
-		return OrderTableResponse.of(id, tableGroup.getId(), numberOfGuests, empty);
+		return OrderTableResponse.of(id, tableGroupId, numberOfGuests, empty);
 	}
 
 	public void unGroup() {

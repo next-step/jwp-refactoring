@@ -1,27 +1,21 @@
 package kitchenpos.table.domain;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Embeddable;
-import javax.persistence.OneToMany;
-
-import kitchenpos.tablegroup.domain.TableGroup;
-
-@Embeddable
 public class OrderTables {
 
 	private static final int ONE_TABLE_SIZE = 1;
 
-	@OneToMany(mappedBy = "tableGroup", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
 	private List<OrderTable> orderTables = new ArrayList<>();
 
 	protected OrderTables() {
 	}
 
 	private OrderTables(final List<OrderTable> orderTables) {
-		this.orderTables = orderTables;
+		this.orderTables = Collections.unmodifiableList(orderTables);
 	}
 
 	public static OrderTables from(final List<OrderTable> orderTables) {
@@ -32,8 +26,16 @@ public class OrderTables {
 		return orderTables;
 	}
 
-	public void changeTableGroup(TableGroup tableGroup) {
-		orderTables.forEach(it -> it.changeTableGroup(tableGroup));
+	public List<Long> getOrderTablesIds() {
+		return orderTables.stream()
+			.map(OrderTable::getId)
+			.collect(Collectors.toList());
+	}
+
+	public void changeTableGroup(Long tableGroupId) {
+		orderTables.forEach(it -> {
+			it.changeTableGroup(tableGroupId);
+		});
 	}
 
 	public boolean isEmpty() {

@@ -2,33 +2,21 @@ package kitchenpos.table.domain;
 
 import static org.assertj.core.api.Assertions.*;
 
-import java.util.Arrays;
-
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import kitchenpos.common.exception.ErrorCode;
 import kitchenpos.order.exception.OrderException;
-import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.exception.TableGroupException;
 
 @DisplayName("주문 테이블 : 단위 테스트")
 class OrderTableTest {
 
-	private TableGroup tableGroup;
-
-	@BeforeEach
-	void setup() {
-		tableGroup = TableGroup.from(Arrays.asList(OrderTable.of(10, tableGroup, true),
-			OrderTable.of(10, tableGroup, true)));
-	}
-
 	@DisplayName("주문 테이블을 비울 때 테이블 그룹이 있는 경우 예외처리 테스트")
 	@Test
 	void changeEmptyNullTableGroup() {
 		// given
-		OrderTable orderTable = OrderTable.of(100, tableGroup, false);
+		OrderTable orderTable = OrderTable.of(100, 1L, false);
 
 		// when // then
 		assertThatThrownBy(() -> {
@@ -44,10 +32,10 @@ class OrderTableTest {
 		OrderTable orderTable = OrderTable.of(10, false);
 
 		// when
-		orderTable.changeTableGroup(tableGroup);
+		orderTable.changeTableGroup(2L);
 
 		// then
-		assertThat(orderTable.getTableGroup()).isEqualTo(tableGroup);
+		assertThat(orderTable.getTableGroupId()).isEqualTo(2L);
 	}
 
 	@DisplayName("주문 테이블의 인원을 변경할 때 음수의 인원일 경우 예외처리 테스트")
@@ -92,13 +80,12 @@ class OrderTableTest {
 	void unGroup() {
 		// given
 		OrderTable orderTable1 = OrderTable.of(1000, true);
-		TableGroup tableGroup1 = TableGroup.from(Arrays.asList(orderTable1, orderTable1));
-		orderTable1.changeTableGroup(tableGroup1);
+		orderTable1.changeTableGroup(3L);
 
 		// when
 		orderTable1.unGroup();
 
 		// then
-		assertThat(orderTable1.getTableGroup()).isNull();
+		assertThat(orderTable1.getTableGroupId()).isNull();
 	}
 }

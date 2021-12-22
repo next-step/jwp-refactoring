@@ -5,7 +5,6 @@ import static org.mockito.BDDMockito.*;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,7 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.common.exception.ErrorCode;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.domain.OrderTables;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
@@ -27,13 +26,16 @@ import kitchenpos.tablegroup.exception.TableGroupException;
 class TableGroupServiceTest {
 
 	@Mock
-	OrderTableRepository orderTableRepository;
+	TableGroupValidator tableGroupValidator;
 
 	@Mock
 	TableGroupRepository tableGroupRepository;
 
 	@Mock
 	OrderTable orderTable;
+
+	@Mock
+	OrderTables orderTables;
 
 	@Mock
 	TableGroup tableGroup;
@@ -49,7 +51,12 @@ class TableGroupServiceTest {
 		// given
 		tableGroupRequest = TableGroupRequest.of(Collections.emptyList());
 
-		// when // then
+		// when
+		doThrow(new TableGroupException(ErrorCode.ORDER_TABLE_IS_NULL))
+			.when(tableGroupValidator)
+			.findValidatedOrderTables(tableGroupRequest.getOrderTables());
+
+		// then
 		assertThatThrownBy(() -> {
 			tableGroupService.create(tableGroupRequest);
 		}).isInstanceOf(TableGroupException.class)
@@ -60,10 +67,14 @@ class TableGroupServiceTest {
 	@Test
 	void createTableGroupSizeOneOrderTableList() {
 		// given
-		given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(orderTable));
-		tableGroupRequest = TableGroupRequest.of(Collections.singletonList(anyLong()));
+		tableGroupRequest = TableGroupRequest.of(Collections.singletonList(1L));
 
-		// when // then
+		// when
+		doThrow(new TableGroupException(ErrorCode.NEED_MORE_ORDER_TABLES))
+			.when(tableGroupValidator)
+			.findValidatedOrderTables(tableGroupRequest.getOrderTables());
+
+		// then
 		assertThatThrownBy(() -> {
 			tableGroupService.create(tableGroupRequest);
 		}).isInstanceOf(TableGroupException.class)
@@ -74,11 +85,12 @@ class TableGroupServiceTest {
 	@Test
 	void createTableGroupEmptyOrderTable() {
 		// given
-		given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(orderTable));
 		tableGroupRequest = TableGroupRequest.of(Arrays.asList(orderTable.getId(), orderTable.getId()));
 
 		// when
-		when((orderTable.isEmpty())).thenReturn(false);
+		doThrow(new TableGroupException(ErrorCode.ORDER_TABLE_IS_EMPTY))
+			.when(tableGroupValidator)
+			.findValidatedOrderTables(tableGroupRequest.getOrderTables());
 
 		// then
 		assertThatThrownBy(() -> {
@@ -91,29 +103,14 @@ class TableGroupServiceTest {
 	@Test
 	void createTableGroup() {
 		// given
-		given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(orderTable));
-		given(orderTable.isEmpty()).willReturn(true);
 		tableGroupRequest = TableGroupRequest.of(Arrays.asList(orderTable.getId(), orderTable.getId()));
 
 		// when
-		when(tableGroupRepository.save(
-			tableGroupRequest.toEntity(Arrays.asList(orderTable, orderTable)))).thenReturn(tableGroup);
+		when(tableGroupValidator.findValidatedOrderTables(tableGroupRequest.getOrderTables()))
+			.thenReturn(orderTables);
+		when(tableGroupRepository.save(tableGroupRequest.toEntity())).thenReturn(tableGroup);
 
 		// then
 		assertThat(tableGroupService.create(tableGroupRequest)).isEqualTo(tableGroup);
-	}
-
-	@DisplayName("테이블 그룹을 해체하는 기능 테스트")
-	@Test
-	void unGroup() {
-		// given
-		given(tableGroupRepository.findById(anyLong())).willReturn(Optional.of(tableGroup));
-		given(orderTable.getTableGroup()).willReturn(null);
-
-		// when
-		tableGroupService.ungroup(tableGroup.getId());
-
-		// then
-		assertThat(orderTable.getTableGroup()).isNull();
 	}
 }

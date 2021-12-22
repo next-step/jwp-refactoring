@@ -2,7 +2,6 @@ package kitchenpos.tablegroup.dto;
 
 import java.util.List;
 
-import kitchenpos.table.domain.OrderTable;
 import kitchenpos.tablegroup.domain.TableGroup;
 
 public class TableGroupRequest {
@@ -24,7 +23,7 @@ public class TableGroupRequest {
 		return orderTables;
 	}
 
-	public TableGroup toEntity(List<OrderTable> savedOrderTables) {
-		return TableGroup.from(savedOrderTables);
+	public TableGroup toEntity() {
+		return TableGroup.from();
 	}
 }

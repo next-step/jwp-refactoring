@@ -17,7 +17,7 @@ import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.exception.MenuException;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
 
-@DisplayName("메뉴 Validator : 단위 테스트")
+@DisplayName("메뉴 : Validator 테스트")
 @ExtendWith(MockitoExtension.class)
 class MenuValidatorTest {
 
