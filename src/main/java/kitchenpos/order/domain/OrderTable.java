@@ -73,7 +73,7 @@ public class OrderTable {
         this.empty.changeEmpty(false);
     }
 
-    public void ungroup() {
+    public void deleteTableGroup() {
         tableGroup = null;
     }
 

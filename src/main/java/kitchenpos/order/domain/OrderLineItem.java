@@ -33,7 +33,7 @@ public class OrderLineItem {
     @Embedded
     private Quantity quantity;
 
-    public OrderLineItem() {
+    protected OrderLineItem() {
     }
 
     private OrderLineItem(Long id, Order order, Menu menu, long quantity) {
