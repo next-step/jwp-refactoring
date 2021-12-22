@@ -1,5 +1,7 @@
 package kitchenpos.domain.order;
 
+import java.util.Objects;
+
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
@@ -59,5 +61,21 @@ public class OrderLineItem {
 
         this.order = order;
         this.order.getOrderLineItems().add(this);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this)
+            return true;
+        if (!(o instanceof OrderLineItem)) {
+            return false;
+        }
+        OrderLineItem orderLineItem = (OrderLineItem) o;
+        return Objects.equals(seq, orderLineItem.seq);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(seq);
     }
 }

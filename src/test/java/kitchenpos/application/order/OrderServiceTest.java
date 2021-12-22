@@ -69,6 +69,7 @@ public class OrderServiceTest {
         Orders 치킨주문 = Orders.of(OrderTableId.of(치킨_주문_단체테이블), OrderStatus.COOKING);
         치킨_주문항목.acceptOrder(치킨주문);
 
+        when(ordersValidator.getValidatedOrdersForCreate(any(OrderDto.class))).thenReturn(치킨주문);
         when(orderRepository.save(any(Orders.class))).thenReturn(치킨주문);
 
         OrderDto 주문_요청전문 = OrderDto.of(1L, List.of(OrderLineItemDto.of(1L, 1L)));

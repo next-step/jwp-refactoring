@@ -22,9 +22,11 @@ import kitchenpos.application.menu.MenuService;
 import kitchenpos.domain.Price;
 import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.order.OrderLineItem;
+import kitchenpos.domain.order.OrderLineItems;
 import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.domain.order.Orders;
 import kitchenpos.domain.table.OrderTable;
+import kitchenpos.dto.order.OrderDto;
 import kitchenpos.event.orders.ValidateEmptyTableEvent;
 import kitchenpos.exception.order.EmptyOrderLineItemOrderException;
 import kitchenpos.exception.order.NotRegistedMenuOrderException;
@@ -41,10 +43,29 @@ public class OrderValidatorTest {
 
     @InjectMocks
     private OrdersValidator ordersValidator;
-    
+
     @Captor
     private ArgumentCaptor<ValidateEmptyTableEvent> captor;
     
+    @DisplayName("주문 유효성검사자는 주문생성시 유효성여부를 확인 후 정합시 주문이 생성된다.")
+    @Test
+    void generate_order_forCreate() {
+        // given
+        Menu 뿌링클콤보 = Menu.of(1L, "뿌링클콤보", Price.of(18_000));
+
+        OrderTable 치킨_주문_단체테이블 = OrderTable.of(10, false);
+        OrderLineItems 주문항목들 = OrderLineItems.of(OrderLineItem.of(MenuId.of(뿌링클콤보.getId()), 1L));
+        Orders 치킨주문 = Orders.of(OrderTableId.of(치킨_주문_단체테이블), OrderStatus.COOKING, 주문항목들);
+
+        when(menuService.findAllByIdIn(anyList())).thenReturn(List.of(뿌링클콤보));
+
+        // when
+        Orders order = ordersValidator.getValidatedOrdersForCreate(OrderDto.of(치킨주문));
+
+        // then
+        Assertions.assertThat(order).isEqualTo(치킨주문);
+    }
+
     @DisplayName("주문에속하는 수량있는 메뉴가 없는 주문은 예외가 발생된다.")
     @Test
     void exception_createOrder_emptyOrderedMenu() {
@@ -55,7 +76,7 @@ public class OrderValidatorTest {
         // when
         // then
         Assertions.assertThatExceptionOfType(EmptyOrderLineItemOrderException.class)
-                    .isThrownBy(() -> ordersValidator.validateForCreate(치킨주문));
+                    .isThrownBy(() -> ordersValidator.getValidatedOrdersForCreate(OrderDto.of(치킨주문)));
     }
 
     @DisplayName("미등록된 메뉴에대한 오더시 예외가 발생된다.")
@@ -74,7 +95,7 @@ public class OrderValidatorTest {
         // when
         // then
         Assertions.assertThatExceptionOfType(NotRegistedMenuOrderException.class)
-                    .isThrownBy(() -> ordersValidator.validateForCreate(치킨주문));
+                    .isThrownBy(() -> ordersValidator.getValidatedOrdersForCreate(OrderDto.of(치킨주문)));
     }
 
     @DisplayName("주문테이블이 빈테이블인지 확인하는 이벤트가 발생된다.")
@@ -90,7 +111,7 @@ public class OrderValidatorTest {
 
         when(menuService.findAllByIdIn(anyList())).thenReturn(List.of(뿌링클콤보));
 
-        ordersValidator.validateForCreate(치킨주문);
+        ordersValidator.getValidatedOrdersForCreate(OrderDto.of(치킨주문));
 
         // when
         // then

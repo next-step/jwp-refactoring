@@ -3,6 +3,7 @@ package kitchenpos.domain.order;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -100,5 +101,21 @@ public class Orders {
 
     public boolean isCompletion() {
         return this.orderStatus.equals(OrderStatus.COMPLETION);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this)
+            return true;
+        if (!(o instanceof Orders)) {
+            return false;
+        }
+        Orders orders = (Orders) o;
+        return Objects.equals(id, orders.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

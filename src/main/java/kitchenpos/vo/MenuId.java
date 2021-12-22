@@ -1,5 +1,7 @@
 package kitchenpos.vo;
 
+import java.util.Objects;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
@@ -28,4 +30,21 @@ public final class MenuId {
     public Long value() {
         return this.menuId;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this)
+            return true;
+        if (!(o instanceof MenuId)) {
+            return false;
+        }
+        MenuId menuId = (MenuId) o;
+        return Objects.equals(this.menuId, menuId.menuId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(menuId);
+    }
+
 }

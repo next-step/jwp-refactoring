@@ -3,6 +3,7 @@ package kitchenpos.domain.order;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public final class OrderLineItems {
     private final List<OrderLineItem> orderLineItems;
@@ -37,4 +38,23 @@ public final class OrderLineItems {
         );
     }
 
+    public List<OrderLineItem> getOrderLineItems() {
+        return this.orderLineItems;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this)
+            return true;
+        if (!(o instanceof OrderLineItems)) {
+            return false;
+        }
+        OrderLineItems orderLineItems = (OrderLineItems) o;
+        return Objects.equals(this.orderLineItems, orderLineItems.orderLineItems);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(orderLineItems);
+    }
 }

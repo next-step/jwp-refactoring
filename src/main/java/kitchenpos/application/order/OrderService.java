@@ -3,12 +3,8 @@ package kitchenpos.application.order;
 import kitchenpos.domain.order.Orders;
 import kitchenpos.domain.order.OrdersRepository;
 import kitchenpos.dto.order.OrderDto;
-import kitchenpos.dto.order.OrderLineItemDto;
-import kitchenpos.domain.order.OrderLineItem;
-import kitchenpos.domain.order.OrderLineItems;
 import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.exception.order.NotFoundOrderException;
-import kitchenpos.vo.MenuId;
 import kitchenpos.vo.OrderTableId;
 
 import org.springframework.stereotype.Service;
@@ -31,22 +27,10 @@ public class OrderService {
     }
 
     @Transactional
-    public OrderDto create(final OrderDto order) {
-        final List<OrderLineItemDto> orderLineItemDtos = order.getOrderLineItems();
-        final OrderLineItems orderLineItems = createOrderLineItems(orderLineItemDtos);
-
-        final Orders newOrder = Orders.of(OrderTableId.of(order.getOrderTableId()), OrderStatus.COOKING, orderLineItems);
-        ordersValidator.validateForCreate(newOrder);
+    public OrderDto create(final OrderDto orderDto) {
+        Orders validatedOrder = ordersValidator.getValidatedOrdersForCreate(orderDto);
         
-        return OrderDto.of(orderRepository.save(newOrder));
-    }
-
-    private OrderLineItems createOrderLineItems(final List<OrderLineItemDto> orderLineItemDtos) {
-        List<OrderLineItem> orderLineItems = orderLineItemDtos.stream()
-                                                                .map(orderLineItemDto -> OrderLineItem.of(MenuId.of(orderLineItemDto.getMenuId()), orderLineItemDto.getQuantity()))
-                                                                .collect(Collectors.toList());
-
-        return OrderLineItems.of(orderLineItems);
+        return OrderDto.of(orderRepository.save(validatedOrder));
     }
 
     @Transactional(readOnly = true)

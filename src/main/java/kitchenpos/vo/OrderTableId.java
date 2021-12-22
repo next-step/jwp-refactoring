@@ -1,5 +1,7 @@
 package kitchenpos.vo;
 
+import java.util.Objects;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
@@ -27,5 +29,21 @@ public class OrderTableId {
 
     public Long value() {
         return this.orderTableId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this)
+            return true;
+        if (!(o instanceof OrderTableId)) {
+            return false;
+        }
+        OrderTableId orderTableId = (OrderTableId) o;
+        return Objects.equals(this.orderTableId, orderTableId.orderTableId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(orderTableId);
     }
 }
