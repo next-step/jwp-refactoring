@@ -10,6 +10,9 @@ public class MenuProductRequest {
         this.quantity = quantity;
     }
 
+    public MenuProductRequest() {
+    }
+
     public Long getProductId() {
         return productId;
     }

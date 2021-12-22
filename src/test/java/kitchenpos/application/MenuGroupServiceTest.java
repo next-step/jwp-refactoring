@@ -1,7 +1,12 @@
 package kitchenpos.application;
 
+import static common.MenuGroupFixture.from;
 import static common.MenuGroupFixture.메뉴그룹_두마리;
 import static common.MenuGroupFixture.메뉴그룹_신메뉴;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
@@ -9,7 +14,8 @@ import java.util.List;
 import kitchenpos.menu.application.MenuGroupService;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuGroupDao;
-import org.assertj.core.api.Assertions;
+import kitchenpos.menu.dto.MenuGroupRequest;
+import kitchenpos.menu.dto.MenuGroupResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -32,11 +38,11 @@ public class MenuGroupServiceTest {
         MenuGroup 두마리그룹 = 메뉴그룹_두마리();
 
         //when
-        when(menuGroupDao.save(두마리그룹)).thenReturn(두마리그룹);
-        MenuGroup 저장된두마리그룹 = menuGroupService.create(두마리그룹);
+        lenient().when(menuGroupDao.save(any(MenuGroup.class))).thenReturn(두마리그룹);
+        MenuGroupResponse 저장된_두마리_그룹 = menuGroupService.create(from(두마리그룹));
 
         // then
-        Assertions.assertThat(저장된두마리그룹).isEqualTo(두마리그룹);
+        assertThat(저장된_두마리_그룹.getName()).isEqualTo(두마리그룹.getName());
     }
 
     @Test
@@ -47,9 +53,9 @@ public class MenuGroupServiceTest {
 
         //when
         when(menuGroupDao.findAll()).thenReturn(Arrays.asList(두마리그룹, 신메뉴그룹));
-        List<MenuGroup> list = menuGroupService.list();
+        List<MenuGroupResponse> list = menuGroupService.list();
 
         // then
-        Assertions.assertThat(list).containsExactly(두마리그룹, 신메뉴그룹);
+        assertThat(list).extracting("name").containsExactly(두마리그룹.getName(), 신메뉴그룹.getName());
     }
 }

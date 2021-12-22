@@ -19,7 +19,11 @@ public class MenuGroup {
         return new MenuGroup(id, name);
     }
 
-    public MenuGroup(Long id, String name) {
+    public static MenuGroup of(String name) {
+        return new MenuGroup(null, name);
+    }
+
+    private MenuGroup(Long id, String name) {
         this.id = id;
         this.name = name;
     }

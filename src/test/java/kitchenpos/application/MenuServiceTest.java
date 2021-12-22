@@ -7,6 +7,7 @@ import static common.MenuProductFixture.양념치킨_1개;
 import static common.ProductFixture.양념치킨;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.atMost;
 import static org.mockito.Mockito.verify;
@@ -61,6 +62,7 @@ public class MenuServiceTest {
         // mocking
         when(menuGroupDao.findById(anyLong())).thenReturn(Optional.of(메뉴그룹_한마리()));
         when(productDao.findById(anyLong())).thenReturn(Optional.of(양념치킨()));
+        when(menuDao.save(any())).thenReturn(menu);
 
         // when
         menuService.create(menuRequest);

@@ -17,6 +17,9 @@ public class MenuRequest {
         this.menuProducts = menuProducts;
     }
 
+    public MenuRequest() {
+    }
+
     public String getName() {
         return name;
     }

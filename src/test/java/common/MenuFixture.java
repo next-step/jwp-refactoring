@@ -3,6 +3,8 @@ package common;
 import static common.MenuGroupFixture.메뉴그룹_한마리;
 
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.product.domain.Amount;
 
 public class MenuFixture {

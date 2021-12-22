@@ -1,6 +1,7 @@
 package common;
 
 import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.dto.MenuGroupRequest;
 
 public class MenuGroupFixture {
 
@@ -16,4 +17,8 @@ public class MenuGroupFixture {
         return MenuGroup.of(3L, "신메뉴");
     }
 
+
+    public static MenuGroupRequest from(MenuGroup menuGroup) {
+        return new MenuGroupRequest(menuGroup.getName());
+    }
 }
