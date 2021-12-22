@@ -1,8 +1,5 @@
 package kitchenpos.order.application;
 
-import kitchenpos.common.exception.NotChangeCompletionOrderException;
-import kitchenpos.common.exception.NotOrderedEmptyTableException;
-import kitchenpos.common.exception.OrderLineItemEmptyException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.*;
@@ -14,7 +11,6 @@ import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -37,18 +33,17 @@ public class OrderService {
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
-        Order order = getCookingOrder(orderRequest);
         OrderLineItems orderLineItems = getOrderLineItems(orderRequest.getOrderLineItems());
-        orderLineItems.initOrder(order);
+        Order order = getCookingOrder(orderRequest, orderLineItems);
 
         final Order savedOrder = orderRepository.save(order);
 
         return OrderResponse.of(savedOrder);
     }
 
-    private Order getCookingOrder(OrderRequest orderRequest) {
+    private Order getCookingOrder(OrderRequest orderRequest, OrderLineItems orderLineItems) {
         final OrderTable orderTable = orderTableRepository.findByIdElseThrow(orderRequest.getOrderTableId());
-        return Order.CookingOrder(orderTable);
+        return Order.CookingOrder(orderTable, orderLineItems);
     }
 
     private OrderLineItems getOrderLineItems(List<OrderLineItemRequest> orderLineItemRequests) {

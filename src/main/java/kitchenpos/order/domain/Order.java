@@ -47,11 +47,18 @@ public class Order {
         this.orderStatus = orderStatus;
     }
 
-    public static Order CookingOrder(OrderTable orderTable) {
+    public Order(OrderTable orderTable, OrderStatus orderStatus, OrderLineItems orderLineItems) {
+        this.orderTable = orderTable;
+        this.orderStatus = orderStatus;
+        orderLineItems.initOrder(this);
+    }
+
+    public static Order CookingOrder(OrderTable orderTable, OrderLineItems orderLineItems) {
         if (orderTable.isEmpty()) {
             throw new NotOrderedEmptyTableException();
         }
-        return new Order(orderTable, OrderStatus.COOKING);
+
+        return new Order(orderTable, OrderStatus.COOKING, orderLineItems);
     }
 
     public Long getId() {

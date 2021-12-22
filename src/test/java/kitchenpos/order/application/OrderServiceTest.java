@@ -72,7 +72,6 @@ public class OrderServiceTest {
     void notFoundOrderLineItem() {
         // given
         OrderRequest 요청_데이터 = mock(OrderRequest.class);
-        given(orderTableRepository.findByIdElseThrow(anyLong())).willReturn(이인석);
         // when
         // then
         assertThatThrownBy(() -> orderService.create(요청_데이터))
@@ -83,7 +82,6 @@ public class OrderServiceTest {
     @DisplayName("등록이 안된 메뉴는 주문 할 수 없다.")
     void notFoundMenu() {
         // given
-        given(orderTableRepository.findByIdElseThrow(anyLong())).willReturn(이인석);
         given(menuRepository.findByIdElseThrow(anyLong())).willThrow(NotFoundMenuException.class);
         // when
         // then
