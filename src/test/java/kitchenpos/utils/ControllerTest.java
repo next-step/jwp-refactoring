@@ -70,9 +70,7 @@ public class ControllerTest {
                 .content(objectMapper.writeValueAsString(body))
                 .accept(MediaType.APPLICATION_JSON_VALUE))
                 .andDo(print())
-                .andExpect(status().isOk())
                 ;
-
     }
 
     protected ResultActions delete(String url, MultiValueMap<String, String> params) throws Exception {

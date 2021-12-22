@@ -63,7 +63,6 @@ public class ProductControllerTest extends ControllerTest {
         resultActions.andExpect(jsonPath("$").isArray());
         resultActions.andExpect(jsonPath("$[0]['name']").value(후라이드.getName()));
         resultActions.andExpect(jsonPath("$[0]['price']").value(후라이드.getPrice()));
-
     }
 
 }
