@@ -4,10 +4,7 @@ import kitchenpos.dao.MenuRepository;
 import kitchenpos.dao.OrderRepository;
 import kitchenpos.dao.OrderLineItemRepository;
 import kitchenpos.dao.OrderTableRepository;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
-import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -41,15 +38,15 @@ class OrderServiceTest {
     @Test
     void creteTest() {
         OrderTable orderTable = new OrderTable(1L, null, 1, false);
-        Order order = new Order(1L, 1L, OrderStatus.COOKING.name(), LocalDateTime.now(), null);
-        OrderLineItem orderLineItem = new OrderLineItem(1L, order, 1L, 1L);
-        order.setOrderLineItems(Collections.singletonList(orderLineItem));
+        Order order = new Order(1L, orderTable, OrderStatus.COOKING.name(), LocalDateTime.now(), null);
+        OrderLineItem orderLineItem = new OrderLineItem(1L, order, null, 1L);
+        order.setOrderLineItems(new OrderLineItems(Collections.singletonList(orderLineItem)));
         when(menuRepository.countByIdIn(Collections.singletonList(1L))).thenReturn(1L);
         when(orderTableRepository.findById(1L)).thenReturn(java.util.Optional.of(orderTable));
         when(orderRepository.save(order)).thenReturn(order);
 
         // when
-        OrderService orderService = new OrderService(menuRepository, orderRepository, orderLineItemRepository, orderTableRepository);
+        OrderService orderService = new OrderService(menuRepository, orderRepository, orderLineItemRepository, orderTableRepository, menuService);
         Order returnedOrder = orderService.create(order);
 
         assertThat(order).isEqualTo(returnedOrder);
@@ -58,10 +55,11 @@ class OrderServiceTest {
     @DisplayName("주문항목 없이 주문을 생성한다")
     @Test
     void creteWithoutOrderLineItemTest() {
-        Order order = new Order(1L, 1L, OrderStatus.COOKING.name(), LocalDateTime.now(), null);
+        OrderTable orderTable = new OrderTable();
+        Order order = new Order(1L, orderTable, OrderStatus.COOKING.name(), LocalDateTime.now(), null);
 
         // when
-        OrderService orderService = new OrderService(menuRepository, orderRepository, orderLineItemRepository, orderTableRepository);
+        OrderService orderService = new OrderService(menuRepository, orderRepository, orderLineItemRepository, orderTableRepository, menuService);
 
         // then
         assertThatThrownBy(() -> orderService.create(order)).isInstanceOf(IllegalArgumentException.class);
@@ -72,10 +70,10 @@ class OrderServiceTest {
     void creteWithoutOrderTableTest() {
         Order order = new Order(1L, null, OrderStatus.COOKING.name(), LocalDateTime.now(), null);
         OrderLineItem orderLineItem = new OrderLineItem(1L, order, 1L, 1L);
-        order.setOrderLineItems(Collections.singletonList(orderLineItem));
+        order.setOrderLineItems(new OrderLineItems(Collections.singletonList(orderLineItem)));
 
         // when
-        OrderService orderService = new OrderService(menuRepository, orderRepository, orderLineItemRepository, orderTableRepository);
+        OrderService orderService = new OrderService(menuRepository, orderRepository, orderLineItemRepository, orderTableRepository, menuService);
 
         // then
         assertThatThrownBy(() -> orderService.create(order)).isInstanceOf(IllegalArgumentException.class);
@@ -86,14 +84,14 @@ class OrderServiceTest {
     void listTest() {
         Order order = new Order(1L, 1L, OrderStatus.COOKING.name(), LocalDateTime.now(), null);
         OrderLineItem orderLineItem = new OrderLineItem(1L, order, 1L, 1L);
-        order.setOrderLineItems(Collections.singletonList(orderLineItem));
+        order.setOrderLineItems(new OrderLineItems(Collections.singletonList(orderLineItem)));
         List<OrderLineItem> orderLineItems = Collections.singletonList(orderLineItem);
         List<Order> orders = Collections.singletonList(order);
         when(orderRepository.findAll()).thenReturn(orders);
         when(orderLineItemRepository.findAllByOrderId(order.getId())).thenReturn(orderLineItems);
 
         // when
-        OrderService orderService = new OrderService(menuRepository, orderRepository, orderLineItemRepository, orderTableRepository);
+        OrderService orderService = new OrderService(menuRepository, orderRepository, orderLineItemRepository, orderTableRepository, menuService);
         List<Order> list = orderService.list();
 
         // then
@@ -105,11 +103,11 @@ class OrderServiceTest {
     void changeStatus() {
         Order order = new Order(1L, 1L, OrderStatus.COOKING.name(), LocalDateTime.now(), null);
         OrderLineItem orderLineItem = new OrderLineItem(1L, order, 1L, 1L);
-        order.setOrderLineItems(Collections.singletonList(orderLineItem));
-        Order orderToChangeStatus = new Order(1L, 1L, OrderStatus.MEAL.name(), LocalDateTime.now(), Collections.singletonList(orderLineItem));
+        order.setOrderLineItems(new OrderLineItems(Collections.singletonList(orderLineItem)));
+        Order orderToChangeStatus = new Order(1L, 1L, OrderStatus.MEAL.name(), LocalDateTime.now(), new OrderLineItems(Collections.singletonList(orderLineItem)));
         when(orderRepository.findById(1L)).thenReturn(java.util.Optional.of(orderToChangeStatus));
 
-        OrderService orderService = new OrderService(menuRepository, orderRepository, orderLineItemRepository, orderTableRepository);
+        OrderService orderService = new OrderService(menuRepository, orderRepository, orderLineItemRepository, orderTableRepository, menuService);
         Order changedOrder = orderService.changeOrderStatus(order.getId(), orderToChangeStatus);
 
         assertThat(changedOrder).isEqualTo(orderToChangeStatus);
@@ -120,11 +118,12 @@ class OrderServiceTest {
     void changeCompleteStatus() {
         Order order = new Order(1L, 1L, OrderStatus.COMPLETION.name(), LocalDateTime.now(), null);
         OrderLineItem orderLineItem = new OrderLineItem(1L, order, 1L, 1L);
-        order.setOrderLineItems(Collections.singletonList(orderLineItem));
-        Order orderToChangeStatus = new Order(1L, 1L, OrderStatus.MEAL.name(), LocalDateTime.now(), Collections.singletonList(orderLineItem));
+        OrderLineItems orderLineItems = new OrderLineItems(Collections.singletonList(orderLineItem));
+        order.setOrderLineItems(orderLineItems);
+        Order orderToChangeStatus = new Order(1L, 1L, OrderStatus.MEAL.name(), LocalDateTime.now(), orderLineItems);
         when(orderRepository.findById(1L)).thenReturn(java.util.Optional.of(order));
 
-        OrderService orderService = new OrderService(menuRepository, orderRepository, orderLineItemRepository, orderTableRepository);
+        OrderService orderService = new OrderService(menuRepository, orderRepository, orderLineItemRepository, orderTableRepository, menuService);
 
         assertThatThrownBy(() -> orderService.changeOrderStatus(order.getId(), orderToChangeStatus)).isInstanceOf(IllegalArgumentException.class);
     }

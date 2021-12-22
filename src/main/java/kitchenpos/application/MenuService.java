@@ -6,6 +6,7 @@ import kitchenpos.dao.MenuProductRepository;
 import kitchenpos.dao.ProductRepository;
 import kitchenpos.domain.*;
 import kitchenpos.exception.NegativePriceException;
+import kitchenpos.exception.NoMenuException;
 import kitchenpos.exception.NoMenuGroupException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,5 +33,9 @@ public class MenuService {
 
     public List<Menu> list() {
         return menuRepository.findAll();
+    }
+
+    public Menu findById(Long menuId) {
+        return menuRepository.findById(menuId).orElseThrow(NoMenuException::new);
     }
 }
