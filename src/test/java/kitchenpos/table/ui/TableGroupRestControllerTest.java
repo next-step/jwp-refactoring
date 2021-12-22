@@ -39,7 +39,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DisplayName("테이블그룹 컨트롤러 테스트")
 @WebMvcTest(TableGroupRestController.class)
 class TableGroupRestControllerTest {
-    private TableGroup tableGroup;
     private TableGroupResponse response;
 
     @Autowired
@@ -50,7 +49,7 @@ class TableGroupRestControllerTest {
 
     @BeforeEach
     void setUp() {
-        tableGroup = new TableGroup(Lists.newArrayList(주문불가_다섯명테이블(), 주문불가_두명테이블()));
+        TableGroup tableGroup = new TableGroup(Lists.newArrayList(주문불가_다섯명테이블(), 주문불가_두명테이블()));
         response = TableGroupResponse.of(tableGroup);
     }
 

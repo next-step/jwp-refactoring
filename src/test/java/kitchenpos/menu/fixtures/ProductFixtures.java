@@ -28,4 +28,8 @@ public class ProductFixtures {
     public static Product 후라이드() {
         return 후라이드요청().toEntity();
     }
+
+    public static ProductRequest 메뉴등록요청(String name, BigDecimal price) {
+        return ProductRequest.of(name, price);
+    }
 }

@@ -5,7 +5,7 @@ import kitchenpos.menu.domain.Product;
 import java.math.BigDecimal;
 import java.util.List;
 
-import static java.util.stream.Collectors.*;
+import static java.util.stream.Collectors.toList;
 
 /**
  * packageName : kitchenpos.dto
@@ -33,7 +33,9 @@ public class ProductResponse {
     }
 
     public static List<ProductResponse> ofList(List<Product> products) {
-        return products.stream().map(ProductResponse::of).collect(toList());
+        return products.stream()
+                .map(ProductResponse::of)
+                .collect(toList());
     }
 
     public Long getId() {

@@ -179,7 +179,8 @@ public class OrderAcceptanceTest extends AcceptanceTest {
                 .body(주문등록요청)
                 .when()
                 .post("/api/orders")
-                .then().log().all().extract();
+                .then().log().all()
+                .extract();
     }
 
     private void 주문_등록됨(ExtractableResponse<Response> response) {

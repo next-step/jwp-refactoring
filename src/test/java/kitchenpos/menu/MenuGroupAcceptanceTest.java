@@ -59,7 +59,8 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .get("/api/menu-groups")
-                .then().log().all().extract();
+                .then().log().all()
+                .extract();
     }
 
     public static MenuGroupResponse 메뉴그룹_등록되어있음(MenuGroupRequest request) {
@@ -73,7 +74,8 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(request)
                 .when().post("/api/menu-groups")
-                .then().log().all().extract();
+                .then().log().all()
+                .extract();
     }
 
     private void 메뉴그룹_등록됨(ExtractableResponse<Response> response) {

@@ -31,7 +31,7 @@ public class TableGroup {
 
     private void addOrderTables(List<OrderTable> orderTables) {
         orderTables.forEach(
-            it -> this.orderTables.add(it.groupBy(this))
+                it -> this.orderTables.add(it.groupBy(this))
         );
     }
 
@@ -46,7 +46,8 @@ public class TableGroup {
     }
 
     private boolean targetTablesEmpty(List<OrderTable> orderTables) {
-        return orderTables.stream().allMatch(OrderTable::isEmpty);
+        return orderTables.stream()
+                .allMatch(OrderTable::isEmpty);
     }
 
     public Long getId() {

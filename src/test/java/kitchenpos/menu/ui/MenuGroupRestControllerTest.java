@@ -62,9 +62,10 @@ class MenuGroupRestControllerTest {
         given(menuGroupService.list()).willReturn(menuGroups);
 
         // when
-        ResultActions actions = mockMvc.perform(get("/api/menu-groups")
-                .contentType(MediaType.APPLICATION_JSON)
-        ).andDo(print());
+        ResultActions actions = mockMvc.perform(
+                get("/api/menu-groups")
+                    .contentType(MediaType.APPLICATION_JSON)
+                ).andDo(print());
 
         // then
         actions.andExpect(status().isOk())
@@ -83,8 +84,8 @@ class MenuGroupRestControllerTest {
         // when
         ResultActions actions = mockMvc.perform(
                 post("/api/menu-groups")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(request))
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(mapper.writeValueAsString(request))
         ).andDo(print());
 
         // then

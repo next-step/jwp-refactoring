@@ -14,7 +14,8 @@ import org.springframework.http.MediaType;
 
 import java.math.BigDecimal;
 
-import static kitchenpos.menu.fixtures.ProductFixtures.*;
+import static kitchenpos.menu.fixtures.ProductFixtures.메뉴등록요청;
+import static kitchenpos.menu.fixtures.ProductFixtures.양념치킨요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -67,8 +68,8 @@ public class ProductAcceptanceTest extends AcceptanceTest {
     @DisplayName("상품을 조회한다.")
     public void list() throws Exception {
         //given
-        상품_등록되어_있음(new ProductRequest("양념치킨", new BigDecimal(18000)));
-        상품_등록되어_있음(new ProductRequest("후라이드치킨", new BigDecimal(16000)));
+        상품_등록되어_있음(메뉴등록요청("양념치킨", new BigDecimal(18000)));
+        상품_등록되어_있음(메뉴등록요청("후라이드치킨", new BigDecimal(16000)));
 
         //when
         final ExtractableResponse<Response> response = 상품_리스트_조회_요청함();
@@ -82,7 +83,8 @@ public class ProductAcceptanceTest extends AcceptanceTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .get("/api/products")
-                .then().log().all().extract();
+                .then().log().all()
+                .extract();
     }
 
     public static ProductResponse 상품_등록되어_있음(ProductRequest request) {
@@ -96,7 +98,8 @@ public class ProductAcceptanceTest extends AcceptanceTest {
                 .body(request)
                 .when()
                 .post("/api/products")
-                .then().log().all().extract();
+                .then().log().all()
+                .extract();
     }
 
     private void 상품_등록됨(ExtractableResponse<Response> response) {
@@ -110,6 +113,10 @@ public class ProductAcceptanceTest extends AcceptanceTest {
 
     private void 상품_리스트_조회됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.jsonPath().getList("", ProductResponse.class).size()).isGreaterThanOrEqualTo(0);
+        assertThat(
+                response.jsonPath()
+                        .getList("", ProductResponse.class)
+                        .size()
+        ).isGreaterThanOrEqualTo(0);
     }
 }

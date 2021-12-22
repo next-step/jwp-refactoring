@@ -65,8 +65,8 @@ class TableRestControllerTest {
 
         // when
         ResultActions actions = mockMvc.perform(
-                get("/api/tables")
-                        .contentType(MediaType.APPLICATION_JSON)
+            get("/api/tables")
+                .contentType(MediaType.APPLICATION_JSON)
         ).andDo(print());
 
         // then
@@ -84,9 +84,9 @@ class TableRestControllerTest {
 
         // when
         ResultActions actions = mockMvc.perform(
-                post("/api/tables")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(request))
+            post("/api/tables")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(request))
         ).andDo(print());
 
         // then
@@ -105,9 +105,9 @@ class TableRestControllerTest {
 
         // when
         ResultActions actions = mockMvc.perform(
-                put("/api/tables/" + 1L + "/empty")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(OrderTableFixtures.주문불가로_변경요청()))
+            put("/api/tables/" + 1L + "/empty")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(주문불가로_변경요청()))
         ).andDo(print());
 
         // then
@@ -124,9 +124,9 @@ class TableRestControllerTest {
 
         // when
         ResultActions actions = mockMvc.perform(
-                put("/api/tables/" + 1L + "/empty")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(OrderTableFixtures.주문가능으로_변경요청()))
+            put("/api/tables/" + 1L + "/empty")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(주문가능으로_변경요청()))
         ).andDo(print());
 
         // then
@@ -143,9 +143,9 @@ class TableRestControllerTest {
 
         // when
         ResultActions actions = mockMvc.perform(
-                put("/api/tables/" + 1L + "/number-of-guests")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(두명으로_변경요청()))
+            put("/api/tables/" + 1L + "/number-of-guests")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(두명으로_변경요청()))
         ).andDo(print());
 
         // then

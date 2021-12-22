@@ -143,7 +143,9 @@ public class OrderTableAcceptanceTest extends AcceptanceTest {
         // given
         OrderTableResponse savedTable1 = 주문_테이블_등록되어_있음(주문불가_두명테이블요청());
         OrderTableResponse savedTable2 = 주문_테이블_등록되어_있음(주문불가_두명테이블요청());
+
         테이블_그룹화_되어있음(그룹테이블_그룹요청(newArrayList(테이블_그룹요청(savedTable1.getId()), 테이블_그룹요청(savedTable2.getId()))));
+
         OrderResponse savedOrder = 주문등록되어있음(주문등록요청(savedTable1.getId(), newArrayList(주문정보_등록요청(메뉴_ID, 1L))));
         주문_상태_변경요청함(savedOrder.getId(), 식사중으로_변경요청());
 
@@ -223,7 +225,8 @@ public class OrderTableAcceptanceTest extends AcceptanceTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .get("/api/tables")
-                .then().log().all().extract();
+                .then().log().all()
+                .extract();
     }
 
     public static OrderTableResponse 주문_테이블_등록되어_있음(OrderTableSaveRequest request) {
@@ -232,7 +235,8 @@ public class OrderTableAcceptanceTest extends AcceptanceTest {
                 .body(request)
                 .when()
                 .post("/api/tables")
-                .then().log().all().extract();
+                .then().log().all()
+                .extract();
 
         return response.jsonPath().getObject("", OrderTableResponse.class);
     }
@@ -243,7 +247,8 @@ public class OrderTableAcceptanceTest extends AcceptanceTest {
                 .body(request)
                 .when()
                 .post("/api/tables")
-                .then().log().all().extract();
+                .then().log().all()
+                .extract();
     }
 
     private void 주문_테이블_조회됨(ExtractableResponse<Response> response) {

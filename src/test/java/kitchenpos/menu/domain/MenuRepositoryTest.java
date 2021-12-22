@@ -33,8 +33,6 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 class MenuRepositoryTest {
     private final BigDecimal 메뉴가격 = new BigDecimal(32000);
     private Menu menu;
-    private Product 양념치킨;
-    private Product 후라이드;
     private MenuGroup 메뉴그룹;
     private MenuProduct 양념치킨메뉴상품;
     private MenuProduct 후라이드메뉴상품;
@@ -50,8 +48,8 @@ class MenuRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        양념치킨 = productRepository.save(양념치킨요청().toEntity());
-        후라이드 = productRepository.save(후라이드요청().toEntity());
+        Product 양념치킨 = productRepository.save(양념치킨요청().toEntity());
+        Product 후라이드 = productRepository.save(후라이드요청().toEntity());
         메뉴그룹 = menuGroupRepository.save(반반메뉴그룹요청().toEntity());
         양념치킨메뉴상품 = new MenuProduct(양념치킨, 1L);
         후라이드메뉴상품 = new MenuProduct(후라이드, 1L);
@@ -98,23 +96,35 @@ class MenuRepositoryTest {
         BigDecimal illegalPrice = new BigDecimal(candidate);
 
         //when
-        assertThatThrownBy(() -> new Menu("가격불일치메뉴", illegalPrice, 메뉴그룹, Lists.newArrayList(양념치킨메뉴상품, 후라이드메뉴상품)))
-                .isInstanceOf(IllegalPriceException.class);
+        assertThatThrownBy(() -> new Menu(
+                "가격불일치메뉴",
+                illegalPrice,
+                메뉴그룹,
+                Lists.newArrayList(양념치킨메뉴상품, 후라이드메뉴상품))
+        ).isInstanceOf(IllegalPriceException.class);
     }
 
     @Test
     @DisplayName("메뉴의 가격이 올바르지 않으면 등록할 수 없다: null")
     public void createFailByPriceNull() {
         //then
-        assertThatThrownBy(() -> new Menu("가격불일치메뉴", null, 메뉴그룹, Lists.newArrayList(양념치킨메뉴상품, 후라이드메뉴상품)))
-                .isInstanceOf(IllegalPriceException.class);
+        assertThatThrownBy(() -> new Menu(
+                "가격불일치메뉴",
+                null,
+                메뉴그룹,
+                Lists.newArrayList(양념치킨메뉴상품, 후라이드메뉴상품))
+        ).isInstanceOf(IllegalPriceException.class);
     }
 
     @Test
     @DisplayName("메뉴의 가격은 메뉴상품들의 수량과 가격의 합과 일치하여야 한다.")
     public void createFailByMenusPrices() {
         //then
-        assertThatThrownBy(() -> new Menu("가격불일치메뉴", new BigDecimal(Long.MAX_VALUE), 메뉴그룹, Lists.newArrayList(양념치킨메뉴상품, 후라이드메뉴상품)))
-                .isInstanceOf(LimitPriceException.class);
+        assertThatThrownBy(() -> new Menu(
+                "가격불일치메뉴",
+                new BigDecimal(Long.MAX_VALUE),
+                메뉴그룹,
+                Lists.newArrayList(양념치킨메뉴상품, 후라이드메뉴상품))
+        ).isInstanceOf(LimitPriceException.class);
     }
 }

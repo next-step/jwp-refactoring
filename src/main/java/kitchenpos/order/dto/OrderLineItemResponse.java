@@ -34,7 +34,9 @@ public class OrderLineItemResponse {
     }
 
     public static List<OrderLineItemResponse> ofList(List<OrderLineItem> orderLineItems) {
-        return orderLineItems.stream().map(OrderLineItemResponse::of).collect(toList());
+        return orderLineItems.stream()
+                .map(OrderLineItemResponse::of)
+                .collect(toList());
     }
 
     public Long getId() {

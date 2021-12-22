@@ -51,7 +51,6 @@ import static org.mockito.Mockito.verify;
 @DisplayName("그룹 테이블 통합 테스트")
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
-    private TableGroup 그룹테이블;
     private Menu 메뉴;
 
     @Mock
@@ -69,11 +68,6 @@ class TableGroupServiceTest {
         final MenuGroup 메뉴그룹 = 메뉴그룹("메뉴그룹");
         final MenuProduct 메뉴상품 = MenuProductFixtures.메뉴상품(양념치킨, 1L);
         메뉴 = MenuFixtures.메뉴("양념하나", 양념치킨.getPrice(), 메뉴그룹, Lists.newArrayList(메뉴상품));
-
-        final OrderTable 주문불가_다섯명테이블 = 주문불가_다섯명테이블();
-        final OrderTable 주문불가_두명테이블 = 주문불가_두명테이블();
-
-        그룹테이블 = new TableGroup(Lists.newArrayList(주문불가_다섯명테이블, 주문불가_두명테이블));
     }
 
     @Test
@@ -147,8 +141,7 @@ class TableGroupServiceTest {
         final TableGroup 그룹테이블 = new TableGroup(그룹화테이블리스트);
 
         final OrderLineItem 주문정보 = new OrderLineItem(메뉴, 1L);
-        Order order = new Order(주문불가_다섯명테이블, Lists.newArrayList(주문정보));
-
+        new Order(주문불가_다섯명테이블, Lists.newArrayList(주문정보));
         given(tableGroupRepository.findById(anyLong())).willReturn(Optional.of(그룹테이블));
 
         // then

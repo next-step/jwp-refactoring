@@ -50,7 +50,9 @@ public class OrderTableResponse {
     }
 
     public static List<OrderTableResponse> ofList(List<OrderTable> orderTables) {
-        return orderTables.stream().map(OrderTableResponse::of).collect(toList());
+        return orderTables.stream()
+                .map(OrderTableResponse::of)
+                .collect(toList());
     }
 
     public Long getId() {

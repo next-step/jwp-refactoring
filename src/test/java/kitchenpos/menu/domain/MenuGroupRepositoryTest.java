@@ -1,7 +1,5 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuGroupRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +9,7 @@ import java.util.List;
 
 import static kitchenpos.menu.fixtures.MenuGroupFixtures.한마리메뉴그룹요청;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 /**
  * packageName : kitchenpos.domain

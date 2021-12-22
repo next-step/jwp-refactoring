@@ -1,11 +1,11 @@
 package kitchenpos.menu.application;
 
-import kitchenpos.menu.exception.IllegalPriceException;
-import kitchenpos.menu.exception.MenuGroupNotFoundException;
-import kitchenpos.menu.exception.LimitPriceException;
-import kitchenpos.menu.exception.ProductNotFoundException;
 import kitchenpos.menu.domain.*;
 import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.menu.exception.IllegalPriceException;
+import kitchenpos.menu.exception.LimitPriceException;
+import kitchenpos.menu.exception.MenuGroupNotFoundException;
+import kitchenpos.menu.exception.ProductNotFoundException;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -22,9 +22,9 @@ import java.util.List;
 import java.util.Optional;
 
 import static kitchenpos.menu.fixtures.MenuFixtures.양념치킨두마리메뉴요청;
-import static kitchenpos.menu.fixtures.MenuGroupFixtures.*;
-import static kitchenpos.menu.fixtures.MenuProductFixtures.*;
-import static kitchenpos.menu.fixtures.ProductFixtures.*;
+import static kitchenpos.menu.fixtures.MenuGroupFixtures.메뉴그룹;
+import static kitchenpos.menu.fixtures.MenuProductFixtures.메뉴상품_두개요청;
+import static kitchenpos.menu.fixtures.ProductFixtures.양념치킨;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -100,32 +100,46 @@ public class MenuServiceTest {
     @DisplayName("메뉴의 가격이 올바르지 않으면 등록할 수 없다: int")
     public void createFailByPrice(int candidate) {
         // then
-        assertThatThrownBy(() -> new Menu("두마리메뉴", new BigDecimal(candidate), 두마리메뉴그룹, Lists.newArrayList(new MenuProduct(양념치킨, 2L))))
-                .isInstanceOf(IllegalPriceException.class);
+        assertThatThrownBy(() -> new Menu(
+                "두마리메뉴",
+                new BigDecimal(candidate),
+                두마리메뉴그룹,
+                Lists.newArrayList(
+                        new MenuProduct(양념치킨, 2L)
+                )
+        )).isInstanceOf(IllegalPriceException.class);
     }
 
     @Test
     @DisplayName("메뉴의 가격이 올바르지 않으면 등록할 수 없다: null")
     public void createFailByPriceNull() {
         // then
-        assertThatThrownBy(() -> new Menu("두마리메뉴", null, null, null))
-                .isInstanceOf(IllegalPriceException.class);
+        assertThatThrownBy(() -> new Menu(
+                "두마리메뉴",
+                null,
+                null,
+                null)
+        ).isInstanceOf(IllegalPriceException.class);
     }
 
     @Test
     @DisplayName("메뉴의 가격은 메뉴상품들의 수량과 가격의 합과 일치하여야 한다.")
     public void createFailByMenusPrices() {
         // then
-        assertThatThrownBy(() -> new Menu("가격불일치메뉴",
+        assertThatThrownBy(() -> new Menu(
+                "가격불일치메뉴",
                 new BigDecimal(Long.MAX_VALUE),
                 두마리메뉴그룹,
-                Lists.newArrayList(new MenuProduct(양념치킨, 2L))
-        )).isInstanceOf(LimitPriceException.class);
+                Lists.newArrayList(
+                        new MenuProduct(양념치킨, 2L)
+                ))
+        ).isInstanceOf(LimitPriceException.class);
     }
 
     @Test
     @DisplayName("메뉴그룹이 등록되어 있어야 한다.")
     public void createFail() {
+        // given
         given(menuGroupRepository.findById(any())).willThrow(MenuGroupNotFoundException.class);
 
         // then
@@ -135,6 +149,7 @@ public class MenuServiceTest {
     @Test
     @DisplayName("메뉴상품은 상품이 등록되어 있어야 한다.")
     public void createFailByMenuProduct() {
+        // given
         given(menuGroupRepository.findById(any())).willReturn(Optional.of(두마리메뉴그룹));
         given(productRepository.findById(anyLong())).willThrow(ProductNotFoundException.class);
 

@@ -23,7 +23,9 @@ import static kitchenpos.menu.MenuGroupAcceptanceTest.메뉴그룹_등록되어�
 import static kitchenpos.menu.ProductAcceptanceTest.상품_등록되어_있음;
 import static kitchenpos.menu.fixtures.MenuFixtures.후라이드두마리메뉴요청;
 import static kitchenpos.menu.fixtures.MenuFixtures.후라이드반양념반메뉴요청;
+import static kitchenpos.menu.fixtures.MenuGroupFixtures.*;
 import static kitchenpos.menu.fixtures.MenuProductFixtures.메뉴상품등록요청;
+import static kitchenpos.menu.fixtures.ProductFixtures.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -44,16 +46,17 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
 
-        MenuGroupResponse 두마리메뉴그룹 = 메뉴그룹_등록되어있음(MenuGroupFixtures.두마리메뉴그룹요청());
-        ProductResponse 후라이드 = 상품_등록되어_있음(ProductFixtures.후라이드요청());
-        ProductResponse 양념치킨 = 상품_등록되어_있음(ProductFixtures.양념치킨요청());
+        MenuGroupResponse 두마리메뉴그룹 = 메뉴그룹_등록되어있음(두마리메뉴그룹요청());
+        ProductResponse 후라이드 = 상품_등록되어_있음(후라이드요청());
+        ProductResponse 양념치킨 = 상품_등록되어_있음(양념치킨요청());
         BigDecimal 후라이드두마리가격 = 후라이드.getPrice().multiply(new BigDecimal(2L));
         BigDecimal 후라이드반양념반가격 = 후라이드.getPrice().add(양념치킨.getPrice());
 
         후라이드두마리등록요청 = 후라이드두마리메뉴요청(
                 후라이드두마리가격,
                 두마리메뉴그룹.getId(),
-                Lists.newArrayList(메뉴상품등록요청(후라이드.getId(), 2L)
+                Lists.newArrayList(
+                        메뉴상품등록요청(후라이드.getId(), 2L)
                 )
         );
 
@@ -88,15 +91,17 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("메뉴를 등록한다.")
     public void create() {
+        // when
         ExtractableResponse<Response> response = 메뉴_등록_요청함(후라이드두마리등록요청);
 
+        /// then
         메뉴_등록됨(response);
     }
 
 
     @Test
     @DisplayName("메뉴그룹 또는 상품번호가 존재하지 않을 경우 예외처리 한다.")
-    public void createFailByMenuGroup() throws Exception {
+    public void createFailByMenuGroup() {
         // when
         ExtractableResponse<Response> 등록되지않은메뉴그룹_요청 = 메뉴_등록_요청함(등록요청_등록되지않은메뉴그룹);
 
@@ -130,9 +135,11 @@ public class MenuAcceptanceTest extends AcceptanceTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(request)
                 .when().post("/api/menus")
-                .then().log().all().extract();
+                .then().log().all()
+                .extract();
 
-        return response.jsonPath().getObject("", MenuResponse.class);
+        return response.jsonPath()
+                .getObject("", MenuResponse.class);
     }
 
     private void 메뉴_리스트_조회됨(ExtractableResponse<Response> response) {
@@ -145,7 +152,8 @@ public class MenuAcceptanceTest extends AcceptanceTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .get("/api/menus")
-                .then().log().all().extract();
+                .then().log().all()
+                .extract();
     }
 
     private ExtractableResponse<Response> 메뉴_등록_요청함(MenuRequest request) {
@@ -154,10 +162,9 @@ public class MenuAcceptanceTest extends AcceptanceTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(request)
                 .when().post("/api/menus")
-                .then().log().all().extract();
+                .then().log().all()
+                .extract();
     }
-
-
 
     private void 메뉴_등록됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());

@@ -38,7 +38,9 @@ public class MenuProductResponse {
     }
 
     public static List<MenuProductResponse> ofList(List<MenuProduct> menuProducts) {
-        return menuProducts.stream().map(MenuProductResponse::of).collect(Collectors.toList());
+        return menuProducts.stream()
+                .map(MenuProductResponse::of)
+                .collect(Collectors.toList());
     }
 
     public Long getId() {

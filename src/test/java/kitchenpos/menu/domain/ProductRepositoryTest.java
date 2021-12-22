@@ -15,7 +15,7 @@ import java.util.List;
 import static kitchenpos.menu.fixtures.ProductFixtures.양념치킨요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 /**
  * packageName : kitchenpos.domain
@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class ProductRepositoryTest {
 
     @Autowired
-    ProductRepository productRepository;
+    private ProductRepository productRepository;
 
     @Test
     @DisplayName("상품의 목록을 조회할 수 있다.")
@@ -60,14 +60,13 @@ class ProductRepositoryTest {
 
     @DisplayName("상품의 가격이 올바르지 않으면 등록할 수 없다.")
     @ParameterizedTest(name = " 작은 수: " + ParameterizedTest.ARGUMENTS_PLACEHOLDER)
-    @ValueSource(ints = { Integer.MIN_VALUE, -10, -5, -1})
+    @ValueSource(ints = {Integer.MIN_VALUE, -10, -5, -1})
     public void illegalPrice(int candidate) {
         //then
         assertThatThrownBy(() -> new Product("양념치킨", new BigDecimal(candidate)))
                 .isInstanceOf(IllegalPriceException.class);
     }
 
-    //TODO 프레젠테이션 처리 리팩토링 대상
     @Test
     @DisplayName("상품의 가격이 올바르지 않으면 등록할 수 없다. null")
     public void illegalPriceNull() throws Exception {

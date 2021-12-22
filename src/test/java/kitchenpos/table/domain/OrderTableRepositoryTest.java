@@ -1,10 +1,11 @@
 package kitchenpos.table.domain;
 
-import kitchenpos.table.exception.OrderTableNotFoundException;
 import kitchenpos.menu.domain.*;
+import kitchenpos.menu.fixtures.MenuProductFixtures;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.table.exception.OrderTableNotFoundException;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -15,11 +16,12 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import java.math.BigDecimal;
 import java.util.List;
 
-import static kitchenpos.menu.fixtures.MenuGroupFixtures.반반메뉴그룹요청;
+import static kitchenpos.menu.fixtures.MenuGroupFixtures.메뉴그룹;
+import static kitchenpos.menu.fixtures.MenuProductFixtures.*;
+import static kitchenpos.menu.fixtures.ProductFixtures.양념치킨;
+import static kitchenpos.menu.fixtures.ProductFixtures.후라이드;
 import static kitchenpos.table.fixtures.OrderTableFixtures.주문가능_다섯명테이블요청;
 import static kitchenpos.table.fixtures.OrderTableFixtures.주문불가_다섯명테이블요청;
-import static kitchenpos.menu.fixtures.ProductFixtures.양념치킨요청;
-import static kitchenpos.menu.fixtures.ProductFixtures.후라이드요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -53,14 +55,21 @@ class OrderTableRepositoryTest {
     @BeforeEach
     void setUp() {
         BigDecimal 메뉴가격 = new BigDecimal(32000);
-        Product 양념치킨 = productRepository.save(양념치킨요청().toEntity());
-        Product 후라이드 = productRepository.save(후라이드요청().toEntity());
-        MenuGroup 메뉴그룹 = menuGroupRepository.save(반반메뉴그룹요청().toEntity());
-        MenuProduct 양념치킨메뉴상품 = new MenuProduct(양념치킨, 1L);
-        MenuProduct 후라이드메뉴상품 = new MenuProduct(후라이드, 1L);
-        Menu 후라이드반양념반메뉴 = menuRepository.save(new Menu("후라이드반양념반메뉴", 메뉴가격, 메뉴그룹, Lists.newArrayList(양념치킨메뉴상품, 후라이드메뉴상품)));
-        savedTable = orderTableRepository.save(주문가능_다섯명테이블요청().toEntity());
+        Product 양념치킨 = productRepository.save(양념치킨());
+        Product 후라이드 = productRepository.save(후라이드());
+        MenuGroup 메뉴그룹 = menuGroupRepository.save(메뉴그룹("반반메뉴그룹"));
+        MenuProduct 양념치킨메뉴상품 = 메뉴상품(양념치킨, 1L);
+        MenuProduct 후라이드메뉴상품 = 메뉴상품(후라이드, 1L);
+        Menu 후라이드반양념반메뉴 = menuRepository.save(
+                new Menu(
+                        "후라이드반양념반메뉴",
+                        메뉴가격,
+                        메뉴그룹,
+                        Lists.newArrayList(양념치킨메뉴상품, 후라이드메뉴상품)
+                )
+        );
 
+        savedTable = orderTableRepository.save(주문가능_다섯명테이블요청().toEntity());
         OrderLineItem 후라이드양념반두개 = new OrderLineItem(후라이드반양념반메뉴, 2L);
         orderRepository.save(new Order(savedTable, Lists.newArrayList(후라이드양념반두개)));
     }

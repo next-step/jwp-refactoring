@@ -62,8 +62,8 @@ class MenuRestControllerTest {
 
         // when
         ResultActions actions = mockMvc.perform(
-                get("/api/menus")
-                        .contentType(MediaType.APPLICATION_JSON)
+            get("/api/menus")
+                .contentType(MediaType.APPLICATION_JSON)
         ).andDo(print());
 
         // then
@@ -84,9 +84,9 @@ class MenuRestControllerTest {
 
         // when
         ResultActions actions = mockMvc.perform(
-                post("/api/menus")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(request))
+            post("/api/menus")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(request))
         ).andDo(print());
 
         // then

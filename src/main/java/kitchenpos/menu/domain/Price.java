@@ -26,13 +26,13 @@ public class Price {
     protected Price() {
     }
 
-    public Price (BigDecimal value) {
+    public Price(BigDecimal value) {
         validate(value);
         this.price = value;
     }
 
     private void validate(BigDecimal value) {
-        if(Objects.isNull(value) || MIN_PRICE.compareTo(value) > 0) {
+        if (Objects.isNull(value) || MIN_PRICE.compareTo(value) > 0) {
             throw new IllegalPriceException();
         }
     }

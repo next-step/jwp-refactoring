@@ -30,7 +30,9 @@ public class MenuGroupResponse {
     }
 
     public static List<MenuGroupResponse> ofList(List<MenuGroup> menuGroups) {
-        return menuGroups.stream().map(MenuGroupResponse::of).collect(toList());
+        return menuGroups.stream()
+                .map(MenuGroupResponse::of)
+                .collect(toList());
     }
 
     public Long getId() {

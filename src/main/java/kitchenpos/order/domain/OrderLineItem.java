@@ -10,7 +10,8 @@ import static javax.persistence.FetchType.LAZY;
 
 @Entity
 public class OrderLineItem {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = LAZY)

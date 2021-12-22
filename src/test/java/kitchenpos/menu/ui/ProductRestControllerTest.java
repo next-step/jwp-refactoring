@@ -62,8 +62,8 @@ class ProductRestControllerTest {
 
         // when
         ResultActions actions = mockMvc.perform(
-                get("/api/products")
-                        .contentType(MediaType.APPLICATION_JSON)
+            get("/api/products")
+                .contentType(MediaType.APPLICATION_JSON)
         ).andDo(print());
 
         // then
@@ -82,9 +82,9 @@ class ProductRestControllerTest {
 
         // when
         ResultActions actions = mockMvc.perform(
-                post("/api/products")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(request))
+            post("/api/products")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(request))
         ).andDo(print());
 
         // then

@@ -35,7 +35,9 @@ public class MenuResponse {
     }
 
     public static List<MenuResponse> ofList(List<Menu> menus) {
-        return menus.stream().map(MenuResponse::of).collect(toList());
+        return menus.stream()
+                .map(MenuResponse::of)
+                .collect(toList());
     }
 
     public Long getId() {

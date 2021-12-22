@@ -35,7 +35,7 @@ public class DatabaseCleanup implements InitializingBean {
 
         //TODO 하트코딩 처리예정
         for (String tableName : tableNames) {
-            if(tableName.equals("order")) {
+            if (tableName.equals("order")) {
                 tableName = "orders";
             }
 

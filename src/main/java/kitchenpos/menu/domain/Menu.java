@@ -40,10 +40,10 @@ public class Menu {
     private void addMenuProducts(List<MenuProduct> newMenuProducts) {
         comparePrice(newMenuProducts);
         newMenuProducts.forEach(
-            menuProduct -> menuProducts.add(menuProduct.by(this))
+                menuProduct -> menuProducts.add(menuProduct.by(this))
         );
     }
-    
+
     private void comparePrice(List<MenuProduct> menuProducts) {
         if (price.value().compareTo(totalPrice(menuProducts)) > 0) {
             throw new LimitPriceException();

@@ -1,16 +1,16 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.table.exception.InvalidTableException;
 import kitchenpos.order.exception.OrderLineItemNotFoundException;
 import kitchenpos.order.exception.OrderStatusUpdateException;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.exception.InvalidTableException;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static javax.persistence.FetchType.*;
+import static javax.persistence.FetchType.LAZY;
 
 @Entity
 @Table(name = "orders")
