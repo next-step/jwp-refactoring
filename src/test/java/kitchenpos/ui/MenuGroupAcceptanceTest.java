@@ -1,7 +1,5 @@
 package kitchenpos.ui;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,7 +14,7 @@ class MenuGroupAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("메뉴 그룹을 관리한다.")
     @Test
-    void create() {
+    void manageMenuGroup() {
         // given
         Map<String, String> params = new HashMap<>();
         String name = "추천메뉴";

@@ -16,7 +16,6 @@ import kitchenpos.domain.Product;
 
 public class ProductAcceptanceTestHelper {
     private ProductAcceptanceTestHelper() {
-
     }
 
     public static ExtractableResponse<Response> 상품_생성_요청(Map<String, String> params) {
