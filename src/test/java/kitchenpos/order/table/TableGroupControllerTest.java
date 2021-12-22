@@ -29,7 +29,7 @@ public class TableGroupControllerTest extends ControllerTest {
         this.mockMvc = MockMvcBuilders.standaloneSetup(new TableGroupRestController(tableGroupService)).build();
     }
 
-    @DisplayName("단체 지정하기")
+    @DisplayName("단체 테이블 지정하기")
     @Test
     void groupingTable() throws Exception {
 
@@ -56,7 +56,7 @@ public class TableGroupControllerTest extends ControllerTest {
         resultActions.andExpect(status().isCreated());
     }
 
-    @DisplayName("단체 지정 해제하기")
+    @DisplayName("지정된 단체 테이블 해제하기")
     @Test
     void unGroupingTable() throws Exception {
 
