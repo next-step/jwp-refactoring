@@ -55,6 +55,7 @@ public class Order {
         this.orderedTime = orderedTime;
         this.orderLineItems = orderLineItems;
         orderLineItems.changeOrder(this);
+        orderTable.addOrder(this);
     }
 
     private void validate(OrderTable orderTable) {

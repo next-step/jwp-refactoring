@@ -34,6 +34,9 @@ public class OrderTable {
     @Embedded
     private Empty empty;
 
+    @Embedded
+    private Orders orders;
+
     protected OrderTable() {
     }
 
@@ -42,6 +45,7 @@ public class OrderTable {
         this.tableGroup = tableGroup;
         this.numberOfGuests = new NumberOfGuests(numberOfGuests);
         this.empty = new Empty(empty);
+        this.orders = new Orders();
     }
 
     public static OrderTable of(int numberOfGuests, boolean empty) {
@@ -66,6 +70,10 @@ public class OrderTable {
 
     public Empty isEmpty() {
         return empty;
+    }
+
+    public void addOrder(Order order) {
+        orders.add(order);
     }
 
     public void changeTableGroup(TableGroup tableGroup) {
