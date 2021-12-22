@@ -72,8 +72,8 @@ class OrderServiceTest {
         빈_테이블 = OrderTableFixture.create(2L, 4, true);
 
         OrderLineItem 생성된_주문_항목 = OrderLineItemFixture.create(1L, 더블강정, 1L);
-        생성된_주문 = OrderFixture.create(1L, 테이블, OrderStatus.COOKING);
-        계산된_주문 = OrderFixture.create(2L, 테이블, OrderStatus.COMPLETION);
+        생성된_주문 = OrderFixture.create(1L, 테이블.getId(), OrderStatus.COOKING);
+        계산된_주문 = OrderFixture.create(2L, 테이블.getId(), OrderStatus.COMPLETION);
 
         생성된_주문.addOrderLineItem(생성된_주문_항목);
         계산된_주문.addOrderLineItem(생성된_주문_항목);

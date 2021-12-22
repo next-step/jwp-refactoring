@@ -188,7 +188,7 @@ public class TableGroupServiceTest {
             // given
             given(tableGroupRepository.findById(any(Long.TYPE)))
                     .willReturn(Optional.of(등록된_단체));
-            given(orderRepository.existsByOrderTableInAndOrderStatusIn(any(), any()))
+            given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any()))
                     .willReturn(false);
 
             // when
@@ -201,7 +201,7 @@ public class TableGroupServiceTest {
             // given
             given(tableGroupRepository.findById(any(Long.TYPE)))
                     .willReturn(Optional.of(등록된_단체));
-            given(orderRepository.existsByOrderTableInAndOrderStatusIn(any(), any()))
+            given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any()))
                     .willReturn(true);
 
             // when

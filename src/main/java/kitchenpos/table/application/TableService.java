@@ -42,8 +42,8 @@ public class TableService {
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
 
-        if (orderRepository.existsByOrderTableAndOrderStatusIn(
-                savedOrderTable, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
+        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
+                savedOrderTable.getId(), Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
             throw new IllegalArgumentException();
         }
 

@@ -37,7 +37,7 @@ public class OrderService {
     }
 
     public OrderResponse create(final OrderRequest orderRequest) {
-        Order order = Order.of(getOrderTable(orderRequest));
+        Order order = Order.of(orderRequest.getOrderTableId());
 
         List<OrderLineItem> orderLineItems = getOrderLineItems(orderRequest.getOrderLineItems());
 

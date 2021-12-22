@@ -23,7 +23,7 @@ class OrderTest {
     @Test
     void 주문_생성() {
         // when
-        ThrowableAssert.ThrowingCallable 생성_요청 = () -> Order.of(테이블);
+        ThrowableAssert.ThrowingCallable 생성_요청 = () -> Order.of(테이블.getId());
 
         // then
         assertThatNoException().isThrownBy(생성_요청);

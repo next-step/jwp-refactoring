@@ -103,7 +103,7 @@ class TableServiceTest {
 
             given(orderTableRepository.findById(any(Long.TYPE)))
                     .willReturn(Optional.of(사용중인_테이블));
-            given(orderRepository.existsByOrderTableAndOrderStatusIn(any(), any()))
+            given(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), any()))
                     .willReturn(false);
             given(orderTableRepository.save(any(OrderTable.class)))
                     .willReturn(상태변경_후_테이블);
@@ -155,7 +155,7 @@ class TableServiceTest {
 
             given(orderTableRepository.findById(any(Long.TYPE)))
                     .willReturn(Optional.of(사용중인_테이블));
-            given(orderRepository.existsByOrderTableAndOrderStatusIn(any(), any()))
+            given(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), any()))
                     .willReturn(true);
 
             // when
