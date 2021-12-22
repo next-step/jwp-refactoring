@@ -68,4 +68,12 @@ public class TableService {
         findOrderTable.changeNumberOfGuests(orderTable.getNumberOfGuests());
         return OrderTableResponse.of(findOrderTable);
     }
+
+    public List<OrderTable> findByOrderTableIds(List<Long> orderTableIds) {
+        final List<OrderTable> findOrderTables = orderTableRepository.findAllByIdIn(orderTableIds);
+        if (orderTableIds.size() != findOrderTables.size()) {
+            throw new BadRequestException(WRONG_VALUE);
+        }
+        return findOrderTables;
+    }
 }

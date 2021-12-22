@@ -17,38 +17,28 @@ import kitchenpos.order.domain.TableGroup;
 import kitchenpos.order.dto.TableGroupRequest;
 import kitchenpos.order.dto.TableGroupResponse;
 import kitchenpos.order.repository.OrderRepository;
-import kitchenpos.order.repository.OrderTableRepository;
 import kitchenpos.order.repository.TableGroupRepository;
 
 @Service
 public class TableGroupService {
+    private final TableService tableService;
     private final OrderRepository orderRepository;
-    private final OrderTableRepository orderTableRepository;
     private final TableGroupRepository tableGroupRepository;
 
-    public TableGroupService(OrderRepository orderRepository,
-        OrderTableRepository orderTableRepository, TableGroupRepository tableGroupRepository) {
+    public TableGroupService(TableService tableService, OrderRepository orderRepository,
+        TableGroupRepository tableGroupRepository) {
+        this.tableService = tableService;
         this.orderRepository = orderRepository;
-        this.orderTableRepository = orderTableRepository;
         this.tableGroupRepository = tableGroupRepository;
     }
 
     @Transactional
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
         final List<Long> orderTableIds = tableGroupRequest.getOrderTables();
-        final List<OrderTable> findOrderTables = findOrderTablesByOrderTableIds(orderTableIds);
+        final List<OrderTable> findOrderTables = tableService.findByOrderTableIds(orderTableIds);
 
         final TableGroup savedTableGroup = tableGroupRepository.save(TableGroup.of(findOrderTables));
         return new TableGroupResponse(savedTableGroup);
-    }
-
-    private List<OrderTable> findOrderTablesByOrderTableIds(List<Long> orderTableIds) {
-        final List<OrderTable> findOrderTables = orderTableRepository.findAllByIdIn(orderTableIds);
-
-        if (orderTableIds.size() != findOrderTables.size()) {
-            throw new BadRequestException(WRONG_VALUE);
-        }
-        return findOrderTables;
     }
 
     @Transactional
