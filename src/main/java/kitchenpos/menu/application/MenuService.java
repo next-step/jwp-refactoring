@@ -1,7 +1,7 @@
 package kitchenpos.menu.application;
 
 import kitchenpos.menu.domain.MenuPriceValidator;
-import kitchenpos.menu.domain.NotFoundMenuGroupValidator;
+import kitchenpos.menugroup.domain.NotFoundMenuGroupValidator;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.infra.MenuRepository;

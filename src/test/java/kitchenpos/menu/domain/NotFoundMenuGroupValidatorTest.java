@@ -1,6 +1,7 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.menu.infra.MenuGroupRepository;
+import kitchenpos.menugroup.domain.NotFoundMenuGroupValidator;
+import kitchenpos.menugroup.infra.MenuGroupRepository;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

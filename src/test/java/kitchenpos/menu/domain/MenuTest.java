@@ -1,7 +1,8 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.menu.infra.MenuGroupRepository;
+import kitchenpos.menugroup.infra.MenuGroupRepository;
 import kitchenpos.menu.infra.MenuRepository;
+import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.product.infra.ProductRepository;
 import kitchenpos.product.domain.Product;
 import org.assertj.core.api.ThrowableAssert;
