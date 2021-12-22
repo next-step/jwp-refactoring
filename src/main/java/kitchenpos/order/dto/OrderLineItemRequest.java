@@ -25,4 +25,8 @@ public class OrderLineItemRequest {
     public Long getQuantity() {
         return quantity;
     }
+
+    public OrderLineItem toOrderLineItem() {
+        return OrderLineItem.of(menuId, quantity);
+    }
 }

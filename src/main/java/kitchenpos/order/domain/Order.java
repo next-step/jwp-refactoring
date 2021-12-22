@@ -40,35 +40,41 @@ public class Order {
     protected Order() {
     }
 
-    private Order(Long id, Long orderTableId, OrderStatus orderStatus, OrderLineItems orderLineItems) {
+    private Order(Long id, Long orderTableId, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
         Assert.notNull(orderTableId, "테이블 ID는 비어있을수 없습니다.");
         Assert.notNull(orderStatus, "주문 상태는 비어있을수 없습니다.");
+        Assert.notEmpty(orderLineItems, "주문 항목는 비어있을수 없습니다.");
+
+        orderLineItems.forEach(orderLineItem -> orderLineItem.updateOrder(this));
 
         this.id = id;
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
-        this.orderLineItems = orderLineItems;
+        this.orderLineItems = OrderLineItems.of(orderLineItems);
     }
 
-    public static Order of(Long id, Long orderTableId, OrderStatus orderStatus) {
-        return new Order(id, orderTableId, orderStatus, OrderLineItems.of());
+    public static Order of(Long id, Long orderTableId, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
+        return new Order(id, orderTableId, orderStatus, orderLineItems);
     }
 
-    public static Order of(Long orderTableId) {
-        return new Order(null, orderTableId, OrderStatus.COOKING, OrderLineItems.of());
+    public static Order of(Long id, Long orderTableId, List<OrderLineItem> orderLineItems) {
+        return new Order(id, orderTableId, OrderStatus.COOKING, orderLineItems);
     }
 
-    public void addOrderLineItem(OrderLineItem orderLineItem) {
-        orderLineItem.updateOrder(this);
-        orderLineItems.add(orderLineItem);
-    }
-
-    public boolean isCompletionStatus() {
-        return this.orderStatus.equals(OrderStatus.COMPLETION);
+    public static Order of(Long orderTableId, List<OrderLineItem> orderLineItems) {
+        return new Order(null, orderTableId, OrderStatus.COOKING, orderLineItems);
     }
 
     public void updateOrderStatus(OrderStatus orderStatus) {
+        if (isCompletionStatus()) {
+            throw new IllegalArgumentException();
+        }
+
         this.orderStatus = orderStatus;
+    }
+
+    private boolean isCompletionStatus() {
+        return this.orderStatus.equals(OrderStatus.COMPLETION);
     }
 
     public Long getId() {

@@ -2,6 +2,7 @@ package kitchenpos.order.application;
 
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.fixture.MenuFixture;
 import kitchenpos.menu.fixture.MenuProductFixture;
 import kitchenpos.menu_group.domain.MenuGroup;
@@ -37,6 +38,8 @@ import static org.mockito.BDDMockito.given;
 class OrderValidatorTest {
     @Mock
     OrderTableRepository orderTableRepository;
+    @Mock
+    MenuRepository menuRepository;
 
     @InjectMocks
     OrderValidator orderValidator;
@@ -67,6 +70,7 @@ class OrderValidatorTest {
             OrderRequest 등록_요청_데이터 = OrderRequest.of(테이블.getId(), Collections.singletonList(주문_항목));
 
             given(orderTableRepository.findById(any())).willReturn(Optional.of(테이블));
+            given(menuRepository.existsById(any())).willReturn(true);
 
             // when
             ThrowableAssert.ThrowingCallable 검증_요청 = () -> orderValidator.validateCreateOrder(등록_요청_데이터);
@@ -99,6 +103,23 @@ class OrderValidatorTest {
             OrderRequest 등록_요청_데이터 = OrderRequest.of(테이블.getId(), Collections.singletonList(주문_항목));
 
             given(orderTableRepository.findById(any())).willReturn(Optional.of(빈_테이블));
+
+            // when
+            ThrowableAssert.ThrowingCallable 검증_요청 = () -> orderValidator.validateCreateOrder(등록_요청_데이터);
+
+            // then
+            assertThatThrownBy(검증_요청).isInstanceOf(IllegalArgumentException.class);
+        }
+
+        @DisplayName("주문 메뉴가 존재하지 않음")
+        @Test
+        void 주문_메뉴가_존재하지_않음() {
+            // given
+            OrderLineItemRequest 주문_항목 = OrderLineItemRequest.of(더블강정.getId(), 1L);
+            OrderRequest 등록_요청_데이터 = OrderRequest.of(테이블.getId(), Collections.singletonList(주문_항목));
+
+            given(orderTableRepository.findById(any())).willReturn(Optional.of(테이블));
+            given(menuRepository.existsById(any())).willReturn(false);
 
             // when
             ThrowableAssert.ThrowingCallable 검증_요청 = () -> orderValidator.validateCreateOrder(등록_요청_데이터);

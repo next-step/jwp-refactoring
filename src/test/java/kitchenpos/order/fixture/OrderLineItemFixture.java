@@ -1,6 +1,5 @@
 package kitchenpos.order.fixture;
 
-import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.domain.OrderLineItem;
 
 public class OrderLineItemFixture {
@@ -8,7 +7,7 @@ public class OrderLineItemFixture {
         throw new UnsupportedOperationException();
     }
 
-    public static OrderLineItem create(Long seq, Menu menu, Long quantity) {
-        return OrderLineItem.of(seq, menu, quantity);
+    public static OrderLineItem create(Long seq, Long menuId, Long quantity) {
+        return OrderLineItem.of(seq, menuId, quantity);
     }
 }

@@ -2,7 +2,6 @@ package kitchenpos.order.application;
 
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.fixture.MenuFixture;
 import kitchenpos.menu.fixture.MenuProductFixture;
 import kitchenpos.menu_group.domain.MenuGroup;
@@ -45,8 +44,6 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
     @Mock
-    MenuRepository menuRepository;
-    @Mock
     OrderRepository orderRepository;
     @Mock
     OrderValidator orderValidator;
@@ -68,12 +65,9 @@ class OrderServiceTest {
         더블강정 = MenuFixture.create(1L, "더블강정", BigDecimal.valueOf(32_000), 추천메뉴, 메뉴_상품);
         테이블 = OrderTableFixture.create(1L, 4, false);
 
-        OrderLineItem 생성된_주문_항목 = OrderLineItemFixture.create(1L, 더블강정, 1L);
-        생성된_주문 = OrderFixture.create(1L, 테이블.getId(), OrderStatus.COOKING);
-        계산된_주문 = OrderFixture.create(2L, 테이블.getId(), OrderStatus.COMPLETION);
-
-        생성된_주문.addOrderLineItem(생성된_주문_항목);
-        계산된_주문.addOrderLineItem(생성된_주문_항목);
+        OrderLineItem 생성된_주문_항목 = OrderLineItemFixture.create(1L, 더블강정.getId(), 1L);
+        생성된_주문 = OrderFixture.create(1L, 테이블.getId(), OrderStatus.COOKING, 생성된_주문_항목);
+        계산된_주문 = OrderFixture.create(2L, 테이블.getId(), OrderStatus.COMPLETION, 생성된_주문_항목);
     }
 
     @DisplayName("주문 목록 조회 확인")
@@ -99,7 +93,6 @@ class OrderServiceTest {
             OrderLineItemRequest 주문_항목 = OrderLineItemRequest.of(더블강정.getId(), 1L);
             OrderRequest 등록_요청_데이터 = OrderRequest.of(테이블.getId(), Collections.singletonList(주문_항목));
 
-            given(menuRepository.findById(any())).willReturn(Optional.of(더블강정));
             given(orderRepository.save(any())).willReturn(생성된_주문);
 
             // when
@@ -114,22 +107,6 @@ class OrderServiceTest {
         void 주문_항목이_존재하지_않음() {
             // given
             OrderRequest 등록_요청_데이터 = OrderRequest.of(테이블.getId(), Collections.emptyList());
-
-            // when
-            ThrowableAssert.ThrowingCallable 등록_요청 = () -> orderService.create(등록_요청_데이터);
-
-            // then
-            assertThatThrownBy(등록_요청).isInstanceOf(IllegalArgumentException.class);
-        }
-
-        @DisplayName("주문 메뉴가 존재하지 않음")
-        @Test
-        void 주문_메뉴가_존재하지_않음() {
-            // given
-            OrderLineItemRequest 주문_항목 = OrderLineItemRequest.of(더블강정.getId(), 1L);
-            OrderRequest 등록_요청_데이터 = OrderRequest.of(테이블.getId(), Collections.singletonList(주문_항목));
-
-            given(menuRepository.findById(any())).willReturn(Optional.empty());
 
             // when
             ThrowableAssert.ThrowingCallable 등록_요청 = () -> orderService.create(등록_요청_데이터);

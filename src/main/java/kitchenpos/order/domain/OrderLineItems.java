@@ -28,10 +28,6 @@ public class OrderLineItems {
         return new OrderLineItems(new ArrayList<>());
     }
 
-    public void add(OrderLineItem orderLineItem) {
-        orderLineItems.add(orderLineItem);
-    }
-
     public List<OrderLineItem> getOrderLineItems() {
         return Collections.unmodifiableList(orderLineItems);
     }
