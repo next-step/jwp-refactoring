@@ -15,6 +15,8 @@ import kitchenpos.common.exception.BadRequestException;
 @Embeddable
 public class OrderTables {
 
+    public static final int ORDER_TABLE_MIN_SIZE = 2;
+
     @OneToMany(mappedBy = "tableGroup")
     private List<OrderTable> orderTables;
 
@@ -32,13 +34,19 @@ public class OrderTables {
     }
 
     private void validateSize(List<OrderTable> orderTables) {
-        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
+        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < ORDER_TABLE_MIN_SIZE) {
             throw new BadRequestException(WRONG_VALUE);
         }
     }
 
     private void validateOrderTable(List<OrderTable> orderTables) {
-        if (orderTables.stream().anyMatch(orderTable -> !orderTable.isPossibleIntoTableGroup())) {
+        for (OrderTable orderTable : orderTables) {
+            validatePossibleIntoTableGroup(orderTable);
+        }
+    }
+
+    private void validatePossibleIntoTableGroup(OrderTable orderTable) {
+        if (!orderTable.isPossibleIntoTableGroup()) {
             throw new BadRequestException(WRONG_VALUE);
         }
     }

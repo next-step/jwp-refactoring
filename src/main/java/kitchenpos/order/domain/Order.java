@@ -90,7 +90,7 @@ public class Order {
     }
 
     public void changeOrderStatus(final OrderStatus orderStatus) {
-        if (Objects.equals(OrderStatus.COMPLETION, this.orderStatus)) {
+        if (this.orderStatus.isCompletion()) {
             throw new BadRequestException(CANNOT_CHANGE_STATUS);
         }
         this.orderStatus = orderStatus;
