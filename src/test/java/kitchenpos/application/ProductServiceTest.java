@@ -8,7 +8,7 @@ import static org.mockito.BDDMockito.given;
 
 import java.util.Collections;
 import java.util.List;
-import kitchenpos.dao.ProductDao;
+import kitchenpos.domain.product.ProductRepository;
 import kitchenpos.dto.product.ProductRequest;
 import kitchenpos.dto.product.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -23,7 +23,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class ProductServiceTest {
 
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     @InjectMocks
     private ProductService productService;
@@ -33,7 +33,7 @@ class ProductServiceTest {
     void 상품_등록() {
         // given
         ProductRequest 양념치킨 = 양념치킨();
-        given(productDao.save(any())).willReturn(양념치킨.toProduct());
+        given(productRepository.save(any())).willReturn(양념치킨.toProduct());
 
         // when
         ProductResponse 등록된_상품 = productService.create(양념치킨);
@@ -46,7 +46,7 @@ class ProductServiceTest {
     @DisplayName("`상품`목록을 조회 할 수 있다.")
     void 상품_목록_조회() {
         // given
-        given(productDao.findAll()).willReturn(Collections.singletonList(후리이드치킨(1L)));
+        given(productRepository.findAll()).willReturn(Collections.singletonList(후리이드치킨(1L)));
 
         // when
         List<ProductResponse> 상품목록 = productService.list();

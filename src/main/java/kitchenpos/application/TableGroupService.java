@@ -1,9 +1,9 @@
 package kitchenpos.application;
 
 import java.security.InvalidParameterException;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.dao.TableGroupDao;
+import kitchenpos.domain.order.OrderRepository;
+import kitchenpos.domain.order.OrderTableRepository;
+import kitchenpos.domain.order.TableGroupRepository;
 import kitchenpos.domain.order.OrderTable;
 import kitchenpos.domain.order.Orders;
 import kitchenpos.domain.order.TableGroup;
@@ -17,20 +17,21 @@ import java.util.List;
 @Service
 public class TableGroupService {
 
-    private final OrderDao orderDao;
-    private final OrderTableDao orderTableDao;
-    private final TableGroupDao tableGroupDao;
+    private final OrderRepository orderRepository;
+    private final OrderTableRepository orderTableRepository;
+    private final TableGroupRepository tableGroupRepository;
 
-    public TableGroupService(final OrderDao orderDao, final OrderTableDao orderTableDao,
-        final TableGroupDao tableGroupDao) {
-        this.orderDao = orderDao;
-        this.orderTableDao = orderTableDao;
-        this.tableGroupDao = tableGroupDao;
+    public TableGroupService(final OrderRepository orderDao,
+        final OrderTableRepository orderTableDao,
+        final TableGroupRepository tableGroupDao) {
+        this.orderRepository = orderDao;
+        this.orderTableRepository = orderTableDao;
+        this.tableGroupRepository = tableGroupDao;
     }
 
     @Transactional
     public TableGroupResponse create(final TableGroupRequest tableGroup) {
-        final List<OrderTable> orderTables = orderTableDao.findAllById(
+        final List<OrderTable> orderTables = orderTableRepository.findAllById(
             tableGroup.getOrderTableIds());
 
         if (tableGroup.getOrderTableSize() != orderTables.size()) {
@@ -38,15 +39,16 @@ public class TableGroupService {
         }
 
         return TableGroupResponse.of(
-            tableGroupDao.save(tableGroup.toTableGroup(orderTables)));
+            tableGroupRepository.save(tableGroup.toTableGroup(orderTables)));
     }
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
-        TableGroup tableGroup = tableGroupDao.findById(tableGroupId)
+        TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
             .orElseThrow(InvalidParameterException::new);
 
-        Orders orders = Orders.of(orderDao.findAllByOrderTableIn(tableGroup.getOrderTables()));
+        Orders orders = Orders.of(
+            orderRepository.findAllByOrderTableIn(tableGroup.getOrderTables()));
         tableGroup.ungroup(orders);
     }
 }

@@ -12,9 +12,9 @@ import static org.mockito.BDDMockito.given;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
+import kitchenpos.domain.menu.MenuRepository;
+import kitchenpos.domain.order.OrderRepository;
+import kitchenpos.domain.order.OrderTableRepository;
 import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menu.MenuGroup;
 import kitchenpos.domain.menu.MenuProduct;
@@ -39,11 +39,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class OrderServiceTest {
 
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     private final long 주문테이블번호 = 1L;
     private final long 주문수량 = 1L;
@@ -56,9 +56,9 @@ class OrderServiceTest {
     void 주문_등록() {
         // given
         OrderRequest 요청_주문 = 요청_주문();
-        given(orderTableDao.findById(any())).willReturn(Optional.of(한명_주문테이블()));
-        given(menuDao.findAllById(any())).willReturn(Collections.singletonList(메뉴()));
-        given(orderDao.save(any())).willReturn(주문());
+        given(orderTableRepository.findById(any())).willReturn(Optional.of(한명_주문테이블()));
+        given(menuRepository.findAllById(any())).willReturn(Collections.singletonList(메뉴()));
+        given(orderRepository.save(any())).willReturn(주문());
 
         // when
         OrderResponse 생성된_주문 = orderService.create(요청_주문);
@@ -71,7 +71,7 @@ class OrderServiceTest {
     @DisplayName("`주문`목록을 조회 할 수 있다.")
     void 주문목록_조회() {
         // given
-        given(orderDao.findAll()).willReturn(Collections.singletonList(주문()));
+        given(orderRepository.findAll()).willReturn(Collections.singletonList(주문()));
 
         // when
         List<OrderResponse> 조회된_주문목록 = orderService.list();
@@ -87,7 +87,7 @@ class OrderServiceTest {
         Long 주문번호 = 1L;
         OrderStatus 변경할_상태 = OrderStatus.COMPLETION;
         OrderStatusRequest 상태변경_파라미터 = new OrderStatusRequest(변경할_상태);
-        given(orderDao.findById(주문번호)).willReturn(Optional.of(주문()));
+        given(orderRepository.findById(주문번호)).willReturn(Optional.of(주문()));
 
         // when
         OrderResponse 상태변경된_주문 = orderService.changeOrderStatus(주문번호, 상태변경_파라미터);

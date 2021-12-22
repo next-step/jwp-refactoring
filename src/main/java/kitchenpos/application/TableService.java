@@ -1,8 +1,8 @@
 package kitchenpos.application;
 
 import java.security.InvalidParameterException;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
+import kitchenpos.domain.order.OrderRepository;
+import kitchenpos.domain.order.OrderTableRepository;
 import kitchenpos.domain.order.Order;
 import kitchenpos.domain.order.OrderTable;
 import kitchenpos.domain.order.Orders;
@@ -16,17 +16,17 @@ import java.util.List;
 @Service
 public class TableService {
 
-    private final OrderDao orderDao;
-    private final OrderTableDao orderTableDao;
+    private final OrderRepository orderRepository;
+    private final OrderTableRepository orderTableRepository;
 
-    public TableService(final OrderDao orderDao, final OrderTableDao orderTableDao) {
-        this.orderDao = orderDao;
-        this.orderTableDao = orderTableDao;
+    public TableService(final OrderRepository orderDao, final OrderTableRepository orderTableDao) {
+        this.orderRepository = orderDao;
+        this.orderTableRepository = orderTableDao;
     }
 
     @Transactional
     public OrderTableResponse create(final OrderTableRequest orderTable) {
-        return OrderTableResponse.of(orderTableDao.save(orderTable.toOrderTable()));
+        return OrderTableResponse.of(orderTableRepository.save(orderTable.toOrderTable()));
     }
 
     @Transactional
@@ -34,7 +34,7 @@ public class TableService {
         final OrderTableRequest orderTable) {
         final OrderTable savedOrderTable = findOrderTableById(orderTableId);
 
-        List<Order> orders = orderDao.findAllByOrderTable(savedOrderTable);
+        List<Order> orders = orderRepository.findAllByOrderTable(savedOrderTable);
 
         savedOrderTable.changeEmpty(Orders.of(orders), orderTable.isEmpty());
 
@@ -52,12 +52,12 @@ public class TableService {
 
     @Transactional(readOnly = true)
     public List<OrderTableResponse> list() {
-        return OrderTableResponse.toList(orderTableDao.findAll());
+        return OrderTableResponse.toList(orderTableRepository.findAll());
     }
 
     @Transactional(readOnly = true)
     public OrderTable findOrderTableById(Long orderTableId) {
-        return orderTableDao.findById(orderTableId)
+        return orderTableRepository.findById(orderTableId)
             .orElseThrow(InvalidParameterException::new);
     }
 }

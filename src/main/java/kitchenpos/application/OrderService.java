@@ -2,9 +2,9 @@ package kitchenpos.application;
 
 import java.security.InvalidParameterException;
 import java.util.stream.Collectors;
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
+import kitchenpos.domain.menu.MenuRepository;
+import kitchenpos.domain.order.OrderRepository;
+import kitchenpos.domain.order.OrderTableRepository;
 import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.order.Order;
 import kitchenpos.domain.order.OrderLineItem;
@@ -20,40 +20,40 @@ import java.util.List;
 @Service
 public class OrderService {
 
-    private final MenuDao menuDao;
-    private final OrderDao orderDao;
-    private final OrderTableDao orderTableDao;
+    private final MenuRepository menuRepository;
+    private final OrderRepository orderRepository;
+    private final OrderTableRepository orderTableRepository;
 
     public OrderService(
-        final MenuDao menuDao,
-        final OrderDao orderDao,
-        final OrderTableDao orderTableDao
+        final MenuRepository menuDao,
+        final OrderRepository orderDao,
+        final OrderTableRepository orderTableDao
     ) {
-        this.menuDao = menuDao;
-        this.orderDao = orderDao;
-        this.orderTableDao = orderTableDao;
+        this.menuRepository = menuDao;
+        this.orderRepository = orderDao;
+        this.orderTableRepository = orderTableDao;
     }
 
     @Transactional
     public OrderResponse create(OrderRequest orderRequest) {
-        OrderTable orderTable = orderTableDao.findById(orderRequest.getOrderTableId())
+        OrderTable orderTable = orderTableRepository.findById(orderRequest.getOrderTableId())
             .orElseThrow(InvalidParameterException::new);
 
         List<OrderLineItem> orderLineItems = getOrderLineItems(orderRequest);
 
         Order order = Order.of(orderTable, orderLineItems);
-        return OrderResponse.of(orderDao.save(order));
+        return OrderResponse.of(orderRepository.save(order));
     }
 
     @Transactional(readOnly = true)
     public List<OrderResponse> list() {
-        return OrderResponse.toList(orderDao.findAll());
+        return OrderResponse.toList(orderRepository.findAll());
     }
 
     @Transactional
     public OrderResponse changeOrderStatus(final Long orderId,
         OrderStatusRequest orderStatusRequest) {
-        final Order savedOrder = orderDao.findById(orderId)
+        final Order savedOrder = orderRepository.findById(orderId)
             .orElseThrow(InvalidParameterException::new);
 
         savedOrder.changeOrderStatus(orderStatusRequest.getOrderStatus());
@@ -63,7 +63,7 @@ public class OrderService {
     @Transactional(readOnly = true)
     public List<OrderLineItem> getOrderLineItems(OrderRequest orderRequest) {
         List<Long> menuIds = orderRequest.getMenuIds();
-        List<Menu> menus = menuDao.findAllById(menuIds);
+        List<Menu> menus = menuRepository.findAllById(menuIds);
 
         return menus.stream()
             .map(

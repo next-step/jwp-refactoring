@@ -11,9 +11,9 @@ import java.security.InvalidParameterException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.dao.TableGroupDao;
+import kitchenpos.domain.order.OrderRepository;
+import kitchenpos.domain.order.OrderTableRepository;
+import kitchenpos.domain.order.TableGroupRepository;
 import kitchenpos.domain.order.OrderTables;
 import kitchenpos.domain.order.TableGroup;
 import kitchenpos.dto.order.TableGroupRequest;
@@ -31,11 +31,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class TableGroupServiceTest {
 
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
     @Mock
-    private TableGroupDao tableGroupDao;
+    private TableGroupRepository tableGroupRepository;
 
     @InjectMocks
     private TableGroupService tableGroupService;
@@ -46,8 +46,8 @@ class TableGroupServiceTest {
         // given
         TableGroup 단체지정 = 단체지정(Arrays.asList(빈_테이블(), 빈_테이블()));
         TableGroupRequest 요청_파라미터 = new TableGroupRequest(Arrays.asList(1L, 2L));
-        given(orderTableDao.findAllById(any())).willReturn(Arrays.asList(빈_테이블(), 빈_테이블()));
-        given(tableGroupDao.save(any())).willReturn(단체지정);
+        given(orderTableRepository.findAllById(any())).willReturn(Arrays.asList(빈_테이블(), 빈_테이블()));
+        given(tableGroupRepository.save(any())).willReturn(단체지정);
 
         // when
         TableGroupResponse 등록된_단체지정 = tableGroupService.create(요청_파라미터);
@@ -63,8 +63,8 @@ class TableGroupServiceTest {
         OrderTables 주문테이블_목록 = OrderTables.of(Arrays.asList(빈_테이블(), 빈_테이블()));
         TableGroup 단체지정 = 단체지정(주문테이블_목록.getOrderTables());
 
-        given(tableGroupDao.findById(any())).willReturn(Optional.of(단체지정));
-        given(orderDao.findAllByOrderTableIn(any())).willReturn(Collections.emptyList());
+        given(tableGroupRepository.findById(any())).willReturn(Optional.of(단체지정));
+        given(orderRepository.findAllByOrderTableIn(any())).willReturn(Collections.emptyList());
 
         // when
         tableGroupService.ungroup(1L);
@@ -78,7 +78,7 @@ class TableGroupServiceTest {
     void 미등록_주문테이블_실패() {
         // given
         TableGroupRequest 요청_파라미터 = new TableGroupRequest(Arrays.asList(1L, 2L));
-        given(orderTableDao.findAllById(any())).willReturn(Collections.emptyList());
+        given(orderTableRepository.findAllById(any())).willReturn(Collections.emptyList());
 
         // when
         ThrowableAssert.ThrowingCallable actual = () -> tableGroupService.create(요청_파라미터);

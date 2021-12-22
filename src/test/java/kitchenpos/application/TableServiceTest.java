@@ -10,8 +10,8 @@ import static org.mockito.BDDMockito.given;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
+import kitchenpos.domain.order.OrderRepository;
+import kitchenpos.domain.order.OrderTableRepository;
 import kitchenpos.domain.order.OrderTable;
 import kitchenpos.dto.order.OrderTableRequest;
 import kitchenpos.dto.order.OrderTableResponse;
@@ -27,9 +27,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class TableServiceTest {
 
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @InjectMocks
     private TableService tableService;
@@ -40,7 +40,7 @@ class TableServiceTest {
         // given
         OrderTableRequest orderTableRequest = OrderTableRequest.of(0, true);
         OrderTable orderTable = orderTableRequest.toOrderTable();
-        given(orderTableDao.save(any())).willReturn(orderTable);
+        given(orderTableRepository.save(any())).willReturn(orderTable);
 
         // when
         OrderTableResponse 등록된_주문테이블 = tableService.create(orderTableRequest);
@@ -55,7 +55,7 @@ class TableServiceTest {
     void list() {
         // given
         OrderTable 요청_주문테이블 = 한명_주문테이블();
-        given(orderTableDao.findAll()).willReturn(Collections.singletonList(요청_주문테이블));
+        given(orderTableRepository.findAll()).willReturn(Collections.singletonList(요청_주문테이블));
 
         // when
         List<OrderTableResponse> 주문목록 = tableService.list();
@@ -70,7 +70,7 @@ class TableServiceTest {
         // given
         OrderTableRequest orderTableRequest = OrderTableRequest.of(0, true);
         OrderTable 요청_주문테이블 = 한명_주문테이블();
-        given(orderTableDao.findById(any())).willReturn(Optional.of(요청_주문테이블));
+        given(orderTableRepository.findById(any())).willReturn(Optional.of(요청_주문테이블));
 
         // when
         OrderTableResponse 빈테이블_변경_결과 = tableService.changeEmpty(1L, orderTableRequest);
@@ -85,7 +85,7 @@ class TableServiceTest {
         // given
         int 방문손님수 = 3;
         OrderTableRequest orderTableRequest = OrderTableRequest.of(방문손님수, false);
-        given(orderTableDao.findById(any())).willReturn(Optional.of(빈_테이블()));
+        given(orderTableRepository.findById(any())).willReturn(Optional.of(빈_테이블()));
 
         // when
         OrderTableResponse 빈테이블_변경_결과 = tableService.changeNumberOfGuests(1L, orderTableRequest);

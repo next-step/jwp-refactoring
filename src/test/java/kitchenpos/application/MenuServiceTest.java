@@ -16,10 +16,10 @@ import java.security.InvalidParameterException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.dao.MenuProductDao;
-import kitchenpos.dao.ProductDao;
+import kitchenpos.domain.menu.MenuRepository;
+import kitchenpos.domain.menu.MenuGroupRepository;
+import kitchenpos.domain.menu.MenuProductRepository;
+import kitchenpos.domain.product.ProductRepository;
 import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menu.MenuGroup;
 import kitchenpos.domain.menu.MenuProduct;
@@ -40,13 +40,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class MenuServiceTest {
 
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
     @Mock
-    private MenuProductDao menuProductDao;
+    private MenuProductRepository menuProductRepository;
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     @InjectMocks
     private MenuService menuService;
@@ -61,9 +61,9 @@ class MenuServiceTest {
         MenuRequest menuRequest = 요청_메뉴("메뉴이름", 14000, 1L, Collections.singletonList(요청_메뉴상품_치킨()));
         Menu 등록_메뉴 = menuRequest.toMenu(메뉴_그룹, Collections.singletonList(메뉴_치킨));
 
-        given(menuGroupDao.findById(any())).willReturn(Optional.of(메뉴_그룹));
-        given(productDao.findAllById(anyList())).willReturn(Collections.singletonList(치킨));
-        given(menuDao.save(any())).willReturn(등록_메뉴);
+        given(menuGroupRepository.findById(any())).willReturn(Optional.of(메뉴_그룹));
+        given(productRepository.findAllById(anyList())).willReturn(Collections.singletonList(치킨));
+        given(menuRepository.save(any())).willReturn(등록_메뉴);
 
         // when
         MenuResponse 등록된_메뉴 = menuService.create(menuRequest);
@@ -80,7 +80,7 @@ class MenuServiceTest {
         MenuProduct 메뉴_치킨 = 메뉴상품(치킨);
         MenuGroup 메뉴_그룹 = 메뉴그룹_치킨류();
         Menu 등록_메뉴 = Menu.of("메뉴", 14000, 메뉴_그룹, Collections.singletonList(메뉴_치킨));
-        given(menuDao.findAll()).willReturn(Collections.singletonList(등록_메뉴));
+        given(menuRepository.findAll()).willReturn(Collections.singletonList(등록_메뉴));
 
         // when
         List<MenuResponse> 메뉴목록 = menuService.list();
@@ -94,7 +94,7 @@ class MenuServiceTest {
     void 메뉴는_메뉴그룹이_없으면_에러() {
         // given
         MenuRequest menuRequest = 요청_메뉴("메뉴이름", 14000, 1L, Collections.singletonList(요청_메뉴상품_치킨()));
-        given(menuGroupDao.findById(any())).willReturn(Optional.empty());
+        given(menuGroupRepository.findById(any())).willReturn(Optional.empty());
 
         // when
         ThrowableAssert.ThrowingCallable actual = () -> menuService.create(menuRequest);
