@@ -63,8 +63,10 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         // given
         List<MenuProductRequest> menuProductRequests1 = Lists.newArrayList(menuProduct1);
         List<MenuProductRequest> menuProductRequests2 = Lists.newArrayList(menuProduct2);
-        MenuRequest 후라이드 = new MenuRequest("후라이드", 17000, 추천메뉴.getId(), menuProductRequests1);
-        MenuRequest 양념 = new MenuRequest("양념", 18000, 추천메뉴.getId(), menuProductRequests2);
+        MenuRequest 후라이드 = new MenuRequest("후라이드치킨", 17000, 추천메뉴.getId(), menuProductRequests1);
+        MenuRequest 양념 = new MenuRequest("양념치킨", 18000, 추천메뉴.getId(), menuProductRequests2);
+        메뉴_생성(후라이드);
+        메뉴_생성(양념);
 
         // when
         ExtractableResponse<Response> 메뉴목록_응답 = 메뉴목록_조회();
@@ -91,10 +93,10 @@ public class MenuAcceptanceTest extends AcceptanceTest {
 
     private void 메뉴목록_조회됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        List<Menu> menus = Lists.newArrayList(response.as(Menu[].class));
-        assertThat(menus).hasSize(6);
-        assertThat(menus).extracting(Menu::getName)
-            .contains("후라이드치킨", "양념치킨", "반반치킨", "통구이", "간장치킨", "순살치킨");
+        List<MenuResponse> menus = Lists.newArrayList(response.as(MenuResponse[].class));
+        assertThat(menus).hasSize(2);
+        assertThat(menus).extracting(MenuResponse::getName)
+            .contains("후라이드치킨", "양념치킨");
     }
 
 
