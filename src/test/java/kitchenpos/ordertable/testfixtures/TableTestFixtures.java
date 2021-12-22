@@ -7,12 +7,13 @@ import static org.mockito.BDDMockito.given;
 import java.util.List;
 import java.util.Optional;
 import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.domain.OrderTableDao;
+import kitchenpos.ordertable.domain.dao.OrderTableDao;
+import kitchenpos.ordertable.dto.OrderTableRequest;
 
 public class TableTestFixtures {
 
     public static void 주문테이블_저장_결과_모킹(OrderTableDao orderTableDao, OrderTable orderTable) {
-        given(orderTableDao.save(orderTable))
+        given(orderTableDao.save(any()))
             .willReturn(orderTable);
     }
 
@@ -38,4 +39,9 @@ public class TableTestFixtures {
         given(orderTableDao.findAllByTableGroupId(any()))
             .willReturn(orderTables);
     }
+
+    public static OrderTableRequest convertToOrderTableRequest(OrderTable orderTable) {
+        return new OrderTableRequest(orderTable.getNumberOfGuests(), orderTable.isEmpty());
+    }
+
 }

@@ -15,6 +15,7 @@ import java.util.List;
 import kitchenpos.common.CommonTestFixtures;
 import kitchenpos.ordertable.application.TableService;
 import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.dto.OrderTableResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +42,8 @@ class TableRestControllerTest {
         int numOfGuests = 6;
         boolean empty = false;
         OrderTable requestOrderTable = new OrderTable(numOfGuests, empty);
-        OrderTable expectedOrderTable = new OrderTable(1L, numOfGuests, empty);
+        OrderTableResponse expectedOrderTable = OrderTableResponse.from(
+            new OrderTable(1L, numOfGuests, empty));
         given(tableService.create(any())).willReturn(expectedOrderTable);
 
         //when, then
@@ -56,8 +58,9 @@ class TableRestControllerTest {
     @Test
     void list() throws Exception {
         //given
-        List<OrderTable> expectedOrderTables = Arrays.asList(new OrderTable(1L, 6, false),
-            new OrderTable(2L, 3, false));
+        List<OrderTableResponse> expectedOrderTables = Arrays.asList(
+            OrderTableResponse.from(new OrderTable(1L, 6, false)),
+            OrderTableResponse.from(new OrderTable(2L, 3, false)));
 
         given(tableService.list()).willReturn(expectedOrderTables);
 
@@ -79,7 +82,8 @@ class TableRestControllerTest {
         //given
         boolean changeEmpty = false;
         OrderTable requestOrderTable = new OrderTable(changeEmpty);
-        OrderTable expectedOrderTable = new OrderTable(1L, 1L, 6, changeEmpty);
+        OrderTableResponse expectedOrderTable = OrderTableResponse.from(
+            new OrderTable(1L, 1L, 6, changeEmpty));
         given(tableService.changeEmpty(any(), any())).willReturn(expectedOrderTable);
 
         //when,then
@@ -98,7 +102,8 @@ class TableRestControllerTest {
         //given
         int numberOfGuests = 5;
         OrderTable requestOrderTable = new OrderTable(numberOfGuests);
-        OrderTable expectedOrderTable = new OrderTable(1L, 1L, numberOfGuests, false);
+        OrderTableResponse expectedOrderTable = OrderTableResponse.from(
+            new OrderTable(1L, 1L, numberOfGuests, false));
         given(tableService.changeNumberOfGuests(any(), any())).willReturn(expectedOrderTable);
 
         //when,then

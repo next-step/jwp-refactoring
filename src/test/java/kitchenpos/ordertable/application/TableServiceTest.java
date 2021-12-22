@@ -3,12 +3,16 @@ package kitchenpos.ordertable.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
-import kitchenpos.order.domain.OrderDao;
-import kitchenpos.order.testfixtures.OrderTestFixtures;
+import java.util.stream.Collectors;
+import kitchenpos.menu.testfixtures.MenuTestFixtures;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.domain.OrderTableDao;
+import kitchenpos.ordertable.domain.dao.OrderTableDao;
+import kitchenpos.ordertable.dto.OrderTableResponse;
 import kitchenpos.ordertable.testfixtures.TableTestFixtures;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -24,9 +28,6 @@ class TableServiceTest {
     @Mock
     private OrderTableDao orderTableDao;
 
-    @Mock
-    private OrderDao orderDao;
-
     @InjectMocks
     private TableService tableService;
 
@@ -34,14 +35,15 @@ class TableServiceTest {
     @Test
     void create() {
         //given
-        OrderTable orderTable = new OrderTable(0, true);
+        OrderTable orderTable = new OrderTable(1L, 0, true);
         TableTestFixtures.주문테이블_저장_결과_모킹(orderTableDao, orderTable);
 
         //when
-        OrderTable savedOrderTable = tableService.create(orderTable);
+        OrderTableResponse savedOrderTable = tableService.create(
+            TableTestFixtures.convertToOrderTableRequest(orderTable));
 
         //then
-        Assertions.assertThat(orderTable).isEqualTo(savedOrderTable);
+        Assertions.assertThat(savedOrderTable.getId()).isEqualTo(orderTable.getId());
     }
 
     @DisplayName("테이블 목록을 조회할 수 있다.")
@@ -55,11 +57,11 @@ class TableServiceTest {
         TableTestFixtures.주문테이블_전체_조회_모킹(orderTableDao, orderTables);
 
         //when
-        List<OrderTable> findOrderTables = tableService.list();
+        List<OrderTableResponse> findOrderTables = tableService.list();
 
         //then
         assertThat(findOrderTables.size()).isEqualTo(orderTables.size());
-        assertThat(findOrderTables).containsAll(orderTables);
+        테이블목록_검증(findOrderTables, orderTables);
     }
 
     @DisplayName("테이블 상태를 변경할 수 있다")
@@ -68,11 +70,11 @@ class TableServiceTest {
         //given
         OrderTable orderTable = new OrderTable(1L, 0, true);
         TableTestFixtures.특정_주문테이블_조회_모킹(orderTableDao, orderTable);
-        TableTestFixtures.주문테이블_저장_결과_모킹(orderTableDao, orderTable);
 
         //when
         OrderTable changeOrderTable = new OrderTable(false);
-        OrderTable savedOrderTable = tableService.changeEmpty(orderTable.getId(), changeOrderTable);
+        OrderTableResponse savedOrderTable = tableService.changeEmpty(orderTable.getId(),
+            TableTestFixtures.convertToOrderTableRequest(changeOrderTable));
 
         //then
         Assertions.assertThat(savedOrderTable.isEmpty()).isEqualTo(changeOrderTable.isEmpty());
@@ -87,7 +89,8 @@ class TableServiceTest {
 
         //when, then
         OrderTable changeOrderTable = new OrderTable(false);
-        assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), changeOrderTable))
+        assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(),
+            TableTestFixtures.convertToOrderTableRequest(changeOrderTable)))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -96,12 +99,16 @@ class TableServiceTest {
     void changeEmpty_exception2() {
         //given
         OrderTable orderTable = new OrderTable(1L, 0, true);
+        List<OrderLineItem> orderLineItems = Arrays.asList(
+            new OrderLineItem(MenuTestFixtures.서비스군만두, 5)
+        );
+        Order order = new Order(orderTable, LocalDateTime.now(), orderLineItems);
         TableTestFixtures.특정_주문테이블_조회_모킹(orderTableDao, orderTable);
-        OrderTestFixtures.특정_테이블이_특정_상태인지_조회_모킹(orderDao, true);
 
         //when, then
         OrderTable changeOrderTable = new OrderTable(false);
-        assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), changeOrderTable))
+        assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(),
+            TableTestFixtures.convertToOrderTableRequest(changeOrderTable)))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -111,12 +118,11 @@ class TableServiceTest {
         //given
         OrderTable orderTable = new OrderTable(1L, 0, false);
         TableTestFixtures.특정_주문테이블_조회_모킹(orderTableDao, orderTable);
-        TableTestFixtures.주문테이블_저장_결과_모킹(orderTableDao, orderTable);
 
         //when
         OrderTable changeOrderTable = new OrderTable(6);
-        OrderTable savedOrderTable = tableService.changeNumberOfGuests(orderTable.getId(),
-            changeOrderTable);
+        OrderTableResponse savedOrderTable = tableService.changeNumberOfGuests(orderTable.getId(),
+            TableTestFixtures.convertToOrderTableRequest(changeOrderTable));
 
         //then
         Assertions.assertThat(savedOrderTable.getNumberOfGuests())
@@ -127,12 +133,12 @@ class TableServiceTest {
     @Test
     void changeNumberOfGuests_exception1() {
         //given
-        OrderTable orderTable = new OrderTable(1L, 0, false);
+        Long orderTableId = 1L;
 
         //when, then
-        OrderTable changeOrderTable = new OrderTable(-1);
         Assertions.assertThatThrownBy(
-                () -> tableService.changeNumberOfGuests(orderTable.getId(), changeOrderTable))
+                () -> tableService.changeNumberOfGuests(orderTableId,
+                    TableTestFixtures.convertToOrderTableRequest(new OrderTable(-1))))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -146,7 +152,18 @@ class TableServiceTest {
         //when, then
         OrderTable changeOrderTable = new OrderTable(6);
         Assertions.assertThatThrownBy(
-                () -> tableService.changeNumberOfGuests(orderTable.getId(), changeOrderTable))
+                () -> tableService.changeNumberOfGuests(orderTable.getId(),
+                    TableTestFixtures.convertToOrderTableRequest(changeOrderTable)))
             .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    private void 테이블목록_검증(List<OrderTableResponse> findOrderTables, List<OrderTable> orderTables) {
+        List<Long> findOrderTableIds = findOrderTables.stream()
+            .map(OrderTableResponse::getId)
+            .collect(Collectors.toList());
+        List<Long> expectOrderTableIds = orderTables.stream()
+            .map(OrderTable::getId)
+            .collect(Collectors.toList());
+        assertThat(findOrderTableIds).containsAll(expectOrderTableIds);
     }
 }
