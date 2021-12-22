@@ -1,6 +1,5 @@
 package kitchenpos.menugroup;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
@@ -8,7 +7,6 @@ import kitchenpos.domain.MenuGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;

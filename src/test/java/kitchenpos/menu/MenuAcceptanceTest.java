@@ -1,6 +1,5 @@
 package kitchenpos.menu;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
@@ -15,7 +14,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
 import java.math.BigDecimal;
 import java.util.Arrays;

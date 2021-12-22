@@ -11,17 +11,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("상품 관련 기능")
+@DisplayName("상품")
 class ProductTest {
 
     @InjectMocks
@@ -46,37 +40,4 @@ class ProductTest {
         });
     }
 
-    @Test
-    @DisplayName("상품을 등록할 수 있다.")
-    void createProduct() {
-        // given
-        when(productDao.save(any())).thenReturn(new Product(1L, "후라이드", BigDecimal.valueOf(17000)));
-
-        // when
-        Product savedProduct = productService.create(new Product("후라이드", BigDecimal.valueOf(17000)));
-
-        // then
-        assertAll(
-                () -> assertThat(savedProduct.getName()).isEqualTo("후라이드"),
-                () -> assertThat(savedProduct.getPrice()).isEqualByComparingTo(BigDecimal.valueOf(17000))
-        );
-    }
-
-    @Test
-    @DisplayName("상품 목록을 조회할 수 있다.")
-    void findProduct() {
-        // given
-        List<Product> products = Arrays.asList(new Product(1L, "후라이드", BigDecimal.valueOf(17000)),
-                new Product(2L, "양념치킨", BigDecimal.valueOf(17000)));
-        when(productDao.findAll()).thenReturn(products);
-
-        // when
-        List<Product> findByProducts = productService.list();
-
-        // then
-        assertAll(
-                () -> assertThat(findByProducts).extracting("id").isNotNull(),
-                () -> assertThat(findByProducts.size()).isEqualTo(2)
-        );
-    }
 }

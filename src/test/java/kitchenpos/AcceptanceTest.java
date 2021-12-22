@@ -3,13 +3,22 @@ package kitchenpos;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
+
+import java.sql.SQLException;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@ActiveProfiles("test")
 public class AcceptanceTest {
+
+    @Autowired
+    private DatabaseCleanup dataBaseCleanUp;
 
     @LocalServerPort
     int port;
@@ -19,6 +28,10 @@ public class AcceptanceTest {
         RestAssured.port = port;
     }
 
+    @AfterEach
+    public void after() throws SQLException {
+        dataBaseCleanUp.truncate();
+    }
 
     protected ExtractableResponse<Response> post(final String url, final Object body) {
         return RestAssured.given().log().all()
