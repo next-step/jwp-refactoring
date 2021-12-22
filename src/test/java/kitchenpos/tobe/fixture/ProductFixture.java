@@ -1,8 +1,8 @@
 package kitchenpos.tobe.fixture;
 
 import java.math.BigDecimal;
-import kitchenpos.tobe.product.domain.Name;
-import kitchenpos.tobe.product.domain.Price;
+import kitchenpos.tobe.common.domain.Name;
+import kitchenpos.tobe.common.domain.Price;
 import kitchenpos.tobe.product.domain.Product;
 import kitchenpos.tobe.product.dto.ProductRequest;
 

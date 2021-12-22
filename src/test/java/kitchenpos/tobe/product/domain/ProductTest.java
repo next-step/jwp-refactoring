@@ -3,6 +3,8 @@ package kitchenpos.tobe.product.domain;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 
 import java.math.BigDecimal;
+import kitchenpos.tobe.common.domain.Name;
+import kitchenpos.tobe.common.domain.Price;
 import kitchenpos.tobe.fixture.ProductFixture;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.DisplayName;

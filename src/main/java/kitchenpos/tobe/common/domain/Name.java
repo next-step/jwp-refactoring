@@ -1,4 +1,4 @@
-package kitchenpos.tobe.product.domain;
+package kitchenpos.tobe.common.domain;
 
 import java.util.Objects;
 import javax.persistence.Column;

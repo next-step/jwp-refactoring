@@ -6,6 +6,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import kitchenpos.tobe.common.domain.Name;
+import kitchenpos.tobe.common.domain.Price;
 
 @Entity
 public class Product {

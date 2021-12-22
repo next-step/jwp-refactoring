@@ -1,8 +1,8 @@
 package kitchenpos.tobe.product.dto;
 
 import java.math.BigDecimal;
-import kitchenpos.tobe.product.domain.Name;
-import kitchenpos.tobe.product.domain.Price;
+import kitchenpos.tobe.common.domain.Name;
+import kitchenpos.tobe.common.domain.Price;
 import kitchenpos.tobe.product.domain.Product;
 
 public class ProductRequest {
