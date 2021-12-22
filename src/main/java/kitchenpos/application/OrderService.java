@@ -1,11 +1,12 @@
 package kitchenpos.application;
 
+import java.util.stream.Collectors;
 import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.order.Order;
+import kitchenpos.domain.order.OrderLineItem;
 import kitchenpos.domain.order.OrderTable;
 import kitchenpos.dto.order.OrderRequest;
 import kitchenpos.dto.order.OrderResponse;
@@ -20,18 +21,15 @@ public class OrderService {
 
     private final MenuDao menuDao;
     private final OrderDao orderDao;
-    private final OrderLineItemDao orderLineItemDao;
     private final OrderTableDao orderTableDao;
 
     public OrderService(
         final MenuDao menuDao,
         final OrderDao orderDao,
-        final OrderLineItemDao orderLineItemDao,
         final OrderTableDao orderTableDao
     ) {
         this.menuDao = menuDao;
         this.orderDao = orderDao;
-        this.orderLineItemDao = orderLineItemDao;
         this.orderTableDao = orderTableDao;
     }
 
@@ -39,11 +37,14 @@ public class OrderService {
     public OrderResponse create(OrderRequest orderRequest) {
         OrderTable orderTable = orderTableDao.findById(orderRequest.getOrderTableId())
             .orElseThrow(IllegalArgumentException::new);
-        List<Menu> menus = menuDao.findAllById(orderRequest.getMenuIds());
 
-        return OrderResponse.of(orderDao.save(orderRequest.toOrder(orderTable, menus)));
+        List<OrderLineItem> orderLineItems = getOrderLineItems(orderRequest);
+
+        Order order = Order.of(orderTable, orderLineItems);
+        return OrderResponse.of(orderDao.save(order));
     }
 
+    @Transactional(readOnly = true)
     public List<OrderResponse> list() {
         return OrderResponse.toList(orderDao.findAll());
     }
@@ -56,5 +57,16 @@ public class OrderService {
 
         savedOrder.changeOrderStatus(orderStatusRequest.getOrderStatus());
         return OrderResponse.of(savedOrder);
+    }
+
+    @Transactional(readOnly = true)
+    public List<OrderLineItem> getOrderLineItems(OrderRequest orderRequest) {
+        List<Long> menuIds = orderRequest.getMenuIds();
+        List<Menu> menus = menuDao.findAllById(menuIds);
+
+        return menus.stream()
+            .map(
+                menu -> OrderLineItem.of(menu, orderRequest.getOrderLineItemQuantity(menu.getId())))
+            .collect(Collectors.toList());
     }
 }

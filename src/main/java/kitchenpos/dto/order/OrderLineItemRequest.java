@@ -1,9 +1,6 @@
 package kitchenpos.dto.order;
 
-import java.security.InvalidParameterException;
-import java.util.List;
-import kitchenpos.domain.menu.Menu;
-import kitchenpos.domain.order.OrderLineItem;
+import java.util.Objects;
 
 public class OrderLineItemRequest {
 
@@ -26,11 +23,7 @@ public class OrderLineItemRequest {
         return quantity;
     }
 
-    public OrderLineItem toOrderLineItem(List<Menu> menus) {
-        Menu menu = menus.stream()
-            .filter(targetMenu -> targetMenu.isSame(menuId))
-            .findFirst()
-            .orElseThrow(() -> new InvalidParameterException("일치하는 메뉴가 없습니다."));
-        return OrderLineItem.of(menu, quantity);
+    public boolean isSameMenuId(Long menuId) {
+        return Objects.equals(this.menuId, menuId);
     }
 }
