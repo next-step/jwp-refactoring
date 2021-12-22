@@ -2,11 +2,11 @@ package kitchenpos.event.tablegroup;
 
 import java.util.List;
 
-public class UngroupOrderTableEvent {
+public class GroupingOrderTableEvent {
     private final Long tableGroupId;
     private final List<Long> orderTableIds;
-    
-    public UngroupOrderTableEvent(Long tableGroupId, List<Long> orderTableIds) {
+
+    public GroupingOrderTableEvent(Long tableGroupId, List<Long> orderTableIds) {
         this.tableGroupId = tableGroupId;
         this.orderTableIds = orderTableIds;
     }

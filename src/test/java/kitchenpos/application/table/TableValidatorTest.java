@@ -6,7 +6,6 @@ import static org.mockito.Mockito.when;
 import java.util.Optional;
 
 import org.assertj.core.api.Assertions;
-import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,13 +20,13 @@ import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.domain.order.Orders;
 import kitchenpos.domain.table.OrderTable;
 import kitchenpos.domain.table.OrderTableRepository;
-import kitchenpos.domain.table.OrderTables;
 import kitchenpos.domain.tablegroup.TableGroup;
 import kitchenpos.exception.order.HasNotCompletionOrderException;
 import kitchenpos.exception.table.EmptyOrderTableException;
 import kitchenpos.exception.table.HasOtherTableGroupException;
 import kitchenpos.exception.table.NegativeOfNumberOfGuestsException;
 import kitchenpos.vo.OrderTableId;
+import kitchenpos.vo.TableGroupId;
 
 @ExtendWith(MockitoExtension.class)
 public class TableValidatorTest {
@@ -64,7 +63,10 @@ public class TableValidatorTest {
         // given
         OrderTable 치킨_주문테이블 = OrderTable.of(0, true);
         OrderTable 치킨2_주문_단체테이블 = OrderTable.of(0, true);
-        TableGroup.of(OrderTables.of(Lists.newArrayList(치킨_주문테이블, 치킨2_주문_단체테이블)));
+
+        TableGroup  단체지정_테이블 = TableGroup.of(1L);
+        치킨_주문테이블.groupingTable(TableGroupId.of(단체지정_테이블.getId()));
+        치킨2_주문_단체테이블.groupingTable(TableGroupId.of(단체지정_테이블.getId()));
         
         Orders 치킨주문 = Orders.of(OrderStatus.COMPLETION);
 

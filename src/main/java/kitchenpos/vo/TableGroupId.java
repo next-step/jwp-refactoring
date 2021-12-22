@@ -1,5 +1,7 @@
 package kitchenpos.vo;
 
+import java.util.Objects;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
@@ -27,5 +29,21 @@ public final class TableGroupId {
 
     public Long value() {
         return this.tableGroupId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this)
+            return true;
+        if (!(o instanceof TableGroupId)) {
+            return false;
+        }
+        TableGroupId tableGroupId = (TableGroupId) o;
+        return Objects.equals(this.tableGroupId, tableGroupId.tableGroupId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(tableGroupId);
     }
 }

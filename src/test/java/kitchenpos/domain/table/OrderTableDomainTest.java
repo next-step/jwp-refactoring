@@ -1,12 +1,12 @@
 package kitchenpos.domain.table;
 
-import java.util.List;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import kitchenpos.domain.tablegroup.TableGroup;
+import kitchenpos.vo.TableGroupId;
 
 public class OrderTableDomainTest {
     @DisplayName("주문테이블이 그룹이 해제된다.")
@@ -15,8 +15,11 @@ public class OrderTableDomainTest {
         // given
         OrderTable 주문테이블1 = OrderTable.of(0, true);
         OrderTable 주문테이블2 = OrderTable.of(0, true);
-        TableGroup.of(OrderTables.of(List.of(주문테이블1, 주문테이블2)));
-        
+
+        TableGroup 치킨_주문_단체테이블 = TableGroup.of(1L);       
+        주문테이블1.groupingTable(TableGroupId.of(치킨_주문_단체테이블));
+        주문테이블2.groupingTable(TableGroupId.of(치킨_주문_단체테이블));
+
         // when
         주문테이블1.unGroupTable();
 
@@ -29,11 +32,11 @@ public class OrderTableDomainTest {
     void group_ordertable() {
         // given
         OrderTable 주문테이블1 = OrderTable.of(0, true);
-        OrderTable 주문테이블2 = OrderTable.of(0, true);
+        TableGroup 치킨_주문_단체테이블 = TableGroup.of(1L);       
 
         // when
-        TableGroup 치킨_주문_단체테이블 = TableGroup.of(OrderTables.of(List.of(주문테이블1, 주문테이블2)));       
-        
+        주문테이블1.groupingTable(TableGroupId.of(치킨_주문_단체테이블.getId()));
+
         // then
         Assertions.assertThat(주문테이블1.getTableGroupId().value()).isEqualTo(치킨_주문_단체테이블.getId());
     }

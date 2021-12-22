@@ -53,6 +53,10 @@ public final class OrderTables {
         return this.orderTables.isEmpty();
     }
 
+    public List<OrderTable> getOrderTables() {
+        return this.orderTables;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == this)
