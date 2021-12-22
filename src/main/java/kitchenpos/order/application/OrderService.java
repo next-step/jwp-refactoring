@@ -62,7 +62,6 @@ public class OrderService {
 
         order.setOrderTable(orderTable);
         order.setOrderStatus(OrderStatus.COOKING);
-        order.setOrderedTime(LocalDateTime.now());
 
         final Order savedOrder = orderRepository.save(order);
 

@@ -82,10 +82,6 @@ public class Order {
         return orderedTime;
     }
 
-    public void setOrderedTime(final LocalDateTime orderedTime) {
-        this.orderedTime = orderedTime;
-    }
-
     public OrderLineItems getOrderLineItems() {
         return orderLineItems;
     }
