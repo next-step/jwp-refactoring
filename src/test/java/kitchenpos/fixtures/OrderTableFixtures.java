@@ -94,5 +94,9 @@ public class OrderTableFixtures {
     public static OrderTableRequest 테이블_그룹요청() {
         return new OrderTableRequest();
     }
+
+    public static OrderTableRequest 테이블_그룹요청(Long tableId) {
+        return new OrderTableRequest(tableId);
+    }
 }
 

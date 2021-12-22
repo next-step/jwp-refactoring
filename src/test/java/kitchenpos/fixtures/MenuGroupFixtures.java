@@ -23,6 +23,10 @@ public class MenuGroupFixtures {
         return MenuGroupRequest.of("반반메뉴그룹요청");
     }
 
+    public static MenuGroupRequest 메뉴그룹요청(String name) {
+        return MenuGroupRequest.of(name);
+    }
+
     public static MenuGroup 메뉴그룹(String name) {
         return new MenuGroup(name);
     }

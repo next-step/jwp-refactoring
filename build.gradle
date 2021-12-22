@@ -19,6 +19,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.flywaydb:flyway-core'
 
+    //query log
+    implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.7.1'
+
 
     //구아바
     implementation 'com.google.guava:guava:28.1-jre'

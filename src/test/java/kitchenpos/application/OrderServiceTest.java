@@ -126,7 +126,7 @@ public class OrderServiceTest {
         // given
         given(menuRepository.findById(anyLong())).willReturn(Optional.of(후라이드반양념반메뉴));
         // then
-        assertThatThrownBy(() -> orderService.create(주문등록요청())).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> orderService.create(주문등록요청())).isInstanceOf(OrderTableNotFoundException.class);
     }
 
     @Test

@@ -27,15 +27,6 @@ public class MenuFixtures {
         );
     }
 
-    public static MenuRequest 후라이드한마리메뉴요청() {
-        return MenuRequest.of(
-                "한마리메뉴",
-                new BigDecimal(16000),
-                2L,
-                Lists.newArrayList(new MenuProductRequest(1L, 1L))
-        );
-    }
-
     public static MenuRequest 후라이드두마리메뉴요청() {
         return MenuRequest.of(
                 "두마리메뉴",
@@ -61,6 +52,15 @@ public class MenuFixtures {
     public static MenuRequest 후라이드반양념반메뉴요청(BigDecimal price, Long menuGroupId, List<MenuProductRequest> menuProductRequests) {
         return MenuRequest.of(
                 "후라이드반양념반메뉴",
+                price,
+                menuGroupId,
+                menuProductRequests
+        );
+    }
+
+    public static MenuRequest 메뉴등록요청(String name, BigDecimal price, Long menuGroupId, List<MenuProductRequest> menuProductRequests) {
+        return MenuRequest.of(
+                name,
                 price,
                 menuGroupId,
                 menuProductRequests

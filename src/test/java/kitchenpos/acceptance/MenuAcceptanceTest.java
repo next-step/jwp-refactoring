@@ -124,6 +124,17 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         메뉴_리스트_조회됨(response);
     }
 
+    public static MenuResponse 메뉴_등록_되어있음(MenuRequest request) {
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(request)
+                .when().post("/api/menus")
+                .then().log().all().extract();
+
+        return response.jsonPath().getObject("", MenuResponse.class);
+    }
+
     private void 메뉴_리스트_조회됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
@@ -146,16 +157,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
                 .then().log().all().extract();
     }
 
-    private MenuResponse 메뉴_등록_되어있음(MenuRequest request) {
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(request)
-                .when().post("/api/menus")
-                .then().log().all().extract();
 
-        return response.jsonPath().getObject("", MenuResponse.class);
-    }
 
     private void 메뉴_등록됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());

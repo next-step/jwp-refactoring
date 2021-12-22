@@ -6,6 +6,7 @@ import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.dto.MenuGroupRequest;
 import kitchenpos.dto.MenuGroupResponse;
+import kitchenpos.fixtures.MenuGroupFixtures;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,7 @@ import org.springframework.http.MediaType;
 
 import java.util.List;
 
+import static kitchenpos.fixtures.MenuGroupFixtures.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -29,7 +31,7 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
     @Test
     void create() {
         // given
-        final MenuGroupRequest request = MenuGroupRequest.of("두마리메뉴");
+        final MenuGroupRequest request = 메뉴그룹요청("두마리메뉴");
 
         // when
         final ExtractableResponse<Response> response = 메뉴그룹_등록_요청함(request);
@@ -42,8 +44,8 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
     @Test
     void list() {
         // given
-        메뉴그룹_등록되어있음(MenuGroupRequest.of("한마리메뉴"));
-        메뉴그룹_등록되어있음(MenuGroupRequest.of("두마리메뉴"));
+        메뉴그룹_등록되어있음(메뉴그룹요청("한마리메뉴"));
+        메뉴그룹_등록되어있음(메뉴그룹요청("두마리메뉴"));
 
         // when
         final ExtractableResponse<Response> response = 메뉴그룹_리스트_요청함();

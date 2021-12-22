@@ -26,6 +26,10 @@ public class TableGroupFixtures {
         return new TableGroupSaveRequest(Lists.newArrayList(테이블_그룹요청(), 테이블_그룹요청()));
     }
 
+    public static TableGroupSaveRequest 그룹테이블_그룹요청(List<OrderTableRequest> orderTableRequests) {
+        return new TableGroupSaveRequest(orderTableRequests);
+    }
+
     public static TableGroupSaveRequest 그룹테이블_그룹요청_예외_테이블한개() {
         return new TableGroupSaveRequest(Lists.newArrayList(테이블_그룹요청()));
     }

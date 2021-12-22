@@ -6,6 +6,7 @@ import kitchenpos.dto.OrderSaveRequest;
 import kitchenpos.dto.OrderStatusUpdateRequest;
 import kitchenpos.exception.MenuNotFoundException;
 import kitchenpos.exception.OrderNotFoundException;
+import kitchenpos.exception.OrderTableNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,7 +36,7 @@ public class OrderService {
 
     private OrderTable toOrderTable(OrderSaveRequest request) {
         return orderTableRepository.findById(request.getOrderTableId())
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(OrderTableNotFoundException::new);
     }
 
     private List<OrderLineItem> toOrderLineItems(OrderSaveRequest request) {

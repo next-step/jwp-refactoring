@@ -7,13 +7,15 @@ import kitchenpos.exception.TableGuestNumberUpdateException;
 import javax.persistence.*;
 import java.util.Objects;
 
+import static javax.persistence.FetchType.*;
+
 @Entity
 public class OrderTable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "table_group_id", foreignKey = @ForeignKey(name = "fk_order_table_table_group"))
     private TableGroup tableGroup;
 
@@ -72,7 +74,7 @@ public class OrderTable {
         if (Objects.nonNull(order) && !isOrderFinished()) {
             throw new NotSupportUngroupException();
         }
-        this.tableGroup = new TableGroup();
+        this.tableGroup = null;
     }
 
     public Long getId() {
@@ -94,6 +96,4 @@ public class OrderTable {
     public Order getOrder() {
         return order;
     }
-
-
 }

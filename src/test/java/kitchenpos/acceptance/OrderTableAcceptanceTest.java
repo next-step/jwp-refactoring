@@ -4,10 +4,8 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.dto.ChangeEmptyRequest;
-import kitchenpos.dto.ChangeGuestNumberRequest;
-import kitchenpos.dto.OrderTableResponse;
-import kitchenpos.dto.OrderTableSaveRequest;
+import kitchenpos.dto.*;
+import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,8 +14,23 @@ import org.springframework.http.MediaType;
 
 import java.util.List;
 
+import static kitchenpos.acceptance.MenuAcceptanceTest.메뉴_등록_되어있음;
+import static kitchenpos.acceptance.MenuGroupAcceptanceTest.메뉴그룹_등록되어있음;
+import static kitchenpos.acceptance.OrderAcceptanceTest.주문_상태_변경요청함;
+import static kitchenpos.acceptance.OrderAcceptanceTest.주문등록되어있음;
+import static kitchenpos.acceptance.ProductAcceptanceTest.상품_등록되어_있음;
+import static kitchenpos.acceptance.TableGroupAcceptanceTest.테이블_그룹화_되어있음;
+import static kitchenpos.fixtures.MenuFixtures.메뉴등록요청;
+import static kitchenpos.fixtures.MenuGroupFixtures.한마리메뉴그룹요청;
+import static kitchenpos.fixtures.MenuProductFixtures.메뉴상품등록요청;
+import static kitchenpos.fixtures.OrderFixtures.식사중으로_변경요청;
+import static kitchenpos.fixtures.OrderFixtures.주문등록요청;
+import static kitchenpos.fixtures.OrderLineItemFixtures.주문정보_등록요청;
 import static kitchenpos.fixtures.OrderTableFixtures.*;
+import static kitchenpos.fixtures.ProductFixtures.양념치킨요청;
+import static kitchenpos.fixtures.TableGroupFixtures.그룹테이블_그룹요청;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.util.Lists.newArrayList;
 
 /**
  * packageName : kitchenpos.acceptance
@@ -28,11 +41,24 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @DisplayName("주문테이블 인수테스트")
 public class OrderTableAcceptanceTest extends AcceptanceTest {
+    private Long 메뉴_ID;
 
     @Override
     @BeforeEach
     public void setUp() {
         super.setUp();
+        ProductResponse 양념치킨 = 상품_등록되어_있음(양념치킨요청());
+        MenuGroupResponse 한마리메뉴그룹 = 메뉴그룹_등록되어있음(한마리메뉴그룹요청());
+
+        메뉴_ID = 메뉴_등록_되어있음(
+                메뉴등록요청(
+                        "양념치킨하나",
+                        양념치킨.getPrice(),
+                        한마리메뉴그룹.getId(),
+                        Lists.newArrayList(메뉴상품등록요청(양념치킨.getId(), 1L)
+                        )
+                )
+        ).getId();
     }
 
     @Test
@@ -90,34 +116,36 @@ public class OrderTableAcceptanceTest extends AcceptanceTest {
         주문_상태_변경_실패함(response);
     }
 
-    //TODO 그룹테이블 인수테스트 작성 시 추가할 것.
     @Test
     @DisplayName("주문 테이블이 그룹테이블인 경우 상태를 변경할 수 없다.")
     public void changeEmptyFailByGroupTable() {
         // given
+        OrderTableResponse savedTable1 = 주문_테이블_등록되어_있음(주문불가_두명테이블요청());
+        OrderTableResponse savedTable2 = 주문_테이블_등록되어_있음(주문불가_두명테이블요청());
+        테이블_그룹화_되어있음(그룹테이블_그룹요청(newArrayList(테이블_그룹요청(savedTable1.getId()), 테이블_그룹요청(savedTable2.getId()))));
 
         // when
-        RestAssured
-                .given().log().all()
-                .when()
-                .then().log().all();
+        ExtractableResponse<Response> response = 주문_테이블_상태_변경_요청(savedTable1.getId(), 주문가능으로_변경요청());
 
         // then
+        주문_상태_변경_실패함(response);
     }
 
-    //TODO 그룹테이블 인수테스트 작성 시 추가할 것.
     @Test
     @DisplayName("주문 테이블의 상태가 주문 완료가 아닌 경우 상태를 변경할 수 없다.")
     public void changeEmptyFailByOrderStatus() {
         // given
+        OrderTableResponse savedTable1 = 주문_테이블_등록되어_있음(주문불가_두명테이블요청());
+        OrderTableResponse savedTable2 = 주문_테이블_등록되어_있음(주문불가_두명테이블요청());
+        테이블_그룹화_되어있음(그룹테이블_그룹요청(newArrayList(테이블_그룹요청(savedTable1.getId()), 테이블_그룹요청(savedTable2.getId()))));
+        OrderResponse savedOrder = 주문등록되어있음(주문등록요청(savedTable1.getId(), newArrayList(주문정보_등록요청(메뉴_ID, 1L))));
+        주문_상태_변경요청함(savedOrder.getId(), 식사중으로_변경요청());
 
         // when
-        RestAssured
-                .given().log().all()
-                .when()
-                .then().log().all();
+        ExtractableResponse<Response> response = 주문_테이블_상태_변경_요청(savedTable1.getId(), 주문가능으로_변경요청());
 
         // then
+        주문_상태_변경_실패함(response);
     }
 
     @Test
@@ -173,7 +201,7 @@ public class OrderTableAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private ExtractableResponse<Response> 주문_테이블_상태_변경_요청(Long savedId, ChangeEmptyRequest request) {
+    public static ExtractableResponse<Response> 주문_테이블_상태_변경_요청(Long savedId, ChangeEmptyRequest request) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -192,7 +220,7 @@ public class OrderTableAcceptanceTest extends AcceptanceTest {
                 .then().log().all().extract();
     }
 
-    private OrderTableResponse 주문_테이블_등록되어_있음(OrderTableSaveRequest request) {
+    public static OrderTableResponse 주문_테이블_등록되어_있음(OrderTableSaveRequest request) {
         final ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(request)
