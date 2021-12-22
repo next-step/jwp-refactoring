@@ -1,5 +1,6 @@
 package kitchenpos.menu.domain;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -51,10 +52,6 @@ public class MenuProduct {
         return seq;
     }
 
-    public void setSeq(final Long seq) {
-        this.seq = seq;
-    }
-
     public Menu getMenu() {
         return menu;
     }
@@ -67,12 +64,8 @@ public class MenuProduct {
         return quantity;
     }
 
-    public void setQuantity(final long quantity) {
-        this.quantity = quantity;
-    }
-
-    public Long getProductId() {
-        return product.getId();
+    public BigDecimal getMenuProductPrice() {
+        return product.getPrice().multiply(BigDecimal.valueOf(quantity));
     }
 
     @Override
@@ -94,7 +87,7 @@ public class MenuProduct {
     }
 
 
-    public void setMenu(Menu savedMenu) {
-        menu = savedMenu;
+    public void assignMenu(Menu menu) {
+        this.menu = menu;
     }
 }

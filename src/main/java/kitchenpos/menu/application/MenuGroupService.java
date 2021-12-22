@@ -12,7 +12,10 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class MenuGroupService {
 
+    private static final String ERROR_MESSAGE_NOT_EXIST_MENU_GROUP = "메뉴 그룹이 존재하지 않습니다.";
+
     private final MenuGroupDao menuGroupDao;
+
 
     public MenuGroupService(final MenuGroupDao menuGroupDao) {
         this.menuGroupDao = menuGroupDao;
@@ -29,5 +32,10 @@ public class MenuGroupService {
             .stream()
             .map(MenuGroupResponse::from)
             .collect(Collectors.toList());
+    }
+
+    public MenuGroup findMenuGroupById(Long id) {
+        return menuGroupDao.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException(ERROR_MESSAGE_NOT_EXIST_MENU_GROUP));
     }
 }

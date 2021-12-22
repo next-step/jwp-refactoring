@@ -17,6 +17,9 @@ import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.menu.testfixtures.MenuTestFixtures;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -44,9 +47,9 @@ class MenuRestControllerTest {
 
     @BeforeEach
     void setUp() {
-        타코야끼 = new Product("타코야끼", BigDecimal.valueOf(12000));
-        뿌링클 = new Product("뿌링클", BigDecimal.valueOf(22000));
-        추천메뉴그룹 = new MenuGroup("추천메뉴");
+        타코야끼 = new Product(1L, "타코야끼", BigDecimal.valueOf(12000));
+        뿌링클 = new Product(2L, "뿌링클", BigDecimal.valueOf(22000));
+        추천메뉴그룹 = new MenuGroup(1L, "추천메뉴");
     }
 
     @DisplayName("메뉴 등록")
@@ -58,14 +61,15 @@ class MenuRestControllerTest {
             new MenuProduct(뿌링클, 1));
         String menuName = "후라이드+후라이드";
         BigDecimal price = BigDecimal.valueOf(19000);
-        Long menuGroupId = 1L;
-        Menu requestMenu = new Menu(menuName, price, 추천메뉴그룹, menuProducts);
-        Menu expectedMenu = new Menu(1L, menuName, price, 추천메뉴그룹, menuProducts);
+        MenuRequest menuRequest = MenuTestFixtures.convertToMenuRequest(
+            new Menu(menuName, price, 추천메뉴그룹, menuProducts));
+        MenuResponse expectedMenu = MenuResponse.from(
+            new Menu(1L, menuName, price, 추천메뉴그룹, menuProducts));
         given(menuService.create(any())).willReturn(expectedMenu);
 
         //when, then
         mockMvc.perform(post(BASE_PATH)
-                .content(CommonTestFixtures.asJsonString(requestMenu))
+                .content(CommonTestFixtures.asJsonString(menuRequest))
                 .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isCreated())
             .andExpect(jsonPath("$.id").value(expectedMenu.getId()))
@@ -83,10 +87,12 @@ class MenuRestControllerTest {
             new MenuProduct(타코야끼, 1),
             new MenuProduct(뿌링클, 2));
 
-        List<Menu> expectedMenus = Arrays.asList(
-            new Menu(1L, "후라이드+후라이드", BigDecimal.valueOf(19000), 추천메뉴그룹, menuProducts1),
-            new Menu(2L, "오븐구이+순살강정", BigDecimal.valueOf(23000), 추천메뉴그룹, menuProducts2));
-        given(menuService.list()).willReturn(expectedMenus);
+        List<MenuResponse> expectedMenus = Arrays.asList(
+            MenuResponse.from(
+                new Menu(1L, "후라이드+후라이드", BigDecimal.valueOf(19000), 추천메뉴그룹, menuProducts1)),
+            MenuResponse.from(
+                new Menu(2L, "오븐구이+순살강정", BigDecimal.valueOf(23000), 추천메뉴그룹, menuProducts2)));
+        given(menuService.listResponse()).willReturn(expectedMenus);
 
         //when, then
         mockMvc.perform(get(BASE_PATH))
