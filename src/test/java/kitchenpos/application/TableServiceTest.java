@@ -8,8 +8,8 @@ import static org.mockito.BDDMockito.given;
 import java.util.List;
 import java.util.Optional;
 import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,7 +25,7 @@ class TableServiceTest {
     private OrderDao orderDao;
 
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @InjectMocks
     private TableService tableService;
@@ -37,7 +37,7 @@ class TableServiceTest {
         OrderTable orderTable = OrderTable.of(3);
         OrderTable savedOrderTable = new OrderTable(1L, null, 3, false);
 
-        given(orderTableDao.save(orderTable)).willReturn(savedOrderTable);
+        given(orderTableRepository.save(orderTable)).willReturn(savedOrderTable);
 
         // when
         OrderTable result = tableService.create(orderTable);
@@ -55,7 +55,8 @@ class TableServiceTest {
         OrderTable orderTable1 = new OrderTable(1L, null, 3, false);
         OrderTable orderTable2 = new OrderTable(2L, null, 2, false);
 
-        given(orderTableDao.findAll()).willReturn(Lists.newArrayList(orderTable1, orderTable2));
+        given(orderTableRepository.findAll()).willReturn(
+            Lists.newArrayList(orderTable1, orderTable2));
 
         // when
         List<OrderTable> result = tableService.list();
@@ -75,10 +76,10 @@ class TableServiceTest {
         OrderTable orderTable = new OrderTable(1L, null, 3, false);
         OrderTable orderTableForUpdate = new OrderTable(1L, null, 3, true);
 
-        given(orderTableDao.findById(1L)).willReturn(Optional.of(orderTable));
+        given(orderTableRepository.findById(1L)).willReturn(Optional.of(orderTable));
         given(orderDao.existsByOrderTableIdAndOrderStatusIn(1L,
             Lists.newArrayList("COOKING", "MEAL"))).willReturn(false);
-        given(orderTableDao.save(any())).willReturn(orderTableForUpdate);
+        given(orderTableRepository.save(any())).willReturn(orderTableForUpdate);
 
         // when
         OrderTable result = tableService.changeEmpty(1L, orderTableForUpdate);
@@ -95,7 +96,7 @@ class TableServiceTest {
         // given
         OrderTable orderTable = new OrderTable(1L, 1L, 3, false);
 
-        given(orderTableDao.findById(1L)).willReturn(Optional.of(orderTable));
+        given(orderTableRepository.findById(1L)).willReturn(Optional.of(orderTable));
 
         // when, then
         assertThatIllegalArgumentException().isThrownBy(
@@ -109,7 +110,7 @@ class TableServiceTest {
         // given
         OrderTable orderTable = new OrderTable(1L, null, 3, false);
 
-        given(orderTableDao.findById(1L)).willReturn(Optional.of(orderTable));
+        given(orderTableRepository.findById(1L)).willReturn(Optional.of(orderTable));
         given(orderDao.existsByOrderTableIdAndOrderStatusIn(1L,
             Lists.newArrayList("COOKING", "MEAL"))).willReturn(true);
 
@@ -126,8 +127,8 @@ class TableServiceTest {
         OrderTable orderTable = new OrderTable(1L, null, 3, false);
         OrderTable orderTableForUpdate = new OrderTable(1L, null, 4, false);
 
-        given(orderTableDao.findById(1L)).willReturn(Optional.of(orderTable));
-        given(orderTableDao.save(orderTable)).willReturn(orderTableForUpdate);
+        given(orderTableRepository.findById(1L)).willReturn(Optional.of(orderTable));
+        given(orderTableRepository.save(orderTable)).willReturn(orderTableForUpdate);
 
         // when
         OrderTable result = tableService.changeNumberOfGuests(1L, orderTableForUpdate);
@@ -156,7 +157,7 @@ class TableServiceTest {
         OrderTable orderTable = new OrderTable(1L, null, 2, true);
         OrderTable orderTableForUpdate = new OrderTable(1L, null, 3, true);
 
-        given(orderTableDao.findById(1L)).willReturn(Optional.of(orderTable));
+        given(orderTableRepository.findById(1L)).willReturn(Optional.of(orderTable));
 
         // when, then
         assertThatIllegalArgumentException().isThrownBy(

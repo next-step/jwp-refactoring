@@ -10,8 +10,8 @@ import static org.mockito.Mockito.verify;
 
 import java.util.List;
 import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.domain.TableGroupRepository;
 import org.assertj.core.util.Lists;
@@ -29,7 +29,7 @@ class TableGroupServiceTest {
     private OrderDao orderDao;
 
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @Mock
     private TableGroupRepository tableGroupRepository;
@@ -47,9 +47,9 @@ class TableGroupServiceTest {
 
         TableGroup tableGroup = new TableGroup(1L, null, orderTables);
 
-        given(orderTableDao.findAllByIdIn(anyList())).willReturn(orderTables);
+        given(orderTableRepository.findAllByIdIn(anyList())).willReturn(orderTables);
         given(tableGroupRepository.save(any())).willReturn(tableGroup);
-        given(orderTableDao.save(any())).willReturn(orderTable1, orderTable2);
+        given(orderTableRepository.save(any())).willReturn(orderTable1, orderTable2);
 
         // when
         TableGroup result = tableGroupService.create(tableGroup);
@@ -102,7 +102,7 @@ class TableGroupServiceTest {
 
         TableGroup tableGroup = new TableGroup(1L, null, orderTables);
 
-        given(orderTableDao.findAllByIdIn(anyList())).willReturn(orderTables);
+        given(orderTableRepository.findAllByIdIn(anyList())).willReturn(orderTables);
 
 
         // when, then
@@ -121,7 +121,7 @@ class TableGroupServiceTest {
 
         TableGroup tableGroup = new TableGroup(1L, null, orderTables);
 
-        given(orderTableDao.findAllByIdIn(anyList())).willReturn(orderTables);
+        given(orderTableRepository.findAllByIdIn(anyList())).willReturn(orderTables);
 
 
         // when, then
@@ -138,14 +138,14 @@ class TableGroupServiceTest {
         OrderTable orderTable2 = new OrderTable(2L, 1L, 3, true);
         List<OrderTable> orderTables = Lists.newArrayList(orderTable1, orderTable2);
 
-        given(orderTableDao.findAllByTableGroupId(any())).willReturn(orderTables);
+        given(orderTableRepository.findAllByTableGroupId(any())).willReturn(orderTables);
         given(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(false);
 
         // when
         tableGroupService.ungroup(1L);
 
         // then
-        verify(orderTableDao, times(2)).save(any());
+        verify(orderTableRepository, times(2)).save(any());
     }
 
     @DisplayName("주문 상태가 요리중 또는 식사일 때 테이블 그룹 해제를 하면 예외 발생")
@@ -156,7 +156,7 @@ class TableGroupServiceTest {
         OrderTable orderTable2 = new OrderTable(2L, 1L, 3, true);
         List<OrderTable> orderTables = Lists.newArrayList(orderTable1, orderTable2);
 
-        given(orderTableDao.findAllByTableGroupId(any())).willReturn(orderTables);
+        given(orderTableRepository.findAllByTableGroupId(any())).willReturn(orderTables);
         given(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(true);
 
         // when, then

@@ -81,7 +81,7 @@
     - [X] TableGroup 엔티티 변환
     - [X] OrderTable 엔티티 변환
   - [X] TableGroupRepository 사용하도록 수정
-  - [ ] OrderTableRepository 사용하도록 수정
+  - [X] OrderTableRepository 사용하도록 수정
   - [ ] dto 모델 추가
 - [ ] 주문 관리 리팩토링
   - [ ] 모델

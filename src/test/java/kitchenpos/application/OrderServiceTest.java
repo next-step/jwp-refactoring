@@ -12,10 +12,10 @@ import java.util.Optional;
 import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,7 +37,7 @@ class OrderServiceTest {
     private OrderLineItemDao orderLineItemDao;
 
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @InjectMocks
     private OrderService orderService;
@@ -53,7 +53,7 @@ class OrderServiceTest {
         OrderTable orderTable = new OrderTable(1L, null, 2, false);
 
         given(menuDao.countByIdIn(anyList())).willReturn((long) orderLineItems.size());
-        given(orderTableDao.findById(1L)).willReturn(Optional.of(orderTable));
+        given(orderTableRepository.findById(1L)).willReturn(Optional.of(orderTable));
         given(orderDao.save(any())).willReturn(order);
 
         // when
