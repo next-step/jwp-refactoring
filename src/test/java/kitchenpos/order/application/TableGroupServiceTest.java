@@ -19,7 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.order.dao.OrderDao;
 import kitchenpos.order.dao.OrderTableDao;
-import kitchenpos.order.dao.TableGroupDao;
+import kitchenpos.order.dao.TableGroupRepository;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.TableGroup;
 
@@ -33,7 +33,7 @@ public class TableGroupServiceTest {
     private OrderTableDao orderTableDao;
     
     @Mock
-    private TableGroupDao tableGroupDao;
+    private TableGroupRepository tableGroupRepository;
 
     @InjectMocks
     private TableGroupService tableGroupService;
@@ -58,7 +58,7 @@ public class TableGroupServiceTest {
         단체지정.setOrderTables(Arrays.asList(첫번째_테이블, 두번째_테이블));
         
         given(orderTableDao.findAllByIdIn(anyList())).willReturn(단체지정.getOrderTables());
-        given(tableGroupDao.save(단체지정)).willReturn(단체지정);
+        given(tableGroupRepository.save(단체지정)).willReturn(단체지정);
         
         // when
         TableGroup 저장된_단체지정 = tableGroupService.create(단체지정);
