@@ -1,7 +1,16 @@
-package kitchenpos.domain;
+package kitchenpos.menu.group.domain;
 
+import javax.persistence.*;
+
+@Table
+@Entity
 public class MenuGroup {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "name", length = 100, nullable = false, unique = true)
     private String name;
 
     public MenuGroup() {
@@ -26,9 +35,5 @@ public class MenuGroup {
 
     public String getName() {
         return name;
-    }
-
-    public void setName(final String name) {
-        this.name = name;
     }
 }
