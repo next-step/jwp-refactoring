@@ -38,7 +38,7 @@ public class Order {
     private LocalDateTime orderedTime;
 
     @Embedded
-    private OrderLineItems orderLineItems;
+    private OrderLineItems orderLineItems = new OrderLineItems();
 
     public Long getId() {
         return id;
@@ -79,26 +79,6 @@ public class Order {
             .forEach(orderLineItem -> orderLineItem.assignOrder(this));
     }
 
-    public OrderTable getOrderTable() {
-        return orderTable;
-    }
-
-    public OrderStatus getOrderStatus() {
-        return orderStatus;
-    }
-
-    public LocalDateTime getOrderedTime() {
-        return orderedTime;
-    }
-
-    public OrderLineItems getOrderLineItems() {
-        return orderLineItems;
-    }
-
-    public List<OrderLineItem> getOrderLineItemList() {
-        return orderLineItems.getOrderLineItems();
-    }
-
     public boolean isCompleteStatus() {
         return orderStatus == OrderStatus.COMPLETION;
     }
@@ -123,6 +103,26 @@ public class Order {
         }
     }
 
+    public OrderTable getOrderTable() {
+        return orderTable;
+    }
+
+    public OrderStatus getOrderStatus() {
+        return orderStatus;
+    }
+
+    public LocalDateTime getOrderedTime() {
+        return orderedTime;
+    }
+
+    public OrderLineItems getOrderLineItems() {
+        return orderLineItems;
+    }
+
+    public List<OrderLineItem> getOrderLineItemList() {
+        return orderLineItems.getOrderLineItems();
+    }
+    
     @Override
     public boolean equals(Object o) {
         if (this == o) {
