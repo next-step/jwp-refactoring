@@ -1,5 +1,7 @@
 package kitchenpos.domain;
 
+import kitchenpos.exception.NullPriceException;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -17,10 +19,20 @@ public class Product {
     public Product() {
     }
 
-    public Product(Long id, String name, Price price) {
-        this.id = id;
+    public Product(String name, Price price) {
         this.name = name;
         this.price = price;
+    }
+
+    public static Product of(String name, BigDecimal price) {
+        validateNullPrice(price);
+        return new Product(name, new Price(price));
+    }
+
+    private static void validateNullPrice(BigDecimal price) {
+        if (price == null) {
+            throw new NullPriceException();
+        }
     }
 
     public Long getId() {

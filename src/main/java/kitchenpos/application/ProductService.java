@@ -3,6 +3,8 @@ package kitchenpos.application;
 import kitchenpos.dao.ProductRepository;
 import kitchenpos.domain.Price;
 import kitchenpos.domain.Product;
+import kitchenpos.dto.ProductRequest;
+import kitchenpos.dto.ProductResponse;
 import kitchenpos.exception.NoProductException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,14 +21,9 @@ public class ProductService {
     }
 
     @Transactional
-    public Product create(final Product product) {
-        final Price price = product.getPrice();
-
-        if (Objects.isNull(price) || price.compareTo(Price.Zero) < 0) {
-            throw new IllegalArgumentException();
-        }
-
-        return productRepository.save(product);
+    public ProductResponse create(final ProductRequest productRequest) {
+        Product savedProduct = productRepository.save(Product.of(productRequest.getName(), productRequest.getPrice()));
+        return ProductResponse.from(savedProduct);
     }
 
     public List<Product> list() {
