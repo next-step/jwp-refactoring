@@ -46,7 +46,7 @@ class MenuGroupRestControllerTest {
         given(service.create(any(MenuGroupRequest.class)))
             .willReturn(expectedMenuGroup);
 
-        //when
+        //when, then
         mockMvc.perform(post(BASE_PATH)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(CommonTestFixtures.asJsonString(requestMenuGroup)))

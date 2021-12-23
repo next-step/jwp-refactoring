@@ -37,6 +37,8 @@ class OrderTest {
         List<OrderLineItem> orderLineItems = Arrays.asList(
             new OrderLineItem(MenuTestFixtures.서비스군만두, 5)
         );
+
+        //when, then
         assertThatThrownBy(() -> new Order(orderTable, LocalDateTime.now(), orderLineItems))
             .isInstanceOf(IllegalArgumentException.class);
     }
@@ -50,6 +52,8 @@ class OrderTest {
             new OrderLineItem(MenuTestFixtures.서비스군만두, 5),
             new OrderLineItem(MenuTestFixtures.서비스군만두, 2)
         );
+
+        //when, then
         assertThatThrownBy(() -> new Order(orderTable, LocalDateTime.now(), orderLineItems))
             .isInstanceOf(IllegalArgumentException.class);
     }
@@ -64,7 +68,10 @@ class OrderTest {
         );
         Order order = new Order(orderTable, LocalDateTime.now(), orderLineItems);
 
+        //when
         order.changeOrderStatus(OrderStatus.MEAL);
+
+        //then
         assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.MEAL);
     }
 
@@ -78,6 +85,8 @@ class OrderTest {
         );
         Order order = new Order(orderTable, LocalDateTime.now(), orderLineItems);
         order.changeOrderStatus(OrderStatus.COMPLETION);
+
+        //when, then
         assertThatThrownBy(() -> order.changeOrderStatus(OrderStatus.MEAL))
             .isInstanceOf(IllegalArgumentException.class);
     }
