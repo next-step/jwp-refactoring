@@ -2,6 +2,7 @@ package kitchenpos.product.domain;
 
 import kitchenpos.common.domain.Name;
 import kitchenpos.common.domain.Price;
+import org.springframework.util.Assert;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -26,6 +27,9 @@ public class Product {
     }
 
     private Product(Long id, Name name, Price price) {
+        Assert.notNull(name, "상품 이름은 반드시 존재해야 합니다.");
+        Assert.notNull(price, "상품 가격은 반드시 존재해야 합니다.");
+
         this.id = id;
         this.name = name;
         this.price = price;

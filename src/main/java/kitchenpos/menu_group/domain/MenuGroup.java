@@ -1,6 +1,7 @@
-package kitchenpos.menu.domain;
+package kitchenpos.menu_group.domain;
 
 import kitchenpos.common.domain.Name;
+import org.springframework.util.Assert;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -21,6 +22,8 @@ public class MenuGroup {
     }
 
     private MenuGroup(Long id, Name name) {
+        Assert.notNull(name, "메뉴 그룹의 이름은 반드시 존재해야 합니다.");
+
         this.id = id;
         this.name = name;
     }

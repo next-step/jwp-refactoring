@@ -1,9 +1,9 @@
 package kitchenpos.menu.domain;
 
 import kitchenpos.common.domain.Quantity;
-import kitchenpos.product.domain.Product;
 import org.springframework.util.Assert;
 
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,7 +13,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import java.math.BigDecimal;
 
 @Entity
 public class MenuProduct {
@@ -25,9 +24,8 @@ public class MenuProduct {
     @JoinColumn(name = "menu_id", foreignKey = @ForeignKey(name = "fk_menu_product_menu"))
     private Menu menu;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id", foreignKey = @ForeignKey(name = "fk_menu_product_product"))
-    private Product product;
+    @Column
+    private Long productId;
 
     @Embedded
     private Quantity quantity;
@@ -35,28 +33,22 @@ public class MenuProduct {
     protected MenuProduct() {
     }
 
-    private MenuProduct(Long seq, Menu menu, Product product, Quantity quantity) {
-        Assert.notNull(product, "상품은 비어있을 수 없습니다.");
+    private MenuProduct(Long seq, Menu menu, Long productId, Quantity quantity) {
+        Assert.notNull(productId, "상품 ID는 비어있을 수 없습니다.");
         Assert.notNull(quantity, "수량은 비어있을 수 없습니다.");
 
         this.seq = seq;
         this.menu = menu;
-        this.product = product;
+        this.productId = productId;
         this.quantity = quantity;
     }
 
-    public static MenuProduct of(Product product, Quantity quantity) {
-        return new MenuProduct(null, null, product, quantity);
+    public static MenuProduct of(Long productId, Long quantity) {
+        return new MenuProduct(null, null, productId, Quantity.of(quantity));
     }
 
     public void updateMenu(Menu menu) {
         this.menu = menu;
-    }
-
-    public BigDecimal getOriginalPrice() {
-        BigDecimal productPrice = product.getPrice();
-
-        return productPrice.multiply(BigDecimal.valueOf(quantity.getQuantity()));
     }
 
     public Long getSeq() {
@@ -68,7 +60,7 @@ public class MenuProduct {
     }
 
     public Long getProductId() {
-        return product.getId();
+        return productId;
     }
 
     public Long getQuantity() {

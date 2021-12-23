@@ -7,6 +7,8 @@ import javax.persistence.Embeddable;
 
 @Embeddable
 public class NumberOfGuests {
+    private static final int ZERO = 0;
+
     @Column
     private int numberOfGuests;
 
@@ -20,7 +22,7 @@ public class NumberOfGuests {
     }
 
     private boolean isGreaterThanZero(int numberOfGuests) {
-        return numberOfGuests >= 0;
+        return numberOfGuests >= ZERO;
     }
 
     public static NumberOfGuests of(int numberOfGuests) {

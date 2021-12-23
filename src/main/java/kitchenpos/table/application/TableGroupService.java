@@ -14,6 +14,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -59,8 +60,13 @@ public class TableGroupService {
         TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
                 .orElseThrow(IllegalAccessError::new);
 
-        if (orderRepository.existsByOrderTableInAndOrderStatusIn(
-                tableGroup.getOrderTables(), Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
+        List<Long> orderTableIds = tableGroup.getOrderTables()
+                .stream()
+                .map(OrderTable::getId)
+                .collect(Collectors.toList());
+
+        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
+                orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
             throw new IllegalArgumentException();
         }
 

@@ -1,17 +1,17 @@
-package kitchenpos.menu.acceptance;
+package kitchenpos.menu_group.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.menu.dto.MenuGroupRequest;
-import kitchenpos.menu.dto.MenuGroupResponse;
+import kitchenpos.menu_group.dto.MenuGroupRequest;
+import kitchenpos.menu_group.dto.MenuGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static kitchenpos.menu.acceptance.step.MenuGroupAcceptStep.메뉴_그룹_등록_요청;
-import static kitchenpos.menu.acceptance.step.MenuGroupAcceptStep.메뉴_그룹_등록_확인;
-import static kitchenpos.menu.acceptance.step.MenuGroupAcceptStep.메뉴_그룹_목록_조회_요청;
-import static kitchenpos.menu.acceptance.step.MenuGroupAcceptStep.메뉴_그룹_조회_확인;
+import static kitchenpos.menu_group.acceptance.step.MenuGroupAcceptStep.메뉴_그룹_등록_요청;
+import static kitchenpos.menu_group.acceptance.step.MenuGroupAcceptStep.메뉴_그룹_등록_확인;
+import static kitchenpos.menu_group.acceptance.step.MenuGroupAcceptStep.메뉴_그룹_목록_조회_요청;
+import static kitchenpos.menu_group.acceptance.step.MenuGroupAcceptStep.메뉴_그룹_조회_확인;
 
 @DisplayName("메뉴 그룹 인수테스트")
 class MenuGroupAcceptTest extends AcceptanceTest {
