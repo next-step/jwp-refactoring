@@ -15,6 +15,9 @@ public class OrderResponse {
     private LocalDateTime orderedTime;
     private List<OrderLineItemResponse> orderLineItems;
 
+    private OrderResponse() {
+    }
+
     public OrderResponse(Long id, OrderTableResponse orderTable,
         OrderStatus orderStatus, java.time.LocalDateTime orderedTime,
         List<OrderLineItemResponse> orderLineItems) {

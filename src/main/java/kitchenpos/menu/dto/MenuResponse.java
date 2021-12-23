@@ -13,7 +13,7 @@ public class MenuResponse {
     private MenuGroupResponse menuGroup;
     private List<MenuProductResponse> menuProducts;
 
-    public MenuResponse() {
+    private MenuResponse() {
     }
 
     public MenuResponse(Long id, String name, BigDecimal price,
