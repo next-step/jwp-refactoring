@@ -75,7 +75,7 @@ class TableAcceptanceTest extends AcceptanceTest {
         TableAcceptanceTestHelper.테이블_손님_명수_변경_실패(response);
     }
 
-    @DisplayName("주문 테이블이 없을 시 변경 불가능")
+    @DisplayName("주문 테이블이 비어있을 시 변경 불가능")
     @Test
     void modifyNumberOfGuestFailWhenTableNotExists() {
         // given
