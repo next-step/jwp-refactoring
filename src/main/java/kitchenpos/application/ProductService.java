@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import kitchenpos.common.exceptions.NoRequiredInputPriceException;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
 import org.springframework.stereotype.Service;
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
+@Transactional(readOnly = true)
 public class ProductService {
     private final ProductDao productDao;
 
@@ -22,7 +24,7 @@ public class ProductService {
         final BigDecimal price = product.getPrice();
 
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException();
+            throw new NoRequiredInputPriceException();
         }
 
         return productDao.save(product);

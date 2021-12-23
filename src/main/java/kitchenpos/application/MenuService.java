@@ -1,5 +1,9 @@
 package kitchenpos.application;
 
+import kitchenpos.common.exceptions.NoRequiredInputPriceException;
+import kitchenpos.common.exceptions.NotFoundException;
+import kitchenpos.common.exceptions.NotExistRegisterException;
+import kitchenpos.common.exceptions.PriceGreaterThenSumException;
 import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
@@ -16,6 +20,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
+@Transactional(readOnly = true)
 public class MenuService {
     private final MenuDao menuDao;
     private final MenuGroupDao menuGroupDao;
@@ -39,11 +44,11 @@ public class MenuService {
         final BigDecimal price = menu.getPrice();
 
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException();
+            throw new NoRequiredInputPriceException();
         }
 
         if (!menuGroupDao.existsById(menu.getMenuGroupId())) {
-            throw new IllegalArgumentException();
+            throw new NotExistRegisterException();
         }
 
         final List<MenuProduct> menuProducts = menu.getMenuProducts();
@@ -51,12 +56,12 @@ public class MenuService {
         BigDecimal sum = BigDecimal.ZERO;
         for (final MenuProduct menuProduct : menuProducts) {
             final Product product = productDao.findById(menuProduct.getProductId())
-                    .orElseThrow(IllegalArgumentException::new);
+                    .orElseThrow(NotFoundException::new);
             sum = sum.add(product.getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
         }
 
         if (price.compareTo(sum) > 0) {
-            throw new IllegalArgumentException();
+            throw new PriceGreaterThenSumException();
         }
 
         final Menu savedMenu = menuDao.save(menu);
