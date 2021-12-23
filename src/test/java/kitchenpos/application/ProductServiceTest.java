@@ -2,6 +2,7 @@ package kitchenpos.application;
 
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,11 +27,20 @@ class ProductServiceTest {
     @InjectMocks
     ProductService productService;
 
-    @DisplayName("상품을 생성한다.")
+    private Product product;
+
+    private Product product2;
+
+    @BeforeEach
+    void setUp() {
+        product = Product.of(1L, "후라이드치킨", new BigDecimal(16000.00));
+        product2 = Product.of(2L, "양념치킨", new BigDecimal(16000.00));
+    }
+
+    @DisplayName("상품을 등록한다.")
     @Test
     void create() {
         // given
-        Product product = Product.of(1L, "후라이드치킨", new BigDecimal(16000.00));
         when(productDao.save(product)).thenReturn(product);
 
         // when
@@ -40,13 +50,12 @@ class ProductServiceTest {
         assertThat(product.getId()).isEqualTo(expected.getId());
     }
 
-    @DisplayName("상품 가격이 없거나 음수인 상품을 생성한다.")
+    @DisplayName("상품 가격이 없거나 음수인 상품은 등록할 수 없다.")
     @Test
     void create2() {
         // given
         Product 가격_없는_상품 = Product.of(1L, "후라이드치킨", null);
         Product 가격_음수_상품 = Product.of(1L, "후라이드치킨", new BigDecimal(-16000.00));
-
 
         //then
         assertAll(
@@ -63,8 +72,6 @@ class ProductServiceTest {
     @Test
     void list() {
         // given
-        Product product = Product.of(1L, "후라이드치킨", new BigDecimal(16000.00));
-        Product product2 = Product.of(2L, "양념치킨", new BigDecimal(16000.00));
         List<Product> actual = Arrays.asList(product, product2);
         when(productDao.findAll()).thenReturn(actual);
 
