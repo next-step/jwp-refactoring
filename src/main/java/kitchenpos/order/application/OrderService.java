@@ -3,10 +3,10 @@ package kitchenpos.order.application;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.*;
-import kitchenpos.order.domain.dto.OrderLineItemRequest;
-import kitchenpos.order.domain.dto.OrderRequest;
-import kitchenpos.order.domain.dto.OrderResponse;
-import kitchenpos.order.domain.dto.OrderStatusRequest;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.order.dto.OrderStatusRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

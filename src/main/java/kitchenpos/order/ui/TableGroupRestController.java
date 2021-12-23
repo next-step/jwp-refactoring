@@ -1,8 +1,8 @@
 package kitchenpos.order.ui;
 
 import kitchenpos.order.application.TableGroupService;
-import kitchenpos.order.domain.dto.TableGroupRequest;
-import kitchenpos.order.domain.dto.TableGroupResponse;
+import kitchenpos.order.dto.TableGroupRequest;
+import kitchenpos.order.dto.TableGroupResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;

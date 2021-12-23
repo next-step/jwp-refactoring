@@ -1,8 +1,8 @@
 package kitchenpos.order.application;
 
 import kitchenpos.order.domain.*;
-import kitchenpos.order.domain.dto.TableGroupRequest;
-import kitchenpos.order.domain.dto.TableGroupResponse;
+import kitchenpos.order.dto.TableGroupRequest;
+import kitchenpos.order.dto.TableGroupResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

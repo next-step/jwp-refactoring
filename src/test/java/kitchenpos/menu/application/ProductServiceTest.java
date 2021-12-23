@@ -2,8 +2,8 @@ package kitchenpos.menu.application;
 
 import kitchenpos.menu.domain.Product;
 import kitchenpos.menu.domain.ProductRepository;
-import kitchenpos.menu.domain.dto.ProductRequest;
-import kitchenpos.menu.domain.dto.ProductResponse;
+import kitchenpos.menu.dto.ProductRequest;
+import kitchenpos.menu.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

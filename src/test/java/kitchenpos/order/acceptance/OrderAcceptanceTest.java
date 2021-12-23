@@ -4,8 +4,8 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.acceptance.AcceptanceTest;
 import kitchenpos.acceptance.RestAssuredApi;
-import kitchenpos.menu.domain.dto.*;
-import kitchenpos.order.domain.dto.*;
+import kitchenpos.menu.dto.*;
+import kitchenpos.order.dto.*;
 import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -23,8 +23,8 @@ import static kitchenpos.menu.acceptance.ProductAcceptanceTest.상품_등록_요
 import static kitchenpos.order.acceptance.OrderTableAcceptanceTest.주문_테이블_등록_요청;
 import static kitchenpos.order.domain.OrderStatus.COMPLETION;
 import static kitchenpos.order.domain.OrderStatus.MEAL;
-import static kitchenpos.order.domain.dto.OrderStatusRequest.completion;
-import static kitchenpos.order.domain.dto.OrderStatusRequest.meal;
+import static kitchenpos.order.dto.OrderStatusRequest.completion;
+import static kitchenpos.order.dto.OrderStatusRequest.meal;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("주문 인수 테스트")

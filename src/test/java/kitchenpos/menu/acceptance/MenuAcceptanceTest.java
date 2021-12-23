@@ -4,7 +4,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.acceptance.AcceptanceTest;
 import kitchenpos.acceptance.RestAssuredApi;
-import kitchenpos.menu.domain.dto.*;
+import kitchenpos.menu.dto.*;
 import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

@@ -1,8 +1,8 @@
 package kitchenpos.order.application;
 
 import kitchenpos.order.domain.*;
-import kitchenpos.order.domain.dto.TableGroupRequest;
-import kitchenpos.order.domain.dto.TableGroupResponse;
+import kitchenpos.order.dto.TableGroupRequest;
+import kitchenpos.order.dto.TableGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
