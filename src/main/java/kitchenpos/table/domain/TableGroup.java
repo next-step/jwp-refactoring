@@ -28,10 +28,6 @@ public class TableGroup {
     public TableGroup() {
     }
 
-    public TableGroup(final List<OrderTable> orderTables) {
-        this.orderTables = OrderTables.of(orderTables);
-    }
-
     public TableGroup(final Long id, final List<OrderTable> orderTables) {
         this.id = id;
         this.orderTables = OrderTables.of(orderTables);
@@ -49,12 +45,16 @@ public class TableGroup {
         return orderTables;
     }
 
-    public void setOrderTables(final List<OrderTable> orderTables) {
-        this.orderTables = OrderTables.of(orderTables);
-    }
-
     public List<Long> getOrderTableIds() {
         return orderTables.getOrderTableIds();
+    }
+
+    public void groupTables(final List<OrderTable> orderTables) {
+        orderTables.forEach(orderTable -> this.orderTables.addOrderTable(this, orderTable));
+    }
+
+    public void ungroup() {
+        orderTables.ungroup();
     }
 }
 

@@ -38,6 +38,17 @@ public class OrderTables {
             .collect(Collectors.toList());
     }
 
+    public void addOrderTable(final TableGroup tableGroup, final OrderTable orderTable) {
+        orderTable.makeGroup(tableGroup);
+        orderTables.add(orderTable);
+    }
+
+    public void ungroup() {
+        for (OrderTable orderTable : orderTables) {
+            orderTable.ungroup();
+        }
+    }
+
     private void validateGreaterOrEqualsMinimum(List<OrderTable> orderTables) {
         if (orderTables.size() < MINIMUM_TABLES) {
             throw new IllegalArgumentException(

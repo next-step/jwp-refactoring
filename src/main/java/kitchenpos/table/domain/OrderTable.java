@@ -64,15 +64,13 @@ public class OrderTable {
         return tableGroup;
     }
 
-    public void setTableGroup(final TableGroup tableGroup) {
-        this.tableGroup = tableGroup;
-    }
-
     public NumberOfGuests getNumberOfGuests() {
         return numberOfGuests;
     }
 
-    public void setNumberOfGuests(final int numberOfGuests) {
+    public void changeNumberOfGuests(final int numberOfGuests) {
+        validateTableNotEmpty();
+
         this.numberOfGuests = NumberOfGuests.of(numberOfGuests);
     }
 
@@ -80,23 +78,57 @@ public class OrderTable {
         return empty.isEmpty();
     }
 
-    public void setEmpty(final boolean empty) {
-        this.empty = Empty.of(empty);
-    }
-
     public void changeEmpty() {
-        if (Objects.nonNull(tableGroup)) {
-            throw new IllegalArgumentException("단체로 지정된 테이블은 빈 테이블로 변경할 수 없습니다.");
-        }
+        validateHasNotTableGroup();
 
         this.empty = Empty.of(true);
     }
 
-    public void changeNumberOfGuests(final int numberOfGuests) {
-        if(empty.isEmpty()) {
+    public void makeGroup(final TableGroup tableGroup) {
+        validateGroupingPossible();
+
+        this.tableGroup = tableGroup;
+        this.empty = Empty.of(false);
+    }
+
+    public void ungroup() {
+        validateUngroupPossible();
+
+        this.tableGroup = null;
+    }
+
+    private void validateUngroupPossible() {
+        if (Objects.isNull(tableGroup)) {
+            throw new IllegalArgumentException("단체로 지정되어 있지 않습니다.");
+        }
+    }
+
+    private void validateGroupingPossible() {
+        validateTableGroupIsNull();
+        validateTableIsEmpty();
+    }
+
+    private void validateTableGroupIsNull() {
+        if (Objects.nonNull(this.tableGroup)) {
+            throw new IllegalArgumentException("이미 단체로 지정되어 있습니다.");
+        }
+    }
+
+    private void validateTableIsEmpty() {
+        if (!empty.isEmpty()) {
+            throw new IllegalArgumentException("테이블이 비어 있지 않습니다.");
+        }
+    }
+
+    private void validateHasNotTableGroup() {
+        if (Objects.nonNull(tableGroup)) {
+            throw new IllegalArgumentException("단체로 지정된 테이블은 빈 테이블로 변경할 수 없습니다.");
+        }
+    }
+
+    private void validateTableNotEmpty() {
+        if (empty.isEmpty()) {
             throw new IllegalArgumentException("빈 테이블의 손님 수를 변경할 수 없습니다.");
         }
-
-        this.numberOfGuests = NumberOfGuests.of(numberOfGuests);
     }
 }
