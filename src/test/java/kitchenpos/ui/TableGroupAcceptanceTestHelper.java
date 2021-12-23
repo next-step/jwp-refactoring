@@ -50,4 +50,8 @@ public class TableGroupAcceptanceTestHelper {
     public static void 테이블_그룹_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
+
+    public static void 테이블_그룹_삭제_실패(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+    }
 }

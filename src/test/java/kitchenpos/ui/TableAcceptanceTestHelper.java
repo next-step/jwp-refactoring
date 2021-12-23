@@ -96,4 +96,8 @@ public class TableAcceptanceTestHelper {
     public static void 테이블_손님_명수_변경_실패(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
+
+    public static void 테이블_빈_테이블_여부_변경_실패(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+    }
 }

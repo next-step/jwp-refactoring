@@ -8,6 +8,8 @@ import java.util.Map;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -104,8 +106,26 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
     }
 
     @DisplayName("요리 중이나 식사 중인 주문 테이블을 포함하고 있다면 삭제 불가능")
-    @Test
-    void deleteTableGroupFailWhenContainsMealOrCooking() {
-        // TODO
+    @ParameterizedTest
+    @ValueSource(strings = {"MEAL", "COOKING"})
+    void deleteTableGroupFailWhenContainsMealOrCooking(String orderStatus) {
+        // given
+        List<Map<String, Integer>> tableIds = Arrays.asList(Collections.singletonMap("id", 1),
+            Collections.singletonMap("id", 2));
+        TableGroupAcceptanceTestHelper.테이블_그룹_생성되어_있음(tableIds);
+
+        TableAcceptanceTestHelper.테이블_빈_테이블_여부_변경되어_있음(1L, "false");
+
+        Map<String, Integer> orderLineItem = new HashMap<>();
+        orderLineItem.put("menuId", 1);
+        orderLineItem.put("quantity", 1);
+        OrderAcceptanceTestHelper.주문_생성되어_있음(Arrays.asList(orderLineItem), 1);
+        OrderAcceptanceTestHelper.주문_상태_변경되어_있음(1, orderStatus);
+
+        // when
+        ExtractableResponse<Response> deleteResponse = TableGroupAcceptanceTestHelper.테이블_그룹_삭제(1L);
+
+        // then
+        TableGroupAcceptanceTestHelper.테이블_그룹_삭제_실패(deleteResponse);
     }
 }
