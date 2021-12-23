@@ -18,7 +18,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import kitchenpos.ordertable.domain.OrderTable;
 
-@Entity
+@Entity(name = "orders")
 public class Order {
 
     private static final String ERROR_MESSAGE_EMPTY_TABLE_CANNOT_ORDER = "주문종료 상태인 테이블은 주문할 수 없습니다.";
