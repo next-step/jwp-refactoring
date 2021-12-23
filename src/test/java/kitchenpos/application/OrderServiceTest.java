@@ -1,9 +1,9 @@
 package kitchenpos.application;
 
+import static java.util.Collections.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.math.BigDecimal;
-import java.util.Collections;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -12,13 +12,18 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import kitchenpos.IntegrationServiceTest;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.Product;
+import kitchenpos.dto.MenuGroupRequest;
+import kitchenpos.dto.MenuGroupResponse;
+import kitchenpos.dto.MenuRequest;
+import kitchenpos.dto.MenuResponse;
+import kitchenpos.dto.OrderLineItemRequest;
+import kitchenpos.dto.OrderRequest;
+import kitchenpos.dto.OrderResponse;
+import kitchenpos.dto.OrderTableRequest;
+import kitchenpos.dto.OrderTableResponse;
+import kitchenpos.dto.ProductRequest;
+import kitchenpos.dto.ProductResponse;
 
 class OrderServiceTest extends IntegrationServiceTest {
     @Autowired
@@ -32,8 +37,8 @@ class OrderServiceTest extends IntegrationServiceTest {
     @Autowired
     private TableService tableService;
 
-    private static Menu savedMenu;
-    private static OrderTable savedTable;
+    private static MenuResponse savedMenu;
+    private static OrderTableResponse savedTable;
 
     @Override
     @BeforeEach
@@ -41,37 +46,37 @@ class OrderServiceTest extends IntegrationServiceTest {
         super.setUp();
 
         // given
-        final Product product = ProductServiceTest.makeProduct("후라이드", new BigDecimal(16000));
-        final Product savedProduct = productService.create(product);
+        final ProductRequest product = ProductServiceTest.makeProductRequest("후라이드", new BigDecimal(16000));
+        final ProductResponse savedProduct = productService.create(product);
 
         // given
-        final MenuGroup menuGroup = MenuGroupServiceTest.makeMenuGroup("한마리메뉴");
-        final MenuGroup savedMenuGroup = menuGroupService.create(menuGroup);
+        final MenuGroupRequest menuGroup = MenuGroupServiceTest.makeMenuGroupRequest("한마리메뉴");
+        final MenuGroupResponse savedMenuGroup = menuGroupService.create(menuGroup);
 
         // given
-        final Menu menu =
-            MenuServiceTest.makeMenu("후라이드치킨", new BigDecimal(16000), savedMenuGroup.getId(), savedProduct.getId(), 1);
+        final MenuRequest menu =
+            MenuServiceTest.makeMenuRequest("후라이드치킨", new BigDecimal(16000), savedMenuGroup.getId(),
+                savedProduct.getId(), 1);
         savedMenu = menuService.create(menu);
 
-        final OrderTable orderTable = TableServiceTest.makeOrderTable(1, false);
+        final OrderTableRequest orderTable = TableServiceTest.makeOrderTableRequest(1, false);
         savedTable = tableService.create(orderTable);
     }
 
     @Test
     void create() {
         // given
-        final Order order = makeOrder(savedTable.getId(), savedMenu.getId(), 1);
+        final OrderRequest order = makeCookingOrderRequest(savedTable.getId(), savedMenu.getId(), 1);
 
         // when
-        final Order savedOrder = orderService.create(order);
+        final OrderResponse savedOrder = orderService.create(order);
 
         // then
         assertThat(savedOrder.getId()).isNotNull();
         assertThat(savedOrder.getOrderTableId()).isEqualTo(savedTable.getId());
-        assertThat(savedOrder.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
+        assertThat(savedOrder.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
         assertThat(savedOrder.getOrderLineItems()).isNotEmpty();
         assertThat(savedOrder.getOrderLineItems().get(0).getSeq()).isNotNull();
-        assertThat(savedOrder.getOrderLineItems().get(0).getOrderId()).isEqualTo(savedOrder.getId());
         assertThat(savedOrder.getOrderLineItems().get(0).getMenuId()).isEqualTo(savedMenu.getId());
         assertThat(savedOrder.getOrderLineItems().get(0).getQuantity()).isEqualTo(1);
     }
@@ -80,9 +85,7 @@ class OrderServiceTest extends IntegrationServiceTest {
     @Test
     void createByEmptyOrderLineItems() {
         // given
-        final Order order = new Order();
-        order.setOrderTableId(savedTable.getId());
-        order.setOrderLineItems(Collections.emptyList());
+        final OrderRequest order = new OrderRequest(savedTable.getId(), OrderStatus.COOKING, emptyList());
 
         // when, then
         assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(order));
@@ -92,8 +95,9 @@ class OrderServiceTest extends IntegrationServiceTest {
     @Test
     void createByEmptyTable() {
         // given
-        final OrderTable emptyTable = TableServiceTest.makeOrderTable(1, true);
-        final Order order = makeOrder(emptyTable.getId(), savedMenu.getId(), 1);
+        final OrderTableRequest request = TableServiceTest.makeOrderTableRequest(1, true);
+        final OrderTableResponse emptyTable = tableService.create(request);
+        final OrderRequest order = makeCookingOrderRequest(emptyTable.getId(), savedMenu.getId(), 1);
 
         // when, then
         assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(order));
@@ -102,20 +106,19 @@ class OrderServiceTest extends IntegrationServiceTest {
     @Test
     void list() {
         // given
-        final Order order = makeOrder(savedTable.getId(), savedMenu.getId(), 1);
-        final Order savedOrder = orderService.create(order);
+        final OrderRequest order = makeCookingOrderRequest(savedTable.getId(), savedMenu.getId(), 1);
+        orderService.create(order);
 
         // when
-        final List<Order> orders = orderService.list();
+        final List<OrderResponse> orders = orderService.list();
 
         // then
         assertThat(orders).isNotEmpty();
         assertThat(orders.get(0).getId()).isNotNull();
         assertThat(orders.get(0).getOrderTableId()).isEqualTo(savedTable.getId());
-        assertThat(orders.get(0).getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
+        assertThat(orders.get(0).getOrderStatus()).isEqualTo(OrderStatus.COOKING);
         assertThat(orders.get(0).getOrderLineItems()).isNotEmpty();
         assertThat(orders.get(0).getOrderLineItems().get(0).getSeq()).isNotNull();
-        assertThat(orders.get(0).getOrderLineItems().get(0).getOrderId()).isEqualTo(savedOrder.getId());
         assertThat(orders.get(0).getOrderLineItems().get(0).getMenuId()).isEqualTo(savedMenu.getId());
         assertThat(orders.get(0).getOrderLineItems().get(0).getQuantity()).isEqualTo(1);
     }
@@ -123,43 +126,39 @@ class OrderServiceTest extends IntegrationServiceTest {
     @Test
     void changeOrderStatus() {
         // given
-        final Order order = makeOrder(savedTable.getId(), savedMenu.getId(), 1);
-        final Order savedOrder = orderService.create(order);
+        final OrderRequest order = makeCookingOrderRequest(savedTable.getId(), savedMenu.getId(), 1);
+        final OrderResponse savedOrder = orderService.create(order);
+        final OrderRequest updateRequest = makeOrderRequest(savedTable.getId(), OrderStatus.MEAL, savedMenu.getId(), 1);
 
         // when
-        savedOrder.setOrderStatus(OrderStatus.MEAL.name());
-        final Order changedOrder = orderService.changeOrderStatus(savedOrder.getId(), savedOrder);
+        final OrderResponse changedOrder = orderService.changeOrderStatus(savedOrder.getId(), updateRequest);
 
         // then
-        assertThat(changedOrder.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name());
+        assertThat(changedOrder.getOrderStatus()).isEqualTo(OrderStatus.MEAL);
     }
 
     @DisplayName("계산 완료된 주문에 대해 주문 상태를 변경하려고 하면 예외 발생")
     @Test
     void changeCompletedOrderStatus() {
         // given
-        final Order order = makeOrder(savedTable.getId(), savedMenu.getId(), 1);
-        final Order savedOrder = orderService.create(order);
-        savedOrder.setOrderStatus(OrderStatus.COMPLETION.name());
-        orderService.changeOrderStatus(savedOrder.getId(), savedOrder);
+        final OrderRequest order = makeOrderRequest(savedTable.getId(), OrderStatus.COMPLETION, savedMenu.getId(), 1);
+        final OrderResponse savedOrder = orderService.create(order);
 
         // when, then
         assertThatIllegalArgumentException().isThrownBy(() -> {
-            savedOrder.setOrderStatus(OrderStatus.MEAL.name());
-            orderService.changeOrderStatus(savedOrder.getId(), savedOrder);
+            final OrderRequest request =
+                makeOrderRequest(savedTable.getId(), OrderStatus.MEAL, savedMenu.getId(), 1);
+            orderService.changeOrderStatus(savedOrder.getId(), request);
         });
     }
 
-    public static Order makeOrder(final Long tableId, final Long menuId, final int quantity) {
-        final Order order = new Order();
-        order.setOrderTableId(tableId);
+    public static OrderRequest makeCookingOrderRequest(final Long tableId, final Long menuId, final int quantity) {
+        return makeOrderRequest(tableId, null, menuId, quantity);
+    }
 
-        final OrderLineItem orderLineItem = new OrderLineItem();
-        orderLineItem.setMenuId(menuId);
-        orderLineItem.setQuantity(quantity);
-
-        order.setOrderLineItems(Collections.singletonList(orderLineItem));
-
-        return order;
+    public static OrderRequest makeOrderRequest(
+        final Long tableId, final OrderStatus orderStatus, final Long menuId, final int quantity
+    ) {
+        return new OrderRequest(tableId, orderStatus, singletonList(new OrderLineItemRequest(menuId, quantity)));
     }
 }

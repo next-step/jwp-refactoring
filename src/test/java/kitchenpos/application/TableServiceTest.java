@@ -3,6 +3,7 @@ package kitchenpos.application;
 import static org.assertj.core.api.Assertions.*;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
@@ -12,13 +13,17 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import kitchenpos.IntegrationServiceTest;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.Product;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.dto.MenuGroupRequest;
+import kitchenpos.dto.MenuGroupResponse;
+import kitchenpos.dto.MenuRequest;
+import kitchenpos.dto.MenuResponse;
+import kitchenpos.dto.OrderRequest;
+import kitchenpos.dto.OrderTableRequest;
+import kitchenpos.dto.OrderTableResponse;
+import kitchenpos.dto.ProductRequest;
+import kitchenpos.dto.ProductResponse;
+import kitchenpos.dto.TableGroupRequest;
 
 class TableServiceTest extends IntegrationServiceTest {
     @Autowired
@@ -37,10 +42,10 @@ class TableServiceTest extends IntegrationServiceTest {
     @Test
     void create() {
         // given
-        final OrderTable orderTable = makeOrderTable(1, false);
+        final OrderTableRequest orderTable = makeOrderTableRequest(1, false);
 
         // when
-        final OrderTable savedTable = tableService.create(orderTable);
+        final OrderTableResponse savedTable = tableService.create(orderTable);
 
         // then
         assertThat(savedTable.getId()).isNotNull();
@@ -52,11 +57,11 @@ class TableServiceTest extends IntegrationServiceTest {
     @Test
     void list() {
         // given
-        final OrderTable orderTable = makeOrderTable(1, false);
+        final OrderTableRequest orderTable = makeOrderTableRequest(1, false);
         tableService.create(orderTable);
 
         // when
-        final List<OrderTable> orderTables = tableService.list();
+        final List<OrderTableResponse> orderTables = tableService.list();
 
         // then
         assertThat(orderTables).isNotEmpty();
@@ -69,12 +74,12 @@ class TableServiceTest extends IntegrationServiceTest {
     @Test
     void changeEmpty() {
         // given
-        final OrderTable orderTable = makeOrderTable(1, false);
-        final OrderTable savedTable = tableService.create(orderTable);
+        final OrderTableRequest orderTable = makeOrderTableRequest(1, false);
+        final OrderTableResponse savedTable = tableService.create(orderTable);
+        final OrderTableRequest emptyTable = makeOrderTableRequest(1, true);
 
         // when
-        savedTable.setEmpty(true);
-        final OrderTable changedTable = tableService.changeEmpty(savedTable.getId(), savedTable);
+        final OrderTableResponse changedTable = tableService.changeEmpty(savedTable.getId(), emptyTable);
 
         // then
         assertThat(changedTable.isEmpty()).isTrue();
@@ -84,18 +89,17 @@ class TableServiceTest extends IntegrationServiceTest {
     @Test
     void changeTableInGroup() {
         // given
-        final OrderTable orderTable1 = makeOrderTable(1, true);
-        final OrderTable savedTable1 = tableService.create(orderTable1);
-        final OrderTable orderTable2 = makeOrderTable(1, true);
-        final OrderTable savedTable2 = tableService.create(orderTable2);
-        final TableGroup tableGroup = TableGroupServiceTest.makeTargetGroup(savedTable1, savedTable2);
-        tableGroupService.create(tableGroup);
+        final OrderTableRequest orderTable1 = makeOrderTableRequest(1, true);
+        final OrderTableResponse savedTable1 = tableService.create(orderTable1);
+        final OrderTableRequest orderTable2 = makeOrderTableRequest(1, true);
+        final OrderTableResponse savedTable2 = tableService.create(orderTable2);
+        final List<Long> orderTableIds = Arrays.asList(savedTable1.getId(), savedTable2.getId());
+        final TableGroupRequest tableGroupRequest = TableGroupServiceTest.makeTableGroupRequest(orderTableIds);
+        tableGroupService.create(tableGroupRequest);
 
         // when, then
-        assertThatIllegalArgumentException().isThrownBy(() -> {
-            savedTable1.setEmpty(true);
-            tableService.changeEmpty(savedTable1.getId(), savedTable1);
-        });
+        assertThatIllegalArgumentException()
+            .isThrownBy(() -> tableService.changeEmpty(savedTable1.getId(), makeOrderTableRequest(1, true)));
     }
 
     @DisplayName("테이블에 속한 주문 상태가 COOKING 이거나 MEAL인 경우에 상태를 변경하려고 하면 예외 발생")
@@ -103,41 +107,38 @@ class TableServiceTest extends IntegrationServiceTest {
     @ValueSource(strings = {"COOKING", "MEAL"})
     void changeTableInInvalidStatus(final OrderStatus orderStatus) {
         // given
-        final OrderTable orderTable = makeOrderTable(1, false);
-        final OrderTable savedTable = tableService.create(orderTable);
+        final OrderTableRequest orderTable = makeOrderTableRequest(1, false);
+        final OrderTableResponse savedTable = tableService.create(orderTable);
 
-        final Product product = ProductServiceTest.makeProduct("후라이드", new BigDecimal(16000));
-        final Product savedProduct = productService.create(product);
+        final ProductRequest product = ProductServiceTest.makeProductRequest("후라이드", new BigDecimal(16000));
+        final ProductResponse savedProduct = productService.create(product);
 
-        final MenuGroup menuGroup = MenuGroupServiceTest.makeMenuGroup("한마리메뉴");
-        final MenuGroup savedMenuGroup = menuGroupService.create(menuGroup);
+        final MenuGroupRequest menuGroup = MenuGroupServiceTest.makeMenuGroupRequest("한마리메뉴");
+        final MenuGroupResponse savedMenuGroup = menuGroupService.create(menuGroup);
 
-        final Menu menu =
-            MenuServiceTest.makeMenu("후라이드치킨", new BigDecimal(16000), savedMenuGroup.getId(), savedProduct.getId(), 1);
-        final Menu savedMenu = menuService.create(menu);
+        final MenuRequest menu =
+            MenuServiceTest.makeMenuRequest("후라이드치킨", new BigDecimal(16000), savedMenuGroup.getId(),
+                savedProduct.getId(), 1);
+        final MenuResponse savedMenu = menuService.create(menu);
 
-        final Order order = OrderServiceTest.makeOrder(savedTable.getId(), savedMenu.getId(), 1);
-        final Order savedOrder = orderService.create(order);
-
-        savedOrder.setOrderStatus(orderStatus.name());
-        orderService.changeOrderStatus(savedOrder.getId(), savedOrder);
+        final OrderRequest order =
+            OrderServiceTest.makeOrderRequest(savedTable.getId(), orderStatus, savedMenu.getId(), 1);
+        orderService.create(order);
 
         // when, then
-        assertThatIllegalArgumentException().isThrownBy(() -> {
-            savedTable.setEmpty(true);
-            tableService.changeEmpty(savedTable.getId(), savedTable);
-        });
+        assertThatIllegalArgumentException()
+            .isThrownBy(() -> tableService.changeEmpty(savedTable.getId(), makeOrderTableRequest(1, true)));
     }
 
     @Test
     void changeNumberOfGuests() {
         // given
-        final OrderTable orderTable = makeOrderTable(1, false);
-        final OrderTable savedTable = tableService.create(orderTable);
+        final OrderTableRequest orderTable = makeOrderTableRequest(1, false);
+        final OrderTableResponse savedTable = tableService.create(orderTable);
 
         // when
-        savedTable.setNumberOfGuests(2);
-        final OrderTable changedTable = tableService.changeNumberOfGuests(savedTable.getId(), savedTable);
+        final OrderTableResponse changedTable =
+            tableService.changeNumberOfGuests(savedTable.getId(), makeOrderTableRequest(2, false));
 
         // then
         assertThat(changedTable.getNumberOfGuests()).isEqualTo(2);
@@ -147,34 +148,27 @@ class TableServiceTest extends IntegrationServiceTest {
     @Test
     void changeNumberOfGuestsByNegative() {
         // given
-        final OrderTable orderTable = makeOrderTable(1, false);
-        final OrderTable savedTable = tableService.create(orderTable);
+        final OrderTableRequest orderTable = makeOrderTableRequest(1, false);
+        final OrderTableResponse savedTable = tableService.create(orderTable);
 
         // when, then
-        assertThatIllegalArgumentException().isThrownBy(() -> {
-            savedTable.setNumberOfGuests(-1);
-            tableService.changeNumberOfGuests(savedTable.getId(), savedTable);
-        });
+        assertThatIllegalArgumentException()
+            .isThrownBy(() -> tableService.changeNumberOfGuests(savedTable.getId(), makeOrderTableRequest(-1, false)));
     }
 
     @DisplayName("빈 테이블의 방문한 손님 수를 변경하려고 할 때 예외 발생")
     @Test
     void changeNumberOfGuestsInEmptyTable() {
         // given
-        final OrderTable orderTable = makeOrderTable(1, true);
-        final OrderTable savedTable = tableService.create(orderTable);
+        final OrderTableRequest orderTable = makeOrderTableRequest(1, true);
+        final OrderTableResponse savedTable = tableService.create(orderTable);
 
         // when, then
-        assertThatIllegalArgumentException().isThrownBy(() -> {
-            savedTable.setNumberOfGuests(2);
-            tableService.changeNumberOfGuests(savedTable.getId(), savedTable);
-        });
+        assertThatIllegalArgumentException()
+            .isThrownBy(() -> tableService.changeNumberOfGuests(savedTable.getId(), makeOrderTableRequest(2, true)));
     }
 
-    public static OrderTable makeOrderTable(final int numberOfGuests, final boolean empty) {
-        final OrderTable orderTable = new OrderTable();
-        orderTable.setNumberOfGuests(numberOfGuests);
-        orderTable.setEmpty(empty);
-        return orderTable;
+    public static OrderTableRequest makeOrderTableRequest(final int numberOfGuests, final boolean empty) {
+        return new OrderTableRequest(numberOfGuests, empty);
     }
 }

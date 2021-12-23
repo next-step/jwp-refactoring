@@ -17,13 +17,18 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import kitchenpos.IntegrationServiceTest;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.Product;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.dto.MenuGroupRequest;
+import kitchenpos.dto.MenuGroupResponse;
+import kitchenpos.dto.MenuRequest;
+import kitchenpos.dto.MenuResponse;
+import kitchenpos.dto.OrderRequest;
+import kitchenpos.dto.OrderTableRequest;
+import kitchenpos.dto.OrderTableResponse;
+import kitchenpos.dto.ProductRequest;
+import kitchenpos.dto.ProductResponse;
+import kitchenpos.dto.TableGroupRequest;
+import kitchenpos.dto.TableGroupResponse;
 
 class TableGroupServiceTest extends IntegrationServiceTest {
     @Autowired
@@ -39,8 +44,8 @@ class TableGroupServiceTest extends IntegrationServiceTest {
     @Autowired
     private OrderService orderService;
 
-    private static OrderTable savedEmptyTable1;
-    private static OrderTable savedEmptyTable2;
+    private static OrderTableResponse savedEmptyTable1;
+    private static OrderTableResponse savedEmptyTable2;
 
     @Override
     @BeforeEach
@@ -48,19 +53,20 @@ class TableGroupServiceTest extends IntegrationServiceTest {
         super.setUp();
 
         // given
-        final OrderTable emptyTable1 = TableServiceTest.makeOrderTable(1, true);
+        final OrderTableRequest emptyTable1 = TableServiceTest.makeOrderTableRequest(1, true);
         savedEmptyTable1 = tableService.create(emptyTable1);
-        final OrderTable emptyTable2 = TableServiceTest.makeOrderTable(2, true);
+        final OrderTableRequest emptyTable2 = TableServiceTest.makeOrderTableRequest(2, true);
         savedEmptyTable2 = tableService.create(emptyTable2);
     }
 
     @Test
     void create() {
         // given
-        final TableGroup tableGroup = makeTargetGroup(savedEmptyTable1, savedEmptyTable2);
+        final List<Long> orderTableIds = Arrays.asList(savedEmptyTable1.getId(), savedEmptyTable2.getId());
+        final TableGroupRequest tableGroupRequest = makeTableGroupRequest(orderTableIds);
 
         // when
-        final TableGroup savedTableGroup = tableGroupService.create(tableGroup);
+        final TableGroupResponse savedTableGroup = tableGroupService.create(tableGroupRequest);
 
         // then
         assertThat(savedTableGroup.getId()).isNotNull();
@@ -69,46 +75,46 @@ class TableGroupServiceTest extends IntegrationServiceTest {
 
     @DisplayName("2개 미만의 테이블에 대해 단체 지정을 하려할 때 예외 발생")
     @ParameterizedTest
-    @MethodSource("provideInvalidNumberOfTables")
-    void createByInvalidNumberOfTables(final List<OrderTable> orderTables) {
+    @MethodSource("provideInvalidNumberOfTableIds")
+    void createByInvalidNumberOfTables(final List<Long> orderTableIds) {
         // given
-        final TableGroup tableGroup = new TableGroup();
-        tableGroup.setOrderTables(orderTables);
+        final TableGroupRequest tableGroupRequest = makeTableGroupRequest(orderTableIds);
 
         // when, then
-        assertThatIllegalArgumentException().isThrownBy(() -> tableGroupService.create(tableGroup));
+        assertThatIllegalArgumentException().isThrownBy(() -> tableGroupService.create(tableGroupRequest));
     }
 
-    private static Stream<List<OrderTable>> provideInvalidNumberOfTables() {
-        return Stream.of(Collections.emptyList(), Collections.singletonList(savedEmptyTable1));
+    private static Stream<List<Long>> provideInvalidNumberOfTableIds() {
+        return Stream.of(Collections.emptyList(), Collections.singletonList(savedEmptyTable1.getId()));
     }
 
     @DisplayName("비어있지 않거나, 이미 단체 지정이 된 테이블에 대햏 단체 지정을 하려할 때 예외 발생")
     @Test
     void createByInvalidStateTable() {
         // given
-        final OrderTable notEmptyTable = TableServiceTest.makeOrderTable(1, false);
-        final OrderTable savedNotEmptyTable = tableService.create(notEmptyTable);
-
-        final TableGroup tableGroup = makeTargetGroup(savedEmptyTable1, savedEmptyTable2);
-        tableGroupService.create(tableGroup);
+        final OrderTableRequest notEmptyTable = TableServiceTest.makeOrderTableRequest(1, false);
+        final OrderTableResponse savedNotEmptyTable = tableService.create(notEmptyTable);
+        final List<Long> orderTableIds = Arrays.asList(savedEmptyTable1.getId(), savedEmptyTable2.getId());
+        final TableGroupRequest tableGroupRequest = makeTableGroupRequest(orderTableIds);
+        tableGroupService.create(tableGroupRequest);
 
         // when, then
         assertThatIllegalArgumentException().isThrownBy(() -> {
-            final TableGroup newTableGroup = makeTargetGroup(savedEmptyTable1, savedEmptyTable2);
-            tableGroupService.create(newTableGroup);
+            final List<Long> tableIds = Arrays.asList(savedEmptyTable1.getId(), savedEmptyTable2.getId());
+            tableGroupService.create(makeTableGroupRequest(tableIds));
         });
         assertThatIllegalArgumentException().isThrownBy(() -> {
-            final TableGroup newTableGroup = makeTargetGroup(savedNotEmptyTable, savedEmptyTable1);
-            tableGroupService.create(newTableGroup);
+            final List<Long> tableIds = Arrays.asList(savedNotEmptyTable.getId(), savedEmptyTable2.getId());
+            tableGroupService.create(makeTableGroupRequest(tableIds));
         });
     }
 
     @Test
     void ungroup() {
         // given
-        final TableGroup tableGroup = makeTargetGroup(savedEmptyTable1, savedEmptyTable2);
-        final TableGroup savedTargetGroup = tableGroupService.create(tableGroup);
+        final List<Long> orderTableIds = Arrays.asList(savedEmptyTable1.getId(), savedEmptyTable2.getId());
+        final TableGroupRequest tableGroupRequest = makeTableGroupRequest(orderTableIds);
+        final TableGroupResponse savedTargetGroup = tableGroupService.create(tableGroupRequest);
 
         // when
         tableGroupService.ungroup(savedTargetGroup.getId());
@@ -122,32 +128,30 @@ class TableGroupServiceTest extends IntegrationServiceTest {
     @ValueSource(strings = {"COOKING", "MEAL"})
     void ungroupTablesInInvalidStatus(final OrderStatus orderStatus) {
         // given
-        final TableGroup tableGroup = makeTargetGroup(savedEmptyTable1, savedEmptyTable2);
-        final TableGroup savedTargetGroup = tableGroupService.create(tableGroup);
+        final List<Long> orderTableIds = Arrays.asList(savedEmptyTable1.getId(), savedEmptyTable2.getId());
+        final TableGroupRequest tableGroupRequest = makeTableGroupRequest(orderTableIds);
+        final TableGroupResponse savedTargetGroup = tableGroupService.create(tableGroupRequest);
 
-        final Product product = ProductServiceTest.makeProduct("후라이드", new BigDecimal(16000));
-        final Product savedProduct = productService.create(product);
+        final ProductRequest product = ProductServiceTest.makeProductRequest("후라이드", new BigDecimal(16000));
+        final ProductResponse savedProduct = productService.create(product);
 
-        final MenuGroup menuGroup = MenuGroupServiceTest.makeMenuGroup("한마리메뉴");
-        final MenuGroup savedMenuGroup = menuGroupService.create(menuGroup);
+        final MenuGroupRequest menuGroup = MenuGroupServiceTest.makeMenuGroupRequest("한마리메뉴");
+        final MenuGroupResponse savedMenuGroup = menuGroupService.create(menuGroup);
 
-        final Menu menu =
-            MenuServiceTest.makeMenu("후라이드치킨", new BigDecimal(16000), savedMenuGroup.getId(), savedProduct.getId(), 1);
-        final Menu savedMenu = menuService.create(menu);
+        final MenuRequest menu =
+            MenuServiceTest.makeMenuRequest("후라이드치킨", new BigDecimal(16000), savedMenuGroup.getId(),
+                savedProduct.getId(), 1);
+        final MenuResponse savedMenu = menuService.create(menu);
 
-        final Order order = OrderServiceTest.makeOrder(savedEmptyTable1.getId(), savedMenu.getId(), 1);
-        final Order savedOrder = orderService.create(order);
-
-        savedOrder.setOrderStatus(orderStatus.name());
-        orderService.changeOrderStatus(savedOrder.getId(), savedOrder);
+        final OrderRequest order = OrderServiceTest.makeOrderRequest(savedEmptyTable1.getId(), orderStatus,
+            savedMenu.getId(), 1);
+        orderService.create(order);
 
         // when, then
         assertThatIllegalArgumentException().isThrownBy(() -> tableGroupService.ungroup(savedTargetGroup.getId()));
     }
 
-    public static TableGroup makeTargetGroup(final OrderTable table1, final OrderTable table2) {
-        final TableGroup tableGroup = new TableGroup();
-        tableGroup.setOrderTables(Arrays.asList(table1, table2));
-        return tableGroup;
+    public static TableGroupRequest makeTableGroupRequest(final List<Long> orderTableIds) {
+        return new TableGroupRequest(orderTableIds);
     }
 }

@@ -13,7 +13,8 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import kitchenpos.IntegrationServiceTest;
-import kitchenpos.domain.Product;
+import kitchenpos.dto.ProductRequest;
+import kitchenpos.dto.ProductResponse;
 
 class ProductServiceTest extends IntegrationServiceTest {
     @Autowired
@@ -22,10 +23,10 @@ class ProductServiceTest extends IntegrationServiceTest {
     @Test
     void create() {
         // given
-        final Product product = makeProduct("후라이드", new BigDecimal(16000));
+        final ProductRequest product = makeProductRequest("후라이드", new BigDecimal(16000));
 
         // when
-        final Product savedProduct = productService.create(product);
+        final ProductResponse savedProduct = productService.create(product);
 
         // then
         assertThat(savedProduct.getId()).isNotNull();
@@ -37,7 +38,7 @@ class ProductServiceTest extends IntegrationServiceTest {
     @MethodSource("provideInvalidPrice")
     void createByInvalidPrice(final BigDecimal price) {
         // given
-        final Product product = makeProduct("후라이드", price);
+        final ProductRequest product = makeProductRequest("후라이드", price);
 
         // when, then
         assertThatIllegalArgumentException().isThrownBy(() -> productService.create(product));
@@ -50,21 +51,18 @@ class ProductServiceTest extends IntegrationServiceTest {
     @Test
     void list() {
         // given
-        final Product product = makeProduct("후라이드", new BigDecimal(16000));
+        final ProductRequest product = makeProductRequest("후라이드", new BigDecimal(16000));
         productService.create(product);
 
         // when
-        final List<Product> products = productService.list();
+        final List<ProductResponse> products = productService.list();
 
         // then
         assertThat(products).isNotEmpty();
         assertThat(products.get(0).getName()).isEqualTo("후라이드");
     }
 
-    public static Product makeProduct(final String name, final BigDecimal price) {
-        final Product product = new Product();
-        product.setName(name);
-        product.setPrice(price);
-        return product;
+    public static ProductRequest makeProductRequest(final String name, final BigDecimal price) {
+        return new ProductRequest(name, price);
     }
 }

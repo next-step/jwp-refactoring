@@ -23,13 +23,13 @@ public class DatabaseCleanup {
     @Transactional
     public void execute() {
         final List<String> tableNames = extractTableNames();
-        executeQuery("SET REFERENTIAL_INTEGRITY FALSE");
+        execute("SET REFERENTIAL_INTEGRITY FALSE");
 
         for (final String tableName : tableNames) {
-            executeQuery("TRUNCATE TABLE " + tableName);
+            execute("TRUNCATE TABLE " + tableName);
         }
 
-        executeQuery("SET REFERENTIAL_INTEGRITY TRUE");
+        execute("SET REFERENTIAL_INTEGRITY TRUE");
     }
 
     private List<String> extractTableNames() {
@@ -38,7 +38,7 @@ public class DatabaseCleanup {
             .collect(Collectors.toList());
     }
 
-    private void executeQuery(final String s) {
-        jdbcTemplate.update(s, Collections.emptyMap());
+    private void execute(final String query) {
+        jdbcTemplate.update(query, Collections.emptyMap());
     }
 }
