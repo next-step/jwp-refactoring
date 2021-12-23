@@ -33,15 +33,8 @@ public class TableTestFixtures {
             .willReturn(orderTable);
     }
 
-    public static void 주문테이블_특정_리스트_조회_모킹(OrderTableDao orderTableDao,
-        List<OrderTable> orderTables) {
-        given(orderTableDao.findAllByIdIn(anyList()))
-            .willReturn(orderTables);
-    }
-
-    public static void 특정_테이블_그룹에_속하는_테이블리스트_조회_모킹(OrderTableDao orderTableDao,
-        List<OrderTable> orderTables) {
-        given(orderTableDao.findAllByTableGroupId(any()))
+    public static void 특정_주문테이블_리스트_조회_모킹(TableService tableService, List<OrderTable> orderTables) {
+        given(tableService.findOrderTables(anyList()))
             .willReturn(orderTables);
     }
 

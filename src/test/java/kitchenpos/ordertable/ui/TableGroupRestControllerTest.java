@@ -14,6 +14,9 @@ import kitchenpos.common.CommonTestFixtures;
 import kitchenpos.ordertable.application.TableGroupService;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.TableGroup;
+import kitchenpos.ordertable.dto.TableGroupRequest;
+import kitchenpos.ordertable.dto.TableGroupResponse;
+import kitchenpos.ordertable.testfixtures.TableGroupTestFixtures;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,10 +41,16 @@ class TableGroupRestControllerTest {
     void create() throws Exception {
         //given
         List<OrderTable> orderTables = Arrays.asList(
-            new OrderTable(1L),
-            new OrderTable(2L));
-        TableGroup requestTableGroup = new TableGroup(orderTables);
-        TableGroup expectedTableGroup = new TableGroup(1L, LocalDateTime.now(), orderTables);
+            new OrderTable(1L, 1, true),
+            new OrderTable(2L, 2, true));
+        TableGroupRequest requestTableGroup = TableGroupTestFixtures.convertToTableGroupRequest(
+            orderTables);
+
+        TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now());
+        tableGroup.groupTables(orderTables);
+        TableGroupResponse expectedTableGroup = TableGroupResponse.from(
+            tableGroup);
+
         given(tableGroupService.create(any()))
             .willReturn(expectedTableGroup);
 

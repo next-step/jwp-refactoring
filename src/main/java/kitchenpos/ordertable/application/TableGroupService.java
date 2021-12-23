@@ -27,12 +27,12 @@ public class TableGroupService {
 
     @Transactional
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
-        final List<OrderTableRequest> orderTables = tableGroupRequest.getOrderTables();
-        List<OrderTable> orderTabless = tableService.findOrderTables(orderTables);
+        final List<OrderTableRequest> orderTableRequests = tableGroupRequest.getOrderTables();
+        List<OrderTable> orderTables = tableService.findOrderTables(orderTableRequests);
 
         TableGroup tableGroup = new TableGroup(LocalDateTime.now());
         final TableGroup savedTableGroup = tableGroupDao.save(tableGroup);
-        savedTableGroup.groupTables(orderTabless);
+        savedTableGroup.groupTables(orderTables);
         return TableGroupResponse.from(savedTableGroup);
     }
 

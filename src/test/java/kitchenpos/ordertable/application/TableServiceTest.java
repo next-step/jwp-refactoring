@@ -1,17 +1,11 @@
 package kitchenpos.ordertable.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.menu.testfixtures.MenuTestFixtures;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.domain.TableGroup;
 import kitchenpos.ordertable.domain.dao.OrderTableDao;
 import kitchenpos.ordertable.dto.OrderTableResponse;
 import kitchenpos.ordertable.testfixtures.TableTestFixtures;
@@ -80,42 +74,7 @@ class TableServiceTest {
         //then
         Assertions.assertThat(savedOrderTable.isEmpty()).isEqualTo(changeOrderTable.isEmpty());
     }
-
-    @DisplayName("테이블 그룹에 속해있는 테이블은 상태를 변경할 수 없다.")
-    @Test
-    void changeEmpty_exception1() {
-        //given
-        OrderTable orderTable = new OrderTable(1L, 0, true);
-        TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now());
-        tableGroup.groupTables(Arrays.asList(orderTable));
-        TableTestFixtures.특정_주문테이블_조회_모킹(orderTableDao, orderTable);
-        orderTable.groupIn(tableGroup);
-
-        //when, then
-        OrderTable changeOrderTable = new OrderTable(false);
-        assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(),
-            TableTestFixtures.convertToOrderTableRequest(changeOrderTable)))
-            .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("테이블 주문 상태가 조리, 식사인 주문이 존재하면 상태를 변경할 수 없다.")
-    @Test
-    void changeEmpty_exception2() {
-        //given
-        OrderTable orderTable = new OrderTable(1L, 0, false);
-        List<OrderLineItem> orderLineItems = Arrays.asList(
-            new OrderLineItem(MenuTestFixtures.서비스군만두, 5)
-        );
-        Order order = new Order(orderTable, LocalDateTime.now(), orderLineItems);
-        TableTestFixtures.특정_주문테이블_조회_모킹(orderTableDao, orderTable);
-
-        //when, then
-        OrderTable changeOrderTable = new OrderTable(true);
-        assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(),
-            TableTestFixtures.convertToOrderTableRequest(changeOrderTable)))
-            .isInstanceOf(IllegalArgumentException.class);
-    }
-
+    
     @DisplayName("테이블 방문 손님 수를 변경할 수 있다.")
     @Test
     void changeNumberOfGuests() {
