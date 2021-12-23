@@ -11,6 +11,7 @@ import kitchenpos.menu.testfixtures.MenuTestFixtures;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.domain.TableGroup;
 import kitchenpos.ordertable.domain.dao.OrderTableDao;
 import kitchenpos.ordertable.dto.OrderTableResponse;
 import kitchenpos.ordertable.testfixtures.TableTestFixtures;
@@ -84,8 +85,11 @@ class TableServiceTest {
     @Test
     void changeEmpty_exception1() {
         //given
-        OrderTable orderTable = new OrderTable(1L, 1L, 0, true);
+        OrderTable orderTable = new OrderTable(1L, 0, true);
+        TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now());
+        tableGroup.groupTables(Arrays.asList(orderTable));
         TableTestFixtures.특정_주문테이블_조회_모킹(orderTableDao, orderTable);
+        orderTable.groupIn(tableGroup);
 
         //when, then
         OrderTable changeOrderTable = new OrderTable(false);
@@ -98,7 +102,7 @@ class TableServiceTest {
     @Test
     void changeEmpty_exception2() {
         //given
-        OrderTable orderTable = new OrderTable(1L, 0, true);
+        OrderTable orderTable = new OrderTable(1L, 0, false);
         List<OrderLineItem> orderLineItems = Arrays.asList(
             new OrderLineItem(MenuTestFixtures.서비스군만두, 5)
         );
@@ -106,7 +110,7 @@ class TableServiceTest {
         TableTestFixtures.특정_주문테이블_조회_모킹(orderTableDao, orderTable);
 
         //when, then
-        OrderTable changeOrderTable = new OrderTable(false);
+        OrderTable changeOrderTable = new OrderTable(true);
         assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(),
             TableTestFixtures.convertToOrderTableRequest(changeOrderTable)))
             .isInstanceOf(IllegalArgumentException.class);

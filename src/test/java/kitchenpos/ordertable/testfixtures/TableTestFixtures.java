@@ -6,6 +6,7 @@ import static org.mockito.BDDMockito.given;
 
 import java.util.List;
 import java.util.Optional;
+import kitchenpos.ordertable.application.TableService;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.dao.OrderTableDao;
 import kitchenpos.ordertable.dto.OrderTableRequest;
@@ -27,6 +28,10 @@ public class TableTestFixtures {
             .willReturn(Optional.of(orderTable));
     }
 
+    public static void 특정_주문테이블_조회_모킹(TableService tableService, OrderTable orderTable) {
+        given(tableService.findOrderTable(orderTable.getId()))
+            .willReturn(orderTable);
+    }
 
     public static void 주문테이블_특정_리스트_조회_모킹(OrderTableDao orderTableDao,
         List<OrderTable> orderTables) {

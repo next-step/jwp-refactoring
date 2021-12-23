@@ -55,4 +55,10 @@ public class TableService {
         savedOrderTable.changeNumberOfGuests(numberOfGuests);
         return OrderTableResponse.from(savedOrderTable);
     }
+
+    public List<OrderTable> findOrderTables(List<OrderTableRequest> orderTableRequests) {
+        return orderTableRequests.stream()
+            .map(orderTableRequest -> findOrderTable(orderTableRequest.getId()))
+            .collect(Collectors.toList());
+    }
 }

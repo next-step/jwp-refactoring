@@ -83,13 +83,12 @@ class TableRestControllerTest {
         boolean changeEmpty = false;
         OrderTable requestOrderTable = new OrderTable(changeEmpty);
         OrderTableResponse expectedOrderTable = OrderTableResponse.from(
-            new OrderTable(1L, 1L, 6, changeEmpty));
+            new OrderTable(1L, 6, changeEmpty));
         given(tableService.changeEmpty(any(), any())).willReturn(expectedOrderTable);
 
         //when,then
-        mockMvc.perform(put(BASE_PATH + "/{orderTableId}/empty",
-                expectedOrderTable.getTableGroupId()).content(
-                    CommonTestFixtures.asJsonString(requestOrderTable))
+        mockMvc.perform(put(BASE_PATH + "/{orderTableId}/empty", expectedOrderTable.getId())
+                .content(CommonTestFixtures.asJsonString(requestOrderTable))
                 .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.id").value(expectedOrderTable.getId()))
@@ -103,14 +102,14 @@ class TableRestControllerTest {
         int numberOfGuests = 5;
         OrderTable requestOrderTable = new OrderTable(numberOfGuests);
         OrderTableResponse expectedOrderTable = OrderTableResponse.from(
-            new OrderTable(1L, 1L, numberOfGuests, false));
+            new OrderTable(1L, numberOfGuests, false));
         given(tableService.changeNumberOfGuests(any(), any())).willReturn(expectedOrderTable);
 
         //when,then
-        mockMvc.perform(put(BASE_PATH + "/{numberOfGuests}/number-of-guests",
-                expectedOrderTable.getTableGroupId()).content(
-                    CommonTestFixtures.asJsonString(requestOrderTable))
-                .contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(
+                put(BASE_PATH + "/{orderTableId}/number-of-guests", expectedOrderTable.getId())
+                    .content(CommonTestFixtures.asJsonString(requestOrderTable))
+                    .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.id").value(expectedOrderTable.getId()))
             .andExpect(jsonPath("$.numberOfGuests").value(expectedOrderTable.getNumberOfGuests()));
