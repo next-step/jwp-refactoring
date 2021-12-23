@@ -5,13 +5,17 @@ import java.util.stream.Collectors;
 import kitchenpos.order.domain.OrderLineItem;
 
 public class OrderLineResponse {
+
     private Long id;
     private Long orderId;
     private Long menuId;
     private long quantity;
 
     public static OrderLineResponse of(OrderLineItem orderLineItem) {
-        return new OrderLineResponse(orderLineItem.getId(), orderLineItem.getOrderId(), orderLineItem.getMenuId(),
+        return new OrderLineResponse(
+            orderLineItem.getId(),
+            orderLineItem.getOrder().getId(),
+            orderLineItem.getMenu().getId(),
             orderLineItem.getQuantity());
     }
 

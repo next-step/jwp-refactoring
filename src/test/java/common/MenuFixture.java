@@ -9,12 +9,12 @@ import kitchenpos.product.domain.Amount;
 
 public class MenuFixture {
 
-    public static Menu 메뉴_후라이드() {
-        return Menu.of(1L, "후라이드치킨", Amount.of(16000), 메뉴그룹_한마리());
+    public static Menu 메뉴_양념치킨() {
+        return Menu.of(1L, "양념치킨", Amount.of(16000), 메뉴그룹_한마리());
     }
 
-    public static Menu 메뉴_양념치킨() {
-        return Menu.of(2L, "양념치킨", Amount.of(16000), 메뉴그룹_한마리());
+    public static Menu 메뉴_후라이드() {
+        return Menu.of(2L, "후라이드치킨", Amount.of(16000), 메뉴그룹_한마리());
     }
 
     public static Menu 메뉴_반반치킨() {

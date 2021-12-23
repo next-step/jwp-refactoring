@@ -1,64 +1,23 @@
 package common;
 
+import static common.MenuFixture.*;
 import static java.util.Arrays.asList;
-import static kitchenpos.order.domain.OrderStatus.COMPLETION;
-import static kitchenpos.order.domain.OrderStatus.COOKING;
 
-import java.time.LocalDateTime;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderStatus;
 
 public class OrderFixture {
 
-    public static Order 주문_첫번째() {
-
-        OrderLineItem orderLineItem = new OrderLineItem();
-        orderLineItem.setOrderId(1L);
-        orderLineItem.setMenuId(1L);
-        orderLineItem.setQuantity(1L);
-
-        Order order = new Order();
-        order.setId(1L);
-        order.setOrderTableId(1L);
-        order.setOrderStatus(COOKING.name());
-        order.setOrderedTime(LocalDateTime.now());
-        order.setOrderLineItems(asList(orderLineItem));
-
-        return order;
+    public static Order 주문() {
+        return Order.createCook(1L, OrderTableFixture.첫번째_주문테이블(),
+            asList(OrderLineItem.of(1L, 메뉴_양념치킨(), 1L)));
     }
 
-    public static Order 주문_첫번째_완료() {
-
-
-        OrderLineItem orderLineItem = new OrderLineItem();
-        orderLineItem.setOrderId(1L);
-        orderLineItem.setMenuId(1L);
-        orderLineItem.setQuantity(1L);
-
-        Order order = new Order();
-        order.setId(1L);
-        order.setOrderTableId(1L);
-        order.setOrderStatus(COMPLETION.name());
-        order.setOrderedTime(LocalDateTime.now());
-        order.setOrderLineItems(asList(orderLineItem));
-
-        return order;
-    }
-
-    public static Order 주문_두번째() {
-
-        OrderLineItem orderLineItem = new OrderLineItem();
-        orderLineItem.setOrderId(2L);
-        orderLineItem.setMenuId(2L);
-        orderLineItem.setQuantity(1L);
-
-        Order order = new Order();
-        order.setId(2L);
-        order.setOrderTableId(2L);
-        order.setOrderStatus(COOKING.name());
-        order.setOrderedTime(LocalDateTime.now());
-        order.setOrderLineItems(asList(orderLineItem));
-
+    public static Order 주문_완료() {
+        Order order = Order.createCook(1L, OrderTableFixture.첫번째_주문테이블(),
+            asList(OrderLineItem.of(1L, 메뉴_양념치킨(), 1L)));
+        order.changeOrderStatus(OrderStatus.COMPLETION.name());
         return order;
     }
 }

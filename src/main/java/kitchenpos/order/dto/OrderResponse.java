@@ -14,7 +14,11 @@ public class OrderResponse {
     private List<OrderLineResponse> orderLineItems;
 
     public static OrderResponse of(Order order) {
-        return new OrderResponse(order.getId(), order.getOrderTableId(), order.getOrderStatus(), order.getOrderedTime(),
+        return new OrderResponse(
+            order.getId(),
+            order.getOrderTable().getId(),
+            order.getOrderStatus().name(),
+            order.getOrderedTime(),
             OrderLineResponse.ofList(order.getOrderLineItems()));
     }
 

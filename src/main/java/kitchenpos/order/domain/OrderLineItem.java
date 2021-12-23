@@ -1,54 +1,67 @@
 package kitchenpos.order.domain;
 
+import static javax.persistence.FetchType.LAZY;
+import static javax.persistence.GenerationType.IDENTITY;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+import kitchenpos.menu.domain.Menu;
+
+@Entity
 public class OrderLineItem {
+
+    @Id
+    @GeneratedValue(strategy = IDENTITY)
     private Long id;
-    private Long orderId;
-    private Long menuId;
-    private long quantity;
 
-    public OrderLineItem(Long orderId, Long menuId, long quantity) {
-        this.orderId = orderId;
-        this.menuId = menuId;
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "orders_id")
+    private Order order;
+
+    @OneToOne
+    @JoinColumn(name = "menu_id")
+    private Menu menu;
+
+    private Long quantity;
+
+    public static OrderLineItem of(Menu menu, long quantity) {
+        return new OrderLineItem(null, menu, quantity);
+    }
+
+    public static OrderLineItem of(Long id, Menu menu, long quantity) {
+        return new OrderLineItem(id, menu, quantity);
+    }
+
+    public OrderLineItem(Long id, Menu menu, Long quantity) {
+        this.id = id;
+        this.menu = menu;
         this.quantity = quantity;
     }
 
-    public OrderLineItem(Long menuId, long quantity) {
-        this.menuId = menuId;
-        this.quantity = quantity;
+    protected OrderLineItem() {
     }
 
-    public OrderLineItem() {
+    public void setOrder(Order order) {
+        this.order = order;
     }
 
     public Long getId() {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
+    public Order getOrder() {
+        return order;
     }
 
-    public Long getOrderId() {
-        return orderId;
+    public Menu getMenu() {
+        return menu;
     }
 
-    public void setOrderId(final Long orderId) {
-        this.orderId = orderId;
-    }
-
-    public Long getMenuId() {
-        return menuId;
-    }
-
-    public void setMenuId(final Long menuId) {
-        this.menuId = menuId;
-    }
-
-    public long getQuantity() {
+    public Long getQuantity() {
         return quantity;
-    }
-
-    public void setQuantity(final long quantity) {
-        this.quantity = quantity;
     }
 }
