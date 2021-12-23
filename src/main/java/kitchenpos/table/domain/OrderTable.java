@@ -30,6 +30,11 @@ public class OrderTable {
     public OrderTable() {
     }
 
+    public OrderTable(final int numberOfGuests, final boolean empty) {
+        this.numberOfGuests = NumberOfGuests.of(numberOfGuests);
+        this.empty = Empty.of(empty);
+    }
+
     public OrderTable(final Long id, final int numberOfGuests, final boolean empty) {
         this.id = id;
         this.numberOfGuests = NumberOfGuests.of(numberOfGuests);
