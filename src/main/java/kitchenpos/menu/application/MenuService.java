@@ -1,18 +1,23 @@
 package kitchenpos.menu.application;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuProductRepository;
 import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.dto.MenuAddRequest;
+import kitchenpos.menu.dto.MenuProductAddRequest;
+import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.menu.exception.NotFoundMenuProductException;
+import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menugroup.domain.MenuGroupRepository;
+import kitchenpos.menugroup.exception.NotFoundMenuGroupException;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 
@@ -21,65 +26,60 @@ public class MenuService {
 
 	private final MenuRepository menuRepository;
 	private final MenuGroupRepository menuGroupRepository;
-	private final MenuProductRepository menuProductRepository;
 	private final ProductRepository productRepository;
 
 	public MenuService(
 		final MenuRepository menuRepository,
 		final MenuGroupRepository menuGroupRepository,
-		final MenuProductRepository menuProductRepository,
 		final ProductRepository productRepository
 	) {
 		this.menuRepository = menuRepository;
 		this.menuGroupRepository = menuGroupRepository;
-		this.menuProductRepository = menuProductRepository;
 		this.productRepository = productRepository;
 	}
 
 	@Transactional
-	public Menu create(final Menu menu) {
-		final BigDecimal price = menu.getPrice();
+	public MenuResponse create(final MenuAddRequest request) {
+		final MenuGroup menuGroup = findMenuGroup(request.getMenuGroupId());
+		final List<MenuProduct> menuProducts = createMenuProducts(request.getMenuProductAddRequests());
 
-		if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-			throw new IllegalArgumentException();
-		}
-
-		if (!menuGroupRepository.existsById(menu.getMenuGroupId())) {
-			throw new IllegalArgumentException();
-		}
-
-		final List<MenuProduct> menuProducts = menu.getMenuProducts();
-
-		BigDecimal sum = BigDecimal.ZERO;
-		for (final MenuProduct menuProduct : menuProducts) {
-			final Product product = productRepository.findById(menuProduct.getProductId())
-				.orElseThrow(IllegalArgumentException::new);
-			sum = sum.add(product.getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
-		}
-
-		if (price.compareTo(sum) > 0) {
-			throw new IllegalArgumentException();
-		}
-
-		final Menu savedMenu = menuRepository.save(menu);
-
-		final List<MenuProduct> savedMenuProducts = new ArrayList<>();
-		for (final MenuProduct menuProduct : menuProducts) {
-			menuProduct.setMenu(savedMenu);
-			savedMenuProducts.add(menuProductRepository.save(menuProduct));
-		}
-		savedMenu.setMenuProducts(savedMenuProducts);
-
-		return savedMenu;
+		final Menu menu = menuRepository.save(
+			Menu.of(request.getName(), request.getPrice(), menuGroup, menuProducts)
+		);
+		return MenuResponse.of(menu);
 	}
 
-	public List<Menu> list() {
-		final List<Menu> menus = menuRepository.findAll();
+	@Transactional(readOnly = true)
+	private MenuGroup findMenuGroup(Long menuGroupId) {
+		return menuGroupRepository.findById(menuGroupId)
+			.orElseThrow(NotFoundMenuGroupException::new);
+	}
 
-		for (final Menu menu : menus) {
-			menu.setMenuProducts(menuProductRepository.findAllByMenuId(menu.getId()));
+	@Transactional(readOnly = true)
+	private Map<Long, Product> findProducts(List<MenuProductAddRequest> requests) {
+		final List<Long> productIds = requests.stream()
+			.map(MenuProductAddRequest::getProductId)
+			.collect(Collectors.toList());
+		return productRepository.findAllById(productIds)
+			.stream()
+			.collect(Collectors.toMap(Product::getId, Function.identity()));
+	}
+
+	@Transactional(readOnly = true)
+	private List<MenuProduct> createMenuProducts(List<MenuProductAddRequest> requests) {
+		final Map<Long, Product> products = findProducts(requests);
+		if (products.size() != requests.size()) {
+			throw new NotFoundMenuProductException();
 		}
+		return requests.stream()
+			.map(menuProductAddRequest -> MenuProduct.of(
+				products.get(menuProductAddRequest.getProductId()),
+				menuProductAddRequest.getQuantity()
+			)).collect(Collectors.toList());
+	}
 
-		return menus;
+	public List<MenuResponse> list() {
+		final List<Menu> menus = menuRepository.findAll();
+		return menus.stream().map(MenuResponse::of).collect(Collectors.toList());
 	}
 }

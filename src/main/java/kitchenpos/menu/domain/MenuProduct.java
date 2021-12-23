@@ -1,5 +1,7 @@
 package kitchenpos.menu.domain;
 
+import java.math.BigDecimal;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -12,6 +14,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.exception.NotFoundProductException;
 
 @Entity
 @Table(name = "menu_product")
@@ -43,16 +46,27 @@ public class MenuProduct {
         this.quantity = quantity;
     }
 
+    public static MenuProduct of(Product product, long quantity) {
+        return of(null, null, product, quantity);
+    }
+
     public static MenuProduct of(Long seq, Menu menu, Product product, long quantity) {
         return new MenuProduct(seq, menu, product, quantity);
+    }
+
+    public BigDecimal getTotalPrice() {
+        if (null == product) {
+            throw new NotFoundProductException();
+        }
+        return product.getPrice().multiply(BigDecimal.valueOf(quantity));
     }
 
     public Long getSeq() {
         return seq;
     }
 
-    public Long getProductId() {
-        return null == product ? null : product.getId();
+    public Product getProduct() {
+        return product;
     }
 
     public long getQuantity() {
