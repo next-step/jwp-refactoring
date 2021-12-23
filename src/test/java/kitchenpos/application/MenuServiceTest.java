@@ -145,6 +145,7 @@ class MenuServiceTest {
             .isThrownBy(() -> menuService.create(menu));
     }
 
+    @DisplayName("메뉴 조회")
     @Test
     void list() {
         // given

@@ -17,11 +17,6 @@ public class MenuGroupAcceptanceTestHelper {
     private MenuGroupAcceptanceTestHelper() {
     }
 
-    // ###
-    //     GET {{host}}/api/menu-groups
-    //
-    // ###
-
     public static ExtractableResponse<Response> 메뉴_그룹_생성_요청(Map<String, String> params) {
         return RestAssured
             .given().log().all()
