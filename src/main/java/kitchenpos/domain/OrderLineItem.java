@@ -1,40 +1,53 @@
 package kitchenpos.domain;
 
+import javax.persistence.*;
+
+import static javax.persistence.FetchType.LAZY;
+import static javax.persistence.GenerationType.IDENTITY;
+
+@Entity
 public class OrderLineItem {
+    @Id
+    @GeneratedValue(strategy = IDENTITY)
     private Long seq;
-    private Long orderId;
-    private Long menuId;
-    private long quantity;
+
+    @ManyToOne(fetch = LAZY)
+    private Order order;
+
+    @ManyToOne(fetch = LAZY)
+    private Menu menu;
+
+    private Long quantity;
+
+    public OrderLineItem() {
+    }
+
+    public OrderLineItem(Menu menu, Long quantity) {
+        this.menu = menu;
+        this.quantity = quantity;
+    }
+
+    public void setOrder(Order order) {
+        if (this.order != null) {
+            this.order.getOrderLineItems().remove(this);
+        }
+        this.order = order;
+        order.getOrderLineItems().add(this);
+    }
 
     public Long getSeq() {
         return seq;
     }
 
-    public void setSeq(final Long seq) {
-        this.seq = seq;
+    public Order getOrder() {
+        return order;
     }
 
-    public Long getOrderId() {
-        return orderId;
+    public Menu getMenu() {
+        return menu;
     }
 
-    public void setOrderId(final Long orderId) {
-        this.orderId = orderId;
-    }
-
-    public Long getMenuId() {
-        return menuId;
-    }
-
-    public void setMenuId(final Long menuId) {
-        this.menuId = menuId;
-    }
-
-    public long getQuantity() {
+    public Long getQuantity() {
         return quantity;
-    }
-
-    public void setQuantity(final long quantity) {
-        this.quantity = quantity;
     }
 }

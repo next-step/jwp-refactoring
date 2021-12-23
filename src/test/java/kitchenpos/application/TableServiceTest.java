@@ -1,10 +1,6 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.OrderTableRepository;
-import kitchenpos.domain.TableGroup;
-import kitchenpos.domain.TableState;
+import kitchenpos.domain.*;
 import kitchenpos.domain.dto.OrderTableRequest;
 import kitchenpos.domain.dto.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,7 +25,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class TableServiceTest {
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
     @Mock
     private OrderTableRepository orderTableRepository;
     @InjectMocks
@@ -72,12 +68,12 @@ class TableServiceTest {
     @DisplayName("테이블을 빈 테이블로 변경한다.")
     void changeEmpty() {
         when(orderTableRepository.findById(1L)).thenReturn(Optional.of(주문테이블));
-        when(orderDao.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).thenReturn(false);
+        when(orderRepository.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).thenReturn(false);
 
         OrderTableResponse response = tableService.changeEmpty(주문테이블.getId());
 
         verify(orderTableRepository, times(1)).findById(anyLong());
-        verify(orderDao, times(1)).existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList());
+        verify(orderRepository, times(1)).existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList());
         assertThat(response.getTableState()).isTrue();
     }
 
@@ -106,12 +102,12 @@ class TableServiceTest {
     @DisplayName("테이블의 주문 상태가 완료가 아닌 경우 예외가 발생한다.")
     void validateOrderStatus() {
         when(orderTableRepository.findById(anyLong())).thenReturn(Optional.of(주문테이블));
-        when(orderDao.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).thenReturn(true);
+        when(orderRepository.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).thenReturn(true);
 
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> tableService.changeEmpty(주문테이블.getId()));
         verify(orderTableRepository, times(1)).findById(anyLong());
-        verify(orderDao, times(1)).existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList());
+        verify(orderRepository, times(1)).existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList());
     }
 
     @Test

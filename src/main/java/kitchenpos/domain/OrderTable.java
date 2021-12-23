@@ -2,6 +2,9 @@ package kitchenpos.domain;
 
 import javax.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
 
@@ -10,10 +13,13 @@ public class OrderTable {
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
+
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "table_group_id", foreignKey = @ForeignKey(name = "fk_order_table_table_group"))
     private TableGroup tableGroup;
+
     private int numberOfGuests;
+
     @Embedded
     private TableState tableState;
 

@@ -1,6 +1,5 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderDao;
 import kitchenpos.domain.*;
 import kitchenpos.domain.dto.TableGroupRequest;
 import kitchenpos.domain.dto.TableGroupResponse;
@@ -24,7 +23,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
     @Mock
     private OrderTableRepository orderTableRepository;
     @Mock
@@ -125,12 +124,12 @@ class TableGroupServiceTest {
     void validateStatusUngroup() {
         when(orderTableRepository.findAllByTableGroupId(1L))
                 .thenReturn(Arrays.asList(테이블1, 테이블2));
-        when(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList()))
+        when(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList()))
                 .thenReturn(true);
 
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> tableGroupService.ungroup(테이블그룹.getId()));
         verify(orderTableRepository, times(1)).findAllByTableGroupId(anyLong());
-        verify(orderDao, times(1)).existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList());
+        verify(orderRepository, times(1)).existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList());
     }
 }

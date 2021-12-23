@@ -1,7 +1,9 @@
 package kitchenpos.ui;
 
 import kitchenpos.application.OrderService;
-import kitchenpos.domain.Order;
+import kitchenpos.domain.dto.OrderRequest;
+import kitchenpos.domain.dto.OrderResponse;
+import kitchenpos.domain.dto.OrderStatusRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,19 +20,20 @@ public class OrderRestController {
     }
 
     @PostMapping("/orders")
-    public ResponseEntity<Order> create(@RequestBody final Order order) {
-        final Order created = orderService.create(order);
-        final URI uri = URI.create("/api/orders/" + created.getId());
-        return ResponseEntity.created(uri).body(created);
+    public ResponseEntity<OrderResponse> create(@RequestBody final OrderRequest request) {
+        final OrderResponse response = orderService.create(request);
+        final URI uri = URI.create("/api/orders/" + response.getId());
+        return ResponseEntity.created(uri).body(response);
     }
 
     @GetMapping("/orders")
-    public ResponseEntity<List<Order>> list() {
+    public ResponseEntity<List<OrderResponse>> list() {
         return ResponseEntity.ok().body(orderService.list());
     }
 
     @PutMapping("/orders/{orderId}/order-status")
-    public ResponseEntity<Order> changeOrderStatus(@PathVariable final Long orderId, @RequestBody final Order order) {
-        return ResponseEntity.ok(orderService.changeOrderStatus(orderId, order));
+    public ResponseEntity<OrderResponse> changeOrderStatus(@PathVariable final Long orderId,
+                                                           @RequestBody final OrderStatusRequest request) {
+        return ResponseEntity.ok(orderService.changeOrderStatus(orderId, request));
     }
 }
