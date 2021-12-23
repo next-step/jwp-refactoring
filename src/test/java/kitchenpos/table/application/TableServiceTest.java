@@ -5,19 +5,17 @@ import static common.OrderTableFixture.첫번째_주문테이블;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.atMostOnce;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import kitchenpos.order.domain.OrderDao;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.table.domain.NumberOfGuests;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableDao;
 import kitchenpos.table.dto.ChangeEmptyRequest;
@@ -50,7 +48,7 @@ public class TableServiceTest {
         when(orderTableDao.save(any(OrderTable.class))).thenReturn(첫번째_테이블);
 
         // when
-        tableService.create(new OrderTableRequest(5, true));
+        tableService.create(new OrderTableRequest(new NumberOfGuests(5), true));
 
         // then 
         verify(orderTableDao, atMostOnce()).save(any());

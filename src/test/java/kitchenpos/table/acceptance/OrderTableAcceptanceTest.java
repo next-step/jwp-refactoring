@@ -8,6 +8,7 @@ import static kitchenpos.utils.TestFactory.put;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
+import kitchenpos.table.domain.NumberOfGuests;
 import kitchenpos.table.dto.ChangeEmptyRequest;
 import kitchenpos.table.dto.ChangeNumberOfGuestRequest;
 import kitchenpos.table.dto.OrderTableRequest;
@@ -23,7 +24,7 @@ public class OrderTableAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        주문_테이블 = new OrderTableRequest(0, false);
+        주문_테이블 = new OrderTableRequest(new NumberOfGuests(0), false);
     }
 
     @Test

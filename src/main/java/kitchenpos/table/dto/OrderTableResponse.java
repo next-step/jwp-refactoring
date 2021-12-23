@@ -2,14 +2,14 @@ package kitchenpos.table.dto;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import kitchenpos.table.domain.NumberOfGuests;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableStatus;
 
 public class OrderTableResponse {
 
     private Long id;
     private Long tableGroupId;
-    private int numberOfGuests;
+    private NumberOfGuests numberOfGuests;
     private boolean empty;
 
     public static OrderTableResponse of(OrderTable orderTable) {
@@ -25,7 +25,7 @@ public class OrderTableResponse {
             .collect(Collectors.toList());
     }
 
-    private OrderTableResponse(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
+    private OrderTableResponse(Long id, Long tableGroupId, NumberOfGuests numberOfGuests, boolean empty) {
         this.id = id;
         this.tableGroupId = tableGroupId;
         this.numberOfGuests = numberOfGuests;
@@ -43,7 +43,7 @@ public class OrderTableResponse {
         return tableGroupId;
     }
 
-    public int getNumberOfGuests() {
+    public NumberOfGuests getNumberOfGuests() {
         return numberOfGuests;
     }
 

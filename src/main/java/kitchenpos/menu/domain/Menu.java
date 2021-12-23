@@ -12,6 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import kitchenpos.common.exception.Message;
 import kitchenpos.product.domain.Amount;
+import org.apache.logging.log4j.util.Strings;
 
 @Entity
 public class Menu {
@@ -41,6 +42,11 @@ public class Menu {
     }
 
     private Menu(Long id, String name, MenuGroup menuGroup, Amount price) {
+
+        if (Strings.isBlank(name)) {
+            throw new IllegalArgumentException(Message.MENU_NAME_IS_NOT_NULL.getMessage());
+        }
+
         this.id = id;
         this.name = name;
         this.menuGroup = menuGroup;

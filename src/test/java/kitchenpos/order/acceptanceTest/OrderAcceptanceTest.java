@@ -24,6 +24,7 @@ import kitchenpos.order.dto.OrderLineRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.table.domain.NumberOfGuests;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,7 +40,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
         // 주문테이블 생성
-        OrderTableResponse 주문테이블 = 주문테이블_생성_요청(new OrderTableRequest(0, false)).as(
+        OrderTableResponse 주문테이블 = 주문테이블_생성_요청(new OrderTableRequest(new NumberOfGuests(0), false)).as(
             OrderTableResponse.class);
 
         // 메뉴 생성

@@ -5,6 +5,8 @@ import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import kitchenpos.common.exception.Message;
+import org.apache.logging.log4j.util.Strings;
 
 @Entity
 public class MenuGroup {
@@ -20,6 +22,9 @@ public class MenuGroup {
     }
 
     public static MenuGroup of(String name) {
+        if (Strings.isBlank(name)) {
+            throw new IllegalArgumentException(Message.MENU_GROUP_NAME_IS_NOT_NULL.getMessage());
+        }
         return new MenuGroup(null, name);
     }
 
@@ -28,7 +33,8 @@ public class MenuGroup {
         this.name = name;
     }
 
-    protected MenuGroup(){}
+    protected MenuGroup() {
+    }
 
     public Long getId() {
         return id;

@@ -2,7 +2,9 @@ package kitchenpos.table.domain;
 
 import static common.OrderTableFixture.첫번째_주문테이블;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import kitchenpos.common.exception.Message;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -42,6 +44,14 @@ class OrderTableTest {
         첫번째_주문테이블.changeNumberOfGuest(3);
 
         // then
-        assertThat(첫번째_주문테이블.getNumberOfGuests()).isEqualTo(3);
+        assertThat(첫번째_주문테이블.getNumberOfGuests()).isEqualTo(new NumberOfGuests(3));
+    }
+
+    @Test
+    void 주문테이블_생성시_빈테이블_여부값이_비어있으면_예외() {
+        assertThatThrownBy(() -> {
+            OrderTable.of(new NumberOfGuests(3), null);
+        }).isInstanceOf(IllegalArgumentException.class)
+            .hasMessage(Message.ORDER_TABLE_IS_NOT_ORDER_TABLE_STATUS_NULL.getMessage());
     }
 }

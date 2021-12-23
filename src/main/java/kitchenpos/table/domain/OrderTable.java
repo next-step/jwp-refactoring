@@ -2,7 +2,8 @@ package kitchenpos.table.domain;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
-import javax.persistence.Convert;
+import java.util.Objects;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -11,6 +12,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import kitchenpos.common.exception.Message;
 
 @Entity
 public class OrderTable {
@@ -23,20 +25,28 @@ public class OrderTable {
     @JoinColumn(name = "table_group_id")
     private TableGroup tableGroup;
 
-    private int numberOfGuests;
+    @Embedded
+    private NumberOfGuests numberOfGuests;
 
     @Enumerated(EnumType.STRING)
     private OrderTableStatus orderTableStatus = OrderTableStatus.EMPTY;
 
-    public static OrderTable of(Long id, int numberOfGuests, OrderTableStatus orderTableStatus) {
+    public static OrderTable of(Long id, NumberOfGuests numberOfGuests,
+        OrderTableStatus orderTableStatus) {
         return new OrderTable(id, numberOfGuests, orderTableStatus);
     }
 
-    public static OrderTable of(int numberOfGuests, OrderTableStatus orderTableStatus) {
+    public static OrderTable of(NumberOfGuests numberOfGuests, OrderTableStatus orderTableStatus) {
         return new OrderTable(null, numberOfGuests, orderTableStatus);
     }
 
-    private OrderTable(Long id, int numberOfGuests, OrderTableStatus orderTableStatus) {
+    private OrderTable(Long id, NumberOfGuests numberOfGuests, OrderTableStatus orderTableStatus) {
+
+        if (Objects.isNull(orderTableStatus)) {
+            throw new IllegalArgumentException(
+                Message.ORDER_TABLE_IS_NOT_ORDER_TABLE_STATUS_NULL.getMessage());
+        }
+
         this.id = id;
         this.numberOfGuests = numberOfGuests;
         this.orderTableStatus = orderTableStatus;
@@ -50,7 +60,7 @@ public class OrderTable {
     }
 
     public void changeNumberOfGuest(int numberOfGuest) {
-        this.numberOfGuests = numberOfGuest;
+        this.numberOfGuests = new NumberOfGuests(numberOfGuest);
     }
 
     public void unGroup() {
@@ -65,7 +75,7 @@ public class OrderTable {
         return tableGroup;
     }
 
-    public int getNumberOfGuests() {
+    public NumberOfGuests getNumberOfGuests() {
         return numberOfGuests;
     }
 

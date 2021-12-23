@@ -10,6 +10,7 @@ import static kitchenpos.utils.TestFactory.post;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
+import kitchenpos.table.domain.NumberOfGuests;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.dto.TableGroupRequest;
@@ -28,10 +29,10 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
         OrderTableResponse createTable1 = 주문테이블_생성_요청(
-            new OrderTableRequest(0, true)).as(
+            new OrderTableRequest(new NumberOfGuests(0), true)).as(
             OrderTableResponse.class);
         OrderTableResponse createTable2 = 주문테이블_생성_요청(
-            new OrderTableRequest(0, true)).as(
+            new OrderTableRequest(new NumberOfGuests(0), true)).as(
             OrderTableResponse.class);
 
         주문_테이블1 = new OrderTableRequest(1L, createTable1.getNumberOfGuests(), false);

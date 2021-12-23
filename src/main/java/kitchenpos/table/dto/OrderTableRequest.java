@@ -1,20 +1,21 @@
 package kitchenpos.table.dto;
 
+import kitchenpos.table.domain.NumberOfGuests;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableStatus;
 
 public class OrderTableRequest {
 
     private Long id;
-    private int numberOfGuests;
+    private NumberOfGuests numberOfGuests;
     private boolean empty;
 
-    public OrderTableRequest(int numberOfGuests, boolean empty) {
+    public OrderTableRequest(NumberOfGuests numberOfGuests, boolean empty) {
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
     }
 
-    public OrderTableRequest(Long id, int numberOfGuests, boolean empty) {
+    public OrderTableRequest(Long id, NumberOfGuests numberOfGuests, boolean empty) {
         this.id = id;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
@@ -31,7 +32,7 @@ public class OrderTableRequest {
         return id;
     }
 
-    public int getNumberOfGuests() {
+    public NumberOfGuests getNumberOfGuests() {
         return numberOfGuests;
     }
 
