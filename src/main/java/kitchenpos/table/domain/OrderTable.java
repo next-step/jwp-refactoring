@@ -1,5 +1,6 @@
 package kitchenpos.table.domain;
 
+import java.util.Objects;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -81,5 +82,13 @@ public class OrderTable {
 
     public void setEmpty(final boolean empty) {
         this.empty = Empty.of(empty);
+    }
+
+    public void changeEmpty() {
+        if (Objects.nonNull(tableGroup)) {
+            throw new IllegalArgumentException("단체로 지정된 테이블은 빈 테이블로 변경할 수 없습니다.");
+        }
+
+        this.empty = Empty.of(true);
     }
 }

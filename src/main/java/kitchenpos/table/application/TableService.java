@@ -1,5 +1,7 @@
 package kitchenpos.table.application;
 
+import java.util.List;
+import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
@@ -9,16 +11,14 @@ import kitchenpos.table.dto.OrderTableResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-
 @Service
 public class TableService {
+
     private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
 
-    public TableService(final OrderRepository orderRepository, final OrderTableRepository orderTableRepository) {
+    public TableService(final OrderRepository orderRepository,
+        final OrderTableRepository orderTableRepository) {
         this.orderRepository = orderRepository;
         this.orderTableRepository = orderTableRepository;
     }
@@ -37,35 +37,25 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId) {
-        final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-            .orElseThrow(IllegalArgumentException::new);
+        final OrderTable savedOrderTable = findOrderTableById(orderTableId);
 
-        if (Objects.nonNull(savedOrderTable.getTableGroup())) {
-            throw new IllegalArgumentException();
-        }
-
-        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
-                orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new IllegalArgumentException();
-        }
-
-        savedOrderTable.setEmpty(true);
+        checkOrderStatusChangeable(orderTableId);
+        savedOrderTable.changeEmpty();
 
         OrderTable persistTable = orderTableRepository.save(savedOrderTable);
-
         return OrderTableResponse.of(persistTable);
     }
 
     @Transactional
-    public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final OrderTableRequest orderTableRequest) {
+    public OrderTableResponse changeNumberOfGuests(final Long orderTableId,
+        final OrderTableRequest orderTableRequest) {
+        final OrderTable savedOrderTable = findOrderTableById(orderTableId);
+
         final int numberOfGuests = orderTableRequest.getNumberOfGuests();
 
         if (numberOfGuests < 0) {
             throw new IllegalArgumentException();
         }
-
-        final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
 
         if (savedOrderTable.isEmpty()) {
             throw new IllegalArgumentException();
@@ -76,5 +66,23 @@ public class TableService {
         OrderTable persistTable = orderTableRepository.save(savedOrderTable);
 
         return OrderTableResponse.of(persistTable);
+    }
+
+    @Transactional(readOnly = true)
+    public OrderTable findOrderTableById(final Long orderTableId) {
+        return orderTableRepository.findById(orderTableId)
+            .orElseThrow(IllegalArgumentException::new);
+    }
+
+    @Transactional(readOnly = true)
+    public void checkOrderStatusChangeable(Long orderTableId) {
+        List<Order> orders = orderRepository.findAllByOrderTableId(orderTableId);
+
+        boolean isChangeable = orders.stream()
+            .allMatch(order -> order.getOrderStatus().equals(OrderStatus.COMPLETION));
+
+        if (!isChangeable) {
+            throw new IllegalArgumentException("주문 완료가 아닌 테이블은 상태를 변경할 수 없습니다.");
+        }
     }
 }
