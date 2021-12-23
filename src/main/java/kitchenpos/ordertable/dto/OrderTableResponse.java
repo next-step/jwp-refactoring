@@ -11,14 +11,6 @@ public class OrderTableResponse {
     private int numberOfGuests;
     private boolean empty;
 
-    public static OrderTableResponse of(OrderTable orderTable) {
-        return new OrderTableResponse(
-            orderTable.getId(),
-            orderTable.getTableGroupId(),
-            orderTable.getNumberOfGuests(),
-            orderTable.isEmpty());
-    }
-
     public OrderTableResponse() {
     }
 
@@ -27,6 +19,14 @@ public class OrderTableResponse {
         this.tableGroupId = tableGroupId;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
+    }
+
+    public static OrderTableResponse of(OrderTable orderTable) {
+        return new OrderTableResponse(
+            orderTable.getId(),
+            orderTable.getTableGroupId(),
+            orderTable.getNumberOfGuests(),
+            orderTable.isEmpty());
     }
 
     public static List<OrderTableResponse> toList(List<OrderTable> orderTables) {

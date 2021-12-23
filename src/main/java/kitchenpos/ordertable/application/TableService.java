@@ -2,11 +2,9 @@ package kitchenpos.ordertable.application;
 
 import kitchenpos.common.exception.CommonErrorCode;
 import kitchenpos.common.exception.NotFoundException;
-import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.ordertable.domain.OrderTableRepository;
-import kitchenpos.order.domain.Order;
 import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.order.domain.Orders;
+import kitchenpos.ordertable.domain.TableValidator;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
 import org.springframework.stereotype.Service;
@@ -17,35 +15,41 @@ import java.util.List;
 @Service
 public class TableService {
 
-    private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
+    private final TableValidator tableValidator;
 
-    public TableService(final OrderRepository orderDao, final OrderTableRepository orderTableDao) {
-        this.orderRepository = orderDao;
-        this.orderTableRepository = orderTableDao;
+    public TableService(
+        final OrderTableRepository orderTableRepository,
+        final TableValidator tableValidator
+    ) {
+        this.orderTableRepository = orderTableRepository;
+        this.tableValidator = tableValidator;
     }
 
     @Transactional
-    public OrderTableResponse create(final OrderTableRequest orderTable) {
-        return OrderTableResponse.of(orderTableRepository.save(orderTable.toOrderTable()));
+    public OrderTableResponse create(final OrderTableRequest orderTableRequest) {
+        OrderTable orderTable = orderTableRequest.toOrderTable();
+        return OrderTableResponse.of(orderTableRepository.save(orderTable));
     }
 
     @Transactional
-    public OrderTableResponse changeEmpty(final Long orderTableId,
-        final OrderTableRequest orderTable) {
-        final OrderTable savedOrderTable = findOrderTableById(orderTableId);
+    public OrderTableResponse changeEmpty(
+        final Long orderTableId,
+        final OrderTableRequest orderTable
+    ) {
+        OrderTable savedOrderTable = findOrderTableById(orderTableId);
 
-        List<Order> orders = orderRepository.findAllByOrderTable(savedOrderTable);
-
-        savedOrderTable.changeEmpty(Orders.of(orders), orderTable.isEmpty());
+        savedOrderTable.changeEmpty(tableValidator, orderTable.isEmpty());
 
         return OrderTableResponse.of(savedOrderTable);
     }
 
     @Transactional
-    public OrderTableResponse changeNumberOfGuests(final Long orderTableId,
-        final OrderTableRequest orderTable) {
-        final OrderTable savedOrderTable = findOrderTableById(orderTableId);
+    public OrderTableResponse changeNumberOfGuests(
+        final Long orderTableId,
+        final OrderTableRequest orderTable
+    ) {
+        OrderTable savedOrderTable = findOrderTableById(orderTableId);
 
         savedOrderTable.changeNumberOfGuests(orderTable.getNumberOfGuests());
         return OrderTableResponse.of(savedOrderTable);

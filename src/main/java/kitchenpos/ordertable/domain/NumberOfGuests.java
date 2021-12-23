@@ -32,12 +32,11 @@ public class NumberOfGuests {
         }
     }
 
-    public int value() {
-        return numberOfGuests;
-    }
-
     public NumberOfGuests changeNumberOfGuests(int changeNumberOfGuests) {
         return of(changeNumberOfGuests);
     }
 
+    public int value() {
+        return numberOfGuests;
+    }
 }

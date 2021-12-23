@@ -1,19 +1,14 @@
 package kitchenpos.ordertable.domain;
 
 import java.util.Objects;
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import kitchenpos.common.exception.CommonErrorCode;
 import kitchenpos.common.exception.InvalidParameterException;
-import kitchenpos.tablegroup.domain.TableGroup;
-import kitchenpos.order.domain.Orders;
 
 @Entity
 public class OrderTable {
@@ -22,9 +17,8 @@ public class OrderTable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "table_group_id", foreignKey = @ForeignKey(name = "fk_order_table_table_group"))
-    private TableGroup tableGroup;
+    @Column(name = "table_group_id")
+    private Long tableGroupId;
 
     @Embedded
     private NumberOfGuests numberOfGuests;
@@ -49,34 +43,28 @@ public class OrderTable {
         this.numberOfGuests = numberOfGuests.changeNumberOfGuests(changeNumberOfGuests);
     }
 
-    public boolean isEmpty() {
-        return empty.isEmpty();
-    }
-
-    public void changeEmpty(Orders orders, boolean empty) {
+    public void changeEmpty(TableValidator tableValidator, boolean empty) {
         validTableGroupNotInclude();
-
-        if (!orders.isOrdersAllCompleted()) {
-            throw new InvalidParameterException(
-                CommonErrorCode.ORDER_TABLE_CHANGE_EMPTY_NOT_COMPLETE_EXCEPTION);
-        }
+        tableValidator.completedOrderValid(this);
 
         this.empty.changeEmpty(empty);
     }
 
-    public void changeTableGroup(TableGroup tableGroup) {
+    public void changeTableGroup(Long tableGroupId) {
         validTableGroupNotInclude();
         empty.validNotEmpty();
-        this.tableGroup = tableGroup;
+        this.tableGroupId = tableGroupId;
         this.empty.changeEmpty(false);
     }
 
-    public void ungroup(Orders orders) {
-        if (!orders.isOrdersAllCompleted()) {
-            throw new InvalidParameterException(
-                CommonErrorCode.ORDER_TABLE_UNGROUP_NOT_COMPLETE_EXCEPTION);
-        }
-        tableGroup = null;
+    public void ungroup(TableValidator tableValidator) {
+        tableValidator.completedOrderValid(this);
+
+        tableGroupId = null;
+    }
+
+    public boolean isEmpty() {
+        return empty.isEmpty();
     }
 
     public Long getId() {
@@ -84,22 +72,19 @@ public class OrderTable {
     }
 
     public Long getTableGroupId() {
-        if (Objects.isNull(tableGroup)) {
+        if (Objects.isNull(tableGroupId)) {
             return null;
         }
-        return tableGroup.getId();
+        return tableGroupId;
     }
 
     public int getNumberOfGuests() {
         return numberOfGuests.value();
     }
 
-    public TableGroup getTableGroup() {
-        return tableGroup;
-    }
 
     private void validTableGroupNotInclude() {
-        if (Objects.nonNull(tableGroup)) {
+        if (Objects.nonNull(tableGroupId)) {
             throw new InvalidParameterException(
                 CommonErrorCode.ORDER_TABLE_EXISTS_TABLE_GROUP_EXCEPTION);
         }
