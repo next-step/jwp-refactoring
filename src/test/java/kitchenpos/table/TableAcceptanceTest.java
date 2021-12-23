@@ -16,6 +16,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
+@DisplayName("테이블 인수 테스트")
 class TableAcceptanceTest extends AcceptanceTest {
 
     private static final String URI = "/api/tables";
@@ -133,7 +134,7 @@ class TableAcceptanceTest extends AcceptanceTest {
         테이블_손님수_변경_실패됨(response);
     }
 
-    private ExtractableResponse<Response> 테이블_등록되어_있음(OrderTableRequest tableRequest) {
+    public static ExtractableResponse<Response> 테이블_등록되어_있음(OrderTableRequest tableRequest) {
         ExtractableResponse<Response> response = 테이블_생성_요청(tableRequest);
         테이블_생성됨(response);
         return response;
@@ -194,11 +195,11 @@ class TableAcceptanceTest extends AcceptanceTest {
         assertThat(responseIds).containsAll(expectedIds);
     }
 
-    private ExtractableResponse<Response> 테이블_생성_요청(OrderTableRequest request) {
+    private static ExtractableResponse<Response> 테이블_생성_요청(OrderTableRequest request) {
         return RestTestApi.post(URI, request);
     }
 
-    private void 테이블_생성됨(ExtractableResponse<Response> response) {
+    private static void 테이블_생성됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.header("Location")).isNotBlank();
     }
