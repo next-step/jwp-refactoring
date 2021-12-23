@@ -72,7 +72,7 @@ class MenuAcceptanceTest extends AcceptanceTest {
         메뉴_목록_일치됨(response, Collections.emptyList());
     }
 
-    private ExtractableResponse<Response> 메뉴_등록_요청(MenuRequest request) {
+    public static ExtractableResponse<Response> 메뉴_등록_요청(MenuRequest request) {
         return RestAssuredApi.post("/api/menus", request);
     }
 

@@ -13,8 +13,16 @@ public class OrderStatusRequest {
         this.orderStatus = orderStatus;
     }
 
-    public void setOrderStatus(String orderStatus) {
-        this.orderStatus = orderStatus;
+    public static OrderStatusRequest cooking() {
+        return new OrderStatusRequest("COOKING");
+    }
+
+    public static OrderStatusRequest meal() {
+        return new OrderStatusRequest("MEAL");
+    }
+
+    public static OrderStatusRequest completion() {
+        return new OrderStatusRequest("COMPLETION");
     }
 
     public OrderStatus getOrderStatus() {
