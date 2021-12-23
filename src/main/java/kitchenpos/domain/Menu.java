@@ -7,6 +7,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -23,7 +24,7 @@ public class Menu {
     private Long menuGroupId;
 
     @OneToMany(mappedBy = "menu", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private List<MenuProduct> menuProducts;
+    private List<MenuProduct> menuProducts = new ArrayList<>();
 
     public Menu() {
     }
@@ -33,7 +34,7 @@ public class Menu {
         this.name = name;
         this.price = price;
         this.menuGroupId = menuGroupId;
-        this.menuProducts = menuProducts;
+        addMenuProducts(menuProducts);
     }
 
     public Menu(Long id, String name, int price, Long menuGroupId, List<MenuProduct> menuProducts) {
@@ -46,7 +47,7 @@ public class Menu {
         this.name = name;
         this.price = price;
         this.menuGroupId = menuGroupId;
-        this.menuProducts = menuProducts;
+        addMenuProducts(menuProducts);
     }
 
     private void validateMenu(BigDecimal price, List<MenuProduct> menuProducts) {
@@ -63,6 +64,14 @@ public class Menu {
             throw new IllegalArgumentException();
         }
     }
+
+    private void addMenuProducts(List<MenuProduct> menuProducts) {
+        menuProducts.forEach(menuProduct -> {
+            this.menuProducts.add(menuProduct);
+            menuProduct.setMenu(this);
+        });
+    }
+
 
     public Long getId() {
         return id;

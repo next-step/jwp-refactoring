@@ -1,11 +1,6 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.dao.MenuProductDao;
-import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuGroupRepository;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.MenuProductRepository;
@@ -59,8 +54,8 @@ class MenuServiceTest {
     @BeforeEach
     void setUp() {
         menuService = new MenuService(menuRepository, menuGroupRepository, menuProductRepository, productRepository);
-        menuProduct = new MenuProduct(1L, new Menu(), 2L, 1);
-        menuProduct2 = new MenuProduct(1L, new Menu(), 3L, 2);
+        menuProduct = new MenuProduct(1L, new Menu(), new Product(), 1);
+        menuProduct2 = new MenuProduct(1L, new Menu(), new Product(), 2);
         menu = new Menu(1L, "메뉴이름1", 1000, 1L, Lists.newArrayList(menuProduct, menuProduct2));
         menuRequest = new MenuRequest(1L, "메뉴이름1", 1000, 1L, Lists.newArrayList(menuProduct, menuProduct2));
     }

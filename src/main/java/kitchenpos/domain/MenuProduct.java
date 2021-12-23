@@ -18,16 +18,19 @@ public class MenuProduct {
     @JoinColumn(name = "menu_id")
     private Menu menu;
 
-    private Long productId;
+    @ManyToOne
+    @JoinColumn(name = "product_id")
+    private Product product;
+
     private long quantity;
 
     public MenuProduct() {
     }
 
-    public MenuProduct(Long seq, Menu menu, Long productId, long quantity) {
+    public MenuProduct(Long seq, Menu menu, Product product, long quantity) {
         this.seq = seq;
         this.menu = menu;
-        this.productId = productId;
+        this.product = product;
         this.quantity = quantity;
     }
 
@@ -47,17 +50,8 @@ public class MenuProduct {
         this.menu = menu;
     }
 
-    // Todo : remove
-    public void setMenuId(Long menuId) {
-        this.menu = new Menu();
-    }
-
-    public Long getProductId() {
-        return productId;
-    }
-
-    public void setProductId(final Long productId) {
-        this.productId = productId;
+    public Product getProduct() {
+        return product;
     }
 
     public long getQuantity() {
