@@ -1,38 +1,47 @@
 package kitchenpos.application;
 
 import kitchenpos.dao.MenuRepository;
-import kitchenpos.dao.MenuGroupRepository;
-import kitchenpos.dao.MenuProductRepository;
-import kitchenpos.dao.ProductRepository;
 import kitchenpos.domain.*;
-import kitchenpos.exception.NegativePriceException;
+import kitchenpos.dto.MenuProductRequest;
+import kitchenpos.dto.MenuRequest;
+import kitchenpos.dto.MenuResponse;
 import kitchenpos.exception.NoMenuException;
-import kitchenpos.exception.NoMenuGroupException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 public class MenuService {
     private final MenuRepository menuRepository;
+    private final MenuGroupService menuGroupService;
+    private final ProductService productService;
 
     public MenuService(
-            final MenuRepository menuRepository
-    ) {
+            final MenuRepository menuRepository,
+            MenuGroupService menuGroupService, ProductService productService) {
         this.menuRepository = menuRepository;
+        this.menuGroupService = menuGroupService;
+        this.productService = productService;
     }
 
     @Transactional
-    public Menu create(final Menu menu) {
-        return menuRepository.save(menu);
+    public MenuResponse create(final MenuRequest menuRequest) {
+        MenuGroup menuGroup = menuGroupService.findById(menuRequest.getMenuGroupId());
+        MenuProducts menuProducts = new MenuProducts();
+        for (MenuProductRequest menuProductRequest : menuRequest.getMenuProducts()) {
+            Product product = productService.findById(menuProductRequest.getProductId());
+            menuProducts.add(new MenuProduct(product, menuProductRequest.getQuantity()));
+        }
+        Menu menu = new Menu(menuRequest.getName(), new Price(menuRequest.getPrice()), menuGroup, menuProducts);
+        Menu savedMenu = menuRepository.save(menu);
+        return MenuResponse.from(savedMenu);
     }
 
-    public List<Menu> list() {
-        return menuRepository.findAll();
+    public List<MenuResponse> list() {
+        List<Menu> menus = menuRepository.findAll();
+        return MenuResponse.fromList(menus);
     }
 
     public Menu findById(Long menuId) {

@@ -25,8 +25,7 @@ public class Menu {
     public Menu() {
     }
 
-    public Menu(Long id, String name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
-        this.id = id;
+    public Menu(String name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
         this.name = name;
         this.price = price;
         this.menuGroup = menuGroup;

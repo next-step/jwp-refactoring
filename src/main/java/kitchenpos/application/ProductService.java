@@ -3,10 +3,10 @@ package kitchenpos.application;
 import kitchenpos.dao.ProductRepository;
 import kitchenpos.domain.Price;
 import kitchenpos.domain.Product;
+import kitchenpos.exception.NoProductException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 
@@ -31,5 +31,9 @@ public class ProductService {
 
     public List<Product> list() {
         return productRepository.findAll();
+    }
+
+    public Product findById(Long productId) {
+        return productRepository.findById(productId).orElseThrow(NoProductException::new);
     }
 }

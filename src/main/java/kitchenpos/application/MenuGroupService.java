@@ -2,6 +2,7 @@ package kitchenpos.application;
 
 import kitchenpos.dao.MenuGroupRepository;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.exception.NoMenuGroupException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,5 +23,9 @@ public class MenuGroupService {
 
     public List<MenuGroup> list() {
         return menuGroupRepository.findAll();
+    }
+
+    public MenuGroup findById(Long menuGroupId) {
+        return menuGroupRepository.findById(menuGroupId).orElseThrow(NoMenuGroupException::new);
     }
 }
