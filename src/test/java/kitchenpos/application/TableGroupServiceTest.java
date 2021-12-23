@@ -60,19 +60,13 @@ class TableGroupServiceTest {
     }
 
     @Test
-    @DisplayName("주문 테이블이 1개 이하이면 단체 지정이 실패한다.")
-    void create_order_table_is_empty_or_one() {
+    @DisplayName("주문 테이블이 없으면 단체 지정을 할 수 없다.")
+    void create_order_table_is_empty() {
         // given
         List<OrderTable> orderTables = new ArrayList<>();
+
         TableGroup tableGroup = new TableGroup();
         tableGroup.setOrderTables(orderTables);
-
-        // when, then
-        assertThatThrownBy(() -> tableGroupService.create(tableGroup))
-                .isInstanceOf(IllegalArgumentException.class);
-
-        // given
-        orderTables.add(new OrderTable());
 
         // when, then
         assertThatThrownBy(() -> tableGroupService.create(tableGroup))
@@ -80,7 +74,22 @@ class TableGroupServiceTest {
     }
 
     @Test
-    @DisplayName("단체 지정할 주문 테이블들이 존재하는 주문테이블이 아니면 단체 지정에 실패한다.")
+    @DisplayName("주문 테이블이 1개이면 단체 지정을 할 수 없다.")
+    void create_order_table_only_one() {
+        // given
+        List<OrderTable> orderTables = new ArrayList<>();
+        orderTables.add(new OrderTable());
+
+        TableGroup tableGroup = new TableGroup();
+        tableGroup.setOrderTables(orderTables);
+
+        // when, then
+        assertThatThrownBy(() -> tableGroupService.create(tableGroup))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("단체 지정할 주문 테이블들이 존재하는 주문 테이블이 아니면 단체 지정을 할 수 없다.")
     void create_not_exist_order_tables() {
         // given
         OrderTable orderTable1 = new OrderTable();
@@ -100,8 +109,9 @@ class TableGroupServiceTest {
     }
 
     @Test
-    @DisplayName("주문 테이블들이 빈 테이블이 아니거나 이미 단체로 지정되어 있으면 단체 지정에 실패한다.")
-    void create_not_empty_or_already_table_group() {
+    @DisplayName("주문 테이블들이 빈 테이블이 아니면 단체 지정을 할 수 없다.")
+//    @DisplayName("주문 테이블들이 빈 테이블이 아니거나 이미 단체로 지정되어 있으면 단체 지정을 할 수 없다.")
+    void create_not_empty() {
         // given
         OrderTable orderTable1 = new OrderTable();
         OrderTable orderTable2 = new OrderTable();
@@ -117,10 +127,21 @@ class TableGroupServiceTest {
         // when, then
         assertThatThrownBy(() -> tableGroupService.create(tableGroup))
                 .isInstanceOf(IllegalArgumentException.class);
+    }
 
+    @Test
+    @DisplayName("주문 테이블들이 이미 단체로 지정되어 있으면 단체 지정을 할 수 없다.")
+    void create_already_table_group() {
         // given
+        OrderTable orderTable1 = new OrderTable();
+        OrderTable orderTable2 = new OrderTable();
         orderTable1.setEmpty(true);
+        orderTable2.setEmpty(true);
         orderTable1.setTableGroupId(1L);
+
+        List<OrderTable> orderTables = new ArrayList<>(Arrays.asList(orderTable1, orderTable2));
+        TableGroup tableGroup = new TableGroup();
+        tableGroup.setOrderTables(orderTables);
 
         // when, then
         assertThatThrownBy(() -> tableGroupService.create(tableGroup))
@@ -144,7 +165,7 @@ class TableGroupServiceTest {
     }
 
     @Test
-    @DisplayName("해제할 주문 테이블들 중에 조리 또는 식사 중인 주문 테이블이 존재하면 단체 지정 해제가 실패한다.")
+    @DisplayName("해제할 주문 테이블들 중에 조리 또는 식사 중인 주문 테이블이 존재하면 단체 지정 해제를 할 수 없다.")
     void ungroup_order_status_cooking_or_meal() {
         // given
         given(orderTableDao.findAllByTableGroupId(any())).willReturn(new ArrayList<>());

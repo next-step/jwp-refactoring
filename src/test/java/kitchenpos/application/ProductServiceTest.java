@@ -46,7 +46,7 @@ class ProductServiceTest {
     }
 
     @Test
-    @DisplayName("상품의 가격이 null 또는 음수이면 등록이 실패한다.")
+    @DisplayName("상품 가격이 0원 이상이 아니면 상품을 등록할 수 없다.")
     void create_null_or_empty() {
         // given
         Product 가격이_null인_상품 = new Product();

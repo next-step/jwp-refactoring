@@ -175,7 +175,7 @@ class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("존재하지 않는 주문이면 주문 상태 변경이 실패한다.")
+    @DisplayName("존재하지 않는 주문이면 주문 상태를 변경할 수 없다.")
     void changeOrderStatus_not_exist_order() {
         // given
         given(orderDao.findById(any())).willReturn(Optional.ofNullable(null));
@@ -186,7 +186,7 @@ class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("이미 계산 완료된 주문이면 주문 상태 변경이 실패한다.")
+    @DisplayName("이미 계산 완료된 주문이면 주문 상태를 변경할 수 없다.")
     void changeOrderStatus_order_status_already_complete() {
         // given
         Order order = new Order();

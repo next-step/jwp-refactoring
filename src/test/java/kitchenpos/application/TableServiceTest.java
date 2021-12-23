@@ -85,7 +85,7 @@ class TableServiceTest {
     }
 
     @Test
-    @DisplayName("존재하지 않는 주문 테이블이면 빈 테이블로 변경이 실패한다.")
+    @DisplayName("존재하지 않는 주문 테이블이면 빈 테이블로 변경할 수 없다.")
     void changeEmpty_not_exist_order_table() {
         // given
         OrderTable orderTable = new OrderTable();
@@ -97,7 +97,7 @@ class TableServiceTest {
     }
 
     @Test
-    @DisplayName("주문 테이블이 이미 단체 지정이 되어 있으면 빈 테이블로 변경이 실패한다.")
+    @DisplayName("주문 테이블이 이미 단체 지정이 되어 있으면 빈 테이블로 변경할 수 없다.")
     void changeEmpty_table_group() {
         // given
         OrderTable orderTable = new OrderTable();
@@ -110,7 +110,7 @@ class TableServiceTest {
     }
 
     @Test
-    @DisplayName("주문 테이블이 조리 또는 식사 중이면 빈 테이블로 변경이 실패한다.")
+    @DisplayName("주문 테이블이 조리 또는 식사 중이면 빈 테이블로 변경로 변경할 수 없다.")
     void changeEmpty_cooking_or_meal() {
         // given
         OrderTable orderTable = new OrderTable();
@@ -142,7 +142,7 @@ class TableServiceTest {
     }
 
     @Test
-    @DisplayName("변경할 방문 손님 수가 0보다 작으면 방문한 손님 수 변경이 실패한다.")
+    @DisplayName("변경할 방문 손님 수가 0보다 작으면 방문한 손님 수를 변경할 수 없다.")
     void changeNumberOfGuests_guest_count_zero() {
         // given
         OrderTable orderTable = new OrderTable();
@@ -154,7 +154,7 @@ class TableServiceTest {
     }
 
     @Test
-    @DisplayName("존재하지 않는 주문 테이블이면 방문한 손님 수 변경이 실패한다.")
+    @DisplayName("존재하지 않는 주문 테이블이면 방문한 손님 수를 변경할 수 없다.")
     void changeNumberOfGuests_not_exist_order_table() {
         // given
         OrderTable orderTable = new OrderTable();
@@ -168,7 +168,7 @@ class TableServiceTest {
     }
 
     @Test
-    @DisplayName("주문 테이블이 빈 테이블이면 방문한 손님 수 변경이 실패한다.")
+    @DisplayName("주문 테이블이 빈 테이블이면 방문한 손님 수를 변경할 수 없다.")
     void changeNumberOfGuests_empty_table() {
         // given
         OrderTable orderTable = new OrderTable();

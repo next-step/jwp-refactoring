@@ -72,7 +72,7 @@ class MenuServiceTest {
     }
 
     @Test
-    @DisplayName("메뉴의 가격이 null 또는 0이면 등록에 실패한다.")
+    @DisplayName("메뉴의 가격이 0원보다 크지 않으면 메뉴를 등록할 수 없다.")
     void create_price_fail() {
         // given
         Menu 가격이_null = new Menu();
@@ -87,7 +87,7 @@ class MenuServiceTest {
     }
 
     @Test
-    @DisplayName("존재하지 않는 메뉴그룹ID이면 등록에 실패한다.")
+    @DisplayName("메뉴그룹 없이 메뉴를 등록할 수 없다.")
     void create_not_exist_menu_grourp_id() {
         // given
         Menu menu = new Menu();
@@ -101,7 +101,7 @@ class MenuServiceTest {
     }
 
     @Test
-    @DisplayName("존재하지 않는 메뉴 상품이면 등록에 실패한다.")
+    @DisplayName("존재하지 않는 메뉴 상품이면 메뉴를 등록할 수 없다.")
     void create_not_exist_product() {
         // given
         Menu menu = new Menu();
@@ -120,7 +120,7 @@ class MenuServiceTest {
     }
 
     @Test
-    @DisplayName("메뉴 가격이 메뉴 상품 가격들의 합보다 크면 등록에 실패한다.")
+    @DisplayName("메뉴 가격이 메뉴 상품 가격들의 합보다 크면 메뉴를 등록할 수 없다.")
     void create_price_greater_than_sum() {
         // given
         Menu menu = new Menu();
