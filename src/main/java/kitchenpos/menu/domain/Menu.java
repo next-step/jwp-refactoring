@@ -61,7 +61,7 @@ public class Menu {
         changeMenuProducts(menuProducts);
     }
 
-    public void changeMenuProducts(List<MenuProduct> inputMenuProducts) {
+    private void changeMenuProducts(List<MenuProduct> inputMenuProducts) {
         for (MenuProduct menuProduct : inputMenuProducts) {
             menuProduct.assignMenu(this);
         }
@@ -82,10 +82,6 @@ public class Menu {
 
     public MenuGroup getMenuGroup() {
         return menuGroup;
-    }
-
-    public MenuProducts getMenuProducts() {
-        return menuProducts;
     }
 
     public List<MenuProduct> getMenuProductList() {
@@ -116,6 +112,5 @@ public class Menu {
     public int hashCode() {
         return Objects.hash(getId());
     }
-
-
+    
 }

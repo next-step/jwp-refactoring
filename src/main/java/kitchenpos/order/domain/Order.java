@@ -91,7 +91,7 @@ public class Order {
         this.orderStatus = changeStatus;
     }
 
-    public void assignTable(OrderTable orderTable) {
+    private void assignTable(OrderTable orderTable) {
         validateNotEmptyTable(orderTable);
         this.orderTable = orderTable;
         orderTable.addOrder(this);
@@ -113,10 +113,6 @@ public class Order {
 
     public LocalDateTime getOrderedTime() {
         return orderedTime;
-    }
-
-    public OrderLineItems getOrderLineItems() {
-        return orderLineItems;
     }
 
     public List<OrderLineItem> getOrderLineItemList() {
