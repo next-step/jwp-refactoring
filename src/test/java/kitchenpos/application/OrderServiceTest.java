@@ -10,9 +10,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderLineItemRepository;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
@@ -35,7 +35,7 @@ class OrderServiceTest {
     private OrderRepository orderRepository;
 
     @Mock
-    private OrderLineItemDao orderLineItemDao;
+    private OrderLineItemRepository orderLineItemRepository;
 
     @Mock
     private OrderTableRepository orderTableRepository;
@@ -85,7 +85,7 @@ class OrderServiceTest {
         Order order2 = new Order(2L, 2L, OrderStatus.MEAL, LocalDateTime.of(2021, 12, 19, 17, 0), null);
 
         given(orderRepository.findAll()).willReturn(Lists.newArrayList(order1, order2));
-        given(orderLineItemDao.findAllByOrderId(any())).willReturn(orderLineItems1,
+        given(orderLineItemRepository.findAllByOrderId(any())).willReturn(orderLineItems1,
             orderLineItems2);
 
         // when
@@ -119,7 +119,7 @@ class OrderServiceTest {
         Order orderForUpdate = new Order(1L, 1L, OrderStatus.MEAL, null, orderLineItems);
 
         given(orderRepository.findById(any())).willReturn(Optional.of(order));
-        given(orderLineItemDao.findAllByOrderId(1L)).willReturn(orderLineItems);
+        given(orderLineItemRepository.findAllByOrderId(1L)).willReturn(orderLineItems);
 
         // when
         Order result = orderService.changeOrderStatus(1L, orderForUpdate);
