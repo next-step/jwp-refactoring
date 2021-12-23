@@ -4,6 +4,7 @@ import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -19,6 +20,10 @@ public class ProductService {
 
     @Transactional
     public Product create(final Product product) {
+        if (!StringUtils.hasText(product.getName())) {
+            throw new IllegalArgumentException();
+        }
+
         final BigDecimal price = product.getPrice();
 
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
