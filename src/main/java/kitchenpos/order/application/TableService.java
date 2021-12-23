@@ -3,8 +3,10 @@ package kitchenpos.order.application;
 import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.order.dto.OrderTableResponse;
+import kitchenpos.tableGroup.dto.OrderTableIdRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.util.Arrays;
 import java.util.List;
@@ -63,5 +65,22 @@ public class TableService {
     private OrderTable findOrderTable(Long orderTableId) {
         return orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
+    }
+
+    public List<OrderTable> getOrderTable(List<OrderTableIdRequest> orderTableIdRequests) {
+        if (CollectionUtils.isEmpty(orderTableIdRequests) || orderTableIdRequests.size() < 2) {
+            throw new IllegalArgumentException();
+        }
+
+        final List<Long> orderTableIds = orderTableIdRequests.stream()
+                .map(OrderTableIdRequest::getId)
+                .collect(Collectors.toList());
+
+        final List<OrderTable> savedOrderTables = orderTableRepository.findAllByIdIn(orderTableIds);
+
+        if (orderTableIdRequests.size() != savedOrderTables.size()) {
+            throw new IllegalArgumentException();
+        }
+        return savedOrderTables;
     }
 }

@@ -7,6 +7,7 @@ import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
 import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.fixture.MenuGroupFixture;
@@ -35,9 +36,9 @@ public class MenuServiceTest {
     @Mock
     private MenuRepository menuRepository;
     @Mock
-    private MenuGroupRepository menuGroupRepository;
+    private MenuGroupService menuGroupService;
     @Mock
-    private ProductRepository productRepository;
+    private ProductService productService;
 
     @InjectMocks
     private MenuService menuService;
@@ -66,9 +67,9 @@ public class MenuServiceTest {
     @Test
     void create() {
         //given
-        given(menuGroupRepository.findById(any())).willReturn(java.util.Optional.ofNullable(치킨류));
+        given(menuGroupService.getMenuGroup(any())).willReturn(치킨류);
+        given(productService.getMenuProducts(any())).willReturn(Arrays.asList(후라이드두마리구성));
         given(menuRepository.save(any())).willReturn(후라이드두마리세트);
-        given(productRepository.findById(any())).willReturn(java.util.Optional.ofNullable(후라이드));
 
         MenuResponse creatMenu = menuService.create(MenuRequest.of("후라이드두마리세트", new BigDecimal("10000"), 치킨류.getId(), Arrays.asList(후라이드두마리구성Request)));
 
@@ -78,12 +79,14 @@ public class MenuServiceTest {
         );
     }
 
-    @DisplayName("금액은 0원 이상이어야한고 금액이 있어야한다.")
+    @DisplayName("금액은 0원 이상이어야하고 금액이 있어야한다.")
     @Test
     void createPriceError() {
         MenuRequest 금액_없는_세트 = new MenuRequest();
         MenuRequest 금액이_음수인_세트 = new MenuRequest();
         금액이_음수인_세트.setPrice(new BigDecimal("-1000"));
+        given(menuGroupService.getMenuGroup(any())).willReturn(치킨류);
+        given(menuGroupService.getMenuGroup(any())).willReturn(치킨류);
 
         assertThatThrownBy(() ->
                 menuService.create(금액_없는_세트)
@@ -97,6 +100,8 @@ public class MenuServiceTest {
     @DisplayName("가격 x 수량 = 금액 보다 등록한 금액이 더 작아야 한다.")
     @Test
     void createPriceLessError() {
+        given(menuGroupService.getMenuGroup(any())).willReturn(치킨류);
+        given(productService.getMenuProducts(any())).willReturn(Arrays.asList(후라이드두마리구성));
         MenuRequest 비싼_후라이드두마리세트 = MenuRequest.of("비싼_후라이드두마리세트", new BigDecimal("100000"), 치킨류.getId(), Arrays.asList(후라이드두마리구성Request));
 
         assertThatThrownBy(() ->

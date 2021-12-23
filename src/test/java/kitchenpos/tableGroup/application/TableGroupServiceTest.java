@@ -2,6 +2,7 @@ package kitchenpos.tableGroup.application;
 
 import kitchenpos.fixture.OrderTableFixture;
 import kitchenpos.fixture.TableGroupFixture;
+import kitchenpos.order.application.TableService;
 import kitchenpos.order.domain.*;
 import kitchenpos.tableGroup.domain.TableGroup;
 import kitchenpos.tableGroup.domain.TableGroupRepository;
@@ -30,7 +31,7 @@ public class TableGroupServiceTest {
     private OrderRepository orderRepository;
 
     @Mock
-    private OrderTableRepository orderTableRepository;
+    private TableService tableService;
 
     @Mock
     private TableGroupRepository tableGroupRepository;
@@ -54,7 +55,7 @@ public class TableGroupServiceTest {
     @DisplayName("단체 지정을 주문 테이블 목록 으로 등록 할 수 있다.")
     @Test
     void create() {
-        given(orderTableRepository.findAllByIdIn(any())).willReturn(Arrays.asList(테이블1번, 테이블2번));
+        given(tableService.getOrderTable(any())).willReturn(Arrays.asList(테이블1번, 테이블2번));
         given(tableGroupRepository.save(any())).willReturn(단체_지정);
 
         TableGroupResponse create = tableGroupService.create(TableGroupFixture.샘플_Request());
@@ -69,22 +70,13 @@ public class TableGroupServiceTest {
     @DisplayName("단체 지정 할 때 주문 테이블이 2개 이상이여야 한다.")
     @Test
     void createOrderTableSizeError() {
-        OrderTableIdRequest 테이블1 = new OrderTableIdRequest(1L);
-        TableGroupRequest 단체_지정_주문테이블1개_Request = TableGroupFixture.생성_Request(Arrays.asList(테이블1));
+        OrderTableIdRequest 테이블요청 = new OrderTableIdRequest(1L);
+        OrderTable 테이블 = OrderTableFixture.생성(0,false);
+        TableGroupRequest 단체_지정_주문테이블1개_Request = TableGroupFixture.생성_Request(Arrays.asList(테이블요청));
+        given(tableService.getOrderTable(any())).willThrow(IllegalArgumentException.class);
+
         assertThatThrownBy(
                 () -> tableGroupService.create(단체_지정_주문테이블1개_Request)
-        ).isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("단체 지정 할때 주문 테이블은 빈 테이블이어야한다.")
-    @Test
-    void shouldBeEmptyTable() {
-        OrderTableIdRequest 테이블1 = new OrderTableIdRequest(1L);
-        OrderTableIdRequest 테이블2 = new OrderTableIdRequest(2L);
-        TableGroupRequest 단체_지정_Request = TableGroupFixture.생성_Request(Arrays.asList(테이블1, 테이블2));
-
-        assertThatThrownBy(
-                () -> tableGroupService.create(단체_지정_Request)
         ).isInstanceOf(IllegalArgumentException.class);
     }
 

@@ -1,12 +1,15 @@
 package kitchenpos.tableGroup.application;
 
 import kitchenpos.fixture.OrderTableFixture;
+import kitchenpos.fixture.TableGroupFixture;
 import kitchenpos.order.application.TableService;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.OrderTableRepository;
 import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.order.dto.OrderTableResponse;
+import kitchenpos.tableGroup.dto.OrderTableIdRequest;
+import kitchenpos.tableGroup.dto.TableGroupRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -114,4 +117,15 @@ public class TableServiceTest {
                 () -> tableService.changeNumberOfGuests(any(), OrderTableFixture.생성_Request(-10,true))
          ).isInstanceOf(IllegalArgumentException.class);
     }
+
+    @DisplayName("단체 지정 할 때 주문 테이블이 2개 이상이여야 한다.")
+    @Test
+    void createOrderTableSizeError() {
+        OrderTableIdRequest 테이블요청 = new OrderTableIdRequest(1L);
+
+        assertThatThrownBy(
+                () -> tableService.getOrderTable(Arrays.asList(테이블요청))
+        ).isInstanceOf(IllegalArgumentException.class);
+    }
+
 }
