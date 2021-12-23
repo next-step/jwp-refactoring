@@ -26,6 +26,15 @@ public class RestTestApi {
             .extract();
     }
 
+    public static ExtractableResponse<Response> put(String uri) {
+        return RestAssured
+            .given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when().put(uri)
+            .then().log().all()
+            .extract();
+    }
+
     public static ExtractableResponse<Response> put(String uri, Object params) {
         return RestAssured
             .given().log().all()
