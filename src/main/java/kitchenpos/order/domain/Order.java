@@ -9,9 +9,11 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
@@ -25,14 +27,14 @@ import kitchenpos.table.domain.OrderTable;
 public class Order {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @OneToOne
-    @JoinColumn(name = "orderTable")
+    @JoinColumn(name = "order_table_id")
     private OrderTable orderTable;
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
 
     private LocalDateTime orderedTime = LocalDateTime.now();

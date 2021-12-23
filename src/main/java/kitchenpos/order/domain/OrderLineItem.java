@@ -3,6 +3,7 @@ package kitchenpos.order.domain;
 import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -18,11 +19,11 @@ public class OrderLineItem {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "orders_id")
+    @ManyToOne(fetch = LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "order_id")
     private Order order;
 
-    @OneToOne
+    @OneToOne(fetch = LAZY)
     @JoinColumn(name = "menu_id")
     private Menu menu;
 

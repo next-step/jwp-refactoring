@@ -3,6 +3,7 @@ package kitchenpos.table.dto;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableStatus;
 
 public class OrderTableResponse {
 
@@ -31,6 +32,8 @@ public class OrderTableResponse {
         this.empty = empty;
     }
 
+    public OrderTableResponse() {
+    }
 
     public Long getId() {
         return id;
@@ -44,7 +47,7 @@ public class OrderTableResponse {
         return numberOfGuests;
     }
 
-    public boolean isEmpty() {
+    public boolean getEmpty() {
         return empty;
     }
 }
