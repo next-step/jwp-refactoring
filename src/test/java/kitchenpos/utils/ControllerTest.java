@@ -2,6 +2,7 @@ package kitchenpos.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.application.*;
+import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.group.application.MenuGroupService;
 import kitchenpos.menu.product.application.ProductService;
 import org.junit.jupiter.api.extension.ExtendWith;

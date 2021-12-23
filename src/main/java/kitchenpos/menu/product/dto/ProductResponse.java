@@ -19,7 +19,7 @@ public class ProductResponse {
     private ProductResponse(Product product) {
         this.id = product.getId();
         this.name = product.getName();
-        this.price = product.getPriceProduct().getPrice();
+        this.price = product.getPrice();
     }
 
     public static ProductResponse of(Product product) {

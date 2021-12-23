@@ -13,6 +13,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -58,14 +59,14 @@ public class ProductServiceTest {
         //given
         List<Product> products = new ArrayList<>();
         Product 후라이드 = new Product();
-        후라이드.setId(1L);
-        후라이드.setPrice(new BigDecimal("16000"));
-        후라이드.setName("후라이드");
+        ReflectionTestUtils.setField(후라이드, "id", 1L);
+        ReflectionTestUtils.setField(후라이드, "name", "후라이드");
+        ReflectionTestUtils.setField(후라이드, "productPrice", new ProductPrice("16000"));
 
         Product 치즈버거 = new Product();
-        치즈버거.setId(2L);
-        치즈버거.setPrice(new BigDecimal("8000"));
-        치즈버거.setName("치즈버거");
+        ReflectionTestUtils.setField(치즈버거, "id", 2L);
+        ReflectionTestUtils.setField(치즈버거, "name", "치즈버거");
+        ReflectionTestUtils.setField(치즈버거, "productPrice", new ProductPrice("8000"));
 
         products.add(후라이드);
         products.add(치즈버거);

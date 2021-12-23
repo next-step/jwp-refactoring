@@ -2,7 +2,7 @@ package kitchenpos.menu.group.domain;
 
 import javax.persistence.*;
 
-@Table
+@Table(name = "menu_group")
 @Entity
 public class MenuGroup {
 
