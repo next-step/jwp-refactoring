@@ -37,7 +37,6 @@ public class Menu {
         if (price.isMoreExpensive(menuProducts.getTotalPrice())) {
             throw new IllegalArgumentException();
         }
-
         this.name = name;
         this.price = price;
         this.menuGroup = menuGroup;
@@ -45,11 +44,8 @@ public class Menu {
     }
 
     private Menu(Long id, Name name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
+        this(name, price, menuGroup, menuProducts);
         this.id = id;
-        this.name = name;
-        this.price = price;
-        this.menuGroup = menuGroup;
-        this.menuProducts = menuProducts;
     }
 
     public static Menu of(Name name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {

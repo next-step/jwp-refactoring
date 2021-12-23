@@ -41,10 +41,8 @@ public class OrderLineItem {
     }
 
     public OrderLineItem(Long seq, Order order, Menu menu, Quantity quantity) {
+        this(order, menu, quantity);
         this.seq = seq;
-        this.order = order;
-        this.menu = menu;
-        this.quantity = quantity;
     }
 
     public static OrderLineItem of(Menu menu, Quantity quantity) {

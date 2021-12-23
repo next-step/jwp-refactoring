@@ -51,10 +51,9 @@ public class MenuProduct {
     }
 
     private MenuProduct(Long seq, Menu menu, Product product, long quantity) {
+        this(product, quantity);
         this.seq = seq;
         this.menu = menu;
-        this.product = product;
-        this.quantity = quantity;
     }
 
     public static MenuProduct of(Product product, long quantity) {

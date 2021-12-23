@@ -34,13 +34,12 @@ public class TableGroup {
     }
 
     private TableGroup(Long id, LocalDateTime createdDate) {
+        this(createdDate);
         this.id = id;
-        this.createdDate = createdDate;
     }
 
     private TableGroup(Long id, LocalDateTime createdDate, OrderTables orderTables) {
-        this.id = id;
-        this.createdDate = createdDate;
+        this(id, createdDate);
         this.orderTables = orderTables;
     }
 

@@ -42,10 +42,8 @@ public class OrderTable {
     }
 
     public OrderTable(Long id, TableGroup tableGroup, NumberOfGuests numberOfGuests, Empty empty) {
+        this(tableGroup, numberOfGuests, empty);
         this.id = id;
-        this.tableGroup = tableGroup;
-        this.numberOfGuests = numberOfGuests;
-        this.empty = empty;
     }
 
     public static OrderTable of(Long id, Empty empty) {

@@ -22,8 +22,8 @@ public class MenuGroup {
     }
 
     private MenuGroup(Long id, String name) {
+        this(name);
         this.id = id;
-        this.name = name;
     }
 
     public static MenuGroup of(String name) {

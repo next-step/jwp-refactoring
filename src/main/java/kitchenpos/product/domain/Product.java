@@ -26,9 +26,8 @@ public class Product {
     }
 
     private Product(Long id, String name, BigDecimal price) {
+        this(name, price);
         this.id = id;
-        this.name = name;
-        this.price = price;
     }
 
     public static Product of(String name, BigDecimal price) {
