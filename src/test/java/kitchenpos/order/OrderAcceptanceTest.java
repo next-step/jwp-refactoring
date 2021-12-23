@@ -24,7 +24,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.menu.dto.MenuDto;
 import kitchenpos.menugroup.dto.MenuGroupDto;
 import kitchenpos.order.dto.OrderDto;
@@ -32,6 +32,7 @@ import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.ordertable.dto.OrderTableDto;
 import kitchenpos.product.dto.ProductDto;
 
+@DisplayName("주문 인수 테스트")
 public class OrderAcceptanceTest extends AcceptanceTest {
 
 	private static ExtractableResponse<Response> 주문_등록_요청(OrderRequest request) {

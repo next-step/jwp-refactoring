@@ -1,13 +1,9 @@
 package kitchenpos.order.dto;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.order.domain.OrderStatus;
 
 public class OrderRequest {
 	private Long orderTableId;
@@ -57,24 +53,5 @@ public class OrderRequest {
 
 	public void setOrderLineItems(List<OrderLineItemDto> orderLineItems) {
 		this.orderLineItems = orderLineItems;
-	}
-
-	public Order toOrder() {
-		Order order = new Order();
-		order.setOrderTableId(orderTableId);
-		order.setOrderStatus(orderStatus != null ? orderStatus.name() : null);
-		order.setOrderedTime(orderedTime);
-		order.setOrderLineItems(
-			orderLineItems != null ?
-				orderLineItems.stream()
-					.map(ol -> {
-						OrderLineItem orderLineItem = new OrderLineItem();
-						orderLineItem.setMenuId(ol.getMenuId());
-						orderLineItem.setQuantity(ol.getQuantity());
-						return orderLineItem;
-					})
-					.collect(Collectors.toList())
-				: new ArrayList<>());
-		return order;
 	}
 }

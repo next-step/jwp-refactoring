@@ -1,8 +1,9 @@
 package kitchenpos.order.dto;
 
+import kitchenpos.order.domain.OrderLineItem;
+
 public class OrderLineItemDto {
 	private Long seq;
-	private Long orderId;
 	private Long menuId;
 	private long quantity;
 
@@ -18,15 +19,19 @@ public class OrderLineItemDto {
 		return seq;
 	}
 
-	public Long getOrderId() {
-		return orderId;
-	}
-
 	public Long getMenuId() {
 		return menuId;
 	}
 
 	public long getQuantity() {
 		return quantity;
+	}
+
+	public static OrderLineItemDto of(OrderLineItem orderLineItem) {
+		OrderLineItemDto dto = new OrderLineItemDto();
+		dto.seq = orderLineItem.getSeq();
+		dto.menuId = orderLineItem.getMenu().getId();
+		dto.quantity = orderLineItem.getQuantity().getValue();
+		return dto;
 	}
 }
