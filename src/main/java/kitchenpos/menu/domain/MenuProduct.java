@@ -2,6 +2,7 @@ package kitchenpos.menu.domain;
 
 import java.math.BigDecimal;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
@@ -11,9 +12,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import kitchenpos.domain.Price;
+import kitchenpos.common.domain.Price;
 import kitchenpos.menu.dto.MenuProductResponse;
-import kitchenpos.product.domain.Product;
 
 @Entity
 public class MenuProduct {
@@ -26,27 +26,26 @@ public class MenuProduct {
 	@JoinColumn(name = "menu_id", foreignKey = @ForeignKey(name = "fk_menu_product_menu"))
 	private Menu menu;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "product_id", foreignKey = @ForeignKey(name = "fk_menu_product_product"))
-	private Product product;
+	@Column(nullable = false)
+	private Long productId;
 
 	private long quantity;
 
 	protected MenuProduct() {
 	}
 
-	private MenuProduct(Menu menu, Product product, Long quantity) {
+	private MenuProduct(Menu menu, Long productId, Long quantity) {
 		this.menu = menu;
-		this.product = product;
+		this.productId = productId;
 		this.quantity = quantity;
 	}
 
-	public static MenuProduct of(Menu menu, Product product, Long quantity) {
-		return new MenuProduct(menu, product, quantity);
+	public static MenuProduct of(Menu menu, Long productId, Long quantity) {
+		return new MenuProduct(menu, productId, quantity);
 	}
 
 	public MenuProductResponse toResDto() {
-		return MenuProductResponse.of(seq, product, quantity);
+		return MenuProductResponse.of(seq, productId, quantity);
 	}
 
 	public Long getSeq() {
@@ -57,26 +56,15 @@ public class MenuProduct {
 		return menu;
 	}
 
-	public void setMenu(Menu menu) {
-		this.menu = menu;
-	}
-
-	public Product getProduct() {
-		return product;
-	}
-
-	public void setProduct(Product product) {
-		this.product = product;
+	public Long getProductId() {
+		return productId;
 	}
 
 	public long getQuantity() {
 		return quantity;
 	}
 
-	public Price getTotalPrice() {
-		return Price.from(product
-			.getPrice()
-			.multiply(BigDecimal.valueOf(quantity))
-			.intValue());
+	public Price calculateMenuProductPrice(BigDecimal price) {
+		return Price.from(price.multiply(BigDecimal.valueOf(quantity)).intValue());
 	}
 }

@@ -1,7 +1,7 @@
 package kitchenpos.menu.domain;
 
 import static kitchenpos.menu.domain.MenuAcceptanceStaticTest.*;
-import static kitchenpos.menu.domain.MenuGroupAcceptanceStaticTest.*;
+import static kitchenpos.menugroup.domain.MenuGroupAcceptanceStaticTest.*;
 import static kitchenpos.product.domain.ProductAcceptanceStaticTest.*;
 
 import java.util.Collections;
@@ -15,10 +15,10 @@ import org.springframework.http.HttpStatus;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.menu.dto.MenuGroupResponse;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
 import kitchenpos.product.dto.ProductResponse;
 
 @DisplayName("메뉴 : 인수 테스트")

@@ -6,15 +6,11 @@ import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 
-import kitchenpos.domain.Price;
+import kitchenpos.common.domain.Price;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 
@@ -31,9 +27,8 @@ public class Menu {
 	@Embedded
 	private Price price;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "menu_group_id", foreignKey = @ForeignKey(name = "fk_menu_menu_group"), nullable = false)
-	private MenuGroup menuGroup;
+	@Column(nullable = false)
+	private Long menuGroupId;
 
 	@Embedded
 	private MenuProducts menuProducts = MenuProducts.EMPTY_MENU_PRODUCTS;
@@ -41,29 +36,33 @@ public class Menu {
 	protected Menu() {
 	}
 
-	private Menu(String name, Price price, MenuGroup menuGroup) {
+	private Menu(String name, Price price, Long menuGroupId) {
 		this.name = name;
 		this.price = price;
-		this.menuGroup = menuGroup;
+		this.menuGroupId = menuGroupId;
 	}
 
-	private Menu(String name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
+	private Menu(String name, Price price, Long menuGroupId, MenuProducts menuProducts) {
 		this.name = name;
 		this.price = price;
-		this.menuGroup = menuGroup;
+		this.menuGroupId = menuGroupId;
 		this.menuProducts = menuProducts;
 	}
 
-	public static Menu of(String name, Price price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-		return new Menu(name, price, menuGroup, MenuProducts.from(menuProducts));
+	public static Menu from(MenuRequest menuRequest) {
+		return new Menu(menuRequest.getName(), Price.from(menuRequest.getPrice()), menuRequest.getMenuGroupId());
 	}
 
-	public static Menu of(String name, Price price, MenuGroup menuGroup) {
-		return new Menu(name, price, menuGroup);
+	public static Menu of(String name, Price price, Long menuGroupId, List<MenuProduct> menuProducts) {
+		return new Menu(name, price, menuGroupId, MenuProducts.from(menuProducts));
 	}
 
-	public static Menu of(MenuRequest menuRequest, MenuGroup menuGroup) {
-		return new Menu(menuRequest.getName(), Price.from(menuRequest.getPrice()), menuGroup);
+	public static Menu of(String name, Price price, Long menuGroupId) {
+		return new Menu(name, price, menuGroupId);
+	}
+
+	public static Menu of(MenuRequest menuRequest, Long menuGroupId) {
+		return new Menu(menuRequest.getName(), Price.from(menuRequest.getPrice()), menuGroupId);
 	}
 
 	public Long getId() {
@@ -78,12 +77,8 @@ public class Menu {
 		return price.getPrice();
 	}
 
-	public MenuGroup getMenuGroup() {
-		return menuGroup;
-	}
-
-	public void setMenuGroup(MenuGroup menuGroup) {
-		this.menuGroup = menuGroup;
+	public Long getMenuGroupId() {
+		return menuGroupId;
 	}
 
 	public MenuProducts getMenuProducts() {
@@ -91,10 +86,10 @@ public class Menu {
 	}
 
 	public MenuResponse toResDto() {
-		return MenuResponse.of(id, name, price, menuGroup, menuProducts.getMenuProducts());
+		return MenuResponse.of(id, name, price, menuGroupId, menuProducts.getMenuProducts());
 	}
 
-	public void addMenuProducts(List<MenuProduct> savedMenuProducts, Integer price) {
-		menuProducts.addList(savedMenuProducts, Price.from(price));
+	public void addMenuProducts(List<MenuProduct> savedMenuProducts) {
+		menuProducts.addList(savedMenuProducts);
 	}
 }

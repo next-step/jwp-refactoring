@@ -9,24 +9,24 @@ import kitchenpos.order.domain.OrderStatus;
 public class OrderResponse {
 
 	private Long id;
-	private OrderTableResponse orderTable;
+	private Long orderTableId;
 	private OrderStatus orderStatus;
 	private List<OrderLineItemResponse> orderLineItems;
 
 	protected OrderResponse() {
 	}
 
-	private OrderResponse(Long id, OrderTableResponse orderTable, OrderStatus orderStatus,
+	private OrderResponse(Long id, Long orderTableId, OrderStatus orderStatus,
 		List<OrderLineItemResponse> orderLineItems) {
 		this.id = id;
-		this.orderTable = orderTable;
+		this.orderTableId = orderTableId;
 		this.orderStatus = orderStatus;
 		this.orderLineItems = orderLineItems;
 	}
 
-	public static OrderResponse of(Long id, OrderTableResponse orderTable,
+	public static OrderResponse of(Long id, Long orderTableId,
 		OrderStatus orderStatus, List<OrderLineItemResponse> orderLineItems) {
-		return new OrderResponse(id, orderTable, orderStatus, orderLineItems);
+		return new OrderResponse(id, orderTableId, orderStatus, orderLineItems);
 	}
 
 	public static List<OrderResponse> ofList(List<Order> orders) {
@@ -43,8 +43,8 @@ public class OrderResponse {
 		return orderStatus;
 	}
 
-	public OrderTableResponse getOrderTable() {
-		return orderTable;
+	public Long getOrderTableId() {
+		return orderTableId;
 	}
 
 	public List<OrderLineItemResponse> getOrderLineItems() {

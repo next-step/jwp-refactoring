@@ -13,13 +13,11 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import kitchenpos.common.ErrorCode;
+import kitchenpos.common.exception.ErrorCode;
 import kitchenpos.order.dto.OrderLineItemResponse;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.exception.OrderException;
@@ -32,9 +30,8 @@ public class Order {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@OneToOne
-	@JoinColumn(name = "order_table_id")
-	private OrderTable orderTable;
+	@Column(nullable = false)
+	private Long orderTableId;
 
 	@Enumerated(EnumType.STRING)
 	@Column
@@ -50,25 +47,23 @@ public class Order {
 	protected Order() {
 	}
 
-	private Order(OrderTable orderTable, OrderStatus orderStatus) {
-		this.orderTable = orderTable;
+	private Order(Long orderTableId, OrderStatus orderStatus) {
+		this.orderTableId = orderTableId;
 		this.orderStatus = orderStatus;
 	}
 
-	private Order(OrderTable orderTable, OrderStatus orderStatus, OrderLineItems orderLineItems) {
-		this.orderTable = orderTable;
+	private Order(Long orderTableId, OrderStatus orderStatus, OrderLineItems orderLineItems) {
+		this.orderTableId = orderTableId;
 		this.orderStatus = orderStatus;
 		this.orderLineItems = orderLineItems;
 	}
 
-	public static Order of(OrderTable orderTable, OrderStatus orderStatus) {
-		orderTable.empty(false);
-		return new Order(orderTable, orderStatus);
+	public static Order of(Long orderTableId, OrderStatus orderStatus) {
+		return new Order(orderTableId, orderStatus);
 	}
 
-	public static Order of(OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
-		orderTable.empty(false);
-		return new Order(orderTable, orderStatus, OrderLineItems.of(orderLineItems));
+	public static Order of(Long orderTableId, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
+		return new Order(orderTableId, orderStatus, OrderLineItems.of(orderLineItems));
 	}
 
 	public void updateOrderStatus(OrderStatus orderStatus) {
@@ -100,8 +95,8 @@ public class Order {
 		return id;
 	}
 
-	public OrderTable getOrderTable() {
-		return orderTable;
+	public Long getOrderTableId() {
+		return orderTableId;
 	}
 
 	public String getOrderStatus() {
@@ -117,7 +112,7 @@ public class Order {
 	}
 
 	public OrderResponse toResDto() {
-		return OrderResponse.of(id, orderTable.toResDto(), orderStatus,
+		return OrderResponse.of(id, orderTableId, orderStatus,
 			OrderLineItemResponse.ofList(orderLineItems.getOrderLineItems()));
 	}
 

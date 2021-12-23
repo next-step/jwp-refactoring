@@ -1,7 +1,7 @@
 package kitchenpos.order.exception;
 
-import kitchenpos.common.BusinessException;
-import kitchenpos.common.ErrorCode;
+import kitchenpos.common.exception.BusinessException;
+import kitchenpos.common.exception.ErrorCode;
 
 public class OrderException extends BusinessException {
 

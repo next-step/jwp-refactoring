@@ -12,8 +12,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.common.ErrorCode;
-import kitchenpos.common.PriceException;
+import kitchenpos.common.exception.ErrorCode;
+import kitchenpos.common.exception.PriceException;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.dto.ProductRequest;

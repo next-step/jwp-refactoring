@@ -6,7 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import kitchenpos.domain.Price;
+import kitchenpos.common.domain.Price;
 import kitchenpos.product.domain.Product;
 
 @DisplayName("메뉴 상품 : 단위 테스트")
@@ -18,14 +18,14 @@ public class MenuProductTest {
 	@BeforeEach
 	void setup() {
 		product = Product.of("p1", 10000);
-		menuProduct = MenuProduct.of(null, product, 1L);
+		menuProduct = MenuProduct.of(null, product.getId(), 1L);
 	}
 
 	@DisplayName("메뉴 상품 갯수와 상품 가격을 곱한 최종 가격을 반환하는 메소드 테스트")
 	@Test
 	void calculateTotalPrice() {
 		// when
-		Price totalPrice = menuProduct.getTotalPrice();
+		Price totalPrice = menuProduct.calculateMenuProductPrice(product.getPrice());
 
 		// then
 		assertThat(totalPrice.getPrice().intValue()).isEqualTo(10000);
