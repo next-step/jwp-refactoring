@@ -1,5 +1,8 @@
-package kitchenpos.domain;
+package kitchenpos.tablegroup.domain;
 
+import kitchenpos.table.domain.Empty;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTables;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.Embedded;
@@ -26,13 +29,31 @@ public class TableGroup {
     protected TableGroup() {
     }
 
+    private TableGroup(LocalDateTime createdDate) {
+        this.createdDate = createdDate;
+    }
+
     private TableGroup(Long id, LocalDateTime createdDate) {
         this.id = id;
         this.createdDate = createdDate;
     }
 
+    private TableGroup(Long id, LocalDateTime createdDate, OrderTables orderTables) {
+        this.id = id;
+        this.createdDate = createdDate;
+        this.orderTables = orderTables;
+    }
+
+    public static TableGroup of(LocalDateTime createdDate) {
+        return new TableGroup(createdDate);
+    }
+
     public static TableGroup of(Long id, LocalDateTime createdDate) {
         return new TableGroup(id, createdDate);
+    }
+
+    public static TableGroup of(Long id, LocalDateTime createdDate, OrderTables orderTables) {
+        return new TableGroup(id, createdDate, orderTables);
     }
 
     public Long getId() {
@@ -45,5 +66,14 @@ public class TableGroup {
 
     public List<OrderTable> getOrderTables() {
         return orderTables.getOrderTables();
+    }
+
+    public void addOrderTable(List<OrderTable> orderTables) {
+        orderTables.forEach(orderTable ->
+        {
+            orderTable.setTableGroup(this);
+            orderTable.setEmpty(Empty.of(false));
+            this.orderTables.add(orderTable);
+        });
     }
 }

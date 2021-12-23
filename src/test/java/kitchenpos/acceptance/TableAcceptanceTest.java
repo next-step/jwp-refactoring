@@ -3,10 +3,10 @@ package kitchenpos.acceptance;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.OrderTable;
 import kitchenpos.table.dto.ChangeEmptyRequest;
 import kitchenpos.table.dto.ChangeNumberOfGuestsRequest;
 import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -99,10 +99,10 @@ class TableAcceptanceTest extends AcceptanceTest {
         );
     }
 
-    public static OrderTable 주문_테이블_등록되어_있음(int numberOfGuests, boolean empty) {
+    public static OrderTableResponse 주문_테이블_등록되어_있음(int numberOfGuests, boolean empty) {
         OrderTableRequest params = OrderTableRequest.of(numberOfGuests, empty);
 
         ExtractableResponse<Response> response = 주문_테이블_생성_요청(params);
-        return response.as(OrderTable.class);
+        return response.as(OrderTableResponse.class);
     }
 }

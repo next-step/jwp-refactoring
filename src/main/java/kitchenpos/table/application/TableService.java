@@ -1,15 +1,16 @@
-package kitchenpos.application;
+package kitchenpos.table.application;
 
 import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
 import kitchenpos.table.domain.Empty;
 import kitchenpos.table.domain.NumberOfGuests;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableDao;
 import kitchenpos.table.dto.ChangeEmptyRequest;
 import kitchenpos.table.dto.ChangeNumberOfGuestsRequest;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.tablegroup.domain.TableGroup;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -78,5 +79,13 @@ public class TableService {
     public boolean isCookingOrMealExists(Long orderTableId) {
         List<String> orderStatuses = Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name());
         return orderDao.existsByOrderTableIdAndOrderStatusIn(orderTableId, orderStatuses);
+    }
+
+    public List<OrderTable> findAllByIdIn(List<Long> orderTableIds) {
+        return orderTableDao.findAllByIdIn(orderTableIds);
+    }
+
+    public List<OrderTable> findAllByTableGroup(TableGroup tableGroup) {
+        return orderTableDao.findAllByTableGroup(tableGroup);
     }
 }

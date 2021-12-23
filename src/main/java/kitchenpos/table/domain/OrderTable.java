@@ -1,7 +1,6 @@
-package kitchenpos.domain;
+package kitchenpos.table.domain;
 
-import kitchenpos.table.domain.Empty;
-import kitchenpos.table.domain.NumberOfGuests;
+import kitchenpos.tablegroup.domain.TableGroup;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -31,6 +30,11 @@ public class OrderTable {
     protected OrderTable() {
     }
 
+    private OrderTable(Long id, Empty empty) {
+        this.id = id;
+        this.empty = empty;
+    }
+
     private OrderTable(TableGroup tableGroup, NumberOfGuests numberOfGuests, Empty empty) {
         this.tableGroup = tableGroup;
         this.numberOfGuests = numberOfGuests;
@@ -42,6 +46,10 @@ public class OrderTable {
         this.tableGroup = tableGroup;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
+    }
+
+    public static OrderTable of(Long id, Empty empty) {
+        return new OrderTable(id, empty);
     }
 
     public static OrderTable of(TableGroup tableGroup, NumberOfGuests numberOfGuests, Empty empty) {
@@ -60,6 +68,10 @@ public class OrderTable {
         return tableGroup;
     }
 
+    public void setTableGroup(TableGroup tableGroup) {
+        this.tableGroup = tableGroup;
+    }
+
     public Long getTableGroupId() {
         if (tableGroup == null) {
             return null;
@@ -73,6 +85,10 @@ public class OrderTable {
 
     public Empty getEmpty() {
         return empty;
+    }
+
+    public void setEmpty(Empty empty) {
+        this.empty = empty;
     }
 
     public void changeEmpty(Empty empty) {
