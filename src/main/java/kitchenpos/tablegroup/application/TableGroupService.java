@@ -49,7 +49,7 @@ public class TableGroupService {
 		}
 
 		for (final OrderTable savedOrderTable : savedOrderTables) {
-			if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroupId())) {
+			if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroup())) {
 				throw new IllegalArgumentException();
 			}
 		}
@@ -58,7 +58,7 @@ public class TableGroupService {
 
 		for (final OrderTable savedOrderTable : savedOrderTables) {
 			savedOrderTable.setTableGroup(savedTableGroup);
-			savedOrderTable.setEmpty(false);
+			savedOrderTable.setEmptyIfNotTableGroup(false);
 			orderTableRepository.save(savedOrderTable);
 		}
 		savedTableGroup.setOrderTables(savedOrderTables);

@@ -53,7 +53,7 @@ class TableGroupServiceTest {
 		assertThat(createdTableGroup.getOrderTables().size()).isEqualTo(2);
 		createdTableGroup.getOrderTables()
 			.forEach(orderTable -> {
-				assertThat(orderTable.getTableGroupId()).isEqualTo(createdTableGroup.getId());
+				assertThat(orderTable.getTableGroup().getId()).isEqualTo(createdTableGroup.getId());
 				assertThat(orderTable.isEmpty()).isFalse();
 			});
 	}
@@ -122,8 +122,8 @@ class TableGroupServiceTest {
 		tableGroupService.ungroup(tableGroup.getId());
 
 		verify(orderTableRepository, times(2)).save(any(OrderTable.class));
-		assertThat(orderTable1.getTableGroupId()).isNull();
-		assertThat(orderTable2.getTableGroupId()).isNull();
+		assertThat(orderTable1.getTableGroup().getId()).isNull();
+		assertThat(orderTable2.getTableGroup().getId()).isNull();
 	}
 
 	@Test
