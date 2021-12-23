@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class MenuService {
 
+    private static final String ERROR_MESSAGE_NOT_EXIST_MENU = "없는 메뉴입니다.";
     private final MenuDao menuDao;
     private final MenuGroupService menuGroupService;
     private final ProductService productService;
@@ -48,13 +49,15 @@ public class MenuService {
         return MenuResponse.from(savedMenu);
     }
 
-    public List<Menu> list() {
-        return menuDao.findAll();
-    }
-
-    public List<MenuResponse> listResponse() {
-        return list().stream()
+    public List<MenuResponse> list() {
+        return menuDao.findAll()
+            .stream()
             .map(MenuResponse::from)
             .collect(Collectors.toList());
+    }
+
+    public Menu findMenu(Long menuId) {
+        return menuDao.findById(menuId)
+            .orElseThrow(() -> new IllegalArgumentException(ERROR_MESSAGE_NOT_EXIST_MENU));
     }
 }

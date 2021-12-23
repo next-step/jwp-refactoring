@@ -33,6 +33,6 @@ public class MenuRestController {
     @GetMapping
     public ResponseEntity<List<MenuResponse>> list() {
         return ResponseEntity.ok()
-            .body(menuService.listResponse());
+            .body(menuService.list());
     }
 }

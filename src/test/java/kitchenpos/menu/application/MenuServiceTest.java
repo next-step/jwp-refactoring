@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
@@ -102,10 +103,20 @@ class MenuServiceTest {
         MenuTestFixtures.메뉴_전체조회_모킹(menuDao, menus);
 
         //when
-        List<Menu> findMenus = menuService.list();
+        List<MenuResponse> findMenus = menuService.list();
 
         //then
         assertThat(findMenus.size()).isEqualTo(menus.size());
-        assertThat(findMenus).containsAll(menus);
+        메뉴목록_검증(findMenus, menus);
+    }
+
+    private void 메뉴목록_검증(List<MenuResponse> findMenus, List<Menu> menus) {
+        List<Long> findProductIds = findMenus.stream()
+            .map(MenuResponse::getId)
+            .collect(Collectors.toList());
+        List<Long> expectProductIds = menus.stream()
+            .map(Menu::getId)
+            .collect(Collectors.toList());
+        assertThat(findProductIds).containsAll(expectProductIds);
     }
 }

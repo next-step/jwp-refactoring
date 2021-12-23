@@ -52,6 +52,10 @@ public class Menu {
         this(null, name, price, menuGroup, menuProducts);
     }
 
+    public Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup) {
+        this(id, name, price, menuGroup, null);
+    }
+
     public Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup,
         List<MenuProduct> menuProducts) {
         validatePrice(price);

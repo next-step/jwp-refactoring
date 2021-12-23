@@ -25,5 +25,7 @@ public class MenuGroupTestFixtures {
     public static void 메뉴그룹_전체조회_모킹(MenuGroupDao menuGroupDao, List<MenuGroup> menuGroups) {
         given(menuGroupDao.findAll()).willReturn(menuGroups);
     }
+
+    public static final MenuGroup 추천메뉴 = new MenuGroup(1L, "추천메뉴");
 }
 

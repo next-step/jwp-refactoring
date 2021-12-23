@@ -92,7 +92,7 @@ class MenuRestControllerTest {
                 new Menu(1L, "후라이드+후라이드", BigDecimal.valueOf(19000), 추천메뉴그룹, menuProducts1)),
             MenuResponse.from(
                 new Menu(2L, "오븐구이+순살강정", BigDecimal.valueOf(23000), 추천메뉴그룹, menuProducts2)));
-        given(menuService.listResponse()).willReturn(expectedMenus);
+        given(menuService.list()).willReturn(expectedMenus);
 
         //when, then
         mockMvc.perform(get(BASE_PATH))
