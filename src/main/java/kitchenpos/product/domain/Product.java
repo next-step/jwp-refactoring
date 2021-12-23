@@ -29,13 +29,13 @@ public class Product {
     }
 
     public Product(Long id, String name, BigDecimal price) {
+        validatePriceLessThanZero(price);
         this.id = id;
         this.name = name;
         this.price = price;
-        validatePriceLessThanZero();
     }
 
-    private void validatePriceLessThanZero() {
+    private void validatePriceLessThanZero(BigDecimal price) {
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalArgumentException("상품 가격은 0이상의 값을 가져야합니다.");
         }

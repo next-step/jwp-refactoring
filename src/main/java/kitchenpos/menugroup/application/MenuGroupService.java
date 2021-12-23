@@ -32,4 +32,10 @@ public class MenuGroupService {
             .map(MenuGroupResponse::of)
             .collect(Collectors.toList());
     }
+
+
+    public MenuGroup findById(long id) {
+        return menuGroupRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("메뉴그룹이 존재하지 않습니다."));
+    }
 }
