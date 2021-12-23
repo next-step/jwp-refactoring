@@ -45,8 +45,8 @@ class ProductServiceTest {
         // then
         assertThat(result).isNotNull();
         assertThat(result.getId()).isEqualTo(1L);
-        assertThat(result.getName()).isEqualTo(Name.of("양념치킨"));
-        assertThat(result.getPrice()).isEqualTo(BigDecimal.valueOf(17000));
+        assertThat(result.getName()).isEqualTo("양념치킨");
+        assertThat(result.getPrice()).isEqualTo(17000);
     }
 
     @DisplayName("가격이 음수인 경우 예외 발생")
@@ -79,12 +79,12 @@ class ProductServiceTest {
         assertThat(result).hasSize(3);
         assertThat(result.get(0).getId()).isEqualTo(1L);
         assertThat(result.get(0).getName()).isEqualTo("양념치킨");
-        assertThat(result.get(0).getPrice()).isEqualTo(BigDecimal.valueOf(17000));
+        assertThat(result.get(0).getPrice()).isEqualTo(17000);
         assertThat(result.get(1).getId()).isEqualTo(2L);
         assertThat(result.get(1).getName()).isEqualTo("후라이드치킨");
-        assertThat(result.get(1).getPrice()).isEqualTo(BigDecimal.valueOf(16000));
+        assertThat(result.get(1).getPrice()).isEqualTo(16000);
         assertThat(result.get(2).getId()).isEqualTo(3L);
         assertThat(result.get(2).getName()).isEqualTo("간장치킨");
-        assertThat(result.get(2).getPrice()).isEqualTo(BigDecimal.valueOf(17000));
+        assertThat(result.get(2).getPrice()).isEqualTo(17000);
     }
 }

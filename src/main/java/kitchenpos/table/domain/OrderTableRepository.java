@@ -7,7 +7,8 @@ import org.springframework.data.repository.query.Param;
 
 public interface OrderTableRepository extends JpaRepository<OrderTable, Long> {
 
-    List<OrderTable> findAllByIdIn(List<Long> ids);
+    @Query("SELECT ot FROM OrderTable ot WHERE ot.id IN :ids")
+    List<OrderTable> findAllByIdIn(@Param("ids") List<Long> ids);
 
     @Query("SELECT ot FROM OrderTable ot WHERE ot.tableGroupId = :tableGroupId")
     List<OrderTable> findAllByTableGroupId(@Param("tableGroupId") Long tableGroupId);
