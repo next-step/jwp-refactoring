@@ -60,8 +60,11 @@ public class TableGroupServiceTest {
         given(orderTableDao.findAllByIdIn(anyList())).willReturn(단체지정.getOrderTables());
         given(tableGroupDao.save(단체지정)).willReturn(단체지정);
         
-        // when, then
-        assertThat(tableGroupService.create(단체지정)).isEqualTo(단체지정);
+        // when
+        TableGroup 저장된_단체지정 = tableGroupService.create(단체지정);
+        
+        // then
+        assertThat(저장된_단체지정).isEqualTo(단체지정);
     }
     
     @DisplayName("주문 테이블이 두 테이블 이상이어야 단체지정을 할 수 있다 - 예외처리")
