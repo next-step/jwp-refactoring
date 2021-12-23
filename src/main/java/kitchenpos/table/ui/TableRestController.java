@@ -45,8 +45,7 @@ public class TableRestController {
     @PutMapping("/{orderTableId}/number-of-guests")
     public ResponseEntity<OrderTableResponse> changeNumberOfGuests(
         @PathVariable final Long orderTableId,
-        @RequestBody final OrderTableRequest orderTableRequest
-    ) {
+        @RequestBody final OrderTableRequest orderTableRequest) {
         return ResponseEntity.ok()
             .body(tableService.changeNumberOfGuests(orderTableId, orderTableRequest));
     }

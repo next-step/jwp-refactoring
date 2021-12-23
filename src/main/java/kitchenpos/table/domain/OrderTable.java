@@ -91,4 +91,12 @@ public class OrderTable {
 
         this.empty = Empty.of(true);
     }
+
+    public void changeNumberOfGuests(final int numberOfGuests) {
+        if(empty.isEmpty()) {
+            throw new IllegalArgumentException("빈 테이블의 손님 수를 변경할 수 없습니다.");
+        }
+
+        this.numberOfGuests = NumberOfGuests.of(numberOfGuests);
+    }
 }

@@ -61,11 +61,10 @@ class TableAcceptanceTest extends AcceptanceTest {
     void changeEmpty() {
         // given
         OrderTableRequest 비어있지않은_테이블 = new OrderTableRequest(1, false);
-        ExtractableResponse<Response> 비어있지않은_테이블_응답 = 테이블_생성_요청(비어있지않은_테이블);
-        테이블_생성됨(비어있지않은_테이블_응답);
+        OrderTableResponse 비어있지않은_테이블_응답 = 테이블_등록되어_있음(비어있지않은_테이블).as(OrderTableResponse.class);
 
         // when
-        ExtractableResponse<Response> response = 테이블_비움_요청(비어있지않은_테이블_응답);
+        ExtractableResponse<Response> response = 테이블_비움_요청(비어있지않은_테이블_응답.getId());
 
         // then
         테이블_상태_변경_응답됨(response);
@@ -76,23 +75,77 @@ class TableAcceptanceTest extends AcceptanceTest {
     @Test
     void changeNumberOfGuests() {
         // given
-        OrderTableRequest 손님수를_변경할_테이블 = new OrderTableRequest(1, false);
-        ExtractableResponse<Response> 손님수를_변경할_테이블_응답 = 테이블_생성_요청(손님수를_변경할_테이블);
-        테이블_생성됨(손님수를_변경할_테이블_응답);
+        OrderTableRequest 손님수를_변경할_테이블_요청 = new OrderTableRequest(1, false);
+        OrderTableResponse 손님수를_변경할_테이블_응답 = 테이블_등록되어_있음(손님수를_변경할_테이블_요청).as(OrderTableResponse.class);
 
         // when
         OrderTableRequest 변경할_손님수 = new OrderTableRequest(3);
-        ExtractableResponse<Response> response = 테이블_손님수_변경_요청(손님수를_변경할_테이블_응답, 변경할_손님수);
+        ExtractableResponse<Response> response = 테이블_손님수_변경_요청(손님수를_변경할_테이블_응답.getId(), 변경할_손님수);
 
         // then
         테이블_손님수_변경_응답됨(response);
         테이블_손님수_변경됨(response, 변경할_손님수.getNumberOfGuests());
     }
 
-    private ExtractableResponse<Response> 테이블_손님수_변경_요청(ExtractableResponse<Response> 손님수를_변경할_테이블_응답,
-        OrderTableRequest 변경할_손님수) {
-        return RestTestApi.put(
-            손님수를_변경할_테이블_응답.header("Location") + "/number-of-guests", 변경할_손님수);
+    @DisplayName("등록 안 된 테이블은 손님수를 변경 할 수 없다.")
+    @Test
+    void changeNumberOfGuestsNotRegisteredTable() {
+        // given
+        OrderTableRequest 마지막_테이블 = new OrderTableRequest(1, false);
+        OrderTableResponse 마지막_테이블_응답 = 테이블_등록되어_있음(마지막_테이블).as(OrderTableResponse.class);
+
+        // when
+        Long 없는_테이블_id = 마지막_테이블_응답.getId() + 1;
+        OrderTableRequest 변경할_손님수 = new OrderTableRequest(2);
+        ExtractableResponse<Response> response = 테이블_손님수_변경_요청(없는_테이블_id, 변경할_손님수);
+
+        // then
+        테이블_손님수_변경_실패됨(response);
+    }
+
+    @DisplayName("빈 테이블은 손님수를 변경 할 수 없다.")
+    @Test
+    void changeNumberOfGuestsEmptyTable() {
+        // given
+        OrderTableRequest 손님수를_변경할_빈_테이블_요청 = new OrderTableRequest(1, true);
+        OrderTableResponse 손님수를_변경할_테이블_응답 = 테이블_등록되어_있음(손님수를_변경할_빈_테이블_요청).as(OrderTableResponse.class);
+
+        // when
+        OrderTableRequest 변경할_손님수 = new OrderTableRequest(2);
+        ExtractableResponse<Response> response = 테이블_손님수_변경_요청(손님수를_변경할_테이블_응답.getId(), 변경할_손님수);
+
+        // then
+        테이블_손님수_변경_실패됨(response);
+    }
+
+    @DisplayName("테이블에 방문한 손님 수를 0명 이하로 변경 할 수 없다.")
+    @Test
+    void changeNumberOfGuestsNegative() {
+        // given
+        OrderTableRequest 손님수를_변경할_테이블 = new OrderTableRequest(1, false);
+        OrderTableResponse 손님수를_변경할_테이블_응답 = 테이블_등록되어_있음(손님수를_변경할_테이블).as(OrderTableResponse.class);
+
+        // when
+        OrderTableRequest 변경할_손님수 = new OrderTableRequest(-1);
+        ExtractableResponse<Response> response = 테이블_손님수_변경_요청(손님수를_변경할_테이블_응답.getId(), 변경할_손님수);
+
+        // then
+        테이블_손님수_변경_실패됨(response);
+    }
+
+    private ExtractableResponse<Response> 테이블_등록되어_있음(OrderTableRequest tableRequest) {
+        ExtractableResponse<Response> response = 테이블_생성_요청(tableRequest);
+        테이블_생성됨(response);
+        return response;
+    }
+
+    private void 테이블_손님수_변경_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    private ExtractableResponse<Response> 테이블_손님수_변경_요청(Long orderTableId, OrderTableRequest request) {
+        String uri = URI + String.format("/%d/number-of-guests", orderTableId);
+        return RestTestApi.put(uri, request);
     }
 
     private void 테이블_손님수_변경_응답됨(ExtractableResponse<Response> response) {
@@ -104,9 +157,9 @@ class TableAcceptanceTest extends AcceptanceTest {
         assertThat(actualResponse.getNumberOfGuests()).isEqualTo(expectedGuests);
     }
 
-    private ExtractableResponse<Response> 테이블_비움_요청(ExtractableResponse<Response> 비어있지않은_테이블_응답) {
-        return RestTestApi.put(
-            비어있지않은_테이블_응답.header("Location") + "/empty");
+    private ExtractableResponse<Response> 테이블_비움_요청(Long orderTableId) {
+        String uri = URI + String.format("/%d/empty", orderTableId);
+        return RestTestApi.put(uri);
     }
 
     private void 테이블_상태_변경_응답됨(ExtractableResponse<Response> response) {
