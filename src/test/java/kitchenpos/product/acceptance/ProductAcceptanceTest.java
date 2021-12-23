@@ -20,39 +20,25 @@ import org.springframework.transaction.annotation.Transactional;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import kitchenpos.AcceptanceTest;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
 import kitchenpos.product.ui.ProductRestController;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class ProductAcceptanceTest {
-	private static final ProductRequest 로제치킨 = new ProductRequest("로제치킨", new BigDecimal(18000));
-
-	@LocalServerPort
-	private int port;
-
-	@BeforeEach
-	public void setUp() {
-		RestAssured.port = port;
-	}
+@DisplayName("상품 기능 인수테스트")
+class ProductAcceptanceTest extends AcceptanceTest {
 
 	@Test
 	@DisplayName("상품 생성 성공 테스트")
 	public void createProductSuccessTest() {
 		//given
+		ProductRequest productRequest = new ProductRequest("로제치킨", new BigDecimal(18000));
 		//when
-		ExtractableResponse<Response> response = RestAssured
-			.given().log().all()
-			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.body(로제치킨)
-			.when().post("/api/products")
-			.then().log().all()
-			.extract();
+		ExtractableResponse<Response> response = 상품_생성_요청(productRequest);
 
 		//then
-		assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-		assertThat(response.header("Location")).isEqualTo("/api/products/7");
+		상품_생성_성공(response);
 	}
 
 	@Test
@@ -60,16 +46,39 @@ class ProductAcceptanceTest {
 	public void findAllProductListSuccessTest() {
 		//given
 		//when
-		ExtractableResponse<Response> response = RestAssured
+		ExtractableResponse<Response> response = 상품_목록_조회_요청();
+
+		//then
+		상품_목록_조회_성공(response);
+	}
+
+	private void 상품_목록_조회_성공(ExtractableResponse<Response> response) {
+		List<ProductResponse> productResponses = response.jsonPath().getList(".", ProductResponse.class);
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+		assertThat(productResponses).hasSizeGreaterThanOrEqualTo(6);
+	}
+
+	private ExtractableResponse<Response> 상품_목록_조회_요청() {
+		return RestAssured
 			.given().log().all()
 			.accept(MediaType.APPLICATION_JSON_VALUE)
 			.when().get("/api/products")
 			.then().log().all()
 			.extract();
+	}
 
-		//then
-		List<ProductResponse> productResponses = response.jsonPath().getList(".", ProductResponse.class);
-		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-		assertThat(productResponses).hasSizeGreaterThanOrEqualTo(6);
+	private void 상품_생성_성공(ExtractableResponse<Response> response) {
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+		assertThat(response.header("Location")).isEqualTo("/api/products/7");
+	}
+
+	private ExtractableResponse<Response> 상품_생성_요청(ProductRequest productRequest) {
+		return RestAssured
+			.given().log().all()
+			.contentType(MediaType.APPLICATION_JSON_VALUE)
+			.body(productRequest)
+			.when().post("/api/products")
+			.then().log().all()
+			.extract();
 	}
 }

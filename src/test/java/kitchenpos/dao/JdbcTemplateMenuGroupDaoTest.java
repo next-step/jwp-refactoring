@@ -15,9 +15,8 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.test.annotation.Rollback;
 
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.menugroup.domain.MenuGroup;
 
-@Rollback
 class JdbcTemplateMenuGroupDaoTest {
 	private static final String NAME = "후라이드+양념";
 	private static final String OTHER_NAME = "로제+양념";
