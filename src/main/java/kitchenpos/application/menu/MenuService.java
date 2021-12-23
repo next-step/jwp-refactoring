@@ -1,12 +1,13 @@
-package kitchenpos.application;
+package kitchenpos.application.menu;
 
-import kitchenpos.domain.*;
-import kitchenpos.dto.MenuProductRequest;
-import kitchenpos.dto.MenuRequest;
-import kitchenpos.event.MenuCreatedEvent;
-import kitchenpos.repository.MenuGroupRepository;
-import kitchenpos.repository.MenuRepository;
-import org.springframework.context.ApplicationEventPublisher;
+import kitchenpos.application.product.ProductService;
+import kitchenpos.domain.menu.Menu;
+import kitchenpos.domain.menu.MenuProduct;
+import kitchenpos.domain.menugroup.MenuGroup;
+import kitchenpos.dto.menu.MenuProductRequest;
+import kitchenpos.dto.menu.MenuRequest;
+import kitchenpos.repository.menugroup.MenuGroupRepository;
+import kitchenpos.repository.menu.MenuRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,13 +17,13 @@ import java.util.List;
 public class MenuService {
     private final MenuRepository menuRepository;
     private final MenuGroupRepository menuGroupRepository;
-    private final ApplicationEventPublisher eventPublisher;
+    private final ProductService productService;
 
 
-    public MenuService(MenuRepository menuRepository, MenuGroupRepository menuGroupRepository, ApplicationEventPublisher eventPublisher) {
+    public MenuService(MenuRepository menuRepository, MenuGroupRepository menuGroupRepository, ProductService productService) {
         this.menuRepository = menuRepository;
         this.menuGroupRepository = menuGroupRepository;
-        this.eventPublisher = eventPublisher;
+        this.productService = productService;
     }
 
     @Transactional
@@ -36,10 +37,11 @@ public class MenuService {
         final List<MenuProductRequest> menuProducts = menuRequest.getMenuProducts();
 
         menuProducts.stream()
-                    .map(menuProductRequest -> new MenuProduct(menu, new Product(menuProductRequest.getProductId()), menuProductRequest.getQuantity()))
-                    .forEach(menu::addMenuProduct);
+                .map(menuProductRequest -> new MenuProduct(menu, productService.getProduct(menuProductRequest.getProductId()), menuProductRequest.getQuantity()))
+                .forEach(menu::addMenuProduct);
 
-        eventPublisher.publishEvent(new MenuCreatedEvent(menu));
+        menu.getMenuProducts().checkOverPrice(menuRequest.getPrice());
+
         return menuRepository.save(menu);
     }
     @Transactional(readOnly=true)
