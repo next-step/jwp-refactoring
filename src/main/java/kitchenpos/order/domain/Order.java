@@ -38,6 +38,11 @@ public class Order {
         this.id = id;
     }
 
+    public  Order(Long orderTableId, List<OrderLineItem> orderLineItems) {
+        this.orderTableId = orderTableId;
+        this.orderLineItems = orderLineItems;
+    }
+
     private Order(Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime,
         List<OrderLineItem> orderLineItems) {
         this.orderTableId = orderTableId;
@@ -57,6 +62,10 @@ public class Order {
 
     public static Order of(Long id) {
         return new Order(id);
+    }
+
+    public static Order of(Long orderTableId, List<OrderLineItem> orderLineItems) {
+        return new Order(orderTableId, orderLineItems);
     }
 
     public static Order of(Long orderTableId, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {

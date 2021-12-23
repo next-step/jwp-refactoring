@@ -13,7 +13,7 @@ import kitchenpos.AcceptanceTest;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.dto.OrderTableResponse;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -28,8 +28,8 @@ class OrderAcceptanceTest extends AcceptanceTest {
     private List<OrderLineItem> 후라이드_양념치킨_주문_항목;
     private List<OrderLineItem> 양념치킨_주문_항목;
     private List<OrderLineItem> 후라이드치킨_주문_항목;
-    private OrderTable 테이블1;
-    private OrderTable 테이블2;
+    private OrderTableResponse 테이블1;
+    private OrderTableResponse 테이블2;
 
     @BeforeEach
     public void setUp() {
@@ -39,8 +39,8 @@ class OrderAcceptanceTest extends AcceptanceTest {
         후라이드_양념치킨_주문_항목 = Lists.newArrayList(후라이드치킨, 양념치킨);
         양념치킨_주문_항목 = Lists.newArrayList(양념치킨);
         후라이드치킨_주문_항목 = Lists.newArrayList(후라이드치킨);
-        테이블1 = 주문테이블_생성(OrderTable.of(2)).as(OrderTable.class);
-        테이블2 = 주문테이블_생성(OrderTable.of(3)).as(OrderTable.class);
+        테이블1 = 주문테이블_생성(2, false);
+        테이블2 = 주문테이블_생성(3, false);
     }
 
     @DisplayName("주문을 생성한다")

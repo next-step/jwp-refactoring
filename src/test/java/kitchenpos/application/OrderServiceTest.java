@@ -10,11 +10,13 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import kitchenpos.dao.MenuDao;
+import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderLineItemRepository;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import org.assertj.core.util.Lists;
@@ -58,7 +60,7 @@ class OrderServiceTest {
         given(orderRepository.save(any())).willReturn(order);
 
         // when
-        Order result = orderService.create(order);
+        OrderResponse result = orderService.create(order);
 
         // then
         assertThat(result.getId()).isEqualTo(1L);
@@ -89,7 +91,7 @@ class OrderServiceTest {
             orderLineItems2);
 
         // when
-        List<Order> result = orderService.list();
+        List<OrderResponse> result = orderService.list();
 
         // then
         assertThat(result).hasSize(2);
@@ -122,7 +124,7 @@ class OrderServiceTest {
         given(orderLineItemRepository.findAllByOrderId(1L)).willReturn(orderLineItems);
 
         // when
-        Order result = orderService.changeOrderStatus(1L, orderForUpdate);
+        OrderResponse result = orderService.changeOrderStatus(1L, orderForUpdate);
 
         // then
         assertThat(result.getId()).isEqualTo(1L);

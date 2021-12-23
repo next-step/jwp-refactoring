@@ -90,7 +90,8 @@
     - [X] OrderLineItem 엔티티 변환
   - [X] OrderRepository 사용하도록 수정
   - [X] OrderLineItemRepository 사용하도록 수정
-  - [ ] dto 모델 추가
+  - [X] 주문 dto 모델 추가
+  - [X] 주문항목 dto 모델 추가
 
 ### step1 요구사항
 - [X] 키친포스 기능 요구사항 분석

@@ -26,6 +26,11 @@ public class OrderLineItem {
     public OrderLineItem() {
     }
 
+    public OrderLineItem(Long menuId, long quantity) {
+        this.menuId = menuId;
+        this.quantity = quantity;
+    }
+
     private OrderLineItem(Long orderId, Long menuId, long quantity) {
         this.order = Order.of(orderId);
         this.menuId = menuId;
@@ -37,6 +42,10 @@ public class OrderLineItem {
         this.order = Order.of(orderId);
         this.menuId = menuId;
         this.quantity = quantity;
+    }
+
+    public static OrderLineItem of(Long menuId, long quantity) {
+        return new OrderLineItem(menuId, quantity);
     }
 
     public static OrderLineItem of(Long orderId, Long menuId, long quantity) {
