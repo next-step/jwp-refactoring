@@ -33,7 +33,7 @@ public class TableGroupService {
         final List<OrderTable> orderTables = tableGroup.getOrderTables();
 
         if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("단체지정은 최소 두 테이블 이상만 가능합니다");
         }
 
         final List<Long> orderTableIds = orderTables.stream()
@@ -43,7 +43,7 @@ public class TableGroupService {
         final List<OrderTable> savedOrderTables = orderTableDao.findAllByIdIn(orderTableIds);
 
         if (orderTables.size() != savedOrderTables.size()) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("등록된 주문 테이블만 단체지정 할 수 있습니다");
         }
 
         for (final OrderTable savedOrderTable : savedOrderTables) {
@@ -77,7 +77,7 @@ public class TableGroupService {
 
         if (orderDao.existsByOrderTableIdInAndOrderStatusIn(
                 orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("조리중, 식사중인 주문 테이블은 단체지정을 해제할 수 업습니다");
         }
 
         for (final OrderTable orderTable : orderTables) {

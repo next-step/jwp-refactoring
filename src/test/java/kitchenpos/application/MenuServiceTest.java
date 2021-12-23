@@ -98,7 +98,8 @@ public class MenuServiceTest {
         // then
         assertThatThrownBy(() -> {
             menuService.create(가격없는_메뉴);
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("메뉴 가격은 0원 이상이어야 합니다");
 
     }
     
@@ -116,7 +117,8 @@ public class MenuServiceTest {
         // then
         assertThatThrownBy(() -> {
             menuService.create(마이너스_가격_메뉴);
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("메뉴 가격은 0원 이상이어야 합니다");
     }
     
     @DisplayName("메뉴 등록시 메뉴그룹이 지정되어 있어야한다 - 예외처리")
@@ -134,7 +136,8 @@ public class MenuServiceTest {
         // then
         assertThatThrownBy(() -> {
             menuService.create(메뉴그룹_미지정_메뉴);
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("해당하는 메뉴그룹이 없습니다");
     }
     
     @DisplayName("메뉴에 등록된 메뉴그룹은 등록된 메뉴그룹이어야한다 - 예외처리")
@@ -153,7 +156,8 @@ public class MenuServiceTest {
         // then
         assertThatThrownBy(() -> {
             menuService.create(메뉴);
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("해당하는 메뉴그룹이 없습니다");
 
     }
     
@@ -181,7 +185,8 @@ public class MenuServiceTest {
         // then
         assertThatThrownBy(() -> {
             menuService.create(메뉴);
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("등록된 상품이 아닙니다");
 
     }
 
@@ -213,7 +218,8 @@ public class MenuServiceTest {
         // when, then
         assertThatThrownBy(() -> {
             menuService.create(메뉴);
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("메뉴 가격이 상품 가격의 합보다 큽니다");
     }
     
     @DisplayName("메뉴 목록을 조회할 수 있다")

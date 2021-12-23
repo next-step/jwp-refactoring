@@ -84,21 +84,12 @@ public class OrderServiceTest {
         // given
         Order 메뉴없는_주문 = new Order();
         메뉴없는_주문.setId(1L);
-
-        OrderLineItem 주문_메뉴 = new OrderLineItem();
-        주문_메뉴.setSeq(1L);
-        주문_메뉴.setOrderId(메뉴없는_주문.getId());
-        주문_메뉴.setQuantity(1L);
         
-        메뉴없는_주문.setOrderLineItems(Arrays.asList(주문_메뉴));
-        
-        // when
-        주문_메뉴.setMenuId(null);
-        
-        // then
+        // when, then
         assertThatThrownBy(() -> {
             orderService.create(메뉴없는_주문);
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("주문에 메뉴가 없습니다");
     
     }
     
@@ -116,7 +107,8 @@ public class OrderServiceTest {
         // then
         assertThatThrownBy(() -> {
             orderService.create(미등록_메뉴_주문);
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("등록된 메뉴만 주문할 수 있습니다");
     
     }
     
@@ -143,7 +135,8 @@ public class OrderServiceTest {
         // then
         assertThatThrownBy(() -> {
             orderService.create(테이블_없이_주문);
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("주문 테이블 없이 주문할 수 없습니다");
     }
     
     @DisplayName("주문 등록시 주문 상태는 조리 상태이다")
@@ -232,7 +225,8 @@ public class OrderServiceTest {
         // when, then
         assertThatThrownBy(() -> {
             orderService.changeOrderStatus(저장된_주문.getId(), 저장된_주문);
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("계산이 완료된 주문은 상태를 변경 할 수 없습니다");
     }
 
 }

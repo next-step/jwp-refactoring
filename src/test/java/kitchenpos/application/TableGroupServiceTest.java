@@ -78,7 +78,8 @@ public class TableGroupServiceTest {
         // when, then
         assertThatThrownBy(() -> {
             tableGroupService.create(단체지정);
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("단체지정은 최소 두 테이블 이상만 가능합니다");
     }
     
     @DisplayName("단체지정 등록시 주문 테이블은 미리 등록되어 있어야한다 - 예외처리")
@@ -95,7 +96,8 @@ public class TableGroupServiceTest {
         // then
         assertThatThrownBy(() -> {
             tableGroupService.create(단체지정);
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("등록된 주문 테이블만 단체지정 할 수 있습니다");
     }
     
     @DisplayName("단체지정을 해제할 수 있다")
@@ -142,7 +144,8 @@ public class TableGroupServiceTest {
         // when, then
         assertThatThrownBy(() -> {
             tableGroupService.ungroup(단체지정.getId());
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("조리중, 식사중인 주문 테이블은 단체지정을 해제할 수 업습니다");
     }
     
 }

@@ -57,7 +57,8 @@ public class ProductServiceTest {
         // when, then
         assertThatThrownBy(() -> {
             productService.create(가격없는_상품);
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("상품은 0원 이상이어야 합니다");
     }
     
     @DisplayName("상품 등록시 가격은 0원 이상이어야한다 - 예외처리")
@@ -72,7 +73,8 @@ public class ProductServiceTest {
         // when, then
         assertThatThrownBy(() -> {
             productService.create(마이너스_가격_상품);
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("상품은 0원 이상이어야 합니다");
     }
 
     @DisplayName("상품 목록을 조회할 수 있다")

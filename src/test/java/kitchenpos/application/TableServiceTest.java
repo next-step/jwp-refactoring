@@ -115,7 +115,8 @@ public class TableServiceTest {
         // then
         assertThatThrownBy(() -> {
             tableService.changeEmpty(등록되지_않은_테이블.getId(), 등록되지_않은_테이블);
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("등록된 테이블만 빈 테이블로 변경할 수 있습니다");
     
     }
     
@@ -133,7 +134,8 @@ public class TableServiceTest {
         // when, then
         assertThatThrownBy(() -> {
             tableService.changeEmpty(테이블.getId(), 테이블);
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("단체지정이 되어있는 테이블은 빈 테이블로 변경할 수 없습니다");
     
     }
     
@@ -158,7 +160,8 @@ public class TableServiceTest {
         // then
         assertThatThrownBy(() -> {
             tableService.changeEmpty(테이블.getId(), 빈_테이블);
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("조리중이거나 식사중인 테이블은 빈 테이블로 변경할 수 없습니다");
     
     }
     
@@ -190,12 +193,13 @@ public class TableServiceTest {
         // given
         OrderTable 테이블 = new OrderTable();
         테이블.setId(1L);
-        테이블.setNumberOfGuests(0);
+        테이블.setNumberOfGuests(-2);
         
         // when, then
         assertThatThrownBy(() -> {
             tableService.changeNumberOfGuests(테이블.getId(), 테이블);
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("테이블의 손님 수는 최소 0명 이상이어야합니다");
     
     }
     
@@ -213,7 +217,8 @@ public class TableServiceTest {
         // then
         assertThatThrownBy(() -> {
             tableService.changeNumberOfGuests(등록되지_않은_테이블.getId(), 등록되지_않은_테이블);
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("등록된 테이블만 방문 손님 수를 지정할 수 있습니다");
     
     }
 }
