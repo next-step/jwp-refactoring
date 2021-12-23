@@ -1,9 +1,18 @@
-package kitchenpos.application;
+package kitchenpos.application.acceptance.menu;
 
 
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.*;
-import kitchenpos.dto.*;
+import kitchenpos.application.acceptance.menugroup.MenuGroupFactory;
+import kitchenpos.application.acceptance.menugroup.MenuGroupServiceAcceptanceTest;
+import kitchenpos.application.acceptance.product.ProductFactory;
+import kitchenpos.application.acceptance.product.ProductServiceAcceptanceTest;
+import kitchenpos.domain.menu.Menu;
+import kitchenpos.dto.menu.MenuProductRequest;
+import kitchenpos.dto.menu.MenuRequest;
+import kitchenpos.dto.menugroup.MenuGroupRequest;
+import kitchenpos.dto.menugroup.MenuGroupResponse;
+import kitchenpos.dto.product.ProductRequest;
+import kitchenpos.dto.product.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,7 +28,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 
 @DisplayName("메뉴 테스트")
-class MenuServiceAcceptanceTest extends AcceptanceTest {
+public class MenuServiceAcceptanceTest extends AcceptanceTest {
 
     MenuGroupResponse createdMenuGroup;
     ProductResponse createdProduct;

@@ -1,11 +1,11 @@
-package kitchenpos.application;
+package kitchenpos.application.acceptance.table;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.dto.OrderTableRequest;
-import kitchenpos.dto.OrderTableResponse;
+import kitchenpos.domain.table.OrderTable;
+import kitchenpos.dto.table.OrderTableRequest;
+import kitchenpos.dto.table.OrderTableResponse;
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class TableServiceAcceptanceTest extends AcceptanceTest {
+public class TableServiceAcceptanceTest extends AcceptanceTest {
 
 
     @DisplayName("주문테이블을 등록한다")

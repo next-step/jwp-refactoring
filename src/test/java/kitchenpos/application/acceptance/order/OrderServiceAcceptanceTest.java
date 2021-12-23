@@ -1,10 +1,16 @@
-package kitchenpos.application;
+package kitchenpos.application.acceptance.order;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.*;
-import kitchenpos.dto.*;
+import kitchenpos.application.acceptance.table.TableFactory;
+import kitchenpos.domain.order.Order;
+import kitchenpos.domain.order.OrderStatus;
+import kitchenpos.dto.order.OrderLineItemRequest;
+import kitchenpos.dto.order.OrderRequest;
+import kitchenpos.dto.order.OrderResponse;
+import kitchenpos.dto.table.OrderTableRequest;
+import kitchenpos.dto.table.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,7 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 
 @DisplayName("주문 테스트")
-class OrderServiceAcceptanceTest extends AcceptanceTest {
+ public class OrderServiceAcceptanceTest extends AcceptanceTest {
 
     OrderTableResponse createdOrderTable;
     List<OrderLineItemRequest> orderLineItems;
@@ -70,10 +76,10 @@ class OrderServiceAcceptanceTest extends AcceptanceTest {
 
         OrderResponse createdOrder = OrderFactory.주문_생성_요청(orderRequest).as(OrderResponse.class);
 
-        Order order = new Order(createdOrder.getId(), createdOrder.getOrderTable(), createdOrder.getOrderStatus(), createdOrder.getOrderedTime(), createdOrder.getOrderLineItems());
+        Order order = new Order(createdOrder.getId(), createdOrder.getOrderTableId(), createdOrder.getOrderStatus(), createdOrder.getOrderedTime(), createdOrder.getOrderLineItems());
         order.changeOrderStatusMeal();
 
-        ExtractableResponse<Response> response = OrderFactory.주문_상태변경_요청(new OrderRequest(order.getOrderTable().getId(), order.getOrderStatus(), orderLineItems), createdOrder.getId());
+        ExtractableResponse<Response> response = OrderFactory.주문_상태변경_요청(new OrderRequest(order.getOrderTableId(), order.getOrderStatus(), orderLineItems), createdOrder.getId());
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.as(OrderResponse.class).getOrderStatus()).isEqualTo(OrderStatus.MEAL);
     }

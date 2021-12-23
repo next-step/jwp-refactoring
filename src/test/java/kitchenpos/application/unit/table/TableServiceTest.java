@@ -1,8 +1,10 @@
-package kitchenpos.application;
+package kitchenpos.application.unit.table;
 
-import kitchenpos.domain.OrderTable;
-import kitchenpos.dto.OrderTableRequest;
-import kitchenpos.repository.OrderTableRepository;
+import kitchenpos.application.table.OrderTableValidator;
+import kitchenpos.application.table.TableService;
+import kitchenpos.domain.table.OrderTable;
+import kitchenpos.dto.table.OrderTableRequest;
+import kitchenpos.repository.table.OrderTableRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,6 +24,8 @@ class TableServiceTest {
     @Mock
     OrderTableRepository orderTableRepository;
 
+    @Mock
+    OrderTableValidator orderTableValidator;
 
     @DisplayName("테이블을 생성한다.")
     @Test
@@ -34,7 +38,7 @@ class TableServiceTest {
         when(expectedOrderTable.getId()).thenReturn(1L);
         when(orderTableRepository.save(orderTable)).thenReturn(expectedOrderTable);
 
-        TableService tableService = new TableService(orderTableRepository);
+        TableService tableService = new TableService(orderTableRepository, orderTableValidator);
 
         // when
         OrderTable createdOrderTable = tableService.create(OrderTableRequest.from(orderTable));
@@ -51,7 +55,7 @@ class TableServiceTest {
         // given
         OrderTable orderTable = new OrderTable();
         when(orderTableRepository.findAll()).thenReturn(Arrays.asList(orderTable));
-        TableService tableService = new TableService(orderTableRepository);
+        TableService tableService = new TableService(orderTableRepository, orderTableValidator);
 
         // when
         List<OrderTable> orderTables = tableService.list();
@@ -75,7 +79,7 @@ class TableServiceTest {
         OrderTable savedOrderTable = mock(OrderTable.class);
         when(savedOrderTable.isEmpty()).thenReturn(true);
 
-        TableService tableService = new TableService(orderTableRepository);
+        TableService tableService = new TableService(orderTableRepository, orderTableValidator);
         // when
         OrderTable changedOrderTable = tableService.changeEmpty(orderTableId, OrderTableRequest.from(savedOrderTable));
 
@@ -95,7 +99,7 @@ class TableServiceTest {
         OrderTable savedOrderTable = mock(OrderTable.class);
         when(savedOrderTable.getNumberOfGuests()).thenReturn(3);
         when(orderTableRepository.save(orderTable)).thenReturn(savedOrderTable);
-        TableService tableService = new TableService(orderTableRepository);
+        TableService tableService = new TableService(orderTableRepository, orderTableValidator);
 
         // when
         OrderTable changedOrderTable = tableService.changeNumberOfGuests(orderTableId, OrderTableRequest.from(orderTable));

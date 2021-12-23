@@ -1,29 +1,28 @@
-package kitchenpos.application;
+package kitchenpos.application.acceptance.menu;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.Product;
-import kitchenpos.dto.ProductRequest;
+import kitchenpos.dto.menu.MenuRequest;
 import org.springframework.http.MediaType;
 
-public class ProductFactory {
+public class MenuFactory {
 
-    public static ExtractableResponse<Response> 상품_생성_요청(ProductRequest params) {
+    public static ExtractableResponse<Response> 메뉴_생성_요청(MenuRequest params) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
-                .when().post("/api/products")
+                .when().post("/api/menus")
                 .then().log().all().
                 extract();
     }
 
-    public static ExtractableResponse<Response> 상품_조회_요청() {
+    public static ExtractableResponse<Response> 메뉴_조회_요청() {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/api/products")
+                .when().get("/api/menus")
                 .then().log().all().
                 extract();
     }

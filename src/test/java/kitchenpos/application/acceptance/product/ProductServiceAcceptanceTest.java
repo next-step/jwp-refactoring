@@ -1,10 +1,10 @@
-package kitchenpos.application;
+package kitchenpos.application.acceptance.product;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.dto.ProductRequest;
-import kitchenpos.dto.ProductResponse;
+import kitchenpos.dto.product.ProductRequest;
+import kitchenpos.dto.product.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -14,7 +14,7 @@ import java.math.BigDecimal;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
-class ProductServiceAcceptanceTest extends AcceptanceTest {
+public class ProductServiceAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("상품을 등록한다")
     @Test

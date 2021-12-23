@@ -1,11 +1,9 @@
-package kitchenpos.application;
+package kitchenpos.application.acceptance.order;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.Order;
-import kitchenpos.dto.OrderRequest;
-import org.springframework.http.HttpStatus;
+import kitchenpos.dto.order.OrderRequest;
 import org.springframework.http.MediaType;
 
 import static org.assertj.core.api.Assertions.assertThat;

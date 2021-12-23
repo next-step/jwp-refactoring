@@ -1,12 +1,10 @@
-package kitchenpos.application;
+package kitchenpos.application.acceptance.table;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.Product;
-import kitchenpos.dto.OrderTableRequest;
-import kitchenpos.dto.OrderTableResponse;
+import kitchenpos.dto.table.OrderTableRequest;
+import kitchenpos.dto.table.OrderTableResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
