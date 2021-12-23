@@ -19,7 +19,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.menu.dao.MenuDao;
-import kitchenpos.menu.dao.MenuGroupDao;
+import kitchenpos.menu.dao.MenuGroupRepository;
 import kitchenpos.menu.dao.MenuProductDao;
 import kitchenpos.menu.dao.ProductDao;
 import kitchenpos.menu.domain.Menu;
@@ -34,7 +34,7 @@ public class MenuServiceTest {
     private MenuDao menuDao;
 
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
 
     @Mock
     private MenuProductDao menuProductDao;
@@ -71,7 +71,7 @@ public class MenuServiceTest {
         메뉴상품.setQuantity(1L);
 
         메뉴.setMenuProducts(Arrays.asList(메뉴상품));
-        given(menuGroupDao.existsById(메뉴.getMenuGroupId())).willReturn(true);
+        given(menuGroupRepository.existsById(메뉴.getMenuGroupId())).willReturn(true);
         given(productDao.findById(메뉴상품.getProductId())).willReturn(Optional.of(상품));
         given(menuDao.save(메뉴)).willReturn(메뉴);
         given(menuProductDao.save(메뉴상품)).willReturn(메뉴상품);
@@ -151,7 +151,7 @@ public class MenuServiceTest {
         메뉴.setMenuGroupId(1L);
         
         // when
-        when(menuGroupDao.existsById(anyLong())).thenReturn(false);
+        when(menuGroupRepository.existsById(anyLong())).thenReturn(false);
 
         // then
         assertThatThrownBy(() -> {
@@ -177,7 +177,7 @@ public class MenuServiceTest {
         메뉴상품.setProductId(1L);
         메뉴.setMenuProducts(Arrays.asList(메뉴상품));
         
-        given(menuGroupDao.existsById(anyLong())).willReturn(true);
+        given(menuGroupRepository.existsById(anyLong())).willReturn(true);
         
         // when
         when(productDao.findById(anyLong())).thenReturn(Optional.empty());
@@ -212,7 +212,7 @@ public class MenuServiceTest {
         메뉴상품.setQuantity(1L);
         메뉴.setMenuProducts(Arrays.asList(메뉴상품));
 
-        given(menuGroupDao.existsById(anyLong())).willReturn(true);
+        given(menuGroupRepository.existsById(anyLong())).willReturn(true);
         given(productDao.findById(anyLong())).willReturn(Optional.of(상품));
 
         // when, then
