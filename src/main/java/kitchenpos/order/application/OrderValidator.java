@@ -4,8 +4,8 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.order.domain.OrderTableValidateEvent;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -14,11 +14,11 @@ import java.util.stream.Collectors;
 
 @Component
 public class OrderValidator {
-    private final OrderTableRepository orderTableRepository;
+    private final ApplicationEventPublisher applicationEventPublisher;
     private final MenuRepository menuRepository;
 
-    public OrderValidator(OrderTableRepository orderTableRepository, MenuRepository menuRepository) {
-        this.orderTableRepository = orderTableRepository;
+    public OrderValidator(ApplicationEventPublisher applicationEventPublisher, MenuRepository menuRepository) {
+        this.applicationEventPublisher = applicationEventPublisher;
         this.menuRepository = menuRepository;
     }
 
@@ -28,12 +28,7 @@ public class OrderValidator {
     }
 
     private void checkUsableOrderTable(Long orderTableId) {
-        OrderTable orderTable = orderTableRepository.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
-
-        if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
+        applicationEventPublisher.publishEvent(OrderTableValidateEvent.of(orderTableId));
     }
 
     private void validateOrderItemRequests(List<OrderLineItem> orderLineItems) {

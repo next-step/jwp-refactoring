@@ -15,7 +15,6 @@ import kitchenpos.order.fixture.OrderLineItemFixture;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.fixture.ProductFixture;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.fixture.OrderTableFixture;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,10 +25,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.math.BigDecimal;
 import java.util.Collections;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -40,7 +39,7 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 class OrderValidatorTest {
     @Mock
-    OrderTableRepository orderTableRepository;
+    ApplicationEventPublisher applicationEventPublisher;
     @Mock
     MenuRepository menuRepository;
 
@@ -49,7 +48,6 @@ class OrderValidatorTest {
 
     private Menu 더블강정;
     private OrderTable 테이블;
-    private OrderTable 빈_테이블;
 
     @BeforeEach
     void setup() {
@@ -59,7 +57,6 @@ class OrderValidatorTest {
 
         더블강정 = MenuFixture.create(1L, "더블강정", BigDecimal.valueOf(32_000), 추천메뉴.getId(), 메뉴_상품);
         테이블 = OrderTableFixture.create(1L, 4, false);
-        빈_테이블 = OrderTableFixture.create(2L, 4, true);
     }
 
     @DisplayName("주문 생성 검증")
@@ -72,7 +69,6 @@ class OrderValidatorTest {
             OrderLineItem 주문_항목 = OrderLineItemFixture.create(1L, 더블강정.getId(), 1L);
             Order 주문 = OrderFixture.create(1L, 테이블.getId(), OrderStatus.COOKING, 주문_항목);
 
-            given(orderTableRepository.findById(any())).willReturn(Optional.of(테이블));
             given(menuRepository.findAllById(any())).willReturn(Collections.singletonList(더블강정));
 
             // when
@@ -82,38 +78,6 @@ class OrderValidatorTest {
             assertThatNoException().isThrownBy(검증_요청);
         }
 
-        @DisplayName("주문 테이블이 존재하지 않음")
-        @Test
-        void 주문_테이블이_존재하지_않음() {
-            // given
-            OrderLineItem 주문_항목 = OrderLineItemFixture.create(1L, 더블강정.getId(), 1L);
-            Order 주문 = OrderFixture.create(1L, 테이블.getId(), OrderStatus.COOKING, 주문_항목);
-
-            given(orderTableRepository.findById(any())).willReturn(Optional.empty());
-
-            // when
-            ThrowableAssert.ThrowingCallable 검증_요청 = () -> orderValidator.validateCreateOrder(주문);
-
-            // then
-            assertThatThrownBy(검증_요청).isInstanceOf(IllegalArgumentException.class);
-        }
-
-        @DisplayName("빈 테이블에 주문 요청")
-        @Test
-        void 빈_테이블에_주문_요청() {
-            // given
-            OrderLineItem 주문_항목 = OrderLineItemFixture.create(1L, 더블강정.getId(), 1L);
-            Order 주문 = OrderFixture.create(1L, 테이블.getId(), OrderStatus.COOKING, 주문_항목);
-
-            given(orderTableRepository.findById(any())).willReturn(Optional.of(빈_테이블));
-
-            // when
-            ThrowableAssert.ThrowingCallable 검증_요청 = () -> orderValidator.validateCreateOrder(주문);
-
-            // then
-            assertThatThrownBy(검증_요청).isInstanceOf(IllegalArgumentException.class);
-        }
-
         @DisplayName("주문 메뉴가 존재하지 않음")
         @Test
         void 주문_메뉴가_존재하지_않음() {
@@ -121,7 +85,6 @@ class OrderValidatorTest {
             OrderLineItem 주문_항목 = OrderLineItemFixture.create(1L, 더블강정.getId(), 1L);
             Order 주문 = OrderFixture.create(1L, 테이블.getId(), OrderStatus.COOKING, 주문_항목);
 
-            given(orderTableRepository.findById(any())).willReturn(Optional.of(테이블));
             given(menuRepository.findAllById(any())).willReturn(Collections.emptyList());
 
             // when
