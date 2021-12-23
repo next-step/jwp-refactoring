@@ -356,3 +356,42 @@ completePayment() vs setOrderState()
 - [ ] 의존성이 필요 없으면 제거
 - [ ] 패키지 사이의 의존성 사이클을 제거 
 
+
+
+### 문제점 파악하기 
+ - 현재 의존 관계 분석  (화살표의 방향은 현재 연관관계(의존성)를 의미한다.) 
+ ```text
+                                                     [MenuGroup]
+                                                         ↑ (1)  
+                                                         |
+                                                         | (1)  
+  [Product] (1) <---- (*) [MenuProduct] (*) -----> (1) [Menu]  
+                                                         ↑ (1)
+                                                         |
+                                                         | (*)
+                                                  [OrderLineItem]
+                                                         ↑ (*)
+                                                         |
+                                                         ↓ (1)
+  [TableGroup] (1) <--- (*) [OrderTable] (1) <---> (*) [Order]
+  ```
+ 1) 양방향 의존관계 제거하기  
+ ```text
+                                                     [MenuGroup]
+                                                         ↑ (1)  
+                                                         |
+                                                         | (1)  
+  [Product] (1) <---- (*) [MenuProduct] (*) -----> (1) [Menu]  
+                                                         ↑ (1)
+                                                         |
+                                                         | (*)
+                                                  [OrderLineItem]
+                                                         ↑ (*)
+                                                         |
+                                                 (v)  (v)| (1)
+  [TableGroup] (1) <--- (*) [OrderTable] (1) <---- (*) [Order]
+  ```
+  
+ - 양방향 의존 제거하기
+   - `Order`에서 `OrderLineItem`을 의존한다
+   - `Order`에서 `OrderTable`을 의존한다
