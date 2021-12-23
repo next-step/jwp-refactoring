@@ -1,6 +1,6 @@
 package kitchenpos.menu.dto;
 
-import java.util.Objects;
+import kitchenpos.menu.domain.MenuProduct;
 
 public class MenuProductRequest {
 
@@ -23,7 +23,7 @@ public class MenuProductRequest {
         return quantity;
     }
 
-    public boolean isSameProductId(Long productId) {
-        return Objects.equals(this.productId, productId);
+    public MenuProduct toMenuProduct() {
+        return MenuProduct.of(productId, quantity);
     }
 }

@@ -6,16 +6,9 @@ import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import kitchenpos.common.exception.CommonErrorCode;
-import kitchenpos.common.exception.InvalidParameterException;
-import kitchenpos.menugroup.domain.MenuGroup;
 
 @Entity
 public class Menu {
@@ -30,9 +23,8 @@ public class Menu {
     @Embedded
     private Price price;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "menu_group_id", foreignKey = @ForeignKey(name = "fk_menu_menu_group"))
-    private MenuGroup menuGroup;
+    @Column(name = "menu_group_id", nullable = false)
+    private Long menuGroupId;
 
     @Embedded
     private MenuProducts menuProducts;
@@ -40,18 +32,16 @@ public class Menu {
     protected Menu() {
     }
 
-    private Menu(String name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
-        validEmpty(name, menuGroup);
-        validPrice(price, menuProducts.getSumPrice());
+    private Menu(String name, Price price, Long menuGroupId, MenuProducts menuProducts) {
         this.name = name;
-        this.menuGroup = menuGroup;
+        this.menuGroupId = menuGroupId;
         this.price = price;
-        this.menuProducts = menuProducts.mapMenu(this);
+        this.menuProducts = menuProducts;
     }
 
-    public static Menu of(String name, int price, MenuGroup menuGroup,
+    public static Menu of(String name, int price, Long menuGroupId,
         List<MenuProduct> menuProducts) {
-        return new Menu(name, Price.of(BigDecimal.valueOf(price)), menuGroup,
+        return new Menu(name, Price.of(BigDecimal.valueOf(price)), menuGroupId,
             MenuProducts.of(menuProducts));
     }
 
@@ -63,30 +53,20 @@ public class Menu {
         return name;
     }
 
-    public BigDecimal getPrice() {
-        return price.value();
+    public Price getPrice() {
+        return price;
+    }
+
+    public Long getMenuGroupId() {
+        return menuGroupId;
     }
 
     public List<MenuProduct> getMenuProducts() {
         return menuProducts.getMenuProducts();
     }
 
-    public Long getMenuGroupId() {
-        return menuGroup.getId();
-    }
-
-    private void validPrice(Price price, BigDecimal sumPrice) {
-        price.validPriceGreaterThanMin(sumPrice);
-    }
-
-    private void validEmpty(String name, MenuGroup menuGroup) {
-        if (Objects.isNull(name)) {
-            throw new InvalidParameterException(CommonErrorCode.NOT_EMPTY);
-        }
-
-        if (Objects.isNull(menuGroup)) {
-            throw new InvalidParameterException(CommonErrorCode.NOT_EMPTY);
-        }
+    public void registerMenu(MenuValidator menuValidator) {
+        menuValidator.registerValidate(this);
     }
 
     @Override

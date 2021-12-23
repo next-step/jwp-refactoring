@@ -4,14 +4,9 @@ import java.math.BigDecimal;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import kitchenpos.product.domain.Product;
 
 @Entity
 public class MenuProduct {
@@ -20,13 +15,8 @@ public class MenuProduct {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "menu_id", foreignKey = @ForeignKey(name = "fk_menu_product_menu"))
-    private Menu menu;
-
-    @ManyToOne
-    @JoinColumn(name = "productId", foreignKey = @ForeignKey(name = "fk_menu_product_product"))
-    private Product product;
+    @Column(name = "product_id", nullable = false)
+    private Long productId;
 
     @Column(name = "quantity", nullable = false)
     private Long quantity;
@@ -34,30 +24,25 @@ public class MenuProduct {
     protected MenuProduct() {
     }
 
-    private MenuProduct(Product product, Long quantity) {
-        this.product = product;
+    private MenuProduct(Long productId, Long quantity) {
+        this.productId = productId;
         this.quantity = quantity;
     }
 
-    public static MenuProduct of(Product product, Long quantity) {
-        return new MenuProduct(product, quantity);
-    }
-
-    public MenuProduct mapMenu(Menu menu) {
-        this.menu = menu;
-        return this;
+    public static MenuProduct of(Long productId, Long quantity) {
+        return new MenuProduct(productId, quantity);
     }
 
     public Long getProductId() {
-        return product.getId();
+        return productId;
     }
 
     public long getQuantity() {
         return quantity;
     }
 
-    public BigDecimal getPrice() {
-        return product.calculatePrice(quantity);
+    public BigDecimal getPrice(BigDecimal price) {
+        return price.multiply(BigDecimal.valueOf(quantity));
     }
 
     @Override

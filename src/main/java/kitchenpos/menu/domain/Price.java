@@ -19,7 +19,7 @@ public class Price {
     }
 
     private Price(BigDecimal price) {
-        validMin(price);
+        minValid(price);
         this.price = price;
     }
 
@@ -31,18 +31,14 @@ public class Price {
         return price;
     }
 
-    protected void validPriceGreaterThanMin(BigDecimal lessThanPrice) {
-        if (price.compareTo(lessThanPrice) > 0) {
-            throw new InvalidParameterException(
-                CommonErrorCode.MENU_PRICE_OVER_RANGE_EXCEPTION);
-        }
+    public boolean greaterThanOf(BigDecimal price) {
+        return this.price.compareTo(price) > 0;
     }
 
-    private void validMin(BigDecimal price) {
+    private void minValid(BigDecimal price) {
         if (Objects.isNull(price) || price.compareTo(MIN) < 0) {
             throw new InvalidParameterException(
                 CommonErrorCode.MENU_PRICE_MIN_UNDER_EXCEPTION);
         }
     }
-
 }
