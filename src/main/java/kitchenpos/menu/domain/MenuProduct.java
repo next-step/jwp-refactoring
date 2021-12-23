@@ -47,6 +47,10 @@ public class MenuProduct {
         return new MenuProduct(null, null, productId, Quantity.of(quantity));
     }
 
+    public boolean isEqualProductId(Long productId) {
+        return this.productId.equals(productId);
+    }
+
     public void updateMenu(Menu menu) {
         this.menu = menu;
     }

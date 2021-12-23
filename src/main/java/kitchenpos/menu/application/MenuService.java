@@ -24,7 +24,7 @@ public class MenuService {
     public MenuResponse create(final MenuRequest menuRequest) {
         Menu menu = menuRequest.toMenu();
 
-        menuValidator.validateCreateMenu(menuRequest);
+        menuValidator.validateCreateMenu(menu);
 
         return MenuResponse.from(menuRepository.save(menu));
     }

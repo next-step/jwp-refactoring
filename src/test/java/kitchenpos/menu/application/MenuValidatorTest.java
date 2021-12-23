@@ -1,7 +1,8 @@
 package kitchenpos.menu.application;
 
-import kitchenpos.menu.dto.MenuProductRequest;
-import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.fixture.MenuFixture;
 import kitchenpos.menu_group.domain.MenuGroup;
 import kitchenpos.menu_group.domain.MenuGroupRepository;
 import kitchenpos.menu_group.fixture.MenuGroupFixture;
@@ -53,14 +54,14 @@ class MenuValidatorTest {
         @Test
         void 검증_확인() {
             // given
-            MenuProductRequest 메뉴_상품 = MenuProductRequest.of(강정치킨.getId(), 2L);
-            MenuRequest 메뉴_등록_요청_데이터 = MenuRequest.of("더블강정", BigDecimal.valueOf(32_000), 추천메뉴.getId(), Collections.singletonList(메뉴_상품));
+            MenuProduct 더블강정_메뉴_상품 = MenuProduct.of(강정치킨.getId(), 2L);
+            Menu 더블강정 = MenuFixture.create(1L, "더블강정", BigDecimal.valueOf(32_000L), 추천메뉴.getId(), 더블강정_메뉴_상품);
 
             given(menuGroupRepository.existsById(any())).willReturn(true);
             given(productRepository.findAllById(any())).willReturn(Collections.singletonList(강정치킨));
 
             // when
-            ThrowableAssert.ThrowingCallable 검증_요청 = () -> menuValidator.validateCreateMenu(메뉴_등록_요청_데이터);
+            ThrowableAssert.ThrowingCallable 검증_요청 = () -> menuValidator.validateCreateMenu(더블강정);
 
             // then
             assertThatNoException().isThrownBy(검증_요청);
@@ -70,13 +71,13 @@ class MenuValidatorTest {
         @Test
         void 그룹이_존재하지_않음() {
             // given
-            MenuProductRequest 메뉴_상품 = MenuProductRequest.of(강정치킨.getId(), 2L);
-            MenuRequest 메뉴_등록_요청_데이터 = MenuRequest.of("더블강정", BigDecimal.valueOf(32_000), null, Collections.singletonList(메뉴_상품));
+            MenuProduct 더블강정_메뉴_상품 = MenuProduct.of(강정치킨.getId(), 2L);
+            Menu 더블강정 = MenuFixture.create(1L, "더블강정", BigDecimal.valueOf(32_000L), 추천메뉴.getId(), 더블강정_메뉴_상품);
 
             given(menuGroupRepository.existsById(any())).willReturn(true);
 
             // when
-            ThrowableAssert.ThrowingCallable 검증_요청 = () -> menuValidator.validateCreateMenu(메뉴_등록_요청_데이터);
+            ThrowableAssert.ThrowingCallable 검증_요청 = () -> menuValidator.validateCreateMenu(더블강정);
 
             // then
             assertThatThrownBy(검증_요청).isInstanceOf(IllegalArgumentException.class);
@@ -86,14 +87,14 @@ class MenuValidatorTest {
         @Test
         void 상품이_존재하지_않음() {
             // given
-            MenuProductRequest 메뉴_상품 = MenuProductRequest.of(강정치킨.getId(), 2L);
-            MenuRequest 메뉴_등록_요청_데이터 = MenuRequest.of("더블강정", BigDecimal.valueOf(32_000), 추천메뉴.getId(), Collections.singletonList(메뉴_상품));
+            MenuProduct 더블강정_메뉴_상품 = MenuProduct.of(강정치킨.getId(), 2L);
+            Menu 더블강정 = MenuFixture.create(1L, "더블강정", BigDecimal.valueOf(32_000L), 추천메뉴.getId(), 더블강정_메뉴_상품);
 
             given(menuGroupRepository.existsById(any())).willReturn(true);
             given(productRepository.findAllById(any())).willReturn(Collections.emptyList());
 
             // when
-            ThrowableAssert.ThrowingCallable 검증_요청 = () -> menuValidator.validateCreateMenu(메뉴_등록_요청_데이터);
+            ThrowableAssert.ThrowingCallable 검증_요청 = () -> menuValidator.validateCreateMenu(더블강정);
 
             // then
             assertThatThrownBy(검증_요청).isInstanceOf(IllegalArgumentException.class);
@@ -103,14 +104,14 @@ class MenuValidatorTest {
         @Test
         void 가격이_메뉴_상품_가격의_총합보다_큼() {
             // given
-            MenuProductRequest 메뉴_상품 = MenuProductRequest.of(강정치킨.getId(), 2L);
-            MenuRequest 메뉴_등록_요청_데이터 = MenuRequest.of("더블강정", BigDecimal.valueOf(35_000), 추천메뉴.getId(), Collections.singletonList(메뉴_상품));
+            MenuProduct 더블강정_메뉴_상품 = MenuProduct.of(강정치킨.getId(), 2L);
+            Menu 더블강정 = MenuFixture.create(1L, "더블강정", BigDecimal.valueOf(35_000L), 추천메뉴.getId(), 더블강정_메뉴_상품);
 
             given(menuGroupRepository.existsById(any())).willReturn(true);
             given(productRepository.findAllById(any())).willReturn(Collections.singletonList(강정치킨));
 
             // when
-            ThrowableAssert.ThrowingCallable 검증_요청 = () -> menuValidator.validateCreateMenu(메뉴_등록_요청_데이터);
+            ThrowableAssert.ThrowingCallable 검증_요청 = () -> menuValidator.validateCreateMenu(더블강정);
 
             // then
             assertThatThrownBy(검증_요청).isInstanceOf(IllegalArgumentException.class);
