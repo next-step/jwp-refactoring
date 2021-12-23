@@ -2,6 +2,7 @@ package kitchenpos.order.application;
 
 import java.util.List;
 import java.util.function.Function;
+import kitchenpos.common.exception.Message;
 import kitchenpos.common.exception.NoResultDataException;
 import kitchenpos.menu.domain.MenuDao;
 import kitchenpos.order.domain.Order;
@@ -71,7 +72,7 @@ public class OrderService {
     private void validSizeIsNotEquals(OrderRequest orderRequest) {
         if (orderRequest.getOrderItemSize() != menuDao.countByIdIn(
             orderRequest.convert(OrderLineRequest::getMenuId))) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(Message.ORDER_SIZE_IS_NOT_EQUALS.getMessage());
         }
     }
 
