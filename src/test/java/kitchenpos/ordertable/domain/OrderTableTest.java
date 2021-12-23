@@ -42,11 +42,13 @@ class OrderTableTest {
     @Test
     void updateEmpty_exception1() {
         //given
-        OrderTable orderTable = new OrderTable(6, false);
-        orderTable.setTableGroupId(1L);
+        OrderTable orderTable1 = new OrderTable(1L, 6, true);
+        OrderTable orderTable2 = new OrderTable(2L, 3, true);
+        TableGroup tableGroup = new TableGroup(LocalDateTime.now());
+        tableGroup.groupTables(Arrays.asList(orderTable1, orderTable2));
 
         //when,then
-        assertThatThrownBy(() -> orderTable.updateEmpty(true))
+        assertThatThrownBy(() -> orderTable1.updateEmpty(true))
             .isInstanceOf(IllegalArgumentException.class);
     }
 

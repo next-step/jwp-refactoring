@@ -60,7 +60,7 @@ public class Order {
     }
 
     public Order(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
-        this(orderTable, null, orderLineItems);
+        this(orderTable, LocalDateTime.now(), orderLineItems);
     }
 
     public Order(OrderTable orderTable, LocalDateTime orderedTime,

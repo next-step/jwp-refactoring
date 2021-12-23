@@ -5,9 +5,12 @@ import java.util.List;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import kitchenpos.order.domain.Order;
 
@@ -22,7 +25,9 @@ public class OrderTable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long tableGroupId;
+    @JoinColumn(name = "table_group_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private TableGroup tableGroup;
 
     @Column(nullable = false)
     private int numberOfGuests;
@@ -56,9 +61,9 @@ public class OrderTable {
         this(id, null, numberOfGuests, empty);
     }
 
-    public OrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
+    public OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
         this.id = id;
-        this.tableGroupId = tableGroupId;
+        this.tableGroup = tableGroup;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
     }
@@ -71,20 +76,16 @@ public class OrderTable {
         this.id = id;
     }
 
-    public Long getTableGroupId() {
-        return tableGroupId;
-    }
-
-    public void setTableGroupId(final Long tableGroupId) {
-        this.tableGroupId = tableGroupId;
+    public TableGroup getTableGroup() {
+        return tableGroup;
     }
 
     public int getNumberOfGuests() {
         return numberOfGuests;
     }
 
-    public void setNumberOfGuests(final int numberOfGuests) {
-        this.numberOfGuests = numberOfGuests;
+    public List<Order> getOrders() {
+        return orders;
     }
 
     public boolean isEmpty() {
@@ -93,6 +94,10 @@ public class OrderTable {
 
     public void setEmpty(final boolean empty) {
         this.empty = empty;
+    }
+
+    public void groupIn(TableGroup tableGroup) {
+        this.tableGroup = tableGroup;
     }
 
     @Override
@@ -115,7 +120,7 @@ public class OrderTable {
     }
 
     public void updateEmpty(boolean updataEmpty) {
-        if (Objects.nonNull(tableGroupId)) {
+        if (Objects.nonNull(tableGroup)) {
             throw new IllegalArgumentException(ERROR_MESSAGE_TABLE_IN_GROUP);
         }
 
@@ -144,5 +149,9 @@ public class OrderTable {
             throw new IllegalArgumentException();
         }
         this.numberOfGuests = numberOfGuests;
+    }
+
+    public void unGroup() {
+        this.tableGroup = null;
     }
 }

@@ -70,6 +70,4 @@ public class OrderTestFixtures {
         return new OrderLineItemRequest(orderLineItem.getMenu().getId(),
             orderLineItem.getQuantity());
     }
-
-
 }
