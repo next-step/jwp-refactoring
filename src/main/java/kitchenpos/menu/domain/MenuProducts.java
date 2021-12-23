@@ -14,8 +14,7 @@ public class MenuProducts {
 
     private static final String ERROR_MESSAGE_MENU_PRICE_HIGH = "메뉴 가격은 상품 리스트의 가격 합보다 작거나 같아야 합니다.";
 
-    @OneToMany(mappedBy = "menu", cascade = {CascadeType.PERSIST,
-        CascadeType.MERGE}, orphanRemoval = true)
+    @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL)
     private List<MenuProduct> menuProducts = new ArrayList<>();
 
     protected void changeMenuProducts(List<MenuProduct> inputMenuProducts, BigDecimal menuPrice) {
