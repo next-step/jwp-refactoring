@@ -72,10 +72,6 @@ public class OrderTable {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public TableGroup getTableGroup() {
         return tableGroup;
     }
@@ -92,31 +88,12 @@ public class OrderTable {
         return orderClose;
     }
 
-    public void setOrderClose(final boolean orderClose) {
+    public void changeOrderClose(final boolean orderClose) {
         this.orderClose = orderClose;
     }
 
     public void groupIn(TableGroup tableGroup) {
         this.tableGroup = tableGroup;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-
-        if (!(o instanceof OrderTable)) {
-            return false;
-        }
-
-        OrderTable that = (OrderTable) o;
-        return Objects.equals(getId(), that.getId());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getId());
     }
 
     public void updateEmpty(boolean updataEmpty) {
@@ -153,5 +130,24 @@ public class OrderTable {
 
     public void unGroup() {
         this.tableGroup = null;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+
+        if (!(o instanceof OrderTable)) {
+            return false;
+        }
+
+        OrderTable that = (OrderTable) o;
+        return Objects.equals(getId(), that.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId());
     }
 }

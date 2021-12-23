@@ -52,7 +52,7 @@ public class TableGroup {
         orderTables.addAll(inputOrderTables);
         for (OrderTable orderTable : inputOrderTables) {
             orderTable.groupIn(this);
-            orderTable.setOrderClose(false);
+            orderTable.changeOrderClose(false);
         }
     }
 
@@ -116,10 +116,6 @@ public class TableGroup {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public LocalDateTime getCreatedDate() {
         return createdDate;
     }
@@ -127,11 +123,7 @@ public class TableGroup {
     public List<OrderTable> getOrderTables() {
         return orderTables;
     }
-
-    public void setOrderTables(final List<OrderTable> orderTables) {
-        this.orderTables = orderTables;
-    }
-
+    
     @Override
     public boolean equals(Object o) {
         if (this == o) {
