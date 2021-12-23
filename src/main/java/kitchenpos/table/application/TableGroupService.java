@@ -1,13 +1,20 @@
 package kitchenpos.table.application;
 
-import java.util.Arrays;
+import static java.util.Arrays.asList;
+
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.common.exception.NoResultDataException;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderDao;
+import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.product.domain.Amount;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableDao;
+import kitchenpos.table.domain.OrderTableStatus;
 import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.domain.TableGroupDao;
@@ -49,7 +56,10 @@ public class TableGroupService {
     public void ungroup(final Long tableGroupId) {
         TableGroup tableGroup = tableGroupDao.findById(tableGroupId)
             .orElseThrow(NoResultDataException::new);
-        validInCookingOrMeal(tableGroup.getOrderTableIds());
+
+        List<OrderStatus> savedOrderStatus = orderDao.findByOrderTableIn(tableGroup.getOrderTables());
+        OrderStatus.validStatusIsCookingOrMealThrow(savedOrderStatus);
+
         tableGroup.unGroup();
     }
 
@@ -60,14 +70,7 @@ public class TableGroupService {
             .collect(Collectors.toList());
     }
 
-    private void validInCookingOrMeal(List<Long> orderTableIds) {
-        if (orderDao.existsByOrderTableIdInAndOrderStatusIn(
-            orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new IllegalArgumentException();
-        }
-    }
-
-    private void validIsNotEqualsSize(OrderTables savedOrderTables,
+    public void validIsNotEqualsSize(OrderTables savedOrderTables,
         List<OrderTableRequest> orderTableRequests) {
         if (savedOrderTables.size() != orderTableRequests.size()) {
             throw new IllegalArgumentException();

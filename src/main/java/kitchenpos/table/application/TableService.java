@@ -1,13 +1,12 @@
 package kitchenpos.table.application;
 
-import static com.google.common.primitives.Longs.asList;
-
-import java.util.Arrays;
 import java.util.List;
+import kitchenpos.common.exception.NoResultDataException;
+import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderDao;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.table.domain.OrderTableDao;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableDao;
 import kitchenpos.table.dto.ChangeEmptyRequest;
 import kitchenpos.table.dto.ChangeNumberOfGuestRequest;
 import kitchenpos.table.dto.OrderTableRequest;
@@ -37,32 +36,27 @@ public class TableService {
     }
 
     @Transactional
-    public OrderTableResponse changeEmpty(final Long orderTableId,
-        final ChangeEmptyRequest changeEmptyRequest) {
-        final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
-            .orElseThrow(IllegalArgumentException::new);
+    public OrderTableResponse changeEmpty(final Long orderTableId, final ChangeEmptyRequest changeEmptyRequest) {
 
-        validInCookingOrMeal(asList(orderTableId));
+        final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
+            .orElseThrow(NoResultDataException::new);
+
+        OrderStatus savedOrderStatus = orderDao.findByOrderTableId(savedOrderTable.getId());
+        OrderStatus.validStatusIsCookingOrMealThrow(savedOrderStatus);
+
         savedOrderTable.changeOrderTableStatus(changeEmptyRequest.isEmpty());
 
-        return OrderTableResponse.of(orderTableDao.save(savedOrderTable));
+        return OrderTableResponse.of(savedOrderTable);
     }
 
     @Transactional
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId,
         final ChangeNumberOfGuestRequest changeEmptyRequest) {
+
         final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
             .orElseThrow(IllegalArgumentException::new);
 
         savedOrderTable.changeNumberOfGuest(changeEmptyRequest.getNumberOfGuest());
-
-        return OrderTableResponse.of(orderTableDao.save(savedOrderTable));
-    }
-
-    private void validInCookingOrMeal(List<Long> orderTableIds) {
-        if (orderDao.existsByOrderTableIdInAndOrderStatusIn(
-            orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new IllegalArgumentException();
-        }
+        return OrderTableResponse.of(savedOrderTable);
     }
 }

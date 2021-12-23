@@ -13,9 +13,11 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import kitchenpos.order.domain.OrderDao;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableDao;
 import kitchenpos.table.dto.ChangeEmptyRequest;
@@ -77,7 +79,7 @@ public class TableServiceTest {
 
         // mocking
         when(orderTableDao.findById(anyLong())).thenReturn(Optional.of(첫번째_주문테이블));
-        when(orderTableDao.save(첫번째_주문테이블)).thenReturn(첫번째_주문테이블);
+        when(orderDao.findByOrderTableId(anyLong())).thenReturn(OrderStatus.COMPLETION);
 
         // when
         tableService.changeEmpty(첫번째_주문테이블.getId(), new ChangeEmptyRequest(true));
@@ -92,8 +94,7 @@ public class TableServiceTest {
 
         // mocking
         when(orderTableDao.findById(anyLong())).thenReturn(Optional.of(첫번째_주문테이블));
-        when(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).thenReturn(
-            true);
+        when(orderDao.findByOrderTableId(anyLong())).thenReturn(OrderStatus.COOKING);
 
         // then
         assertThatThrownBy(() -> {
@@ -108,7 +109,6 @@ public class TableServiceTest {
 
         // mocking
         when(orderTableDao.findById(anyLong())).thenReturn(Optional.of(첫번째_주문테이블));
-        when(orderTableDao.save(any(OrderTable.class))).thenReturn(첫번째_주문테이블);
 
         // when
         tableService.changeNumberOfGuests(첫번째_주문테이블.getId(), new ChangeNumberOfGuestRequest(3));

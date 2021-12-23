@@ -48,7 +48,8 @@ public class TableRestController {
         @RequestBody final ChangeEmptyRequest changeEmptyRequest
     ) {
         return ResponseEntity.ok()
-            .body(tableService.changeEmpty(orderTableId, changeEmptyRequest))
+            .body(tableService.changeEmpty(orderTableId,
+                changeEmptyRequest))
             ;
     }
 

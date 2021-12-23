@@ -46,8 +46,8 @@ public class TableGroup {
         return id;
     }
 
-    public List<Long> getOrderTableIds() {
-        return orderTables.getIds();
+    public List<OrderTable> getOrderTable() {
+        return orderTables.getList();
     }
 
     public List<OrderTable> getOrderTables() {
