@@ -3,6 +3,7 @@ package kitchenpos.menu.domain;
 import java.math.BigDecimal;
 
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
@@ -13,6 +14,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import kitchenpos.common.Quantity;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.exception.NotFoundProductException;
 
@@ -33,8 +35,8 @@ public class MenuProduct {
     @JoinColumn(name = "product_id", foreignKey = @ForeignKey(name = "fk_menu_product_product"), nullable = false)
     private Product product;
 
-    @Column(name = "quantity", nullable = false)
-    private long quantity;
+    @Embedded
+    private Quantity quantity;
 
     protected MenuProduct() {
     }
@@ -43,7 +45,7 @@ public class MenuProduct {
         this.seq = seq;
         this.menu = menu;
         this.product = product;
-        this.quantity = quantity;
+        this.quantity = Quantity.of(quantity);
     }
 
     public static MenuProduct of(Product product, long quantity) {
@@ -58,7 +60,7 @@ public class MenuProduct {
         if (null == product) {
             throw new NotFoundProductException();
         }
-        return product.getPrice().multiply(BigDecimal.valueOf(quantity));
+        return product.getPrice().multiply(BigDecimal.valueOf(quantity.getQuantity()));
     }
 
     public Long getSeq() {
@@ -70,7 +72,7 @@ public class MenuProduct {
     }
 
     public long getQuantity() {
-        return quantity;
+        return quantity.getQuantity();
     }
 
     public void setMenu(Menu menu) {
