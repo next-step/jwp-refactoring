@@ -6,10 +6,10 @@ public class InputOrderDateException extends RuntimeException {
     private InputOrderDataErrorCode inputOrderDataErrorCode;
 
     public InputOrderDateException(InputOrderDataErrorCode inputOrderDataErrorCode) {
-        this(inputOrderDataErrorCode.errorMessage(), inputOrderDataErrorCode);
+        this(inputOrderDataErrorCode, inputOrderDataErrorCode.errorMessage());
     }
 
-    public InputOrderDateException(String errorMessage, InputOrderDataErrorCode inputOrderDataErrorCode) {
+    public InputOrderDateException(InputOrderDataErrorCode inputOrderDataErrorCode, String errorMessage) {
         super(errorMessage);
         this.errorMessage = errorMessage;
         this.inputOrderDataErrorCode = inputOrderDataErrorCode;

@@ -1,5 +1,8 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.order.exceptions.InputTableDataErrorCode;
+import kitchenpos.order.exceptions.InputTableDataException;
+
 public class OrderTable {
     private Long id;
     private Long tableGroupId;
@@ -12,6 +15,7 @@ public class OrderTable {
     }
 
     public OrderTable(Long tableGroupId, int numberOfGuests, boolean empty) {
+        validateWrongNumberOfGuest(numberOfGuests);
         this.tableGroupId = tableGroupId;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
@@ -21,23 +25,16 @@ public class OrderTable {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public Long getTableGroupId() {
         return tableGroupId;
-    }
-
-    public void setTableGroupId(final Long tableGroupId) {
-        this.tableGroupId = tableGroupId;
     }
 
     public int getNumberOfGuests() {
         return numberOfGuests;
     }
 
-    public void setNumberOfGuests(final int numberOfGuests) {
+    public void seatNumberOfGuests(int numberOfGuests) {
+        validateWrongNumberOfGuest(numberOfGuests);
         this.numberOfGuests = numberOfGuests;
     }
 
@@ -45,7 +42,25 @@ public class OrderTable {
         return empty;
     }
 
-    public void setEmpty(final boolean empty) {
-        this.empty = empty;
+    public void allocateTableGroupId(Long tableGroupId) {
+        this.tableGroupId = tableGroupId;
+    }
+
+    public void emptyTableGroupId() {
+        this.tableGroupId = null;
+    }
+
+    public void enterGuest() {
+        this.empty = false;
+    }
+
+    public void leaveGuest() {
+        this.empty = true;
+    }
+
+    private void validateWrongNumberOfGuest(int numberOfGuests) {
+        if (numberOfGuests < 0) {
+            throw new InputTableDataException(InputTableDataErrorCode.THE_NUMBER_OF_GUESTS_IS_NOT_LESS_THAN_ZERO);
+        }
     }
 }

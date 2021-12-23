@@ -71,6 +71,7 @@ class MenuRestControllerTest {
         Menu savedMenu = mock(Menu.class);
         when(savedMenu.getPrice())
                 .thenReturn(new BigDecimal("10000"));
+
         when(menuDao.save(menu)).thenReturn(savedMenu);
         //when
         menuService.create(menu);

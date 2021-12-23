@@ -4,6 +4,8 @@ import kitchenpos.order.dao.OrderDao;
 import kitchenpos.order.dao.OrderTableDao;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.exceptions.InputTableDataErrorCode;
+import kitchenpos.order.exceptions.InputTableDataException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,8 +25,7 @@ public class TableService {
 
     @Transactional
     public OrderTable create(final OrderTable orderTable) {
-        orderTable.setTableGroupId(null);
-
+        orderTable.emptyTableGroupId();
         return orderTableDao.save(orderTable);
     }
 
@@ -35,7 +36,7 @@ public class TableService {
     @Transactional
     public OrderTable changeEmpty(final Long orderTableId, final OrderTable orderTable) {
         final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new InputTableDataException(InputTableDataErrorCode.THE_TABLE_CAN_NOT_FIND));
 
         if (Objects.nonNull(savedOrderTable.getTableGroupId())) {
             throw new IllegalArgumentException();
@@ -46,7 +47,7 @@ public class TableService {
             throw new IllegalArgumentException();
         }
 
-        savedOrderTable.setEmpty(orderTable.isEmpty());
+        changeTableStatus(orderTable, savedOrderTable);
 
         return orderTableDao.save(savedOrderTable);
     }
@@ -56,18 +57,32 @@ public class TableService {
         final int numberOfGuests = orderTable.getNumberOfGuests();
 
         if (numberOfGuests < 0) {
-            throw new IllegalArgumentException();
+            throw new InputTableDataException(InputTableDataErrorCode.THE_NUMBER_OF_GUESTS_IS_NOT_LESS_THAN_ZERO);
         }
 
         final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new InputTableDataException(InputTableDataErrorCode.THE_TABLE_CAN_NOT_FIND));
 
         if (savedOrderTable.isEmpty()) {
             throw new IllegalArgumentException();
         }
 
-        savedOrderTable.setNumberOfGuests(numberOfGuests);
+        savedOrderTable.seatNumberOfGuests(numberOfGuests);
 
         return orderTableDao.save(savedOrderTable);
+    }
+
+    private void changeTableStatus(OrderTable orderTable, OrderTable savedOrderTable) {
+        if (orderTable.isEmpty()) {
+            savedOrderTable.leaveGuest();
+            return;
+        }
+
+        if (!orderTable.isEmpty()) {
+            savedOrderTable.enterGuest();
+            return;
+        }
+
+        throw new InputTableDataException(InputTableDataErrorCode.THE_STATUS_IS_WRONG_DATA);
     }
 }
