@@ -14,6 +14,7 @@ import java.util.List;
  * date : 2021/12/21
  * description :
  */
+//FIXME 생성자 제한하기
 public class MenuRequest {
     private String name;
     private BigDecimal price;

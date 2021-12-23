@@ -33,6 +33,7 @@ public class OrderLineItem {
         this.quantity = Quantity.of(quantity);
     }
 
+    //FIXME 네이밍 변경 필요. 직관적이지 못함.
     public OrderLineItem in(Order order) {
         this.order = order;
         return this;

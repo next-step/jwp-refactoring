@@ -11,6 +11,7 @@ import java.math.BigDecimal;
  * date : 2021/12/21
  * description :
  */
+//FIXME 생성자 제한하기
 public class ProductRequest {
     private String name;
     private BigDecimal price;

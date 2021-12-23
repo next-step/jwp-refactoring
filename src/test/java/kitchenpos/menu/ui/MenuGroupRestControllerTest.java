@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.menu.application.MenuGroupService;
 import kitchenpos.menu.dto.MenuGroupRequest;
 import kitchenpos.menu.dto.MenuGroupResponse;
-import kitchenpos.menu.ui.MenuGroupRestController;
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -64,8 +63,8 @@ class MenuGroupRestControllerTest {
         // when
         ResultActions actions = mockMvc.perform(
                 get("/api/menu-groups")
-                    .contentType(MediaType.APPLICATION_JSON)
-                ).andDo(print());
+                        .contentType(MediaType.APPLICATION_JSON)
+        ).andDo(print());
 
         // then
         actions.andExpect(status().isOk())
@@ -84,8 +83,8 @@ class MenuGroupRestControllerTest {
         // when
         ResultActions actions = mockMvc.perform(
                 post("/api/menu-groups")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(mapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(request))
         ).andDo(print());
 
         // then

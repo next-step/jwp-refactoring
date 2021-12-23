@@ -12,6 +12,7 @@ import java.util.List;
  * date : 2021/12/22
  * description :
  */
+//FIXME 생성자 제한하기
 public class TableGroupResponse {
     private Long id;
     private LocalDateTime createdDate;
