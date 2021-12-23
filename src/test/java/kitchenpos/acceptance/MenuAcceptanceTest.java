@@ -3,10 +3,7 @@ package kitchenpos.acceptance;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.domain.Product;
-import kitchenpos.domain.dto.MenuGroupRequest;
-import kitchenpos.domain.dto.MenuGroupResponse;
-import kitchenpos.domain.dto.MenuProductRequest;
-import kitchenpos.domain.dto.MenuRequest;
+import kitchenpos.domain.dto.*;
 import kitchenpos.util.RestAssuredApi;
 import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,8 +32,8 @@ class MenuAcceptanceTest extends AcceptanceTest {
     void setUp() {
         super.setUp();
 
-        Product 매콤치킨 = 상품_등록_요청(new Product(1L, "매콤치킨", BigDecimal.valueOf(13000))).as(Product.class);
-        Product 치즈볼 = 상품_등록_요청(new Product(2L, "치즈볼", BigDecimal.valueOf(2000))).as(Product.class);
+        ProductResponse 매콤치킨 = 상품_등록_요청(ProductRequest.of("매콤치킨", BigDecimal.valueOf(13000))).as(ProductResponse.class);
+        ProductResponse 치즈볼 = 상품_등록_요청(ProductRequest.of("치즈볼", BigDecimal.valueOf(2000))).as(ProductResponse.class);
 
         매콤치킨구성 = new MenuProductRequest(매콤치킨.getId(), 1L);
         치즈볼구성 = new MenuProductRequest(치즈볼.getId(), 2L);

@@ -2,6 +2,8 @@ package kitchenpos.application;
 
 import kitchenpos.domain.Product;
 import kitchenpos.domain.ProductRepository;
+import kitchenpos.domain.dto.ProductRequest;
+import kitchenpos.domain.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -43,29 +45,29 @@ class ProductServiceTest {
     void create() {
         when(productRepository.save(any())).thenReturn(매콤치킨);
 
-        Product product = productService.create(매콤치킨);
+        ProductResponse response = productService.create(ProductRequest.of("매콤치킨", BigDecimal.valueOf(13000)));
 
         verify(productRepository, times(1)).save(any(Product.class));
-        assertThat(product.getName()).isEqualTo(매콤치킨.getName());
+        assertThat(response.getName()).isEqualTo(매콤치킨.getName());
     }
 
     @Test
     @DisplayName("상품의 가격이 null인 경우 예외가 발생한다.")
     void validatePriceNull() {
-        Product product = new Product("통통치킨", null);
+        ProductRequest request = ProductRequest.of("통통치킨", null);
 
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> productService.create(product));
+                .isThrownBy(() -> productService.create(request));
     }
 
     @Test
     @DisplayName("상품의 가격이 0원 미만인 경우 예외가 발생한다.")
     void validateMinPrice() {
         BigDecimal invalidPrice = BigDecimal.valueOf(-1);
-        Product product = new Product("통통치킨", invalidPrice);
+        ProductRequest request = ProductRequest.of("통통치킨", invalidPrice);
 
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> productService.create(product));
+                .isThrownBy(() -> productService.create(request));
     }
 
     @Test
@@ -73,9 +75,9 @@ class ProductServiceTest {
     void list() {
         when(productRepository.findAll()).thenReturn(Arrays.asList(매콤치킨, 치즈볼, 사이다));
 
-        List<Product> products = productService.list();
+        List<ProductResponse> responses = productService.list();
 
         verify(productRepository, times(1)).findAll();
-        assertThat(products).hasSize(3);
+        assertThat(responses).hasSize(3);
     }
 }

@@ -2,7 +2,6 @@ package kitchenpos.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.Product;
 import kitchenpos.domain.dto.*;
 import kitchenpos.util.RestAssuredApi;
 import org.assertj.core.api.AssertionsForClassTypes;
@@ -37,9 +36,8 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     void setUp() {
         super.setUp();
-
-        Product 매콤치킨 = 상품_등록_요청(new Product(1L, "매콤치킨", BigDecimal.valueOf(13000))).as(Product.class);
-        Product 허니치킨 = 상품_등록_요청(new Product(2L, "허니치킨", BigDecimal.valueOf(15000))).as(Product.class);
+        ProductResponse 매콤치킨 = 상품_등록_요청(ProductRequest.of("매콤치킨", BigDecimal.valueOf(13000))).as(ProductResponse.class);
+        ProductResponse 허니치킨 = 상품_등록_요청(ProductRequest.of("허니치킨", BigDecimal.valueOf(15000))).as(ProductResponse.class);
 
         MenuProductRequest 매콤치킨구성 = new MenuProductRequest(매콤치킨.getId(), 1L);
         MenuProductRequest 허니치킨구성 = new MenuProductRequest(허니치킨.getId(), 1L);
