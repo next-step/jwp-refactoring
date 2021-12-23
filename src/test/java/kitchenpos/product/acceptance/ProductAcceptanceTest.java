@@ -4,6 +4,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -49,9 +50,9 @@ public class ProductAcceptanceTest extends AcceptanceTest {
         성공_200_OK(response);
     }
 
-    public static Product 상품_등록되어_있음(String name, long price) {
+    public static ProductResponse 상품_등록되어_있음(String name, long price) {
         Product product = Product.of(name, BigDecimal.valueOf(price));
 
-        return 상품_생성_요청(product).as(Product.class);
+        return 상품_생성_요청(product).as(ProductResponse.class);
     }
 }

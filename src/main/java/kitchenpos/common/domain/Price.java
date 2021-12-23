@@ -1,4 +1,4 @@
-package kitchenpos.menu.domain;
+package kitchenpos.common.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -11,7 +11,7 @@ public class Price implements Comparable<Price> {
     @Column
     private BigDecimal price;
 
-    protected Price() {
+    public Price() {
     }
 
     private Price(BigDecimal price) {
@@ -29,12 +29,25 @@ public class Price implements Comparable<Price> {
         return price;
     }
 
+    public boolean isMoreExpensive(Price totalPrice) {
+        return price.compareTo(totalPrice.getPrice()) > 0;
+    }
+
     @Override
     public int compareTo(Price o) {
         return price.compareTo(o.getPrice());
     }
 
-    public boolean isMoreExpensive(Price totalPrice) {
-        return price.compareTo(totalPrice.getPrice()) > 0;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Price price1 = (Price) o;
+        return Objects.equals(price, price1.price);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(price);
     }
 }

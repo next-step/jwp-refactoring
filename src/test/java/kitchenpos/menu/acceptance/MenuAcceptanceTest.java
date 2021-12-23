@@ -7,7 +7,7 @@ import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.product.domain.Product;
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,7 +26,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     private static final String API_URL = "/api/menus";
 
     private MenuGroup 추천_메뉴_그룹;
-    private Product 강정치킨;
+    private ProductResponse 강정치킨;
 
     @BeforeEach
     public void setUp() {

@@ -1,5 +1,9 @@
 package kitchenpos.product.domain;
 
+import kitchenpos.common.domain.Name;
+import kitchenpos.common.domain.Price;
+
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -13,29 +17,31 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
+    @Embedded
+    private Name name;
 
-    private BigDecimal price;
+    @Embedded
+    private Price price;
 
     protected Product() {
     }
 
-    private Product(String name, BigDecimal price) {
+    private Product(Name name, Price price) {
         this.name = name;
         this.price = price;
     }
 
-    private Product(Long id, String name, BigDecimal price) {
+    private Product(Long id, Name name, Price price) {
         this(name, price);
         this.id = id;
     }
 
     public static Product of(String name, BigDecimal price) {
-        return new Product(name, price);
+        return new Product(Name.of(name), Price.of(price));
     }
 
     public static Product of(Long id, String name, BigDecimal price) {
-        return new Product(id, name, price);
+        return new Product(id, Name.of(name), Price.of(price));
     }
 
     public Long getId() {
@@ -43,14 +49,10 @@ public class Product {
     }
 
     public String getName() {
-        return name;
+        return name.getName();
     }
 
     public BigDecimal getPrice() {
-        return price;
-    }
-
-    public void setPrice(final BigDecimal price) {
-        this.price = price;
+        return price.getPrice();
     }
 }
