@@ -45,7 +45,6 @@ public class MenuService {
         if (menu.getPrice().compareTo(sum) > 0) {
             throw new IllegalArgumentException();
         }
-
         Menu save = menuRepository.save(menu);
 
         return MenuResponse.of(save);

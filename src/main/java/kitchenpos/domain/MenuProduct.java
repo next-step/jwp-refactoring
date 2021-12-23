@@ -29,6 +29,14 @@ public class MenuProduct {
         this.quantity = quantity;
     }
 
+    public void setMenu(Menu menu) {
+        if (this.menu != null) {
+            this.menu.getMenuProducts().remove(this);
+        }
+        this.menu = menu;
+        menu.getMenuProducts().add(this);
+    }
+
     public void setProduct(Product product) {
         this.product = product;
     }

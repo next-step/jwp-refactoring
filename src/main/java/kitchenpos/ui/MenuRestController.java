@@ -1,20 +1,17 @@
 package kitchenpos.ui;
 
 import kitchenpos.application.MenuService;
-import kitchenpos.domain.Menu;
 import kitchenpos.domain.dto.MenuRequest;
 import kitchenpos.domain.dto.MenuResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
+@RequestMapping("/api/menus")
 @RestController
 public class MenuRestController {
     private final MenuService menuService;
@@ -23,7 +20,7 @@ public class MenuRestController {
         this.menuService = menuService;
     }
 
-    @PostMapping("/api/menus")
+    @PostMapping
     public ResponseEntity<MenuResponse> create(@RequestBody @Valid final MenuRequest request, BindingResult bs) {
         if (bs.hasErrors()) {
             throw new IllegalArgumentException();
@@ -33,7 +30,7 @@ public class MenuRestController {
         return ResponseEntity.created(uri).body(response);
     }
 
-    @GetMapping("/api/menus")
+    @GetMapping
     public ResponseEntity<List<MenuResponse>> list() {
         return ResponseEntity.ok().body(menuService.list());
     }

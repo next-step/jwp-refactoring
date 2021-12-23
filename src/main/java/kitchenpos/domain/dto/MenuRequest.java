@@ -8,22 +8,19 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class MenuRequest {
 
     public String name;
 
-    @NotNull @Min(0)
+    @NotNull
+    @Min(0)
     public BigDecimal price;
 
     @NotNull
     public Long menuGroupId;
 
     public List<MenuProductRequest> menuProducts;
-
-    protected MenuRequest() {
-    }
 
     public MenuRequest(String name, BigDecimal price, Long menuGroupId, List<MenuProductRequest> menuProducts) {
         this.name = name;
@@ -44,18 +41,6 @@ public class MenuRequest {
         this.name = name;
     }
 
-    public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
-
-    public void setMenuGroupId(Long menuGroupId) {
-        this.menuGroupId = menuGroupId;
-    }
-
-    public void setMenuProductRequests(List<MenuProductRequest> menuProducts) {
-        this.menuProducts = menuProducts;
-    }
-
     public String getName() {
         return name;
     }
@@ -70,11 +55,5 @@ public class MenuRequest {
 
     public List<MenuProductRequest> getMenuProducts() {
         return menuProducts;
-    }
-
-    public List<Long> getProductIds() {
-        return menuProducts.stream()
-                .map(MenuProductRequest::getProductId)
-                .collect(Collectors.toList());
     }
 }

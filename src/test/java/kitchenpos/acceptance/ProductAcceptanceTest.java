@@ -44,7 +44,7 @@ class ProductAcceptanceTest extends AcceptanceTest {
         상품_목록_일치됨(response, Arrays.asList(매콤치킨, 치즈볼, 사이다));
     }
 
-    private ExtractableResponse<Response> 상품_등록_요청(Product product) {
+    public static ExtractableResponse<Response> 상품_등록_요청(Product product) {
         return RestAssuredApi.post("/api/products", product);
     }
 

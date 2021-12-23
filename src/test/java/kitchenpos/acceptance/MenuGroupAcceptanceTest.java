@@ -39,7 +39,7 @@ class MenuGroupAcceptanceTest extends AcceptanceTest {
         메뉴_그룹_목록_일치됨(response, Arrays.asList(인기메뉴, 타임세일메뉴));
     }
 
-    private ExtractableResponse<Response> 메뉴_그룹_등록_요청(MenuGroup menuGroup) {
+    public static ExtractableResponse<Response> 메뉴_그룹_등록_요청(MenuGroup menuGroup) {
         return RestAssuredApi.post("/api/menu-groups", menuGroup);
     }
 

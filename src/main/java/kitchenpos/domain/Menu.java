@@ -2,9 +2,9 @@ package kitchenpos.domain;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
-import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
 
@@ -23,7 +23,7 @@ public class Menu {
     private MenuGroup menuGroup;
 
     @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MenuProduct> menuProducts;
+    private List<MenuProduct> menuProducts = new ArrayList<>();
 
     public Menu() {
     }
@@ -32,7 +32,12 @@ public class Menu {
         this.name = name;
         this.price = price;
         this.menuGroup = menuGroup;
-        this.menuProducts = menuProducts;
+        addProducts(menuProducts);
+    }
+
+    private void addProducts(List<MenuProduct> menuProducts) {
+        this.menuProducts.addAll(menuProducts);
+        menuProducts.forEach(menuProduct -> menuProduct.setMenu(this));
     }
 
     public static Menu of(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
@@ -45,10 +50,6 @@ public class Menu {
         }
         this.menuGroup = menuGroup;
         menuGroup.getMenus().add(this);
-    }
-
-    public void setMenuProducts(List<MenuProduct> menuProducts) {
-        this.menuProducts = menuProducts;
     }
 
     public Long getId() {
