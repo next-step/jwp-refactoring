@@ -42,7 +42,6 @@ public class TableService {
         final OrderTable findOrderTable = orderTableRepository.findById(orderTableId)
             .orElseThrow(() -> new NotFoundException(NOT_FOUND_DATA));
 
-        findOrderTable.validateNotCompletionOrderStatus();
         findOrderTable.changeEmpty(orderTableRequest.isEmpty());
         return OrderTableResponse.of(findOrderTable);
     }

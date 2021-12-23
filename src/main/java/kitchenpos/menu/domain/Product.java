@@ -11,6 +11,7 @@ import javax.persistence.Id;
 
 import kitchenpos.common.domain.Name;
 import kitchenpos.common.domain.Price;
+import kitchenpos.common.domain.Quantity;
 
 @Entity
 public class Product {
@@ -48,6 +49,10 @@ public class Product {
 
     public Price getPrice() {
         return price;
+    }
+
+    public BigDecimal multiplyQuantity(Quantity quantity) {
+        return price.multiplyQuantity(quantity);
     }
 
     @Override

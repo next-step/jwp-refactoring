@@ -95,6 +95,7 @@ public class OrderTable {
 
     public void changeEmpty(final boolean empty) {
         validateChangeableEmpty();
+        validateNotCompletionOrderStatus();
         this.empty.changeEmpty(empty);
     }
 
