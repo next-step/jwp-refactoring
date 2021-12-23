@@ -1,19 +1,21 @@
 package kitchenpos.event;
 
-import kitchenpos.domain.TableGroup;
+import kitchenpos.domain.table.OrderTable;
 import org.springframework.context.ApplicationEvent;
+
+import java.util.List;
 
 public class TableGroupCreatedEvent extends ApplicationEvent {
 
-    private final TableGroup tableGroup;
+    private final List<OrderTable> orderTables;
 
 
-    public TableGroupCreatedEvent(TableGroup tableGroup) {
-        super(tableGroup);
-        this.tableGroup = tableGroup;
+    public TableGroupCreatedEvent(List<OrderTable> orderTables) {
+        super(orderTables);
+        this.orderTables = orderTables;
     }
 
-    public TableGroup getTableGroup() {
-        return tableGroup;
+    public List<OrderTable> getOrderTables() {
+        return orderTables;
     }
 }

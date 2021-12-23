@@ -1,11 +1,11 @@
-package kitchenpos.application;
+package kitchenpos.application.table;
 
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
-import kitchenpos.dto.TableGroupRequest;
+import kitchenpos.domain.table.OrderTable;
+import kitchenpos.domain.table.TableGroup;
+import kitchenpos.dto.table.TableGroupRequest;
 import kitchenpos.event.TableGroupCreatedEvent;
 import kitchenpos.event.TableGroupUnGroupEvent;
-import kitchenpos.repository.TableGroupRepository;
+import kitchenpos.repository.table.TableGroupRepository;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,7 +36,7 @@ public class TableGroupService {
                                                     .collect(Collectors.toList());
 
         TableGroup tableGroup = new TableGroup(orderTables);
-        publisher.publishEvent(new TableGroupCreatedEvent(tableGroup));
+        publisher.publishEvent(new TableGroupCreatedEvent(tableGroup.getOrderTables()));
 
         return tableGroupRepository.save(tableGroup);
     }

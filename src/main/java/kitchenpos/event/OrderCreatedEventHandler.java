@@ -1,9 +1,8 @@
 package kitchenpos.event;
 
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
-import kitchenpos.repository.MenuRepository;
+import kitchenpos.domain.menu.Menu;
+import kitchenpos.domain.order.OrderLineItem;
+import kitchenpos.repository.menu.MenuRepository;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
@@ -19,10 +18,9 @@ public class OrderCreatedEventHandler {
     }
 
     @EventListener
-    public void createOrder(OrderCreatedEvent event) {
+    public void addOrderMenu(OrderCreatedEvent event) {
 
-        Order order = event.getOrder();
-        List<OrderLineItem> orderLineItems = order.getOrderLineItems();
+        List<OrderLineItem> orderLineItems = event.getOrderLineItems();
 
         orderLineItems.forEach(orderLineItem -> {
             Menu menu = menuRepository.findById(orderLineItem.getMenu().getId())

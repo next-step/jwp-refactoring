@@ -1,6 +1,6 @@
 package kitchenpos.event;
 
-import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.table.OrderTable;
 import org.springframework.context.ApplicationEvent;
 
 import java.util.List;

@@ -1,18 +1,21 @@
 package kitchenpos.event;
 
-import kitchenpos.domain.TableGroup;
+import kitchenpos.domain.table.OrderTable;
+import kitchenpos.domain.table.TableGroup;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 
 @Component
 public class TableGroupCreatedEventHandler {
 
     @EventListener
-    public void createTableGroup(TableGroupCreatedEvent event) {
+    public void nonEmptyOrderTables(TableGroupCreatedEvent event) {
 
-        TableGroup tableGroup = event.getTableGroup();
-        tableGroup.getOrderTables()
+        List<OrderTable> orderTables = event.getOrderTables();
+        orderTables
                     .forEach(orderTable -> {
                         orderTable.checkAvailable();
                         orderTable.changeNonEmptyOrderTable();

@@ -1,9 +1,9 @@
-package kitchenpos.application;
+package kitchenpos.application.table;
 
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
-import kitchenpos.dto.OrderTableRequest;
-import kitchenpos.repository.OrderTableRepository;
+import kitchenpos.domain.table.OrderTable;
+import kitchenpos.domain.table.TableGroup;
+import kitchenpos.dto.table.OrderTableRequest;
+import kitchenpos.repository.table.OrderTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,11 +11,13 @@ import java.util.List;
 
 @Service
 public class TableService {
+
     private final OrderTableRepository orderTableRepository;
+    private final OrderTableValidator orderTableValidator;
 
-
-    public TableService(OrderTableRepository orderTableRepository) {
+    public TableService(OrderTableRepository orderTableRepository, OrderTableValidator orderTableValidator) {
         this.orderTableRepository = orderTableRepository;
+        this.orderTableValidator = orderTableValidator;
     }
 
     @Transactional
@@ -33,7 +35,7 @@ public class TableService {
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(() -> new IllegalArgumentException("등록된 주문테이블이 아닙니다."));
 
-        savedOrderTable.changeEmpty(orderTableRequest.isEmpty());
+        savedOrderTable.changeEmpty(orderTableRequest.isEmpty(), orderTableValidator);
         return savedOrderTable;
     }
 

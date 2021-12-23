@@ -1,18 +1,21 @@
 package kitchenpos.event;
 
-import kitchenpos.domain.Order;
+import kitchenpos.domain.order.OrderLineItem;
 import org.springframework.context.ApplicationEvent;
+
+import java.util.List;
 
 public class OrderCreatedEvent extends ApplicationEvent {
 
-    private final Order order;
+    private final List<OrderLineItem> orderLineItems;
 
-    public OrderCreatedEvent(Order order) {
-        super(order);
-        this.order = order;
+
+    public OrderCreatedEvent(List<OrderLineItem> orderLineItems) {
+        super(orderLineItems);
+        this.orderLineItems = orderLineItems;
     }
 
-    public Order getOrder() {
-        return order;
+    public List<OrderLineItem> getOrderLineItems() {
+        return orderLineItems;
     }
 }
