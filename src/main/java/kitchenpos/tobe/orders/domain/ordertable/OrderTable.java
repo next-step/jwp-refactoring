@@ -1,15 +1,20 @@
 package kitchenpos.tobe.orders.domain.ordertable;
 
-import javax.persistence.Column;
+import java.util.Objects;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class OrderTable {
 
+    private static final long EMPTY_ORDER_TABLE_ID = 0L;
     private static final int MIN_NUMBER_OF_GUESTS = 0;
     private static final boolean TAKE = false;
     private static final boolean CLEAR = true;
@@ -24,8 +29,12 @@ public class OrderTable {
     @Embedded
     private Empty empty;
 
-    @Column(name = "table_group_id", nullable = false)
-    private Long tableGroupId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(
+        name = "table_group_id",
+        foreignKey = @ForeignKey(name = "fk_order_table_to_table_group")
+    )
+    private TableGroup tableGroup;
 
     protected OrderTable() {
     }
@@ -76,6 +85,20 @@ public class OrderTable {
     }
 
     public Long getTableGroupId() {
-        return tableGroupId;
+        if (Objects.nonNull(tableGroup)) {
+            return tableGroup.getId();
+        }
+        return EMPTY_ORDER_TABLE_ID;
+    }
+
+    public void group(final TableGroup tableGroup) {
+        if (Objects.nonNull(this.tableGroup)) {
+            throw new IllegalStateException("이미 단체 지정된 테이블을 단체 지정할 수 없습니다.");
+        }
+        this.tableGroup = tableGroup;
+    }
+
+    public void ungroup() {
+        tableGroup = null;
     }
 }

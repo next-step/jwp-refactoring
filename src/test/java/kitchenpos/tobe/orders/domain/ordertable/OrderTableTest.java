@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import kitchenpos.tobe.fixture.OrderTableFixture;
+import kitchenpos.tobe.fixture.TableGroupFixture;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -132,5 +133,49 @@ public class OrderTableTest {
 
         // then
         assertThatThrownBy(request).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("단체로 지정될 수 있다.")
+    @Test
+    void group() {
+        // given
+        final OrderTable table = OrderTableFixture.of(1L);
+        final TableGroup tableGroup = TableGroupFixture.of(1L);
+
+        // when
+        table.group(tableGroup);
+
+        // then
+        assertThat(table.getTableGroupId()).isEqualTo(tableGroup.getId());
+    }
+
+    @DisplayName("이미 단체 지정된 테이블은 단체 지정될 수 없다.")
+    @Test
+    void groupFailAlreadyGrouped() {
+        // given
+        final OrderTable table = OrderTableFixture.of(1L);
+        final TableGroup tableGroup = TableGroupFixture.of(1L);
+        table.group(tableGroup);
+
+        // when
+        final ThrowableAssert.ThrowingCallable request = () -> table.group(tableGroup);
+
+        // then
+        assertThatThrownBy(request).isInstanceOf(IllegalStateException.class);
+    }
+
+    @DisplayName("단체에서 제외될 수 있다.")
+    @Test
+    void ungroup() {
+        // given
+        final OrderTable table = OrderTableFixture.of(1L);
+        final TableGroup tableGroup = TableGroupFixture.of(1L);
+        table.group(tableGroup);
+
+        // when
+        table.ungroup();
+
+        // then
+        assertThat(table.getTableGroupId()).isEqualTo(0L);
     }
 }
