@@ -8,11 +8,12 @@ import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.exceptions.InputOrderDataErrorCode;
+import kitchenpos.order.exceptions.InputOrderDateException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -60,7 +61,9 @@ public class OrderService {
             throw new IllegalArgumentException();
         }
 
-        final Order savedOrder = orderDao.save(new Order(order.getId(), orderTable.getId(), OrderStatus.COOKING.name(), LocalDateTime.now()));
+        order.startCooking();
+
+        final Order savedOrder = orderDao.save(order);
 
         final Long orderId = savedOrder.getId();
         final List<OrderLineItem> savedOrderLineItems = new ArrayList<>();
@@ -69,7 +72,7 @@ public class OrderService {
             savedOrderLineItems.add(orderLineItemDao.save(orderLineItem));
         }
 
-        return Order.of(savedOrder.getId(), savedOrder.getOrderTableId(), savedOrder.getOrderStatus(), savedOrder.getOrderedTime(), savedOrderLineItems);
+        return savedOrder;
     }
 
     public List<Order> list() {
@@ -87,12 +90,12 @@ public class OrderService {
                 .orElseThrow(IllegalArgumentException::new);
 
         if (Objects.equals(OrderStatus.COMPLETION.name(), savedOrder.getOrderStatus())) {
-            throw new IllegalArgumentException();
+            throw new InputOrderDateException(InputOrderDataErrorCode.THE_ORDER_STATUS_DO_NOT_CHANGE_COMPLETION_TO_ANY_OTHER);
         }
 
         final OrderStatus orderStatus = OrderStatus.valueOf(order.getOrderStatus());
 
         orderDao.save(savedOrder);
-        return Order.of(savedOrder.getId(),order.getOrderTableId(),orderStatus.name(),order.getOrderedTime(),orderLineItemDao.findAllByOrderId(orderId));
+        return Order.of(savedOrder.getId(), savedOrder.getOrderTableId(), orderStatus.name(), savedOrder.getOrderedTime(), orderLineItemDao.findAllByOrderId(orderId));
     }
 }

@@ -2,6 +2,7 @@ package kitchenpos.order.domain;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 public class Order {
     private Long id;
@@ -50,4 +51,24 @@ public class Order {
         return orderLineItems;
     }
 
+    public void startCooking(){
+        this.orderStatus = OrderStatus.COOKING.name();
+    }
+
+    public void startMeal() {
+        this.orderStatus = OrderStatus.MEAL.name();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Order)) return false;
+        Order order = (Order) o;
+        return Objects.equals(getId(), order.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId());
+    }
 }

@@ -6,7 +6,6 @@ public class InputMenuDataException extends RuntimeException{
 
     public InputMenuDataException(InputMenuDataErrorCode inputMenuDataErrorCode) {
         this(inputMenuDataErrorCode, inputMenuDataErrorCode.errorMessage());
-        this.inputMenuDataErrorCode = inputMenuDataErrorCode;
     }
 
     public InputMenuDataException(InputMenuDataErrorCode inputMenuDataErrorCode, String errorMessage) {

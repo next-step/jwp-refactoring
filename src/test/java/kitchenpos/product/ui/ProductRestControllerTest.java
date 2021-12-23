@@ -1,8 +1,8 @@
-package kitchenpos.product.acceptance;
+package kitchenpos.product.ui;
 
 import kitchenpos.product.application.ProductService;
-import kitchenpos.product.domain.Product;
 import kitchenpos.product.dao.ProductDao;
+import kitchenpos.product.domain.Product;
 import kitchenpos.product.exception.InputProductDataErrorCode;
 import kitchenpos.product.exception.InputProductDataException;
 import org.junit.jupiter.api.DisplayName;
@@ -18,10 +18,9 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 @DisplayName("상품 인수테스트")
 @ExtendWith(MockitoExtension.class)
