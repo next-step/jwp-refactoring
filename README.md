@@ -103,4 +103,12 @@
     - [X] `JdbcTemplateOrderLineItemDao` -> `OrderLineItemRepository`
 - [X] 서비스 레이어로직 도메인으로 분리
 - [X] 인수 테스트 리팩토링
-- [X] `Request`, `Response` DTO 분리 
+- [X] `Request`, `Response` DTO 분리
+
+## 3단계 - 의존성 리팩터링
+
+- 느슨한 결합과 강한 결합 학습
+- 이벤트 학습 (`ApplicationEventPublisher`, `ApplicationListener`)
+- 데이터베이스 스키마 변경 될 수 있음(형상관리 참고)
+- [ ] 메뉴 정보가 변경되더라도 주문 항목이 변경되지 않게 구현한다
+- [ ] 클래스 사이, 패키지 사이의 의존 관계는 단방향이 되도록 해야 한다
