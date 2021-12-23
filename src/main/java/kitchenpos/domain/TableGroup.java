@@ -30,7 +30,7 @@ public class TableGroup {
 
     private void groupOrderTables(List<OrderTable> orderTables) {
         orderTables.forEach(orderTable -> orderTable.changeTableGroup(this));
-        orderTables.forEach(orderTable -> orderTable.setEmpty(false));
+        orderTables.forEach(orderTable -> orderTable.changeEmpty(false));
     }
 
     private void validateOrderTables() {

@@ -10,9 +10,9 @@ public class Orders {
     @OneToMany(mappedBy = "orderTable")
     private List<Order> orders = new ArrayList<>();
 
-    public boolean canUngroup() {
+    public boolean canUngroupOrChange() {
         return orders.stream()
-                .map(order -> order.getOrderStatus())
+                .map(Order::getOrderStatus)
                 .anyMatch(orderStatus -> orderStatus == OrderStatus.COOKING || orderStatus == OrderStatus.MEAL);
     }
 }

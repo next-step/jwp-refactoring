@@ -25,7 +25,7 @@ public class OrderTableResponse {
                 .collect(Collectors.toList());
     }
 
-    private static OrderTableResponse from(OrderTable orderTable) {
+    public static OrderTableResponse from(OrderTable orderTable) {
         return new OrderTableResponse(orderTable.getId(), orderTable.getTableGroup().getId(), orderTable.getNumberOfGuests(), orderTable.isEmpty());
     }
 

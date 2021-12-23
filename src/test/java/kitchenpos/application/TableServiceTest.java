@@ -53,7 +53,7 @@ class TableServiceTest {
     void changeEmptyTableTest() {
         // given
         orderTable.changeTableGroup(null);
-        orderTable.setEmpty(true);
+        orderTable.changeEmpty(true);
         when(orderTableRepository.save(orderTable)).thenReturn(orderTable);
         when(orderTableRepository.findById(1L)).thenReturn(java.util.Optional.ofNullable(orderTable));
         when(orderRepository.existsByOrderTableIdAndOrderStatusIn(1L, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).thenReturn(false);
@@ -69,7 +69,7 @@ class TableServiceTest {
     @Test
     void changeEmptyTableInTableGroupTest() {
         // given
-        orderTable.setEmpty(true);
+        orderTable.changeEmpty(true);
         when(orderTableRepository.findById(1L)).thenReturn(java.util.Optional.ofNullable(orderTable));
 
         // when
@@ -83,7 +83,7 @@ class TableServiceTest {
     @Test
     void changeEmptyTableInCookingOrMeal() {
         // given
-        orderTable.setEmpty(true);
+        orderTable.changeEmpty(true);
         orderTable.changeTableGroup(null);
         when(orderTableRepository.findById(1L)).thenReturn(java.util.Optional.ofNullable(orderTable));
         when(orderRepository.existsByOrderTableIdAndOrderStatusIn(1L, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).thenReturn(true);
@@ -126,7 +126,7 @@ class TableServiceTest {
     @Test
     void changeNumberOfGuestsEmptyTable() {
         // given
-        orderTable.setEmpty(true);
+        orderTable.changeEmpty(true);
         orderTable.setNumberOfGuests(10);
         // when
         TableService tableService = new TableService(orderRepository, orderTableRepository);

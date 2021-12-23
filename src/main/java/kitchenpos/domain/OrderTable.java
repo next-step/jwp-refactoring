@@ -1,11 +1,16 @@
 package kitchenpos.domain;
 
+import kitchenpos.exception.CannotChangeEmptyException;
 import kitchenpos.exception.CannotUngroupException;
+import kitchenpos.exception.NegativeNumberOfGuestsException;
+import kitchenpos.exception.NoTableGroupException;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 public class OrderTable {
+    public static final int ZERO = 0;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -19,8 +24,7 @@ public class OrderTable {
     public OrderTable() {
     }
 
-    public OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
-        this.id = id;
+    public OrderTable(TableGroup tableGroup, int numberOfGuests, boolean empty) {
         this.tableGroup = tableGroup;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
@@ -47,6 +51,9 @@ public class OrderTable {
     }
 
     public void setNumberOfGuests(final int numberOfGuests) {
+        if (numberOfGuests < ZERO) {
+            throw new NegativeNumberOfGuestsException();
+        }
         this.numberOfGuests = numberOfGuests;
     }
 
@@ -54,12 +61,22 @@ public class OrderTable {
         return empty;
     }
 
-    public void setEmpty(final boolean empty) {
+    public void changeEmpty(final boolean empty) {
+        validateChangeEmpty();
         this.empty = empty;
     }
 
+    private void validateChangeEmpty() {
+        if (Objects.nonNull(getTableGroup())) {
+            throw new NoTableGroupException();
+        }
+        if (this.orders.canUngroupOrChange()) {
+            throw new CannotChangeEmptyException();
+        }
+    }
+
     public void ungroup() {
-        if (!orders.canUngroup()) {
+        if (!orders.canUngroupOrChange()) {
             throw new CannotUngroupException();
         }
         this.tableGroup = null;
