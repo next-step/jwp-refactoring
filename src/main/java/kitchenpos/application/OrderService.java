@@ -52,7 +52,7 @@ public class OrderService {
     public OrderResponse changeOrderStatus(final Long orderId, final OrderRequest orderRequest) {
         final Order order = findById(orderId);
         order.makeOrderStatus(orderRequest.getOrderStatus());
-        return OrderResponse.from(orderRepository.save(order));
+        return OrderResponse.from(order);
     }
 
     private Order findById(Long orderId) {

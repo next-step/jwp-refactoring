@@ -1,11 +1,16 @@
 package kitchenpos.domain;
 
+import kitchenpos.exception.IllegalOrderTablesException;
+import org.springframework.util.CollectionUtils;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class TableGroup {
+    public static final int ORDERTABLE_MIN = 2;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -16,10 +21,31 @@ public class TableGroup {
     public TableGroup() {
     }
 
-    public TableGroup(Long id, LocalDateTime createdDate, List<OrderTable> orderTables) {
-        this.id = id;
-        this.createdDate = createdDate;
+    public TableGroup(List<OrderTable> orderTables) {
+        this.createdDate = LocalDateTime.now();
         this.orderTables = orderTables;
+        validateOrderTables();
+        groupOrderTables(orderTables);
+    }
+
+    private void groupOrderTables(List<OrderTable> orderTables) {
+        orderTables.forEach(orderTable -> orderTable.changeTableGroup(this));
+        orderTables.forEach(orderTable -> orderTable.setEmpty(false));
+    }
+
+    private void validateOrderTables() {
+        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < ORDERTABLE_MIN) { //
+            throw new IllegalOrderTablesException();
+        }
+        for (final OrderTable savedOrderTable : orderTables) {
+            validateOrderTable(savedOrderTable);
+        }
+    }
+
+    private void validateOrderTable(OrderTable savedOrderTable) {
+        if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroup())) {
+            throw new IllegalOrderTablesException();
+        }
     }
 
     public Long getId() {
@@ -44,5 +70,9 @@ public class TableGroup {
 
     public void setOrderTables(final List<OrderTable> orderTables) {
         this.orderTables = orderTables;
+    }
+
+    public void ungroup() {
+        this.orderTables.forEach(OrderTable::ungroup);
     }
 }

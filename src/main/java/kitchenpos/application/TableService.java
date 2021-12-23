@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @Service
 public class TableService {
@@ -25,7 +24,7 @@ public class TableService {
 
     @Transactional
     public OrderTable create(final OrderTable orderTable) {
-        orderTable.setTableGroup(null);
+        orderTable.changeTableGroup(null);
 
         return orderTableRepository.save(orderTable);
     }

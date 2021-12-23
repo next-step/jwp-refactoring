@@ -1,5 +1,7 @@
 package kitchenpos.domain;
 
+import kitchenpos.exception.CannotUngroupException;
+
 import javax.persistence.*;
 
 @Entity
@@ -11,6 +13,8 @@ public class OrderTable {
     private TableGroup tableGroup;
     private int numberOfGuests;
     private boolean empty;
+    @Embedded
+    private Orders orders;
 
     public OrderTable() {
     }
@@ -34,7 +38,7 @@ public class OrderTable {
         return tableGroup;
     }
 
-    public void setTableGroup(TableGroup tableGroup) {
+    public void changeTableGroup(TableGroup tableGroup) {
         this.tableGroup = tableGroup;
     }
 
@@ -52,5 +56,12 @@ public class OrderTable {
 
     public void setEmpty(final boolean empty) {
         this.empty = empty;
+    }
+
+    public void ungroup() {
+        if (!orders.canUngroup()) {
+            throw new CannotUngroupException();
+        }
+        this.tableGroup = null;
     }
 }

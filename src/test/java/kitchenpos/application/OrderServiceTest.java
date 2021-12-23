@@ -2,6 +2,7 @@ package kitchenpos.application;
 
 import kitchenpos.dao.OrderRepository;
 import kitchenpos.domain.OrderStatus;
+import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.OrderLineItemRequest;
 import kitchenpos.dto.OrderRequest;
 import kitchenpos.exception.NoOrderLineItemException;
@@ -15,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
@@ -32,6 +34,7 @@ class OrderServiceTest {
 
         // when
         OrderService orderService = new OrderService(orderRepository, tableService, menuService);
+        when(tableService.findById(1L)).thenReturn(new OrderTable());
 
         // then
         assertThatThrownBy(() -> orderService.create(orderRequest)).isInstanceOf(NoOrderLineItemException.class);

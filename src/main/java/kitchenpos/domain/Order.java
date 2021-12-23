@@ -17,6 +17,7 @@ public class Order {
     private Long id;
     @ManyToOne
     private OrderTable orderTable;
+    @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
     private LocalDateTime orderedTime;
     @Embedded

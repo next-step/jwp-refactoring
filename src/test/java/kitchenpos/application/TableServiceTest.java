@@ -52,7 +52,7 @@ class TableServiceTest {
     @Test
     void changeEmptyTableTest() {
         // given
-        orderTable.setTableGroup(null);
+        orderTable.changeTableGroup(null);
         orderTable.setEmpty(true);
         when(orderTableRepository.save(orderTable)).thenReturn(orderTable);
         when(orderTableRepository.findById(1L)).thenReturn(java.util.Optional.ofNullable(orderTable));
@@ -84,7 +84,7 @@ class TableServiceTest {
     void changeEmptyTableInCookingOrMeal() {
         // given
         orderTable.setEmpty(true);
-        orderTable.setTableGroup(null);
+        orderTable.changeTableGroup(null);
         when(orderTableRepository.findById(1L)).thenReturn(java.util.Optional.ofNullable(orderTable));
         when(orderRepository.existsByOrderTableIdAndOrderStatusIn(1L, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).thenReturn(true);
 
