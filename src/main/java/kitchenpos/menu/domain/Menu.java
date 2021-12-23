@@ -88,6 +88,10 @@ public class Menu {
         return menuProducts;
     }
 
+    public List<MenuProduct> getMenuProductList() {
+        return menuProducts.getMenuProducts();
+    }
+
     private void validatePrice(BigDecimal price) {
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
             throw new PriceValueNotAcceptableException();

@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.domain.dao.MenuDao;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
@@ -25,9 +24,8 @@ public class MenuTestFixtures {
     }
 
     public static MenuRequest convertToMenuRequest(Menu menu) {
-        MenuProducts menuProducts = menu.getMenuProducts();
         return new MenuRequest(menu.getName(), menu.getPrice(), menu.getMenuGroup().getId(),
-            menuProducts.getMenuProducts()
+            menu.getMenuProductList()
                 .stream()
                 .map(MenuTestFixtures::convertToMenuProductRequest)
                 .collect(Collectors.toList()));

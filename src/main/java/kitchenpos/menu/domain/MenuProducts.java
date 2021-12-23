@@ -18,7 +18,7 @@ public class MenuProducts {
         CascadeType.MERGE}, orphanRemoval = true)
     private List<MenuProduct> menuProducts = new ArrayList<>();
 
-    public void changeMenuProducts(List<MenuProduct> inputMenuProducts, BigDecimal menuPrice) {
+    protected void changeMenuProducts(List<MenuProduct> inputMenuProducts, BigDecimal menuPrice) {
         menuProducts.clear();
         if (isEmptyList(inputMenuProducts)) {
             validatePriceIsZero(menuPrice);
