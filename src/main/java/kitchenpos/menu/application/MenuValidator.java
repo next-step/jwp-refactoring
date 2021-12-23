@@ -15,6 +15,8 @@ import java.util.stream.Collectors;
 
 @Component
 public class MenuValidator {
+    private static final int COMPARE_EQUAL = 0;
+
     private final MenuGroupRepository menuGroupRepository;
     private final ProductRepository productRepository;
 
@@ -38,7 +40,7 @@ public class MenuValidator {
     private void checkOverPrice(BigDecimal menuPrice, List<MenuProduct> menuProducts) {
         BigDecimal totalPrice = getTotalPrice(menuProducts);
 
-        if (menuPrice.compareTo(totalPrice) > 0) {
+        if (menuPrice.compareTo(totalPrice) > COMPARE_EQUAL) {
             throw new IllegalArgumentException("메뉴 금액이 전체 메뉴 상품 금액의 합보다 많습니다.");
         }
     }

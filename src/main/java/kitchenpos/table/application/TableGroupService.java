@@ -19,6 +19,8 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class TableGroupService {
+    private static final int ORDER_TABLE_MIN_SIZE = 2;
+
     private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
     private final TableGroupRepository tableGroupRepository;
@@ -44,7 +46,7 @@ public class TableGroupService {
     private List<OrderTable> getOrderTables(TableGroupRequest tableGroupRequest) {
         final List<Long> orderTableIds = tableGroupRequest.getOrderTableIds();
 
-        if (CollectionUtils.isEmpty(orderTableIds) || orderTableIds.size() < 2) {
+        if (CollectionUtils.isEmpty(orderTableIds) || orderTableIds.size() < ORDER_TABLE_MIN_SIZE) {
             throw new IllegalArgumentException();
         }
 

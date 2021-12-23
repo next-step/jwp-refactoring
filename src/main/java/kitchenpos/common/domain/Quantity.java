@@ -8,6 +8,8 @@ import java.util.Objects;
 
 @Embeddable
 public class Quantity {
+    private static final int MIN_VALUE = 0;
+
     @Column
     private Long quantity;
 
@@ -16,13 +18,13 @@ public class Quantity {
 
     private Quantity(Long quantity) {
         Assert.notNull(quantity, "수량은 반드시 존재해야 합니다.");
-        Assert.isTrue(isMoreThanZero(quantity), "수량은 1개 이상이여야 합니다.");
+        Assert.isTrue(isMoreThanMinValue(quantity), "수량은 1개 이상이여야 합니다.");
 
         this.quantity = quantity;
     }
 
-    private boolean isMoreThanZero(Long quantity) {
-        return quantity > 0;
+    private boolean isMoreThanMinValue(Long quantity) {
+        return quantity > MIN_VALUE;
     }
 
     public static Quantity of(Long quantity) {

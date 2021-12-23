@@ -7,7 +7,7 @@ import javax.persistence.Embeddable;
 
 @Embeddable
 public class NumberOfGuests {
-    private static final int ZERO = 0;
+    private static final int MIN_VALUE = 0;
 
     @Column
     private int numberOfGuests;
@@ -16,13 +16,13 @@ public class NumberOfGuests {
     }
 
     private NumberOfGuests(int numberOfGuests) {
-        Assert.isTrue(isGreaterThanZero(numberOfGuests), "손님 수는 0명 이상이여야 합니다.");
+        Assert.isTrue(isGreaterThanMinValue(numberOfGuests), "손님 수는 0명 이상이여야 합니다.");
 
         this.numberOfGuests = numberOfGuests;
     }
 
-    private boolean isGreaterThanZero(int numberOfGuests) {
-        return numberOfGuests >= ZERO;
+    private boolean isGreaterThanMinValue(int numberOfGuests) {
+        return numberOfGuests >= MIN_VALUE;
     }
 
     public static NumberOfGuests of(int numberOfGuests) {
