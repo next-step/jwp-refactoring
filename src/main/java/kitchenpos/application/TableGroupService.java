@@ -1,6 +1,5 @@
 package kitchenpos.application;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -32,9 +31,7 @@ public class TableGroupService {
     }
 
     @Transactional
-    public TableGroupResponse create(final TableGroup tableGroup) {
-        final List<OrderTable> orderTables = tableGroup.getOrderTables();
-
+    public TableGroupResponse create(final List<OrderTable> orderTables) {
         if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
             throw new IllegalArgumentException();
         }
@@ -55,7 +52,7 @@ public class TableGroupService {
             }
         }
 
-        tableGroup.setCreatedDate(LocalDateTime.now());
+        TableGroup tableGroup = TableGroup.create();
 
         final TableGroup savedTableGroup = tableGroupRepository.save(tableGroup);
 
@@ -65,9 +62,8 @@ public class TableGroupService {
             savedOrderTable.setEmpty(false);
             orderTableRepository.save(savedOrderTable);
         }
-        savedTableGroup.setOrderTables(savedOrderTables);
 
-        return TableGroupResponse.from(savedTableGroup);
+        return TableGroupResponse.from(savedTableGroup, savedOrderTables);
     }
 
     @Transactional

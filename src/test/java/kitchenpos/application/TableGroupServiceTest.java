@@ -46,14 +46,14 @@ class TableGroupServiceTest {
         OrderTable orderTable2 = new OrderTable(2L, null, 3, true);
         List<OrderTable> orderTables = Lists.newArrayList(orderTable1, orderTable2);
 
-        TableGroup tableGroup = new TableGroup(1L, null, orderTables);
+        TableGroup tableGroup = new TableGroup(1L, null);
 
         given(orderTableRepository.findAllByIdIn(anyList())).willReturn(orderTables);
         given(tableGroupRepository.save(any())).willReturn(tableGroup);
         given(orderTableRepository.save(any())).willReturn(orderTable1, orderTable2);
 
         // when
-        TableGroupResponse result = tableGroupService.create(tableGroup);
+        TableGroupResponse result = tableGroupService.create(orderTables);
 
         // then
         assertThat(result.getCreatedDate()).isNotNull();
@@ -71,12 +71,9 @@ class TableGroupServiceTest {
     @DisplayName("테이블 그룹 생성시 주문 테이블 목록이 빈 경우 예외 발생")
     @Test
     void 테이블_그룹_생성_예외1() {
-        // given
-        TableGroup tableGroup = new TableGroup(1L, null, Lists.emptyList());
-
         // when, then
         assertThatIllegalArgumentException().isThrownBy(
-            () -> tableGroupService.create(tableGroup)
+            () -> tableGroupService.create(Lists.newArrayList())
         );
     }
 
@@ -85,11 +82,10 @@ class TableGroupServiceTest {
     void 테이블_그룹_생성_예외2() {
         // given
         OrderTable orderTable1 = new OrderTable(1L, null, 4, true);
-        TableGroup tableGroup = new TableGroup(1L, null, Lists.newArrayList(orderTable1));
 
         // when, then
         assertThatIllegalArgumentException().isThrownBy(
-            () -> tableGroupService.create(tableGroup)
+            () -> tableGroupService.create(Lists.newArrayList(orderTable1))
         );
     }
 
@@ -101,14 +97,12 @@ class TableGroupServiceTest {
         OrderTable orderTable2 = new OrderTable(2L, null, 3, true);
         List<OrderTable> orderTables = Lists.newArrayList(orderTable1, orderTable2);
 
-        TableGroup tableGroup = new TableGroup(1L, null, orderTables);
-
         given(orderTableRepository.findAllByIdIn(anyList())).willReturn(orderTables);
 
 
         // when, then
         assertThatIllegalArgumentException().isThrownBy(
-            () -> tableGroupService.create(tableGroup)
+            () -> tableGroupService.create(orderTables)
         );
     }
 
@@ -120,14 +114,12 @@ class TableGroupServiceTest {
         OrderTable orderTable2 = new OrderTable(2L, null, 3, true);
         List<OrderTable> orderTables = Lists.newArrayList(orderTable1, orderTable2);
 
-        TableGroup tableGroup = new TableGroup(1L, null, orderTables);
-
         given(orderTableRepository.findAllByIdIn(anyList())).willReturn(orderTables);
 
 
         // when, then
         assertThatIllegalArgumentException().isThrownBy(
-            () -> tableGroupService.create(tableGroup)
+            () -> tableGroupService.create(orderTables)
         );
     }
 

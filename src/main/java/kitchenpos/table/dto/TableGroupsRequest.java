@@ -4,7 +4,6 @@ import static java.util.stream.Collectors.toList;
 
 import java.util.List;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.TableGroup;
 
 public class TableGroupsRequest {
 
@@ -21,13 +20,13 @@ public class TableGroupsRequest {
         return orderTables;
     }
 
-    public TableGroup toEntity() {
-        return TableGroup.of(this.orderTables.stream()
+    public List<OrderTable> toEntity() {
+        return this.orderTables.stream()
             .map(orderTable -> OrderTable.of(orderTable.id))
-            .collect(toList()));
+            .collect(toList());
     }
 
-    static class OrderTableRequest {
+    public static class OrderTableRequest {
 
         private Long id;
 
