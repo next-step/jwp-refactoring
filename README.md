@@ -13,6 +13,7 @@
 | 금액 | amount | 가격 * 수량 |
 | 주문 테이블 | order table | 매장에서 주문이 발생하는 영역 |
 | 빈 테이블 | empty table | 주문을 등록할 수 없는 주문 테이블 |
+| 테이블 상태| orderTableStatus| 테이블의 상태를 표시 USE(주문테이블), EMPTY(빈테이블)
 | 주문 | order | 매장에서 발생하는 주문 |
 | 주문 상태 | order status | 주문은 조리 ➜ 식사 ➜ 계산 완 료 순서로 진행된다. |
 | 방문한 손님 수 | number of guests | 필수 사항은 아니며 주문은 0명으로 등록할 수 있다. |
@@ -85,22 +86,22 @@
    Feature 상품 관리
    
       Scenario 상품을 생성한다.
-          When 상품을 생성을 요청
+          When 상품을 생성 요청
           Then 상품 생성됨
           
        Scenario 전체 상품을 조회한다.
-          given 상품이 등록됨 
-          When 전체 상품을 조회한다.
+          given 상품이 생성 요청
+          When 전체 상품 조회
           Then 전체 상품 조회됨
        
    Feature 메뉴그룹 관리  
    
-      Scenario `메뉴그룹`을 생성한다.
-          When `메뉴그룹`을 생성요청
+      Scenario `메뉴그룹` 생성한다.
+          When `메뉴그룹` 생성 요청
           Then 메뉴그룹 생성됨
           
        Scenario `메뉴그룹`을 조회한다.
-          given 메뉴그룹 생성됨
+          given 메뉴그룹 생성 요청
           When  메뉴그룹 전체조회 
           Then  메뉴그룹 조회됨
        
@@ -111,18 +112,18 @@
           Then 메뉴 생성됨
           
        Scenario `메뉴`을 조회한다.
-          given 메뉴 생성됨
+          given 메뉴 생성 요청
           When  메뉴 전체조회 
           Then  메뉴 조회됨
        
    Feature 주문을 할 수 있다 
    
       Scenario `주문`을 생성한다.
-          When 주문 생성을 요청
+          When 주문 생성 요청
           Then 주문 생성됨
           
        Scenario 전체 `주문`을 조회한다.
-          given 주문 생성됨
+          given 주문 생성 요청
           When  주문 전체조회 요청 
           Then  주문 조회됨
    
@@ -134,31 +135,34 @@
           Then 주문테이블 생성됨
       
       Scenario `주문테이블`을 `빈테이블` 변경한다.
-         given 주문테이블 생성됨
+         given 주문테이블 생성 요청
           When 주문테이블 변경 요청
           Then 주문테이블 변경 됨
           
       Scenario `주문테이블`에 `손님 수` 변경한다..
-         given 주문테이블 생성됨
+         given 주문테이블 생성
           When 주문테이블 손님 수 변경 요청
           Then 주문테이블 손님 수 변경됨
           
    Feature `단체지정` 관리
    
       Secnario `주문테이블` 단체지정 생성
-         given 주문테이블 생성됨
-         given 주문테이블 생성됨
-          when `단체지정` 생성을 요청 
+         given 주문테이블 생성
+         given 주문테이블 생성
+          when 단체지정 생성을 요청 
           then 단체지정 생성됨
           
       Secnario `단체지정`을 취소할 수 있다.
-         given 주문테이블 생성됨
-         given 주문테이블 생성됨
-         given 단체지정됨
+         given 주문테이블 생성요청
+         given 주문테이블 생성요청
+         given 단체지정 요청
           when 단체지정 취소 요청
           then 단체지정 취소됨 
 ```
+## 기능정의성
 
+## 주문 
+---- 
 
 
 
