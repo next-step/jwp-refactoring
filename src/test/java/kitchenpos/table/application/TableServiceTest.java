@@ -8,6 +8,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.atMostOnce;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -15,10 +16,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import kitchenpos.order.domain.OrderDao;
-import kitchenpos.table.domain.OrderTableDao;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.dto.ChangeNumberOfGuestRequest;
+import kitchenpos.table.domain.OrderTableDao;
 import kitchenpos.table.dto.ChangeEmptyRequest;
+import kitchenpos.table.dto.ChangeNumberOfGuestRequest;
 import kitchenpos.table.dto.OrderTableRequest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,16 +31,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class TableServiceTest {
 
     @Mock
-    private OrderDao orderDao;
-
-    @Mock
     private OrderTableDao orderTableDao;
 
     @InjectMocks
     private TableService tableService;
 
     @Mock
-    TableValidation tableValidator;
+    private OrderDao orderDao;
 
     @Test
     void 주문가능_테이블생성() {
@@ -79,7 +77,6 @@ public class TableServiceTest {
 
         // mocking
         when(orderTableDao.findById(anyLong())).thenReturn(Optional.of(첫번째_주문테이블));
-        when(orderDao.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).thenReturn(false);
         when(orderTableDao.save(첫번째_주문테이블)).thenReturn(첫번째_주문테이블);
 
         // when
@@ -95,7 +92,8 @@ public class TableServiceTest {
 
         // mocking
         when(orderTableDao.findById(anyLong())).thenReturn(Optional.of(첫번째_주문테이블));
-        when(orderDao.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).thenReturn(true);
+        when(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).thenReturn(
+            true);
 
         // then
         assertThatThrownBy(() -> {

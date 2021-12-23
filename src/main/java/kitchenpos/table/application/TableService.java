@@ -2,7 +2,10 @@ package kitchenpos.table.application;
 
 import static com.google.common.primitives.Longs.asList;
 
+import java.util.Arrays;
 import java.util.List;
+import kitchenpos.order.domain.OrderDao;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTableDao;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.dto.ChangeEmptyRequest;
@@ -15,12 +18,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class TableService {
 
-    private final TableValidation tableValidator;
     private final OrderTableDao orderTableDao;
+    private final OrderDao orderDao;
 
-    public TableService(final TableValidation tableValidator, final OrderTableDao orderTableDao) {
-        this.tableValidator = tableValidator;
+    public TableService(OrderTableDao orderTableDao, OrderDao orderDao) {
         this.orderTableDao = orderTableDao;
+        this.orderDao = orderDao;
     }
 
     @Transactional
@@ -39,7 +42,7 @@ public class TableService {
         final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
             .orElseThrow(IllegalArgumentException::new);
 
-        tableValidator.validInCookingOrMeal(asList(orderTableId));
+        validInCookingOrMeal(asList(orderTableId));
         savedOrderTable.changeOrderTableStatus(changeEmptyRequest.isEmpty());
 
         return OrderTableResponse.of(orderTableDao.save(savedOrderTable));
@@ -54,5 +57,12 @@ public class TableService {
         savedOrderTable.changeNumberOfGuest(changeEmptyRequest.getNumberOfGuest());
 
         return OrderTableResponse.of(orderTableDao.save(savedOrderTable));
+    }
+
+    private void validInCookingOrMeal(List<Long> orderTableIds) {
+        if (orderDao.existsByOrderTableIdInAndOrderStatusIn(
+            orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
+            throw new IllegalArgumentException();
+        }
     }
 }

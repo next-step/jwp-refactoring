@@ -9,10 +9,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.atMostOnce;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
+import java.util.Optional;
 import kitchenpos.order.domain.OrderDao;
 import kitchenpos.table.domain.OrderTableDao;
 import kitchenpos.table.domain.TableGroupDao;
@@ -39,9 +42,6 @@ public class TableGroupServiceTest {
     @Mock
     private TableGroupDao tableGroupDao;
 
-    @Mock
-    TableValidation tableValidator;
-
     @InjectMocks
     private TableGroupService tableGroupService;
 
@@ -62,21 +62,27 @@ public class TableGroupServiceTest {
         when(tableGroupDao.save(any(TableGroup.class))).thenReturn(단체테이블_첫번째_두번째);
 
         // when
-        TableGroupResponse tableGroupResponse = tableGroupService.create(tableGroupRequest);
+        tableGroupService.create(tableGroupRequest);
 
         // then
-        assertThat(tableGroupResponse).isEqualTo(단체테이블_첫번째_두번째);
+        verify(tableGroupDao, atMostOnce()).save(any());
     }
 
     @Test
     void 단체그룹_취소() {
+        // given
         OrderTable 단체지정_첫번째_주문테이블 = 단체지정_첫번째_주문테이블();
         OrderTable 단체지정_두번째_주문테이블 = 단체지정_두번째_주문테이블();
         List<OrderTable> orderTables = asList(단체지정_첫번째_주문테이블, 단체지정_두번째_주문테이블);
+        TableGroup tableGroup = TableGroup.of(orderTables);
+        when(tableGroupDao.findById(anyLong())).thenReturn(Optional.of(tableGroup));
+        TableGroup mock = mock(TableGroup.class);
 
-        when(orderTableDao.findAllByTableGroupId(anyLong())).thenReturn(orderTables);
-
+        // when
         tableGroupService.ungroup(1L);
+
+        // then
+        verify(mock, atMostOnce()).unGroup();
     }
 
 }
