@@ -21,7 +21,7 @@ import kitchenpos.ordertable.domain.OrderTable;
 @Entity
 public class Order {
 
-    private static final String ERROR_MESSAGE_EMPTY_TABLE_CANNOT_ORDER = "빈 테이블은 주문할 수 없습니다.";
+    private static final String ERROR_MESSAGE_EMPTY_TABLE_CANNOT_ORDER = "주문종료 상태인 테이블은 주문할 수 없습니다.";
     private static final String ERROR_MESSAGE_DUPLICATE_MENU = "주문항목들 중에 중복된 메뉴가 존재합니다.";
     private static final String ERROR_MESSAGE_COMPLETE_ORDER_CANNOT_CHANGE = "계산 완료된 주문 상태는 변경할 수 없습니다.";
 
@@ -132,7 +132,7 @@ public class Order {
     }
 
     private void validateNotEmptyTable(OrderTable orderTable) {
-        if (orderTable.isEmpty()) {
+        if (orderTable.isOrderClose()) {
             throw new IllegalArgumentException(ERROR_MESSAGE_EMPTY_TABLE_CANNOT_ORDER);
         }
     }

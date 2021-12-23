@@ -72,9 +72,10 @@ class TableServiceTest {
             TableTestFixtures.convertToOrderTableRequest(changeOrderTable));
 
         //then
-        Assertions.assertThat(savedOrderTable.isEmpty()).isEqualTo(changeOrderTable.isEmpty());
+        Assertions.assertThat(savedOrderTable.isOrderClose())
+            .isEqualTo(changeOrderTable.isOrderClose());
     }
-    
+
     @DisplayName("테이블 방문 손님 수를 변경할 수 있다.")
     @Test
     void changeNumberOfGuests() {
@@ -105,7 +106,7 @@ class TableServiceTest {
             .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("빈 테이블은 방문 손님 수를 변경할 수 없다.")
+    @DisplayName("주문종료 상태의 테이블은 방문 손님 수를 변경할 수 없다.")
     @Test
     void changeNumberOfGuests_exception2() {
         //given

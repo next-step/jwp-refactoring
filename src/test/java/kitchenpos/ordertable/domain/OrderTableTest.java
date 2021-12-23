@@ -35,7 +35,7 @@ class OrderTableTest {
         orderTable.updateEmpty(true);
 
         //then
-        assertThat(orderTable.isEmpty()).isTrue();
+        assertThat(orderTable.isOrderClose()).isTrue();
     }
 
     @DisplayName("그룹화된 테이블은 상태 업데이트 불가")
@@ -95,7 +95,7 @@ class OrderTableTest {
             .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("빈 테이블 상태인 경우에는 방문손님 수를 변경할 수 없다.")
+    @DisplayName("주문종료 상태의 테이블은 방문손님 수를 변경할 수 없다.")
     @Test
     void changeNumberOfGuests_exception2() {
         //given

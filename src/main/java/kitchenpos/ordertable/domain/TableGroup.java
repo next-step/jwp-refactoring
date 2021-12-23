@@ -20,7 +20,7 @@ public class TableGroup {
 
     private static final String ERROR_MESSAGE_ORDER_NOT_COMPLETE = "조리, 식사중인 주문이 존재하는 테이블이 있습니다.";
     private static final String ERROR_MESSAGE_NOT_ENOUGH_TABLES = "주문 테이블이 2개 이상일때 그룹화 가능 합니다.";
-    private static final String ERROR_MESSAGE_NOT_EMPTY_TABLE = "주문 테이블들은 빈 테이블이어야 합니다.";
+    private static final String ERROR_MESSAGE_NOT_EMPTY_TABLE = "그룹화를 위해선 테이블들이 주문종료 상태여야 합니다.";
     private static final String ERROR_MESSAGE_TABLE_ALREADY_IN_GROUP = "테이블 그룹에 이미 속해있는 주문테이블은 그룹화할 수 없습니다..";
     private static final String ERROR_MESSAGE_DUPLICATE_TALBES = "그룹대상 테이블에 중복이 존재합니다.";
 
@@ -52,7 +52,7 @@ public class TableGroup {
         orderTables.addAll(inputOrderTables);
         for (OrderTable orderTable : inputOrderTables) {
             orderTable.groupIn(this);
-            orderTable.setEmpty(false);
+            orderTable.setOrderClose(false);
         }
     }
 
@@ -90,7 +90,7 @@ public class TableGroup {
     }
 
     private void validateEmptyTable(OrderTable orderTable) {
-        if (!orderTable.isEmpty()) {
+        if (!orderTable.isOrderClose()) {
             throw new IllegalArgumentException(ERROR_MESSAGE_NOT_EMPTY_TABLE);
         }
     }

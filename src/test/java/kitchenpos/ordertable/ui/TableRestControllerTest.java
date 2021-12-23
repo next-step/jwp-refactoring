@@ -40,10 +40,10 @@ class TableRestControllerTest {
     void create() throws Exception {
         //given
         int numOfGuests = 6;
-        boolean empty = false;
-        OrderTable requestOrderTable = new OrderTable(numOfGuests, empty);
+        boolean orderClose = false;
+        OrderTable requestOrderTable = new OrderTable(numOfGuests, orderClose);
         OrderTableResponse expectedOrderTable = OrderTableResponse.from(
-            new OrderTable(1L, numOfGuests, empty));
+            new OrderTable(1L, numOfGuests, orderClose));
         given(tableService.create(any())).willReturn(expectedOrderTable);
 
         //when, then
@@ -87,12 +87,12 @@ class TableRestControllerTest {
         given(tableService.changeEmpty(any(), any())).willReturn(expectedOrderTable);
 
         //when,then
-        mockMvc.perform(put(BASE_PATH + "/{orderTableId}/empty", expectedOrderTable.getId())
+        mockMvc.perform(put(BASE_PATH + "/{orderTableId}/order_close", expectedOrderTable.getId())
                 .content(CommonTestFixtures.asJsonString(requestOrderTable))
                 .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.id").value(expectedOrderTable.getId()))
-            .andExpect(jsonPath("$.empty").value(expectedOrderTable.isEmpty()));
+            .andExpect(jsonPath("$.orderClose").value(expectedOrderTable.isOrderClose()));
     }
 
     @DisplayName("테이블 방문자 수 변경")

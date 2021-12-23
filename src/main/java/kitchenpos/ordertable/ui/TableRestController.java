@@ -39,7 +39,7 @@ public class TableRestController {
             .body(tableService.list());
     }
 
-    @PutMapping("/{orderTableId}/empty")
+    @PutMapping("/{orderTableId}/order_close")
     public ResponseEntity<OrderTableResponse> changeEmpty(
         @PathVariable final Long orderTableId,
         @RequestBody final OrderTableRequest orderTable

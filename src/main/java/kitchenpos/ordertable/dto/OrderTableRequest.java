@@ -6,14 +6,14 @@ public class OrderTableRequest {
 
     private Long id;
     private int numberOfGuests;
-    private boolean empty;
+    private boolean orderClose;
 
     private OrderTableRequest() {
     }
 
-    public OrderTableRequest(int numberOfGuests, boolean empty) {
+    public OrderTableRequest(int numberOfGuests, boolean orderClose) {
         this.numberOfGuests = numberOfGuests;
-        this.empty = empty;
+        this.orderClose = orderClose;
     }
 
     public OrderTableRequest(Long id) {
@@ -24,16 +24,16 @@ public class OrderTableRequest {
         return numberOfGuests;
     }
 
-    public boolean isEmpty() {
-        return empty;
+    public boolean isOrderClose() {
+        return orderClose;
     }
 
     public OrderTable toOrderTable() {
-        return new OrderTable(numberOfGuests, empty);
+        return new OrderTable(numberOfGuests, orderClose);
     }
 
     public Long getId() {
         return id;
     }
-    
+
 }

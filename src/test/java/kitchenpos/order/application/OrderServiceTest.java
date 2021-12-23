@@ -112,7 +112,7 @@ class OrderServiceTest {
             .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("빈 테이블은 주문할 수 없다.")
+    @DisplayName("주문종료 상태의 테이블은 주문할 수 없다.")
     @Test
     void create_exception3() {
         //given

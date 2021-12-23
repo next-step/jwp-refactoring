@@ -33,7 +33,7 @@ public class OrderTable {
     private int numberOfGuests;
 
     @Column(nullable = false)
-    private boolean empty;
+    private boolean orderClose;
 
     @OneToMany(mappedBy = "orderTable")
     private List<Order> orders = new ArrayList<>();
@@ -45,27 +45,27 @@ public class OrderTable {
         this.id = id;
     }
 
-    public OrderTable(boolean empty) {
-        this(0, empty);
+    public OrderTable(boolean orderClose) {
+        this(0, orderClose);
     }
 
     public OrderTable(int numberOfGuests) {
         this(numberOfGuests, false);
     }
 
-    public OrderTable(int numberOfGuests, boolean empty) {
-        this(null, null, numberOfGuests, empty);
+    public OrderTable(int numberOfGuests, boolean orderClose) {
+        this(null, null, numberOfGuests, orderClose);
     }
 
-    public OrderTable(Long id, int numberOfGuests, boolean empty) {
-        this(id, null, numberOfGuests, empty);
+    public OrderTable(Long id, int numberOfGuests, boolean orderClose) {
+        this(id, null, numberOfGuests, orderClose);
     }
 
-    public OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
+    public OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean orderClose) {
         this.id = id;
         this.tableGroup = tableGroup;
         this.numberOfGuests = numberOfGuests;
-        this.empty = empty;
+        this.orderClose = orderClose;
     }
 
     public Long getId() {
@@ -88,12 +88,12 @@ public class OrderTable {
         return orders;
     }
 
-    public boolean isEmpty() {
-        return empty;
+    public boolean isOrderClose() {
+        return orderClose;
     }
 
-    public void setEmpty(final boolean empty) {
-        this.empty = empty;
+    public void setOrderClose(final boolean orderClose) {
+        this.orderClose = orderClose;
     }
 
     public void groupIn(TableGroup tableGroup) {
@@ -127,7 +127,7 @@ public class OrderTable {
         for (Order order : orders) {
             validateAllOrdersComplete(order);
         }
-        empty = updataEmpty;
+        orderClose = updataEmpty;
     }
 
     private void validateAllOrdersComplete(Order order) {
@@ -145,7 +145,7 @@ public class OrderTable {
             throw new IllegalArgumentException(ERROR_MESSAGE_NUMBER_OF_GUESTS);
         }
 
-        if (isEmpty()) {
+        if (isOrderClose()) {
             throw new IllegalArgumentException();
         }
         this.numberOfGuests = numberOfGuests;

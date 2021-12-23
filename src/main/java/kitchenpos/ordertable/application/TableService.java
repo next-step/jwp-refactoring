@@ -41,7 +41,7 @@ public class TableService {
         final OrderTableRequest orderTableRequest) {
         final OrderTable savedOrderTable = findOrderTable(orderTableId);
 
-        savedOrderTable.updateEmpty(orderTableRequest.isEmpty());
+        savedOrderTable.updateEmpty(orderTableRequest.isOrderClose());
         return OrderTableResponse.from(savedOrderTable);
     }
 

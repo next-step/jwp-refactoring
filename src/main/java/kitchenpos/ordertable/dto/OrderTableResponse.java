@@ -8,16 +8,16 @@ public class OrderTableResponse {
 
     private int numberOfGuests;
 
-    private boolean empty;
+    private boolean orderClose;
 
     private OrderTableResponse() {
     }
 
     private OrderTableResponse(Long id, int numberOfGuests,
-        boolean empty) {
+        boolean orderClose) {
         this.id = id;
         this.numberOfGuests = numberOfGuests;
-        this.empty = empty;
+        this.orderClose = orderClose;
     }
 
     public Long getId() {
@@ -28,12 +28,12 @@ public class OrderTableResponse {
         return numberOfGuests;
     }
 
-    public boolean isEmpty() {
-        return empty;
+    public boolean isOrderClose() {
+        return orderClose;
     }
 
     public static OrderTableResponse from(OrderTable orderTable) {
         return new OrderTableResponse(orderTable.getId(), orderTable.getNumberOfGuests(),
-            orderTable.isEmpty());
+            orderTable.isOrderClose());
     }
 }

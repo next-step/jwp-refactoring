@@ -29,7 +29,7 @@ class OrderTest {
         assertThat(order.getOrderTable()).isEqualTo(orderTable);
     }
 
-    @DisplayName("빈 테이블은 주문할 수 없다.")
+    @DisplayName("주문종료 상태의 테이블은 주문할 수 없다.")
     @Test
     void constructor_exception1() {
         //given

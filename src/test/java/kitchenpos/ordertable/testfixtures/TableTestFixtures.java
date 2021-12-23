@@ -39,7 +39,7 @@ public class TableTestFixtures {
     }
 
     public static OrderTableRequest convertToOrderTableRequest(OrderTable orderTable) {
-        return new OrderTableRequest(orderTable.getNumberOfGuests(), orderTable.isEmpty());
+        return new OrderTableRequest(orderTable.getNumberOfGuests(), orderTable.isOrderClose());
     }
 
 }
