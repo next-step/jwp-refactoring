@@ -3,15 +3,20 @@ package kitchenpos.acceptance;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
-import kitchenpos.domain.OrderStatus;
 import kitchenpos.fixture.MenuProductFixture;
 import kitchenpos.fixture.OrderLineItemFixture;
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProducts;
+import kitchenpos.menu.domain.Name;
+import kitchenpos.menu.domain.Price;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.product.domain.Product;
 import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.Assertions;
@@ -52,19 +57,18 @@ class OrderAcceptanceTest extends AcceptanceTest {
         메뉴_그룹 = 메뉴_그룹_등록되어_있음("추천_메뉴_그룹");
         메뉴 = 메뉴_등록되어_있음("강정치킨_두마리_세트_메뉴", 30_000, 메뉴_그룹.getId(), Arrays.asList(MenuProductRequest.of(상품.getId(), 메뉴_상품.getQuantity())));
         주문_테이블 = 주문_테이블_등록되어_있음(4, false);
-        주문_항목 = OrderLineItemFixture.create(null, null, 메뉴.getId(), 1L);
+        주문_항목 = OrderLineItemFixture.create(null, null, Menu.of(메뉴.getId(), Name.of(메뉴.getName()), Price.of(메뉴.getPrice()), 메뉴_그룹, MenuProducts.of(Arrays.asList(메뉴_상품))), 1L);
     }
 
     @DisplayName("주문을 관리한다.")
     @Test
     void manageOrder() {
         // given
-        Order order = new Order();
-        order.setOrderTableId(주문_테이블.getId());
-        order.setOrderLineItems(Arrays.asList(주문_항목));
+        OrderRequest orderRequest = OrderRequest.of(
+                주문_테이블.getId(), Arrays.asList(OrderLineItemRequest.of(주문_항목.getMenu().getId(), 주문_항목.getQuantity().getQuantity())));
 
         // when
-        ExtractableResponse<Response> 주문_생성_응답 = 주문_생성_요청(order);
+        ExtractableResponse<Response> 주문_생성_응답 = 주문_생성_요청(orderRequest);
         // then
         주문_생성_응답됨(주문_생성_응답);
 
@@ -82,7 +86,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
         주문_상태_수정됨(주문_상태_수정_응답, 주문_상태);
     }
 
-    private ExtractableResponse<Response> 주문_생성_요청(Order params) {
+    private ExtractableResponse<Response> 주문_생성_요청(OrderRequest params) {
         return 생성_요청(API_URL, params);
     }
 

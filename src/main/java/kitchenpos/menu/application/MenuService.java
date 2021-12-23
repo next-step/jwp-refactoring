@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Transactional(readOnly = true)
@@ -55,6 +56,11 @@ public class MenuService {
         return persistMenus.stream()
                 .map(MenuResponse::of)
                 .collect(Collectors.toList());
+    }
+
+    public Menu findById(Long menuId) {
+        return menuDao.findById(menuId)
+                .orElseThrow(NoSuchElementException::new);
     }
 
     private List<MenuProduct> toMenuProducts(List<MenuProductRequest> menuProductRequests) {

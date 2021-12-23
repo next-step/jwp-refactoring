@@ -1,10 +1,11 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderDao;
 import kitchenpos.fixture.TableFixture;
 import kitchenpos.fixture.TableGroupFixture;
+import kitchenpos.order.application.OrderService;
 import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTables;
 import kitchenpos.tablegroup.application.TableGroupService;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.domain.TableGroupDao;
@@ -37,13 +38,13 @@ class TableGroupServiceTest {
     private TableGroupService tableGroupService;
 
     @Mock
-    private OrderDao orderDao;
-
-    @Mock
     private TableGroupDao tableGroupDao;
 
     @Mock
     private TableService tableService;
+
+    @Mock
+    private OrderService orderService;
 
     private OrderTable 테이블1;
     private OrderTable 테이블2;
@@ -140,7 +141,7 @@ class TableGroupServiceTest {
         // given
         given(tableGroupDao.findById(any(Long.class))).willReturn(Optional.of(TableGroup.of(LocalDateTime.now())));
         given(tableService.findAllByTableGroup(any(TableGroup.class))).willReturn(Arrays.asList(그룹에_속해있는_테이블1, 그룹에_속해있는_테이블2));
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(false);
+        given(orderService.isCookingOrMealExists(any(OrderTables.class))).willReturn(false);
 
         // when
         tableGroupService.ungroup(그룹에_속해있는_테이블1.getTableGroupId());
@@ -158,7 +159,7 @@ class TableGroupServiceTest {
         // given
         given(tableGroupDao.findById(any(Long.class))).willReturn(Optional.of(회사B_단체_테이블));
         given(tableService.findAllByTableGroup(any(TableGroup.class))).willReturn(Arrays.asList(그룹에_속해있는_테이블1, 그룹에_속해있는_테이블2));
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(true);
+        given(orderService.isCookingOrMealExists(any(OrderTables.class))).willReturn(true);
 
         // when & then
         assertThatIllegalArgumentException()

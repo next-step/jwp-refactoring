@@ -1,7 +1,6 @@
 package kitchenpos.tablegroup.application;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.order.application.OrderService;
 import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTables;
 import kitchenpos.tablegroup.domain.TableGroup;
@@ -13,24 +12,24 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
 public class TableGroupService {
 
-    private final OrderDao orderDao;
     private final TableGroupDao tableGroupDao;
     private final TableService tableService;
+    private final OrderService orderService;
 
     public TableGroupService(
-            OrderDao orderDao
-            , TableGroupDao tableGroupDao
-            , TableService tableService) {
-        this.orderDao = orderDao;
+            TableGroupDao tableGroupDao
+            , TableService tableService
+            , OrderService orderService
+    ) {
         this.tableGroupDao = tableGroupDao;
         this.tableService = tableService;
+        this.orderService = orderService;
     }
 
     @Transactional
@@ -50,10 +49,8 @@ public class TableGroupService {
     public void ungroup(final Long tableGroupId) {
         TableGroup tableGroup = findById(tableGroupId);
         OrderTables orderTables = OrderTables.of(tableService.findAllByTableGroup(tableGroup));
-        List<Long> orderTableIds = orderTables.getIds();
 
-        if (orderDao.existsByOrderTableIdInAndOrderStatusIn(
-                orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
+        if (orderService.isCookingOrMealExists(orderTables)) {
             throw new IllegalArgumentException();
         }
         orderTables.ungroup();

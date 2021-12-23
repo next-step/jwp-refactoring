@@ -1,6 +1,6 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderDao;
+import kitchenpos.order.domain.OrderDao;
 import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableDao;
@@ -73,7 +73,7 @@ class TableServiceTest {
         ChangeEmptyRequest 요청_테이블 = ChangeEmptyRequest.of(false);
 
         given(orderTableDao.findById(any(Long.class))).willReturn(Optional.of(테이블_그룹에_속해있지_않은_테이블));
-        given(orderDao.existsByOrderTableIdAndOrderStatusIn(any(Long.class), anyList())).willReturn(false);
+        given(orderDao.existsByOrderTableAndOrderStatusIn(any(OrderTable.class), anyList())).willReturn(false);
 
         // when
         OrderTableResponse 수정된_테이블 = tableService.changeEmpty(테이블_그룹에_속해있지_않은_테이블.getId(), 요청_테이블);
@@ -102,7 +102,7 @@ class TableServiceTest {
         ChangeEmptyRequest 요청_테이블 = ChangeEmptyRequest.of(false);
 
         given(orderTableDao.findById(any(Long.class))).willReturn(Optional.of(테이블_그룹에_속해있지_않은_테이블));
-        given(orderDao.existsByOrderTableIdAndOrderStatusIn(any(Long.class), anyList())).willReturn(true);
+        given(orderDao.existsByOrderTableAndOrderStatusIn(any(OrderTable.class), anyList())).willReturn(true);
 
         // when & then
         assertThatIllegalArgumentException()

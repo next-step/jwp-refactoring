@@ -13,7 +13,6 @@ public class TableFixture {
     public static final OrderTable 테이블_그룹에_속해있는_테이블 = create(2L, 1L, 0, true);
     public static final OrderTable 비어있지_않은_테이블 = create(3L, null, 0, false);
     public static final OrderTable 비어있는_테이블 = create(4L, null, 0, true);
-    public static final OrderTable 일반_테이블 = create(1L, null, 4, false);
 
     private TableFixture() {
         throw new UnsupportedOperationException();

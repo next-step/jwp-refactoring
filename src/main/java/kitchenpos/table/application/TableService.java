@@ -1,7 +1,7 @@
 package kitchenpos.table.application;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.order.domain.OrderDao;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.Empty;
 import kitchenpos.table.domain.NumberOfGuests;
 import kitchenpos.table.domain.OrderTable;
@@ -53,7 +53,7 @@ public class TableService {
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, final ChangeEmptyRequest request) {
         OrderTable persistOrderTable = findById(orderTableId);
-        if (isCookingOrMealExists(persistOrderTable.getId())) {
+        if (isCookingOrMealExists(persistOrderTable)) {
             throw new IllegalArgumentException();
         }
 
@@ -76,9 +76,9 @@ public class TableService {
                 .orElseThrow(NoSuchElementException::new);
     }
 
-    public boolean isCookingOrMealExists(Long orderTableId) {
-        List<String> orderStatuses = Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name());
-        return orderDao.existsByOrderTableIdAndOrderStatusIn(orderTableId, orderStatuses);
+    public boolean isCookingOrMealExists(OrderTable orderTable) {
+        List<OrderStatus> orderStatuses = Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL);
+        return orderDao.existsByOrderTableAndOrderStatusIn(orderTable, orderStatuses);
     }
 
     public List<OrderTable> findAllByIdIn(List<Long> orderTableIds) {
