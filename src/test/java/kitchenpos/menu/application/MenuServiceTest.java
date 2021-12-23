@@ -19,7 +19,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.menu.dao.MenuGroupRepository;
-import kitchenpos.menu.dao.MenuProductDao;
+import kitchenpos.menu.dao.MenuProductRepository;
 import kitchenpos.menu.dao.MenuRepository;
 import kitchenpos.menu.dao.ProductRepository;
 import kitchenpos.menu.domain.Menu;
@@ -37,7 +37,7 @@ public class MenuServiceTest {
     private MenuGroupRepository menuGroupRepository;
 
     @Mock
-    private MenuProductDao menuProductDao;
+    private MenuProductRepository menuProductRepository;
 
     @Mock
     private ProductRepository productRepository;
@@ -66,15 +66,15 @@ public class MenuServiceTest {
 
         MenuProduct 메뉴상품 = new MenuProduct();
         메뉴상품.setSeq(1L);
-        메뉴상품.setMenuId(메뉴.getId());
-        메뉴상품.setProductId(상품.getId());
+        메뉴상품.setMenu(메뉴);
+        메뉴상품.setProduct(상품);
         메뉴상품.setQuantity(1L);
 
         메뉴.setMenuProducts(Arrays.asList(메뉴상품));
         given(menuGroupRepository.existsById(메뉴.getMenuGroup().getId())).willReturn(true);
-        given(productRepository.findById(메뉴상품.getProductId())).willReturn(Optional.of(상품));
+        given(productRepository.findById(메뉴상품.getProduct().getId())).willReturn(Optional.of(상품));
         given(menuRepository.save(메뉴)).willReturn(메뉴);
-        given(menuProductDao.save(메뉴상품)).willReturn(메뉴상품);
+        given(menuProductRepository.save(메뉴상품)).willReturn(메뉴상품);
 
         // when
         Menu 저장된_메뉴 = menuService.create(메뉴);
@@ -177,8 +177,11 @@ public class MenuServiceTest {
         
         MenuProduct 메뉴상품 = new MenuProduct();
         메뉴상품.setSeq(1L);
-        메뉴상품.setMenuId(메뉴.getId());
-        메뉴상품.setProductId(1L);
+        메뉴상품.setMenu(메뉴);
+        
+        Product 상품 = new Product();
+        상품.setId(1L);
+        메뉴상품.setProduct(상품);
         메뉴.setMenuProducts(Arrays.asList(메뉴상품));
         
         given(menuGroupRepository.existsById(anyLong())).willReturn(true);
@@ -213,8 +216,8 @@ public class MenuServiceTest {
         
         MenuProduct 메뉴상품 = new MenuProduct();
         메뉴상품.setSeq(1L);
-        메뉴상품.setMenuId(메뉴.getId());
-        메뉴상품.setProductId(상품.getId());
+        메뉴상품.setMenu(메뉴);
+        메뉴상품.setProduct(상품);
         메뉴상품.setQuantity(1L);
         메뉴.setMenuProducts(Arrays.asList(메뉴상품));
 
