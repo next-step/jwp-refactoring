@@ -1,4 +1,4 @@
-package kitchenpos.domain.menu;
+package kitchenpos.menu.domain;
 
 import static kitchenpos.application.fixture.MenuGroupFixture.메뉴그룹_치킨류;
 import static kitchenpos.application.fixture.MenuProductFixture.메뉴상품_치킨_리스트;
@@ -28,8 +28,9 @@ class MenuTest {
             @Test
             @DisplayName("`InvalidParameterException` 에러가 발생한다.")
             void it_return_exception() {
+                // Todo menuGroup.getId()
                 ThrowableAssert.ThrowingCallable actual = () -> Menu.of("메뉴", minusPrice,
-                    메뉴그룹_치킨류(), 메뉴상품_치킨_리스트());
+                    메뉴그룹_치킨류().getId(), 메뉴상품_치킨_리스트());
 
                 assertThatThrownBy(actual).isInstanceOf(InvalidParameterException.class);
             }
@@ -44,8 +45,9 @@ class MenuTest {
             @Test
             @DisplayName("`InvalidParameterException` 에러가 발생한다.")
             void it_return_exception() {
+                // Todo menuGroup.getId()
                 ThrowableAssert.ThrowingCallable actual = () -> Menu.of("메뉴", largePrice,
-                    메뉴그룹_치킨류(), 메뉴상품_치킨_리스트());
+                    메뉴그룹_치킨류().getId(), 메뉴상품_치킨_리스트());
 
                 assertThatThrownBy(actual).isInstanceOf(InvalidParameterException.class);
             }
@@ -60,8 +62,9 @@ class MenuTest {
             @Test
             @DisplayName("`InvalidParameterException` 에러가 발생한다.")
             void it_return_exception() {
+                // Todo menuGroup.getId()
                 ThrowableAssert.ThrowingCallable actual = () -> Menu.of("메뉴", 15000,
-                    menuGroup, 메뉴상품_치킨_리스트());
+                    menuGroup.getId(), 메뉴상품_치킨_리스트());
 
                 assertThatThrownBy(actual).isInstanceOf(InvalidParameterException.class);
             }

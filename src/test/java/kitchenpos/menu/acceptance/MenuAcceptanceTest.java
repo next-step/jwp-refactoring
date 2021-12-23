@@ -1,9 +1,12 @@
-package kitchenpos.acceptance;
+package kitchenpos.menu.acceptance;
 
-import static kitchenpos.acceptance.step.MenuAcceptanceStep.*;
 import static kitchenpos.acceptance.step.MenuGroupAcceptanceStep.메뉴그룹_등록됨;
 import static kitchenpos.acceptance.step.ProductAcceptanceStep.상품_등록됨;
 import static kitchenpos.acceptance.step.ProductAcceptanceStep.양념치킨;
+import static kitchenpos.menu.acceptance.step.MenuAcceptanceStep.메뉴_등록_검증;
+import static kitchenpos.menu.acceptance.step.MenuAcceptanceStep.메뉴_등록_요청;
+import static kitchenpos.menu.acceptance.step.MenuAcceptanceStep.메뉴_목록조회_검증;
+import static kitchenpos.menu.acceptance.step.MenuAcceptanceStep.메뉴_목록조회_요청;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;

@@ -40,6 +40,6 @@ public enum CommonErrorCode implements ErrorCode {
 
     @Override
     public String getErrorMessage() {
-        return null;
+        return errorMessage;
     }
 }

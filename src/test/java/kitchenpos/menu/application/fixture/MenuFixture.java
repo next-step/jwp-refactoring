@@ -1,4 +1,4 @@
-package kitchenpos.application.fixture;
+package kitchenpos.menu.application.fixture;
 
 
 import java.util.List;

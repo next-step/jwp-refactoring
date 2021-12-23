@@ -40,10 +40,6 @@ public class MenuValidator {
         if (Objects.isNull(menu.getName())) {
             throw new InvalidParameterException(CommonErrorCode.NOT_EMPTY);
         }
-
-        if (Objects.isNull(menu.getMenuGroupId())) {
-            throw new InvalidParameterException(CommonErrorCode.NOT_EMPTY);
-        }
     }
 
     private void greaterThanMinPriceValid(Menu menu) {
