@@ -1,6 +1,7 @@
 package kitchenpos.application;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -50,7 +51,7 @@ class MenuServiceTest {
         Mockito.when(productDao.findById(Mockito.anyLong()))
             .thenReturn(Optional.of(product));
 
-        MenuProduct expectedMenuProduct = new MenuProduct(2L, 2);
+        MenuProduct expectedMenuProduct = new MenuProduct(2L, 2L, 2L, 2);
         Mockito.when(menuProductDao.save(Mockito.any()))
             .thenReturn(expectedMenuProduct);
 
@@ -58,13 +59,16 @@ class MenuServiceTest {
         Mockito.when(menuDao.save(Mockito.any()))
             .thenReturn(expectedMenu);
 
-        Menu menu = new Menu( "name", BigDecimal.ONE, 1L, Arrays.asList(menuProduct));
+        Menu menu = new Menu("name", BigDecimal.ONE, 1L, Arrays.asList(menuProduct));
 
         // when
         Menu actual = menuService.create(menu);
 
         // then
-        assertThat(actual).isEqualTo(expectedMenu);
+        assertAll(
+            () -> assertThat(actual.getMenuProducts()).hasSize(1),
+            () -> assertThat(actual.getMenuProducts().get(0).getMenuId()).isEqualTo(2L)
+        );
     }
 
     @DisplayName("메뉴 상품 가격의 합과 입력받은 가격 비교하여 입력받은 가격이 더 크면 에러")
@@ -79,7 +83,7 @@ class MenuServiceTest {
         Mockito.when(productDao.findById(Mockito.anyLong()))
             .thenReturn(Optional.of(product));
 
-        Menu menu = new Menu( "name", BigDecimal.valueOf(21), 1L, Arrays.asList(menuProduct));
+        Menu menu = new Menu("name", BigDecimal.valueOf(21), 1L, Arrays.asList(menuProduct));
 
         // when and then
         assertThatExceptionOfType(IllegalArgumentException.class)
@@ -97,7 +101,7 @@ class MenuServiceTest {
         Mockito.when(productDao.findById(Mockito.anyLong()))
             .thenReturn(Optional.empty());
 
-        Menu menu = new Menu( "name", BigDecimal.ONE, 1L, Arrays.asList(menuProduct));
+        Menu menu = new Menu("name", BigDecimal.ONE, 1L, Arrays.asList(menuProduct));
 
         // when and then
         assertThatExceptionOfType(IllegalArgumentException.class)
@@ -108,7 +112,7 @@ class MenuServiceTest {
     @Test
     void createErrorWhenPriceIsNull() {
         MenuProduct menuProduct = new MenuProduct(1L, 2);
-        Menu menu = new Menu( "name", null, 1L, Arrays.asList(menuProduct));
+        Menu menu = new Menu("name", null, 1L, Arrays.asList(menuProduct));
 
         // when and then
         assertThatExceptionOfType(IllegalArgumentException.class)
@@ -119,7 +123,7 @@ class MenuServiceTest {
     @Test
     void createErrorWhenPriceIsLessThanZero() {
         MenuProduct menuProduct = new MenuProduct(1L, 2);
-        Menu menu = new Menu( "name", BigDecimal.valueOf(-1), 1L, Arrays.asList(menuProduct));
+        Menu menu = new Menu("name", BigDecimal.valueOf(-1), 1L, Arrays.asList(menuProduct));
 
         // when and then
         assertThatExceptionOfType(IllegalArgumentException.class)
@@ -134,7 +138,7 @@ class MenuServiceTest {
         Mockito.when(menuGroupDao.existsById(Mockito.anyLong()))
             .thenReturn(false);
 
-        Menu menu = new Menu( "name", BigDecimal.ONE, 1L, Arrays.asList(menuProduct));
+        Menu menu = new Menu("name", BigDecimal.ONE, 1L, Arrays.asList(menuProduct));
 
         // when and then
         assertThatExceptionOfType(IllegalArgumentException.class)
@@ -146,8 +150,8 @@ class MenuServiceTest {
         // given
         MenuProduct menuProduct = new MenuProduct(1L, 2);
 
-        Menu menu1 = new Menu(1L, "name1", BigDecimal.ONE, 1L, Arrays.asList(menuProduct));
-        Menu menu2 = new Menu(2L, "name2", BigDecimal.TEN, 1L, Arrays.asList(menuProduct));
+        Menu menu1 = new Menu(1L, "name1", BigDecimal.ONE, 1L, Collections.emptyList());
+        Menu menu2 = new Menu(2L, "name2", BigDecimal.TEN, 1L, Collections.emptyList());
         List<Menu> menus = Arrays.asList(menu1, menu2);
         Mockito.when(menuDao.findAll())
             .thenReturn(menus);
@@ -159,6 +163,10 @@ class MenuServiceTest {
         List<Menu> actual = menuService.list();
 
         // given
+        assertAll(
+            () -> assertThat(actual.get(0).getMenuProducts()).hasSize(1),
+            () -> assertThat(actual.get(0).getMenuProducts().get(0)).isEqualTo(menuProduct)
+        );
         assertThat(actual).isEqualTo(menus);
     }
 }

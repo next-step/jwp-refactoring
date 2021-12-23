@@ -1,6 +1,7 @@
 package kitchenpos.application;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -55,7 +56,11 @@ class TableGroupServiceTest {
         TableGroup actual = tableGroupService.create(request);
 
         // then
-        assertThat(actual).isEqualTo(tableGroup);
+        assertAll(
+            () -> assertThat(actual.getOrderTables()).hasSize(2),
+            () -> assertThat(actual.getOrderTables().get(0).getTableGroupId()).isEqualTo(1),
+            () -> assertThat(actual.getOrderTables().get(0).isEmpty()).isFalse()
+        );
         Mockito.verify(orderTableDao, Mockito.times(2)).save(Mockito.any());
     }
 
