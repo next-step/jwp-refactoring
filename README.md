@@ -79,7 +79,7 @@
 - Spring Data JPA 사용 시 spring.jpa.hibernate.ddl-auto=validate 옵션을 필수로 준다.
 
 ## 구현목록
-- [ ] JPA 설정 정보 추가
+- [x] JPA 설정 정보 추가
 - [ ] JDBC -> JPA로 변경
 - [ ] domain 정리
     - [ ] 생성자 정적팩토리 메서드
