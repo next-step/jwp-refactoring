@@ -1,6 +1,5 @@
 package kitchenpos.table.application;
 
-import static common.MenuGroupFixture.메뉴그룹_한마리;
 import static common.OrderTableFixture.from;
 import static common.OrderTableFixture.단체지정_두번째_주문테이블;
 import static common.OrderTableFixture.단체지정_첫번째_주문테이블;
@@ -14,12 +13,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.table.application.TableValidation;
+import kitchenpos.order.domain.OrderDao;
 import kitchenpos.table.domain.OrderTableDao;
 import kitchenpos.table.domain.TableGroupDao;
-import kitchenpos.table.application.TableGroupService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.dto.OrderTableRequest;

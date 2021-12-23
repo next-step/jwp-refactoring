@@ -1,4 +1,4 @@
-package kitchenpos.application;
+package kitchenpos.order.application;
 
 import static common.OrderFixture.주문_첫번째;
 import static common.OrderFixture.주문_첫번째_완료;
@@ -7,17 +7,25 @@ import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.atMostOnce;
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import common.MenuFixture;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderLineItemDao;
-import kitchenpos.table.domain.OrderTableDao;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
-import kitchenpos.table.domain.OrderTable;
 import kitchenpos.menu.domain.MenuDao;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderDao;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderLineItemDao;
+import kitchenpos.order.dto.ChangeOrderStatusRequest;
+import kitchenpos.order.dto.OrderLineRequest;
+import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableDao;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -58,15 +66,17 @@ public class OrderServiceTest {
         when(menuDao.countByIdIn(any(List.class))).thenReturn(1L);
 
         when(orderTableDao.findById(any(Long.class))).thenReturn(Optional.of(첫번째_주문테이블));
-        when(orderDao.save(주문_첫번째)).thenReturn(주문_첫번째);
-        when(orderLineItemDao.save(any(OrderLineItem.class))).thenReturn(
-            orderLineItem);
+        when(orderDao.save(any(Order.class))).thenReturn(주문_첫번째);
+        lenient().when(orderLineItemDao.save(any(OrderLineItem.class))).thenReturn(orderLineItem);
 
         // when
-        Order 저장된주문 = orderService.create(주문_첫번째);
+        OrderResponse 저장된주문 = orderService.create(
+            new OrderRequest(첫번째_주문테이블.getId(), asList(new OrderLineRequest(MenuFixture.메뉴_양념치킨()
+                .getId(), 1L))));
 
         // then
-        assertThat(저장된주문).isEqualTo(주문_첫번째);
+        verify(orderDao, atMostOnce()).save(any());
+        verify(orderLineItemDao, atMostOnce()).save(any());
     }
 
 
@@ -79,7 +89,7 @@ public class OrderServiceTest {
 
         // then
         Assertions.assertThatThrownBy(() -> {
-            orderService.changeOrderStatus(1L, 주문_첫번째_완료);
+            orderService.changeOrderStatus(1L, new ChangeOrderStatusRequest("COMPLETION"));
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -101,12 +111,10 @@ public class OrderServiceTest {
         when(orderLineItemDao.findAllByOrderId(anyLong())).thenReturn(asList(
             orderLineItem));
         // when
-        Order order = orderService.changeOrderStatus(1L, 주문_첫번째_완료);
+        OrderResponse orderResponse = orderService.changeOrderStatus(1L, new ChangeOrderStatusRequest("COMPLETION"));
 
         // then
-        assertThat(order.getId()).isEqualTo(주문_첫번째_완료.getId());
-        assertThat(order.getOrderStatus()).isEqualTo(주문_첫번째_완료.getOrderStatus());
-        assertThat(order.getOrderTableId()).isEqualTo(주문_첫번째_완료.getOrderTableId());
+        verify(orderDao, atMostOnce()).save(any());
     }
 
 }

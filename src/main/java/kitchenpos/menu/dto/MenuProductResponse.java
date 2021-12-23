@@ -24,6 +24,9 @@ public class MenuProductResponse {
         this.quantity = quantity;
     }
 
+    public MenuProductResponse() {
+    }
+
     public String getName() {
         return name;
     }
