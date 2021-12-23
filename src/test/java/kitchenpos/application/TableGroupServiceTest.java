@@ -9,7 +9,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.util.List;
-import kitchenpos.dao.OrderDao;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
@@ -27,7 +27,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class TableGroupServiceTest {
 
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRep;
 
     @Mock
     private OrderTableRepository orderTableRepository;
@@ -132,7 +132,7 @@ class TableGroupServiceTest {
         List<OrderTable> orderTables = Lists.newArrayList(orderTable1, orderTable2);
 
         given(orderTableRepository.findAllByTableGroupId(any())).willReturn(orderTables);
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(false);
+        given(orderRep.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(false);
 
         // when
         tableGroupService.ungroup(1L);
@@ -150,7 +150,7 @@ class TableGroupServiceTest {
         List<OrderTable> orderTables = Lists.newArrayList(orderTable1, orderTable2);
 
         given(orderTableRepository.findAllByTableGroupId(any())).willReturn(orderTables);
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(true);
+        given(orderRep.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(true);
 
         // when, then
         assertThatIllegalArgumentException().isThrownBy(

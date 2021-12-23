@@ -88,7 +88,7 @@
   - [ ] 모델
     - [X] Order 엔티티 변환
     - [X] OrderLineItem 엔티티 변환
-  - [ ] OrderRepository 사용하도록 수정
+  - [X] OrderRepository 사용하도록 수정
   - [ ] OrderLineItemRepository 사용하도록 수정
   - [ ] dto 모델 추가
 

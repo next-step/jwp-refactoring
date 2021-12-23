@@ -7,7 +7,8 @@ import static org.mockito.BDDMockito.given;
 
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.dao.OrderDao;
+import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableResponse;
@@ -23,7 +24,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class TableServiceTest {
 
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
 
     @Mock
     private OrderTableRepository orderTableRepository;
@@ -78,8 +79,8 @@ class TableServiceTest {
         OrderTable orderTableForUpdate = new OrderTable(1L, null, 3, true);
 
         given(orderTableRepository.findById(1L)).willReturn(Optional.of(orderTable));
-        given(orderDao.existsByOrderTableIdAndOrderStatusIn(1L,
-            Lists.newArrayList("COOKING", "MEAL"))).willReturn(false);
+        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(1L,
+            Lists.newArrayList(OrderStatus.COOKING, OrderStatus.MEAL))).willReturn(false);
         given(orderTableRepository.save(any())).willReturn(orderTableForUpdate);
 
         // when
@@ -112,8 +113,8 @@ class TableServiceTest {
         OrderTable orderTable = new OrderTable(1L, null, 3, false);
 
         given(orderTableRepository.findById(1L)).willReturn(Optional.of(orderTable));
-        given(orderDao.existsByOrderTableIdAndOrderStatusIn(1L,
-            Lists.newArrayList("COOKING", "MEAL"))).willReturn(true);
+        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(1L,
+            Lists.newArrayList(OrderStatus.COOKING, OrderStatus.MEAL))).willReturn(true);
 
         // when, then
         assertThatIllegalArgumentException().isThrownBy(

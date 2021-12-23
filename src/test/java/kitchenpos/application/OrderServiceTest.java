@@ -10,10 +10,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
@@ -32,7 +32,7 @@ class OrderServiceTest {
     private MenuDao menuDao;
 
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
 
     @Mock
     private OrderLineItemDao orderLineItemDao;
@@ -55,7 +55,7 @@ class OrderServiceTest {
 
         given(menuDao.countByIdIn(anyList())).willReturn((long) orderLineItems.size());
         given(orderTableRepository.findById(1L)).willReturn(Optional.of(orderTable));
-        given(orderDao.save(any())).willReturn(order);
+        given(orderRepository.save(any())).willReturn(order);
 
         // when
         Order result = orderService.create(order);
@@ -84,7 +84,7 @@ class OrderServiceTest {
         Order order1 = new Order(1L, 1L, OrderStatus.COOKING, LocalDateTime.of(2021, 12, 19, 18, 30), null);
         Order order2 = new Order(2L, 2L, OrderStatus.MEAL, LocalDateTime.of(2021, 12, 19, 17, 0), null);
 
-        given(orderDao.findAll()).willReturn(Lists.newArrayList(order1, order2));
+        given(orderRepository.findAll()).willReturn(Lists.newArrayList(order1, order2));
         given(orderLineItemDao.findAllByOrderId(any())).willReturn(orderLineItems1,
             orderLineItems2);
 
@@ -118,7 +118,7 @@ class OrderServiceTest {
         Order order = new Order(1L, 1L, OrderStatus.COOKING, null, orderLineItems);
         Order orderForUpdate = new Order(1L, 1L, OrderStatus.MEAL, null, orderLineItems);
 
-        given(orderDao.findById(any())).willReturn(Optional.of(order));
+        given(orderRepository.findById(any())).willReturn(Optional.of(order));
         given(orderLineItemDao.findAllByOrderId(1L)).willReturn(orderLineItems);
 
         // when
@@ -140,7 +140,7 @@ class OrderServiceTest {
         Order order = new Order(1L, 1L, OrderStatus.COMPLETION, null, orderLineItems);
         Order orderForUpdate = new Order(1L, 1L, OrderStatus.MEAL, null, orderLineItems);
 
-        given(orderDao.findById(any())).willReturn(Optional.of(order));
+        given(orderRepository.findById(any())).willReturn(Optional.of(order));
 
         // when, then
         assertThatIllegalArgumentException().isThrownBy(
