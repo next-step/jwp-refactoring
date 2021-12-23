@@ -1,8 +1,12 @@
 package kitchenpos.menu.product;
 
-import kitchenpos.application.ProductService;
+import kitchenpos.menu.product.application.ProductService;
 import kitchenpos.dao.ProductDao;
-import kitchenpos.domain.Product;
+import kitchenpos.menu.product.domain.Product;
+import kitchenpos.menu.product.domain.ProductPrice;
+import kitchenpos.menu.product.domain.ProductRepository;
+import kitchenpos.menu.product.dto.ProductRequest;
+import kitchenpos.menu.product.dto.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,24 +31,23 @@ public class ProductServiceTest {
     @Mock
     private ProductDao productDao;
 
+    @Mock
+    private ProductRepository productRepository;
+
     @DisplayName("상품을 등록한다.")
     @Test
     void registerProduct() {
 
         //given
-        Product product = new Product();
-        product.setId(1L);
-        product.setName("후라이드");
-        product.setPrice(new BigDecimal("16000"));
-
-        when(productDao.save(any())).thenReturn(product);
+        ProductRequest productRequest = new ProductRequest("후라이드", new BigDecimal("16000"));
+        Product product = productRequest.toEntity();
+        when(productRepository.save(any())).thenReturn(product);
 
         //when
-        Product savedProduct = productService.create(product);
+        ProductResponse savedProduct = productService.create(productRequest);
 
         //then
         assertThat(savedProduct).isNotNull();
-        assertThat(savedProduct.getId()).isGreaterThan(0L);
         assertThat(savedProduct.getName()).isEqualTo(product.getName());
     }
 
@@ -67,20 +70,15 @@ public class ProductServiceTest {
         products.add(후라이드);
         products.add(치즈버거);
 
-        when(productDao.findAll()).thenReturn(products);
+        when(productRepository.findAll()).thenReturn(products);
 
         //when
-        List<Product> findProducts = productService.list();
+        List<ProductResponse> findProducts = productService.list();
 
         //then
         assertThat(findProducts).isNotEmpty();
         assertThat(findProducts.size()).isEqualTo(products.size());
-        assertThat(findProducts).extracting(Product::getName).containsExactly("후라이드", "치즈버거");
-        assertThat(findProducts.stream()
-                .map(Product::getPrice)
-                .reduce((a, b) -> a.add(b))
-                .orElse(BigDecimal.ZERO))
-                .isEqualTo(new BigDecimal("24000"));
+        assertThat(findProducts).extracting(ProductResponse::getName).containsExactly("후라이드", "치즈버거");
     }
 
 

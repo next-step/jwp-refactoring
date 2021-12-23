@@ -1,9 +1,9 @@
 package kitchenpos.menu.product;
 
-import kitchenpos.application.ProductService;
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Product;
-import kitchenpos.ui.ProductRestController;
+import kitchenpos.menu.product.domain.Product;
+import kitchenpos.menu.product.dto.ProductRequest;
+import kitchenpos.menu.product.dto.ProductResponse;
+import kitchenpos.menu.product.ui.ProductController;
 import kitchenpos.utils.ControllerTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,7 +24,7 @@ public class ProductControllerTest extends ControllerTest {
 
     @PostConstruct
     public void setUp() {
-        this.mockMvc = MockMvcBuilders.standaloneSetup(new ProductRestController(productService)).build();
+        this.mockMvc = MockMvcBuilders.standaloneSetup(new ProductController(productService)).build();
     }
 
     @DisplayName("상품을 등록한다.")
@@ -32,10 +32,9 @@ public class ProductControllerTest extends ControllerTest {
     void registerProduct() throws Exception {
 
         //given
-        Product 후라이드 = new Product();
-        후라이드.setName("후라이드");
-        후라이드.setPrice(new BigDecimal("10000"));
-        when(productService.create(any())).thenReturn(후라이드);
+        ProductRequest 후라이드 = new ProductRequest("후라이드", new BigDecimal("16000"));
+        Product product = 후라이드.toEntity();
+        when(productService.create(any())).thenReturn(ProductResponse.of(product));
 
         //when
         ResultActions resultActions = post("/api/products", 후라이드);
@@ -49,11 +48,8 @@ public class ProductControllerTest extends ControllerTest {
     void getProducts() throws Exception {
 
         //given
-        Product 후라이드 = new Product();
-        후라이드.setName("후라이드");
-        후라이드.setPrice(new BigDecimal("10000"));
-        
-        when(productService.list()).thenReturn(Arrays.asList(후라이드));
+        Product 후라이드 = Product.create("후라이드", new BigDecimal("16000"));
+        when(productService.list()).thenReturn(ProductResponse.ofList(Arrays.asList(후라이드)));
 
         //when
         ResultActions resultActions = get("/api/products", new LinkedMultiValueMap<>());
@@ -62,7 +58,7 @@ public class ProductControllerTest extends ControllerTest {
         resultActions.andExpect(status().isOk());
         resultActions.andExpect(jsonPath("$").isArray());
         resultActions.andExpect(jsonPath("$[0]['name']").value(후라이드.getName()));
-        resultActions.andExpect(jsonPath("$[0]['price']").value(후라이드.getPrice()));
+        resultActions.andExpect(jsonPath("$[0]['price']").value(16_000));
     }
 
 }
