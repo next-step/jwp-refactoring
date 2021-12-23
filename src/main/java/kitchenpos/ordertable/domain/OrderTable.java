@@ -38,7 +38,7 @@ public class OrderTable {
     @OneToMany(mappedBy = "orderTable")
     private List<Order> orders = new ArrayList<>();
 
-    public OrderTable() {
+    protected OrderTable() {
     }
 
     public OrderTable(Long id) {

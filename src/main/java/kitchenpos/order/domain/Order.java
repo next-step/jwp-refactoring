@@ -48,7 +48,7 @@ public class Order {
         this.id = id;
     }
 
-    public Order() {
+    protected Order() {
     }
 
     public Order(OrderStatus orderStatus) {
@@ -122,7 +122,7 @@ public class Order {
     public List<OrderLineItem> getOrderLineItemList() {
         return orderLineItems.getOrderLineItems();
     }
-    
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
