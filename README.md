@@ -83,3 +83,24 @@
 * `주문`목록을 조회 할 수 있다.
 * `주문`의 `주문 상태`를 변경 할 수 있다.
     * `주문 상태`가 `계산 완료`이면 상태를 변경 할 수 없다.
+
+## 2단계 - 서비스 리팩터링
+
+- 단위 테스트
+    - 테스트하기 어려운 코드와 쉬운코드 분리해보기
+    - 단위 테스트 가능한 코드에 대해 단위 테스트를 구현하기
+- 데이터 베이스 스키마 변경 및 마이그레이션 활용하기
+- 모델에 `setter` 넣지 않기
+- 객체지향 체조원칙 지향하기
+- `JPA`로 리팩토링 하기
+    - [X] `JdbcTemplateProductDao` -> `ProductRepository`
+    - [X] `JdbcTemplateMenuGroupDao` -> `MenuGroupRepository`
+    - [X] `JdbcTemplateMenuDao` -> `MenuRepository`
+    - [X] `JdbcTemplateMenuProductDao` -> `MenuProductRepository`
+    - [X] `JdbcTemplateOrderTableDao` -> `OrderTableRepository`
+    - [X] `JdbcTemplateTableGroupDao` -> `TableGroupRepository`
+    - [X] `JdbcTemplateOrderDao` -> `OrderRepository`
+    - [X] `JdbcTemplateOrderLineItemDao` -> `OrderLineItemRepository`
+- [X] 서비스 레이어로직 도메인으로 분리
+- [X] 인수 테스트 리팩토링
+- [X] `Request`, `Response` DTO 분리 

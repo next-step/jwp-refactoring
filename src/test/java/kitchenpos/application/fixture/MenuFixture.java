@@ -1,24 +1,17 @@
 package kitchenpos.application.fixture;
 
-import java.math.BigDecimal;
-import java.util.Collections;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuProduct;
+
+import java.util.List;
+import kitchenpos.dto.menu.MenuProductRequest;
+import kitchenpos.dto.menu.MenuRequest;
 
 public class MenuFixture {
 
     private MenuFixture() {
     }
 
-    public static Menu 메뉴생성(Long id, String name, Integer price, Long menuGroupId,
-        MenuProduct menuProduct) {
-        Menu menu = new Menu();
-        menu.setId(id);
-        menu.setName(name);
-        menu.setPrice(BigDecimal.valueOf(price));
-        menu.setMenuGroupId(menuGroupId);
-        menu.setMenuProducts(Collections.singletonList(menuProduct));
-        return menu;
+    public static MenuRequest 요청_메뉴(String name, int price, Long menuGroupId,
+        List<MenuProductRequest> menuProductRequests) {
+        return new MenuRequest(name, price, menuGroupId, menuProductRequests);
     }
-
 }

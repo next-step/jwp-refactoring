@@ -1,19 +1,27 @@
 package kitchenpos.application.fixture;
 
-import kitchenpos.domain.OrderTable;
+
+import static kitchenpos.application.fixture.TableGroupFixture.단체지정;
+
+import java.util.Arrays;
+import kitchenpos.domain.order.OrderTable;
 
 public class OrderTableFixture {
 
     private OrderTableFixture() {
     }
 
-    public static OrderTable 주문테이블_생성(Long id, Long tableGroupId, boolean empty,
-        int numberOfGuests) {
-        OrderTable orderTable = new OrderTable();
-        orderTable.setId(id);
-        orderTable.setTableGroupId(tableGroupId);
-        orderTable.setEmpty(empty);
-        orderTable.setNumberOfGuests(numberOfGuests);
+    public static OrderTable 빈_테이블() {
+        return OrderTable.of(0, true);
+    }
+
+    public static OrderTable 한명_주문테이블() {
+        return OrderTable.of(1, false);
+    }
+
+    public static OrderTable 단체지정된_주문테이블() {
+        OrderTable orderTable = OrderTable.of(0, true);
+        orderTable.changeTableGroup(단체지정(Arrays.asList(빈_테이블(), 빈_테이블())));
         return orderTable;
     }
 }

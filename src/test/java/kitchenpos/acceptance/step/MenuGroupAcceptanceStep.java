@@ -8,7 +8,9 @@ import io.restassured.mapper.TypeRef;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.domain.menu.MenuGroup;
+import kitchenpos.dto.menu.MenuGroupRequest;
+import kitchenpos.dto.menu.MenuGroupResponse;
 import org.springframework.http.MediaType;
 
 public class MenuGroupAcceptanceStep {
@@ -18,13 +20,13 @@ public class MenuGroupAcceptanceStep {
     private MenuGroupAcceptanceStep() {
     }
 
-    public static MenuGroup 메뉴그룹_등록됨(MenuGroup menuGroup) {
+    public static MenuGroupResponse 메뉴그룹_등록됨(MenuGroupRequest menuGroup) {
         ExtractableResponse<Response> 메뉴그룹_등록_결과 = 메뉴그룹_등록_요청(menuGroup);
 
         return 메뉴그룹_등록됨(메뉴그룹_등록_결과, menuGroup);
     }
 
-    public static ExtractableResponse<Response> 메뉴그룹_등록_요청(MenuGroup menuGroup) {
+    public static ExtractableResponse<Response> 메뉴그룹_등록_요청(MenuGroupRequest menuGroup) {
         return RestAssured
             .given().log().all()
             .body(menuGroup)
@@ -43,19 +45,22 @@ public class MenuGroupAcceptanceStep {
             .extract();
     }
 
-    public static MenuGroup 메뉴그룹_등록됨(ExtractableResponse<Response> response, MenuGroup expected) {
-        MenuGroup 등록된_메뉴그룹 = response.as(MenuGroup.class);
-        assertThat(등록된_메뉴그룹.getId()).isNotNull();
+    public static MenuGroupResponse 메뉴그룹_등록됨(ExtractableResponse<Response> response,
+        MenuGroupRequest expected) {
+        MenuGroupResponse 등록된_메뉴그룹 = response.as(MenuGroupResponse.class);
         assertThat(등록된_메뉴그룹.getName()).isEqualTo(expected.getName());
 
         return 등록된_메뉴그룹;
     }
 
     public static List<MenuGroup> 메뉴그룹_목록조회_됨(ExtractableResponse<Response> response,
-        MenuGroup expected) {
+        MenuGroupResponse expected) {
         List<MenuGroup> 조회된_메뉴그룹_목록 = response.as(new TypeRef<List<MenuGroup>>() {
         });
-        assertThat(조회된_메뉴그룹_목록).contains(expected);
+
+        assertThat(조회된_메뉴그룹_목록).isNotNull()
+            .extracting("name")
+            .contains(expected.getName());
 
         return 조회된_메뉴그룹_목록;
     }
