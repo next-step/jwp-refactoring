@@ -49,7 +49,7 @@ public class OrderResponse {
         return new OrderResponse(order.getId(),
             OrderTableResponse.from(order.getOrderTable()),
             order.getOrderStatus(), order.getOrderedTime(),
-            order.getOrderLineItems()
+            order.getOrderLineItemList()
                 .stream()
                 .map(OrderLineItemResponse::from)
                 .collect(Collectors.toList()));

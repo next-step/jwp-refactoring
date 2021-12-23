@@ -46,7 +46,7 @@ public class OrderTestFixtures {
     public static void 특정_주문에_해당하는_주문항목_조회_모킹(OrderLineItemDao orderLineItemDao,
         List<Order> orders) {
         orders.stream().forEach(order -> given(orderLineItemDao.findAllByOrderId(order.getId()))
-            .willReturn(order.getOrderLineItems()));
+            .willReturn(order.getOrderLineItemList()));
     }
 
     public static void 특정_주문_조회_모킹(OrderDao orderDao, Order order) {
@@ -56,7 +56,7 @@ public class OrderTestFixtures {
 
     public static OrderRequest convertToOrderRequest(Order order) {
         return new OrderRequest(order.getOrderTable().getId(),
-            convertToOrderLineItemRequests(order.getOrderLineItems()));
+            convertToOrderLineItemRequests(order.getOrderLineItemList()));
     }
 
     public static List<OrderLineItemRequest> convertToOrderLineItemRequests(

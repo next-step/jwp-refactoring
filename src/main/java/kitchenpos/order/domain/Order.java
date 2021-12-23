@@ -1,11 +1,10 @@
 package kitchenpos.order.domain;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -15,14 +14,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import kitchenpos.ordertable.domain.OrderTable;
 
 @Entity(name = "orders")
 public class Order {
 
     private static final String ERROR_MESSAGE_EMPTY_TABLE_CANNOT_ORDER = "주문종료 상태인 테이블은 주문할 수 없습니다.";
-    private static final String ERROR_MESSAGE_DUPLICATE_MENU = "주문항목들 중에 중복된 메뉴가 존재합니다.";
     private static final String ERROR_MESSAGE_COMPLETE_ORDER_CANNOT_CHANGE = "계산 완료된 주문 상태는 변경할 수 없습니다.";
 
     @Id
@@ -40,9 +37,8 @@ public class Order {
     @Column(nullable = false, updatable = false)
     private LocalDateTime orderedTime;
 
-    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY, cascade = {
-        CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private List<OrderLineItem> orderLineItems = new ArrayList<>();
+    @Embedded
+    private OrderLineItems orderLineItems;
 
     public Long getId() {
         return id;
@@ -73,28 +69,14 @@ public class Order {
         this.id = id;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
-
         assignOrderLineItems(orderLineItems);
         assignTable(orderTable);
     }
 
-    private void assignOrderLineItems(List<OrderLineItem> orderLineItems) {
-        validateNoDuplicateMenu(orderLineItems);
-        this.orderLineItems.addAll(orderLineItems);
-        orderLineItems.stream()
+    private void assignOrderLineItems(List<OrderLineItem> inputOrderLineItems) {
+        orderLineItems.assignOrderLineItems(inputOrderLineItems);
+        inputOrderLineItems.stream()
             .forEach(orderLineItem -> orderLineItem.assignOrder(this));
-    }
-
-    private void validateNoDuplicateMenu(List<OrderLineItem> orderLineItems) {
-        int inputSize = orderLineItems.size();
-        long distinctSize = orderLineItems.stream()
-            .map(orderLineItem -> orderLineItem.getMenu())
-            .distinct()
-            .count();
-
-        if (distinctSize != inputSize) {
-            throw new IllegalArgumentException(ERROR_MESSAGE_DUPLICATE_MENU);
-        }
     }
 
     public OrderTable getOrderTable() {
@@ -109,8 +91,12 @@ public class Order {
         return orderedTime;
     }
 
-    public List<OrderLineItem> getOrderLineItems() {
+    public OrderLineItems getOrderLineItems() {
         return orderLineItems;
+    }
+
+    public List<OrderLineItem> getOrderLineItemList() {
+        return orderLineItems.getOrderLineItems();
     }
 
     public boolean isCompleteStatus() {
