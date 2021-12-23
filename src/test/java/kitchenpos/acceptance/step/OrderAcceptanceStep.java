@@ -6,9 +6,9 @@ import io.restassured.mapper.TypeRef;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
-import kitchenpos.dto.order.OrderRequest;
-import kitchenpos.dto.order.OrderResponse;
-import kitchenpos.dto.order.OrderStatusRequest;
+import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.order.dto.OrderStatusRequest;
 
 public class OrderAcceptanceStep {
 

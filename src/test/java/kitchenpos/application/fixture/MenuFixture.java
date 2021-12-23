@@ -2,8 +2,8 @@ package kitchenpos.application.fixture;
 
 
 import java.util.List;
-import kitchenpos.dto.menu.MenuProductRequest;
-import kitchenpos.dto.menu.MenuRequest;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuRequest;
 
 public class MenuFixture {
 

@@ -1,7 +1,7 @@
 package kitchenpos.common.exception;
 
-import kitchenpos.domain.order.NumberOfGuests;
-import kitchenpos.domain.order.OrderTables;
+import kitchenpos.ordertable.domain.NumberOfGuests;
+import kitchenpos.tablegroup.domain.OrderTables;
 
 public enum CommonErrorCode implements ErrorCode {
     DATABASE_CONSTRAINT_VIOLATION("고유값이 이미 존재합니다."),

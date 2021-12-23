@@ -4,7 +4,7 @@ package kitchenpos.application.fixture;
 import static kitchenpos.application.fixture.TableGroupFixture.단체지정;
 
 import java.util.Arrays;
-import kitchenpos.domain.order.OrderTable;
+import kitchenpos.ordertable.domain.OrderTable;
 
 public class OrderTableFixture {
 

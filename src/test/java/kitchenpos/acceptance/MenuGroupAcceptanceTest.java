@@ -6,8 +6,8 @@ import static kitchenpos.application.fixture.MenuGroupFixture.요청_메뉴그�
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.dto.menu.MenuGroupRequest;
-import kitchenpos.dto.menu.MenuGroupResponse;
+import kitchenpos.menugroup.dto.MenuGroupRequest;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

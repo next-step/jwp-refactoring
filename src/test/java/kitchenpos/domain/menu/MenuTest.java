@@ -5,6 +5,8 @@ import static kitchenpos.application.fixture.MenuProductFixture.메뉴상품_치
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import kitchenpos.common.exception.InvalidParameterException;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menugroup.domain.MenuGroup;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

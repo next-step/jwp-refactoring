@@ -4,9 +4,9 @@ import static kitchenpos.application.fixture.ProductFixture.후리이드치킨;
 
 import java.util.Collections;
 import java.util.List;
-import kitchenpos.domain.menu.MenuProduct;
-import kitchenpos.domain.product.Product;
-import kitchenpos.dto.menu.MenuProductRequest;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.product.domain.Product;
+import kitchenpos.menu.dto.MenuProductRequest;
 
 public class MenuProductFixture {
 
