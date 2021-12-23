@@ -16,14 +16,14 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.menu.application.ProductService;
-import kitchenpos.menu.dao.ProductDao;
+import kitchenpos.menu.dao.ProductRepository;
 import kitchenpos.menu.domain.Product;
 
 @ExtendWith(MockitoExtension.class)
 public class ProductServiceTest {
 
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     @InjectMocks
     private ProductService productService;
@@ -36,7 +36,7 @@ public class ProductServiceTest {
         상품.setId(1L);
         상품.setName("치킨");
         상품.setPrice(new BigDecimal("18000"));
-        given(productDao.save(상품)).willReturn(상품);
+        given(productRepository.save(상품)).willReturn(상품);
 
         // when
         Product 등록_결과 = productService.create(상품);
@@ -92,7 +92,7 @@ public class ProductServiceTest {
         두번째_상품.setName("삼겹살");
         두번째_상품.setPrice(new BigDecimal("20000"));
         
-        given(productDao.findAll()).willReturn(Arrays.asList(첫번째_상품, 두번째_상품));
+        given(productRepository.findAll()).willReturn(Arrays.asList(첫번째_상품, 두번째_상품));
 
         // when
         List<Product> 상품_목록 = productService.list();

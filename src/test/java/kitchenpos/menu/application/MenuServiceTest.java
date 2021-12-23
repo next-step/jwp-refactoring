@@ -21,7 +21,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import kitchenpos.menu.dao.MenuDao;
 import kitchenpos.menu.dao.MenuGroupRepository;
 import kitchenpos.menu.dao.MenuProductDao;
-import kitchenpos.menu.dao.ProductDao;
+import kitchenpos.menu.dao.ProductRepository;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
@@ -40,7 +40,7 @@ public class MenuServiceTest {
     private MenuProductDao menuProductDao;
 
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     @InjectMocks
     private MenuService menuService;
@@ -72,7 +72,7 @@ public class MenuServiceTest {
 
         메뉴.setMenuProducts(Arrays.asList(메뉴상품));
         given(menuGroupRepository.existsById(메뉴.getMenuGroupId())).willReturn(true);
-        given(productDao.findById(메뉴상품.getProductId())).willReturn(Optional.of(상품));
+        given(productRepository.findById(메뉴상품.getProductId())).willReturn(Optional.of(상품));
         given(menuDao.save(메뉴)).willReturn(메뉴);
         given(menuProductDao.save(메뉴상품)).willReturn(메뉴상품);
 
@@ -180,7 +180,7 @@ public class MenuServiceTest {
         given(menuGroupRepository.existsById(anyLong())).willReturn(true);
         
         // when
-        when(productDao.findById(anyLong())).thenReturn(Optional.empty());
+        when(productRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         // then
         assertThatThrownBy(() -> {
@@ -213,7 +213,7 @@ public class MenuServiceTest {
         메뉴.setMenuProducts(Arrays.asList(메뉴상품));
 
         given(menuGroupRepository.existsById(anyLong())).willReturn(true);
-        given(productDao.findById(anyLong())).willReturn(Optional.of(상품));
+        given(productRepository.findById(anyLong())).willReturn(Optional.of(상품));
 
         // when, then
         assertThatThrownBy(() -> {
