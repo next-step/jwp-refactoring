@@ -2,6 +2,8 @@ package kitchenpos.application;
 
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuGroupRepository;
+import kitchenpos.domain.dto.MenuGroupRequest;
+import kitchenpos.domain.dto.MenuGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -39,10 +41,10 @@ class MenuGroupServiceTest {
     void create() {
         when(menuGroupRepository.save(any())).thenReturn(베스트메뉴);
 
-        MenuGroup menuGroup = menuGroupService.create(베스트메뉴);
+        MenuGroupResponse response = menuGroupService.create(new MenuGroupRequest("베스트메뉴"));
 
         verify(menuGroupRepository, times(1)).save(any(MenuGroup.class));
-        assertThat(menuGroup.getName()).isEqualTo(베스트메뉴.getName());
+        assertThat(response.getName()).isEqualTo(this.베스트메뉴.getName());
     }
 
     @Test
@@ -50,9 +52,9 @@ class MenuGroupServiceTest {
     void list() {
         when(menuGroupRepository.findAll()).thenReturn(Arrays.asList(베스트메뉴, 세트메뉴));
 
-        List<MenuGroup> menuGroups = menuGroupService.list();
+        List<MenuGroupResponse> responses = menuGroupService.list();
 
         verify(menuGroupRepository, times(1)).findAll();
-        assertThat(menuGroups).hasSize(2);
+        assertThat(responses).hasSize(2);
     }
 }

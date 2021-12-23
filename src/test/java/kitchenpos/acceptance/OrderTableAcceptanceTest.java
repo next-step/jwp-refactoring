@@ -53,8 +53,6 @@ class OrderTableAcceptanceTest extends AcceptanceTest {
         주문_테이블_비움(createdLocationUri1);
         주문_테이블_비움(createdLocationUri2);
         테이블_변경_실패됨(테이블_손님수_변경(createdLocationUri2, OrderTableRequest.of(3)));
-
-        // TODO 주문 상태 확인
     }
 
     public static ExtractableResponse<Response> 주문_테이블_등록_요청(OrderTableRequest request) {

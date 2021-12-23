@@ -54,8 +54,6 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
 
         테이블_그룹_등록_실패됨(테이블_그룹_등록_요청(request1));
         테이블_그룹_등록_실패됨(테이블_그룹_등록_요청(request2));
-
-        // TODO 테이블 그룹 해제
     }
 
     public static ExtractableResponse<Response> 테이블_그룹_등록_요청(TableGroupRequest request) {

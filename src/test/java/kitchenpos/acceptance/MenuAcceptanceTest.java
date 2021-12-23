@@ -2,11 +2,11 @@ package kitchenpos.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.Product;
+import kitchenpos.domain.dto.MenuGroupRequest;
+import kitchenpos.domain.dto.MenuGroupResponse;
 import kitchenpos.domain.dto.MenuProductRequest;
 import kitchenpos.domain.dto.MenuRequest;
-import kitchenpos.domain.dto.OrderTableRequest;
 import kitchenpos.util.RestAssuredApi;
 import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,7 +29,7 @@ class MenuAcceptanceTest extends AcceptanceTest {
     private MenuProductRequest 매콤치킨구성;
     private MenuProductRequest 치즈볼구성;
 
-    private MenuGroup 인기메뉴그룹;
+    private MenuGroupResponse 인기메뉴그룹;
 
     @BeforeEach
     void setUp() {
@@ -41,7 +41,7 @@ class MenuAcceptanceTest extends AcceptanceTest {
         매콤치킨구성 = new MenuProductRequest(매콤치킨.getId(), 1L);
         치즈볼구성 = new MenuProductRequest(치즈볼.getId(), 2L);
 
-        인기메뉴그룹 = 메뉴_그룹_등록_요청(new MenuGroup(1L, "인기메뉴")).as(MenuGroup.class);
+        인기메뉴그룹 = 메뉴_그룹_등록_요청(new MenuGroupRequest("인기메뉴")).as(MenuGroupResponse.class);
     }
 
     @Test

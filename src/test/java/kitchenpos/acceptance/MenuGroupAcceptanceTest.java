@@ -2,7 +2,7 @@ package kitchenpos.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.domain.dto.MenuGroupRequest;
 import kitchenpos.util.RestAssuredApi;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -11,21 +11,20 @@ import org.springframework.http.HttpStatus;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("메뉴 그룹 인수 테스트")
 class MenuGroupAcceptanceTest extends AcceptanceTest {
 
-    private MenuGroup 인기메뉴;
-    private MenuGroup 타임세일메뉴;
+    private MenuGroupRequest 인기메뉴;
+    private MenuGroupRequest 타임세일메뉴;
 
     @BeforeEach
     void setUp() {
         super.setUp();
-        인기메뉴 = new MenuGroup("인기메뉴");
-        타임세일메뉴 = new MenuGroup("타임세일메뉴");
+        인기메뉴 = new MenuGroupRequest("인기메뉴");
+        타임세일메뉴 = new MenuGroupRequest("타임세일메뉴");
     }
 
     @Test
@@ -36,11 +35,11 @@ class MenuGroupAcceptanceTest extends AcceptanceTest {
 
         ExtractableResponse<Response> response = 메뉴_그룹_목록_조회_요청();
         메뉴_그룹_목록_조회됨(response);
-        메뉴_그룹_목록_일치됨(response, Arrays.asList(인기메뉴, 타임세일메뉴));
+        메뉴_그룹_목록_일치됨(response, Arrays.asList("인기메뉴", "타임세일메뉴"));
     }
 
-    public static ExtractableResponse<Response> 메뉴_그룹_등록_요청(MenuGroup menuGroup) {
-        return RestAssuredApi.post("/api/menu-groups", menuGroup);
+    public static ExtractableResponse<Response> 메뉴_그룹_등록_요청(MenuGroupRequest request) {
+        return RestAssuredApi.post("/api/menu-groups", request);
     }
 
     private ExtractableResponse<Response> 메뉴_그룹_목록_조회_요청() {
@@ -55,14 +54,8 @@ class MenuGroupAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    private void 메뉴_그룹_목록_일치됨(ExtractableResponse<Response> response, List<MenuGroup> excepted) {
+    private void 메뉴_그룹_목록_일치됨(ExtractableResponse<Response> response, List<String> excepted) {
         assertThat(response.jsonPath().getList("name"))
-                .isEqualTo(getMenuGroupNames(excepted));
-    }
-
-    private List<String> getMenuGroupNames(List<MenuGroup> excepted) {
-        return excepted.stream()
-                .map(MenuGroup::getName)
-                .collect(Collectors.toList());
+                .isEqualTo(excepted);
     }
 }

@@ -2,7 +2,7 @@ package kitchenpos.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.*;
+import kitchenpos.domain.Product;
 import kitchenpos.domain.dto.*;
 import kitchenpos.util.RestAssuredApi;
 import org.assertj.core.api.AssertionsForClassTypes;
@@ -44,7 +44,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         MenuProductRequest 매콤치킨구성 = new MenuProductRequest(매콤치킨.getId(), 1L);
         MenuProductRequest 허니치킨구성 = new MenuProductRequest(허니치킨.getId(), 1L);
 
-        MenuGroup 인기메뉴그룹 = 메뉴_그룹_등록_요청(new MenuGroup(1L, "인기메뉴")).as(MenuGroup.class);
+        MenuGroupResponse 인기메뉴그룹 = 메뉴_그룹_등록_요청(new MenuGroupRequest("인기메뉴")).as(MenuGroupResponse.class);
 
         MenuRequest menuRequest1 = MenuRequest.of("매콤치킨단품", BigDecimal.valueOf(13000), 인기메뉴그룹.getId(), Collections.singletonList(매콤치킨구성));
         MenuRequest menuRequest2 = MenuRequest.of("허니치킨단품", BigDecimal.valueOf(15000), 인기메뉴그룹.getId(), Collections.singletonList(허니치킨구성));
