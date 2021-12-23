@@ -56,7 +56,7 @@ class TableGroupServiceTest {
         //then
         assertThat(savedTableGroup.getCreatedDate()).isEqualTo(tableGroup.getCreatedDate());
         assertThat(savedTableGroup.getOrderTables().size()).isEqualTo(
-            tableGroup.getOrderTables().size());
+            tableGroup.getOrderTableSize());
     }
 
     @DisplayName("테이블 그룹을 해제할 수 있다.")

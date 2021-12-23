@@ -27,7 +27,7 @@ class TableGroupTest {
         tableGroup.groupTables(orderTables);
 
         //then
-        assertThat(tableGroup.getOrderTables()).containsAll(orderTables);
+        assertThat(tableGroup.getOrderTableList()).containsAll(orderTables);
     }
 
     @DisplayName("그룹 대상 테이블은 2개 이상이어야 한다.")
@@ -102,8 +102,8 @@ class TableGroupTest {
         tableGroup.ungroup();
 
         //then
-        assertThat(tableGroup.getOrderTables().size()).isEqualTo(0);
-        tableGroup.getOrderTables()
+        assertThat(tableGroup.getOrderTableSize()).isEqualTo(0);
+        tableGroup.getOrderTableList()
             .stream()
             .forEach(orderTable -> assertThat(orderTable.getTableGroup()).isNull());
     }

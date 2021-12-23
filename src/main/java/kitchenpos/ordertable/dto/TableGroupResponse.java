@@ -20,7 +20,7 @@ public class TableGroupResponse {
 
     public static TableGroupResponse from(TableGroup tableGroup) {
         return new TableGroupResponse(tableGroup.getId(), tableGroup.getCreatedDate()
-            , tableGroup.getOrderTables().stream()
+            , tableGroup.getOrderTableList().stream()
             .map(OrderTableResponse::from)
             .collect(Collectors.toList()));
     }
