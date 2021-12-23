@@ -39,6 +39,8 @@ public class MenuServiceTest {
     private MenuGroupRepository menuGroupRepository;
     @Mock
     private ProductRepository productRepository;
+    @Mock
+    private MenuProductService menuProductService;
     @InjectMocks
     private MenuService menuService;
 
@@ -52,7 +54,9 @@ public class MenuServiceTest {
                 , BigDecimal.valueOf(32_000)
                 , 두마리메뉴.getId()
                 , Collections.singletonList(간장치킨_요청));
-        Menu 간장_두마리_세트 = 요청_데이터.toMenu(두마리메뉴, Arrays.asList(new MenuProduct(간장치킨_상품, 2L)));
+        Menu 간장_두마리_세트 = 요청_데이터.toMenu(두마리메뉴);
+        MenuProducts menuProducts = MenuProducts.of(Arrays.asList(new MenuProduct(간장치킨_상품, 2L)));
+        given(menuProductService.allSave(anyList(), any())).willReturn(menuProducts);
         given(menuGroupRepository.findByIdElseThrow(anyLong())).willReturn(두마리메뉴);
         given(productRepository.findByIdElseThrow(anyLong())).willReturn(간장치킨_상품);
         given(menuRepository.save(any(Menu.class))).willReturn(간장_두마리_세트);

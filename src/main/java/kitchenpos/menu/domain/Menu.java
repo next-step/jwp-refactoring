@@ -4,7 +4,6 @@ import kitchenpos.common.domain.Price;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -21,25 +20,15 @@ public class Menu {
     @JoinColumn(name = "menu_group_id")
     private MenuGroup menuGroup;
 
-    @Embedded
-    private MenuProducts menuProducts;
-
     protected Menu() {
     }
 
-    public Menu(Long id, String name, Price price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+    public Menu(Long id, String name, Price price, MenuGroup menuGroup) {
         this(name, price, menuGroup);
         this.id = id;
-        this.menuProducts = new MenuProducts(menuProducts);
     }
 
-    public Menu(String name, Price price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        this(name, price, menuGroup);
-        this.menuProducts = new MenuProducts(menuProducts);
-        this.menuProducts.initMenu(this);
-    }
-
-    private Menu(String name, Price price, MenuGroup menuGroup) {
+    public Menu(String name, Price price, MenuGroup menuGroup) {
         this.name = name;
         this.price = price;
         this.menuGroup = menuGroup;
@@ -61,10 +50,6 @@ public class Menu {
         return menuGroup.getId();
     }
 
-    public List<MenuProduct> getMenuProducts() {
-        return menuProducts.getMenuProducts();
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -73,12 +58,11 @@ public class Menu {
         return Objects.equals(id, menu.id)
                 && Objects.equals(name, menu.name)
                 && Objects.equals(price, menu.price)
-                && Objects.equals(menuGroup, menu.menuGroup)
-                && Objects.equals(menuProducts, menu.menuProducts);
+                && Objects.equals(menuGroup, menu.menuGroup);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, price, menuGroup, menuProducts);
+        return Objects.hash(id, name, price, menuGroup);
     }
 }
