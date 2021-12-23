@@ -1,11 +1,9 @@
-package kitchenpos.domain;
+package kitchenpos.domain.table;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import kitchenpos.dto.OrderTableRequest;
+import kitchenpos.application.table.OrderTableValidator;
+import kitchenpos.dto.table.OrderTableRequest;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -23,9 +21,6 @@ public class OrderTable {
 
     private boolean empty;
 
-    @OneToMany(mappedBy = "orderTable", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JsonIgnoreProperties(value = {"orderTable"}, allowSetters = true)
-    private List<Order> orders = new ArrayList<>();
 
     public OrderTable() {
     }
@@ -61,15 +56,10 @@ public class OrderTable {
         return tableGroup;
     }
 
-    public List<Order> getOrders() {
-        return orders;
-    }
 
-    public void changeEmpty(boolean empty) {
+    public void changeEmpty(boolean empty, OrderTableValidator orderTableValidator) {
         checkGroupedOrderTable();
-        getOrders()
-                .forEach(Order::checkOrderStatusCookingOrMeal);
-
+        orderTableValidator.checkOrderStatusCookingOrMeal(this);
         this.empty = empty;
     }
 
@@ -111,7 +101,7 @@ public class OrderTable {
     }
 
     public void unGroup() {
-        orders.forEach(Order::checkOrderStatusCookingOrMeal);
+        //orders.forEach(Order::checkOrderStatusCookingOrMeal);
         this.tableGroup = null;
     }
 

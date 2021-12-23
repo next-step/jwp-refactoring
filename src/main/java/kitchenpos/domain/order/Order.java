@@ -1,7 +1,7 @@
-package kitchenpos.domain;
+package kitchenpos.domain.order;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import kitchenpos.dto.OrderRequest;
+import kitchenpos.dto.order.OrderRequest;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -17,9 +17,8 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "order_table_id")
-    private OrderTable orderTable;
+    @JoinColumn(name = "order_table_id", nullable = false)
+    private Long orderTableId;
 
     @Enumerated(value = EnumType.STRING)
     private OrderStatus orderStatus;
@@ -33,20 +32,18 @@ public class Order {
     public Order() {
     }
 
-    public Order(OrderTable orderTable) {
-        this.orderTable = orderTable;
+    public Order(Long orderTableId) {
+        this.orderTableId = orderTableId;
         this.orderStatus = OrderStatus.COOKING;
         this.orderedTime = LocalDateTime.now();
-        orderTable.checkIsEmpty();
     }
 
-    public Order(Long id, OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
+    public Order(Long id, Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
         this.id = id;
-        this.orderTable = orderTable;
+        this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
         this.orderLineItems = orderLineItems;
-        orderTable.checkIsEmpty();
     }
 
 
@@ -62,8 +59,8 @@ public class Order {
         return orderLineItems;
     }
 
-    public OrderTable getOrderTable() {
-        return orderTable;
+    public Long getOrderTableId() {
+        return orderTableId;
     }
 
     public OrderStatus getOrderStatus() {
@@ -98,19 +95,19 @@ public class Order {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Order order = (Order) o;
-        return Objects.equals(id, order.id) && Objects.equals(orderTable, order.orderTable) && orderStatus == order.orderStatus && Objects.equals(orderedTime, order.orderedTime) && Objects.equals(orderLineItems, order.orderLineItems);
+        return Objects.equals(id, order.id) && Objects.equals(orderTableId, order.orderTableId) && orderStatus == order.orderStatus && Objects.equals(orderedTime, order.orderedTime) && Objects.equals(orderLineItems, order.orderLineItems);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, orderTable, orderStatus, orderedTime, orderLineItems);
+        return Objects.hash(id, orderTableId, orderStatus, orderedTime, orderLineItems);
     }
 
     @Override
     public String toString() {
         return "Order{" +
                 "id=" + id +
-                ", orderTable=" + orderTable +
+                ", orderTableId=" + orderTableId +
                 ", orderStatus=" + orderStatus +
                 ", orderedTime=" + orderedTime +
                 ", orderLineItems=" + orderLineItems +

@@ -1,9 +1,8 @@
-package kitchenpos.dto;
+package kitchenpos.dto.order;
 
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
-import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.order.Order;
+import kitchenpos.domain.order.OrderLineItem;
+import kitchenpos.domain.order.OrderStatus;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -11,21 +10,21 @@ import java.util.List;
 public class OrderResponse {
 
     private final Long id;
-    private final OrderTable orderTable;
+    private final Long orderTableId;
     private final OrderStatus orderStatus;
     private final LocalDateTime orderedTime;
     private final List<OrderLineItem> orderLineItems;
 
-    public OrderResponse(Long id, OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
+    public OrderResponse(Long id, Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
         this.id = id;
-        this.orderTable = orderTable;
+        this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
         this.orderLineItems = orderLineItems;
     }
 
     public static OrderResponse from(Order order) {
-        return new OrderResponse(order.getId(), order.getOrderTable(), order.getOrderStatus(),
+        return new OrderResponse(order.getId(), order.getOrderTableId(), order.getOrderStatus(),
                 order.getOrderedTime(), order.getOrderLineItems());
     }
 
@@ -33,8 +32,8 @@ public class OrderResponse {
         return id;
     }
 
-    public OrderTable getOrderTable() {
-        return orderTable;
+    public Long getOrderTableId() {
+        return orderTableId;
     }
 
     public OrderStatus getOrderStatus() {
