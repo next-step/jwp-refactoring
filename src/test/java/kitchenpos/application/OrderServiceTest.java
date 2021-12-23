@@ -9,7 +9,7 @@ import static org.mockito.BDDMockito.given;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.dao.MenuDao;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
@@ -31,7 +31,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class OrderServiceTest {
 
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
 
     @Mock
     private OrderRepository orderRepository;
@@ -55,9 +55,10 @@ class OrderServiceTest {
         Order order = new Order(1L, 1L, OrderStatus.COOKING, null, orderLineItems);
         OrderTable orderTable = new OrderTable(1L, null, 2, false);
 
-        given(menuDao.countByIdIn(anyList())).willReturn((long) orderLineItems.size());
+        given(menuRepository.countByIdIn(anyList())).willReturn(orderLineItems.size());
         given(orderTableRepository.findById(1L)).willReturn(Optional.of(orderTable));
         given(orderRepository.save(any())).willReturn(order);
+        given(orderLineItemRepository.save(any())).willReturn(orderLineItem1, orderLineItem2);
 
         // when
         OrderResponse result = orderService.create(order);
