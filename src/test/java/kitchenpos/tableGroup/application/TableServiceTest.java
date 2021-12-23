@@ -1,15 +1,15 @@
 package kitchenpos.tableGroup.application;
 
+import kitchenpos.fixture.OrderFixture;
 import kitchenpos.fixture.OrderTableFixture;
-import kitchenpos.fixture.TableGroupFixture;
 import kitchenpos.order.application.TableService;
-import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.OrderTableRepository;
 import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.order.dto.OrderTableResponse;
 import kitchenpos.tableGroup.dto.OrderTableIdRequest;
-import kitchenpos.tableGroup.dto.TableGroupRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,9 +29,6 @@ import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 public class TableServiceTest {
-    @Mock
-    private OrderRepository orderRepository;
-
     @Mock
     private OrderTableRepository orderTableRepository;
 
@@ -88,9 +85,9 @@ public class TableServiceTest {
     @Test
     void changeError() {
         OrderTable 빈주문테이블 = OrderTableFixture.생성(0,true);
-
+        Order order = OrderFixture.생성(빈주문테이블);
+        빈주문테이블.addOrders(Arrays.asList(order));
         given(orderTableRepository.findById(any())).willReturn(java.util.Optional.of(빈주문테이블));
-        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), any())).willReturn(true);
 
         assertThatThrownBy(
                 () -> tableService.changeEmpty(any(), OrderTableFixture.생성_Request(0,false))

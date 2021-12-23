@@ -1,7 +1,6 @@
 package kitchenpos.order.domain;
 
 import kitchenpos.fixture.OrderFixture;
-import kitchenpos.fixture.OrderLineItemFixture;
 import kitchenpos.fixture.OrderTableFixture;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,4 +33,15 @@ public class OrderTest {
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
+    @DisplayName("조리 또는 식사 상태이면 빈 테이블로 만들 수 없다.")
+    @Test
+    void validateCompletion() {
+        OrderTable orderTable = OrderTableFixture.생성(7, true);
+        Order order = OrderFixture.생성(orderTable);
+        order.updateOrderStatus(OrderStatus.MEAL);
+
+        assertThatThrownBy(
+                () -> order.validateCompletion()
+        ).isInstanceOf(IllegalArgumentException.class);
+    }
 }

@@ -76,4 +76,13 @@ public class Order {
                 });
     }
 
+    public void validateCompletion() {
+        if(orderStatus.isCookingOrMeal()){
+            throw new IllegalArgumentException();
+        }
+    }
+
+    public void updateOrderTable(OrderTable orderTable) {
+        this.orderTable = orderTable;
+    }
 }

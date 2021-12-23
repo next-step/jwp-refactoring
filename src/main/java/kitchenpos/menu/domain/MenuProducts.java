@@ -25,7 +25,7 @@ public class MenuProducts {
         menuProducts.add(addMenuProduct);
     }
 
-    public void validationOverPrice(BigDecimal price) {
+    public void validateOverPrice(BigDecimal price) {
         BigDecimal totalPrice = menuProducts.stream()
                 .map(MenuProduct::calculatePriceQuantity)
                 .reduce(BigDecimal::add)

@@ -35,7 +35,6 @@ public class TableGroup {
     private void addOrderTables(final List<OrderTable> orderTables) {
         orderTables.stream()
                 .forEach(orderTable -> {
-                    orderTable.changeEmpty(false);
                     orderTable.updateTableGroup(this);
                     this.orderTables.add(orderTable);
                 });

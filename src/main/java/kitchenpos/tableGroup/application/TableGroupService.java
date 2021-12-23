@@ -17,12 +17,10 @@ import java.util.List;
 @Service
 @Transactional(readOnly = true)
 public class TableGroupService {
-    private final OrderRepository orderRepository;
     private final TableService tableService;
     private final TableGroupRepository tableGroupRepository;
 
-    public TableGroupService(final OrderRepository orderRepository, final TableService tableService, final TableGroupRepository tableGroupRepository) {
-        this.orderRepository = orderRepository;
+    public TableGroupService(final TableService tableService, final TableGroupRepository tableGroupRepository) {
         this.tableService = tableService;
         this.tableGroupRepository = tableGroupRepository;
     }
@@ -39,11 +37,6 @@ public class TableGroupService {
     public void ungroup(final Long tableGroupId) {
         final TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
                 .orElseThrow(IllegalArgumentException::new);
-
-        if (orderRepository.existsByOrderTableInAndOrderStatusIn(
-                tableGroup.getOrderTables(), Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException();
-        }
 
         tableGroup.ungroup();
 

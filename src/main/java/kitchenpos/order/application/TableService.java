@@ -15,11 +15,9 @@ import java.util.stream.Collectors;
 @Service
 @Transactional(readOnly = true)
 public class TableService {
-    private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
 
-    public TableService(final OrderRepository orderRepository, final OrderTableRepository orderTableRepository) {
-        this.orderRepository = orderRepository;
+    public TableService(final OrderTableRepository orderTableRepository) {
         this.orderTableRepository = orderTableRepository;
     }
 
@@ -39,7 +37,6 @@ public class TableService {
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, OrderTableRequest request) {
         final OrderTable savedOrderTable = findOrderTable(orderTableId);
-        checkOrderStatus(orderTableId);
         savedOrderTable.changeEmpty(request.isEmpty());
 
         return OrderTableResponse.from(orderTableRepository.save(savedOrderTable));
@@ -47,19 +44,11 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final OrderTableRequest request) {
-
         final OrderTable savedOrderTable = findOrderTable(orderTableId);
 
         savedOrderTable.updateNumberOfGuests(request.getNumberOfGuests());
 
         return OrderTableResponse.from(orderTableRepository.save(savedOrderTable));
-    }
-
-    private void checkOrderStatus(Long orderTableId) {
-        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
-                orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException();
-        }
     }
 
     private OrderTable findOrderTable(Long orderTableId) {

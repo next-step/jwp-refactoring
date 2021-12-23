@@ -27,13 +27,13 @@ public class Menu {
     }
 
     public Menu(String name, BigDecimal price, MenuGroup menuGroup) {
-        validationPrice(price);
+        validatePrice(price);
         this.name = name;
         this.price = price;
         this.menuGroup = menuGroup;
     }
 
-    private void validationPrice(BigDecimal price) {
+    private void validatePrice(BigDecimal price) {
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalArgumentException();
         }
@@ -67,7 +67,7 @@ public class Menu {
                     menuProduct.updateMenu(this);
                     this.menuProducts.add(menuProduct);
                 });
-        this.menuProducts.validationOverPrice(this.price);
+        this.menuProducts.validateOverPrice(this.price);
     }
 
 }

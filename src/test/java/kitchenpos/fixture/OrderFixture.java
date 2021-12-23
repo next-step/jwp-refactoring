@@ -13,6 +13,16 @@ public class OrderFixture {
         return new Order(orderTable);
     }
 
+    public static Order 샘플1() {
+        OrderTable 테이블1번 = OrderTableFixture.생성(0, true);
+        return new Order(테이블1번);
+    }
+
+    public static Order 샘플2() {
+        OrderTable 테이블1번 = OrderTableFixture.생성(0, true);
+        return new Order(테이블1번);
+    }
+
     public static OrderRequest request생성(Long orderTableId, List<OrderLineItemRequest> orderLineItemRequests) {
         return new OrderRequest(orderTableId, orderLineItemRequests);
     }
@@ -22,6 +32,7 @@ public class OrderFixture {
                 Arrays.asList(OrderLineItemFixture.생성_Request(1L, 1L), OrderLineItemFixture.생성_Request(2L, 2L));
         return new OrderRequest(1L, orderLineItemRequests);
     }
+
     public static OrderRequest 샘플_Request_2L() {
         List<OrderLineItemRequest> orderLineItemRequests =
                 Arrays.asList(OrderLineItemFixture.생성_Request(3L, 1L), OrderLineItemFixture.생성_Request(4L, 2L));

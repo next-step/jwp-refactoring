@@ -3,6 +3,7 @@ package kitchenpos.order.domain;
 import kitchenpos.tableGroup.domain.TableGroup;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 public class OrderTable {
@@ -19,12 +20,54 @@ public class OrderTable {
     @Column(nullable = false)
     private boolean empty;
 
+    @Embedded
+    private Orders orders;
+
     protected OrderTable() {
     }
 
     public OrderTable(int numberOfGuests, boolean empty) {
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
+        this.orders = new Orders();
+    }
+
+    public void updateNumberOfGuests(final int numberOfGuests) {
+        validateNumber(numberOfGuests);
+        this.numberOfGuests = numberOfGuests;
+    }
+
+    private void validateNumber(int numberOfGuests) {
+        if (numberOfGuests < 0 || empty) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    public void changeEmpty(final boolean empty) {
+        validateCompletion();
+        this.empty = empty;
+    }
+
+    private void validateCompletion() {
+        orders.validateCompletion();
+    }
+
+    public void ungroup() {
+        validateCompletion();
+        updateTableGroup(null);
+    }
+
+    public void updateTableGroup(TableGroup tableGroup) {
+        this.empty = false;
+        this.tableGroup = tableGroup;
+    }
+
+    public void addOrders(List<Order> addOrders) {
+        addOrders.stream()
+                .forEach(order -> {
+                    order.updateOrderTable(this);
+                    this.orders.add(order);
+                });
     }
 
     public Long getId() {
@@ -42,28 +85,11 @@ public class OrderTable {
         return numberOfGuests;
     }
 
-    public void updateNumberOfGuests(final int numberOfGuests) {
-        validationNumber(numberOfGuests);
-        this.numberOfGuests = numberOfGuests;
-    }
-
-    private void validationNumber(int numberOfGuests) {
-        if (numberOfGuests < 0 || empty) {
-            throw new IllegalArgumentException();
-        }
-    }
-
     public boolean isEmpty() {
         return empty;
     }
 
-    public void changeEmpty(final boolean empty) {
-        this.empty = empty;
+    public List<Order> getOrders() {
+        return orders.getOrders();
     }
-
-    public void updateTableGroup(TableGroup tableGroup) {
-        this.tableGroup = tableGroup;
-    }
-
-
 }

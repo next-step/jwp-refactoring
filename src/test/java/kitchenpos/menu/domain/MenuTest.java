@@ -16,7 +16,7 @@ public class MenuTest {
 
     @DisplayName("메뉴 생성시 가격은 0보다 커야 한다.")
     @Test
-    void validationPrice() {
+    void validatePrice() {
         MenuGroup 치킨류 = MenuGroupFixture.생성("치킨");
 
         assertThatThrownBy(
