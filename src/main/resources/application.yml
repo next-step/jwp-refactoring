@@ -1,10 +1,22 @@
-logging:
-  level:
-    org:
-      springframework:
-        jdbc:
-          core: TRACE
 spring:
+  profiles:
+    active: dev
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
   h2:
     console:
       enabled: true
+  logging:
+    level:
+      org:
+        springframework:
+          jdbc:
+            core: TRACE
