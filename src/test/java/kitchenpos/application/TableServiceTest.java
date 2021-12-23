@@ -3,6 +3,10 @@ package kitchenpos.application;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.table.dto.ChangeEmptyRequest;
+import kitchenpos.table.dto.ChangeNumberOfGuestsRequest;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,17 +41,15 @@ class TableServiceTest {
     @Test
     void create_success() {
         // given
-        OrderTable 요청_테이블 = new OrderTable();
-        요청_테이블.setNumberOfGuests(0);
-        요청_테이블.setEmpty(true);
+        OrderTableRequest 요청_테이블 = OrderTableRequest.of(0, true);
 
         given(orderTableDao.save(any(OrderTable.class))).willReturn(테이블_그룹에_속해있지_않은_테이블);
 
         // when
-        OrderTable 생성된_테이블 = tableService.create(요청_테이블);
+        OrderTableResponse 생성된_테이블 = tableService.create(요청_테이블);
 
         // then
-        assertThat(생성된_테이블).isEqualTo(테이블_그룹에_속해있지_않은_테이블);
+        assertThat(생성된_테이블).isEqualTo(OrderTableResponse.of(테이블_그룹에_속해있지_않은_테이블));
     }
 
     @DisplayName("테이블 목록 조회 테스트")
@@ -57,25 +59,23 @@ class TableServiceTest {
         given(orderTableDao.findAll()).willReturn(Arrays.asList(테이블_그룹에_속해있지_않은_테이블));
 
         // when
-        List<OrderTable> 조회된_테이블_목록 = tableService.list();
+        List<OrderTableResponse> 조회된_테이블_목록 = tableService.list();
 
         // then
-        assertThat(조회된_테이블_목록).containsExactly(테이블_그룹에_속해있지_않은_테이블);
+        assertThat(조회된_테이블_목록).containsExactly(OrderTableResponse.of(테이블_그룹에_속해있지_않은_테이블));
     }
 
     @DisplayName("기존 주문 테이블 수정 성공 테스트")
     @Test
     void changeEmpty_success() {
         // given
-        OrderTable 요청_테이블 = new OrderTable();
-        요청_테이블.setEmpty(false);
+        ChangeEmptyRequest 요청_테이블 = ChangeEmptyRequest.of(false);
 
         given(orderTableDao.findById(any(Long.class))).willReturn(Optional.of(테이블_그룹에_속해있지_않은_테이블));
         given(orderDao.existsByOrderTableIdAndOrderStatusIn(any(Long.class), anyList())).willReturn(false);
-        given(orderTableDao.save(any(OrderTable.class))).willReturn(테이블_그룹에_속해있지_않은_테이블);
 
         // when
-        OrderTable 수정된_테이블 = tableService.changeEmpty(테이블_그룹에_속해있지_않은_테이블.getId(), 요청_테이블);
+        OrderTableResponse 수정된_테이블 = tableService.changeEmpty(테이블_그룹에_속해있지_않은_테이블.getId(), 요청_테이블);
 
         // then
         assertThat(수정된_테이블.isEmpty()).isFalse();
@@ -85,8 +85,7 @@ class TableServiceTest {
     @Test
     void changeEmpty_failure_existTableGroup() {
         // given
-        OrderTable 요청_테이블 = new OrderTable();
-        요청_테이블.setEmpty(false);
+        ChangeEmptyRequest 요청_테이블 = ChangeEmptyRequest.of(false);
 
         given(orderTableDao.findById(any(Long.class))).willReturn(Optional.of(테이블_그룹에_속해있는_테이블));
 
@@ -99,8 +98,7 @@ class TableServiceTest {
     @Test
     void changeEmpty_failure_orderStatus_cooking() {
         // given
-        OrderTable 요청_테이블 = new OrderTable();
-        요청_테이블.setEmpty(false);
+        ChangeEmptyRequest 요청_테이블 = ChangeEmptyRequest.of(false);
 
         given(orderTableDao.findById(any(Long.class))).willReturn(Optional.of(테이블_그룹에_속해있지_않은_테이블));
         given(orderDao.existsByOrderTableIdAndOrderStatusIn(any(Long.class), anyList())).willReturn(true);
@@ -114,14 +112,12 @@ class TableServiceTest {
     @Test
     void changeNumberOfGuests_success() {
         // given
-        OrderTable 요청_테이블 = new OrderTable();
-        요청_테이블.setNumberOfGuests(4);
+        ChangeNumberOfGuestsRequest 요청_테이블 = ChangeNumberOfGuestsRequest.of(4);
 
         given(orderTableDao.findById(any(Long.class))).willReturn(Optional.of(비어있지_않은_테이블));
-        given(orderTableDao.save(any(OrderTable.class))).willReturn(비어있지_않은_테이블);
 
         // when
-        OrderTable 수정된_테이블 = tableService.changeNumberOfGuests(비어있지_않은_테이블.getId(), 요청_테이블);
+        OrderTableResponse 수정된_테이블 = tableService.changeNumberOfGuests(비어있지_않은_테이블.getId(), 요청_테이블);
 
         // then
         assertThat(수정된_테이블.getNumberOfGuests()).isEqualTo(요청_테이블.getNumberOfGuests());
@@ -131,8 +127,7 @@ class TableServiceTest {
     @Test
     void changeNumberOfGuests_failure_invalidNumberOfGuests() {
         // given
-        OrderTable 요청_테이블 = new OrderTable();
-        요청_테이블.setNumberOfGuests(-1);
+        ChangeNumberOfGuestsRequest 요청_테이블 = ChangeNumberOfGuestsRequest.of(-1);
 
         // when & then
         assertThatIllegalArgumentException()
@@ -143,8 +138,7 @@ class TableServiceTest {
     @Test
     void changeNumberOfGuests_failure() {
         // given
-        OrderTable 요청_테이블 = new OrderTable();
-        요청_테이블.setNumberOfGuests(4);
+        ChangeNumberOfGuestsRequest 요청_테이블 = ChangeNumberOfGuestsRequest.of(4);
 
         given(orderTableDao.findById(any(Long.class))).willReturn(Optional.of(비어있는_테이블));
 

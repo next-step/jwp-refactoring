@@ -56,7 +56,7 @@ public class OrderService {
         final OrderTable orderTable = orderTableDao.findById(order.getOrderTableId())
                 .orElseThrow(IllegalArgumentException::new);
 
-        if (orderTable.isEmpty()) {
+        if (orderTable.getEmpty().isEmpty()) {
             throw new IllegalArgumentException();
         }
 

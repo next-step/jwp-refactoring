@@ -1,6 +1,11 @@
 package kitchenpos.fixture;
 
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.TableGroup;
+import kitchenpos.table.domain.Empty;
+import kitchenpos.table.domain.NumberOfGuests;
+
+import java.time.LocalDateTime;
 
 public class TableFixture {
 
@@ -19,12 +24,8 @@ public class TableFixture {
     }
 
     public static OrderTable create(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
-        OrderTable orderTable = new OrderTable();
-        orderTable.setId(id);
-        orderTable.setTableGroupId(tableGroupId);
-        orderTable.setNumberOfGuests(numberOfGuests);
-        orderTable.setEmpty(empty);
+        TableGroup tableGroup = tableGroupId == null ? null : TableGroup.of(tableGroupId, LocalDateTime.now());
 
-        return orderTable;
+        return OrderTable.of(id, tableGroup, NumberOfGuests.of(numberOfGuests), Empty.of(empty));
     }
 }

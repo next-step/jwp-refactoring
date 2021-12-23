@@ -4,6 +4,9 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.table.dto.ChangeEmptyRequest;
+import kitchenpos.table.dto.ChangeNumberOfGuestsRequest;
+import kitchenpos.table.dto.OrderTableRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -20,9 +23,8 @@ class TableAcceptanceTest extends AcceptanceTest {
     @Test
     void manageTable() {
         // given
-        OrderTable 비어있는_주문_테이블 = new OrderTable();
-        비어있는_주문_테이블.setNumberOfGuests(0);
-        비어있는_주문_테이블.setEmpty(true);
+        OrderTableRequest 비어있는_주문_테이블 = OrderTableRequest.of(0, true);
+
         // when
         ExtractableResponse<Response> 주문_테이블_생성_응답 = 주문_테이블_생성_요청(비어있는_주문_테이블);
         // then
@@ -49,7 +51,7 @@ class TableAcceptanceTest extends AcceptanceTest {
         주문_테이블_손님_수_수정됨(주문_테이블_손님_수_수정_응답, numberOfGuests);
     }
 
-    private static ExtractableResponse<Response> 주문_테이블_생성_요청(OrderTable params) {
+    private static ExtractableResponse<Response> 주문_테이블_생성_요청(OrderTableRequest params) {
         return 생성_요청(API_URL, params);
     }
 
@@ -71,8 +73,7 @@ class TableAcceptanceTest extends AcceptanceTest {
 
     private ExtractableResponse<Response> 주문_테이블_수정_요청(Long orderTableId, boolean empty) {
         String path = String.format("%s/%s/empty", API_URL, orderTableId);
-        OrderTable params = new OrderTable();
-        params.setEmpty(empty);
+        ChangeEmptyRequest params = ChangeEmptyRequest.of(empty);
 
         return 수정_요청(path, params);
     }
@@ -86,8 +87,7 @@ class TableAcceptanceTest extends AcceptanceTest {
 
     private ExtractableResponse<Response> 주문_테이블_손님_수_수정_요청(Long orderTableId, int numberOfGuests) {
         String path = String.format("%s/%s/number-of-guests", API_URL, orderTableId);
-        OrderTable params = new OrderTable();
-        params.setNumberOfGuests(numberOfGuests);
+        ChangeNumberOfGuestsRequest params = ChangeNumberOfGuestsRequest.of(numberOfGuests);
 
         return 수정_요청(path, params);
     }
@@ -100,11 +100,9 @@ class TableAcceptanceTest extends AcceptanceTest {
     }
 
     public static OrderTable 주문_테이블_등록되어_있음(int numberOfGuests, boolean empty) {
-        OrderTable orderTable = new OrderTable();
-        orderTable.setNumberOfGuests(numberOfGuests);
-        orderTable.setEmpty(empty);
+        OrderTableRequest params = OrderTableRequest.of(numberOfGuests, empty);
 
-        ExtractableResponse<Response> response = 주문_테이블_생성_요청(orderTable);
+        ExtractableResponse<Response> response = 주문_테이블_생성_요청(params);
         return response.as(OrderTable.class);
     }
 }
