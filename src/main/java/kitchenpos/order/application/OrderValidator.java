@@ -1,13 +1,16 @@
 package kitchenpos.order.application;
 
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.order.dto.OrderLineItemRequest;
-import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 @Component
 public class OrderValidator {
@@ -19,9 +22,9 @@ public class OrderValidator {
         this.menuRepository = menuRepository;
     }
 
-    public void validateCreateOrder(OrderRequest orderRequest) {
-        checkUsableOrderTable(orderRequest.getOrderTableId());
-        validateOrderItemRequests(orderRequest.getOrderLineItems());
+    public void validateCreateOrder(Order order) {
+        checkUsableOrderTable(order.getOrderTableId());
+        validateOrderItemRequests(order.getOrderLineItems());
     }
 
     private void checkUsableOrderTable(Long orderTableId) {
@@ -33,15 +36,24 @@ public class OrderValidator {
         }
     }
 
-    private void validateOrderItemRequests(List<OrderLineItemRequest> orderLineItemRequests) {
-        orderLineItemRequests.stream()
-                .map(OrderLineItemRequest::getMenuId)
-                .forEach(this::checkExistMenu);
+    private void validateOrderItemRequests(List<OrderLineItem> orderLineItems) {
+        List<Menu> menus = getMenus(orderLineItems);
+
+        orderLineItems.forEach(checkExistMenuId(menus));
     }
 
-    private void checkExistMenu(Long menuId) {
-        if (!menuRepository.existsById(menuId)) {
-            throw new IllegalArgumentException("메뉴가 존재하지 않습니다.");
-        }
+    private List<Menu> getMenus(List<OrderLineItem> orderLineItems) {
+        List<Long> menuIds = orderLineItems.stream()
+                .map(OrderLineItem::getMenuId)
+                .collect(Collectors.toList());
+
+        return menuRepository.findAllById(menuIds);
+    }
+
+    private Consumer<OrderLineItem> checkExistMenuId(List<Menu> menus) {
+        return orderLineItem -> menus.stream()
+                .filter(menu -> orderLineItem.isEqualMenuId(menu.getId()))
+                .findFirst()
+                .orElseThrow(IllegalArgumentException::new);
     }
 }

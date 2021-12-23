@@ -51,6 +51,10 @@ public class OrderLineItem {
         return new OrderLineItem(null, null, menuId, Quantity.of(quantity));
     }
 
+    public boolean isEqualMenuId(Long menuId) {
+        return this.menuId.equals(menuId);
+    }
+
     public void updateOrder(Order order) {
         this.order = order;
     }

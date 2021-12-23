@@ -7,8 +7,11 @@ import kitchenpos.menu.fixture.MenuFixture;
 import kitchenpos.menu.fixture.MenuProductFixture;
 import kitchenpos.menu_group.domain.MenuGroup;
 import kitchenpos.menu_group.fixture.MenuGroupFixture;
-import kitchenpos.order.dto.OrderLineItemRequest;
-import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.fixture.OrderFixture;
+import kitchenpos.order.fixture.OrderLineItemFixture;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.fixture.ProductFixture;
 import kitchenpos.table.domain.OrderTable;
@@ -66,14 +69,14 @@ class OrderValidatorTest {
         @Test
         void 검증_확인() {
             // given
-            OrderLineItemRequest 주문_항목 = OrderLineItemRequest.of(더블강정.getId(), 1L);
-            OrderRequest 등록_요청_데이터 = OrderRequest.of(테이블.getId(), Collections.singletonList(주문_항목));
+            OrderLineItem 주문_항목 = OrderLineItemFixture.create(1L, 더블강정.getId(), 1L);
+            Order 주문 = OrderFixture.create(1L, 테이블.getId(), OrderStatus.COOKING, 주문_항목);
 
             given(orderTableRepository.findById(any())).willReturn(Optional.of(테이블));
-            given(menuRepository.existsById(any())).willReturn(true);
+            given(menuRepository.findAllById(any())).willReturn(Collections.singletonList(더블강정));
 
             // when
-            ThrowableAssert.ThrowingCallable 검증_요청 = () -> orderValidator.validateCreateOrder(등록_요청_데이터);
+            ThrowableAssert.ThrowingCallable 검증_요청 = () -> orderValidator.validateCreateOrder(주문);
 
             // then
             assertThatNoException().isThrownBy(검증_요청);
@@ -83,13 +86,13 @@ class OrderValidatorTest {
         @Test
         void 주문_테이블이_존재하지_않음() {
             // given
-            OrderLineItemRequest 주문_항목 = OrderLineItemRequest.of(더블강정.getId(), 1L);
-            OrderRequest 등록_요청_데이터 = OrderRequest.of(테이블.getId(), Collections.singletonList(주문_항목));
+            OrderLineItem 주문_항목 = OrderLineItemFixture.create(1L, 더블강정.getId(), 1L);
+            Order 주문 = OrderFixture.create(1L, 테이블.getId(), OrderStatus.COOKING, 주문_항목);
 
             given(orderTableRepository.findById(any())).willReturn(Optional.empty());
 
             // when
-            ThrowableAssert.ThrowingCallable 검증_요청 = () -> orderValidator.validateCreateOrder(등록_요청_데이터);
+            ThrowableAssert.ThrowingCallable 검증_요청 = () -> orderValidator.validateCreateOrder(주문);
 
             // then
             assertThatThrownBy(검증_요청).isInstanceOf(IllegalArgumentException.class);
@@ -99,13 +102,13 @@ class OrderValidatorTest {
         @Test
         void 빈_테이블에_주문_요청() {
             // given
-            OrderLineItemRequest 주문_항목 = OrderLineItemRequest.of(더블강정.getId(), 1L);
-            OrderRequest 등록_요청_데이터 = OrderRequest.of(테이블.getId(), Collections.singletonList(주문_항목));
+            OrderLineItem 주문_항목 = OrderLineItemFixture.create(1L, 더블강정.getId(), 1L);
+            Order 주문 = OrderFixture.create(1L, 테이블.getId(), OrderStatus.COOKING, 주문_항목);
 
             given(orderTableRepository.findById(any())).willReturn(Optional.of(빈_테이블));
 
             // when
-            ThrowableAssert.ThrowingCallable 검증_요청 = () -> orderValidator.validateCreateOrder(등록_요청_데이터);
+            ThrowableAssert.ThrowingCallable 검증_요청 = () -> orderValidator.validateCreateOrder(주문);
 
             // then
             assertThatThrownBy(검증_요청).isInstanceOf(IllegalArgumentException.class);
@@ -115,14 +118,14 @@ class OrderValidatorTest {
         @Test
         void 주문_메뉴가_존재하지_않음() {
             // given
-            OrderLineItemRequest 주문_항목 = OrderLineItemRequest.of(더블강정.getId(), 1L);
-            OrderRequest 등록_요청_데이터 = OrderRequest.of(테이블.getId(), Collections.singletonList(주문_항목));
+            OrderLineItem 주문_항목 = OrderLineItemFixture.create(1L, 더블강정.getId(), 1L);
+            Order 주문 = OrderFixture.create(1L, 테이블.getId(), OrderStatus.COOKING, 주문_항목);
 
             given(orderTableRepository.findById(any())).willReturn(Optional.of(테이블));
-            given(menuRepository.existsById(any())).willReturn(false);
+            given(menuRepository.findAllById(any())).willReturn(Collections.emptyList());
 
             // when
-            ThrowableAssert.ThrowingCallable 검증_요청 = () -> orderValidator.validateCreateOrder(등록_요청_데이터);
+            ThrowableAssert.ThrowingCallable 검증_요청 = () -> orderValidator.validateCreateOrder(주문);
 
             // then
             assertThatThrownBy(검증_요청).isInstanceOf(IllegalArgumentException.class);

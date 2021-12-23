@@ -28,7 +28,7 @@ public class OrderService {
 
     public OrderResponse create(final OrderRequest orderRequest) {
         Order order = orderRequest.toOrder();
-        orderValidator.validateCreateOrder(orderRequest);
+        orderValidator.validateCreateOrder(order);
 
         return OrderResponse.from(orderRepository.save(order));
     }
