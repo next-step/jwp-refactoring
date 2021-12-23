@@ -3,7 +3,6 @@ package kitchenpos.menu.domain;
 import kitchenpos.fixture.MenuGroupFixture;
 import kitchenpos.fixture.MenuProductFixture;
 import kitchenpos.fixture.MenuFixture;
-import kitchenpos.menuGroup.domain.MenuGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
