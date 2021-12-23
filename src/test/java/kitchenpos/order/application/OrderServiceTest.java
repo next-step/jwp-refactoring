@@ -18,7 +18,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.menu.dao.MenuDao;
+import kitchenpos.menu.dao.MenuRepository;
 import kitchenpos.order.dao.OrderDao;
 import kitchenpos.order.dao.OrderLineItemDao;
 import kitchenpos.order.dao.OrderTableDao;
@@ -31,7 +31,7 @@ import kitchenpos.order.domain.OrderTable;
 public class OrderServiceTest {
 
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
 
     @Mock
     private OrderDao orderDao;
@@ -67,7 +67,7 @@ public class OrderServiceTest {
         
         주문.setOrderLineItems(Arrays.asList(주문_메뉴));
         
-        given(menuDao.countByIdIn(anyList())).willReturn((long) 주문.getOrderLineItems().size());
+        given(menuRepository.countByIdIn(anyList())).willReturn((long) 주문.getOrderLineItems().size());
         given(orderTableDao.findById(주문.getOrderTableId())).willReturn(Optional.of(주문_테이블));
         given(orderDao.save(주문)).willReturn(주문);
 
@@ -102,7 +102,7 @@ public class OrderServiceTest {
         미등록_메뉴_주문.setOrderLineItems(Arrays.asList(new OrderLineItem()));
 
         // when
-        when(menuDao.countByIdIn(anyList())).thenReturn(0L);
+        when(menuRepository.countByIdIn(anyList())).thenReturn(0L);
         
         // then
         assertThatThrownBy(() -> {
@@ -127,7 +127,7 @@ public class OrderServiceTest {
         
         테이블_없이_주문.setOrderLineItems(Arrays.asList(주문_메뉴));
         
-        given(menuDao.countByIdIn(anyList())).willReturn((long) 테이블_없이_주문.getOrderLineItems().size());
+        given(menuRepository.countByIdIn(anyList())).willReturn((long) 테이블_없이_주문.getOrderLineItems().size());
 
         // when
         테이블_없이_주문.setOrderTableId(null);
@@ -161,7 +161,7 @@ public class OrderServiceTest {
         
         주문.setOrderLineItems(Arrays.asList(주문_메뉴));
         
-        given(menuDao.countByIdIn(anyList())).willReturn((long) 주문.getOrderLineItems().size());
+        given(menuRepository.countByIdIn(anyList())).willReturn((long) 주문.getOrderLineItems().size());
         given(orderTableDao.findById(주문.getOrderTableId())).willReturn(Optional.of(주문_테이블));
         given(orderDao.save(주문)).willReturn(주문);
 

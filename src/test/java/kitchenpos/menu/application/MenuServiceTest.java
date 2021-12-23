@@ -18,9 +18,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.menu.dao.MenuDao;
 import kitchenpos.menu.dao.MenuGroupRepository;
 import kitchenpos.menu.dao.MenuProductDao;
+import kitchenpos.menu.dao.MenuRepository;
 import kitchenpos.menu.dao.ProductRepository;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
@@ -31,7 +31,7 @@ import kitchenpos.menu.domain.Product;
 public class MenuServiceTest {
 
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
 
     @Mock
     private MenuGroupRepository menuGroupRepository;
@@ -57,7 +57,7 @@ public class MenuServiceTest {
         메뉴.setId(1L);
         메뉴.setName("짜장면");
         메뉴.setPrice(new BigDecimal("6000"));
-        메뉴.setMenuGroupId(메뉴그룹.getId());
+        메뉴.setMenuGroup(메뉴그룹);
         
         Product 상품 = new Product();
         상품.setId(1L);
@@ -71,9 +71,9 @@ public class MenuServiceTest {
         메뉴상품.setQuantity(1L);
 
         메뉴.setMenuProducts(Arrays.asList(메뉴상품));
-        given(menuGroupRepository.existsById(메뉴.getMenuGroupId())).willReturn(true);
+        given(menuGroupRepository.existsById(메뉴.getMenuGroup().getId())).willReturn(true);
         given(productRepository.findById(메뉴상품.getProductId())).willReturn(Optional.of(상품));
-        given(menuDao.save(메뉴)).willReturn(메뉴);
+        given(menuRepository.save(메뉴)).willReturn(메뉴);
         given(menuProductDao.save(메뉴상품)).willReturn(메뉴상품);
 
         // when
@@ -131,7 +131,7 @@ public class MenuServiceTest {
         메뉴그룹_미지정_메뉴.setPrice(new BigDecimal("6000"));
         
         // when
-        메뉴그룹_미지정_메뉴.setMenuGroupId(null);
+        메뉴그룹_미지정_메뉴.setMenuGroup(new MenuGroup());
 
         // then
         assertThatThrownBy(() -> {
@@ -148,7 +148,9 @@ public class MenuServiceTest {
         메뉴.setId(1L);
         메뉴.setName("짜장면");
         메뉴.setPrice(new BigDecimal("6000"));
-        메뉴.setMenuGroupId(1L);
+        MenuGroup 메뉴그룹 = new MenuGroup();
+        메뉴그룹.setId(1L);
+        메뉴.setMenuGroup(메뉴그룹);
         
         // when
         when(menuGroupRepository.existsById(anyLong())).thenReturn(false);
@@ -169,7 +171,9 @@ public class MenuServiceTest {
         메뉴.setId(1L);
         메뉴.setName("짜장면");
         메뉴.setPrice(new BigDecimal("6000"));
-        메뉴.setMenuGroupId(1L);
+        MenuGroup 메뉴그룹 = new MenuGroup();
+        메뉴그룹.setId(1L);
+        메뉴.setMenuGroup(메뉴그룹);
         
         MenuProduct 메뉴상품 = new MenuProduct();
         메뉴상품.setSeq(1L);
@@ -198,7 +202,9 @@ public class MenuServiceTest {
         메뉴.setId(1L);
         메뉴.setName("짜장면");
         메뉴.setPrice(new BigDecimal("10000"));
-        메뉴.setMenuGroupId(1L);
+        MenuGroup 메뉴그룹 = new MenuGroup();
+        메뉴그룹.setId(1L);
+        메뉴.setMenuGroup(메뉴그룹);
         
         Product 상품 = new Product();
         상품.setId(1L);
@@ -236,7 +242,7 @@ public class MenuServiceTest {
         두번째_메뉴.setName("짬뽕");
         두번째_메뉴.setPrice(new BigDecimal("7000"));
 
-        given(menuDao.findAll()).willReturn(Arrays.asList(첫번째_메뉴, 두번째_메뉴));
+        given(menuRepository.findAll()).willReturn(Arrays.asList(첫번째_메뉴, 두번째_메뉴));
 
         // when
         List<Menu> 메뉴_목록 = menuService.list();
