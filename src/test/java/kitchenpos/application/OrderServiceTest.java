@@ -12,8 +12,9 @@ import java.util.Optional;
 import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import org.assertj.core.util.Lists;
@@ -49,7 +50,7 @@ class OrderServiceTest {
         OrderLineItem orderLineItem1 = new OrderLineItem(1L, 1L, 1L, 1);
         OrderLineItem orderLineItem2 = new OrderLineItem(2L, 1L, 2L, 1);
         List<OrderLineItem> orderLineItems = Lists.newArrayList(orderLineItem1, orderLineItem2);
-        Order order = new Order(1L, 1L, "COOKING", null, orderLineItems);
+        Order order = new Order(1L, 1L, OrderStatus.COOKING, null, orderLineItems);
         OrderTable orderTable = new OrderTable(1L, null, 2, false);
 
         given(menuDao.countByIdIn(anyList())).willReturn((long) orderLineItems.size());
@@ -62,7 +63,7 @@ class OrderServiceTest {
         // then
         assertThat(result.getId()).isEqualTo(1L);
         assertThat(result.getOrderTableId()).isEqualTo(1L);
-        assertThat(result.getOrderStatus()).isEqualTo("COOKING");
+        assertThat(result.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
         assertThat(result.getOrderedTime()).isNotNull();
         assertThat(result.getOrderLineItems()).hasSize(2);
 
@@ -80,8 +81,8 @@ class OrderServiceTest {
         OrderLineItem orderLineItem4 = new OrderLineItem(4L, 4L, 2L, 2);
         List<OrderLineItem> orderLineItems2 = Lists.newArrayList(orderLineItem3, orderLineItem4);
 
-        Order order1 = new Order(1L, 1L, "COOKING", LocalDateTime.of(2021, 12, 19, 18, 30), null);
-        Order order2 = new Order(2L, 2L, "MEAL", LocalDateTime.of(2021, 12, 19, 17, 0), null);
+        Order order1 = new Order(1L, 1L, OrderStatus.COOKING, LocalDateTime.of(2021, 12, 19, 18, 30), null);
+        Order order2 = new Order(2L, 2L, OrderStatus.MEAL, LocalDateTime.of(2021, 12, 19, 17, 0), null);
 
         given(orderDao.findAll()).willReturn(Lists.newArrayList(order1, order2));
         given(orderLineItemDao.findAllByOrderId(any())).willReturn(orderLineItems1,
@@ -94,13 +95,13 @@ class OrderServiceTest {
         assertThat(result).hasSize(2);
         assertThat(result.get(0).getId()).isEqualTo(1L);
         assertThat(result.get(0).getOrderTableId()).isEqualTo(1L);
-        assertThat(result.get(0).getOrderStatus()).isEqualTo("COOKING");
+        assertThat(result.get(0).getOrderStatus()).isEqualTo(OrderStatus.COOKING);
         assertThat(result.get(0).getOrderLineItems()).hasSize(2);
         assertThat(result.get(0).getOrderLineItems().get(0).getId()).isEqualTo(1L);
         assertThat(result.get(0).getOrderLineItems().get(1).getId()).isEqualTo(2L);
         assertThat(result.get(1).getId()).isEqualTo(2L);
         assertThat(result.get(1).getOrderTableId()).isEqualTo(2L);
-        assertThat(result.get(1).getOrderStatus()).isEqualTo("MEAL");
+        assertThat(result.get(1).getOrderStatus()).isEqualTo(OrderStatus.MEAL);
         assertThat(result.get(1).getOrderLineItems()).hasSize(2);
         assertThat(result.get(1).getOrderLineItems().get(0).getId()).isEqualTo(3L);
         assertThat(result.get(1).getOrderLineItems().get(1).getId()).isEqualTo(4L);
@@ -114,8 +115,8 @@ class OrderServiceTest {
         OrderLineItem orderLineItem1 = new OrderLineItem(1L, 1L, 1L, 1);
         OrderLineItem orderLineItem2 = new OrderLineItem(2L, 1L, 2L, 1);
         List<OrderLineItem> orderLineItems = Lists.newArrayList(orderLineItem1, orderLineItem2);
-        Order order = new Order(1L, 1L, "COOKING", null, orderLineItems);
-        Order orderForUpdate = new Order(1L, 1L, "MEAL", null, orderLineItems);
+        Order order = new Order(1L, 1L, OrderStatus.COOKING, null, orderLineItems);
+        Order orderForUpdate = new Order(1L, 1L, OrderStatus.MEAL, null, orderLineItems);
 
         given(orderDao.findById(any())).willReturn(Optional.of(order));
         given(orderLineItemDao.findAllByOrderId(1L)).willReturn(orderLineItems);
@@ -125,7 +126,7 @@ class OrderServiceTest {
 
         // then
         assertThat(result.getId()).isEqualTo(1L);
-        assertThat(result.getOrderStatus()).isEqualTo("MEAL");
+        assertThat(result.getOrderStatus()).isEqualTo(OrderStatus.MEAL);
 
     }
 
@@ -136,8 +137,8 @@ class OrderServiceTest {
         OrderLineItem orderLineItem1 = new OrderLineItem(1L, 1L, 1L, 1);
         OrderLineItem orderLineItem2 = new OrderLineItem(2L, 1L, 2L, 1);
         List<OrderLineItem> orderLineItems = Lists.newArrayList(orderLineItem1, orderLineItem2);
-        Order order = new Order(1L, 1L, "COMPLETION", null, orderLineItems);
-        Order orderForUpdate = new Order(1L, 1L, "MEAL", null, orderLineItems);
+        Order order = new Order(1L, 1L, OrderStatus.COMPLETION, null, orderLineItems);
+        Order orderForUpdate = new Order(1L, 1L, OrderStatus.MEAL, null, orderLineItems);
 
         given(orderDao.findById(any())).willReturn(Optional.of(order));
 

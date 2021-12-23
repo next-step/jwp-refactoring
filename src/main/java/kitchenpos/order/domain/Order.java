@@ -1,19 +1,44 @@
-package kitchenpos.domain;
+package kitchenpos.order.domain;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.ForeignKey;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
+@Entity
+@Table(name = "orders")
 public class Order {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @JoinColumn(name = "order_table_id", foreignKey = @ForeignKey(name = "fk_orders_order_table"))
     private Long orderTableId;
-    private String orderStatus;
+
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus;
+
     private LocalDateTime orderedTime;
+
+    @OneToMany(mappedBy = "order")
     private List<OrderLineItem> orderLineItems;
 
     public Order() {
     }
 
-    private Order(Long orderTableId, String orderStatus, LocalDateTime orderedTime,
+    public Order(Long id) {
+        this.id = id;
+    }
+
+    private Order(Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime,
         List<OrderLineItem> orderLineItems) {
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
@@ -21,7 +46,7 @@ public class Order {
         this.orderLineItems = orderLineItems;
     }
 
-    public Order(Long id, Long orderTableId, String orderStatus, LocalDateTime orderedTime,
+    public Order(Long id, Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime,
         List<OrderLineItem> orderLineItems) {
         this.id = id;
         this.orderTableId = orderTableId;
@@ -30,7 +55,11 @@ public class Order {
         this.orderLineItems = orderLineItems;
     }
 
-    public static Order of(Long orderTableId, String orderStatus, List<OrderLineItem> orderLineItems) {
+    public static Order of(Long id) {
+        return new Order(id);
+    }
+
+    public static Order of(Long orderTableId, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
         return new Order(orderTableId, orderStatus, LocalDateTime.now(), orderLineItems);
     }
 
@@ -50,11 +79,11 @@ public class Order {
         this.orderTableId = orderTableId;
     }
 
-    public String getOrderStatus() {
+    public OrderStatus getOrderStatus() {
         return orderStatus;
     }
 
-    public void setOrderStatus(final String orderStatus) {
+    public void setOrderStatus(final OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
     }
 

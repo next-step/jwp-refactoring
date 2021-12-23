@@ -8,9 +8,9 @@ import java.util.stream.Collectors;
 import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import org.springframework.stereotype.Service;
@@ -60,7 +60,7 @@ public class OrderService {
         }
 
         order.setOrderTableId(orderTable.getId());
-        order.setOrderStatus(OrderStatus.COOKING.name());
+        order.setOrderStatus(OrderStatus.COOKING);
         order.setOrderedTime(LocalDateTime.now());
 
         final Order savedOrder = orderDao.save(order);
@@ -95,8 +95,8 @@ public class OrderService {
             throw new IllegalArgumentException();
         }
 
-        final OrderStatus orderStatus = OrderStatus.valueOf(order.getOrderStatus());
-        savedOrder.setOrderStatus(orderStatus.name());
+        final OrderStatus orderStatus = order.getOrderStatus();
+        savedOrder.setOrderStatus(orderStatus);
 
         orderDao.save(savedOrder);
 

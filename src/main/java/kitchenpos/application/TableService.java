@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import kitchenpos.dao.OrderDao;
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableResponse;

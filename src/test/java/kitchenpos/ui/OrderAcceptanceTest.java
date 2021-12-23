@@ -10,8 +10,9 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
@@ -46,7 +47,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
     @Test
     void createOrder() {
         // given
-        Order order = Order.of(테이블1.getId(), "COOKING", 후라이드_양념치킨_주문_항목);
+        Order order = Order.of(테이블1.getId(), OrderStatus.COOKING, 후라이드_양념치킨_주문_항목);
 
         // when
         ExtractableResponse<Response> 주문생성_응답 = 주문_생성(order);
@@ -60,8 +61,8 @@ class OrderAcceptanceTest extends AcceptanceTest {
     @Test
     void readOrders() {
         // given
-        Order 후라이드치킨_주문 = Order.of(테이블1.getId(), "COOKING", 후라이드치킨_주문_항목);
-        Order 양념치킨_주문 = Order.of(테이블2.getId(), "COOKING", 양념치킨_주문_항목);
+        Order 후라이드치킨_주문 = Order.of(테이블1.getId(), OrderStatus.COOKING, 후라이드치킨_주문_항목);
+        Order 양념치킨_주문 = Order.of(테이블2.getId(), OrderStatus.COOKING, 양념치킨_주문_항목);
 
         후라이드치킨_주문 = 주문_생성(후라이드치킨_주문).as(Order.class);
         양념치킨_주문 = 주문_생성(양념치킨_주문).as(Order.class);
@@ -78,11 +79,11 @@ class OrderAcceptanceTest extends AcceptanceTest {
     @Test
     void changeOrderStatus() {
         // given
-        Order order = Order.of(테이블1.getId(), "COOKING", 후라이드_양념치킨_주문_항목);
+        Order order = Order.of(테이블1.getId(), OrderStatus.COOKING, 후라이드_양념치킨_주문_항목);
         Order 주문생성_응답 = 주문_생성(order).as(Order.class);
 
         // when
-        Order orderForUpdate = new Order(주문생성_응답.getId(), 테이블1.getId(), "MEAL",
+        Order orderForUpdate = new Order(주문생성_응답.getId(), 테이블1.getId(), OrderStatus.MEAL,
             주문생성_응답.getOrderedTime(), 후라이드_양념치킨_주문_항목);
 
         ExtractableResponse<Response> 주문상태_변경_응답 = 주문상태_변경(orderForUpdate);
