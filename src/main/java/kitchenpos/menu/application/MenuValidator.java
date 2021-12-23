@@ -3,11 +3,15 @@ package kitchenpos.menu.application;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu_group.domain.MenuGroupRepository;
+import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Component
 public class MenuValidator {
@@ -19,9 +23,9 @@ public class MenuValidator {
         this.productRepository = productRepository;
     }
 
+    @Transactional(readOnly = true)
     public void validateCreateMenu(MenuRequest menuRequest) {
         checkExistMenuGroup(menuRequest);
-
         checkOverPrice(menuRequest.getPrice(), menuRequest.getMenuProducts());
     }
 
@@ -32,26 +36,43 @@ public class MenuValidator {
     }
 
     private void checkOverPrice(BigDecimal requestPrice, List<MenuProductRequest> menuProductRequests) {
-        BigDecimal totalPrice = menuProductRequests.stream()
-                .map(this::getMenuProductPrice)
-                .reduce(BigDecimal::add)
-                .orElse(BigDecimal.ZERO);
+        BigDecimal totalPrice = getTotalPrice(menuProductRequests);
 
         if (requestPrice.compareTo(totalPrice) > 0) {
             throw new IllegalArgumentException("메뉴 금액이 전체 메뉴 상품 금액의 합보다 많습니다.");
         }
     }
 
-    private BigDecimal getMenuProductPrice(MenuProductRequest menuProductRequest) {
-        BigDecimal productPrice = getProductPrice(menuProductRequest.getProductId());
+    private BigDecimal getTotalPrice(List<MenuProductRequest> menuProductRequests) {
+        List<Product> products = getProducts(menuProductRequests);
 
-
-        return productPrice.multiply(BigDecimal.valueOf(menuProductRequest.getQuantity()));
+        return menuProductRequests.stream()
+                .map(getMenuProductPrice(products))
+                .reduce(BigDecimal::add)
+                .orElse(BigDecimal.ZERO);
     }
 
-    private BigDecimal getProductPrice(Long productId) {
-        return productRepository.findById(productId)
-                .orElseThrow(IllegalArgumentException::new)
-                .getPrice();
+    private List<Product> getProducts(List<MenuProductRequest> menuProductRequests) {
+        List<Long> productIds = menuProductRequests.stream()
+                .map(MenuProductRequest::getProductId)
+                .collect(Collectors.toList());
+
+        return productRepository.findAllById(productIds);
+    }
+
+    private Function<MenuProductRequest, BigDecimal> getMenuProductPrice(List<Product> products) {
+        return menuProductRequest -> {
+            Product product = findMatchProduct(products, menuProductRequest);
+            BigDecimal productPrice = product.getPrice();
+
+            return productPrice.multiply(BigDecimal.valueOf(menuProductRequest.getQuantity()));
+        };
+    }
+
+    private Product findMatchProduct(List<Product> products, MenuProductRequest menuProductRequest) {
+        return products.stream()
+                .filter(product -> product.getId().equals(menuProductRequest.getProductId()))
+                .findFirst()
+                .orElseThrow(IllegalArgumentException::new);
     }
 }

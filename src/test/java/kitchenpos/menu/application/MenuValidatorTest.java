@@ -20,7 +20,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 import java.util.Collections;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -58,7 +57,7 @@ class MenuValidatorTest {
             MenuRequest 메뉴_등록_요청_데이터 = MenuRequest.of("더블강정", BigDecimal.valueOf(32_000), 추천메뉴.getId(), Collections.singletonList(메뉴_상품));
 
             given(menuGroupRepository.existsById(any())).willReturn(true);
-            given(productRepository.findById(any(Long.TYPE))).willReturn(Optional.of(강정치킨));
+            given(productRepository.findAllById(any())).willReturn(Collections.singletonList(강정치킨));
 
             // when
             ThrowableAssert.ThrowingCallable 검증_요청 = () -> menuValidator.validateCreateMenu(메뉴_등록_요청_데이터);
@@ -91,7 +90,7 @@ class MenuValidatorTest {
             MenuRequest 메뉴_등록_요청_데이터 = MenuRequest.of("더블강정", BigDecimal.valueOf(32_000), 추천메뉴.getId(), Collections.singletonList(메뉴_상품));
 
             given(menuGroupRepository.existsById(any())).willReturn(true);
-            given(productRepository.findById(any(Long.TYPE))).willReturn(Optional.empty());
+            given(productRepository.findAllById(any())).willReturn(Collections.emptyList());
 
             // when
             ThrowableAssert.ThrowingCallable 검증_요청 = () -> menuValidator.validateCreateMenu(메뉴_등록_요청_데이터);
@@ -108,7 +107,7 @@ class MenuValidatorTest {
             MenuRequest 메뉴_등록_요청_데이터 = MenuRequest.of("더블강정", BigDecimal.valueOf(35_000), 추천메뉴.getId(), Collections.singletonList(메뉴_상품));
 
             given(menuGroupRepository.existsById(any())).willReturn(true);
-            given(productRepository.findById(any(Long.TYPE))).willReturn(Optional.of(강정치킨));
+            given(productRepository.findAllById(any())).willReturn(Collections.singletonList(강정치킨));
 
             // when
             ThrowableAssert.ThrowingCallable 검증_요청 = () -> menuValidator.validateCreateMenu(메뉴_등록_요청_데이터);
