@@ -1,7 +1,6 @@
 package kitchenpos.acceptance;
 
 import io.restassured.RestAssured;
-import kitchenpos.util.DatabaseCleanup;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,7 +18,7 @@ public class AcceptanceTest {
     private DatabaseCleanup databaseCleanup;
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         RestAssured.port = post;
         databaseCleanup.execute();
     }
