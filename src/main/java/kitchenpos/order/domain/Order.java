@@ -1,22 +1,16 @@
 package kitchenpos.order.domain;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
-import javax.persistence.CascadeType;
-import javax.persistence.Embeddable;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import kitchenpos.common.exception.Message;
@@ -51,6 +45,9 @@ public class Order {
     }
 
     private Order(Long id, OrderTable orderTable, List<OrderLineItem> orderLineItems) {
+
+        validRequireOrderTable(orderTable);
+
         this.id = id;
         this.orderTable = orderTable;
         this.orderStatus = OrderStatus.COOKING;
@@ -59,6 +56,12 @@ public class Order {
     }
 
     protected Order() {
+    }
+
+    private void validRequireOrderTable(OrderTable orderTable) {
+        if (Objects.isNull(orderTable)) {
+            throw new IllegalArgumentException(Message.ORDER_TABLE_IS_NOT_NULL.getMessage());
+        }
     }
 
     public void changeOrderStatus(final String changeOrderStatus) {

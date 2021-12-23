@@ -58,4 +58,5 @@ public class MenuProducts {
     public int hashCode() {
         return Objects.hash(menuProducts);
     }
+
 }

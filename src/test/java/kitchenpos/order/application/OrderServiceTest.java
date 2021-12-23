@@ -97,5 +97,22 @@ public class OrderServiceTest {
         // then
         verify(orderDao, atMostOnce()).save(any());
     }
+    
+    @Test 
+    void 주문상품의_숫자와_메뉴에_등록된_숫자가_다른경우_예외() {
+        // given
+        OrderTable 첫번째_주문테이블 = 첫번째_주문테이블();
+        Menu 메뉴_양념치킨 = 메뉴_양념치킨();
+
+        // mocking
+        when(menuDao.countByIdIn(any(List.class))).thenReturn(3L);
+
+        Assertions.assertThatThrownBy(() -> {
+            orderService.create(
+                new OrderRequest(첫번째_주문테이블.getId(),
+                    asList(new OrderLineRequest(메뉴_양념치킨.getId(), 1L))));
+            }).isInstanceOf(IllegalArgumentException.class)
+            .hasMessage(Message.ORDER_SIZE_IS_NOT_EQUALS.getMessage());
+    }
 
 }

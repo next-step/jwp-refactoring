@@ -78,6 +78,9 @@ public class Menu {
     public MenuProducts getMenuProducts() {
         return menuProducts;
     }
+    public List<MenuProduct> getProducts(){
+        return menuProducts.getMenuProducts();
+    }
 
     @Override
     public boolean equals(Object o) {

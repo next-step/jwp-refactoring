@@ -42,8 +42,7 @@ class MenuTest {
             Assertions.assertThat(menu.getMenuGroup().getName()).isEqualTo(메뉴그룹_한마리.getName());
             Assertions.assertThat(menu.getName()).isEqualTo("양념치킨");
             Assertions.assertThat(menu.getPrice().getPrice()).isEqualTo(new BigDecimal("18000"));
-            Assertions.assertThat(menu.getMenuProducts().getMenuProducts())
-                .contains(양념치킨_1개, 콜라_1개);
+            Assertions.assertThat(menu.getProducts()).contains(양념치킨_1개, 콜라_1개);
         });
     }
 

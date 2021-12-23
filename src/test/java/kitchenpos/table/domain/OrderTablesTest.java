@@ -1,5 +1,6 @@
 package kitchenpos.table.domain;
 
+import static common.OrderTableFixture.단체지정_두번째_주문테이블;
 import static common.OrderTableFixture.단체지정_첫번째_주문테이블;
 import static common.OrderTableFixture.두번째_주문테이블;
 import static common.OrderTableFixture.첫번째_주문테이블;
@@ -38,7 +39,7 @@ class OrderTablesTest {
     @Test
     void 주문테이블_생성() {
         // given
-        List<OrderTable> orderTables = Arrays.asList(첫번째_주문테이블(),두번째_주문테이블());
+        List<OrderTable> orderTables = Arrays.asList(단체지정_첫번째_주문테이블(), 단체지정_두번째_주문테이블());
 
         // when
         OrderTables orderTable = OrderTables.of(orderTables);

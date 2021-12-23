@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.List;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.domain.TableGroupDao;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -22,7 +21,7 @@ class OrderDaoTest {
     @Test
     void id값으로_주문상태확인() {
         // when
-        OrderStatus orderStatus = orderDao.findByOrderTableId(1L);
+        OrderStatus orderStatus = orderDao.findByOrderTableId(9L);
 
         // then
         assertThat(orderStatus).isEqualTo(OrderStatus.COOKING);

@@ -9,7 +9,9 @@ public enum Message {
     ORDER_TABLE_IS_NOT_EMPTY_TABLE_OR_ALREADY_GROUP("빈 테이블이 아니거나 이미 단체지정이 된 테이블 입니다."),
     ORDER_TABLES_IS_SMALL_THAN_MIN_TABLE_SIZE("주문 테이블이 최소크기보다 크거나 같아야합니다."),
     ORDER_STATUS_IS_NOT_COMPLETION("계산이 완료되어 변경할 수 없습니다."),
-    ORDER_SIZE_IS_NOT_EQUALS("주문상품의 개수가 올바르지 않습니다.")
+    ORDER_SIZE_IS_NOT_EQUALS("주문상품의 개수가 올바르지 않습니다."),
+    ORDER_TABLE_IS_NOT_NULL("주문 테이블은 필수입니다."),
+    ORDER_LINE_ITEMS_IS_NOT_NULL("주문시_주문_상품은_필수입니다.")
     ;
 
 

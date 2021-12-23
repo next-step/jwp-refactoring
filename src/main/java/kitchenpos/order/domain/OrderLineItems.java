@@ -7,6 +7,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
+import kitchenpos.common.exception.Message;
 import org.springframework.util.CollectionUtils;
 
 @Embeddable
@@ -17,7 +18,7 @@ public class OrderLineItems {
 
     public static OrderLineItems of(List<OrderLineItem> orderLineItems) {
         if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(Message.ORDER_LINE_ITEMS_IS_NOT_NULL.getMessage());
         }
         return new OrderLineItems(orderLineItems);
     }
@@ -28,7 +29,6 @@ public class OrderLineItems {
 
     protected OrderLineItems() {
     }
-
 
     public List<OrderLineItem> getList() {
         return Collections.unmodifiableList(orderLineItems);
