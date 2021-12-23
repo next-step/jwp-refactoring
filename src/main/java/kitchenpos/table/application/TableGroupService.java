@@ -57,7 +57,7 @@ public class TableGroupService {
         TableGroup tableGroup = tableGroupDao.findById(tableGroupId)
             .orElseThrow(NoResultDataException::new);
 
-        List<OrderStatus> savedOrderStatus = orderDao.findByOrderTableIn(tableGroup.getOrderTables());
+        List<OrderStatus> savedOrderStatus = orderDao.findOrderStatusByOrderTableIn(tableGroup.getOrderTableIds());
         OrderStatus.validStatusIsCookingOrMealThrow(savedOrderStatus);
 
         tableGroup.unGroup();

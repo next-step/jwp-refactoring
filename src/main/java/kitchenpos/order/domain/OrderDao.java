@@ -1,7 +1,6 @@
 package kitchenpos.order.domain;
 
 import java.util.List;
-import kitchenpos.table.domain.OrderTable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -10,5 +9,6 @@ public interface OrderDao extends JpaRepository<Order, Long> {
     @Query("SELECT o.orderStatus From Order o where o.orderTable.id = :id")
     OrderStatus findByOrderTableId(Long id);
 
-    List<OrderStatus> findByOrderTableIn(List<OrderTable> orderTables);
+    @Query("SELECT o.orderStatus FROM Order o WHERE o.orderTable.id in :orderTableIds")
+    List<OrderStatus> findOrderStatusByOrderTableIn(List<Long> orderTableIds);
 }

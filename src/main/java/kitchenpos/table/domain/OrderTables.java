@@ -73,6 +73,12 @@ public class OrderTables {
         return orderTables.size();
     }
 
+    public List<Long> getIds() {
+        return orderTables.stream()
+            .map(OrderTable::getId)
+            .collect(Collectors.toList());
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -89,4 +95,5 @@ public class OrderTables {
     public int hashCode() {
         return Objects.hash(orderTables);
     }
+
 }

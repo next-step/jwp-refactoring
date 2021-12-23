@@ -46,12 +46,12 @@ public class TableGroup {
         return id;
     }
 
-    public List<OrderTable> getOrderTable() {
+    public List<OrderTable> getOrderTables() {
         return orderTables.getList();
     }
 
-    public List<OrderTable> getOrderTables() {
-        return orderTables.getList();
+    public List<Long> getOrderTableIds() {
+        return orderTables.getIds();
     }
 
     public LocalDateTime getCreatedDate() {
