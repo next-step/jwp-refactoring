@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -35,7 +36,7 @@ class MenuGroupAcceptanceTest extends AcceptanceTest {
 
         ExtractableResponse<Response> response = 메뉴_그룹_목록_조회_요청();
         메뉴_그룹_목록_조회됨(response);
-        메뉴_그룹_목록_일치됨(response, Arrays.asList("인기메뉴", "타임세일메뉴"));
+        메뉴_그룹_목록_일치됨(response, Arrays.asList(인기메뉴, 타임세일메뉴));
     }
 
     private ExtractableResponse<Response> 메뉴_그룹_등록_요청(MenuGroup menuGroup) {
@@ -54,8 +55,14 @@ class MenuGroupAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    private void 메뉴_그룹_목록_일치됨(ExtractableResponse<Response> response, List<String> excepted) {
+    private void 메뉴_그룹_목록_일치됨(ExtractableResponse<Response> response, List<MenuGroup> excepted) {
         assertThat(response.jsonPath().getList("name"))
-                .isEqualTo(excepted);
+                .isEqualTo(getMenuGroupNames(excepted));
+    }
+
+    private List<String> getMenuGroupNames(List<MenuGroup> excepted) {
+        return excepted.stream()
+                .map(MenuGroup::getName)
+                .collect(Collectors.toList());
     }
 }

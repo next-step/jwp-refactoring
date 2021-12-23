@@ -13,7 +13,7 @@ public class TableGroup {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
     private LocalDateTime createdDate;
-    @OneToMany(mappedBy = "tableGroup", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "tableGroup", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderTable> orderTables;
 
     public TableGroup() {

@@ -1,8 +1,9 @@
 package kitchenpos.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
@@ -11,9 +12,18 @@ public class MenuGroup {
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
+
     private String name;
 
+    @OneToMany(mappedBy = "menuGroup", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Menu> menus = new ArrayList<>();
+
     public MenuGroup() {
+    }
+
+    public MenuGroup(Long id, String name) {
+        this.id = id;
+        this.name = name;
     }
 
     public MenuGroup(String name) {
@@ -34,5 +44,9 @@ public class MenuGroup {
 
     public String getName() {
         return name;
+    }
+
+    public List<Menu> getMenus() {
+        return menus;
     }
 }
