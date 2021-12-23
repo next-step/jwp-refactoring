@@ -1,6 +1,6 @@
-package kitchenpos.acceptance;
+package kitchenpos.ordertable.acceptance;
 
-import static kitchenpos.acceptance.step.TableAcceptanceStep.*;
+import static kitchenpos.ordertable.acceptance.step.TableAcceptanceStep.*;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
