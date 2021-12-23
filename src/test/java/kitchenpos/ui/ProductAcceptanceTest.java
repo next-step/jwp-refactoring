@@ -1,24 +1,16 @@
 package kitchenpos.ui;
 
 import static kitchenpos.ui.ProductAcceptanceTestHelper.*;
-import static org.assertj.core.api.Assertions.*;
 
-import java.math.BigDecimal;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.Product;
 
 class ProductAcceptanceTest extends AcceptanceTest {
 

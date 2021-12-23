@@ -2,7 +2,6 @@ package kitchenpos.ui;
 
 import static org.assertj.core.api.Assertions.*;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,12 +14,13 @@ import io.restassured.response.Response;
 import kitchenpos.domain.MenuGroup;
 
 public class MenuGroupAcceptanceTestHelper {
-    private MenuGroupAcceptanceTestHelper() {}
+    private MenuGroupAcceptanceTestHelper() {
+    }
 
-// ###
-//     GET {{host}}/api/menu-groups
-//
-// ###
+    // ###
+    //     GET {{host}}/api/menu-groups
+    //
+    // ###
 
     public static ExtractableResponse<Response> 메뉴_그룹_생성_요청(Map<String, String> params) {
         return RestAssured
