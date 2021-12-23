@@ -12,7 +12,6 @@ import org.springframework.stereotype.Repository;
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -62,9 +61,6 @@ public class JdbcTemplateTableGroupDao implements TableGroupDao {
     }
 
     private TableGroup toEntity(final ResultSet resultSet) throws SQLException {
-        final TableGroup entity = new TableGroup();
-        entity.setId(resultSet.getLong(KEY_COLUMN_NAME));
-        entity.setCreatedDate(resultSet.getObject("created_date", LocalDateTime.class));
-        return entity;
+        return TableGroup.from(resultSet);
     }
 }
