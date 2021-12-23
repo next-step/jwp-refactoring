@@ -48,6 +48,10 @@ public class MenuProduct {
         this.quantity = quantity;
     }
 
+    public void assignMenu(Menu menu) {
+        this.menu = menu;
+    }
+
     public Long getSeq() {
         return seq;
     }
@@ -84,10 +88,5 @@ public class MenuProduct {
     @Override
     public int hashCode() {
         return Objects.hash(getSeq());
-    }
-
-
-    public void assignMenu(Menu menu) {
-        this.menu = menu;
     }
 }

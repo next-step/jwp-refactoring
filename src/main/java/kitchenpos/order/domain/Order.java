@@ -79,6 +79,18 @@ public class Order {
             .forEach(orderLineItem -> orderLineItem.assignOrder(this));
     }
 
+    private void assignTable(OrderTable orderTable) {
+        validateNotEmptyTable(orderTable);
+        this.orderTable = orderTable;
+        orderTable.addOrder(this);
+    }
+
+    private void validateNotEmptyTable(OrderTable orderTable) {
+        if (orderTable.isOrderClose()) {
+            throw new IllegalArgumentException(ERROR_MESSAGE_EMPTY_TABLE_CANNOT_ORDER);
+        }
+    }
+
     public boolean isCompleteStatus() {
         return orderStatus == OrderStatus.COMPLETION;
     }
@@ -91,17 +103,6 @@ public class Order {
         this.orderStatus = changeStatus;
     }
 
-    private void assignTable(OrderTable orderTable) {
-        validateNotEmptyTable(orderTable);
-        this.orderTable = orderTable;
-        orderTable.addOrder(this);
-    }
-
-    private void validateNotEmptyTable(OrderTable orderTable) {
-        if (orderTable.isOrderClose()) {
-            throw new IllegalArgumentException(ERROR_MESSAGE_EMPTY_TABLE_CANNOT_ORDER);
-        }
-    }
 
     public OrderTable getOrderTable() {
         return orderTable;

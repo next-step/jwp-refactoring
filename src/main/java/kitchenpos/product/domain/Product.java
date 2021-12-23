@@ -36,6 +36,12 @@ public class Product {
         this.price = price;
     }
 
+    private void validatePrice(BigDecimal price) {
+        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
+            throw new PriceValueNotAcceptableException();
+        }
+    }
+
     public Long getId() {
         return id;
     }
@@ -46,12 +52,6 @@ public class Product {
 
     public BigDecimal getPrice() {
         return price;
-    }
-
-    private void validatePrice(BigDecimal price) {
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new PriceValueNotAcceptableException();
-        }
     }
 
     @Override

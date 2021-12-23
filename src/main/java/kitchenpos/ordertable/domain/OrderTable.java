@@ -68,34 +68,6 @@ public class OrderTable {
         this.orderClose = orderClose;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public TableGroup getTableGroup() {
-        return tableGroup;
-    }
-
-    public int getNumberOfGuests() {
-        return numberOfGuests;
-    }
-
-    public List<Order> getOrders() {
-        return orders;
-    }
-
-    public boolean isOrderClose() {
-        return orderClose;
-    }
-
-    public void changeOrderClose(final boolean orderClose) {
-        this.orderClose = orderClose;
-    }
-
-    public void groupIn(TableGroup tableGroup) {
-        this.tableGroup = tableGroup;
-    }
-
     public void updateEmpty(boolean updataEmpty) {
         if (Objects.nonNull(tableGroup)) {
             throw new IllegalArgumentException(ERROR_MESSAGE_TABLE_IN_GROUP);
@@ -128,8 +100,36 @@ public class OrderTable {
         this.numberOfGuests = numberOfGuests;
     }
 
+    public void groupIn(TableGroup tableGroup) {
+        this.tableGroup = tableGroup;
+    }
+
     public void unGroup() {
         this.tableGroup = null;
+    }
+
+    public void changeOrderClose(final boolean orderClose) {
+        this.orderClose = orderClose;
+    }
+
+    public boolean isOrderClose() {
+        return orderClose;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public TableGroup getTableGroup() {
+        return tableGroup;
+    }
+
+    public int getNumberOfGuests() {
+        return numberOfGuests;
+    }
+
+    public List<Order> getOrders() {
+        return orders;
     }
 
     @Override

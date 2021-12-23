@@ -61,6 +61,12 @@ public class Menu {
         changeMenuProducts(menuProducts);
     }
 
+    private void validatePrice(BigDecimal price) {
+        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
+            throw new PriceValueNotAcceptableException();
+        }
+    }
+
     private void changeMenuProducts(List<MenuProduct> inputMenuProducts) {
         for (MenuProduct menuProduct : inputMenuProducts) {
             menuProduct.assignMenu(this);
@@ -88,12 +94,6 @@ public class Menu {
         return menuProducts.getMenuProducts();
     }
 
-    private void validatePrice(BigDecimal price) {
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new PriceValueNotAcceptableException();
-        }
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -112,5 +112,4 @@ public class Menu {
     public int hashCode() {
         return Objects.hash(getId());
     }
-    
 }

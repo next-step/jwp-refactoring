@@ -37,6 +37,10 @@ public class OrderLineItem {
         this.quantity = quantity;
     }
 
+    public void assignOrder(Order order) {
+        this.order = order;
+    }
+
     public Long getSeq() {
         return seq;
     }
@@ -70,10 +74,5 @@ public class OrderLineItem {
     @Override
     public int hashCode() {
         return Objects.hash(getSeq());
-    }
-
-
-    public void assignOrder(Order order) {
-        this.order = order;
     }
 }
