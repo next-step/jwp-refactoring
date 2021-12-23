@@ -92,35 +92,7 @@ class TableServiceTest {
         Assertions.assertThat(savedOrderTable.getNumberOfGuests())
             .isEqualTo(changeOrderTable.getNumberOfGuests());
     }
-
-    @DisplayName("변경 요청 방문 손님 수는 0 이상 이어야 한다.")
-    @Test
-    void changeNumberOfGuests_exception1() {
-        //given
-        Long orderTableId = 1L;
-
-        //when, then
-        Assertions.assertThatThrownBy(
-                () -> tableService.changeNumberOfGuests(orderTableId,
-                    TableTestFixtures.convertToOrderTableRequest(new OrderTable(-1))))
-            .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("주문종료 상태의 테이블은 방문 손님 수를 변경할 수 없다.")
-    @Test
-    void changeNumberOfGuests_exception2() {
-        //given
-        OrderTable orderTable = new OrderTable(1L, 0, true);
-        TableTestFixtures.특정_주문테이블_조회_모킹(orderTableDao, orderTable);
-
-        //when, then
-        OrderTable changeOrderTable = new OrderTable(6);
-        Assertions.assertThatThrownBy(
-                () -> tableService.changeNumberOfGuests(orderTable.getId(),
-                    TableTestFixtures.convertToOrderTableRequest(changeOrderTable)))
-            .isInstanceOf(IllegalArgumentException.class);
-    }
-
+    
     private void 테이블목록_검증(List<OrderTableResponse> findOrderTables, List<OrderTable> orderTables) {
         List<Long> findOrderTableIds = findOrderTables.stream()
             .map(OrderTableResponse::getId)

@@ -1,7 +1,6 @@
 package kitchenpos.menu.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -75,19 +74,6 @@ class MenuServiceTest {
 
         //then
         assertThat(menuResponse.getName()).isEqualTo(menu.getName());
-    }
-
-    @DisplayName("메뉴 가격은 0 이상이어야 한다.")
-    @Test
-    void create_exception1() {
-        //given
-        List<MenuProduct> menuProducts = Arrays.asList(
-            new MenuProduct(타코야끼, 3L),
-            new MenuProduct(뿌링클, 1L));
-
-        //when, then
-        assertThatThrownBy(() -> new Menu("타코야끼와 뿌링클", BigDecimal.valueOf(-1), 추천메뉴,
-            menuProducts));
     }
 
     @DisplayName("메뉴 목록을 조회할 수 있다.")

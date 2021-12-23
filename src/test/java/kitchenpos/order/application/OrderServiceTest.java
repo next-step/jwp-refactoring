@@ -1,11 +1,9 @@
 package kitchenpos.order.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -82,52 +80,6 @@ class OrderServiceTest {
         assertThat(savedOrder.getId()).isEqualTo(expectedOrder.getId());
     }
 
-    @DisplayName("주문 항목은 1개 이상이어야 한다.")
-    @Test
-    void create_exception1() {
-        //given
-        OrderTable orderTable = new OrderTable(1L, 6, false);
-        List<OrderLineItem> orderLineItems = new ArrayList<>();
-        OrderRequest order = OrderTestFixtures.convertToOrderRequest(
-            new Order(orderTable, LocalDateTime.now(), orderLineItems));
-
-        // when, then
-        assertThatThrownBy(() -> orderService.create(order))
-            .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("중복된 메뉴가 존재하면 안된다.")
-    @Test
-    void create_exception2() {
-        //given
-        OrderTable orderTable = new OrderTable(1L, 6, false);
-        List<OrderLineItem> orderLineItems = Arrays.asList(
-            new OrderLineItem(혼술세트, 1),
-            new OrderLineItem(이달의메뉴, 3));
-        OrderRequest order = OrderTestFixtures.convertToOrderRequest(
-            new Order(orderTable, LocalDateTime.now(), orderLineItems));
-
-        // when, then
-        assertThatThrownBy(() -> orderService.create(order))
-            .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("주문종료 상태의 테이블은 주문할 수 없다.")
-    @Test
-    void create_exception3() {
-        //given
-        List<OrderLineItem> orderLineItems = Arrays.asList(new OrderLineItem(혼술세트, 1));
-        OrderRequest requestOrder = new OrderRequest(
-            1L, OrderTestFixtures.convertToOrderLineItemRequests(orderLineItems));
-
-        OrderTable expectedOrderTable = new OrderTable(1L, 6, true);
-        TableTestFixtures.특정_주문테이블_조회_모킹(tableService, expectedOrderTable);
-
-        // when, then
-        assertThatThrownBy(() -> orderService.create(requestOrder))
-            .isInstanceOf(IllegalArgumentException.class);
-    }
-
     @DisplayName("주문 목록을 조회할 수 있다.")
     @Test
     void list() {
@@ -173,24 +125,6 @@ class OrderServiceTest {
 
         //then
         assertThat(savedOrder.getOrderStatus()).isEqualTo(changeOrder.getOrderStatus());
-    }
-
-    @DisplayName("계산 완료된 주문 상태는 변경할 수 없다.")
-    @Test
-    void changeOrderStatus_exception() {
-        // given
-        OrderTable orderTable = new OrderTable(1L, 6, false);
-        List<OrderLineItem> orderLineItems = Arrays.asList(
-            new OrderLineItem(혼술세트, 1));
-
-        Order order = new Order(1L, orderTable, OrderStatus.COMPLETION,
-            LocalDateTime.now(), orderLineItems);
-        OrderTestFixtures.특정_주문_조회_모킹(orderDao, order);
-
-        //when
-        OrderRequest changeOrder = new OrderRequest(OrderStatus.MEAL);
-        assertThatThrownBy(() -> orderService.changeOrderStatus(order.getId(), changeOrder))
-            .isInstanceOf(IllegalArgumentException.class);
     }
 
     private void 주문목록_검증(List<OrderResponse> findOrders, List<Order> orders) {
