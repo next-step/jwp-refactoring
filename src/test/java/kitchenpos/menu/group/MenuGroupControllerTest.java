@@ -2,6 +2,7 @@ package kitchenpos.menu.group;
 
 import kitchenpos.menu.group.domain.MenuGroup;
 import kitchenpos.menu.group.dto.MenuGroupRequest;
+import kitchenpos.menu.group.dto.MenuGroupResponse;
 import kitchenpos.menu.group.ui.MenuGroupController;
 import kitchenpos.utils.ControllerTest;
 import org.junit.jupiter.api.DisplayName;
@@ -34,8 +35,8 @@ public class MenuGroupControllerTest extends ControllerTest {
         final String menuGroupName = "중화요리";
         MenuGroupRequest menuGroupRequest = new MenuGroupRequest();
         ReflectionTestUtils.setField(menuGroupRequest, "name", menuGroupName);
-        MenuGroup menuGroup = menuGroupRequest.toEntity();
-        when(menuGroupService.create(any())).thenReturn(menuGroup);
+        MenuGroupResponse menuGroupResponse = MenuGroupResponse.of(menuGroupRequest.toEntity());
+        when(menuGroupService.create(any())).thenReturn(menuGroupResponse);
 
         //when
         ResultActions resultActions = post("/api/menu-groups", menuGroupRequest);
@@ -51,7 +52,7 @@ public class MenuGroupControllerTest extends ControllerTest {
         //given
         MenuGroup 중화요리 = MenuGroup.create("중화요리");
         MenuGroup 일식 = MenuGroup.create("일식");
-        List<MenuGroup> 메뉴리스트 = Arrays.asList(중화요리, 일식);
+        List<MenuGroupResponse> 메뉴리스트 = MenuGroupResponse.ofList(Arrays.asList(중화요리, 일식));
         when(menuGroupService.list()).thenReturn(메뉴리스트);
 
         //when

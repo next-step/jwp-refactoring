@@ -6,6 +6,7 @@ import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.menu.group.domain.MenuGroup;
 import kitchenpos.menu.group.domain.MenuGroupRepository;
 import kitchenpos.menu.group.dto.MenuGroupRequest;
+import kitchenpos.menu.group.dto.MenuGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -43,7 +44,7 @@ public class MenuGroupServiceTest {
         when(menuGroupRepository.save(any())).thenReturn(menuGroup);
 
         //when
-        MenuGroup savedMenuGroup = menuGroupService.create(menuGroupRequest);
+        MenuGroupResponse savedMenuGroup = menuGroupService.create(menuGroupRequest);
 
         //then
         assertThat(savedMenuGroup).isNotNull();
@@ -66,12 +67,12 @@ public class MenuGroupServiceTest {
         when(menuGroupRepository.findAll()).thenReturn(menuGroups);
 
         //when
-        List<MenuGroup> findMenuGroups = menuGroupService.list();
+        List<MenuGroupResponse> findMenuGroups = menuGroupService.list();
 
         //then
         assertThat(findMenuGroups).isNotEmpty();
         assertThat(findMenuGroups.size()).isEqualTo(2);
-        assertThat(findMenuGroups).extracting(MenuGroup::getName).containsExactly("중화요리", "파스타");
+        assertThat(findMenuGroups).extracting(MenuGroupResponse::getName).containsExactly("중화요리", "파스타");
     }
 
 }
