@@ -21,7 +21,7 @@ public class OrderTableValidator {
     }
 
     public void validateHasProgressOrder(OrderTable orderTable) {
-        List<Order> orderList = orderRepository.findByOrderTableAndOrderStatusIn(orderTable, PROGRESSING_ORDER_STATUSES);
+        List<Order> orderList = orderRepository.findByOrderTableIdAndOrderStatusIn(orderTable.getId(), PROGRESSING_ORDER_STATUSES);
         if (!orderList.isEmpty()) {
             throw new IllegalArgumentException("주문이 진행되어 테이블 비움 상태를 변경할 수 없습니다");
         }

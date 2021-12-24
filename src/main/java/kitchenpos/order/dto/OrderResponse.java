@@ -27,7 +27,7 @@ public class OrderResponse {
     }
 
     public static OrderResponse of(Order order) {
-        return new OrderResponse(order.getId(), order.getOrderTable().getId(), order.getOrderStatus(), order.getOrderedTime(), OrderLineItemResponse.ofList(order.getOrderLineItems()));
+        return new OrderResponse(order.getId(), order.getId(), order.getOrderStatus(), order.getOrderedTime(), OrderLineItemResponse.ofList(order.getOrderLineItems()));
     }
 
     public static List<OrderResponse> ofList(List<Order> orders) {

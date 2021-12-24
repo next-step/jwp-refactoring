@@ -12,7 +12,6 @@ import kitchenpos.order.exception.OrderNotFoundException;
 import kitchenpos.order.exception.OrderTableNotFoundException;
 import kitchenpos.product.domain.Product;
 import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.domain.OrderTableRepository;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -30,6 +29,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 
 @ExtendWith(MockitoExtension.class)
 public class OrderServiceTest {
@@ -39,7 +40,7 @@ public class OrderServiceTest {
     @Mock
     private MenuRepository menuRepository;
     @Mock
-    private OrderTableRepository orderTableRepository;
+    private OrderValidator orderValidator;
     @InjectMocks
     private OrderService orderService;
 
@@ -66,11 +67,11 @@ public class OrderServiceTest {
             OrderRequest orderRequest = new OrderRequest(orderTable.getId(), orderLineItemRequests);
 
             List<OrderLineItem> orderLineItems = new ArrayList<>();
-            Order expectedOrder = new Order(1L, orderTable, OrderStatus.COOKING, orderLineItems);
+            Order expectedOrder = new Order(1L, orderTable.getId(), OrderStatus.COOKING, orderLineItems);
             orderLineItems.add(new OrderLineItem(expectedOrder, 커플세트.getId(), orderLineItemRequest1.getQuantity()));
             orderLineItems.add(new OrderLineItem(expectedOrder, 혼밥세트.getId(), orderLineItemRequest2.getQuantity()));
 
-            given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(orderTable));
+            doNothing().when(orderValidator).validateEmptyTable(orderTable.getId());
             given(menuRepository.findById(anyLong())).willReturn(Optional.of(커플세트), Optional.of(혼밥세트));
             given(orderRepository.save(any(Order.class))).willReturn(expectedOrder);
 
@@ -107,7 +108,7 @@ public class OrderServiceTest {
             List<OrderLineItemRequest> orderLineItemRequests = Arrays.asList(orderLineItemRequest1, orderLineItemRequest2);
             OrderRequest orderRequest = new OrderRequest(orderTable.getId(), orderLineItemRequests);
 
-            given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(orderTable));
+            doNothing().when(orderValidator).validateEmptyTable(orderTable.getId());
             given(menuRepository.findById(anyLong())).willReturn(Optional.empty());
 
             // when
@@ -127,7 +128,7 @@ public class OrderServiceTest {
             List<OrderLineItemRequest> orderLineItemRequests = Arrays.asList(orderLineItemRequest1, orderLineItemRequest2);
             OrderRequest orderRequest = new OrderRequest(orderTable.getId(), orderLineItemRequests);
 
-            given(orderTableRepository.findById(anyLong())).willReturn(Optional.empty());
+            doThrow(OrderTableNotFoundException.class).when(orderValidator).validateEmptyTable(orderTable.getId());
 
             // when
             ThrowableAssert.ThrowingCallable callable = () -> orderService.create(orderRequest);
@@ -147,7 +148,7 @@ public class OrderServiceTest {
             List<OrderLineItemRequest> orderLineItemRequests = Arrays.asList(orderLineItemRequest1, orderLineItemRequest2);
             OrderRequest orderRequest = new OrderRequest(orderTable.getId(), orderLineItemRequests);
 
-            given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(orderTable));
+            doThrow(IllegalArgumentException.class).when(orderValidator).validateEmptyTable(orderTable.getId());
 
             // when
             ThrowableAssert.ThrowingCallable callable = () -> orderService.create(orderRequest);
@@ -165,7 +166,7 @@ public class OrderServiceTest {
         void testChangeOrderStatus() {
             // given
             OrderRequest requestOrder = new OrderRequest(OrderStatus.COMPLETION);
-            Order savedOrder = new Order(1L, new OrderTable(), OrderStatus.COOKING, TEST_CREATED_AT, Collections.emptyList());
+            Order savedOrder = new Order(1L, 1L, OrderStatus.COOKING, TEST_CREATED_AT, Collections.emptyList());
 
             given(orderRepository.findById(anyLong())).willReturn(Optional.of(savedOrder));
 
@@ -181,7 +182,7 @@ public class OrderServiceTest {
         void hasSavedOrder() {
             // given
             OrderRequest requestOrder = new OrderRequest(OrderStatus.COMPLETION);
-            Order savedOrder = new Order(1L, new OrderTable(), OrderStatus.COOKING, TEST_CREATED_AT, Collections.emptyList());
+            Order savedOrder = new Order(1L, 1L, OrderStatus.COOKING, TEST_CREATED_AT, Collections.emptyList());
 
             given(orderRepository.findById(anyLong())).willReturn(Optional.empty());
 
@@ -197,7 +198,7 @@ public class OrderServiceTest {
         void canNotChangeWhenCompleteStatus() {
             // given
             OrderRequest requestOrder = new OrderRequest(OrderStatus.MEAL);
-            Order savedOrder = new Order(1L, new OrderTable(), OrderStatus.COMPLETION, TEST_CREATED_AT, Collections.emptyList());
+            Order savedOrder = new Order(1L, 1L, OrderStatus.COMPLETION, TEST_CREATED_AT, Collections.emptyList());
             given(orderRepository.findById(anyLong())).willReturn(Optional.of(savedOrder));
 
             // when
@@ -213,7 +214,7 @@ public class OrderServiceTest {
     void testList() {
         // given
         List<OrderLineItem> orderLineItems = Collections.emptyList();
-        Order order = new Order(1L, new OrderTable(), OrderStatus.COOKING, TEST_CREATED_AT, orderLineItems);
+        Order order = new Order(1L, 1L, OrderStatus.COOKING, TEST_CREATED_AT, orderLineItems);
         List<Order> expectedOrders = Arrays.asList(order);
 
         given(orderRepository.findAll()).willReturn(expectedOrders);

@@ -8,22 +8,16 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mockito;
 
-import java.util.Arrays;
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doThrow;
 
 public class OrderTableTest {
-    private OrderRepository orderRepository;
     private OrderTableValidator orderTableValidator;
 
     @BeforeEach
     void setUp() {
-        orderRepository = Mockito.mock(OrderRepository.class);
-        orderTableValidator = new OrderTableValidator(orderRepository);;
+        orderTableValidator = Mockito.mock(OrderTableValidator.class);
     }
 
     @DisplayName("손님의 수를 변경한다")
@@ -45,6 +39,7 @@ public class OrderTableTest {
     void testCantChangeNumberOfGuest() {
         // given
         OrderTable orderTable = new OrderTable(3, true);
+        doThrow(IllegalArgumentException.class).when(orderTableValidator).validateChangeNumberOfGuests(orderTable);
 
         // when
         ThrowableAssert.ThrowingCallable callable = () -> orderTable.changeNumberOfGuests(orderTable.getNumberOfGuests(), orderTableValidator);
@@ -72,8 +67,7 @@ public class OrderTableTest {
     void whenOrderedThenCanNotChangeEmpty() {
         // given
         OrderTable orderTable = new OrderTable();
-        given(orderRepository.findByOrderTableAndOrderStatusIn(any(OrderTable.class), any(List.class)))
-                .willReturn(Arrays.asList(new Order()));
+        doThrow(IllegalArgumentException.class).when(orderTableValidator).validateHasProgressOrder(orderTable);
 
         // when
         ThrowableAssert.ThrowingCallable callable = () -> orderTable.changeEmptyStatus(true, orderTableValidator);

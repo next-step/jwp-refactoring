@@ -11,8 +11,7 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne
-    private OrderTable orderTable;
+    private Long orderTableId;
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
     private LocalDateTime orderedTime = LocalDateTime.now();
@@ -22,24 +21,24 @@ public class Order {
     public Order() {
     }
 
-    public Order(Long id, OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
-        this(id, orderTable, orderStatus, orderLineItems);
+    public Order(Long id, Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
+        this(id, orderTableId, orderStatus, orderLineItems);
         this.orderedTime = orderedTime;
     }
 
-    public Order(Long id, OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
-        this(orderTable, orderLineItems);
+    public Order(Long id, Long orderTableId, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
+        this(orderTableId, orderLineItems);
         this.orderStatus = orderStatus;
         this.id = id;
     }
 
-    public Order(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
-        this.orderTable = orderTable;
+    public Order(Long orderTableId, List<OrderLineItem> orderLineItems) {
+        this.orderTableId = orderTableId;
         this.orderLineItems = new OrderLineItems(orderLineItems);
     }
 
-    public Order(OrderTable orderTable, OrderStatus orderStatus) {
-        this.orderTable = orderTable;
+    public Order(Long orderTableId, OrderStatus orderStatus) {
+        this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
     }
 
@@ -47,15 +46,9 @@ public class Order {
         this.orderStatus = orderStatus;
     }
 
-    public static Order create(OrderTable orderTable) {
-        if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException("테이블이 비어있는 상태에서는 주문을 생성할 수 없습니다");
-        }
-        return new Order(orderTable, OrderStatus.COOKING);
-    }
-
-    public boolean isStarted() {
-        return orderStatus == OrderStatus.MEAL || orderStatus == OrderStatus.COOKING;
+    public static Order create(Long orderTableId, OrderValidator orderValidator) {
+        orderValidator.validateEmptyTable(orderTableId);
+        return new Order(orderTableId, OrderStatus.COOKING);
     }
 
     public void addOrderLineItem(Long menuId, long quantity) {
@@ -78,8 +71,8 @@ public class Order {
         return id;
     }
 
-    public OrderTable getOrderTable() {
-        return orderTable;
+    public Long getOrderTableId() {
+        return orderTableId;
     }
 
     public OrderStatus getOrderStatus() {
