@@ -1,4 +1,4 @@
-package kitchenpos.exception;
+package kitchenpos.common.exception;
 
 import javax.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
