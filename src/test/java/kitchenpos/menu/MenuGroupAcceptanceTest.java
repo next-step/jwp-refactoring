@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
 @DisplayName("메뉴 그룹 인수테스트")
-class MenuGroupAcceptanceTest extends AcceptanceTest {
+public class MenuGroupAcceptanceTest extends AcceptanceTest {
 
     private static final String URI = "/api/menu-groups";
 

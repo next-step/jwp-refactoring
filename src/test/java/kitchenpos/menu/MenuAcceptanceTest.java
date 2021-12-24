@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
 @DisplayName("메뉴 인수 테스트")
-class MenuAcceptanceTest extends AcceptanceTest {
+public class MenuAcceptanceTest extends AcceptanceTest {
 
     private static String URI = "/api/menus";
 
@@ -79,12 +79,18 @@ class MenuAcceptanceTest extends AcceptanceTest {
         메뉴_목록_포함됨(메뉴_목록_응답, Arrays.asList(메뉴_후라이드_응답, 메뉴_양념치킨_응답));
     }
 
-    private void 메뉴_생성됨(ExtractableResponse<Response> response) {
+    public static ExtractableResponse<Response> 메뉴_등록되어_있음(MenuRequest menuRequest) {
+        ExtractableResponse<Response> response = 메뉴_생성_요청(menuRequest);
+        메뉴_생성됨(response);
+        return response;
+    }
+
+    private static void 메뉴_생성됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.header("Location")).isNotBlank();
     }
 
-    private ExtractableResponse<Response> 메뉴_생성_요청(MenuRequest menuRequest) {
+    private static ExtractableResponse<Response> 메뉴_생성_요청(MenuRequest menuRequest) {
         return RestTestApi.post(URI, menuRequest);
     }
 

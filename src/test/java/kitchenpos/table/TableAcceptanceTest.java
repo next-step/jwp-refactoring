@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
 @DisplayName("테이블 인수 테스트")
-class TableAcceptanceTest extends AcceptanceTest {
+public class TableAcceptanceTest extends AcceptanceTest {
 
     private static final String URI = "/api/tables";
 
