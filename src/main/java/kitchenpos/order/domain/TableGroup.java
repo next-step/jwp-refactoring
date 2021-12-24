@@ -39,18 +39,6 @@ public class TableGroup {
         return createdDate;
     }
 
-    // private void changeTableGroupOfOrderTables() {
-    //     orderTables.changeTableGroup(this);
-    // }
-
-    // public void validateUngroup() {
-    //     orderTables.validateNotCompletionOrderStatus();
-    // }
-
-    // public void ungroup() {
-    //     orderTables.ungroup();
-    // }
-
     @Override
     public boolean equals(Object o) {
         if (this == o)

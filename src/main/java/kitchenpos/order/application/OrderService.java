@@ -41,7 +41,7 @@ public class OrderService {
             .orElseThrow(() -> new NotFoundException(NOT_FOUND_DATA));
 
         final Order savedOrder = orderRepository.save(Order.of(
-            orderTable, makeOrderLineItems(orderRequest.getOrderLineItems())));
+            orderTable.getId(), makeOrderLineItems(orderRequest.getOrderLineItems())));
 
         return new OrderResponse(savedOrder);
     }

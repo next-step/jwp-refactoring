@@ -13,6 +13,8 @@ import kitchenpos.common.exception.NotFoundException;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.TableGroup;
 import kitchenpos.order.domain.TableGroupSavedEvent;
+import kitchenpos.order.domain.TableGroupValidator;
+import kitchenpos.order.domain.TableUngroupEvent;
 import kitchenpos.order.dto.TableGroupRequest;
 import kitchenpos.order.dto.TableGroupResponse;
 import kitchenpos.order.repository.TableGroupRepository;
@@ -23,12 +25,15 @@ public class TableGroupService {
     private final TableService tableService;
     private final TableGroupRepository tableGroupRepository;
     private final ApplicationEventPublisher eventPublisher;
+    private final TableGroupValidator tableGroupValidator;
 
     public TableGroupService(TableService tableService,
-        TableGroupRepository tableGroupRepository, ApplicationEventPublisher eventPublisher) {
+        TableGroupRepository tableGroupRepository, ApplicationEventPublisher eventPublisher,
+        TableGroupValidator tableGroupValidator) {
         this.tableService = tableService;
         this.tableGroupRepository = tableGroupRepository;
         this.eventPublisher = eventPublisher;
+        this.tableGroupValidator = tableGroupValidator;
     }
 
     @Transactional
@@ -46,9 +51,9 @@ public class TableGroupService {
     public void ungroup(final Long tableGroupId) {
         TableGroup findTableGroup = tableGroupRepository.findById(tableGroupId)
             .orElseThrow(() -> new NotFoundException(NOT_FOUND_DATA));
-
-        // findTableGroup.validateUngroup();
-        // findTableGroup.ungroup();
+        tableGroupValidator.validateUngroup(findTableGroup.getId());
         tableGroupRepository.delete(findTableGroup);
+
+        eventPublisher.publishEvent(new TableUngroupEvent(findTableGroup));
     }
 }

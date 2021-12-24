@@ -9,20 +9,29 @@ import org.springframework.transaction.annotation.Transactional;
 import kitchenpos.order.repository.OrderTableRepository;
 
 @Component
-public class TableGroupSavedEventHandler {
+public class TableGroupEventHandler {
 
     private final OrderTableRepository orderTableRepository;
 
-    public TableGroupSavedEventHandler(OrderTableRepository orderTableRepository) {
+    public TableGroupEventHandler(OrderTableRepository orderTableRepository) {
         this.orderTableRepository = orderTableRepository;
     }
 
     @EventListener
     @Transactional
-    public void handle(TableGroupSavedEvent event) {
+    public void createTargetGroupHandle(TableGroupSavedEvent event) {
         List<OrderTable> findOrderTables = orderTableRepository.findAllByIdIn(event.getOrderTableIds());
         for (OrderTable findOrderTable : findOrderTables) {
             findOrderTable.changeTableGroup(event.getTableGroupId());
+        }
+    }
+
+    @EventListener
+    @Transactional
+    public void ungroupHandle(TableUngroupEvent event) {
+        List<OrderTable> findOrderTables = orderTableRepository.findAllByTableGroupId(event.getTableGroupId());
+        for (OrderTable findOrderTable : findOrderTables) {
+            findOrderTable.deleteTableGroup();
         }
     }
 }
