@@ -1,6 +1,6 @@
-package kitchenpos.acceptance;
+package kitchenpos.product.acceptance;
 
-import static kitchenpos.acceptance.step.ProductAcceptanceStep.*;
+import static kitchenpos.product.acceptance.step.ProductAcceptanceStep.*;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;

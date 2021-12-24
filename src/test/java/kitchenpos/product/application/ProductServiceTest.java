@@ -1,7 +1,7 @@
-package kitchenpos.application;
+package kitchenpos.product.application;
 
-import static kitchenpos.acceptance.step.ProductAcceptanceStep.양념치킨;
-import static kitchenpos.application.fixture.ProductFixture.후리이드치킨;
+import static kitchenpos.product.acceptance.step.ProductAcceptanceStep.양념치킨;
+import static kitchenpos.product.application.fixture.ProductFixture.후리이드치킨;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -11,7 +11,6 @@ import java.util.List;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
-import kitchenpos.product.application.ProductService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

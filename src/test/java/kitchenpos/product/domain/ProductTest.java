@@ -1,9 +1,8 @@
-package kitchenpos.domain.product;
+package kitchenpos.product.domain;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import kitchenpos.common.exception.InvalidParameterException;
-import kitchenpos.product.domain.Product;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

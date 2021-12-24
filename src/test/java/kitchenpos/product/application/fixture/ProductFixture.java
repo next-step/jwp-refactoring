@@ -1,4 +1,4 @@
-package kitchenpos.application.fixture;
+package kitchenpos.product.application.fixture;
 
 import kitchenpos.product.domain.Product;
 
