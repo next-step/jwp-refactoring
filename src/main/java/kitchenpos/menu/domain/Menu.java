@@ -16,9 +16,11 @@ public class Menu {
     private String name;
     private BigDecimal price;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    /*@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "menu_group_id", foreignKey = @ForeignKey(name = "fk_menu_product_menu"))
-    private MenuGroup menuGroup;
+    private MenuGroup menuGroup;// 간접참조*/
+
+    private Long menuGroupId;
 
     @Embedded
     private MenuProducts menuProducts = new MenuProducts();
@@ -26,11 +28,11 @@ public class Menu {
     protected Menu() {
     }
 
-    public Menu(String name, BigDecimal price, MenuGroup menuGroup) {
+    public Menu(String name, BigDecimal price, Long menuGroupId) {
         validatePrice(price);
         this.name = name;
         this.price = price;
-        this.menuGroup = menuGroup;
+        this.menuGroupId = menuGroupId;
     }
 
     private void validatePrice(BigDecimal price) {
@@ -52,13 +54,12 @@ public class Menu {
     }
 
     public Long getMenuGroupId() {
-        return menuGroup.getId();
+        return menuGroupId;
     }
 
     public List<MenuProduct> getMenuProducts() {
         return menuProducts.getList();
     }
-
 
 
     public void addMenuProducts(List<MenuProduct> menuProducts) {

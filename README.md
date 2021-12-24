@@ -114,3 +114,5 @@
   * Menu 간접참조
 
 * [ ] EventHandler 를 사용하여 의존성객체를 리팩터링
+* [x] MenuService
+* [ ] MenuGroupService

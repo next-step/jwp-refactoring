@@ -16,23 +16,23 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class MenuService {
     private final MenuRepository menuRepository;
-    private final MenuGroupService menuGroupService;
+    private final MenuValidator menuValidator;
     private final ProductService productService;
 
     public MenuService(
             final MenuRepository menuRepository,
-            final MenuGroupService menuGroupService,
+            final MenuValidator menuValidator,
             final ProductService productService
     ) {
         this.menuRepository = menuRepository;
-        this.menuGroupService = menuGroupService;
+        this.menuValidator = menuValidator;
         this.productService = productService;
     }
 
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
-        final MenuGroup menuGroup = menuGroupService.getMenuGroup(menuRequest.getMenuGroupId());
-        final Menu menu = menuRequest.toMenu(menuGroup);
+        menuValidator.existMenuGroup(menuRequest.getMenuGroupId());
+        final Menu menu = menuRequest.toMenu();
         final List<MenuProduct> menuProducts = productService.getMenuProducts(menuRequest.getMenuProducts());
 
         menu.addMenuProducts(menuProducts);

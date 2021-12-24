@@ -36,7 +36,7 @@ public class MenuServiceTest {
     @Mock
     private MenuRepository menuRepository;
     @Mock
-    private MenuGroupService menuGroupService;
+    private MenuValidator menuValidator;
     @Mock
     private ProductService productService;
 
@@ -67,7 +67,6 @@ public class MenuServiceTest {
     @Test
     void create() {
         //given
-        given(menuGroupService.getMenuGroup(any())).willReturn(치킨류);
         given(productService.getMenuProducts(any())).willReturn(Arrays.asList(후라이드두마리구성));
         given(menuRepository.save(any())).willReturn(후라이드두마리세트);
 
@@ -85,8 +84,6 @@ public class MenuServiceTest {
         MenuRequest 금액_없는_세트 = new MenuRequest();
         MenuRequest 금액이_음수인_세트 = new MenuRequest();
         금액이_음수인_세트.setPrice(new BigDecimal("-1000"));
-        given(menuGroupService.getMenuGroup(any())).willReturn(치킨류);
-        given(menuGroupService.getMenuGroup(any())).willReturn(치킨류);
 
         assertThatThrownBy(() ->
                 menuService.create(금액_없는_세트)
@@ -100,7 +97,6 @@ public class MenuServiceTest {
     @DisplayName("가격 x 수량 = 금액 보다 등록한 금액이 더 작아야 한다.")
     @Test
     void createPriceLessError() {
-        given(menuGroupService.getMenuGroup(any())).willReturn(치킨류);
         given(productService.getMenuProducts(any())).willReturn(Arrays.asList(후라이드두마리구성));
         MenuRequest 비싼_후라이드두마리세트 = MenuRequest.of("비싼_후라이드두마리세트", new BigDecimal("100000"), 치킨류.getId(), Arrays.asList(후라이드두마리구성Request));
 
