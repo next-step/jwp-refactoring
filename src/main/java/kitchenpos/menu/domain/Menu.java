@@ -75,6 +75,12 @@ public class Menu {
         this.menuProducts.add(menuProduct);
     }
 
+    public void validSum(BigDecimal sumPrice) {
+        if(this.getPrice().compareTo(sumPrice) > 0){
+            throw new InputMenuDataException(InputMenuDataErrorCode.THE_SUM_OF_MENU_PRICE_IS_LESS_THAN_SUM_OF_PRODUCTS);
+        }
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

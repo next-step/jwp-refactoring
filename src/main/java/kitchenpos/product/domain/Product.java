@@ -46,6 +46,10 @@ public class Product {
         return this.price;
     }
 
+    public BigDecimal sumPrice(Price price) {
+        return this.price.getPrice().add(price.getPrice());
+    }
+
     public BigDecimal getAmount() {
         return this.price.getPrice();
     }
