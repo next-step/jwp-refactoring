@@ -10,6 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import kitchenpos.domain.Name;
+import kitchenpos.domain.Price;
 
 @Entity
 public class Menu {
@@ -17,9 +19,9 @@ public class Menu {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
+    private Name name;
 
-    private BigDecimal price;
+    private Price price;
 
     @ManyToOne
     @JoinColumn(name = "menu_group_id", foreignKey = @ForeignKey(name = "fk_menu_group_id_of_menu"))
@@ -35,19 +37,19 @@ public class Menu {
         this.id = id;
     }
 
-    private Menu(String name, BigDecimal price, Long menuGroupId,
+    private Menu(String name, Integer price, Long menuGroupId,
         List<MenuProduct> menuProducts) {
-        this.name = name;
-        this.price = price;
+        this.name = Name.of(name);
+        this.price = Price.of(price);
         this.menuGroup = MenuGroup.of(menuGroupId);
         this.menuProducts = menuProducts;
     }
 
-    public Menu(Long id, String name, BigDecimal price, Long menuGroupId,
+    public Menu(Long id, String name, Integer price, Long menuGroupId,
         List<MenuProduct> menuProducts) {
         this.id = id;
-        this.name = name;
-        this.price = price;
+        this.name = Name.of(name);
+        this.price = Price.of(price);
         this.menuGroup = MenuGroup.of(menuGroupId);
         this.menuProducts = menuProducts;
     }
@@ -56,7 +58,7 @@ public class Menu {
         return new Menu(id);
     }
 
-    public static Menu of(String name, BigDecimal price, Long menuGroupId,
+    public static Menu of(String name, Integer price, Long menuGroupId,
         List<MenuProduct> menuProducts) {
         return new Menu(name, price, menuGroupId, menuProducts);
     }
@@ -65,32 +67,16 @@ public class Menu {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
+    public Name getName() {
         return name;
     }
 
-    public void setName(final String name) {
-        this.name = name;
-    }
-
-    public BigDecimal getPrice() {
+    public Price getPrice() {
         return price;
-    }
-
-    public void setPrice(final BigDecimal price) {
-        this.price = price;
     }
 
     public Long getMenuGroupId() {
         return menuGroup.getId();
-    }
-
-    public void setMenuGroupId(final Long menuGroupId) {
-        this.menuGroup = MenuGroup.of(menuGroupId);
     }
 
     public List<MenuProduct> getMenuProducts() {

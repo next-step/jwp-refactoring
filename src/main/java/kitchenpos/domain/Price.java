@@ -1,4 +1,4 @@
-package kitchenpos.product.domain;
+package kitchenpos.domain;
 
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -19,6 +19,10 @@ public class Price {
 
     public static Price of(Integer value) {
         return new Price(BigDecimal.valueOf(value));
+    }
+
+    public static Price of(BigDecimal value) {
+        return new Price(value);
     }
 
     public void validate() {
@@ -53,5 +57,9 @@ public class Price {
         return "Price{" +
             "price=" + price +
             '}';
+    }
+
+    public boolean isGreaterThan(Price other) {
+        return this.price.compareTo(other.price) > 0;
     }
 }

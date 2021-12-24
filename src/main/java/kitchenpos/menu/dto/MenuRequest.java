@@ -28,7 +28,7 @@ public class MenuRequest {
     }
 
     public Menu toEntity() {
-        return Menu.of(name, BigDecimal.valueOf(price), menuGroupId, menuProducts.stream()
+        return Menu.of(name, price, menuGroupId, menuProducts.stream()
             .map(MenuProductRequest::toEntity)
             .collect(toList()));
     }

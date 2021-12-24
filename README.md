@@ -72,6 +72,8 @@
     - [X] Menu 엔티티 변환
     - [X] MenuProduct 엔티티 변환
     - [X] Quantity 래핑 클래스 추가
+    - [X] Name 래핑 클래스 추가
+    - [X] Price 래핑 클래스 추가
   - [X] MenuRepository 사용하도록 수정
   - [X] MenuGroupRepository 사용하도록 수정
   - [X] MenuProductRepository 사용하도록 수정

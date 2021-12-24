@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import kitchenpos.domain.Price;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuProduct;
@@ -37,11 +38,8 @@ public class MenuService {
 
     @Transactional
     public MenuResponse create(final Menu menu) {
-        final BigDecimal price = menu.getPrice();
-
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException();
-        }
+        Price price = menu.getPrice();
+        price.validate();
 
         if (!menuGroupRepository.existsById(menu.getMenuGroupId())) {
             throw new IllegalArgumentException();
@@ -57,7 +55,7 @@ public class MenuService {
                 product.getPriceValue().multiply(BigDecimal.valueOf(menuProduct.getQuantityValue())));
         }
 
-        if (price.compareTo(sum) > 0) {
+        if (price.isGreaterThan(Price.of(sum))) {
             throw new IllegalArgumentException();
         }
 

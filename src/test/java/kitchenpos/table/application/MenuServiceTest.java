@@ -61,7 +61,7 @@ public class MenuServiceTest {
     @Test
     void 메뉴_생성() {
         // given
-        Menu menu = Menu.of("후라이드+양념", BigDecimal.valueOf(34000), 1L,
+        Menu menu = Menu.of("후라이드+양념", 34000, 1L,
             Lists.newArrayList(menuProduct1, menuProduct2));
 
         given(menuGroupRepository.existsById(any())).willReturn(true);
@@ -101,7 +101,7 @@ public class MenuServiceTest {
     @Test
     void 메뉴_생성_예외2() {
         // given
-        Menu menu = Menu.of("후라이드+양념", BigDecimal.valueOf(-20000), 1L,
+        Menu menu = Menu.of("후라이드+양념", -20000, 1L,
             Lists.newArrayList(menuProduct1, menuProduct2));
 
         // when, then
@@ -114,7 +114,7 @@ public class MenuServiceTest {
     @Test
     void 메뉴_생성_예외3() {
         // given
-        Menu menu = Menu.of("후라이드+양념", BigDecimal.valueOf(36000), 1L,
+        Menu menu = Menu.of("후라이드+양념", 36000, 1L,
             Lists.newArrayList(menuProduct1, menuProduct2));
 
         given(menuGroupRepository.existsById(any())).willReturn(true);
@@ -131,11 +131,11 @@ public class MenuServiceTest {
     @Test
     void 메뉴_목록_조회() {
         // given
-        Menu menu1 = Menu.of("후라이드+양념", BigDecimal.valueOf(34000), 1L,
+        Menu menu1 = Menu.of("후라이드+양념", 34000, 1L,
             Lists.newArrayList(menuProduct1, menuProduct2));
 
         MenuProduct menuProduct3 = MenuProduct.of(2L, 2L, 2);
-        Menu menu2 = Menu.of("후라이드+후라이드", BigDecimal.valueOf(33000), 1L,
+        Menu menu2 = Menu.of("후라이드+후라이드", 33000, 1L,
             Lists.newArrayList(menuProduct3));
 
         given(menuRepository.findAll()).willReturn(Lists.newArrayList(menu1, menu2));
