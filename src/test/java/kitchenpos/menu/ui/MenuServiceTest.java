@@ -29,7 +29,7 @@ import static org.mockito.Mockito.*;
 
 @DisplayName("메뉴 컨트롤러 테스트")
 @ExtendWith(MockitoExtension.class)
-class MenuRestControllerTest {
+class MenuServiceTest {
 
     @Mock
     private MenuDao menuDao;

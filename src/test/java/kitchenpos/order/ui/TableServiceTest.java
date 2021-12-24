@@ -27,7 +27,7 @@ import static org.mockito.Mockito.when;
 
 @DisplayName("Table 컨트롤러 테스트")
 @ExtendWith(MockitoExtension.class)
-class TableRestControllerTest {
+class TableServiceTest {
 
     @Mock
     private OrderTableDao orderTableDao;

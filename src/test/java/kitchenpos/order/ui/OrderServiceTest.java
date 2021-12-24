@@ -31,7 +31,7 @@ import static org.mockito.Mockito.when;
 
 @DisplayName("주문 컨트롤러 테스트")
 @ExtendWith(MockitoExtension.class)
-class OrderRestControllerTest {
+class OrderServiceTest {
 
     @Mock
     private OrderDao orderDao;

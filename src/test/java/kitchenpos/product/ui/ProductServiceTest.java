@@ -24,7 +24,7 @@ import static org.mockito.Mockito.verify;
 
 @DisplayName("상품 컨트롤러 테스트")
 @ExtendWith(MockitoExtension.class)
-class ProductRestControllerTest {
+class ProductServiceTest {
     @Mock
     private ProductDao productDao;
 
