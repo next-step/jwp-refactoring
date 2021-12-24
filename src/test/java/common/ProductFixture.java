@@ -1,47 +1,31 @@
 package common;
 
-import java.math.BigDecimal;
-import kitchenpos.domain.Product;
+import kitchenpos.product.domain.Amount;
+import kitchenpos.product.domain.Product;
 
 public class ProductFixture {
 
     public static Product 후라이드() {
-
-        Product product = new Product();
-        product.setId(1L);
-        product.setName("후라이드");
-        product.setPrice(new BigDecimal(16000));
-
-        return product;
+        return Product.of(1L, "후라이드", 16000L);
     }
 
     public static Product 양념치킨() {
-
-        Product product = new Product();
-        product.setId(2L);
-        product.setName("양념치킨");
-        product.setPrice(new BigDecimal(16000));
-
-        return product;
+        return Product.of(2L, "양념치킨", 16000L);
     }
 
     public static Product 가격이없는_반반치킨() {
-        Product product = new Product();
-        product.setId(3L);
-        product.setName("반반치킨");
-        product.setPrice(new BigDecimal(-1));
-
-        return product;
-    }
+        return Product.of(3L, "반반치킨", 0L);
+   }
 
     public static Product 반반치킨() {
+        return Product.of(4L, "반반치킨", 16500L);
+    }
 
-        Product product = new Product();
-        product.setId(4L);
-        product.setName("반반치킨");
-        product.setPrice(new BigDecimal(16500));
-
-        return product;
+    public static Product 콜라() {
+        return Product.of(5L, "콜라", 2000L);
+    }
+    public static Product 떡볶이() {
+        return Product.of(6L, "떡볶이", 6000L);
     }
 
 }
