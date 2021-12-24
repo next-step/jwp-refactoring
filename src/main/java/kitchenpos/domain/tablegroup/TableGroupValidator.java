@@ -19,6 +19,8 @@ import kitchenpos.exception.table.NotRegistedMenuOrderTableException;
 
 @Component
 public class TableGroupValidator {
+    private static final int GROUPING_ORDERTABLE_MINCOUNT = 2;
+
     private final OrderService orderService;
     private final TableService tableService;
 
@@ -77,7 +79,7 @@ public class TableGroupValidator {
     }
     
     private static void checkOrderTableSize(final OrderTables orderTables) {
-        if (orderTables.size() < 2) {
+        if (orderTables.size() < GROUPING_ORDERTABLE_MINCOUNT) {
             throw new NotGroupingOrderTableCountException("주문 테이블의 개수가 2개 미만입니다.");
         }
     }
