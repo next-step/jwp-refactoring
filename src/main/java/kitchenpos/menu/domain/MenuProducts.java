@@ -26,4 +26,8 @@ public class MenuProducts {
     public List<MenuProduct> getMenuProducts() {
         return Collections.unmodifiableList(menuProducts);
     }
+
+    public void addMenuProduct(final MenuProduct menuProduct) {
+        menuProducts.add(menuProduct);
+    }
 }

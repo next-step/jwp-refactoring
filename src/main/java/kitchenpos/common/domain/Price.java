@@ -47,7 +47,7 @@ public class Price {
         return price;
     }
 
-    public Price multiply(BigDecimal toMultiply) {
-        return new Price(price.multiply(toMultiply));
+    public boolean isOverPrice(BigDecimal totalPrice) {
+        return price.compareTo(totalPrice) > ZERO;
     }
 }
