@@ -6,11 +6,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import java.math.BigDecimal;
 import java.util.List;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.product.domain.Name;
-import kitchenpos.product.domain.Product;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
 import org.assertj.core.util.Lists;
@@ -57,9 +54,9 @@ class ProductAcceptanceTest extends AcceptanceTest {
     private void 상품_생성됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.header("Location")).isNotBlank();
-        Product product = response.as(Product.class);
-        assertThat(product.getName()).isEqualTo(Name.of("양념치킨"));
-        assertThat(product.getPrice()).isEqualByComparingTo(BigDecimal.valueOf(18000));
+        ProductResponse product = response.as(ProductResponse.class);
+        assertThat(product.getName()).isEqualTo("양념치킨");
+        assertThat(product.getPrice()).isEqualTo(18000);
     }
 
     private ExtractableResponse<Response> 상품목록_조회() {

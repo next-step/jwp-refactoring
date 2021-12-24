@@ -22,11 +22,7 @@ public class ProductService {
 
     @Transactional
     public ProductResponse create(final Product product) {
-        final BigDecimal price = product.getPrice();
-
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException();
-        }
+        product.priceValidate();
 
         return ProductResponse.from(productRepository.save(product));
     }

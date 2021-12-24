@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 import static org.mockito.BDDMockito.any;
 import static org.mockito.BDDMockito.given;
 
-import java.math.BigDecimal;
 import java.util.List;
 import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
@@ -33,7 +32,7 @@ class ProductServiceTest {
     void 상품_생성() {
         // given
         Product product = Product.of("양념치킨", 17000);
-        Product savedProduct = new Product(1L, "양념치킨", BigDecimal.valueOf(17000));
+        Product savedProduct = new Product(1L, "양념치킨", 17000);
 
         given(productRepository.save(any()))
             .willReturn(savedProduct);
@@ -64,9 +63,9 @@ class ProductServiceTest {
     @Test
     void 상품_목록_조회() {
         // given
-        Product savedProduct1 = new Product(1L, "양념치킨", BigDecimal.valueOf(17000));
-        Product savedProduct2 = new Product(2L, "후라이드치킨", BigDecimal.valueOf(16000));
-        Product savedProduct3 = new Product(3L, "간장치킨", BigDecimal.valueOf(17000));
+        Product savedProduct1 = new Product(1L, "양념치킨", 17000);
+        Product savedProduct2 = new Product(2L, "후라이드치킨", 16000);
+        Product savedProduct3 = new Product(3L, "간장치킨", 17000);
 
         given(productRepository.findAll())
             .willReturn(Lists.newArrayList(savedProduct1, savedProduct2, savedProduct3));

@@ -63,6 +63,7 @@
   - [X] 모델 
     - [X] Product 엔티티 변환
     - [X] Name 래핑 클래스 추가
+    - [X] Price 래핑 클래스 추가
   - [X] ProductRepository 사용하도록 수정
   - [X] dto 모델 추가
 - [ ] 메뉴 관리 리팩토링
