@@ -79,13 +79,13 @@ public class TableGroupValidator {
     }
     
     private static void checkOrderTableSize(final OrderTables orderTables) {
-        if (orderTables.size() < GROUPING_ORDERTABLE_MINCOUNT) {
+        if (orderTables.isLessSizeThan(GROUPING_ORDERTABLE_MINCOUNT)) {
             throw new NotGroupingOrderTableCountException("주문 테이블의 개수가 2개 미만입니다.");
         }
     }
 
     private void checkAllExistOfOrderTables(final List<OrderTableDto> orderTables, final OrderTables savedOrderTables) {
-        if (orderTables.size() != savedOrderTables.size()) {
+        if (savedOrderTables.isNotEqualSize(orderTables.size())) {
             throw new NotRegistedMenuOrderTableException("요청된 주문테이블 수와 조회된 주문테이블 수가 일치하지 않습니다.");
         }
     }

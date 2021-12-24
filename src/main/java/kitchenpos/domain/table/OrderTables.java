@@ -57,6 +57,14 @@ public final class OrderTables {
         return this.orderTables;
     }
 
+    public boolean isLessSizeThan(int size) {
+        return this.orderTables.size() < size;
+    }
+
+    public boolean isNotEqualSize(int size) {
+        return this.orderTables.size() != size;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == this)
