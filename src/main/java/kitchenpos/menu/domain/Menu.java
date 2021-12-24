@@ -5,13 +5,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import kitchenpos.common.domain.Name;
 import kitchenpos.common.domain.Price;
-import kitchenpos.menugroup.domain.MenuGroup;
 
 @Table(name = "menu")
 @Entity
@@ -26,9 +23,7 @@ public class Menu {
 	@Embedded
 	private Price price;
 
-	@ManyToOne(optional = false)
-	@JoinColumn(name = "menu_group_id")
-	private MenuGroup menuGroup;
+	private Long menuGroupId;
 
 	@Embedded
 	private MenuProducts menuProducts;
@@ -36,13 +31,13 @@ public class Menu {
 	protected Menu() {
 	}
 
-	public static Menu of(Name name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
+	public static Menu of(Name name, Price price, Long menuGroupId, MenuProducts menuProducts) {
 		throwOnPriceInvalid(price, menuProducts);
 
 		Menu menu = new Menu();
 		menu.name = name;
 		menu.price = price;
-		menu.menuGroup = menuGroup;
+		menu.menuGroupId = menuGroupId;
 		menu.menuProducts = menuProducts;
 		return menu;
 	}
@@ -65,8 +60,8 @@ public class Menu {
 		return price;
 	}
 
-	public MenuGroup getMenuGroup() {
-		return menuGroup;
+	public Long getMenuGroupId() {
+		return menuGroupId;
 	}
 
 	public MenuProducts getMenuProducts() {

@@ -49,7 +49,7 @@ public class MenuDto {
 		dto.id = menu.getId();
 		dto.name = menu.getName().getValue();
 		dto.price = menu.getPrice().getValue();
-		dto.menuGroupId = menu.getMenuGroup().getId();
+		dto.menuGroupId = menu.getMenuGroupId();
 		dto.menuProducts = menu.getMenuProducts()
 			.getValues()
 			.stream()

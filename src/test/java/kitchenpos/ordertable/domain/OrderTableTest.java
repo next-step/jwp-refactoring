@@ -1,5 +1,6 @@
 package kitchenpos.ordertable.domain;
 
+import static kitchenpos.menugroup.MenuGroupFixture.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -17,7 +18,6 @@ import kitchenpos.common.domain.Quantity;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProducts;
-import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderLineItems;
@@ -80,7 +80,7 @@ class OrderTableTest {
 			Menu.of(
 				Name.from("후라이드+후라이드"),
 				Price.from(BigDecimal.valueOf(25000)),
-				MenuGroup.from(Name.from("추천메뉴")),
+				추천_메뉴_그룹().getId(),
 				MenuProducts.from(Collections.singletonList(
 					MenuProduct.of(
 						Product.of(Name.from("후라이드치킨"), Price.from(BigDecimal.valueOf(17000))),

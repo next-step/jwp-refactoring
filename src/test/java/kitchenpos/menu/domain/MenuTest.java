@@ -1,5 +1,6 @@
 package kitchenpos.menu.domain;
 
+import static kitchenpos.menugroup.MenuGroupFixture.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.ThrowableAssert.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -25,7 +26,7 @@ class MenuTest {
 		// given
 		Name name = Name.from("후라이드+후라이드");
 		Price price = Price.from(BigDecimal.valueOf(25000));
-		MenuGroup menuGroup = MenuGroup.from(Name.from("추천메뉴"));
+		MenuGroup menuGroup = 추천_메뉴_그룹();
 		MenuProducts menuProducts = MenuProducts.from(Collections.singletonList(
 			MenuProduct.of(
 				Product.of(
@@ -34,14 +35,14 @@ class MenuTest {
 				Quantity.from(2L))));
 
 		// when
-		Menu menu = Menu.of(name, price, menuGroup, menuProducts);
+		Menu menu = Menu.of(name, price, menuGroup.getId(), menuProducts);
 
 		// then
 		assertAll(
 			() -> assertThat(menu).isNotNull(),
 			() -> assertThat(menu.getName()).isEqualTo(name),
 			() -> assertThat(menu.getPrice()).isEqualTo(price),
-			() -> assertThat(menu.getMenuGroup()).isEqualTo(menuGroup),
+			() -> assertThat(menu.getMenuGroupId()).isEqualTo(menuGroup.getId()),
 			() -> assertThat(menu.getMenuProducts()).isEqualTo(menuProducts)
 		);
 	}
@@ -52,7 +53,7 @@ class MenuTest {
 		// given
 		Name name = Name.from("후라이드+후라이드");
 		Price price = Price.from(BigDecimal.valueOf(100000));
-		MenuGroup menuGroup = MenuGroup.from(Name.from("추천메뉴"));
+		MenuGroup menuGroup = 추천_메뉴_그룹();
 		MenuProducts menuProducts = MenuProducts.from(Collections.singletonList(
 			MenuProduct.of(
 				Product.of(
@@ -61,7 +62,7 @@ class MenuTest {
 				Quantity.from(2L))));
 
 		// when
-		ThrowingCallable throwingCallable = () -> Menu.of(name, price, menuGroup, menuProducts);
+		ThrowingCallable throwingCallable = () -> Menu.of(name, price, menuGroup.getId(), menuProducts);
 
 		// when & then
 		assertThatThrownBy(throwingCallable).isInstanceOf(IllegalArgumentException.class);

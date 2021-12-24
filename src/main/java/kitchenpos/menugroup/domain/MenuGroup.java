@@ -22,10 +22,17 @@ public class MenuGroup {
 	protected MenuGroup() {
 	}
 
+	private MenuGroup(Long id, Name name) {
+		this.id = id;
+		this.name = name;
+	}
+
 	public static MenuGroup from(Name name) {
-		MenuGroup menuGroup = new MenuGroup();
-		menuGroup.name = name;
-		return menuGroup;
+		return new MenuGroup(null, name);
+	}
+
+	public static MenuGroup of(Long id, Name name) {
+		return new MenuGroup(id, name);
 	}
 
 	public Long getId() {

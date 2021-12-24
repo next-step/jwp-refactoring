@@ -48,7 +48,7 @@ public class MenuService {
 			.stream()
 			.map(this::findMenuProduct)
 			.collect(Collectors.toList()));
-		Menu menu = menuRepository.save(Menu.of(name, price, menuGroup, menuProducts));
+		Menu menu = menuRepository.save(Menu.of(name, price, menuGroup.getId(), menuProducts));
 		return MenuDto.from(menu);
 	}
 

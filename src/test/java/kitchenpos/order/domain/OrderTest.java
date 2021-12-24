@@ -1,5 +1,6 @@
 package kitchenpos.order.domain;
 
+import static kitchenpos.menugroup.MenuGroupFixture.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.ThrowableAssert.*;
 
@@ -31,7 +32,7 @@ class OrderTest {
 			Menu.of(
 				Name.from("후라이드+후라이드"),
 				Price.from(BigDecimal.valueOf(25000)),
-				MenuGroup.from(Name.from("추천메뉴")),
+				추천_메뉴_그룹().getId(),
 				MenuProducts.from(Collections.singletonList(
 					MenuProduct.of(
 						Product.of(Name.from("후라이드치킨"), Price.from(BigDecimal.valueOf(17000))),
@@ -54,7 +55,7 @@ class OrderTest {
 			Menu.of(
 				Name.from("후라이드+후라이드"),
 				Price.from(BigDecimal.valueOf(25000)),
-				MenuGroup.from(Name.from("추천메뉴")),
+				추천_메뉴_그룹().getId(),
 				MenuProducts.from(Collections.singletonList(
 					MenuProduct.of(
 						Product.of(Name.from("후라이드치킨"), Price.from(BigDecimal.valueOf(17000))),
