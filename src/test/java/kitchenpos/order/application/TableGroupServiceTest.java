@@ -3,6 +3,7 @@ package kitchenpos.order.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.BDDMockito.given;
@@ -23,6 +24,8 @@ import kitchenpos.order.dao.OrderTableRepository;
 import kitchenpos.order.dao.TableGroupRepository;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.TableGroup;
+import kitchenpos.order.dto.TableGroupRequest;
+import kitchenpos.order.dto.TableGroupResponse;
 
 @ExtendWith(MockitoExtension.class)
 public class TableGroupServiceTest {
@@ -49,13 +52,13 @@ public class TableGroupServiceTest {
         단체지정.addOrderTables(Arrays.asList(첫번째_테이블, 두번째_테이블));
         
         given(orderTableRepository.findAllByIdIn(anyList())).willReturn(단체지정.getOrderTables());
-        given(tableGroupRepository.save(단체지정)).willReturn(단체지정);
+        given(tableGroupRepository.save(any())).willReturn(단체지정);
         
         // when
-        TableGroup 저장된_단체지정 = tableGroupService.create(단체지정);
+        TableGroupResponse 저장된_단체지정 = tableGroupService.create(TableGroupRequest.from(단체지정));
         
         // then
-        assertThat(저장된_단체지정).isEqualTo(단체지정);
+        assertThat(저장된_단체지정).isEqualTo(TableGroupResponse.from(단체지정));
     }
     
     @DisplayName("주문 테이블이 두 테이블 이상이어야 단체지정을 할 수 있다 - 예외처리")
@@ -66,7 +69,7 @@ public class TableGroupServiceTest {
     
         // when, then
         assertThatThrownBy(() -> {
-            tableGroupService.create(단체지정);
+            tableGroupService.create(TableGroupRequest.from(단체지정));
         }).isInstanceOf(IllegalArgumentException.class)
         .hasMessage("단체지정은 최소 두 테이블 이상만 가능합니다");
     }
@@ -84,7 +87,7 @@ public class TableGroupServiceTest {
     
         // then
         assertThatThrownBy(() -> {
-            tableGroupService.create(단체지정);
+            tableGroupService.create(TableGroupRequest.from(단체지정));
         }).isInstanceOf(IllegalArgumentException.class)
         .hasMessage("등록된 주문 테이블만 단체지정 할 수 있습니다");
     }
