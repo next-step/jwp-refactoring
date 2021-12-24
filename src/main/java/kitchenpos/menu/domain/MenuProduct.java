@@ -2,6 +2,7 @@ package kitchenpos.menu.domain;
 
 import kitchenpos.product.domain.Product;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -16,7 +17,8 @@ public class MenuProduct {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long seq;
+    @Column(name = "seq")
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Menu menu;
@@ -29,8 +31,8 @@ public class MenuProduct {
     protected MenuProduct() {
     }
 
-    public Long getSeq() {
-        return seq;
+    public Long getId() {
+        return id;
     }
 
     public Menu getMenu() {
@@ -50,9 +52,9 @@ public class MenuProduct {
         this.quantity = quantity;
     }
 
-    private MenuProduct(Long seq, Menu menu, Product product, long quantity) {
+    private MenuProduct(Long id, Menu menu, Product product, long quantity) {
         this(product, quantity);
-        this.seq = seq;
+        this.id = id;
         this.menu = menu;
     }
 
@@ -60,8 +62,8 @@ public class MenuProduct {
         return new MenuProduct(product, quantity);
     }
 
-    public static MenuProduct of(Long seq, Menu menu, Product product, long quantity) {
-        return new MenuProduct(seq, menu, product, quantity);
+    public static MenuProduct of(Long id, Menu menu, Product product, long quantity) {
+        return new MenuProduct(id, menu, product, quantity);
     }
 
     public void setMenu(Menu menu) {
