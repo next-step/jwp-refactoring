@@ -28,6 +28,19 @@ public class OrderResponse {
         this.orderLineItems = orderLineItems;
     }
 
+    public static List<OrderResponse> fromList(List<Order> orders) {
+        return orders.stream()
+            .map(OrderResponse::from)
+            .collect(Collectors.toList());
+    }
+
+    public static OrderResponse from(Order order) {
+        return new OrderResponse(order.getId(),
+            OrderTableResponse.from(order.getOrderTable()),
+            order.getOrderStatus(), order.getCreatedDate(),
+            OrderLineItemResponse.fromList(order.getOrderLineItemList()));
+    }
+
     public Long getId() {
         return id;
     }
@@ -48,13 +61,4 @@ public class OrderResponse {
         return orderLineItems;
     }
 
-    public static OrderResponse from(Order order) {
-        return new OrderResponse(order.getId(),
-            OrderTableResponse.from(order.getOrderTable()),
-            order.getOrderStatus(), order.getCreatedDate(),
-            order.getOrderLineItemList()
-                .stream()
-                .map(OrderLineItemResponse::from)
-                .collect(Collectors.toList()));
-    }
 }

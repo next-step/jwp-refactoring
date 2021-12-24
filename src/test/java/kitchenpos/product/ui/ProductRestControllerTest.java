@@ -56,9 +56,11 @@ class ProductRestControllerTest {
     @Test
     void list() throws Exception {
         //given
-        List<ProductResponse> expectedProducts = Arrays.asList(
-            ProductResponse.from(new Product(1L, "육개장", BigDecimal.valueOf(9000))),
-            ProductResponse.from(new Product(1L, "과메기", BigDecimal.valueOf(22000))));
+        List<ProductResponse> expectedProducts = ProductResponse.fromList(Arrays.asList(
+            new Product(1L, "육개장", BigDecimal.valueOf(9000)),
+            new Product(1L, "과메기", BigDecimal.valueOf(22000))
+        ));
+
         given(productService.list()).willReturn(expectedProducts);
 
         //when, then

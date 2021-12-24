@@ -2,7 +2,6 @@ package kitchenpos.order.application;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.domain.Order;
@@ -66,9 +65,7 @@ public class OrderService {
 
     public List<OrderResponse> list() {
         final List<Order> orders = orderRepository.findAll();
-        return orders.stream()
-            .map(OrderResponse::from)
-            .collect(Collectors.toList());
+        return OrderResponse.fromList(orders);
     }
 
     @Transactional

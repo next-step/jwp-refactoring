@@ -87,11 +87,10 @@ class MenuRestControllerTest {
             new MenuProduct(타코야끼, 1),
             new MenuProduct(뿌링클, 2));
 
-        List<MenuResponse> expectedMenus = Arrays.asList(
-            MenuResponse.from(
-                new Menu(1L, "후라이드+후라이드", BigDecimal.valueOf(19000), 추천메뉴그룹, menuProducts1)),
-            MenuResponse.from(
-                new Menu(2L, "오븐구이+순살강정", BigDecimal.valueOf(23000), 추천메뉴그룹, menuProducts2)));
+        List<MenuResponse> expectedMenus = MenuResponse.fromList(Arrays.asList(
+            new Menu(1L, "후라이드+후라이드", BigDecimal.valueOf(19000), 추천메뉴그룹, menuProducts1),
+            new Menu(2L, "오븐구이+순살강정", BigDecimal.valueOf(23000), 추천메뉴그룹, menuProducts2)
+        ));
         given(menuService.list()).willReturn(expectedMenus);
 
         //when, then

@@ -47,8 +47,7 @@ class TableGroupRestControllerTest {
 
         TableGroup tableGroup = new TableGroup(1L);
         tableGroup.groupTables(orderTables);
-        TableGroupResponse expectedTableGroup = TableGroupResponse.from(
-            tableGroup);
+        TableGroupResponse expectedTableGroup = TableGroupResponse.from(tableGroup);
 
         given(tableGroupService.create(any()))
             .willReturn(expectedTableGroup);

@@ -58,9 +58,10 @@ class TableRestControllerTest {
     @Test
     void list() throws Exception {
         //given
-        List<OrderTableResponse> expectedOrderTables = Arrays.asList(
-            OrderTableResponse.from(new OrderTable(1L, 6, false)),
-            OrderTableResponse.from(new OrderTable(2L, 3, false)));
+        List<OrderTableResponse> expectedOrderTables = OrderTableResponse.fromList(Arrays.asList(
+            new OrderTable(1L, 6, false),
+            new OrderTable(2L, 3, false)
+        ));
 
         given(tableService.list()).willReturn(expectedOrderTables);
 

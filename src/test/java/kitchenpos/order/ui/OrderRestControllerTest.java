@@ -91,11 +91,9 @@ class OrderRestControllerTest {
             new OrderLineItem(혼술세트, 2),
             new OrderLineItem(이달의메뉴, 2));
 
-        List<OrderResponse> expectedOrders = Arrays.asList(
-            OrderResponse.from(
-                new Order(1L, 테이블1번, OrderStatus.MEAL, orderLineItems1)),
-            OrderResponse.from(
-                new Order(2L, 테이블1번, OrderStatus.COOKING, orderLineItems2)));
+        List<OrderResponse> expectedOrders = OrderResponse.fromList(Arrays.asList(
+            new Order(1L, 테이블1번, OrderStatus.MEAL, orderLineItems1),
+            new Order(2L, 테이블1번, OrderStatus.COOKING, orderLineItems2)));
 
         given(orderService.list())
             .willReturn(expectedOrders);

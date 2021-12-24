@@ -26,10 +26,8 @@ public class TableService {
     }
 
     public List<OrderTableResponse> list() {
-        return orderTableRepository.findAll()
-            .stream()
-            .map(OrderTableResponse::from)
-            .collect(Collectors.toList());
+        List<OrderTable> orderTables = orderTableRepository.findAll();
+        return OrderTableResponse.fromList(orderTables);
     }
 
     public OrderTable findOrderTable(Long orderTableId) {

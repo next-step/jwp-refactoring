@@ -59,9 +59,10 @@ class MenuGroupRestControllerTest {
     @Test
     void list() throws Exception {
         //given
-        List<MenuGroupResponse> expectedMenuGroups = Arrays.asList(
-            MenuGroupResponse.from(new MenuGroup(1L, "추천메뉴")),
-            MenuGroupResponse.from(new MenuGroup(2L, "베스트메뉴")));
+
+        List<MenuGroupResponse> expectedMenuGroups = MenuGroupResponse.fromList(Arrays.asList(
+            new MenuGroup(1L, "추천메뉴"),
+            new MenuGroup(2L, "베스트메뉴")));
         given(service.list())
             .willReturn(expectedMenuGroups);
 
