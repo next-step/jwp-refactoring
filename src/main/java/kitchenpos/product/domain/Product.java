@@ -19,10 +19,10 @@ public class Product {
     private String name;
     private BigDecimal price;
 
-    public Product() {
+    protected Product() {
     }
 
-    public Product(String name, BigDecimal price) {
+    private Product(String name, BigDecimal price) {
         validatePrice(price);
         this.name = Objects.requireNonNull(name, "상품의 이름은 필수 입니다.");
         this.price = price;
@@ -42,23 +42,11 @@ public class Product {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public String getName() {
         return name;
     }
 
-    public void setName(final String name) {
-        this.name = name;
-    }
-
     public BigDecimal getPrice() {
         return price;
-    }
-
-    public void setPrice(final BigDecimal price) {
-        this.price = price;
     }
 }

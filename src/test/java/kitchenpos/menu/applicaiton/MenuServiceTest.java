@@ -4,14 +4,14 @@ import kitchenpos.common.fixtrue.MenuFixture;
 import kitchenpos.common.fixtrue.MenuGroupFixture;
 import kitchenpos.common.fixtrue.MenuProductFixture;
 import kitchenpos.common.fixtrue.ProductFixture;
+import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.dao.MenuDao;
 import kitchenpos.menu.dao.MenuGroupDao;
 import kitchenpos.menu.dao.MenuProductDao;
-import kitchenpos.menu.application.MenuService;
-import kitchenpos.product.dao.ProductDao;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,7 +25,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -46,7 +45,7 @@ class MenuServiceTest {
     MenuProductDao menuProductDao;
 
     @Mock
-    ProductDao productDao;
+    ProductService productService;
 
     @InjectMocks
     MenuService menuService;
@@ -73,7 +72,7 @@ class MenuServiceTest {
     void 메뉴_생성() {
         // given
         given(menuGroupDao.existsById(후라이드_후라이드.getMenuGroupId())).willReturn(true);
-        given(productDao.findById(후라이드_후라이드.getMenuProducts().get(0).getProductId())).willReturn(Optional.of(후라이드치킨));
+        given(productService.findProductById(후라이드_후라이드.getMenuProducts().get(0).getProductId())).willReturn(후라이드치킨);
         given(menuDao.save(후라이드_후라이드)).willReturn(후라이드_후라이드);
         given(menuProductDao.save(후라이드_후라이드_메뉴_상품)).willReturn(후라이드_후라이드_메뉴_상품);
 
@@ -106,7 +105,7 @@ class MenuServiceTest {
         // given
         후라이드_후라이드.setPrice(BigDecimal.valueOf(33000L));
         given(menuGroupDao.existsById(후라이드_후라이드.getMenuGroupId())).willReturn(true);
-        given(productDao.findById(후라이드_후라이드.getMenuProducts().get(0).getProductId())).willReturn(Optional.of(후라이드치킨));
+        given(productService.findProductById(후라이드_후라이드.getMenuProducts().get(0).getProductId())).willReturn(후라이드치킨);
 
         // then
         ThrowingCallable throwingCallable = () -> menuService.create(후라이드_후라이드);

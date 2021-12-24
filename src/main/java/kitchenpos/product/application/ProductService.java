@@ -30,4 +30,9 @@ public class ProductService {
                 .map(ProductResponse::of)
                 .collect(Collectors.toList());
     }
+
+    public Product findProductById(Long id) {
+        return productRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("상품이 존재하지 않습니다."));
+    }
 }
