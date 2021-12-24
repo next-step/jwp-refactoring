@@ -115,7 +115,7 @@ public class OrderValidatorTest {
         OrderLineItem 치킨_주문항목 = OrderLineItem.of(MenuId.of(뿌링클콤보.getId()), 1L);
 
         OrderTable 치킨_주문_단체테이블 = OrderTable.of(0, true);
-        Orders 치킨주문 = Orders.of(OrderTableId.of(치킨_주문_단체테이블), OrderStatus.COOKING);
+        Orders 치킨주문 = Orders.of(OrderTableId.of(치킨_주문_단체테이블.getId()), OrderStatus.COOKING);
         치킨_주문항목.acceptOrder(치킨주문);
 
         when(menuService.findAllByIdIn(anyList())).thenReturn(List.of(뿌링클콤보));
@@ -132,7 +132,7 @@ public class OrderValidatorTest {
     void generate_order_forChangeOrderStatus() {
         // given
         Menu 뿌링클콤보 = Menu.of(1L, "뿌링클콤보", Price.of(18_000));
-        OrderLineItem 치킨_주문항목 = OrderLineItem.of(MenuId.of(뿌링클콤보), 1L);
+        OrderLineItem 치킨_주문항목 = OrderLineItem.of(MenuId.of(뿌링클콤보.getId()), 1L);
 
         OrderTable 치킨_주문_단체테이블 = OrderTable.of(0, true);
         Orders 치킨주문 = Orders.of(OrderTableId.of(치킨_주문_단체테이블.getId()), OrderStatus.COOKING);
