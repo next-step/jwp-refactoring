@@ -9,7 +9,6 @@ import kitchenpos.AcceptanceTest;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.dto.TableGroupRequest;
-import kitchenpos.table.dto.TableGroupResponse;
 import kitchenpos.utils.RestTestApi;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -21,22 +20,22 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
 
     private static final String URI = "/api/table-groups";
 
-    OrderTableRequest 단체_지정할_테이블1;
-    OrderTableRequest 단체_지정할_테이블2;
+    OrderTableRequest 단체_3인_테이블;
+    OrderTableRequest 단체_4인_테이블;
 
-    OrderTableResponse 단체_테이블1;
-    OrderTableResponse 단체_테이블2;
+    OrderTableResponse 단체_3인_테이블_응답;
+    OrderTableResponse 단체_4인_테이블_응답;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
 
-        단체_지정할_테이블1 = new OrderTableRequest(3, true);
-        단체_지정할_테이블2 = new OrderTableRequest(3, true);
+        단체_3인_테이블 = new OrderTableRequest(3, true);
+        단체_4인_테이블 = new OrderTableRequest(4, true);
 
-        단체_테이블1 = TableAcceptanceTest.테이블_등록되어_있음(단체_지정할_테이블1)
+        단체_3인_테이블_응답 = TableAcceptanceTest.테이블_등록되어_있음(단체_3인_테이블)
             .as(OrderTableResponse.class);
-        단체_테이블2 = TableAcceptanceTest.테이블_등록되어_있음(단체_지정할_테이블2)
+        단체_4인_테이블_응답 = TableAcceptanceTest.테이블_등록되어_있음(단체_4인_테이블)
             .as(OrderTableResponse.class);
     }
 
@@ -44,7 +43,7 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
     @Test
     void create() {
         // when
-        TableGroupRequest 단체_지정_요청 = new TableGroupRequest(Arrays.asList(단체_테이블1.getId(), 단체_테이블2.getId()));
+        TableGroupRequest 단체_지정_요청 = new TableGroupRequest(Arrays.asList(단체_3인_테이블_응답.getId(), 단체_4인_테이블_응답.getId()));
         ExtractableResponse<Response> 단체_지정_응답 = 단체_지정_등록_요청(단체_지정_요청);
 
         // then
@@ -54,7 +53,7 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
     @DisplayName("단체 지정을 해제한다.")
     @Test
     void ungroup() {
-        TableGroupRequest 단체_지정_요청 = new TableGroupRequest(Arrays.asList(단체_테이블1.getId(), 단체_테이블2.getId()));
+        TableGroupRequest 단체_지정_요청 = new TableGroupRequest(Arrays.asList(단체_3인_테이블_응답.getId(), 단체_4인_테이블_응답.getId()));
         ExtractableResponse<Response> 단체_지정_응답 = 단체_지정_등록_요청(단체_지정_요청);
         단체_지정됨(단체_지정_응답);
 
