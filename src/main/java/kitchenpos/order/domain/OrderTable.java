@@ -3,7 +3,6 @@ package kitchenpos.order.domain;
 import kitchenpos.tablegroup.domain.TableGroup;
 
 import javax.persistence.*;
-import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -16,15 +15,8 @@ public class OrderTable {
     @Embedded
     private NumberOfGuests numberOfGuests;
     private boolean empty;
-    @Embedded
-    private Orders orders = new Orders();
 
     public OrderTable() {
-    }
-
-    public OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty, List<Order> orders) {
-        this(id, tableGroup, numberOfGuests, empty);
-        this.orders = new Orders(orders);
     }
 
     public OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
@@ -47,17 +39,13 @@ public class OrderTable {
         this.empty = empty;
     }
 
-    public void changeNumberOfGuests(final int numberOfGuests) {
-        if (isEmpty()) {
-            throw new IllegalArgumentException("비어 있는 테이블은 손님 수를 변경할 수 없습니다");
-        }
+    public void changeNumberOfGuests(final int numberOfGuests, OrderTableValidator validator) {
+        validator.validateChangeNumberOfGuests(this);
         this.numberOfGuests = NumberOfGuests.of(numberOfGuests);
     }
 
-    public void changeEmptyStatus(final boolean empty) {
-        if (containsStartedOrder()) {
-            throw new IllegalArgumentException("주문이 진행되어 테이블 비움 상태를 변경할 수 없습니다");
-        }
+    public void changeEmptyStatus(final boolean empty, OrderTableValidator validator) {
+        validator.validateHasProgressOrder(this);
         this.empty = empty;
     }
 
@@ -67,10 +55,6 @@ public class OrderTable {
 
     public boolean hasTableGroup() {
         return tableGroup != null;
-    }
-
-    public boolean containsStartedOrder() {
-        return orders.containsStartedOrder();
     }
 
     public void setTableGroup(TableGroup tableGroup) {

@@ -37,18 +37,12 @@ public class OrderTables {
         }
     }
 
-    public void ungroup() {
+    public void ungroup(OrderTableValidator orderTableValidator) {
         for (final OrderTable orderTable : orderTables) {
-            validateUngroupOrderStatus(orderTable);
+            orderTableValidator.validateHasProgressOrder(orderTable);
             orderTable.unsetTableGroup();
         }
         orderTables = new ArrayList<>();
-    }
-
-    private void validateUngroupOrderStatus(OrderTable orderTable) {
-        if (orderTable.containsStartedOrder()) {
-            throw new IllegalArgumentException("주문이 있는 단체 지정은 해제할 수 없습니다");
-        }
     }
 
     public List<OrderTable> values() {

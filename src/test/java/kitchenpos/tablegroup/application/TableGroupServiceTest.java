@@ -1,8 +1,7 @@
 package kitchenpos.tablegroup.application;
 
-import kitchenpos.order.domain.*;
+import kitchenpos.order.domain.OrderTableValidator;
 import kitchenpos.order.dto.OrderTableRequest;
-import kitchenpos.tablegroup.application.TableGroupService;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
@@ -26,6 +25,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class TableGroupServiceTest {
@@ -33,6 +33,8 @@ public class TableGroupServiceTest {
     private OrderTableRepository orderTableRepository;
     @Mock
     private TableGroupRepository tableGroupRepository;
+    @Mock
+    private OrderTableValidator orderTableValidator;
     @InjectMocks
     private TableGroupService tableGroupService;
 
@@ -151,12 +153,12 @@ public class TableGroupServiceTest {
             // given
             List<OrderTable> orderTables = new ArrayList<>();
             TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), orderTables);
-            List<Order> orders = Arrays.asList(new Order(OrderStatus.COOKING), new Order(OrderStatus.COOKING));
-            OrderTable firstOrderTable = new OrderTable(1L, tableGroup, 4, false, orders);
-            OrderTable secondOrderTable = new OrderTable(2L, tableGroup, 4, false, orders);
+            OrderTable firstOrderTable = new OrderTable(1L, tableGroup, 4, false);
+            OrderTable secondOrderTable = new OrderTable(2L, tableGroup, 4, false);
             orderTables.addAll(Arrays.asList(firstOrderTable, secondOrderTable));
 
             given(tableGroupRepository.findById(anyLong())).willReturn(Optional.of(tableGroup));
+            doThrow(IllegalArgumentException.class).when(orderTableValidator).validateHasProgressOrder(any(OrderTable.class));
 
             // when
             ThrowableAssert.ThrowingCallable callable = () -> tableGroupService.ungroup(tableGroup.getId());

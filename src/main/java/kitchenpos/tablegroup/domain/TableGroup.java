@@ -1,6 +1,7 @@
 package kitchenpos.tablegroup.domain;
 
 import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.domain.OrderTableValidator;
 import kitchenpos.order.domain.OrderTables;
 
 import javax.persistence.*;
@@ -30,8 +31,8 @@ public class TableGroup {
         this.orderTables = OrderTables.of(this, orderTables, orderTablesSize);
     }
 
-    public void ungroup() {
-        orderTables.ungroup();
+    public void ungroup(OrderTableValidator orderTableValidator) {
+        orderTables.ungroup(orderTableValidator);
     }
 
     public Long getId() {

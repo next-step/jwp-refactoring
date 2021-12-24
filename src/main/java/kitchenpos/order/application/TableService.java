@@ -2,6 +2,7 @@ package kitchenpos.order.application;
 
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.OrderTableRepository;
+import kitchenpos.order.domain.OrderTableValidator;
 import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.order.dto.OrderTableResponse;
 import org.springframework.stereotype.Service;
@@ -12,9 +13,11 @@ import java.util.List;
 @Service
 public class TableService {
     private final OrderTableRepository orderTableRepository;
+    private final OrderTableValidator orderTableValidator;
 
-    public TableService(final OrderTableRepository orderTableRepository) {
+    public TableService(final OrderTableRepository orderTableRepository, final OrderTableValidator orderTableValidator) {
         this.orderTableRepository = orderTableRepository;
+        this.orderTableValidator = orderTableValidator;
     }
 
     @Transactional
@@ -37,7 +40,7 @@ public class TableService {
             throw new IllegalArgumentException();
         }
 
-        savedOrderTable.changeEmptyStatus(orderTableRequest.isEmpty());
+        savedOrderTable.changeEmptyStatus(orderTableRequest.isEmpty(), orderTableValidator);
         return OrderTableResponse.of(savedOrderTable);
     }
 
@@ -45,7 +48,7 @@ public class TableService {
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
-        savedOrderTable.changeNumberOfGuests(orderTableRequest.getNumberOfGuests());
+        savedOrderTable.changeNumberOfGuests(orderTableRequest.getNumberOfGuests(), orderTableValidator);
         return OrderTableResponse.of(savedOrderTable);
     }
 }

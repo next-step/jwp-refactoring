@@ -3,8 +3,10 @@ package kitchenpos.order.domain;
 
 import kitchenpos.tablegroup.domain.TableGroup;
 import org.assertj.core.api.ThrowableAssert;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import java.util.Arrays;
 import java.util.List;
@@ -13,8 +15,19 @@ import java.util.Objects;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 
 public class OrderTablesTest {
+    private OrderRepository orderRepository;
+    private OrderTableValidator orderTableValidator;
+
+    @BeforeEach
+    void setUp() {
+        orderRepository = Mockito.mock(OrderRepository.class);
+        orderTableValidator = new OrderTableValidator(orderRepository);
+    }
+
     @DisplayName("OrderTables를 생성한다")
     @Test
     void testCreate() {
@@ -62,7 +75,7 @@ public class OrderTablesTest {
         OrderTables orderTables = new OrderTables(orderTableList);
 
         // when
-        orderTables.ungroup();
+        orderTables.ungroup(orderTableValidator);
 
         // then
         assertAll(
@@ -78,14 +91,15 @@ public class OrderTablesTest {
     void testHasNotOrder() {
         // given
         TableGroup tableGroup = new TableGroup();
-        List<Order> orders = Arrays.asList(new Order(OrderStatus.COOKING), new Order(OrderStatus.COOKING));
-        OrderTable one = new OrderTable(1L, tableGroup, 4, false, orders);
-        OrderTable two = new OrderTable(2L, tableGroup, 4, false, orders);
+        OrderTable one = new OrderTable(1L, tableGroup, 4, false);
+        OrderTable two = new OrderTable(2L, tableGroup, 4, false);
         List<OrderTable> orderTableList = Arrays.asList(one, two);
         OrderTables orderTables = new OrderTables(orderTableList);
 
+        doThrow(new IllegalArgumentException()).when(orderTableValidator).validateHasProgressOrder(any(OrderTable.class));
+
         // when
-        ThrowableAssert.ThrowingCallable callable = () -> orderTables.ungroup();
+        ThrowableAssert.ThrowingCallable callable = () -> orderTables.ungroup(orderTableValidator);
 
         // then
         assertThatThrownBy(callable).isInstanceOf(IllegalArgumentException.class);

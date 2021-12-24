@@ -1,6 +1,6 @@
 package kitchenpos.order.application;
 
-import kitchenpos.order.domain.*;
+import kitchenpos.order.domain.OrderTableValidator;
 import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.order.dto.OrderTableResponse;
 import kitchenpos.order.domain.OrderTable;
@@ -29,6 +29,8 @@ import static org.mockito.BDDMockito.given;
 public class TableServiceTest {
     @Mock
     private OrderTableRepository orderTableRepository;
+    @Mock
+    private OrderTableValidator orderTableValidator;
     @InjectMocks
     private TableService tableService;
 
@@ -118,8 +120,7 @@ public class TableServiceTest {
         void validateOrderState() {
             // given
             OrderTableRequest requestOrderTable = new OrderTableRequest(4, true);
-            List<Order> orders = Arrays.asList(new Order(OrderStatus.COOKING), new Order(OrderStatus.COOKING));
-            OrderTable orderTable = new OrderTable(1L, null, 4, true, orders);
+            OrderTable orderTable = new OrderTable(1L, null, 4, true);
 
             given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(orderTable));
 
