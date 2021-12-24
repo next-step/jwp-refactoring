@@ -3,7 +3,7 @@ package kitchenpos.ui;
 import kitchenpos.application.MenuService;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.Product;
+import kitchenpos.product.domain.Product;
 import kitchenpos.common.fixtrue.MenuFixture;
 import kitchenpos.common.fixtrue.MenuGroupFixture;
 import kitchenpos.common.fixtrue.MenuProductFixture;

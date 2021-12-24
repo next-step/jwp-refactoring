@@ -1,8 +1,8 @@
-package kitchenpos.application;
+package kitchenpos.product.application;
 
 import kitchenpos.common.fixtrue.ProductFixture;
-import kitchenpos.dao.ProductDao;
-import kitchenpos.domain.Product;
+import kitchenpos.product.dao.ProductDao;
+import kitchenpos.product.domain.Product;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.BeforeEach;
