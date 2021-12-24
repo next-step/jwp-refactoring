@@ -14,10 +14,6 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.menu.dto.MenuDto;
 import kitchenpos.menu.dto.MenuProductDto;
-import kitchenpos.menugroup.dto.MenuGroupDto;
-import kitchenpos.product.dto.ProductDto;
-import kitchenpos.menugroup.presentation.MenuGroupRestControllerTest;
-import kitchenpos.product.presentation.ProductRestControllerTest;
 import kitchenpos.common.testassistance.config.TestConfig;
 
 @DisplayName("메뉴 API기능에 관한")
@@ -73,12 +69,9 @@ public class MenuRestControllerTest extends TestConfig {
     }
 
     public static MenuDto 신메뉴() {
-        ProductDto product = ProductRestControllerTest.상품_조회요청().as(ProductDto[].class)[0];
-        MenuGroupDto menuGroup = MenuGroupRestControllerTest.메뉴그룹_조회().as(MenuGroupDto[].class)[0];
+        MenuProductDto menuProduct = MenuProductDto.of(1L, 2);
+        MenuDto menu = MenuDto.of("후라이드+후라이드", BigDecimal.valueOf(19_000), 1L, List.of(menuProduct));
 
-        MenuProductDto menuProduct = MenuProductDto.of(product.getId(), 2);
-
-        MenuDto menu = MenuDto.of("후라이드+후라이드", BigDecimal.valueOf(19_000), menuGroup.getId(), List.of(menuProduct));
         return menu;
     }
 }

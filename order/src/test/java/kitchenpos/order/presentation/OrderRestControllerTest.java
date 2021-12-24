@@ -1,7 +1,6 @@
 package kitchenpos.order.presentation;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -13,12 +12,8 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.menu.dto.MenuDto;
 import kitchenpos.order.dto.OrderDto;
 import kitchenpos.order.dto.OrderLineItemDto;
-import kitchenpos.table.dto.OrderTableDto;
-import kitchenpos.menu.presentation.MenuRestControllerTest;
-import kitchenpos.table.presentation.TableRestControllerTest;
 import kitchenpos.common.testassistance.config.TestConfig;
 
 @DisplayName("주문 API기능에 관한")
@@ -66,28 +61,13 @@ public class OrderRestControllerTest extends TestConfig {
     }
 
     public static OrderDto 저장될_주문생성() {
-        OrderTableDto orderTable = 반테이블들_조회됨().get(0);
-        orderTable.changeNumberOfGuests(10);
+        List<OrderLineItemDto> orderLineItems = 주문명세서_생성();
 
-        OrderTableDto changedOrderTable = TableRestControllerTest.주문테이블_빈테이블_변경요청(orderTable).as(OrderTableDto.class);
-
-        MenuDto[] menus = MenuRestControllerTest.메뉴_조회요청().as(MenuDto[].class);
-
-        List<OrderLineItemDto> orderLineItems = 주문명세서_생성(List.of(menus[0], menus[1]));
-
-        return OrderDto.of(changedOrderTable.getId(), orderLineItems);
+        return OrderDto.of(9L, orderLineItems);
     }
 
-    public static List<OrderLineItemDto> 주문명세서_생성(List<MenuDto> menus) {
-        return menus.stream()
-                    .map(menu -> OrderLineItemDto.of(menu.getId(), 1L))
-                    .collect(Collectors.toList());
-    }
-
-    public static List<OrderTableDto> 반테이블들_조회됨() {
-        return List.of(TableRestControllerTest.주문테이블_조회요청().as(OrderTableDto[].class)).stream()
-                                .filter(OrderTableDto::isEmpty)
-                                .collect(Collectors.toList());
+    public static List<OrderLineItemDto> 주문명세서_생성() {
+        return List.of(OrderLineItemDto.of(1L,1L), OrderLineItemDto.of(2L,1L));
     }
 
     private void 주문_저장됨(ExtractableResponse<Response> response) {

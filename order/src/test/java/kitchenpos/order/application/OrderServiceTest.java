@@ -14,16 +14,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.common.domain.Price;
-import kitchenpos.product.domain.Product;
-import kitchenpos.table.domain.OrderTable;
 import kitchenpos.order.dto.OrderDto;
 import kitchenpos.order.dto.OrderLineItemDto;
 import kitchenpos.common.vo.MenuId;
-import kitchenpos.table.vo.OrderTableId;
+import kitchenpos.common.vo.OrderTableId;
 import kitchenpos.order.domain.OrdersValidator;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.order.domain.Orders;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrdersRepository;
@@ -44,24 +39,8 @@ public class OrderServiceTest {
     @Test
     void create_order() {
         // given
-        Product 뿌링클치킨 = Product.of("뿌링클치킨", Price.of(15_000));
-        Product 치킨무 = Product.of("치킨무", Price.of(1_000));
-        Product 코카콜라 = Product.of("코카콜라", Price.of(3_000));
-
-        MenuProduct 뿌링클콤보_뿌링클치킨 = MenuProduct.of(뿌링클치킨, 1L);
-        MenuProduct 뿌링클콤보_치킨무 = MenuProduct.of(치킨무, 1L);
-        MenuProduct 뿌링클콤보_코카콜라 = MenuProduct.of(코카콜라, 1L);
-
-        Menu 뿌링클콤보 = Menu.of(1L, "뿌링클콤보", Price.of(18_000));
-
-        뿌링클콤보_뿌링클치킨.acceptMenu(뿌링클콤보);
-        뿌링클콤보_치킨무.acceptMenu(뿌링클콤보);
-        뿌링클콤보_코카콜라.acceptMenu(뿌링클콤보);
-
-        OrderTable 치킨_주문_단체테이블 = OrderTable.of(10, false);
-
-        OrderLineItem 치킨_주문항목 = OrderLineItem.of(MenuId.of(뿌링클콤보), 1L);
-        Orders 치킨주문 = Orders.of(OrderTableId.of(치킨_주문_단체테이블), OrderStatus.COOKING);
+        OrderLineItem 치킨_주문항목 = OrderLineItem.of(MenuId.of(1L), 1L);
+        Orders 치킨주문 = Orders.of(OrderTableId.of(1L), OrderStatus.COOKING);
         치킨_주문항목.acceptOrder(치킨주문);
 
         when(ordersValidator.getValidatedOrdersForCreate(any(OrderDto.class))).thenReturn(치킨주문);
@@ -83,12 +62,8 @@ public class OrderServiceTest {
     @Test
     void search_order() {
         // given
-        Menu 뿌링클콤보 = Menu.of("뿌링클콤보", Price.of(18_000));
-
-        OrderTable 치킨_주문_단체테이블 = OrderTable.of(10, false);
-
-        OrderLineItem 치킨_주문항목 = OrderLineItem.of(MenuId.of(뿌링클콤보), 1L);
-        Orders 치킨주문 = Orders.of(OrderTableId.of(치킨_주문_단체테이블), OrderStatus.MEAL);
+        OrderLineItem 치킨_주문항목 = OrderLineItem.of(MenuId.of(1L), 1L);
+        Orders 치킨주문 = Orders.of(OrderTableId.of(1L), OrderStatus.MEAL);
         치킨_주문항목.acceptOrder(치킨주문);
 
         when(orderRepository.findAll()).thenReturn(List.of(치킨주문));
@@ -104,12 +79,8 @@ public class OrderServiceTest {
     @Test
     void update_orderStatus() {
         // given
-        Menu 뿌링클콤보 = Menu.of("뿌링클콤보", Price.of(18_000));
-
-        OrderTable 치킨_주문_단체테이블 = OrderTable.of(10, false);
-
-        OrderLineItem 치킨_주문항목 = OrderLineItem.of(MenuId.of(뿌링클콤보), 1L);
-        Orders 치킨주문 = Orders.of(OrderTableId.of(치킨_주문_단체테이블), OrderStatus.COOKING);
+        OrderLineItem 치킨_주문항목 = OrderLineItem.of(MenuId.of(1L), 1L);
+        Orders 치킨주문 = Orders.of(OrderTableId.of(1L), OrderStatus.COOKING);
         치킨_주문항목.acceptOrder(치킨주문);
 
         when(ordersValidator.getValidatedOrdersForChangeOrderStatus(치킨주문.getId())).thenReturn(치킨주문);

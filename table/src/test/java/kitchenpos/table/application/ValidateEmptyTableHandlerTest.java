@@ -15,7 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.orders.event.ValidateEmptyTableEvent;
+import kitchenpos.common.event.ValidateEmptyTableEvent;
 import kitchenpos.table.exception.EmptyOrderTableException;
 
 @ExtendWith(MockitoExtension.class)

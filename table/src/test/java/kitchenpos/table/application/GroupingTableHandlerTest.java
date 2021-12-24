@@ -1,4 +1,4 @@
-package kitchenpos.application.table;
+package kitchenpos.table.application;
 
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.when;
@@ -15,7 +15,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.common.event.GroupingOrderTableEvent;
 import kitchenpos.common.event.UngroupOrderTableEvent;
 import kitchenpos.common.vo.TableGroupId;
@@ -34,10 +33,8 @@ public class GroupingTableHandlerTest {
         // given
         OrderTable 주문테이블 = OrderTable.of(0, true);
         OrderTable 주문테이블2 = OrderTable.of(0, true);
-        
-        TableGroup 단체지정 = TableGroup.of(1L);
-        
-        GroupingOrderTableEvent groupingOrderTableEvent = new GroupingOrderTableEvent(단체지정.getId(), List.of(1L, 2L));
+                
+        GroupingOrderTableEvent groupingOrderTableEvent = new GroupingOrderTableEvent(1L, List.of(1L, 2L));
 
         when(orderTableRepository.findByIdIn(anyList())).thenReturn(List.of(주문테이블, 주문테이블2));
         
@@ -45,8 +42,8 @@ public class GroupingTableHandlerTest {
         groupingTableHandler.handle(groupingOrderTableEvent);
 
         // then
-        Assertions.assertThat(주문테이블.getTableGroupId()).isEqualTo(TableGroupId.of(단체지정.getId()));
-        Assertions.assertThat(주문테이블2.getTableGroupId()).isEqualTo(TableGroupId.of(단체지정.getId()));
+        Assertions.assertThat(주문테이블.getTableGroupId()).isEqualTo(TableGroupId.of(1L));
+        Assertions.assertThat(주문테이블2.getTableGroupId()).isEqualTo(TableGroupId.of(1L));
     }
 
 
@@ -57,11 +54,10 @@ public class GroupingTableHandlerTest {
         OrderTable 주문테이블 = OrderTable.of(0, true);
         OrderTable 주문테이블2 = OrderTable.of(0, true);
         
-        TableGroup 단체지정 = TableGroup.of(1L);
-        주문테이블.groupingTable(TableGroupId.of(단체지정));
-        주문테이블2.groupingTable(TableGroupId.of(단체지정));
+        주문테이블.groupingTable(TableGroupId.of(1L));
+        주문테이블2.groupingTable(TableGroupId.of(1L));
         
-        UngroupOrderTableEvent ungroupOrderTableEvent = new UngroupOrderTableEvent(단체지정.getId(), List.of(1L, 2L));
+        UngroupOrderTableEvent ungroupOrderTableEvent = new UngroupOrderTableEvent(1L, List.of(1L, 2L));
 
         when(orderTableRepository.findByIdIn(anyList())).thenReturn(List.of(주문테이블, 주문테이블2));
         
