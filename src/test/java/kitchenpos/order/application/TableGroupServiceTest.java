@@ -1,7 +1,8 @@
 package kitchenpos.order.application;
 
+import kitchenpos.order.application.exception.InvalidOrderState;
 import kitchenpos.order.application.exception.InvalidTableState;
-import kitchenpos.order.application.exception.OrderTableNotFoundException;
+import kitchenpos.order.application.exception.TableNotFoundException;
 import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.TableGroupRequest;
 import kitchenpos.order.dto.TableGroupResponse;
@@ -18,6 +19,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
 
+import static kitchenpos.order.domain.OrderStatus.COMPLETION;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -66,7 +68,7 @@ class TableGroupServiceTest {
         TableGroupRequest 테이블1개그룹 = new TableGroupRequest(Collections.singletonList(테이블1.getId()));
 
         assertThatThrownBy(() -> tableGroupService.create(테이블1개그룹))
-                .isInstanceOf(OrderTableNotFoundException.class);
+                .isInstanceOf(TableNotFoundException.class);
     }
 
     @Test
@@ -77,7 +79,7 @@ class TableGroupServiceTest {
         when(orderTableRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> tableGroupService.create(request))
-                .isInstanceOf(OrderTableNotFoundException.class);
+                .isInstanceOf(TableNotFoundException.class);
         verify(orderTableRepository, times(1)).findById(anyLong());
     }
 
@@ -112,11 +114,13 @@ class TableGroupServiceTest {
     @Test
     @DisplayName("테이블 그룹을 해제한다.")
     void ungroup() {
-        when(orderTableRepository.findAllByTableGroupId(1L)).thenReturn(Arrays.asList(테이블1, 테이블2));
+        테이블1.changeStatus(COMPLETION);
+        테이블2.changeStatus(COMPLETION);
+        when(tableGroupRepository.findById(anyLong())).thenReturn(Optional.of(테이블그룹));
 
         tableGroupService.ungroup(테이블그룹.getId());
 
-        verify(orderTableRepository, times(1)).findAllByTableGroupId(anyLong());
+        verify(tableGroupRepository, times(1)).findById(anyLong());
         assertThat(테이블1.getTableGroup()).isNull();
         assertThat(테이블2.getTableGroup()).isNull();
     }
@@ -124,14 +128,10 @@ class TableGroupServiceTest {
     @Test
     @DisplayName("모든 테이블의 주문 상태가 계산 완료가 아닌 경우 예외가 발생한다.")
     void validateStatusUngroup() {
-        when(orderTableRepository.findAllByTableGroupId(1L))
-                .thenReturn(Arrays.asList(테이블1, 테이블2));
-        when(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList()))
-                .thenReturn(true);
+        when(tableGroupRepository.findById(anyLong())).thenReturn(Optional.of(테이블그룹));
 
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableGroupService.ungroup(테이블그룹.getId()));
-        verify(orderTableRepository, times(1)).findAllByTableGroupId(anyLong());
-        verify(orderRepository, times(1)).existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList());
+        assertThatThrownBy(() -> tableGroupService.ungroup(테이블그룹.getId()))
+                .isInstanceOf(InvalidOrderState.class);
+        verify(tableGroupRepository, times(1)).findById(anyLong());
     }
 }

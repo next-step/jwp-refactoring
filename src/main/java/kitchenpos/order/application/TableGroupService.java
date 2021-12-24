@@ -1,27 +1,27 @@
 package kitchenpos.order.application;
 
-import kitchenpos.order.application.exception.OrderTableNotFoundException;
-import kitchenpos.order.domain.*;
+import kitchenpos.order.application.exception.TableGroupNotFoundException;
+import kitchenpos.order.application.exception.TableNotFoundException;
+import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.domain.OrderTableRepository;
+import kitchenpos.order.domain.TableGroup;
+import kitchenpos.order.domain.TableGroupRepository;
 import kitchenpos.order.dto.TableGroupRequest;
 import kitchenpos.order.dto.TableGroupResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
 public class TableGroupService {
-    private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
     private final TableGroupRepository tableGroupRepository;
 
-    public TableGroupService(final OrderRepository orderRepository,
-                             final OrderTableRepository orderTableRepository,
+    public TableGroupService(final OrderTableRepository orderTableRepository,
                              final TableGroupRepository tableGroupRepository) {
-        this.orderRepository = orderRepository;
         this.orderTableRepository = orderTableRepository;
         this.tableGroupRepository = tableGroupRepository;
     }
@@ -37,17 +37,10 @@ public class TableGroupService {
     }
 
     @Transactional
-    public void ungroup(final Long tableGroupId) {
-        final List<OrderTable> orderTables = orderTableRepository.findAllByTableGroupId(tableGroupId);
-
-        final List<Long> orderTableIds = orderTables.stream()
-                .map(OrderTable::getId)
-                .collect(Collectors.toList());
-
-        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
-                orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException();
-        }
+    public void ungroup(final Long id) {
+        TableGroup tableGroup = getTableGroup(id);
+        tableGroup.validateStatus();
+        tableGroupRepository.delete(tableGroup);
     }
 
     private List<OrderTable> getTables(List<Long> tableIds) {
@@ -58,6 +51,11 @@ public class TableGroupService {
 
     private OrderTable getTable(Long id) {
         return orderTableRepository.findById(id)
-                .orElseThrow(OrderTableNotFoundException::new);
+                .orElseThrow(TableNotFoundException::new);
+    }
+
+    private TableGroup getTableGroup(Long id) {
+        return tableGroupRepository.findById(id)
+                .orElseThrow(TableGroupNotFoundException::new);
     }
 }

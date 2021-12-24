@@ -1,11 +1,9 @@
 package kitchenpos.order.application;
 
-import kitchenpos.menu.application.exception.MenuGroupNotFoundException;
 import kitchenpos.menu.domain.*;
 import kitchenpos.order.application.exception.InvalidOrderState;
-import kitchenpos.order.application.exception.InvalidTableState;
 import kitchenpos.order.application.exception.OrderNotFoundException;
-import kitchenpos.order.application.exception.OrderTableNotFoundException;
+import kitchenpos.order.application.exception.TableNotFoundException;
 import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
@@ -83,7 +81,7 @@ class OrderServiceTest {
         OrderRequest 주문요청 = new OrderRequest(주문테이블.getId(), Collections.emptyList());
 
         assertThatThrownBy(() -> orderService.create(주문요청))
-                .isInstanceOf(OrderTableNotFoundException.class);
+                .isInstanceOf(TableNotFoundException.class);
     }
 
     @Test
@@ -96,7 +94,7 @@ class OrderServiceTest {
         when(orderTableRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> orderService.create(주문요청))
-                .isInstanceOf(OrderTableNotFoundException.class);
+                .isInstanceOf(TableNotFoundException.class);
         verify(menuRepository, times(1)).findById(anyLong());
         verify(orderTableRepository, times(1)).findById(anyLong());
     }

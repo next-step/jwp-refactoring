@@ -4,7 +4,7 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.application.exception.OrderLineItemNotFoundException;
 import kitchenpos.order.application.exception.OrderNotFoundException;
-import kitchenpos.order.application.exception.OrderTableNotFoundException;
+import kitchenpos.order.application.exception.TableNotFoundException;
 import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
@@ -53,7 +53,7 @@ public class OrderService {
 
     private OrderTable getOrderTable(Long tableId) {
         return orderTableRepository.findById(tableId)
-                .orElseThrow(OrderTableNotFoundException::new);
+                .orElseThrow(TableNotFoundException::new);
     }
 
     private Order getOrder(Long orderId) {

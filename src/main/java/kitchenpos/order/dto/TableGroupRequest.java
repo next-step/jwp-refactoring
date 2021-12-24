@@ -1,6 +1,6 @@
 package kitchenpos.order.dto;
 
-import kitchenpos.order.application.exception.OrderTableNotFoundException;
+import kitchenpos.order.application.exception.TableNotFoundException;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.TableGroup;
 import org.checkerframework.common.aliasing.qual.Unique;
@@ -25,7 +25,7 @@ public class TableGroupRequest {
 
     public TableGroup toEntity(List<OrderTable> orderTables) {
         if (tableIds.size() != orderTables.size()) {
-            throw new OrderTableNotFoundException();
+            throw new TableNotFoundException();
         }
         return new TableGroup(LocalDateTime.now(), orderTables);
     }

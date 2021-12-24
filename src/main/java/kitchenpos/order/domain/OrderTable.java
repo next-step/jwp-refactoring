@@ -2,8 +2,10 @@ package kitchenpos.order.domain;
 
 import javax.persistence.*;
 
+import static javax.persistence.EnumType.STRING;
 import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
+import static kitchenpos.order.domain.OrderStatus.READY;
 
 @Entity
 public class OrderTable {
@@ -20,6 +22,9 @@ public class OrderTable {
     @Embedded
     private TableState tableState;
 
+    @Enumerated(value = STRING)
+    private OrderStatus orderStatus;
+
     protected OrderTable() {
     }
 
@@ -27,10 +32,15 @@ public class OrderTable {
         this.id = id;
         this.numberOfGuests = numberOfGuests;
         this.tableState = tableState;
+        this.orderStatus = READY;
     }
 
     public OrderTable(int numberOfGuests, TableState tableState) {
         this(null, numberOfGuests, tableState);
+    }
+
+    public boolean isCompleted() {
+        return orderStatus == OrderStatus.COMPLETION;
     }
 
     public void setTableGroup(TableGroup tableGroup) {
@@ -45,8 +55,8 @@ public class OrderTable {
         this.tableState = new TableState(true);
     }
 
-    public void changeSit() {
-        this.tableState = new TableState(false);
+    public void changeStatus(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
     }
 
     public void setNumberOfGuests(final int numberOfGuests) {

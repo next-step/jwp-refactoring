@@ -1,5 +1,6 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.order.application.exception.InvalidOrderState;
 import kitchenpos.order.application.exception.InvalidTableState;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -47,6 +48,14 @@ public class TableGroup {
         }
         if (Objects.nonNull(orderTable.getTableGroup())) {
             throw new InvalidTableState("테이블에 일행이 있습니다.");
+        }
+    }
+
+    public void validateStatus() {
+        boolean isAllCompleted = orderTables.stream()
+                .allMatch(OrderTable::isCompleted);
+        if (!isAllCompleted) {
+            throw new InvalidOrderState("모든 주문 상태가 완료되지 않아 단체석을 해제할 수 없습니다.");
         }
     }
 
