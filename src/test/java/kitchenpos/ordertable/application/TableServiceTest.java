@@ -69,7 +69,7 @@ class TableServiceTest {
     void changeEmpty() {
         // given
         OrderTableRequest 요청_주문테이블 = OrderTableRequest.of(0, true);
-        OrderTable 주문테이블 = 한명_주문테이블();
+        OrderTable 주문테이블 = 빈_테이블();
         given(orderTableRepository.findById(any())).willReturn(Optional.of(주문테이블));
 
         // when

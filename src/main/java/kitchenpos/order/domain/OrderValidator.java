@@ -5,7 +5,7 @@ import kitchenpos.common.exception.CommonErrorCode;
 import kitchenpos.common.exception.InvalidParameterException;
 import kitchenpos.common.exception.NotFoundException;
 import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.ordertable.domain.Empty;
+import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
 import org.springframework.stereotype.Component;
 
@@ -24,23 +24,17 @@ public class OrderValidator {
     }
 
     public void registerValidate(Order order) {
-        existOrderTableValidate(order.getOrderTableId());
-        emptyOrdersValidate(order.getOrderTableId());
+        existAndEmptyOrderTableValidate(order.getOrderTableId());
         existMenuValidate(order.getMenuIds());
     }
 
-    private void emptyOrdersValidate(Long orderTableId) {
-        boolean isExistEmptyTable = orderTableRepository.existsByIdAndEmpty(orderTableId,
-            Empty.of(true));
-        if (isExistEmptyTable) {
-            throw new InvalidParameterException(CommonErrorCode.TABLE_NOT_EMPTY_EXCEPTION);
-        }
-    }
+    private void existAndEmptyOrderTableValidate(Long orderTableId) {
+        OrderTable orderTable = orderTableRepository.findById(orderTableId)
+            .orElseThrow(
+                () -> new NotFoundException(CommonErrorCode.ORDER_TABLE_NOT_FOUND_EXCEPTION));
 
-    private void existOrderTableValidate(Long orderTableId) {
-        boolean isExist = orderTableRepository.existsById(orderTableId);
-        if (!isExist) {
-            throw new InvalidParameterException(CommonErrorCode.ORDER_TABLE_NOT_FOUND_EXCEPTION);
+        if (orderTable.isEmpty()) {
+            throw new InvalidParameterException(CommonErrorCode.TABLE_NOT_EMPTY_EXCEPTION);
         }
     }
 

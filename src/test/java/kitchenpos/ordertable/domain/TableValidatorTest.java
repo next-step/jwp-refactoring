@@ -33,10 +33,12 @@ class TableValidatorTest {
     void 단체지정_중_빈테이블_변경_실패() {
         // given
         OrderTable 단체지정된_주문테이블 = 단체지정된_주문테이블();
+        given(orderRepository.findAllByOrderTableId(any())).willReturn(
+            Collections.singletonList(요리중_주문_of()));
 
         // when
-        ThrowableAssert.ThrowingCallable actual = () -> 단체지정된_주문테이블.changeEmpty(tableValidator,
-            true);
+        ThrowableAssert.ThrowingCallable actual = () -> tableValidator.completedOrderValid(
+            단체지정된_주문테이블);
 
         // then
         assertThatThrownBy(actual).isInstanceOf(InvalidParameterException.class);
@@ -51,7 +53,8 @@ class TableValidatorTest {
             Collections.singletonList(요리중_주문_of()));
 
         // when
-        ThrowableAssert.ThrowingCallable actual = () -> 한명_주문테이블.changeEmpty(tableValidator, true);
+        ThrowableAssert.ThrowingCallable actual = () -> tableValidator.completedOrderValid(
+            한명_주문테이블);
 
         // then
         assertThatThrownBy(actual).isInstanceOf(InvalidParameterException.class);
