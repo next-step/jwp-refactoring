@@ -16,13 +16,13 @@ class QuantityTest {
 	@Test
 	void from() {
 		// given
-		long quantity = 2;
+		long value = 2;
 
 		// when
-		Quantity menuProductQuantity = Quantity.from(quantity);
+		Quantity quantity = Quantity.from(value);
 
 		// then
-		assertThat(menuProductQuantity.getValue()).isEqualTo(quantity);
+		assertThat(quantity.getValue()).isEqualTo(value);
 	}
 
 	@DisplayName("생성 실패 - 수량이 없거나 음수인 경우")
