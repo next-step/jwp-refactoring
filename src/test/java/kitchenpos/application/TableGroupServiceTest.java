@@ -49,7 +49,7 @@ class TableGroupServiceTest {
 
         TableGroup tableGroup = new TableGroup(1L, LocalDateTime.of(2021, 12, 25, 00, 00, 00));
 
-        given(orderTableRepository.findAllByIdIn(anyList())).willReturn(orderTables);
+        given(orderTableRepository.findAllById(anyList())).willReturn(orderTables);
         given(tableGroupRepository.save(any())).willReturn(tableGroup);
         given(orderTableRepository.save(any())).willReturn(orderTable1, orderTable2);
 
@@ -96,7 +96,7 @@ class TableGroupServiceTest {
         OrderTable orderTable2 = new OrderTable(2L, null, 3, true);
         List<OrderTable> orderTables = Lists.newArrayList(orderTable1, orderTable2);
 
-        given(orderTableRepository.findAllByIdIn(anyList())).willReturn(orderTables);
+        given(orderTableRepository.findAllById(anyList())).willReturn(orderTables);
 
 
         // when, then
@@ -113,7 +113,7 @@ class TableGroupServiceTest {
         OrderTable orderTable2 = new OrderTable(2L, null, 3, true);
         List<OrderTable> orderTables = Lists.newArrayList(orderTable1, orderTable2);
 
-        given(orderTableRepository.findAllByIdIn(anyList())).willReturn(orderTables);
+        given(orderTableRepository.findAllById(anyList())).willReturn(orderTables);
 
 
         // when, then
