@@ -1,5 +1,6 @@
 package kitchenpos.menu.application;
 
+import kitchenpos.menu.application.exception.InvalidPrice;
 import kitchenpos.menu.domain.Product;
 import kitchenpos.menu.domain.ProductRepository;
 import kitchenpos.menu.dto.ProductRequest;
@@ -16,8 +17,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -56,8 +56,8 @@ class ProductServiceTest {
     void validatePriceNull() {
         ProductRequest request = ProductRequest.of("통통치킨", null);
 
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> productService.create(request));
+        assertThatThrownBy(() -> productService.create(request))
+                .isInstanceOf(InvalidPrice.class);
     }
 
     @Test
@@ -66,8 +66,8 @@ class ProductServiceTest {
         BigDecimal invalidPrice = BigDecimal.valueOf(-1);
         ProductRequest request = ProductRequest.of("통통치킨", invalidPrice);
 
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> productService.create(request));
+        assertThatThrownBy(() -> productService.create(request))
+                .isInstanceOf(InvalidPrice.class);
     }
 
     @Test

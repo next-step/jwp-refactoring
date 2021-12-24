@@ -29,24 +29,16 @@ public class MenuProduct {
         this.quantity = quantity;
     }
 
+    public Price calculate() {
+        return product.multiply(quantity);
+    }
+
     public void setMenu(Menu menu) {
         if (this.menu != null) {
             this.menu.getMenuProducts().remove(this);
         }
         this.menu = menu;
         menu.getMenuProducts().add(this);
-    }
-
-    public void setProduct(Product product) {
-        this.product = product;
-    }
-
-    public long getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(final Long quantity) {
-        this.quantity = quantity;
     }
 
     public Long getSeq() {
@@ -59,5 +51,9 @@ public class MenuProduct {
 
     public Product getProduct() {
         return product;
+    }
+
+    public Long getQuantity() {
+        return quantity;
     }
 }

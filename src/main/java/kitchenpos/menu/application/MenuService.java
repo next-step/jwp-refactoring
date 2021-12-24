@@ -1,5 +1,7 @@
 package kitchenpos.menu.application;
 
+import kitchenpos.menu.application.exception.MenuGroupNotFoundException;
+import kitchenpos.menu.application.exception.ProductNotFoundException;
 import kitchenpos.menu.domain.*;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
@@ -7,9 +9,7 @@ import kitchenpos.menu.dto.MenuResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,31 +28,22 @@ public class MenuService {
 
     @Transactional
     public MenuResponse create(final MenuRequest request) {
-        Optional<MenuGroup> menuGroup = menuGroupRepository.findById(request.getMenuGroupId());
-        if (!menuGroup.isPresent()) {
-            throw new IllegalArgumentException();
-        }
-
+        MenuGroup menuGroup = getMenuGroup(request);
         List<MenuProduct> menuProducts = getMenuProducts(request);
-        Menu menu = request.toEntity(menuGroup.get(), menuProducts);
 
-        BigDecimal sum = BigDecimal.ZERO;
-        for (final MenuProduct menuProduct : menuProducts) {
-            Product product = menuProduct.getProduct();
-            sum = sum.add(product.getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
-        }
-
-        if (menu.getPrice().compareTo(sum) > 0) {
-            throw new IllegalArgumentException();
-        }
-        Menu save = menuRepository.save(menu);
-
-        return MenuResponse.of(save);
+        Menu menu = request.toEntity(menuGroup, menuProducts);
+        Menu persistMenu = menuRepository.save(menu);
+        return MenuResponse.of(persistMenu);
     }
 
     public List<MenuResponse> list() {
         List<Menu> menus = menuRepository.findAll();
         return MenuResponse.ofList(menus);
+    }
+
+    private MenuGroup getMenuGroup(MenuRequest request) {
+        return menuGroupRepository.findById(request.getMenuGroupId())
+                .orElseThrow(MenuGroupNotFoundException::new);
     }
 
     private List<MenuProduct> getMenuProducts(MenuRequest request) {
@@ -67,6 +58,6 @@ public class MenuService {
 
     private Product getProduct(Long productId) {
         return productRepository.findById(productId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(ProductNotFoundException::new);
     }
 }

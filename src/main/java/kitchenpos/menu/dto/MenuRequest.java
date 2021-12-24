@@ -10,13 +10,10 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public class MenuRequest {
-
     public String name;
-
     @NotNull
     @Min(0)
     public BigDecimal price;
-
     @NotNull
     public Long menuGroupId;
 

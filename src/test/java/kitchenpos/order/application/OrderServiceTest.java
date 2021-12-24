@@ -42,7 +42,7 @@ class OrderServiceTest {
 
     @BeforeEach
     void setUp() {
-        Product 매콤치킨 = new Product(1L, "매콤치킨", BigDecimal.valueOf(13000));
+        Product 매콤치킨 = new Product("매콤치킨", BigDecimal.valueOf(13000));
         MenuGroup 인기메뉴그룹 = new MenuGroup(1L, "인기메뉴");
         MenuProduct 매콤치킨구성 = new MenuProduct(매콤치킨, 1L);
         매콤치킨단품 = Menu.of("매콤치킨단품", BigDecimal.valueOf(13000), 인기메뉴그룹, Collections.singletonList(매콤치킨구성));
