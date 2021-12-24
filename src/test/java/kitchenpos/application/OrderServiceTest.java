@@ -86,7 +86,7 @@ class OrderServiceTest {
         );
     }
 
-    @DisplayName("주문 상태를 변경한다.")
+    @DisplayName("주문 상태를 완료로 변경한다.")
     @Test
     void changeOrderStatus() {
         final OrderLineItem orderLineItem1 = new OrderLineItem(1L, 1L, null, 5);
