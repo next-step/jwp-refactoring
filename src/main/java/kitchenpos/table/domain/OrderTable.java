@@ -21,6 +21,10 @@ public class OrderTable {
     public OrderTable() {
     }
 
+    public OrderTable(Long id) {
+        this.id = id;
+    }
+
     private OrderTable(Long tableGroupId, int numberOfGuests, boolean empty) {
         this.tableGroupId = tableGroupId;
         this.numberOfGuests = numberOfGuests;
@@ -35,15 +39,11 @@ public class OrderTable {
     }
 
     public static OrderTable of(Long id) {
-        return new OrderTable(id, 0, false);
+        return new OrderTable(id);
     }
 
     public static OrderTable of(int numberOfGuests) {
         return new OrderTable(null, numberOfGuests, false);
-    }
-
-    public static OrderTable ofWithEmpty(int numberOfGuests) {
-        return new OrderTable(null, numberOfGuests, true);
     }
 
     public static OrderTable of(int numberOfGuests, boolean empty) {
