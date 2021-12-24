@@ -27,11 +27,7 @@ public class TableGroupAcceptanceStep {
         TableGroupRequest expected) {
         TableGroupResponse 등록된_단체지정 = response.as(TableGroupResponse.class);
 
-        assertAll(
-            () -> assertThat(등록된_단체지정.getId()).isNotNull()
-//            () -> assertThat(등록된_단체지정.getOrderTables()).extracting("id")
-//                .containsExactlyElementsOf(expected.getOrderTableIds())
-        );
+        assertThat(등록된_단체지정.getId()).isNotNull();
 
         return 등록된_단체지정.getId();
     }
