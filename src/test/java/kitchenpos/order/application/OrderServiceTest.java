@@ -19,8 +19,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.menu.dao.MenuRepository;
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.dao.OrderDao;
-import kitchenpos.order.dao.OrderLineItemDao;
+import kitchenpos.order.dao.OrderLineItemRepository;
 import kitchenpos.order.dao.OrderTableRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
@@ -38,7 +39,7 @@ public class OrderServiceTest {
     private OrderDao orderDao;
 
     @Mock
-    private OrderLineItemDao orderLineItemDao;
+    private OrderLineItemRepository orderLineItemRepository;
 
     @Mock
     private OrderTableRepository orderTableRepository;
@@ -63,10 +64,13 @@ public class OrderServiceTest {
         주문.setId(1L);
         주문.setOrderTableId(주문_테이블.getId());
         
+        Menu 메뉴 = new Menu();
+        메뉴.setId(1L);
+        
         OrderLineItem 주문_메뉴 = new OrderLineItem();
         주문_메뉴.setSeq(1L);
-        주문_메뉴.setOrderId(주문.getId());
-        주문_메뉴.setMenuId(1L);
+        주문_메뉴.setOrder(주문);
+        주문_메뉴.setMenu(메뉴);
         주문_메뉴.setQuantity(1L);
         
         주문.setOrderLineItems(Arrays.asList(주문_메뉴));
@@ -101,9 +105,15 @@ public class OrderServiceTest {
     @Test
     void 주문_등록_등록된_메뉴만() {
         // given
+        Menu 미등록_메뉴 = new Menu();
+        미등록_메뉴.setId(1L);
+        
+        OrderLineItem 주문_항목 = new OrderLineItem();
+        주문_항목.setMenu(미등록_메뉴);
+        
         Order 미등록_메뉴_주문 = new Order();
         미등록_메뉴_주문.setId(1L);
-        미등록_메뉴_주문.setOrderLineItems(Arrays.asList(new OrderLineItem()));
+        미등록_메뉴_주문.setOrderLineItems(Arrays.asList(주문_항목));
 
         // when
         when(menuRepository.countByIdIn(anyList())).thenReturn(0L);
@@ -122,11 +132,14 @@ public class OrderServiceTest {
         // given
         Order 테이블_없이_주문 = new Order();
         테이블_없이_주문.setId(1L);
+        
+        Menu 메뉴 = new Menu();
+        메뉴.setId(1L);
 
         OrderLineItem 주문_메뉴 = new OrderLineItem();
         주문_메뉴.setSeq(1L);
-        주문_메뉴.setOrderId(테이블_없이_주문.getId());
-        주문_메뉴.setMenuId(1L);
+        주문_메뉴.setOrder(테이블_없이_주문);
+        주문_메뉴.setMenu(메뉴);
         주문_메뉴.setQuantity(1L);
         
         테이블_없이_주문.setOrderLineItems(Arrays.asList(주문_메뉴));
@@ -160,10 +173,13 @@ public class OrderServiceTest {
         주문.setId(1L);
         주문.setOrderTableId(주문_테이블.getId());
         
+        Menu 메뉴 = new Menu();
+        메뉴.setId(1L);
+        
         OrderLineItem 주문_메뉴 = new OrderLineItem();
         주문_메뉴.setSeq(1L);
-        주문_메뉴.setOrderId(주문.getId());
-        주문_메뉴.setMenuId(1L);
+        주문_메뉴.setOrder(주문);
+        주문_메뉴.setMenu(메뉴);
         주문_메뉴.setQuantity(1L);
         
         주문.setOrderLineItems(Arrays.asList(주문_메뉴));
@@ -190,7 +206,7 @@ public class OrderServiceTest {
         두번째_주문.setId(1L);
         
         given(orderDao.findAll()).willReturn(Arrays.asList(첫번째_주문, 두번째_주문));
-        given(orderLineItemDao.findAllByOrderId(첫번째_주문.getId())).willReturn(Arrays.asList(new OrderLineItem()));
+        given(orderLineItemRepository.findAllByOrderId(첫번째_주문.getId())).willReturn(Arrays.asList(new OrderLineItem()));
     
         // when
         List<Order> 주문_목록 = orderService.list();
@@ -211,7 +227,7 @@ public class OrderServiceTest {
         Order 변경할_주문 = new Order();
         변경할_주문.setId(1L);
         변경할_주문.setOrderStatus(OrderStatus.COMPLETION.name());
-        given(orderLineItemDao.findAllByOrderId(anyLong())).willReturn(Arrays.asList(new OrderLineItem()));
+        given(orderLineItemRepository.findAllByOrderId(anyLong())).willReturn(Arrays.asList(new OrderLineItem()));
     
         // when
         Order 변경후_주문 = orderService.changeOrderStatus(저장된_주문.getId(), 변경할_주문);
