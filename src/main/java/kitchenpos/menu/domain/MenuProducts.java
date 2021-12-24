@@ -9,6 +9,7 @@ import javax.persistence.OneToMany;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Embeddable
@@ -45,5 +46,18 @@ public class MenuProducts {
 
     public void add(MenuProduct menuProduct) {
         menuProducts.add(menuProduct);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof MenuProducts)) return false;
+        MenuProducts that = (MenuProducts) o;
+        return Objects.equals(menuProducts, that.menuProducts);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(menuProducts);
     }
 }
