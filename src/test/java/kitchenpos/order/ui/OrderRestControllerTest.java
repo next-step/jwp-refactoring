@@ -11,7 +11,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import kitchenpos.common.CommonTestFixtures;
@@ -67,7 +66,7 @@ class OrderRestControllerTest {
         OrderRequest requestOrder = OrderTestFixtures.convertToOrderRequest(
             new Order(테이블1번, orderLineItems));
         OrderResponse expectedOrder = OrderResponse.from(new Order(1L, 테이블1번, OrderStatus.COOKING,
-            LocalDateTime.now(), orderLineItems));
+            orderLineItems));
         given(orderService.create(any()))
             .willReturn(expectedOrder);
 
@@ -94,9 +93,9 @@ class OrderRestControllerTest {
 
         List<OrderResponse> expectedOrders = Arrays.asList(
             OrderResponse.from(
-                new Order(1L, 테이블1번, OrderStatus.MEAL, LocalDateTime.now(), orderLineItems1)),
+                new Order(1L, 테이블1번, OrderStatus.MEAL, orderLineItems1)),
             OrderResponse.from(
-                new Order(2L, 테이블1번, OrderStatus.COOKING, LocalDateTime.now(), orderLineItems2)));
+                new Order(2L, 테이블1번, OrderStatus.COOKING, orderLineItems2)));
 
         given(orderService.list())
             .willReturn(expectedOrders);
@@ -124,8 +123,7 @@ class OrderRestControllerTest {
         OrderRequest requestOrder = new OrderRequest(changeOrderStatus);
 
         OrderResponse expectedOrder = OrderResponse.from(
-            new Order(1L, 테이블1번, changeOrderStatus, LocalDateTime.now(),
-                orderLineItems));
+            new Order(1L, 테이블1번, changeOrderStatus, orderLineItems));
         given(orderService.changeOrderStatus(any(), any()))
             .willReturn(expectedOrder);
 

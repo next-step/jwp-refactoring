@@ -3,7 +3,6 @@ package kitchenpos.ordertable.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import kitchenpos.menu.testfixtures.MenuTestFixtures;
@@ -44,7 +43,7 @@ class OrderTableTest {
         //given
         OrderTable orderTable1 = new OrderTable(1L, 6, true);
         OrderTable orderTable2 = new OrderTable(2L, 3, true);
-        TableGroup tableGroup = new TableGroup(LocalDateTime.now());
+        TableGroup tableGroup = new TableGroup();
         tableGroup.groupTables(Arrays.asList(orderTable1, orderTable2));
 
         //when,then
@@ -62,7 +61,7 @@ class OrderTableTest {
         );
 
         //when
-        Order order = new Order(orderTable, LocalDateTime.now(), orderLineItems);
+        Order order = new Order(orderTable, orderLineItems);
 
         //then
         assertThatThrownBy(() -> orderTable.updateEmpty(true))

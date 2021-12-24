@@ -3,7 +3,6 @@ package kitchenpos.order.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import kitchenpos.menu.testfixtures.MenuTestFixtures;
@@ -23,7 +22,7 @@ class OrderTest {
         );
 
         //when
-        Order order = new Order(orderTable, LocalDateTime.now(), orderLineItems);
+        Order order = new Order(orderTable, orderLineItems);
 
         //then
         assertThat(order.getOrderTable()).isEqualTo(orderTable);
@@ -39,7 +38,7 @@ class OrderTest {
         );
 
         //when, then
-        assertThatThrownBy(() -> new Order(orderTable, LocalDateTime.now(), orderLineItems))
+        assertThatThrownBy(() -> new Order(orderTable, orderLineItems))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -54,7 +53,7 @@ class OrderTest {
         );
 
         //when, then
-        assertThatThrownBy(() -> new Order(orderTable, LocalDateTime.now(), orderLineItems))
+        assertThatThrownBy(() -> new Order(orderTable, orderLineItems))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -66,7 +65,7 @@ class OrderTest {
         List<OrderLineItem> orderLineItems = Arrays.asList(
             new OrderLineItem(MenuTestFixtures.서비스군만두, 5)
         );
-        Order order = new Order(orderTable, LocalDateTime.now(), orderLineItems);
+        Order order = new Order(orderTable, orderLineItems);
 
         //when
         order.changeOrderStatus(OrderStatus.MEAL);
@@ -83,7 +82,7 @@ class OrderTest {
         List<OrderLineItem> orderLineItems = Arrays.asList(
             new OrderLineItem(MenuTestFixtures.서비스군만두, 5)
         );
-        Order order = new Order(orderTable, LocalDateTime.now(), orderLineItems);
+        Order order = new Order(orderTable, orderLineItems);
         order.changeOrderStatus(OrderStatus.COMPLETION);
 
         //when, then

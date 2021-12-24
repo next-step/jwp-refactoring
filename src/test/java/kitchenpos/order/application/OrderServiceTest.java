@@ -3,7 +3,6 @@ package kitchenpos.order.application;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -64,9 +63,8 @@ class OrderServiceTest {
             new OrderLineItem(이달의메뉴, 3));
 
         OrderRequest requestOrder = OrderTestFixtures.convertToOrderRequest(
-            new Order(orderTable, LocalDateTime.now(), orderLineItems));
-        Order expectedOrder = new Order(1L, orderTable, OrderStatus.COOKING, LocalDateTime.now(),
-            orderLineItems);
+            new Order(orderTable, orderLineItems));
+        Order expectedOrder = new Order(1L, orderTable, OrderStatus.COOKING, orderLineItems);
 
         MenuTestFixtures.특정_메뉴_조회_모킹(menuService, 혼술세트);
         MenuTestFixtures.특정_메뉴_조회_모킹(menuService, 이달의메뉴);
@@ -92,10 +90,8 @@ class OrderServiceTest {
             new OrderLineItem(혼술세트, 2),
             new OrderLineItem(이달의메뉴, 5));
         List<Order> orders = Arrays.asList(
-            new Order(1L, orderTable, OrderStatus.MEAL, LocalDateTime.now(),
-                orderLineItems1),
-            new Order(2L, orderTable, OrderStatus.COMPLETION, LocalDateTime.now(),
-                orderLineItems2));
+            new Order(1L, orderTable, OrderStatus.MEAL, orderLineItems1),
+            new Order(2L, orderTable, OrderStatus.COMPLETION, orderLineItems2));
 
         OrderTestFixtures.주문_전체_조회_모킹(orderDao, orders);
 
@@ -115,8 +111,7 @@ class OrderServiceTest {
         List<OrderLineItem> orderLineItems = Arrays.asList(
             new OrderLineItem(혼술세트, 1),
             new OrderLineItem(이달의메뉴, 3));
-        Order order = new Order(1L, orderTable, OrderStatus.MEAL,
-            LocalDateTime.now(), orderLineItems);
+        Order order = new Order(1L, orderTable, OrderStatus.MEAL, orderLineItems);
         OrderTestFixtures.특정_주문_조회_모킹(orderDao, order);
 
         //when

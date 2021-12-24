@@ -2,7 +2,6 @@ package kitchenpos.ordertable.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import kitchenpos.ordertable.domain.OrderTable;
@@ -46,7 +45,7 @@ class TableGroupServiceTest {
         List<OrderTable> expectedOrderTables = Arrays.asList(
             new OrderTable(1L, 6, true),
             new OrderTable(2L, 3, true));
-        TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now());
+        TableGroup tableGroup = new TableGroup(1L);
         tableGroup.groupTables(expectedOrderTables);
         TableGroupTestFixtures.테이블그룹_저장_결과_모킹(tableGroupDao, tableGroup);
 
@@ -66,7 +65,7 @@ class TableGroupServiceTest {
         List<OrderTable> orderTables = Arrays.asList(
             new OrderTable(1L, 6, true),
             new OrderTable(2L, 3, true));
-        TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now());
+        TableGroup tableGroup = new TableGroup(1L);
         tableGroup.groupTables(orderTables);
         TableGroupTestFixtures.특정_테이블그룹_조회_모킹(tableGroupDao, tableGroup);
 

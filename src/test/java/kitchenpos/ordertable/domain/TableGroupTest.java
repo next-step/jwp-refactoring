@@ -3,7 +3,6 @@ package kitchenpos.ordertable.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import kitchenpos.menu.testfixtures.MenuTestFixtures;
@@ -23,7 +22,7 @@ class TableGroupTest {
             new OrderTable(2L, 3, true));
 
         //when
-        TableGroup tableGroup = new TableGroup(LocalDateTime.now());
+        TableGroup tableGroup = new TableGroup();
         tableGroup.groupTables(orderTables);
 
         //then
@@ -38,7 +37,7 @@ class TableGroupTest {
             new OrderTable(1L, 6, true));
 
         //when, then
-        TableGroup tableGroup = new TableGroup(LocalDateTime.now());
+        TableGroup tableGroup = new TableGroup();
         assertThatThrownBy(() -> tableGroup.groupTables(orderTables))
             .isInstanceOf(IllegalArgumentException.class);
     }
@@ -52,7 +51,7 @@ class TableGroupTest {
             new OrderTable(2L, 3, true));
 
         //when, then
-        TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now());
+        TableGroup tableGroup = new TableGroup(1L);
         assertThatThrownBy(() -> tableGroup.groupTables(orderTables))
             .isInstanceOf(IllegalArgumentException.class);
     }
@@ -66,7 +65,7 @@ class TableGroupTest {
             new OrderTable(1L, 6, true));
 
         //when, then
-        TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now());
+        TableGroup tableGroup = new TableGroup(1L);
         assertThatThrownBy(() -> tableGroup.groupTables(orderTables))
             .isInstanceOf(IllegalArgumentException.class);
     }
@@ -79,11 +78,11 @@ class TableGroupTest {
             new OrderTable(1L, 6, true),
             new OrderTable(2L, 3, true));
 
-        TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now());
+        TableGroup tableGroup = new TableGroup(1L);
         tableGroup.groupTables(orderTables);
 
         //when,then
-        TableGroup tableGroup2 = new TableGroup(2L, LocalDateTime.now());
+        TableGroup tableGroup2 = new TableGroup(2L);
         assertThatThrownBy(() -> tableGroup2.groupTables(orderTables))
             .isInstanceOf(IllegalArgumentException.class);
     }
@@ -95,7 +94,7 @@ class TableGroupTest {
         List<OrderTable> orderTables = Arrays.asList(
             new OrderTable(1L, 6, true),
             new OrderTable(2L, 3, true));
-        TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now());
+        TableGroup tableGroup = new TableGroup(1L);
         tableGroup.groupTables(orderTables);
 
         //when
@@ -115,7 +114,7 @@ class TableGroupTest {
         List<OrderTable> orderTables = Arrays.asList(
             new OrderTable(1L, 6, true),
             new OrderTable(2L, 3, true));
-        TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now());
+        TableGroup tableGroup = new TableGroup(1L);
         tableGroup.groupTables(orderTables);
 
         Order order = new Order(orderTables.get(0), Arrays.asList(

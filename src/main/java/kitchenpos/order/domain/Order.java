@@ -1,6 +1,5 @@
 package kitchenpos.order.domain;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.Column;
@@ -14,10 +13,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import kitchenpos.common.BaseTimeEntity;
 import kitchenpos.ordertable.domain.OrderTable;
 
 @Entity(name = "orders")
-public class Order {
+public class Order extends BaseTimeEntity {
 
     private static final String ERROR_MESSAGE_EMPTY_TABLE_CANNOT_ORDER = "주문종료 상태인 테이블은 주문할 수 없습니다.";
     private static final String ERROR_MESSAGE_COMPLETE_ORDER_CANNOT_CHANGE = "계산 완료된 주문 상태는 변경할 수 없습니다.";
@@ -33,9 +33,6 @@ public class Order {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
-
-    @Column(nullable = false, updatable = false)
-    private LocalDateTime orderedTime;
 
     @Embedded
     private OrderLineItems orderLineItems = new OrderLineItems();
@@ -55,20 +52,15 @@ public class Order {
         this.orderStatus = orderStatus;
     }
 
+
     public Order(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
-        this(orderTable, LocalDateTime.now(), orderLineItems);
+        this(null, orderTable, OrderStatus.COOKING, orderLineItems);
     }
 
-    public Order(OrderTable orderTable, LocalDateTime orderedTime,
-        List<OrderLineItem> orderLineItems) {
-        this(null, orderTable, OrderStatus.COOKING, orderedTime, orderLineItems);
-    }
-
-    public Order(Long id, OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime,
+    public Order(Long id, OrderTable orderTable, OrderStatus orderStatus,
         List<OrderLineItem> orderLineItems) {
         this.id = id;
         this.orderStatus = orderStatus;
-        this.orderedTime = orderedTime;
         assignOrderLineItems(orderLineItems);
         assignTable(orderTable);
     }
@@ -103,17 +95,12 @@ public class Order {
         this.orderStatus = changeStatus;
     }
 
-
     public OrderTable getOrderTable() {
         return orderTable;
     }
 
     public OrderStatus getOrderStatus() {
         return orderStatus;
-    }
-
-    public LocalDateTime getOrderedTime() {
-        return orderedTime;
     }
 
     public List<OrderLineItem> getOrderLineItemList() {

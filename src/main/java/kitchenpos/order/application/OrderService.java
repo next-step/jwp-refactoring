@@ -1,6 +1,5 @@
 package kitchenpos.order.application;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -46,7 +45,7 @@ public class OrderService {
 
         final OrderTable orderTable = tableService.findOrderTable(orderRequest.getOrderTableId());
 
-        Order order = new Order(orderTable, LocalDateTime.now(), orderLineItems);
+        Order order = new Order(orderTable, orderLineItems);
         final Order savedOrder = orderDao.save(order);
         return OrderResponse.from(savedOrder);
     }

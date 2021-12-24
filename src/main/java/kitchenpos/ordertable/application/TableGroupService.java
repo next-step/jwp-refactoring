@@ -1,6 +1,5 @@
 package kitchenpos.ordertable.application;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.TableGroup;
@@ -31,7 +30,7 @@ public class TableGroupService {
         final List<OrderTableRequest> orderTableRequests = tableGroupRequest.getOrderTables();
         List<OrderTable> orderTables = tableService.findOrderTables(orderTableRequests);
 
-        TableGroup tableGroup = new TableGroup(LocalDateTime.now());
+        TableGroup tableGroup = new TableGroup();
         final TableGroup savedTableGroup = tableGroupDao.save(tableGroup);
         savedTableGroup.groupTables(orderTables);
         return TableGroupResponse.from(savedTableGroup);

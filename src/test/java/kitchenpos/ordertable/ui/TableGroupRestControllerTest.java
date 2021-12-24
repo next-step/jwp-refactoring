@@ -7,7 +7,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import kitchenpos.common.CommonTestFixtures;
@@ -46,7 +45,7 @@ class TableGroupRestControllerTest {
         TableGroupRequest requestTableGroup = TableGroupTestFixtures.convertToTableGroupRequest(
             orderTables);
 
-        TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now());
+        TableGroup tableGroup = new TableGroup(1L);
         tableGroup.groupTables(orderTables);
         TableGroupResponse expectedTableGroup = TableGroupResponse.from(
             tableGroup);
