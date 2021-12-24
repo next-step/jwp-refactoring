@@ -1,23 +1,18 @@
 package kitchenpos.domain;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Order {
-    private static final String KEY_COLUMN_NAME = "id";
-
     private Long id;
     private Long orderTableId;
     private String orderStatus;
     private LocalDateTime orderedTime;
     private List<OrderLineItem> orderLineItems;
 
-    protected Order() {}
+    public Order() {}
 
-    public Order(Long id, Long orderTableId, String orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
+    public Order(final Long id, final Long orderTableId, final String orderStatus, final LocalDateTime orderedTime, final List<OrderLineItem> orderLineItems) {
         this.id = id;
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
@@ -25,9 +20,8 @@ public class Order {
         this.orderLineItems = orderLineItems;
     }
 
-    public static Order from(final ResultSet resultSet) throws SQLException {
-        return new Order(resultSet.getLong(KEY_COLUMN_NAME), resultSet.getLong("order_table_id"), resultSet.getString("order_status")
-                , resultSet.getObject("ordered_time", LocalDateTime.class), new ArrayList<>());
+    public static Order of(final Long id, final Long orderTableId, final String orderStatus, final LocalDateTime orderedTime, final List<OrderLineItem> orderLineItems) {
+        return new Order(id, orderTableId, orderStatus, orderedTime, orderLineItems);
     }
 
     public Long getId() {

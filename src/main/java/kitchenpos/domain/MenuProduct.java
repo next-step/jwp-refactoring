@@ -1,28 +1,22 @@
 package kitchenpos.domain;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 public class MenuProduct {
-    private static final String KEY_COLUMN_NAME = "seq";
-
     private Long seq;
     private Long menuId;
     private Long productId;
     private long quantity;
 
-    protected MenuProduct() {}
+    public MenuProduct() {}
 
-    public MenuProduct(Long seq, Long menuId, Long productId, long quantity) {
+    public MenuProduct(final Long seq, final Long menuId, final Long productId, final long quantity) {
         this.seq = seq;
         this.menuId = menuId;
         this.productId = productId;
         this.quantity = quantity;
     }
 
-    public static MenuProduct from(final ResultSet resultSet) throws SQLException {
-        return new MenuProduct(resultSet.getLong(KEY_COLUMN_NAME), resultSet.getLong("menu_id")
-                , resultSet.getLong("product_id"), resultSet.getLong("quantity"));
+    public static MenuProduct of(final Long seq, final Long menuId, final Long productId, final long quantity) {
+        return new MenuProduct(seq, menuId, productId, quantity);
     }
 
     public Long getSeq() {

@@ -1,28 +1,23 @@
 package kitchenpos.domain;
 
 import java.math.BigDecimal;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Objects;
 
 public class Product {
-
-    private static final String KEY_COLUMN_NAME = "id";
-
     private Long id;
     private String name;
     private BigDecimal price;
 
-    protected Product() {}
+    public Product() {}
 
-    public Product(long id, String name, BigDecimal price) {
+    public Product(final long id, final String name, final BigDecimal price) {
         this.id = id;
         this.name = name;
         this.price = price;
     }
 
-    public static Product from(final ResultSet resultSet) throws SQLException {
-        return new Product(resultSet.getLong(KEY_COLUMN_NAME), resultSet.getString("name"), resultSet.getBigDecimal("price"));
+    public static Product of(final long id, final String name, final BigDecimal price) {
+        return new Product(id, name, price);
     }
 
     public Long getId() {
@@ -56,5 +51,9 @@ public class Product {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
     }
 }

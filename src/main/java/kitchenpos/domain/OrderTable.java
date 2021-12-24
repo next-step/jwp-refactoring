@@ -1,28 +1,22 @@
 package kitchenpos.domain;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 public class OrderTable {
-    private static final String KEY_COLUMN_NAME = "id";
-
     private Long id;
     private Long tableGroupId;
     private int numberOfGuests;
     private boolean empty;
 
-    protected OrderTable() {}
+    public OrderTable() {}
 
-    public OrderTable(long id, Long tableGroupId, int numberOfGuests, boolean empty) {
+    public OrderTable(final long id, final Long tableGroupId, final int numberOfGuests, final boolean empty) {
         this.id = id;
         this.tableGroupId = tableGroupId;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
     }
 
-    public static OrderTable from(final ResultSet resultSet) throws SQLException {
-        return new OrderTable(resultSet.getLong(KEY_COLUMN_NAME), resultSet.getObject("table_group_id", Long.class)
-                , resultSet.getInt("number_of_guests"), resultSet.getBoolean("empty"));
+    public static OrderTable of(final long id, final Long tableGroupId, final int numberOfGuests, final boolean empty) {
+        return new OrderTable(id, tableGroupId, numberOfGuests, empty);
     }
 
     public Long getId() {

@@ -1,9 +1,6 @@
 package kitchenpos.domain;
 
 import java.math.BigDecimal;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Menu {
@@ -13,18 +10,17 @@ public class Menu {
     private Long menuGroupId;
     private List<MenuProduct> menuProducts;
 
-    protected Menu() {}
+    public Menu() {}
 
-    public Menu(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
+    public Menu(final Long id, final String name, final BigDecimal price, final Long menuGroupId, final List<MenuProduct> menuProducts) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.menuGroupId = menuGroupId;
         this.menuProducts = menuProducts;
     }
-    public static Menu from(final ResultSet resultSet) throws SQLException {
-        return new Menu(resultSet.getLong("id"), resultSet.getString("name"), resultSet.getBigDecimal("price")
-                , resultSet.getLong("menu_group_id"), new ArrayList<>());
+    public static Menu of(final Long id, final String name, final BigDecimal price, final Long menuGroupId, final List<MenuProduct> menuProducts) {
+        return new Menu(id, name, price, menuGroupId, menuProducts);
     }
 
     public Long getId() {
