@@ -15,7 +15,7 @@ class ProductRepositoryTest {
 
     @Test
     void save() {
-        Product product = new Product("치킨", BigDecimal.valueOf(21000));
+        Product product = new Product("치킨", new ProductPrice(BigDecimal.valueOf(21000)));
         Product saveProduct = productRepository.save(product);
         Product findProduct = productRepository.findById(saveProduct.getId())
             .orElseThrow(() -> new IllegalStateException());

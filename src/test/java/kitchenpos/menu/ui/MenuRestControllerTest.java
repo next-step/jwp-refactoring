@@ -22,6 +22,7 @@ import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.testfixtures.MenuTestFixtures;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductPrice;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -48,8 +49,8 @@ class MenuRestControllerTest {
 
     @BeforeEach
     void setUp() {
-        타코야끼 = new Product(1L, "타코야끼", BigDecimal.valueOf(12000));
-        뿌링클 = new Product(2L, "뿌링클", BigDecimal.valueOf(22000));
+        타코야끼 = new Product(1L, "타코야끼", new ProductPrice(BigDecimal.valueOf(12000)));
+        뿌링클 = new Product(2L, "뿌링클", new ProductPrice(BigDecimal.valueOf(22000)));
         추천메뉴그룹 = new MenuGroup(1L, "추천메뉴");
     }
 

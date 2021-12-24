@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 import kitchenpos.menu.exception.MenuPriceNotAcceptableException;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductPrice;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -35,8 +36,8 @@ class MenuTest {
     void construct2() {
         //given
         MenuGroup menuGroup = new MenuGroup("추천메뉴");
-        Product 타코야끼 = new Product(1L, "타코야끼", BigDecimal.valueOf(12000));
-        Product 뿌링클 = new Product(2L, "뿌링클", BigDecimal.valueOf(15000));
+        Product 타코야끼 = new Product(1L, "타코야끼", new ProductPrice(BigDecimal.valueOf(12000)));
+        Product 뿌링클 = new Product(2L, "뿌링클", new ProductPrice(BigDecimal.valueOf(15000)));
         List<MenuProduct> menuProducts = Arrays.asList(
             new MenuProduct(타코야끼, 3L),
             new MenuProduct(뿌링클, 1L));
@@ -69,8 +70,8 @@ class MenuTest {
     void construct_exception2() {
         //given
         MenuGroup menuGroup = new MenuGroup("추천메뉴");
-        Product 타코야끼 = new Product(1L, "타코야끼", BigDecimal.valueOf(12000));
-        Product 뿌링클 = new Product(2L, "뿌링클", BigDecimal.valueOf(15000));
+        Product 타코야끼 = new Product(1L, "타코야끼", new ProductPrice(BigDecimal.valueOf(12000)));
+        Product 뿌링클 = new Product(2L, "뿌링클", new ProductPrice(BigDecimal.valueOf(15000)));
         List<MenuProduct> menuProducts = Arrays.asList(
             new MenuProduct(타코야끼, 3L),
             new MenuProduct(뿌링클, 1L));
