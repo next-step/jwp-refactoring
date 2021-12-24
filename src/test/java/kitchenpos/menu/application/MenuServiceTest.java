@@ -29,6 +29,7 @@ import static kitchenpos.product.fixture.ProductFixture.강정치킨;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -65,7 +66,7 @@ public class MenuServiceTest {
         MenuRequest 요청_메뉴 = MenuRequest.of("강정치킨_두마리_세트_메뉴", BigDecimal.valueOf(30_000), 추천_메뉴_그룹.getId(), Arrays.asList(요청_메뉴_상품));
 
         given(menuGroupService.findById(any(Long.class))).willReturn(추천_메뉴_그룹);
-        given(productService.findById(any(Long.class))).willReturn(강정치킨);
+        given(productService.findByIdIn(anyList())).willReturn(Arrays.asList(강정치킨));
         given(menuRepository.save(any(Menu.class))).willReturn(강정치킨_두마리_세트_메뉴);
 
         // when
@@ -98,7 +99,7 @@ public class MenuServiceTest {
         MenuRequest 요청_메뉴 = MenuRequest.of("강정치킨_두마리_세트_메뉴", BigDecimal.valueOf(30_000), 추천_메뉴_그룹.getId(), Arrays.asList(요청_메뉴_상품));
 
         given(menuGroupService.findById(추천_메뉴_그룹.getId())).willReturn(추천_메뉴_그룹);
-        given(productService.findById(강정치킨.getId())).willThrow(new NoSuchElementException());
+        given(productService.findByIdIn(Arrays.asList(강정치킨.getId()))).willThrow(new NoSuchElementException());
 
         // when & then
         assertThatThrownBy(() -> menuService.create(요청_메뉴))
@@ -127,7 +128,7 @@ public class MenuServiceTest {
         MenuRequest 요청_메뉴 = MenuRequest.of("강정치킨_두마리_세트_메뉴", BigDecimal.valueOf(51_000), 추천_메뉴_그룹.getId(), Arrays.asList(요청_메뉴_상품));
 
         given(menuGroupService.findById(추천_메뉴_그룹.getId())).willReturn(추천_메뉴_그룹);
-        given(productService.findById(강정치킨.getId())).willReturn(강정치킨);
+        given(productService.findByIdIn(Arrays.asList(강정치킨.getId()))).willReturn(Arrays.asList(강정치킨));
 
         // when & then
         assertThatIllegalArgumentException()

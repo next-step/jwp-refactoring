@@ -16,7 +16,9 @@ import kitchenpos.product.domain.Product;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
@@ -62,14 +64,14 @@ public class MenuService {
                 .orElseThrow(NoSuchElementException::new);
     }
 
-    private List<MenuProduct> toMenuProducts(List<MenuProductRequest> menuProductRequests) {
-        return menuProductRequests.stream()
-                .map(menuProductRequest ->
-                {
-                    Product product = productService.findById(menuProductRequest.getProductId());
-                    long quantity = menuProductRequest.getQuantity();
-                    return MenuProduct.of(product, quantity);
-                })
+    private List<MenuProduct> toMenuProducts(List<MenuProductRequest> requests) {
+        Map<Long, Long> menuProductRequests = requests.stream().collect(
+                Collectors.toMap(MenuProductRequest::getProductId, MenuProductRequest::getQuantity));
+        List<Long> productIds = new ArrayList<>(menuProductRequests.keySet());
+
+        List<Product> products = productService.findByIdIn(productIds);
+        return products.stream()
+                .map(product -> MenuProduct.of(product, menuProductRequests.get(product.getId())))
                 .collect(Collectors.toList());
     }
 }
