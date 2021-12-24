@@ -9,7 +9,6 @@ import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.ordertable.dto.OrderTableResponse;
 import kitchenpos.ordertable.testfixtures.TableTestFixtures;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -38,7 +37,7 @@ class TableServiceTest {
             TableTestFixtures.convertToOrderTableRequest(orderTable));
 
         //then
-        Assertions.assertThat(savedOrderTable.getId()).isEqualTo(orderTable.getId());
+        assertThat(savedOrderTable.getId()).isEqualTo(orderTable.getId());
     }
 
     @DisplayName("테이블 목록을 조회할 수 있다.")
@@ -72,7 +71,7 @@ class TableServiceTest {
             TableTestFixtures.convertToOrderTableRequest(changeOrderTable));
 
         //then
-        Assertions.assertThat(savedOrderTable.isOrderClose())
+        assertThat(savedOrderTable.isOrderClose())
             .isEqualTo(changeOrderTable.isOrderClose());
     }
 
@@ -89,7 +88,7 @@ class TableServiceTest {
             TableTestFixtures.convertToOrderTableRequest(changeOrderTable));
 
         //then
-        Assertions.assertThat(savedOrderTable.getNumberOfGuests())
+        assertThat(savedOrderTable.getNumberOfGuests())
             .isEqualTo(changeOrderTable.getNumberOfGuests());
     }
 

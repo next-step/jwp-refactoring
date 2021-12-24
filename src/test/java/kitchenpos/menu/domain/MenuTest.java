@@ -1,5 +1,6 @@
 package kitchenpos.menu.domain;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.math.BigDecimal;
@@ -8,7 +9,6 @@ import java.util.List;
 import kitchenpos.menu.exception.MenuPriceNotAcceptableException;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductPrice;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -27,8 +27,8 @@ class MenuTest {
         Menu menu = new Menu(menuName, price, menuGroup);
 
         //then
-        Assertions.assertThat(menu.getName()).isEqualTo(expectMenu.getName());
-        Assertions.assertThat(menu.getMenuGroup()).isEqualTo(expectMenu.getMenuGroup());
+        assertThat(menu.getName()).isEqualTo(expectMenu.getName());
+        assertThat(menu.getMenuGroup()).isEqualTo(expectMenu.getMenuGroup());
     }
 
     @DisplayName("메뉴 상품을 포함한 메뉴 생성")
@@ -49,7 +49,7 @@ class MenuTest {
             menuProducts);
 
         //then
-        Assertions.assertThat(menu.getName()).isEqualTo(menuName);
+        assertThat(menu.getName()).isEqualTo(menuName);
     }
 
     @DisplayName("메뉴에 속한 상품리스트가 없을 경우 메뉴 가격은 0원 이어야 한다.")

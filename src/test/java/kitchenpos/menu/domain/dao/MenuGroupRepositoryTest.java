@@ -1,8 +1,9 @@
 package kitchenpos.menu.domain.dao;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuGroupRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,7 @@ class MenuGroupRepositoryTest {
     void existById() {
         MenuGroup savedMenuGroup = menuGroupRepository.save(new MenuGroup("추천메뉴"));
         boolean isExist = menuGroupRepository.existsById(savedMenuGroup.getId());
-        Assertions.assertThat(isExist).isTrue();
+        assertThat(isExist).isTrue();
     }
 
 }
