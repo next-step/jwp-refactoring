@@ -36,7 +36,7 @@ public class TableGroupService {
     @Transactional
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
         final List<Long> orderTableIds = tableGroupRequest.getOrderTables();
-        final List<OrderTable> findOrderTables = tableGroupValidator.validateExistOrderTable(orderTableIds);
+        final List<OrderTable> findOrderTables = tableGroupValidator.validateOrderTables(orderTableIds);
         final TableGroup savedTableGroup = tableGroupRepository.save(TableGroup.of());
 
         eventPublisher.publishEvent(new TableGroupSavedEvent(savedTableGroup,
