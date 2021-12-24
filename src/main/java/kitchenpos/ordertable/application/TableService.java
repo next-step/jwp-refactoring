@@ -22,8 +22,10 @@ public class TableService {
     }
 
     @Transactional
-    public OrderTableResponse create(final OrderTableRequest orderTable) {
-        OrderTable savedOrderTable = orderTableRepository.save(orderTable.toOrderTable());
+    public OrderTableResponse create(final OrderTableRequest requestOrderTable) {
+        OrderTable orderTable = new OrderTable(requestOrderTable.getNumberOfGuests(),
+            requestOrderTable.isOrderClose());
+        OrderTable savedOrderTable = orderTableRepository.save(orderTable);
         return OrderTableResponse.from(savedOrderTable);
     }
 

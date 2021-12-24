@@ -1,7 +1,5 @@
 package kitchenpos.ordertable.dto;
 
-import kitchenpos.ordertable.domain.OrderTable;
-
 public class OrderTableRequest {
 
     private Long id;
@@ -27,11 +25,7 @@ public class OrderTableRequest {
     public boolean isOrderClose() {
         return orderClose;
     }
-
-    public OrderTable toOrderTable() {
-        return new OrderTable(numberOfGuests, orderClose);
-    }
-
+    
     public Long getId() {
         return id;
     }
