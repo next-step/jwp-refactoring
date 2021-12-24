@@ -7,18 +7,26 @@ import static org.mockito.BDDMockito.*;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
+import kitchenpos.ordertable.exception.NotFoundOrderTableException;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
+import kitchenpos.tablegroup.dto.TableGroupAddRequest;
+import kitchenpos.tablegroup.dto.TableGroupResponse;
+import kitchenpos.tablegroup.exception.InvalidTableGroupException;
 
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
@@ -27,115 +35,75 @@ class TableGroupServiceTest {
 	private TableGroupService tableGroupService;
 
 	@Mock
-	private OrderRepository orderRepository;
+	private OrderService orderService;
 	@Mock
 	private OrderTableRepository orderTableRepository;
 	@Mock
 	private TableGroupRepository tableGroupRepository;
 
+	@DisplayName("그룹 생성")
 	@Test
 	void create() {
-		final List<OrderTable> orderTables = Arrays.asList(
+		final List<OrderTable> 주문테이블_목록 = Arrays.asList(
 			orderTable(1L, null, 4, true),
 			orderTable(2L, null, 6, true)
 		);
-		final TableGroup tableGroup = tableGroup(1L, orderTables);
+		final TableGroup 그룹 = tableGroup(1L, Arrays.asList(
+			orderTable(1L, null, 4, true),
+			orderTable(2L, null, 6, true)
+		));
 
-		given(orderTableRepository.findAllById(any())).willReturn(orderTables);
-		given(tableGroupRepository.save(any())).willReturn(tableGroup);
-		given(orderTableRepository.save(any()))
-			.willReturn(orderTable(1L, tableGroup, 4, false))
-			.willReturn(orderTable(2L, tableGroup, 6, false));
+		given(orderTableRepository.findAllById(any())).willReturn(주문테이블_목록);
+		given(tableGroupRepository.save(any())).willReturn(그룹);
 
-		final TableGroup createdTableGroup = tableGroupService.create(tableGroup(null, orderTables));
+		final List<Long> 주문테이블_ID목록 = 주문테이블_목록.stream().map(OrderTable::getId).collect(Collectors.toList());
+		final TableGroupResponse createdTableGroup = tableGroupService.create(
+			TableGroupAddRequest.of(주문테이블_ID목록)
+		);
 
 		assertThat(createdTableGroup.getId()).isNotNull();
 		assertThat(createdTableGroup.getOrderTables().size()).isEqualTo(2);
-		createdTableGroup.getOrderTables()
-			.forEach(orderTable -> {
-				assertThat(orderTable.getTableGroup().getId()).isEqualTo(createdTableGroup.getId());
-				assertThat(orderTable.isEmpty()).isFalse();
-			});
 	}
 
-	@Test
-	void create_invalid_order_tables_size() {
-		assertThatIllegalArgumentException()
-			.isThrownBy(() -> tableGroupService.create(tableGroup(null, null)));
-
-		assertThatIllegalArgumentException()
-			.isThrownBy(() -> tableGroupService.create(tableGroup(null, Collections.emptyList())));
-
-		assertThatIllegalArgumentException()
-			.isThrownBy(() -> tableGroupService.create(tableGroup(null,
-				Arrays.asList(orderTable(1L, null, 4, true))
-			)));
-	}
-
+	@DisplayName("그룹 생성: 주문 테이블이 존재하지 않으면 예외발생")
 	@Test
 	void create_not_found_order_table() {
-		given(orderTableRepository.findAllById(any())).willReturn(Arrays.asList(
-			orderTable(1L, null, 3, true)
-		));
+		final OrderTable 주문테이블1 = orderTable(1L, null, 3, true);
+		given(orderTableRepository.findAllById(any())).willReturn(Arrays.asList(주문테이블1));
 
-		assertThatIllegalArgumentException()
-			.isThrownBy(() -> tableGroupService.create(tableGroup(null, Arrays.asList(
-				orderTable(1L, null, 3, true),
-				orderTable(2L, null, 2, true)
-			))));
+		assertThatExceptionOfType(NotFoundOrderTableException.class)
+			.isThrownBy(() -> tableGroupService.create(
+				TableGroupAddRequest.of(Arrays.asList(주문테이블1.getId(), 2L))
+			));
 	}
 
-	@Test
-	void create_not_empty_order_table() {
-		final List<OrderTable> orderTables = Arrays.asList(
-			orderTable(1L, null, 3, false),
-			orderTable(2L, null, 2, true)
-		);
-		given(orderTableRepository.findAllById(any())).willReturn(orderTables);
-
-		assertThatIllegalArgumentException()
-			.isThrownBy(() -> tableGroupService.create(tableGroup(null, orderTables)));
-	}
-
-	@Test
-	void create_order_table_having_table_group_id_already() {
-		final TableGroup tableGroup = tableGroup(1L, null);
-		final List<OrderTable> orderTables = Arrays.asList(
-			orderTable(1L, tableGroup, 4, true),
-			orderTable(2L, null, 4, true)
-		);
-		given(orderTableRepository.findAllById(any())).willReturn(orderTables);
-
-		assertThatIllegalArgumentException()
-			.isThrownBy(() -> tableGroupService.create(tableGroup(null, orderTables)));
-	}
-
+	@DisplayName("그룹 해지")
 	@Test
 	void ungroup() {
-		final TableGroup tableGroup = tableGroup(1L, null);
-		final OrderTable orderTable1 = orderTable(1L, tableGroup, 4, false);
-		final OrderTable orderTable2 = orderTable(2L, tableGroup, 4, false);
+		final OrderTable 주문테이블1 = orderTable(1L, null, 3, true);
+		final OrderTable 주문테이블2 = orderTable(2L, null, 2, true);
+		final TableGroup 그룹 = tableGroup(1L, Arrays.asList(주문테이블1, 주문테이블2));
 
-		given(orderTableRepository.findAllByTableGroup_Id(any())).willReturn(Arrays.asList(orderTable1, orderTable2));
-		given(orderRepository.existsByOrderTable_IdInAndOrderStatusIn(any(), anyList())).willReturn(false);
+		given(tableGroupRepository.findById(any())).willReturn(Optional.of(그룹));
+		given(orderService.existsOrderStatusCookingOrMeal(anyList())).willReturn(false);
 
-		tableGroupService.ungroup(tableGroup.getId());
+		tableGroupService.ungroup(그룹.getId());
 
-		verify(orderTableRepository, times(2)).save(any(OrderTable.class));
-		assertThat(orderTable1.getTableGroup().getId()).isNull();
-		assertThat(orderTable2.getTableGroup().getId()).isNull();
+		assertThat(주문테이블1.getTableGroup()).isNull();
+		assertThat(주문테이블2.getTableGroup()).isNull();
 	}
 
+	@DisplayName("그룹 해지: 주문 테이블의 주문 상태가 조리 혹은 식사 상태이면 예외발생")
 	@Test
 	void ungroup_order_table_status_cooking_or_meal() {
-		final TableGroup tableGroup = tableGroup(1L, null);
-		final OrderTable orderTable1 = orderTable(1L, tableGroup, 4, false);
-		final OrderTable orderTable2 = orderTable(2L, tableGroup, 4, false);
+		final OrderTable 주문테이블1 = orderTable(1L, null, 4, true);
+		final OrderTable 주문테이블2 = orderTable(2L, null, 3, true);
+		final TableGroup 그룹 = tableGroup(1L, Arrays.asList(주문테이블1, 주문테이블2));
 
-		given(orderTableRepository.findAllByTableGroup_Id(any())).willReturn(Arrays.asList(orderTable1, orderTable2));
-		given(orderRepository.existsByOrderTable_IdInAndOrderStatusIn(any(), anyList())).willReturn(true);
+		given(tableGroupRepository.findById(any())).willReturn(Optional.of(그룹));
+		given(orderService.existsOrderStatusCookingOrMeal(anyList())).willReturn(true);
 
-		assertThatIllegalArgumentException()
-			.isThrownBy(() -> tableGroupService.ungroup(tableGroup.getId()));
+		assertThatExceptionOfType(InvalidTableGroupException.class)
+			.isThrownBy(() -> tableGroupService.ungroup(그룹.getId()));
 	}
 }

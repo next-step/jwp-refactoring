@@ -46,7 +46,7 @@ public class Order {
     private LocalDateTime orderedTime;
 
     @Embedded
-    private OrderLineItems orderLineItems = OrderLineItems.of();
+    private OrderLineItems orderLineItems;
 
     protected Order() {
     }
@@ -57,7 +57,7 @@ public class Order {
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
         this.orderedTime = LocalDateTime.now();
-        this.orderLineItems.addAll(this, orderLineItems);
+        this.orderLineItems = OrderLineItems.of(this, orderLineItems);
     }
 
     private void validate(OrderTable orderTable) {
@@ -95,7 +95,7 @@ public class Order {
     }
 
     public void changeOrderStatusIfNotCompletion(OrderStatus orderStatus) {
-        if (OrderStatus.COMPLETION.equals(orderStatus)) {
+        if (OrderStatus.COMPLETION.equals(this.orderStatus)) {
             throw new CanNotEditOrderStatusException();
         }
         this.orderStatus = orderStatus;

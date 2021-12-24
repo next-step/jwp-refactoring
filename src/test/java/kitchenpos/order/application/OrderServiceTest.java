@@ -93,6 +93,8 @@ class OrderServiceTest {
 	void create_not_found_menu() {
 		final List<OrderLineItemAddRequest> 생성할_주문항목_목록 =
 			Arrays.asList(OrderLineItemAddRequest.of(일식메뉴.getId(), 2L));
+
+		given(orderTableRepository.findById(any())).willReturn(Optional.of(개별_주문테이블));
 		given(menuRepository.findAllById(any())).willReturn(Collections.emptyList());
 
 		assertThatExceptionOfType(NotFoundMenuException.class)

@@ -3,6 +3,8 @@ package kitchenpos.ordertable.domain;
 import static kitchenpos.common.DomainFixture.*;
 import static org.assertj.core.api.Assertions.*;
 
+import java.util.Arrays;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -14,8 +16,10 @@ class OrderTableTest {
 	@DisplayName("주문테이블 비어있음 유무 수정: 단체 지정된 테이블이면 예외발생")
 	@Test
 	void changeEmptyIfNotTableGroup_having_table_group() {
-		final TableGroup 단체 = tableGroup(2L, null);
-		final OrderTable 단체주문테이블 = orderTable(1L, 단체, 2, true);
+		final OrderTable 단체주문테이블 = orderTable(1L, null, 2, true);
+
+		tableGroup(2L, Arrays.asList(단체주문테이블,
+			orderTable(2L, null, 3, true)));
 
 		assertThatExceptionOfType(InvalidOrderTableEmptyException.class)
 			.isThrownBy(() -> 단체주문테이블.changeEmptyIfNotTableGroup(false));

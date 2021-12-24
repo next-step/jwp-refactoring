@@ -1,14 +1,12 @@
 package kitchenpos.ordertable.application;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.application.OrderService;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.ordertable.dto.OrderTableAddRequest;
@@ -21,13 +19,11 @@ import kitchenpos.ordertable.exception.NotFoundOrderTableException;
 @Service
 public class TableService {
 
-	private static final List<OrderStatus> COOKING_OR_MEAL = Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL);
-
-	private final OrderRepository orderRepository;
+	private final OrderService orderService;
 	private final OrderTableRepository orderTableRepository;
 
-	public TableService(final OrderRepository orderRepository, final OrderTableRepository orderTableRepository) {
-		this.orderRepository = orderRepository;
+	public TableService(final OrderService orderService, final OrderTableRepository orderTableRepository) {
+		this.orderService = orderService;
 		this.orderTableRepository = orderTableRepository;
 	}
 
@@ -52,7 +48,7 @@ public class TableService {
 	}
 
 	private void validateEmpty(final OrderTable orderTable) {
-		if (orderRepository.existsByOrderTable_IdAndOrderStatusIn(orderTable.getId(), COOKING_OR_MEAL)) {
+		if (orderService.existsOrderStatusCookingOrMeal(orderTable.getId())) {
 			throw new InvalidOrderTableEmptyException("주문 테이블이 '조리' 혹은 식사' 상태면 수정할 수 없습니다.");
 		}
 	}

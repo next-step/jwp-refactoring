@@ -2,9 +2,9 @@ package kitchenpos.order.domain;
 
 import static kitchenpos.common.DomainFixture.*;
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
@@ -56,5 +56,15 @@ class OrderTest {
 
 		assertThatExceptionOfType(CanNotEditOrderStatusException.class)
 			.isThrownBy(() -> 주문.changeOrderStatusIfNotCompletion(OrderStatus.COOKING));
+	}
+
+	@DisplayName("주문항목 목록이 없거나 비어있으면 예외발생")
+	@Test
+	void of_invalid_order_line_items() {
+		final OrderTable 개별_주문테이블 = orderTable(1L, null, 3, false);
+		assertThatExceptionOfType(InvalidOrderException.class)
+			.isThrownBy(() -> Order.of(개별_주문테이블, OrderStatus.COOKING, null));
+		assertThatExceptionOfType(InvalidOrderException.class)
+			.isThrownBy(() -> Order.of(개별_주문테이블, OrderStatus.COOKING, Collections.emptyList()));
 	}
 }

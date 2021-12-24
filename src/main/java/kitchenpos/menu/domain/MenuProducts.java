@@ -21,9 +21,9 @@ public class MenuProducts {
 	protected MenuProducts() {
 	}
 
-	private MenuProducts(List<MenuProduct> menuProducts) {
+	private MenuProducts(Menu menu, List<MenuProduct> menuProducts) {
 		validate(menuProducts);
-		this.menuProducts = menuProducts;
+		addAll(menu, menuProducts);
 	}
 
 	private void validate(List<MenuProduct> menuProducts) {
@@ -32,15 +32,11 @@ public class MenuProducts {
 		}
 	}
 
-	public static MenuProducts of() {
-		return of(new ArrayList<>());
+	public static MenuProducts of(Menu menu, List<MenuProduct> menuProducts) {
+		return new MenuProducts(menu, menuProducts);
 	}
 
-	public static MenuProducts of(List<MenuProduct> menuProducts) {
-		return new MenuProducts(menuProducts);
-	}
-
-	public void addAll(Menu menu, List<MenuProduct> menuProducts) {
+	private void addAll(Menu menu, List<MenuProduct> menuProducts) {
 		this.menuProducts.addAll(menuProducts);
 		this.menuProducts.forEach(menuProduct -> menuProduct.setMenu(menu));
 	}

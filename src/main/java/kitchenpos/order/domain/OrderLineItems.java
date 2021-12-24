@@ -21,9 +21,9 @@ public class OrderLineItems {
 	protected OrderLineItems() {
 	}
 
-	private OrderLineItems(List<OrderLineItem> orderLineItems) {
+	private OrderLineItems(Order order, List<OrderLineItem> orderLineItems) {
 		validate(orderLineItems);
-		this.orderLineItems = orderLineItems;
+		addAll(order, orderLineItems);
 	}
 
 	private void validate(List<OrderLineItem> orderLineItems) {
@@ -32,15 +32,11 @@ public class OrderLineItems {
 		}
 	}
 
-	public static OrderLineItems of() {
-		return of(new ArrayList<>());
+	public static OrderLineItems of(Order order, List<OrderLineItem> orderLineItems) {
+		return new OrderLineItems(order, orderLineItems);
 	}
 
-	public static OrderLineItems of(List<OrderLineItem> orderLineItems) {
-		return new OrderLineItems(orderLineItems);
-	}
-
-	public void addAll(Order order, List<OrderLineItem> orderLineItems) {
+	private void addAll(Order order, List<OrderLineItem> orderLineItems) {
 		this.orderLineItems.addAll(orderLineItems);
 		this.orderLineItems.forEach(orderLineItem -> orderLineItem.setOrder(order));
 	}

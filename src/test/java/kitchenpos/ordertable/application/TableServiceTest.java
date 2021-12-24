@@ -14,6 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
@@ -30,7 +31,7 @@ public class TableServiceTest {
 	private TableService tableService;
 
 	@Mock
-	private OrderRepository orderRepository;
+	private OrderService orderService;
 	@Mock
 	private OrderTableRepository orderTableRepository;
 
@@ -64,7 +65,7 @@ public class TableServiceTest {
 	void changeEmpty() {
 		final OrderTable 비어있지않은_테이블 = orderTable(1L, null, 2, false);
 		given(orderTableRepository.findById(any())).willReturn(Optional.of(비어있지않은_테이블));
-		given(orderRepository.existsByOrderTable_IdAndOrderStatusIn(any(), anyList())).willReturn(false);
+		given(orderService.existsOrderStatusCookingOrMeal(비어있지않은_테이블.getId())).willReturn(false);
 
 		final OrderTableResponse changedOrderTable = tableService.changeEmpty(
 			비어있지않은_테이블.getId(),
@@ -91,7 +92,7 @@ public class TableServiceTest {
 	void changeEmpty_order_table_status_cooking_or_meal() {
 		final OrderTable 비어있지않은_테이블 = orderTable(1L, null, 2, false);
 		given(orderTableRepository.findById(any())).willReturn(Optional.of(비어있지않은_테이블));
-		given(orderRepository.existsByOrderTable_IdAndOrderStatusIn(any(), anyList())).willReturn(true);
+		given(orderService.existsOrderStatusCookingOrMeal(비어있지않은_테이블.getId())).willReturn(true);
 
 		assertThatIllegalArgumentException()
 			.isThrownBy(() -> tableService.changeEmpty(비어있지않은_테이블.getId(),

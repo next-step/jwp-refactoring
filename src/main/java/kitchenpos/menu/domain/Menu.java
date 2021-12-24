@@ -39,7 +39,7 @@ public class Menu {
 	private MenuGroup menuGroup;
 
 	@Embedded
-	private MenuProducts menuProducts = MenuProducts.of();
+	private MenuProducts menuProducts;
 
 	protected Menu() {
 	}
@@ -50,7 +50,7 @@ public class Menu {
 		this.name = name;
 		this.price = Price.of(price);
 		this.menuGroup = menuGroup;
-		this.menuProducts.addAll(this, menuProducts);
+		this.menuProducts = MenuProducts.of(this, menuProducts);
 	}
 
 	public static Menu of(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {

@@ -16,10 +16,14 @@ import javax.persistence.Table;
 
 import kitchenpos.ordertable.exception.InvalidOrderTableEmptyException;
 import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.exception.InvalidTableGroupException;
+import kitchenpos.tablegroup.exception.NotFoundTableGroupException;
 
 @Entity
 @Table(name = "order_table")
 public class OrderTable {
+
+    public static final String HAS_BEEN_GROUPED = "이미 단체 지정이 된 주문 테이블입니다.";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -54,8 +58,23 @@ public class OrderTable {
         return new OrderTable(id, tableGroup, numberOfGuests, empty);
     }
 
-    public void setTableGroup(TableGroup tableGroup) {
+    private boolean hasBeenGrouped() {
+        return !empty || Objects.nonNull(tableGroup);
+    }
+
+    public void group(TableGroup tableGroup) {
+        if (Objects.isNull(tableGroup)) {
+            throw new NotFoundTableGroupException();
+        }
+        if (hasBeenGrouped()) {
+            throw new InvalidTableGroupException(HAS_BEEN_GROUPED);
+        }
+        this.empty = false;
         this.tableGroup = tableGroup;
+    }
+
+    public void ungroup() {
+        this.tableGroup = null;
     }
 
     public void changeEmptyIfNotTableGroup(boolean empty) {
