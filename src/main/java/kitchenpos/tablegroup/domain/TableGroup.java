@@ -54,7 +54,6 @@ public class TableGroup extends AbstractAggregateRoot<TableGroup> {
         registerEvent(new TableUnGroupingEvent(id));
     }
 
-
     private void minOrderTableValid(List<Long> tableIds) {
         if (tableIds.size() < ORDER_TABLES_MIN_SIZE) {
             throw new InvalidParameterException(CommonErrorCode.ORDER_TABLES_MIN_UNDER_EXCEPTION);

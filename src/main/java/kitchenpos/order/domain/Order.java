@@ -52,19 +52,6 @@ public class Order {
             LocalDateTime.now());
     }
 
-    public boolean isComplete() {
-        return orderStatus.isComplete();
-    }
-
-    public void changeOrderStatus(OrderStatus orderStatus) {
-        if (isComplete()) {
-            throw new InvalidParameterException(
-                CommonErrorCode.ORDER_STATUS_COMPLETE_NOT_CHANGE_STATUS_EXCEPTION);
-        }
-
-        this.orderStatus = orderStatus;
-    }
-
     public Long getId() {
         return id;
     }
@@ -87,6 +74,19 @@ public class Order {
 
     public List<Long> getMenuIds() {
         return orderLineItems.getMenuIds();
+    }
+
+    public boolean isComplete() {
+        return orderStatus.isComplete();
+    }
+
+    public void changeOrderStatus(OrderStatus orderStatus) {
+        if (isComplete()) {
+            throw new InvalidParameterException(
+                CommonErrorCode.ORDER_STATUS_COMPLETE_NOT_CHANGE_STATUS_EXCEPTION);
+        }
+
+        this.orderStatus = orderStatus;
     }
 
     public void registerOrder(OrderValidator orderValidator) {

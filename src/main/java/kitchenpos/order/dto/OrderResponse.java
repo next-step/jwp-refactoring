@@ -13,7 +13,6 @@ public class OrderResponse {
     private LocalDateTime orderedTime;
     private List<OrderLineItemResponse> orderLineItems;
 
-
     public OrderResponse() {
     }
 

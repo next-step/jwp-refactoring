@@ -13,15 +13,6 @@ public class MenuResponse {
     private Long menuGroupId;
     private List<MenuProductResponse> menuProductResponses;
 
-    public static MenuResponse of(Menu menu) {
-        return new MenuResponse(
-            menu.getId(),
-            menu.getName(),
-            menu.getPrice().value(),
-            menu.getMenuGroupId(),
-            collectorMenuProductResponses(menu));
-    }
-
     public MenuResponse() {
     }
 
@@ -32,6 +23,15 @@ public class MenuResponse {
         this.price = price;
         this.menuGroupId = menuGroupId;
         this.menuProductResponses = menuProductResponse;
+    }
+
+    public static MenuResponse of(Menu menu) {
+        return new MenuResponse(
+            menu.getId(),
+            menu.getName(),
+            menu.getPrice().value(),
+            menu.getMenuGroupId(),
+            collectorMenuProductResponses(menu));
     }
 
     public static List<MenuResponse> toList(List<Menu> menus) {

@@ -38,42 +38,6 @@ public class OrderTable {
         return new OrderTable(numberOfGuests, empty);
     }
 
-    public void changeNumberOfGuests(int changeNumberOfGuests) {
-        empty.validNotEmpty();
-        this.numberOfGuests = numberOfGuests.changeNumberOfGuests(changeNumberOfGuests);
-    }
-
-    public void changeEmpty(TableValidator tableValidator, boolean empty) {
-        notIncludeTableGroupValid();
-        tableValidator.completedOrderValid(this);
-
-        this.empty.changeEmpty(empty);
-    }
-
-    public void changeTableGroup(Long tableGroupId) {
-        notIncludeTableGroupValid();
-        empty.validNotEmpty();
-        this.tableGroupId = tableGroupId;
-        this.empty.changeEmpty(false);
-    }
-
-    public void group(Long tableGroupId) {
-        notIncludeTableGroupValid();
-        this.tableGroupId = tableGroupId;
-    }
-
-    public void ungroup() {
-        tableGroupId = null;
-    }
-
-    public boolean isEmpty() {
-        return empty.isEmpty();
-    }
-
-    public boolean isIncludeTableGroup() {
-        return Objects.nonNull(tableGroupId);
-    }
-
     public Long getId() {
         return id;
     }
@@ -87,6 +51,35 @@ public class OrderTable {
 
     public int getNumberOfGuests() {
         return numberOfGuests.value();
+    }
+
+    public void changeNumberOfGuests(int changeNumberOfGuests) {
+        empty.validNotEmpty();
+        this.numberOfGuests = numberOfGuests.changeNumberOfGuests(changeNumberOfGuests);
+    }
+
+    public void changeEmpty(TableValidator tableValidator, boolean empty) {
+        notIncludeTableGroupValid();
+        tableValidator.completedOrderValid(this);
+
+        this.empty.changeEmpty(empty);
+    }
+
+    public boolean isEmpty() {
+        return empty.isEmpty();
+    }
+
+    public void ungroup() {
+        tableGroupId = null;
+    }
+
+    public void group(Long tableGroupId) {
+        notIncludeTableGroupValid();
+        this.tableGroupId = tableGroupId;
+    }
+
+    public boolean isIncludeTableGroup() {
+        return Objects.nonNull(tableGroupId);
     }
 
     private void notIncludeTableGroupValid() {
