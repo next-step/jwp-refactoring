@@ -2,9 +2,11 @@ package kitchenpos.order.domain;
 
 import kitchenpos.table.domain.OrderTable;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
@@ -17,6 +19,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Table(name = "orders")
+@EntityListeners(AuditingEntityListener.class)
 @Entity
 public class Order {
 
