@@ -1,7 +1,7 @@
-package kitchenpos.acceptance;
+package kitchenpos.tablegroup.acceptance;
 
-import static kitchenpos.acceptance.step.TableAcceptanceStep.주문테이블_생성됨;
-import static kitchenpos.acceptance.step.TableGroupAcceptanceStep.*;
+import static kitchenpos.ordertable.acceptance.step.TableAcceptanceStep.주문테이블_생성됨;
+import static kitchenpos.tablegroup.acceptance.step.TableGroupAcceptanceStep.*;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
