@@ -1,14 +1,28 @@
 package kitchenpos.product.domain;
 
-import kitchenpos.product.exception.InputProductDataErrorCode;
-import kitchenpos.product.exception.InputProductDataException;
+import kitchenpos.common.domain.Name;
+import kitchenpos.common.domain.Price;
 
+import javax.persistence.*;
 import java.math.BigDecimal;
 
+@Entity(name = "product")
 public class Product {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
-    private BigDecimal price;
+
+    @Embedded
+    @Column(name = "name", nullable = false)
+    private Name name;
+
+    @Embedded
+    @Column(name = "price", nullable = false)
+    private Price price;
+
+    public Product() {
+
+    }
 
     public Product(Long id, String name, BigDecimal price) {
         this(name, price);
@@ -16,26 +30,23 @@ public class Product {
     }
 
     public Product(String name, BigDecimal price) {
-        checkValidPrice(price);
-        this.name = name;
-        this.price = price;
+        this.name = new Name(name);
+        this.price = new Price(price);
     }
 
     public Long getId() {
         return id;
     }
 
-    public String getName() {
+    public Name getName() {
         return name;
     }
 
-    public BigDecimal getPrice() {
-        return price;
+    public Price getPrice() {
+        return this.price;
     }
 
-    private void checkValidPrice(BigDecimal price) {
-        if (price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new InputProductDataException(InputProductDataErrorCode.IT_CAN_NOT_INPUT_PRICE_LESS_THAN_ZERO);
-        }
+    public BigDecimal getAmount() {
+        return this.price.getPrice();
     }
 }

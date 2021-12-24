@@ -1,10 +1,13 @@
 package kitchenpos.product.ui;
 
+import kitchenpos.common.domain.Name;
+import kitchenpos.common.exception.InputDataErrorCode;
+import kitchenpos.common.exception.InputDataException;
 import kitchenpos.product.application.ProductService;
-import kitchenpos.product.dao.ProductDao;
 import kitchenpos.product.domain.Product;
-import kitchenpos.product.exception.InputProductDataErrorCode;
-import kitchenpos.product.exception.InputProductDataException;
+import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,15 +21,15 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
-@DisplayName("상품 컨트롤러 테스트")
+@DisplayName("상품 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     @InjectMocks
     private ProductService productService;
@@ -35,48 +38,58 @@ class ProductServiceTest {
     @DisplayName("상품을 등록한다.")
     void createProductTest() {
         //given
+        ProductRequest productRequest = mock(ProductRequest.class);
         Product product = mock(Product.class);
-        given(product.getPrice())
-                .willReturn(new BigDecimal("10000"));
+
+        given(product.getName())
+                .willReturn(new Name("양파치킨"));
+
+        when(productRequest.toEntity()).thenReturn(product);
+        when(productRepository.save(any(Product.class))).thenReturn(product);
+
         //when
-        productService.create(product);
+        productService.create(productRequest);
         //then
-        상품_생성_검증(product);
+        verify(productRepository).save(any(Product.class));
     }
 
     @Test
     @DisplayName("상품을 조회한다.")
-    void findAllTest(){
+    void findAllTest() {
         //given
         Product product = mock(Product.class);
-        given(productDao.findAll())
-                .willReturn(Arrays.asList(product));
+
+        when(product.getId())
+                .thenReturn(1L);
+        when(product.getName())
+                .thenReturn(new Name("양파치킨"));
+
+        when(productRepository.findAll())
+                .thenReturn(Arrays.asList(product));
 
         //when
-        List<Product> products = productDao.findAll();
+        List<ProductResponse> productResponses = productService.findAll();
 
         //then
-        assertThat(products.size()).isEqualTo(1);
-        assertThat(products).contains(product);
+        assertThat(productResponses.size()).isEqualTo(1);
+        assertThat(productResponses).isNotEmpty();
     }
 
     @Test
-    @DisplayName("잘못된 가격이 들어가면 상품을 등록할때 에러 처리")
-    void saveWrongPriceTest(){
-        //given
-        Product product = mock(Product.class);
-        given(product.getPrice())
-                .willReturn(new BigDecimal(-10000));
-
-        //when
-        assertThatThrownBy(() -> {
-            productService.create(product);
-        }).isInstanceOf(InputProductDataException.class)
-                .hasMessageContaining(InputProductDataErrorCode.IT_CAN_NOT_INPUT_PRICE_LESS_THAN_ZERO.errorMessage());
+    @DisplayName("상품 가격이 0원 미만일 경우 테스트")
+    void priceLessThanZeroTest() {
+        assertThatThrownBy(
+                () -> productService.create(new ProductRequest("대파치킨", new BigDecimal(-1000)))
+        ).isInstanceOf(InputDataException.class)
+                .hasMessageContaining(InputDataErrorCode.THE_PRICE_CAN_NOT_INPUT_LESS_THAN_ZERO.errorMessage());
     }
 
-    private void 상품_생성_검증(Product product) {
-        verify(product).getPrice();
+    @Test
+    @DisplayName("상품 가격을 넣지 않을 경우 테스트")
+    void notInputPriceTest() {
+        assertThatThrownBy(
+                () -> productService.create(new ProductRequest("대파치킨", null))
+        ).isInstanceOf(InputDataException.class)
+                .hasMessageContaining(InputDataErrorCode.THE_PRICE_MUST_INPUT.errorMessage());
     }
-
 }

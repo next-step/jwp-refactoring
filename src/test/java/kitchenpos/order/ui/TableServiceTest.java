@@ -25,7 +25,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@DisplayName("Table 컨트롤러 테스트")
+@DisplayName("Table 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
 class TableServiceTest {
 
@@ -108,24 +108,10 @@ class TableServiceTest {
     void changeMemberCountTest(){
         OrderTable orderTable = mock(OrderTable.class);
 
-        when(orderTable.getId())
-                .thenReturn(1L);
-
-        when(orderTable.getNumberOfGuests())
-                .thenReturn(5);
-
-        when(orderTableDao.save(any()))
-                .thenReturn(orderTable);
-
-        tableService.create(orderTable);
-
-
-        when(orderTable.getNumberOfGuests())
-                .thenReturn(4);
-
         when(orderTableDao.findById(anyLong()))
                 .thenReturn(Optional.of(orderTable));
 
+        when(orderTable.getNumberOfGuests()).thenReturn(4);
         tableService.changeNumberOfGuests(orderTable.getId(), orderTable);
 
         assertThat(orderTable.getNumberOfGuests()).isEqualTo(4);
@@ -135,17 +121,6 @@ class TableServiceTest {
     @DisplayName("테이블 인원수를 음수로 변경하면 에러처리 테스트.")
     void changeWrongMemberCountTest(){
         OrderTable orderTable = mock(OrderTable.class);
-
-        when(orderTable.getId())
-                .thenReturn(1L);
-
-        when(orderTable.getNumberOfGuests())
-                .thenReturn(5);
-
-        when(orderTableDao.save(any()))
-                .thenReturn(orderTable);
-
-        tableService.create(orderTable);
 
         when(orderTable.getNumberOfGuests())
                 .thenReturn(-4);

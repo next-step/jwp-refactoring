@@ -8,8 +8,8 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.exceptions.InputMenuDataErrorCode;
 import kitchenpos.menu.exceptions.InputMenuDataException;
-import kitchenpos.product.dao.ProductDao;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,7 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
-@DisplayName("메뉴 컨트롤러 테스트")
+@DisplayName("메뉴 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
 class MenuServiceTest {
 
@@ -41,7 +41,7 @@ class MenuServiceTest {
     private MenuProductDao menuProductDao;
 
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     @InjectMocks
     private MenuService menuService;
@@ -63,9 +63,9 @@ class MenuServiceTest {
                 .thenReturn(1L);
 
         Product product = mock(Product.class);
-        when(product.getPrice())
+        when(product.getAmount())
                 .thenReturn(new BigDecimal("10000"));
-        when(productDao.findById(anyLong()))
+        when(productRepository.findById(anyLong()))
                 .thenReturn(Optional.of(product));
 
         Menu savedMenu = mock(Menu.class);
@@ -78,7 +78,7 @@ class MenuServiceTest {
 
         //then
         verify(menuDao).save(menu);
-        verify(productDao).findById(anyLong());
+        verify(productRepository).findById(anyLong());
     }
 
     @Test
@@ -150,7 +150,7 @@ class MenuServiceTest {
                 .thenReturn(Arrays.asList(menuProduct));
 
         //when
-        when(productDao.findById(anyLong()))
+        when(productRepository.findById(anyLong()))
                 .thenReturn(Optional.empty());
 
         //then

@@ -1,7 +1,7 @@
 package kitchenpos.product.domain;
 
-import kitchenpos.product.exception.InputProductDataErrorCode;
-import kitchenpos.product.exception.InputProductDataException;
+import kitchenpos.common.exception.InputDataErrorCode;
+import kitchenpos.common.exception.InputDataException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -21,17 +21,26 @@ class ProductTest {
     }
 
     @Test
-    @DisplayName("잘못된 상품 가격을 입력하면 예외처리")
-    void createWrongPriceProductTest() {
+    @DisplayName("잘못된 상품 가격을 음수로 입력하면 예외처리")
+    void createWrongMinusPriceProductTest() {
         assertThatThrownBy(() -> {
             new Product("대파치킨", new BigDecimal(-10000));
-        }).isInstanceOf(InputProductDataException.class)
-                .hasMessageContaining(InputProductDataErrorCode.IT_CAN_NOT_INPUT_PRICE_LESS_THAN_ZERO.errorMessage());
+        }).isInstanceOf(InputDataException.class)
+                .hasMessageContaining(InputDataErrorCode.THE_PRICE_CAN_NOT_INPUT_LESS_THAN_ZERO.errorMessage());
+    }
+
+    @Test
+    @DisplayName("상품 가격을 입력하지 않으면 예외처리")
+    void createNotInputPriceProductTest() {
+        assertThatThrownBy(() -> {
+            new Product("대파치킨", null);
+        }).isInstanceOf(InputDataException.class)
+                .hasMessageContaining(InputDataErrorCode.THE_PRICE_MUST_INPUT.errorMessage());
     }
 
     private void checkValidProduct(Product product, String name, BigDecimal price) {
-        assertThat(product.getName()).isEqualTo(name);
-        assertThat(product.getPrice()).isEqualTo(price);
+        assertThat(product.getName().getName()).isEqualTo(name);
+        assertThat(product.getAmount()).isEqualTo(price);
     }
 
 }
