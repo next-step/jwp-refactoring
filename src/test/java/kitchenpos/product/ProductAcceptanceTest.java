@@ -18,7 +18,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
 @DisplayName("상품 인수 테스트")
-class ProductAcceptanceTest extends AcceptanceTest {
+public class ProductAcceptanceTest extends AcceptanceTest {
 
     private static final String URI = "/api/products";
 
@@ -58,17 +58,23 @@ class ProductAcceptanceTest extends AcceptanceTest {
         상품_목록_포함됨(상품_목록_응답, Arrays.asList(응답_강정치킨, 응답_마늘치킨));
     }
 
-    private ExtractableResponse<Response> 상품_목록_요청() {
-        return RestTestApi.get(URI);
+    public static ExtractableResponse<Response> 상품_생성되어_있음(ProductRequest productRequest) {
+        ExtractableResponse<Response> response = 상품_생성_요청(productRequest);
+        상품_생성됨(response);
+        return response;
     }
 
-    private ExtractableResponse<Response> 상품_생성_요청(ProductRequest productRequest) {
+    private static ExtractableResponse<Response> 상품_생성_요청(ProductRequest productRequest) {
         return RestTestApi.post(URI, productRequest);
     }
 
-    private void 상품_생성됨(ExtractableResponse<Response> response) {
+    private static void 상품_생성됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.header("Location")).isNotBlank();
+    }
+
+    private ExtractableResponse<Response> 상품_목록_요청() {
+        return RestTestApi.get(URI);
     }
 
     private void 상품_목록_응답됨(ExtractableResponse<Response> response) {

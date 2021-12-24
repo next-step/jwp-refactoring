@@ -57,12 +57,19 @@ class MenuGroupAcceptanceTest extends AcceptanceTest {
         메뉴그룹_목록_포함됨(메뉴그룹_목록_응답, Arrays.asList(응답_두마리메뉴그룹, 응답_한마리메뉴그룹));
     }
 
-    private ExtractableResponse<Response> 메뉴그룹_생성_요청(MenuGroupRequest request) {
-        return RestTestApi.post(URI, request);
+    public static ExtractableResponse<Response> 메뉴그룹_등록되어_있음(MenuGroupRequest menuGroupRequest) {
+        ExtractableResponse<Response> response = 메뉴그룹_생성_요청(menuGroupRequest);
+        메뉴그룹_생성됨(response);
+        return response;
     }
 
-    private void 메뉴그룹_생성됨(ExtractableResponse<Response> response) {
+    private static ExtractableResponse<Response> 메뉴그룹_생성_요청(MenuGroupRequest menuGroupRequest) {
+        return RestTestApi.post(URI, menuGroupRequest);
+    }
+
+    private static void 메뉴그룹_생성됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(response.header("Location")).isNotBlank();
     }
 
     private ExtractableResponse<Response> 메뉴그룹_목록_요청() {
