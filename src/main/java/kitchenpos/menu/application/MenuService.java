@@ -3,9 +3,9 @@ package kitchenpos.menu.application;
 import kitchenpos.menu.dao.MenuDao;
 import kitchenpos.menu.dao.MenuGroupDao;
 import kitchenpos.menu.dao.MenuProductDao;
-import kitchenpos.product.dao.ProductDao;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.product.dao.ProductDao;
 import kitchenpos.product.domain.Product;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class MenuService {
@@ -37,10 +36,6 @@ public class MenuService {
     @Transactional
     public Menu create(final Menu menu) {
         final BigDecimal price = menu.getPrice();
-
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException();
-        }
 
         if (!menuGroupDao.existsById(menu.getMenuGroupId())) {
             throw new IllegalArgumentException();

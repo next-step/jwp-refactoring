@@ -88,19 +88,6 @@ class MenuServiceTest {
     }
 
     @Test
-    void 메뉴_생성_시_가격은_0원_이상이어야_한다() {
-        // given
-        후라이드_후라이드.setPrice(BigDecimal.valueOf(-1));
-
-        // when
-        ThrowingCallable throwingCallable = () -> menuService.create(후라이드_후라이드);
-
-        // then
-        assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(throwingCallable);
-    }
-
-    @Test
     void 메뉴_생성_시_등록하려는_메뉴는_메뉴_그룹이_존재해야한다() {
         // given
         후라이드_후라이드.setMenuGroupId(null);

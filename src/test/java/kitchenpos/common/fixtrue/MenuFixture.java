@@ -13,12 +13,6 @@ public class MenuFixture {
     }
 
     public static Menu of(long id, String name, BigDecimal price, Long menuGroupId, MenuProduct... menuProducts) {
-        Menu menu = new Menu();
-        menu.setId(id);
-        menu.setName(name);
-        menu.setPrice(price);
-        menu.setMenuGroupId(menuGroupId);
-        menu.setMenuProducts(Arrays.asList(menuProducts));
-        return menu;
+        return Menu.of(id, name, price, menuGroupId, Arrays.asList(menuProducts));
     }
 }
