@@ -56,7 +56,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         상품 = 상품_등록되어_있음("강정치킨", 17_000);
         메뉴_상품 = MenuProductFixture.create(null, Product.of(상품.getId(), 상품.getName(), 상품.getPrice()), 2);
         메뉴_그룹 = 메뉴_그룹_등록되어_있음("추천_메뉴_그룹");
-        메뉴 = 메뉴_등록되어_있음("강정치킨_두마리_세트_메뉴", 30_000, 메뉴_그룹.getId(), Arrays.asList(MenuProductRequest.of(상품.getId(), 메뉴_상품.getQuantity())));
+        메뉴 = 메뉴_등록되어_있음("강정치킨_두마리_세트_메뉴", 30_000, 메뉴_그룹.getId(), Arrays.asList(MenuProductRequest.of(상품.getId(), 메뉴_상품.getQuantity().getQuantity())));
         주문_테이블 = 주문_테이블_등록되어_있음(4, false);
         주문_항목 = OrderLineItemFixture.create(null, null, Menu.of(메뉴.getId(), Name.of(메뉴.getName()), Price.of(메뉴.getPrice()), 메뉴_그룹, MenuProducts.of(Arrays.asList(메뉴_상품))), 1L);
     }

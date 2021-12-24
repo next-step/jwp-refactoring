@@ -28,7 +28,7 @@ public class MenuProductResponse {
                 menuProduct.getId()
                 , menuProduct.getMenu().getId()
                 , menuProduct.getProduct().getId()
-                , menuProduct.getQuantity());
+                , menuProduct.getQuantity().getQuantity());
     }
 
     public static List<MenuProductResponse> fromList(List<MenuProduct> menuProducts) {

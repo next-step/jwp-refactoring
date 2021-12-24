@@ -1,5 +1,6 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.order.domain.Quantity;
 import kitchenpos.product.domain.Product;
 
 import javax.persistence.Column;
@@ -26,7 +27,7 @@ public class MenuProduct {
     @OneToOne(fetch = FetchType.LAZY)
     private Product product;
 
-    private long quantity;
+    private Quantity quantity;
 
     protected MenuProduct() {
     }
@@ -43,26 +44,26 @@ public class MenuProduct {
         return product;
     }
 
-    public long getQuantity() {
+    public Quantity getQuantity() {
         return quantity;
     }
 
-    private MenuProduct(Product product, long quantity) {
+    private MenuProduct(Product product, Quantity quantity) {
         this.product = product;
         this.quantity = quantity;
     }
 
-    private MenuProduct(Long id, Menu menu, Product product, long quantity) {
+    private MenuProduct(Long id, Menu menu, Product product, Quantity quantity) {
         this(product, quantity);
         this.id = id;
         this.menu = menu;
     }
 
-    public static MenuProduct of(Product product, long quantity) {
+    public static MenuProduct of(Product product, Quantity quantity) {
         return new MenuProduct(product, quantity);
     }
 
-    public static MenuProduct of(Long id, Menu menu, Product product, long quantity) {
+    public static MenuProduct of(Long id, Menu menu, Product product, Quantity quantity) {
         return new MenuProduct(id, menu, product, quantity);
     }
 
@@ -72,7 +73,7 @@ public class MenuProduct {
 
     public BigDecimal getTotalPrice() {
         BigDecimal price = product.getPrice();
-        BigDecimal bigDecimal = BigDecimal.valueOf(quantity);
+        BigDecimal bigDecimal = BigDecimal.valueOf(quantity.getQuantity());
         return price.multiply(bigDecimal);
     }
 }

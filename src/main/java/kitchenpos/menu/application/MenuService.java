@@ -11,6 +11,7 @@ import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.application.MenuGroupService;
 import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.order.domain.Quantity;
 import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
 import org.springframework.stereotype.Service;
@@ -71,7 +72,10 @@ public class MenuService {
 
         List<Product> products = productService.findByIdIn(productIds);
         return products.stream()
-                .map(product -> MenuProduct.of(product, menuProductRequests.get(product.getId())))
+                .map(product -> {
+                    Long quantity = menuProductRequests.get(product.getId());
+                    return MenuProduct.of(product, Quantity.of(quantity));
+                })
                 .collect(Collectors.toList());
     }
 }
