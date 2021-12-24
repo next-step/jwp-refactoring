@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import kitchenpos.menu.dao.MenuGroupRepository;
+import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.dto.MenuGroupRequest;
 import kitchenpos.menu.dto.MenuGroupResponse;
 
@@ -29,5 +30,11 @@ public class MenuGroupService {
         return menuGroupRepository.findAll().stream()
                 .map(MenuGroupResponse::from)
                 .collect(Collectors.toList());
+    }
+    
+    @Transactional(readOnly = true)
+    public MenuGroup findById(Long menuGroupId) {
+        return menuGroupRepository.findById(menuGroupId)
+                .orElseThrow(() -> new IllegalArgumentException("해당하는 메뉴그룹이 없습니다"));
     }
 }

@@ -2,6 +2,7 @@ package kitchenpos.menu.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
@@ -19,7 +20,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.menu.dao.MenuGroupRepository;
 import kitchenpos.menu.dao.MenuProductRepository;
 import kitchenpos.menu.dao.MenuRepository;
 import kitchenpos.menu.dao.ProductRepository;
@@ -27,6 +27,8 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.Product;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
 
 @ExtendWith(MockitoExtension.class)
 public class MenuServiceTest {
@@ -35,7 +37,7 @@ public class MenuServiceTest {
     private MenuRepository menuRepository;
 
     @Mock
-    private MenuGroupRepository menuGroupRepository;
+    private MenuGroupService menuGroupService;
 
     @Mock
     private MenuProductRepository menuProductRepository;
@@ -55,31 +57,32 @@ public class MenuServiceTest {
         MenuProduct 메뉴상품 = MenuProduct.of(메뉴, 상품, 1L);
         메뉴.addMenuProducts(Arrays.asList(메뉴상품));
 
-        given(menuGroupRepository.existsById(nullable(Long.class))).willReturn(true);
+        given(menuGroupService.findById(nullable(Long.class))).willReturn(메뉴.getMenuGroup());
         given(productRepository.findById(nullable(Long.class))).willReturn(Optional.of(상품));
-        given(menuRepository.save(메뉴)).willReturn(메뉴);
+        given(menuRepository.save(any())).willReturn(메뉴);
         given(menuProductRepository.save(메뉴상품)).willReturn(메뉴상품);
 
         // when
-        Menu 저장된_메뉴 = menuService.create(메뉴);
+        MenuResponse 저장된_메뉴 = menuService.create(MenuRequest.from(메뉴));
 
         // then
-        assertThat(저장된_메뉴).isEqualTo(메뉴);
+        assertThat(저장된_메뉴).isEqualTo(MenuResponse.from(메뉴));
 
     }
-
+    
     @DisplayName("메뉴 등록시 가격은 필수여야한다 - 예외처리")
     @Test
     void 메뉴_등록_가격_필수() {
         // given
         Menu 가격없는_메뉴 = Menu.of("짜장면", null, MenuGroup.from("메뉴그룹"), new ArrayList<MenuProduct>());
+        given(menuGroupService.findById(nullable(Long.class))).willReturn(가격없는_메뉴.getMenuGroup());
         
         // when, then
         assertThatThrownBy(() -> {
-            menuService.create(가격없는_메뉴);
+            menuService.create(MenuRequest.from(가격없는_메뉴));
         }).isInstanceOf(IllegalArgumentException.class)
         .hasMessage("메뉴 가격은 0원 이상이어야 합니다");
-
+    
     }
     
     @DisplayName("메뉴 등록시 가격은 0원 이상이어야한다 - 예외처리")
@@ -87,10 +90,11 @@ public class MenuServiceTest {
     void 메뉴_등록_가격_0원_이상() {
         // given
         Menu 마이너스_가격_메뉴 = Menu.of("짜장면", new BigDecimal("-6000"), MenuGroup.from("메뉴그룹"), new ArrayList<MenuProduct>());
+        given(menuGroupService.findById(nullable(Long.class))).willReturn(마이너스_가격_메뉴.getMenuGroup());
         
         // when, then
         assertThatThrownBy(() -> {
-            menuService.create(마이너스_가격_메뉴);
+            menuService.create(MenuRequest.from(마이너스_가격_메뉴));
         }).isInstanceOf(IllegalArgumentException.class)
         .hasMessage("메뉴 가격은 0원 이상이어야 합니다");
     }
@@ -100,10 +104,11 @@ public class MenuServiceTest {
     void 메뉴_등록_메뉴그룹_필수() {
         // given
         Menu 메뉴그룹_미지정_메뉴 = Menu.of("짜장면", new BigDecimal("6000"), null, new ArrayList<MenuProduct>());
+        given(menuGroupService.findById(nullable(Long.class))).willReturn(메뉴그룹_미지정_메뉴.getMenuGroup());
         
         // when, then
         assertThatThrownBy(() -> {
-            menuService.create(메뉴그룹_미지정_메뉴);
+            menuService.create(MenuRequest.from(메뉴그룹_미지정_메뉴));
         }).isInstanceOf(IllegalArgumentException.class)
         .hasMessage("해당하는 메뉴그룹이 없습니다");
     }
@@ -113,17 +118,15 @@ public class MenuServiceTest {
         // given
         Menu 메뉴 = Menu.of("짜장면", new BigDecimal("6000"), MenuGroup.from("미등록_메뉴그룹"), new ArrayList<MenuProduct>());
         
-        // when
-        when(menuGroupRepository.existsById(nullable(Long.class))).thenReturn(false);
     
-        // then
+        // when, then
         assertThatThrownBy(() -> {
-            menuService.create(메뉴);
+            menuService.create(MenuRequest.from(메뉴));
         }).isInstanceOf(IllegalArgumentException.class)
         .hasMessage("해당하는 메뉴그룹이 없습니다");
     
     }
-
+    
     
     @DisplayName("메뉴에 포함된 상품은 등록된 상품이어야한다 - 예외처리")
     @Test
@@ -134,14 +137,14 @@ public class MenuServiceTest {
         Product 상품 = Product.of("짜장면", new BigDecimal("6000"));
         메뉴.addMenuProducts(Arrays.asList(MenuProduct.of(메뉴, 상품, 1L)));
         
-        given(menuGroupRepository.existsById(nullable(Long.class))).willReturn(true);
+        given(menuGroupService.findById(nullable(Long.class))).willReturn(메뉴.getMenuGroup());
         
         // when
         when(productRepository.findById(nullable(Long.class))).thenReturn(Optional.empty());
     
         // then
         assertThatThrownBy(() -> {
-            menuService.create(메뉴);
+            menuService.create(MenuRequest.from(메뉴));
         }).isInstanceOf(IllegalArgumentException.class)
         .hasMessage("등록된 상품이 아닙니다");
     
@@ -157,12 +160,12 @@ public class MenuServiceTest {
         
         메뉴.addMenuProducts(Arrays.asList(MenuProduct.of(메뉴, 상품, 1L)));
     
-        given(menuGroupRepository.existsById(nullable(Long.class))).willReturn(true);
+        given(menuGroupService.findById(nullable(Long.class))).willReturn(메뉴.getMenuGroup());
         given(productRepository.findById(nullable(Long.class))).willReturn(Optional.of(상품));
     
         // when, then
         assertThatThrownBy(() -> {
-            menuService.create(메뉴);
+            menuService.create(MenuRequest.from(메뉴));
         }).isInstanceOf(IllegalArgumentException.class)
         .hasMessage("메뉴 가격이 상품 가격의 합보다 큽니다");
     }
@@ -178,9 +181,9 @@ public class MenuServiceTest {
         given(menuRepository.findAll()).willReturn(Arrays.asList(첫번째_메뉴, 두번째_메뉴));
     
         // when
-        List<Menu> 메뉴_목록 = menuService.list();
+        List<MenuResponse> 메뉴_목록 = menuService.list();
     
         // then
-        assertThat(메뉴_목록).containsExactly(첫번째_메뉴, 두번째_메뉴);
+        assertThat(메뉴_목록).containsExactly(MenuResponse.from(첫번째_메뉴), MenuResponse.from(두번째_메뉴));
     }
 }
