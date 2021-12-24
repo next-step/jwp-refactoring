@@ -38,7 +38,7 @@ class ProductRestControllerTest extends RestControllerTest {
     @Test
     void 상품_등록() throws Exception {
         //given
-        Product 후라이드치킨 = ProductFixture.of(1L, "후라이드치킨", BigDecimal.valueOf(16000));
+        Product 후라이드치킨 = ProductFixture.of("후라이드치킨", BigDecimal.valueOf(16000));
         given(productService.create(any())).willReturn(후라이드치킨);
 
         //when
@@ -59,8 +59,8 @@ class ProductRestControllerTest extends RestControllerTest {
     void 상품_조회() throws Exception {
         //given
         List<Product> products = new ArrayList<>();
-        products.add(ProductFixture.of(1L, "후라이드치킨", BigDecimal.valueOf(16000)));
-        products.add(ProductFixture.of(2L, "양념치킨", BigDecimal.valueOf(17000)));
+        products.add(ProductFixture.of("후라이드치킨", BigDecimal.valueOf(16000)));
+        products.add(ProductFixture.of("양념치킨", BigDecimal.valueOf(17000)));
         given(productService.list()).willReturn(products);
 
         //when

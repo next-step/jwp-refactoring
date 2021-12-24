@@ -14,7 +14,6 @@ import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("메뉴 테스트")
 class MenuTest {
@@ -26,7 +25,7 @@ class MenuTest {
 
     @BeforeEach
     void setUp() {
-        후라이드치킨 = ProductFixture.of(1L, "후라이드치킨", BigDecimal.valueOf(16000));
+        후라이드치킨 = ProductFixture.of("후라이드치킨", BigDecimal.valueOf(16000));
         두마리치킨 = MenuGroupFixture.of(1L, "두마리치킨");
         후라이드_후라이드_메뉴_상품 = MenuProductFixture.of(1L, 1L, 후라이드치킨.getId(), 2);
     }

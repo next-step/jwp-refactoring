@@ -47,7 +47,7 @@ class MenuRestControllerTest extends RestControllerTest {
 
     @BeforeEach
     void setUp() {
-        후라이드치킨 = ProductFixture.of(1L, "후라이드치킨", BigDecimal.valueOf(16000));
+        후라이드치킨 = ProductFixture.of("후라이드치킨", BigDecimal.valueOf(16000));
         두마리치킨 = MenuGroupFixture.of(1L, "두마리치킨");
         후라이드_후라이드 = MenuFixture.of(
                 1L,

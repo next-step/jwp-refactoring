@@ -10,7 +10,7 @@ public class ProductFixture {
 
     }
 
-    public static Product of(Long id, String name, BigDecimal price) {
-        return Product.of(id, name, price);
+    public static Product of(String name, BigDecimal price) {
+        return Product.of(name, price);
     }
 }

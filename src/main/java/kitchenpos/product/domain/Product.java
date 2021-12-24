@@ -1,19 +1,29 @@
 package kitchenpos.product.domain;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.math.BigDecimal;
 import java.util.Objects;
 
+@Entity
 public class Product {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false)
     private String name;
     private BigDecimal price;
 
     public Product() {
     }
 
-    public Product(Long id, String name, BigDecimal price) {
+    public Product(String name, BigDecimal price) {
         validatePrice(price);
-        this.id = id;
         this.name = Objects.requireNonNull(name, "상품의 이름은 필수 입니다.");
         this.price = price;
     }
@@ -24,8 +34,8 @@ public class Product {
         }
     }
 
-    public static Product of(Long id, String name, BigDecimal price) {
-        return new Product(id, name, price);
+    public static Product of(String name, BigDecimal price) {
+        return new Product(name, price);
     }
 
     public Long getId() {

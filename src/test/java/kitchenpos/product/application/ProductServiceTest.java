@@ -1,8 +1,8 @@
 package kitchenpos.product.application;
 
 import kitchenpos.common.fixtrue.ProductFixture;
-import kitchenpos.product.dao.ProductDao;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,7 +24,7 @@ import static org.mockito.BDDMockito.given;
 class ProductServiceTest {
 
     @Mock
-    ProductDao productDao;
+    ProductRepository productRepository;
 
     @InjectMocks
     ProductService productService;
@@ -34,14 +34,14 @@ class ProductServiceTest {
 
     @BeforeEach
     void setUp() {
-        후라이드치킨 = ProductFixture.of(1L, "후라이드치킨", BigDecimal.valueOf(16000));
-        양념치킨 = ProductFixture.of(2L, "양념치킨", BigDecimal.valueOf(17000));
+        후라이드치킨 = ProductFixture.of("후라이드치킨", BigDecimal.valueOf(16000));
+        양념치킨 = ProductFixture.of("양념치킨", BigDecimal.valueOf(17000));
     }
 
     @Test
     void 상품_등록() {
         // given
-        given(productDao.save(any())).willReturn(후라이드치킨);
+        given(productRepository.save(any())).willReturn(후라이드치킨);
 
         // when
         Product actual = productService.create(후라이드치킨);
@@ -54,7 +54,7 @@ class ProductServiceTest {
     void 상품_조회() {
         // given
         List<Product> products = Arrays.asList(후라이드치킨, 양념치킨);
-        given(productDao.findAll()).willReturn(products);
+        given(productRepository.findAll()).willReturn(products);
 
         // when
         List<Product> actual = productService.list();

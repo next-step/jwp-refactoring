@@ -15,7 +15,7 @@ class ProductTest {
     @Test
     void 상품_등록() {
         // given - when
-        Product actual = Product.of(1L,"후라이드치킨", BigDecimal.valueOf(16000));
+        Product actual = Product.of("후라이드치킨", BigDecimal.valueOf(16000));
 
         // then
         assertThat(actual).isNotNull();
@@ -24,7 +24,7 @@ class ProductTest {
     @Test
     void 상품_등록_시_상품의_이름과_가격은_필수이다() {
         // given - when
-        ThrowableAssert.ThrowingCallable throwingCallable = () -> Product.of(1L, null, null);
+        ThrowableAssert.ThrowingCallable throwingCallable = () -> Product.of(null, null);
 
         // then
         assertThatExceptionOfType(IllegalArgumentException.class)
@@ -34,7 +34,7 @@ class ProductTest {
     @Test
     void 상품_등록_시_가격은_0원_이상이어야_한다() {
         // given - when
-        ThrowableAssert.ThrowingCallable throwingCallable = () -> Product.of(1L, "후라이드치킨", BigDecimal.valueOf(-1));
+        ThrowableAssert.ThrowingCallable throwingCallable = () -> Product.of("후라이드치킨", BigDecimal.valueOf(-1));
 
         // then
         assertThatExceptionOfType(IllegalArgumentException.class)
