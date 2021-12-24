@@ -82,9 +82,9 @@
 - [x] JPA 설정 정보 추가
 - [x] package 분리
 - [x] JDBC -> JPA로 변경
-- [ ] domain 정리
+- [x] domain 정리
     - [x] 정적팩토리 메서드 추가
-    - [ ] setter 제거
+    - [x] setter 제거
 - [ ] 일급콜렉션 추가
 - [ ] 서비스 로직을 도메인 로직으로 이동
 - [ ] Domain 단위 테스트 추가

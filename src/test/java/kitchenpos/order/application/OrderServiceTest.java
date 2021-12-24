@@ -62,7 +62,7 @@ public class OrderServiceTest {
         Order 주문 = Order.of(주문_테이블, OrderStatus.COOKING, new ArrayList<OrderLineItem>());
         
         OrderLineItem 주문_메뉴 = OrderLineItem.of(주문, 메뉴, 1L);
-        주문.setOrderLineItems(Arrays.asList(주문_메뉴));
+        주문.addOrderLineItems(Arrays.asList(주문_메뉴));
         
         given(menuRepository.countByIdIn(anyList())).willReturn((long) 주문.getOrderLineItems().size());
         given(orderTableRepository.findById(주문.getOrderTable().getId())).willReturn(Optional.of(주문_테이블));
@@ -96,7 +96,7 @@ public class OrderServiceTest {
         Menu 미등록_메뉴 = Menu.of("메뉴", new BigDecimal("5000"), MenuGroup.from("메뉴그룹"), new ArrayList<MenuProduct>());
         OrderLineItem 주문_항목 = OrderLineItem.of(null, 미등록_메뉴, 1L);
         Order 미등록_메뉴_주문 = Order.of(null, OrderStatus.COOKING, new ArrayList<OrderLineItem>());
-        미등록_메뉴_주문.setOrderLineItems(Arrays.asList(주문_항목));
+        미등록_메뉴_주문.addOrderLineItems(Arrays.asList(주문_항목));
     
         // when
         when(menuRepository.countByIdIn(anyList())).thenReturn(0L);
@@ -118,7 +118,7 @@ public class OrderServiceTest {
         Menu 메뉴 = Menu.of("햄버거", new BigDecimal("5500"), MenuGroup.from("메뉴그룹"), new ArrayList<MenuProduct>());
         
         OrderLineItem 주문_메뉴 = OrderLineItem.of(등록된_테이블_없이_주문, 메뉴, 1L);
-        등록된_테이블_없이_주문.setOrderLineItems(Arrays.asList(주문_메뉴));
+        등록된_테이블_없이_주문.addOrderLineItems(Arrays.asList(주문_메뉴));
         
         given(menuRepository.countByIdIn(anyList())).willReturn((long) 등록된_테이블_없이_주문.getOrderLineItems().size());
     
@@ -142,7 +142,7 @@ public class OrderServiceTest {
         Menu 메뉴 = Menu.of("햄버거", new BigDecimal("5500"), MenuGroup.from("메뉴그룹"), new ArrayList<MenuProduct>());
         
         OrderLineItem 주문_메뉴 = OrderLineItem.of(주문, 메뉴, 1L);
-        주문.setOrderLineItems(Arrays.asList(주문_메뉴));
+        주문.addOrderLineItems(Arrays.asList(주문_메뉴));
         
         given(menuRepository.countByIdIn(anyList())).willReturn((long) 주문.getOrderLineItems().size());
         given(orderTableRepository.findById(nullable(Long.class))).willReturn(Optional.of(주문_테이블));

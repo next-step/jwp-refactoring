@@ -53,7 +53,7 @@ public class MenuServiceTest {
         Menu 메뉴 = Menu.of("짜장면", new BigDecimal("6000"), MenuGroup.from("중식"), null);
         Product 상품 = Product.of("짜장면", new BigDecimal("6000"));
         MenuProduct 메뉴상품 = MenuProduct.of(메뉴, 상품, 1L);
-        메뉴.setMenuProducts(Arrays.asList(메뉴상품));
+        메뉴.addMenuProducts(Arrays.asList(메뉴상품));
 
         given(menuGroupRepository.existsById(nullable(Long.class))).willReturn(true);
         given(productRepository.findById(nullable(Long.class))).willReturn(Optional.of(상품));
@@ -132,7 +132,7 @@ public class MenuServiceTest {
         Menu 메뉴 = Menu.of("짜장면", new BigDecimal("6000"), MenuGroup.from("메뉴그룹"), new ArrayList<MenuProduct>());
         
         Product 상품 = Product.of("짜장면", new BigDecimal("6000"));
-        메뉴.setMenuProducts(Arrays.asList(MenuProduct.of(메뉴, 상품, 1L)));
+        메뉴.addMenuProducts(Arrays.asList(MenuProduct.of(메뉴, 상품, 1L)));
         
         given(menuGroupRepository.existsById(nullable(Long.class))).willReturn(true);
         
@@ -155,7 +155,7 @@ public class MenuServiceTest {
         
         Product 상품 = Product.of("짜장면", new BigDecimal("6000"));
         
-        메뉴.setMenuProducts(Arrays.asList(MenuProduct.of(메뉴, 상품, 1L)));
+        메뉴.addMenuProducts(Arrays.asList(MenuProduct.of(메뉴, 상품, 1L)));
     
         given(menuGroupRepository.existsById(nullable(Long.class))).willReturn(true);
         given(productRepository.findById(nullable(Long.class))).willReturn(Optional.of(상품));

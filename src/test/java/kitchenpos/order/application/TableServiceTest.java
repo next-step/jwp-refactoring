@@ -91,7 +91,7 @@ public class TableServiceTest {
         // given
         TableGroup 단체지정 = TableGroup.from(new ArrayList<OrderTable>());
         OrderTable 등록되지_않은_테이블 = OrderTable.of(단체지정, 3, false);
-        단체지정.setOrderTables(Arrays.asList(등록되지_않은_테이블));
+        단체지정.addOrderTables(Arrays.asList(등록되지_않은_테이블));
         
         // when
         when(orderTableRepository.findById(nullable(Long.class))).thenReturn(Optional.empty());
@@ -110,7 +110,7 @@ public class TableServiceTest {
         // given
         TableGroup 단체지정 = TableGroup.from(new ArrayList<OrderTable>());
         OrderTable 테이블 = OrderTable.of(단체지정, 3, false);
-        단체지정.setOrderTables(Arrays.asList(테이블));
+        단체지정.addOrderTables(Arrays.asList(테이블));
         
         given(orderTableRepository.findById(nullable(Long.class))).willReturn(Optional.of(테이블));
         

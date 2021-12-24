@@ -63,18 +63,17 @@ public class OrderService {
             throw new IllegalArgumentException();
         }
 
-        order.setOrderTable(orderTable);
-        order.setOrderStatus(OrderStatus.COOKING);
-        order.setOrderedTime(LocalDateTime.now());
+        order.updateOrderTable(orderTable);
+        order.changeOrderStatus(OrderStatus.COOKING);
 
         final Order savedOrder = orderRepository.save(order);
 
         final List<OrderLineItem> savedOrderLineItems = new ArrayList<>();
         for (final OrderLineItem orderLineItem : orderLineItems) {
-            orderLineItem.setOrder(savedOrder);
+            orderLineItem.updateOrder(savedOrder);
             savedOrderLineItems.add(orderLineItemRepository.save(orderLineItem));
         }
-        savedOrder.setOrderLineItems(savedOrderLineItems);
+        savedOrder.addOrderLineItems(savedOrderLineItems);
 
         return savedOrder;
     }
@@ -83,7 +82,7 @@ public class OrderService {
         final List<Order> orders = orderRepository.findAll();
 
         for (final Order order : orders) {
-            order.setOrderLineItems(orderLineItemRepository.findAllByOrderId(order.getId()));
+            order.addOrderLineItems(orderLineItemRepository.findAllByOrderId(order.getId()));
         }
 
         return orders;
@@ -98,11 +97,11 @@ public class OrderService {
             throw new IllegalArgumentException("계산이 완료된 주문은 상태를 변경 할 수 없습니다");
         }
 
-        savedOrder.setOrderStatus(order.getOrderStatus());
+        savedOrder.changeOrderStatus(order.getOrderStatus());
 
         orderRepository.save(savedOrder);
 
-        savedOrder.setOrderLineItems(orderLineItemRepository.findAllByOrderId(orderId));
+        savedOrder.addOrderLineItems(orderLineItemRepository.findAllByOrderId(orderId));
 
         return savedOrder;
     }

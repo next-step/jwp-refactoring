@@ -46,7 +46,7 @@ public class TableGroupServiceTest {
         TableGroup 단체지정 = TableGroup.from(new ArrayList<OrderTable>());
         OrderTable 첫번째_테이블 = OrderTable.of(null, 3, true);
         OrderTable 두번째_테이블 = OrderTable.of(null, 5, true);
-        단체지정.setOrderTables(Arrays.asList(첫번째_테이블, 두번째_테이블));
+        단체지정.addOrderTables(Arrays.asList(첫번째_테이블, 두번째_테이블));
         
         given(orderTableRepository.findAllByIdIn(anyList())).willReturn(단체지정.getOrderTables());
         given(tableGroupRepository.save(단체지정)).willReturn(단체지정);
@@ -97,8 +97,8 @@ public class TableGroupServiceTest {
         OrderTable 두번째_테이블 = OrderTable.of(null, 5, false);
         
         TableGroup 단체지정 = TableGroup.from(Arrays.asList(첫번째_테이블, 두번째_테이블));
-        첫번째_테이블.setTableGroup(단체지정);
-        두번째_테이블.setTableGroup(단체지정);
+        첫번째_테이블.updateTableGroup(단체지정);
+        두번째_테이블.updateTableGroup(단체지정);
         
         given(orderTableRepository.findAllByTableGroupId(nullable(Long.class))).willReturn(Arrays.asList(첫번째_테이블, 두번째_테이블));
         given(orderTableRepository.save(첫번째_테이블)).willReturn(첫번째_테이블);

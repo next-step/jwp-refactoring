@@ -24,7 +24,7 @@ public class TableService {
 
     @Transactional
     public OrderTable create(final OrderTable orderTable) {
-        orderTable.setTableGroup(null);
+        orderTable.updateTableGroup(null);
 
         return orderTableRepository.save(orderTable);
     }
@@ -47,7 +47,7 @@ public class TableService {
             throw new IllegalArgumentException("조리중이거나 식사중인 테이블은 빈 테이블로 변경할 수 없습니다");
         }
 
-        savedOrderTable.setEmpty(orderTable.isEmpty());
+        savedOrderTable.changeEmpty(orderTable.isEmpty());
 
         return orderTableRepository.save(savedOrderTable);
     }
@@ -67,7 +67,7 @@ public class TableService {
             throw new IllegalArgumentException();
         }
 
-        savedOrderTable.setNumberOfGuests(numberOfGuests);
+        savedOrderTable.changeNumberOfGuests(numberOfGuests);
 
         return orderTableRepository.save(savedOrderTable);
     }

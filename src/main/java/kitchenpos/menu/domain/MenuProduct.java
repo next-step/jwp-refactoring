@@ -36,36 +36,26 @@ public class MenuProduct {
     public static MenuProduct of(Menu menu, Product product, long quantity) {
         return new MenuProduct(menu, product, quantity);
     }
+    
+
+    public void updateMenu(Menu menu) {
+        this.menu = menu;
+    }
 
     public Long getSeq() {
         return seq;
-    }
-
-    public void setSeq(final Long seq) {
-        this.seq = seq;
     }
 
     public long getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(final long quantity) {
-        this.quantity = quantity;
-    }
-
     public Menu getMenu() {
         return menu;
-    }
-
-    public void setMenu(Menu menu) {
-        this.menu = menu;
     }
 
     public Product getProduct() {
         return product;
     }
 
-    public void setProduct(Product product) {
-        this.product = product;
-    }
 }

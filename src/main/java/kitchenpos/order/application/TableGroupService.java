@@ -53,16 +53,14 @@ public class TableGroupService {
             }
         }
 
-        tableGroup.setCreatedDate(LocalDateTime.now());
-
         final TableGroup savedTableGroup = tableGroupRepository.save(tableGroup);
 
         for (final OrderTable savedOrderTable : savedOrderTables) {
-            savedOrderTable.setTableGroup(savedTableGroup);
-            savedOrderTable.setEmpty(false);
+            savedOrderTable.updateTableGroup(savedTableGroup);
+            savedOrderTable.changeEmpty(false);
             orderTableRepository.save(savedOrderTable);
         }
-        savedTableGroup.setOrderTables(savedOrderTables);
+        savedTableGroup.addOrderTables(savedOrderTables);
 
         return savedTableGroup;
     }
@@ -81,7 +79,7 @@ public class TableGroupService {
         }
 
         for (final OrderTable orderTable : orderTables) {
-            orderTable.setTableGroup(null);
+            orderTable.updateTableGroup(null);
             orderTableRepository.save(orderTable);
         }
     }
