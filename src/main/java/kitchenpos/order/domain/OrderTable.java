@@ -61,4 +61,11 @@ public class OrderTable {
     public void setEmpty(final boolean empty) {
         this.empty = empty;
     }
+
+    public void changeNumberOfGuests(int numberOfGuests) {
+        if (isEmpty()) {
+            throw new IllegalArgumentException("주문 테이블이 빈 테이블이면 방문자 수를 변경할 수 없습니다.");
+        }
+        this.numberOfGuests = numberOfGuests;
+    }
 }
