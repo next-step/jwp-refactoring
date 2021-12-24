@@ -8,6 +8,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
@@ -46,7 +47,7 @@ class TableGroupServiceTest {
         OrderTable orderTable2 = new OrderTable(2L, null, 3, true);
         List<OrderTable> orderTables = Lists.newArrayList(orderTable1, orderTable2);
 
-        TableGroup tableGroup = new TableGroup(1L, null);
+        TableGroup tableGroup = new TableGroup(1L, LocalDateTime.of(2021, 12, 25, 00, 00, 00));
 
         given(orderTableRepository.findAllByIdIn(anyList())).willReturn(orderTables);
         given(tableGroupRepository.save(any())).willReturn(tableGroup);
@@ -59,11 +60,9 @@ class TableGroupServiceTest {
         assertThat(result.getCreatedDate()).isNotNull();
         assertThat(result.getOrderTables()).hasSize(2);
         assertThat(result.getOrderTables().get(0).getId()).isEqualTo(1L);
-        assertThat(result.getOrderTables().get(0).getId()).isEqualTo(1L);
         assertThat(result.getOrderTables().get(0).getNumberOfGuests()).isEqualTo(4);
         assertThat(result.getOrderTables().get(0).isEmpty()).isFalse();
         assertThat(result.getOrderTables().get(1).getId()).isEqualTo(2L);
-        assertThat(result.getOrderTables().get(1).getId()).isEqualTo(1L);
         assertThat(result.getOrderTables().get(1).getNumberOfGuests()).isEqualTo(3);
         assertThat(result.getOrderTables().get(1).isEmpty()).isFalse();
     }
