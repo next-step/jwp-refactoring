@@ -7,7 +7,7 @@ import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
-import kitchenpos.exception.PriceValueNotAcceptableException;
+import kitchenpos.menu.exception.MenuPriceNotAcceptableException;
 
 @Embeddable
 public class MenuProducts {
@@ -38,13 +38,13 @@ public class MenuProducts {
             .reduce(BigDecimal.ZERO, (subSum, menuProductPrice) -> subSum.add(menuProductPrice));
 
         if (menuPrice.compareTo(sum) > 0) {
-            throw new PriceValueNotAcceptableException(ERROR_MESSAGE_MENU_PRICE_HIGH);
+            throw new MenuPriceNotAcceptableException(ERROR_MESSAGE_MENU_PRICE_HIGH);
         }
     }
 
     private void validatePriceIsZero(BigDecimal menuPrice) {
         if (menuPrice.compareTo(BigDecimal.ZERO) > 0) {
-            throw new PriceValueNotAcceptableException("메뉴상품이 없는 경우 메뉴 가격은 0 이어야 합니다.");
+            throw new MenuPriceNotAcceptableException("메뉴상품이 없는 경우 메뉴 가격은 0 이어야 합니다.");
         }
     }
 

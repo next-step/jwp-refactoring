@@ -6,6 +6,9 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.util.Arrays;
 import java.util.List;
 import kitchenpos.menu.testfixtures.MenuTestFixtures;
+import kitchenpos.order.exception.ClosedTableOrderException;
+import kitchenpos.order.exception.CompleteOrderChangeStateException;
+import kitchenpos.order.exception.DuplicateOrderLineItemsException;
 import kitchenpos.ordertable.domain.OrderTable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -39,7 +42,7 @@ class OrderTest {
 
         //when, then
         assertThatThrownBy(() -> new Order(orderTable, orderLineItems))
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(ClosedTableOrderException.class);
     }
 
     @DisplayName("주문항목 리스트에 중복되는 메뉴가 존재해서는 안된다.")
@@ -54,7 +57,7 @@ class OrderTest {
 
         //when, then
         assertThatThrownBy(() -> new Order(orderTable, orderLineItems))
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(DuplicateOrderLineItemsException.class);
     }
 
     @DisplayName("주문 상태 변경")
@@ -87,6 +90,6 @@ class OrderTest {
 
         //when, then
         assertThatThrownBy(() -> order.changeOrderStatus(OrderStatus.MEAL))
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(CompleteOrderChangeStateException.class);
     }
 }

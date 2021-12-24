@@ -8,6 +8,8 @@ import java.util.List;
 import kitchenpos.menu.testfixtures.MenuTestFixtures;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.ordertable.exception.GroupTablesException;
+import kitchenpos.ordertable.exception.UngroupTablesException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -39,7 +41,7 @@ class TableGroupTest {
         //when, then
         TableGroup tableGroup = new TableGroup();
         assertThatThrownBy(() -> tableGroup.groupTables(orderTables))
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(GroupTablesException.class);
     }
 
     @DisplayName("주문 가능한 테이블은 그룹이 될 수 없다.")
@@ -53,7 +55,7 @@ class TableGroupTest {
         //when, then
         TableGroup tableGroup = new TableGroup(1L);
         assertThatThrownBy(() -> tableGroup.groupTables(orderTables))
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(GroupTablesException.class);
     }
 
     @DisplayName("그룹 대상 테이블 리스트에 중복이 존재해서는 안된다.")
@@ -67,7 +69,7 @@ class TableGroupTest {
         //when, then
         TableGroup tableGroup = new TableGroup(1L);
         assertThatThrownBy(() -> tableGroup.groupTables(orderTables))
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(GroupTablesException.class);
     }
 
     @DisplayName("이미 그룹에 소속된 테이블은 그룹화 할 수 없다.")
@@ -84,7 +86,7 @@ class TableGroupTest {
         //when,then
         TableGroup tableGroup2 = new TableGroup(2L);
         assertThatThrownBy(() -> tableGroup2.groupTables(orderTables))
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(GroupTablesException.class);
     }
 
     @DisplayName("그룹 해제")
@@ -122,6 +124,6 @@ class TableGroupTest {
 
         //when,then
         assertThatThrownBy(() -> tableGroup.ungroup())
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(UngroupTablesException.class);
     }
 }

@@ -13,14 +13,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import kitchenpos.common.BaseTimeEntity;
+import kitchenpos.common.entity.BaseTimeEntity;
+import kitchenpos.order.exception.ClosedTableOrderException;
+import kitchenpos.order.exception.CompleteOrderChangeStateException;
 import kitchenpos.ordertable.domain.OrderTable;
 
 @Entity(name = "orders")
 public class Order extends BaseTimeEntity {
-
-    private static final String ERROR_MESSAGE_EMPTY_TABLE_CANNOT_ORDER = "주문종료 상태인 테이블은 주문할 수 없습니다.";
-    private static final String ERROR_MESSAGE_COMPLETE_ORDER_CANNOT_CHANGE = "계산 완료된 주문 상태는 변경할 수 없습니다.";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -52,7 +51,6 @@ public class Order extends BaseTimeEntity {
         this.orderStatus = orderStatus;
     }
 
-
     public Order(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
         this(null, orderTable, OrderStatus.COOKING, orderLineItems);
     }
@@ -72,14 +70,14 @@ public class Order extends BaseTimeEntity {
     }
 
     private void assignTable(OrderTable orderTable) {
-        validateNotEmptyTable(orderTable);
+        validateNotOrderClosedTable(orderTable);
         this.orderTable = orderTable;
         orderTable.addOrder(this);
     }
 
-    private void validateNotEmptyTable(OrderTable orderTable) {
+    private void validateNotOrderClosedTable(OrderTable orderTable) {
         if (orderTable.isOrderClose()) {
-            throw new IllegalArgumentException(ERROR_MESSAGE_EMPTY_TABLE_CANNOT_ORDER);
+            throw new ClosedTableOrderException();
         }
     }
 
@@ -89,7 +87,7 @@ public class Order extends BaseTimeEntity {
 
     public void changeOrderStatus(OrderStatus changeStatus) {
         if (this.orderStatus == OrderStatus.COMPLETION) {
-            throw new IllegalArgumentException(ERROR_MESSAGE_COMPLETE_ORDER_CANNOT_CHANGE);
+            throw new CompleteOrderChangeStateException();
         }
 
         this.orderStatus = changeStatus;

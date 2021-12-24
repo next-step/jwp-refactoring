@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import kitchenpos.order.domain.Order;
+import kitchenpos.ordertable.exception.GroupTablesException;
+import kitchenpos.ordertable.exception.UngroupTablesException;
 import org.springframework.util.CollectionUtils;
 
 @Embeddable
@@ -37,7 +39,7 @@ public class OrderTables {
         validateNoDuplicateTable(inputOrderTables);
 
         if (CollectionUtils.isEmpty(inputOrderTables) || inputOrderTables.size() < 2) {
-            throw new IllegalArgumentException(ERROR_MESSAGE_NOT_ENOUGH_TABLES);
+            throw new GroupTablesException(ERROR_MESSAGE_NOT_ENOUGH_TABLES);
         }
     }
 
@@ -50,19 +52,19 @@ public class OrderTables {
         Set<OrderTable> distinctOrderTables = inputOrderTables.stream().collect(Collectors.toSet());
 
         if (inputOrderTables.size() != distinctOrderTables.size()) {
-            throw new IllegalArgumentException(ERROR_MESSAGE_DUPLICATE_TALBES);
+            throw new GroupTablesException(ERROR_MESSAGE_DUPLICATE_TALBES);
         }
     }
 
     private void validateNotInAnyGroup(OrderTable orderTable) {
         if (Objects.nonNull(orderTable.getTableGroup())) {
-            throw new IllegalArgumentException(ERROR_MESSAGE_TABLE_ALREADY_IN_GROUP);
+            throw new GroupTablesException(ERROR_MESSAGE_TABLE_ALREADY_IN_GROUP);
         }
     }
 
     private void validateEmptyTable(OrderTable orderTable) {
         if (!orderTable.isOrderClose()) {
-            throw new IllegalArgumentException(ERROR_MESSAGE_NOT_EMPTY_TABLE);
+            throw new GroupTablesException(ERROR_MESSAGE_NOT_EMPTY_TABLE);
         }
     }
 
@@ -79,7 +81,7 @@ public class OrderTables {
             .filter(Order::isCompleteStatus)
             .count();
         if (orders.size() != completeCount) {
-            throw new IllegalArgumentException(ERROR_MESSAGE_ORDER_NOT_COMPLETE);
+            throw new UngroupTablesException(ERROR_MESSAGE_ORDER_NOT_COMPLETE);
         }
     }
 

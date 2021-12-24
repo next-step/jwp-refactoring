@@ -8,6 +8,8 @@ import java.util.List;
 import kitchenpos.menu.testfixtures.MenuTestFixtures;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.ordertable.exception.TableChangeNumberOfGuestsException;
+import kitchenpos.ordertable.exception.TableUpdateStateException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -31,7 +33,7 @@ class OrderTableTest {
         OrderTable orderTable = new OrderTable(6, false);
 
         //when
-        orderTable.updateEmpty(true);
+        orderTable.updateTableStatus(true);
 
         //then
         assertThat(orderTable.isOrderClose()).isTrue();
@@ -47,8 +49,8 @@ class OrderTableTest {
         tableGroup.groupTables(Arrays.asList(orderTable1, orderTable2));
 
         //when,then
-        assertThatThrownBy(() -> orderTable1.updateEmpty(true))
-            .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> orderTable1.updateTableStatus(true))
+            .isInstanceOf(TableUpdateStateException.class);
     }
 
     @DisplayName("주문상태가 계산완료가 아닌 주문이 있는 경우 업데이트 불가")
@@ -64,8 +66,8 @@ class OrderTableTest {
         Order order = new Order(orderTable, orderLineItems);
 
         //then
-        assertThatThrownBy(() -> orderTable.updateEmpty(true))
-            .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> orderTable.updateTableStatus(true))
+            .isInstanceOf(TableUpdateStateException.class);
     }
 
     @DisplayName("테이블 방문 손님 수 변경")
@@ -91,7 +93,7 @@ class OrderTableTest {
 
         //when, then
         assertThatThrownBy(() -> orderTable.changeNumberOfGuests(changeNumber))
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(TableChangeNumberOfGuestsException.class);
     }
 
     @DisplayName("주문종료 상태의 테이블은 방문손님 수를 변경할 수 없다.")
@@ -102,6 +104,6 @@ class OrderTableTest {
 
         //when, then
         assertThatThrownBy(() -> orderTable.changeNumberOfGuests(2))
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(TableChangeNumberOfGuestsException.class);
     }
 }

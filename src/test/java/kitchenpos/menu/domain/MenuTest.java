@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
-import kitchenpos.exception.PriceValueNotAcceptableException;
+import kitchenpos.menu.exception.MenuPriceNotAcceptableException;
 import kitchenpos.product.domain.Product;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -60,7 +60,7 @@ class MenuTest {
 
         //when, then
         assertThatThrownBy(() -> new Menu(menuName, price, menuGroup))
-            .isInstanceOf(PriceValueNotAcceptableException.class);
+            .isInstanceOf(MenuPriceNotAcceptableException.class);
     }
 
     @DisplayName("메뉴 가격은 상품 리스트의 합보다 작거나 같아야 한다.")
@@ -78,6 +78,6 @@ class MenuTest {
         // 타코야끼x3 = 36,000, 뿌링클X1 = 15,000 => 51,000 < 51001
         assertThatThrownBy(() -> new Menu("타코야끼와 뿌링클", BigDecimal.valueOf(51001),
             menuGroup, menuProducts))
-            .isInstanceOf(PriceValueNotAcceptableException.class);
+            .isInstanceOf(MenuPriceNotAcceptableException.class);
     }
 }

@@ -6,11 +6,10 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
+import kitchenpos.order.exception.DuplicateOrderLineItemsException;
 
 @Embeddable
 public class OrderLineItems {
-
-    private static final String ERROR_MESSAGE_DUPLICATE_MENU = "주문항목들 중에 중복된 메뉴가 존재합니다.";
 
     @OneToMany(mappedBy = "order", fetch = FetchType.LAZY, cascade = {
         CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
@@ -29,7 +28,7 @@ public class OrderLineItems {
             .count();
 
         if (distinctSize != inputSize) {
-            throw new IllegalArgumentException(ERROR_MESSAGE_DUPLICATE_MENU);
+            throw new DuplicateOrderLineItemsException();
         }
     }
 

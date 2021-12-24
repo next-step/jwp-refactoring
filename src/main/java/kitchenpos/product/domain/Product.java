@@ -7,7 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import kitchenpos.exception.PriceValueNotAcceptableException;
+import kitchenpos.product.exception.ProductPriceNotAcceptableException;
 
 @Entity
 public class Product {
@@ -38,7 +38,7 @@ public class Product {
 
     private void validatePrice(BigDecimal price) {
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new PriceValueNotAcceptableException();
+            throw new ProductPriceNotAcceptableException();
         }
     }
 

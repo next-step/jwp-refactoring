@@ -9,12 +9,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class KitchenposExceptionHandler {
 
-    @ExceptionHandler(PriceValueNotAcceptableException.class)
-    public ResponseEntity handlePriceValueNotAcceptableException(
-        PriceValueNotAcceptableException e) {
-        return ResponseEntity.badRequest().build();
-    }
-
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity handleEntityNotFoundException(
         EntityNotFoundException e) {

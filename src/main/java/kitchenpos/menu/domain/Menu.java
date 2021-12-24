@@ -13,7 +13,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import kitchenpos.exception.PriceValueNotAcceptableException;
+import kitchenpos.menu.exception.MenuPriceNotAcceptableException;
 
 @Entity
 public class Menu {
@@ -63,7 +63,7 @@ public class Menu {
 
     private void validatePrice(BigDecimal price) {
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new PriceValueNotAcceptableException();
+            throw new MenuPriceNotAcceptableException();
         }
     }
 
