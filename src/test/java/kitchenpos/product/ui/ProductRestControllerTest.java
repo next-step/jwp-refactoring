@@ -1,9 +1,10 @@
 package kitchenpos.product.ui;
 
-import kitchenpos.common.fixtrue.ProductFixture;
+import kitchenpos.common.ui.RestControllerTest;
 import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
-import kitchenpos.common.ui.RestControllerTest;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -38,29 +39,30 @@ class ProductRestControllerTest extends RestControllerTest {
     @Test
     void 상품_등록() throws Exception {
         //given
-        Product 후라이드치킨 = ProductFixture.of("후라이드치킨", BigDecimal.valueOf(16000));
-        given(productService.create(any())).willReturn(후라이드치킨);
+        ProductRequest 후라이드치킨_요청 = ProductRequest.of("후라이드치킨", BigDecimal.valueOf(16000));
+        ProductResponse 후라이드치킨_응답 = ProductResponse.of(Product.of(후라이드치킨_요청.getName(), 후라이드치킨_요청.getPrice()));
+        given(productService.create(any())).willReturn(후라이드치킨_응답);
 
         //when
         ResultActions actions = mockMvc.perform(post(API_PRODUCT_ROOT)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(asJsonString(후라이드치킨)))
+                        .content(asJsonString(후라이드치킨_요청)))
                 .andDo(print());
 
         //then
         actions
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").value(후라이드치킨.getId()))
-                .andExpect(jsonPath("$.name").value(후라이드치킨.getName()))
-                .andExpect(jsonPath("$.price").value(후라이드치킨.getPrice()));
+                .andExpect(jsonPath("$.id").value(후라이드치킨_응답.getId()))
+                .andExpect(jsonPath("$.name").value(후라이드치킨_응답.getName()))
+                .andExpect(jsonPath("$.price").value(후라이드치킨_응답.getPrice()));
     }
 
     @Test
     void 상품_조회() throws Exception {
         //given
-        List<Product> products = new ArrayList<>();
-        products.add(ProductFixture.of("후라이드치킨", BigDecimal.valueOf(16000)));
-        products.add(ProductFixture.of("양념치킨", BigDecimal.valueOf(17000)));
+        List<ProductResponse> products = new ArrayList<>();
+        products.add(ProductResponse.of(Product.of("후라이드치킨", BigDecimal.valueOf(16000))));
+        products.add(ProductResponse.of(Product.of("양념치킨", BigDecimal.valueOf(17000))));
         given(productService.list()).willReturn(products);
 
         //when
