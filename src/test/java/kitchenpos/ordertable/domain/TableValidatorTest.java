@@ -1,8 +1,8 @@
 package kitchenpos.ordertable.domain;
 
-import static kitchenpos.application.fixture.OrderFixture.요리중_주문_of;
-import static kitchenpos.application.fixture.OrderTableFixture.단체지정된_주문테이블;
-import static kitchenpos.application.fixture.OrderTableFixture.한명_주문테이블;
+import static kitchenpos.order.application.fixture.OrderFixture.요리중_주문_of;
+import static kitchenpos.ordertable.application.fixture.OrderTableFixture.단체지정된_주문테이블;
+import static kitchenpos.ordertable.application.fixture.OrderTableFixture.한명_주문테이블;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;

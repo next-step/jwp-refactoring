@@ -1,7 +1,7 @@
 package kitchenpos.ordertable.application;
 
-import static kitchenpos.application.fixture.OrderTableFixture.빈_테이블;
-import static kitchenpos.application.fixture.OrderTableFixture.한명_주문테이블;
+import static kitchenpos.ordertable.application.fixture.OrderTableFixture.빈_테이블;
+import static kitchenpos.ordertable.application.fixture.OrderTableFixture.한명_주문테이블;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;

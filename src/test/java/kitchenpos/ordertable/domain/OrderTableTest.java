@@ -1,6 +1,6 @@
 package kitchenpos.ordertable.domain;
 
-import static kitchenpos.application.fixture.OrderTableFixture.단체지정된_주문테이블;
+import static kitchenpos.ordertable.application.fixture.OrderTableFixture.단체지정된_주문테이블;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import kitchenpos.common.exception.InvalidParameterException;
