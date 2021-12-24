@@ -8,8 +8,8 @@ import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableDto;
 import kitchenpos.table.exception.NotFoundOrderTableException;
-import kitchenpos.tablegroup.vo.TableGroupId;
-import kitchenpos.validation.TableValidator;
+import kitchenpos.common.vo.TableGroupId;
+import kitchenpos.table.domain.TableValidator;
 
 import java.util.List;
 import java.util.stream.Collectors;

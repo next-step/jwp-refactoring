@@ -10,6 +10,7 @@ import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.dto.OrderTableDto;
+import kitchenpos.tablegroup.domain.TableGroupValidator;
 import kitchenpos.tablegroup.dto.TableGroupDto;
 import kitchenpos.order.exception.HasNotCompletionOrderException;
 import kitchenpos.table.exception.HasOtherTableGroupException;
@@ -18,13 +19,13 @@ import kitchenpos.table.exception.NotGroupingOrderTableCountException;
 import kitchenpos.table.exception.NotRegistedMenuOrderTableException;
 
 @Component
-public class TableGroupValidator {
+public class TableGroupValidatorImpl implements TableGroupValidator {
     private static final int GROUPING_ORDERTABLE_MINCOUNT = 2;
 
     private final OrderService orderService;
     private final TableService tableService;
 
-    public TableGroupValidator(
+    public TableGroupValidatorImpl(
         final OrderService orderService,
         final TableService tableService
     ) {
@@ -32,12 +33,14 @@ public class TableGroupValidator {
         this.tableService = tableService;
     }
 
+    @Override
     public void validateForUnGroup(OrderTables orderTables) {
         if (orderService.hasNotComplateStatus(orderTables.getOrderTableIds())) {
             throw new HasNotCompletionOrderException("계산완료가 되지않은 주문이 존재합니다.");
         }
     }
 
+    @Override
     public OrderTables getComplateOrderTable(Long tableGroupId) {
         final OrderTables orderTables = OrderTables.of(tableService.findByTableGroupId(tableGroupId));
 
@@ -46,6 +49,7 @@ public class TableGroupValidator {
         return orderTables;
     }
 
+    @Override
     public OrderTables getValidatedOrderTables(TableGroupDto tableGroup) {
         final List<Long> orderTableIds = tableGroup.getOrderTables().stream()
                                                     .map(OrderTableDto::getId)
@@ -65,7 +69,6 @@ public class TableGroupValidator {
         return savedOrderTables;
     }
     
-
     private static void checkHasTableGroup(final OrderTable orderTable) {
         if (orderTable.hasTableGroup()) {
             throw new HasOtherTableGroupException("단체지정이 된 주문테이블입니다.");

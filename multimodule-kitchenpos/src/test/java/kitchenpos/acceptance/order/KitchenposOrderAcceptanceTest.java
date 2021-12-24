@@ -10,14 +10,14 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.opentest4j.MultipleFailuresError;
 
-import kitchenpos.domain.order.OrderStatus;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.menu.dto.MenuDto;
 import kitchenpos.order.dto.OrderDto;
 import kitchenpos.order.dto.OrderLineItemDto;
+import kitchenpos.order.presentation.OrderRestControllerTest;
 import kitchenpos.table.dto.OrderTableDto;
 import kitchenpos.tablegroup.dto.TableGroupDto;
 import kitchenpos.menu.presentation.MenuRestControllerTest;
-import kitchenpos.order.presentation.OrderRestControllerTest;
 import kitchenpos.table.presentation.TableRestControllerTest;
 import kitchenpos.tablegroup.presentation.TableGroupRestControllerTest;
 import kitchenpos.testassistance.config.TestConfig;

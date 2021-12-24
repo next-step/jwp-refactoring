@@ -8,25 +8,29 @@ import org.springframework.stereotype.Component;
 
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menus;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderLineItems;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.Orders;
 import kitchenpos.order.domain.OrdersRepository;
+import kitchenpos.order.domain.OrdersValidator;
 import kitchenpos.order.dto.OrderDto;
 import kitchenpos.order.dto.OrderLineItemDto;
 import kitchenpos.order.event.ValidateEmptyTableEvent;
 import kitchenpos.order.exception.EmptyOrderLineItemOrderException;
 import kitchenpos.order.exception.NotChangableOrderStatusException;
 import kitchenpos.order.exception.NotFoundOrderException;
-import kitchenpos.menu.vo.MenuId;
-import kitchenpos.menugroup.exception.NotRegistedMenuOrderException;
-import kitchenpos.table.vo.OrderTableId;
+import kitchenpos.common.vo.MenuId;
+import kitchenpos.menu.exception.NotRegistedMenuOrderException;
+import kitchenpos.common.vo.OrderTableId;
 
 @Component
-public class OrdersValidator {
+public class OrdersValidatorImpl implements OrdersValidator {
     private final OrdersRepository ordersRepository;
     private final MenuService menuService;
     private final ApplicationEventPublisher eventPublisher;
 
-    public OrdersValidator (
+    public OrdersValidatorImpl (
         final OrdersRepository ordersRepository,
         final MenuService menuService,
         final ApplicationEventPublisher eventPublisher

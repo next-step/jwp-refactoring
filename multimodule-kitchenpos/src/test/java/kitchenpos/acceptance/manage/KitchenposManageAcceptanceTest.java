@@ -15,19 +15,19 @@ import org.springframework.http.HttpStatus;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.Price;
-import kitchenpos.domain.product.Product;
-import kitchenpos.dto.menu.MenuDto;
-import kitchenpos.dto.menu.MenuProductDto;
-import kitchenpos.dto.menugroup.MenuGroupDto;
-import kitchenpos.dto.product.ProductDto;
-import kitchenpos.dto.table.OrderTableDto;
-import kitchenpos.domain.menu.Menu;
-import kitchenpos.domain.menugroup.MenuGroup;
-import kitchenpos.presentation.menu.MenuRestControllerTest;
-import kitchenpos.presentation.menugroup.MenuGroupRestControllerTest;
-import kitchenpos.presentation.product.ProductRestControllerTest;
-import kitchenpos.presentation.table.TableRestControllerTest;
+import kitchenpos.common.domain.Price;
+import kitchenpos.product.domain.Product;
+import kitchenpos.menu.dto.MenuDto;
+import kitchenpos.menu.dto.MenuProductDto;
+import kitchenpos.menugroup.dto.MenuGroupDto;
+import kitchenpos.product.dto.ProductDto;
+import kitchenpos.table.dto.OrderTableDto;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menu.presentation.MenuRestControllerTest;
+import kitchenpos.menugroup.presentation.MenuGroupRestControllerTest;
+import kitchenpos.product.presentation.ProductRestControllerTest;
+import kitchenpos.table.presentation.TableRestControllerTest;
 import kitchenpos.testassistance.config.TestConfig;
 
 public class KitchenposManageAcceptanceTest extends TestConfig {

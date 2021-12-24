@@ -22,7 +22,7 @@ import kitchenpos.table.domain.OrderTables;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.table.dto.OrderTableDto;
 import kitchenpos.tablegroup.dto.TableGroupDto;
-import kitchenpos.validation.TableGroupValidator;
+import kitchenpos.tablegroup.domain.TableGroupValidator;
 import kitchenpos.order.exception.HasNotCompletionOrderException;
 import kitchenpos.table.exception.HasOtherTableGroupException;
 import kitchenpos.table.exception.NotEmptyOrderTableException;

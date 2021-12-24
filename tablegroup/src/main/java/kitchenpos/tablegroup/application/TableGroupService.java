@@ -6,7 +6,7 @@ import kitchenpos.tablegroup.domain.TableGroupRepository;
 import kitchenpos.tablegroup.dto.TableGroupDto;
 import kitchenpos.tablegroup.event.GroupingOrderTableEvent;
 import kitchenpos.tablegroup.event.UngroupOrderTableEvent;
-import kitchenpos.validation.TableGroupValidator;
+import kitchenpos.tablegroup.domain.TableGroupValidator;
 
 import java.util.List;
 

@@ -7,17 +7,18 @@ import kitchenpos.order.domain.Orders;
 import kitchenpos.order.exception.HasNotCompletionOrderException;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.domain.TableValidator;
 import kitchenpos.table.exception.EmptyOrderTableException;
 import kitchenpos.table.exception.HasOtherTableGroupException;
 import kitchenpos.table.exception.NegativeOfNumberOfGuestsException;
 import kitchenpos.table.exception.NotFoundOrderTableException;
 
 @Component
-public class TableValidator {
+public class TableValidatorImpl implements TableValidator{
     private final OrderService orderService;
     private final OrderTableRepository orderTableRepository;
 
-    public TableValidator (
+    public TableValidatorImpl (
         final OrderService orderService,
         final OrderTableRepository orderTableRepository
     ) {
