@@ -3,7 +3,6 @@ package kitchenpos.table.application;
 import java.util.List;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableRequest;
@@ -68,7 +67,7 @@ public class TableService {
         List<Order> orders = orderRepository.findAllByOrderTableId(orderTableId);
 
         boolean isChangeable = orders.stream()
-            .allMatch(order -> order.getOrderStatus().equals(OrderStatus.COMPLETION));
+            .allMatch(Order::isCompleteStatus);
 
         if (!isChangeable) {
             throw new IllegalArgumentException("주문 완료가 아닌 테이블은 상태를 변경할 수 없습니다.");

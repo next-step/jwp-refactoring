@@ -17,6 +17,7 @@ import javax.persistence.Table;
 import kitchenpos.table.domain.OrderTable;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.util.CollectionUtils;
 
 @Entity
 @Table(name = "orders")
@@ -37,9 +38,16 @@ public class Order {
     @CreatedDate
     private LocalDateTime orderedTime;
 
-    private OrderLineItems orderLineItems;
+    private OrderLineItems orderLineItems = new OrderLineItems();
 
     public Order() {
+    }
+
+    public Order(final OrderTable orderTable) {
+        validateOrderTableNotEmpty(orderTable);
+
+        this.orderTable = orderTable;
+        this.orderStatus = OrderStatus.COOKING;
     }
 
     public Order(OrderStatus orderStatus) {
@@ -48,6 +56,8 @@ public class Order {
 
     public Order(final Long id, final OrderTable orderTable, final OrderStatus orderStatus,
         final List<OrderLineItem> orderLineItems) {
+        validateOrderTableNotEmpty(orderTable);
+
         this.id = id;
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
@@ -56,10 +66,6 @@ public class Order {
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(final Long id) {
-        this.id = id;
     }
 
     public OrderTable getOrderTable() {
@@ -74,7 +80,9 @@ public class Order {
         return orderStatus;
     }
 
-    public void setOrderStatus(final OrderStatus orderStatus) {
+    public void changeOrderStatus(final OrderStatus orderStatus) {
+        validateOrderStatusNotCompletion();
+
         this.orderStatus = orderStatus;
     }
 
@@ -86,7 +94,31 @@ public class Order {
         return orderLineItems;
     }
 
-    public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
-        this.orderLineItems = OrderLineItems.of(orderLineItems);
+    public void addOrderLineItems(List<OrderLineItem> orderLineItems) {
+        validateOrderLineItemsNotEmpty(orderLineItems);
+
+        orderLineItems.forEach(orderLineItem -> this.orderLineItems.addOrderLineItem(orderLineItem));
+    }
+
+    public boolean isCompleteStatus() {
+        return orderStatus.equals(OrderStatus.COMPLETION);
+    }
+
+    private void validateOrderStatusNotCompletion() {
+        if (orderStatus.equals(OrderStatus.COMPLETION)) {
+            throw new IllegalArgumentException("계산 완료된 주문입니다.");
+        }
+    }
+
+    private void validateOrderTableNotEmpty(OrderTable orderTable) {
+        if (orderTable.isEmpty()) {
+            throw new IllegalArgumentException("주문 테이블이 비어있지 않습니다.");
+        }
+    }
+
+    private void validateOrderLineItemsNotEmpty(List<OrderLineItem> orderLineItems) {
+        if (CollectionUtils.isEmpty(orderLineItems)) {
+            throw new IllegalArgumentException("주문 항목은 하나 이상이어야 합니다.");
+        }
     }
 }
