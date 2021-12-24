@@ -19,7 +19,7 @@ public class OrderTableFixture {
     }
 
     public static OrderTable 단체지정된_주문테이블() {
-        OrderTable orderTable = OrderTable.of(0, true);
+        OrderTable orderTable = OrderTable.of(1, false);
         orderTable.group(1L);
         return orderTable;
     }
