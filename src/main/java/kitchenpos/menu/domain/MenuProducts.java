@@ -17,7 +17,7 @@ public class MenuProducts {
     @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL)
     private List<MenuProduct> menuProducts = new ArrayList<>();
 
-    protected void changeMenuProducts(List<MenuProduct> inputMenuProducts, BigDecimal menuPrice) {
+    protected void changeMenuProducts(List<MenuProduct> inputMenuProducts, MenuPrice menuPrice) {
         menuProducts.clear();
         if (isEmptyList(inputMenuProducts)) {
             validatePriceIsZero(menuPrice);
@@ -31,19 +31,19 @@ public class MenuProducts {
         return Objects.isNull(inputMenuProducts) || inputMenuProducts.size() == 0;
     }
 
-    private void validateMenuPriceIsLessThanMenuProductsSum(BigDecimal menuPrice,
+    private void validateMenuPriceIsLessThanMenuProductsSum(MenuPrice menuPrice,
         List<MenuProduct> menuProducts) {
         BigDecimal sum = menuProducts.stream()
             .map(MenuProduct::getMenuProductPrice)
             .reduce(BigDecimal.ZERO, (subSum, menuProductPrice) -> subSum.add(menuProductPrice));
 
-        if (menuPrice.compareTo(sum) > 0) {
+        if (menuPrice.isBiggerThan(sum)) {
             throw new MenuPriceNotAcceptableException(ERROR_MESSAGE_MENU_PRICE_HIGH);
         }
     }
 
-    private void validatePriceIsZero(BigDecimal menuPrice) {
-        if (menuPrice.compareTo(BigDecimal.ZERO) > 0) {
+    private void validatePriceIsZero(MenuPrice menuPrice) {
+        if (menuPrice.isBiggerThan(BigDecimal.ZERO)) {
             throw new MenuPriceNotAcceptableException("메뉴상품이 없는 경우 메뉴 가격은 0 이어야 합니다.");
         }
     }

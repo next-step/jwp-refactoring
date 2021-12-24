@@ -13,7 +13,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import kitchenpos.menu.exception.MenuPriceNotAcceptableException;
 
 @Entity
 public class Menu {
@@ -25,8 +24,9 @@ public class Menu {
     @Column(nullable = false)
     private String name;
 
+    @Embedded
     @Column(nullable = false)
-    private BigDecimal price;
+    private MenuPrice price;
 
     @JoinColumn(name = "menu_group_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
@@ -38,22 +38,21 @@ public class Menu {
     protected Menu() {
     }
 
-    public Menu(String name, BigDecimal price, MenuGroup menuGroup) {
+    public Menu(String name, MenuPrice price, MenuGroup menuGroup) {
         this(null, name, price, menuGroup, new ArrayList<>());
     }
 
-    public Menu(String name, BigDecimal price, MenuGroup menuGroup,
+    public Menu(String name, MenuPrice price, MenuGroup menuGroup,
         List<MenuProduct> menuProducts) {
         this(null, name, price, menuGroup, menuProducts);
     }
 
-    public Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup) {
+    public Menu(Long id, String name, MenuPrice price, MenuGroup menuGroup) {
         this(id, name, price, menuGroup, new ArrayList<>());
     }
 
-    public Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup,
+    public Menu(Long id, String name, MenuPrice price, MenuGroup menuGroup,
         List<MenuProduct> menuProducts) {
-        validatePrice(price);
         this.id = id;
         this.name = name;
         this.price = price;
@@ -61,11 +60,6 @@ public class Menu {
         changeMenuProducts(menuProducts);
     }
 
-    private void validatePrice(BigDecimal price) {
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new MenuPriceNotAcceptableException();
-        }
-    }
 
     private void changeMenuProducts(List<MenuProduct> inputMenuProducts) {
         for (MenuProduct menuProduct : inputMenuProducts) {
@@ -82,8 +76,12 @@ public class Menu {
         return name;
     }
 
-    public BigDecimal getPrice() {
+    public MenuPrice getPrice() {
         return price;
+    }
+
+    public BigDecimal getPriceVal() {
+        return price.getPrice();
     }
 
     public MenuGroup getMenuGroup() {

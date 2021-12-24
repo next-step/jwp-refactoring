@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuPrice;
 import kitchenpos.menu.testfixtures.MenuTestFixtures;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
@@ -50,8 +51,8 @@ class OrderServiceTest {
     @BeforeEach
     void setUp() {
         MenuGroup 신상메뉴그룹 = new MenuGroup("신상메뉴그룹");
-        혼술세트 = new Menu(1L, "혼술세트", BigDecimal.valueOf(0), 신상메뉴그룹);
-        이달의메뉴 = new Menu(2L, "이달의메뉴", BigDecimal.valueOf(0), 신상메뉴그룹);
+        혼술세트 = new Menu(1L, "혼술세트", new MenuPrice(BigDecimal.ZERO), 신상메뉴그룹);
+        이달의메뉴 = new Menu(2L, "이달의메뉴", new MenuPrice(BigDecimal.ZERO), 신상메뉴그룹);
     }
 
     @DisplayName("주문을 등록할 수 있다.")

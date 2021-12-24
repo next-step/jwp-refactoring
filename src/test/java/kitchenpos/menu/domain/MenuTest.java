@@ -18,7 +18,7 @@ class MenuTest {
     void construct1() {
         //given
         String menuName = "앙념반 후라이드반";
-        BigDecimal price = BigDecimal.ZERO;
+        MenuPrice price = new MenuPrice(BigDecimal.ZERO);
         MenuGroup menuGroup = new MenuGroup("추천메뉴");
         Menu expectMenu = new Menu(menuName, price, menuGroup);
 
@@ -44,7 +44,8 @@ class MenuTest {
         //when
         // 타코야끼x3 = 36,000, 뿌링클X1 = 15,000 => 51,000
         String menuName = "타코야끼와 뿌링클";
-        Menu menu = new Menu(menuName, BigDecimal.valueOf(51000), menuGroup, menuProducts);
+        Menu menu = new Menu(menuName, new MenuPrice(BigDecimal.valueOf(51000)), menuGroup,
+            menuProducts);
 
         //then
         Assertions.assertThat(menu.getName()).isEqualTo(menuName);
@@ -55,7 +56,7 @@ class MenuTest {
     void construct_exception1() {
         //given
         String menuName = "앙념반 후라이드반";
-        BigDecimal price = BigDecimal.valueOf(15000);
+        MenuPrice price = new MenuPrice(BigDecimal.valueOf(15000));
         MenuGroup menuGroup = new MenuGroup("추천메뉴");
 
         //when, then
@@ -76,7 +77,7 @@ class MenuTest {
 
         //when, then
         // 타코야끼x3 = 36,000, 뿌링클X1 = 15,000 => 51,000 < 51001
-        assertThatThrownBy(() -> new Menu("타코야끼와 뿌링클", BigDecimal.valueOf(51001),
+        assertThatThrownBy(() -> new Menu("타코야끼와 뿌링클", new MenuPrice(BigDecimal.valueOf(51001)),
             menuGroup, menuProducts))
             .isInstanceOf(MenuPriceNotAcceptableException.class);
     }

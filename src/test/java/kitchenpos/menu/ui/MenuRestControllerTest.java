@@ -16,6 +16,7 @@ import kitchenpos.common.CommonTestFixtures;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuPrice;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
@@ -60,7 +61,7 @@ class MenuRestControllerTest {
             new MenuProduct(타코야끼, 2),
             new MenuProduct(뿌링클, 1));
         String menuName = "후라이드+후라이드";
-        BigDecimal price = BigDecimal.valueOf(19000);
+        MenuPrice price = new MenuPrice(BigDecimal.valueOf(19000));
         MenuRequest menuRequest = MenuTestFixtures.convertToMenuRequest(
             new Menu(menuName, price, 추천메뉴그룹, menuProducts));
         MenuResponse expectedMenu = MenuResponse.from(
@@ -88,8 +89,10 @@ class MenuRestControllerTest {
             new MenuProduct(뿌링클, 2));
 
         List<MenuResponse> expectedMenus = MenuResponse.fromList(Arrays.asList(
-            new Menu(1L, "후라이드+후라이드", BigDecimal.valueOf(19000), 추천메뉴그룹, menuProducts1),
-            new Menu(2L, "오븐구이+순살강정", BigDecimal.valueOf(23000), 추천메뉴그룹, menuProducts2)
+            new Menu(1L, "후라이드+후라이드", new MenuPrice(BigDecimal.valueOf(19000)), 추천메뉴그룹,
+                menuProducts1),
+            new Menu(2L, "오븐구이+순살강정", new MenuPrice(BigDecimal.valueOf(23000)), 추천메뉴그룹,
+                menuProducts2)
         ));
         given(menuService.list()).willReturn(expectedMenus);
 

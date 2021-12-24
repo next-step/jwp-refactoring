@@ -1,6 +1,7 @@
 package kitchenpos.order.domain;
 
-import org.assertj.core.api.Assertions;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -11,7 +12,7 @@ public class QuantityTest {
     void constructor() {
         long five = 5L;
         Quantity quantity = new Quantity(five);
-        Assertions.assertThat(quantity).isEqualTo(new Quantity(five));
+        assertThat(quantity).isEqualTo(new Quantity(five));
     }
 
     @DisplayName("수량은 0개 이상이어야 한다.")
@@ -19,6 +20,6 @@ public class QuantityTest {
     void constructor_exception1() {
         long five = 5L;
         Quantity quantity = new Quantity(five);
-        Assertions.assertThat(quantity).isEqualTo(new Quantity(five));
+        assertThat(quantity).isEqualTo(new Quantity(five));
     }
 }
