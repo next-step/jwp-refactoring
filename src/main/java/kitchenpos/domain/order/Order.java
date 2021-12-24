@@ -17,7 +17,7 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @JoinColumn(name = "order_table_id", nullable = false)
+    @JoinColumn(nullable = false)
     private Long orderTableId;
 
     @Enumerated(value = EnumType.STRING)

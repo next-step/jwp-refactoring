@@ -1,6 +1,7 @@
-package kitchenpos.domain.table;
+package kitchenpos.domain.tablegroup;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import kitchenpos.domain.table.OrderTable;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -17,17 +18,7 @@ public class TableGroup {
 
     private LocalDateTime createdDate;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "tableGroup", cascade = CascadeType.PERSIST)
-    @JsonIgnoreProperties(value = {"tableGroup"} , allowSetters = true)
-    private List<OrderTable> orderTables = new ArrayList<>();
-
     public TableGroup() {
-    }
-
-    public TableGroup(List<OrderTable> orderTables) {
-
-
-        this.orderTables = orderTables;
         this.createdDate = LocalDateTime.now();
     }
 
@@ -39,20 +30,22 @@ public class TableGroup {
         return createdDate;
     }
 
-    public List<OrderTable> getOrderTables() {
-        return orderTables;
-    }
 
-    public void setTableGroupToOrderTables(List<OrderTable> orderTables) {
-        orderTables.forEach(orderTable -> orderTable.addTableGroup(this));
-    }
+//    public void setTableGroupToOrderTables(List<OrderTable> orderTables) {
+//        orderTables.forEach(orderTable -> orderTable.addTableGroup(this.id));
+//    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         TableGroup that = (TableGroup) o;
-        return Objects.equals(id, that.id) && Objects.equals(orderTables, that.orderTables);
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, createdDate);
     }
 
     @Override
@@ -60,12 +53,6 @@ public class TableGroup {
         return "TableGroup{" +
                 "id=" + id +
                 ", createdDate=" + createdDate +
-                ", orderTables=" + orderTables +
                 '}';
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, createdDate, orderTables);
     }
 }

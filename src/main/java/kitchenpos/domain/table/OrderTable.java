@@ -1,6 +1,5 @@
 package kitchenpos.domain.table;
 
-import kitchenpos.application.table.OrderTableValidator;
 import kitchenpos.dto.table.OrderTableRequest;
 
 import javax.persistence.*;
@@ -13,9 +12,7 @@ public class OrderTable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "table_group_id")
-    private TableGroup tableGroup;
+    private Long tableGroupId;
 
     private int numberOfGuests;
 
@@ -52,14 +49,12 @@ public class OrderTable {
         return empty;
     }
 
-    public TableGroup getTableGroup() {
-        return tableGroup;
+    public Long getTableGroupId() {
+        return tableGroupId;
     }
 
-
-    public void changeEmpty(boolean empty, OrderTableValidator orderTableValidator) {
+    public void changeEmpty(boolean empty) {
         checkGroupedOrderTable();
-        orderTableValidator.checkOrderStatusCookingOrMeal(this);
         this.empty = empty;
     }
 
@@ -72,12 +67,12 @@ public class OrderTable {
         checkNumberOfGuestsOverZero();
     }
 
-    public void addTableGroup(TableGroup tableGroup) {
-        this.tableGroup = tableGroup;
+    public void addTableGroup(Long tableGroupId) {
+        this.tableGroupId = tableGroupId;
     }
 
     public void checkAvailable() {
-        if (!this.isEmpty() || Objects.nonNull(this.getTableGroup())) {
+        if (!this.isEmpty() || Objects.nonNull(this.tableGroupId)) {
             throw new IllegalArgumentException("주문테이블이 비어있지 않거나, 단체지정이 되어있습니다.");
         }
     }
@@ -95,28 +90,26 @@ public class OrderTable {
     }
 
     public void checkGroupedOrderTable() {
-        if (Objects.nonNull(getTableGroup())) {
+        if (Objects.nonNull(tableGroupId)) {
             throw new IllegalArgumentException("이미 단체지정으로 등록되어 있는 주문 테이블입니다.");
         }
     }
 
     public void unGroup() {
-        //orders.forEach(Order::checkOrderStatusCookingOrMeal);
-        this.tableGroup = null;
+        this.tableGroupId = null;
     }
+
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         OrderTable that = (OrderTable) o;
-        return numberOfGuests == that.numberOfGuests && empty == that.empty && Objects.equals(id, that.id) && Objects.equals(tableGroup, that.tableGroup);
+        return numberOfGuests == that.numberOfGuests && empty == that.empty && Objects.equals(id, that.id) && Objects.equals(tableGroupId, that.tableGroupId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, tableGroup, numberOfGuests, empty);
+        return Objects.hash(id, tableGroupId, numberOfGuests, empty);
     }
-
-
 }

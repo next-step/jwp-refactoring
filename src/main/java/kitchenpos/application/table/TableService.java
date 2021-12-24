@@ -1,9 +1,11 @@
 package kitchenpos.application.table;
 
 import kitchenpos.domain.table.OrderTable;
-import kitchenpos.domain.table.TableGroup;
+import kitchenpos.domain.table.OrderTableChangeEmptyEvent;
+import kitchenpos.domain.tablegroup.TableGroup;
 import kitchenpos.dto.table.OrderTableRequest;
 import kitchenpos.repository.table.OrderTableRepository;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,11 +15,11 @@ import java.util.List;
 public class TableService {
 
     private final OrderTableRepository orderTableRepository;
-    private final OrderTableValidator orderTableValidator;
+    private final ApplicationEventPublisher eventPublisher;
 
-    public TableService(OrderTableRepository orderTableRepository, OrderTableValidator orderTableValidator) {
+    public TableService(OrderTableRepository orderTableRepository, ApplicationEventPublisher eventPublisher) {
         this.orderTableRepository = orderTableRepository;
-        this.orderTableValidator = orderTableValidator;
+        this.eventPublisher = eventPublisher;
     }
 
     @Transactional
@@ -32,18 +34,17 @@ public class TableService {
 
     @Transactional
     public OrderTable changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
-        final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-                .orElseThrow(() -> new IllegalArgumentException("등록된 주문테이블이 아닙니다."));
+        final OrderTable savedOrderTable = getOrderTable(orderTableId);
 
-        savedOrderTable.changeEmpty(orderTableRequest.isEmpty(), orderTableValidator);
+        eventPublisher.publishEvent(new OrderTableChangeEmptyEvent(savedOrderTable.getId()));
+        savedOrderTable.changeEmpty(orderTableRequest.isEmpty());
         return savedOrderTable;
     }
 
     @Transactional
     public OrderTable changeNumberOfGuests(final Long orderTableId, final OrderTableRequest orderTableRequest) {
 
-        final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-                .orElseThrow(() -> new IllegalArgumentException("등록된 주문테이블이 아닙니다."));
+        final OrderTable savedOrderTable = getOrderTable(orderTableId);
 
         savedOrderTable.checkIsEmpty();
         savedOrderTable.changeNumberOfGuests(orderTableRequest.getNumberOfGuests());
@@ -55,7 +56,7 @@ public class TableService {
                                     .orElseThrow(() -> new IllegalArgumentException("등록된 주문테이블이 아닙니다."));
     }
 
-    public List<OrderTable> getOrderTablesByTableGroup(TableGroup tableGroup) {
-        return orderTableRepository.findAllByTableGroup(tableGroup);
+    public List<OrderTable> getOrderTablesByTableGroup(Long tableGroupId) {
+        return orderTableRepository.findAllByTableGroupId(tableGroupId);
     }
 }
