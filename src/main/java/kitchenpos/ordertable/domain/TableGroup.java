@@ -27,11 +27,7 @@ public class TableGroup extends BaseTimeEntity {
     }
 
     public void groupTables(List<OrderTable> inputOrderTables) {
-        orderTables.groupTables(inputOrderTables);
-        for (OrderTable orderTable : inputOrderTables) {
-            orderTable.groupIn(this);
-            orderTable.changeOrderClose(false);
-        }
+        orderTables.groupTables(inputOrderTables, this);
     }
 
     public void ungroup() {

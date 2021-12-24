@@ -64,9 +64,7 @@ public class Order extends BaseTimeEntity {
     }
 
     private void assignOrderLineItems(List<OrderLineItem> inputOrderLineItems) {
-        orderLineItems.assignOrderLineItems(inputOrderLineItems);
-        inputOrderLineItems.stream()
-            .forEach(orderLineItem -> orderLineItem.assignOrder(this));
+        orderLineItems.assignOrderLineItems(inputOrderLineItems, this);
     }
 
     private void assignTable(OrderTable orderTable) {

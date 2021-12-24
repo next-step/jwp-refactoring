@@ -15,9 +15,12 @@ public class OrderLineItems {
         CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<OrderLineItem> orderLineItems = new ArrayList<>();
 
-    protected void assignOrderLineItems(List<OrderLineItem> orderLineItems) {
-        validateNoDuplicateMenu(orderLineItems);
-        this.orderLineItems.addAll(orderLineItems);
+    protected void assignOrderLineItems(List<OrderLineItem> inputOrderLineItems,
+        Order order) {
+        validateNoDuplicateMenu(inputOrderLineItems);
+        inputOrderLineItems.stream()
+            .forEach(orderLineItem -> orderLineItem.assignOrder(order));
+        this.orderLineItems.addAll(inputOrderLineItems);
     }
 
     private void validateNoDuplicateMenu(List<OrderLineItem> orderLineItems) {

@@ -24,8 +24,12 @@ public class OrderTables {
     @OneToMany(mappedBy = "tableGroup")
     private List<OrderTable> orderTables = new ArrayList<>();
 
-    protected void groupTables(List<OrderTable> inputOrderTables) {
+    protected void groupTables(List<OrderTable> inputOrderTables, TableGroup tableGroup) {
         validateGroupingCondition(inputOrderTables);
+        for (OrderTable orderTable : inputOrderTables) {
+            orderTable.groupIn(tableGroup);
+            orderTable.changeOrderClose(false);
+        }
         orderTables.addAll(inputOrderTables);
     }
 
