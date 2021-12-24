@@ -1,4 +1,4 @@
-package kitchenpos.common;
+package kitchenpos.common.entity;
 
 import java.time.LocalDateTime;
 import javax.persistence.Column;
