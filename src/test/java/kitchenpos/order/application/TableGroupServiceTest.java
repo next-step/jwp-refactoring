@@ -18,7 +18,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.order.dao.OrderDao;
-import kitchenpos.order.dao.OrderTableDao;
+import kitchenpos.order.dao.OrderTableRepository;
 import kitchenpos.order.dao.TableGroupRepository;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.TableGroup;
@@ -30,7 +30,7 @@ public class TableGroupServiceTest {
     private OrderDao orderDao;
     
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
     
     @Mock
     private TableGroupRepository tableGroupRepository;
@@ -57,7 +57,7 @@ public class TableGroupServiceTest {
         
         단체지정.setOrderTables(Arrays.asList(첫번째_테이블, 두번째_테이블));
         
-        given(orderTableDao.findAllByIdIn(anyList())).willReturn(단체지정.getOrderTables());
+        given(orderTableRepository.findAllByIdIn(anyList())).willReturn(단체지정.getOrderTables());
         given(tableGroupRepository.save(단체지정)).willReturn(단체지정);
         
         // when
@@ -91,7 +91,7 @@ public class TableGroupServiceTest {
         단체지정.setOrderTables(Arrays.asList(new OrderTable(), new OrderTable()));
         
         // when
-        when(orderTableDao.findAllByIdIn(anyList())).thenReturn(Arrays.asList());
+        when(orderTableRepository.findAllByIdIn(anyList())).thenReturn(Arrays.asList());
     
         // then
         assertThatThrownBy(() -> {
@@ -110,26 +110,26 @@ public class TableGroupServiceTest {
         OrderTable 첫번째_테이블 = new OrderTable();
         첫번째_테이블.setId(1L);
         첫번째_테이블.setEmpty(false);
-        첫번째_테이블.setTableGroupId(단체지정.getId());
+        첫번째_테이블.setTableGroup(단체지정);
         
         OrderTable 두번째_테이블 = new OrderTable();
         두번째_테이블.setId(2L);
         두번째_테이블.setEmpty(false);
-        두번째_테이블.setTableGroupId(단체지정.getId());
+        두번째_테이블.setTableGroup(단체지정);
         
         단체지정.setOrderTables(Arrays.asList(첫번째_테이블, 두번째_테이블));
         
-        given(orderTableDao.findAllByTableGroupId(anyLong())).willReturn(Arrays.asList(첫번째_테이블, 두번째_테이블));
-        given(orderTableDao.save(첫번째_테이블)).willReturn(첫번째_테이블);
-        given(orderTableDao.save(두번째_테이블)).willReturn(두번째_테이블);
+        given(orderTableRepository.findAllByTableGroupId(anyLong())).willReturn(Arrays.asList(첫번째_테이블, 두번째_테이블));
+        given(orderTableRepository.save(첫번째_테이블)).willReturn(첫번째_테이블);
+        given(orderTableRepository.save(두번째_테이블)).willReturn(두번째_테이블);
 
         // when
         tableGroupService.ungroup(단체지정.getId());
 
         // then
         assertAll(
-                () -> assertThat(첫번째_테이블.getTableGroupId()).isNull(),
-                () -> assertThat(두번째_테이블.getTableGroupId()).isNull()
+                () -> assertThat(첫번째_테이블.getTableGroup()).isNull(),
+                () -> assertThat(두번째_테이블.getTableGroup()).isNull()
                 );
     }
     

@@ -19,8 +19,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.order.dao.OrderDao;
-import kitchenpos.order.dao.OrderTableDao;
+import kitchenpos.order.dao.OrderTableRepository;
 import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.domain.TableGroup;
 
 @ExtendWith(MockitoExtension.class)
 public class TableServiceTest {
@@ -29,7 +30,7 @@ public class TableServiceTest {
     private OrderDao orderDao;
 
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @InjectMocks
     private TableService tableService;
@@ -42,7 +43,7 @@ public class TableServiceTest {
         테이블.setId(1L);
         테이블.setNumberOfGuests(3);
         
-        given(orderTableDao.save(테이블)).willReturn(테이블);
+        given(orderTableRepository.save(테이블)).willReturn(테이블);
 
         // when
         OrderTable 저장된_테이블 = tableService.create(테이블);
@@ -65,7 +66,7 @@ public class TableServiceTest {
         두번째_테이블.setNumberOfGuests(5);
         두번째_테이블.setEmpty(false);
         
-        given(orderTableDao.findAll()).willReturn(Arrays.asList(첫번째_테이블, 두번째_테이블));
+        given(orderTableRepository.findAll()).willReturn(Arrays.asList(첫번째_테이블, 두번째_테이블));
     
         // when
         List<OrderTable> 테이블_목록 = tableService.list();
@@ -88,9 +89,9 @@ public class TableServiceTest {
         빈_테이블.setNumberOfGuests(3);
         빈_테이블.setEmpty(true);
         
-        given(orderTableDao.findById(anyLong())).willReturn(Optional.of(테이블));
+        given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(테이블));
         given(orderDao.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).willReturn(false);
-        given(orderTableDao.save(테이블)).willReturn(빈_테이블);
+        given(orderTableRepository.save(테이블)).willReturn(빈_테이블);
     
         // when
         OrderTable 상태_변경후_테이블 = tableService.changeEmpty(테이블.getId(), 빈_테이블);
@@ -103,14 +104,17 @@ public class TableServiceTest {
     @Test
     void 등록되지않은_테이블_빈_테이블_변경_불가() {
         // given
+        TableGroup 단체지정 = new TableGroup();
+        단체지정.setId(1L);
+        
         OrderTable 등록되지_않은_테이블 = new OrderTable();
         등록되지_않은_테이블.setId(1L);
-        등록되지_않은_테이블.setTableGroupId(1L);
+        등록되지_않은_테이블.setTableGroup(단체지정);
         등록되지_않은_테이블.setNumberOfGuests(3);
         등록되지_않은_테이블.setEmpty(false);
         
         // when
-        when(orderTableDao.findById(anyLong())).thenReturn(Optional.empty());
+        when(orderTableRepository.findById(anyLong())).thenReturn(Optional.empty());
         
         // then
         assertThatThrownBy(() -> {
@@ -124,12 +128,15 @@ public class TableServiceTest {
     @Test
     void 단체지정_테이블_빈_테이블_변경_불가() {
         // given
+        TableGroup 단체지정 = new TableGroup();
+        단체지정.setId(1L);
+        
         OrderTable 테이블 = new OrderTable();
         테이블.setId(1L);
-        테이블.setTableGroupId(1L);
+        테이블.setTableGroup(단체지정);
         테이블.setNumberOfGuests(3);
         테이블.setEmpty(false);
-        given(orderTableDao.findById(anyLong())).willReturn(Optional.of(테이블));
+        given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(테이블));
         
         // when, then
         assertThatThrownBy(() -> {
@@ -152,7 +159,7 @@ public class TableServiceTest {
         빈_테이블.setId(1L);
         빈_테이블.setNumberOfGuests(3);
         빈_테이블.setEmpty(true);
-        given(orderTableDao.findById(anyLong())).willReturn(Optional.of(테이블));
+        given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(테이블));
     
         // when
         when(orderDao.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).thenReturn(true);
@@ -177,8 +184,8 @@ public class TableServiceTest {
         손님_수_변경_테이블.setId(1L);
         손님_수_변경_테이블.setNumberOfGuests(3);
         
-        given(orderTableDao.findById(anyLong())).willReturn(Optional.of(테이블));
-        given(orderTableDao.save(테이블)).willReturn(손님_수_변경_테이블);
+        given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(테이블));
+        given(orderTableRepository.save(테이블)).willReturn(손님_수_변경_테이블);
     
         // when
         OrderTable 손님_수_변경후_테이블 = tableService.changeNumberOfGuests(테이블.getId(), 손님_수_변경_테이블);
@@ -212,7 +219,7 @@ public class TableServiceTest {
         등록되지_않은_테이블.setNumberOfGuests(3);
         
         // when
-        when(orderTableDao.findById(anyLong())).thenReturn(Optional.empty());
+        when(orderTableRepository.findById(anyLong())).thenReturn(Optional.empty());
         
         // then
         assertThatThrownBy(() -> {

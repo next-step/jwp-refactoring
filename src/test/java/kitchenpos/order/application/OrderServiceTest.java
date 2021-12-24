@@ -21,11 +21,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import kitchenpos.menu.dao.MenuRepository;
 import kitchenpos.order.dao.OrderDao;
 import kitchenpos.order.dao.OrderLineItemDao;
-import kitchenpos.order.dao.OrderTableDao;
+import kitchenpos.order.dao.OrderTableRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.domain.TableGroup;
 
 @ExtendWith(MockitoExtension.class)
 public class OrderServiceTest {
@@ -40,7 +41,7 @@ public class OrderServiceTest {
     private OrderLineItemDao orderLineItemDao;
 
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @InjectMocks
     private OrderService orderService;
@@ -49,9 +50,12 @@ public class OrderServiceTest {
     @Test
     void 주문_등록() {
         // given
+        TableGroup 단체지정 = new TableGroup();
+        단체지정.setId(1L);
+        
         OrderTable 주문_테이블 = new OrderTable();
         주문_테이블.setId(1L);
-        주문_테이블.setTableGroupId(1L);
+        주문_테이블.setTableGroup(단체지정);
         주문_테이블.setNumberOfGuests(3);
         주문_테이블.setEmpty(false);
         
@@ -68,7 +72,7 @@ public class OrderServiceTest {
         주문.setOrderLineItems(Arrays.asList(주문_메뉴));
         
         given(menuRepository.countByIdIn(anyList())).willReturn((long) 주문.getOrderLineItems().size());
-        given(orderTableDao.findById(주문.getOrderTableId())).willReturn(Optional.of(주문_테이블));
+        given(orderTableRepository.findById(주문.getOrderTableId())).willReturn(Optional.of(주문_테이블));
         given(orderDao.save(주문)).willReturn(주문);
 
         // when
@@ -143,9 +147,12 @@ public class OrderServiceTest {
     @Test
     void 주문_등록_상태_확인() {
         // given
+        TableGroup 단체지정 = new TableGroup();
+        단체지정.setId(1L);
+        
         OrderTable 주문_테이블 = new OrderTable();
         주문_테이블.setId(1L);
-        주문_테이블.setTableGroupId(1L);
+        주문_테이블.setTableGroup(단체지정);
         주문_테이블.setNumberOfGuests(3);
         주문_테이블.setEmpty(false);
         
@@ -162,7 +169,7 @@ public class OrderServiceTest {
         주문.setOrderLineItems(Arrays.asList(주문_메뉴));
         
         given(menuRepository.countByIdIn(anyList())).willReturn((long) 주문.getOrderLineItems().size());
-        given(orderTableDao.findById(주문.getOrderTableId())).willReturn(Optional.of(주문_테이블));
+        given(orderTableRepository.findById(주문.getOrderTableId())).willReturn(Optional.of(주문_테이블));
         given(orderDao.save(주문)).willReturn(주문);
 
         // when
