@@ -3,9 +3,9 @@ package kitchenpos.menugroup.application;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menugroup.domain.NotFoundMenuGroupValidator;
+import kitchenpos.menu.domain.validator.ExistMenuGroupMenuValidator;
 import kitchenpos.product.domain.Product;
-import kitchenpos.menu.domain.MenuPriceValidator;
+import kitchenpos.menu.domain.validator.MenuPriceValidator;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
@@ -40,7 +40,7 @@ class MenuServiceTest {
     @Mock
     private MenuRepository menuRepository;
     @Mock
-    private NotFoundMenuGroupValidator notFoundMenuGroupValidator;
+    private ExistMenuGroupMenuValidator notFoundMenuGroupValidator;
     @Mock
     private MenuPriceValidator menuPriceValidator;
     @InjectMocks

@@ -2,6 +2,7 @@ package kitchenpos.menu.dto;
 
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProductGroup;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +36,7 @@ public class MenuRequest {
     public List<MenuProductRequest> getMenuProductRequests() {
         return menuProductRequests;
     }
-
+    
     public Menu toEntity() {
         final List<MenuProduct> menuProducts = this.menuProductRequests.stream()
                 .map(MenuProductRequest::toEntity)

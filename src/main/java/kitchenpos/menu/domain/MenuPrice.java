@@ -46,4 +46,8 @@ public class MenuPrice {
     public boolean matchPrice(int targetPrice) {
         return price.compareTo(BigDecimal.valueOf(targetPrice)) == 0;
     }
+
+    public boolean isLessThen(BigDecimal totalPrice) {
+        return price.compareTo(totalPrice) > 0;
+    }
 }

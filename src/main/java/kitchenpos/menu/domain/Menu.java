@@ -11,6 +11,8 @@ import java.util.List;
 
 @Entity
 public class Menu {
+    private static final String ILLEGAL_PRICE_ERROR_MESSAGE = "가격은 포함된 구성된 상품들의 금액 보다 작거나 같아야 한다.";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -28,27 +30,35 @@ public class Menu {
     protected Menu() {
     }
 
-    private Menu(String name, int price, long menuGroupId, List<MenuProduct> menuProducts) {
-        this.name = MenuName.of(name);
-        this.price = MenuPrice.of(price);
+    private Menu(MenuName name, MenuPrice price, MenuProductGroup menuProducts, Long menuGroupId) {
+        this.name = name;
+        this.price = price;
+        this.menuProducts = menuProducts;
         this.menuGroupId = menuGroupId;
-        this.menuProducts = MenuProductGroup.of(menuProducts);
+    }
+
+    private Menu(String name, int price, long menuGroupId, List<MenuProduct> menuProducts) {
+        this(MenuName.of(name), MenuPrice.of(price), MenuProductGroup.of(menuProducts), menuGroupId);
+    }
+
+    private Menu(String name, int price, Long menuGroupId, MenuProductGroup menuProductGroup) {
+        this(MenuName.of(name), MenuPrice.of(price), menuProductGroup, menuGroupId);
     }
 
     private Menu(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
+        this(MenuName.of(name), MenuPrice.of(price), MenuProductGroup.of(menuProducts), menuGroupId);
         this.id = id;
-        this.name = MenuName.of(name);
-        this.price = MenuPrice.of(price);
-        this.menuGroupId = menuGroupId;
-        this.menuProducts = MenuProductGroup.of(menuProducts);
     }
-
 
     public static Menu generate(long id, String name, List<MenuProduct> menuProducts, Long menuGroupId, BigDecimal price) {
         return new Menu(id, name, price, menuGroupId, menuProducts);
     }
 
     public static Menu of(String name, int price, long menuGroupId, List<MenuProduct> menuProducts) {
+        return new Menu(name, price, menuGroupId, menuProducts);
+    }
+
+    public static Menu create(int price, String name, MenuProductGroup menuProducts, long menuGroupId) {
         return new Menu(name, price, menuGroupId, menuProducts);
     }
 
