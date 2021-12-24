@@ -6,13 +6,9 @@ import java.util.Objects;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 
 import kitchenpos.common.domain.Empty;
 import kitchenpos.common.exception.BadRequestException;
@@ -24,9 +20,7 @@ public class OrderTable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "table_group_id", foreignKey = @ForeignKey(name = "fk_order_table_table_group"))
-    private TableGroup tableGroup;
+    private Long tableGroupId;
 
     @Embedded
     private NumberOfGuests numberOfGuests;
@@ -40,9 +34,9 @@ public class OrderTable {
     protected OrderTable() {
     }
 
-    private OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
+    private OrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
         this.id = id;
-        this.tableGroup = tableGroup;
+        this.tableGroupId = tableGroupId;
         this.numberOfGuests = new NumberOfGuests(numberOfGuests);
         this.empty = new Empty(empty);
         this.orders = new Orders();
@@ -52,8 +46,8 @@ public class OrderTable {
         return new OrderTable(null, null, numberOfGuests, empty);
     }
 
-    public static OrderTable of(long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
-        return new OrderTable(id, tableGroup, numberOfGuests, empty);
+    public static OrderTable of(long id, Long tableGroupId, int numberOfGuests, boolean empty) {
+        return new OrderTable(id, tableGroupId, numberOfGuests, empty);
     }
 
     public Long getId() {
@@ -61,10 +55,7 @@ public class OrderTable {
     }
 
     public Long getTableGroupId() {
-        if (Objects.isNull(tableGroup)) {
-            return null;
-        }
-        return tableGroup.getId();
+        return tableGroupId;
     }
 
     public NumberOfGuests getNumberOfGuests() {
@@ -79,13 +70,13 @@ public class OrderTable {
         orders.add(order);
     }
 
-    public void changeTableGroup(TableGroup tableGroup) {
-        this.tableGroup = tableGroup;
+    public void changeTableGroup(Long tableGroupId) {
+        this.tableGroupId = tableGroupId;
         this.empty.changeEmpty(false);
     }
 
     public void deleteTableGroup() {
-        tableGroup = null;
+        tableGroupId = null;
     }
 
     public void changeNumberOfGuests(final int numberOfGuests) {
@@ -100,7 +91,7 @@ public class OrderTable {
     }
 
     public boolean isPossibleIntoTableGroup() {
-        return empty.getValue() && Objects.isNull(tableGroup);
+        return empty.getValue() && Objects.isNull(tableGroupId);
     }
 
     private void validateChangeableNumberOfGuests() {
@@ -110,7 +101,7 @@ public class OrderTable {
     }
 
     private void validateChangeableEmpty() {
-        if (Objects.nonNull(tableGroup)) {
+        if (Objects.nonNull(tableGroupId)) {
             throw new BadRequestException(CANNOT_CHANGE_STATUS);
         }
     }

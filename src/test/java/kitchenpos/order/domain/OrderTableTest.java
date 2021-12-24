@@ -35,7 +35,7 @@ class OrderTableTest {
             OrderTable.of(0, true));
 
         OrderTable orderTable = OrderTable.of(
-            1L, TableGroup.of(orderTables), 0, true);
+            1L, 1L, 0, true);
 
         // when && then
         assertThatThrownBy(() -> orderTable.changeEmpty(false))

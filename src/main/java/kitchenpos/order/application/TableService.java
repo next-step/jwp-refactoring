@@ -31,7 +31,7 @@ public class TableService {
 
     @Transactional(readOnly = true)
     public List<OrderTableResponse> list() {
-        List<OrderTable> orderTables = orderTableRepository.findOrderTables();
+        List<OrderTable> orderTables = orderTableRepository.findAll();
         return orderTables.stream()
             .map(OrderTableResponse::of)
             .collect(Collectors.toList());

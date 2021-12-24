@@ -63,7 +63,7 @@ public class OrderTables {
 
     public void changeTableGroup(TableGroup tableGroup) {
         for (OrderTable orderTable : orderTables) {
-            orderTable.changeTableGroup(tableGroup);
+            // orderTable.changeTableGroup(tableGroup);
         }
     }
 

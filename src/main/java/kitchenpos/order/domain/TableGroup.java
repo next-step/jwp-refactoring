@@ -1,11 +1,9 @@
 package kitchenpos.order.domain;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.Column;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -21,21 +19,16 @@ public class TableGroup {
     @Column(updatable = false)
     private LocalDateTime createdDate;
 
-    @Embedded
-    private OrderTables orderTables;
-
     protected TableGroup() {
     }
 
-    private TableGroup(Long id, LocalDateTime createdDate, OrderTables orderTables) {
+    private TableGroup(Long id, LocalDateTime createdDate) {
         this.id = id;
         this.createdDate = createdDate;
-        this.orderTables = orderTables;
-        changeTableGroupOfOrderTables();
     }
 
-    public static TableGroup of(List<OrderTable> orderTables) {
-        return new TableGroup(null, LocalDateTime.now(), new OrderTables(orderTables));
+    public static TableGroup of() {
+        return new TableGroup(null, LocalDateTime.now());
     }
 
     public Long getId() {
@@ -46,21 +39,17 @@ public class TableGroup {
         return createdDate;
     }
 
-    public OrderTables getOrderTables() {
-        return orderTables;
-    }
+    // private void changeTableGroupOfOrderTables() {
+    //     orderTables.changeTableGroup(this);
+    // }
 
-    private void changeTableGroupOfOrderTables() {
-        orderTables.changeTableGroup(this);
-    }
+    // public void validateUngroup() {
+    //     orderTables.validateNotCompletionOrderStatus();
+    // }
 
-    public void validateUngroup() {
-        orderTables.validateNotCompletionOrderStatus();
-    }
-
-    public void ungroup() {
-        orderTables.ungroup();
-    }
+    // public void ungroup() {
+    //     orderTables.ungroup();
+    // }
 
     @Override
     public boolean equals(Object o) {
