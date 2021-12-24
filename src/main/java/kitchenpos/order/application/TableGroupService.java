@@ -39,7 +39,7 @@ public class TableGroupService {
     @Transactional
     public void ungroup(final Long id) {
         TableGroup tableGroup = getTableGroup(id);
-        tableGroup.validateStatus();
+        tableGroup.validateTableState();
         tableGroupRepository.delete(tableGroup);
     }
 

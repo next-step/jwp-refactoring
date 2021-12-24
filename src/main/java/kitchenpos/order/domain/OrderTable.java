@@ -4,8 +4,6 @@ import kitchenpos.order.application.exception.InvalidOrderState;
 import kitchenpos.order.application.exception.InvalidTableState;
 
 import javax.persistence.*;
-
-import java.util.Arrays;
 import java.util.Objects;
 
 import static javax.persistence.EnumType.STRING;

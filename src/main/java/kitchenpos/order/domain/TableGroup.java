@@ -1,18 +1,14 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.order.application.exception.InvalidOrderState;
 import kitchenpos.order.application.exception.InvalidTableState;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static javax.persistence.CascadeType.MERGE;
-import static javax.persistence.CascadeType.PERSIST;
 import static javax.persistence.GenerationType.IDENTITY;
 
 @Entity
@@ -25,8 +21,8 @@ public class TableGroup {
     @CreatedDate
     private LocalDateTime createdDate;
 
-    @OneToMany(mappedBy = "tableGroup", cascade = {PERSIST, MERGE}, orphanRemoval = true)
-    private List<OrderTable> orderTables = new ArrayList<>();
+    @Embedded
+    private OrderTables orderTables;
 
     protected TableGroup() {
     }
@@ -35,7 +31,7 @@ public class TableGroup {
         orderTables.forEach(this::validate);
         this.id = id;
         this.createdDate = createdDate;
-        this.orderTables.addAll(orderTables);
+        this.orderTables = new OrderTables(orderTables);
     }
 
     public TableGroup(LocalDateTime createdDate, List<OrderTable> orderTables) {
@@ -51,12 +47,8 @@ public class TableGroup {
         }
     }
 
-    public void validateStatus() {
-        boolean isAllCompleted = orderTables.stream()
-                .allMatch(OrderTable::isCompleted);
-        if (!isAllCompleted) {
-            throw new InvalidOrderState("모든 주문 상태가 완료되지 않아 단체석을 해제할 수 없습니다.");
-        }
+    public void validateTableState() {
+        orderTables.validateTableState();
     }
 
     public Long getId() {
@@ -68,6 +60,6 @@ public class TableGroup {
     }
 
     public List<OrderTable> getOrderTables() {
-        return orderTables;
+        return orderTables.getOrderTables();
     }
 }

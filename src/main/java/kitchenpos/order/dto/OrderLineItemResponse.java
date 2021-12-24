@@ -10,9 +10,6 @@ public class OrderLineItemResponse {
     private Long menuId;
     private Long quantity;
 
-    public OrderLineItemResponse() {
-    }
-
     public OrderLineItemResponse(Long seq, Long menuId, Long quantity) {
         this.seq = seq;
         this.menuId = menuId;
@@ -31,18 +28,6 @@ public class OrderLineItemResponse {
         return orderLineItems.stream()
                 .map(OrderLineItemResponse::of)
                 .collect(Collectors.toList());
-    }
-
-    public void setSeq(Long seq) {
-        this.seq = seq;
-    }
-
-    public void setMenuId(Long menuId) {
-        this.menuId = menuId;
-    }
-
-    public void setQuantity(Long quantity) {
-        this.quantity = quantity;
     }
 
     public Long getSeq() {

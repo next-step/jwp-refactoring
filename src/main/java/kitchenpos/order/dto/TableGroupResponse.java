@@ -25,14 +25,6 @@ public class TableGroupResponse {
         this.id = id;
     }
 
-    public void setCreatedDate(LocalDateTime createdDate) {
-        this.createdDate = createdDate;
-    }
-
-    public void setOrderTableResponses(List<OrderTableResponse> orderTableResponses) {
-        this.orderTableResponses = orderTableResponses;
-    }
-
     public Long getId() {
         return id;
     }
