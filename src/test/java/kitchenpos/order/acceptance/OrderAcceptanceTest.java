@@ -1,22 +1,22 @@
-package kitchenpos.acceptance;
+package kitchenpos.order.acceptance;
 
 
-import static kitchenpos.acceptance.step.OrderAcceptanceStep.*;
-import static kitchenpos.acceptance.step.MenuAcceptanceStep.메뉴_등록됨;
-import static kitchenpos.acceptance.step.MenuGroupAcceptanceStep.메뉴그룹_등록됨;
-import static kitchenpos.acceptance.step.ProductAcceptanceStep.상품_등록됨;
-import static kitchenpos.acceptance.step.ProductAcceptanceStep.양념치킨;
-import static kitchenpos.acceptance.step.TableAcceptanceStep.주문테이블_생성됨;
+import static kitchenpos.menu.acceptance.step.MenuAcceptanceStep.메뉴_등록됨;
+import static kitchenpos.menugroup.acceptance.step.MenuGroupAcceptanceStep.메뉴그룹_등록됨;
+import static kitchenpos.order.acceptance.step.OrderAcceptanceStep.*;
+import static kitchenpos.ordertable.acceptance.step.TableAcceptanceStep.주문테이블_생성됨;
+import static kitchenpos.product.acceptance.step.ProductAcceptanceStep.상품_등록됨;
+import static kitchenpos.product.acceptance.step.ProductAcceptanceStep.양념치킨;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.Collections;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.menugroup.dto.MenuGroupRequest;
-import kitchenpos.menugroup.dto.MenuGroupResponse;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menugroup.dto.MenuGroupRequest;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderStatusRequest;
@@ -44,7 +44,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
 
         // when
         ExtractableResponse<Response> 주문_상태변경_결과 = 주문_상태변경_요청(등록된_주문_번호,
-            요리중_요청_파라미터(OrderStatus.MEAL));
+            요리중_요청_파라미터());
         // then
         주문_상태변경_검증(주문_상태변경_결과, OrderStatus.MEAL.name());
     }
@@ -65,7 +65,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
         return 메뉴_등록됨(메뉴등록_요청_파라미터);
     }
 
-    private OrderStatusRequest 요리중_요청_파라미터(OrderStatus orderStatus) {
-        return new OrderStatusRequest(orderStatus);
+    private OrderStatusRequest 요리중_요청_파라미터() {
+        return new OrderStatusRequest(OrderStatus.MEAL);
     }
 }

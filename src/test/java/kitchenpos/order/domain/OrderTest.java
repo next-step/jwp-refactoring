@@ -1,4 +1,4 @@
-package kitchenpos.domain.order;
+package kitchenpos.order.domain;
 
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -6,9 +6,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.Collections;
 import kitchenpos.common.exception.InvalidParameterException;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.ordertable.domain.OrderTable;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
@@ -25,7 +22,7 @@ class OrderTest {
         OrderLineItem 주문항목 = OrderLineItem.of(null, 1L);
 
         // when
-        Order 주문 = Order.of(손님있는_테이블, Collections.singletonList(주문항목));
+        Order 주문 = Order.of(1L, Collections.singletonList(주문항목));
 
         // then
         assertThat(주문.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
@@ -38,22 +35,7 @@ class OrderTest {
         OrderTable 손님있는_테이블 = OrderTable.of(1, false);
 
         // when
-        ThrowableAssert.ThrowingCallable actual = () -> Order.of(손님있는_테이블, Collections.emptyList());
-
-        // then
-        assertThatThrownBy(actual).isInstanceOf(InvalidParameterException.class);
-    }
-
-    @Test
-    @DisplayName("`주문`이 속할 `주문 테이블`은 `빈 테이블`상태가 아니어야 한다.")
-    void 주문에_속할_주문테이블이_빈테이블_아니면_실패() {
-        // given
-        OrderTable 빈테이블 = OrderTable.of(0, true);
-        OrderLineItem 주문항목 = OrderLineItem.of(null, 1L);
-
-        // when
-        ThrowableAssert.ThrowingCallable actual = () -> Order.of(빈테이블,
-            Collections.singletonList(주문항목));
+        ThrowableAssert.ThrowingCallable actual = () -> Order.of(1L, Collections.emptyList());
 
         // then
         assertThatThrownBy(actual).isInstanceOf(InvalidParameterException.class);
@@ -65,7 +47,7 @@ class OrderTest {
         // given
         OrderTable 손님있는_테이블 = OrderTable.of(1, false);
         OrderLineItem 주문항목 = OrderLineItem.of(null, 1L);
-        Order 주문 = Order.of(손님있는_테이블, Collections.singletonList(주문항목));
+        Order 주문 = Order.of(1L, Collections.singletonList(주문항목));
         주문.changeOrderStatus(OrderStatus.COMPLETION);
 
         // when

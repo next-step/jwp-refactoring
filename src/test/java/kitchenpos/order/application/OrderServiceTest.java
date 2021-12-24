@@ -1,10 +1,10 @@
-package kitchenpos.application;
+package kitchenpos.order.application;
 
 
-import static kitchenpos.application.fixture.MenuGroupFixture.메뉴그룹_치킨류;
-import static kitchenpos.application.fixture.MenuProductFixture.메뉴상품;
-import static kitchenpos.application.fixture.OrderTableFixture.한명_주문테이블;
-import static kitchenpos.application.fixture.ProductFixture.후리이드치킨;
+import static kitchenpos.menugroup.application.fixture.MenuGroupFixture.메뉴그룹_치킨류;
+import static kitchenpos.menu.application.fixture.MenuProductFixture.메뉴상품;
+import static kitchenpos.ordertable.application.fixture.OrderTableFixture.한명_주문테이블;
+import static kitchenpos.product.application.fixture.ProductFixture.후리이드치킨;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -12,9 +12,8 @@ import static org.mockito.BDDMockito.given;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.ordertable.domain.OrderTableRepository;
+import kitchenpos.order.domain.OrderValidator;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
@@ -27,7 +26,6 @@ import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusRequest;
-import kitchenpos.order.application.OrderService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -40,11 +38,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class OrderServiceTest {
 
     @Mock
-    private MenuRepository menuRepository;
+    private OrderValidator orderValidator;
     @Mock
     private OrderRepository orderRepository;
-    @Mock
-    private OrderTableRepository orderTableRepository;
 
     @InjectMocks
     private OrderService orderService;
@@ -54,8 +50,6 @@ class OrderServiceTest {
     void 주문_등록() {
         // given
         OrderRequest 요청_주문 = 요청_주문();
-        given(orderTableRepository.findById(any())).willReturn(Optional.of(한명_주문테이블()));
-        given(menuRepository.findAllById(any())).willReturn(Collections.singletonList(메뉴()));
         given(orderRepository.save(any())).willReturn(주문());
 
         // when
@@ -105,13 +99,13 @@ class OrderServiceTest {
         OrderTable 주문테이블 = 한명_주문테이블();
         OrderLineItemRequest 주문항목 = new OrderLineItemRequest(메뉴.getId(), 1);
 
-        return Order.of(주문테이블, Collections.singletonList(OrderLineItem.of(메뉴, 1L)));
+        return Order.of(1L, Collections.singletonList(OrderLineItem.of(1L, 1L)));
     }
 
     private Menu 메뉴() {
         Product 치킨 = 후리이드치킨();
         MenuProduct 메뉴_치킨 = 메뉴상품(치킨);
         MenuGroup 메뉴_그룹 = 메뉴그룹_치킨류();
-        return Menu.of("메뉴이름", 14000, 메뉴_그룹, Collections.singletonList(메뉴_치킨));
+        return Menu.of("메뉴이름", 14000, 메뉴_그룹.getId(), Collections.singletonList(메뉴_치킨));
     }
 }

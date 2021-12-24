@@ -48,7 +48,7 @@ class TableValidatorTest {
         // given
         OrderTable 한명_주문테이블 = 한명_주문테이블();
         given(orderRepository.findAllByOrderTableId(any())).willReturn(
-            Collections.singletonList(요리중_주문_of(한명_주문테이블)));
+            Collections.singletonList(요리중_주문_of()));
 
         // when
         ThrowableAssert.ThrowingCallable actual = () -> 한명_주문테이블.changeEmpty(tableValidator, true);
