@@ -3,6 +3,7 @@ package kitchenpos.order.domain;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
+import java.math.BigDecimal;
 import kitchenpos.common.domain.MustHaveName;
 import kitchenpos.common.domain.Price;
 import kitchenpos.exception.InvalidArgumentException;
@@ -17,12 +18,10 @@ class OrderLineItemTest {
     @Test
     @DisplayName("동등성 비교")
     void equalsOrderLineItem() {
-        OrderLineItem orderLineItem_1 = OrderLineItem.of(OrderMenu.of(1L,
-            MustHaveName.valueOf("후라이드치킨"),
-            Price.fromInteger(10000)), 2L);
-        OrderLineItem orderLineItem_2 = OrderLineItem.of(OrderMenu.of(1L,
-            MustHaveName.valueOf("후라이드치킨"),
-            Price.fromInteger(10000)), 1L);
+        OrderLineItem orderLineItem_1 = OrderLineItem.of(
+            OrderMenu.of(1L, "후라이드치킨", BigDecimal.valueOf(10000)), 2L);
+        OrderLineItem orderLineItem_2 = OrderLineItem.of(
+            OrderMenu.of(1L, "후라이드치킨", BigDecimal.valueOf(10000)), 1L);
 
         assertFalse(orderLineItem_1.equalsOrderLineItem(orderLineItem_2));
     }

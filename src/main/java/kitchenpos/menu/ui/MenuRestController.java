@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class MenuRestController {
 
     private static final String MAPPING_URL = "/api/menus/";
+
     private final MenuService menuService;
 
     public MenuRestController(final MenuService menuService) {

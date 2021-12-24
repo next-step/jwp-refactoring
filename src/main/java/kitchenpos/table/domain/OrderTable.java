@@ -76,7 +76,7 @@ public class OrderTable extends BaseEntity {
     }
 
     public Integer getNumberOfGuests() {
-        return numberOfGuests.get();
+        return numberOfGuests.toInteger();
     }
 
     public Boolean isEmpty() {

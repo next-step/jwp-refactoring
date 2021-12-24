@@ -44,7 +44,7 @@ public class OrderLineItem extends BaseEntity {
     }
 
     public long getQuantity() {
-        return quantity.getQuantity();
+        return quantity.toLong();
     }
 
     public OrderMenu getOrderMenu() {

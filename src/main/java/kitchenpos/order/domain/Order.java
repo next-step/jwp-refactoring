@@ -93,14 +93,4 @@ public class Order extends BaseEntity {
         return OrderStatus.COMPLETION.equals(this.orderStatus);
     }
 
-    @Override
-    public String toString() {
-        return "Order{" +
-            "id=" + id +
-            ", orderTableId=" + orderTableId +
-            ", orderedTime=" + orderedTime +
-            ", orderStatus=" + orderStatus +
-            ", orderLineItems=" + orderLineItems +
-            '}';
-    }
 }

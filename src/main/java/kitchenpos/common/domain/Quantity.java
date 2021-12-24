@@ -25,7 +25,7 @@ public final class Quantity {
         return new Quantity(quantity);
     }
 
-    public Long getQuantity() {
+    public Long toLong() {
         return quantity;
     }
 

@@ -28,7 +28,7 @@ public final class GuestNumber {
         return new GuestNumber(numberOfGuests);
     }
 
-    public Integer get() {
+    public Integer toInteger() {
         return numberOfGuests;
     }
 

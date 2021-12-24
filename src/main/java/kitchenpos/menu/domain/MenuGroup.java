@@ -38,7 +38,7 @@ public class MenuGroup extends BaseEntity {
     }
 
     public String getName() {
-        return name.getName();
+        return name.toString();
     }
 
 }

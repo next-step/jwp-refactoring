@@ -1,5 +1,6 @@
 package kitchenpos.order.domain;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
@@ -22,18 +23,31 @@ public class OrderMenu {
     protected OrderMenu() {
     }
 
-    public OrderMenu(Long menuId, MustHaveName menuName, Price menuPrice) {
+    public OrderMenu(Long menuId, String menuName, BigDecimal menuPrice) {
         validateMenu(menuId, menuName, menuPrice);
         this.menuId = menuId;
-        this.menuName = menuName;
-        this.menuPrice = menuPrice;
+        this.menuName = MustHaveName.valueOf(menuName);
+        this.menuPrice = Price.valueOf(menuPrice);
     }
 
-    public static OrderMenu of(Long menuId, MustHaveName menuName, Price menuPrice) {
+    public static OrderMenu of(Long menuId, String menuName, BigDecimal menuPrice) {
         return new OrderMenu(menuId, menuName, menuPrice);
     }
 
-    private void validateMenu(Long menuId, MustHaveName menuName, Price menuPrice) {
+
+    public Long getMenuId() {
+        return menuId;
+    }
+
+    public String getMenuName() {
+        return menuName.toString();
+    }
+
+    public BigDecimal getMenuPrice() {
+        return menuPrice.toBigDecimal();
+    }
+
+    private void validateMenu(Long menuId, String menuName, BigDecimal menuPrice) {
         if (Objects.isNull(menuId) || Objects.isNull(menuName) || Objects.isNull(menuPrice)) {
             throw new InvalidArgumentException("메뉴는 필수 입니다.");
         }
@@ -57,15 +71,4 @@ public class OrderMenu {
         return Objects.hash(menuId, menuName, menuPrice);
     }
 
-    public Long getMenuId() {
-        return menuId;
-    }
-
-    public MustHaveName getMenuName() {
-        return menuName;
-    }
-
-    public Price getMenuPrice() {
-        return menuPrice;
-    }
 }

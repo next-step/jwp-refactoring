@@ -1,5 +1,6 @@
 package kitchenpos.order.acceptance;
 
+import static java.lang.Thread.sleep;
 import static kitchenpos.menu.acceptance.MenuAcceptanceTest.메뉴등록되어있음;
 import static kitchenpos.menu.acceptance.MenuGroupAcceptanceTest.메뉴그룹_등록_되어있음;
 import static kitchenpos.product.acceptance.ProductAcceptanceTest.상품_등록_되어있음;

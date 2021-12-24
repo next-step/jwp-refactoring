@@ -64,7 +64,7 @@ public class MenuProduct extends BaseEntity {
     }
 
     public long getQuantity() {
-        return quantity.getQuantity();
+        return quantity.toLong();
     }
 
     private void validateProduct(Product product) {

@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class TableRestController {
 
     private static final String MAPPING_URL = "/api/tables/";
+
     private final TableService tableService;
 
     public TableRestController(final TableService tableService) {

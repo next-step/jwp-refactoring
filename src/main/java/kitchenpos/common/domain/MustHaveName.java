@@ -34,7 +34,8 @@ public class MustHaveName {
         }
     }
 
-    public String getName() {
+    @Override
+    public String toString() {
         return name;
     }
 

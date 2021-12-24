@@ -10,6 +10,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -45,9 +46,8 @@ class OrderServiceTest {
 
     private final OrderRequest orderRequest = new OrderRequest(1L,
         Arrays.asList(new OrderLineItemRequest(1L, 1L)));
-    private final OrderLineItem orderLineItem = OrderLineItem.of(OrderMenu.of(1L,
-        MustHaveName.valueOf("후라이드치킨"),
-        Price.fromInteger(10000)), 2L);
+    private final OrderLineItem orderLineItem = OrderLineItem.of(
+        OrderMenu.of(1L, "후라이드치킨", BigDecimal.valueOf(10000)), 2L);
     private final Order order = orderRequest.toEntity( Arrays.asList(orderLineItem));
     @Mock
     private MenuRepository menuRepository;

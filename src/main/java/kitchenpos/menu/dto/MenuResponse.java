@@ -24,7 +24,7 @@ public class MenuResponse {
     }
 
     public static MenuResponse of(Menu menu) {
-        return new MenuResponse(menu.getId(), menu.getName().getName(), menu.getPrice().getPrice(),
+        return new MenuResponse(menu.getId(), menu.getName(), menu.getPrice(),
             MenuGroupResponse.of(menu.getMenuGroup()),
             MenuProductResponse.ofList(menu.getMenuProducts()));
     }

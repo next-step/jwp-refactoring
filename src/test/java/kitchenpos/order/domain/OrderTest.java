@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import kitchenpos.common.domain.MustHaveName;
 import kitchenpos.common.domain.Price;
@@ -15,9 +16,8 @@ import org.junit.jupiter.api.Test;
 @DisplayName("주문 도메인 테스트")
 class OrderTest {
 
-    final OrderLineItem orderLineItem = OrderLineItem.of(OrderMenu.of(1L,
-        MustHaveName.valueOf("후라이드치킨"),
-        Price.fromInteger(10000)), 2L);
+    final OrderLineItem orderLineItem = OrderLineItem.of(
+        OrderMenu.of(1L, "후라이드치킨", BigDecimal.valueOf(10000)), 2L);
 
     @Test
     @DisplayName("주문 진행중 여부")

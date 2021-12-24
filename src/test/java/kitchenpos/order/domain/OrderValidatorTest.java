@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Optional;
 import kitchenpos.common.domain.MustHaveName;
@@ -32,9 +33,8 @@ class OrderValidatorTest {
     @InjectMocks
     private OrderValidator orderValidator;
 
-    final OrderLineItem orderLineItem = OrderLineItem.of(OrderMenu.of(1L,
-        MustHaveName.valueOf("후라이드치킨"),
-        Price.fromInteger(10000)), 2L);
+    final OrderLineItem orderLineItem = OrderLineItem.of(
+        OrderMenu.of(1L, "후라이드치킨", BigDecimal.valueOf(10000)), 2L);
 
     @Test
     @DisplayName("주문 생성 validate 체크: 테이블 정보는 필수, 빈 테이블인 경우 주문을 생성할 수 없다.")

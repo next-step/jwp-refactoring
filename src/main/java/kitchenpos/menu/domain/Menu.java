@@ -1,5 +1,6 @@
 package kitchenpos.menu.domain;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.CascadeType;
@@ -69,12 +70,12 @@ public class Menu extends BaseEntity {
         return id;
     }
 
-    public MustHaveName getName() {
-        return name;
+    public String getName() {
+        return name.toString();
     }
 
-    public Price getPrice() {
-        return price;
+    public BigDecimal getPrice() {
+        return price.toBigDecimal();
     }
 
     public List<MenuProduct> getMenuProducts() {

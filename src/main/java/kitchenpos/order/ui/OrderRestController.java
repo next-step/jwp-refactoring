@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class OrderRestController {
 
     private static final String MAPPING_URL = "/api/orders/";
+
     private final OrderService orderService;
 
     public OrderRestController(final OrderService orderService) {

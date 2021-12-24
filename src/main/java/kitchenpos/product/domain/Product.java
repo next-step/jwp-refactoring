@@ -38,7 +38,7 @@ public class Product extends BaseEntity {
     }
 
     public Price multiplyQuantity(Quantity quantity) {
-        return price.multiply(quantity.getQuantity());
+        return price.multiply(quantity.toLong());
     }
 
 
@@ -51,11 +51,11 @@ public class Product extends BaseEntity {
     }
 
     public String getName() {
-        return name.getName();
+        return name.toString();
     }
 
     public BigDecimal getPrice() {
-        return price.getPrice();
+        return price.toBigDecimal();
     }
 
     public boolean equalName(String name) {
