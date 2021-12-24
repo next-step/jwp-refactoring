@@ -19,13 +19,11 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 
 public class OrderTablesTest {
-    private OrderRepository orderRepository;
     private OrderTableValidator orderTableValidator;
 
     @BeforeEach
     void setUp() {
-        orderRepository = Mockito.mock(OrderRepository.class);
-        orderTableValidator = new OrderTableValidator(orderRepository);
+        orderTableValidator = Mockito.mock(OrderTableValidator.class);
     }
 
     @DisplayName("OrderTables를 생성한다")
@@ -48,7 +46,7 @@ public class OrderTablesTest {
         List<OrderTable> orderTables = Arrays.asList(new OrderTable(4, true), new OrderTable(4, true), new OrderTable(4, true));
 
         // when
-        OrderTables result = OrderTables.of(new TableGroup(), orderTables, orderTables.size());
+        OrderTables result = OrderTables.of(orderTables, orderTables.size());
 
         // then
         assertThat(result.values()).isEqualTo(orderTables);
@@ -61,7 +59,7 @@ public class OrderTablesTest {
         List<OrderTable> orderTables = Arrays.asList(new OrderTable(4, true), new OrderTable(4, true), new OrderTable(4, true));
 
         // when
-        ThrowableAssert.ThrowingCallable callable = () -> OrderTables.of(new TableGroup(), orderTables, orderTables.size() + 1);
+        ThrowableAssert.ThrowingCallable callable = () -> OrderTables.of(orderTables, orderTables.size() + 1);
 
         // then
         assertThatThrownBy(callable).isInstanceOf(IllegalArgumentException.class);
@@ -96,7 +94,7 @@ public class OrderTablesTest {
         List<OrderTable> orderTableList = Arrays.asList(one, two);
         OrderTables orderTables = new OrderTables(orderTableList);
 
-        doThrow(new IllegalArgumentException()).when(orderTableValidator).validateHasProgressOrder(any(OrderTable.class));
+        doThrow(IllegalArgumentException.class).when(orderTableValidator).validateHasProgressOrder(any(OrderTable.class));
 
         // when
         ThrowableAssert.ThrowingCallable callable = () -> orderTables.ungroup(orderTableValidator);

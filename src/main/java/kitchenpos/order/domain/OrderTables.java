@@ -22,12 +22,15 @@ public class OrderTables {
         this.orderTables = orderTables;
     }
 
-    public static OrderTables of(TableGroup tableGroup, List<OrderTable> orderTables, int expectedSize) {
+    public static OrderTables of(List<OrderTable> orderTables, int expectedSize) {
         if (expectedSize != orderTables.size()) {
             throw new IllegalArgumentException("올바른 주문 테이블을 입력하세요");
         }
-        setTableGroupToOrderTables(tableGroup, orderTables);
         return new OrderTables(orderTables);
+    }
+
+    public void group(TableGroup tableGroup) {
+        setTableGroupToOrderTables(tableGroup, orderTables);
     }
 
     private static void setTableGroupToOrderTables(TableGroup tableGroup, List<OrderTable> orderTables) {
