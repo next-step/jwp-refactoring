@@ -31,4 +31,8 @@ public class Price extends Value<Price> {
 	public int compareTo(Price price) {
 		return value.compareTo(price.value);
 	}
+
+	public Price add(Price price) {
+		return from(value.add(price.value));
+	}
 }

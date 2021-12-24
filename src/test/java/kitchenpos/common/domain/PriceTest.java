@@ -53,4 +53,18 @@ class PriceTest {
 		// then
 		assertThat(aPrice).isEqualTo(bPrice);
 	}
+
+	@DisplayName("더하기")
+	@Test
+	void add() {
+		// given
+		Price augend = Price.from(BigDecimal.valueOf(10000));
+		Price addend = Price.from(BigDecimal.valueOf(20000));
+
+		// when
+		Price sum = augend.add(addend);
+
+		// then
+		assertThat(sum).isEqualTo(Price.from(BigDecimal.valueOf(30000)));
+	}
 }

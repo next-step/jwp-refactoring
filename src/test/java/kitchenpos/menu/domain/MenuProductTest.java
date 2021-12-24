@@ -29,4 +29,21 @@ public class MenuProductTest {
 		assertThat(menuProduct.getProduct()).isEqualTo(product);
 		assertThat(menuProduct.getQuantity()).isEqualTo(quantity);
 	}
+
+	@DisplayName("총 금액을 구할 수 있다.")
+	@Test
+	void getTotalPrice() {
+		// given
+		MenuProduct menuProduct = MenuProduct.of(
+			Product.of(
+				Name.from("강정치킨"),
+				Price.from(BigDecimal.valueOf(17000))),
+			Quantity.from(2L));
+
+		// when
+		Price price = menuProduct.getTotalPrice();
+
+		// then
+		assertThat(price).isEqualTo(Price.from(BigDecimal.valueOf(34000)));
+	}
 }
