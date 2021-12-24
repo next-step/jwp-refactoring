@@ -26,7 +26,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -77,8 +76,7 @@ class OrderServiceTest {
         주문 = OrderFixture.of(
                 1L,
                 주문_테이블.getId(),
-                OrderStatus.COOKING.name(),
-                주문_상품);
+                Collections.singletonList(주문_상품));
     }
 
     @Test
@@ -101,19 +99,6 @@ class OrderServiceTest {
             assertThat(actual).isEqualTo(주문);
             assertThat(actual.getOrderStatus()).isEqualTo(주문.getOrderStatus());
         });
-    }
-
-    @Test
-    void 주문_발생_시_주문_상품은_반드시_존재해야_한다() {
-        // given
-        주문.setOrderLineItems(new ArrayList<>());
-
-        // when
-        ThrowingCallable throwingCallable = () -> orderService.create(주문);
-
-        // then
-        assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(throwingCallable);
     }
 
     @Test

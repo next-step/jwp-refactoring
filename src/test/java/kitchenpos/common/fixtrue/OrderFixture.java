@@ -3,20 +3,14 @@ package kitchenpos.common.fixtrue;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 
-import java.util.Arrays;
+import java.util.List;
 
 public class OrderFixture {
 
     private OrderFixture() {
     }
 
-    public static Order of(Long id, Long orderTableId, String orderStatus, OrderLineItem... orderLineItems) {
-        Order order = new Order();
-        order.setId(id);
-        order.setOrderTableId(orderTableId);
-        order.setOrderStatus(orderStatus);
-        order.setOrderedTime(null);
-        order.setOrderLineItems(Arrays.asList(orderLineItems));
-        return order;
+    public static Order of(Long id, Long orderTableId, List<OrderLineItem> orderLineItems) {
+        return Order.of(id, orderTableId, orderLineItems);
     }
 }

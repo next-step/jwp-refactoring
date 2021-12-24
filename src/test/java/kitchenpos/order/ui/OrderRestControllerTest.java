@@ -26,6 +26,7 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -65,8 +66,7 @@ class OrderRestControllerTest extends RestControllerTest {
         주문 = OrderFixture.of(
                 1L,
                 주문_테이블.getId(),
-                OrderStatus.COOKING.name(),
-                OrderLineItemFixture.of(1L, 1L, 후라이드_후라이드.getId(), 1L));
+                Collections.singletonList(OrderLineItemFixture.of(1L, 1L, 후라이드_후라이드.getId(), 1L)));
     }
 
     @Test
