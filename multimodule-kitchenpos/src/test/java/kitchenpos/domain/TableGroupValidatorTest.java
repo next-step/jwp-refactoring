@@ -1,4 +1,4 @@
-package kitchenpos.application.tablegroup;
+package kitchenpos.domain;
 
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;

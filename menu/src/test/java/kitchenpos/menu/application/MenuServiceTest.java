@@ -16,25 +16,20 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.common.domain.Price;
-import kitchenpos.product.domain.Product;
+import kitchenpos.common.vo.MenuGroupId;
+import kitchenpos.common.vo.ProductId;
 import kitchenpos.menu.dto.MenuDto;
 import kitchenpos.menu.dto.MenuProductDto;
-import kitchenpos.menugroup.vo.MenuGroupId;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.domain.MenuValidator;
-import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.menugroup.domain.MenuGroupRepository;
 
 @ExtendWith(MockitoExtension.class)
 public class MenuServiceTest {
     @Mock
     private MenuRepository menuRepository;
-
-    @Mock
-    private MenuGroupRepository menuGroupRepository;
 
     @Mock
     private MenuValidator menuValidator;
@@ -46,17 +41,11 @@ public class MenuServiceTest {
     @Test
     void craete_menu() {
         // given
-        Product 뿌링클치킨 = Product.of(1L, "뿌링클치킨", Price.of(15_000));
-        Product 치킨무 = Product.of(2L, "치킨무", Price.of(1_000));
-        Product 코카콜라 = Product.of(3L, "코카콜라", Price.of(3_000));
+        MenuProduct 뿌링클콤보_뿌링클치킨 = MenuProduct.of(ProductId.of(1L), 1L);
+        MenuProduct 뿌링클콤보_치킨무 = MenuProduct.of(ProductId.of(2L), 2L);
+        MenuProduct 뿌링클콤보_코카콜라 = MenuProduct.of(ProductId.of(3L), 3L);
 
-        MenuGroup 치킨_메뉴그룹 = MenuGroup.of("치킨");
-
-        MenuProduct 뿌링클콤보_뿌링클치킨 = MenuProduct.of(뿌링클치킨, 1L);
-        MenuProduct 뿌링클콤보_치킨무 = MenuProduct.of(치킨무, 2L);
-        MenuProduct 뿌링클콤보_코카콜라 = MenuProduct.of(코카콜라, 3L);
-
-        Menu 뿌링클콤보 = Menu.of("뿌링클콤보", Price.of(18_000), MenuGroupId.of(치킨_메뉴그룹), MenuProducts.of(List.of(뿌링클콤보_뿌링클치킨, 뿌링클콤보_치킨무, 뿌링클콤보_코카콜라)));
+        Menu 뿌링클콤보 = Menu.of("뿌링클콤보", Price.of(18_000), MenuGroupId.of(1L), MenuProducts.of(List.of(뿌링클콤보_뿌링클치킨, 뿌링클콤보_치킨무, 뿌링클콤보_코카콜라)));
 
         when(menuValidator.getValidatedMenu(any(MenuDto.class))).thenReturn(뿌링클콤보);
         when(menuRepository.save(any(Menu.class))).thenReturn(뿌링클콤보);
@@ -76,8 +65,7 @@ public class MenuServiceTest {
     @Test
     void search_menu() {
         // given
-        MenuGroup 치킨_메뉴그룹 = MenuGroup.of("치킨");
-        Menu 뿌링클콤보 = Menu.of("뿌링클콤보", Price.of(18_000), MenuGroupId.of(치킨_메뉴그룹));
+        Menu 뿌링클콤보 = Menu.of("뿌링클콤보", Price.of(18_000), MenuGroupId.of(1L));
 
         when(menuRepository.findAll()).thenReturn(List.of(뿌링클콤보));
 
@@ -85,6 +73,6 @@ public class MenuServiceTest {
         List<MenuDto> searchedMenu = menuService.list();
 
         // then
-        Assertions.assertThat(searchedMenu).isEqualTo(List.of(MenuDto.of("뿌링클콤보", BigDecimal.valueOf(18_000), null, Lists.newArrayList())));
+        Assertions.assertThat(searchedMenu).isEqualTo(List.of(MenuDto.of("뿌링클콤보", BigDecimal.valueOf(18_000), 1L, Lists.newArrayList())));
     }
 }

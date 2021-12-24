@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
+import kitchenpos.common.event.ValidateEmptyTableEvent;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menus;
 import kitchenpos.order.domain.OrderLineItem;
@@ -16,7 +17,6 @@ import kitchenpos.order.domain.OrdersRepository;
 import kitchenpos.order.domain.OrdersValidator;
 import kitchenpos.order.dto.OrderDto;
 import kitchenpos.order.dto.OrderLineItemDto;
-import kitchenpos.order.event.ValidateEmptyTableEvent;
 import kitchenpos.order.exception.EmptyOrderLineItemOrderException;
 import kitchenpos.order.exception.NotChangableOrderStatusException;
 import kitchenpos.order.exception.NotFoundOrderException;

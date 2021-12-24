@@ -1,4 +1,4 @@
-package kitchenpos.application.menu;
+package kitchenpos.domain;
 
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.nullable;
@@ -27,9 +27,9 @@ import kitchenpos.product.domain.Product;
 import kitchenpos.menu.dto.MenuDto;
 import kitchenpos.menu.dto.MenuProductDto;
 import kitchenpos.menu.exception.NotCorrectMenuPriceException;
-import kitchenpos.menu.exception.NotFoundMenuGroupException;
+import kitchenpos.menugroup.exception.NotFoundMenuGroupException;
 import kitchenpos.product.exception.NotFoundProductException;
-import kitchenpos.menugroup.vo.MenuGroupId;
+import kitchenpos.common.vo.MenuGroupId;
 
 @ExtendWith(MockitoExtension.class)
 public class MenuValidatorTest {

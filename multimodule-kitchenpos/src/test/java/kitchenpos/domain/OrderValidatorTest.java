@@ -1,4 +1,4 @@
-package kitchenpos.order.domain;
+package kitchenpos.domain;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;

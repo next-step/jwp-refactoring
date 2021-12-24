@@ -1,4 +1,4 @@
-package kitchenpos.table.application;
+package kitchenpos.domain;
 
 import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.Mockito.when;
