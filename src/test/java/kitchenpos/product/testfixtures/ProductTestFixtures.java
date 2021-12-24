@@ -6,7 +6,7 @@ import static org.mockito.BDDMockito.given;
 import java.util.List;
 import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
-import kitchenpos.product.domain.ProductDao;
+import kitchenpos.product.domain.ProductRepository;
 
 public class ProductTestFixtures {
 
@@ -15,13 +15,13 @@ public class ProductTestFixtures {
             .willReturn(product);
     }
 
-    public static void 상품_생성_결과_모킹(ProductDao productDao, Product product) {
-        given(productDao.save(any()))
+    public static void 상품_생성_결과_모킹(ProductRepository productRepository, Product product) {
+        given(productRepository.save(any()))
             .willReturn(product);
     }
 
-    public static void 상품_전체_조회_모킹(ProductDao productDao, List<Product> products) {
-        given(productDao.findAll())
+    public static void 상품_전체_조회_모킹(ProductRepository productRepository, List<Product> products) {
+        given(productRepository.findAll())
             .willReturn(products);
     }
 }

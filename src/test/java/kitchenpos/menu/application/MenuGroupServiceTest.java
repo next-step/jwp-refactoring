@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.dao.MenuGroupDao;
+import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.dto.MenuGroupRequest;
 import kitchenpos.menu.dto.MenuGroupResponse;
 import kitchenpos.menu.testfixtures.MenuGroupTestFixtures;
@@ -21,7 +21,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class MenuGroupServiceTest {
 
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
 
     @InjectMocks
     private MenuGroupService menuGroupService;
@@ -32,7 +32,7 @@ class MenuGroupServiceTest {
         // given
         String name = "추천메뉴";
         MenuGroup menuGroup = new MenuGroup(name);
-        MenuGroupTestFixtures.메뉴그룹_생성_결과_모킹(menuGroupDao, menuGroup);
+        MenuGroupTestFixtures.메뉴그룹_생성_결과_모킹(menuGroupRepository, menuGroup);
 
         //when
         MenuGroupResponse savedMenuGroup = menuGroupService.create(new MenuGroupRequest(name));
@@ -48,7 +48,7 @@ class MenuGroupServiceTest {
         List<MenuGroup> menuGroups = Arrays.asList(
             new MenuGroup(1L, "추천메뉴"),
             new MenuGroup(2L, "베스트메뉴"));
-        MenuGroupTestFixtures.메뉴그룹_전체조회_모킹(menuGroupDao, menuGroups);
+        MenuGroupTestFixtures.메뉴그룹_전체조회_모킹(menuGroupRepository, menuGroups);
 
         //when
         List<MenuGroupResponse> findMenuGroups = menuGroupService.list();

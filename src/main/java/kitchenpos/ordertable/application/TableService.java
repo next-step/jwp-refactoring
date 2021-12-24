@@ -3,7 +3,7 @@ package kitchenpos.ordertable.application;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.domain.dao.OrderTableDao;
+import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
 import org.springframework.stereotype.Service;
@@ -13,27 +13,27 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class TableService {
 
-    private final OrderTableDao orderTableDao;
+    private final OrderTableRepository orderTableRepository;
 
-    public TableService(OrderTableDao orderTableDao) {
-        this.orderTableDao = orderTableDao;
+    public TableService(OrderTableRepository orderTableRepository) {
+        this.orderTableRepository = orderTableRepository;
     }
 
     @Transactional
     public OrderTableResponse create(final OrderTableRequest orderTable) {
-        OrderTable savedOrderTable = orderTableDao.save(orderTable.toOrderTable());
+        OrderTable savedOrderTable = orderTableRepository.save(orderTable.toOrderTable());
         return OrderTableResponse.from(savedOrderTable);
     }
 
     public List<OrderTableResponse> list() {
-        return orderTableDao.findAll()
+        return orderTableRepository.findAll()
             .stream()
             .map(OrderTableResponse::from)
             .collect(Collectors.toList());
     }
 
     public OrderTable findOrderTable(Long orderTableId) {
-        return orderTableDao.findById(orderTableId)
+        return orderTableRepository.findById(orderTableId)
             .orElseThrow(IllegalArgumentException::new);
     }
 

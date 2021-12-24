@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.dao.MenuDao;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
@@ -20,14 +20,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class MenuService {
 
     private static final String ERROR_MESSAGE_NOT_EXIST_MENU = "없는 메뉴입니다.";
-    private final MenuDao menuDao;
+    private final MenuRepository menuRepository;
     private final MenuGroupService menuGroupService;
     private final ProductService productService;
 
-
-    public MenuService(MenuDao menuDao, MenuGroupService menuGroupService,
-        ProductService productService) {
-        this.menuDao = menuDao;
+    public MenuService(MenuRepository menuRepository,
+        MenuGroupService menuGroupService, ProductService productService) {
+        this.menuRepository = menuRepository;
         this.menuGroupService = menuGroupService;
         this.productService = productService;
     }
@@ -45,20 +44,20 @@ public class MenuService {
 
         Menu menu = new Menu(menuRequest.getName(), menuRequest.getPrice(), menuGroup,
             menuProducts);
-        Menu savedMenu = menuDao.save(menu);
+        Menu savedMenu = menuRepository.save(menu);
 
         return MenuResponse.from(savedMenu);
     }
 
     public List<MenuResponse> list() {
-        return menuDao.findAll()
+        return menuRepository.findAll()
             .stream()
             .map(MenuResponse::from)
             .collect(Collectors.toList());
     }
 
     public Menu findMenu(Long menuId) {
-        return menuDao.findById(menuId)
+        return menuRepository.findById(menuId)
             .orElseThrow(() -> new IllegalArgumentException(ERROR_MESSAGE_NOT_EXIST_MENU));
     }
 }

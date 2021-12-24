@@ -12,8 +12,8 @@ import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.testfixtures.MenuTestFixtures;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.domain.dao.OrderDao;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.testfixtures.OrderTestFixtures;
@@ -32,7 +32,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class OrderServiceTest {
 
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
 
     @Mock
     private MenuService menuService;
@@ -68,7 +68,7 @@ class OrderServiceTest {
 
         MenuTestFixtures.특정_메뉴_조회_모킹(menuService, 혼술세트);
         MenuTestFixtures.특정_메뉴_조회_모킹(menuService, 이달의메뉴);
-        OrderTestFixtures.주문_저장_결과_모킹(orderDao, expectedOrder);
+        OrderTestFixtures.주문_저장_결과_모킹(orderRepository, expectedOrder);
         TableTestFixtures.특정_주문테이블_조회_모킹(tableService, orderTable);
 
         // when
@@ -93,7 +93,7 @@ class OrderServiceTest {
             new Order(1L, orderTable, OrderStatus.MEAL, orderLineItems1),
             new Order(2L, orderTable, OrderStatus.COMPLETION, orderLineItems2));
 
-        OrderTestFixtures.주문_전체_조회_모킹(orderDao, orders);
+        OrderTestFixtures.주문_전체_조회_모킹(orderRepository, orders);
 
         //when
         List<OrderResponse> findOrders = orderService.list();
@@ -112,7 +112,7 @@ class OrderServiceTest {
             new OrderLineItem(혼술세트, 1),
             new OrderLineItem(이달의메뉴, 3));
         Order order = new Order(1L, orderTable, OrderStatus.MEAL, orderLineItems);
-        OrderTestFixtures.특정_주문_조회_모킹(orderDao, order);
+        OrderTestFixtures.특정_주문_조회_모킹(orderRepository, order);
 
         //when
         OrderRequest changeOrder = new OrderRequest(OrderStatus.COMPLETION);

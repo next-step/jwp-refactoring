@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.TableGroup;
-import kitchenpos.ordertable.domain.dao.TableGroupDao;
+import kitchenpos.ordertable.domain.TableGroupRepository;
 import kitchenpos.ordertable.dto.TableGroupRequest;
 import kitchenpos.ordertable.dto.TableGroupResponse;
 import kitchenpos.ordertable.testfixtures.TableGroupTestFixtures;
@@ -22,7 +22,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class TableGroupServiceTest {
 
     @Mock
-    private TableGroupDao tableGroupDao;
+    private TableGroupRepository tableGroupRepository;
 
     @Mock
     private TableService tableService;
@@ -47,7 +47,7 @@ class TableGroupServiceTest {
             new OrderTable(2L, 3, true));
         TableGroup tableGroup = new TableGroup(1L);
         tableGroup.groupTables(expectedOrderTables);
-        TableGroupTestFixtures.테이블그룹_저장_결과_모킹(tableGroupDao, tableGroup);
+        TableGroupTestFixtures.테이블그룹_저장_결과_모킹(tableGroupRepository, tableGroup);
 
         //when
         TableGroupResponse savedTableGroup = tableGroupService.create(tableGroupRequest);
@@ -67,7 +67,7 @@ class TableGroupServiceTest {
             new OrderTable(2L, 3, true));
         TableGroup tableGroup = new TableGroup(1L);
         tableGroup.groupTables(orderTables);
-        TableGroupTestFixtures.특정_테이블그룹_조회_모킹(tableGroupDao, tableGroup);
+        TableGroupTestFixtures.특정_테이블그룹_조회_모킹(tableGroupRepository, tableGroup);
 
         //when
         tableGroupService.ungroup(tableGroup.getId());

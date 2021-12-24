@@ -9,18 +9,18 @@ import java.util.stream.Collectors;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.dao.MenuDao;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 
 public class MenuTestFixtures {
 
-    public static void 메뉴_저장_결과_모킹(MenuDao menuDao, Menu menu) {
-        given(menuDao.save(any())).willReturn(menu);
+    public static void 메뉴_저장_결과_모킹(MenuRepository menuRepository, Menu menu) {
+        given(menuRepository.save(any())).willReturn(menu);
     }
 
-    public static void 메뉴_전체조회_모킹(MenuDao menuDao, List<Menu> menus) {
-        given(menuDao.findAll()).willReturn(menus);
+    public static void 메뉴_전체조회_모킹(MenuRepository menuRepository, List<Menu> menus) {
+        given(menuRepository.findAll()).willReturn(menus);
     }
 
     public static MenuRequest convertToMenuRequest(Menu menu) {

@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.domain.dao.OrderTableDao;
+import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.ordertable.dto.OrderTableResponse;
 import kitchenpos.ordertable.testfixtures.TableTestFixtures;
 import org.assertj.core.api.Assertions;
@@ -21,7 +21,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class TableServiceTest {
 
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @InjectMocks
     private TableService tableService;
@@ -31,7 +31,7 @@ class TableServiceTest {
     void create() {
         //given
         OrderTable orderTable = new OrderTable(1L, 0, true);
-        TableTestFixtures.주문테이블_저장_결과_모킹(orderTableDao, orderTable);
+        TableTestFixtures.주문테이블_저장_결과_모킹(orderTableRepository, orderTable);
 
         //when
         OrderTableResponse savedOrderTable = tableService.create(
@@ -49,7 +49,7 @@ class TableServiceTest {
             new OrderTable(1L, 0, true),
             new OrderTable(2L, 6, false));
 
-        TableTestFixtures.주문테이블_전체_조회_모킹(orderTableDao, orderTables);
+        TableTestFixtures.주문테이블_전체_조회_모킹(orderTableRepository, orderTables);
 
         //when
         List<OrderTableResponse> findOrderTables = tableService.list();
@@ -64,7 +64,7 @@ class TableServiceTest {
     void changeEmpty() {
         //given
         OrderTable orderTable = new OrderTable(1L, 0, true);
-        TableTestFixtures.특정_주문테이블_조회_모킹(orderTableDao, orderTable);
+        TableTestFixtures.특정_주문테이블_조회_모킹(orderTableRepository, orderTable);
 
         //when
         OrderTable changeOrderTable = new OrderTable(false);
@@ -81,7 +81,7 @@ class TableServiceTest {
     void changeNumberOfGuests() {
         //given
         OrderTable orderTable = new OrderTable(1L, 0, false);
-        TableTestFixtures.특정_주문테이블_조회_모킹(orderTableDao, orderTable);
+        TableTestFixtures.특정_주문테이블_조회_모킹(orderTableRepository, orderTable);
 
         //when
         OrderTable changeOrderTable = new OrderTable(6);
@@ -92,7 +92,7 @@ class TableServiceTest {
         Assertions.assertThat(savedOrderTable.getNumberOfGuests())
             .isEqualTo(changeOrderTable.getNumberOfGuests());
     }
-    
+
     private void 테이블목록_검증(List<OrderTableResponse> findOrderTables, List<OrderTable> orderTables) {
         List<Long> findOrderTableIds = findOrderTables.stream()
             .map(OrderTableResponse::getId)

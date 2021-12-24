@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.dao.MenuDao;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.testfixtures.MenuGroupTestFixtures;
@@ -29,7 +29,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class MenuServiceTest {
 
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
 
     @InjectMocks
     private MenuService menuService;
@@ -58,7 +58,7 @@ class MenuServiceTest {
         //given
         ProductTestFixtures.상품_조회시_응답_모킹(productService, 타코야끼);
         ProductTestFixtures.상품_조회시_응답_모킹(productService, 뿌링클);
-        MenuGroupTestFixtures.메뉴_그룹_존재여부_조회시_응답_모킹(menuGroupService, 추천메뉴, true);
+        MenuGroupTestFixtures.메뉴_그룹_존재여부_조회시_응답_모킹(menuGroupService, 추천메뉴);
 
         List<MenuProduct> menuProducts = Arrays.asList(
             new MenuProduct(타코야끼, 3L),
@@ -66,7 +66,7 @@ class MenuServiceTest {
 
         Menu menu = new Menu("타코야끼와 뿌링클", BigDecimal.valueOf(51000), 추천메뉴,
             menuProducts);
-        MenuTestFixtures.메뉴_저장_결과_모킹(menuDao, menu);
+        MenuTestFixtures.메뉴_저장_결과_모킹(menuRepository, menu);
 
         //when
         MenuRequest menuRequest = MenuTestFixtures.convertToMenuRequest(menu);
@@ -86,7 +86,7 @@ class MenuServiceTest {
         List<Menu> menus = Arrays.asList(
             new Menu(1L, "타코야끼와 뿌링클", BigDecimal.valueOf(51000), 추천메뉴,
                 menuProducts));
-        MenuTestFixtures.메뉴_전체조회_모킹(menuDao, menus);
+        MenuTestFixtures.메뉴_전체조회_모킹(menuRepository, menus);
 
         //when
         List<MenuResponse> findMenus = menuService.list();

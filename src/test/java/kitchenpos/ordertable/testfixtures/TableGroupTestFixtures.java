@@ -8,14 +8,15 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.TableGroup;
-import kitchenpos.ordertable.domain.dao.TableGroupDao;
+import kitchenpos.ordertable.domain.TableGroupRepository;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.TableGroupRequest;
 
 public class TableGroupTestFixtures {
 
-    public static void 테이블그룹_저장_결과_모킹(TableGroupDao tableGroupDao, TableGroup tableGroup) {
-        given(tableGroupDao.save(any()))
+    public static void 테이블그룹_저장_결과_모킹(TableGroupRepository tableGroupRepository,
+        TableGroup tableGroup) {
+        given(tableGroupRepository.save(any()))
             .willReturn(tableGroup);
     }
 
@@ -26,8 +27,9 @@ public class TableGroupTestFixtures {
         return new TableGroupRequest(orderTableRequests);
     }
 
-    public static void 특정_테이블그룹_조회_모킹(TableGroupDao tableGroupDao, TableGroup tableGroup) {
-        given(tableGroupDao.findById(any()))
+    public static void 특정_테이블그룹_조회_모킹(TableGroupRepository tableGroupRepository,
+        TableGroup tableGroup) {
+        given(tableGroupRepository.findById(any()))
             .willReturn(Optional.ofNullable(tableGroup));
     }
 }

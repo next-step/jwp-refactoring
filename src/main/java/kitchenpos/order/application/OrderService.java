@@ -7,7 +7,7 @@ import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.dao.OrderDao;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
@@ -22,17 +22,15 @@ import org.springframework.util.CollectionUtils;
 public class OrderService {
 
     private static final String ERROR_MESSAGE_NO_ITEMS = "주문 항목이 없습니다.";
-
     private static final String ERROR_MESSAGE_NOT_EXIST_ORDER = "존재하지 않는 주문입니다.";
 
-    private final OrderDao orderDao;
-
+    private final OrderRepository orderRepository;
     private final TableService tableService;
     private final MenuService menuService;
 
-    public OrderService(OrderDao orderDao, TableService tableService,
-        MenuService menuService) {
-        this.orderDao = orderDao;
+    public OrderService(OrderRepository orderRepository,
+        TableService tableService, MenuService menuService) {
+        this.orderRepository = orderRepository;
         this.tableService = tableService;
         this.menuService = menuService;
     }
@@ -46,7 +44,7 @@ public class OrderService {
         final OrderTable orderTable = tableService.findOrderTable(orderRequest.getOrderTableId());
 
         Order order = new Order(orderTable, orderLineItems);
-        final Order savedOrder = orderDao.save(order);
+        final Order savedOrder = orderRepository.save(order);
         return OrderResponse.from(savedOrder);
     }
 
@@ -67,7 +65,7 @@ public class OrderService {
     }
 
     public List<OrderResponse> list() {
-        final List<Order> orders = orderDao.findAll();
+        final List<Order> orders = orderRepository.findAll();
         return orders.stream()
             .map(OrderResponse::from)
             .collect(Collectors.toList());
@@ -82,7 +80,7 @@ public class OrderService {
     }
 
     public Order findOrder(Long orderId) {
-        return orderDao.findById(orderId)
+        return orderRepository.findById(orderId)
             .orElseThrow(() -> new IllegalArgumentException(ERROR_MESSAGE_NOT_EXIST_ORDER));
     }
 }

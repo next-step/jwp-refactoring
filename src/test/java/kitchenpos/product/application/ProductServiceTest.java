@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.product.domain.Product;
-import kitchenpos.product.domain.ProductDao;
+import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
 import kitchenpos.product.testfixtures.ProductTestFixtures;
@@ -22,7 +22,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class ProductServiceTest {
 
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     @InjectMocks
     private ProductService productService;
@@ -34,7 +34,7 @@ class ProductServiceTest {
         String name = "타코야끼";
         BigDecimal price = BigDecimal.valueOf(12000);
         Product product = new Product(1L, name, price);
-        ProductTestFixtures.상품_생성_결과_모킹(productDao, product);
+        ProductTestFixtures.상품_생성_결과_모킹(productRepository, product);
 
         //when
         ProductResponse savedProduct = productService.create(new ProductRequest(name, price));
@@ -50,7 +50,7 @@ class ProductServiceTest {
         List<Product> products = Arrays.asList(
             new Product("타코야끼", BigDecimal.valueOf(12000)),
             new Product("뿌링클", BigDecimal.valueOf(22000)));
-        ProductTestFixtures.상품_전체_조회_모킹(productDao, products);
+        ProductTestFixtures.상품_전체_조회_모킹(productRepository, products);
 
         //when
         List<ProductResponse> findProducts = productService.list();

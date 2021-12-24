@@ -11,13 +11,13 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 class ProductRepositoryTest {
 
     @Autowired
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     @Test
     void save() {
         Product product = new Product("치킨", BigDecimal.valueOf(21000));
-        Product saveProduct = productDao.save(product);
-        Product findProduct = productDao.findById(saveProduct.getId())
+        Product saveProduct = productRepository.save(product);
+        Product findProduct = productRepository.findById(saveProduct.getId())
             .orElseThrow(() -> new IllegalStateException());
         assertThat(saveProduct).isEqualTo(findProduct);
     }

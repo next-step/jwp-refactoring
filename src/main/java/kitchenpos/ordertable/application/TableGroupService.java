@@ -3,7 +3,7 @@ package kitchenpos.ordertable.application;
 import java.util.List;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.TableGroup;
-import kitchenpos.ordertable.domain.dao.TableGroupDao;
+import kitchenpos.ordertable.domain.TableGroupRepository;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.TableGroupRequest;
 import kitchenpos.ordertable.dto.TableGroupResponse;
@@ -16,12 +16,12 @@ public class TableGroupService {
 
     private static final String ERROR_MESSAGE_NOT_EXIST_TABLE_GROUP = "테이블 그룹 정보가 없습니다.";
 
-    private final TableGroupDao tableGroupDao;
+    private final TableGroupRepository tableGroupRepository;
     private final TableService tableService;
 
-    public TableGroupService(TableGroupDao tableGroupDao,
+    public TableGroupService(TableGroupRepository tableGroupRepository,
         TableService tableService) {
-        this.tableGroupDao = tableGroupDao;
+        this.tableGroupRepository = tableGroupRepository;
         this.tableService = tableService;
     }
 
@@ -31,7 +31,7 @@ public class TableGroupService {
         List<OrderTable> orderTables = tableService.findOrderTables(orderTableRequests);
 
         TableGroup tableGroup = new TableGroup();
-        final TableGroup savedTableGroup = tableGroupDao.save(tableGroup);
+        final TableGroup savedTableGroup = tableGroupRepository.save(tableGroup);
         savedTableGroup.groupTables(orderTables);
         return TableGroupResponse.from(savedTableGroup);
     }
@@ -40,11 +40,11 @@ public class TableGroupService {
     public void ungroup(final Long tableGroupId) {
         final TableGroup tableGroup = findTableGroup(tableGroupId);
         tableGroup.ungroup();
-        tableGroupDao.delete(tableGroup);
+        tableGroupRepository.delete(tableGroup);
     }
 
     public TableGroup findTableGroup(Long tableGroupId) {
-        return tableGroupDao.findById(tableGroupId)
+        return tableGroupRepository.findById(tableGroupId)
             .orElseThrow(() -> new IllegalArgumentException(ERROR_MESSAGE_NOT_EXIST_TABLE_GROUP));
     }
 }

@@ -9,48 +9,34 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.dao.OrderDao;
-import kitchenpos.order.domain.dao.OrderLineItemDao;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 
 public class OrderTestFixtures {
 
-    public static void 특정_테이블이_특정_상태인지_조회_모킹(OrderDao orderDao, boolean isExist) {
-        given(orderDao.existsByOrderTableIdAndOrderStatusIn(any(), anyList()))
+    public static void 특정_테이블이_특정_상태인지_조회_모킹(OrderRepository orderRepository, boolean isExist) {
+        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), anyList()))
             .willReturn(isExist);
     }
 
-    public static void 특정_테이블들이_특정상태인지_조회_모킹(OrderDao orderDao, boolean isExist) {
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(), anyList()))
+    public static void 특정_테이블들이_특정상태인지_조회_모킹(OrderRepository orderRepository, boolean isExist) {
+        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), anyList()))
             .willReturn(isExist);
     }
 
-    public static void 주문_저장_결과_모킹(OrderDao orderDao, Order order) {
-        given(orderDao.save(any()))
+    public static void 주문_저장_결과_모킹(OrderRepository orderRepository, Order order) {
+        given(orderRepository.save(any()))
             .willReturn(order);
     }
 
-    public static void 주문항목리스트_저장_결과_모킹(OrderLineItemDao orderLineItemDao,
-        List<OrderLineItem> orderLineItems) {
-        orderLineItems.stream()
-            .forEach(orderLineItem -> given(orderLineItemDao.save(orderLineItem))
-                .willReturn(orderLineItem));
-    }
-
-    public static void 주문_전체_조회_모킹(OrderDao orderDao, List<Order> orders) {
-        given(orderDao.findAll())
+    public static void 주문_전체_조회_모킹(OrderRepository orderRepository, List<Order> orders) {
+        given(orderRepository.findAll())
             .willReturn(orders);
     }
 
-    public static void 특정_주문에_해당하는_주문항목_조회_모킹(OrderLineItemDao orderLineItemDao,
-        List<Order> orders) {
-        orders.stream().forEach(order -> given(orderLineItemDao.findAllByOrderId(order.getId()))
-            .willReturn(order.getOrderLineItemList()));
-    }
-
-    public static void 특정_주문_조회_모킹(OrderDao orderDao, Order order) {
-        given(orderDao.findById(any()))
+    public static void 특정_주문_조회_모킹(OrderRepository orderRepository, Order order) {
+        given(orderRepository.findById(any()))
             .willReturn(Optional.of(order));
     }
 
