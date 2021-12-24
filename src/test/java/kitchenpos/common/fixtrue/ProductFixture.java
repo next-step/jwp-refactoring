@@ -11,10 +11,6 @@ public class ProductFixture {
     }
 
     public static Product of(Long id, String name, BigDecimal price) {
-        Product product = new Product();
-        product.setId(id);
-        product.setName(name);
-        product.setPrice(price);
-        return product;
+        return Product.of(id, name, price);
     }
 }

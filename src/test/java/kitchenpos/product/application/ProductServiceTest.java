@@ -4,7 +4,6 @@ import kitchenpos.common.fixtrue.ProductFixture;
 import kitchenpos.product.dao.ProductDao;
 import kitchenpos.product.domain.Product;
 import org.assertj.core.api.Assertions;
-import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -49,19 +48,6 @@ class ProductServiceTest {
 
         // then
         Assertions.assertThat(actual).isEqualTo(후라이드치킨);
-    }
-
-    @Test
-    void 상품의_가격은_0원_이상이어야_한다() {
-        // given
-        Product 마이너스치킨 = ProductFixture.of(3L, "마이너스치킨", BigDecimal.valueOf(-1));
-
-        // when
-        ThrowableAssert.ThrowingCallable throwingCallable = () ->  productService.create(마이너스치킨);
-
-        // then
-        Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(throwingCallable);
     }
 
     @Test
