@@ -20,11 +20,11 @@ import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTables;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
-import kitchenpos.tablegroup.domain.TableGroupValidator;
 import kitchenpos.table.dto.OrderTableDto;
 import kitchenpos.tablegroup.dto.TableGroupDto;
 import kitchenpos.tablegroup.event.GroupingOrderTableEvent;
 import kitchenpos.tablegroup.event.UngroupOrderTableEvent;
+import kitchenpos.validation.TableGroupValidator;
 
 @ExtendWith(MockitoExtension.class)
 public class TableGroupServiceTest {

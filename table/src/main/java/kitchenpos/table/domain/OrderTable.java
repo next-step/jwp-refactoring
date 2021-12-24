@@ -8,7 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-import kitchenpos.tablegroup.vo.TableGroupId;
+import kitchenpos.common.vo.TableGroupId;
 
 @Entity
 public class OrderTable {

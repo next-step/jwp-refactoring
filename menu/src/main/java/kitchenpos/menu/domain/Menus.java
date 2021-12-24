@@ -1,8 +1,8 @@
-package kitchenpos.domain.menu;
+package kitchenpos.menu.domain;
 
 import java.util.List;
 
-import kitchenpos.exception.order.NotRegistedMenuOrderException;
+import kitchenpos.menu.exception.NotRegistedMenuOrderException;
 
 public class Menus {
     List<Menu> menus;

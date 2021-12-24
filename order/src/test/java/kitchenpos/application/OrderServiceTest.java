@@ -21,12 +21,12 @@ import kitchenpos.order.dto.OrderDto;
 import kitchenpos.order.dto.OrderLineItemDto;
 import kitchenpos.menu.vo.MenuId;
 import kitchenpos.table.vo.OrderTableId;
+import kitchenpos.validation.OrdersValidator;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.order.domain.Orders;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrdersRepository;
-import kitchenpos.order.domain.OrdersValidator;
 import kitchenpos.order.domain.OrderStatus;
 
 @ExtendWith(MockitoExtension.class)

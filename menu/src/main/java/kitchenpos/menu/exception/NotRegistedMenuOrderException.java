@@ -1,4 +1,4 @@
-package kitchenpos.order.exception;
+package kitchenpos.menu.exception;
 
 public class NotRegistedMenuOrderException extends IllegalArgumentException{
     public NotRegistedMenuOrderException() {

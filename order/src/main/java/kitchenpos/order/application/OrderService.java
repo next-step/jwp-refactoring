@@ -2,10 +2,10 @@ package kitchenpos.order.application;
 
 import kitchenpos.order.domain.Orders;
 import kitchenpos.order.domain.OrdersRepository;
-import kitchenpos.order.domain.OrdersValidator;
 import kitchenpos.order.dto.OrderDto;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.vo.OrderTableId;
+import kitchenpos.common.vo.OrderTableId;
+import kitchenpos.validation.OrdersValidator;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -1,4 +1,4 @@
-package kitchenpos.order.domain;
+package kitchenpos.validation;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -8,14 +8,16 @@ import org.springframework.stereotype.Component;
 
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menus;
+import kitchenpos.order.domain.Orders;
+import kitchenpos.order.domain.OrdersRepository;
 import kitchenpos.order.dto.OrderDto;
 import kitchenpos.order.dto.OrderLineItemDto;
 import kitchenpos.order.event.ValidateEmptyTableEvent;
 import kitchenpos.order.exception.EmptyOrderLineItemOrderException;
 import kitchenpos.order.exception.NotChangableOrderStatusException;
 import kitchenpos.order.exception.NotFoundOrderException;
-import kitchenpos.order.exception.NotRegistedMenuOrderException;
 import kitchenpos.menu.vo.MenuId;
+import kitchenpos.menugroup.exception.NotRegistedMenuOrderException;
 import kitchenpos.table.vo.OrderTableId;
 
 @Component

@@ -1,4 +1,4 @@
-package kitchenpos.tablegroup.domain;
+package kitchenpos.validation;
 
 import java.util.List;
 import java.util.stream.Collectors;

@@ -8,8 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import kitchenpos.product.domain.Product;
-import kitchenpos.product.vo.ProductId;
+import kitchenpos.common.vo.ProductId;
 
 @Entity
 public class MenuProduct {
@@ -36,10 +35,6 @@ public class MenuProduct {
 
     public static MenuProduct of(ProductId productId, long quantity) {
         return new MenuProduct(productId, quantity);
-    }
-
-    public static MenuProduct of(Product product, long quantity) {
-        return new MenuProduct(ProductId.of(product.getId()), quantity);
     }
 
     public static MenuProduct of(Menu menu, ProductId productId, long quantity) {

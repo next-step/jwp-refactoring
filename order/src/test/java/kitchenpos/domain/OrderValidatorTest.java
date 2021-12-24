@@ -28,15 +28,15 @@ import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.Orders;
 import kitchenpos.order.domain.OrdersRepository;
-import kitchenpos.order.domain.OrdersValidator;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.order.dto.OrderDto;
 import kitchenpos.order.event.ValidateEmptyTableEvent;
 import kitchenpos.order.exception.EmptyOrderLineItemOrderException;
 import kitchenpos.order.exception.NotChangableOrderStatusException;
-import kitchenpos.order.exception.NotRegistedMenuOrderException;
 import kitchenpos.menu.vo.MenuId;
+import kitchenpos.menugroup.exception.NotRegistedMenuOrderException;
 import kitchenpos.table.vo.OrderTableId;
+import kitchenpos.validation.OrdersValidator;
 
 @ExtendWith(MockitoExtension.class)
 public class OrderValidatorTest {

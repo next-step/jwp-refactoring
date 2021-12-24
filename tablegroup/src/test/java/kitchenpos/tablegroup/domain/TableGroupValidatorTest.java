@@ -14,20 +14,20 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import kitchenpos.common.vo.TableGroupId;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTables;
 import kitchenpos.tablegroup.domain.TableGroup;
-import kitchenpos.tablegroup.domain.TableGroupValidator;
 import kitchenpos.table.dto.OrderTableDto;
 import kitchenpos.tablegroup.dto.TableGroupDto;
+import kitchenpos.validation.TableGroupValidator;
 import kitchenpos.order.exception.HasNotCompletionOrderException;
 import kitchenpos.table.exception.HasOtherTableGroupException;
 import kitchenpos.table.exception.NotEmptyOrderTableException;
 import kitchenpos.table.exception.NotGroupingOrderTableCountException;
 import kitchenpos.table.exception.NotRegistedMenuOrderTableException;
-import kitchenpos.tablegroup.vo.TableGroupId;
 
 @ExtendWith(MockitoExtension.class)
 public class TableGroupValidatorTest {

@@ -1,10 +1,12 @@
-package kitchenpos.table.domain;
+package kitchenpos.validation;
 
 import org.springframework.stereotype.Component;
 
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.Orders;
 import kitchenpos.order.exception.HasNotCompletionOrderException;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.exception.EmptyOrderTableException;
 import kitchenpos.table.exception.HasOtherTableGroupException;
 import kitchenpos.table.exception.NegativeOfNumberOfGuestsException;

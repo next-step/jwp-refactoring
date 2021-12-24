@@ -9,7 +9,7 @@ import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.tablegroup.event.GroupingOrderTableEvent;
 import kitchenpos.tablegroup.event.UngroupOrderTableEvent;
-import kitchenpos.tablegroup.vo.TableGroupId;
+import kitchenpos.common.vo.TableGroupId;
 
 @Component
 public class GroupingTableHandler {

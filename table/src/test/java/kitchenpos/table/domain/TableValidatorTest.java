@@ -20,7 +20,6 @@ import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.Orders;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.table.domain.TableValidator;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.order.exception.HasNotCompletionOrderException;
 import kitchenpos.table.exception.EmptyOrderTableException;
@@ -28,6 +27,7 @@ import kitchenpos.table.exception.HasOtherTableGroupException;
 import kitchenpos.table.exception.NegativeOfNumberOfGuestsException;
 import kitchenpos.ordertable.vo.OrderTableId;
 import kitchenpos.tablegroup.vo.TableGroupId;
+import kitchenpos.validation.TableValidator;
 
 @ExtendWith(MockitoExtension.class)
 public class TableValidatorTest {

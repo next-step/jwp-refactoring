@@ -1,11 +1,9 @@
-package kitchenpos.menu.vo;
+package kitchenpos.common.vo;
 
 import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-
-import kitchenpos.menu.domain.Menu;
 
 @Embeddable
 public final class MenuId {
@@ -22,9 +20,6 @@ public final class MenuId {
 
     public static MenuId of(Long id) {
         return new MenuId(id);
-    }
-    public static MenuId of(Menu menu) {
-        return new MenuId(menu.getId());
     }
 
     public Long value() {

@@ -1,9 +1,7 @@
-package kitchenpos.product.vo;
+package kitchenpos.common.vo;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-
-import kitchenpos.product.domain.Product;
 
 @Embeddable
 public class ProductId {
@@ -20,9 +18,6 @@ public class ProductId {
 
     public static ProductId of(Long id) {
         return new ProductId(id);
-    }
-    public static ProductId of(Product product) {
-        return new ProductId(product.getId());
     }
 
     public Long value() {

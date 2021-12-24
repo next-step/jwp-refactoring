@@ -10,8 +10,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import kitchenpos.common.domain.Price;
-import kitchenpos.menu.vo.MenuGroupId;
-import kitchenpos.menu.vo.ProductId;
+import kitchenpos.common.vo.MenuGroupId;
+import kitchenpos.common.vo.ProductId;
 
 @Entity
 public class Menu {

@@ -3,13 +3,13 @@ package kitchenpos.table.application;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import kitchenpos.common.vo.OrderTableId;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.table.domain.TableValidator;
 import kitchenpos.table.dto.OrderTableDto;
 import kitchenpos.table.exception.NotFoundOrderTableException;
-import kitchenpos.table.vo.OrderTableId;
 import kitchenpos.tablegroup.vo.TableGroupId;
+import kitchenpos.validation.TableValidator;
 
 import java.util.List;
 import java.util.stream.Collectors;

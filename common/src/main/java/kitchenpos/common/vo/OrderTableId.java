@@ -1,11 +1,9 @@
-package kitchenpos.table.vo;
+package kitchenpos.common.vo;
 
 import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-
-import kitchenpos.table.domain.OrderTable;
 
 @Embeddable
 public class OrderTableId {
@@ -22,9 +20,6 @@ public class OrderTableId {
 
     public static OrderTableId of(Long id) {
         return new OrderTableId(id);
-    }
-    public static OrderTableId of(OrderTable menu) {
-        return new OrderTableId(menu.getId());
     }
 
     public Long value() {

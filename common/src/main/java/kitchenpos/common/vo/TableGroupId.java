@@ -1,11 +1,9 @@
-package kitchenpos.tablegroup.vo;
+package kitchenpos.common.vo;
 
 import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-
-import kitchenpos.tablegroup.domain.TableGroup;
 
 @Embeddable
 public final class TableGroupId {
@@ -22,9 +20,6 @@ public final class TableGroupId {
 
     public static TableGroupId of(Long id) {
         return new TableGroupId(id);
-    }
-    public static TableGroupId of(TableGroup tableGroup) {
-        return new TableGroupId(tableGroup.getId());
     }
 
     public Long value() {
