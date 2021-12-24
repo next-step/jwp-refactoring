@@ -4,8 +4,8 @@ import kitchenpos.table.domain.OrderTables;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
 import kitchenpos.tablegroup.dto.TableGroupDto;
-import kitchenpos.tablegroup.event.GroupingOrderTableEvent;
-import kitchenpos.tablegroup.event.UngroupOrderTableEvent;
+import kitchenpos.common.event.GroupingOrderTableEvent;
+import kitchenpos.common.event.UngroupOrderTableEvent;
 import kitchenpos.tablegroup.domain.TableGroupValidator;
 
 import java.util.List;

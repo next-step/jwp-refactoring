@@ -7,8 +7,8 @@ import org.springframework.stereotype.Component;
 
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.tablegroup.event.GroupingOrderTableEvent;
-import kitchenpos.tablegroup.event.UngroupOrderTableEvent;
+import kitchenpos.common.event.GroupingOrderTableEvent;
+import kitchenpos.common.event.UngroupOrderTableEvent;
 import kitchenpos.common.vo.TableGroupId;
 
 @Component
