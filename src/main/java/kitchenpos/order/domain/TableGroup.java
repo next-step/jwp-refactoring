@@ -23,10 +23,6 @@ public class TableGroup {
         this.orderTables = new OrderTables(orderTables);
     }
 
-    public TableGroup(final List<OrderTable> orderTables) {
-        this.orderTables = new OrderTables(orderTables);
-    }
-
     public TableGroup(List<OrderTable> orderTables, int orderTablesSize) {
         this.orderTables = OrderTables.of(this, orderTables, orderTablesSize);
     }
