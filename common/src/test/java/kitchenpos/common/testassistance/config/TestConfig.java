@@ -1,4 +1,4 @@
-package kitchenpos.testassistance.config;
+package kitchenpos.common.testassistance.config;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;

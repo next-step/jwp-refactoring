@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.common.domain.Price;
+import kitchenpos.common.testassistance.config.TestConfig;
 import kitchenpos.product.domain.Product;
 import kitchenpos.menu.dto.MenuDto;
 import kitchenpos.menu.dto.MenuProductDto;
@@ -28,7 +29,6 @@ import kitchenpos.menu.presentation.MenuRestControllerTest;
 import kitchenpos.menugroup.presentation.MenuGroupRestControllerTest;
 import kitchenpos.product.presentation.ProductRestControllerTest;
 import kitchenpos.table.presentation.TableRestControllerTest;
-import kitchenpos.testassistance.config.TestConfig;
 
 public class KitchenposManageAcceptanceTest extends TestConfig {
     private MenuGroup 사이드메뉴;

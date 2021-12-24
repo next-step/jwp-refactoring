@@ -19,7 +19,7 @@ import kitchenpos.order.dto.OrderLineItemDto;
 import kitchenpos.table.dto.OrderTableDto;
 import kitchenpos.menu.presentation.MenuRestControllerTest;
 import kitchenpos.table.presentation.TableRestControllerTest;
-import kitchenpos.testassistance.config.TestConfig;
+import kitchenpos.common.testassistance.config.TestConfig;
 
 @DisplayName("주문 API기능에 관한")
 public class OrderRestControllerTest extends TestConfig {

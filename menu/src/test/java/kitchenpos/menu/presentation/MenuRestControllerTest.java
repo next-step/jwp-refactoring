@@ -18,7 +18,7 @@ import kitchenpos.menugroup.dto.MenuGroupDto;
 import kitchenpos.product.dto.ProductDto;
 import kitchenpos.menugroup.presentation.MenuGroupRestControllerTest;
 import kitchenpos.product.presentation.ProductRestControllerTest;
-import kitchenpos.testassistance.config.TestConfig;
+import kitchenpos.common.testassistance.config.TestConfig;
 
 @DisplayName("메뉴 API기능에 관한")
 public class MenuRestControllerTest extends TestConfig {

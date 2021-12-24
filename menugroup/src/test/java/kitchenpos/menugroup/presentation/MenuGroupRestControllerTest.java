@@ -9,8 +9,8 @@ import org.springframework.http.MediaType;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import kitchenpos.common.testassistance.config.TestConfig;
 import kitchenpos.menugroup.dto.MenuGroupDto;
-import kitchenpos.testassistance.config.TestConfig;
 
 @DisplayName("메뉴그룹 API기능에 관한")
 public class MenuGroupRestControllerTest extends TestConfig {

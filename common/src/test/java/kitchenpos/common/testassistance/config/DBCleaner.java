@@ -1,4 +1,4 @@
-package kitchenpos.testassistance.config;
+package kitchenpos.common.testassistance.config;
 
 import javax.sql.DataSource;
 

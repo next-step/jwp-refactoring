@@ -13,7 +13,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.product.dto.ProductDto;
-import kitchenpos.testassistance.config.TestConfig;
+import kitchenpos.common.testassistance.config.TestConfig;
 
 @DisplayName("상품 API기능에 관한")
 public class ProductRestControllerTest extends TestConfig {

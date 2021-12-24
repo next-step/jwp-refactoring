@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.opentest4j.MultipleFailuresError;
 
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.common.testassistance.config.TestConfig;
 import kitchenpos.menu.dto.MenuDto;
 import kitchenpos.order.dto.OrderDto;
 import kitchenpos.order.dto.OrderLineItemDto;
@@ -20,7 +21,6 @@ import kitchenpos.tablegroup.dto.TableGroupDto;
 import kitchenpos.menu.presentation.MenuRestControllerTest;
 import kitchenpos.table.presentation.TableRestControllerTest;
 import kitchenpos.tablegroup.presentation.TableGroupRestControllerTest;
-import kitchenpos.testassistance.config.TestConfig;
 
 public class KitchenposOrderAcceptanceTest extends TestConfig {
     @DisplayName("한테이블대한 손님들이 음식을 주문한다.")
