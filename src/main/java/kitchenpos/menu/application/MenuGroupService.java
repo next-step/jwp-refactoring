@@ -1,12 +1,14 @@
 package kitchenpos.menu.application;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import kitchenpos.menu.dao.MenuGroupRepository;
-import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.dto.MenuGroupRequest;
+import kitchenpos.menu.dto.MenuGroupResponse;
 
 @Service
 @Transactional
@@ -18,12 +20,14 @@ public class MenuGroupService {
     }
 
     @Transactional
-    public MenuGroup create(final MenuGroup menuGroup) {
-        return menuGroupRepository.save(menuGroup);
+    public MenuGroupResponse create(final MenuGroupRequest request) {
+        return MenuGroupResponse.from(menuGroupRepository.save(request.toMenuGroup()));
     }
     
     @Transactional(readOnly = true)
-    public List<MenuGroup> list() {
-        return menuGroupRepository.findAll();
+    public List<MenuGroupResponse> list() {
+        return menuGroupRepository.findAll().stream()
+                .map(MenuGroupResponse::from)
+                .collect(Collectors.toList());
     }
 }

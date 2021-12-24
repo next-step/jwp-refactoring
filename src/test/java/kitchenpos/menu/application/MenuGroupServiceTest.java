@@ -1,6 +1,7 @@
 package kitchenpos.menu.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 import java.util.Arrays;
@@ -15,6 +16,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.menu.dao.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.dto.MenuGroupRequest;
+import kitchenpos.menu.dto.MenuGroupResponse;
 
 @ExtendWith(MockitoExtension.class)
 public class MenuGroupServiceTest {
@@ -30,13 +33,13 @@ public class MenuGroupServiceTest {
     void 메뉴그룹_등록() {
         // given
         MenuGroup 메뉴그룹 = MenuGroup.from("한식");
-        given(menuGroupRepository.save(메뉴그룹)).willReturn(메뉴그룹);
+        given(menuGroupRepository.save(any())).willReturn(메뉴그룹);
 
         // when
-        MenuGroup savedMenuGroup = menuGroupService.create(메뉴그룹);
+        MenuGroupResponse savedMenuGroup = menuGroupService.create(MenuGroupRequest.from(메뉴그룹));
 
         // then
-        assertThat(savedMenuGroup).isEqualTo(메뉴그룹);
+        assertThat(savedMenuGroup).isEqualTo(MenuGroupResponse.from(메뉴그룹));
 
     }
 
@@ -50,10 +53,10 @@ public class MenuGroupServiceTest {
         given(menuGroupRepository.findAll()).willReturn(Arrays.asList(첫번째_메뉴그룹, 두번째_메뉴그룹));
 
         // when
-        List<MenuGroup> menuGroups = menuGroupService.list();
+        List<MenuGroupResponse> menuGroups = menuGroupService.list();
 
         // then
-        assertThat(menuGroups).containsExactly(첫번째_메뉴그룹, 두번째_메뉴그룹);
+        assertThat(menuGroups).containsExactly(MenuGroupResponse.from(첫번째_메뉴그룹), MenuGroupResponse.from(두번째_메뉴그룹));
     }
 
 }
