@@ -37,7 +37,7 @@ public class TableService {
     public OrderTableResponse create(final OrderTableRequest request) {
         NumberOfGuests numberOfGuests = NumberOfGuests.of(request.getNumberOfGuests());
         Empty empty = Empty.of(request.isEmpty());
-        OrderTable orderTable = OrderTable.of(null, numberOfGuests, empty);
+        OrderTable orderTable = OrderTable.of(numberOfGuests, empty);
 
         return OrderTableResponse.of(orderTableRepository.save(orderTable));
     }

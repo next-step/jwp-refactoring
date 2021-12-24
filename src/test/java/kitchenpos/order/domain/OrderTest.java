@@ -35,7 +35,7 @@ class OrderTest {
 
     @BeforeEach
     void setUp() {
-        orderTable = OrderTable.of(null, NumberOfGuests.of(4), Empty.of(false));
+        orderTable = OrderTable.of(NumberOfGuests.of(4), Empty.of(false));
         orderedTime = LocalDateTime.now();
         product = Product.of("강정치킨", BigDecimal.valueOf(17_000));
         menuProducts = MenuProducts.of(Arrays.asList(MenuProduct.of(product, Quantity.of(2))));

@@ -55,7 +55,7 @@ public class OrderTables {
     private void validateGroupTable() {
         for (final OrderTable orderTable : orderTables) {
             if (orderTable.getEmpty().isNotEmpty() || Objects.nonNull(orderTable.getTableGroupId())) {
-                throw new IllegalArgumentException("테이블이 비어있지 않거나, 테이블 그룹이 존재하지 않습니다.");
+                throw new IllegalArgumentException("테이블이 비어있지 않거나, 테이블 그룹에 이미 속해 있습니다.");
             }
         }
     }
@@ -64,5 +64,18 @@ public class OrderTables {
         if (orderTableIds.size() != orderTables.size()) {
             throw new IllegalArgumentException("테이블을 그룹화할 주문 테이블 수가 일치하지 않습니다.");
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof OrderTables)) return false;
+        OrderTables that = (OrderTables) o;
+        return Objects.equals(orderTables, that.orderTables);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(orderTables);
     }
 }

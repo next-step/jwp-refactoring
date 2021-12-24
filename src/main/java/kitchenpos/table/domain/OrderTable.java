@@ -36,23 +36,24 @@ public class OrderTable {
         this.empty = empty;
     }
 
-    private OrderTable(TableGroup tableGroup, NumberOfGuests numberOfGuests, Empty empty) {
-        this.tableGroup = tableGroup;
+    private OrderTable(NumberOfGuests numberOfGuests, Empty empty) {
+
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
     }
 
     public OrderTable(Long id, TableGroup tableGroup, NumberOfGuests numberOfGuests, Empty empty) {
-        this(tableGroup, numberOfGuests, empty);
+        this(numberOfGuests, empty);
         this.id = id;
+        this.tableGroup = tableGroup;
     }
 
     public static OrderTable of(Long id, Empty empty) {
         return new OrderTable(id, empty);
     }
 
-    public static OrderTable of(TableGroup tableGroup, NumberOfGuests numberOfGuests, Empty empty) {
-        return new OrderTable(tableGroup, numberOfGuests, empty);
+    public static OrderTable of(NumberOfGuests numberOfGuests, Empty empty) {
+        return new OrderTable(numberOfGuests, empty);
     }
 
     public static OrderTable of(Long id, TableGroup tableGroup, NumberOfGuests numberOfGuests, Empty empty) {
