@@ -10,6 +10,7 @@ import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -38,7 +39,7 @@ public class TableGroupService {
         final List<OrderTable> orderTables = tableGroup.getOrderTables();
 
         if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
-            throw new EmptyException();
+            throw new EmptyException(HttpStatus.BAD_REQUEST);
         }
 
         final List<Long> orderTableIds = orderTables.stream()
@@ -48,12 +49,12 @@ public class TableGroupService {
         final List<OrderTable> savedOrderTables = orderTableDao.findAllByIdIn(orderTableIds);
 
         if (orderTables.size() != savedOrderTables.size()) {
-            throw new NotEqualsException();
+            throw new NotEqualsException(HttpStatus.BAD_REQUEST);
         }
 
         for (final OrderTable savedOrderTable : savedOrderTables) {
             if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroupId())) {
-                throw new NotExistRegisterException();
+                throw new NotExistRegisterException(HttpStatus.BAD_REQUEST);
             }
         }
 
@@ -82,7 +83,7 @@ public class TableGroupService {
 
         if (orderDao.existsByOrderTableIdInAndOrderStatusIn(
                 orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new NotExistOrDisableStatusException();
+            throw new NotExistOrDisableStatusException(HttpStatus.BAD_REQUEST);
         }
 
         for (final OrderTable orderTable : orderTables) {

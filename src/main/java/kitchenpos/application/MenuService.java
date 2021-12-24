@@ -1,8 +1,8 @@
 package kitchenpos.application;
 
 import kitchenpos.common.exceptions.NoRequiredInputPriceException;
-import kitchenpos.common.exceptions.NotFoundException;
 import kitchenpos.common.exceptions.NotExistRegisterException;
+import kitchenpos.common.exceptions.NotFoundException;
 import kitchenpos.common.exceptions.PriceGreaterThenSumException;
 import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.MenuGroupDao;
@@ -11,6 +11,7 @@ import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,11 +45,11 @@ public class MenuService {
         final BigDecimal price = menu.getPrice();
 
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new NoRequiredInputPriceException();
+            throw new NoRequiredInputPriceException(HttpStatus.BAD_REQUEST);
         }
 
         if (!menuGroupDao.existsById(menu.getMenuGroupId())) {
-            throw new NotExistRegisterException();
+            throw new NotExistRegisterException(HttpStatus.BAD_REQUEST);
         }
 
         final List<MenuProduct> menuProducts = menu.getMenuProducts();
@@ -56,12 +57,14 @@ public class MenuService {
         BigDecimal sum = BigDecimal.ZERO;
         for (final MenuProduct menuProduct : menuProducts) {
             final Product product = productDao.findById(menuProduct.getProductId())
-                    .orElseThrow(NotFoundException::new);
+                    .orElseThrow(() -> {
+                        throw new NotFoundException(HttpStatus.BAD_REQUEST);
+                    });
             sum = sum.add(product.getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
         }
 
         if (price.compareTo(sum) > 0) {
-            throw new PriceGreaterThenSumException();
+            throw new PriceGreaterThenSumException(HttpStatus.BAD_REQUEST);
         }
 
         final Menu savedMenu = menuDao.save(menu);

@@ -15,11 +15,6 @@ public abstract class CustomException extends RuntimeException {
         this.status = status;
     }
 
-    protected CustomException(final String message, HttpStatus status) {
-        super(message);
-        this.status = status;
-    }
-
     public HttpStatus getHttpStatus() {
         return status;
     }
