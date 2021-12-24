@@ -1,5 +1,6 @@
 package kitchenpos.menu.domain;
 
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -10,6 +11,7 @@ import kitchenpos.product.domain.Product;
 
 @Entity
 public class MenuProduct {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -22,7 +24,8 @@ public class MenuProduct {
     @JoinColumn(name = "product_id")
     private Product product;
 
-    private long quantity;
+    @Embedded
+    private Quantity quantity;
 
     public MenuProduct() {
     }
@@ -30,19 +33,12 @@ public class MenuProduct {
     private MenuProduct(Long menuId, Long productId, long quantity) {
         this.menu = Menu.of(menuId);
         this.product = Product.of(productId);
-        this.quantity = quantity;
+        this.quantity = Quantity.of(quantity);
     }
 
     public MenuProduct(Long productId, long quantity) {
         this.product = Product.of(productId);
-        this.quantity = quantity;
-    }
-
-    public MenuProduct(Long id, Long menuId, Long productId, long quantity) {
-        this.id = id;
-        this.menu = Menu.of(menuId);
-        this.product = Product.of(productId);
-        this.quantity = quantity;
+        this.quantity = Quantity.of(quantity);
     }
 
     public static MenuProduct of(Long productId, long quantity) {
@@ -57,15 +53,11 @@ public class MenuProduct {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
+    public Menu getMenu() {
+        return menu;
     }
 
-    public Long getMenuId() {
-        return menu.getId();
-    }
-
-    public void setMenu(final Long menuId) {
+    public void setMenu(Long menuId) {
         this.menu = Menu.of(menuId);
     }
 
@@ -73,15 +65,12 @@ public class MenuProduct {
         return product.getId();
     }
 
-    public void setProduct(final Long productId) {
-        this.product = Product.of(productId);
-    }
-
-    public long getQuantity() {
+    public Quantity getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(final long quantity) {
-        this.quantity = quantity;
+    public long getQuantityValue() {
+        return quantity.getValue();
     }
+
 }
