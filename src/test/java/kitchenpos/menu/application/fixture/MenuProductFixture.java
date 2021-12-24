@@ -1,6 +1,6 @@
-package kitchenpos.application.fixture;
+package kitchenpos.menu.application.fixture;
 
-import static kitchenpos.application.fixture.ProductFixture.후리이드치킨;
+import static kitchenpos.product.application.fixture.ProductFixture.후리이드치킨;
 
 import java.util.Collections;
 import java.util.List;
@@ -18,11 +18,11 @@ public class MenuProductFixture {
     }
 
     public static List<MenuProduct> 메뉴상품_치킨_리스트() {
-        return Collections.singletonList(MenuProduct.of(후리이드치킨(), 1L));
+        return Collections.singletonList(MenuProduct.of(후리이드치킨().getId(), 1L));
     }
 
     public static MenuProduct 메뉴상품(Product product) {
-        return MenuProduct.of(product, 1L);
+        return MenuProduct.of(product.getId(), 1L);
     }
 
 

@@ -2,19 +2,16 @@ package kitchenpos.menu.application;
 
 
 import static kitchenpos.menu.application.fixture.MenuFixture.요청_메뉴;
-import static kitchenpos.application.fixture.MenuGroupFixture.메뉴그룹_치킨류;
-import static kitchenpos.application.fixture.MenuProductFixture.메뉴상품;
-import static kitchenpos.application.fixture.MenuProductFixture.요청_메뉴상품_치킨;
-import static kitchenpos.application.fixture.ProductFixture.후리이드치킨;
+import static kitchenpos.menugroup.application.fixture.MenuGroupFixture.메뉴그룹_치킨류;
+import static kitchenpos.menu.application.fixture.MenuProductFixture.메뉴상품;
+import static kitchenpos.menu.application.fixture.MenuProductFixture.요청_메뉴상품_치킨;
+import static kitchenpos.product.application.fixture.ProductFixture.후리이드치킨;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
-import kitchenpos.common.exception.NotFoundException;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.domain.MenuValidator;
 import kitchenpos.menu.domain.Menu;
@@ -25,8 +22,6 @@ import kitchenpos.product.domain.Product;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.product.domain.ProductRepository;
-import org.assertj.core.api.ThrowableAssert;
-import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -89,24 +84,6 @@ class MenuServiceTest {
         // then
         메뉴목록_조회됨(메뉴목록);
     }
-
-//    @Test
-//    @DisplayName("`메뉴`가 속할 `메뉴그룹`이 필수로 있어야 한다.")
-//    void 메뉴는_메뉴그룹이_없으면_에러() {
-//        // given
-//        MenuRequest menuRequest = 요청_메뉴("메뉴이름", 14000, 1L, Collections.singletonList(요청_메뉴상품_치킨()));
-//        given(menuGroupRepository.findById(any())).willReturn(Optional.empty());
-//
-//        // when
-//        ThrowableAssert.ThrowingCallable actual = () -> menuService.create(menuRequest);
-//
-//        // then
-//        메뉴생성_메뉴그룹_없음_실패(actual);
-//    }
-//
-//    private void 메뉴생성_메뉴그룹_없음_실패(ThrowingCallable actual) {
-//        assertThatThrownBy(actual).isInstanceOf(NotFoundException.class);
-//    }
 
     private void 메뉴등록_됨(MenuResponse menuResponse) {
         assertThat(menuResponse).isNotNull();

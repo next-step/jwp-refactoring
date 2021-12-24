@@ -1,11 +1,10 @@
 package kitchenpos.menu.domain;
 
-import static kitchenpos.application.fixture.MenuGroupFixture.메뉴그룹_치킨류;
-import static kitchenpos.application.fixture.MenuProductFixture.메뉴상품_치킨_리스트;
+import static kitchenpos.menugroup.application.fixture.MenuGroupFixture.메뉴그룹_치킨류;
+import static kitchenpos.menu.application.fixture.MenuProductFixture.메뉴상품_치킨_리스트;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import kitchenpos.common.exception.InvalidParameterException;
-import kitchenpos.menu.domain.Menu;
 import kitchenpos.menugroup.domain.MenuGroup;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
