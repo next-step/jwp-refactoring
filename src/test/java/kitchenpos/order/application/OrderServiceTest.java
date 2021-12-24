@@ -1,6 +1,7 @@
 package kitchenpos.order.application;
 
 import kitchenpos.menu.domain.*;
+import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderLineItemResponse;
@@ -8,7 +9,10 @@ import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.menu.exception.MenuNotFoundException;
 import kitchenpos.order.exception.OrderNotFoundException;
-import kitchenpos.order.exception.OrderTableNotFoundException;
+import kitchenpos.table.exception.OrderTableNotFoundException;
+import kitchenpos.product.domain.Product;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

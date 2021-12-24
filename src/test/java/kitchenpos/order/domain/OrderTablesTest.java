@@ -1,7 +1,9 @@
 package kitchenpos.order.domain;
 
 
-import kitchenpos.order.domain.*;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTables;
+import kitchenpos.tablegroup.domain.TableGroup;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -1,9 +1,12 @@
 package kitchenpos.order.application;
 
-import kitchenpos.order.application.TableService;
 import kitchenpos.order.domain.*;
-import kitchenpos.order.dto.OrderTableRequest;
-import kitchenpos.order.dto.OrderTableResponse;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.table.application.TableService;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.tablegroup.domain.TableGroup;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -141,7 +144,6 @@ public class TableServiceTest {
             OrderTable expectedOrderTable = new OrderTable(1L, null, 4, false);
 
             given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(expectedOrderTable));
-            given(orderTableRepository.save(any(OrderTable.class))).willReturn(expectedOrderTable);
 
             // when
             OrderTableResponse orderTable = tableService.changeNumberOfGuests(expectedOrderTable.getId(), requestOrderTable);

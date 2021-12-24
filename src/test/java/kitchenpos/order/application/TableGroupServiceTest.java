@@ -1,10 +1,14 @@
 package kitchenpos.order.application;
 
-import kitchenpos.order.application.TableGroupService;
 import kitchenpos.order.domain.*;
-import kitchenpos.order.dto.OrderTableRequest;
-import kitchenpos.order.dto.TableGroupRequest;
-import kitchenpos.order.dto.TableGroupResponse;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.tablegroup.application.TableGroupService;
+import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.domain.TableGroupRepository;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
+import kitchenpos.tablegroup.dto.TableGroupResponse;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
