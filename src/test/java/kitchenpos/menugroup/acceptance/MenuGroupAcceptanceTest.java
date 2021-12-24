@@ -1,7 +1,7 @@
-package kitchenpos.acceptance;
+package kitchenpos.menugroup.acceptance;
 
-import static kitchenpos.acceptance.step.MenuGroupAcceptanceStep.*;
-import static kitchenpos.application.fixture.MenuGroupFixture.요청_메뉴그룹_치킨류;
+import static kitchenpos.menugroup.acceptance.step.MenuGroupAcceptanceStep.*;
+import static kitchenpos.menugroup.application.fixture.MenuGroupFixture.요청_메뉴그룹_치킨류;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
