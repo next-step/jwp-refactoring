@@ -89,3 +89,28 @@
 * [x] tableGroupService 리팩토링
 * [x] DTO 를 이용하여 Response, Request 분리
 * [x] fixture 사용
+
+### 3단계 - 의존성 리팩터링
+
+* Menu
+  * MenuGroup 간접참조
+  * MenuProduct 직접참조
+* MenuGroup
+  * 없음
+* MenuProduct
+  * Menu 간접참조
+  * Product 간접참조
+* Product
+  * 없음
+* TableGroup
+  * OrderTable 간접참조
+* OrderTable
+  * TableGroup 간접참조
+* Order
+  * OrderTable 간접참조
+  * OrderLineItem 직접참조
+* OrderLineItem
+  * Order 간접참조
+  * Menu 간접참조
+
+* [ ] EventHandler 를 사용하여 의존성객체를 리팩터링
