@@ -11,7 +11,7 @@ public class MenuProductResponse {
     private Long productId;
     private long quantity;
 
-    public MenuProductResponse() {
+    protected MenuProductResponse() {
     }
 
     public MenuProductResponse(Long seq, Long menuId, Long productId, long quantity) {

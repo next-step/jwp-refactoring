@@ -11,7 +11,7 @@ public class Price implements Comparable<Price> {
     @Column
     private BigDecimal price;
 
-    public Price() {
+    protected Price() {
     }
 
     private Price(BigDecimal price) {
