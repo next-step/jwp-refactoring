@@ -1,5 +1,6 @@
 package kitchenpos.menu.ui;
 
+import kitchenpos.common.BindingException;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
@@ -23,7 +24,7 @@ public class MenuRestController {
     @PostMapping
     public ResponseEntity<MenuResponse> create(@RequestBody @Valid final MenuRequest request, BindingResult bs) {
         if (bs.hasErrors()) {
-            throw new IllegalArgumentException();
+            throw new BindingException();
         }
         final MenuResponse response = menuService.create(request);
         final URI uri = URI.create("/api/menus/" + response.getId());

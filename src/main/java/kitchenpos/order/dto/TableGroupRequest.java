@@ -1,5 +1,6 @@
 package kitchenpos.order.dto;
 
+import kitchenpos.order.application.exception.OrderTableNotFoundException;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.TableGroup;
 import org.checkerframework.common.aliasing.qual.Unique;
@@ -13,20 +14,23 @@ public class TableGroupRequest {
     @Unique
     @Size(min = 2)
     @NotEmpty
-    private List<Long> orderTableIds;
+    private List<Long> tableIds;
 
     protected TableGroupRequest() {
     }
 
-    public TableGroupRequest(List<Long> orderTableIds) {
-        this.orderTableIds = orderTableIds;
+    public TableGroupRequest(List<Long> tableIds) {
+        this.tableIds = tableIds;
     }
 
     public TableGroup toEntity(List<OrderTable> orderTables) {
+        if (tableIds.size() != orderTables.size()) {
+            throw new OrderTableNotFoundException();
+        }
         return new TableGroup(LocalDateTime.now(), orderTables);
     }
 
-    public List<Long> getOrderTableIds() {
-        return orderTableIds;
+    public List<Long> getTableIds() {
+        return tableIds;
     }
 }

@@ -26,6 +26,8 @@ import static kitchenpos.order.domain.OrderStatus.MEAL;
 import static kitchenpos.order.dto.OrderStatusRequest.completion;
 import static kitchenpos.order.dto.OrderStatusRequest.meal;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @DisplayName("주문 인수 테스트")
 public class OrderAcceptanceTest extends AcceptanceTest {
@@ -78,7 +80,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("주문 예외 시나리오")
     void exceptionScenario() {
-        OrderRequest 주문테이블없음 = new OrderRequest(10L, Collections.singletonList(주문항목1));
+        OrderRequest 주문테이블없음 = new OrderRequest(null, Collections.singletonList(주문항목1));
         OrderRequest 빈주문테이블 = new OrderRequest(빈테이블.getId(), Collections.singletonList(주문항목2));
         OrderRequest 매콤치킨주문 = new OrderRequest(테이블.getId(), Collections.singletonList(주문항목1));
 
@@ -117,7 +119,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 주문_등록_실패됨(ExtractableResponse<Response> response) {
-        AssertionsForClassTypes.assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        AssertionsForClassTypes.assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     public static void 주문_상태_변경됨(ExtractableResponse<Response> response) {
@@ -125,6 +127,6 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 주문_상태_변경_실패됨(ExtractableResponse<Response> response) {
-        AssertionsForClassTypes.assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        AssertionsForClassTypes.assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }

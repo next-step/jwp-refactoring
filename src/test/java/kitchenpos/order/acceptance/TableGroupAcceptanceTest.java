@@ -80,10 +80,6 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 테이블_그룹_등록_실패됨(ExtractableResponse<Response> response) {
-        AssertionsForClassTypes.assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
-    }
-
-    public static void 테이블_그룹_해제_실패됨(ExtractableResponse<Response> response) {
-        AssertionsForClassTypes.assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        AssertionsForClassTypes.assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }

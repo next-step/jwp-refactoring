@@ -20,14 +20,7 @@ public class OrderTable {
     @Embedded
     private TableState tableState;
 
-    public OrderTable() {
-    }
-
-    public OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, TableState tableState) {
-        this.id = id;
-        this.tableGroup = tableGroup;
-        this.numberOfGuests = numberOfGuests;
-        this.tableState = tableState;
+    protected OrderTable() {
     }
 
     public OrderTable(Long id, int numberOfGuests, TableState tableState) {
@@ -37,8 +30,7 @@ public class OrderTable {
     }
 
     public OrderTable(int numberOfGuests, TableState tableState) {
-        this.numberOfGuests = numberOfGuests;
-        this.tableState = tableState;
+        this(null, numberOfGuests, tableState);
     }
 
     public void setTableGroup(TableGroup tableGroup) {

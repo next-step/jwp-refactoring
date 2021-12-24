@@ -1,12 +1,15 @@
 package kitchenpos.order.ui;
 
+import kitchenpos.common.BindingException;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusRequest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
@@ -20,7 +23,10 @@ public class OrderRestController {
     }
 
     @PostMapping
-    public ResponseEntity<OrderResponse> create(@RequestBody final OrderRequest request) {
+    public ResponseEntity<OrderResponse> create(@RequestBody @Valid final OrderRequest request, BindingResult bs) {
+        if (bs.hasErrors()) {
+            throw new BindingException();
+        }
         final OrderResponse response = orderService.create(request);
         final URI uri = URI.create("/api/orders/" + response.getId());
         return ResponseEntity.created(uri).body(response);

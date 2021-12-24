@@ -22,4 +22,16 @@ public class GlobalControllerAdvice {
         ApiError apiError = new ApiError(NOT_FOUND, e.getLocalizedMessage(), e.getMessage());
         return ResponseEntity.status(apiError.getStatus()).body(apiError);
     }
+
+    @ExceptionHandler(InvalidException.class)
+    public ResponseEntity<ApiError> handler(InvalidException e) {
+        ApiError apiError = new ApiError(BAD_REQUEST, e.getLocalizedMessage(), e.getMessage());
+        return ResponseEntity.status(apiError.getStatus()).body(apiError);
+    }
+
+    @ExceptionHandler(BindingException.class)
+    public ResponseEntity<ApiError> handler(BindingException e) {
+        ApiError apiError = new ApiError(BAD_REQUEST, e.getLocalizedMessage(), e.getMessage());
+        return ResponseEntity.status(apiError.getStatus()).body(apiError);
+    }
 }

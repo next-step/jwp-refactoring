@@ -31,11 +31,11 @@ public class OrderTableRequest {
     }
 
     public static OrderTableRequest group(int numberOfGuests) {
-        return new OrderTableRequest(numberOfGuests, true);
+        return new OrderTableRequest(numberOfGuests, false);
     }
 
     public OrderTable toEntity() {
-        return new OrderTable(id, numberOfGuests, new TableState(empty));
+        return new OrderTable(numberOfGuests, new TableState(empty));
     }
 
     public Long getId() {

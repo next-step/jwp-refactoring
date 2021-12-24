@@ -31,14 +31,6 @@ public class OrderTableResponse {
         this.id = id;
     }
 
-    public void setNumberOfGuests(int numberOfGuests) {
-        this.numberOfGuests = numberOfGuests;
-    }
-
-    public void setTableState(TableState tableState) {
-        this.tableState = tableState;
-    }
-
     public Long getId() {
         return id;
     }

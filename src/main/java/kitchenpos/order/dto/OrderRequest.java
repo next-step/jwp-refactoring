@@ -5,46 +5,35 @@ import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderTable;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 import static kitchenpos.order.domain.OrderStatus.COOKING;
 
 public class OrderRequest {
-
-    private Long orderTableId;
-
+    @NotNull
+    private Long tableId;
     @NotEmpty
-    private List<OrderLineItemRequest> orderLineItems;
+    private List<OrderLineItemRequest> items;
 
-    public OrderRequest() {
+    public OrderRequest(Long tableId, List<OrderLineItemRequest> items) {
+        this.tableId = tableId;
+        this.items = items;
     }
 
-    public OrderRequest(Long orderTableId, List<OrderLineItemRequest> orderLineItems) {
-        this.orderTableId = orderTableId;
-        this.orderLineItems = orderLineItems;
+    public static OrderRequest of(Long orderTableId, List<OrderLineItemRequest> items) {
+        return new OrderRequest(orderTableId, items);
     }
 
-    public static OrderRequest of(Long orderTableId, List<OrderLineItemRequest> orderLineItems) {
-        return new OrderRequest(orderTableId, orderLineItems);
+    public Order toEntity(OrderTable orderTable, List<OrderLineItem> items) {
+        return new Order(orderTable, COOKING, items);
     }
 
-    public Order toEntity(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
-        return new Order(orderTable, COOKING, orderLineItems);
+    public Long getTableId() {
+        return tableId;
     }
 
-    public void setOrderTableId(Long orderTableId) {
-        this.orderTableId = orderTableId;
-    }
-
-    public void setOrderLineItems(List<OrderLineItemRequest> orderLineItems) {
-        this.orderLineItems = orderLineItems;
-    }
-
-    public Long getOrderTableId() {
-        return orderTableId;
-    }
-
-    public List<OrderLineItemRequest> getOrderLineItems() {
-        return orderLineItems;
+    public List<OrderLineItemRequest> getItems() {
+        return items;
     }
 }

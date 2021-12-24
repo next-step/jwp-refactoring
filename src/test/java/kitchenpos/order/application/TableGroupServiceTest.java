@@ -1,5 +1,7 @@
 package kitchenpos.order.application;
 
+import kitchenpos.order.application.exception.InvalidTableState;
+import kitchenpos.order.application.exception.OrderTableNotFoundException;
 import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.TableGroupRequest;
 import kitchenpos.order.dto.TableGroupResponse;
@@ -14,9 +16,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @DisplayName("테이블 그룹 서비스")
@@ -37,8 +39,8 @@ class TableGroupServiceTest {
 
     @BeforeEach
     void setUp() {
-        테이블1 = new OrderTable(1L, 3, new TableState(true));
-        테이블2 = new OrderTable(2L, 3, new TableState(true));
+        테이블1 = new OrderTable(1L, 3, new TableState(false));
+        테이블2 = new OrderTable(2L, 3, new TableState(false));
         테이블그룹 = new TableGroup(1L, LocalDateTime.now(), Arrays.asList(테이블1, 테이블2));
     }
 
@@ -47,12 +49,13 @@ class TableGroupServiceTest {
     void create() {
         TableGroupRequest request = new TableGroupRequest(Arrays.asList(테이블1.getId(), 테이블2.getId()));
 
-        when(orderTableRepository.findAllByIdIn(Arrays.asList(1L, 2L))).thenReturn(Arrays.asList(테이블1, 테이블2));
+        when(orderTableRepository.findById(anyLong())).thenReturn(Optional.of(테이블1));
+        when(orderTableRepository.findById(anyLong())).thenReturn(Optional.of(테이블1));
         when(tableGroupRepository.save(any())).thenReturn(테이블그룹);
 
         TableGroupResponse response = tableGroupService.create(request);
 
-        verify(orderTableRepository, times(1)).findAllByIdIn(anyList());
+        verify(orderTableRepository, times(2)).findById(any());
         verify(tableGroupRepository, times(1)).save(any(TableGroup.class));
         assertThat(response.getOrderTableResponses()).hasSize(2);
     }
@@ -62,49 +65,48 @@ class TableGroupServiceTest {
     void validateOrderTableSize() {
         TableGroupRequest 테이블1개그룹 = new TableGroupRequest(Collections.singletonList(테이블1.getId()));
 
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableGroupService.create(테이블1개그룹));
+        assertThatThrownBy(() -> tableGroupService.create(테이블1개그룹))
+                .isInstanceOf(OrderTableNotFoundException.class);
     }
 
     @Test
     @DisplayName("주문 테이블이 등록되어 있지 않은 경우 예외가 발생한다.")
     void validateOrderTable() {
         TableGroupRequest request = new TableGroupRequest(Arrays.asList(테이블1.getId(), 테이블2.getId()));
+        when(orderTableRepository.findById(anyLong())).thenReturn(Optional.of(테이블1));
+        when(orderTableRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        when(orderTableRepository.findAllByIdIn(anyList()))
-                .thenReturn(Collections.singletonList(테이블1));
-
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableGroupService.create(request));
-        verify(orderTableRepository, times(1)).findAllByIdIn(anyList());
+        assertThatThrownBy(() -> tableGroupService.create(request))
+                .isInstanceOf(OrderTableNotFoundException.class);
+        verify(orderTableRepository, times(1)).findById(anyLong());
     }
 
     @Test
-    @DisplayName("주문 테이블이 빈 테이블이 아닌(사용중) 경우 예외가 발생한다.")
+    @DisplayName("주문 테이블이 빈 테이블인 경우 예외가 발생한다.")
     void validateOrderTableEmpty() {
-        TableGroupRequest request = new TableGroupRequest(Arrays.asList(테이블1.getId(), 테이블2.getId()));
-        테이블1.changeSit();
+        OrderTable 빈테이블 = new OrderTable(3L, 0, new TableState(true));
+        TableGroupRequest request = new TableGroupRequest(Arrays.asList(테이블2.getId(), 빈테이블.getId()));
 
-        when(orderTableRepository.findAllByIdIn(anyList()))
-                .thenReturn(Arrays.asList(테이블1, 테이블2));
+        when(orderTableRepository.findById(anyLong())).thenReturn(Optional.of(테이블1));
+        when(orderTableRepository.findById(anyLong())).thenReturn(Optional.of(빈테이블));
 
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableGroupService.create(request));
-        verify(orderTableRepository, times(1)).findAllByIdIn(anyList());
+        assertThatThrownBy(() -> tableGroupService.create(request))
+                .isInstanceOf(InvalidTableState.class);
+        verify(orderTableRepository, times(2)).findById(anyLong());
     }
 
     @Test
     @DisplayName("다른 테이블 그룹에 등록되어 있는 주문 테이블인 경우 예외가 발생한다.")
     void validateExistTableGroup() {
         TableGroupRequest request = new TableGroupRequest(Arrays.asList(테이블1.getId(), 테이블2.getId()));
-        테이블2.setTableGroup(new TableGroup(LocalDateTime.now()));
+        테이블2.setTableGroup(new TableGroup(LocalDateTime.now(), Arrays.asList(테이블1, 테이블2)));
 
-        when(orderTableRepository.findAllByIdIn(anyList()))
-                .thenReturn(Arrays.asList(테이블1, 테이블2));
+        when(orderTableRepository.findById(anyLong())).thenReturn(Optional.of(테이블1));
+        when(orderTableRepository.findById(anyLong())).thenReturn(Optional.of(테이블2));
 
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableGroupService.create(request));
-        verify(orderTableRepository, times(1)).findAllByIdIn(anyList());
+        assertThatThrownBy(() -> tableGroupService.create(request))
+                .isInstanceOf(InvalidTableState.class);
+        verify(orderTableRepository, times(2)).findById(anyLong());
     }
 
     @Test

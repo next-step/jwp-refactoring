@@ -38,26 +38,6 @@ public class OrderResponse {
                 .collect(Collectors.toList());
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setOrderTableId(Long orderTableId) {
-        this.orderTableId = orderTableId;
-    }
-
-    public void setOrderStatus(String orderStatus) {
-        this.orderStatus = orderStatus;
-    }
-
-    public void setOrderedTime(LocalDateTime orderedTime) {
-        this.orderedTime = orderedTime;
-    }
-
-    public void setOrderLineItems(List<OrderLineItemResponse> orderLineItems) {
-        this.orderLineItems = orderLineItems;
-    }
-
     public Long getId() {
         return id;
     }

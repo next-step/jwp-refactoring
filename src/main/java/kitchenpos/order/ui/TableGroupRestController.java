@@ -1,5 +1,6 @@
 package kitchenpos.order.ui;
 
+import kitchenpos.common.BindingException;
 import kitchenpos.order.application.TableGroupService;
 import kitchenpos.order.dto.TableGroupRequest;
 import kitchenpos.order.dto.TableGroupResponse;
@@ -22,9 +23,8 @@ public class TableGroupRestController {
     @PostMapping
     public ResponseEntity<TableGroupResponse> create(@RequestBody @Valid final TableGroupRequest request, BindingResult bs) {
         if (bs.hasErrors()) {
-            throw new IllegalArgumentException();
+            throw new BindingException();
         }
-
         TableGroupResponse response = tableGroupService.create(request);
         final URI uri = URI.create("/api/table-groups/" + response.getId());
         return ResponseEntity.created(uri).body(response);

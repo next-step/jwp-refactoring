@@ -1,6 +1,11 @@
 package kitchenpos.order.application;
 
+import kitchenpos.menu.application.exception.MenuGroupNotFoundException;
 import kitchenpos.menu.domain.*;
+import kitchenpos.order.application.exception.InvalidOrderState;
+import kitchenpos.order.application.exception.InvalidTableState;
+import kitchenpos.order.application.exception.OrderNotFoundException;
+import kitchenpos.order.application.exception.OrderTableNotFoundException;
 import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
@@ -77,8 +82,8 @@ class OrderServiceTest {
     void validateOrderLineItemsEmpty() {
         OrderRequest 주문요청 = new OrderRequest(주문테이블.getId(), Collections.emptyList());
 
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> orderService.create(주문요청));
+        assertThatThrownBy(() -> orderService.create(주문요청))
+                .isInstanceOf(OrderTableNotFoundException.class);
     }
 
     @Test
@@ -90,8 +95,8 @@ class OrderServiceTest {
         when(menuRepository.findById(anyLong())).thenReturn(Optional.of(매콤치킨단품));
         when(orderTableRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> orderService.create(주문요청));
+        assertThatThrownBy(() -> orderService.create(주문요청))
+                .isInstanceOf(OrderTableNotFoundException.class);
         verify(menuRepository, times(1)).findById(anyLong());
         verify(orderTableRepository, times(1)).findById(anyLong());
     }
@@ -106,8 +111,8 @@ class OrderServiceTest {
         when(menuRepository.findById(anyLong())).thenReturn(Optional.of(매콤치킨단품));
         when(orderTableRepository.findById(anyLong())).thenReturn(Optional.of(빈테이블));
 
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> orderService.create(주문요청));
+        assertThatThrownBy(() -> orderService.create(주문요청))
+                .isInstanceOf(InvalidOrderState.class);
         verify(menuRepository, times(1)).findById(anyLong());
         verify(orderTableRepository, times(1)).findById(anyLong());
     }
@@ -146,8 +151,8 @@ class OrderServiceTest {
         OrderStatusRequest 주문상태 = new OrderStatusRequest("MEAL");
         when(orderRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> orderService.changeOrderStatus(1L, 주문상태));
+        assertThatThrownBy(() -> orderService.changeOrderStatus(1L, 주문상태))
+                .isInstanceOf(OrderNotFoundException.class);
         verify(orderRepository, times(1)).findById(anyLong());
     }
 
@@ -158,8 +163,8 @@ class OrderServiceTest {
         주문.setOrderStatus(COMPLETION);
         when(orderRepository.findById(anyLong())).thenReturn(Optional.of(주문));
 
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> orderService.changeOrderStatus(1L, 주문상태));
+        assertThatThrownBy(() -> orderService.changeOrderStatus(1L, 주문상태))
+                .isInstanceOf(InvalidOrderState.class);
         verify(orderRepository, times(1)).findById(anyLong());
     }
 }

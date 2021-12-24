@@ -1,5 +1,6 @@
 package kitchenpos.order.application;
 
+import kitchenpos.order.application.exception.InvalidTableState;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
@@ -42,7 +43,7 @@ public class TableService {
                 .orElseThrow(IllegalArgumentException::new);
 
         if (Objects.nonNull(orderTable.getTableGroup())) {
-            throw new IllegalArgumentException();
+            throw new InvalidTableState("테이블에 일행이 있습니다.");
         }
 
         if (orderRepository.existsByOrderTableIdAndOrderStatusIn(

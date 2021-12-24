@@ -7,7 +7,7 @@ import java.util.Objects;
 public class TableState {
     private boolean empty;
 
-    public TableState() {
+    protected TableState() {
     }
 
     public TableState(boolean empty) {

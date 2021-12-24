@@ -91,6 +91,6 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 메뉴_등록_실패됨(ExtractableResponse<Response> response) {
-        AssertionsForClassTypes.assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        AssertionsForClassTypes.assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }

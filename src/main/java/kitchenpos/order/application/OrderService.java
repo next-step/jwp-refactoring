@@ -2,6 +2,9 @@ package kitchenpos.order.application;
 
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.order.application.exception.OrderLineItemNotFoundException;
+import kitchenpos.order.application.exception.OrderNotFoundException;
+import kitchenpos.order.application.exception.OrderTableNotFoundException;
 import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
@@ -29,14 +32,8 @@ public class OrderService {
 
     @Transactional
     public OrderResponse create(final OrderRequest request) {
-        List<OrderLineItem> orderLineItems = getOrderLineItems(request.getOrderLineItems());
-
-        final OrderTable orderTable = orderTableRepository.findById(request.getOrderTableId())
-                .orElseThrow(IllegalArgumentException::new);
-
-        if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
+        final List<OrderLineItem> orderLineItems = getOrderLineItems(request.getItems());
+        final OrderTable orderTable = getOrderTable(request.getTableId());
 
         Order order = request.toEntity(orderTable, orderLineItems);
         return OrderResponse.of(orderRepository.save(order));
@@ -49,15 +46,19 @@ public class OrderService {
 
     @Transactional
     public OrderResponse changeOrderStatus(final Long orderId, final OrderStatusRequest request) {
-        final Order order = orderRepository.findById(orderId)
-                .orElseThrow(IllegalArgumentException::new);
-
-        if (order.isCompleted()) {
-            throw new IllegalArgumentException();
-        }
+        final Order order = getOrder(orderId);
         order.setOrderStatus(request.getOrderStatus());
-
         return OrderResponse.of(order);
+    }
+
+    private OrderTable getOrderTable(Long tableId) {
+        return orderTableRepository.findById(tableId)
+                .orElseThrow(OrderTableNotFoundException::new);
+    }
+
+    private Order getOrder(Long orderId) {
+        return orderRepository.findById(orderId)
+                .orElseThrow(OrderNotFoundException::new);
     }
 
     private List<OrderLineItem> getOrderLineItems(List<OrderLineItemRequest> requests) {
@@ -67,7 +68,7 @@ public class OrderService {
 
     private OrderLineItem getOrderLineItem(OrderLineItemRequest request) {
         Menu menu = menuRepository.findById(request.getMenuId())
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(OrderLineItemNotFoundException::new);
         return request.toEntity(menu);
     }
 }

@@ -1,5 +1,6 @@
 package kitchenpos.order.application;
 
+import kitchenpos.order.application.exception.OrderTableNotFoundException;
 import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.TableGroupRequest;
 import kitchenpos.order.dto.TableGroupResponse;
@@ -8,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,23 +28,12 @@ public class TableGroupService {
 
     @Transactional
     public TableGroupResponse create(final TableGroupRequest request) {
-        final List<Long> orderTableIds = request.getOrderTableIds();
-        final List<OrderTable> orderTables = orderTableRepository.findAllByIdIn(orderTableIds);
-        TableGroup tableGroup = request.toEntity(orderTables);
+        final List<Long> tableIds = request.getTableIds();
+        final List<OrderTable> orderTables = getTables(tableIds);
 
-        if (orderTableIds.size() != orderTables.size()) {
-            throw new IllegalArgumentException();
-        }
-
-        for (final OrderTable orderTable : orderTables) {
-            if (!orderTable.isEmpty() || Objects.nonNull(orderTable.getTableGroup())) {
-                throw new IllegalArgumentException();
-            }
-        }
-
-        final TableGroup savedTableGroup = tableGroupRepository.save(tableGroup);
-
-        return TableGroupResponse.of(savedTableGroup, savedTableGroup.getOrderTables());
+        final TableGroup tableGroup = request.toEntity(orderTables);
+        final TableGroup persistTableGroup = tableGroupRepository.save(tableGroup);
+        return TableGroupResponse.of(persistTableGroup, persistTableGroup.getOrderTables());
     }
 
     @Transactional
@@ -59,5 +48,16 @@ public class TableGroupService {
                 orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
             throw new IllegalArgumentException();
         }
+    }
+
+    private List<OrderTable> getTables(List<Long> tableIds) {
+        return tableIds.stream()
+                .map(this::getTable)
+                .collect(Collectors.toList());
+    }
+
+    private OrderTable getTable(Long id) {
+        return orderTableRepository.findById(id)
+                .orElseThrow(OrderTableNotFoundException::new);
     }
 }
