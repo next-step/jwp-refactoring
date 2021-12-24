@@ -12,12 +12,12 @@ import org.junit.jupiter.params.provider.NullAndEmptySource;
 class NameTest {
 	@DisplayName("생성")
 	@Test
-	void of() {
+	void from() {
 		// given
 		String value = "이름";
 
 		// when
-		Name name = Name.of(value);
+		Name name = Name.from(value);
 
 		// then
 		assertThat(name.getValue()).isEqualTo(value);
@@ -26,11 +26,11 @@ class NameTest {
 	@DisplayName("생성 실패 - 이름이 없거나 빈 값인 경우")
 	@ParameterizedTest
 	@NullAndEmptySource
-	void ofFailOnNullOrEmptyName(String value) {
+	void fromFailOnNullOrEmptyName(String value) {
 		// given
 
 		// when
-		ThrowingCallable throwingCallable = () -> Name.of(value);
+		ThrowingCallable throwingCallable = () -> Name.from(value);
 
 		// then
 		assertThatThrownBy(throwingCallable).isInstanceOf(IllegalArgumentException.class);
@@ -43,8 +43,8 @@ class NameTest {
 		String name = "이름";
 
 		// when
-		Name actual = Name.of(name);
-		Name expected = Name.of(name);
+		Name actual = Name.from(name);
+		Name expected = Name.from(name);
 
 		// then
 		assertThat(actual).isEqualTo(expected);

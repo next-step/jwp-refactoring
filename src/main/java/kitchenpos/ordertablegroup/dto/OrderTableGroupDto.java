@@ -22,13 +22,13 @@ public class OrderTableGroupDto {
 		this.orderTables = orderTables;
 	}
 
-	public static OrderTableGroupDto of(OrderTableGroup orderTableGroup) {
+	public static OrderTableGroupDto from(OrderTableGroup orderTableGroup) {
 		OrderTableGroupDto dto = new OrderTableGroupDto();
 		dto.id = orderTableGroup.getId();
 		dto.createdDate = orderTableGroup.getCreatedDate();
 		dto.orderTables = orderTableGroup.getOrderTables()
 			.stream()
-			.map(OrderTableDto::of)
+			.map(OrderTableDto::from)
 			.collect(Collectors.toList());
 		return dto;
 	}

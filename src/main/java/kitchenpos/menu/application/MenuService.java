@@ -40,29 +40,29 @@ public class MenuService {
 
 	@Transactional
 	public MenuDto create(final MenuCreateRequest request) {
-		Name name = Name.of(request.getName());
-		Price price = Price.of(request.getPrice());
+		Name name = Name.from(request.getName());
+		Price price = Price.from(request.getPrice());
 		MenuGroup menuGroup = menuGroupRepository.findById(request.getMenuGroupId())
 			.orElseThrow(IllegalArgumentException::new);
-		MenuProducts menuProducts = MenuProducts.of(request.getMenuProducts()
+		MenuProducts menuProducts = MenuProducts.from(request.getMenuProducts()
 			.stream()
 			.map(this::findMenuProduct)
 			.collect(Collectors.toList()));
 		Menu menu = menuRepository.save(Menu.of(name, price, menuGroup, menuProducts));
-		return MenuDto.of(menu);
+		return MenuDto.from(menu);
 	}
 
 	public List<MenuDto> list() {
 		List<Menu> menus = menuRepository.findAll();
 		return menus.stream()
-			.map(MenuDto::of)
+			.map(MenuDto::from)
 			.collect(Collectors.toList());
 	}
 
 	private MenuProduct findMenuProduct(MenuProductDto menuProductDto) {
 		Product product = productRepository.findById(menuProductDto.getProductId())
 			.orElseThrow(IllegalArgumentException::new);
-		Quantity quantity = Quantity.of(menuProductDto.getQuantity());
+		Quantity quantity = Quantity.from(menuProductDto.getQuantity());
 		return MenuProduct.of(product, quantity);
 	}
 }

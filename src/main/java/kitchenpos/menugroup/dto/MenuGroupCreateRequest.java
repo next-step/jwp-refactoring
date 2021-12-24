@@ -22,7 +22,7 @@ public class MenuGroupCreateRequest {
 	}
 
 	public MenuGroup toMenuGroup() {
-		Name name = Name.of(this.name);
-		return MenuGroup.of(name);
+		Name name = Name.from(this.name);
+		return MenuGroup.from(name);
 	}
 }

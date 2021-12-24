@@ -25,14 +25,14 @@ class OrderLineItemTest {
 	void of() {
 		// given
 		Menu menu = Menu.of(
-			Name.of("후라이드+후라이드"),
-			Price.of(BigDecimal.valueOf(25000)),
-			MenuGroup.of(Name.of("추천메뉴")),
-			MenuProducts.of(Collections.singletonList(
+			Name.from("후라이드+후라이드"),
+			Price.from(BigDecimal.valueOf(25000)),
+			MenuGroup.from(Name.from("추천메뉴")),
+			MenuProducts.from(Collections.singletonList(
 				MenuProduct.of(
-					Product.of(Name.of("후라이드치킨"), Price.of(BigDecimal.valueOf(17000))),
-					Quantity.of(2L)))));
-		Quantity quantity = Quantity.of(1L);
+					Product.of(Name.from("후라이드치킨"), Price.from(BigDecimal.valueOf(17000))),
+					Quantity.from(2L)))));
+		Quantity quantity = Quantity.from(1L);
 
 		// when
 		OrderLineItem orderLineItem = OrderLineItem.of(menu, quantity);

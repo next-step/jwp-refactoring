@@ -19,8 +19,8 @@ public class MenuProductTest {
 	@Test
 	void of() {
 		// given
-		Product product = Product.of(Name.of("강정치킨"), Price.of(BigDecimal.valueOf(17000)));
-		Quantity quantity = Quantity.of(2L);
+		Product product = Product.of(Name.from("강정치킨"), Price.from(BigDecimal.valueOf(17000)));
+		Quantity quantity = Quantity.from(2L);
 
 		// when
 		MenuProduct menuProduct = MenuProduct.of(product, quantity);

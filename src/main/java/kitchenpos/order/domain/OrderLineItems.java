@@ -17,7 +17,7 @@ public class OrderLineItems {
 	protected OrderLineItems() {
 	}
 
-	public static OrderLineItems of(List<OrderLineItem> values) {
+	public static OrderLineItems from(List<OrderLineItem> values) {
 		if (values == null || values.isEmpty()) {
 			throw new IllegalArgumentException("주문 항목들은 한개 이상이어야 합니다.");
 		}

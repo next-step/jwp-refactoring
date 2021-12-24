@@ -31,7 +31,7 @@ class OrderTableTest {
 	@Test
 	void of() {
 		// given
-		NumberOfGuests numberOfGuests = NumberOfGuests.of(4);
+		NumberOfGuests numberOfGuests = NumberOfGuests.from(4);
 		boolean empty = false;
 
 		// when
@@ -47,7 +47,7 @@ class OrderTableTest {
 	@Test
 	void changeEmpty() {
 		// given
-		OrderTable orderTable = OrderTable.of(NumberOfGuests.of(4), false);
+		OrderTable orderTable = OrderTable.of(NumberOfGuests.from(4), false);
 
 		// when
 		orderTable.changeEmpty(true);
@@ -60,9 +60,9 @@ class OrderTableTest {
 	@Test
 	void changeEmptyFailOnBelongToOrderTableGroup() {
 		// given
-		OrderTable orderTable1 = OrderTable.of(NumberOfGuests.of(4), true);
-		OrderTable orderTable2 = OrderTable.of(NumberOfGuests.of(4), true);
-		OrderTableGroup.of(Arrays.asList(orderTable1, orderTable2));
+		OrderTable orderTable1 = OrderTable.of(NumberOfGuests.from(4), true);
+		OrderTable orderTable2 = OrderTable.of(NumberOfGuests.from(4), true);
+		OrderTableGroup.from(Arrays.asList(orderTable1, orderTable2));
 
 		// when
 		ThrowingCallable throwingCallable = () -> orderTable1.changeEmpty(true);
@@ -75,17 +75,17 @@ class OrderTableTest {
 	@Test
 	void changeEmptyFailOnOrderNotCompleted() {
 		// given
-		OrderTable orderTable = OrderTable.of(NumberOfGuests.of(4), false);
-		OrderLineItems orderLineItems = OrderLineItems.of(Collections.singletonList(OrderLineItem.of(
+		OrderTable orderTable = OrderTable.of(NumberOfGuests.from(4), false);
+		OrderLineItems orderLineItems = OrderLineItems.from(Collections.singletonList(OrderLineItem.of(
 			Menu.of(
-				Name.of("후라이드+후라이드"),
-				Price.of(BigDecimal.valueOf(25000)),
-				MenuGroup.of(Name.of("추천메뉴")),
-				MenuProducts.of(Collections.singletonList(
+				Name.from("후라이드+후라이드"),
+				Price.from(BigDecimal.valueOf(25000)),
+				MenuGroup.from(Name.from("추천메뉴")),
+				MenuProducts.from(Collections.singletonList(
 					MenuProduct.of(
-						Product.of(Name.of("후라이드치킨"), Price.of(BigDecimal.valueOf(17000))),
-						Quantity.of(2L))))),
-			Quantity.of(1L))));
+						Product.of(Name.from("후라이드치킨"), Price.from(BigDecimal.valueOf(17000))),
+						Quantity.from(2L))))),
+			Quantity.from(1L))));
 
 		Order.of(orderTable, orderLineItems);
 
@@ -100,8 +100,8 @@ class OrderTableTest {
 	@Test
 	void changeNumberOfGuests() {
 		// given
-		OrderTable orderTable = OrderTable.of(NumberOfGuests.of(4), false);
-		NumberOfGuests numberOfGuests = NumberOfGuests.of(6);
+		OrderTable orderTable = OrderTable.of(NumberOfGuests.from(4), false);
+		NumberOfGuests numberOfGuests = NumberOfGuests.from(6);
 
 		// when
 		orderTable.changeNumberOfGuests(numberOfGuests);
@@ -114,8 +114,8 @@ class OrderTableTest {
 	@Test
 	void changeNumberOfGuestsFailOnEmpty() {
 		// given
-		OrderTable orderTable = OrderTable.of(NumberOfGuests.of(4), true);
-		NumberOfGuests numberOfGuests = NumberOfGuests.of(6);
+		OrderTable orderTable = OrderTable.of(NumberOfGuests.from(4), true);
+		NumberOfGuests numberOfGuests = NumberOfGuests.from(6);
 
 		// when
 		ThrowingCallable throwingCallable = () -> orderTable.changeNumberOfGuests(numberOfGuests);

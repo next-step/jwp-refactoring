@@ -23,15 +23,15 @@ class MenuTest {
 	@Test
 	void of() {
 		// given
-		Name name = Name.of("후라이드+후라이드");
-		Price price = Price.of(BigDecimal.valueOf(25000));
-		MenuGroup menuGroup = MenuGroup.of(Name.of("추천메뉴"));
-		MenuProducts menuProducts = MenuProducts.of(Collections.singletonList(
+		Name name = Name.from("후라이드+후라이드");
+		Price price = Price.from(BigDecimal.valueOf(25000));
+		MenuGroup menuGroup = MenuGroup.from(Name.from("추천메뉴"));
+		MenuProducts menuProducts = MenuProducts.from(Collections.singletonList(
 			MenuProduct.of(
 				Product.of(
-					Name.of("후라이드치킨"),
-					Price.of(BigDecimal.valueOf(17000))),
-				Quantity.of(2L))));
+					Name.from("후라이드치킨"),
+					Price.from(BigDecimal.valueOf(17000))),
+				Quantity.from(2L))));
 
 		// when
 		Menu menu = Menu.of(name, price, menuGroup, menuProducts);
@@ -50,15 +50,15 @@ class MenuTest {
 	@Test
 	void ofFailOnPriceInvalid() {
 		// given
-		Name name = Name.of("후라이드+후라이드");
-		Price price = Price.of(BigDecimal.valueOf(100000));
-		MenuGroup menuGroup = MenuGroup.of(Name.of("추천메뉴"));
-		MenuProducts menuProducts = MenuProducts.of(Collections.singletonList(
+		Name name = Name.from("후라이드+후라이드");
+		Price price = Price.from(BigDecimal.valueOf(100000));
+		MenuGroup menuGroup = MenuGroup.from(Name.from("추천메뉴"));
+		MenuProducts menuProducts = MenuProducts.from(Collections.singletonList(
 			MenuProduct.of(
 				Product.of(
-					Name.of("후라이드치킨"),
-					Price.of(BigDecimal.valueOf(17000))),
-				Quantity.of(2L))));
+					Name.from("후라이드치킨"),
+					Price.from(BigDecimal.valueOf(17000))),
+				Quantity.from(2L))));
 
 		// when
 		ThrowingCallable throwingCallable = () -> Menu.of(name, price, menuGroup, menuProducts);

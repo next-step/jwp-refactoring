@@ -40,6 +40,6 @@ public class OrderTableRequest {
 	}
 
 	public OrderTable toOrderTable() {
-		return OrderTable.of(NumberOfGuests.of(numberOfGuests), empty);
+		return OrderTable.of(NumberOfGuests.from(numberOfGuests), empty);
 	}
 }

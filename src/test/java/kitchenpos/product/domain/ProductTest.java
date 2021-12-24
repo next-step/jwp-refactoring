@@ -17,8 +17,8 @@ class ProductTest {
 	@Test
 	void of() {
 		// given
-		Name name = Name.of("강정치킨");
-		Price price = Price.of(BigDecimal.valueOf(17000));
+		Name name = Name.from("강정치킨");
+		Price price = Price.from(BigDecimal.valueOf(17000));
 
 		// when
 		Product product = Product.of(name, price);

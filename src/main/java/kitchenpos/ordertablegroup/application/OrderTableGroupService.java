@@ -29,8 +29,8 @@ public class OrderTableGroupService {
 	@Transactional
 	public OrderTableGroupDto create(OrderTableGroupCreateRequest request) {
 		List<OrderTable> orderTables = findOrderTablesBy(request.getOrderTableIds());
-		OrderTableGroup orderTableGroup = orderTableGroupRepository.save(OrderTableGroup.of(orderTables));
-		return OrderTableGroupDto.of(orderTableGroup);
+		OrderTableGroup orderTableGroup = orderTableGroupRepository.save(OrderTableGroup.from(orderTables));
+		return OrderTableGroupDto.from(orderTableGroup);
 	}
 
 	private List<OrderTable> findOrderTablesBy(List<Long> orderTableIds) {

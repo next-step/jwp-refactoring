@@ -14,7 +14,7 @@ public class MenuGroupDto {
 		this.name = name;
 	}
 
-	public static MenuGroupDto of(MenuGroup menuGroup) {
+	public static MenuGroupDto from(MenuGroup menuGroup) {
 		MenuGroupDto dto = new MenuGroupDto();
 		dto.id = menuGroup.getId();
 		dto.name = menuGroup.getName().getValue();

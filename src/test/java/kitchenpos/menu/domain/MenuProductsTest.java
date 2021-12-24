@@ -21,31 +21,31 @@ class MenuProductsTest {
 
 	@DisplayName("생성")
 	@Test
-	void of() {
+	void from() {
 		// given
 		MenuProduct menuProduct1 = MenuProduct.of(
 			Product.of(
-				Name.of("강정치킨"),
-				Price.of(BigDecimal.valueOf(17000))),
-			Quantity.of(1L));
+				Name.from("강정치킨"),
+				Price.from(BigDecimal.valueOf(17000))),
+			Quantity.from(1L));
 		MenuProduct menuProduct2 = MenuProduct.of(
 			Product.of(
-				Name.of("양념치킨"),
-				Price.of(BigDecimal.valueOf(18000))),
-			Quantity.of(2L));
+				Name.from("양념치킨"),
+				Price.from(BigDecimal.valueOf(18000))),
+			Quantity.from(2L));
 
 		// when
-		MenuProducts.of(Arrays.asList(menuProduct1, menuProduct2));
+		MenuProducts.from(Arrays.asList(menuProduct1, menuProduct2));
 	}
 
 	@DisplayName("생성 실패 - 한개 이상이어야 한다.")
 	@Test
-	void ofFailOnEmpty() {
+	void fromFailOnEmpty() {
 		// given
 		List<MenuProduct> empty = Collections.emptyList();
 
 		// when
-		ThrowingCallable throwingCallable = () -> MenuProducts.of(empty);
+		ThrowingCallable throwingCallable = () -> MenuProducts.from(empty);
 
 		// then
 		assertThatThrownBy(throwingCallable).isInstanceOf(IllegalArgumentException.class);
@@ -55,22 +55,22 @@ class MenuProductsTest {
 	@Test
 	void getTotalPrice() {
 		// given
-		MenuProducts menuProducts = MenuProducts.of(Arrays.asList(
+		MenuProducts menuProducts = MenuProducts.from(Arrays.asList(
 			MenuProduct.of(
 				Product.of(
-					Name.of("강정치킨"),
-					Price.of(BigDecimal.valueOf(17000))),
-				Quantity.of(1L)),
+					Name.from("강정치킨"),
+					Price.from(BigDecimal.valueOf(17000))),
+				Quantity.from(1L)),
 			MenuProduct.of(
 				Product.of(
-					Name.of("양념치킨"),
-					Price.of(BigDecimal.valueOf(18000))),
-				Quantity.of(2L))));
+					Name.from("양념치킨"),
+					Price.from(BigDecimal.valueOf(18000))),
+				Quantity.from(2L))));
 
 		// when
 		Price actual = menuProducts.getTotalPrice();
 
 		// then
-		assertThat(actual).isEqualTo(Price.of(BigDecimal.valueOf(53000)));
+		assertThat(actual).isEqualTo(Price.from(BigDecimal.valueOf(53000)));
 	}
 }

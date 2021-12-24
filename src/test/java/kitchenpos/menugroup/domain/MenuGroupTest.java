@@ -12,12 +12,12 @@ class MenuGroupTest {
 
 	@DisplayName("생성")
 	@Test
-	void of() {
+	void from() {
 		// given
-		Name name = Name.of("추천 메뉴");
+		Name name = Name.from("추천 메뉴");
 
 		// when
-		MenuGroup menuGroup = MenuGroup.of(name);
+		MenuGroup menuGroup = MenuGroup.from(name);
 
 		// then
 		assertThat(menuGroup.getName()).isEqualTo(name);

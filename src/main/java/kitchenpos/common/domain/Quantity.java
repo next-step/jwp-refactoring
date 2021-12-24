@@ -11,7 +11,7 @@ public class Quantity extends Value<Quantity> {
 	protected Quantity() {
 	}
 
-	public static Quantity of(Long quantity) {
+	public static Quantity from(Long quantity) {
 		if (quantity == null || quantity < 0) {
 			throw new IllegalArgumentException("수량은 0 이상이어야 합니다.");
 		}

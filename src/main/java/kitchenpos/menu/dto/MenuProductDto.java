@@ -28,7 +28,7 @@ public class MenuProductDto {
 		return quantity;
 	}
 
-	public static MenuProductDto of(MenuProduct menuProduct) {
+	public static MenuProductDto from(MenuProduct menuProduct) {
 		MenuProductDto dto = new MenuProductDto();
 		dto.seq = menuProduct.getSeq();
 		dto.productId = menuProduct.getProduct().getId();

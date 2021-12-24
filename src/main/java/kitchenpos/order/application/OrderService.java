@@ -39,16 +39,16 @@ public class OrderService {
 			.orElseThrow(IllegalArgumentException::new);
 		OrderLineItems orderLineItems = findOrderLineItems(request.getOrderLineItems());
 		Order order = orderRepository.save(Order.of(orderTable, orderLineItems));
-		return OrderDto.of(order);
+		return OrderDto.from(order);
 	}
 
 	private OrderLineItems findOrderLineItems(List<OrderLineItemDto> orderLineItems) {
-		return OrderLineItems.of(
+		return OrderLineItems.from(
 			orderLineItems
 				.stream()
 				.map(ol -> {
 					Menu menu = menuRepository.findById(ol.getMenuId()).orElseThrow(IllegalArgumentException::new);
-					Quantity quantity = Quantity.of(ol.getQuantity());
+					Quantity quantity = Quantity.from(ol.getQuantity());
 					return OrderLineItem.of(menu, quantity);
 				})
 				.collect(Collectors.toList()));
@@ -57,7 +57,7 @@ public class OrderService {
 	public List<OrderDto> list() {
 		List<Order> orders = orderRepository.findAll();
 		return orders.stream()
-			.map(OrderDto::of)
+			.map(OrderDto::from)
 			.collect(Collectors.toList());
 	}
 
@@ -65,6 +65,6 @@ public class OrderService {
 	public OrderDto changeOrderStatus(Long id, OrderRequest request) {
 		Order order = orderRepository.findById(id).orElseThrow(IllegalArgumentException::new);
 		order.changeOrderStatus(request.getOrderStatus());
-		return OrderDto.of(order);
+		return OrderDto.from(order);
 	}
 }

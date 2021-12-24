@@ -20,7 +20,7 @@ public class MenuProducts {
 	protected MenuProducts() {
 	}
 
-	public static MenuProducts of(List<MenuProduct> values) {
+	public static MenuProducts from(List<MenuProduct> values) {
 		if (values == null || values.isEmpty()) {
 			throw new IllegalArgumentException("메뉴 상품들은 한개 이상이어야 합니다.");
 		}
@@ -42,7 +42,7 @@ public class MenuProducts {
 				return price.multiply(quantity);
 			})
 			.reduce(BigDecimal::add)
-			.map(Price::of)
+			.map(Price::from)
 			.get();
 	}
 }

@@ -26,17 +26,17 @@ class OrderTest {
 	@Test
 	void of() {
 		// given
-		OrderTable orderTable = OrderTable.of(NumberOfGuests.of(4), false);
-		OrderLineItems orderLineItems = OrderLineItems.of(Collections.singletonList(OrderLineItem.of(
+		OrderTable orderTable = OrderTable.of(NumberOfGuests.from(4), false);
+		OrderLineItems orderLineItems = OrderLineItems.from(Collections.singletonList(OrderLineItem.of(
 			Menu.of(
-				Name.of("후라이드+후라이드"),
-				Price.of(BigDecimal.valueOf(25000)),
-				MenuGroup.of(Name.of("추천메뉴")),
-				MenuProducts.of(Collections.singletonList(
+				Name.from("후라이드+후라이드"),
+				Price.from(BigDecimal.valueOf(25000)),
+				MenuGroup.from(Name.from("추천메뉴")),
+				MenuProducts.from(Collections.singletonList(
 					MenuProduct.of(
-						Product.of(Name.of("후라이드치킨"), Price.of(BigDecimal.valueOf(17000))),
-						Quantity.of(2L))))),
-			Quantity.of(1L))));
+						Product.of(Name.from("후라이드치킨"), Price.from(BigDecimal.valueOf(17000))),
+						Quantity.from(2L))))),
+			Quantity.from(1L))));
 
 		// when
 		Order order = Order.of(orderTable, orderLineItems);
@@ -49,17 +49,17 @@ class OrderTest {
 	@Test
 	void ofFailOnEmptyOrderTable() {
 		// given
-		OrderTable orderTable = OrderTable.of(NumberOfGuests.of(4), true);
-		OrderLineItems orderLineItems = OrderLineItems.of(Collections.singletonList(OrderLineItem.of(
+		OrderTable orderTable = OrderTable.of(NumberOfGuests.from(4), true);
+		OrderLineItems orderLineItems = OrderLineItems.from(Collections.singletonList(OrderLineItem.of(
 			Menu.of(
-				Name.of("후라이드+후라이드"),
-				Price.of(BigDecimal.valueOf(25000)),
-				MenuGroup.of(Name.of("추천메뉴")),
-				MenuProducts.of(Collections.singletonList(
+				Name.from("후라이드+후라이드"),
+				Price.from(BigDecimal.valueOf(25000)),
+				MenuGroup.from(Name.from("추천메뉴")),
+				MenuProducts.from(Collections.singletonList(
 					MenuProduct.of(
-						Product.of(Name.of("후라이드치킨"), Price.of(BigDecimal.valueOf(17000))),
-						Quantity.of(2L))))),
-			Quantity.of(1L))));
+						Product.of(Name.from("후라이드치킨"), Price.from(BigDecimal.valueOf(17000))),
+						Quantity.from(2L))))),
+			Quantity.from(1L))));
 
 		// when
 		ThrowingCallable throwingCallable = () -> Order.of(orderTable, orderLineItems);

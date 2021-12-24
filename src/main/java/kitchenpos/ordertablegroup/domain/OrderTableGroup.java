@@ -37,7 +37,7 @@ public class OrderTableGroup {
 	protected OrderTableGroup() {
 	}
 
-	public static OrderTableGroup of(List<OrderTable> orderTables) {
+	public static OrderTableGroup from(List<OrderTable> orderTables) {
 		throwOnLessThanTwo(orderTables);
 		orderTables.forEach(OrderTableGroup::throwOnAlreadyHavingOrderTableGroup);
 		orderTables.forEach(OrderTableGroup::throwOnNotEmpty);

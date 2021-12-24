@@ -24,13 +24,13 @@ public class OrderTableService {
 	@Transactional
 	public OrderTableDto create(OrderTableRequest request) {
 		OrderTable orderTable = orderTableRepository.save(request.toOrderTable());
-		return OrderTableDto.of(orderTable);
+		return OrderTableDto.from(orderTable);
 	}
 
 	public List<OrderTableDto> list() {
 		List<OrderTable> orderTables = orderTableRepository.findAll();
 		return orderTables.stream()
-			.map(OrderTableDto::of)
+			.map(OrderTableDto::from)
 			.collect(Collectors.toList());
 	}
 
@@ -38,14 +38,14 @@ public class OrderTableService {
 	public OrderTableDto changeEmpty(Long id, OrderTableRequest request) {
 		OrderTable orderTable = orderTableRepository.findById(id).orElseThrow(IllegalArgumentException::new);
 		orderTable.changeEmpty(request.isEmpty());
-		return OrderTableDto.of(orderTable);
+		return OrderTableDto.from(orderTable);
 	}
 
 	@Transactional
 	public OrderTableDto changeNumberOfGuests(Long id, OrderTableRequest request) {
 		OrderTable orderTable = orderTableRepository.findById(id).orElseThrow(IllegalArgumentException::new);
-		NumberOfGuests numberOfGuests = NumberOfGuests.of(request.getNumberOfGuests());
+		NumberOfGuests numberOfGuests = NumberOfGuests.from(request.getNumberOfGuests());
 		orderTable.changeNumberOfGuests(numberOfGuests);
-		return OrderTableDto.of(orderTable);
+		return OrderTableDto.from(orderTable);
 	}
 }

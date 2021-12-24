@@ -30,13 +30,13 @@ class OrderTableGroupTest {
 
 	@DisplayName("생성")
 	@Test
-	void of() {
+	void from() {
 		// given
-		OrderTable orderTable1 = OrderTable.of(NumberOfGuests.of(4), true);
-		OrderTable orderTable2 = OrderTable.of(NumberOfGuests.of(4), true);
+		OrderTable orderTable1 = OrderTable.of(NumberOfGuests.from(4), true);
+		OrderTable orderTable2 = OrderTable.of(NumberOfGuests.from(4), true);
 
 		// when
-		OrderTableGroup orderTableGroup = OrderTableGroup.of(Arrays.asList(
+		OrderTableGroup orderTableGroup = OrderTableGroup.from(Arrays.asList(
 			orderTable1,
 			orderTable2));
 
@@ -46,12 +46,12 @@ class OrderTableGroupTest {
 
 	@DisplayName("생성 실패 - 주문 테이블이 2개 미만인 경우")
 	@Test
-	void ofFailOnLessThenTwo() {
+	void fromFailOnLessThenTwo() {
 		// given
-		OrderTable orderTable = OrderTable.of(NumberOfGuests.of(4), true);
+		OrderTable orderTable = OrderTable.of(NumberOfGuests.from(4), true);
 
 		// when
-		ThrowingCallable throwingCallable = () -> OrderTableGroup.of(Collections.singletonList(orderTable));
+		ThrowingCallable throwingCallable = () -> OrderTableGroup.from(Collections.singletonList(orderTable));
 
 		// then
 		assertThatThrownBy(throwingCallable).isInstanceOf(IllegalArgumentException.class);
@@ -59,15 +59,15 @@ class OrderTableGroupTest {
 
 	@DisplayName("생성 실패 - 이미 주문 테이블 그룹이 있는 경우")
 	@Test
-	void ofFailOnAlreadyHavingOrderTableGroup() {
+	void fromFailOnAlreadyHavingOrderTableGroup() {
 		// given
-		OrderTable orderTable1 = OrderTable.of(NumberOfGuests.of(4), true);
-		OrderTable orderTable2 = OrderTable.of(NumberOfGuests.of(4), true);
-		OrderTable orderTable3 = OrderTable.of(NumberOfGuests.of(4), true);
-		OrderTableGroup.of(Arrays.asList(orderTable1, orderTable2));
+		OrderTable orderTable1 = OrderTable.of(NumberOfGuests.from(4), true);
+		OrderTable orderTable2 = OrderTable.of(NumberOfGuests.from(4), true);
+		OrderTable orderTable3 = OrderTable.of(NumberOfGuests.from(4), true);
+		OrderTableGroup.from(Arrays.asList(orderTable1, orderTable2));
 
 		// when
-		ThrowingCallable throwingCallable = () -> OrderTableGroup.of(Arrays.asList(orderTable1, orderTable3));
+		ThrowingCallable throwingCallable = () -> OrderTableGroup.from(Arrays.asList(orderTable1, orderTable3));
 
 		// then
 		assertThatThrownBy(throwingCallable).isInstanceOf(IllegalArgumentException.class);
@@ -75,13 +75,13 @@ class OrderTableGroupTest {
 
 	@DisplayName("생성 실패 - 주문 테이블이 비어있지 않은 경우")
 	@Test
-	void ofFailOnNotEmpty() {
+	void fromFailOnNotEmpty() {
 		// given
-		OrderTable orderTable1 = OrderTable.of(NumberOfGuests.of(4), false);
-		OrderTable orderTable2 = OrderTable.of(NumberOfGuests.of(4), false);
+		OrderTable orderTable1 = OrderTable.of(NumberOfGuests.from(4), false);
+		OrderTable orderTable2 = OrderTable.of(NumberOfGuests.from(4), false);
 
 		// when
-		ThrowingCallable throwingCallable = () -> OrderTableGroup.of(Arrays.asList(orderTable1, orderTable2));
+		ThrowingCallable throwingCallable = () -> OrderTableGroup.from(Arrays.asList(orderTable1, orderTable2));
 
 		// then
 		assertThatThrownBy(throwingCallable).isInstanceOf(IllegalArgumentException.class);
@@ -91,9 +91,9 @@ class OrderTableGroupTest {
 	@Test
 	void ungroup() {
 		// given
-		OrderTable orderTable1 = OrderTable.of(NumberOfGuests.of(4), true);
-		OrderTable orderTable2 = OrderTable.of(NumberOfGuests.of(4), true);
-		OrderTableGroup orderTableGroup = OrderTableGroup.of(Arrays.asList(orderTable1, orderTable2));
+		OrderTable orderTable1 = OrderTable.of(NumberOfGuests.from(4), true);
+		OrderTable orderTable2 = OrderTable.of(NumberOfGuests.from(4), true);
+		OrderTableGroup orderTableGroup = OrderTableGroup.from(Arrays.asList(orderTable1, orderTable2));
 
 		// when
 		orderTableGroup.ungroup();
@@ -109,20 +109,20 @@ class OrderTableGroupTest {
 	@Test
 	void ungroupFailOnHavingNotCompletedOrder() {
 		// given
-		OrderTable orderTable1 = OrderTable.of(NumberOfGuests.of(4), true);
-		OrderTable orderTable2 = OrderTable.of(NumberOfGuests.of(4), true);
-		OrderTableGroup orderTableGroup = OrderTableGroup.of(Arrays.asList(orderTable1, orderTable2));
+		OrderTable orderTable1 = OrderTable.of(NumberOfGuests.from(4), true);
+		OrderTable orderTable2 = OrderTable.of(NumberOfGuests.from(4), true);
+		OrderTableGroup orderTableGroup = OrderTableGroup.from(Arrays.asList(orderTable1, orderTable2));
 		Order.of(orderTable1,
-			OrderLineItems.of(Collections.singletonList(OrderLineItem.of(
+			OrderLineItems.from(Collections.singletonList(OrderLineItem.of(
 				Menu.of(
-					Name.of("후라이드+후라이드"),
-					Price.of(BigDecimal.valueOf(25000)),
-					MenuGroup.of(Name.of("추천메뉴")),
-					MenuProducts.of(Collections.singletonList(
+					Name.from("후라이드+후라이드"),
+					Price.from(BigDecimal.valueOf(25000)),
+					MenuGroup.from(Name.from("추천메뉴")),
+					MenuProducts.from(Collections.singletonList(
 						MenuProduct.of(
-							Product.of(Name.of("후라이드치킨"), Price.of(BigDecimal.valueOf(17000))),
-							Quantity.of(2L))))),
-				Quantity.of(1L)))));
+							Product.of(Name.from("후라이드치킨"), Price.from(BigDecimal.valueOf(17000))),
+							Quantity.from(2L))))),
+				Quantity.from(1L)))));
 
 		// when
 		ThrowingCallable throwingCallable = orderTableGroup::ungroup;

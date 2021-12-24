@@ -11,7 +11,7 @@ public class Name extends Value<Name> {
 	protected Name() {
 	}
 
-	public static Name of(String value) {
+	public static Name from(String value) {
 		if (value == null || value.isEmpty()) {
 			throw new IllegalArgumentException("이름은 빈 값일 수 없습니다.");
 		}

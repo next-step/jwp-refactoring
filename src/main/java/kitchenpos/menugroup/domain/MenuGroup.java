@@ -22,7 +22,7 @@ public class MenuGroup {
 	protected MenuGroup() {
 	}
 
-	public static MenuGroup of(Name name) {
+	public static MenuGroup from(Name name) {
 		MenuGroup menuGroup = new MenuGroup();
 		menuGroup.name = name;
 		return menuGroup;
