@@ -5,6 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import kitchenpos.domain.table.OrderTable;
 import kitchenpos.domain.table.OrderTableRepository;
+import kitchenpos.domain.table.TableValidator;
 import kitchenpos.dto.table.OrderTableDto;
 import kitchenpos.exception.table.NotFoundOrderTableException;
 import kitchenpos.vo.OrderTableId;

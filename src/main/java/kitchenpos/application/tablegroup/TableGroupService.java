@@ -3,6 +3,7 @@ package kitchenpos.application.tablegroup;
 import kitchenpos.domain.table.OrderTables;
 import kitchenpos.domain.tablegroup.TableGroup;
 import kitchenpos.domain.tablegroup.TableGroupRepository;
+import kitchenpos.domain.tablegroup.TableGroupValidator;
 import kitchenpos.dto.tablegroup.TableGroupDto;
 import kitchenpos.event.tablegroup.GroupingOrderTableEvent;
 import kitchenpos.event.tablegroup.UngroupOrderTableEvent;

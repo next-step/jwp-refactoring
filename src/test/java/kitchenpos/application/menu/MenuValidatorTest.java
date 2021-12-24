@@ -21,6 +21,7 @@ import kitchenpos.domain.Price;
 import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menu.MenuProduct;
 import kitchenpos.domain.menu.MenuProducts;
+import kitchenpos.domain.menu.MenuValidator;
 import kitchenpos.domain.menugroup.MenuGroup;
 import kitchenpos.domain.product.Product;
 import kitchenpos.dto.menu.MenuDto;

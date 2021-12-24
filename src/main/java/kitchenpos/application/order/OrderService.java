@@ -2,6 +2,7 @@ package kitchenpos.application.order;
 
 import kitchenpos.domain.order.Orders;
 import kitchenpos.domain.order.OrdersRepository;
+import kitchenpos.domain.order.OrdersValidator;
 import kitchenpos.dto.order.OrderDto;
 import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.vo.OrderTableId;

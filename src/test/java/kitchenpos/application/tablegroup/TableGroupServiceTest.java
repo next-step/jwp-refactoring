@@ -20,6 +20,7 @@ import kitchenpos.domain.table.OrderTable;
 import kitchenpos.domain.table.OrderTables;
 import kitchenpos.domain.tablegroup.TableGroup;
 import kitchenpos.domain.tablegroup.TableGroupRepository;
+import kitchenpos.domain.tablegroup.TableGroupValidator;
 import kitchenpos.dto.table.OrderTableDto;
 import kitchenpos.dto.tablegroup.TableGroupDto;
 import kitchenpos.event.tablegroup.GroupingOrderTableEvent;

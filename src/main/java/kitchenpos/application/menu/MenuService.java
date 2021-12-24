@@ -3,6 +3,7 @@ package kitchenpos.application.menu;
 import kitchenpos.exception.menu.NotFoundMenuException;
 import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menu.MenuRepository;
+import kitchenpos.domain.menu.MenuValidator;
 import kitchenpos.dto.menu.MenuDto;
 
 import org.springframework.stereotype.Service;

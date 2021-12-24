@@ -18,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.domain.table.OrderTable;
 import kitchenpos.domain.table.OrderTableRepository;
+import kitchenpos.domain.table.TableValidator;
 import kitchenpos.dto.table.OrderTableDto;
 
 @ExtendWith(MockitoExtension.class)

@@ -1,11 +1,9 @@
-package kitchenpos.application.table;
+package kitchenpos.domain.table;
 
 import org.springframework.stereotype.Component;
 
 import kitchenpos.application.order.OrderService;
 import kitchenpos.domain.order.Orders;
-import kitchenpos.domain.table.OrderTable;
-import kitchenpos.domain.table.OrderTableRepository;
 import kitchenpos.exception.order.HasNotCompletionOrderException;
 import kitchenpos.exception.table.EmptyOrderTableException;
 import kitchenpos.exception.table.HasOtherTableGroupException;
