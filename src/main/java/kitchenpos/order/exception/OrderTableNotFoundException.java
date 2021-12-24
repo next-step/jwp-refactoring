@@ -1,4 +1,4 @@
-package kitchenpos.table.exception;
+package kitchenpos.order.exception;
 
 import kitchenpos.common.exception.NotFoundException;
 

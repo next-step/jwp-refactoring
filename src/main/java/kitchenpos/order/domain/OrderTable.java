@@ -1,7 +1,5 @@
-package kitchenpos.table.domain;
+package kitchenpos.order.domain;
 
-import kitchenpos.order.domain.NumberOfGuests;
-import kitchenpos.order.domain.Order;
 import kitchenpos.tablegroup.domain.TableGroup;
 
 import javax.persistence.*;

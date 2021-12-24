@@ -4,6 +4,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.menu.dto.*;
+import kitchenpos.menugroup.acceptance.MenuGroupAcceptanceTest;
 import kitchenpos.menugroup.dto.MenuGroupResponse;
 import kitchenpos.product.acceptance.ProductAcceptanceTest;
 import kitchenpos.product.dto.ProductResponse;
