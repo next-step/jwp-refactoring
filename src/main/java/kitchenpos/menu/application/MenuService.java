@@ -1,7 +1,8 @@
 package kitchenpos.menu.application;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import javax.persistence.EntityNotFoundException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
@@ -33,19 +34,23 @@ public class MenuService {
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
         MenuGroup menuGroup = menuGroupService.findMenuGroupById(menuRequest.getMenuGroupId());
-        final List<MenuProductRequest> menuProductRequests = menuRequest.getMenuProducts();
-
-        final List<MenuProduct> menuProducts = new ArrayList<>();
-        for (final MenuProductRequest menuProductRequest : menuProductRequests) {
-            Product product = productService.findProduct(menuProductRequest.getProductId());
-            menuProducts.add(new MenuProduct(product, menuProductRequest.getQuantity()));
-        }
-
+        final List<MenuProduct> menuProducts = createMenuProducts(menuRequest.getMenuProducts());
         Menu menu = new Menu(menuRequest.getName(), menuRequest.getPrice(), menuGroup,
             menuProducts);
-        Menu savedMenu = menuRepository.save(menu);
 
+        Menu savedMenu = menuRepository.save(menu);
         return MenuResponse.from(savedMenu);
+    }
+
+    private List<MenuProduct> createMenuProducts(List<MenuProductRequest> menuProductRequests) {
+        return menuProductRequests.stream()
+            .map(menuProductRequest -> createMenuProduct(menuProductRequest))
+            .collect(Collectors.toList());
+    }
+
+    private MenuProduct createMenuProduct(MenuProductRequest menuProductRequest) {
+        Product product = productService.findProduct(menuProductRequest.getProductId());
+        return new MenuProduct(product, menuProductRequest.getQuantity());
     }
 
     public List<MenuResponse> list() {
@@ -55,6 +60,6 @@ public class MenuService {
 
     public Menu findMenu(Long menuId) {
         return menuRepository.findById(menuId)
-            .orElseThrow(() -> new IllegalArgumentException(ERROR_MESSAGE_NOT_EXIST_MENU));
+            .orElseThrow(() -> new EntityNotFoundException(ERROR_MESSAGE_NOT_EXIST_MENU));
     }
 }

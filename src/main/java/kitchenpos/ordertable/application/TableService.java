@@ -2,6 +2,7 @@ package kitchenpos.ordertable.application;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.persistence.EntityNotFoundException;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.ordertable.dto.OrderTableRequest;
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class TableService {
 
+    private static final String ERROR_MESSAGE_TABLE_NOT_EXIST = "존재하지 않는 주문 테이블입니다.";
     private final OrderTableRepository orderTableRepository;
 
     public TableService(OrderTableRepository orderTableRepository) {
@@ -32,7 +34,7 @@ public class TableService {
 
     public OrderTable findOrderTable(Long orderTableId) {
         return orderTableRepository.findById(orderTableId)
-            .orElseThrow(IllegalArgumentException::new);
+            .orElseThrow(() -> new EntityNotFoundException(ERROR_MESSAGE_TABLE_NOT_EXIST));
     }
 
     @Transactional

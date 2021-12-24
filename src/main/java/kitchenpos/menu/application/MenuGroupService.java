@@ -1,6 +1,7 @@
 package kitchenpos.menu.application;
 
 import java.util.List;
+import javax.persistence.EntityNotFoundException;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.dto.MenuGroupRequest;
@@ -34,6 +35,6 @@ public class MenuGroupService {
 
     public MenuGroup findMenuGroupById(Long id) {
         return menuGroupRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException(ERROR_MESSAGE_NOT_EXIST_MENU_GROUP));
+            .orElseThrow(() -> new EntityNotFoundException(ERROR_MESSAGE_NOT_EXIST_MENU_GROUP));
     }
 }

@@ -1,6 +1,7 @@
 package kitchenpos.product.application;
 
 import java.util.List;
+import javax.persistence.EntityNotFoundException;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.dto.ProductRequest;
@@ -32,6 +33,6 @@ public class ProductService {
 
     public Product findProduct(long productId) {
         return productRepository.findById(productId)
-            .orElseThrow(() -> new IllegalArgumentException(ERROR_MESSAGE_NOT_EXIST_PRODUCT));
+            .orElseThrow(() -> new EntityNotFoundException(ERROR_MESSAGE_NOT_EXIST_PRODUCT));
     }
 }

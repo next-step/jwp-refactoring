@@ -2,6 +2,7 @@ package kitchenpos.order.application;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.EntityNotFoundException;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.domain.Order;
@@ -78,6 +79,6 @@ public class OrderService {
 
     public Order findOrder(Long orderId) {
         return orderRepository.findById(orderId)
-            .orElseThrow(() -> new IllegalArgumentException(ERROR_MESSAGE_NOT_EXIST_ORDER));
+            .orElseThrow(() -> new EntityNotFoundException(ERROR_MESSAGE_NOT_EXIST_ORDER));
     }
 }
