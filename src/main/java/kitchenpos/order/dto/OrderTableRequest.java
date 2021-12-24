@@ -3,8 +3,12 @@ package kitchenpos.order.dto;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.TableState;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.PositiveOrZero;
+
 public class OrderTableRequest {
     private Long id;
+    @PositiveOrZero
     private int numberOfGuests;
     private boolean empty;
 

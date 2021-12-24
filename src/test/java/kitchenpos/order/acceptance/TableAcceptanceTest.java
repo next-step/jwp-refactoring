@@ -4,6 +4,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.acceptance.AcceptanceTest;
 import kitchenpos.acceptance.RestAssuredApi;
+import kitchenpos.order.dto.OrderStatusRequest;
 import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.order.dto.OrderTableResponse;
 import kitchenpos.order.dto.TableGroupRequest;
@@ -17,10 +18,11 @@ import java.util.Arrays;
 import java.util.List;
 
 import static kitchenpos.order.acceptance.TableGroupAcceptanceTest.테이블_그룹_등록_요청;
+import static kitchenpos.order.dto.OrderStatusRequest.completion;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("주문 테이블 인수 테스트")
-class OrderTableAcceptanceTest extends AcceptanceTest {
+class TableAcceptanceTest extends AcceptanceTest {
 
     @BeforeEach
     public void setUp() {
@@ -30,15 +32,16 @@ class OrderTableAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("주문 테이블 정상 시나리오")
     void normalScenario() {
-        String createdLocationUri1 = 주문_테이블_등록됨(주문_테이블_등록_요청(OrderTableRequest.of(2)));
-        String createdLocationUri2 = 주문_테이블_등록됨(주문_테이블_등록_요청(OrderTableRequest.of(4)));
+        String 테이블1 = 주문_테이블_등록됨(주문_테이블_등록_요청(OrderTableRequest.of(2)));
+        String 테이블2 = 주문_테이블_등록됨(주문_테이블_등록_요청(OrderTableRequest.of(4)));
 
-        주문_테이블_비움(createdLocationUri1);
-        테이블_손님수_변경(createdLocationUri2, OrderTableRequest.of(3));
+        주문_상태_변경됨(주문_상태_변경_요청(테이블1, completion()));
+        주문_테이블_비움(테이블1);
+        테이블_손님수_변경(테이블2, OrderTableRequest.of(3));
 
         ExtractableResponse<Response> response = 주문_테이블_목록_조회_요청();
         주문_테이블_목록_조회됨(response);
-        주문_테이블_손님수_일치됨(response, Arrays.asList(2, 3));
+        주문_테이블_손님수_일치됨(response, Arrays.asList(0, 3));
         주문_테이블_상태_일치됨(response, Arrays.asList(true, false));
     }
 
@@ -47,13 +50,14 @@ class OrderTableAcceptanceTest extends AcceptanceTest {
     void exceptionScenario() {
         ExtractableResponse<Response> response1 = 주문_테이블_등록_요청(OrderTableRequest.of(2));
         ExtractableResponse<Response> response2 = 주문_테이블_등록_요청(OrderTableRequest.of(4));
+        String 테이블1 = 주문_테이블_등록됨(response1);
+        String 테이블2 = 주문_테이블_등록됨(response2);
 
-        String createdLocationUri1 = 주문_테이블_등록됨(response1);
-        String createdLocationUri2 = 주문_테이블_등록됨(response2);
+        주문_상태_변경됨(주문_상태_변경_요청(테이블1, completion()));
+        주문_테이블_비움(테이블1);
+        테이블_변경_실패됨(테이블_손님수_변경(테이블1, OrderTableRequest.of(3)));
 
-        주문_테이블_비움(createdLocationUri1);
-        주문_테이블_비움(createdLocationUri2);
-        테이블_변경_실패됨(테이블_손님수_변경(createdLocationUri2, OrderTableRequest.of(3)));
+        테이블_변경_실패됨(테이블_손님수_변경(테이블2, OrderTableRequest.of(-1)));
     }
 
     public static ExtractableResponse<Response> 주문_테이블_등록_요청(OrderTableRequest request) {
@@ -66,6 +70,10 @@ class OrderTableAcceptanceTest extends AcceptanceTest {
 
     private ExtractableResponse<Response> 테이블_손님수_변경(String uri, OrderTableRequest request) {
         return RestAssuredApi.put(uri + "/number-of-guests", request);
+    }
+
+    private ExtractableResponse<Response> 주문_상태_변경_요청(String uri, OrderStatusRequest request) {
+        return RestAssuredApi.put(uri + "/order-status", request);
     }
 
     private ExtractableResponse<Response> 주문_테이블_목록_조회_요청() {
@@ -92,13 +100,10 @@ class OrderTableAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 테이블_변경_실패됨(ExtractableResponse<Response> response) {
-        AssertionsForClassTypes.assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        AssertionsForClassTypes.assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-    private void 테이블_그룹_등록됨(ExtractableResponse<Response> response1, ExtractableResponse<Response> response2) {
-        OrderTableResponse 테이블1 = response1.as(OrderTableResponse.class);
-        OrderTableResponse 테이블2 = response2.as(OrderTableResponse.class);
-        TableGroupRequest request = new TableGroupRequest(Arrays.asList(테이블1.getId(), 테이블2.getId()));
-        테이블_그룹_등록_요청(request);
+    public static void 주문_상태_변경됨(ExtractableResponse<Response> response) {
+        AssertionsForClassTypes.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 }

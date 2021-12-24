@@ -17,7 +17,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static kitchenpos.order.acceptance.OrderTableAcceptanceTest.주문_테이블_등록_요청;
+import static kitchenpos.order.acceptance.TableAcceptanceTest.주문_테이블_등록_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("테이블 그룹 인수 테스트")

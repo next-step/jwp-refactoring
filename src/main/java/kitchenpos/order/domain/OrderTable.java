@@ -1,6 +1,12 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.order.application.exception.InvalidOrderState;
+import kitchenpos.order.application.exception.InvalidTableState;
+
 import javax.persistence.*;
+
+import java.util.Arrays;
+import java.util.Objects;
 
 import static javax.persistence.EnumType.STRING;
 import static javax.persistence.FetchType.LAZY;
@@ -52,14 +58,26 @@ public class OrderTable {
     }
 
     public void changeEmpty() {
+        if (Objects.nonNull(tableGroup)) {
+            throw new InvalidTableState("테이블에 일행이 있습니다.");
+        }
+
+        if (!orderStatus.isCompleted()) {
+            throw new InvalidOrderState("주문 상태가 완료되지 않아 테이블을 정리할 수 없습니다.");
+        }
+
         this.tableState = new TableState(true);
+        this.numberOfGuests = 0;
     }
 
     public void changeStatus(OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
     }
 
-    public void setNumberOfGuests(final int numberOfGuests) {
+    public void changeGuests(final int numberOfGuests) {
+        if (tableState.isEmpty()) {
+            throw new InvalidTableState("빈 테이블 입니다.");
+        }
         this.numberOfGuests = numberOfGuests;
     }
 

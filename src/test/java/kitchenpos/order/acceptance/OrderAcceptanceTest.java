@@ -20,14 +20,12 @@ import java.util.List;
 import static kitchenpos.menu.acceptance.MenuAcceptanceTest.메뉴_등록_요청;
 import static kitchenpos.menu.acceptance.MenuGroupAcceptanceTest.메뉴_그룹_등록_요청;
 import static kitchenpos.menu.acceptance.ProductAcceptanceTest.상품_등록_요청;
-import static kitchenpos.order.acceptance.OrderTableAcceptanceTest.주문_테이블_등록_요청;
+import static kitchenpos.order.acceptance.TableAcceptanceTest.주문_테이블_등록_요청;
 import static kitchenpos.order.domain.OrderStatus.COMPLETION;
 import static kitchenpos.order.domain.OrderStatus.MEAL;
 import static kitchenpos.order.dto.OrderStatusRequest.completion;
 import static kitchenpos.order.dto.OrderStatusRequest.meal;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @DisplayName("주문 인수 테스트")
 public class OrderAcceptanceTest extends AcceptanceTest {

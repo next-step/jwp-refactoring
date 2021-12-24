@@ -1,7 +1,12 @@
 package kitchenpos.order.application;
 
+import kitchenpos.order.application.exception.InvalidOrderState;
 import kitchenpos.order.application.exception.InvalidTableState;
-import kitchenpos.order.domain.*;
+import kitchenpos.order.application.exception.TableNotFoundException;
+import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.domain.OrderTableRepository;
+import kitchenpos.order.domain.TableGroup;
+import kitchenpos.order.domain.TableState;
 import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.order.dto.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,15 +22,15 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.*;
+import static kitchenpos.order.domain.OrderStatus.COMPLETION;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @DisplayName("테이블 서비스")
 @ExtendWith(MockitoExtension.class)
 class TableServiceTest {
-    @Mock
-    private OrderRepository orderRepository;
     @Mock
     private OrderTableRepository orderTableRepository;
     @InjectMocks
@@ -69,13 +74,12 @@ class TableServiceTest {
     @Test
     @DisplayName("테이블을 빈 테이블로 변경한다.")
     void changeEmpty() {
+        테이블1.changeStatus(COMPLETION);
         when(orderTableRepository.findById(1L)).thenReturn(Optional.of(테이블1));
-        when(orderRepository.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).thenReturn(false);
 
         OrderTableResponse response = tableService.changeEmpty(테이블1.getId());
 
         verify(orderTableRepository, times(1)).findById(anyLong());
-        verify(orderRepository, times(1)).existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList());
         assertThat(response.getTableState()).isTrue();
     }
 
@@ -84,8 +88,8 @@ class TableServiceTest {
     void validateOrderTable() {
         when(orderTableRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableService.changeEmpty(테이블1.getId()));
+        assertThatThrownBy(() -> tableService.changeEmpty(테이블1.getId()))
+                .isInstanceOf(TableNotFoundException.class);
         verify(orderTableRepository, times(1)).findById(anyLong());
     }
 
@@ -104,12 +108,10 @@ class TableServiceTest {
     @DisplayName("테이블의 주문 상태가 완료가 아닌 경우 예외가 발생한다.")
     void validateOrderStatus() {
         when(orderTableRepository.findById(anyLong())).thenReturn(Optional.of(테이블1));
-        when(orderRepository.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).thenReturn(true);
 
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableService.changeEmpty(테이블1.getId()));
+        assertThatThrownBy(() -> tableService.changeEmpty(테이블1.getId()))
+                .isInstanceOf(InvalidOrderState.class);
         verify(orderTableRepository, times(1)).findById(anyLong());
-        verify(orderRepository, times(1)).existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList());
     }
 
     @Test
@@ -118,19 +120,10 @@ class TableServiceTest {
         OrderTableRequest request = OrderTableRequest.of(5);
 
         when(orderTableRepository.findById(anyLong())).thenReturn(Optional.of(테이블1));
-        OrderTableResponse response = tableService.changeNumberOfGuests(테이블1.getId(), request);
+        OrderTableResponse response = tableService.changeGuests(테이블1.getId(), request);
 
         verify(orderTableRepository, times(1)).findById(anyLong());
         assertThat(response.getNumberOfGuests()).isEqualTo(request.getNumberOfGuests());
-    }
-
-    @Test
-    @DisplayName("손님의 수가 0명 미만인 경우 예외가 발생한다.")
-    void validateGuestNumbers() {
-        OrderTableRequest request = OrderTableRequest.of(-1);
-
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableService.changeNumberOfGuests(테이블1.getId(), request));
     }
 
     @Test
@@ -139,8 +132,8 @@ class TableServiceTest {
         OrderTableRequest request = OrderTableRequest.of(5);
         when(orderTableRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableService.changeNumberOfGuests(테이블1.getId(), request));
+        assertThatThrownBy(() -> tableService.changeGuests(테이블1.getId(), request))
+                .isInstanceOf(TableNotFoundException.class);
         verify(orderTableRepository, times(1)).findById(anyLong());
     }
 
@@ -150,8 +143,8 @@ class TableServiceTest {
         OrderTableRequest request = OrderTableRequest.of(2);
         when(orderTableRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableService.changeNumberOfGuests(빈테이블.getId(), request));
+        assertThatThrownBy(() -> tableService.changeGuests(빈테이블.getId(), request))
+                .isInstanceOf(TableNotFoundException.class);
         verify(orderTableRepository, times(1)).findById(anyLong());
     }
 }
