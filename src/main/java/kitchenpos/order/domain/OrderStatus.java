@@ -1,5 +1,7 @@
 package kitchenpos.order.domain;
 
 public enum OrderStatus {
-    COOKING, MEAL, COMPLETION
+    COOKING,    // 조리
+    MEAL,       // 식사
+    COMPLETION  // 계산완료
 }

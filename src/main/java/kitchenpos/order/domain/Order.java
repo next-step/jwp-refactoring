@@ -2,8 +2,10 @@ package kitchenpos.order.domain;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -17,6 +19,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.springframework.util.CollectionUtils;
+
+import kitchenpos.order.exception.CanNotEditOrderStatusException;
+import kitchenpos.order.exception.InvalidOrderException;
 import kitchenpos.ordertable.domain.OrderTable;
 
 @Entity
@@ -39,18 +45,29 @@ public class Order {
     @Column(name = "ordered_time", nullable = false)
     private LocalDateTime orderedTime;
 
-    @OneToMany(mappedBy = "order")
-    private List<OrderLineItem> orderLineItems;
+    @Embedded
+    private OrderLineItems orderLineItems = OrderLineItems.of();
 
     protected Order() {
     }
 
     private Order(Long id, OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
+        validate(orderTable);
         this.id = id;
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
         this.orderedTime = LocalDateTime.now();
-        this.orderLineItems = orderLineItems;
+        this.orderLineItems.addAll(this, orderLineItems);
+    }
+
+    private void validate(OrderTable orderTable) {
+        if (Objects.isNull(orderTable) || orderTable.isEmpty()) {
+            throw new InvalidOrderException("주문한 테이블은 비어있을 수 없습니다.");
+        }
+    }
+
+    public static Order of(OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
+        return new Order(null, orderTable, orderStatus, orderLineItems);
     }
 
     public static Order of(Long id, OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
@@ -61,27 +78,26 @@ public class Order {
         return id;
     }
 
-    public Long getOrderTableId() {
-        return null == orderTable ? null : orderTable.getId();
+    public OrderTable getOrderTable() {
+        return orderTable;
     }
 
-    public String getOrderStatus() {
-        return orderStatus.toString();
+    public OrderStatus getOrderStatus() {
+        return orderStatus;
+    }
+
+    public LocalDateTime getOrderedTime() {
+        return orderedTime;
     }
 
     public List<OrderLineItem> getOrderLineItems() {
-        return orderLineItems;
+        return orderLineItems.getOrderLineItems();
     }
 
-    public void setOrderStatus(OrderStatus orderStatus) {
+    public void changeOrderStatusIfNotCompletion(OrderStatus orderStatus) {
+        if (OrderStatus.COMPLETION.equals(orderStatus)) {
+            throw new CanNotEditOrderStatusException();
+        }
         this.orderStatus = orderStatus;
-    }
-
-    public void setOrderTable(OrderTable orderTable) {
-        this.orderTable = orderTable;
-    }
-
-    public void setOrderLineItems(List<OrderLineItem> orderLineItems) {
-        this.orderLineItems = orderLineItems;
     }
 }
