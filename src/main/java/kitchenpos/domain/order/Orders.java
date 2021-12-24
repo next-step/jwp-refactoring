@@ -3,9 +3,11 @@ package kitchenpos.domain.order;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
@@ -13,17 +15,12 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import kitchenpos.domain.table.OrderTable;
-import kitchenpos.exception.order.EmptyOrderLineItemOrderException;
-import kitchenpos.exception.order.EmptyOrderTableOrderException;
-import kitchenpos.exception.order.NotChangableOrderStatusException;
+import kitchenpos.vo.OrderTableId;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
@@ -32,9 +29,8 @@ public class Orders {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "order_table_id")
-    private OrderTable orderTable;
+    @Embedded
+    private OrderTableId orderTableId;
 
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
@@ -49,14 +45,13 @@ public class Orders {
     protected Orders() {
     }
 
-    private Orders(OrderTable orderTable, OrderStatus orderStatus) {
-        this.orderTable = orderTable;
+    private Orders(OrderTableId orderTableId, OrderStatus orderStatus) {
+        this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
         this.orderLineItems = new ArrayList<>();
     }
 
-    public static Orders of(OrderTable orderTable, OrderStatus orderStatus) {
-        checkEmptyTable(orderTable);
+    public static Orders of(OrderTableId orderTable, OrderStatus orderStatus) {
         return new Orders(orderTable, orderStatus);
     }
     
@@ -64,35 +59,19 @@ public class Orders {
         return new Orders(null, orderStatus);
     }
     
-    public static Orders of(OrderTable orderTable, OrderStatus orderStatus, OrderLineItems orderLineItems) {
-        checkEmptyTable(orderTable);
-        
-        Orders order = new Orders(orderTable, orderStatus);
-        
-        checkEmptyOfOrderLineItems(orderLineItems);
+    public static Orders of(OrderTableId orderTableId, OrderStatus orderStatus, OrderLineItems orderLineItems) {
+        Orders order = new Orders(orderTableId, orderStatus);
         orderLineItems.acceptOrder(order);
     
         return order;
-    }
-
-    private static void checkEmptyOfOrderLineItems(final OrderLineItems orderLineItems) {
-        if (orderLineItems.isEmpty()) {
-            throw new EmptyOrderLineItemOrderException();
-        }
-    }
-    
-    private static void checkEmptyTable(final OrderTable orderTable) {
-        if (orderTable.isEmpty()) {
-            throw new EmptyOrderTableOrderException();
-        }
     }
 
     public Long getId() {
         return this.id;
     }
 
-    public OrderTable getOrderTable() {
-        return this.orderTable;
+    public OrderTableId getOrderTableId() {
+        return this.orderTableId;
     }
 
     public OrderStatus getOrderStatus() {
@@ -108,18 +87,26 @@ public class Orders {
     }
 
     public void changeOrderStatus(OrderStatus orderStatus) {
-        validateionOfChageOrderStatus();
-
         this.orderStatus = orderStatus;
-    }
-
-    private void validateionOfChageOrderStatus() {
-        if (this.isCompletion()) {
-            throw new NotChangableOrderStatusException();
-        }
     }
 
     public boolean isCompletion() {
         return this.orderStatus.equals(OrderStatus.COMPLETION);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this)
+            return true;
+        if (!(o instanceof Orders)) {
+            return false;
+        }
+        Orders orders = (Orders) o;
+        return Objects.equals(id, orders.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

@@ -1,17 +1,14 @@
 package kitchenpos.domain.table;
 
+import java.util.Objects;
+
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 
-import kitchenpos.domain.order.Orders;
-import kitchenpos.exception.order.HasNotCompletionOrderException;
-import kitchenpos.exception.table.EmptyOrderTableException;
-import kitchenpos.exception.table.HasOtherTableGroupException;
-import kitchenpos.exception.table.NegativeOfNumberOfGuestsException;
+import kitchenpos.vo.TableGroupId;
 
 @Entity
 public class OrderTable {
@@ -19,9 +16,8 @@ public class OrderTable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name ="table_group_id")
-    private TableGroup tableGroup;
+    @Embedded
+    private TableGroupId tableGroupId;
     private int numberOfGuests;
 
     boolean empty;
@@ -29,18 +25,18 @@ public class OrderTable {
     protected OrderTable() {
     }
 
-    private OrderTable(TableGroup tableGroup, int numberOfGuests, boolean empty) {
-        this.tableGroup = tableGroup;
+    private OrderTable(TableGroupId tableGroupId, int numberOfGuests, boolean empty) {
+        this.tableGroupId = tableGroupId;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
     }
 
-    public static OrderTable of(TableGroup tableGroup, int numberOfGuests) {
+    public static OrderTable of(TableGroupId tableGroupId, int numberOfGuests) {
         if (numberOfGuests > 0) {
-            return new OrderTable(tableGroup, numberOfGuests, false);
+            return new OrderTable(tableGroupId, numberOfGuests, false);
         }
 
-        return new OrderTable(tableGroup, numberOfGuests, true);
+        return new OrderTable(tableGroupId, numberOfGuests, true);
     }
 
     public static OrderTable of(int numberOfGuests, boolean empty) {
@@ -51,8 +47,8 @@ public class OrderTable {
         return this.id;
     }
 
-    public TableGroup getTableGroup() {
-        return this.tableGroup;
+    public TableGroupId getTableGroupId() {
+        return this.tableGroupId;
     }
     public int getNumberOfGuests() {
         return this.numberOfGuests;
@@ -62,32 +58,15 @@ public class OrderTable {
         return empty;
     }
 
-    public void unGroupTable(final Orders order) {
-        checkOrderStatusOfOrderTable(order);
-
-        this.tableGroup.getOrderTables().remove(this);
-        this.tableGroup = null;
+    public void unGroupTable() {
+        this.tableGroupId = null;
     }
 
-    private void checkOrderStatusOfOrderTable(final Orders order) {
-        if (order != null && !order.isCompletion()) {
-            throw new HasNotCompletionOrderException();
-        }
-    }
-
-    public void groupingTable(TableGroup tableGroup) {
-        if (this.tableGroup != null) {
-            this.tableGroup.getOrderTables().remove(this);
-        }
-
-        this.tableGroup = tableGroup;
-        this.tableGroup.getOrderTables().add(this);
+    public void groupingTable(TableGroupId tableGroupId) {
+        this.tableGroupId = tableGroupId;
     }
 
     public void changeNumberOfGuests(int numberOfGuests) {
-        checkEmptyTable();
-        checkPositiveOfNumberOfGuests(numberOfGuests);
-
         this.numberOfGuests = numberOfGuests;
     }
 
@@ -95,32 +74,27 @@ public class OrderTable {
         return this.empty;
     }
 
-    public void changeEmpty(boolean empty, Orders order) {
-        checkHasTableGroup();
-        checkOrderStatusOfOrderTable(order);
-
+    public void changeEmpty(boolean empty) {
         this.empty = empty;
     }
 
-    private void checkHasTableGroup() {
-        if (this.tableGroup != null) {
-            throw new HasOtherTableGroupException();
-        }
-    }
-
     public boolean hasTableGroup() {
-        return tableGroup != null;
+        return tableGroupId != null;
     }
 
-    private void checkEmptyTable() {
-        if (this.empty) {
-            throw new EmptyOrderTableException();
+    @Override
+    public boolean equals(Object o) {
+        if (o == this)
+            return true;
+        if (!(o instanceof OrderTable)) {
+            return false;
         }
+        OrderTable orderTable = (OrderTable) o;
+        return Objects.equals(id, orderTable.id) && Objects.equals(tableGroupId, orderTable.tableGroupId) && numberOfGuests == orderTable.numberOfGuests && empty == orderTable.empty;
     }
 
-    private void checkPositiveOfNumberOfGuests(int numberOfGuests) {
-        if (numberOfGuests < 0) {
-            throw new NegativeOfNumberOfGuestsException();
-        }
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, tableGroupId, numberOfGuests, empty);
     }
 }

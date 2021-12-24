@@ -2,14 +2,13 @@ package kitchenpos.domain.table;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.persistence.Embeddable;
-import javax.persistence.OneToMany;
 
 @Embeddable
 public final class OrderTables {
-    @OneToMany(mappedBy = "tableGroup")
     private final List<OrderTable> orderTables;
 
     protected OrderTables() {
@@ -28,6 +27,10 @@ public final class OrderTables {
         return this.orderTables.remove(orderTable);
     }
     
+    public OrderTable remove(int index) {
+        return this.orderTables.remove(index);
+    }
+    
     public boolean add(OrderTable orderTable) {
         return this.orderTables.add(orderTable);
     }
@@ -44,5 +47,29 @@ public final class OrderTables {
         return this.orderTables.stream()
                                 .map(OrderTable::getId)
                                 .collect(Collectors.toList());
+    }
+
+    public boolean isEmpty() {
+        return this.orderTables.isEmpty();
+    }
+
+    public List<OrderTable> getOrderTables() {
+        return this.orderTables;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this)
+            return true;
+        if (!(o instanceof OrderTables)) {
+            return false;
+        }
+        OrderTables orderTables = (OrderTables) o;
+        return Objects.equals(this.orderTables, orderTables.orderTables);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(orderTables);
     }
 }

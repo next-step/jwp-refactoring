@@ -1,81 +1,35 @@
 package kitchenpos.application.order;
 
-import kitchenpos.application.menu.MenuService;
-import kitchenpos.domain.menu.Menu;
-import kitchenpos.domain.menu.Menus;
 import kitchenpos.domain.order.Orders;
 import kitchenpos.domain.order.OrdersRepository;
-import kitchenpos.domain.table.OrderTable;
-import kitchenpos.domain.table.OrderTableRepository;
 import kitchenpos.dto.order.OrderDto;
-import kitchenpos.dto.order.OrderLineItemDto;
-import kitchenpos.domain.order.OrderLineItem;
-import kitchenpos.domain.order.OrderLineItems;
 import kitchenpos.domain.order.OrderStatus;
-import kitchenpos.exception.order.NotFoundOrderException;
-import kitchenpos.exception.order.NotRegistedMenuOrderException;
-import kitchenpos.exception.table.NotFoundOrderTableException;
+import kitchenpos.vo.OrderTableId;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
-    private final MenuService menuService;
     private final OrdersRepository orderRepository;
-    private final OrderTableRepository orderTableRepository;
-
+    private final OrdersValidator ordersValidator;
     public OrderService(
-            final MenuService menuService,
             final OrdersRepository orderRepository,
-            final OrderTableRepository orderTableRepository
+            final OrdersValidator ordersValidator
     ) {
-        this.menuService = menuService;
         this.orderRepository = orderRepository;
-        this.orderTableRepository = orderTableRepository;
+        this.ordersValidator = ordersValidator;
     }
 
     @Transactional
-    public OrderDto create(final OrderDto order) {
-        final OrderTable orderTable = orderTableRepository.findById(order.getOrderTableId()).orElseThrow(NotFoundOrderTableException::new);
-        final List<OrderLineItemDto> orderLineItemDtos = order.getOrderLineItems();
-
-        OrderLineItems orderLineItems = createOrderLineItems(orderLineItemDtos);
-
-        checkExistOfMenu(orderLineItems, orderLineItemDtos);
-
-        final Orders newOrder = Orders.of(orderTable, OrderStatus.COOKING, orderLineItems);
-
-        return OrderDto.of(orderRepository.save(newOrder));
-    }
-
-    private void checkExistOfMenu(final OrderLineItems orderLineItems, final List<OrderLineItemDto> orderLineItemDtos) {
-        if (orderLineItems.size() != orderLineItemDtos.size()) {
-            throw new NotRegistedMenuOrderException();
-        }
-    }
-
-    private OrderLineItems createOrderLineItems(final List<OrderLineItemDto> orderLineItemDtos) {
-        List<Long> menuIds = findMenuIds(orderLineItemDtos);
-        Menus menus = Menus.of(menuService.findAllByIdIn(menuIds));
+    public OrderDto create(final OrderDto orderDto) {
+        Orders validatedOrder = ordersValidator.getValidatedOrdersForCreate(orderDto);
         
-        List<OrderLineItem> orderLineItems = new ArrayList<>();
-        
-        for (OrderLineItemDto orderLineItemDto : orderLineItemDtos) {
-            Menu matchingMenu = menus.findById(orderLineItemDto.getMenuId());
-
-            orderLineItems.add(OrderLineItem.of(matchingMenu, orderLineItemDto.getQuantity()));
-        }
-
-        return OrderLineItems.of(orderLineItems);
-    }
-
-    private List<Long> findMenuIds(final List<OrderLineItemDto> orderLineItemDtos) {
-        return orderLineItemDtos.stream().map(OrderLineItemDto::getMenuId).collect(Collectors.toList());
+        return OrderDto.of(orderRepository.save(validatedOrder));
     }
 
     @Transactional(readOnly = true)
@@ -86,20 +40,23 @@ public class OrderService {
     }
 
     @Transactional
-    public Orders changeOrderStatus(final Long orderId, final OrderDto order) {
-        final Orders savedOrder = orderRepository.findById(orderId)
-                                                .orElseThrow(NotFoundOrderException::new);
+    public OrderDto changeOrderStatus(final Long orderId, final OrderDto order) {
+        final Orders validatedOrder = ordersValidator.getValidatedOrdersForChangeOrderStatus(orderId);
 
-        savedOrder.changeOrderStatus(OrderStatus.valueOf(order.getOrderStatus()));
+        validatedOrder.changeOrderStatus(OrderStatus.valueOf(order.getOrderStatus()));
 
-        return savedOrder;
+        return OrderDto.of(validatedOrder);
     }
 
     public Orders findByOrderTableId(Long orderTableId) {
-        return orderRepository.findByOrderTableId(orderTableId);
+        return orderRepository.findByOrderTableId(OrderTableId.of(orderTableId));
     }
 
     public List<Orders> findAllByOrderTableIdIn(List<Long> orderTableIds) {
-        return orderRepository.findAllByOrderTableIdIn(orderTableIds);
+        return orderRepository.findAllByOrderTableIdIn(orderTableIds.stream().map(OrderTableId::of).collect(Collectors.toList()));
+    }
+
+    public boolean hasNotComplateStatus(List<Long> orderTableIds) {
+        return orderRepository.existsByOrderTableIdInAndOrderStatusIn(orderTableIds.stream().map(OrderTableId::of).collect(Collectors.toList()), Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL));
     }
 }

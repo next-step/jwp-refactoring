@@ -3,25 +3,26 @@ package kitchenpos.application.table;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kitchenpos.application.order.OrderService;
 import kitchenpos.domain.table.OrderTable;
 import kitchenpos.domain.table.OrderTableRepository;
 import kitchenpos.dto.table.OrderTableDto;
 import kitchenpos.exception.table.NotFoundOrderTableException;
+import kitchenpos.vo.OrderTableId;
+import kitchenpos.vo.TableGroupId;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class TableService {
-    private final OrderService orderService;
+    private final TableValidator tableValidator;
     private final OrderTableRepository orderTableRepository;
 
     public TableService(
-        final OrderService orderService,
+        final TableValidator tableValidator,
         final OrderTableRepository orderTableRepository
     ) {
-        this.orderService = orderService;
+        this.tableValidator = tableValidator;
         this.orderTableRepository = orderTableRepository;
     }
 
@@ -38,22 +39,32 @@ public class TableService {
     }
 
     @Transactional
-    public OrderTableDto changeEmpty(final Long orderTableId, final OrderTableDto orderTable) {
-        final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-                                                                .orElseThrow(NotFoundOrderTableException::new);
+    public OrderTableDto changeEmpty(final Long orderTableId, final OrderTableDto orderTableDto) {
+        OrderTable validatedOrderTable = tableValidator.getValidatedOrderTableForChangeEmpty(orderTableId);
 
-        savedOrderTable.changeEmpty(orderTable.isEmpty(), orderService.findByOrderTableId(orderTableId));
+        validatedOrderTable.changeEmpty(orderTableDto.isEmpty());
 
-        return OrderTableDto.of(savedOrderTable);
+        return OrderTableDto.of(validatedOrderTable);
     }
 
     @Transactional
-    public OrderTable changeNumberOfGuests(final Long orderTableId, final OrderTableDto orderTable) {
-        final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-                                                                .orElseThrow(NotFoundOrderTableException::new);
+    public OrderTableDto changeNumberOfGuests(final Long orderTableId, final OrderTableDto orderTableDto) {
+        final OrderTable validatedOrderTable = tableValidator.getValidatedOrderTableForChangeNumberOfGuests(orderTableId, orderTableDto.getNumberOfGuests());
 
-        savedOrderTable.changeNumberOfGuests(orderTable.getNumberOfGuests());
+        validatedOrderTable.changeNumberOfGuests(orderTableDto.getNumberOfGuests());
 
-        return orderTableRepository.save(savedOrderTable);
+        return OrderTableDto.of(validatedOrderTable);
+    }
+
+    public OrderTable findById(OrderTableId orderTableId) {
+        return orderTableRepository.findById(orderTableId.value()).orElseThrow(NotFoundOrderTableException::new);
+    }
+
+    public List<OrderTable> findAllByIdIn(List<Long> orderTableIds) {
+        return orderTableRepository.findAllByIdIn(orderTableIds);
+    }
+
+    public List<OrderTable> findByTableGroupId(Long tableGroupId) {
+        return orderTableRepository.findAllByTableGroupId(TableGroupId.of(tableGroupId));
     }
 }

@@ -2,40 +2,28 @@ package kitchenpos.application.table;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.assertj.core.api.Assertions;
-import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.application.order.OrderService;
-import kitchenpos.domain.order.OrderStatus;
-import kitchenpos.domain.order.Orders;
 import kitchenpos.domain.table.OrderTable;
 import kitchenpos.domain.table.OrderTableRepository;
-import kitchenpos.domain.table.OrderTables;
-import kitchenpos.domain.table.TableGroup;
 import kitchenpos.dto.table.OrderTableDto;
-import kitchenpos.exception.order.HasNotCompletionOrderException;
-import kitchenpos.exception.table.EmptyOrderTableException;
-import kitchenpos.exception.table.HasOtherTableGroupException;
-import kitchenpos.exception.table.NegativeOfNumberOfGuestsException;
 
 @ExtendWith(MockitoExtension.class)
 public class TableServiceTest {
     @Mock
-    private OrderService orderService;
+    private TableValidator tableValidator;
 
     @Mock
     private OrderTableRepository orderTableRepository;
@@ -86,7 +74,7 @@ public class TableServiceTest {
         // given
         OrderTable 치킨_주문_개인테이블 =  OrderTable.of(10, false);
 
-        when(orderTableRepository.findById(nullable(Long.class))).thenReturn(Optional.of(치킨_주문_개인테이블));
+        when(tableValidator.getValidatedOrderTableForChangeEmpty(nullable(Long.class))).thenReturn(치킨_주문_개인테이블);
 
         OrderTableDto 주문테이블_빈테이블전환_요청전문 = OrderTableDto.of(0);
 
@@ -97,86 +85,23 @@ public class TableServiceTest {
         Assertions.assertThat(changedOrderTable.getEmpty()).isTrue();
     }
 
-    @DisplayName("단체지정된 주문테이블의 빈테이블 상태변경시 예외가 발생된다.")
-    @Test
-    void exception_updateOrderTable_existOrderTableInTableGroup() {
-        // given
-        OrderTable 치킨_주문_단체테이블 = OrderTable.of(0, true);
-        OrderTable 치킨2_주문_단체테이블 = OrderTable.of(0, true);
-        TableGroup 단체주문테이블 = TableGroup.of(OrderTables.of(Lists.newArrayList(치킨_주문_단체테이블, 치킨2_주문_단체테이블)));
-        치킨_주문_단체테이블.groupingTable(단체주문테이블);
-
-        when(orderTableRepository.findById(nullable(Long.class))).thenReturn(Optional.of(치킨_주문_단체테이블));
-        
-        // when
-        // then
-        Assertions.assertThatExceptionOfType(HasOtherTableGroupException.class)
-                    .isThrownBy(() -> tableService.changeEmpty(치킨_주문_단체테이블.getId(), OrderTableDto.of(치킨_주문_단체테이블)));
-    }
-
-    @DisplayName("주문상태가 계산완료가 아닌 주문테이블의 빈테이블 상태변경시 예외가 발생된다.")
-    @Test
-    void exception_updateOrderTable_EmptyStatus() {
-        // given
-        OrderTable 치킨_주문_단체테이블 = OrderTable.of(10, false);
-
-        when(orderTableRepository.findById(nullable(Long.class))).thenReturn(Optional.of(치킨_주문_단체테이블));
-        when(orderService.findByOrderTableId(nullable(Long.class))).thenReturn(Orders.of(치킨_주문_단체테이블, OrderStatus.MEAL));
-        
-        // when
-        // then
-        Assertions.assertThatExceptionOfType(HasNotCompletionOrderException.class)
-                      .isThrownBy(() -> tableService.changeEmpty(치킨_주문_단체테이블.getId(), OrderTableDto.of(치킨_주문_단체테이블)));
-    }
-
     @DisplayName("주문테이블의 방문한 손님수가 변경된다.")
     @Test
     void update_orderTable_numberOfGuests() {
         // given
-        OrderTable 치킨_주문_단체테이블 = OrderTable.of(10, false);
+        OrderTable 치킨_주문테이블 = OrderTable.of(10, false);
 
-        when(orderTableRepository.findById(nullable(Long.class))).thenReturn(Optional.of(치킨_주문_단체테이블));
-        when(orderTableRepository.save(any(OrderTable.class))).thenReturn(치킨_주문_단체테이블);
+        when(tableValidator.getValidatedOrderTableForChangeNumberOfGuests(nullable(Long.class), anyInt())).thenReturn(치킨_주문테이블);
 
         OrderTableDto 손님수변경_요청전문 = OrderTableDto.of(3);
 
         // when
-        OrderTable changedOrderTable = tableService.changeNumberOfGuests(치킨_주문_단체테이블.getId(), 손님수변경_요청전문);
+        OrderTableDto changedOrderTableDto = tableService.changeNumberOfGuests(치킨_주문테이블.getId(), 손님수변경_요청전문);
 
         // then
         assertAll(
-            () -> Assertions.assertThat(changedOrderTable.getNumberOfGuests()).isEqualTo(3),
-            () -> Assertions.assertThat(changedOrderTable.isEmpty()).isFalse()
+            () -> Assertions.assertThat(changedOrderTableDto.getNumberOfGuests()).isEqualTo(3),
+            () -> Assertions.assertThat(changedOrderTableDto.isEmpty()).isFalse()
         );
-    }
-
-    @DisplayName("주문테이블의 방문한 손님수를 0이만으로 변경시 예외가 발생된다.")
-    @ValueSource(ints = {-1, -9})
-    @ParameterizedTest(name ="[{index}] 방문한 손님수는 [{0}]")
-    void exception_updateOrderTable_underZeroCountAboutNumberOfGuest(int numberOfGuests) {
-        // given
-        OrderTable 치킨_주문_단체테이블 = OrderTable.of(10, false);
-
-        when(orderTableRepository.findById(nullable(Long.class))).thenReturn(Optional.of(치킨_주문_단체테이블));
-
-        // when
-        // then
-        Assertions.assertThatExceptionOfType(NegativeOfNumberOfGuestsException.class)
-                    .isThrownBy(() -> tableService.changeNumberOfGuests(치킨_주문_단체테이블.getId(), OrderTableDto.of(numberOfGuests)));
-
-    }
-
-    @DisplayName("빈테이블에 방문한 손님수 변경시 예외가 발생된다.")
-    @Test
-    void exception_updateOrderTable_atEmptyTable() {
-        // given
-        OrderTable 치킨_주문_단체테이블 = OrderTable.of(0, true);
-
-        when(orderTableRepository.findById(nullable(Long.class))).thenReturn(Optional.of(치킨_주문_단체테이블));
-
-        // when
-        // then
-        Assertions.assertThatExceptionOfType(EmptyOrderTableException.class)
-                   .isThrownBy(() -> tableService.changeNumberOfGuests(치킨_주문_단체테이블.getId(), OrderTableDto.of(3)));
     }
 }

@@ -25,4 +25,8 @@ public class Menus {
     public boolean contains(Menu menu) {
         return this.menus.contains(menu);
     }
+
+    public int size() {
+        return this.menus.size();
+    }
 }

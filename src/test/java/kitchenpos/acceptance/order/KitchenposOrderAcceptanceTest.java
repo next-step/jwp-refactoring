@@ -15,11 +15,11 @@ import kitchenpos.dto.menu.MenuDto;
 import kitchenpos.dto.order.OrderDto;
 import kitchenpos.dto.order.OrderLineItemDto;
 import kitchenpos.dto.table.OrderTableDto;
-import kitchenpos.dto.table.TableGroupDto;
+import kitchenpos.dto.tablegroup.TableGroupDto;
 import kitchenpos.presentation.menu.MenuRestControllerTest;
 import kitchenpos.presentation.order.OrderRestControllerTest;
-import kitchenpos.presentation.table.TableGroupRestControllerTest;
 import kitchenpos.presentation.table.TableRestControllerTest;
+import kitchenpos.presentation.tablegroup.TableGroupRestControllerTest;
 import kitchenpos.testassistance.config.TestConfig;
 
 public class KitchenposOrderAcceptanceTest extends TestConfig {

@@ -1,0 +1,32 @@
+@startuml Lotto_3step
+skinparam groupInheritance 2
+
+Menu -- MenuProducts
+
+MenuProduct -- Menu
+
+MenuProducts -- MenuProduct
+
+Menus -- Menu
+
+OrderLineItem -- Orders
+
+OrderLineItems -- OrderLineItem
+
+Orders -- OrderLineItems
+Products -- Product
+
+OrderTables -- OrderTable
+
+Class TableGroup {
+}
+
+Class OrderTable {
+}
+
+class Product {
+}
+
+class MenuGroup {
+}
+@enduml

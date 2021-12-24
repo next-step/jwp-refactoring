@@ -21,5 +21,8 @@ public class Products {
                         .findFirst()
                         .orElseThrow(NotFoundProductException::new);
     }
-    
+
+    public int size() {
+        return this.products.size();
+    }
 }
