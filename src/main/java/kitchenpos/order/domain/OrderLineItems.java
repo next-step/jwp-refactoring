@@ -20,7 +20,7 @@ public class OrderLineItems {
 
     public OrderLineItems(List<OrderLineItem> orderLineItems) {
         if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("주문 항목이 없습니다.");
         }
         this.orderLineItems = orderLineItems;
     }

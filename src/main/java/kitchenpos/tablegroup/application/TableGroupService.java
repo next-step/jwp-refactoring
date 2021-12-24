@@ -1,5 +1,6 @@
 package kitchenpos.tablegroup.application;
 
+import kitchenpos.common.exception.OrderStatusException;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTables;
@@ -37,7 +38,7 @@ public class TableGroupService {
         OrderTableIdRequests orderTables = OrderTableIdRequests.of(request.getOrderTables());
         List<Long> orderTableIds = orderTables.getOrderTableIds();
         OrderTables persistOrderTables = OrderTables.of(tableService.findAllByIdIn(orderTableIds));
-        persistOrderTables.validateCreate(orderTableIds);
+        persistOrderTables.validateGroup(orderTableIds);
 
         TableGroup tableGroup = TableGroup.of(LocalDateTime.now());
         tableGroup.addOrderTable(persistOrderTables.getOrderTables());
@@ -51,7 +52,7 @@ public class TableGroupService {
         OrderTables orderTables = OrderTables.of(tableService.findAllByTableGroup(tableGroup));
 
         if (orderService.isCookingOrMealExists(orderTables)) {
-            throw new IllegalArgumentException();
+            throw new OrderStatusException();
         }
         orderTables.ungroup();
     }

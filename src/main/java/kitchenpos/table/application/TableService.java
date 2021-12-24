@@ -1,5 +1,6 @@
 package kitchenpos.table.application;
 
+import kitchenpos.common.exception.OrderStatusException;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.Empty;
@@ -51,7 +52,7 @@ public class TableService {
     public OrderTableResponse changeEmpty(final Long orderTableId, final ChangeEmptyRequest request) {
         OrderTable persistOrderTable = findById(orderTableId);
         if (isCookingOrMealExists(persistOrderTable)) {
-            throw new IllegalArgumentException();
+            throw new OrderStatusException();
         }
 
         Empty empty = Empty.of(request.isEmpty());

@@ -15,7 +15,7 @@ public class OrderTableIdRequests {
 
     private OrderTableIdRequests(List<OrderTableIdRequest> orderTableIdRequests) {
         if (CollectionUtils.isEmpty(orderTableIdRequests) || orderTableIdRequests.size() < 2) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("주문 테이블이 2개 미만입니다.");
         }
         this.orderTableIdRequests = orderTableIdRequests;
     }

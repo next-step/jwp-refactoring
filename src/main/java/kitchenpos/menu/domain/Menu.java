@@ -37,7 +37,7 @@ public class Menu {
 
     private Menu(Name name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
         if (price.isMoreExpensive(menuProducts.getTotalPrice())) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("메뉴가 메뉴 상품들의 합계보다 비쌉니다.");
         }
         this.name = name;
         this.price = price;

@@ -1,5 +1,6 @@
 package kitchenpos.table.domain;
 
+import kitchenpos.common.exception.OrderTableEmptyException;
 import kitchenpos.tablegroup.domain.TableGroup;
 
 import javax.persistence.Embedded;
@@ -91,14 +92,14 @@ public class OrderTable {
 
     public void changeEmpty(Empty empty) {
         if (Objects.nonNull(tableGroup)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("이미 속해있는 테이블 그룹이 있습니다.");
         }
         this.empty = empty;
     }
 
     public void changeNumberOfGuests(NumberOfGuests numberOfGuests) {
         if (empty.isEmpty()) {
-            throw new IllegalArgumentException();
+            throw new OrderTableEmptyException();
         }
         this.numberOfGuests = numberOfGuests;
     }

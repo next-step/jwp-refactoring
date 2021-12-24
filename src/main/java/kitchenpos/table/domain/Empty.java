@@ -25,6 +25,10 @@ public class Empty {
         return empty;
     }
 
+    public boolean isNotEmpty() {
+        return !empty;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

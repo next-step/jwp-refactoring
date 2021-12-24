@@ -1,5 +1,6 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.common.exception.OrderTableEmptyException;
 import kitchenpos.table.domain.OrderTable;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -44,7 +45,7 @@ public class Order {
 
     private Order(OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime, OrderLineItems orderLineItems) {
         if (orderTable.getEmpty().isEmpty()) {
-            throw new IllegalArgumentException();
+            throw new OrderTableEmptyException();
         }
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
@@ -87,7 +88,7 @@ public class Order {
 
     public void changeOrderStatus(OrderStatus orderStatus) {
         if (this.orderStatus.isCompletion()) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("주문 상태가 completion인 경우 주문 상태를 변경할 수 없습니다.");
         }
         this.orderStatus = orderStatus;
     }

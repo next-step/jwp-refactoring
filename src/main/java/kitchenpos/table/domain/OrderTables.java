@@ -47,22 +47,22 @@ public class OrderTables {
         orderTables.forEach(orderTable -> orderTable.setTableGroup(null));
     }
 
-    public void validateCreate(List<Long> orderTableIds) {
+    public void validateGroup(List<Long> orderTableIds) {
         validateGroupTable();
         validateSize(orderTableIds);
     }
 
     public void validateGroupTable() {
         for (final OrderTable orderTable : orderTables) {
-            if (!orderTable.getEmpty().isEmpty() || Objects.nonNull(orderTable.getTableGroupId())) {
-                throw new IllegalArgumentException();
+            if (orderTable.getEmpty().isNotEmpty() || Objects.nonNull(orderTable.getTableGroupId())) {
+                throw new IllegalArgumentException("테이블이 비어있지 않거나, 테이블 그룹이 존재하지 않습니다.");
             }
         }
     }
 
     public void validateSize(List<Long> orderTableIds) {
         if (orderTableIds.size() != orderTables.size()) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("테이블을 그룹화할 주문 테이블 수가 일치하지 않습니다.");
         }
     }
 }

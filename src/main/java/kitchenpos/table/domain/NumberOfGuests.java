@@ -15,7 +15,7 @@ public class NumberOfGuests {
 
     private NumberOfGuests(int numberOfGuests) {
         if (numberOfGuests < 0) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("손님 수가 0보다 작습니다.");
         }
         this.numberOfGuests = numberOfGuests;
     }
