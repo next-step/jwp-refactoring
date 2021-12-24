@@ -26,6 +26,21 @@ public class Menu {
     private MenuGroup menuGroup;
     
     private List<MenuProduct> menuProducts;
+    
+    protected Menu() {
+    }
+    
+    private Menu(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+        this.name = name;
+        this.price = price;
+        this.menuGroup = menuGroup;
+        this.menuProducts = menuProducts;
+    }
+    
+
+    public static Menu of(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+        return new Menu(name, price, menuGroup, menuProducts);
+    }
 
     public Long getId() {
         return id;

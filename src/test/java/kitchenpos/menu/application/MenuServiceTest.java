@@ -2,11 +2,12 @@ package kitchenpos.menu.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -49,30 +50,13 @@ public class MenuServiceTest {
     @Test
     void 메뉴_등록() {
         // given
-        MenuGroup 메뉴그룹 = new MenuGroup();
-        메뉴그룹.setId(1L);
-        메뉴그룹.setName("중식");
-
-        Menu 메뉴 = new Menu();
-        메뉴.setId(1L);
-        메뉴.setName("짜장면");
-        메뉴.setPrice(new BigDecimal("6000"));
-        메뉴.setMenuGroup(메뉴그룹);
-        
-        Product 상품 = new Product();
-        상품.setId(1L);
-        상품.setName("짜장면");
-        상품.setPrice(new BigDecimal("6000"));
-
-        MenuProduct 메뉴상품 = new MenuProduct();
-        메뉴상품.setSeq(1L);
-        메뉴상품.setMenu(메뉴);
-        메뉴상품.setProduct(상품);
-        메뉴상품.setQuantity(1L);
-
+        Menu 메뉴 = Menu.of("짜장면", new BigDecimal("6000"), MenuGroup.from("중식"), null);
+        Product 상품 = Product.of("짜장면", new BigDecimal("6000"));
+        MenuProduct 메뉴상품 = MenuProduct.of(메뉴, 상품, 1L);
         메뉴.setMenuProducts(Arrays.asList(메뉴상품));
-        given(menuGroupRepository.existsById(메뉴.getMenuGroup().getId())).willReturn(true);
-        given(productRepository.findById(메뉴상품.getProduct().getId())).willReturn(Optional.of(상품));
+
+        given(menuGroupRepository.existsById(nullable(Long.class))).willReturn(true);
+        given(productRepository.findById(nullable(Long.class))).willReturn(Optional.of(상품));
         given(menuRepository.save(메뉴)).willReturn(메뉴);
         given(menuProductRepository.save(메뉴상품)).willReturn(메뉴상품);
 
@@ -88,14 +72,9 @@ public class MenuServiceTest {
     @Test
     void 메뉴_등록_가격_필수() {
         // given
-        Menu 가격없는_메뉴 = new Menu();
-        가격없는_메뉴.setId(1L);
-        가격없는_메뉴.setName("짜장면");
+        Menu 가격없는_메뉴 = Menu.of("짜장면", null, MenuGroup.from("메뉴그룹"), new ArrayList<MenuProduct>());
         
-        // when
-        가격없는_메뉴.setPrice(null);
-
-        // then
+        // when, then
         assertThatThrownBy(() -> {
             menuService.create(가격없는_메뉴);
         }).isInstanceOf(IllegalArgumentException.class)
@@ -107,14 +86,9 @@ public class MenuServiceTest {
     @Test
     void 메뉴_등록_가격_0원_이상() {
         // given
-        Menu 마이너스_가격_메뉴 = new Menu();
-        마이너스_가격_메뉴.setId(1L);
-        마이너스_가격_메뉴.setName("짜장면");
+        Menu 마이너스_가격_메뉴 = Menu.of("짜장면", new BigDecimal("-6000"), MenuGroup.from("메뉴그룹"), new ArrayList<MenuProduct>());
         
-        // when
-        마이너스_가격_메뉴.setPrice(new BigDecimal("-6000"));
-
-        // then
+        // when, then
         assertThatThrownBy(() -> {
             menuService.create(마이너스_가격_메뉴);
         }).isInstanceOf(IllegalArgumentException.class)
@@ -125,105 +99,67 @@ public class MenuServiceTest {
     @Test
     void 메뉴_등록_메뉴그룹_필수() {
         // given
-        Menu 메뉴그룹_미지정_메뉴 = new Menu();
-        메뉴그룹_미지정_메뉴.setId(1L);
-        메뉴그룹_미지정_메뉴.setName("짜장면");
-        메뉴그룹_미지정_메뉴.setPrice(new BigDecimal("6000"));
+        Menu 메뉴그룹_미지정_메뉴 = Menu.of("짜장면", new BigDecimal("6000"), null, new ArrayList<MenuProduct>());
         
-        // when
-        메뉴그룹_미지정_메뉴.setMenuGroup(new MenuGroup());
-
-        // then
+        // when, then
         assertThatThrownBy(() -> {
             menuService.create(메뉴그룹_미지정_메뉴);
         }).isInstanceOf(IllegalArgumentException.class)
         .hasMessage("해당하는 메뉴그룹이 없습니다");
     }
-    
     @DisplayName("메뉴에 등록된 메뉴그룹은 등록된 메뉴그룹이어야한다 - 예외처리")
     @Test
     void 메뉴_등록_등록된_메뉴그룹만() {
         // given
-        Menu 메뉴 = new Menu();
-        메뉴.setId(1L);
-        메뉴.setName("짜장면");
-        메뉴.setPrice(new BigDecimal("6000"));
-        MenuGroup 메뉴그룹 = new MenuGroup();
-        메뉴그룹.setId(1L);
-        메뉴.setMenuGroup(메뉴그룹);
+        Menu 메뉴 = Menu.of("짜장면", new BigDecimal("6000"), MenuGroup.from("미등록_메뉴그룹"), new ArrayList<MenuProduct>());
         
         // when
-        when(menuGroupRepository.existsById(anyLong())).thenReturn(false);
-
+        when(menuGroupRepository.existsById(nullable(Long.class))).thenReturn(false);
+    
         // then
         assertThatThrownBy(() -> {
             menuService.create(메뉴);
         }).isInstanceOf(IllegalArgumentException.class)
         .hasMessage("해당하는 메뉴그룹이 없습니다");
-
+    
     }
+
     
     @DisplayName("메뉴에 포함된 상품은 등록된 상품이어야한다 - 예외처리")
     @Test
     void 메뉴_등록_등록된_상품만() {
         // given
-        Menu 메뉴 = new Menu();
-        메뉴.setId(1L);
-        메뉴.setName("짜장면");
-        메뉴.setPrice(new BigDecimal("6000"));
-        MenuGroup 메뉴그룹 = new MenuGroup();
-        메뉴그룹.setId(1L);
-        메뉴.setMenuGroup(메뉴그룹);
+        Menu 메뉴 = Menu.of("짜장면", new BigDecimal("6000"), MenuGroup.from("메뉴그룹"), new ArrayList<MenuProduct>());
         
-        MenuProduct 메뉴상품 = new MenuProduct();
-        메뉴상품.setSeq(1L);
-        메뉴상품.setMenu(메뉴);
+        Product 상품 = Product.of("짜장면", new BigDecimal("6000"));
+        메뉴.setMenuProducts(Arrays.asList(MenuProduct.of(메뉴, 상품, 1L)));
         
-        Product 상품 = new Product();
-        상품.setId(1L);
-        메뉴상품.setProduct(상품);
-        메뉴.setMenuProducts(Arrays.asList(메뉴상품));
-        
-        given(menuGroupRepository.existsById(anyLong())).willReturn(true);
+        given(menuGroupRepository.existsById(nullable(Long.class))).willReturn(true);
         
         // when
-        when(productRepository.findById(anyLong())).thenReturn(Optional.empty());
-
+        when(productRepository.findById(nullable(Long.class))).thenReturn(Optional.empty());
+    
         // then
         assertThatThrownBy(() -> {
             menuService.create(메뉴);
         }).isInstanceOf(IllegalArgumentException.class)
         .hasMessage("등록된 상품이 아닙니다");
-
+    
     }
-
+    
     @DisplayName("메뉴 등록시 가격은 포함된 상품들의 총 금액보다 클 수 없다- 예외처리")
     @Test
     void 메뉴_등록_금액_확인() {
         // given
-        Menu 메뉴 = new Menu();
-        메뉴.setId(1L);
-        메뉴.setName("짜장면");
-        메뉴.setPrice(new BigDecimal("10000"));
-        MenuGroup 메뉴그룹 = new MenuGroup();
-        메뉴그룹.setId(1L);
-        메뉴.setMenuGroup(메뉴그룹);
+        Menu 메뉴 = Menu.of("짜장면", new BigDecimal("10000"), MenuGroup.from("메뉴그룹"), new ArrayList<MenuProduct>());
         
-        Product 상품 = new Product();
-        상품.setId(1L);
-        상품.setName("짜장면");
-        상품.setPrice(new BigDecimal("6000"));
+        Product 상품 = Product.of("짜장면", new BigDecimal("6000"));
         
-        MenuProduct 메뉴상품 = new MenuProduct();
-        메뉴상품.setSeq(1L);
-        메뉴상품.setMenu(메뉴);
-        메뉴상품.setProduct(상품);
-        메뉴상품.setQuantity(1L);
-        메뉴.setMenuProducts(Arrays.asList(메뉴상품));
-
-        given(menuGroupRepository.existsById(anyLong())).willReturn(true);
-        given(productRepository.findById(anyLong())).willReturn(Optional.of(상품));
-
+        메뉴.setMenuProducts(Arrays.asList(MenuProduct.of(메뉴, 상품, 1L)));
+    
+        given(menuGroupRepository.existsById(nullable(Long.class))).willReturn(true);
+        given(productRepository.findById(nullable(Long.class))).willReturn(Optional.of(상품));
+    
         // when, then
         assertThatThrownBy(() -> {
             menuService.create(메뉴);
@@ -235,23 +171,16 @@ public class MenuServiceTest {
     @Test
     void 메뉴_목록_조회() {
         // given
-        Menu 첫번째_메뉴 = new Menu();
-        첫번째_메뉴.setId(1L);
-        첫번째_메뉴.setName("짜장면");
-        첫번째_메뉴.setPrice(new BigDecimal("6000"));
+        Menu 첫번째_메뉴 = Menu.of("짜장면", new BigDecimal("6000"), MenuGroup.from("짜장면_메뉴그룹"), new ArrayList<MenuProduct>());
         
-        Menu 두번째_메뉴 = new Menu();
-        두번째_메뉴.setId(2L);
-        두번째_메뉴.setName("짬뽕");
-        두번째_메뉴.setPrice(new BigDecimal("7000"));
-
+        Menu 두번째_메뉴 = Menu.of("짬뽕", new BigDecimal("7000"), MenuGroup.from("짬뽕_메뉴그룹"), new ArrayList<MenuProduct>());
+    
         given(menuRepository.findAll()).willReturn(Arrays.asList(첫번째_메뉴, 두번째_메뉴));
-
+    
         // when
         List<Menu> 메뉴_목록 = menuService.list();
-
+    
         // then
         assertThat(메뉴_목록).containsExactly(첫번째_메뉴, 두번째_메뉴);
     }
-
 }

@@ -4,9 +4,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -39,10 +41,7 @@ public class TableServiceTest {
     @Test
     void 테이블_등록() {
         // given
-        OrderTable 테이블 = new OrderTable();
-        테이블.setId(1L);
-        테이블.setNumberOfGuests(3);
-        
+        OrderTable 테이블 = OrderTable.of(null, 3, false);
         given(orderTableRepository.save(테이블)).willReturn(테이블);
 
         // when
@@ -56,15 +55,8 @@ public class TableServiceTest {
     @Test
     void 테이블_목록_조회() {
         // given
-        OrderTable 첫번째_테이블 = new OrderTable();
-        첫번째_테이블.setId(1L);
-        첫번째_테이블.setNumberOfGuests(3);
-        첫번째_테이블.setEmpty(false);
-        
-        OrderTable 두번째_테이블 = new OrderTable();
-        두번째_테이블.setId(1L);
-        두번째_테이블.setNumberOfGuests(5);
-        두번째_테이블.setEmpty(false);
+        OrderTable 첫번째_테이블 = OrderTable.of(null, 3, false);
+        OrderTable 두번째_테이블 = OrderTable.of(null, 5, false);
         
         given(orderTableRepository.findAll()).willReturn(Arrays.asList(첫번째_테이블, 두번째_테이블));
     
@@ -79,18 +71,11 @@ public class TableServiceTest {
     @Test
     void 테이블_상태_변경() {
         // given
-        OrderTable 테이블 = new OrderTable();
-        테이블.setId(1L);
-        테이블.setNumberOfGuests(3);
-        테이블.setEmpty(false);
+        OrderTable 테이블 = OrderTable.of(null, 3, false);
+        OrderTable 빈_테이블 = OrderTable.of(null, 3, true);
         
-        OrderTable 빈_테이블 = new OrderTable();
-        빈_테이블.setId(1L);
-        빈_테이블.setNumberOfGuests(3);
-        빈_테이블.setEmpty(true);
-        
-        given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(테이블));
-        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).willReturn(false);
+        given(orderTableRepository.findById(nullable(Long.class))).willReturn(Optional.of(테이블));
+        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(nullable(Long.class), anyList())).willReturn(false);
         given(orderTableRepository.save(테이블)).willReturn(빈_테이블);
     
         // when
@@ -104,17 +89,12 @@ public class TableServiceTest {
     @Test
     void 등록되지않은_테이블_빈_테이블_변경_불가() {
         // given
-        TableGroup 단체지정 = new TableGroup();
-        단체지정.setId(1L);
-        
-        OrderTable 등록되지_않은_테이블 = new OrderTable();
-        등록되지_않은_테이블.setId(1L);
-        등록되지_않은_테이블.setTableGroup(단체지정);
-        등록되지_않은_테이블.setNumberOfGuests(3);
-        등록되지_않은_테이블.setEmpty(false);
+        TableGroup 단체지정 = TableGroup.from(new ArrayList<OrderTable>());
+        OrderTable 등록되지_않은_테이블 = OrderTable.of(단체지정, 3, false);
+        단체지정.setOrderTables(Arrays.asList(등록되지_않은_테이블));
         
         // when
-        when(orderTableRepository.findById(anyLong())).thenReturn(Optional.empty());
+        when(orderTableRepository.findById(nullable(Long.class))).thenReturn(Optional.empty());
         
         // then
         assertThatThrownBy(() -> {
@@ -128,15 +108,11 @@ public class TableServiceTest {
     @Test
     void 단체지정_테이블_빈_테이블_변경_불가() {
         // given
-        TableGroup 단체지정 = new TableGroup();
-        단체지정.setId(1L);
+        TableGroup 단체지정 = TableGroup.from(new ArrayList<OrderTable>());
+        OrderTable 테이블 = OrderTable.of(단체지정, 3, false);
+        단체지정.setOrderTables(Arrays.asList(테이블));
         
-        OrderTable 테이블 = new OrderTable();
-        테이블.setId(1L);
-        테이블.setTableGroup(단체지정);
-        테이블.setNumberOfGuests(3);
-        테이블.setEmpty(false);
-        given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(테이블));
+        given(orderTableRepository.findById(nullable(Long.class))).willReturn(Optional.of(테이블));
         
         // when, then
         assertThatThrownBy(() -> {
@@ -150,19 +126,12 @@ public class TableServiceTest {
     @Test
     void 조리중_식사중_테이블은_빈_테이블_변경_불가() {
         // given
-        OrderTable 테이블 = new OrderTable();
-        테이블.setId(1L);
-        테이블.setNumberOfGuests(3);
-        테이블.setEmpty(false);
-        
-        OrderTable 빈_테이블 = new OrderTable();
-        빈_테이블.setId(1L);
-        빈_테이블.setNumberOfGuests(3);
-        빈_테이블.setEmpty(true);
-        given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(테이블));
+        OrderTable 테이블 = OrderTable.of(null, 3, false);
+        OrderTable 빈_테이블 = OrderTable.of(null, 3, true);
+        given(orderTableRepository.findById(nullable(Long.class))).willReturn(Optional.of(테이블));
     
         // when
-        when(orderRepository.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).thenReturn(true);
+        when(orderRepository.existsByOrderTableIdAndOrderStatusIn(nullable(Long.class), anyList())).thenReturn(true);
         
         // then
         assertThatThrownBy(() -> {
@@ -176,15 +145,10 @@ public class TableServiceTest {
     @Test
     void 테이블_방문_손님_수_변경() {
         // given
-        OrderTable 테이블 = new OrderTable();
-        테이블.setId(1L);
-        테이블.setNumberOfGuests(5);
+        OrderTable 테이블 = OrderTable.of(null, 5, false);
+        OrderTable 손님_수_변경_테이블 = OrderTable.of(null, 3, false);
         
-        OrderTable 손님_수_변경_테이블 = new OrderTable();
-        손님_수_변경_테이블.setId(1L);
-        손님_수_변경_테이블.setNumberOfGuests(3);
-        
-        given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(테이블));
+        given(orderTableRepository.findById(nullable(Long.class))).willReturn(Optional.of(테이블));
         given(orderTableRepository.save(테이블)).willReturn(손님_수_변경_테이블);
     
         // when
@@ -198,9 +162,7 @@ public class TableServiceTest {
     @Test
     void 테이블_손님_수_0명_이상() {
         // given
-        OrderTable 테이블 = new OrderTable();
-        테이블.setId(1L);
-        테이블.setNumberOfGuests(-2);
+        OrderTable 테이블 = OrderTable.of(null, -2, false);
         
         // when, then
         assertThatThrownBy(() -> {
@@ -214,12 +176,10 @@ public class TableServiceTest {
     @Test
     void 등록된_테이블만_방문_손님_수_변경() {
         // given
-        OrderTable 등록되지_않은_테이블 = new OrderTable();
-        등록되지_않은_테이블.setId(1L);
-        등록되지_않은_테이블.setNumberOfGuests(3);
+        OrderTable 등록되지_않은_테이블 = OrderTable.of(null, 3, false);
         
         // when
-        when(orderTableRepository.findById(anyLong())).thenReturn(Optional.empty());
+        when(orderTableRepository.findById(nullable(Long.class))).thenReturn(Optional.empty());
         
         // then
         assertThatThrownBy(() -> {

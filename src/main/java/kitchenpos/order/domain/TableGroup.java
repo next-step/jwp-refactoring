@@ -18,7 +18,18 @@ public class TableGroup {
     private LocalDateTime createdDate;
     
     private List<OrderTable> orderTables;
-
+    
+    protected TableGroup() {
+    }
+    
+    private TableGroup(List<OrderTable> orderTables) {
+        this.orderTables = orderTables;
+    }
+    
+    public static TableGroup from(List<OrderTable> orderTables) {
+        return new TableGroup(orderTables);
+    }
+    
     public Long getId() {
         return id;
     }

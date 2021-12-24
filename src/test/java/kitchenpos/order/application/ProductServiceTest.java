@@ -32,10 +32,7 @@ public class ProductServiceTest {
     @Test
     void 상품_등록() {
         // given
-        Product 상품 = new Product();
-        상품.setId(1L);
-        상품.setName("치킨");
-        상품.setPrice(new BigDecimal("18000"));
+        Product 상품 = Product.of("치킨", new BigDecimal("18000"));
         given(productRepository.save(상품)).willReturn(상품);
 
         // when
@@ -50,11 +47,8 @@ public class ProductServiceTest {
     @Test
     void 상품_등록_가격_필수() {
         // given
-        Product 가격없는_상품 = new Product();
-        가격없는_상품.setId(1L);
-        가격없는_상품.setName("치킨");
-        가격없는_상품.setPrice(null);
-
+        Product 가격없는_상품 = Product.of("치킨", null);
+    
         // when, then
         assertThatThrownBy(() -> {
             productService.create(가격없는_상품);
@@ -66,39 +60,29 @@ public class ProductServiceTest {
     @Test
     void 상품_등록_가격_0원_이상() {
         // given
-        Product 마이너스_가격_상품 = new Product();
-        마이너스_가격_상품.setId(1L);
-        마이너스_가격_상품.setName("치킨");
-        마이너스_가격_상품.setPrice(new BigDecimal("-6000"));
-
+        Product 마이너스_가격_상품 = Product.of("치킨", new BigDecimal("-6000"));
+    
         // when, then
         assertThatThrownBy(() -> {
             productService.create(마이너스_가격_상품);
         }).isInstanceOf(IllegalArgumentException.class)
         .hasMessage("상품은 0원 이상이어야 합니다");
     }
-
+    
     @DisplayName("상품 목록을 조회할 수 있다")
     @Test
     void 상품_목록_조회() {
         // given
-        Product 첫번째_상품 = new Product();
-        첫번째_상품.setId(1L);
-        첫번째_상품.setName("치킨");
-        첫번째_상품.setPrice(new BigDecimal("18000"));
-        
-        Product 두번째_상품 = new Product();
-        두번째_상품.setId(2L);
-        두번째_상품.setName("삼겹살");
-        두번째_상품.setPrice(new BigDecimal("20000"));
+        Product 첫번째_상품 = Product.of("치킨", new BigDecimal("18000"));
+        Product 두번째_상품 = Product.of("삼겹살", new BigDecimal("20000"));
         
         given(productRepository.findAll()).willReturn(Arrays.asList(첫번째_상품, 두번째_상품));
-
+    
         // when
         List<Product> 상품_목록 = productService.list();
-
+    
         // then
         assertThat(상품_목록).containsExactly(첫번째_상품, 두번째_상품);
     }
-
+    
 }

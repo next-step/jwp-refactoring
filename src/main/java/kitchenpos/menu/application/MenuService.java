@@ -43,7 +43,7 @@ public class MenuService {
             throw new IllegalArgumentException("메뉴 가격은 0원 이상이어야 합니다");
         }
 
-        if (!menuGroupRepository.existsById(menu.getMenuGroup().getId())) {
+        if (menu.getMenuGroup() == null || !menuGroupRepository.existsById(menu.getMenuGroup().getId())) {
             throw new IllegalArgumentException("해당하는 메뉴그룹이 없습니다");
         }
 

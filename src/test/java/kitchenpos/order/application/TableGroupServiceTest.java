@@ -4,10 +4,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.junit.jupiter.api.DisplayName;
@@ -42,19 +43,9 @@ public class TableGroupServiceTest {
     @Test
     void 단체지정_등록() {
         // given
-        TableGroup 단체지정 = new TableGroup();
-        단체지정.setId(1L);
-        
-        OrderTable 첫번째_테이블 = new OrderTable();
-        첫번째_테이블.setId(1L);
-        첫번째_테이블.setNumberOfGuests(3);
-        첫번째_테이블.setEmpty(true);
-        
-        OrderTable 두번째_테이블 = new OrderTable();
-        두번째_테이블.setId(2L);
-        두번째_테이블.setNumberOfGuests(5);
-        두번째_테이블.setEmpty(true);
-        
+        TableGroup 단체지정 = TableGroup.from(new ArrayList<OrderTable>());
+        OrderTable 첫번째_테이블 = OrderTable.of(null, 3, true);
+        OrderTable 두번째_테이블 = OrderTable.of(null, 5, true);
         단체지정.setOrderTables(Arrays.asList(첫번째_테이블, 두번째_테이블));
         
         given(orderTableRepository.findAllByIdIn(anyList())).willReturn(단체지정.getOrderTables());
@@ -71,9 +62,7 @@ public class TableGroupServiceTest {
     @Test
     void 단체지정_등록_두_테이블_이상만() {
         // given
-        TableGroup 단체지정 = new TableGroup();
-        단체지정.setId(1L);
-        단체지정.setOrderTables(Arrays.asList(new OrderTable()));
+        TableGroup 단체지정 = TableGroup.from(Arrays.asList(OrderTable.of(null, 3, true)));
     
         // when, then
         assertThatThrownBy(() -> {
@@ -86,9 +75,9 @@ public class TableGroupServiceTest {
     @Test
     void 단체지정_등록_등록된_주문테이블만() {
         // given
-        TableGroup 단체지정 = new TableGroup();
-        단체지정.setId(1L);
-        단체지정.setOrderTables(Arrays.asList(new OrderTable(), new OrderTable()));
+        OrderTable 첫번째_테이블 = OrderTable.of(null, 3, true);
+        OrderTable 두번째_테이블 = OrderTable.of(null, 5, true);
+        TableGroup 단체지정 = TableGroup.from(Arrays.asList(첫번째_테이블, 두번째_테이블));
         
         // when
         when(orderTableRepository.findAllByIdIn(anyList())).thenReturn(Arrays.asList());
@@ -104,28 +93,20 @@ public class TableGroupServiceTest {
     @Test
     void 단체지정_해제() {
         // given
-        TableGroup 단체지정 = new TableGroup();
-        단체지정.setId(1L);
+        OrderTable 첫번째_테이블 = OrderTable.of(null, 3, false);
+        OrderTable 두번째_테이블 = OrderTable.of(null, 5, false);
         
-        OrderTable 첫번째_테이블 = new OrderTable();
-        첫번째_테이블.setId(1L);
-        첫번째_테이블.setEmpty(false);
+        TableGroup 단체지정 = TableGroup.from(Arrays.asList(첫번째_테이블, 두번째_테이블));
         첫번째_테이블.setTableGroup(단체지정);
-        
-        OrderTable 두번째_테이블 = new OrderTable();
-        두번째_테이블.setId(2L);
-        두번째_테이블.setEmpty(false);
         두번째_테이블.setTableGroup(단체지정);
         
-        단체지정.setOrderTables(Arrays.asList(첫번째_테이블, 두번째_테이블));
-        
-        given(orderTableRepository.findAllByTableGroupId(anyLong())).willReturn(Arrays.asList(첫번째_테이블, 두번째_테이블));
+        given(orderTableRepository.findAllByTableGroupId(nullable(Long.class))).willReturn(Arrays.asList(첫번째_테이블, 두번째_테이블));
         given(orderTableRepository.save(첫번째_테이블)).willReturn(첫번째_테이블);
         given(orderTableRepository.save(두번째_테이블)).willReturn(두번째_테이블);
-
+    
         // when
         tableGroupService.ungroup(단체지정.getId());
-
+    
         // then
         assertAll(
                 () -> assertThat(첫번째_테이블.getTableGroup()).isNull(),
@@ -137,10 +118,9 @@ public class TableGroupServiceTest {
     @Test
     void 단체지정_해제_조리중_식사중인_테이블_불가() {
         // given
-        TableGroup 단체지정 = new TableGroup();
-        단체지정.setId(1L);
+        TableGroup 단체지정 = TableGroup.from(new ArrayList<OrderTable>());
         given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(true);
-
+    
         // when, then
         assertThatThrownBy(() -> {
             tableGroupService.ungroup(단체지정.getId());

@@ -46,10 +46,10 @@ public class TableGroupService {
         if (orderTables.size() != savedOrderTables.size()) {
             throw new IllegalArgumentException("등록된 주문 테이블만 단체지정 할 수 있습니다");
         }
-
+        
         for (final OrderTable savedOrderTable : savedOrderTables) {
             if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroup())) {
-                throw new IllegalArgumentException();
+                throw new IllegalArgumentException("지정할 주문 테이블은 단체지정이 되어 있지 않아야 합니다");
             }
         }
 

@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.persistence.Column;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -22,13 +24,27 @@ public class Order {
     @JoinColumn(name = "order_table_id")
     private OrderTable orderTable;
     
-    private String orderStatus;
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus;
     
     @CreatedDate
     @Column(nullable = false, updatable = false)
     private LocalDateTime orderedTime;
     
     private List<OrderLineItem> orderLineItems;
+    
+    protected Order() {
+    }
+    
+    public Order(OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
+        this.orderTable = orderTable;
+        this.orderStatus = orderStatus;
+        this.orderLineItems = orderLineItems;
+    }
+
+    public static Order of(OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
+        return new Order(orderTable, orderStatus, orderLineItems);
+    }
 
     public Long getId() {
         return id;
@@ -45,12 +61,12 @@ public class Order {
     public void setOrderTable(OrderTable orderTable) {
         this.orderTable = orderTable;
     }
-
-    public String getOrderStatus() {
+    
+    public OrderStatus getOrderStatus() {
         return orderStatus;
     }
 
-    public void setOrderStatus(final String orderStatus) {
+    public void setOrderStatus(OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
     }
 

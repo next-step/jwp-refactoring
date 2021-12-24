@@ -21,6 +21,19 @@ public class OrderTable {
     private int numberOfGuests;
     
     private boolean empty;
+    
+    protected OrderTable() {
+    }
+    
+    private OrderTable(TableGroup tableGroup, int numberOfGuests, boolean empty) {
+        this.tableGroup = tableGroup;
+        this.numberOfGuests = numberOfGuests;
+        this.empty = empty;
+    }
+
+    public static OrderTable of(TableGroup tableGroup, int numberOfGuests, boolean empty) {
+        return new OrderTable(tableGroup, numberOfGuests, empty);
+    }
 
     public Long getId() {
         return id;

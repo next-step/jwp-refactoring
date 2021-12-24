@@ -29,9 +29,7 @@ public class MenuGroupServiceTest {
     @Test
     void 메뉴그룹_등록() {
         // given
-        MenuGroup 메뉴그룹 = new MenuGroup();
-        메뉴그룹.setId(1L);
-        메뉴그룹.setName("한식");
+        MenuGroup 메뉴그룹 = MenuGroup.from("한식");
         given(menuGroupRepository.save(메뉴그룹)).willReturn(메뉴그룹);
 
         // when
@@ -46,13 +44,8 @@ public class MenuGroupServiceTest {
     @Test
     void 메뉴그룹_목록_조회() {
         // given
-        MenuGroup 첫번째_메뉴그룹 = new MenuGroup();
-        첫번째_메뉴그룹.setId(1L);
-        첫번째_메뉴그룹.setName("한식");
-        
-        MenuGroup 두번째_메뉴그룹 = new MenuGroup();
-        두번째_메뉴그룹.setId(2L);
-        두번째_메뉴그룹.setName("양식");
+        MenuGroup 첫번째_메뉴그룹 = MenuGroup.from("한식");
+        MenuGroup 두번째_메뉴그룹 = MenuGroup.from("양식");
         
         given(menuGroupRepository.findAll()).willReturn(Arrays.asList(첫번째_메뉴그룹, 두번째_메뉴그룹));
 
