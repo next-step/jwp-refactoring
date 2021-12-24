@@ -1,11 +1,11 @@
 package kitchenpos.order.ui;
 
-import kitchenpos.order.application.TableGroupService;
-import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.domain.TableGroup;
 import kitchenpos.common.fixtrue.OrderTableFixture;
 import kitchenpos.common.fixtrue.TableGroupFixture;
 import kitchenpos.common.ui.RestControllerTest;
+import kitchenpos.order.application.TableGroupService;
+import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.domain.TableGroup;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;

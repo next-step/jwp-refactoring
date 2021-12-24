@@ -77,19 +77,6 @@ class TableGroupServiceTest {
     }
 
     @Test
-    void 단체_지정_시_주문_테이블은_두_테이블_이상이어야_한다() {
-        // given
-        단체_지정_테이블.setOrderTables(new ArrayList<>());
-
-        // when
-        ThrowingCallable throwingCallable = () -> tableGroupService.create(단체_지정_테이블);
-
-        // then
-        assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(throwingCallable);
-    }
-
-    @Test
     void 단체_지정_시_등록하려는_주문_테이블은_주문테이블에_등록되어있어야_한다() {
         // given
         List<Long> orderTableIds = 단체_지정_테이블.getOrderTables().stream()

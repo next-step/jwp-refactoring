@@ -11,10 +11,6 @@ public class TableGroupFixture {
     }
 
     public static TableGroup of(Long id, OrderTable... orderTables) {
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.setId(id);
-        tableGroup.setCreatedDate(null);
-        tableGroup.setOrderTables(Arrays.asList(orderTables));
-        return tableGroup;
+        return TableGroup.of(id, Arrays.asList(orderTables));
     }
 }
