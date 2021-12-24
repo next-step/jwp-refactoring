@@ -13,12 +13,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.domain.table.OrderTable;
-import kitchenpos.domain.table.OrderTableRepository;
-import kitchenpos.domain.tablegroup.TableGroup;
-import kitchenpos.event.tablegroup.GroupingOrderTableEvent;
-import kitchenpos.event.tablegroup.UngroupOrderTableEvent;
-import kitchenpos.vo.TableGroupId;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.common.event.GroupingOrderTableEvent;
+import kitchenpos.common.event.UngroupOrderTableEvent;
+import kitchenpos.common.vo.TableGroupId;
 
 @ExtendWith(MockitoExtension.class)
 public class GroupingTableHandlerTest {

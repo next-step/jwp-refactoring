@@ -5,8 +5,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import kitchenpos.tablegroup.domain.TableGroup;
-import kitchenpos.tablegroup.vo.TableGroupId;
+import kitchenpos.common.vo.TableGroupId;
 
 public class OrderTableDomainTest {
     @DisplayName("주문테이블이 그룹이 해제된다.")
@@ -16,9 +15,8 @@ public class OrderTableDomainTest {
         OrderTable 주문테이블1 = OrderTable.of(0, true);
         OrderTable 주문테이블2 = OrderTable.of(0, true);
 
-        TableGroup 치킨_주문_단체테이블 = TableGroup.of(1L);       
-        주문테이블1.groupingTable(TableGroupId.of(치킨_주문_단체테이블));
-        주문테이블2.groupingTable(TableGroupId.of(치킨_주문_단체테이블));
+        주문테이블1.groupingTable(TableGroupId.of(1L));
+        주문테이블2.groupingTable(TableGroupId.of(1L));
 
         // when
         주문테이블1.unGroupTable();
@@ -32,13 +30,12 @@ public class OrderTableDomainTest {
     void group_ordertable() {
         // given
         OrderTable 주문테이블1 = OrderTable.of(0, true);
-        TableGroup 치킨_주문_단체테이블 = TableGroup.of(1L);       
 
         // when
-        주문테이블1.groupingTable(TableGroupId.of(치킨_주문_단체테이블.getId()));
+        주문테이블1.groupingTable(TableGroupId.of(1L));
 
         // then
-        Assertions.assertThat(주문테이블1.getTableGroupId().value()).isEqualTo(치킨_주문_단체테이블.getId());
+        Assertions.assertThat(주문테이블1.getTableGroupId().value()).isEqualTo(1L);
     }
 
     @DisplayName("주문테이블이 상태변경된다.")

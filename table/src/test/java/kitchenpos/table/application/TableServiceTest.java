@@ -19,7 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableDto;
-import kitchenpos.validation.TableValidator;
+import kitchenpos.table.domain.TableValidator;
 
 @ExtendWith(MockitoExtension.class)
 public class TableServiceTest {

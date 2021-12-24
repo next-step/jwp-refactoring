@@ -25,9 +25,9 @@ import kitchenpos.order.exception.HasNotCompletionOrderException;
 import kitchenpos.table.exception.EmptyOrderTableException;
 import kitchenpos.table.exception.HasOtherTableGroupException;
 import kitchenpos.table.exception.NegativeOfNumberOfGuestsException;
-import kitchenpos.ordertable.vo.OrderTableId;
-import kitchenpos.tablegroup.vo.TableGroupId;
-import kitchenpos.validation.TableValidator;
+import kitchenpos.common.vo.OrderTableId;
+import kitchenpos.common.vo.TableGroupId;
+import kitchenpos.table.domain.TableValidator;
 
 @ExtendWith(MockitoExtension.class)
 public class TableValidatorTest {
@@ -87,7 +87,7 @@ public class TableValidatorTest {
         OrderTable 치킨_주문테이블 = OrderTable.of(10, false);
 
         when(orderTableRepository.findById(nullable(Long.class))).thenReturn(Optional.of(치킨_주문테이블));
-        when(orderService.findByOrderTableId(nullable(Long.class))).thenReturn(Orders.of(OrderTableId.of(치킨_주문테이블), OrderStatus.MEAL));
+        when(orderService.findByOrderTableId(nullable(Long.class))).thenReturn(Orders.of(OrderTableId.of(치킨_주문테이블.getId()), OrderStatus.MEAL));
         
         // when
         // then

@@ -30,6 +30,7 @@ import kitchenpos.menu.exception.NotCorrectMenuPriceException;
 import kitchenpos.menugroup.exception.NotFoundMenuGroupException;
 import kitchenpos.product.exception.NotFoundProductException;
 import kitchenpos.common.vo.MenuGroupId;
+import kitchenpos.common.vo.ProductId;
 
 @ExtendWith(MockitoExtension.class)
 public class MenuValidatorTest {
@@ -50,13 +51,13 @@ public class MenuValidatorTest {
         Product 치킨무 = Product.of(2L, "치킨무", Price.of(1_000));
         Product 코카콜라 = Product.of(3L, "코카콜라", Price.of(3_000));
 
-        MenuProduct 뿌링클콤보_뿌링클치킨 = MenuProduct.of(뿌링클치킨, 1L);
-        MenuProduct 뿌링클콤보_치킨무 = MenuProduct.of(치킨무, 1L);
-        MenuProduct 뿌링클콤보_코카콜라 = MenuProduct.of(코카콜라, 1L);
+        MenuProduct 뿌링클콤보_뿌링클치킨 = MenuProduct.of(ProductId.of(뿌링클치킨.getId()), 1L);
+        MenuProduct 뿌링클콤보_치킨무 = MenuProduct.of(ProductId.of(치킨무.getId()), 1L);
+        MenuProduct 뿌링클콤보_코카콜라 = MenuProduct.of(ProductId.of(코카콜라.getId()), 1L);
 
         MenuGroup 치킨_메뉴그룹 = MenuGroup.of("치킨");
 
-        Menu 뿌링클콤보 = Menu.of("뿌링클콤보", Price.of(18_000), MenuGroupId.of(치킨_메뉴그룹), MenuProducts.of(List.of(뿌링클콤보_뿌링클치킨, 뿌링클콤보_치킨무, 뿌링클콤보_코카콜라)));
+        Menu 뿌링클콤보 = Menu.of("뿌링클콤보", Price.of(18_000), MenuGroupId.of(치킨_메뉴그룹.getId()), MenuProducts.of(List.of(뿌링클콤보_뿌링클치킨, 뿌링클콤보_치킨무, 뿌링클콤보_코카콜라)));
 
         when(productService.findAllByIds(anyList())).thenReturn(List.of(뿌링클치킨, 치킨무));
         when(menuGroupService.findById(nullable(Long.class))).thenReturn(치킨_메뉴그룹);
@@ -75,13 +76,13 @@ public class MenuValidatorTest {
         Product 치킨무 = Product.of(2L, "치킨무", Price.of(1_000));
         Product 코카콜라 = Product.of(3L, "코카콜라", Price.of(3_000));
 
-        MenuProduct 뿌링클콤보_뿌링클치킨 = MenuProduct.of(뿌링클치킨, 1L);
-        MenuProduct 뿌링클콤보_치킨무 = MenuProduct.of(치킨무, 1L);
-        MenuProduct 뿌링클콤보_코카콜라 = MenuProduct.of(코카콜라, 1L);
+        MenuProduct 뿌링클콤보_뿌링클치킨 = MenuProduct.of(ProductId.of(뿌링클치킨.getId()), 1L);
+        MenuProduct 뿌링클콤보_치킨무 = MenuProduct.of(ProductId.of(치킨무.getId()), 1L);
+        MenuProduct 뿌링클콤보_코카콜라 = MenuProduct.of(ProductId.of(코카콜라.getId()), 1L);
 
         MenuGroup 치킨_메뉴그룹 = MenuGroup.of("치킨");
 
-        Menu 뿌링클콤보 = Menu.of("뿌링클콤보", Price.of(28_000), MenuGroupId.of(치킨_메뉴그룹), MenuProducts.of(List.of(뿌링클콤보_뿌링클치킨, 뿌링클콤보_치킨무, 뿌링클콤보_코카콜라)));
+        Menu 뿌링클콤보 = Menu.of("뿌링클콤보", Price.of(28_000), MenuGroupId.of(치킨_메뉴그룹.getId()), MenuProducts.of(List.of(뿌링클콤보_뿌링클치킨, 뿌링클콤보_치킨무, 뿌링클콤보_코카콜라)));
 
         when(productService.findAllByIds(anyList())).thenReturn(List.of(뿌링클치킨, 치킨무, 코카콜라));
         when(menuGroupService.findById(nullable(Long.class))).thenReturn(치킨_메뉴그룹);
@@ -98,7 +99,7 @@ public class MenuValidatorTest {
     void exception_createMenu_containNotExistMenuGroup() {
         // given
         MenuGroup 치킨_메뉴그룹 = MenuGroup.of("치킨");
-        Menu 뿌링클콤보 = Menu.of("뿌링클콤보", Price.of(18_000), MenuGroupId.of(치킨_메뉴그룹));
+        Menu 뿌링클콤보 = Menu.of("뿌링클콤보", Price.of(18_000), MenuGroupId.of(치킨_메뉴그룹.getId()));
 
         when(menuGroupService.findById(nullable(Long.class))).thenThrow(NotFoundMenuGroupException.class);
 

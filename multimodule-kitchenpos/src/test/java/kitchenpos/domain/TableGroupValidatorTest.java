@@ -129,8 +129,8 @@ public class TableGroupValidatorTest {
         OrderTable 치킨3_주문_단체테이블 =  OrderTable.of(0, true);
 
         TableGroup 단체지정테이블 = TableGroup.of();
-        치킨_주문_단체테이블.groupingTable(TableGroupId.of(단체지정테이블));
-        치킨3_주문_단체테이블.groupingTable(TableGroupId.of(단체지정테이블));
+        치킨_주문_단체테이블.groupingTable(TableGroupId.of(단체지정테이블.getId()));
+        치킨3_주문_단체테이블.groupingTable(TableGroupId.of(단체지정테이블.getId()));
 
         List<OrderTable> 조회된_주문테이블_리스트 = List.of(치킨_주문_단체테이블, 치킨2_주문_단체테이블);
 
