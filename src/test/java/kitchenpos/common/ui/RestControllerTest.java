@@ -8,7 +8,7 @@ public class RestControllerTest {
 
     public String asJsonString(Object obj) {
         try {
-            return new ObjectMapper().writeValueAsString(obj);
+            return new ObjectMapper().findAndRegisterModules().writeValueAsString(obj);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
