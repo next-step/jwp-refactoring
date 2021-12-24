@@ -4,7 +4,7 @@ import kitchenpos.order.application.OrderService;
 import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTables;
 import kitchenpos.tablegroup.domain.TableGroup;
-import kitchenpos.tablegroup.domain.TableGroupDao;
+import kitchenpos.tablegroup.domain.TableGroupRepository;
 import kitchenpos.tablegroup.dto.OrderTableIdRequests;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
@@ -18,16 +18,16 @@ import java.util.NoSuchElementException;
 @Service
 public class TableGroupService {
 
-    private final TableGroupDao tableGroupDao;
+    private final TableGroupRepository tableGroupRepository;
     private final TableService tableService;
     private final OrderService orderService;
 
     public TableGroupService(
-            TableGroupDao tableGroupDao
+            TableGroupRepository tableGroupRepository
             , TableService tableService
             , OrderService orderService
     ) {
-        this.tableGroupDao = tableGroupDao;
+        this.tableGroupRepository = tableGroupRepository;
         this.tableService = tableService;
         this.orderService = orderService;
     }
@@ -41,7 +41,7 @@ public class TableGroupService {
 
         TableGroup tableGroup = TableGroup.of(LocalDateTime.now());
         tableGroup.addOrderTable(persistOrderTables.getOrderTables());
-        TableGroup persistTableGroup = tableGroupDao.save(tableGroup);
+        TableGroup persistTableGroup = tableGroupRepository.save(tableGroup);
         return TableGroupResponse.of(persistTableGroup);
     }
 
@@ -57,7 +57,7 @@ public class TableGroupService {
     }
 
     public TableGroup findById(Long tableGroupId) {
-        return tableGroupDao.findById(tableGroupId)
+        return tableGroupRepository.findById(tableGroupId)
                 .orElseThrow(NoSuchElementException::new);
     }
 }

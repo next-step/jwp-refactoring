@@ -6,8 +6,8 @@ import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.fixture.MenuFixture;
 import kitchenpos.menu.fixture.MenuProductFixture;
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderDao;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.ChangeOrderStatusRequest;
 import kitchenpos.order.dto.OrderLineItemRequest;
@@ -47,7 +47,7 @@ public class OrderServiceTest {
     private OrderService orderService;
 
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
 
     @Mock
     private MenuService menuService;
@@ -82,7 +82,7 @@ public class OrderServiceTest {
                 일반_테이블.getId(), Arrays.asList(OrderLineItemRequest.of(주문_항목.getMenu().getId(), 주문_항목.getQuantity().getQuantity())));
 
         given(tableService.findById(any(Long.class))).willReturn(일반_테이블);
-        given(orderDao.save(any(Order.class))).willReturn(신규_주문);
+        given(orderRepository.save(any(Order.class))).willReturn(신규_주문);
 
         // when
         OrderResponse 생성된_주문 = orderService.create(orderRequest);
@@ -134,7 +134,7 @@ public class OrderServiceTest {
     @Test
     void list() {
         // given
-        given(orderDao.findAll()).willReturn(Arrays.asList(신규_주문));
+        given(orderRepository.findAll()).willReturn(Arrays.asList(신규_주문));
 
         // when
         List<OrderResponse> 조회된_주문_목록 = orderService.list();
@@ -149,7 +149,7 @@ public class OrderServiceTest {
         // given
         ChangeOrderStatusRequest changeOrderStatusRequest = ChangeOrderStatusRequest.of(OrderStatus.MEAL.name());
 
-        given(orderDao.findById(any(Long.class))).willReturn(Optional.of(신규_주문));
+        given(orderRepository.findById(any(Long.class))).willReturn(Optional.of(신규_주문));
 
         // when
         OrderResponse 수정된_주문 = orderService.changeOrderStatus(신규_주문.getId(), changeOrderStatusRequest);
@@ -164,7 +164,7 @@ public class OrderServiceTest {
         // given
         ChangeOrderStatusRequest changeOrderStatusRequest = ChangeOrderStatusRequest.of(OrderStatus.MEAL.name());
 
-        given(orderDao.findById(any(Long.class))).willReturn(Optional.of(완료_주문));
+        given(orderRepository.findById(any(Long.class))).willReturn(Optional.of(완료_주문));
 
         // when & then
         assertThatIllegalArgumentException()

@@ -1,7 +1,7 @@
 package kitchenpos.menugroup.application;
 
 import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.menugroup.domain.MenuGroupDao;
+import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.menugroup.dto.MenuGroupRequest;
 import kitchenpos.menugroup.dto.MenuGroupResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -27,7 +27,7 @@ public class MenuGroupServiceTest {
     private MenuGroupService menuGroupService;
 
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
 
     @DisplayName("메뉴 그룹 생성 테스트")
     @Test
@@ -35,7 +35,7 @@ public class MenuGroupServiceTest {
         // given
         MenuGroupRequest 요청_메뉴_그룹 = MenuGroupRequest.of("추천_메뉴_그룹");
 
-        given(menuGroupDao.save(any(MenuGroup.class))).willReturn(추천_메뉴_그룹);
+        given(menuGroupRepository.save(any(MenuGroup.class))).willReturn(추천_메뉴_그룹);
 
         // when
         MenuGroupResponse 생성된_메뉴_그룹 = menuGroupService.create(요청_메뉴_그룹);
@@ -48,7 +48,7 @@ public class MenuGroupServiceTest {
     @Test
     void list() {
         // given
-        given(menuGroupDao.findAll()).willReturn(Arrays.asList(추천_메뉴_그룹, 시즌_메뉴_그룹));
+        given(menuGroupRepository.findAll()).willReturn(Arrays.asList(추천_메뉴_그룹, 시즌_메뉴_그룹));
 
         // when
         List<MenuGroupResponse> 조회된_메뉴_그룹_목록 = menuGroupService.list();

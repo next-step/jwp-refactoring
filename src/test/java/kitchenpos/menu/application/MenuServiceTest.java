@@ -1,8 +1,8 @@
 package kitchenpos.menu.application;
 
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuDao;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuProductResponse;
 import kitchenpos.menu.dto.MenuRequest;
@@ -38,7 +38,7 @@ public class MenuServiceTest {
     private MenuService menuService;
 
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
 
     @Mock
     private MenuGroupService menuGroupService;
@@ -66,7 +66,7 @@ public class MenuServiceTest {
 
         given(menuGroupService.findById(any(Long.class))).willReturn(추천_메뉴_그룹);
         given(productService.findById(any(Long.class))).willReturn(강정치킨);
-        given(menuDao.save(any(Menu.class))).willReturn(강정치킨_두마리_세트_메뉴);
+        given(menuRepository.save(any(Menu.class))).willReturn(강정치킨_두마리_세트_메뉴);
 
         // when
         MenuResponse 생성된_메뉴 = menuService.create(요청_메뉴);
@@ -138,7 +138,7 @@ public class MenuServiceTest {
     @Test
     void list() {
         // given
-        given(menuDao.findAll()).willReturn(Arrays.asList(강정치킨_두마리_세트_메뉴));
+        given(menuRepository.findAll()).willReturn(Arrays.asList(강정치킨_두마리_세트_메뉴));
 
         // when
         List<MenuResponse> 조회된_메뉴_목록 = menuService.list();

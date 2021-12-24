@@ -3,9 +3,9 @@ package kitchenpos.order.application;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderDao;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderLineItems;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.Quantity;
 import kitchenpos.order.dto.ChangeOrderStatusRequest;
@@ -28,15 +28,15 @@ import java.util.stream.Collectors;
 @Service
 public class OrderService {
 
-    private final OrderDao orderDao;
+    private final OrderRepository orderRepository;
     private final MenuService menuService;
     private final TableService tableService;
 
     public OrderService(
-            OrderDao orderDao
+            OrderRepository orderRepository
             , MenuService menuService
             , TableService tableService) {
-        this.orderDao = orderDao;
+        this.orderRepository = orderRepository;
         this.menuService = menuService;
         this.tableService = tableService;
     }
@@ -47,12 +47,12 @@ public class OrderService {
         OrderLineItems orderLineItems = OrderLineItems.of(getOrderLineItems(request.getOrderLineItems()));
 
         Order order = Order.of(orderTable, OrderStatus.COOKING, LocalDateTime.now(), orderLineItems);
-        Order persistOrder = orderDao.save(order);
+        Order persistOrder = orderRepository.save(order);
         return OrderResponse.of(persistOrder);
     }
 
     public List<OrderResponse> list() {
-        List<Order> persistOrders = orderDao.findAll();
+        List<Order> persistOrders = orderRepository.findAll();
 
         return persistOrders.stream()
                 .map(OrderResponse::of)
@@ -69,13 +69,13 @@ public class OrderService {
     }
 
     public Order findById(Long orderId) {
-        return orderDao.findById(orderId)
+        return orderRepository.findById(orderId)
                 .orElseThrow(NoSuchElementException::new);
     }
 
     public boolean isCookingOrMealExists(OrderTables orderTables) {
         List<OrderStatus> orderStatuses = Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL);
-        return orderDao.existsByOrderTableInAndOrderStatusIn(orderTables.getOrderTables(), orderStatuses);
+        return orderRepository.existsByOrderTableInAndOrderStatusIn(orderTables.getOrderTables(), orderStatuses);
     }
 
     private List<OrderLineItem> getOrderLineItems(List<OrderLineItemRequest> orderLineItemRequests) {

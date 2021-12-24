@@ -1,8 +1,8 @@
 package kitchenpos.table.application;
 
-import kitchenpos.order.domain.OrderDao;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableDao;
+import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.ChangeEmptyRequest;
 import kitchenpos.table.dto.ChangeNumberOfGuestsRequest;
 import kitchenpos.table.dto.OrderTableRequest;
@@ -32,10 +32,10 @@ public class TableServiceTest {
     private TableService tableService;
 
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
 
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @DisplayName("테이블 생성 성공 테스트")
     @Test
@@ -43,7 +43,7 @@ public class TableServiceTest {
         // given
         OrderTableRequest 요청_테이블 = OrderTableRequest.of(0, true);
 
-        given(orderTableDao.save(any(OrderTable.class))).willReturn(테이블_그룹에_속해있지_않은_테이블);
+        given(orderTableRepository.save(any(OrderTable.class))).willReturn(테이블_그룹에_속해있지_않은_테이블);
 
         // when
         OrderTableResponse 생성된_테이블 = tableService.create(요청_테이블);
@@ -56,7 +56,7 @@ public class TableServiceTest {
     @Test
     void list() {
         // given
-        given(orderTableDao.findAll()).willReturn(Arrays.asList(테이블_그룹에_속해있지_않은_테이블));
+        given(orderTableRepository.findAll()).willReturn(Arrays.asList(테이블_그룹에_속해있지_않은_테이블));
 
         // when
         List<OrderTableResponse> 조회된_테이블_목록 = tableService.list();
@@ -71,8 +71,8 @@ public class TableServiceTest {
         // given
         ChangeEmptyRequest 요청_테이블 = ChangeEmptyRequest.of(false);
 
-        given(orderTableDao.findById(any(Long.class))).willReturn(Optional.of(테이블_그룹에_속해있지_않은_테이블));
-        given(orderDao.existsByOrderTableAndOrderStatusIn(any(OrderTable.class), anyList())).willReturn(false);
+        given(orderTableRepository.findById(any(Long.class))).willReturn(Optional.of(테이블_그룹에_속해있지_않은_테이블));
+        given(orderRepository.existsByOrderTableAndOrderStatusIn(any(OrderTable.class), anyList())).willReturn(false);
 
         // when
         OrderTableResponse 수정된_테이블 = tableService.changeEmpty(테이블_그룹에_속해있지_않은_테이블.getId(), 요청_테이블);
@@ -87,7 +87,7 @@ public class TableServiceTest {
         // given
         ChangeEmptyRequest 요청_테이블 = ChangeEmptyRequest.of(false);
 
-        given(orderTableDao.findById(any(Long.class))).willReturn(Optional.of(테이블_그룹에_속해있는_테이블));
+        given(orderTableRepository.findById(any(Long.class))).willReturn(Optional.of(테이블_그룹에_속해있는_테이블));
 
         // when & then
         assertThatIllegalArgumentException()
@@ -100,8 +100,8 @@ public class TableServiceTest {
         // given
         ChangeEmptyRequest 요청_테이블 = ChangeEmptyRequest.of(false);
 
-        given(orderTableDao.findById(any(Long.class))).willReturn(Optional.of(테이블_그룹에_속해있지_않은_테이블));
-        given(orderDao.existsByOrderTableAndOrderStatusIn(any(OrderTable.class), anyList())).willReturn(true);
+        given(orderTableRepository.findById(any(Long.class))).willReturn(Optional.of(테이블_그룹에_속해있지_않은_테이블));
+        given(orderRepository.existsByOrderTableAndOrderStatusIn(any(OrderTable.class), anyList())).willReturn(true);
 
         // when & then
         assertThatIllegalArgumentException()
@@ -114,7 +114,7 @@ public class TableServiceTest {
         // given
         ChangeNumberOfGuestsRequest 요청_테이블 = ChangeNumberOfGuestsRequest.of(4);
 
-        given(orderTableDao.findById(any(Long.class))).willReturn(Optional.of(비어있지_않은_테이블));
+        given(orderTableRepository.findById(any(Long.class))).willReturn(Optional.of(비어있지_않은_테이블));
 
         // when
         OrderTableResponse 수정된_테이블 = tableService.changeNumberOfGuests(비어있지_않은_테이블.getId(), 요청_테이블);
@@ -140,7 +140,7 @@ public class TableServiceTest {
         // given
         ChangeNumberOfGuestsRequest 요청_테이블 = ChangeNumberOfGuestsRequest.of(4);
 
-        given(orderTableDao.findById(any(Long.class))).willReturn(Optional.of(비어있는_테이블));
+        given(orderTableRepository.findById(any(Long.class))).willReturn(Optional.of(비어있는_테이블));
 
         // when & then
         assertThatIllegalArgumentException()

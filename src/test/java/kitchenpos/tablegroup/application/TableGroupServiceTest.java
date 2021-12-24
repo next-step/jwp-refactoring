@@ -6,7 +6,7 @@ import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.fixture.TableFixture;
 import kitchenpos.tablegroup.domain.TableGroup;
-import kitchenpos.tablegroup.domain.TableGroupDao;
+import kitchenpos.tablegroup.domain.TableGroupRepository;
 import kitchenpos.tablegroup.dto.OrderTableIdRequest;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
@@ -37,7 +37,7 @@ public class TableGroupServiceTest {
     private TableGroupService tableGroupService;
 
     @Mock
-    private TableGroupDao tableGroupDao;
+    private TableGroupRepository tableGroupRepository;
 
     @Mock
     private TableService tableService;
@@ -73,7 +73,7 @@ public class TableGroupServiceTest {
         TableGroupRequest 요청_테이블_그룹 = TableGroupRequest.of(Arrays.asList(OrderTableIdRequest.of(테이블1.getId()), OrderTableIdRequest.of(테이블2.getId())));
 
         given(tableService.findAllByIdIn(anyList())).willReturn(Arrays.asList(테이블1, 테이블2));
-        given(tableGroupDao.save(any(TableGroup.class))).willReturn(회사A_단체_테이블);
+        given(tableGroupRepository.save(any(TableGroup.class))).willReturn(회사A_단체_테이블);
 
         // when
         TableGroupResponse 생성된_테이블_그룹 = tableGroupService.create(요청_테이블_그룹);
@@ -138,7 +138,7 @@ public class TableGroupServiceTest {
     @Test
     void ungroup_success() {
         // given
-        given(tableGroupDao.findById(any(Long.class))).willReturn(Optional.of(TableGroup.of(LocalDateTime.now())));
+        given(tableGroupRepository.findById(any(Long.class))).willReturn(Optional.of(TableGroup.of(LocalDateTime.now())));
         given(tableService.findAllByTableGroup(any(TableGroup.class))).willReturn(Arrays.asList(그룹에_속해있는_테이블1, 그룹에_속해있는_테이블2));
         given(orderService.isCookingOrMealExists(any(OrderTables.class))).willReturn(false);
 
@@ -156,7 +156,7 @@ public class TableGroupServiceTest {
     @Test
     void ungroup_failure_orderStatus() {
         // given
-        given(tableGroupDao.findById(any(Long.class))).willReturn(Optional.of(회사B_단체_테이블));
+        given(tableGroupRepository.findById(any(Long.class))).willReturn(Optional.of(회사B_단체_테이블));
         given(tableService.findAllByTableGroup(any(TableGroup.class))).willReturn(Arrays.asList(그룹에_속해있는_테이블1, 그룹에_속해있는_테이블2));
         given(orderService.isCookingOrMealExists(any(OrderTables.class))).willReturn(true);
 

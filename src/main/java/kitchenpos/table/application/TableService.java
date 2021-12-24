@@ -1,11 +1,11 @@
 package kitchenpos.table.application;
 
-import kitchenpos.order.domain.OrderDao;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.Empty;
 import kitchenpos.table.domain.NumberOfGuests;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableDao;
+import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.ChangeEmptyRequest;
 import kitchenpos.table.dto.ChangeNumberOfGuestsRequest;
 import kitchenpos.table.dto.OrderTableRequest;
@@ -23,14 +23,14 @@ import java.util.stream.Collectors;
 @Service
 public class TableService {
 
-    private final OrderDao orderDao;
-    private final OrderTableDao orderTableDao;
+    private final OrderRepository orderRepository;
+    private final OrderTableRepository orderTableRepository;
 
     public TableService(
-            OrderDao orderDao
-            , OrderTableDao orderTableDao) {
-        this.orderDao = orderDao;
-        this.orderTableDao = orderTableDao;
+            OrderRepository orderRepository
+            , OrderTableRepository orderTableRepository) {
+        this.orderRepository = orderRepository;
+        this.orderTableRepository = orderTableRepository;
     }
 
     @Transactional
@@ -39,11 +39,11 @@ public class TableService {
         Empty empty = Empty.of(request.isEmpty());
         OrderTable orderTable = OrderTable.of(null, numberOfGuests, empty);
 
-        return OrderTableResponse.of(orderTableDao.save(orderTable));
+        return OrderTableResponse.of(orderTableRepository.save(orderTable));
     }
 
     public List<OrderTableResponse> list() {
-        final List<OrderTable> orderTables = orderTableDao.findAll();
+        final List<OrderTable> orderTables = orderTableRepository.findAll();
 
         return orderTables.stream()
                 .map(OrderTableResponse::of)
@@ -72,20 +72,20 @@ public class TableService {
     }
 
     public OrderTable findById(Long orderTableId) {
-        return orderTableDao.findById(orderTableId)
+        return orderTableRepository.findById(orderTableId)
                 .orElseThrow(NoSuchElementException::new);
     }
 
     public boolean isCookingOrMealExists(OrderTable orderTable) {
         List<OrderStatus> orderStatuses = Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL);
-        return orderDao.existsByOrderTableAndOrderStatusIn(orderTable, orderStatuses);
+        return orderRepository.existsByOrderTableAndOrderStatusIn(orderTable, orderStatuses);
     }
 
     public List<OrderTable> findAllByIdIn(List<Long> orderTableIds) {
-        return orderTableDao.findAllByIdIn(orderTableIds);
+        return orderTableRepository.findAllByIdIn(orderTableIds);
     }
 
     public List<OrderTable> findAllByTableGroup(TableGroup tableGroup) {
-        return orderTableDao.findAllByTableGroup(tableGroup);
+        return orderTableRepository.findAllByTableGroup(tableGroup);
     }
 }

@@ -1,7 +1,7 @@
 package kitchenpos.menugroup.application;
 
 import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.menugroup.domain.MenuGroupDao;
+import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.menugroup.dto.MenuGroupRequest;
 import kitchenpos.menugroup.dto.MenuGroupResponse;
 import org.springframework.stereotype.Service;
@@ -15,22 +15,22 @@ import java.util.stream.Collectors;
 @Service
 public class MenuGroupService {
 
-    private final MenuGroupDao menuGroupDao;
+    private final MenuGroupRepository menuGroupRepository;
 
-    public MenuGroupService(final MenuGroupDao menuGroupDao) {
-        this.menuGroupDao = menuGroupDao;
+    public MenuGroupService(final MenuGroupRepository menuGroupRepository) {
+        this.menuGroupRepository = menuGroupRepository;
     }
 
     @Transactional
     public MenuGroupResponse create(final MenuGroupRequest request) {
         MenuGroup menuGroup = request.toMenuGroup();
-        MenuGroup persistMenuGroup = menuGroupDao.save(menuGroup);
+        MenuGroup persistMenuGroup = menuGroupRepository.save(menuGroup);
 
         return MenuGroupResponse.of(persistMenuGroup);
     }
 
     public List<MenuGroupResponse> list() {
-        List<MenuGroup> menuGroups = menuGroupDao.findAll();
+        List<MenuGroup> menuGroups = menuGroupRepository.findAll();
 
         return menuGroups.stream()
                 .map(MenuGroupResponse::of)
@@ -38,7 +38,7 @@ public class MenuGroupService {
     }
 
     public MenuGroup findById(Long menuGroupId) {
-        return menuGroupDao.findById(menuGroupId)
+        return menuGroupRepository.findById(menuGroupId)
                 .orElseThrow(NoSuchElementException::new);
     }
 }

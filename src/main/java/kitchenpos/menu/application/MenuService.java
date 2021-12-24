@@ -3,9 +3,9 @@ package kitchenpos.menu.application;
 import kitchenpos.common.domain.Name;
 import kitchenpos.common.domain.Price;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuDao;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProducts;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
@@ -24,16 +24,16 @@ import java.util.stream.Collectors;
 @Service
 public class MenuService {
 
-    private final MenuDao menuDao;
+    private final MenuRepository menuRepository;
     private final MenuGroupService menuGroupService;
     private final ProductService productService;
 
     public MenuService(
-            MenuDao menuDao
+            MenuRepository menuRepository
             , MenuGroupService menuGroupService
             , ProductService productService
     ) {
-        this.menuDao = menuDao;
+        this.menuRepository = menuRepository;
         this.menuGroupService = menuGroupService;
         this.productService = productService;
     }
@@ -46,12 +46,12 @@ public class MenuService {
         MenuProducts menuProducts = MenuProducts.of(toMenuProducts(request.getMenuProducts()));
 
         Menu menu = Menu.of(name, price, menuGroup, menuProducts);
-        Menu persistMenu = menuDao.save(menu);
+        Menu persistMenu = menuRepository.save(menu);
         return MenuResponse.of(persistMenu);
     }
 
     public List<MenuResponse> list() {
-        final List<Menu> persistMenus = menuDao.findAll();
+        final List<Menu> persistMenus = menuRepository.findAll();
 
         return persistMenus.stream()
                 .map(MenuResponse::of)
@@ -59,7 +59,7 @@ public class MenuService {
     }
 
     public Menu findById(Long menuId) {
-        return menuDao.findById(menuId)
+        return menuRepository.findById(menuId)
                 .orElseThrow(NoSuchElementException::new);
     }
 
