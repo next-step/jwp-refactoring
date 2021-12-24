@@ -1,7 +1,7 @@
 package kitchenpos.common.fixtrue;
 
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.domain.TableGroup;
 
 import java.util.Arrays;
 

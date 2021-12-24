@@ -1,6 +1,6 @@
 package kitchenpos.common.fixtrue;
 
-import kitchenpos.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderLineItem;
 
 public class OrderLineItemFixture {
 

@@ -1,7 +1,7 @@
 package kitchenpos.common.fixtrue;
 
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
 
 import java.util.Arrays;
 
