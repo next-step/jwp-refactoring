@@ -10,25 +10,25 @@ import kitchenpos.domain.menu.Menu;
 @Embeddable
 public final class MenuId {
     @Column(name = "menu_id")
-    private final Long menuId;
+    private final Long id;
 
     protected MenuId() {
-        this.menuId = null;
+        this.id = null;
     }
 
-    private MenuId(Long menuId) {
-        this.menuId = menuId;
+    private MenuId(Long id) {
+        this.id = id;
     }
 
-    public static MenuId of(Long menuId) {
-        return new MenuId(menuId);
+    public static MenuId of(Long id) {
+        return new MenuId(id);
     }
     public static MenuId of(Menu menu) {
         return new MenuId(menu.getId());
     }
 
     public Long value() {
-        return this.menuId;
+        return this.id;
     }
 
     @Override
@@ -38,13 +38,13 @@ public final class MenuId {
         if (!(o instanceof MenuId)) {
             return false;
         }
-        MenuId menuId = (MenuId) o;
-        return Objects.equals(this.menuId, menuId.menuId);
+        MenuId id = (MenuId) o;
+        return Objects.equals(this.id, id.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(menuId);
+        return Objects.hashCode(id);
     }
 
 }

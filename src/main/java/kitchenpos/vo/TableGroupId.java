@@ -10,25 +10,25 @@ import kitchenpos.domain.tablegroup.TableGroup;
 @Embeddable
 public final class TableGroupId {
     @Column(name = "table_group_id")
-    private final Long tableGroupId;
+    private final Long id;
 
     protected TableGroupId() {
-        this.tableGroupId = null;
+        this.id = null;
     }
 
-    private TableGroupId(Long tableGroupId) {
-        this.tableGroupId = tableGroupId;
+    private TableGroupId(Long id) {
+        this.id = id;
     }
 
-    public static TableGroupId of(Long tableGroupId) {
-        return new TableGroupId(tableGroupId);
+    public static TableGroupId of(Long id) {
+        return new TableGroupId(id);
     }
     public static TableGroupId of(TableGroup tableGroup) {
         return new TableGroupId(tableGroup.getId());
     }
 
     public Long value() {
-        return this.tableGroupId;
+        return this.id;
     }
 
     @Override
@@ -38,12 +38,12 @@ public final class TableGroupId {
         if (!(o instanceof TableGroupId)) {
             return false;
         }
-        TableGroupId tableGroupId = (TableGroupId) o;
-        return Objects.equals(this.tableGroupId, tableGroupId.tableGroupId);
+        TableGroupId id = (TableGroupId) o;
+        return Objects.equals(this.id, id.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(tableGroupId);
+        return Objects.hashCode(id);
     }
 }

@@ -10,25 +10,25 @@ import kitchenpos.domain.table.OrderTable;
 @Embeddable
 public class OrderTableId {
     @Column(name = "order_table_id")
-    private final Long orderTableId;
+    private final Long id;
 
     protected OrderTableId() {
-        this.orderTableId = null;
+        this.id = null;
     }
 
-    private OrderTableId(Long orderTableId) {
-        this.orderTableId = orderTableId;
+    private OrderTableId(Long id) {
+        this.id = id;
     }
 
-    public static OrderTableId of(Long orderTableId) {
-        return new OrderTableId(orderTableId);
+    public static OrderTableId of(Long id) {
+        return new OrderTableId(id);
     }
     public static OrderTableId of(OrderTable menu) {
         return new OrderTableId(menu.getId());
     }
 
     public Long value() {
-        return this.orderTableId;
+        return this.id;
     }
 
     @Override
@@ -39,11 +39,11 @@ public class OrderTableId {
             return false;
         }
         OrderTableId orderTableId = (OrderTableId) o;
-        return Objects.equals(this.orderTableId, orderTableId.orderTableId);
+        return Objects.equals(this.id, orderTableId.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(orderTableId);
+        return Objects.hashCode(id);
     }
 }

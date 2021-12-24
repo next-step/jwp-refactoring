@@ -8,18 +8,18 @@ import kitchenpos.domain.menugroup.MenuGroup;
 @Embeddable
 public class MenuGroupId {
     @Column(name = "menu_group_id")
-    private final Long menuGroupId;
+    private final Long id;
 
     protected MenuGroupId() {
-        this.menuGroupId = null;
+        this.id = null;
     }
 
-    private MenuGroupId(Long menuGroupId) {
-        this.menuGroupId = menuGroupId;
+    private MenuGroupId(Long id) {
+        this.id = id;
     }
 
-    public static MenuGroupId of(Long menuGroupId) {
-        return new MenuGroupId(menuGroupId);
+    public static MenuGroupId of(Long id) {
+        return new MenuGroupId(id);
     }
 
     public static MenuGroupId of(MenuGroup menuGroup) {
@@ -27,6 +27,6 @@ public class MenuGroupId {
     }
 
     public Long value() {
-        return this.menuGroupId;
+        return this.id;
     }
 }
