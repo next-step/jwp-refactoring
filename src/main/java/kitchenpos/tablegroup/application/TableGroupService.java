@@ -26,7 +26,7 @@ public class TableGroupService {
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
         validateOrderTablesSize(tableGroupRequest);
         TableGroup tableGroup = tableGroupRepository.save(new TableGroup());
-        applicationEventPublisher.publishEvent(new GroupEvent(new GroupingPair(tableGroup, tableGroupRequest.getOrderTableIds())));
+        applicationEventPublisher.publishEvent(new GroupEvent(new GroupingPair(tableGroup.getId(), tableGroupRequest.getOrderTableIds())));
         return TableGroupResponse.of(tableGroup);
     }
 

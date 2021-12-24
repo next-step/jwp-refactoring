@@ -1,7 +1,5 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.tablegroup.domain.TableGroup;
-
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -10,8 +8,7 @@ public class OrderTable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne
-    private TableGroup tableGroup;
+    private Long tableGroupId;
     @Embedded
     private NumberOfGuests numberOfGuests;
     private boolean empty;
@@ -19,9 +16,9 @@ public class OrderTable {
     public OrderTable() {
     }
 
-    public OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
+    public OrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
         this.id = id;
-        this.tableGroup = tableGroup;
+        this.tableGroupId = tableGroupId;
         this.numberOfGuests = NumberOfGuests.of(numberOfGuests);
         this.empty = empty;
     }
@@ -54,29 +51,29 @@ public class OrderTable {
     }
 
     public boolean hasTableGroup() {
-        return tableGroup != null;
+        return tableGroupId != null;
     }
 
-    public void setTableGroup(TableGroup tableGroup) {
+    public void setTableGroup(Long tableGroupId) {
         if (!isEmpty()) {
             throw new IllegalArgumentException("모든 테이블이 비어 있어야 합니다");
         }
         if (hasTableGroup()) {
             throw new IllegalArgumentException("이미 단체 지정이 되어 있습니다");
         }
-        this.tableGroup = tableGroup;
+        this.tableGroupId = tableGroupId;
     }
 
     public void unsetTableGroup() {
-        this.tableGroup = null;
+        this.tableGroupId = null;
     }
 
     public Long getId() {
         return id;
     }
 
-    public TableGroup getTableGroup() {
-        return tableGroup;
+    public Long getTableGroupId() {
+        return tableGroupId;
     }
 
     public int getNumberOfGuests() {

@@ -4,16 +4,16 @@ import java.util.List;
 import java.util.Objects;
 
 public class GroupingPair {
-    private final TableGroup tableGroup;
+    private final Long tableGroupId;
     private final List<Long> orderTableIds;
 
-    public GroupingPair(TableGroup tableGroup, List<Long> orderTableIds) {
-        this.tableGroup = tableGroup;
+    public GroupingPair(Long tableGroupId, List<Long> orderTableIds) {
+        this.tableGroupId = tableGroupId;
         this.orderTableIds = orderTableIds;
     }
 
-    public TableGroup getTableGroup() {
-        return tableGroup;
+    public Long getTableGroupId() {
+        return tableGroupId;
     }
 
     public List<Long> getOrderTableIds() {
@@ -25,11 +25,11 @@ public class GroupingPair {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         GroupingPair that = (GroupingPair) o;
-        return Objects.equals(tableGroup, that.tableGroup) && Objects.equals(orderTableIds, that.orderTableIds);
+        return Objects.equals(tableGroupId, that.tableGroupId) && Objects.equals(orderTableIds, that.orderTableIds);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(tableGroup, orderTableIds);
+        return Objects.hash(tableGroupId, orderTableIds);
     }
 }

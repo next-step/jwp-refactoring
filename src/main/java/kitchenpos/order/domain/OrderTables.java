@@ -1,18 +1,12 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.tablegroup.domain.TableGroup;
 import org.springframework.util.CollectionUtils;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Embeddable;
-import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-@Embeddable
 public class OrderTables {
-    @OneToMany(mappedBy = "tableGroup", cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
     private List<OrderTable> orderTables = new ArrayList<>();
 
     public OrderTables() {
@@ -29,13 +23,13 @@ public class OrderTables {
         return new OrderTables(orderTables);
     }
 
-    public void group(TableGroup tableGroup) {
-        setTableGroupToOrderTables(tableGroup, orderTables);
+    public void group(Long tableGroupId) {
+        setTableGroupToOrderTables(tableGroupId, orderTables);
     }
 
-    private static void setTableGroupToOrderTables(TableGroup tableGroup, List<OrderTable> orderTables) {
+    private static void setTableGroupToOrderTables(Long tableGroupId, List<OrderTable> orderTables) {
         for (final OrderTable orderTable : orderTables) {
-            orderTable.setTableGroup(tableGroup);
+            orderTable.setTableGroup(tableGroupId);
             orderTable.changeToNotEmpty();
         }
     }

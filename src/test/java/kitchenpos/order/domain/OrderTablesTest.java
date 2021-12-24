@@ -79,7 +79,7 @@ public class OrderTablesTest {
         assertAll(
                 () -> assertThat(orderTables.isEmpty()).isTrue(),
                 () -> assertThat(orderTableList)
-                        .map(OrderTable::getTableGroup)
+                        .map(OrderTable::getTableGroupId)
                         .allMatch(Objects::isNull)
         );
     }
@@ -89,8 +89,8 @@ public class OrderTablesTest {
     void testHasNotOrder() {
         // given
         TableGroup tableGroup = new TableGroup();
-        OrderTable one = new OrderTable(1L, tableGroup, 4, false);
-        OrderTable two = new OrderTable(2L, tableGroup, 4, false);
+        OrderTable one = new OrderTable(1L, 1L, 4, false);
+        OrderTable two = new OrderTable(2L, 1L, 4, false);
         List<OrderTable> orderTableList = Arrays.asList(one, two);
         OrderTables orderTables = new OrderTables(orderTableList);
 

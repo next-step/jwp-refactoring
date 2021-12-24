@@ -16,17 +16,15 @@ public class OrderTableResponse {
     public OrderTableResponse() {
     }
 
-    public OrderTableResponse(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
+    public OrderTableResponse(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
         this.id = id;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
-        if (tableGroup != null) {
-            this.tableGroupId = tableGroup.getId();
-        }
+        this.tableGroupId = tableGroupId;
     }
 
     public static OrderTableResponse of(OrderTable orderTable) {
-        return new OrderTableResponse(orderTable.getId(), orderTable.getTableGroup(), orderTable.getNumberOfGuests(), orderTable.isEmpty());
+        return new OrderTableResponse(orderTable.getId(), orderTable.getTableGroupId(), orderTable.getNumberOfGuests(), orderTable.isEmpty());
     }
 
     public static List<OrderTableResponse> ofList(List<OrderTable> orderTables) {

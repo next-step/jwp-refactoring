@@ -5,7 +5,6 @@ import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.order.dto.OrderTableResponse;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.OrderTableRepository;
-import kitchenpos.tablegroup.domain.TableGroup;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -24,6 +23,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doThrow;
 
 @ExtendWith(MockitoExtension.class)
 public class TableServiceTest {
@@ -103,7 +103,7 @@ public class TableServiceTest {
         void notGrouping() {
             // given
             OrderTableRequest requestOrderTable = new OrderTableRequest( 4, true);
-            OrderTable expectedOrderTable = new OrderTable(1L, new TableGroup(), 4, true);
+            OrderTable expectedOrderTable = new OrderTable(1L, 2L, 4, true);
 
             given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(expectedOrderTable));
 
@@ -123,6 +123,7 @@ public class TableServiceTest {
             OrderTable orderTable = new OrderTable(1L, null, 4, true);
 
             given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(orderTable));
+            doThrow(IllegalArgumentException.class).when(orderTableValidator).validateHasProgressOrder(orderTable);
 
             // when
             ThrowableAssert.ThrowingCallable callable = () -> tableService.changeEmpty(orderTable.getId(), requestOrderTable);
@@ -188,6 +189,7 @@ public class TableServiceTest {
             OrderTableRequest orderTableRequest = new OrderTableRequest(4, false);
             OrderTable orderTable = new OrderTable(1L, null, 4, true);
             given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(orderTable));
+            doThrow(IllegalArgumentException.class).when(orderTableValidator).validateChangeNumberOfGuests(orderTable);
 
             // when
             ThrowableAssert.ThrowingCallable callable = () -> tableService.changeNumberOfGuests(orderTable.getId(), orderTableRequest);

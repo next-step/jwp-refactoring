@@ -63,7 +63,7 @@ public class TableService {
         List<Long> orderTableIds = groupingPair.getOrderTableIds();
         List<OrderTable> savedOrderTables = orderTableRepository.findAllById(orderTableIds);
         OrderTables orderTables = OrderTables.of(savedOrderTables, orderTableIds.size());
-        orderTables.group(groupingPair.getTableGroup());
+        orderTables.group(groupingPair.getTableGroupId());
     }
 
     @EventListener
