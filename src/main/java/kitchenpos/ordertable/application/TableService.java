@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 public class TableService {
 
     private final OrderTableRepository orderTableRepository;
@@ -55,12 +56,10 @@ public class TableService {
         return OrderTableResponse.of(savedOrderTable);
     }
 
-    @Transactional(readOnly = true)
     public List<OrderTableResponse> list() {
         return OrderTableResponse.toList(orderTableRepository.findAll());
     }
 
-    @Transactional(readOnly = true)
     public OrderTable findOrderTableById(final Long orderTableId) {
         return orderTableRepository.findById(orderTableId)
             .orElseThrow(() -> new NotFoundException(CommonErrorCode.ORDER_NOT_FOUND_EXCEPTION));

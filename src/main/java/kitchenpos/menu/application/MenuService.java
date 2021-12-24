@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 public class MenuService {
 
     private final MenuRepository menuRepository;
@@ -32,7 +33,6 @@ public class MenuService {
         return MenuResponse.of(menuRepository.save(menu));
     }
 
-    @Transactional(readOnly = true)
     public List<MenuResponse> list() {
         return MenuResponse.toList(menuRepository.findAll());
     }
