@@ -1,7 +1,7 @@
 package kitchenpos.common.exception;
 
 import kitchenpos.ordertable.domain.NumberOfGuests;
-import kitchenpos.tablegroup.domain.OrderTables;
+import kitchenpos.tablegroup.domain.TableGroup;
 
 public enum CommonErrorCode implements ErrorCode {
     DATABASE_CONSTRAINT_VIOLATION("고유값이 이미 존재합니다."),
@@ -29,7 +29,7 @@ public enum CommonErrorCode implements ErrorCode {
     ORDER_TABLE_UNGROUP_NOT_COMPLETE_EXCEPTION("계산 완료 상태가 아니면 단체지정을 해지 할 수 없습니다."),
     ORDER_TABLE_EXISTS_TABLE_GROUP_EXCEPTION("단체지정이 되어있는 테이블입니다."),
     ORDER_TABLES_MIN_UNDER_EXCEPTION(
-        String.format("단체 지정에 속하는 주문테이블은 %s개 이상이어야 합니다.", OrderTables.ORDER_TABLES_MIN_SIZE)),
+        String.format("단체 지정에 속하는 주문테이블은 %s개 이상이어야 합니다.", TableGroup.ORDER_TABLES_MIN_SIZE)),
     ;
 
     private final String errorMessage;

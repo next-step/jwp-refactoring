@@ -13,17 +13,6 @@ public class OrderResponse {
     private LocalDateTime orderedTime;
     private List<OrderLineItemResponse> orderLineItems;
 
-    public static OrderResponse of(Order order) {
-        return new OrderResponse(
-            order.getId(), order.getOrderTableId(), order.getOrderStatus(), order.getOrderedTime(),
-            OrderLineItemResponse.toList(order.getId(), order.getOrderLineItems()));
-    }
-
-    public static List<OrderResponse> toList(List<Order> orders) {
-        return orders.stream()
-            .map(OrderResponse::of)
-            .collect(Collectors.toList());
-    }
 
     public OrderResponse() {
     }
@@ -35,6 +24,18 @@ public class OrderResponse {
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
         this.orderLineItems = orderLineItems;
+    }
+
+    public static OrderResponse of(Order order) {
+        return new OrderResponse(
+            order.getId(), order.getOrderTableId(), order.getOrderStatus(), order.getOrderedTime(),
+            OrderLineItemResponse.toList(order.getId(), order.getOrderLineItems()));
+    }
+
+    public static List<OrderResponse> toList(List<Order> orders) {
+        return orders.stream()
+            .map(OrderResponse::of)
+            .collect(Collectors.toList());
     }
 
     public Long getId() {

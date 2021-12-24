@@ -44,27 +44,34 @@ public class OrderTable {
     }
 
     public void changeEmpty(TableValidator tableValidator, boolean empty) {
-        validTableGroupNotInclude();
+        notIncludeTableGroupValid();
         tableValidator.completedOrderValid(this);
 
         this.empty.changeEmpty(empty);
     }
 
     public void changeTableGroup(Long tableGroupId) {
-        validTableGroupNotInclude();
+        notIncludeTableGroupValid();
         empty.validNotEmpty();
         this.tableGroupId = tableGroupId;
         this.empty.changeEmpty(false);
     }
 
-    public void ungroup(TableValidator tableValidator) {
-        tableValidator.completedOrderValid(this);
+    public void group(Long tableGroupId) {
+        notIncludeTableGroupValid();
+        this.tableGroupId = tableGroupId;
+    }
 
+    public void ungroup() {
         tableGroupId = null;
     }
 
     public boolean isEmpty() {
         return empty.isEmpty();
+    }
+
+    public boolean isIncludeTableGroup() {
+        return Objects.nonNull(tableGroupId);
     }
 
     public Long getId() {
@@ -82,8 +89,7 @@ public class OrderTable {
         return numberOfGuests.value();
     }
 
-
-    private void validTableGroupNotInclude() {
+    private void notIncludeTableGroupValid() {
         if (Objects.nonNull(tableGroupId)) {
             throw new InvalidParameterException(
                 CommonErrorCode.ORDER_TABLE_EXISTS_TABLE_GROUP_EXCEPTION);
@@ -110,4 +116,5 @@ public class OrderTable {
     public int hashCode() {
         return getClass().hashCode();
     }
+
 }

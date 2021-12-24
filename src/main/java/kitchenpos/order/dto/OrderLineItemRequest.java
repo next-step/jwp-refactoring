@@ -1,6 +1,7 @@
 package kitchenpos.order.dto;
 
 import java.util.Objects;
+import kitchenpos.order.domain.OrderLineItem;
 
 public class OrderLineItemRequest {
 
@@ -25,5 +26,9 @@ public class OrderLineItemRequest {
 
     public boolean isSameMenuId(Long menuId) {
         return Objects.equals(this.menuId, menuId);
+    }
+
+    public OrderLineItem toOrderLineItem() {
+        return OrderLineItem.of(menuId, quantity);
     }
 }

@@ -11,6 +11,9 @@ public class OrderLineItemResponse {
     private Long menuId;
     private long quantity;
 
+    public OrderLineItemResponse() {
+    }
+
     public static OrderLineItemResponse of(final Long orderId, final OrderLineItem orderLineItem) {
         return new OrderLineItemResponse(orderId, orderLineItem);
     }
@@ -20,16 +23,6 @@ public class OrderLineItemResponse {
         return orderLineItems.stream()
             .map(orderLineItem -> OrderLineItemResponse.of(orderId, orderLineItem))
             .collect(Collectors.toList());
-    }
-
-    public OrderLineItemResponse() {
-    }
-
-    private OrderLineItemResponse(final Long orderId, final OrderLineItem orderLineItem) {
-        this.seq = orderLineItem.getSeq();
-        this.orderId = orderId;
-        this.menuId = orderLineItem.getMenuId();
-        this.quantity = orderLineItem.getQuantity();
     }
 
     public Long getSeq() {
@@ -46,5 +39,12 @@ public class OrderLineItemResponse {
 
     public long getQuantity() {
         return quantity;
+    }
+
+    private OrderLineItemResponse(final Long orderId, final OrderLineItem orderLineItem) {
+        this.seq = orderLineItem.getSeq();
+        this.orderId = orderId;
+        this.menuId = orderLineItem.getMenuId();
+        this.quantity = orderLineItem.getQuantity();
     }
 }

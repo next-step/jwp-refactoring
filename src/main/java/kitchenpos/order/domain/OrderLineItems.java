@@ -2,8 +2,10 @@ package kitchenpos.order.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import kitchenpos.common.exception.CommonErrorCode;
 import kitchenpos.common.exception.InvalidParameterException;
@@ -12,7 +14,8 @@ import org.springframework.util.CollectionUtils;
 @Embeddable
 public class OrderLineItems {
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.PERSIST)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "order_id")
     private List<OrderLineItem> orderLineItems = new ArrayList<>();
 
     protected OrderLineItems() {
@@ -31,8 +34,10 @@ public class OrderLineItems {
         return orderLineItems;
     }
 
-    public void mapOrder(Order order) {
-        orderLineItems.forEach(orderLineItem -> orderLineItem.orderedBy(order));
+    public List<Long> getMenuIds() {
+        return orderLineItems.stream()
+            .map(OrderLineItem::getMenuId)
+            .collect(Collectors.toList());
     }
 
     private void validEmpty(List<OrderLineItem> orderLineItems) {

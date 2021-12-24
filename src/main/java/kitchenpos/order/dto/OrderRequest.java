@@ -2,8 +2,7 @@ package kitchenpos.order.dto;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.common.exception.CommonErrorCode;
-import kitchenpos.common.exception.InvalidParameterException;
+import kitchenpos.order.domain.OrderLineItem;
 
 public class OrderRequest {
 
@@ -27,19 +26,9 @@ public class OrderRequest {
         return orderLineItems;
     }
 
-    public List<Long> getMenuIds() {
+    public List<OrderLineItem> toOrderLineItems() {
         return orderLineItems.stream()
-            .map(OrderLineItemRequest::getMenuId)
+            .map(OrderLineItemRequest::toOrderLineItem)
             .collect(Collectors.toList());
-    }
-
-    public Long getOrderLineItemQuantity(Long menuId) {
-        OrderLineItemRequest orderLineItemRequest = orderLineItems.stream()
-            .filter(orderLineItemRequestTarget -> orderLineItemRequestTarget.isSameMenuId(menuId))
-            .findFirst()
-            .orElseThrow(
-                () -> new InvalidParameterException(CommonErrorCode.MENU_NOT_FOUND_EXCEPTION));
-
-        return orderLineItemRequest.getQuantity();
     }
 }
