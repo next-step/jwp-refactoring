@@ -1,9 +1,9 @@
 package kitchenpos.application.unit.table;
 
-import kitchenpos.application.table.TableService;
-import kitchenpos.domain.table.OrderTable;
-import kitchenpos.dto.table.OrderTableRequest;
-import kitchenpos.repository.table.OrderTableRepository;
+import kitchenpos.table.application.TableService;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.repository.OrderTableRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

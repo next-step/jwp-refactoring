@@ -3,7 +3,7 @@ package kitchenpos.application.acceptance.product;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.dto.product.ProductRequest;
+import kitchenpos.product.dto.ProductRequest;
 import org.springframework.http.MediaType;
 
 public class ProductFactory {

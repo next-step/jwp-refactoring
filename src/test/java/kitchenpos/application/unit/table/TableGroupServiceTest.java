@@ -1,13 +1,12 @@
 package kitchenpos.application.unit.table;
 
-import kitchenpos.application.tablegroup.TableGroupService;
-import kitchenpos.application.table.TableService;
-import kitchenpos.domain.table.OrderTable;
-import kitchenpos.domain.table.TableGroupUnGroupEvent;
-import kitchenpos.domain.tablegroup.TableGroup;
-import kitchenpos.dto.tablegroup.TableGroupRequest;
-import kitchenpos.domain.tablegroup.TableGroupCreatedEvent;
-import kitchenpos.repository.tablegroup.TableGroupRepository;
+import kitchenpos.tablegroup.application.TableGroupService;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.TableGroupUnGroupEvent;
+import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
+import kitchenpos.tablegroup.domain.TableGroupCreatedEvent;
+import kitchenpos.tablegroup.repository.TableGroupRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

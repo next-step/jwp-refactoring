@@ -1,9 +1,9 @@
 package kitchenpos.application.unit.product;
 
-import kitchenpos.application.product.ProductService;
-import kitchenpos.domain.product.Product;
-import kitchenpos.dto.product.ProductRequest;
-import kitchenpos.repository.product.ProductRepository;
+import kitchenpos.product.application.ProductService;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.repository.ProductRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
