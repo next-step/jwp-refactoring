@@ -58,18 +58,18 @@ public class OrderTable {
         this.tableGroup = tableGroup;
     }
 
-    public void setEmptyIfNotTableGroup(boolean empty) {
+    public void changeEmptyIfNotTableGroup(boolean empty) {
         if (Objects.nonNull(tableGroup)) {
             throw new InvalidOrderTableEmptyException("주문 테이블이 단체 지정된 경우 수정할 수 없습니다.");
         }
         this.empty = empty;
     }
 
-    public void setNumberOfGuestsIfNotEmpty(int numberOfGuests) {
+    public void changeNumberOfGuestsIfNotEmpty(int numberOfGuests) {
         if (empty) {
             throw new IllegalArgumentException("주문 테이블이 비어있으면 손님 수를 수정할 수 없습니다.");
         }
-        this.numberOfGuests.setNumberOfGuests(numberOfGuests);
+        this.numberOfGuests.changeNumberOfGuests(numberOfGuests);
     }
 
     public Long getId() {

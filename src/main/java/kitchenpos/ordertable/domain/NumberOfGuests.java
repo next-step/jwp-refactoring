@@ -35,7 +35,7 @@ public class NumberOfGuests {
 		return numberOfGuests;
 	}
 
-	public void setNumberOfGuests(int numberOfGuests) {
+	public void changeNumberOfGuests(int numberOfGuests) {
 		validate(numberOfGuests);
 		this.numberOfGuests = numberOfGuests;
 	}

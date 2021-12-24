@@ -47,7 +47,7 @@ public class TableService {
 	public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableEmptyRequest request) {
 		final OrderTable orderTable = findOrderTable(orderTableId);
 		validateEmpty(orderTable);
-		orderTable.setEmptyIfNotTableGroup(request.isEmpty());
+		orderTable.changeEmptyIfNotTableGroup(request.isEmpty());
 		return OrderTableResponse.of(orderTable);
 	}
 
@@ -62,7 +62,7 @@ public class TableService {
 		final Long orderTableId, final OrderTableNumberOfGuestsRequest request
 	) {
 		final OrderTable orderTable = findOrderTable(orderTableId);
-		orderTable.setNumberOfGuestsIfNotEmpty(request.getNumberOfGuests());
+		orderTable.changeNumberOfGuestsIfNotEmpty(request.getNumberOfGuests());
 		return OrderTableResponse.of(orderTable);
 	}
 
