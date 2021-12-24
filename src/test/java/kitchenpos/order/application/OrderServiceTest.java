@@ -20,8 +20,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.menu.dao.MenuRepository;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.order.dao.OrderDao;
 import kitchenpos.order.dao.OrderLineItemRepository;
+import kitchenpos.order.dao.OrderRepository;
 import kitchenpos.order.dao.OrderTableRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
@@ -36,7 +36,7 @@ public class OrderServiceTest {
     private MenuRepository menuRepository;
 
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
 
     @Mock
     private OrderLineItemRepository orderLineItemRepository;
@@ -62,7 +62,7 @@ public class OrderServiceTest {
         
         Order 주문 = new Order();
         주문.setId(1L);
-        주문.setOrderTableId(주문_테이블.getId());
+        주문.setOrderTable(주문_테이블);
         
         Menu 메뉴 = new Menu();
         메뉴.setId(1L);
@@ -76,8 +76,8 @@ public class OrderServiceTest {
         주문.setOrderLineItems(Arrays.asList(주문_메뉴));
         
         given(menuRepository.countByIdIn(anyList())).willReturn((long) 주문.getOrderLineItems().size());
-        given(orderTableRepository.findById(주문.getOrderTableId())).willReturn(Optional.of(주문_테이블));
-        given(orderDao.save(주문)).willReturn(주문);
+        given(orderTableRepository.findById(주문.getOrderTable().getId())).willReturn(Optional.of(주문_테이블));
+        given(orderRepository.save(주문)).willReturn(주문);
 
         // when
         Order 등록된_주문 = orderService.create(주문);
@@ -126,34 +126,38 @@ public class OrderServiceTest {
     
     }
     
-    @DisplayName("주문 테이블 없이 주문할 수 없다- 예외처리")
+    @DisplayName("등록된 주문 테이블만 주문할 수 있다- 예외처리")
     @Test
     void 주문_등록_주문_테이블_필수() {
         // given
-        Order 테이블_없이_주문 = new Order();
-        테이블_없이_주문.setId(1L);
+        OrderTable 주문_테이블 = new OrderTable();
+        주문_테이블.setId(1L);
+        
+        Order 등록된_테이블_없이_주문 = new Order();
+        등록된_테이블_없이_주문.setId(1L);
+        등록된_테이블_없이_주문.setOrderTable(주문_테이블);
         
         Menu 메뉴 = new Menu();
         메뉴.setId(1L);
 
         OrderLineItem 주문_메뉴 = new OrderLineItem();
         주문_메뉴.setSeq(1L);
-        주문_메뉴.setOrder(테이블_없이_주문);
+        주문_메뉴.setOrder(등록된_테이블_없이_주문);
         주문_메뉴.setMenu(메뉴);
         주문_메뉴.setQuantity(1L);
         
-        테이블_없이_주문.setOrderLineItems(Arrays.asList(주문_메뉴));
+        등록된_테이블_없이_주문.setOrderLineItems(Arrays.asList(주문_메뉴));
         
-        given(menuRepository.countByIdIn(anyList())).willReturn((long) 테이블_없이_주문.getOrderLineItems().size());
+        given(menuRepository.countByIdIn(anyList())).willReturn((long) 등록된_테이블_없이_주문.getOrderLineItems().size());
 
         // when
-        테이블_없이_주문.setOrderTableId(null);
+        when(orderTableRepository.findById(anyLong())).thenReturn(Optional.empty());
         
         // then
         assertThatThrownBy(() -> {
-            orderService.create(테이블_없이_주문);
+            orderService.create(등록된_테이블_없이_주문);
         }).isInstanceOf(IllegalArgumentException.class)
-        .hasMessage("주문 테이블 없이 주문할 수 없습니다");
+        .hasMessage("등록된 주문 테이블만 주문할 수 없습니다");
     }
     
     @DisplayName("주문 등록시 주문 상태는 조리 상태이다")
@@ -171,7 +175,7 @@ public class OrderServiceTest {
         
         Order 주문 = new Order();
         주문.setId(1L);
-        주문.setOrderTableId(주문_테이블.getId());
+        주문.setOrderTable(주문_테이블);
         
         Menu 메뉴 = new Menu();
         메뉴.setId(1L);
@@ -185,8 +189,8 @@ public class OrderServiceTest {
         주문.setOrderLineItems(Arrays.asList(주문_메뉴));
         
         given(menuRepository.countByIdIn(anyList())).willReturn((long) 주문.getOrderLineItems().size());
-        given(orderTableRepository.findById(주문.getOrderTableId())).willReturn(Optional.of(주문_테이블));
-        given(orderDao.save(주문)).willReturn(주문);
+        given(orderTableRepository.findById(주문.getOrderTable().getId())).willReturn(Optional.of(주문_테이블));
+        given(orderRepository.save(주문)).willReturn(주문);
 
         // when
         Order 등록된_주문 = orderService.create(주문);
@@ -205,7 +209,7 @@ public class OrderServiceTest {
         Order 두번째_주문 = new Order();
         두번째_주문.setId(1L);
         
-        given(orderDao.findAll()).willReturn(Arrays.asList(첫번째_주문, 두번째_주문));
+        given(orderRepository.findAll()).willReturn(Arrays.asList(첫번째_주문, 두번째_주문));
         given(orderLineItemRepository.findAllByOrderId(첫번째_주문.getId())).willReturn(Arrays.asList(new OrderLineItem()));
     
         // when
@@ -222,7 +226,7 @@ public class OrderServiceTest {
         Order 저장된_주문 = new Order();
         저장된_주문.setId(1L);
         저장된_주문.setOrderStatus(OrderStatus.MEAL.name());
-        given(orderDao.findById(anyLong())).willReturn(Optional.of(저장된_주문));
+        given(orderRepository.findById(anyLong())).willReturn(Optional.of(저장된_주문));
         
         Order 변경할_주문 = new Order();
         변경할_주문.setId(1L);
@@ -243,7 +247,7 @@ public class OrderServiceTest {
         Order 저장된_주문 = new Order();
         저장된_주문.setId(1L);
         저장된_주문.setOrderStatus(OrderStatus.COMPLETION.name());
-        given(orderDao.findById(anyLong())).willReturn(Optional.of(저장된_주문));
+        given(orderRepository.findById(anyLong())).willReturn(Optional.of(저장된_주문));
     
         // when, then
         assertThatThrownBy(() -> {

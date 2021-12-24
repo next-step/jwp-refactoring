@@ -17,7 +17,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.order.dao.OrderDao;
+import kitchenpos.order.dao.OrderRepository;
 import kitchenpos.order.dao.OrderTableRepository;
 import kitchenpos.order.dao.TableGroupRepository;
 import kitchenpos.order.domain.OrderTable;
@@ -27,7 +27,7 @@ import kitchenpos.order.domain.TableGroup;
 public class TableGroupServiceTest {
 
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
     
     @Mock
     private OrderTableRepository orderTableRepository;
@@ -139,7 +139,7 @@ public class TableGroupServiceTest {
         // given
         TableGroup 단체지정 = new TableGroup();
         단체지정.setId(1L);
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(true);
+        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(true);
 
         // when, then
         assertThatThrownBy(() -> {
