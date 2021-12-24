@@ -1,5 +1,6 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.order.exception.CanNotChangeOrderStatusException;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.util.CollectionUtils;
@@ -22,6 +23,8 @@ import java.util.Objects;
 @Table(name = "orders")
 @EntityListeners(AuditingEntityListener.class)
 public class Order {
+    private static final String COMPLETION_CHANGE_ORDER_STATUS_ERROR_MESSAGE = "완료된 주문은 주문상태를 변경할 수 없습니다.";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -66,6 +69,9 @@ public class Order {
     }
 
     public void updateOrderStatus(String orderStatus) {
+        if (isCompletion()) {
+            throw new CanNotChangeOrderStatusException(COMPLETION_CHANGE_ORDER_STATUS_ERROR_MESSAGE);
+        }
         this.orderStatus = OrderStatus.valueOf(orderStatus);
     }
 

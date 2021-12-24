@@ -1,6 +1,6 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.menugroup.domain.NotFoundMenuGroupValidator;
+import kitchenpos.menu.domain.validator.ExistMenuGroupMenuValidator;
 import kitchenpos.menugroup.infra.MenuGroupRepository;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
@@ -23,7 +23,7 @@ class NotFoundMenuGroupValidatorTest {
     private MenuGroupRepository menuGroupRepository;
 
     @InjectMocks
-    private NotFoundMenuGroupValidator notFoundMenuGroupValidator;
+    private ExistMenuGroupMenuValidator notFoundMenuGroupValidator;
 
     @DisplayName("존재하지 않을 경우 유효하지 못하다.")
     @Test

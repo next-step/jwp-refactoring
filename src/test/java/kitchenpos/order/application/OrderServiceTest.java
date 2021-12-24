@@ -1,12 +1,12 @@
 package kitchenpos.order.application;
 
-import kitchenpos.order.domain.MenuCountOrderValidator;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.validator.MenuCountOrderValidator;
+import kitchenpos.order.domain.validator.OrderTableValidator;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.infra.OrderRepository;
-import kitchenpos.ordertable.exception.OrderTableService;
 import kitchenpos.ordertable.domain.OrderTable;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,7 +35,7 @@ import static org.mockito.Mockito.doThrow;
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
     @Mock
-    private OrderTableService orderTableService;
+    private OrderTableValidator orderTableValidator;
     @Mock
     private OrderRepository orderRepository;
     @Mock
@@ -64,8 +64,8 @@ class OrderServiceTest {
         final OrderRequest createRequest = getCreateRequest(주문_테이블.getId(),
                 getOrderLineRequests(orderLineItem1, orderLineItem2));
 
-        given(orderTableService.getOrderTable(anyLong())).willReturn(주문_테이블);
         doNothing().when(menuCountOrderValidator).validate(any());
+        doNothing().when(orderTableValidator).validate(any());
         given(orderRepository.save(any())).willReturn(expected);
 
         // when
@@ -85,7 +85,7 @@ class OrderServiceTest {
             // given
             final OrderTable orderTable = getOrderTable(1L, false, 7);
             final OrderRequest createRequest = getCreateRequest(orderTable.getId(), Collections.emptyList());
-            given(orderTableService.getOrderTable(anyLong())).willReturn(주문_테이블);
+            doNothing().when(menuCountOrderValidator).validate(any());
             // when
             ThrowableAssert.ThrowingCallable callable = () -> orderService.create(createRequest);
             // then
@@ -117,7 +117,8 @@ class OrderServiceTest {
             final OrderRequest createRequest = getCreateRequest(주문_테이블.getId(),
                     getOrderLineRequests(orderLineItem1, orderLineItem2));
 
-            doThrow(new IllegalArgumentException()).when(orderTableService).getOrderTable(anyLong());
+            doNothing().when(menuCountOrderValidator).validate(anyList());
+            doThrow(new IllegalArgumentException()).when(orderTableValidator).validate(any());
             // when
             ThrowableAssert.ThrowingCallable callable = () -> orderService.create(createRequest);
             // then
@@ -133,8 +134,8 @@ class OrderServiceTest {
             final OrderRequest createRequest = getCreateRequest(빈_주문_테이블.getId(),
                     getOrderLineRequests(orderLineItem1, orderLineItem2));
 
-            given(orderTableService.getOrderTable(anyLong())).willReturn(빈_주문_테이블);
             doNothing().when(menuCountOrderValidator).validate(any());
+            doThrow(new IllegalArgumentException()).when(orderTableValidator).validate(anyLong());
             // when
             ThrowableAssert.ThrowingCallable callable = () -> orderService.create(createRequest);
             // then
