@@ -2,6 +2,7 @@ package kitchenpos.order.domain;
 
 import java.util.Objects;
 import javax.persistence.Embeddable;
+import kitchenpos.order.exception.InvalidQuantityValueException;
 
 @Embeddable
 public class Quantity {
@@ -13,7 +14,14 @@ public class Quantity {
     }
 
     public Quantity(long quantity) {
+        validateQuantityValue(quantity);
         this.quantity = quantity;
+    }
+
+    private void validateQuantityValue(long inputQuantity) {
+        if (inputQuantity < 0) {
+            throw new InvalidQuantityValueException();
+        }
     }
 
     public long getQuantity() {
