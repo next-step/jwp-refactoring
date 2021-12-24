@@ -2,12 +2,13 @@ package kitchenpos.application.unit.order;
 
 
 import kitchenpos.application.order.OrderService;
-import kitchenpos.application.order.OrderValidator;
+import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.order.Order;
 import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.domain.table.OrderTable;
 import kitchenpos.dto.order.OrderLineItemRequest;
 import kitchenpos.dto.order.OrderRequest;
+import kitchenpos.repository.menu.MenuRepository;
 import kitchenpos.repository.order.OrderRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,7 +32,7 @@ class OrderServiceTest {
     @Mock
     ApplicationEventPublisher eventPublisher;
     @Mock
-    OrderValidator orderValidator;
+    MenuRepository menuRepository;
 
     @DisplayName("주문을 등록한다.")
     @Test
@@ -41,13 +42,15 @@ class OrderServiceTest {
 
         OrderTable orderTable = mock(OrderTable.class);
         when(orderTable.getId()).thenReturn(1L);
+        when(menuRepository.findById(orderLineItemRequest.getMenuId())).thenReturn(Optional.of(new Menu()));
+
 
         OrderRequest orderRequest = new OrderRequest(orderTable.getId(), null, Arrays.asList(orderLineItemRequest));
 
         Order savedOrder = mock(Order.class);
         when(savedOrder.getId()).thenReturn(1L);
         when(orderRepository.save(any())).thenReturn(savedOrder);
-        OrderService orderService = new OrderService(orderRepository, orderValidator, eventPublisher);
+        OrderService orderService = new OrderService(orderRepository, menuRepository, eventPublisher);
 
         // when
         Order createdOrder = orderService.create(orderRequest);
@@ -63,7 +66,7 @@ class OrderServiceTest {
         Order order = mock(Order.class);
         when(orderRepository.findAll()).thenReturn(Arrays.asList(order));
 
-        OrderService orderService = new OrderService(orderRepository, orderValidator, eventPublisher);
+        OrderService orderService = new OrderService(orderRepository, menuRepository, eventPublisher);
 
         // when
         List<Order> orders = orderService.list();
@@ -85,7 +88,7 @@ class OrderServiceTest {
 
         when(orderRepository.findById(1L)).thenReturn(Optional.of(expectedOrder));
 
-        OrderService orderService = new OrderService(orderRepository, orderValidator, eventPublisher);
+        OrderService orderService = new OrderService(orderRepository, menuRepository, eventPublisher);
         // when
         Order savedOrder = orderService.changeOrderStatus(1L, orderRequest);
         // then

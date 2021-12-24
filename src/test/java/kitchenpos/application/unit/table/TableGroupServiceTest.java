@@ -1,13 +1,13 @@
 package kitchenpos.application.unit.table;
 
-import kitchenpos.application.table.TableGroupService;
+import kitchenpos.application.tablegroup.TableGroupService;
 import kitchenpos.application.table.TableService;
 import kitchenpos.domain.table.OrderTable;
-import kitchenpos.domain.table.TableGroup;
-import kitchenpos.dto.table.TableGroupRequest;
-import kitchenpos.event.TableGroupCreatedEvent;
-import kitchenpos.event.TableGroupUnGroupEvent;
-import kitchenpos.repository.table.TableGroupRepository;
+import kitchenpos.domain.table.TableGroupUnGroupEvent;
+import kitchenpos.domain.tablegroup.TableGroup;
+import kitchenpos.dto.tablegroup.TableGroupRequest;
+import kitchenpos.domain.tablegroup.TableGroupCreatedEvent;
+import kitchenpos.repository.tablegroup.TableGroupRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,8 +28,6 @@ class TableGroupServiceTest {
     TableGroupRepository tableGroupRepository;
     @Mock
     ApplicationEventPublisher eventPublisher;
-    @Mock
-    TableService tableService;
 
 
     @DisplayName("단체를 지정한다.")
@@ -39,29 +37,24 @@ class TableGroupServiceTest {
         // given
         OrderTable orderTable1 = mock(OrderTable.class);
         OrderTable orderTable2 = mock(OrderTable.class);
+        when(orderTable1.getId()).thenReturn(1L);
+        when(orderTable2.getId()).thenReturn(2L);
 
         TableGroup tableGroup = new TableGroup();
-        tableGroup.setTableGroupToOrderTables(Arrays.asList(orderTable1, orderTable2));
 
         TableGroup savedTableGroup = mock(TableGroup.class);
         when(savedTableGroup.getId()).thenReturn(1L);
 
         when(tableGroupRepository.save(tableGroup)).thenReturn(savedTableGroup);
 
-        OrderTable expectedOrderTable1 = mock(OrderTable.class);
-        OrderTable expectedOrderTable2 = mock(OrderTable.class);
-
-        when(savedTableGroup.getOrderTables()).thenReturn(Arrays.asList(expectedOrderTable1, expectedOrderTable2));
-
-        TableGroupService tableGroupService = new TableGroupService(tableGroupRepository, tableService, eventPublisher);
+        TableGroupService tableGroupService = new TableGroupService(tableGroupRepository, eventPublisher);
 
         // when
-        TableGroup createdTableGroup = tableGroupService.create(TableGroupRequest.from(tableGroup));
+        TableGroup createdTableGroup = tableGroupService.create(new TableGroupRequest(Arrays.asList(orderTable2.getId(), orderTable1.getId())));
 
         // then
         verify(eventPublisher).publishEvent(any(TableGroupCreatedEvent.class));
-        assertThat(createdTableGroup.getId()).isNotNull();
-        assertThat(createdTableGroup.getOrderTables()).containsExactly(expectedOrderTable1, expectedOrderTable2);
+        assertThat(createdTableGroup.getId()).isEqualTo(savedTableGroup.getId());
     }
 
 
@@ -70,28 +63,26 @@ class TableGroupServiceTest {
     void ungroupTest(){
 
         // given
-        Long tableGroupId = 1L;
-
         OrderTable orderTable1 = mock(OrderTable.class);
         OrderTable orderTable2 = mock(OrderTable.class);
-        TableGroup tableGroup = mock(TableGroup.class);
+        when(orderTable1.getId()).thenReturn(1L);
+        when(orderTable2.getId()).thenReturn(2L);
 
-        when(tableService.getOrderTablesByTableGroup(tableGroup)).thenReturn(Arrays.asList(orderTable1, orderTable2));
+        TableGroup tableGroup = new TableGroup();
 
-        OrderTable expectedOrderTable1 = mock(OrderTable.class);
-        when(expectedOrderTable1.getTableGroup()).thenReturn(null);
-        OrderTable expectedOrderTable2 = mock(OrderTable.class);
-        when(expectedOrderTable2.getTableGroup()).thenReturn(null);
+        TableGroup savedTableGroup = mock(TableGroup.class);
+        when(savedTableGroup.getId()).thenReturn(1L);
 
-        TableGroupService tableGroupService = new TableGroupService(tableGroupRepository, tableService, eventPublisher);
+        when(tableGroupRepository.save(tableGroup)).thenReturn(savedTableGroup);
+        when(tableGroupRepository.findById(savedTableGroup.getId())).thenReturn(Optional.of(savedTableGroup));
 
-        when(tableGroupRepository.findById(tableGroupId)).thenReturn(Optional.of(tableGroup));
+        TableGroupService tableGroupService = new TableGroupService(tableGroupRepository, eventPublisher);
+        TableGroup createdTableGroup = tableGroupService.create(new TableGroupRequest(Arrays.asList(orderTable2.getId(), orderTable1.getId())));
+
         // when
-        tableGroupService.ungroup(tableGroupId);
+        tableGroupService.ungroup(savedTableGroup.getId());
 
         // then
         verify(eventPublisher).publishEvent(any(TableGroupUnGroupEvent.class));
-        assertThat(expectedOrderTable1.getTableGroup()).isNull();
-        assertThat(expectedOrderTable2.getTableGroup()).isNull();
     }
 }
