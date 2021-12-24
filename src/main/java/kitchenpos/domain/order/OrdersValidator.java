@@ -66,13 +66,13 @@ public class OrdersValidator {
         Menus menus = Menus.of(menuService.findAllByIdIn(menuIds));
 
         if (menus.size() != menuIds.size()) {
-            throw new NotRegistedMenuOrderException();
+            throw new NotRegistedMenuOrderException("요청된 메뉴와 조회된 메뉴의 수가 일치하지 않습니다.");
         }
     }
 
     private static void checkEmptyOfOrderLineItems(final List<OrderLineItem> orderLineItems) {
         if (orderLineItems.isEmpty()) {
-            throw new EmptyOrderLineItemOrderException();
+            throw new EmptyOrderLineItemOrderException("주문상품이 없습니다.");
         }
     }
 
@@ -87,7 +87,7 @@ public class OrdersValidator {
 
     private void validateionOfChageOrderStatus(Orders order) {
         if (order.isCompletion()) {
-            throw new NotChangableOrderStatusException();
+            throw new NotChangableOrderStatusException("주문이 계산완료된 상태입니다.");
         }
     }
 }

@@ -24,7 +24,7 @@ public class Price {
 
     private void validate(int value) {
         if (value < 0) {
-            throw new InvalidPriceException();
+            throw new InvalidPriceException("가격이 음수로 입력되었습니다.");
         }
     }
 

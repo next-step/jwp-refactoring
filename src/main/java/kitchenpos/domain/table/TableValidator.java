@@ -37,13 +37,13 @@ public class TableValidator {
 
     private void checkOrderStatusOfOrderTable(final Orders order) {
         if (order != null && !order.isCompletion()) {
-            throw new HasNotCompletionOrderException();
+            throw new HasNotCompletionOrderException("주문이 계산완료되지 않았습니다.");
         }
     }
 
     private void checkHasTableGroup(OrderTable orderTable) {
         if (orderTable.getTableGroupId() != null) {
-            throw new HasOtherTableGroupException();
+            throw new HasOtherTableGroupException("단체지정이 된 주문테이블입니다.");
         }
     }
 
@@ -59,13 +59,13 @@ public class TableValidator {
     
     private void checkEmptyTable(OrderTable orderTable) {
         if (orderTable.isEmpty()) {
-            throw new EmptyOrderTableException();
+            throw new EmptyOrderTableException("주문테이블이 빈테이블입니다.");
         }
     }
 
     private void checkPositiveOfNumberOfGuests(int numberOfGuests) {
         if (numberOfGuests < 0) {
-            throw new NegativeOfNumberOfGuestsException();
+            throw new NegativeOfNumberOfGuestsException("고객수는 음수일 수 없습니다.");
         }
     }
 }

@@ -16,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import kitchenpos.domain.table.OrderTable;
 import kitchenpos.domain.table.OrderTableRepository;
 import kitchenpos.event.orders.ValidateEmptyTableEvent;
+import kitchenpos.exception.table.EmptyOrderTableException;
 
 @ExtendWith(MockitoExtension.class)
 public class ValidateEmptyTableHandlerTest {
@@ -37,7 +38,7 @@ public class ValidateEmptyTableHandlerTest {
 
         // when 
         // then   
-        Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
+        Assertions.assertThatExceptionOfType(EmptyOrderTableException.class)
                     .isThrownBy(() -> validateEmptyTableHandler.handle(validateEmptyTableEvent));
     }
 }

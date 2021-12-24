@@ -1,0 +1,104 @@
+@startuml Lotto_3step
+skinparam groupInheritance 2
+
+package Service {
+    class MenuService {
+    }
+    class MenuGroupService {
+    }
+    class OrderService {
+    }
+    class ProductService {
+    }
+    class TableGroupService {
+    }
+    class TableService {
+    }
+}
+package Repogitory {
+    class MenuRepository {
+    }
+    class MenuGroupRepository{
+    }
+    class OrdersRepository{
+    }
+    class OrderTableRepository{
+    }
+    class ProductRepository{
+    }
+    class TableGroupRepository {
+    }
+}
+
+MenuService *-- MenuRepository
+MenuService *-- MenuGroupRepository
+MenuService *-- ProductService
+
+MenuService <-- MenuGroup
+MenuService <-- MenuProducts
+MenuService <-- Menu
+MenuService <-- Products
+MenuService <-- Product
+
+MenuGroupService *-- MenuGroupRepository
+
+OrderService *-- MenuService
+OrderService *-- OrdersRepository
+OrderService *-- OrderTableRepository
+
+OrderService <-- OrderTable
+OrderService <-- OrderLineItems
+OrderService <-- Orders 
+OrderService <-- Menus
+OrderService <-- Menu
+OrderService <-- OrderStatus
+
+ProductService *-- ProductRepository
+
+ProductService <-- Product
+
+TableGroupService *-- OrderService
+TableGroupService *-- OrderTableRepository
+TableGroupService *-- TableGroupRepository
+
+TableGroupService <-- OrderTables
+TableGroupService <-- Orders
+
+TableService *-- OrderService
+TableService *-- OrderTableRepository
+
+TableService <-- OrderTable
+TableService <-- Orders
+
+
+Menu *-- MenuGroup
+Menu *-- MenuProducts
+
+MenuProduct *-- Menu
+MenuProduct *-- Product
+
+MenuProducts *-- MenuProduct
+MenuProducts <-- Menu
+
+Menus *-- Menu
+
+OrderLineItem *-- Orders
+OrderLineItem *-- Menu
+
+OrderLineItems *-- OrderLineItem
+OrderLineItems <-- Orders
+
+Orders *-- OrderTable
+Orders *-- OrderStatus
+Orders *-- OrderLineItems
+
+Products *-- Product
+
+OrderTable *-- TableGroup
+OrderTable <-- Orders
+
+OrderTables *-- OrderTable
+
+TableGroup *-- OrderTables
+TableGroup <-- OrderTable
+@enduml

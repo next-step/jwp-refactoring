@@ -59,7 +59,7 @@ public class MenuValidator {
         Products products = Products.of(productService.findAllByIds(productIds));
 
         if (productIds.size() != products.size()) {
-            throw new NotFoundProductException();
+            throw new NotFoundProductException("요청된 상품과 조회된 상품의 수가 일치하지 않습니다.");
         }
     }
 
@@ -70,7 +70,7 @@ public class MenuValidator {
         Price sumOfProductsPrice = getSumOfProductsPrice(menu.getMenuProducts(), products);
 
         if (menu.getPrice().compareTo(sumOfProductsPrice) > 0) {
-            throw new NotCorrectMenuPriceException();
+            throw new NotCorrectMenuPriceException("메뉴의 가격은 상품들의 가격의 합보다 클 수 없습니다.");
         }
     }
 

@@ -32,7 +32,7 @@ public class TableGroupValidator {
 
     public void validateForUnGroup(OrderTables orderTables) {
         if (orderService.hasNotComplateStatus(orderTables.getOrderTableIds())) {
-            throw new HasNotCompletionOrderException();
+            throw new HasNotCompletionOrderException("계산완료가 되지않은 주문이 존재합니다.");
         }
     }
 
@@ -66,25 +66,25 @@ public class TableGroupValidator {
 
     private static void checkHasTableGroup(final OrderTable orderTable) {
         if (orderTable.hasTableGroup()) {
-            throw new HasOtherTableGroupException();
+            throw new HasOtherTableGroupException("단체지정이 된 주문테이블입니다.");
         }
     }
 
     private static void checkNotEmptyTable(final OrderTable orderTable) {
         if (!orderTable.isEmpty()) {
-            throw new NotEmptyOrderTableException();
+            throw new NotEmptyOrderTableException("주문테이블이 빈테이블이 아닙니다.");
         }
     }
     
     private static void checkOrderTableSize(final OrderTables orderTables) {
         if (orderTables.size() < 2) {
-            throw new NotGroupingOrderTableCountException();
+            throw new NotGroupingOrderTableCountException("주문 테이블의 개수가 2개 미만입니다.");
         }
     }
 
     private void checkAllExistOfOrderTables(final List<OrderTableDto> orderTables, final OrderTables savedOrderTables) {
         if (orderTables.size() != savedOrderTables.size()) {
-            throw new NotRegistedMenuOrderTableException();
+            throw new NotRegistedMenuOrderTableException("요청된 주문테이블 수와 조회된 주문테이블 수가 일치하지 않습니다.");
         }
     }
 }
