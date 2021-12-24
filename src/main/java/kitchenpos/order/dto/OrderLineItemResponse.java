@@ -2,6 +2,8 @@ package kitchenpos.order.dto;
 
 import kitchenpos.order.domain.OrderLineItem;
 
+import java.util.Objects;
+
 public class OrderLineItemResponse {
     private final Long seq;
     private final Long menuId;
@@ -30,22 +32,19 @@ public class OrderLineItemResponse {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    public boolean equals(Object target) {
+        if (this == target) return true;
+        if (target == null || getClass() != target.getClass()) return false;
 
-        OrderLineItemResponse that = (OrderLineItemResponse) o;
+        OrderLineItemResponse that = (OrderLineItemResponse) target;
 
         if (quantity != that.quantity) return false;
-        if (seq != null ? !seq.equals(that.seq) : that.seq != null) return false;
-        return menuId != null ? menuId.equals(that.menuId) : that.menuId == null;
+        if (!Objects.equals(seq, that.seq)) return false;
+        return Objects.equals(menuId, that.menuId);
     }
 
     @Override
     public int hashCode() {
-        int result = seq != null ? seq.hashCode() : 0;
-        result = 31 * result + (menuId != null ? menuId.hashCode() : 0);
-        result = 31 * result + (int) (quantity ^ (quantity >>> 32));
-        return result;
+        return Objects.hash(seq, menuId, quantity);
     }
 }

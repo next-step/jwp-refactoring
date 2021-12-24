@@ -4,6 +4,7 @@ import kitchenpos.menu.domain.Menu;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class MenuResponse {
@@ -51,26 +52,21 @@ public class MenuResponse {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    public boolean equals(Object target) {
+        if (this == target) return true;
+        if (target == null || getClass() != target.getClass()) return false;
 
-        MenuResponse that = (MenuResponse) o;
+        MenuResponse that = (MenuResponse) target;
 
         if (price != that.price) return false;
-        if (id != null ? !id.equals(that.id) : that.id != null) return false;
-        if (name != null ? !name.equals(that.name) : that.name != null) return false;
-        if (menuProducts != null ? !menuProducts.equals(that.menuProducts) : that.menuProducts != null) return false;
-        return menuGroupId != null ? menuGroupId.equals(that.menuGroupId) : that.menuGroupId == null;
+        if (!Objects.equals(id, that.id)) return false;
+        if (!Objects.equals(name, that.name)) return false;
+        if (!menuProducts.equals(that.menuProducts)) return false;
+        return Objects.equals(menuGroupId, that.menuGroupId);
     }
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + price;
-        result = 31 * result + (menuProducts != null ? menuProducts.hashCode() : 0);
-        result = 31 * result + (menuGroupId != null ? menuGroupId.hashCode() : 0);
-        return result;
+        return Objects.hash(id, name, price, menuProducts, menuGroupId);
     }
 }

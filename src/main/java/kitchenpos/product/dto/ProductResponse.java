@@ -2,6 +2,8 @@ package kitchenpos.product.dto;
 
 import kitchenpos.product.domain.Product;
 
+import java.util.Objects;
+
 public class ProductResponse {
     private final Long id;
     private final String name;
@@ -30,22 +32,19 @@ public class ProductResponse {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    public boolean equals(Object target) {
+        if (this == target) return true;
+        if (target == null || getClass() != target.getClass()) return false;
 
-        ProductResponse that = (ProductResponse) o;
+        ProductResponse that = (ProductResponse) target;
 
         if (price != that.price) return false;
-        if (id != null ? !id.equals(that.id) : that.id != null) return false;
-        return name != null ? name.equals(that.name) : that.name == null;
+        if (!Objects.equals(id, that.id)) return false;
+        return Objects.equals(name, that.name);
     }
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + price;
-        return result;
+        return Objects.hash(id, name, price);
     }
 }

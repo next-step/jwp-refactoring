@@ -2,6 +2,8 @@ package kitchenpos.menugroup.dto;
 
 import kitchenpos.menugroup.domain.MenuGroup;
 
+import java.util.Objects;
+
 public class MenuGroupResponse {
 
     private final Long id;
@@ -25,20 +27,18 @@ public class MenuGroupResponse {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    public boolean equals(Object target) {
+        if (this == target) return true;
+        if (target == null || getClass() != target.getClass()) return false;
 
-        MenuGroupResponse that = (MenuGroupResponse) o;
+        MenuGroupResponse that = (MenuGroupResponse) target;
 
-        if (id != null ? !id.equals(that.id) : that.id != null) return false;
-        return name != null ? name.equals(that.name) : that.name == null;
+        if (!Objects.equals(id, that.id)) return false;
+        return Objects.equals(name, that.name);
     }
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        return result;
+        return Objects.hash(id, name);
     }
 }

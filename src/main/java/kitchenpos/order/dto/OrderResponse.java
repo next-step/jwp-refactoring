@@ -4,6 +4,7 @@ import kitchenpos.order.domain.Order;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class OrderResponse {
@@ -50,27 +51,22 @@ public class OrderResponse {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    public boolean equals(Object target) {
+        if (this == target) return true;
+        if (target == null || getClass() != target.getClass()) return false;
 
-        OrderResponse that = (OrderResponse) o;
+        OrderResponse that = (OrderResponse) target;
 
-        if (id != null ? !id.equals(that.id) : that.id != null) return false;
-        if (orderTableId != null ? !orderTableId.equals(that.orderTableId) : that.orderTableId != null) return false;
-        if (orderStatus != null ? !orderStatus.equals(that.orderStatus) : that.orderStatus != null) return false;
-        if (orderLineItems != null ? !orderLineItems.equals(that.orderLineItems) : that.orderLineItems != null)
+        if (!Objects.equals(id, that.id)) return false;
+        if (!Objects.equals(orderTableId, that.orderTableId)) return false;
+        if (!Objects.equals(orderStatus, that.orderStatus)) return false;
+        if (!Objects.equals(orderLineItems, that.orderLineItems))
             return false;
-        return orderedTime != null ? orderedTime.equals(that.orderedTime) : that.orderedTime == null;
+        return Objects.equals(orderedTime, that.orderedTime);
     }
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (orderTableId != null ? orderTableId.hashCode() : 0);
-        result = 31 * result + (orderStatus != null ? orderStatus.hashCode() : 0);
-        result = 31 * result + (orderLineItems != null ? orderLineItems.hashCode() : 0);
-        result = 31 * result + (orderedTime != null ? orderedTime.hashCode() : 0);
-        return result;
+        return Objects.hash(id, orderTableId, orderStatus, orderLineItems, orderedTime);
     }
 }

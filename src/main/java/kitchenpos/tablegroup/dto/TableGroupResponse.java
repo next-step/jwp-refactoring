@@ -4,6 +4,7 @@ import kitchenpos.tablegroup.domain.TableGroup;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 public class TableGroupResponse {
 
@@ -34,23 +35,20 @@ public class TableGroupResponse {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    public boolean equals(Object target) {
+        if (this == target) return true;
+        if (target == null || getClass() != target.getClass()) return false;
 
-        TableGroupResponse that = (TableGroupResponse) o;
+        TableGroupResponse that = (TableGroupResponse) target;
 
-        if (createdDate != null ? !createdDate.equals(that.createdDate) : that.createdDate != null) return false;
-        if (orderTableIds != null ? !orderTableIds.equals(that.orderTableIds) : that.orderTableIds != null)
+        if (!Objects.equals(createdDate, that.createdDate)) return false;
+        if (!Objects.equals(orderTableIds, that.orderTableIds))
             return false;
-        return id != null ? id.equals(that.id) : that.id == null;
+        return Objects.equals(id, that.id);
     }
 
     @Override
     public int hashCode() {
-        int result = createdDate != null ? createdDate.hashCode() : 0;
-        result = 31 * result + (orderTableIds != null ? orderTableIds.hashCode() : 0);
-        result = 31 * result + (id != null ? id.hashCode() : 0);
-        return result;
+        return Objects.hash(createdDate, orderTableIds, id);
     }
 }
