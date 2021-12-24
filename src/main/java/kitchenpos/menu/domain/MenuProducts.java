@@ -32,11 +32,10 @@ public class MenuProducts {
     }
 
     public Price getTotalPrice() {
-        BigDecimal sum = BigDecimal.ZERO;
-        for (MenuProduct menuProduct : menuProducts) {
-            sum = sum.add(menuProduct.getTotalPrice());
-        }
-        return Price.of(sum);
+        BigDecimal totalPrice = menuProducts.stream()
+                .map(MenuProduct::getTotalPrice)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        return Price.of(totalPrice);
     }
 
     public List<MenuProduct> getMenuProducts() {
