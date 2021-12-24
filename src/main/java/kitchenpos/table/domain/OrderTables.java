@@ -12,6 +12,7 @@ import javax.persistence.Embeddable;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import kitchenpos.common.exception.Message;
+import kitchenpos.order.domain.OrderStatus;
 import org.springframework.util.CollectionUtils;
 
 @Embeddable
@@ -28,10 +29,12 @@ public class OrderTables {
 
     private OrderTables(List<OrderTable> orderTables) {
         if (isSmallThanMinTableSize(orderTables)) {
-            throw new IllegalArgumentException(Message.ORDER_TABLES_IS_SMALL_THAN_MIN_TABLE_SIZE.getMessage());
+            throw new IllegalArgumentException(
+                Message.ORDER_TABLES_IS_SMALL_THAN_MIN_TABLE_SIZE.getMessage());
         }
         if (isNotEmptyOrAlreadyGroup(orderTables)) {
-            throw new IllegalArgumentException(Message.ORDER_TABLE_IS_NOT_EMPTY_TABLE_OR_ALREADY_GROUP.getMessage());
+            throw new IllegalArgumentException(
+                Message.ORDER_TABLE_IS_NOT_EMPTY_TABLE_OR_ALREADY_GROUP.getMessage());
         }
         this.orderTables.addAll(orderTables);
     }

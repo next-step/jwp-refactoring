@@ -2,9 +2,6 @@ package kitchenpos.table.application;
 
 import java.util.List;
 import kitchenpos.common.exception.NoResultDataException;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderDao;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableDao;
 import kitchenpos.table.dto.ChangeEmptyRequest;
@@ -18,11 +15,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class TableService {
 
     private final OrderTableDao orderTableDao;
-    private final OrderDao orderDao;
 
-    public TableService(OrderTableDao orderTableDao, OrderDao orderDao) {
+    public TableService(OrderTableDao orderTableDao) {
         this.orderTableDao = orderTableDao;
-        this.orderDao = orderDao;
     }
 
     @Transactional
@@ -37,15 +32,10 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, final ChangeEmptyRequest changeEmptyRequest) {
-
         final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
             .orElseThrow(NoResultDataException::new);
 
-        OrderStatus savedOrderStatus = orderDao.findByOrderTableId(savedOrderTable.getId());
-        OrderStatus.validStatusIsCookingOrMealThrow(savedOrderStatus);
-
         savedOrderTable.changeOrderTableStatus(changeEmptyRequest.isEmpty());
-
         return OrderTableResponse.of(savedOrderTable);
     }
 

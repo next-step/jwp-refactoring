@@ -1,5 +1,6 @@
 package kitchenpos.table.application;
 
+import static common.OrderFixture.주문;
 import static common.OrderTableFixture.두번째_주문테이블;
 import static common.OrderTableFixture.첫번째_주문테이블;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -13,11 +14,12 @@ import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderDao;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.NumberOfGuests;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableDao;
+import kitchenpos.table.domain.OrderTableStatus;
 import kitchenpos.table.dto.ChangeEmptyRequest;
 import kitchenpos.table.dto.ChangeNumberOfGuestRequest;
 import kitchenpos.table.dto.OrderTableRequest;
@@ -36,8 +38,6 @@ public class TableServiceTest {
     @InjectMocks
     private TableService tableService;
 
-    @Mock
-    private OrderDao orderDao;
 
     @Test
     void 주문가능_테이블생성() {
@@ -77,7 +77,6 @@ public class TableServiceTest {
 
         // mocking
         when(orderTableDao.findById(anyLong())).thenReturn(Optional.of(첫번째_주문테이블));
-        when(orderDao.findByOrderTableId(anyLong())).thenReturn(OrderStatus.COMPLETION);
 
         // when
         tableService.changeEmpty(첫번째_주문테이블.getId(), new ChangeEmptyRequest(true));
@@ -88,11 +87,12 @@ public class TableServiceTest {
     @Test
     void 요리중이거나_식사중이면_빈테이블로_변경시_예외() {
         // given
-        OrderTable 첫번째_주문테이블 = 첫번째_주문테이블();
+        Order 주문 = 주문();
+        OrderTable 첫번째_주문테이블 = OrderTable.of(1L, new NumberOfGuests(3), OrderTableStatus.USE,
+            Arrays.asList(주문));
 
         // mocking
         when(orderTableDao.findById(anyLong())).thenReturn(Optional.of(첫번째_주문테이블));
-        when(orderDao.findByOrderTableId(anyLong())).thenReturn(OrderStatus.COOKING);
 
         // then
         assertThatThrownBy(() -> {

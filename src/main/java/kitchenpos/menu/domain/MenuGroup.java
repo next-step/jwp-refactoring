@@ -22,13 +22,17 @@ public class MenuGroup {
     }
 
     public static MenuGroup of(String name) {
-        if (Strings.isBlank(name)) {
-            throw new IllegalArgumentException(Message.MENU_GROUP_NAME_IS_NOT_NULL.getMessage());
-        }
         return new MenuGroup(null, name);
     }
 
+    private static void validIsNotNull(String name) {
+        if (Strings.isBlank(name)) {
+            throw new IllegalArgumentException(Message.MENU_GROUP_NAME_IS_NOT_NULL.getMessage());
+        }
+    }
+
     private MenuGroup(Long id, String name) {
+        validIsNotNull(name);
         this.id = id;
         this.name = name;
     }

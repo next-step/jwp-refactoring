@@ -2,7 +2,7 @@ package kitchenpos.order.application;
 
 import static common.MenuFixture.메뉴_양념치킨;
 import static common.OrderFixture.주문;
-import static common.OrderFixture.주문_완료;
+import static common.OrderFixture.계산_완료;
 import static common.OrderTableFixture.첫번째_주문테이블;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.*;
@@ -71,11 +71,11 @@ public class OrderServiceTest {
 
 
     @Test
-    void 주문상태변경시_이미완료상태라면_예외() {
+    void 주문상태변경시_이미계산완료_상태라면_예외() {
         // then
         assertThatThrownBy(() -> {
-            Order 주문_완료 = 주문_완료();
-            when(orderDao.findById(anyLong())).thenReturn(Optional.of(주문_완료));
+            Order 계산_완료 = 계산_완료();
+            when(orderDao.findById(anyLong())).thenReturn(Optional.of(계산_완료));
             orderService.changeOrderStatus(1L, new ChangeOrderStatusRequest(OrderStatus.COMPLETION.name()));
         }).isInstanceOf(IllegalArgumentException.class)
             .hasMessage(Message.ORDER_STATUS_IS_NOT_COMPLETION.getMessage());

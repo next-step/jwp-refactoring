@@ -42,18 +42,21 @@ public class Menu {
     }
 
     private Menu(Long id, String name, MenuGroup menuGroup, Amount price) {
-
-        if (Strings.isBlank(name)) {
-            throw new IllegalArgumentException(Message.MENU_NAME_IS_NOT_NULL.getMessage());
-        }
-
+        validIsNotNull(name);
         this.id = id;
         this.name = name;
         this.menuGroup = menuGroup;
         this.price = price;
     }
 
+
     protected Menu() {
+    }
+
+    private void validIsNotNull(String name) {
+        if (Strings.isBlank(name)) {
+            throw new IllegalArgumentException(Message.MENU_NAME_IS_NOT_NULL.getMessage());
+        }
     }
 
     public void withMenuProducts(List<MenuProduct> menuProducts) {

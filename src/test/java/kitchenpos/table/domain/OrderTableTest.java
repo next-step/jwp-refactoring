@@ -54,4 +54,5 @@ class OrderTableTest {
         }).isInstanceOf(IllegalArgumentException.class)
             .hasMessage(Message.ORDER_TABLE_IS_NOT_ORDER_TABLE_STATUS_NULL.getMessage());
     }
+
 }
