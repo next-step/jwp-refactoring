@@ -1,6 +1,19 @@
 # 키친포스
 
 ## 요구 사항
+### step1 : 테스트 코드 작성
+- [ ] MenuGroupRestController
+- [ ] MenuRestController
+- [ ] OrderRestController
+- [ ] ProductRestController
+- [ ] TableGroupRestController
+- [ ] TableRestController
+- [ ] MenuService
+- [ ] MenuGroupService
+- [ ] OrderService
+- [ ] ProductService
+- [ ] TableGroupService
+- [ ] TableService
 
 ## 용어 사전
 
