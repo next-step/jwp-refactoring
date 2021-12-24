@@ -65,7 +65,6 @@ public class MenuService {
 			.collect(Collectors.toMap(Product::getId, Function.identity()));
 	}
 
-	@Transactional(readOnly = true)
 	private List<MenuProduct> createMenuProducts(List<MenuProductAddRequest> requests) {
 		final Map<Long, Product> products = findProducts(requests);
 		if (products.size() != requests.size()) {
@@ -78,6 +77,7 @@ public class MenuService {
 			)).collect(Collectors.toList());
 	}
 
+	@Transactional(readOnly = true)
 	public List<MenuResponse> list() {
 		final List<Menu> menus = menuRepository.findAll();
 		return menus.stream().map(MenuResponse::of).collect(Collectors.toList());

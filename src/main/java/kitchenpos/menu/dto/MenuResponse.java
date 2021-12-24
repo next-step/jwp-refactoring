@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menugroup.domain.MenuGroupResponse;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
 
 public class MenuResponse {
 

@@ -1,6 +1,7 @@
 package kitchenpos.menu.domain;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -15,6 +16,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import kitchenpos.common.Quantity;
+import kitchenpos.menu.exception.NotFoundMenuException;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.exception.NotFoundProductException;
 
@@ -42,10 +44,17 @@ public class MenuProduct {
     }
 
     private MenuProduct(Long seq, Menu menu, Product product, long quantity) {
+        validate(product);
         this.seq = seq;
         this.menu = menu;
         this.product = product;
         this.quantity = Quantity.of(quantity);
+    }
+
+    private void validate(Product product) {
+        if (Objects.isNull(product)) {
+            throw new NotFoundProductException();
+        }
     }
 
     public static MenuProduct of(Product product, long quantity) {
@@ -76,6 +85,9 @@ public class MenuProduct {
     }
 
     public void setMenu(Menu menu) {
+        if (Objects.isNull(menu)) {
+            throw new NotFoundMenuException();
+        }
         this.menu = menu;
     }
 }

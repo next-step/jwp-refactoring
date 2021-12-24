@@ -8,6 +8,10 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 
+import org.springframework.util.CollectionUtils;
+
+import kitchenpos.menu.exception.InvalidMenuException;
+
 @Embeddable
 public class MenuProducts {
 
@@ -18,7 +22,14 @@ public class MenuProducts {
 	}
 
 	private MenuProducts(List<MenuProduct> menuProducts) {
+		validate(menuProducts);
 		this.menuProducts = menuProducts;
+	}
+
+	private void validate(List<MenuProduct> menuProducts) {
+		if (CollectionUtils.isEmpty(menuProducts)) {
+			throw new InvalidMenuException("메뉴를 구성하는 상품 목록이 있어야 합니다.");
+		}
 	}
 
 	public static MenuProducts of() {
