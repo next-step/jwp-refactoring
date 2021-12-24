@@ -9,6 +9,7 @@ import javax.persistence.OneToMany;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Embeddable
 public class MenuProducts {
@@ -32,10 +33,10 @@ public class MenuProducts {
     }
 
     public Price getTotalPrice() {
-        BigDecimal totalPrice = menuProducts.stream()
+        List<BigDecimal> prices = menuProducts.stream()
                 .map(MenuProduct::getTotalPrice)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-        return Price.of(totalPrice);
+                .collect(Collectors.toList());
+        return Price.sum(prices);
     }
 
     public List<MenuProduct> getMenuProducts() {

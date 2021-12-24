@@ -3,6 +3,7 @@ package kitchenpos.common.domain;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Objects;
 
 @Embeddable
@@ -23,6 +24,10 @@ public class Price implements Comparable<Price> {
 
     public static Price of(BigDecimal price) {
         return new Price(price);
+    }
+
+    public static Price sum(List<BigDecimal> prices) {
+        return Price.of(prices.stream().reduce(BigDecimal.ZERO, BigDecimal::add));
     }
 
     public BigDecimal getPrice() {
