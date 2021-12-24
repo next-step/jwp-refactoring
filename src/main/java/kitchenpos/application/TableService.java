@@ -38,9 +38,9 @@ public class TableService {
     @Transactional
     public OrderTable changeEmpty(final Long orderTableId, final OrderTable orderTable) {
         final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
-                .orElseThrow(() -> {
-                    throw new NotFoundException(HttpStatus.BAD_REQUEST);
-                });
+                .orElseThrow(() ->
+                        new NotFoundException(HttpStatus.BAD_REQUEST)
+                );
 
         if (Objects.nonNull(savedOrderTable.getTableGroupId())) {
             throw new NotExistRegisterException(HttpStatus.BAD_REQUEST);
@@ -65,9 +65,9 @@ public class TableService {
         }
 
         final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
-                .orElseThrow(() -> {
-                    throw new NotFoundException(HttpStatus.BAD_REQUEST);
-                });
+                .orElseThrow(() ->
+                        new NotFoundException(HttpStatus.BAD_REQUEST)
+                );
 
         if (savedOrderTable.isEmpty()) {
             throw new EmptyException(HttpStatus.BAD_REQUEST);

@@ -57,9 +57,10 @@ public class MenuService {
         BigDecimal sum = BigDecimal.ZERO;
         for (final MenuProduct menuProduct : menuProducts) {
             final Product product = productDao.findById(menuProduct.getProductId())
-                    .orElseThrow(() -> {
-                        throw new NotFoundException(HttpStatus.BAD_REQUEST);
-                    });
+                    .orElseThrow(() ->
+                            new NotFoundException(HttpStatus.BAD_REQUEST)
+                    );
+
             sum = sum.add(product.getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
         }
 

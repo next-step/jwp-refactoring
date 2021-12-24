@@ -60,9 +60,9 @@ public class OrderService {
         }
 
         final OrderTable orderTable = orderTableDao.findById(order.getOrderTableId())
-                .orElseThrow(() -> {
-                    throw new NotFoundException(HttpStatus.BAD_REQUEST);
-                });
+                .orElseThrow(() ->
+                        new NotFoundException(HttpStatus.BAD_REQUEST)
+                );
 
         if (orderTable.isEmpty()) {
             throw new EmptyException(HttpStatus.BAD_REQUEST);
@@ -98,9 +98,9 @@ public class OrderService {
     @Transactional
     public Order changeOrderStatus(final Long orderId, final Order order) {
         final Order savedOrder = orderDao.findById(orderId)
-                .orElseThrow(() -> {
-                    throw new NotFoundException(HttpStatus.BAD_REQUEST);
-                });
+                .orElseThrow(() ->
+                        new NotFoundException(HttpStatus.BAD_REQUEST)
+                );
 
         if (Objects.equals(OrderStatus.COMPLETION.name(), savedOrder.getOrderStatus())) {
             throw new OrderStatusException(HttpStatus.BAD_REQUEST);
