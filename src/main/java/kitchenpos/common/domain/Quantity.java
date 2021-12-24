@@ -1,4 +1,4 @@
-package kitchenpos.order.domain;
+package kitchenpos.common.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -14,6 +14,9 @@ public class Quantity {
     }
 
     private Quantity(long quantity) {
+        if (quantity < 0) {
+            throw new IllegalArgumentException("quantity는 0이상이어야 합니다.");
+        }
         this.quantity = quantity;
     }
 

@@ -1,7 +1,7 @@
 package kitchenpos.menu.fixture;
 
+import kitchenpos.common.domain.Quantity;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.order.domain.Quantity;
 import kitchenpos.product.domain.Product;
 
 public class MenuProductFixture {
