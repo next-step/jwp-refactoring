@@ -75,7 +75,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         메뉴목록_조회됨(메뉴목록_응답);
     }
 
-    private ExtractableResponse<Response> 메뉴_생성(MenuRequest menu) {
+    public static ExtractableResponse<Response> 메뉴_생성(MenuRequest menu) {
         return post("/api/menus", menu);
     }
 

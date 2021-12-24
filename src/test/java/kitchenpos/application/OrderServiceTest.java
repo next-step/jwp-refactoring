@@ -17,6 +17,7 @@ import kitchenpos.order.domain.OrderLineItemRepository;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.order.dto.OrderStatusRequest;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import org.assertj.core.util.Lists;
@@ -119,7 +120,7 @@ class OrderServiceTest {
         OrderLineItem orderLineItem2 = new OrderLineItem(2L, 1L, 2L, 1);
         List<OrderLineItem> orderLineItems = Lists.newArrayList(orderLineItem1, orderLineItem2);
         Order order = new Order(1L, 1L, OrderStatus.COOKING, null, orderLineItems);
-        Order orderForUpdate = new Order(1L, 1L, OrderStatus.MEAL, null, orderLineItems);
+        OrderStatusRequest orderForUpdate = new OrderStatusRequest(OrderStatus.MEAL);
 
         given(orderRepository.findById(any())).willReturn(Optional.of(order));
         given(orderLineItemRepository.findAllByOrderId(1L)).willReturn(orderLineItems);
@@ -141,7 +142,7 @@ class OrderServiceTest {
         OrderLineItem orderLineItem2 = new OrderLineItem(2L, 1L, 2L, 1);
         List<OrderLineItem> orderLineItems = Lists.newArrayList(orderLineItem1, orderLineItem2);
         Order order = new Order(1L, 1L, OrderStatus.COMPLETION, null, orderLineItems);
-        Order orderForUpdate = new Order(1L, 1L, OrderStatus.MEAL, null, orderLineItems);
+        OrderStatusRequest orderForUpdate = new OrderStatusRequest(OrderStatus.MEAL);
 
         given(orderRepository.findById(any())).willReturn(Optional.of(order));
 
