@@ -12,12 +12,16 @@ public class Product {
     }
 
     public Product(Long id, String name, BigDecimal price) {
+        validatePrice(price);
+        this.id = id;
+        this.name = Objects.requireNonNull(name, "상품의 이름은 필수 입니다.");
+        this.price = price;
+    }
+
+    private void validatePrice(BigDecimal price) {
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalArgumentException("상품의 가격은 0원 이상 이어야 합니다.");
         }
-        this.id = id;
-        this.name = name;
-        this.price = price;
     }
 
     public static Product of(Long id, String name, BigDecimal price) {
