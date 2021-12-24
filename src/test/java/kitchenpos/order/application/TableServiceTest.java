@@ -42,9 +42,10 @@ class TableServiceTest {
 
     @BeforeEach
     void setUp() {
-        빈_테이블 = OrderTableFixture.of(1L, null, 0, true);
-        주문_테이블 = OrderTableFixture.of(2L, null, 5, false);
-        단체_지정_테이블 = OrderTableFixture.of(3L, 1L, 5, false);
+        빈_테이블 = OrderTableFixture.of(1L,  0, true);
+        주문_테이블 = OrderTableFixture.of(2L, 5, false);
+        단체_지정_테이블 = OrderTableFixture.of(3L, 5, false);
+        단체_지정_테이블.group(1L);
     }
 
     @Test
@@ -82,7 +83,7 @@ class TableServiceTest {
     @Test
     void 테이블_상태_변경() {
         // given
-        OrderTable 변경된_빈_테이블 = OrderTableFixture.of(빈_테이블.getId(), null, 0, false);
+        OrderTable 변경된_빈_테이블 = OrderTableFixture.of(빈_테이블.getId(), 0, false);
 
         given(orderTableDao.findById(빈_테이블.getId())).willReturn(Optional.of(빈_테이블));
         given(orderDao.existsByOrderTableIdAndOrderStatusIn(
@@ -143,7 +144,7 @@ class TableServiceTest {
     @Test
     void 방문한_손님_수_변경() {
         // given
-        OrderTable 방문자_수_변경된_주문_테이블 = OrderTableFixture.of(주문_테이블.getId(), null, 3, false);
+        OrderTable 방문자_수_변경된_주문_테이블 = OrderTableFixture.of(주문_테이블.getId(), 3, false);
         given(orderTableDao.findById(주문_테이블.getId())).willReturn(Optional.of(주문_테이블));
         given(orderTableDao.save(any())).willReturn(방문자_수_변경된_주문_테이블);
 
@@ -155,19 +156,6 @@ class TableServiceTest {
             assertThat(actual).isEqualTo(방문자_수_변경된_주문_테이블);
             assertThat(actual.getNumberOfGuests()).isEqualTo(방문자_수_변경된_주문_테이블.getNumberOfGuests());
         });
-    }
-
-    @Test
-    void 방문한_손님의_수_변경_시_손님는_0명_이상이어야_한다() {
-        // given
-        OrderTable 방문자수_0명_미만_테이블 = OrderTableFixture.of(4L, 1L, -1, false);
-
-        // when
-        ThrowingCallable throwingCallable = () -> tableService.changeNumberOfGuests(방문자수_0명_미만_테이블.getId(), 방문자수_0명_미만_테이블);
-
-        // then
-        assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(throwingCallable);
     }
 
     @Test

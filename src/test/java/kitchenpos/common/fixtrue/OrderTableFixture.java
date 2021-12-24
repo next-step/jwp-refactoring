@@ -8,12 +8,7 @@ public class OrderTableFixture {
 
     }
 
-    public static OrderTable of(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
-        OrderTable orderTable = new OrderTable();
-        orderTable.setId(id);
-        orderTable.setTableGroupId(tableGroupId);
-        orderTable.setNumberOfGuests(numberOfGuests);
-        orderTable.setEmpty(empty);
-        return orderTable;
+    public static OrderTable of(Long id, int numberOfGuests, boolean empty) {
+        return OrderTable.of(id, numberOfGuests, empty);
     }
 }

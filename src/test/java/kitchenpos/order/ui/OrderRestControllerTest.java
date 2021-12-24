@@ -61,7 +61,7 @@ class OrderRestControllerTest extends RestControllerTest {
                 두마리치킨.getId(),
                 MenuProductFixture.of(1L, 1L, 후라이드치킨.getId(), 2));
 
-        OrderTable 주문_테이블 = OrderTableFixture.of(1L, null, 4, false);
+        OrderTable 주문_테이블 = OrderTableFixture.of(1L, 4, false);
         주문 = OrderFixture.of(
                 1L,
                 주문_테이블.getId(),

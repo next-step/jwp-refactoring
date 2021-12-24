@@ -8,16 +8,15 @@ import kitchenpos.common.fixtrue.OrderLineItemFixture;
 import kitchenpos.common.fixtrue.OrderTableFixture;
 import kitchenpos.common.fixtrue.ProductFixture;
 import kitchenpos.menu.dao.MenuDao;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.order.dao.OrderDao;
 import kitchenpos.order.dao.OrderLineItemDao;
 import kitchenpos.order.dao.OrderTableDao;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.application.OrderService;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -73,7 +72,7 @@ class OrderServiceTest {
                 두마리치킨.getId(),
                 MenuProductFixture.of(1L, 1L, 후라이드치킨.getId(), 2));
 
-        주문_테이블 = OrderTableFixture.of(1L, null, 4, false);
+        주문_테이블 = OrderTableFixture.of(1L, 4, false);
         주문_상품 = OrderLineItemFixture.of(1L, 1L, 후라이드_후라이드.getId(), 1L);
         주문 = OrderFixture.of(
                 1L,

@@ -38,7 +38,7 @@ class TableRestControllerTest extends RestControllerTest {
     @Test
     void 테이블_생성() throws Exception {
         // given
-        OrderTable 빈_테이블 = OrderTableFixture.of(1L, null, 0, true);
+        OrderTable 빈_테이블 = OrderTableFixture.of(1L, 0, true);
         given(tableService.create(any())).willReturn(빈_테이블);
 
         // when
@@ -60,8 +60,8 @@ class TableRestControllerTest extends RestControllerTest {
     void 테이블_조회() throws Exception {
         // given
         List<OrderTable> orderTables = new ArrayList<>();
-        orderTables.add(OrderTableFixture.of(1L, null, 0, true));
-        orderTables.add(OrderTableFixture.of(2L, null, 5, false));
+        orderTables.add(OrderTableFixture.of(1L, 0, true));
+        orderTables.add(OrderTableFixture.of(2L, 5, false));
 
         given(tableService.list()).willReturn(orderTables);
 
@@ -86,8 +86,8 @@ class TableRestControllerTest extends RestControllerTest {
     @Test
     void 테이블_상태_변경() throws Exception {
         // given
-        OrderTable 빈_테이블 = OrderTableFixture.of(1L, null, 0, true);
-        OrderTable 주문_테이블 = OrderTableFixture.of(1L, null, 0, false);
+        OrderTable 빈_테이블 = OrderTableFixture.of(1L, 0, true);
+        OrderTable 주문_테이블 = OrderTableFixture.of(1L, 0, false);
 
         given(tableService.changeEmpty(any(), any())).willReturn(주문_테이블);
         빈_테이블.setEmpty(false);
@@ -107,8 +107,8 @@ class TableRestControllerTest extends RestControllerTest {
     @Test
     void 방문한_손님_수_변경() throws Exception {
         // given
-        OrderTable 주문_테이블 = OrderTableFixture.of(1L, null, 0, false);
-        OrderTable 방문한_손님_수가_변경된_주문_테이블 = OrderTableFixture.of(1L, null, 5, false);
+        OrderTable 주문_테이블 = OrderTableFixture.of(1L, 0, false);
+        OrderTable 방문한_손님_수가_변경된_주문_테이블 = OrderTableFixture.of(1L, 5, false);
 
         given(tableService.changeNumberOfGuests(any(), any())).willReturn(방문한_손님_수가_변경된_주문_테이블);
         주문_테이블.setNumberOfGuests(5);

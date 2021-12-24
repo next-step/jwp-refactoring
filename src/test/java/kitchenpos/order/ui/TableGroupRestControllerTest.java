@@ -1,6 +1,7 @@
 package kitchenpos.order.ui;
 
 import kitchenpos.order.application.TableGroupService;
+import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.TableGroup;
 import kitchenpos.common.fixtrue.OrderTableFixture;
 import kitchenpos.common.fixtrue.TableGroupFixture;
@@ -35,9 +36,14 @@ class TableGroupRestControllerTest extends RestControllerTest {
     @Test
     void 단체_지정() throws Exception {
         // given
-        TableGroup tableGroup = TableGroupFixture.of(1L,
-                OrderTableFixture.of(1L, 1L, 2, true),
-                OrderTableFixture.of(2L, 1L, 4, true));
+        OrderTable firstOrderTable = OrderTableFixture.of(1L, 2, true);
+        firstOrderTable.group(1L);
+        OrderTable secondOrderTable = OrderTableFixture.of(1L, 2, true);
+        secondOrderTable.group(1L);
+        TableGroup tableGroup = TableGroupFixture.of(
+                1L,
+                firstOrderTable,
+                secondOrderTable);
 
         given(tableGroupService.create(any())).willReturn(tableGroup);
 
@@ -57,9 +63,14 @@ class TableGroupRestControllerTest extends RestControllerTest {
     @Test
     void 단체_지정_해제() throws Exception {
         // given
+        OrderTable firstOrderTable = OrderTableFixture.of(1L, 2, true);
+        firstOrderTable.group(1L);
+        OrderTable secondOrderTable = OrderTableFixture.of(1L, 2, true);
+        secondOrderTable.group(1L);
+
         TableGroup tableGroup = TableGroupFixture.of(1L,
-                OrderTableFixture.of(1L, null, 2, true),
-                OrderTableFixture.of(2L, null, 4, true));
+                firstOrderTable,
+                secondOrderTable);
 
         // when
         ResultActions actions = mockMvc.perform(delete(API_TABLE_GROUP_ROOT + "/" + tableGroup.getId()))

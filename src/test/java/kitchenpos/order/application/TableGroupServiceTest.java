@@ -7,7 +7,6 @@ import kitchenpos.order.dao.OrderTableDao;
 import kitchenpos.order.dao.TableGroupDao;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.TableGroup;
-import kitchenpos.order.application.TableGroupService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -50,8 +49,8 @@ class TableGroupServiceTest {
 
     @BeforeEach
     void setUp() {
-        firstOrderTable = OrderTableFixture.of(1L, null, 2, true);
-        secondOrderTable = OrderTableFixture.of(1L, null, 2, true);
+        firstOrderTable = OrderTableFixture.of(1L, 2, true);
+        secondOrderTable = OrderTableFixture.of(1L, 2, true);
         orderTables = Arrays.asList(firstOrderTable, secondOrderTable);
         단체_지정_테이블 = TableGroupFixture.of(1L, firstOrderTable, secondOrderTable);
     }
@@ -165,8 +164,8 @@ class TableGroupServiceTest {
 
         // then
         assertThat(orderTables)
-                    .extracting("tableGroupId")
-                    .containsExactly(null, null);
+                .extracting("tableGroupId")
+                .containsExactly(null, null);
     }
 
     @Test
