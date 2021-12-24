@@ -16,7 +16,8 @@ public class OrderLineItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long seq;
+    @Column(name = "seq")
+    private Long id;
 
     @JoinColumn(name = "order_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
@@ -41,8 +42,8 @@ public class OrderLineItem {
         this.order = order;
     }
 
-    public Long getSeq() {
-        return seq;
+    public Long getId() {
+        return id;
     }
 
     public Order getOrder() {
@@ -68,11 +69,11 @@ public class OrderLineItem {
         }
 
         OrderLineItem that = (OrderLineItem) o;
-        return Objects.equals(getSeq(), that.getSeq());
+        return Objects.equals(getId(), that.getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getSeq());
+        return Objects.hash(getId());
     }
 }
