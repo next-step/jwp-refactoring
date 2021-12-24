@@ -8,6 +8,7 @@ import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Embeddable
 public class OrderLineItems {
@@ -39,5 +40,18 @@ public class OrderLineItems {
 
     public void add(OrderLineItem orderLineItem) {
         orderLineItems.add(orderLineItem);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof OrderLineItems)) return false;
+        OrderLineItems that = (OrderLineItems) o;
+        return Objects.equals(orderLineItems, that.orderLineItems);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(orderLineItems);
     }
 }
