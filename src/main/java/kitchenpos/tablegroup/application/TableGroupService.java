@@ -1,46 +1,35 @@
 package kitchenpos.tablegroup.application;
 
 import kitchenpos.common.exception.CommonErrorCode;
-import kitchenpos.common.exception.InvalidParameterException;
 import kitchenpos.common.exception.NotFoundException;
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
-import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.order.domain.Orders;
 import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.domain.TableGroupValidator;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 @Service
 public class TableGroupService {
 
-    private final OrderRepository orderRepository;
-    private final OrderTableRepository orderTableRepository;
     private final TableGroupRepository tableGroupRepository;
+    private final TableGroupValidator tableGroupValidator;
 
-    public TableGroupService(final OrderRepository orderDao,
-        final OrderTableRepository orderTableDao, final TableGroupRepository tableGroupDao) {
-        this.orderRepository = orderDao;
-        this.orderTableRepository = orderTableDao;
-        this.tableGroupRepository = tableGroupDao;
+    public TableGroupService(
+        final TableGroupRepository orderTableRepository,
+        final TableGroupValidator tableGroupValidator
+    ) {
+        this.tableGroupRepository = orderTableRepository;
+        this.tableGroupValidator = tableGroupValidator;
     }
 
     @Transactional
     public TableGroupResponse create(final TableGroupRequest tableGroup) {
-        final List<OrderTable> orderTables = orderTableRepository.findAllById(
-            tableGroup.getOrderTableIds());
+        TableGroup savedTableGroup = tableGroupRepository.save(TableGroup.of());
 
-        if (tableGroup.getOrderTableSize() != orderTables.size()) {
-            throw new InvalidParameterException(CommonErrorCode.TABLE_NOT_CREATED_EXCEPTION);
-        }
-
-        return TableGroupResponse.of(
-            tableGroupRepository.save(tableGroup.toTableGroup(orderTables)));
+        savedTableGroup.group(tableGroupValidator, tableGroup.getOrderTableIds());
+        return TableGroupResponse.of(savedTableGroup);
     }
 
     @Transactional
@@ -49,8 +38,6 @@ public class TableGroupService {
             .orElseThrow(
                 () -> new NotFoundException(CommonErrorCode.TABLE_GROUP_NOT_FOUND_EXCEPTION));
 
-        Orders orders = Orders.of(
-            orderRepository.findAllByOrderTableIn(tableGroup.getOrderTables()));
-        tableGroup.ungroup(orders);
+        tableGroup.ungroup(tableGroupValidator);
     }
 }
