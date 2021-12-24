@@ -2,6 +2,7 @@ package kitchenpos.order.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 import java.math.BigDecimal;
@@ -18,6 +19,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import kitchenpos.menu.application.ProductService;
 import kitchenpos.menu.dao.ProductRepository;
 import kitchenpos.menu.domain.Product;
+import kitchenpos.menu.dto.ProductRequest;
+import kitchenpos.menu.dto.ProductResponse;
 
 @ExtendWith(MockitoExtension.class)
 public class ProductServiceTest {
@@ -33,13 +36,13 @@ public class ProductServiceTest {
     void 상품_등록() {
         // given
         Product 상품 = Product.of("치킨", new BigDecimal("18000"));
-        given(productRepository.save(상품)).willReturn(상품);
+        given(productRepository.save(any())).willReturn(상품);
 
         // when
-        Product 등록_결과 = productService.create(상품);
+        ProductResponse 등록_결과 = productService.create(ProductRequest.from(상품));
 
         // then
-        assertThat(등록_결과).isEqualTo(상품);
+        assertThat(등록_결과).isEqualTo(ProductResponse.from(상품));
 
     }
     
@@ -51,7 +54,7 @@ public class ProductServiceTest {
     
         // when, then
         assertThatThrownBy(() -> {
-            productService.create(가격없는_상품);
+            productService.create(ProductRequest.from(가격없는_상품));
         }).isInstanceOf(IllegalArgumentException.class)
         .hasMessage("상품은 0원 이상이어야 합니다");
     }
@@ -64,7 +67,7 @@ public class ProductServiceTest {
     
         // when, then
         assertThatThrownBy(() -> {
-            productService.create(마이너스_가격_상품);
+            productService.create(ProductRequest.from(마이너스_가격_상품));
         }).isInstanceOf(IllegalArgumentException.class)
         .hasMessage("상품은 0원 이상이어야 합니다");
     }
@@ -79,10 +82,10 @@ public class ProductServiceTest {
         given(productRepository.findAll()).willReturn(Arrays.asList(첫번째_상품, 두번째_상품));
     
         // when
-        List<Product> 상품_목록 = productService.list();
+        List<ProductResponse> 상품_목록 = productService.list();
     
         // then
-        assertThat(상품_목록).containsExactly(첫번째_상품, 두번째_상품);
+        assertThat(상품_목록).containsExactly(ProductResponse.from(첫번째_상품), ProductResponse.from(두번째_상품));
     }
     
 }
