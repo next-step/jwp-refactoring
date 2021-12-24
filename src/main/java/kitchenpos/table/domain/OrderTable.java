@@ -36,26 +36,6 @@ public class OrderTable {
         this.empty = Empty.of(empty);
     }
 
-    public OrderTable(final Long id, final int numberOfGuests, final boolean empty) {
-        this.id = id;
-        this.numberOfGuests = NumberOfGuests.of(numberOfGuests);
-        this.empty = Empty.of(empty);
-    }
-
-    public OrderTable(final TableGroup tableGroup, final int numberOfGuests, final boolean empty) {
-        this.tableGroup = tableGroup;
-        this.numberOfGuests = NumberOfGuests.of(numberOfGuests);
-        this.empty = Empty.of(empty);
-    }
-
-    public OrderTable(final Long id, final TableGroup tableGroup, final int numberOfGuests,
-        final boolean empty) {
-        this.id = id;
-        this.tableGroup = tableGroup;
-        this.numberOfGuests = NumberOfGuests.of(numberOfGuests);
-        this.empty = Empty.of(empty);
-    }
-
     public Long getId() {
         return id;
     }

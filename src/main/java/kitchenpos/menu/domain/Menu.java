@@ -44,21 +44,8 @@ public class Menu {
         this.menuGroup = menuGroup;
     }
 
-    public Menu(final Long id, final String name, final Long price, final MenuGroup menuGroup,
-        final List<MenuProduct> menuProducts) {
-        this.id = id;
-        this.name = Name.of(name);
-        this.price = Price.of(BigDecimal.valueOf(price));
-        this.menuGroup = menuGroup;
-        this.menuProducts = MenuProducts.of(menuProducts);
-    }
-
     public Long getId() {
         return id;
-    }
-
-    public void setId(final Long id) {
-        this.id = id;
     }
 
     public Name getName() {

@@ -50,20 +50,6 @@ public class Order {
         this.orderStatus = OrderStatus.COOKING;
     }
 
-    public Order(OrderStatus orderStatus) {
-        this.orderStatus = orderStatus;
-    }
-
-    public Order(final Long id, final OrderTable orderTable, final OrderStatus orderStatus,
-        final List<OrderLineItem> orderLineItems) {
-        validateOrderTableNotEmpty(orderTable);
-
-        this.id = id;
-        this.orderTable = orderTable;
-        this.orderStatus = orderStatus;
-        this.orderLineItems = OrderLineItems.of(orderLineItems);
-    }
-
     public Long getId() {
         return id;
     }

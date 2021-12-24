@@ -38,11 +38,6 @@ public class MenuProduct {
         this.quantity = Quantity.of(quantity);
     }
 
-    public MenuProduct(Product product, Quantity quantity) {
-        this.product = product;
-        this.quantity = quantity;
-    }
-
     public Long getSeq() {
         return seq;
     }

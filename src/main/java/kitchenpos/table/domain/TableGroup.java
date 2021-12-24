@@ -28,11 +28,6 @@ public class TableGroup {
     public TableGroup() {
     }
 
-    public TableGroup(final Long id, final List<OrderTable> orderTables) {
-        this.id = id;
-        this.orderTables = OrderTables.of(orderTables);
-    }
-
     public Long getId() {
         return id;
     }

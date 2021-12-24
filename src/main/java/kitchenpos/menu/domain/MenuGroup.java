@@ -24,11 +24,6 @@ public class MenuGroup {
         this.name = Name.of(name);
     }
 
-    public MenuGroup(final Long id, final String name) {
-        this.id = id;
-        this.name = Name.of(name);
-    }
-
     public Long getId() {
         return id;
     }
