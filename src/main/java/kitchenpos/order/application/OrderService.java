@@ -54,9 +54,7 @@ public class OrderService {
     public List<OrderResponse> list() {
         List<Order> persistOrders = orderRepository.findAll();
 
-        return persistOrders.stream()
-                .map(OrderResponse::of)
-                .collect(Collectors.toList());
+        return OrderResponse.fromList(persistOrders);
     }
 
     @Transactional

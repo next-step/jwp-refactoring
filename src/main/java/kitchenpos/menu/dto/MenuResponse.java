@@ -32,7 +32,13 @@ public class MenuResponse {
                 , menu.getName().getName()
                 , menu.getPrice().getPrice()
                 , menu.getMenuGroup().getId()
-                , menu.getMenuProducts().getMenuProducts().stream().map(MenuProductResponse::of).collect(Collectors.toList()));
+                , MenuProductResponse.fromList(menu.getMenuProducts().getMenuProducts()));
+    }
+
+    public static List<MenuResponse> fromList(List<Menu> menus) {
+        return menus.stream()
+                .map(MenuResponse::of)
+                .collect(Collectors.toList());
     }
 
     public Long getId() {

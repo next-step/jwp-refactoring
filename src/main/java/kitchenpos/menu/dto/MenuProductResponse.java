@@ -2,7 +2,9 @@ package kitchenpos.menu.dto;
 
 import kitchenpos.menu.domain.MenuProduct;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class MenuProductResponse {
 
@@ -27,6 +29,12 @@ public class MenuProductResponse {
                 , menuProduct.getMenu().getId()
                 , menuProduct.getProduct().getId()
                 , menuProduct.getQuantity());
+    }
+
+    public static List<MenuProductResponse> fromList(List<MenuProduct> menuProducts) {
+        return menuProducts.stream()
+                .map(MenuProductResponse::of)
+                .collect(Collectors.toList());
     }
 
     public Long getSeq() {

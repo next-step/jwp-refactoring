@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 
 @Transactional(readOnly = true)
 @Service
@@ -30,11 +29,9 @@ public class MenuGroupService {
     }
 
     public List<MenuGroupResponse> list() {
-        List<MenuGroup> menuGroups = menuGroupRepository.findAll();
+        List<MenuGroup> persistMenuGroups = menuGroupRepository.findAll();
 
-        return menuGroups.stream()
-                .map(MenuGroupResponse::of)
-                .collect(Collectors.toList());
+        return MenuGroupResponse.fromList(persistMenuGroups);
     }
 
     public MenuGroup findById(Long menuGroupId) {

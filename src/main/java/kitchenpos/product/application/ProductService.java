@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 
 @Transactional(readOnly = true)
 @Service
@@ -30,11 +29,9 @@ public class ProductService {
     }
 
     public List<ProductResponse> list() {
-        List<Product> products = productRepository.findAll();
+        List<Product> persistProducts = productRepository.findAll();
 
-        return products.stream()
-                .map(ProductResponse::of)
-                .collect(Collectors.toList());
+        return ProductResponse.fromList(persistProducts);
     }
 
     public Product findById(Long productId) {

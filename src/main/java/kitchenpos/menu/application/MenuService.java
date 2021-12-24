@@ -53,9 +53,8 @@ public class MenuService {
     public List<MenuResponse> list() {
         final List<Menu> persistMenus = menuRepository.findAll();
 
-        return persistMenus.stream()
-                .map(MenuResponse::of)
-                .collect(Collectors.toList());
+        return MenuResponse.fromList(persistMenus);
+
     }
 
     public Menu findById(Long menuId) {

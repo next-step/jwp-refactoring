@@ -2,7 +2,9 @@ package kitchenpos.order.dto;
 
 import kitchenpos.order.domain.OrderLineItem;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class OrderLineItemResponse {
 
@@ -27,6 +29,12 @@ public class OrderLineItemResponse {
                 , orderLineItem.getOrder().getId()
                 , orderLineItem.getMenu().getId()
                 , orderLineItem.getQuantity().getQuantity());
+    }
+
+    public static List<OrderLineItemResponse> fromList(List<OrderLineItem> orderLineItems) {
+        return orderLineItems.stream()
+                .map(OrderLineItemResponse::of)
+                .collect(Collectors.toList());
     }
 
     public Long getSeq() {

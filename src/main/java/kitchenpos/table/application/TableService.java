@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 
 @Transactional(readOnly = true)
 @Service
@@ -43,11 +42,9 @@ public class TableService {
     }
 
     public List<OrderTableResponse> list() {
-        final List<OrderTable> orderTables = orderTableRepository.findAll();
+        final List<OrderTable> persistOrderTables = orderTableRepository.findAll();
 
-        return orderTables.stream()
-                .map(OrderTableResponse::of)
-                .collect(Collectors.toList());
+        return OrderTableResponse.fromList(persistOrderTables);
     }
 
     @Transactional
