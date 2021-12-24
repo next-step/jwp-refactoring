@@ -14,6 +14,7 @@ import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.Quantity;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.testfixtures.OrderTestFixtures;
@@ -59,8 +60,8 @@ class OrderServiceTest {
         //given
         OrderTable orderTable = new OrderTable(1L, 6, false);
         List<OrderLineItem> orderLineItems = Arrays.asList(
-            new OrderLineItem(혼술세트, 1),
-            new OrderLineItem(이달의메뉴, 3));
+            new OrderLineItem(혼술세트, new Quantity(1L)),
+            new OrderLineItem(이달의메뉴, new Quantity(3L)));
 
         OrderRequest requestOrder = OrderTestFixtures.convertToOrderRequest(
             new Order(orderTable, orderLineItems));
@@ -84,11 +85,11 @@ class OrderServiceTest {
         // given
         OrderTable orderTable = new OrderTable(1L, 6, false);
         List<OrderLineItem> orderLineItems1 = Arrays.asList(
-            new OrderLineItem(혼술세트, 1),
-            new OrderLineItem(이달의메뉴, 3));
+            new OrderLineItem(혼술세트, new Quantity(1L)),
+            new OrderLineItem(이달의메뉴, new Quantity(3L)));
         List<OrderLineItem> orderLineItems2 = Arrays.asList(
-            new OrderLineItem(혼술세트, 2),
-            new OrderLineItem(이달의메뉴, 5));
+            new OrderLineItem(혼술세트, new Quantity(2L)),
+            new OrderLineItem(이달의메뉴, new Quantity(5L)));
         List<Order> orders = Arrays.asList(
             new Order(1L, orderTable, OrderStatus.MEAL, orderLineItems1),
             new Order(2L, orderTable, OrderStatus.COMPLETION, orderLineItems2));
@@ -109,8 +110,8 @@ class OrderServiceTest {
         // given
         OrderTable orderTable = new OrderTable(1L, 6, false);
         List<OrderLineItem> orderLineItems = Arrays.asList(
-            new OrderLineItem(혼술세트, 1),
-            new OrderLineItem(이달의메뉴, 3));
+            new OrderLineItem(혼술세트, new Quantity(1L)),
+            new OrderLineItem(이달의메뉴, new Quantity(3L)));
         Order order = new Order(1L, orderTable, OrderStatus.MEAL, orderLineItems);
         OrderTestFixtures.특정_주문_조회_모킹(orderRepository, order);
 

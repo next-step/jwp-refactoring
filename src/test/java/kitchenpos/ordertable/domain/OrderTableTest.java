@@ -8,6 +8,7 @@ import java.util.List;
 import kitchenpos.menu.testfixtures.MenuTestFixtures;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.Quantity;
 import kitchenpos.ordertable.exception.TableChangeNumberOfGuestsException;
 import kitchenpos.ordertable.exception.TableUpdateStateException;
 import org.junit.jupiter.api.DisplayName;
@@ -59,7 +60,7 @@ class OrderTableTest {
         //given
         OrderTable orderTable = new OrderTable(6, false);
         List<OrderLineItem> orderLineItems = Arrays.asList(
-            new OrderLineItem(MenuTestFixtures.서비스군만두, 5)
+            new OrderLineItem(MenuTestFixtures.서비스군만두, new Quantity(5L))
         );
 
         //when

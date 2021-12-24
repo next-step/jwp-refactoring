@@ -20,6 +20,7 @@ import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.Quantity;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.testfixtures.OrderTestFixtures;
@@ -61,8 +62,8 @@ class OrderRestControllerTest {
     void create() throws Exception {
         //given
         List<OrderLineItem> orderLineItems = Arrays.asList(
-            new OrderLineItem(혼술세트, 1),
-            new OrderLineItem(이달의메뉴, 3));
+            new OrderLineItem(혼술세트, new Quantity(1L)),
+            new OrderLineItem(이달의메뉴, new Quantity(3L)));
         OrderRequest requestOrder = OrderTestFixtures.convertToOrderRequest(
             new Order(테이블1번, orderLineItems));
         OrderResponse expectedOrder = OrderResponse.from(new Order(1L, 테이블1번, OrderStatus.COOKING,
@@ -84,12 +85,12 @@ class OrderRestControllerTest {
     void list() throws Exception {
         //given
         List<OrderLineItem> orderLineItems1 = Arrays.asList(
-            new OrderLineItem(혼술세트, 1),
-            new OrderLineItem(이달의메뉴, 3));
+            new OrderLineItem(혼술세트, new Quantity(1L)),
+            new OrderLineItem(이달의메뉴, new Quantity(3L)));
 
         List<OrderLineItem> orderLineItems2 = Arrays.asList(
-            new OrderLineItem(혼술세트, 2),
-            new OrderLineItem(이달의메뉴, 2));
+            new OrderLineItem(혼술세트, new Quantity(2L)),
+            new OrderLineItem(이달의메뉴, new Quantity(2L)));
 
         List<OrderResponse> expectedOrders = OrderResponse.fromList(Arrays.asList(
             new Order(1L, 테이블1번, OrderStatus.MEAL, orderLineItems1),
@@ -115,8 +116,8 @@ class OrderRestControllerTest {
     void changeOrderStatus() throws Exception {
         //given
         List<OrderLineItem> orderLineItems = Arrays.asList(
-            new OrderLineItem(혼술세트, 1),
-            new OrderLineItem(이달의메뉴, 3));
+            new OrderLineItem(혼술세트, new Quantity(1L)),
+            new OrderLineItem(이달의메뉴, new Quantity(3L)));
         OrderStatus changeOrderStatus = OrderStatus.MEAL;
         OrderRequest requestOrder = new OrderRequest(changeOrderStatus);
 

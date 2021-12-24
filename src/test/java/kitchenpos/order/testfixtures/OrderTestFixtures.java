@@ -54,6 +54,6 @@ public class OrderTestFixtures {
 
     private static OrderLineItemRequest convertToOrderLineItemRequest(OrderLineItem orderLineItem) {
         return new OrderLineItemRequest(orderLineItem.getMenu().getId(),
-            orderLineItem.getQuantity());
+            orderLineItem.getQuantityVal());
     }
 }

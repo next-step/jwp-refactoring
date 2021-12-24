@@ -21,7 +21,7 @@ class OrderTest {
         //given
         OrderTable orderTable = new OrderTable(1L, 6, false);
         List<OrderLineItem> orderLineItems = Arrays.asList(
-            new OrderLineItem(MenuTestFixtures.서비스군만두, 5)
+            new OrderLineItem(MenuTestFixtures.서비스군만두, new Quantity(5L))
         );
 
         //when
@@ -37,7 +37,7 @@ class OrderTest {
         //given
         OrderTable orderTable = new OrderTable(1L, 6, true);
         List<OrderLineItem> orderLineItems = Arrays.asList(
-            new OrderLineItem(MenuTestFixtures.서비스군만두, 5)
+            new OrderLineItem(MenuTestFixtures.서비스군만두, new Quantity(5L))
         );
 
         //when, then
@@ -51,8 +51,8 @@ class OrderTest {
         //given
         OrderTable orderTable = new OrderTable(1L, 6, true);
         List<OrderLineItem> orderLineItems = Arrays.asList(
-            new OrderLineItem(MenuTestFixtures.서비스군만두, 5),
-            new OrderLineItem(MenuTestFixtures.서비스군만두, 2)
+            new OrderLineItem(MenuTestFixtures.서비스군만두, new Quantity(5L)),
+            new OrderLineItem(MenuTestFixtures.서비스군만두, new Quantity(2L))
         );
 
         //when, then
@@ -66,7 +66,7 @@ class OrderTest {
         //given
         OrderTable orderTable = new OrderTable(1L, 6, false);
         List<OrderLineItem> orderLineItems = Arrays.asList(
-            new OrderLineItem(MenuTestFixtures.서비스군만두, 5)
+            new OrderLineItem(MenuTestFixtures.서비스군만두, new Quantity(5L))
         );
         Order order = new Order(orderTable, orderLineItems);
 
@@ -83,7 +83,7 @@ class OrderTest {
         //given
         OrderTable orderTable = new OrderTable(1L, 6, false);
         List<OrderLineItem> orderLineItems = Arrays.asList(
-            new OrderLineItem(MenuTestFixtures.서비스군만두, 5)
+            new OrderLineItem(MenuTestFixtures.서비스군만두, new Quantity(5L))
         );
         Order order = new Order(orderTable, orderLineItems);
         order.changeOrderStatus(OrderStatus.COMPLETION);

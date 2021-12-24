@@ -30,7 +30,7 @@ public class OrderLineItemResponse {
     public static OrderLineItemResponse from(OrderLineItem orderLineItem) {
         return new OrderLineItemResponse(orderLineItem.getId(),
             MenuResponse.from(orderLineItem.getMenu()),
-            orderLineItem.getQuantity());
+            orderLineItem.getQuantityVal());
     }
 
     public Long getId() {

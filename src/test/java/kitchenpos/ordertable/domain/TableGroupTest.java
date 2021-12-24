@@ -8,6 +8,7 @@ import java.util.List;
 import kitchenpos.menu.testfixtures.MenuTestFixtures;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.Quantity;
 import kitchenpos.ordertable.exception.GroupTablesException;
 import kitchenpos.ordertable.exception.UngroupTablesException;
 import org.junit.jupiter.api.DisplayName;
@@ -120,7 +121,7 @@ class TableGroupTest {
         tableGroup.groupTables(orderTables);
 
         Order order = new Order(orderTables.get(0), Arrays.asList(
-            new OrderLineItem(MenuTestFixtures.서비스군만두, 2)));
+            new OrderLineItem(MenuTestFixtures.서비스군만두, new Quantity(2L))));
 
         //when,then
         assertThatThrownBy(() -> tableGroup.ungroup())
