@@ -53,7 +53,7 @@ class MenuServiceTest {
 
     @BeforeEach
     void setUp() {
-        menuService = new MenuService(menuRepository, menuGroupRepository, menuProductRepository, productRepository);
+        menuService = new MenuService(menuRepository, menuGroupRepository);
         menuProduct = new MenuProduct(1L, new Menu(), new Product(), 1);
         menuProduct2 = new MenuProduct(1L, new Menu(), new Product(), 2);
         menu = new Menu(1L, "메뉴이름1", 1000, 1L, Lists.newArrayList(menuProduct, menuProduct2));
