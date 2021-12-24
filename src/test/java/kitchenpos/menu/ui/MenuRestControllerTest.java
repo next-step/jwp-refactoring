@@ -27,7 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
-@DisplayName("메뉴 인수테스트")
+@DisplayName("메뉴 컨트롤러 테스트")
 @ExtendWith(MockitoExtension.class)
 class MenuRestControllerTest {
 

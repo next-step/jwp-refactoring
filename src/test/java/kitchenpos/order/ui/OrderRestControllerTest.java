@@ -29,7 +29,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@DisplayName("주문 관련 인수테스트")
+@DisplayName("주문 컨트롤러 테스트")
 @ExtendWith(MockitoExtension.class)
 class OrderRestControllerTest {
 

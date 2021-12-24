@@ -9,6 +9,7 @@ import java.util.Arrays;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+@DisplayName("주문 단위 테스트")
 class OrderTest {
 
     @Test

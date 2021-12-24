@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-
+@DisplayName("상품 단위 테스트")
 class ProductTest {
 
     @Test

@@ -22,7 +22,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-@DisplayName("상품 인수테스트")
+@DisplayName("상품 컨트롤러 테스트")
 @ExtendWith(MockitoExtension.class)
 class ProductRestControllerTest {
     @Mock

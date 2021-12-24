@@ -8,7 +8,7 @@ import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DisplayName("Table Group Test")
+@DisplayName("테이블 그룹 단위 Test")
 class TableGroupTest {
 
     @Test

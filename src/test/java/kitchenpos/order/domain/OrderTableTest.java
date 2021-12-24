@@ -9,7 +9,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-@DisplayName("테이블 관련 테스트")
+@DisplayName("테이블 단위 테스트")
 class OrderTableTest {
 
     @Test
