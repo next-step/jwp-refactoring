@@ -22,7 +22,6 @@ import java.util.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -75,80 +74,6 @@ public class TableGroupServiceTest {
             assertThatThrownBy(callable)
                     .isInstanceOf(IllegalArgumentException.class);
         }
-
-        @DisplayName("생성된 주문 테이블로 묶어야 한다")
-        @Test
-        void hasSavedTable() {
-            // given
-            OrderTableRequest firstOrderTableRequest = new OrderTableRequest(1L, 4, true);
-            OrderTableRequest secondOrderTableRequest = new OrderTableRequest(2L, 4, true);
-            List<OrderTableRequest> orderTableRequests = Arrays.asList(firstOrderTableRequest, secondOrderTableRequest);
-            TableGroupRequest tableGroupRequest = new TableGroupRequest(orderTableRequests);
-
-            // when
-            ThrowableAssert.ThrowingCallable callable = () -> tableGroupService.create(tableGroupRequest);
-
-            // then
-            assertThatThrownBy(callable)
-                    .isInstanceOf(IllegalArgumentException.class);
-        }
-
-        @DisplayName("비어있는 테이블만 단체지정을 할 수 있다")
-        @Test
-        void mustEmptyTables() {
-            // given
-            OrderTableRequest firstOrderTableRequest = new OrderTableRequest(1L, 4, true);
-            OrderTableRequest secondOrderTableRequest = new OrderTableRequest(2L, 4, true);
-            List<OrderTableRequest> orderTableRequests = Arrays.asList(firstOrderTableRequest, secondOrderTableRequest);
-            TableGroupRequest tableGroupRequest = new TableGroupRequest(orderTableRequests);
-
-            OrderTable firstOrderTable = new OrderTable(firstOrderTableRequest.getId(), null, firstOrderTableRequest.getNumberOfGuests(), firstOrderTableRequest.isEmpty());
-            OrderTable secondOrderTable = new OrderTable(secondOrderTableRequest.getId(), null, secondOrderTableRequest.getNumberOfGuests(), false);
-            List<OrderTable> orderTables = Arrays.asList(firstOrderTable, secondOrderTable);
-
-            // when
-            ThrowableAssert.ThrowingCallable callable = () -> tableGroupService.create(tableGroupRequest);
-
-            // then
-            assertThatThrownBy(callable)
-                    .isInstanceOf(IllegalArgumentException.class);
-        }
     }
 
-    @DisplayName("단체 지정 해제")
-    @Nested
-    class UngroupTableGroupTest {
-        @DisplayName("단체 지정을 해제한다")
-        @Test
-        void testUngroup() {
-            // given
-            TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now());
-            given(tableGroupRepository.findById(anyLong())).willReturn(Optional.of(tableGroup));
-
-            // when
-            tableGroupService.ungroup(tableGroup.getId());
-
-            // then
-        }
-
-        @DisplayName("아직 주문이 생성되지 않아야 한다")
-        @Test
-        void doNotOrder() {
-            // given
-            List<OrderTable> orderTables = new ArrayList<>();
-            TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now());
-            OrderTable firstOrderTable = new OrderTable(1L, tableGroup, 4, false);
-            OrderTable secondOrderTable = new OrderTable(2L, tableGroup, 4, false);
-            orderTables.addAll(Arrays.asList(firstOrderTable, secondOrderTable));
-
-            given(tableGroupRepository.findById(anyLong())).willReturn(Optional.of(tableGroup));
-
-            // when
-            ThrowableAssert.ThrowingCallable callable = () -> tableGroupService.ungroup(tableGroup.getId());
-
-            // then
-            assertThatThrownBy(callable)
-                    .isInstanceOf(IllegalArgumentException.class);
-        }
-    }
 }
