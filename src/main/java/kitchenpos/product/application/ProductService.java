@@ -28,4 +28,10 @@ public class ProductService {
         List<Product> persistLines = productRepository.findAll();
         return ProductResponse.ofList(persistLines);
     }
+
+    @Transactional(readOnly = true)
+    public Product findById(final Long id) {
+        return productRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 상품입니다."));
+    }
 }
