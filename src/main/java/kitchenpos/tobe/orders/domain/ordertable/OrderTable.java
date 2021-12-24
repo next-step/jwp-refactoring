@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import kitchenpos.tobe.common.domain.Validator;
 
 @Entity
 public class OrderTable {
@@ -63,8 +64,8 @@ public class OrderTable {
         changeNumberOfGuests(numberOfGuests);
     }
 
-    public void clear() {
-        // TODO: 완료되지 않은 주문이 있는 주문 테이블은 빈 테이블로 설정할 수 없음
+    public void clear(final Validator<OrderTable> validator) {
+        validator.validate(this);
         if (isEmpty()) {
             throw new IllegalStateException();
         }

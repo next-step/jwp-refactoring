@@ -2,12 +2,14 @@ package kitchenpos.tobe.orders.domain.order;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import kitchenpos.tobe.common.DomainService;
 import kitchenpos.tobe.common.domain.Validator;
 import kitchenpos.tobe.menu.domain.Menu;
 import kitchenpos.tobe.menu.domain.MenuRepository;
 import kitchenpos.tobe.orders.domain.ordertable.OrderTable;
 import kitchenpos.tobe.orders.domain.ordertable.OrderTableRepository;
 
+@DomainService
 public class OrderValidator implements Validator<Order> {
 
     private final OrderTableRepository orderTableRepository;
