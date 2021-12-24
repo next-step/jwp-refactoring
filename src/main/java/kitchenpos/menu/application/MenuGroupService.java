@@ -21,7 +21,8 @@ public class MenuGroupService {
     public MenuGroup create(final MenuGroup menuGroup) {
         return menuGroupRepository.save(menuGroup);
     }
-
+    
+    @Transactional(readOnly = true)
     public List<MenuGroup> list() {
         return menuGroupRepository.findAll();
     }

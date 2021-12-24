@@ -73,6 +73,7 @@ public class MenuService {
         return savedMenu;
     }
 
+    @Transactional(readOnly = true)
     public List<Menu> list() {
         final List<Menu> menus = menuRepository.findAll();
 
