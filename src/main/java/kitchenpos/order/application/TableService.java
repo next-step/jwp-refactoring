@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kitchenpos.common.exception.BadRequestException;
 import kitchenpos.common.exception.NotFoundException;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.dto.OrderTableRequest;
@@ -52,13 +51,5 @@ public class TableService {
             .orElseThrow(() -> new NotFoundException(NOT_FOUND_DATA));
         findOrderTable.changeNumberOfGuests(orderTable.getNumberOfGuests());
         return OrderTableResponse.of(findOrderTable);
-    }
-
-    public List<OrderTable> findByOrderTableIds(List<Long> orderTableIds) {
-        final List<OrderTable> findOrderTables = orderTableRepository.findAllByIdIn(orderTableIds);
-        if (orderTableIds.size() != findOrderTables.size()) {
-            throw new BadRequestException(WRONG_VALUE);
-        }
-        return findOrderTables;
     }
 }

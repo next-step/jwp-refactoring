@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -45,6 +46,32 @@ class TableGroupValidatorTest {
         notCompletionOrderStatuses = Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL);
     }
 
+    @DisplayName("주문 테이블이 존재하는지 확인한다.")
+    @Test
+    void validateExistOrderTable() {
+        // given
+        List<Long> orderTableIds = findOrderTable.stream().map(OrderTable::getId).collect(Collectors.toList());
+        given(orderTableRepository.findAllByIdIn(orderTableIds))
+            .willReturn(findOrderTable);
+
+        // when && then
+        assertDoesNotThrow(() -> tableGroupValidator.validateExistOrderTable(orderTableIds));
+    }
+
+    @DisplayName("주문 테이블이 존재하지 않으면 단체 지정을 할 수 없다.")
+    @Test
+    void validateExistOrderTableNotExist() {
+        // given
+        List<Long> orderTableIds = findOrderTable.stream().map(OrderTable::getId).collect(Collectors.toList());
+        given(orderTableRepository.findAllByIdIn(orderTableIds))
+            .willReturn(new ArrayList<>());
+
+        // when && then
+        assertThatThrownBy(() -> tableGroupValidator.validateExistOrderTable(orderTableIds))
+            .isInstanceOf(BadRequestException.class)
+            .hasMessage(WRONG_VALUE.getMessage());
+    }
+
     @DisplayName("주문이 계산완료 상태여야 주문테이블을 단체 지정에서 해지할 수 있다.")
     @Test
     void validateUngroup() {
@@ -74,5 +101,4 @@ class TableGroupValidatorTest {
             .isInstanceOf(BadRequestException.class)
             .hasMessage(CANNOT_CHANGE_STATUS.getMessage());
     }
-
 }

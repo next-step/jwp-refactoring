@@ -24,6 +24,18 @@ public class TableGroupValidator {
         this.orderRepository = orderRepository;
     }
 
+    public List<OrderTable> validateExistOrderTable(List<Long> orderTableIds) {
+        final List<OrderTable> findOrderTables = orderTableRepository.findAllByIdIn(orderTableIds);
+        if (!isExistOrderTables(orderTableIds, findOrderTables)) {
+            throw new BadRequestException(WRONG_VALUE);
+        }
+        return findOrderTables;
+    }
+
+    private boolean isExistOrderTables(List<Long> orderTableIds, List<OrderTable> findOrderTables) {
+        return orderTableIds.size() == findOrderTables.size();
+    }
+
     public void validateUngroup(Long tableGroupId) {
         List<OrderTable> findOrderTables = orderTableRepository.findAllByTableGroupId(tableGroupId);
         List<Long> orderTableIds = findOrderTables.stream()

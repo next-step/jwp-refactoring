@@ -22,24 +22,21 @@ import kitchenpos.order.repository.TableGroupRepository;
 @Service
 public class TableGroupService {
 
-    private final TableService tableService;
+    private final TableGroupValidator tableGroupValidator;
     private final TableGroupRepository tableGroupRepository;
     private final ApplicationEventPublisher eventPublisher;
-    private final TableGroupValidator tableGroupValidator;
 
-    public TableGroupService(TableService tableService,
-        TableGroupRepository tableGroupRepository, ApplicationEventPublisher eventPublisher,
-        TableGroupValidator tableGroupValidator) {
-        this.tableService = tableService;
+    public TableGroupService(TableGroupValidator tableGroupValidator,
+        TableGroupRepository tableGroupRepository, ApplicationEventPublisher eventPublisher) {
+        this.tableGroupValidator = tableGroupValidator;
         this.tableGroupRepository = tableGroupRepository;
         this.eventPublisher = eventPublisher;
-        this.tableGroupValidator = tableGroupValidator;
     }
 
     @Transactional
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
         final List<Long> orderTableIds = tableGroupRequest.getOrderTables();
-        final List<OrderTable> findOrderTables = tableService.findByOrderTableIds(orderTableIds);
+        final List<OrderTable> findOrderTables = tableGroupValidator.validateExistOrderTable(orderTableIds);
         final TableGroup savedTableGroup = tableGroupRepository.save(TableGroup.of());
 
         eventPublisher.publishEvent(new TableGroupSavedEvent(savedTableGroup,
