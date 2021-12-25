@@ -24,10 +24,6 @@ public class TableGroup extends BaseTimeEntity {
         orderTable.addTableGroup(this);
     }
 
-    public TableGroup(final List<OrderTable> orderTables) {
-        this.orderTables = orderTables;
-    }
-
     public Long getId() {
         return id;
     }
