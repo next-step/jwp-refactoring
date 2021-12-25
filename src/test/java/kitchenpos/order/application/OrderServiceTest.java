@@ -118,7 +118,8 @@ class OrderServiceTest {
         OrderTestFixtures.특정_주문_조회_모킹(orderRepository, order);
 
         //when
-        OrderRequest changeOrder = new OrderRequest(OrderStatus.COMPLETION);
+        OrderRequest changeOrder = OrderTestFixtures.convertToChangeOrderStatusRequest(
+            OrderStatus.COMPLETION);
         OrderResponse savedOrder = orderService.changeOrderStatus(order.getId(), changeOrder);
 
         //then

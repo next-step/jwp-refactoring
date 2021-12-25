@@ -121,7 +121,8 @@ class OrderRestControllerTest {
             new OrderLineItem(혼술세트, new Quantity(1L)),
             new OrderLineItem(이달의메뉴, new Quantity(3L)));
         OrderStatus changeOrderStatus = OrderStatus.MEAL;
-        OrderRequest requestOrder = new OrderRequest(changeOrderStatus);
+        OrderRequest requestOrder = OrderTestFixtures.convertToChangeOrderStatusRequest(
+            changeOrderStatus);
 
         OrderResponse expectedOrder = OrderResponse.from(
             new Order(1L, 테이블1번, changeOrderStatus, orderLineItems));
