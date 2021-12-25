@@ -4,8 +4,10 @@ import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
+import kitchenpos.dto.MenuProductRequest;
+import kitchenpos.dto.MenuRequest;
+import kitchenpos.exception.MenuGroupNotFoundException;
 import kitchenpos.repos.MenuGroupRepository;
-import kitchenpos.repos.MenuProductRepository;
 import kitchenpos.repos.MenuRepository;
 import kitchenpos.repos.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,7 +25,6 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -34,9 +35,6 @@ class MenuServiceTest {
 
     @Mock
     MenuGroupRepository menuGroupRepository;
-
-    @Mock
-    MenuProductRepository menuProductRepository;
 
     @Mock
     ProductRepository productRepository;
@@ -58,6 +56,10 @@ class MenuServiceTest {
 
     private Menu menu2;
 
+    private MenuRequest menuRequest;
+
+    private MenuProductRequest menuProductRequest;
+
     @BeforeEach
     void setUp() {
         product = Product.of(1L, "후라이드치킨", new BigDecimal(16000.00));
@@ -67,69 +69,32 @@ class MenuServiceTest {
         menu2 = Menu.of(2L, "양념치킨", new BigDecimal(16000.00), menuGroup, Arrays.asList(menuProduct2));
         menuProduct = MenuProduct.of(1L, menu, product, 1);
         menuProduct2 = MenuProduct.of(2L, menu2, product2, 1);
+        menuProductRequest = new MenuProductRequest(1L, 1);
+        menuRequest = new MenuRequest("후라이드치킨", new BigDecimal(16000.00), 1L, Arrays.asList(menuProductRequest));
     }
 
     @DisplayName("메뉴를 등록한다.")
     @Test
     void create() {
         // given
-        when(menuGroupRepository.existsById(1L)).thenReturn(true);
+        when(menuGroupRepository.findById(1L)).thenReturn(Optional.of(menuGroup));
         when(productRepository.findById(any())).thenReturn(Optional.of(product));
-        when(menuRepository.save(menu)).thenReturn(menu);
-        when(menuProductRepository.save(menuProduct)).thenReturn(menuProduct);
+        when(menuRepository.save(any())).thenReturn(menu);
 
         // when
-        Menu expected = menuService.create(menu);
+        Menu expected = menuService.create(menuRequest);
 
         // then
         assertThat(menu.getId()).isEqualTo(expected.getId());
     }
 
-    @DisplayName("가격이 없거나 음수인 경우에는 메뉴를 등록할 수 없다.")
-    @Test
-    void create2() {
-        // given
-        Menu 가격_음수_메뉴 = Menu.of(1L, "후라이드치킨", new BigDecimal(-1000), menuGroup, Arrays.asList(menuProduct));
-        Menu 가격_없는_메뉴 = Menu.of(1L, "후라이드치킨", null, menuGroup, Arrays.asList(menuProduct));
-
-        //then
-        assertAll(
-                () -> assertThatThrownBy(
-                        () -> menuService.create(가격_음수_메뉴)
-                ).isInstanceOf(IllegalArgumentException.class),
-                () -> assertThatThrownBy(
-                        () -> menuService.create(가격_없는_메뉴)
-                ).isInstanceOf(IllegalArgumentException.class)
-        );
-    }
-
     @DisplayName("메뉴그룹없이 메뉴를 등록할 수 없다.")
     @Test
-    void create3() {
-        // given
-        menuGroup.setId(null);
-        Menu 메뉴_그룹_없는_메뉴 = Menu.of(1L, "후라이드치킨", new BigDecimal(16000.00), menuGroup, Arrays.asList(menuProduct));
-        when(menuGroupRepository.existsById(any())).thenReturn(false);
-
+    void create2() {
         //then
         assertThatThrownBy(
-                () -> menuService.create(메뉴_그룹_없는_메뉴)
-        ).isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("메뉴상품 목록의 총 금액의 합보다 메뉴 금액이 비싼 경우 등록할 수 없다.")
-    @Test
-    void create4() {
-        // given
-        Menu 메뉴_금액_비싼_메뉴 = Menu.of(1L, "후라이드치킨", new BigDecimal(33000.00), null, Arrays.asList(menuProduct, menuProduct2));
-        when(menuGroupRepository.existsById(any())).thenReturn(true);
-        when(productRepository.findById(1L)).thenReturn(Optional.of(product));
-        when(productRepository.findById(2L)).thenReturn(Optional.of(product2));
-
-        //then
-        assertThatThrownBy(
-                () -> menuService.create(메뉴_금액_비싼_메뉴)
-        ).isInstanceOf(IllegalArgumentException.class);
+                () -> menuService.create(menuRequest)
+        ).isInstanceOf(MenuGroupNotFoundException.class);
     }
 
     @DisplayName("메뉴 목록을 조회한다.")

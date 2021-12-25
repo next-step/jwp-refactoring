@@ -4,6 +4,8 @@ import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
+import kitchenpos.dto.MenuProductRequest;
+import kitchenpos.dto.MenuRequest;
 import kitchenpos.exception.MenuGroupNotFoundException;
 import kitchenpos.exception.ProductNotFoundException;
 import kitchenpos.repos.MenuGroupRepository;

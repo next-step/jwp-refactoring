@@ -1,4 +1,4 @@
-package kitchenpos.application;
+package kitchenpos.dto;
 
 public class MenuProductRequest {
     private Long productId;

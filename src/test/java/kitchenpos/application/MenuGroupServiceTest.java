@@ -1,6 +1,7 @@
 package kitchenpos.application;
 
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.dto.MenuGroupRequest;
 import kitchenpos.repos.MenuGroupRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -14,6 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -28,21 +30,23 @@ class MenuGroupServiceTest {
 
     private MenuGroup menuGroup2;
 
+    private MenuGroupRequest menuGroupRequest;
 
     @BeforeEach
     void setUp() {
         menuGroup = MenuGroup.of(1L, "추천메뉴");
         menuGroup2 = MenuGroup.of(2L, "한마리메뉴");
+        menuGroupRequest = new MenuGroupRequest("두마리메뉴");
     }
 
     @DisplayName("메뉴그룹을 등록한다.")
     @Test
     void create() {
         // given
-        when(menuGroupRepository.save(menuGroup)).thenReturn(menuGroup);
+        when(menuGroupRepository.save(any())).thenReturn(menuGroup);
 
         // when
-        MenuGroup expected = menuGroupService.create(menuGroup);
+        MenuGroup expected = menuGroupService.create(menuGroupRequest);
 
         // then
         assertThat(menuGroup.getId()).isEqualTo(expected.getId());
