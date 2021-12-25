@@ -49,8 +49,8 @@ class MenuRestControllerTest {
 
     @BeforeEach
     void setUp() {
-        타코야끼 = new Product(1L, "타코야끼", new Price(BigDecimal.valueOf(12000)));
-        뿌링클 = new Product(2L, "뿌링클", new Price(BigDecimal.valueOf(22000)));
+        타코야끼 = new Product(1L, "타코야끼", Price.valueOf(BigDecimal.valueOf(12000)));
+        뿌링클 = new Product(2L, "뿌링클", Price.valueOf(BigDecimal.valueOf(22000)));
         추천메뉴그룹 = new MenuGroup(1L, "추천메뉴");
     }
 
@@ -62,7 +62,7 @@ class MenuRestControllerTest {
             new MenuProduct(타코야끼, new Quantity(2)),
             new MenuProduct(뿌링클, new Quantity(1)));
         String menuName = "후라이드+후라이드";
-        Price price = new Price(BigDecimal.valueOf(19000));
+        Price price = Price.valueOf(BigDecimal.valueOf(19000));
         MenuRequest menuRequest = MenuTestFixtures.convertToMenuRequest(
             new Menu(menuName, price, 추천메뉴그룹, menuProducts));
         MenuResponse expectedMenu = MenuResponse.from(
@@ -90,9 +90,9 @@ class MenuRestControllerTest {
             new MenuProduct(뿌링클, new Quantity(2)));
 
         List<MenuResponse> expectedMenus = MenuResponse.fromList(Arrays.asList(
-            new Menu(1L, "후라이드+후라이드", new Price(BigDecimal.valueOf(19000)), 추천메뉴그룹,
+            new Menu(1L, "후라이드+후라이드", Price.valueOf(BigDecimal.valueOf(19000)), 추천메뉴그룹,
                 menuProducts1),
-            new Menu(2L, "오븐구이+순살강정", new Price(BigDecimal.valueOf(23000)), 추천메뉴그룹,
+            new Menu(2L, "오븐구이+순살강정", Price.valueOf(BigDecimal.valueOf(23000)), 추천메뉴그룹,
                 menuProducts2)
         ));
         given(menuService.list()).willReturn(expectedMenus);

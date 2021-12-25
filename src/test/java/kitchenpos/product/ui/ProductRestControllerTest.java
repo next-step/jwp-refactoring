@@ -45,7 +45,7 @@ class ProductRestControllerTest {
         BigDecimal price = BigDecimal.valueOf(9000);
         ProductRequest requestProduct = new ProductRequest(productName, price);
         ProductResponse expectedProduct = ProductResponse.from(
-            new Product(1L, productName, new Price(price)));
+            new Product(1L, productName, Price.valueOf(price)));
         given(productService.create(any())).willReturn(expectedProduct);
 
         //when, then
@@ -60,8 +60,8 @@ class ProductRestControllerTest {
     void list() throws Exception {
         //given
         List<ProductResponse> expectedProducts = ProductResponse.fromList(Arrays.asList(
-            new Product(1L, "육개장", new Price(BigDecimal.valueOf(9000))),
-            new Product(1L, "과메기", new Price(BigDecimal.valueOf(22000)))
+            new Product(1L, "육개장", Price.valueOf(BigDecimal.valueOf(9000))),
+            new Product(1L, "과메기", Price.valueOf(BigDecimal.valueOf(22000)))
         ));
 
         given(productService.list()).willReturn(expectedProducts);

@@ -38,7 +38,7 @@ public class MenuTestFixtures {
     }
 
 
-    public static final Menu 서비스군만두 = new Menu(1L, "서비스군만두", new Price(BigDecimal.valueOf(0)),
+    public static final Menu 서비스군만두 = new Menu(1L, "서비스군만두", Price.valueOf(BigDecimal.valueOf(0)),
         MenuGroupTestFixtures.추천메뉴);
 
     public static void 특정_메뉴_조회_모킹(MenuService menuService, Menu menu) {

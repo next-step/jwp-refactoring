@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
@@ -34,17 +35,22 @@ public class MenuProducts {
 
     private void validateMenuPriceIsLessThanMenuProductsSum(Price price,
         List<MenuProduct> menuProducts) {
-        BigDecimal sum = menuProducts.stream()
-            .map(MenuProduct::getMenuPrice)
-            .reduce(BigDecimal.ZERO, (subSum, menuPrice) -> subSum.add(menuPrice));
+        List<Price> menuProductPrices = getMenuProductPrices(menuProducts);
+        Price sumOfMenuProducts = Price.sumPrices(menuProductPrices);
 
-        if (price.isBiggerThan(sum)) {
+        if (price.isBiggerThan(sumOfMenuProducts)) {
             throw new PriceNotAcceptableException(ERROR_MESSAGE_MENU_PRICE_HIGH);
         }
     }
 
+    private List<Price> getMenuProductPrices(List<MenuProduct> menuProducts) {
+        return menuProducts.stream()
+            .map(MenuProduct::getMenuPrice)
+            .collect(Collectors.toList());
+    }
+
     private void validatePriceIsZero(Price price) {
-        if (price.isBiggerThan(BigDecimal.ZERO)) {
+        if (price.isBiggerThan(Price.valueOf(BigDecimal.ZERO))) {
             throw new PriceNotAcceptableException("메뉴상품이 없는 경우 메뉴 가격은 0 이어야 합니다.");
         }
     }

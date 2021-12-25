@@ -34,7 +34,7 @@ class ProductServiceTest {
         // given
         String name = "타코야끼";
         BigDecimal price = BigDecimal.valueOf(12000);
-        Product product = new Product(1L, name, new Price(price));
+        Product product = new Product(1L, name, Price.valueOf(price));
         ProductTestFixtures.상품_생성_결과_모킹(productRepository, product);
 
         //when
@@ -49,8 +49,8 @@ class ProductServiceTest {
     void list() {
         //given
         List<Product> products = Arrays.asList(
-            new Product("타코야끼", new Price(BigDecimal.valueOf(12000))),
-            new Product("뿌링클", new Price(BigDecimal.valueOf(22000))));
+            new Product("타코야끼", Price.valueOf(BigDecimal.valueOf(12000))),
+            new Product("뿌링클", Price.valueOf(BigDecimal.valueOf(22000))));
         ProductTestFixtures.상품_전체_조회_모킹(productRepository, products);
 
         //when

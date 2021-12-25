@@ -20,7 +20,7 @@ class MenuTest {
     void construct1() {
         //given
         String menuName = "앙념반 후라이드반";
-        Price price = new Price(BigDecimal.ZERO);
+        Price price = Price.valueOf(BigDecimal.ZERO);
         MenuGroup menuGroup = new MenuGroup("추천메뉴");
         Menu expectMenu = new Menu(menuName, price, menuGroup);
 
@@ -37,8 +37,8 @@ class MenuTest {
     void construct2() {
         //given
         MenuGroup menuGroup = new MenuGroup("추천메뉴");
-        Product 타코야끼 = new Product(1L, "타코야끼", new Price(BigDecimal.valueOf(12000)));
-        Product 뿌링클 = new Product(2L, "뿌링클", new Price(BigDecimal.valueOf(15000)));
+        Product 타코야끼 = new Product(1L, "타코야끼", Price.valueOf(BigDecimal.valueOf(12000)));
+        Product 뿌링클 = new Product(2L, "뿌링클", Price.valueOf(BigDecimal.valueOf(15000)));
         List<MenuProduct> menuProducts = Arrays.asList(
             new MenuProduct(타코야끼, new Quantity(3L)),
             new MenuProduct(뿌링클, new Quantity(1L)));
@@ -46,7 +46,7 @@ class MenuTest {
         //when
         // 타코야끼x3 = 36,000, 뿌링클X1 = 15,000 => 51,000
         String menuName = "타코야끼와 뿌링클";
-        Menu menu = new Menu(menuName, new Price(BigDecimal.valueOf(51000)), menuGroup,
+        Menu menu = new Menu(menuName, Price.valueOf(BigDecimal.valueOf(51000)), menuGroup,
             menuProducts);
 
         //then
@@ -58,7 +58,7 @@ class MenuTest {
     void construct_exception1() {
         //given
         String menuName = "앙념반 후라이드반";
-        Price price = new Price(BigDecimal.valueOf(15000));
+        Price price = Price.valueOf(BigDecimal.valueOf(15000));
         MenuGroup menuGroup = new MenuGroup("추천메뉴");
 
         //when, then
@@ -71,15 +71,15 @@ class MenuTest {
     void construct_exception2() {
         //given
         MenuGroup menuGroup = new MenuGroup("추천메뉴");
-        Product 타코야끼 = new Product(1L, "타코야끼", new Price(BigDecimal.valueOf(12000)));
-        Product 뿌링클 = new Product(2L, "뿌링클", new Price(BigDecimal.valueOf(15000)));
+        Product 타코야끼 = new Product(1L, "타코야끼", Price.valueOf(BigDecimal.valueOf(12000)));
+        Product 뿌링클 = new Product(2L, "뿌링클", Price.valueOf(BigDecimal.valueOf(15000)));
         List<MenuProduct> menuProducts = Arrays.asList(
             new MenuProduct(타코야끼, new Quantity(3L)),
             new MenuProduct(뿌링클, new Quantity(1L)));
 
         //when, then
         // 타코야끼x3 = 36,000, 뿌링클X1 = 15,000 => 51,000 < 51001
-        assertThatThrownBy(() -> new Menu("타코야끼와 뿌링클", new Price(BigDecimal.valueOf(51001)),
+        assertThatThrownBy(() -> new Menu("타코야끼와 뿌링클", Price.valueOf(BigDecimal.valueOf(51001)),
             menuGroup, menuProducts))
             .isInstanceOf(PriceNotAcceptableException.class);
     }

@@ -52,8 +52,8 @@ class OrderServiceTest {
     @BeforeEach
     void setUp() {
         MenuGroup 신상메뉴그룹 = new MenuGroup("신상메뉴그룹");
-        혼술세트 = new Menu(1L, "혼술세트", new Price(BigDecimal.ZERO), 신상메뉴그룹);
-        이달의메뉴 = new Menu(2L, "이달의메뉴", new Price(BigDecimal.ZERO), 신상메뉴그룹);
+        혼술세트 = new Menu(1L, "혼술세트", Price.valueOf(BigDecimal.ZERO), 신상메뉴그룹);
+        이달의메뉴 = new Menu(2L, "이달의메뉴", Price.valueOf(BigDecimal.ZERO), 신상메뉴그룹);
     }
 
     @DisplayName("주문을 등록할 수 있다.")

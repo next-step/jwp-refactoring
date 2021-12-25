@@ -1,6 +1,5 @@
 package kitchenpos.menu.domain;
 
-import java.math.BigDecimal;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import kitchenpos.common.vo.Price;
 import kitchenpos.common.vo.Quantity;
 import kitchenpos.product.domain.Product;
 
@@ -74,7 +74,7 @@ public class MenuProduct {
         return quantity.getQuantity();
     }
 
-    public BigDecimal getMenuPrice() {
+    public Price getMenuPrice() {
         return product.getPrice().multiply(quantity);
     }
 
