@@ -171,3 +171,13 @@
   
 
   ![image](https://user-images.githubusercontent.com/17772475/146971725-05a656c6-22ca-48ab-923f-7ee8180344fa.png)
+  
+
+## 2단계 할 일
+- [x] Dao 기반 -> Repository 기반 (spring-data-jpa) 로 변경
+- [x] Entity 설정
+- [x] Dao 제거
+- [x] 디렉토리 정리 (도메인 기반)
+- [ ] mock 제거 -> inside-out 기반 테스트 작성
+- [ ] getter setter 제거
+- [ ] 인수테스트 작성 (시간이 있으면.. 12시까지)
