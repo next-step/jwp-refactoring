@@ -2,6 +2,21 @@
 
 ## 요구 사항
 
+### step1 : 테스트 코드 작성
+
+- [x] MenuGroupAcceptanceTest
+- [x] MenuAcceptanceTest
+- [x] OrderAcceptanceTest
+- [x] ProductAcceptanceTest
+- [x] TableGroupAcceptanceTest
+- [x] TableAcceptanceTest
+- [x] MenuServiceTest
+- [x] MenuGroupServiceTest
+- [x] OrderServiceTest
+- [x] ProductServiceTest
+- [x] TableGroupServiceTest
+- [x] TableServiceTest
+
 ## 용어 사전
 
 | 한글명 | 영문명 | 설명 |
