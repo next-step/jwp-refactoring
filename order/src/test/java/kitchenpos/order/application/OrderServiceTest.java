@@ -1,11 +1,5 @@
 package kitchenpos.order.application;
 
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.fixture.MenuFixture;
-import kitchenpos.menu.fixture.MenuProductFixture;
-import kitchenpos.menu_group.domain.MenuGroup;
-import kitchenpos.menu_group.fixture.MenuGroupFixture;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
@@ -16,8 +10,6 @@ import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.fixture.OrderFixture;
 import kitchenpos.order.fixture.OrderLineItemFixture;
-import kitchenpos.product.domain.Product;
-import kitchenpos.product.fixture.ProductFixture;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.fixture.OrderTableFixture;
 import org.assertj.core.api.ThrowableAssert;
@@ -30,7 +22,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -51,21 +42,15 @@ class OrderServiceTest {
     @InjectMocks
     OrderService orderService;
 
-    private Menu 더블강정;
     private OrderTable 테이블;
     private Order 생성된_주문;
     private Order 계산된_주문;
 
     @BeforeEach
     void setup() {
-        Product 강정치킨 = ProductFixture.create(1L, "강정치킨", BigDecimal.valueOf(17_000));
-        MenuGroup 추천메뉴 = MenuGroupFixture.create(1L, "추천메뉴");
-        MenuProduct 메뉴_상품 = MenuProductFixture.create(강정치킨.getId(), 2L);
-
-        더블강정 = MenuFixture.create(1L, "더블강정", BigDecimal.valueOf(32_000), 추천메뉴.getId(), 메뉴_상품);
         테이블 = OrderTableFixture.create(1L, 4, false);
 
-        OrderLineItem 생성된_주문_항목 = OrderLineItemFixture.create(1L, 더블강정.getId(), 1L);
+        OrderLineItem 생성된_주문_항목 = OrderLineItemFixture.create(1L, 1L, 1L);
         생성된_주문 = OrderFixture.create(1L, 테이블.getId(), OrderStatus.COOKING, 생성된_주문_항목);
         계산된_주문 = OrderFixture.create(2L, 테이블.getId(), OrderStatus.COMPLETION, 생성된_주문_항목);
     }
@@ -90,7 +75,7 @@ class OrderServiceTest {
         @Test
         void 주문_생성_확인() {
             // given
-            OrderLineItemRequest 주문_항목 = OrderLineItemRequest.of(더블강정.getId(), 1L);
+            OrderLineItemRequest 주문_항목 = OrderLineItemRequest.of(1L, 1L);
             OrderRequest 등록_요청_데이터 = OrderRequest.of(테이블.getId(), Collections.singletonList(주문_항목));
 
             given(orderRepository.save(any())).willReturn(생성된_주문);
