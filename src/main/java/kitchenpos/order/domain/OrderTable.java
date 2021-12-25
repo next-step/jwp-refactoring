@@ -53,6 +53,7 @@ public class OrderTable {
     }
 
     public void ungroup() {
+        validateCompletion();
         this.tableGroupId = null;
         this.empty = false;
     }
@@ -66,6 +67,7 @@ public class OrderTable {
     }
 
     public void group(Long tableGroupId) {
+        System.out.println(tableGroupId+"@@@");
         this.tableGroupId = tableGroupId;
     }
 

@@ -26,7 +26,6 @@ public class TableGroupTest {
     void ungroup() {
         OrderTable orderTable = OrderTableFixture.생성(4, true);
         TableGroup tableGroup = TableGroup.empty();
-        //tableGroup.ungroup();
 
         assertAll(
                 () -> assertThat(orderTable.getTableGroupId()).isNull()

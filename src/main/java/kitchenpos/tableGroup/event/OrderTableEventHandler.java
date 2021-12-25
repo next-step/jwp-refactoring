@@ -1,4 +1,4 @@
-package kitchenpos.tableGroup.application;
+package kitchenpos.tableGroup.event;
 
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.OrderTableRepository;
@@ -6,6 +6,7 @@ import kitchenpos.tableGroup.event.OrderTableGroupEvent;
 import kitchenpos.tableGroup.event.OrderTableUngroupEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.event.TransactionalEventListener;
 
 import java.util.List;
 
@@ -17,23 +18,23 @@ public class OrderTableEventHandler {
         this.orderTableRepository = orderTableRepository;
     }
 
-    @EventListener
+    @TransactionalEventListener
     public void group(OrderTableGroupEvent event) {
         List<OrderTable> orderTables = event.getOrderTables();
 
-        orderTables.stream()
-                .forEach(orderTable -> {
+        orderTables.forEach(orderTable -> {
                     orderTable.group(event.getTableGroupId());
                 });
 
         orderTableRepository.saveAll(orderTables);
     }
 
-    @EventListener
+    @TransactionalEventListener
     public void ungroup(OrderTableUngroupEvent event) {
+        List<OrderTable> orderTables = orderTableRepository.findByTableGroupId(event.getTableGroupId());
+        orderTables.forEach(OrderTable::ungroup);
 
-        //TODO
+        orderTableRepository.saveAll(orderTables);
     }
-
 
 }

@@ -10,7 +10,7 @@ import java.util.List;
 
 @Embeddable
 public class Orders {
-    @OneToMany(mappedBy = "orderTable", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "orderTable", cascade = CascadeType.PERSIST)
     private List<Order> orders = new ArrayList<>();
 
     protected Orders() {

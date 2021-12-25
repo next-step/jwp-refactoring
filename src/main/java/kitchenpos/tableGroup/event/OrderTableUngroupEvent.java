@@ -5,7 +5,7 @@ import kitchenpos.tableGroup.domain.TableGroup;
 public class OrderTableUngroupEvent {
     private TableGroup tableGroup;
 
-    public OrderTableUngroupEvent(TableGroup tableGroup) {
+    private OrderTableUngroupEvent(TableGroup tableGroup) {
         this.tableGroup = tableGroup;
     }
 
@@ -15,5 +15,8 @@ public class OrderTableUngroupEvent {
 
     public TableGroup getTableGroup() {
         return tableGroup;
+    }
+    public Long getTableGroupId(){
+        return tableGroup.getId();
     }
 }

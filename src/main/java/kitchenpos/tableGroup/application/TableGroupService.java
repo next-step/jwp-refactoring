@@ -6,6 +6,7 @@ import kitchenpos.tableGroup.domain.TableGroupRepository;
 import kitchenpos.tableGroup.dto.TableGroupRequest;
 import kitchenpos.tableGroup.dto.TableGroupResponse;
 import kitchenpos.tableGroup.event.OrderTableGroupEvent;
+import kitchenpos.tableGroup.event.OrderTableUngroupEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,11 +41,7 @@ public class TableGroupService {
         final TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
                 .orElseThrow(IllegalArgumentException::new);
 
-        //tableGroup.ungroup();
-
-        //이벤트로 보내준다.?
-        //eventPublisher.publishEvent(new OrderTableEvent(tableGroup));
-
+        eventPublisher.publishEvent(OrderTableUngroupEvent.from(tableGroup));
 
         tableGroupRepository.delete(tableGroup);
     }

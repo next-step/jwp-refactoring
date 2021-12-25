@@ -17,6 +17,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.Arrays;
 
@@ -33,6 +34,9 @@ public class TableGroupServiceTest {
 
     @Mock
     private TableGroupRepository tableGroupRepository;
+
+    @Mock
+    private ApplicationEventPublisher eventPublisher;
 
     @InjectMocks
     TableGroupService tableGroupService;
@@ -59,9 +63,7 @@ public class TableGroupServiceTest {
         TableGroupResponse create = tableGroupService.create(TableGroupFixture.샘플_Request());
 
         assertAll(
-                () -> assertThat(create).isNotNull(),
-                () -> assertThat(테이블1번.isEmpty()).isFalse(),
-                () -> assertThat(테이블2번.isEmpty()).isFalse()
+                () -> assertThat(create).isNotNull()
         );
     }
 
@@ -75,38 +77,6 @@ public class TableGroupServiceTest {
 
         assertThatThrownBy(
                 () -> tableGroupService.create(단체_지정_주문테이블1개_Request)
-        ).isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("단체 지정 해체 할 수 있다.")
-    @Test
-    void ungroup() {
-        OrderTable 테이블3번 = OrderTableFixture.생성(0,true);
-        OrderTable 테이블4번 = OrderTableFixture.생성(0,true);
-        TableGroup 단체_지정 = TableGroup.empty();
-        given(tableGroupRepository.findById(any())).willReturn(java.util.Optional.of(단체_지정));
-
-        tableGroupService.ungroup(단체_지정.getId());
-
-        assertAll(
-                () -> assertThat(테이블3번.getTableGroupId()).isEqualTo(null),
-                () -> assertThat(테이블4번.getTableGroupId()).isEqualTo(null)
-        );
-    }
-
-    @DisplayName("단체지정 해제는 주문 테이블 계산 완료일때만 가능하다.")
-    @Test
-    void shouldBeCompletionStatus() {
-        OrderTable 테이블3번 = OrderTableFixture.생성(0,true);
-        OrderTable 테이블4번 = OrderTableFixture.생성(0,true);
-        Order order = OrderFixture.생성(테이블3번);
-        테이블3번.addOrders(Arrays.asList(order));
-        TableGroup 단체_지정 = TableGroup.empty();
-
-        given(tableGroupRepository.findById(any())).willReturn(java.util.Optional.of(단체_지정));
-
-        assertThatThrownBy(
-                () -> tableGroupService.ungroup(단체_지정.getId())
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
