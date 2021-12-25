@@ -3,7 +3,6 @@ package kitchenpos.tablegroup.domain;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
@@ -11,16 +10,13 @@ import javax.persistence.OneToMany;
 import org.springframework.util.CollectionUtils;
 
 import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.tablegroup.exception.InvalidTableGroupException;
+import kitchenpos.tablegroup.exception.InvalidOrderTablesException;
+import kitchenpos.tablegroup.exception.NotFoundOrderTablesException;
 
 @Embeddable
 public class OrderTables {
 
 	public static final int MIN_SIZE_INCLUSIVE = 2;
-	public static final String INVALID_ORDER_TABLE_SIZE = String.format(
-		"단체로 지정할 주문 테이블의 수는 %d와 같거나 커야합니다",
-		OrderTables.MIN_SIZE_INCLUSIVE
-	);
 
 	@OneToMany(mappedBy = "tableGroup")
 	private List<OrderTable> orderTables = new ArrayList<>();
@@ -34,8 +30,11 @@ public class OrderTables {
 	}
 
 	private void validate(List<OrderTable> orderTables) {
-		if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < MIN_SIZE_INCLUSIVE) {
-			throw new InvalidTableGroupException(INVALID_ORDER_TABLE_SIZE);
+		if (CollectionUtils.isEmpty(orderTables)) {
+			throw new NotFoundOrderTablesException();
+		}
+		if (orderTables.size() < MIN_SIZE_INCLUSIVE) {
+			throw new InvalidOrderTablesException();
 		}
 	}
 

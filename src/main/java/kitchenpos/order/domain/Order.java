@@ -19,7 +19,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import kitchenpos.order.exception.CanNotEditOrderStatusException;
-import kitchenpos.order.exception.InvalidOrderException;
+import kitchenpos.order.exception.InvalidOrderTableException;
 import kitchenpos.ordertable.domain.OrderTable;
 
 @Entity
@@ -59,7 +59,7 @@ public class Order {
 
     private void validate(OrderTable orderTable) {
         if (Objects.isNull(orderTable) || orderTable.isEmpty()) {
-            throw new InvalidOrderException("주문한 테이블은 비어있을 수 없습니다.");
+            throw new InvalidOrderTableException();
         }
     }
 

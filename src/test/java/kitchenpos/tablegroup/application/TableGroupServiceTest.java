@@ -23,7 +23,8 @@ import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
 import kitchenpos.tablegroup.dto.TableGroupAddRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
-import kitchenpos.tablegroup.exception.InvalidTableGroupException;
+import kitchenpos.tablegroup.exception.CanNotGroupByGroupingAlreadyException;
+import kitchenpos.tablegroup.exception.CanNotUngroupByOrderStatusException;
 
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
@@ -102,7 +103,7 @@ class TableGroupServiceTest {
 		given(tableGroupRepository.findById(any())).willReturn(Optional.of(그룹));
 		given(orderService.existsOrderStatusCookingOrMeal(anyList())).willReturn(true);
 
-		assertThatExceptionOfType(InvalidTableGroupException.class)
+		assertThatExceptionOfType(CanNotUngroupByOrderStatusException.class)
 			.isThrownBy(() -> tableGroupService.ungroup(그룹.getId()));
 	}
 }

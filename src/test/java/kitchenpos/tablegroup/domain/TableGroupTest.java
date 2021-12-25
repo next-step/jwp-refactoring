@@ -10,20 +10,23 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.tablegroup.exception.InvalidTableGroupException;
+import kitchenpos.tablegroup.exception.CanNotGroupByEmptyException;
+import kitchenpos.tablegroup.exception.CanNotGroupByGroupingAlreadyException;
+import kitchenpos.tablegroup.exception.InvalidOrderTablesException;
+import kitchenpos.tablegroup.exception.NotFoundOrderTablesException;
 
 class TableGroupTest {
 
 	@DisplayName("주문 테이블 목록이 유효하지 않으면 예외발생")
 	@Test
 	void of_invalid_order_tables() {
-		assertThatExceptionOfType(InvalidTableGroupException.class)
+		assertThatExceptionOfType(NotFoundOrderTablesException.class)
 			.isThrownBy(() -> TableGroup.of(null));
 
-		assertThatExceptionOfType(InvalidTableGroupException.class)
+		assertThatExceptionOfType(NotFoundOrderTablesException.class)
 			.isThrownBy(() -> TableGroup.of(Collections.emptyList()));
 
-		assertThatExceptionOfType(InvalidTableGroupException.class)
+		assertThatExceptionOfType(InvalidOrderTablesException.class)
 			.isThrownBy(() -> TableGroup.of(Arrays.asList(
 				OrderTable.of(3, true)
 			)));
@@ -51,7 +54,7 @@ class TableGroupTest {
 		final OrderTable 논그룹_빈테이블 = OrderTable.of(2L, null, 2, true);
 		final List<OrderTable> 테이블목록 = Arrays.asList(논그룹_비어있지_않은_테이블, 논그룹_빈테이블);
 
-		assertThatExceptionOfType(InvalidTableGroupException.class)
+		assertThatExceptionOfType(CanNotGroupByEmptyException.class)
 			.isThrownBy(() -> TableGroup.of(테이블목록));
 	}
 
@@ -63,7 +66,7 @@ class TableGroupTest {
 		TableGroup.of(Arrays.asList(그룹_빈테이블1, 그룹_빈테이블2));
 		final OrderTable 논그룹_빈테이블3 = OrderTable.of(3L, null, 3, true);
 
-		assertThatExceptionOfType(InvalidTableGroupException.class)
+		assertThatExceptionOfType(CanNotGroupByGroupingAlreadyException.class)
 			.isThrownBy(() -> TableGroup.of(Arrays.asList(그룹_빈테이블1, 논그룹_빈테이블3)));
 	}
 

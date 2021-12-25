@@ -7,7 +7,8 @@ import java.util.Arrays;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import kitchenpos.ordertable.exception.InvalidOrderTableEmptyException;
+import kitchenpos.ordertable.exception.CanNotEditOrderTableEmptyByGroupException;
+import kitchenpos.ordertable.exception.CanNotEditOrderTableNumberOfGuestsByEmptyException;
 import kitchenpos.tablegroup.domain.TableGroup;
 
 class OrderTableTest {
@@ -22,7 +23,7 @@ class OrderTableTest {
 			OrderTable.of(2L, null, 3, true)
 		));
 
-		assertThatExceptionOfType(InvalidOrderTableEmptyException.class)
+		assertThatExceptionOfType(CanNotEditOrderTableEmptyByGroupException.class)
 			.isThrownBy(() -> 단체주문테이블.changeEmptyIfNotTableGroup(false));
 	}
 
@@ -31,7 +32,7 @@ class OrderTableTest {
 	void changeNumberOfGuestsIfNotEmpty_empty_order_table() {
 		final OrderTable 빈_테이블 = OrderTable.of(1L, null, 0, true);
 
-		assertThatExceptionOfType(IllegalArgumentException.class)
+		assertThatExceptionOfType(CanNotEditOrderTableNumberOfGuestsByEmptyException.class)
 			.isThrownBy(() -> 빈_테이블.changeNumberOfGuestsIfNotEmpty(4));
 	}
 }

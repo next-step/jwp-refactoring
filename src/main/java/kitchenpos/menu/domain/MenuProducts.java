@@ -10,7 +10,7 @@ import javax.persistence.OneToMany;
 
 import org.springframework.util.CollectionUtils;
 
-import kitchenpos.menu.exception.InvalidMenuException;
+import kitchenpos.menu.exception.NotFoundMenuProductsException;
 
 @Embeddable
 public class MenuProducts {
@@ -28,7 +28,7 @@ public class MenuProducts {
 
 	private void validate(List<MenuProduct> menuProducts) {
 		if (CollectionUtils.isEmpty(menuProducts)) {
-			throw new InvalidMenuException("메뉴를 구성하는 상품 목록이 있어야 합니다.");
+			throw new NotFoundMenuProductsException();
 		}
 	}
 

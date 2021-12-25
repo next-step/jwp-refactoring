@@ -14,12 +14,10 @@ import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
 import kitchenpos.tablegroup.dto.TableGroupAddRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
-import kitchenpos.tablegroup.exception.InvalidTableGroupException;
+import kitchenpos.tablegroup.exception.CanNotUngroupByOrderStatusException;
 
 @Service
 public class TableGroupService {
-
-	public static final String CAN_NOT_UNGROUP = "주문 테이블이 조리 혹은 식사 상태인 경우 단체 지정을 해지 할 수 없습니다.";
 
 	private final OrderService orderService;
 	private final OrderTableRepository orderTableRepository;
@@ -67,7 +65,7 @@ public class TableGroupService {
 			.collect(Collectors.toList());
 
 		if (orderService.existsOrderStatusCookingOrMeal(orderTableIds)) {
-			throw new InvalidTableGroupException(CAN_NOT_UNGROUP);
+			throw new CanNotUngroupByOrderStatusException();
 		}
 	}
 }

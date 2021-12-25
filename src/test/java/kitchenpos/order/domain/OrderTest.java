@@ -1,6 +1,7 @@
 package kitchenpos.order.domain;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -13,7 +14,8 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.order.exception.CanNotEditOrderStatusException;
-import kitchenpos.order.exception.InvalidOrderException;
+import kitchenpos.order.exception.InvalidOrderTableException;
+import kitchenpos.order.exception.NotFoundOrderLineItemsException;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.product.domain.Product;
 
@@ -28,11 +30,11 @@ class OrderTest {
 	@DisplayName("주문 테이블이 없거나 비어있으면 예외발생")
 	@Test
 	void of_invalid_order_table() {
-		assertThatExceptionOfType(InvalidOrderException.class)
+		assertThatExceptionOfType(InvalidOrderTableException.class)
 			.isThrownBy(() -> Order.of(null, OrderStatus.COOKING, 주문항목_목록));
 
 		final OrderTable 빈_주문테이블 = OrderTable.of(1L, null, 4, true);
-		assertThatExceptionOfType(InvalidOrderException.class)
+		assertThatExceptionOfType(InvalidOrderTableException.class)
 			.isThrownBy(() -> Order.of(빈_주문테이블, OrderStatus.COOKING, 주문항목_목록));
 	}
 
@@ -61,9 +63,12 @@ class OrderTest {
 	@Test
 	void of_invalid_order_line_items() {
 		final OrderTable 개별_주문테이블 = OrderTable.of(1L, null, 3, false);
-		assertThatExceptionOfType(InvalidOrderException.class)
-			.isThrownBy(() -> Order.of(개별_주문테이블, OrderStatus.COOKING, null));
-		assertThatExceptionOfType(InvalidOrderException.class)
-			.isThrownBy(() -> Order.of(개별_주문테이블, OrderStatus.COOKING, Collections.emptyList()));
+
+		assertAll(() -> {
+			assertThatExceptionOfType(NotFoundOrderLineItemsException.class)
+				.isThrownBy(() -> Order.ofCooking(개별_주문테이블, null));
+			assertThatExceptionOfType(NotFoundOrderLineItemsException.class)
+				.isThrownBy(() -> Order.ofCooking(개별_주문테이블, Collections.emptyList()));
+		});
 	}
 }

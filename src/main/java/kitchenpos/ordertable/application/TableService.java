@@ -13,7 +13,7 @@ import kitchenpos.ordertable.dto.OrderTableAddRequest;
 import kitchenpos.ordertable.dto.OrderTableEmptyRequest;
 import kitchenpos.ordertable.dto.OrderTableNumberOfGuestsRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
-import kitchenpos.ordertable.exception.InvalidOrderTableEmptyException;
+import kitchenpos.ordertable.exception.CanNotEditOrderTableEmptyByStatusException;
 import kitchenpos.ordertable.exception.NotFoundOrderTableException;
 
 @Service
@@ -51,7 +51,7 @@ public class TableService {
 
 	private void validateEmpty(final OrderTable orderTable) {
 		if (orderService.existsOrderStatusCookingOrMeal(orderTable.getId())) {
-			throw new InvalidOrderTableEmptyException("주문 테이블이 '조리' 혹은 식사' 상태면 수정할 수 없습니다.");
+			throw new CanNotEditOrderTableEmptyByStatusException();
 		}
 	}
 

@@ -14,16 +14,16 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import kitchenpos.ordertable.exception.InvalidOrderTableEmptyException;
+import kitchenpos.ordertable.exception.CanNotEditOrderTableEmptyByGroupException;
+import kitchenpos.ordertable.exception.CanNotEditOrderTableNumberOfGuestsByEmptyException;
 import kitchenpos.tablegroup.domain.TableGroup;
-import kitchenpos.tablegroup.exception.InvalidTableGroupException;
+import kitchenpos.tablegroup.exception.CanNotGroupByEmptyException;
+import kitchenpos.tablegroup.exception.CanNotGroupByGroupingAlreadyException;
 import kitchenpos.tablegroup.exception.NotFoundTableGroupException;
 
 @Entity
 @Table(name = "order_table")
 public class OrderTable {
-
-    public static final String HAS_BEEN_GROUPED = "이미 단체 지정이 된 주문 테이블입니다.";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -58,19 +58,22 @@ public class OrderTable {
         return new OrderTable(id, tableGroup, numberOfGuests, empty);
     }
 
-    private boolean hasBeenGrouped() {
-        return !empty || Objects.nonNull(tableGroup);
+    public void group(TableGroup tableGroup) {
+        validateGroup(tableGroup);
+        this.empty = false;
+        this.tableGroup = tableGroup;
     }
 
-    public void group(TableGroup tableGroup) {
+    private void validateGroup(TableGroup tableGroup) {
         if (Objects.isNull(tableGroup)) {
             throw new NotFoundTableGroupException();
         }
-        if (hasBeenGrouped()) {
-            throw new InvalidTableGroupException(HAS_BEEN_GROUPED);
+        if (Objects.nonNull(this.tableGroup)) {
+            throw new CanNotGroupByGroupingAlreadyException();
         }
-        this.empty = false;
-        this.tableGroup = tableGroup;
+        if (!empty) {
+            throw new CanNotGroupByEmptyException();
+        }
     }
 
     public void ungroup() {
@@ -79,14 +82,14 @@ public class OrderTable {
 
     public void changeEmptyIfNotTableGroup(boolean empty) {
         if (Objects.nonNull(tableGroup)) {
-            throw new InvalidOrderTableEmptyException("주문 테이블이 단체 지정된 경우 수정할 수 없습니다.");
+            throw new CanNotEditOrderTableEmptyByGroupException();
         }
         this.empty = empty;
     }
 
     public void changeNumberOfGuestsIfNotEmpty(int numberOfGuests) {
         if (empty) {
-            throw new IllegalArgumentException("주문 테이블이 비어있으면 손님 수를 수정할 수 없습니다.");
+            throw new CanNotEditOrderTableNumberOfGuestsByEmptyException();
         }
         this.numberOfGuests.changeNumberOfGuests(numberOfGuests);
     }

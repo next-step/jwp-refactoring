@@ -10,7 +10,7 @@ import javax.persistence.OneToMany;
 
 import org.springframework.util.CollectionUtils;
 
-import kitchenpos.order.exception.InvalidOrderException;
+import kitchenpos.order.exception.NotFoundOrderLineItemsException;
 
 @Embeddable
 public class OrderLineItems {
@@ -28,7 +28,7 @@ public class OrderLineItems {
 
 	private void validate(List<OrderLineItem> orderLineItems) {
 		if (CollectionUtils.isEmpty(orderLineItems)) {
-			throw new InvalidOrderException("주문항목 목록이 있어야 합니다.");
+			throw new NotFoundOrderLineItemsException();
 		}
 	}
 
