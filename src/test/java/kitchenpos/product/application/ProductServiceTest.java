@@ -59,14 +59,4 @@ public class ProductServiceTest {
         assertThat(products.size()).isEqualTo(1);
     }
 
-    @DisplayName("메뉴 상품 목록 조회")
-    @Test
-    void getMenuProducts() {
-        MenuProductRequest 강정치킨요청 = MenuProductFixture.request생성(강정치킨.getId(), 2L);
-        given(productRepository.findById(any())).willReturn(java.util.Optional.ofNullable(강정치킨));
-
-        List<MenuProduct> menuProducts = productService.getMenuProducts(Arrays.asList(강정치킨요청));
-
-        assertThat(menuProducts.size()).isEqualTo(1);
-    }
 }

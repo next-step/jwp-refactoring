@@ -1,9 +1,6 @@
 package kitchenpos.menu.domain;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Embeddable;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -11,7 +8,8 @@ import java.util.List;
 
 @Embeddable
 public class MenuProducts {
-    @OneToMany(mappedBy = "menu", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "menu_id", foreignKey = @ForeignKey(name = "fk_menu_product_menu"), nullable = false)
     private List<MenuProduct> menuProducts = new ArrayList<>();
 
     protected MenuProducts() {
@@ -25,14 +23,4 @@ public class MenuProducts {
         menuProducts.add(addMenuProduct);
     }
 
-    public void validateOverPrice(BigDecimal price) {
-        BigDecimal totalPrice = menuProducts.stream()
-                .map(MenuProduct::calculatePriceQuantity)
-                .reduce(BigDecimal::add)
-                .orElse(BigDecimal.ZERO);
-
-        if (price.compareTo(totalPrice) > 0) {
-            throw new IllegalArgumentException();
-        }
-    }
 }

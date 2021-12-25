@@ -35,13 +35,4 @@ public class ProductService {
                 .collect(Collectors.toList());
     }
 
-    public List<MenuProduct> getMenuProducts(List<MenuProductRequest> menuProducts) {
-        List<MenuProduct> result = new ArrayList<>();
-        for (final MenuProductRequest menuProductRequest : menuProducts) {
-            final Product product = productRepository.findById(menuProductRequest.getProductId())
-                    .orElseThrow(IllegalArgumentException::new);
-            result.add(new MenuProduct(product, menuProductRequest.getQuantity()));
-        }
-        return result;
-    }
 }

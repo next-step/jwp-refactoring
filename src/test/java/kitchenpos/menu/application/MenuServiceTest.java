@@ -37,8 +37,6 @@ public class MenuServiceTest {
     private MenuRepository menuRepository;
     @Mock
     private MenuValidator menuValidator;
-    @Mock
-    private ProductService productService;
 
     @InjectMocks
     private MenuService menuService;
@@ -67,7 +65,7 @@ public class MenuServiceTest {
     @Test
     void create() {
         //given
-        given(productService.getMenuProducts(any())).willReturn(Arrays.asList(후라이드두마리구성));
+        given(menuValidator.createMenu(any())).willReturn(후라이드두마리세트);
         given(menuRepository.save(any())).willReturn(후라이드두마리세트);
 
         MenuResponse creatMenu = menuService.create(MenuRequest.of("후라이드두마리세트", new BigDecimal("10000"), 치킨류.getId(), Arrays.asList(후라이드두마리구성Request)));
@@ -76,34 +74,6 @@ public class MenuServiceTest {
                 () -> assertThat(creatMenu).isNotNull(),
                 () -> assertThat(creatMenu.getPrice()).isEqualTo("10000")
         );
-    }
-
-    @DisplayName("금액은 0원 이상이어야하고 금액이 있어야한다.")
-    @Test
-    void createPriceError() {
-        MenuRequest 금액_없는_세트 = new MenuRequest();
-        MenuRequest 금액이_음수인_세트 = new MenuRequest();
-        금액이_음수인_세트.setPrice(new BigDecimal("-1000"));
-
-        assertThatThrownBy(() ->
-                menuService.create(금액_없는_세트)
-        ).isInstanceOf(IllegalArgumentException.class);
-
-        assertThatThrownBy(() ->
-                menuService.create(금액이_음수인_세트)
-        ).isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("가격 x 수량 = 금액 보다 등록한 금액이 더 작아야 한다.")
-    @Test
-    void createPriceLessError() {
-        given(productService.getMenuProducts(any())).willReturn(Arrays.asList(후라이드두마리구성));
-        MenuRequest 비싼_후라이드두마리세트 = MenuRequest.of("비싼_후라이드두마리세트", new BigDecimal("100000"), 치킨류.getId(), Arrays.asList(후라이드두마리구성Request));
-
-        assertThatThrownBy(() ->
-                menuService.create(비싼_후라이드두마리세트)
-        ).isInstanceOf(IllegalArgumentException.class);
-
     }
 
     @DisplayName("메뉴 목록")

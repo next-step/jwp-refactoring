@@ -98,14 +98,15 @@
 * MenuGroup
   * 없음
 * MenuProduct
-  * Menu 간접참조
+  * Menu 참조제거
   * Product 간접참조
 * Product
   * 없음
 * TableGroup
-  * OrderTable 간접참조
+  * OrderTable 직접참조
 * OrderTable
   * TableGroup 간접참조
+  * Orders 직접참조
 * Order
   * OrderTable 간접참조
   * OrderLineItem 직접참조
@@ -115,4 +116,5 @@
 
 * [ ] EventHandler 를 사용하여 의존성객체를 리팩터링
 * [x] MenuService
-* [ ] MenuGroupService
+* [x] MenuGroupService
+* [ ] TableGroupService

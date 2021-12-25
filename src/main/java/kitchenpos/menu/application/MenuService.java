@@ -17,25 +17,18 @@ import java.util.stream.Collectors;
 public class MenuService {
     private final MenuRepository menuRepository;
     private final MenuValidator menuValidator;
-    private final ProductService productService;
 
     public MenuService(
             final MenuRepository menuRepository,
-            final MenuValidator menuValidator,
-            final ProductService productService
+            final MenuValidator menuValidator
     ) {
         this.menuRepository = menuRepository;
         this.menuValidator = menuValidator;
-        this.productService = productService;
     }
 
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
-        menuValidator.existMenuGroup(menuRequest.getMenuGroupId());
-        final Menu menu = menuRequest.toMenu();
-        final List<MenuProduct> menuProducts = productService.getMenuProducts(menuRequest.getMenuProducts());
-
-        menu.addMenuProducts(menuProducts);
+        final Menu menu = menuValidator.createMenu(menuRequest);
 
         final Menu savedMenu = menuRepository.save(menu);
 
