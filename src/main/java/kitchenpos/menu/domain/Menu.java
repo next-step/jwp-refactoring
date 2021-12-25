@@ -1,7 +1,7 @@
 package kitchenpos.menu.domain;
 
-import java.math.BigDecimal;
 import java.util.List;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
@@ -9,7 +9,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import kitchenpos.domain.Name;
 import kitchenpos.domain.Price;
 
@@ -27,8 +26,8 @@ public class Menu {
     @JoinColumn(name = "menu_group_id", foreignKey = @ForeignKey(name = "fk_menu_group_id_of_menu"))
     private MenuGroup menuGroup;
 
-    @OneToMany(mappedBy = "menu")
-    private List<MenuProduct> menuProducts;
+    @Embedded
+    private MenuProducts menuProducts;
 
     public Menu() {
     }
@@ -42,7 +41,7 @@ public class Menu {
         this.name = Name.of(name);
         this.price = Price.of(price);
         this.menuGroup = MenuGroup.of(menuGroupId);
-        this.menuProducts = menuProducts;
+        this.menuProducts = MenuProducts.of(menuProducts);
     }
 
     public Menu(Long id, String name, Integer price, Long menuGroupId,
@@ -51,7 +50,7 @@ public class Menu {
         this.name = Name.of(name);
         this.price = Price.of(price);
         this.menuGroup = MenuGroup.of(menuGroupId);
-        this.menuProducts = menuProducts;
+        this.menuProducts = MenuProducts.of(menuProducts);
     }
 
     public static Menu of(Long id) {
@@ -79,11 +78,11 @@ public class Menu {
         return menuGroup.getId();
     }
 
-    public List<MenuProduct> getMenuProducts() {
+    public MenuProducts getMenuProducts() {
         return menuProducts;
     }
 
-    public void setMenuProducts(final List<MenuProduct> menuProducts) {
+    public void setMenuProducts(final MenuProducts menuProducts) {
         this.menuProducts = menuProducts;
     }
 }

@@ -11,6 +11,7 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProductRepository;
+import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.product.domain.Product;
@@ -44,10 +45,10 @@ public class MenuService {
             throw new IllegalArgumentException();
         }
 
-        final List<MenuProduct> menuProducts = menu.getMenuProducts();
+        final MenuProducts menuProducts = menu.getMenuProducts();
 
         BigDecimal sum = BigDecimal.ZERO;
-        for (final MenuProduct menuProduct : menuProducts) {
+        for (final MenuProduct menuProduct : menuProducts.getValues()) {
             final Product product = productRepository.findById(menuProduct.getProductId())
                 .orElseThrow(IllegalArgumentException::new);
             sum = sum.add(
@@ -61,8 +62,8 @@ public class MenuService {
         final Menu savedMenu = menuRepository.save(menu);
 
         final Long menuId = savedMenu.getId();
-        final List<MenuProduct> savedMenuProducts = new ArrayList<>();
-        for (final MenuProduct menuProduct : menuProducts) {
+        final MenuProducts savedMenuProducts = MenuProducts.empty();
+        for (final MenuProduct menuProduct : menuProducts.getValues()) {
             menuProduct.setMenu(menuId);
             savedMenuProducts.add(menuProductRepository.save(menuProduct));
         }
@@ -75,7 +76,7 @@ public class MenuService {
         final List<Menu> menus = menuRepository.findAll();
 
         for (final Menu menu : menus) {
-            menu.setMenuProducts(menuProductRepository.findAllByMenu(menu));
+            menu.setMenuProducts(MenuProducts.of(menuProductRepository.findAllByMenu(menu)));
         }
 
         return menus.stream()
