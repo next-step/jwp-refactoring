@@ -9,10 +9,8 @@ public class MenuProduct {
     public MenuProduct() {
     }
 
-    public MenuProduct(Long seq, Long menuId, Long productId, long quantity) {
+    public MenuProduct(Long productId, long quantity) {
         validateQuantity(quantity);
-        this.seq = seq;
-        this.menuId = menuId;
         this.productId = productId;
         this.quantity = quantity;
     }
@@ -23,8 +21,8 @@ public class MenuProduct {
         }
     }
 
-    public static MenuProduct of(Long seq, Long menuId, Long productId, long quantity) {
-        return new MenuProduct(seq, menuId, productId, quantity);
+    public static MenuProduct of(Long productId, long quantity) {
+        return new MenuProduct(productId, quantity);
     }
 
     public Long getSeq() {

@@ -21,13 +21,13 @@ public class ProductService {
 
     @Transactional
     public ProductResponse create(final ProductRequest productRequest) {
-        return ProductResponse.of(productRepository.save(Product.of(productRequest.getName(), productRequest.getPrice())));
+        return ProductResponse.from(productRepository.save(Product.of(productRequest.getName(), productRequest.getPrice())));
     }
 
     public List<ProductResponse> list() {
         return productRepository.findAll()
                 .stream()
-                .map(ProductResponse::of)
+                .map(ProductResponse::from)
                 .collect(Collectors.toList());
     }
 

@@ -7,7 +7,7 @@ public class MenuProductFixture {
     private MenuProductFixture() {
     }
 
-    public static MenuProduct of(Long seq, Long menuId, Long productId, long quantity) {
-        return MenuProduct.of(seq, menuId, productId, quantity);
+    public static MenuProduct of(Long productId, long quantity) {
+        return MenuProduct.of(productId, quantity);
     }
 }

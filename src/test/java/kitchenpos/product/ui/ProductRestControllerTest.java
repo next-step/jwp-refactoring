@@ -40,7 +40,7 @@ class ProductRestControllerTest extends RestControllerTest {
     void 상품_등록() throws Exception {
         //given
         ProductRequest 후라이드치킨_요청 = ProductRequest.of("후라이드치킨", BigDecimal.valueOf(16000));
-        ProductResponse 후라이드치킨_응답 = ProductResponse.of(Product.of(후라이드치킨_요청.getName(), 후라이드치킨_요청.getPrice()));
+        ProductResponse 후라이드치킨_응답 = ProductResponse.from(Product.of(후라이드치킨_요청.getName(), 후라이드치킨_요청.getPrice()));
         given(productService.create(any())).willReturn(후라이드치킨_응답);
 
         //when
@@ -61,8 +61,8 @@ class ProductRestControllerTest extends RestControllerTest {
     void 상품_조회() throws Exception {
         //given
         List<ProductResponse> products = new ArrayList<>();
-        products.add(ProductResponse.of(Product.of("후라이드치킨", BigDecimal.valueOf(16000))));
-        products.add(ProductResponse.of(Product.of("양념치킨", BigDecimal.valueOf(17000))));
+        products.add(ProductResponse.from(Product.of("후라이드치킨", BigDecimal.valueOf(16000))));
+        products.add(ProductResponse.from(Product.of("양념치킨", BigDecimal.valueOf(17000))));
         given(productService.list()).willReturn(products);
 
         //when

@@ -1,6 +1,7 @@
 package kitchenpos.menu.domain;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -9,18 +10,16 @@ public class Menu {
     private String name;
     private BigDecimal price;
     private Long menuGroupId;
-    private List<MenuProduct> menuProducts;
+    private List<MenuProduct> menuProducts = new ArrayList<>();
 
     public Menu() {
     }
 
-    public Menu(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
+    public Menu(String name, BigDecimal price, Long menuGroupId) {
         validatePrice(price);
-        this.id = id;
         this.name = Objects.requireNonNull(name, "메뉴명은 필수입니다.");
         this.price = price;
         this.menuGroupId = menuGroupId;
-        this.menuProducts = menuProducts;
     }
 
     private void validatePrice(BigDecimal price) {
@@ -29,8 +28,12 @@ public class Menu {
         }
     }
 
-    public static Menu of(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
-        return new Menu(id, name, price, menuGroupId, menuProducts);
+    public static Menu of(String name, BigDecimal price, Long menuGroupId) {
+        return new Menu(name, price, menuGroupId);
+    }
+
+    public void addMenuProduct(MenuProduct menuProduct) {
+        menuProducts.add(menuProduct);
     }
 
     public Long getId() {
