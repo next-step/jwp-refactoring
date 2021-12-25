@@ -6,24 +6,23 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kitchenpos.order.application.OrderService;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
+import kitchenpos.ordertable.domain.OrderTableExternalValidator;
 import kitchenpos.ordertable.dto.OrderTableAddRequest;
 import kitchenpos.ordertable.dto.OrderTableEmptyRequest;
 import kitchenpos.ordertable.dto.OrderTableNumberOfGuestsRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
-import kitchenpos.ordertable.exception.CanNotEditOrderTableEmptyByStatusException;
 import kitchenpos.ordertable.exception.NotFoundOrderTableException;
 
 @Service
 public class TableService {
 
-	private final OrderService orderService;
+	private final OrderTableExternalValidator orderTableExternalValidator;
 	private final OrderTableRepository orderTableRepository;
 
-	public TableService(final OrderService orderService, final OrderTableRepository orderTableRepository) {
-		this.orderService = orderService;
+	public TableService(OrderTableExternalValidator orderTableExternalValidator, OrderTableRepository orderTableRepository) {
+		this.orderTableExternalValidator = orderTableExternalValidator;
 		this.orderTableRepository = orderTableRepository;
 	}
 
@@ -44,15 +43,8 @@ public class TableService {
 	@Transactional
 	public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableEmptyRequest request) {
 		final OrderTable orderTable = findOrderTable(orderTableId);
-		validateEmpty(orderTable);
-		orderTable.changeEmptyIfNotTableGroup(request.isEmpty());
+		orderTable.changeEmpty(orderTableExternalValidator, request.isEmpty());
 		return OrderTableResponse.of(orderTable);
-	}
-
-	private void validateEmpty(final OrderTable orderTable) {
-		if (orderService.existsOrderStatusCookingOrMeal(orderTable.getId())) {
-			throw new CanNotEditOrderTableEmptyByStatusException();
-		}
 	}
 
 	@Transactional
@@ -60,7 +52,7 @@ public class TableService {
 		final Long orderTableId, final OrderTableNumberOfGuestsRequest request
 	) {
 		final OrderTable orderTable = findOrderTable(orderTableId);
-		orderTable.changeNumberOfGuestsIfNotEmpty(request.getNumberOfGuests());
+		orderTable.changeNumberOfGuests(request.getNumberOfGuests());
 		return OrderTableResponse.of(orderTable);
 	}
 

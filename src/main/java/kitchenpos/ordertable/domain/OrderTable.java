@@ -51,6 +51,10 @@ public class OrderTable {
         return new OrderTable(id, tableGroupId, numberOfGuests, empty);
     }
 
+    private boolean isInGroup() {
+        return Objects.nonNull(tableGroupId);
+    }
+
     public void group(Long tableGroupId) {
         validateGroup();
         this.empty = false;
@@ -66,22 +70,19 @@ public class OrderTable {
         }
     }
 
-    private boolean isInGroup() {
-        return Objects.nonNull(tableGroupId);
-    }
-
     public void ungroup() {
         this.tableGroupId = null;
     }
 
-    public void changeEmptyIfNotTableGroup(boolean empty) {
+    public void changeEmpty(OrderTableExternalValidator externalValidator, boolean empty) {
         if (isInGroup()) {
             throw new CanNotEditOrderTableEmptyByGroupException();
         }
+        externalValidator.changeEmpty(id);
         this.empty = empty;
     }
 
-    public void changeNumberOfGuestsIfNotEmpty(int numberOfGuests) {
+    public void changeNumberOfGuests(int numberOfGuests) {
         if (empty) {
             throw new CanNotEditOrderTableNumberOfGuestsByEmptyException();
         }

@@ -14,9 +14,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.order.application.OrderService;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
+import kitchenpos.ordertable.domain.OrderTableExternalValidator;
 import kitchenpos.ordertable.dto.OrderTableAddRequest;
 import kitchenpos.ordertable.dto.OrderTableEmptyRequest;
 import kitchenpos.ordertable.dto.OrderTableNumberOfGuestsRequest;
@@ -30,7 +30,7 @@ public class TableServiceTest {
 	private TableService tableService;
 
 	@Mock
-	private OrderService orderService;
+	private OrderTableExternalValidator orderTableExternalValidator;
 	@Mock
 	private OrderTableRepository orderTableRepository;
 
@@ -66,7 +66,6 @@ public class TableServiceTest {
 	void changeEmpty() {
 		final OrderTable 비어있지않은_테이블 = OrderTable.of(1L, null, 2, false);
 		given(orderTableRepository.findById(any())).willReturn(Optional.of(비어있지않은_테이블));
-		given(orderService.existsOrderStatusCookingOrMeal(비어있지않은_테이블.getId())).willReturn(false);
 
 		final OrderTableResponse changedOrderTable = tableService.changeEmpty(
 			비어있지않은_테이블.getId(),
@@ -85,19 +84,6 @@ public class TableServiceTest {
 		assertThatExceptionOfType(NotFoundOrderTableException.class)
 			.isThrownBy(() -> tableService.changeEmpty(orderTableId,
 				OrderTableEmptyRequest.of(false)
-			));
-	}
-
-	@DisplayName("주문테이블 비어있음 유무 수정: 주문이 `조리` 혹은 `식사` 상태면 예외발생")
-	@Test
-	void changeEmpty_order_table_status_cooking_or_meal() {
-		final OrderTable 비어있지않은_테이블 = OrderTable.of(1L, null, 2, false);
-		given(orderTableRepository.findById(any())).willReturn(Optional.of(비어있지않은_테이블));
-		given(orderService.existsOrderStatusCookingOrMeal(비어있지않은_테이블.getId())).willReturn(true);
-
-		assertThatIllegalArgumentException()
-			.isThrownBy(() -> tableService.changeEmpty(비어있지않은_테이블.getId(),
-				OrderTableEmptyRequest.of(true)
 			));
 	}
 
