@@ -33,7 +33,7 @@ public class Order {
     private OrderLineItems orderLineItems;
 
     @CreatedDate
-    private LocalDateTime orderDateTime;
+    private LocalDateTime orderedDateTime;
 
     protected Order() {
     }
@@ -83,8 +83,8 @@ public class Order {
         return orderLineItems.asList();
     }
 
-    public LocalDateTime getOrderDateTime() {
-        return orderDateTime;
+    public LocalDateTime getOrderedDateTime() {
+        return orderedDateTime;
     }
 
     public List<Long> getMenuIds() {

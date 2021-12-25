@@ -4,6 +4,7 @@ import java.util.Arrays;
 import kitchenpos.tobe.common.domain.Quantity;
 import kitchenpos.tobe.orders.domain.order.OrderLineItem;
 import kitchenpos.tobe.orders.domain.order.OrderLineItems;
+import kitchenpos.tobe.orders.dto.OrderLineItemRequest;
 
 public class OrderLineItemFixture {
 
@@ -20,5 +21,9 @@ public class OrderLineItemFixture {
 
     public static OrderLineItem of(final Long menuId, final long quantity) {
         return of(null, menuId, quantity);
+    }
+
+    public static OrderLineItemRequest ofRequest(final Long menuId, final long quantity) {
+        return new OrderLineItemRequest(menuId, quantity);
     }
 }

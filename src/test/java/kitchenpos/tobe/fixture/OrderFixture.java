@@ -1,8 +1,13 @@
 package kitchenpos.tobe.fixture;
 
+import java.util.List;
 import kitchenpos.tobe.common.domain.Validator;
 import kitchenpos.tobe.orders.domain.order.Order;
 import kitchenpos.tobe.orders.domain.order.OrderLineItems;
+import kitchenpos.tobe.orders.domain.order.OrderStatus;
+import kitchenpos.tobe.orders.dto.OrderChangeStatusRequest;
+import kitchenpos.tobe.orders.dto.OrderLineItemRequest;
+import kitchenpos.tobe.orders.dto.OrderRequest;
 
 public class OrderFixture {
 
@@ -24,5 +29,16 @@ public class OrderFixture {
         final Validator<Order> validator
     ) {
         return of(null, orderTableId, orderLineItems, validator);
+    }
+
+    public static OrderRequest ofRequest(
+        final Long orderTableId,
+        final List<OrderLineItemRequest> orderLineItems
+    ) {
+        return new OrderRequest(orderTableId, orderLineItems);
+    }
+
+    public static OrderChangeStatusRequest ofChangeStatusRequest(final OrderStatus status) {
+        return new OrderChangeStatusRequest(status);
     }
 }
