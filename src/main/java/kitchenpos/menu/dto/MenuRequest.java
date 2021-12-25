@@ -42,9 +42,12 @@ public class MenuRequest {
     }
 
     public Menu toEntity() {
-        List<MenuProduct> menuProducts = this.menuProducts.stream()
+        return Menu.of(name, price, menuGroupId, convertMenuProductEntities());
+    }
+
+    private List<MenuProduct> convertMenuProductEntities() {
+        return this.menuProducts.stream()
             .map(MenuProductRequest::toEntity)
             .collect(Collectors.toList());
-        return Menu.of(name, price, menuGroupId, menuProducts);
     }
 }

@@ -30,15 +30,15 @@ public class MenuValidator {
         validateMenuPrice(menu);
     }
 
+    private void validateExistMenuGroup(Long menuGroupId) {
+        menuGroupRepository.findById(menuGroupId).orElseThrow(() -> new NotFoundException(NOT_FOUND_DATA));
+    }
+
     private void validateMenuPrice(Menu menu) {
         BigDecimal sumPrice = sumProductsPrice(menu.getMenuProducts().getValue());
         if (menu.getPrice().isGreaterThanSumPrice(sumPrice)) {
             throw new BadRequestException(WRONG_VALUE);
         }
-    }
-
-    private void validateExistMenuGroup(Long menuGroupId) {
-        menuGroupRepository.findById(menuGroupId).orElseThrow(() -> new NotFoundException(NOT_FOUND_DATA));
     }
 
     private BigDecimal sumProductsPrice(List<MenuProduct> menuProducts) {

@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -29,6 +30,7 @@ public class Menu {
     @Embedded
     private Price price;
 
+    @Column(nullable = false)
     private Long menuGroupId;
 
     @Embedded
@@ -39,7 +41,7 @@ public class Menu {
 
     private Menu(Long id, String name, BigDecimal price, Long menuGroupId,
         List<MenuProduct> menuProducts) {
-        validate(menuGroupId);
+        validate(menuGroupId, menuProducts);
         this.id = id;
         this.name = new Name(name);
         this.price = new Price(price);
@@ -51,7 +53,18 @@ public class Menu {
         return new Menu(null, name, price, menuGroupId, menuProducts);
     }
 
-    private void validate(Long menuGroupId) {
+    private void validate(Long menuGroupId, List<MenuProduct> menuProducts) {
+        validateMenuProducts(menuProducts);
+        validateMenuGroupId(menuGroupId);
+    }
+
+    private void validateMenuProducts(List<MenuProduct> menuProducts) {
+        if (menuProducts.isEmpty()) {
+            throw new BadRequestException(WRONG_VALUE);
+        }
+    }
+
+    private void validateMenuGroupId(Long menuGroupId) {
         if (Objects.isNull(menuGroupId)) {
             throw new BadRequestException(WRONG_VALUE);
         }
