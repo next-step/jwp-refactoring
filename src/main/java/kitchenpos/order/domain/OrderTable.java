@@ -13,26 +13,28 @@ import javax.persistence.ManyToOne;
 
 @Entity
 public class OrderTable {
-    
+    public static final int MIN_NUMBER_OF_GUESTS = 0;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     @ManyToOne
     @JoinColumn(name = "table_group_id")
     private TableGroup tableGroup;
-    
+
     private int numberOfGuests;
-    
+
     private boolean empty;
-    
+
     @Embedded
     private Orders orders;
-    
+
     protected OrderTable() {
     }
-    
+
     private OrderTable(TableGroup tableGroup, int numberOfGuests, boolean empty) {
+        checkNumberOfGuests(numberOfGuests);
         this.tableGroup = tableGroup;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
@@ -42,7 +44,7 @@ public class OrderTable {
     public static OrderTable of(TableGroup tableGroup, int numberOfGuests, boolean empty) {
         return new OrderTable(tableGroup, numberOfGuests, empty);
     }
-    
+
     public static OrderTable of(int numberOfGuests, boolean empty) {
         return new OrderTable(null, numberOfGuests, empty);
     }
@@ -54,7 +56,7 @@ public class OrderTable {
     public TableGroup getTableGroup() {
         return tableGroup;
     }
-    
+
     public Long getTableGroupId() {
         if (tableGroup == null) {
             return null;
@@ -71,6 +73,8 @@ public class OrderTable {
     }
 
     public void changeEmpty(final boolean empty) {
+        checkTableGroup();
+        checkIsCookingOrMeal();
         this.empty = empty;
     }
 
@@ -79,32 +83,47 @@ public class OrderTable {
     }
 
     public void changeNumberOfGuests(final int numberOfGuests) {
+        checkNumberOfGuests(numberOfGuests);
         this.numberOfGuests = numberOfGuests;
     }
-    
+
     public void ungroup() {
-        checkOrderStatus();
+        checkIsCookingOrMeal();
         empty = false;
         tableGroup = null;
     }
-    
+
     public void addOrders(List<Order> orders) {
         orders.forEach(order -> {
             order.updateOrderTable(this);
             this.orders.add(order);
         });
     }
-    
-    private void checkOrderStatus() {
-        if (!orders.checkCompletion()) {
-            throw new IllegalArgumentException("조리중, 식사중인 주문 테이블은 단체지정을 해제할 수 없습니다");
+
+    private void checkTableGroup() {
+        if (Objects.nonNull(tableGroup)) {
+            throw new IllegalArgumentException("단체지정이 되어있는 테이블은 빈 테이블로 변경할 수 없습니다");
+        }
+    }
+
+    private void checkIsCookingOrMeal() {
+        if (orders.checkMealStatus() || orders.checkCookingStatus()) {
+            throw new IllegalArgumentException("조리중, 식사중인 주문 테이블은 변경할 수 없습니다");
+        }
+    }
+
+    private void checkNumberOfGuests(int numberOfGuests) {
+        if (numberOfGuests < MIN_NUMBER_OF_GUESTS) {
+            throw new IllegalArgumentException(String.format("테이블의 손님 수는 최소 %d명 이상이어야합니다", MIN_NUMBER_OF_GUESTS));
         }
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         OrderTable that = (OrderTable) o;
         return numberOfGuests == that.numberOfGuests && empty == that.empty && Objects.equals(tableGroup, that.tableGroup);
     }

@@ -33,9 +33,14 @@ public class Orders {
         return orders;
     }
 
-    public boolean checkCompletion() {
+    public boolean checkMealStatus() {
         return orders.stream()
-                .allMatch(Order::isCompletion);
+                .anyMatch(Order::isMeal);
+    }
+    
+    public boolean checkCookingStatus() {
+        return orders.stream()
+                .anyMatch(Order::isCooking);
     }
     
 }
