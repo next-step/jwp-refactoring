@@ -9,6 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import kitchenpos.common.InvalidPriceException;
+import kitchenpos.common.Price;
 import kitchenpos.menu.exception.InvalidMenuPriceException;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.product.domain.Product;
@@ -30,7 +31,7 @@ class MenuTest {
 		final Menu 음료메뉴 = Menu.of("음료메뉴", 음료메뉴_200원, 논알콜메뉴그룹,
 			Arrays.asList(콜라1개_100원, 사이다2개_100원));
 
-		assertThat(음료메뉴.getPrice()).isEqualTo(음료메뉴_200원);
+		assertThat(음료메뉴.getPrice()).isEqualTo(Price.of(200));
 
 		assertThatExceptionOfType(InvalidMenuPriceException.class)
 			.isThrownBy(() -> Menu.of("음료메뉴", 음료메뉴_200원, 논알콜메뉴그룹,

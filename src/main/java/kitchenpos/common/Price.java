@@ -9,7 +9,8 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class Price {
 
-	public static final BigDecimal MIN_INCLUSIVE = BigDecimal.ZERO;
+	private static final BigDecimal MIN_INCLUSIVE = BigDecimal.ZERO;
+	public static final Price MIN_PRICE = Price.of(MIN_INCLUSIVE);
 
 	@Column(name = "price", nullable = false)
 	private BigDecimal price;
@@ -28,8 +29,24 @@ public class Price {
 		}
 	}
 
+	public static Price of(long price) {
+		return new Price(BigDecimal.valueOf(price));
+	}
+
 	public static Price of(BigDecimal price) {
 		return new Price(price);
+	}
+
+	public Price add(Price price) {
+		return Price.of(this.price.add(price.price));
+	}
+
+	public Price multiply(long operand) {
+		return Price.of(price.multiply(BigDecimal.valueOf(operand)));
+	}
+
+	public boolean isBiggerThan(Price price) {
+		return this.price.compareTo(price.price) > 0;
 	}
 
 	public BigDecimal getPrice() {

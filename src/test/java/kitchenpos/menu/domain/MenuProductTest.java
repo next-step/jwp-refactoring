@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import kitchenpos.common.Price;
 import kitchenpos.product.domain.Product;
 
 class MenuProductTest {
@@ -16,6 +17,6 @@ class MenuProductTest {
 	void getTotalPrice() {
 		final Product 만두 = Product.of("만두", BigDecimal.valueOf(500));
 		final MenuProduct 만두2개 = MenuProduct.of(만두, 2L);
-		assertThat(만두2개.getTotalPrice()).isEqualTo(BigDecimal.valueOf(1_000));
+		assertThat(만두2개.getTotalPrice()).isEqualTo(Price.of(1_000));
 	}
 }

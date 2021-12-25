@@ -15,6 +15,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import kitchenpos.common.Price;
 import kitchenpos.common.Quantity;
 import kitchenpos.menu.exception.NotFoundMenuException;
 import kitchenpos.product.domain.Product;
@@ -65,11 +66,11 @@ public class MenuProduct {
         return new MenuProduct(seq, menu, product, quantity);
     }
 
-    public BigDecimal getTotalPrice() {
+    public Price getTotalPrice() {
         if (null == product) {
             throw new NotFoundProductException();
         }
-        return product.getPrice().multiply(BigDecimal.valueOf(quantity.getQuantity()));
+        return product.getPrice().multiply(quantity.getQuantity());
     }
 
     public Long getSeq() {

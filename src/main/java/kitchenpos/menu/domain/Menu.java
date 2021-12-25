@@ -44,11 +44,11 @@ public class Menu {
 	protected Menu() {
 	}
 
-	private Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+	private Menu(Long id, String name, Price price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
 		validate(price, menuProducts);
 		this.id = id;
 		this.name = name;
-		this.price = Price.of(price);
+		this.price = price;
 		this.menuGroup = menuGroup;
 		this.menuProducts = MenuProducts.of(this, menuProducts);
 	}
@@ -58,14 +58,14 @@ public class Menu {
 	}
 
 	public static Menu of(Long id, String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-		return new Menu(id, name, price, menuGroup, menuProducts);
+		return new Menu(id, name, Price.of(price), menuGroup, menuProducts);
 	}
 
-	private void validate(BigDecimal price, List<MenuProduct> menuProducts) {
-		final BigDecimal sumMenuProductsPrice = menuProducts.stream()
+	private void validate(Price price, List<MenuProduct> menuProducts) {
+		final Price sumMenuProductsPrice = menuProducts.stream()
 			.map(MenuProduct::getTotalPrice)
-			.reduce(BigDecimal.ZERO, BigDecimal::add);
-		if (price.compareTo(sumMenuProductsPrice) > 0) {
+			.reduce(Price.MIN_PRICE, Price::add);
+		if (price.isBiggerThan(sumMenuProductsPrice)) {
 			throw new InvalidMenuPriceException(price, sumMenuProductsPrice);
 		}
 	}
@@ -78,8 +78,8 @@ public class Menu {
 		return name;
 	}
 
-	public BigDecimal getPrice() {
-		return price.getPrice();
+	public Price getPrice() {
+		return price;
 	}
 
 	public MenuGroup getMenuGroup() {
