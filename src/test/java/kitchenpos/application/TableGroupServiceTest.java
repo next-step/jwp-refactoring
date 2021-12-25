@@ -1,29 +1,21 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderRepository;
 import kitchenpos.dao.OrderTableRepository;
 import kitchenpos.dao.TableGroupRepository;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
-import kitchenpos.dto.OrderTableResponse;
 import kitchenpos.dto.TableGroupRequest;
 import kitchenpos.exception.IllegalOrderTablesException;
-import kitchenpos.exception.NoOrderTableException;
-import org.hibernate.mapping.Any;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -67,8 +59,8 @@ class TableGroupServiceTest {
     void noEmptyTableCreateTest() {
 
         // given
-        OrderTable orderTable1 = new OrderTable(1L, null, 1, true);
-        OrderTable orderTable2 = new OrderTable(2L, null, 1, false);
+        OrderTable orderTable1 = new OrderTable(null, 1, true);
+        OrderTable orderTable2 = new OrderTable(null, 1, false);
         List<OrderTable> orderTables = Arrays.asList(orderTable1, orderTable2);
         List<Long> orderTableIds = Arrays.asList(orderTable1.getId(), orderTable2.getId());
         TableGroupRequest tableGroupRequest = new TableGroupRequest(orderTableIds);
@@ -85,8 +77,8 @@ class TableGroupServiceTest {
     @Test
     void tableGroupTableCreateTest() {
         // given
-        OrderTable orderTable1 = new OrderTable(1L, new TableGroup(), 1, true);
-        OrderTable orderTable2 = new OrderTable(2L, null, 1, true);
+        OrderTable orderTable1 = new OrderTable(new TableGroup(), 1, true);
+        OrderTable orderTable2 = new OrderTable(null, 1, true);
         List<OrderTable> orderTables = Arrays.asList(orderTable1, orderTable2);
         List<Long> orderTableIds = Arrays.asList(orderTable1.getId(), orderTable2.getId());
         TableGroupRequest tableGroupRequest = new TableGroupRequest(orderTableIds);

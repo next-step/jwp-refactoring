@@ -15,4 +15,8 @@ public class Orders {
                 .map(Order::getOrderStatus)
                 .anyMatch(orderStatus -> orderStatus == OrderStatus.COOKING || orderStatus == OrderStatus.MEAL);
     }
+
+    public void add(Order order) {
+        this.orders.add(order);
+    }
 }

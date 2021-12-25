@@ -38,8 +38,7 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
-        final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-                .orElseThrow(NoOrderTableException::new);
+        final OrderTable savedOrderTable = findById(orderTableId);
         savedOrderTable.changeEmpty(orderTableRequest.isEmpty());
         return OrderTableResponse.from(savedOrderTable);
     }
@@ -48,7 +47,7 @@ public class TableService {
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         final OrderTable orderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(NoOrderTableException::new);
-        orderTable.setNumberOfGuests(orderTable.getNumberOfGuests());
+        orderTable.setNumberOfGuests(orderTableRequest.getNumberOfGuests());
         return OrderTableResponse.from(orderTable);
     }
 

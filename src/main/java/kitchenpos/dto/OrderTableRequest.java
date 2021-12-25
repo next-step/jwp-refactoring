@@ -4,6 +4,11 @@ public class OrderTableRequest {
     private int numberOfGuests;
     private boolean empty;
 
+    public OrderTableRequest(int numberOfGuests, boolean empty) {
+        this.numberOfGuests = numberOfGuests;
+        this.empty = empty;
+    }
+
     public int getNumberOfGuests() {
         return numberOfGuests;
     }
