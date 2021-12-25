@@ -23,6 +23,7 @@ import kitchenpos.menugroup.domain.MenuGroup;
 public class Menu {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(columnDefinition = "bigint(20)")
 	private Long id;
 
 	@Column(nullable = false)
@@ -32,7 +33,7 @@ public class Menu {
 	private BigDecimal price;
 
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "menuGroupId")
+	@JoinColumn(name = "menuGroupId", columnDefinition = "bigint(20)", nullable = false)
 	private MenuGroup menuGroup;
 
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "menu", orphanRemoval = true, cascade = CascadeType.ALL)
@@ -57,7 +58,11 @@ public class Menu {
 		this.name = name;
 		this.price = price;
 		this.menuGroup = menuGroup;
-		this.menuProducts = menuProducts.stream()
+		this.menuProducts = setMenu(menuProducts);
+	}
+
+	private List<MenuProduct> setMenu(List<MenuProduct> menuProducts) {
+		return menuProducts.stream()
 			.map(mp -> new MenuProduct(this, mp.getProduct(), mp.getQuantity()))
 			.collect(Collectors.toList());
 	}
@@ -67,7 +72,7 @@ public class Menu {
 			.map(mp -> mp.getProductPrice().multiply(BigDecimal.valueOf(mp.getQuantity())))
 			.reduce(BigDecimal::add)
 			.orElseThrow(IllegalArgumentException::new);
-		if (price.compareTo(sum) > 0){
+		if (price.compareTo(sum) > 0) {
 			throw new IllegalArgumentException("메뉴의 가격은 상품들의 가격합보다 작거나 같아야 합니다");
 		}
 	}

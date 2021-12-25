@@ -12,6 +12,7 @@ import javax.persistence.Id;
 public class MenuGroup {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(columnDefinition = "bigint(20)")
 	private Long id;
 
 	@Column(nullable = false)

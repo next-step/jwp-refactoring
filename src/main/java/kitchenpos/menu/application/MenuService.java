@@ -48,4 +48,10 @@ public class MenuService {
 			.map(mp -> new MenuProduct(productService.findById(mp.getProductId()), mp.getQuantity()))
 			.collect(Collectors.toList());
 	}
+
+	public Menu findById(long menuId) {
+		return menuRepository.findById(menuId)
+			.orElseThrow(() -> new IllegalArgumentException("메뉴가 존재하지 않습니다"));
+
+	}
 }

@@ -18,17 +18,18 @@ public class MenuProduct {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(columnDefinition = "bigint(20)")
     private Long seq;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "menu_id", nullable = false)
+    @JoinColumn(name = "menu_id", nullable = false, columnDefinition = "bigint(20)")
     private Menu menu;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "product_id", nullable = false)
+    @JoinColumn(name = "product_id", nullable = false, columnDefinition = "bigint(20)")
     private Product product;
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, columnDefinition = "bigint(20)")
     private long quantity;
 
     public MenuProduct() {

@@ -8,10 +8,10 @@ import kitchenpos.menu.domain.Menu;
 
 public class MenuResponse {
 
-	private long id;
+	private Long id;
 	private String name;
 	private BigDecimal price;
-	private long menuGroupId;
+	private Long menuGroupId;
 	private List<MenuProductResponse> menuProductResponses;
 
 	public MenuResponse() {
@@ -33,7 +33,7 @@ public class MenuResponse {
 		return new MenuResponse(menu.getId(), menu.getName(), menu.getPrice(), menu.getMenuGroupId(), menuProductResponses);
 	}
 
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
@@ -45,7 +45,7 @@ public class MenuResponse {
 		return price;
 	}
 
-	public long getMenuGroupId() {
+	public Long getMenuGroupId() {
 		return menuGroupId;
 	}
 

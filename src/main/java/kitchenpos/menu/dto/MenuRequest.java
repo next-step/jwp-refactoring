@@ -11,7 +11,7 @@ public class MenuRequest {
 
 	private String name;
 	private BigDecimal price;
-	private long menuGroupId;
+	private Long menuGroupId;
 	private List<MenuProductRequest> menuProductRequests;
 
 	public MenuRequest() {
@@ -36,7 +36,7 @@ public class MenuRequest {
 		return price;
 	}
 
-	public long getMenuGroupId() {
+	public Long getMenuGroupId() {
 		return menuGroupId;
 	}
 
