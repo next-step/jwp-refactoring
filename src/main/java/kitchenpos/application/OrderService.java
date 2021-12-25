@@ -1,9 +1,7 @@
 package kitchenpos.application;
 
-import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuRepository;
 import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderLineItemRepository;
 import kitchenpos.domain.OrderRepository;
 import kitchenpos.domain.OrderTable;
@@ -13,13 +11,8 @@ import kitchenpos.domain.OrderTableRepository;
 import kitchenpos.dto.OrderResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
@@ -42,13 +35,14 @@ public class OrderService {
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
-        validOrderTable(orderRequest);
-        Order order = orderRepository.save(orderRequest.toOrder());
+        OrderTable orderTable = findOrderTableById(orderRequest.getOrderTableId());
+        Order order = orderRepository.save(orderRequest.toOrder(orderTable));
+
         return OrderResponse.of(order);
     }
 
-    private void validOrderTable(OrderRequest orderRequest) {
-        orderTableRepository.findByOrderTable(orderRequest.getOrderTable())
+    private OrderTable findOrderTableById(Long orderTableId) {
+        return orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
     }
 

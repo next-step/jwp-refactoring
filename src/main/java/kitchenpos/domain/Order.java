@@ -118,4 +118,10 @@ public class Order {
 
         this.orderStatus = orderStatus;
     }
+
+    public void validateCompleted() {
+        if (!OrderStatus.isCompleted(orderStatus)) {
+            throw new IllegalArgumentException();
+        }
+    }
 }

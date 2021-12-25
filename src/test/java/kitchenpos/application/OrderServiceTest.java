@@ -8,6 +8,7 @@ import kitchenpos.domain.OrderRepository;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.OrderTableRepository;
+import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.OrderRequest;
 import kitchenpos.dto.OrderResponse;
 import org.assertj.core.util.Lists;
@@ -49,21 +50,25 @@ class OrderServiceTest {
     private OrderRequest orderRequest;
     private OrderLineItem orderLineItem;
     private OrderLineItem orderLineItem2;
+    private OrderTable orderTable;
 
     @BeforeEach
     void setUp() {
+        when(orderTableRepository.save(any())).thenReturn(new OrderTable(1L, 3));
+
         orderService = new OrderService(menuRepository, orderRepository, orderLineItemRepository, orderTableRepository);
         orderLineItem = new OrderLineItem();
         orderLineItem2 = new OrderLineItem();
         order = new Order(1L, new OrderTable(), "MEAL", LocalDateTime.now(), Lists.newArrayList(orderLineItem, orderLineItem2));
 
-        orderRequest = new OrderRequest(new OrderTable(), "MEAL", LocalDateTime.now(), Lists.newArrayList(orderLineItem, orderLineItem2));
+        orderTable = orderTableRepository.save(new OrderTable(3));
+        orderRequest = new OrderRequest(orderTable.getId(), "MEAL", LocalDateTime.now(), Lists.newArrayList(orderLineItem, orderLineItem2));
     }
 
     @DisplayName("메뉴를 등록할 수 있다.")
     @Test
     void createOrderTest() {
-            when(orderTableRepository.findByOrderTable(any())).thenReturn(Optional.of(new OrderTable(1L, 1L, 3, false)));
+        when(orderTableRepository.findById(anyLong())).thenReturn(Optional.of(new OrderTable(1L, new TableGroup(), 3, false)));
         when(orderRepository.save(any())).thenReturn(order);
 
         // when
@@ -81,7 +86,7 @@ class OrderServiceTest {
     void createOrderExistProductExceptionTest() {
         assertThatThrownBy(() -> {
             // given
-            final OrderRequest emptyOrderLineItem = new OrderRequest(new OrderTable(), "MEAL", LocalDateTime.now(), Lists.emptyList());
+            final OrderRequest emptyOrderLineItem = new OrderRequest(orderTable.getId(), "MEAL", LocalDateTime.now(), Lists.emptyList());
 
             // when
             OrderResponse createdOrder = orderService.create(emptyOrderLineItem);
@@ -123,7 +128,7 @@ class OrderServiceTest {
 //            when(orderTableRepository.findByOrderTable(any())).thenReturn(Optional.of(new OrderTable(1L, 1L, 3, true)));
 //            when(orderRepository.save(any())).thenReturn(new Order(1L, new OrderTable(1L, 1L, 3, true), "MEAL", LocalDateTime.now(), Lists.newArrayList(orderLineItem, orderLineItem2)));
             // given
-            final OrderRequest emptyOrderTableItem = new OrderRequest(new OrderTable(), "MEAL", LocalDateTime.now(), Lists.newArrayList(orderLineItem, orderLineItem2));
+            final OrderRequest emptyOrderTableItem = new OrderRequest(orderTable.getId(), "MEAL", LocalDateTime.now(), Lists.newArrayList(orderLineItem, orderLineItem2));
 
             // when
             OrderResponse createdOrder = orderService.create(emptyOrderTableItem);

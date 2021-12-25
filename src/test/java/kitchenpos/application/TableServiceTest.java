@@ -5,6 +5,7 @@ import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.TableGroup;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -42,7 +43,7 @@ public class TableServiceTest {
     @DisplayName("새로운 테이블을 등록한다.")
     @Test
     void createTableTest() {
-        when(orderTableDao.save(any())).thenReturn(new OrderTable(1L, 1L, 3, false));
+        when(orderTableDao.save(any())).thenReturn(new OrderTable(1L, new TableGroup(), 3, false));
 
         // when
         final OrderTable createdOrderTable = tableService.create(new OrderTable());
@@ -50,7 +51,7 @@ public class TableServiceTest {
         // then
         assertAll(
                 () -> assertThat(createdOrderTable.getId()).isEqualTo(1L),
-                () -> assertThat(createdOrderTable.getTableGroupId()).isEqualTo(1L),
+                () -> assertThat(createdOrderTable.getTableGroup()).isEqualTo(new TableGroup()),
                 () -> assertThat(createdOrderTable.getNumberOfGuests()).isEqualTo(3),
                 () -> assertThat(createdOrderTable.isEmpty()).isEqualTo(false)
         );
@@ -60,7 +61,7 @@ public class TableServiceTest {
     @Test
     void getListTableTest() {
         when(orderTableDao.findAll())
-                .thenReturn(Lists.newArrayList(new OrderTable(1L, 1L, 3, false), new OrderTable(2L, 1L, 7, false)));
+                .thenReturn(Lists.newArrayList(new OrderTable(1L, new TableGroup(), 3, false), new OrderTable(2L, new TableGroup(), 7, false)));
 
         // when
         final List<OrderTable> createdOrderTables = tableService.list();
@@ -85,7 +86,7 @@ public class TableServiceTest {
         // then
         assertAll(
                 () -> assertThat(changeEmptyTable.getId()).isEqualTo(1L),
-                () -> assertThat(changeEmptyTable.getTableGroupId()).isEqualTo(null),
+                () -> assertThat(changeEmptyTable.getTableGroup()).isEqualTo(new TableGroup()),
                 () -> assertThat(changeEmptyTable.getNumberOfGuests()).isEqualTo(3),
                 () -> assertThat(changeEmptyTable.isEmpty()).isEqualTo(false)
         );
@@ -121,7 +122,7 @@ public class TableServiceTest {
     @Test
     void changeNumberOfGuestsTest() {
         // given
-        final OrderTable orderTable = new OrderTable(1L, 1L, 7, false);
+        final OrderTable orderTable = new OrderTable(1L, new TableGroup(), 7, false);
         when(orderTableDao.findById(anyLong())).thenReturn(Optional.of(orderTable));
         when(orderTableDao.save(any())).thenReturn(orderTable);
 

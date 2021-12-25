@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class OrderRequest {
-    private OrderTable orderTable;
+    private Long orderTableId;
     private String orderStatus;
     private LocalDateTime orderedTime;
     private List<OrderLineItem> orderLineItems;
@@ -16,15 +16,15 @@ public class OrderRequest {
     public OrderRequest() {
     }
 
-    public OrderRequest(OrderTable orderTable, String orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
-        this.orderTable = orderTable;
+    public OrderRequest(Long orderTableId, String orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
+        this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
         this.orderLineItems = orderLineItems;
     }
 
-    public OrderTable getOrderTable() {
-        return orderTable;
+    public Long getOrderTableId() {
+        return orderTableId;
     }
 
     public String getOrderStatus() {
@@ -39,7 +39,7 @@ public class OrderRequest {
         return orderLineItems;
     }
 
-    public Order toOrder() {
+    public Order toOrder(OrderTable orderTable) {
         return new Order(orderTable, orderStatus, orderedTime, orderLineItems);
     }
 }
