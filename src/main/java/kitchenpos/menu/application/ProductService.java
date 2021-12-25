@@ -31,4 +31,15 @@ public class ProductService {
                 .map(ProductResponse::from)
                 .collect(Collectors.toList());
     }
+    
+    @Transactional(readOnly = true)
+    public Product findById(Long productId) {
+        return productRepository.findById(productId)
+                .orElseThrow(() -> new IllegalArgumentException("해당하는 상품이 없습니다"));
+    }
+    
+    @Transactional(readOnly = true)
+    public Product findById(Product product) {
+        return findById(product.getId());
+    }
 }

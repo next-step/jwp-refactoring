@@ -26,7 +26,6 @@ public class TableGroupService {
         List<OrderTable> orderTables = tableService.findByOrderTables(request.getOrderTables());
         TableGroup tableGroup = TableGroup.from(orderTables);
         return TableGroupResponse.from(tableGroupRepository.save(tableGroup));
-        
     }
 
     @Transactional

@@ -1,11 +1,14 @@
 package kitchenpos.menu.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.BDDMockito.given;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -58,6 +61,36 @@ public class ProductServiceTest {
     
         // then
         assertThat(상품_목록).containsExactly(ProductResponse.from(첫번째_상품), ProductResponse.from(두번째_상품));
+    }
+    
+    @DisplayName("상품을 조회할 수 있다")
+    @Test
+    void 상품_조회() {
+        // given
+        Product 상품 = Product.of("치킨", 18000);
+        
+        given(productRepository.findById(nullable(Long.class))).willReturn(Optional.of(상품));
+    
+        // when
+        Product 저장된_상품 = productService.findById(상품);
+    
+        // then
+        assertThat(저장된_상품).isEqualTo(상품);
+    }
+    
+    @DisplayName("미등록 상품 조회시 오류 - 예외처리")
+    @Test
+    void 미등록_상품_조회() {
+        // given
+        Product 상품 = Product.of("치킨", 18000);
+        
+        given(productRepository.findById(nullable(Long.class))).willReturn(Optional.empty());
+    
+        // when, then
+        assertThatThrownBy(() -> {
+            productService.findById(상품);
+        }).isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("해당하는 상품이 없습니다");
     }
     
 }
