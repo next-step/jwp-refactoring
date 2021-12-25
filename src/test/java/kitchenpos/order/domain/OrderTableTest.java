@@ -28,7 +28,7 @@ public class OrderTableTest {
         OrderTable orderTable = new OrderTable();
 
         // when
-        orderTable.changeNumberOfGuests(numberOfGuest, orderTableValidator);
+        orderTable.changeNumberOfGuests(numberOfGuest);
 
         // then
         assertThat(orderTable.getNumberOfGuests()).isEqualTo(numberOfGuest);
@@ -39,10 +39,9 @@ public class OrderTableTest {
     void testCantChangeNumberOfGuest() {
         // given
         OrderTable orderTable = new OrderTable(3, true);
-        doThrow(IllegalArgumentException.class).when(orderTableValidator).validateChangeNumberOfGuests(orderTable);
 
         // when
-        ThrowableAssert.ThrowingCallable callable = () -> orderTable.changeNumberOfGuests(orderTable.getNumberOfGuests(), orderTableValidator);
+        ThrowableAssert.ThrowingCallable callable = () -> orderTable.changeNumberOfGuests(orderTable.getNumberOfGuests());
 
         // then
         assertThatThrownBy(callable).isInstanceOf(IllegalArgumentException.class);

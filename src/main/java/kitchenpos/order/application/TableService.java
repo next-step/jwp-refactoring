@@ -53,7 +53,7 @@ public class TableService {
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
-        savedOrderTable.changeNumberOfGuests(orderTableRequest.getNumberOfGuests(), orderTableValidator);
+        savedOrderTable.changeNumberOfGuests(orderTableRequest.getNumberOfGuests());
         return OrderTableResponse.of(savedOrderTable);
     }
 

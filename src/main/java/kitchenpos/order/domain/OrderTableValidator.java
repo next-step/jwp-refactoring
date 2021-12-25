@@ -14,12 +14,6 @@ public class OrderTableValidator {
         this.orderRepository = orderRepository;
     }
 
-    public void validateChangeNumberOfGuests(OrderTable orderTable) {
-        if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException("비어 있는 테이블은 손님 수를 변경할 수 없습니다");
-        }
-    }
-
     public void validateHasProgressOrder(OrderTable orderTable) {
         List<Order> orderList = orderRepository.findByOrderTableIdAndOrderStatusIn(orderTable.getId(), PROGRESSING_ORDER_STATUSES);
         if (!orderList.isEmpty()) {
