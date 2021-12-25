@@ -30,17 +30,25 @@ public class Product {
     protected Product() {
     }
 
-    private Product(Long id, String name, BigDecimal price) {
+    private Product(Long id, String name, Price price) {
         this.id = id;
         this.name = name;
-        this.price = Price.of(price);
+        this.price = price;
     }
 
     public static Product of(String name, BigDecimal price) {
         return of(null, name, price);
     }
 
+    public static Product of(Long id, String name, long price) {
+        return of(id, name, Price.of(price));
+    }
+
     public static Product of(Long id, String name, BigDecimal price) {
+        return of(id, name, Price.of(price));
+    }
+
+    public static Product of(Long id, String name, Price price) {
         return new Product(id, name, price);
     }
 

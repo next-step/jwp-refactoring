@@ -53,14 +53,6 @@ public class Menu {
 		this.menuProducts = MenuProducts.of(this, menuProducts);
 	}
 
-	public static Menu of(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-		return of(null, name, price, menuGroup, menuProducts);
-	}
-
-	public static Menu of(Long id, String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-		return new Menu(id, name, Price.of(price), menuGroup, menuProducts);
-	}
-
 	private void validate(Price price, List<MenuProduct> menuProducts) {
 		final Price sumMenuProductsPrice = menuProducts.stream()
 			.map(MenuProduct::getTotalPrice)
@@ -68,6 +60,22 @@ public class Menu {
 		if (price.isBiggerThan(sumMenuProductsPrice)) {
 			throw new InvalidMenuPriceException(price, sumMenuProductsPrice);
 		}
+	}
+
+	public static Menu of(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+		return of(null, name, Price.of(price), menuGroup, menuProducts);
+	}
+
+	public static Menu of(Long id, String name, long price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+		return of(id, name, Price.of(price), menuGroup, menuProducts);
+	}
+
+	public static Menu of(Long id, String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+		return of(id, name, Price.of(price), menuGroup, menuProducts);
+	}
+
+	public static Menu of(Long id, String name, Price price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+		return new Menu(id, name, price, menuGroup, menuProducts);
 	}
 
 	public Long getId() {

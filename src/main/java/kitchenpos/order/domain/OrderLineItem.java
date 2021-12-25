@@ -26,7 +26,7 @@ public class OrderLineItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "seq")
-    private Long seq;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", foreignKey = @ForeignKey(name = "fk_order_line_item_orders"), nullable = false)
@@ -42,9 +42,9 @@ public class OrderLineItem {
     protected OrderLineItem() {
     }
 
-    private OrderLineItem(Long seq, Order order, Menu menu, long quantity) {
+    private OrderLineItem(Long id, Order order, Menu menu, long quantity) {
         validate(menu);
-        this.seq = seq;
+        this.id = id;
         this.order = order;
         this.menu = menu;
         this.quantity = Quantity.of(quantity);
@@ -60,12 +60,12 @@ public class OrderLineItem {
         return of(null, null, menu, quantity);
     }
 
-    public static OrderLineItem of(Long seq, Order order, Menu menu, long quantity) {
-        return new OrderLineItem(seq, order, menu, quantity);
+    public static OrderLineItem of(Long id, Order order, Menu menu, long quantity) {
+        return new OrderLineItem(id, order, menu, quantity);
     }
 
-    public Long getSeq() {
-        return seq;
+    public Long getId() {
+        return id;
     }
 
     public Order getOrder() {
