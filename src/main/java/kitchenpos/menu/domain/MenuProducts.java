@@ -1,6 +1,6 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.menu.product.domain.Product;
+import kitchenpos.product.domain.Product;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;

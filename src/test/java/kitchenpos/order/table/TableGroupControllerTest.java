@@ -1,20 +1,20 @@
 package kitchenpos.order.table;
 
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
-import kitchenpos.ui.TableGroupRestController;
+import kitchenpos.order.table.domain.TableGroup;
+import kitchenpos.order.table.dto.OrderTableRequest;
+import kitchenpos.order.table.dto.TableGroupRequest;
+import kitchenpos.order.table.dto.TableGroupResponse;
+import kitchenpos.order.table.ui.TableGroupController;
 import kitchenpos.utils.ControllerTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.internal.matchers.Or;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.util.LinkedMultiValueMap;
 
 import javax.annotation.PostConstruct;
-import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -26,7 +26,7 @@ public class TableGroupControllerTest extends ControllerTest {
 
     @PostConstruct
     public void setUp() {
-        this.mockMvc = MockMvcBuilders.standaloneSetup(new TableGroupRestController(tableGroupService)).build();
+        this.mockMvc = MockMvcBuilders.standaloneSetup(new TableGroupController(tableGroupService)).build();
     }
 
     @DisplayName("단체 테이블 지정하기")
@@ -34,23 +34,21 @@ public class TableGroupControllerTest extends ControllerTest {
     void groupingTable() throws Exception {
 
         //given
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.setId(1L);
+        TableGroupRequest tableGroupRequest = new TableGroupRequest();
 
-        OrderTable orderTableA = new OrderTable();
-        OrderTable orderTableB = new OrderTable();
+        OrderTableRequest orderTableA = new OrderTableRequest();
+        ReflectionTestUtils.setField(orderTableA, "numberOfGuests", 10);
 
-        orderTableA.setTableGroupId(tableGroup.getId());
-        orderTableA.setNumberOfGuests(10);
-        orderTableB.setTableGroupId(tableGroup.getId());
-        orderTableB.setNumberOfGuests(3);
+        OrderTableRequest orderTableB = new OrderTableRequest();
+        ReflectionTestUtils.setField(orderTableB, "numberOfGuests", 4);
 
-        tableGroup.setOrderTables(Arrays.asList(orderTableA, orderTableB));
+        ReflectionTestUtils.setField(tableGroupRequest, "orderTables", Arrays.asList(orderTableA, orderTableB));
 
-        when(tableGroupService.create(any())).thenReturn(tableGroup);
+        TableGroupResponse tableGroupResponse = TableGroupResponse.of(tableGroupRequest.toEntity());
+        when(tableGroupService.create(any())).thenReturn(tableGroupResponse);
 
         //when
-        ResultActions resultActions = post("/api/table-groups", tableGroup);
+        ResultActions resultActions = post("/api/table-groups", tableGroupRequest);
 
         //then
         resultActions.andExpect(status().isCreated());

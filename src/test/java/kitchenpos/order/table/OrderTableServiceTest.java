@@ -1,11 +1,10 @@
 package kitchenpos.order.table;
 
-import kitchenpos.application.TableService;
+import kitchenpos.order.table.application.TableService;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.order.table.domain.OrderTable;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -46,7 +45,7 @@ public class OrderTableServiceTest {
 
         //then
         assertThat(savedOrderTable).isNotNull();
-        assertThat(savedOrderTable.getTableGroupId()).isNull();
+        assertThat(savedOrderTable.getTableGroup()).isNull();
     }
     
     @DisplayName("주문 테이블 조회하기")
@@ -75,12 +74,12 @@ public class OrderTableServiceTest {
         final boolean tableOrderStatus = false;
         OrderTable originOrderTable = new OrderTable();
         originOrderTable.setId(1L);
-        originOrderTable.setTableGroupId(null);
+//        originOrderTable.setTableGroupId(null);
         originOrderTable.setEmpty(false);
 
         OrderTable newOrderTable = new OrderTable();
         newOrderTable.setId(1L);
-        newOrderTable.setTableGroupId(null);
+//        newOrderTable.setTableGroupId(null);
         newOrderTable.setEmpty(true);
 
         when(orderTableDao.findById(anyLong())).thenReturn(Optional.ofNullable(originOrderTable));
@@ -102,7 +101,7 @@ public class OrderTableServiceTest {
         //given
         OrderTable originOrderTable = new OrderTable();
         originOrderTable.setId(1L);
-        originOrderTable.setTableGroupId(1L);
+//        originOrderTable.setTableGroupId(1L);
         originOrderTable.setEmpty(false);
 
         when(orderTableDao.findById(anyLong())).thenReturn(Optional.ofNullable(originOrderTable));
@@ -120,7 +119,7 @@ public class OrderTableServiceTest {
         final boolean existTableOrderStatus = true;
         OrderTable originOrderTable = new OrderTable();
         originOrderTable.setId(1L);
-        originOrderTable.setTableGroupId(null);
+//        originOrderTable.setTableGroupId(null);
 
         when(orderTableDao.findById(anyLong())).thenReturn(Optional.ofNullable(originOrderTable));
         when(orderDao.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).thenReturn(existTableOrderStatus);

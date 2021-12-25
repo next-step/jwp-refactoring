@@ -70,7 +70,7 @@ public class JdbcTemplateMenuGroupDao implements MenuGroupDao {
 
     private MenuGroup toEntity(final ResultSet resultSet) throws SQLException {
         final MenuGroup entity = MenuGroup.create(resultSet.getString("name"));
-        entity.setId(resultSet.getLong("id"));
+//        entity.setId(resultSet.getLong("id"));
         return entity;
     }
 }

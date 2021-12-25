@@ -1,10 +1,12 @@
 package kitchenpos.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kitchenpos.application.*;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.group.application.MenuGroupService;
-import kitchenpos.menu.product.application.ProductService;
+import kitchenpos.product.application.ProductService;
+import kitchenpos.order.application.OrderService;
+import kitchenpos.order.table.application.TableGroupService;
+import kitchenpos.order.table.application.TableService;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;

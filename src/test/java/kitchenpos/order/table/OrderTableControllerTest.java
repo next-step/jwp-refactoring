@@ -1,11 +1,10 @@
 package kitchenpos.order.table;
 
-import kitchenpos.domain.OrderTable;
-import kitchenpos.ui.TableRestController;
+import kitchenpos.order.table.domain.OrderTable;
+import kitchenpos.order.table.ui.TableRestController;
 import kitchenpos.utils.ControllerTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.internal.matchers.Or;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.util.LinkedMultiValueMap;
@@ -31,7 +30,7 @@ public class OrderTableControllerTest extends ControllerTest {
     private OrderTable createOrderTable() {
         OrderTable orderTable = new OrderTable();
         orderTable.setId(1L);
-        orderTable.setTableGroupId(1L);
+//        orderTable.setTableGroupId(1L);
         orderTable.setNumberOfGuests(10);
         orderTable.setEmpty(false);
         return orderTable;

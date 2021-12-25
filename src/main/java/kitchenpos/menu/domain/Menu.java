@@ -3,7 +3,7 @@ package kitchenpos.menu.domain;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.group.domain.MenuGroup;
-import kitchenpos.menu.product.domain.Product;
+import kitchenpos.product.domain.Product;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -54,6 +54,7 @@ public class Menu {
     public BigDecimal getMenuPrice() {
         return menuPrice.getPrice();
     }
+
     public Long getMenuGroupId() {
         return menuGroupId;
     }
