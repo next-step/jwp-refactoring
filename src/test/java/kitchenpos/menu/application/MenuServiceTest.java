@@ -7,7 +7,6 @@ import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -26,6 +25,7 @@ import kitchenpos.menu.dao.ProductRepository;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.Price;
 import kitchenpos.menu.domain.Product;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
@@ -52,8 +52,8 @@ public class MenuServiceTest {
     @Test
     void 메뉴_등록() {
         // given
-        Menu 메뉴 = Menu.of("짜장면", new BigDecimal("6000"), MenuGroup.from("중식"), null);
-        Product 상품 = Product.of("짜장면", new BigDecimal("6000"));
+        Menu 메뉴 = Menu.of("짜장면", 6000, MenuGroup.from("중식"), null);
+        Product 상품 = Product.of("짜장면", 6000);
         MenuProduct 메뉴상품 = MenuProduct.of(메뉴, 상품, 1L);
         메뉴.addMenuProducts(Arrays.asList(메뉴상품));
 
@@ -70,40 +70,11 @@ public class MenuServiceTest {
 
     }
     
-    @DisplayName("메뉴 등록시 가격은 필수여야한다 - 예외처리")
-    @Test
-    void 메뉴_등록_가격_필수() {
-        // given
-        Menu 가격없는_메뉴 = Menu.of("짜장면", null, MenuGroup.from("메뉴그룹"), new ArrayList<MenuProduct>());
-        given(menuGroupService.findById(nullable(Long.class))).willReturn(가격없는_메뉴.getMenuGroup());
-        
-        // when, then
-        assertThatThrownBy(() -> {
-            menuService.create(MenuRequest.from(가격없는_메뉴));
-        }).isInstanceOf(IllegalArgumentException.class)
-        .hasMessage("메뉴 가격은 0원 이상이어야 합니다");
-    
-    }
-    
-    @DisplayName("메뉴 등록시 가격은 0원 이상이어야한다 - 예외처리")
-    @Test
-    void 메뉴_등록_가격_0원_이상() {
-        // given
-        Menu 마이너스_가격_메뉴 = Menu.of("짜장면", new BigDecimal("-6000"), MenuGroup.from("메뉴그룹"), new ArrayList<MenuProduct>());
-        given(menuGroupService.findById(nullable(Long.class))).willReturn(마이너스_가격_메뉴.getMenuGroup());
-        
-        // when, then
-        assertThatThrownBy(() -> {
-            menuService.create(MenuRequest.from(마이너스_가격_메뉴));
-        }).isInstanceOf(IllegalArgumentException.class)
-        .hasMessage("메뉴 가격은 0원 이상이어야 합니다");
-    }
-    
     @DisplayName("메뉴 등록시 메뉴그룹이 지정되어 있어야한다 - 예외처리")
     @Test
     void 메뉴_등록_메뉴그룹_필수() {
         // given
-        Menu 메뉴그룹_미지정_메뉴 = Menu.of("짜장면", new BigDecimal("6000"), null, new ArrayList<MenuProduct>());
+        Menu 메뉴그룹_미지정_메뉴 = Menu.of("짜장면", 6000, null, new ArrayList<MenuProduct>());
         given(menuGroupService.findById(nullable(Long.class))).willReturn(메뉴그룹_미지정_메뉴.getMenuGroup());
         
         // when, then
@@ -116,7 +87,7 @@ public class MenuServiceTest {
     @Test
     void 메뉴_등록_등록된_메뉴그룹만() {
         // given
-        Menu 메뉴 = Menu.of("짜장면", new BigDecimal("6000"), MenuGroup.from("미등록_메뉴그룹"), new ArrayList<MenuProduct>());
+        Menu 메뉴 = Menu.of("짜장면", 6000, MenuGroup.from("미등록_메뉴그룹"), new ArrayList<MenuProduct>());
     
         // when, then
         assertThatThrownBy(() -> {
@@ -131,9 +102,9 @@ public class MenuServiceTest {
     @Test
     void 메뉴_등록_등록된_상품만() {
         // given
-        Menu 메뉴 = Menu.of("짜장면", new BigDecimal("6000"), MenuGroup.from("메뉴그룹"), new ArrayList<MenuProduct>());
+        Menu 메뉴 = Menu.of("짜장면", 6000, MenuGroup.from("메뉴그룹"), new ArrayList<MenuProduct>());
         
-        Product 상품 = Product.of("짜장면", new BigDecimal("6000"));
+        Product 상품 = Product.of("짜장면", 6000);
         메뉴.addMenuProducts(Arrays.asList(MenuProduct.of(메뉴, 상품, 1L)));
         
         given(menuGroupService.findById(nullable(Long.class))).willReturn(메뉴.getMenuGroup());
@@ -153,9 +124,9 @@ public class MenuServiceTest {
     @Test
     void 메뉴_등록_금액_확인() {
         // given
-        Menu 메뉴 = Menu.of("짜장면", new BigDecimal("10000"), MenuGroup.from("메뉴그룹"), new ArrayList<MenuProduct>());
+        Menu 메뉴 = Menu.of("짜장면", 10000, MenuGroup.from("메뉴그룹"), new ArrayList<MenuProduct>());
         
-        Product 상품 = Product.of("짜장면", new BigDecimal("6000"));
+        Product 상품 = Product.of("짜장면", 6000);
         
         메뉴.addMenuProducts(Arrays.asList(MenuProduct.of(메뉴, 상품, 1L)));
     
@@ -173,9 +144,9 @@ public class MenuServiceTest {
     @Test
     void 메뉴_목록_조회() {
         // given
-        Menu 첫번째_메뉴 = Menu.of("짜장면", new BigDecimal("6000"), MenuGroup.from("짜장면_메뉴그룹"), new ArrayList<MenuProduct>());
+        Menu 첫번째_메뉴 = Menu.of("짜장면", 6000, MenuGroup.from("짜장면_메뉴그룹"), new ArrayList<MenuProduct>());
         
-        Menu 두번째_메뉴 = Menu.of("짬뽕", new BigDecimal("7000"), MenuGroup.from("짬뽕_메뉴그룹"), new ArrayList<MenuProduct>());
+        Menu 두번째_메뉴 = Menu.of("짬뽕", 7000, MenuGroup.from("짬뽕_메뉴그룹"), new ArrayList<MenuProduct>());
     
         given(menuRepository.findAll()).willReturn(Arrays.asList(첫번째_메뉴, 두번째_메뉴));
     

@@ -21,7 +21,6 @@ import kitchenpos.menu.dao.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.dto.MenuGroupRequest;
 import kitchenpos.menu.dto.MenuGroupResponse;
-import kitchenpos.order.dto.OrderRequest;
 
 @ExtendWith(MockitoExtension.class)
 public class MenuGroupServiceTest {

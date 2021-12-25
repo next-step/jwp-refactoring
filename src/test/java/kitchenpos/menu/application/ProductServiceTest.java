@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
@@ -33,7 +32,7 @@ public class ProductServiceTest {
     @Test
     void 상품_등록() {
         // given
-        Product 상품 = Product.of("치킨", new BigDecimal("18000"));
+        Product 상품 = Product.of("치킨", 18000);
         given(productRepository.save(any())).willReturn(상품);
 
         // when
@@ -49,8 +48,8 @@ public class ProductServiceTest {
     @Test
     void 상품_목록_조회() {
         // given
-        Product 첫번째_상품 = Product.of("치킨", new BigDecimal("18000"));
-        Product 두번째_상품 = Product.of("삼겹살", new BigDecimal("20000"));
+        Product 첫번째_상품 = Product.of("치킨", 18000);
+        Product 두번째_상품 = Product.of("삼겹살", 20000);
         
         given(productRepository.findAll()).willReturn(Arrays.asList(첫번째_상품, 두번째_상품));
     

@@ -1,8 +1,6 @@
 package kitchenpos.menu.domain;
 
-import java.math.BigDecimal;
-import java.util.Objects;
-
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -17,18 +15,18 @@ public class Product {
     
     private String name;
     
-    private BigDecimal price;
+    @Embedded
+    private Price price;
 
     protected Product() {
     }
     
-    private Product(String name, BigDecimal price) {
-        checkPrice(price);
+    private Product(String name, int price) {
         this.name = name;
-        this.price = price;
+        this.price = Price.from(price);
     }
 
-    public static Product of(String name, BigDecimal price) {
+    public static Product of(String name, int price) {
         return new Product(name, price);
     }
 
@@ -40,14 +38,8 @@ public class Product {
         return name;
     }
 
-    public BigDecimal getPrice() {
+    public Price getPrice() {
         return price;
-    }
-    
-    private void checkPrice(BigDecimal price) {
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException("상품은 0원 이상이어야 합니다");
-        }
     }
 
 }

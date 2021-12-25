@@ -1,6 +1,5 @@
 package kitchenpos.menu.dto;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import kitchenpos.menu.domain.Menu;
@@ -9,26 +8,26 @@ import kitchenpos.menu.domain.MenuProduct;
 
 public class MenuRequest {
     private String name;
-    private BigDecimal price;
+    private int price;
     private Long menuGroupId;
     private List<MenuProduct> menuProducts;
     
     private MenuRequest() {
     }
 
-    private MenuRequest(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
+    private MenuRequest(String name, int price, Long menuGroupId, List<MenuProduct> menuProducts) {
         this.name = name;
         this.price = price;
         this.menuGroupId = menuGroupId;
         this.menuProducts = menuProducts;
     }
     
-    public static MenuRequest of(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
+    public static MenuRequest of(String name, int price, Long menuGroupId, List<MenuProduct> menuProducts) {
         return new MenuRequest(name, price, menuGroupId, menuProducts);
     }
     
     public static MenuRequest from(Menu menu) {
-        return new MenuRequest(menu.getName(), menu.getPrice(), menu.getMenuGroupId(), menu.getMenuProducts());
+        return new MenuRequest(menu.getName(), menu.getPrice().intValue(), menu.getMenuGroupId(), menu.getMenuProducts());
     }
     
     public Menu toMenu(MenuGroup menuGroup) {
@@ -39,7 +38,7 @@ public class MenuRequest {
         return name;
     }
 
-    public BigDecimal getPrice() {
+    public int getPrice() {
         return price;
     }
 
