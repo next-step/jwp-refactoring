@@ -1,17 +1,19 @@
 package kitchenpos.table;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.dto.TableChangeEmptyRequest;
+import kitchenpos.dto.TableChangeNumberOfGuestRequest;
+import kitchenpos.dto.TableCreateRequest;
+import kitchenpos.dto.TableResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -28,14 +30,14 @@ public class TableAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        savedOrderTable = orderTableDao.save(new OrderTable(null, 0, false));
+        savedOrderTable = orderTableDao.save(OrderTable.builder().numberOfGuests(0).empty(false).build());
     }
 
     @Test
     @DisplayName("테이블을 생성할 수 있다.")
     void createTable() {
         // given
-        OrderTable 생성_할_테이블 = new OrderTable(0, true);
+        TableCreateRequest 생성_할_테이블 = new TableCreateRequest(0, true);
 
         // when
         ExtractableResponse<Response> 테이블_생성_요청_응답 = 테이블_생성_요청(생성_할_테이블);
@@ -45,7 +47,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
     }
 
     private void 테이블_생성_됨(ExtractableResponse<Response> response) {
-        OrderTable 생성된_테이블 = response.as(OrderTable.class);
+        TableResponse 생성된_테이블 = response.as(TableResponse.class);
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
                 () -> assertThat(생성된_테이블.getId()).isNotNull(),
@@ -55,16 +57,16 @@ public class TableAcceptanceTest extends AcceptanceTest {
         );
     }
 
-    public ExtractableResponse<Response> 테이블_생성_요청(OrderTable orderTable) {
-        return post("/api/tables", orderTable);
+    public ExtractableResponse<Response> 테이블_생성_요청(TableCreateRequest request) {
+        return post("/api/tables", request);
     }
 
     @Test
     @DisplayName("테이블의 사용여부를 변경할 수 있다.")
     void changeEmpty() {
         // given
-        OrderTable 기존_테이블 = orderTableDao.save(new OrderTable(null, 0, true));
-        OrderTable 기존_테이블_사용함_으로_변경 = new OrderTable(false);
+        OrderTable 기존_테이블 = orderTableDao.save(OrderTable.builder().numberOfGuests(0).empty(true).build());
+        TableChangeEmptyRequest 기존_테이블_사용함_으로_변경 = new TableChangeEmptyRequest(false);
 
         // when
         ExtractableResponse<Response> 테이블_사용여부_변경_요청_응답 = 테이블_사용여부_변경_요청(기존_테이블, 기존_테이블_사용함_으로_변경);
@@ -82,15 +84,15 @@ public class TableAcceptanceTest extends AcceptanceTest {
 
     }
 
-    public ExtractableResponse<Response> 테이블_사용여부_변경_요청(OrderTable savedOrderTable, OrderTable orderTable) {
-        return put("/api/tables/{orderTableId}/empty", orderTable, savedOrderTable.getId());
+    public ExtractableResponse<Response> 테이블_사용여부_변경_요청(OrderTable savedOrderTable, TableChangeEmptyRequest changeOrderTable) {
+        return put("/api/tables/{orderTableId}/empty", changeOrderTable, savedOrderTable.getId());
     }
 
     @Test
     @DisplayName("방문한 손님 수를 변경할 수 있다.")
     void changeNumberOfGuests() {
         // given
-        OrderTable 변경할_손님_수 = new OrderTable(1);
+        TableChangeNumberOfGuestRequest 변경할_손님_수 = new TableChangeNumberOfGuestRequest(1);
 
         // when
         ExtractableResponse<Response> 방문한_손님_수_변경_응답 = 방문한_손님_수_변경_요청(변경할_손님_수);
@@ -107,7 +109,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
         );
     }
 
-    public ExtractableResponse<Response> 방문한_손님_수_변경_요청(OrderTable orderTable) {
-        return put("/api/tables/{orderTableId}/number-of-guests", orderTable, savedOrderTable.getId());
+    public ExtractableResponse<Response> 방문한_손님_수_변경_요청(TableChangeNumberOfGuestRequest request) {
+        return put("/api/tables/{orderTableId}/number-of-guests", request, savedOrderTable.getId());
     }
 }

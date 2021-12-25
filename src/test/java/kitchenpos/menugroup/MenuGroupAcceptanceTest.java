@@ -4,6 +4,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.dto.MenuGroupCreateRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -18,7 +19,7 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
     @DisplayName("메뉴 그룹을 등록할 수 있다.")
     void createMenuGroup() {
         // given
-        MenuGroup 추천메뉴 = new MenuGroup("추천메뉴");
+        MenuGroupCreateRequest 추천메뉴 = new MenuGroupCreateRequest("추천메뉴");
 
         // when
         ExtractableResponse<Response> 메뉴_그룹_등록_요청_응답 = 메뉴_그룹_등록을_요청(추천메뉴);
@@ -36,7 +37,7 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
         );
     }
 
-    public ExtractableResponse<Response> 메뉴_그룹_등록을_요청(MenuGroup menuGroup) {
-        return post("/api/menu-groups", menuGroup);
+    public ExtractableResponse<Response> 메뉴_그룹_등록을_요청(MenuGroupCreateRequest request) {
+        return post("/api/menu-groups", request);
     }
 }
