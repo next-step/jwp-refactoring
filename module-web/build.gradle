@@ -1,0 +1,15 @@
+bootJar {
+    enabled=false
+}
+
+jar {
+    enabled=true
+}
+
+dependencies {
+    implementation project(":module-menu")
+    implementation project(":module-order")
+
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+}
+
