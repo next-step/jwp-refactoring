@@ -1,11 +1,14 @@
 package kitchenpos.menu.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.BDDMockito.given;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,6 +21,7 @@ import kitchenpos.menu.dao.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.dto.MenuGroupRequest;
 import kitchenpos.menu.dto.MenuGroupResponse;
+import kitchenpos.order.dto.OrderRequest;
 
 @ExtendWith(MockitoExtension.class)
 public class MenuGroupServiceTest {
@@ -57,6 +61,36 @@ public class MenuGroupServiceTest {
 
         // then
         assertThat(menuGroups).containsExactly(MenuGroupResponse.from(첫번째_메뉴그룹), MenuGroupResponse.from(두번째_메뉴그룹));
+    }
+    
+    @DisplayName("메뉴 그룹 조회")
+    @Test
+    void 메뉴그룹_조회() {
+        // given
+        MenuGroup 메뉴그룹 = MenuGroup.from("한식");
+        
+        given(menuGroupRepository.findById(nullable(Long.class))).willReturn(Optional.of(메뉴그룹));
+
+        // when
+        MenuGroup 저장된_메뉴그룹 = menuGroupService.findById(메뉴그룹.getId());
+
+        // then
+        assertThat(저장된_메뉴그룹).isEqualTo(메뉴그룹);
+    }
+    
+    @DisplayName("등록되지 않은 메뉴그룹 조회 - 예외처리")
+    @Test
+    void 미등록_메뉴그룹_조회() {
+        // given
+        MenuGroup 메뉴그룹 = MenuGroup.from("한식");
+        
+        given(menuGroupRepository.findById(nullable(Long.class))).willReturn(Optional.empty());
+
+        // when, then
+        assertThatThrownBy(() -> {
+            menuGroupService.findById(메뉴그룹.getId());
+        }).isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("해당하는 메뉴그룹이 없습니다");
     }
 
 }
