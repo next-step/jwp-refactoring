@@ -28,19 +28,13 @@ public class MenuProduct {
 
     private long quantity;
 
-    public MenuProduct() {
+    protected MenuProduct() {
     }
 
-    public MenuProduct(Product product, long quantity) {
+    private MenuProduct(Product product, long quantity) {
         validateQuantity(quantity);
         this.product = product;
         this.quantity = quantity;
-    }
-
-    private void validateQuantity(long quantity) {
-        if (quantity < 0) {
-            throw new IllegalArgumentException("메뉴 상품의 수량는 0개 이상 이어야 합니다.");
-        }
     }
 
     public static MenuProduct of(Product product, long quantity) {
@@ -67,7 +61,13 @@ public class MenuProduct {
         return quantity;
     }
 
-    public BigDecimal calculateAllPrice() {
+    public BigDecimal calculateTotalPrice() {
         return product.getPrice().multiply(BigDecimal.valueOf(quantity));
+    }
+
+    private void validateQuantity(long quantity) {
+        if (quantity < 0) {
+            throw new IllegalArgumentException("메뉴 상품의 수량는 0개 이상 이어야 합니다.");
+        }
     }
 }

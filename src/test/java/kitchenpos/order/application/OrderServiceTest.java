@@ -7,7 +7,7 @@ import kitchenpos.common.fixtrue.OrderFixture;
 import kitchenpos.common.fixtrue.OrderLineItemFixture;
 import kitchenpos.common.fixtrue.OrderTableFixture;
 import kitchenpos.common.fixtrue.ProductFixture;
-import kitchenpos.menu.dao.MenuDao;
+import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.order.dao.OrderDao;
@@ -42,7 +42,7 @@ import static org.mockito.BDDMockito.given;
 class OrderServiceTest {
 
     @Mock
-    MenuDao menuDao;
+    MenuService menuService;
 
     @Mock
     OrderDao orderDao;
@@ -86,7 +86,7 @@ class OrderServiceTest {
                 .map(OrderLineItem::getMenuId)
                 .collect(Collectors.toList());
 
-        given(menuDao.countByIdIn(menuIds)).willReturn(1L);
+        given(menuService.countByIdIn(menuIds)).willReturn(1L);
         given(orderTableDao.findById(주문.getOrderTableId())).willReturn(Optional.of(주문_테이블));
         given(orderDao.save(any())).willReturn(주문);
 
@@ -103,7 +103,7 @@ class OrderServiceTest {
     @Test
     void 주문_발생_시_주문_상품은_반드시_메뉴에_존재해야_한다() {
         // given
-        given(menuDao.countByIdIn(any())).willReturn(0L);
+        given(menuService.countByIdIn(any())).willReturn(0L);
 
         // when
         ThrowingCallable throwingCallable = () -> orderService.create(주문);
@@ -116,7 +116,7 @@ class OrderServiceTest {
     @Test
     void 주문_발생_시_주문_테이블이_존재해야_한다() {
         // given
-        given(menuDao.countByIdIn(any())).willReturn(1L);
+        given(menuService.countByIdIn(any())).willReturn(1L);
         given(orderTableDao.findById(주문.getOrderTableId())).willReturn(Optional.empty());
 
         // when
@@ -130,7 +130,7 @@ class OrderServiceTest {
     @Test
     void 주문_발생_시_주문_테이블이_빈_테이블이면_주문할_수_없다() {
         // given
-        given(menuDao.countByIdIn(any())).willReturn(1L);
+        given(menuService.countByIdIn(any())).willReturn(1L);
         주문_테이블.setEmpty(true);
         given(orderTableDao.findById(주문.getOrderTableId())).willReturn(Optional.of(주문_테이블));
 

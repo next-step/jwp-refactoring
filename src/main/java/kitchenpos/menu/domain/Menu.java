@@ -35,20 +35,14 @@ public class Menu {
     @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MenuProduct> menuProducts = new ArrayList<>();
 
-    public Menu() {
+    protected Menu() {
     }
 
-    public Menu(String name, BigDecimal price, MenuGroup menuGroup) {
+    private Menu(String name, BigDecimal price, MenuGroup menuGroup) {
         validatePrice(price);
         this.name = Objects.requireNonNull(name, "메뉴명은 필수입니다.");
         this.price = price;
         this.menuGroup = menuGroup;
-    }
-
-    private void validatePrice(BigDecimal price) {
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException("상품의 가격은 0원 이상 이어야 합니다.");
-        }
     }
 
     public static Menu of(String name, BigDecimal price, MenuGroup menuGroup) {
@@ -56,10 +50,7 @@ public class Menu {
     }
 
     public void addMenuProduct(MenuProduct menuProduct) {
-        if (price.compareTo(menuProduct.calculateAllPrice()) > 0) {
-            throw new IllegalArgumentException("메뉴의 가격은 " +
-                    "메뉴 상품들의 수량 * 상품의 가격을 모두 더한 금액 보다 작거나 같아야 합니다.");
-        }
+        validateTotalPrice(menuProduct);
 
         menuProducts.add(menuProduct);
         menuProduct.changeMenu(this);
@@ -83,5 +74,18 @@ public class Menu {
 
     public List<MenuProduct> getMenuProducts() {
         return menuProducts;
+    }
+
+    private void validateTotalPrice(MenuProduct menuProduct) {
+        if (price.compareTo(menuProduct.calculateTotalPrice()) > 0) {
+            throw new IllegalArgumentException("메뉴의 가격은 " +
+                    "메뉴 상품들의 수량 * 상품의 가격을 모두 더한 금액 보다 작거나 같아야 합니다.");
+        }
+    }
+
+    private void validatePrice(BigDecimal price) {
+        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("상품의 가격은 0원 이상 이어야 합니다.");
+        }
     }
 }

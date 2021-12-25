@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Transactional(readOnly = true)
 @Service
 public class MenuService {
     private final MenuRepository menuRepository;
@@ -42,18 +43,22 @@ public class MenuService {
         return MenuResponse.from(menuRepository.save(savedMenu));
     }
 
-    private List<MenuProduct> findMenuProducts(List<MenuProductRequest> menuProducts) {
-        return menuProducts.stream()
-                .map(menuProductRequest ->
-                        MenuProduct.of(productService
-                                .findProductById(menuProductRequest.getProductId()), menuProductRequest.getQuantity()))
-                .collect(Collectors.toList());
+    public long countByIdIn(List<Long> ids) {
+        return menuRepository.countByIdIn(ids);
     }
 
     public List<MenuResponse> list() {
         final List<Menu> menus = menuRepository.findAll();
         return menus.stream()
                 .map(MenuResponse::from)
+                .collect(Collectors.toList());
+    }
+
+    private List<MenuProduct> findMenuProducts(List<MenuProductRequest> menuProducts) {
+        return menuProducts.stream()
+                .map(menuProductRequest ->
+                        MenuProduct.of(productService
+                                .findProductById(menuProductRequest.getProductId()), menuProductRequest.getQuantity()))
                 .collect(Collectors.toList());
     }
 }
