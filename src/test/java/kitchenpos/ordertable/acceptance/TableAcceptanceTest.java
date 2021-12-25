@@ -7,12 +7,11 @@ import java.util.List;
 import kitchenpos.common.AcceptanceTest;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
-import kitchenpos.ordertable.testfixtures.TableAcceptanceFixtures;
+import kitchenpos.ordertable.testfixtures.acceptance.TableAcceptanceFixtures;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 
 
 public class TableAcceptanceTest extends AcceptanceTest {
@@ -29,8 +28,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
         //then
         테이블_생성_정상_확인(테이블_생성_결과);
     }
-
-    @Transactional
+    
     @DisplayName("주문테이블 전체 조회")
     @Test
     void list() {
@@ -48,7 +46,6 @@ public class TableAcceptanceTest extends AcceptanceTest {
         조회목록_정상(조회_결과, Arrays.asList(첫번째_테이블, 두번째_테이블));
     }
 
-    @Transactional
     @DisplayName("주문테이블 상태 변경")
     @Test
     void changeOrderClose() {
@@ -66,7 +63,6 @@ public class TableAcceptanceTest extends AcceptanceTest {
         상태변경_확인(변경_결과, 주문종료_상태로_변경);
     }
 
-    @Transactional
     @DisplayName("방문자수 변경 변경")
     @Test
     void changeNumberOfGuests() {

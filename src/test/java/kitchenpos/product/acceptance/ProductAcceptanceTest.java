@@ -13,7 +13,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 
 
 public class ProductAcceptanceTest extends AcceptanceTest {
@@ -32,8 +31,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
         상품_생성_정상_확인(양념치킨_생성_결과);
         상품_생성_세부내용_확인(양념치킨_생성_결과, 양념치킨_정보);
     }
-
-    @Transactional
+    
     @DisplayName("상품 조회")
     @Test
     void list() {
