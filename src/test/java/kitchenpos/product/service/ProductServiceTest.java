@@ -1,10 +1,12 @@
-package kitchenpos.menu.service;
+package kitchenpos.product.service;
 
-import kitchenpos.application.ProductService;
-import kitchenpos.dao.ProductDao;
-import kitchenpos.domain.Product;
+import kitchenpos.common.exception.IllegalArgumentException;
 import kitchenpos.menu.MenuFactory;
-import org.junit.jupiter.api.BeforeEach;
+import kitchenpos.product.application.ProductService;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,7 +14,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
@@ -28,30 +29,26 @@ public class ProductServiceTest {
     ProductService productService;
 
     @Mock
-    ProductDao productDao;
-
-    private Product 치킨;
-
-    @BeforeEach
-    void setUp() {
-        치킨 = MenuFactory.ofProduct("치킨", 3500);
-    }
+    ProductRepository productRepository;
 
     @DisplayName("상품을 생성한다.")
     @Test
     void 상품_생성() {
         // given
-        Product expected = MenuFactory.ofProduct(1L, "치킨", 3500);
-        given(productDao.save(치킨)).willReturn(expected);
+        final String name = "치킨";
+        final int price = 3500;
+        ProductRequest 치킨_상품 = MenuFactory.ofProductRequest(name, price);
+        ProductResponse expected = MenuFactory.ofProductResponse(1L, name, price);
+        given(productRepository.save(치킨_상품.toProduct())).willReturn(MenuFactory.ofProduct(1L, name, price));
 
         // when
-        Product response = productService.create(치킨);
+        ProductResponse response = productService.create(치킨_상품);
 
         // then
         assertAll(
                 () -> assertThat(response.getId()).isEqualTo(expected.getId()),
-                () -> assertThat(response.getName()).isEqualTo(치킨.getName()),
-                () -> assertThat(response.getPrice()).isEqualTo(치킨.getPrice())
+                () -> assertThat(response.getName()).isEqualTo(치킨_상품.getName()),
+                () -> assertThat(response.getPrice()).isEqualTo(치킨_상품.getPrice())
         );
     }
 
@@ -59,23 +56,12 @@ public class ProductServiceTest {
     @Test
     void 상품_생성_가격_0원_미만_예외() {
         // given
-        치킨.setPrice(BigDecimal.valueOf(-1));
+        final String name = "치킨";
+        final int price = -1;
+        ProductRequest 치킨_상품 = MenuFactory.ofProductRequest(name, price);
 
         // when
-        Throwable thrown = catchThrowable(() -> productService.create(치킨));
-
-        // then
-        assertThat(thrown).isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("상품 생성 시 가격이 null 값이 입력되면 안된다.")
-    @Test
-    void 상품_생성_가격_null_예외() {
-        // given
-        치킨.setPrice(null);
-
-        // when
-        Throwable thrown = catchThrowable(() -> productService.create(치킨));
+        Throwable thrown = catchThrowable(() -> productService.create(치킨_상품));
 
         // then
         assertThat(thrown).isInstanceOf(IllegalArgumentException.class);
@@ -87,12 +73,12 @@ public class ProductServiceTest {
         // given
         Product 치킨_예상결과 = MenuFactory.ofProduct(1L, "치킨", 3500);
         Product 콜라_예상결과 = MenuFactory.ofProduct(2L, "콜라", 500);
-        given(productDao.findAll()).willReturn(Arrays.asList(치킨_예상결과, 콜라_예상결과));
+        given(productRepository.findAll()).willReturn(Arrays.asList(치킨_예상결과, 콜라_예상결과));
 
         // when
-        List<Product> response = productService.list();
+        List<ProductResponse> response = productService.list();
 
         // then
-        assertThat(response).containsExactly(치킨_예상결과, 콜라_예상결과);
+        assertThat(response).containsExactly(ProductResponse.of(치킨_예상결과), ProductResponse.of(콜라_예상결과));
     }
 }

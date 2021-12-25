@@ -1,16 +1,15 @@
-package kitchenpos.menu.acceptance;
+package kitchenpos.product.acceptance;
 
-import io.restassured.RestAssured;
 import io.restassured.http.Method;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.Product;
+import kitchenpos.common.acceptance.AcceptanceTest;
 import kitchenpos.menu.MenuFactory;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -21,7 +20,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
     @Test
     void createProduct() {
         // given
-        Product 치킨 = MenuFactory.ofProduct("치킨", 35000);
+        ProductRequest 치킨 = MenuFactory.ofProductRequest("치킨", 35000);
 
         // when
         ExtractableResponse<Response> response = 상품_생성_요청(치킨);
@@ -40,11 +39,16 @@ public class ProductAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    private ExtractableResponse<Response> 상품_생성_요청(Product product) {
-        return ofRequest(Method.POST, "/api/products", product);
+    private static ExtractableResponse<Response> 상품_생성_요청(ProductRequest productRequest) {
+        return ofRequest(Method.POST, "/api/products", productRequest);
     }
 
     private ExtractableResponse<Response> 상품_목록_조회됨() {
         return ofRequest(Method.GET, "/api/products");
+    }
+
+    public static ProductResponse 상품_생성됨(ProductRequest productRequest) {
+        return 상품_생성_요청(productRequest)
+                .as(ProductResponse.class);
     }
 }
