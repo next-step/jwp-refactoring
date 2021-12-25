@@ -56,20 +56,5 @@ public class TableService {
                 .orElseThrow(IllegalArgumentException::new);
     }
 
-    public List<OrderTable> getOrderTable(List<OrderTableIdRequest> orderTableIdRequests) {
-        if (CollectionUtils.isEmpty(orderTableIdRequests) || orderTableIdRequests.size() < 2) {
-            throw new IllegalArgumentException();
-        }
 
-        final List<Long> orderTableIds = orderTableIdRequests.stream()
-                .map(OrderTableIdRequest::getId)
-                .collect(Collectors.toList());
-
-        final List<OrderTable> savedOrderTables = orderTableRepository.findAllByIdIn(orderTableIds);
-
-        if (orderTableIdRequests.size() != savedOrderTables.size()) {
-            throw new IllegalArgumentException();
-        }
-        return savedOrderTables;
-    }
 }

@@ -92,18 +92,18 @@
 
 ### 3단계 - 의존성 리팩터링
 
-* Menu
+* [x] Menu
   * MenuGroup 간접참조
   * MenuProduct 직접참조
-* MenuGroup
+* [x] MenuGroup
   * 없음
-* MenuProduct
+* [x] MenuProduct
   * Menu 참조제거
   * Product 간접참조
-* Product
+* [x] Product
   * 없음
 * TableGroup
-  * OrderTable 직접참조
+  * OrderTable 참조제거
 * OrderTable
   * TableGroup 간접참조
   * Orders 직접참조
@@ -117,4 +117,5 @@
 * [ ] EventHandler 를 사용하여 의존성객체를 리팩터링
 * [x] MenuService
 * [x] MenuGroupService
+* [ ] TableService
 * [ ] TableGroupService

@@ -11,8 +11,8 @@ public class OrderTable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    private TableGroup tableGroup;
+    @JoinColumn(name = "table_group_id", foreignKey = @ForeignKey(name = "fk_order_table_table_group"))
+    private Long tableGroupId;
 
     @Column(nullable = false)
     private int numberOfGuests;
@@ -53,13 +53,8 @@ public class OrderTable {
     }
 
     public void ungroup() {
-        validateCompletion();
-        updateTableGroup(null);
-    }
-
-    public void updateTableGroup(TableGroup tableGroup) {
+        this.tableGroupId = null;
         this.empty = false;
-        this.tableGroup = tableGroup;
     }
 
     public void addOrders(List<Order> addOrders) {
@@ -70,15 +65,16 @@ public class OrderTable {
                 });
     }
 
+    public void group(Long tableGroupId) {
+        this.tableGroupId = tableGroupId;
+    }
+
     public Long getId() {
         return id;
     }
 
     public Long getTableGroupId() {
-        if (tableGroup == null) {
-            return null;
-        }
-        return tableGroup.getId();
+       return tableGroupId;
     }
 
     public int getNumberOfGuests() {
@@ -92,4 +88,5 @@ public class OrderTable {
     public List<Order> getOrders() {
         return orders.getOrders();
     }
+
 }

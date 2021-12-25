@@ -1,36 +1,38 @@
 package kitchenpos.tableGroup.application;
 
-import kitchenpos.order.application.TableService;
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.tableGroup.domain.TableGroup;
 import kitchenpos.tableGroup.domain.TableGroupRepository;
 import kitchenpos.tableGroup.dto.TableGroupRequest;
 import kitchenpos.tableGroup.dto.TableGroupResponse;
+import kitchenpos.tableGroup.event.OrderTableGroupEvent;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
 public class TableGroupService {
-    private final TableService tableService;
+    private final TableGroupValidator tableGroupValidator;
     private final TableGroupRepository tableGroupRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
-    public TableGroupService(final TableService tableService, final TableGroupRepository tableGroupRepository) {
-        this.tableService = tableService;
+    public TableGroupService(final TableGroupValidator tableGroupValidator,
+                             final TableGroupRepository tableGroupRepository,
+                             final ApplicationEventPublisher eventPublisher) {
+        this.tableGroupValidator = tableGroupValidator;
         this.tableGroupRepository = tableGroupRepository;
+        this.eventPublisher = eventPublisher;
     }
 
     @Transactional
     public TableGroupResponse create(TableGroupRequest request) {
-        final List<OrderTable> orderTables = tableService.getOrderTable(request.getOrderTables());
-        final TableGroup tableGroup = new TableGroup(orderTables);
-        final TableGroup savedTableGroup = tableGroupRepository.save(tableGroup);
-        return TableGroupResponse.from(savedTableGroup);
+        final List<OrderTable> orderTables = tableGroupValidator.getOrderTable(request.getOrderTables());
+        final TableGroup saved = tableGroupRepository.save(TableGroup.empty());
+        eventPublisher.publishEvent(OrderTableGroupEvent.from(saved.getId(), orderTables));
+        return TableGroupResponse.of(saved, orderTables);
     }
 
     @Transactional
@@ -38,12 +40,14 @@ public class TableGroupService {
         final TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
                 .orElseThrow(IllegalArgumentException::new);
 
-        tableGroup.ungroup();
+        //tableGroup.ungroup();
+
+        //이벤트로 보내준다.?
+        //eventPublisher.publishEvent(new OrderTableEvent(tableGroup));
+
 
         tableGroupRepository.delete(tableGroup);
     }
-
-
 
 
 }

@@ -114,15 +114,4 @@ public class TableServiceTest {
                 () -> tableService.changeNumberOfGuests(any(), OrderTableFixture.생성_Request(-10,true))
          ).isInstanceOf(IllegalArgumentException.class);
     }
-
-    @DisplayName("단체 지정 할 때 주문 테이블이 2개 이상이여야 한다.")
-    @Test
-    void createOrderTableSizeError() {
-        OrderTableIdRequest 테이블요청 = new OrderTableIdRequest(1L);
-
-        assertThatThrownBy(
-                () -> tableService.getOrderTable(Arrays.asList(테이블요청))
-        ).isInstanceOf(IllegalArgumentException.class);
-    }
-
 }

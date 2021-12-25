@@ -29,7 +29,7 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 public class TableGroupServiceTest {
     @Mock
-    private TableService tableService;
+    private TableGroupValidator tableGroupValidator;
 
     @Mock
     private TableGroupRepository tableGroupRepository;
@@ -47,13 +47,13 @@ public class TableGroupServiceTest {
         테이블1번 = OrderTableFixture.생성(0,true);
         테이블2번 = OrderTableFixture.생성(0,true);
 
-        단체_지정 = new TableGroup(Arrays.asList(테이블1번, 테이블2번));
+        단체_지정 = TableGroup.empty();
     }
 
     @DisplayName("단체 지정을 주문 테이블 목록 으로 등록 할 수 있다.")
     @Test
     void create() {
-        given(tableService.getOrderTable(any())).willReturn(Arrays.asList(테이블1번, 테이블2번));
+        given(tableGroupValidator.getOrderTable(any())).willReturn(Arrays.asList(테이블1번, 테이블2번));
         given(tableGroupRepository.save(any())).willReturn(단체_지정);
 
         TableGroupResponse create = tableGroupService.create(TableGroupFixture.샘플_Request());
@@ -71,7 +71,7 @@ public class TableGroupServiceTest {
         OrderTableIdRequest 테이블요청 = new OrderTableIdRequest(1L);
         OrderTable 테이블 = OrderTableFixture.생성(0,false);
         TableGroupRequest 단체_지정_주문테이블1개_Request = TableGroupFixture.생성_Request(Arrays.asList(테이블요청));
-        given(tableService.getOrderTable(any())).willThrow(IllegalArgumentException.class);
+        given(tableGroupValidator.getOrderTable(any())).willThrow(IllegalArgumentException.class);
 
         assertThatThrownBy(
                 () -> tableGroupService.create(단체_지정_주문테이블1개_Request)
@@ -83,7 +83,7 @@ public class TableGroupServiceTest {
     void ungroup() {
         OrderTable 테이블3번 = OrderTableFixture.생성(0,true);
         OrderTable 테이블4번 = OrderTableFixture.생성(0,true);
-        TableGroup 단체_지정 = new TableGroup(Arrays.asList(테이블3번, 테이블4번));
+        TableGroup 단체_지정 = TableGroup.empty();
         given(tableGroupRepository.findById(any())).willReturn(java.util.Optional.of(단체_지정));
 
         tableGroupService.ungroup(단체_지정.getId());
@@ -101,7 +101,7 @@ public class TableGroupServiceTest {
         OrderTable 테이블4번 = OrderTableFixture.생성(0,true);
         Order order = OrderFixture.생성(테이블3번);
         테이블3번.addOrders(Arrays.asList(order));
-        TableGroup 단체_지정 = new TableGroup(Arrays.asList(테이블3번, 테이블4번));
+        TableGroup 단체_지정 = TableGroup.empty();
 
         given(tableGroupRepository.findById(any())).willReturn(java.util.Optional.of(단체_지정));
 
