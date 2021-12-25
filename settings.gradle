@@ -3,4 +3,5 @@ include 'module-common'
 include 'module-menu'
 include 'module-order'
 include 'module-web'
+include 'module-api'
 
