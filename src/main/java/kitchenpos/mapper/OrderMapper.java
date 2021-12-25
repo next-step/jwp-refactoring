@@ -12,7 +12,7 @@ public class OrderMapper {
     }
 
     public static OrderResponse toOrderResponse(Order order) {
-        return new OrderResponse(order.getId(), order.getOrderTable().getId(), order.getOrderStatus().name(), null, getOrderLineIte(order));
+        return new OrderResponse(order.getId(), order.getOrderTable().getId(), order.getOrderStatus().name(), order.getCreatedDate(), getOrderLineIte(order));
     }
 
     public static List<OrderResponse> toOrderResponses(List<Order> orders) {
