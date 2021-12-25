@@ -1,6 +1,8 @@
 package kitchenpos.domain;
 
-import kitchenpos.exception.NegativePriceException;
+import kitchenpos.product.domain.Price;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.exception.NegativePriceException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

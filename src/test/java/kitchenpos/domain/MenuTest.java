@@ -1,8 +1,14 @@
 package kitchenpos.domain;
 
-import kitchenpos.exception.IllegalMenuPriceException;
-import kitchenpos.exception.NegativePriceException;
-import kitchenpos.exception.NoMenuGroupException;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProducts;
+import kitchenpos.menu.exception.IllegalMenuPriceException;
+import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.product.domain.Price;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.exception.NegativePriceException;
+import kitchenpos.menugroup.exception.NoMenuGroupException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -22,7 +28,7 @@ class MenuTest {
     @Test
     void sumPriceTest() {
         Product 후라이드치킨 = new Product("후라이드치킨", Price.from(16_000));
-        MenuProducts menuProducts = new MenuProducts(Collections.singletonList(new MenuProduct(1L, null, 후라이드치킨, 1)));
+        MenuProducts menuProducts = new MenuProducts(Collections.singletonList(new MenuProduct(후라이드치킨, 1)));
         assertThatThrownBy(() -> new Menu("후라이드치킨", Price.from(19_000), new MenuGroup(), menuProducts)).isInstanceOf(IllegalMenuPriceException.class);
     }
 
@@ -31,7 +37,7 @@ class MenuTest {
     void negativePriceTest() {
         // then
         Product 후라이드치킨 = new Product("후라이드치킨", Price.from(16_000));
-        MenuProducts menuProducts = new MenuProducts(Collections.singletonList(new MenuProduct(1L, null, 후라이드치킨, 1)));
+        MenuProducts menuProducts = new MenuProducts(Collections.singletonList(new MenuProduct(후라이드치킨, 1)));
         assertThatThrownBy(() -> new Menu("후라이드치킨", Price.from(-1_000), new MenuGroup(), menuProducts)).isInstanceOf(NegativePriceException.class);
     }
 }

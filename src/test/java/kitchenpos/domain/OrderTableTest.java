@@ -1,8 +1,12 @@
 package kitchenpos.domain;
 
-import kitchenpos.exception.CannotChangeEmptyException;
-import kitchenpos.exception.CannotChangeNumberOfGuestsException;
-import kitchenpos.exception.NegativeNumberOfGuestsException;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.exception.CannotChangeEmptyException;
+import kitchenpos.table.exception.CannotChangeNumberOfGuestsException;
+import kitchenpos.order.exception.NegativeNumberOfGuestsException;
+import kitchenpos.tablegroup.domain.TableGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -42,7 +46,7 @@ class OrderTableTest {
     void changeNumberOfGuestsTest() {
         // given
         OrderTable orderTable = new OrderTable(null, 1, false);
-        orderTable.setNumberOfGuests(10);
+        orderTable.changeNumberOfGuests(10);
 
         // then
         assertThat(orderTable.getNumberOfGuests()).isEqualTo(10);
@@ -55,7 +59,7 @@ class OrderTableTest {
         OrderTable orderTable = new OrderTable(null, 1, false);
 
         // then
-        assertThatThrownBy(() -> orderTable.setNumberOfGuests(-1)).isInstanceOf(NegativeNumberOfGuestsException.class);
+        assertThatThrownBy(() -> orderTable.changeNumberOfGuests(-1)).isInstanceOf(NegativeNumberOfGuestsException.class);
     }
 
     @DisplayName("빈 테이블의 손님 숫자를 지정할 수 없다")
@@ -65,6 +69,6 @@ class OrderTableTest {
         OrderTable orderTable = new OrderTable(null, 1, true);
 
         // then
-        assertThatThrownBy(() -> orderTable.setNumberOfGuests(10)).isInstanceOf(CannotChangeNumberOfGuestsException.class);
+        assertThatThrownBy(() -> orderTable.changeNumberOfGuests(10)).isInstanceOf(CannotChangeNumberOfGuestsException.class);
     }
 }

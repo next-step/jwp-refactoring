@@ -1,16 +1,17 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderRepository;
-import kitchenpos.dao.OrderTableRepository;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
-import kitchenpos.dto.OrderTableRequest;
-import kitchenpos.dto.OrderTableResponse;
-import kitchenpos.exception.CannotChangeEmptyException;
-import kitchenpos.exception.CannotChangeNumberOfGuestsException;
-import kitchenpos.exception.NegativeNumberOfGuestsException;
+import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.table.application.TableService;
+import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.table.exception.CannotChangeEmptyException;
+import kitchenpos.table.exception.CannotChangeNumberOfGuestsException;
+import kitchenpos.order.exception.NegativeNumberOfGuestsException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -45,7 +46,7 @@ class TableServiceTest {
         when(orderTableRepository.findById(1L)).thenReturn(java.util.Optional.ofNullable(orderTable));
 
         // when
-        TableService tableService = new TableService(orderRepository, orderTableRepository);
+        TableService tableService = new TableService(orderTableRepository);
         OrderTableResponse returnedOrderTable = tableService.changeEmpty(1L, orderTableRequest);
 
         assertThat(returnedOrderTable.isEmpty()).isTrue();
@@ -60,7 +61,7 @@ class TableServiceTest {
         OrderTableRequest orderTableRequest = new OrderTableRequest(1, true);
 
         // when
-        TableService tableService = new TableService(orderRepository, orderTableRepository);
+        TableService tableService = new TableService(orderTableRepository);
 
         // then
         assertThatThrownBy(() -> tableService.changeEmpty(1L, orderTableRequest)).isInstanceOf(CannotChangeEmptyException.class);
@@ -75,7 +76,7 @@ class TableServiceTest {
         when(orderTableRepository.findById(1L)).thenReturn(java.util.Optional.ofNullable(orderTable));
 
         // when
-        TableService tableService = new TableService(orderRepository, orderTableRepository);
+        TableService tableService = new TableService(orderTableRepository);
 
         // then
         assertThatThrownBy(() -> tableService.changeEmpty(1L, orderTableRequest)).isInstanceOf(CannotChangeEmptyException.class);
@@ -89,7 +90,7 @@ class TableServiceTest {
         when(orderTableRepository.findById(1L)).thenReturn(java.util.Optional.ofNullable(orderTable));
 
         // when
-        TableService tableService = new TableService(orderRepository, orderTableRepository);
+        TableService tableService = new TableService(orderTableRepository);
         OrderTableResponse returnedOrderTable = tableService.changeNumberOfGuests(1L, orderTableRequest);
 
         // then
@@ -104,7 +105,7 @@ class TableServiceTest {
         when(orderTableRepository.findById(1L)).thenReturn(java.util.Optional.ofNullable(orderTable));
 
         // when
-        TableService tableService = new TableService(orderRepository, orderTableRepository);
+        TableService tableService = new TableService(orderTableRepository);
 
         // then
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, orderTableRequest)).isInstanceOf(NegativeNumberOfGuestsException.class);
@@ -118,7 +119,7 @@ class TableServiceTest {
         OrderTableRequest orderTableRequest = new OrderTableRequest(2, true);
         when(orderTableRepository.findById(1L)).thenReturn(java.util.Optional.ofNullable(orderTable));
         // when
-        TableService tableService = new TableService(orderRepository, orderTableRepository);
+        TableService tableService = new TableService(orderTableRepository);
 
         // then
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, orderTableRequest)).isInstanceOf(CannotChangeNumberOfGuestsException.class);
