@@ -1,4 +1,4 @@
-package kitchenpos.order.application;
+package kitchenpos.ordertable.application;
 
 import static kitchenpos.common.exception.ExceptionMessage.*;
 
@@ -9,10 +9,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import kitchenpos.common.exception.NotFoundException;
-import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.dto.OrderTableRequest;
-import kitchenpos.order.dto.OrderTableResponse;
-import kitchenpos.order.repository.OrderTableRepository;
+import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.dto.OrderTableRequest;
+import kitchenpos.ordertable.dto.OrderTableResponse;
+import kitchenpos.ordertable.repository.OrderTableRepository;
 
 @Service
 public class TableService {

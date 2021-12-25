@@ -11,6 +11,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import kitchenpos.common.exception.BadRequestException;
+import kitchenpos.ordertable.domain.OrderTable;
 
 class OrderTest {
 

@@ -1,4 +1,4 @@
-package kitchenpos.order.domain;
+package kitchenpos.ordertable.domain;
 
 import static kitchenpos.common.exception.ExceptionMessage.*;
 
@@ -10,8 +10,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import kitchenpos.common.exception.BadRequestException;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.repository.OrderRepository;
-import kitchenpos.order.repository.OrderTableRepository;
+import kitchenpos.ordertable.repository.OrderTableRepository;
 
 @Component
 public class TableGroupValidator {

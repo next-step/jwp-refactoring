@@ -21,7 +21,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import kitchenpos.common.exception.BadRequestException;
 import kitchenpos.common.exception.ExceptionMessage;
 import kitchenpos.order.repository.OrderRepository;
-import kitchenpos.order.repository.OrderTableRepository;
+import kitchenpos.ordertable.repository.OrderTableRepository;
+import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.domain.TableGroupValidator;
 
 @ExtendWith(MockitoExtension.class)
 class TableGroupValidatorTest {

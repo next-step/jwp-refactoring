@@ -1,4 +1,4 @@
-package kitchenpos.order.domain;
+package kitchenpos.ordertable.domain;
 
 import java.util.List;
 
@@ -6,7 +6,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import kitchenpos.order.repository.OrderTableRepository;
+import kitchenpos.ordertable.repository.OrderTableRepository;
 
 @Component
 public class TableGroupEventHandler {

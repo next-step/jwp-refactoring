@@ -19,9 +19,9 @@ import io.restassured.mapper.TypeRef;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.order.dto.OrderTableRequest;
-import kitchenpos.order.dto.OrderTableResponse;
-import kitchenpos.order.dto.TableGroupRequest;
+import kitchenpos.ordertable.dto.OrderTableRequest;
+import kitchenpos.ordertable.dto.OrderTableResponse;
+import kitchenpos.ordertable.dto.TableGroupRequest;
 
 @DisplayName("주문 테이블 관련 기능")
 class TableAcceptanceTest extends AcceptanceTest {
