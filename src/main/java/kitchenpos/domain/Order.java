@@ -15,7 +15,7 @@ public class Order {
     private OrderTable orderTable;
 
     @Enumerated(EnumType.STRING)
-    private String orderStatus;
+    private OrderStatus orderStatus;
 
     private LocalDateTime orderedTime;
 
@@ -25,7 +25,7 @@ public class Order {
     public Order() {
     }
 
-    private Order(Long id, OrderTable orderTable, String orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
+    private Order(Long id, OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
         this.id = id;
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
@@ -33,7 +33,7 @@ public class Order {
         this.orderLineItems = orderLineItems;
     }
 
-    public static Order of(Long id, OrderTable orderTable, String orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
+    public static Order of(Long id, OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
         return new Order(id, orderTable, orderStatus, orderedTime, orderLineItems);
     }
 
@@ -54,11 +54,7 @@ public class Order {
     }
 
     public String getOrderStatus() {
-        return orderStatus;
-    }
-
-    public void setOrderStatus(final String orderStatus) {
-        this.orderStatus = orderStatus;
+        return orderStatus.name();
     }
 
     public LocalDateTime getOrderedTime() {

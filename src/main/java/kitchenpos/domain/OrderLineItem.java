@@ -17,7 +17,7 @@ public class OrderLineItem {
     @JoinColumn(name = "menu_id", nullable = false)
     private Menu menu;
 
-    private long quantity;
+    private Quantity quantity;
 
     public OrderLineItem() {
     }
@@ -26,7 +26,7 @@ public class OrderLineItem {
         this.seq = seq;
         this.order = order;
         this.menu = menu;
-        this.quantity = quantity;
+        this.quantity = Quantity.of(quantity);
     }
 
     public static OrderLineItem of(Long seq, Order order, Menu menu, long quantity) {
@@ -58,10 +58,10 @@ public class OrderLineItem {
     }
 
     public long getQuantity() {
-        return quantity;
+        return quantity.getQuantity();
     }
 
     public void setQuantity(final long quantity) {
-        this.quantity = quantity;
+        this.quantity = Quantity.of(quantity);
     }
 }

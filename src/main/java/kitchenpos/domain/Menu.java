@@ -10,9 +10,11 @@ public class Menu {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String name;
-    private BigDecimal price;
+    @Embedded
+    private Name name;
+
+    @Embedded
+    private Price price;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "menu_group_id", nullable = false)
@@ -27,8 +29,8 @@ public class Menu {
 
     private Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
         this.id = id;
-        this.name = name;
-        this.price = price;
+        this.name = Name.of(name);
+        this.price = Price.of(price);
         this.menuGroup = menuGroup;
         this.menuProducts = menuProducts;
     }
@@ -46,19 +48,19 @@ public class Menu {
     }
 
     public String getName() {
-        return name;
+        return name.getName();
     }
 
     public void setName(final String name) {
-        this.name = name;
+        this.name = Name.of(name);
     }
 
     public BigDecimal getPrice() {
-        return price;
+        return price.getPrice();
     }
 
     public void setPrice(final BigDecimal price) {
-        this.price = price;
+        this.price = Price.of(price);
     }
 
     public Long getMenuGroupId() {
