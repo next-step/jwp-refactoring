@@ -15,6 +15,10 @@ public class ProductResponse {
         this.price = price.getPrice();
     }
 
+    public static ProductResponse from(Product savedProduct) {
+        return new ProductResponse(savedProduct.getName(), savedProduct.getPrice());
+    }
+
     public Long getId() {
         return id;
     }
@@ -25,9 +29,5 @@ public class ProductResponse {
 
     public BigDecimal getPrice() {
         return price;
-    }
-
-    public static ProductResponse from(Product savedProduct) {
-        return new ProductResponse(savedProduct.getName(), savedProduct.getPrice());
     }
 }

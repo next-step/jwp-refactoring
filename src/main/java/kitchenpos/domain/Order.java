@@ -1,10 +1,8 @@
 package kitchenpos.domain;
 
 import kitchenpos.exception.CannotProgressException;
-import kitchenpos.exception.NoOrderLineItemException;
 import kitchenpos.exception.NoOrderTableException;
 
-import javax.naming.CannotProceedException;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Objects;

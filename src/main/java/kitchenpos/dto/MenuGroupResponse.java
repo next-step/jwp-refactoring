@@ -1,9 +1,5 @@
 package kitchenpos.dto;
 
-import kitchenpos.domain.MenuGroup;
-
-import java.util.List;
-
 public class MenuGroupResponse {
     private Long id;
     private String name;

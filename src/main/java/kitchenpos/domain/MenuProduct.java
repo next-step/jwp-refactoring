@@ -40,6 +40,10 @@ public class MenuProduct {
         return menu;
     }
 
+    public void setMenu(Menu menu) {
+        this.menu = menu;
+    }
+
     public Product getProduct() {
         return product;
     }
@@ -54,9 +58,5 @@ public class MenuProduct {
 
     public void setQuantity(final long quantity) {
         this.quantity = quantity;
-    }
-
-    public void setMenu(Menu menu) {
-        this.menu = menu;
     }
 }

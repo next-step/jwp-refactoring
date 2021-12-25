@@ -1,10 +1,7 @@
 package kitchenpos.application;
 
 import kitchenpos.dao.ProductRepository;
-import kitchenpos.domain.Price;
-import kitchenpos.domain.Product;
 import kitchenpos.dto.ProductRequest;
-import kitchenpos.exception.NegativePriceException;
 import kitchenpos.exception.NullPriceException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -14,13 +11,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {

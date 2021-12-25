@@ -1,12 +1,9 @@
 package kitchenpos.domain;
 
-import com.sun.istack.NotNull;
 import kitchenpos.exception.IllegalMenuPriceException;
 import kitchenpos.exception.NoMenuGroupException;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
-import java.util.List;
 
 @Entity
 public class Menu {
