@@ -34,7 +34,10 @@ public class OrderResponse {
 			OrderTableResponse.of(order.getOrderTable()),
 			order.getOrderStatus(),
 			order.getOrderedTime(),
-			order.getOrderLineItems().stream().map(OrderLineItemResponse::of).collect(Collectors.toList())
+			order.getOrderLineItems()
+				.stream()
+				.map(OrderLineItemResponse::of)
+				.collect(Collectors.toList())
 		);
 	}
 

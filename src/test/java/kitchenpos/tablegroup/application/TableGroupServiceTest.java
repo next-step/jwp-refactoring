@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -18,7 +17,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.order.application.OrderService;
-import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.ordertable.exception.NotFoundOrderTableException;
@@ -56,7 +54,9 @@ class TableGroupServiceTest {
 		given(orderTableRepository.findAllById(any())).willReturn(주문테이블_목록);
 		given(tableGroupRepository.save(any())).willReturn(그룹);
 
-		final List<Long> 주문테이블_ID목록 = 주문테이블_목록.stream().map(OrderTable::getId).collect(Collectors.toList());
+		final List<Long> 주문테이블_ID목록 = 주문테이블_목록.stream()
+			.map(OrderTable::getId)
+			.collect(Collectors.toList());
 		final TableGroupResponse createdTableGroup = tableGroupService.create(
 			TableGroupAddRequest.of(주문테이블_ID목록)
 		);

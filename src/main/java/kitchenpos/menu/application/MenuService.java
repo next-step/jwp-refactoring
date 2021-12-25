@@ -78,6 +78,8 @@ public class MenuService {
 	@Transactional(readOnly = true)
 	public List<MenuResponse> list() {
 		final List<Menu> menus = menuRepository.findAll();
-		return menus.stream().map(MenuResponse::of).collect(Collectors.toList());
+		return menus.stream()
+			.map(MenuResponse::of)
+			.collect(Collectors.toList());
 	}
 }
