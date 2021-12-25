@@ -11,16 +11,13 @@ import org.junit.jupiter.api.Test;
 import org.opentest4j.MultipleFailuresError;
 
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.acceptance.Fixture;
 import kitchenpos.common.testassistance.config.TestConfig;
 import kitchenpos.menu.dto.MenuDto;
 import kitchenpos.order.dto.OrderDto;
 import kitchenpos.order.dto.OrderLineItemDto;
-import kitchenpos.order.presentation.OrderRestControllerTest;
 import kitchenpos.table.dto.OrderTableDto;
 import kitchenpos.tablegroup.dto.TableGroupDto;
-import kitchenpos.menu.presentation.MenuRestControllerTest;
-import kitchenpos.table.presentation.TableRestControllerTest;
-import kitchenpos.tablegroup.presentation.TableGroupRestControllerTest;
 
 public class KitchenposOrderAcceptanceTest extends TestConfig {
     @DisplayName("한테이블대한 손님들이 음식을 주문한다.")
@@ -30,7 +27,7 @@ public class KitchenposOrderAcceptanceTest extends TestConfig {
         OrderTableDto 손님있는_테이블 = 테이블에_손님이앉음(2);
 
         // when
-        MenuDto[] 메뉴들 = MenuRestControllerTest.메뉴_조회요청().as(MenuDto[].class);
+        MenuDto[] 메뉴들 = Fixture.메뉴_조회요청().as(MenuDto[].class);
         List<OrderLineItemDto> 주문명세서 = 주문명세서_생성(List.of(메뉴들[0], 메뉴들[1]));
         OrderDto 주문 = 테이블_주문요청(손님있는_테이블, 주문명세서);
 
@@ -47,9 +44,9 @@ public class KitchenposOrderAcceptanceTest extends TestConfig {
 
         TableGroupDto 단체결제지정 = TableGroupDto.of(List.of(손님있는_테이블1, 손님있는_테이블2));
 
-        TableGroupRestControllerTest.단체지정_저장요청(단체결제지정);
+        Fixture.단체지정_저장요청(단체결제지정);
 
-        MenuDto[] 메뉴들 = MenuRestControllerTest.메뉴_조회요청().as(MenuDto[].class);
+        MenuDto[] 메뉴들 = Fixture.메뉴_조회요청().as(MenuDto[].class);
 
         List<OrderLineItemDto> 주문명세서 = 주문명세서_생성(List.of(메뉴들[0], 메뉴들[1]));
 
@@ -69,7 +66,7 @@ public class KitchenposOrderAcceptanceTest extends TestConfig {
         OrderTableDto 손님있는_테이블 = 테이블에_손님이앉음(2);
 
         // when
-        MenuDto[] 메뉴들 = MenuRestControllerTest.메뉴_조회요청().as(MenuDto[].class);
+        MenuDto[] 메뉴들 = Fixture.메뉴_조회요청().as(MenuDto[].class);
         List<OrderLineItemDto> 주문명세서 = 주문명세서_생성(List.of(메뉴들[0], 메뉴들[1]));
         OrderDto 주문 = 테이블_주문요청(손님있는_테이블, 주문명세서);
 
@@ -78,7 +75,7 @@ public class KitchenposOrderAcceptanceTest extends TestConfig {
 
         // when
         주문.changeOrderStatus(OrderStatus.COMPLETION);
-        OrderDto 결재된_주문 = OrderRestControllerTest.주문_상태변경요청(주문).as(OrderDto.class);
+        OrderDto 결재된_주문 = Fixture.주문_상태변경요청(주문).as(OrderDto.class);
 
         // then
         Assertions.assertThat(결재된_주문.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION.name());
@@ -116,7 +113,7 @@ public class KitchenposOrderAcceptanceTest extends TestConfig {
         // when
         OrderDto 주문 = 주문_생성(orderTable, OrderSpecification);
 
-        return OrderRestControllerTest.주문_저장요청(주문).as(OrderDto.class);
+        return Fixture.주문_저장요청(주문).as(OrderDto.class);
     }
 
     private OrderDto 주문_생성(OrderTableDto orderTable, List<OrderLineItemDto> OrderSpecification) {
@@ -128,8 +125,8 @@ public class KitchenposOrderAcceptanceTest extends TestConfig {
 
         OrderTableDto 손님있는_테이블 = 손님있는_테이블_생성(numberOfGuests, 손님없는_테이블들);
 
-        손님있는_테이블 = TableRestControllerTest.주문테이블_빈테이블_변경요청(손님있는_테이블).as(OrderTableDto.class);
-        손님있는_테이블 = TableRestControllerTest.주문테이블_고객수_변경요청(손님있는_테이블).as(OrderTableDto.class);
+        손님있는_테이블 = Fixture.주문테이블_빈테이블_변경요청(손님있는_테이블).as(OrderTableDto.class);
+        손님있는_테이블 = Fixture.주문테이블_고객수_변경요청(손님있는_테이블).as(OrderTableDto.class);
 
         return 손님있는_테이블;
     }
@@ -142,7 +139,7 @@ public class KitchenposOrderAcceptanceTest extends TestConfig {
     }
 
     private List<OrderTableDto> 반테이블들_조회됨() {
-        return List.of(TableRestControllerTest.주문테이블_조회요청().as(OrderTableDto[].class)).stream()
+        return List.of(Fixture.주문테이블_조회요청().as(OrderTableDto[].class)).stream()
                     .filter(OrderTableDto::isEmpty)
                     .collect(Collectors.toList());
     }

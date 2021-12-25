@@ -1,7 +1,6 @@
 package kitchenpos.tablegroup.presentation;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -13,7 +12,6 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.table.dto.OrderTableDto;
-import kitchenpos.table.presentation.TableRestControllerTest;
 import kitchenpos.tablegroup.dto.TableGroupDto;
 import kitchenpos.common.testassistance.config.TestConfig;
 
@@ -55,9 +53,7 @@ public class TableGroupRestControllerTest extends TestConfig {
         return 단체지정_저장요청(tableGroup).as(TableGroupDto.class);
     }
     private List<OrderTableDto> 반테이블들_조회됨() {
-        return List.of(TableRestControllerTest.주문테이블_조회요청().as(OrderTableDto[].class)).stream()
-                                .filter(OrderTableDto::isEmpty)
-                                .collect(Collectors.toList());
+        return List.of(OrderTableDto.of(0));
     }
 
     private void 단체지정_저장됨(ExtractableResponse<Response> response) {

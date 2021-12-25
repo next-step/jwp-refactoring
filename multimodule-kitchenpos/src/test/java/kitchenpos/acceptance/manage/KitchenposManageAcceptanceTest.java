@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import kitchenpos.acceptance.Fixture;
 import kitchenpos.common.domain.Price;
 import kitchenpos.common.testassistance.config.TestConfig;
 import kitchenpos.product.domain.Product;
@@ -25,10 +26,6 @@ import kitchenpos.product.dto.ProductDto;
 import kitchenpos.table.dto.OrderTableDto;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.menu.presentation.MenuRestControllerTest;
-import kitchenpos.menugroup.presentation.MenuGroupRestControllerTest;
-import kitchenpos.product.presentation.ProductRestControllerTest;
-import kitchenpos.table.presentation.TableRestControllerTest;
 
 public class KitchenposManageAcceptanceTest extends TestConfig {
     private MenuGroup 사이드메뉴;
@@ -55,11 +52,11 @@ public class KitchenposManageAcceptanceTest extends TestConfig {
     @Test
     void addMenu_newGroup() {
         // when
-        MenuGroupDto 신메뉴그룹 = MenuGroupRestControllerTest.메뉴그룹_저장(MenuGroupDto.of(this.사이드메뉴)).as(MenuGroupDto.class);
+        MenuGroupDto 신메뉴그룹 = Fixture.메뉴그룹_저장(MenuGroupDto.of(this.사이드메뉴)).as(MenuGroupDto.class);
         List<MenuProductDto> 메뉴_상품패키지 = 제품팩키지_생성(List.of(ProductDto.of(this.참치맛감자튀김), ProductDto.of(this.고등어맛감자튀김)));
         
         MenuDto 신매뉴 = MenuDto.of("감튀세상",  BigDecimal.valueOf(3_000), 신메뉴그룹.getId(), 메뉴_상품패키지);
-        MenuDto 등록된_신메뉴 = MenuRestControllerTest.메뉴_저장요청(신매뉴).as(MenuDto.class);
+        MenuDto 등록된_신메뉴 = Fixture.메뉴_저장요청(신매뉴).as(MenuDto.class);
 
         // then
         메뉴_저장됨(신메뉴그룹, 등록된_신메뉴);
@@ -72,7 +69,7 @@ public class KitchenposManageAcceptanceTest extends TestConfig {
         OrderTableDto 신규_주문테이블 = 신규_주문테이블_생성();
 
         // when
-        ExtractableResponse<Response> response = TableRestControllerTest.주문테이블_저장요청(신규_주문테이블);
+        ExtractableResponse<Response> response = Fixture.주문테이블_저장요청(신규_주문테이블);
 
         // then
         신규_주문테이블_저장됨(response);
@@ -108,7 +105,7 @@ public class KitchenposManageAcceptanceTest extends TestConfig {
         List<MenuProductDto> productPackage = new ArrayList<>();
 
         for (ProductDto product : products) {
-            ProductDto createdProduct = ProductRestControllerTest.상품_저장요청(product).as(ProductDto.class);
+            ProductDto createdProduct = Fixture.상품_저장요청(product).as(ProductDto.class);
 
             MenuProductDto menuProduct = MenuProductDto.of(createdProduct.getId(), 1L);
             productPackage.add(menuProduct);
