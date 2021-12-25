@@ -4,14 +4,18 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
+import javax.persistence.ForeignKey;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import kitchenpos.exception.InvalidArgumentException;
 
 @Embeddable
 public class OrderTables {
+
     private static final Integer MIN_SIZE = 2;
 
-    @OneToMany(mappedBy = "tableGroup", cascade = CascadeType.PERSIST)
+    @OneToMany(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "table_group_id", foreignKey = @ForeignKey(name = "fk_order_table_table_group"))
     private List<OrderTable> orderTables = new ArrayList<>();
 
     protected OrderTables() {
@@ -23,29 +27,33 @@ public class OrderTables {
         }
     }
 
-    protected void remove(OrderTable orderTable) {
-        orderTables.remove(orderTable);
-    }
-
     public List<OrderTable> get() {
         return orderTables;
     }
 
     public void clearOrderTable() {
-        for (OrderTable orderTable: orderTables) {
-            orderTable.clearTableGroup();
+        for (OrderTable orderTable : orderTables) {
+            orderTable.validateOnGoingOrder();
         }
         orderTables = new ArrayList<>();
     }
 
-    public void validateAddTables(List<OrderTable> orderTables) {
+    public boolean isEmpty() {
+        return orderTables.isEmpty();
+    }
+
+    public void addOrderTables(List<OrderTable> orderTables) {
+        validateAddTables(orderTables);
+
+        for (OrderTable orderTable : orderTables) {
+            this.orderTables.add(orderTable.changeEmpty(false));
+        }
+    }
+
+    protected void validateAddTables(List<OrderTable> orderTables) {
         validateTableSize(orderTables);
         validateTableEmpty(orderTables);
         validateTableGroup(orderTables);
-    }
-
-    public boolean isEmpty() {
-        return orderTables.isEmpty();
     }
 
     private void validateTableSize(List<OrderTable> orderTables) {

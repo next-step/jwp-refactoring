@@ -1,5 +1,6 @@
 package kitchenpos.product.application;
 
+import java.util.List;
 import kitchenpos.exception.CannotCreateException;
 import kitchenpos.exception.InvalidArgumentException;
 import kitchenpos.product.domain.Product;
@@ -9,10 +10,9 @@ import kitchenpos.product.dto.ProductResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 @Service
 public class ProductService {
+
     private final ProductRepository productRepository;
 
     public ProductService(final ProductRepository productRepository) {
@@ -21,12 +21,14 @@ public class ProductService {
 
     @Transactional
     public ProductResponse create(final ProductRequest productRequest) {
+        Product product;
         try {
-            Product product = productRepository.save(productRequest.toEntity());
-            return ProductResponse.of(product);
+            product = productRequest.toEntity();
         } catch (InvalidArgumentException e) {
             throw new CannotCreateException("상품을 생성할 수 없습니다. 다시 입력해 주세요.");
         }
+        Product persist = productRepository.save(product);
+        return ProductResponse.of(persist);
     }
 
     public List<ProductResponse> list() {

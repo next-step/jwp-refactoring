@@ -9,10 +9,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("/api/menus")
 public class MenuRestController {
+
+    private static final String MAPPING_URL = "/api/menus/";
 
     private final MenuService menuService;
 
@@ -20,14 +24,14 @@ public class MenuRestController {
         this.menuService = menuService;
     }
 
-    @PostMapping("/api/menus")
+    @PostMapping
     public ResponseEntity<MenuResponse> create(@RequestBody final MenuRequest menu) {
         final MenuResponse created = menuService.create(menu);
-        final URI uri = URI.create("/api/menus/" + created.getId());
+        final URI uri = URI.create(MAPPING_URL + created.getId());
         return ResponseEntity.created(uri).body(created);
     }
 
-    @GetMapping("/api/menus")
+    @GetMapping
     public ResponseEntity<List<MenuResponse>> list() {
         return ResponseEntity.ok().body(menuService.list());
     }

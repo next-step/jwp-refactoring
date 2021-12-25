@@ -21,6 +21,7 @@ import org.springframework.http.MediaType;
 
 @DisplayName("테이블 그룹 인수 테스트")
 public class TableGroupAcceptanceTest extends AcceptanceTest {
+
     private static final String URL = "/api/table-groups";
 
     @Test
@@ -37,7 +38,8 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
         단체지정됨(saveResponse, orderTables);
 
         // 단체지정 해제(삭제)
-        ExtractableResponse<Response> deleteResponse = 단제지정_해제_요청(saveResponse.jsonPath().getLong("id"));
+        ExtractableResponse<Response> deleteResponse = 단제지정_해제_요청(
+            saveResponse.jsonPath().getLong("id"));
         // 단제지정 해제됨
         단체지정_해제됨(deleteResponse);
 
@@ -57,7 +59,8 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
             .extract();
     }
 
-    public static void 단체지정됨(ExtractableResponse<Response> response, List<OrderTableResponse> expectedTables) {
+    public static void 단체지정됨(ExtractableResponse<Response> response,
+        List<OrderTableResponse> expectedTables) {
         TableGroupResponse tableGroup = response.as(TableGroupResponse.class);
         List<Long> expectedIds = expectedTables.stream()
             .map(OrderTableResponse::getId)
@@ -76,7 +79,7 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
         return RestAssured
             .given().log().all()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when().delete(URL+"/{tableGroupId}", groupId)
+            .when().delete(URL + "/{tableGroupId}", groupId)
             .then().log().all()
             .extract();
     }

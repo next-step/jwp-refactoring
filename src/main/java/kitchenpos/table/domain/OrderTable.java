@@ -2,101 +2,73 @@ package kitchenpos.table.domain;
 
 
 import java.util.Objects;
-import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ForeignKey;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import kitchenpos.common.domain.BaseEntity;
 import kitchenpos.exception.CannotUpdatedException;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.Orders;
 
 @Entity
 public class OrderTable extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "table_group_id", foreignKey = @ForeignKey(name = "fk_order_table_table_group"))
-    private TableGroup tableGroup;
+    @Column(name = "table_group_id")
+    private Long tableGroupId;
+
+    private Long orderId;
+
+    @Enumerated(EnumType.STRING)
+    private TableStatus tableStatus = TableStatus.EMPTY;
 
     @Embedded
     private GuestNumber numberOfGuests;
 
-    @Embedded
-    private EmptyTable empty;
-
-    @Embedded
-    private Orders orders = Orders.create();
-
     protected OrderTable() {
     }
 
-    private OrderTable(Integer numberOfGuests, boolean empty) {
+    private OrderTable(Integer numberOfGuests, Boolean empty) {
         this.numberOfGuests = GuestNumber.valueOf(numberOfGuests);
-        this.empty = EmptyTable.valueOf(empty);
+        this.tableStatus = TableStatus.valueOfEmpty(empty);
     }
 
-    public static OrderTable of(Integer numberOfGuests, boolean empty) {
+    public static OrderTable of(Integer numberOfGuests, Boolean empty) {
         return new OrderTable(numberOfGuests, empty);
     }
 
-    public void relateTableGroup(TableGroup tableGroup) {
-        if (Objects.nonNull(this.tableGroup)) {
-            this.tableGroup.removeOrderTable(this);
-        }
-        this.tableGroup = tableGroup;
-        tableGroup.addOrderTable(this);
+    public void updateOrderInfo(Long orderId, TableStatus tableStatus) {
+        changeTableStatus(tableStatus);
+        updateOrderId(orderId);
     }
 
-    public void removeTableGroup() {
-        this.tableGroup = null;
+    public void changeTableStatus(TableStatus tableStatus) {
+        this.tableStatus = tableStatus;
     }
 
-    public void addOrder(Order order) {
-        orders.add(order);
+    public OrderTable changeEmpty(Boolean empty) {
+        validateChangeEmpty();
+        this.tableStatus = TableStatus.valueOfEmpty(empty);
+        return this;
     }
 
-    public void removeOrder(Order order) {
-        this.orders.remove(order);
-    }
-
-    public void updateEmpty(Boolean empty) {
-        validateUpdateEmpty();
-        this.empty = EmptyTable.valueOf(empty);
-    }
-
-    public void updateNumberOfGuests(Integer numberOfGuests) {
-        validateUpdateNumberOfGuests();
+    public void changeNumberOfGuests(Integer numberOfGuests) {
+        validateChangeNumberOfGuests();
         this.numberOfGuests = GuestNumber.valueOf(numberOfGuests);
     }
 
-    public void clearTableGroup() {
-        validateOnGoingOrder();
-        this.empty = EmptyTable.valueOf(Boolean.TRUE);
-        removeTableGroup();
-    }
-
-    public boolean equalTableGroup(TableGroup tableGroup) {
-        if (Objects.isNull(this.tableGroup)) {
-            return false;
-        }
-        return this.tableGroup.equals(tableGroup);
-    }
-
     public boolean isNotEmptyTableGroup() {
-        return Objects.nonNull(this.tableGroup);
+        return Objects.nonNull(tableGroupId);
     }
 
     public boolean isNotEmpty() {
-        return empty.equals(Boolean.FALSE);
+        return !isEmpty();
     }
 
     public Long getId() {
@@ -104,29 +76,36 @@ public class OrderTable extends BaseEntity {
     }
 
     public Integer getNumberOfGuests() {
-        return numberOfGuests.get();
+        return numberOfGuests.toInteger();
     }
 
     public Boolean isEmpty() {
-        return empty.isEmpty();
+        return TableStatus.EMPTY.equals(this.tableStatus);
     }
 
-    private void validateUpdateEmpty() {
-        if (Objects.nonNull(tableGroup)) {
+    private void updateOrderId(Long orderId) {
+        if (TableStatus.ORDERED.equals(this.tableStatus)) {
+            this.orderId = orderId;
+            return;
+        }
+        this.orderId = null;
+    }
+
+    private void validateChangeEmpty() {
+        if (Objects.nonNull(tableGroupId)) {
             throw new CannotUpdatedException("단체지정된 테이블은 변경할 수 없습니다.");
         }
-
         validateOnGoingOrder();
     }
 
-    private void validateUpdateNumberOfGuests() {
-        if (empty.isEmpty()) {
+    private void validateChangeNumberOfGuests() {
+        if (TableStatus.EMPTY.equals(this.tableStatus)) {
             throw new CannotUpdatedException("빈 테이블의 손님수는 변경 할 수 없습니다.");
         }
     }
 
-    private void validateOnGoingOrder() {
-        if (orders.isOnGoing()) {
+    protected void validateOnGoingOrder() {
+        if (TableStatus.ORDERED.equals(this.tableStatus)) {
             throw new CannotUpdatedException("주문이 완료되지 않은 테이블이 있습니다.");
         }
     }
@@ -148,4 +127,11 @@ public class OrderTable extends BaseEntity {
         return Objects.hash(id);
     }
 
+    public String getTableStatus() {
+        return tableStatus.name();
+    }
+
+    public Long getOrderId() {
+        return this.orderId;
+    }
 }

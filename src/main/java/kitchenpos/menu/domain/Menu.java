@@ -14,18 +14,17 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import kitchenpos.common.domain.BaseEntity;
 import kitchenpos.common.domain.MustHaveName;
-import kitchenpos.exception.InvalidArgumentException;
 import kitchenpos.common.domain.Price;
+import kitchenpos.exception.InvalidArgumentException;
 
 @Entity
 public class Menu extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @Embedded
     private MustHaveName name;
-
     @Embedded
     private Price price;
 
@@ -34,7 +33,7 @@ public class Menu extends BaseEntity {
     private MenuGroup menuGroup;
 
     @Embedded
-    private MenuProducts menuProducts = new MenuProducts();
+    private final MenuProducts menuProducts = new MenuProducts();
 
     protected Menu() {
     }
@@ -50,34 +49,15 @@ public class Menu extends BaseEntity {
         return new Menu(name, price, menuGroup);
     }
 
-    public void removeMenuProduct(MenuProduct menuProduct) {
-        this.menuProducts.remove(menuProduct);
-    }
-
     public void addMenuProducts(List<MenuProduct> menuProducts) {
-        for (MenuProduct menuProduct: menuProducts) {
-            addMenuProduct(menuProduct);
+        for (MenuProduct menuProduct : menuProducts) {
+            this.menuProducts.add(menuProduct);
         }
-        validatePrice();
+        this.menuProducts.validatePrice(price);
     }
 
     public MenuGroup getMenuGroup() {
         return this.menuGroup;
-    }
-
-
-    protected void addMenuProduct(MenuProduct menuProduct) {
-        menuProducts.add(menuProduct);
-
-        if (!menuProduct.equalMenu(this)) {
-            menuProduct.relateMenu(this);
-        }
-    }
-
-    private void validatePrice() {
-        if (price.isGreaterThan(this.menuProducts.getTotalPrice())) {
-            throw new InvalidArgumentException("메뉴의 총 가격은 구성하는 상품의 총가격보다 작거나 같아야 합니다.");
-        }
     }
 
     private void validateMenuGroup(MenuGroup menuGroup) {
@@ -91,11 +71,11 @@ public class Menu extends BaseEntity {
     }
 
     public String getName() {
-        return name.get();
+        return name.toString();
     }
 
     public BigDecimal getPrice() {
-        return price.get();
+        return price.toBigDecimal();
     }
 
     public List<MenuProduct> getMenuProducts() {
@@ -119,5 +99,4 @@ public class Menu extends BaseEntity {
     public int hashCode() {
         return Objects.hash(id);
     }
-
 }

@@ -14,11 +14,15 @@ import org.springframework.test.util.ReflectionTestUtils;
 @DisplayName("메뉴 도메인 테스트")
 class MenuTest {
 
-    private final MenuProduct 후라이드치킨 = MenuProduct.of(Product.of("후라이드치킨", 10000), 1L);
-    private final MenuProduct 양념치킨 = MenuProduct.of(Product.of("양념치킨", 11000), 1L);
+    private final Product 후라이드치킨_상품 = Product.of("후라이드치킨", 10000);
+    private final Product 양념치킨_상품 = Product.of("양념치킨", 11000);
+    private final MenuProduct 후라이드치킨 = MenuProduct.of(후라이드치킨_상품, 1L);
+    private final MenuProduct 양념치킨 = MenuProduct.of(양념치킨_상품, 1L);
 
     @BeforeEach
     void setUp() {
+        ReflectionTestUtils.setField(후라이드치킨_상품, "id", 1L);
+        ReflectionTestUtils.setField(양념치킨_상품, "id", 2L);
         ReflectionTestUtils.setField(후라이드치킨, "seq", 1L);
         ReflectionTestUtils.setField(양념치킨, "seq", 2L);
     }

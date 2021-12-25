@@ -38,47 +38,32 @@ public class Product extends BaseEntity {
     }
 
     public Price multiplyQuantity(Quantity quantity) {
-        return price.multiply(quantity.getQuantity());
+        return price.multiply(quantity.toLong());
     }
-
-
-
-
-
-
-
-
 
 
     public Long getId() {
         return id;
     }
 
-    public String getName() {
-        return name.get();
-    }
-    public BigDecimal getPrice() {
-        return price.get();
-    }
-
     public void setId(Long id) {
         this.id = id;
     }
 
-    public void setName(String name) {
-        this.name = MustHaveName.valueOf(name);
+    public String getName() {
+        return name.toString();
     }
 
-    public void setPrice(Integer price) {
-        this.price = Price.fromInteger(price);
+    public BigDecimal getPrice() {
+        return price.toBigDecimal();
     }
 
     public boolean equalName(String name) {
-        return this.name.equals(name);
+        return this.name.equals(MustHaveName.valueOf(name));
     }
 
     public boolean equalPrice(BigDecimal price) {
-        return this.price.equals(price);
+        return this.price.equals(Price.valueOf(price));
     }
 
     @Override

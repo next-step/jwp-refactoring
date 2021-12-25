@@ -1,27 +1,31 @@
 package kitchenpos.order.dto;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderMenu;
 
 public class OrderLineItemResponse {
 
     private Long seq;
-    private MenuResponse menu;
+    private String menuName;
+    private BigDecimal menuPrice;
     private long quantity;
 
     public OrderLineItemResponse() {
     }
 
-    private OrderLineItemResponse(Long seq, MenuResponse menu, long quantity) {
+    private OrderLineItemResponse(Long seq, OrderMenu menu, long quantity) {
         this.seq = seq;
-        this.menu = menu;
+        this.menuName = menu.getMenuName();
+        this.menuPrice = menu.getMenuPrice();
         this.quantity = quantity;
     }
 
     public static OrderLineItemResponse of(OrderLineItem orderLineItem) {
-        return new OrderLineItemResponse(orderLineItem.getSeq(), MenuResponse.of(orderLineItem.getMenu()),
+        return new OrderLineItemResponse(orderLineItem.getSeq(),
+            orderLineItem.getOrderMenu(),
             orderLineItem.getQuantity());
     }
 
@@ -35,8 +39,12 @@ public class OrderLineItemResponse {
         return seq;
     }
 
-    public MenuResponse getMenu() {
-        return menu;
+    public String getMenuName() {
+        return menuName;
+    }
+
+    public BigDecimal getMenuPrice() {
+        return menuPrice;
     }
 
     public long getQuantity() {

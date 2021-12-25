@@ -10,6 +10,7 @@ import kitchenpos.common.domain.MustHaveName;
 
 @Entity
 public class MenuGroup extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -29,7 +30,7 @@ public class MenuGroup extends BaseEntity {
     }
 
     public boolean equalName(String menuGroupName) {
-        return this.name.equals(menuGroupName);
+        return this.name.equals(MustHaveName.valueOf(menuGroupName));
     }
 
     public Long getId() {
@@ -37,7 +38,7 @@ public class MenuGroup extends BaseEntity {
     }
 
     public String getName() {
-        return name.get();
+        return name.toString();
     }
 
 }

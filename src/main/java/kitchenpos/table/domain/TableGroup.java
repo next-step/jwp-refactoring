@@ -18,16 +18,20 @@ public class TableGroup {
     private Long id;
 
     @Column(nullable = false)
-    private LocalDateTime createdDate = LocalDateTime.now();
+    private final LocalDateTime createdDate = LocalDateTime.now();
 
     @Embedded
-    private OrderTables orderTables = new OrderTables();
+    private final OrderTables orderTables = new OrderTables();
 
     protected TableGroup() {
     }
 
-    public static TableGroup create() {
-        return new TableGroup();
+    private TableGroup(List<OrderTable> orderTables) {
+        this.orderTables.addOrderTables(orderTables);
+    }
+
+    public static TableGroup fromOrderTables(List<OrderTable> orderTables) {
+        return new TableGroup(orderTables);
     }
 
     public Long getId() {
@@ -42,33 +46,12 @@ public class TableGroup {
         return orderTables.get();
     }
 
-    public void addOrderTables(List<OrderTable> orderTables) {
-        this.orderTables.validateAddTables(orderTables);
-
-        for (OrderTable orderTable: orderTables) {
-            orderTable.updateEmpty(Boolean.FALSE);
-            addOrderTable(orderTable);
-        }
-    }
-
     public void clearOrderTable() {
         orderTables.clearOrderTable();
     }
 
     public boolean isEmpty() {
         return orderTables.isEmpty();
-    }
-
-    protected void removeOrderTable(OrderTable orderTable) {
-        this.orderTables.remove(orderTable);
-    }
-
-    protected void addOrderTable(OrderTable orderTable) {
-        orderTables.add(orderTable);
-
-        if (!orderTable.equalTableGroup(this)) {
-            orderTable.relateTableGroup(this);
-        }
     }
 
     @Override

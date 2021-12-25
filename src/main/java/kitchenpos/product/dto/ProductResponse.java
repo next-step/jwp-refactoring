@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import kitchenpos.product.domain.Product;
 
 public class ProductResponse {
+
     private Long id;
     private String name;
     private BigDecimal price;

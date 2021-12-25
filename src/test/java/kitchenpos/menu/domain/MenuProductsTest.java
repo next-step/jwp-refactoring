@@ -1,9 +1,8 @@
 package kitchenpos.menu.domain;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.math.BigDecimal;
+import kitchenpos.common.domain.Price;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,7 +28,7 @@ class MenuProductsTest {
         menuProducts.add(MenuProduct.of(양념치킨, 1L));
         menuProducts.add(MenuProduct.of(간장치킨, 2L));
 
-        assertTrue(menuProducts.getTotalPrice().equals(BigDecimal.valueOf(45000)));
+        assertTrue(menuProducts.getTotalPrice().equals(Price.fromInteger(45000)));
 
     }
 }

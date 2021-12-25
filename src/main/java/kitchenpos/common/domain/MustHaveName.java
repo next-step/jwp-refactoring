@@ -7,6 +7,7 @@ import kitchenpos.exception.InvalidArgumentException;
 
 @Embeddable
 public class MustHaveName {
+
     @Column(nullable = false)
     private String name;
 
@@ -33,7 +34,8 @@ public class MustHaveName {
         }
     }
 
-    public String get() {
+    @Override
+    public String toString() {
         return name;
     }
 
@@ -41,9 +43,6 @@ public class MustHaveName {
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        }
-        if (o instanceof String) {
-            return name.equals(o);
         }
         if (o == null || getClass() != o.getClass()) {
             return false;
@@ -56,4 +55,5 @@ public class MustHaveName {
     public int hashCode() {
         return Objects.hash(name);
     }
+
 }

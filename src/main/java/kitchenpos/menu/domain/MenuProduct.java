@@ -11,20 +11,17 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import kitchenpos.common.domain.BaseEntity;
+import kitchenpos.common.domain.Price;
 import kitchenpos.common.domain.Quantity;
 import kitchenpos.exception.InvalidArgumentException;
-import kitchenpos.common.domain.Price;
 import kitchenpos.product.domain.Product;
 
 @Entity
 public class MenuProduct extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "menu_id", foreignKey = @ForeignKey(name = "fk_menu_product_menu"))
-    private Menu menu;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "product_id", foreignKey = @ForeignKey(name = "fk_menu_product_product"))
@@ -45,31 +42,11 @@ public class MenuProduct extends BaseEntity {
         return new MenuProduct(product, quantity);
     }
 
-    public void relateMenu(Menu menu) {
-        validateMenu(menu);
-        if (this.menu != null) {
-            this.menu.removeMenuProduct(this);
-        }
-        this.menu = menu;
-        menu.addMenuProduct(this);
-    }
-
-    public boolean equalMenu(Menu menu) {
-        if (this.menu == null) {
-            return null == menu;
-        }
-        return this.menu.equals(menu);
-    }
-
     public boolean equalMenuProduct(MenuProduct other) {
-        return equalMenu(other.menu) && product.equals(other.product) && quantity.equals(other.quantity);
+        return product.equals(other.product) && quantity.equals(other.quantity);
     }
 
-    public void removeMenu() {
-        this.menu = null;
-    }
-
-    public Price getPrice(){
+    public Price getPrice() {
         return product.multiplyQuantity(quantity);
     }
 
@@ -77,23 +54,17 @@ public class MenuProduct extends BaseEntity {
         return this.product;
     }
 
-    public Long getSeq() {
-        return seq;
-    }
-
-    public long getQuantity() {
-        return quantity.getQuantity();
-    }
-
     private void setProduct(Product product) {
         validateProduct(product);
         this.product = product;
     }
 
-    private void validateMenu(Menu menu) {
-        if (menu == null) {
-            throw new InvalidArgumentException("메뉴는 필수입니다.");
-        }
+    public Long getSeq() {
+        return seq;
+    }
+
+    public long getQuantity() {
+        return quantity.toLong();
     }
 
     private void validateProduct(Product product) {
@@ -101,7 +72,6 @@ public class MenuProduct extends BaseEntity {
             throw new InvalidArgumentException("상품은 필수입니다.");
         }
     }
-
 
     @Override
     public boolean equals(Object o) {
@@ -119,5 +89,4 @@ public class MenuProduct extends BaseEntity {
     public int hashCode() {
         return Objects.hash(seq);
     }
-
 }

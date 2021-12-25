@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 
 @DisplayName("메뉴 그룹 도메인 테스트")
 class MenuGroupTest {
+
     private static final String MENU_GROUP_NAME = "치킨류";
 
     @Test

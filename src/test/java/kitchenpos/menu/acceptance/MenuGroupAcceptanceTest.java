@@ -16,6 +16,7 @@ import org.springframework.http.MediaType;
 
 @DisplayName("메뉴 그룹 인수 테스트")
 public class MenuGroupAcceptanceTest extends AcceptanceTest {
+
     private static final String URL = "/api/menu-groups";
 
     @Test
@@ -57,7 +58,8 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 메뉴그룹_목록_조회_됨(ExtractableResponse<Response> response, String... expected) {
-        List<MenuGroupResponse> menuGroups = response.jsonPath().getList(".", MenuGroupResponse.class);
+        List<MenuGroupResponse> menuGroups = response.jsonPath()
+            .getList(".", MenuGroupResponse.class);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(menuGroups).extracting(MenuGroupResponse::getName).containsExactly(expected);

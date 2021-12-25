@@ -7,6 +7,7 @@ import kitchenpos.exception.InvalidArgumentException;
 
 @Embeddable
 public final class GuestNumber {
+
     private static final Integer MIN_NUMBER_OF_GUESTS = 0;
 
     @Column(nullable = false)
@@ -27,7 +28,7 @@ public final class GuestNumber {
         return new GuestNumber(numberOfGuests);
     }
 
-    public Integer get() {
+    public Integer toInteger() {
         return numberOfGuests;
     }
 
@@ -38,7 +39,8 @@ public final class GuestNumber {
      */
     private void validate(Integer numberOfGuests) {
         if (numberOfGuests < MIN_NUMBER_OF_GUESTS) {
-            throw new InvalidArgumentException(String.format("손님의 수는 %s 이상이어야 합니다.", MIN_NUMBER_OF_GUESTS));
+            throw new InvalidArgumentException(
+                String.format("손님의 수는 %s 이상이어야 합니다.", MIN_NUMBER_OF_GUESTS));
         }
     }
 
@@ -46,9 +48,6 @@ public final class GuestNumber {
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        }
-        if (o instanceof Integer) {
-            return numberOfGuests.equals(o);
         }
         if (o == null || getClass() != o.getClass()) {
             return false;

@@ -8,19 +8,22 @@ public class OrderTableResponse {
 
     private Long id;
     private Integer numberOfGuests;
-    private Boolean empty;
+    private String tableStatus;
+    private Long orderId;
 
     public OrderTableResponse() {
     }
 
-    private OrderTableResponse(Long id, Integer numberOfGuests, Boolean empty) {
+    private OrderTableResponse(Long id, Integer numberOfGuests, String tableStatus, Long orderId) {
         this.id = id;
         this.numberOfGuests = numberOfGuests;
-        this.empty = empty;
+        this.tableStatus = tableStatus;
+        this.orderId = orderId;
     }
 
     public static OrderTableResponse of(OrderTable orderTable) {
-        return new OrderTableResponse(orderTable.getId(), orderTable.getNumberOfGuests(), orderTable.isEmpty());
+        return new OrderTableResponse(orderTable.getId(), orderTable.getNumberOfGuests(),
+            orderTable.getTableStatus(), orderTable.getOrderId());
     }
 
     public static List<OrderTableResponse> ofList(List<OrderTable> orderTables) {
@@ -37,8 +40,11 @@ public class OrderTableResponse {
         return numberOfGuests;
     }
 
-    public Boolean getEmpty() {
-        return empty;
+    public String getTableStatus() {
+        return tableStatus;
     }
 
+    public Long getOrderId() {
+        return orderId;
+    }
 }

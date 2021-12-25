@@ -7,6 +7,7 @@ import kitchenpos.exception.InvalidArgumentException;
 
 @Embeddable
 public final class Quantity {
+
     private static final Long MIN_QUANTITY = 1L;
 
     @Column(nullable = false)
@@ -24,7 +25,7 @@ public final class Quantity {
         return new Quantity(quantity);
     }
 
-    public Long getQuantity() {
+    public Long toLong() {
         return quantity;
     }
 
@@ -41,9 +42,6 @@ public final class Quantity {
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        }
-        if (o instanceof Long) {
-            return quantity.equals(o);
         }
         if (o == null || getClass() != o.getClass()) {
             return false;

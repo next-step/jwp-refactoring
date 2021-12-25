@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import kitchenpos.AcceptanceTest;
+import kitchenpos.table.domain.TableStatus;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -23,6 +24,7 @@ import org.springframework.http.MediaType;
 
 @DisplayName("테이블 인수 테스트")
 public class TableAcceptanceTest extends AcceptanceTest {
+
     private static final String URL = "/api/tables";
 
     @DisplayName("테이블을 관리한다.")
@@ -43,14 +45,15 @@ public class TableAcceptanceTest extends AcceptanceTest {
             dynamicTest("테이블의 상태를 변경한다.", () -> {
                 // 테이블 목록 조회 요청
                 ExtractableResponse<Response> response = 테이블_목록_조회_요청();
-                List<OrderTableResponse> orderTables = response.jsonPath().getList(".", OrderTableResponse.class);
+                List<OrderTableResponse> orderTables = response.jsonPath()
+                    .getList(".", OrderTableResponse.class);
                 OrderTableResponse orderTable = orderTables.get(0);
 
                 // 빈테이블 -> 주문 테이블 상태 변경 요청
                 ExtractableResponse<Response> emptyResponse = 테이블_상태변경_요청(orderTable.getId(), false);
 
                 // 상태 변경됨
-                테이블_상태변경_됨(emptyResponse, false);
+                테이블_상태변경_됨(emptyResponse, TableStatus.SEATED.name());
 
                 // 테이블의 손님 수 변경 요청
                 ExtractableResponse<Response> numberResponse = 테이블_손님수_변경_요청(orderTable.getId(), 3);
@@ -89,11 +92,11 @@ public class TableAcceptanceTest extends AcceptanceTest {
     public static void 빈_테이블_등록됨(ExtractableResponse<Response> response) {
         OrderTableResponse orderTable = response.as(OrderTableResponse.class);
 
-        assertAll(() -> {
-            테이블_등록됨(response);
-            assertThat(orderTable.getNumberOfGuests()).isEqualTo(0);
-            assertTrue(orderTable.getEmpty());
-        });
+        assertAll(
+            () -> 테이블_등록됨(response),
+            () -> assertThat(orderTable.getNumberOfGuests()).isEqualTo(0),
+            () -> assertThat(orderTable.getTableStatus()).isEqualTo("EMPTY")
+        );
     }
 
     public static ExtractableResponse<Response> 테이블_목록_조회_요청() {
@@ -105,18 +108,20 @@ public class TableAcceptanceTest extends AcceptanceTest {
             .extract();
     }
 
-    public static void 테이블_목록_조회됨(ExtractableResponse<Response> response, List<OrderTableResponse> expected) {
-        List<OrderTableResponse> orderTables = response.jsonPath().getList(".", OrderTableResponse.class);
+    public static void 테이블_목록_조회됨(ExtractableResponse<Response> response,
+        List<OrderTableResponse> expected) {
+        List<OrderTableResponse> orderTables = response.jsonPath()
+            .getList(".", OrderTableResponse.class);
         List<Long> expectedIds = expected.stream()
             .map(OrderTableResponse::getId)
             .collect(Collectors.toList());
 
-        assertAll(() -> {
-            assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-            assertThat(orderTables)
+        assertAll(
+            () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+            () -> assertThat(orderTables)
                 .extracting(OrderTableResponse::getId)
-                .containsAll(expectedIds);
-        });
+                .containsAll(expectedIds)
+        );
     }
 
     public static ExtractableResponse<Response> 테이블_상태변경_요청(Long tableId, boolean isEmpty) {
@@ -124,18 +129,18 @@ public class TableAcceptanceTest extends AcceptanceTest {
             .given().log().all()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .param("empty", isEmpty)
-            .when().put(URL+"/{orderTableId}/empty", tableId)
+            .when().put(URL + "/{orderTableId}/empty", tableId)
             .then().log().all()
             .extract();
     }
 
-    public static void 테이블_상태변경_됨(ExtractableResponse<Response> response, boolean expected) {
+    public static void 테이블_상태변경_됨(ExtractableResponse<Response> response, String expected) {
         OrderTableResponse orderTable = response.as(OrderTableResponse.class);
 
-        assertAll(() ->{
-            assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-            assertThat(orderTable.getEmpty()).isEqualTo(expected);
-        });
+        assertAll(
+            () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+            () -> assertThat(orderTable.getTableStatus()).isEqualTo(expected)
+        );
     }
 
     public static ExtractableResponse<Response> 테이블_손님수_변경_요청(Long tableId, int numberOfGuests) {
@@ -144,7 +149,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
             .given().log().all()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .param("numberOfGuests", numberOfGuests)
-            .when().put(URL+"/{orderTableId}/number-of-guests", tableId)
+            .when().put(URL + "/{orderTableId}/number-of-guests", tableId)
             .then().log().all()
             .extract();
     }
@@ -152,7 +157,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
     public static void 테이블_손님수_변경_됨(ExtractableResponse<Response> response, int expected) {
         OrderTableResponse orderTable = response.as(OrderTableResponse.class);
 
-        assertAll(() ->{
+        assertAll(() -> {
             assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
             assertThat(orderTable.getNumberOfGuests()).isEqualTo(expected);
         });
@@ -165,5 +170,15 @@ public class TableAcceptanceTest extends AcceptanceTest {
     public static OrderTableResponse 주문테이블_등록되어있음(int numberOfGuests) {
         return 테이블_등록_요청(numberOfGuests, false).as(OrderTableResponse.class);
     }
+
+    public static ExtractableResponse<Response> 테이블_조회_요청(Long orderTableId) {
+        return RestAssured
+            .given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when().get(URL+"/{orderTableId}", orderTableId)
+            .then().log().all()
+            .extract();
+    }
+
 
 }

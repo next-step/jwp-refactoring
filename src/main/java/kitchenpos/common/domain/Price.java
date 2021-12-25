@@ -8,6 +8,7 @@ import kitchenpos.exception.InvalidArgumentException;
 
 @Embeddable
 public class Price {
+
     private static final BigDecimal MIN_PRICE = BigDecimal.ZERO;
 
     @Column(nullable = false)
@@ -22,10 +23,10 @@ public class Price {
     }
 
     public static Price fromInteger(Integer price) {
-        try{
+        try {
             BigDecimal bigDecimal = BigDecimal.valueOf(price);
             return new Price(bigDecimal);
-        }catch (NullPointerException e) {
+        } catch (NullPointerException e) {
             throw new InvalidArgumentException("가격은 필수입니다.");
         }
     }
@@ -35,8 +36,7 @@ public class Price {
     }
 
     /**
-     * 가격은 0원 이상이다.
-     * 가격은 필수이다.
+     * 가격은 0원 이상이다. 가격은 필수이다.
      */
     private void validate(BigDecimal price) {
         if (Objects.isNull(price)) {
@@ -47,7 +47,7 @@ public class Price {
         }
     }
 
-    public BigDecimal get() {
+    public BigDecimal toBigDecimal() {
         return price;
     }
 
@@ -67,9 +67,6 @@ public class Price {
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        }
-        if (o instanceof BigDecimal) {
-            return price.equals(o);
         }
         if (o == null || getClass() != o.getClass()) {
             return false;

@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Optional;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.domain.TableStatus;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -25,13 +26,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @DisplayName("테이블 서비스 테스트")
 @ExtendWith({MockitoExtension.class})
 public class TableServiceTest {
-    @Mock
-    private OrderTableRepository orderTableRepository;
-
-    @InjectMocks
-    private TableService tableService;
 
     private final OrderTable emptyTable = OrderTable.of(0, true);
+    @Mock
+    private OrderTableRepository orderTableRepository;
+    @InjectMocks
+    private TableService tableService;
 
     @Test
     @DisplayName("빈 테이블을 등록한다.")
@@ -45,7 +45,7 @@ public class TableServiceTest {
 
         assertAll(
             () -> assertThat(saved.getNumberOfGuests()).isEqualTo(0),
-            () -> assertTrue(saved.getEmpty())
+            () -> assertThat(saved.getTableStatus()).isEqualTo(TableStatus.EMPTY.name())
         );
     }
 
@@ -68,9 +68,9 @@ public class TableServiceTest {
         when(orderTableRepository.findById(anyLong()))
             .thenReturn(Optional.of(emptyTable));
 
-        OrderTableResponse orderTable = tableService.changeEmpty(1L, Boolean.FALSE);
+        OrderTableResponse orderTable = tableService.changeEmpty(1L, false);
 
-        assertFalse(orderTable.getEmpty());
+        assertFalse(orderTable.getTableStatus().equals(TableStatus.EMPTY));
     }
 
     @Test
@@ -79,7 +79,7 @@ public class TableServiceTest {
 
         assertThat(emptyTable.getNumberOfGuests()).isEqualTo(0);
 
-        emptyTable.updateEmpty(Boolean.FALSE);
+        emptyTable.changeEmpty(false);
         when(orderTableRepository.findById(anyLong()))
             .thenReturn(Optional.of(emptyTable));
 

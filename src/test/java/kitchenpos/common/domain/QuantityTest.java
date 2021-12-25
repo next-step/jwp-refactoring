@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import kitchenpos.common.domain.Quantity;
 import kitchenpos.exception.InvalidArgumentException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,7 +18,7 @@ class QuantityTest {
         Quantity quantity = Quantity.valueOf(100L);
 
         assertAll(
-            () -> assertTrue(quantity.equals(100L)),
+            () -> assertFalse(quantity.equals(100L)),
             () -> assertTrue(quantity.equals(Quantity.valueOf(100L))),
             () -> assertFalse(quantity.equals(101))
         );

@@ -2,17 +2,13 @@ package kitchenpos.table.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.Arrays;
 import kitchenpos.exception.CannotUpdatedException;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.util.ReflectionTestUtils;
 
 @DisplayName("테이블 도메인 테스트")
 class OrderTableTest {
@@ -23,7 +19,7 @@ class OrderTableTest {
         OrderTable orderTable = OrderTable.of(1, false);
         assertFalse(orderTable.isEmpty());
 
-        orderTable.updateEmpty(true);
+        orderTable.changeEmpty(true);
         assertTrue(orderTable.isEmpty());
     }
 
@@ -31,9 +27,9 @@ class OrderTableTest {
     @Test
     void validateUpdateEmpty() {
         OrderTable orderTable = OrderTable.of(1, false);
-        orderTable.relateTableGroup(TableGroup.create());
+        ReflectionTestUtils.setField(orderTable, "tableGroupId", 1L);
 
-        assertThatThrownBy(() -> orderTable.updateEmpty(Boolean.TRUE))
+        assertThatThrownBy(() -> orderTable.changeEmpty(true))
             .isInstanceOf(CannotUpdatedException.class)
             .hasMessage("단체지정된 테이블은 변경할 수 없습니다.");
     }
@@ -42,12 +38,8 @@ class OrderTableTest {
     @Test
     void validateUpdateEmptyOnGoingOrder() {
         final OrderTable orderTable = OrderTable.of(1, false);
-        final Menu menu = Menu.of("후라이드치킨", 10000, MenuGroup.from("치킨"));
-        final OrderLineItem orderLineItem = OrderLineItem.of(menu, 2L);
-
-        Order.of(orderTable, OrderStatus.COOKING, Arrays.asList(orderLineItem));
-
-        assertThatThrownBy(() -> orderTable.updateEmpty(Boolean.TRUE))
+        orderTable.changeTableStatus(TableStatus.ORDERED);
+        assertThatThrownBy(() -> orderTable.changeEmpty(true))
             .isInstanceOf(CannotUpdatedException.class)
             .hasMessage("주문이 완료되지 않은 테이블이 있습니다.");
     }
@@ -57,12 +49,12 @@ class OrderTableTest {
     void updateNumberOfGuests() {
         OrderTable orderTable = OrderTable.of(1, true);
 
-        assertThatThrownBy(() -> orderTable.updateNumberOfGuests(2))
+        assertThatThrownBy(() -> orderTable.changeNumberOfGuests(2))
             .isInstanceOf(CannotUpdatedException.class)
             .hasMessage("빈 테이블의 손님수는 변경 할 수 없습니다.");
 
-        orderTable.updateEmpty(false);
-        orderTable.updateNumberOfGuests(2);
+        orderTable.changeEmpty(false);
+        orderTable.changeNumberOfGuests(2);
 
         assertThat(orderTable.getNumberOfGuests()).isEqualTo(2);
     }

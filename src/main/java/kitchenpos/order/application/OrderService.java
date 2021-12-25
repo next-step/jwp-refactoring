@@ -8,40 +8,46 @@ import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.OrderStatusEvent;
+import kitchenpos.order.domain.OrderValidator;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusRequest;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class OrderService {
+
     private final OrderRepository orderRepository;
     private final MenuRepository menuRepository;
-    private final OrderTableRepository orderTableRepository;
+    private final OrderValidator orderValidator;
+    private final ApplicationEventPublisher publisher;
 
     public OrderService(final OrderRepository orderRepository,
-        final MenuRepository menuRepository,
-        final OrderTableRepository orderTableRepository) {
+        final MenuRepository menuRepository, OrderValidator orderValidator,
+        ApplicationEventPublisher publisher) {
         this.orderRepository = orderRepository;
         this.menuRepository = menuRepository;
-        this.orderTableRepository = orderTableRepository;
+        this.orderValidator = orderValidator;
+        this.publisher = publisher;
     }
 
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
 
-        final List<OrderLineItem> orderLineItems = orderRequest.getOrderLineItems().stream()
+        final List<OrderLineItem> orderLineItems = orderRequest.getOrderLineItems()
+            .stream()
             .map(it -> it.toEntity(findMenu(it.getMenuId())))
             .collect(Collectors.toList());
 
-        final OrderTable orderTable = findOrderTable(orderRequest.getOrderTableId());
+        orderValidator.validateCreateOrder(orderRequest.getOrderTableId(), orderLineItems);
 
-        final Order persist = orderRepository.save(orderRequest.toEntity(orderTable, orderLineItems));
+        final Order persist = orderRepository.save(orderRequest.toEntity(orderLineItems));
+
+        publishOrderStatus(persist);
 
         return OrderResponse.of(persist);
     }
@@ -52,11 +58,15 @@ public class OrderService {
     }
 
     @Transactional
-    public OrderResponse changeOrderStatus(final Long orderId, final OrderStatusRequest orderStatus) {
+    public OrderResponse changeOrderStatus(final Long orderId,
+        final OrderStatusRequest orderStatus) {
 
         final Order savedOrder = findOrder(orderId);
 
+        orderValidator.validateUpdateOrderStatus(savedOrder);
         savedOrder.updateOrderStatus(orderStatus.toStatus());
+
+        publishOrderStatus(savedOrder);
 
         return OrderResponse.of(savedOrder);
     }
@@ -66,13 +76,12 @@ public class OrderService {
             .orElseThrow(() -> new NotFoundException("해당하는 메뉴가 없습니다."));
     }
 
-    private OrderTable findOrderTable(Long orderTableId) {
-        return orderTableRepository.findById(orderTableId)
-            .orElseThrow(() -> new NotFoundException("해당하는 테이블이 없습니다."));
-    }
-
     private Order findOrder(Long orderId) {
         return orderRepository.findById(orderId)
             .orElseThrow(() -> new NotFoundException("해당하는 주문이 없습니다."));
+    }
+
+    private void publishOrderStatus(Order order) {
+        publisher.publishEvent(OrderStatusEvent.of(this, order));
     }
 }
