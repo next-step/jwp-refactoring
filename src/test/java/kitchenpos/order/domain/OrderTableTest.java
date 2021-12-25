@@ -2,6 +2,7 @@ package kitchenpos.order.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.Arrays;
 
@@ -17,8 +18,11 @@ public class OrderTableTest {
         OrderTable 테이블 = OrderTable.of(3, false);
         
         // then
-        assertThat(테이블).isEqualTo(OrderTable.of(3, false));
-    
+        assertAll(
+                () -> assertThat(테이블.getNumberOfGuests()).isEqualTo(3),
+                () -> assertThat(테이블.isEmpty()).isFalse(),
+                () -> assertThat(테이블).isEqualTo(OrderTable.of(3, false))
+        );
     }
     
     @DisplayName("조리중이거나 식사중인 테이블은 빈 테이블로 변경할 수 없다 - 예외처리")
