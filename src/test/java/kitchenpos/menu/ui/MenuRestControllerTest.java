@@ -13,10 +13,11 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import kitchenpos.common.CommonTestFixtures;
+import kitchenpos.common.vo.Price;
+import kitchenpos.common.vo.Quantity;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.common.vo.Price;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
@@ -58,8 +59,8 @@ class MenuRestControllerTest {
     void create() throws Exception {
         //given
         List<MenuProduct> menuProducts = Arrays.asList(
-            new MenuProduct(타코야끼, 2),
-            new MenuProduct(뿌링클, 1));
+            new MenuProduct(타코야끼, new Quantity(2)),
+            new MenuProduct(뿌링클, new Quantity(1)));
         String menuName = "후라이드+후라이드";
         Price price = new Price(BigDecimal.valueOf(19000));
         MenuRequest menuRequest = MenuTestFixtures.convertToMenuRequest(
@@ -82,11 +83,11 @@ class MenuRestControllerTest {
     void list() throws Exception {
         //given
         List<MenuProduct> menuProducts1 = Arrays.asList(
-            new MenuProduct(타코야끼, 2),
-            new MenuProduct(뿌링클, 3));
+            new MenuProduct(타코야끼, new Quantity(2)),
+            new MenuProduct(뿌링클, new Quantity(3)));
         List<MenuProduct> menuProducts2 = Arrays.asList(
-            new MenuProduct(타코야끼, 1),
-            new MenuProduct(뿌링클, 2));
+            new MenuProduct(타코야끼, new Quantity(1)),
+            new MenuProduct(뿌링클, new Quantity(2)));
 
         List<MenuResponse> expectedMenus = MenuResponse.fromList(Arrays.asList(
             new Menu(1L, "후라이드+후라이드", new Price(BigDecimal.valueOf(19000)), 추천메뉴그룹,

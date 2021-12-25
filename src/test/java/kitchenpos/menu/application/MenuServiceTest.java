@@ -6,9 +6,10 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import kitchenpos.common.vo.Price;
+import kitchenpos.common.vo.Quantity;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.common.vo.Price;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuRequest;
@@ -62,8 +63,8 @@ class MenuServiceTest {
         MenuGroupTestFixtures.메뉴_그룹_존재여부_조회시_응답_모킹(menuGroupService, 추천메뉴);
 
         List<MenuProduct> menuProducts = Arrays.asList(
-            new MenuProduct(타코야끼, 3L),
-            new MenuProduct(뿌링클, 1L));
+            new MenuProduct(타코야끼, new Quantity(3L)),
+            new MenuProduct(뿌링클, new Quantity(1L)));
 
         Menu menu = new Menu("타코야끼와 뿌링클", new Price(BigDecimal.valueOf(51000)), 추천메뉴,
             menuProducts);
@@ -82,8 +83,8 @@ class MenuServiceTest {
     void list() {
         // given
         List<MenuProduct> menuProducts = Arrays.asList(
-            new MenuProduct(타코야끼, 3L),
-            new MenuProduct(뿌링클, 1L));
+            new MenuProduct(타코야끼, new Quantity(3L)),
+            new MenuProduct(뿌링클, new Quantity(1L)));
         List<Menu> menus = Arrays.asList(
             new Menu(1L, "타코야끼와 뿌링클", new Price(BigDecimal.valueOf(51000)), 추천메뉴,
                 menuProducts));

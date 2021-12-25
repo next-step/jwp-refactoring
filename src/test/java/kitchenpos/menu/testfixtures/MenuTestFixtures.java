@@ -6,9 +6,9 @@ import static org.mockito.BDDMockito.given;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
+import kitchenpos.common.vo.Price;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.common.vo.Price;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuProductRequest;
@@ -33,7 +33,8 @@ public class MenuTestFixtures {
     }
 
     public static MenuProductRequest convertToMenuProductRequest(MenuProduct menuProduct) {
-        return new MenuProductRequest(menuProduct.getProduct().getId(), menuProduct.getQuantity());
+        return new MenuProductRequest(menuProduct.getProduct().getId(),
+            menuProduct.getQuantityVal());
     }
 
 

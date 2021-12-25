@@ -8,7 +8,7 @@ import java.util.List;
 import kitchenpos.menu.testfixtures.MenuTestFixtures;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.Quantity;
+import kitchenpos.common.vo.Quantity;
 import kitchenpos.ordertable.exception.TableChangeNumberOfGuestsException;
 import kitchenpos.ordertable.exception.TableUpdateStateException;
 import org.junit.jupiter.api.DisplayName;

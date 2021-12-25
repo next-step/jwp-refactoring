@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import kitchenpos.common.vo.Quantity;
 import kitchenpos.menu.domain.Menu;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 

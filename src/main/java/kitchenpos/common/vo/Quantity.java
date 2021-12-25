@@ -1,4 +1,4 @@
-package kitchenpos.order.domain;
+package kitchenpos.common.vo;
 
 import java.util.Objects;
 import javax.persistence.Embeddable;

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import javax.persistence.EntityNotFoundException;
 import kitchenpos.common.vo.Price;
+import kitchenpos.common.vo.Quantity;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
@@ -51,7 +52,7 @@ public class MenuService {
 
     private MenuProduct createMenuProduct(MenuProductRequest menuProductRequest) {
         Product product = productService.findProduct(menuProductRequest.getProductId());
-        return new MenuProduct(product, menuProductRequest.getQuantity());
+        return new MenuProduct(product, new Quantity(menuProductRequest.getQuantity()));
     }
 
     public List<MenuResponse> list() {

@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.Arrays;
 import java.util.List;
+import kitchenpos.common.vo.Quantity;
 import kitchenpos.menu.testfixtures.MenuTestFixtures;
 import kitchenpos.order.exception.ClosedTableOrderException;
 import kitchenpos.order.exception.CompleteOrderChangeStateException;

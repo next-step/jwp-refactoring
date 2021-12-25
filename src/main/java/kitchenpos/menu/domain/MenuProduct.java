@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import kitchenpos.common.vo.Quantity;
 import kitchenpos.product.domain.Product;
 
 @Entity
@@ -29,20 +30,20 @@ public class MenuProduct {
     private Product product;
 
     @Column(nullable = false)
-    private long quantity;
+    private Quantity quantity;
 
     protected MenuProduct() {
     }
 
-    public MenuProduct(Product product, long quantity) {
+    public MenuProduct(Product product, Quantity quantity) {
         this(null, null, product, quantity);
     }
 
-    public MenuProduct(Menu menu, Product product, long quantity) {
+    public MenuProduct(Menu menu, Product product, Quantity quantity) {
         this(null, menu, product, quantity);
     }
 
-    public MenuProduct(Long id, Menu menu, Product product, long quantity) {
+    public MenuProduct(Long id, Menu menu, Product product, Quantity quantity) {
         this.id = id;
         this.menu = menu;
         this.product = product;
@@ -65,12 +66,16 @@ public class MenuProduct {
         return product;
     }
 
-    public long getQuantity() {
+    public Quantity getQuantity() {
         return quantity;
     }
 
+    public long getQuantityVal() {
+        return quantity.getQuantity();
+    }
+
     public BigDecimal getMenuPrice() {
-        return product.getPriceVal().multiply(BigDecimal.valueOf(quantity));
+        return product.getPrice().multiply(quantity);
     }
 
     @Override

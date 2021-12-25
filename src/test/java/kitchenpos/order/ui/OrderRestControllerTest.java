@@ -21,7 +21,7 @@ import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.domain.Quantity;
+import kitchenpos.common.vo.Quantity;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.testfixtures.OrderTestFixtures;

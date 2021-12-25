@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 import kitchenpos.common.exception.PriceNotAcceptableException;
 import kitchenpos.common.vo.Price;
+import kitchenpos.common.vo.Quantity;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -39,8 +40,8 @@ class MenuTest {
         Product 타코야끼 = new Product(1L, "타코야끼", new Price(BigDecimal.valueOf(12000)));
         Product 뿌링클 = new Product(2L, "뿌링클", new Price(BigDecimal.valueOf(15000)));
         List<MenuProduct> menuProducts = Arrays.asList(
-            new MenuProduct(타코야끼, 3L),
-            new MenuProduct(뿌링클, 1L));
+            new MenuProduct(타코야끼, new Quantity(3L)),
+            new MenuProduct(뿌링클, new Quantity(1L)));
 
         //when
         // 타코야끼x3 = 36,000, 뿌링클X1 = 15,000 => 51,000
@@ -73,8 +74,8 @@ class MenuTest {
         Product 타코야끼 = new Product(1L, "타코야끼", new Price(BigDecimal.valueOf(12000)));
         Product 뿌링클 = new Product(2L, "뿌링클", new Price(BigDecimal.valueOf(15000)));
         List<MenuProduct> menuProducts = Arrays.asList(
-            new MenuProduct(타코야끼, 3L),
-            new MenuProduct(뿌링클, 1L));
+            new MenuProduct(타코야끼, new Quantity(3L)),
+            new MenuProduct(뿌링클, new Quantity(1L)));
 
         //when, then
         // 타코야끼x3 = 36,000, 뿌링클X1 = 15,000 => 51,000 < 51001
