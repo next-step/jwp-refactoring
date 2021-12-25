@@ -9,6 +9,7 @@ import kitchenpos.common.vo.Quantity;
 import kitchenpos.menu.testfixtures.MenuTestFixtures;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.ordertable.exception.IllegalNumberOfGuests;
 import kitchenpos.ordertable.exception.TableChangeNumberOfGuestsException;
 import kitchenpos.ordertable.exception.TableUpdateStateException;
 import org.junit.jupiter.api.DisplayName;
@@ -46,8 +47,7 @@ class OrderTableTest {
         //given
         OrderTable orderTable1 = new OrderTable(1L, new NumberOfGuests(6), true);
         OrderTable orderTable2 = new OrderTable(2L, new NumberOfGuests(3), true);
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.groupTables(Arrays.asList(orderTable1, orderTable2));
+        TableGroup tableGroup = new TableGroup(Arrays.asList(orderTable1, orderTable2));
 
         //when,then
         assertThatThrownBy(() -> orderTable1.updateTableStatus(true))
@@ -92,7 +92,7 @@ class OrderTableTest {
         OrderTable orderTable = new OrderTable(1L, new NumberOfGuests(6), false);
         //when, then
         assertThatThrownBy(() -> orderTable.changeNumberOfGuests(new NumberOfGuests(-1)))
-            .isInstanceOf(TableChangeNumberOfGuestsException.class);
+            .isInstanceOf(IllegalNumberOfGuests.class);
     }
 
     @DisplayName("주문종료 상태의 테이블은 방문손님 수를 변경할 수 없다.")

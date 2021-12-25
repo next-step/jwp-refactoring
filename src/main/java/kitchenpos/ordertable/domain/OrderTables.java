@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import kitchenpos.order.domain.Order;
@@ -21,7 +22,7 @@ public class OrderTables {
     private static final String ERROR_MESSAGE_DUPLICATE_TALBES = "그룹대상 테이블에 중복이 존재합니다.";
     private static final String ERROR_MESSAGE_ORDER_NOT_COMPLETE = "조리, 식사중인 주문이 존재하는 테이블이 있습니다.";
 
-    @OneToMany(mappedBy = "tableGroup")
+    @OneToMany(mappedBy = "tableGroup", cascade = CascadeType.MERGE)
     private List<OrderTable> orderTables = new ArrayList<>();
 
     protected void groupTables(List<OrderTable> inputOrderTables, TableGroup tableGroup) {

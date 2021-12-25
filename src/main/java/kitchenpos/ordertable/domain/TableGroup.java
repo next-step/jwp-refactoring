@@ -19,11 +19,15 @@ public class TableGroup extends BaseTimeEntity {
     @Embedded
     private OrderTables orderTables = new OrderTables();
 
-    public TableGroup() {
+    protected TableGroup() {
     }
 
     public TableGroup(Long id) {
         this.id = id;
+    }
+
+    public TableGroup(List<OrderTable> orderTables) {
+        groupTables(orderTables);
     }
 
     public void groupTables(List<OrderTable> inputOrderTables) {

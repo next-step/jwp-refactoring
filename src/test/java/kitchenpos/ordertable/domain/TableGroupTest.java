@@ -25,8 +25,7 @@ class TableGroupTest {
             new OrderTable(2L, new NumberOfGuests(3), true));
 
         //when
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.groupTables(orderTables);
+        TableGroup tableGroup = new TableGroup(orderTables);
 
         //then
         assertThat(tableGroup.getOrderTableList()).containsAll(orderTables);
@@ -40,8 +39,7 @@ class TableGroupTest {
             new OrderTable(1L, new NumberOfGuests(6), true));
 
         //when, then
-        TableGroup tableGroup = new TableGroup();
-        assertThatThrownBy(() -> tableGroup.groupTables(orderTables))
+        assertThatThrownBy(() -> new TableGroup(orderTables))
             .isInstanceOf(GroupTablesException.class);
     }
 
