@@ -1,4 +1,4 @@
-package kitchenpos.ordertable.domain;
+package kitchenpos.ordertable.vo;
 
 import java.util.Objects;
 import javax.persistence.Embeddable;
@@ -6,7 +6,7 @@ import kitchenpos.ordertable.exception.IllegalNumberOfGuests;
 
 @Embeddable
 public class NumberOfGuests {
-    
+
     private int numberOfGuests;
 
     protected NumberOfGuests() {

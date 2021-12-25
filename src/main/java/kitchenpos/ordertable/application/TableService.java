@@ -3,11 +3,11 @@ package kitchenpos.ordertable.application;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.persistence.EntityNotFoundException;
-import kitchenpos.ordertable.domain.NumberOfGuests;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
+import kitchenpos.ordertable.vo.NumberOfGuests;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

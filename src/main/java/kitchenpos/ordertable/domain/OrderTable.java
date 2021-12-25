@@ -16,6 +16,7 @@ import javax.persistence.OneToMany;
 import kitchenpos.order.domain.Order;
 import kitchenpos.ordertable.exception.TableChangeNumberOfGuestsException;
 import kitchenpos.ordertable.exception.TableUpdateStateException;
+import kitchenpos.ordertable.vo.NumberOfGuests;
 
 @Entity
 public class OrderTable {

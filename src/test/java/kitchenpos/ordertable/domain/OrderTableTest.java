@@ -12,6 +12,7 @@ import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.ordertable.exception.IllegalNumberOfGuests;
 import kitchenpos.ordertable.exception.TableChangeNumberOfGuestsException;
 import kitchenpos.ordertable.exception.TableUpdateStateException;
+import kitchenpos.ordertable.vo.NumberOfGuests;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

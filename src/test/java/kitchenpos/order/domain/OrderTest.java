@@ -10,8 +10,8 @@ import kitchenpos.menu.testfixtures.MenuTestFixtures;
 import kitchenpos.order.exception.ClosedTableOrderException;
 import kitchenpos.order.exception.CompleteOrderChangeStateException;
 import kitchenpos.order.exception.DuplicateOrderLineItemsException;
-import kitchenpos.ordertable.domain.NumberOfGuests;
 import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.vo.NumberOfGuests;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

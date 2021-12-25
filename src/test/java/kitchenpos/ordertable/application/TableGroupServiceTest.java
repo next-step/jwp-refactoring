@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
 import java.util.List;
-import kitchenpos.ordertable.domain.NumberOfGuests;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.TableGroup;
 import kitchenpos.ordertable.domain.TableGroupRepository;
@@ -12,6 +11,7 @@ import kitchenpos.ordertable.dto.TableGroupRequest;
 import kitchenpos.ordertable.dto.TableGroupResponse;
 import kitchenpos.ordertable.testfixtures.TableGroupTestFixtures;
 import kitchenpos.ordertable.testfixtures.TableTestFixtures;
+import kitchenpos.ordertable.vo.NumberOfGuests;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
