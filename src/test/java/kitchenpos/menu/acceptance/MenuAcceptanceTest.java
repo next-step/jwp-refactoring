@@ -1,21 +1,21 @@
 package kitchenpos.menu.acceptance;
 
-import io.restassured.RestAssured;
 import io.restassured.http.Method;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.common.acceptance.AcceptanceTest;
 import kitchenpos.menu.MenuFactory;
+import kitchenpos.menu.dto.*;
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 
 import static kitchenpos.menu.acceptance.MenuGroupAcceptanceTest.메뉴_그룹_생성됨;
+import static kitchenpos.product.acceptance.ProductAcceptanceTest.상품_생성됨;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("메뉴 인수 테스트")
@@ -25,9 +25,12 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     @Test
     void createMenu() {
         // given
-        MenuGroup 튀김종류 = 메뉴_그룹_생성됨(MenuFactory.ofMenuGroup("튀김종류"));
-        Menu 치킨세트 = MenuFactory.ofMenu("치킨세트", 튀김종류.getId(), 35000);
-        치킨세트.setMenuProducts(Collections.singletonList(MenuFactory.ofMenuProduct(1L, 치킨세트.getId(), 1L, 35000)));
+        MenuGroupResponse 튀김종류 = 메뉴_그룹_생성됨(MenuFactory.ofMenuGroupRequest("튀김종류"));
+        ProductResponse 치킨 = 상품_생성됨(MenuFactory.ofProductRequest("치킨", 35000));
+        MenuRequest 치킨세트 = MenuFactory.ofMenuRequest("치킨세트",
+                BigDecimal.valueOf(35000),
+                튀김종류.getId(),
+                Collections.singletonList(MenuFactory.ofMenuProductRequest(치킨.getId(), 1L)));
 
         // when
         ExtractableResponse<Response> response = 메뉴_생성_요청(치킨세트);
@@ -46,17 +49,16 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    private static ExtractableResponse<Response> 메뉴_생성_요청(Menu menu) {
-        return ofRequest(Method.POST, "/api/menus", menu);
+    private static ExtractableResponse<Response> 메뉴_생성_요청(MenuRequest menuRequest) {
+        return ofRequest(Method.POST, "/api/menus", menuRequest);
     }
 
     private ExtractableResponse<Response> 메뉴_목록_조회됨() {
         return ofRequest(Method.GET, "/api/menus");
     }
 
-    public static Menu 메뉴_생성됨(Menu menu) {
-        return 메뉴_생성_요청(menu)
-                .body()
-                .as(Menu.class);
+    public static MenuResponse 메뉴_생성됨(MenuRequest menuRequest) {
+        return 메뉴_생성_요청(menuRequest)
+                .as(MenuResponse.class);
     }
 }

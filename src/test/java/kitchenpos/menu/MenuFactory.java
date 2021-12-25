@@ -1,65 +1,52 @@
 package kitchenpos.menu;
 
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Product;
+import kitchenpos.common.domain.Price;
+import kitchenpos.menu.domain.*;
+import kitchenpos.menu.dto.*;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 
 public class MenuFactory {
     public static MenuGroup ofMenuGroup(Long id, String name) {
-        MenuGroup menuGroup = new MenuGroup();
-        menuGroup.setId(id);
-        menuGroup.setName(name);
-
-        return menuGroup;
+        return MenuGroup.of(id, name);
     }
 
-    public static MenuGroup ofMenuGroup(String name) {
-        return ofMenuGroup(null, name);
+    public static MenuGroupRequest ofMenuGroupRequest(String name) {
+        return MenuGroupRequest.of(name);
     }
 
-    public static Menu ofMenu(Long id, String name, Long menuGroupId, int price) {
-        Menu menu = new Menu();
-        menu.setId(id);
-        menu.setName(name);
-        menu.setMenuGroupId(menuGroupId);
-        menu.setPrice(BigDecimal.valueOf(price));
+    public static ProductRequest ofProductRequest(String name, int price) {
+        return new ProductRequest(name, BigDecimal.valueOf(price));
+    }
+
+    public static ProductResponse ofProductResponse(long id, String name, int price) {
+        return new ProductResponse(id, name, BigDecimal.valueOf(price));
+    }
+
+    public static MenuRequest ofMenuRequest(String name, BigDecimal price, Long productId, List<MenuProductRequest> menuProductRequests) {
+        return new MenuRequest(name, price, productId, menuProductRequests);
+    }
+
+    public static MenuProductRequest ofMenuProductRequest(Long productId, Long quantity) {
+        return new MenuProductRequest(productId, quantity);
+    }
+
+    public static Menu ofMenu(long id, String name, Price price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+        Menu menu = new Menu(id, name, price, menuGroup);
+        menu.addMenuProducts(menuProducts);
 
         return menu;
     }
 
-    public static Menu ofMenu(String name, Long menuGroupId, int price) {
-        return ofMenu(null, name, menuGroupId, price);
+    public static Menu ofMenu(String name, Price price, MenuGroup menuGroup) {
+        return new Menu(null, name, price, menuGroup);
     }
 
-    public static Product ofProduct(Long id, String name, int price) {
-        Product product = new Product();
-        product.setId(id);
-        product.setName(name);
-        product.setPrice(BigDecimal.valueOf(price));
-
-        return product;
-    }
-
-    public static Product ofProduct(String name, int price) {
-        return ofProduct(null, name, price);
-    }
-
-    public static MenuProduct ofMenuProduct(Long seq, Long menuId, Long productId, int quantity) {
-        MenuProduct menuProduct = new MenuProduct();
-        menuProduct.setSeq(seq);
-        menuProduct.setMenuId(menuId);
-        menuProduct.setProductId(productId);
-        menuProduct.setQuantity(quantity);
-
-        return menuProduct;
-    }
-
-    public static List<MenuProduct> ofMenuProductList(List<MenuProduct> list) {
-        return new ArrayList<>(list);
+    public static Product ofProduct(long id, String name, int price) {
+        return Product.of(id, name, Price.of(BigDecimal.valueOf(price)));
     }
 }
