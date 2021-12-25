@@ -4,10 +4,9 @@ import kitchenpos.AcceptanceTest;
 import kitchenpos.application.OrderService;
 import kitchenpos.application.TableService;
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.dto.OrderCreateRequest;
-import kitchenpos.dto.OrderStatusChangeRequest;
-import kitchenpos.dto.TableCreateRequest;
-import kitchenpos.dto.TableResponse;
+import kitchenpos.dto.*;
+import kitchenpos.exception.TableNotAvailableException;
+import kitchenpos.global.exception.EntityNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DisplayName("주문 관련 기능")
 class OrderServiceTest extends AcceptanceTest {
@@ -32,9 +32,9 @@ class OrderServiceTest extends AcceptanceTest {
         final OrderCreateRequest orderCreateRequest = new OrderCreateRequest(1L, Arrays.asList(new OrderCreateRequest.OrderLineItem(1L, 1L)));
 
         // when
-        assertThatIllegalArgumentException().isThrownBy(() -> {
+        assertThatThrownBy(() -> {
             orderService.create(orderCreateRequest);
-        });
+        }).isInstanceOf(EntityNotFoundException.class);
     }
 
     @Test
@@ -44,9 +44,9 @@ class OrderServiceTest extends AcceptanceTest {
         final OrderCreateRequest orderCreateRequest = new OrderCreateRequest(1L, Arrays.asList(new OrderCreateRequest.OrderLineItem(1L, 1L)));
 
         // when
-        assertThatIllegalArgumentException().isThrownBy(() -> {
+        assertThatThrownBy(() -> {
             orderService.create(orderCreateRequest);
-        });
+        }).isInstanceOf(EntityNotFoundException.class);
     }
 
 
@@ -54,9 +54,9 @@ class OrderServiceTest extends AcceptanceTest {
     @DisplayName("주문 상태 변경 시 주문이 존재하지 않으면 예외가 발생한다.")
     void changeOrderStatusFailBecauseOfIsNotExistOrder() {
         // when
-        assertThatIllegalArgumentException().isThrownBy(() -> {
+        assertThatThrownBy(() -> {
             orderService.changeOrderStatus(1L, new OrderStatusChangeRequest(OrderStatus.COMPLETION));
-        });
+        }).isInstanceOf(EntityNotFoundException.class);
     }
 
     @Test
@@ -67,8 +67,8 @@ class OrderServiceTest extends AcceptanceTest {
         final OrderCreateRequest orderCreateRequest = new OrderCreateRequest(tableResponse.getId(), Arrays.asList(new OrderCreateRequest.OrderLineItem(1L, 1L)));
 
         // when
-        assertThatIllegalArgumentException().isThrownBy(() -> {
+        assertThatThrownBy(() -> {
             orderService.create(orderCreateRequest);
-        });
+        }).isInstanceOf(TableNotAvailableException.class);
     }
 }

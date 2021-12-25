@@ -4,10 +4,12 @@ import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.exception.CannotChangeTableEmptyException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class TableTest {
 
@@ -21,9 +23,9 @@ class TableTest {
         orderTable.addTableGroup(TableGroup.builder().build());
 
         // when
-        assertThatIllegalArgumentException().isThrownBy(() -> {
+        assertThatThrownBy(() -> {
             orderTable.changeEmpty(true);
-        });
+        }).isInstanceOf(CannotChangeTableEmptyException.class);
     }
 
     @Test

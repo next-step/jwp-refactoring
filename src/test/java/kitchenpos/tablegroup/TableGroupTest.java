@@ -1,38 +1,19 @@
 package kitchenpos.tablegroup;
 
-import kitchenpos.application.TableGroupService;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.dao.TableGroupDao;
-import kitchenpos.domain.*;
+import kitchenpos.domain.Order;
+import kitchenpos.domain.OrderStatus;
+import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.TableGroup;
+import kitchenpos.exception.TableGroupNotAvailableException;
+import kitchenpos.exception.TableNotAvailableException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.math.BigDecimal;
-import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@ExtendWith(MockitoExtension.class)
 @DisplayName("단체 지정")
 class TableGroupTest {
-
-    @InjectMocks
-    private TableGroupService tableGroupService;
-
-    @Mock
-    private OrderDao orderDao;
-
-    @Mock
-    private OrderTableDao orderTableDao;
-
-    @Mock
-    private TableGroupDao tableGroupDao;
-
 
 
     @Test
@@ -43,11 +24,11 @@ class TableGroupTest {
         OrderTable secondOrderTable = OrderTable.builder().empty(false).build();
 
         // when
-        assertThatIllegalArgumentException().isThrownBy(() -> {
+        assertThatThrownBy(() -> {
             final TableGroup tableGroup = TableGroup.builder().build();
             tableGroup.saveOrderTable(firstOrderTable);
             tableGroup.saveOrderTable(secondOrderTable);
-        });
+        }).isInstanceOf(TableGroupNotAvailableException.class);
     }
 
     @Test
@@ -60,11 +41,11 @@ class TableGroupTest {
         existTableGroup.saveOrderTable(firstOrderTable);
 
         // when
-        assertThatIllegalArgumentException().isThrownBy(() -> {
+        assertThatThrownBy(() -> {
             final TableGroup tableGroup = TableGroup.builder().build();
             tableGroup.saveOrderTable(firstOrderTable);
             tableGroup.saveOrderTable(secondOrderTable);
-        });
+        }).isInstanceOf(TableGroupNotAvailableException.class);
     }
 
     @Test

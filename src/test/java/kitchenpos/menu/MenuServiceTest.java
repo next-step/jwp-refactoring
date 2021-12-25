@@ -6,6 +6,7 @@ import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.dto.MenuCreateRequest;
+import kitchenpos.global.exception.EntityNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.math.BigDecimal;
 import java.util.Arrays;
 
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DisplayName("메뉴 관련 기능")
 class MenuServiceTest extends AcceptanceTest {
@@ -30,9 +31,9 @@ class MenuServiceTest extends AcceptanceTest {
     @Test
     @DisplayName("메뉴 그룹이 존재하지 않을 경우 예외가 발생한다.")
     void nonExistMenuGroup() {
-        assertThatIllegalArgumentException().isThrownBy(() -> {
+        assertThatThrownBy(() -> {
             menuService.create(new MenuCreateRequest(1L));
-        });
+        }).isInstanceOf(EntityNotFoundException.class);
     }
 
     @Test
@@ -42,8 +43,8 @@ class MenuServiceTest extends AcceptanceTest {
         final MenuGroup savedMenuGroup = menuGroupDao.save(MenuGroup.builder().name("추천메뉴").build());
 
         // when
-        assertThatIllegalArgumentException().isThrownBy(() -> {
+        assertThatThrownBy(() -> {
             menuService.create(new MenuCreateRequest("후라이드+후라이드", BigDecimal.valueOf(18000), savedMenuGroup.getId(), Arrays.asList(new MenuCreateRequest.MenuProduct(1L, 1L))));
-        });
+        }).isInstanceOf(EntityNotFoundException.class);
     }
 }
