@@ -2,6 +2,7 @@ package kitchenpos.application;
 
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
@@ -18,6 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -47,14 +49,14 @@ class MenuServiceTest {
         menuService = new MenuService(menuRepository, menuGroupRepository);
         menuProduct = new MenuProduct(1L, new Menu(), new Product(), 1);
         menuProduct2 = new MenuProduct(1L, new Menu(), new Product(), 2);
-        menu = new Menu(1L, "메뉴이름1", 1000, 1L, Lists.newArrayList(menuProduct, menuProduct2));
+        menu = new Menu(1L, "메뉴이름1", 1000, new MenuGroup(), Lists.newArrayList(menuProduct, menuProduct2));
         menuRequest = new MenuRequest(1L, "메뉴이름1", 1000, 1L, Lists.newArrayList(menuProduct, menuProduct2));
     }
 
     @DisplayName("메뉴를 등록할 수 있다.")
     @Test
     void createMenuTest() {
-        when(menuGroupRepository.existsById(anyLong())).thenReturn(true);
+        when(menuGroupRepository.findById(anyLong())).thenReturn(Optional.of(new MenuGroup()));
         when(menuRepository.save(any())).thenReturn(menu);
 
         // when
@@ -99,8 +101,6 @@ class MenuServiceTest {
     @Test
     void createMenuSumBiggerThanPriceExceptionTest() {
         assertThatThrownBy(() -> {
-            when(menuGroupRepository.existsById(anyLong())).thenReturn(true);
-
             // given
             final MenuRequest MenuSumZero = new MenuRequest(1L, "메뉴이름1", 1000, 1L, new ArrayList<>());
 

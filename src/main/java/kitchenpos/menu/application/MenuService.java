@@ -1,6 +1,7 @@
 package kitchenpos.menu.application;
 
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuRequest;
@@ -25,16 +26,15 @@ public class MenuService {
 
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
-        validExistMenuGroup(menuRequest);
-        final Menu menu = menuRepository.save(menuRequest.toMenu());
+        MenuGroup menuGroup = findMenuGroupById(menuRequest.getMenuGroupId());
+        final Menu menu = menuRepository.save(menuRequest.toMenu(menuGroup));
 
         return MenuResponse.of(menu);
     }
 
-    private void validExistMenuGroup(MenuRequest menuRequest) {
-        if (!menuGroupRepository.existsById(menuRequest.getMenuGroupId())) {
-            throw new IllegalArgumentException();
-        }
+    private MenuGroup findMenuGroupById(Long id) {
+        return menuGroupRepository.findById(id)
+                .orElseThrow(IllegalArgumentException::new);
     }
 
     public List<MenuResponse> list() {
