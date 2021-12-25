@@ -50,7 +50,7 @@ public class OrderService {
 		final List<OrderLineItem> orderLineItems = createOrderLineItems(request.getOrderLineItemAddRequests());
 
 		final Order order = orderRepository.save(
-			Order.of(orderTable, OrderStatus.COOKING, orderLineItems)
+			request.toEntity(orderTable, orderLineItems)
 		);
 		return OrderResponse.of(order);
 	}

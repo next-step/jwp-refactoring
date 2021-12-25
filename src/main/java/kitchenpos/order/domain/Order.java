@@ -16,10 +16,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
-import org.springframework.util.CollectionUtils;
 
 import kitchenpos.order.exception.CanNotEditOrderStatusException;
 import kitchenpos.order.exception.InvalidOrderException;
@@ -66,8 +63,12 @@ public class Order {
         }
     }
 
+    public static Order ofCooking(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
+        return of(orderTable, OrderStatus.COOKING, orderLineItems);
+    }
+
     public static Order of(OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
-        return new Order(null, orderTable, orderStatus, orderLineItems);
+        return of(null, orderTable, orderStatus, orderLineItems);
     }
 
     public static Order of(Long id, OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {

@@ -2,6 +2,9 @@ package kitchenpos.tablegroup.dto;
 
 import java.util.List;
 
+import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.tablegroup.domain.TableGroup;
+
 public class TableGroupAddRequest {
 
 	private List<Long> orderTableIds;
@@ -15,6 +18,10 @@ public class TableGroupAddRequest {
 
 	public static TableGroupAddRequest of(List<Long> orderTableIds) {
 		return new TableGroupAddRequest(orderTableIds);
+	}
+
+	public TableGroup toEntity(List<OrderTable> orderTables) {
+		return TableGroup.of(orderTables);
 	}
 
 	public List<Long> getOrderTableIds() {

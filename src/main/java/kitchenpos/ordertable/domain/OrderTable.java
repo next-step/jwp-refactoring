@@ -51,7 +51,7 @@ public class OrderTable {
     }
 
     public static OrderTable of(int numberOfGuests, boolean empty) {
-        return new OrderTable(null, null, numberOfGuests, empty);
+        return of(null, null, numberOfGuests, empty);
     }
 
     public static OrderTable of(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {

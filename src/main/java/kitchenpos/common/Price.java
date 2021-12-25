@@ -30,7 +30,7 @@ public class Price {
 	}
 
 	public static Price of(long price) {
-		return new Price(BigDecimal.valueOf(price));
+		return of(BigDecimal.valueOf(price));
 	}
 
 	public static Price of(BigDecimal price) {

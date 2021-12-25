@@ -44,7 +44,7 @@ public class MenuService {
 		final List<MenuProduct> menuProducts = createMenuProducts(request.getMenuProductAddRequests());
 
 		final Menu menu = menuRepository.save(
-			Menu.of(request.getName(), request.getPrice(), menuGroup, menuProducts)
+			request.toEntity(menuGroup, menuProducts)
 		);
 		return MenuResponse.of(menu);
 	}

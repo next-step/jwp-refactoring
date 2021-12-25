@@ -35,7 +35,9 @@ public class TableGroupService {
 	@Transactional
 	public TableGroupResponse create(final TableGroupAddRequest request) {
 		final List<OrderTable> orderTables = findOrderTables(request.getOrderTableIds());
-		final TableGroup tableGroup = tableGroupRepository.save(TableGroup.of(orderTables));
+		final TableGroup tableGroup = tableGroupRepository.save(
+			request.toEntity(orderTables)
+		);
 		return TableGroupResponse.of(tableGroup);
 	}
 
