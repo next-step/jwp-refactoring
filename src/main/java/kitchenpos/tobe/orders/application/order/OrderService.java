@@ -5,9 +5,9 @@ import java.util.NoSuchElementException;
 import kitchenpos.tobe.common.domain.Validator;
 import kitchenpos.tobe.orders.domain.order.Order;
 import kitchenpos.tobe.orders.domain.order.OrderRepository;
-import kitchenpos.tobe.orders.dto.OrderChangeStatusRequest;
-import kitchenpos.tobe.orders.dto.OrderRequest;
-import kitchenpos.tobe.orders.dto.OrderResponse;
+import kitchenpos.tobe.orders.dto.order.OrderChangeStatusRequest;
+import kitchenpos.tobe.orders.dto.order.OrderRequest;
+import kitchenpos.tobe.orders.dto.order.OrderResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

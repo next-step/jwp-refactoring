@@ -5,10 +5,10 @@ import java.util.List;
 import kitchenpos.tobe.common.domain.Name;
 import kitchenpos.tobe.common.domain.Price;
 import kitchenpos.tobe.common.domain.Validator;
-import kitchenpos.tobe.menu.domain.Menu;
-import kitchenpos.tobe.menu.domain.MenuProducts;
-import kitchenpos.tobe.menu.dto.MenuProductRequest;
-import kitchenpos.tobe.menu.dto.MenuRequest;
+import kitchenpos.tobe.menus.domain.Menu;
+import kitchenpos.tobe.menus.domain.MenuProducts;
+import kitchenpos.tobe.menus.dto.MenuProductRequest;
+import kitchenpos.tobe.menus.dto.MenuRequest;
 
 public class MenuFixture {
 

@@ -4,7 +4,7 @@ import java.util.Arrays;
 import kitchenpos.tobe.common.domain.Quantity;
 import kitchenpos.tobe.orders.domain.order.OrderLineItem;
 import kitchenpos.tobe.orders.domain.order.OrderLineItems;
-import kitchenpos.tobe.orders.dto.OrderLineItemRequest;
+import kitchenpos.tobe.orders.dto.order.OrderLineItemRequest;
 
 public class OrderLineItemFixture {
 

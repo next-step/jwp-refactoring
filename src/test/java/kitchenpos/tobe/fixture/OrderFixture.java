@@ -5,9 +5,9 @@ import kitchenpos.tobe.common.domain.Validator;
 import kitchenpos.tobe.orders.domain.order.Order;
 import kitchenpos.tobe.orders.domain.order.OrderLineItems;
 import kitchenpos.tobe.orders.domain.order.OrderStatus;
-import kitchenpos.tobe.orders.dto.OrderChangeStatusRequest;
-import kitchenpos.tobe.orders.dto.OrderLineItemRequest;
-import kitchenpos.tobe.orders.dto.OrderRequest;
+import kitchenpos.tobe.orders.dto.order.OrderChangeStatusRequest;
+import kitchenpos.tobe.orders.dto.order.OrderLineItemRequest;
+import kitchenpos.tobe.orders.dto.order.OrderRequest;
 
 public class OrderFixture {
 
