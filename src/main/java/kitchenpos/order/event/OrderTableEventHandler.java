@@ -1,10 +1,7 @@
-package kitchenpos.tableGroup.event;
+package kitchenpos.order.event;
 
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.OrderTableRepository;
-import kitchenpos.tableGroup.event.OrderTableGroupEvent;
-import kitchenpos.tableGroup.event.OrderTableUngroupEvent;
-import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionalEventListener;
 

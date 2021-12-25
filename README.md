@@ -102,7 +102,7 @@
   * Product 간접참조
 * [x] Product
   * 없음
-* TableGroup
+* [x] TableGroup
   * OrderTable 참조제거
 * OrderTable
   * TableGroup 간접참조
@@ -117,5 +117,6 @@
 * [ ] EventHandler 를 사용하여 의존성객체를 리팩터링
 * [x] MenuService
 * [x] MenuGroupService
+* [x] TableGroupService
 * [ ] TableService
-* [ ] TableGroupService
+* [ ] OrderService
