@@ -68,56 +68,6 @@ public class OrderService {
             .map(OrderResponse::of)
             .collect(Collectors.toList());
     }
-    //
-    // @Transactional
-    // public Order create(final Order order) {
-    //     final List<OrderLineItem> orderLineItems = order.getOrderLineItems();
-    //
-    //     if (CollectionUtils.isEmpty(orderLineItems)) {
-    //         throw new IllegalArgumentException("주문할 메뉴를 골라주세요");
-    //     }
-    //
-    //     final List<Long> menuIds = orderLineItems.stream()
-    //         .map(OrderLineItem::getMenuId)
-    //         .collect(Collectors.toList());
-    //
-    //     if (orderLineItems.size() != menuRepository.countByIdIn(menuIds)) {
-    //         throw new IllegalArgumentException("없는 메뉴는 주문할 수 없습니다");
-    //     }
-    //
-    //     final OrderTable orderTable = orderTableDao.findById(order.getOrderTableId())
-    //         .orElseThrow(() -> new IllegalArgumentException("주문을 받을 테이블이 존재하지 않습니다"));
-    //
-    //     if (orderTable.isUnUse()) {
-    //         throw new IllegalArgumentException("주문 할 테이블이 비어있습니다");
-    //     }
-    //
-    //     order.setOrderTableId(orderTable.getId());
-    //     order.setOrderStatus(OrderStatus.COOKING.name());
-    //     order.setOrderedTime(LocalDateTime.now());
-    //
-    //     final Order savedOrder = orderRepository.save(order);
-    //
-    //     final Long orderId = savedOrder.getId();
-    //     final List<OrderLineItem> savedOrderLineItems = new ArrayList<>();
-    //     for (final OrderLineItem orderLineItem : orderLineItems) {
-    //         orderLineItem.setOrderId(orderId);
-    //         savedOrderLineItems.add(orderLineItemDao.save(orderLineItem));
-    //     }
-    //     savedOrder.setOrderLineItems(savedOrderLineItems);
-    //
-    //     return savedOrder;
-    // }
-    //
-    // public List<Order> list() {
-    //     final List<Order> orders = orderRepository.findAll();
-    //
-    //     for (final Order order : orders) {
-    //         order.setOrderLineItems(orderLineItemDao.findAllByOrderId(order.getId()));
-    //     }
-    //
-    //     return orders;
-    // }
 
     @Transactional
     public Order changeOrderStatus(final Long orderId, final OrderRequest orderRequest) {

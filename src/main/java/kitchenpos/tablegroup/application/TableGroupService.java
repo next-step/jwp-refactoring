@@ -69,45 +69,6 @@ public class TableGroupService {
 		return CollectionUtils.isEmpty(orderTableRequests) || orderTableRequests.size() < 2;
 	}
 
-	// @Transactional
-	// public TableGroup create(final TableGroup tableGroup) {
-	//     final List<OrderTable> orderTables = tableGroup.getOrderTables();
-	//
-	//     if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
-	//         throw new IllegalArgumentException("2개 이상의 테이블만 그룹생성이 가능합니다");
-	//     }
-	//
-	//     final List<Long> orderTableIds = orderTables.stream()
-	//         .map(OrderTable::getId)
-	//         .collect(Collectors.toList());
-	//
-	//     final List<OrderTable> savedOrderTables = orderTableDao.findAllByIdIn(orderTableIds);
-	//
-	//     if (orderTables.size() != savedOrderTables.size()) {
-	//         throw new IllegalArgumentException("존재하는 테이블만 그룹생성이 가능합니다");
-	//     }
-	//
-	//     for (final OrderTable savedOrderTable : savedOrderTables) {
-	//         if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroupId())) {
-	//             throw new IllegalArgumentException("이미 사용중이거나 그룹화된 테이블은 그룹생성 할 수 없습니다");
-	//         }
-	//     }
-	//
-	//     tableGroup.setCreatedDate(LocalDateTime.now());
-	//
-	//     final TableGroup savedTableGroup = tableGroupDao.save(tableGroup);
-	//
-	//     final Long tableGroupId = savedTableGroup.getId();
-	//     for (final OrderTable savedOrderTable : savedOrderTables) {
-	//         savedOrderTable.setTableGroupId(tableGroupId);
-	//         savedOrderTable.setEmpty(false);
-	//         orderTableDao.save(savedOrderTable);
-	//     }
-	//     savedTableGroup.setOrderTables(savedOrderTables);
-	//
-	//     return savedTableGroup;
-	// }
-
 	@Transactional
 	public void ungroup(final Long tableGroupId) {
 		TableGroup tableGroup = findTableGroupById(tableGroupId);
@@ -126,7 +87,7 @@ public class TableGroupService {
 	}
 
 	private void validateOrderIsCompletion(TableGroup tableGroup) {
-		if(!isOrderCompletion(tableGroup)){
+		if (!isOrderCompletion(tableGroup)) {
 			throw new IllegalArgumentException("아직 테이블의 주문이 계산완료되지 않았습니다");
 		}
 	}
@@ -135,23 +96,4 @@ public class TableGroupService {
 		return tableGroup.getOrderTables().stream()
 			.allMatch(OrderTable::isOrderCompletion);
 	}
-
-	// @Transactional
-	// public void ungroup(final Long tableGroupId) {
-	// 	final List<OrderTable> orderTables = orderTableService.findAllByTableGroupId(tableGroupId);
-	//
-	// 	final List<Long> orderTableIds = orderTables.stream()
-	// 		.map(OrderTable::getId)
-	// 		.collect(Collectors.toList());
-	//
-	// 	if (orderService.existsByOrderTableIdInAndOrderStatusIn(
-	// 		orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-	// 		throw new IllegalArgumentException("아직 주문이 계산완료되지 않았습니다");
-	// 	}
-	//
-	// 	for (final OrderTable orderTable : orderTables) {
-	// 		orderTable.setTableGroupId(null);
-	// 		orderTableService.save(orderTable);
-	// 	}
-	// }
 }
