@@ -42,8 +42,8 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     @Test
     void create() {
         //given
-        MenuProductRequest 양념치킨_하나 = new MenuProductRequest(양념치킨.getId(), 1);
-        MenuProductRequest 후라이드치킨_둘 = new MenuProductRequest(후라이드치킨.getId(), 2);
+        MenuProductRequest 양념치킨_하나 = MenuAcceptanceFixtures.메뉴상품_정의(양념치킨.getId(), 1);
+        MenuProductRequest 후라이드치킨_둘 = MenuAcceptanceFixtures.메뉴상품_정의(후라이드치킨.getId(), 2);
         MenuRequest 후라이드_앤드_양념 = MenuAcceptanceFixtures.메뉴_정의("후라이드와 양념", BigDecimal.valueOf(27000),
             추천메뉴.getId(), Arrays.asList(양념치킨_하나, 후라이드치킨_둘));
 
@@ -60,8 +60,8 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     @Test
     void list() {
         //given
-        MenuProductRequest 양념치킨_하나 = new MenuProductRequest(양념치킨.getId(), 1);
-        MenuProductRequest 후라이드치킨_둘 = new MenuProductRequest(후라이드치킨.getId(), 2);
+        MenuProductRequest 양념치킨_하나 = MenuAcceptanceFixtures.메뉴상품_정의(양념치킨.getId(), 1);
+        MenuProductRequest 후라이드치킨_둘 = MenuAcceptanceFixtures.메뉴상품_정의(후라이드치킨.getId(), 2);
         MenuResponse 후라이드_앤드_양념_생성됨 = MenuAcceptanceFixtures.메뉴_생성_요청(
             MenuAcceptanceFixtures.메뉴_정의("후라이드와 양념", BigDecimal.valueOf(27000),
                 추천메뉴.getId(), Arrays.asList(양념치킨_하나, 후라이드치킨_둘))).getBody();
