@@ -20,7 +20,7 @@ public class TableGroupRequest {
     }
     
     public static TableGroupRequest from(TableGroup tableGroup) {
-        return new TableGroupRequest(tableGroup.getOrderTables());
+        return new TableGroupRequest(tableGroup.getOrderTables().getOrderTables());
     }
     
     public TableGroup toTableGroup() {

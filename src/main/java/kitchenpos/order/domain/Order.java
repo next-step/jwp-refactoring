@@ -94,6 +94,18 @@ public class Order {
     public void addOrderLineItems(final List<OrderLineItem> orderLineItems) {
         this.orderLineItems = orderLineItems;
     }
+    
+    public boolean isCompletion() {
+        return this.orderStatus.equals(OrderStatus.COMPLETION);
+    }
+    
+    public boolean isMeal() {
+        return this.orderStatus.equals(OrderStatus.MEAL);
+    }
+    
+    public boolean isCooking() {
+        return this.orderStatus.equals(OrderStatus.COOKING);
+    }
 
     @Override
     public boolean equals(Object o) {

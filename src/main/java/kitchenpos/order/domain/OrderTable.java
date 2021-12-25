@@ -1,12 +1,15 @@
 package kitchenpos.order.domain;
 
+import java.util.List;
+import java.util.Objects;
+
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import java.util.Objects;
 
 @Entity
 public class OrderTable {
@@ -23,6 +26,9 @@ public class OrderTable {
     
     private boolean empty;
     
+    @Embedded
+    private Orders orders;
+    
     protected OrderTable() {
     }
     
@@ -30,6 +36,7 @@ public class OrderTable {
         this.tableGroup = tableGroup;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
+        this.orders = new Orders();
     }
 
     public static OrderTable of(TableGroup tableGroup, int numberOfGuests, boolean empty) {
@@ -73,6 +80,25 @@ public class OrderTable {
 
     public void changeNumberOfGuests(final int numberOfGuests) {
         this.numberOfGuests = numberOfGuests;
+    }
+    
+    public void ungroup() {
+        checkOrderStatus();
+        empty = false;
+        tableGroup = null;
+    }
+    
+    public void addOrders(List<Order> orders) {
+        orders.forEach(order -> {
+            order.updateOrderTable(this);
+            this.orders.add(order);
+        });
+    }
+    
+    private void checkOrderStatus() {
+        if (!orders.checkCompletion()) {
+            throw new IllegalArgumentException("조리중, 식사중인 주문 테이블은 단체지정을 해제할 수 없습니다");
+        }
     }
 
     @Override

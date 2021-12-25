@@ -19,7 +19,7 @@ public class MenuProducts {
         this.menuProducts = new ArrayList<MenuProduct>();
     }
 
-    public MenuProducts(List<MenuProduct> menuProducts) {
+    private MenuProducts(List<MenuProduct> menuProducts) {
         this.menuProducts = menuProducts;
     }
 

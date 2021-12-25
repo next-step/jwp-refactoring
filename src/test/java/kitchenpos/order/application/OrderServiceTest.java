@@ -59,14 +59,18 @@ public class OrderServiceTest {
         // given
         Menu 메뉴 = Menu.of("메뉴", 5000, MenuGroup.from("메뉴그룹"));
         
-        OrderTable 주문_테이블 = OrderTable.of(TableGroup.from(new ArrayList<OrderTable>()), 3, false);
+        OrderTable 첫번째_테이블 = OrderTable.of(null, 3, false);
+        OrderTable 두번째_테이블 = OrderTable.of(null, 5, false);
+        TableGroup 단체지정 = TableGroup.from(Arrays.asList(첫번째_테이블, 두번째_테이블));
+        첫번째_테이블.updateTableGroup(단체지정);
+        두번째_테이블.updateTableGroup(단체지정);
         
-        Order 주문 = Order.of(주문_테이블, OrderStatus.COOKING, new ArrayList<OrderLineItem>());
+        Order 주문 = Order.of(첫번째_테이블, OrderStatus.COOKING, new ArrayList<OrderLineItem>());
         
         OrderLineItem 주문_메뉴 = OrderLineItem.of(주문, 메뉴, 1L);
         주문.addOrderLineItems(Arrays.asList(주문_메뉴));
         
-        given(orderTableRepository.findById(주문.getOrderTable().getId())).willReturn(Optional.of(주문_테이블));
+        given(orderTableRepository.findById(주문.getOrderTable().getId())).willReturn(Optional.of(첫번째_테이블));
         given(menuRepository.countByIdIn(anyList())).willReturn((long) 주문.getOrderLineItems().size());
         given(orderRepository.save(any())).willReturn(주문);
 
@@ -138,7 +142,13 @@ public class OrderServiceTest {
     @Test
     void 주문_등록_상태_확인() {
         // given
-        TableGroup 단체지정 = TableGroup.from(new ArrayList<OrderTable>());
+        OrderTable 첫번째_테이블 = OrderTable.of(null, 3, false);
+        OrderTable 두번째_테이블 = OrderTable.of(null, 5, false);
+        
+        TableGroup 단체지정 = TableGroup.from(Arrays.asList(첫번째_테이블, 두번째_테이블));
+        첫번째_테이블.updateTableGroup(단체지정);
+        두번째_테이블.updateTableGroup(단체지정);
+        
         OrderTable 주문_테이블 = OrderTable.of(단체지정, 3, false);
         Order 주문 = Order.of(주문_테이블, OrderStatus.COOKING, new ArrayList<OrderLineItem>());
         Menu 메뉴 = Menu.of("햄버거", 5500, MenuGroup.from("메뉴그룹"));

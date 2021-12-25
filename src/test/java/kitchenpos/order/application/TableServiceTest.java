@@ -91,9 +91,12 @@ public class TableServiceTest {
     @Test
     void 등록되지않은_테이블_빈_테이블_변경_불가() {
         // given
-        TableGroup 단체지정 = TableGroup.from(new ArrayList<OrderTable>());
+        OrderTable 첫번째_테이블 = OrderTable.of(null, 3, false);
+        OrderTable 두번째_테이블 = OrderTable.of(null, 5, false);
+        List<OrderTable> 테이블_목록 = Arrays.asList(첫번째_테이블, 두번째_테이블);
+        TableGroup 단체지정 = TableGroup.from(테이블_목록);
+        
         OrderTable 등록되지_않은_테이블 = OrderTable.of(단체지정, 3, false);
-        단체지정.addOrderTables(Arrays.asList(등록되지_않은_테이블));
         
         // when
         when(orderTableRepository.findById(nullable(Long.class))).thenReturn(Optional.empty());
@@ -110,15 +113,16 @@ public class TableServiceTest {
     @Test
     void 단체지정_테이블_빈_테이블_변경_불가() {
         // given
-        TableGroup 단체지정 = TableGroup.from(new ArrayList<OrderTable>());
-        OrderTable 테이블 = OrderTable.of(단체지정, 3, false);
-        단체지정.addOrderTables(Arrays.asList(테이블));
+        OrderTable 첫번째_테이블 = OrderTable.of(null, 3, false);
+        OrderTable 두번째_테이블 = OrderTable.of(null, 5, false);
+        List<OrderTable> 테이블_목록 = Arrays.asList(첫번째_테이블, 두번째_테이블);
+        TableGroup 단체지정 = TableGroup.from(테이블_목록);
         
-        given(orderTableRepository.findById(nullable(Long.class))).willReturn(Optional.of(테이블));
+        given(orderTableRepository.findById(nullable(Long.class))).willReturn(Optional.of(두번째_테이블));
         
         // when, then
         assertThatThrownBy(() -> {
-            tableService.changeEmpty(테이블.getId(), OrderTableRequest.from(테이블));
+            tableService.changeEmpty(두번째_테이블.getId(), OrderTableRequest.from(두번째_테이블));
         }).isInstanceOf(IllegalArgumentException.class)
         .hasMessage("단체지정이 되어있는 테이블은 빈 테이블로 변경할 수 없습니다");
     
@@ -189,5 +193,39 @@ public class TableServiceTest {
         }).isInstanceOf(IllegalArgumentException.class)
         .hasMessage("등록된 테이블만 방문 손님 수를 지정할 수 있습니다");
     
+    }
+    
+    @DisplayName("테이블 목록으로 저장된 테이블 목록을 조회할 수 있다")
+    @Test
+    void 저장된_테이블_목록_조회() {
+        // given
+        OrderTable 첫번째_테이블 = OrderTable.of(null, 3, false);
+        OrderTable 두번째_테이블 = OrderTable.of(null, 5, false);
+        List<OrderTable> 테이블_목록 = Arrays.asList(첫번째_테이블, 두번째_테이블);
+        
+        given(orderTableRepository.findAllByIdIn(anyList())).willReturn(Arrays.asList(첫번째_테이블, 두번째_테이블));
+    
+        // when
+        List<OrderTable> 저장된_테이블_목록 = tableService.findByOrderTables(테이블_목록);
+    
+        // then
+        assertThat(저장된_테이블_목록).isEqualTo(테이블_목록);
+    }
+    
+    @DisplayName("미등록 테이블 목록을 조회시 오류 - 예외처리")
+    @Test
+    void 미등록_테이블_목록_조회() {
+        // given
+        OrderTable 첫번째_테이블 = OrderTable.of(null, 3, false);
+        OrderTable 두번째_테이블 = OrderTable.of(null, 5, false);
+        List<OrderTable> 테이블_목록 = Arrays.asList(첫번째_테이블, 두번째_테이블);
+        
+        given(orderTableRepository.findAllByIdIn(anyList())).willReturn(new ArrayList<OrderTable>());
+    
+        // when, then
+        assertThatThrownBy(() -> {
+            tableService.findByOrderTables(테이블_목록);
+        }).isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("해당하는 주문 테이블이 없습니다");
     }
 }

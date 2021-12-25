@@ -4,17 +4,17 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.util.CollectionUtils;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
@@ -28,14 +28,16 @@ public class TableGroup {
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdDate;
 
-    @OneToMany(mappedBy = "tableGroup", orphanRemoval = true, cascade = CascadeType.ALL)
-    private List<OrderTable> orderTables;
+    @Embedded
+    private OrderTables orderTables;
     
     protected TableGroup() {
+        this.orderTables = new OrderTables();
     }
     
     private TableGroup(List<OrderTable> orderTables) {
-        this.orderTables = orderTables;
+        this.orderTables = new OrderTables();
+        addOrderTables(orderTables);
     }
     
     public static TableGroup from(List<OrderTable> orderTables) {
@@ -50,12 +52,26 @@ public class TableGroup {
         return createdDate;
     }
 
-    public List<OrderTable> getOrderTables() {
+    public OrderTables getOrderTables() {
         return orderTables;
     }
 
-    public void addOrderTables(final List<OrderTable> orderTables) {
-        this.orderTables = orderTables;
+    public void validateOrderTables() {
+        if (CollectionUtils.isEmpty(orderTables.getOrderTables()) || orderTables.count() < 2) {
+            throw new IllegalArgumentException("단체지정은 최소 두 테이블 이상만 가능합니다");
+        }
+    }
+    
+    public void ungroup() {
+        orderTables.ungroup();
+    }
+    
+    private void addOrderTables(final List<OrderTable> orderTables) {
+        orderTables.forEach(orderTable -> {
+            orderTable.updateTableGroup(this);
+            this.orderTables.add(orderTable);
+        });
+        validateOrderTables();
     }
 
     @Override
@@ -63,11 +79,11 @@ public class TableGroup {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         TableGroup that = (TableGroup) o;
-        return Objects.equals(createdDate, that.createdDate) && Objects.equals(orderTables, that.orderTables);
+        return Objects.equals(orderTables, that.orderTables);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(createdDate, orderTables);
+        return Objects.hash(orderTables);
     }
 }

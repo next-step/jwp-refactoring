@@ -12,6 +12,7 @@ import kitchenpos.order.dao.OrderRepository;
 import kitchenpos.order.dao.OrderTableRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.domain.OrderTables;
 import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.order.dto.OrderTableResponse;
 
@@ -82,8 +83,21 @@ public class TableService {
     
     @Transactional(readOnly = true)
     public OrderTable findById(Long orderTableId) {
-        System.out.println("여기왜안들어오징..");
         return orderTableRepository.findById(orderTableId)
                 .orElseThrow(() -> new IllegalArgumentException("해당하는 주문 테이블이 없습니다"));
+    }
+    
+    @Transactional(readOnly = true)
+    public List<OrderTable> findByOrderTables(List<OrderTable> request) {
+        OrderTables orderTables = OrderTables.from(request);
+        
+        final List<Long> orderTableIds = orderTables.getIds();
+
+        final List<OrderTable> savedOrderTables = orderTableRepository.findAllByIdIn(orderTableIds);
+
+        if (orderTables.count() != savedOrderTables.size()) {
+            throw new IllegalArgumentException("해당하는 주문 테이블이 없습니다");
+        }
+        return savedOrderTables;
     }
 }
