@@ -48,7 +48,7 @@ class OrderServiceTest {
 	private OrderTableRepository orderTableRepository;
 
 	private final Product 초밥 = Product.of(1L, "초밥", 3_000);
-	private final MenuProduct 메뉴초밥 = MenuProduct.of(1L, null, 초밥, 10);
+	private final MenuProduct 메뉴초밥 = MenuProduct.of(1L, 초밥, 10);
 	private final MenuGroup 메인메뉴그룹 = MenuGroup.of(1L, "메인");
 	private final Menu 일식메뉴 = Menu.of(1L, "일식", 30_000, 메인메뉴그룹, Arrays.asList(메뉴초밥));
 	final OrderTable 개별_주문테이블 = OrderTable.of(1L, null, 4, false);

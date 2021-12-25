@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 
 import org.springframework.util.CollectionUtils;
@@ -15,7 +16,8 @@ import kitchenpos.menu.exception.NotFoundMenuProductsException;
 @Embeddable
 public class MenuProducts {
 
-	@OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(name = "menu_id")
 	private List<MenuProduct> menuProducts = new ArrayList<>();
 
 	protected MenuProducts() {
@@ -38,7 +40,6 @@ public class MenuProducts {
 
 	private void addAll(Menu menu, List<MenuProduct> menuProducts) {
 		this.menuProducts.addAll(menuProducts);
-		this.menuProducts.forEach(menuProduct -> menuProduct.setMenu(menu));
 	}
 
 	public List<MenuProduct> getMenuProducts() {

@@ -47,7 +47,7 @@ class MenuServiceTest {
 	void create() {
 		final MenuGroup 메뉴그룹 = MenuGroup.of(1L, "메뉴그룹");
 		final Product 콜라 = Product.of(1L, "콜라", 500);
-		final List<MenuProduct> 메뉴상품목록 = Arrays.asList(MenuProduct.of(1L, null, 콜라, 2));
+		final List<MenuProduct> 메뉴상품목록 = Arrays.asList(MenuProduct.of(1L, 콜라, 2));
 		final Menu 메뉴 = Menu.of(1L, "메뉴", 1_000, 메뉴그룹, 메뉴상품목록);
 
 		given(menuGroupRepository.findById(any())).willReturn(Optional.of(메뉴그룹));
@@ -105,7 +105,7 @@ class MenuServiceTest {
 	void list() {
 		final MenuGroup 메뉴그룹1 = MenuGroup.of(1L, "메뉴그룹1");
 		final Product 사이다 = Product.of(1L, "사이다", 300);
-		final List<MenuProduct> 메뉴상품목록 = Arrays.asList(MenuProduct.of(1L, null, 사이다, 3L));
+		final List<MenuProduct> 메뉴상품목록 = Arrays.asList(MenuProduct.of(1L, 사이다, 3L));
 		final Menu 메뉴1 = Menu.of(1L, "menu1", 900, 메뉴그룹1, 메뉴상품목록);
 		final MenuGroup 메뉴그룹2 = MenuGroup.of(2L, "메뉴그룹2");
 		final Menu 메뉴2 = Menu.of(2L, "menu2", 900, 메뉴그룹2, 메뉴상품목록);

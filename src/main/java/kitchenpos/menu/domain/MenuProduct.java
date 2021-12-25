@@ -16,7 +16,6 @@ import javax.persistence.Table;
 
 import kitchenpos.common.Price;
 import kitchenpos.common.Quantity;
-import kitchenpos.menu.exception.NotFoundMenuException;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.exception.NotFoundProductException;
 
@@ -30,10 +29,6 @@ public class MenuProduct {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "menu_id", foreignKey = @ForeignKey(name = "fk_menu_product_menu"), nullable = false)
-    private Menu menu;
-
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", foreignKey = @ForeignKey(name = "fk_menu_product_product"), nullable = false)
     private Product product;
 
@@ -43,10 +38,9 @@ public class MenuProduct {
     protected MenuProduct() {
     }
 
-    private MenuProduct(Long id, Menu menu, Product product, long quantity) {
+    private MenuProduct(Long id, Product product, long quantity) {
         validate(product);
         this.id = id;
-        this.menu = menu;
         this.product = product;
         this.quantity = Quantity.of(quantity);
     }
@@ -58,11 +52,11 @@ public class MenuProduct {
     }
 
     public static MenuProduct of(Product product, long quantity) {
-        return of(null, null, product, quantity);
+        return of(null, product, quantity);
     }
 
-    public static MenuProduct of(Long id, Menu menu, Product product, long quantity) {
-        return new MenuProduct(id, menu, product, quantity);
+    public static MenuProduct of(Long id, Product product, long quantity) {
+        return new MenuProduct(id, product, quantity);
     }
 
     public Price getTotalPrice() {
@@ -82,12 +76,5 @@ public class MenuProduct {
 
     public long getQuantity() {
         return quantity.getQuantity();
-    }
-
-    public void setMenu(Menu menu) {
-        if (Objects.isNull(menu)) {
-            throw new NotFoundMenuException();
-        }
-        this.menu = menu;
     }
 }
