@@ -1,5 +1,6 @@
 package kitchenpos.common.domain;
 
+import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -44,5 +45,71 @@ class PriceTest {
         // when & then
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> Price.of(price));
+    }
+
+    @DisplayName("sum 테스트")
+    @Test
+    void sum() {
+        // given
+        BigDecimal 천원 = BigDecimal.valueOf(1_000);
+        BigDecimal 오백원 = BigDecimal.valueOf(500);
+
+        // when
+        Price price = Price.sum(Lists.list(천원, 오백원, 오백원));
+
+        // then
+        assertThat(price).isEqualTo(Price.of(BigDecimal.valueOf(2_000)));
+    }
+
+    @DisplayName("multiply 테스트")
+    @Test
+    void multiply() {
+        // given
+        Price price = Price.of(BigDecimal.valueOf(1_000));
+
+        // when
+        Price result = price.multiply(BigDecimal.TEN);
+
+        // then
+        assertThat(result).isEqualTo(Price.of(BigDecimal.valueOf(10_000)));
+    }
+
+    @DisplayName("isMoreExpensive 테스트 - 저렴함")
+    @Test
+    void isMoreExpensive_cheap() {
+        // given
+        Price price = Price.of(BigDecimal.valueOf(1_000));
+
+        // when
+        boolean result = price.isMoreExpensive(Price.of(BigDecimal.valueOf(2_000)));
+
+        // then
+        assertThat(result).isFalse();
+    }
+
+    @DisplayName("isMoreExpensive 테스트 - 같음")
+    @Test
+    void isMoreExpensive_same() {
+        // given
+        Price price = Price.of(BigDecimal.valueOf(1_000));
+
+        // when
+        boolean result = price.isMoreExpensive(Price.of(BigDecimal.valueOf(1_000)));
+
+        // then
+        assertThat(result).isFalse();
+    }
+
+    @DisplayName("isMoreExpensive 테스트 - 비쌈")
+    @Test
+    void isMoreExpensive_expensive() {
+        // given
+        Price price = Price.of(BigDecimal.valueOf(1_000));
+
+        // when
+        boolean result = price.isMoreExpensive(Price.of(BigDecimal.valueOf(500)));
+
+        // then
+        assertThat(result).isTrue();
     }
 }
