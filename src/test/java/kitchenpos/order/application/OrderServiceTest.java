@@ -63,7 +63,7 @@ class OrderServiceTest {
     @BeforeEach
     void setUp() {
         Product 후라이드치킨 = ProductFixture.of("후라이드치킨", BigDecimal.valueOf(16000));
-        MenuGroup 두마리치킨 = MenuGroupFixture.of(1L, "두마리치킨");
+        MenuGroup 두마리치킨 = MenuGroupFixture.from("두마리치킨");
         Menu 후라이드_후라이드 = MenuFixture.of(
                 "후라이드+후라이드",
                 BigDecimal.valueOf(31000),

@@ -1,9 +1,10 @@
 package kitchenpos.menu.ui;
 
+import kitchenpos.common.ui.RestControllerTest;
 import kitchenpos.menu.application.MenuGroupService;
 import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.common.fixtrue.MenuGroupFixture;
-import kitchenpos.common.ui.RestControllerTest;
+import kitchenpos.menu.dto.MenuGroupRequest;
+import kitchenpos.menu.dto.MenuGroupResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -38,28 +39,29 @@ class MenuGroupRestControllerTest extends RestControllerTest {
     void 메뉴_그룹_생성() throws Exception {
         // given
 
-        MenuGroup 두마리메뉴 = MenuGroupFixture.of(1L, "두마리메뉴");
-        given(menuGroupService.create(any())).willReturn(두마리메뉴);
+        MenuGroupRequest 두마리메뉴_요청 = MenuGroupRequest.from("두마리메뉴");
+        MenuGroupResponse 두마리메뉴_응답 = MenuGroupResponse.from(MenuGroup.from(두마리메뉴_요청.getName()));
+        given(menuGroupService.create(any())).willReturn(두마리메뉴_응답);
 
         // when
         ResultActions actions = mockMvc.perform(post(API_MENU_GROUP_ROOT)
-                        .content(asJsonString(두마리메뉴))
+                        .content(asJsonString(두마리메뉴_요청))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print());
 
         // then
         actions
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").value(두마리메뉴.getId()))
-                .andExpect(jsonPath("$.name").value(두마리메뉴.getName()));
+                .andExpect(jsonPath("$.id").value(두마리메뉴_응답.getId()))
+                .andExpect(jsonPath("$.name").value(두마리메뉴_응답.getName()));
     }
 
     @Test
     void 메뉴_그룹_조회() throws Exception {
         // given
-        List<MenuGroup> menuGroups = new ArrayList<>();
-        menuGroups.add(MenuGroupFixture.of(1L, "두마리메뉴"));
-        menuGroups.add(MenuGroupFixture.of(2, "한마리메뉴"));
+        List<MenuGroupResponse> menuGroups = new ArrayList<>();
+        menuGroups.add(MenuGroupResponse.from(MenuGroup.from("한마리메뉴")));
+        menuGroups.add(MenuGroupResponse.from(MenuGroup.from("두마리메뉴")));
 
         given(menuGroupService.list()).willReturn(menuGroups);
 

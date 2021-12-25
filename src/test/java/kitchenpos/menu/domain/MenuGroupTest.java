@@ -11,7 +11,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 class MenuGroupTest {
     @Test
     void 메뉴_그룹_생성() {
-        MenuGroup actual = MenuGroup.of(1L, "두마리메뉴");
+        MenuGroup actual = MenuGroup.from("두마리메뉴");
 
         Assertions.assertThat(actual).isNotNull();
     }
@@ -19,7 +19,7 @@ class MenuGroupTest {
     @Test
     void 메뉴_그룹_생성_시_메뉴_그룹의_이름은_필수이다() {
         // given - when
-        ThrowableAssert.ThrowingCallable throwingCallable = () -> MenuGroup.of(1L, null);
+        ThrowableAssert.ThrowingCallable throwingCallable = () -> MenuGroup.from(null);
 
         // then
         assertThatExceptionOfType(NullPointerException.class)

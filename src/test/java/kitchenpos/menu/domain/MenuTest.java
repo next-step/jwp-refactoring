@@ -23,7 +23,7 @@ class MenuTest {
     @BeforeEach
     void setUp() {
         후라이드치킨 = ProductFixture.of("후라이드치킨", BigDecimal.valueOf(16000));
-        두마리치킨 = MenuGroupFixture.of(1L, "두마리치킨");
+        두마리치킨 = MenuGroupFixture.from("두마리치킨");
     }
 
     @Test

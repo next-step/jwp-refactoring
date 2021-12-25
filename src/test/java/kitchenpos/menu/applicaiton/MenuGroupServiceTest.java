@@ -1,9 +1,10 @@
 package kitchenpos.menu.applicaiton;
 
-import kitchenpos.common.fixtrue.MenuGroupFixture;
+import kitchenpos.menu.application.MenuGroupService;
 import kitchenpos.menu.dao.MenuGroupDao;
 import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.application.MenuGroupService;
+import kitchenpos.menu.dto.MenuGroupRequest;
+import kitchenpos.menu.dto.MenuGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,40 +29,41 @@ class MenuGroupServiceTest {
     @InjectMocks
     private MenuGroupService menuGroupService;
 
-    MenuGroup 한마리메뉴;
-    MenuGroup 두마리메뉴;
+    MenuGroupRequest 한마리메뉴;
+    MenuGroupRequest 두마리메뉴;
 
     @BeforeEach
     void setUp() {
-        한마리메뉴 = MenuGroupFixture.of(1L, "한마리메뉴");
-        두마리메뉴 = MenuGroupFixture.of(2L, "두마리메뉴");
+        한마리메뉴 = MenuGroupRequest.from("한마리메뉴");
+        두마리메뉴 = MenuGroupRequest.from("두마리메뉴");
     }
 
     @Test
     void 메뉴_그룹_생성() {
         // given
-        given(menuGroupDao.save(any())).willReturn(두마리메뉴);
+        given(menuGroupDao.save(any())).willReturn(MenuGroup.from(두마리메뉴.getName()));
 
         // when
-        MenuGroup actual = menuGroupService.create(두마리메뉴);
+        MenuGroupResponse actual = menuGroupService.create(두마리메뉴);
 
         // then
-        assertThat(actual).isEqualTo(두마리메뉴);
+        assertThat(actual.getName()).isEqualTo("두마리메뉴");
     }
 
     @Test
     void 메뉴_그룹_조회() {
         // given
-        List<MenuGroup> menuGroups = Arrays.asList(한마리메뉴, 두마리메뉴);
+        List<MenuGroup> menuGroups = Arrays.asList(MenuGroup.from(한마리메뉴.getName()), MenuGroup.from(두마리메뉴.getName()));
         given(menuGroupDao.findAll()).willReturn(menuGroups);
 
         // when
-        List<MenuGroup> actual = menuGroupService.list();
+        List<MenuGroupResponse> actual = menuGroupService.list();
 
         // then
         assertAll(() -> {
             assertThat(actual).hasSize(2);
-            assertThat(actual).containsExactlyElementsOf(Arrays.asList(한마리메뉴, 두마리메뉴));
+            assertThat(actual).extracting("name")
+                    .containsExactly("한마리메뉴", "두마리메뉴");
         });
     }
 }

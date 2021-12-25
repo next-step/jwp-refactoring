@@ -8,7 +8,7 @@ public class MenuGroupFixture {
 
     }
 
-    public static MenuGroup of(long id, String name) {
-        return MenuGroup.of(id, name);
+    public static MenuGroup from(String name) {
+        return MenuGroup.from(name);
     }
 }

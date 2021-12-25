@@ -9,13 +9,12 @@ public class MenuGroup {
     public MenuGroup() {
     }
 
-    public MenuGroup(Long id, String name) {
-        this.id = id;
+    private MenuGroup(String name) {
         this.name = Objects.requireNonNull(name, "메뉴그룹명은 필수입니다.");
     }
 
-    public static MenuGroup of(Long id, String name) {
-        return new MenuGroup(id, name);
+    public static MenuGroup from(String name) {
+        return new MenuGroup(name);
     }
 
     public Long getId() {
