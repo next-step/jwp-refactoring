@@ -66,12 +66,10 @@ public class TableGroupServiceTest {
     @Test
     void 단체지정_해제() {
         // given
-        OrderTable 첫번째_테이블 = OrderTable.of(null, 3, false);
-        OrderTable 두번째_테이블 = OrderTable.of(null, 5, false);
+        OrderTable 첫번째_테이블 = OrderTable.of(3, false);
+        OrderTable 두번째_테이블 = OrderTable.of(5, false);
         
         TableGroup 단체지정 = TableGroup.from(Arrays.asList(첫번째_테이블, 두번째_테이블));
-        첫번째_테이블.updateTableGroup(단체지정);
-        두번째_테이블.updateTableGroup(단체지정);
         
         given(tableGroupRepository.findById(nullable(Long.class))).willReturn(Optional.of(단체지정));
     

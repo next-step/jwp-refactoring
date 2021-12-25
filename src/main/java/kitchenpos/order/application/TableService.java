@@ -60,15 +60,8 @@ public class TableService {
     
     @Transactional(readOnly = true)
     public List<OrderTable> findByOrderTables(List<OrderTable> request) {
-        OrderTables orderTables = OrderTables.from(request);
-        
-        final List<Long> orderTableIds = orderTables.getIds();
-
-        final List<OrderTable> savedOrderTables = orderTableRepository.findAllByIdIn(orderTableIds);
-
-        if (orderTables.count() != savedOrderTables.size()) {
-            throw new IllegalArgumentException("해당하는 주문 테이블이 없습니다");
-        }
-        return savedOrderTables;
+        return request.stream()
+                .map(orderTable -> findById(orderTable.getId()))
+                .collect(Collectors.toList());
     }
 }

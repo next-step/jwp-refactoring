@@ -33,7 +33,7 @@ public class TableGroupTest {
     void 단체지정_테이블_확인() {
         // given, when, then
         assertThatThrownBy(() -> {
-            TableGroup.from(Arrays.asList(OrderTable.of(null, 3, true)));
+            TableGroup.from(Arrays.asList(OrderTable.of(3, true)));
         }).isInstanceOf(IllegalArgumentException.class)
         .hasMessage("단체지정은 최소 두 테이블 이상만 가능합니다");
     }
@@ -42,12 +42,10 @@ public class TableGroupTest {
     @Test
     void 단체지정_해제() {
         // given
-        OrderTable 첫번째_테이블 = OrderTable.of(null, 3, false);
-        OrderTable 두번째_테이블 = OrderTable.of(null, 5, false);
+        OrderTable 첫번째_테이블 = OrderTable.of(3, false);
+        OrderTable 두번째_테이블 = OrderTable.of(5, false);
         
         TableGroup 단체지정 = TableGroup.from(Arrays.asList(첫번째_테이블, 두번째_테이블));
-        첫번째_테이블.updateTableGroup(단체지정);
-        두번째_테이블.updateTableGroup(단체지정);
         
         // when
         단체지정.ungroup();
@@ -63,13 +61,11 @@ public class TableGroupTest {
     @Test
     void 조리중_식사중_테이블_단체지정_해제_불가() {
         // given
-        OrderTable 첫번째_테이블 = OrderTable.of(null, 3, false);
-        OrderTable 두번째_테이블 = OrderTable.of(null, 5, false);
+        OrderTable 첫번째_테이블 = OrderTable.of(3, false);
+        OrderTable 두번째_테이블 = OrderTable.of(5, false);
         첫번째_테이블.addOrders(Arrays.asList(Order.of(null, OrderStatus.COOKING)));
         
         TableGroup 단체지정 = TableGroup.from(Arrays.asList(첫번째_테이블, 두번째_테이블));
-        첫번째_테이블.updateTableGroup(단체지정);
-        두번째_테이블.updateTableGroup(단체지정);
         
         // when, then
         assertThatThrownBy(() -> {

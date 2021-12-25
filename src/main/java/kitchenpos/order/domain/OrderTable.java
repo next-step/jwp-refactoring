@@ -33,20 +33,15 @@ public class OrderTable {
     protected OrderTable() {
     }
 
-    private OrderTable(TableGroup tableGroup, int numberOfGuests, boolean empty) {
+    private OrderTable(int numberOfGuests, boolean empty) {
         checkNumberOfGuests(numberOfGuests);
-        this.tableGroup = tableGroup;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
         this.orders = new Orders();
     }
 
-    public static OrderTable of(TableGroup tableGroup, int numberOfGuests, boolean empty) {
-        return new OrderTable(tableGroup, numberOfGuests, empty);
-    }
-
     public static OrderTable of(int numberOfGuests, boolean empty) {
-        return new OrderTable(null, numberOfGuests, empty);
+        return new OrderTable(numberOfGuests, empty);
     }
 
     public Long getId() {
