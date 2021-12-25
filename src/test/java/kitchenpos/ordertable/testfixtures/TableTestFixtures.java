@@ -41,8 +41,16 @@ public class TableTestFixtures {
             .willReturn(orderTables);
     }
 
-    public static OrderTableRequest convertToOrderTableRequest(OrderTable orderTable) {
-        return new OrderTableRequest(orderTable.getNumberOfGuests(), orderTable.isOrderClose());
+    public static OrderTableRequest convertToOrderTableRequest(int numberOfGuests,
+        boolean isOrderClose) {
+        return new OrderTableRequest(numberOfGuests, isOrderClose);
     }
 
+    public static OrderTableRequest convertToIsOrderCloseChangeRequest(boolean isOrderClose) {
+        return new OrderTableRequest(isOrderClose);
+    }
+
+    public static OrderTableRequest convertToNumberOfGuestsChangeRequest(int numberOfGuests) {
+        return new OrderTableRequest(numberOfGuests);
+    }
 }

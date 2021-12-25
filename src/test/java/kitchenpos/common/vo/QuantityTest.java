@@ -1,4 +1,4 @@
-package kitchenpos.order.domain;
+package kitchenpos.common.vo;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

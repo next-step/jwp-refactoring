@@ -6,20 +6,21 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import kitchenpos.common.vo.Price;
+import kitchenpos.common.vo.Quantity;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.common.vo.Price;
 import kitchenpos.menu.testfixtures.MenuTestFixtures;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.common.vo.Quantity;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.testfixtures.OrderTestFixtures;
 import kitchenpos.ordertable.application.TableService;
+import kitchenpos.ordertable.domain.NumberOfGuests;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.testfixtures.TableTestFixtures;
 import org.junit.jupiter.api.BeforeEach;
@@ -59,7 +60,7 @@ class OrderServiceTest {
     @Test
     void create() {
         //given
-        OrderTable orderTable = new OrderTable(1L, 6, false);
+        OrderTable orderTable = new OrderTable(1L, new NumberOfGuests(6), false);
         List<OrderLineItem> orderLineItems = Arrays.asList(
             new OrderLineItem(혼술세트, new Quantity(1L)),
             new OrderLineItem(이달의메뉴, new Quantity(3L)));
@@ -84,7 +85,7 @@ class OrderServiceTest {
     @Test
     void list() {
         // given
-        OrderTable orderTable = new OrderTable(1L, 6, false);
+        OrderTable orderTable = new OrderTable(1L, new NumberOfGuests(6), false);
         List<OrderLineItem> orderLineItems1 = Arrays.asList(
             new OrderLineItem(혼술세트, new Quantity(1L)),
             new OrderLineItem(이달의메뉴, new Quantity(3L)));
@@ -109,7 +110,7 @@ class OrderServiceTest {
     @Test
     void changeOrderStatus() {
         // given
-        OrderTable orderTable = new OrderTable(1L, 6, false);
+        OrderTable orderTable = new OrderTable(1L, new NumberOfGuests(6), false);
         List<OrderLineItem> orderLineItems = Arrays.asList(
             new OrderLineItem(혼술세트, new Quantity(1L)),
             new OrderLineItem(이달의메뉴, new Quantity(3L)));

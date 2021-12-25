@@ -10,6 +10,7 @@ import kitchenpos.menu.testfixtures.MenuTestFixtures;
 import kitchenpos.order.exception.ClosedTableOrderException;
 import kitchenpos.order.exception.CompleteOrderChangeStateException;
 import kitchenpos.order.exception.DuplicateOrderLineItemsException;
+import kitchenpos.ordertable.domain.NumberOfGuests;
 import kitchenpos.ordertable.domain.OrderTable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,7 +21,7 @@ class OrderTest {
     @Test
     void constructor() {
         //given
-        OrderTable orderTable = new OrderTable(1L, 6, false);
+        OrderTable orderTable = new OrderTable(1L, new NumberOfGuests(6), false);
         List<OrderLineItem> orderLineItems = Arrays.asList(
             new OrderLineItem(MenuTestFixtures.서비스군만두, new Quantity(5L))
         );
@@ -36,7 +37,7 @@ class OrderTest {
     @Test
     void constructor_exception1() {
         //given
-        OrderTable orderTable = new OrderTable(1L, 6, true);
+        OrderTable orderTable = new OrderTable(1L, new NumberOfGuests(6), true);
         List<OrderLineItem> orderLineItems = Arrays.asList(
             new OrderLineItem(MenuTestFixtures.서비스군만두, new Quantity(5L))
         );
@@ -50,7 +51,7 @@ class OrderTest {
     @Test
     void constructor_exception2() {
         //given
-        OrderTable orderTable = new OrderTable(1L, 6, true);
+        OrderTable orderTable = new OrderTable(1L, new NumberOfGuests(6), true);
         List<OrderLineItem> orderLineItems = Arrays.asList(
             new OrderLineItem(MenuTestFixtures.서비스군만두, new Quantity(5L)),
             new OrderLineItem(MenuTestFixtures.서비스군만두, new Quantity(2L))
@@ -65,7 +66,7 @@ class OrderTest {
     @Test
     void changeOrderStatus() {
         //given
-        OrderTable orderTable = new OrderTable(1L, 6, false);
+        OrderTable orderTable = new OrderTable(1L, new NumberOfGuests(6), false);
         List<OrderLineItem> orderLineItems = Arrays.asList(
             new OrderLineItem(MenuTestFixtures.서비스군만두, new Quantity(5L))
         );
@@ -82,7 +83,7 @@ class OrderTest {
     @Test
     void changeOrderStatus_exception() {
         //given
-        OrderTable orderTable = new OrderTable(1L, 6, false);
+        OrderTable orderTable = new OrderTable(1L, new NumberOfGuests(6), false);
         List<OrderLineItem> orderLineItems = Arrays.asList(
             new OrderLineItem(MenuTestFixtures.서비스군만두, new Quantity(5L))
         );

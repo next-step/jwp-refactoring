@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 import kitchenpos.common.CommonTestFixtures;
 import kitchenpos.ordertable.application.TableGroupService;
+import kitchenpos.ordertable.domain.NumberOfGuests;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.TableGroup;
 import kitchenpos.ordertable.dto.TableGroupRequest;
@@ -40,8 +41,8 @@ class TableGroupRestControllerTest {
     void create() throws Exception {
         //given
         List<OrderTable> orderTables = Arrays.asList(
-            new OrderTable(1L, 1, true),
-            new OrderTable(2L, 2, true));
+            new OrderTable(1L, new NumberOfGuests(1), true),
+            new OrderTable(2L, new NumberOfGuests(2), true));
         TableGroupRequest requestTableGroup = TableGroupTestFixtures.convertToTableGroupRequest(
             orderTables);
 

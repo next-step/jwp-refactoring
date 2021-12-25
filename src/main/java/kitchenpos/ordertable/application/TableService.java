@@ -3,6 +3,7 @@ package kitchenpos.ordertable.application;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.persistence.EntityNotFoundException;
+import kitchenpos.ordertable.domain.NumberOfGuests;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.ordertable.dto.OrderTableRequest;
@@ -23,7 +24,8 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse create(final OrderTableRequest requestOrderTable) {
-        OrderTable orderTable = new OrderTable(requestOrderTable.getNumberOfGuests(),
+        OrderTable orderTable = new OrderTable(
+            new NumberOfGuests(requestOrderTable.getNumberOfGuests()),
             requestOrderTable.isOrderClose());
         OrderTable savedOrderTable = orderTableRepository.save(orderTable);
         return OrderTableResponse.from(savedOrderTable);
@@ -50,11 +52,10 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId,
-        final OrderTableRequest orderTable) {
-        final int numberOfGuests = orderTable.getNumberOfGuests();
-
+        final OrderTableRequest orderTableRequest) {
+        final NumberOfGuests numberOfGuests = new NumberOfGuests(
+            orderTableRequest.getNumberOfGuests());
         final OrderTable savedOrderTable = findOrderTable(orderTableId);
-
         savedOrderTable.changeNumberOfGuests(numberOfGuests);
         return OrderTableResponse.from(savedOrderTable);
     }

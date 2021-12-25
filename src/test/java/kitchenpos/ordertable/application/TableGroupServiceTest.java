@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
 import java.util.List;
+import kitchenpos.ordertable.domain.NumberOfGuests;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.TableGroup;
 import kitchenpos.ordertable.domain.TableGroupRepository;
@@ -35,16 +36,16 @@ class TableGroupServiceTest {
     void create() {
         //given
         List<OrderTable> orderTables = Arrays.asList(
-            new OrderTable(1L, 6, true),
-            new OrderTable(2L, 3, true));
+            new OrderTable(1L, new NumberOfGuests(6), true),
+            new OrderTable(2L, new NumberOfGuests(3), true));
         TableTestFixtures.특정_주문테이블_리스트_조회_모킹(tableService, orderTables);
 
         TableGroupRequest tableGroupRequest = TableGroupTestFixtures.convertToTableGroupRequest(
             orderTables);
 
         List<OrderTable> expectedOrderTables = Arrays.asList(
-            new OrderTable(1L, 6, true),
-            new OrderTable(2L, 3, true));
+            new OrderTable(1L, new NumberOfGuests(6), true),
+            new OrderTable(2L, new NumberOfGuests(3), true));
         TableGroup tableGroup = new TableGroup(1L);
         tableGroup.groupTables(expectedOrderTables);
         TableGroupTestFixtures.테이블그룹_저장_결과_모킹(tableGroupRepository, tableGroup);
@@ -63,8 +64,8 @@ class TableGroupServiceTest {
     void ungroup() {
         //given
         List<OrderTable> orderTables = Arrays.asList(
-            new OrderTable(1L, 6, true),
-            new OrderTable(2L, 3, true));
+            new OrderTable(1L, new NumberOfGuests(6), true),
+            new OrderTable(2L, new NumberOfGuests(3), true));
         TableGroup tableGroup = new TableGroup(1L);
         tableGroup.groupTables(orderTables);
         TableGroupTestFixtures.특정_테이블그룹_조회_모킹(tableGroupRepository, tableGroup);

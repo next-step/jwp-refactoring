@@ -5,10 +5,10 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.Arrays;
 import java.util.List;
+import kitchenpos.common.vo.Quantity;
 import kitchenpos.menu.testfixtures.MenuTestFixtures;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.common.vo.Quantity;
 import kitchenpos.ordertable.exception.GroupTablesException;
 import kitchenpos.ordertable.exception.UngroupTablesException;
 import org.junit.jupiter.api.DisplayName;
@@ -21,8 +21,8 @@ class TableGroupTest {
     void groupTables() {
         //given
         List<OrderTable> orderTables = Arrays.asList(
-            new OrderTable(1L, 6, true),
-            new OrderTable(2L, 3, true));
+            new OrderTable(1L, new NumberOfGuests(6), true),
+            new OrderTable(2L, new NumberOfGuests(3), true));
 
         //when
         TableGroup tableGroup = new TableGroup();
@@ -37,7 +37,7 @@ class TableGroupTest {
     void groupTables_exception1() {
         //given
         List<OrderTable> orderTables = Arrays.asList(
-            new OrderTable(1L, 6, true));
+            new OrderTable(1L, new NumberOfGuests(6), true));
 
         //when, then
         TableGroup tableGroup = new TableGroup();
@@ -50,8 +50,8 @@ class TableGroupTest {
     void groupTables_exception2() {
         //given
         List<OrderTable> orderTables = Arrays.asList(
-            new OrderTable(1L, 6, false),
-            new OrderTable(2L, 3, true));
+            new OrderTable(1L, new NumberOfGuests(6), false),
+            new OrderTable(2L, new NumberOfGuests(3), true));
 
         //when, then
         TableGroup tableGroup = new TableGroup(1L);
@@ -64,8 +64,8 @@ class TableGroupTest {
     void groupTables_exception3() {
         //given
         List<OrderTable> orderTables = Arrays.asList(
-            new OrderTable(1L, 6, true),
-            new OrderTable(1L, 6, true));
+            new OrderTable(1L, new NumberOfGuests(6), true),
+            new OrderTable(1L, new NumberOfGuests(6), true));
 
         //when, then
         TableGroup tableGroup = new TableGroup(1L);
@@ -78,8 +78,8 @@ class TableGroupTest {
     void groupTables_exception4() {
         //given
         List<OrderTable> orderTables = Arrays.asList(
-            new OrderTable(1L, 6, true),
-            new OrderTable(2L, 3, true));
+            new OrderTable(1L, new NumberOfGuests(6), true),
+            new OrderTable(2L, new NumberOfGuests(3), true));
 
         TableGroup tableGroup = new TableGroup(1L);
         tableGroup.groupTables(orderTables);
@@ -95,8 +95,8 @@ class TableGroupTest {
     void ungroup() {
         //given
         List<OrderTable> orderTables = Arrays.asList(
-            new OrderTable(1L, 6, true),
-            new OrderTable(2L, 3, true));
+            new OrderTable(1L, new NumberOfGuests(6), true),
+            new OrderTable(2L, new NumberOfGuests(3), true));
         TableGroup tableGroup = new TableGroup(1L);
         tableGroup.groupTables(orderTables);
 
@@ -115,8 +115,8 @@ class TableGroupTest {
     void ungroup_exception() {
         //given
         List<OrderTable> orderTables = Arrays.asList(
-            new OrderTable(1L, 6, true),
-            new OrderTable(2L, 3, true));
+            new OrderTable(1L, new NumberOfGuests(6), true),
+            new OrderTable(2L, new NumberOfGuests(3), true));
         TableGroup tableGroup = new TableGroup(1L);
         tableGroup.groupTables(orderTables);
 

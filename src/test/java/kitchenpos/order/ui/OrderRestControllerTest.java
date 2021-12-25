@@ -14,17 +14,18 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import kitchenpos.common.CommonTestFixtures;
+import kitchenpos.common.vo.Price;
+import kitchenpos.common.vo.Quantity;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.common.vo.Price;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.common.vo.Quantity;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.testfixtures.OrderTestFixtures;
+import kitchenpos.ordertable.domain.NumberOfGuests;
 import kitchenpos.ordertable.domain.OrderTable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -53,7 +54,7 @@ class OrderRestControllerTest {
     @BeforeEach
     void setUp() {
         MenuGroup 신상메뉴그룹 = new MenuGroup("신상메뉴그룹");
-        테이블1번 = new OrderTable(1L, 5, false);
+        테이블1번 = new OrderTable(1L, new NumberOfGuests(5), false);
         혼술세트 = new Menu(1L, "혼술세트", new Price(BigDecimal.ZERO), 신상메뉴그룹);
         이달의메뉴 = new Menu(2L, "이달의메뉴", new Price(BigDecimal.ZERO), 신상메뉴그룹);
     }
