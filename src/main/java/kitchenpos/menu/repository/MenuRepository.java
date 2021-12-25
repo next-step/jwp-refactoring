@@ -10,7 +10,6 @@ import kitchenpos.menu.domain.Menu;
 public interface MenuRepository extends JpaRepository<Menu, Long> {
 
     @Query("select distinct m from Menu m "
-        + "join fetch m.menuGroup mg "
         + "join fetch m.menuProducts.menuProducts mp")
     List<Menu> findMenus();
 }

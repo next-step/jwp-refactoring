@@ -19,7 +19,7 @@ public class MenuResponse {
     }
 
     public MenuResponse(Menu menu) {
-        this(menu.getId(), menu.getName().getValue(), menu.getPrice().getValue(), menu.getMenuGroup().getId(),
+        this(menu.getId(), menu.getName().getValue(), menu.getPrice().getValue(), menu.getMenuGroupId(),
             menu.getMenuProducts().getValue().stream()
                 .map(MenuProductResponse::new)
                 .collect(Collectors.toList()));

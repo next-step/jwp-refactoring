@@ -9,13 +9,9 @@ import java.util.Objects;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 
 import kitchenpos.common.domain.Name;
 import kitchenpos.common.domain.Price;
@@ -34,9 +30,7 @@ public class Menu {
     @Embedded
     private Price price;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "menu_group_id", foreignKey = @ForeignKey(name = "fk_menu_menu_group"))
-    private MenuGroup menuGroup;
+    private Long menuGroupId;
 
     @Embedded
     private MenuProducts menuProducts;
@@ -44,22 +38,22 @@ public class Menu {
     protected Menu() {
     }
 
-    private Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup,
+    private Menu(Long id, String name, BigDecimal price, Long menuGroupId,
         List<MenuProduct> menuProducts) {
-        validate(menuGroup);
+        validate(menuGroupId);
         this.id = id;
         this.name = new Name(name);
         this.price = new Price(price);
-        this.menuGroup = menuGroup;
+        this.menuGroupId = menuGroupId;
         this.menuProducts = new MenuProducts(menuProducts);
     }
 
-    public static Menu of(String name, BigDecimal price, MenuGroup menuGroup) {
-        return new Menu(null, name, price, menuGroup, new ArrayList<>());
+    public static Menu of(String name, BigDecimal price, Long menuGroupId) {
+        return new Menu(null, name, price, menuGroupId, new ArrayList<>());
     }
 
-    private void validate(MenuGroup menuGroup) {
-        if (Objects.isNull(menuGroup)) {
+    private void validate(Long menuGroupId) {
+        if (Objects.isNull(menuGroupId)) {
             throw new BadRequestException(WRONG_VALUE);
         }
     }
@@ -76,8 +70,8 @@ public class Menu {
         return price;
     }
 
-    public MenuGroup getMenuGroup() {
-        return menuGroup;
+    public Long getMenuGroupId() {
+        return menuGroupId;
     }
 
     public MenuProducts getMenuProducts() {
@@ -103,11 +97,12 @@ public class Menu {
             return false;
         Menu menu = (Menu)o;
         return Objects.equals(id, menu.id) && Objects.equals(name, menu.name)
-            && Objects.equals(price, menu.price) && Objects.equals(menuGroup, menu.menuGroup);
+            && Objects.equals(price, menu.price) && Objects.equals(menuGroupId, menu.menuGroupId)
+            && Objects.equals(menuProducts, menu.menuProducts);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, price, menuGroup);
+        return Objects.hash(id, name, price, menuGroupId, menuProducts);
     }
 }
