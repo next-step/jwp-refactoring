@@ -3,6 +3,7 @@ package kitchenpos.tobe.orders.domain.order;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
@@ -37,6 +38,7 @@ public class OrderLineItems {
             orderLineItems
                 .stream()
                 .map(OrderLineItem::getMenuId)
+                .filter(Objects::nonNull)
                 .distinct()
                 .collect(Collectors.toList())
         );
