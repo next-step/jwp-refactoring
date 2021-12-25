@@ -1,19 +1,11 @@
 package kitchenpos.order;
 
-import kitchenpos.application.OrderService;
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderLineItemDao;
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.Order;
+import kitchenpos.domain.OrderStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
@@ -21,30 +13,17 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 @DisplayName("주문")
 class OrderTest {
 
-    @InjectMocks
-    private OrderService orderService;
-
-    @Mock
-    private MenuDao menuDao;
-
-    @Mock
-    private OrderDao orderDao;
-
-    @Mock
-    private OrderLineItemDao orderLineItemDao;
-
-    @Mock
-    private OrderTableDao orderTableDao;
-
     @Test
-    @DisplayName("주문이 존재하지 않으면 예외가 발생한다.")
-    void createOrderFailBecauseOfIsEmptyOrderLineItem() {
+    @DisplayName("주문 상태 변경 시 주문이 완료 상태면 예외가 발생한다.")
+    void changeOrderStatusFailBecauseOfOrderStatusCompletion() {
         // given
-        final Order order = new Order(Collections.emptyList());
+        final Order order = Order.builder()
+                .orderStatus(OrderStatus.COMPLETION)
+                .build();
 
         // when
         assertThatIllegalArgumentException().isThrownBy(() -> {
-            orderService.create(order);
+            order.changeOrderStatus(OrderStatus.COOKING);
         });
     }
 }
