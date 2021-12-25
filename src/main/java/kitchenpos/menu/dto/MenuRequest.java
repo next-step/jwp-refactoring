@@ -31,7 +31,7 @@ public class MenuRequest {
     }
     
     public Menu toMenu(MenuGroup menuGroup) {
-        return Menu.of(name, price, menuGroup, menuProducts);
+        return Menu.of(name, price, menuGroup);
     }
 
     public String getName() {

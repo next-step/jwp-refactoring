@@ -24,12 +24,12 @@ public class ProductTest {
     
     @DisplayName("상품 가격은 0원 이상이어야한다 - 예외처리")
     @Test
-    void 상품_등록_가격_0원_이상() {
+    void 상품_가격_0원_이상() {
         // given, when, then
         assertThatThrownBy(() -> {
             Product.of("치킨", -6000);
         }).isInstanceOf(IllegalArgumentException.class)
-        .hasMessage("상품은 0원 이상이어야 합니다");
+        .hasMessage("가격은 0원 이상이어야 합니다");
     }
 
 }

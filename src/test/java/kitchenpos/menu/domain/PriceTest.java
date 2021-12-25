@@ -28,7 +28,7 @@ public class PriceTest {
         assertThatThrownBy(() -> {
             Price.from(-3000);
         }).isInstanceOf(IllegalArgumentException.class)
-        .hasMessage("상품은 0원 이상이어야 합니다");
+        .hasMessage("가격은 0원 이상이어야 합니다");
     }
     
     @DisplayName("수량에 따라 총 가격이 잘 만들어지는지 확인")

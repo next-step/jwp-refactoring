@@ -46,7 +46,7 @@ public class Price {
     
     private void checkPrice(int value) {
         if (Objects.isNull(value) || value < 0) {
-            throw new IllegalArgumentException("상품은 0원 이상이어야 합니다");
+            throw new IllegalArgumentException("가격은 0원 이상이어야 합니다");
         }
     }
 

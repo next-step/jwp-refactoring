@@ -1,18 +1,14 @@
 package kitchenpos.menu.domain;
 
-import java.math.BigDecimal;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 
 @Entity
 public class Menu {
@@ -30,21 +26,20 @@ public class Menu {
     @JoinColumn(name = "menu_group_id")
     private MenuGroup menuGroup;
     
-    @OneToMany(mappedBy = "menu", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    private List<MenuProduct> menuProducts;
+    @Embedded
+    private MenuProducts menuProducts = new MenuProducts();
     
     protected Menu() {
     }
     
-    private Menu(String name, int price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+    private Menu(String name, int price, MenuGroup menuGroup) {
         this.name = name;
         this.price = Price.from(price);
         this.menuGroup = menuGroup;
-        this.menuProducts = menuProducts;
     }
 
-    public static Menu of(String name, int price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        return new Menu(name, price, menuGroup, menuProducts);
+    public static Menu of(String name, int price, MenuGroup menuGroup) {
+        return new Menu(name, price, menuGroup);
     }
 
     public Long getId() {
@@ -71,10 +66,20 @@ public class Menu {
     }
 
     public List<MenuProduct> getMenuProducts() {
-        return menuProducts;
+        return menuProducts.getMenuProducts();
     }
 
     public void addMenuProducts(final List<MenuProduct> menuProducts) {
-        this.menuProducts = menuProducts;
+        menuProducts.forEach(menuProduct -> {
+            menuProduct.updateMenu(this);
+            this.menuProducts.add(menuProduct);
+        });
+        checkTotalPrice(this.menuProducts.calculatorTotalPrice());
+    }
+    
+    private void checkTotalPrice(Price sumProductPrice) {
+        if (this.price.compareTo(sumProductPrice) > 0) {
+            throw new IllegalArgumentException("메뉴 가격이 상품 가격의 합보다 큽니다");
+        }
     }
 }

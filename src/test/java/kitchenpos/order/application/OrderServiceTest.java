@@ -57,7 +57,7 @@ public class OrderServiceTest {
     @Test
     void 주문_등록() {
         // given
-        Menu 메뉴 = Menu.of("메뉴", 5000, MenuGroup.from("메뉴그룹"), new ArrayList<MenuProduct>());
+        Menu 메뉴 = Menu.of("메뉴", 5000, MenuGroup.from("메뉴그룹"));
         
         OrderTable 주문_테이블 = OrderTable.of(TableGroup.from(new ArrayList<OrderTable>()), 3, false);
         
@@ -96,7 +96,7 @@ public class OrderServiceTest {
     @Test
     void 주문_등록_등록된_메뉴만() {
         // given
-        Menu 미등록_메뉴 = Menu.of("메뉴", 5000, MenuGroup.from("메뉴그룹"), new ArrayList<MenuProduct>());
+        Menu 미등록_메뉴 = Menu.of("메뉴", 5000, MenuGroup.from("메뉴그룹"));
         OrderLineItem 주문_항목 = OrderLineItem.of(null, 미등록_메뉴, 1L);
         Order 미등록_메뉴_주문 = Order.of(null, OrderStatus.COOKING, new ArrayList<OrderLineItem>());
         미등록_메뉴_주문.addOrderLineItems(Arrays.asList(주문_항목));
@@ -119,7 +119,7 @@ public class OrderServiceTest {
         // given
         OrderTable 주문_테이블 = OrderTable.of(null, 3, false);
         Order 등록된_테이블_없이_주문 = Order.of(주문_테이블, OrderStatus.COOKING, new ArrayList<OrderLineItem>());
-        Menu 메뉴 = Menu.of("햄버거", 5500, MenuGroup.from("메뉴그룹"), new ArrayList<MenuProduct>());
+        Menu 메뉴 = Menu.of("햄버거", 5500, MenuGroup.from("메뉴그룹"));
         
         OrderLineItem 주문_메뉴 = OrderLineItem.of(등록된_테이블_없이_주문, 메뉴, 1L);
         등록된_테이블_없이_주문.addOrderLineItems(Arrays.asList(주문_메뉴));
@@ -141,7 +141,7 @@ public class OrderServiceTest {
         TableGroup 단체지정 = TableGroup.from(new ArrayList<OrderTable>());
         OrderTable 주문_테이블 = OrderTable.of(단체지정, 3, false);
         Order 주문 = Order.of(주문_테이블, OrderStatus.COOKING, new ArrayList<OrderLineItem>());
-        Menu 메뉴 = Menu.of("햄버거", 5500, MenuGroup.from("메뉴그룹"), new ArrayList<MenuProduct>());
+        Menu 메뉴 = Menu.of("햄버거", 5500, MenuGroup.from("메뉴그룹"));
         
         OrderLineItem 주문_메뉴 = OrderLineItem.of(주문, 메뉴, 1L);
         주문.addOrderLineItems(Arrays.asList(주문_메뉴));
