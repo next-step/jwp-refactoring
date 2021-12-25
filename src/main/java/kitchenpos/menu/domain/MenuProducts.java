@@ -35,7 +35,7 @@ public class MenuProducts {
 
     public Price getTotalPrice() {
         List<BigDecimal> prices = menuProducts.stream()
-                .map(MenuProduct::getTotalPrice)
+                .map(menuProduct -> menuProduct.getTotalPrice().getPrice())
                 .collect(Collectors.toList());
         return Price.sum(prices);
     }

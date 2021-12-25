@@ -1,5 +1,6 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.common.domain.Price;
 import kitchenpos.common.domain.Quantity;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.DisplayName;
@@ -41,6 +42,6 @@ class MenuProductTest {
         MenuProduct menuProduct = MenuProduct.of(product, quantity);
 
         // when & then
-        assertThat(menuProduct.getTotalPrice()).isEqualTo(BigDecimal.valueOf(34_000));
+        assertThat(menuProduct.getTotalPrice()).isEqualTo(Price.of(BigDecimal.valueOf(34_000)));
     }
 }

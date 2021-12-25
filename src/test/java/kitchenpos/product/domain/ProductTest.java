@@ -1,5 +1,6 @@
 package kitchenpos.product.domain;
 
+import kitchenpos.common.domain.Price;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -25,7 +26,7 @@ class ProductTest {
         assertAll(
                 () -> assertThat(product).isNotNull()
                 , () -> assertThat(product.getName()).isEqualTo(name)
-                , () -> assertThat(product.getPrice()).isEqualTo(price)
+                , () -> assertThat(product.getPrice()).isEqualTo(Price.of(price))
         );
     }
 }

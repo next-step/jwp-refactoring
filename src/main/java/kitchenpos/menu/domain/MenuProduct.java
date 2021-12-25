@@ -1,5 +1,6 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.common.domain.Price;
 import kitchenpos.common.domain.Quantity;
 import kitchenpos.product.domain.Product;
 
@@ -71,9 +72,9 @@ public class MenuProduct {
         this.menu = menu;
     }
 
-    public BigDecimal getTotalPrice() {
-        BigDecimal price = product.getPrice();
-        BigDecimal bigDecimal = BigDecimal.valueOf(quantity.getQuantity());
-        return price.multiply(bigDecimal);
+    public Price getTotalPrice() {
+        Price price = product.getPrice();
+        BigDecimal value = BigDecimal.valueOf(quantity.getQuantity());
+        return price.multiply(value);
     }
 }
