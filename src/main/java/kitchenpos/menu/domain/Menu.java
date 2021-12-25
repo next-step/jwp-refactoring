@@ -60,9 +60,6 @@ public class Menu {
     }
     
     public Long getMenuGroupId() {
-        if (menuGroup == null) {
-            return null;
-        }
         return menuGroup.getId();
     }
 

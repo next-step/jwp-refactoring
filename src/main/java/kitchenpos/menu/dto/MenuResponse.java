@@ -1,6 +1,5 @@
 package kitchenpos.menu.dto;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 
@@ -23,10 +22,6 @@ public class MenuResponse {
         this.price = price;
         this.menuGroupId = menuGroupId;
         this.menuProducts = menuProducts;
-    }
-    
-    public static MenuResponse of(Long id, String name, int price, Long menuGroupId, List<MenuProduct> menuProducts) {
-        return new MenuResponse(id, name, price, menuGroupId, menuProducts);
     }
     
     public static MenuResponse from(Menu menu) {

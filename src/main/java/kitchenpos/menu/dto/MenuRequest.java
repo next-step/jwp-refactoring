@@ -26,10 +26,6 @@ public class MenuRequest {
         return new MenuRequest(name, price, menuGroupId, menuProducts);
     }
     
-    public static MenuRequest from(Menu menu) {
-        return new MenuRequest(menu.getName(), menu.getPrice().intValue(), menu.getMenuGroupId(), menu.getMenuProducts());
-    }
-    
     public Menu toMenu(MenuGroup menuGroup) {
         return Menu.of(name, price, menuGroup);
     }

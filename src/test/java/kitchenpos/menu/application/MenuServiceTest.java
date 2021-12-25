@@ -47,13 +47,14 @@ public class MenuServiceTest {
         Product 상품 = Product.of("짜장면", 6000);
         MenuProduct 메뉴상품 = MenuProduct.of(메뉴, 상품, 1L);
         메뉴.addMenuProducts(Arrays.asList(메뉴상품));
+        MenuRequest 메뉴_생성_요청 = MenuRequest.of("짜장면", 6000, 1L, Arrays.asList(메뉴상품));
         
         given(menuGroupService.findById(nullable(Long.class))).willReturn(메뉴.getMenuGroup());
         given(productService.findById(상품)).willReturn(상품);
         given(menuRepository.save(any())).willReturn(메뉴);
 
         // when
-        MenuResponse 저장된_메뉴 = menuService.create(MenuRequest.from(메뉴));
+        MenuResponse 저장된_메뉴 = menuService.create(메뉴_생성_요청);
 
         // then
         assertThat(저장된_메뉴).isEqualTo(MenuResponse.from(메뉴));
