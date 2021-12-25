@@ -2,12 +2,13 @@ package kitchenpos.order;
 
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderStatus;
+import kitchenpos.exception.CannotChangeOrderStatusException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("주문")
@@ -22,8 +23,8 @@ class OrderTest {
                 .build();
 
         // when
-        assertThatIllegalArgumentException().isThrownBy(() -> {
+        assertThatThrownBy(() -> {
             order.changeOrderStatus(OrderStatus.COOKING);
-        });
+        }).isInstanceOf(CannotChangeOrderStatusException.class);
     }
 }
