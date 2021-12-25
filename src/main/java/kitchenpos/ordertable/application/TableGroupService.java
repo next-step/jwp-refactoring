@@ -40,7 +40,6 @@ public class TableGroupService {
     public void ungroup(final Long tableGroupId) {
         final TableGroup tableGroup = findTableGroup(tableGroupId);
         tableGroup.ungroup();
-        tableGroupRepository.delete(tableGroup);
     }
 
     public TableGroup findTableGroup(Long tableGroupId) {
