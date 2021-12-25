@@ -16,4 +16,12 @@ class PriceTest {
                 () -> Price.of(new BigDecimal(-1))
         ).isInstanceOf(InvalidPriceException.class);
     }
+
+    @DisplayName("가격이 null이면  생성할 수 없다.")
+    @Test
+    void validate2() {
+        assertThatThrownBy(
+                () -> Price.of(null)
+        ).isInstanceOf(InvalidPriceException.class);
+    }
 }

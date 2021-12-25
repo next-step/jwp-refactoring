@@ -33,6 +33,10 @@ public class MenuProduct {
         return new MenuProduct(seq, menu, product, quantity);
     }
 
+    public static MenuProduct of(Product product, int quantity) {
+        return new MenuProduct(null, null, product, quantity);
+    }
+
     public Long getSeq() {
         return seq;
     }
@@ -63,5 +67,9 @@ public class MenuProduct {
 
     public void setQuantity(final long quantity) {
         this.quantity = Quantity.of(quantity);
+    }
+
+    public Price calculate() {
+        return product.multiply(quantity.getQuantity());
     }
 }

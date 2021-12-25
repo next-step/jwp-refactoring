@@ -50,4 +50,8 @@ public class Product {
     public void setPrice(final BigDecimal price) {
         this.price = Price.of(price);
     }
+
+    public Price multiply(Long quantity) {
+        return price.multiply(quantity);
+    }
 }

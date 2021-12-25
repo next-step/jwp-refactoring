@@ -5,6 +5,7 @@ import kitchenpos.exception.InvalidPriceException;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.math.BigDecimal;
+import java.util.Objects;
 
 @Embeddable
 public class Price {
@@ -28,13 +29,25 @@ public class Price {
     }
 
     private void validate(BigDecimal price) {
-        if(price.compareTo(PRICE_MIN_VALUE) < 0) {
+        if(Objects.isNull(price) || price.compareTo(PRICE_MIN_VALUE) < 0) {
             throw new InvalidPriceException(INVALID_PRICE_EXCEPTION);
         }
     }
 
     public BigDecimal getPrice() {
         return price;
+    }
+
+    public Price multiply(Long quantity) {
+        return Price.of(price.multiply(BigDecimal.valueOf(quantity)));
+    }
+
+    public Price sum(Price price) {
+        return Price.of(this.price.add(price.getPrice()));
+    }
+
+    public static Price zero() {
+        return new Price(BigDecimal.ZERO);
     }
 }
 
