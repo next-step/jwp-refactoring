@@ -1,4 +1,4 @@
-package kitchenpos;
+package kitchenpos.common.acceptance;
 
 import io.restassured.RestAssured;
 import io.restassured.http.Method;
@@ -8,10 +8,12 @@ import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.MediaType;
 
 import java.util.Map;
 
+@Profile("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class AcceptanceTest {
     @LocalServerPort
