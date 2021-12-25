@@ -16,10 +16,6 @@ public class MenuGroupRequest {
         return new MenuGroupRequest(name);
     }
     
-    public static MenuGroupRequest from(MenuGroup menuGroup) {
-        return new MenuGroupRequest(menuGroup.getName());
-    }
-    
     public MenuGroup toMenuGroup() {
         return MenuGroup.from(name);
     }

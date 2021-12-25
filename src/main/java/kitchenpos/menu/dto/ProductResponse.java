@@ -18,10 +18,6 @@ public class ProductResponse {
         this.price = price;
     }
     
-    public static ProductResponse of(Long id, String name, int price) {
-        return new ProductResponse(id, name, price);
-    }
-    
     public static ProductResponse from(Product product) {
         return new ProductResponse(product.getId(), product.getName(), product.getPrice().intValue());
     }

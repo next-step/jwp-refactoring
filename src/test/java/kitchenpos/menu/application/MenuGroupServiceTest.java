@@ -39,7 +39,7 @@ public class MenuGroupServiceTest {
         given(menuGroupRepository.save(any())).willReturn(메뉴그룹);
 
         // when
-        MenuGroupResponse savedMenuGroup = menuGroupService.create(MenuGroupRequest.from(메뉴그룹));
+        MenuGroupResponse savedMenuGroup = menuGroupService.create(MenuGroupRequest.from(메뉴그룹.getName()));
 
         // then
         assertThat(savedMenuGroup).isEqualTo(MenuGroupResponse.from(메뉴그룹));

@@ -39,7 +39,7 @@ public class ProductServiceTest {
         given(productRepository.save(any())).willReturn(상품);
 
         // when
-        ProductResponse 등록_결과 = productService.create(ProductRequest.from(상품));
+        ProductResponse 등록_결과 = productService.create(ProductRequest.of("치킨", 18000));
 
         // then
         assertThat(등록_결과).isEqualTo(ProductResponse.from(상품));

@@ -16,10 +16,6 @@ public class MenuGroupResponse {
         this.name = name;
     }
     
-    public static MenuGroupResponse of(Long id, String name) {
-        return new MenuGroupResponse(id, name);
-    }
-    
     public static MenuGroupResponse from(MenuGroup menuGroup) {
         return new MenuGroupResponse(menuGroup.getId(), menuGroup.getName());
     }

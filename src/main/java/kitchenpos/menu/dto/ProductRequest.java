@@ -1,6 +1,5 @@
 package kitchenpos.menu.dto;
 
-import kitchenpos.menu.domain.Price;
 import kitchenpos.menu.domain.Product;
 
 public class ProductRequest {
@@ -17,10 +16,6 @@ public class ProductRequest {
     
     public static ProductRequest of(String name, int price) {
         return new ProductRequest(name, price);
-    }
-    
-    public static ProductRequest from(Product product) {
-        return new ProductRequest(product.getName(), product.getPrice().intValue());
     }
     
     public Product toProduct() {
