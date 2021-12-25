@@ -1,11 +1,11 @@
-package kitchenpos.order.application;
+package kitchenpos.table.application;
 
-import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.domain.OrderTableRepository;
-import kitchenpos.order.domain.OrderTableValidator;
-import kitchenpos.order.domain.OrderTables;
-import kitchenpos.order.dto.OrderTableRequest;
-import kitchenpos.order.dto.OrderTableResponse;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.domain.OrderTableValidatable;
+import kitchenpos.table.domain.OrderTables;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.tablegroup.domain.GroupingPair;
 import kitchenpos.tablegroup.event.GroupEvent;
 import kitchenpos.tablegroup.event.UngroupEvent;
@@ -18,9 +18,9 @@ import java.util.List;
 @Service
 public class TableService {
     private final OrderTableRepository orderTableRepository;
-    private final OrderTableValidator orderTableValidator;
+    private final OrderTableValidatable orderTableValidator;
 
-    public TableService(final OrderTableRepository orderTableRepository, final OrderTableValidator orderTableValidator) {
+    public TableService(final OrderTableRepository orderTableRepository, final OrderTableValidatable orderTableValidator) {
         this.orderTableRepository = orderTableRepository;
         this.orderTableValidator = orderTableValidator;
     }

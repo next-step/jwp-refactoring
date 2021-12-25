@@ -1,4 +1,4 @@
-package kitchenpos.order.domain;
+package kitchenpos.table.domain;
 
 import org.springframework.util.CollectionUtils;
 
@@ -34,7 +34,7 @@ public class OrderTables {
         }
     }
 
-    public void ungroup(OrderTableValidator orderTableValidator) {
+    public void ungroup(OrderTableValidatable orderTableValidator) {
         for (final OrderTable orderTable : orderTables) {
             orderTableValidator.validateHasProgressOrder(orderTable);
             orderTable.unsetTableGroup();

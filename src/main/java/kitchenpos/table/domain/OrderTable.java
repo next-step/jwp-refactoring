@@ -1,4 +1,4 @@
-package kitchenpos.order.domain;
+package kitchenpos.table.domain;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -43,7 +43,7 @@ public class OrderTable {
         this.numberOfGuests = NumberOfGuests.of(numberOfGuests);
     }
 
-    public void changeEmptyStatus(final boolean empty, OrderTableValidator validator) {
+    public void changeEmptyStatus(final boolean empty, OrderTableValidatable validator) {
         validator.validateHasProgressOrder(this);
         this.empty = empty;
     }

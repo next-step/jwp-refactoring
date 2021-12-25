@@ -1,4 +1,4 @@
-package kitchenpos.order.domain;
+package kitchenpos.table.domain;
 
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,11 +13,11 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.doThrow;
 
 public class OrderTableTest {
-    private OrderTableValidator orderTableValidator;
+    private OrderTableValidatable orderTableValidator;
 
     @BeforeEach
     void setUp() {
-        orderTableValidator = Mockito.mock(OrderTableValidator.class);
+        orderTableValidator = Mockito.mock(OrderTableValidatable.class);
     }
 
     @DisplayName("손님의 수를 변경한다")

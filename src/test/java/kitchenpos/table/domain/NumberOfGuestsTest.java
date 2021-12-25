@@ -1,6 +1,6 @@
-package kitchenpos.order.domain;
+package kitchenpos.table.domain;
 
-import kitchenpos.order.domain.NumberOfGuests;
+import kitchenpos.table.domain.NumberOfGuests;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;

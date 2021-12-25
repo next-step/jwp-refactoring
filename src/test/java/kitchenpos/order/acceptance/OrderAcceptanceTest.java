@@ -9,13 +9,13 @@ import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.order.dto.OrderTableResponse;
+import kitchenpos.table.acceptance.TableAcceptanceTest;
+import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.utils.Http;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
-import java.awt.*;
 import java.util.Arrays;
 import java.util.List;
 

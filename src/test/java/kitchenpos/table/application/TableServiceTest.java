@@ -1,10 +1,10 @@
-package kitchenpos.order.application;
+package kitchenpos.table.application;
 
-import kitchenpos.order.domain.OrderTableValidator;
-import kitchenpos.order.dto.OrderTableRequest;
-import kitchenpos.order.dto.OrderTableResponse;
-import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.domain.OrderTableRepository;
+import kitchenpos.table.domain.OrderTableValidatable;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -30,7 +30,7 @@ public class TableServiceTest {
     @Mock
     private OrderTableRepository orderTableRepository;
     @Mock
-    private OrderTableValidator orderTableValidator;
+    private OrderTableValidatable orderTableValidator;
     @InjectMocks
     private TableService tableService;
 
@@ -189,7 +189,6 @@ public class TableServiceTest {
             OrderTableRequest orderTableRequest = new OrderTableRequest(4, false);
             OrderTable orderTable = new OrderTable(1L, null, 4, true);
             given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(orderTable));
-            doThrow(IllegalArgumentException.class).when(orderTableValidator).validateChangeNumberOfGuests(orderTable);
 
             // when
             ThrowableAssert.ThrowingCallable callable = () -> tableService.changeNumberOfGuests(orderTable.getId(), orderTableRequest);

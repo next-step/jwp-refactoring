@@ -1,4 +1,4 @@
-package kitchenpos.order.domain;
+package kitchenpos.table.domain;
 
 
 import kitchenpos.tablegroup.domain.TableGroup;
@@ -19,11 +19,11 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 
 public class OrderTablesTest {
-    private OrderTableValidator orderTableValidator;
+    private OrderTableValidatable orderTableValidator;
 
     @BeforeEach
     void setUp() {
-        orderTableValidator = Mockito.mock(OrderTableValidator.class);
+        orderTableValidator = Mockito.mock(OrderTableValidatable.class);
     }
 
     @DisplayName("OrderTables를 생성한다")

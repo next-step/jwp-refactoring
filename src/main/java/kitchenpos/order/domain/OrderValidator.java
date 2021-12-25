@@ -1,6 +1,8 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.order.exception.OrderTableNotFoundException;
+import kitchenpos.table.exception.OrderTableNotFoundException;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
 import org.springframework.stereotype.Component;
 
 @Component

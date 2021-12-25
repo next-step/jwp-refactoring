@@ -1,12 +1,14 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableValidatable;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 import java.util.List;
 
 @Component
-public class OrderTableValidator {
+public class OrderTableValidator implements OrderTableValidatable {
     public static final List<OrderStatus> PROGRESSING_ORDER_STATUSES = Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL);
     private final OrderRepository orderRepository;
 
