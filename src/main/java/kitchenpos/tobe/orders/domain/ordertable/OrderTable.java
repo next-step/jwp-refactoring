@@ -37,7 +37,7 @@ public class OrderTable {
     )
     private TableGroup tableGroup;
 
-    protected OrderTable() {
+    public OrderTable() {
     }
 
     public OrderTable(final Long id) {
@@ -56,11 +56,15 @@ public class OrderTable {
         this.numberOfGuests = numberOfGuests;
     }
 
-    public void serve(final NumberOfGuests numberOfGuests) {
+    public void serve() {
         if (!isEmpty()) {
             throw new IllegalStateException("방문한 손님이 없는 주문 테이블만 사용할 수 있습니다.");
         }
         this.empty = new Empty(TAKE);
+    }
+
+    public void serve(final NumberOfGuests numberOfGuests) {
+        serve();
         changeNumberOfGuests(numberOfGuests);
     }
 

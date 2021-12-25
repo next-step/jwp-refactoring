@@ -1,9 +1,11 @@
 package kitchenpos.tobe.orders.domain.ordertable;
 
+import kitchenpos.tobe.common.DomainService;
 import kitchenpos.tobe.common.domain.Validator;
 import kitchenpos.tobe.orders.domain.order.OrderRepository;
 import kitchenpos.tobe.orders.domain.order.OrderStatus;
 
+@DomainService
 class OrderTableValidator implements Validator<OrderTable> {
 
     private final OrderRepository orderRepository;
