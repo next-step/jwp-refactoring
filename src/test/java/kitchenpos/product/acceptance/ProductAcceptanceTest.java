@@ -39,9 +39,9 @@ public class ProductAcceptanceTest extends AcceptanceTest {
     void list() {
         //given
         ProductResponse 양념치킨 = ProductAcceptanceFixtures.상품_생성_요청(
-            ProductAcceptanceFixtures.상품_정의("양념치킨", BigDecimal.valueOf(10000.00))).getBody();
+            ProductAcceptanceFixtures.상품_정의("양념치킨", BigDecimal.valueOf(10000))).getBody();
         ProductResponse 후라이드 = ProductAcceptanceFixtures.상품_생성_요청(
-            ProductAcceptanceFixtures.상품_정의("후라이드", BigDecimal.valueOf(9000.00))).getBody();
+            ProductAcceptanceFixtures.상품_정의("후라이드", BigDecimal.valueOf(9000))).getBody();
 
         //when
         ResponseEntity<List<ProductResponse>> 조회_결과 = ProductAcceptanceFixtures.상품_전체_조회_요청();
