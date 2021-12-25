@@ -6,7 +6,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "table_group")
-public class TableGroup {
+public class TableGroup extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", length = 20)

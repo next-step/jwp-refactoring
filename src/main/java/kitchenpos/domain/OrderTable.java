@@ -7,7 +7,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "order_table")
-public class OrderTable {
+public class OrderTable extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", length = 20)

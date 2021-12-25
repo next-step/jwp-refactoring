@@ -7,7 +7,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "menu")
-public class Menu {
+public class Menu extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", length = 20)
