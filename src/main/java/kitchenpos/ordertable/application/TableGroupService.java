@@ -39,8 +39,9 @@ public class TableGroupService {
         final List<OrderTable> findOrderTables = tableGroupValidator.validateOrderTables(orderTableIds);
         final TableGroup savedTableGroup = tableGroupRepository.save(TableGroup.of());
 
-        eventPublisher.publishEvent(new TableGroupSavedEvent(savedTableGroup,
-            findOrderTables.stream().map(OrderTable::getId).collect(Collectors.toList())));
+        List<Long> findOrderTableIds = findOrderTables.stream().map(OrderTable::getId)
+            .collect(Collectors.toList());
+        eventPublisher.publishEvent(new TableGroupSavedEvent(savedTableGroup, findOrderTableIds));
         return new TableGroupResponse(savedTableGroup, findOrderTables);
     }
 

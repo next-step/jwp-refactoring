@@ -59,7 +59,7 @@ public class Menu {
     }
 
     private void validateMenuProducts(List<MenuProduct> menuProducts) {
-        if (menuProducts.isEmpty()) {
+        if (menuProducts == null || menuProducts.isEmpty()) {
             throw new BadRequestException(WRONG_VALUE);
         }
     }
