@@ -58,8 +58,8 @@ class OrderRestControllerTest extends RestControllerTest {
         Menu 후라이드_후라이드 = MenuFixture.of(
                 "후라이드+후라이드",
                 BigDecimal.valueOf(16000),
-                두마리치킨.getId());
-        후라이드_후라이드.addMenuProduct(MenuProductFixture.of(후라이드치킨.getId(), 2));
+                두마리치킨);
+        후라이드_후라이드.addMenuProduct(MenuProductFixture.of(후라이드치킨, 2));
 
         OrderTable 주문_테이블 = OrderTableFixture.of(1L, 4, false);
         주문 = OrderFixture.of(

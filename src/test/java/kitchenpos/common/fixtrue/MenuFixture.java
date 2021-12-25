@@ -1,6 +1,7 @@
 package kitchenpos.common.fixtrue;
 
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
 
 import java.math.BigDecimal;
 
@@ -10,7 +11,7 @@ public class MenuFixture {
 
     }
 
-    public static Menu of(String name, BigDecimal price, Long menuGroupId) {
-        return Menu.of(name, price, menuGroupId);
+    public static Menu of(String name, BigDecimal price, MenuGroup menuGroup) {
+        return Menu.of(name, price, menuGroup);
     }
 }

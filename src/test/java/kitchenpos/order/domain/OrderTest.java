@@ -37,9 +37,9 @@ class OrderTest {
         Menu 후라이드_후라이드 = MenuFixture.of(
                 "후라이드+후라이드",
                 BigDecimal.valueOf(31000),
-                두마리치킨.getId());
+                두마리치킨);
 
-        후라이드_후라이드.addMenuProduct(MenuProductFixture.of(후라이드치킨.getId(), 2));
+        후라이드_후라이드.addMenuProduct(MenuProductFixture.of(후라이드치킨, 2));
 
         주문_테이블 = OrderTableFixture.of(1L, 4, false);
         주문_상품 = OrderLineItemFixture.of(1L, 1L, 후라이드_후라이드.getId(), 1L);

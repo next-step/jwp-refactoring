@@ -3,13 +3,12 @@ package kitchenpos.menu.applicaiton;
 import kitchenpos.common.fixtrue.MenuGroupFixture;
 import kitchenpos.common.fixtrue.MenuProductFixture;
 import kitchenpos.common.fixtrue.ProductFixture;
+import kitchenpos.menu.application.MenuGroupService;
 import kitchenpos.menu.application.MenuService;
-import kitchenpos.menu.dao.MenuDao;
-import kitchenpos.menu.dao.MenuGroupDao;
-import kitchenpos.menu.dao.MenuProductDao;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
@@ -39,13 +38,10 @@ import static org.mockito.BDDMockito.given;
 class MenuServiceTest {
 
     @Mock
-    MenuDao menuDao;
+    MenuRepository menuRepository;
 
     @Mock
-    MenuGroupDao menuGroupDao;
-
-    @Mock
-    MenuProductDao menuProductDao;
+    MenuGroupService menuGroupService;
 
     @Mock
     ProductService productService;
@@ -75,11 +71,11 @@ class MenuServiceTest {
                 Collections.singletonList(MenuProductRequest.of(후라이드치킨.getId(), 2)));
 
         후라이드_후라이드_메뉴_상품_요청 = MenuProductRequest.of(후라이드치킨.getId(), 2);
-        후라이드_후라이드_메뉴_상품 = MenuProductFixture.of(후라이드치킨.getId(), 2);
+        후라이드_후라이드_메뉴_상품 = MenuProductFixture.of(후라이드치킨, 2);
         후라이드_후라이드 = Menu.of(
                 후라이드_후라이드_요청.getName(),
                 후라이드_후라이드_요청.getPrice(),
-                후라이드_후라이드_요청.getMenuGroupId());
+                두마리치킨);
         후라이드_후라이드.addMenuProduct(후라이드_후라이드_메뉴_상품);
         후라이드_후라이드_응답 = MenuResponse.from(후라이드_후라이드);
     }
@@ -87,10 +83,9 @@ class MenuServiceTest {
     @Test
     void 메뉴_생성() {
         // given
-        given(menuGroupDao.existsById(후라이드_후라이드.getMenuGroupId())).willReturn(true);
-        given(productService.findProductById(후라이드_후라이드.getMenuProducts().get(0).getProductId())).willReturn(후라이드치킨);
-        given(menuDao.save(any())).willReturn(후라이드_후라이드);
-        given(menuProductDao.save(any())).willReturn(후라이드_후라이드_메뉴_상품);
+        given(menuGroupService.findMenuGroupById(후라이드_후라이드_요청.getMenuGroupId())).willReturn(두마리치킨);
+        given(productService.findProductById(후라이드_후라이드_요청.getMenuProducts().get(0).getProductId())).willReturn(후라이드치킨);
+        given(menuRepository.save(any())).willReturn(후라이드_후라이드);
 
         // when
         MenuResponse actual = menuService.create(후라이드_후라이드_요청);
@@ -105,14 +100,21 @@ class MenuServiceTest {
     @Test
     void 메뉴_생성_시_등록하려는_메뉴는_메뉴_그룹이_존재해야한다() {
         // given
-        given(menuGroupDao.existsById(any())).willReturn(false);
+        MenuRequest 메뉴_그룹_없는_후라이드_후라이드_요청 = MenuRequest.of(
+                "후라이드+후라이드",
+                BigDecimal.valueOf(31000),
+                null,
+                Collections.singletonList(MenuProductRequest.of(후라이드치킨.getId(), 2)));
+
+        given(menuGroupService.findMenuGroupById(any())).willThrow(new IllegalArgumentException("메뉴 그룹이 존재하지 않습니다."));
 
         // then
-        ThrowingCallable throwingCallable = () -> menuService.create(후라이드_후라이드_요청);
+        ThrowingCallable throwingCallable = () -> menuService.create(메뉴_그룹_없는_후라이드_후라이드_요청);
 
         // then
         assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(throwingCallable);
+                .isThrownBy(throwingCallable)
+                .withMessage("메뉴 그룹이 존재하지 않습니다.");
     }
 
     @DisplayName("등록하려는 `메뉴`의 가격은 `메뉴 상품`들의 수량 * `상품`의 가격을 모두 더한 금액보다 작아야한다")
@@ -125,7 +127,7 @@ class MenuServiceTest {
                 두마리치킨.getId(),
                 Collections.singletonList(MenuProductRequest.of(후라이드치킨.getId(), 2)));
 
-        given(menuGroupDao.existsById(any())).willReturn(true);
+        given(menuGroupService.findMenuGroupById(any())).willReturn(두마리치킨);
         given(productService.findProductById(any())).willReturn(후라이드치킨);
 
 
@@ -134,15 +136,15 @@ class MenuServiceTest {
 
         // then
         assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(throwingCallable);
+                .isThrownBy(throwingCallable)
+                .withMessage("메뉴의 가격은 메뉴 상품들의 수량 * 상품의 가격을 모두 더한 금액 보다 작거나 같아야 합니다.");
     }
 
     @Test
     void 메뉴_조회() {
         // given
         List<Menu> menus = Collections.singletonList(후라이드_후라이드);
-        given(menuDao.findAll()).willReturn(menus);
-        given(menuProductDao.findAllByMenuId(후라이드_후라이드.getId())).willReturn(Collections.singletonList(후라이드_후라이드_메뉴_상품));
+        given(menuRepository.findAll()).willReturn(menus);
 
         // when
         List<MenuResponse> actual = menuService.list();
