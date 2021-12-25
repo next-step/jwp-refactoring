@@ -1,48 +1,78 @@
 package kitchenpos.domain;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "order_line_item")
 public class OrderLineItem {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
-    private Long orderId;
-    private Long menuId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id")
+    private Order order;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "menu_id")
+    private Menu menu;
+
+    @Column(name = "quantity", length = 20, nullable = false)
     private long quantity;
 
-    public OrderLineItem() {
+    protected OrderLineItem() {
     }
 
-    public OrderLineItem(final Long menuId, final long quantity) {
-        this.menuId = menuId;
-        this.quantity = quantity;
+    public void addOrder(final Order order) {
+        this.order = order;
     }
 
     public Long getSeq() {
         return seq;
     }
 
-    public void setSeq(final Long seq) {
-        this.seq = seq;
+    public Order getOrder() {
+        return order;
     }
 
-    public Long getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(final Long orderId) {
-        this.orderId = orderId;
-    }
-
-    public Long getMenuId() {
-        return menuId;
-    }
-
-    public void setMenuId(final Long menuId) {
-        this.menuId = menuId;
+    public Menu getMenu() {
+        return menu;
     }
 
     public long getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(final long quantity) {
-        this.quantity = quantity;
+    public static OrderLineItemBuilder builder() {
+        return new OrderLineItemBuilder();
+    }
+
+    public static final class OrderLineItemBuilder {
+        private Menu menu;
+        private long quantity;
+
+        private OrderLineItemBuilder() {
+        }
+
+        public static OrderLineItemBuilder anOrderLineItem() {
+            return new OrderLineItemBuilder();
+        }
+
+        public OrderLineItemBuilder menu(Menu menu) {
+            this.menu = menu;
+            return this;
+        }
+
+        public OrderLineItemBuilder quantity(long quantity) {
+            this.quantity = quantity;
+            return this;
+        }
+
+        public OrderLineItem build() {
+            OrderLineItem orderLineItem = new OrderLineItem();
+            orderLineItem.quantity = this.quantity;
+            orderLineItem.menu = this.menu;
+            return orderLineItem;
+        }
     }
 }
