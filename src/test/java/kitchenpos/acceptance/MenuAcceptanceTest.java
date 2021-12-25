@@ -27,7 +27,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     @DisplayName("메뉴를 등록한다.")
     void createMenu() {
         Product product = ProductAcceptanceTest.상품_등록_요청("짜장면", new BigDecimal(5000)).as(Product.class);
-        MenuGroup menuGroup = MenuGroupAcceptanceTest.메뉴_그룹_등록_요청("짜장면세트").as(MenuGroup.class);
+        MenuGroup menuGroup = MenuGroupAcceptanceTest.메뉴_그룹_등록_요청("중국음식").as(MenuGroup.class);
         MenuProduct menuProduct = new MenuProduct();
         menuProduct.setMenuId(1L);
         menuProduct.setProductId(product.getId());
