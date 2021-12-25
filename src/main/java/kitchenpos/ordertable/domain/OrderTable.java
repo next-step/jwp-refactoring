@@ -5,21 +5,15 @@ import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import kitchenpos.ordertable.exception.CanNotEditOrderTableEmptyByGroupException;
 import kitchenpos.ordertable.exception.CanNotEditOrderTableNumberOfGuestsByEmptyException;
-import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.exception.CanNotGroupByEmptyException;
 import kitchenpos.tablegroup.exception.CanNotGroupByGroupingAlreadyException;
-import kitchenpos.tablegroup.exception.NotFoundTableGroupException;
 
 @Entity
 @Table(name = "order_table")
@@ -30,9 +24,8 @@ public class OrderTable {
     @Column(name = "id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "table_group_id", foreignKey = @ForeignKey(name = "fk_order_table_table_group"))
-    private TableGroup tableGroup;
+    @Column(name = "table_group_id")
+    private Long tableGroupId;
 
     @Embedded
     private NumberOfGuests numberOfGuests;
@@ -43,9 +36,9 @@ public class OrderTable {
     protected OrderTable() {
     }
 
-    private OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
+    private OrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
         this.id = id;
-        this.tableGroup = tableGroup;
+        this.tableGroupId = tableGroupId;
         this.numberOfGuests = NumberOfGuests.of(numberOfGuests);
         this.empty = empty;
     }
@@ -54,21 +47,18 @@ public class OrderTable {
         return of(null, null, numberOfGuests, empty);
     }
 
-    public static OrderTable of(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
-        return new OrderTable(id, tableGroup, numberOfGuests, empty);
+    public static OrderTable of(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
+        return new OrderTable(id, tableGroupId, numberOfGuests, empty);
     }
 
-    public void group(TableGroup tableGroup) {
-        validateGroup(tableGroup);
+    public void group(Long tableGroupId) {
+        validateGroup();
         this.empty = false;
-        this.tableGroup = tableGroup;
+        this.tableGroupId = tableGroupId;
     }
 
-    private void validateGroup(TableGroup tableGroup) {
-        if (Objects.isNull(tableGroup)) {
-            throw new NotFoundTableGroupException();
-        }
-        if (Objects.nonNull(this.tableGroup)) {
+    private void validateGroup() {
+        if (isInGroup()) {
             throw new CanNotGroupByGroupingAlreadyException();
         }
         if (!empty) {
@@ -76,12 +66,16 @@ public class OrderTable {
         }
     }
 
+    private boolean isInGroup() {
+        return Objects.nonNull(tableGroupId);
+    }
+
     public void ungroup() {
-        this.tableGroup = null;
+        this.tableGroupId = null;
     }
 
     public void changeEmptyIfNotTableGroup(boolean empty) {
-        if (Objects.nonNull(tableGroup)) {
+        if (isInGroup()) {
             throw new CanNotEditOrderTableEmptyByGroupException();
         }
         this.empty = empty;
@@ -98,8 +92,8 @@ public class OrderTable {
         return id;
     }
 
-    public TableGroup getTableGroup() {
-        return tableGroup;
+    public Long getTableGroupId() {
+        return tableGroupId;
     }
 
     public int getNumberOfGuests() {

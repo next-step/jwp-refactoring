@@ -15,6 +15,7 @@ import kitchenpos.tablegroup.domain.TableGroupRepository;
 import kitchenpos.tablegroup.dto.TableGroupAddRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
 import kitchenpos.tablegroup.exception.CanNotUngroupByOrderStatusException;
+import kitchenpos.tablegroup.exception.NotFoundTableGroupException;
 
 @Service
 public class TableGroupService {
@@ -56,7 +57,7 @@ public class TableGroupService {
 
 	private TableGroup findTableGroup(Long id) {
 		return tableGroupRepository.findById(id)
-			.orElseThrow(NotFoundOrderTableException::new);
+			.orElseThrow(NotFoundTableGroupException::new);
 	}
 
 	private void validateUngroup(final List<OrderTable> orderTables) {

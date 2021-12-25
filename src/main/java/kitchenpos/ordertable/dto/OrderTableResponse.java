@@ -1,9 +1,6 @@
 package kitchenpos.ordertable.dto;
 
-import java.util.Optional;
-
 import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.tablegroup.domain.TableGroup;
 
 public class OrderTableResponse {
 
@@ -24,9 +21,7 @@ public class OrderTableResponse {
 
 	public static OrderTableResponse of(OrderTable orderTable) {
 		return new OrderTableResponse(orderTable.getId(),
-			Optional.ofNullable(orderTable.getTableGroup())
-				.map(TableGroup::getId)
-				.orElse(null),
+			orderTable.getTableGroupId(),
 			orderTable.getNumberOfGuests(),
 			orderTable.isEmpty());
 	}

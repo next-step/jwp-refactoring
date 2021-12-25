@@ -47,15 +47,13 @@ class TableGroupTest {
 		final OrderTable 논그룹_빈테이블1 = OrderTable.of(1L, null, 2, true);
 		final OrderTable 논그룹_빈테이블2 = OrderTable.of(2L, null, 3, true);
 
-		final TableGroup 그룹 = TableGroup.of(
-			Arrays.asList(논그룹_빈테이블1, 논그룹_빈테이블2)
-		);
+		final TableGroup 그룹 = TableGroup.of(1L, Arrays.asList(논그룹_빈테이블1, 논그룹_빈테이블2));
 
 		assertAll(
 			() -> assertThat(논그룹_빈테이블1.isEmpty()).isFalse(),
-			() -> assertThat(논그룹_빈테이블1.getTableGroup()).isEqualTo(그룹),
+			() -> assertThat(논그룹_빈테이블1.getTableGroupId()).isEqualTo(그룹.getId()),
 			() -> assertThat(논그룹_빈테이블2.isEmpty()).isFalse(),
-			() -> assertThat(논그룹_빈테이블2.getTableGroup()).isEqualTo(그룹)
+			() -> assertThat(논그룹_빈테이블2.getTableGroupId()).isEqualTo(그룹.getId())
 		);
 	}
 
@@ -75,7 +73,7 @@ class TableGroupTest {
 	void group_having_table_group_already() {
 		final OrderTable 그룹_빈테이블1 = OrderTable.of(1L, null, 1, true);
 		final OrderTable 그룹_빈테이블2 = OrderTable.of(2L, null, 2, true);
-		TableGroup.of(Arrays.asList(그룹_빈테이블1, 그룹_빈테이블2));
+		TableGroup.of(1L, Arrays.asList(그룹_빈테이블1, 그룹_빈테이블2));
 		final OrderTable 논그룹_빈테이블3 = OrderTable.of(3L, null, 3, true);
 
 		assertThatExceptionOfType(CanNotGroupByGroupingAlreadyException.class)
@@ -92,8 +90,8 @@ class TableGroupTest {
 		그룹.ungroup();
 
 		assertAll(
-			() -> assertThat(그룹_빈테이블1.getTableGroup()).isNull(),
-			() -> assertThat(그룹_빈테이블2.getTableGroup()).isNull()
+			() -> assertThat(그룹_빈테이블1.getTableGroupId()).isNull(),
+			() -> assertThat(그룹_빈테이블2.getTableGroupId()).isNull()
 		);
 	}
 }

@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
+import javax.persistence.ForeignKey;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 
 import org.springframework.util.CollectionUtils;
@@ -18,7 +21,8 @@ public class OrderTables {
 
 	public static final int MIN_SIZE_INCLUSIVE = 2;
 
-	@OneToMany(mappedBy = "tableGroup")
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinColumn(name = "table_group_id", foreignKey = @ForeignKey(name = "fk_order_table_table_group"), nullable = false, insertable = false)
 	private List<OrderTable> orderTables = new ArrayList<>();
 
 	protected OrderTables() {
@@ -44,7 +48,7 @@ public class OrderTables {
 
 	private void addAll(TableGroup tableGroup, List<OrderTable> orderTables) {
 		this.orderTables.addAll(orderTables);
-		this.orderTables.forEach(orderTable -> orderTable.group(tableGroup));
+		this.orderTables.forEach(orderTable -> orderTable.group(tableGroup.getId()));
 	}
 
 	public void ungroup() {
