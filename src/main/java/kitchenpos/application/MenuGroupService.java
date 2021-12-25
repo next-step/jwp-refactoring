@@ -28,7 +28,7 @@ public class MenuGroupService {
     @Transactional(readOnly = true)
     public MenuGroup findMenuGroup(Long id) {
         return menuGroupDao.findById(id)
-                .orElseThrow(IllegalAccessError::new);
+                .orElseThrow(IllegalArgumentException::new);
     }
 
     public List<MenuGroupResponse> list() {

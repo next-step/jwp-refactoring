@@ -57,7 +57,7 @@ public class TableService {
 
    public OrderTable findOrderTable(Long id) {
         return orderTableDao.findById(id)
-                .orElseThrow(IllegalAccessError::new);
+                .orElseThrow(IllegalArgumentException::new);
     }
 
     public List<OrderTable> findOrderTables(List<Long> ids) {

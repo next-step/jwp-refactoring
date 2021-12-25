@@ -75,7 +75,7 @@ public class MenuService {
         return products.stream()
                 .filter(product -> product.getId().equals(menuProductRequest.getProductId()))
                 .findFirst()
-                .orElseThrow(IllegalAccessError::new);
+                .orElseThrow(IllegalArgumentException::new);
     }
 
     @Transactional(readOnly = true)
