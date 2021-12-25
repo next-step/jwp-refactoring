@@ -86,9 +86,10 @@ public class TableServiceTest {
     void changeError() {
         OrderTable 빈주문테이블 = OrderTableFixture.생성(0,true);
         Order order = OrderFixture.생성(빈주문테이블);
-        빈주문테이블.addOrders(Arrays.asList(order));
-        given(orderTableRepository.findById(any())).willReturn(java.util.Optional.of(빈주문테이블));
 
+        //OrderTable 주문테이블 = OrderTableFixture.생성(0,true, Arrays.asList(order));
+        given(orderTableRepository.findById(any())).willReturn(java.util.Optional.of(주문테이블));
+        // TODO
         assertThatThrownBy(
                 () -> tableService.changeEmpty(any(), OrderTableFixture.생성_Request(0,false))
         ).isInstanceOf(IllegalArgumentException.class);

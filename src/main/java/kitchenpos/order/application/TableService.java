@@ -37,6 +37,7 @@ public class TableService {
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, OrderTableRequest request) {
         final OrderTable savedOrderTable = findOrderTable(orderTableId);
+        //TODO  validateCompletion();
         savedOrderTable.changeEmpty(request.isEmpty());
 
         return OrderTableResponse.from(orderTableRepository.save(savedOrderTable));

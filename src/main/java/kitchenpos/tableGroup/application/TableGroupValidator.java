@@ -1,5 +1,7 @@
 package kitchenpos.tableGroup.application;
 
+import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.OrderTableRepository;
 import kitchenpos.tableGroup.dto.OrderTableIdRequest;
@@ -14,9 +16,11 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class TableGroupValidator {
     private final OrderTableRepository orderTableRepository;
+    private final OrderRepository orderRepository;
 
-    public TableGroupValidator(OrderTableRepository orderTableRepository) {
+    public TableGroupValidator(OrderTableRepository orderTableRepository, OrderRepository orderRepository) {
         this.orderTableRepository = orderTableRepository;
+        this.orderRepository = orderRepository;
     }
 
     public List<OrderTable> getOrderTable(List<OrderTableIdRequest> orderTableIdRequests) {
@@ -34,5 +38,17 @@ public class TableGroupValidator {
             throw new IllegalArgumentException();
         }
         return savedOrderTables;
+    }
+
+    public void validateCompletion(Long tableGroupId) {
+        List<OrderTable> orderTables = orderTableRepository.findByTableGroupId(tableGroupId);
+        final List<Long> orderTableIds = orderTables.stream()
+                .map(OrderTable::getId)
+                .collect(Collectors.toList());
+
+        if (!orderRepository.existsAllByOrderTableIdInAndOrderStatus(orderTableIds,
+                OrderStatus.COMPLETION)) {
+            throw new IllegalArgumentException();
+        }
     }
 }

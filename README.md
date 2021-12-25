@@ -104,11 +104,11 @@
   * 없음
 * [x] TableGroup
   * OrderTable 참조제거
-* OrderTable
+* [x] OrderTable
   * TableGroup 간접참조
-  * Orders 직접참조
+  * Orders 참조제거
 * Order
-  * OrderTable 간접참조
+  * OrderTable 참조제거
   * OrderLineItem 직접참조
 * OrderLineItem
   * Order 간접참조

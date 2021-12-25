@@ -1,11 +1,14 @@
 package kitchenpos.order.event;
 
+import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.OrderTableRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionalEventListener;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class OrderTableEventHandler {

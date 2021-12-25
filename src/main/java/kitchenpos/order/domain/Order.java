@@ -7,7 +7,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 @Table(name = "orders")
@@ -17,9 +16,8 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_table_id", foreignKey = @ForeignKey(name = "fk_orders_order_table"))
-    private OrderTable orderTable;
+    @Column(nullable = false)
+    private Long orderTableId;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -35,8 +33,8 @@ public class Order {
     protected Order() {
     }
 
-    public Order(OrderTable orderTable) {
-        this.orderTable = orderTable;
+    public Order(Long orderTableId) {
+        this.orderTableId = orderTableId;
         this.orderStatus = OrderStatus.COOKING;
         this.orderLineItems = new OrderLineItems();
     }
@@ -46,7 +44,7 @@ public class Order {
     }
 
     public Long getOrderTableId() {
-        return orderTable.getId();
+        return orderTableId;
     }
 
     public LocalDateTime getOrderedTime() {
@@ -80,9 +78,5 @@ public class Order {
         if(orderStatus.isCookingOrMeal()){
             throw new IllegalArgumentException();
         }
-    }
-
-    public void updateOrderTable(OrderTable orderTable) {
-        this.orderTable = orderTable;
     }
 }

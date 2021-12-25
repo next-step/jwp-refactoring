@@ -32,7 +32,7 @@ public class OrderService {
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
         final OrderTable orderTable = findOrderTable(orderRequest.getOrderTableId());
-        final Order order = new Order(orderTable);
+        final Order order = new Order(orderTable.getId());
         final List<OrderLineItem> orderLineItems = toOrderLineItems(orderRequest.getOrderLineItems(), order);
         order.addLineItems(orderLineItems);
 

@@ -1,12 +1,10 @@
 package kitchenpos.tableGroup.domain;
 
-import kitchenpos.order.domain.OrderTable;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
@@ -22,12 +20,8 @@ public class TableGroup {
     protected TableGroup() {
     }
 
-    private TableGroup(LocalDateTime createdDate) {
-        this.createdDate = createdDate;
-    }
-
     public static TableGroup empty() {
-        return new TableGroup(LocalDateTime.now());
+        return new TableGroup();
     }
 
     public Long getId() {

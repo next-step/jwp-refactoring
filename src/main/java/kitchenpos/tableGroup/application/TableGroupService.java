@@ -40,7 +40,7 @@ public class TableGroupService {
     public void ungroup(final Long tableGroupId) {
         final TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
                 .orElseThrow(IllegalArgumentException::new);
-
+        tableGroupValidator.validateCompletion(tableGroupId);
         eventPublisher.publishEvent(OrderTableUngroupEvent.from(tableGroup));
 
         tableGroupRepository.delete(tableGroup);
