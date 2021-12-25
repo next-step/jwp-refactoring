@@ -32,7 +32,7 @@ public class MenuGroupService {
                 .collect(Collectors.toList());
     }
 
-    public MenuGroup findById(Long id) {
-        return menuGroupRepository.findByIdElseThrow(id);
+    public boolean existsById(Long id) {
+        return menuGroupRepository.existsById(id);
     }
 }

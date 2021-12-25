@@ -2,6 +2,7 @@ package kitchenpos.menu.domain;
 
 import kitchenpos.common.exception.InvalidPriceException;
 import kitchenpos.common.exception.OverMenuPriceException;
+import kitchenpos.product.domain.Product;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
@@ -10,6 +11,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Embeddable
 public class MenuProducts {
@@ -41,21 +43,20 @@ public class MenuProducts {
         menuProducts.add(menuProduct);
     }
 
-    private BigDecimal totalPrice() {
+    private BigDecimal totalPrice(List<Product> products) {
         return menuProducts.stream()
-                .map(MenuProduct::totalPrice)
+                .map(menuProduct -> menuProduct.totalPrice(products))
                 .reduce(BigDecimal::add)
                 .orElseThrow(InvalidPriceException::new);
     }
 
-    public void validateOverPrice(BigDecimal price) {
-        if (price.compareTo(totalPrice()) > MIN_PRICE) {
+    public void validateOverPrice(BigDecimal price, List<Product> products) {
+        if (price.compareTo(totalPrice(products)) > MIN_PRICE) {
             throw new OverMenuPriceException();
         }
     }
 
     public void initMenu(Menu menu) {
-        validateOverPrice(menu.getPrice());
         menuProducts.forEach(menuProduct -> menuProduct.assignMenu(menu));
     }
 
@@ -70,5 +71,11 @@ public class MenuProducts {
     @Override
     public int hashCode() {
         return Objects.hash(menuProducts);
+    }
+
+    public List<Long> getProductIds() {
+        return menuProducts.stream()
+                .map(MenuProduct::getProductId)
+                .collect(Collectors.toList());
     }
 }

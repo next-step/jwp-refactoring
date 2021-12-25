@@ -2,10 +2,11 @@ package kitchenpos.menu.dto;
 
 import kitchenpos.common.domain.Price;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuProduct;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MenuRequest {
     private String name;
@@ -27,15 +28,13 @@ public class MenuRequest {
         return name;
     }
 
-    public Long getMenuGroupId() {
-        return menuGroupId;
+    public List<MenuProduct> getMenuProducts() {
+        return menuProducts.stream()
+                .map(MenuProductRequest::toMenuProduct)
+                .collect(Collectors.toList());
     }
 
-    public List<MenuProductRequest> getMenuProducts() {
-        return menuProducts;
-    }
-
-    public Menu toMenu(MenuGroup menuGroup) {
-        return new Menu(name, new Price(price), menuGroup);
+    public Menu toMenu() {
+        return new Menu(name, new Price(price), menuGroupId, getMenuProducts());
     }
 }

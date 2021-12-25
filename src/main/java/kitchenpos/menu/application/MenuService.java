@@ -1,8 +1,10 @@
 package kitchenpos.menu.application;
 
-import kitchenpos.menu.domain.*;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.validator.MenuValidator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,39 +15,26 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class MenuService {
     private final MenuRepository menuRepository;
-    private final MenuGroupService menuGroupService;
-    private final MenuProductService menuProductService;
+    private final MenuValidator menuValidator;
 
     public MenuService(
             final MenuRepository menuRepository,
-            final MenuGroupService menuGroupService,
-            final MenuProductService menuProductService
-    ) {
+            final MenuValidator menuValidator) {
         this.menuRepository = menuRepository;
-        this.menuGroupService = menuGroupService;
-        this.menuProductService = menuProductService;
+        this.menuValidator = menuValidator;
     }
 
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
-        Menu savedMenu = menuRepository.save(menuRequest.toMenu(getMenuGroup(menuRequest)));
-        MenuProducts menuProducts = menuProductService.allSave(menuRequest.getMenuProducts(), savedMenu);
-        return MenuResponse.of(savedMenu, menuProducts.getMenuProducts());
-    }
-
-    private MenuGroup getMenuGroup(MenuRequest menuRequest) {
-        return menuGroupService.findById(menuRequest.getMenuGroupId());
+        Menu menu = menuRequest.toMenu();
+        menuValidator.validate(menu);
+        return MenuResponse.of(menuRepository.save(menu));
     }
 
     public List<MenuResponse> list() {
         return menuRepository.findAll()
                 .stream()
-                .map(this::getMenuResponse)
+                .map(MenuResponse::of)
                 .collect(Collectors.toList());
-    }
-
-    private MenuResponse getMenuResponse(Menu menu) {
-        List<MenuProduct> menuProducts = menuProductService.findAllByMenu(menu);
-        return MenuResponse.of(menu, menuProducts);
     }
 }
