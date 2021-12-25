@@ -1,6 +1,5 @@
 package kitchenpos.order.dto;
 
-import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.domain.OrderLineItem;
 
 public class OrderLineItemRequest {
@@ -24,7 +23,7 @@ public class OrderLineItemRequest {
         return quantity;
     }
 
-    public OrderLineItem toEntity(Menu menu) {
-        return OrderLineItem.of(menu, quantity);
+    public OrderLineItem toEntity() {
+        return OrderLineItem.of(menuId, quantity);
     }
 }

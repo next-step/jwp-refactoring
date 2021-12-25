@@ -28,24 +28,6 @@ class OrderTest {
             .hasMessage(WRONG_VALUE.getMessage());
     }
 
-    @DisplayName("주문 생성시 주문 항목에 주문이 등록된다.")
-    @Test
-    void createOrderAddToOrderLineItems() {
-        // given
-        OrderTable orderTable = OrderTable.of(1L, null, 0, false);
-        List<OrderLineItem> orderLineItems = Arrays.asList(
-            OrderLineItem.of(null, 1),
-            OrderLineItem.of(null, 2));
-
-        // when
-        Order order = Order.of(orderTable.getId(), orderLineItems);
-
-        // then
-        assertThat(order.getOrderLineItems().getValue())
-            .extracting("order")
-            .containsExactlyElementsOf(Arrays.asList(order, order));
-    }
-
     @DisplayName("주문 상태 갱신은 계산 완료가 아니어야 가능하다.")
     @Test
     void changeOrderStatusCompletion() {

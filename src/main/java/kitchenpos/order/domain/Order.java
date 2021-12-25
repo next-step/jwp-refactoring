@@ -5,6 +5,7 @@ import static kitchenpos.common.exception.ExceptionMessage.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -48,7 +49,6 @@ public class Order {
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
         this.orderLineItems = orderLineItems;
-        orderLineItems.changeOrder(this);
     }
 
     private void validate(Long orderTableId) {
@@ -89,12 +89,6 @@ public class Order {
         this.orderStatus = orderStatus;
     }
 
-    public void validateNotCompletionOrderStatus() {
-        if (!orderStatus.isCompletion()) {
-            throw new BadRequestException(CANNOT_CHANGE_STATUS);
-        }
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o)
@@ -109,5 +103,11 @@ public class Order {
     @Override
     public int hashCode() {
         return Objects.hash(id, orderTableId, orderStatus, orderedTime);
+    }
+
+    public List<Long> getMenuIds() {
+        return orderLineItems.getValue().stream()
+            .map(OrderLineItem::getMenuId)
+            .collect(Collectors.toList());
     }
 }

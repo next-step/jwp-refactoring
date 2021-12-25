@@ -8,53 +8,40 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kitchenpos.common.exception.ExceptionMessage;
 import kitchenpos.common.exception.NotFoundException;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.order.domain.OrderValidator;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusRequest;
 import kitchenpos.order.repository.OrderRepository;
-import kitchenpos.ordertable.repository.OrderTableRepository;
 
 @Service
 public class OrderService {
-    private final MenuRepository menuRepository;
-    private final OrderRepository orderRepository;
-    private final OrderTableRepository orderTableRepository;
 
-    public OrderService(MenuRepository menuRepository, OrderRepository orderRepository,
-        OrderTableRepository orderTableRepository) {
-        this.menuRepository = menuRepository;
+    private final OrderValidator orderValidator;
+    private final OrderRepository orderRepository;
+
+    public OrderService(OrderValidator orderValidator, OrderRepository orderRepository) {
+        this.orderValidator = orderValidator;
         this.orderRepository = orderRepository;
-        this.orderTableRepository = orderTableRepository;
     }
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
-        final OrderTable orderTable = orderTableRepository.findById(orderRequest.getOrderTableId())
-            .orElseThrow(() -> new NotFoundException(NOT_FOUND_DATA));
-
-        final Order savedOrder = orderRepository.save(Order.of(
-            orderTable.getId(), makeOrderLineItems(orderRequest.getOrderLineItems())));
-
+        Order order = Order.of(
+            orderRequest.getOrderTableId(), makeOrderLineItems(orderRequest.getOrderLineItems()));
+        orderValidator.validateCreate(order);
+        final Order savedOrder = orderRepository.save(order);
         return new OrderResponse(savedOrder);
     }
 
     private List<OrderLineItem> makeOrderLineItems(List<OrderLineItemRequest> orderLineItems) {
         return orderLineItems.stream().map(
-            orderLineItemRequest -> orderLineItemRequest.toEntity(findMenu(orderLineItemRequest.getMenuId()))
+            OrderLineItemRequest::toEntity
         ).collect(Collectors.toList());
-    }
-
-    private Menu findMenu(Long menuId) {
-        return menuRepository.findById(menuId).orElseThrow(() -> new NotFoundException(
-            ExceptionMessage.NOT_FOUND_DATA));
     }
 
     @Transactional(readOnly = true)

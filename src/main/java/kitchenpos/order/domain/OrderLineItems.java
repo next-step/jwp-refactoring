@@ -6,6 +6,8 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
+import javax.persistence.ForeignKey;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 
 import org.springframework.util.CollectionUtils;
@@ -15,7 +17,8 @@ import kitchenpos.common.exception.BadRequestException;
 @Embeddable
 public class OrderLineItems {
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "order_id", foreignKey = @ForeignKey(name = "fk_order_line_item_orders"))
     private List<OrderLineItem> orderLineItems;
 
     protected OrderLineItems() {
@@ -34,11 +37,5 @@ public class OrderLineItems {
 
     public List<OrderLineItem> getValue() {
         return orderLineItems;
-    }
-
-    public void changeOrder(Order order) {
-        for (OrderLineItem orderLineItem : orderLineItems) {
-            orderLineItem.changeOrder(order);
-        }
     }
 }

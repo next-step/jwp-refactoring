@@ -13,9 +13,9 @@ public class OrderLineItemResponse {
     public OrderLineItemResponse() {
     }
 
-    public OrderLineItemResponse(OrderLineItem orderLineItem) {
-        this(orderLineItem.getId(), orderLineItem.getOrder().getId(),
-            orderLineItem.getMenu().getId(), orderLineItem.getQuantity().getValue());
+    public OrderLineItemResponse(OrderLineItem orderLineItem, Long orderId) {
+        this(orderLineItem.getId(), orderId,
+            orderLineItem.getMenuId(), orderLineItem.getQuantity().getValue());
     }
 
     public OrderLineItemResponse(Long id, Long orderId, Long menuId, long quantity) {

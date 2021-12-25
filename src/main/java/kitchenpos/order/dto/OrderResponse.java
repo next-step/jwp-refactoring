@@ -23,7 +23,7 @@ public class OrderResponse {
     public OrderResponse(Order order) {
         this(order.getId(), order.getOrderTableId(), order.getOrderStatus(), order.getOrderedTime(),
             order.getOrderLineItems().getValue().stream().map(
-                    OrderLineItemResponse::new)
+                    orderLineItem -> new OrderLineItemResponse(orderLineItem, order.getId()))
                 .collect(Collectors.toList()));
     }
 
