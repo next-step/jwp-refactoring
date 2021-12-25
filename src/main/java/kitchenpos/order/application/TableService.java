@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import kitchenpos.order.dao.OrderTableRepository;
 import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.domain.OrderTables;
 import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.order.dto.OrderTableResponse;
 

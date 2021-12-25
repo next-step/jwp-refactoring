@@ -68,7 +68,7 @@ public class OrderTable {
     }
 
     public void changeEmpty(final boolean empty) {
-        checkTableGroup();
+        checkIsSetTableGroup();
         checkIsCookingOrMeal();
         this.empty = empty;
     }
@@ -95,7 +95,7 @@ public class OrderTable {
         });
     }
 
-    private void checkTableGroup() {
+    private void checkIsSetTableGroup() {
         if (Objects.nonNull(tableGroup)) {
             throw new IllegalArgumentException("단체지정이 되어있는 테이블은 빈 테이블로 변경할 수 없습니다");
         }

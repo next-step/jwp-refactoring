@@ -26,10 +26,6 @@ public class OrderResponse {
         this.orderLineItems = orderLineItems;
     }
     
-    public static OrderResponse of(Long id, Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
-        return new OrderResponse(id, orderTableId, orderStatus, orderedTime, orderLineItems);
-    }
-    
     public static OrderResponse from(Order order) {
         return new OrderResponse(order.getId(), order.getOrderTableId(), order.getOrderStatus(), order.getOrderedTime(), order.getOrderLineItems());
     }

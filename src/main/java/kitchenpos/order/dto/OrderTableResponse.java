@@ -23,10 +23,6 @@ public class OrderTableResponse {
         this.empty = empty;
     }
     
-    public static OrderTableResponse of(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
-        return new OrderTableResponse(id, tableGroupId, numberOfGuests, empty);
-    }
-    
     public static OrderTableResponse from(OrderTable orderTable) {
         return new OrderTableResponse(orderTable.getId(), orderTable.getTableGroupId(), orderTable.getNumberOfGuests(), orderTable.isEmpty());
     }

@@ -21,10 +21,6 @@ public class TableGroupResponse {
         this.orderTables = orderTables;
     }
     
-    public static TableGroupResponse of(Long id, LocalDateTime createdDate, List<OrderTable> orderTables) {
-        return new TableGroupResponse(id, createdDate, orderTables);
-    }
-    
     public static TableGroupResponse from(TableGroup tableGroup) {
         return new TableGroupResponse(tableGroup.getId(), tableGroup.getCreatedDate(), tableGroup.getOrderTables().getOrderTables());
     }
