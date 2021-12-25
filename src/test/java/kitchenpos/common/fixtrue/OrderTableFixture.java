@@ -8,7 +8,7 @@ public class OrderTableFixture {
 
     }
 
-    public static OrderTable of(Long id, int numberOfGuests, boolean empty) {
-        return OrderTable.of(id, numberOfGuests, empty);
+    public static OrderTable of(int numberOfGuests, boolean empty) {
+        return OrderTable.of(numberOfGuests, empty);
     }
 }

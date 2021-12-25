@@ -23,8 +23,8 @@ class TableGroupTest {
 
     @BeforeEach
     void setUp() {
-        firstOrderTable = OrderTableFixture.of(1L, 2, true);
-        secondOrderTable = OrderTableFixture.of(1L, 2, true);
+        firstOrderTable = OrderTableFixture.of(2, true);
+        secondOrderTable = OrderTableFixture.of(2, true);
         orderTables = Arrays.asList(firstOrderTable, secondOrderTable);
     }
 

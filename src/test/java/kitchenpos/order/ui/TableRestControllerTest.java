@@ -1,9 +1,11 @@
 package kitchenpos.order.ui;
 
-import kitchenpos.order.application.TableService;
-import kitchenpos.order.domain.OrderTable;
 import kitchenpos.common.fixtrue.OrderTableFixture;
 import kitchenpos.common.ui.RestControllerTest;
+import kitchenpos.order.application.TableService;
+import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.dto.OrderTableRequest;
+import kitchenpos.order.dto.OrderTableResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -36,32 +38,33 @@ class TableRestControllerTest extends RestControllerTest {
     TableService tableService;
 
     @Test
-    void 테이블_생성() throws Exception {
+    void 빈_테이블_생성() throws Exception {
         // given
-        OrderTable 빈_테이블 = OrderTableFixture.of(1L, 0, true);
-        given(tableService.create(any())).willReturn(빈_테이블);
+        OrderTableRequest 빈_테이블_요청 = OrderTableRequest.of(0, true);
+        OrderTableResponse 빈_테이블_응답 = OrderTableResponse.from(OrderTable.of(빈_테이블_요청.getNumberOfGuests(), 빈_테이블_요청.isEmpty()));
+        given(tableService.create(any())).willReturn(빈_테이블_응답);
 
         // when
         ResultActions actions = mockMvc.perform(post(API_TABLE_ROOT)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(asJsonString(빈_테이블)))
+                        .content(asJsonString(빈_테이블_요청)))
                 .andDo(print());
 
         // then
         actions
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").value(빈_테이블.getId()))
-                .andExpect(jsonPath("$.tableGroupId").value(빈_테이블.getTableGroupId()))
-                .andExpect(jsonPath("$.numberOfGuests").value(빈_테이블.getNumberOfGuests()))
-                .andExpect(jsonPath("$.empty").value(true));
+                .andExpect(jsonPath("$.id").value(빈_테이블_응답.getId()))
+                .andExpect(jsonPath("$.tableGroupId").value(빈_테이블_응답.getTableGroupId()))
+                .andExpect(jsonPath("$.numberOfGuests").value(빈_테이블_응답.getNumberOfGuests()))
+                .andExpect(jsonPath("$.empty").value(빈_테이블_응답.isEmpty()));
     }
 
     @Test
     void 테이블_조회() throws Exception {
         // given
-        List<OrderTable> orderTables = new ArrayList<>();
-        orderTables.add(OrderTableFixture.of(1L, 0, true));
-        orderTables.add(OrderTableFixture.of(2L, 5, false));
+        List<OrderTableResponse> orderTables = new ArrayList<>();
+        orderTables.add(OrderTableResponse.from(OrderTable.of(0, true)));
+        orderTables.add(OrderTableResponse.from(OrderTable.of(5, false)));
 
         given(tableService.list()).willReturn(orderTables);
 
@@ -86,13 +89,13 @@ class TableRestControllerTest extends RestControllerTest {
     @Test
     void 테이블_상태_변경() throws Exception {
         // given
-        OrderTable 빈_테이블 = OrderTableFixture.of(1L, 0, true);
-        OrderTable 주문_테이블 = OrderTableFixture.of(1L, 0, false);
+        OrderTable 빈_테이블 = OrderTable.of(0, true);
+        OrderTableResponse 주문_테이블 = OrderTableResponse.from(OrderTable.of(빈_테이블.getNumberOfGuests(), false));
 
         given(tableService.changeEmpty(any(), any())).willReturn(주문_테이블);
-        빈_테이블.setEmpty(false);
+
         // when
-        ResultActions actions = mockMvc.perform(put(API_TABLE_ROOT + "/" + 빈_테이블.getId() + "/empty")
+        ResultActions actions = mockMvc.perform(put(API_TABLE_ROOT + "/" + 1L + "/empty")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(빈_테이블)))
                 .andDo(print());
@@ -107,13 +110,13 @@ class TableRestControllerTest extends RestControllerTest {
     @Test
     void 방문한_손님_수_변경() throws Exception {
         // given
-        OrderTable 주문_테이블 = OrderTableFixture.of(1L, 0, false);
-        OrderTable 방문한_손님_수가_변경된_주문_테이블 = OrderTableFixture.of(1L, 5, false);
+        OrderTable 주문_테이블 = OrderTableFixture.of(0, false);
+        OrderTableResponse 방문한_손님_수가_변경된_주문_테이블 = OrderTableResponse.from(OrderTable.of(5, 주문_테이블.isEmpty()));
 
         given(tableService.changeNumberOfGuests(any(), any())).willReturn(방문한_손님_수가_변경된_주문_테이블);
-        주문_테이블.setNumberOfGuests(5);
+
         // when
-        ResultActions actions = mockMvc.perform(put(API_TABLE_ROOT + "/" + 주문_테이블.getId() + "/number-of-guests")
+        ResultActions actions = mockMvc.perform(put(API_TABLE_ROOT + "/" + 1L + "/number-of-guests")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(주문_테이블)))
                 .andDo(print());
@@ -122,7 +125,7 @@ class TableRestControllerTest extends RestControllerTest {
         actions
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(주문_테이블.getId()))
-                .andExpect(jsonPath("$.numberOfGuests").value(주문_테이블.getNumberOfGuests()));
+                .andExpect(jsonPath("$.numberOfGuests").value(5));
     }
 
 }

@@ -49,8 +49,8 @@ class TableGroupServiceTest {
 
     @BeforeEach
     void setUp() {
-        firstOrderTable = OrderTableFixture.of(1L, 2, true);
-        secondOrderTable = OrderTableFixture.of(1L, 2, true);
+        firstOrderTable = OrderTableFixture.of(2, true);
+        secondOrderTable = OrderTableFixture.of(2, true);
         orderTables = Arrays.asList(firstOrderTable, secondOrderTable);
         단체_지정_테이블 = TableGroupFixture.of(1L, firstOrderTable, secondOrderTable);
     }

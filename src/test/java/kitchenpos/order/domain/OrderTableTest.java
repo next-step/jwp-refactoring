@@ -13,7 +13,7 @@ class OrderTableTest {
 
     @Test
     void 주문_테이블_생성_시_단체_지정은_되어있지_않다() {
-        OrderTable actual = OrderTable.of(1L, 0, true);
+        OrderTable actual = OrderTable.of(0, true);
 
         assertAll(() -> {
             assertThat(actual).isNotNull();
@@ -23,7 +23,7 @@ class OrderTableTest {
 
     @Test
     void 방문한_손님_수는_0명_이상이어야_한다() {
-        ThrowingCallable throwingCallable = () -> OrderTable.of(1L, -1, true);
+        ThrowingCallable throwingCallable = () -> OrderTable.of(-1, true);
 
         assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(throwingCallable)
@@ -33,7 +33,7 @@ class OrderTableTest {
     @Test
     void 방문한_손님_수를_변경한다() {
         // given
-        OrderTable actual = OrderTable.of(1L, 1, false);
+        OrderTable actual = OrderTable.of(1, false);
 
         // when
         actual.changeNumberOfGuests(5);
@@ -45,7 +45,7 @@ class OrderTableTest {
     @Test
     void 방문한_손님_수_변경_시_빈테이블이면_변경할_수_없다() {
         // given
-        OrderTable actual = OrderTable.of(1L, 1, true);
+        OrderTable actual = OrderTable.of(1, true);
 
         // when
         ThrowingCallable throwingCallable = () -> actual.changeNumberOfGuests(5);

@@ -9,9 +9,8 @@ public class OrderTable {
     public OrderTable() {
     }
 
-    public OrderTable(Long id, int numberOfGuests, boolean empty) {
+    public OrderTable(int numberOfGuests, boolean empty) {
         validateNumberOfGuests(numberOfGuests);
-        this.id = id;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
     }
@@ -22,8 +21,8 @@ public class OrderTable {
         }
     }
 
-    public static OrderTable of(Long id, int numberOfGuests, boolean empty) {
-        return new OrderTable(id, numberOfGuests, empty);
+    public static OrderTable of(int numberOfGuests, boolean empty) {
+        return new OrderTable(numberOfGuests, empty);
     }
 
     public void group(Long tableGroupId) {

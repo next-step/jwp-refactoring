@@ -36,9 +36,9 @@ class TableGroupRestControllerTest extends RestControllerTest {
     @Test
     void 단체_지정() throws Exception {
         // given
-        OrderTable firstOrderTable = OrderTableFixture.of(1L, 2, true);
+        OrderTable firstOrderTable = OrderTableFixture.of(2, true);
         firstOrderTable.group(1L);
-        OrderTable secondOrderTable = OrderTableFixture.of(1L, 2, true);
+        OrderTable secondOrderTable = OrderTableFixture.of(2, true);
         secondOrderTable.group(1L);
         TableGroup tableGroup = TableGroupFixture.of(
                 1L,
@@ -63,9 +63,9 @@ class TableGroupRestControllerTest extends RestControllerTest {
     @Test
     void 단체_지정_해제() throws Exception {
         // given
-        OrderTable firstOrderTable = OrderTableFixture.of(1L, 2, true);
+        OrderTable firstOrderTable = OrderTableFixture.of(2, true);
         firstOrderTable.group(1L);
-        OrderTable secondOrderTable = OrderTableFixture.of(1L, 2, true);
+        OrderTable secondOrderTable = OrderTableFixture.of(2, true);
         secondOrderTable.group(1L);
 
         TableGroup tableGroup = TableGroupFixture.of(1L,

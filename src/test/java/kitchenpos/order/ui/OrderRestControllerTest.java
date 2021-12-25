@@ -61,7 +61,7 @@ class OrderRestControllerTest extends RestControllerTest {
                 두마리치킨);
         후라이드_후라이드.addMenuProduct(MenuProductFixture.of(후라이드치킨, 2));
 
-        OrderTable 주문_테이블 = OrderTableFixture.of(1L, 4, false);
+        OrderTable 주문_테이블 = OrderTableFixture.of(4, false);
         주문 = OrderFixture.of(
                 1L,
                 주문_테이블.getId(),
@@ -83,7 +83,6 @@ class OrderRestControllerTest extends RestControllerTest {
         actions
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value(1L))
-                .andExpect(jsonPath("$.orderTableId").value(1L))
                 .andExpect(jsonPath("$.orderStatus").value("COOKING"))
                 .andExpect(jsonPath("$.orderLineItems.length()").value(1));
     }
@@ -105,7 +104,6 @@ class OrderRestControllerTest extends RestControllerTest {
         // then
         actions.andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id").value(1L))
-                .andExpect(jsonPath("$[0].orderTableId").value(1L))
                 .andExpect(jsonPath("$[0].orderStatus").value("COOKING"))
                 .andExpect(jsonPath("$[0].orderLineItems.length()").value(1));
     }
@@ -126,7 +124,6 @@ class OrderRestControllerTest extends RestControllerTest {
         actions
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1L))
-                .andExpect(jsonPath("$.orderTableId").value(1L))
                 .andExpect(jsonPath("$.orderStatus").value("MEAL"))
                 .andExpect(jsonPath("$.orderLineItems.length()").value(1));
     }
