@@ -3,13 +3,8 @@ package kitchenpos.table.application;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.OrderTableValidatable;
-import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
-import kitchenpos.tablegroup.domain.GroupingPair;
-import kitchenpos.tablegroup.event.GroupEvent;
-import kitchenpos.tablegroup.event.UngroupEvent;
-import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -55,21 +50,5 @@ public class TableService {
                 .orElseThrow(IllegalArgumentException::new);
         savedOrderTable.changeNumberOfGuests(orderTableRequest.getNumberOfGuests());
         return OrderTableResponse.of(savedOrderTable);
-    }
-
-    @EventListener
-    public void group(GroupEvent groupEvent) {
-        GroupingPair groupingPair = groupEvent.getGroupingPair();
-        List<Long> orderTableIds = groupingPair.getOrderTableIds();
-        List<OrderTable> savedOrderTables = orderTableRepository.findAllById(orderTableIds);
-        OrderTables orderTables = OrderTables.of(savedOrderTables, orderTableIds.size());
-        orderTables.group(groupingPair.getTableGroupId());
-    }
-
-    @EventListener
-    public void ungroup(UngroupEvent ungroupEvent) {
-        List<OrderTable> savedOrderTables = orderTableRepository.findByTableGroupId(ungroupEvent.getTableGroupId());
-        OrderTables orderTables = new OrderTables(savedOrderTables);
-        orderTables.ungroup(orderTableValidator);
     }
 }

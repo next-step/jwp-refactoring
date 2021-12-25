@@ -9,7 +9,7 @@ import java.util.List;
 public class OrderTables {
     private List<OrderTable> orderTables = new ArrayList<>();
 
-    public OrderTables() {
+    protected OrderTables() {
     }
 
     public OrderTables(List<OrderTable> orderTables) {
@@ -24,10 +24,6 @@ public class OrderTables {
     }
 
     public void group(Long tableGroupId) {
-        setTableGroupToOrderTables(tableGroupId, orderTables);
-    }
-
-    private static void setTableGroupToOrderTables(Long tableGroupId, List<OrderTable> orderTables) {
         for (final OrderTable orderTable : orderTables) {
             orderTable.setTableGroup(tableGroupId);
             orderTable.changeToNotEmpty();

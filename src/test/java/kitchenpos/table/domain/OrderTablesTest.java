@@ -1,7 +1,6 @@
 package kitchenpos.table.domain;
 
 
-import kitchenpos.tablegroup.domain.TableGroup;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -65,6 +64,36 @@ public class OrderTablesTest {
         assertThatThrownBy(callable).isInstanceOf(IllegalArgumentException.class);
     }
 
+    @DisplayName("단체 지정한다")
+    @Test
+    void testGroup() {
+        // given
+        List<OrderTable> orderTableList = Arrays.asList(new OrderTable(4, true), new OrderTable(4, true), new OrderTable(4, true));
+        OrderTables orderTables = OrderTables.of(orderTableList, orderTableList.size());
+        Long tableGroupId = 1L;
+
+        // when
+        orderTables.group(tableGroupId);
+
+        // then
+        assertThat(orderTableList).allMatch(orderTable -> tableGroupId.equals(orderTable.getTableGroupId()));
+    }
+
+    @DisplayName("비어있는 테이블만 단체지정을 할 수 있다")
+    @Test
+    void givenNotEmptyTableWhenGroupThenThrowException() {
+        // given
+        List<OrderTable> orderTableList = Arrays.asList(new OrderTable(4, false), new OrderTable(4, false), new OrderTable(4, true));
+        OrderTables orderTables = OrderTables.of(orderTableList, orderTableList.size());
+        Long tableGroupId = 1L;
+
+        // when
+        ThrowableAssert.ThrowingCallable callable = () ->orderTables.group(tableGroupId);
+
+        // then
+        assertThatThrownBy(callable).isInstanceOf(IllegalArgumentException.class);
+    }
+
     @DisplayName("단체 지정을 해제한다")
     @Test
     void testUngroup() {
@@ -88,7 +117,6 @@ public class OrderTablesTest {
     @Test
     void testHasNotOrder() {
         // given
-        TableGroup tableGroup = new TableGroup();
         OrderTable one = new OrderTable(1L, 1L, 4, false);
         OrderTable two = new OrderTable(2L, 1L, 4, false);
         List<OrderTable> orderTableList = Arrays.asList(one, two);
