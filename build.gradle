@@ -85,7 +85,6 @@ project(':table') {
     jar { enabled = true }
     dependencies {
         implementation project(':common')
-        implementation project(':tablegroup')
     }
 }
 
@@ -94,7 +93,6 @@ project(':order') {
     jar { enabled = true }
     dependencies {
         implementation project(':common')
-        implementation project(':table')
     }
 }
 
