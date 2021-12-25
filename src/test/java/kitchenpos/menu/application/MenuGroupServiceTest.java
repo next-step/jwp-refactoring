@@ -31,7 +31,6 @@ class MenuGroupServiceTest {
     private MenuGroup exampleMenuGroup2;
 
     private MenuGroupRequest exampleMenuGroupRequest;
-    private MenuGroupRequest exampleMenuGroupRequest2;
 
     @BeforeEach
     void setUp() {
@@ -40,7 +39,6 @@ class MenuGroupServiceTest {
         exampleMenuGroup2 = new MenuGroup(2L, "메뉴 이름2");
 
         exampleMenuGroupRequest = new MenuGroupRequest(1L, "메뉴 이름");
-        exampleMenuGroupRequest2 = new MenuGroupRequest(2L, "메뉴 이름2");
     }
 
     @DisplayName("메뉴 그룹 생성 테스트")
