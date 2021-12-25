@@ -3,7 +3,7 @@ package kitchenpos.order.acceptance;
 import static kitchenpos.menu.acceptance.MenuAcceptanceTest.*;
 import static kitchenpos.menu.acceptance.MenuGroupAcceptanceTest.*;
 import static kitchenpos.menu.acceptance.ProductAcceptanceTest.*;
-import static kitchenpos.order.acceptance.TableAcceptanceTest.*;
+import static kitchenpos.ordertable.acceptance.TableAcceptanceTest.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.math.BigDecimal;

@@ -78,8 +78,6 @@ public class OrderTable {
     }
 
     public void changeEmpty(final boolean empty) {
-        validateChangeableEmpty();
-        validateNotCompletionOrderStatus();
         this.empty.changeEmpty(empty);
     }
 
@@ -93,14 +91,10 @@ public class OrderTable {
         }
     }
 
-    private void validateChangeableEmpty() {
+    public void validateChangeableEmpty() {
         if (Objects.nonNull(tableGroupId)) {
             throw new BadRequestException(CANNOT_CHANGE_STATUS);
         }
-    }
-
-    public void validateNotCompletionOrderStatus() {
-        // orders.validateNotCompletionOrderStatus();
     }
 
     @Override

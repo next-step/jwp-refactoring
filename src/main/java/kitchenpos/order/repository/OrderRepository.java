@@ -13,5 +13,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
         + "join fetch o.orderLineItems.orderLineItems ol")
     List<Order> findOrders();
 
-    boolean existsByOrderTableIdInAndOrderStatusIn(List<Long> collect, List<OrderStatus> asList);
+    boolean existsByOrderTableIdInAndOrderStatusIn(List<Long> orderTableIds, List<OrderStatus> orderStatuses);
+
+    boolean existsByOrderTableIdAndOrderStatusIn(Long orderTableId, List<OrderStatus> orderStatuses);
 }

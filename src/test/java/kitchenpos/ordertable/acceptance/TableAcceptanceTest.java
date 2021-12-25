@@ -1,6 +1,6 @@
-package kitchenpos.order.acceptance;
+package kitchenpos.ordertable.acceptance;
 
-import static kitchenpos.order.acceptance.TableGroupAcceptanceTest.*;
+import static kitchenpos.ordertable.acceptance.TableGroupAcceptanceTest.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -24,7 +24,7 @@ import kitchenpos.ordertable.dto.OrderTableResponse;
 import kitchenpos.ordertable.dto.TableGroupRequest;
 
 @DisplayName("주문 테이블 관련 기능")
-class TableAcceptanceTest extends AcceptanceTest {
+public class TableAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("주문 테이블을 등록한다.")
     @Test
@@ -95,7 +95,7 @@ class TableAcceptanceTest extends AcceptanceTest {
         주문_테이블_방문_손님수_갱신됨(response, numberOfGuests);
     }
 
-    static ExtractableResponse<Response> 주문_테이블_생성_요청(OrderTableRequest request) {
+    public static ExtractableResponse<Response> 주문_테이블_생성_요청(OrderTableRequest request) {
         return RestAssured
             .given().log().all()
             .body(request)

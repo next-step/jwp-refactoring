@@ -1,4 +1,4 @@
-package kitchenpos.order.domain;
+package kitchenpos.ordertable.domain;
 
 import static kitchenpos.common.exception.ExceptionMessage.*;
 import static org.assertj.core.api.Assertions.*;
@@ -20,10 +20,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.common.exception.BadRequestException;
 import kitchenpos.common.exception.ExceptionMessage;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.ordertable.repository.OrderTableRepository;
-import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.domain.TableGroupValidator;
 
 @ExtendWith(MockitoExtension.class)
 class TableGroupValidatorTest {
