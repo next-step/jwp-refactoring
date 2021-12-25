@@ -53,6 +53,11 @@ public class MenuService {
     }
     
     @Transactional
+    public Long countByIdIn(final List<Long> menuIds) {
+        return menuRepository.countByIdIn(menuIds);
+    }
+    
+    @Transactional
     private MenuProducts createMenuProducts(List<MenuProduct> menuProducts) {
         List<MenuProduct> result = new ArrayList<MenuProduct>();
 

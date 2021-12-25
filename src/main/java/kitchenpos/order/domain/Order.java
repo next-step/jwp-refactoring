@@ -1,6 +1,7 @@
 package kitchenpos.order.domain;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -20,6 +21,7 @@ import javax.persistence.OneToMany;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.util.CollectionUtils;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
@@ -46,14 +48,14 @@ public class Order {
     protected Order() {
     }
     
-    public Order(OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
+    public Order(OrderTable orderTable, OrderStatus orderStatus) {
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
-        this.orderLineItems = orderLineItems;
+        this.orderLineItems = new ArrayList<OrderLineItem>();
     }
 
-    public static Order of(OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
-        return new Order(orderTable, orderStatus, orderLineItems);
+    public static Order of(OrderTable orderTable, OrderStatus orderStatus) {
+        return new Order(orderTable, orderStatus);
     }
     
     public Long getId() {
@@ -84,6 +86,7 @@ public class Order {
     }
     
     public void changeOrderStatus(OrderStatus orderStatus) {
+        checkCompletionStatus();
         this.orderStatus = orderStatus;
     }
     
@@ -92,7 +95,18 @@ public class Order {
     }
 
     public void addOrderLineItems(final List<OrderLineItem> orderLineItems) {
-        this.orderLineItems = orderLineItems;
+        orderLineItems.stream()
+        .forEach(orderLineItem -> {
+            orderLineItem.updateOrder(this);
+            this.orderLineItems.add(orderLineItem);
+        });
+        checkOrderLineItems();
+    }
+    
+    public void checkCompletionStatus() {
+        if (isCompletion()) {
+            throw new IllegalArgumentException("계산이 완료된 주문은 상태를 변경 할 수 없습니다");
+        }
     }
     
     public boolean isCompletion() {
@@ -106,6 +120,19 @@ public class Order {
     public boolean isCooking() {
         return this.orderStatus.equals(OrderStatus.COOKING);
     }
+    
+    public void checkMenuCount(Long menuCount) {
+        if (orderLineItems.size() != menuCount) {
+            throw new IllegalArgumentException("등록된 메뉴만 주문할 수 있습니다");
+        }
+    }
+    
+    private void checkOrderLineItems() {
+        if (CollectionUtils.isEmpty(orderLineItems)) {
+            throw new IllegalArgumentException("주문에 메뉴가 없습니다");
+        }
+    }
+    
 
     @Override
     public boolean equals(Object o) {

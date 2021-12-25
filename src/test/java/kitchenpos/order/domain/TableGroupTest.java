@@ -65,7 +65,7 @@ public class TableGroupTest {
         // given
         OrderTable 첫번째_테이블 = OrderTable.of(null, 3, false);
         OrderTable 두번째_테이블 = OrderTable.of(null, 5, false);
-        첫번째_테이블.addOrders(Arrays.asList(Order.of(null, OrderStatus.COOKING, new ArrayList<OrderLineItem>())));
+        첫번째_테이블.addOrders(Arrays.asList(Order.of(null, OrderStatus.COOKING)));
         
         TableGroup 단체지정 = TableGroup.from(Arrays.asList(첫번째_테이블, 두번째_테이블));
         첫번째_테이블.updateTableGroup(단체지정);
@@ -75,7 +75,7 @@ public class TableGroupTest {
         assertThatThrownBy(() -> {
             단체지정.ungroup();
         }).isInstanceOf(IllegalArgumentException.class)
-        .hasMessage("조리중, 식사중인 주문 테이블은 단체지정을 해제할 수 없습니다");
+        .hasMessage("조리중, 식사중인 주문 테이블은 변경할 수 없습니다");
     }
 
 }

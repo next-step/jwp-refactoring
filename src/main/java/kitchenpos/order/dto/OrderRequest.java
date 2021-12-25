@@ -30,7 +30,7 @@ public class OrderRequest {
     }
     
     public Order toOrder(OrderTable orderTable) {
-        return Order.of(orderTable, orderStatus, orderLineItems);
+        return Order.of(orderTable, orderStatus);
     }
 
     public Long getOrderTableId() {

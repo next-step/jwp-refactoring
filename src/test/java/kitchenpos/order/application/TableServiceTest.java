@@ -114,8 +114,7 @@ public class TableServiceTest {
         // given
         OrderTable 첫번째_테이블 = OrderTable.of(null, 3, false);
         OrderTable 두번째_테이블 = OrderTable.of(null, 5, false);
-        List<OrderTable> 테이블_목록 = Arrays.asList(첫번째_테이블, 두번째_테이블);
-        TableGroup 단체지정 = TableGroup.from(테이블_목록);
+        TableGroup.from(Arrays.asList(첫번째_테이블, 두번째_테이블));
         
         given(orderTableRepository.findById(nullable(Long.class))).willReturn(Optional.of(두번째_테이블));
         

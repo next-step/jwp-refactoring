@@ -27,7 +27,7 @@ public class OrderTableTest {
     void 조리중_식사중_테이블은_빈_테이블_변경_불가() {
         // given
         OrderTable 테이블 = OrderTable.of(3, false);
-        테이블.addOrders(Arrays.asList(Order.of(테이블, OrderStatus.COOKING, new ArrayList<OrderLineItem>())));
+        테이블.addOrders(Arrays.asList(Order.of(테이블, OrderStatus.COOKING)));
     
         // when, then
         assertThatThrownBy(() -> {

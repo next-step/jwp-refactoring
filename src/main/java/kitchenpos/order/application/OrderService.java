@@ -1,19 +1,14 @@
 package kitchenpos.order.application;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
-import kitchenpos.menu.dao.MenuRepository;
+import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.order.dao.OrderLineItemRepository;
 import kitchenpos.order.dao.OrderRepository;
-import kitchenpos.order.dao.OrderTableRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
@@ -23,94 +18,58 @@ import kitchenpos.order.dto.OrderResponse;
 
 @Service
 public class OrderService {
-    private final MenuRepository menuRepository;
+    private final MenuService menuService;
     private final OrderRepository orderRepository;
-    private final OrderLineItemRepository orderLineItemRepository;
-    private final OrderTableRepository orderTableRepository;
+    private final TableService tableService;
 
     public OrderService(
-            final MenuRepository menuRepository,
+            final MenuService menuService,
             final OrderRepository orderRepository,
-            final OrderLineItemRepository orderLineItemRepository,
-            final OrderTableRepository orderTableRepository
+            final TableService tableService
     ) {
-        this.menuRepository = menuRepository;
+        this.menuService = menuService;
         this.orderRepository = orderRepository;
-        this.orderLineItemRepository = orderLineItemRepository;
-        this.orderTableRepository = orderTableRepository;
+        this.tableService = tableService;
     }
 
     @Transactional
     public OrderResponse create(final OrderRequest request) {
-        final OrderTable orderTable = orderTableRepository.findById(request.getOrderTableId())
-                .orElseThrow(() -> new IllegalArgumentException("해당하는 주문 테이블이 없습니다"));
+        final OrderTable orderTable = tableService.findById(request.getOrderTableId());
         Order order = request.toOrder(orderTable);
-        final List<OrderLineItem> orderLineItems = order.getOrderLineItems();
-
-        if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalArgumentException("주문에 메뉴가 없습니다");
-        }
-
-        final List<Long> menuIds = orderLineItems.stream()
+        order.addOrderLineItems(request.getOrderLineItems());
+        
+        final List<Long> menuIds = order.getOrderLineItems()
+                .stream()
                 .map(OrderLineItem::getMenu)
                 .map(Menu::getId)
                 .collect(Collectors.toList());
-
-        if (orderLineItems.size() != menuRepository.countByIdIn(menuIds)) {
-            throw new IllegalArgumentException("등록된 메뉴만 주문할 수 있습니다");
-        }
-
         
-        if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
-
-        order.updateOrderTable(orderTable);
+        order.checkMenuCount(menuService.countByIdIn(menuIds));
         order.changeOrderStatus(OrderStatus.COOKING);
 
-        final Order savedOrder = orderRepository.save(order);
-
-        final List<OrderLineItem> savedOrderLineItems = new ArrayList<>();
-        for (final OrderLineItem orderLineItem : orderLineItems) {
-            orderLineItem.updateOrder(savedOrder);
-            savedOrderLineItems.add(orderLineItemRepository.save(orderLineItem));
-        }
-        savedOrder.addOrderLineItems(savedOrderLineItems);
-
-        return OrderResponse.from(savedOrder);
+        return OrderResponse.from(orderRepository.save(order));
     }
 
     @Transactional(readOnly = true)
     public List<OrderResponse> list() {
-        final List<Order> orders = orderRepository.findAll();
-
-        for (final Order order : orders) {
-            order.addOrderLineItems(orderLineItemRepository.findAllByOrderId(order.getId()));
-        }
-
-        return orders.stream()
+        return orderRepository.findAll()
+                .stream()
                 .map(OrderResponse::from)
                 .collect(Collectors.toList());
     }
 
     @Transactional
     public OrderResponse changeOrderStatus(final Long orderId, final OrderRequest request) {
-        final OrderTable orderTable = orderTableRepository.findById(request.getOrderTableId())
-                .orElseThrow(() -> new IllegalArgumentException("해당하는 주문 테이블이 없습니다"));
-        Order order = request.toOrder(orderTable);
-        final Order savedOrder = orderRepository.findById(orderId)
+        final Order order = findById(orderId);
+        
+        order.changeOrderStatus(request.getOrderStatus());
+        
+        return OrderResponse.from(orderRepository.save(order));
+    }
+    
+    @Transactional(readOnly = true)
+    public Order findById(Long orderId) {
+        return orderRepository.findById(orderId)
                 .orElseThrow(() -> new IllegalArgumentException("해당하는 주문이 없습니다"));
-
-        if (Objects.equals(OrderStatus.COMPLETION, savedOrder.getOrderStatus())) {
-            throw new IllegalArgumentException("계산이 완료된 주문은 상태를 변경 할 수 없습니다");
-        }
-
-        savedOrder.changeOrderStatus(order.getOrderStatus());
-
-        orderRepository.save(savedOrder);
-
-        savedOrder.addOrderLineItems(orderLineItemRepository.findAllByOrderId(orderId));
-
-        return OrderResponse.from(savedOrder);
     }
 }
