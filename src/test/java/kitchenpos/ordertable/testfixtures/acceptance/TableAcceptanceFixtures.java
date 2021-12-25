@@ -1,4 +1,4 @@
-package kitchenpos.ordertable.testfixtures;
+package kitchenpos.ordertable.testfixtures.acceptance;
 
 import java.util.List;
 import kitchenpos.common.CustomTestRestTemplate;
@@ -45,6 +45,10 @@ public class TableAcceptanceFixtures {
 
     public static OrderTableRequest 테이블_정의(int numOfGuests, boolean orderClose) {
         return new OrderTableRequest(numOfGuests, orderClose);
+    }
+
+    public static OrderTableRequest 테이블_정의(Long tableId) {
+        return new OrderTableRequest(tableId);
     }
 
 }
