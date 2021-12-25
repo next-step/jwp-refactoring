@@ -54,7 +54,7 @@ public class Order {
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
         this.orderedTime = LocalDateTime.now();
-        this.orderLineItems = OrderLineItems.of(this, orderLineItems);
+        this.orderLineItems = OrderLineItems.of(orderLineItems);
     }
 
     private void validate(OrderTable orderTable) {

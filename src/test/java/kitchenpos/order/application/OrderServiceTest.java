@@ -56,7 +56,7 @@ class OrderServiceTest {
 	@DisplayName("주문생성")
 	@Test
 	void create() {
-		final OrderLineItem 주문항목 = OrderLineItem.of(1L, null, 일식메뉴, 2);
+		final OrderLineItem 주문항목 = OrderLineItem.of(1L, 일식메뉴, 2);
 		final List<OrderLineItem> 주문항목목록 = Arrays.asList(주문항목);
 		final Order 주문 = Order.of(1L, 개별_주문테이블, OrderStatus.COOKING, 주문항목목록);
 
@@ -110,7 +110,7 @@ class OrderServiceTest {
 	@DisplayName("주문 목록 조회")
 	@Test
 	void list() {
-		final OrderLineItem 주문항목 = OrderLineItem.of(1L, null, 일식메뉴, 2);
+		final OrderLineItem 주문항목 = OrderLineItem.of(1L, 일식메뉴, 2);
 		final List<OrderLineItem> 주문항목목록 = Arrays.asList(주문항목);
 		final Order 주문1 = Order.of(1L, 개별_주문테이블, OrderStatus.COOKING, 주문항목목록);
 		given(orderRepository.findAll()).willReturn(Arrays.asList(주문1));
@@ -123,7 +123,7 @@ class OrderServiceTest {
 	@DisplayName("주문 상태 변경: 조리->식사")
 	@Test
 	void changeOrderStatus() {
-		final OrderLineItem 주문항목 = OrderLineItem.of(1L, null, 일식메뉴, 2);
+		final OrderLineItem 주문항목 = OrderLineItem.of(1L, 일식메뉴, 2);
 		final List<OrderLineItem> 주문항목목록 = Arrays.asList(주문항목);
 		final Order 주문 = Order.of(1L, 개별_주문테이블, OrderStatus.COOKING, 주문항목목록);
 		given(orderRepository.findById(any())).willReturn(Optional.of(주문));

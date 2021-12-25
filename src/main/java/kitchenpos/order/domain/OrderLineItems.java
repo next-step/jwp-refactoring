@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 
 import org.springframework.util.CollectionUtils;
@@ -15,15 +16,16 @@ import kitchenpos.order.exception.NotFoundOrderLineItemsException;
 @Embeddable
 public class OrderLineItems {
 
-	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(name = "order_id")
 	private List<OrderLineItem> orderLineItems = new ArrayList<>();
 
 	protected OrderLineItems() {
 	}
 
-	private OrderLineItems(Order order, List<OrderLineItem> orderLineItems) {
+	private OrderLineItems(List<OrderLineItem> orderLineItems) {
 		validate(orderLineItems);
-		addAll(order, orderLineItems);
+		addAll(orderLineItems);
 	}
 
 	private void validate(List<OrderLineItem> orderLineItems) {
@@ -32,13 +34,12 @@ public class OrderLineItems {
 		}
 	}
 
-	public static OrderLineItems of(Order order, List<OrderLineItem> orderLineItems) {
-		return new OrderLineItems(order, orderLineItems);
+	public static OrderLineItems of(List<OrderLineItem> orderLineItems) {
+		return new OrderLineItems(orderLineItems);
 	}
 
-	private void addAll(Order order, List<OrderLineItem> orderLineItems) {
+	private void addAll(List<OrderLineItem> orderLineItems) {
 		this.orderLineItems.addAll(orderLineItems);
-		this.orderLineItems.forEach(orderLineItem -> orderLineItem.setOrder(order));
 	}
 
 	public List<OrderLineItem> getOrderLineItems() {
