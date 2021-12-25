@@ -69,18 +69,14 @@ public class MenuServiceTest {
         MenuProduct 후라이드메뉴 = new MenuProduct();
         ReflectionTestUtils.setField(후라이드메뉴, "quantity", 1L);
 
-        Product 후라이드 = new Product();
+        Product 후라이드 = Product.create("후라이드", new BigDecimal(22000));
         ReflectionTestUtils.setField(후라이드, "id", 1L);
-        ReflectionTestUtils.setField(후라이드, "name", "후라이드");
-        ReflectionTestUtils.setField(후라이드, "productPrice", new ProductPrice("22000"));
 
         MenuProduct 콜라메뉴 = new MenuProduct();
         ReflectionTestUtils.setField(콜라메뉴, "quantity", 1L);
 
-        Product 콜라 = new Product();
+        Product 콜라 = Product.create("콜라", new BigDecimal(2000));
         ReflectionTestUtils.setField(콜라, "id", 2L);
-        ReflectionTestUtils.setField(콜라, "name", "콜라");
-        ReflectionTestUtils.setField(콜라, "productPrice", new ProductPrice("2000"));
 
         MenuGroup menuGroup = MenuGroup.create("치킨");
         List<Product> products = Arrays.asList(후라이드, 콜라);

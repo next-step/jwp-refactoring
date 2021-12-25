@@ -13,7 +13,7 @@ public class MenuGroup {
     @Column(name = "name", length = 100, nullable = false, unique = true)
     private String name;
 
-    public MenuGroup() {
+    protected MenuGroup() {
 
     }
 

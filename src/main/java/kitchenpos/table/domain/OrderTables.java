@@ -1,4 +1,4 @@
-package kitchenpos.order.table.domain;
+package kitchenpos.table.domain;
 
 import kitchenpos.order.domain.Order;
 
@@ -30,12 +30,12 @@ public class OrderTables {
         return this.orderTables;
     }
 
-    public void unGroup() {
+    public void unGrouping() {
 
         validateOrderStatusCookingOrMeal();
 
         for (final OrderTable orderTable : this.orderTables) {
-            orderTable.unGroup();
+            orderTable.unGrouping();
         }
 
         this.orderTables.clear();

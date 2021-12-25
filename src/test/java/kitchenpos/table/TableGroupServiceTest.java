@@ -1,18 +1,15 @@
-package kitchenpos.order.table;
+package kitchenpos.table;
 
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.table.application.TableGroupService;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.dao.TableGroupDao;
-import kitchenpos.order.table.domain.OrderTable;
-import kitchenpos.order.table.domain.OrderTableRepository;
-import kitchenpos.order.table.domain.TableGroup;
-import kitchenpos.order.table.domain.TableGroupRepository;
-import kitchenpos.order.table.dto.OrderTableRequest;
-import kitchenpos.order.table.dto.OrderTableResponse;
-import kitchenpos.order.table.dto.TableGroupRequest;
-import kitchenpos.order.table.dto.TableGroupResponse;
+import kitchenpos.table.application.TableGroupService;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.domain.TableGroupRepository;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.table.dto.TableGroupRequest;
+import kitchenpos.table.dto.TableGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,7 +21,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -104,7 +100,7 @@ public class TableGroupServiceTest {
         orderB.completion();;
         orderTableB.order(orderB);
 
-        TableGroup tableGroup = new TableGroup();
+        TableGroup tableGroup = TableGroup.create();
         ReflectionTestUtils.setField(tableGroup, "id", 1L);
         tableGroup.addOrderTable(orderTableA);
         tableGroup.addOrderTable(orderTableB);

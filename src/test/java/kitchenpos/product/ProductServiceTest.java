@@ -58,15 +58,11 @@ public class ProductServiceTest {
 
         //given
         List<Product> products = new ArrayList<>();
-        Product 후라이드 = new Product();
+        Product 후라이드 = Product.create("후라이드", new BigDecimal("16000"));
         ReflectionTestUtils.setField(후라이드, "id", 1L);
-        ReflectionTestUtils.setField(후라이드, "name", "후라이드");
-        ReflectionTestUtils.setField(후라이드, "productPrice", new ProductPrice("16000"));
 
-        Product 치즈버거 = new Product();
+        Product 치즈버거 = Product.create("치즈버거", new BigDecimal("8000"));
         ReflectionTestUtils.setField(치즈버거, "id", 2L);
-        ReflectionTestUtils.setField(치즈버거, "name", "치즈버거");
-        ReflectionTestUtils.setField(치즈버거, "productPrice", new ProductPrice("8000"));
 
         products.add(후라이드);
         products.add(치즈버거);

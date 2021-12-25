@@ -1,14 +1,13 @@
-package kitchenpos.order.table;
+package kitchenpos.table;
 
-import kitchenpos.order.table.domain.OrderTable;
-import kitchenpos.order.table.domain.OrderTableRepository;
-import kitchenpos.order.table.domain.TableGroup;
-import kitchenpos.order.table.domain.TableGroupRepository;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.domain.TableGroupRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

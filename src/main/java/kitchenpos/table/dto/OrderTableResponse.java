@@ -1,6 +1,11 @@
-package kitchenpos.order.table.dto;
+package kitchenpos.table.dto;
 
-import kitchenpos.order.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTable;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 public class OrderTableResponse {
 
@@ -16,6 +21,12 @@ public class OrderTableResponse {
 
     public static OrderTableResponse of(OrderTable orderTable) {
         return new OrderTableResponse(orderTable);
+    }
+
+    public static List<OrderTableResponse> ofList(List<OrderTable> orderTables) {
+        return orderTables.stream()
+                .map(OrderTableResponse::of)
+                .collect(toList());
     }
 
     public Long getId() {

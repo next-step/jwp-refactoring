@@ -1,15 +1,10 @@
-package kitchenpos.order.table.domain;
+package kitchenpos.table.domain;
 
-import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.table.domain.OrderTable;
 import kitchenpos.utils.BaseEntity;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.*;
 
@@ -19,12 +14,13 @@ public class TableGroup extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
     @Embedded
     private OrderTables orderTables = new OrderTables();
 
-    public TableGroup() {
+    protected TableGroup() {
     }
 
     public static TableGroup create() {
@@ -40,8 +36,9 @@ public class TableGroup extends BaseEntity {
     }
 
     public void addOrderTable(OrderTable orderTable) {
-        orderTable.validateTableGrouping();
-        orderTable.notEmpty(this);
+        orderTable.validateFullAndTableGrouping();
+        orderTable.full();
+        orderTable.grouping(this);
         this.orderTables.add(orderTable);
     }
 
@@ -61,7 +58,7 @@ public class TableGroup extends BaseEntity {
         return this.orderTables.find();
     }
 
-    public void unGroup() {
-        this.orderTables.unGroup();
+    public void unGrouping() {
+        this.orderTables.unGrouping();
     }
 }

@@ -1,25 +1,29 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.order.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTable;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Table(name = "order")
+@Table(name = "orders")
 @Entity
 public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
     @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_table_id", nullable = false)
     private OrderTable orderTable;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "order_status", nullable = false)
     private OrderStatus orderStatus;
 
+    @Column(name = "ordered_time", nullable = false)
     private LocalDateTime orderedTime;
 
     @OneToMany(mappedBy = "order")
@@ -67,8 +71,24 @@ public class Order {
 
     public void completion() {
         this.orderStatus = OrderStatus.COMPLETION;
-
     }
+
+    public void cooking() {
+        this.orderStatus = OrderStatus.COOKING;
+    }
+
+    public void meal() {
+        this.orderStatus = OrderStatus.MEAL;
+    }
+
+    public boolean isCooking() {
+        return this.orderStatus == OrderStatus.COOKING;
+    }
+
+    public boolean isMeal() {
+        return this.orderStatus == OrderStatus.MEAL;
+    }
+
     public boolean isCompletion() {
         return this.orderStatus == OrderStatus.COMPLETION;
     }

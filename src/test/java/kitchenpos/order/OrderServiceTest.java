@@ -8,7 +8,7 @@ import kitchenpos.dao.OrderTableDao;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -59,7 +59,7 @@ public class OrderServiceTest {
 
         List<OrderLineItem> orderLineItems = Arrays.asList(itemA, itemB);
 
-        OrderTable orderTable = new OrderTable();
+        OrderTable orderTable = OrderTable.create(10, true);
         orderTable.setId(1L);
         Order order = new Order();
         order.setId(1L);

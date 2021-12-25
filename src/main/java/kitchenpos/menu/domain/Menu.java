@@ -29,7 +29,7 @@ public class Menu {
 
     private Long menuGroupId;
 
-    public Menu() {
+    protected Menu() {
 
     }
 
