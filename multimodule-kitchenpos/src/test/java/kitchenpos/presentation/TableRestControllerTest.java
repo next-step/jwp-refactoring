@@ -1,4 +1,4 @@
-package kitchenpos.table.presentation;
+package kitchenpos.presentation;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 

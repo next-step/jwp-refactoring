@@ -1,4 +1,4 @@
-package kitchenpos.order.presentation;
+package kitchenpos.presentation;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package kitchenpos.menugroup.presentation;
+package kitchenpos.presentation;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;

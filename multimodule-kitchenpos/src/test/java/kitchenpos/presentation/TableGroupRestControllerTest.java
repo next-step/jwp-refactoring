@@ -1,6 +1,7 @@
-package kitchenpos.tablegroup.presentation;
+package kitchenpos.presentation;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -53,7 +54,9 @@ public class TableGroupRestControllerTest extends TestConfig {
         return 단체지정_저장요청(tableGroup).as(TableGroupDto.class);
     }
     private List<OrderTableDto> 반테이블들_조회됨() {
-        return List.of(OrderTableDto.of(0));
+        return List.of(TableRestControllerTest.주문테이블_조회요청().as(OrderTableDto[].class)).stream()
+                                .filter(OrderTableDto::isEmpty)
+                                .collect(Collectors.toList());
     }
 
     private void 단체지정_저장됨(ExtractableResponse<Response> response) {
