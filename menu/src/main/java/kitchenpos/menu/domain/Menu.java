@@ -57,6 +57,10 @@ public class Menu {
         return new Menu(null, name, price, menuGroupId, menuProducts);
     }
 
+    public boolean isEqualMenuId(Long menuId) {
+        return this.id.equals(menuId);
+    }
+
     public Long getId() {
         return id;
     }

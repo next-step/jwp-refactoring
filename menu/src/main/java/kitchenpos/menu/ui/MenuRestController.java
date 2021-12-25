@@ -1,6 +1,7 @@
 package kitchenpos.menu.ui;
 
 import kitchenpos.menu.application.MenuService;
+import kitchenpos.menu.dto.MenuIdsExistRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import org.springframework.http.ResponseEntity;
@@ -34,5 +35,12 @@ public class MenuRestController {
     public ResponseEntity<List<MenuResponse>> list() {
         return ResponseEntity.ok()
                 .body(menuService.list());
+    }
+
+    @GetMapping(BASE_URL + "/exist")
+    public ResponseEntity<Void> checkExistMenuIds(@RequestBody final MenuIdsExistRequest menuIdsExistRequest) {
+        menuService.isExistMenuIds(menuIdsExistRequest);
+        return ResponseEntity.ok()
+                .build();
     }
 }

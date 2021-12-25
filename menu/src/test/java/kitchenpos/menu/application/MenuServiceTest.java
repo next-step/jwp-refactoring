@@ -3,6 +3,7 @@ package kitchenpos.menu.application;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.dto.MenuIdsExistRequest;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
@@ -28,6 +29,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
@@ -137,6 +139,40 @@ class MenuServiceTest {
 
             // then
             assertThatThrownBy(등록_요청).isInstanceOf(IllegalArgumentException.class);
+        }
+    }
+
+    @DisplayName("메뉴 존재 여부 확인")
+    @Nested
+    class TestExistMenus {
+        @DisplayName("메뉴 존재 확인")
+        @Test
+        void 메뉴_존재_확인() {
+            // given
+            MenuIdsExistRequest 메뉴_확인_요청 = MenuIdsExistRequest.of(Arrays.asList(더블강정.getId(), 트리플강정.getId()));
+
+            given(menuRepository.findAllById(any())).willReturn(Arrays.asList(더블강정, 트리플강정));
+
+            // when
+            ThrowableAssert.ThrowingCallable 확인_요청 = () -> menuService.isExistMenuIds(메뉴_확인_요청);
+
+            // then
+            assertThatNoException().isThrownBy(확인_요청);
+        }
+
+        @DisplayName("메뉴 존재 확인 실패")
+        @Test
+        void 메뉴_존재_확인_실패() {
+            // given
+            MenuIdsExistRequest 메뉴_확인_요청 = MenuIdsExistRequest.of(Arrays.asList(더블강정.getId(), 트리플강정.getId()));
+
+            given(menuRepository.findAllById(any())).willReturn(Collections.singletonList(더블강정));
+
+            // when
+            ThrowableAssert.ThrowingCallable 확인_요청 = () -> menuService.isExistMenuIds(메뉴_확인_요청);
+
+            // then
+            assertThatThrownBy(확인_요청).isInstanceOf(IllegalArgumentException.class);
         }
     }
 }
