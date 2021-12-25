@@ -56,7 +56,7 @@ public class TableGroupTest {
         group.group(tables);
 
         // when
-        group.ungroup();
+        group.ungroup(new FakeTableGroupValidator());
 
         // then
         assertAll(

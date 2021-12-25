@@ -8,6 +8,7 @@ import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import kitchenpos.tobe.common.domain.Validator;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
@@ -23,7 +24,7 @@ public class TableGroup {
     @Embedded
     private OrderTables orderTables = new OrderTables();
 
-    protected TableGroup() {
+    public TableGroup() {
     }
 
     public TableGroup(final Long id) {
@@ -35,7 +36,8 @@ public class TableGroup {
         orderTables.group(this);
     }
 
-    public void ungroup() {
+    public void ungroup(final Validator<TableGroup> validator) {
+        validator.validate(this);
         orderTables.ungroup();
     }
 
