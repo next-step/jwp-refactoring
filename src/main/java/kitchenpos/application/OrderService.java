@@ -19,6 +19,7 @@ public class OrderService {
     private final MenuRepository menuRepository;
     private final OrderRepository orderRepository;
     private final OrderLineItemRepository orderLineItemRepository;
+    // todo : orderTableService 로 바꾸기
     private final OrderTableRepository orderTableRepository;
 
     public OrderService(

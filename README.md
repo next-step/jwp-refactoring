@@ -159,7 +159,7 @@
 | list | **테이블 목록을 조회한다.** |
 | changeEmpty | **빈 테이블로 변경한다.** |
 | changeEmpty | 주문 테이블이 반드시 존재한다. |
-| changeEmpty | 주문 테이블에 테이블 그룹 아이디가 없어야 한다. |
+| changeEmpty | 테이블 그룹이 아닌 주문 테이블만 빈 테이블로 변경 가능하다. |
 | changeEmpty | 주문 상태는 cooking이나 meal이 아니어야 한다. |
 | changeNumberOfGuests | **테이블 게스트 숫자를 변경한다.** |
 | changeNumberOfGuests | 테이블 게스트 숫자는 0 이하일 수 없다. |

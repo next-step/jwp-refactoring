@@ -8,6 +8,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -21,7 +22,6 @@ public class OrderTable {
     @JoinColumn(name = "table_group_id")
     private TableGroup tableGroup;
 
-    // orderTable 인지 order_table 인지 헷갈림
     @OneToMany(mappedBy = "order_table")
     private List<Order> orders = new ArrayList<>();
 
@@ -77,6 +77,10 @@ public class OrderTable {
         this.tableGroup = tableGroup;
     }
 
+    public List<Order> getOrders() {
+        return orders;
+    }
+
     public int getNumberOfGuests() {
         return numberOfGuests;
     }
@@ -103,5 +107,33 @@ public class OrderTable {
         for (Order order: orders) {
             order.validateCompleted();
         }
+    }
+
+    public void changeNumberOfGuests(int numberOfGuests) {
+        this.numberOfGuests = numberOfGuests;
+    }
+
+    public void changeEmpty() {
+        validateChangeableOrderTable();
+        validateNotProcessing();
+        empty = true;
+        orders = Collections.emptyList();
+    }
+
+    public void validateNotProcessing() {
+        for (Order order: orders) {
+            order.validateNotProcessing();
+        }
+    }
+
+    private void validateChangeableOrderTable() {
+        if (Objects.nonNull(tableGroup)) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    public void addOrder(Order order) {
+        this.orders.add(order);
+        order.setOrderTable(this);
     }
 }

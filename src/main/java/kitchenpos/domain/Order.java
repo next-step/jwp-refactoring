@@ -33,7 +33,7 @@ public class Order {
     public Order() {
     }
 
-    public Order(OrderTable orderTable, String orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
+    public Order(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
         validateOrder(orderTable);
         this.orderTable = orderTable;
         this.orderStatus = OrderStatus.COOKING;
@@ -42,7 +42,7 @@ public class Order {
         validateOrderLineItems();
     }
 
-    public Order(Long id, OrderTable orderTable, String orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
+    public Order(Long id, OrderTable orderTable, List<OrderLineItem> orderLineItems) {
         validateOrder(orderTable);
         this.id = id;
         this.orderTable = orderTable;
@@ -123,5 +123,13 @@ public class Order {
         if (!OrderStatus.isCompleted(orderStatus)) {
             throw new IllegalArgumentException();
         }
+    }
+
+    public void validateNotProcessing() {
+        if (!OrderStatus.isMeal(orderStatus) && !OrderStatus.isCooking(orderStatus)) {
+            return;
+        }
+
+        throw new IllegalArgumentException();
     }
 }

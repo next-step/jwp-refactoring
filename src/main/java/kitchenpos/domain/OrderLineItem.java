@@ -18,9 +18,16 @@ public class OrderLineItem {
     @ManyToOne
     @JoinColumn(name = "manu_id")
     private Menu menu;
+
     private long quantity;
 
     public OrderLineItem() {
+    }
+
+    public OrderLineItem(Order order, Menu menu, long quantity) {
+        this.order = order;
+        this.menu = menu;
+        this.quantity = quantity;
     }
 
     public OrderLineItem(Long seq, Order order, Menu menu, long quantity) {
