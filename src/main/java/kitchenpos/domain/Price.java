@@ -18,6 +18,7 @@ public class Price {
     }
 
     public static Price of(Integer value) {
+        validate(value);
         return new Price(BigDecimal.valueOf(value));
     }
 
@@ -25,8 +26,8 @@ public class Price {
         return new Price(value);
     }
 
-    public void validate() {
-        if (price == null || price.compareTo(BigDecimal.ZERO) < 0) {
+    public static void validate(Integer price) {
+        if (price == null || price < 0) {
             throw new IllegalArgumentException("가격이 없거나 0보다 작습니다");
         }
     }

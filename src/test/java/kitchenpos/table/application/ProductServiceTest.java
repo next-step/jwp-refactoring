@@ -47,18 +47,6 @@ class ProductServiceTest {
         assertThat(result.getPrice()).isEqualTo(17000);
     }
 
-    @DisplayName("가격이 음수인 경우 예외 발생")
-    @Test
-    void 상품_생성_예외1() {
-        // given
-        Product product = Product.of("양념치킨", -1000);
-
-        // when, then
-        assertThatIllegalArgumentException().isThrownBy(
-            () -> productService.create(product)
-        );
-    }
-
     @DisplayName("상품 목록 조회")
     @Test
     void 상품_목록_조회() {

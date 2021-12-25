@@ -39,7 +39,6 @@ public class MenuService {
     @Transactional
     public MenuResponse create(final Menu menu) {
         Price price = menu.getPrice();
-        price.validate();
 
         if (!menuGroupRepository.existsById(menu.getMenuGroupId())) {
             throw new IllegalArgumentException();

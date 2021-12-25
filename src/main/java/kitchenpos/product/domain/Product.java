@@ -50,10 +50,6 @@ public class Product {
         return new Product(id);
     }
 
-    public void priceValidate() {
-        price.validate();
-    }
-
     public Long getId() {
         return id;
     }

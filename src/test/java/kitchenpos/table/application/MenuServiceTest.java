@@ -84,32 +84,6 @@ public class MenuServiceTest {
 
     }
 
-    @DisplayName("메뉴의 가격이 없으면 예외 발생")
-    @Test
-    void 메뉴_생성_예외1() {
-        // given
-        Menu menu = Menu.of("후라이드+양념", null, 1L,
-            Lists.newArrayList(menuProduct1, menuProduct2));
-
-        // when, then
-        assertThatIllegalArgumentException().isThrownBy(
-            () -> menuService.create(menu)
-        );
-    }
-
-    @DisplayName("메뉴의 가격이 음수면 예외 발생")
-    @Test
-    void 메뉴_생성_예외2() {
-        // given
-        Menu menu = Menu.of("후라이드+양념", -20000, 1L,
-            Lists.newArrayList(menuProduct1, menuProduct2));
-
-        // when, then
-        assertThatIllegalArgumentException().isThrownBy(
-            () -> menuService.create(menu)
-        );
-    }
-
     @DisplayName("단일 상품 가격의 합보다 메뉴의 가격이 높으면 예외 발생")
     @Test
     void 메뉴_생성_예외3() {
