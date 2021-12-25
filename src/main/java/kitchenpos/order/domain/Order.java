@@ -89,6 +89,12 @@ public class Order {
         this.orderStatus = orderStatus;
     }
 
+    public List<Long> getMenuIds() {
+        return orderLineItems.getValue().stream()
+            .map(OrderLineItem::getMenuId)
+            .collect(Collectors.toList());
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o)
@@ -103,11 +109,5 @@ public class Order {
     @Override
     public int hashCode() {
         return Objects.hash(id, orderTableId, orderStatus, orderedTime);
-    }
-
-    public List<Long> getMenuIds() {
-        return orderLineItems.getValue().stream()
-            .map(OrderLineItem::getMenuId)
-            .collect(Collectors.toList());
     }
 }

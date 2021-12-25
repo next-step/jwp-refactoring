@@ -6,8 +6,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -19,6 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.common.exception.NotFoundException;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.repository.OrderTableRepository;
@@ -34,9 +35,14 @@ class OrderValidatorTest {
 
     private OrderValidator orderValidator;
 
+    private List<MenuProduct> menuProducts;
+
     @BeforeEach
     void setUp() {
         orderValidator = new OrderValidator(orderTableRepository, menuRepository);
+        menuProducts = Collections.singletonList(
+            MenuProduct.of(1L, 2)
+        );
     }
 
     @DisplayName("주문 테이블과 메뉴가 존재해야 주문을 등록할 수 있다.")
@@ -51,7 +57,7 @@ class OrderValidatorTest {
         given(orderTableRepository.findById(order.getOrderTableId()))
             .willReturn(Optional.of(OrderTable.of(0, true)));
         given(menuRepository.findById(menuId)).willReturn(Optional.of(Menu.of(
-            "양념치킨", new BigDecimal(10000), 1L, new ArrayList<>())));
+            "양념치킨", new BigDecimal(10000), 1L, menuProducts)));
 
         // when && then
         assertDoesNotThrow(() -> orderValidator.validateCreate(order));

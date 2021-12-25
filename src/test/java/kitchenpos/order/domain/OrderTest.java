@@ -34,8 +34,8 @@ class OrderTest {
         // given
         OrderTable orderTable = OrderTable.of(1L, null, 0, false);
         List<OrderLineItem> orderLineItems = Arrays.asList(
-            OrderLineItem.of(null, 1),
-            OrderLineItem.of(null, 2));
+            OrderLineItem.of(1L, 1),
+            OrderLineItem.of(2L, 2));
         Order order = Order.of(orderTable.getId(), orderLineItems);
         order.changeOrderStatus(OrderStatus.COMPLETION);
 

@@ -1,5 +1,10 @@
 package kitchenpos.order.domain;
 
+import static kitchenpos.common.exception.ExceptionMessage.*;
+
+import java.util.Objects;
+
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -7,6 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import kitchenpos.common.domain.Quantity;
+import kitchenpos.common.exception.BadRequestException;
 
 @Entity
 public class OrderLineItem {
@@ -15,6 +21,7 @@ public class OrderLineItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private Long menuId;
 
     @Embedded
@@ -24,9 +31,16 @@ public class OrderLineItem {
     }
 
     private OrderLineItem(Long id, Long menuId, long quantity) {
+        validateMenuId(menuId);
         this.id = id;
         this.menuId = menuId;
         this.quantity = new Quantity(quantity);
+    }
+
+    private void validateMenuId(Long menuId) {
+        if (Objects.isNull(menuId)) {
+            throw new BadRequestException(WRONG_VALUE);
+        }
     }
 
     public static OrderLineItem of(Long menuId, long quantity) {
