@@ -30,7 +30,6 @@ public class TableGroup {
         this.createdDate = LocalDateTime.now();
         this.orderTables = orderTables;
         validateTableGroup();
-        validateOrderTables();
     }
 
     public TableGroup(Long id, List<OrderTable> orderTables) {
@@ -38,13 +37,14 @@ public class TableGroup {
         this.createdDate = LocalDateTime.now();
         this.orderTables = orderTables;
         validateTableGroup();
-        validateOrderTables();
     }
 
     private void validateTableGroup() {
         if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
             throw new IllegalArgumentException();
         }
+
+        validateOrderTables();
     }
 
     private void validateOrderTables() {
@@ -57,34 +57,17 @@ public class TableGroup {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public LocalDateTime getCreatedDate() {
         return createdDate;
-    }
-
-    public void setCreatedDate(final LocalDateTime createdDate) {
-        this.createdDate = createdDate;
     }
 
     public List<OrderTable> getOrderTables() {
         return orderTables;
     }
 
-    public void setOrderTables(final List<OrderTable> orderTables) {
-        this.orderTables = orderTables;
-    }
-
     public void ungroup() {
         for (OrderTable orderTable: orderTables) {
-            // todo : 메서드 하나로 묶기
-            orderTable.setTableGroup(null);
-            orderTable.validateCompleted();
+            orderTable.ungroupTableGroup();
         }
-    }
-
-    public void create() {
     }
 }

@@ -74,7 +74,7 @@ public class Menu {
     private void addMenuProducts(List<MenuProduct> menuProducts) {
         menuProducts.forEach(menuProduct -> {
             this.menuProducts.add(menuProduct);
-            menuProduct.setMenu(this);
+            menuProduct.decideMenu(this);
         });
     }
 
@@ -83,39 +83,19 @@ public class Menu {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public void setName(final String name) {
-        this.name = name;
     }
 
     public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(final BigDecimal price) {
-        this.price = price;
-    }
-
     public MenuGroup getMenuGroup() {
         return menuGroup;
     }
 
-    public void setMenuGroup(MenuGroup menuGroup) {
-        this.menuGroup = menuGroup;
-    }
-
     public List<MenuProduct> getMenuProducts() {
         return menuProducts;
-    }
-
-    public void setMenuProducts(final List<MenuProduct> menuProducts) {
-        this.menuProducts = menuProducts;
     }
 }

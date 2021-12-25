@@ -179,5 +179,5 @@
 - [x] Dao 제거
 - [x] 디렉토리 정리 (도메인 기반)
 - [x] mock 제거 -> inside-out 기반 테스트 작성 -> 취소 (직접 작성해보니 도메인 테스트에서 inside-out 방식으로 거르고 service 테스트 시에는 mock이 더 영속성에 제약이 없었다.)
-- [ ] getter setter 제거
+- [x] getter setter 제거
 - [ ] 인수테스트 작성 (시간이 있으면.. 12시까지)

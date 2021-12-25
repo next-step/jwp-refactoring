@@ -68,16 +68,8 @@ public class OrderTable {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public TableGroup getTableGroup() {
         return tableGroup;
-    }
-
-    public void setTableGroup(TableGroup tableGroup) {
-        this.tableGroup = tableGroup;
     }
 
     public List<Order> getOrders() {
@@ -88,27 +80,13 @@ public class OrderTable {
         return numberOfGuests;
     }
 
-    public void setNumberOfGuests(final int numberOfGuests) {
-        this.numberOfGuests = numberOfGuests;
-    }
-
     public boolean isEmpty() {
         return empty;
-    }
-
-    public void setEmpty(final boolean empty) {
-        this.empty = empty;
     }
 
     public void validateAddableOrderTable() {
         if (!isEmpty() || Objects.nonNull(tableGroup)) {
             throw new IllegalArgumentException();
-        }
-    }
-
-    public void validateCompleted() {
-        for (Order order: orders) {
-            order.validateCompleted();
         }
     }
 
@@ -148,6 +126,14 @@ public class OrderTable {
 
     public void addOrder(Order order) {
         this.orders.add(order);
-        order.setOrderTable(this);
+        order.decideOrderTable(this);
+    }
+
+    public void ungroupTableGroup() {
+        for (Order order: orders) {
+            order.validateCompleted();
+        }
+
+        this.tableGroup = null;
     }
 }

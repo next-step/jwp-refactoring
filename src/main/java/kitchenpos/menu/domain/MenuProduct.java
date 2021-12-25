@@ -41,16 +41,8 @@ public class MenuProduct {
         return seq;
     }
 
-    public void setSeq(final Long seq) {
-        this.seq = seq;
-    }
-
     public Menu getMenu() {
         return menu;
-    }
-
-    public void setMenu(Menu menu) {
-        this.menu = menu;
     }
 
     public Product getProduct() {
@@ -61,11 +53,11 @@ public class MenuProduct {
         return quantity;
     }
 
-    public void setQuantity(final long quantity) {
-        this.quantity = quantity;
-    }
-
     public BigDecimal multiply(BigDecimal price) {
         return price.multiply(price);
+    }
+
+    public void decideMenu(Menu menu) {
+        this.menu = menu;
     }
 }
