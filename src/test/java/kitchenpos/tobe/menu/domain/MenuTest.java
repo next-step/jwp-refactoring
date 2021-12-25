@@ -3,6 +3,7 @@ package kitchenpos.tobe.menu.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 
+import kitchenpos.tobe.common.domain.Validator;
 import kitchenpos.tobe.fixture.MenuFixture;
 import kitchenpos.tobe.fixture.MenuProductFixture;
 import kitchenpos.tobe.fixture.MenuProductsFixture;
@@ -13,11 +14,11 @@ import org.junit.jupiter.api.Test;
 
 public class MenuTest {
 
-    private MenuValidator menuValidator;
+    private Validator<Menu> validator;
 
     @BeforeEach
     void setUp() {
-        menuValidator = new FakeMenuValidator();
+        validator = new FakeMenuValidator();
     }
 
     @DisplayName("메뉴를 생성할 수 있다.")
@@ -38,7 +39,7 @@ public class MenuTest {
             price,
             menuProducts,
             menuGroupId,
-            menuValidator
+            validator
         );
 
         // then
@@ -56,7 +57,7 @@ public class MenuTest {
             MenuProductFixture.of(2L, 6_000L, 1L)
         );
         final Long menuGroupId = 1L;
-        final Menu menu = MenuFixture.of(name, price, menuProducts, menuGroupId, menuValidator);
+        final Menu menu = MenuFixture.of(name, price, menuProducts, menuGroupId, validator);
 
         // when
         final boolean isOverpriced = menu.isOverpriced();
@@ -76,7 +77,7 @@ public class MenuTest {
             MenuProductFixture.of(2L, 6_000L, 1L)
         );
         final Long menuGroupId = 1L;
-        final Menu menu = MenuFixture.of(name, price, menuProducts, menuGroupId, menuValidator);
+        final Menu menu = MenuFixture.of(name, price, menuProducts, menuGroupId, validator);
 
         // when
         final boolean isOverpriced = menu.isOverpriced();

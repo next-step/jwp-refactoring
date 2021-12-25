@@ -1,6 +1,8 @@
 package kitchenpos.tobe.menu.domain;
 
-public class FakeMenuValidator implements MenuValidator {
+import kitchenpos.tobe.common.domain.Validator;
+
+public class FakeMenuValidator implements Validator<Menu> {
 
     @Override
     public void validate(final Menu menu) {

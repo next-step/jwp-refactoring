@@ -4,9 +4,9 @@ import java.math.BigDecimal;
 import java.util.List;
 import kitchenpos.tobe.common.domain.Name;
 import kitchenpos.tobe.common.domain.Price;
+import kitchenpos.tobe.common.domain.Validator;
 import kitchenpos.tobe.menu.domain.Menu;
 import kitchenpos.tobe.menu.domain.MenuProducts;
-import kitchenpos.tobe.menu.domain.MenuValidator;
 import kitchenpos.tobe.menu.dto.MenuProductRequest;
 import kitchenpos.tobe.menu.dto.MenuRequest;
 
@@ -21,7 +21,7 @@ public class MenuFixture {
         final long price,
         final MenuProducts menuProducts,
         final Long menuGroupId,
-        final MenuValidator menuValidator
+        final Validator<Menu> menuValidator
     ) {
         return new Menu(
             id,
@@ -38,7 +38,7 @@ public class MenuFixture {
         final long price,
         final MenuProducts menuProducts,
         final Long menuGroupId,
-        final MenuValidator menuValidator
+        final Validator<Menu> menuValidator
     ) {
         return of(null, name, price, menuProducts, menuGroupId, menuValidator);
     }
@@ -51,7 +51,7 @@ public class MenuFixture {
     ) {
         return new MenuRequest(name, price, menuProducts, menuGroupId);
     }
-    
+
     public static MenuRequest ofRequest(
         final String name,
         final long price,

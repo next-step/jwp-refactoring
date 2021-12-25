@@ -5,9 +5,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.tobe.common.domain.Name;
 import kitchenpos.tobe.common.domain.Price;
+import kitchenpos.tobe.common.domain.Validator;
 import kitchenpos.tobe.menu.domain.Menu;
 import kitchenpos.tobe.menu.domain.MenuProducts;
-import kitchenpos.tobe.menu.domain.MenuValidator;
 
 public class MenuRequest {
 
@@ -31,7 +31,7 @@ public class MenuRequest {
         this.menuGroupId = menuGroupId;
     }
 
-    public Menu toMenu(final MenuValidator menuValidator) {
+    public Menu toMenu(final Validator<Menu> validator) {
         return new Menu(
             new Name(name),
             new Price(price),
@@ -42,7 +42,7 @@ public class MenuRequest {
                     .collect(Collectors.toList())
             ),
             menuGroupId,
-            menuValidator
+            validator
         );
     }
 

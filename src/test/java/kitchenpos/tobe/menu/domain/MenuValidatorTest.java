@@ -28,7 +28,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class MenuRegisterValidatorTest {
+public class MenuValidatorTest {
 
     @Mock
     private MenuGroupRepository menuGroupRepository;
@@ -37,7 +37,7 @@ public class MenuRegisterValidatorTest {
     private ProductRepository productRepository;
 
     @InjectMocks
-    private MenuRegisterValidator validator;
+    private MenuValidator validator;
 
     private List<Product> products;
     private MenuProducts menuProducts;

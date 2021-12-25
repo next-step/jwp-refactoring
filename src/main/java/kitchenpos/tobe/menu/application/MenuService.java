@@ -1,9 +1,9 @@
 package kitchenpos.tobe.menu.application;
 
 import java.util.List;
+import kitchenpos.tobe.common.domain.Validator;
 import kitchenpos.tobe.menu.domain.Menu;
 import kitchenpos.tobe.menu.domain.MenuRepository;
-import kitchenpos.tobe.menu.domain.MenuValidator;
 import kitchenpos.tobe.menu.dto.MenuRequest;
 import kitchenpos.tobe.menu.dto.MenuResponse;
 import org.springframework.stereotype.Service;
@@ -12,15 +12,15 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class MenuService {
 
-    private final MenuValidator menuValidator;
     private final MenuRepository menuRepository;
+    private final Validator<Menu> menuValidator;
 
     public MenuService(
-        final MenuValidator menuValidator,
-        final MenuRepository menuRepository
+        final MenuRepository menuRepository,
+        final Validator<Menu> menuValidator
     ) {
-        this.menuValidator = menuValidator;
         this.menuRepository = menuRepository;
+        this.menuValidator = menuValidator;
     }
 
     @Transactional

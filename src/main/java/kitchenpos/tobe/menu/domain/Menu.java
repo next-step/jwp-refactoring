@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import kitchenpos.tobe.common.domain.Name;
 import kitchenpos.tobe.common.domain.Price;
+import kitchenpos.tobe.common.domain.Validator;
 
 @Entity
 public class Menu {
@@ -41,7 +42,7 @@ public class Menu {
         final Price price,
         final MenuProducts menuProducts,
         final Long menuGroupId,
-        final MenuValidator menuValidator
+        final Validator<Menu> menuValidator
     ) {
         this.id = id;
         this.name = name;
@@ -57,7 +58,7 @@ public class Menu {
         final Price price,
         final MenuProducts menuProducts,
         final Long menuGroupId,
-        final MenuValidator menuValidator
+        final Validator<Menu> menuValidator
     ) {
         this(null, name, price, menuProducts, menuGroupId, menuValidator);
     }
