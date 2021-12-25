@@ -73,10 +73,4 @@ public class Order {
                     this.orderLineItems.add(orderLineItem);
                 });
     }
-
-    public void validateCompletion() {
-        if(orderStatus.isCookingOrMeal()){
-            throw new IllegalArgumentException();
-        }
-    }
 }

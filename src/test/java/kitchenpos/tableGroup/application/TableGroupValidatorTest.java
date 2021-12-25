@@ -1,6 +1,8 @@
 package kitchenpos.tableGroup.application;
 
-import kitchenpos.order.application.TableService;
+import kitchenpos.fixture.OrderTableFixture;
+import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.OrderTableRepository;
 import kitchenpos.tableGroup.dto.OrderTableIdRequest;
 import org.junit.jupiter.api.DisplayName;
@@ -13,11 +15,15 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
-public class TableValidatorTest {
+public class TableGroupValidatorTest {
     @Mock
     private OrderTableRepository orderTableRepository;
+    @Mock
+    private OrderRepository orderRepository;
 
     @InjectMocks
     private TableGroupValidator tableGroupValidator;
@@ -30,5 +36,17 @@ public class TableValidatorTest {
         assertThatThrownBy(
                 () -> tableGroupValidator.getOrderTable(Arrays.asList(테이블요청))
         ).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("조리 또는 식사 상태이면 단제지정 해제 할 수 없다.")
+    @Test
+    void validateCompletion() {
+        OrderTable orderTable = OrderTableFixture.생성(7, true);
+        given(orderRepository.existsAllByOrderTableIdInAndOrderStatus(any(), any())).willReturn(false);
+
+        assertThatThrownBy(
+                () -> tableGroupValidator.validateCompletion(orderTable.getTableGroupId())
+        ).isInstanceOf(IllegalArgumentException.class);
+
     }
 }

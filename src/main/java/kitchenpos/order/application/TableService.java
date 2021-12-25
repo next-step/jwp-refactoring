@@ -16,9 +16,11 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class TableService {
     private final OrderTableRepository orderTableRepository;
+    private final TableValidator tableValidator;
 
-    public TableService(final OrderTableRepository orderTableRepository) {
+    public TableService(OrderTableRepository orderTableRepository, TableValidator tableValidator) {
         this.orderTableRepository = orderTableRepository;
+        this.tableValidator = tableValidator;
     }
 
     @Transactional
@@ -36,11 +38,11 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, OrderTableRequest request) {
-        final OrderTable savedOrderTable = findOrderTable(orderTableId);
-        //TODO  validateCompletion();
-        savedOrderTable.changeEmpty(request.isEmpty());
+        final OrderTable orderTable = findOrderTable(orderTableId);
+        tableValidator.validateCompletion(orderTable);
+        orderTable.changeEmpty(request.isEmpty());
 
-        return OrderTableResponse.from(orderTableRepository.save(savedOrderTable));
+        return OrderTableResponse.from(orderTableRepository.save(orderTable));
     }
 
     @Transactional

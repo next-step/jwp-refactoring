@@ -118,5 +118,5 @@
 * [x] MenuService
 * [x] MenuGroupService
 * [x] TableGroupService
-* [ ] TableService
+* [x] TableService
 * [ ] OrderService
