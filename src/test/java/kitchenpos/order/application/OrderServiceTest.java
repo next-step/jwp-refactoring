@@ -2,6 +2,7 @@ package kitchenpos.order.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.BDDMockito.given;
@@ -32,6 +33,8 @@ import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.TableGroup;
+import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
 
 @ExtendWith(MockitoExtension.class)
 public class OrderServiceTest {
@@ -64,15 +67,15 @@ public class OrderServiceTest {
         OrderLineItem 주문_메뉴 = OrderLineItem.of(주문, 메뉴, 1L);
         주문.addOrderLineItems(Arrays.asList(주문_메뉴));
         
-        given(menuRepository.countByIdIn(anyList())).willReturn((long) 주문.getOrderLineItems().size());
         given(orderTableRepository.findById(주문.getOrderTable().getId())).willReturn(Optional.of(주문_테이블));
-        given(orderRepository.save(주문)).willReturn(주문);
+        given(menuRepository.countByIdIn(anyList())).willReturn((long) 주문.getOrderLineItems().size());
+        given(orderRepository.save(any())).willReturn(주문);
 
         // when
-        Order 등록된_주문 = orderService.create(주문);
+        OrderResponse 등록된_주문 = orderService.create(OrderRequest.from(주문));
 
         // then
-        assertThat(등록된_주문).isEqualTo(주문);
+        assertThat(등록된_주문).isEqualTo(OrderResponse.from(주문));
     }
     
     @DisplayName("메뉴없이 주문할 수 없다 - 예외처리")
@@ -80,10 +83,11 @@ public class OrderServiceTest {
     void 주문_등록_메뉴_필수() {
         // given
         Order 메뉴없는_주문 = Order.of(null, OrderStatus.COOKING, new ArrayList<OrderLineItem>());
+        given(orderTableRepository.findById(any())).willReturn(Optional.of(OrderTable.of(3, false)));
         
         // when, then
         assertThatThrownBy(() -> {
-            orderService.create(메뉴없는_주문);
+            orderService.create(OrderRequest.from(메뉴없는_주문));
         }).isInstanceOf(IllegalArgumentException.class)
         .hasMessage("주문에 메뉴가 없습니다");
     
@@ -97,13 +101,14 @@ public class OrderServiceTest {
         OrderLineItem 주문_항목 = OrderLineItem.of(null, 미등록_메뉴, 1L);
         Order 미등록_메뉴_주문 = Order.of(null, OrderStatus.COOKING, new ArrayList<OrderLineItem>());
         미등록_메뉴_주문.addOrderLineItems(Arrays.asList(주문_항목));
+        given(orderTableRepository.findById(any())).willReturn(Optional.of(OrderTable.of(3, false)));
     
         // when
         when(menuRepository.countByIdIn(anyList())).thenReturn(0L);
         
         // then
         assertThatThrownBy(() -> {
-            orderService.create(미등록_메뉴_주문);
+            orderService.create(OrderRequest.from(미등록_메뉴_주문));
         }).isInstanceOf(IllegalArgumentException.class)
         .hasMessage("등록된 메뉴만 주문할 수 있습니다");
     
@@ -119,17 +124,15 @@ public class OrderServiceTest {
         
         OrderLineItem 주문_메뉴 = OrderLineItem.of(등록된_테이블_없이_주문, 메뉴, 1L);
         등록된_테이블_없이_주문.addOrderLineItems(Arrays.asList(주문_메뉴));
-        
-        given(menuRepository.countByIdIn(anyList())).willReturn((long) 등록된_테이블_없이_주문.getOrderLineItems().size());
     
         // when
         when(orderTableRepository.findById(nullable(Long.class))).thenReturn(Optional.empty());
         
         // then
         assertThatThrownBy(() -> {
-            orderService.create(등록된_테이블_없이_주문);
+            orderService.create(OrderRequest.from(등록된_테이블_없이_주문));
         }).isInstanceOf(IllegalArgumentException.class)
-        .hasMessage("등록된 주문 테이블만 주문할 수 없습니다");
+        .hasMessage("해당하는 주문 테이블이 없습니다");
     }
     
     @DisplayName("주문 등록시 주문 상태는 조리 상태이다")
@@ -146,10 +149,10 @@ public class OrderServiceTest {
         
         given(menuRepository.countByIdIn(anyList())).willReturn((long) 주문.getOrderLineItems().size());
         given(orderTableRepository.findById(nullable(Long.class))).willReturn(Optional.of(주문_테이블));
-        given(orderRepository.save(주문)).willReturn(주문);
+        given(orderRepository.save(any())).willReturn(주문);
     
         // when
-        Order 등록된_주문 = orderService.create(주문);
+        OrderResponse 등록된_주문 = orderService.create(OrderRequest.from(주문));
     
         // then
         assertThat(등록된_주문.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
@@ -166,10 +169,10 @@ public class OrderServiceTest {
         given(orderLineItemRepository.findAllByOrderId(첫번째_주문.getId())).willReturn(Arrays.asList(OrderLineItem.of(null, null, 1L)));
     
         // when
-        List<Order> 주문_목록 = orderService.list();
+        List<OrderResponse> 주문_목록 = orderService.list();
     
         // then
-        assertThat(주문_목록).containsExactly(첫번째_주문, 두번째_주문);
+        assertThat(주문_목록).containsExactly(OrderResponse.from(첫번째_주문), OrderResponse.from(두번째_주문));
     }
     
     @DisplayName("주문상태를 변경 할 수 있다")
@@ -177,13 +180,14 @@ public class OrderServiceTest {
     void 주문_상태_변경() {
         // given
         Order 저장된_주문 = Order.of(null, OrderStatus.MEAL, new ArrayList<OrderLineItem>());
-        given(orderRepository.findById(nullable(Long.class))).willReturn(Optional.of(저장된_주문));
         
         Order 변경할_주문 = Order.of(null, OrderStatus.COMPLETION, new ArrayList<OrderLineItem>());
+        given(orderTableRepository.findById(any())).willReturn(Optional.of(OrderTable.of(3, false)));
+        given(orderRepository.findById(nullable(Long.class))).willReturn(Optional.of(저장된_주문));
         given(orderLineItemRepository.findAllByOrderId(nullable(Long.class))).willReturn(Arrays.asList(OrderLineItem.of(null, null, 1L)));
-    
+        
         // when
-        Order 변경후_주문 = orderService.changeOrderStatus(저장된_주문.getId(), 변경할_주문);
+        OrderResponse 변경후_주문 = orderService.changeOrderStatus(저장된_주문.getId(), OrderRequest.from(변경할_주문));
     
         // then
         assertThat(변경후_주문.getOrderStatus()).isEqualTo(변경할_주문.getOrderStatus());
@@ -194,11 +198,12 @@ public class OrderServiceTest {
     void 계산_완료_주문_변경_불가() {
         // given
         Order 저장된_주문 = Order.of(null, OrderStatus.COMPLETION, new ArrayList<OrderLineItem>());
+        given(orderTableRepository.findById(any())).willReturn(Optional.of(OrderTable.of(3, false)));
         given(orderRepository.findById(nullable(Long.class))).willReturn(Optional.of(저장된_주문));
     
         // when, then
         assertThatThrownBy(() -> {
-            orderService.changeOrderStatus(저장된_주문.getId(), 저장된_주문);
+            orderService.changeOrderStatus(저장된_주문.getId(), OrderRequest.from(저장된_주문));
         }).isInstanceOf(IllegalArgumentException.class)
         .hasMessage("계산이 완료된 주문은 상태를 변경 할 수 없습니다");
     }

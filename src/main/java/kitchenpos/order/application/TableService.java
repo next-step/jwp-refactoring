@@ -79,4 +79,5 @@ public class TableService {
 
         return OrderTableResponse.from(orderTableRepository.save(savedOrderTable));
     }
+    
 }

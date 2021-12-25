@@ -117,7 +117,6 @@ public class MenuServiceTest {
     void 메뉴_등록_등록된_메뉴그룹만() {
         // given
         Menu 메뉴 = Menu.of("짜장면", new BigDecimal("6000"), MenuGroup.from("미등록_메뉴그룹"), new ArrayList<MenuProduct>());
-        
     
         // when, then
         assertThatThrownBy(() -> {

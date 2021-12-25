@@ -63,6 +63,13 @@ public class Order {
         return orderTable;
     }
     
+    public Long getOrderTableId() {
+        if (orderTable == null) {
+            return null;
+        }
+        return orderTable.getId();
+    }
+    
     public OrderStatus getOrderStatus() {
         return orderStatus;
     }
