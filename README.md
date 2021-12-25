@@ -193,9 +193,9 @@
 
 ### 기능목록
 
-- 모듈분리
-  - 도메인
-    - common, menu, menugroup, order, prodduct, table, tablegroup
-  - 통합계층
-    - application
-    - ui
+- [X] 모듈분리
+  - [X] 도메인
+    - [X] common, menu, menugroup, order, prodduct, table, tablegroup
+  - [X] 통합계층
+    - [X] application
+    - [X] ui (appication에 합침)
