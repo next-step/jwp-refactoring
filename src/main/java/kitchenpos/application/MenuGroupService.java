@@ -2,13 +2,16 @@ package kitchenpos.application;
 
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.dto.MenuGroupCreateRequest;
+import kitchenpos.dto.MenuGroupResponse;
+import kitchenpos.mapper.MenuGroupMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import java.util.List;
 
 @Service
+@Transactional
 public class MenuGroupService {
     private final MenuGroupDao menuGroupDao;
 
@@ -16,15 +19,19 @@ public class MenuGroupService {
         this.menuGroupDao = menuGroupDao;
     }
 
-    @Transactional
-    public MenuGroup create(final MenuGroup menuGroup) {
-        if (!StringUtils.hasText(menuGroup.getName())) {
-            throw new IllegalArgumentException();
-        }
-        return menuGroupDao.save(menuGroup);
+    public MenuGroupResponse create(final MenuGroupCreateRequest request) {
+        return MenuGroupMapper.toMenuGroupResponse(menuGroupDao.save(MenuGroup.builder()
+                .name(request.getName())
+                .build()));
     }
 
-    public List<MenuGroup> list() {
-        return menuGroupDao.findAll();
+    @Transactional(readOnly = true)
+    public MenuGroup findMenuGroup(Long id) {
+        return menuGroupDao.findById(id)
+                .orElseThrow(IllegalAccessError::new);
+    }
+
+    public List<MenuGroupResponse> list() {
+        return MenuGroupMapper.toMenuGroupResponses(menuGroupDao.findAll());
     }
 }
