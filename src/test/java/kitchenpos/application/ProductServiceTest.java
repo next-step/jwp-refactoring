@@ -24,7 +24,7 @@ import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("상품 관련 기능")
-public class ProductTest {
+public class ProductServiceTest {
     @Mock
     private ProductDao productDao;
 

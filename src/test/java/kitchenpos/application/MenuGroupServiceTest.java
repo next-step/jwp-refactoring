@@ -19,7 +19,7 @@ import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("메뉴 그룹 관련 기능")
-public class MenuGroupTest {
+public class MenuGroupServiceTest {
     @Mock
     MenuGroupDao menuGroupDao;
 

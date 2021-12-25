@@ -26,7 +26,7 @@ import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("단체 관련 기능")
-public class TableGroupTest {
+public class TableGroupServiceTest {
 
     @Mock
     private OrderDao orderDao;
@@ -43,8 +43,8 @@ public class TableGroupTest {
 
     @BeforeEach
     void setUp() {
-        orderTable1 = TableTest.테이블_등록(1L, true);
-        orderTable2 = TableTest.테이블_등록(2L, true);
+        orderTable1 = TableServiceTest.테이블_등록(1L, true);
+        orderTable2 = TableServiceTest.테이블_등록(2L, true);
     }
 
     @Test
@@ -126,7 +126,7 @@ public class TableGroupTest {
     }
 
     static Stream<List<OrderTable>> tableGroupProvider() {
-        OrderTable orderTable1 = TableTest.테이블_등록(1L, true);
+        OrderTable orderTable1 = TableServiceTest.테이블_등록(1L, true);
         return Stream.of(
                 Arrays.asList(),
                 Arrays.asList(orderTable1)
