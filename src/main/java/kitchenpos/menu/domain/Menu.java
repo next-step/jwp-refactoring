@@ -1,35 +1,59 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.common.domain.Name;
+import kitchenpos.common.domain.Price;
 import kitchenpos.menu.exceptions.InputMenuDataErrorCode;
 import kitchenpos.menu.exceptions.InputMenuDataException;
 
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 
+@Entity
 public class Menu {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
-    private BigDecimal price;
-    private Long menuGroupId;
-    private List<MenuProduct> menuProducts;
 
+    @Embedded
+    @Column(name = "name", nullable = false)
+    private Name name;
+
+    @Embedded
+    @Column(name = "price", nullable = false)
+    private Price price;
+
+    @Column(name = "menuGroupId")
+    private Long menuGroupId;
+
+
+    @Embedded
+    private MenuProducts menuProducts = new MenuProducts();
+
+    protected Menu() {
+
+    }
 
     public Menu(Long id, String name, BigDecimal price, Long menuGroupId) {
         this(name, price, menuGroupId);
         this.id = id;
     }
 
-    public Menu(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
+    public Menu(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
         this(name, price, menuGroupId);
+        this.menuProducts = new MenuProducts(menuProducts);
+    }
+
+    public Menu(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
+        this(name, price, menuGroupId, menuProducts);
         this.id = id;
-        this.menuProducts = menuProducts;
     }
 
     public Menu(String name, BigDecimal price, Long menuGroupId) {
         checkValidValue(price, menuGroupId);
-        this.name = name;
-        this.price = price;
+        this.name = new Name(name);
+        this.price = new Price(price);
         this.menuGroupId = menuGroupId;
     }
 
@@ -55,11 +79,15 @@ public class Menu {
         return id;
     }
 
-    public String getName() {
+    public Name getName() {
         return name;
     }
 
-    public BigDecimal getPrice() {
+    public List<MenuProduct> getMenuProducts() {
+        return menuProducts.getMenuProducts();
+    }
+
+    public Price getPrice() {
         return price;
     }
 
@@ -67,16 +95,10 @@ public class Menu {
         return menuGroupId;
     }
 
-    public List<MenuProduct> getMenuProducts() {
-        return menuProducts;
-    }
-
-    public void addMenuProduct(MenuProduct menuProduct) {
-        this.menuProducts.add(menuProduct);
-    }
 
     public void validSum(BigDecimal sumPrice) {
-        if(this.getPrice().compareTo(sumPrice) > 0){
+        BigDecimal amount = this.getPrice().getPrice();
+        if (amount.compareTo(sumPrice) > 0) {
             throw new InputMenuDataException(InputMenuDataErrorCode.THE_SUM_OF_MENU_PRICE_IS_LESS_THAN_SUM_OF_PRODUCTS);
         }
     }

@@ -1,14 +1,14 @@
 package kitchenpos.menu.ui;
 
 import kitchenpos.menu.application.MenuService;
-import kitchenpos.menu.dao.MenuDao;
-import kitchenpos.menu.dao.MenuGroupDao;
-import kitchenpos.menu.dao.MenuProductDao;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuGroupRepository;
+import kitchenpos.menu.domain.MenuProductRepository;
+import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.exceptions.InputMenuDataErrorCode;
 import kitchenpos.menu.exceptions.InputMenuDataException;
-import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -19,11 +19,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
@@ -32,13 +31,13 @@ import static org.mockito.Mockito.*;
 class MenuServiceTest {
 
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
 
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
 
     @Mock
-    private MenuProductDao menuProductDao;
+    private MenuProductRepository menuProductRepository;
 
     @Mock
     private ProductRepository productRepository;
@@ -47,54 +46,13 @@ class MenuServiceTest {
     private MenuService menuService;
 
     @Test
-    @DisplayName("메뉴를 등록한다.")
-    void saveMenuTest() {
-        //given
-        Menu menu = mock(Menu.class);
-        when(menu.getPrice())
-                .thenReturn(new BigDecimal("10000"));
-        when(menuGroupDao.existsById(anyLong()))
-                .thenReturn(true);
-
-        MenuProduct menuProduct = mock(MenuProduct.class);
-        when(menu.getMenuProducts())
-                .thenReturn(Arrays.asList(menuProduct));
-        when(menuProduct.getQuantity())
-                .thenReturn(1L);
-
-        Product product = mock(Product.class);
-        when(product.getAmount())
-                .thenReturn(new BigDecimal("10000"));
-        when(productRepository.findById(anyLong()))
-                .thenReturn(Optional.of(product));
-
-        Menu savedMenu = mock(Menu.class);
-        when(savedMenu.getPrice())
-                .thenReturn(new BigDecimal("10000"));
-
-        when(menuDao.save(menu)).thenReturn(savedMenu);
-        //when
-        menuService.create(menu);
-
-        //then
-        verify(menuDao).save(menu);
-        verify(productRepository).findById(anyLong());
-    }
-
-    @Test
     @DisplayName("메뉴 조회한다.")
     void findMenusTest() {
         //given
-        Menu menu = mock(Menu.class);
-        when(menu.getPrice())
-                .thenReturn(new BigDecimal("1000"));
-        when(menuDao.findAll())
-                .thenReturn(Arrays.asList(menu));
         //when
-        List<Menu> menus = menuService.list();
+        menuService.findAll();
         //then
-        assertThat(menus).contains(menu);
-        verify(menuDao).findAll();
+        verify(menuRepository).findAll();
     }
 
     @Test
@@ -105,7 +63,7 @@ class MenuServiceTest {
         //when
         //then
         Assertions.assertThatThrownBy(() -> {
-                    new Menu(1L, "치킨", new BigDecimal(-100), 1L);
+                    new Menu("치킨", new BigDecimal(-100), 1L, null);
                 }).isInstanceOf(InputMenuDataException.class)
                 .hasMessageContaining(InputMenuDataErrorCode.IT_CAN_NOT_INPUT_MENU_PRICE_LESS_THAN_ZERO.errorMessage());
     }
@@ -118,7 +76,7 @@ class MenuServiceTest {
         //when
         //then
         Assertions.assertThatThrownBy(() -> {
-                    new Menu(1L, "치킨", new BigDecimal(100), null);
+                    new Menu("치킨", new BigDecimal(100), null, null);
                 }).isInstanceOf(InputMenuDataException.class)
                 .hasMessageContaining(InputMenuDataErrorCode.YOU_MUST_INPUT_MENU_GROUP_ID.errorMessage());
     }
@@ -140,22 +98,18 @@ class MenuServiceTest {
     @DisplayName("등록되지 않는 상품은 메뉴로 등록할수 없다.")
     void saveMenuNotRegisteredProduct() {
         //given
-        Menu menu = mock(Menu.class);
-        when(menu.getPrice())
-                .thenReturn(new BigDecimal(1000));
-        when(menuGroupDao.existsById(anyLong()))
-                .thenReturn(true);
-        MenuProduct menuProduct = mock(MenuProduct.class);
-        when(menu.getMenuProducts())
-                .thenReturn(Arrays.asList(menuProduct));
+        List<MenuProductRequest> menuProductRequests = Arrays.asList(new MenuProductRequest(1L, 1L));
+        MenuRequest menuRequest = new MenuRequest("핫도그", new BigDecimal(100), 1L, menuProductRequests);
 
+        when(menuGroupRepository.existsById(anyLong()))
+                .thenReturn(true);
         //when
-        when(productRepository.findById(anyLong()))
-                .thenReturn(Optional.empty());
+        when(productRepository.findAllById(anyList()))
+                .thenReturn(new ArrayList<>());
 
         //then
         assertThatThrownBy(() -> {
-            menuService.create(menu);
+            menuService.create(menuRequest);
         }).isInstanceOf(InputMenuDataException.class)
                 .hasMessageContaining(InputMenuDataErrorCode.THE_PRODUCT_IS_NOT_REGISTERED.errorMessage());
     }

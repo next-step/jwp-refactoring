@@ -1,6 +1,6 @@
 package kitchenpos.order.ui;
 
-import kitchenpos.menu.dao.MenuDao;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.dao.OrderDao;
 import kitchenpos.order.dao.OrderLineItemDao;
@@ -24,7 +24,6 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -37,7 +36,7 @@ class OrderServiceTest {
     private OrderDao orderDao;
 
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
 
     @Mock
     private OrderTableDao orderTableDao;
@@ -65,8 +64,8 @@ class OrderServiceTest {
         when(orderTableDao.findById(anyLong()))
                 .thenReturn(Optional.of(orderTable));
 
-        when(menuDao.countByIdIn(anyList()))
-                .thenReturn(1L);
+//        when(menuRepository.countByIdIn(anyList()))
+//                .thenReturn(1L);
 
         Order savedOrder = mock(Order.class);
 

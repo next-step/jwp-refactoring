@@ -67,8 +67,8 @@ class MenuTest {
     private void checkValidMenu(Menu menu) {
         assertAll(
                 () -> assertThat(menu.getId()).isEqualTo(1L),
-                () -> assertThat(menu.getName()).isEqualTo("스페셜치킨"),
-                () -> assertThat(menu.getPrice()).isEqualTo(new BigDecimal("10000")),
+                () -> assertThat(menu.getName().getName()).isEqualTo("스페셜치킨"),
+                () -> assertThat(menu.getPrice().getPrice()).isEqualTo(new BigDecimal("10000")),
                 () -> assertThat(menu.getMenuGroupId()).isEqualTo(1L)
         );
     }
