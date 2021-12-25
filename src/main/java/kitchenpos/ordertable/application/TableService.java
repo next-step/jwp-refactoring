@@ -62,7 +62,6 @@ public class TableService {
 		return OrderTableResponse.of(orderTable);
 	}
 
-	@Transactional(readOnly = true)
 	private OrderTable findOrderTable(final Long id) {
 		return orderTableRepository.findById(id)
 			.orElseThrow(NotFoundOrderTableException::new);

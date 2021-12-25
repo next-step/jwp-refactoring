@@ -39,7 +39,6 @@ public class TableGroupService {
 		return TableGroupResponse.of(tableGroup);
 	}
 
-	@Transactional(readOnly = true)
 	private List<OrderTable> findOrderTables(List<Long> ids) {
 		final List<OrderTable> orderTables = orderTableRepository.findAllById(ids);
 		if (orderTables.size() != ids.size()) {
@@ -55,7 +54,6 @@ public class TableGroupService {
 		tableGroup.ungroup();
 	}
 
-	@Transactional(readOnly = true)
 	private TableGroup findTableGroup(Long id) {
 		return tableGroupRepository.findById(id)
 			.orElseThrow(NotFoundOrderTableException::new);

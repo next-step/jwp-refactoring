@@ -49,13 +49,11 @@ public class MenuService {
 		return MenuResponse.of(menu);
 	}
 
-	@Transactional(readOnly = true)
 	private MenuGroup findMenuGroup(Long menuGroupId) {
 		return menuGroupRepository.findById(menuGroupId)
 			.orElseThrow(NotFoundMenuGroupException::new);
 	}
 
-	@Transactional(readOnly = true)
 	private Map<Long, Product> findProducts(List<MenuProductAddRequest> requests) {
 		final List<Long> productIds = requests.stream()
 			.map(MenuProductAddRequest::getProductId)

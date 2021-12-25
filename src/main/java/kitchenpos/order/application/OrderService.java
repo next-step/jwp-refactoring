@@ -55,13 +55,11 @@ public class OrderService {
 		return OrderResponse.of(order);
 	}
 
-	@Transactional(readOnly = true)
 	private OrderTable findOrderTable(Long id) {
 		return orderTableRepository.findById(id)
 			.orElseThrow(NotFoundOrderTableException::new);
 	}
 
-	@Transactional(readOnly = true)
 	private Map<Long, Menu> findMenus(List<OrderLineItemAddRequest> requests) {
 		final List<Long> menuIds = requests.stream()
 			.map(OrderLineItemAddRequest::getMenuId)
@@ -96,7 +94,6 @@ public class OrderService {
 		return OrderResponse.of(order);
 	}
 
-	@Transactional(readOnly = true)
 	private Order findOrder(Long id) {
 		return orderRepository.findById(id)
 			.orElseThrow(NotFoundOrderException::new);
