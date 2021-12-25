@@ -1,11 +1,16 @@
 package kitchenpos.application;
 
+import kitchenpos.common.exceptions.EmptyException;
+import kitchenpos.common.exceptions.NotEqualsException;
+import kitchenpos.common.exceptions.NotExistOrDisableStatusException;
+import kitchenpos.common.exceptions.NotExistRegisterException;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -17,6 +22,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 public class TableGroupService {
     private final OrderDao orderDao;
     private final OrderTableDao orderTableDao;
@@ -33,7 +39,7 @@ public class TableGroupService {
         final List<OrderTable> orderTables = tableGroup.getOrderTables();
 
         if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
-            throw new IllegalArgumentException();
+            throw new EmptyException(HttpStatus.BAD_REQUEST);
         }
 
         final List<Long> orderTableIds = orderTables.stream()
@@ -43,12 +49,12 @@ public class TableGroupService {
         final List<OrderTable> savedOrderTables = orderTableDao.findAllByIdIn(orderTableIds);
 
         if (orderTables.size() != savedOrderTables.size()) {
-            throw new IllegalArgumentException();
+            throw new NotEqualsException(HttpStatus.BAD_REQUEST);
         }
 
         for (final OrderTable savedOrderTable : savedOrderTables) {
             if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroupId())) {
-                throw new IllegalArgumentException();
+                throw new NotExistRegisterException(HttpStatus.BAD_REQUEST);
             }
         }
 
@@ -77,7 +83,7 @@ public class TableGroupService {
 
         if (orderDao.existsByOrderTableIdInAndOrderStatusIn(
                 orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new IllegalArgumentException();
+            throw new NotExistOrDisableStatusException(HttpStatus.BAD_REQUEST);
         }
 
         for (final OrderTable orderTable : orderTables) {

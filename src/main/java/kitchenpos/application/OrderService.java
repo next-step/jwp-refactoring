@@ -1,5 +1,9 @@
 package kitchenpos.application;
 
+import kitchenpos.common.exceptions.EmptyException;
+import kitchenpos.common.exceptions.NotEqualsException;
+import kitchenpos.common.exceptions.NotFoundException;
+import kitchenpos.common.exceptions.OrderStatusException;
 import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
@@ -8,6 +12,7 @@ import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -19,6 +24,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 public class OrderService {
     private final MenuDao menuDao;
     private final OrderDao orderDao;
@@ -42,7 +48,7 @@ public class OrderService {
         final List<OrderLineItem> orderLineItems = order.getOrderLineItems();
 
         if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalArgumentException();
+            throw new EmptyException(HttpStatus.BAD_REQUEST);
         }
 
         final List<Long> menuIds = orderLineItems.stream()
@@ -50,14 +56,16 @@ public class OrderService {
                 .collect(Collectors.toList());
 
         if (orderLineItems.size() != menuDao.countByIdIn(menuIds)) {
-            throw new IllegalArgumentException();
+            throw new NotEqualsException(HttpStatus.BAD_REQUEST);
         }
 
         final OrderTable orderTable = orderTableDao.findById(order.getOrderTableId())
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() ->
+                        new NotFoundException(HttpStatus.BAD_REQUEST)
+                );
 
         if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException();
+            throw new EmptyException(HttpStatus.BAD_REQUEST);
         }
 
         order.setOrderTableId(orderTable.getId());
@@ -90,10 +98,12 @@ public class OrderService {
     @Transactional
     public Order changeOrderStatus(final Long orderId, final Order order) {
         final Order savedOrder = orderDao.findById(orderId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() ->
+                        new NotFoundException(HttpStatus.BAD_REQUEST)
+                );
 
         if (Objects.equals(OrderStatus.COMPLETION.name(), savedOrder.getOrderStatus())) {
-            throw new IllegalArgumentException();
+            throw new OrderStatusException(HttpStatus.BAD_REQUEST);
         }
 
         final OrderStatus orderStatus = OrderStatus.valueOf(order.getOrderStatus());
