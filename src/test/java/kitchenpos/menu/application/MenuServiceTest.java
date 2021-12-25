@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuPrice;
+import kitchenpos.common.vo.Price;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuRequest;
@@ -17,7 +17,6 @@ import kitchenpos.menu.testfixtures.MenuGroupTestFixtures;
 import kitchenpos.menu.testfixtures.MenuTestFixtures;
 import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
-import kitchenpos.product.domain.ProductPrice;
 import kitchenpos.product.testfixtures.ProductTestFixtures;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -49,8 +48,8 @@ class MenuServiceTest {
     @BeforeEach
     void setUp() {
         //background
-        타코야끼 = new Product(1L, "타코야끼", new ProductPrice(BigDecimal.valueOf(12000)));
-        뿌링클 = new Product(2L, "뿌링클", new ProductPrice(BigDecimal.valueOf(15000)));
+        타코야끼 = new Product(1L, "타코야끼", new Price(BigDecimal.valueOf(12000)));
+        뿌링클 = new Product(2L, "뿌링클", new Price(BigDecimal.valueOf(15000)));
         추천메뉴 = new MenuGroup(1L, "추천메뉴");
     }
 
@@ -66,7 +65,7 @@ class MenuServiceTest {
             new MenuProduct(타코야끼, 3L),
             new MenuProduct(뿌링클, 1L));
 
-        Menu menu = new Menu("타코야끼와 뿌링클", new MenuPrice(BigDecimal.valueOf(51000)), 추천메뉴,
+        Menu menu = new Menu("타코야끼와 뿌링클", new Price(BigDecimal.valueOf(51000)), 추천메뉴,
             menuProducts);
         MenuTestFixtures.메뉴_저장_결과_모킹(menuRepository, menu);
 
@@ -86,7 +85,7 @@ class MenuServiceTest {
             new MenuProduct(타코야끼, 3L),
             new MenuProduct(뿌링클, 1L));
         List<Menu> menus = Arrays.asList(
-            new Menu(1L, "타코야끼와 뿌링클", new MenuPrice(BigDecimal.valueOf(51000)), 추천메뉴,
+            new Menu(1L, "타코야끼와 뿌링클", new Price(BigDecimal.valueOf(51000)), 추천메뉴,
                 menuProducts));
         MenuTestFixtures.메뉴_전체조회_모킹(menuRepository, menus);
 

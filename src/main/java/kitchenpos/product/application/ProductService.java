@@ -2,8 +2,8 @@ package kitchenpos.product.application;
 
 import java.util.List;
 import javax.persistence.EntityNotFoundException;
+import kitchenpos.common.vo.Price;
 import kitchenpos.product.domain.Product;
-import kitchenpos.product.domain.ProductPrice;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
@@ -24,7 +24,7 @@ public class ProductService {
     @Transactional
     public ProductResponse create(final ProductRequest productRequest) {
         Product product = new Product(productRequest.getName(),
-            new ProductPrice(productRequest.getPrice()));
+            new Price(productRequest.getPrice()));
         Product savedProduct = productRepository.save(product);
         return ProductResponse.from(savedProduct);
     }

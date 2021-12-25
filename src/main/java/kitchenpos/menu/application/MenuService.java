@@ -3,9 +3,9 @@ package kitchenpos.menu.application;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.persistence.EntityNotFoundException;
+import kitchenpos.common.vo.Price;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuPrice;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuProductRequest;
@@ -36,7 +36,7 @@ public class MenuService {
     public MenuResponse create(final MenuRequest menuRequest) {
         MenuGroup menuGroup = menuGroupService.findMenuGroupById(menuRequest.getMenuGroupId());
         final List<MenuProduct> menuProducts = createMenuProducts(menuRequest.getMenuProducts());
-        Menu menu = new Menu(menuRequest.getName(), new MenuPrice(menuRequest.getPrice()),
+        Menu menu = new Menu(menuRequest.getName(), new Price(menuRequest.getPrice()),
             menuGroup, menuProducts);
 
         Menu savedMenu = menuRepository.save(menu);

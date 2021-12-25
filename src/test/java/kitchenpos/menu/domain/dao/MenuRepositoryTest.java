@@ -7,7 +7,7 @@ import java.util.Arrays;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuGroupRepository;
-import kitchenpos.menu.domain.MenuPrice;
+import kitchenpos.common.vo.Price;
 import kitchenpos.menu.domain.MenuRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -34,8 +34,8 @@ class MenuRepositoryTest {
 
     @Test
     void countByIdIn() {
-        Menu 나홀로세트 = menuRepository.save(new Menu("나홀로세트", new MenuPrice(BigDecimal.ZERO), 추천메뉴그룹));
-        Menu 커플세트 = menuRepository.save(new Menu("커플세트", new MenuPrice(BigDecimal.ZERO), 추천메뉴그룹));
+        Menu 나홀로세트 = menuRepository.save(new Menu("나홀로세트", new Price(BigDecimal.ZERO), 추천메뉴그룹));
+        Menu 커플세트 = menuRepository.save(new Menu("커플세트", new Price(BigDecimal.ZERO), 추천메뉴그룹));
         long count = menuRepository.countByIdIn(Arrays.asList(나홀로세트.getId(), 커플세트.getId()));
         assertThat(count).isEqualTo(2);
     }

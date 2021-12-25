@@ -1,28 +1,28 @@
-package kitchenpos.menu.domain;
+package kitchenpos.common.vo;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.math.BigDecimal;
-import kitchenpos.menu.exception.MenuPriceNotAcceptableException;
+import kitchenpos.common.exception.PriceNotAcceptableException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-class MenuPriceTest {
+class PriceTest {
 
     @DisplayName("메뉴 가격 생성")
     @Test
     void constructor() {
         BigDecimal value = BigDecimal.valueOf(1000L);
-        MenuPrice menuPrice = new MenuPrice(value);
-        assertThat(menuPrice).isEqualTo(new MenuPrice(value));
+        Price price = new Price(value);
+        assertThat(price).isEqualTo(new Price(value));
     }
 
     @DisplayName("메뉴 가격은 0원 이상이어야 한다.")
     @Test
     void constructor_exception() {
         BigDecimal value = BigDecimal.valueOf(-1L);
-        assertThatThrownBy(() -> new MenuPrice(value))
-            .isInstanceOf(MenuPriceNotAcceptableException.class);
+        assertThatThrownBy(() -> new Price(value))
+            .isInstanceOf(PriceNotAcceptableException.class);
     }
 }

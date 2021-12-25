@@ -13,6 +13,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import kitchenpos.common.vo.Price;
 
 @Entity
 public class Menu {
@@ -26,7 +27,7 @@ public class Menu {
 
     @Embedded
     @Column(nullable = false)
-    private MenuPrice price;
+    private Price price;
 
     @JoinColumn(name = "menu_group_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
@@ -38,20 +39,20 @@ public class Menu {
     protected Menu() {
     }
 
-    public Menu(String name, MenuPrice price, MenuGroup menuGroup) {
+    public Menu(String name, Price price, MenuGroup menuGroup) {
         this(null, name, price, menuGroup, new ArrayList<>());
     }
 
-    public Menu(String name, MenuPrice price, MenuGroup menuGroup,
+    public Menu(String name, Price price, MenuGroup menuGroup,
         List<MenuProduct> menuProducts) {
         this(null, name, price, menuGroup, menuProducts);
     }
 
-    public Menu(Long id, String name, MenuPrice price, MenuGroup menuGroup) {
+    public Menu(Long id, String name, Price price, MenuGroup menuGroup) {
         this(id, name, price, menuGroup, new ArrayList<>());
     }
 
-    public Menu(Long id, String name, MenuPrice price, MenuGroup menuGroup,
+    public Menu(Long id, String name, Price price, MenuGroup menuGroup,
         List<MenuProduct> menuProducts) {
         this.id = id;
         this.name = name;
@@ -76,7 +77,7 @@ public class Menu {
         return name;
     }
 
-    public MenuPrice getPrice() {
+    public Price getPrice() {
         return price;
     }
 

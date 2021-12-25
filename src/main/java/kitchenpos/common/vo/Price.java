@@ -1,26 +1,26 @@
-package kitchenpos.product.domain;
+package kitchenpos.common.vo;
 
 import java.math.BigDecimal;
 import java.util.Objects;
 import javax.persistence.Embeddable;
-import kitchenpos.product.exception.ProductPriceNotAcceptableException;
+import kitchenpos.common.exception.PriceNotAcceptableException;
 
 @Embeddable
-public class ProductPrice {
+public class Price {
 
     private BigDecimal price;
 
-    protected ProductPrice() {
+    protected Price() {
     }
 
-    public ProductPrice(BigDecimal price) {
+    public Price(BigDecimal price) {
         validatePrice(price);
         this.price = price;
     }
 
     private void validatePrice(BigDecimal price) {
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new ProductPriceNotAcceptableException();
+            throw new PriceNotAcceptableException();
         }
     }
 
@@ -40,8 +40,8 @@ public class ProductPrice {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        ProductPrice menuPrice = (ProductPrice) o;
-        return Objects.equals(getPrice(), menuPrice.getPrice());
+        Price price = (Price) o;
+        return Objects.equals(getPrice(), price.getPrice());
     }
 
     @Override
