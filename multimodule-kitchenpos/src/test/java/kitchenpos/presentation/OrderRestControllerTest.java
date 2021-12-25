@@ -14,7 +14,7 @@ import io.restassured.response.Response;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderDto;
 import kitchenpos.order.dto.OrderLineItemDto;
-import kitchenpos.common.testassistance.config.TestConfig;
+import kitchenpos.testassistance.config.TestConfig;
 
 @DisplayName("주문 API기능에 관한")
 public class OrderRestControllerTest extends TestConfig {

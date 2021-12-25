@@ -14,7 +14,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.menu.dto.MenuDto;
 import kitchenpos.menu.dto.MenuProductDto;
-import kitchenpos.common.testassistance.config.TestConfig;
+import kitchenpos.testassistance.config.TestConfig;
 
 @DisplayName("메뉴 API기능에 관한")
 public class MenuRestControllerTest extends TestConfig {

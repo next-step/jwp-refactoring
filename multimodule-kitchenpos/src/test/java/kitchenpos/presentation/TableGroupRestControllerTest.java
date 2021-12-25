@@ -14,7 +14,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.table.dto.OrderTableDto;
 import kitchenpos.tablegroup.dto.TableGroupDto;
-import kitchenpos.common.testassistance.config.TestConfig;
+import kitchenpos.testassistance.config.TestConfig;
 
 @DisplayName("단체지정 API기능에 관한")
 public class TableGroupRestControllerTest extends TestConfig {

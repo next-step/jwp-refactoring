@@ -17,13 +17,13 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.acceptance.Fixture;
 import kitchenpos.common.domain.Price;
-import kitchenpos.common.testassistance.config.TestConfig;
 import kitchenpos.product.domain.Product;
 import kitchenpos.menu.dto.MenuDto;
 import kitchenpos.menu.dto.MenuProductDto;
 import kitchenpos.menugroup.dto.MenuGroupDto;
 import kitchenpos.product.dto.ProductDto;
 import kitchenpos.table.dto.OrderTableDto;
+import kitchenpos.testassistance.config.TestConfig;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menugroup.domain.MenuGroup;
 
