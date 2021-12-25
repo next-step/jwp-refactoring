@@ -22,7 +22,7 @@ public class OrderTables {
 	public static final int MIN_SIZE_INCLUSIVE = 2;
 
 	@OneToMany(cascade = CascadeType.ALL)
-	@JoinColumn(name = "table_group_id", foreignKey = @ForeignKey(name = "fk_order_table_table_group"), nullable = false, insertable = false)
+	@JoinColumn(name = "table_group_id", foreignKey = @ForeignKey(name = "fk_order_table_table_group"), insertable = false)
 	private List<OrderTable> orderTables = new ArrayList<>();
 
 	protected OrderTables() {

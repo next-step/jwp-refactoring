@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
+import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 
@@ -17,7 +18,7 @@ import kitchenpos.order.exception.NotFoundOrderLineItemsException;
 public class OrderLineItems {
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinColumn(name = "order_id")
+	@JoinColumn(name = "order_id", foreignKey = @ForeignKey(name = "fk_order_line_item_orders"), nullable = false)
 	private List<OrderLineItem> orderLineItems = new ArrayList<>();
 
 	protected OrderLineItems() {
