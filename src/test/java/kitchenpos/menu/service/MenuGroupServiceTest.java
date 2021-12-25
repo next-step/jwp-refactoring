@@ -1,9 +1,11 @@
 package kitchenpos.menu.service;
 
-import kitchenpos.application.MenuGroupService;
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.domain.MenuGroup;
 import kitchenpos.menu.MenuFactory;
+import kitchenpos.menu.application.MenuGroupService;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuGroupRepository;
+import kitchenpos.menu.dto.MenuGroupRequest;
+import kitchenpos.menu.dto.MenuGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,13 +28,13 @@ public class MenuGroupServiceTest {
     MenuGroupService menuGroupService;
 
     @Mock
-    MenuGroupDao menuGroupDao;
+    MenuGroupRepository menuGroupRepository;
 
-    private MenuGroup 튀김종류;
+    private MenuGroupRequest 튀김종류;
 
     @BeforeEach
     void setUp() {
-        튀김종류 = MenuFactory.ofMenuGroup("튀김종류");
+        튀김종류 = MenuFactory.ofMenuGroupRequest("튀김종류");
     }
 
     @DisplayName("메뉴 그룹을 생성한다.")
@@ -40,10 +42,10 @@ public class MenuGroupServiceTest {
     void 메뉴_그룹_생성() {
         // given
         MenuGroup expected = MenuFactory.ofMenuGroup(1L, "튀김종류");
-        given(menuGroupDao.save(튀김종류)).willReturn(expected);
+        given(menuGroupRepository.save(튀김종류.toMenuGroup())).willReturn(expected);
 
         // when
-        MenuGroup response = menuGroupService.create(튀김종류);
+        MenuGroupResponse response = menuGroupService.create(튀김종류);
 
         // then
         assertAll(
@@ -58,15 +60,15 @@ public class MenuGroupServiceTest {
         // given
         MenuGroup 튀김종류_예상_결과 = MenuFactory.ofMenuGroup(1L, "튀김종류");
         MenuGroup 중식종류_예상_결과 = MenuFactory.ofMenuGroup(2L, "중식종류");
-        given(menuGroupDao.findAll()).willReturn(Arrays.asList(튀김종류_예상_결과, 중식종류_예상_결과));
+        given(menuGroupRepository.findAll()).willReturn(Arrays.asList(튀김종류_예상_결과, 중식종류_예상_결과));
 
         // when
-        List<MenuGroup> response = menuGroupService.list();
+        List<MenuGroupResponse> response = menuGroupService.list();
 
         // then
         assertAll(
                 () -> assertThat(response.size()).isEqualTo(2),
-                () -> assertThat(response).contains(튀김종류_예상_결과, 중식종류_예상_결과)
+                () -> assertThat(response).contains(MenuGroupResponse.of(튀김종류_예상_결과), MenuGroupResponse.of(중식종류_예상_결과))
         );
     }
 }
