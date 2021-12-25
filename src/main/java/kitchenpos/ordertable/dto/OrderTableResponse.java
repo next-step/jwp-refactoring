@@ -1,6 +1,7 @@
 package kitchenpos.ordertable.dto;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import kitchenpos.ordertable.domain.OrderTable;
 
@@ -43,5 +44,24 @@ public class OrderTableResponse {
 
     public boolean isOrderClose() {
         return orderClose;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        OrderTableResponse that = (OrderTableResponse) o;
+        return getNumberOfGuests() == that.getNumberOfGuests()
+            && isOrderClose() == that.isOrderClose()
+            && Objects.equals(getId(), that.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getNumberOfGuests(), isOrderClose());
     }
 }

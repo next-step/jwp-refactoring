@@ -2,6 +2,7 @@ package kitchenpos.order.dto;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
@@ -61,4 +62,24 @@ public class OrderResponse {
         return orderLineItems;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        OrderResponse that = (OrderResponse) o;
+        return Objects.equals(getId(), that.getId()) && Objects.equals(
+            getOrderTable(), that.getOrderTable()) && getOrderStatus() == that.getOrderStatus()
+            && Objects.equals(getOrderedTime(), that.getOrderedTime())
+            && Objects.equals(getOrderLineItems(), that.getOrderLineItems());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getOrderTable(), getOrderStatus(), getOrderedTime(),
+            getOrderLineItems());
+    }
 }

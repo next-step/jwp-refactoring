@@ -1,6 +1,7 @@
 package kitchenpos.order.dto;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.order.domain.OrderLineItem;
@@ -45,5 +46,21 @@ public class OrderLineItemResponse {
         return quantity;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        OrderLineItemResponse that = (OrderLineItemResponse) o;
+        return getQuantity() == that.getQuantity() && Objects.equals(getId(), that.getId())
+            && Objects.equals(getMenu(), that.getMenu());
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getMenu(), getQuantity());
+    }
 }
