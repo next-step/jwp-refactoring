@@ -13,6 +13,7 @@ import javax.persistence.Id;
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(columnDefinition = "bigint(20)")
     private Long id;
 
     @Column(nullable = false)

@@ -6,7 +6,7 @@ import kitchenpos.product.domain.Product;
 
 public class ProductResponse {
 
-	private long id;
+	private Long id;
 	private String name;
 	private BigDecimal price;
 
@@ -20,7 +20,7 @@ public class ProductResponse {
 		return new ProductResponse(product.getId(), product.getName(), product.getPrice());
 	}
 
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
