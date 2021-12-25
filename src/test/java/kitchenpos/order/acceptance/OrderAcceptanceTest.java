@@ -3,11 +3,7 @@ package kitchenpos.order.acceptance;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.common.domain.Name;
-import kitchenpos.common.domain.Price;
-import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.fixture.MenuProductFixture;
@@ -34,6 +30,7 @@ import static kitchenpos.menugroup.acceptance.MenuGroupAcceptanceTest.메뉴_그
 import static kitchenpos.product.acceptance.ProductAcceptanceTest.상품_등록되어_있음;
 import static kitchenpos.table.acceptance.TableAcceptanceTest.주문_테이블_등록되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("주문 관련 기능")
 public class OrderAcceptanceTest extends AcceptanceTest {
@@ -57,7 +54,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         메뉴_그룹 = 메뉴_그룹_등록되어_있음("추천_메뉴_그룹");
         메뉴 = 메뉴_등록되어_있음("강정치킨_두마리_세트_메뉴", 30_000, 메뉴_그룹.getId(), Arrays.asList(MenuProductRequest.of(상품.getId(), 메뉴_상품.getQuantity().getQuantity())));
         주문_테이블 = 주문_테이블_등록되어_있음(4, false);
-        주문_항목 = OrderLineItemFixture.create(null, null, Menu.of(메뉴.getId(), Name.of(메뉴.getName()), Price.of(메뉴.getPrice()), 메뉴_그룹.getId(), MenuProducts.of(Arrays.asList(메뉴_상품))), 1L);
+        주문_항목 = OrderLineItemFixture.create(null, null, 메뉴.getId(), 1L);
     }
 
     @DisplayName("주문을 관리한다.")
@@ -65,7 +62,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     void manageOrder() {
         // given
         OrderRequest orderRequest = OrderRequest.of(
-                주문_테이블.getId(), Arrays.asList(OrderLineItemRequest.of(주문_항목.getMenu().getId(), 주문_항목.getQuantity().getQuantity())));
+                주문_테이블.getId(), Arrays.asList(OrderLineItemRequest.of(주문_항목.getMenuId(), 주문_항목.getQuantity().getQuantity())));
 
         // when
         ExtractableResponse<Response> 주문_생성_응답 = 주문_생성_요청(orderRequest);
@@ -115,7 +112,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     }
 
     private void 주문_상태_수정됨(ExtractableResponse<Response> response, OrderStatus orderStatus) {
-        Assertions.assertAll(
+        assertAll(
                 () -> 성공_200_OK(response)
                 , () -> assertThat(response.jsonPath().getString("orderStatus")).isEqualTo(orderStatus.name())
         );

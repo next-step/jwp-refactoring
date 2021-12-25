@@ -76,7 +76,7 @@ public class TableService {
 
     public boolean isCookingOrMealExists(OrderTable orderTable) {
         List<OrderStatus> orderStatuses = Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL);
-        return orderRepository.existsByOrderTableAndOrderStatusIn(orderTable, orderStatuses);
+        return orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTable.getId(), orderStatuses);
     }
 
     public List<OrderTable> findAllByIdIn(List<Long> orderTableIds) {

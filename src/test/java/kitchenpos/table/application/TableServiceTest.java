@@ -72,7 +72,7 @@ public class TableServiceTest {
         ChangeEmptyRequest 요청_테이블 = ChangeEmptyRequest.of(false);
 
         given(orderTableRepository.findById(any(Long.class))).willReturn(Optional.of(테이블_그룹에_속해있지_않은_테이블));
-        given(orderRepository.existsByOrderTableAndOrderStatusIn(any(OrderTable.class), anyList())).willReturn(false);
+        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(Long.class), anyList())).willReturn(false);
 
         // when
         OrderTableResponse 수정된_테이블 = tableService.changeEmpty(테이블_그룹에_속해있지_않은_테이블.getId(), 요청_테이블);
@@ -101,7 +101,7 @@ public class TableServiceTest {
         ChangeEmptyRequest 요청_테이블 = ChangeEmptyRequest.of(false);
 
         given(orderTableRepository.findById(any(Long.class))).willReturn(Optional.of(테이블_그룹에_속해있지_않은_테이블));
-        given(orderRepository.existsByOrderTableAndOrderStatusIn(any(OrderTable.class), anyList())).willReturn(true);
+        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(Long.class), anyList())).willReturn(true);
 
         // when & then
         assertThatIllegalArgumentException()
