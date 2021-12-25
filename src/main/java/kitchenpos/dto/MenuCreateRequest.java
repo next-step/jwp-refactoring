@@ -13,12 +13,15 @@ public class MenuCreateRequest {
     @DecimalMin(value = "0")
     private BigDecimal price;
 
+    private Long menuGroupId;
+
+    private List<MenuProduct> menuProducts;
+
     public MenuCreateRequest() {
     }
 
-    public MenuCreateRequest(final String name, final BigDecimal price) {
-        this.name = name;
-        this.price = price;
+    public MenuCreateRequest(final Long menuGroupId) {
+        this.menuGroupId = menuGroupId;
     }
 
     public MenuCreateRequest(final String name, final BigDecimal price, final Long menuGroupId, final List<MenuProduct> menuProducts) {
@@ -27,10 +30,6 @@ public class MenuCreateRequest {
         this.menuGroupId = menuGroupId;
         this.menuProducts = menuProducts;
     }
-
-    private Long menuGroupId;
-
-    private List<MenuProduct> menuProducts;
 
     public String getName() {
         return name;
