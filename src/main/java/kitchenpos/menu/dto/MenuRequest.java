@@ -28,10 +28,7 @@ public class MenuRequest {
     }
     
     public static MenuRequest from(Menu menu) {
-        if (menu.getMenuGroup() == null) {
-            return new MenuRequest(menu.getName(), menu.getPrice(), null, menu.getMenuProducts());
-        }
-        return new MenuRequest(menu.getName(), menu.getPrice(), menu.getMenuGroup().getId(), menu.getMenuProducts());
+        return new MenuRequest(menu.getName(), menu.getPrice(), menu.getMenuGroupId(), menu.getMenuProducts());
     }
     
     public Menu toMenu(MenuGroup menuGroup) {

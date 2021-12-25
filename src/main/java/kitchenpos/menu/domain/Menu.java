@@ -60,6 +60,13 @@ public class Menu {
     public MenuGroup getMenuGroup() {
         return menuGroup;
     }
+    
+    public Long getMenuGroupId() {
+        if (menuGroup == null) {
+            return null;
+        }
+        return menuGroup.getId();
+    }
 
     public List<MenuProduct> getMenuProducts() {
         return menuProducts;

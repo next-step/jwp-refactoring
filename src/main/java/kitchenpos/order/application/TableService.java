@@ -3,6 +3,7 @@ package kitchenpos.order.application;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,6 +12,8 @@ import kitchenpos.order.dao.OrderRepository;
 import kitchenpos.order.dao.OrderTableRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.dto.OrderTableRequest;
+import kitchenpos.order.dto.OrderTableResponse;
 
 @Service
 public class TableService {
@@ -23,18 +26,22 @@ public class TableService {
     }
 
     @Transactional
-    public OrderTable create(final OrderTable orderTable) {
+    public OrderTableResponse create(final OrderTableRequest request) {
+        OrderTable orderTable = request.toOrderTable();
         orderTable.updateTableGroup(null);
 
-        return orderTableRepository.save(orderTable);
+        return OrderTableResponse.from(orderTableRepository.save(orderTable));
     }
 
-    public List<OrderTable> list() {
-        return orderTableRepository.findAll();
+    public List<OrderTableResponse> list() {
+        return orderTableRepository.findAll().stream()
+                .map(OrderTableResponse::from)
+                .collect(Collectors.toList());
     }
 
     @Transactional
-    public OrderTable changeEmpty(final Long orderTableId, final OrderTable orderTable) {
+    public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest request) {
+        OrderTable orderTable = request.toOrderTable();
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(() -> new IllegalArgumentException("등록된 테이블만 빈 테이블로 변경할 수 있습니다"));
 
@@ -49,11 +56,12 @@ public class TableService {
 
         savedOrderTable.changeEmpty(orderTable.isEmpty());
 
-        return orderTableRepository.save(savedOrderTable);
+        return OrderTableResponse.from(orderTableRepository.save(savedOrderTable));
     }
 
     @Transactional
-    public OrderTable changeNumberOfGuests(final Long orderTableId, final OrderTable orderTable) {
+    public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final OrderTableRequest request) {
+        OrderTable orderTable = request.toOrderTable();
         final int numberOfGuests = orderTable.getNumberOfGuests();
 
         if (numberOfGuests < 0) {
@@ -69,6 +77,6 @@ public class TableService {
 
         savedOrderTable.changeNumberOfGuests(numberOfGuests);
 
-        return orderTableRepository.save(savedOrderTable);
+        return OrderTableResponse.from(orderTableRepository.save(savedOrderTable));
     }
 }
