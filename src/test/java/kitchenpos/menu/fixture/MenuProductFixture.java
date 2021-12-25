@@ -2,7 +2,6 @@ package kitchenpos.menu.fixture;
 
 import kitchenpos.common.domain.Quantity;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.product.domain.Product;
 
 public class MenuProductFixture {
 
@@ -10,7 +9,7 @@ public class MenuProductFixture {
         throw new UnsupportedOperationException();
     }
 
-    public static MenuProduct create(Long seq, Product product, long quantity) {
-        return MenuProduct.of(seq, null, product, Quantity.of(quantity));
+    public static MenuProduct create(Long seq, Long productId, long quantity) {
+        return MenuProduct.of(seq, null, productId, Quantity.of(quantity));
     }
 }

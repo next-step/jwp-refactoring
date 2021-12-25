@@ -6,8 +6,6 @@ import kitchenpos.common.domain.Quantity;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProducts;
-import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,16 +21,18 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 @DisplayName("주문 항목들 테스트")
 class OrderLineItemsTest {
 
-    private Product product;
+    private Long productId;
+    private Long menuGroupId;
     private MenuProducts menuProducts;
     private Menu menu;
     private OrderLineItem orderLineItem;
 
     @BeforeEach
     void setUp() {
-        product = Product.of("강정치킨", BigDecimal.valueOf(17_000));
-        menuProducts = MenuProducts.of(Arrays.asList(MenuProduct.of(product, Quantity.of(2))));
-        menu = Menu.of(Name.of("강정치킨_두마리_세트_메뉴"), Price.of(BigDecimal.valueOf(30_000)), MenuGroup.of("추천_메뉴_그룹"), menuProducts);
+        productId = 1L;
+        menuGroupId = 1L;
+        menuProducts = MenuProducts.of(Arrays.asList(MenuProduct.of(productId, Quantity.of(2))));
+        menu = Menu.of(Name.of("강정치킨_두마리_세트_메뉴"), Price.of(BigDecimal.valueOf(30_000)), menuGroupId, menuProducts);
         orderLineItem = OrderLineItem.of(menu, Quantity.of(1));
     }
 

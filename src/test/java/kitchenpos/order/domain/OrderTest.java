@@ -27,9 +27,10 @@ class OrderTest {
 
     private OrderTable orderTable;
     private LocalDateTime orderedTime;
-    private Product product;
+    private Long productId;
     private MenuProducts menuProducts;
     private Menu menu;
+    private Long menuGroupId;
     private OrderLineItem orderLineItem;
     private OrderLineItems orderLineItems;
 
@@ -37,9 +38,10 @@ class OrderTest {
     void setUp() {
         orderTable = OrderTable.of(NumberOfGuests.of(4), Empty.of(false));
         orderedTime = LocalDateTime.now();
-        product = Product.of("강정치킨", BigDecimal.valueOf(17_000));
-        menuProducts = MenuProducts.of(Arrays.asList(MenuProduct.of(product, Quantity.of(2))));
-        menu = Menu.of(Name.of("강정치킨_두마리_세트_메뉴"), Price.of(BigDecimal.valueOf(30_000)), MenuGroup.of("추천_메뉴_그룹"), menuProducts);
+        productId = 1L;
+        menuProducts = MenuProducts.of(Arrays.asList(MenuProduct.of(productId, Quantity.of(2))));
+        menuGroupId = 1L;
+        menu = Menu.of(Name.of("강정치킨_두마리_세트_메뉴"), Price.of(BigDecimal.valueOf(30_000)), menuGroupId, menuProducts);
         orderLineItem = OrderLineItem.of(menu, Quantity.of(1));
         orderLineItems = OrderLineItems.of(Arrays.asList(orderLineItem));
     }

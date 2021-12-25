@@ -1,14 +1,14 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.common.domain.Price;
+import kitchenpos.common.domain.Quantity;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -33,19 +33,17 @@ public class MenuProducts {
         return new MenuProducts();
     }
 
-    public Price getTotalPrice() {
-        List<BigDecimal> prices = menuProducts.stream()
-                .map(menuProduct -> menuProduct.getTotalPrice().getPrice())
-                .collect(Collectors.toList());
-        return Price.sum(prices);
-    }
-
     public List<MenuProduct> getMenuProducts() {
         return menuProducts;
     }
 
     public void add(MenuProduct menuProduct) {
         menuProducts.add(menuProduct);
+    }
+
+    public Map<Long, Quantity> toMap() {
+        return menuProducts.stream()
+                .collect(Collectors.toMap(MenuProduct::getProductId, MenuProduct::getQuantity));
     }
 
     @Override

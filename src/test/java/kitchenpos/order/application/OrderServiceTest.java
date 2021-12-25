@@ -34,8 +34,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
-import static kitchenpos.menugroup.fixture.MenuGroupFixture.추천_메뉴_그룹;
-import static kitchenpos.product.fixture.ProductFixture.강정치킨;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -55,6 +53,8 @@ public class OrderServiceTest {
     @Mock
     private TableService tableService;
 
+    private Long productId;
+    private Long menuGroupId;
     private MenuProduct 강정치킨_두마리;
     private Menu 강정치킨_두마리_세트_메뉴;
     private OrderTable 일반_테이블;
@@ -65,8 +65,12 @@ public class OrderServiceTest {
 
     @BeforeEach
     public void setUp() {
-        강정치킨_두마리 = MenuProductFixture.create(1L, 강정치킨, 2);
-        강정치킨_두마리_세트_메뉴 = MenuFixture.create(1L, "강정치킨_두마리_세트_메뉴", BigDecimal.valueOf(30_000), 추천_메뉴_그룹, Arrays.asList(강정치킨_두마리));
+        // given
+        productId = 1L;
+        menuGroupId = 1L;
+
+        강정치킨_두마리 = MenuProductFixture.create(1L, productId, 2);
+        강정치킨_두마리_세트_메뉴 = MenuFixture.create(1L, "강정치킨_두마리_세트_메뉴", BigDecimal.valueOf(30_000), menuGroupId, Arrays.asList(강정치킨_두마리));
         일반_테이블 = TableFixture.create(1L, null, 4, false);
         비어있는_테이블 = TableFixture.create(1L, null, 4, true);
         주문_항목 = OrderLineItemFixture.create(null, null, 강정치킨_두마리_세트_메뉴, 1L);
