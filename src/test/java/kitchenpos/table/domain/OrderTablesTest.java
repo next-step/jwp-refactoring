@@ -18,11 +18,11 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 
 public class OrderTablesTest {
-    private OrderTableValidatable orderTableValidator;
+    private OrderTableValidator orderTableValidator;
 
     @BeforeEach
     void setUp() {
-        orderTableValidator = Mockito.mock(OrderTableValidatable.class);
+        orderTableValidator = Mockito.mock(OrderTableValidator.class);
     }
 
     @DisplayName("OrderTables를 생성한다")

@@ -2,7 +2,7 @@ package kitchenpos.table.application;
 
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.table.domain.OrderTableValidatable;
+import kitchenpos.table.domain.OrderTableValidator;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import org.springframework.stereotype.Service;
@@ -13,9 +13,9 @@ import java.util.List;
 @Service
 public class TableService {
     private final OrderTableRepository orderTableRepository;
-    private final OrderTableValidatable orderTableValidator;
+    private final OrderTableValidator orderTableValidator;
 
-    public TableService(final OrderTableRepository orderTableRepository, final OrderTableValidatable orderTableValidator) {
+    public TableService(final OrderTableRepository orderTableRepository, final OrderTableValidator orderTableValidator) {
         this.orderTableRepository = orderTableRepository;
         this.orderTableValidator = orderTableValidator;
     }

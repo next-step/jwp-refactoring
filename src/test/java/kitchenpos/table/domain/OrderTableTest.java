@@ -13,11 +13,11 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.doThrow;
 
 public class OrderTableTest {
-    private OrderTableValidatable orderTableValidator;
+    private OrderTableValidator orderTableValidator;
 
     @BeforeEach
     void setUp() {
-        orderTableValidator = Mockito.mock(OrderTableValidatable.class);
+        orderTableValidator = Mockito.mock(OrderTableValidator.class);
     }
 
     @DisplayName("손님의 수를 변경한다")

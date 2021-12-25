@@ -30,7 +30,7 @@ public class OrderTables {
         }
     }
 
-    public void ungroup(OrderTableValidatable orderTableValidator) {
+    public void ungroup(OrderTableValidator orderTableValidator) {
         for (final OrderTable orderTable : orderTables) {
             orderTableValidator.validateHasProgressOrder(orderTable);
             orderTable.unsetTableGroup();

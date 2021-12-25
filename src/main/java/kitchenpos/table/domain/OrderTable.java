@@ -43,7 +43,7 @@ public class OrderTable {
         this.numberOfGuests = NumberOfGuests.of(numberOfGuests);
     }
 
-    public void changeEmptyStatus(final boolean empty, OrderTableValidatable validator) {
+    public void changeEmptyStatus(final boolean empty, OrderTableValidator validator) {
         validator.validateHasProgressOrder(this);
         this.empty = empty;
     }

@@ -8,9 +8,9 @@ import java.util.List;
 @Component
 public class TableGroupManagerImpl implements TableGroupManager {
     private final OrderTableRepository orderTableRepository;
-    private final OrderTableValidatable orderTableValidator;
+    private final OrderTableValidator orderTableValidator;
 
-    public TableGroupManagerImpl(OrderTableRepository orderTableRepository, OrderTableValidatable orderTableValidator) {
+    public TableGroupManagerImpl(OrderTableRepository orderTableRepository, OrderTableValidator orderTableValidator) {
         this.orderTableRepository = orderTableRepository;
         this.orderTableValidator = orderTableValidator;
     }
