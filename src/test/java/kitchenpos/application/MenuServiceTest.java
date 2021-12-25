@@ -1,12 +1,13 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.dao.MenuProductDao;
-import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
+import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
+import kitchenpos.repos.MenuGroupRepository;
+import kitchenpos.repos.MenuProductRepository;
+import kitchenpos.repos.MenuRepository;
+import kitchenpos.repos.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,16 +30,16 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class MenuServiceTest {
     @Mock
-    MenuDao menuDao;
+    MenuRepository menuRepository;
 
     @Mock
-    MenuGroupDao menuGroupDao;
+    MenuGroupRepository menuGroupRepository;
 
     @Mock
-    MenuProductDao menuProductDao;
+    MenuProductRepository menuProductRepository;
 
     @Mock
-    ProductDao productDao;
+    ProductRepository productRepository;
 
     @InjectMocks
     MenuService menuService;
@@ -51,6 +52,8 @@ class MenuServiceTest {
 
     private MenuProduct menuProduct2;
 
+    private MenuGroup menuGroup;
+
     private Menu menu;
 
     private Menu menu2;
@@ -59,20 +62,21 @@ class MenuServiceTest {
     void setUp() {
         product = Product.of(1L, "후라이드치킨", new BigDecimal(16000.00));
         product2 = Product.of(2L, "양념치킨", new BigDecimal(16000.00));
-        menuProduct = MenuProduct.of(1L, 1L, 1L, 1);
-        menuProduct2 = MenuProduct.of(1L, 1L, 2L, 1);
-        menu = Menu.of(1L, "후라이드치킨", new BigDecimal(16000.00), 2L, Arrays.asList(menuProduct));
-        menu2 = Menu.of(2L, "양념치킨", new BigDecimal(16000.00), 2L, Arrays.asList(menuProduct2));
+        menuGroup = MenuGroup.of(1L, "메뉴그룹1");
+        menu = Menu.of(1L, "후라이드치킨", new BigDecimal(16000.00), menuGroup, Arrays.asList(menuProduct));
+        menu2 = Menu.of(2L, "양념치킨", new BigDecimal(16000.00), menuGroup, Arrays.asList(menuProduct2));
+        menuProduct = MenuProduct.of(1L, menu, product, 1);
+        menuProduct2 = MenuProduct.of(2L, menu2, product2, 1);
     }
 
     @DisplayName("메뉴를 등록한다.")
     @Test
     void create() {
         // given
-        when(menuGroupDao.existsById(2L)).thenReturn(true);
-        when(productDao.findById(any())).thenReturn(Optional.of(product));
-        when(menuDao.save(menu)).thenReturn(menu);
-        when(menuProductDao.save(menuProduct)).thenReturn(menuProduct);
+        when(menuGroupRepository.existsById(1L)).thenReturn(true);
+        when(productRepository.findById(any())).thenReturn(Optional.of(product));
+        when(menuRepository.save(menu)).thenReturn(menu);
+        when(menuProductRepository.save(menuProduct)).thenReturn(menuProduct);
 
         // when
         Menu expected = menuService.create(menu);
@@ -85,8 +89,8 @@ class MenuServiceTest {
     @Test
     void create2() {
         // given
-        Menu 가격_음수_메뉴 = Menu.of(1L, "후라이드치킨", new BigDecimal(-1000), 2L, Arrays.asList(menuProduct));
-        Menu 가격_없는_메뉴 = Menu.of(1L, "후라이드치킨", null, 2L, Arrays.asList(menuProduct));
+        Menu 가격_음수_메뉴 = Menu.of(1L, "후라이드치킨", new BigDecimal(-1000), menuGroup, Arrays.asList(menuProduct));
+        Menu 가격_없는_메뉴 = Menu.of(1L, "후라이드치킨", null, menuGroup, Arrays.asList(menuProduct));
 
         //then
         assertAll(
@@ -103,8 +107,9 @@ class MenuServiceTest {
     @Test
     void create3() {
         // given
-        Menu 메뉴_그룹_없는_메뉴 = Menu.of(1L, "후라이드치킨", new BigDecimal(16000.00), null, Arrays.asList(menuProduct));
-        when(menuGroupDao.existsById(메뉴_그룹_없는_메뉴.getMenuGroupId())).thenReturn(false);
+        menuGroup.setId(null);
+        Menu 메뉴_그룹_없는_메뉴 = Menu.of(1L, "후라이드치킨", new BigDecimal(16000.00), menuGroup, Arrays.asList(menuProduct));
+        when(menuGroupRepository.existsById(any())).thenReturn(false);
 
         //then
         assertThatThrownBy(
@@ -117,9 +122,9 @@ class MenuServiceTest {
     void create4() {
         // given
         Menu 메뉴_금액_비싼_메뉴 = Menu.of(1L, "후라이드치킨", new BigDecimal(33000.00), null, Arrays.asList(menuProduct, menuProduct2));
-        when(menuGroupDao.existsById(any())).thenReturn(true);
-        when(productDao.findById(1L)).thenReturn(Optional.of(product));
-        when(productDao.findById(2L)).thenReturn(Optional.of(product2));
+        when(menuGroupRepository.existsById(any())).thenReturn(true);
+        when(productRepository.findById(1L)).thenReturn(Optional.of(product));
+        when(productRepository.findById(2L)).thenReturn(Optional.of(product2));
 
         //then
         assertThatThrownBy(
@@ -132,7 +137,7 @@ class MenuServiceTest {
     void list() {
         // given
         List<Menu> actual = Arrays.asList(menu, menu2);
-        when(menuDao.findAll()).thenReturn(actual);
+        when(menuRepository.findAll()).thenReturn(actual);
 
         // when
         List<Menu> expected = menuService.list();

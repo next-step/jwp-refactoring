@@ -4,10 +4,7 @@ import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
-import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,6 +13,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -51,12 +49,15 @@ class OrderServiceTest {
 
     private Order order2;
 
+    private TableGroup tableGroup;
+
     @BeforeEach
     void setUp() {
-        orderLineItem = OrderLineItem.of(1L, 1L, 1L, 1);
-        orderTable = OrderTable.of(1L, 1L, 2, false);
-        order = Order.of(1L, 1L, null, null, Arrays.asList(orderLineItem));
-        order2 = Order.of(2L, 2L, null, null, Arrays.asList(orderLineItem));
+        tableGroup = TableGroup.of(1L, null, null);
+        orderTable = OrderTable.of(1L, tableGroup, 2, false);
+        orderLineItem = OrderLineItem.of(1L, null, null, 1);
+        order = Order.of(1L, orderTable, null, null, Arrays.asList(orderLineItem));
+        order2 = Order.of(2L, orderTable, null, null, Arrays.asList(orderLineItem));
     }
 
     @DisplayName("주문을 등록한다.")
@@ -79,7 +80,7 @@ class OrderServiceTest {
     @Test
     void create2() {
         // given
-        Order 주문_항목_없는_주문 = Order.of(1L, 1L, null, null, null);
+        Order 주문_항목_없는_주문 = Order.of(1L, orderTable, null, null, null);
 
         //then
         assertThatThrownBy(
@@ -103,7 +104,7 @@ class OrderServiceTest {
     @Test
     void create4() {
         // given
-        OrderTable 빈_테이블 = OrderTable.of(1L, 1L, 2, true);
+        OrderTable 빈_테이블 = OrderTable.of(1L, tableGroup, 2, true);
         when(menuDao.countByIdIn(Arrays.asList(1L))).thenReturn(Long.valueOf(1));
         when(orderTableDao.findById(1L)).thenReturn(Optional.of(빈_테이블));
 
@@ -132,8 +133,8 @@ class OrderServiceTest {
     @Test
     void changeOrderStatus() {
         // given
-        Order 조리중_주문 = Order.of(1L, 1L, OrderStatus.COOKING.name(), LocalDateTime.now(), Arrays.asList(orderLineItem));
-        Order 주문상태_변경_주문 = Order.of(조리중_주문.getId(), 조리중_주문.getOrderTableId(), OrderStatus.MEAL.name(), 조리중_주문.getOrderedTime(), 조리중_주문.getOrderLineItems());
+        Order 조리중_주문 = Order.of(1L, orderTable, OrderStatus.COOKING.name(), LocalDateTime.now(), Arrays.asList(orderLineItem));
+        Order 주문상태_변경_주문 = Order.of(조리중_주문.getId(), 조리중_주문.getOrderTable(), OrderStatus.MEAL.name(), 조리중_주문.getOrderedTime(), 조리중_주문.getOrderLineItems());
         when(orderDao.findById(1L)).thenReturn(Optional.of(조리중_주문));
         when(orderDao.save(조리중_주문)).thenReturn(주문상태_변경_주문);
 
@@ -148,8 +149,8 @@ class OrderServiceTest {
     @Test
     void changeOrderStatus2() {
         // given
-        Order 계산완료_주문 = Order.of(1L, 1L, OrderStatus.COMPLETION.name(), LocalDateTime.now(), Arrays.asList(orderLineItem));
-        Order 주문상태_변경_주문 = Order.of(계산완료_주문.getId(), 계산완료_주문.getOrderTableId(), OrderStatus.MEAL.name(), 계산완료_주문.getOrderedTime(), 계산완료_주문.getOrderLineItems());
+        Order 계산완료_주문 = Order.of(1L, orderTable, OrderStatus.COMPLETION.name(), LocalDateTime.now(), Arrays.asList(orderLineItem));
+        Order 주문상태_변경_주문 = Order.of(계산완료_주문.getId(), 계산완료_주문.getOrderTable(), OrderStatus.MEAL.name(), 계산완료_주문.getOrderedTime(), 계산완료_주문.getOrderLineItems());
         when(orderDao.findById(1L)).thenReturn(Optional.of(계산완료_주문));
 
         //then

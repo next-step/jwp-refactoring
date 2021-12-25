@@ -61,4 +61,8 @@ public class OrderTable {
     public void setEmpty(final boolean empty) {
         this.empty = empty;
     }
+
+    public TableGroup getTableGroup() {
+        return tableGroup;
+    }
 }
