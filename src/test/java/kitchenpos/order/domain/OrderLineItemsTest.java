@@ -1,10 +1,9 @@
 package kitchenpos.order.domain;
 
-import static kitchenpos.menugroup.MenuGroupFixture.*;
+import static kitchenpos.menu.MenuFixture.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.ThrowableAssert.*;
 
-import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 
@@ -13,13 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 
-import kitchenpos.common.domain.Name;
-import kitchenpos.common.domain.Price;
 import kitchenpos.common.domain.Quantity;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuProducts;
-import kitchenpos.product.domain.Product;
 
 @DisplayName("주문 항목들")
 class OrderLineItemsTest {
@@ -28,14 +21,7 @@ class OrderLineItemsTest {
 	void from() {
 		// given
 		OrderLineItem orderLineItem = OrderLineItem.of(
-			Menu.of(
-				Name.from("후라이드+후라이드"),
-				Price.from(BigDecimal.valueOf(25000)),
-				추천_메뉴_그룹().getId(),
-				MenuProducts.from(Collections.singletonList(
-					MenuProduct.of(
-						Product.of(Name.from("후라이드치킨"), Price.from(BigDecimal.valueOf(17000))),
-						Quantity.from(2L))))),
+			후라이드후라이드_메뉴(),
 			Quantity.from(1L));
 
 		// when

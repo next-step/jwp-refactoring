@@ -67,4 +67,18 @@ class PriceTest {
 		// then
 		assertThat(sum).isEqualTo(Price.from(BigDecimal.valueOf(30000)));
 	}
+
+	@DisplayName("곱하기")
+	@Test
+	void multiply() {
+		// given
+		Price multiplicand = Price.from(BigDecimal.valueOf(10000));
+		Quantity multiplier = Quantity.from(2L);
+
+		// when
+		Price product = multiplicand.multiply(multiplier);
+
+		// then
+		assertThat(product).isEqualTo(Price.from(BigDecimal.valueOf(20000)));
+	}
 }

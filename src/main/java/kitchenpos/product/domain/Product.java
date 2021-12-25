@@ -26,6 +26,14 @@ public class Product {
 	protected Product() {
 	}
 
+	public static Product of(Long id, Name name, Price price) {
+		Product product = new Product();
+		product.id = id;
+		product.name = name;
+		product.price = price;
+		return product;
+	}
+
 	public static Product of(Name name, Price price) {
 		Product product = new Product();
 		product.name = name;

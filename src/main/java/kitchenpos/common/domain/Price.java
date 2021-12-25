@@ -35,4 +35,8 @@ public class Price extends Value<Price> {
 	public Price add(Price price) {
 		return from(value.add(price.value));
 	}
+
+	public Price multiply(Quantity quantity) {
+		return from(value.multiply(BigDecimal.valueOf(quantity.getValue())));
+	}
 }

@@ -1,8 +1,8 @@
 package kitchenpos.menu.domain;
 
+import static kitchenpos.menu.MenuProductFixture.*;
 import static org.assertj.core.api.Assertions.*;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -11,11 +11,6 @@ import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import kitchenpos.common.domain.Name;
-import kitchenpos.common.domain.Price;
-import kitchenpos.common.domain.Quantity;
-import kitchenpos.product.domain.Product;
-
 @DisplayName("메뉴 상품들")
 class MenuProductsTest {
 
@@ -23,16 +18,8 @@ class MenuProductsTest {
 	@Test
 	void from() {
 		// given
-		MenuProduct menuProduct1 = MenuProduct.of(
-			Product.of(
-				Name.from("강정치킨"),
-				Price.from(BigDecimal.valueOf(17000))),
-			Quantity.from(1L));
-		MenuProduct menuProduct2 = MenuProduct.of(
-			Product.of(
-				Name.from("양념치킨"),
-				Price.from(BigDecimal.valueOf(18000))),
-			Quantity.from(2L));
+		MenuProduct menuProduct1 = 강정치킨_메뉴_상품();
+		MenuProduct menuProduct2 = 양념치킨_메뉴_상품();
 
 		// when
 		MenuProducts.from(Arrays.asList(menuProduct1, menuProduct2));
@@ -49,28 +36,5 @@ class MenuProductsTest {
 
 		// then
 		assertThatThrownBy(throwingCallable).isInstanceOf(IllegalArgumentException.class);
-	}
-
-	@DisplayName("총 금액을 구할 수 있다.")
-	@Test
-	void getTotalPrice() {
-		// given
-		MenuProducts menuProducts = MenuProducts.from(Arrays.asList(
-			MenuProduct.of(
-				Product.of(
-					Name.from("강정치킨"),
-					Price.from(BigDecimal.valueOf(17000))),
-				Quantity.from(1L)),
-			MenuProduct.of(
-				Product.of(
-					Name.from("양념치킨"),
-					Price.from(BigDecimal.valueOf(18000))),
-				Quantity.from(2L))));
-
-		// when
-		Price actual = menuProducts.getTotalPrice();
-
-		// then
-		assertThat(actual).isEqualTo(Price.from(BigDecimal.valueOf(53000)));
 	}
 }

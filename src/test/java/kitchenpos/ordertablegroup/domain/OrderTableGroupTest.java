@@ -1,29 +1,22 @@
 package kitchenpos.ordertablegroup.domain;
 
-import static kitchenpos.menugroup.MenuGroupFixture.*;
+import static kitchenpos.menu.MenuFixture.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.ThrowableAssert.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import kitchenpos.common.domain.Name;
-import kitchenpos.common.domain.Price;
 import kitchenpos.common.domain.Quantity;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.ordertable.domain.NumberOfGuests;
 import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.product.domain.Product;
 
 @DisplayName("주문 테이블 그룹")
 class OrderTableGroupTest {
@@ -114,14 +107,7 @@ class OrderTableGroupTest {
 		OrderTableGroup orderTableGroup = OrderTableGroup.from(Arrays.asList(orderTable1, orderTable2));
 		Order.of(orderTable1,
 			OrderLineItems.from(Collections.singletonList(OrderLineItem.of(
-				Menu.of(
-					Name.from("후라이드+후라이드"),
-					Price.from(BigDecimal.valueOf(25000)),
-					추천_메뉴_그룹().getId(),
-					MenuProducts.from(Collections.singletonList(
-						MenuProduct.of(
-							Product.of(Name.from("후라이드치킨"), Price.from(BigDecimal.valueOf(17000))),
-							Quantity.from(2L))))),
+				후라이드후라이드_메뉴(),
 				Quantity.from(1L)))));
 
 		// when

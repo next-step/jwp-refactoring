@@ -8,8 +8,6 @@ import javax.persistence.Embeddable;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 
-import kitchenpos.common.domain.Price;
-
 @Embeddable
 public class MenuProducts {
 	@OneToMany(cascade = CascadeType.ALL)
@@ -33,10 +31,7 @@ public class MenuProducts {
 		return values;
 	}
 
-	public Price getTotalPrice() {
-		return values.stream()
-			.map(MenuProduct::getTotalPrice)
-			.reduce(Price::add)
-			.get();
+	public int size() {
+		return values.size();
 	}
 }
