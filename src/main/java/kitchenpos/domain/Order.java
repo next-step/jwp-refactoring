@@ -1,5 +1,7 @@
 package kitchenpos.domain;
 
+import kitchenpos.exception.CannotChangeOrderStatusException;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +35,7 @@ public class Order extends BaseTimeEntity {
 
     public void changeOrderStatus(OrderStatus changeOrderStatus) {
         if (OrderStatus.COMPLETION.equals(this.orderStatus)) {
-            throw new IllegalArgumentException();
+            throw new CannotChangeOrderStatusException(String.format("order status is %s", orderStatus.name()));
         }
         this.orderStatus = changeOrderStatus;
     }

@@ -5,6 +5,7 @@ import kitchenpos.domain.*;
 import kitchenpos.dto.OrderCreateRequest;
 import kitchenpos.dto.OrderResponse;
 import kitchenpos.dto.OrderStatusChangeRequest;
+import kitchenpos.global.exception.EntityNotFoundException;
 import kitchenpos.mapper.OrderMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -61,7 +62,7 @@ public class OrderService {
 
     public OrderResponse changeOrderStatus(final Long orderId, final OrderStatusChangeRequest request) {
         final Order findOrder = orderDao.findById(orderId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new EntityNotFoundException(String.format("order not found. find order id is %d", orderId)));
         findOrder.changeOrderStatus(request.getOrderStatus());
 
         return OrderMapper.toOrderResponse(findOrder);

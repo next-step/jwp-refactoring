@@ -5,6 +5,7 @@ import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.TableGroupCreateRequest;
 import kitchenpos.dto.TableGroupResponse;
+import kitchenpos.global.exception.EntityNotFoundException;
 import kitchenpos.mapper.TableGroupMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,7 +42,7 @@ public class TableGroupService {
 
     private void existCheckOrderTable(final List<OrderTable> savedOrderTables, final TableGroupCreateRequest request) {
         if (savedOrderTables.size() != request.getOrderTables().size()) {
-            throw new IllegalArgumentException();
+            throw new EntityNotFoundException("orderTable Not Found");
         }
     }
 

@@ -4,6 +4,7 @@ import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.dto.MenuGroupCreateRequest;
 import kitchenpos.dto.MenuGroupResponse;
+import kitchenpos.global.exception.EntityNotFoundException;
 import kitchenpos.mapper.MenuGroupMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +29,7 @@ public class MenuGroupService {
     @Transactional(readOnly = true)
     public MenuGroup findMenuGroup(Long id) {
         return menuGroupDao.findById(id)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new EntityNotFoundException(String.format("menu not found. find menu id is %d", id)));
     }
 
     public List<MenuGroupResponse> list() {

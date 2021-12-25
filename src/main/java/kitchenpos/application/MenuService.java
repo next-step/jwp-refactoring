@@ -7,6 +7,7 @@ import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
 import kitchenpos.dto.MenuCreateRequest;
 import kitchenpos.dto.MenuResponse;
+import kitchenpos.global.exception.EntityNotFoundException;
 import kitchenpos.mapper.MenuMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -75,7 +76,7 @@ public class MenuService {
         return products.stream()
                 .filter(product -> product.getId().equals(menuProductRequest.getProductId()))
                 .findFirst()
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new EntityNotFoundException(String.format("menu product not found. find menu product id is %d", menuProductRequest.getProductId())));
     }
 
     @Transactional(readOnly = true)

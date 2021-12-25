@@ -1,5 +1,9 @@
 package kitchenpos.domain;
 
+import kitchenpos.exception.CannotChangeTableEmptyException;
+import kitchenpos.exception.TableGroupNotAvailableException;
+import kitchenpos.exception.TableNotAvailableException;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,13 +40,13 @@ public class OrderTable extends BaseTimeEntity {
 
     public void checkAvailability() {
         if (this.empty) {
-            throw new IllegalArgumentException();
+            throw new TableNotAvailableException(String.format("table id is %d", this.id));
         }
     }
 
     public void checkAvailabilityTableGroup() {
         if (!this.empty || Objects.nonNull(this.tableGroup)) {
-            throw new IllegalArgumentException();
+            throw new TableGroupNotAvailableException(String.format("table id is %d", this.id));
         }
     }
 
@@ -52,7 +56,7 @@ public class OrderTable extends BaseTimeEntity {
 
     public void changeEmpty(boolean empty) {
         if (this.getTableGroup() != null) {
-            throw new IllegalArgumentException();
+            throw new CannotChangeTableEmptyException(String.format("table id is %d", this.id));
         }
         checkOrderStatus();
 

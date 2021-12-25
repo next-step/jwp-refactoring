@@ -1,5 +1,7 @@
 package kitchenpos.domain;
 
+import kitchenpos.exception.MenuPriceMoreThanMenuProductPriceSumException;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -36,7 +38,7 @@ public class Menu extends BaseTimeEntity {
 
     public void checkMenuPrice(BigDecimal menuProductPriceSum) {
         if (this.price.compareTo(menuProductPriceSum) > 0) {
-            throw new IllegalArgumentException();
+            throw new MenuPriceMoreThanMenuProductPriceSumException(this.price.toPlainString());
         }
     }
 

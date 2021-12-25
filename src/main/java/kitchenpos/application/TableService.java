@@ -6,6 +6,7 @@ import kitchenpos.dto.TableChangeEmptyRequest;
 import kitchenpos.dto.TableChangeNumberOfGuestRequest;
 import kitchenpos.dto.TableCreateRequest;
 import kitchenpos.dto.TableResponse;
+import kitchenpos.global.exception.EntityNotFoundException;
 import kitchenpos.mapper.TableMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,8 +38,7 @@ public class TableService {
     }
 
     public OrderTable changeEmpty(final Long orderTableId, final TableChangeEmptyRequest request) {
-        final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
+        final OrderTable savedOrderTable = findOrderTable(orderTableId);
 
         savedOrderTable.changeEmpty(request.isEmpty());
 
@@ -46,8 +46,7 @@ public class TableService {
     }
 
     public OrderTable changeNumberOfGuests(final Long orderTableId, final TableChangeNumberOfGuestRequest request) {
-        final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
+        final OrderTable savedOrderTable = findOrderTable(orderTableId);
 
         savedOrderTable.checkAvailability();
         savedOrderTable.changeNumberOfGuest(request.getNumberOfGuests());
@@ -55,15 +54,18 @@ public class TableService {
         return savedOrderTable;
     }
 
-   public OrderTable findOrderTable(Long id) {
+    @Transactional(readOnly = true)
+    public OrderTable findOrderTable(Long id) {
         return orderTableDao.findById(id)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new EntityNotFoundException(String.format("order not found. find order id is %d", id)));
     }
 
+    @Transactional(readOnly = true)
     public List<OrderTable> findOrderTables(List<Long> ids) {
         return orderTableDao.findAllByIdIn(ids);
     }
 
+    @Transactional(readOnly = true)
     public List<OrderTable> findAllByTableGroupId(final Long tableGroupId) {
         return orderTableDao.findAllByTableGroupId(tableGroupId);
     }
