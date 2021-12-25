@@ -28,6 +28,8 @@ public class TableGroupService {
                 .map(TableGroupCreateRequest.OrderTable::getId)
                 .collect(Collectors.toList()));
 
+        existCheckOrderTable(savedOrderTables, request);
+
         final TableGroup tableGroup = TableGroup.builder().build();
 
         for (final OrderTable savedOrderTable : savedOrderTables) {
@@ -35,6 +37,12 @@ public class TableGroupService {
         }
 
         return TableGroupMapper.toTableGroupResponse(tableGroupDao.save(tableGroup));
+    }
+
+    private void existCheckOrderTable(final List<OrderTable> savedOrderTables, final TableGroupCreateRequest request) {
+        if (savedOrderTables.size() != request.getOrderTables().size()) {
+            throw new IllegalArgumentException();
+        }
     }
 
     @Transactional
