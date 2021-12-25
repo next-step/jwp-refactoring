@@ -1,8 +1,6 @@
 package kitchenpos.menu.application;
 
-import java.math.BigDecimal;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -24,12 +22,6 @@ public class ProductService {
     @Transactional
     public ProductResponse create(final ProductRequest request) {
         Product product = request.toProduct();
-        final BigDecimal price = product.getPrice();
-
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException("상품은 0원 이상이어야 합니다");
-        }
-
         return ProductResponse.from(productRepository.save(product));
     }
     

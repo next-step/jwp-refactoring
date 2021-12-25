@@ -1,7 +1,6 @@
 package kitchenpos.menu.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
@@ -16,7 +15,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.menu.application.ProductService;
 import kitchenpos.menu.dao.ProductRepository;
 import kitchenpos.menu.domain.Product;
 import kitchenpos.menu.dto.ProductRequest;
@@ -46,31 +44,6 @@ public class ProductServiceTest {
 
     }
     
-    @DisplayName("상품 등록시 가격은 필수여야한다 - 예외처리")
-    @Test
-    void 상품_등록_가격_필수() {
-        // given
-        Product 가격없는_상품 = Product.of("치킨", null);
-    
-        // when, then
-        assertThatThrownBy(() -> {
-            productService.create(ProductRequest.from(가격없는_상품));
-        }).isInstanceOf(IllegalArgumentException.class)
-        .hasMessage("상품은 0원 이상이어야 합니다");
-    }
-    
-    @DisplayName("상품 등록시 가격은 0원 이상이어야한다 - 예외처리")
-    @Test
-    void 상품_등록_가격_0원_이상() {
-        // given
-        Product 마이너스_가격_상품 = Product.of("치킨", new BigDecimal("-6000"));
-    
-        // when, then
-        assertThatThrownBy(() -> {
-            productService.create(ProductRequest.from(마이너스_가격_상품));
-        }).isInstanceOf(IllegalArgumentException.class)
-        .hasMessage("상품은 0원 이상이어야 합니다");
-    }
     
     @DisplayName("상품 목록을 조회할 수 있다")
     @Test
