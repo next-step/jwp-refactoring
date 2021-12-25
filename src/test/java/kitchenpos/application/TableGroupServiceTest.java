@@ -29,12 +29,6 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
     @Mock
-    private OrderRepository orderRepository;
-
-    @Mock
-    private OrderTableRepository orderTableRepository;
-
-    @Mock
     private TableGroupRepository tableGroupRepository;
 
     private TableGroupService tableGroupService;

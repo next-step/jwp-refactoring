@@ -37,12 +37,6 @@ class MenuServiceTest {
     @Mock
     private MenuGroupRepository menuGroupRepository;
 
-    @Mock
-    private MenuProductRepository menuProductRepository;
-
-    @Mock
-    private ProductRepository productRepository;
-
     private MenuService menuService;
     private Menu menu;
     private MenuRequest menuRequest;

@@ -22,7 +22,7 @@ public class OrderTable {
     @JoinColumn(name = "table_group_id")
     private TableGroup tableGroup;
 
-    @OneToMany(mappedBy = "order_table")
+    @OneToMany(mappedBy = "orderTable")
     private List<Order> orders = new ArrayList<>();
 
     private int numberOfGuests;

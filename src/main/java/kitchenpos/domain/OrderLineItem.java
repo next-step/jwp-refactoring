@@ -1,11 +1,13 @@
 package kitchenpos.domain;
 
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+@Entity(name = "order_line_item")
 public class OrderLineItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,7 +18,7 @@ public class OrderLineItem {
     private Order order;
 
     @ManyToOne
-    @JoinColumn(name = "manu_id")
+    @JoinColumn(name = "menu_id")
     private Menu menu;
 
     private long quantity;

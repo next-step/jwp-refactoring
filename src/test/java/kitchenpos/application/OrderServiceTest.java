@@ -55,7 +55,7 @@ class OrderServiceTest {
     void setUp() {
         when(orderTableRepository.save(any())).thenReturn(new OrderTable(1L, 3));
 
-        orderService = new OrderService(menuRepository, orderRepository, orderLineItemRepository, orderTableRepository);
+        orderService = new OrderService(orderRepository, orderTableRepository);
         orderLineItem = new OrderLineItem();
         orderLineItem2 = new OrderLineItem();
         order = new Order(1L, new OrderTable(), Lists.newArrayList(orderLineItem, orderLineItem2));
@@ -152,6 +152,9 @@ class OrderServiceTest {
     @Test
     void changeOrderStatusTest() {
         when(orderRepository.findById(anyLong())).thenReturn(Optional.of(order));
+
+        // given
+        OrderRequest orderRequest = new OrderRequest(orderTable.getId(), "MEAL");
 
         // when
         OrderResponse changedOrders = orderService.changeOrderStatus(2L, orderRequest);
