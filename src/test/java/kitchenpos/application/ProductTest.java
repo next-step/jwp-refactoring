@@ -43,7 +43,7 @@ public class ProductTest {
         // given
         given(productDao.save(any())).willReturn(product);
 
-        // given
+        // when
         Product createProduct = productService.create(product);
 
         // then
@@ -69,7 +69,7 @@ public class ProductTest {
         // given
         given(productDao.findAll()).willReturn(Arrays.asList(product));
 
-        // given
+        // when
         List<Product> products = productService.list();
 
         // then

@@ -5,6 +5,7 @@ import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
+import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,6 +21,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static kitchenpos.application.MenuGroupTest.메뉴_그룹_등록;
+import static kitchenpos.application.ProductTest.상품_등록;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -42,16 +45,17 @@ public class MenuTest {
     @InjectMocks
     MenuService menuService;
 
-    private Menu menu;
-    private Product product;
+    private Product 짜장면;
+    private Product 탕수육;
+    private MenuGroup 중국음식;
+    private Menu 짜장면메뉴;
 
     @BeforeEach
     void setUp() {
-        product = ProductTest.상품_등록(1L, "짜장면", 5000);
-
-        MenuProduct menuProduct = 메뉴_상품_등록(1L, 1L, 1L);
-
-        menu = 메뉴_등록("짜장면", new BigDecimal(5000), 1L, 1L, Arrays.asList(menuProduct));
+        짜장면 = 상품_등록(1L, "짜장면", 5000);
+        탕수육 = 상품_등록(2L, "탕수육", 15000);
+        중국음식 = 메뉴_그룹_등록(1L, "중국음식");
+        짜장면메뉴 = 메뉴_등록(1L, "짜장면탕수육세트", 짜장면.getPrice().add(탕수육.getPrice()), 중국음식.getId(), Arrays.asList(메뉴_상품_등록(1L, 짜장면.getId(), 1L), 메뉴_상품_등록(2L, 탕수육.getId(), 1L)));
     }
 
     @Test
@@ -59,27 +63,27 @@ public class MenuTest {
     void createMenu() {
         // given
         given(menuGroupDao.existsById(any())).willReturn(true);
-        given(productDao.findById(any())).willReturn(Optional.of(product));
-        given(menuDao.save(any())).willReturn(menu);
+        given(productDao.findById(any())).willReturn(Optional.of(짜장면));
+        given(menuDao.save(any())).willReturn(짜장면메뉴);
 
         // when
-        Menu createMenu = menuService.create(menu);
+        Menu createMenu = menuService.create(짜장면메뉴);
 
         // then
         assertThat(createMenu).isNotNull();
     }
 
-    Menu 메뉴_등록(String name, BigDecimal price, Long id, Long menuGroupId, List<MenuProduct> menuProducts) {
+    static Menu 메뉴_등록(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
         Menu menu = new Menu();
-        menu.setName("짜장면");
-        menu.setPrice(new BigDecimal(5000));
-        menu.setId(1L);
-        menu.setMenuGroupId(1L);
+        menu.setId(id);
+        menu.setName(name);
+        menu.setPrice(price);
+        menu.setMenuGroupId(menuGroupId);
         menu.setMenuProducts(menuProducts);
         return menu;
     }
 
-    MenuProduct 메뉴_상품_등록(Long seq, Long productId, long quantity) {
+    static MenuProduct 메뉴_상품_등록(Long seq, Long productId, long quantity) {
         MenuProduct menuProduct = new MenuProduct();
         menuProduct.setSeq(seq);
         menuProduct.setProductId(productId);

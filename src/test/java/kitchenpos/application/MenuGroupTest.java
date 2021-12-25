@@ -30,9 +30,7 @@ public class MenuGroupTest {
 
     @BeforeEach
     void setUp() {
-        menuGroup = new MenuGroup();
-        menuGroup.setName("짜장면 세트");
-        menuGroup.setId(1L);
+        menuGroup = 메뉴_그룹_등록(1L, "짜장면 세트");
     }
 
     @Test
@@ -59,5 +57,12 @@ public class MenuGroupTest {
 
         // then
         assertThat(menuGroups).isNotNull();
+    }
+
+    public static MenuGroup 메뉴_그룹_등록(Long id, String name) {
+        MenuGroup menuGroup = new MenuGroup();
+        menuGroup.setId(id);
+        menuGroup.setName(name);
+        return menuGroup;
     }
 }
