@@ -22,7 +22,7 @@ import kitchenpos.table.domain.OrderTables;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.table.dto.OrderTableDto;
 import kitchenpos.tablegroup.dto.TableGroupDto;
-import kitchenpos.tablegroup.domain.TableGroupValidator;
+import kitchenpos.validation.TableGroupValidatorImpl;
 import kitchenpos.order.exception.HasNotCompletionOrderException;
 import kitchenpos.table.exception.HasOtherTableGroupException;
 import kitchenpos.table.exception.NotEmptyOrderTableException;
@@ -38,7 +38,7 @@ public class TableGroupValidatorTest {
     TableService tableService;
 
     @InjectMocks
-    TableGroupValidator tableGroupValidator;
+    TableGroupValidatorImpl tableGroupValidator;
 
     @DisplayName("그룹해제시 주문상태가 전부 계산완료가아니면 예외가 발생된다.")
     @Test

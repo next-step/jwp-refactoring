@@ -21,13 +21,13 @@ import kitchenpos.order.domain.Orders;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.validation.TableValidatorImpl;
 import kitchenpos.order.exception.HasNotCompletionOrderException;
 import kitchenpos.table.exception.EmptyOrderTableException;
 import kitchenpos.table.exception.HasOtherTableGroupException;
 import kitchenpos.table.exception.NegativeOfNumberOfGuestsException;
 import kitchenpos.common.vo.OrderTableId;
 import kitchenpos.common.vo.TableGroupId;
-import kitchenpos.table.domain.TableValidator;
 
 @ExtendWith(MockitoExtension.class)
 public class TableValidatorTest {
@@ -38,7 +38,7 @@ public class TableValidatorTest {
     private OrderTableRepository orderTableRepository;
 
     @InjectMocks
-    private TableValidator tableValidator;
+    private TableValidatorImpl tableValidator;
 
     @DisplayName("주문테이블 유효성검사자는 주문테이블의 빈테이블 상태변경의 유효성을 검사하고 정합시 주문테이블이 생성된다.")
     @Test

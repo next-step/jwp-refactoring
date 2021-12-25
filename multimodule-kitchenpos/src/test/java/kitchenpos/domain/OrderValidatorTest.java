@@ -33,10 +33,10 @@ import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.Orders;
 import kitchenpos.order.domain.OrdersRepository;
 import kitchenpos.order.dto.OrderDto;
-import kitchenpos.order.domain.OrdersValidator;
 import kitchenpos.order.exception.EmptyOrderLineItemOrderException;
 import kitchenpos.order.exception.NotChangableOrderStatusException;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.validation.OrdersValidatorImpl;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -51,7 +51,7 @@ public class OrderValidatorTest {
     private OrdersRepository ordersRepository;
 
     @InjectMocks
-    private OrdersValidator ordersValidator;
+    private OrdersValidatorImpl ordersValidator;
 
     @Captor
     private ArgumentCaptor<ValidateEmptyTableEvent> captor;
