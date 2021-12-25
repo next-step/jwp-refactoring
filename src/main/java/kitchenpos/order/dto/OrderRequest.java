@@ -35,10 +35,4 @@ public class OrderRequest {
         this.orderLineItems = orderLineItems;
     }
 
-    public List<OrderLineItem> toOrderLineItem(Order order, Menu menu) {
-        return orderLineItems.stream()
-                .map(orderLineItemRequest -> orderLineItemRequest.toOrderLineItem(order, menu))
-                .collect(Collectors.toList());
-    }
-
 }

@@ -15,25 +15,19 @@ import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
-    private final MenuRepository menuRepository;
+    private final OrderValidator orderValidator;
     private final OrderRepository orderRepository;
-    private final OrderTableRepository orderTableRepository;
 
-    public OrderService(
-            final MenuRepository menuRepository,
-            final OrderRepository orderRepository,
-            final OrderTableRepository orderTableRepository
-    ) {
-        this.menuRepository = menuRepository;
+    public OrderService(OrderValidator orderValidator, OrderRepository orderRepository) {
+        this.orderValidator = orderValidator;
         this.orderRepository = orderRepository;
-        this.orderTableRepository = orderTableRepository;
     }
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
-        final OrderTable orderTable = findOrderTable(orderRequest.getOrderTableId());
+        final OrderTable orderTable = orderValidator.findOrderTable(orderRequest.getOrderTableId());
         final Order order = new Order(orderTable.getId());
-        final List<OrderLineItem> orderLineItems = toOrderLineItems(orderRequest.getOrderLineItems(), order);
+        final List<OrderLineItem> orderLineItems = orderValidator.toOrderLineItems(orderRequest.getOrderLineItems(), order);
         order.addLineItems(orderLineItems);
 
         return OrderResponse.from(orderRepository.save(order));
@@ -56,27 +50,5 @@ public class OrderService {
         return OrderResponse.from(savedOrder);
     }
 
-    private OrderTable findOrderTable(Long orderTableId) {
-        OrderTable result = orderTableRepository.findById(orderTableId).orElseThrow(IllegalArgumentException::new);
-
-        return result;
-    }
-
-    private List<OrderLineItem> toOrderLineItems(List<OrderLineItemRequest> orderLineItemRequests, Order order) {
-        if (CollectionUtils.isEmpty(orderLineItemRequests)) {
-            throw new IllegalArgumentException();
-        }
-        return orderLineItemRequests.stream()
-                .map(orderLineItemRequest -> {
-                    Menu menu = findMenu(orderLineItemRequest.getMenuId());
-                    return new OrderLineItem(order, menu, orderLineItemRequest.getQuantity());
-                })
-                .collect(Collectors.toList());
-    }
-
-    private Menu findMenu(Long menuId) {
-        return menuRepository.findById(menuId)
-                .orElseThrow(IllegalArgumentException::new);
-    }
 
 }

@@ -69,7 +69,6 @@ public class Order {
     public void addLineItems(List<OrderLineItem> orderLineItems) {
         orderLineItems.stream()
                 .forEach(orderLineItem -> {
-                    orderLineItem.updateOrder(this);
                     this.orderLineItems.add(orderLineItem);
                 });
     }

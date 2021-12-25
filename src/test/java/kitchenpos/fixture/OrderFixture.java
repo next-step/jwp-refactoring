@@ -9,6 +9,11 @@ import java.util.Arrays;
 import java.util.List;
 
 public class OrderFixture {
+
+    public static Order 생성(Long orderTableId) {
+        return new Order(orderTableId);
+    }
+
     public static Order 생성(OrderTable orderTable) {
         return new Order(orderTable.getId());
     }

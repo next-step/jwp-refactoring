@@ -107,16 +107,16 @@
 * [x] OrderTable
   * TableGroup 간접참조
   * Orders 참조제거
-* Order
+* [x] Order
   * OrderTable 참조제거
   * OrderLineItem 직접참조
-* OrderLineItem
+* [x] OrderLineItem
   * Order 간접참조
   * Menu 간접참조
 
-* [ ] EventHandler 를 사용하여 의존성객체를 리팩터링
+* [x] EventHandler 를 사용하여 의존성객체를 리팩터링
 * [x] MenuService
 * [x] MenuGroupService
 * [x] TableGroupService
 * [x] TableService
-* [ ] OrderService
+* [x] OrderService

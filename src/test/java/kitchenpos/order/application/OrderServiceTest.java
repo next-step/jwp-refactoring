@@ -28,11 +28,9 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 public class OrderServiceTest {
     @Mock
-    private MenuRepository menuRepository;
+    private OrderValidator orderValidator;
     @Mock
     private OrderRepository orderRepository;
-    @Mock
-    private OrderTableRepository orderTableRepository;
 
     @InjectMocks
     private OrderService orderService;
@@ -51,21 +49,21 @@ public class OrderServiceTest {
 
         테이블1번 = OrderTableFixture.생성(0,true);
 
-        후라이드두마리세트_2개_주문함 = OrderLineItemFixture.생성(총주문, 후라이드두마리세트, 2L);
+        후라이드두마리세트_2개_주문함 = OrderLineItemFixture.생성(후라이드두마리세트.getId(), 2L);
 
-        총주문 = OrderFixture.생성(테이블1번);
+        총주문 = OrderFixture.생성(1L);
         총주문.addLineItems(Arrays.asList(후라이드두마리세트_2개_주문함));
 
         후라이드두마리세트_2개_주문_Request = OrderLineItemFixture.생성_Request(1L, 2L);
-        총주문Request = OrderFixture.request생성(테이블1번.getId(),Arrays.asList(후라이드두마리세트_2개_주문_Request));
+        총주문Request = OrderFixture.request생성(1L,Arrays.asList(후라이드두마리세트_2개_주문_Request));
     }
 
     @DisplayName("주문 생성")
     @Test
     void create() {
-        given(orderTableRepository.findById(any())).willReturn(java.util.Optional.ofNullable(테이블1번));
+        given(orderValidator.findOrderTable(any())).willReturn(테이블1번);
         given(orderRepository.save(any())).willReturn(총주문);
-        given(menuRepository.findById(any())).willReturn(java.util.Optional.ofNullable(후라이드두마리세트));
+        given(orderValidator.toOrderLineItems(any(), any())).willReturn(Arrays.asList(후라이드두마리세트_2개_주문함));
 
         OrderResponse createOrder = orderService.create(총주문Request);
 
