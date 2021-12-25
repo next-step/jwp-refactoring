@@ -1,7 +1,7 @@
 package kitchenpos.order.application;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.persistence.EntityNotFoundException;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
@@ -38,10 +38,7 @@ public class OrderService {
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
-        final List<OrderLineItemRequest> orderLineItemRequests = orderRequest.getOrderLineItems();
-        validateExistOrderLineItems(orderLineItemRequests);
-        List<OrderLineItem> orderLineItems = createOrderLineItems(orderLineItemRequests);
-
+        List<OrderLineItem> orderLineItems = createOrderLineItems(orderRequest.getOrderLineItems());
         final OrderTable orderTable = tableService.findOrderTable(orderRequest.getOrderTableId());
 
         Order order = new Order(orderTable, orderLineItems);
@@ -51,13 +48,16 @@ public class OrderService {
 
     private List<OrderLineItem> createOrderLineItems(
         List<OrderLineItemRequest> orderLineItemRequests) {
-        List<OrderLineItem> orderLineItems = new ArrayList<>();
-        for (OrderLineItemRequest orderLineItemRequest : orderLineItemRequests) {
-            Menu menu = menuService.findMenu(orderLineItemRequest.getMenuId());
-            orderLineItems.add(
-                new OrderLineItem(menu, new Quantity(orderLineItemRequest.getQuantity())));
-        }
-        return orderLineItems;
+        validateExistOrderLineItems(orderLineItemRequests);
+
+        return orderLineItemRequests.stream()
+            .map(orderLineItemRequest -> createOrderLineItem(orderLineItemRequest))
+            .collect(Collectors.toList());
+    }
+
+    private OrderLineItem createOrderLineItem(OrderLineItemRequest orderLineItemRequest) {
+        Menu menu = menuService.findMenu(orderLineItemRequest.getMenuId());
+        return new OrderLineItem(menu, new Quantity(orderLineItemRequest.getQuantity()));
     }
 
     private void validateExistOrderLineItems(List<OrderLineItemRequest> orderLineItemRequests) {
