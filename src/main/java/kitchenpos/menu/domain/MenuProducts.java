@@ -9,6 +9,7 @@ import java.util.List;
 
 @Embeddable
 public class MenuProducts {
+    public static final int INITAL_SUM_PRICE = 0;
     @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
     List<MenuProduct> menuProducts;
 
@@ -25,7 +26,7 @@ public class MenuProducts {
     }
 
     public Price getSumPrice() {
-        Price sumPrice = Price.from(0);
+        Price sumPrice = Price.from(INITAL_SUM_PRICE);
         for (final MenuProduct menuProduct : menuProducts) {    // TODO MenuProducts 내부로 이동
             sumPrice = sumPrice.add(menuProduct.getProduct()
                     .getPrice());
