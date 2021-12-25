@@ -41,15 +41,27 @@ class PriceTest {
 		assertThat(오백원.multiply(2)).isEqualTo(Price.of(1_000));
 	}
 
-	@DisplayName("가격 A가 가격 B보다 큰가")
+	@DisplayName("가격 A가 가격 B보다 큰가: A > B")
 	@Test
 	void isBiggerThan() {
 		final Price 백원 = Price.of(100);
 		final Price 오십원 = Price.of(50);
-		assertAll(() -> {
-			assertThat(백원.isBiggerThan(백원)).isFalse();
-			assertThat(백원.isBiggerThan(오십원)).isTrue();
-			assertThat(오십원.isBiggerThan(백원)).isFalse();
-		});
+		assertThat(백원.isBiggerThan(오십원)).isTrue();
+	}
+
+	@DisplayName("가격 A가 가격 B보다 큰가: A = B")
+	@Test
+	void isBiggerThan_same() {
+		final Price 백원 = Price.of(100);
+		final Price 오십원 = Price.of(50);
+		assertThat(백원.isBiggerThan(백원)).isFalse();
+	}
+
+	@DisplayName("가격 A가 가격 B보다 큰가: A < B")
+	@Test
+	void isBiggerThan_smaller() {
+		final Price 백원 = Price.of(100);
+		final Price 오십원 = Price.of(50);
+		assertThat(오십원.isBiggerThan(백원)).isFalse();
 	}
 }

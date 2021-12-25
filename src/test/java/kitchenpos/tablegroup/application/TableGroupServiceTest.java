@@ -1,6 +1,7 @@
 package kitchenpos.tablegroup.application;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
 import java.util.Arrays;
@@ -23,7 +24,6 @@ import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
 import kitchenpos.tablegroup.dto.TableGroupAddRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
-import kitchenpos.tablegroup.exception.CanNotGroupByGroupingAlreadyException;
 import kitchenpos.tablegroup.exception.CanNotUngroupByOrderStatusException;
 
 @ExtendWith(MockitoExtension.class)
@@ -61,8 +61,10 @@ class TableGroupServiceTest {
 			TableGroupAddRequest.of(주문테이블_ID목록)
 		);
 
-		assertThat(createdTableGroup.getId()).isNotNull();
-		assertThat(createdTableGroup.getOrderTables().size()).isEqualTo(2);
+		assertAll(
+			() -> assertThat(createdTableGroup.getId()).isNotNull(),
+			() -> assertThat(createdTableGroup.getOrderTables().size()).isEqualTo(2)
+		);
 	}
 
 	@DisplayName("그룹 생성: 주문 테이블이 존재하지 않으면 예외발생")
@@ -89,8 +91,10 @@ class TableGroupServiceTest {
 
 		tableGroupService.ungroup(그룹.getId());
 
-		assertThat(주문테이블1.getTableGroup()).isNull();
-		assertThat(주문테이블2.getTableGroup()).isNull();
+		assertAll(
+			() -> assertThat(주문테이블1.getTableGroup()).isNull(),
+			() -> assertThat(주문테이블2.getTableGroup()).isNull()
+		);
 	}
 
 	@DisplayName("그룹 해지: 주문 테이블의 주문 상태가 조리 혹은 식사 상태이면 예외발생")

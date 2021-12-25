@@ -1,6 +1,7 @@
 package kitchenpos.order.application;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
 import java.util.Arrays;
@@ -68,10 +69,14 @@ class OrderServiceTest {
 				Arrays.asList(OrderLineItemAddRequest.of(일식메뉴.getId(), 2L)))
 		);
 
-		assertThat(createdOrder.getId()).isNotNull();
-		assertThat(createdOrder.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
-		assertThat(createdOrder.getOrderLineItems().size()).isEqualTo(1);
-		assertThat(createdOrder.getOrderLineItems().get(0).getId()).isNotNull();
+		assertAll(
+			() -> assertThat(createdOrder.getId()).isNotNull(),
+			() -> assertThat(createdOrder.getOrderStatus()).isEqualTo(OrderStatus.COOKING),
+			() -> {
+				assertThat(createdOrder.getOrderLineItems().size()).isEqualTo(1);
+				assertThat(createdOrder.getOrderLineItems().get(0).getId()).isNotNull();
+			}
+		);
 	}
 
 	@DisplayName("주문생성: 주문테이블이 없으면 예외발생")
@@ -121,7 +126,6 @@ class OrderServiceTest {
 		final OrderLineItem 주문항목 = OrderLineItem.of(1L, null, 일식메뉴, 2);
 		final List<OrderLineItem> 주문항목목록 = Arrays.asList(주문항목);
 		final Order 주문 = Order.of(1L, 개별_주문테이블, OrderStatus.COOKING, 주문항목목록);
-
 		given(orderRepository.findById(any())).willReturn(Optional.of(주문));
 
 		final OrderResponse changedOrder = orderService.changeOrderStatus(

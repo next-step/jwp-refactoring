@@ -62,6 +62,10 @@ public class Menu {
 		}
 	}
 
+	public static Menu of(String name, long price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+		return of(null, name, Price.of(price), menuGroup, menuProducts);
+	}
+
 	public static Menu of(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
 		return of(null, name, Price.of(price), menuGroup, menuProducts);
 	}

@@ -27,7 +27,7 @@ class ProductServiceTest {
 	@Mock
 	private ProductRepository productRepository;
 
-	@DisplayName("product 생성")
+	@DisplayName("상품 생성")
 	@Test
 	void create() {
 		final Product 딤섬 = Product.of(1L, "딤섬", 5_000);
@@ -40,7 +40,7 @@ class ProductServiceTest {
 		assertThat(createdProduct.getId()).isNotNull();
 	}
 
-	@DisplayName("product 목록 조회")
+	@DisplayName("상품 목록 조회")
 	@Test
 	void list() {
 		final Product 짜장 = Product.of(1L, "짜장", 7_000);

@@ -1,6 +1,7 @@
 package kitchenpos.ordertable.application;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
 import java.util.Arrays;
@@ -44,8 +45,10 @@ public class TableServiceTest {
 			OrderTableAddRequest.of(3, true)
 		);
 
-		assertThat(createdOrderTable.getId()).isNotNull();
-		assertThat(createdOrderTable.getTableGroupId()).isNull();
+		assertAll(
+			() -> assertThat(createdOrderTable.getId()).isNotNull(),
+			() -> assertThat(createdOrderTable.getTableGroupId()).isNull()
+		);
 	}
 
 	@DisplayName("주문테이블 목록조회")

@@ -27,13 +27,18 @@ class OrderTest {
 	private final Menu 일식메뉴 = Menu.of(1L, "일식", 30_000, 메인메뉴그룹, Arrays.asList(메뉴초밥));
 	private final List<OrderLineItem> 주문항목_목록 = Arrays.asList(OrderLineItem.of(일식메뉴, 2L));
 
-	@DisplayName("주문 테이블이 없거나 비어있으면 예외발생")
+	@DisplayName("주문 테이블이 없으면 예외발생")
 	@Test
-	void of_invalid_order_table() {
+	void of_null_order_table() {
 		assertThatExceptionOfType(InvalidOrderTableException.class)
-			.isThrownBy(() -> Order.of(null, OrderStatus.COOKING, 주문항목_목록));
+			.isThrownBy(() -> Order.ofCooking(null, 주문항목_목록));
+	}
 
+	@DisplayName("주문 테이블이 비어있으면 예외발생")
+	@Test
+	void of_empty_order_table() {
 		final OrderTable 빈_주문테이블 = OrderTable.of(1L, null, 4, true);
+
 		assertThatExceptionOfType(InvalidOrderTableException.class)
 			.isThrownBy(() -> Order.of(빈_주문테이블, OrderStatus.COOKING, 주문항목_목록));
 	}
@@ -59,16 +64,21 @@ class OrderTest {
 			.isThrownBy(() -> 주문.changeOrderStatusIfNotCompletion(OrderStatus.COOKING));
 	}
 
-	@DisplayName("주문항목 목록이 없거나 비어있으면 예외발생")
+	@DisplayName("주문항목 목록이 없으면 예외발생")
 	@Test
-	void of_invalid_order_line_items() {
+	void of_null_order_line_items() {
 		final OrderTable 개별_주문테이블 = OrderTable.of(1L, null, 3, false);
 
-		assertAll(() -> {
-			assertThatExceptionOfType(NotFoundOrderLineItemsException.class)
-				.isThrownBy(() -> Order.ofCooking(개별_주문테이블, null));
-			assertThatExceptionOfType(NotFoundOrderLineItemsException.class)
-				.isThrownBy(() -> Order.ofCooking(개별_주문테이블, Collections.emptyList()));
-		});
+		assertThatExceptionOfType(NotFoundOrderLineItemsException.class)
+			.isThrownBy(() -> Order.ofCooking(개별_주문테이블, null));
+	}
+
+	@DisplayName("주문항목 목록이 없거나 비어있으면 예외발생")
+	@Test
+	void of_empty_order_line_items() {
+		final OrderTable 개별_주문테이블 = OrderTable.of(1L, null, 3, false);
+
+		assertThatExceptionOfType(NotFoundOrderLineItemsException.class)
+			.isThrownBy(() -> Order.ofCooking(개별_주문테이블, Collections.emptyList()));
 	}
 }

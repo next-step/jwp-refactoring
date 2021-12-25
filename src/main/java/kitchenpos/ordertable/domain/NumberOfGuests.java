@@ -1,5 +1,7 @@
 package kitchenpos.ordertable.domain;
 
+import java.util.Objects;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
@@ -38,5 +40,22 @@ public class NumberOfGuests {
 	public void changeNumberOfGuests(int numberOfGuests) {
 		validate(numberOfGuests);
 		this.numberOfGuests = numberOfGuests;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (!(o instanceof NumberOfGuests)) {
+			return false;
+		}
+		NumberOfGuests that = (NumberOfGuests)o;
+		return numberOfGuests == that.numberOfGuests;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(numberOfGuests);
 	}
 }

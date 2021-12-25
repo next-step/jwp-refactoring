@@ -17,6 +17,7 @@ class MenuProductTest {
 	void getTotalPrice() {
 		final Product 만두 = Product.of("만두", BigDecimal.valueOf(500));
 		final MenuProduct 만두2개 = MenuProduct.of(만두, 2L);
+
 		assertThat(만두2개.getTotalPrice()).isEqualTo(Price.of(1_000));
 	}
 }

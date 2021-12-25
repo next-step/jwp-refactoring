@@ -9,10 +9,15 @@ import kitchenpos.ordertable.exception.InvalidNumberOfGuestsException;
 
 class NumberOfGuestsTest {
 
-	@DisplayName("손님 수가 음수이면 예외발생")
+	@DisplayName("손님 수 생성")
 	@Test
 	void of() {
-		assertThat(NumberOfGuests.of(0).getNumberOfGuests()).isEqualTo(0);
+		assertThat(NumberOfGuests.of(0)).isEqualTo(NumberOfGuests.of(0));
+	}
+
+	@DisplayName("손님 수가 음수이면 예외발생")
+	@Test
+	void of_minus() {
 		assertThatExceptionOfType(InvalidNumberOfGuestsException.class)
 			.isThrownBy(() -> NumberOfGuests.of(-1));
 	}

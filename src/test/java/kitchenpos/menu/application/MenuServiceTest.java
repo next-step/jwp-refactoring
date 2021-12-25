@@ -1,6 +1,7 @@
 package kitchenpos.menu.application;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
 import java.math.BigDecimal;
@@ -58,9 +59,13 @@ class MenuServiceTest {
 				Arrays.asList(MenuProductAddRequest.of(콜라.getId(), 2L)))
 		);
 
-		assertThat(createdMenu.getId()).isNotNull();
-		assertThat(createdMenu.getMenuProducts().size()).isEqualTo(1);
-		assertThat(createdMenu.getMenuProducts().get(0).getId()).isNotNull();
+		assertAll(
+			() -> assertThat(createdMenu.getId()).isNotNull(),
+			() -> {
+				assertThat(createdMenu.getMenuProducts().size()).isEqualTo(1);
+				assertThat(createdMenu.getMenuProducts().get(0).getId()).isNotNull();
+			}
+		);
 	}
 
 	@DisplayName("메뉴생성: 메뉴그룹이 존재하지 않으면 예외발생")

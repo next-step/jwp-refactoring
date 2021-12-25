@@ -10,11 +10,10 @@ class QuantityTest {
 	@DisplayName("수량생성")
 	@Test
 	void of() {
-		assertThat(Quantity.of(0L).getQuantity()).isEqualTo(0);
-		assertThat(Quantity.of(100L).getQuantity()).isEqualTo(100);
+		assertThat(Quantity.of(0L)).isEqualTo(Quantity.of(0L));
 	}
 
-	@DisplayName("수량이 음수인 경우 예외발생")
+	@DisplayName("수량이 음수이면 예외발생")
 	@Test
 	void of_minus() {
 		assertThatExceptionOfType(InvalidQuantityException.class)
