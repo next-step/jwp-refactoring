@@ -3,6 +3,8 @@ CREATE TABLE orders (
     order_table_id BIGINT(20) NOT NULL,
     order_status VARCHAR(255) NOT NULL,
     ordered_time DATETIME NOT NULL,
+    created_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    modified_date DATETIME,
     PRIMARY KEY (id)
 );
 
@@ -11,6 +13,8 @@ CREATE TABLE order_line_item (
     order_id BIGINT(20) NOT NULL,
     menu_id BIGINT(20) NOT NULL,
     quantity BIGINT(20) NOT NULL,
+    created_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    modified_date DATETIME,
     PRIMARY KEY (seq)
 );
 
@@ -19,12 +23,16 @@ CREATE TABLE menu (
     name VARCHAR(255) NOT NULL,
     price DECIMAL(19, 2) NOT NULL,
     menu_group_id BIGINT(20) NOT NULL,
+    created_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    modified_date DATETIME,
     PRIMARY KEY (id)
 );
 
 CREATE TABLE menu_group (
     id BIGINT(20) NOT NULL AUTO_INCREMENT,
     name VARCHAR(255) NOT NULL,
+    created_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    modified_date DATETIME,
     PRIMARY KEY (id)
 );
 
@@ -33,6 +41,8 @@ CREATE TABLE menu_product (
     menu_id BIGINT(20) NOT NULL,
     product_id BIGINT(20) NOT NULL,
     quantity BIGINT(20) NOT NULL,
+    created_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    modified_date DATETIME,
     PRIMARY KEY (seq)
 );
 
@@ -41,12 +51,15 @@ CREATE TABLE order_table (
     table_group_id BIGINT(20),
     number_of_guests INT(11) NOT NULL,
     empty BIT(1) NOT NULL,
+    created_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    modified_date DATETIME,
     PRIMARY KEY (id)
 );
 
 CREATE TABLE table_group (
     id BIGINT(20) NOT NULL AUTO_INCREMENT,
-    created_date DATETIME NOT NULL,
+    created_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    modified_date DATETIME,
     PRIMARY KEY (id)
 );
 
@@ -54,6 +67,8 @@ CREATE TABLE product (
     id BIGINT(20) NOT NULL AUTO_INCREMENT,
     name VARCHAR(255) NOT NULL,
     price DECIMAL(19, 2) NOT NULL,
+    created_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    modified_date DATETIME,
     PRIMARY KEY (id)
 );
 
