@@ -2,13 +2,11 @@ package kitchenpos.ordertable.domain;
 
 import java.util.Objects;
 import javax.persistence.Embeddable;
-import kitchenpos.ordertable.exception.TableChangeNumberOfGuestsException;
+import kitchenpos.ordertable.exception.IllegalNumberOfGuests;
 
 @Embeddable
 public class NumberOfGuests {
-
-    private final static String ERROR_MESSAGE_NUMBER_OF_GUESTS = "방문 손님 수는 0명 이상이어야 합니다.";
-
+    
     private int numberOfGuests;
 
     protected NumberOfGuests() {
@@ -21,7 +19,7 @@ public class NumberOfGuests {
 
     private void validateNumberOfGuests(int inputNumberOfGuest) {
         if (inputNumberOfGuest < 0) {
-            throw new TableChangeNumberOfGuestsException(ERROR_MESSAGE_NUMBER_OF_GUESTS);
+            throw new IllegalNumberOfGuests();
         }
     }
 
