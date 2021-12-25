@@ -10,7 +10,6 @@ public class TableGuest {
     private int numberOfGuests;
 
     protected TableGuest() {
-
     }
 
     public TableGuest(int numberOfGuests) {

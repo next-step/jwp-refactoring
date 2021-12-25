@@ -78,19 +78,19 @@ public class OrderTable {
         }
     }
 
-    public void validateTableGrouping() {
+    private void validateTableGrouping() {
         if (isGrouping()) {
             throw new IllegalArgumentException("단체로 지정되어있습니다.");
         }
     }
 
-    public void validateChangeNumberOfGuestsByIsEmpty() {
+    private void validateChangeNumberOfGuestsByIsEmpty() {
         if (isEmpty()) {
             throw new IllegalArgumentException("테이블이 비어있을 때 손님 수를 조정할 수 없습니다.");
         }
     }
 
-    public void validateOrderStatusCompletion() {
+    private void validateOrderStatusCompletion() {
         if(Objects.nonNull(this.order) && (this.order.isCooking() || this.order.isMeal())) {
             throw new IllegalArgumentException("요리중이거나 식사중입니다.");
         }

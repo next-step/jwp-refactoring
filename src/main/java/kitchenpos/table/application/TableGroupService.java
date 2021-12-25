@@ -10,9 +10,11 @@ import kitchenpos.table.dto.TableGroupResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 public class TableGroupService {
     private final OrderTableRepository orderTableRepository;
     private final TableGroupRepository tableGroupRepository;
@@ -31,7 +33,7 @@ public class TableGroupService {
         final List<OrderTable> savedOrderTables = orderTableRepository.findAllById(orderTableIds);
 
         if (orderTables.size() != savedOrderTables.size()) {
-            throw new IllegalArgumentException();
+            throw new EntityNotFoundException("일부 주문 테이블을 찾을 수 없습니다.");
         }
 
         TableGroup saveTableGroup = tableGroupRepository.save(tableGroup);
@@ -43,7 +45,7 @@ public class TableGroupService {
     public void ungroup(final Long tableGroupId) {
 
         final TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
-                .orElseThrow(() -> new IllegalArgumentException("지정된 단체를 찾을 수 없습니다."));
+                .orElseThrow(() -> new EntityNotFoundException("지정된 단체를 찾을 수 없습니다."));
 
         tableGroup.unGrouping();
     }

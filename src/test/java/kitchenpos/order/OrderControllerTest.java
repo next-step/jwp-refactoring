@@ -3,10 +3,15 @@ package kitchenpos.order;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.ui.OrderRestController;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.order.ui.OrderController;
+import kitchenpos.table.domain.OrderTable;
 import kitchenpos.utils.ControllerTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.util.LinkedMultiValueMap;
@@ -15,6 +20,7 @@ import javax.annotation.PostConstruct;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -27,21 +33,23 @@ public class OrderControllerTest extends ControllerTest {
 
     @PostConstruct
     public void setUp() {
-        this.mockMvc = MockMvcBuilders.standaloneSetup(new OrderRestController(orderService)).build();
+        this.mockMvc = MockMvcBuilders.standaloneSetup(new OrderController(orderService)).build();
     }
 
-    private Order createOrder() {
-        Order order = new Order();
-        order.setId(1L);
-        order.setOrderTableId(1L);
-        order.setOrderStatus(OrderStatus.COOKING.name());
+    private OrderRequest createOrder() {
+        OrderRequest orderRequest = new OrderRequest();
+        ReflectionTestUtils.setField(orderRequest, "orderTableId", 1L);
 
-        OrderLineItem orderLineItem = new OrderLineItem();
-        orderLineItem.setMenuId(1L);
-        orderLineItem.setQuantity(1);
-        orderLineItem.setOrderId(order.getId());
-        order.setOrderLineItems(Arrays.asList(orderLineItem));
-        return order;
+        OrderLineItemRequest orderLineItemRequestA = new OrderLineItemRequest();
+        ReflectionTestUtils.setField(orderLineItemRequestA, "menuId", 1L);
+        ReflectionTestUtils.setField(orderLineItemRequestA, "quantity", 3L);
+
+        OrderLineItemRequest orderLineItemRequestB = new OrderLineItemRequest();
+        ReflectionTestUtils.setField(orderLineItemRequestA, "menuId", 2L);
+        ReflectionTestUtils.setField(orderLineItemRequestA, "quantity", 2L);
+
+        ReflectionTestUtils.setField(orderRequest, "orderLineItems", Arrays.asList(orderLineItemRequestA, orderLineItemRequestB));
+        return orderRequest;
     }
 
     @DisplayName("주문하다.")
@@ -49,14 +57,34 @@ public class OrderControllerTest extends ControllerTest {
     void order() throws Exception {
 
         //given
-        Order order = createOrder();
-        when(orderService.create(any())).thenReturn(order);
+        OrderRequest orderRequest = createOrder();
+        OrderResponse orderResponse = new OrderResponse();
+        ReflectionTestUtils.setField(orderResponse, "id", 1L);
+        when(orderService.create(any())).thenReturn(orderResponse);
 
         //when
-        ResultActions resultActions = post("/api/orders", order);
+        ResultActions resultActions = post("/api/orders", orderRequest);
 
         //then
         resultActions.andExpect(status().isCreated());
+    }
+
+    @DisplayName("주문할 때 주문 Item 내역이 없을경우")
+    @Test
+    void orderEmptyItems() throws Exception {
+
+        //given
+        OrderRequest orderRequest = createOrder();
+        ReflectionTestUtils.setField(orderRequest, "orderLineItems", Collections.emptyList());
+        OrderResponse orderResponse = new OrderResponse();
+        ReflectionTestUtils.setField(orderResponse, "id", 1L);
+        when(orderService.create(any())).thenReturn(orderResponse);
+
+        //when
+        ResultActions resultActions = post("/api/orders", orderRequest);
+
+        //then
+        resultActions.andExpect(status().isBadRequest());
     }
 
     @DisplayName("주문 리스트를 조회한다.")
@@ -64,13 +92,15 @@ public class OrderControllerTest extends ControllerTest {
     void getOrders() throws Exception {
 
         //given
-        List<Order> orders = new ArrayList<>();
-        Order order = new Order();
-        order.setId(1L);
-        order.setOrderTableId(1L);
-        order.setOrderStatus(OrderStatus.COOKING.name());
+        final List<Order> orders = new ArrayList<>();
+        final int numberOfGuests = 10;
+        final OrderTable orderTable = OrderTable.create(numberOfGuests);
+        ReflectionTestUtils.setField(orderTable, "id", 1L);
+        final Order order = Order.create(orderTable);
+        ReflectionTestUtils.setField(order, "id", 1L);
         orders.add(order);
-        when(orderService.list()).thenReturn(orders);
+
+        when(orderService.list()).thenReturn(OrderResponse.ofList(orders));
 
         //when
         ResultActions resultActions = get("/api/orders", new LinkedMultiValueMap<>());
@@ -88,12 +118,14 @@ public class OrderControllerTest extends ControllerTest {
     void changeOrderStatus() throws Exception {
 
         //given
-        Order order = createOrder();
-        order.setOrderStatus(OrderStatus.COMPLETION.name());
-        when(orderService.changeOrderStatus(anyLong(), any())).thenReturn(order);
+        OrderRequest orderRequest = createOrder();
+        OrderResponse orderResponse = new OrderResponse();
+        ReflectionTestUtils.setField(orderResponse, "orderStatus", OrderStatus.COMPLETION.name());
+
+        when(orderService.changeOrderStatus(anyLong())).thenReturn(orderResponse);
 
         //when
-        ResultActions resultActions = put("/api/orders/1/order-status", new LinkedMultiValueMap<>(), order);
+        ResultActions resultActions = put("/api/orders/1/order-status", new LinkedMultiValueMap<>(), orderRequest);
 
         //then
         resultActions.andExpect(status().isOk());

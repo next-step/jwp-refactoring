@@ -2,8 +2,6 @@ package kitchenpos.table;
 
 import kitchenpos.order.domain.Order;
 import kitchenpos.table.application.TableService;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
@@ -32,9 +30,6 @@ public class OrderTableServiceTest {
 
     @InjectMocks
     private TableService tableService;
-
-    @Mock
-    private OrderDao orderDao;
 
     @Mock
     private OrderTableRepository orderTableRepository;

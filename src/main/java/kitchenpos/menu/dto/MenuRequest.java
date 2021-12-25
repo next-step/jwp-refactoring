@@ -47,6 +47,6 @@ public class MenuRequest {
         return this.products.stream()
                 .filter(p -> p.match(product))
                 .findFirst()
-                .orElseThrow(() -> new IllegalStateException("상품을 찾을 수 없습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("상품을 찾을 수 없습니다."));
     }
 }

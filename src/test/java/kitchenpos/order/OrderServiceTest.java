@@ -1,21 +1,26 @@
 package kitchenpos.order;
 
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.application.OrderService;
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderLineItemDao;
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -32,49 +37,49 @@ public class OrderServiceTest {
     private OrderService orderService;
 
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
 
     @Mock
-    private OrderDao orderDao;
+    private OrderTableRepository orderTableRepository;
 
     @Mock
-    private OrderLineItemDao orderLineItemDao;
-
-    @Mock
-    private OrderTableDao orderTableDao;
+    private OrderRepository orderRepository;
 
     @DisplayName("주문한다.")
     @Test
     void order() {
 
         //given
+        final OrderRequest orderRequest = new OrderRequest();
 
-        OrderLineItem itemA = new OrderLineItem();
-        itemA.setSeq(1L);
-        itemA.setMenuId(1L);
+        final OrderLineItemRequest orderLineItemRequestA = new OrderLineItemRequest();
+        ReflectionTestUtils.setField(orderLineItemRequestA, "menuId", 1L);
+        ReflectionTestUtils.setField(orderLineItemRequestA, "quantity", 1L);
 
-        OrderLineItem itemB = new OrderLineItem();
-        itemB.setSeq(2L);
-        itemB.setMenuId(2L);
+        final OrderLineItemRequest orderLineItemRequestB = new OrderLineItemRequest();
+        ReflectionTestUtils.setField(orderLineItemRequestB, "menuId", 2L);
+        ReflectionTestUtils.setField(orderLineItemRequestB, "quantity", 1L);
 
-        List<OrderLineItem> orderLineItems = Arrays.asList(itemA, itemB);
+        ReflectionTestUtils.setField(orderRequest, "orderLineItems", Arrays.asList(orderLineItemRequestA, orderLineItemRequestB));
 
-        OrderTable orderTable = OrderTable.create(10, true);
-        orderTable.setId(1L);
-        Order order = new Order();
-        order.setId(1L);
-        order.setOrderTableId(orderTable.getId());
-        order.setOrderLineItems(orderLineItems);
+        final OrderTable orderTable = OrderTable.create(10, false);
+        ReflectionTestUtils.setField(orderTable, "id", 1L);
 
+        final Order order = Order.create(orderTable);
+        ReflectionTestUtils.setField(order, "id", 1L);
 
-        when(menuDao.countByIdIn(anyList())).thenReturn((long)orderLineItems.size());
-        when(orderTableDao.findById(anyLong())).thenReturn(Optional.ofNullable(orderTable));
-        when(orderDao.save(any())).thenReturn(order);
-        when(orderLineItemDao.save(itemA)).thenReturn(itemA);
-        when(orderLineItemDao.save(itemB)).thenReturn(itemB);
+        final Menu menuA = Menu.create("후라이드세트", new BigDecimal("17000"));
+        ReflectionTestUtils.setField(menuA, "id", orderLineItemRequestA.getMenuId());
+        final Menu menuB = Menu.create("햄버거세트", new BigDecimal("10000"));
+        ReflectionTestUtils.setField(menuB, "id", orderLineItemRequestB.getMenuId());
+
+        ReflectionTestUtils.setField(orderRequest, "orderTableId", orderTable.getId());
+        when(menuRepository.findAllById(anyList())).thenReturn(Arrays.asList(menuA, menuB));
+        when(orderTableRepository.findById(anyLong())).thenReturn(Optional.ofNullable(orderTable));
+        when(orderRepository.save(any())).thenReturn(order);
 
         //when
-        Order savedOrder = orderService.create(order);
+        OrderResponse savedOrder = orderService.create(orderRequest);
 
         //then
         assertThat(savedOrder).isNotNull();
@@ -86,27 +91,30 @@ public class OrderServiceTest {
     void getOrders() {
 
         //given
-        Order orderA = new Order();
-        orderA.setId(1L);
+        final int numberOfGuest = 10;
+        final boolean isEmpty = false;
+        OrderTable orderTable = OrderTable.create(numberOfGuest, isEmpty);
 
-        Order orderB = new Order();
-        orderB.setId(2L);
+        Order orderA = Order.create(orderTable);
+        ReflectionTestUtils.setField(orderA, "id", 1L);
 
-        Order orderC = new Order();
-        orderC.setId(3L);
+        Order orderB = Order.create(orderTable);
+        ReflectionTestUtils.setField(orderB, "id", 2L);
+
+        Order orderC = Order.create(orderTable);
+        ReflectionTestUtils.setField(orderC, "id", 3L);
 
         List<Order> orders = Arrays.asList(orderA, orderB, orderC);
-        List<OrderLineItem> items =  Arrays.asList(new OrderLineItem());
 
-        when(orderDao.findAll()).thenReturn(orders);
-        when(orderLineItemDao.findAllByOrderId(anyLong())).thenReturn(items);
+        when(orderRepository.findAll()).thenReturn(orders);
 
         //when
-        List<Order> findOrders = orderService.list();
+        List<OrderResponse> findOrders = orderService.list();
 
         //then
         assertThat(findOrders).isNotEmpty();
-        assertThat(findOrders).contains(orderA, orderB, orderC);
+        assertThat(findOrders).extracting(OrderResponse::getId)
+                .contains(orderA.getId(), orderB.getId(), orderC.getId());
     }
 
     @DisplayName("주문 상태를 수정한다.")
@@ -114,14 +122,15 @@ public class OrderServiceTest {
     void changeOrderStatus() {
 
         //given
-        Order order = new Order();
-        order.setId(1L);
-        order.setOrderStatus(OrderStatus.MEAL.name());
+        final int numberOfGuests = 10;
+        final OrderTable orderTable = OrderTable.create(numberOfGuests);
+        final Order order = Order.create(orderTable);
+        ReflectionTestUtils.setField(order, "id", 1L);
 
-        when(orderDao.findById(anyLong())).thenReturn(Optional.ofNullable(order));
+        when(orderRepository.findById(anyLong())).thenReturn(Optional.ofNullable(order));
 
         //when
-        Order changeOrder = orderService.changeOrderStatus(order.getId(), order);
+        OrderResponse changeOrder = orderService.changeOrderStatus(order.getId());
 
         //then
         assertThat(changeOrder).isNotNull();
@@ -134,13 +143,14 @@ public class OrderServiceTest {
 
         //given
         Order order = new Order();
-        order.setId(1L);
-        order.setOrderStatus(OrderStatus.COMPLETION.name());
+        ReflectionTestUtils.setField(order, "id", 1L);
+        order.completion();
 
-        when(orderDao.findById(anyLong())).thenReturn(Optional.ofNullable(order));
+        when(orderRepository.findById(anyLong())).thenReturn(Optional.ofNullable(order));
 
         //when
-        assertThatThrownBy(() -> orderService.changeOrderStatus(order.getId(), order));
+        assertThatThrownBy(() -> orderService.changeOrderStatus(order.getId()))
+                .isInstanceOf(IllegalStateException.class);
 
     }
 

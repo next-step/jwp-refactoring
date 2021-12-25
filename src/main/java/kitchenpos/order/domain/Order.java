@@ -1,13 +1,20 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.table.domain.OrderTable;
+import org.aspectj.weaver.ast.Or;
+import org.springframework.context.event.EventListener;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Table(name = "orders")
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 public class Order {
 
     @Id
@@ -15,7 +22,7 @@ public class Order {
     @Column(name = "id")
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_table_id", nullable = false)
     private OrderTable orderTable;
 
@@ -23,11 +30,26 @@ public class Order {
     @Column(name = "order_status", nullable = false)
     private OrderStatus orderStatus;
 
+    @CreatedDate
     @Column(name = "ordered_time", nullable = false)
     private LocalDateTime orderedTime;
 
     @OneToMany(mappedBy = "order")
-    private List<OrderLineItem> orderLineItems;
+    private List<OrderLineItem> orderLineItems = new ArrayList<>();
+
+    public Order() {
+
+    }
+
+    public Order(OrderTable orderTable) {
+        this.orderTable = orderTable;
+    }
+
+    public static Order create(OrderTable orderTable) {
+        Order order = new Order(orderTable);
+        order.cooking();
+        return order;
+    }
 
     public Long getId() {
         return id;
@@ -45,12 +67,15 @@ public class Order {
 //        this.orderTableId = orderTableId;
     }
 
-    public String getOrderStatus() {
-        return orderStatus.name();
+    public OrderStatus getOrderStatus() {
+        return orderStatus;
     }
 
-    public void setOrderStatus(final String orderStatus) {
-        this.orderStatus = OrderStatus.valueOf(orderStatus);
+    public void nextOrderStatus() {
+        if(isCompletion()) {
+            throw new IllegalStateException("완료된 주문은 상태를 변경할 수 없습니다.");
+        }
+        this.orderStatus = this.orderStatus.next();
     }
 
     public LocalDateTime getOrderedTime() {
@@ -95,5 +120,9 @@ public class Order {
 
     public boolean notIsCompletion() {
         return !isCompletion();
+    }
+
+    public void addItem(Menu menu, long quantity) {
+        this.orderLineItems.add(OrderLineItem.create(this, menu, quantity));
     }
 }

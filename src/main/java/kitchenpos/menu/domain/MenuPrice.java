@@ -1,5 +1,6 @@
 package kitchenpos.menu.domain;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -7,6 +8,7 @@ import java.util.Objects;
 @Embeddable
 public class MenuPrice {
 
+    @Column(name = "price", precision = 19, scale = 2)
     private BigDecimal price;
 
     protected MenuPrice() {
@@ -27,7 +29,6 @@ public class MenuPrice {
             throw new IllegalArgumentException();
         }
     }
-
 
     public boolean notMatch(MenuPrice otherMenuPrice) {
         return price.compareTo(otherMenuPrice.getPrice()) != 0;

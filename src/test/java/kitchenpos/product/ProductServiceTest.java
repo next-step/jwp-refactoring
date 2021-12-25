@@ -1,9 +1,7 @@
 package kitchenpos.product;
 
 import kitchenpos.product.application.ProductService;
-import kitchenpos.dao.ProductDao;
 import kitchenpos.product.domain.Product;
-import kitchenpos.product.domain.ProductPrice;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
@@ -28,9 +26,6 @@ public class ProductServiceTest {
 
     @InjectMocks
     private ProductService productService;
-
-    @Mock
-    private ProductDao productDao;
 
     @Mock
     private ProductRepository productRepository;

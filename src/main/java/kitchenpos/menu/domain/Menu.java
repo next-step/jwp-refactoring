@@ -63,6 +63,10 @@ public class Menu {
         return menuProducts.getMenuProducts();
     }
 
+    public boolean matchId(Long menuId) {
+        return Objects.nonNull(this.id) && this.id.equals(menuId);
+    }
+
     private void validatePrice(MenuPrice otherMenuPrice) {
         if (menuPrice.notMatch(otherMenuPrice)) {
             throw new IllegalArgumentException();

@@ -11,9 +11,11 @@ import kitchenpos.product.domain.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.*;
 
 @Service
+@Transactional(readOnly = true)
 public class MenuService {
     private final MenuRepository menuRepository;
     private final MenuGroupRepository menuGroupRepository;
@@ -32,13 +34,19 @@ public class MenuService {
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
 
-        MenuGroup menuGroup = menuGroupRepository.findById(menuRequest.getMenuGroupId())
-                .orElseThrow(() -> new IllegalArgumentException("MenuGroup이 존재하지 않습니다. MenuGroupId = " + menuRequest.getMenuGroupId()));
+        final MenuGroup menuGroup = menuGroupRepository.findById(menuRequest.getMenuGroupId())
+                .orElseThrow(() -> new EntityNotFoundException("MenuGroup이 존재하지 않습니다. MenuGroupId = " + menuRequest.getMenuGroupId()));
 
-        Menu menu = menuRequest.toEntity();
+        final Menu menu = menuRequest.toEntity();
         menu.grouping(menuGroup);
 
-        List<Product> products = productRepository.findAllById(menuRequest.getProductIds());
+        final List<Long> productIds = menuRequest.getProductIds();
+        final List<Product> products = productRepository.findAllById(productIds);
+
+        if(products.size() != productIds.size()) {
+            throw new EntityNotFoundException("일부 상품이 존재하지 않습니다.");
+        }
+
         menu.addAllProduct(products, menuRequest);
 
         final Menu savedMenu = menuRepository.save(menu);

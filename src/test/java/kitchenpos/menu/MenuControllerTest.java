@@ -1,11 +1,10 @@
 package kitchenpos.menu;
 
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.menu.ui.MenuRestController;
+import kitchenpos.menu.ui.MenuController;
 import kitchenpos.utils.ControllerTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,7 +16,6 @@ import org.springframework.util.LinkedMultiValueMap;
 import javax.annotation.PostConstruct;
 import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.Collections;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -28,7 +26,7 @@ public class MenuControllerTest extends ControllerTest {
 
     @PostConstruct
     public void setUp() {
-        this.mockMvc = MockMvcBuilders.standaloneSetup(new MenuRestController(menuService)).build();
+        this.mockMvc = MockMvcBuilders.standaloneSetup(new MenuController(menuService)).build();
     }
 
     @DisplayName("메뉴를 생성하다.")
