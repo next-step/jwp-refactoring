@@ -1,4 +1,4 @@
-package kitchenpos.application;
+package kitchenpos.ordertable.application;
 
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.domain.Order;
@@ -150,11 +150,15 @@ public class OrderTableServiceTest {
     @Test
     void changeNumberOfGuestsNegativeNumberExceptionTest() {
         assertThatThrownBy(() -> {
+            when(orderTableRepository.findById(anyLong())).thenReturn(Optional.of(new OrderTable(1L, -1)));
+            when(orderTableRepository.save(any())).thenReturn(new OrderTable(1L, -1));
+
             // given
-            final OrderTable orderTable = new OrderTable(-1);
+            final OrderTableRequest orderTableRequest = new OrderTableRequest(-1);
+            final OrderTableResponse createdOrderTable = orderTableService.create(orderTableRequest);
 
             // when
-            orderTableService.changeNumberOfGuests(1L, orderTableRequest);
+            orderTableService.changeNumberOfGuests(createdOrderTable.getId(), orderTableRequest);
 
             // then
         }).isInstanceOf(IllegalArgumentException.class);

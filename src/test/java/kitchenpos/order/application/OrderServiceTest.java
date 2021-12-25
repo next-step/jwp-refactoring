@@ -1,4 +1,4 @@
-package kitchenpos.application;
+package kitchenpos.order.application;
 
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.application.OrderService;
@@ -34,13 +34,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
     @Mock
-    private MenuRepository menuRepository;
-
-    @Mock
     private OrderRepository orderRepository;
-
-    @Mock
-    private OrderLineItemRepository orderLineItemRepository;
 
     @Mock
     private OrderTableRepository orderTableRepository;

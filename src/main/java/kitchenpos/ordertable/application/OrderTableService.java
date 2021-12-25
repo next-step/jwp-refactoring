@@ -40,19 +40,6 @@ public class OrderTableService {
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId, OrderTableRequest orderTableRequest) {
         final OrderTable orderTable = findOrderTableById(orderTableId);
         orderTable.changeNumberOfGuests(orderTableRequest.getNumberOfGuests());
-//        final int numberOfGuests = orderTable.getNumberOfGuests();
-//
-//        if (numberOfGuests < 0) {
-//            throw new IllegalArgumentException();
-//        }
-//
-//        final OrderTable savedOrderTable = findOrderTableById(orderTableId);
-//
-//        if (savedOrderTable.isEmpty()) {
-//            throw new IllegalArgumentException();
-//        }
-//
-//        savedOrderTable.changeNumberOfGuests(numberOfGuests);
 
         return OrderTableResponse.of(orderTable);
     }
