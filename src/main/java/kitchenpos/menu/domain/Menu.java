@@ -3,7 +3,6 @@ package kitchenpos.menu.domain;
 import static kitchenpos.common.exception.ExceptionMessage.*;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -48,8 +47,8 @@ public class Menu {
         this.menuProducts = new MenuProducts(menuProducts);
     }
 
-    public static Menu of(String name, BigDecimal price, Long menuGroupId) {
-        return new Menu(null, name, price, menuGroupId, new ArrayList<>());
+    public static Menu of(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
+        return new Menu(null, name, price, menuGroupId, menuProducts);
     }
 
     private void validate(Long menuGroupId) {
@@ -76,17 +75,6 @@ public class Menu {
 
     public MenuProducts getMenuProducts() {
         return menuProducts;
-    }
-
-    public void addMenuProduct(MenuProduct menuProduct) {
-        this.menuProducts.getValue().add(menuProduct);
-        if (menuProduct.getMenu() != this) {
-            menuProduct.changeMenu(this);
-        }
-    }
-
-    public void validateMenuPrice() {
-        menuProducts.validateMenuPrice(price);
     }
 
     @Override

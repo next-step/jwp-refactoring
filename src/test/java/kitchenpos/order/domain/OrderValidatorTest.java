@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Optional;
 
@@ -50,7 +51,7 @@ class OrderValidatorTest {
         given(orderTableRepository.findById(order.getOrderTableId()))
             .willReturn(Optional.of(OrderTable.of(0, true)));
         given(menuRepository.findById(menuId)).willReturn(Optional.of(Menu.of(
-            "양념치킨", new BigDecimal(10000), 1L)));
+            "양념치킨", new BigDecimal(10000), 1L, new ArrayList<>())));
 
         // when && then
         assertDoesNotThrow(() -> orderValidator.validateCreate(order));
