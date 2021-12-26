@@ -49,8 +49,8 @@ public class OrderService {
 
     private void saveOrderLineItem(final List<Menu> menus, final OrderCreateRequest request, final Order savedOrder) {
         for (OrderCreateRequest.OrderLineItem orderLineItemRequest : request.getOrderLineItems()) {
-            final Menu orderLineItemMenu = getMenu(menus, orderLineItemRequest);
-            final OrderLineItem orderLineItem = new OrderLineItem(orderLineItemMenu, orderLineItemRequest.getQuantity());
+            final Menu menu = getMenu(menus, orderLineItemRequest);
+            final OrderLineItem orderLineItem = new OrderLineItem(menu, orderLineItemRequest.getQuantity());
 
             savedOrder.saveOrderLineItem(orderLineItem);
         }
