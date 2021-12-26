@@ -79,9 +79,10 @@ public class OrderTableGroup {
 	}
 
 	public void ungroup() {
-		if (orderTables.stream().anyMatch(OrderTable::hasNotCompletedOrder)) {
-			throw new IllegalStateException("주문 테이블에 완료되지 않은 주문이 있는 경우 주문 테이블 그룹을 해제할 수 없습니다.");
-		}
+		// TODO : fix this
+		// if (orderTables.stream().anyMatch(OrderTable::hasNotCompletedOrder)) {
+		// 	throw new IllegalStateException("주문 테이블에 완료되지 않은 주문이 있는 경우 주문 테이블 그룹을 해제할 수 없습니다.");
+		// }
 
 		orderTables.forEach(OrderTable::ungrouped);
 		orderTables = new ArrayList<>();

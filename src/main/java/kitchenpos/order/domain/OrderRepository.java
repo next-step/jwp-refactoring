@@ -9,4 +9,6 @@ public interface OrderRepository {
 	List<Order> findAll();
 
 	Optional<Order> findById(Long id);
+
+	List<Order> findByOrderTableId(Long orderTableId);
 }

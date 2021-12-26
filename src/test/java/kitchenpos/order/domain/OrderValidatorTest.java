@@ -20,6 +20,7 @@ import kitchenpos.order.infra.OrderTablesImpl;
 import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.ordertable.infra.repository.InMemoryOrderTableRepository;
 
+@DisplayName("주문 검증자")
 class OrderValidatorTest {
 	private OrderTableRepository orderTableRepository;
 	private MenuRepository menuRepository;

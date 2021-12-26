@@ -1,18 +1,14 @@
 package kitchenpos.ordertable.domain;
 
-import static kitchenpos.order.OrderLineItemFixture.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Arrays;
-import java.util.Collections;
 
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.ordertablegroup.domain.OrderTableGroup;
 
 @DisplayName("주문 테이블")
@@ -41,7 +37,7 @@ class OrderTableTest {
 		OrderTable orderTable = OrderTable.of(NumberOfGuests.from(4), false);
 
 		// when
-		orderTable.changeEmpty(true);
+		orderTable.changeEmpty(true, new ValidOrderTableValidator());
 
 		// then
 		assertThat(orderTable.isEmpty()).isEqualTo(true);
@@ -56,7 +52,7 @@ class OrderTableTest {
 		OrderTableGroup.from(Arrays.asList(orderTable1, orderTable2));
 
 		// when
-		ThrowingCallable throwingCallable = () -> orderTable1.changeEmpty(true);
+		ThrowingCallable throwingCallable = () -> orderTable1.changeEmpty(true, new ValidOrderTableValidator());
 
 		// then
 		assertThatThrownBy(throwingCallable).isInstanceOf(IllegalStateException.class);
@@ -67,12 +63,11 @@ class OrderTableTest {
 	void changeEmptyFailOnOrderNotCompleted() {
 		// given
 		OrderTable orderTable = OrderTable.of(NumberOfGuests.from(4), false);
-		OrderLineItems orderLineItems = OrderLineItems.from(Collections.singletonList(후라이드후라이드_메뉴_주문_항목()));
-		// TODO : fix this
-		// Order.of(orderTable, orderLineItems);
 
 		// when
-		ThrowingCallable throwingCallable = () -> orderTable.changeEmpty(true);
+		ThrowingCallable throwingCallable = () -> orderTable.changeEmpty(
+			true,
+			new NotCompletedOrderExistOrderTableValidator());
 
 		// then
 		assertThatThrownBy(throwingCallable).isInstanceOf(IllegalStateException.class);

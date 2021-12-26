@@ -22,6 +22,7 @@ import kitchenpos.menugroup.infra.repository.InMemoryMenuGroupRepository;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.infra.repository.InMemoryProductRepository;
 
+@DisplayName("메뉴 검증자")
 class MenuValidatorTest {
 	private MenuGroupRepository menuGroupRepository;
 	private ProductRepository productRepository;

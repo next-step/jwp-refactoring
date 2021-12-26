@@ -13,6 +13,10 @@ public class OrderTableFixture {
 		return OrderTable.of(2L, NumberOfGuests.from(0), true);
 	}
 
+	public static OrderTable 주문_테이블_그룹에_속한_주문_테이블_3번() {
+		return OrderTable.of(3L, NumberOfGuests.from(0), true);
+	}
+
 	public static OrderTableRequest 빈_주문_테이블_요청() {
 		return new OrderTableRequest(4, true);
 	}

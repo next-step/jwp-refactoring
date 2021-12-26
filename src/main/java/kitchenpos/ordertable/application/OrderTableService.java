@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import kitchenpos.ordertable.domain.NumberOfGuests;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
+import kitchenpos.ordertable.domain.OrderTableValidator;
 import kitchenpos.ordertable.dto.OrderTableDto;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 
@@ -16,9 +17,14 @@ import kitchenpos.ordertable.dto.OrderTableRequest;
 @Transactional(readOnly = true)
 public class OrderTableService {
 	private final OrderTableRepository orderTableRepository;
+	private final OrderTableValidator orderTableValidator;
 
-	public OrderTableService(OrderTableRepository orderTableRepository) {
+	public OrderTableService(
+		OrderTableRepository orderTableRepository,
+		OrderTableValidator orderTableValidator
+	) {
 		this.orderTableRepository = orderTableRepository;
+		this.orderTableValidator = orderTableValidator;
 	}
 
 	@Transactional
@@ -37,7 +43,7 @@ public class OrderTableService {
 	@Transactional
 	public OrderTableDto changeEmpty(Long id, OrderTableRequest request) {
 		OrderTable orderTable = orderTableRepository.findById(id).orElseThrow(IllegalArgumentException::new);
-		orderTable.changeEmpty(request.isEmpty());
+		orderTable.changeEmpty(request.isEmpty(), orderTableValidator);
 		return OrderTableDto.from(orderTable);
 	}
 
