@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 public class MenuTest {
     
     @Test
-    @DisplayName("메뉴가 잘 생성되는지 확인")
+    @DisplayName("메뉴가 생성된다")
     void 메뉴_생성() {
         // given, when
         Menu 메뉴 = Menu.of("치킨", 17000, MenuGroup.from("메뉴그룹"));
@@ -24,7 +24,7 @@ public class MenuTest {
         );
     }
     
-    @DisplayName("메뉴 가격은 0원 이상이어야한다 - 예외처리")
+    @DisplayName("메뉴 가격은 0원 이상이어야한다")
     @Test
     void 메뉴_가격_0원_이상() {
         // given, when, then
@@ -34,7 +34,7 @@ public class MenuTest {
         .hasMessage("가격은 0원 이상이어야 합니다");
     }
     
-    @DisplayName("메뉴 가격은 포함된 상품들의 총 금액보다 클 수 없다- 예외처리")
+    @DisplayName("메뉴 가격은 포함된 상품들의 총 금액보다 클 수 없다")
     @Test
     void 메뉴_가격_상품_가격_비교() {
         // given

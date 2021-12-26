@@ -8,7 +8,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 public class MenuProductTest {
     
-    @DisplayName("메뉴 상품의 수량 반영 가격 확인")
+    @DisplayName("메뉴 상품의 수량 반영 가격을 확인한다")
     @ParameterizedTest
     @CsvSource(value = { "3000:2:6000", "5000:1:5000" }, delimiter = ':')
     void 메뉴_상품_가격(int price, int quantity, int expected) {

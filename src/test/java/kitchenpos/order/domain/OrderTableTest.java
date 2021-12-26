@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 
 public class OrderTableTest {
     
-    @DisplayName("주문 테이블이 잘 만들어지는지 확인")
+    @DisplayName("주문 테이블을 생성한다")
     @Test
     void 주문_테이블_생성() {
         // when
@@ -25,7 +25,7 @@ public class OrderTableTest {
         );
     }
     
-    @DisplayName("조리중이거나 식사중인 테이블은 빈 테이블로 변경할 수 없다 - 예외처리")
+    @DisplayName("조리중이거나 식사중인 테이블은 빈 테이블로 변경할 수 없다")
     @Test
     void 조리중_식사중_테이블은_빈_테이블_변경_불가() {
         // given
@@ -40,7 +40,7 @@ public class OrderTableTest {
     
     }
     
-    @DisplayName("테이블 최소 손님 수를 확인한다 - 예외처리")
+    @DisplayName("테이블 최소 손님 수를 확인한다")
     @Test
     void 테이블_최소_손님_수_확인() {
         // given

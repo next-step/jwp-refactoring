@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 
 public class OrdersTest {
     
-    @DisplayName("주문 목록이 잘 만들어지는지 확인")
+    @DisplayName("주문 목록을 생성한다")
     @Test
     void 주문_목록_생성() {
         // given
@@ -25,7 +25,7 @@ public class OrdersTest {
         assertThat(주문_목록.getOrders()).containsExactlyElementsOf(Arrays.asList(첫번째_주문, 두번째_주문));
     }
     
-    @DisplayName("주문 목록에 주문이 잘 추가되는지 확인")
+    @DisplayName("주문 목록에 주문을 추가한다")
     @Test
     void 주문_추가() {
      // given
@@ -41,7 +41,7 @@ public class OrdersTest {
         assertThat(주문_목록.getOrders()).containsExactlyElementsOf(Arrays.asList(첫번째_주문, 두번째_주문));
     }
     
-    @DisplayName("목록에 조리중인 주문이 있는지 확인")
+    @DisplayName("목록에 조리중인 주문이 있는지 확인한다")
     @Test
     void 조리중_주문_확인() {
      // given
@@ -56,7 +56,7 @@ public class OrdersTest {
         assertThat(조리중_주문_유무).isTrue();
     }
     
-    @DisplayName("목록에 식사중인 주문이 있는지 확인")
+    @DisplayName("목록에 식사중인 주문이 있는지 확인한다")
     @Test
     void 식사중_주문_확인() {
      // given

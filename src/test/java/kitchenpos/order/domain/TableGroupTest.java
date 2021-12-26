@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 public class TableGroupTest {
     
     @Test
-    @DisplayName("단체지정이 잘 생성되는지 확인")
+    @DisplayName("단체지정을 생성한다")
     void 단체지정_생성() {
         // given
         List<OrderTable> 주문_테이블_목록 = new ArrayList<OrderTable>();
@@ -28,7 +28,7 @@ public class TableGroupTest {
         assertThat(단체_지정).isEqualTo(TableGroup.from(주문_테이블_목록));
     }
     
-    @DisplayName("단체지정은 최소 두 테이블 이상만 가능 - 예외처리")
+    @DisplayName("단체지정은 최소 두 테이블 이상만 가능하다")
     @Test
     void 단체지정_테이블_확인() {
         // given, when, then
@@ -38,7 +38,7 @@ public class TableGroupTest {
         .hasMessage("단체지정은 최소 두 테이블 이상만 가능합니다");
     }
     
-    @DisplayName("단체지정이 해제되는지 확인")
+    @DisplayName("단체지정을 해제한다")
     @Test
     void 단체지정_해제() {
         // given

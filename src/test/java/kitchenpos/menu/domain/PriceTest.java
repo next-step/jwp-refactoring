@@ -10,7 +10,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 public class PriceTest {
     
-    @DisplayName("가격이 잘 생성되는지 확인")
+    @DisplayName("가격이 생성된다")
     @ParameterizedTest
     @CsvSource(value = { "3000:3000", "5000:5000" }, delimiter = ':')
     void 가격_생성(int price, int expected) {
@@ -21,7 +21,7 @@ public class PriceTest {
         assertThat(가격.intValue()).isEqualTo(expected);
     }
     
-    @DisplayName("가격은 0원 이상이어야한다 - 예외처리")
+    @DisplayName("가격은 0원 이상이어야한다")
     @Test
     void 가격_0원_이상() {
         // given, when, then
@@ -31,7 +31,7 @@ public class PriceTest {
         .hasMessage("가격은 0원 이상이어야 합니다");
     }
     
-    @DisplayName("수량에 따라 총 가격이 잘 만들어지는지 확인")
+    @DisplayName("수량에 따라 총 가격이 잘 만들어지는지 확인한다")
     @ParameterizedTest
     @CsvSource(value = { "3000:1:3000", "200:6:1200" }, delimiter = ':')
     void 수량별_가격(int price, int quantity, int expected) {
@@ -45,7 +45,7 @@ public class PriceTest {
         assertThat(수량에_따른_가격.intValue()).isEqualTo(expected);
     }
     
-    @DisplayName("가격끼리 비교가 잘 되는지 확인")
+    @DisplayName("가격끼리 비교가 잘 되는지 확인한다")
     @ParameterizedTest
     @CsvSource(value = { "3000:5000:-1", "200:6:1" }, delimiter = ':')
     void 가격_비교(int price, int targetPrice, int expected) {
@@ -59,7 +59,7 @@ public class PriceTest {
         assertThat(가격_비교).isEqualTo(expected);
     }
     
-    @DisplayName("가격끼리  잘 더해지는지 확인")
+    @DisplayName("가격을 더할 수 있다")
     @ParameterizedTest
     @CsvSource(value = { "3000:5000:8000", "200:6:206" }, delimiter = ':')
     void 가격_합계(int price, int addPrice, int expected) {

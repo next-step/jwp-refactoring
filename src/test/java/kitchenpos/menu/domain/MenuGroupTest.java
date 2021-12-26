@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 public class MenuGroupTest {
 
     @Test
-    @DisplayName("메뉴그룹이 잘 생성되는지 확인")
+    @DisplayName("메뉴그룹이 생성된다")
     void 메뉴그룹_생성() {
         // when
         MenuGroup 메뉴그룹 = MenuGroup.from("메뉴그룹");

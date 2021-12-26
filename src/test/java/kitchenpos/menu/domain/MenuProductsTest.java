@@ -9,9 +9,9 @@ import org.junit.jupiter.api.Test;
 
 public class MenuProductsTest {
     
-    @DisplayName("메뉴 상품들의 총 가격 계산")
+    @DisplayName("메뉴 상품들의 총 가격을 확인한다")
     @Test
-    void 메뉴_상품_가격_계산() {
+    void 메뉴_상품_총_가격_학인() {
         // given
         Menu 메뉴 = Menu.of("치킨세트", 22_000, MenuGroup.from("메뉴그룹"));
         Product 치킨 = Product.of("치킨", 18_000);

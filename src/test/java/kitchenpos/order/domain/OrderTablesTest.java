@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 
 public class OrderTablesTest {
     
-    @DisplayName("주문 테이블 목록 잘 만들어지는지 확인")
+    @DisplayName("주문 테이블 목록을 생성한다")
     @Test
     void 주문_테이블_목록_생성() {
         // given

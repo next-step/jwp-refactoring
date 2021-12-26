@@ -77,7 +77,7 @@ public class ProductServiceTest {
         assertThat(저장된_상품).isEqualTo(상품);
     }
     
-    @DisplayName("미등록 상품 조회시 오류 - 예외처리")
+    @DisplayName("미등록 상품은 조회할 수 없다")
     @Test
     void 미등록_상품_조회() {
         // given

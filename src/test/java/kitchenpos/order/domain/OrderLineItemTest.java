@@ -11,7 +11,7 @@ import kitchenpos.menu.domain.MenuGroup;
 
 public class OrderLineItemTest {
     
-    @DisplayName("주문 항목이 잘 만들어지는지 확인")
+    @DisplayName("주문 항목을 생성한다")
     @Test
     void 주문_항목_생성() {
         // given
@@ -31,7 +31,7 @@ public class OrderLineItemTest {
         );
     }
     
-    @DisplayName("주문 항목에 주문이 잘 반영되는지 확인")
+    @DisplayName("주문 항목에 주문이 잘 반영되는지 확인한다")
     @Test
     void 주문_항목_주문_반영() {
         // given

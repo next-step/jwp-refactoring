@@ -62,7 +62,7 @@ public class MenuGroupServiceTest {
         assertThat(menuGroups).containsExactly(MenuGroupResponse.from(첫번째_메뉴그룹), MenuGroupResponse.from(두번째_메뉴그룹));
     }
     
-    @DisplayName("메뉴 그룹 조회")
+    @DisplayName("메뉴 그룹을 조회한다")
     @Test
     void 메뉴그룹_조회() {
         // given
@@ -77,7 +77,7 @@ public class MenuGroupServiceTest {
         assertThat(저장된_메뉴그룹).isEqualTo(메뉴그룹);
     }
     
-    @DisplayName("등록되지 않은 메뉴그룹 조회 - 예외처리")
+    @DisplayName("등록되지 않은 메뉴그룹을 조회한다")
     @Test
     void 미등록_메뉴그룹_조회() {
         // given

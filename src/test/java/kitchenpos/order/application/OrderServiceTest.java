@@ -71,7 +71,7 @@ public class OrderServiceTest {
         assertThat(등록된_주문).isEqualTo(OrderResponse.from(주문));
     }
     
-    @DisplayName("메뉴없이 주문할 수 없다 - 예외처리")
+    @DisplayName("메뉴없이 주문할 수 없다")
     @Test
     void 주문_등록_메뉴_필수() {
         // given
@@ -149,7 +149,7 @@ public class OrderServiceTest {
         assertThat(변경후_주문.getOrderStatus()).isEqualTo(변경할_주문.getOrderStatus());
     }
     
-    @DisplayName("계산이 완료된 주문은 상태를 변경 할 수 없다 - 예외처리")
+    @DisplayName("계산이 완료된 주문은 상태를 변경 할 수 없다")
     @Test
     void 계산_완료_주문_변경_불가() {
         // given

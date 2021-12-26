@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 public class ProductTest {
     
     @Test
-    @DisplayName("상품이 잘 생성되는지 확인")
+    @DisplayName("상품이 생성된다")
     void 상품_생성() {
         // given, when
         Product 상품 = Product.of("치킨", 17000);
@@ -22,7 +22,7 @@ public class ProductTest {
         );
     }
     
-    @DisplayName("상품 가격은 0원 이상이어야한다 - 예외처리")
+    @DisplayName("상품 가격은 0원 이상이어야한다")
     @Test
     void 상품_가격_0원_이상() {
         // given, when, then

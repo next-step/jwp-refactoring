@@ -80,7 +80,7 @@ public class TableServiceTest {
         assertThat(상태_변경후_테이블.isEmpty()).isTrue();
     }
     
-    @DisplayName("등록된 테이블만 빈 테이블로 변경할 수 있다 - 예외처리")
+    @DisplayName("등록된 테이블만 빈 테이블로 변경할 수 있다")
     @Test
     void 등록되지않은_테이블_빈_테이블_변경_불가() {
         // when
@@ -94,7 +94,7 @@ public class TableServiceTest {
     
     }
     
-    @DisplayName("단체지정이 된 테이블은 빈 테이블로 변경할 수 없다 - 예외처리")
+    @DisplayName("단체지정이 된 테이블은 빈 테이블로 변경할 수 없다")
     @Test
     void 단체지정_테이블_빈_테이블_변경_불가() {
         // given
@@ -129,7 +129,7 @@ public class TableServiceTest {
         assertThat(손님_수_변경후_테이블.getNumberOfGuests()).isEqualTo(손님_수_변경_테이블.getNumberOfGuests());
     }
     
-    @DisplayName("등록된 테이블만 방문 손님 수를 지정할 수 있다 - 예외처리")
+    @DisplayName("등록된 테이블만 방문 손님 수를 지정할 수 있다")
     @Test
     void 등록된_테이블만_방문_손님_수_변경() {
         // when
@@ -143,7 +143,7 @@ public class TableServiceTest {
     
     }
     
-    @DisplayName("미등록 테이블 목록을 조회시 오류 - 예외처리")
+    @DisplayName("미등록 테이블은 조회할 수 없다")
     @Test
     void 미등록_테이블_목록_조회() {
         // given
