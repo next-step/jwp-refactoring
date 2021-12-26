@@ -1,4 +1,4 @@
-package kitchenpos.product.application;
+package kitchenpos.common.domain.product.application;
 
 import kitchenpos.common.domain.Name;
 import kitchenpos.common.exception.InputDataErrorCode;

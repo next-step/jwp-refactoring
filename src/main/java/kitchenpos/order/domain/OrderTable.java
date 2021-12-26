@@ -1,23 +1,39 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.order.exceptions.InputTableDataErrorCode;
-import kitchenpos.order.exceptions.InputTableDataException;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
+@Entity
 public class OrderTable {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long tableGroupId;
-    private int numberOfGuests;
+
+    @ManyToOne
+    @JoinColumn(name = "table_group_id")
+    private TableGroup tableGroup;
+
+    @Embedded
+    private NumberOfGuests numberOfGuests;
+
+    @OneToMany(mappedBy = "orderTable")
+    private List<Order> orders = new ArrayList<>();
+
     private boolean empty;
 
-    public OrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
-        this(tableGroupId, numberOfGuests, empty);
-        this.id = id;
+    protected OrderTable() {
+
     }
 
-    public OrderTable(Long tableGroupId, int numberOfGuests, boolean empty) {
-        validateWrongNumberOfGuest(numberOfGuests);
-        this.tableGroupId = tableGroupId;
-        this.numberOfGuests = numberOfGuests;
+    public OrderTable(int numberOfGuests, boolean empty, List<Order> orders) {
+        this(numberOfGuests, empty);
+        this.orders = orders;
+    }
+
+    public OrderTable(int numberOfGuests, boolean empty) {
+        this.numberOfGuests = new NumberOfGuests(numberOfGuests);
         this.empty = empty;
     }
 
@@ -25,29 +41,24 @@ public class OrderTable {
         return id;
     }
 
-    public Long getTableGroupId() {
-        return tableGroupId;
-    }
-
     public int getNumberOfGuests() {
-        return numberOfGuests;
+        return numberOfGuests.getNumberOfGuests();
     }
 
     public void seatNumberOfGuests(int numberOfGuests) {
-        validateWrongNumberOfGuest(numberOfGuests);
-        this.numberOfGuests = numberOfGuests;
+        this.numberOfGuests = new NumberOfGuests(numberOfGuests);
     }
 
     public boolean isEmpty() {
         return empty;
     }
 
-    public void allocateTableGroupId(Long tableGroupId) {
-        this.tableGroupId = tableGroupId;
+    public void allocateTableGroupId(TableGroup tableGroup) {
+        this.tableGroup = tableGroup;
     }
 
-    public void emptyTableGroupId() {
-        this.tableGroupId = null;
+    public void emptyTableGroup() {
+        this.tableGroup = null;
     }
 
     public void enterGuest() {
@@ -58,9 +69,11 @@ public class OrderTable {
         this.empty = true;
     }
 
-    private void validateWrongNumberOfGuest(int numberOfGuests) {
-        if (numberOfGuests < 0) {
-            throw new InputTableDataException(InputTableDataErrorCode.THE_NUMBER_OF_GUESTS_IS_NOT_LESS_THAN_ZERO);
-        }
+    public TableGroup getTableGroup() {
+        return tableGroup;
+    }
+
+    public List<Order> getOrders() {
+        return orders;
     }
 }

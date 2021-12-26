@@ -1,7 +1,8 @@
-package kitchenpos.product.domain;
+package kitchenpos.common.domain.product.domain;
 
 import kitchenpos.common.exception.InputDataErrorCode;
 import kitchenpos.common.exception.InputDataException;
+import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

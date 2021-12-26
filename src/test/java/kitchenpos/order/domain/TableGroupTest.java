@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 
 @DisplayName("테이블 그룹 단위 테스트")
 class TableGroupTest {
@@ -14,10 +15,10 @@ class TableGroupTest {
     @Test
     @DisplayName("주문을 그룹화한다.")
     void createOrderTableGroup() {
-        OrderTable orderTable = new OrderTable(1L, null, 2, false);
-        OrderTable orderTable2 = new OrderTable(2L, null, 5, false);
-
-        TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), Arrays.asList(orderTable, orderTable2));
+        OrderTable orderTable = mock(OrderTable.class);
+        OrderTable orderTable2 = mock(OrderTable.class);
+        OrderTables orderTables = new OrderTables(Arrays.asList(orderTable, orderTable2));
+        TableGroup tableGroup = new TableGroup(orderTables, LocalDateTime.now());
 
         assertThat(tableGroup.getOrderTables()).contains(orderTable, orderTable2);
     }
@@ -25,10 +26,11 @@ class TableGroupTest {
     @Test
     @DisplayName("주문을 그룹화하지 않는다.")
     void deleteOrderTableGroup() {
-        OrderTable orderTable = new OrderTable(1L, null, 2, false);
-        OrderTable orderTable2 = new OrderTable(2L, null, 5, false);
+        OrderTable orderTable = mock(OrderTable.class);
+        OrderTable orderTable2 = mock(OrderTable.class);
+        OrderTables orderTables = new OrderTables(Arrays.asList(orderTable, orderTable2));
+        TableGroup tableGroup = new TableGroup(orderTables, LocalDateTime.now());
 
-        TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), Arrays.asList(orderTable, orderTable2));
         tableGroup.cancleGroup();
         assertThat(tableGroup.getOrderTables().size()).isEqualTo(0);
     }

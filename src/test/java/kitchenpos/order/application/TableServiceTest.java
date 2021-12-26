@@ -1,9 +1,10 @@
 package kitchenpos.order.application;
 
-import kitchenpos.order.dao.OrderDao;
-import kitchenpos.order.dao.OrderTableDao;
-import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.domain.OrderTableRepository;
+import kitchenpos.order.dto.OrderTableRequest;
+import kitchenpos.order.dto.OrderTableResponse;
 import kitchenpos.order.exceptions.InputTableDataErrorCode;
 import kitchenpos.order.exceptions.InputTableDataException;
 import org.junit.jupiter.api.DisplayName;
@@ -20,19 +21,17 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @DisplayName("Table 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
 class TableServiceTest {
 
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
 
     @InjectMocks
     private TableService tableService;
@@ -40,94 +39,39 @@ class TableServiceTest {
     @Test
     @DisplayName("테이블을 생성한다.")
     void createTableTest() {
+        OrderTableRequest orderTableRequest = mock(OrderTableRequest.class);
         OrderTable orderTable = mock(OrderTable.class);
 
-        when(orderTable.getId())
-                .thenReturn(1L);
-
-        when(orderTableDao.save(any()))
+        when(orderTableRequest.toEntity()).thenReturn(orderTable);
+        when(orderTableRepository.save(any(OrderTable.class)))
                 .thenReturn(orderTable);
 
-        tableService.create(orderTable);
-        assertThat(orderTable.getId()).isEqualTo(1L);
+        tableService.create(orderTableRequest);
 
+        verify(orderTableRepository).save(orderTable);
     }
 
     @Test
     @DisplayName("Table을 조회한다.")
     void findTableTest() {
         OrderTable orderTable = mock(OrderTable.class);
+        when(orderTable.getId()).thenReturn(1L);
+        when(orderTable.getNumberOfGuests()).thenReturn(5);
+        when(orderTableRepository.findAll()).thenReturn(Arrays.asList(orderTable));
 
-        when(orderTableDao.save(any()))
-                .thenReturn(orderTable);
-
-        tableService.create(orderTable);
-
-        when(tableService.list())
-                .thenReturn(Arrays.asList(orderTable));
-
-        List<OrderTable> orderTables = tableService.list();
-
-        assertThat(orderTables).contains(orderTable);
-    }
-
-
-    @Test
-    @DisplayName("테이블상태를 변경한다.")
-    void modifyTableStatusTest() {
-        OrderTable orderTable = mock(OrderTable.class);
-
-        when(orderTable.getId())
-                .thenReturn(1L);
-
-        when(orderTableDao.save(any()))
-                .thenReturn(orderTable);
-
-        tableService.create(orderTable);
-
-        when(orderTableDao.findById(anyLong()))
-                .thenReturn(Optional.of(orderTable));
-
-        when(orderTable.getTableGroupId())
-                .thenReturn(null);
-
-        when(orderDao.existsByOrderTableIdAndOrderStatusIn(
-                1L, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name())))
-                .thenReturn(false);
-
-        orderTable.enterGuest();
-        tableService.changeEmpty(orderTable.getId(), orderTable);
-
-        assertThat(orderTable.getId()).isEqualTo(1L);
-        assertThat(orderTable.isEmpty()).isFalse();
+        List<OrderTableResponse> orderTables = tableService.findAll();
+        assertThat(orderTables.size()).isEqualTo(1);
     }
 
     @Test
-    @DisplayName("테이블 인원수를 변경한다.")
-    void changeMemberCountTest(){
-        OrderTable orderTable = mock(OrderTable.class);
-
-        when(orderTableDao.findById(anyLong()))
-                .thenReturn(Optional.of(orderTable));
-
-        when(orderTable.getNumberOfGuests()).thenReturn(4);
-        tableService.changeNumberOfGuests(orderTable.getId(), orderTable);
-
-        assertThat(orderTable.getNumberOfGuests()).isEqualTo(4);
-    }
-
-    @Test
-    @DisplayName("테이블 인원수를 음수로 변경하면 에러처리 테스트.")
+    @DisplayName("등록된 테이블이 없을 경우 에러처리 테스트.")
     void changeWrongMemberCountTest(){
-        OrderTable orderTable = mock(OrderTable.class);
 
-        when(orderTable.getNumberOfGuests())
-                .thenReturn(-4);
+        when(orderTableRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> {
-            tableService.changeNumberOfGuests(orderTable.getId(), orderTable);
+            tableService.changeNumberOfGuests(1L, -20);
         }).isInstanceOf(InputTableDataException.class)
-                .hasMessageContaining(InputTableDataErrorCode.THE_NUMBER_OF_GUESTS_IS_NOT_LESS_THAN_ZERO.errorMessage());
-
+                .hasMessageContaining(InputTableDataErrorCode.THE_TABLE_CAN_NOT_FIND.errorMessage());
     }
 }

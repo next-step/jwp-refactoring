@@ -1,6 +1,7 @@
 package kitchenpos.order.application;
 
 import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.domain.OrderTables;
 import kitchenpos.order.domain.TableGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -40,7 +41,8 @@ class TableGroupServiceTest {
         //given
         OrderTable orderTable = mock(OrderTable.class);
         OrderTable orderTable2 = mock(OrderTable.class);
-        TableGroup tableGroup1 = new TableGroup(LocalDateTime.now(), Arrays.asList(orderTable, orderTable2));
+        OrderTables orderTables = new OrderTables(Arrays.asList(orderTable, orderTable2));
+        TableGroup tableGroup1 = new TableGroup(orderTables, LocalDateTime.now());
 
         //when
         tableGroup1.cancleGroup();

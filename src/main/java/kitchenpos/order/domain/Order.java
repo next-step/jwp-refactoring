@@ -1,46 +1,48 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.order.exceptions.InputOrderDataErrorCode;
+import kitchenpos.order.exceptions.InputOrderDateException;
+import org.springframework.util.CollectionUtils;
+
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
+@Entity
+@Table(name = "orders")
 public class Order {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long orderTableId;
-    private String orderStatus;
+
+    @ManyToOne
+    @JoinColumn(name = "order_table_id")
+    private OrderTable orderTable;
+
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus;
+
     private LocalDateTime orderedTime;
-    private List<OrderLineItem> orderLineItems;
 
-    public Order(Long id, Long orderTableId, String orderStatus, LocalDateTime orderedTime) {
-        this(orderTableId, orderStatus, orderedTime);
-        this.id = id;
-    }
+    @Embedded
+    private OrderLineItems orderLineItems;
 
-    public Order(Long id, Long orderTableId, String orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
-        this(id, orderTableId, orderStatus, orderedTime);
+    public Order(OrderTable orderTable, OrderLineItems orderLineItems) {
+        validate(orderLineItems);
+        this.orderTable = orderTable;
+        this.orderedTime = LocalDateTime.now();
         this.orderLineItems = orderLineItems;
-    }
-
-    public Order(Long orderTableId, String orderStatus, LocalDateTime orderedTime) {
-        this.orderTableId = orderTableId;
-        this.orderStatus = orderStatus;
-        this.orderedTime = orderedTime;
-    }
-
-    public static Order of(Long id, Long orderTableId, String orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
-        return new Order(id, orderTableId, orderStatus, orderedTime, orderLineItems);
+        this.orderStatus = OrderStatus.COOKING;
     }
 
     public Long getId() {
         return id;
     }
 
-    public Long getOrderTableId() {
-        return orderTableId;
-    }
-
     public String getOrderStatus() {
-        return orderStatus;
+        return orderStatus.name();
     }
 
     public LocalDateTime getOrderedTime() {
@@ -48,15 +50,42 @@ public class Order {
     }
 
     public List<OrderLineItem> getOrderLineItems() {
-        return orderLineItems;
+        return orderLineItems.getOrderLineItems();
     }
 
-    public void startCooking(){
-        this.orderStatus = OrderStatus.COOKING.name();
+    public void startCooking() {
+        checkEndOrder();
+        this.orderStatus = OrderStatus.COOKING;
     }
 
     public void startMeal() {
-        this.orderStatus = OrderStatus.MEAL.name();
+        checkEndOrder();
+        this.orderStatus = OrderStatus.MEAL;
+    }
+
+    public void endOrder() {
+        checkEndOrder();
+        this.orderStatus = OrderStatus.COMPLETION;
+    }
+
+    public OrderTable getOrderTable() {
+        return orderTable;
+    }
+
+    public Long getOrderTableId() {
+        return orderTable.getId();
+    }
+
+    private void checkEndOrder() {
+        if (this.orderStatus == OrderStatus.COMPLETION) {
+            throw new InputOrderDateException(InputOrderDataErrorCode.THE_ORDER_STATUS_DO_NOT_CHANGE_COMPLETION_TO_ANY_OTHER);
+        }
+    }
+
+    private void validate(OrderLineItems orderLineItems) {
+        if (CollectionUtils.isEmpty(orderLineItems.getOrderLineItems())) {
+            throw new InputOrderDateException(InputOrderDataErrorCode.THE_ORDER_LINE_IS_EMPTY);
+        }
     }
 
     @Override

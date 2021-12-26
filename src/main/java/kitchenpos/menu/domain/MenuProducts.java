@@ -13,7 +13,7 @@ public class MenuProducts implements Iterable<MenuProduct> {
     @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MenuProduct> menuProducts = new ArrayList<>();
 
-    public MenuProducts() {
+    protected MenuProducts() {
 
     }
 
