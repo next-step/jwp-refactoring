@@ -2,11 +2,11 @@ package kitchenpos.table.domain;
 
 import org.springframework.context.ApplicationEvent;
 
-public class OrderTableChangeEmptyEvent extends ApplicationEvent {
+public class OrderTableChangeableCheckRequestEvent extends ApplicationEvent {
 
     private final Long orderTableId;
 
-    public OrderTableChangeEmptyEvent(Long orderTableId) {
+    public OrderTableChangeableCheckRequestEvent(Long orderTableId) {
         super(orderTableId);
         this.orderTableId = orderTableId;
     }

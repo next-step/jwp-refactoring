@@ -1,7 +1,7 @@
 package kitchenpos.table.application;
 
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableChangeEmptyEvent;
+import kitchenpos.table.domain.OrderTableChangeableCheckRequestEvent;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.repository.OrderTableRepository;
 import org.springframework.context.ApplicationEventPublisher;
@@ -35,7 +35,7 @@ public class TableService {
     public OrderTable changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         final OrderTable savedOrderTable = getOrderTable(orderTableId);
 
-        eventPublisher.publishEvent(new OrderTableChangeEmptyEvent(savedOrderTable.getId()));
+        eventPublisher.publishEvent(new OrderTableChangeableCheckRequestEvent(savedOrderTable.getId()));
         savedOrderTable.changeEmpty(orderTableRequest.isEmpty());
         return savedOrderTable;
     }
