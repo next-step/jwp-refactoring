@@ -1,11 +1,8 @@
 package kitchenpos.table.application;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
+import static kitchenpos.order.domain.OrderStatus.UNGROUP_DISABLE_ORDER_STATUS;
+
 import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.domain.TableGroup;
@@ -45,21 +42,19 @@ public class TableGroupService {
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
-        final List<OrderTable> orderTables = orderTableRepository.findAllByTableGroupId(
-            tableGroupId);
+        final OrderTables orderTables = OrderTables.of(orderTableRepository.findAllByTableGroupId(
+            tableGroupId));
 
-        final List<Long> orderTableIds = orderTables.stream()
-            .map(OrderTable::getId)
-            .collect(Collectors.toList());
+        validateForUngroup(orderTables);
 
-        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
-            orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException();
-        }
+        orderTables.ungroup();
+        orderTableRepository.saveAll(orderTables.getValues());
+    }
 
-        for (final OrderTable orderTable : orderTables) {
-            orderTable.setTableGroupId(null);
-            orderTableRepository.save(orderTable);
+    private void validateForUngroup(OrderTables orderTables) {
+        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(orderTables.extractIds(),
+            UNGROUP_DISABLE_ORDER_STATUS)) {
+            throw new IllegalArgumentException("주문 상태가 요리중 또는 식사 상태여서 그룹 해제가 불가능합니다");
         }
     }
 }

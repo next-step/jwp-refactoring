@@ -29,6 +29,12 @@ public class OrderTables {
         }
     }
 
+    public void ungroup() {
+        for (OrderTable orderTable : orderTables) {
+            orderTable.ungroup();
+        }
+    }
+
     public void validateForCreatableGroup() {
         if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
             throw new IllegalArgumentException("테이블이 두 개 이상 있어야 합니다");

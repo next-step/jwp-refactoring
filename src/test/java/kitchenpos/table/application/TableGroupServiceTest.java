@@ -138,7 +138,7 @@ class TableGroupServiceTest {
         tableGroupService.ungroup(1L);
 
         // then
-        verify(orderTableRepository, times(2)).save(any());
+        verify(orderTableRepository, times(1)).saveAll(any());
     }
 
     @DisplayName("주문 상태가 요리중 또는 식사일 때 테이블 그룹 해제를 하면 예외 발생")

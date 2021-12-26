@@ -63,16 +63,16 @@ public class OrderTable {
         this.tableGroupId = tableGroup.getId();
     }
 
+    public void ungroup() {
+        this.tableGroupId = null;
+    }
+
     public Long getId() {
         return id;
     }
 
     public Long getTableGroupId() {
         return tableGroupId;
-    }
-
-    public void setTableGroupId(final Long tableGroupId) {
-        this.tableGroupId = tableGroupId;
     }
 
     public int getNumberOfGuests() {
