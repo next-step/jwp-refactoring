@@ -21,7 +21,7 @@ public class MenuProductsTest {
         MenuProducts 메뉴_상품_목록 = MenuProducts.from(Arrays.asList(메뉴_치킨, 메뉴_콜라));
         
         // when
-        Price 총_가격 = 메뉴_상품_목록.calculatorTotalPrice();
+        Price 총_가격 = 메뉴_상품_목록.getTotalPrice();
     
         // then
         assertThat(총_가격).isEqualTo(Price.from(22_000));

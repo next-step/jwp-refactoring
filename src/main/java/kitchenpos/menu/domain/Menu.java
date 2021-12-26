@@ -72,7 +72,7 @@ public class Menu {
             menuProduct.updateMenu(this);
             this.menuProducts.add(menuProduct);
         });
-        checkTotalPrice(this.menuProducts.calculatorTotalPrice());
+        checkTotalPrice(this.menuProducts.getTotalPrice());
     }
     
     private void checkTotalPrice(Price sumProductPrice) {
