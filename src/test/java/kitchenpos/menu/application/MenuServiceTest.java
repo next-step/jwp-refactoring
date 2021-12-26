@@ -23,6 +23,7 @@ import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.ProductDao;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,10 +38,10 @@ public class MenuServiceTest {
     private MenuDao menuDao;
 
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupService menuGroupService;
 
     @Mock
-    private ProductDao productDao;
+    private ProductService productService;
 
     @InjectMocks
     private MenuService menuService;
@@ -60,8 +61,8 @@ public class MenuServiceTest {
             ));
 
         // mocking
-        when(menuGroupDao.findById(anyLong())).thenReturn(Optional.of(메뉴그룹_한마리()));
-        when(productDao.findById(anyLong())).thenReturn(Optional.of(양념치킨()));
+        when(menuGroupService.findByIdThrow(anyLong())).thenReturn(메뉴그룹_한마리());
+        when(productService.findByIdThrow(anyLong())).thenReturn(양념치킨());
         when(menuDao.save(any())).thenReturn(menu);
 
         // when

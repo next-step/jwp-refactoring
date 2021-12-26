@@ -1,5 +1,6 @@
 package kitchenpos.product.application;
 
+import kitchenpos.common.exception.NoResultDataException;
 import kitchenpos.product.domain.ProductDao;
 import kitchenpos.product.domain.Product;
 import org.springframework.stereotype.Service;
@@ -24,4 +25,12 @@ public class ProductService {
     public List<Product> list() {
         return productDao.findAll();
     }
+
+
+    public Product findByIdThrow(Long id) {
+        return productDao.findById(id)
+            .orElseThrow(NoResultDataException::new);
+    }
+
+
 }

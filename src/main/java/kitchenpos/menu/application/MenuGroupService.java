@@ -1,9 +1,11 @@
 package kitchenpos.menu.application;
 
+import kitchenpos.common.exception.NoResultDataException;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuGroupDao;
 import kitchenpos.menu.dto.MenuGroupRequest;
 import kitchenpos.menu.dto.MenuGroupResponse;
+import kitchenpos.menu.dto.MenuRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,5 +28,10 @@ public class MenuGroupService {
     public List<MenuGroupResponse> list() {
         List<MenuGroup> menuGroups = menuGroupDao.findAll();
         return MenuGroupResponse.ofList(menuGroups);
+    }
+
+    public MenuGroup findByIdThrow(Long id) {
+        return menuGroupDao.findById(id)
+            .orElseThrow(NoResultDataException::new);
     }
 }

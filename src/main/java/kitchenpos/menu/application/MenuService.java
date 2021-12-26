@@ -6,12 +6,11 @@ import java.util.stream.Collectors;
 import kitchenpos.common.exception.NoResultDataException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuDao;
-import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuGroupDao;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Amount;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductDao;
@@ -22,30 +21,27 @@ import org.springframework.transaction.annotation.Transactional;
 public class MenuService {
 
     private final MenuDao menuDao;
-    private final MenuGroupDao menuGroupDao;
-    private final ProductDao productDao;
+    private final MenuGroupService menuGroupService;
+    private final ProductService productService;
 
 
     public MenuService(
         final MenuDao menuDao,
-        final MenuGroupDao menuGroupDao,
-        final ProductDao productDao
+        final MenuGroupService menuGroupService,
+        final ProductService productService
     ) {
         this.menuDao = menuDao;
-        this.menuGroupDao = menuGroupDao;
-        this.productDao = productDao;
+        this.menuGroupService = menuGroupService;
+        this.productService = productService;
     }
 
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
 
-        final MenuGroup menuGroup = menuGroupDao.findById(menuRequest.getMenuGroupId())
-            .orElseThrow(NoResultDataException::new);
-
         final Menu menu = Menu.of(
             menuRequest.getName(),
             Amount.of(menuRequest.getPrice()),
-            menuGroup
+            menuGroupService.findByIdThrow(menuRequest.getMenuGroupId())
         );
 
         menu.withMenuProducts(createMenuProducts(menuRequest, menu));
@@ -64,11 +60,11 @@ public class MenuService {
     }
 
     private Function<MenuProductRequest, MenuProduct> findByProductIdToMenuProduct(final Menu menu) {
-        return menuProduct -> {
-            Product product = productDao.findById(menuProduct.getProductId())
-                .orElseThrow(NoResultDataException::new);
-            return MenuProduct.of(menu, product, menuProduct.getQuantity());
-        };
+        return menuProduct -> MenuProduct.of(
+            menu,
+            productService.findByIdThrow(menuProduct.getProductId()),
+            menuProduct.getQuantity()
+        );
     }
 
 }

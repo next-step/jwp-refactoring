@@ -49,7 +49,6 @@ public class Menu {
         this.price = price;
     }
 
-
     protected Menu() {
     }
 
@@ -60,12 +59,15 @@ public class Menu {
     }
 
     public void withMenuProducts(List<MenuProduct> menuProducts) {
-        Amount sumAmount = MenuProducts.of(menuProducts)
-                                       .sum();
-        if (price.grateThan(sumAmount)) {
+        if (price.grateThan(sumAmount(menuProducts))) {
             throw new IllegalArgumentException(Message.MENU_AMOUNT_IS_TOO_LAGE.getMessage());
         }
         this.menuProducts.addAll(menuProducts);
+    }
+
+    private Amount sumAmount(List<MenuProduct> menuProducts) {
+        return MenuProducts.of(menuProducts)
+            .sum();
     }
 
     public Long getId() {
