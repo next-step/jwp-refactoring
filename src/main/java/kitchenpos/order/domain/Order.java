@@ -2,6 +2,7 @@ package kitchenpos.order.domain;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -10,12 +11,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "orders")
 public class Order {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -28,8 +29,8 @@ public class Order {
 
     private LocalDateTime orderedTime;
 
-    @OneToMany(mappedBy = "order")
-    private List<OrderLineItem> orderLineItems;
+    @Embedded
+    private OrderLineItems orderLineItems;
 
     public Order() {
     }
@@ -38,9 +39,9 @@ public class Order {
         this.id = id;
     }
 
-    public  Order(Long orderTableId, List<OrderLineItem> orderLineItems) {
+    public Order(Long orderTableId, List<OrderLineItem> orderLineItems) {
         this.orderTableId = orderTableId;
-        this.orderLineItems = orderLineItems;
+        this.orderLineItems = OrderLineItems.of(this, orderLineItems);
     }
 
     private Order(Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime,
@@ -48,7 +49,7 @@ public class Order {
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
-        this.orderLineItems = orderLineItems;
+        this.orderLineItems = OrderLineItems.of(orderLineItems);
     }
 
     public Order(Long id, Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime,
@@ -57,7 +58,7 @@ public class Order {
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
-        this.orderLineItems = orderLineItems;
+        this.orderLineItems = OrderLineItems.of(orderLineItems);
     }
 
     public static Order of(Long id) {
@@ -68,8 +69,15 @@ public class Order {
         return new Order(orderTableId, orderLineItems);
     }
 
-    public static Order of(Long orderTableId, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
+    public static Order of(Long orderTableId, OrderStatus orderStatus,
+        List<OrderLineItem> orderLineItems) {
         return new Order(orderTableId, orderStatus, LocalDateTime.now(), orderLineItems);
+    }
+
+    public void validateForChangeStatus() {
+        if (OrderStatus.COMPLETION == this.orderStatus) {
+            throw new IllegalArgumentException("완료된 주문은 상태를 변경할 수 없습니다");
+        }
     }
 
     public Long getId() {
@@ -92,7 +100,7 @@ public class Order {
         return orderStatus;
     }
 
-    public void setOrderStatus(final OrderStatus orderStatus) {
+    public void changeOrderStatus(final OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
     }
 
@@ -104,11 +112,11 @@ public class Order {
         this.orderedTime = orderedTime;
     }
 
-    public List<OrderLineItem> getOrderLineItems() {
+    public OrderLineItems getOrderLineItems() {
         return orderLineItems;
     }
 
-    public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
+    public void setOrderLineItems(final OrderLineItems orderLineItems) {
         this.orderLineItems = orderLineItems;
     }
 }

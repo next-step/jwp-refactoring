@@ -85,12 +85,12 @@ class OrderServiceTest {
         OrderLineItem orderLineItem4 = new OrderLineItem(4L, 4L, 2L, 2);
         List<OrderLineItem> orderLineItems2 = Lists.newArrayList(orderLineItem3, orderLineItem4);
 
-        Order order1 = new Order(1L, 1L, OrderStatus.COOKING, LocalDateTime.of(2021, 12, 19, 18, 30), null);
-        Order order2 = new Order(2L, 2L, OrderStatus.MEAL, LocalDateTime.of(2021, 12, 19, 17, 0), null);
+        Order order1 = new Order(1L, 1L, OrderStatus.COOKING,
+            LocalDateTime.of(2021, 12, 19, 18, 30), orderLineItems1);
+        Order order2 = new Order(2L, 2L, OrderStatus.MEAL, LocalDateTime.of(2021, 12, 19, 17, 0),
+            orderLineItems2);
 
         given(orderRepository.findAll()).willReturn(Lists.newArrayList(order1, order2));
-        given(orderLineItemRepository.findAllByOrderId(any())).willReturn(orderLineItems1,
-            orderLineItems2);
 
         // when
         List<OrderResponse> result = orderService.list();
@@ -123,7 +123,6 @@ class OrderServiceTest {
         OrderStatusRequest orderForUpdate = new OrderStatusRequest(OrderStatus.MEAL);
 
         given(orderRepository.findById(any())).willReturn(Optional.of(order));
-        given(orderLineItemRepository.findAllByOrderId(1L)).willReturn(orderLineItems);
 
         // when
         OrderResponse result = orderService.changeOrderStatus(1L, orderForUpdate);

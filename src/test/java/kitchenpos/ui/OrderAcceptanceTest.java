@@ -147,7 +147,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
 
     private void 주문상태_변경됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        Order order = response.as(Order.class);
+        OrderResponse order = response.as(OrderResponse.class);
         assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.MEAL);
     }
 
