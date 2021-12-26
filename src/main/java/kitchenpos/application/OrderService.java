@@ -28,23 +28,23 @@ public class OrderService {
     }
 
     public OrderResponse create(final OrderCreateRequest request) {
-        final List<Menu> menus = menuService.findMenus(request.getOrderLineItems().stream()
-                .map(OrderCreateRequest.OrderLineItem::getMenuId)
-                .collect(Collectors.toList()));
-
+        final List<Menu> menus = getMenus(request.getOrderLineItems());
         final OrderTable orderTable = tableService.findOrderTable(request.getOrderTableId());
         orderTable.checkAvailability();
 
-        final Order order = Order.builder()
-                .orderStatus(OrderStatus.COOKING)
-                .build();
-
+        final Order order = new Order(OrderStatus.COOKING);
         order.saveOrderTable(orderTable);
         saveOrderLineItem(menus, request, order);
 
         final Order savedOrder = orderRepository.save(order);
 
         return OrderMapper.toOrderResponse(savedOrder);
+    }
+
+    private List<Menu> getMenus(final List<OrderCreateRequest.OrderLineItem> requestOrderLineItems) {
+        return menuService.findMenus(requestOrderLineItems.stream()
+                .map(OrderCreateRequest.OrderLineItem::getMenuId)
+                .collect(Collectors.toList()));
     }
 
     private void saveOrderLineItem(final List<Menu> menus, final OrderCreateRequest request, final Order savedOrder) {

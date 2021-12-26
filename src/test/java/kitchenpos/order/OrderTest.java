@@ -18,9 +18,7 @@ class OrderTest {
     @DisplayName("주문 상태 변경 시 주문이 완료 상태면 예외가 발생한다.")
     void changeOrderStatusFailBecauseOfOrderStatusCompletion() {
         // given
-        final Order order = Order.builder()
-                .orderStatus(OrderStatus.COMPLETION)
-                .build();
+        final Order order = new Order(OrderStatus.COMPLETION);
 
         // when
         assertThatThrownBy(() -> {

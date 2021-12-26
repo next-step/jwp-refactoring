@@ -54,8 +54,8 @@ class TableGroupTest {
         // given
         OrderTable firstOrderTable = OrderTable.builder().empty(true).build();
         OrderTable secondOrderTable = OrderTable.builder().empty(true).build();
-        firstOrderTable.addOrder(Order.builder().orderStatus(OrderStatus.COOKING).build());
-        secondOrderTable.addOrder(Order.builder().orderStatus(OrderStatus.COMPLETION).build());
+        firstOrderTable.addOrder(new Order(OrderStatus.COOKING));
+        secondOrderTable.addOrder(new Order(OrderStatus.COMPLETION));
 
         final TableGroup tableGroup = TableGroup.builder().build();
         tableGroup.saveOrderTable(firstOrderTable);

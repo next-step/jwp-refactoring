@@ -35,7 +35,7 @@ class TableTest {
         final OrderTable orderTable = OrderTable.builder()
                 .empty(false)
                 .build();
-        orderTable.addOrder(Order.builder().orderStatus(OrderStatus.COOKING).build());
+        orderTable.addOrder(new Order(OrderStatus.COOKING));
 
         // then
         assertThatIllegalArgumentException().isThrownBy(() -> {

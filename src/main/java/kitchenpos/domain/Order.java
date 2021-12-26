@@ -28,6 +28,10 @@ public class Order extends BaseTimeEntity {
     protected Order() {
     }
 
+    public Order(final OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
+    }
+
     public void saveOrderLineItem(OrderLineItem orderLineItem) {
         this.orderLineItems.add(orderLineItem);
         orderLineItem.addOrder(this);
@@ -61,25 +65,4 @@ public class Order extends BaseTimeEntity {
         return orderStatus;
     }
 
-    public static OrderBuilder builder() {
-        return new OrderBuilder();
-    }
-
-    public static final class OrderBuilder {
-        private OrderStatus orderStatus;
-
-        private OrderBuilder() {
-        }
-
-        public OrderBuilder orderStatus(OrderStatus orderStatus) {
-            this.orderStatus = orderStatus;
-            return this;
-        }
-
-        public Order build() {
-            Order order = new Order();
-            order.orderStatus = this.orderStatus;
-            return order;
-        }
-    }
 }
