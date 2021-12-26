@@ -1,8 +1,7 @@
 package kitchenpos.table.application;
 
 import java.util.List;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.application.OrderService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
@@ -15,14 +14,14 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class TableGroupService {
 
-    private final OrderRepository orderRepository;
+    private final OrderService orderService;
     private final OrderTableRepository orderTableRepository;
     private final TableGroupRepository tableGroupRepository;
 
-    public TableGroupService(final OrderRepository orderRepository,
+    public TableGroupService(final OrderService orderService,
         final OrderTableRepository orderTableRepository,
         final TableGroupRepository tableGroupRepository) {
-        this.orderRepository = orderRepository;
+        this.orderService = orderService;
         this.orderTableRepository = orderTableRepository;
         this.tableGroupRepository = tableGroupRepository;
     }
@@ -44,7 +43,7 @@ public class TableGroupService {
     @Transactional
     public void ungroup(final Long tableGroupId) {
         final TableGroup tableGroup = findTableGroupById(tableGroupId);
-        validateOrderStatusUngroupPossible(tableGroup);
+        validateOrderStatusUngroupPossible(tableGroup.getOrderTableIds());
         tableGroup.ungroup();
         tableGroupRepository.delete(tableGroup);
     }
@@ -55,13 +54,8 @@ public class TableGroupService {
             .orElseThrow(() -> new IllegalArgumentException("단체를 찾을 수 없습니다."));
     }
 
-    private void validateOrderStatusUngroupPossible(final TableGroup tableGroup) {
-        List<Order> orders = orderRepository.findAllByOrderTableIdIn(tableGroup.getOrderTableIds());
-
-        boolean allOrdersCompleted = orders.stream()
-            .allMatch(Order::isCompleteStatus);
-
-        if (!allOrdersCompleted) {
+    private void validateOrderStatusUngroupPossible(final List<Long> orderTableIds) {
+        if (!orderService.isAllOrderStatusCompleted(orderTableIds)) {
             throw new IllegalArgumentException("조리나 식사중인 테이블은 단체를 해제할 수 없습니다.");
         }
     }

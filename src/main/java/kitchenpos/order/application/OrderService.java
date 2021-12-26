@@ -60,16 +60,29 @@ public class OrderService {
     }
 
     @Transactional(readOnly = true)
-    public Order findOrderById(Long orderId) {
+    public Order findOrderById(final Long orderId) {
         return orderRepository.findById(orderId)
             .orElseThrow(IllegalArgumentException::new);
     }
 
     @Transactional(readOnly = true)
-    public OrderTable findOrderTableById(Long orderTableId) {
-        return orderTableRepository.findById(
-                orderTableId)
+    public OrderTable findOrderTableById(final Long orderTableId) {
+        return orderTableRepository.findById(orderTableId)
             .orElseThrow(IllegalArgumentException::new);
+    }
+
+    @Transactional(readOnly = true)
+    public boolean isAllOrderStatusCompleted(final List<Long> orderTableIds) {
+        return orderTableIds.stream()
+            .allMatch(this::isOrderStatusCompleted);
+    }
+
+    @Transactional(readOnly = true)
+    public boolean isOrderStatusCompleted(final Long orderTableId) {
+        List<Order> orders = orderRepository.findAllByOrderTableId(orderTableId);
+
+        return orders.stream()
+            .allMatch(Order::isCompleteStatus);
     }
 
     private List<OrderLineItem> makeOrderLineItems(final Order order,
