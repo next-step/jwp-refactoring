@@ -14,7 +14,7 @@ public class MenuGroup {
     private Name name;
 
     protected MenuGroup(){
-        
+
     }
 
     public MenuGroup(Long id, String name) {
