@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static kitchenpos.application.MenuGroupServiceTest.메뉴_그룹_등록;
-import static kitchenpos.application.ProductServiceTest.상품_등록;
+import static kitchenpos.product.ProductServiceTest.상품_등록;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
