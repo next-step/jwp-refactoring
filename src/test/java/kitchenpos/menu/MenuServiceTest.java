@@ -44,7 +44,7 @@ class MenuServiceTest extends AcceptanceTest {
 
         // when
         assertThatThrownBy(() -> {
-            menuService.create(new MenuCreateRequest("후라이드+후라이드", BigDecimal.valueOf(18000), savedMenuGroup.getId(), Arrays.asList(new MenuCreateRequest.MenuProduct(1L, 1L))));
+            menuService.create(new MenuCreateRequest("후라이드+후라이드", BigDecimal.valueOf(18000), savedMenuGroup.getId(), Arrays.asList(new MenuCreateRequest.MenuProductRequest(1L, 1L))));
         }).isInstanceOf(EntityNotFoundException.class);
     }
 }

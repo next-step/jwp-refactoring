@@ -45,12 +45,12 @@ public class MenuService {
     private List<Product> getMenuProduct(final MenuCreateRequest request) {
         return productService.findProducts(request.getMenuProducts()
                 .stream()
-                .map(MenuCreateRequest.MenuProduct::getProductId)
+                .map(MenuCreateRequest.MenuProductRequest::getProductId)
                 .collect(Collectors.toList()));
     }
 
     private void saveMenuProduct(final MenuCreateRequest request, final List<Product> products, final Menu savedMenu) {
-        for (final MenuCreateRequest.MenuProduct menuProductRequest : request.getMenuProducts()) {
+        for (final MenuCreateRequest.MenuProductRequest menuProductRequest : request.getMenuProducts()) {
             final Product product = getProduct(products, menuProductRequest);
             final MenuProduct menuProduct = new MenuProduct(product, menuProductRequest.getQuantity());
 
@@ -61,7 +61,7 @@ public class MenuService {
     private BigDecimal getMenuProductPriceSum(final MenuCreateRequest request, final List<Product> products) {
         BigDecimal menuProductPriceSum = BigDecimal.ZERO;
 
-        for (final MenuCreateRequest.MenuProduct menuProductRequest : request.getMenuProducts()) {
+        for (final MenuCreateRequest.MenuProductRequest menuProductRequest : request.getMenuProducts()) {
             final Product menuProduct = getProduct(products, menuProductRequest);
             final BigDecimal menuProductTotalPrice = menuProduct.getPrice().multiply(BigDecimal.valueOf(menuProductRequest.getQuantity()));
             menuProductPriceSum = menuProductPriceSum.add(menuProductTotalPrice);
@@ -70,7 +70,7 @@ public class MenuService {
         return menuProductPriceSum;
     }
 
-    private Product getProduct(final List<Product> products, final MenuCreateRequest.MenuProduct menuProductRequest) {
+    private Product getProduct(final List<Product> products, final MenuCreateRequest.MenuProductRequest menuProductRequest) {
         return products.stream()
                 .filter(product -> product.getId().equals(menuProductRequest.getProductId()))
                 .findFirst()

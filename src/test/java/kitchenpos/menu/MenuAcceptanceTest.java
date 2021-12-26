@@ -46,7 +46,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     @DisplayName("메뉴를 등록할 수 있다.")
     void createMenu() {
         // given
-        final MenuCreateRequest 후라이드_두마리_메뉴 = new MenuCreateRequest("후라이드+후라이드", BigDecimal.valueOf(19000), 추천메뉴_그룹.getId(), Arrays.asList(new MenuCreateRequest.MenuProduct(후라이드.getId(), 2L)));
+        final MenuCreateRequest 후라이드_두마리_메뉴 = new MenuCreateRequest("후라이드+후라이드", BigDecimal.valueOf(19000), 추천메뉴_그룹.getId(), Arrays.asList(new MenuCreateRequest.MenuProductRequest(후라이드.getId(), 2L)));
 
         // when
         ExtractableResponse<Response> 메뉴_등록_요청_응답 = 메뉴_등록을_요청(후라이드_두마리_메뉴);

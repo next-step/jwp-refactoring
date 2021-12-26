@@ -15,7 +15,7 @@ public class MenuCreateRequest {
 
     private Long menuGroupId;
 
-    private List<MenuProduct> menuProducts;
+    private List<MenuProductRequest> menuProducts;
 
     public MenuCreateRequest() {
     }
@@ -24,7 +24,7 @@ public class MenuCreateRequest {
         this.menuGroupId = menuGroupId;
     }
 
-    public MenuCreateRequest(final String name, final BigDecimal price, final Long menuGroupId, final List<MenuProduct> menuProducts) {
+    public MenuCreateRequest(final String name, final BigDecimal price, final Long menuGroupId, final List<MenuProductRequest> menuProducts) {
         this.name = name;
         this.price = price;
         this.menuGroupId = menuGroupId;
@@ -43,19 +43,19 @@ public class MenuCreateRequest {
         return menuGroupId;
     }
 
-    public List<MenuProduct> getMenuProducts() {
+    public List<MenuProductRequest> getMenuProducts() {
         return menuProducts;
     }
 
-    public static class MenuProduct {
+    public static class MenuProductRequest {
 
         private Long productId;
         private Long quantity;
 
-        public MenuProduct() {
+        public MenuProductRequest() {
         }
 
-        public MenuProduct(final Long productId, final Long quantity) {
+        public MenuProductRequest(final Long productId, final Long quantity) {
             this.productId = productId;
             this.quantity = quantity;
         }
