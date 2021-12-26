@@ -1,5 +1,6 @@
 package kitchenpos.product.application;
 
+import static kitchenpos.product.application.ProductServiceTestHelper.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
@@ -59,11 +60,4 @@ public class ProductServiceTest {
         assertThat(products.size()).isEqualTo(1);
     }
 
-    private Product 상품_정보(Long id, String name, int price) {
-        Product product = new Product();
-        product.setId(id);
-        product.setName(name);
-        product.setPrice(BigDecimal.valueOf(price));
-        return product;
-    }
 }

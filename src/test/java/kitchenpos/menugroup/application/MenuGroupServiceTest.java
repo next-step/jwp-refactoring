@@ -1,5 +1,6 @@
 package kitchenpos.menugroup.application;
 
+import static kitchenpos.menugroup.application.MenuGroupServiceTestHelper.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.*;
@@ -21,11 +22,11 @@ import kitchenpos.domain.MenuGroup;
 
 @ExtendWith(MockitoExtension.class)
 public class MenuGroupServiceTest {
-    @InjectMocks
-    private MenuGroupService menuGroupService;
-
     @Mock
     private MenuGroupDao menuGroupDao;
+
+    @InjectMocks
+    private MenuGroupService menuGroupService;
 
     private MenuGroup menuGroup;
 
@@ -58,10 +59,4 @@ public class MenuGroupServiceTest {
         assertThat(expected.size()).isEqualTo(1);
     }
 
-    private MenuGroup 메뉴_그룹_정보(Long id, String name) {
-        MenuGroup menuGroup = new MenuGroup();
-        menuGroup.setId(id);
-        menuGroup.setName(name);
-        return menuGroup;
-    }
 }
