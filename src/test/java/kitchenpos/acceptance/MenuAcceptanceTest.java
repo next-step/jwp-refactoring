@@ -116,7 +116,8 @@ public class MenuAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static Menu 메뉴_등록되어있음(Menu menu) {
+    public static Menu 메뉴_등록되어있음(String name, int price, Long menuGroupId, List<MenuProduct> menuProducts) {
+        Menu menu = Menu.of(name, BigDecimal.valueOf(price), menuGroupId, menuProducts);
         return 메뉴_생성_요청(menu).as(Menu.class);
     }
 }

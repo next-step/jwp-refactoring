@@ -33,13 +33,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
 
         추천메뉴 = MenuAcceptanceTest.메뉴그룹_등록되어있음(MenuGroup.of("추천메뉴"));
         소고기한우 = MenuAcceptanceTest.상품_등록되어있음(Product.of("소고기한우", 30000));
-        메뉴 = MenuAcceptanceTest.메뉴_등록되어있음(
-                Menu.of(
-                        "소고기+소고기",
-                        BigDecimal.valueOf(50000),
-                        추천메뉴.getId(),
-                        Arrays.asList(MenuProduct.of(소고기한우.getId(), 2L)))
-        );
+        메뉴 = MenuAcceptanceTest.메뉴_등록되어있음("소고기+소고기",50000,추천메뉴.getId(),Arrays.asList(MenuProduct.of(소고기한우.getId(), 2L)));
         테이블 = TableAcceptanceTest.테이블_등록되어_있음(OrderTable.of(4, false));
     }
 
@@ -67,7 +61,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         주문_상태_변경_확인(updateResponse, changeOrder);
     }
 
-    private void 주문_상태_변경_확인(ExtractableResponse<Response> updateResponse, Order changeOrder) {
+    public static void 주문_상태_변경_확인(ExtractableResponse<Response> updateResponse, Order changeOrder) {
         assertThat(updateResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
         Order order = updateResponse.as(Order.class);
         assertThat(order.getOrderStatus()).isEqualTo(changeOrder.getOrderStatus());
@@ -93,7 +87,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         return savedOrder;
     }
 
-    private ExtractableResponse<Response> 주문_상태_변경_요청(Long id, Order changeOrder) {
+    public static ExtractableResponse<Response> 주문_상태_변경_요청(Long id, Order changeOrder) {
         return RestAssured
                 .given().log().all()
                 .body(changeOrder)
@@ -111,7 +105,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private ExtractableResponse<Response> 주문_생성_요청(Order order) {
+    private static ExtractableResponse<Response> 주문_생성_요청(Order order) {
         return RestAssured
                 .given().log().all()
                 .body(order)
@@ -119,6 +113,11 @@ public class OrderAcceptanceTest extends AcceptanceTest {
                 .when().post("/api/orders")
                 .then().log().all()
                 .extract();
+    }
+
+    public static Order 주문_생성됨(Long orderTableId, List<OrderLineItem> orderLineItems) {
+        Order order = Order.of(orderTableId, orderLineItems);
+        return 주문_생성_요청(order).as(Order.class);
     }
 
 }
