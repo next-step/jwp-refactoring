@@ -54,7 +54,8 @@ public class MenuProduct {
     }
 
     public BigDecimal multiply(BigDecimal price) {
-        return price.multiply(price);
+        return BigDecimal.valueOf(quantity)
+                .multiply(price);
     }
 
     public void decideMenu(Menu menu) {

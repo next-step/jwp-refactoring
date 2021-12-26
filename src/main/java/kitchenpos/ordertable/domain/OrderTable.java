@@ -1,5 +1,8 @@
 package kitchenpos.ordertable.domain;
 
+import kitchenpos.common.exception.EmptyOrderTableStatusException;
+import kitchenpos.common.exception.NegativeNumberOfGuestsException;
+import kitchenpos.common.exception.NotEmptyOrderTableStatusException;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.order.domain.Order;
 
@@ -37,31 +40,27 @@ public class OrderTable {
     }
 
     public OrderTable(int numberOfGuests) {
-        this.numberOfGuests = numberOfGuests;
-        this.empty = false;
-    }
-
-    public OrderTable(Long id, int numberOfGuests) {
-        this.id = id;
-        this.numberOfGuests = numberOfGuests;
-        this.empty = false;
+        this(null, numberOfGuests);
     }
 
     public OrderTable(TableGroup tableGroup, int numberOfGuests) {
-        this.tableGroup = tableGroup;
-        this.numberOfGuests = numberOfGuests;
-        this.empty = false;
+        this(null, tableGroup, numberOfGuests);
     }
 
     public OrderTable(Long id, TableGroup tableGroup, int numberOfGuests) {
-        this(id, tableGroup, numberOfGuests, false);
-    }
-
-    public OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
         this.id = id;
         this.tableGroup = tableGroup;
         this.numberOfGuests = numberOfGuests;
-        this.empty = empty;
+        checkEmpty(numberOfGuests);
+    }
+
+    private void checkEmpty(int numberOfGuests) {
+        if (numberOfGuests == 0) {
+            empty = true;
+            return;
+        }
+
+        empty = false;
     }
 
     public Long getId() {
@@ -86,7 +85,7 @@ public class OrderTable {
 
     public void validateAddableOrderTable() {
         if (!isEmpty() || Objects.nonNull(tableGroup)) {
-            throw new IllegalArgumentException();
+            throw new NotEmptyOrderTableStatusException();
         }
     }
 
@@ -97,11 +96,11 @@ public class OrderTable {
 
     private void validateChangeableNumberOfGuests(int numberOfGuests) {
         if (numberOfGuests < 0) {
-            throw new IllegalArgumentException();
+            throw new NegativeNumberOfGuestsException();
         }
 
         if (isEmpty()) {
-            throw new IllegalArgumentException();
+            throw new EmptyOrderTableStatusException();
         }
     }
 
@@ -120,7 +119,7 @@ public class OrderTable {
 
     private void validateChangeableOrderTable() {
         if (Objects.nonNull(tableGroup)) {
-            throw new IllegalArgumentException();
+            throw new NotEmptyOrderTableStatusException();
         }
     }
 

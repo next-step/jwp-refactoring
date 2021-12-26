@@ -1,10 +1,10 @@
 package kitchenpos.product.application;
 
+import kitchenpos.common.exception.NegativePriceException;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
-import kitchenpos.product.application.ProductService;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -32,32 +32,32 @@ class ProductServiceTest {
     @InjectMocks
     private ProductService productService;
 
-    private Product product;
-    private Product product2;
+    private Product 짜장면;
+    private Product 짬뽕;
 
-    private ProductRequest productRequest;
-    private ProductRequest productRequestZeroPrice;
+    private ProductRequest 짜장면요청;
+    private ProductRequest 가격0원상품요청;
 
     @BeforeEach
     void setUp() {
-        product = new Product(1L, "상품1", 3500);
-        product2 = new Product(2L, "상품2", 1500);
+        짜장면 = new Product(1L, "짜장면", 3500);
+        짬뽕 = new Product(2L, "짬뽕", 1500);
 
-        productRequest = new ProductRequest(1L, "상품1", 3500);
-        productRequestZeroPrice = new ProductRequest(3L, "상품3", null);
+        짜장면요청 = new ProductRequest(1L, "짜장면", 3500);
+        가격0원상품요청 = new ProductRequest(3L, "말도안되는상품", null);
     }
 
     @DisplayName("상품 등록 테스트")
     @Test
     void createProductTest() {
-        when(productRepository.save(any())).thenReturn(product);
+        when(productRepository.save(any())).thenReturn(짜장면);
 
         // when
-        final ProductResponse createdProduct = productService.create(productRequest);
+        final ProductResponse createdProduct = 상품을_등록한다(짜장면요청);
 
         // then
         assertAll(
-                () -> assertThat(createdProduct.getName()).isEqualTo("상품1"),
+                () -> assertThat(createdProduct.getName()).isEqualTo("짜장면"),
                 () -> assertThat(createdProduct.getPrice()).isEqualTo(new BigDecimal(3500))
         );
     }
@@ -67,24 +67,32 @@ class ProductServiceTest {
     void createProductExceptionTest() {
         assertThatThrownBy(() -> {
             // when
-            final ProductResponse createdProduct = productService.create(productRequestZeroPrice);
+            final ProductResponse createdProduct = 상품을_등록한다(가격0원상품요청);
 
         // then
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(NegativePriceException.class);
     }
 
     @DisplayName("상품 목록을 가져올 수 있다.")
     @Test
     void getProductsTest() {
-        when(productRepository.findAll()).thenReturn(Lists.newArrayList(product, product2));
+        when(productRepository.findAll()).thenReturn(Lists.newArrayList(짜장면, 짬뽕));
 
         // when
-        final List<ProductResponse> products = productService.list();
+        final List<ProductResponse> products = 상품_목록을_조회한다();
 
         // then
         assertAll(
-                () -> assertThat(products.get(0).getName()).isEqualTo(product.getName()),
-                () -> assertThat(products.get(1).getName()).isEqualTo(product2.getName())
+                () -> assertThat(products.get(0).getName()).isEqualTo(짜장면.getName()),
+                () -> assertThat(products.get(1).getName()).isEqualTo(짬뽕.getName())
         );
+    }
+
+    private ProductResponse 상품을_등록한다(ProductRequest productRequest) {
+        return productService.create(productRequest);
+    }
+
+    private List<ProductResponse> 상품_목록을_조회한다() {
+        return productService.list();
     }
 }

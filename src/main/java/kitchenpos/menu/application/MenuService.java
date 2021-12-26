@@ -1,5 +1,6 @@
 package kitchenpos.menu.application;
 
+import kitchenpos.common.exception.NotFoundEntityException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
@@ -34,7 +35,7 @@ public class MenuService {
 
     private MenuGroup findMenuGroupById(Long id) {
         return menuGroupRepository.findById(id)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(NotFoundEntityException::new);
     }
 
     public List<MenuResponse> list() {

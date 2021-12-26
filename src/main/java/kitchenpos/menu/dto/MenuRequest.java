@@ -8,7 +8,6 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public class MenuRequest {
-    private Long id;
     private String name;
     private BigDecimal price;
     private Long menuGroupId;
@@ -17,20 +16,15 @@ public class MenuRequest {
     public MenuRequest() {
     }
 
-    public MenuRequest(Long id, String name, int price, Long menuGroupId, List<MenuProduct> menuProducts) {
-        this(id, name, new BigDecimal(price), menuGroupId, menuProducts);
+    public MenuRequest(String name, int price, Long menuGroupId, List<MenuProduct> menuProducts) {
+        this(name, new BigDecimal(price), menuGroupId, menuProducts);
     }
 
-    public MenuRequest(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
-        this.id = id;
+    public MenuRequest(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
         this.name = name;
         this.price = price;
         this.menuGroupId = menuGroupId;
         this.menuProducts = menuProducts;
-    }
-
-    public Long getId() {
-        return id;
     }
 
     public String getName() {

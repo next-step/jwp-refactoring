@@ -1,5 +1,6 @@
 package kitchenpos.tablegroup.domain;
 
+import kitchenpos.common.exception.MinimumOrderTableNumberException;
 import kitchenpos.ordertable.domain.OrderTable;
 import org.springframework.util.CollectionUtils;
 
@@ -41,7 +42,7 @@ public class TableGroup {
 
     private void validateTableGroup() {
         if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
-            throw new IllegalArgumentException();
+            throw new MinimumOrderTableNumberException();
         }
 
         validateOrderTables();

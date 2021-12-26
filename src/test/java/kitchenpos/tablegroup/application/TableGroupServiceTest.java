@@ -1,5 +1,11 @@
 package kitchenpos.tablegroup.application;
 
+import kitchenpos.common.exception.MinimumOrderTableNumberException;
+import kitchenpos.common.exception.NotEmptyOrderTableStatusException;
+import kitchenpos.common.exception.OrderStatusNotCompletedException;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.ordertable.application.OrderTableServiceTest;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
@@ -30,33 +36,35 @@ class TableGroupServiceTest {
     private TableGroupRepository tableGroupRepository;
 
     private TableGroupService tableGroupService;
-    private TableGroup tableGroup;
-    private OrderTable orderTable;
-    private OrderTable orderTable2;
-    private TableGroupRequest tableGroupRequest;
+
+    private TableGroup 단체테이블1번;
+    private OrderTable 주문테이블1번;
+    private OrderTable 주문테이블2번;
+    private TableGroupRequest 단체테이블요청;
 
     @BeforeEach
     void setUp() {
         tableGroupService = new TableGroupService(tableGroupRepository);
-        orderTable = new OrderTable(1L, null, 0, true);
-        orderTable2 = new OrderTable(2L, null, 0, true);
-        tableGroup = new TableGroup(1L, Lists.newArrayList(orderTable, orderTable2));
 
-        tableGroupRequest = new TableGroupRequest(Lists.newArrayList(orderTable, orderTable2));
+        주문테이블1번 = new OrderTable(null, 0);
+        주문테이블2번 = new OrderTable(null, 0);
+        단체테이블1번 = new TableGroup(1L, Lists.newArrayList(주문테이블1번, 주문테이블2번));
+
+        단체테이블요청 = new TableGroupRequest(Lists.newArrayList(주문테이블1번, 주문테이블2번));
     }
 
     @DisplayName("상품 등록 테스트")
     @Test
     void createTableGroupTest() {
-        when(tableGroupRepository.save(any())).thenReturn(tableGroup);
+        when(tableGroupRepository.save(any())).thenReturn(단체테이블1번);
 
         // when
-        final TableGroupResponse createdTableGroup = tableGroupService.create(tableGroupRequest);
+        final TableGroupResponse createdTableGroup = tableGroupService.create(단체테이블요청);
 
         // then
         assertAll(
-                () -> assertThat(createdTableGroup.getOrderTables().get(0)).isEqualTo(orderTable),
-                () -> assertThat(createdTableGroup.getOrderTables().get(1)).isEqualTo(orderTable2)
+                () -> assertThat(createdTableGroup.getOrderTables().get(0)).isEqualTo(주문테이블1번),
+                () -> assertThat(createdTableGroup.getOrderTables().get(1)).isEqualTo(주문테이블2번)
         );
     }
 
@@ -68,34 +76,34 @@ class TableGroupServiceTest {
             final TableGroupResponse createdTableGroup = tableGroupService.create(new TableGroupRequest());
 
             // then
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(MinimumOrderTableNumberException.class);
     }
 
     @DisplayName("테이블 그룹 생성 시 주문 테이블은 비어있어야 한다.")
     @Test
-    void createTableGroupEmptyOrderTablesFromDBExceptionTest() {
+    void createTableGroupEmptyOrderTablesTest() {
         assertThatThrownBy(() -> {
-            TableGroupRequest notEmptyOrderTables = new TableGroupRequest(Lists.newArrayList(new OrderTable(1L, null, 0, false), new OrderTable(1L, null, 0, false)));
+            TableGroupRequest notEmptyOrderTables = new TableGroupRequest(Lists.newArrayList(new OrderTable(null, 3), new OrderTable(null, 3)));
 
             // when
             final TableGroupResponse createdTableGroup = tableGroupService.create(notEmptyOrderTables);
 
             // then
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(NotEmptyOrderTableStatusException.class);
     }
 
     @DisplayName("테이블 그룹에 주문 테이블들을 등록한다.")
     @Test
     void createOrderTableInTableGroupTest() {
-        when(tableGroupRepository.save(any())).thenReturn(tableGroup);
+        when(tableGroupRepository.save(any())).thenReturn(단체테이블1번);
 
         // when
-        final TableGroupResponse createdTableGroup = tableGroupService.create(tableGroupRequest);
+        final TableGroupResponse createdTableGroup = tableGroupService.create(단체테이블요청);
 
         // then
         assertAll(
-                () -> assertThat(createdTableGroup.getOrderTables().get(0)).isEqualTo(orderTable),
-                () -> assertThat(createdTableGroup.getOrderTables().get(1)).isEqualTo(orderTable2)
+                () -> assertThat(createdTableGroup.getOrderTables().get(0)).isEqualTo(주문테이블1번),
+                () -> assertThat(createdTableGroup.getOrderTables().get(1)).isEqualTo(주문테이블2번)
         );
     }
 
@@ -103,30 +111,37 @@ class TableGroupServiceTest {
     @Test
     void ungroupTableGroupIsNotMealOrCookingStatusTest() {
         assertThatThrownBy(() -> {
-            when(tableGroupRepository.save(any())).thenReturn(tableGroup);
+            when(tableGroupRepository.findById(any())).thenReturn(Optional.ofNullable(단체테이블1번));
+            when(tableGroupRepository.save(any())).thenReturn(단체테이블1번);
 
             // given
-            tableGroupService.create(tableGroupRequest);
+            OrderLineItem 주문항목 = new OrderLineItem();
+            OrderTable 주문테이블1번_요리중 = new OrderTable(3);
+            단체테이블요청 = new TableGroupRequest(Lists.newArrayList(주문테이블1번, 주문테이블2번));
+            OrderTableServiceTest.주문테이블에_주문_추가(주문테이블1번, new Order(주문테이블1번_요리중, Lists.newArrayList(주문항목)));
+
+            TableGroupResponse createdTableGroup = tableGroupService.create(단체테이블요청);
 
             // when
-            tableGroupService.ungroup(1L);
+            tableGroupService.ungroup(createdTableGroup.getId());
 
-        }).isInstanceOf(IllegalArgumentException.class);
+            //then
+        }).isInstanceOf(OrderStatusNotCompletedException.class);
     }
 
     @DisplayName("주문 테이블에 테이블 그룹을 해제한다.")
     @Test
     void ungroupTableGroupTest() {
-        when(tableGroupRepository.save(any())).thenReturn(tableGroup);
-        when(tableGroupRepository.findById(anyLong())).thenReturn(Optional.ofNullable(tableGroup));
+        when(tableGroupRepository.save(any())).thenReturn(단체테이블1번);
+        when(tableGroupRepository.findById(anyLong())).thenReturn(Optional.ofNullable(단체테이블1번));
 
         // given
-        TableGroupResponse createdTableGroup = tableGroupService.create(tableGroupRequest);
+        TableGroupResponse createdTableGroup = tableGroupService.create(단체테이블요청);
 
         // when
         tableGroupService.ungroup(createdTableGroup.getId());
 
         // then
-        assertThat(orderTable.getTableGroup()).isEqualTo(null);
+        assertThat(주문테이블1번.getTableGroup()).isEqualTo(null);
     }
 }

@@ -1,11 +1,15 @@
 package kitchenpos.ordertable.application;
 
+import kitchenpos.common.exception.NegativeNumberOfGuestsException;
+import kitchenpos.common.exception.NotFoundEntityException;
+import kitchenpos.common.exception.OrderStatusNotProcessingException;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.ordertable.application.OrderTableService;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
+import kitchenpos.product.domain.Product;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
@@ -34,36 +38,45 @@ public class OrderTableServiceTest {
     private OrderTableRepository orderTableRepository;
 
     private OrderTableService orderTableService;
-    private OrderTable orderTable;
-    private Order order;
-    private Menu menu;
-    private OrderLineItem orderLineItem;
-    private OrderLineItem orderLineItem2;
-    private OrderTableRequest orderTableRequest;
+    private OrderTable 주문_테이블_1번;
+    private OrderTable 빈_주문_테이블;
+    private Order 주문;
+    private Menu 짜장면;
+    private OrderLineItem 짜장면_주문1;
+    private OrderLineItem 짜장면_주문2;
+    private OrderTableRequest 주문_테이블_1번_요청;
+    private OrderTableRequest 빈_주문_테이블_요청;
+    private MenuProduct 짜장면_곱배기;
+    private MenuProduct 짜장면_보통;
 
     @BeforeEach
     void setUp() {
         orderTableService = new OrderTableService(orderTableRepository);
-        orderTable = new OrderTable(1L, 3);
-        orderLineItem = new OrderLineItem(order, menu, 10);
-        orderLineItem2 = new OrderLineItem(order, menu, 3);
-        order = new Order(orderTable, Lists.newArrayList(orderLineItem, orderLineItem2));
-        orderTable.addOrder(order);
-        menu = new Menu();
-        orderTableRequest = new OrderTableRequest(3);
+
+        짜장면_주문1 = new OrderLineItem(주문, 짜장면, 10);
+        짜장면_주문2 = new OrderLineItem(주문, 짜장면, 3);
+        짜장면_곱배기 = new MenuProduct(1L, 짜장면, new Product(), 10);
+        짜장면_보통 = new MenuProduct(1L, 짜장면, new Product(), 3);
+        짜장면 = new Menu("짜장면", 1000, null, Lists.newArrayList(짜장면_곱배기, 짜장면_보통));
+
+        주문_테이블_1번 = new OrderTable(3);
+        빈_주문_테이블 = new OrderTable(0);
+        주문 = new Order(주문_테이블_1번, Lists.newArrayList(짜장면_주문1, 짜장면_주문2));
+        주문테이블에_주문_추가(주문_테이블_1번, 주문);
+        주문_테이블_1번_요청 = new OrderTableRequest(3);
+        빈_주문_테이블_요청 = new OrderTableRequest(0);
     }
 
     @DisplayName("새로운 테이블을 등록한다.")
     @Test
     void createTableTest() {
-        when(orderTableRepository.save(any())).thenReturn(new OrderTable(1L, null, 3, false));
+        when(orderTableRepository.save(any())).thenReturn(주문_테이블_1번);
 
         // when
-        final OrderTableResponse createdOrderTable = orderTableService.create(new OrderTableRequest(3));
+        final OrderTableResponse createdOrderTable = 주문_테이블_요청한다(주문_테이블_1번_요청);
 
         // then
         assertAll(
-                () -> assertThat(createdOrderTable.getId()).isNotNull(),
                 () -> assertThat(createdOrderTable.getNumberOfGuests()).isEqualTo(3),
                 () -> assertThat(createdOrderTable.isEmpty()).isEqualTo(false)
         );
@@ -72,31 +85,30 @@ public class OrderTableServiceTest {
     @DisplayName("테이블 목록을 조회한다.")
     @Test
     void getListTableTest() {
-        when(orderTableRepository.findAll())
-                .thenReturn(Lists.newArrayList(new OrderTable(1L, new TableGroup(), 3, false), new OrderTable(2L, new TableGroup(), 7, false)));
+        // given
+        List<OrderTable> 주문_테이블_목록 = Lists.newArrayList(new OrderTable(new TableGroup(), 3), new OrderTable(new TableGroup(), 7));
+        when(orderTableRepository.findAll()).thenReturn(주문_테이블_목록);
 
         // when
-        final List<OrderTableResponse> createdOrderTables = orderTableService.list();
+        final List<OrderTableResponse> createdOrderTables = 주문_테이블_목록을_조회한다();
 
         // then
         assertAll(
-                () -> assertThat(createdOrderTables.get(0).getId()).isEqualTo(1L),
-                () -> assertThat(createdOrderTables.get(1).getId()).isEqualTo(2L)
+                () -> assertThat(createdOrderTables.size()).isPositive()
         );
     }
 
     @DisplayName("빈 테이블로 변경한다.")
     @Test
     void changeEmptyTableTest() {
-        when(orderTableRepository.findById(anyLong()))
-                .thenReturn(Optional.of(new OrderTable(1L, null, 3, false)));
-        when(orderTableRepository.save(any())).thenReturn(new OrderTable(1L, null, 3, false));
+        when(orderTableRepository.findById(any())).thenReturn(Optional.of(빈_주문_테이블));
+        when(orderTableRepository.save(any())).thenReturn(빈_주문_테이블);
         // given
-        final OrderTableResponse createdOrderTable = orderTableService.create(orderTableRequest);
+        final OrderTableResponse createdOrderTable = 주문_테이블_요청한다(빈_주문_테이블_요청);
 
 
         // when
-        final OrderTableResponse changeEmptyTable = orderTableService.changeEmpty(createdOrderTable.getId());
+        final OrderTableResponse changeEmptyTable = 주문_테이블을_비운다(createdOrderTable.getId());
 
         // then
         assertAll(
@@ -107,40 +119,41 @@ public class OrderTableServiceTest {
     @DisplayName("주문 테이블이 반드시 존재한다.")
     @Test
     void changeEmptyTableExistTableExceptionTest() {
-        // when
         assertThatThrownBy(() -> {
-            final OrderTableResponse changeEmptyTable = orderTableService.changeEmpty(null);
+            // when
+            final OrderTableResponse changeEmptyTable = 주문_테이블을_비운다(null);
+
             // then
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(NotFoundEntityException.class);
     }
 
     @DisplayName("주문 상태는 cooking이나 meal이 아니어야 한다. ")
     @Test
     void changeEmptyTableOrderStatusExceptionTest() {
         assertThatThrownBy(() -> {
-            when(orderTableRepository.save(any())).thenReturn(orderTable);
-            when(orderTableRepository.findById(anyLong())).thenReturn(Optional.of(orderTable));
+            when(orderTableRepository.save(any())).thenReturn(주문_테이블_1번);
+            when(orderTableRepository.findById(any())).thenReturn(Optional.of(주문_테이블_1번));
 
             // given
-            final OrderTableResponse createdOrderTable = orderTableService.create(orderTableRequest);
+            final OrderTableResponse createdOrderTable = 주문_테이블_요청한다(주문_테이블_1번_요청);
 
             // when
-            final OrderTableResponse changeEmptyTable = orderTableService.changeEmpty(createdOrderTable.getId());
+            final OrderTableResponse changeEmptyTable = 주문_테이블을_비운다(createdOrderTable.getId());
 
             // then
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(OrderStatusNotProcessingException.class);
     }
 
-    @DisplayName("테이블 게스트 숫자를 변경한다. ")
+    @DisplayName("테이블 게스트 숫자를 변경한다.")
     @Test
     void changeNumberOfGuestsTest() {
-        when(orderTableRepository.findById(anyLong())).thenReturn(Optional.of(orderTable));
+        when(orderTableRepository.findById(anyLong())).thenReturn(Optional.of(주문_테이블_1번));
 
         // given
         final OrderTableRequest orderTableRequest = new OrderTableRequest(7);
 
         // when
-        OrderTableResponse changedOrderTable = orderTableService.changeNumberOfGuests(1L, orderTableRequest);
+        OrderTableResponse changedOrderTable = 주문_테이블_손님수를_변경한다(1L, orderTableRequest);
 
         // then
         assertThat(changedOrderTable.getNumberOfGuests()).isEqualTo(7);
@@ -150,18 +163,38 @@ public class OrderTableServiceTest {
     @Test
     void changeNumberOfGuestsNegativeNumberExceptionTest() {
         assertThatThrownBy(() -> {
-            when(orderTableRepository.findById(anyLong())).thenReturn(Optional.of(new OrderTable(1L, -1)));
-            when(orderTableRepository.save(any())).thenReturn(new OrderTable(1L, -1));
+            when(orderTableRepository.findById(any())).thenReturn(Optional.of(new OrderTable(-1)));
+            when(orderTableRepository.save(any())).thenReturn(new OrderTable(-1));
 
             // given
             final OrderTableRequest orderTableRequest = new OrderTableRequest(-1);
-            final OrderTableResponse createdOrderTable = orderTableService.create(orderTableRequest);
+            final OrderTableResponse createdOrderTable = 주문_테이블_요청한다(orderTableRequest);
 
             // when
-            orderTableService.changeNumberOfGuests(createdOrderTable.getId(), orderTableRequest);
+            주문_테이블_손님수를_변경한다(createdOrderTable.getId(), orderTableRequest);
 
             // then
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(NegativeNumberOfGuestsException.class);
+    }
+
+    public static void 주문테이블에_주문_추가(OrderTable orderTable, Order order) {
+        orderTable.addOrder(order);
+    }
+
+    private OrderTableResponse 주문_테이블_요청한다(OrderTableRequest orderTableRequest) {
+        return orderTableService.create(orderTableRequest);
+    }
+
+    private List<OrderTableResponse> 주문_테이블_목록을_조회한다() {
+        return orderTableService.list();
+    }
+
+    private OrderTableResponse 주문_테이블을_비운다(Long orderTableId) {
+        return orderTableService.changeEmpty(orderTableId);
+    }
+
+    private OrderTableResponse 주문_테이블_손님수를_변경한다(Long orderTableId, OrderTableRequest orderTableRequest) {
+        return orderTableService.changeNumberOfGuests(orderTableId, orderTableRequest);
     }
 
 }

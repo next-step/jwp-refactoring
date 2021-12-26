@@ -1,5 +1,6 @@
 package kitchenpos.tablegroup.application;
 
+import kitchenpos.common.exception.NotFoundEntityException;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
@@ -32,6 +33,6 @@ public class TableGroupService {
 
     private TableGroup findByTableGroupId(Long id) {
         return tableGroupRepository.findById(id)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(NotFoundEntityException::new);
     }
 }

@@ -1,6 +1,8 @@
-package kitchenpos.menugroup.application;
+package kitchenpos.menu.application;
 
-import kitchenpos.menu.application.MenuService;
+import kitchenpos.common.exception.MenuProductSumPriceException;
+import kitchenpos.common.exception.NegativePriceException;
+import kitchenpos.common.exception.NotFoundEntityException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
@@ -39,33 +41,33 @@ class MenuServiceTest {
     private MenuGroupRepository menuGroupRepository;
 
     private MenuService menuService;
-    private Menu menu;
-    private MenuRequest menuRequest;
-    private MenuProduct menuProduct;
-    private MenuProduct menuProduct2;
+
+    private Menu 짜장면;
+    private MenuRequest 짜장면_요청;
+    private MenuProduct 짜장면_하나;
+    private MenuProduct 짜장면_두개;
 
     @BeforeEach
     void setUp() {
         menuService = new MenuService(menuRepository, menuGroupRepository);
-        menuProduct = new MenuProduct(1L, new Menu(), new Product(), 1);
-        menuProduct2 = new MenuProduct(1L, new Menu(), new Product(), 2);
-        menu = new Menu(1L, "메뉴이름1", 1000, new MenuGroup(), Lists.newArrayList(menuProduct, menuProduct2));
-        menuRequest = new MenuRequest(1L, "메뉴이름1", 1000, 1L, Lists.newArrayList(menuProduct, menuProduct2));
+        짜장면_하나 = new MenuProduct(1L, new Menu(), new Product(), 1);
+        짜장면_두개 = new MenuProduct(1L, new Menu(), new Product(), 2);
+        짜장면 = new Menu("짜장면", 1000, new MenuGroup(), Lists.newArrayList(짜장면_하나, 짜장면_두개));
+        짜장면_요청 = new MenuRequest("메뉴이름1", 1000, 1L, Lists.newArrayList(짜장면_하나, 짜장면_두개));
     }
 
     @DisplayName("메뉴를 등록할 수 있다.")
     @Test
     void createMenuTest() {
         when(menuGroupRepository.findById(anyLong())).thenReturn(Optional.of(new MenuGroup()));
-        when(menuRepository.save(any())).thenReturn(menu);
+        when(menuRepository.save(any())).thenReturn(짜장면);
 
         // when
-        MenuResponse createdMenu = menuService.create(menuRequest);
+        MenuResponse createdMenu = 메뉴를_주문한다(짜장면_요청);
 
         // then
         assertAll(
-                () -> assertThat(createdMenu.getId()).isEqualTo(1L),
-                () -> assertThat(createdMenu.getName()).isEqualTo("메뉴이름1")
+                () -> assertThat(createdMenu.getName()).isEqualTo("짜장면")
         );
     }
 
@@ -73,14 +75,16 @@ class MenuServiceTest {
     @Test
     void createMenuPriceNegativeExceptionTest() {
         assertThatThrownBy(() -> {
+            when(menuGroupRepository.findById(any())).thenReturn(Optional.of(new MenuGroup()));
+
             // given
-            final MenuRequest menuPriceNegative = new MenuRequest(1L, "메뉴 가격 -", -100, null, null);
+            final MenuRequest 메뉴_가격_마이너스_요청 = new MenuRequest("메뉴 가격 -", -100, null, null);
 
             // when
-            menuService.create(menuPriceNegative);
+            메뉴를_주문한다(메뉴_가격_마이너스_요청);
 
             // then
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(NegativePriceException.class);
     }
 
     @DisplayName("메뉴 그룹이 존재해야 한다.")
@@ -88,38 +92,48 @@ class MenuServiceTest {
     void createMenuHasMenuGroupExceptionTest() {
         assertThatThrownBy(() -> {
             //given
-            final MenuRequest MenuGroupNull = new MenuRequest(1L, "테스트 메뉴", 0, null, null);
+            final MenuRequest 메뉴_그룹_없는_요청 = new MenuRequest("테스트 메뉴", 0, null, null);
 
             // when
-            menuService.create(MenuGroupNull);
+            메뉴를_주문한다(메뉴_그룹_없는_요청);
 
             // then
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(NotFoundEntityException.class);
     }
 
     @DisplayName("메뉴의 가격이 상품들의 총 가격의 합보다 커야한다.")
     @Test
     void createMenuSumBiggerThanPriceExceptionTest() {
         assertThatThrownBy(() -> {
+            when(menuGroupRepository.findById(any())).thenReturn(Optional.of(new MenuGroup()));
+
             // given
-            final MenuRequest MenuSumZero = new MenuRequest(1L, "메뉴이름1", 1000, 1L, new ArrayList<>());
+            final MenuRequest 메뉴_가격_총합_0원 = new MenuRequest("메뉴이름1", 1000, 1L, new ArrayList<>());
 
             // when
-            menuService.create(MenuSumZero);
+            메뉴를_주문한다(메뉴_가격_총합_0원);
 
             // then
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(MenuProductSumPriceException.class);
     }
 
     @DisplayName("메뉴 목록을 조회한다.")
     @Test
     void getMenusTest() {
-        when(menuRepository.findAll()).thenReturn(Lists.newArrayList(menu));
+        when(menuRepository.findAll()).thenReturn(Lists.newArrayList(짜장면));
 
         // when
-        List<MenuResponse> menus = menuService.list();
+        List<MenuResponse> menus = 메뉴_목록_조회한다();
 
         // then
-        assertThat(menus.get(0).getName()).isEqualTo("메뉴이름1");
+        assertThat(menus.get(0).getName()).isEqualTo("짜장면");
+    }
+
+    private MenuResponse 메뉴를_주문한다(MenuRequest menuRequest) {
+        return menuService.create(menuRequest);
+    }
+
+    private List<MenuResponse> 메뉴_목록_조회한다() {
+        return menuService.list();
     }
 }

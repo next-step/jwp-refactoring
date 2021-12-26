@@ -1,5 +1,10 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.common.exception.EmptyOrderTableException;
+import kitchenpos.common.exception.NotEmptyOrderLineItemException;
+import kitchenpos.common.exception.OrderStatusCompletedException;
+import kitchenpos.common.exception.OrderStatusNotCompletedException;
+import kitchenpos.common.exception.OrderStatusNotProcessingException;
 import kitchenpos.ordertable.domain.OrderTable;
 import org.springframework.util.CollectionUtils;
 
@@ -55,7 +60,7 @@ public class Order {
 
     private void validateOrder(OrderTable orderTable) {
         if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException();
+            throw new EmptyOrderTableException();
         }
     }
 
@@ -68,7 +73,7 @@ public class Order {
 
     private void validateOrderLineItems() {
         if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalArgumentException();
+            throw new NotEmptyOrderLineItemException();
         }
     }
 
@@ -98,7 +103,7 @@ public class Order {
 
     public void changeOrderStatus(OrderStatus orderStatus) {
         if (OrderStatus.isCompleted(orderStatus)) {
-            throw new IllegalArgumentException();
+            throw new OrderStatusCompletedException();
         }
 
         this.orderStatus = orderStatus;
@@ -106,7 +111,7 @@ public class Order {
 
     public void validateCompleted() {
         if (!OrderStatus.isCompleted(orderStatus)) {
-            throw new IllegalArgumentException();
+            throw new OrderStatusNotCompletedException();
         }
     }
 
@@ -115,6 +120,6 @@ public class Order {
             return;
         }
 
-        throw new IllegalArgumentException();
+        throw new OrderStatusNotProcessingException();
     }
 }

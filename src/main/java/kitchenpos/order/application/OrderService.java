@@ -1,5 +1,7 @@
 package kitchenpos.order.application;
 
+import kitchenpos.common.exception.NotFoundEntityException;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.ordertable.domain.OrderTable;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class OrderService {
@@ -18,10 +21,7 @@ public class OrderService {
     // todo : orderTableService 로 바꾸기
     private final OrderTableRepository orderTableRepository;
 
-    public OrderService(
-            final OrderRepository orderRepository,
-            final OrderTableRepository orderTableRepository
-    ) {
+    public OrderService(OrderRepository orderRepository, OrderTableRepository orderTableRepository) {
         this.orderRepository = orderRepository;
         this.orderTableRepository = orderTableRepository;
     }
@@ -36,7 +36,7 @@ public class OrderService {
 
     private OrderTable findOrderTableById(Long orderTableId) {
         return orderTableRepository.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(NotFoundEntityException::new);
     }
 
     public List<OrderResponse> list() {
@@ -54,6 +54,6 @@ public class OrderService {
 
     private Order findById(Long orderId) {
         return orderRepository.findById(orderId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(NotFoundEntityException::new);
     }
 }
