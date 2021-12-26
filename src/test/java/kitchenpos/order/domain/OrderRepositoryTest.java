@@ -1,6 +1,7 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.menu.fixtures.MenuProductFixtures;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.table.fixtures.OrderTableFixtures;
 import kitchenpos.menu.domain.*;
 import kitchenpos.table.domain.OrderTable;
@@ -16,7 +17,6 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import static kitchenpos.menu.fixtures.MenuGroupFixtures.메뉴그룹;
-import static kitchenpos.menu.fixtures.MenuGroupFixtures.반반메뉴그룹요청;
 import static kitchenpos.menu.fixtures.MenuProductFixtures.*;
 import static kitchenpos.menu.fixtures.ProductFixtures.*;
 import static org.assertj.core.api.Assertions.assertThat;

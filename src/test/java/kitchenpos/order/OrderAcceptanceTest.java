@@ -6,7 +6,7 @@ import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.menu.dto.MenuGroupResponse;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.menu.dto.ProductResponse;
+import kitchenpos.product.dto.ProductResponse;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderSaveRequest;

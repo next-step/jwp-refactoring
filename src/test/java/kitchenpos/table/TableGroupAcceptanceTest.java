@@ -5,7 +5,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.menu.dto.MenuGroupResponse;
-import kitchenpos.menu.dto.ProductResponse;
+import kitchenpos.product.dto.ProductResponse;
 import kitchenpos.table.dto.TableGroupResponse;
 import kitchenpos.table.dto.TableGroupSaveRequest;
 import org.assertj.core.util.Lists;

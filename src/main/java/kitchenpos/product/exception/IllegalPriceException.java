@@ -1,7 +1,7 @@
-package kitchenpos.menu.exception;
+package kitchenpos.product.exception;
 
 import kitchenpos.common.exception.ServiceException;
-import kitchenpos.menu.domain.Price;
+import kitchenpos.product.domain.Price;
 
 /**
  * packageName : kitchenpos.exception

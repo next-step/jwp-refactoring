@@ -1,7 +1,7 @@
 package kitchenpos.menu.fixtures;
 
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.Product;
+import kitchenpos.product.domain.Product;
 import kitchenpos.menu.dto.MenuProductRequest;
 
 /**

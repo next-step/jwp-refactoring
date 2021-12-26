@@ -2,10 +2,12 @@ package kitchenpos.menu.application;
 
 import kitchenpos.menu.domain.*;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.menu.exception.IllegalPriceException;
+import kitchenpos.product.exception.IllegalPriceException;
 import kitchenpos.menu.exception.LimitPriceException;
 import kitchenpos.menu.exception.MenuGroupNotFoundException;
 import kitchenpos.menu.exception.ProductNotFoundException;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

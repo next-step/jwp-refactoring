@@ -1,7 +1,9 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.menu.dto.ProductRequest;
-import kitchenpos.menu.exception.IllegalPriceException;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.exception.IllegalPriceException;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

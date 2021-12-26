@@ -1,11 +1,11 @@
 package kitchenpos.table.domain;
 
 import kitchenpos.menu.domain.*;
-import kitchenpos.menu.fixtures.MenuProductFixtures;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.table.exception.OrderTableNotFoundException;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

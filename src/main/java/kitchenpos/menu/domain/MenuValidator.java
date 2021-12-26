@@ -1,8 +1,12 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.common.exception.NotFoundException;
 import kitchenpos.menu.exception.LimitPriceException;
 import kitchenpos.menu.exception.MenuGroupNotFoundException;
 import kitchenpos.menu.exception.ProductNotFoundException;
+import kitchenpos.product.domain.Price;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -28,7 +32,7 @@ public class MenuValidator {
 
     public void validate(Menu menu) {
         if (menu.getMenuProducts().isEmpty()) {
-            throw new IllegalStateException("메뉴 항목이 비어있습니다.");
+            throw new NotFoundException("메뉴 항목이 비어있습니다.");
         }
 
         if (!menuGroupRepository.existsById(menu.getMenuGroupId())) {
@@ -58,24 +62,4 @@ public class MenuValidator {
         return productRepository.findById(id)
                 .orElseThrow(ProductNotFoundException::new);
     }
-
-
-//    private void comparePrice(List<MenuProduct> menuProducts) {
-//        if (price.value().compareTo(totalPrice(menuProducts)) > 0) {
-//            throw new LimitPriceException();
-//        }
-//    }
-
-    //    private BigDecimal totalPrice(List<MenuProduct> menuProducts) {
-//        return menuProducts.stream().map(MenuProduct::price)
-//                .reduce(BigDecimal.ZERO, BigDecimal::add);
-//    }
-
-//    private List<Product> getProducts(Menu menu) {
-//        List<Long> productIds = menu.getMenuProducts()
-//                .stream()
-//                .map(MenuProduct::getId)
-//                .collect(toList());
-//        return productRepository.findAllById(productIds);
-//    }
 }
