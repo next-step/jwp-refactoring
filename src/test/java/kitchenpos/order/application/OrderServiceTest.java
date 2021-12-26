@@ -45,10 +45,8 @@ class OrderServiceTest {
 
     @BeforeEach
     void setUp() {
-        Product 매콤치킨 = new Product("매콤치킨", BigDecimal.valueOf(13000));
-        MenuGroup 인기메뉴그룹 = new MenuGroup("인기메뉴");
-        MenuProduct 매콤치킨구성 = new MenuProduct(매콤치킨, 1L);
-        매콤치킨단품 = Menu.of("매콤치킨단품", BigDecimal.valueOf(13000), 인기메뉴그룹, Collections.singletonList(매콤치킨구성));
+        MenuProduct 매콤치킨구성 = new MenuProduct(1L, 1L);
+        매콤치킨단품 = Menu.of("매콤치킨단품", BigDecimal.valueOf(13000), 1L, Collections.singletonList(매콤치킨구성));
 
         주문테이블 = new OrderTable(1L, 2, new TableState(false));
         주문항목 = new OrderLineItem(매콤치킨단품, 1L);
