@@ -5,9 +5,7 @@ import io.restassured.response.Response;
 import kitchenpos.acceptance.AcceptanceTest;
 import kitchenpos.acceptance.RestAssuredApi;
 import kitchenpos.order.dto.OrderStatusRequest;
-import kitchenpos.order.dto.OrderTableRequest;
-import kitchenpos.order.dto.OrderTableResponse;
-import kitchenpos.order.dto.TableGroupRequest;
+import kitchenpos.order.dto.TableRequest;
 import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -17,7 +15,6 @@ import org.springframework.http.HttpStatus;
 import java.util.Arrays;
 import java.util.List;
 
-import static kitchenpos.order.acceptance.TableGroupAcceptanceTest.테이블_그룹_등록_요청;
 import static kitchenpos.order.dto.OrderStatusRequest.completion;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -32,12 +29,13 @@ class TableAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("주문 테이블 정상 시나리오")
     void normalScenario() {
-        String 테이블1 = 주문_테이블_등록됨(주문_테이블_등록_요청(OrderTableRequest.of(2)));
-        String 테이블2 = 주문_테이블_등록됨(주문_테이블_등록_요청(OrderTableRequest.of(4)));
+        String createdUri1 = 주문_테이블_등록됨(주문_테이블_등록_요청(TableRequest.from(2)));
+        String createdUri2 = 주문_테이블_등록됨(주문_테이블_등록_요청(TableRequest.from(4)));
 
-        주문_상태_변경됨(주문_상태_변경_요청(테이블1, completion()));
-        주문_테이블_비움(테이블1);
-        테이블_손님수_변경(테이블2, OrderTableRequest.of(3));
+        주문_상태_변경됨(주문_상태_변경_요청(createdUri1, completion()));
+        주문_테이블_비움(createdUri1);
+
+        테이블_손님수_변경(createdUri2, TableRequest.from(3));
 
         ExtractableResponse<Response> response = 주문_테이블_목록_조회_요청();
         주문_테이블_목록_조회됨(response);
@@ -48,19 +46,19 @@ class TableAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("주문 테이블 예외 시나리오")
     void exceptionScenario() {
-        ExtractableResponse<Response> response1 = 주문_테이블_등록_요청(OrderTableRequest.of(2));
-        ExtractableResponse<Response> response2 = 주문_테이블_등록_요청(OrderTableRequest.of(4));
+        ExtractableResponse<Response> response1 = 주문_테이블_등록_요청(TableRequest.from(2));
+        ExtractableResponse<Response> response2 = 주문_테이블_등록_요청(TableRequest.from(4));
         String 테이블1 = 주문_테이블_등록됨(response1);
         String 테이블2 = 주문_테이블_등록됨(response2);
 
         주문_상태_변경됨(주문_상태_변경_요청(테이블1, completion()));
         주문_테이블_비움(테이블1);
-        테이블_변경_실패됨(테이블_손님수_변경(테이블1, OrderTableRequest.of(3)));
+        테이블_변경_실패됨(테이블_손님수_변경(테이블1, TableRequest.from(3)));
 
-        테이블_변경_실패됨(테이블_손님수_변경(테이블2, OrderTableRequest.of(-1)));
+        테이블_변경_실패됨(테이블_손님수_변경(테이블2, TableRequest.from(-1)));
     }
 
-    public static ExtractableResponse<Response> 주문_테이블_등록_요청(OrderTableRequest request) {
+    public static ExtractableResponse<Response> 주문_테이블_등록_요청(TableRequest request) {
         return RestAssuredApi.post("/api/tables", request);
     }
 
@@ -68,15 +66,15 @@ class TableAcceptanceTest extends AcceptanceTest {
         return RestAssuredApi.put(uri + "/empty");
     }
 
-    private ExtractableResponse<Response> 테이블_손님수_변경(String uri, OrderTableRequest request) {
+    private ExtractableResponse<Response> 테이블_손님수_변경(String uri, TableRequest request) {
         return RestAssuredApi.put(uri + "/number-of-guests", request);
     }
 
-    private ExtractableResponse<Response> 주문_상태_변경_요청(String uri, OrderStatusRequest request) {
+    public static ExtractableResponse<Response> 주문_상태_변경_요청(String uri, OrderStatusRequest request) {
         return RestAssuredApi.put(uri + "/order-status", request);
     }
 
-    private ExtractableResponse<Response> 주문_테이블_목록_조회_요청() {
+    public static ExtractableResponse<Response> 주문_테이블_목록_조회_요청() {
         return RestAssuredApi.get("/api/tables");
     }
 

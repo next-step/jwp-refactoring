@@ -13,7 +13,7 @@ import static javax.persistence.CascadeType.PERSIST;
 @Embeddable
 public class OrderTables {
 
-    @OneToMany(mappedBy = "tableGroup", cascade = {PERSIST, MERGE}, orphanRemoval = true)
+    @OneToMany(mappedBy = "tableGroupId", cascade = {PERSIST, MERGE}, orphanRemoval = true)
     private List<OrderTable> orderTables = new ArrayList<>();
 
     protected OrderTables() {

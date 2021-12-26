@@ -34,11 +34,11 @@ class OrderServiceTest {
     @Mock
     private OrderRepository orderRepository;
     @Mock
-    private OrderTableRepository orderTableRepository;
+    private TableRepository tableRepository;
     @InjectMocks
     private OrderService orderService;
 
-    private OrderTable 주문테이블;
+    private OrderTable 테이블;
     private Order 주문;
     private OrderLineItem 주문항목;
     private Menu 매콤치킨단품;
@@ -48,35 +48,35 @@ class OrderServiceTest {
         MenuProduct 매콤치킨구성 = new MenuProduct(1L, 1L);
         매콤치킨단품 = Menu.of("매콤치킨단품", BigDecimal.valueOf(13000), 1L, Collections.singletonList(매콤치킨구성));
 
-        주문테이블 = new OrderTable(1L, 2, new TableState(false));
+        테이블 = new OrderTable(2, new TableState(false));
         주문항목 = new OrderLineItem(매콤치킨단품, 1L);
-        주문 = new Order(주문테이블, COOKING, Collections.singletonList(주문항목));
+        주문 = new Order(테이블, COOKING, Collections.singletonList(주문항목));
     }
 
     @Test
     @DisplayName("주문을 등록한다.")
     void create() {
         OrderLineItemRequest 주문항목 = OrderLineItemRequest.of(1L, 1L);
-        OrderRequest 주문요청 = new OrderRequest(주문테이블.getId(), Collections.singletonList(주문항목));
+        OrderRequest 주문요청 = new OrderRequest(1L, Collections.singletonList(주문항목));
 
         when(menuRepository.findById(anyLong())).thenReturn(Optional.of(매콤치킨단품));
-        when(orderTableRepository.findById(anyLong())).thenReturn(Optional.of(주문테이블));
+        when(tableRepository.findById(anyLong())).thenReturn(Optional.of(테이블));
         when(orderRepository.save(any())).thenReturn(주문);
 
         OrderResponse response = orderService.create(주문요청);
 
         verify(menuRepository, times(1)).findById(anyLong());
-        verify(orderTableRepository, times(1)).findById(anyLong());
+        verify(tableRepository, times(1)).findById(anyLong());
         verify(orderRepository, times(1)).save(any(Order.class));
         assertThat(response)
                 .extracting("orderTableId", "orderStatus")
-                .containsExactly(주문테이블.getId(), COOKING.name());
+                .containsExactly(테이블.getId(), COOKING.name());
     }
 
     @Test
     @DisplayName("주문 항목의 목록이 비어있는 경우 예외가 발생한다.")
     void validateOrderLineItemsEmpty() {
-        OrderRequest 주문요청 = new OrderRequest(주문테이블.getId(), Collections.emptyList());
+        OrderRequest 주문요청 = new OrderRequest(1L, Collections.emptyList());
 
         assertThatThrownBy(() -> orderService.create(주문요청))
                 .isInstanceOf(TableNotFoundException.class);
@@ -86,31 +86,31 @@ class OrderServiceTest {
     @DisplayName("주문 항목의 메뉴가 기존에 등록된 메뉴가 아닌 경우 예외가 발생한다.")
     void validateOrderLineItems() {
         OrderLineItemRequest 주문항목 = OrderLineItemRequest.of(1L, 1L);
-        OrderRequest 주문요청 = new OrderRequest(주문테이블.getId(), Collections.singletonList(주문항목));
+        OrderRequest 주문요청 = new OrderRequest(1L, Collections.singletonList(주문항목));
 
         when(menuRepository.findById(anyLong())).thenReturn(Optional.of(매콤치킨단품));
-        when(orderTableRepository.findById(anyLong())).thenReturn(Optional.empty());
+        when(tableRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> orderService.create(주문요청))
                 .isInstanceOf(TableNotFoundException.class);
         verify(menuRepository, times(1)).findById(anyLong());
-        verify(orderTableRepository, times(1)).findById(anyLong());
+        verify(tableRepository, times(1)).findById(anyLong());
     }
 
     @Test
     @DisplayName("주문 테이블이 빈 테이블인 경우 예외가 발생한다.")
     void validateOrderTableEmpty() {
-        OrderTable 빈테이블 = new OrderTable(1L, 0, new TableState(true));
+        OrderTable 빈테이블 = new OrderTable(0, new TableState(true));
         OrderLineItemRequest 주문항목 = OrderLineItemRequest.of(1L, 1L);
-        OrderRequest 주문요청 = OrderRequest.of(빈테이블.getId(), Collections.singletonList(주문항목));
+        OrderRequest 주문요청 = OrderRequest.of(1L, Collections.singletonList(주문항목));
 
         when(menuRepository.findById(anyLong())).thenReturn(Optional.of(매콤치킨단품));
-        when(orderTableRepository.findById(anyLong())).thenReturn(Optional.of(빈테이블));
+        when(tableRepository.findById(anyLong())).thenReturn(Optional.of(빈테이블));
 
         assertThatThrownBy(() -> orderService.create(주문요청))
                 .isInstanceOf(InvalidOrderState.class);
         verify(menuRepository, times(1)).findById(anyLong());
-        verify(orderTableRepository, times(1)).findById(anyLong());
+        verify(tableRepository, times(1)).findById(anyLong());
     }
 
     @Test
@@ -125,7 +125,7 @@ class OrderServiceTest {
         assertThat(orders)
                 .extracting("orderTableId", "orderStatus", "orderedTime")
                 .containsExactly(
-                        tuple(주문테이블.getId(), 주문.getOrderStatus(), 주문.getOrderedTime())
+                        tuple(테이블.getId(), 주문.getOrderStatus(), 주문.getOrderedTime())
                 );
     }
 

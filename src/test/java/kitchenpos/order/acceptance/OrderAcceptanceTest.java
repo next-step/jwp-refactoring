@@ -30,8 +30,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DisplayName("주문 인수 테스트")
 public class OrderAcceptanceTest extends AcceptanceTest {
 
-    private OrderTableResponse 테이블;
-    private OrderTableResponse 빈테이블;
+    private TableResponse 테이블;
+    private TableResponse 빈테이블;
     private OrderLineItemRequest 주문항목1;
     private OrderLineItemRequest 주문항목2;
 
@@ -52,8 +52,8 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         MenuResponse 매콤치킨단품 = 메뉴_등록_요청(menuRequest1).as(MenuResponse.class);
         MenuResponse 허니치킨단품 = 메뉴_등록_요청(menuRequest2).as(MenuResponse.class);
 
-        테이블 = 주문_테이블_등록_요청(OrderTableRequest.of(2)).as(OrderTableResponse.class);
-        빈테이블 = 주문_테이블_등록_요청(OrderTableRequest.empty()).as(OrderTableResponse.class);
+        테이블 = 주문_테이블_등록_요청(TableRequest.from(2)).as(TableResponse.class);
+        빈테이블 = 주문_테이블_등록_요청(TableRequest.empty()).as(TableResponse.class);
         주문항목1 = new OrderLineItemRequest(매콤치킨단품.getId(), 1L);
         주문항목2 = new OrderLineItemRequest(허니치킨단품.getId(), 1L);
     }

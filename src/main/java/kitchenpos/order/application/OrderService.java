@@ -21,13 +21,13 @@ import java.util.stream.Collectors;
 public class OrderService {
     private final MenuRepository menuRepository;
     private final OrderRepository orderRepository;
-    private final OrderTableRepository orderTableRepository;
+    private final TableRepository tableRepository;
 
     public OrderService(final MenuRepository menuRepository, final OrderRepository orderRepository,
-                        final OrderTableRepository orderTableRepository) {
+                        final TableRepository tableRepository) {
         this.menuRepository = menuRepository;
         this.orderRepository = orderRepository;
-        this.orderTableRepository = orderTableRepository;
+        this.tableRepository = tableRepository;
     }
 
     @Transactional
@@ -52,7 +52,7 @@ public class OrderService {
     }
 
     private OrderTable getOrderTable(Long tableId) {
-        return orderTableRepository.findById(tableId)
+        return tableRepository.findById(tableId)
                 .orElseThrow(TableNotFoundException::new);
     }
 

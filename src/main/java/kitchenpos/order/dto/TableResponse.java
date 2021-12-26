@@ -6,24 +6,26 @@ import kitchenpos.order.domain.TableState;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class OrderTableResponse {
+public class TableResponse {
     private Long id;
     private int numberOfGuests;
     private TableState tableState;
+    private Long tableGroupId;
 
-    public OrderTableResponse(Long id, int numberOfGuests, TableState tableState) {
+    public TableResponse(Long id, int numberOfGuests, TableState tableState, Long tableGroupId) {
         this.id = id;
         this.numberOfGuests = numberOfGuests;
         this.tableState = tableState;
+        this.tableGroupId = tableGroupId;
     }
 
-    public static OrderTableResponse of(OrderTable orderTable) {
-        return new OrderTableResponse(orderTable.getId(), orderTable.getNumberOfGuests(), orderTable.getTableState());
+    public static TableResponse of(OrderTable orderTable) {
+        return new TableResponse(orderTable.getId(), orderTable.getNumberOfGuests(), orderTable.getTableState(), orderTable.getTableGroupId());
     }
 
-    public static List<OrderTableResponse> ofList(List<OrderTable> orderTables) {
+    public static List<TableResponse> ofList(List<OrderTable> orderTables) {
         return orderTables.stream()
-                .map(OrderTableResponse::of)
+                .map(TableResponse::of)
                 .collect(Collectors.toList());
     }
 
@@ -41,5 +43,9 @@ public class OrderTableResponse {
 
     public boolean getTableState() {
         return tableState.isEmpty();
+    }
+
+    public Long getTableGroupId() {
+        return tableGroupId;
     }
 }
