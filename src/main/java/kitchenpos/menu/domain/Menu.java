@@ -26,8 +26,8 @@ public class Menu {
     @JoinColumn(name = "menu_group_id", nullable = false)
     private MenuGroup menuGroup;
 
-    @OneToMany(mappedBy = "menu")
-    private List<MenuProduct> menuProducts;
+    @Embedded
+    private MenuProducts menuProducts;
 
     public Menu() {
 
@@ -38,7 +38,7 @@ public class Menu {
         this.name = Name.of(name);
         this.price = Price.of(price);
         this.menuGroup = menuGroup;
-        this.menuProducts = menuProducts;
+        this.menuProducts = MenuProducts.of(menuProducts);
     }
 
     private Menu(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
@@ -46,7 +46,7 @@ public class Menu {
         this.name = Name.of(name);
         this.price = Price.of(price);
         this.menuGroup = menuGroup;
-        this.menuProducts = menuProducts;
+        this.menuProducts = MenuProducts.of(menuProducts);
     }
 
     private void validatePrice(BigDecimal price, List<MenuProduct> menuProducts) {
@@ -101,12 +101,10 @@ public class Menu {
     }
 
     public List<MenuProduct> getMenuProducts() {
-        return menuProducts;
+        return menuProducts.getMenuProducts();
     }
 
-    public void setMenuProducts(final List<MenuProduct> menuProducts) {
-        this.menuProducts = menuProducts;
+    public MenuGroup getMenuGroup() {
+        return menuGroup;
     }
-
-
 }

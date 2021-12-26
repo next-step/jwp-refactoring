@@ -21,6 +21,7 @@ public class MenuProduct {
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
+    @Embedded
     private Quantity quantity;
 
     public MenuProduct() {
@@ -73,6 +74,9 @@ public class MenuProduct {
         this.quantity = Quantity.of(quantity);
     }
 
+    public Product getProduct() {
+        return product;
+    }
     public Price calculate() {
         return product.multiply(quantity.getQuantity());
     }

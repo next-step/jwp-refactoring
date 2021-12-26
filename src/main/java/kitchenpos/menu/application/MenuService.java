@@ -3,8 +3,10 @@ package kitchenpos.menu.application;
 import kitchenpos.exception.MenuGroupNotFoundException;
 import kitchenpos.exception.ProductNotFoundException;
 import kitchenpos.menu.domain.*;
+import kitchenpos.menu.dto.MenuGroupResponse;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import org.springframework.stereotype.Service;
@@ -33,11 +35,12 @@ public class MenuService {
     }
 
     @Transactional
-    public Menu create(final MenuRequest menuRequest) {
+    public MenuResponse create(final MenuRequest menuRequest) {
         final MenuGroup menuGroup = getMenuGroup(menuRequest.getMenuGroupId());
         final List<MenuProduct> menuProducts = getMenuProducts(menuRequest.getMenuProductRequests());
         Menu menu = menuRequest.toMenu(menuGroup, menuProducts);
-        return menuRepository.save(menu);
+        final Menu persistMenu = menuRepository.save(menu);
+        return MenuResponse.of(persistMenu);
     }
 
     @Transactional(readOnly = true)
@@ -63,7 +66,10 @@ public class MenuService {
     }
 
 
-    public List<Menu> list() {
-        return menuRepository.findAll();
+    public List<MenuResponse> list() {
+        List<Menu> menus = menuRepository.findAll();
+        return menus.stream()
+                .map(MenuResponse::of)
+                .collect(Collectors.toList());
     }
 }

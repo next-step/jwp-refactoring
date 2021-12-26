@@ -16,6 +16,10 @@ public class ProductRequest {
         this.price = price;
     }
 
+    public static ProductRequest of(String name, BigDecimal price) {
+        return new ProductRequest(name, price);
+    }
+
     public String getName() {
         return name;
     }

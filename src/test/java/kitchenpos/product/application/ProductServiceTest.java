@@ -3,6 +3,7 @@ package kitchenpos.product.application;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -47,7 +48,7 @@ class ProductServiceTest {
         when(productRepository.save(any())).thenReturn(product);
 
         // when
-        Product expected = productService.create(productRequest);
+        ProductResponse expected = productService.create(productRequest);
 
         // then
         assertThat(product.getId()).isEqualTo(expected.getId());
@@ -61,7 +62,7 @@ class ProductServiceTest {
         when(productRepository.findAll()).thenReturn(actual);
 
         // when
-        List<Product> expected = productService.list();
+        List<ProductResponse> expected = productService.list();
 
         // then
         assertThat(actual.size()).isEqualTo(expected.size());

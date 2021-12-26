@@ -23,6 +23,10 @@ public class MenuRequest {
         this.menuProductRequests = menuProductRequests;
     }
 
+    public static MenuRequest of (String name, BigDecimal price, long menuGroupId, List<MenuProductRequest> menuProductRequests) {
+        return new MenuRequest(name, price, menuGroupId, menuProductRequests);
+    }
+
     public Menu toMenu(MenuGroup menuGroup, List<MenuProduct> menuProducts) {
         return Menu.of(name, price, menuGroup, menuProducts);
     }

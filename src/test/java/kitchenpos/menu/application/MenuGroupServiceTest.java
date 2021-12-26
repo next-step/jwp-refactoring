@@ -3,6 +3,7 @@ package kitchenpos.menu.application;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.dto.MenuGroupRequest;
+import kitchenpos.menu.dto.MenuGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -46,7 +47,7 @@ class MenuGroupServiceTest {
         when(menuGroupRepository.save(any())).thenReturn(menuGroup);
 
         // when
-        MenuGroup expected = menuGroupService.create(menuGroupRequest);
+        MenuGroupResponse expected = menuGroupService.create(menuGroupRequest);
 
         // then
         assertThat(menuGroup.getId()).isEqualTo(expected.getId());
@@ -60,7 +61,7 @@ class MenuGroupServiceTest {
         when(menuGroupRepository.findAll()).thenReturn(actual);
 
         // when
-        List<MenuGroup> expected = menuGroupService.list();
+        List<MenuGroupResponse> expected = menuGroupService.list();
 
         // then
         assertThat(actual.size()).isEqualTo(expected.size());

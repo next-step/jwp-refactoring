@@ -4,6 +4,7 @@ import kitchenpos.exception.MenuGroupNotFoundException;
 import kitchenpos.menu.domain.*;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -78,7 +79,7 @@ class MenuServiceTest {
         when(menuRepository.save(any())).thenReturn(menu);
 
         // when
-        Menu expected = menuService.create(menuRequest);
+        MenuResponse expected = menuService.create(menuRequest);
 
         // then
         assertThat(menu.getId()).isEqualTo(expected.getId());
@@ -101,7 +102,7 @@ class MenuServiceTest {
         when(menuRepository.findAll()).thenReturn(actual);
 
         // when
-        List<Menu> expected = menuService.list();
+        List<MenuResponse> expected = menuService.list();
 
         // then
         assertThat(actual.size()).isEqualTo(expected.size());
