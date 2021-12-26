@@ -27,6 +27,7 @@
 - 주문 생성 기능
   - 주문 항목이 없으면 주문을 생성할 수 없다.
   - 주문 항목은 메뉴에 등록 되어 있어야 한다.
+  - 주문 상태는 COOKING 이다.
   - 주문 테이블이 등록되어 있어야 한다.
   - 주문을 저장할 때 주문항목도 함께 저장된다.
 - 주문 조회 기능
@@ -73,23 +74,25 @@
 #### 메모
 
 - kitchenpos 라는 도메인 아래에 3가지 하위 도메인이 존재하는 것 같다.
-- 주문, 메뉴, 지정
+- 주문, 메뉴, 테이블
 
 - Order, OrderLintItem
   - Order 가 List<OrderLIneItem> 포함
   - OrderLineItem 이 OrderId 를 가지고 있다.
-- Menu, MenuProduct
+- Menu, MenuProduct, Product
   - Menu 가 List<MenuProduct> 포함
   - MenuProduct 이 MenuId 를 가지고 있다.
-- TableGroup, OrderTable
-  - TableGroup 이 List<OrderTable> 포함
-  - OrderTables 가 TableGroupId 를 가지고 있다.
+  - Menu 와 Product 는 다대다 관계.
+  - MenuProduct 가 MenuId, ProductId 를 가지고 있다.
+- OrderTable, TableGroup
+  - TableGroup 이 List<OrderTable> 포함 (조회용?)
+  - OrderTable 가 TableGroupId 를 가지고 있다.
 
 
 ### 구현 기능 목록
 
 - [ ] 주문 테스트 생성
-  - [ ] 주문 인수테스트 생성
+  - [x] 주문 인수테스트 생성
   - [ ] 주문 단위 테스트 생성
   - [ ] 주문 통합 테스트 생성
 - [ ] 메뉴 테스트 생성
