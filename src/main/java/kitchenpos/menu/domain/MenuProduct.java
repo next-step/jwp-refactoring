@@ -44,16 +44,16 @@ public class MenuProduct {
         return seq;
     }
 
-    public Menu getMenu() {
-        return menu;
+    public Long getMenuId() {
+        return menu.getId();
     }
 
-    public Product getProduct() {
-        return product;
+    public Long getProductId() {
+        return product.getId();
     }
 
-    public Quantity getQuantity() {
-        return quantity;
+    public Long getQuantity() {
+        return quantity.getQuantity();
     }
 
     public BigDecimal getPrice() {
