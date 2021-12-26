@@ -1,17 +1,14 @@
 package kitchenpos.menu;
 
-import ch.qos.logback.core.encoder.EchoEncoder;
-import com.jayway.jsonpath.JsonPath;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.ui.MenuRestController;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.menu.ui.MenuController;
 import kitchenpos.utils.ControllerTest;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.util.LinkedMultiValueMap;
@@ -29,7 +26,7 @@ public class MenuControllerTest extends ControllerTest {
 
     @PostConstruct
     public void setUp() {
-        this.mockMvc = MockMvcBuilders.standaloneSetup(new MenuRestController(menuService)).build();
+        this.mockMvc = MockMvcBuilders.standaloneSetup(new MenuController(menuService)).build();
     }
 
     @DisplayName("메뉴를 생성하다.")
@@ -37,19 +34,19 @@ public class MenuControllerTest extends ControllerTest {
     void createMenu() throws Exception {
 
         //given
-        MenuProduct menuProduct = new MenuProduct();
-        menuProduct.setProductId(1L);
-        menuProduct.setQuantity(2);
-        Menu menu = new Menu();
-        menu.setMenuGroupId(1L);
-        menu.setName("후라이드+후라이드");
-        menu.setPrice(new BigDecimal("19000"));
-        menu.setMenuProducts(Arrays.asList(menuProduct));
+        MenuProductRequest menuProduct = new MenuProductRequest();
+        ReflectionTestUtils.setField(menuProduct, "productId", 1L);
+        ReflectionTestUtils.setField(menuProduct, "quantity", 1);
 
-        when(menuService.create(any())).thenReturn(menu);
+        MenuRequest menuRequest = new MenuRequest();
+        ReflectionTestUtils.setField(menuRequest, "name", "후라이드세트");
+        ReflectionTestUtils.setField(menuRequest, "price", new BigDecimal("19000"));
+        ReflectionTestUtils.setField(menuRequest, "products", Arrays.asList(menuProduct));
+
+        when(menuService.create(any())).thenReturn(MenuResponse.of(menuRequest.toEntity()));
 
         //when
-        ResultActions resultActions = post("/api/menus", menu);
+        ResultActions resultActions = post("/api/menus", menuRequest);
 
         //then
         resultActions.andExpect(status().isCreated());
@@ -60,14 +57,10 @@ public class MenuControllerTest extends ControllerTest {
     void getMenus() throws Exception {
 
         //given
-        Menu 후라이드_후라이드 = new Menu();
-        MenuProduct 후라이드 = new MenuProduct();
-        후라이드.setQuantity(2);
-        후라이드.setProductId(1L);
-        후라이드_후라이드.setMenuProducts(Arrays.asList(후라이드));
-        후라이드_후라이드.setPrice(new BigDecimal("19000"));
-        후라이드_후라이드.setName("후라이드_후라이드");
-        when(menuService.list()).thenReturn(Arrays.asList(후라이드_후라이드));
+        Menu 후라이드세트 = Menu.create("후라이드세트", new BigDecimal("24000"));
+        MenuResponse menuResponse = MenuResponse.of(후라이드세트);
+
+        when(menuService.list()).thenReturn(Arrays.asList(menuResponse));
 
         //when
         ResultActions resultActions = get("/api/menus", new LinkedMultiValueMap<>());
@@ -75,8 +68,8 @@ public class MenuControllerTest extends ControllerTest {
         //then
         resultActions.andExpect(status().isOk());
         resultActions.andExpect(jsonPath("$").isArray());
-        resultActions.andExpect(jsonPath("$[0]['name']").value(후라이드_후라이드.getName()));
-        resultActions.andExpect(jsonPath("$[0]['price']").value(후라이드_후라이드.getPrice()));
+        resultActions.andExpect(jsonPath("$[0]['name']").value(후라이드세트.getName()));
+        resultActions.andExpect(jsonPath("$[0]['price']").value(24000));
     }
 
 

@@ -1,32 +1,34 @@
 package kitchenpos.menu;
 
-import kitchenpos.application.MenuService;
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.dao.MenuProductDao;
-import kitchenpos.dao.ProductDao;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Product;
+import kitchenpos.menu.application.MenuService;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuProductResponse;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.menu.group.domain.MenuGroup;
+import kitchenpos.menu.group.domain.MenuGroupRepository;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductPrice;
+import kitchenpos.product.domain.ProductRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -36,61 +38,58 @@ public class MenuServiceTest {
     private MenuService menuService;
 
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
 
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
 
     @Mock
-    private ProductDao productDao;
-
-    @Mock
-    private MenuProductDao menuProductDao;
+    private ProductRepository productRepository;
 
     @DisplayName("메뉴를 생성한다.")
     @Test
     void createMenu() {
 
         //given
-        final boolean isExistedMenuGroup = true;
-        Menu menu = new Menu();
-        menu.setId(1L);
-        menu.setMenuGroupId(1L);
-        menu.setName("후라이드세트");
-        menu.setPrice(new BigDecimal("24000"));
+        MenuRequest menu = new MenuRequest();
+        ReflectionTestUtils.setField(menu, "menuGroupId", 1L);
+        ReflectionTestUtils.setField(menu, "name", "후라이드세트");
+        ReflectionTestUtils.setField(menu, "price", new BigDecimal("24000"));
+
+        MenuProductRequest 후라이드요청 = new MenuProductRequest();
+        ReflectionTestUtils.setField(후라이드요청, "productId", 1L);
+        ReflectionTestUtils.setField(후라이드요청, "quantity", 1);
+
+        MenuProductRequest 콜라요청 = new MenuProductRequest();
+        ReflectionTestUtils.setField(콜라요청, "productId", 2L);
+        ReflectionTestUtils.setField(콜라요청, "quantity", 1);
+
+        ReflectionTestUtils.setField(menu, "products", Arrays.asList(후라이드요청, 콜라요청));
 
         MenuProduct 후라이드메뉴 = new MenuProduct();
-        후라이드메뉴.setProductId(1L);
-        후라이드메뉴.setQuantity(1);
+        ReflectionTestUtils.setField(후라이드메뉴, "quantity", 1L);
 
-        Product 후라이드 = new Product();
-        후라이드.setId(1L);
-        후라이드.setName("후라이드");
-        후라이드.setPrice(new BigDecimal("22000"));
+        Product 후라이드 = Product.create("후라이드", new BigDecimal(22000));
+        ReflectionTestUtils.setField(후라이드, "id", 1L);
 
         MenuProduct 콜라메뉴 = new MenuProduct();
-        콜라메뉴.setProductId(2L);
-        콜라메뉴.setQuantity(1);
+        ReflectionTestUtils.setField(콜라메뉴, "quantity", 1L);
 
-        Product 콜라 = new Product();
-        콜라.setId(2L);
-        콜라.setName("콜라");
-        콜라.setPrice(new BigDecimal("2000"));
+        Product 콜라 = Product.create("콜라", new BigDecimal(2000));
+        ReflectionTestUtils.setField(콜라, "id", 2L);
 
-        menu.setMenuProducts(Arrays.asList(후라이드메뉴, 콜라메뉴));
-        when(menuGroupDao.existsById(anyLong())).thenReturn(isExistedMenuGroup);
-        when(menuDao.save(any())).thenReturn(menu);
-        when(productDao.findById(후라이드메뉴.getProductId())).thenReturn(Optional.ofNullable(후라이드));
-        when(productDao.findById(콜라메뉴.getProductId())).thenReturn(Optional.ofNullable(콜라));
-        when(menuProductDao.save(후라이드메뉴)).thenReturn(후라이드메뉴);
-        when(menuProductDao.save(콜라메뉴)).thenReturn(콜라메뉴);
+        MenuGroup menuGroup = MenuGroup.create("치킨");
+        List<Product> products = Arrays.asList(후라이드, 콜라);
+
+        when(menuGroupRepository.findById(anyLong())).thenReturn(Optional.ofNullable(menuGroup));
+        when(productRepository.findAllById(anyList())).thenReturn(products);
+        when(menuRepository.save(any())).thenReturn(Menu.create("후라이드세트", new BigDecimal("24000")));
 
         //when
-        Menu savedMenu = menuService.create(menu);
+        MenuResponse savedMenu = menuService.create(menu);
 
         //then
         assertThat(savedMenu).isNotNull();
-        assertThat(savedMenu.getId()).isGreaterThan(0L);
         assertThat(savedMenu.getName()).isEqualTo(menu.getName());
     }
 
@@ -99,37 +98,35 @@ public class MenuServiceTest {
     void getMenus() {
 
         //given
-        MenuProduct 후라이드메뉴 = new MenuProduct();
-        MenuProduct 햄버거메뉴 = new MenuProduct();
-        MenuProduct 콜라메뉴 = new MenuProduct();
+        Menu menuA = Menu.create("후라이드세트", new BigDecimal("24000"));
+        menuA.addProduct(Product.create("후라이드", new BigDecimal("23000")), 1);
+        menuA.addProduct(Product.create("콜라", new BigDecimal("2000")), 1);
 
-        Menu menuA = new Menu();
-        menuA.setId(1L);
-        menuA.setName("후라이드세트");
-        List<MenuProduct> menuAProducts = Arrays.asList(후라이드메뉴, 콜라메뉴);
-        menuA.setMenuProducts(menuAProducts);
+        Menu menuB = Menu.create("햄버거세트", new BigDecimal("10000"));
+        menuB.addProduct(Product.create("햄버거", new BigDecimal("8000")), 1);
+        menuB.addProduct(Product.create("콜라", new BigDecimal("2000")), 1);
+        List<Menu> menus = Arrays.asList(menuA, menuB);
 
-        Menu menuB = new Menu();
-        menuB.setId(2L);
-        menuB.setName("햄버거세트");
-        List<MenuProduct> menuBProducts = Arrays.asList(햄버거메뉴, 콜라메뉴);
-        menuB.setMenuProducts(menuBProducts);
-
-        when(menuDao.findAll()).thenReturn(Arrays.asList(menuA, menuB));
-        when(menuProductDao.findAllByMenuId(menuA.getId())).thenReturn(menuAProducts);
-        when(menuProductDao.findAllByMenuId(menuB.getId())).thenReturn(menuBProducts);
+        when(menuRepository.findAll()).thenReturn(menus);
 
         //when
-        List<Menu> findMenus = menuService.list();
+        List<MenuResponse> findMenus = menuService.list();
+
 
         //then
         assertThat(findMenus).isNotEmpty();
+        List<MenuProductResponse> result = MenuProductResponse.ofList(
+                menus.stream()
+                .flatMap(m -> m.getMenuProducts().stream())
+                .collect(toList())
+        );
+
         assertThat(findMenus.stream()
                 .flatMap(m -> m.getMenuProducts()
                 .stream())
                 .distinct()
                 .collect(toList()))
-                .contains(후라이드메뉴, 콜라메뉴, 햄버거메뉴);
+                .containsAll(result);
     }
 }
 
