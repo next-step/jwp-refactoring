@@ -3,12 +3,9 @@ package kitchenpos.order.application;
 import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.order.dto.OrderTableResponse;
-import kitchenpos.tableGroup.dto.OrderTableIdRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -54,10 +51,34 @@ public class TableService {
         return OrderTableResponse.from(orderTableRepository.save(savedOrderTable));
     }
 
-    private OrderTable findOrderTable(Long orderTableId) {
+    public OrderTable findOrderTable(Long orderTableId) {
         return orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
     }
 
+    @Transactional
+    public void grouped(Long tableGroupId, List<OrderTable> orderTables) {
+        orderTables.forEach(orderTable -> {
+            orderTable.group(tableGroupId);
+        });
 
+        orderTableRepository.saveAll(orderTables);
+    }
+
+    @Transactional
+    public void ungrouped(Long tableGroupId) {
+        List<OrderTable> orderTables = findByTableGroupId(tableGroupId);
+        tableValidator.validateCompletion(orderTables);
+        orderTables.forEach(OrderTable::ungroup);
+
+        orderTableRepository.saveAll(orderTables);
+    }
+
+    public List<OrderTable> findAllByIdIn(List<Long> orderTableIds) {
+        return orderTableRepository.findAllByIdIn(orderTableIds);
+    }
+
+    public List<OrderTable> findByTableGroupId(Long tableGroupId) {
+        return orderTableRepository.findByTableGroupId(tableGroupId);
+    }
 }

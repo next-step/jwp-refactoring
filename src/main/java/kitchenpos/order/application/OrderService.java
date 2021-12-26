@@ -1,14 +1,13 @@
 package kitchenpos.order.application;
 
+import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.domain.*;
-import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,17 +16,25 @@ import java.util.stream.Collectors;
 public class OrderService {
     private final OrderValidator orderValidator;
     private final OrderRepository orderRepository;
+    private final TableService tableService;
+    private final MenuService menuService;
 
-    public OrderService(OrderValidator orderValidator, OrderRepository orderRepository) {
+    public OrderService(OrderValidator orderValidator,
+                        OrderRepository orderRepository,
+                        TableService tableService,
+                        MenuService menuService) {
         this.orderValidator = orderValidator;
         this.orderRepository = orderRepository;
+        this.tableService = tableService;
+        this.menuService = menuService;
     }
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
-        final OrderTable orderTable = orderValidator.findOrderTable(orderRequest.getOrderTableId());
+        orderValidator.validateEmpty(orderRequest.getOrderLineItems());
+        final OrderTable orderTable = tableService.findOrderTable(orderRequest.getOrderTableId());
         final Order order = new Order(orderTable.getId());
-        final List<OrderLineItem> orderLineItems = orderValidator.toOrderLineItems(orderRequest.getOrderLineItems(), order);
+        final List<OrderLineItem> orderLineItems = toOrderLineItems(orderRequest.getOrderLineItems());
         order.addLineItems(orderLineItems);
 
         return OrderResponse.from(orderRepository.save(order));
@@ -50,5 +57,12 @@ public class OrderService {
         return OrderResponse.from(savedOrder);
     }
 
-
+    private List<OrderLineItem> toOrderLineItems(List<OrderLineItemRequest> orderLineItemRequests) {
+        return orderLineItemRequests.stream()
+                .map(orderLineItemRequest -> {
+                    Menu menu = menuService.findById(orderLineItemRequest.getMenuId());
+                    return new OrderLineItem(menu.getId(), orderLineItemRequest.getQuantity());
+                })
+                .collect(Collectors.toList());
+    }
 }

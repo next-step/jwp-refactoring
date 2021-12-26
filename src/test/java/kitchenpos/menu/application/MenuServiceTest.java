@@ -9,10 +9,8 @@ import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
-import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.fixture.MenuGroupFixture;
 import kitchenpos.fixture.MenuFixture;
-import kitchenpos.product.domain.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,7 +24,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -37,6 +34,8 @@ public class MenuServiceTest {
     private MenuRepository menuRepository;
     @Mock
     private MenuValidator menuValidator;
+    @Mock
+    private ProductService productService;
 
     @InjectMocks
     private MenuService menuService;
@@ -64,8 +63,7 @@ public class MenuServiceTest {
     @DisplayName("메뉴 생성")
     @Test
     void create() {
-        //given
-        given(menuValidator.createMenu(any())).willReturn(후라이드두마리세트);
+        given(productService.getProduct(any())).willReturn(후라이드);
         given(menuRepository.save(any())).willReturn(후라이드두마리세트);
 
         MenuResponse creatMenu = menuService.create(MenuRequest.of("후라이드두마리세트", new BigDecimal("10000"), 치킨류.getId(), Arrays.asList(후라이드두마리구성Request)));
@@ -88,4 +86,5 @@ public class MenuServiceTest {
                 () -> assertThat(menus.get(0).getName()).isEqualTo("후라이드두마리세트")
         );
     }
+
 }

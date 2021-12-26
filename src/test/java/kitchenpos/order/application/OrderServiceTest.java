@@ -1,8 +1,8 @@
 package kitchenpos.order.application;
 
 import kitchenpos.fixture.*;
+import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
@@ -31,6 +31,10 @@ public class OrderServiceTest {
     private OrderValidator orderValidator;
     @Mock
     private OrderRepository orderRepository;
+    @Mock
+    private TableService tableService;
+    @Mock
+    private MenuService menuService;
 
     @InjectMocks
     private OrderService orderService;
@@ -61,10 +65,9 @@ public class OrderServiceTest {
     @DisplayName("주문 생성")
     @Test
     void create() {
-        given(orderValidator.findOrderTable(any())).willReturn(테이블1번);
+        given(tableService.findOrderTable(any())).willReturn(테이블1번);
         given(orderRepository.save(any())).willReturn(총주문);
-        given(orderValidator.toOrderLineItems(any(), any())).willReturn(Arrays.asList(후라이드두마리세트_2개_주문함));
-
+        given(menuService.findById(any())).willReturn(후라이드두마리세트);
         OrderResponse createOrder = orderService.create(총주문Request);
 
         assertAll(

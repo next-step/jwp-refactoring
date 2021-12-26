@@ -7,6 +7,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 @Transactional(readOnly = true)
@@ -19,6 +21,16 @@ public class TableValidator {
 
     public void validateCompletion(OrderTable orderTable) {
         if (!orderRepository.existsAllByOrderTableIdInAndOrderStatus(Arrays.asList(orderTable.getId()),
+                OrderStatus.COMPLETION)) {
+            throw new IllegalArgumentException();
+        }
+    }
+    public void validateCompletion(List<OrderTable> orderTables){
+        final List<Long> orderTableIds = orderTables.stream()
+                .map(OrderTable::getId)
+                .collect(Collectors.toList());
+
+        if (!orderRepository.existsAllByOrderTableIdInAndOrderStatus(orderTableIds,
                 OrderStatus.COMPLETION)) {
             throw new IllegalArgumentException();
         }

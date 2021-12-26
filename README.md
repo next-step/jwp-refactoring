@@ -108,7 +108,7 @@
   * TableGroup 간접참조
   * Orders 참조제거
 * [x] Order
-  * OrderTable 참조제거
+  * OrderTable 간접참조
   * OrderLineItem 직접참조
 * [x] OrderLineItem
   * Order 간접참조

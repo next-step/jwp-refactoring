@@ -1,6 +1,5 @@
 package kitchenpos.tableGroup.application;
 
-import kitchenpos.fixture.OrderFixture;
 import kitchenpos.fixture.OrderTableFixture;
 import kitchenpos.fixture.TableGroupFixture;
 import kitchenpos.order.application.TableService;
@@ -36,6 +35,9 @@ public class TableGroupServiceTest {
     private TableGroupRepository tableGroupRepository;
 
     @Mock
+    private  TableService tableService;
+
+    @Mock
     private ApplicationEventPublisher eventPublisher;
 
     @InjectMocks
@@ -57,7 +59,7 @@ public class TableGroupServiceTest {
     @DisplayName("단체 지정을 주문 테이블 목록 으로 등록 할 수 있다.")
     @Test
     void create() {
-        given(tableGroupValidator.getOrderTable(any())).willReturn(Arrays.asList(테이블1번, 테이블2번));
+        given(tableService.findAllByIdIn(any())).willReturn(Arrays.asList(테이블1번, 테이블2번));
         given(tableGroupRepository.save(any())).willReturn(단체_지정);
 
         TableGroupResponse create = tableGroupService.create(TableGroupFixture.샘플_Request());
@@ -73,7 +75,7 @@ public class TableGroupServiceTest {
         OrderTableIdRequest 테이블요청 = new OrderTableIdRequest(1L);
         OrderTable 테이블 = OrderTableFixture.생성(0,false);
         TableGroupRequest 단체_지정_주문테이블1개_Request = TableGroupFixture.생성_Request(Arrays.asList(테이블요청));
-        given(tableGroupValidator.getOrderTable(any())).willThrow(IllegalArgumentException.class);
+        given(tableService.findAllByIdIn(any())).willThrow(IllegalArgumentException.class);
 
         assertThatThrownBy(
                 () -> tableGroupService.create(단체_지정_주문테이블1개_Request)
