@@ -140,21 +140,9 @@ class TableServiceTest {
         assertThat(result.getNumberOfGuests()).isEqualTo(4);
     }
 
-    @DisplayName("테이블 인원이 0보다 작은 경우 예외 발생")
-    @Test
-    void 테이블_인원_변경_예외1() {
-        // given
-        OrderTable orderTable = new OrderTable(1L, null, -2, false);
-
-        // when, then
-        assertThatIllegalArgumentException().isThrownBy(
-            () -> tableService.changeNumberOfGuests(1L, orderTable)
-        );
-    }
-
     @DisplayName("빈 테이블의 인원을 변경하는 경우 예외 발생")
     @Test
-    void 테이블_인원_변경_예외2() {
+    void 테이블_인원_변경_예외() {
         // given
         OrderTable orderTable = new OrderTable(1L, null, 2, true);
         OrderTable orderTableForUpdate = new OrderTable(1L, null, 3, true);

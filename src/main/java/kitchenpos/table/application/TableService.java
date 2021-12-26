@@ -5,6 +5,7 @@ import static kitchenpos.order.domain.OrderStatus.CHANGE_EMPTY_IMPOSSIBLE_ORDER_
 
 import java.util.List;
 import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.table.domain.NumberOfGuests;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableResponse;
@@ -55,20 +56,12 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final OrderTable orderTable) {
-        final int numberOfGuests = orderTable.getNumberOfGuests();
-
-        if (numberOfGuests < 0) {
-            throw new IllegalArgumentException();
-        }
+        final NumberOfGuests numberOfGuests = orderTable.getNumberOfGuests();
 
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
 
-        if (savedOrderTable.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
-
-        savedOrderTable.setNumberOfGuests(numberOfGuests);
+        savedOrderTable.changeNumberOfGuests(numberOfGuests);
 
         return OrderTableResponse.from(orderTableRepository.save(savedOrderTable));
     }

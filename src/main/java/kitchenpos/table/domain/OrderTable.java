@@ -1,6 +1,7 @@
 package kitchenpos.table.domain;
 
 import java.util.Objects;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
@@ -18,7 +19,8 @@ public class OrderTable {
     @JoinColumn(name = "table_group_id", foreignKey = @ForeignKey(name = "fk_order_table_table_group"))
     private Long tableGroupId;
 
-    private int numberOfGuests;
+    @Embedded
+    private NumberOfGuests numberOfGuests;
 
     private boolean empty;
 
@@ -31,14 +33,14 @@ public class OrderTable {
 
     private OrderTable(Long tableGroupId, int numberOfGuests, boolean empty) {
         this.tableGroupId = tableGroupId;
-        this.numberOfGuests = numberOfGuests;
+        this.numberOfGuests = NumberOfGuests.of(numberOfGuests);
         this.empty = empty;
     }
 
     public OrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
         this.id = id;
         this.tableGroupId = tableGroupId;
-        this.numberOfGuests = numberOfGuests;
+        this.numberOfGuests = NumberOfGuests.of(numberOfGuests);
         this.empty = empty;
     }
 
@@ -67,6 +69,12 @@ public class OrderTable {
         this.tableGroupId = null;
     }
 
+    private void validateForChangeNumberOfGuests() {
+        if (isEmpty()) {
+            throw new IllegalArgumentException("테이블이 비어있습니다");
+        }
+    }
+
     public void validateForChangeEmpty() {
         if (hasGroup()) {
             throw new IllegalArgumentException("그룹이 있는 테이블은 빈 상태로 변경할 수 없습니다");
@@ -85,11 +93,12 @@ public class OrderTable {
         return tableGroupId;
     }
 
-    public int getNumberOfGuests() {
+    public NumberOfGuests getNumberOfGuests() {
         return numberOfGuests;
     }
 
-    public void setNumberOfGuests(final int numberOfGuests) {
+    public void changeNumberOfGuests(final NumberOfGuests numberOfGuests) {
+        validateForChangeNumberOfGuests();
         this.numberOfGuests = numberOfGuests;
     }
 

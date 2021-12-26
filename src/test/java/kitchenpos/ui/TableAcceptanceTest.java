@@ -69,10 +69,10 @@ class TableAcceptanceTest extends AcceptanceTest {
     void changeNumberOfGuests() {
         // given
         OrderTableResponse 인원수_네_명_테이블 = 주문테이블_생성(4, false);
-        OrderTable 인원수_두_명으로_변경된_테이블 = new OrderTable(인원수_네_명_테이블.getId(), null, 2, false);
+        OrderTableRequest 인원수_두_명으로_변경된_테이블 = new OrderTableRequest(2, false);
 
         // when
-        ExtractableResponse<Response> 테이블_인원수_변경_응답 = 테이블_인원수_변경(인원수_두_명으로_변경된_테이블);
+        ExtractableResponse<Response> 테이블_인원수_변경_응답 = 테이블_인원수_변경(인원수_네_명_테이블, 인원수_두_명으로_변경된_테이블);
 
         // then
         테이블_인원수가_두_명으로_변경됨(테이블_인원수_변경_응답);
@@ -96,9 +96,11 @@ class TableAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    private void 주문테이블_두_개가_포함됨(ExtractableResponse<Response> 테이블목록_조회_응답, OrderTableResponse orderTable1,
+    private void 주문테이블_두_개가_포함됨(ExtractableResponse<Response> 테이블목록_조회_응답,
+        OrderTableResponse orderTable1,
         OrderTableResponse orderTable2) {
-        List<OrderTableResponse> orderTables = Lists.newArrayList(테이블목록_조회_응답.as(OrderTableResponse[].class));
+        List<OrderTableResponse> orderTables = Lists.newArrayList(
+            테이블목록_조회_응답.as(OrderTableResponse[].class));
         assertThat(orderTables).extracting(OrderTableResponse::getId)
             .contains(orderTable1.getId(), orderTable2.getId());
     }
@@ -114,14 +116,15 @@ class TableAcceptanceTest extends AcceptanceTest {
         assertThat(response.as(OrderTable.class).isEmpty()).isTrue();
     }
 
-    private ExtractableResponse<Response> 테이블_인원수_변경(OrderTable orderTable) {
-        String url = String.format("/api/tables/%s/number-of-guests", orderTable.getId());
-        return put(url, orderTable);
+    private ExtractableResponse<Response> 테이블_인원수_변경(OrderTableResponse orderTableResponse,
+        OrderTableRequest orderTableRequest) {
+        String url = String.format("/api/tables/%s/number-of-guests", orderTableResponse.getId());
+        return put(url, orderTableRequest);
     }
 
     private void 테이블_인원수가_두_명으로_변경됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.as(OrderTable.class).getNumberOfGuests()).isEqualTo(2);
+        assertThat(response.as(OrderTableResponse.class).getNumberOfGuests()).isEqualTo(2);
     }
 
     public static OrderTableResponse 주문테이블_생성(int numberOfGuests, boolean empty) {
