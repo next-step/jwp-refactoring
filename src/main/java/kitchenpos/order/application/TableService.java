@@ -3,7 +3,6 @@ package kitchenpos.order.application;
 import kitchenpos.order.application.exception.TableNotFoundException;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.TableRepository;
-import kitchenpos.order.domain.TableValidator;
 import kitchenpos.order.dto.OrderStatusRequest;
 import kitchenpos.order.dto.TableRequest;
 import kitchenpos.order.dto.TableResponse;

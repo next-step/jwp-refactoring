@@ -4,7 +4,6 @@ import kitchenpos.order.application.exception.InvalidOrderState;
 import kitchenpos.order.application.exception.InvalidTableState;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.TableState;
-import kitchenpos.order.domain.TableValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

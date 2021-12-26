@@ -1,7 +1,10 @@
-package kitchenpos.order.domain;
+package kitchenpos.order.application;
 
 import kitchenpos.order.application.exception.InvalidOrderState;
 import kitchenpos.order.application.exception.InvalidTableState;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.domain.TableState;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;

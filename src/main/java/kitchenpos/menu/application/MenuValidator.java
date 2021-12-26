@@ -1,8 +1,9 @@
-package kitchenpos.menu.domain;
+package kitchenpos.menu.application;
 
 import kitchenpos.menu.application.exception.InvalidPrice;
 import kitchenpos.menu.application.exception.MenuGroupNotFoundException;
 import kitchenpos.menu.application.exception.ProductNotFoundException;
+import kitchenpos.menu.domain.*;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -12,7 +13,7 @@ public class MenuValidator {
     private final MenuGroupRepository menuGroupRepository;
     private final ProductRepository productRepository;
 
-    public MenuValidator(MenuGroupRepository menuGroupRepository, ProductRepository productRepository) {
+    public MenuValidator(final MenuGroupRepository menuGroupRepository, final ProductRepository productRepository) {
         this.menuGroupRepository = menuGroupRepository;
         this.productRepository = productRepository;
     }
