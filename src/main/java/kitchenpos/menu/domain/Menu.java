@@ -59,14 +59,6 @@ public class Menu {
         menuProducts.forEach(menuProduct -> menuProduct.setMenu(this));
     }
 
-    public void setMenuGroup(MenuGroup menuGroup) {
-        if (this.menuGroup != null) {
-            this.menuGroup.getMenus().remove(this);
-        }
-        this.menuGroup = menuGroup;
-        menuGroup.getMenus().add(this);
-    }
-
     public Long getId() {
         return id;
     }

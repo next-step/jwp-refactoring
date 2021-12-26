@@ -54,7 +54,7 @@ class MenuServiceTest {
         매콤치킨구성 = new MenuProduct(매콤치킨, 1L);
         치즈볼구성 = new MenuProduct(치즈볼, 2L);
 
-        인기메뉴그룹 = new MenuGroup(1L, "인기메뉴");
+        인기메뉴그룹 = new MenuGroup("인기메뉴");
 
         매콤치킨단품 = Menu.of("매콤치킨단품", BigDecimal.valueOf(13000), 인기메뉴그룹, Collections.singletonList(매콤치킨구성));
         매콤치즈볼세트 = Menu.of("매콤치즈볼세트", BigDecimal.valueOf(15000), 인기메뉴그룹, Arrays.asList(매콤치킨구성, 치즈볼구성));
@@ -64,7 +64,7 @@ class MenuServiceTest {
     @DisplayName("메뉴를 등록한다.")
     void create() {
         MenuProductRequest 메뉴상품 = new MenuProductRequest(매콤치킨.getId(), 1L);
-        MenuRequest 메뉴요청 = MenuRequest.of("매콤치킨단품", BigDecimal.valueOf(13000), 인기메뉴그룹.getId(), Collections.singletonList(메뉴상품));
+        MenuRequest 메뉴요청 = MenuRequest.of("매콤치킨단품", BigDecimal.valueOf(13000), 1L, Collections.singletonList(메뉴상품));
 
         when(menuGroupRepository.findById(anyLong())).thenReturn(Optional.of(인기메뉴그룹));
         when(productRepository.findById(anyLong())).thenReturn(Optional.of(매콤치킨));
@@ -94,7 +94,7 @@ class MenuServiceTest {
     @DisplayName("메뉴에 속한 상품이 존재하지 않는 경우 예외가 발생한다.")
     void validateProduct() {
         MenuProductRequest 메뉴상품 = new MenuProductRequest(매콤치킨.getId(), 1L);
-        MenuRequest 상품없는메뉴 = MenuRequest.of("통통치킨한마리", BigDecimal.valueOf(10000), 인기메뉴그룹.getId(), Collections.singletonList(메뉴상품));
+        MenuRequest 상품없는메뉴 = MenuRequest.of("통통치킨한마리", BigDecimal.valueOf(10000), 1L, Collections.singletonList(메뉴상품));
 
         when(menuGroupRepository.findById(1L)).thenReturn(Optional.of(인기메뉴그룹));
 

@@ -44,7 +44,7 @@ class MenuGroupServiceTest {
         MenuGroupResponse response = menuGroupService.create(new MenuGroupRequest("베스트메뉴"));
 
         verify(menuGroupRepository, times(1)).save(any(MenuGroup.class));
-        assertThat(response.getName()).isEqualTo(this.베스트메뉴.getName());
+        assertThat(response.getName()).isEqualTo(베스트메뉴.getName());
     }
 
     @Test

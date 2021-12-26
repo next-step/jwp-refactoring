@@ -1,11 +1,14 @@
 package kitchenpos.menu.ui;
 
+import kitchenpos.common.BindingException;
 import kitchenpos.menu.application.MenuGroupService;
 import kitchenpos.menu.dto.MenuGroupRequest;
 import kitchenpos.menu.dto.MenuGroupResponse;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
@@ -19,7 +22,10 @@ public class MenuGroupRestController {
     }
 
     @PostMapping("/menu-groups")
-    public ResponseEntity<MenuGroupResponse> create(@RequestBody final MenuGroupRequest request) {
+    public ResponseEntity<MenuGroupResponse> create(@RequestBody @Valid final MenuGroupRequest request, BindingResult bs) {
+        if (bs.hasErrors()) {
+            throw new BindingException();
+        }
         final MenuGroupResponse response = menuGroupService.create(request);
         final URI uri = URI.create("/api/menu-groups/" + response.getId());
         return ResponseEntity.created(uri).body(response);
