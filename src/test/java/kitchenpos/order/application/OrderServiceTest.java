@@ -31,7 +31,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
@@ -112,18 +111,5 @@ public class OrderServiceTest {
 
         // then
         assertThat(수정된_주문.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name());
-    }
-
-    @DisplayName("주문 상태 수정 실패 테스트 - 수정 전 주문 상태가 COMPLETION")
-    @Test
-    void changeOrderStatus_failure_orderStatus() {
-        // given
-        ChangeOrderStatusRequest changeOrderStatusRequest = ChangeOrderStatusRequest.of(OrderStatus.MEAL.name());
-
-        given(orderRepository.findById(any(Long.class))).willReturn(Optional.of(완료_주문));
-
-        // when & then
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> orderService.changeOrderStatus(완료_주문.getId(), changeOrderStatusRequest));
     }
 }

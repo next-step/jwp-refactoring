@@ -47,7 +47,7 @@ public class OrderService {
         Order persistOrder = findById(orderId);
         OrderStatus orderStatus = OrderStatus.valueOf(request.getOrderStatus());
 
-        persistOrder.changeOrderStatus(orderStatus);
+        persistOrder.changeOrderStatus(orderStatus, orderValidator);
         return OrderResponse.of(persistOrder);
     }
 

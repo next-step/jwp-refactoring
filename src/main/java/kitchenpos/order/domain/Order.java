@@ -1,5 +1,6 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.order.application.OrderValidator;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -80,10 +81,8 @@ public class Order {
         return orderLineItems;
     }
 
-    public void changeOrderStatus(OrderStatus orderStatus) {
-        if (this.orderStatus.isCompletion()) {
-            throw new IllegalArgumentException("주문 상태가 completion인 경우 주문 상태를 변경할 수 없습니다.");
-        }
+    public void changeOrderStatus(OrderStatus orderStatus, OrderValidator orderValidator) {
+        orderValidator.validateChangeOrderStatus(this);
         this.orderStatus = orderStatus;
     }
 

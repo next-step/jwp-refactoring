@@ -44,34 +44,4 @@ class OrderTest {
                 , () -> assertThat(order.getOrderLineItems()).isEqualTo(orderLineItems)
         );
     }
-
-    @DisplayName("주문 상태 수정 성공 테스트")
-    @Test
-    void changeOrderStatus_success() {
-        // given
-        Order order = Order.of(orderTableId, OrderStatus.COOKING, orderedTime, orderLineItems);
-
-        // when
-        order.changeOrderStatus(OrderStatus.MEAL);
-
-        // then
-        assertAll(
-                () -> assertThat(order).isNotNull()
-                , () -> assertThat(order.getOrderTableId()).isEqualTo(orderTableId)
-                , () -> assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.MEAL)
-                , () -> assertThat(order.getOrderedTime()).isEqualTo(orderedTime)
-                , () -> assertThat(order.getOrderLineItems()).isEqualTo(orderLineItems)
-        );
-    }
-
-    @DisplayName("주문 상태 수정 실패 테스트 - 주문 상태가 completion인 경우 주문 상태 변경할 수 없음")
-    @Test
-    void changeOrderStatus_failure() {
-        // given
-        Order order = Order.of(orderTableId, OrderStatus.COMPLETION, orderedTime, orderLineItems);
-
-        // when & then
-        org.assertj.core.api.Assertions.assertThatIllegalArgumentException()
-                .isThrownBy(() -> order.changeOrderStatus(OrderStatus.MEAL));
-    }
 }

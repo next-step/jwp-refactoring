@@ -1,5 +1,7 @@
 package kitchenpos.order.domain;
 
+import org.springframework.util.CollectionUtils;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.FetchType;
@@ -18,6 +20,9 @@ public class OrderLineItems {
     }
 
     public OrderLineItems(List<OrderLineItem> orderLineItems) {
+        if (CollectionUtils.isEmpty(orderLineItems)) {
+            throw new IllegalArgumentException("주문 항목이 없습니다.");
+        }
         this.orderLineItems = orderLineItems;
     }
 

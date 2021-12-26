@@ -37,6 +37,12 @@ public class OrderValidator {
         validateOrderLineItems(order.getOrderLineItems());
     }
 
+    public void validateChangeOrderStatus(Order order) {
+        if (order.getOrderStatus().isCompletion()) {
+            throw new IllegalArgumentException("주문 상태가 완료인 경우 주문 상태를 수정할 수 없습니다.");
+        }
+    }
+
     private void validateOrderTable(Long orderTableId) {
         validateOrderTableExists(orderTableId);
         validateOrderTableIsEmpty(orderTableId);

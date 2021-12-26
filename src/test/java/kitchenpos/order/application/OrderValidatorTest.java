@@ -15,7 +15,6 @@ import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.Empty;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -92,7 +91,7 @@ class OrderValidatorTest {
         given(orderTableRepository.existsById(orderTableId)).willReturn(Boolean.FALSE);
 
         // when & then
-        Assertions.assertThatIllegalArgumentException()
+        assertThatIllegalArgumentException()
                 .isThrownBy(() -> orderValidator.validateCreate(order));
     }
 
@@ -112,21 +111,6 @@ class OrderValidatorTest {
                 .isThrownBy(() -> orderValidator.validateCreate(order));
     }
 
-    @DisplayName("주문 생성 유효성 검증 실패 테스트 - 주문 항목 없음")
-    @Test
-    void validateCreate_failure_validateOrderLineItemsSize() {
-        // given
-        OrderTable orderTable = OrderTable.of(orderTableId, Empty.of(false));
-        Order order = Order.of(orderTableId, OrderStatus.COOKING, LocalDateTime.now(), OrderLineItems.of(Collections.emptyList()));
-
-        given(orderTableRepository.existsById(orderTableId)).willReturn(Boolean.TRUE);
-        given(tableService.findById(orderTableId)).willReturn(orderTable);
-
-        // when & then
-        Assertions.assertThatIllegalArgumentException()
-                .isThrownBy(() -> orderValidator.validateCreate(order));
-    }
-
     @DisplayName("주문 생성 유효성 검증 실패 테스트 - 메뉴 수 일치하지 않음")
     @Test
     void validateCreate_failure_invalidMenuSize() {
@@ -140,7 +124,43 @@ class OrderValidatorTest {
         given(menuRepository.findByIdIn(Arrays.asList(menuId))).willReturn(Collections.emptyList());
 
         // when & then
-        Assertions.assertThatIllegalArgumentException()
+        assertThatIllegalArgumentException()
                 .isThrownBy(() -> orderValidator.validateCreate(order));
+    }
+
+    @DisplayName("주문 상태 수정 유효성 검증 성공 테스트 - 주문 상태 COOKING")
+    @Test
+    void validateChangeOrderStatus_success_cooking() {
+        // given
+        OrderLineItem orderLineItem = OrderLineItem.of(menuId, Quantity.of(1));
+        Order order = Order.of(orderTableId, OrderStatus.COOKING, LocalDateTime.now(), OrderLineItems.of(Arrays.asList(orderLineItem)));
+
+        // when & then
+        assertThatNoException()
+                .isThrownBy(() -> orderValidator.validateChangeOrderStatus(order));
+    }
+
+    @DisplayName("주문 상태 수정 유효성 검증 성공 테스트 - 주문 상태 MEAL")
+    @Test
+    void validateChangeOrderStatus_success_meal() {
+        // given
+        OrderLineItem orderLineItem = OrderLineItem.of(menuId, Quantity.of(1));
+        Order order = Order.of(orderTableId, OrderStatus.MEAL, LocalDateTime.now(), OrderLineItems.of(Arrays.asList(orderLineItem)));
+
+        // when & then
+        assertThatNoException()
+                .isThrownBy(() -> orderValidator.validateChangeOrderStatus(order));
+    }
+
+    @DisplayName("주문 상태 수정 유효성 검증 실패 테스트 - 주문 상태가 COMPLETION인 경우 주문 상태를 수정할 수 없음")
+    @Test
+    void validateChangeOrderStatus_failure() {
+        // given
+        OrderLineItem orderLineItem = OrderLineItem.of(menuId, Quantity.of(1));
+        Order order = Order.of(orderTableId, OrderStatus.COMPLETION, LocalDateTime.now(), OrderLineItems.of(Arrays.asList(orderLineItem)));
+
+        // when & then
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> orderValidator.validateChangeOrderStatus(order));
     }
 }
