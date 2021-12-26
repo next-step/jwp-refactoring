@@ -43,15 +43,15 @@ public class OrderLineItem {
         return seq;
     }
 
-    public Order getOrder() {
-        return order;
+    public Long getOrderId() {
+        return order.getId();
     }
 
-    public Menu getMenu() {
-        return menu;
+    public Long getMenuId() {
+        return menu.getId();
     }
 
-    public Quantity getQuantity() {
-        return quantity;
+    public Long getQuantity() {
+        return quantity.getQuantity();
     }
 }

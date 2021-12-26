@@ -44,8 +44,8 @@ public class OrderTable {
         return tableGroup;
     }
 
-    public NumberOfGuests getNumberOfGuests() {
-        return numberOfGuests;
+    public int getNumberOfGuests() {
+        return numberOfGuests.getNumberOfGuests();
     }
 
     public void changeNumberOfGuests(final int numberOfGuests) {

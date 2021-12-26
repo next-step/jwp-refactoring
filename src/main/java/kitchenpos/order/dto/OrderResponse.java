@@ -32,7 +32,7 @@ public class OrderResponse {
             .collect(Collectors.toList());
 
         return new OrderResponse(order.getId(), order.getOrderTable().getId(),
-            order.getOrderStatus().name(), order.getOrderedTime(), orderLineItems);
+            order.getOrderStatus(), order.getOrderedTime(), orderLineItems);
     }
 
     public Long getId() {

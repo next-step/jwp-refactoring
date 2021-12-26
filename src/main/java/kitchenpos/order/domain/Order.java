@@ -60,8 +60,8 @@ public class Order {
         return orderTable;
     }
 
-    public OrderStatus getOrderStatus() {
-        return orderStatus;
+    public String getOrderStatus() {
+        return orderStatus.name();
     }
 
     public void changeOrderStatus(final OrderStatus orderStatus) {
