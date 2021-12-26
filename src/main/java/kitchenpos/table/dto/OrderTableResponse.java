@@ -9,8 +9,11 @@ import java.util.stream.Collectors;
 
 public class OrderTableResponse {
     private Long id;
+
     private Long tableGroupId;
+
     private int numberOfGuests;
+
     private boolean empty;
 
     public OrderTableResponse(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {

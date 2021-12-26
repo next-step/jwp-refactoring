@@ -10,6 +10,7 @@ import java.util.List;
 @Embeddable
 public class MenuProducts {
     public static final int INITAL_SUM_PRICE = 0;
+
     @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
     List<MenuProduct> menuProducts;
 

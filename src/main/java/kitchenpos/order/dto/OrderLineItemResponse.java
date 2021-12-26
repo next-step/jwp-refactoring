@@ -8,7 +8,9 @@ import java.util.stream.Collectors;
 
 public class OrderLineItemResponse {
     private Long seq;
+
     private Long menuId;
+
     private Long quantity;
 
     public OrderLineItemResponse(Long seq, Long menuId, Long quantity) {

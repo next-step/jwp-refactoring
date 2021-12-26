@@ -9,8 +9,11 @@ import java.util.Objects;
 @Embeddable
 public class Price {
     public static final String MESSAGE_NEGATIVE_PRICE = "가격이 0보다 작거나 같을 수 없습니다";
+
     public static final int MIN_PRICE = 0;
+
     public static Price Zero = new Price(BigDecimal.ZERO);
+
     private BigDecimal price;
 
     public Price(BigDecimal price) {

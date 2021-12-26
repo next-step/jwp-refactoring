@@ -15,6 +15,7 @@ import java.util.List;
 @Service
 public class TableGroupService {
     private final OrderTableRepository orderTableRepository;
+
     private final TableGroupRepository tableGroupRepository;
 
     public TableGroupService(OrderTableRepository orderTableRepository, TableGroupRepository tableGroupRepository) {

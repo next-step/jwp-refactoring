@@ -9,10 +9,13 @@ public class OrderLineItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
+
     @ManyToOne(fetch = FetchType.LAZY)
     private Order order;
+
     @ManyToOne
     private Menu menu;
+
     private long quantity;
 
     public OrderLineItem(Menu menu, Long quantity) {

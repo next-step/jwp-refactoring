@@ -14,11 +14,15 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @ManyToOne
     private OrderTable orderTable;
+
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
+
     private LocalDateTime orderedTime;
+
     @Embedded
     private OrderLineItems orderLineItems;
 

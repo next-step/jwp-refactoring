@@ -2,6 +2,7 @@ package kitchenpos.table.dto;
 
 public class OrderTableRequest {
     private int numberOfGuests;
+
     private boolean empty;
 
     public OrderTableRequest(int numberOfGuests, boolean empty) {

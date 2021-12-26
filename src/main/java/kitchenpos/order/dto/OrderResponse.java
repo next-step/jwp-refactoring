@@ -8,9 +8,13 @@ import java.util.List;
 
 public class OrderResponse {
     private Long id;
+
     private Long orderTableId;
+
     private OrderStatus orderStatus;
+
     private LocalDateTime orderedTime;
+
     private List<OrderLineItemResponse> orderLineItems;
 
     public OrderResponse(Long id, Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItemResponse> orderLineItems) {

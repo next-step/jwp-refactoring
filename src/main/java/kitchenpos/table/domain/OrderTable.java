@@ -14,13 +14,18 @@ import java.util.Objects;
 @Entity
 public class OrderTable {
     public static final int ZERO = 0;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @ManyToOne(fetch = FetchType.LAZY)
     private TableGroup tableGroup = new TableGroup();
+
     private int numberOfGuests;
+
     private boolean empty;
+
     @Embedded
     private Orders orders;
 

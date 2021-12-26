@@ -8,7 +8,9 @@ import java.util.List;
 
 public class TableGroupResponse {
     private Long id;
+
     private LocalDateTime createdDate;
+
     private List<OrderTableResponse> orderTables;
 
     public TableGroupResponse(Long id, LocalDateTime createdDate, List<OrderTableResponse> orderTables) {

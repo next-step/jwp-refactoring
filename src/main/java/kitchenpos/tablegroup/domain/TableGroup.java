@@ -12,10 +12,13 @@ import java.util.Objects;
 @Entity
 public class TableGroup {
     public static final int ORDERTABLE_MIN = 2;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private LocalDateTime createdDate;
+
     @OneToMany(mappedBy = "tableGroup", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderTable> orderTables;
 

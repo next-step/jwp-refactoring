@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 public class MenuGroupResponse {
     private Long id;
+
     private String name;
 
     public MenuGroupResponse(Long id, String name) {

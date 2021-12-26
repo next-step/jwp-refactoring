@@ -25,8 +25,10 @@ import static org.mockito.Mockito.when;
 class OrderServiceTest {
     @Mock
     private OrderRepository orderRepository;
+
     @Mock
     private TableService tableService;
+
     @Mock
     private MenuService menuService;
 

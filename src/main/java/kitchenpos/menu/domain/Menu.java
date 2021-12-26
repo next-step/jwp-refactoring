@@ -11,15 +11,20 @@ import java.math.BigDecimal;
 @Entity
 public class Menu {
     public static final int MIN_MENU_PRICE = 0;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String name;
+
     @Embedded
     @Column(nullable = false)
     private Price price;
+
     @ManyToOne
     private MenuGroup menuGroup;
+
     @Embedded
     private MenuProducts menuProducts;
 

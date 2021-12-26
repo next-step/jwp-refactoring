@@ -8,8 +8,11 @@ import java.util.stream.Collectors;
 
 public class MenuProductResponse {
     private Long seq;
+
     private Long menuId;
+
     private Long productId;
+
     private Long quantity;
 
     public MenuProductResponse(Long seq, Long menuId, Long productId, long quantity) {

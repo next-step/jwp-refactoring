@@ -9,10 +9,13 @@ public class MenuProduct {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
+
     @ManyToOne
     private Menu menu;
+
     @ManyToOne
     private Product product;
+
     private long quantity;
 
     public MenuProduct() {
