@@ -9,7 +9,6 @@ import kitchenpos.common.vo.Quantity;
 import kitchenpos.menu.testfixtures.MenuTestFixtures;
 import kitchenpos.order.exception.ClosedTableOrderException;
 import kitchenpos.order.exception.CompleteOrderChangeStateException;
-import kitchenpos.order.exception.DuplicateOrderLineItemsException;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.vo.NumberOfGuests;
 import org.junit.jupiter.api.DisplayName;
@@ -23,7 +22,7 @@ class OrderTest {
         //given
         OrderTable orderTable = new OrderTable(1L, new NumberOfGuests(6), false);
         List<OrderLineItem> orderLineItems = Arrays.asList(
-            new OrderLineItem(MenuTestFixtures.서비스군만두, new Quantity(5L))
+            new OrderLineItem(MenuTestFixtures.서비스군만두.getId(), new Quantity(5L))
         );
 
         //when
@@ -39,27 +38,12 @@ class OrderTest {
         //given
         OrderTable orderTable = new OrderTable(1L, new NumberOfGuests(6), true);
         List<OrderLineItem> orderLineItems = Arrays.asList(
-            new OrderLineItem(MenuTestFixtures.서비스군만두, new Quantity(5L))
+            new OrderLineItem(MenuTestFixtures.서비스군만두.getId(), new Quantity(5L))
         );
 
         //when, then
         assertThatThrownBy(() -> new Order(orderTable, orderLineItems))
             .isInstanceOf(ClosedTableOrderException.class);
-    }
-
-    @DisplayName("주문항목 리스트에 중복되는 메뉴가 존재해서는 안된다.")
-    @Test
-    void constructor_exception2() {
-        //given
-        OrderTable orderTable = new OrderTable(1L, new NumberOfGuests(6), true);
-        List<OrderLineItem> orderLineItems = Arrays.asList(
-            new OrderLineItem(MenuTestFixtures.서비스군만두, new Quantity(5L)),
-            new OrderLineItem(MenuTestFixtures.서비스군만두, new Quantity(2L))
-        );
-
-        //when, then
-        assertThatThrownBy(() -> new Order(orderTable, orderLineItems))
-            .isInstanceOf(DuplicateOrderLineItemsException.class);
     }
 
     @DisplayName("주문 상태 변경")
@@ -68,7 +52,7 @@ class OrderTest {
         //given
         OrderTable orderTable = new OrderTable(1L, new NumberOfGuests(6), false);
         List<OrderLineItem> orderLineItems = Arrays.asList(
-            new OrderLineItem(MenuTestFixtures.서비스군만두, new Quantity(5L))
+            new OrderLineItem(MenuTestFixtures.서비스군만두.getId(), new Quantity(5L))
         );
         Order order = new Order(orderTable, orderLineItems);
 
@@ -85,7 +69,7 @@ class OrderTest {
         //given
         OrderTable orderTable = new OrderTable(1L, new NumberOfGuests(6), false);
         List<OrderLineItem> orderLineItems = Arrays.asList(
-            new OrderLineItem(MenuTestFixtures.서비스군만두, new Quantity(5L))
+            new OrderLineItem(MenuTestFixtures.서비스군만두.getId(), new Quantity(5L))
         );
         Order order = new Order(orderTable, orderLineItems);
         order.changeOrderStatus(OrderStatus.COMPLETION);

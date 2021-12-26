@@ -64,8 +64,8 @@ class OrderRestControllerTest {
     void create() throws Exception {
         //given
         List<OrderLineItem> orderLineItems = Arrays.asList(
-            new OrderLineItem(혼술세트, new Quantity(1L)),
-            new OrderLineItem(이달의메뉴, new Quantity(3L)));
+            new OrderLineItem(혼술세트.getId(), new Quantity(1L)),
+            new OrderLineItem(이달의메뉴.getId(), new Quantity(3L)));
         OrderRequest requestOrder = OrderTestFixtures.convertToOrderRequest(
             new Order(테이블1번, orderLineItems));
         OrderResponse expectedOrder = OrderResponse.from(new Order(1L, 테이블1번, OrderStatus.COOKING,
@@ -87,12 +87,12 @@ class OrderRestControllerTest {
     void list() throws Exception {
         //given
         List<OrderLineItem> orderLineItems1 = Arrays.asList(
-            new OrderLineItem(혼술세트, new Quantity(1L)),
-            new OrderLineItem(이달의메뉴, new Quantity(3L)));
+            new OrderLineItem(혼술세트.getId(), new Quantity(1L)),
+            new OrderLineItem(이달의메뉴.getId(), new Quantity(3L)));
 
         List<OrderLineItem> orderLineItems2 = Arrays.asList(
-            new OrderLineItem(혼술세트, new Quantity(2L)),
-            new OrderLineItem(이달의메뉴, new Quantity(2L)));
+            new OrderLineItem(혼술세트.getId(), new Quantity(2L)),
+            new OrderLineItem(이달의메뉴.getId(), new Quantity(2L)));
 
         List<OrderResponse> expectedOrders = OrderResponse.fromList(Arrays.asList(
             new Order(1L, 테이블1번, OrderStatus.MEAL, orderLineItems1),
@@ -118,8 +118,8 @@ class OrderRestControllerTest {
     void changeOrderStatus() throws Exception {
         //given
         List<OrderLineItem> orderLineItems = Arrays.asList(
-            new OrderLineItem(혼술세트, new Quantity(1L)),
-            new OrderLineItem(이달의메뉴, new Quantity(3L)));
+            new OrderLineItem(혼술세트.getId(), new Quantity(1L)),
+            new OrderLineItem(이달의메뉴.getId(), new Quantity(3L)));
         OrderStatus changeOrderStatus = OrderStatus.MEAL;
         OrderRequest requestOrder = OrderTestFixtures.convertToChangeOrderStatusRequest(
             changeOrderStatus);

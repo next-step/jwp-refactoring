@@ -8,10 +8,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.common.vo.Price;
 import kitchenpos.common.vo.Quantity;
-import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.testfixtures.MenuTestFixtures;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
@@ -23,6 +21,7 @@ import kitchenpos.ordertable.application.TableService;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.testfixtures.TableTestFixtures;
 import kitchenpos.ordertable.vo.NumberOfGuests;
+import kitchenpos.validator.OrderMenuValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -38,13 +37,13 @@ class OrderServiceTest {
     private OrderRepository orderRepository;
 
     @Mock
-    private MenuService menuService;
-
-    @Mock
     private TableService tableService;
 
     @InjectMocks
     private OrderService orderService;
+
+    @Mock
+    private OrderMenuValidator orderMenuValidator;
 
     private Menu 혼술세트;
     private Menu 이달의메뉴;
@@ -62,15 +61,12 @@ class OrderServiceTest {
         //given
         OrderTable orderTable = new OrderTable(1L, new NumberOfGuests(6), false);
         List<OrderLineItem> orderLineItems = Arrays.asList(
-            new OrderLineItem(혼술세트, new Quantity(1L)),
-            new OrderLineItem(이달의메뉴, new Quantity(3L)));
+            new OrderLineItem(혼술세트.getId(), new Quantity(1L)),
+            new OrderLineItem(이달의메뉴.getId(), new Quantity(3L)));
 
         OrderRequest requestOrder = OrderTestFixtures.convertToOrderRequest(
             new Order(orderTable, orderLineItems));
         Order expectedOrder = new Order(1L, orderTable, OrderStatus.COOKING, orderLineItems);
-
-        MenuTestFixtures.특정_메뉴_조회_모킹(menuService, 혼술세트);
-        MenuTestFixtures.특정_메뉴_조회_모킹(menuService, 이달의메뉴);
         OrderTestFixtures.주문_저장_결과_모킹(orderRepository, expectedOrder);
         TableTestFixtures.특정_주문테이블_조회_모킹(tableService, orderTable);
 
@@ -87,11 +83,11 @@ class OrderServiceTest {
         // given
         OrderTable orderTable = new OrderTable(1L, new NumberOfGuests(6), false);
         List<OrderLineItem> orderLineItems1 = Arrays.asList(
-            new OrderLineItem(혼술세트, new Quantity(1L)),
-            new OrderLineItem(이달의메뉴, new Quantity(3L)));
+            new OrderLineItem(혼술세트.getId(), new Quantity(1L)),
+            new OrderLineItem(이달의메뉴.getId(), new Quantity(3L)));
         List<OrderLineItem> orderLineItems2 = Arrays.asList(
-            new OrderLineItem(혼술세트, new Quantity(2L)),
-            new OrderLineItem(이달의메뉴, new Quantity(5L)));
+            new OrderLineItem(혼술세트.getId(), new Quantity(2L)),
+            new OrderLineItem(이달의메뉴.getId(), new Quantity(5L)));
         List<Order> orders = Arrays.asList(
             new Order(1L, orderTable, OrderStatus.MEAL, orderLineItems1),
             new Order(2L, orderTable, OrderStatus.COMPLETION, orderLineItems2));
@@ -112,8 +108,8 @@ class OrderServiceTest {
         // given
         OrderTable orderTable = new OrderTable(1L, new NumberOfGuests(6), false);
         List<OrderLineItem> orderLineItems = Arrays.asList(
-            new OrderLineItem(혼술세트, new Quantity(1L)),
-            new OrderLineItem(이달의메뉴, new Quantity(3L)));
+            new OrderLineItem(혼술세트.getId(), new Quantity(1L)),
+            new OrderLineItem(이달의메뉴.getId(), new Quantity(3L)));
         Order order = new Order(1L, orderTable, OrderStatus.MEAL, orderLineItems);
         OrderTestFixtures.특정_주문_조회_모킹(orderRepository, order);
 

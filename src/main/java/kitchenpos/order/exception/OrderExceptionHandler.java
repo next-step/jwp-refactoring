@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class OrderExceptionHandler {
 
-    @ExceptionHandler(DuplicateOrderLineItemsException.class)
+    @ExceptionHandler(InvalidMenuInOrderLineItems.class)
     public ResponseEntity handleDuplicateOrderLineItemsException(
-        DuplicateOrderLineItemsException e) {
+        InvalidMenuInOrderLineItems e) {
         return ResponseEntity.badRequest().build();
     }
 

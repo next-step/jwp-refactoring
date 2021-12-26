@@ -47,7 +47,7 @@ public class OrderTestFixtures {
     }
 
     private static OrderLineItemRequest convertToOrderLineItemRequest(OrderLineItem orderLineItem) {
-        return new OrderLineItemRequest(orderLineItem.getMenu().getId(),
+        return new OrderLineItemRequest(orderLineItem.getMenuId(),
             orderLineItem.getQuantityVal());
     }
 }

@@ -3,21 +3,20 @@ package kitchenpos.order.dto;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.order.domain.OrderLineItem;
 
 public class OrderLineItemResponse {
 
     private Long id;
-    private MenuResponse menu;
+    private Long menuId;
     private long quantity;
 
     private OrderLineItemResponse() {
     }
 
-    public OrderLineItemResponse(Long seq, MenuResponse menu, long quantity) {
+    public OrderLineItemResponse(Long seq, Long menuId, long quantity) {
         this.id = seq;
-        this.menu = menu;
+        this.menuId = menuId;
         this.quantity = quantity;
     }
 
@@ -30,7 +29,7 @@ public class OrderLineItemResponse {
 
     public static OrderLineItemResponse from(OrderLineItem orderLineItem) {
         return new OrderLineItemResponse(orderLineItem.getId(),
-            MenuResponse.from(orderLineItem.getMenu()),
+            orderLineItem.getMenuId(),
             orderLineItem.getQuantityVal());
     }
 
@@ -38,8 +37,8 @@ public class OrderLineItemResponse {
         return id;
     }
 
-    public MenuResponse getMenu() {
-        return menu;
+    public Long getMenuId() {
+        return menuId;
     }
 
     public long getQuantity() {
@@ -56,11 +55,11 @@ public class OrderLineItemResponse {
         }
         OrderLineItemResponse that = (OrderLineItemResponse) o;
         return getQuantity() == that.getQuantity() && Objects.equals(getId(), that.getId())
-            && Objects.equals(getMenu(), that.getMenu());
+            && Objects.equals(getMenuId(), that.getMenuId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getMenu(), getQuantity());
+        return Objects.hash(getId(), getMenuId(), getQuantity());
     }
 }

@@ -120,7 +120,7 @@ class TableGroupTest {
         tableGroup.groupTables(orderTables);
 
         Order order = new Order(orderTables.get(0), Arrays.asList(
-            new OrderLineItem(MenuTestFixtures.서비스군만두, new Quantity(2L))));
+            new OrderLineItem(MenuTestFixtures.서비스군만두.getId(), new Quantity(2L))));
 
         //when,then
         assertThatThrownBy(() -> tableGroup.ungroup())

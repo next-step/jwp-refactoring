@@ -61,7 +61,7 @@ class OrderTableTest {
         //given
         OrderTable orderTable = new OrderTable(new NumberOfGuests(6), false);
         List<OrderLineItem> orderLineItems = Arrays.asList(
-            new OrderLineItem(MenuTestFixtures.서비스군만두, new Quantity(5L))
+            new OrderLineItem(MenuTestFixtures.서비스군만두.getId(), new Quantity(5L))
         );
 
         //when
