@@ -1,6 +1,7 @@
 package kitchenpos.menu.domain;
 
 import java.math.BigDecimal;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
@@ -27,6 +28,7 @@ public class MenuProduct {
     @JoinColumn(name = "product_id", foreignKey = @ForeignKey(name = "fk_menu_product_product"))
     private Product product;
 
+    @Embedded
     private Quantity quantity;
 
     public MenuProduct() {
