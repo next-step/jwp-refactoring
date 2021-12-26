@@ -1,5 +1,6 @@
 package kitchenpos.validator;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
 
@@ -8,7 +9,6 @@ import java.util.List;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.exception.InvalidMenuInOrderLineItems;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,8 +39,8 @@ class OrderMenuValidatorTest {
         메뉴_개수_조회_모킹(orderLineItemRequests.size() - 1);
 
         //when, then
-        Assertions.assertThatThrownBy(
-                () -> orderMenuValidator.validateOrderLineItems(orderLineItemRequests))
+        assertThatThrownBy(
+            () -> orderMenuValidator.validateOrderLineItems(orderLineItemRequests))
             .isInstanceOf(InvalidMenuInOrderLineItems.class);
     }
 
@@ -58,8 +58,8 @@ class OrderMenuValidatorTest {
         메뉴_개수_조회_모킹(orderLineItemRequests.size() - 1);
 
         //when, then
-        Assertions.assertThatThrownBy(
-                () -> orderMenuValidator.validateOrderLineItems(orderLineItemRequests))
+        assertThatThrownBy(
+            () -> orderMenuValidator.validateOrderLineItems(orderLineItemRequests))
             .isInstanceOf(InvalidMenuInOrderLineItems.class);
     }
 
