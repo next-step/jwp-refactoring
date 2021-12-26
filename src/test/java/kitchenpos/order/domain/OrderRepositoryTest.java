@@ -1,5 +1,7 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.table.fixtures.OrderTableFixtures;
@@ -16,9 +18,9 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import java.math.BigDecimal;
 import java.util.List;
 
-import static kitchenpos.menu.fixtures.MenuGroupFixtures.메뉴그룹;
+import static kitchenpos.menugroup.fixtures.MenuGroupFixtures.메뉴그룹;
 import static kitchenpos.menu.fixtures.MenuProductFixtures.*;
-import static kitchenpos.menu.fixtures.ProductFixtures.*;
+import static kitchenpos.product.fixtures.ProductFixtures.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -56,8 +58,8 @@ class OrderRepositoryTest {
         Product 양념치킨 = productRepository.save(양념치킨());
         Product 후라이드 = productRepository.save(후라이드());
         MenuGroup 메뉴그룹 = menuGroupRepository.save(메뉴그룹("반반메뉴그룹"));
-        MenuProduct 양념치킨메뉴상품 = 메뉴상품(양념치킨, 1L);
-        MenuProduct 후라이드메뉴상품 = 메뉴상품(후라이드, 1L);
+        MenuProduct 양념치킨메뉴상품 = 메뉴상품(양념치킨.getId(), 1L);
+        MenuProduct 후라이드메뉴상품 = 메뉴상품(후라이드.getId(), 1L);
         후라이드반양념반메뉴 = menuRepository.save(
                 new Menu(
                         "후라이드반양념반메뉴",

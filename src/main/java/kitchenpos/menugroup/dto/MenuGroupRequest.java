@@ -1,6 +1,6 @@
-package kitchenpos.menu.dto;
+package kitchenpos.menugroup.dto;
 
-import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menugroup.domain.MenuGroup;
 
 /**
  * packageName : kitchenpos.dto
@@ -9,15 +9,13 @@ import kitchenpos.menu.domain.MenuGroup;
  * date : 2021/12/21
  * description :
  */
-
-//FIXME 생성자 제한하기
 public class MenuGroupRequest {
     private String name;
 
-    public MenuGroupRequest() {
+    private MenuGroupRequest() {
     }
 
-    public MenuGroupRequest(String name) {
+    private MenuGroupRequest(String name) {
         this.name = name;
     }
 

@@ -1,5 +1,7 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.product.exception.IllegalPriceException;
 import kitchenpos.menu.exception.LimitPriceException;
 import kitchenpos.product.domain.Product;
@@ -16,9 +18,9 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import java.math.BigDecimal;
 import java.util.List;
 
-import static kitchenpos.menu.fixtures.MenuGroupFixtures.반반메뉴그룹요청;
-import static kitchenpos.menu.fixtures.ProductFixtures.양념치킨요청;
-import static kitchenpos.menu.fixtures.ProductFixtures.후라이드요청;
+import static kitchenpos.menugroup.fixtures.MenuGroupFixtures.반반메뉴그룹요청;
+import static kitchenpos.product.fixtures.ProductFixtures.양념치킨요청;
+import static kitchenpos.product.fixtures.ProductFixtures.후라이드요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 

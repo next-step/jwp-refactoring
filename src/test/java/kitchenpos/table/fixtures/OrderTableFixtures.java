@@ -13,9 +13,9 @@ import org.assertj.core.util.Lists;
 
 import java.math.BigDecimal;
 
-import static kitchenpos.menu.fixtures.MenuGroupFixtures.메뉴그룹;
-import static kitchenpos.menu.fixtures.ProductFixtures.양념치킨;
-import static kitchenpos.menu.fixtures.ProductFixtures.후라이드;
+import static kitchenpos.menugroup.fixtures.MenuGroupFixtures.메뉴그룹;
+import static kitchenpos.product.fixtures.ProductFixtures.양념치킨;
+import static kitchenpos.product.fixtures.ProductFixtures.후라이드;
 import static kitchenpos.table.fixtures.TableGroupFixtures.주문불가_5인_2인_그룹테이블;
 
 /**

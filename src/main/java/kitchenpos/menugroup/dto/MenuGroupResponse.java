@@ -1,6 +1,6 @@
-package kitchenpos.menu.dto;
+package kitchenpos.menugroup.dto;
 
-import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menugroup.domain.MenuGroup;
 
 import java.util.List;
 
@@ -13,12 +13,11 @@ import static java.util.stream.Collectors.*;
  * date : 2021-12-21
  * description :
  */
-//FIXME 생성자 제한하기
 public class MenuGroupResponse {
     private Long id;
     private String name;
 
-    public MenuGroupResponse() {
+    private MenuGroupResponse() {
     }
 
     public MenuGroupResponse(Long id, String name) {

@@ -1,7 +1,7 @@
-package kitchenpos.menu.fixtures;
+package kitchenpos.menugroup.fixtures;
 
-import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.dto.MenuGroupRequest;
+import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menugroup.dto.MenuGroupRequest;
 
 /**
  * packageName : kitchenpos.fixtures

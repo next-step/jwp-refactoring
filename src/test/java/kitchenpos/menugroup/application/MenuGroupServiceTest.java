@@ -1,9 +1,9 @@
-package kitchenpos.menu.application;
+package kitchenpos.menugroup.application;
 
-import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuGroupRepository;
-import kitchenpos.menu.dto.MenuGroupRequest;
-import kitchenpos.menu.dto.MenuGroupResponse;
+import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menugroup.domain.MenuGroupRepository;
+import kitchenpos.menugroup.dto.MenuGroupRequest;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,7 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 
-import static kitchenpos.menu.fixtures.MenuGroupFixtures.두마리메뉴그룹요청;
+import static kitchenpos.menugroup.fixtures.MenuGroupFixtures.두마리메뉴그룹요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;

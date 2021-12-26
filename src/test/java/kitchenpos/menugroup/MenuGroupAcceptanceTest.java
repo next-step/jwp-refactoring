@@ -1,11 +1,11 @@
-package kitchenpos.menu;
+package kitchenpos.menugroup;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.menu.dto.MenuGroupRequest;
-import kitchenpos.menu.dto.MenuGroupResponse;
+import kitchenpos.menugroup.dto.MenuGroupRequest;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -13,7 +13,7 @@ import org.springframework.http.MediaType;
 
 import java.util.List;
 
-import static kitchenpos.menu.fixtures.MenuGroupFixtures.*;
+import static kitchenpos.menugroup.fixtures.MenuGroupFixtures.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**

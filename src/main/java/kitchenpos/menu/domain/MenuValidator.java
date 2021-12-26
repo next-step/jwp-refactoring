@@ -2,7 +2,8 @@ package kitchenpos.menu.domain;
 
 import kitchenpos.common.exception.NotFoundException;
 import kitchenpos.menu.exception.LimitPriceException;
-import kitchenpos.menu.exception.MenuGroupNotFoundException;
+import kitchenpos.menugroup.domain.MenuGroupRepository;
+import kitchenpos.menugroup.exception.MenuGroupNotFoundException;
 import kitchenpos.menu.exception.ProductNotFoundException;
 import kitchenpos.product.domain.Price;
 import kitchenpos.product.domain.Product;

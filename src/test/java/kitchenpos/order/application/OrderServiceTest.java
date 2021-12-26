@@ -1,7 +1,6 @@
 package kitchenpos.order.application;
 
 import kitchenpos.menu.exception.MenuNotFoundException;
-import kitchenpos.menu.fixtures.MenuProductFixtures;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
@@ -26,18 +25,15 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static kitchenpos.menu.fixtures.MenuGroupFixtures.메뉴그룹;
+import static kitchenpos.menugroup.fixtures.MenuGroupFixtures.메뉴그룹;
 import static kitchenpos.menu.fixtures.MenuProductFixtures.메뉴상품;
 import static kitchenpos.order.fixtures.OrderFixtures.*;
 import static kitchenpos.table.fixtures.OrderTableFixtures.주문가능_다섯명테이블;
 import static kitchenpos.table.fixtures.OrderTableFixtures.주문불가_다섯명테이블;
-import static kitchenpos.menu.fixtures.ProductFixtures.양념치킨;
-import static kitchenpos.menu.fixtures.ProductFixtures.후라이드;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -75,8 +71,8 @@ public class OrderServiceTest {
     void setUp() {
         BigDecimal 메뉴가격 = new BigDecimal(32000);
 
-        MenuProduct 양념치킨메뉴상품 = 메뉴상품(양념치킨(), 1L);
-        MenuProduct 후라이드메뉴상품 = 메뉴상품(후라이드(), 1L);
+        MenuProduct 양념치킨메뉴상품 = 메뉴상품(1L, 1L);
+        MenuProduct 후라이드메뉴상품 = 메뉴상품(2L, 1L);
 
         후라이드반양념반메뉴 = new Menu("후라이드반양념반메뉴", 메뉴가격, 메뉴그룹("반반메뉴").getId(), Lists.newArrayList(양념치킨메뉴상품, 후라이드메뉴상품));
 

@@ -5,10 +5,8 @@ import kitchenpos.table.dto.TableGroupResponse;
 import kitchenpos.table.exception.IllegalOrderTableException;
 import kitchenpos.table.exception.NotSupportUngroupException;
 import kitchenpos.table.exception.OrderTableNotFoundException;
-import kitchenpos.menu.fixtures.MenuFixtures;
-import kitchenpos.menu.fixtures.MenuProductFixtures;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.product.domain.Product;
 import kitchenpos.order.domain.Order;
@@ -29,9 +27,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 import java.util.Optional;
 
-import static kitchenpos.menu.fixtures.MenuGroupFixtures.메뉴그룹;
+import static kitchenpos.menu.fixtures.MenuFixtures.*;
+import static kitchenpos.menugroup.fixtures.MenuGroupFixtures.메뉴그룹;
+import static kitchenpos.menu.fixtures.MenuProductFixtures.*;
 import static kitchenpos.table.fixtures.OrderTableFixtures.*;
-import static kitchenpos.menu.fixtures.ProductFixtures.양념치킨;
+import static kitchenpos.product.fixtures.ProductFixtures.양념치킨;
 import static kitchenpos.table.fixtures.TableGroupFixtures.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -66,8 +66,8 @@ class TableGroupServiceTest {
     void setUp() {
         final Product 양념치킨 = 양념치킨();
         final MenuGroup 메뉴그룹 = 메뉴그룹("메뉴그룹");
-        final MenuProduct 메뉴상품 = MenuProductFixtures.메뉴상품(양념치킨, 1L);
-        메뉴 = MenuFixtures.메뉴("양념하나", 양념치킨.getPrice(), 메뉴그룹, Lists.newArrayList(메뉴상품));
+        final MenuProduct 메뉴상품 = 메뉴상품(1L, 1L);
+        메뉴 = 메뉴("양념하나", 양념치킨.getPrice(), 메뉴그룹.getId(), Lists.newArrayList(메뉴상품));
     }
 
     @Test

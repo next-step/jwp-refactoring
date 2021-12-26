@@ -4,7 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.menu.dto.MenuGroupResponse;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.product.dto.ProductResponse;
@@ -17,13 +17,13 @@ import org.springframework.http.MediaType;
 
 import java.math.BigDecimal;
 
-import static kitchenpos.menu.MenuGroupAcceptanceTest.메뉴그룹_등록되어있음;
-import static kitchenpos.menu.ProductAcceptanceTest.상품_등록되어_있음;
+import static kitchenpos.menugroup.MenuGroupAcceptanceTest.메뉴그룹_등록되어있음;
+import static kitchenpos.product.ProductAcceptanceTest.상품_등록되어_있음;
 import static kitchenpos.menu.fixtures.MenuFixtures.후라이드두마리메뉴요청;
 import static kitchenpos.menu.fixtures.MenuFixtures.후라이드반양념반메뉴요청;
-import static kitchenpos.menu.fixtures.MenuGroupFixtures.*;
+import static kitchenpos.menugroup.fixtures.MenuGroupFixtures.*;
 import static kitchenpos.menu.fixtures.MenuProductFixtures.메뉴상품등록요청;
-import static kitchenpos.menu.fixtures.ProductFixtures.*;
+import static kitchenpos.product.fixtures.ProductFixtures.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**

@@ -1,10 +1,9 @@
-package kitchenpos.menu.application;
+package kitchenpos.product.application;
 
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.exception.IllegalPriceException;
-import kitchenpos.product.application.ProductService;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -18,7 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 
-import static kitchenpos.menu.fixtures.ProductFixtures.양념치킨요청;
+import static kitchenpos.product.fixtures.ProductFixtures.양념치킨요청;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;

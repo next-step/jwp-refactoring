@@ -1,4 +1,4 @@
-package kitchenpos.menu.exception;
+package kitchenpos.menugroup.exception;
 
 import kitchenpos.common.exception.ServiceException;
 

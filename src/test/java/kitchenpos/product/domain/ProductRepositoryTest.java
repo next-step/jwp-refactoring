@@ -1,9 +1,7 @@
-package kitchenpos.menu.domain;
+package kitchenpos.product.domain;
 
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.exception.IllegalPriceException;
-import kitchenpos.product.domain.Product;
-import kitchenpos.product.domain.ProductRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -14,7 +12,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import java.math.BigDecimal;
 import java.util.List;
 
-import static kitchenpos.menu.fixtures.ProductFixtures.양념치킨요청;
+import static kitchenpos.product.fixtures.ProductFixtures.양념치킨요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;

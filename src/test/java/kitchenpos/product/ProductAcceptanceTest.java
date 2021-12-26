@@ -1,4 +1,4 @@
-package kitchenpos.menu;
+package kitchenpos.product;
 
 
 import io.restassured.RestAssured;
@@ -14,8 +14,8 @@ import org.springframework.http.MediaType;
 
 import java.math.BigDecimal;
 
-import static kitchenpos.menu.fixtures.ProductFixtures.메뉴등록요청;
-import static kitchenpos.menu.fixtures.ProductFixtures.양념치킨요청;
+import static kitchenpos.product.fixtures.ProductFixtures.메뉴등록요청;
+import static kitchenpos.product.fixtures.ProductFixtures.양념치킨요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
