@@ -1,5 +1,7 @@
 package kitchenpos.domain;
 
+import kitchenpos.menu.domain.MenuGroup;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
@@ -49,7 +51,7 @@ public class Menu {
     }
 
     public void setMenuGroupId(final Long menuGroupId) {
-        this.menuGroupId.setId(menuGroupId);
+        //this.menuGroupId.setId(menuGroupId);
     }
 
     public List<MenuProduct> getMenuProducts() {

@@ -5,8 +5,9 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
+import kitchenpos.menu.MenuGroupAcceptanceTest;
+import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.product.ProductAcceptanceTest;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.DisplayName;
@@ -31,7 +32,6 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         MenuGroup menuGroup = MenuGroupAcceptanceTest.메뉴_그룹_등록_요청("중국음식").as(MenuGroup.class);
         MenuProduct menuProduct = new MenuProduct();
         menuProduct.setMenuId(1L);
-        menuProduct.setProductId(product.getId());
         menuProduct.setQuantity(1);
 
         // when
@@ -59,7 +59,6 @@ public class MenuAcceptanceTest extends AcceptanceTest {
 
     private ExtractableResponse<Response> 메뉴_등록_요청(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
         Menu menu = new Menu();
-        menu.setMenuGroupId(menuGroupId);
         menu.setMenuProducts(menuProducts);
         menu.setName(name);
         menu.setPrice(price);

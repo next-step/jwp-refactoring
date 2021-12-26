@@ -5,8 +5,8 @@ import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -21,7 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static kitchenpos.application.MenuGroupServiceTest.메뉴_그룹_등록;
+import static kitchenpos.menu.MenuGroupServiceTest.메뉴_그룹_등록;
 import static kitchenpos.product.ProductServiceTest.상품_등록;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -54,7 +54,7 @@ public class MenuServiceTest {
     void setUp() {
         짜장면 = 상품_등록("짜장면", 5000);
         탕수육 = 상품_등록("탕수육", 15000);
-        중국음식 = 메뉴_그룹_등록(1L, "중국음식");
+        중국음식 = 메뉴_그룹_등록("중국음식");
         짜장면메뉴 = 메뉴_등록(1L, "짜장면탕수육세트", 짜장면.getPrice().add(탕수육.getPrice()), 중국음식.getId(), Arrays.asList(메뉴_상품_등록(1L, 짜장면.getId(), 1L), 메뉴_상품_등록(2L, 탕수육.getId(), 1L)));
     }
 

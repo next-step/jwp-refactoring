@@ -5,6 +5,7 @@ import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.*;
+import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.product.domain.Product;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,9 +20,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static kitchenpos.application.MenuGroupServiceTest.메뉴_그룹_등록;
 import static kitchenpos.application.MenuServiceTest.메뉴_등록;
 import static kitchenpos.application.MenuServiceTest.메뉴_상품_등록;
+import static kitchenpos.menu.MenuGroupServiceTest.메뉴_그룹_등록;
 import static kitchenpos.product.ProductServiceTest.상품_등록;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -56,7 +57,7 @@ public class OrderServiceTest {
     void setUp() {
         짜장면 = 상품_등록("짜장면", 5000);
         탕수육 = 상품_등록("탕수육", 15000);
-        중국음식 = 메뉴_그룹_등록(1L, "중국음식");
+        중국음식 = 메뉴_그룹_등록("중국음식");
         짜장면메뉴1 = 메뉴_등록(1L, "짜장면탕수육세트", 짜장면.getPrice().add(탕수육.getPrice()), 중국음식.getId(), Arrays.asList(메뉴_상품_등록(1L, 짜장면.getId(), 1L), 메뉴_상품_등록(2L, 탕수육.getId(), 1L)));
         짜장면메뉴2 = 메뉴_등록(2L, "짜장면", 짜장면.getPrice(), 중국음식.getId(), Arrays.asList(메뉴_상품_등록(1L, 짜장면.getId(), 1L)));
         짜장면메뉴3 = 메뉴_등록(3L, "탕수육", 탕수육.getPrice(), 중국음식.getId(), Arrays.asList(메뉴_상품_등록(1L, 탕수육.getId(), 1L)));
