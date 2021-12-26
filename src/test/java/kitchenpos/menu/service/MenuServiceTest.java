@@ -1,16 +1,17 @@
 package kitchenpos.menu.service;
 
-import kitchenpos.application.MenuService;
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.dao.MenuProductDao;
-import kitchenpos.dao.ProductDao;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Product;
+import kitchenpos.common.domain.Price;
+import kitchenpos.common.domain.Quantity;
+import kitchenpos.common.exception.NotFoundException;
+import kitchenpos.common.exception.IllegalArgumentException;
 import kitchenpos.menu.MenuFactory;
-import org.junit.jupiter.api.BeforeEach;
+import kitchenpos.menu.application.MenuService;
+import kitchenpos.menu.domain.*;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,114 +30,100 @@ import static org.mockito.BDDMockito.given;
 @DisplayName("메뉴 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
 public class MenuServiceTest {
-  @InjectMocks
-  private MenuService menuService;
+    @InjectMocks
+    private MenuService menuService;
 
-  @Mock
-  private MenuDao menuDao;
+    @Mock
+    private MenuRepository menuRepository;
 
-  @Mock
-  private MenuGroupDao menuGroupDao;
+    @Mock
+    private MenuGroupRepository menuGroupRepository;
 
-  @Mock
-  private MenuProductDao menuProductDao;
+    @Mock
+    private MenuProductRepository menuProductRepository;
 
-  @Mock
-  private ProductDao productDao;
+    @Mock
+    private ProductRepository productRepository;
 
-  private MenuGroup 튀김종류;
-  private Menu 치킨세트;
-  private List<MenuProduct> 치킨세트_상품_리스트;
-  private Product 치킨;
-  private Product 맥주;
-  private MenuProduct 치킨_상품메뉴;
-  private MenuProduct 맥주_상품메뉴;
+    @DisplayName("메뉴를 생성한다.")
+    @Test
+    void 메뉴_생성() {
+        // given
 
+        MenuGroup menuGroup = MenuFactory.ofMenuGroup(1L, "튀김류");
+        Product product = MenuFactory.ofProduct(1L, "양념치킨", 5000);
 
-  @BeforeEach
-  void setUp() {
-    튀김종류 = MenuFactory.ofMenuGroup(1L, "튀김종류");
+        MenuProductRequest menuProductRequest = new MenuProductRequest(product.getId(), 1L);
+        MenuRequest menuRequest = new MenuRequest("치킨", BigDecimal.valueOf(5000), menuGroup.getId(), Collections.singletonList(menuProductRequest));
 
-    치킨세트 = MenuFactory.ofMenu(1L, "치킨세트_모형", 튀김종류.getId(), 24000);
+        Menu menu = MenuFactory.ofMenu("치킨", Price.of(BigDecimal.valueOf(5000)), menuGroup);
+        Menu savedMenu = MenuFactory.ofMenu(1L, "치킨", Price.of(BigDecimal.valueOf(5000)), menuGroup, Collections.singletonList(MenuProduct.of(product, Quantity.of(1L))));
 
-    치킨 = MenuFactory.ofProduct(1L, "치킨", 19000);
-    맥주 = MenuFactory.ofProduct(2L, "맥주", 5000);
+        given(menuGroupRepository.findById(1L)).willReturn(Optional.of(menuGroup));
+        given(productRepository.findById(1L)).willReturn(Optional.of(product));
+        given(menuRepository.save(menu)).willReturn(savedMenu);
 
-    치킨_상품메뉴 = MenuFactory.ofMenuProduct(1L, 치킨세트.getId(), 치킨.getId(), 1);
-    맥주_상품메뉴 = MenuFactory.ofMenuProduct(2L, 치킨세트.getId(), 맥주.getId(), 1);
+        // when
+        MenuResponse response = menuService.create(menuRequest);
 
-    치킨세트_상품_리스트 = MenuFactory.ofMenuProductList(Arrays.asList(치킨_상품메뉴, 맥주_상품메뉴));
+        // then
+        assertAll(
+                () -> assertThat(response.getName()).isEqualTo(menuRequest.getName()),
+                () -> assertThat(response.getMenuGroup().getId()).isEqualTo(menuRequest.getMenuGroupId()),
+                () -> assertThat(response.getMenuProducts().size()).isEqualTo(1)
+        );
+    }
 
-    치킨세트.setMenuProducts(치킨세트_상품_리스트);
+    @DisplayName("메뉴가 메뉴 묶음에 존재하는 메뉴여야 한다.")
+    @Test
+    void 메뉴_생성_메뉴_그룹에_존재하지_않음() {
+        // given
+        MenuGroup menuGroup = MenuFactory.ofMenuGroup(1L, "튀김류");
+        Product product = MenuFactory.ofProduct(1L, "양념치킨", 5000);
 
-  }
+        MenuProductRequest menuProductRequest = new MenuProductRequest(product.getId(), 1L);
+        MenuRequest menuRequest = new MenuRequest("치킨", BigDecimal.valueOf(5000), menuGroup.getId(), Collections.singletonList(menuProductRequest));
 
-  @DisplayName("메뉴를 생성한다.")
-  @Test
-  void 메뉴_생성() {
-    // given
-    메뉴_생성_정보_설정됨();
+        given(menuGroupRepository.findById(1L)).willReturn(Optional.empty());
 
-    // when
-    Menu response = menuService.create(치킨세트);
+        Throwable thrown = catchThrowable(() -> menuService.create(menuRequest));
 
-    // then
-    assertAll(
-            () -> assertThat(response.getName()).isEqualTo(치킨세트.getName()),
-            () -> assertThat(response.getMenuGroupId()).isEqualTo(튀김종류.getId()),
-            () -> assertThat(response.getMenuProducts()).isEqualTo(치킨세트_상품_리스트)
-    );
-  }
+        assertThat(thrown).isInstanceOf(NotFoundException.class)
+                .hasMessage("해당 메뉴 그룹을 찾을 수 없습니다.");
+    }
 
-  @DisplayName("메뉴가 메뉴 묶음에 존재하는 메뉴여야 한다.")
-  @Test
-  void 메뉴_생성_메뉴_그룹에_존재하지_않음() {
-    // given
-    given(menuGroupDao.existsById(치킨세트.getMenuGroupId())).willReturn(false);
+    @DisplayName("메뉴 생성 가격이 null 이거나 0원보다 낮으면 안된다.")
+    @Test
+    void 메뉴_생성_가격_0미만_예외() {
+        // given
+        MenuGroup menuGroup = MenuFactory.ofMenuGroup(1L, "튀김류");
+        Product product = MenuFactory.ofProduct(1L, "양념치킨", 5000);
 
-    Throwable thrown = catchThrowable(() -> menuService.create(치킨세트));
+        MenuProductRequest menuProductRequest = new MenuProductRequest(product.getId(), 1L);
+        MenuRequest menuRequest = new MenuRequest("치킨", BigDecimal.valueOf(-1), menuGroup.getId(), Collections.singletonList(menuProductRequest));
 
-    assertThat(thrown).isInstanceOf(IllegalArgumentException.class);
-  }
+        given(menuGroupRepository.findById(1L)).willReturn(Optional.of(menuGroup));
+        given(productRepository.findById(1L)).willReturn(Optional.of(product));
 
-  @DisplayName("메뉴 생성 가격이 null 이거나 0원보다 낮으면 안된다.")
-  @Test
-  void 메뉴_생성_가격_0미만_예외() {
-    // given
-    치킨세트.setPrice(BigDecimal.valueOf(-1));
+        Throwable thrown = catchThrowable(() -> menuService.create(menuRequest));
 
-    Throwable thrown = catchThrowable(() -> menuService.create(치킨세트));
+        assertThat(thrown).isInstanceOf(IllegalArgumentException.class);
+    }
 
-    assertThat(thrown).isInstanceOf(IllegalArgumentException.class);
-  }
+    @DisplayName("메뉴 목록을 조회한다.")
+    @Test
+    void 메뉴_목록_조회() {
+        // given
+        MenuGroup menuGroup = MenuFactory.ofMenuGroup(1L, "튀김류");
+        Product product = MenuFactory.ofProduct(1L, "양념치킨", 5000);
+        Menu savedMenu = MenuFactory.ofMenu(1L, "치킨", Price.of(BigDecimal.valueOf(5000)), menuGroup, Collections.singletonList(MenuProduct.of(product, Quantity.of(1L))));
 
-  @DisplayName("메뉴 목록을 조회한다.")
-  @Test
-  void 메뉴_목록_조회() {
-    // given
-    메뉴_생성됨();
+        given(menuRepository.findAll()).willReturn(Collections.singletonList(savedMenu));
 
-    // when
-    List<Menu> response = menuService.list();
+        // when
+        List<MenuResponse> response = menuService.list();
 
-    // then
-    assertThat(response.size()).isEqualTo(1);
-  }
-
-  private void 메뉴_생성됨() {
-    given(menuDao.findAll()).willReturn(new ArrayList<>(Collections.singletonList(치킨세트)));
-    given(menuProductDao.findAllByMenuId(치킨세트.getId())).willReturn(치킨세트_상품_리스트);
-  }
-
-  private void 메뉴_생성_정보_설정됨() {
-    given(menuGroupDao.existsById(치킨세트.getMenuGroupId())).willReturn(true);
-
-    given(productDao.findById(치킨_상품메뉴.getProductId())).willReturn(Optional.ofNullable(치킨));
-    given(productDao.findById(맥주_상품메뉴.getProductId())).willReturn(Optional.ofNullable(맥주));
-
-
-    given(menuDao.save(치킨세트)).willReturn(치킨세트);
-    given(menuProductDao.save(치킨_상품메뉴)).willReturn(치킨_상품메뉴);
-    given(menuProductDao.save(맥주_상품메뉴)).willReturn(맥주_상품메뉴);
-  }
+        // then
+        assertThat(response.size()).isEqualTo(1);
+    }
 }
