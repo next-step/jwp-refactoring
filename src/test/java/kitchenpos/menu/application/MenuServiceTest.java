@@ -1,6 +1,8 @@
 package kitchenpos.menu.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -61,7 +63,10 @@ public class MenuServiceTest {
         MenuResponse 저장된_메뉴 = menuService.create(메뉴_생성_요청);
 
         // then
-        assertThat(저장된_메뉴).isEqualTo(MenuResponse.from(메뉴));
+        assertAll(
+                () -> assertThat(저장된_메뉴.getName()).isEqualTo("짜장면"),
+                () -> assertThat(저장된_메뉴.getPrice()).isEqualTo(6000)
+        );
 
     }
     

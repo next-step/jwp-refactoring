@@ -1,11 +1,13 @@
 package kitchenpos.menu.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.BDDMockito.given;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -42,7 +44,10 @@ public class ProductServiceTest {
         ProductResponse 등록_결과 = productService.create(ProductRequest.of("치킨", 18000));
 
         // then
-        assertThat(등록_결과).isEqualTo(ProductResponse.from(상품));
+        assertAll(
+                () -> assertThat(등록_결과.getName()).isEqualTo("치킨"),
+                () ->assertThat(등록_결과.getPrice()).isEqualTo(18000)
+        );
 
     }
     
@@ -74,7 +79,10 @@ public class ProductServiceTest {
         Product 저장된_상품 = productService.findById(상품);
     
         // then
-        assertThat(저장된_상품).isEqualTo(상품);
+        assertAll(
+                () -> assertThat(저장된_상품.getName()).isEqualTo("치킨"),
+                () ->assertThat(저장된_상품.getPrice().getValue()).isEqualTo(new BigDecimal("18000"))
+        );
     }
     
     @DisplayName("미등록 상품은 조회할 수 없다")

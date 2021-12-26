@@ -2,6 +2,7 @@ package kitchenpos.menu.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.BDDMockito.given;
@@ -19,6 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.menu.dao.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.Price;
 import kitchenpos.menu.dto.MenuGroupRequest;
 import kitchenpos.menu.dto.MenuGroupResponse;
 
@@ -39,10 +41,10 @@ public class MenuGroupServiceTest {
         given(menuGroupRepository.save(any())).willReturn(메뉴그룹);
 
         // when
-        MenuGroupResponse savedMenuGroup = menuGroupService.create(MenuGroupRequest.from(메뉴그룹.getName()));
+        MenuGroupResponse 저장된_메뉴그룹 = menuGroupService.create(MenuGroupRequest.from(메뉴그룹.getName()));
 
         // then
-        assertThat(savedMenuGroup).isEqualTo(MenuGroupResponse.from(메뉴그룹));
+        assertThat(저장된_메뉴그룹.getName()).isEqualTo(메뉴그룹.getName());
 
     }
 
@@ -74,7 +76,7 @@ public class MenuGroupServiceTest {
         MenuGroup 저장된_메뉴그룹 = menuGroupService.findById(메뉴그룹.getId());
 
         // then
-        assertThat(저장된_메뉴그룹).isEqualTo(메뉴그룹);
+        assertThat(저장된_메뉴그룹.getName()).isEqualTo(메뉴그룹.getName());
     }
     
     @DisplayName("등록되지 않은 메뉴그룹을 조회한다")

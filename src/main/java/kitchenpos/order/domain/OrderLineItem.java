@@ -61,16 +61,4 @@ public class OrderLineItem {
         this.order = order;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        OrderLineItem that = (OrderLineItem) o;
-        return quantity == that.quantity && Objects.equals(order, that.order) && Objects.equals(menu, that.menu);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(order, menu, quantity);
-    }
 }

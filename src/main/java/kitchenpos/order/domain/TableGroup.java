@@ -79,11 +79,11 @@ public class TableGroup {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         TableGroup that = (TableGroup) o;
-        return Objects.equals(orderTables, that.orderTables);
+        return Objects.equals(id, that.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(orderTables);
+        return Objects.hash(id);
     }
 }

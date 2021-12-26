@@ -86,11 +86,11 @@ public class Menu {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Menu menu = (Menu) o;
-        return Objects.equals(name, menu.name) && Objects.equals(price, menu.price);
+        return Objects.equals(id, menu.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, price);
+        return Objects.hash(id);
     }
 }

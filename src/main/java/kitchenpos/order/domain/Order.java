@@ -137,18 +137,17 @@ public class Order {
             throw new IllegalArgumentException("주문에 메뉴가 없습니다");
         }
     }
-    
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Order order = (Order) o;
-        return Objects.equals(orderTable, order.orderTable) && orderStatus == order.orderStatus && Objects.equals(orderedTime, order.orderedTime);
+        return Objects.equals(id, order.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(orderTable, orderStatus, orderedTime);
+        return Objects.hash(id);
     }
 }
