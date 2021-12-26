@@ -6,12 +6,18 @@ public class OrderLineItem {
     private Long menuId;
     private long quantity;
 
-    public Long getSeq() {
-        return seq;
+    public OrderLineItem() {
     }
 
-    public void setSeq(final Long seq) {
-        this.seq = seq;
+    public OrderLineItem(builder builder) {
+        this.seq = builder.seq;
+        this.orderId = builder.orderId;
+        this.menuId = builder.menuId;
+        this.quantity = builder.quantity;
+    }
+
+    public Long getSeq() {
+        return seq;
     }
 
     public Long getOrderId() {
@@ -26,15 +32,42 @@ public class OrderLineItem {
         return menuId;
     }
 
-    public void setMenuId(final Long menuId) {
-        this.menuId = menuId;
-    }
-
     public long getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(final long quantity) {
-        this.quantity = quantity;
+    public static class builder {
+        private Long seq;
+        private Long orderId;
+        private Long menuId;
+        private long quantity;
+
+        public builder() {
+        }
+
+        public builder seq(Long seq) {
+            this.seq = seq;
+            return this;
+        }
+
+        public builder orderId(Long orderId) {
+            this.orderId = orderId;
+            return this;
+        }
+
+        public builder menuId(Long menuId) {
+            this.menuId = menuId;
+            return this;
+        }
+
+        public builder quantity(long quantity) {
+            this.quantity = quantity;
+            return this;
+        }
+
+        public OrderLineItem build() {
+            return new OrderLineItem(this);
+        }
     }
+
 }
