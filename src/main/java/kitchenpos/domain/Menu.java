@@ -57,7 +57,8 @@ public class Menu extends BaseTimeEntity {
         BigDecimal menuProductPriceSum = BigDecimal.ZERO;
 
         for (final MenuProduct menuProduct : this.menuProducts) {
-            final BigDecimal menuProductTotalPrice = menuProduct.getProduct().getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity()));
+            final BigDecimal productPrice = menuProduct.getProduct().getPrice();
+            final BigDecimal menuProductTotalPrice = productPrice.multiply(BigDecimal.valueOf(menuProduct.getQuantity()));
             menuProductPriceSum = menuProductPriceSum.add(menuProductTotalPrice);
         }
 
