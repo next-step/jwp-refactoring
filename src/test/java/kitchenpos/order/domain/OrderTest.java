@@ -1,16 +1,17 @@
 package kitchenpos.order.domain;
 
-import static kitchenpos.menu.MenuFixture.*;
+import static kitchenpos.order.OrderLineItemFixture.*;
+import static kitchenpos.ordertable.OrderTableFixture.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.ThrowableAssert.*;
 
 import java.util.Collections;
+import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import kitchenpos.common.domain.Quantity;
-import kitchenpos.ordertable.domain.NumberOfGuests;
+import kitchenpos.order.dto.OrderLineItemDto;
 import kitchenpos.ordertable.domain.OrderTable;
 
 @DisplayName("주문")
@@ -19,13 +20,15 @@ class OrderTest {
 	@Test
 	void of() {
 		// given
-		OrderTable orderTable = OrderTable.of(NumberOfGuests.from(4), false);
-		OrderLineItems orderLineItems = OrderLineItems.from(Collections.singletonList(OrderLineItem.of(
-			후라이드후라이드_메뉴(),
-			Quantity.from(1L))));
+		OrderTable orderTable = 비어있지않은_주문_테이블_1번();
+		List<OrderLineItemDto> orderLineItemDtos = Collections.singletonList(
+			OrderLineItemDto.from(후라이드후라이드_메뉴_주문_항목()));
 
 		// when
-		Order order = Order.of(orderTable, orderLineItems);
+		Order order = Order.of(
+			orderTable.getId(),
+			orderLineItemDtos,
+			new ValidOrderValidator());
 
 		// then
 		assertThat(order).isNotNull();
@@ -35,13 +38,15 @@ class OrderTest {
 	@Test
 	void ofFailOnEmptyOrderTable() {
 		// given
-		OrderTable orderTable = OrderTable.of(NumberOfGuests.from(4), true);
-		OrderLineItems orderLineItems = OrderLineItems.from(Collections.singletonList(OrderLineItem.of(
-			후라이드후라이드_메뉴(),
-			Quantity.from(1L))));
+		OrderTable orderTable = 비어있지않은_주문_테이블_1번();
+		List<OrderLineItemDto> orderLineItemDtos = Collections.singletonList(
+			OrderLineItemDto.from(후라이드후라이드_메뉴_주문_항목()));
 
 		// when
-		ThrowingCallable throwingCallable = () -> Order.of(orderTable, orderLineItems);
+		ThrowingCallable throwingCallable = () -> Order.of(
+			orderTable.getOrderTableGroupId(),
+			orderLineItemDtos,
+			new OrderTableEmptyOrderValidator());
 
 		// then
 		assertThatThrownBy(throwingCallable).isInstanceOf(IllegalArgumentException.class);

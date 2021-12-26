@@ -9,4 +9,6 @@ public interface MenuRepository {
 	Menu save(Menu menu);
 
 	Optional<Menu> findById(Long id);
+
+	List<Menu> findAllByIdIn(List<Long> ids);
 }

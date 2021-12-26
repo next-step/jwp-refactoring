@@ -20,10 +20,10 @@ class OrderLineItemTest {
 		Quantity quantity = Quantity.from(1L);
 
 		// when
-		OrderLineItem orderLineItem = OrderLineItem.of(menu, quantity);
+		OrderLineItem orderLineItem = OrderLineItem.of(menu.getId(), quantity);
 
 		// then
-		assertThat(orderLineItem.getMenu()).isEqualTo(menu);
+		assertThat(orderLineItem.getMenuId()).isEqualTo(menu.getId());
 		assertThat(orderLineItem.getQuantity()).isEqualTo(quantity);
 	}
 }

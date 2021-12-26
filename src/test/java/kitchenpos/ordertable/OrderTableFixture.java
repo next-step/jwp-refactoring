@@ -1,8 +1,18 @@
 package kitchenpos.ordertable;
 
+import kitchenpos.ordertable.domain.NumberOfGuests;
+import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 
 public class OrderTableFixture {
+	public static OrderTable 비어있지않은_주문_테이블_1번() {
+		return OrderTable.of(1L, NumberOfGuests.from(4), false);
+	}
+
+	public static OrderTable 빈_주문_테이블_2번() {
+		return OrderTable.of(2L, NumberOfGuests.from(0), true);
+	}
+
 	public static OrderTableRequest 빈_주문_테이블_요청() {
 		return new OrderTableRequest(4, true);
 	}

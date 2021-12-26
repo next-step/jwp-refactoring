@@ -1,6 +1,6 @@
 package kitchenpos.ordertablegroup.domain;
 
-import static kitchenpos.menu.MenuFixture.*;
+import static kitchenpos.order.OrderLineItemFixture.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.ThrowableAssert.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -11,9 +11,7 @@ import java.util.Collections;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import kitchenpos.common.domain.Quantity;
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.ordertable.domain.NumberOfGuests;
 import kitchenpos.ordertable.domain.OrderTable;
@@ -105,10 +103,8 @@ class OrderTableGroupTest {
 		OrderTable orderTable1 = OrderTable.of(NumberOfGuests.from(4), true);
 		OrderTable orderTable2 = OrderTable.of(NumberOfGuests.from(4), true);
 		OrderTableGroup orderTableGroup = OrderTableGroup.from(Arrays.asList(orderTable1, orderTable2));
-		Order.of(orderTable1,
-			OrderLineItems.from(Collections.singletonList(OrderLineItem.of(
-				후라이드후라이드_메뉴(),
-				Quantity.from(1L)))));
+		// TODO : fix this
+		// Order.of(orderTable1, OrderLineItems.from(Collections.singletonList(후라이드후라이드_메뉴_주문_항목())));
 
 		// when
 		ThrowingCallable throwingCallable = orderTableGroup::ungroup;

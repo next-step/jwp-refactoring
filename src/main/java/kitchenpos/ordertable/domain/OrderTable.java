@@ -24,7 +24,8 @@ public class OrderTable {
 	@JoinColumn(name = "table_group_id")
 	private OrderTableGroup orderTableGroup;
 
-	@OneToOne(mappedBy = "orderTable")
+	@OneToOne
+	@JoinColumn(name = "order_table_id")
 	private Order order;
 
 	@Embedded
@@ -33,6 +34,14 @@ public class OrderTable {
 	private boolean empty;
 
 	protected OrderTable() {
+	}
+
+	public static OrderTable of(Long id, NumberOfGuests numberOfGuests, boolean empty) {
+		OrderTable orderTable = new OrderTable();
+		orderTable.id = id;
+		orderTable.numberOfGuests = numberOfGuests;
+		orderTable.empty = empty;
+		return orderTable;
 	}
 
 	public static OrderTable of(NumberOfGuests numberOfGuests, boolean empty) {
@@ -96,10 +105,6 @@ public class OrderTable {
 		}
 
 		this.numberOfGuests = numberOfGuests;
-	}
-
-	public void setOrder(Order order) {
-		this.order = order;
 	}
 
 	public void groupedBy(OrderTableGroup orderTableGroup) {

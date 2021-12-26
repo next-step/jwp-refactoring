@@ -30,7 +30,7 @@ public class OrderLineItemDto {
 	public static OrderLineItemDto from(OrderLineItem orderLineItem) {
 		OrderLineItemDto dto = new OrderLineItemDto();
 		dto.seq = orderLineItem.getSeq();
-		dto.menuId = orderLineItem.getMenu().getId();
+		dto.menuId = orderLineItem.getMenuId();
 		dto.quantity = orderLineItem.getQuantity().getValue();
 		return dto;
 	}

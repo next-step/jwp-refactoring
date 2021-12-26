@@ -1,6 +1,6 @@
 package kitchenpos.order.domain;
 
-import static kitchenpos.menu.MenuFixture.*;
+import static kitchenpos.order.OrderLineItemFixture.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.ThrowableAssert.*;
 
@@ -12,17 +12,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 
-import kitchenpos.common.domain.Quantity;
-
 @DisplayName("주문 항목들")
 class OrderLineItemsTest {
 	@DisplayName("생성")
 	@Test
 	void from() {
 		// given
-		OrderLineItem orderLineItem = OrderLineItem.of(
-			후라이드후라이드_메뉴(),
-			Quantity.from(1L));
+		OrderLineItem orderLineItem = 후라이드후라이드_메뉴_주문_항목();
 
 		// when
 		OrderLineItems orderLineItems = OrderLineItems.from(Collections.singletonList(orderLineItem));
