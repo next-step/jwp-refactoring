@@ -20,8 +20,8 @@ class TableGroupTest {
     @DisplayName("단체 지정 하고자 하는 테이블의 상태가 사용중이라면 예외가 발생한다.")
     void createTableGroupFailBecauseOfTableNotEmpty() {
         // given
-        OrderTable firstOrderTable = OrderTable.builder().empty(false).build();
-        OrderTable secondOrderTable = OrderTable.builder().empty(false).build();
+        OrderTable firstOrderTable = new OrderTable(0, false);
+        OrderTable secondOrderTable = new OrderTable(0, false);
 
         // when
         assertThatThrownBy(() -> {
@@ -35,8 +35,8 @@ class TableGroupTest {
     @DisplayName("단체 지정 하고자 하는 테이블이 단체 지정이 되어 있다면 예외가 발생한다.")
     void createTableGroupFailBecauseOfAlreadyTableGroup() {
         // given
-        OrderTable firstOrderTable = OrderTable.builder().empty(true).build();
-        OrderTable secondOrderTable = OrderTable.builder().empty(false).build();
+        OrderTable firstOrderTable = new OrderTable(0, true);
+        OrderTable secondOrderTable = new OrderTable(0, false);
         final TableGroup existTableGroup = TableGroup.builder().build();
         existTableGroup.saveOrderTable(firstOrderTable);
 
@@ -52,8 +52,8 @@ class TableGroupTest {
     @DisplayName("단체 지정 해제시 테이블의 주문 상태가 조리 또는 식사 상태면 변경이 불가능하다.")
     void ungroupFailBecauseOfOrderStatusCookingOrMeal() {
         // given
-        OrderTable firstOrderTable = OrderTable.builder().empty(true).build();
-        OrderTable secondOrderTable = OrderTable.builder().empty(true).build();
+        OrderTable firstOrderTable = new OrderTable(0, true);
+        OrderTable secondOrderTable = new OrderTable(0, true);
         firstOrderTable.addOrder(new Order(OrderStatus.COOKING));
         secondOrderTable.addOrder(new Order(OrderStatus.COMPLETION));
 

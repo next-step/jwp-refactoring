@@ -31,8 +31,8 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        final OrderTable firstOrderTable = orderTableRepository.save(OrderTable.builder().empty(true).build());
-        final OrderTable secondOrderTable = orderTableRepository.save(OrderTable.builder().empty(true).build());
+        final OrderTable firstOrderTable = orderTableRepository.save(new OrderTable(0, true));
+        final OrderTable secondOrderTable = orderTableRepository.save(new OrderTable(0, true));
         tableGroupCreateRequest = new TableGroupCreateRequest(Arrays.asList(new TableGroupCreateRequest.OrderTable(firstOrderTable.getId()),
                 new TableGroupCreateRequest.OrderTable(secondOrderTable.getId())));
     }

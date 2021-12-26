@@ -30,7 +30,8 @@ public class TableAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        savedOrderTable = orderTableRepository.save(OrderTable.builder().numberOfGuests(0).empty(false).build());
+        final OrderTable orderTable = new OrderTable(0, false);
+        savedOrderTable = orderTableRepository.save(orderTable);
     }
 
     @Test
@@ -65,7 +66,8 @@ public class TableAcceptanceTest extends AcceptanceTest {
     @DisplayName("테이블의 사용여부를 변경할 수 있다.")
     void changeEmpty() {
         // given
-        OrderTable 기존_테이블 = orderTableRepository.save(OrderTable.builder().numberOfGuests(0).empty(true).build());
+        final OrderTable orderTable = new OrderTable(0, true);
+        OrderTable 기존_테이블 = orderTableRepository.save(orderTable);
         TableChangeEmptyRequest 기존_테이블_사용함_으로_변경 = new TableChangeEmptyRequest(false);
 
         // when

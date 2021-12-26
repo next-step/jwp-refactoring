@@ -44,7 +44,8 @@ class TableServiceTest extends AcceptanceTest {
     @DisplayName("방문한 손님 수를 변경하고자 하는 테이블이 사용불가할 경우 예외가 발생한다.")
     void changeNumberOfGuestsIsEmptyTable() {
         // given
-        final OrderTable savedOrderTable = orderTableRepository.save(OrderTable.builder().empty(true).build());
+        final OrderTable orderTable = new OrderTable(0, true);
+        final OrderTable savedOrderTable = orderTableRepository.save(orderTable);
 
         // when
         assertThatThrownBy(() -> {

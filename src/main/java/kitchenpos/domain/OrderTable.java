@@ -33,6 +33,11 @@ public class OrderTable extends BaseTimeEntity {
     protected OrderTable() {
     }
 
+    public OrderTable(final int numberOfGuests, final boolean empty) {
+        this.numberOfGuests = numberOfGuests;
+        this.empty = empty;
+    }
+
     public void addTableGroup(final TableGroup tableGroup) {
         this.tableGroup = tableGroup;
         this.empty=false;
@@ -102,32 +107,4 @@ public class OrderTable extends BaseTimeEntity {
         return empty;
     }
 
-    public static OrderTableBuilder builder() {
-        return new OrderTableBuilder();
-    }
-
-    public static final class OrderTableBuilder {
-        private int numberOfGuests;
-        private boolean empty;
-
-        private OrderTableBuilder() {
-        }
-
-        public OrderTableBuilder numberOfGuests(int numberOfGuests) {
-            this.numberOfGuests = numberOfGuests;
-            return this;
-        }
-
-        public OrderTableBuilder empty(boolean empty) {
-            this.empty = empty;
-            return this;
-        }
-
-        public OrderTable build() {
-            OrderTable orderTable = new OrderTable();
-            orderTable.empty = this.empty;
-            orderTable.numberOfGuests = this.numberOfGuests;
-            return orderTable;
-        }
-    }
 }
