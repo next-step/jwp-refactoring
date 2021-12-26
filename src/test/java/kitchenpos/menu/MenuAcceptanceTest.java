@@ -3,11 +3,9 @@ package kitchenpos.menu;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.dao.ProductDao;
-import kitchenpos.domain.Menu;
+import kitchenpos.repository.MenuGroupRepository;
+import kitchenpos.repository.ProductRepository;
 import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
 import kitchenpos.dto.MenuCreateRequest;
 import kitchenpos.dto.MenuResponse;
@@ -27,10 +25,10 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 public class MenuAcceptanceTest extends AcceptanceTest {
 
     @Autowired
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
 
     @Autowired
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     private MenuGroup 추천메뉴_그룹;
 
@@ -40,8 +38,8 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        추천메뉴_그룹 = menuGroupDao.save(MenuGroup.builder().name("추천메뉴").build());
-        후라이드 = productDao.save(Product.builder().name("후라이드").price(BigDecimal.valueOf(9500)).build());
+        추천메뉴_그룹 = menuGroupRepository.save(MenuGroup.builder().name("추천메뉴").build());
+        후라이드 = productRepository.save(Product.builder().name("후라이드").price(BigDecimal.valueOf(9500)).build());
     }
 
     @Test

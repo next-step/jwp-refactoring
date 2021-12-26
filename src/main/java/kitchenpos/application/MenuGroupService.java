@@ -1,6 +1,6 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuGroupDao;
+import kitchenpos.repository.MenuGroupRepository;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.dto.MenuGroupCreateRequest;
 import kitchenpos.dto.MenuGroupResponse;
@@ -14,14 +14,14 @@ import java.util.List;
 @Service
 @Transactional
 public class MenuGroupService {
-    private final MenuGroupDao menuGroupDao;
+    private final MenuGroupRepository menuGroupRepository;
 
-    public MenuGroupService(final MenuGroupDao menuGroupDao) {
-        this.menuGroupDao = menuGroupDao;
+    public MenuGroupService(final MenuGroupRepository menuGroupRepository) {
+        this.menuGroupRepository = menuGroupRepository;
     }
 
     public MenuGroupResponse create(final MenuGroupCreateRequest request) {
-        final MenuGroup savedMenuGroup = menuGroupDao.save(MenuGroup.builder()
+        final MenuGroup savedMenuGroup = menuGroupRepository.save(MenuGroup.builder()
                 .name(request.getName())
                 .build());
 
@@ -30,13 +30,13 @@ public class MenuGroupService {
 
     @Transactional(readOnly = true)
     public MenuGroup findMenuGroup(Long id) {
-        return menuGroupDao.findById(id)
+        return menuGroupRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(String.format("menu not found. find menu id is %d", id)));
     }
 
     @Transactional(readOnly = true)
     public List<MenuGroupResponse> list() {
-        final List<MenuGroup> menuGroups = menuGroupDao.findAll();
+        final List<MenuGroup> menuGroups = menuGroupRepository.findAll();
 
         return MenuGroupMapper.toMenuGroupResponses(menuGroups);
     }

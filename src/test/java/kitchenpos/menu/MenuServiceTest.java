@@ -2,8 +2,8 @@ package kitchenpos.menu;
 
 import kitchenpos.AcceptanceTest;
 import kitchenpos.application.MenuService;
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.dao.ProductDao;
+import kitchenpos.repository.MenuGroupRepository;
+import kitchenpos.repository.ProductRepository;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.dto.MenuCreateRequest;
 import kitchenpos.global.exception.EntityNotFoundException;
@@ -23,10 +23,10 @@ class MenuServiceTest extends AcceptanceTest {
     private MenuService menuService;
 
     @Autowired
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
 
     @Autowired
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     @Test
     @DisplayName("메뉴 그룹이 존재하지 않을 경우 예외가 발생한다.")
@@ -40,7 +40,7 @@ class MenuServiceTest extends AcceptanceTest {
     @DisplayName("메뉴에 등록하고자 하는 상품이 존재하지 않을 경우 예외가 발생한다.")
     void nonExistProduct() {
         // given
-        final MenuGroup savedMenuGroup = menuGroupDao.save(MenuGroup.builder().name("추천메뉴").build());
+        final MenuGroup savedMenuGroup = menuGroupRepository.save(MenuGroup.builder().name("추천메뉴").build());
 
         // when
         assertThatThrownBy(() -> {

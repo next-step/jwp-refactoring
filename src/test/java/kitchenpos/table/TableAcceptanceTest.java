@@ -3,7 +3,7 @@ package kitchenpos.table;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.dao.OrderTableDao;
+import kitchenpos.repository.OrderTableRepository;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.TableChangeEmptyRequest;
 import kitchenpos.dto.TableChangeNumberOfGuestRequest;
@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 public class TableAcceptanceTest extends AcceptanceTest {
 
     @Autowired
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     private OrderTable savedOrderTable;
 
@@ -30,7 +30,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        savedOrderTable = orderTableDao.save(OrderTable.builder().numberOfGuests(0).empty(false).build());
+        savedOrderTable = orderTableRepository.save(OrderTable.builder().numberOfGuests(0).empty(false).build());
     }
 
     @Test
@@ -65,7 +65,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
     @DisplayName("테이블의 사용여부를 변경할 수 있다.")
     void changeEmpty() {
         // given
-        OrderTable 기존_테이블 = orderTableDao.save(OrderTable.builder().numberOfGuests(0).empty(true).build());
+        OrderTable 기존_테이블 = orderTableRepository.save(OrderTable.builder().numberOfGuests(0).empty(true).build());
         TableChangeEmptyRequest 기존_테이블_사용함_으로_변경 = new TableChangeEmptyRequest(false);
 
         // when

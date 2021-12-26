@@ -1,6 +1,6 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.TableGroupDao;
+import kitchenpos.repository.TableGroupRepository;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.TableGroupCreateRequest;
@@ -16,11 +16,11 @@ import java.util.stream.Collectors;
 @Service
 public class TableGroupService {
     private final TableService tableService;
-    private final TableGroupDao tableGroupDao;
+    private final TableGroupRepository tableGroupRepository;
 
-    public TableGroupService(final TableService tableService, final TableGroupDao tableGroupDao) {
+    public TableGroupService(final TableService tableService, final TableGroupRepository tableGroupRepository) {
         this.tableService = tableService;
-        this.tableGroupDao = tableGroupDao;
+        this.tableGroupRepository = tableGroupRepository;
     }
 
     @Transactional
@@ -37,7 +37,7 @@ public class TableGroupService {
             tableGroup.saveOrderTable(savedOrderTable);
         }
 
-        final TableGroup savedTableGroup = tableGroupDao.save(tableGroup);
+        final TableGroup savedTableGroup = tableGroupRepository.save(tableGroup);
 
         return TableGroupMapper.toTableGroupResponse(savedTableGroup);
     }

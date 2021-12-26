@@ -1,6 +1,6 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.ProductDao;
+import kitchenpos.repository.ProductRepository;
 import kitchenpos.domain.Product;
 import kitchenpos.dto.ProductCreateRequest;
 import kitchenpos.dto.ProductResponse;
@@ -13,14 +13,14 @@ import java.util.List;
 @Service
 @Transactional
 public class ProductService {
-    private final ProductDao productDao;
+    private final ProductRepository productRepository;
 
-    public ProductService(final ProductDao productDao) {
-        this.productDao = productDao;
+    public ProductService(final ProductRepository productRepository) {
+        this.productRepository = productRepository;
     }
 
     public ProductResponse create(final ProductCreateRequest request) {
-        final Product savedProduct = productDao.save(Product.builder()
+        final Product savedProduct = productRepository.save(Product.builder()
                 .name(request.getName())
                 .price(request.getPrice())
                 .build());
@@ -30,12 +30,12 @@ public class ProductService {
 
     @Transactional(readOnly = true)
     public List<Product> findProducts(List<Long> id) {
-        return productDao.findByIdIn(id);
+        return productRepository.findByIdIn(id);
     }
 
     @Transactional(readOnly = true)
     public List<ProductResponse> list() {
-        final List<Product> products = productDao.findAll();
+        final List<Product> products = productRepository.findAll();
 
         return ProductMapper.toProductResponses(products);
     }

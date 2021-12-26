@@ -1,6 +1,6 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderTableDao;
+import kitchenpos.repository.OrderTableRepository;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.TableChangeEmptyRequest;
 import kitchenpos.dto.TableChangeNumberOfGuestRequest;
@@ -16,10 +16,10 @@ import java.util.List;
 @Service
 @Transactional
 public class TableService {
-    private final OrderTableDao orderTableDao;
+    private final OrderTableRepository orderTableRepository;
 
-    public TableService(final OrderTableDao orderTableDao) {
-        this.orderTableDao = orderTableDao;
+    public TableService(final OrderTableRepository orderTableRepository) {
+        this.orderTableRepository = orderTableRepository;
     }
 
     public TableResponse create(final TableCreateRequest request) {
@@ -29,14 +29,14 @@ public class TableService {
                 .build();
         orderTable.initTableGroup();
 
-        final OrderTable savedOrderTable = orderTableDao.save(orderTable);
+        final OrderTable savedOrderTable = orderTableRepository.save(orderTable);
 
         return TableMapper.toOrderTable(savedOrderTable);
     }
 
     @Transactional(readOnly = true)
     public List<TableResponse> list() {
-        final List<OrderTable> orderTables = orderTableDao.findAll();
+        final List<OrderTable> orderTables = orderTableRepository.findAll();
 
         return TableMapper.toOrderTables(orderTables);
     }
@@ -60,17 +60,17 @@ public class TableService {
 
     @Transactional(readOnly = true)
     public OrderTable findOrderTable(Long id) {
-        return orderTableDao.findById(id)
+        return orderTableRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(String.format("order not found. find order id is %d", id)));
     }
 
     @Transactional(readOnly = true)
     public List<OrderTable> findOrderTables(List<Long> ids) {
-        return orderTableDao.findAllByIdIn(ids);
+        return orderTableRepository.findAllByIdIn(ids);
     }
 
     @Transactional(readOnly = true)
     public List<OrderTable> findAllByTableGroupId(final Long tableGroupId) {
-        return orderTableDao.findAllByTableGroupId(tableGroupId);
+        return orderTableRepository.findAllByTableGroupId(tableGroupId);
     }
 }

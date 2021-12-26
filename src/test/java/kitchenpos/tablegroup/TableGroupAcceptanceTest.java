@@ -1,11 +1,9 @@
 package kitchenpos.tablegroup;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.dao.TableGroupDao;
+import kitchenpos.repository.OrderTableRepository;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.TableGroupCreateRequest;
@@ -15,7 +13,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
 import java.util.Arrays;
 
@@ -26,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 public class TableGroupAcceptanceTest extends AcceptanceTest {
 
     @Autowired
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     private TableGroupCreateRequest tableGroupCreateRequest;
 
@@ -34,8 +31,8 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        final OrderTable firstOrderTable = orderTableDao.save(OrderTable.builder().empty(true).build());
-        final OrderTable secondOrderTable = orderTableDao.save(OrderTable.builder().empty(true).build());
+        final OrderTable firstOrderTable = orderTableRepository.save(OrderTable.builder().empty(true).build());
+        final OrderTable secondOrderTable = orderTableRepository.save(OrderTable.builder().empty(true).build());
         tableGroupCreateRequest = new TableGroupCreateRequest(Arrays.asList(new TableGroupCreateRequest.OrderTable(firstOrderTable.getId()),
                 new TableGroupCreateRequest.OrderTable(secondOrderTable.getId())));
     }

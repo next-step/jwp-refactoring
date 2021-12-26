@@ -3,9 +3,9 @@ package kitchenpos.order;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.dao.OrderTableDao;
+import kitchenpos.repository.MenuRepository;
+import kitchenpos.repository.MenuGroupRepository;
+import kitchenpos.repository.OrderTableRepository;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.OrderStatus;
@@ -30,13 +30,13 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 public class OrderAcceptanceTest extends AcceptanceTest {
 
     @Autowired
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
 
     @Autowired
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
 
     @Autowired
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     private Menu menu;
 
@@ -46,9 +46,9 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        final MenuGroup menuGroup = menuGroupDao.save(MenuGroup.builder().name("추천메뉴").build());
-        menu = menuDao.save(Menu.builder().name("후라이드+후라이드").price(BigDecimal.valueOf(17000)).menuGroup(menuGroup).build());
-        orderTable = orderTableDao.save(OrderTable.builder().build());
+        final MenuGroup menuGroup = menuGroupRepository.save(MenuGroup.builder().name("추천메뉴").build());
+        menu = menuRepository.save(Menu.builder().name("후라이드+후라이드").price(BigDecimal.valueOf(17000)).menuGroup(menuGroup).build());
+        orderTable = orderTableRepository.save(OrderTable.builder().build());
     }
 
     @Test

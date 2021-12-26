@@ -1,6 +1,6 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderDao;
+import kitchenpos.repository.OrderRepository;
 import kitchenpos.domain.*;
 import kitchenpos.dto.OrderCreateRequest;
 import kitchenpos.dto.OrderResponse;
@@ -19,12 +19,12 @@ public class OrderService {
 
     private final MenuService menuService;
     private final TableService tableService;
-    private final OrderDao orderDao;
+    private final OrderRepository orderRepository;
 
-    public OrderService(final MenuService menuService, final TableService tableService, final OrderDao orderDao) {
+    public OrderService(final MenuService menuService, final TableService tableService, final OrderRepository orderRepository) {
         this.menuService = menuService;
         this.tableService = tableService;
-        this.orderDao = orderDao;
+        this.orderRepository = orderRepository;
     }
 
     public OrderResponse create(final OrderCreateRequest request) {
@@ -42,7 +42,7 @@ public class OrderService {
         order.saveOrderTable(orderTable);
         saveOrderLineItem(menus, request, order);
 
-        final Order savedOrder = orderDao.save(order);
+        final Order savedOrder = orderRepository.save(order);
 
         return OrderMapper.toOrderResponse(savedOrder);
     }
@@ -61,13 +61,13 @@ public class OrderService {
 
     @Transactional(readOnly = true)
     public List<OrderResponse> list() {
-        final List<Order> orders = orderDao.findAll();
+        final List<Order> orders = orderRepository.findAll();
 
         return OrderMapper.toOrderResponses(orders);
     }
 
     public OrderResponse changeOrderStatus(final Long orderId, final OrderStatusChangeRequest request) {
-        final Order findOrder = orderDao.findById(orderId)
+        final Order findOrder = orderRepository.findById(orderId)
                 .orElseThrow(() -> new EntityNotFoundException(String.format("order not found. find order id is %d", orderId)));
 
         findOrder.changeOrderStatus(request.getOrderStatus());

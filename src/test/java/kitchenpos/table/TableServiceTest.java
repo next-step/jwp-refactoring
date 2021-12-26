@@ -2,9 +2,8 @@ package kitchenpos.table;
 
 import kitchenpos.AcceptanceTest;
 import kitchenpos.application.*;
-import kitchenpos.dao.OrderTableDao;
+import kitchenpos.repository.OrderTableRepository;
 import kitchenpos.domain.OrderTable;
-import kitchenpos.dto.MenuCreateRequest;
 import kitchenpos.dto.TableChangeEmptyRequest;
 import kitchenpos.dto.TableChangeNumberOfGuestRequest;
 import kitchenpos.exception.TableNotAvailableException;
@@ -13,7 +12,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DisplayName("테이블 관련 기능")
@@ -23,7 +21,7 @@ class TableServiceTest extends AcceptanceTest {
     private TableService tableService;
 
     @Autowired
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @Test
     @DisplayName("사용여부를 변경하고자 하는 테이블이 존재하지 않으면 예외가 발생한다.")
@@ -46,7 +44,7 @@ class TableServiceTest extends AcceptanceTest {
     @DisplayName("방문한 손님 수를 변경하고자 하는 테이블이 사용불가할 경우 예외가 발생한다.")
     void changeNumberOfGuestsIsEmptyTable() {
         // given
-        final OrderTable savedOrderTable = orderTableDao.save(OrderTable.builder().empty(true).build());
+        final OrderTable savedOrderTable = orderTableRepository.save(OrderTable.builder().empty(true).build());
 
         // when
         assertThatThrownBy(() -> {

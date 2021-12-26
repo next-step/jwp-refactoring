@@ -1,6 +1,6 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuDao;
+import kitchenpos.repository.MenuRepository;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
@@ -22,12 +22,12 @@ public class MenuService {
 
     private final MenuGroupService menuGroupService;
     private final ProductService productService;
-    private final MenuDao menuDao;
+    private final MenuRepository menuRepository;
 
-    public MenuService(final MenuGroupService menuGroupService, final ProductService productService, final MenuDao menuDao) {
+    public MenuService(final MenuGroupService menuGroupService, final ProductService productService, final MenuRepository menuRepository) {
         this.menuGroupService = menuGroupService;
         this.productService = productService;
-        this.menuDao = menuDao;
+        this.menuRepository = menuRepository;
     }
 
     public MenuResponse create(final MenuCreateRequest request) {
@@ -50,7 +50,7 @@ public class MenuService {
 
         saveMenuProduct(request, products, menu);
 
-        final Menu savedMenu = menuDao.save(menu);
+        final Menu savedMenu = menuRepository.save(menu);
 
         return MenuMapper.toMenuResponse(savedMenu);
     }
@@ -88,13 +88,13 @@ public class MenuService {
 
     @Transactional(readOnly = true)
     public List<MenuResponse> list() {
-        final List<Menu> menus = menuDao.findAll();
+        final List<Menu> menus = menuRepository.findAll();
 
         return MenuMapper.toMenuResponses(menus);
     }
 
     @Transactional(readOnly = true)
     public List<Menu> findMenus(List<Long> id) {
-        return menuDao.findByIdIn(id);
+        return menuRepository.findByIdIn(id);
     }
 }
