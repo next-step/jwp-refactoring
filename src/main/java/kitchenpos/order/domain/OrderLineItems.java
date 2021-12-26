@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
+import org.springframework.util.CollectionUtils;
 
 @Embeddable
 public class OrderLineItems {
@@ -16,6 +17,8 @@ public class OrderLineItems {
     }
 
     private OrderLineItems(final List<OrderLineItem> orderLineItems) {
+        validateOrderLineItemsNotEmpty(orderLineItems);
+
         this.orderLineItems = orderLineItems;
     }
 
@@ -27,7 +30,9 @@ public class OrderLineItems {
         return Collections.unmodifiableList(orderLineItems);
     }
 
-    public void addOrderLineItem(final OrderLineItem orderLineItem) {
-        orderLineItems.add(orderLineItem);
+    private void validateOrderLineItemsNotEmpty(List<OrderLineItem> orderLineItems) {
+        if (CollectionUtils.isEmpty(orderLineItems)) {
+            throw new IllegalArgumentException("주문 항목은 하나 이상이어야 합니다.");
+        }
     }
 }

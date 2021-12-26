@@ -18,7 +18,6 @@ import javax.persistence.Table;
 import kitchenpos.table.domain.OrderTable;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import org.springframework.util.CollectionUtils;
 
 @Entity
 @Table(name = "orders")
@@ -79,9 +78,7 @@ public class Order {
     }
 
     public void addOrderLineItems(List<OrderLineItem> orderLineItems) {
-        validateOrderLineItemsNotEmpty(orderLineItems);
-
-        orderLineItems.forEach(orderLineItem -> this.orderLineItems.addOrderLineItem(orderLineItem));
+        this.orderLineItems = OrderLineItems.of(orderLineItems);
     }
 
     public boolean isCompleteStatus() {
@@ -97,12 +94,6 @@ public class Order {
     private void validateOrderTableNotEmpty(OrderTable orderTable) {
         if (orderTable.isEmpty()) {
             throw new IllegalArgumentException("주문 테이블이 비어있지 않습니다.");
-        }
-    }
-
-    private void validateOrderLineItemsNotEmpty(List<OrderLineItem> orderLineItems) {
-        if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalArgumentException("주문 항목은 하나 이상이어야 합니다.");
         }
     }
 }
