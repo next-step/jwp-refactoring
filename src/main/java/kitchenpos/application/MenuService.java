@@ -85,7 +85,7 @@ public class MenuService {
     }
 
     @Transactional(readOnly = true)
-    public List<Menu> findMenus(List<Long> id) {
-        return menuRepository.findByIdIn(id);
+    public List<Menu> findMenus(List<Long> ids) {
+        return menuRepository.findByIdIn(ids);
     }
 }
