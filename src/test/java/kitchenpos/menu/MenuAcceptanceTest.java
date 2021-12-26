@@ -27,7 +27,7 @@ import org.springframework.http.HttpStatus;
 @DisplayName("메뉴 인수 테스트")
 public class MenuAcceptanceTest extends AcceptanceTest {
 
-    private static String URI = "/api/menus";
+    private static final String  URI = "/api/menus";
 
     private MenuRequest 메뉴_후라이드;
     private MenuRequest 메뉴_양념치킨;
