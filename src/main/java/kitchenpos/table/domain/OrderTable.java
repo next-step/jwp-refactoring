@@ -28,7 +28,7 @@ public class OrderTable {
     @Embedded
     private Empty empty;
 
-    public OrderTable() {
+    protected OrderTable() {
     }
 
     public OrderTable(final int numberOfGuests, final boolean empty) {
