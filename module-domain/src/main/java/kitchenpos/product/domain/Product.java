@@ -1,6 +1,5 @@
 package kitchenpos.product.domain;
 
-import kitchenpos.product.dto.ProductRequest;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -50,10 +49,6 @@ public class Product {
 
     public BigDecimal getPrice() {
         return price;
-    }
-
-    public static Product from(ProductRequest productRequest) {
-        return new Product(productRequest.getName(), productRequest.getPrice());
     }
 
     public void checkPriceOverZero() {

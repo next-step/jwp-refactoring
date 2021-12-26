@@ -1,11 +1,11 @@
-package kitchenpos.tablegroup.dto;
+package kitchenpos.event;
 
 import java.util.List;
 
 public class TableGroupCreatedEventRequest {
 
-    private Long tableGroupId;
-    private List<Long> orderTableIds;
+    private final Long tableGroupId;
+    private final List<Long> orderTableIds;
 
     public TableGroupCreatedEventRequest(Long tableGroupId, List<Long> orderTableIds) {
         this.tableGroupId = tableGroupId;

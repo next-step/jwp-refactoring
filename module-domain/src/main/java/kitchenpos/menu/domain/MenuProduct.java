@@ -1,7 +1,6 @@
 package kitchenpos.menu.domain;
 
 import kitchenpos.product.domain.Product;
-import kitchenpos.menu.dto.MenuProductRequest;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -39,8 +38,8 @@ public class MenuProduct {
         this.quantity = quantity;
     }
 
-    public static MenuProduct from(Menu menu, Product product, MenuProductRequest menuProductRequest) {
-        return new MenuProduct(menu, product, menuProductRequest.getQuantity());
+    public static MenuProduct from(Menu menu, Product product, Long quantity) {
+        return new MenuProduct(menu, product, quantity);
     }
 
     public Menu getMenu() {

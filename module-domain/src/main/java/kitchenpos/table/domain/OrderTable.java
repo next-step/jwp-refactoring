@@ -1,6 +1,5 @@
 package kitchenpos.table.domain;
 
-import kitchenpos.table.dto.OrderTableRequest;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -33,8 +32,8 @@ public class OrderTable {
         this.empty = empty;
     }
 
-    public static OrderTable from(OrderTableRequest orderTableRequest) {
-        return new OrderTable(orderTableRequest.getNumberOfGuests(), orderTableRequest.isEmpty());
+    public static OrderTable from(int numberOfGuests, boolean isEmpty) {
+        return new OrderTable(numberOfGuests, isEmpty);
     }
 
     public Long getId() {

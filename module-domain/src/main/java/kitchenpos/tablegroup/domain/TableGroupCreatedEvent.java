@@ -1,6 +1,7 @@
 package kitchenpos.tablegroup.domain;
 
-import kitchenpos.tablegroup.dto.TableGroupCreatedEventRequest;
+
+import kitchenpos.event.TableGroupCreatedEventRequest;
 import org.springframework.context.ApplicationEvent;
 
 

@@ -1,7 +1,7 @@
 package kitchenpos.order.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.domain.OrderStatus;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -72,12 +72,12 @@ public class Order {
         orderLineItem.addOrder(this);
     }
 
-    public void changeStatus(OrderRequest orderRequest) {
+    public void changeStatus(OrderStatus orderStatus) {
 
-        if (Objects.equals(OrderStatus.COMPLETION, orderRequest.getOrderStatus())) {
+        if (Objects.equals(OrderStatus.COMPLETION, orderStatus)) {
             throw new IllegalArgumentException("주문이 완료 상태입니다.");
         }
-        this.orderStatus = orderRequest.getOrderStatus();
+        this.orderStatus = orderStatus;
     }
 
     public void changeOrderStatusMeal() {

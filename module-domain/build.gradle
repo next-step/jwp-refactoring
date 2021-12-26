@@ -1,0 +1,14 @@
+bootJar {
+    enabled=false
+}
+
+jar {
+    enabled=true
+}
+
+dependencies {
+    implementation project(":module-common")
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.12.3'
+    runtimeOnly 'com.h2database:h2'
+}
