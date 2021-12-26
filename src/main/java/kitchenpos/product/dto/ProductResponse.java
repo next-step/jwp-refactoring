@@ -22,7 +22,7 @@ public class ProductResponse {
 
     public static ProductResponse of(final Product product) {
         return new ProductResponse(product.getId(), product.getName().getName(),
-            product.getPrice().getPrice());
+            product.getPrice());
     }
 
     public static List<ProductResponse> ofList(final List<Product> products) {

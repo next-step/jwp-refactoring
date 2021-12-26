@@ -38,7 +38,7 @@ public class Product {
         return name;
     }
 
-    public Price getPrice() {
-        return price;
+    public BigDecimal getPrice() {
+        return price.getPrice();
     }
 }
