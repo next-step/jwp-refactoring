@@ -45,8 +45,8 @@ public class TableGroup {
         return new TableGroup(id, orderTables);
     }
 
-    public void ungroup() {
-        orderTables.ungroup();
+    public void ungroup(TableGroupExternalValidator externalValidator) {
+        orderTables.ungroup(externalValidator);
     }
 
     public Long getId() {

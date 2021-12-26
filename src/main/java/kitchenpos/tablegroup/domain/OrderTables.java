@@ -3,6 +3,7 @@ package kitchenpos.tablegroup.domain;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
@@ -51,7 +52,12 @@ public class OrderTables {
 		this.orderTables.forEach(orderTable -> orderTable.group(tableGroup.getId()));
 	}
 
-	public void ungroup() {
+	public void ungroup(TableGroupExternalValidator externalValidator) {
+		final List<Long> orderTableIds = orderTables.stream()
+			.map(OrderTable::getId)
+			.collect(Collectors.toList());
+		externalValidator.ungroup(orderTableIds);
+
 		orderTables.forEach(OrderTable::ungroup);
 	}
 
