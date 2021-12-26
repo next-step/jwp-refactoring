@@ -58,10 +58,6 @@ public class Order {
         return orderTable;
     }
 
-    public void setOrderTable(final OrderTable orderTableId) {
-        this.orderTable = orderTableId;
-    }
-
     public OrderStatus getOrderStatus() {
         return orderStatus;
     }
