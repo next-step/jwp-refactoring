@@ -8,8 +8,6 @@ import java.util.Objects;
 
 @Embeddable
 public class Price {
-    public static final String MESSAGE_NEGATIVE_PRICE = "가격이 0보다 작거나 같을 수 없습니다";
-
     public static final int MIN_PRICE = 0;
 
     public static Price Zero = new Price(BigDecimal.ZERO);
@@ -35,7 +33,7 @@ public class Price {
 
     private void validateNegativePrice(BigDecimal price) {
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < MIN_PRICE) {
-            throw new NegativePriceException(MESSAGE_NEGATIVE_PRICE);
+            throw new NegativePriceException();
         }
     }
 
