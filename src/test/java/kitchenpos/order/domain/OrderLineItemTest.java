@@ -41,7 +41,7 @@ public class OrderLineItemTest {
         OrderLineItem 주문_항목 = OrderLineItem.of(주문, 메뉴, 3L);
         
         // when
-        주문_항목.updateOrder(Order.of(테이블, OrderStatus.MEAL));
+        주문_항목.setOrder(Order.of(테이블, OrderStatus.MEAL));
         
         // then
         assertThat(주문_항목.getOrder()).isEqualTo(Order.of(테이블, OrderStatus.MEAL));

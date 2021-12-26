@@ -94,7 +94,7 @@ public class Order {
         this.orderStatus = orderStatus;
     }
     
-    public void updateOrderTable(OrderTable orderTable) {
+    public void setOrderTable(OrderTable orderTable) {
         this.orderTable = orderTable;
     }
 
@@ -103,7 +103,7 @@ public class Order {
         
         orderLineItems.stream()
         .forEach(orderLineItem -> {
-            orderLineItem.updateOrder(this);
+            orderLineItem.setOrder(this);
             this.orderLineItems.add(orderLineItem);
         });
     }

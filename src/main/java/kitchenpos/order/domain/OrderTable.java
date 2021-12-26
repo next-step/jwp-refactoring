@@ -90,7 +90,7 @@ public class OrderTable {
 
     public void addOrders(List<Order> orders) {
         orders.forEach(order -> {
-            order.updateOrderTable(this);
+            order.setOrderTable(this);
             this.orders.add(order);
         });
     }
