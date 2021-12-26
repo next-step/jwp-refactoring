@@ -8,7 +8,6 @@ import java.util.List;
 
 @Entity
 public class Menu {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

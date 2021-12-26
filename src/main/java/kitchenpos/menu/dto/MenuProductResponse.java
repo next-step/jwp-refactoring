@@ -30,7 +30,7 @@ public class MenuProductResponse {
         return new MenuProductResponse(
                 menuProduct.getId(),
                 menuProduct.getProductId(),
-                menuProduct.getQuantity().value()
+                menuProduct.getQuantity()
         );
     }
 

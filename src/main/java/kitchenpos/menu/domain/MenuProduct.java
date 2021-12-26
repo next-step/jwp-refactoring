@@ -22,11 +22,6 @@ public class MenuProduct {
     protected MenuProduct() {
     }
 
-    public MenuProduct(Product product, Long quantity) {
-        this.productId = product.getId();
-        this.quantity = Quantity.of(quantity);
-    }
-
     public MenuProduct(Long productId, Long quantity) {
         this.productId = productId;
         this.quantity = Quantity.of(quantity);
@@ -40,8 +35,8 @@ public class MenuProduct {
         return productId;
     }
 
-    public Quantity getQuantity() {
-        return quantity;
+    public Long getQuantity() {
+        return quantity.value();
     }
 
     public BigDecimal price(BigDecimal productPrice) {
