@@ -25,6 +25,11 @@ public class MenuProduct extends BaseTimeEntity {
     protected MenuProduct() {
     }
 
+    public MenuProduct(final Product product, final long quantity) {
+        this.product = product;
+        this.quantity = quantity;
+    }
+
     public void addMenu(Menu menu) {
         this.menu = menu;
     }
@@ -45,32 +50,4 @@ public class MenuProduct extends BaseTimeEntity {
         return quantity;
     }
 
-    public static MenuProductBuilder builder() {
-        return new MenuProductBuilder();
-    }
-
-    public static final class MenuProductBuilder {
-        private Product product;
-        private long quantity;
-
-        private MenuProductBuilder() {
-        }
-
-        public MenuProductBuilder product(Product product) {
-            this.product = product;
-            return this;
-        }
-
-        public MenuProductBuilder quantity(long quantity) {
-            this.quantity = quantity;
-            return this;
-        }
-
-        public MenuProduct build() {
-            MenuProduct menuProduct = new MenuProduct();
-            menuProduct.product = this.product;
-            menuProduct.quantity = this.quantity;
-            return menuProduct;
-        }
-    }
 }

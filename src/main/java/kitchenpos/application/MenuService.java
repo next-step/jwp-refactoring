@@ -52,10 +52,7 @@ public class MenuService {
     private void saveMenuProduct(final MenuCreateRequest request, final List<Product> products, final Menu savedMenu) {
         for (final MenuCreateRequest.MenuProduct menuProductRequest : request.getMenuProducts()) {
             final Product product = getProduct(products, menuProductRequest);
-            final MenuProduct menuProduct = MenuProduct.builder()
-                    .product(product)
-                    .quantity(menuProductRequest.getQuantity())
-                    .build();
+            final MenuProduct menuProduct = new MenuProduct(product, menuProductRequest.getQuantity());
 
             savedMenu.addMenuProduct(menuProduct);
         }
