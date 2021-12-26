@@ -1,4 +1,4 @@
-package kitchenpos.ordertable.acceptance;
+package kitchenpos.tablegroup.acceptance;
 
 import static kitchenpos.ordertable.acceptance.TableAcceptanceTest.*;
 
@@ -17,8 +17,8 @@ import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
-import kitchenpos.ordertable.dto.TableGroupRequest;
-import kitchenpos.ordertable.dto.TableGroupResponse;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
+import kitchenpos.tablegroup.dto.TableGroupResponse;
 
 @DisplayName("단체 지정 관련 기능")
 public class TableGroupAcceptanceTest extends AcceptanceTest {

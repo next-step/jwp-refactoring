@@ -1,4 +1,4 @@
-package kitchenpos.ordertable.application;
+package kitchenpos.tablegroup.application;
 
 import static kitchenpos.common.exception.ExceptionMessage.*;
 
@@ -11,13 +11,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import kitchenpos.common.exception.NotFoundException;
 import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.domain.TableGroup;
-import kitchenpos.ordertable.domain.TableGroupSavedEvent;
-import kitchenpos.ordertable.domain.TableGroupValidator;
-import kitchenpos.ordertable.domain.TableUngroupEvent;
-import kitchenpos.ordertable.dto.TableGroupRequest;
-import kitchenpos.ordertable.dto.TableGroupResponse;
-import kitchenpos.ordertable.repository.TableGroupRepository;
+import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.domain.TableGroupSavedEvent;
+import kitchenpos.tablegroup.domain.TableGroupValidator;
+import kitchenpos.tablegroup.domain.TableUngroupEvent;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
+import kitchenpos.tablegroup.dto.TableGroupResponse;
+import kitchenpos.tablegroup.repository.TableGroupRepository;
 
 @Service
 public class TableGroupService {

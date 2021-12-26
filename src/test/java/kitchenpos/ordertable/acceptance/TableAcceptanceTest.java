@@ -1,6 +1,6 @@
 package kitchenpos.ordertable.acceptance;
 
-import static kitchenpos.ordertable.acceptance.TableGroupAcceptanceTest.*;
+import static kitchenpos.tablegroup.acceptance.TableGroupAcceptanceTest.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -21,7 +21,7 @@ import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
-import kitchenpos.ordertable.dto.TableGroupRequest;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
 
 @DisplayName("주문 테이블 관련 기능")
 public class TableAcceptanceTest extends AcceptanceTest {
