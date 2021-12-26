@@ -16,6 +16,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
+import kitchenpos.domain.ProductRequest;
+import kitchenpos.domain.ProductResponse;
+import kitchenpos.exception.KitchenposException;
 
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
@@ -29,14 +32,15 @@ class ProductServiceTest {
     @Test
     void create() {
         // given
-        Product product = new Product("name", BigDecimal.valueOf(10000));
-        Product expected = new Product(1L, "name", BigDecimal.valueOf(10000));
+        ProductRequest request = new ProductRequest("name", BigDecimal.valueOf(10000));
+        Product product = new Product(1L, "name", BigDecimal.valueOf(10000));
+        ProductResponse expected = ProductResponse.from(product);
 
         Mockito.when(productDao.save(Mockito.any()))
-            .thenReturn(expected);
+            .thenReturn(product);
 
         // when
-        Product result = productService.create(product);
+        ProductResponse result = productService.create(request);
 
         // then
         assertThat(result).isEqualTo(expected);
@@ -46,22 +50,22 @@ class ProductServiceTest {
     @Test
     void createErrorWhenPriceNull() {
         // given
-        Product product = new Product("name", null);
+        ProductRequest request = new ProductRequest("name", null);
 
         // when and then
-        assertThatExceptionOfType(IllegalArgumentException.class)
-            .isThrownBy(() -> productService.create(product));
+        assertThatExceptionOfType(KitchenposException.class)
+            .isThrownBy(() -> productService.create(request));
     }
 
     @DisplayName("가격이 음수인 상품 생성시 에러")
     @Test
     void createErrorWhenPriceLessThanZero() {
         // given
-        Product product = new Product("name", BigDecimal.valueOf(-1));
+        ProductRequest request = new ProductRequest("name", BigDecimal.valueOf(-1));
 
         // when and then
-        assertThatExceptionOfType(IllegalArgumentException.class)
-            .isThrownBy(() -> productService.create(product));
+        assertThatExceptionOfType(KitchenposException.class)
+            .isThrownBy(() -> productService.create(request));
     }
 
     @DisplayName("상품 목록 조회")
@@ -70,13 +74,13 @@ class ProductServiceTest {
         // given
         Product product1 = new Product(1L, "name1", BigDecimal.valueOf(10000));
         Product product2 = new Product(2L, "name2", BigDecimal.valueOf(20000));
-        List<Product> expected = Arrays.asList(product1, product2);
+        List<ProductResponse> expected = Arrays.asList(ProductResponse.from(product1), ProductResponse.from(product2));
 
         Mockito.when(productDao.findAll())
-            .thenReturn(expected);
+            .thenReturn(Arrays.asList(product1, product2));
 
         // when
-        List<Product> actual = productService.list();
+        List<ProductResponse> actual = productService.list();
 
         // then
         assertThat(actual).isEqualTo(expected);
