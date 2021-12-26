@@ -1,74 +1,50 @@
 package kitchenpos.table.domain;
 
-import kitchenpos.tablegroup.domain.TableGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("주문 테이블들 테스트")
 class OrderTablesTest {
 
-    private OrderTable orderTable;
+    private OrderTable 테이블1;
+    private OrderTable 테이블2;
 
     @BeforeEach
-    void setUp() {
-        orderTable = OrderTable.of(NumberOfGuests.of(4), Empty.of(false));
+    public void setUp() {
+        테이블1 = OrderTable.of(1L, Empty.of(false));
+        테이블2 = OrderTable.of(2L, Empty.of(false));
     }
 
     @DisplayName("주문 테이블들 생성 성공 테스트")
     @Test
     void instantiate_success() {
         // when
-        OrderTables orderTables = OrderTables.of(Arrays.asList(orderTable));
+        OrderTables orderTables = OrderTables.of(Arrays.asList(테이블1));
 
         // then
         assertAll(
                 () -> assertThat(orderTables).isNotNull()
-                , () -> assertThat(orderTables.getOrderTables()).isEqualTo(Arrays.asList(orderTable))
+                , () -> assertThat(orderTables.getOrderTables()).isEqualTo(Arrays.asList(테이블1))
         );
     }
 
-    @DisplayName("그룹 테이블화 검증 테스트 - 테이블 비어 있음")
+    @DisplayName("주문 테이블들 ID 목록 조회 성공 테스트")
     @Test
-    void validateGroup_validateGroupTable_isNotEmpty() {
+    void getOrderTableIds() {
         // given
-        OrderTable orderTable = OrderTable.of(NumberOfGuests.of(4), Empty.of(true));
-        OrderTables orderTables = OrderTables.of(Arrays.asList(orderTable));
+        OrderTables orderTables = OrderTables.of(Arrays.asList(테이블1, 테이블2));
 
-        // when & then
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> orderTables.validateGroup(Collections.emptyList()));
-    }
+        // when
+        List<Long> orderTableIds = orderTables.getOrderTableIds();
 
-    @DisplayName("그룹 테이블화 검증 테스트 - 테이블 그룹에 이미 속해 있음")
-    @Test
-    void validateGroup_validateGroupTable_noNull() {
-        // given
-        OrderTable orderTable = OrderTable.of(NumberOfGuests.of(4), Empty.of(true));
-        orderTable.setTableGroup(TableGroup.of(LocalDateTime.now()));
-        OrderTables orderTables = OrderTables.of(Arrays.asList(orderTable));
-
-        // when & then
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> orderTables.validateGroup(Collections.emptyList()));
-    }
-
-    @DisplayName("그룹 테이블화 검증 테스트 - 주문 테이블 수 일치하지 않음")
-    @Test
-    void validateGroup_validateSize() {
-        // given
-        OrderTables orderTables = OrderTables.of(Arrays.asList(orderTable));
-
-        // when & then
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> orderTables.validateGroup(Collections.emptyList()));
+        // then
+        assertThat(orderTableIds).containsExactly(테이블1.getId(), 테이블2.getId());
     }
 }

@@ -1,12 +1,10 @@
 package kitchenpos.tablegroup.domain;
 
-import kitchenpos.table.domain.Empty;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTables;
+import kitchenpos.tablegroup.application.TableGroupValidator;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.domain.AbstractAggregateRoot;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
@@ -17,7 +15,7 @@ import java.util.List;
 
 @EntityListeners(AuditingEntityListener.class)
 @Entity
-public class TableGroup {
+public class TableGroup extends AbstractAggregateRoot<TableGroup> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,9 +23,6 @@ public class TableGroup {
 
     @CreatedDate
     private LocalDateTime createdDate;
-
-    @Embedded
-    private OrderTables orderTables = OrderTables.empty();
 
     protected TableGroup() {
     }
@@ -41,21 +36,12 @@ public class TableGroup {
         this.id = id;
     }
 
-    private TableGroup(Long id, LocalDateTime createdDate, OrderTables orderTables) {
-        this(id, createdDate);
-        this.orderTables = orderTables;
-    }
-
     public static TableGroup of(LocalDateTime createdDate) {
         return new TableGroup(createdDate);
     }
 
     public static TableGroup of(Long id, LocalDateTime createdDate) {
         return new TableGroup(id, createdDate);
-    }
-
-    public static TableGroup of(Long id, LocalDateTime createdDate, OrderTables orderTables) {
-        return new TableGroup(id, createdDate, orderTables);
     }
 
     public Long getId() {
@@ -66,16 +52,13 @@ public class TableGroup {
         return createdDate;
     }
 
-    public List<OrderTable> getOrderTables() {
-        return orderTables.getOrderTables();
+    public void create(List<Long> orderTableIds, TableGroupValidator tableGroupValidator) {
+        tableGroupValidator.validateCreate(orderTableIds);
+        registerEvent(new TableGroupEvent(id, orderTableIds));
     }
 
-    public void addOrderTable(List<OrderTable> orderTables) {
-        orderTables.forEach(orderTable ->
-        {
-            orderTable.setTableGroup(this);
-            orderTable.setEmpty(Empty.of(false));
-            this.orderTables.add(orderTable);
-        });
+    public void ungroup(TableGroupValidator tableGroupValidator) {
+        tableGroupValidator.validateUngroup(id);
+        registerEvent(new TableUngroupEvent(id));
     }
 }

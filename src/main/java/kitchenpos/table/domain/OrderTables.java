@@ -33,37 +33,10 @@ public class OrderTables {
         return orderTables;
     }
 
-    public void add(OrderTable orderTable) {
-        orderTables.add(orderTable);
-    }
-
-    public List<Long> getIds() {
+    public List<Long> getOrderTableIds() {
         return orderTables.stream()
                 .map(OrderTable::getId)
                 .collect(Collectors.toList());
-    }
-
-    public void ungroup() {
-        orderTables.forEach(orderTable -> orderTable.setTableGroup(null));
-    }
-
-    public void validateGroup(List<Long> orderTableIds) {
-        validateGroupTable();
-        validateSize(orderTableIds);
-    }
-
-    private void validateGroupTable() {
-        for (final OrderTable orderTable : orderTables) {
-            if (orderTable.getEmpty().isNotEmpty() || Objects.nonNull(orderTable.getTableGroupId())) {
-                throw new IllegalArgumentException("테이블이 비어있지 않거나, 테이블 그룹에 이미 속해 있습니다.");
-            }
-        }
-    }
-
-    private void validateSize(List<Long> orderTableIds) {
-        if (orderTableIds.size() != orderTables.size()) {
-            throw new IllegalArgumentException("테이블을 그룹화할 주문 테이블 수가 일치하지 않습니다.");
-        }
     }
 
     @Override

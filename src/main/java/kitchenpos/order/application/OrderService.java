@@ -6,15 +6,11 @@ import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.ChangeOrderStatusRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTables;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 
 @Transactional(readOnly = true)
 @Service
@@ -58,13 +54,5 @@ public class OrderService {
     public Order findById(Long orderId) {
         return orderRepository.findById(orderId)
                 .orElseThrow(NoSuchElementException::new);
-    }
-
-    public boolean isCookingOrMealExists(OrderTables orderTables) {
-        List<OrderStatus> orderStatuses = Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL);
-        List<Long> orderTableIds = orderTables.getOrderTables().stream()
-                .map(OrderTable::getId)
-                .collect(Collectors.toList());
-        return orderRepository.existsByOrderTableIdInAndOrderStatusIn(orderTableIds, orderStatuses);
     }
 }
