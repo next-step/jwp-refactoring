@@ -33,13 +33,13 @@ class TableGroupServiceTest {
     @Test
     void oneOrderTableCreateTest() {
         // given
-        TableGroupRequest tableGroupRequest = new TableGroupRequest(Collections.singletonList(1L));
+        TableGroupRequest oneTableTableGroupRequest = new TableGroupRequest(Collections.singletonList(1L));
 
         // when
         TableGroupService tableGroupService = new TableGroupService(orderTableRepository, tableGroupRepository);
 
         // then
-        assertThatThrownBy(() -> tableGroupService.create(tableGroupRequest))
+        assertThatThrownBy(() -> tableGroupService.create(oneTableTableGroupRequest))
                 .isInstanceOf(IllegalOrderTablesException.class);
     }
 
@@ -47,13 +47,13 @@ class TableGroupServiceTest {
     @Test
     void noOrderTableCreateTest() {
         // given
-        TableGroupRequest tableGroupRequest = new TableGroupRequest(Collections.singletonList(null));
+        TableGroupRequest nullTableGroupRequest = new TableGroupRequest(Collections.singletonList(null));
 
         // when
         TableGroupService tableGroupService = new TableGroupService(orderTableRepository, tableGroupRepository);
 
         // then
-        assertThatThrownBy(() -> tableGroupService.create(tableGroupRequest))
+        assertThatThrownBy(() -> tableGroupService.create(nullTableGroupRequest))
                 .isInstanceOf(IllegalOrderTablesException.class);
     }
 
@@ -62,10 +62,10 @@ class TableGroupServiceTest {
     void noEmptyTableCreateTest() {
 
         // given
-        OrderTable orderTable1 = new OrderTable(null, 1, true);
-        OrderTable orderTable2 = new OrderTable(null, 1, false);
-        List<OrderTable> orderTables = Arrays.asList(orderTable1, orderTable2);
-        List<Long> orderTableIds = Arrays.asList(orderTable1.getId(), orderTable2.getId());
+        OrderTable emptyOrderTable = new OrderTable(null, 1, true);
+        OrderTable notEmptyOrderTable = new OrderTable(null, 1, false);
+        List<OrderTable> orderTables = Arrays.asList(emptyOrderTable, notEmptyOrderTable);
+        List<Long> orderTableIds = Arrays.asList(emptyOrderTable.getId(), notEmptyOrderTable.getId());
         TableGroupRequest tableGroupRequest = new TableGroupRequest(orderTableIds);
         when(orderTableRepository.findByIdIn(any())).thenReturn(orderTables);
 
@@ -81,10 +81,10 @@ class TableGroupServiceTest {
     @Test
     void tableGroupTableCreateTest() {
         // given
-        OrderTable orderTable1 = new OrderTable(new TableGroup(), 1, true);
-        OrderTable orderTable2 = new OrderTable(null, 1, true);
-        List<OrderTable> orderTables = Arrays.asList(orderTable1, orderTable2);
-        List<Long> orderTableIds = Arrays.asList(orderTable1.getId(), orderTable2.getId());
+        OrderTable tableGroupOrderTable = new OrderTable(new TableGroup(), 1, true);
+        OrderTable nullTableGroupOrderTable = new OrderTable(null, 1, true);
+        List<OrderTable> orderTables = Arrays.asList(tableGroupOrderTable, nullTableGroupOrderTable);
+        List<Long> orderTableIds = Arrays.asList(tableGroupOrderTable.getId(), nullTableGroupOrderTable.getId());
         TableGroupRequest tableGroupRequest = new TableGroupRequest(orderTableIds);
         when(orderTableRepository.findByIdIn(any())).thenReturn(orderTables);
 

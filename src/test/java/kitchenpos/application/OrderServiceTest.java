@@ -35,26 +35,29 @@ class OrderServiceTest {
     @DisplayName("주문항목 없이 주문을 생성한다")
     @Test
     void creteWithoutOrderLineItemTest() {
-        OrderRequest orderRequest = new OrderRequest(1L, OrderStatus.COOKING, null);
+        OrderRequest noOrderLineItemOrderRequest
+                = new OrderRequest(1L, OrderStatus.COOKING, null);
 
         // when
         OrderService orderService = new OrderService(orderRepository, tableService, menuService);
         when(tableService.findById(1L)).thenReturn(new OrderTable());
 
         // then
-        assertThatThrownBy(() -> orderService.create(orderRequest)).isInstanceOf(NoOrderLineItemException.class);
+        assertThatThrownBy(() -> orderService.create(noOrderLineItemOrderRequest))
+                .isInstanceOf(NoOrderLineItemException.class);
     }
 
     @DisplayName("주문 테이블 없이 주문을 생성한다")
     @Test
     void creteWithoutOrderTableTest() {
-        OrderRequest orderRequest = new OrderRequest(null, OrderStatus.COOKING,
+        OrderRequest noOrderTableOrderRequest = new OrderRequest(null, OrderStatus.COOKING,
                 Collections.singletonList(new OrderLineItemRequest(1L, 1L)));
 
         // when
         OrderService orderService = new OrderService(orderRepository, tableService, menuService);
 
         // then
-        assertThatThrownBy(() -> orderService.create(orderRequest)).isInstanceOf(NoOrderTableException.class);
+        assertThatThrownBy(() -> orderService.create(noOrderTableOrderRequest))
+                .isInstanceOf(NoOrderTableException.class);
     }
 }

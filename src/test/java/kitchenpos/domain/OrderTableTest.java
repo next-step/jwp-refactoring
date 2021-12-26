@@ -27,18 +27,18 @@ class OrderTableTest {
     @DisplayName("테이블 그룹에 속해있는 테이블은 빈 테이블로 변경할 수 없다")
     @Test
     public void inTableGroupChangeEmptyTest() {
-        OrderTable orderTable = new OrderTable(new TableGroup(), 1, false);
+        OrderTable tableGroupOrderTable = new OrderTable(new TableGroup(), 1, false);
 
-        assertThatThrownBy(() -> orderTable.changeEmpty(true)).isInstanceOf(CannotChangeEmptyException.class);
+        assertThatThrownBy(() -> tableGroupOrderTable.changeEmpty(true)).isInstanceOf(CannotChangeEmptyException.class);
     }
 
     @DisplayName("조리 중이거나 식사 중인 테이블은 빈 테이블로 변경할 수 없다")
     @Test
     void changeEmptyTableInCookingOrMeal() {
-        OrderTable orderTable = new OrderTable(null, 1, false);
-        orderTable.addOrder(Order.of(orderTable, OrderStatus.COOKING));
+        OrderTable CookingOrderTable = new OrderTable(null, 1, false);
+        CookingOrderTable.addOrder(Order.of(CookingOrderTable, OrderStatus.COOKING));
 
-        assertThatThrownBy(() -> orderTable.changeEmpty(true)).isInstanceOf(CannotChangeEmptyException.class);
+        assertThatThrownBy(() -> CookingOrderTable.changeEmpty(true)).isInstanceOf(CannotChangeEmptyException.class);
     }
 
     @DisplayName("주문 테이블의 손님 수를 지정한다")
@@ -67,10 +67,10 @@ class OrderTableTest {
     @Test
     void changeNumberOfGuestsEmptyTable() {
         // given
-        OrderTable orderTable = new OrderTable(null, 1, true);
+        OrderTable emptyOrderTable = new OrderTable(null, 1, true);
 
         // then
-        assertThatThrownBy(() -> orderTable.changeNumberOfGuests(10))
+        assertThatThrownBy(() -> emptyOrderTable.changeNumberOfGuests(10))
                 .isInstanceOf(CannotChangeNumberOfGuestsException.class);
     }
 }

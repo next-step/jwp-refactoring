@@ -26,9 +26,6 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class TableServiceTest {
     @Mock
-    private OrderRepository orderRepository;
-
-    @Mock
     private OrderTableRepository orderTableRepository;
 
     private OrderTable orderTable;
@@ -73,7 +70,7 @@ class TableServiceTest {
     void changeEmptyTableInCookingOrMeal() {
         // given
         orderTable.addOrder(Order.of(orderTable, OrderStatus.COOKING));
-        OrderTableRequest orderTableRequest = new OrderTableRequest(1, false);
+        OrderTableRequest orderTableRequest = new OrderTableRequest(1, true);
         when(orderTableRepository.findById(1L)).thenReturn(java.util.Optional.ofNullable(orderTable));
 
         // when

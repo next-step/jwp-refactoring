@@ -17,22 +17,15 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
-    private ProductRequest productRequest;
-
     @Mock
     private ProductRepository productRepository;
-
-    @BeforeEach
-    void setUp() {
-        productRequest = new ProductRequest("양념치킨", new BigDecimal(16_000));
-    }
 
     @DisplayName("가격이 없는 상품을 생성한다")
     @Test
     public void createNullProceProductTest() {
-        productRequest = new ProductRequest("양념치킨", null);
+        ProductRequest nullPriceProductRequest = new ProductRequest("양념치킨", null);
         ProductService productService = new ProductService(productRepository);
 
-        assertThatThrownBy(() -> productService.create(productRequest)).isInstanceOf(NullPriceException.class);
+        assertThatThrownBy(() -> productService.create(nullPriceProductRequest)).isInstanceOf(NullPriceException.class);
     }
 }

@@ -22,8 +22,8 @@ class OrderTest {
     @DisplayName("결제완료 상태인 주문상태를 변경한다")
     @Test
     void cannotProgressExceptionTest() {
-        Order order = Order.of(new OrderTable(), OrderStatus.COMPLETION);
-        assertThatThrownBy(() -> order.makeOrderStatus(OrderStatus.COOKING))
+        Order completeOrder = Order.of(new OrderTable(), OrderStatus.COMPLETION);
+        assertThatThrownBy(() -> completeOrder.makeOrderStatus(OrderStatus.COOKING))
                 .isInstanceOf(CannotProgressException.class);
     }
 }
