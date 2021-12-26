@@ -2,26 +2,24 @@ package kitchenpos.menu.dto;
 
 import java.util.Objects;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.product.dto.ProductResponse;
 
 public class MenuProductResponse {
 
     private Long id;
-    private ProductResponse product;
+    private Long productId;
     private long quantity;
 
     private MenuProductResponse() {
     }
 
-    private MenuProductResponse(Long seq, ProductResponse product, long quantity) {
-        this.id = seq;
-        this.product = product;
+    public MenuProductResponse(Long id, Long productId, long quantity) {
+        this.id = id;
+        this.productId = productId;
         this.quantity = quantity;
     }
 
     public static MenuProductResponse from(MenuProduct menuProduct) {
-        return new MenuProductResponse(menuProduct.getId(),
-            ProductResponse.from(menuProduct.getProduct()),
+        return new MenuProductResponse(menuProduct.getId(), menuProduct.getProductId(),
             menuProduct.getQuantityVal());
     }
 
@@ -29,8 +27,8 @@ public class MenuProductResponse {
         return id;
     }
 
-    public ProductResponse getProduct() {
-        return product;
+    public Long getProductId() {
+        return productId;
     }
 
     public long getQuantity() {
@@ -47,11 +45,11 @@ public class MenuProductResponse {
         }
         MenuProductResponse that = (MenuProductResponse) o;
         return getQuantity() == that.getQuantity() && Objects.equals(getId(), that.getId())
-            && Objects.equals(getProduct(), that.getProduct());
+            && Objects.equals(getProductId(), that.getProductId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getProduct(), getQuantity());
+        return Objects.hash(getId(), getProductId(), getQuantity());
     }
 }

@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
@@ -13,8 +12,6 @@ import kitchenpos.common.vo.Price;
 
 @Embeddable
 public class MenuProducts {
-
-    private static final String ERROR_MESSAGE_MENU_PRICE_HIGH = "메뉴 가격은 상품 리스트의 가격 합보다 작거나 같아야 합니다.";
 
     @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL)
     private List<MenuProduct> menuProducts = new ArrayList<>();
@@ -25,28 +22,11 @@ public class MenuProducts {
             validatePriceIsZero(price);
             return;
         }
-        validateMenuPriceIsLessThanMenuProductsSum(price, inputMenuProducts);
         menuProducts.addAll(inputMenuProducts);
     }
 
     private boolean isEmptyList(List<MenuProduct> inputMenuProducts) {
         return Objects.isNull(inputMenuProducts) || inputMenuProducts.size() == 0;
-    }
-
-    private void validateMenuPriceIsLessThanMenuProductsSum(Price price,
-        List<MenuProduct> menuProducts) {
-        List<Price> menuProductPrices = getMenuProductPrices(menuProducts);
-        Price sumOfMenuProducts = Price.sumPrices(menuProductPrices);
-
-        if (price.isBiggerThan(sumOfMenuProducts)) {
-            throw new PriceNotAcceptableException(ERROR_MESSAGE_MENU_PRICE_HIGH);
-        }
-    }
-
-    private List<Price> getMenuProductPrices(List<MenuProduct> menuProducts) {
-        return menuProducts.stream()
-            .map(MenuProduct::getMenuPrice)
-            .collect(Collectors.toList());
     }
 
     private void validatePriceIsZero(Price price) {

@@ -2,7 +2,6 @@ package kitchenpos.menu.application;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.persistence.EntityNotFoundException;
 import kitchenpos.common.vo.Price;
 import kitchenpos.common.vo.Quantity;
 import kitchenpos.menu.domain.Menu;
@@ -12,8 +11,8 @@ import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.product.application.ProductService;
-import kitchenpos.product.domain.Product;
+import kitchenpos.menu.exception.MenuNotFoundException;
+import kitchenpos.validator.MenuProductValidator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,20 +20,25 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class MenuService {
 
-    private static final String ERROR_MESSAGE_NOT_EXIST_MENU = "없는 메뉴입니다.";
     private final MenuRepository menuRepository;
     private final MenuGroupService menuGroupService;
-    private final ProductService productService;
+    private final MenuProductValidator menuProductValidator;
 
-    public MenuService(MenuRepository menuRepository,
-        MenuGroupService menuGroupService, ProductService productService) {
+    public MenuService(MenuRepository menuRepository, MenuGroupService menuGroupService,
+        MenuProductValidator menuProductValidator) {
+        
         this.menuRepository = menuRepository;
         this.menuGroupService = menuGroupService;
-        this.productService = productService;
+        this.menuProductValidator = menuProductValidator;
     }
 
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
+        Price menuPrice = Price.valueOf(menuRequest.getPrice());
+        List<MenuProductRequest> menuProductRequests = menuRequest.getMenuProducts();
+        menuProductValidator.validateMenuPriceIsLessThanMenuProductsSum(menuPrice,
+            menuProductRequests);
+
         MenuGroup menuGroup = menuGroupService.findMenuGroupById(menuRequest.getMenuGroupId());
         final List<MenuProduct> menuProducts = createMenuProducts(menuRequest.getMenuProducts());
         Menu menu = new Menu(menuRequest.getName(), Price.valueOf(menuRequest.getPrice()),
@@ -51,8 +55,8 @@ public class MenuService {
     }
 
     private MenuProduct createMenuProduct(MenuProductRequest menuProductRequest) {
-        Product product = productService.findProduct(menuProductRequest.getProductId());
-        return new MenuProduct(product, new Quantity(menuProductRequest.getQuantity()));
+        return new MenuProduct(menuProductRequest.getProductId(),
+            new Quantity(menuProductRequest.getQuantity()));
     }
 
     public List<MenuResponse> list() {
@@ -62,6 +66,6 @@ public class MenuService {
 
     public Menu findMenu(Long menuId) {
         return menuRepository.findById(menuId)
-            .orElseThrow(() -> new EntityNotFoundException(ERROR_MESSAGE_NOT_EXIST_MENU));
+            .orElseThrow(MenuNotFoundException::new);
     }
 }

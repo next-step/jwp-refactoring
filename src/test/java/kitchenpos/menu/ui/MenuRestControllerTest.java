@@ -59,8 +59,8 @@ class MenuRestControllerTest {
     void create() throws Exception {
         //given
         List<MenuProduct> menuProducts = Arrays.asList(
-            new MenuProduct(타코야끼, new Quantity(2)),
-            new MenuProduct(뿌링클, new Quantity(1)));
+            new MenuProduct(타코야끼.getId(), new Quantity(2)),
+            new MenuProduct(뿌링클.getId(), new Quantity(1)));
         String menuName = "후라이드+후라이드";
         Price price = Price.valueOf(BigDecimal.valueOf(19000));
         MenuRequest menuRequest = MenuTestFixtures.convertToMenuRequest(
@@ -83,11 +83,11 @@ class MenuRestControllerTest {
     void list() throws Exception {
         //given
         List<MenuProduct> menuProducts1 = Arrays.asList(
-            new MenuProduct(타코야끼, new Quantity(2)),
-            new MenuProduct(뿌링클, new Quantity(3)));
+            new MenuProduct(타코야끼.getId(), new Quantity(2)),
+            new MenuProduct(뿌링클.getId(), new Quantity(3)));
         List<MenuProduct> menuProducts2 = Arrays.asList(
-            new MenuProduct(타코야끼, new Quantity(1)),
-            new MenuProduct(뿌링클, new Quantity(2)));
+            new MenuProduct(타코야끼.getId(), new Quantity(1)),
+            new MenuProduct(뿌링클.getId(), new Quantity(2)));
 
         List<MenuResponse> expectedMenus = MenuResponse.fromList(Arrays.asList(
             new Menu(1L, "후라이드+후라이드", Price.valueOf(BigDecimal.valueOf(19000)), 추천메뉴그룹,

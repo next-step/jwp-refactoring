@@ -16,9 +16,8 @@ import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.testfixtures.MenuGroupTestFixtures;
 import kitchenpos.menu.testfixtures.MenuTestFixtures;
-import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
-import kitchenpos.product.testfixtures.ProductTestFixtures;
+import kitchenpos.validator.MenuProductValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -40,7 +39,7 @@ class MenuServiceTest {
     private MenuGroupService menuGroupService;
 
     @Mock
-    private ProductService productService;
+    private MenuProductValidator menuProductValidator;
 
     private MenuGroup 추천메뉴;
     private Product 타코야끼;
@@ -58,13 +57,11 @@ class MenuServiceTest {
     @Test
     void create() {
         //given
-        ProductTestFixtures.상품_조회시_응답_모킹(productService, 타코야끼);
-        ProductTestFixtures.상품_조회시_응답_모킹(productService, 뿌링클);
         MenuGroupTestFixtures.메뉴_그룹_존재여부_조회시_응답_모킹(menuGroupService, 추천메뉴);
 
         List<MenuProduct> menuProducts = Arrays.asList(
-            new MenuProduct(타코야끼, new Quantity(3L)),
-            new MenuProduct(뿌링클, new Quantity(1L)));
+            new MenuProduct(타코야끼.getId(), new Quantity(3L)),
+            new MenuProduct(뿌링클.getId(), new Quantity(1L)));
 
         Menu menu = new Menu("타코야끼와 뿌링클", Price.valueOf(BigDecimal.valueOf(51000)), 추천메뉴,
             menuProducts);
@@ -83,8 +80,8 @@ class MenuServiceTest {
     void list() {
         // given
         List<MenuProduct> menuProducts = Arrays.asList(
-            new MenuProduct(타코야끼, new Quantity(3L)),
-            new MenuProduct(뿌링클, new Quantity(1L)));
+            new MenuProduct(타코야끼.getId(), new Quantity(3L)),
+            new MenuProduct(뿌링클.getId(), new Quantity(1L)));
         List<Menu> menus = Arrays.asList(
             new Menu(1L, "타코야끼와 뿌링클", Price.valueOf(BigDecimal.valueOf(51000)), 추천메뉴,
                 menuProducts));
