@@ -14,6 +14,7 @@ import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
+import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.MenuProductRequest;
 import kitchenpos.domain.MenuRequest;
@@ -42,16 +43,14 @@ public class MenuService {
 
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
-        Menu menu = menuRequest.toEntity();
-        final BigDecimal price = menu.getPrice();
+        final BigDecimal price = menuRequest.getPrice();
 
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalArgumentException();
         }
 
-        if (!menuGroupDao.existsById(menu.getMenuGroupId())) {
-            throw new IllegalArgumentException();
-        }
+        MenuGroup menuGroup = menuGroupDao.findById(menuRequest.getMenuGroupId())
+            .orElseThrow(IllegalArgumentException::new);
 
         final List<MenuProductRequest> menuProducts = menuRequest.getMenuProducts();
 
@@ -65,6 +64,8 @@ public class MenuService {
         if (price.compareTo(sum) > 0) {
             throw new IllegalArgumentException();
         }
+
+        Menu menu = new Menu(menuRequest.getName(), menuRequest.getPrice(), menuGroup, new ArrayList<>());
 
         final Menu savedMenu = menuDao.save(menu);
 

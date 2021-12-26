@@ -24,6 +24,7 @@ import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
+import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.MenuProductRequest;
 import kitchenpos.domain.MenuProductResponse;
@@ -51,25 +52,30 @@ class MenuServiceTest {
     @BeforeEach
     void setUp() {
         menuProductRequest = new MenuProductRequest(1L, 2);
-        menuProduct = new MenuProduct(1L, new Menu(2L, "name", BigDecimal.ONE, 1L, new ArrayList<>()), new Product(1L, "name", BigDecimal.ONE), 2);
+        MenuGroup menuGroup = new MenuGroup(1L, "name");
+        Menu menu = new Menu(1L, "name", BigDecimal.ONE, menuGroup, new ArrayList<>());
+        Product product = new Product(1L, "name", BigDecimal.ONE);
+        menuProduct = new MenuProduct(1L, menu, product, 2);
     }
 
     @DisplayName("메뉴 생성")
     @Test
     void create() {
         // given
-        Mockito.when(menuGroupDao.existsById(Mockito.anyLong()))
-            .thenReturn(true);
+        Mockito.when(menuGroupDao.findById(Mockito.anyLong()))
+            .thenReturn(Optional.of(new MenuGroup(1L, "name")));
 
         Product product = new Product(1L, "name", BigDecimal.TEN);
         Mockito.when(productDao.findById(Mockito.anyLong()))
             .thenReturn(Optional.of(product));
 
-        MenuProduct expectedMenuProduct = new MenuProduct(2L, new Menu(2L, "name", BigDecimal.ONE, 1L, new ArrayList<>()), new Product(2L, "name2", BigDecimal.TEN), 2);
+        MenuProduct expectedMenuProduct = new MenuProduct(2L,
+            new Menu(2L, "name2", BigDecimal.TEN, new MenuGroup(1L, "name"), new ArrayList<>()),
+            new Product(2L, "name2", BigDecimal.TEN), 2);
         Mockito.when(menuProductDao.save(Mockito.any()))
             .thenReturn(expectedMenuProduct);
 
-        Menu expectedMenu = new Menu(1L, "name", BigDecimal.ONE, 1L, Collections.emptyList());
+        Menu expectedMenu = new Menu(1L, "name", BigDecimal.ONE, new MenuGroup(1L, "name"), Collections.emptyList());
         Mockito.when(menuDao.save(Mockito.any()))
             .thenReturn(expectedMenu);
 
@@ -89,8 +95,8 @@ class MenuServiceTest {
     @Test
     void createErrorWhenPriceIsBiggerThanSum() {
         // given
-        Mockito.when(menuGroupDao.existsById(Mockito.anyLong()))
-            .thenReturn(true);
+        Mockito.when(menuGroupDao.findById(Mockito.anyLong()))
+            .thenReturn(Optional.of(new MenuGroup(1L, "name")));
 
         Product product = new Product(1L, "name", BigDecimal.TEN);
         Mockito.when(productDao.findById(Mockito.anyLong()))
@@ -108,8 +114,8 @@ class MenuServiceTest {
     @Test
     void createErrorWhenProductNotExists() {
         // given
-        Mockito.when(menuGroupDao.existsById(Mockito.anyLong()))
-            .thenReturn(true);
+        Mockito.when(menuGroupDao.findById(Mockito.anyLong()))
+            .thenReturn(Optional.of(new MenuGroup(1L, "name")));
 
         Mockito.when(productDao.findById(Mockito.anyLong()))
             .thenReturn(Optional.empty());
@@ -145,8 +151,8 @@ class MenuServiceTest {
     @Test
     void createErrorWhenMenuGroupNotExists() {
         // given
-        Mockito.when(menuGroupDao.existsById(Mockito.anyLong()))
-            .thenReturn(false);
+        Mockito.when(menuGroupDao.findById(Mockito.anyLong()))
+            .thenReturn(Optional.empty());
 
         MenuRequest menu = new MenuRequest("name", BigDecimal.ONE, 1L, Arrays.asList(menuProductRequest));
 
@@ -159,8 +165,8 @@ class MenuServiceTest {
     @Test
     void list() {
         // given
-        Menu menu1 = new Menu(1L, "name1", BigDecimal.ONE, 1L, Collections.emptyList());
-        Menu menu2 = new Menu(2L, "name2", BigDecimal.TEN, 1L, Collections.emptyList());
+        Menu menu1 = new Menu(1L, "name1", BigDecimal.ONE, new MenuGroup(1L, "name"), Collections.emptyList());
+        Menu menu2 = new Menu(2L, "name2", BigDecimal.TEN, new MenuGroup(1L, "name"), Collections.emptyList());
         List<Menu> menus = Arrays.asList(menu1, menu2);
         Mockito.when(menuDao.findAll())
             .thenReturn(menus);
