@@ -4,19 +4,7 @@ import kitchenpos.table.dto.ChangeEmptyRequest;
 import kitchenpos.table.dto.ChangeGuestNumberRequest;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableSaveRequest;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.table.domain.OrderTable;
-import org.assertj.core.util.Lists;
-
-import java.math.BigDecimal;
-
-import static kitchenpos.menugroup.fixtures.MenuGroupFixtures.메뉴그룹;
-import static kitchenpos.product.fixtures.ProductFixtures.양념치킨;
-import static kitchenpos.product.fixtures.ProductFixtures.후라이드;
-import static kitchenpos.table.fixtures.TableGroupFixtures.주문불가_5인_2인_그룹테이블;
 
 /**
  * packageName : kitchenpos.fixtures

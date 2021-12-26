@@ -1,10 +1,10 @@
-package kitchenpos.table.ui;
+package kitchenpos.tablegroup.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kitchenpos.table.application.TableGroupService;
-import kitchenpos.table.dto.TableGroupResponse;
-import kitchenpos.table.dto.TableGroupSaveRequest;
-import kitchenpos.table.domain.TableGroup;
+import kitchenpos.tablegroup.application.TableGroupService;
+import kitchenpos.tablegroup.dto.TableGroupResponse;
+import kitchenpos.tablegroup.dto.TableGroupSaveRequest;
+import kitchenpos.tablegroup.domain.TableGroup;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -18,7 +18,7 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import static kitchenpos.table.fixtures.OrderTableFixtures.주문불가_다섯명테이블;
 import static kitchenpos.table.fixtures.OrderTableFixtures.주문불가_두명테이블;
-import static kitchenpos.table.fixtures.TableGroupFixtures.*;
+import static kitchenpos.tablegroup.fixtures.TableGroupFixtures.*;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;

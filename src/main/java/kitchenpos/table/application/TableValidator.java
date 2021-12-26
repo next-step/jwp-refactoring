@@ -30,28 +30,17 @@ public class TableValidator {
         }
     }
 
-    private boolean usingTable(OrderTable orderTable) {
+    public boolean usingTable(OrderTable orderTable) {
         List<Order> orders = getOrders(orderTable);
         return !orders.isEmpty() && !orderCompleted(orders);
     }
 
-
     public List<Order> getOrders(OrderTable orderTable) {
         return orderRepository.findByOrderTableId(orderTable.getId());
-
     }
-
 
     public boolean orderCompleted(List<Order> orders) {
         return orders.stream()
                 .allMatch(Order::isCompleted);
     }
-
 }
-
-//    public void ungroup() {
-//        if (orders.checkOccupied()) {
-//            throw new NotSupportUngroupException();
-//        }
-//        //tableGroup = null;
-//    }

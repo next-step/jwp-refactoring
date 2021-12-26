@@ -14,4 +14,6 @@ import java.util.Optional;
  * description :
  */
 public interface OrderTableRepository extends JpaRepository<OrderTable, Long> {
+
+    List<OrderTable> findAllByTableGroupId(Long id);
 }

@@ -1,8 +1,8 @@
-package kitchenpos.table.fixtures;
+package kitchenpos.tablegroup.fixtures;
 
-import kitchenpos.table.domain.TableGroup;
+import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.table.dto.OrderTableRequest;
-import kitchenpos.table.dto.TableGroupSaveRequest;
+import kitchenpos.tablegroup.dto.TableGroupSaveRequest;
 import org.assertj.core.util.Lists;
 
 import java.util.List;

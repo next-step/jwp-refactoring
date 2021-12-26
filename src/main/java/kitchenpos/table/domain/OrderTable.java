@@ -1,10 +1,7 @@
 package kitchenpos.table.domain;
 
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.Orders;
-import kitchenpos.table.exception.NotSupportUngroupException;
-import kitchenpos.table.exception.TableEmptyUpdateException;
 import kitchenpos.table.exception.TableGuestNumberUpdateException;
+import kitchenpos.tablegroup.domain.TableGroup;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -32,12 +29,6 @@ public class OrderTable {
         this.empty = empty;
     }
 
-    public OrderTable(Integer numberOfGuests, boolean empty, Long tableGroupId) {
-        this.numberOfGuests = NumberOfGuests.of(numberOfGuests);
-        this.empty = empty;
-        this.tableGroupId = tableGroupId;
-    }
-
     public void updateNumberOfGuests(Integer newNumberOfGuests) {
         if (empty) {
             throw new TableGuestNumberUpdateException();
@@ -45,9 +36,8 @@ public class OrderTable {
         this.numberOfGuests = NumberOfGuests.of(newNumberOfGuests);
     }
 
-    public OrderTable groupBy(TableGroup tableGroup) {
-        this.empty = false;
-        return this;
+    public void groupBy(Long tableGroupId) {
+        this.tableGroupId = tableGroupId;
     }
 
     public boolean isGrouped() {

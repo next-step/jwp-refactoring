@@ -1,5 +1,7 @@
 package kitchenpos.table.dto;
 
+import kitchenpos.table.domain.OrderTable;
+
 /**
  * packageName : kitchenpos.dto
  * fileName : OrderTableRequest
@@ -7,15 +9,18 @@ package kitchenpos.table.dto;
  * date : 2021-12-21
  * description :
  */
-//FIXME 생성자 제한하기
 public class OrderTableRequest {
     private Long id;
 
-    public OrderTableRequest() {
+    private OrderTableRequest() {
     }
 
-    public OrderTableRequest(Long id) {
+    private OrderTableRequest(Long id) {
         this.id = id;
+    }
+
+    public static OrderTableRequest of(Long id) {
+        return new OrderTableRequest(id);
     }
 
     public Long getId() {

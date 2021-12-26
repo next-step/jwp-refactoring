@@ -25,7 +25,7 @@ import static kitchenpos.menugroup.MenuGroupAcceptanceTest.메뉴그룹_등록�
 import static kitchenpos.order.OrderAcceptanceTest.주문_상태_변경요청함;
 import static kitchenpos.order.OrderAcceptanceTest.주문등록되어있음;
 import static kitchenpos.product.ProductAcceptanceTest.상품_등록되어_있음;
-import static kitchenpos.table.TableGroupAcceptanceTest.테이블_그룹화_되어있음;
+import static kitchenpos.tablegroup.TableGroupAcceptanceTest.테이블_그룹화_되어있음;
 import static kitchenpos.menu.fixtures.MenuFixtures.메뉴등록요청;
 import static kitchenpos.menugroup.fixtures.MenuGroupFixtures.한마리메뉴그룹요청;
 import static kitchenpos.menu.fixtures.MenuProductFixtures.메뉴상품등록요청;
@@ -34,7 +34,7 @@ import static kitchenpos.order.fixtures.OrderFixtures.주문등록요청;
 import static kitchenpos.order.fixtures.OrderLineItemFixtures.주문정보_등록요청;
 import static kitchenpos.table.fixtures.OrderTableFixtures.*;
 import static kitchenpos.product.fixtures.ProductFixtures.양념치킨요청;
-import static kitchenpos.table.fixtures.TableGroupFixtures.그룹테이블_그룹요청;
+import static kitchenpos.tablegroup.fixtures.TableGroupFixtures.그룹테이블_그룹요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.util.Lists.newArrayList;
 

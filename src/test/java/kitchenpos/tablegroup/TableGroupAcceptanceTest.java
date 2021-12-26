@@ -1,4 +1,4 @@
-package kitchenpos.table;
+package kitchenpos.tablegroup;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -6,8 +6,8 @@ import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.menugroup.dto.MenuGroupResponse;
 import kitchenpos.product.dto.ProductResponse;
-import kitchenpos.table.dto.TableGroupResponse;
-import kitchenpos.table.dto.TableGroupSaveRequest;
+import kitchenpos.tablegroup.dto.TableGroupResponse;
+import kitchenpos.tablegroup.dto.TableGroupSaveRequest;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -27,7 +27,7 @@ import static kitchenpos.order.fixtures.OrderFixtures.주문등록요청;
 import static kitchenpos.order.fixtures.OrderLineItemFixtures.주문정보_등록요청;
 import static kitchenpos.table.fixtures.OrderTableFixtures.*;
 import static kitchenpos.product.fixtures.ProductFixtures.양념치킨요청;
-import static kitchenpos.table.fixtures.TableGroupFixtures.그룹테이블_그룹요청;
+import static kitchenpos.tablegroup.fixtures.TableGroupFixtures.그룹테이블_그룹요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.util.Lists.newArrayList;
 
