@@ -3,6 +3,7 @@ package kitchenpos.order.dto;
 import kitchenpos.order.domain.OrderStatus;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class OrderRequest {
 
@@ -40,5 +41,11 @@ public class OrderRequest {
 
     public List<OrderLineItemRequest> getOrderLineItems() {
         return orderLineItems;
+    }
+
+    public List<Long> getMenuIds() {
+        return orderLineItems.stream()
+                .map(OrderLineItemRequest::getMenuId)
+                .collect(Collectors.toList());
     }
 }

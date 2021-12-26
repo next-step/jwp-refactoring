@@ -9,13 +9,12 @@ import kitchenpos.common.fixtrue.ProductFixture;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.order.dao.OrderDao;
-import kitchenpos.order.dao.OrderLineItemDao;
-import kitchenpos.order.dao.OrderTableDao;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.domain.OrderTableRepository;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
@@ -47,13 +46,10 @@ class OrderServiceTest {
     MenuService menuService;
 
     @Mock
-    OrderDao orderDao;
+    OrderRepository orderRepository;
 
     @Mock
-    OrderLineItemDao orderLineItemDao;
-
-    @Mock
-    OrderTableDao orderTableDao;
+    OrderTableRepository orderTableRepository;
 
     @InjectMocks
     OrderService orderService;
@@ -62,6 +58,7 @@ class OrderServiceTest {
     OrderTable 주문_테이블;
     OrderLineItem 주문_상품;
 
+    Menu 후라이드_후라이드;
     OrderLineItemRequest 주문_항목_요청;
     OrderRequest 주문_요청;
     Order 주문;
@@ -71,7 +68,7 @@ class OrderServiceTest {
     void setUp() {
         Product 후라이드치킨 = ProductFixture.of("후라이드치킨", BigDecimal.valueOf(16000));
         MenuGroup 두마리치킨 = MenuGroupFixture.from("두마리치킨");
-        Menu 후라이드_후라이드 = MenuFixture.of(
+        후라이드_후라이드 = MenuFixture.of(
                 "후라이드+후라이드",
                 BigDecimal.valueOf(31000),
                 두마리치킨);
@@ -79,11 +76,11 @@ class OrderServiceTest {
 
         주문_테이블 = OrderTableFixture.of(4, false);
         빈_테이블 = OrderTableFixture.of(0, true);
-        주문_상품 = OrderLineItemFixture.of(1L, 1L, 후라이드_후라이드.getId(), 1L);
+        주문_상품 = OrderLineItemFixture.of(후라이드_후라이드, 1L);
 
         주문_항목_요청 = OrderLineItemRequest.of(후라이드_후라이드.getId(), 1L);
         주문_요청 = OrderRequest.of(주문_테이블.getId(), Arrays.asList(주문_항목_요청));
-        주문 = Order.from(주문_테이블.getId());
+        주문 = Order.from(주문_테이블);
         주문.addOrderLineItem(주문_상품);
         주문_응답 = OrderResponse.from(주문);
     }
@@ -97,10 +94,9 @@ class OrderServiceTest {
                 .collect(Collectors.toList());
 
         given(menuService.countByIdIn(menuIds)).willReturn(1L);
-        given(orderTableDao.findById(주문.getOrderTableId())).willReturn(Optional.of(주문_테이블));
-        given(orderDao.save(any())).willReturn(주문);
-        given(orderLineItemDao.save(any())).willReturn(주문_상품);
-
+        given(menuService.findMenuById(any())).willReturn(후라이드_후라이드);
+        given(orderTableRepository.findById(주문_테이블.getId())).willReturn(Optional.of(주문_테이블));
+        given(orderRepository.save(any())).willReturn(주문);
 
         // when
         OrderResponse actual = orderService.create(주문_요청);
@@ -126,7 +122,7 @@ class OrderServiceTest {
     void 주문_발생_시_주문_테이블이_존재해야_한다() {
         // given
         given(menuService.countByIdIn(any())).willReturn(1L);
-        given(orderTableDao.findById(주문.getOrderTableId())).willReturn(Optional.empty());
+        given(orderTableRepository.findById(주문_테이블.getId())).willReturn(Optional.empty());
 
         // when
         ThrowingCallable throwingCallable = () -> orderService.create(주문_요청);
@@ -140,7 +136,7 @@ class OrderServiceTest {
     void 주문_발생_시_주문_테이블이_빈_테이블이면_주문할_수_없다() {
         // given
         given(menuService.countByIdIn(any())).willReturn(1L);
-        given(orderTableDao.findById(주문.getOrderTableId())).willReturn(Optional.of(빈_테이블));
+        given(orderTableRepository.findById(주문_테이블.getId())).willReturn(Optional.of(빈_테이블));
 
         // when
         ThrowingCallable throwingCallable = () -> orderService.create(주문_요청);
@@ -154,8 +150,7 @@ class OrderServiceTest {
     void 주문_조회() {
         // given
         List<Order> orders = Collections.singletonList(주문);
-        given(orderDao.findAll()).willReturn(orders);
-        given(orderLineItemDao.findAllByOrderId(주문.getId())).willReturn(Collections.singletonList(주문_상품));
+        given(orderRepository.findAll()).willReturn(orders);
 
         // when
         List<OrderResponse> actual = orderService.list();
@@ -168,21 +163,20 @@ class OrderServiceTest {
     void 주문_상태_변경() {
         // given
         OrderRequest 주문_상태_변경_요청 = OrderRequest.from(OrderStatus.MEAL);
-        given(orderDao.findById(주문.getId())).willReturn(Optional.of(주문));
-        given(orderDao.save(any())).willReturn(주문);
+        given(orderRepository.findById(주문.getId())).willReturn(Optional.of(주문));
 
         // when
         OrderResponse actual = orderService.changeOrderStatus(주문.getId(), 주문_상태_변경_요청);
 
         // then
-        assertThat(actual.getOrderStatus()).isEqualTo(주문.getOrderStatus());
+        assertThat(actual.getOrderStatus()).isEqualTo(주문.getOrderStatus().name());
     }
 
     @Test
     void 주문_상태_변경_시_주문이_반드시_존재해야_한다() {
         // given
         OrderRequest 주문_상태_변경_요청 = OrderRequest.from(OrderStatus.MEAL);
-        given(orderDao.findById(주문.getId())).willReturn(Optional.empty());
+        given(orderRepository.findById(주문.getId())).willReturn(Optional.empty());
 
         // when
         ThrowingCallable throwingCallable = () -> orderService.changeOrderStatus(주문.getId(), 주문_상태_변경_요청);
@@ -196,8 +190,8 @@ class OrderServiceTest {
     void 주문_상태_변경_시_상태가_계산이면_변경할_수_없다() {
         // given
         OrderRequest 주문_상태_변경_요청 = OrderRequest.from(OrderStatus.MEAL);
-        주문.changeOrderStatus(OrderStatus.COMPLETION.name());
-        given(orderDao.findById(주문.getId())).willReturn(Optional.of(주문));
+        주문.changeOrderStatus(OrderStatus.COMPLETION);
+        given(orderRepository.findById(주문.getId())).willReturn(Optional.of(주문));
 
         // when
         ThrowingCallable throwingCallable = () -> orderService.changeOrderStatus(주문.getId(), 주문_상태_변경_요청);

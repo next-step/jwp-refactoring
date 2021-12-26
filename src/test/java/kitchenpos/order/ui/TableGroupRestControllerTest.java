@@ -57,9 +57,7 @@ class TableGroupRestControllerTest extends RestControllerTest {
     void 단체_지정() throws Exception {
         // given
         OrderTable firstOrderTable = OrderTable.of(2, true);
-        firstOrderTable.group(1L);
         OrderTable secondOrderTable = OrderTable.of(2, true);
-        secondOrderTable.group(1L);
         TableGroup tableGroup = TableGroup.from(
                 Arrays.asList(firstOrderTable, secondOrderTable));
 
@@ -74,19 +72,16 @@ class TableGroupRestControllerTest extends RestControllerTest {
         // then
         actions
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.orderTables[0].tableGroupId").value(1L))
-                .andExpect(jsonPath("$.orderTables[1].tableGroupId").value(1L));
+                .andExpect(jsonPath("$.orderTables[0].numberOfGuests").value(2))
+                .andExpect(jsonPath("$.orderTables[1].numberOfGuests").value(2));
     }
 
     @Test
     void 단체_지정_해제() throws Exception {
         // given
         OrderTable firstOrderTable = OrderTableFixture.of(2, true);
-        firstOrderTable.group(null);
         OrderTable secondOrderTable = OrderTableFixture.of(2, true);
-        secondOrderTable.group(null);
-        TableGroup tableGroup = TableGroupFixture.from(
-                Arrays.asList(firstOrderTable, secondOrderTable));
+        TableGroupFixture.from(Arrays.asList(firstOrderTable, secondOrderTable));
 
         // when
         ResultActions actions = mockMvc.perform(delete(API_TABLE_GROUP_ROOT + "/" + 1L))

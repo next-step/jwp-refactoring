@@ -17,7 +17,7 @@ class OrderTableTest {
 
         assertAll(() -> {
             assertThat(actual).isNotNull();
-            assertThat(actual.getTableGroupId()).isNull();
+            assertThat(actual.getTableGroup()).isNull();
         });
     }
 

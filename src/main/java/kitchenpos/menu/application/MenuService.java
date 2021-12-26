@@ -47,6 +47,11 @@ public class MenuService {
         return menuRepository.countByIdIn(ids);
     }
 
+    public Menu findMenuById(Long id) {
+        return menuRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("메뉴가 존재하지 않습니다."));
+    }
+
     public List<MenuResponse> list() {
         final List<Menu> menus = menuRepository.findAll();
         return menus.stream()

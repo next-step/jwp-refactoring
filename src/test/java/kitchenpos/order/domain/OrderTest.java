@@ -43,18 +43,18 @@ class OrderTest {
     @Test
     void 주문_발생_시_주문상태는_조리상태이다() {
         // given
-        Order actual = Order.from(주문_테이블.getId());
+        Order actual = Order.from(주문_테이블);
 
         assertAll(() -> {
             assertThat(actual).isNotNull();
-            assertThat(actual.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
+            assertThat(actual.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
         });
     }
 
     @Test
     void 주문_발생_시_주문_항목은_필수이다() {
         // given
-        Order actual = Order.from(주문_테이블.getId());
+        Order actual = Order.from(주문_테이블);
 
         // when
         ThrowingCallable throwingCallable = () -> actual.addOrderLineItem(null);
@@ -68,25 +68,25 @@ class OrderTest {
     @Test
     void 주문_상태를_변경한다() {
         // given
-        Order actual = Order.from(주문_테이블.getId());
-        actual.addOrderLineItem(OrderLineItem.of(actual.getId(), 후라이드_후라이드.getId(), 1L));
+        Order actual = Order.from(주문_테이블);
+        actual.addOrderLineItem(OrderLineItem.of(후라이드_후라이드, 1L));
 
         // when
-        actual.changeOrderStatus(OrderStatus.MEAL.name());
+        actual.changeOrderStatus(OrderStatus.MEAL);
 
         // then
-        Assertions.assertThat(actual.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name());
+        Assertions.assertThat(actual.getOrderStatus()).isEqualTo(OrderStatus.MEAL);
     }
 
     @Test
     void 주문_상태가_계산_완료_상태이면_변경할_수_없다() {
         // given
-        Order actual = Order.from(주문_테이블.getId());
-        actual.addOrderLineItem(OrderLineItem.of(actual.getId(), 후라이드_후라이드.getId(), 1L));
-        actual.changeOrderStatus(OrderStatus.COMPLETION.name());
+        Order actual = Order.from(주문_테이블);
+        actual.addOrderLineItem(OrderLineItem.of(후라이드_후라이드, 1L));
+        actual.changeOrderStatus(OrderStatus.COMPLETION);
 
         // when
-        ThrowingCallable throwingCallable = () -> actual.changeOrderStatus(OrderStatus.MEAL.name());
+        ThrowingCallable throwingCallable = () -> actual.changeOrderStatus(OrderStatus.MEAL);
 
         // then
         Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
