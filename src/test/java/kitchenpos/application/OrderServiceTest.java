@@ -1,5 +1,11 @@
 package kitchenpos.application;
 
+import static kitchenpos.fixture.MenuFixture.menu1;
+import static kitchenpos.fixture.MenuGroupFixture.menuGroup2;
+import static kitchenpos.fixture.OrderFixture.order;
+import static kitchenpos.fixture.OrderLineItemsFixture.orderLineItems;
+import static kitchenpos.fixture.OrderTableFixture.orderTable1;
+import static kitchenpos.fixture.TableGroupFixture.tableGroup;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -21,19 +27,7 @@ class OrderServiceTest {
     private OrderDao orderDao;
     private OrderLineItemDao orderLineItemDao;
     private OrderTableDao orderTableDao;
-
     private OrderService orderService;
-
-    private MenuGroup menuGroup;
-    private Product product;
-    private Menu menu;
-    private List<MenuProduct> menuProducts;
-
-    private TableGroup tableGroup;
-    private OrderTable orderTable;
-    private List<OrderTable> orderTables;
-    private Order order;
-    private List<OrderLineItem> orderLineItems;
 
     @BeforeEach
     void setUp() {
@@ -43,26 +37,16 @@ class OrderServiceTest {
         orderTableDao = mock(OrderTableDao.class);
         orderService = new OrderService(menuDao, orderDao, orderLineItemDao, orderTableDao);
 
-        menuGroup = MenuGroup.of(2L, "한마리메뉴");
-        product = Product.of(1L, "후라이드치킨", BigDecimal.valueOf(16000L));
-        menu = Menu.of(1L, product.getName(), product.getPrice(), menuGroup.getId(), null);
-        menuProducts = Lists.newArrayList(MenuProduct.of(1L, menu.getId(), product.getId(), 1L));
-
-        tableGroup = TableGroup.of(1L, LocalDateTime.now(), null);
-        orderTable = OrderTable.of(1L, tableGroup.getId(), 4, false);
-        orderTables = Lists.newArrayList(orderTable);
-        tableGroup = TableGroup.of(1L, LocalDateTime.now(), orderTables);
-
-        order = Order.of(1L, 1L, OrderStatus.COOKING.name(), LocalDateTime.now(), null);
-        orderLineItems = Lists.newArrayList(OrderLineItem.of(1L, order.getId(), menu.getId(), 1L));
+        menu1.setMenuGroupId(menuGroup2.getId());
+        orderTable1.setEmpty(false);
         order.setOrderLineItems(orderLineItems);
     }
 
     @DisplayName("주문 생성하기")
     @Test
     void createTest() {
-        when(menuDao.countByIdIn(Lists.newArrayList(menu.getId()))).thenReturn(1L);
-        when(orderTableDao.findById(order.getOrderTableId())).thenReturn(Optional.of(orderTable));
+        when(menuDao.countByIdIn(Lists.newArrayList(menu1.getId()))).thenReturn(1L);
+        when(orderTableDao.findById(order.getOrderTableId())).thenReturn(Optional.of(orderTable1));
         when(orderDao.save(order)).thenReturn(order);
 
         assertThat(orderService.create(order)).isEqualTo(order);
@@ -114,6 +98,7 @@ class OrderServiceTest {
     @DisplayName("주문 상태 변경")
     @Test
     void changeOrderStatusTest() {
+        order.setOrderStatus(OrderStatus.COOKING.name());
         when(orderDao.findById(order.getId())).thenReturn(Optional.of(order));
 
         Order targetOrder = Order.of(2L, order.getOrderTableId(), OrderStatus.MEAL.name(), LocalDateTime.now(), order.getOrderLineItems());

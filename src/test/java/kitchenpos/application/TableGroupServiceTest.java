@@ -1,5 +1,7 @@
 package kitchenpos.application;
 
+import static kitchenpos.fixture.OrderTablesFixture.*;
+import static kitchenpos.fixture.TableGroupFixture.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -19,11 +21,7 @@ class TableGroupServiceTest {
     private OrderDao orderDao;
     private OrderTableDao orderTableDao;
     private TableGroupDao tableGroupDao;
-
     private TableGroupService tableGroupService;
-    private OrderTable orderTable;
-    private List<OrderTable> orderTables;
-    private TableGroup tableGroup;
 
     @BeforeEach
     void setUp() {
@@ -31,19 +29,16 @@ class TableGroupServiceTest {
         orderTableDao = mock(OrderTableDao.class);
         tableGroupDao = mock(TableGroupDao.class);
         tableGroupService = new TableGroupService(orderDao, orderTableDao, tableGroupDao);
-
-        tableGroup = TableGroup.of(1L, LocalDateTime.now(), null);
-
-        orderTables = Lists.newArrayList(
-            OrderTable.of(1L, null, 4, true),
-            OrderTable.of(2L, null, 6, true)
-        );
-        tableGroup = TableGroup.of(1L, LocalDateTime.now(), orderTables);
     }
 
     @DisplayName("단체 지정 생성하기")
     @Test
     void createTest() {
+        orderTables = Lists.newArrayList(
+            OrderTable.of(1L, null, 4, true),
+            OrderTable.of(2L, null, 6, true)
+        );
+        tableGroup = TableGroup.of(1L, LocalDateTime.now(), orderTables);
         when(tableGroupDao.save(tableGroup)).thenReturn(tableGroup);
         when(orderTableDao.findAllByIdIn(Lists.newArrayList(1L, 2L))).thenReturn(orderTables);
         assertThat(tableGroupService.create(tableGroup)).isEqualTo(tableGroup);

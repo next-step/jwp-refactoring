@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import static kitchenpos.fixture.ProductFixture.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -15,18 +16,11 @@ import kitchenpos.domain.*;
 class ProductServiceTest {
     private ProductDao productDao;
     private ProductService productService;
-    private Product product1;
-    private Product product2;
-    private Product product3;
 
     @BeforeEach
     void setUp() {
         productDao = mock(ProductDao.class);
         productService = new ProductService(productDao);
-
-        product1 = Product.of(1L, "짜장면", BigDecimal.valueOf(10000L));
-        product2 = Product.of(2L, "짬뽕", BigDecimal.valueOf(12000L));
-        product3 = Product.of(3L, "탕수육", BigDecimal.valueOf(30000L));
     }
 
     @DisplayName("상품 생성하기")

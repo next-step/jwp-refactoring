@@ -1,5 +1,11 @@
 package kitchenpos.application;
 
+import static kitchenpos.fixture.MenuFixture.menu1;
+import static kitchenpos.fixture.MenuFixture.menu2;
+import static kitchenpos.fixture.MenuGroupFixture.menuGroup2;
+import static kitchenpos.fixture.MenuProductsFixture.menuProducts1;
+import static kitchenpos.fixture.MenuProductsFixture.menuProducts2;
+import static kitchenpos.fixture.ProductFixture.product1;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -20,14 +26,6 @@ class MenuServiceTest {
     private ProductDao productDao;
     private MenuService menuService;
 
-    private Product product1;
-    private Product product2;
-    private Menu menu1;
-    private Menu menu2;
-    private MenuGroup menuGroup;
-    private List<MenuProduct> menuProducts1;
-    private List<MenuProduct> menuProducts2;
-
     @BeforeEach
     void setUp() {
         menuDao = mock(MenuDao.class);
@@ -36,16 +34,7 @@ class MenuServiceTest {
         productDao = mock(ProductDao.class);
         menuService = new MenuService(menuDao, menuGroupDao, menuProductDao, productDao);
 
-        menuGroup = MenuGroup.of(2L, "한마리메뉴");
-
-        product1 = Product.of(1L, "후라이드치킨", BigDecimal.valueOf(16000L));
-        menu1 = Menu.of(1L, product1.getName(), product1.getPrice(), menuGroup.getId(), null);
-        menuProducts1 = Lists.newArrayList(MenuProduct.of(1L, menu1.getId(), product1.getId(), 1L));
         menu1.setMenuProducts(menuProducts1);
-
-        product2 = Product.of(2L, "양념치킨", BigDecimal.valueOf(16000L));
-        menu2 = Menu.of(1L, product2.getName(), product2.getPrice(), menuGroup.getId(), null);
-        menuProducts2 = Lists.newArrayList(MenuProduct.of(2L, menu2.getId(), product2.getId(), 1L));
         menu2.setMenuProducts(menuProducts2);
     }
 
@@ -62,7 +51,7 @@ class MenuServiceTest {
     @Test
     void exceptionTest1() {
         BigDecimal wrongPrice = BigDecimal.valueOf(-16000L);
-        Menu wrongMenu = Menu.of(3L, product1.getName(), wrongPrice, menuGroup.getId(), menuProducts1);
+        Menu wrongMenu = Menu.of(3L, product1.getName(), wrongPrice, menuGroup2.getId(), menuProducts1);
         assertThatThrownBy(() -> menuService.create(wrongMenu)).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -78,7 +67,7 @@ class MenuServiceTest {
     @Test
     void exceptionTest3() {
         Long wrongId = 100L;
-        Menu wrongMenu = Menu.of(3L, product1.getName(), product1.getPrice(), menuGroup.getId(), null);
+        Menu wrongMenu = Menu.of(3L, product1.getName(), product1.getPrice(), menuGroup2.getId(), null);
         List<MenuProduct> wrongMenuProducts = Lists.newArrayList(MenuProduct.of(1L, wrongMenu.getId(), wrongId, 1L));
         wrongMenu.setMenuProducts(wrongMenuProducts);
 
@@ -90,7 +79,7 @@ class MenuServiceTest {
     @DisplayName("메뉴상품 목록의 금액의 총합보다 작은 메뉴를 생성시 예외 발생")
     @Test
     void exceptionTest4() {
-        Menu wrongMenu = Menu.of(3L, product1.getName(), product1.getPrice().add(BigDecimal.ONE), menuGroup.getId(), menuProducts1);
+        Menu wrongMenu = Menu.of(3L, product1.getName(), product1.getPrice().add(BigDecimal.ONE), menuGroup2.getId(), menuProducts1);
         assertThatThrownBy(() -> menuService.create(wrongMenu)).isInstanceOf(IllegalArgumentException.class);
     }
 
