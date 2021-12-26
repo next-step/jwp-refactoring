@@ -2,7 +2,6 @@ package kitchenpos.order.application;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.persistence.EntityNotFoundException;
 import kitchenpos.common.vo.Quantity;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
@@ -10,6 +9,7 @@ import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.order.exception.OrderNotFoundException;
 import kitchenpos.ordertable.application.TableService;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.validator.OrderMenuValidator;
@@ -22,7 +22,6 @@ import org.springframework.util.CollectionUtils;
 public class OrderService {
 
     private static final String ERROR_MESSAGE_NO_ITEMS = "주문 항목이 없습니다.";
-    private static final String ERROR_MESSAGE_NOT_EXIST_ORDER = "존재하지 않는 주문입니다.";
 
     private final OrderRepository orderRepository;
     private final TableService tableService;
@@ -37,9 +36,7 @@ public class OrderService {
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
-        List<Long> menuIds = getMenuIds(orderRequest.getOrderLineItems());
-        orderMenuValidator.validateOrderLineItems(menuIds);
-
+        orderMenuValidator.validateOrderLineItems(orderRequest.getOrderLineItems());
         List<OrderLineItem> orderLineItems = createOrderLineItems(
             orderRequest.getOrderLineItems());
         final OrderTable orderTable = tableService.findOrderTable(orderRequest.getOrderTableId());
@@ -84,12 +81,8 @@ public class OrderService {
 
     public Order findOrder(Long orderId) {
         return orderRepository.findById(orderId)
-            .orElseThrow(() -> new EntityNotFoundException(ERROR_MESSAGE_NOT_EXIST_ORDER));
+            .orElseThrow(OrderNotFoundException::new);
     }
 
-    private List<Long> getMenuIds(List<OrderLineItemRequest> requestOrderLineItems) {
-        return requestOrderLineItems.stream()
-            .map(OrderLineItemRequest::getMenuId)
-            .collect(Collectors.toList());
-    }
+
 }
