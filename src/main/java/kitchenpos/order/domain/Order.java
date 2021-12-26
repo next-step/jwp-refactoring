@@ -2,6 +2,7 @@ package kitchenpos.order.domain;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
@@ -38,6 +39,7 @@ public class Order {
     @CreatedDate
     private LocalDateTime orderedTime;
 
+    @Embedded
     private OrderLineItems orderLineItems = new OrderLineItems();
 
     public Order() {
