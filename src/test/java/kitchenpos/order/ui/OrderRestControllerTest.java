@@ -3,18 +3,21 @@ package kitchenpos.order.ui;
 import kitchenpos.common.fixtrue.MenuFixture;
 import kitchenpos.common.fixtrue.MenuGroupFixture;
 import kitchenpos.common.fixtrue.MenuProductFixture;
-import kitchenpos.common.fixtrue.OrderFixture;
 import kitchenpos.common.fixtrue.OrderLineItemFixture;
 import kitchenpos.common.fixtrue.OrderTableFixture;
 import kitchenpos.common.fixtrue.ProductFixture;
+import kitchenpos.common.ui.RestControllerTest;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.product.domain.Product;
-import kitchenpos.common.ui.RestControllerTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +29,7 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -49,8 +52,11 @@ class OrderRestControllerTest extends RestControllerTest {
     @MockBean
     OrderService orderService;
 
+    OrderTable 주문_테이블;
+    OrderRequest 주문_요청;
     Order 주문;
-
+    OrderLineItem 주문_항목;
+    OrderResponse 주문_응답;
     @BeforeEach
     void setUp() {
         Product 후라이드치킨 = ProductFixture.of("후라이드치킨", BigDecimal.valueOf(16000));
@@ -61,28 +67,31 @@ class OrderRestControllerTest extends RestControllerTest {
                 두마리치킨);
         후라이드_후라이드.addMenuProduct(MenuProductFixture.of(후라이드치킨, 2));
 
-        OrderTable 주문_테이블 = OrderTableFixture.of(4, false);
-        주문 = OrderFixture.of(
-                1L,
-                주문_테이블.getId(),
-                Collections.singletonList(OrderLineItemFixture.of(1L, 1L, 후라이드_후라이드.getId(), 1L)));
+        주문_테이블 = OrderTableFixture.of(4, false);
+        OrderLineItemRequest 주문_항목_요청 = OrderLineItemRequest.of(후라이드_후라이드.getId(), 1L);
+        주문_요청 = OrderRequest.of(주문_테이블.getId(), Arrays.asList(주문_항목_요청));
+
+        주문 = Order.from(주문_테이블.getId());
+        주문_항목 = OrderLineItemFixture.of(1L, 1L, 후라이드_후라이드.getId(), 1L);
+        주문.addOrderLineItem(주문_항목);
+
+        주문_응답 = OrderResponse.from(주문);
     }
 
     @Test
     void 주문_발생() throws Exception {
         // given
-        given(orderService.create(any())).willReturn(주문);
+        given(orderService.create(any())).willReturn(주문_응답);
 
         // when
         ResultActions actions = mockMvc.perform(post(API_ORDER_ROOT)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(asJsonString(주문)))
+                        .content(asJsonString(주문_요청)))
                 .andDo(print());
 
         // then
         actions
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").value(1L))
                 .andExpect(jsonPath("$.orderStatus").value("COOKING"))
                 .andExpect(jsonPath("$.orderLineItems.length()").value(1));
     }
@@ -90,8 +99,8 @@ class OrderRestControllerTest extends RestControllerTest {
     @Test
     void 주문_조회() throws Exception {
         // given
-        List<Order> orders = new ArrayList<>();
-        orders.add(주문);
+        List<OrderResponse> orders = new ArrayList<>();
+        orders.add(OrderResponse.from(주문));
 
         given(orderService.list()).willReturn(orders);
 
@@ -103,7 +112,6 @@ class OrderRestControllerTest extends RestControllerTest {
 
         // then
         actions.andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value(1L))
                 .andExpect(jsonPath("$[0].orderStatus").value("COOKING"))
                 .andExpect(jsonPath("$[0].orderLineItems.length()").value(1));
     }
@@ -111,19 +119,23 @@ class OrderRestControllerTest extends RestControllerTest {
     @Test
     void 주문_상태_변경() throws Exception {
         // given
-        주문.setOrderStatus(OrderStatus.MEAL.name());
-        given(orderService.changeOrderStatus(any(), any())).willReturn(주문);
+        OrderRequest 주문_변경_요청 = OrderRequest.from(OrderStatus.MEAL);
+        Order 변경된_주문 = Order.from(주문_테이블.getId());
+        변경된_주문.addOrderLineItem(주문_항목);
+        변경된_주문.changeOrderStatus(OrderStatus.MEAL.name());
+        OrderResponse 변경된_주문_응답 = OrderResponse.from(변경된_주문);
+
+        given(orderService.changeOrderStatus(any(), any())).willReturn(변경된_주문_응답);
 
         // when
-        ResultActions actions = mockMvc.perform(put(API_ORDER_ROOT + "/" + 주문.getId() + "/order-status")
+        ResultActions actions = mockMvc.perform(put(API_ORDER_ROOT + "/" + 1L + "/order-status")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(asJsonString(주문)))
+                        .content(asJsonString(주문_변경_요청)))
                 .andDo(print());
 
         // then
         actions
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(1L))
                 .andExpect(jsonPath("$.orderStatus").value("MEAL"))
                 .andExpect(jsonPath("$.orderLineItems.length()").value(1));
     }

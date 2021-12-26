@@ -3,7 +3,6 @@ package kitchenpos.order.application;
 import kitchenpos.common.fixtrue.MenuFixture;
 import kitchenpos.common.fixtrue.MenuGroupFixture;
 import kitchenpos.common.fixtrue.MenuProductFixture;
-import kitchenpos.common.fixtrue.OrderFixture;
 import kitchenpos.common.fixtrue.OrderLineItemFixture;
 import kitchenpos.common.fixtrue.OrderTableFixture;
 import kitchenpos.common.fixtrue.ProductFixture;
@@ -17,6 +16,9 @@ import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,6 +28,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -34,7 +37,6 @@ import java.util.stream.Collectors;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.ThrowableAssert.ThrowingCallable;
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
@@ -56,9 +58,14 @@ class OrderServiceTest {
     @InjectMocks
     OrderService orderService;
 
-    Order 주문;
+    OrderTable 빈_테이블;
     OrderTable 주문_테이블;
     OrderLineItem 주문_상품;
+
+    OrderLineItemRequest 주문_항목_요청;
+    OrderRequest 주문_요청;
+    Order 주문;
+    OrderResponse 주문_응답;
 
     @BeforeEach
     void setUp() {
@@ -71,33 +78,35 @@ class OrderServiceTest {
         후라이드_후라이드.addMenuProduct(MenuProductFixture.of(후라이드치킨, 2));
 
         주문_테이블 = OrderTableFixture.of(4, false);
+        빈_테이블 = OrderTableFixture.of(0, true);
         주문_상품 = OrderLineItemFixture.of(1L, 1L, 후라이드_후라이드.getId(), 1L);
-        주문 = OrderFixture.of(
-                1L,
-                주문_테이블.getId(),
-                Collections.singletonList(주문_상품));
+
+        주문_항목_요청 = OrderLineItemRequest.of(후라이드_후라이드.getId(), 1L);
+        주문_요청 = OrderRequest.of(주문_테이블.getId(), Arrays.asList(주문_항목_요청));
+        주문 = Order.from(주문_테이블.getId());
+        주문.addOrderLineItem(주문_상품);
+        주문_응답 = OrderResponse.from(주문);
     }
 
     @Test
     void 주문_발생() {
         // given
-        List<Long> menuIds = 주문.getOrderLineItems()
+        List<Long> menuIds = 주문_요청.getOrderLineItems()
                 .stream()
-                .map(OrderLineItem::getMenuId)
+                .map(OrderLineItemRequest::getMenuId)
                 .collect(Collectors.toList());
 
         given(menuService.countByIdIn(menuIds)).willReturn(1L);
         given(orderTableDao.findById(주문.getOrderTableId())).willReturn(Optional.of(주문_테이블));
         given(orderDao.save(any())).willReturn(주문);
+        given(orderLineItemDao.save(any())).willReturn(주문_상품);
+
 
         // when
-        Order actual = orderService.create(주문);
+        OrderResponse actual = orderService.create(주문_요청);
 
         // then
-        assertAll(() -> {
-            assertThat(actual).isEqualTo(주문);
-            assertThat(actual.getOrderStatus()).isEqualTo(주문.getOrderStatus());
-        });
+        assertThat(actual.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
     }
 
     @Test
@@ -106,7 +115,7 @@ class OrderServiceTest {
         given(menuService.countByIdIn(any())).willReturn(0L);
 
         // when
-        ThrowingCallable throwingCallable = () -> orderService.create(주문);
+        ThrowingCallable throwingCallable = () -> orderService.create(주문_요청);
 
         // then
         assertThatExceptionOfType(IllegalArgumentException.class)
@@ -120,7 +129,7 @@ class OrderServiceTest {
         given(orderTableDao.findById(주문.getOrderTableId())).willReturn(Optional.empty());
 
         // when
-        ThrowingCallable throwingCallable = () -> orderService.create(주문);
+        ThrowingCallable throwingCallable = () -> orderService.create(주문_요청);
 
         // then
         assertThatExceptionOfType(IllegalArgumentException.class)
@@ -131,11 +140,10 @@ class OrderServiceTest {
     void 주문_발생_시_주문_테이블이_빈_테이블이면_주문할_수_없다() {
         // given
         given(menuService.countByIdIn(any())).willReturn(1L);
-        주문_테이블.setEmpty(true);
-        given(orderTableDao.findById(주문.getOrderTableId())).willReturn(Optional.of(주문_테이블));
+        given(orderTableDao.findById(주문.getOrderTableId())).willReturn(Optional.of(빈_테이블));
 
         // when
-        ThrowingCallable throwingCallable = () -> orderService.create(주문);
+        ThrowingCallable throwingCallable = () -> orderService.create(주문_요청);
 
         // then
         assertThatExceptionOfType(IllegalArgumentException.class)
@@ -150,39 +158,34 @@ class OrderServiceTest {
         given(orderLineItemDao.findAllByOrderId(주문.getId())).willReturn(Collections.singletonList(주문_상품));
 
         // when
-        List<Order> actual = orderService.list();
+        List<OrderResponse> actual = orderService.list();
 
         // then
-        assertAll(() -> {
-            assertThat(actual).hasSize(1);
-            assertThat(actual).containsExactlyElementsOf(Collections.singletonList(주문));
-        });
+        assertThat(actual).hasSize(1);
     }
 
     @Test
     void 주문_상태_변경() {
         // given
-        주문.setOrderStatus(OrderStatus.MEAL.name());
+        OrderRequest 주문_상태_변경_요청 = OrderRequest.from(OrderStatus.MEAL);
         given(orderDao.findById(주문.getId())).willReturn(Optional.of(주문));
         given(orderDao.save(any())).willReturn(주문);
 
         // when
-        Order actual = orderService.changeOrderStatus(주문.getId(), 주문);
+        OrderResponse actual = orderService.changeOrderStatus(주문.getId(), 주문_상태_변경_요청);
 
         // then
-        assertAll(() -> {
-            assertThat(actual).isEqualTo(주문);
-            assertThat(actual.getOrderStatus()).isEqualTo(주문.getOrderStatus());
-        });
+        assertThat(actual.getOrderStatus()).isEqualTo(주문.getOrderStatus());
     }
 
     @Test
     void 주문_상태_변경_시_주문이_반드시_존재해야_한다() {
         // given
+        OrderRequest 주문_상태_변경_요청 = OrderRequest.from(OrderStatus.MEAL);
         given(orderDao.findById(주문.getId())).willReturn(Optional.empty());
 
         // when
-        ThrowingCallable throwingCallable = () -> orderService.changeOrderStatus(주문.getId(), 주문);
+        ThrowingCallable throwingCallable = () -> orderService.changeOrderStatus(주문.getId(), 주문_상태_변경_요청);
 
         // then
         assertThatExceptionOfType(IllegalArgumentException.class)
@@ -192,11 +195,12 @@ class OrderServiceTest {
     @Test
     void 주문_상태_변경_시_상태가_계산이면_변경할_수_없다() {
         // given
-        주문.setOrderStatus(OrderStatus.COMPLETION.name());
+        OrderRequest 주문_상태_변경_요청 = OrderRequest.from(OrderStatus.MEAL);
+        주문.changeOrderStatus(OrderStatus.COMPLETION.name());
         given(orderDao.findById(주문.getId())).willReturn(Optional.of(주문));
 
         // when
-        ThrowingCallable throwingCallable = () -> orderService.changeOrderStatus(주문.getId(), 주문);
+        ThrowingCallable throwingCallable = () -> orderService.changeOrderStatus(주문.getId(), 주문_상태_변경_요청);
 
         // then
         assertThatExceptionOfType(IllegalArgumentException.class)

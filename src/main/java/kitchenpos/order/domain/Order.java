@@ -1,8 +1,7 @@
 package kitchenpos.order.domain;
 
-import org.springframework.util.CollectionUtils;
-
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -11,28 +10,24 @@ public class Order {
     private Long orderTableId;
     private String orderStatus;
     private LocalDateTime orderedTime;
-    private List<OrderLineItem> orderLineItems;
+    private List<OrderLineItem> orderLineItems = new ArrayList<>();
 
     public Order() {
     }
 
-    public Order(Long id, Long orderTableId, List<OrderLineItem> orderLineItems) {
-        validateOrderLineItems(orderLineItems);
-        this.id = id;
+    public Order(Long orderTableId) {
         this.orderTableId = orderTableId;
         this.orderStatus = OrderStatus.COOKING.name();
         this.orderedTime = LocalDateTime.now();
-        this.orderLineItems = orderLineItems;
     }
 
-    private void validateOrderLineItems(List<OrderLineItem> orderLineItems) {
-        if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalArgumentException("주문 시 주문 항목은 필수 입니다.");
-        }
+    public static Order from(Long orderTableId) {
+        return new Order(orderTableId);
     }
 
-    public static Order of(Long id, Long orderTableId, List<OrderLineItem> orderLineItems) {
-        return new Order(id, orderTableId, orderLineItems);
+    public void addOrderLineItem(OrderLineItem orderLineItem) {
+        validateOrderLineItem(orderLineItem);
+        this.orderLineItems.add(orderLineItem);
     }
 
     public Long getId() {
@@ -81,5 +76,11 @@ public class Order {
         }
 
         this.orderStatus = orderStatus;
+    }
+
+    private void validateOrderLineItem(OrderLineItem orderLineItems) {
+        if (Objects.isNull(orderLineItems)) {
+            throw new IllegalArgumentException("주문 시 주문 항목은 필수 입니다.");
+        }
     }
 }

@@ -3,8 +3,6 @@ package kitchenpos.order.domain;
 import kitchenpos.common.fixtrue.MenuFixture;
 import kitchenpos.common.fixtrue.MenuGroupFixture;
 import kitchenpos.common.fixtrue.MenuProductFixture;
-import kitchenpos.common.fixtrue.OrderFixture;
-import kitchenpos.common.fixtrue.OrderLineItemFixture;
 import kitchenpos.common.fixtrue.OrderTableFixture;
 import kitchenpos.common.fixtrue.ProductFixture;
 import kitchenpos.menu.domain.Menu;
@@ -16,8 +14,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -27,14 +23,14 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 @DisplayName("주문 테스트")
 class OrderTest {
 
+    Menu 후라이드_후라이드;
     OrderTable 주문_테이블;
-    OrderLineItem 주문_상품;
 
     @BeforeEach
     void setUp() {
         Product 후라이드치킨 = ProductFixture.of("후라이드치킨", BigDecimal.valueOf(16000));
         MenuGroup 두마리치킨 = MenuGroupFixture.from("두마리치킨");
-        Menu 후라이드_후라이드 = MenuFixture.of(
+        후라이드_후라이드 = MenuFixture.of(
                 "후라이드+후라이드",
                 BigDecimal.valueOf(31000),
                 두마리치킨);
@@ -42,16 +38,12 @@ class OrderTest {
         후라이드_후라이드.addMenuProduct(MenuProductFixture.of(후라이드치킨, 2));
 
         주문_테이블 = OrderTableFixture.of(4, false);
-        주문_상품 = OrderLineItemFixture.of(1L, 1L, 후라이드_후라이드.getId(), 1L);
-
     }
 
     @Test
     void 주문_발생_시_주문상태는_조리상태이다() {
-        Order actual = OrderFixture.of(
-                1L,
-                주문_테이블.getId(),
-                Collections.singletonList(주문_상품));
+        // given
+        Order actual = Order.from(주문_테이블.getId());
 
         assertAll(() -> {
             assertThat(actual).isNotNull();
@@ -61,11 +53,13 @@ class OrderTest {
 
     @Test
     void 주문_발생_시_주문_항목은_필수이다() {
-        ThrowingCallable throwingCallable = () -> OrderFixture.of(
-                1L,
-                주문_테이블.getId(),
-                new ArrayList<>());
+        // given
+        Order actual = Order.from(주문_테이블.getId());
 
+        // when
+        ThrowingCallable throwingCallable = () -> actual.addOrderLineItem(null);
+
+        // then
         assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(throwingCallable)
                 .withMessage("주문 시 주문 항목은 필수 입니다.");
@@ -74,10 +68,8 @@ class OrderTest {
     @Test
     void 주문_상태를_변경한다() {
         // given
-        Order actual = OrderFixture.of(
-                1L,
-                주문_테이블.getId(),
-                Collections.singletonList(주문_상품));
+        Order actual = Order.from(주문_테이블.getId());
+        actual.addOrderLineItem(OrderLineItem.of(actual.getId(), 후라이드_후라이드.getId(), 1L));
 
         // when
         actual.changeOrderStatus(OrderStatus.MEAL.name());
@@ -89,10 +81,8 @@ class OrderTest {
     @Test
     void 주문_상태가_계산_완료_상태이면_변경할_수_없다() {
         // given
-        Order actual = OrderFixture.of(
-                1L,
-                주문_테이블.getId(),
-                Collections.singletonList(주문_상품));
+        Order actual = Order.from(주문_테이블.getId());
+        actual.addOrderLineItem(OrderLineItem.of(actual.getId(), 후라이드_후라이드.getId(), 1L));
         actual.changeOrderStatus(OrderStatus.COMPLETION.name());
 
         // when
