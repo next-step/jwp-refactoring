@@ -1,5 +1,6 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.product.domain.Price;
 import kitchenpos.product.domain.Product;
 
 import javax.persistence.*;
@@ -44,5 +45,9 @@ public class MenuProduct {
 
     public long getQuantity() {
         return quantity;
+    }
+
+    public Price getPrice() {
+        return this.product.getPrice();
     }
 }
