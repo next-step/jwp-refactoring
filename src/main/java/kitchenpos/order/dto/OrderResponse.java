@@ -15,7 +15,6 @@ import static java.util.stream.Collectors.toList;
  * date : 2021/12/21
  * description :
  */
-//FIXME 생성자 제한하기
 public class OrderResponse {
     private Long id;
     private Long orderTableId;
@@ -23,10 +22,10 @@ public class OrderResponse {
     private LocalDateTime orderedTime;
     private List<OrderLineItemResponse> orderLineItems;
 
-    public OrderResponse() {
+    private OrderResponse() {
     }
 
-    public OrderResponse(Long id, Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItemResponse> orderLineItems) {
+    private OrderResponse(Long id, Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItemResponse> orderLineItems) {
         this.id = id;
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
@@ -35,7 +34,7 @@ public class OrderResponse {
     }
 
     public static OrderResponse of(Order order) {
-        List<OrderLineItemResponse> orderLineItemResponses = OrderLineItemResponse.ofList(order.getOrderLineItems());
+        List<OrderLineItemResponse> orderLineItemResponses = OrderLineItemResponse.ofList(order.getOrderLineItems().value());
         return new OrderResponse(order.getId(), order.getOrderTable().getId(), order.getOrderStatus(), order.getOrderedTime(), orderLineItemResponses);
     }
 

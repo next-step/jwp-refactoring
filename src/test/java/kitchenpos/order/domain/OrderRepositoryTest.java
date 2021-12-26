@@ -33,6 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 @DisplayName("주문 리파지토리 테스트")
 class OrderRepositoryTest {
     private Order 후라이드반양념반두개주세요;
+    private Menu 후라이드반양념반메뉴;
 
     @Autowired
     private MenuRepository menuRepository;
@@ -57,7 +58,7 @@ class OrderRepositoryTest {
         MenuGroup 메뉴그룹 = menuGroupRepository.save(메뉴그룹("반반메뉴그룹"));
         MenuProduct 양념치킨메뉴상품 = 메뉴상품(양념치킨, 1L);
         MenuProduct 후라이드메뉴상품 = 메뉴상품(후라이드, 1L);
-        Menu 후라이드반양념반메뉴 = menuRepository.save(
+        후라이드반양념반메뉴 = menuRepository.save(
                 new Menu(
                         "후라이드반양념반메뉴",
                         메뉴가격,
@@ -65,7 +66,7 @@ class OrderRepositoryTest {
                         Lists.newArrayList(양념치킨메뉴상품, 후라이드메뉴상품)
                 )
         );
-        OrderTable 사용가능_다섯명테이블 = orderTableRepository.save(OrderTableFixtures.주문가능_다섯명테이블요청().toEntity());
+        OrderTable 사용가능_다섯명테이블 = orderTableRepository.save(OrderTableFixtures.주문가능_다섯명테이블());
         OrderLineItem 후라이드양념반두개 = new OrderLineItem(후라이드반양념반메뉴, 2L);
         후라이드반양념반두개주세요 = new Order(사용가능_다섯명테이블, Lists.newArrayList(후라이드양념반두개));
 
@@ -103,5 +104,22 @@ class OrderRepositoryTest {
                 () -> assertThat(actual.getOrderLineItems()).extracting(OrderLineItem::getId)
                         .isNotNull()
         );
+    }
+
+    @Test
+    @DisplayName("양방향 연관관계 제거 주문 등록")
+    public void order() throws Exception {
+        // given
+        Order order = new Order();
+        OrderTable savedOrderTable = orderTableRepository.save(OrderTableFixtures.주문가능_다섯명테이블());
+        order.addOrderTable(savedOrderTable);
+        order.addOrderLineItem(new OrderLineItem(후라이드반양념반메뉴, 2L));
+        order.addOrderLineItem(new OrderLineItem(후라이드반양념반메뉴, 3L));
+
+        // when
+        Order savedOrder = orderRepository.save(order);
+
+        // then
+        assertThat(savedOrder.getId()).isNotNull();
     }
 }

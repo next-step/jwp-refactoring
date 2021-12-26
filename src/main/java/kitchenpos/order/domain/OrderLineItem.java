@@ -14,10 +14,6 @@ public class OrderLineItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "order_id", foreignKey = @ForeignKey(name = "fk_order_line_item_orders"))
-    private Order order;
-
     @OneToOne(fetch = LAZY)
     @JoinColumn(name = "menu_id", foreignKey = @ForeignKey(name = "fk_order_line_item_menu"))
     private Menu menu;
@@ -33,18 +29,8 @@ public class OrderLineItem {
         this.quantity = Quantity.of(quantity);
     }
 
-    //FIXME 네이밍 변경 필요. 직관적이지 못함.
-    public OrderLineItem in(Order order) {
-        this.order = order;
-        return this;
-    }
-
     public Long getId() {
         return id;
-    }
-
-    public Order getOrder() {
-        return order;
     }
 
     public Menu getMenu() {
