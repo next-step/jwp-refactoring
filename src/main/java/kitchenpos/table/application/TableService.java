@@ -1,6 +1,7 @@
 package kitchenpos.table.application;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
@@ -30,8 +31,9 @@ public class TableService {
 
     @Transactional(readOnly = true)
     public List<OrderTableResponse> list() {
-        List<OrderTable> orderTables = orderTableRepository.findAll();
-        return OrderTableResponse.ofList(orderTables);
+        return orderTableRepository.findAll().stream()
+            .map(OrderTableResponse::of)
+            .collect(Collectors.toList());
     }
 
     @Transactional
