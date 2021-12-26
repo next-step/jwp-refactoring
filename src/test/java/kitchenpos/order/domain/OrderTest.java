@@ -7,7 +7,6 @@ import java.util.Arrays;
 import java.util.List;
 import kitchenpos.common.vo.Quantity;
 import kitchenpos.menu.testfixtures.MenuTestFixtures;
-import kitchenpos.order.exception.ClosedTableOrderException;
 import kitchenpos.order.exception.CompleteOrderChangeStateException;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.vo.NumberOfGuests;
@@ -26,26 +25,12 @@ class OrderTest {
         );
 
         //when
-        Order order = new Order(orderTable, orderLineItems);
+        Order order = new Order(orderTable.getId(), orderLineItems);
 
         //then
-        assertThat(order.getOrderTable()).isEqualTo(orderTable);
+        assertThat(order.getOrderTableId()).isEqualTo(orderTable.getId());
     }
-
-    @DisplayName("주문종료 상태의 테이블은 주문할 수 없다.")
-    @Test
-    void constructor_exception1() {
-        //given
-        OrderTable orderTable = new OrderTable(1L, new NumberOfGuests(6), true);
-        List<OrderLineItem> orderLineItems = Arrays.asList(
-            new OrderLineItem(MenuTestFixtures.서비스군만두.getId(), new Quantity(5L))
-        );
-
-        //when, then
-        assertThatThrownBy(() -> new Order(orderTable, orderLineItems))
-            .isInstanceOf(ClosedTableOrderException.class);
-    }
-
+    
     @DisplayName("주문 상태 변경")
     @Test
     void changeOrderStatus() {
@@ -54,7 +39,7 @@ class OrderTest {
         List<OrderLineItem> orderLineItems = Arrays.asList(
             new OrderLineItem(MenuTestFixtures.서비스군만두.getId(), new Quantity(5L))
         );
-        Order order = new Order(orderTable, orderLineItems);
+        Order order = new Order(orderTable.getId(), orderLineItems);
 
         //when
         order.changeOrderStatus(OrderStatus.MEAL);
@@ -71,7 +56,7 @@ class OrderTest {
         List<OrderLineItem> orderLineItems = Arrays.asList(
             new OrderLineItem(MenuTestFixtures.서비스군만두.getId(), new Quantity(5L))
         );
-        Order order = new Order(orderTable, orderLineItems);
+        Order order = new Order(orderTable.getId(), orderLineItems);
         order.changeOrderStatus(OrderStatus.COMPLETION);
 
         //when, then

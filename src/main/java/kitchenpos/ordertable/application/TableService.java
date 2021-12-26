@@ -8,6 +8,7 @@ import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
 import kitchenpos.ordertable.exception.TableNotFoundException;
 import kitchenpos.ordertable.vo.NumberOfGuests;
+import kitchenpos.validator.OrderTableValidator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,9 +17,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class TableService {
 
     private final OrderTableRepository orderTableRepository;
+    private final OrderTableValidator orderTableValidator;
 
-    public TableService(OrderTableRepository orderTableRepository) {
+    public TableService(OrderTableRepository orderTableRepository,
+        OrderTableValidator orderTableValidator) {
         this.orderTableRepository = orderTableRepository;
+        this.orderTableValidator = orderTableValidator;
     }
 
     @Transactional
@@ -44,7 +48,7 @@ public class TableService {
     public OrderTableResponse changeEmpty(final Long orderTableId,
         final OrderTableRequest orderTableRequest) {
         final OrderTable savedOrderTable = findOrderTable(orderTableId);
-
+        orderTableValidator.validateAllOrdersInTableComplete(savedOrderTable.getId());
         savedOrderTable.updateTableStatus(orderTableRequest.isOrderClose());
         return OrderTableResponse.from(savedOrderTable);
     }

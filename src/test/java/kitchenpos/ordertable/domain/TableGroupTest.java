@@ -5,12 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.Arrays;
 import java.util.List;
-import kitchenpos.common.vo.Quantity;
-import kitchenpos.menu.testfixtures.MenuTestFixtures;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.ordertable.exception.GroupTablesException;
-import kitchenpos.ordertable.exception.UngroupTablesException;
 import kitchenpos.ordertable.vo.NumberOfGuests;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -107,23 +102,5 @@ class TableGroupTest {
         tableGroup.getOrderTableList()
             .stream()
             .forEach(orderTable -> assertThat(orderTable.getTableGroup()).isNull());
-    }
-
-    @DisplayName("계산완료 되지 않은 주문이 있는 경우 그룹 해제할 수 없다.")
-    @Test
-    void ungroup_exception() {
-        //given
-        List<OrderTable> orderTables = Arrays.asList(
-            new OrderTable(1L, new NumberOfGuests(6), true),
-            new OrderTable(2L, new NumberOfGuests(3), true));
-        TableGroup tableGroup = new TableGroup(1L);
-        tableGroup.groupTables(orderTables);
-
-        Order order = new Order(orderTables.get(0), Arrays.asList(
-            new OrderLineItem(MenuTestFixtures.서비스군만두.getId(), new Quantity(2L))));
-
-        //when,then
-        assertThatThrownBy(() -> tableGroup.ungroup())
-            .isInstanceOf(UngroupTablesException.class);
     }
 }

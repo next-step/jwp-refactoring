@@ -31,11 +31,6 @@ public class TableTestFixtures {
             .willReturn(Optional.of(orderTable));
     }
 
-    public static void 특정_주문테이블_조회_모킹(TableService tableService, OrderTable orderTable) {
-        given(tableService.findOrderTable(orderTable.getId()))
-            .willReturn(orderTable);
-    }
-
     public static void 특정_주문테이블_리스트_조회_모킹(TableService tableService, List<OrderTable> orderTables) {
         given(tableService.findOrderTables(anyList()))
             .willReturn(orderTables);

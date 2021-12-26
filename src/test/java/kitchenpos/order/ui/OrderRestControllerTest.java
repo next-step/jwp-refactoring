@@ -67,9 +67,10 @@ class OrderRestControllerTest {
             new OrderLineItem(혼술세트.getId(), new Quantity(1L)),
             new OrderLineItem(이달의메뉴.getId(), new Quantity(3L)));
         OrderRequest requestOrder = OrderTestFixtures.convertToOrderRequest(
-            new Order(테이블1번, orderLineItems));
-        OrderResponse expectedOrder = OrderResponse.from(new Order(1L, 테이블1번, OrderStatus.COOKING,
-            orderLineItems));
+            new Order(테이블1번.getId(), orderLineItems));
+        OrderResponse expectedOrder = OrderResponse.from(
+            new Order(1L, 테이블1번.getId(), OrderStatus.COOKING,
+                orderLineItems));
         given(orderService.create(any()))
             .willReturn(expectedOrder);
 
@@ -79,7 +80,7 @@ class OrderRestControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isCreated())
             .andExpect(jsonPath("$.id").value(expectedOrder.getId()))
-            .andExpect(jsonPath("$.orderTable.id").value(expectedOrder.getOrderTable().getId()));
+            .andExpect(jsonPath("$.orderTableId").value(expectedOrder.getOrderTableId()));
     }
 
     @DisplayName("주문 목록 조회")
@@ -95,8 +96,8 @@ class OrderRestControllerTest {
             new OrderLineItem(이달의메뉴.getId(), new Quantity(2L)));
 
         List<OrderResponse> expectedOrders = OrderResponse.fromList(Arrays.asList(
-            new Order(1L, 테이블1번, OrderStatus.MEAL, orderLineItems1),
-            new Order(2L, 테이블1번, OrderStatus.COOKING, orderLineItems2)));
+            new Order(1L, 테이블1번.getId(), OrderStatus.MEAL, orderLineItems1),
+            new Order(2L, 테이블1번.getId(), OrderStatus.COOKING, orderLineItems2)));
 
         given(orderService.list())
             .willReturn(expectedOrders);
@@ -125,7 +126,7 @@ class OrderRestControllerTest {
             changeOrderStatus);
 
         OrderResponse expectedOrder = OrderResponse.from(
-            new Order(1L, 테이블1번, changeOrderStatus, orderLineItems));
+            new Order(1L, 테이블1번.getId(), changeOrderStatus, orderLineItems));
         given(orderService.changeOrderStatus(any(), any()))
             .willReturn(expectedOrder);
 

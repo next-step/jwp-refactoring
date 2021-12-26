@@ -12,6 +12,7 @@ import kitchenpos.ordertable.dto.TableGroupResponse;
 import kitchenpos.ordertable.testfixtures.TableGroupTestFixtures;
 import kitchenpos.ordertable.testfixtures.TableTestFixtures;
 import kitchenpos.ordertable.vo.NumberOfGuests;
+import kitchenpos.validator.OrderTableValidator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,6 +31,9 @@ class TableGroupServiceTest {
 
     @InjectMocks
     private TableGroupService tableGroupService;
+
+    @Mock
+    private OrderTableValidator orderTableValidator;
 
     @DisplayName("테이블 그룹을 등록할 수 있다.")
     @Test

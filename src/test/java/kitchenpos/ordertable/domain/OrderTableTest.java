@@ -4,11 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.Arrays;
-import java.util.List;
-import kitchenpos.common.vo.Quantity;
-import kitchenpos.menu.testfixtures.MenuTestFixtures;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.ordertable.exception.IllegalNumberOfGuests;
 import kitchenpos.ordertable.exception.TableChangeNumberOfGuestsException;
 import kitchenpos.ordertable.exception.TableUpdateStateException;
@@ -55,23 +50,7 @@ class OrderTableTest {
             .isInstanceOf(TableUpdateStateException.class);
     }
 
-    @DisplayName("주문상태가 계산완료가 아닌 주문이 있는 경우 업데이트 불가")
-    @Test
-    void updateEmpty_exception2() {
-        //given
-        OrderTable orderTable = new OrderTable(new NumberOfGuests(6), false);
-        List<OrderLineItem> orderLineItems = Arrays.asList(
-            new OrderLineItem(MenuTestFixtures.서비스군만두.getId(), new Quantity(5L))
-        );
-
-        //when
-        Order order = new Order(orderTable, orderLineItems);
-
-        //then
-        assertThatThrownBy(() -> orderTable.updateTableStatus(true))
-            .isInstanceOf(TableUpdateStateException.class);
-    }
-
+  
     @DisplayName("테이블 방문 손님 수 변경")
     @Test
     void changeNumberOfGuests() {

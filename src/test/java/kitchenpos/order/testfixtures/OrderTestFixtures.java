@@ -31,7 +31,7 @@ public class OrderTestFixtures {
     }
 
     public static OrderRequest convertToOrderRequest(Order order) {
-        return new OrderRequest(order.getOrderTable().getId(),
+        return new OrderRequest(order.getOrderTableId(),
             convertToOrderLineItemRequests(order.getOrderLineItemList()));
     }
 

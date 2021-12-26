@@ -7,16 +7,11 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import kitchenpos.common.entity.BaseTimeEntity;
-import kitchenpos.order.exception.ClosedTableOrderException;
 import kitchenpos.order.exception.CompleteOrderChangeStateException;
-import kitchenpos.ordertable.domain.OrderTable;
 
 @Entity(name = "orders")
 public class Order extends BaseTimeEntity {
@@ -25,9 +20,7 @@ public class Order extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @JoinColumn(name = "order_table_id", nullable = false)
-    @ManyToOne(fetch = FetchType.LAZY)
-    private OrderTable orderTable;
+    private Long orderTableId;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -51,32 +44,20 @@ public class Order extends BaseTimeEntity {
         this.orderStatus = orderStatus;
     }
 
-    public Order(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
-        this(null, orderTable, OrderStatus.COOKING, orderLineItems);
+    public Order(Long orderTableId, List<OrderLineItem> orderLineItems) {
+        this(null, orderTableId, OrderStatus.COOKING, orderLineItems);
     }
 
-    public Order(Long id, OrderTable orderTable, OrderStatus orderStatus,
+    public Order(Long id, Long orderTableId, OrderStatus orderStatus,
         List<OrderLineItem> orderLineItems) {
         this.id = id;
         this.orderStatus = orderStatus;
+        this.orderTableId = orderTableId;
         assignOrderLineItems(orderLineItems);
-        assignTable(orderTable);
     }
 
     private void assignOrderLineItems(List<OrderLineItem> inputOrderLineItems) {
         orderLineItems.assignOrderLineItems(inputOrderLineItems, this);
-    }
-
-    private void assignTable(OrderTable orderTable) {
-        validateNotOrderClosedTable(orderTable);
-        this.orderTable = orderTable;
-        orderTable.addOrder(this);
-    }
-
-    private void validateNotOrderClosedTable(OrderTable orderTable) {
-        if (orderTable.isOrderClose()) {
-            throw new ClosedTableOrderException();
-        }
     }
 
     public boolean isCompleteStatus() {
@@ -91,8 +72,8 @@ public class Order extends BaseTimeEntity {
         this.orderStatus = changeStatus;
     }
 
-    public OrderTable getOrderTable() {
-        return orderTable;
+    public Long getOrderTableId() {
+        return orderTableId;
     }
 
     public OrderStatus getOrderStatus() {

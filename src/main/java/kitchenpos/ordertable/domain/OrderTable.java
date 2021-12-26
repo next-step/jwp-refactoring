@@ -1,7 +1,5 @@
 package kitchenpos.ordertable.domain;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -12,8 +10,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import kitchenpos.order.domain.Order;
 import kitchenpos.ordertable.exception.TableChangeNumberOfGuestsException;
 import kitchenpos.ordertable.exception.TableUpdateStateException;
 import kitchenpos.ordertable.vo.NumberOfGuests;
@@ -22,7 +18,6 @@ import kitchenpos.ordertable.vo.NumberOfGuests;
 public class OrderTable {
 
     private static final String ERROR_MESSAGE_TABLE_IN_GROUP = "테이블 그룹에 속해있는 테이블은 상태를 변경할 수 없습니다.";
-    private static final String ERROR_MESSAGE_ORDER_NOT_FINISH = "주문 상태가 조리 혹은 식사인 주문이 존재합니다.";
     private static final String ERROR_MESSAGE_CANNOT_CHANGE_NUM_OF_GUESTS_WHEN_ORDER_CLOSED = "주문 종료 상태에선 방문 손님 수를 변경할 수 없습니다.";
 
     @Id
@@ -39,9 +34,6 @@ public class OrderTable {
 
     @Column(nullable = false)
     private boolean orderClose = false;
-
-    @OneToMany(mappedBy = "orderTable")
-    private List<Order> orders = new ArrayList<>();
 
     protected OrderTable() {
     }
@@ -78,21 +70,7 @@ public class OrderTable {
         if (Objects.nonNull(tableGroup)) {
             throw new TableUpdateStateException(ERROR_MESSAGE_TABLE_IN_GROUP);
         }
-
-        for (Order order : orders) {
-            validateAllOrdersComplete(order);
-        }
         this.orderClose = orderClose;
-    }
-
-    private void validateAllOrdersComplete(Order order) {
-        if (!order.isCompleteStatus()) {
-            throw new TableUpdateStateException(ERROR_MESSAGE_ORDER_NOT_FINISH);
-        }
-    }
-
-    public void addOrder(Order order) {
-        orders.add(order);
     }
 
     public void changeNumberOfGuests(NumberOfGuests numberOfGuests) {
@@ -133,10 +111,6 @@ public class OrderTable {
 
     public int getNumberOfGuestsVal() {
         return numberOfGuests.getNumberOfGuests();
-    }
-
-    public List<Order> getOrders() {
-        return orders;
     }
 
     @Override
