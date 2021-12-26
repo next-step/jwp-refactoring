@@ -3,6 +3,7 @@ package kitchenpos.order.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
@@ -68,13 +69,12 @@ public class TableServiceTest {
     void 테이블_상태_변경() {
         // given
         OrderTable 테이블 = OrderTable.of(3, false);
-        OrderTable 빈_테이블 = OrderTable.of(3, true);
         
-        given(orderTableRepository.findById(nullable(Long.class))).willReturn(Optional.of(테이블));
-        given(orderTableRepository.save(테이블)).willReturn(빈_테이블);
+        given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(테이블));
+        given(orderTableRepository.save(테이블)).willReturn(OrderTable.of(3, true));
     
         // when
-        OrderTableResponse 상태_변경후_테이블 = tableService.changeEmpty(테이블.getId(), OrderTableRequest.from(빈_테이블));
+        OrderTableResponse 상태_변경후_테이블 = tableService.changeEmpty(1L, true);
     
         // then
         assertThat(상태_변경후_테이블.isEmpty()).isTrue();
@@ -83,19 +83,12 @@ public class TableServiceTest {
     @DisplayName("등록된 테이블만 빈 테이블로 변경할 수 있다 - 예외처리")
     @Test
     void 등록되지않은_테이블_빈_테이블_변경_불가() {
-        // given
-        OrderTable 첫번째_테이블 = OrderTable.of(3, false);
-        OrderTable 두번째_테이블 = OrderTable.of(5, false);
-        TableGroup 단체지정 = TableGroup.from(Arrays.asList(첫번째_테이블, 두번째_테이블));
-        
-        OrderTable 등록되지_않은_테이블 = OrderTable.of(3, false);
-        
         // when
-        when(orderTableRepository.findById(nullable(Long.class))).thenReturn(Optional.empty());
+        when(orderTableRepository.findById(anyLong())).thenReturn(Optional.empty());
         
         // then
         assertThatThrownBy(() -> {
-            tableService.changeEmpty(등록되지_않은_테이블.getId(), OrderTableRequest.from(등록되지_않은_테이블));
+            tableService.changeEmpty(1L, true);
         }).isInstanceOf(IllegalArgumentException.class)
         .hasMessage("해당하는 주문 테이블이 없습니다");
     
@@ -109,11 +102,11 @@ public class TableServiceTest {
         OrderTable 두번째_테이블 = OrderTable.of(5, false);
         TableGroup.from(Arrays.asList(첫번째_테이블, 두번째_테이블));
         
-        given(orderTableRepository.findById(nullable(Long.class))).willReturn(Optional.of(두번째_테이블));
+        given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(두번째_테이블));
         
         // when, then
         assertThatThrownBy(() -> {
-            tableService.changeEmpty(두번째_테이블.getId(), OrderTableRequest.from(두번째_테이블));
+            tableService.changeEmpty(1L, true);
         }).isInstanceOf(IllegalArgumentException.class)
         .hasMessage("단체지정이 되어있는 테이블은 빈 테이블로 변경할 수 없습니다");
     
@@ -126,11 +119,11 @@ public class TableServiceTest {
         OrderTable 테이블 = OrderTable.of(5, false);
         OrderTable 손님_수_변경_테이블 = OrderTable.of(3, false);
         
-        given(orderTableRepository.findById(nullable(Long.class))).willReturn(Optional.of(테이블));
+        given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(테이블));
         given(orderTableRepository.save(테이블)).willReturn(손님_수_변경_테이블);
     
         // when
-        OrderTableResponse 손님_수_변경후_테이블 = tableService.changeNumberOfGuests(테이블.getId(), OrderTableRequest.from(손님_수_변경_테이블));
+        OrderTableResponse 손님_수_변경후_테이블 = tableService.changeNumberOfGuests(1L, 3);
     
         // then
         assertThat(손님_수_변경후_테이블.getNumberOfGuests()).isEqualTo(손님_수_변경_테이블.getNumberOfGuests());
@@ -139,15 +132,12 @@ public class TableServiceTest {
     @DisplayName("등록된 테이블만 방문 손님 수를 지정할 수 있다 - 예외처리")
     @Test
     void 등록된_테이블만_방문_손님_수_변경() {
-        // given
-        OrderTable 등록되지_않은_테이블 = OrderTable.of(3, false);
-        
         // when
-        when(orderTableRepository.findById(nullable(Long.class))).thenReturn(Optional.empty());
+        when(orderTableRepository.findById(anyLong())).thenReturn(Optional.empty());
         
         // then
         assertThatThrownBy(() -> {
-            tableService.changeNumberOfGuests(등록되지_않은_테이블.getId(), OrderTableRequest.from(등록되지_않은_테이블));
+            tableService.changeNumberOfGuests(1L, 5);
         }).isInstanceOf(IllegalArgumentException.class)
         .hasMessage("해당하는 주문 테이블이 없습니다");
     

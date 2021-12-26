@@ -33,19 +33,19 @@ public class TableService {
     }
 
     @Transactional
-    public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest request) {
+    public OrderTableResponse changeEmpty(final Long orderTableId, boolean isEmpty) {
         final OrderTable orderTable = findById(orderTableId);
         
-        orderTable.changeEmpty(request.isEmpty());
+        orderTable.changeEmpty(isEmpty);
         
         return OrderTableResponse.from(orderTableRepository.save(orderTable));
     }
 
     @Transactional
-    public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final OrderTableRequest request) {
+    public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final int numberOfGuests) {
         final OrderTable orderTable = findById(orderTableId);
         
-        orderTable.changeNumberOfGuests(request.getNumberOfGuests());
+        orderTable.changeNumberOfGuests(numberOfGuests);
         
         return OrderTableResponse.from(orderTableRepository.save(orderTable));
     }
