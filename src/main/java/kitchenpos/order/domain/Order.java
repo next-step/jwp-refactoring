@@ -62,7 +62,7 @@ public class Order extends BaseEntity {
     }
 
     public boolean isComplete() {
-        return orderStatus.equals(OrderStatus.COMPLETION);
+        return orderStatus.isComplete();
     }
 
     public boolean equalsOrderTable(OrderTable orderTable) {

@@ -66,7 +66,7 @@ public class OrderTest {
         OrderTable orderTable = OrderTable.of(5, true);
         Order order = Order.of(orderTable);
 
-        Throwable thrown = catchThrowable(() -> order.addOrderLineItems(new ArrayList()));
+        Throwable thrown = catchThrowable(() -> order.addOrderLineItems(new ArrayList<>()));
 
         // then
         assertThat(thrown).isInstanceOf(IllegalArgumentException.class)

@@ -60,13 +60,13 @@ public class MenuService {
     }
 
     private List<MenuProduct> getMenuProducts(MenuRequest menuRequest) {
-        final List<MenuProduct> menuProductList = new ArrayList<>();
+        final List<MenuProduct> menuProducts = new ArrayList<>();
         for (MenuProductRequest menuProductRequest : menuRequest.getMenuProductRequests()) {
             Product product = findProductById(menuProductRequest.getProductId());
             Quantity quantity = Quantity.of(menuProductRequest.getQuantity());
 
-            menuProductList.add(MenuProduct.of(product, quantity));
+            menuProducts.add(MenuProduct.of(product, quantity));
         }
-        return menuProductList;
+        return menuProducts;
     }
 }
