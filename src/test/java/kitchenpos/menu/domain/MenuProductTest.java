@@ -18,7 +18,7 @@ public class MenuProductTest {
         MenuProduct 메뉴_상품 = MenuProduct.of(상품, quantity);
         
         // when
-        Price 메뉴_상품_가격 = 메뉴_상품.calculatePrice();
+        Price 메뉴_상품_가격 = 메뉴_상품.getPrice();
         
         // then
         assertThat(메뉴_상품_가격.intValue()).isEqualTo(expected);
