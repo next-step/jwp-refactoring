@@ -166,7 +166,6 @@ ___
 ![img_old](uml/img_old.png)
 - ### 변경된 클래스 다이어그램
 ![img_new](uml/img_new.png)
-![img_new_group](uml/img_new_group.png)
 - ### 메뉴 생성 유효성 검사
 ![img_menu_create](uml/img_menu_create.png)
 - ### 주문 생성 유효성 검사

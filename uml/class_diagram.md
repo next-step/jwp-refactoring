@@ -76,16 +76,16 @@ Entity TableGroup {
  - List<OrderTable> orderTables
 }
 
-MenuGroup ..# Menu : menuGroupId
+MenuGroup ..> Menu : menuGroupId
 Menu -> MenuProduct : menu
 Menu <- MenuProduct : List<MenuProduct>
-MenuProduct #.. Product : productId
-OrderTable ..# Order : orderTableId
+MenuProduct <.. Product : productId
+OrderTable ..> Order : orderTableId
 TableGroup -> OrderTable : tableGroup
 TableGroup <- OrderTable : List<OrderTable>
 Order ---> OrderLineItem : order
 Order <--- OrderLineItem : List<OrderLineItem>
-Menu ...# OrderLineItem : menuId
+Menu ...> OrderLineItem : menuId
 @enduml
 ```
 

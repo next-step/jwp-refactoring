@@ -35,12 +35,6 @@ public class Order {
     protected Order() {
     }
 
-    public Order(Long id, Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime) {
-        this.orderTableId = orderTableId;
-        this.orderStatus = orderStatus;
-        this.orderedTime = orderedTime;
-    }
-
     public Order(Long orderTableId, OrderStatus orderStatus) {
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
