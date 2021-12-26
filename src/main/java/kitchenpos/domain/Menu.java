@@ -39,7 +39,7 @@ public class Menu extends BaseTimeEntity {
         checkMenuPrice();
     }
 
-    public void addMenuProduct(List<MenuProduct> menuProduct) {
+    private void addMenuProduct(List<MenuProduct> menuProduct) {
         for (MenuProduct mp : menuProduct) {
             this.menuProducts.add(mp);
             mp.addMenu(this);
