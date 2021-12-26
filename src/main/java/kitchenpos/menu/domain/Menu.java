@@ -62,7 +62,7 @@ public class Menu {
     }
 
     public BigDecimal getPrice() {
-        return this.price.getPrice();
+        return this.price.toBigDecimal();
     }
 
     public MenuGroup getMenuGroup() {

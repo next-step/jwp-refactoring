@@ -14,7 +14,7 @@ public class ProductResponse {
 
     public ProductResponse(String name, Price price) {
         this.name = name;
-        this.price = price.getPrice();
+        this.price = price.toBigDecimal();
     }
 
     public static ProductResponse from(Product savedProduct) {

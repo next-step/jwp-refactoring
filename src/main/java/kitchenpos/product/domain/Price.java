@@ -26,7 +26,7 @@ public class Price {
     }
 
     public int compareTo(Price price) {
-        return this.price.compareTo(price.getPrice());
+        return this.price.compareTo(price.toBigDecimal());
     }
 
     private void validateNegativePrice(BigDecimal price) {
@@ -53,10 +53,10 @@ public class Price {
     }
 
     public Price add(Price price) {
-        return new Price(this.price.add(price.getPrice()));
+        return new Price(this.price.add(price.toBigDecimal()));
     }
 
-    public BigDecimal getPrice() {
+    public BigDecimal toBigDecimal() {
         return price;
     }
 }
