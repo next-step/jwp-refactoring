@@ -21,7 +21,8 @@ class MenuTest {
     @DisplayName("메뉴 그룹이 있어야한다")
     @Test
     void noMenuGroupTest() {
-        assertThatThrownBy(() -> new Menu("후라이드치킨", Price.from(16_000), null, new MenuProducts())).isInstanceOf(NoMenuGroupException.class);
+        assertThatThrownBy(() -> new Menu("후라이드치킨", Price.from(16_000), null, new MenuProducts()))
+                .isInstanceOf(NoMenuGroupException.class);
     }
 
     @DisplayName("메뉴의 가격이 메뉴 상품의 총합보다 작아야 한다")
@@ -29,7 +30,8 @@ class MenuTest {
     void sumPriceTest() {
         Product 후라이드치킨 = new Product("후라이드치킨", Price.from(16_000));
         MenuProducts menuProducts = new MenuProducts(Collections.singletonList(new MenuProduct(후라이드치킨, 1)));
-        assertThatThrownBy(() -> new Menu("후라이드치킨", Price.from(19_000), new MenuGroup(), menuProducts)).isInstanceOf(IllegalMenuPriceException.class);
+        assertThatThrownBy(() -> new Menu("후라이드치킨", Price.from(19_000), new MenuGroup(), menuProducts))
+                .isInstanceOf(IllegalMenuPriceException.class);
     }
 
     @DisplayName("메뉴의 가격이 0원 이상이어야 한다")
@@ -38,6 +40,7 @@ class MenuTest {
         // then
         Product 후라이드치킨 = new Product("후라이드치킨", Price.from(16_000));
         MenuProducts menuProducts = new MenuProducts(Collections.singletonList(new MenuProduct(후라이드치킨, 1)));
-        assertThatThrownBy(() -> new Menu("후라이드치킨", Price.from(-1_000), new MenuGroup(), menuProducts)).isInstanceOf(NegativePriceException.class);
+        assertThatThrownBy(() -> new Menu("후라이드치킨", Price.from(-1_000), new MenuGroup(), menuProducts))
+                .isInstanceOf(NegativePriceException.class);
     }
 }

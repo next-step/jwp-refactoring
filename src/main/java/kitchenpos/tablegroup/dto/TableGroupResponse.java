@@ -20,7 +20,8 @@ public class TableGroupResponse {
     }
 
     public static TableGroupResponse from(TableGroup savedTableGroup) {
-        return new TableGroupResponse(savedTableGroup.getId(), savedTableGroup.getCreatedDate(), OrderTableResponse.fromList(savedTableGroup.getOrderTables()));
+        return new TableGroupResponse(savedTableGroup.getId(), savedTableGroup.getCreatedDate(),
+                OrderTableResponse.fromList(savedTableGroup.getOrderTables()));
     }
 
     public Long getId() {

@@ -59,7 +59,8 @@ class OrderTableTest {
         OrderTable orderTable = new OrderTable(null, 1, false);
 
         // then
-        assertThatThrownBy(() -> orderTable.changeNumberOfGuests(-1)).isInstanceOf(NegativeNumberOfGuestsException.class);
+        assertThatThrownBy(() -> orderTable.changeNumberOfGuests(-1))
+                .isInstanceOf(NegativeNumberOfGuestsException.class);
     }
 
     @DisplayName("빈 테이블의 손님 숫자를 지정할 수 없다")
@@ -69,6 +70,7 @@ class OrderTableTest {
         OrderTable orderTable = new OrderTable(null, 1, true);
 
         // then
-        assertThatThrownBy(() -> orderTable.changeNumberOfGuests(10)).isInstanceOf(CannotChangeNumberOfGuestsException.class);
+        assertThatThrownBy(() -> orderTable.changeNumberOfGuests(10))
+                .isInstanceOf(CannotChangeNumberOfGuestsException.class);
     }
 }

@@ -48,7 +48,8 @@ class OrderServiceTest {
     @DisplayName("주문 테이블 없이 주문을 생성한다")
     @Test
     void creteWithoutOrderTableTest() {
-        OrderRequest orderRequest = new OrderRequest(null, OrderStatus.COOKING, Collections.singletonList(new OrderLineItemRequest(1L, 1L)));
+        OrderRequest orderRequest = new OrderRequest(null, OrderStatus.COOKING,
+                Collections.singletonList(new OrderLineItemRequest(1L, 1L)));
 
         // when
         OrderService orderService = new OrderService(orderRepository, tableService, menuService);

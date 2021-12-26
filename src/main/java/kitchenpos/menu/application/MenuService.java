@@ -49,7 +49,9 @@ public class MenuService {
 
     private MenuProducts getMenuProducts(final MenuRequest menuRequest) {
         MenuProducts menuProducts = new MenuProducts();
-        List<Product> products = productService.findAllById(menuRequest.getMenuProducts().stream().map(menuProductRequest -> menuProductRequest.getProductId()).collect(Collectors.toList()));
+        List<Product> products = productService.findAllById(menuRequest.getMenuProducts()
+                .stream()
+                .map(MenuProductRequest::getProductId).collect(Collectors.toList()));
         getMenuProduct(menuRequest, menuProducts, products);
         return menuProducts;
     }

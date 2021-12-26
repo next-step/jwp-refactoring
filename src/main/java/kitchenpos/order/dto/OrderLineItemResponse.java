@@ -20,10 +20,12 @@ public class OrderLineItemResponse {
     }
 
     public static List<OrderLineItemResponse> fromList(OrderLineItems orderLineItems) {
-        return orderLineItems.getOrderLineItems().stream().map(OrderLineItemResponse::from).collect(Collectors.toList());
+        return orderLineItems.getOrderLineItems().stream().map(OrderLineItemResponse::from).
+                collect(Collectors.toList());
     }
 
     private static OrderLineItemResponse from(OrderLineItem orderLineItem) {
-        return new OrderLineItemResponse(orderLineItem.getSeq(), orderLineItem.getMenu().getId(), orderLineItem.getQuantity());
+        return new OrderLineItemResponse(orderLineItem.getSeq(), orderLineItem.getMenu().getId(),
+                orderLineItem.getQuantity());
     }
 }

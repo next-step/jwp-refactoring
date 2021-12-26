@@ -64,7 +64,8 @@ class TableServiceTest {
         TableService tableService = new TableService(orderTableRepository);
 
         // then
-        assertThatThrownBy(() -> tableService.changeEmpty(1L, orderTableRequest)).isInstanceOf(CannotChangeEmptyException.class);
+        assertThatThrownBy(() -> tableService.changeEmpty(1L, orderTableRequest))
+                .isInstanceOf(CannotChangeEmptyException.class);
     }
 
     @DisplayName("조리 중이거나 식사 중인 테이블은 빈 테이블로 변경할 수 없다")
@@ -79,7 +80,8 @@ class TableServiceTest {
         TableService tableService = new TableService(orderTableRepository);
 
         // then
-        assertThatThrownBy(() -> tableService.changeEmpty(1L, orderTableRequest)).isInstanceOf(CannotChangeEmptyException.class);
+        assertThatThrownBy(() -> tableService.changeEmpty(1L, orderTableRequest))
+                .isInstanceOf(CannotChangeEmptyException.class);
     }
 
     @DisplayName("주문 테이블의 손님 수를 지정한다")
@@ -108,7 +110,8 @@ class TableServiceTest {
         TableService tableService = new TableService(orderTableRepository);
 
         // then
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, orderTableRequest)).isInstanceOf(NegativeNumberOfGuestsException.class);
+        assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, orderTableRequest))
+                .isInstanceOf(NegativeNumberOfGuestsException.class);
     }
 
     @DisplayName("빈 테이블의 손님 숫자를 지정할 수 없다")
@@ -122,6 +125,7 @@ class TableServiceTest {
         TableService tableService = new TableService(orderTableRepository);
 
         // then
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, orderTableRequest)).isInstanceOf(CannotChangeNumberOfGuestsException.class);
+        assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, orderTableRequest))
+                .isInstanceOf(CannotChangeNumberOfGuestsException.class);
     }
 }

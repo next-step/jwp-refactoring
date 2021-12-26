@@ -28,7 +28,7 @@ public class MenuProducts {
 
     public Price getSumPrice() {
         Price sumPrice = Price.from(INITAL_SUM_PRICE);
-        for (final MenuProduct menuProduct : menuProducts) {    // TODO MenuProducts 내부로 이동
+        for (final MenuProduct menuProduct : menuProducts) {
             sumPrice = sumPrice.add(menuProduct.getPrice());
         }
         return sumPrice;

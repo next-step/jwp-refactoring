@@ -39,7 +39,8 @@ class TableGroupServiceTest {
         TableGroupService tableGroupService = new TableGroupService(orderTableRepository, tableGroupRepository);
 
         // then
-        assertThatThrownBy(() -> tableGroupService.create(tableGroupRequest)).isInstanceOf(IllegalOrderTablesException.class);
+        assertThatThrownBy(() -> tableGroupService.create(tableGroupRequest))
+                .isInstanceOf(IllegalOrderTablesException.class);
     }
 
     @DisplayName("테이블이 없는 테이블 그룹을 생성한다")
@@ -52,7 +53,8 @@ class TableGroupServiceTest {
         TableGroupService tableGroupService = new TableGroupService(orderTableRepository, tableGroupRepository);
 
         // then
-        assertThatThrownBy(() -> tableGroupService.create(tableGroupRequest)).isInstanceOf(IllegalOrderTablesException.class);
+        assertThatThrownBy(() -> tableGroupService.create(tableGroupRequest))
+                .isInstanceOf(IllegalOrderTablesException.class);
     }
 
     @DisplayName("빈 테이블이 아닌 테이블을 테이블 그룹으로 생성한다")
@@ -71,7 +73,8 @@ class TableGroupServiceTest {
         TableGroupService tableGroupService = new TableGroupService(orderTableRepository, tableGroupRepository);
 
         // then
-        assertThatThrownBy(() -> tableGroupService.create(tableGroupRequest)).isInstanceOf(IllegalOrderTablesException.class);
+        assertThatThrownBy(() -> tableGroupService.create(tableGroupRequest))
+                .isInstanceOf(IllegalOrderTablesException.class);
     }
 
     @DisplayName("테이블 그룹에 속해있는 테이블을 테이블 그룹으로 만든다")
@@ -89,6 +92,7 @@ class TableGroupServiceTest {
         TableGroupService tableGroupService = new TableGroupService(orderTableRepository, tableGroupRepository);
 
         // then
-        assertThatThrownBy(() -> tableGroupService.create(tableGroupRequest)).isInstanceOf(IllegalOrderTablesException.class);
+        assertThatThrownBy(() -> tableGroupService.create(tableGroupRequest))
+                .isInstanceOf(IllegalOrderTablesException.class);
     }
 }
