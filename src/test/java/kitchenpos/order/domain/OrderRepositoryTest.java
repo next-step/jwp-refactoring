@@ -62,7 +62,7 @@ class OrderRepositoryTest {
                 new Menu(
                         "후라이드반양념반메뉴",
                         메뉴가격,
-                        메뉴그룹,
+                        메뉴그룹.getId(),
                         Lists.newArrayList(양념치킨메뉴상품, 후라이드메뉴상품)
                 )
         );

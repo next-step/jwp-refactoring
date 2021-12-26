@@ -1,7 +1,5 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.menu.exception.LimitPriceException;
-
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
@@ -28,27 +26,11 @@ public class Menu {
     protected Menu() {
     }
 
-    public Menu(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+    public Menu(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
         this.name = name;
         this.price = Price.of(price);
-        this.menuGroupId = menuGroup.getId();
-        addMenuProducts(menuProducts);
-    }
-
-    private void addMenuProducts(List<MenuProduct> newMenuProducts) {
-        comparePrice(newMenuProducts);
-        menuProducts.add(newMenuProducts);
-    }
-
-    private void comparePrice(List<MenuProduct> menuProducts) {
-        if (price.value().compareTo(totalPrice(menuProducts)) > 0) {
-            throw new LimitPriceException();
-        }
-    }
-
-    private BigDecimal totalPrice(List<MenuProduct> menuProducts) {
-        return menuProducts.stream().map(MenuProduct::price)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        this.menuGroupId = menuGroupId;
+        this.menuProducts.add(menuProducts);
     }
 
     public Long getId() {

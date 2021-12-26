@@ -29,7 +29,7 @@ public class MenuProductResponse {
     public static MenuProductResponse of(MenuProduct menuProduct) {
         return new MenuProductResponse(
                 menuProduct.getId(),
-                menuProduct.getProduct().getId(),
+                menuProduct.getProductId(),
                 menuProduct.getQuantity().value()
         );
     }

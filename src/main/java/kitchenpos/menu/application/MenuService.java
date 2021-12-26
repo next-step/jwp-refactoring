@@ -17,31 +17,26 @@ public class MenuService {
     private final MenuRepository menuRepository;
     private final ProductRepository productRepository;
     private final MenuGroupRepository menuGroupRepository;
+    private final MenuValidator menuValidator;
 
-    public MenuService(MenuRepository menuRepository, ProductRepository productRepository, MenuGroupRepository menuGroupRepository) {
+    public MenuService(
+            MenuRepository menuRepository,
+            ProductRepository productRepository,
+            MenuGroupRepository menuGroupRepository,
+            MenuValidator menuValidator
+    ) {
         this.menuRepository = menuRepository;
         this.productRepository = productRepository;
         this.menuGroupRepository = menuGroupRepository;
+        this.menuValidator = menuValidator;
     }
 
     @Transactional
     public MenuResponse create(final MenuRequest request) {
-        final MenuGroup menuGroup = menuGroupRepository.findById(request.getMenuGroupId())
-                .orElseThrow(MenuGroupNotFoundException::new);
-        final List<MenuProduct> menuProducts = toMenuProducts(request);
-        final Menu menu = menuRepository.save(request.toEntity(menuGroup, menuProducts));
+        Menu menu = request.toEntity();
+        menuValidator.validate(menu);
+        menuRepository.save(menu);
         return MenuResponse.of(menu);
-    }
-
-    private List<MenuProduct> toMenuProducts(MenuRequest request) {
-        return request.getMenuProducts()
-                .stream()
-                .map(it -> {
-                    final Product product = productRepository.findById(it.getProductId())
-                            .orElseThrow(ProductNotFoundException::new);
-                    return new MenuProduct(product, it.getQuantity());
-                })
-                .collect(Collectors.toList());
     }
 
     public List<MenuResponse> list() {

@@ -61,8 +61,7 @@ public class MenuServiceTest {
     @BeforeEach
     void setUp() {
         MenuProduct menuProduct = 메뉴상품_두개요청().toEntity(양념치킨);
-        List<MenuProduct> menuProducts = Lists.newArrayList(menuProduct);
-        양념치킨두마리메뉴 = 양념치킨두마리메뉴요청().toEntity(두마리메뉴그룹, menuProducts);
+        양념치킨두마리메뉴 = 양념치킨두마리메뉴요청().toEntity();
     }
 
     @Test
@@ -103,7 +102,7 @@ public class MenuServiceTest {
         assertThatThrownBy(() -> new Menu(
                 "두마리메뉴",
                 new BigDecimal(candidate),
-                두마리메뉴그룹,
+                두마리메뉴그룹.getId(),
                 Lists.newArrayList(
                         new MenuProduct(양념치킨, 2L)
                 )
@@ -129,9 +128,9 @@ public class MenuServiceTest {
         assertThatThrownBy(() -> new Menu(
                 "가격불일치메뉴",
                 new BigDecimal(Long.MAX_VALUE),
-                두마리메뉴그룹,
+                두마리메뉴그룹.getId(),
                 Lists.newArrayList(
-                        new MenuProduct(양념치킨, 2L)
+                    new MenuProduct(양념치킨, 2L)
                 ))
         ).isInstanceOf(LimitPriceException.class);
     }

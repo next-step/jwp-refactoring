@@ -4,8 +4,6 @@ package kitchenpos.menu.domain;
 import javax.persistence.*;
 import java.math.BigDecimal;
 
-import static javax.persistence.FetchType.LAZY;
-
 @Entity
 public class MenuProduct {
 
@@ -13,9 +11,8 @@ public class MenuProduct {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "product_id", foreignKey = @ForeignKey(name = "fk_menu_product_product"))
-    private Product product;
+    private Long productId;
 
     @Embedded
     private Quantity quantity;
@@ -24,25 +21,29 @@ public class MenuProduct {
     }
 
     public MenuProduct(Product product, Long quantity) {
-        this.product = product;
+        this.productId = product.getId();
         this.quantity = Quantity.of(quantity);
     }
 
-    public BigDecimal price() {
-        return product.getPrice()
-                .multiply(BigDecimal.valueOf(quantity.value()));
+    public MenuProduct(Long productId, Long quantity) {
+        this.productId = productId;
+        this.quantity = Quantity.of(quantity);
     }
 
     public Long getId() {
         return id;
     }
 
-    public Product getProduct() {
-        return product;
+    public Long getProductId() {
+        return productId;
     }
 
     public Quantity getQuantity() {
         return quantity;
+    }
+
+    public BigDecimal price(BigDecimal productPrice) {
+        return productPrice.multiply(BigDecimal.valueOf(quantity.value()));
     }
 
 }

@@ -37,7 +37,7 @@ public class MenuFixtures {
     }
 
     public static Menu 메뉴(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        return new Menu(name, price, menuGroup, menuProducts);
+        return new Menu(name, price, menuGroup.getId(), menuProducts);
     }
 
     public static MenuRequest 후라이드두마리메뉴요청(BigDecimal price, Long menuGroupId, List<MenuProductRequest> menuProductRequests) {
