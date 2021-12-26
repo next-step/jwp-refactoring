@@ -1,5 +1,6 @@
 package kitchenpos.common.domain;
 
+import java.math.BigDecimal;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
@@ -32,5 +33,9 @@ public class Quantity {
 
     public Long getQuantity() {
         return quantity;
+    }
+
+    public BigDecimal toBigDecimal() {
+        return BigDecimal.valueOf(quantity);
     }
 }
