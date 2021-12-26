@@ -123,6 +123,14 @@
     - [X] 가격 분리
     - [X] jpa 적용
     - [X] model과 Dto 분리
-- [ ] 메뉴 그룹
+- [X] 메뉴 그룹
+    - [X] jpa 적용
+    - [X] model과 Dto 분리
+- [ ] 메뉴
     - [ ] jpa 적용
+        - [ ] menuProduct
+        - [ ] menu
+        - [ ] product
+        - [ ] menuGroup
     - [ ] model과 Dto 분리
+    - [ ] price 분리
