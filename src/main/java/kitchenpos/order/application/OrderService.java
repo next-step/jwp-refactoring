@@ -1,5 +1,6 @@
 package kitchenpos.order.application;
 
+import kitchenpos.menu.exception.NoMenuException;
 import kitchenpos.table.application.TableService;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.order.domain.OrderRepository;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -43,11 +45,26 @@ public class OrderService {
     }
 
     private void makeOrderLineItems(OrderRequest orderRequest, Order order) {
+        List<Menu> menus = menuService.findAllById(orderRequest.getOrderLineItemRequests()
+                .stream()
+                .map(OrderLineItemRequest::getMenuId)
+                .collect(Collectors.toList()));
+        makeOrderLineItem(orderRequest, order, menus);
+    }
+
+    private void makeOrderLineItem(OrderRequest orderRequest, Order order, List<Menu> menus) {
         for (OrderLineItemRequest orderLineItemRequest : orderRequest.getOrderLineItemRequests()) {
-            Menu menu = menuService.findById(orderLineItemRequest.getMenuId());
-            OrderLineItem orderLineItem = new OrderLineItem(menu, orderLineItemRequest.getQuantity());
+            Menu filteredMenu = getFilteredMenu(menus, orderLineItemRequest);
+            OrderLineItem orderLineItem = new OrderLineItem(filteredMenu, orderLineItemRequest.getQuantity());
             orderLineItem.makeOrder(order);
         }
+    }
+
+    private Menu getFilteredMenu(List<Menu> menus, OrderLineItemRequest orderLineItemRequest) {
+        return menus.stream()
+                .filter(menu -> Objects.equals(menu.getId(), orderLineItemRequest.getMenuId()))
+                .findFirst()
+                .orElseThrow(NoMenuException::new);
     }
 
     public List<OrderResponse> list() {

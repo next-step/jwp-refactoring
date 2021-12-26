@@ -13,10 +13,14 @@ import kitchenpos.menu.exception.NoMenuException;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.product.domain.Price;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.exception.NoProductException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class MenuService {
@@ -43,11 +47,23 @@ public class MenuService {
 
     private MenuProducts getMenuProducts(final MenuRequest menuRequest) {
         MenuProducts menuProducts = new MenuProducts();
-        for (MenuProductRequest menuProductRequest : menuRequest.getMenuProducts()) {
-            Product product = productService.findById(menuProductRequest.getProductId());
-            menuProducts.add(new MenuProduct(product, menuProductRequest.getQuantity()));
-        }
+        List<Product> products = productService.findAllById(menuRequest.getMenuProducts().stream().map(menuProductRequest -> menuProductRequest.getProductId()).collect(Collectors.toList()));
+        getMenuProduct(menuRequest, menuProducts, products);
         return menuProducts;
+    }
+
+    private void getMenuProduct(MenuRequest menuRequest, MenuProducts menuProducts, List<Product> products) {
+        for (MenuProductRequest menuProductRequest : menuRequest.getMenuProducts()) {
+            Product filteredProduct = getFilteredProduct(products, menuProductRequest);
+            menuProducts.add(new MenuProduct(filteredProduct, menuProductRequest.getQuantity()));
+        }
+    }
+
+    private Product getFilteredProduct(List<Product> products, MenuProductRequest menuProductRequest) {
+        return products.stream()
+                .filter(product -> Objects.equals(product.getId(), menuProductRequest.getProductId()))
+                .findFirst()
+                .orElseThrow(NoProductException::new);
     }
 
     public List<MenuResponse> list() {
@@ -57,5 +73,9 @@ public class MenuService {
 
     public Menu findById(final Long menuId) {
         return menuRepository.findById(menuId).orElseThrow(NoMenuException::new);
+    }
+
+    public List<Menu> findAllById(List<Long> menuIds) {
+        return menuRepository.findAllById(menuIds);
     }
 }

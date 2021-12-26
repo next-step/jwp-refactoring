@@ -32,4 +32,8 @@ public class ProductService {
         return productRepository.findById(productId)
                 .orElseThrow(NoProductException::new);
     }
+
+    public List<Product> findAllById(List<Long> ids) {
+        return productRepository.findAllById(ids);
+    }
 }
