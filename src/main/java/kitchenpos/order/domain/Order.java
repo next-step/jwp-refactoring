@@ -85,6 +85,10 @@ public class Order {
         return orderLineItems;
     }
     
+    public void received() {
+        changeOrderStatus(OrderStatus.COOKING);
+    }
+    
     public void changeOrderStatus(OrderStatus orderStatus) {
         checkCompletionStatus();
         this.orderStatus = orderStatus;

@@ -45,7 +45,7 @@ public class OrderService {
                 .collect(Collectors.toList());
         
         order.checkMenuCount(menuService.countByIdIn(menuIds));
-        order.changeOrderStatus(OrderStatus.COOKING);
+        order.received();
 
         return OrderResponse.from(orderRepository.save(order));
     }

@@ -22,7 +22,6 @@ public class TableService {
     @Transactional
     public OrderTableResponse create(final OrderTableRequest request) {
         OrderTable orderTable = request.toOrderTable();
-        orderTable.updateTableGroup(null);
 
         return OrderTableResponse.from(orderTableRepository.save(orderTable));
     }
