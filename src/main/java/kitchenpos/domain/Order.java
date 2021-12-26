@@ -6,6 +6,7 @@ import kitchenpos.exception.InvalidOrderStatusException;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class Order {
@@ -36,20 +37,35 @@ public class Order {
         validateOrderTable(orderTable);
         validateOrderLineItems(orderLineItems);
         this.id = id;
-        this.orderTable = orderTable;
+        addOrderTable(orderTable);
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
         this.orderLineItems = orderLineItems;
     }
 
+    private void addOrderTable(OrderTable orderTable) {
+        if (!equalsOrderTable(orderTable)) {
+            this.orderTable = orderTable;
+            orderTable.addOrder(this);
+        }
+    }
+
+    public boolean equalsOrderTable(OrderTable orderTable) {
+        if (Objects.isNull(this.orderTable)) {
+            return false;
+        }
+
+        return this.orderTable.equals(orderTable);
+    }
+
     private void validateOrderTable(OrderTable orderTable) {
-        if(orderTable.isEmpty()) {
+        if (orderTable.isEmpty()) {
             throw new InvalidOrderException(INVALID_ORDER_TABLE);
         }
     }
 
     private void validateOrderLineItems(List<OrderLineItem> orderLineItems) {
-        if(orderLineItems.isEmpty()) {
+        if (orderLineItems.isEmpty()) {
             throw new InvalidOrderException(INVALID_ORDER_LINE);
         }
     }
@@ -59,7 +75,7 @@ public class Order {
     }
 
     public static Order of(OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
-        return new Order(null, orderTable, orderStatus, LocalDateTime.now(),orderLineItems );
+        return new Order(null, orderTable, orderStatus, LocalDateTime.now(), orderLineItems);
     }
 
     public Long getId() {
@@ -108,8 +124,12 @@ public class Order {
     }
 
     private void validateOrderStatus() {
-        if(orderStatus.equals(OrderStatus.COMPLETION)) {
+        if (isComplete()) {
             throw new InvalidOrderStatusException(INVALID_ORDER_STATUS);
         }
+    }
+
+    public boolean isComplete() {
+        return orderStatus.equals(OrderStatus.COMPLETION);
     }
 }
