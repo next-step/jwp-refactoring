@@ -31,10 +31,10 @@ public class OrderTable {
     @OneToMany(mappedBy = "orderTable")
     private List<Order> orders = new ArrayList<>();
 
-    public OrderTable() {
+    protected OrderTable() {
     }
 
-    public OrderTable(int numberOfGuests, boolean empty) {
+    private OrderTable(int numberOfGuests, boolean empty) {
         validateNumberOfGuests(numberOfGuests);
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
@@ -64,10 +64,6 @@ public class OrderTable {
         grouped();
     }
 
-    private void grouped() {
-        this.empty = false;
-    }
-
     public void ungroup() {
         validateOrderStatus();
         this.tableGroup = null;
@@ -75,15 +71,6 @@ public class OrderTable {
 
     public Long getId() {
         return id;
-    }
-
-    private void validateOrderStatus() {
-        boolean isNotCooking = orders
-                .stream()
-                .anyMatch(Order::isNotCooking);
-        if (isNotCooking) {
-            throw new IllegalArgumentException("주문 테이블의 상태가 조리이거나, 식사이면 변경할 수 없습니다.");
-        }
     }
 
     public TableGroup getTableGroup() {
@@ -106,14 +93,23 @@ public class OrderTable {
         return !empty;
     }
 
-    public void setEmpty(final boolean empty) {
-        this.empty = empty;
-    }
-
     public void changeNumberOfGuests(int numberOfGuests) {
         if (isEmpty()) {
             throw new IllegalArgumentException("주문 테이블이 빈 테이블이면 방문자 수를 변경할 수 없습니다.");
         }
         this.numberOfGuests = numberOfGuests;
+    }
+
+    private void grouped() {
+        this.empty = false;
+    }
+
+    private void validateOrderStatus() {
+        boolean isNotCooking = orders
+                .stream()
+                .anyMatch(Order::isNotCooking);
+        if (isNotCooking) {
+            throw new IllegalArgumentException("주문 테이블의 상태가 조리이거나, 식사이면 변경할 수 없습니다.");
+        }
     }
 }

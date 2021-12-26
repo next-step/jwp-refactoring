@@ -37,10 +37,10 @@ public class Order {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderLineItem> orderLineItems = new ArrayList<>();
 
-    public Order() {
+    protected Order() {
     }
 
-    public Order(OrderTable orderTable) {
+    private Order(OrderTable orderTable) {
         if (orderTable.isEmpty()) {
             throw new IllegalArgumentException("주문 테이블이 빈 테이블인 경우 주문할 수 없습니다.");
         }
@@ -87,13 +87,13 @@ public class Order {
         this.orderStatus = orderStatus;
     }
 
+    public boolean isNotCooking() {
+        return orderStatus != OrderStatus.COOKING;
+    }
+
     private void validateOrderLineItem(OrderLineItem orderLineItems) {
         if (Objects.isNull(orderLineItems)) {
             throw new IllegalArgumentException("주문 시 주문 항목은 필수 입니다.");
         }
-    }
-
-    public boolean isNotCooking() {
-        return orderStatus != OrderStatus.COOKING;
     }
 }

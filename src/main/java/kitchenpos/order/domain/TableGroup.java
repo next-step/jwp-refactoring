@@ -21,16 +21,32 @@ public class TableGroup {
     @OneToMany(mappedBy = "tableGroup")
     private List<OrderTable> orderTables;
 
-    public TableGroup() {
+    protected TableGroup() {
     }
 
-    public TableGroup(List<OrderTable> orderTables) {
+    private TableGroup(List<OrderTable> orderTables) {
         validateSize(orderTables);
         validateEmptyOrderTables(orderTables);
         validateTableGroup(orderTables);
         this.createdDate = LocalDateTime.now();
         this.orderTables = orderTables;
         group(orderTables);
+    }
+
+    public static TableGroup from(List<OrderTable> orderTables) {
+        return new TableGroup(orderTables);
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public LocalDateTime getCreatedDate() {
+        return createdDate;
+    }
+
+    public List<OrderTable> getOrderTables() {
+        return orderTables;
     }
 
     public void group(List<OrderTable> orderTables) {
@@ -56,22 +72,5 @@ public class TableGroup {
         if (notEmpty) {
             throw new IllegalArgumentException("주문 테이블이 빈 테이블이 아니면 등록할 수 없습니다.");
         }
-    }
-
-    public static TableGroup from(List<OrderTable> orderTables) {
-        return new TableGroup(orderTables);
-    }
-
-
-    public Long getId() {
-        return id;
-    }
-
-    public LocalDateTime getCreatedDate() {
-        return createdDate;
-    }
-
-    public List<OrderTable> getOrderTables() {
-        return orderTables;
     }
 }

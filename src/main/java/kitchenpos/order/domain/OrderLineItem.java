@@ -29,10 +29,10 @@ public class OrderLineItem {
     @Column(nullable = false)
     private long quantity;
 
-    public OrderLineItem() {
+    protected OrderLineItem() {
     }
 
-    public OrderLineItem(Menu menu, long quantity) {
+    private OrderLineItem(Menu menu, long quantity) {
         this.menu = menu;
         this.quantity = quantity;
     }
