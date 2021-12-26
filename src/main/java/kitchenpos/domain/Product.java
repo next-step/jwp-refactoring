@@ -20,6 +20,11 @@ public class Product extends BaseTimeEntity {
     protected Product() {
     }
 
+    public Product(final String name, final BigDecimal price) {
+        this.name = name;
+        this.price = price;
+    }
+
     public Long getId() {
         return id;
     }
@@ -32,32 +37,4 @@ public class Product extends BaseTimeEntity {
         return price;
     }
 
-    public static ProductBuilder builder() {
-        return new ProductBuilder();
-    }
-
-    public static final class ProductBuilder {
-        private String name;
-        private BigDecimal price;
-
-        private ProductBuilder() {
-        }
-
-        public ProductBuilder name(String name) {
-            this.name = name;
-            return this;
-        }
-
-        public ProductBuilder price(BigDecimal price) {
-            this.price = price;
-            return this;
-        }
-
-        public Product build() {
-            Product product = new Product();
-            product.price = this.price;
-            product.name = this.name;
-            return product;
-        }
-    }
 }

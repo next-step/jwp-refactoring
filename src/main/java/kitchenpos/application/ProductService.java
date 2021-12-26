@@ -20,10 +20,9 @@ public class ProductService {
     }
 
     public ProductResponse create(final ProductCreateRequest request) {
-        final Product savedProduct = productRepository.save(Product.builder()
-                .name(request.getName())
-                .price(request.getPrice())
-                .build());
+        final Product product = new Product(request.getName(), request.getPrice());
+
+        final Product savedProduct = productRepository.save(product);
 
         return ProductMapper.toProductResponse(savedProduct);
     }
