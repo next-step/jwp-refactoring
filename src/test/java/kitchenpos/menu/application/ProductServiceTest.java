@@ -46,7 +46,6 @@ public class ProductServiceTest {
 
     }
     
-    
     @DisplayName("상품 목록을 조회할 수 있다")
     @Test
     void 상품_목록_조회() {

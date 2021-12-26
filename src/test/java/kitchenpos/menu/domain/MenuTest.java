@@ -41,8 +41,8 @@ public class MenuTest {
         Menu 메뉴 = Menu.of("치킨세트", 24000, MenuGroup.from("메뉴그룹"));
         Product 치킨 = Product.of("치킨", 18000);
         Product 콜라 = Product.of("치킨", 2000);
-        MenuProduct 메뉴_치킨 = MenuProduct.of(메뉴, 치킨, 1L);
-        MenuProduct 메뉴_콜라 = MenuProduct.of(메뉴, 콜라, 2L);
+        MenuProduct 메뉴_치킨 = MenuProduct.of(치킨, 1L);
+        MenuProduct 메뉴_콜라 = MenuProduct.of(콜라, 2L);
         
         // when, then
         assertThatThrownBy(() -> {

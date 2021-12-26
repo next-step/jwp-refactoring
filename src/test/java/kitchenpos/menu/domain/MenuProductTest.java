@@ -15,7 +15,7 @@ public class MenuProductTest {
         // given
         Menu 메뉴 = Menu.of("치킨", price, MenuGroup.from("메뉴그룹"));
         Product 상품 = Product.of("치킨", price);
-        MenuProduct 메뉴_상품 = MenuProduct.of(메뉴, 상품, quantity);
+        MenuProduct 메뉴_상품 = MenuProduct.of(상품, quantity);
         
         // when
         Price 메뉴_상품_가격 = 메뉴_상품.calculatePrice();

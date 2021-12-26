@@ -3,7 +3,7 @@ package kitchenpos.menu.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.nullable;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 
 import java.util.Arrays;
@@ -21,6 +21,7 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.Product;
+import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 
@@ -45,13 +46,16 @@ public class MenuServiceTest {
         // given
         Menu 메뉴 = Menu.of("짜장면", 6000, MenuGroup.from("중식"));
         Product 상품 = Product.of("짜장면", 6000);
-        MenuProduct 메뉴상품 = MenuProduct.of(메뉴, 상품, 1L);
+        MenuProduct 메뉴상품 = MenuProduct.of(상품, 1L);
         메뉴.addMenuProducts(Arrays.asList(메뉴상품));
-        MenuRequest 메뉴_생성_요청 = MenuRequest.of("짜장면", 6000, 1L, Arrays.asList(메뉴상품));
         
-        given(menuGroupService.findById(nullable(Long.class))).willReturn(메뉴.getMenuGroup());
-        given(productService.findById(상품)).willReturn(상품);
+        MenuProductRequest 메뉴_상품_요청 = MenuProductRequest.of(1L, 1L);
+        MenuRequest 메뉴_생성_요청 = MenuRequest.of("짜장면", 6000, 1L, Arrays.asList(메뉴_상품_요청));
+        
+        given(menuGroupService.findById(anyLong())).willReturn(메뉴.getMenuGroup());
+        given(productService.findAllByIds(anyList())).willReturn(Arrays.asList(상품));
         given(menuRepository.save(any())).willReturn(메뉴);
+
 
         // when
         MenuResponse 저장된_메뉴 = menuService.create(메뉴_생성_요청);

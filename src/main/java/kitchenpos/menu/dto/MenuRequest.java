@@ -4,25 +4,24 @@ import java.util.List;
 
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuProduct;
 
 public class MenuRequest {
     private String name;
     private int price;
     private Long menuGroupId;
-    private List<MenuProduct> menuProducts;
+    private List<MenuProductRequest> menuProducts;
     
     private MenuRequest() {
     }
 
-    private MenuRequest(String name, int price, Long menuGroupId, List<MenuProduct> menuProducts) {
+    private MenuRequest(String name, int price, Long menuGroupId, List<MenuProductRequest> menuProducts) {
         this.name = name;
         this.price = price;
         this.menuGroupId = menuGroupId;
         this.menuProducts = menuProducts;
     }
     
-    public static MenuRequest of(String name, int price, Long menuGroupId, List<MenuProduct> menuProducts) {
+    public static MenuRequest of(String name, int price, Long menuGroupId, List<MenuProductRequest> menuProducts) {
         return new MenuRequest(name, price, menuGroupId, menuProducts);
     }
     
@@ -42,7 +41,7 @@ public class MenuRequest {
         return menuGroupId;
     }
 
-    public List<MenuProduct> getMenuProducts() {
+    public List<MenuProductRequest> getMenuProducts() {
         return menuProducts;
     }
 

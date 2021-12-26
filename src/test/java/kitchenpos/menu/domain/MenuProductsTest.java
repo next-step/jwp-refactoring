@@ -16,8 +16,8 @@ public class MenuProductsTest {
         Menu 메뉴 = Menu.of("치킨세트", 22_000, MenuGroup.from("메뉴그룹"));
         Product 치킨 = Product.of("치킨", 18_000);
         Product 콜라 = Product.of("치킨", 2_000);
-        MenuProduct 메뉴_치킨 = MenuProduct.of(메뉴, 치킨, 1L);
-        MenuProduct 메뉴_콜라 = MenuProduct.of(메뉴, 콜라, 2L);
+        MenuProduct 메뉴_치킨 = MenuProduct.of(치킨, 1L);
+        MenuProduct 메뉴_콜라 = MenuProduct.of(콜라, 2L);
         MenuProducts 메뉴_상품_목록 = MenuProducts.from(Arrays.asList(메뉴_치킨, 메뉴_콜라));
         
         // when

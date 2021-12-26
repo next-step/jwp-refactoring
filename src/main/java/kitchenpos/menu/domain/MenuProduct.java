@@ -29,14 +29,13 @@ public class MenuProduct {
     protected MenuProduct() {
     }
 
-    public MenuProduct(Menu menu, Product product, long quantity) {
-        this.menu = menu;
+    public MenuProduct(Product product, long quantity) {
         this.product = product;
         this.quantity = quantity;
     }
 
-    public static MenuProduct of(Menu menu, Product product, long quantity) {
-        return new MenuProduct(menu, product, quantity);
+    public static MenuProduct of(Product product, long quantity) {
+        return new MenuProduct(product, quantity);
     }
 
     public Long getSeq() {
@@ -55,7 +54,7 @@ public class MenuProduct {
         return product;
     }
 
-    public void updateMenu(Menu menu) {
+    public void setMenu(Menu menu) {
         this.menu = menu;
     }
     

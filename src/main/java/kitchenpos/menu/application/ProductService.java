@@ -42,4 +42,9 @@ public class ProductService {
     public Product findById(Product product) {
         return findById(product.getId());
     }
+    
+    @Transactional(readOnly = true)
+    public List<Product> findAllByIds(List<Long> ids) {
+        return productRepository.findAllByIds(ids);
+    }
 }

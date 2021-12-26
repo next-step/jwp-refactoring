@@ -69,7 +69,7 @@ public class Menu {
 
     public void addMenuProducts(final List<MenuProduct> menuProducts) {
         menuProducts.forEach(menuProduct -> {
-            menuProduct.updateMenu(this);
+            menuProduct.setMenu(this);
             this.menuProducts.add(menuProduct);
         });
         checkTotalPrice(this.menuProducts.getTotalPrice());
