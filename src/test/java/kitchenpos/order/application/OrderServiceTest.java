@@ -81,7 +81,7 @@ class OrderServiceTest {
         주문_항목_요청 = OrderLineItemRequest.of(후라이드_후라이드.getId(), 1L);
         주문_요청 = OrderRequest.of(주문_테이블.getId(), Arrays.asList(주문_항목_요청));
         주문 = Order.from(주문_테이블);
-        주문.addOrderLineItem(주문_상품);
+        주문.addOrderLineItem(Collections.singletonList(주문_상품));
         주문_응답 = OrderResponse.from(주문);
     }
 

@@ -14,6 +14,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -69,7 +70,7 @@ class OrderTest {
     void 주문_상태를_변경한다() {
         // given
         Order actual = Order.from(주문_테이블);
-        actual.addOrderLineItem(OrderLineItem.of(후라이드_후라이드, 1L));
+        actual.addOrderLineItem(Collections.singletonList(OrderLineItem.of(후라이드_후라이드, 1L)));
 
         // when
         actual.changeOrderStatus(OrderStatus.MEAL);
@@ -82,7 +83,7 @@ class OrderTest {
     void 주문_상태가_계산_완료_상태이면_변경할_수_없다() {
         // given
         Order actual = Order.from(주문_테이블);
-        actual.addOrderLineItem(OrderLineItem.of(후라이드_후라이드, 1L));
+        actual.addOrderLineItem(Collections.singletonList(OrderLineItem.of(후라이드_후라이드, 1L)));
         actual.changeOrderStatus(OrderStatus.COMPLETION);
 
         // when

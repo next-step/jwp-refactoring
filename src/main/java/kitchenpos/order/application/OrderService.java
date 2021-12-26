@@ -42,12 +42,7 @@ public class OrderService {
                 .orElseThrow(IllegalArgumentException::new);
 
         final Order savedOrder = orderRepository.save(Order.from(orderTable));
-
-        List<OrderLineItem> orderLineItems = findOrderLineItems(orderRequest.getOrderLineItems());
-
-        for (final OrderLineItem orderLineItem : orderLineItems) {
-            savedOrder.addOrderLineItem(orderLineItem);
-        }
+        savedOrder.addOrderLineItem(findOrderLineItems(orderRequest.getOrderLineItems()));
 
         return OrderResponse.from(savedOrder);
     }

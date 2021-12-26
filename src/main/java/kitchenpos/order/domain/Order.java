@@ -1,6 +1,6 @@
 package kitchenpos.order.domain;
 
-import javax.persistence.CascadeType;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -10,10 +10,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -34,8 +32,8 @@ public class Order {
 
     private LocalDateTime orderedTime;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderLineItem> orderLineItems = new ArrayList<>();
+    @Embedded
+    private OrderLineItems orderLineItems = new OrderLineItems();
 
     protected Order() {
     }
@@ -53,10 +51,12 @@ public class Order {
         return new Order(orderTable);
     }
 
-    public void addOrderLineItem(OrderLineItem orderLineItem) {
-        validateOrderLineItem(orderLineItem);
-        this.orderLineItems.add(orderLineItem);
-        orderLineItem.changeOrder(this);
+    public void addOrderLineItem(List<OrderLineItem> orderLineItems) {
+        orderLineItems.forEach(orderLineItem -> {
+            validateOrderLineItem(orderLineItem);
+            this.orderLineItems.add(orderLineItem);
+            orderLineItem.changeOrder(this);
+        });
     }
 
     public Long getId() {
@@ -76,7 +76,7 @@ public class Order {
     }
 
     public List<OrderLineItem> getOrderLineItems() {
-        return orderLineItems;
+        return orderLineItems.getOrderLineItems();
     }
 
     public void changeOrderStatus(OrderStatus orderStatus) {
