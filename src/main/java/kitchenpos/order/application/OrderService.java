@@ -6,6 +6,7 @@ import kitchenpos.menu.exception.MenuNotFoundException;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.OrderValidator;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderSaveRequest;
 import kitchenpos.order.dto.OrderStatusUpdateRequest;
@@ -22,36 +23,20 @@ import java.util.stream.Collectors;
 @Service
 @Transactional(readOnly = true)
 public class OrderService {
-    private final MenuRepository menuRepository;
-    private final OrderTableRepository orderTableRepository;
     private final OrderRepository orderRepository;
+    private final OrderValidator orderValidator;
 
-    public OrderService(MenuRepository menuRepository, OrderTableRepository orderTableRepository, OrderRepository orderRepository) {
-        this.menuRepository = menuRepository;
-        this.orderTableRepository = orderTableRepository;
+    public OrderService(OrderRepository orderRepository, OrderValidator orderValidator) {
         this.orderRepository = orderRepository;
+        this.orderValidator = orderValidator;
     }
 
     @Transactional
     public OrderResponse create(OrderSaveRequest request) {
-        List<OrderLineItem> orderLineItems = toOrderLineItems(request);
-        OrderTable orderTable = toOrderTable(request);
-        Order order = orderRepository.save(new Order(orderTable, orderLineItems));
+        Order order = request.toEntity();
+        orderValidator.validate(order);
+        orderRepository.save(order);
         return OrderResponse.of(order);
-    }
-
-    private OrderTable toOrderTable(OrderSaveRequest request) {
-        return orderTableRepository.findById(request.getOrderTableId())
-                .orElseThrow(OrderTableNotFoundException::new);
-    }
-
-    private List<OrderLineItem> toOrderLineItems(OrderSaveRequest request) {
-        return request.getOrderLineItems().stream().map(it -> {
-                    Menu menu = menuRepository.findById(it.getMenuId())
-                            .orElseThrow(MenuNotFoundException::new);
-                    return it.toEntity(menu.getId());
-                })
-                .collect(Collectors.toList());
     }
 
     public List<OrderResponse> list() {

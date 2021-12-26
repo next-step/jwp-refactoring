@@ -141,7 +141,7 @@ class TableGroupServiceTest {
         final TableGroup 그룹테이블 = new TableGroup(그룹화테이블리스트);
 
         final OrderLineItem 주문정보 = new OrderLineItem(메뉴.getId(), 1L);
-        new Order(주문불가_다섯명테이블, Lists.newArrayList(주문정보));
+        new Order(주문불가_다섯명테이블.getId(), Lists.newArrayList(주문정보));
         given(tableGroupRepository.findById(anyLong())).willReturn(Optional.of(그룹테이블));
 
         // then

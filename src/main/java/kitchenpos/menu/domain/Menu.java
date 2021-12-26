@@ -18,7 +18,7 @@ public class Menu {
     @Embedded
     private Price price;
 
-    @JoinColumn(name = "menu_group_id")
+    @JoinColumn(name = "menu_group_id", foreignKey = @ForeignKey(name = "fk_menu_menu_group"))
     private Long menuGroupId;
 
     @Embedded

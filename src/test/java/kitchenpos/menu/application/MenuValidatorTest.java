@@ -36,7 +36,7 @@ import static org.mockito.BDDMockito.given;
  * date : 2021/12/26
  * description :
  */
-@DisplayName("메뉴 통합 테스트")
+@DisplayName("메뉴 Validator 테스트")
 @ExtendWith(MockitoExtension.class)
 public class MenuValidatorTest {
     @Mock

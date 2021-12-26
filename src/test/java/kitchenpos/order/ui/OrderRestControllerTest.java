@@ -63,14 +63,14 @@ class OrderRestControllerTest {
     void setUp() {
         BigDecimal 메뉴가격 = new BigDecimal(32000);
 
-        MenuProduct 양념치킨메뉴상품 = new MenuProduct(양념치킨(), 1L);
-        MenuProduct 후라이드메뉴상품 = new MenuProduct(후라이드(), 1L);
+        MenuProduct 양념치킨메뉴상품 = new MenuProduct(양념치킨().getId(), 1L);
+        MenuProduct 후라이드메뉴상품 = new MenuProduct(후라이드().getId(), 1L);
 
         Menu 후라이드반양념반메뉴 = new Menu("후라이드반양념반메뉴", 메뉴가격, 메뉴그룹("반반메뉴").getId(), Lists.newArrayList(양념치킨메뉴상품, 후라이드메뉴상품));
 
         OrderLineItem 주문정보_후라이드양념반두개 = new OrderLineItem(후라이드반양념반메뉴.getId(), 2L);
 
-        Order 후라이드반양념반두개주문 = new Order(주문가능_다섯명테이블(), Lists.newArrayList(주문정보_후라이드양념반두개));
+        Order 후라이드반양념반두개주문 = new Order(주문가능_다섯명테이블().getId(), Lists.newArrayList(주문정보_후라이드양념반두개));
         response = OrderResponse.of(후라이드반양념반두개주문);
 
         후라이드반양념반두개주문.changeStatus(OrderStatus.COMPLETION);

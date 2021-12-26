@@ -65,11 +65,11 @@ public class OrderTableFixtures {
 
     public static OrderTable 주문이_완료되지_않은_테이블() {
         BigDecimal 메뉴가격 = new BigDecimal(32000);
-        MenuProduct 양념치킨메뉴상품 = new MenuProduct(양념치킨(), 1L);
-        MenuProduct 후라이드메뉴상품 = new MenuProduct(후라이드(), 1L);
+        MenuProduct 양념치킨메뉴상품 = new MenuProduct(1L, 1L);
+        MenuProduct 후라이드메뉴상품 = new MenuProduct(2L, 1L);
         Menu 후라이드반양념반메뉴 = new Menu("후라이드반양념반메뉴", 메뉴가격, 메뉴그룹("반반메뉴").getId(), Lists.newArrayList(양념치킨메뉴상품, 후라이드메뉴상품));
         OrderLineItem 후라이드양념반두개 = new OrderLineItem(후라이드반양념반메뉴.getId(), 2L);
-        Order order = new Order(주문가능_다섯명테이블(), Lists.newArrayList(후라이드양념반두개));
+        Order order = new Order(1L, Lists.newArrayList(후라이드양념반두개));
 
         return 주문불가_다섯명테이블요청().toEntity()
                 .addOrder(order);

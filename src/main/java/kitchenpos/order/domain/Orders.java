@@ -1,6 +1,5 @@
 package kitchenpos.order.domain;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
@@ -15,7 +14,7 @@ import java.util.List;
  */
 @Embeddable
 public class Orders {
-    @OneToMany(mappedBy = "orderTable", cascade = {CascadeType.ALL})
+    @OneToMany(mappedBy = "orderTableId")
     private final List<Order> orders = new ArrayList<>();
 
     public void add(Order order) {

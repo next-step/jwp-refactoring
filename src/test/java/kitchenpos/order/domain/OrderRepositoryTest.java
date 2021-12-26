@@ -70,7 +70,7 @@ class OrderRepositoryTest {
         );
         OrderTable 사용가능_다섯명테이블 = orderTableRepository.save(OrderTableFixtures.주문가능_다섯명테이블());
         OrderLineItem 후라이드양념반두개 = new OrderLineItem(후라이드반양념반메뉴.getId(), 2L);
-        후라이드반양념반두개주세요 = new Order(사용가능_다섯명테이블, Lists.newArrayList(후라이드양념반두개));
+        후라이드반양념반두개주세요 = new Order(사용가능_다섯명테이블.getId(), Lists.newArrayList(후라이드양념반두개));
 
     }
 

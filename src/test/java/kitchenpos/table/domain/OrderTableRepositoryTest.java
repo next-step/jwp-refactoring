@@ -72,7 +72,7 @@ class OrderTableRepositoryTest {
 
         OrderTable savedTable = orderTableRepository.save(주문가능_다섯명테이블요청().toEntity());
         OrderLineItem 후라이드양념반두개 = new OrderLineItem(후라이드반양념반메뉴.getId(), 2L);
-        orderRepository.save(new Order(savedTable, Lists.newArrayList(후라이드양념반두개)));
+        orderRepository.save(new Order(savedTable.getId(), Lists.newArrayList(후라이드양념반두개)));
     }
 
     @Test

@@ -22,7 +22,6 @@ import java.util.List;
  */
 @Component
 public class MenuValidator {
-    private final static int SAME = 0;
     private final MenuGroupRepository menuGroupRepository;
     private final ProductRepository productRepository;
 
@@ -40,13 +39,13 @@ public class MenuValidator {
             throw new MenuGroupNotFoundException();
         }
 
-        if (!samePrice(menu.getPrice(), menu.getMenuProducts())) {
+        if (invalidMenuPrice(menu.getPrice(), menu.getMenuProducts())) {
             throw new LimitPriceException();
         }
     }
 
-    private boolean samePrice(Price price, List<MenuProduct> menuProducts) {
-        return price.value().compareTo(getTotalPrice(menuProducts)) == SAME;
+    private boolean invalidMenuPrice(Price price, List<MenuProduct> menuProducts) {
+        return price.value().compareTo(getTotalPrice(menuProducts)) > 0;
     }
 
     private BigDecimal getTotalPrice(List<MenuProduct> menuProducts) {

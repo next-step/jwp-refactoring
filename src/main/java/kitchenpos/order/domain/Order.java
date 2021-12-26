@@ -1,28 +1,20 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.order.exception.OrderLineItemNotFoundException;
 import kitchenpos.order.exception.OrderStatusUpdateException;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.exception.InvalidTableException;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-
-import static javax.persistence.FetchType.LAZY;
 
 @Entity
 @Table(name = "orders")
 public class Order {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "order_table_id", foreignKey = @ForeignKey(name = "fk_orders_order_table"))
-    private OrderTable orderTable;
+    private Long orderTableId;
 
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus = OrderStatus.COOKING;
@@ -36,24 +28,9 @@ public class Order {
     protected Order() {
     }
 
-    public Order(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
-        validate(orderTable, orderLineItems);
-        addOrderLineItems(orderLineItems);
-        this.orderTable = orderTable.addOrder(this);
-    }
-
-    public void addOrderLineItems(List<OrderLineItem> orderLineItems) {
+    public Order(Long orderTableId, List<OrderLineItem> orderLineItems) {
+        this.orderTableId = orderTableId;
         this.orderLineItems.add(orderLineItems);
-
-    }
-
-    private void validate(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
-        if (orderTable.isEmpty()) {
-            throw new InvalidTableException();
-        }
-        if (orderLineItems.isEmpty()) {
-            throw new OrderLineItemNotFoundException();
-        }
     }
 
     public void changeStatus(OrderStatus changeStatus) {
@@ -71,8 +48,8 @@ public class Order {
         return id;
     }
 
-    public OrderTable getOrderTable() {
-        return orderTable;
+    public Long getOrderTableId() {
+        return orderTableId;
     }
 
     public OrderStatus getOrderStatus() {
@@ -83,7 +60,7 @@ public class Order {
         return orderedTime;
     }
 
-    public OrderLineItems getOrderLineItems() {
-        return orderLineItems;
+    public List<OrderLineItem> getOrderLineItems() {
+        return orderLineItems.value();
     }
 }

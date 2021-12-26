@@ -34,8 +34,8 @@ public class OrderResponse {
     }
 
     public static OrderResponse of(Order order) {
-        List<OrderLineItemResponse> orderLineItemResponses = OrderLineItemResponse.ofList(order.getOrderLineItems().value());
-        return new OrderResponse(order.getId(), order.getOrderTable().getId(), order.getOrderStatus(), order.getOrderedTime(), orderLineItemResponses);
+        List<OrderLineItemResponse> orderLineItemResponses = OrderLineItemResponse.ofList(order.getOrderLineItems());
+        return new OrderResponse(order.getId(), order.getOrderTableId(), order.getOrderStatus(), order.getOrderedTime(), orderLineItemResponses);
     }
 
     public static List<OrderResponse> ofList(List<Order> orders) {

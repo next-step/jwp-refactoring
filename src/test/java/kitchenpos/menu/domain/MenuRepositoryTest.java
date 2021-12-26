@@ -54,8 +54,8 @@ class MenuRepositoryTest {
         Product 양념치킨 = productRepository.save(양념치킨요청().toEntity());
         Product 후라이드 = productRepository.save(후라이드요청().toEntity());
         메뉴그룹 = menuGroupRepository.save(반반메뉴그룹요청().toEntity());
-        양념치킨메뉴상품 = new MenuProduct(양념치킨, 1L);
-        후라이드메뉴상품 = new MenuProduct(후라이드, 1L);
+        양념치킨메뉴상품 = new MenuProduct(양념치킨.getId(), 1L);
+        후라이드메뉴상품 = new MenuProduct(후라이드.getId(), 1L);
         menu = new Menu("후라이드반양념반메뉴", 메뉴가격, 메뉴그룹.getId(), Lists.newArrayList(양념치킨메뉴상품, 후라이드메뉴상품));
     }
 

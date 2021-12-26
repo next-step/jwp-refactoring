@@ -7,8 +7,10 @@ import kitchenpos.order.dto.OrderStatusUpdateRequest;
 import kitchenpos.order.domain.OrderStatus;
 import org.assertj.core.util.Lists;
 
+import java.util.Arrays;
 import java.util.List;
 
+import static kitchenpos.order.fixtures.OrderLineItemFixtures.주문정보;
 import static kitchenpos.order.fixtures.OrderLineItemFixtures.주문정보_1개_등록요청;
 
 /**
@@ -20,11 +22,15 @@ import static kitchenpos.order.fixtures.OrderLineItemFixtures.주문정보_1개_
  */
 public class OrderFixtures {
     public static OrderSaveRequest 주문등록요청() {
-        return new OrderSaveRequest(1L, Lists.newArrayList(주문정보_1개_등록요청()));
+        return OrderSaveRequest.of(1L, Lists.newArrayList(주문정보_1개_등록요청()));
     }
 
     public static OrderSaveRequest 주문등록요청(Long orderTableId, List<OrderLineItemSaveRequest> orderLineItemSaveRequests) {
-        return new OrderSaveRequest(orderTableId, orderLineItemSaveRequests);
+        return OrderSaveRequest.of(orderTableId, orderLineItemSaveRequests);
+    }
+
+    public static Order 주문() {
+        return new Order(1L, Arrays.asList(주문정보(), 주문정보()));
     }
 
     public static OrderStatusUpdateRequest 식사중으로_변경요청() {
