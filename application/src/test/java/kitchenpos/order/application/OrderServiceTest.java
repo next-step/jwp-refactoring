@@ -58,8 +58,8 @@ public class OrderServiceTest {
             List<MenuProduct> menuProducts = new ArrayList<>();
             menuProducts.add(new MenuProduct(볶음짜장면, 1));
             menuProducts.add(new MenuProduct(삼선짬뽕, 1));
-            Menu 커플세트 = Menu.create(1L, "커플세트", 16000, new MenuGroup(), new MenuProducts(menuProducts));
-            Menu 혼밥세트 = Menu.create(2L, "혼밥세트", 16000, new MenuGroup(), new MenuProducts(menuProducts));
+            Menu 커플세트 = Menu.create(1L, "커플세트", 16000, 1L, new MenuProducts(menuProducts));
+            Menu 혼밥세트 = Menu.create(2L, "혼밥세트", 16000, 1L, new MenuProducts(menuProducts));
 
             OrderLineItemRequest orderLineItemRequest1 = new OrderLineItemRequest(커플세트.getId(), 1);
             OrderLineItemRequest orderLineItemRequest2 = new OrderLineItemRequest(혼밥세트.getId(), 1);

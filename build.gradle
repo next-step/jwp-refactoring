@@ -67,7 +67,6 @@ project(':menu') {
     jar { enabled = true }
     dependencies {
         implementation project(':common')
-        implementation project(':menugroup')
         implementation project(':product')
     }
 }

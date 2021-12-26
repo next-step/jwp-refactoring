@@ -1,6 +1,5 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.product.domain.Product;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
@@ -21,15 +20,15 @@ public class MenuTest {
         Product 볶음짜장면 = new Product(1L, "볶음짜장면", 8000);
         Product 삼선짬뽕 = new Product(2L, "삼선짬뽕", 8000);
 
-        MenuGroup menuGroup = new MenuGroup(1L, "식사류");
+        Long menuGroupId = 1L;
 
         List<MenuProduct> menuProducts = new ArrayList<>();
         menuProducts.add(new MenuProduct(볶음짜장면, 1));
         menuProducts.add(new MenuProduct(삼선짬뽕, 1));
-        Menu expectedMenu = Menu.create(1L, "집밥이최고", 16000, menuGroup, new MenuProducts(menuProducts));
+        Menu expectedMenu = Menu.create(1L, "집밥이최고", 16000, menuGroupId, new MenuProducts(menuProducts));
 
         // when
-        Menu menu = Menu.create(expectedMenu.getName(), expectedMenu.getPrice(), menuGroup, new MenuProducts(menuProducts));
+        Menu menu = Menu.create(expectedMenu.getName(), expectedMenu.getPrice(), menuGroupId, new MenuProducts(menuProducts));
 
         // then
         assertAll(
@@ -45,11 +44,11 @@ public class MenuTest {
         // given
         String name = "대표 메뉴";
         long price = 0;
-        MenuGroup menuGroup = new MenuGroup();
+        Long menuGroupId = 1L;
         List<MenuProduct> menuProducts = new ArrayList<>();
 
         // when
-        ThrowableAssert.ThrowingCallable callable = () -> Menu.create(name, price, menuGroup, new MenuProducts(menuProducts));
+        ThrowableAssert.ThrowingCallable callable = () -> Menu.create(name, price, menuGroupId, new MenuProducts(menuProducts));
 
         // then
         assertThatThrownBy(callable)
@@ -62,11 +61,11 @@ public class MenuTest {
         // given
         String name = "";
         long price = 16000;
-        MenuGroup menuGroup = new MenuGroup();
+        Long menuGroupId = 1L;
         List<MenuProduct> menuProducts = new ArrayList<>();
 
         // when
-        ThrowableAssert.ThrowingCallable callable = () -> Menu.create(name, price, menuGroup, new MenuProducts(menuProducts));
+        ThrowableAssert.ThrowingCallable callable = () -> Menu.create(name, price, menuGroupId, new MenuProducts(menuProducts));
 
         // then
         assertThatThrownBy(callable)
@@ -80,14 +79,14 @@ public class MenuTest {
         Product 볶음짜장면 = new Product(1L, "볶음짜장면", 8000);
         Product 삼선짬뽕 = new Product(2L, "삼선짬뽕", 8000);
 
-        MenuGroup menuGroup = new MenuGroup(1L, "식사류");
+        Long menuGroupId = 1L;
 
         List<MenuProduct> menuProducts = new ArrayList<>();
         menuProducts.add(new MenuProduct(볶음짜장면, 1));
         menuProducts.add(new MenuProduct(삼선짬뽕, 1));
 
         // when
-        ThrowableAssert.ThrowingCallable callable = () -> Menu.create(1L, "집밥이최고", 17000, menuGroup, new MenuProducts(menuProducts));
+        ThrowableAssert.ThrowingCallable callable = () -> Menu.create(1L, "집밥이최고", 17000, menuGroupId, new MenuProducts(menuProducts));
 
         // then
         assertThatThrownBy(callable)

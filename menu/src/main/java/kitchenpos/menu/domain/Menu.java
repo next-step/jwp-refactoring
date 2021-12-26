@@ -2,7 +2,6 @@ package kitchenpos.menu.domain;
 
 import kitchenpos.common.domain.Name;
 import kitchenpos.common.domain.Price;
-import kitchenpos.menugroup.domain.MenuGroup;
 
 import javax.persistence.*;
 import java.util.List;
@@ -17,36 +16,35 @@ public class Menu {
     private Name name;
     @Embedded
     private Price price;
-    @ManyToOne
-    private MenuGroup menuGroup;
+    private Long menuGroupId;
     @Embedded
     private MenuProducts menuProducts = new MenuProducts();
 
     protected Menu() {
     }
 
-    private Menu(Long id, Name name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
+    private Menu(Long id, Name name, Price price, Long menuGroupId, MenuProducts menuProducts) {
         this.id = id;
         this.name = name;
         this.price = price;
-        this.menuGroup = menuGroup;
+        this.menuGroupId = menuGroupId;
         this.menuProducts = menuProducts;
     }
 
-    private Menu(Name name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
+    private Menu(Name name, Price price, Long menuGroupId, MenuProducts menuProducts) {
         this.name = name;
         this.price = price;
-        this.menuGroup = menuGroup;
+        this.menuGroupId = menuGroupId;
         this.menuProducts = menuProducts;
     }
 
-    public static Menu create(Long id, String name, long price, MenuGroup menuGroup, MenuProducts menuProducts) {
-        Menu menu = new Menu(id, Name.of(name), Price.of(price), menuGroup, menuProducts);
+    public static Menu create(Long id, String name, long price, Long menuGroupId, MenuProducts menuProducts) {
+        Menu menu = new Menu(id, Name.of(name), Price.of(price), menuGroupId, menuProducts);
         return create(price, menuProducts, menu);
     }
 
-    public static Menu create(String name, long price, MenuGroup menuGroup, MenuProducts menuProducts) {
-        Menu menu = new Menu(Name.of(name), Price.of(price), menuGroup, menuProducts);
+    public static Menu create(String name, long price, Long menuGroupId, MenuProducts menuProducts) {
+        Menu menu = new Menu(Name.of(name), Price.of(price), menuGroupId, menuProducts);
         return create(price, menuProducts, menu);
     }
 
@@ -75,8 +73,8 @@ public class Menu {
         return price.longValue();
     }
 
-    public MenuGroup getMenuGroup() {
-        return menuGroup;
+    public Long getMenuGroupId() {
+        return menuGroupId;
     }
 
     public List<MenuProduct> getMenuProducts() {

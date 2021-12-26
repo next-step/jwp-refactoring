@@ -34,7 +34,7 @@ public class MenuService {
                 .orElseThrow(() -> new MenuGroupNotFoundException(menuRequest.getMenuGroupId()));
 
         MenuProducts menuProducts = createMenuProducts(menuRequest.getMenuProducts());
-        Menu menu = Menu.create(menuRequest.getName(), menuRequest.getPrice(), menuGroup, menuProducts);
+        Menu menu = Menu.create(menuRequest.getName(), menuRequest.getPrice(), menuGroup.getId(), menuProducts);
         return MenuResponse.of(menuRepository.save(menu));
     }
 

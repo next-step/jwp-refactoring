@@ -53,7 +53,7 @@ public class MenuServiceTest {
         List<MenuProduct> menuProducts = new ArrayList<>();
         menuProducts.add(new MenuProduct(볶음짜장면, 1));
         menuProducts.add(new MenuProduct(삼선짬뽕, 1));
-        Menu expectedMenu = Menu.create(1L, "집밥이최고", 16000, new MenuGroup(), new MenuProducts(menuProducts));
+        Menu expectedMenu = Menu.create(1L, "집밥이최고", 16000, 1L, new MenuProducts(menuProducts));
 
         given(menuGroupRepository.findById(anyLong())).willReturn(Optional.of(menuGroup));
         given(productRepository.findById(anyLong())).willReturn(Optional.of(볶음짜장면), Optional.of(삼선짬뽕));
@@ -118,7 +118,7 @@ public class MenuServiceTest {
         List<MenuProduct> menuProducts = new ArrayList<>();
         menuProducts.add(new MenuProduct(볶음짜장면, 1));
         menuProducts.add(new MenuProduct(삼선짬뽕, 1));
-        List<Menu> expectedMenus = Arrays.asList(Menu.create(1L, "대표 메뉴", 16000, new MenuGroup(), new MenuProducts(menuProducts)));
+        List<Menu> expectedMenus = Arrays.asList(Menu.create(1L, "대표 메뉴", 16000, 1L, new MenuProducts(menuProducts)));
         given(menuRepository.findAll()).willReturn(expectedMenus);
 
         // when
