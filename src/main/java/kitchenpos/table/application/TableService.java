@@ -1,12 +1,10 @@
 package kitchenpos.table.application;
 
 import static java.util.stream.Collectors.toList;
+import static kitchenpos.order.domain.OrderStatus.CHANGE_EMPTY_IMPOSSIBLE_ORDER_STATUS;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableResponse;
@@ -40,18 +38,19 @@ public class TableService {
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
 
-        if (Objects.nonNull(savedOrderTable.getTableGroupId())) {
-            throw new IllegalArgumentException();
-        }
-
-        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
-                orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException();
-        }
+        savedOrderTable.validateForChangeEmpty();
+        validateChangeableOrderStatus(orderTableId);
 
         savedOrderTable.changeEmpty(orderTable.isEmpty());
 
         return OrderTableResponse.from(orderTableRepository.save(savedOrderTable));
+    }
+
+    private void validateChangeableOrderStatus(Long orderTableId) {
+        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
+                orderTableId, CHANGE_EMPTY_IMPOSSIBLE_ORDER_STATUS)) {
+            throw new IllegalArgumentException();
+        }
     }
 
     @Transactional

@@ -67,6 +67,16 @@ public class OrderTable {
         this.tableGroupId = null;
     }
 
+    public void validateForChangeEmpty() {
+        if (hasGroup()) {
+            throw new IllegalArgumentException("그룹이 있는 테이블은 빈 상태로 변경할 수 없습니다");
+        }
+    }
+
+    private boolean hasGroup() {
+        return Objects.nonNull(tableGroupId);
+    }
+
     public Long getId() {
         return id;
     }

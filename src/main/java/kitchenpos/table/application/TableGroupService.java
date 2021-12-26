@@ -1,6 +1,6 @@
 package kitchenpos.table.application;
 
-import static kitchenpos.order.domain.OrderStatus.UNGROUP_DISABLE_ORDER_STATUS;
+import static kitchenpos.order.domain.OrderStatus.UNGROUP_IMPOSSIBLE_ORDER_STATUS;
 
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.OrderTableRepository;
@@ -53,7 +53,7 @@ public class TableGroupService {
 
     private void validateForUngroup(OrderTables orderTables) {
         if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(orderTables.extractIds(),
-            UNGROUP_DISABLE_ORDER_STATUS)) {
+            UNGROUP_IMPOSSIBLE_ORDER_STATUS)) {
             throw new IllegalArgumentException("주문 상태가 요리중 또는 식사 상태여서 그룹 해제가 불가능합니다");
         }
     }
