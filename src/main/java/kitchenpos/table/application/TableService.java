@@ -23,7 +23,6 @@ public class TableService {
     public OrderTableResponse create(final OrderTableRequest orderTableRequest) {
         OrderTable orderTable = new OrderTable(null, orderTableRequest.getNumberOfGuests(),
                 orderTableRequest.isEmpty());
-        orderTable.changeTableGroup(null);
 
         return OrderTableResponse.from(orderTableRepository.save(orderTable));
     }

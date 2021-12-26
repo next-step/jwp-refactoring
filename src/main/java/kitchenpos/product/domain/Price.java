@@ -35,6 +35,14 @@ public class Price {
         }
     }
 
+    public Price add(Price price) {
+        return new Price(this.price.add(price.toBigDecimal()));
+    }
+
+    public BigDecimal toBigDecimal() {
+        return price;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -46,17 +54,5 @@ public class Price {
     @Override
     public int hashCode() {
         return Objects.hash(price);
-    }
-
-    public BigDecimal multiply(BigDecimal price) {
-        return this.price.multiply(price);
-    }
-
-    public Price add(Price price) {
-        return new Price(this.price.add(price.toBigDecimal()));
-    }
-
-    public BigDecimal toBigDecimal() {
-        return price;
     }
 }
