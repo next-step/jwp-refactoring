@@ -81,9 +81,10 @@
   - [X] 메뉴 dto 모델 추가
   - [X] 메뉴 상품 dto 모델 추가
 - [ ] 테이블 관리 리팩토링
-  - [ ] 모델
+  - [X] 모델
     - [X] TableGroup 엔티티 변환
     - [X] OrderTable 엔티티 변환
+    - [X] OrderTables 일급 컬렉션 추가
   - [X] TableGroupRepository 사용하도록 수정
   - [X] OrderTableRepository 사용하도록 수정
   - [X] 테이블그룹 dto 모델 추가

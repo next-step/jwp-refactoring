@@ -1,5 +1,6 @@
 package kitchenpos.table.domain;
 
+import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
@@ -53,12 +54,17 @@ public class OrderTable {
         return new OrderTable(null, numberOfGuests, empty);
     }
 
-    public Long getId() {
-        return id;
+    public boolean isGroupable() {
+        return isEmpty() && Objects.isNull(getTableGroupId());
     }
 
-    public void setId(final Long id) {
-        this.id = id;
+    public void groupBy(TableGroup tableGroup) {
+        changeEmpty(false);
+        this.tableGroupId = tableGroup.getId();
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public Long getTableGroupId() {
@@ -81,7 +87,7 @@ public class OrderTable {
         return empty;
     }
 
-    public void setEmpty(final boolean empty) {
+    public void changeEmpty(final boolean empty) {
         this.empty = empty;
     }
 }

@@ -13,6 +13,7 @@ import java.util.List;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.domain.TableGroupRepository;
 import kitchenpos.table.dto.TableGroupResponse;
@@ -51,10 +52,10 @@ class TableGroupServiceTest {
 
         given(orderTableRepository.findAllById(anyList())).willReturn(orderTables);
         given(tableGroupRepository.save(any())).willReturn(tableGroup);
-        given(orderTableRepository.save(any())).willReturn(orderTable1, orderTable2);
+        given(orderTableRepository.saveAll(any())).willReturn(Lists.newArrayList(orderTable1, orderTable2));
 
         // when
-        TableGroupResponse result = tableGroupService.create(orderTables);
+        TableGroupResponse result = tableGroupService.create(OrderTables.of(orderTables));
 
         // then
         assertThat(result.getCreatedDate()).isNotNull();
@@ -72,7 +73,7 @@ class TableGroupServiceTest {
     void 테이블_그룹_생성_예외1() {
         // when, then
         assertThatIllegalArgumentException().isThrownBy(
-            () -> tableGroupService.create(Lists.newArrayList())
+            () -> tableGroupService.create(OrderTables.of(Lists.newArrayList()))
         );
     }
 
@@ -84,7 +85,7 @@ class TableGroupServiceTest {
 
         // when, then
         assertThatIllegalArgumentException().isThrownBy(
-            () -> tableGroupService.create(Lists.newArrayList(orderTable1))
+            () -> tableGroupService.create(OrderTables.of(Lists.newArrayList(orderTable1)))
         );
     }
 
@@ -101,7 +102,7 @@ class TableGroupServiceTest {
 
         // when, then
         assertThatIllegalArgumentException().isThrownBy(
-            () -> tableGroupService.create(orderTables)
+            () -> tableGroupService.create(OrderTables.of(orderTables))
         );
     }
 
@@ -118,7 +119,7 @@ class TableGroupServiceTest {
 
         // when, then
         assertThatIllegalArgumentException().isThrownBy(
-            () -> tableGroupService.create(orderTables)
+            () -> tableGroupService.create(OrderTables.of(orderTables))
         );
     }
 
