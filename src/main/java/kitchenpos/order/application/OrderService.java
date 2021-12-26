@@ -49,7 +49,7 @@ public class OrderService {
         return request.getOrderLineItems().stream().map(it -> {
                     Menu menu = menuRepository.findById(it.getMenuId())
                             .orElseThrow(MenuNotFoundException::new);
-                    return it.toEntity(menu);
+                    return it.toEntity(menu.getId());
                 })
                 .collect(Collectors.toList());
     }

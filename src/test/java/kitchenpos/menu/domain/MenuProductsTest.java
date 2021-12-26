@@ -33,14 +33,10 @@ class MenuProductsTest {
         MenuProducts menuProducts = new MenuProducts();
 
         // when
-        menuProducts.add(menu, given);
+        menuProducts.add(given);
 
         // then
-        assertAll(
-                () -> assertThat(menuProducts.value()).hasSize(3),
-                () -> assertThat(menuProducts.value()).extracting(MenuProduct::getMenu).isNotNull()
-        );
-
+        assertThat(menuProducts.value()).hasSize(3);
     }
 
 }

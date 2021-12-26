@@ -80,7 +80,7 @@ public class OrderServiceTest {
 
         후라이드반양념반메뉴 = new Menu("후라이드반양념반메뉴", 메뉴가격, 메뉴그룹("반반메뉴"), Lists.newArrayList(양념치킨메뉴상품, 후라이드메뉴상품));
 
-        OrderLineItem 주문정보_후라이드양념반두개 = new OrderLineItem(후라이드반양념반메뉴, 2L);
+        OrderLineItem 주문정보_후라이드양념반두개 = new OrderLineItem(후라이드반양념반메뉴.getId(), 2L);
 
         후라이드반양념반두개주문 = new Order(주문가능_다섯명테이블(), Lists.newArrayList(주문정보_후라이드양념반두개));
     }

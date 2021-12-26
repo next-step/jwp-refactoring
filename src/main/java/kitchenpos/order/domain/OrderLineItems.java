@@ -14,7 +14,7 @@ import java.util.List;
 @Embeddable
 public class OrderLineItems {
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "order_id", foreignKey = @ForeignKey(name = "fk_order_line_item_menu"))
     private final List<OrderLineItem> orderLineItems = new ArrayList<>();
 

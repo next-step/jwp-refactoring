@@ -67,7 +67,7 @@ class OrderRepositoryTest {
                 )
         );
         OrderTable 사용가능_다섯명테이블 = orderTableRepository.save(OrderTableFixtures.주문가능_다섯명테이블());
-        OrderLineItem 후라이드양념반두개 = new OrderLineItem(후라이드반양념반메뉴, 2L);
+        OrderLineItem 후라이드양념반두개 = new OrderLineItem(후라이드반양념반메뉴.getId(), 2L);
         후라이드반양념반두개주세요 = new Order(사용가능_다섯명테이블, Lists.newArrayList(후라이드양념반두개));
 
     }
@@ -99,27 +99,6 @@ class OrderRepositoryTest {
         Order actual = orderRepository.save(후라이드반양념반두개주세요);
 
         // then
-        assertAll(
-                () -> assertThat(actual.getId()).isNotNull(),
-                () -> assertThat(actual.getOrderLineItems()).extracting(OrderLineItem::getId)
-                        .isNotNull()
-        );
-    }
-
-    @Test
-    @DisplayName("양방향 연관관계 제거 주문 등록")
-    public void order() throws Exception {
-        // given
-        Order order = new Order();
-        OrderTable savedOrderTable = orderTableRepository.save(OrderTableFixtures.주문가능_다섯명테이블());
-        order.addOrderTable(savedOrderTable);
-        order.addOrderLineItem(new OrderLineItem(후라이드반양념반메뉴, 2L));
-        order.addOrderLineItem(new OrderLineItem(후라이드반양념반메뉴, 3L));
-
-        // when
-        Order savedOrder = orderRepository.save(order);
-
-        // then
-        assertThat(savedOrder.getId()).isNotNull();
+        assertThat(actual.getId()).isNotNull();
     }
 }

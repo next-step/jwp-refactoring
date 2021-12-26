@@ -10,17 +10,20 @@ import kitchenpos.order.domain.OrderLineItem;
  * date : 2021/12/21
  * description :
  */
-//FIXME 생성자 제한하기
 public class OrderLineItemSaveRequest {
     private Long menuId;
     private Long quantity;
 
-    public OrderLineItemSaveRequest() {
+    private OrderLineItemSaveRequest() {
     }
 
-    public OrderLineItemSaveRequest(Long menuId, Long quantity) {
+    private OrderLineItemSaveRequest(Long menuId, Long quantity) {
         this.menuId = menuId;
         this.quantity = quantity;
+    }
+
+    public static OrderLineItemSaveRequest of(Long menuId, Long quantity) {
+        return new OrderLineItemSaveRequest(menuId, quantity);
     }
 
     public Long getMenuId() {
@@ -31,7 +34,7 @@ public class OrderLineItemSaveRequest {
         return quantity;
     }
 
-    public OrderLineItem toEntity(Menu menu) {
-        return new OrderLineItem(menu, quantity);
+    public OrderLineItem toEntity(Long menuId) {
+        return new OrderLineItem(menuId, quantity);
     }
 }

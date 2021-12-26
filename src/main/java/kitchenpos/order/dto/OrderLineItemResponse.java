@@ -28,7 +28,7 @@ public class OrderLineItemResponse {
     }
 
     public static OrderLineItemResponse of(OrderLineItem orderLineItem) {
-        return new OrderLineItemResponse(orderLineItem.getId(), orderLineItem.getMenu().getId(), orderLineItem.getQuantity().value());
+        return new OrderLineItemResponse(orderLineItem.getId(), orderLineItem.getMenuId(), orderLineItem.getQuantity().value());
     }
 
     public static List<OrderLineItemResponse> ofList(List<OrderLineItem> orderLineItems) {

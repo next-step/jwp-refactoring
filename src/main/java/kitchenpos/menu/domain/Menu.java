@@ -38,7 +38,7 @@ public class Menu {
 
     private void addMenuProducts(List<MenuProduct> newMenuProducts) {
         comparePrice(newMenuProducts);
-        menuProducts.add(this, newMenuProducts);
+        menuProducts.add(newMenuProducts);
     }
 
     private void comparePrice(List<MenuProduct> menuProducts) {

@@ -1,7 +1,6 @@
 package kitchenpos.table.application;
 
 import com.google.common.collect.Lists;
-import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableResponse;

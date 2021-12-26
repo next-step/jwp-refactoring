@@ -1,4 +1,4 @@
-package kitchenpos.common.exception.advice;
+package kitchenpos.common.advice;
 
 import kitchenpos.common.exception.ServiceException;
 import org.springframework.http.ResponseEntity;
@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 /**
- * packageName : kitchenpos.common.exception.advice
+ * packageName : kitchenpos.common.advice
  * fileName : KichenPosExceptionHandler
  * author : haedoang
  * date : 2021/12/25
