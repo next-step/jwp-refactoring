@@ -14,17 +14,16 @@ import java.util.List;
  * date : 2021/12/21
  * description :
  */
-//FIXME 생성자 제한하기
 public class MenuRequest {
     private String name;
     private BigDecimal price;
     private Long menuGroupId;
     private List<MenuProductRequest> menuProducts;
 
-    public MenuRequest() {
+    private MenuRequest() {
     }
 
-    public MenuRequest(String name, BigDecimal price, Long menuGroupId, List<MenuProductRequest> menuProducts) {
+    private MenuRequest(String name, BigDecimal price, Long menuGroupId, List<MenuProductRequest> menuProducts) {
         this.name = name;
         this.price = price;
         this.menuGroupId = menuGroupId;

@@ -14,7 +14,6 @@ import java.util.List;
  */
 public interface MenuRepository extends JpaRepository<Menu, Long> {
     @Query(value = "select distinct m from Menu m " +
-            "left join fetch m.menuProducts mp " +
-            "left join fetch m.menuGroup mg ")
+            "left join fetch m.menuProducts mp ")
     List<Menu> findAllJoinFetch();
 }

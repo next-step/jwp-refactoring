@@ -13,17 +13,16 @@ import static java.util.stream.Collectors.toList;
  * date : 2021-12-21
  * description :
  */
-//FIXME 생성자 제한하기
 public class MenuResponse {
     private Long id;
     private String name;
     private Long menuGroupId;
     private List<MenuProductResponse> menuProducts;
 
-    public MenuResponse() {
+    private MenuResponse() {
     }
 
-    public MenuResponse(Long id, String name, Long menuGroupId, List<MenuProductResponse> menuProducts) {
+    private MenuResponse(Long id, String name, Long menuGroupId, List<MenuProductResponse> menuProducts) {
         this.id = id;
         this.name = name;
         this.menuGroupId = menuGroupId;
@@ -32,7 +31,7 @@ public class MenuResponse {
 
     public static MenuResponse of(Menu menu) {
         final List<MenuProductResponse> menuProductResponses = MenuProductResponse.ofList(menu.getMenuProducts());
-        return new MenuResponse(menu.getId(), menu.getName(), menu.getMenuGroup().getId(), menuProductResponses);
+        return new MenuResponse(menu.getId(), menu.getName(), menu.getMenuGroupId(), menuProductResponses);
     }
 
     public static List<MenuResponse> ofList(List<Menu> menus) {

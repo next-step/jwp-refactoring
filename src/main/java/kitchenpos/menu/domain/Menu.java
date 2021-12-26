@@ -19,9 +19,8 @@ public class Menu {
     @Embedded
     private Price price;
 
-    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "menu_group_id")
-    private MenuGroup menuGroup;
+    private Long menuGroupId;
 
     @Embedded
     private final MenuProducts menuProducts = new MenuProducts();
@@ -32,7 +31,7 @@ public class Menu {
     public Menu(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
         this.name = name;
         this.price = Price.of(price);
-        this.menuGroup = menuGroup;
+        this.menuGroupId = menuGroup.getId();
         addMenuProducts(menuProducts);
     }
 
@@ -64,8 +63,8 @@ public class Menu {
         return price;
     }
 
-    public MenuGroup getMenuGroup() {
-        return menuGroup;
+    public Long getMenuGroupId() {
+        return menuGroupId;
     }
 
     public List<MenuProduct> getMenuProducts() {
