@@ -39,10 +39,9 @@ public class OrderService {
         validateExistsOrderLineItems(orderRequest);
 
         final OrderTable orderTable = orderTableRepository.findById(orderRequest.getOrderTableId())
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new IllegalArgumentException("주문 테이블이 존재하지 않습니다."));
 
-        final Order savedOrder = orderRepository.save(Order.from(orderTable));
-        savedOrder.addOrderLineItem(findOrderLineItems(orderRequest.getOrderLineItems()));
+        final Order savedOrder = orderRepository.save(Order.of(orderTable, findOrderLineItems(orderRequest.getOrderLineItems())));
 
         return OrderResponse.from(savedOrder);
     }
@@ -57,7 +56,7 @@ public class OrderService {
     @Transactional
     public OrderResponse changeOrderStatus(final Long orderId, final OrderRequest orderRequest) {
         final Order savedOrder = orderRepository.findById(orderId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new IllegalArgumentException("주문 테이블이 존재하지 않습니다."));
         savedOrder.changeOrderStatus(orderRequest.getOrderStatus());
         return OrderResponse.from(savedOrder);
     }

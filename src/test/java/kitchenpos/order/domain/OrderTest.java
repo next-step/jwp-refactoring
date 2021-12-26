@@ -14,7 +14,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -26,7 +28,7 @@ class OrderTest {
 
     Menu 후라이드_후라이드;
     OrderTable 주문_테이블;
-
+    List<OrderLineItem> 주문_항목들;
     @BeforeEach
     void setUp() {
         Product 후라이드치킨 = ProductFixture.of("후라이드치킨", BigDecimal.valueOf(16000));
@@ -36,15 +38,15 @@ class OrderTest {
                 BigDecimal.valueOf(31000),
                 두마리치킨);
 
-        후라이드_후라이드.addMenuProduct(MenuProductFixture.of(후라이드치킨, 2));
-
+        후라이드_후라이드.addMenuProduct(Collections.singletonList(MenuProductFixture.of(후라이드치킨, 2)));
+        주문_항목들 = Collections.singletonList(OrderLineItem.of(후라이드_후라이드, 1L));
         주문_테이블 = OrderTableFixture.of(4, false);
     }
 
     @Test
     void 주문_발생_시_주문상태는_조리상태이다() {
         // given
-        Order actual = Order.from(주문_테이블);
+        Order actual = Order.of(주문_테이블, 주문_항목들);
 
         assertAll(() -> {
             assertThat(actual).isNotNull();
@@ -54,11 +56,8 @@ class OrderTest {
 
     @Test
     void 주문_발생_시_주문_항목은_필수이다() {
-        // given
-        Order actual = Order.from(주문_테이블);
-
-        // when
-        ThrowingCallable throwingCallable = () -> actual.addOrderLineItem(null);
+        // given - when
+        ThrowingCallable throwingCallable = () -> Order.of(주문_테이블, new ArrayList<>());
 
         // then
         assertThatExceptionOfType(IllegalArgumentException.class)
@@ -69,8 +68,7 @@ class OrderTest {
     @Test
     void 주문_상태를_변경한다() {
         // given
-        Order actual = Order.from(주문_테이블);
-        actual.addOrderLineItem(Collections.singletonList(OrderLineItem.of(후라이드_후라이드, 1L)));
+        Order actual = Order.of(주문_테이블, 주문_항목들);
 
         // when
         actual.changeOrderStatus(OrderStatus.MEAL);
@@ -82,8 +80,7 @@ class OrderTest {
     @Test
     void 주문_상태가_계산_완료_상태이면_변경할_수_없다() {
         // given
-        Order actual = Order.from(주문_테이블);
-        actual.addOrderLineItem(Collections.singletonList(OrderLineItem.of(후라이드_후라이드, 1L)));
+        Order actual = Order.of(주문_테이블, 주문_항목들);
         actual.changeOrderStatus(OrderStatus.COMPLETION);
 
         // when

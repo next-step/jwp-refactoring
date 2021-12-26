@@ -1,7 +1,7 @@
 package kitchenpos.menu.domain;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
@@ -9,9 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -32,8 +30,8 @@ public class Menu {
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_menu_menu_group"))
     private MenuGroup menuGroup;
 
-    @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MenuProduct> menuProducts = new ArrayList<>();
+    @Embedded
+    private MenuProducts menuProducts = new MenuProducts();
 
     protected Menu() {
     }
@@ -49,11 +47,12 @@ public class Menu {
         return new Menu(name, price, menuGroup);
     }
 
-    public void addMenuProduct(MenuProduct menuProduct) {
-        validateTotalPrice(menuProduct);
-
-        menuProducts.add(menuProduct);
-        menuProduct.changeMenu(this);
+    public void addMenuProduct(List<MenuProduct> menuProducts) {
+        menuProducts.forEach(menuProduct -> {
+            validateTotalPrice(menuProduct);
+            this.menuProducts.add(menuProduct);
+            menuProduct.changeMenu(this);
+        });
     }
 
     public Long getId() {
@@ -73,7 +72,7 @@ public class Menu {
     }
 
     public List<MenuProduct> getMenuProducts() {
-        return menuProducts;
+        return menuProducts.getMenuProducts();
     }
 
     private void validateTotalPrice(MenuProduct menuProduct) {

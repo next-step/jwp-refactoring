@@ -58,6 +58,7 @@ class OrderRestControllerTest extends RestControllerTest {
     Order 주문;
     OrderLineItem 주문_항목;
     OrderResponse 주문_응답;
+
     @BeforeEach
     void setUp() {
         Product 후라이드치킨 = ProductFixture.of("후라이드치킨", BigDecimal.valueOf(16000));
@@ -66,15 +67,14 @@ class OrderRestControllerTest extends RestControllerTest {
                 "후라이드+후라이드",
                 BigDecimal.valueOf(16000),
                 두마리치킨);
-        후라이드_후라이드.addMenuProduct(MenuProductFixture.of(후라이드치킨, 2));
+        후라이드_후라이드.addMenuProduct(Collections.singletonList(MenuProductFixture.of(후라이드치킨, 2)));
 
         주문_테이블 = OrderTableFixture.of(4, false);
         OrderLineItemRequest 주문_항목_요청 = OrderLineItemRequest.of(후라이드_후라이드.getId(), 1L);
         주문_요청 = OrderRequest.of(주문_테이블.getId(), Arrays.asList(주문_항목_요청));
 
-        주문 = Order.from(주문_테이블);
         주문_항목 = OrderLineItemFixture.of(후라이드_후라이드, 1L);
-        주문.addOrderLineItem(Collections.singletonList(주문_항목));
+        주문 = Order.of(주문_테이블, Collections.singletonList(주문_항목));
 
         주문_응답 = OrderResponse.from(주문);
     }
@@ -120,8 +120,7 @@ class OrderRestControllerTest extends RestControllerTest {
     @Test
     void 주문_상태_변경() throws Exception {
         // given
-        Order 변경된_주문 = Order.from(주문_테이블);
-        변경된_주문.addOrderLineItem(Collections.singletonList(주문_항목));
+        Order 변경된_주문 = Order.of(주문_테이블, Collections.singletonList(주문_항목));
         변경된_주문.changeOrderStatus(OrderStatus.MEAL);
         OrderResponse 변경된_주문_응답 = OrderResponse.from(변경된_주문);
 

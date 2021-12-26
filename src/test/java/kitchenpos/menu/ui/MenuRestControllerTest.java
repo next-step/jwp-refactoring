@@ -66,7 +66,7 @@ class MenuRestControllerTest extends RestControllerTest {
                 후라이드_후라이드_요청.getName(),
                 후라이드_후라이드_요청.getPrice(),
                 두마리치킨);
-        후라이드_후라이드.addMenuProduct(후라이드_후라이드_메뉴_상품);
+        후라이드_후라이드.addMenuProduct(Collections.singletonList(후라이드_후라이드_메뉴_상품));
         후라이드_후라이드_응답 = MenuResponse.from(후라이드_후라이드);
     }
 

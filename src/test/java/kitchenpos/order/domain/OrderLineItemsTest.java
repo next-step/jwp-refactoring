@@ -30,7 +30,7 @@ class OrderLineItemsTest {
                 BigDecimal.valueOf(31000),
                 두마리치킨);
 
-        후라이드_후라이드.addMenuProduct(MenuProductFixture.of(후라이드치킨, 2));
+        후라이드_후라이드.addMenuProduct(Collections.singletonList(MenuProductFixture.of(후라이드치킨, 2)));
     }
 
     @Test

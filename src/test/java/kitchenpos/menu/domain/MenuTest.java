@@ -10,6 +10,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.ThrowableAssert.ThrowingCallable;
@@ -58,7 +59,7 @@ class MenuTest {
         Menu 후라이드_후라이드 = MenuFixture.of("후라이드+후라이드", BigDecimal.valueOf(33000), 두마리치킨);
 
         // when
-        ThrowingCallable throwingCallable = () ->  후라이드_후라이드.addMenuProduct(MenuProduct.of(후라이드치킨, 2));
+        ThrowingCallable throwingCallable = () -> 후라이드_후라이드.addMenuProduct(Collections.singletonList(MenuProduct.of(후라이드치킨, 2)));
 
         // then
         assertThatExceptionOfType(IllegalArgumentException.class)

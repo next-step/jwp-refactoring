@@ -21,6 +21,7 @@ class MenuProductTest {
     void setUp() {
         후라이드치킨 = ProductFixture.of("후라이드치킨", BigDecimal.valueOf(16000));
     }
+
     @Test
     void 메뉴_상품_생성() {
         MenuProduct actual = MenuProduct.of(후라이드치킨, 5);
