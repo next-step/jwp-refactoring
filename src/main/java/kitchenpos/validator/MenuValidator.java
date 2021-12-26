@@ -29,7 +29,7 @@ public class MenuValidator {
     }
 
     public void validateMenuGroup(Long menuGroupId) {
-        if(!menuGroupService.existsById(menuGroupId)){
+        if (!menuGroupService.existsById(menuGroupId)) {
             throw new NotFoundMenuGroupException();
         }
     }
@@ -41,7 +41,7 @@ public class MenuValidator {
 
     private List<Product> getValidProducts(List<Long> productIds) {
         List<Product> products = productService.findAllByIdIn(productIds);
-        if(productIds.size() != products.size()){
+        if (productIds.size() != products.size()) {
             throw new NotFoundProductException();
         }
         return products;

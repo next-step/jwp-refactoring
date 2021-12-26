@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,5 +37,10 @@ public class MenuService {
                 .stream()
                 .map(MenuResponse::of)
                 .collect(Collectors.toList());
+    }
+
+    public boolean isNotExistsAllByIdIn(Set<Long> menuIds) {
+        return menuIds.size() != menuRepository.findAllById(menuIds)
+                .size();
     }
 }

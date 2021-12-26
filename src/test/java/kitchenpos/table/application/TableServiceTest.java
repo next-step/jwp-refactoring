@@ -84,7 +84,7 @@ public class TableServiceTest {
         given(savedOrderTable.isEmpty()).willReturn(empty);
         given(savedOrderTable.getTableGroup()).willReturn(null);
         given(orderTableRepository.findByIdElseThrow(anyLong())).willReturn(savedOrderTable);
-        given(orderRepository.existsByOrderTableAndOrderStatusIn(any(), anyList())).willReturn(false);
+        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), anyList())).willReturn(false);
         // when
         OrderTableResponse actual = tableService.changeEmpty(anyLong(), 요청_데이터);
         // then
@@ -109,7 +109,7 @@ public class TableServiceTest {
         // given
         OrderTable savedOrderTable = mock(OrderTable.class);
         given(orderTableRepository.findByIdElseThrow(anyLong())).willReturn(savedOrderTable);
-        given(orderRepository.existsByOrderTableAndOrderStatusIn(any(), anyList())).willReturn(false);
+        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), anyList())).willReturn(false);
         doThrow(IsNotNullTableGroupException.class).when(savedOrderTable).changeEmpty(anyBoolean());
         // when
         // then
@@ -123,12 +123,12 @@ public class TableServiceTest {
         // given
         OrderTable savedOrderTable = mock(OrderTable.class);
         given(orderTableRepository.findByIdElseThrow(anyLong())).willReturn(savedOrderTable);
-        given(orderRepository.existsByOrderTableAndOrderStatusIn(any(), anyList())).willReturn(true);
+        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), anyList())).willReturn(true);
         // when
         // then
         assertThatThrownBy(() -> tableService.changeEmpty(1L, any()))
                 .isInstanceOf(InvalidOrderStatusException.class);
-        verify(orderRepository, only()).existsByOrderTableAndOrderStatusIn(any(), anyList());
+        verify(orderRepository, only()).existsByOrderTableIdAndOrderStatusIn(any(), anyList());
     }
 
     @Test

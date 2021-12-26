@@ -120,7 +120,7 @@ public class TableGroupServiceTest {
         given(tableGroup.getOrderTables()).willReturn(Collections.emptyList());
         given(tableGroupRepository.findByIdElseThrow(anyLong()))
                 .willReturn(tableGroup);
-        given(orderRepository.existsByOrderTableInAndOrderStatusIn(anyList(), anyList()))
+        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList()))
                 .willReturn(false);
         // when
         tableGroupService.ungroup(1L);
@@ -134,7 +134,7 @@ public class TableGroupServiceTest {
         // given
         given(tableGroupRepository.findByIdElseThrow(anyLong()))
                 .willReturn(tableGroup);
-        given(orderRepository.existsByOrderTableInAndOrderStatusIn(anyList(), anyList()))
+        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList()))
                 .willReturn(true);
         // when
         // then

@@ -1,8 +1,5 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.common.exception.OrderLineItemEmptyException;
-import org.springframework.util.CollectionUtils;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -10,6 +7,8 @@ import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Embeddable
 public class OrderLineItems {
@@ -22,9 +21,6 @@ public class OrderLineItems {
     }
 
     public OrderLineItems(List<OrderLineItem> orderLineItems) {
-        if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new OrderLineItemEmptyException();
-        }
         this.orderLineItems = orderLineItems;
     }
 
@@ -37,7 +33,13 @@ public class OrderLineItems {
     }
 
     public void initOrder(Order order) {
-        orderLineItems.forEach(order::addOrderItem);
+        orderLineItems.forEach(orderLineItem -> orderLineItem.assignOrder(order));
+    }
+
+    public Set<Long> getMenuIds() {
+        return orderLineItems.stream()
+                .map(OrderLineItem::getMenuId)
+                .collect(Collectors.toSet());
     }
 
     @Override

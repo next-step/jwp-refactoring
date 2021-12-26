@@ -1,8 +1,6 @@
 package kitchenpos.table.application;
 
 import kitchenpos.common.exception.InvalidOrderStatusException;
-import kitchenpos.common.exception.IsEmptyTableException;
-import kitchenpos.common.exception.IsNotNullTableGroupException;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
@@ -56,8 +54,8 @@ public class TableService {
     }
 
     private void checkTableOrderStatus(OrderTable orderTable) {
-        if (orderRepository.existsByOrderTableAndOrderStatusIn(
-                orderTable, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
+        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
+                orderTable.getId(), Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
             throw new InvalidOrderStatusException();
         }
     }
@@ -67,5 +65,13 @@ public class TableService {
         final OrderTable savedOrderTable = orderTableRepository.findByIdElseThrow(orderTableId);
         savedOrderTable.changeNumberOfGuests(changeGuestsRequest.toNumberOfGuests());
         return OrderTableResponse.of(savedOrderTable);
+    }
+
+    public boolean isExistsByIdAndEmptyTrue(final Long id) {
+        return orderTableRepository.existsByIdAndEmptyTrue(id);
+    }
+
+    public boolean isExistsById(Long id) {
+        return orderTableRepository.existsById(id);
     }
 }

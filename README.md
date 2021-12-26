@@ -162,11 +162,13 @@ ___
   - [ ] 양방향 연관관계 제거
   - [ ] 양방향 연관관계 제거에 따른 cascade로 처리되던 작업 구현
 - 서비스 나누기
-- ## 기존 클래스 다이어그램
-- ![img.png](uml/img_old.png)
-- ## 변경된 클래스 다이어그램
-- ![img.png](uml/img_new.png)
-- ![img.png](uml/img_new_group.png)
-- ## 메뉴 생성 유효성 검사
-- ![img.png](uml/img_menu_create.png)
+- ### 기존 클래스 다이어그램
+![img_old](uml/img_old.png)
+- ### 변경된 클래스 다이어그램
+![img_new](uml/img_new.png)
+![img_new_group](uml/img_new_group.png)
+- ### 메뉴 생성 유효성 검사
+![img_menu_create](uml/img_menu_create.png)
+- ### 주문 생성 유효성 검사
+![img_order_create](uml/img_order_create.png)
 - 연관된 도메인끼리만 연관관계를 묶고 나머지는 Id로 연결

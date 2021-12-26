@@ -40,13 +40,13 @@ public class TableGroupService {
     @Transactional
     public void ungroup(final Long tableGroupId) {
         final TableGroup tableGroup = tableGroupRepository.findByIdElseThrow(tableGroupId);
-        checkTablesOrderStatus(tableGroup.getOrderTables());
+        checkTablesOrderStatus(tableGroup.getOrderTableIds());
         tableGroup.ungroup();
         tableGroupRepository.delete(tableGroup);
     }
 
-    private void checkTablesOrderStatus(List<OrderTable> orderTables) {
-        if (orderRepository.existsByOrderTableInAndOrderStatusIn(
+    private void checkTablesOrderStatus(List<Long> orderTables) {
+        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
                 orderTables, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
             throw new InvalidOrderTableException();
         }

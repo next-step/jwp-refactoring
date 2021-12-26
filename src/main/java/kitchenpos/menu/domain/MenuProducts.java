@@ -31,6 +31,7 @@ public class MenuProducts {
     public static MenuProducts ofEmpty() {
         return new MenuProducts();
     }
+
     public static MenuProducts of(List<MenuProduct> menuProducts) {
         return new MenuProducts(menuProducts);
     }
@@ -60,6 +61,12 @@ public class MenuProducts {
         menuProducts.forEach(menuProduct -> menuProduct.assignMenu(menu));
     }
 
+    public List<Long> getProductIds() {
+        return menuProducts.stream()
+                .map(MenuProduct::getProductId)
+                .collect(Collectors.toList());
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -71,11 +78,5 @@ public class MenuProducts {
     @Override
     public int hashCode() {
         return Objects.hash(menuProducts);
-    }
-
-    public List<Long> getProductIds() {
-        return menuProducts.stream()
-                .map(MenuProduct::getProductId)
-                .collect(Collectors.toList());
     }
 }
