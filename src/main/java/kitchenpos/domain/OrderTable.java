@@ -1,18 +1,41 @@
 package kitchenpos.domain;
 
+import java.util.Objects;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+
+@Entity
 public class OrderTable {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(columnDefinition = "bigint(20)")
     private Long id;
-    private Long tableGroupId;
+
+    @ManyToOne
+    private TableGroup tableGroup;
+
+    @Column(nullable = false, columnDefinition = "int(11)")
     private int numberOfGuests;
+
+    @Column(nullable = false, columnDefinition = "bit(1)")
     private boolean empty;
 
     public OrderTable() {
     }
 
-    public OrderTable(Long id, int numberOfGuests) {
-        this.id = id;
+    public OrderTable(int numberOfGuests) {
         this.numberOfGuests = numberOfGuests;
         this.empty = false;
+    }
+
+    public OrderTable(int numberOfGuests, boolean empty) {
+        this.numberOfGuests = numberOfGuests;
+        this.empty = empty;
     }
 
     public OrderTable(Long id, int numberOfGuests, boolean empty) {
@@ -21,10 +44,10 @@ public class OrderTable {
         this.empty = empty;
     }
 
-    public OrderTable(Long id, int numberOfGuests, Long tableGroupId) {
+    public OrderTable(Long id, int numberOfGuests, TableGroup tableGroup) {
         this.id = id;
         this.numberOfGuests = numberOfGuests;
-        this.tableGroupId = tableGroupId;
+        this.tableGroup = tableGroup;
     }
 
     public Long getId() {
@@ -35,12 +58,12 @@ public class OrderTable {
         this.id = id;
     }
 
-    public Long getTableGroupId() {
-        return tableGroupId;
+    public TableGroup getTableGroup() {
+        return tableGroup;
     }
 
-    public void setTableGroupId(final Long tableGroupId) {
-        this.tableGroupId = tableGroupId;
+    public void setTableGroup(TableGroup tableGroup) {
+        this.tableGroup = tableGroup;
     }
 
     public int getNumberOfGuests() {
@@ -57,5 +80,9 @@ public class OrderTable {
 
     public void setEmpty(final boolean empty) {
         this.empty = empty;
+    }
+
+    public boolean isGrouped() {
+        return Objects.nonNull(tableGroup);
     }
 }

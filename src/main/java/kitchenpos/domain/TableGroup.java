@@ -2,18 +2,34 @@ package kitchenpos.domain;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+@Entity
+@EntityListeners(AuditingEntityListener.class)
 public class TableGroup {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(columnDefinition = "bigint(20)")
     private Long id;
+
+    @CreatedDate
     private LocalDateTime createdDate;
-    private List<OrderTable> orderTables;
+
+    @Embedded
+    private OrderTables orderTables;
 
     public TableGroup() {
-    }
-
-    public TableGroup(Long id, List<OrderTable> orderTables) {
-        this.id = id;
-        this.orderTables = orderTables;
     }
 
     public Long getId() {
@@ -28,15 +44,15 @@ public class TableGroup {
         return createdDate;
     }
 
-    public void setCreatedDate(final LocalDateTime createdDate) {
-        this.createdDate = createdDate;
-    }
-
-    public List<OrderTable> getOrderTables() {
+    public OrderTables getOrderTables() {
         return orderTables;
     }
 
-    public void setOrderTables(final List<OrderTable> orderTables) {
+    public void setOrderTables(final OrderTables orderTables) {
         this.orderTables = orderTables;
+    }
+
+    public void ungroup() {
+        orderTables.ungroup();
     }
 }
