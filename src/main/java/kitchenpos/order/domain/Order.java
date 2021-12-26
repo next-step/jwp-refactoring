@@ -99,12 +99,13 @@ public class Order {
     }
 
     public void addOrderLineItems(final List<OrderLineItem> orderLineItems) {
+        checkOrderLineItems(orderLineItems);
+        
         orderLineItems.stream()
         .forEach(orderLineItem -> {
             orderLineItem.updateOrder(this);
             this.orderLineItems.add(orderLineItem);
         });
-        checkOrderLineItems();
     }
     
     public void checkCompletionStatus() {
@@ -131,7 +132,7 @@ public class Order {
         }
     }
     
-    private void checkOrderLineItems() {
+    private void checkOrderLineItems(List<OrderLineItem> orderLineItems) {
         if (CollectionUtils.isEmpty(orderLineItems)) {
             throw new IllegalArgumentException("주문에 메뉴가 없습니다");
         }
