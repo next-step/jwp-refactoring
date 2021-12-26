@@ -31,26 +31,37 @@ public class Menu extends BaseTimeEntity {
     protected Menu() {
     }
 
-    public Menu(final String name, final BigDecimal price, final MenuGroup menuGroup) {
+    public Menu(final String name, final BigDecimal price, final MenuGroup menuGroup, final List<MenuProduct> menuProducts) {
         this.name = name;
         this.price = price;
         this.menuGroup = menuGroup;
+        addMenuProduct(menuProducts);
+        checkMenuPrice();
     }
 
-    public Menu(final String name, final BigDecimal price, final MenuGroup menuGroup, final BigDecimal menuProductPriceSum) {
-        this(name, price, menuGroup);
-        checkMenuPrice(menuProductPriceSum);
+    public void addMenuProduct(List<MenuProduct> menuProduct) {
+        for (MenuProduct mp : menuProduct) {
+            this.menuProducts.add(mp);
+            mp.addMenu(this);
+        }
     }
 
-    public void addMenuProduct(MenuProduct menuProduct) {
-        this.menuProducts.add(menuProduct);
-        menuProduct.addMenu(this);
-    }
-
-    private void checkMenuPrice(BigDecimal menuProductPriceSum) {
+    private void checkMenuPrice() {
+        final BigDecimal menuProductPriceSum = getMenuProductPriceSum();
         if (this.price.compareTo(menuProductPriceSum) > 0) {
             throw new MenuPriceMoreThanMenuProductPriceSumException(this.price.toPlainString());
         }
+    }
+
+    private BigDecimal getMenuProductPriceSum() {
+        BigDecimal menuProductPriceSum = BigDecimal.ZERO;
+
+        for (final MenuProduct menuProduct : this.menuProducts) {
+            final BigDecimal menuProductTotalPrice = menuProduct.getProduct().getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity()));
+            menuProductPriceSum = menuProductPriceSum.add(menuProductTotalPrice);
+        }
+
+        return menuProductPriceSum;
     }
 
     public Long getId() {

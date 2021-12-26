@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import kitchenpos.global.exception.EntityNotFoundException;
 import kitchenpos.repository.MenuRepository;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
@@ -7,12 +8,11 @@ import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
 import kitchenpos.dto.MenuCreateRequest;
 import kitchenpos.dto.MenuResponse;
-import kitchenpos.global.exception.EntityNotFoundException;
 import kitchenpos.mapper.MenuMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,42 +32,32 @@ public class MenuService {
 
     public MenuResponse create(final MenuCreateRequest request) {
         final MenuGroup menuGroup = menuGroupService.findMenuGroup(request.getMenuGroupId());
-        final List<Product> products = getMenuProduct(request);
-        BigDecimal menuProductPriceSum = getMenuProductPriceSum(request, products);
+        final List<Product> products = getProducts(request);
 
-        final Menu menu = new Menu(request.getName(), request.getPrice(), menuGroup, menuProductPriceSum);
-        saveMenuProduct(request, products, menu);
+        final List<MenuProduct> menuProduct = getMenuProduct(request, products);
+
+        final Menu menu = new Menu(request.getName(), request.getPrice(), menuGroup, menuProduct);
 
         final Menu savedMenu = menuRepository.save(menu);
         return MenuMapper.toMenuResponse(savedMenu);
     }
 
-    private List<Product> getMenuProduct(final MenuCreateRequest request) {
-        return productService.findProducts(request.getMenuProducts()
+    private List<Product> getProducts(final MenuCreateRequest request) {
+        final List<Long> productIds = request.getMenuProducts()
                 .stream()
                 .map(MenuCreateRequest.MenuProductRequest::getProductId)
-                .collect(Collectors.toList()));
+                .collect(Collectors.toList());
+
+        return productService.findProducts(productIds);
     }
 
-    private void saveMenuProduct(final MenuCreateRequest request, final List<Product> products, final Menu savedMenu) {
+    private List<MenuProduct> getMenuProduct(final MenuCreateRequest request, final List<Product> products) {
+        List<MenuProduct> menuProducts = new ArrayList<>();
         for (final MenuCreateRequest.MenuProductRequest menuProductRequest : request.getMenuProducts()) {
             final Product product = getProduct(products, menuProductRequest);
-            final MenuProduct menuProduct = new MenuProduct(product, menuProductRequest.getQuantity());
-
-            savedMenu.addMenuProduct(menuProduct);
+            menuProducts.add(new MenuProduct(product, menuProductRequest.getQuantity()));
         }
-    }
-
-    private BigDecimal getMenuProductPriceSum(final MenuCreateRequest request, final List<Product> products) {
-        BigDecimal menuProductPriceSum = BigDecimal.ZERO;
-
-        for (final MenuCreateRequest.MenuProductRequest menuProductRequest : request.getMenuProducts()) {
-            final Product menuProduct = getProduct(products, menuProductRequest);
-            final BigDecimal menuProductTotalPrice = menuProduct.getPrice().multiply(BigDecimal.valueOf(menuProductRequest.getQuantity()));
-            menuProductPriceSum = menuProductPriceSum.add(menuProductTotalPrice);
-        }
-
-        return menuProductPriceSum;
+        return menuProducts;
     }
 
     private Product getProduct(final List<Product> products, final MenuCreateRequest.MenuProductRequest menuProductRequest) {

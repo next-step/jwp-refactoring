@@ -3,16 +3,14 @@ package kitchenpos.order;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
+import kitchenpos.domain.*;
 import kitchenpos.repository.MenuRepository;
 import kitchenpos.repository.MenuGroupRepository;
 import kitchenpos.repository.OrderTableRepository;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.OrderCreateRequest;
 import kitchenpos.dto.OrderResponse;
 import kitchenpos.dto.OrderStatusChangeRequest;
+import kitchenpos.repository.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -38,6 +36,9 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     @Autowired
     private OrderTableRepository orderTableRepository;
 
+    @Autowired
+    private ProductRepository productRepository;
+
     private Menu menu;
 
     private OrderTable orderTable;
@@ -47,7 +48,9 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
         final MenuGroup menuGroup = menuGroupRepository.save(new MenuGroup("추천메뉴"));
-        final Menu menu = new Menu("후라이드+후라이드", BigDecimal.valueOf(17000), menuGroup);
+        final Product product = new Product("후라이드", BigDecimal.valueOf(8000));
+        final Menu menu = new Menu("후라이드+후라이드", BigDecimal.valueOf(15000), menuGroup, Arrays.asList(new MenuProduct(product, 2L)));
+        productRepository.save(product);
         this.menu = menuRepository.save(menu);
         orderTable = orderTableRepository.save(new OrderTable(0, false));
     }
