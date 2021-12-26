@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -50,7 +51,7 @@ class MenuServiceTest {
     @BeforeEach
     void setUp() {
         menuProductRequest = new MenuProductRequest(1L, 2);
-        menuProduct = new MenuProduct(new Product(1L, "name", BigDecimal.ONE), 2);
+        menuProduct = new MenuProduct(1L, new Menu(2L, "name", BigDecimal.ONE, 1L, new ArrayList<>()), new Product(1L, "name", BigDecimal.ONE), 2);
     }
 
     @DisplayName("메뉴 생성")
@@ -64,7 +65,7 @@ class MenuServiceTest {
         Mockito.when(productDao.findById(Mockito.anyLong()))
             .thenReturn(Optional.of(product));
 
-        MenuProduct expectedMenuProduct = new MenuProduct(2L, 2L, new Product(2L, "name2", BigDecimal.TEN), 2);
+        MenuProduct expectedMenuProduct = new MenuProduct(2L, new Menu(2L, "name", BigDecimal.ONE, 1L, new ArrayList<>()), new Product(2L, "name2", BigDecimal.TEN), 2);
         Mockito.when(menuProductDao.save(Mockito.any()))
             .thenReturn(expectedMenuProduct);
 

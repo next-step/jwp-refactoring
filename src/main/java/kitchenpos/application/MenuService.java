@@ -68,13 +68,12 @@ public class MenuService {
 
         final Menu savedMenu = menuDao.save(menu);
 
-        final Long menuId = savedMenu.getId();
         final List<MenuProduct> savedMenuProducts = new ArrayList<>();
         for (final MenuProductRequest menuProductRequest : menuProducts) {
             final Product product = productDao.findById(menuProductRequest.getProductId())
                 .orElseThrow(IllegalArgumentException::new);
             MenuProduct menuProduct = new MenuProduct(product, menuProductRequest.getQuantity());
-            menuProduct.setMenuId(menuId);
+            menuProduct.setMenu(menu);
             savedMenuProducts.add(menuProductDao.save(menuProduct));
         }
         savedMenu.setMenuProducts(savedMenuProducts);
