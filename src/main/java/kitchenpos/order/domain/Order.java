@@ -95,7 +95,7 @@ public class Order {
         return orderLineItems.getOrderLineItems();
     }
 
-    public void changeOrderStatusIfNotCompletion(OrderStatus orderStatus) {
+    public void changeOrderStatus(OrderStatus orderStatus) {
         if (OrderStatus.COMPLETION.equals(this.orderStatus)) {
             throw new CanNotEditOrderStatusException();
         }

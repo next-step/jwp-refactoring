@@ -92,7 +92,7 @@ public class OrderService {
 	@Transactional
 	public OrderResponse changeOrderStatus(final Long orderId, final OrderStatusRequest request) {
 		final Order order = findOrder(orderId);
-		order.changeOrderStatusIfNotCompletion(request.getOrderStatus());
+		order.changeOrderStatus(request.getOrderStatus());
 		return OrderResponse.of(order);
 	}
 

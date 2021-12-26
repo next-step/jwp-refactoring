@@ -1,7 +1,6 @@
 package kitchenpos.order.domain;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -45,23 +44,23 @@ class OrderTest {
 
 	@DisplayName("주문의 상태변경: 식사->계산완료")
 	@Test
-	void changeOrderStatusIfNotCompletion() {
+	void changeOrderStatus() {
 		final OrderTable 개별_주문테이블 = OrderTable.of(1L, null, 1, false);
 		final Order 주문 = Order.of(개별_주문테이블, OrderStatus.MEAL, 주문항목_목록);
 
-		주문.changeOrderStatusIfNotCompletion(OrderStatus.COMPLETION);
+		주문.changeOrderStatus(OrderStatus.COMPLETION);
 
 		assertThat(주문.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION);
 	}
 
 	@DisplayName("계산완료된 주문의 상태변경을 시도하면 예외발생")
 	@Test
-	void changeOrderStatusIfNotCompletion_when_completion() {
+	void changeOrderStatus_when_completion() {
 		final OrderTable 개별_주문테이블 = OrderTable.of(1L, null, 2, false);
 		final Order 주문 = Order.of(개별_주문테이블, OrderStatus.COMPLETION, 주문항목_목록);
 
 		assertThatExceptionOfType(CanNotEditOrderStatusException.class)
-			.isThrownBy(() -> 주문.changeOrderStatusIfNotCompletion(OrderStatus.COOKING));
+			.isThrownBy(() -> 주문.changeOrderStatus(OrderStatus.COOKING));
 	}
 
 	@DisplayName("주문항목 목록이 없으면 예외발생")
