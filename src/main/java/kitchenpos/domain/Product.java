@@ -2,6 +2,7 @@ package kitchenpos.domain;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+
 @Entity
 public class Product {
     @Id
@@ -25,6 +26,10 @@ public class Product {
 
     public static Product of(Long id, String name, BigDecimal price) {
         return new Product(id, name, price);
+    }
+
+    public static Product of(String name, BigDecimal price) {
+        return new Product(null, name, price);
     }
 
     public Long getId() {
