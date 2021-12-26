@@ -5,8 +5,10 @@ import kitchenpos.common.exception.NotFoundEntityException;
 import kitchenpos.common.exception.OrderStatusNotProcessingException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.product.domain.Product;
@@ -21,6 +23,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,6 +41,7 @@ public class OrderTableServiceTest {
     private OrderTableRepository orderTableRepository;
 
     private OrderTableService orderTableService;
+
     private OrderTable 주문_테이블_1번;
     private OrderTable 빈_주문_테이블;
     private Order 주문;
@@ -48,21 +52,25 @@ public class OrderTableServiceTest {
     private OrderTableRequest 빈_주문_테이블_요청;
     private MenuProduct 짜장면_곱배기;
     private MenuProduct 짜장면_보통;
+    private Product 짜장면_상품;
 
     @BeforeEach
     void setUp() {
         orderTableService = new OrderTableService(orderTableRepository);
 
+        짜장면_상품 = new Product("짜장면", new BigDecimal(1000));
         짜장면_주문1 = new OrderLineItem(주문, 짜장면, 10);
         짜장면_주문2 = new OrderLineItem(주문, 짜장면, 3);
-        짜장면_곱배기 = new MenuProduct(1L, 짜장면, new Product(), 10);
-        짜장면_보통 = new MenuProduct(1L, 짜장면, new Product(), 3);
-        짜장면 = new Menu("짜장면", 1000, null, Lists.newArrayList(짜장면_곱배기, 짜장면_보통));
+        짜장면_곱배기 = new MenuProduct(1L, 짜장면, 짜장면_상품, 2);
+        짜장면_보통 = new MenuProduct(1L, 짜장면, 짜장면_상품, 1);
+        짜장면 = new Menu("짜장면", 10000, new MenuGroup(), Lists.newArrayList(짜장면_곱배기, 짜장면_보통));
 
         주문_테이블_1번 = new OrderTable(3);
-        빈_주문_테이블 = new OrderTable(0);
         주문 = new Order(주문_테이블_1번, Lists.newArrayList(짜장면_주문1, 짜장면_주문2));
         주문테이블에_주문_추가(주문_테이블_1번, 주문);
+
+        빈_주문_테이블 = new OrderTable(0);
+
         주문_테이블_1번_요청 = new OrderTableRequest(3);
         빈_주문_테이블_요청 = new OrderTableRequest(0);
     }
@@ -136,6 +144,7 @@ public class OrderTableServiceTest {
 
             // given
             final OrderTableResponse createdOrderTable = 주문_테이블_요청한다(주문_테이블_1번_요청);
+            주문_상태를_변경한다(주문, OrderStatus.COOKING);
 
             // when
             final OrderTableResponse changeEmptyTable = 주문_테이블을_비운다(createdOrderTable.getId());
@@ -163,9 +172,6 @@ public class OrderTableServiceTest {
     @Test
     void changeNumberOfGuestsNegativeNumberExceptionTest() {
         assertThatThrownBy(() -> {
-            when(orderTableRepository.findById(any())).thenReturn(Optional.of(new OrderTable(-1)));
-            when(orderTableRepository.save(any())).thenReturn(new OrderTable(-1));
-
             // given
             final OrderTableRequest orderTableRequest = new OrderTableRequest(-1);
             final OrderTableResponse createdOrderTable = 주문_테이블_요청한다(orderTableRequest);
@@ -175,6 +181,23 @@ public class OrderTableServiceTest {
 
             // then
         }).isInstanceOf(NegativeNumberOfGuestsException.class);
+    }
+
+    @DisplayName("주문 테이블이 반드시 존재해야 한다.")
+    @Test
+    void changeNumberOfGuestsExistOrderTableExceptionTest() {
+        assertThatThrownBy(() -> {
+            when(orderTableRepository.save(any())).thenReturn(new OrderTable(3));
+
+            // given
+            final OrderTableRequest orderTableRequest = new OrderTableRequest(3);
+            final OrderTableResponse createdOrderTable = 주문_테이블_요청한다(orderTableRequest);
+
+            // when
+            주문_테이블_손님수를_변경한다(createdOrderTable.getId(), orderTableRequest);
+
+            // then
+        }).isInstanceOf(NotFoundEntityException.class);
     }
 
     public static void 주문테이블에_주문_추가(OrderTable orderTable, Order order) {
@@ -195,6 +218,10 @@ public class OrderTableServiceTest {
 
     private OrderTableResponse 주문_테이블_손님수를_변경한다(Long orderTableId, OrderTableRequest orderTableRequest) {
         return orderTableService.changeNumberOfGuests(orderTableId, orderTableRequest);
+    }
+
+    private void 주문_상태를_변경한다(Order order, OrderStatus orderStatus) {
+        order.changeOrderStatus(orderStatus);
     }
 
 }

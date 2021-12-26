@@ -1,13 +1,14 @@
 package kitchenpos.product.domain;
 
-import kitchenpos.common.exception.NegativePriceException;
+import kitchenpos.common.domain.Name;
+import kitchenpos.common.domain.Price;
 
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.math.BigDecimal;
-import java.util.Objects;
 
 @Entity
 public class Product {
@@ -15,17 +16,18 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
+    @Embedded
+    private Name name;
 
-    private BigDecimal price;
+    @Embedded
+    private Price price;
 
     public Product() {
     }
 
     public Product(String name, BigDecimal price) {
-        validatePrice(price);
-        this.name = name;
-        this.price = price;
+        this.name = new Name(name);
+        this.price = new Price(price);
     }
 
     public Product(long id, String name, int price) {
@@ -33,16 +35,9 @@ public class Product {
     }
 
     public Product(long id, String name, BigDecimal price) {
-        validatePrice(price);
         this.id = id;
-        this.name = name;
-        this.price = price;
-    }
-
-    private void validatePrice(BigDecimal price) {
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new NegativePriceException();
-        }
+        this.name = new Name(name);
+        this.price = new Price(price);
     }
 
     public Long getId() {
@@ -50,10 +45,10 @@ public class Product {
     }
 
     public String getName() {
-        return name;
+        return name.getName();
     }
 
     public BigDecimal getPrice() {
-        return price;
+        return price.getPrice();
     }
 }

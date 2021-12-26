@@ -1,7 +1,7 @@
 package kitchenpos.order.domain;
 
 public enum OrderStatus {
-    COOKING, MEAL, COMPLETION;
+    COOKING, MEAL, COMPLETION, NONE;
 
     public static boolean isCompleted(OrderStatus orderStatus) {
         return OrderStatus.COMPLETION == orderStatus;

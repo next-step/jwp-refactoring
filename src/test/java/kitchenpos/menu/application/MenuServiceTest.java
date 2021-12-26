@@ -19,6 +19,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -46,14 +47,16 @@ class MenuServiceTest {
     private MenuRequest 짜장면_요청;
     private MenuProduct 짜장면_하나;
     private MenuProduct 짜장면_두개;
+    private Product 짜장면_상품;
 
     @BeforeEach
     void setUp() {
         menuService = new MenuService(menuRepository, menuGroupRepository);
-        짜장면_하나 = new MenuProduct(1L, new Menu(), new Product(), 1);
-        짜장면_두개 = new MenuProduct(1L, new Menu(), new Product(), 2);
-        짜장면 = new Menu("짜장면", 1000, new MenuGroup(), Lists.newArrayList(짜장면_하나, 짜장면_두개));
-        짜장면_요청 = new MenuRequest("메뉴이름1", 1000, 1L, Lists.newArrayList(짜장면_하나, 짜장면_두개));
+        짜장면_상품 = new Product("짜장면", new BigDecimal(1000));
+        짜장면_하나 = new MenuProduct(1L, new Menu(), 짜장면_상품, 1);
+        짜장면_두개 = new MenuProduct(2L, new Menu(), 짜장면_상품, 2);
+        짜장면 = new Menu("짜장면", 10000, new MenuGroup(), Lists.newArrayList(짜장면_하나, 짜장면_두개));
+        짜장면_요청 = new MenuRequest("짜장면", 10000, 1L, Lists.newArrayList(짜장면_하나, 짜장면_두개));
     }
 
     @DisplayName("메뉴를 등록할 수 있다.")
@@ -105,13 +108,15 @@ class MenuServiceTest {
     @Test
     void createMenuSumBiggerThanPriceExceptionTest() {
         assertThatThrownBy(() -> {
-            when(menuGroupRepository.findById(any())).thenReturn(Optional.of(new MenuGroup()));
-
             // given
-            final MenuRequest 메뉴_가격_총합_0원 = new MenuRequest("메뉴이름1", 1000, 1L, new ArrayList<>());
+            Menu 가격이_말도_안되는_짜장면 = new Menu(1L, "짜장면", 1000, new MenuGroup(), Lists.newArrayList(짜장면_하나, 짜장면_두개));
+            when(menuGroupRepository.findById(any())).thenReturn(Optional.of(new MenuGroup()));
+            when(menuRepository.save(any())).thenReturn(가격이_말도_안되는_짜장면);
+
+            final MenuRequest 가격이_말도_안되는_짜장면_요청 = new MenuRequest("짜장면", 1000, 1L, new ArrayList<>());
 
             // when
-            메뉴를_주문한다(메뉴_가격_총합_0원);
+            메뉴를_주문한다(가격이_말도_안되는_짜장면_요청);
 
             // then
         }).isInstanceOf(MenuProductSumPriceException.class);

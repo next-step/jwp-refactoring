@@ -32,9 +32,9 @@ public class Price {
 
     public boolean isPossibleMenu(List<MenuProduct> menuProducts) {
         BigDecimal sum = menuProducts.stream()
-                .map(menuProduct -> menuProduct.multiply(price))
+                .map(MenuProduct::multiply)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        return price.compareTo(sum) < 0;
+        return price.compareTo(sum) > 0;
     }
 }

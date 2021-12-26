@@ -3,7 +3,6 @@ package kitchenpos.order.application;
 import kitchenpos.common.exception.EmptyOrderTableException;
 import kitchenpos.common.exception.NotFoundEntityException;
 import kitchenpos.common.exception.OrderStatusCompletedException;
-import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
@@ -51,12 +50,13 @@ class OrderServiceTest {
     @BeforeEach
     void setUp() {
         orderService = new OrderService(orderRepository, orderTableRepository);
-        주문_항목 = new OrderLineItem();
-        주문_항목2 = new OrderLineItem();
-        주문 = new Order(new OrderTable(), Lists.newArrayList(주문_항목, 주문_항목2));
-
         주문_테이블_1번 = new OrderTable(1L, null, 3);
         주문_테이블_2번 = new OrderTable(null, 0);
+
+        주문_항목 = new OrderLineItem();
+        주문_항목2 = new OrderLineItem();
+        주문 = new Order(주문_테이블_1번, Lists.newArrayList(주문_항목, 주문_항목2));
+
         주문_요청 = new OrderRequest(주문_테이블_1번.getId(), Lists.newArrayList(주문_항목, 주문_항목2));
     }
 

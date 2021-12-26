@@ -1,11 +1,12 @@
 package kitchenpos.ordertable.domain;
 
-import kitchenpos.common.exception.EmptyOrderTableStatusException;
-import kitchenpos.common.exception.NegativeNumberOfGuestsException;
+import kitchenpos.common.domain.Empty;
+import kitchenpos.common.domain.NumberOfGuests;
 import kitchenpos.common.exception.NotEmptyOrderTableStatusException;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.order.domain.Order;
 
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -31,9 +32,12 @@ public class OrderTable {
     @OneToMany(mappedBy = "orderTable")
     private List<Order> orders = new ArrayList<>();
 
-    private int numberOfGuests;
+    @Embedded
+    private NumberOfGuests numberOfGuests;
 
-    private boolean empty;
+
+    @Embedded
+    private Empty empty;
 
 
     public OrderTable() {
@@ -50,17 +54,17 @@ public class OrderTable {
     public OrderTable(Long id, TableGroup tableGroup, int numberOfGuests) {
         this.id = id;
         this.tableGroup = tableGroup;
-        this.numberOfGuests = numberOfGuests;
+        this.numberOfGuests = new NumberOfGuests(numberOfGuests);
         checkEmpty(numberOfGuests);
     }
 
     private void checkEmpty(int numberOfGuests) {
         if (numberOfGuests == 0) {
-            empty = true;
+            empty = new Empty(true);
             return;
         }
 
-        empty = false;
+        empty = new Empty(false);
     }
 
     public Long getId() {
@@ -76,11 +80,11 @@ public class OrderTable {
     }
 
     public int getNumberOfGuests() {
-        return numberOfGuests;
+        return numberOfGuests.getNumberOfGuests();
     }
 
     public boolean isEmpty() {
-        return empty;
+        return empty.isEmpty();
     }
 
     public void validateAddableOrderTable() {
@@ -90,36 +94,30 @@ public class OrderTable {
     }
 
     public void changeNumberOfGuests(int numberOfGuests) {
-        validateChangeableNumberOfGuests(numberOfGuests);
-        this.numberOfGuests = numberOfGuests;
-    }
-
-    private void validateChangeableNumberOfGuests(int numberOfGuests) {
-        if (numberOfGuests < 0) {
-            throw new NegativeNumberOfGuestsException();
-        }
-
-        if (isEmpty()) {
-            throw new EmptyOrderTableStatusException();
-        }
+        this.numberOfGuests.changeNumberOfGuests(numberOfGuests);
+        checkEmpty(numberOfGuests);
     }
 
     public void changeEmpty() {
-        validateChangeableOrderTable();
-        validateNotProcessing();
-        empty = true;
+        validateChangeableEmpty();
+        empty = new Empty(true);
         orders = Collections.emptyList();
+    }
+
+    private void validateChangeableEmpty() {
+        validateNotHavingTableGroup();
+        validateNotProcessing();
+    }
+
+    private void validateNotHavingTableGroup() {
+        if (Objects.nonNull(tableGroup)) {
+            throw new NotEmptyOrderTableStatusException();
+        }
     }
 
     public void validateNotProcessing() {
         for (Order order: orders) {
-            order.validateNotProcessing();
-        }
-    }
-
-    private void validateChangeableOrderTable() {
-        if (Objects.nonNull(tableGroup)) {
-            throw new NotEmptyOrderTableStatusException();
+            order.validateNotProcessingWhenChangeEmpty();
         }
     }
 
@@ -130,7 +128,7 @@ public class OrderTable {
 
     public void ungroupTableGroup() {
         for (Order order: orders) {
-            order.validateCompleted();
+            order.validateCompletedWhenUngroup();
         }
 
         this.tableGroup = null;

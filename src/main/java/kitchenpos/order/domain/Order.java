@@ -1,25 +1,28 @@
 package kitchenpos.order.domain;
 
 import kitchenpos.common.exception.EmptyOrderTableException;
-import kitchenpos.common.exception.NotEmptyOrderLineItemException;
+import kitchenpos.common.exception.NotFoundEntityException;
 import kitchenpos.common.exception.OrderStatusCompletedException;
 import kitchenpos.common.exception.OrderStatusNotCompletedException;
 import kitchenpos.common.exception.OrderStatusNotProcessingException;
 import kitchenpos.ordertable.domain.OrderTable;
-import org.springframework.util.CollectionUtils;
 
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Entity
+@Table(name = "orders")
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,12 +32,13 @@ public class Order {
     @JoinColumn(name = "order_table_id")
     private OrderTable orderTable;
 
+    @Enumerated(value = EnumType.STRING)
     private OrderStatus orderStatus;
 
     private LocalDateTime orderedTime;
 
-    @OneToMany(mappedBy = "order")
-    private List<OrderLineItem> orderLineItems = new ArrayList<>();
+    @Embedded
+    private OrderLineItems orderLineItems = new OrderLineItems();
 
     public Order() {
     }
@@ -42,23 +46,24 @@ public class Order {
     public Order(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
         validateOrder(orderTable);
         this.orderTable = orderTable;
-        this.orderStatus = OrderStatus.COOKING;
+        this.orderStatus = OrderStatus.NONE;
         this.orderedTime = LocalDateTime.now();
         addOrderLineItems(orderLineItems);
-        validateOrderLineItems();
     }
 
     public Order(Long id, OrderTable orderTable, List<OrderLineItem> orderLineItems) {
         validateOrder(orderTable);
         this.id = id;
         this.orderTable = orderTable;
-        this.orderStatus = OrderStatus.COOKING;
+        this.orderStatus = OrderStatus.NONE;
         this.orderedTime = LocalDateTime.now();
         addOrderLineItems(orderLineItems);
-        validateOrderLineItems();
     }
 
     private void validateOrder(OrderTable orderTable) {
+        orderTable = Optional.ofNullable(orderTable)
+                .orElseThrow(NotFoundEntityException::new);
+
         if (orderTable.isEmpty()) {
             throw new EmptyOrderTableException();
         }
@@ -66,15 +71,9 @@ public class Order {
 
     private void addOrderLineItems(List<OrderLineItem> orderLineItems) {
         orderLineItems.forEach(orderLineItem -> {
-            this.orderLineItems.add(orderLineItem);
+            this.orderLineItems.addOrderLineItem(orderLineItem);
             orderLineItem.decideOrder(this);
         });
-    }
-
-    private void validateOrderLineItems() {
-        if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new NotEmptyOrderLineItemException();
-        }
     }
 
     public Long getId() {
@@ -94,7 +93,7 @@ public class Order {
     }
 
     public List<OrderLineItem> getOrderLineItems() {
-        return orderLineItems;
+        return orderLineItems.getOrderLineItems();
     }
 
     public void decideOrderTable(OrderTable orderTable) {
@@ -109,13 +108,13 @@ public class Order {
         this.orderStatus = orderStatus;
     }
 
-    public void validateCompleted() {
+    public void validateCompletedWhenUngroup() {
         if (!OrderStatus.isCompleted(orderStatus)) {
             throw new OrderStatusNotCompletedException();
         }
     }
 
-    public void validateNotProcessing() {
+    public void validateNotProcessingWhenChangeEmpty() {
         if (!OrderStatus.isMeal(orderStatus) && !OrderStatus.isCooking(orderStatus)) {
             return;
         }

@@ -1,12 +1,12 @@
-package kitchenpos.menu.domain;
+package kitchenpos.common.domain;
 
 import javax.persistence.Embeddable;
 
 @Embeddable
-public class MenuName {
+public class Name {
     private String name;
 
-    public MenuName(String name) {
+    public Name(String name) {
         this.name = name;
     }
 

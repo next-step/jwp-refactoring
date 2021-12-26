@@ -1,6 +1,8 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.common.domain.Name;
 import kitchenpos.common.domain.Price;
+import kitchenpos.common.exception.MenuGroupRequiredException;
 import kitchenpos.common.exception.MenuProductSumPriceException;
 import kitchenpos.menugroup.domain.MenuGroup;
 
@@ -13,6 +15,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 @Entity
 public class Menu {
@@ -21,7 +24,7 @@ public class Menu {
     private Long id;
 
     @Embedded
-    private MenuName name;
+    private Name name;
 
     @Embedded
     private Price price;
@@ -41,11 +44,20 @@ public class Menu {
     }
 
     public Menu(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        this.name = new MenuName(name);
+        this.name = new Name(name);
         this.price = new Price(price);
         this.menuGroup = menuGroup;
         addMenuProducts(menuProducts);
-        validateMenu(menuProducts);
+        validateMenu(menuGroup, menuProducts);
+    }
+
+    public Menu(Long id, String name, int price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+        this.id = id;
+        this.name = new Name(name);
+        this.price = new Price(BigDecimal.valueOf(price));
+        this.menuGroup = menuGroup;
+        addMenuProducts(menuProducts);
+        validateMenu(menuGroup, menuProducts);
     }
 
     private void addMenuProducts(List<MenuProduct> menuProducts) {
@@ -55,7 +67,10 @@ public class Menu {
         });
     }
 
-    private void validateMenu(List<MenuProduct> menuProducts) {
+    private void validateMenu(MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+        Optional.ofNullable(menuGroup)
+                .orElseThrow(MenuGroupRequiredException::new);
+
         if (!price.isPossibleMenu(menuProducts)) {
             throw new MenuProductSumPriceException();
         }

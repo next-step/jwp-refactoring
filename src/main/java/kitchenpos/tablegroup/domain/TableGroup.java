@@ -1,16 +1,14 @@
 package kitchenpos.tablegroup.domain;
 
-import kitchenpos.common.exception.MinimumOrderTableNumberException;
 import kitchenpos.ordertable.domain.OrderTable;
-import org.springframework.util.CollectionUtils;
+import kitchenpos.ordertable.domain.OrderTables;
 
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -21,37 +19,21 @@ public class TableGroup {
 
     private LocalDateTime createdDate;
 
-    @OneToMany(mappedBy = "tableGroup")
-    private List<OrderTable> orderTables = new ArrayList<>();
+    @Embedded
+    private OrderTables orderTables;
 
     public TableGroup() {
     }
 
     public TableGroup(List<OrderTable> orderTables) {
         this.createdDate = LocalDateTime.now();
-        this.orderTables = orderTables;
-        validateTableGroup();
+        this.orderTables = new OrderTables(orderTables);
     }
 
     public TableGroup(Long id, List<OrderTable> orderTables) {
         this.id = id;
         this.createdDate = LocalDateTime.now();
-        this.orderTables = orderTables;
-        validateTableGroup();
-    }
-
-    private void validateTableGroup() {
-        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
-            throw new MinimumOrderTableNumberException();
-        }
-
-        validateOrderTables();
-    }
-
-    private void validateOrderTables() {
-        for (final OrderTable orderTable : orderTables) {
-            orderTable.validateAddableOrderTable();
-        }
+        this.orderTables = new OrderTables(orderTables);
     }
 
     public Long getId() {
@@ -63,12 +45,10 @@ public class TableGroup {
     }
 
     public List<OrderTable> getOrderTables() {
-        return orderTables;
+        return orderTables.getOrderTables();
     }
 
     public void ungroup() {
-        for (OrderTable orderTable: orderTables) {
-            orderTable.ungroupTableGroup();
-        }
+        orderTables.ungroup();
     }
 }
