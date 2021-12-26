@@ -3,17 +3,19 @@ package kitchenpos.product;
 import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.product.dto.ProductRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Arrays;
+import java.math.BigDecimal;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -29,11 +31,11 @@ public class ProductServiceTest {
 
     @InjectMocks
     private ProductService productService;
-    private Product product;
+    private ProductRequest product;
 
     @BeforeEach
     void setUp() {
-        product = 상품_등록("짜장면", 5000);
+        product = 상품_등록("짜장면", new BigDecimal(5000));
     }
 
     @Test
@@ -49,8 +51,9 @@ public class ProductServiceTest {
     }
 
     @ParameterizedTest(name = "가격이 음수인 경우 등록 실패한다.")
-    @ValueSource(ints = {-100})
-    void createProductWithInValidPrice(int price) {
+    @NullSource
+    @ValueSource(strings = {"-100"})
+    void createProductWithInValidPrice(BigDecimal price) {
         // then
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
             productService.create(상품_등록("짜장면", price));
@@ -60,9 +63,6 @@ public class ProductServiceTest {
     @Test
     @DisplayName("상품을 조회한다.")
     void getProduct() {
-        // given
-        given(productRepository.findAll()).willReturn(Arrays.asList(product));
-
         // when
         List<Product> products = productService.list();
 
@@ -70,7 +70,7 @@ public class ProductServiceTest {
         assertThat(products).isNotNull();
     }
 
-    public static Product 상품_등록(String name, int price) {
-        return new Product(name, price);
+    public static ProductRequest 상품_등록(String name, BigDecimal price) {
+        return new ProductRequest(name, price);
     }
 }

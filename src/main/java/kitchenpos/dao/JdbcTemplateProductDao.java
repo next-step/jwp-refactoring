@@ -61,7 +61,7 @@ public class JdbcTemplateProductDao implements ProductDao {
     }
 
     private Product toEntity(final ResultSet resultSet) throws SQLException {
-        final Product entity = new Product(resultSet.getString("name"), Integer.parseInt(resultSet.getBigDecimal("price").toString()));
+        final Product entity = new Product(resultSet.getString("name"), resultSet.getBigDecimal("price"));
         return entity;
     }
 }

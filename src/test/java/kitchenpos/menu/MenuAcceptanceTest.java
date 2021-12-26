@@ -1,15 +1,14 @@
-package kitchenpos.acceptance;
+package kitchenpos.menu;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.menu.MenuGroupAcceptanceTest;
-import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.dto.MenuGroupResponse;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.product.ProductAcceptanceTest;
-import kitchenpos.product.domain.Product;
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -17,9 +16,7 @@ import org.springframework.http.MediaType;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -28,14 +25,12 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("메뉴를 등록한다.")
     void createMenu() {
-        Product product = ProductAcceptanceTest.상품_등록_요청("짜장면", new BigDecimal(5000)).as(Product.class);
-        MenuGroup menuGroup = MenuGroupAcceptanceTest.메뉴_그룹_등록_요청("중국음식").as(MenuGroup.class);
-        MenuProduct menuProduct = new MenuProduct();
-        menuProduct.setMenuId(1L);
-        menuProduct.setQuantity(1);
+        ProductResponse product = ProductAcceptanceTest.상품_등록_요청("짜장면", new BigDecimal(5000)).as(ProductResponse.class);
+        MenuGroupResponse menuGroup = MenuGroupAcceptanceTest.메뉴_그룹_등록_요청("중국음식").as(MenuGroupResponse.class);
+        MenuProductRequest menuProductRequest = new MenuProductRequest(product.getId(), 1L);
 
         // when
-        ExtractableResponse<Response> response = 메뉴_등록_요청("짜장면", product.getPrice(), menuGroup.getId(), Arrays.asList(menuProduct));
+        ExtractableResponse<Response> response = 메뉴_등록_요청("짜장면", new BigDecimal(5000), menuGroup.getId(), Arrays.asList(menuProductRequest));
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
@@ -44,8 +39,6 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("메뉴를 조회한다.")
     void getMenu() {
-        // when
-        Map<String, String> params = new HashMap<>();
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -57,15 +50,12 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         assertThat(response.jsonPath().getList(".")).hasSize(6);
     }
 
-    private ExtractableResponse<Response> 메뉴_등록_요청(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
-        Menu menu = new Menu();
-        menu.setMenuProducts(menuProducts);
-        menu.setName(name);
-        menu.setPrice(price);
+    private ExtractableResponse<Response> 메뉴_등록_요청(String name, BigDecimal price, Long menuGroupId, List<MenuProductRequest> menuProductRequests) {
+        MenuRequest menuRequest = new MenuRequest(name, price, menuGroupId, menuProductRequests);
 
         return RestAssured
                 .given().log().all()
-                .body(menu)
+                .body(menuRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/api/menus")
                 .then().log().all().extract();

@@ -4,14 +4,13 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
+import kitchenpos.product.dto.ProductRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -48,13 +47,11 @@ public class ProductAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 상품_등록_요청(String name, BigDecimal price) {
-        Map<String, String> params = new HashMap<>();
-        params.put("name", name);
-        params.put("price", price.toString());
+        ProductRequest productRequest = new ProductRequest(name, price);
 
         return RestAssured
                 .given().log().all()
-                .body(params)
+                .body(productRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/api/products")
                 .then().log().all().extract();
