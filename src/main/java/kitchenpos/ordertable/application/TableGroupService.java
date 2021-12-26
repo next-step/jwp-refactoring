@@ -1,6 +1,7 @@
 package kitchenpos.ordertable.application;
 
 import java.util.List;
+import kitchenpos.common.validator.OrderTableValidator;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.TableGroup;
 import kitchenpos.ordertable.domain.TableGroupRepository;
@@ -8,7 +9,6 @@ import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.TableGroupRequest;
 import kitchenpos.ordertable.dto.TableGroupResponse;
 import kitchenpos.ordertable.exception.TableGroupNotFoundException;
-import kitchenpos.validator.OrderTableValidator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

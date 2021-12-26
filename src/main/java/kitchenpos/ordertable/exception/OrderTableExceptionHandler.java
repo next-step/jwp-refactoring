@@ -13,9 +13,27 @@ public class OrderTableExceptionHandler {
         return ResponseEntity.badRequest().build();
     }
 
+    @ExceptionHandler(IllegalNumberOfGuests.class)
+    public ResponseEntity handleIllegalNumberOfGuests(
+        IllegalNumberOfGuests e) {
+        return ResponseEntity.badRequest().build();
+    }
+
     @ExceptionHandler(TableChangeNumberOfGuestsException.class)
     public ResponseEntity handleTableChangeNumberOfGuestsException(
         TableChangeNumberOfGuestsException e) {
+        return ResponseEntity.badRequest().build();
+    }
+
+    @ExceptionHandler(TableGroupNotFoundException.class)
+    public ResponseEntity handleTableGroupNotFoundException(
+        TableGroupNotFoundException e) {
+        return ResponseEntity.badRequest().build();
+    }
+
+    @ExceptionHandler(TableNotFoundException.class)
+    public ResponseEntity handleTableNotFoundException(
+        TableNotFoundException e) {
         return ResponseEntity.badRequest().build();
     }
 

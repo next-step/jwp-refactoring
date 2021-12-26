@@ -2,6 +2,7 @@ package kitchenpos.menu.application;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import kitchenpos.common.validator.MenuProductValidator;
 import kitchenpos.common.vo.Price;
 import kitchenpos.common.vo.Quantity;
 import kitchenpos.menu.domain.Menu;
@@ -12,7 +13,6 @@ import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.exception.MenuNotFoundException;
-import kitchenpos.validator.MenuProductValidator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,7 +26,7 @@ public class MenuService {
 
     public MenuService(MenuRepository menuRepository, MenuGroupService menuGroupService,
         MenuProductValidator menuProductValidator) {
-        
+
         this.menuRepository = menuRepository;
         this.menuGroupService = menuGroupService;
         this.menuProductValidator = menuProductValidator;

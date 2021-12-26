@@ -1,4 +1,4 @@
-package kitchenpos.validator;
+package kitchenpos.common.validator;
 
 import java.util.List;
 import java.util.stream.Collectors;

@@ -1,4 +1,4 @@
-package kitchenpos.validator;
+package kitchenpos.common.validator;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 

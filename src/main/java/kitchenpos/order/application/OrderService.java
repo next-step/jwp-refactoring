@@ -2,6 +2,8 @@ package kitchenpos.order.application;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import kitchenpos.common.validator.OrderMenuValidator;
+import kitchenpos.common.validator.OrderTableValidator;
 import kitchenpos.common.vo.Quantity;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
@@ -10,8 +12,6 @@ import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.exception.OrderNotFoundException;
-import kitchenpos.validator.OrderMenuValidator;
-import kitchenpos.validator.OrderTableValidator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
