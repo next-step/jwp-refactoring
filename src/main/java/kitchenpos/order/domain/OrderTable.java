@@ -17,7 +17,8 @@ public class OrderTable {
 
     private Long tableGroupId;
 
-    private int numberOfGuests;
+    @Embedded
+    private Guests guests;
 
     @Embedded
     private TableState tableState;
@@ -29,7 +30,7 @@ public class OrderTable {
     }
 
     public OrderTable(int numberOfGuests, TableState tableState) {
-        this.numberOfGuests = numberOfGuests;
+        this.guests = new Guests(numberOfGuests);
         this.tableState = tableState;
         this.orderStatus = READY;
     }
@@ -46,12 +47,12 @@ public class OrderTable {
     }
 
     public void changeGuests(final int numberOfGuests) {
-        this.numberOfGuests = numberOfGuests;
+        this.guests = new Guests(numberOfGuests);
     }
 
     public void changeEmpty() {
         this.tableState = new TableState(true);
-        this.numberOfGuests = 0;
+        this.guests = Guests.none();
     }
 
     public void changeStatus(OrderStatus orderStatus) {
@@ -73,8 +74,8 @@ public class OrderTable {
         return tableGroupId;
     }
 
-    public int getNumberOfGuests() {
-        return numberOfGuests;
+    public int getGuests() {
+        return guests.getNumber();
     }
 
     public TableState getTableState() {

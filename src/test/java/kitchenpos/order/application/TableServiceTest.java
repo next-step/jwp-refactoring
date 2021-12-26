@@ -54,7 +54,7 @@ class TableServiceTest {
 
         verify(tableRepository, times(1)).save(any(OrderTable.class));
         assertThat(response).extracting("id", "numberOfGuests", "tableState")
-                .containsExactly(빈테이블.getId(), 빈테이블.getNumberOfGuests(), true);
+                .containsExactly(빈테이블.getId(), 빈테이블.getGuests(), true);
     }
 
     @Test
