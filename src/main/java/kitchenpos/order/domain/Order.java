@@ -83,11 +83,11 @@ public class Order {
     }
 
     public boolean isCompleteStatus() {
-        return orderStatus.equals(OrderStatus.COMPLETION);
+        return orderStatus.isCompletion();
     }
 
     private void validateOrderStatusNotCompletion() {
-        if (orderStatus.equals(OrderStatus.COMPLETION)) {
+        if (orderStatus.isCompletion()) {
             throw new IllegalArgumentException("계산 완료된 주문입니다.");
         }
     }
