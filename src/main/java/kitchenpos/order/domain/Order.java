@@ -12,6 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Table;
+import kitchenpos.table.domain.OrderTable;
 
 @Entity
 @Table(name = "orders")
@@ -80,6 +81,15 @@ public class Order {
         }
     }
 
+    public void receive(OrderTable orderTable) {
+        if (orderTable.isEmpty()) {
+            throw new IllegalArgumentException("테이블이 비어 있습니다");
+        }
+        this.orderTableId = orderTable.getId();
+        changeOrderStatus(OrderStatus.COOKING);
+        this.orderedTime = LocalDateTime.now();
+    }
+
     public Long getId() {
         return id;
     }
@@ -92,15 +102,12 @@ public class Order {
         return orderTableId;
     }
 
-    public void setOrderTableId(final Long orderTableId) {
-        this.orderTableId = orderTableId;
-    }
-
     public OrderStatus getOrderStatus() {
         return orderStatus;
     }
 
     public void changeOrderStatus(final OrderStatus orderStatus) {
+        validateForChangeStatus();
         this.orderStatus = orderStatus;
     }
 
@@ -108,15 +115,8 @@ public class Order {
         return orderedTime;
     }
 
-    public void setOrderedTime(final LocalDateTime orderedTime) {
-        this.orderedTime = orderedTime;
-    }
-
     public OrderLineItems getOrderLineItems() {
         return orderLineItems;
     }
 
-    public void setOrderLineItems(final OrderLineItems orderLineItems) {
-        this.orderLineItems = orderLineItems;
-    }
 }

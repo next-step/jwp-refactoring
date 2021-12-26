@@ -1,9 +1,12 @@
 package kitchenpos.order.domain;
 
+import static java.util.stream.Collectors.toList;
+
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
+import org.springframework.util.CollectionUtils;
 
 @Embeddable
 public class OrderLineItems {
@@ -27,13 +30,24 @@ public class OrderLineItems {
         return new OrderLineItems(orderLineItems);
     }
 
+    public void validateForCreateOrder() {
+        if (CollectionUtils.isEmpty(orderLineItems)) {
+            throw new IllegalArgumentException("주문 항목은 하나 이상 있어야 합니다");
+        }
+    }
+
+    public List<Long> extractMenuIds() {
+        return orderLineItems.stream()
+            .map(OrderLineItem::getMenuId)
+            .collect(toList());
+    }
+
     public List<OrderLineItem> getValues() {
         return orderLineItems;
     }
 
-    private void setOrder(Order order) {
-        for (OrderLineItem orderLineItem : orderLineItems) {
-            orderLineItem.setOrder(order);
-        }
+    public int size() {
+        return orderLineItems.size();
     }
+
 }
