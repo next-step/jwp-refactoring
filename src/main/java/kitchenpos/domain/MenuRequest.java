@@ -1,8 +1,8 @@
 package kitchenpos.domain;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class MenuRequest {
     private String name;
@@ -35,9 +35,6 @@ public class MenuRequest {
     }
 
     public Menu toEntity() {
-        List<MenuProduct> menuProducts = this.menuProducts.stream()
-            .map(MenuProductRequest::toEntity)
-            .collect(Collectors.toList());
-        return new Menu(name, price, menuGroupId, menuProducts);
+        return new Menu(name, price, menuGroupId, new ArrayList<>());
     }
 }

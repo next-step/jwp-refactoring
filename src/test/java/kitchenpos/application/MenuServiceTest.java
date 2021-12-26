@@ -25,7 +25,9 @@ import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.MenuProductRequest;
+import kitchenpos.domain.MenuProductResponse;
 import kitchenpos.domain.MenuRequest;
+import kitchenpos.domain.MenuResponse;
 import kitchenpos.domain.Product;
 
 @ExtendWith(MockitoExtension.class)
@@ -48,7 +50,7 @@ class MenuServiceTest {
     @BeforeEach
     void setUp() {
         menuProductRequest = new MenuProductRequest(1L, 2);
-        menuProduct = menuProductRequest.toEntity();
+        menuProduct = new MenuProduct(new Product(1L, "name", BigDecimal.ONE), 2);
     }
 
     @DisplayName("메뉴 생성")
@@ -62,7 +64,7 @@ class MenuServiceTest {
         Mockito.when(productDao.findById(Mockito.anyLong()))
             .thenReturn(Optional.of(product));
 
-        MenuProduct expectedMenuProduct = new MenuProduct(2L, 2L, 2L, 2);
+        MenuProduct expectedMenuProduct = new MenuProduct(2L, 2L, new Product(2L, "name2", BigDecimal.TEN), 2);
         Mockito.when(menuProductDao.save(Mockito.any()))
             .thenReturn(expectedMenuProduct);
 
@@ -73,7 +75,7 @@ class MenuServiceTest {
         MenuRequest menu = new MenuRequest("name", BigDecimal.ONE, 1L, Arrays.asList(menuProductRequest));
 
         // when
-        Menu actual = menuService.create(menu);
+        MenuResponse actual = menuService.create(menu);
 
         // then
         assertAll(
@@ -166,13 +168,12 @@ class MenuServiceTest {
             .thenReturn(Arrays.asList(menuProduct));
 
         // when
-        List<Menu> actual = menuService.list();
+        List<MenuResponse> actual = menuService.list();
 
         // given
         assertAll(
             () -> assertThat(actual.get(0).getMenuProducts()).hasSize(1),
-            () -> assertThat(actual.get(0).getMenuProducts().get(0)).isEqualTo(menuProduct)
+            () -> assertThat(actual.get(0).getMenuProducts().get(0)).isEqualTo(MenuProductResponse.from(menuProduct))
         );
-        assertThat(actual).isEqualTo(menus);
     }
 }

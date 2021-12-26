@@ -17,7 +17,4 @@ public class MenuProductRequest {
         return quantity;
     }
 
-    public MenuProduct toEntity() {
-        return new MenuProduct(productId, quantity);
-    }
 }
