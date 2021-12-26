@@ -3,10 +3,8 @@ package kitchenpos.order.application;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.exception.MenuNotFoundException;
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderValidator;
 import kitchenpos.order.exception.OrderLineItemNotFoundException;
-import kitchenpos.order.fixtures.OrderFixtures;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.exception.InvalidTableException;
 import kitchenpos.table.exception.OrderTableNotFoundException;
@@ -18,11 +16,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Collections;
 import java.util.Optional;
 
 import static kitchenpos.order.fixtures.OrderFixtures.주문;
-import static kitchenpos.order.fixtures.OrderFixtures.주문등록요청;
 import static kitchenpos.table.fixtures.OrderTableFixtures.주문가능_다섯명테이블;
 import static kitchenpos.table.fixtures.OrderTableFixtures.주문불가_다섯명테이블;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

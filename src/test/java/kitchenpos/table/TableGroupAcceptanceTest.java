@@ -133,7 +133,6 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
         그룹화_해제됨(response);
     }
 
-
     @Test
     @DisplayName("테이블의 주문 상태가 조리, 식사중인 경우 그룹화를 해제할 수 없다.")
     public void ungroupFail() {

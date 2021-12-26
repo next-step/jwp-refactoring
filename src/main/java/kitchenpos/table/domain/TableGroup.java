@@ -18,7 +18,7 @@ public class TableGroup {
     @Column(nullable = false)
     private final LocalDateTime createdDate = LocalDateTime.now();
 
-    @OneToMany(mappedBy = "tableGroup")
+    @OneToMany(mappedBy = "tableGroupId")
     private final List<OrderTable> orderTables = new ArrayList<>();
 
     protected TableGroup() {
@@ -31,7 +31,7 @@ public class TableGroup {
 
     private void addOrderTables(List<OrderTable> orderTables) {
         orderTables.forEach(
-                it -> this.orderTables.add(it.groupBy(this))
+            it -> this.orderTables.add(it.groupBy(this))
         );
     }
 
@@ -63,6 +63,6 @@ public class TableGroup {
     }
 
     public void ungroup() {
-        orderTables.forEach(OrderTable::ungroup);
+        //orderTables.forEach(OrderTable::ungroup);
     }
 }

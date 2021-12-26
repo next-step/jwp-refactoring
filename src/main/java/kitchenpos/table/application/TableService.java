@@ -16,9 +16,11 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class TableService {
     private final OrderTableRepository orderTableRepository;
+    private final TableValidator tableValidator;
 
-    public TableService(OrderTableRepository orderTableRepository) {
+    public TableService(OrderTableRepository orderTableRepository, TableValidator tableValidator) {
         this.orderTableRepository = orderTableRepository;
+        this.tableValidator = tableValidator;
     }
 
     @Transactional
@@ -28,21 +30,20 @@ public class TableService {
     }
 
     public List<OrderTableResponse> list() {
-        return OrderTableResponse.ofList(orderTableRepository.findAllJoinFetch());
+        return OrderTableResponse.ofList(orderTableRepository.findAll());
     }
 
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, final ChangeEmptyRequest request) {
-        OrderTable orderTable = orderTableRepository.findOneWithOrderByIdJoinFetch(orderTableId)
-                .orElseThrow(OrderTableNotFoundException::new);
+        OrderTable orderTable = orderTableRepository.findById(orderTableId).orElseThrow(OrderTableNotFoundException::new);
+        tableValidator.validateChangeEmpty(orderTable);
         orderTable.changeEmpty(request.isEmpty());
         return OrderTableResponse.of(orderTable);
     }
 
     @Transactional
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final ChangeGuestNumberRequest request) {
-        OrderTable orderTable = orderTableRepository.findById(orderTableId)
-                .orElseThrow(OrderTableNotFoundException::new);
+        OrderTable orderTable = orderTableRepository.findById(orderTableId).orElseThrow(OrderTableNotFoundException::new);
         orderTable.updateNumberOfGuests(request.getNumberOfGuests());
         return OrderTableResponse.of(orderTable);
     }

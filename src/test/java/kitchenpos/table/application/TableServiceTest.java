@@ -18,6 +18,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,6 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 
 /**
@@ -45,6 +47,9 @@ class TableServiceTest {
     @Mock
     private OrderTableRepository orderTableRepository;
 
+    @Mock
+    private TableValidator tableValidator;
+
     @InjectMocks
     private TableService tableService;
 
@@ -52,7 +57,7 @@ class TableServiceTest {
     @DisplayName("테이블 목록을 조회할 수 있다.")
     public void list() throws Exception {
         // given
-        given(orderTableRepository.findAllJoinFetch()).willReturn(Lists.newArrayList(주문가능_다섯명테이블));
+        given(orderTableRepository.findAll()).willReturn(Lists.newArrayList(주문가능_다섯명테이블));
 
         // when
         List<OrderTableResponse> lists = tableService.list();
@@ -79,7 +84,7 @@ class TableServiceTest {
     @DisplayName("테이블의 상태를 변경할 수 있다.")
     public void changeTableStatus() {
         // given
-        given(orderTableRepository.findOneWithOrderByIdJoinFetch(any(Long.class))).willReturn(Optional.of(주문가능_다섯명테이블));
+        given(orderTableRepository.findById(any(Long.class))).willReturn(Optional.of(주문가능_다섯명테이블()));
 
         // when
         OrderTableResponse actual = tableService.changeEmpty(1L, 주문불가로_변경요청());
@@ -92,34 +97,6 @@ class TableServiceTest {
 
         // then
         assertThat(actual2.isEmpty()).isFalse();
-    }
-
-    @Test
-    @DisplayName("존재하지 않은 테이블은 상태를 변경할 수 없다.")
-    public void changeTableStatusFailByUnknownTable() {
-        // then
-        assertThatThrownBy(() -> tableService.changeEmpty(1L, 주문불가로_변경요청()))
-                .isInstanceOf(OrderTableNotFoundException.class);
-    }
-
-    @Test
-    @DisplayName("테이블이 그룹 테이블인 경우 상태를 변경할 수 없다.")
-    public void changeTableStatusFailByGroupTable() {
-        // given
-        given(orderTableRepository.findOneWithOrderByIdJoinFetch(any(Long.class))).willReturn(Optional.of(그룹화된_테이블()));
-
-        // then
-        assertThatThrownBy(() -> tableService.changeEmpty(1L, 주문가능으로_변경요청())).isInstanceOf(TableEmptyUpdateException.class);
-    }
-
-    @Test
-    @DisplayName("테이블의 주문 상태가 조리, 식사인 경우 변경할 수 없다.")
-    public void changeTableStatusFailByTableOrderStatus() throws Exception {
-        // given
-        given(orderTableRepository.findOneWithOrderByIdJoinFetch(any(Long.class))).willReturn(Optional.of(주문이_완료되지_않은_테이블()));
-
-        // then
-        assertThatThrownBy(() -> tableService.changeEmpty(1L, 주문가능으로_변경요청())).isInstanceOf(TableEmptyUpdateException.class);
     }
 
     @Test
@@ -139,6 +116,17 @@ class TableServiceTest {
 
         // then
         assertThat(actua2.getNumberOfGuests()).isEqualTo(5);
+    }
+
+
+    @Test
+    @DisplayName("존재하지 않은 테이블은 상태를 변경할 수 없다.")
+    public void changeTableStatusFailByUnknownTable() {
+        // given
+        given(orderTableRepository.findById(any(Long.class))).willThrow(OrderTableNotFoundException.class);
+        // then
+        assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, 두명으로_변경요청()))
+                .isInstanceOf(OrderTableNotFoundException.class);
     }
 
     @DisplayName("테이블 사용자 수가 올바르지 않을 경우 테이블을 등록할 수 없다.")

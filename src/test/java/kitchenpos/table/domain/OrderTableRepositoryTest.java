@@ -84,7 +84,7 @@ class OrderTableRepositoryTest {
         // then
         assertAll(
                 () -> assertThat(actual.getId()).isNotNull(),
-                () -> assertThat(actual.getTableGroup()).isNull(),
+                () -> assertThat(actual.getTableGroupId()).isNull(),
                 () -> assertThat(actual.isEmpty()).isTrue()
         );
     }
@@ -98,7 +98,7 @@ class OrderTableRepositoryTest {
         // then
         assertAll(
                 () -> assertThat(actual.getId()).isNotNull(),
-                () -> assertThat(actual.getTableGroup()).isNull(),
+                () -> assertThat(actual.getTableGroupId()).isNull(),
                 () -> assertThat(actual.isEmpty()).isFalse()
         );
     }
@@ -108,16 +108,6 @@ class OrderTableRepositoryTest {
     public void list() {
         // when
         List<OrderTable> orderTables = orderTableRepository.findAll();
-
-        // then
-        assertThat(orderTables.size()).isGreaterThanOrEqualTo(0);
-    }
-
-    @Test
-    @DisplayName("그룹화된 테이블 정보를 조회할 수 있다.")
-    public void listWithGroupTable() {
-        // when
-        List<OrderTable> orderTables = orderTableRepository.findAllJoinFetch();
 
         // then
         assertThat(orderTables.size()).isGreaterThanOrEqualTo(0);

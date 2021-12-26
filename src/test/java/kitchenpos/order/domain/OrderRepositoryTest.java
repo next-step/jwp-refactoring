@@ -16,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static kitchenpos.menugroup.fixtures.MenuGroupFixtures.메뉴그룹;
@@ -35,7 +37,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 @DisplayName("주문 리파지토리 테스트")
 class OrderRepositoryTest {
     private Order 후라이드반양념반두개주세요;
-    private Menu 후라이드반양념반메뉴;
+    private OrderLineItem 후라이드양념반두개;
 
     @Autowired
     private MenuRepository menuRepository;
@@ -60,7 +62,7 @@ class OrderRepositoryTest {
         MenuGroup 메뉴그룹 = menuGroupRepository.save(메뉴그룹("반반메뉴그룹"));
         MenuProduct 양념치킨메뉴상품 = 메뉴상품(양념치킨.getId(), 1L);
         MenuProduct 후라이드메뉴상품 = 메뉴상품(후라이드.getId(), 1L);
-        후라이드반양념반메뉴 = menuRepository.save(
+        Menu 후라이드반양념반메뉴 = menuRepository.save(
                 new Menu(
                         "후라이드반양념반메뉴",
                         메뉴가격,
@@ -69,7 +71,7 @@ class OrderRepositoryTest {
                 )
         );
         OrderTable 사용가능_다섯명테이블 = orderTableRepository.save(OrderTableFixtures.주문가능_다섯명테이블());
-        OrderLineItem 후라이드양념반두개 = new OrderLineItem(후라이드반양념반메뉴.getId(), 2L);
+        후라이드양념반두개 = new OrderLineItem(후라이드반양념반메뉴.getId(), 2L);
         후라이드반양념반두개주세요 = new Order(사용가능_다섯명테이블.getId(), Lists.newArrayList(후라이드양념반두개));
 
     }
