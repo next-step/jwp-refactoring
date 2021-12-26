@@ -5,12 +5,13 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 
 @Embeddable
 public class Orders {
     
-    @OneToMany(mappedBy = "orderTable", orphanRemoval = true, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "orderTable", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private List<Order> orders;
     
     protected Orders() {
@@ -33,12 +34,12 @@ public class Orders {
         return orders;
     }
 
-    public boolean checkMealStatus() {
+    public boolean isContainsMealStatus() {
         return orders.stream()
                 .anyMatch(Order::isMeal);
     }
     
-    public boolean checkCookingStatus() {
+    public boolean isContainsCookingStatus() {
         return orders.stream()
                 .anyMatch(Order::isCooking);
     }

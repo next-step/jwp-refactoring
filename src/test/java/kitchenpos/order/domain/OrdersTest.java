@@ -50,7 +50,7 @@ public class OrdersTest {
         Orders 주문_목록 = Orders.from(Arrays.asList(주문));
         
         // when
-        boolean 조리중_주문_유무 = 주문_목록.checkCookingStatus();
+        boolean 조리중_주문_유무 = 주문_목록.isContainsCookingStatus();
         
         // then
         assertThat(조리중_주문_유무).isTrue();
@@ -65,7 +65,7 @@ public class OrdersTest {
         Orders 주문_목록 = Orders.from(Arrays.asList(주문));
         
         // when
-        boolean 조리중_주문_유무 = 주문_목록.checkMealStatus();
+        boolean 조리중_주문_유무 = 주문_목록.isContainsMealStatus();
         
         // then
         assertThat(조리중_주문_유무).isTrue();

@@ -7,12 +7,13 @@ import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 
 @Embeddable
 public class OrderTables {
 
-    @OneToMany(mappedBy = "tableGroup", orphanRemoval = true, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "tableGroup", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private List<OrderTable> orderTables;
     
     protected OrderTables() {

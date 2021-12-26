@@ -42,7 +42,7 @@ public class Order {
     @Column(nullable = false, updatable = false)
     private LocalDateTime orderedTime;
     
-    @OneToMany(mappedBy = "order", orphanRemoval = true, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private List<OrderLineItem> orderLineItems;
     
     protected Order() {
