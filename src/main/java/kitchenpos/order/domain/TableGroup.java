@@ -40,14 +40,6 @@ public class TableGroup {
         return orderTables.getOrderTables();
     }
 
-    public void createDate() {
-        this.createdDate = LocalDateTime.now();
-    }
-
-    public void receiveOrderTables(OrderTables savedOrderTables) {
-        this.orderTables = savedOrderTables;
-    }
-
     public void cancleGroup() {
         this.orderTables.cancleGroup();
     }

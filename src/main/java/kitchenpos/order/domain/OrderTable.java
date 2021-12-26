@@ -53,10 +53,6 @@ public class OrderTable {
         return empty;
     }
 
-    public void allocateTableGroupId(TableGroup tableGroup) {
-        this.tableGroup = tableGroup;
-    }
-
     public void emptyTableGroup() {
         this.tableGroup = null;
     }

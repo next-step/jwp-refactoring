@@ -17,7 +17,7 @@ public class MenuRequest {
     private Long menuGroupId;
     private List<MenuProductRequest> menuProducts;
 
-    public MenuRequest(){
+    protected MenuRequest(){
 
     }
 

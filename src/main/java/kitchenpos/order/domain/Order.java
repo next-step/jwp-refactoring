@@ -37,6 +37,10 @@ public class Order {
         this.orderStatus = OrderStatus.COOKING;
     }
 
+    protected Order() {
+
+    }
+
     public Long getId() {
         return id;
     }

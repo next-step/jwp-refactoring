@@ -1,6 +1,5 @@
 package kitchenpos.order.application;
 
-import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.OrderTableRepository;
 import kitchenpos.order.dto.OrderTableRequest;
@@ -29,9 +28,6 @@ class TableServiceTest {
 
     @Mock
     private OrderTableRepository orderTableRepository;
-
-    @Mock
-    private OrderRepository orderRepository;
 
     @InjectMocks
     private TableService tableService;

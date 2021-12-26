@@ -20,7 +20,7 @@ public class Product {
     @Column(name = "price", nullable = false)
     private Price price;
 
-    public Product() {
+    protected Product() {
 
     }
 

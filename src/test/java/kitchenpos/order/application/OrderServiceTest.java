@@ -1,8 +1,9 @@
 package kitchenpos.order.application;
 
-import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.order.exceptions.InputOrderDataErrorCode;
+import kitchenpos.order.exceptions.InputOrderDateException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
@@ -24,15 +26,6 @@ class OrderServiceTest {
 
     @Mock
     private OrderRepository orderRepository;
-
-    @Mock
-    private MenuRepository menuRepository;
-
-    @Mock
-    private OrderTableRepository orderTableRepository;
-
-    @Mock
-    private OrderLineItemRepository orderLineItemRepository;
 
     @InjectMocks
     private OrderService orderService;
@@ -86,26 +79,17 @@ class OrderServiceTest {
     void modifyOrderStatusErrorTest() {
 
         //given
-        Order order = mock(Order.class);
-        when(order.getOrderStatus()).thenReturn(OrderStatus.COMPLETION.name());
+        OrderLineItems orderLineItems = new OrderLineItems(Arrays.asList(new OrderLineItem(1L, 5)));
+
+        Order order = new Order(new OrderTable(4, false), orderLineItems);
+        order.endOrder();
         //when
         when(orderRepository.findById(anyLong()))
                 .thenReturn(Optional.of(order));
 
-        orderService.changeOrderStatus(1L, OrderStatus.MEAL);
-        verify(order).startMeal();
-//        //given
-//        OrderLineItems orderLineItems = new OrderLineItems(Arrays.asList(new OrderLineItem(1L, 5)));
-//
-//        Order order = new Order(new OrderTable(4, true), orderLineItems);
-//        order.endOrder();
-//        //when
-//        when(orderRepository.findById(anyLong()))
-//                .thenReturn(Optional.of(order));
-//
-//        assertThatThrownBy(() -> {
-//            orderService.changeOrderStatus(1L, OrderStatus.MEAL);
-//        }).isInstanceOf(InputOrderDateException.class)
-//                .hasMessageContaining(InputOrderDataErrorCode.THE_ORDER_STATUS_DO_NOT_CHANGE_COMPLETION_TO_ANY_OTHER.errorMessage());
+        assertThatThrownBy(() -> {
+            orderService.changeOrderStatus(1L, OrderStatus.MEAL);
+        }).isInstanceOf(InputOrderDateException.class)
+                .hasMessageContaining(InputOrderDataErrorCode.THE_ORDER_STATUS_DO_NOT_CHANGE_COMPLETION_TO_ANY_OTHER.errorMessage());
     }
 }

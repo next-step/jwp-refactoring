@@ -7,7 +7,7 @@ public class OrderTableRequest {
     private int numberOfGuests;
     private boolean empty;
 
-    public OrderTableRequest() {
+    protected OrderTableRequest() {
 
     }
 

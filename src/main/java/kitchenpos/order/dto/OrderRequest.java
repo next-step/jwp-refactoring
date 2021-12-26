@@ -28,6 +28,4 @@ public class OrderRequest {
                 .map(OrderLineItemRequest::toEntity)
                 .collect(Collectors.toList());
     }
-
-
 }

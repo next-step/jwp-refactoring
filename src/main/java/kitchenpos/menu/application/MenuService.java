@@ -32,7 +32,7 @@ public class MenuService {
     public MenuResponse create(final MenuRequest menuRequest) {
         final List<Long> productIds = menuRequest.getProductIds();
         validateInputValue(menuRequest, productIds);
-        List<Product> products = findProducts(menuRequest, productIds);
+        List<Product> products = findProducts(productIds);
         Menu createMenu = new Menu(menuRequest.getName(), menuRequest.getPrice(), menuRequest.getMenuGroupId(), menuRequest.toMenuProducts(products));
         Menu persistMenu = menuRepository.save(createMenu);
 
@@ -44,7 +44,7 @@ public class MenuService {
         return MenuResponse.listOf(menus);
     }
 
-    private List<Product> findProducts(MenuRequest menuRequest, List<Long> productIds) {
+    private List<Product> findProducts(List<Long> productIds) {
         List<Product> products =  productRepository.findAllById(productIds);
         if (products.size() != productIds.size()) {
             throw new InputMenuDataException(InputMenuDataErrorCode.THE_PRODUCT_IS_NOT_REGISTERED);
