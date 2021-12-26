@@ -17,6 +17,20 @@ public class Product {
     public Product() {
     }
 
+    public Product(String name, int price) {
+        this.name = name;
+        this.price = validatePrice(price);
+    }
+
+    private BigDecimal validatePrice(int price) {
+        BigDecimal newPrice = new BigDecimal(price);
+
+        if (newPrice.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("가격이 음수입니다. 입력한 금액 : " + price);
+        }
+        return newPrice;
+    }
+
     public Long getId() {
         return id;
     }
