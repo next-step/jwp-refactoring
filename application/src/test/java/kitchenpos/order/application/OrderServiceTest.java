@@ -1,5 +1,7 @@
 package kitchenpos.order.application;
 
+import kitchenpos.common.domain.Name;
+import kitchenpos.common.domain.Price;
 import kitchenpos.menu.domain.*;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.order.domain.*;
@@ -56,10 +58,10 @@ public class OrderServiceTest {
             Product 볶음짜장면 = new Product(1L, "볶음짜장면", 8000);
             Product 삼선짬뽕 = new Product(2L, "삼선짬뽕", 8000);
             List<MenuProduct> menuProducts = new ArrayList<>();
-            menuProducts.add(new MenuProduct(볶음짜장면, 1));
-            menuProducts.add(new MenuProduct(삼선짬뽕, 1));
-            Menu 커플세트 = Menu.create(1L, "커플세트", 16000, 1L, new MenuProducts(menuProducts));
-            Menu 혼밥세트 = Menu.create(2L, "혼밥세트", 16000, 1L, new MenuProducts(menuProducts));
+            menuProducts.add(new MenuProduct(볶음짜장면.getId(), 1));
+            menuProducts.add(new MenuProduct(삼선짬뽕.getId(), 1));
+            Menu 커플세트 = new Menu(1L, Name.of("커플세트"), Price.of(16000), 1L, new MenuProducts(menuProducts));
+            Menu 혼밥세트 = new Menu(2L,  Name.of("혼밥세트"), Price.of(16000), 1L, new MenuProducts(menuProducts));
 
             OrderLineItemRequest orderLineItemRequest1 = new OrderLineItemRequest(커플세트.getId(), 1);
             OrderLineItemRequest orderLineItemRequest2 = new OrderLineItemRequest(혼밥세트.getId(), 1);

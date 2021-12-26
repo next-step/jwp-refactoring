@@ -1,7 +1,5 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.product.domain.Product;
-
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -12,20 +10,16 @@ public class MenuProduct {
     private Long seq;
     @ManyToOne
     private Menu menu;
-    @ManyToOne
-    private Product product;
+    private Long productId;
     private long quantity;
 
     public MenuProduct() {
     }
 
-    public MenuProduct(Product product, long quantity) {
-        this.product = product;
-        this.quantity = quantity;
-    }
 
-    public long getTotalPrice() {
-        return product.getPrice() * quantity;
+    public MenuProduct(Long productId, long quantity) {
+        this.productId = productId;
+        this.quantity = quantity;
     }
 
     public void updateMenu(Menu menu) {
@@ -40,8 +34,8 @@ public class MenuProduct {
         return menu;
     }
 
-    public Product getProduct() {
-        return product;
+    public Long getProductId() {
+        return productId;
     }
 
     public long getQuantity() {

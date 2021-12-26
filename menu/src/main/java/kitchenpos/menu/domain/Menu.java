@@ -23,7 +23,7 @@ public class Menu {
     protected Menu() {
     }
 
-    private Menu(Long id, Name name, Price price, Long menuGroupId, MenuProducts menuProducts) {
+    public Menu(Long id, Name name, Price price, Long menuGroupId, MenuProducts menuProducts) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -31,35 +31,21 @@ public class Menu {
         this.menuProducts = menuProducts;
     }
 
-    private Menu(Name name, Price price, Long menuGroupId, MenuProducts menuProducts) {
+    public Menu(Name name, Price price, Long menuGroupId, MenuProducts menuProducts) {
         this.name = name;
         this.price = price;
         this.menuGroupId = menuGroupId;
         this.menuProducts = menuProducts;
     }
 
-    public static Menu create(Long id, String name, long price, Long menuGroupId, MenuProducts menuProducts) {
-        Menu menu = new Menu(id, Name.of(name), Price.of(price), menuGroupId, menuProducts);
-        return create(price, menuProducts, menu);
-    }
-
-    public static Menu create(String name, long price, Long menuGroupId, MenuProducts menuProducts) {
+    public static Menu create(String name, long price, Long menuGroupId, MenuProducts menuProducts, MenuValidator menuValidator) {
+        menuValidator.validateHasProducts(menuProducts.getProductIds());
+        menuValidator.validateMenuPrice(price, menuProducts.getProductIds());
         Menu menu = new Menu(Name.of(name), Price.of(price), menuGroupId, menuProducts);
-        return create(price, menuProducts, menu);
-    }
-
-    private static Menu create(long price, MenuProducts menuProducts, Menu menu) {
-        validateMenuPrice(price, menuProducts);
         menuProducts.updateMenu(menu);
         return menu;
     }
 
-    private static void validateMenuPrice(long price, MenuProducts menuProducts) {
-        long totalProductPrice = menuProducts.getTotalPrice();
-        if (price > totalProductPrice) {
-            throw new IllegalArgumentException("메뉴의 가격이 상품 가격의 총 합보다 클 수 없습니다");
-        }
-    }
 
     public Long getId() {
         return id;

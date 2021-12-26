@@ -4,6 +4,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Embeddable
 public class MenuProducts {
@@ -27,11 +28,10 @@ public class MenuProducts {
         return Collections.unmodifiableList(menuProducts);
     }
 
-    public long getTotalPrice() {
+    public List<Long> getProductIds() {
         return menuProducts.stream()
-                .map(MenuProduct::getTotalPrice)
-                .reduce(Long::sum)
-                .orElse(0L);
+                .map(MenuProduct::getProductId)
+                .collect(Collectors.toList());
     }
 
     @Override

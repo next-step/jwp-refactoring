@@ -7,9 +7,6 @@ import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.exception.MenuGroupNotFoundException;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
-import kitchenpos.product.exception.ProductNotFoundException;
-import kitchenpos.product.domain.Product;
-import kitchenpos.product.domain.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,12 +17,12 @@ import java.util.List;
 public class MenuService {
     private final MenuRepository menuRepository;
     private final MenuGroupRepository menuGroupRepository;
-    private final ProductRepository productRepository;
+    private final MenuValidator menuValidator;
 
-    public MenuService(MenuRepository menuRepository, MenuGroupRepository menuGroupRepository, ProductRepository productRepository) {
+    public MenuService(MenuRepository menuRepository, MenuGroupRepository menuGroupRepository, MenuValidator menuValidator) {
         this.menuRepository = menuRepository;
         this.menuGroupRepository = menuGroupRepository;
-        this.productRepository = productRepository;
+        this.menuValidator = menuValidator;
     }
 
     @Transactional
@@ -34,16 +31,14 @@ public class MenuService {
                 .orElseThrow(() -> new MenuGroupNotFoundException(menuRequest.getMenuGroupId()));
 
         MenuProducts menuProducts = createMenuProducts(menuRequest.getMenuProducts());
-        Menu menu = Menu.create(menuRequest.getName(), menuRequest.getPrice(), menuGroup.getId(), menuProducts);
+        Menu menu = Menu.create(menuRequest.getName(), menuRequest.getPrice(), menuGroup.getId(), menuProducts, menuValidator);
         return MenuResponse.of(menuRepository.save(menu));
     }
 
     private MenuProducts createMenuProducts(final List<MenuProductRequest> menuProductRequests) {
         List<MenuProduct> menuProducts = new ArrayList<>();
         for (final MenuProductRequest menuProductRequest : menuProductRequests) {
-            Product product = productRepository.findById(menuProductRequest.getProductId())
-                    .orElseThrow(() -> new ProductNotFoundException(menuProductRequest.getProductId()));
-            menuProducts.add(new MenuProduct(product, menuProductRequest.getQuantity()));
+            menuProducts.add(new MenuProduct(menuProductRequest.getProductId(), menuProductRequest.getQuantity()));
         }
         return new MenuProducts(menuProducts);
     }

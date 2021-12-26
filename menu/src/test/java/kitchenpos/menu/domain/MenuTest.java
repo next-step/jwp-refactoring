@@ -1,9 +1,12 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.product.domain.Product;
+import kitchenpos.common.domain.Name;
+import kitchenpos.common.domain.Price;
 import org.assertj.core.api.ThrowableAssert;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,24 +14,29 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.Mockito.doThrow;
 
 public class MenuTest {
+    private MenuValidator menuValidator;
+
+    @BeforeEach
+    void setUp() {
+        menuValidator = Mockito.mock(MenuValidator.class);
+    }
+
     @DisplayName("메뉴를 생성한다")
     @Test
     void testCreate() {
         // given
-        Product 볶음짜장면 = new Product(1L, "볶음짜장면", 8000);
-        Product 삼선짬뽕 = new Product(2L, "삼선짬뽕", 8000);
-
         Long menuGroupId = 1L;
 
         List<MenuProduct> menuProducts = new ArrayList<>();
-        menuProducts.add(new MenuProduct(볶음짜장면, 1));
-        menuProducts.add(new MenuProduct(삼선짬뽕, 1));
-        Menu expectedMenu = Menu.create(1L, "집밥이최고", 16000, menuGroupId, new MenuProducts(menuProducts));
+        menuProducts.add(new MenuProduct(1L, 1));
+        menuProducts.add(new MenuProduct(2L, 1));
+        Menu expectedMenu = new Menu(1L, Name.of("집밥이최고"), Price.of(16000), menuGroupId, new MenuProducts(menuProducts));
 
         // when
-        Menu menu = Menu.create(expectedMenu.getName(), expectedMenu.getPrice(), menuGroupId, new MenuProducts(menuProducts));
+        Menu menu = Menu.create(expectedMenu.getName(), expectedMenu.getPrice(), menuGroupId, new MenuProducts(menuProducts), menuValidator);
 
         // then
         assertAll(
@@ -48,7 +56,7 @@ public class MenuTest {
         List<MenuProduct> menuProducts = new ArrayList<>();
 
         // when
-        ThrowableAssert.ThrowingCallable callable = () -> Menu.create(name, price, menuGroupId, new MenuProducts(menuProducts));
+        ThrowableAssert.ThrowingCallable callable = () -> Menu.create(name, price, menuGroupId, new MenuProducts(menuProducts), menuValidator);
 
         // then
         assertThatThrownBy(callable)
@@ -65,7 +73,7 @@ public class MenuTest {
         List<MenuProduct> menuProducts = new ArrayList<>();
 
         // when
-        ThrowableAssert.ThrowingCallable callable = () -> Menu.create(name, price, menuGroupId, new MenuProducts(menuProducts));
+        ThrowableAssert.ThrowingCallable callable = () -> Menu.create(name, price, menuGroupId, new MenuProducts(menuProducts), menuValidator);
 
         // then
         assertThatThrownBy(callable)
@@ -76,17 +84,18 @@ public class MenuTest {
     @Test
     void givenLessThanProductSumPriceThenThrowException() {
         // given
-        Product 볶음짜장면 = new Product(1L, "볶음짜장면", 8000);
-        Product 삼선짬뽕 = new Product(2L, "삼선짬뽕", 8000);
-
+        int menuPrice = 17000;
         Long menuGroupId = 1L;
 
-        List<MenuProduct> menuProducts = new ArrayList<>();
-        menuProducts.add(new MenuProduct(볶음짜장면, 1));
-        menuProducts.add(new MenuProduct(삼선짬뽕, 1));
+        List<MenuProduct> menuProductList = new ArrayList<>();
+        menuProductList.add(new MenuProduct(1L, 1));
+        menuProductList.add(new MenuProduct(2L, 1));
+        MenuProducts menuProducts = new MenuProducts(menuProductList);
+
+        doThrow(IllegalArgumentException.class).when(menuValidator).validateMenuPrice(menuPrice, menuProducts.getProductIds());
 
         // when
-        ThrowableAssert.ThrowingCallable callable = () -> Menu.create(1L, "집밥이최고", 17000, menuGroupId, new MenuProducts(menuProducts));
+        ThrowableAssert.ThrowingCallable callable = () -> Menu.create("집밥이최고", menuPrice, menuGroupId, menuProducts, menuValidator);
 
         // then
         assertThatThrownBy(callable)
