@@ -38,7 +38,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        추천메뉴_그룹 = menuGroupRepository.save(MenuGroup.builder().name("추천메뉴").build());
+        추천메뉴_그룹 = menuGroupRepository.save(new MenuGroup("추천메뉴"));
         후라이드 = productRepository.save(Product.builder().name("후라이드").price(BigDecimal.valueOf(9500)).build());
     }
 

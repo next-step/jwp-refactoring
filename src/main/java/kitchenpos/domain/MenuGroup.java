@@ -16,6 +16,10 @@ public class MenuGroup extends BaseTimeEntity{
     protected MenuGroup() {
     }
 
+    public MenuGroup(final String name) {
+        this.name = name;
+    }
+
     public Long getId() {
         return id;
     }
@@ -24,25 +28,4 @@ public class MenuGroup extends BaseTimeEntity{
         return name;
     }
 
-    public static MenuGroupBuilder builder() {
-        return new MenuGroupBuilder();
-    }
-
-    public static final class MenuGroupBuilder {
-        private String name;
-
-        private MenuGroupBuilder() {
-        }
-
-        public MenuGroupBuilder name(String name) {
-            this.name = name;
-            return this;
-        }
-
-        public MenuGroup build() {
-            MenuGroup menuGroup = new MenuGroup();
-            menuGroup.name = this.name;
-            return menuGroup;
-        }
-    }
 }

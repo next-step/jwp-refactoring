@@ -40,7 +40,7 @@ class MenuServiceTest extends AcceptanceTest {
     @DisplayName("메뉴에 등록하고자 하는 상품이 존재하지 않을 경우 예외가 발생한다.")
     void nonExistProduct() {
         // given
-        final MenuGroup savedMenuGroup = menuGroupRepository.save(MenuGroup.builder().name("추천메뉴").build());
+        final MenuGroup savedMenuGroup = menuGroupRepository.save(new MenuGroup("추천메뉴"));
 
         // when
         assertThatThrownBy(() -> {

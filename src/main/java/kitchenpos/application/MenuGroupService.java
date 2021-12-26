@@ -21,9 +21,7 @@ public class MenuGroupService {
     }
 
     public MenuGroupResponse create(final MenuGroupCreateRequest request) {
-        final MenuGroup savedMenuGroup = menuGroupRepository.save(MenuGroup.builder()
-                .name(request.getName())
-                .build());
+        final MenuGroup savedMenuGroup = menuGroupRepository.save(new MenuGroup(request.getName()));
 
         return MenuGroupMapper.toMenuGroupResponse(savedMenuGroup);
     }
