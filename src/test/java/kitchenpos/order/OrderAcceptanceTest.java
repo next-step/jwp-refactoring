@@ -71,9 +71,9 @@ class OrderAcceptanceTest extends AcceptanceTest {
         OrderLineItemRequest 주문항목_후라이드 = new OrderLineItemRequest(메뉴_후라이드_응답.getId(), 1L);
         OrderLineItemRequest 주문항목_양념치킨 = new OrderLineItemRequest(메뉴_양념치킨_응답.getId(), 1L);
 
-        주문_후라이드 = new OrderRequest(주문테이블_후라이드_응답.getId(), OrderStatus.COOKING.name(),
+        주문_후라이드 = new OrderRequest(주문테이블_후라이드_응답.getId(), OrderStatus.COOKING,
             Arrays.asList(주문항목_후라이드));
-        주문_양념치킨 = new OrderRequest(주문테이블_양념치킨_응답.getId(), OrderStatus.COOKING.name(),
+        주문_양념치킨 = new OrderRequest(주문테이블_양념치킨_응답.getId(), OrderStatus.COOKING,
             Arrays.asList(주문항목_양념치킨));
     }
 
@@ -109,7 +109,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
         OrderResponse 주문_후라이드_응답 = 주문_생성_요청(주문_후라이드).as(OrderResponse.class);
 
         // when
-        OrderRequest 주문_상태변경 = new OrderRequest(OrderStatus.MEAL.name());
+        OrderRequest 주문_상태변경 = new OrderRequest(OrderStatus.MEAL);
         ExtractableResponse<Response> response = 주문_상태변경_요청(주문_후라이드_응답.getId(), 주문_상태변경);
 
         // then
@@ -120,7 +120,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
     @Test
     void changeOrderStatusNotRegistered() {
         //when
-        OrderRequest 주문_상태변경 = new OrderRequest(OrderStatus.MEAL.name());
+        OrderRequest 주문_상태변경 = new OrderRequest(OrderStatus.MEAL);
         Long 등록안된_주문Id = 0L;
         ExtractableResponse<Response> response = 주문_상태변경_요청(등록안된_주문Id, 주문_상태변경);
 
@@ -133,11 +133,11 @@ class OrderAcceptanceTest extends AcceptanceTest {
     void changeOrderStatusCompleted() {
         // given
         OrderResponse 주문_후라이드_응답 = 주문_생성_요청(주문_후라이드).as(OrderResponse.class);
-        OrderRequest 주문_완료상태_변경 = new OrderRequest(OrderStatus.COMPLETION.name());
+        OrderRequest 주문_완료상태_변경 = new OrderRequest(OrderStatus.COMPLETION);
         주문_상태변경_요청(주문_후라이드_응답.getId(), 주문_완료상태_변경);
 
         // when
-        OrderRequest 주문_다시상태변경 = new OrderRequest(OrderStatus.COOKING.name());
+        OrderRequest 주문_다시상태변경 = new OrderRequest(OrderStatus.COOKING);
         ExtractableResponse<Response> response = 주문_상태변경_요청(주문_후라이드_응답.getId(), 주문_다시상태변경);
 
         // then
