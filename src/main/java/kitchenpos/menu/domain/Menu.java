@@ -13,7 +13,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import kitchenpos.common.domain.Name;
 import kitchenpos.common.domain.Price;
-import org.springframework.util.CollectionUtils;
 
 @Entity
 public class Menu {
@@ -65,26 +64,6 @@ public class Menu {
     }
 
     public void addMenuProducts(final List<MenuProduct> menuProducts) {
-        validateMenuProductsNotEmpty(menuProducts);
-        validateNotOverPrice(menuProducts);
-
-        menuProducts.forEach(menuProduct -> this.menuProducts.addMenuProduct(menuProduct));
-    }
-
-    private void validateMenuProductsNotEmpty(List<MenuProduct> menuProducts) {
-        if (CollectionUtils.isEmpty(menuProducts)) {
-            throw new IllegalArgumentException("메뉴 상품은 하나 이상여야 합니다.");
-        }
-    }
-
-    private void validateNotOverPrice(final List<MenuProduct> menuProducts) {
-        BigDecimal totalPrice = menuProducts.stream()
-            .map(MenuProduct::getPrice)
-            .reduce(BigDecimal::add)
-            .orElse(BigDecimal.ZERO);
-
-        if (price.isOverPrice(totalPrice)) {
-            throw new IllegalArgumentException("메뉴의 가격이 상품 가격의 총합을 초과했습니다.");
-        }
+        this.menuProducts = MenuProducts.of(menuProducts, price);
     }
 }
