@@ -106,8 +106,12 @@ public class OrderTable {
         this.empty = false;
     }
 
-    public void order(Order order) {
-        this.order = order;
+    public Order order() {
+        if (isEmpty()) {
+            throw new IllegalArgumentException("비어있는 주문 테이블에서는 주문할 수 없습니다.");
+        }
+        this.order = Order.create(this);
+        return this.order;
     }
 
     public void grouping(TableGroup tableGroup) {

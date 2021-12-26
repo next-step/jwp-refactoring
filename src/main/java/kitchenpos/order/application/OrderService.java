@@ -1,5 +1,6 @@
 package kitchenpos.order.application;
 
+import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
@@ -7,6 +8,7 @@ import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import org.springframework.stereotype.Service;
@@ -22,37 +24,27 @@ import java.util.stream.Collectors;
 @Service
 @Transactional(readOnly = true)
 public class OrderService {
-    private final MenuRepository menuRepository;
+    private final MenuService menuService;
     private final OrderRepository orderRepository;
-    private final OrderTableRepository orderTableRepository;
+    private final TableService tableService;
 
     public OrderService(
-            final MenuRepository menuRepository,
+            final MenuService menuService,
             final OrderRepository orderRepository,
-            final OrderTableRepository orderTableRepository
+            final TableService tableService
     ) {
-        this.menuRepository = menuRepository;
+        this.menuService = menuService;
         this.orderRepository = orderRepository;
-        this.orderTableRepository = orderTableRepository;
+        this.tableService = tableService;
     }
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
-        List<Long> menuIds = orderRequest.getMenuIds();
-        final List<Menu> menus = menuRepository.findAllById(menuIds);
+        final List<Menu> menus = menuService.findAllByIds(orderRequest.getMenuIds());
 
-        if (menus.size() != menus.size()) {
-            throw new IllegalArgumentException("일부 메뉴가 존재하지 않습니다.");
-        }
+        final OrderTable orderTable = tableService.findById(orderRequest.getOrderTableId());
 
-        final OrderTable orderTable = orderTableRepository.findById(orderRequest.getOrderTableId())
-                .orElseThrow(() -> new EntityNotFoundException("주문 테이블이 존재하지 않습니다. orderTableId = " + orderRequest.getOrderTableId()));
-
-        if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException("비어있는 주문 테이블에서는 주문할 수 없습니다.");
-        }
-
-        final Order order = Order.create(orderTable);
+        final Order order = orderTable.order();
 
         for(Menu menu : menus) {
             final OrderLineItemRequest orderLineItemRequest = orderRequest.find(menu);

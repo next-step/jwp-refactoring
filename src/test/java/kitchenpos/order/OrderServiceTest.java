@@ -1,5 +1,6 @@
 package kitchenpos.order;
 
+import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.application.OrderService;
@@ -10,6 +11,7 @@ import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -37,10 +39,10 @@ public class OrderServiceTest {
     private OrderService orderService;
 
     @Mock
-    private MenuRepository menuRepository;
+    private MenuService menuService;
 
     @Mock
-    private OrderTableRepository orderTableRepository;
+    private TableService tableService;
 
     @Mock
     private OrderRepository orderRepository;
@@ -68,18 +70,18 @@ public class OrderServiceTest {
         final Order order = Order.create(orderTable);
         ReflectionTestUtils.setField(order, "id", 1L);
 
-        final Menu menuA = Menu.create("후라이드세트", new BigDecimal("17000"));
+        final Menu menuA = Menu.prepared("후라이드세트", new BigDecimal("17000"));
         ReflectionTestUtils.setField(menuA, "id", orderLineItemRequestA.getMenuId());
-        final Menu menuB = Menu.create("햄버거세트", new BigDecimal("10000"));
+        final Menu menuB = Menu.prepared("햄버거세트", new BigDecimal("10000"));
         ReflectionTestUtils.setField(menuB, "id", orderLineItemRequestB.getMenuId());
 
         ReflectionTestUtils.setField(orderRequest, "orderTableId", orderTable.getId());
-        when(menuRepository.findAllById(anyList())).thenReturn(Arrays.asList(menuA, menuB));
-        when(orderTableRepository.findById(anyLong())).thenReturn(Optional.ofNullable(orderTable));
+        when(menuService.findAllByIds(anyList())).thenReturn(Arrays.asList(menuA, menuB));
+        when(tableService.findById(anyLong())).thenReturn(orderTable);
         when(orderRepository.save(any())).thenReturn(order);
 
         //when
-        OrderResponse savedOrder = orderService.create(orderRequest);
+        final OrderResponse savedOrder = orderService.create(orderRequest);
 
         //then
         assertThat(savedOrder).isNotNull();
@@ -142,7 +144,9 @@ public class OrderServiceTest {
     void changeOrderStatusByOrderStatusCompletion() {
 
         //given
-        Order order = new Order();
+        final int numberOfGuests = 10;
+        OrderTable orderTable = OrderTable.create(numberOfGuests);
+        Order order = Order.create(orderTable);
         ReflectionTestUtils.setField(order, "id", 1L);
         order.completion();
 

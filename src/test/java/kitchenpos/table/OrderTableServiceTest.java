@@ -41,8 +41,10 @@ public class OrderTableServiceTest {
         //given
         final int numberOfGuests = 7;
         final boolean empty = true;
-        OrderTable orderTable = OrderTable.create(numberOfGuests, empty);
-        OrderTableRequest orderTableRequest = new OrderTableRequest();
+        final OrderTable orderTable = OrderTable.create(numberOfGuests, empty);
+        final OrderTableRequest orderTableRequest = new OrderTableRequest();
+        ReflectionTestUtils.setField(orderTableRequest, "numberOfGuests", numberOfGuests);
+        ReflectionTestUtils.setField(orderTableRequest, "empty", empty);
         when(orderTableRepository.save(any())).thenReturn(orderTable);
 
         //when
@@ -120,12 +122,9 @@ public class OrderTableServiceTest {
 
         //given
         final int numberOfGuests = 10;
-        final boolean empty = true;
-        final Order order = new Order();
-        order.cooking();
+        final boolean empty = false;
         final OrderTable originOrderTable = OrderTable.create(numberOfGuests, empty);
-        originOrderTable.full();
-        originOrderTable.order(order);
+        Order order = originOrderTable.order();
         ReflectionTestUtils.setField(originOrderTable, "id", 1L);
 
         when(orderTableRepository.findById(anyLong())).thenReturn(Optional.ofNullable(originOrderTable));

@@ -7,6 +7,7 @@ import kitchenpos.product.dto.ProductResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 @Service
@@ -26,5 +27,14 @@ public class ProductService {
 
     public List<ProductResponse> list() {
         return ProductResponse.ofList(productRepository.findAll());
+    }
+
+    public List<Product> findAllByIds(List<Long> productIds) {
+        final List<Product> products = productRepository.findAllById(productIds);
+
+        if(products.size() != productIds.size()) {
+            throw new EntityNotFoundException("일부 상품이 존재하지 않습니다.");
+        }
+        return products;
     }
 }

@@ -8,6 +8,7 @@ import kitchenpos.product.domain.Product;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @Table(name = "menu")
@@ -39,8 +40,8 @@ public class Menu {
         this.menuProducts = new MenuProducts();
     }
 
-    public static Menu create(String name, BigDecimal price) {
-        return new Menu(name, price);
+    public static Menu prepared(String name, BigDecimal price) {
+        return new Menu(name.trim(), price);
     }
 
     public Long getId() {
@@ -67,8 +68,9 @@ public class Menu {
         return Objects.nonNull(this.id) && this.id.equals(menuId);
     }
 
-    private void validatePrice(MenuPrice otherMenuPrice) {
-        if (menuPrice.notMatch(otherMenuPrice)) {
+    public void validatePrice() {
+        MenuPrice menuPrice = this.menuProducts.totalPrice();
+        if (menuPrice.notMatch(menuPrice)) {
             throw new IllegalArgumentException();
         }
     }
@@ -77,19 +79,16 @@ public class Menu {
         this.menuGroupId = menuGroup.getId();
     }
 
-    public void addAllProduct(List<Product> products, MenuRequest menuRequest) {
-        BigDecimal sum = BigDecimal.ZERO;
-        for(Product product : products)
-        {
-            MenuProductRequest menuProductRequest = menuRequest.find(product);
-            addProduct(product, menuProductRequest.getQuantity());
-            sum = sum.add(product.multiplyQuantity(new BigDecimal(menuProductRequest.getQuantity())));
+    public void addProducts(Map<Product, Long> menuProducts) {
+
+        for(Map.Entry<Product, Long> entry : menuProducts.entrySet()) {
+            addProduct(entry.getKey(), entry.getValue());
         }
 
-        validatePrice(new MenuPrice(sum));
+        validatePrice();
     }
 
-    public void addProduct(Product product, Integer quantity) {
+    private void addProduct(Product product, Long quantity) {
         this.menuProducts.add(this, product, quantity);
     }
 

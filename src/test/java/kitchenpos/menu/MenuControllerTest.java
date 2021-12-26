@@ -36,7 +36,7 @@ public class MenuControllerTest extends ControllerTest {
         //given
         MenuProductRequest menuProduct = new MenuProductRequest();
         ReflectionTestUtils.setField(menuProduct, "productId", 1L);
-        ReflectionTestUtils.setField(menuProduct, "quantity", 1);
+        ReflectionTestUtils.setField(menuProduct, "quantity", 1L);
 
         MenuRequest menuRequest = new MenuRequest();
         ReflectionTestUtils.setField(menuRequest, "name", "후라이드세트");
@@ -57,7 +57,7 @@ public class MenuControllerTest extends ControllerTest {
     void getMenus() throws Exception {
 
         //given
-        Menu 후라이드세트 = Menu.create("후라이드세트", new BigDecimal("24000"));
+        Menu 후라이드세트 = Menu.prepared("후라이드세트", new BigDecimal("24000"));
         MenuResponse menuResponse = MenuResponse.of(후라이드세트);
 
         when(menuService.list()).thenReturn(Arrays.asList(menuResponse));

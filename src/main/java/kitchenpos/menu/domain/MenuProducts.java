@@ -6,6 +6,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,5 +30,13 @@ public class MenuProducts {
 
     public void add(MenuProduct menuProduct) {
         this.menuProducts.add(menuProduct);
+    }
+
+    public MenuPrice totalPrice() {
+        return new MenuPrice(
+                this.menuProducts.stream()
+                .mapToLong(p -> p.getProduct().multiplyQuantity(p.getQuantity()))
+                .sum()
+        );
     }
 }

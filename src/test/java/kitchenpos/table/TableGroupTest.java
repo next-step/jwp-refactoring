@@ -14,7 +14,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class TableGroupTest {
 
-
     @DisplayName("주문 테이블 단체 지정하기")
     @Test
     void groupingTable() {
@@ -80,18 +79,15 @@ public class TableGroupTest {
         TableGroup tableGroup = TableGroup.create();
         OrderTable orderTableA = OrderTable.create(10, true);
         ReflectionTestUtils.setField(orderTableA, "id", 1L);
-        Order orderA = new Order();
+        tableGroup.addOrderTable(orderTableA);
+        Order orderA = orderTableA.order();
         orderA.completion();
-        orderTableA.order(orderA);
 
         OrderTable orderTableB = OrderTable.create(7, true);
-        Order orderB = new Order();
-        orderB.completion();
-        orderTableB.order(orderB);
         ReflectionTestUtils.setField(orderTableB, "id", 2L);
-
-        tableGroup.addOrderTable(orderTableA);
         tableGroup.addOrderTable(orderTableB);
+        Order orderB = orderTableB.order();
+        orderB.completion();
 
         //when
         tableGroup.unGrouping();
@@ -106,20 +102,17 @@ public class TableGroupTest {
 
         //given
         TableGroup tableGroup = TableGroup.create();
+
         OrderTable orderTableA = OrderTable.create(10, true);
         ReflectionTestUtils.setField(orderTableA, "id", 1L);
-        Order orderA = new Order();
-        orderA.cooking();
-        orderTableA.order(orderA);
+        tableGroup.addOrderTable(orderTableA);
+        orderTableA.order();
 
         OrderTable orderTableB = OrderTable.create(7, true);
-        Order orderB = new Order();
-        orderB.completion();
-        orderTableB.order(orderB);
         ReflectionTestUtils.setField(orderTableB, "id", 2L);
-
-        tableGroup.addOrderTable(orderTableA);
         tableGroup.addOrderTable(orderTableB);
+        Order orderB = orderTableB.order();
+        orderB.completion();
 
         //when
         assertThatThrownBy(() -> tableGroup.unGrouping()).isInstanceOf(IllegalArgumentException.class);

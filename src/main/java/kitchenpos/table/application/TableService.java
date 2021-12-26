@@ -53,4 +53,14 @@ public class TableService {
         return orderTableRepository.findById(orderTableId)
                 .orElseThrow(() -> new EntityNotFoundException("주문 테이블을 찾을 수 없습니다. orderTableId = " + orderTableId));
     }
+
+    public List<OrderTable> findAllByIds(List<Long> orderTableIds) {
+        final List<OrderTable> savedOrderTables = orderTableRepository.findAllById(orderTableIds);
+
+        if (orderTableIds.size() != savedOrderTables.size()) {
+            throw new EntityNotFoundException("일부 주문 테이블을 찾을 수 없습니다.");
+        }
+
+        return savedOrderTables;
+    }
 }

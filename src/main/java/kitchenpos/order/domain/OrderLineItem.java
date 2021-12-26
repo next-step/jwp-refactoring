@@ -20,17 +20,17 @@ public class OrderLineItem {
     @JoinColumn(name = "menu_id", nullable = false)
     private Menu menu;
 
-    @Column(name = "quantity", nullable = false)
-    private long quantity;
+    @Embedded
+    private OrderQuantity orderQuantity;
 
-    public OrderLineItem() {
+    protected OrderLineItem() {
 
     }
 
     private OrderLineItem(Order order, Menu menu, long quantity) {
         this.order = order;
         this.menu = menu;
-        this.quantity = quantity;
+        this.orderQuantity = new OrderQuantity(quantity);
     }
 
     public static OrderLineItem create(Order order, Menu menu, long quantity) {
@@ -41,31 +41,16 @@ public class OrderLineItem {
         return seq;
     }
 
-    public void setSeq(final Long seq) {
-        this.seq = seq;
-    }
-
     public Long getOrderId() {
         return order.getId();
-    }
-
-    public void setOrderId(final Long orderId) {
-//        this.orderId = orderId;
     }
 
     public Menu getMenu() {
         return menu;
     }
 
-    public void setMenuId(final Long menuId) {
-//        this.menu = menuId;
-    }
-
     public long getQuantity() {
-        return quantity;
+        return orderQuantity.getQuantity();
     }
 
-    public void setQuantity(final long quantity) {
-        this.quantity = quantity;
-    }
 }

@@ -16,25 +16,19 @@ import java.util.List;
 @Service
 @Transactional(readOnly = true)
 public class TableGroupService {
-    private final OrderTableRepository orderTableRepository;
+    private final TableService tableService;
     private final TableGroupRepository tableGroupRepository;
 
-    public TableGroupService(final OrderTableRepository orderTableRepository, final TableGroupRepository tableGroupRepository) {
-        this.orderTableRepository = orderTableRepository;
+    public TableGroupService(final TableService tableService, final TableGroupRepository tableGroupRepository) {
+        this.tableService = tableService;
         this.tableGroupRepository = tableGroupRepository;
     }
 
     @Transactional
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
         final TableGroup tableGroup = tableGroupRequest.toEntity();
-        final List<OrderTableRequest> orderTables = tableGroupRequest.getOrderTables();
 
-        final List<Long> orderTableIds = tableGroupRequest.toOrderTableIds();
-        final List<OrderTable> savedOrderTables = orderTableRepository.findAllById(orderTableIds);
-
-        if (orderTables.size() != savedOrderTables.size()) {
-            throw new EntityNotFoundException("일부 주문 테이블을 찾을 수 없습니다.");
-        }
+        final List<OrderTable> savedOrderTables = tableService.findAllByIds(tableGroupRequest.toOrderTableIds());
 
         TableGroup saveTableGroup = tableGroupRepository.save(tableGroup);
         saveTableGroup.addAllOrderTables(savedOrderTables);

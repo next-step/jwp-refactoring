@@ -3,20 +3,23 @@ package kitchenpos.menu.dto;
 import kitchenpos.product.domain.Product;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 
 public class MenuProductRequest {
 
+    @Positive
     @NotNull
     private Long productId;
 
+    @Positive
     @NotNull
-    private Integer quantity;
+    private Long quantity;
 
     public Long getProductId() {
         return productId;
     }
 
-    public Integer getQuantity() {
+    public Long getQuantity() {
         return quantity;
     }
 

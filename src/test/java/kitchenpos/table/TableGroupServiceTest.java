@@ -2,6 +2,7 @@ package kitchenpos.table;
 
 import kitchenpos.order.domain.Order;
 import kitchenpos.table.application.TableGroupService;
+import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
@@ -34,7 +35,7 @@ public class TableGroupServiceTest {
     private TableGroupService tableGroupService;
 
     @Mock
-    private OrderTableRepository orderTableRepository;
+    private TableService tableService;
 
     @Mock
     private TableGroupRepository tableGroupRepository;
@@ -66,7 +67,7 @@ public class TableGroupServiceTest {
                 .map(OrderTableRequest::toEntity)
                 .collect(toList());
 
-        when(orderTableRepository.findAllById(anyList())).thenReturn(orderTables);
+        when(tableService.findAllByIds(anyList())).thenReturn(orderTables);
         when(tableGroupRepository.save(any())).thenReturn(tableGroup);
 
         //when
@@ -90,20 +91,18 @@ public class TableGroupServiceTest {
     void unGroupingTable() {
 
         //given
-        OrderTable orderTableA = OrderTable.create(10, true);
-        Order orderA = new Order();
-        orderA.completion();;
-        orderTableA.order(orderA);
-
-        OrderTable orderTableB = OrderTable.create(4, true);
-        Order orderB = new Order();
-        orderB.completion();;
-        orderTableB.order(orderB);
-
         TableGroup tableGroup = TableGroup.create();
         ReflectionTestUtils.setField(tableGroup, "id", 1L);
+
+        OrderTable orderTableA = OrderTable.create(10, true);
         tableGroup.addOrderTable(orderTableA);
+        Order orderA = orderTableA.order();
+        orderA.completion();
+
+        OrderTable orderTableB = OrderTable.create(4, true);
         tableGroup.addOrderTable(orderTableB);
+        Order orderB = orderTableB.order();
+        orderB.completion();
 
         when(tableGroupRepository.findById(anyLong())).thenReturn(Optional.ofNullable(tableGroup));
 

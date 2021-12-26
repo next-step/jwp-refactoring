@@ -3,7 +3,9 @@ package kitchenpos.menu.dto;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.product.domain.Product;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -13,12 +15,14 @@ import static java.util.stream.Collectors.toList;
 
 public class MenuRequest {
 
-    @NotNull
+    @NotBlank
     private String name;
 
+    @Positive
     @NotNull
     private BigDecimal price;
 
+    @Positive
     @NotNull
     private Long menuGroupId;
 
@@ -42,7 +46,7 @@ public class MenuRequest {
     }
 
     public Menu toEntity() {
-        Menu menu = Menu.create(name, price);
+        Menu menu = Menu.prepared(name, price);
         return menu;
     }
 

@@ -19,7 +19,7 @@ public class MenuTest {
         final BigDecimal menuPrice = new BigDecimal("24000");
 
         //when
-        Menu menu = Menu.create(menuName, menuPrice);
+        Menu menu = Menu.prepared(menuName, menuPrice);
 
         //then
         assertThat(menu).isNotNull();

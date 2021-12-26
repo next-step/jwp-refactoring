@@ -2,15 +2,19 @@ package kitchenpos.table.dto;
 
 import kitchenpos.table.domain.OrderTable;
 
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.util.Objects;
 
 public class OrderTableRequest {
 
+    @Positive
+    @NotNull
     private Long id;
 
     @Positive
-    private int numberOfGuests;
+    @NotNull
+    private Integer numberOfGuests;
 
     private Boolean empty;
 
