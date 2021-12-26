@@ -23,6 +23,7 @@ public class ProductService {
         return ProductResponse.from(productRepository.save(product));
     }
 
+    @Transactional(readOnly = true)
     public List<ProductResponse> list() {
         return productRepository.findAll()
             .stream()

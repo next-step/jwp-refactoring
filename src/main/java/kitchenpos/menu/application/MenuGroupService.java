@@ -23,6 +23,7 @@ public class MenuGroupService {
         return MenuGroupResponse.from(menuGroupRepository.save(menuGroup));
     }
 
+    @Transactional(readOnly = true)
     public List<MenuGroupResponse> list() {
         return menuGroupRepository.findAll()
             .stream()
