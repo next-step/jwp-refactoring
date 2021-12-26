@@ -30,10 +30,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        // 메뉴가 등록되어 있어야 한다.
-        // 메뉴 그룹 등록되어 있어야 한다.
-        // 상품이 등록되어어 있어야 한다.
-        // 주문 테이블이 등록되어 있어야 한다.
+
         추천메뉴 = MenuAcceptanceTest.메뉴그룹_등록되어있음(MenuGroup.of("추천메뉴"));
         소고기한우 = MenuAcceptanceTest.상품_등록되어있음(Product.of("소고기한우", 30000));
         메뉴 = MenuAcceptanceTest.메뉴_등록되어있음(
@@ -61,8 +58,8 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         Order savedOrder = 주문_생성_확인(createResponse);
 
         // 주문 조회
-        ExtractableResponse<Response> findResponse = 주문_조회_요청();
-        주문_조회_확인(findResponse, savedOrder.getOrderLineItems());
+        ExtractableResponse<Response> findResponse = 모든_주문_조회_요청();
+        모든_주문_조회_확인(findResponse, savedOrder);
 
         // 주문 상태 변경
         Order changeOrder = Order.of(OrderStatus.COMPLETION.name());
@@ -76,14 +73,15 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         assertThat(order.getOrderStatus()).isEqualTo(changeOrder.getOrderStatus());
     }
 
-    private void 주문_조회_확인(ExtractableResponse<Response> findResponse, List<OrderLineItem> expected) {
+    private void 모든_주문_조회_확인(ExtractableResponse<Response> findResponse, Order expected) {
         assertThat(findResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
         List<Order> orders = findResponse.jsonPath().getList(".", Order.class);
         List<OrderLineItem> orderLineItems = orders.stream()
                 .map(Order::getOrderLineItems)
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
-        assertThat(orderLineItems).containsAll(expected);
+        assertThat(orders).contains(expected);
+        assertThat(orderLineItems).containsAll(expected.getOrderLineItems());
     }
 
     private Order 주문_생성_확인(ExtractableResponse<Response> createResponse) {
@@ -105,7 +103,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private ExtractableResponse<Response> 주문_조회_요청() {
+    private ExtractableResponse<Response> 모든_주문_조회_요청() {
         return RestAssured
                 .given().log().all()
                 .when().get("/api/orders")
