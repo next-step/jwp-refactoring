@@ -50,26 +50,33 @@ public class MenuService {
 
         saveMenuProduct(request, products, menu);
 
-        return MenuMapper.toMenuResponse(menuDao.save(menu));
+        final Menu savedMenu = menuDao.save(menu);
+
+        return MenuMapper.toMenuResponse(savedMenu);
     }
 
     private void saveMenuProduct(final MenuCreateRequest request, final List<Product> products, final Menu savedMenu) {
         for (final MenuCreateRequest.MenuProduct menuProductRequest : request.getMenuProducts()) {
-            final Product menuProduct = getProduct(products, menuProductRequest);
-            savedMenu.addMenuProduct(MenuProduct.builder()
-                    .product(menuProduct)
+            final Product product = getProduct(products, menuProductRequest);
+            final MenuProduct menuProduct = MenuProduct.builder()
+                    .product(product)
                     .quantity(menuProductRequest.getQuantity())
-                    .build());
+                    .build();
+
+            savedMenu.addMenuProduct(menuProduct);
         }
     }
 
     private BigDecimal getMenuProductPriceSum(final MenuCreateRequest request, final List<Product> products) {
-        BigDecimal sum = BigDecimal.ZERO;
+        BigDecimal menuProductPriceSum = BigDecimal.ZERO;
+
         for (final MenuCreateRequest.MenuProduct menuProductRequest : request.getMenuProducts()) {
             final Product menuProduct = getProduct(products, menuProductRequest);
-            sum = sum.add(menuProduct.getPrice().multiply(BigDecimal.valueOf(menuProductRequest.getQuantity())));
+            final BigDecimal menuProductTotalPrice = menuProduct.getPrice().multiply(BigDecimal.valueOf(menuProductRequest.getQuantity()));
+            menuProductPriceSum = menuProductPriceSum.add(menuProductTotalPrice);
         }
-        return sum;
+
+        return menuProductPriceSum;
     }
 
     private Product getProduct(final List<Product> products, final MenuCreateRequest.MenuProduct menuProductRequest) {
@@ -81,7 +88,9 @@ public class MenuService {
 
     @Transactional(readOnly = true)
     public List<MenuResponse> list() {
-        return MenuMapper.toMenuResponses(menuDao.findAll());
+        final List<Menu> menus = menuDao.findAll();
+
+        return MenuMapper.toMenuResponses(menus);
     }
 
     @Transactional(readOnly = true)

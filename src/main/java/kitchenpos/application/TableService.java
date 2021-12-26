@@ -29,12 +29,16 @@ public class TableService {
                 .build();
         orderTable.initTableGroup();
 
-        return TableMapper.toOrderTable(orderTableDao.save(orderTable));
+        final OrderTable savedOrderTable = orderTableDao.save(orderTable);
+
+        return TableMapper.toOrderTable(savedOrderTable);
     }
 
     @Transactional(readOnly = true)
     public List<TableResponse> list() {
-        return TableMapper.toOrderTables(orderTableDao.findAll());
+        final List<OrderTable> orderTables = orderTableDao.findAll();
+
+        return TableMapper.toOrderTables(orderTables);
     }
 
     public OrderTable changeEmpty(final Long orderTableId, final TableChangeEmptyRequest request) {

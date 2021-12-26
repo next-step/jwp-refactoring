@@ -37,7 +37,9 @@ public class TableGroupService {
             tableGroup.saveOrderTable(savedOrderTable);
         }
 
-        return TableGroupMapper.toTableGroupResponse(tableGroupDao.save(tableGroup));
+        final TableGroup savedTableGroup = tableGroupDao.save(tableGroup);
+
+        return TableGroupMapper.toTableGroupResponse(savedTableGroup);
     }
 
     private void existCheckOrderTable(final List<OrderTable> savedOrderTables, final TableGroupCreateRequest request) {

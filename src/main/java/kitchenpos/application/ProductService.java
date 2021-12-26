@@ -20,10 +20,12 @@ public class ProductService {
     }
 
     public ProductResponse create(final ProductCreateRequest request) {
-        return ProductMapper.toProductResponse(productDao.save(Product.builder()
+        final Product savedProduct = productDao.save(Product.builder()
                 .name(request.getName())
                 .price(request.getPrice())
-                .build()));
+                .build());
+
+        return ProductMapper.toProductResponse(savedProduct);
     }
 
     @Transactional(readOnly = true)
@@ -33,6 +35,8 @@ public class ProductService {
 
     @Transactional(readOnly = true)
     public List<ProductResponse> list() {
-        return ProductMapper.toProductResponses(productDao.findAll());
+        final List<Product> products = productDao.findAll();
+
+        return ProductMapper.toProductResponses(products);
     }
 }

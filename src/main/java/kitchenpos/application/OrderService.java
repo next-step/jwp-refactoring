@@ -42,27 +42,34 @@ public class OrderService {
         order.saveOrderTable(orderTable);
         saveOrderLineItem(menus, request, order);
 
-        return OrderMapper.toOrderResponse(orderDao.save(order));
+        final Order savedOrder = orderDao.save(order);
+
+        return OrderMapper.toOrderResponse(savedOrder);
     }
 
     private void saveOrderLineItem(final List<Menu> menus, final OrderCreateRequest request, final Order savedOrder) {
         for (OrderCreateRequest.OrderLineItem orderLineItemRequest : request.getOrderLineItems()) {
             final Menu orderLineItemMenu = getMenu(menus, orderLineItemRequest);
-            savedOrder.saveOrderLineItem(OrderLineItem.builder()
+            final OrderLineItem orderLineItem = OrderLineItem.builder()
                     .menu(orderLineItemMenu)
                     .quantity(orderLineItemRequest.getQuantity())
-                    .build());
+                    .build();
+
+            savedOrder.saveOrderLineItem(orderLineItem);
         }
     }
 
     @Transactional(readOnly = true)
     public List<OrderResponse> list() {
-        return OrderMapper.toOrderResponses(orderDao.findAll());
+        final List<Order> orders = orderDao.findAll();
+
+        return OrderMapper.toOrderResponses(orders);
     }
 
     public OrderResponse changeOrderStatus(final Long orderId, final OrderStatusChangeRequest request) {
         final Order findOrder = orderDao.findById(orderId)
                 .orElseThrow(() -> new EntityNotFoundException(String.format("order not found. find order id is %d", orderId)));
+
         findOrder.changeOrderStatus(request.getOrderStatus());
 
         return OrderMapper.toOrderResponse(findOrder);

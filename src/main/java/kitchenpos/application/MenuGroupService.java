@@ -21,9 +21,11 @@ public class MenuGroupService {
     }
 
     public MenuGroupResponse create(final MenuGroupCreateRequest request) {
-        return MenuGroupMapper.toMenuGroupResponse(menuGroupDao.save(MenuGroup.builder()
+        final MenuGroup savedMenuGroup = menuGroupDao.save(MenuGroup.builder()
                 .name(request.getName())
-                .build()));
+                .build());
+
+        return MenuGroupMapper.toMenuGroupResponse(savedMenuGroup);
     }
 
     @Transactional(readOnly = true)
@@ -33,6 +35,8 @@ public class MenuGroupService {
     }
 
     public List<MenuGroupResponse> list() {
-        return MenuGroupMapper.toMenuGroupResponses(menuGroupDao.findAll());
+        final List<MenuGroup> menuGroups = menuGroupDao.findAll();
+
+        return MenuGroupMapper.toMenuGroupResponses(menuGroups);
     }
 }
