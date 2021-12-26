@@ -3,7 +3,6 @@ package kitchenpos.tablegroup.domain;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.fixture.TableFixture;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,8 +15,8 @@ import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.BDDMockito.given;
-
 
 @ExtendWith(MockitoExtension.class)
 class TableGroupHandlerTest {
@@ -27,7 +26,6 @@ class TableGroupHandlerTest {
 
     @Mock
     private OrderTableRepository orderTableRepository;
-
 
     private Long 테이블_그룹_ID = 1L;
     private OrderTable 비어있는_테이블1;
@@ -54,7 +52,7 @@ class TableGroupHandlerTest {
         tableGroupHandler.group(new TableGroupEvent(테이블_그룹_ID, Arrays.asList(비어있는_테이블1.getId(), 비어있는_테이블2.getId())));
 
         // then
-        Assertions.assertAll(
+        assertAll(
                 () -> assertThat(비어있는_테이블1.getTableGroupId()).isEqualTo(테이블_그룹_ID)
                 , () -> assertThat(비어있는_테이블2.getTableGroupId()).isEqualTo(테이블_그룹_ID)
         );
@@ -84,7 +82,7 @@ class TableGroupHandlerTest {
         tableGroupHandler.ungroup(new TableUngroupEvent(테이블_그룹_ID));
 
         // then
-        Assertions.assertAll(
+        assertAll(
                 () -> assertThat(비어있는_테이블1.getTableGroupId()).isNull()
                 , () -> assertThat(비어있는_테이블2.getTableGroupId()).isNull()
         );

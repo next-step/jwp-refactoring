@@ -9,7 +9,6 @@ import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,6 +21,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.mockito.BDDMockito.given;
 
@@ -73,7 +73,7 @@ class MenuValidatorTest {
         given(menuGroupRepository.existsById(menuGroupId)).willReturn(Boolean.FALSE);
 
         // when & then
-        Assertions.assertThatIllegalArgumentException()
+        assertThatIllegalArgumentException()
                 .isThrownBy(() -> menuValidator.validateCreate(menu));
     }
 
@@ -87,7 +87,7 @@ class MenuValidatorTest {
         given(menuGroupRepository.existsById(menuGroupId)).willReturn(Boolean.TRUE);
 
         // when & then
-        Assertions.assertThatIllegalArgumentException()
+        assertThatIllegalArgumentException()
                 .isThrownBy(() -> menuValidator.validateCreate(menu));
     }
 
@@ -103,7 +103,7 @@ class MenuValidatorTest {
         given(productRepository.findByIdIn(Arrays.asList(productId))).willReturn(Arrays.asList(product));
 
         // when & then
-        Assertions.assertThatIllegalArgumentException()
+        assertThatIllegalArgumentException()
                 .isThrownBy(() -> menuValidator.validateCreate(menu));
     }
 
@@ -118,7 +118,7 @@ class MenuValidatorTest {
         given(productRepository.findByIdIn(Arrays.asList(productId))).willReturn(Collections.emptyList());
 
         // when & then
-        Assertions.assertThatIllegalArgumentException()
+        assertThatIllegalArgumentException()
                 .isThrownBy(() -> menuValidator.validateCreate(menu));
     }
 }

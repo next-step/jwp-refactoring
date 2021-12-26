@@ -8,7 +8,6 @@ import kitchenpos.tablegroup.dto.OrderTableIdRequest;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
 import kitchenpos.tablegroup.fixture.TableGroupFixture;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,6 +21,7 @@ import java.util.Arrays;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
@@ -70,7 +70,7 @@ public class TableGroupServiceTest {
         given(tableGroupRepository.findById(any(Long.class))).willReturn(Optional.of(그룹_테이블));
 
         // when & then
-        Assertions.assertThatNoException()
+        assertThatNoException()
                 .isThrownBy(() -> tableGroupService.ungroup(그룹_테이블.getId()));
 
     }
