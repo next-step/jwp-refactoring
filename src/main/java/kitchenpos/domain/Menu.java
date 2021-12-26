@@ -1,14 +1,24 @@
 package kitchenpos.domain;
 
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
 
+@Entity
 public class Menu {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private BigDecimal price;
-    private Long menuGroupId;
+    @ManyToOne
+    @JoinColumn(name = "menu_group_id")
+    private MenuGroup menuGroupId;
+    @OneToMany(mappedBy = "menuId")
     private List<MenuProduct> menuProducts;
+
+    public Menu() {
+    }
 
     public Long getId() {
         return id;
@@ -35,11 +45,11 @@ public class Menu {
     }
 
     public Long getMenuGroupId() {
-        return menuGroupId;
+        return menuGroupId.getId();
     }
 
     public void setMenuGroupId(final Long menuGroupId) {
-        this.menuGroupId = menuGroupId;
+        this.menuGroupId.setId(menuGroupId);
     }
 
     public List<MenuProduct> getMenuProducts() {

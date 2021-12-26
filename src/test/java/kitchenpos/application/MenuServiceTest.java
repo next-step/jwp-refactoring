@@ -63,7 +63,8 @@ public class MenuServiceTest {
     void createMenu() {
         // given
         given(menuGroupDao.existsById(any())).willReturn(true);
-        given(productDao.findById(any())).willReturn(Optional.of(짜장면));
+        given(productDao.findById(짜장면.getId())).willReturn(Optional.of(짜장면));
+        given(productDao.findById(탕수육.getId())).willReturn(Optional.of(탕수육));
         given(menuDao.save(any())).willReturn(짜장면메뉴);
 
         // when

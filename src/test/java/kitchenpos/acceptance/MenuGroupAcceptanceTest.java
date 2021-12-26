@@ -4,7 +4,6 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -22,25 +21,32 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
     @DisplayName("메뉴그룹을 등록한다.")
     void postMenuGroup() {
         // when
+        ExtractableResponse<Response> initResponse = 메뉴_그룹_조회_요청();
+
+        // then
+        assertThat(initResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(initResponse.jsonPath().getList(".")).hasSize(4);
+
+        // when
         ExtractableResponse<Response> response = 메뉴_그룹_등록_요청("두마리메뉴");
 
         // then
         메뉴_그룹_등록됨(response);
+
+        // when
+        ExtractableResponse<Response> getResponse = 메뉴_그룹_조회_요청();
+
+        // then
+        assertThat(getResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(getResponse.jsonPath().getList(".")).hasSize(5);
     }
 
-    @Test
-    @DisplayName("메뉴그룹을 조회한다.")
-    void getMenuGroup() {
-        // when
-        ExtractableResponse<Response> response = RestAssured
+    private ExtractableResponse<Response> 메뉴_그룹_조회_요청() {
+        return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/api/menu-groups")
                 .then().log().all().extract();
-
-        // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.jsonPath().getList(".")).hasSize(4);
     }
 
     private void 메뉴_그룹_등록됨(ExtractableResponse<Response> response) {

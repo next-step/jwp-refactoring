@@ -34,7 +34,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         menuProduct.setQuantity(1);
 
         // when
-        ExtractableResponse<Response> response = 메뉴_등록_요청("짜장면", new BigDecimal(5000), menuGroup.getId(), Arrays.asList(menuProduct));
+        ExtractableResponse<Response> response = 메뉴_등록_요청("짜장면", product.getPrice(), menuGroup.getId(), Arrays.asList(menuProduct));
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
