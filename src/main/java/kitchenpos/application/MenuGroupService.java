@@ -34,6 +34,7 @@ public class MenuGroupService {
                 .orElseThrow(() -> new EntityNotFoundException(String.format("menu not found. find menu id is %d", id)));
     }
 
+    @Transactional(readOnly = true)
     public List<MenuGroupResponse> list() {
         final List<MenuGroup> menuGroups = menuGroupDao.findAll();
 
