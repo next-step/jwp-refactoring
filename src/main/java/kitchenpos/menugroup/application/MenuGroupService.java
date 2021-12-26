@@ -14,7 +14,7 @@ import java.util.List;
 public class MenuGroupService {
     private final MenuGroupRepository menuGroupRepository;
 
-    public MenuGroupService(final MenuGroupRepository menuGroupRepository) {
+    public MenuGroupService(MenuGroupRepository menuGroupRepository) {
         this.menuGroupRepository = menuGroupRepository;
     }
 
@@ -30,7 +30,7 @@ public class MenuGroupService {
         return MenuGroupResponse.fromList(menuGroups);
     }
 
-    public MenuGroup findById(Long menuGroupId) {
+    public MenuGroup findById(final Long menuGroupId) {
         return menuGroupRepository.findById(menuGroupId)
                 .orElseThrow(NoMenuGroupException::new);
     }

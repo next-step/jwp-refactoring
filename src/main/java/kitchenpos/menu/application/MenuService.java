@@ -25,7 +25,7 @@ public class MenuService {
     private final ProductService productService;
 
     public MenuService(
-            final MenuRepository menuRepository,
+            MenuRepository menuRepository,
             MenuGroupService menuGroupService, ProductService productService) {
         this.menuRepository = menuRepository;
         this.menuGroupService = menuGroupService;
@@ -41,7 +41,7 @@ public class MenuService {
         return MenuResponse.from(savedMenu);
     }
 
-    private MenuProducts getMenuProducts(MenuRequest menuRequest) {
+    private MenuProducts getMenuProducts(final MenuRequest menuRequest) {
         MenuProducts menuProducts = new MenuProducts();
         for (MenuProductRequest menuProductRequest : menuRequest.getMenuProducts()) {
             Product product = productService.findById(menuProductRequest.getProductId());
@@ -55,7 +55,7 @@ public class MenuService {
         return MenuResponse.fromList(menus);
     }
 
-    public Menu findById(Long menuId) {
+    public Menu findById(final Long menuId) {
         return menuRepository.findById(menuId).orElseThrow(NoMenuException::new);
     }
 }

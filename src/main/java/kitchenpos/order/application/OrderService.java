@@ -26,8 +26,8 @@ public class OrderService {
     private final MenuService menuService;
 
     public OrderService(
-            final OrderRepository orderRepository,
-            final TableService tableService, final MenuService menuService) {
+            OrderRepository orderRepository,
+            TableService tableService, MenuService menuService) {
         this.tableService = tableService;
         this.menuService = menuService;
         this.orderRepository = orderRepository;
@@ -64,12 +64,12 @@ public class OrderService {
         return OrderResponse.from(order);
     }
 
-    private Order findById(Long orderId) {
+    private Order findById(final Long orderId) {
         return orderRepository.findById(orderId)
                 .orElseThrow(NoOrderException::new);
     }
 
-    private void validateOrderLineItemsExists(List<OrderLineItemRequest> orderLineItemRequests) {
+    private void validateOrderLineItemsExists(final List<OrderLineItemRequest> orderLineItemRequests) {
         if (CollectionUtils.isEmpty(orderLineItemRequests)) {
             throw new NoOrderLineItemException();
         }

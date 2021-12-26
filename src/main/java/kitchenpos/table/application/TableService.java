@@ -46,7 +46,7 @@ public class TableService {
         return OrderTableResponse.from(orderTable);
     }
 
-    public OrderTable findById(Long orderTableId) {
+    public OrderTable findById(final Long orderTableId) {
         return orderTableRepository.findById(orderTableId)
                 .orElseThrow(NoOrderTableException::new);
     }
