@@ -48,7 +48,7 @@ public class OrderTables {
     
     public void ungroup() {
         orderTables.forEach(orderTable -> orderTable.ungroup());
-        orderTables = new ArrayList<OrderTable>();
+        orderTables.clear();
     }
 
     @Override
