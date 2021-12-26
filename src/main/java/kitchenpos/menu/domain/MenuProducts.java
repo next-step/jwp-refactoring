@@ -1,14 +1,17 @@
 package kitchenpos.menu.domain;
 
-import com.google.common.collect.Lists;
+import static java.util.stream.Collectors.toList;
+
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
+import kitchenpos.domain.Price;
 
 @Embeddable
 public class MenuProducts {
 
-    @OneToMany(mappedBy = "menu")
+    @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MenuProduct> menuProducts;
 
     protected MenuProducts() {
@@ -18,19 +21,32 @@ public class MenuProducts {
         this.menuProducts = menuProducts;
     }
 
-    public static MenuProducts of(List<MenuProduct> menuProducts) {
+    public static MenuProducts of(Menu menu, List<MenuProduct> menuProducts) {
+        menuProducts.forEach(menuProduct -> menuProduct.setMenu(menu));
         return new MenuProducts(menuProducts);
-    }
-
-    public static MenuProducts empty() {
-        return new MenuProducts(Lists.newArrayList());
-    }
-
-    public void add(MenuProduct menuProduct) {
-        this.menuProducts.add(menuProduct);
     }
 
     public List<MenuProduct> getValues() {
         return menuProducts;
+    }
+
+    public List<Long> extractProductIds() {
+        return getValues().stream()
+            .map(MenuProduct::getProductId)
+            .collect(toList());
+    }
+
+    public Price getTotalPrice() {
+        Price totalPrice = Price.zero();
+        for (MenuProduct menuProduct : this.menuProducts) {
+            totalPrice = totalPrice.add(menuProduct.calculateProductsPrice());
+        }
+        return totalPrice;
+    }
+
+    public void setMenu(Menu menu) {
+        for(MenuProduct menuProduct : this.menuProducts) {
+            menuProduct.setMenu(menu);
+        }
     }
 }

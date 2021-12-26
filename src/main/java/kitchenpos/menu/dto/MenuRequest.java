@@ -2,9 +2,10 @@ package kitchenpos.menu.dto;
 
 import static java.util.stream.Collectors.toList;
 
-import java.math.BigDecimal;
 import java.util.List;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProducts;
 
 public class MenuRequest {
 
@@ -28,9 +29,13 @@ public class MenuRequest {
     }
 
     public Menu toEntity() {
-        return Menu.of(name, price, menuGroupId, menuProducts.stream()
+        Menu menu = Menu.of(name, price, menuGroupId);
+        List<MenuProduct> menuProducts = this.menuProducts.stream()
             .map(MenuProductRequest::toEntity)
-            .collect(toList()));
+            .collect(toList());
+        menu.setMenuProducts(MenuProducts.of(menu, menuProducts));
+
+        return menu;
     }
 
     public String getName() {

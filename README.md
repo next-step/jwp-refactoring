@@ -59,15 +59,15 @@
 
 ### step2 요구사항
 
-- [ ] 상품 관리 리팩토링
+- [X] 상품 관리 리팩토링
   - [X] 모델 
     - [X] Product 엔티티 변환
     - [X] Name 래핑 클래스 추가
     - [X] Price 래핑 클래스 추가
   - [X] ProductRepository 사용하도록 수정
   - [X] dto 모델 추가
-- [ ] 메뉴 관리 리팩토링
-  - [ ] 모델
+- [X] 메뉴 관리 리팩토링
+  - [X] 모델
     - [X] MenuGroup 엔티티 변환
     - [X] Menu 엔티티 변환
     - [X] MenuProduct 엔티티 변환
@@ -77,7 +77,6 @@
     - [X] MenuProducts 일급 컬렉션 추가
   - [X] MenuRepository 사용하도록 수정
   - [X] MenuGroupRepository 사용하도록 수정
-  - [X] MenuProductRepository 사용하도록 수정
   - [X] 메뉴 그룹 dto 모델 추가
   - [X] 메뉴 dto 모델 추가
   - [X] 메뉴 상품 dto 모델 추가

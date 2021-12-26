@@ -2,9 +2,7 @@ package kitchenpos.product.application;
 
 import static java.util.stream.Collectors.toList;
 
-import java.math.BigDecimal;
 import java.util.List;
-import java.util.Objects;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.dto.ProductResponse;

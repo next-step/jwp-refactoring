@@ -1,5 +1,6 @@
 package kitchenpos.menu.domain;
 
+import com.google.common.collect.Lists;
 import java.util.List;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -41,16 +42,7 @@ public class Menu {
         this.name = Name.of(name);
         this.price = Price.of(price);
         this.menuGroup = MenuGroup.of(menuGroupId);
-        this.menuProducts = MenuProducts.of(menuProducts);
-    }
-
-    public Menu(Long id, String name, Integer price, Long menuGroupId,
-        List<MenuProduct> menuProducts) {
-        this.id = id;
-        this.name = Name.of(name);
-        this.price = Price.of(price);
-        this.menuGroup = MenuGroup.of(menuGroupId);
-        this.menuProducts = MenuProducts.of(menuProducts);
+        this.menuProducts = MenuProducts.of(this, menuProducts);
     }
 
     public static Menu of(Long id) {
@@ -60,6 +52,20 @@ public class Menu {
     public static Menu of(String name, Integer price, Long menuGroupId,
         List<MenuProduct> menuProducts) {
         return new Menu(name, price, menuGroupId, menuProducts);
+    }
+
+    public static Menu of(String name, Integer price, Long menuGroupId) {
+        return new Menu(name, price, menuGroupId, Lists.newArrayList());
+    }
+
+    public void validateMenuPrice(Price menuPrice) {
+        if (priceIsGreaterThan(menuPrice)) {
+            throw new IllegalArgumentException("메뉴의 가격이 단품의 합보다 비쌉니다.");
+        }
+    }
+
+    private boolean priceIsGreaterThan(Price price) {
+        return this.price.isGreaterThan(price);
     }
 
     public Long getId() {

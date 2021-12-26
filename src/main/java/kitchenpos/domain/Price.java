@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import kitchenpos.menu.domain.Quantity;
+import kitchenpos.product.domain.Product;
 
 @Embeddable
 public class Price {
@@ -26,10 +28,18 @@ public class Price {
         return new Price(value);
     }
 
+    public static Price zero() {
+        return new Price(BigDecimal.ZERO);
+    }
+
     public static void validate(Integer price) {
         if (price == null || price < 0) {
             throw new IllegalArgumentException("가격이 없거나 0보다 작습니다");
         }
+    }
+
+    public static Price multiply(Product product, Quantity quantity) {
+        return Price.of(product.getPriceValue().multiply(BigDecimal.valueOf(quantity.getValue())));
     }
 
     public BigDecimal getValue() {
@@ -62,5 +72,9 @@ public class Price {
 
     public boolean isGreaterThan(Price other) {
         return this.price.compareTo(other.price) > 0;
+    }
+
+    public Price add(Price other) {
+        return Price.of(this.price.add(other.price));
     }
 }

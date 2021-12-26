@@ -3,16 +3,15 @@ package kitchenpos.table.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuProductRepository;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.product.domain.Product;
@@ -34,9 +33,6 @@ public class MenuServiceTest {
 
     @Mock
     private MenuGroupRepository menuGroupRepository;
-
-    @Mock
-    private MenuProductRepository menuProductRepository;
 
     @Mock
     private ProductRepository productRepository;
@@ -65,11 +61,9 @@ public class MenuServiceTest {
             Lists.newArrayList(menuProduct1, menuProduct2));
 
         given(menuGroupRepository.existsById(any())).willReturn(true);
-        given(productRepository.findById(1L)).willReturn(Optional.of(product1));
-        given(productRepository.findById(2L)).willReturn(Optional.of(product2));
+        given(productRepository.findAllById(anyList())).willReturn(
+            Lists.newArrayList(product1, product2));
         given(menuRepository.save(menu)).willReturn(menu);
-        given(menuProductRepository.save(menuProduct1)).willReturn(menuProduct1);
-        given(menuProductRepository.save(menuProduct2)).willReturn(menuProduct2);
 
         // when
         MenuResponse result = menuService.create(menu);
@@ -86,14 +80,14 @@ public class MenuServiceTest {
 
     @DisplayName("단일 상품 가격의 합보다 메뉴의 가격이 높으면 예외 발생")
     @Test
-    void 메뉴_생성_예외3() {
+    void 메뉴_생성_예외() {
         // given
         Menu menu = Menu.of("후라이드+양념", 36000, 1L,
             Lists.newArrayList(menuProduct1, menuProduct2));
 
         given(menuGroupRepository.existsById(any())).willReturn(true);
-        given(productRepository.findById(1L)).willReturn(Optional.of(product1));
-        given(productRepository.findById(2L)).willReturn(Optional.of(product2));
+        given(productRepository.findAllById(anyList())).willReturn(
+            Lists.newArrayList(product1, product2));
 
         // when, then
         assertThatIllegalArgumentException().isThrownBy(
@@ -113,9 +107,6 @@ public class MenuServiceTest {
             Lists.newArrayList(menuProduct3));
 
         given(menuRepository.findAll()).willReturn(Lists.newArrayList(menu1, menu2));
-        given(menuProductRepository.findAllByMenu(any())).willReturn(
-            Lists.newArrayList(menuProduct1, menuProduct2),
-            Lists.newArrayList(menuProduct3));
 
         // when
         List<MenuResponse> result = menuService.list();
