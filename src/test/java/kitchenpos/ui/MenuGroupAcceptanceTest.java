@@ -8,7 +8,6 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.dto.MenuGroupRequest;
 import kitchenpos.menu.dto.MenuGroupResponse;
 import org.assertj.core.util.Lists;

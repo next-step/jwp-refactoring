@@ -11,7 +11,6 @@ import io.restassured.response.Response;
 import java.math.BigDecimal;
 import java.util.List;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.dto.MenuGroupRequest;
 import kitchenpos.menu.dto.MenuGroupResponse;
 import kitchenpos.menu.dto.MenuProductRequest;
