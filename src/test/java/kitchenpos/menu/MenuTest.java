@@ -15,14 +15,9 @@ class MenuTest {
     @Test
     @DisplayName("메뉴의 금액이 상품의 총 금액보다 크다면 예외가 발생한다.")
     void menuPriceMoreThanProductPriceSum() {
-        // given
-        final Menu menu = Menu.builder()
-                .price(BigDecimal.valueOf(18000))
-                .build();
-
         // when
         assertThatThrownBy(() -> {
-            menu.checkMenuPrice(BigDecimal.valueOf(8000));
+            new Menu(null, BigDecimal.valueOf(18000), null, BigDecimal.valueOf(8000));
         }).isInstanceOf(MenuPriceMoreThanMenuProductPriceSumException.class);
     }
 }

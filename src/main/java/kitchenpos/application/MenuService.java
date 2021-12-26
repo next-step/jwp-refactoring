@@ -32,27 +32,21 @@ public class MenuService {
 
     public MenuResponse create(final MenuCreateRequest request) {
         final MenuGroup menuGroup = menuGroupService.findMenuGroup(request.getMenuGroupId());
+        final List<Product> products = getMenuProduct(request);
+        BigDecimal menuProductPriceSum = getMenuProductPriceSum(request, products);
 
-        final List<Product> products = productService.findProducts(request.getMenuProducts()
-                .stream()
-                .map(MenuCreateRequest.MenuProduct::getProductId)
-                .collect(Collectors.toList()));
-
-        BigDecimal sum = getMenuProductPriceSum(request, products);
-
-        final Menu menu = Menu.builder()
-                .name(request.getName())
-                .menuGroup(menuGroup)
-                .price(request.getPrice())
-                .build();
-
-        menu.checkMenuPrice(sum);
-
+        final Menu menu = new Menu(request.getName(), request.getPrice(), menuGroup, menuProductPriceSum);
         saveMenuProduct(request, products, menu);
 
         final Menu savedMenu = menuRepository.save(menu);
-
         return MenuMapper.toMenuResponse(savedMenu);
+    }
+
+    private List<Product> getMenuProduct(final MenuCreateRequest request) {
+        return productService.findProducts(request.getMenuProducts()
+                .stream()
+                .map(MenuCreateRequest.MenuProduct::getProductId)
+                .collect(Collectors.toList()));
     }
 
     private void saveMenuProduct(final MenuCreateRequest request, final List<Product> products, final Menu savedMenu) {

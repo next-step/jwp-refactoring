@@ -47,7 +47,8 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
         final MenuGroup menuGroup = menuGroupRepository.save(MenuGroup.builder().name("추천메뉴").build());
-        menu = menuRepository.save(Menu.builder().name("후라이드+후라이드").price(BigDecimal.valueOf(17000)).menuGroup(menuGroup).build());
+        final Menu menu = new Menu("후라이드+후라이드", BigDecimal.valueOf(17000), menuGroup);
+        this.menu = menuRepository.save(menu);
         orderTable = orderTableRepository.save(OrderTable.builder().build());
     }
 

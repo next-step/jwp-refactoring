@@ -31,12 +31,23 @@ public class Menu extends BaseTimeEntity {
     protected Menu() {
     }
 
+    public Menu(final String name, final BigDecimal price, final MenuGroup menuGroup) {
+        this.name = name;
+        this.price = price;
+        this.menuGroup = menuGroup;
+    }
+
+    public Menu(final String name, final BigDecimal price, final MenuGroup menuGroup, final BigDecimal menuProductPriceSum) {
+        this(name, price, menuGroup);
+        checkMenuPrice(menuProductPriceSum);
+    }
+
     public void addMenuProduct(MenuProduct menuProduct) {
         this.menuProducts.add(menuProduct);
         menuProduct.addMenu(this);
     }
 
-    public void checkMenuPrice(BigDecimal menuProductPriceSum) {
+    private void checkMenuPrice(BigDecimal menuProductPriceSum) {
         if (this.price.compareTo(menuProductPriceSum) > 0) {
             throw new MenuPriceMoreThanMenuProductPriceSumException(this.price.toPlainString());
         }
@@ -60,41 +71,5 @@ public class Menu extends BaseTimeEntity {
 
     public List<MenuProduct> getMenuProducts() {
         return menuProducts;
-    }
-
-    public static MenuBuilder builder() {
-        return new MenuBuilder();
-    }
-
-    public static final class MenuBuilder {
-        private String name;
-        private BigDecimal price;
-        private MenuGroup menuGroup;
-
-        private MenuBuilder() {
-        }
-
-        public MenuBuilder name(String name) {
-            this.name = name;
-            return this;
-        }
-
-        public MenuBuilder price(BigDecimal price) {
-            this.price = price;
-            return this;
-        }
-
-        public MenuBuilder menuGroup(MenuGroup menuGroup) {
-            this.menuGroup = menuGroup;
-            return this;
-        }
-
-        public Menu build() {
-            Menu menu = new Menu();
-            menu.price = this.price;
-            menu.name = this.name;
-            menu.menuGroup = this.menuGroup;
-            return menu;
-        }
     }
 }
