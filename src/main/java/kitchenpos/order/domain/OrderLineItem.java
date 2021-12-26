@@ -56,15 +56,7 @@ public class OrderLineItem {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
-    public Long getOrderId() {
-        return order.getId();
-    }
-
-    public void setOrder(final Order order) {
+    void setOrder(final Order order) {
         this.order = order;
     }
 
@@ -72,15 +64,8 @@ public class OrderLineItem {
         return menuId;
     }
 
-    public void setMenuId(final Long menuId) {
-        this.menuId = menuId;
-    }
-
     public long getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(final long quantity) {
-        this.quantity = quantity;
-    }
 }

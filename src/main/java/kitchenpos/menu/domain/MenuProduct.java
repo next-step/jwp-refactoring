@@ -63,20 +63,12 @@ public class MenuProduct {
         return menu;
     }
 
-    public void setMenu(Long menuId) {
-        this.menu = Menu.of(menuId);
-    }
-
-    public void setMenu(Menu menu) {
+    void setMenu(Menu menu) {
         this.menu = menu;
     }
 
     public Long getProductId() {
         return product.getId();
-    }
-
-    public Quantity getQuantity() {
-        return quantity;
     }
 
     public long getQuantityValue() {

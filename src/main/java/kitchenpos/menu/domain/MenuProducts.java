@@ -43,10 +43,4 @@ public class MenuProducts {
         }
         return totalPrice;
     }
-
-    public void setMenu(Menu menu) {
-        for(MenuProduct menuProduct : this.menuProducts) {
-            menuProduct.setMenu(menu);
-        }
-    }
 }
