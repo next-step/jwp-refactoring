@@ -12,7 +12,7 @@ public class Price {
     private static final BigDecimal PRICE_MIN_VALUE = BigDecimal.ZERO;
     private static final String INVALID_PRICE_EXCEPTION = "가격은 0보다 작을 수 없습니다.";
 
-    @Column(name = "price")
+    @Column(name = "price", nullable = false)
     private BigDecimal price;
 
     protected Price() {
@@ -29,7 +29,7 @@ public class Price {
     }
 
     private void validate(BigDecimal price) {
-        if(Objects.isNull(price) || price.compareTo(PRICE_MIN_VALUE) < 0) {
+        if (Objects.isNull(price) || price.compareTo(PRICE_MIN_VALUE) < 0) {
             throw new InvalidPriceException(INVALID_PRICE_EXCEPTION);
         }
     }
