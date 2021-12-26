@@ -173,3 +173,29 @@
   - [X] 주문, 메뉴 하위에 계층별 패키지 분리
 - [X] 도메인 객체 의존성 끊기
   - [X] Order, OrderLineItem과 Menu의 연관관계 끊기
+
+## 4단계 - 멀티 모듈 적용
+
+### 요구 사항
+
+- Gradle의 멀티 모듈 개념을 적용해 자유롭게 서로 다른 프로젝트로 분리해 본다.
+  - 컨텍스트 간의 독립된 모듈로 만들 수 있다.
+  - 계층 간의 독립된 모듈로 만들 수 있다.
+- 의존성 주입, HTTP 요청/응답, 이벤트 발행/구독 등 다양한 방식으로 모듈 간 데이터를 주고받을 수 있다.
+
+### 참고자료
+
+- [Gradle 멀티 프로젝트 관리](https://jojoldu.tistory.com/123)
+- [Gradle Multi Project](https://kwonnam.pe.kr/wiki/gradle/multiproject)
+- [[우아한테크세미나] 200123 우아한모노리스 by 박용권님](https://www.youtube.com/watch?v=SrQeIz3gXZg)
+  - [SlideShare](https://www.slideshare.net/arawnkr/ss-195979955)
+  - [Github](https://github.com/arawn/building-modular-monoliths-using-spring)
+
+### 기능목록
+
+- [X] 모듈분리
+  - [X] 도메인
+    - [X] common, menu, menugroup, order, prodduct, table, tablegroup
+  - [X] 통합계층
+    - [X] application
+    - [X] ui (appication에 합침)
