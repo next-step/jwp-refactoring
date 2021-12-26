@@ -6,6 +6,8 @@ import kitchenpos.order.dao.TableGroupDao;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.TableGroup;
+import kitchenpos.order.dto.TableGroupRequest;
+import kitchenpos.order.dto.TableGroupResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,18 +29,8 @@ public class TableGroupService {
     }
 
     @Transactional
-    public TableGroup create(final TableGroup tableGroup) {
-        final List<OrderTable> orderTables = tableGroup.getOrderTables();
-
-        final List<Long> orderTableIds = orderTables.stream()
-                .map(OrderTable::getId)
-                .collect(Collectors.toList());
-
-        final List<OrderTable> savedOrderTables = orderTableDao.findAllByIdIn(orderTableIds);
-
-        if (orderTables.size() != savedOrderTables.size()) {
-            throw new IllegalArgumentException();
-        }
+    public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
+        final List<OrderTable> savedOrderTables = findOrderTables(tableGroupRequest);
 
         for (final OrderTable savedOrderTable : savedOrderTables) {
             if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroupId())) {
@@ -46,7 +38,12 @@ public class TableGroupService {
             }
         }
 
-        final TableGroup savedTableGroup = tableGroupDao.save(tableGroup);
+        List<OrderTable> orderTables = tableGroupRequest.getOrderTables()
+                .stream()
+                .map(orderTableRequest -> OrderTable.of(orderTableRequest.getNumberOfGuests(), orderTableRequest.isEmpty()))
+                .collect(Collectors.toList());
+
+        final TableGroup savedTableGroup = tableGroupDao.save(TableGroup.from(orderTables));
 
         final Long tableGroupId = savedTableGroup.getId();
         for (final OrderTable savedOrderTable : savedOrderTables) {
@@ -56,7 +53,7 @@ public class TableGroupService {
         }
         savedTableGroup.setOrderTables(savedOrderTables);
 
-        return savedTableGroup;
+        return TableGroupResponse.from(savedTableGroup);
     }
 
     @Transactional
@@ -76,5 +73,14 @@ public class TableGroupService {
             orderTable.setTableGroupId(null);
             orderTableDao.save(orderTable);
         }
+    }
+
+    private List<OrderTable> findOrderTables(final TableGroupRequest tableGroupRequest) {
+        List<Long> requestOrderTableIds = tableGroupRequest.getOrderTableIds();
+        List<OrderTable> savedOrderTable = orderTableDao.findAllByIdIn(requestOrderTableIds);
+        if (requestOrderTableIds.size() != savedOrderTable.size()) {
+            throw new IllegalArgumentException("등록하려는 주문 테이블이 등록되어있지 않습니다.");
+        }
+        return savedOrderTable;
     }
 }

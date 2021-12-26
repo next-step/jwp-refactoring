@@ -1,18 +1,18 @@
 package kitchenpos.order.domain;
 
 import kitchenpos.common.fixtrue.OrderTableFixture;
-import kitchenpos.common.fixtrue.TableGroupFixture;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("단체 지정 테스트")
 class TableGroupTest {
@@ -30,7 +30,7 @@ class TableGroupTest {
 
     @Test
     void 단체_지정() {
-        TableGroup actual = TableGroupFixture.of(1L, firstOrderTable, secondOrderTable);
+        TableGroup actual = TableGroup.from(Arrays.asList(firstOrderTable, secondOrderTable));
 
         assertAll(() -> {
             assertThat(actual).isNotNull();
@@ -40,7 +40,7 @@ class TableGroupTest {
 
     @Test
     void 단체_지정_시_주문_테이블은_두_테이블_이상이어야_한다() {
-        ThrowableAssert.ThrowingCallable throwingCallable = () -> TableGroupFixture.of(1L, firstOrderTable);
+        ThrowableAssert.ThrowingCallable throwingCallable = () -> TableGroup.from(Collections.singletonList(firstOrderTable));
 
         assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(throwingCallable)

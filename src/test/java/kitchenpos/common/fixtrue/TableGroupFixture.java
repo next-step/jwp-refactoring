@@ -3,14 +3,14 @@ package kitchenpos.common.fixtrue;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.TableGroup;
 
-import java.util.Arrays;
+import java.util.List;
 
 public class TableGroupFixture {
 
     private TableGroupFixture() {
     }
 
-    public static TableGroup of(Long id, OrderTable... orderTables) {
-        return TableGroup.of(id, Arrays.asList(orderTables));
+    public static TableGroup from(List<OrderTable> orderTables) {
+        return TableGroup.from(orderTables);
     }
 }
