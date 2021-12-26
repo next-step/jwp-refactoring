@@ -8,9 +8,7 @@ import java.util.Objects;
 
 @Embeddable
 public class Price {
-    public static final int MIN_PRICE = 0;
-
-    public static Price Zero = new Price(BigDecimal.ZERO);
+    public static final int MIN = 0;
 
     private BigDecimal price;
 
@@ -32,7 +30,7 @@ public class Price {
     }
 
     private void validateNegativePrice(BigDecimal price) {
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < MIN_PRICE) {
+        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < MIN) {
             throw new NegativePriceException();
         }
     }
