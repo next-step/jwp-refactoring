@@ -11,7 +11,7 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import kitchenpos.order.application.OrderService;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.tablegroup.exception.CanNotGroupByEmptyException;
 import kitchenpos.tablegroup.exception.CanNotGroupByGroupingAlreadyException;
@@ -85,7 +85,7 @@ class TableGroupTest {
 	@DisplayName("그룹해지")
 	@Test
 	void ungroup() {
-		final TableGroupExternalValidator externalValidator = new TableGroupExternalValidator(mock(OrderService.class));
+		final TableGroupExternalValidator externalValidator = new TableGroupExternalValidator(mock(OrderRepository.class));
 		final OrderTable 그룹_빈테이블1 = OrderTable.of(1L, null, 1, true);
 		final OrderTable 그룹_빈테이블2 = OrderTable.of(2L, null, 2, true);
 		final TableGroup 그룹 = TableGroup.of(Arrays.asList(그룹_빈테이블1, 그룹_빈테이블2));

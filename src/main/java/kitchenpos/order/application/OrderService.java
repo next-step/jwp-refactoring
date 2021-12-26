@@ -1,6 +1,5 @@
 package kitchenpos.order.application;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -15,7 +14,6 @@ import kitchenpos.menu.exception.NotFoundMenuException;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderAddRequest;
 import kitchenpos.order.dto.OrderLineItemAddRequest;
 import kitchenpos.order.dto.OrderResponse;
@@ -27,8 +25,6 @@ import kitchenpos.ordertable.exception.NotFoundOrderTableException;
 
 @Service
 public class OrderService {
-
-	private static final List<OrderStatus> COOKING_OR_MEAL = Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL);
 
 	private final MenuRepository menuRepository;
 	private final OrderRepository orderRepository;
@@ -99,15 +95,5 @@ public class OrderService {
 	private Order findOrder(Long id) {
 		return orderRepository.findById(id)
 			.orElseThrow(NotFoundOrderException::new);
-	}
-
-	@Transactional(readOnly = true)
-	public boolean existsOrderStatusCookingOrMeal(Long orderTableId) {
-		return orderRepository.existsByOrderTable_IdAndOrderStatusIn(orderTableId, COOKING_OR_MEAL);
-	}
-
-	@Transactional(readOnly = true)
-	public boolean existsOrderStatusCookingOrMeal(List<Long> orderTableIds) {
-		return orderRepository.existsByOrderTable_IdInAndOrderStatusIn(orderTableIds, COOKING_OR_MEAL);
 	}
 }
