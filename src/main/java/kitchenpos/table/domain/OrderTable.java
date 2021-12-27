@@ -78,6 +78,10 @@ public class OrderTable {
         this.numberOfGuests = new NumberOfGuests(numberOfGuest);
     }
 
+    public void group(TableGroup tableGroup) {
+        this.tableGroup = tableGroup;
+    }
+
     public void unGroup() {
         validCookieOreMeal();
         tableGroup = null;
@@ -103,9 +107,6 @@ public class OrderTable {
         return orderTableStatus.isEmpty();
     }
 
-    public void withTableGroup(TableGroup tableGroup) {
-        this.tableGroup = tableGroup;
-    }
 
     public Orders getOrders() {
         return orders;

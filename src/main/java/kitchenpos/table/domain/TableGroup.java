@@ -8,9 +8,10 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import org.springframework.data.domain.AbstractAggregateRoot;
 
 @Entity
-public class TableGroup {
+public class TableGroup extends AbstractAggregateRoot<TableGroup> {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
@@ -64,7 +65,7 @@ public class TableGroup {
                 if (this.orderTables.contains(orderTable)) {
                     return;
                 }
-                orderTable.withTableGroup(this);
+                orderTable.group(this);
             });
         return orderTables;
     }

@@ -13,8 +13,6 @@ import kitchenpos.order.dto.ChangeOrderStatusRequest;
 import kitchenpos.order.dto.OrderLineRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableDao;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,33 +20,24 @@ import org.springframework.transaction.annotation.Transactional;
 public class OrderService {
 
 
-    private final MenuService menuService;
     private final OrderDao orderDao;
-    private final OrderTableDao orderTableDao;
     private final OrderValidation orderValidation;
 
     public OrderService(
-        final MenuService menuService,
         final OrderDao orderDao,
-        final OrderTableDao orderTableDao,
         final OrderValidation orderValidation
     ) {
-        this.menuService = menuService;
         this.orderDao = orderDao;
-        this.orderTableDao = orderTableDao;
         this.orderValidation = orderValidation;
     }
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
-        orderValidation.validSizeIsNotEquals(orderRequest);
-
-        final OrderTable orderTable = orderTableDao.findById(orderRequest.getOrderTableId())
-            .orElseThrow(NoResultDataException::new);
+        orderValidation.valid(orderRequest);
 
         Order orderCooking = Order.createCook(
-            orderTable,
-            orderRequest.toEntity(findByMenuIdToOrderItemLine())
+            orderRequest.getOrderTableId(),
+            orderRequest.toOrderItems()
         );
 
         return OrderResponse.of(orderDao.save(orderCooking));
@@ -68,12 +57,5 @@ public class OrderService {
 
         savedOrder.changeOrderStatus(changeOrderStatusRequest.getOrderStatus());
         return OrderResponse.of(orderDao.save(savedOrder));
-    }
-
-    private Function<OrderLineRequest, OrderLineItem> findByMenuIdToOrderItemLine() {
-        return o -> OrderLineItem.of(
-            new MenuId(menuService.findMenuNoById(o.getMenuId())),
-            o.getQuantity()
-        );
     }
 }

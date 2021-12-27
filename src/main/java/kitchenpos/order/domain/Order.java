@@ -10,11 +10,8 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import kitchenpos.common.exception.Message;
-import kitchenpos.table.domain.OrderTable;
 
 @Entity
 @Table(name = "orders")
@@ -24,9 +21,8 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "order_table_id")
-    private OrderTable orderTable;
+    @Embedded
+    private OrderTableId orderTableId;
 
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
@@ -36,32 +32,18 @@ public class Order {
     @Embedded
     private OrderLineItems orderLineItems = new OrderLineItems();
 
-    public static Order createCook(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
-        return new Order(null, orderTable, orderLineItems);
+    public static Order createCook(Long orderTableId, List<OrderLineItem> orderLineItems) {
+        return new Order(null, orderTableId, orderLineItems);
     }
 
-    public static Order createCook(Long id, OrderTable orderTable, List<OrderLineItem> orderLineItems) {
-        return new Order(id, orderTable, orderLineItems);
-    }
-
-    private Order(Long id, OrderTable orderTable, List<OrderLineItem> orderLineItems) {
-
-        validRequireOrderTable(orderTable);
-
+    private Order(Long id, Long orderTableId, List<OrderLineItem> orderLineItems) {
         this.id = id;
-        this.orderTable = orderTable;
+        this.orderTableId = new OrderTableId(orderTableId);
         this.orderStatus = OrderStatus.COOKING;
         association(orderLineItems);
-        this.orderLineItems = OrderLineItems.of(orderLineItems);
     }
 
     protected Order() {
-    }
-
-    private void validRequireOrderTable(OrderTable orderTable) {
-        if (Objects.isNull(orderTable)) {
-            throw new IllegalArgumentException(Message.ORDER_TABLE_IS_NOT_NULL.getMessage());
-        }
     }
 
     public void changeOrderStatus(final String changeOrderStatus) {
@@ -72,16 +54,15 @@ public class Order {
     }
 
     private void association(List<OrderLineItem> orderLineItems) {
-        orderLineItems.stream()
-            .forEach(s -> s.setOrder(this));
+        this.orderLineItems.association(orderLineItems, this);
     }
 
     public Long getId() {
         return id;
     }
 
-    public OrderTable getOrderTable() {
-        return orderTable;
+    public Long getOrderTableId() {
+        return orderTableId.getId();
     }
 
     public OrderStatus getOrderStatus() {

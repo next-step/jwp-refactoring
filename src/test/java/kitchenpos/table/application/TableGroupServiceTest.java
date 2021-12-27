@@ -1,6 +1,5 @@
 package kitchenpos.table.application;
 
-import static common.OrderFixture.주문;
 import static common.OrderTableFixture.from;
 import static common.OrderTableFixture.단체지정_두번째_주문테이블;
 import static common.OrderTableFixture.단체지정_첫번째_주문테이블;
@@ -10,22 +9,14 @@ import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.atMostOnce;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockConstruction;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.List;
-import java.util.Optional;
-import kitchenpos.order.domain.OrderDao;
-import kitchenpos.order.domain.Orders;
 import kitchenpos.table.domain.OrderTableDao;
 import kitchenpos.table.domain.TableGroupDao;
 import kitchenpos.table.domain.OrderTable;
@@ -36,12 +27,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockedConstruction.Context;
-import org.mockito.MockedConstruction.MockInitializer;
-import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.stubbing.Answer;
 
 @ExtendWith(MockitoExtension.class)
 public class TableGroupServiceTest {
