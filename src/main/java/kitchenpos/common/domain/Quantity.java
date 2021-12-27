@@ -12,6 +12,8 @@ import kitchenpos.common.exception.BadRequestException;
 @Embeddable
 public class Quantity {
 
+    public static final int QUANTITY_MIN = 0;
+
     @Column
     private long quantity;
 
@@ -24,7 +26,7 @@ public class Quantity {
     }
 
     private void validate(long quantity) {
-        if (quantity < 0) {
+        if (quantity < QUANTITY_MIN) {
             throw new BadRequestException(WRONG_VALUE);
         }
     }

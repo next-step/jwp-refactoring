@@ -18,11 +18,10 @@ class OrderTest {
     @Test
     void createOrderEmptyOrderTable() {
         // given
-        OrderTable orderTable = OrderTable.of(0, true);
         List<OrderLineItem> orderLineItems = Collections.emptyList();
 
         // when && then
-        assertThatThrownBy(() -> Order.of(orderTable.getId(), orderLineItems))
+        assertThatThrownBy(() -> Order.of(null, orderLineItems))
             .isInstanceOf(BadRequestException.class)
             .hasMessage(WRONG_VALUE.getMessage());
     }
@@ -35,7 +34,7 @@ class OrderTest {
         List<OrderLineItem> orderLineItems = Arrays.asList(
             OrderLineItem.of(1L, 1),
             OrderLineItem.of(2L, 2));
-        Order order = Order.of(orderTable.getId(), orderLineItems);
+        Order order = Order.of(orderTable, orderLineItems);
         order.changeOrderStatus(OrderStatus.COMPLETION);
 
         // when && then

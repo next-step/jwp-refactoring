@@ -12,9 +12,13 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import kitchenpos.common.exception.BadRequestException;
@@ -27,7 +31,9 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long orderTableId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_orders_order_table"))
+    private OrderTable orderTable;
 
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
@@ -41,24 +47,24 @@ public class Order {
     protected Order() {
     }
 
-    private Order(Long id, Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime,
+    private Order(Long id, OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime,
         OrderLineItems orderLineItems) {
-        validate(orderTableId);
+        validate(orderTable);
         this.id = id;
-        this.orderTableId = orderTableId;
+        this.orderTable = orderTable;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
         this.orderLineItems = orderLineItems;
     }
 
-    private void validate(Long orderTableId) {
-        if (Objects.isNull(orderTableId)) {
+    private void validate(OrderTable orderTable) {
+        if (orderTable.isEmpty().getValue()) {
             throw new BadRequestException(WRONG_VALUE);
         }
     }
 
-    public static Order of(Long orderTableId, List<OrderLineItem> orderLineItems) {
-        return new Order(null, orderTableId, OrderStatus.COOKING,
+    public static Order of(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
+        return new Order(null, orderTable, OrderStatus.COOKING,
             LocalDateTime.now(), new OrderLineItems(orderLineItems));
     }
 
@@ -66,8 +72,8 @@ public class Order {
         return id;
     }
 
-    public Long getOrderTableId() {
-        return orderTableId;
+    public OrderTable getOrderTable() {
+        return orderTable;
     }
 
     public OrderStatus getOrderStatus() {
@@ -102,12 +108,13 @@ public class Order {
         if (o == null || getClass() != o.getClass())
             return false;
         Order order = (Order)o;
-        return Objects.equals(id, order.id) && Objects.equals(orderTableId, order.orderTableId)
-            && orderStatus == order.orderStatus && Objects.equals(orderedTime, order.orderedTime);
+        return Objects.equals(id, order.id) && Objects.equals(orderTable, order.orderTable)
+            && orderStatus == order.orderStatus && Objects.equals(orderedTime, order.orderedTime)
+            && Objects.equals(orderLineItems, order.orderLineItems);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, orderTableId, orderStatus, orderedTime);
+        return Objects.hash(id, orderTable, orderStatus, orderedTime, orderLineItems);
     }
 }
