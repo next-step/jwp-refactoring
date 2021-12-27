@@ -2,6 +2,7 @@ package kitchenpos.order.application;
 
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.OrderTableRepository;
+import kitchenpos.order.domain.OrderTables;
 import kitchenpos.order.domain.TableGroup;
 import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.order.dto.OrderTableResponse;
@@ -116,7 +117,7 @@ class TableServiceTest {
         OrderTableRequest 단체_지정_테이블_요청 = OrderTableRequest.of(5, true);
         OrderTable 첫번째_단체_지정_테이블 = OrderTable.of(단체_지정_테이블_요청.getNumberOfGuests(), 단체_지정_테이블_요청.isEmpty());
         OrderTable 두번째_단체_지정_테이블 = OrderTable.of(단체_지정_테이블_요청.getNumberOfGuests(), 단체_지정_테이블_요청.isEmpty());
-        TableGroup.from(Arrays.asList(첫번째_단체_지정_테이블, 두번째_단체_지정_테이블));
+        TableGroup.from(OrderTables.from(Arrays.asList(첫번째_단체_지정_테이블, 두번째_단체_지정_테이블)));
         given(orderTableRepository.findById(첫번째_단체_지정_테이블.getId())).willReturn(Optional.of(첫번째_단체_지정_테이블));
 
         // when

@@ -5,6 +5,7 @@ import kitchenpos.common.fixtrue.TableGroupFixture;
 import kitchenpos.common.ui.RestControllerTest;
 import kitchenpos.order.application.TableGroupService;
 import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.domain.OrderTables;
 import kitchenpos.order.domain.TableGroup;
 import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.order.dto.TableGroupRequest;
@@ -59,7 +60,7 @@ class TableGroupRestControllerTest extends RestControllerTest {
         OrderTable firstOrderTable = OrderTable.of(2, true);
         OrderTable secondOrderTable = OrderTable.of(2, true);
         TableGroup tableGroup = TableGroup.from(
-                Arrays.asList(firstOrderTable, secondOrderTable));
+                OrderTables.from(Arrays.asList(firstOrderTable, secondOrderTable)));
 
         given(tableGroupService.create(any())).willReturn(TableGroupResponse.from(tableGroup));
 
@@ -81,7 +82,7 @@ class TableGroupRestControllerTest extends RestControllerTest {
         // given
         OrderTable firstOrderTable = OrderTableFixture.of(2, true);
         OrderTable secondOrderTable = OrderTableFixture.of(2, true);
-        TableGroupFixture.from(Arrays.asList(firstOrderTable, secondOrderTable));
+        TableGroupFixture.from(OrderTables.from(Arrays.asList(firstOrderTable, secondOrderTable)));
 
         // when
         ResultActions actions = mockMvc.perform(delete(API_TABLE_GROUP_ROOT + "/" + 1L))

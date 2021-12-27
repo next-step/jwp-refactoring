@@ -2,6 +2,7 @@ package kitchenpos.order.application;
 
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.OrderTableRepository;
+import kitchenpos.order.domain.OrderTables;
 import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.order.dto.OrderTableResponse;
 import kitchenpos.order.dto.TableGroupRequest;
@@ -50,13 +51,13 @@ public class TableService {
         return OrderTableResponse.from(savedOrderTable);
     }
 
-    public List<OrderTable> findOrderTables(final TableGroupRequest tableGroupRequest) {
+    public OrderTables findOrderTables(final TableGroupRequest tableGroupRequest) {
         List<Long> requestOrderTableIds = tableGroupRequest.getOrderTableIds();
         List<OrderTable> savedOrderTable = orderTableRepository.findAllById(requestOrderTableIds);
         if (requestOrderTableIds.size() != savedOrderTable.size()) {
             throw new IllegalArgumentException("등록하려는 주문 테이블이 등록되어있지 않습니다.");
         }
-        return savedOrderTable;
+        return OrderTables.from(savedOrderTable);
     }
 
     public List<OrderTable> findAllByTableGroupId(final Long tableGroupId) {
