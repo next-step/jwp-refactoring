@@ -43,7 +43,7 @@ public class OrderValidatorTest {
     @Nested
     class ValidateOrderMenuTest {
 
-        @DisplayName("1개 이상의 메뉴 요청을 검증")
+        @DisplayName("1개 이상의 메뉴를 포함하지 않으면 주문을 요청할 수 없다.")
         @Test
         void atLeastOneMenu() {
             // given
@@ -65,7 +65,7 @@ public class OrderValidatorTest {
             assertThatThrownBy(request).isInstanceOf(IllegalArgumentException.class);
         }
 
-        @DisplayName("메뉴 등록 되어 있음을 검증")
+        @DisplayName("등록 되어 있지 않은 메뉴로 주문을 요청할 수 없다.")
         @Test
         void menuExist() {
             // given
@@ -92,7 +92,7 @@ public class OrderValidatorTest {
     @Nested
     class ValidateOrderTableTest {
 
-        @DisplayName("주문 테이블 등록되어 있음 검증")
+        @DisplayName("등록되어 있지 주문 테이블에 주문을 요청할 수 없다.")
         @Test
         void orderTableExists() {
             // given
@@ -126,7 +126,7 @@ public class OrderValidatorTest {
             assertThatThrownBy(request).isInstanceOf(NoSuchElementException.class);
         }
 
-        @DisplayName("주문 테이블 등록되어 있음 검증")
+        @DisplayName("빈 주문 테이블에 주문을 등록할 수 없다.")
         @Test
         void orderTableEmpty() {
             // given
