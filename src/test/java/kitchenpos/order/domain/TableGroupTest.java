@@ -52,8 +52,7 @@ public class TableGroupTest {
         
         OrderTable 첫번째_테이블 = OrderTable.of(3, false);
         OrderTable 두번째_테이블 = OrderTable.of(5, false);
-        첫번째_테이블.addOrders(Arrays.asList(Order.of(OrderStatus.COOKING, Arrays.asList(주문_항목))));
-        
+        Order.of(첫번째_테이블, OrderStatus.COOKING, Arrays.asList(주문_항목));
         TableGroup 단체지정 = TableGroup.from(Arrays.asList(첫번째_테이블, 두번째_테이블));
         
         // when, then

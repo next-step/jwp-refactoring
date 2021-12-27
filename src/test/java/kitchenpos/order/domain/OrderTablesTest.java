@@ -42,7 +42,6 @@ public class OrderTablesTest {
         
         OrderTable 테이블 = OrderTable.of(5, true);
         Order 주문 = Order.of(테이블, OrderStatus.COMPLETION, Arrays.asList(주문_항목));
-        테이블.addOrders(Arrays.asList(주문));
         OrderTables 주문_테이블_목록 = OrderTables.from(new ArrayList<OrderTable>(Arrays.asList(테이블)));
         
         // when
@@ -64,7 +63,6 @@ public class OrderTablesTest {
         
         OrderTable 테이블 = OrderTable.of(5, true);
         Order 주문 = Order.of(테이블, OrderStatus.MEAL, Arrays.asList(주문_항목));
-        테이블.addOrders(Arrays.asList(주문));
         OrderTables 주문_테이블_목록 = OrderTables.from(new ArrayList<OrderTable>(Arrays.asList(테이블)));
         
         // when, then

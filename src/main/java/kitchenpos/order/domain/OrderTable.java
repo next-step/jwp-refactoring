@@ -1,6 +1,5 @@
 package kitchenpos.order.domain;
 
-import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.Embedded;
@@ -88,11 +87,8 @@ public class OrderTable {
         tableGroup = null;
     }
 
-    public void addOrders(List<Order> orders) {
-        orders.forEach(order -> {
-            order.setOrderTable(this);
-            this.orders.add(order);
-        });
+    public void addOrder(Order order) {
+        orders.add(order);
     }
 
     private void checkIsSetTableGroup() {

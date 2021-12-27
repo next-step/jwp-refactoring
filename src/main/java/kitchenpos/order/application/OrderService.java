@@ -39,7 +39,7 @@ public class OrderService {
         
         List<OrderLineItem> orderLineItems = createOrderLineItems(request.getOrderLineItems());
         
-        Order order = request.toOrder(orderTable, orderLineItems);
+        Order order = Order.createOrder(orderTable, orderLineItems);
         
         order.received();
 
@@ -55,10 +55,19 @@ public class OrderService {
     }
 
     @Transactional
-    public OrderResponse changeOrderStatus(final Long orderId, final OrderRequest request) {
+    public OrderResponse onMealing(final Long orderId) {
         final Order order = findById(orderId);
         
-        order.changeOrderStatus(request.getOrderStatus());
+        order.onMealing();
+        
+        return OrderResponse.from(orderRepository.save(order));
+    }
+    
+    @Transactional
+    public OrderResponse completed(final Long orderId) {
+        final Order order = findById(orderId);
+        
+        order.completed();
         
         return OrderResponse.from(orderRepository.save(order));
     }

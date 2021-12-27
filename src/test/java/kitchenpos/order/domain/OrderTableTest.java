@@ -18,9 +18,8 @@ public class OrderTableTest {
         // given
         Menu 메뉴 = Menu.of("메뉴", 5000L, MenuGroup.from("메뉴그룹"));
         OrderLineItem 주문_항목 = OrderLineItem.of(메뉴, 3L);
-        
         OrderTable 테이블 = OrderTable.of(3, false);
-        테이블.addOrders(Arrays.asList(Order.of(테이블, OrderStatus.COOKING, Arrays.asList(주문_항목))));
+        Order 주문 = Order.of(테이블, OrderStatus.COOKING, Arrays.asList(주문_항목));
     
         // when, then
         assertThatThrownBy(() -> {

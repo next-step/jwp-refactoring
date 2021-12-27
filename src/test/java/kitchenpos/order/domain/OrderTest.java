@@ -14,9 +14,9 @@ import kitchenpos.menu.domain.MenuGroup;
 
 public class OrderTest {
     
-    @DisplayName("조리중일때는 주문 상태를 변경할 수 있다")
+    @DisplayName("식사중으로 주문 상태를 변경할 수 있다")
     @Test
-    void 조리중_상태_변경() {
+    void 식사중_상태_변경() {
         // given
         Menu 메뉴 = Menu.of("메뉴", 5000L, MenuGroup.from("메뉴그룹"));
         OrderLineItem 주문_항목 = OrderLineItem.of(메뉴, 3L);
@@ -25,16 +25,16 @@ public class OrderTest {
         Order 주문 = Order.of(테이블, OrderStatus.COOKING, Arrays.asList(주문_항목));
         
         // when
-        주문.changeOrderStatus(OrderStatus.MEAL);
+        주문.onMealing();
         
         // then
         assertThat(주문.getOrderStatus()).isEqualTo(OrderStatus.MEAL);
     
     }
     
-    @DisplayName("식사중일때는 주문 상태를 변경할 수 있다")
+    @DisplayName("계산완료로 주문 상태를 변경할 수 있다")
     @Test
-    void 식사중_상태_변경() {
+    void 계산_완료_상태_변경() {
         // given
         Menu 메뉴 = Menu.of("메뉴", 5000L, MenuGroup.from("메뉴그룹"));
         OrderLineItem 주문_항목 = OrderLineItem.of(메뉴, 3L);
@@ -43,7 +43,7 @@ public class OrderTest {
         Order 주문 = Order.of(테이블, OrderStatus.MEAL, Arrays.asList(주문_항목));
         
         // when
-        주문.changeOrderStatus(OrderStatus.COMPLETION);
+        주문.completed();
         
         // then
         assertThat(주문.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION);
@@ -62,7 +62,7 @@ public class OrderTest {
     
         // when, then
         assertThatThrownBy(() -> {
-            주문.changeOrderStatus(OrderStatus.COOKING);
+            주문.onMealing();
         }).isInstanceOf(IllegalArgumentException.class)
         .hasMessage("계산이 완료된 주문은 상태를 변경 할 수 없습니다");
     

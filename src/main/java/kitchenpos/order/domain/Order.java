@@ -53,14 +53,15 @@ public class Order {
         this.orderStatus = orderStatus;
         this.orderLineItems = new ArrayList<OrderLineItem>();
         addOrderLineItems(orderLineItems);
+        orderTable.addOrder(this);
     }
 
     public static Order of(OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
         return new Order(orderTable, orderStatus, orderLineItems);
     }
     
-    public static Order of(OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
-        return new Order(null, orderStatus, orderLineItems);
+    public static Order createOrder(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
+        return new Order(orderTable, OrderStatus.COOKING, orderLineItems);
     }
     
     public Long getId() {
@@ -94,19 +95,16 @@ public class Order {
         changeOrderStatus(OrderStatus.COOKING);
     }
     
-    public void changeOrderStatus(OrderStatus orderStatus) {
-        checkCompletionStatus();
-        this.orderStatus = orderStatus;
+    public void onMealing() {
+        changeOrderStatus(OrderStatus.MEAL);
+    }
+    
+    public void completed() {
+        changeOrderStatus(OrderStatus.COMPLETION);
     }
     
     public void setOrderTable(OrderTable orderTable) {
         this.orderTable = orderTable;
-    }
-
-    public void checkCompletionStatus() {
-        if (isCompletion()) {
-            throw new IllegalArgumentException("계산이 완료된 주문은 상태를 변경 할 수 없습니다");
-        }
     }
     
     public boolean isCompletion() {
@@ -124,6 +122,17 @@ public class Order {
     public void validateMenu(Long menuCount) {
         if (orderLineItems.size() != menuCount) {
             throw new IllegalArgumentException("등록된 메뉴만 주문할 수 있습니다");
+        }
+    }
+    
+    private void changeOrderStatus(OrderStatus orderStatus) {
+        checkCompletionStatus();
+        this.orderStatus = orderStatus;
+    }
+
+    private void checkCompletionStatus() {
+        if (isCompletion()) {
+            throw new IllegalArgumentException("계산이 완료된 주문은 상태를 변경 할 수 없습니다");
         }
     }
     

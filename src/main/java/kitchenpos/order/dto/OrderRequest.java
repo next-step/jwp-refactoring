@@ -25,6 +25,10 @@ public class OrderRequest {
         return new OrderRequest(orderTableId, orderStatus, orderLineItemRequests);
     }
     
+    public static OrderRequest of(Long orderTableId, List<OrderLineItemRequest> orderLineItemRequests) {
+        return new OrderRequest(orderTableId, null, orderLineItemRequests);
+    }
+    
     public Order toOrder(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
         return Order.of(orderTable, orderStatus, orderLineItems);
     }

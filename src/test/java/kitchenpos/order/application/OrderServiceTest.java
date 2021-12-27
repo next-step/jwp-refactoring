@@ -2,11 +2,9 @@ package kitchenpos.order.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.nullable;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 
 import java.util.ArrayList;
@@ -62,7 +60,7 @@ public class OrderServiceTest {
         List<OrderLineItem> 주문_항목_목록 = new ArrayList<OrderLineItem>();
         주문_항목_목록.add(OrderLineItem.of(메뉴, 1L));
         
-        Order 주문 = Order.of(첫번째_테이블, OrderStatus.COOKING, 주문_항목_목록);
+        Order 주문 = Order.createOrder(첫번째_테이블, 주문_항목_목록);
         
         given(menuService.findAllByIds(anyList())).willReturn(Arrays.asList(메뉴));
         given(tableService.findById(anyLong())).willReturn(첫번째_테이블);
@@ -86,7 +84,7 @@ public class OrderServiceTest {
         
         // when, then
         assertThatThrownBy(() -> {
-            orderService.create(OrderRequest.of(1L, OrderStatus.COOKING, new ArrayList<OrderLineItemRequest>()));
+            orderService.create(OrderRequest.of(1L, new ArrayList<OrderLineItemRequest>()));
         }).isInstanceOf(IllegalArgumentException.class)
         .hasMessage("주문에 메뉴가 없습니다");
     
@@ -97,14 +95,18 @@ public class OrderServiceTest {
     @Test
     void 주문_목록_조회() {
         // given
+        OrderTable 테이블 = OrderTable.of(3, false);
+        
+        Menu 첫번째_메뉴 = Menu.of("메뉴", 5000L, MenuGroup.from("메뉴그룹"));
         List<OrderLineItem> 첫번째_주문_항목 = new ArrayList<OrderLineItem>();
-        첫번째_주문_항목.add(OrderLineItem.of(null, 1L));
-        
+        첫번째_주문_항목.add(OrderLineItem.of(첫번째_메뉴, 1L));
+
+        Menu 두번째_메뉴 = Menu.of("메뉴", 5000L, MenuGroup.from("메뉴그룹"));
         List<OrderLineItem> 두번째_주문_항목 = new ArrayList<OrderLineItem>();
-        두번째_주문_항목.add(OrderLineItem.of(null, 1L));
+        두번째_주문_항목.add(OrderLineItem.of(두번째_메뉴, 1L));
         
-        Order 첫번째_주문 = Order.of(OrderStatus.COOKING, 첫번째_주문_항목);
-        Order 두번째_주문 = Order.of(OrderStatus.COOKING, 두번째_주문_항목);
+        Order 첫번째_주문 = Order.of(테이블, OrderStatus.COOKING, 첫번째_주문_항목);
+        Order 두번째_주문 = Order.of(테이블, OrderStatus.MEAL, 두번째_주문_항목);
         
         given(orderRepository.findAll()).willReturn(Arrays.asList(첫번째_주문, 두번째_주문));
     
@@ -114,40 +116,58 @@ public class OrderServiceTest {
         // then
         assertThat(주문_목록.size()).isEqualTo(2);
     }
-    /*
-    @DisplayName("주문상태를 변경 할 수 있다")
+    
+    @DisplayName("식사중으로 상태를 변경할 수 있다")
     @Test
-    void 주문_상태_변경() {
+    void 식사중_상태_변경() {
         // given
-        Order 저장된_주문 = Order.of(null, OrderStatus.MEAL);
-        저장된_주문.addOrderLineItems(Arrays.asList(OrderLineItem.of(저장된_주문, Menu.of("메뉴", 3000L, null), 2L)));
+        OrderTable 테이블 = OrderTable.of(3, false);
+        OrderLineItem 주문_항목 = OrderLineItem.of(Menu.of("메뉴", 3000L, null), 2L);
+        Order 조리중_주문 = Order.of(테이블, OrderStatus.COOKING, Arrays.asList(주문_항목));
         
-        Order 변경할_주문 = Order.of(null, OrderStatus.COMPLETION);
-        변경할_주문.addOrderLineItems(Arrays.asList(OrderLineItem.of(변경할_주문, Menu.of("메뉴", 3000L, null), 2L)));
-        
-        given(orderRepository.findById(nullable(Long.class))).willReturn(Optional.of(저장된_주문));
-        given(orderRepository.save(any())).willReturn(변경할_주문);
+        given(orderRepository.findById(anyLong())).willReturn(Optional.of(조리중_주문));
+        given(orderRepository.save(any())).willReturn(조리중_주문);
         
         // when
-        OrderResponse 변경후_주문 = orderService.changeOrderStatus(저장된_주문.getId(), OrderRequest.from(변경할_주문));
+        OrderResponse 변경후_주문 = orderService.onMealing(1L);
     
         // then
-        assertThat(변경후_주문.getOrderStatus()).isEqualTo(변경할_주문.getOrderStatus());
+        assertThat(변경후_주문.getOrderStatus()).isEqualTo(OrderStatus.MEAL);
+    }
+    
+    @DisplayName("계산완료로 상태를 변경할 수 있다")
+    @Test
+    void 계산완료_상태_변경() {
+        // given
+        OrderTable 테이블 = OrderTable.of(3, false);
+        OrderLineItem 주문_항목 = OrderLineItem.of(Menu.of("메뉴", 3000L, null), 2L);
+        Order 식사중_주문 = Order.of(테이블, OrderStatus.MEAL, Arrays.asList(주문_항목));
+        
+        given(orderRepository.findById(anyLong())).willReturn(Optional.of(식사중_주문));
+        given(orderRepository.save(any())).willReturn(식사중_주문);
+        
+        // when
+        OrderResponse 변경후_주문 = orderService.completed(1L);
+    
+        // then
+        assertThat(변경후_주문.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION);
     }
     
     @DisplayName("계산이 완료된 주문은 상태를 변경 할 수 없다")
     @Test
     void 계산_완료_주문_변경_불가() {
         // given
-        Order 저장된_주문 = Order.of(null, OrderStatus.COMPLETION);
-        저장된_주문.addOrderLineItems(Arrays.asList(OrderLineItem.of(저장된_주문, Menu.of("메뉴", 3000L, null), 2L)));
-        given(orderRepository.findById(nullable(Long.class))).willReturn(Optional.of(저장된_주문));
+        OrderTable 테이블 = OrderTable.of(3, false);
+        OrderLineItem 주문_항목 = OrderLineItem.of(Menu.of("메뉴", 3000L, null), 2L);
+        Order 계산_완료_주문 = Order.of(테이블, OrderStatus.COMPLETION, Arrays.asList(주문_항목));
+        
+        given(orderRepository.findById(anyLong())).willReturn(Optional.of(계산_완료_주문));
     
         // when, then
         assertThatThrownBy(() -> {
-            orderService.changeOrderStatus(저장된_주문.getId(), OrderRequest.from(저장된_주문));
+            orderService.onMealing(1L);
         }).isInstanceOf(IllegalArgumentException.class)
         .hasMessage("계산이 완료된 주문은 상태를 변경 할 수 없습니다");
-    }*/
+    }
 
 }

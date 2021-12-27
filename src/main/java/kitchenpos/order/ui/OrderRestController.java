@@ -35,8 +35,13 @@ public class OrderRestController {
         return ResponseEntity.ok().body(orderService.list());
     }
 
-    @PutMapping("/api/orders/{orderId}/order-status")
-    public ResponseEntity<OrderResponse> changeOrderStatus(@PathVariable final Long orderId, @RequestBody final OrderRequest request) {
-        return ResponseEntity.ok(orderService.changeOrderStatus(orderId, request));
+    @PutMapping("/api/orders/{orderId}/on-mealing")
+    public ResponseEntity<OrderResponse> changeOnMealing(@PathVariable final Long orderId) {
+        return ResponseEntity.ok(orderService.onMealing(orderId));
+    }
+    
+    @PutMapping("/api/orders/{orderId}/completed")
+    public ResponseEntity<OrderResponse> changeCompleted(@PathVariable final Long orderId) {
+        return ResponseEntity.ok(orderService.completed(orderId));
     }
 }
