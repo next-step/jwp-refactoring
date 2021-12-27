@@ -10,6 +10,7 @@ import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.domain.OrderTable;
 
+@DisplayName("좌석 관련 기능")
 public class TableAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("주문 테이블 생성")

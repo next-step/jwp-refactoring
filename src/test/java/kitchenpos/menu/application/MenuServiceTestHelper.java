@@ -7,7 +7,7 @@ import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
 
 public class MenuServiceTestHelper {
-    public static Menu 메뉴_정보(String name, int price, Long menuGroupId, MenuProduct... menuProducts) {
+    public static Menu 메뉴_생성(String name, int price, Long menuGroupId, MenuProduct... menuProducts) {
         Menu menu = new Menu();
         menu.setName(name);
         menu.setPrice(BigDecimal.valueOf(price));
@@ -16,7 +16,7 @@ public class MenuServiceTestHelper {
         return menu;
     }
 
-    public static MenuProduct 메뉴_상품_정보(Long productId, int quantity) {
+    public static MenuProduct 메뉴_상품_생성(Long productId, int quantity) {
         MenuProduct menuProduct = new MenuProduct();
         menuProduct.setProductId(productId);
         menuProduct.setQuantity(quantity);

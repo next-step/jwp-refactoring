@@ -47,15 +47,15 @@ public class MenuServiceTest {
     @BeforeEach
     void setUp() {
         // given
-        제육볶음 = 상품_정보(1L, "제육볶음", 8_900);
-        제육볶음_상품 = 메뉴_상품_정보(제육볶음.getId(), 1);
-        분식 = 메뉴_그룹_정보(1L, "분식");
+        제육볶음 = 상품_생성(1L, "제육볶음", 8_900);
+        제육볶음_상품 = 메뉴_상품_생성(제육볶음.getId(), 1);
+        분식 = 메뉴_그룹_생성(1L, "분식");
     }
 
     @DisplayName("메뉴 등록")
     @Test
     void createMenu() {
-        Menu 제육볶음_메뉴 = 메뉴_정보("제육볶음정식", 6000, 분식.getId(), 제육볶음_상품);
+        Menu 제육볶음_메뉴 = 메뉴_생성("제육볶음정식", 6000, 분식.getId(), 제육볶음_상품);
 
         // given
         given(menuGroupDao.existsById(any(Long.class))).willReturn(true);

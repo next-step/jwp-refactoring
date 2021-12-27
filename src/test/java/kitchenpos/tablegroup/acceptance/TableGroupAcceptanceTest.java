@@ -13,6 +13,7 @@ import kitchenpos.AcceptanceTest;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 
+@DisplayName("단체 좌석 관련 기능")
 public class TableGroupAcceptanceTest extends AcceptanceTest {
 
     OrderTable 좌석1;

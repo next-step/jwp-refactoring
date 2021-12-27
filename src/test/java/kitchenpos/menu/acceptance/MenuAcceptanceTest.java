@@ -29,8 +29,8 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         // given
         Product 제육볶음 = 상품_등록되어_있음("제육볶음", 8900).as(Product.class);
         Product 볶음밥 = 상품_등록되어_있음("볶음밥", 8900).as(Product.class);
-        제육볶음_메뉴 = 메뉴(제육볶음.getId(), 1);
-        볶음밥_메뉴 = 메뉴(볶음밥.getId(), 1);
+        제육볶음_메뉴 = 메뉴_상품(제육볶음.getId(), 1);
+        볶음밥_메뉴 = 메뉴_상품(볶음밥.getId(), 1);
 
         분식 = 메뉴그룹_등록되어_있음("분식").as(MenuGroup.class);
     }
@@ -75,7 +75,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     @Test
     void invalidCreateMenu_UnregisteredProduct() {
         // given
-        MenuProduct 등록되어_있지_않은_상품 = 메뉴(-1L, 1);
+        MenuProduct 등록되어_있지_않은_상품 = 메뉴_상품(-1L, 1);
 
         // when
         ExtractableResponse<Response> 메뉴_등록_요청_응답 = 메뉴_등록_요청("제육볶음", 7000, 분식.getId(), 등록되어_있지_않은_상품);

@@ -32,7 +32,7 @@ public class MenuGroupServiceTest {
 
     @BeforeEach
     void setUp() {
-        menuGroup = 메뉴_그룹_정보(1L, "제육볶음");
+        menuGroup = 메뉴_그룹_생성(1L, "제육볶음");
     }
 
     @DisplayName("메뉴그룹을 등록한다.")

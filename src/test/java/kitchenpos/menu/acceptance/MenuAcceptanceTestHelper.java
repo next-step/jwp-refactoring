@@ -15,6 +15,11 @@ import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
 
 public class MenuAcceptanceTestHelper {
+
+    public static ExtractableResponse 메뉴_등록되어_있음(String name, int price, Long id, MenuProduct... menuProducts) {
+        return 메뉴_등록_요청(name, price, id, menuProducts);
+    }
+
     public static ExtractableResponse<Response> 메뉴_목록_조회_요청() {
         return RestAssured
             .given().log().all()
@@ -36,7 +41,7 @@ public class MenuAcceptanceTestHelper {
             .then().log().all().extract();
     }
 
-    public static MenuProduct 메뉴(Long productId, int quantity) {
+    public static MenuProduct 메뉴_상품(Long productId, int quantity) {
         MenuProduct menuProduct = new MenuProduct();
         menuProduct.setProductId(productId);
         menuProduct.setQuantity(quantity);

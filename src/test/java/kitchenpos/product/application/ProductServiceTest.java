@@ -32,7 +32,7 @@ public class ProductServiceTest {
 
     @BeforeEach
     void setUp() {
-        product = 상품_정보(1L, "제육볶음", 8900);
+        product = 상품_생성(1L, "제육볶음", 8900);
     }
 
     @DisplayName("상품을 등록한다.")
