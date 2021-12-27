@@ -11,15 +11,15 @@ import org.junit.jupiter.api.Test;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.acceptance.step.MenuAcceptStep;
 import kitchenpos.acceptance.step.TableAcceptStep;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.menu.acceptance.MenuAcceptStep;
 import kitchenpos.menu.acceptance.MenuGroupAcceptStep;
 import kitchenpos.menu.dto.MenuGroupResponse;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.product.acceptance.ProductAcceptStep;
 import kitchenpos.product.dto.ProductResponse;
 
@@ -28,16 +28,14 @@ public class OrderAcceptTest extends AcceptanceTest {
 
 	private static final String BASE_URL = "/api/orders";
 
-	private Menu 후라이드둘;
+	private MenuResponse 후라이드둘;
 	private OrderTable 테이블;
 
 	@BeforeEach
 	void setup() {
 		ProductResponse 후라이드 = ProductAcceptStep.상품이_등록되어_있음("후라이드", 15_000);
 		MenuGroupResponse 추천메뉴 = MenuGroupAcceptStep.메뉴_그룹이_등록되어_있음("추천메뉴");
-		MenuProduct 메뉴_상품 = new MenuProduct();
-		메뉴_상품.setProductId(후라이드.getId());
-		메뉴_상품.setQuantity(2);
+		MenuProductRequest 메뉴_상품 = new MenuProductRequest(후라이드.getId(), 2L);
 
 		후라이드둘 = MenuAcceptStep.메뉴가_등록되어_있음("후라이드둘", 30_000, 추천메뉴, 메뉴_상품);
 		테이블 = TableAcceptStep.테이블_등록_되어_있음(2, false);

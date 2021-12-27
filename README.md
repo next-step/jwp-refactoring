@@ -29,15 +29,15 @@
 - 상품
     - [x] Product
 - 메뉴
-    - Menu
-    - MenuGroup
-    - MenuProduct
+    - [x] Menu
+    - [x] MenuGroup
+    - [x] MenuProduct
 - 주문
-    - OrderLineItem
-    - Order
+    - [ ] OrderLineItem
+    - [ ] Order
 - 테이블
-    - TableGroup
-    - OrderTable
+    - [ ] TableGroup
+    - [ ] OrderTable
 
 # 1단계 - 테스트를 통한 코드 보호
 

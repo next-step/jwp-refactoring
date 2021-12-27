@@ -6,6 +6,8 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import kitchenpos.exception.AppException;
+import kitchenpos.exception.ErrorCode;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.dto.MenuGroupRequest;
@@ -32,4 +34,9 @@ public class MenuGroupService {
 			.collect(Collectors.toList());
 	}
 
+	@Transactional(readOnly = true)
+	public MenuGroup getById(Long menuGroupId) {
+		return menuGroupRepository.findById(menuGroupId)
+			.orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "메뉴 그룹(id: {})를 찾을 수 없습니다", menuGroupId));
+	}
 }

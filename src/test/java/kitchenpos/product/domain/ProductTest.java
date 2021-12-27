@@ -13,6 +13,8 @@ import kitchenpos.common.domain.Price;
 @DisplayName("제품 도메인 테스트")
 public class ProductTest {
 
+	public static final Product 후라이드 = Product.of(1L, "후라이드 치킨", BigDecimal.valueOf(15_000));
+
 	@DisplayName("생성 테스트")
 	@Test
 	void createTest() {

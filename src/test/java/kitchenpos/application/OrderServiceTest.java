@@ -5,7 +5,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,7 +16,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
@@ -24,6 +23,7 @@ import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.menu.domain.MenuRepository;
 
 @ExtendWith(MockitoExtension.class)
 public class OrderServiceTest {
@@ -32,7 +32,7 @@ public class OrderServiceTest {
 	private OrderService orderService;
 
 	@Mock
-	private MenuDao menuDao;
+	private MenuRepository menuRepository;
 
 	@Mock
 	private OrderTableDao orderTableDao;
@@ -62,7 +62,7 @@ public class OrderServiceTest {
 		orderTable.setId(1L);
 		orderTable.setEmpty(false);
 
-		given(menuDao.countByIdIn(any())).willReturn((long)orderLineItems.size());
+		given(menuRepository.countByIdIn(any())).willReturn((long)orderLineItems.size());
 		given(orderTableDao.findById(any())).willReturn(Optional.of(orderTable));
 		given(orderDao.save(any())).willReturn(persist);
 		given(orderLineItemDao.save(any())).willReturn(item1);
@@ -101,7 +101,7 @@ public class OrderServiceTest {
 		List<OrderLineItem> orderLineItems = new ArrayList<>();
 		orderLineItems.add(item1);
 
-		given(menuDao.countByIdIn(any())).willReturn(0L);
+		given(menuRepository.countByIdIn(any())).willReturn(0L);
 
 		Order request = new Order();
 		request.setOrderTableId(1L);
@@ -122,7 +122,7 @@ public class OrderServiceTest {
 		List<OrderLineItem> orderLineItems = new ArrayList<>();
 		orderLineItems.add(item1);
 
-		given(menuDao.countByIdIn(any())).willReturn((long)orderLineItems.size());
+		given(menuRepository.countByIdIn(any())).willReturn((long)orderLineItems.size());
 		given(orderTableDao.findById(any())).willReturn(Optional.empty());
 
 		Order request = new Order();
@@ -148,7 +148,7 @@ public class OrderServiceTest {
 		orderTable.setId(1L);
 		orderTable.setEmpty(true);
 
-		given(menuDao.countByIdIn(any())).willReturn((long)orderLineItems.size());
+		given(menuRepository.countByIdIn(any())).willReturn((long)orderLineItems.size());
 		given(orderTableDao.findById(any())).willReturn(Optional.of(orderTable));
 
 		Order request = new Order();
@@ -170,12 +170,12 @@ public class OrderServiceTest {
 
 		Order order = new Order();
 		order.setId(1L);
-		order.setOrderLineItems(Arrays.asList(item1));
+		order.setOrderLineItems(Collections.singletonList(item1));
 		List<Order> persist = new ArrayList<>();
 		persist.add(order);
 
 		given(orderDao.findAll()).willReturn(persist);
-		given(orderLineItemDao.findAllByOrderId(any())).willReturn(Arrays.asList(item1));
+		given(orderLineItemDao.findAllByOrderId(any())).willReturn(Collections.singletonList(item1));
 
 		// when
 		List<Order> results = orderService.list();
@@ -225,5 +225,5 @@ public class OrderServiceTest {
 			orderService.changeOrderStatus(requestOrderId, request)
 		).isInstanceOf(IllegalArgumentException.class);
 	}
-	
+
 }

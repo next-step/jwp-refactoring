@@ -39,4 +39,34 @@ public class PriceTest {
 			.hasMessage(ErrorCode.WRONG_INPUT.getMessage());
 	}
 
+	@DisplayName("곱할 수 있다")
+	@Test
+	void multiplyTest() {
+		// given
+		Price price = Price.valueOf(2);
+		Long multiplyNumber = 3L;
+		Price expected = Price.valueOf(6);
+
+		// when
+		Price result = price.multiply(multiplyNumber);
+
+		// then
+		assertThat(result).isEqualTo(expected);
+	}
+
+	@DisplayName("더할 수 있다")
+	@Test
+	void addTest() {
+		// given
+		Price price = Price.valueOf(2);
+		Price addPrice = Price.valueOf(3);
+		Price expected = Price.valueOf(5);
+
+		// when
+		Price result = price.add(addPrice);
+
+		// then
+		assertThat(result).isEqualTo(expected);
+	}
+
 }

@@ -6,6 +6,8 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import kitchenpos.exception.AppException;
+import kitchenpos.exception.ErrorCode;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.dto.ProductRequest;
@@ -33,4 +35,9 @@ public class ProductService {
 		return products.stream().map(ProductResponse::new).collect(Collectors.toList());
 	}
 
+	@Transactional(readOnly = true)
+	public Product getById(Long id) {
+		return productRepository.findById(id)
+			.orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "상품(id:{})를 찾을 수 없습니다", id));
+	}
 }
