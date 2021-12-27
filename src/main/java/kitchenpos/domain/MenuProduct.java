@@ -43,7 +43,7 @@ public class MenuProduct {
         return menu;
     }
 
-    public void setMenu(final Menu menu) {
+    public void referenceMenu(final Menu menu) {
         this.menu = menu;
     }
 

@@ -95,6 +95,6 @@ public class Menu {
 
     private void addMenuProduct(MenuProduct menuProduct) {
         this.menuProducts.add(menuProduct);
-        menuProduct.setMenu(this);
+        menuProduct.referenceMenu(this);
     }
 }
