@@ -1,6 +1,5 @@
 package kitchenpos.product.application;
 
-import static kitchenpos.common.DomainFixture.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
@@ -14,8 +13,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.product.domain.Product;
-import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.product.domain.domain.Product;
+import kitchenpos.product.domain.repo.ProductRepository;
 import kitchenpos.product.dto.ProductAddRequest;
 import kitchenpos.product.dto.ProductResponse;
 
@@ -28,10 +27,10 @@ class ProductServiceTest {
 	@Mock
 	private ProductRepository productRepository;
 
-	@DisplayName("product 생성")
+	@DisplayName("상품 생성")
 	@Test
 	void create() {
-		final Product 딤섬 = product(1L, "딤섬", 5_000);
+		final Product 딤섬 = Product.of(1L, "딤섬", 5_000);
 		given(productRepository.save(any())).willReturn(딤섬);
 
 		final ProductResponse createdProduct = productService.create(
@@ -41,11 +40,11 @@ class ProductServiceTest {
 		assertThat(createdProduct.getId()).isNotNull();
 	}
 
-	@DisplayName("product 목록 조회")
+	@DisplayName("상품 목록 조회")
 	@Test
 	void list() {
-		final Product 짜장 = product(1L, "짜장", 7_000);
-		final Product 짬뽕 = product(2L, "짬뽕", 9_000);
+		final Product 짜장 = Product.of(1L, "짜장", 7_000);
+		final Product 짬뽕 = Product.of(2L, "짬뽕", 9_000);
 		given(productRepository.findAll()).willReturn(Arrays.asList(짜장, 짬뽕));
 
 		assertThat(productService.list().size()).isEqualTo(2);

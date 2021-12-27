@@ -8,18 +8,18 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.domain.domain.Menu;
+import kitchenpos.menu.domain.domain.MenuProduct;
+import kitchenpos.menu.domain.repo.MenuRepository;
 import kitchenpos.menu.dto.MenuAddRequest;
 import kitchenpos.menu.dto.MenuProductAddRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.exception.NotFoundMenuProductException;
-import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.menugroup.domain.MenuGroupRepository;
+import kitchenpos.menugroup.domain.domain.MenuGroup;
+import kitchenpos.menugroup.domain.repo.MenuGroupRepository;
 import kitchenpos.menugroup.exception.NotFoundMenuGroupException;
-import kitchenpos.product.domain.Product;
-import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.product.domain.domain.Product;
+import kitchenpos.product.domain.repo.ProductRepository;
 
 @Service
 public class MenuService {
@@ -44,18 +44,16 @@ public class MenuService {
 		final List<MenuProduct> menuProducts = createMenuProducts(request.getMenuProductAddRequests());
 
 		final Menu menu = menuRepository.save(
-			Menu.of(request.getName(), request.getPrice(), menuGroup, menuProducts)
+			request.toEntity(menuGroup, menuProducts)
 		);
 		return MenuResponse.of(menu);
 	}
 
-	@Transactional(readOnly = true)
 	private MenuGroup findMenuGroup(Long menuGroupId) {
 		return menuGroupRepository.findById(menuGroupId)
 			.orElseThrow(NotFoundMenuGroupException::new);
 	}
 
-	@Transactional(readOnly = true)
 	private Map<Long, Product> findProducts(List<MenuProductAddRequest> requests) {
 		final List<Long> productIds = requests.stream()
 			.map(MenuProductAddRequest::getProductId)
@@ -80,6 +78,8 @@ public class MenuService {
 	@Transactional(readOnly = true)
 	public List<MenuResponse> list() {
 		final List<Menu> menus = menuRepository.findAll();
-		return menus.stream().map(MenuResponse::of).collect(Collectors.toList());
+		return menus.stream()
+			.map(MenuResponse::of)
+			.collect(Collectors.toList());
 	}
 }

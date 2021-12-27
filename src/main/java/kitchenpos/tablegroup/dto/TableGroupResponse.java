@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import kitchenpos.ordertable.dto.OrderTableResponse;
-import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.domain.domain.TableGroup;
 
 public class TableGroupResponse {
 

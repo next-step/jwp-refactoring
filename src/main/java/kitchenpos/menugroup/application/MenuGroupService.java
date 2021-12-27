@@ -6,8 +6,8 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.menugroup.domain.MenuGroupRepository;
+import kitchenpos.menugroup.domain.domain.MenuGroup;
+import kitchenpos.menugroup.domain.repo.MenuGroupRepository;
 import kitchenpos.menugroup.dto.MenuGroupAddRequest;
 import kitchenpos.menugroup.dto.MenuGroupResponse;
 
@@ -29,6 +29,8 @@ public class MenuGroupService {
 	@Transactional(readOnly = true)
 	public List<MenuGroupResponse> list() {
 		final List<MenuGroup> menuGroups = menuGroupRepository.findAll();
-		return menuGroups.stream().map(MenuGroupResponse::of).collect(Collectors.toList());
+		return menuGroups.stream()
+			.map(MenuGroupResponse::of)
+			.collect(Collectors.toList());
 	}
 }

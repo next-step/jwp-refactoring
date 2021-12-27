@@ -1,7 +1,7 @@
 package kitchenpos.order.application;
 
-import static kitchenpos.common.DomainFixture.*;
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
 import java.util.Arrays;
@@ -16,23 +16,23 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.domain.domain.Menu;
+import kitchenpos.menu.domain.domain.MenuProduct;
+import kitchenpos.menu.domain.repo.MenuRepository;
 import kitchenpos.menu.exception.NotFoundMenuException;
-import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.menugroup.domain.domain.MenuGroup;
+import kitchenpos.order.domain.domain.Order;
+import kitchenpos.order.domain.domain.OrderLineItem;
+import kitchenpos.order.domain.repo.OrderRepository;
+import kitchenpos.order.domain.domain.OrderStatus;
 import kitchenpos.order.dto.OrderAddRequest;
 import kitchenpos.order.dto.OrderLineItemAddRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusRequest;
-import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.domain.OrderTableRepository;
+import kitchenpos.ordertable.domain.domain.OrderTable;
+import kitchenpos.ordertable.domain.repo.OrderTableRepository;
 import kitchenpos.ordertable.exception.NotFoundOrderTableException;
-import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.domain.Product;
 
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
@@ -47,18 +47,18 @@ class OrderServiceTest {
 	@Mock
 	private OrderTableRepository orderTableRepository;
 
-	private final Product 초밥 = product(1L, "초밥", 3_000);
-	private final MenuProduct 메뉴초밥 = menuProduct(1L, null, 초밥, 10);
-	private final MenuGroup 메인메뉴그룹 = menuGroup(1L, "메인");
-	private final Menu 일식메뉴 = menu(1L, "일식", 30_000, 메인메뉴그룹, Arrays.asList(메뉴초밥));
-	final OrderTable 개별_주문테이블 = orderTable(1L, null, 4, false);
+	private final Product 초밥 = Product.of(1L, "초밥", 3_000);
+	private final MenuProduct 메뉴초밥 = MenuProduct.of(1L, 초밥, 10);
+	private final MenuGroup 메인메뉴그룹 = MenuGroup.of(1L, "메인");
+	private final Menu 일식메뉴 = Menu.of(1L, "일식", 30_000, 메인메뉴그룹, Arrays.asList(메뉴초밥));
+	final OrderTable 개별_주문테이블 = OrderTable.of(1L, null, 4, false);
 
 	@DisplayName("주문생성")
 	@Test
 	void create() {
-		final OrderLineItem 주문항목 = orderLineItem(1L, null, 일식메뉴, 2);
+		final OrderLineItem 주문항목 = OrderLineItem.of(1L, 일식메뉴, 2);
 		final List<OrderLineItem> 주문항목목록 = Arrays.asList(주문항목);
-		final Order 주문 = order(1L, 개별_주문테이블, OrderStatus.COOKING, 주문항목목록);
+		final Order 주문 = Order.of(1L, 개별_주문테이블, OrderStatus.COOKING, 주문항목목록);
 
 		given(orderTableRepository.findById(any())).willReturn(Optional.of(개별_주문테이블));
 		given(menuRepository.findAllById(any())).willReturn(Arrays.asList(일식메뉴));
@@ -69,10 +69,14 @@ class OrderServiceTest {
 				Arrays.asList(OrderLineItemAddRequest.of(일식메뉴.getId(), 2L)))
 		);
 
-		assertThat(createdOrder.getId()).isNotNull();
-		assertThat(createdOrder.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
-		assertThat(createdOrder.getOrderLineItems().size()).isEqualTo(1);
-		assertThat(createdOrder.getOrderLineItems().get(0).getId()).isNotNull();
+		assertAll(
+			() -> assertThat(createdOrder.getId()).isNotNull(),
+			() -> assertThat(createdOrder.getOrderStatus()).isEqualTo(OrderStatus.COOKING),
+			() -> {
+				assertThat(createdOrder.getOrderLineItems().size()).isEqualTo(1);
+				assertThat(createdOrder.getOrderLineItems().get(0).getId()).isNotNull();
+			}
+		);
 	}
 
 	@DisplayName("주문생성: 주문테이블이 없으면 예외발생")
@@ -106,9 +110,9 @@ class OrderServiceTest {
 	@DisplayName("주문 목록 조회")
 	@Test
 	void list() {
-		final OrderLineItem 주문항목 = orderLineItem(1L, null, 일식메뉴, 2);
+		final OrderLineItem 주문항목 = OrderLineItem.of(1L, 일식메뉴, 2);
 		final List<OrderLineItem> 주문항목목록 = Arrays.asList(주문항목);
-		final Order 주문1 = order(1L, 개별_주문테이블, OrderStatus.COOKING, 주문항목목록);
+		final Order 주문1 = Order.of(1L, 개별_주문테이블, OrderStatus.COOKING, 주문항목목록);
 		given(orderRepository.findAll()).willReturn(Arrays.asList(주문1));
 
 		final List<OrderResponse> orders = orderService.list();
@@ -119,10 +123,9 @@ class OrderServiceTest {
 	@DisplayName("주문 상태 변경: 조리->식사")
 	@Test
 	void changeOrderStatus() {
-		final OrderLineItem 주문항목 = orderLineItem(1L, null, 일식메뉴, 2);
+		final OrderLineItem 주문항목 = OrderLineItem.of(1L, 일식메뉴, 2);
 		final List<OrderLineItem> 주문항목목록 = Arrays.asList(주문항목);
-		final Order 주문 = order(1L, 개별_주문테이블, OrderStatus.COOKING, 주문항목목록);
-
+		final Order 주문 = Order.of(1L, 개별_주문테이블, OrderStatus.COOKING, 주문항목목록);
 		given(orderRepository.findById(any())).willReturn(Optional.of(주문));
 
 		final OrderResponse changedOrder = orderService.changeOrderStatus(

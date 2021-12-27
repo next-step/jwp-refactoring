@@ -1,6 +1,5 @@
 package kitchenpos.menugroup.application;
 
-import static kitchenpos.common.DomainFixture.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
@@ -13,8 +12,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.menugroup.domain.MenuGroupRepository;
+import kitchenpos.menugroup.domain.domain.MenuGroup;
+import kitchenpos.menugroup.domain.repo.MenuGroupRepository;
 import kitchenpos.menugroup.dto.MenuGroupAddRequest;
 import kitchenpos.menugroup.dto.MenuGroupResponse;
 
@@ -30,7 +29,7 @@ class MenuGroupServiceTest {
 	@DisplayName("메뉴그룹 생성")
 	@Test
 	void create() {
-		final MenuGroup 일식 = menuGroup(1L, "일식");
+		final MenuGroup 일식 = MenuGroup.of(1L, "일식");
 		given(menuGroupRepository.save(any())).willReturn(일식);
 
 		final MenuGroupResponse created = menuGroupService.create(
@@ -43,8 +42,8 @@ class MenuGroupServiceTest {
 	@DisplayName("메뉴그룹 목록 조회")
 	@Test
 	void list() {
-		final MenuGroup 한식 = menuGroup(1L, "한식");
-		final MenuGroup 중식 = menuGroup(2L, "중식");
+		final MenuGroup 한식 = MenuGroup.of(1L, "한식");
+		final MenuGroup 중식 = MenuGroup.of(2L, "중식");
 		given(menuGroupRepository.findAll()).willReturn(Arrays.asList(한식, 중식));
 
 		assertThat(menuGroupService.list().size()).isEqualTo(2);

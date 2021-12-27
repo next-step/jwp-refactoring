@@ -2,6 +2,10 @@ package kitchenpos.order.dto;
 
 import java.util.List;
 
+import kitchenpos.order.domain.domain.Order;
+import kitchenpos.order.domain.domain.OrderLineItem;
+import kitchenpos.ordertable.domain.domain.OrderTable;
+
 public class OrderAddRequest {
 
 	private Long tableId;
@@ -17,6 +21,10 @@ public class OrderAddRequest {
 
 	public static OrderAddRequest of(Long tableId, List<OrderLineItemAddRequest> orderLineItemAddRequests) {
 		return new OrderAddRequest(tableId, orderLineItemAddRequests);
+	}
+
+	public Order toEntity(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
+		return Order.ofCooking(orderTable, orderLineItems);
 	}
 
 	public Long getTableId() {

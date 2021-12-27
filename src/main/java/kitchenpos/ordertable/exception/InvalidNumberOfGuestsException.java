@@ -1,6 +1,6 @@
 package kitchenpos.ordertable.exception;
 
-import kitchenpos.ordertable.domain.NumberOfGuests;
+import kitchenpos.ordertable.domain.domain.NumberOfGuests;
 
 public class InvalidNumberOfGuestsException extends IllegalArgumentException {
 

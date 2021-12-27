@@ -4,8 +4,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.domain.Order;
+import kitchenpos.order.domain.domain.OrderStatus;
 import kitchenpos.ordertable.dto.OrderTableResponse;
 
 public class OrderResponse {
@@ -34,7 +34,10 @@ public class OrderResponse {
 			OrderTableResponse.of(order.getOrderTable()),
 			order.getOrderStatus(),
 			order.getOrderedTime(),
-			order.getOrderLineItems().stream().map(OrderLineItemResponse::of).collect(Collectors.toList())
+			order.getOrderLineItems()
+				.stream()
+				.map(OrderLineItemResponse::of)
+				.collect(Collectors.toList())
 		);
 	}
 

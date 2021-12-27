@@ -1,7 +1,6 @@
 package kitchenpos.ordertable.ui;
 
 import kitchenpos.ordertable.application.TableService;
-import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.dto.OrderTableAddRequest;
 import kitchenpos.ordertable.dto.OrderTableEmptyRequest;
 import kitchenpos.ordertable.dto.OrderTableNumberOfGuestsRequest;
