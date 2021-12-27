@@ -76,7 +76,7 @@ class TableServiceTest {
 
         Mockito.when(orderTableDao.findById(Mockito.anyLong()))
             .thenReturn(Optional.of(orderTable));
-        Mockito.when(orderDao.existsByOrderTableIdAndOrderStatusIn(Mockito.anyLong(), Mockito.anyList()))
+        Mockito.when(orderDao.existsByOrderTable_IdAndOrderStatusIn(Mockito.anyLong(), Mockito.anyList()))
             .thenReturn(false);
 
         OrderTable expected = new OrderTable(1L, new TableGroup(1L), 4, true);
@@ -117,7 +117,7 @@ class TableServiceTest {
 
         Mockito.when(orderTableDao.findById(Mockito.anyLong()))
             .thenReturn(Optional.of(orderTable));
-        Mockito.when(orderDao.existsByOrderTableIdAndOrderStatusIn(Mockito.anyLong(), Mockito.anyList()))
+        Mockito.when(orderDao.existsByOrderTable_IdAndOrderStatusIn(Mockito.anyLong(), Mockito.anyList()))
             .thenReturn(true);
 
         OrderTableRequest request = new OrderTableRequest(true);

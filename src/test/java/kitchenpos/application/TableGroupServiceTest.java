@@ -152,7 +152,7 @@ class TableGroupServiceTest {
         Mockito.when(orderTableDao.findAllByTableGroup_Id(Mockito.anyLong()))
             .thenReturn(orderTables);
 
-        Mockito.when(orderDao.existsByOrderTableIdInAndOrderStatusIn(Mockito.anyList(), Mockito.anyList()))
+        Mockito.when(orderDao.existsByOrderTable_IdInAndOrderStatusIn(Mockito.anyList(), Mockito.anyList()))
             .thenReturn(false);
 
         // when
@@ -169,7 +169,7 @@ class TableGroupServiceTest {
         Mockito.when(orderTableDao.findAllByTableGroup_Id(Mockito.anyLong()))
             .thenReturn(orderTables);
 
-        Mockito.when(orderDao.existsByOrderTableIdInAndOrderStatusIn(Mockito.anyList(), Mockito.anyList()))
+        Mockito.when(orderDao.existsByOrderTable_IdInAndOrderStatusIn(Mockito.anyList(), Mockito.anyList()))
             .thenReturn(true);
 
         // when and then
