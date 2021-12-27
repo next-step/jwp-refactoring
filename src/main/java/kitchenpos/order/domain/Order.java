@@ -39,24 +39,17 @@ public class Order {
     protected Order() {
     }
 
-    private Order(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
+    private Order(OrderTable orderTable, OrderLineItems orderLineItems) {
         validateEmptyOrderTable(orderTable);
-        validateOrderLineItems(orderLineItems);
         this.orderTable = orderTable;
         this.orderStatus = OrderStatus.COOKING;
         this.orderedTime = LocalDateTime.now();
-        addOrderLineItem(orderLineItems);
+        this.orderLineItems = orderLineItems;
+        orderLineItems.changeOrder(this);
     }
 
-    public static Order of(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
+    public static Order of(OrderTable orderTable, OrderLineItems orderLineItems) {
         return new Order(orderTable, orderLineItems);
-    }
-
-    private void addOrderLineItem(List<OrderLineItem> orderLineItems) {
-        orderLineItems.forEach(orderLineItem -> {
-            this.orderLineItems.add(orderLineItem);
-            orderLineItem.changeOrder(this);
-        });
     }
 
     public Long getId() {
@@ -94,12 +87,6 @@ public class Order {
     private void validateEmptyOrderTable(OrderTable orderTable) {
         if (orderTable.isEmpty()) {
             throw new IllegalArgumentException("주문 테이블이 빈 테이블인 경우 주문할 수 없습니다.");
-        }
-    }
-
-    private void validateOrderLineItems(List<OrderLineItem> orderLineItems) {
-        if (orderLineItems.size() < ORDER_LINE_ITEM_MIN_SIZE) {
-            throw new IllegalArgumentException("주문 시 주문 항목은 필수 입니다.");
         }
     }
 }

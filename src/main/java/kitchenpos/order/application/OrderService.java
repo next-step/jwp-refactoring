@@ -4,6 +4,7 @@ import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.OrderTableRepository;
@@ -12,7 +13,6 @@ import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -68,16 +68,12 @@ public class OrderService {
         }
     }
 
-    private List<OrderLineItem> findOrderLineItems(List<OrderLineItemRequest> OrderLineItemRequests) {
-        if (CollectionUtils.isEmpty(OrderLineItemRequests)) {
-            throw new IllegalArgumentException("주문 항목이 존재하지 않습니다.");
-        }
-
-        return OrderLineItemRequests.stream()
+    private OrderLineItems findOrderLineItems(List<OrderLineItemRequest> orderLineItemRequests) {
+        return OrderLineItems.from(orderLineItemRequests.stream()
                 .map(orderLineItemRequest -> {
                     Menu menu = menuService.findMenuById(orderLineItemRequest.getMenuId());
                     return OrderLineItem.of(menu, orderLineItemRequest.getQuantity());
                 })
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()));
     }
 }

@@ -9,14 +9,19 @@ import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.product.domain.Product;
+import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
 
 import java.math.BigDecimal;
 import java.util.Collections;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 @DisplayName("주문 항목들 테스트")
 class OrderLineItemsTest {
@@ -41,4 +46,18 @@ class OrderLineItemsTest {
 
         assertThat(actual).isNotNull();
     }
+
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    void 주문_발생_시_주문_항목은_필수이다(List<OrderLineItem> orderLineItems) {
+        // given - when
+        ThrowableAssert.ThrowingCallable throwingCallable = () -> OrderLineItems.from(orderLineItems);
+
+        // then
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(throwingCallable)
+                .withMessage("주문 시 주문 항목은 필수 입니다.");
+    }
+
 }

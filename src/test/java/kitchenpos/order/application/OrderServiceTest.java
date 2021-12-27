@@ -13,6 +13,7 @@ import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
@@ -83,7 +84,7 @@ class OrderServiceTest {
 
         주문_항목_요청 = OrderLineItemRequest.of(후라이드_후라이드.getId(), 1L);
         주문_요청 = OrderRequest.of(주문_테이블.getId(), Arrays.asList(주문_항목_요청));
-        주문 = Order.of(주문_테이블, Collections.singletonList(주문_상품));
+        주문 = Order.of(주문_테이블, OrderLineItems.from(Collections.singletonList(주문_상품)));
         주문_응답 = OrderResponse.from(주문);
     }
 

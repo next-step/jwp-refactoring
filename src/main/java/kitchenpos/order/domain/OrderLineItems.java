@@ -1,5 +1,7 @@
 package kitchenpos.order.domain;
 
+import org.springframework.util.Assert;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
@@ -18,6 +20,7 @@ public class OrderLineItems {
     }
 
     private OrderLineItems(List<OrderLineItem> orderLineItems) {
+        Assert.notEmpty(orderLineItems, "주문 시 주문 항목은 필수 입니다.");
         this.orderLineItems = orderLineItems;
     }
 
@@ -29,7 +32,9 @@ public class OrderLineItems {
         return Collections.unmodifiableList(orderLineItems);
     }
 
-    public void add(OrderLineItem orderLineItem) {
-        orderLineItems.add(orderLineItem);
+    public void changeOrder(Order order) {
+        Assert.notNull(order, "주문은 필수입니다.");
+        orderLineItems.forEach(orderLineItem ->
+                orderLineItem.changeOrder(order));
     }
 }

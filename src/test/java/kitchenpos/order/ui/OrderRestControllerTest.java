@@ -14,6 +14,7 @@ import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.dto.OrderLineItemRequest;
@@ -78,7 +79,7 @@ class OrderRestControllerTest extends RestControllerTest {
         주문_요청 = OrderRequest.of(주문_테이블.getId(), Arrays.asList(주문_항목_요청));
 
         주문_항목 = OrderLineItemFixture.of(후라이드_후라이드, 1L);
-        주문 = Order.of(주문_테이블, Collections.singletonList(주문_항목));
+        주문 = Order.of(주문_테이블, OrderLineItems.from(Collections.singletonList(주문_항목)));
 
         주문_응답 = OrderResponse.from(주문);
     }
@@ -124,7 +125,7 @@ class OrderRestControllerTest extends RestControllerTest {
     @Test
     void 주문_상태_변경() throws Exception {
         // given
-        Order 변경된_주문 = Order.of(주문_테이블, Collections.singletonList(주문_항목));
+        Order 변경된_주문 = Order.of(주문_테이블, OrderLineItems.from(Collections.singletonList(주문_항목)));
         변경된_주문.changeOrderStatus(OrderStatus.MEAL);
         OrderResponse 변경된_주문_응답 = OrderResponse.from(변경된_주문);
 
