@@ -1,11 +1,11 @@
 package kitchenpos.menu;
 
 import kitchenpos.AcceptanceTest;
-import kitchenpos.application.MenuService;
-import kitchenpos.repository.MenuGroupRepository;
-import kitchenpos.repository.ProductRepository;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.dto.MenuCreateRequest;
+import kitchenpos.menu.application.MenuService;
+import kitchenpos.menugroup.repository.MenuGroupRepository;
+import kitchenpos.product.repository.ProductRepository;
+import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menu.dto.MenuCreateRequest;
 import kitchenpos.global.exception.EntityNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

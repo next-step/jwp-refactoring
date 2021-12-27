@@ -1,18 +1,15 @@
 package kitchenpos.tablegroup;
 
 import kitchenpos.AcceptanceTest;
-import kitchenpos.application.TableGroupService;
-import kitchenpos.dto.MenuCreateRequest;
-import kitchenpos.dto.TableGroupCreateRequest;
+import kitchenpos.tablegroup.application.TableGroupService;
+import kitchenpos.tablegroup.dto.TableGroupCreateRequest;
 import kitchenpos.global.exception.EntityNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DisplayName("단체 지정 관련 기능")

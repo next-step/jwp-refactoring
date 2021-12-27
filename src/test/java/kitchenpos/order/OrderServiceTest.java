@@ -1,19 +1,21 @@
 package kitchenpos.order;
 
 import kitchenpos.AcceptanceTest;
-import kitchenpos.application.OrderService;
-import kitchenpos.application.TableService;
-import kitchenpos.domain.OrderStatus;
-import kitchenpos.dto.*;
-import kitchenpos.exception.TableNotAvailableException;
+import kitchenpos.order.application.OrderService;
+import kitchenpos.order.dto.OrderCreateRequest;
+import kitchenpos.order.dto.OrderStatusChangeRequest;
+import kitchenpos.table.application.TableService;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.table.exception.TableNotAvailableException;
 import kitchenpos.global.exception.EntityNotFoundException;
+import kitchenpos.table.dto.TableCreateRequest;
+import kitchenpos.table.dto.TableResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
 
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DisplayName("주문 관련 기능")

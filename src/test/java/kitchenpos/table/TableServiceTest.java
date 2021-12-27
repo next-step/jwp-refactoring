@@ -1,13 +1,13 @@
 package kitchenpos.table;
 
 import kitchenpos.AcceptanceTest;
-import kitchenpos.application.*;
-import kitchenpos.repository.OrderTableRepository;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.dto.TableChangeEmptyRequest;
-import kitchenpos.dto.TableChangeNumberOfGuestRequest;
-import kitchenpos.exception.TableNotAvailableException;
+import kitchenpos.table.repository.OrderTableRepository;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.dto.TableChangeEmptyRequest;
+import kitchenpos.table.dto.TableChangeNumberOfGuestRequest;
+import kitchenpos.table.exception.TableNotAvailableException;
 import kitchenpos.global.exception.EntityNotFoundException;
+import kitchenpos.table.application.TableService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

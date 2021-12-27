@@ -1,10 +1,10 @@
 package kitchenpos.menu;
 
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Product;
-import kitchenpos.exception.MenuPriceMoreThanMenuProductPriceSumException;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.product.domain.Product;
+import kitchenpos.menu.exception.MenuPriceMoreThanMenuProductPriceSumException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
