@@ -57,6 +57,47 @@
 | 주문 항목 | order line item | 주문에 속하는 수량이 있는 메뉴 |
 | 매장 식사 | eat in | 포장하지 않고 매장에서 식사하는 것 |
 
+### step2 요구사항
+
+- [X] 상품 관리 리팩토링
+  - [X] 모델 
+    - [X] Product 엔티티 변환
+    - [X] Name 래핑 클래스 추가
+    - [X] Price 래핑 클래스 추가
+  - [X] ProductRepository 사용하도록 수정
+  - [X] dto 모델 추가
+- [X] 메뉴 관리 리팩토링
+  - [X] 모델
+    - [X] MenuGroup 엔티티 변환
+    - [X] Menu 엔티티 변환
+    - [X] MenuProduct 엔티티 변환
+    - [X] Quantity 래핑 클래스 추가
+    - [X] Name 래핑 클래스 추가
+    - [X] Price 래핑 클래스 추가
+    - [X] MenuProducts 일급 컬렉션 추가
+  - [X] MenuRepository 사용하도록 수정
+  - [X] MenuGroupRepository 사용하도록 수정
+  - [X] 메뉴 그룹 dto 모델 추가
+  - [X] 메뉴 dto 모델 추가
+  - [X] 메뉴 상품 dto 모델 추가
+- [X] 테이블 관리 리팩토링
+  - [X] 모델
+    - [X] TableGroup 엔티티 변환
+    - [X] OrderTable 엔티티 변환
+    - [X] OrderTables 일급 컬렉션 추가
+    - [X] NumberOfGuests 래핑 클래스 추가
+  - [X] TableGroupRepository 사용하도록 수정
+  - [X] OrderTableRepository 사용하도록 수정
+  - [X] 테이블그룹 dto 모델 추가
+  - [X] 주문테이블 dto 모델 추가
+- [X] 주문 관리 리팩토링
+  - [X] 모델
+    - [X] Order 엔티티 변환
+    - [X] OrderLineItem 엔티티 변환
+    - [X] OrderLineItems 일급 컬렉션 추가
+  - [X] OrderRepository 사용하도록 수정
+  - [X] 주문 dto 모델 추가
+  - [X] 주문항목 dto 모델 추가
 
 ### step1 요구사항
 - [X] 키친포스 기능 요구사항 분석

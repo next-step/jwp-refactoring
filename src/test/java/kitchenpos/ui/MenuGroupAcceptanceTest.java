@@ -8,7 +8,8 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.menu.dto.MenuGroupRequest;
+import kitchenpos.menu.dto.MenuGroupResponse;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -26,7 +27,7 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
     @Test
     void createMenuGroup() {
         // when
-        ExtractableResponse<Response> 메뉴그룹_응답 = 메뉴그룹_생성(MenuGroup.of("추천메뉴"));
+        ExtractableResponse<Response> 메뉴그룹_응답 = 메뉴그룹_생성(new MenuGroupRequest("추천메뉴"));
 
         // then
         메뉴그룹_생성됨(메뉴그룹_응답);
@@ -35,6 +36,10 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
     @DisplayName("메뉴 그룹을 조회한다")
     @Test
     void readMenuGroups() {
+        // given
+        메뉴그룹_생성(new MenuGroupRequest("추천메뉴"));
+        메뉴그룹_생성(new MenuGroupRequest("신메뉴"));
+
         // when
         ExtractableResponse<Response> 메뉴그룹_조회_응답 = 메뉴그룹_조회();
 
@@ -42,14 +47,14 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
         메뉴그룹_목록_조회됨(메뉴그룹_조회_응답);
     }
 
-    private ExtractableResponse<Response> 메뉴그룹_생성(MenuGroup menuGroup) {
+    public static ExtractableResponse<Response> 메뉴그룹_생성(MenuGroupRequest menuGroup) {
         return post("/api/menu-groups", menuGroup);
     }
 
     private void 메뉴그룹_생성됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.header("Location")).isNotBlank();
-        assertThat(response.as(MenuGroup.class).getName()).isEqualTo("추천메뉴");
+        assertThat(response.as(MenuGroupResponse.class).getName()).isEqualTo("추천메뉴");
     }
 
     private ExtractableResponse<Response> 메뉴그룹_조회() {
@@ -58,10 +63,10 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
 
     private void 메뉴그룹_목록_조회됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        List<MenuGroup> menuGroups = Lists.newArrayList(response.as(MenuGroup[].class));
-        assertThat(menuGroups).hasSize(4);
-        assertThat(menuGroups).extracting(MenuGroup::getName)
-            .contains("두마리메뉴", "한마리메뉴", "순살파닭두마리메뉴", "신메뉴");
+        List<MenuGroupResponse> menuGroups = Lists.newArrayList(response.as(MenuGroupResponse[].class));
+        assertThat(menuGroups).hasSize(2);
+        assertThat(menuGroups).extracting(MenuGroupResponse::getName)
+            .contains("추천메뉴", "신메뉴");
     }
 
 }
