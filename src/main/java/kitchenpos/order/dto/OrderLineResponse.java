@@ -2,20 +2,21 @@ package kitchenpos.order.dto;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import kitchenpos.order.domain.MenuId;
 import kitchenpos.order.domain.OrderLineItem;
 
 public class OrderLineResponse {
 
     private Long id;
     private Long orderId;
-    private Long menuId;
+    private MenuId menuId;
     private long quantity;
 
     public static OrderLineResponse of(OrderLineItem orderLineItem) {
         return new OrderLineResponse(
             orderLineItem.getId(),
             orderLineItem.getOrder().getId(),
-            orderLineItem.getMenu().getId(),
+            orderLineItem.getMenuId(),
             orderLineItem.getQuantity());
     }
 
@@ -25,7 +26,7 @@ public class OrderLineResponse {
             .collect(Collectors.toList());
     }
 
-    public OrderLineResponse(Long id, Long orderId, Long menuId, long quantity) {
+    public OrderLineResponse(Long id, Long orderId, MenuId menuId, long quantity) {
         this.id = id;
         this.orderId = orderId;
         this.menuId = menuId;
@@ -40,7 +41,7 @@ public class OrderLineResponse {
         return orderId;
     }
 
-    public Long getMenuId() {
+    public MenuId getMenuId() {
         return menuId;
     }
 

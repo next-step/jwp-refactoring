@@ -67,4 +67,10 @@ public class MenuService {
         );
     }
 
+    public Long findMenuNoById(Long id) {
+        Menu menu = menuDao.findById(id)
+            .orElseThrow(NoResultDataException::new);
+        return menu.getId();
+    }
+
 }

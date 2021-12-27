@@ -4,13 +4,12 @@ import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
-import kitchenpos.menu.domain.Menu;
 
 @Entity
 public class OrderLineItem {
@@ -23,23 +22,22 @@ public class OrderLineItem {
     @JoinColumn(name = "order_id")
     private Order order;
 
-    @OneToOne(fetch = LAZY)
-    @JoinColumn(name = "menu_id")
-    private Menu menu;
+    @Embedded
+    private MenuId menuId;
 
     private Long quantity;
 
-    public static OrderLineItem of(Menu menu, long quantity) {
-        return new OrderLineItem(null, menu, quantity);
+    public static OrderLineItem of(MenuId menuId, long quantity) {
+        return new OrderLineItem(null, menuId, quantity);
     }
 
-    public static OrderLineItem of(Long id, Menu menu, long quantity) {
-        return new OrderLineItem(id, menu, quantity);
+    public static OrderLineItem of(Long id, MenuId menuId, long quantity) {
+        return new OrderLineItem(id, menuId, quantity);
     }
 
-    public OrderLineItem(Long id, Menu menu, Long quantity) {
+    public OrderLineItem(Long id, MenuId menuId, Long quantity) {
         this.id = id;
-        this.menu = menu;
+        this.menuId = menuId;
         this.quantity = quantity;
     }
 
@@ -58,8 +56,8 @@ public class OrderLineItem {
         return order;
     }
 
-    public Menu getMenu() {
-        return menu;
+    public MenuId getMenuId() {
+        return menuId;
     }
 
     public Long getQuantity() {
