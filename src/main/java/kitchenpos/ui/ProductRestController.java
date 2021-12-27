@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import kitchenpos.application.ProductService;
 import kitchenpos.dto.ProductRequest;
 import kitchenpos.dto.ProductResponse;
+import kitchenpos.dto.ProductResponses;
 
 @RestController
 public class ProductRestController {
@@ -32,8 +33,8 @@ public class ProductRestController {
 
     @GetMapping("/api/products")
     public ResponseEntity<List<ProductResponse>> list() {
+        ProductResponses productResponses = productService.list();
         return ResponseEntity.ok()
-            .body(productService.list())
-            ;
+            .body(productResponses.getProductResponses());
     }
 }

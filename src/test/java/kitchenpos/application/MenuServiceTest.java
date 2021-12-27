@@ -23,11 +23,12 @@ import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
+import kitchenpos.domain.Product;
 import kitchenpos.dto.MenuProductRequest;
 import kitchenpos.dto.MenuProductResponse;
 import kitchenpos.dto.MenuRequest;
 import kitchenpos.dto.MenuResponse;
-import kitchenpos.domain.Product;
+import kitchenpos.dto.MenuResponses;
 import kitchenpos.exception.KitchenposException;
 import kitchenpos.exception.KitchenposNotFoundException;
 
@@ -164,12 +165,13 @@ class MenuServiceTest {
             .thenReturn(menus);
 
         // when
-        List<MenuResponse> actual = menuService.list();
+        MenuResponses actual = menuService.list();
 
         // given
         assertAll(
-            () -> assertThat(actual.get(0).getMenuProducts()).hasSize(1),
-            () -> assertThat(actual.get(0).getMenuProducts().get(0)).isEqualTo(MenuProductResponse.from(menuProduct))
+            () -> assertThat(actual.getMenuResponses().get(0).getMenuProducts()).hasSize(1),
+            () -> assertThat(actual.getMenuResponses().get(0).getMenuProducts().get(0))
+                .isEqualTo(MenuProductResponse.from(menuProduct))
         );
     }
 }

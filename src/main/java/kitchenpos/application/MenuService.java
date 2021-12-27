@@ -17,6 +17,7 @@ import kitchenpos.domain.MenuProducts;
 import kitchenpos.dto.MenuRequest;
 import kitchenpos.dto.MenuResponse;
 import kitchenpos.domain.Product;
+import kitchenpos.dto.MenuResponses;
 import kitchenpos.exception.KitchenposNotFoundException;
 
 @Service
@@ -49,7 +50,7 @@ public class MenuService {
         return MenuResponse.from(savedMenu);
     }
 
-    public MenuProducts makeMenuProducts(List<MenuProductRequest> menuProductRequests) {
+    private MenuProducts makeMenuProducts(List<MenuProductRequest> menuProductRequests) {
         return new MenuProducts(menuProductRequests.stream()
             .map(menuProductRequest -> {
                 Product product = productDao.findById(menuProductRequest.getProductId())
@@ -59,11 +60,8 @@ public class MenuService {
             .collect(Collectors.toList()));
     }
 
-    public List<MenuResponse> list() {
+    public MenuResponses list() {
         final List<Menu> menus = menuDao.findAll();
-
-        return menus.stream()
-            .map(MenuResponse::from)
-            .collect(Collectors.toList());
+        return MenuResponses.from(menus);
     }
 }

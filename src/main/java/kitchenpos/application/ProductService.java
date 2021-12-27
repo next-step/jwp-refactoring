@@ -10,6 +10,7 @@ import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
 import kitchenpos.dto.ProductRequest;
 import kitchenpos.dto.ProductResponse;
+import kitchenpos.dto.ProductResponses;
 
 @Service
 @Transactional(readOnly = true)
@@ -25,10 +26,8 @@ public class ProductService {
         return ProductResponse.from(productDao.save(request.toEntity()));
     }
 
-    public List<ProductResponse> list() {
+    public ProductResponses list() {
         List<Product> products = productDao.findAll();
-        return products.stream()
-            .map(ProductResponse::from)
-            .collect(Collectors.toList());
+        return ProductResponses.from(products);
     }
 }

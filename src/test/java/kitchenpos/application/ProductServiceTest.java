@@ -18,6 +18,7 @@ import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
 import kitchenpos.dto.ProductRequest;
 import kitchenpos.dto.ProductResponse;
+import kitchenpos.dto.ProductResponses;
 import kitchenpos.exception.KitchenposException;
 
 @ExtendWith(MockitoExtension.class)
@@ -74,13 +75,13 @@ class ProductServiceTest {
         // given
         Product product1 = new Product(1L, "name1", BigDecimal.valueOf(10000));
         Product product2 = new Product(2L, "name2", BigDecimal.valueOf(20000));
-        List<ProductResponse> expected = Arrays.asList(ProductResponse.from(product1), ProductResponse.from(product2));
+        ProductResponses expected = ProductResponses.from(Arrays.asList(product1, product2));
 
         Mockito.when(productDao.findAll())
             .thenReturn(Arrays.asList(product1, product2));
 
         // when
-        List<ProductResponse> actual = productService.list();
+        ProductResponses actual = productService.list();
 
         // then
         assertThat(actual).isEqualTo(expected);
