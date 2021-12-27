@@ -31,6 +31,9 @@ subprojects {
         implementation 'org.springframework.boot:spring-boot-starter-jdbc'
         implementation 'org.springframework.boot:spring-boot-starter-web'
         runtimeOnly 'com.h2database:h2'
+        // handlebars
+        implementation 'pl.allegro.tech.boot:handlebars-spring-boot-starter:0.3.0'
+        
         testImplementation 'io.rest-assured:rest-assured:3.3.0'
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
     }
@@ -42,9 +45,18 @@ test {
 
 project(':module-order') {
     dependencies {
-//        implementation(project(':module-menu'))
+        implementation(project(':module-menu'))
 //        testFixturesImplementation(project(':module-menu'))
-//
+
+//        implementation(project(':module-common'))
+    }
+}
+
+project(':module-menu') {
+    dependencies {
+
+//        testFixturesImplementation(project(':module-menu'))
+
 //        implementation(project(':module-common'))
     }
 }

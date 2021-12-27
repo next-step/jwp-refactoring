@@ -1,51 +1,49 @@
-package kitchenpos.order.domain;
+package kitchenpos.menu.domain;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Table;
 
 @Entity
-@Table(name = "order_line_item")
-public class OrderLineItem {
+public class MenuProduct {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
 
-    @Column(name = "menu_id", nullable = false)
-    private Long menuId;
+    @Column(name = "product_id", nullable = false)
+    private Long productId;
 
     @Column(name = "quantity", nullable = false)
     private Long quantity;
 
-
-    protected OrderLineItem() {
+    protected MenuProduct() {
     }
 
-    private OrderLineItem(Long menuId, Long quantity) {
-        this.menuId = menuId;
+    private MenuProduct(Long productId, Long quantity) {
+        this.productId = productId;
         this.quantity = quantity;
     }
 
-    public static OrderLineItem of(Long menuId, Long quantity) {
-        return new OrderLineItem(menuId, quantity);
+    public static MenuProduct of(Long productId, Long quantity) {
+        return new MenuProduct(productId, quantity);
     }
 
-    public Long getSeq() {
-        return seq;
+    public Long getProductId() {
+        return productId;
     }
 
-    public Long getMenuId() {
-        return menuId;
-    }
-
-    public Long getQuantity() {
+    public long getQuantity() {
         return quantity;
+    }
+
+    public BigDecimal getPrice(BigDecimal price) {
+        return price.multiply(BigDecimal.valueOf(quantity));
     }
 
     @Override
@@ -60,7 +58,8 @@ public class OrderLineItem {
             return false;
         }
 
-        OrderLineItem that = (OrderLineItem) o;
+        MenuProduct that = (MenuProduct) o;
+
         return Objects.equals(seq, that.seq);
     }
 
