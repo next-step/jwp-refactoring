@@ -1,7 +1,6 @@
 package kitchenpos.order.testfixtures;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
 
 import java.util.List;
@@ -10,20 +9,11 @@ import java.util.stream.Collectors;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 
 public class OrderTestFixtures {
-
-    public static void 특정_테이블이_특정_상태인지_조회_모킹(OrderRepository orderRepository, boolean isExist) {
-        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), anyList()))
-            .willReturn(isExist);
-    }
-
-    public static void 특정_테이블들이_특정상태인지_조회_모킹(OrderRepository orderRepository, boolean isExist) {
-        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), anyList()))
-            .willReturn(isExist);
-    }
 
     public static void 주문_저장_결과_모킹(OrderRepository orderRepository, Order order) {
         given(orderRepository.save(any()))
@@ -41,8 +31,12 @@ public class OrderTestFixtures {
     }
 
     public static OrderRequest convertToOrderRequest(Order order) {
-        return new OrderRequest(order.getOrderTable().getId(),
+        return new OrderRequest(order.getOrderTableId(),
             convertToOrderLineItemRequests(order.getOrderLineItemList()));
+    }
+
+    public static OrderRequest convertToChangeOrderStatusRequest(OrderStatus orderStatus) {
+        return new OrderRequest(orderStatus);
     }
 
     public static List<OrderLineItemRequest> convertToOrderLineItemRequests(
@@ -53,7 +47,7 @@ public class OrderTestFixtures {
     }
 
     private static OrderLineItemRequest convertToOrderLineItemRequest(OrderLineItem orderLineItem) {
-        return new OrderLineItemRequest(orderLineItem.getMenu().getId(),
+        return new OrderLineItemRequest(orderLineItem.getMenuId(),
             orderLineItem.getQuantityVal());
     }
 }

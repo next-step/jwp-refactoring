@@ -7,12 +7,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class OrderExceptionHandler {
 
-    @ExceptionHandler(DuplicateOrderLineItemsException.class)
-    public ResponseEntity handleDuplicateOrderLineItemsException(
-        DuplicateOrderLineItemsException e) {
-        return ResponseEntity.badRequest().build();
-    }
-
     @ExceptionHandler(ClosedTableOrderException.class)
     public ResponseEntity handleClosedTableOrderException(
         ClosedTableOrderException e) {
@@ -22,6 +16,24 @@ public class OrderExceptionHandler {
     @ExceptionHandler(CompleteOrderChangeStateException.class)
     public ResponseEntity handleCompleteOrderChangeStateException(
         CompleteOrderChangeStateException e) {
+        return ResponseEntity.badRequest().build();
+    }
+
+    @ExceptionHandler(InvalidMenuInOrderLineItems.class)
+    public ResponseEntity handleInvalidMenuInOrderLineItems(
+        InvalidMenuInOrderLineItems e) {
+        return ResponseEntity.badRequest().build();
+    }
+
+    @ExceptionHandler(InvalidQuantityValueException.class)
+    public ResponseEntity handleInvalidQuantityValueException(
+        InvalidQuantityValueException e) {
+        return ResponseEntity.badRequest().build();
+    }
+
+    @ExceptionHandler(OrderNotFoundException.class)
+    public ResponseEntity handleOrderNotFoundException(
+        OrderNotFoundException e) {
         return ResponseEntity.badRequest().build();
     }
 }

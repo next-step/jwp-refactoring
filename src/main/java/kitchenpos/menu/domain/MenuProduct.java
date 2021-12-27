@@ -1,6 +1,5 @@
 package kitchenpos.menu.domain;
 
-import java.math.BigDecimal;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,7 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import kitchenpos.product.domain.Product;
+import kitchenpos.common.vo.Quantity;
 
 @Entity
 public class MenuProduct {
@@ -24,28 +23,26 @@ public class MenuProduct {
     @ManyToOne(fetch = FetchType.LAZY)
     private Menu menu;
 
-    @JoinColumn(name = "product_id", nullable = false)
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Product product;
+    private Long productId;
 
     @Column(nullable = false)
-    private long quantity;
+    private Quantity quantity;
 
     protected MenuProduct() {
     }
 
-    public MenuProduct(Product product, long quantity) {
-        this(null, null, product, quantity);
+    public MenuProduct(Long productId, Quantity quantity) {
+        this(null, null, productId, quantity);
     }
 
-    public MenuProduct(Menu menu, Product product, long quantity) {
-        this(null, menu, product, quantity);
+    public MenuProduct(Menu menu, Long productId, Quantity quantity) {
+        this(null, menu, productId, quantity);
     }
 
-    public MenuProduct(Long id, Menu menu, Product product, long quantity) {
+    public MenuProduct(Long id, Menu menu, Long productId, Quantity quantity) {
         this.id = id;
         this.menu = menu;
-        this.product = product;
+        this.productId = productId;
         this.quantity = quantity;
     }
 
@@ -61,16 +58,16 @@ public class MenuProduct {
         return menu;
     }
 
-    public Product getProduct() {
-        return product;
-    }
-
-    public long getQuantity() {
+    public Quantity getQuantity() {
         return quantity;
     }
 
-    public BigDecimal getMenuProductPrice() {
-        return product.getPriceVal().multiply(BigDecimal.valueOf(quantity));
+    public long getQuantityVal() {
+        return quantity.getQuantity();
+    }
+
+    public Long getProductId() {
+        return productId;
     }
 
     @Override

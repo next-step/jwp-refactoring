@@ -8,7 +8,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import kitchenpos.product.exception.ProductPriceNotAcceptableException;
+import kitchenpos.common.exception.PriceNotAcceptableException;
+import kitchenpos.common.vo.Price;
 
 @Entity
 public class Product {
@@ -22,18 +23,18 @@ public class Product {
 
     @Embedded
     @Column(nullable = false)
-    private ProductPrice price;
+    private Price price;
 
     protected Product() {
     }
 
-    public Product(String name, ProductPrice price) {
+    public Product(String name, Price price) {
         this(null, name, price);
     }
 
-    public Product(Long id, String name, ProductPrice price) {
+    public Product(Long id, String name, Price price) {
         if (price == null) {
-            throw new ProductPriceNotAcceptableException();
+            throw new PriceNotAcceptableException();
         }
         this.id = id;
         this.name = name;
@@ -48,7 +49,7 @@ public class Product {
         return name;
     }
 
-    public ProductPrice getPrice() {
+    public Price getPrice() {
         return price;
     }
 

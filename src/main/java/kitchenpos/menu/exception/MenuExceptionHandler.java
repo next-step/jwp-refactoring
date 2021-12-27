@@ -6,10 +6,10 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class MenuExceptionHandler {
-
-    @ExceptionHandler(MenuPriceNotAcceptableException.class)
-    public ResponseEntity handleMenuPriceNotAcceptableException(
-        MenuPriceNotAcceptableException e) {
+    
+    @ExceptionHandler(MenuNotFoundException.class)
+    public ResponseEntity handleMenuNotFoundException(
+        MenuNotFoundException e) {
         return ResponseEntity.badRequest().build();
     }
 }
