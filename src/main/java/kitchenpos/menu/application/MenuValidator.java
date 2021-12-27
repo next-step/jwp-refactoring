@@ -13,7 +13,7 @@ import kitchenpos.product.domain.ProductRepository;
 
 @Component
 public class MenuValidator {
-	private final static int COMPARE_ZERO = 0;
+	private static final int COMPARE_ZERO = 0;
 
 	private final MenuGroupRepository menuGroupRepository;
 	private final ProductRepository productRepository;
