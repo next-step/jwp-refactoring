@@ -1,4 +1,4 @@
-package kitchenpos.domain;
+package kitchenpos.menu.domain;
 
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.nullable;
@@ -18,9 +18,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import kitchenpos.menugroup.application.MenuGroupService;
 import kitchenpos.product.application.ProductService;
 import kitchenpos.common.domain.Price;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.product.domain.Product;
 import kitchenpos.menu.dto.MenuDto;
@@ -28,7 +25,6 @@ import kitchenpos.menu.dto.MenuProductDto;
 import kitchenpos.menu.exception.NotCorrectMenuPriceException;
 import kitchenpos.menugroup.exception.NotFoundMenuGroupException;
 import kitchenpos.product.exception.NotFoundProductException;
-import kitchenpos.validation.MenuValidatorImpl;
 import kitchenpos.common.vo.MenuGroupId;
 import kitchenpos.common.vo.ProductId;
 
@@ -41,7 +37,7 @@ public class MenuValidatorTest {
     private ProductService productService;
     
     @InjectMocks
-    private MenuValidatorImpl menuValidator;
+    private MenuValidator menuValidator;
     
     @DisplayName("메뉴생성시 미등록 상품이 포함되면 예외가 발생된다.")
     @Test

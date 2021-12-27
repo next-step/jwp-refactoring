@@ -1,4 +1,4 @@
-package kitchenpos.domain;
+package kitchenpos.order.domain;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
@@ -27,17 +27,9 @@ import kitchenpos.common.vo.OrderTableId;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.exception.NotRegistedMenuOrderException;
-import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderLineItems;
-import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.domain.Orders;
-import kitchenpos.order.domain.OrdersRepository;
 import kitchenpos.order.dto.OrderDto;
 import kitchenpos.order.exception.EmptyOrderLineItemOrderException;
 import kitchenpos.order.exception.NotChangableOrderStatusException;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.validation.OrdersValidatorImpl;
-
 
 @ExtendWith(MockitoExtension.class)
 public class OrderValidatorTest {
@@ -51,7 +43,7 @@ public class OrderValidatorTest {
     private OrdersRepository ordersRepository;
 
     @InjectMocks
-    private OrdersValidatorImpl ordersValidator;
+    private OrdersValidator ordersValidator;
 
     @Captor
     private ArgumentCaptor<ValidateEmptyTableEvent> captor;
@@ -62,9 +54,8 @@ public class OrderValidatorTest {
         // given
         Menu 뿌링클콤보 = Menu.of(1L, "뿌링클콤보", Price.of(18_000));
 
-        OrderTable 치킨_주문_단체테이블 = OrderTable.of(10, false);
         OrderLineItems 주문항목들 = OrderLineItems.of(OrderLineItem.of(MenuId.of(뿌링클콤보.getId()), 1L));
-        Orders 치킨주문 = Orders.of(OrderTableId.of(치킨_주문_단체테이블.getId()), OrderStatus.COOKING, 주문항목들);
+        Orders 치킨주문 = Orders.of(OrderTableId.of(1L), OrderStatus.COOKING, 주문항목들);
 
         when(menuService.findAllByIdIn(anyList())).thenReturn(List.of(뿌링클콤보));
 
@@ -79,8 +70,7 @@ public class OrderValidatorTest {
     @Test
     void exception_createOrder_emptyOrderedMenu() {
         // given
-        OrderTable 치킨_주문_단체테이블 = OrderTable.of(10, false);
-        Orders 치킨주문 = Orders.of(OrderTableId.of(치킨_주문_단체테이블.getId()), OrderStatus.COOKING);
+        Orders 치킨주문 = Orders.of(OrderTableId.of(1L), OrderStatus.COOKING);
 
         // when
         // then
@@ -95,8 +85,7 @@ public class OrderValidatorTest {
         Menu 뿌링클콤보 = Menu.of(1L, "뿌링클콤보", Price.of(18_000));
         OrderLineItem 치킨_주문항목 = OrderLineItem.of(MenuId.of(뿌링클콤보.getId()), 1L);
 
-        OrderTable 치킨_주문_단체테이블 = OrderTable.of(10, false);
-        Orders 치킨주문 = Orders.of(OrderTableId.of(치킨_주문_단체테이블.getId()), OrderStatus.COOKING);
+        Orders 치킨주문 = Orders.of(OrderTableId.of(1L), OrderStatus.COOKING);
         치킨_주문항목.acceptOrder(치킨주문);
 
         when(menuService.findAllByIdIn(anyList())).thenReturn(List.of());
@@ -114,8 +103,7 @@ public class OrderValidatorTest {
         Menu 뿌링클콤보 = Menu.of(1L, "뿌링클콤보", Price.of(18_000));
         OrderLineItem 치킨_주문항목 = OrderLineItem.of(MenuId.of(뿌링클콤보.getId()), 1L);
 
-        OrderTable 치킨_주문_단체테이블 = OrderTable.of(0, true);
-        Orders 치킨주문 = Orders.of(OrderTableId.of(치킨_주문_단체테이블.getId()), OrderStatus.COOKING);
+        Orders 치킨주문 = Orders.of(OrderTableId.of(1L), OrderStatus.COOKING);
         치킨_주문항목.acceptOrder(치킨주문);
 
         when(menuService.findAllByIdIn(anyList())).thenReturn(List.of(뿌링클콤보));
@@ -134,8 +122,7 @@ public class OrderValidatorTest {
         Menu 뿌링클콤보 = Menu.of(1L, "뿌링클콤보", Price.of(18_000));
         OrderLineItem 치킨_주문항목 = OrderLineItem.of(MenuId.of(뿌링클콤보.getId()), 1L);
 
-        OrderTable 치킨_주문_단체테이블 = OrderTable.of(0, true);
-        Orders 치킨주문 = Orders.of(OrderTableId.of(치킨_주문_단체테이블.getId()), OrderStatus.COOKING);
+        Orders 치킨주문 = Orders.of(OrderTableId.of(1L), OrderStatus.COOKING);
         치킨_주문항목.acceptOrder(치킨주문);
 
         when(ordersRepository.findById(nullable(Long.class))).thenReturn(Optional.of(치킨주문));
@@ -154,8 +141,7 @@ public class OrderValidatorTest {
         Menu 뿌링클콤보 = Menu.of(1L, "뿌링클콤보", Price.of(18_000));
         OrderLineItem 치킨_주문항목 = OrderLineItem.of(MenuId.of(뿌링클콤보.getId()), 1L);
 
-        OrderTable 치킨_주문_단체테이블 = OrderTable.of(0, true);
-        Orders 치킨주문 = Orders.of(OrderTableId.of(치킨_주문_단체테이블.getId()), OrderStatus.COMPLETION);
+        Orders 치킨주문 = Orders.of(OrderTableId.of(1L), OrderStatus.COMPLETION);
         치킨_주문항목.acceptOrder(치킨주문);
 
         when(ordersRepository.findById(nullable(Long.class))).thenReturn(Optional.of(치킨주문));

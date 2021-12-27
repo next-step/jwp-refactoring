@@ -1,4 +1,4 @@
-package kitchenpos.domain;
+package kitchenpos.table.domain;
 
 import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.Mockito.when;
@@ -18,10 +18,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.Orders;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.tablegroup.domain.TableGroup;
-import kitchenpos.validation.TableValidatorImpl;
 import kitchenpos.order.exception.HasNotCompletionOrderException;
 import kitchenpos.table.exception.EmptyOrderTableException;
 import kitchenpos.table.exception.HasOtherTableGroupException;
@@ -38,7 +34,7 @@ public class TableValidatorTest {
     private OrderTableRepository orderTableRepository;
 
     @InjectMocks
-    private TableValidatorImpl tableValidator;
+    private TableValidator tableValidator;
 
     @DisplayName("주문테이블 유효성검사자는 주문테이블의 빈테이블 상태변경의 유효성을 검사하고 정합시 주문테이블이 생성된다.")
     @Test
@@ -65,9 +61,8 @@ public class TableValidatorTest {
         OrderTable 치킨_주문테이블 = OrderTable.of(0, true);
         OrderTable 치킨2_주문_단체테이블 = OrderTable.of(0, true);
 
-        TableGroup  단체지정_테이블 = TableGroup.of(1L);
-        치킨_주문테이블.groupingTable(TableGroupId.of(단체지정_테이블.getId()));
-        치킨2_주문_단체테이블.groupingTable(TableGroupId.of(단체지정_테이블.getId()));
+        치킨_주문테이블.groupingTable(TableGroupId.of(1L));
+        치킨2_주문_단체테이블.groupingTable(TableGroupId.of(1L));
         
         Orders 치킨주문 = Orders.of(OrderStatus.COMPLETION);
 
