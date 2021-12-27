@@ -2,6 +2,8 @@ package kitchenpos.product.domain;
 
 import java.math.BigDecimal;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -21,9 +23,11 @@ public class Product {
 	private Long id;
 
 	@Embedded
+	@AttributeOverride(name = "name", column = @Column(name = "name", nullable = false))
 	private Name name;
 
 	@Embedded
+	@AttributeOverride(name = "price", column = @Column(name = "price", nullable = false))
 	private Price price;
 
 	protected Product() {

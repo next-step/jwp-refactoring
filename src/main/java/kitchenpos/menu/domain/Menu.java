@@ -3,8 +3,12 @@ package kitchenpos.menu.domain;
 import java.math.BigDecimal;
 import java.util.Objects;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -27,13 +31,15 @@ public class Menu {
 	private Long id;
 
 	@Embedded
+	@AttributeOverride(name = "name", column = @Column(name = "name", nullable = false))
 	private Name name;
 
 	@Embedded
+	@AttributeOverride(name = "price", column = @Column(name = "price", nullable = false))
 	private Price price;
 
-	@ManyToOne
-	@JoinColumn(name = "menu_group_id", foreignKey = @ForeignKey(name = "fk_menu_menu_group"))
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JoinColumn(name = "menu_group_id", foreignKey = @ForeignKey(name = "fk_menu_menu_group"), nullable = false)
 	private MenuGroup menuGroup;
 
 	@Embedded

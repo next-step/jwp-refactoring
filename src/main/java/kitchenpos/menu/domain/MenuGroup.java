@@ -1,5 +1,7 @@
 package kitchenpos.menu.domain;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -18,6 +20,7 @@ public class MenuGroup {
 	private Long id;
 
 	@Embedded
+	@AttributeOverride(name = "name", column = @Column(name = "name", nullable = false))
 	private Name name;
 
 	protected MenuGroup() {
