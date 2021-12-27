@@ -22,7 +22,7 @@ class OrderRepositoryTest {
 	@DisplayName("주문 저장 테스트")
 	public void saveOrderTest() {
 		//given
-		Order order = new Order(null, new OrderTable(1L), OrderStatus.COOKING, Lists.emptyList());
+		Order order = new Order(null, new OrderTable(1L), OrderStatus.COOKING, new OrderLineItems(Lists.emptyList()));
 
 		//when
 		Order save = orderRepository.save(order);

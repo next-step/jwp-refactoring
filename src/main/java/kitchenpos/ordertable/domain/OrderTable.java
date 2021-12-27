@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -28,8 +29,9 @@ public class OrderTable {
 	@JoinColumn(name = "table_group_id", columnDefinition = "bigint(20)")
 	private TableGroup tableGroup;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "orderTable")
-	private List<Order> orders = new ArrayList<>();
+	@Embedded
+	private Orders orders;
+
 
 	@Column(columnDefinition = "int(11)", nullable = false)
 	private int numberOfGuests;
@@ -64,7 +66,14 @@ public class OrderTable {
 	}
 
 	public void changeNumberOfGuests(int numberOfGuests) {
+		validateOrderTableIsNotUse();
 		this.numberOfGuests = numberOfGuests;
+	}
+
+	private void validateOrderTableIsNotUse() {
+		if (isNotUse()) {
+			throw new IllegalArgumentException("비어 있는 테이블입니다");
+		}
 	}
 
 	public boolean isUseOrIsGrouped() {
@@ -116,17 +125,37 @@ public class OrderTable {
 	}
 
 	public List<Order> getOrders() {
-		return orders;
+		return orders.value();
 	}
 
 	public boolean isOrderCompletion() {
-		return this.orders.stream()
-			.allMatch(Order::isCompletion);
+		return orders.isOrderCompletion();
 	}
 
 	public void ungroup() {
 		this.tableGroup = null;
 	}
 
+	public void changeStatus(boolean status) {
+		validateOrderTableIsGrouped();
+		validateOrderIsCompletion();
 
+		if (status) {
+			notUse();
+			return;
+		}
+		use();
+	}
+
+	private void validateOrderTableIsGrouped() {
+		if (isGrouped()) {
+			throw new IllegalArgumentException("그룹화 된 테이블은 상태를 변경 할 수 없습니다");
+		}
+	}
+
+	private void validateOrderIsCompletion() {
+		if (!isOrderCompletion()) {
+			throw new IllegalArgumentException("테이블의 주문이 계산완료 되지 않았습니다");
+		}
+	}
 }

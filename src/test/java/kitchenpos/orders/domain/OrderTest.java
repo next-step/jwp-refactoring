@@ -9,8 +9,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import kitchenpos.orders.domain.Order;
-
 class OrderTest {
 
 	@Test
@@ -28,7 +26,7 @@ class OrderTest {
 	@DisplayName("주문이 계산완료된 상태인지 확인")
 	public void isCompletion(String status, boolean expected) {
 		//when
-		Order order = new Order(1L,null, OrderStatus.valueOf(status), Lists.emptyList());
+		Order order = new Order(1L, null, OrderStatus.valueOf(status), new OrderLineItems(Lists.emptyList()));
 
 		//then
 		assertThat(order.isCompletion()).isEqualTo(expected);

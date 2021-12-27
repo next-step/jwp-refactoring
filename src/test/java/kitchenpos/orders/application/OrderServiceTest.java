@@ -15,7 +15,6 @@ import kitchenpos.orders.domain.Order;
 import kitchenpos.orders.domain.OrderStatus;
 import kitchenpos.orders.dto.OrderLineItemRequest;
 import kitchenpos.orders.dto.OrderRequest;
-import kitchenpos.orders.dto.OrderResponse;
 
 @Transactional
 @SpringBootTest

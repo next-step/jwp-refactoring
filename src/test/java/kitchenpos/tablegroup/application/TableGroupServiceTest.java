@@ -1,10 +1,9 @@
 package kitchenpos.tablegroup.application;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
+
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

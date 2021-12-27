@@ -19,10 +19,8 @@ class MenuProductRepositoryTest {
 	private static Product product = new Product(1L, "양념치킨", Price.valueOf(new BigDecimal(15000)));
 	private static Menu menu = new Menu(1L);
 
-
 	@Autowired
 	private MenuProductRepository menuProductRepository;
-
 
 	@Test
 	@DisplayName("메뉴상품 저장 테스트")

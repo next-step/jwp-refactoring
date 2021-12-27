@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
@@ -31,8 +32,8 @@ public class TableGroup{
     @CreatedDate
     private LocalDateTime createdDate;
 
-    @OneToMany(mappedBy = "tableGroup", fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
-    private List<OrderTable> orderTables;
+    @Embedded
+    private OrderTables orderTables;
 
     public TableGroup() {
     }
@@ -41,18 +42,14 @@ public class TableGroup{
         this.id = id;
     }
 
-    public TableGroup(List<OrderTable> orderTables) {
+    public TableGroup(OrderTables orderTables) {
         this(null, orderTables);
     }
 
-    public TableGroup(Long id, List<OrderTable> orderTables) {
-        groupOrderTable(orderTables);
+    public TableGroup(Long id, OrderTables orderTables) {
+        orderTables.group(this);
         this.id = id;
         this.orderTables = orderTables;
-    }
-
-    private void groupOrderTable(List<OrderTable> orderTables) {
-        orderTables.forEach(orderTable -> orderTable.toGroup(this));
     }
 
     public Long getId() {
@@ -64,6 +61,26 @@ public class TableGroup{
     }
 
     public List<OrderTable> getOrderTables() {
-        return orderTables;
+        return orderTables.value();
+    }
+
+    private void validateOrderIsCompletion() {
+        if (!isOrderCompletion()) {
+            throw new IllegalArgumentException("아직 테이블의 주문이 계산완료되지 않았습니다");
+        }
+    }
+
+    private boolean isOrderCompletion() {
+        return orderTables.isOrderCompletion();
+    }
+
+    public void ungrouped() {
+        validateOrderIsCompletion();
+        ungroupOrderTable();
+
+    }
+
+    private void ungroupOrderTable() {
+        orderTables.ungroup();
     }
 }

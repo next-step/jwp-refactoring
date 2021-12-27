@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.dto.MenuGroupRequest;
-import kitchenpos.menugroup.dto.MenuGroupResponse;
 
 @Transactional
 @SpringBootTest

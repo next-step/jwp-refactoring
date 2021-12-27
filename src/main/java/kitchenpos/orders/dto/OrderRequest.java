@@ -2,8 +2,11 @@ package kitchenpos.orders.dto;
 
 import java.util.List;
 
+import org.springframework.util.CollectionUtils;
+
 import kitchenpos.orders.domain.Order;
 import kitchenpos.orders.domain.OrderLineItem;
+import kitchenpos.orders.domain.OrderLineItems;
 import kitchenpos.orders.domain.OrderStatus;
 import kitchenpos.ordertable.domain.OrderTable;
 
@@ -36,7 +39,7 @@ public class OrderRequest {
 		return orderLineItemRequests;
 	}
 
-	public Order toOrder(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
+	public Order toOrder(OrderTable orderTable, OrderLineItems orderLineItems) {
 		return new Order(orderTable, OrderStatus.COOKING, orderLineItems);
 	}
 }

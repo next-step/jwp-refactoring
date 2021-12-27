@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.dto.OrderTableRequest;
-import kitchenpos.ordertable.dto.OrderTableResponse;
+import kitchenpos.tablegroup.domain.OrderTables;
 
 @SpringBootTest
 @Transactional
@@ -116,10 +116,10 @@ class OrderTableServiceTest {
 	public void findOrderTableByIdIn() {
 		//given
 		//when
-		List<OrderTable> orderTables = orderTableService.findOrderTableByIdIn(Lists.newArrayList(1L, 2L, 3L));
+		OrderTables orderTables = orderTableService.findOrderTableByIdIn(Lists.newArrayList(1L, 2L, 3L));
 
 		//then
-		assertThat(orderTables).hasSize(3);
+		assertThat(orderTables.size()).isEqualTo(3);
 	}
 
 
