@@ -1,7 +1,5 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.tableGroup.domain.TableGroup;
-
 import javax.persistence.*;
 import java.util.List;
 
@@ -11,8 +9,8 @@ public class OrderTable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    private TableGroup tableGroup;
+    @JoinColumn(name = "table_group_id", foreignKey = @ForeignKey(name = "fk_order_table_table_group"))
+    private Long tableGroupId;
 
     @Column(nullable = false)
     private int numberOfGuests;
@@ -20,16 +18,17 @@ public class OrderTable {
     @Column(nullable = false)
     private boolean empty;
 
-    @Embedded
-    private Orders orders;
-
     protected OrderTable() {
     }
 
     public OrderTable(int numberOfGuests, boolean empty) {
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
-        this.orders = new Orders();
+    }
+
+    public OrderTable(int numberOfGuests, boolean empty, List<Order> orders) {
+        this.numberOfGuests = numberOfGuests;
+        this.empty = empty;
     }
 
     public void updateNumberOfGuests(final int numberOfGuests) {
@@ -44,30 +43,16 @@ public class OrderTable {
     }
 
     public void changeEmpty(final boolean empty) {
-        validateCompletion();
         this.empty = empty;
     }
 
-    private void validateCompletion() {
-        orders.validateCompletion();
-    }
-
     public void ungroup() {
-        validateCompletion();
-        updateTableGroup(null);
-    }
-
-    public void updateTableGroup(TableGroup tableGroup) {
+        this.tableGroupId = null;
         this.empty = false;
-        this.tableGroup = tableGroup;
     }
 
-    public void addOrders(List<Order> addOrders) {
-        addOrders.stream()
-                .forEach(order -> {
-                    order.updateOrderTable(this);
-                    this.orders.add(order);
-                });
+    public void group(Long tableGroupId) {
+        this.tableGroupId = tableGroupId;
     }
 
     public Long getId() {
@@ -75,10 +60,7 @@ public class OrderTable {
     }
 
     public Long getTableGroupId() {
-        if (tableGroup == null) {
-            return null;
-        }
-        return tableGroup.getId();
+        return tableGroupId;
     }
 
     public int getNumberOfGuests() {
@@ -89,7 +71,4 @@ public class OrderTable {
         return empty;
     }
 
-    public List<Order> getOrders() {
-        return orders.getOrders();
-    }
 }

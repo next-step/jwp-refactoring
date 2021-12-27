@@ -1,7 +1,5 @@
 package kitchenpos.product.application;
 
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.dto.ProductRequest;
@@ -9,7 +7,6 @@ import kitchenpos.product.dto.ProductResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,13 +32,9 @@ public class ProductService {
                 .collect(Collectors.toList());
     }
 
-    public List<MenuProduct> getMenuProducts(List<MenuProductRequest> menuProducts) {
-        List<MenuProduct> result = new ArrayList<>();
-        for (final MenuProductRequest menuProductRequest : menuProducts) {
-            final Product product = productRepository.findById(menuProductRequest.getProductId())
-                    .orElseThrow(IllegalArgumentException::new);
-            result.add(new MenuProduct(product, menuProductRequest.getQuantity()));
-        }
-        return result;
+    public Product getProduct(Long productId) {
+        return productRepository.findById(productId)
+                .orElseThrow(IllegalArgumentException::new);
     }
+
 }

@@ -1,13 +1,10 @@
 package kitchenpos.tableGroup.domain;
 
-import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.domain.OrderTables;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
@@ -20,24 +17,11 @@ public class TableGroup {
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdDate;
 
-    @Embedded
-    private OrderTables orderTables;
-
     protected TableGroup() {
-        this.orderTables = new OrderTables();
     }
 
-    public TableGroup(List<OrderTable> orderTables) {
-        this.orderTables = new OrderTables();
-        addOrderTables(orderTables);
-    }
-
-    private void addOrderTables(final List<OrderTable> orderTables) {
-        orderTables.stream()
-                .forEach(orderTable -> {
-                    orderTable.updateTableGroup(this);
-                    this.orderTables.add(orderTable);
-                });
+    public static TableGroup empty() {
+        return new TableGroup();
     }
 
     public Long getId() {
@@ -48,11 +32,4 @@ public class TableGroup {
         return createdDate;
     }
 
-    public List<OrderTable> getOrderTables() {
-        return orderTables.getOrderTables();
-    }
-
-    public void ungroup() {
-        this.orderTables.ungroup();
-    }
 }

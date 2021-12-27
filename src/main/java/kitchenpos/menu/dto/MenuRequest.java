@@ -59,7 +59,7 @@ public class MenuRequest {
         this.menuProducts = menuProducts;
     }
 
-    public Menu toMenu(MenuGroup menuGroup) {
-        return new Menu(this.name, this.price, menuGroup);
+    public Menu toMenu() {
+        return new Menu(this.name, this.price, this.menuGroupId);
     }
 }

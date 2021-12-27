@@ -3,12 +3,9 @@ package kitchenpos.order.application;
 import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.order.dto.OrderTableResponse;
-import kitchenpos.tableGroup.dto.OrderTableIdRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,9 +13,11 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class TableService {
     private final OrderTableRepository orderTableRepository;
+    private final TableValidator tableValidator;
 
-    public TableService(final OrderTableRepository orderTableRepository) {
+    public TableService(OrderTableRepository orderTableRepository, TableValidator tableValidator) {
         this.orderTableRepository = orderTableRepository;
+        this.tableValidator = tableValidator;
     }
 
     @Transactional
@@ -36,10 +35,11 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, OrderTableRequest request) {
-        final OrderTable savedOrderTable = findOrderTable(orderTableId);
-        savedOrderTable.changeEmpty(request.isEmpty());
+        final OrderTable orderTable = findOrderTable(orderTableId);
+        tableValidator.validateCompletion(orderTable);
+        orderTable.changeEmpty(request.isEmpty());
 
-        return OrderTableResponse.from(orderTableRepository.save(savedOrderTable));
+        return OrderTableResponse.from(orderTableRepository.save(orderTable));
     }
 
     @Transactional
@@ -51,25 +51,34 @@ public class TableService {
         return OrderTableResponse.from(orderTableRepository.save(savedOrderTable));
     }
 
-    private OrderTable findOrderTable(Long orderTableId) {
+    public OrderTable findOrderTable(Long orderTableId) {
         return orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
     }
 
-    public List<OrderTable> getOrderTable(List<OrderTableIdRequest> orderTableIdRequests) {
-        if (CollectionUtils.isEmpty(orderTableIdRequests) || orderTableIdRequests.size() < 2) {
-            throw new IllegalArgumentException();
-        }
+    @Transactional
+    public void grouped(Long tableGroupId, List<OrderTable> orderTables) {
+        orderTables.forEach(orderTable -> {
+            orderTable.group(tableGroupId);
+        });
 
-        final List<Long> orderTableIds = orderTableIdRequests.stream()
-                .map(OrderTableIdRequest::getId)
-                .collect(Collectors.toList());
+        orderTableRepository.saveAll(orderTables);
+    }
 
-        final List<OrderTable> savedOrderTables = orderTableRepository.findAllByIdIn(orderTableIds);
+    @Transactional
+    public void ungrouped(Long tableGroupId) {
+        List<OrderTable> orderTables = findByTableGroupId(tableGroupId);
+        tableValidator.validateCompletion(orderTables);
+        orderTables.forEach(OrderTable::ungroup);
 
-        if (orderTableIdRequests.size() != savedOrderTables.size()) {
-            throw new IllegalArgumentException();
-        }
-        return savedOrderTables;
+        orderTableRepository.saveAll(orderTables);
+    }
+
+    public List<OrderTable> findAllByIdIn(List<Long> orderTableIds) {
+        return orderTableRepository.findAllByIdIn(orderTableIds);
+    }
+
+    public List<OrderTable> findByTableGroupId(Long tableGroupId) {
+        return orderTableRepository.findByTableGroupId(tableGroupId);
     }
 }
