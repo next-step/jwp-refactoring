@@ -104,8 +104,9 @@ class TableServiceTest {
         OrderTableRequest request = new OrderTableRequest(true);
 
         // when and then
-        assertThatExceptionOfType(IllegalArgumentException.class)
-            .isThrownBy(() -> tableService.changeEmpty(1L, request));
+        assertThatExceptionOfType(KitchenposException.class)
+            .isThrownBy(() -> tableService.changeEmpty(1L, request))
+            .withMessage("주문 테이블이 그룹에 포함되어 있습니다.");
     }
 
     @DisplayName("요리 중이나 식사 중일 때 변경 불가능")
@@ -170,7 +171,8 @@ class TableServiceTest {
         OrderTableRequest request = new OrderTableRequest(4);
 
         // when and then
-        assertThatExceptionOfType(IllegalArgumentException.class)
-            .isThrownBy(() -> tableService.changeNumberOfGuests(1L, request));
+        assertThatExceptionOfType(KitchenposException.class)
+            .isThrownBy(() -> tableService.changeNumberOfGuests(1L, request))
+            .withMessage("주문 테이블이 비어있습니다.");
     }
 }

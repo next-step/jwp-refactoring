@@ -1,11 +1,16 @@
 package kitchenpos.domain;
 
+import java.util.Objects;
+
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+
+import kitchenpos.exception.KitchenposErrorCode;
+import kitchenpos.exception.KitchenposException;
 
 @Entity
 public class OrderTable {
@@ -60,7 +65,14 @@ public class OrderTable {
     }
 
     public void updateNumberOfGuests(final NumberOfGuests numberOfGuests) {
+        checkNotEmpty();
         this.numberOfGuests = numberOfGuests;
+    }
+
+    private void checkNotEmpty() {
+        if (empty) {
+            throw new KitchenposException(KitchenposErrorCode.TABLE_IS_EMPTY);
+        }
     }
 
     public boolean isEmpty() {
@@ -80,5 +92,11 @@ public class OrderTable {
 
     public int getGuestNumber() {
         return numberOfGuests.getNumberOfGuests();
+    }
+
+    public void checkNotGrouped() {
+        if (Objects.nonNull(tableGroup)) {
+            throw new KitchenposException(KitchenposErrorCode.TABLE_IS_IN_GROUP);
+        }
     }
 }

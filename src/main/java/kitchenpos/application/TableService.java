@@ -15,6 +15,7 @@ import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.OrderTableRequest;
 import kitchenpos.dto.OrderTableResponse;
 import kitchenpos.dto.OrderTableResponses;
+import kitchenpos.exception.KitchenposNotFoundException;
 
 @Service
 @Transactional(readOnly = true)
@@ -42,21 +43,19 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest request) {
-        final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
-            .orElseThrow(IllegalArgumentException::new);
+        final OrderTable orderTable = orderTableDao.findById(orderTableId)
+            .orElseThrow(KitchenposNotFoundException::new);
 
-        if (Objects.nonNull(savedOrderTable.getTableGroup())) {
-            throw new IllegalArgumentException();
-        }
+        orderTable.checkNotGrouped();
 
         if (orderDao.existsByOrderTableIdAndOrderStatusIn(
             orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
             throw new IllegalArgumentException();
         }
 
-        savedOrderTable.updateEmpty(request.isEmpty());
+        orderTable.updateEmpty(request.isEmpty());
 
-        return OrderTableResponse.from(orderTableDao.save(savedOrderTable));
+        return OrderTableResponse.from(orderTableDao.save(orderTable));
     }
 
     @Transactional
@@ -64,11 +63,7 @@ public class TableService {
         NumberOfGuests numberOfGuests = new NumberOfGuests(request.getNumberOfGuests());
 
         final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
-            .orElseThrow(IllegalArgumentException::new);
-
-        if (savedOrderTable.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
+            .orElseThrow(KitchenposNotFoundException::new);
 
         savedOrderTable.updateNumberOfGuests(numberOfGuests);
 
