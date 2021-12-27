@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 public class MenuFixture {
 
     public static Menu 생성(String name, BigDecimal price, MenuGroup menuGroupId) {
-        return new Menu(name,price,menuGroupId.getId());
+        return new Menu(name,price,menuGroupId);
     }
 
     public static Menu 샘플(){

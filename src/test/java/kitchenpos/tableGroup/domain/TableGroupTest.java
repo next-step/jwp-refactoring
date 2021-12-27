@@ -16,18 +16,20 @@ public class TableGroupTest {
     @Test
     void addOrderTables() {
         OrderTable orderTable = OrderTableFixture.생성(4, true);
-        TableGroup tableGroup = TableGroup.empty();
+        TableGroup tableGroup = new TableGroup(Arrays.asList(orderTable));
 
-        assertThat(orderTable.getTableGroupId()).isEqualTo(tableGroup.getId());
+        assertThat(tableGroup.getOrderTables().contains(orderTable)).isTrue();
     }
 
     @DisplayName("단체 지정 해제")
     @Test
     void ungroup() {
         OrderTable orderTable = OrderTableFixture.생성(4, true);
-        TableGroup tableGroup = TableGroup.empty();
+        TableGroup tableGroup = new TableGroup(Arrays.asList(orderTable));
+        tableGroup.ungroup();
 
         assertAll(
+                () -> assertThat(tableGroup.getOrderTables().contains(orderTable)).isFalse(),
                 () -> assertThat(orderTable.getTableGroupId()).isNull()
         );
     }

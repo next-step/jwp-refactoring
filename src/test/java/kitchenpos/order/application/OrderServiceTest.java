@@ -1,8 +1,8 @@
 package kitchenpos.order.application;
 
 import kitchenpos.fixture.*;
-import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
@@ -28,13 +28,11 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 public class OrderServiceTest {
     @Mock
-    private OrderValidator orderValidator;
+    private MenuRepository menuRepository;
     @Mock
     private OrderRepository orderRepository;
     @Mock
-    private TableService tableService;
-    @Mock
-    private MenuService menuService;
+    private OrderTableRepository orderTableRepository;
 
     @InjectMocks
     private OrderService orderService;
@@ -53,21 +51,22 @@ public class OrderServiceTest {
 
         테이블1번 = OrderTableFixture.생성(0,true);
 
-        후라이드두마리세트_2개_주문함 = OrderLineItemFixture.생성(후라이드두마리세트.getId(), 2L);
+        후라이드두마리세트_2개_주문함 = OrderLineItemFixture.생성(총주문, 후라이드두마리세트, 2L);
 
-        총주문 = OrderFixture.생성(1L);
+        총주문 = OrderFixture.생성(테이블1번);
         총주문.addLineItems(Arrays.asList(후라이드두마리세트_2개_주문함));
 
         후라이드두마리세트_2개_주문_Request = OrderLineItemFixture.생성_Request(1L, 2L);
-        총주문Request = OrderFixture.request생성(1L,Arrays.asList(후라이드두마리세트_2개_주문_Request));
+        총주문Request = OrderFixture.request생성(테이블1번.getId(),Arrays.asList(후라이드두마리세트_2개_주문_Request));
     }
 
     @DisplayName("주문 생성")
     @Test
     void create() {
-        given(tableService.findOrderTable(any())).willReturn(테이블1번);
+        given(orderTableRepository.findById(any())).willReturn(java.util.Optional.ofNullable(테이블1번));
         given(orderRepository.save(any())).willReturn(총주문);
-        given(menuService.findById(any())).willReturn(후라이드두마리세트);
+        given(menuRepository.findById(any())).willReturn(java.util.Optional.ofNullable(후라이드두마리세트));
+
         OrderResponse createOrder = orderService.create(총주문Request);
 
         assertAll(

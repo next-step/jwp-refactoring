@@ -6,8 +6,8 @@ import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.dto.OrderLineItemRequest;
 
 public class OrderLineItemFixture {
-    public static OrderLineItem 생성(Long menuId, long quantity) {
-        return new OrderLineItem(menuId, quantity);
+    public static OrderLineItem 생성(Order order, Menu menu, long quantity) {
+        return new OrderLineItem(order, menu, quantity);
     }
 
     public static OrderLineItem 샘플(){

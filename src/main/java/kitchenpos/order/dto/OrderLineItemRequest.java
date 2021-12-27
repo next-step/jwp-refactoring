@@ -32,4 +32,7 @@ public class OrderLineItemRequest {
         this.quantity = quantity;
     }
 
+    public OrderLineItem toOrderLineItem(Order order, Menu menu) {
+        return new OrderLineItem(order, menu, quantity);
+    }
 }

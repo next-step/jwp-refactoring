@@ -45,4 +45,15 @@ public class OrderTableTest {
         assertThat(orderTable.isEmpty()).isTrue();
 
     }
+
+    @DisplayName("주문을 추가한다.")
+    @Test
+    void addOrders() {
+        OrderTable orderTable = OrderTableFixture.생성(7, false);
+        Order order = OrderFixture.샘플1();
+
+        orderTable.addOrders(Arrays.asList(order));
+
+        assertThat(orderTable.getOrders().contains(order)).isTrue();
+    }
 }

@@ -1,16 +1,17 @@
 package kitchenpos.order.domain;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Embeddable;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 @Embeddable
 public class OrderLineItems {
-
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "order_id", foreignKey = @ForeignKey(name = "fk_order_line_item_orders"))
-    private List<OrderLineItem> orderLineItems = new ArrayList<>();
+    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    private List<OrderLineItem> orderLineItems= new ArrayList<>();
 
     protected OrderLineItems() {
     }

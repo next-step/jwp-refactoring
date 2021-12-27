@@ -16,8 +16,9 @@ public class Menu {
     private String name;
     private BigDecimal price;
 
-    @Column(nullable = false)
-    private Long menuGroupId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "menu_group_id", foreignKey = @ForeignKey(name = "fk_menu_product_menu"))
+    private MenuGroup menuGroup;
 
     @Embedded
     private MenuProducts menuProducts = new MenuProducts();
@@ -25,11 +26,11 @@ public class Menu {
     protected Menu() {
     }
 
-    public Menu(String name, BigDecimal price, Long menuGroupId) {
+    public Menu(String name, BigDecimal price, MenuGroup menuGroup) {
         validatePrice(price);
         this.name = name;
         this.price = price;
-        this.menuGroupId = menuGroupId;
+        this.menuGroup = menuGroup;
     }
 
     private void validatePrice(BigDecimal price) {
@@ -51,7 +52,7 @@ public class Menu {
     }
 
     public Long getMenuGroupId() {
-        return menuGroupId;
+        return menuGroup.getId();
     }
 
     public List<MenuProduct> getMenuProducts() {
@@ -59,11 +60,14 @@ public class Menu {
     }
 
 
+
     public void addMenuProducts(List<MenuProduct> menuProducts) {
         menuProducts.stream()
                 .forEach(menuProduct -> {
+                    menuProduct.updateMenu(this);
                     this.menuProducts.add(menuProduct);
                 });
+        this.menuProducts.validateOverPrice(this.price);
     }
 
 }

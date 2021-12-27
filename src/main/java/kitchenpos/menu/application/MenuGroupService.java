@@ -31,4 +31,9 @@ public class MenuGroupService {
                 .map(MenuGroupResponse::from)
                 .collect(Collectors.toList());
     }
+
+    public MenuGroup getMenuGroup(Long menuGroupId) {
+        return menuGroupRepository.findById(menuGroupId)
+                .orElseThrow(IllegalArgumentException::new);
+    }
 }
