@@ -35,7 +35,7 @@ class TableGroupServiceTest {
     void notCreateTableGroupNotSavedOrderTable() {
         OrderTable savedOrderTable1 = OrderTable.of(10, true);
         OrderTable savedOrderTable2 = OrderTable.of(20, true);
-        TableGroup tableGroup = TableGroup.of(Arrays.asList(savedOrderTable1,savedOrderTable2));
+        TableGroup tableGroup = TableGroup.of(Arrays.asList(savedOrderTable1, savedOrderTable2));
 
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> tableGroupService.create(tableGroup));
@@ -46,7 +46,7 @@ class TableGroupServiceTest {
     void notCreateTableGroupNotEmptyTable() {
         OrderTable savedOrderTable1 = orderTableDao.save(OrderTable.of(10, false));
         OrderTable savedOrderTable2 = orderTableDao.save(OrderTable.of(20, false));
-        TableGroup tableGroup = TableGroup.of(Arrays.asList(savedOrderTable1,savedOrderTable2));
+        TableGroup tableGroup = TableGroup.of(Arrays.asList(savedOrderTable1, savedOrderTable2));
 
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> tableGroupService.create(tableGroup));
@@ -55,9 +55,9 @@ class TableGroupServiceTest {
     @DisplayName("주문 테이블이 이미 단체 지정 되어 있으면 단체를 지정할 수 없다.")
     @Test
     void notCreateTableGroupAlreadyGroupingTable() {
-        OrderTable savedOrderTable1 = orderTableDao.save(OrderTable.of(1L,10, true));
-        OrderTable savedOrderTable2 = orderTableDao.save(OrderTable.of(1L,20, true));
-        TableGroup tableGroup = TableGroup.of(Arrays.asList(savedOrderTable1,savedOrderTable2));
+        OrderTable savedOrderTable1 = orderTableDao.save(OrderTable.of(1L, 10, true));
+        OrderTable savedOrderTable2 = orderTableDao.save(OrderTable.of(1L, 20, true));
+        TableGroup tableGroup = TableGroup.of(Arrays.asList(savedOrderTable1, savedOrderTable2));
 
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> tableGroupService.create(tableGroup));
@@ -68,7 +68,7 @@ class TableGroupServiceTest {
     void successCreateTableGroup() {
         OrderTable savedOrderTable1 = orderTableDao.save(OrderTable.of(10, true));
         OrderTable savedOrderTable2 = orderTableDao.save(OrderTable.of(20, true));
-        TableGroup tableGroup = TableGroup.of(Arrays.asList(savedOrderTable1,savedOrderTable2));
+        TableGroup tableGroup = TableGroup.of(Arrays.asList(savedOrderTable1, savedOrderTable2));
 
         TableGroup result = tableGroupService.create(tableGroup);
         List<OrderTable> resultOrderTables = result.getOrderTables();
@@ -83,7 +83,7 @@ class TableGroupServiceTest {
     void notUngroupTableCookingOrMeal() {
         OrderTable savedOrderTable1 = orderTableDao.save(OrderTable.of(10, true));
         OrderTable savedOrderTable2 = orderTableDao.save(OrderTable.of(20, true));
-        TableGroup tableGroup = TableGroup.of(Arrays.asList(savedOrderTable1,savedOrderTable2));
+        TableGroup tableGroup = TableGroup.of(Arrays.asList(savedOrderTable1, savedOrderTable2));
         TableGroup result = tableGroupService.create(tableGroup);
         Order order1 = new Order(1L,
                 savedOrderTable1.getId(),
@@ -101,15 +101,15 @@ class TableGroupServiceTest {
         orderDao.save(order2);
 
         assertThatIllegalArgumentException()
-                .isThrownBy( () -> tableGroupService.ungroup(result.getId()));
+                .isThrownBy(() -> tableGroupService.ungroup(result.getId()));
     }
 
-    @DisplayName("주문 상태가 COOKING, MEAL 이면 단체 해지를 할 수 없다.")
+    @DisplayName("단체 해지 성공")
     @Test
     void successUngroup() {
         OrderTable savedOrderTable1 = orderTableDao.save(OrderTable.of(10, true));
         OrderTable savedOrderTable2 = orderTableDao.save(OrderTable.of(20, true));
-        TableGroup tableGroup = TableGroup.of(Arrays.asList(savedOrderTable1,savedOrderTable2));
+        TableGroup tableGroup = TableGroup.of(Arrays.asList(savedOrderTable1, savedOrderTable2));
         TableGroup result = tableGroupService.create(tableGroup);
 
         assertThat(savedOrderTable1.getTableGroupId()).isEqualTo(tableGroup.getId());

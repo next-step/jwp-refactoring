@@ -35,7 +35,6 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         테이블 = TableAcceptanceTest.테이블_등록되어_있음(OrderTable.of(4, false), "/api/tables");
     }
 
-
     @DisplayName("주문 관리")
     @Test
     void handleOrder() {

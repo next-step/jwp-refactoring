@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 
 @DisplayName("메뉴 테스트")
 class MenuServiceTest {
-    private final MenuDao menuDao =  new FakeMenuDao();
+    private final MenuDao menuDao = new FakeMenuDao();
     private final MenuGroupDao menuGroupDao = new FakeMenuGroupDao();
     private final MenuProductDao menuProductDao = new FakeMenuProductDao();
     private final ProductDao productDao = new FakeProductDao();
@@ -32,7 +32,7 @@ class MenuServiceTest {
                 )
         );
 
-        assertThatIllegalArgumentException().isThrownBy( () -> menuService.create(menu));
+        assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menu));
     }
 
     @DisplayName("메뉴 그룹이 존재하지 않으면 예외가 발생한다.")
@@ -45,7 +45,7 @@ class MenuServiceTest {
                 )
         );
 
-        assertThatIllegalArgumentException().isThrownBy( () -> menuService.create(menu));
+        assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menu));
     }
 
     @DisplayName("상품이 존재하지 않으면 예외가 발생한다.")
@@ -59,15 +59,15 @@ class MenuServiceTest {
                 )
         );
 
-        assertThatIllegalArgumentException().isThrownBy( () -> menuService.create(menu));
+        assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menu));
     }
 
     @DisplayName("메뉴 가격이 메뉴 상품들 가격의 합보다 크면 예외 발생한다.")
     @Test
     void priceCheaperThanSumMenuProducts() {
         MenuGroup savedMenuGroup = menuGroupDao.save(MenuGroup.of("추천메뉴"));
-        Product product1 =  productDao.save(Product.of("소고기", 30000));
-        Product product2 =  productDao.save(Product.of("쌈채소", 10000));
+        Product product1 = productDao.save(Product.of("소고기", 30000));
+        Product product2 = productDao.save(Product.of("쌈채소", 10000));
         Menu menu = Menu.of("소고기세트", 100000, savedMenuGroup.getId(),
                 Arrays.asList(
                         MenuProduct.of(product1.getId(), 2),
@@ -75,15 +75,15 @@ class MenuServiceTest {
                 )
         );
 
-        assertThatIllegalArgumentException().isThrownBy( () -> menuService.create(menu));
+        assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menu));
     }
 
     @DisplayName("메뉴 생성 성공")
     @Test
     void success() {
         MenuGroup savedMenuGroup = menuGroupDao.save(MenuGroup.of("추천메뉴"));
-        Product product1 =  productDao.save(Product.of("소고기", 30000));
-        Product product2 =  productDao.save(Product.of("쌈채소", 10000));
+        Product product1 = productDao.save(Product.of("소고기", 30000));
+        Product product2 = productDao.save(Product.of("쌈채소", 10000));
         Menu menu = Menu.of("소고기세트", 70000, savedMenuGroup.getId(),
                 Arrays.asList(
                         MenuProduct.of(product1.getId(), 2),
@@ -100,9 +100,9 @@ class MenuServiceTest {
     @Test
     void list() {
         MenuGroup savedMenuGroup = menuGroupDao.save(MenuGroup.of("추천메뉴"));
-        Product product1 =  productDao.save(Product.of("소고기", 30000));
-        Product product2 =  productDao.save(Product.of("쌈채소", 10000));
-        Product product3 =  productDao.save(Product.of("소주", 5000));
+        Product product1 = productDao.save(Product.of("소고기", 30000));
+        Product product2 = productDao.save(Product.of("쌈채소", 10000));
+        Product product3 = productDao.save(Product.of("소주", 5000));
         Menu menu1 = Menu.of("소고기세트", 70000, savedMenuGroup.getId(),
                 Arrays.asList(
                         MenuProduct.of(product1.getId(), 2),
@@ -133,7 +133,7 @@ class MenuServiceTest {
     private void equalsMenuProduct(Menu resultMenu, Menu menu) {
         List<MenuProduct> savedMenuProducts = resultMenu.getMenuProducts();
         List<MenuProduct> menuProducts = menu.getMenuProducts();
-        for (int i=0 ; i < savedMenuProducts.size() ; i++) {
+        for (int i = 0; i < savedMenuProducts.size(); i++) {
             MenuProduct resultMenuProduct = savedMenuProducts.get(i);
             MenuProduct menuProduct = menuProducts.get(i);
             assertThat(resultMenuProduct.getSeq()).isNotNull();

@@ -8,7 +8,6 @@ import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -24,11 +23,6 @@ class TableServiceTest {
     private final OrderDao orderDao = new FakeOrderDao();
     private final OrderTableDao orderTableDao = new FakeOrderTableDao();
     private final TableService tableService = new TableService(orderDao, orderTableDao);
-
-    @BeforeEach
-    void setUp() {
-
-    }
 
     @DisplayName("주문 테이블 생성")
     @Test

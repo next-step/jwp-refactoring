@@ -13,7 +13,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -36,8 +35,6 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     @DisplayName("메뉴 관리")
     @Test
     void handleMenu() {
-        // 메뉴 생성
-        // 메뉴 조회
         Menu menu = Menu.of(
                 "소고기+소고기",
                 50000,
@@ -74,7 +71,6 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         assertThat(location).isEqualTo("/api/menus/" + createResponse.as(Menu.class).getId());
         return createResponse.as(Menu.class);
     }
-
 
     public static MenuGroup 메뉴그룹_등록되어있음(MenuGroup menuGroup, String path) {
         return TestApiClient.create(menuGroup, path).as(MenuGroup.class);
