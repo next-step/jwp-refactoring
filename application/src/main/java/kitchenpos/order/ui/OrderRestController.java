@@ -32,7 +32,7 @@ public class OrderRestController {
 		final Order created = orderService.create(order);
 		final URI uri = URI.create("/api/orders/" + created.getId());
 		return ResponseEntity.created(uri)
-			.body(created.toResDto());
+			.body(OrderResponse.from(created));
 	}
 
 	@GetMapping
@@ -46,6 +46,6 @@ public class OrderRestController {
 		@PathVariable final Long orderId,
 		@RequestBody final OrderStatusRequest orderStatusRequest
 	) {
-		return ResponseEntity.ok(orderService.changeOrderStatus(orderId, orderStatusRequest).toResDto());
+		return ResponseEntity.ok(OrderResponse.from(orderService.changeOrderStatus(orderId, orderStatusRequest)));
 	}
 }

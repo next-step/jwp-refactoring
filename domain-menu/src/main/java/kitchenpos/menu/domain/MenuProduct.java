@@ -13,7 +13,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import kitchenpos.common.domain.Price;
-import kitchenpos.menu.dto.MenuProductResponse;
 
 @Entity
 public class MenuProduct {
@@ -42,10 +41,6 @@ public class MenuProduct {
 
 	public static MenuProduct of(Menu menu, Long productId, Long quantity) {
 		return new MenuProduct(menu, productId, quantity);
-	}
-
-	public MenuProductResponse toResDto() {
-		return MenuProductResponse.of(seq, productId, quantity);
 	}
 
 	public Long getSeq() {

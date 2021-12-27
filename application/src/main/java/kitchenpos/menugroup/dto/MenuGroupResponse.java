@@ -18,13 +18,17 @@ public class MenuGroupResponse {
 		this.name = name;
 	}
 
+	public static MenuGroupResponse from(MenuGroup menuGroup) {
+		return new MenuGroupResponse(menuGroup.getId(), menuGroup.getName());
+	}
+
 	public static MenuGroupResponse of(Long id, String name) {
 		return new MenuGroupResponse(id, name);
 	}
 
 	public static List<MenuGroupResponse> ofList(List<MenuGroup> menuGroupList) {
 		return menuGroupList.stream()
-			.map(MenuGroup::toResDto)
+			.map(MenuGroupResponse::from)
 			.collect(Collectors.toList());
 	}
 

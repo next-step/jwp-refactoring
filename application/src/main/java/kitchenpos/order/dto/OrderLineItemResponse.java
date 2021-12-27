@@ -20,13 +20,18 @@ public class OrderLineItemResponse {
 		this.quantity = quantity;
 	}
 
+	public static OrderLineItemResponse from(OrderLineItem orderLineItem) {
+		return new OrderLineItemResponse(orderLineItem.getSeq(), orderLineItem.getMenuId(),
+			orderLineItem.getQuantity());
+	}
+
 	public static OrderLineItemResponse of(Long seq, Long menuId, Long quantity) {
 		return new OrderLineItemResponse(seq, menuId, quantity);
 	}
 
 	public static List<OrderLineItemResponse> ofList(List<OrderLineItem> orderLineItemList) {
 		return orderLineItemList.stream()
-			.map(OrderLineItem::toResDto)
+			.map(OrderLineItemResponse::from)
 			.collect(Collectors.toList());
 	}
 

@@ -10,7 +10,6 @@ import javax.persistence.Id;
 
 import kitchenpos.common.exception.ErrorCode;
 import kitchenpos.order.exception.OrderException;
-import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.tablegroup.exception.TableGroupException;
 
 @Entity
@@ -95,13 +94,6 @@ public class OrderTable {
 		if (isEmpty()) {
 			throw new OrderException(ErrorCode.ORDER_TABLE_IS_NO_EMPTY);
 		}
-	}
-
-	public OrderTableResponse toResDto() {
-		if (tableGroupId == null) {
-			return OrderTableResponse.of(id, null, numberOfGuests, empty);
-		}
-		return OrderTableResponse.of(id, tableGroupId, numberOfGuests, empty);
 	}
 
 	public void unGroup() {

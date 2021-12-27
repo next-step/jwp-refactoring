@@ -11,8 +11,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import kitchenpos.common.domain.Price;
-import kitchenpos.product.dto.ProductRequest;
-import kitchenpos.product.dto.ProductResponse;
 
 @Entity
 public class Product {
@@ -35,12 +33,8 @@ public class Product {
 		this.price = price;
 	}
 
-	public static Product of(String name, int price) {
+	public static Product of(String name, Integer price) {
 		return new Product(name, Price.from(price));
-	}
-
-	public static Product from(ProductRequest productRequest) {
-		return new Product(productRequest.getName(), Price.from(productRequest.getPrice()));
 	}
 
 	public Long getId() {
@@ -53,10 +47,6 @@ public class Product {
 
 	public BigDecimal getPrice() {
 		return price.getPrice();
-	}
-
-	public ProductResponse toResDto() {
-		return ProductResponse.of(id, name, price);
 	}
 
 	@Override

@@ -6,8 +6,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-import kitchenpos.menugroup.dto.MenuGroupResponse;
-
 @Entity
 public class MenuGroup {
 
@@ -35,9 +33,5 @@ public class MenuGroup {
 
 	public String getName() {
 		return name;
-	}
-
-	public MenuGroupResponse toResDto() {
-		return MenuGroupResponse.of(id, name);
 	}
 }

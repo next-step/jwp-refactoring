@@ -21,6 +21,10 @@ public class ProductResponse {
 		this.price = price;
 	}
 
+	public static ProductResponse from(Product product) {
+		return new ProductResponse(product.getId(), product.getName(), Price.from(product.getPrice().intValue()));
+	}
+
 	public static ProductResponse of(Long id, String name, Price price) {
 		return new ProductResponse(id, name, price);
 	}
@@ -31,7 +35,7 @@ public class ProductResponse {
 
 	public static List<ProductResponse> ofList(List<Product> list) {
 		return list.stream()
-			.map(Product::toResDto)
+			.map(ProductResponse::from)
 			.collect(Collectors.toList());
 	}
 

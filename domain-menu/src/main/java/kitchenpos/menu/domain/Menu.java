@@ -11,8 +11,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import kitchenpos.common.domain.Price;
-import kitchenpos.menu.dto.MenuRequest;
-import kitchenpos.menu.dto.MenuResponse;
 
 @Entity
 public class Menu {
@@ -49,20 +47,12 @@ public class Menu {
 		this.menuProducts = menuProducts;
 	}
 
-	public static Menu from(MenuRequest menuRequest) {
-		return new Menu(menuRequest.getName(), Price.from(menuRequest.getPrice()), menuRequest.getMenuGroupId());
-	}
-
 	public static Menu of(String name, Price price, Long menuGroupId, List<MenuProduct> menuProducts) {
 		return new Menu(name, price, menuGroupId, MenuProducts.from(menuProducts));
 	}
 
 	public static Menu of(String name, Price price, Long menuGroupId) {
 		return new Menu(name, price, menuGroupId);
-	}
-
-	public static Menu of(MenuRequest menuRequest, Long menuGroupId) {
-		return new Menu(menuRequest.getName(), Price.from(menuRequest.getPrice()), menuGroupId);
 	}
 
 	public Long getId() {
@@ -83,10 +73,6 @@ public class Menu {
 
 	public MenuProducts getMenuProducts() {
 		return menuProducts;
-	}
-
-	public MenuResponse toResDto() {
-		return MenuResponse.of(id, name, price, menuGroupId, menuProducts.getMenuProducts());
 	}
 
 	public void addMenuProducts(List<MenuProduct> savedMenuProducts) {

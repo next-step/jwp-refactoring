@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import kitchenpos.common.domain.Price;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
@@ -28,7 +29,8 @@ public class MenuService {
 	@Transactional
 	public Menu create(final MenuRequest menuRequest) {
 		menuValidator.validate(menuRequest);
-		final Menu savedMenu = Menu.from(menuRequest);
+		final Menu savedMenu = Menu.of(menuRequest.getName(), Price.from(menuRequest.getPrice()),
+			menuRequest.getMenuGroupId());
 		savedMenu.addMenuProducts(generateMenuProducts(menuRequest, savedMenu));
 		return menuRepository.save(savedMenu);
 	}

@@ -22,6 +22,11 @@ public class OrderTableResponse {
 		this.empty = empty;
 	}
 
+	public static OrderTableResponse from(OrderTable orderTable) {
+		return new OrderTableResponse(orderTable.getId(), orderTable.getTableGroupId(), orderTable.getNumberOfGuests(),
+			orderTable.isEmpty());
+	}
+
 	public static OrderTableResponse of(Long id, Long tableGroup, Integer numberOfGuests,
 		Boolean empty) {
 		return new OrderTableResponse(id, tableGroup, numberOfGuests, empty);
@@ -30,13 +35,13 @@ public class OrderTableResponse {
 	public static List<OrderTableResponse> ofList(OrderTables orderTables) {
 		return orderTables.getOrderTables()
 			.stream()
-			.map(OrderTable::toResDto)
+			.map(OrderTableResponse::from)
 			.collect(Collectors.toList());
 	}
 
 	public static List<OrderTableResponse> ofList(List<OrderTable> orderTables) {
 		return orderTables.stream()
-			.map(OrderTable::toResDto)
+			.map(OrderTableResponse::from)
 			.collect(Collectors.toList());
 	}
 

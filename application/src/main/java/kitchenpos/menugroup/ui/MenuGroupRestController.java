@@ -29,7 +29,7 @@ public class MenuGroupRestController {
 		final MenuGroup created = menuGroupService.create(menuGroupRequest);
 		final URI uri = URI.create("/api/menu-groups/" + created.getId());
 		return ResponseEntity.created(uri)
-			.body(created.toResDto());
+			.body(MenuGroupResponse.from(created));
 	}
 
 	@GetMapping

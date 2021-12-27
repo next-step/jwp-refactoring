@@ -1,6 +1,6 @@
 package kitchenpos.tablegroup;
 
-import static kitchenpos.table.domain.TableAcceptanceStaticTest.*;
+import static kitchenpos.table.TableAcceptanceStaticTest.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.List;

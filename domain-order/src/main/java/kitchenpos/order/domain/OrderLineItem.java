@@ -10,8 +10,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import kitchenpos.order.dto.OrderLineItemResponse;
-
 @Entity
 public class OrderLineItem {
 
@@ -56,9 +54,5 @@ public class OrderLineItem {
 
 	public Long getQuantity() {
 		return quantity;
-	}
-
-	public OrderLineItemResponse toResDto() {
-		return OrderLineItemResponse.of(seq, menuId, quantity);
 	}
 }

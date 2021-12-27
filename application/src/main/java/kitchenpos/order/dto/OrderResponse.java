@@ -24,6 +24,11 @@ public class OrderResponse {
 		this.orderLineItems = orderLineItems;
 	}
 
+	public static OrderResponse from(Order order) {
+		return new OrderResponse(order.getId(), order.getOrderTableId(), order.getOrderStatus(),
+			OrderLineItemResponse.ofList(order.getOrderLineItems()));
+	}
+
 	public static OrderResponse of(Long id, Long orderTableId,
 		OrderStatus orderStatus, List<OrderLineItemResponse> orderLineItems) {
 		return new OrderResponse(id, orderTableId, orderStatus, orderLineItems);
@@ -31,7 +36,7 @@ public class OrderResponse {
 
 	public static List<OrderResponse> ofList(List<Order> orders) {
 		return orders.stream()
-			.map(Order::toResDto)
+			.map(OrderResponse::from)
 			.collect(Collectors.toList());
 	}
 

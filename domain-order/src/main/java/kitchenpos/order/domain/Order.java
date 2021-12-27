@@ -18,8 +18,6 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import kitchenpos.common.exception.ErrorCode;
-import kitchenpos.order.dto.OrderLineItemResponse;
-import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.exception.OrderException;
 
 @Entity(name = "orders")
@@ -99,8 +97,8 @@ public class Order {
 		return orderTableId;
 	}
 
-	public String getOrderStatus() {
-		return orderStatus.name();
+	public OrderStatus getOrderStatus() {
+		return orderStatus;
 	}
 
 	public LocalDateTime getOrderedTime() {
@@ -109,11 +107,6 @@ public class Order {
 
 	public List<OrderLineItem> getOrderLineItems() {
 		return orderLineItems.getOrderLineItems();
-	}
-
-	public OrderResponse toResDto() {
-		return OrderResponse.of(id, orderTableId, orderStatus,
-			OrderLineItemResponse.ofList(orderLineItems.getOrderLineItems()));
 	}
 
 	@Override

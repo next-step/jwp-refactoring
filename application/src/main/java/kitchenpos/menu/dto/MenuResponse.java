@@ -28,6 +28,11 @@ public class MenuResponse {
 		this.menuProducts = menuProducts;
 	}
 
+	public static MenuResponse from(Menu menu) {
+		return new MenuResponse(menu.getId(), menu.getName(), menu.getPrice(), menu.getMenuGroupId(),
+			MenuProductResponse.ofList(menu.getMenuProducts()));
+	}
+
 	public static MenuResponse of(Long id, String name, Price price, Long menuGroupId,
 		List<MenuProduct> menuProducts) {
 		return new MenuResponse(id, name, price.getPrice(), menuGroupId,
@@ -36,7 +41,7 @@ public class MenuResponse {
 
 	public static List<MenuResponse> ofList(List<Menu> menus) {
 		return menus.stream()
-			.map(Menu::toResDto)
+			.map(MenuResponse::from)
 			.collect(Collectors.toList());
 	}
 
