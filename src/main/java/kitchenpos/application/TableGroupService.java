@@ -18,6 +18,7 @@ import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 
 @Service
+@Transactional(readOnly = true)
 public class TableGroupService {
     private final OrderDao orderDao;
     private final OrderTableDao orderTableDao;
@@ -49,7 +50,7 @@ public class TableGroupService {
         }
 
         for (final OrderTable savedOrderTable : savedOrderTables) {
-            if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroupId())) {
+            if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroup())) {
                 throw new IllegalArgumentException();
             }
         }
@@ -58,10 +59,9 @@ public class TableGroupService {
 
         final TableGroup savedTableGroup = tableGroupDao.save(tableGroup);
 
-        final Long tableGroupId = savedTableGroup.getId();
         for (final OrderTable savedOrderTable : savedOrderTables) {
-            savedOrderTable.setTableGroupId(tableGroupId);
-            savedOrderTable.setEmpty(false);
+            savedOrderTable.setTableGroup(savedTableGroup);
+            savedOrderTable.updateEmpty(false);
             orderTableDao.save(savedOrderTable);
         }
         savedTableGroup.setOrderTables(savedOrderTables);
@@ -71,7 +71,7 @@ public class TableGroupService {
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
-        final List<OrderTable> orderTables = orderTableDao.findAllByTableGroupId(tableGroupId);
+        final List<OrderTable> orderTables = orderTableDao.findAllByTableGroup_Id(tableGroupId);
 
         final List<Long> orderTableIds = orderTables.stream()
             .map(OrderTable::getId)
@@ -83,7 +83,7 @@ public class TableGroupService {
         }
 
         for (final OrderTable orderTable : orderTables) {
-            orderTable.setTableGroupId(null);
+            orderTable.setTableGroup(null);
             orderTableDao.save(orderTable);
         }
     }

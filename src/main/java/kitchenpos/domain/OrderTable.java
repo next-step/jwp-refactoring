@@ -4,13 +4,16 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class OrderTable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long tableGroupId;
+
+    @ManyToOne
+    private TableGroup tableGroup;
     private int numberOfGuests;
     private boolean empty;
 
@@ -21,8 +24,8 @@ public class OrderTable {
         this.id = id;
     }
 
-    public OrderTable(Long tableGroupId, int numberOfGuests) {
-        this.tableGroupId = tableGroupId;
+    public OrderTable(TableGroup tableGroup, int numberOfGuests) {
+        this.tableGroup = tableGroup;
         this.numberOfGuests = numberOfGuests;
     }
 
@@ -31,9 +34,9 @@ public class OrderTable {
         this.empty = empty;
     }
 
-    public OrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
+    public OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
         this.id = id;
-        this.tableGroupId = tableGroupId;
+        this.tableGroup = tableGroup;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
     }
@@ -42,23 +45,19 @@ public class OrderTable {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
+    public TableGroup getTableGroup() {
+        return tableGroup;
     }
 
-    public Long getTableGroupId() {
-        return tableGroupId;
-    }
-
-    public void setTableGroupId(final Long tableGroupId) {
-        this.tableGroupId = tableGroupId;
+    public void setTableGroup(TableGroup tableGroup) {
+        this.tableGroup = tableGroup;
     }
 
     public int getNumberOfGuests() {
         return numberOfGuests;
     }
 
-    public void setNumberOfGuests(final int numberOfGuests) {
+    public void updateNumberOfGuests(final int numberOfGuests) {
         this.numberOfGuests = numberOfGuests;
     }
 
@@ -66,7 +65,14 @@ public class OrderTable {
         return empty;
     }
 
-    public void setEmpty(final boolean empty) {
+    public void updateEmpty(final boolean empty) {
         this.empty = empty;
+    }
+
+    public Long getTableGroupId() {
+        if (tableGroup == null) {
+            return null;
+        }
+        return tableGroup.getId();
     }
 }

@@ -17,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.OrderTableRequest;
 import kitchenpos.dto.OrderTableResponse;
 import kitchenpos.dto.OrderTableResponses;
@@ -35,7 +36,7 @@ class TableServiceTest {
     @Test
     void create() {
         // given
-        OrderTable expected = new OrderTable(1L, 1L, 4, false);
+        OrderTable expected = new OrderTable(1L, new TableGroup(1L), 4, false);
         Mockito.when(orderTableDao.save(Mockito.any()))
             .thenReturn(expected);
 
@@ -52,8 +53,8 @@ class TableServiceTest {
     @Test
     void list() {
         // given
-        OrderTable orderTable1 = new OrderTable(1L, 4);
-        OrderTable orderTable2 = new OrderTable(2L, 2);
+        OrderTable orderTable1 = new OrderTable(new TableGroup(1L), 4);
+        OrderTable orderTable2 = new OrderTable(new TableGroup(1L), 2);
         List<OrderTable> orderTables = Arrays.asList(orderTable1, orderTable2);
 
         Mockito.when(orderTableDao.findAll())
@@ -77,7 +78,7 @@ class TableServiceTest {
         Mockito.when(orderDao.existsByOrderTableIdAndOrderStatusIn(Mockito.anyLong(), Mockito.anyList()))
             .thenReturn(false);
 
-        OrderTable expected = new OrderTable(1L, 1L, 4, true);
+        OrderTable expected = new OrderTable(1L, new TableGroup(1L), 4, true);
         Mockito.when(orderTableDao.save(Mockito.any()))
             .thenReturn(expected);
 
@@ -94,7 +95,7 @@ class TableServiceTest {
     @Test
     void changeEmptyFailWhenTableGroupExists() {
         // given
-        OrderTable orderTable = new OrderTable(1L, 1L, 4, false);
+        OrderTable orderTable = new OrderTable(1L, new TableGroup(1L), 4, false);
 
         Mockito.when(orderTableDao.findById(Mockito.anyLong()))
             .thenReturn(Optional.of(orderTable));
@@ -132,7 +133,7 @@ class TableServiceTest {
         Mockito.when(orderTableDao.findById(Mockito.anyLong()))
             .thenReturn(Optional.of(orderTable));
 
-        OrderTable expected = new OrderTable(1L, 1L, 4, false);
+        OrderTable expected = new OrderTable(1L, new TableGroup(1L), 4, false);
         Mockito.when(orderTableDao.save(Mockito.any()))
             .thenReturn(expected);
 

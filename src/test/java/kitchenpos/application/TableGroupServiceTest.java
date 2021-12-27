@@ -121,7 +121,7 @@ class TableGroupServiceTest {
         // given
         List<OrderTable> orderTables = Arrays.asList(
             new OrderTable(1L, null, 4, true),
-            new OrderTable(2L, 1L, 2, true));
+            new OrderTable(2L, new TableGroup(1L), 2, true));
         Mockito.when(orderTableDao.findAllByIdIn(Mockito.anyList()))
             .thenReturn(orderTables);
 
@@ -142,7 +142,7 @@ class TableGroupServiceTest {
         List<OrderTable> orderTables = Arrays.asList(
             new OrderTable(1L, null, 4, true),
             new OrderTable(2L, null, 2, true));
-        Mockito.when(orderTableDao.findAllByTableGroupId(Mockito.anyLong()))
+        Mockito.when(orderTableDao.findAllByTableGroup_Id(Mockito.anyLong()))
             .thenReturn(orderTables);
 
         Mockito.when(orderDao.existsByOrderTableIdInAndOrderStatusIn(Mockito.anyList(), Mockito.anyList()))
@@ -162,7 +162,7 @@ class TableGroupServiceTest {
         List<OrderTable> orderTables = Arrays.asList(
             new OrderTable(1L, null, 4, true),
             new OrderTable(2L, null, 2, true));
-        Mockito.when(orderTableDao.findAllByTableGroupId(Mockito.anyLong()))
+        Mockito.when(orderTableDao.findAllByTableGroup_Id(Mockito.anyLong()))
             .thenReturn(orderTables);
 
         Mockito.when(orderDao.existsByOrderTableIdInAndOrderStatusIn(Mockito.anyList(), Mockito.anyList()))

@@ -16,6 +16,7 @@ import kitchenpos.dto.OrderTableResponse;
 import kitchenpos.dto.OrderTableResponses;
 
 @Service
+@Transactional(readOnly = true)
 public class TableService {
     private final OrderDao orderDao;
     private final OrderTableDao orderTableDao;
@@ -43,7 +44,7 @@ public class TableService {
         final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
             .orElseThrow(IllegalArgumentException::new);
 
-        if (Objects.nonNull(savedOrderTable.getTableGroupId())) {
+        if (Objects.nonNull(savedOrderTable.getTableGroup())) {
             throw new IllegalArgumentException();
         }
 
@@ -52,7 +53,7 @@ public class TableService {
             throw new IllegalArgumentException();
         }
 
-        savedOrderTable.setEmpty(request.isEmpty());
+        savedOrderTable.updateEmpty(request.isEmpty());
 
         return OrderTableResponse.from(orderTableDao.save(savedOrderTable));
     }
@@ -71,7 +72,7 @@ public class TableService {
             throw new IllegalArgumentException();
         }
 
-        savedOrderTable.setNumberOfGuests(numberOfGuests);
+        savedOrderTable.updateNumberOfGuests(numberOfGuests);
 
         return OrderTableResponse.from(orderTableDao.save(savedOrderTable));
     }

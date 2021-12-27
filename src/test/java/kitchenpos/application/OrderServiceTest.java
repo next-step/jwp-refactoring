@@ -24,6 +24,7 @@ import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.TableGroup;
 
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
@@ -48,7 +49,7 @@ class OrderServiceTest {
         Mockito.when(menuDao.countByIdIn(Mockito.anyList()))
             .thenReturn(1L);
 
-        OrderTable orderTable = new OrderTable(1L, 1L, 4, false);
+        OrderTable orderTable = new OrderTable(1L, new TableGroup(1L), 4, false);
         Mockito.when(orderTableDao.findById(Mockito.anyLong()))
             .thenReturn(Optional.of(orderTable));
 
@@ -110,7 +111,7 @@ class OrderServiceTest {
         Mockito.when(menuDao.countByIdIn(Mockito.anyList()))
             .thenReturn(1L);
 
-        OrderTable orderTable = new OrderTable(1L, 1L, 4, true);
+        OrderTable orderTable = new OrderTable(1L, new TableGroup(1L), 4, true);
         Mockito.when(orderTableDao.findById(Mockito.anyLong()))
             .thenReturn(Optional.of(orderTable));
 
