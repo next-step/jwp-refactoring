@@ -30,7 +30,8 @@ class MenuRepositoryTest {
 	public void saveMenuTest() {
 		//given
 		//when
-		Menu menu = new Menu("신양념", Price.valueOf(new BigDecimal(20000)), menuGroup, Lists.newArrayList(menuProduct));
+		MenuProducts menuProducts = new MenuProducts(Lists.newArrayList(menuProduct));
+		Menu menu = new Menu("신양념", Price.valueOf(new BigDecimal(20000)), menuGroup, menuProducts);
 
 		//when
 		Menu save = menuRepository.save(menu);

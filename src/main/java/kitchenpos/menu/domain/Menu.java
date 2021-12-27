@@ -39,8 +39,8 @@ public class Menu {
 	@JoinColumn(name = "menuGroupId", columnDefinition = "bigint(20)", nullable = false)
 	private MenuGroup menuGroup;
 
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "menu", orphanRemoval = true, cascade = CascadeType.ALL)
-	private List<MenuProduct> menuProducts = new ArrayList<>();
+	@Embedded
+	private MenuProducts menuProducts;
 
 	public Menu() {
 	}
@@ -49,11 +49,11 @@ public class Menu {
 		this.id = id;
 	}
 
-	public Menu(String name, Price price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+	public Menu(String name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
 		this(null, name, price, menuGroup, menuProducts);
 	}
 
-	public Menu(Long id, String name, Price price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+	public Menu(Long id, String name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
 		validateMenuPriceIsNullOrLessThanZero(price);
 		validateMenuPriceSumGreaterThanProductsSum(menuProducts, price);
 
@@ -61,20 +61,11 @@ public class Menu {
 		this.name = name;
 		this.price = price;
 		this.menuGroup = menuGroup;
-		this.menuProducts = setMenu(menuProducts);
+		this.menuProducts = menuProducts.setMenu(this);
 	}
 
-	private List<MenuProduct> setMenu(List<MenuProduct> menuProducts) {
-		return menuProducts.stream()
-			.map(mp -> new MenuProduct(this, mp.getProduct(), mp.getQuantity()))
-			.collect(Collectors.toList());
-	}
-
-	private void validateMenuPriceSumGreaterThanProductsSum(List<MenuProduct> menuProducts, Price price) {
-		BigDecimal sum = menuProducts.stream()
-			.map(mp -> mp.getProductPrice().multiply(BigDecimal.valueOf(mp.getQuantity())))
-			.reduce(BigDecimal::add)
-			.orElseThrow(IllegalArgumentException::new);
+	private void validateMenuPriceSumGreaterThanProductsSum(MenuProducts menuProducts, Price price) {
+		Price sum = menuProducts.sumProductPrice();
 		if (price.greaterThan(sum)) {
 			throw new IllegalArgumentException("메뉴의 가격은 상품들의 가격합보다 작거나 같아야 합니다");
 		}
@@ -103,7 +94,7 @@ public class Menu {
 	}
 
 	public List<MenuProduct> getMenuProducts() {
-		return menuProducts;
+		return menuProducts.value();
 	}
 
 	public long getMenuGroupId() {

@@ -7,6 +7,9 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class Price {
 
+	public static final int LESS_THAN_COMPARE_VALUE = -1;
+	public static final int GREATER_THAN_COMPARE_VALUE = 1;
+
 	private final BigDecimal price;
 
 	protected Price() {
@@ -22,14 +25,14 @@ public class Price {
 	}
 
 	public boolean lessThanZero() {
-		return price.compareTo(BigDecimal.ZERO) < 0;
+		return price.compareTo(BigDecimal.ZERO) == LESS_THAN_COMPARE_VALUE;
 	}
 
 	public BigDecimal value() {
 		return BigDecimal.valueOf(price.intValue());
 	}
 
-	public boolean greaterThan(BigDecimal sum) {
-		return price.compareTo(sum) > 0;
+	public boolean greaterThan(Price sum) {
+		return price.compareTo(sum.price) == GREATER_THAN_COMPARE_VALUE;
 	}
 }
