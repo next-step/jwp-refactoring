@@ -1,10 +1,9 @@
 package kitchenpos.ordertable.application;
 
 import java.util.List;
-import java.util.stream.Collectors;
+import kitchenpos.order.domain.OrderValidator;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
-import kitchenpos.ordertable.domain.OrderTableValidator;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
 import kitchenpos.ordertable.exception.TableNotFoundException;
@@ -17,10 +16,10 @@ import org.springframework.transaction.annotation.Transactional;
 public class TableService {
 
     private final OrderTableRepository orderTableRepository;
-    private final OrderTableValidator orderTableValidator;
+    private final OrderValidator orderTableValidator;
 
     public TableService(OrderTableRepository orderTableRepository,
-        OrderTableValidator orderTableValidator) {
+        OrderValidator orderTableValidator) {
         this.orderTableRepository = orderTableRepository;
         this.orderTableValidator = orderTableValidator;
     }
@@ -61,11 +60,5 @@ public class TableService {
         final OrderTable savedOrderTable = findOrderTable(orderTableId);
         savedOrderTable.changeNumberOfGuests(numberOfGuests);
         return OrderTableResponse.from(savedOrderTable);
-    }
-
-    public List<OrderTable> findOrderTables(List<OrderTableRequest> orderTableRequests) {
-        return orderTableRequests.stream()
-            .map(orderTableRequest -> findOrderTable(orderTableRequest.getId()))
-            .collect(Collectors.toList());
     }
 }

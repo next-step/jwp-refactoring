@@ -5,9 +5,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import kitchenpos.order.domain.OrderValidator;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
-import kitchenpos.ordertable.domain.OrderTableValidator;
 import kitchenpos.ordertable.dto.OrderTableResponse;
 import kitchenpos.ordertable.testfixtures.TableTestFixtures;
 import kitchenpos.ordertable.vo.NumberOfGuests;
@@ -25,7 +25,7 @@ class TableServiceTest {
     private OrderTableRepository orderTableRepository;
 
     @Mock
-    private OrderTableValidator orderTableValidator;
+    private OrderValidator orderValidator;
 
     @InjectMocks
     private TableService tableService;
