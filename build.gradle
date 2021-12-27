@@ -1,4 +1,3 @@
-
 plugins {
     id 'org.springframework.boot' version '2.4.1'
     id 'io.spring.dependency-management' version '1.0.10.RELEASE'
@@ -8,8 +7,7 @@ plugins {
 group = 'camp.nextstep.edu'
 version = '0.0.1-SNAPSHOT'
 
-
-allprojects {
+subprojects {
     group 'kitchenpos'
     version '1.0'
 
@@ -42,12 +40,6 @@ test {
     useJUnitPlatform()
 }
 
-//project(':module-common') {
-//    dependencies {
-//        implementation 'org.flywaydb:flyway-core'
-//    }
-//}
-
 project(':module-order') {
     dependencies {
 //        implementation(project(':module-menu'))
@@ -56,11 +48,3 @@ project(':module-order') {
 //        implementation(project(':module-common'))
     }
 }
-
-//project(':module-menu') {
-//    dependencies {
-//        testFixturesImplementation(project(':module-order'))
-//
-//        implementation(project(':module-common'))
-//    }
-//}
