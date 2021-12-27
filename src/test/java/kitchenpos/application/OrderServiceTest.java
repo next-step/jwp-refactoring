@@ -7,10 +7,11 @@ import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.product.domain.Product;
+import kitchenpos.table.application.TableService;
+import kitchenpos.table.domain.OrderTable;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -49,6 +50,9 @@ public class OrderServiceTest {
     @InjectMocks
     OrderService orderService;
 
+    @InjectMocks
+    TableService tableService;
+
     private Product 짜장면;
     private Product 탕수육;
     private MenuGroup 중국음식;
@@ -67,7 +71,7 @@ public class OrderServiceTest {
         짜장면메뉴2 = 메뉴_등록("짜장면", 짜장면.getPrice(), 중국음식, Arrays.asList(메뉴_상품_등록(짜장면, 1L)));
         짜장면메뉴3 = 메뉴_등록("탕수육", 탕수육.getPrice(), 중국음식, Arrays.asList(메뉴_상품_등록(탕수육, 1L)));
 
-        테이블 = TableServiceTest.테이블_등록(1L, true);
+        테이블 = new OrderTable(2, true);
     }
 
     @Test
@@ -137,7 +141,7 @@ public class OrderServiceTest {
     void changeOrderStatusOfCompleted() {
         List<OrderLineItem> orderLineItems = Arrays.asList(주문_항목(1L, 짜장면메뉴1.getId(), 1L), 주문_항목(2L, 짜장면메뉴2.getId(), 1L));
         Order 주문 = 주문_등록(1L, 테이블.getId(), orderLineItems);
-        주문.setOrderStatus(OrderStatus.COMPLETION.name());
+        주문.setOrderStatus(OrderStatus.COMPLETION);
         given(orderDao.findById(any())).willReturn(Optional.of(주문));
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
             orderService.changeOrderStatus(주문.getId(), 주문);
@@ -149,10 +153,10 @@ public class OrderServiceTest {
     void changeOrderStatus() {
         List<OrderLineItem> orderLineItems = Arrays.asList(주문_항목(1L, 짜장면메뉴1.getId(), 1L), 주문_항목(2L, 짜장면메뉴2.getId(), 1L));
         Order 주문_조리중 = 주문_등록(1L, 테이블.getId(), orderLineItems);
-        주문_조리중.setOrderStatus(OrderStatus.COOKING.name());
+        주문_조리중.setOrderStatus(OrderStatus.COOKING);
 
         Order 주문_식사중 = 주문_등록(1L, 테이블.getId(), orderLineItems);
-        주문_식사중.setOrderStatus(OrderStatus.MEAL.name());
+        주문_식사중.setOrderStatus(OrderStatus.MEAL);
 
         given(orderDao.findById(any())).willReturn(Optional.of(주문_조리중));
         Order 주문_상태_변경 = orderService.changeOrderStatus(주문_조리중.getId(), 주문_식사중);
@@ -176,7 +180,7 @@ public class OrderServiceTest {
     private Order 주문_등록(Long id, Long orderTableId, List<OrderLineItem> orderLineItems) {
         Order order = new Order();
         order.setId(id);
-        order.setOrderTableId(orderTableId);
+        //order.setOrderTable(orderTableId);
         order.setOrderLineItems(orderLineItems);
         return order;
     }

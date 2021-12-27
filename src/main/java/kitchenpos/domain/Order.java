@@ -1,5 +1,7 @@
 package kitchenpos.domain;
 
+import kitchenpos.table.domain.OrderTable;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -11,8 +13,9 @@ public class Order {
     private Long id;
     @ManyToOne
     @JoinColumn(name = "order_table_id")
-    private OrderTable orderTableId;
-    private String orderStatus;
+    private OrderTable orderTable;
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus;
     private LocalDateTime orderedTime;
     @OneToMany(mappedBy = "orderId")
     private List<OrderLineItem> orderLineItems;
@@ -28,19 +31,19 @@ public class Order {
         this.id = id;
     }
 
-    public Long getOrderTableId() {
-        return orderTableId.getId();
+    public OrderTable getOrderTable() {
+        return orderTable;
     }
 
-    public void setOrderTableId(final Long orderTableId) {
-        this.orderTableId.setId(orderTableId);
+    public void setOrderTable(OrderTable orderTable) {
+        this.orderTable = orderTable;
     }
 
-    public String getOrderStatus() {
+    public OrderStatus getOrderStatus() {
         return orderStatus;
     }
 
-    public void setOrderStatus(final String orderStatus) {
+    public void setOrderStatus(OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
     }
 

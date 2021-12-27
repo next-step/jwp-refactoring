@@ -1,10 +1,12 @@
-package kitchenpos.application;
+package kitchenpos.table;
 
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
+import kitchenpos.domain.OrderRepository;
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.table.application.TableService;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.dto.OrderTableRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,42 +28,36 @@ import static org.mockito.BDDMockito.given;
 @DisplayName("테이블 관련 기능")
 public class TableServiceTest {
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @InjectMocks
-    TableService tableService;
+    private TableService tableService;
 
+    private OrderTableRequest orderTableRequest;
     private OrderTable orderTable;
 
     @BeforeEach
     void setUp() {
-        orderTable = 테이블_등록(1L, true);
-    }
-
-    public static OrderTable 테이블_등록(Long id, boolean empty) {
-        OrderTable orderTable = new OrderTable();
-        orderTable.setId(id);
-        orderTable.setEmpty(empty);
-        return orderTable;
+        orderTableRequest = 테이블_등록_요청(1L, 6, true);
+        orderTable = 테이블_등록(1L, 6, true);
     }
 
     @Test
     @DisplayName("테이블을 등록한다.")
     void createTable() {
-        // when
-        given(orderTableDao.save(any())).willReturn(orderTable);
-
+        given(orderTableRepository.save(any())).willReturn(orderTable);
         // then
-        assertThat(tableService.create(orderTable)).isNotNull();
+        assertThat(tableService.create(orderTableRequest)).isNotNull();
     }
+
 
     @Test
     @DisplayName("테이블 목록을 조회한다.")
     void getTable() {
         // given
-        given(orderTableDao.findAll()).willReturn(Arrays.asList(orderTable));
+        given(orderTableRepository.findAll()).willReturn(Arrays.asList(orderTable));
         // when
         List<OrderTable> tables = tableService.list();
         // then
@@ -71,9 +67,9 @@ public class TableServiceTest {
     @Test
     @DisplayName("테이블을 비운다.")
     void changeEmpty() {
-        given(orderTableDao.findById(any())).willReturn(Optional.of(orderTable));
+        given(orderTableRepository.findById(any())).willReturn(Optional.of(orderTable));
 
-        given(orderTableDao.save(any())).willReturn(orderTable);
+        given(orderTableRepository.save(any())).willReturn(orderTable);
 
         OrderTable emptyTable = tableService.changeEmpty(orderTable.getId(), orderTable);
 
@@ -93,9 +89,9 @@ public class TableServiceTest {
     @Test
     @DisplayName("식사중이거나 조리중인 테이블은 비울 수 없다.")
     void changeEmptyOfExistsByOrderTableIdAndOrderStatusIn() {
-        given(orderTableDao.findById(any())).willReturn(Optional.of(orderTable));
-        given(orderDao.existsByOrderTableIdAndOrderStatusIn(
-                orderTable.getId(), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).willReturn(true);
+        given(orderTableRepository.findById(any())).willReturn(Optional.of(orderTable));
+        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(
+                orderTable.getId(), Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))).willReturn(true);
 
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
             tableService.changeEmpty(orderTable.getId(), orderTable);
@@ -107,8 +103,8 @@ public class TableServiceTest {
     void changeNumberOfGuests() {
         orderTable.setEmpty(false);
         orderTable.setNumberOfGuests(10);
-        given(orderTableDao.save(any())).willReturn(orderTable);
-        given(orderTableDao.findById(any())).willReturn(Optional.of(orderTable));
+        given(orderTableRepository.save(any())).willReturn(orderTable);
+        given(orderTableRepository.findById(any())).willReturn(Optional.of(orderTable));
 
         OrderTable changeTable = tableService.changeNumberOfGuests(orderTable.getId(), orderTable);
         assertThat(changeTable).isNotNull();
@@ -133,4 +129,13 @@ public class TableServiceTest {
             tableService.changeNumberOfGuests(orderTable.getId(), orderTable);
         });
     }
+
+    public static OrderTableRequest 테이블_등록_요청(Long id, int numberOfGuests, boolean empty) {
+        return new OrderTableRequest(id, numberOfGuests, empty);
+    }
+
+    private OrderTable 테이블_등록(Long id, int numberOfGuests, boolean empty) {
+        return new OrderTable(id, numberOfGuests, empty);
+    }
+
 }

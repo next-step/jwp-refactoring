@@ -7,7 +7,8 @@ import kitchenpos.AcceptanceTest;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.table.TableAcceptanceTest;
+import kitchenpos.table.domain.OrderTable;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -59,7 +60,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
 
     private ExtractableResponse<Response> 주문_상태_변경(ExtractableResponse<Response> response, String orderStatus) {
         Order order = new Order();
-        order.setOrderStatus(orderStatus);
+        order.setOrderStatus(OrderStatus.valueOf(orderStatus));
         return RestAssured
                 .given().log().all()
                 .body(order)
@@ -78,7 +79,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
 
     private ExtractableResponse<Response> 주문_요청(Long orderTableId, List<OrderLineItem> orderLineItems) {
         Order order = new Order();
-        order.setOrderTableId(orderTableId);
+        //order.setOrderTable(orderTableId);
         order.setOrderLineItems(orderLineItems);
 
         return RestAssured
