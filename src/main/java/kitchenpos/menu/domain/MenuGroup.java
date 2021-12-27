@@ -47,4 +47,29 @@ public class MenuGroup {
 	public Name getName() {
 		return name;
 	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
+
+		MenuGroup menuGroup = (MenuGroup)o;
+
+		return id.equals(menuGroup.id);
+	}
+
+	@Override
+	public int hashCode() {
+		return id.hashCode();
+	}
+
+	@Override
+	public String toString() {
+		return "MenuGroup{" +
+			"id=" + id +
+			", name=" + name +
+			'}';
+	}
 }
