@@ -24,7 +24,7 @@ public class MenuService {
     public MenuResponse create(final MenuRequest request) {
         Menu menu = request.toEntity();
         menuValidator.validate(menu);
-        
+
         Menu persistMenu = menuRepository.save(menu);
         return MenuResponse.of(persistMenu);
     }

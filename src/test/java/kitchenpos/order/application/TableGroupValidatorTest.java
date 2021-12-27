@@ -3,7 +3,9 @@ package kitchenpos.order.application;
 import kitchenpos.order.application.exception.InvalidOrderState;
 import kitchenpos.order.application.exception.InvalidTableState;
 import kitchenpos.order.application.exception.TableNotFoundException;
-import kitchenpos.order.domain.*;
+import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.domain.TableRepository;
+import kitchenpos.order.domain.TableState;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -93,7 +95,7 @@ class TableGroupValidatorTest {
         테이블1.changeStatus(MEAL);
         테이블2.changeStatus(COMPLETION);
 
-        assertThatThrownBy(() ->  tableGroupValidator.validateTableState(Arrays.asList(테이블1, 테이블2)))
+        assertThatThrownBy(() -> tableGroupValidator.validateTableState(Arrays.asList(테이블1, 테이블2)))
                 .isInstanceOf(InvalidOrderState.class);
     }
 }

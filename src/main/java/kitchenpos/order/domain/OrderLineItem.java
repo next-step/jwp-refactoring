@@ -12,6 +12,7 @@ public class OrderLineItem {
     private Long seq;
 
     @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "order_id", foreignKey = @ForeignKey(name = "fk_order_line_item_order"))
     private Order order;
 
     @Column(nullable = false)
