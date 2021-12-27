@@ -7,8 +7,8 @@ jar {
 }
 
 dependencies {
-    implementation project(':module-common')
-    implementation project(':module-web')
+    implementation project(':module-menu')
+    implementation project(':module-order')
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.flywaydb:flyway-core'

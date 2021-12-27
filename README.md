@@ -107,7 +107,9 @@
     - [ ] 컨텍스트 간의 독립된 모듈로 만들 수 있다.
   > 긴밀하게 연관된 도메인을 묶는다. menu-product, order-table, 공통 모듈(VO, BaseEntity, Exception)
     - [ ] 계층간 독립된 모듈로 만들 수 있다.
-  > ui, application, domain 계층으로 나눈다.
-* 의존성 주입, HTTP 요청/응답, 이벤트 발행/구독 등 다양한 방식으로 모듈 간 데이터를 주고받을 수 있다.
+  > ui, domain 계층으로 나눈다.
+  
+모듈별로 배포가 가능하도록 요구사항 변경이 서로 영향을 줄거 같은 도메인들끼리 모듈화함.
 
-![multi-module.png](./uml/multi-module.png)
+
+![multi-module](uml/multi-module_v0.0.2.png)
