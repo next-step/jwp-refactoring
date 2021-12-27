@@ -8,8 +8,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import kitchenpos.common.vo.ProductId;
-
 @Entity
 public class MenuProduct {
     @Id

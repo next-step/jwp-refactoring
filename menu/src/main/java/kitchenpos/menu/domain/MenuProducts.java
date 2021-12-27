@@ -8,8 +8,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 
-import kitchenpos.common.vo.ProductId;
-
 @Embeddable
 public class MenuProducts {
     @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)

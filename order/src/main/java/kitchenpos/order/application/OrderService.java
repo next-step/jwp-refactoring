@@ -4,7 +4,7 @@ import kitchenpos.order.domain.Orders;
 import kitchenpos.order.domain.OrdersRepository;
 import kitchenpos.order.dto.OrderDto;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.common.vo.OrderTableId;
+import kitchenpos.order.domain.OrderTableId;
 import kitchenpos.order.domain.OrdersValidator;
 
 import org.springframework.stereotype.Service;

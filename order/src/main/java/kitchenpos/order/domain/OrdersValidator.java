@@ -6,8 +6,6 @@ import java.util.stream.Collectors;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
-import kitchenpos.common.vo.MenuId;
-import kitchenpos.common.vo.OrderTableId;
 import kitchenpos.common.event.ValidateEmptyTableEvent;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menus;

@@ -1,4 +1,4 @@
-package kitchenpos.common.vo;
+package kitchenpos.order.domain;
 
 import java.util.Objects;
 

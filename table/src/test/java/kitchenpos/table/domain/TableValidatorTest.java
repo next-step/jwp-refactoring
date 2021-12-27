@@ -17,13 +17,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.OrderTableId;
 import kitchenpos.order.domain.Orders;
 import kitchenpos.order.exception.HasNotCompletionOrderException;
 import kitchenpos.table.exception.EmptyOrderTableException;
 import kitchenpos.table.exception.HasOtherTableGroupException;
 import kitchenpos.table.exception.NegativeOfNumberOfGuestsException;
-import kitchenpos.common.vo.OrderTableId;
-import kitchenpos.common.vo.TableGroupId;
 
 @ExtendWith(MockitoExtension.class)
 public class TableValidatorTest {

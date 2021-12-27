@@ -25,8 +25,6 @@ import kitchenpos.menu.dto.MenuProductDto;
 import kitchenpos.menu.exception.NotCorrectMenuPriceException;
 import kitchenpos.menugroup.exception.NotFoundMenuGroupException;
 import kitchenpos.product.exception.NotFoundProductException;
-import kitchenpos.common.vo.MenuGroupId;
-import kitchenpos.common.vo.ProductId;
 
 @ExtendWith(MockitoExtension.class)
 public class MenuValidatorTest {

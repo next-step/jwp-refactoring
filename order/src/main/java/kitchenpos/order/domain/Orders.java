@@ -20,8 +20,6 @@ import javax.persistence.OneToMany;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import kitchenpos.common.vo.OrderTableId;
-
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 public class Orders {

@@ -16,15 +16,15 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.common.domain.Price;
-import kitchenpos.common.vo.MenuGroupId;
-import kitchenpos.common.vo.ProductId;
 import kitchenpos.menu.dto.MenuDto;
 import kitchenpos.menu.dto.MenuProductDto;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroupId;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.domain.MenuValidator;
+import kitchenpos.menu.domain.ProductId;
 
 @ExtendWith(MockitoExtension.class)
 public class MenuServiceTest {

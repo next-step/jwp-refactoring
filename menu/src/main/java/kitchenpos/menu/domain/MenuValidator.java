@@ -6,8 +6,6 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
 import kitchenpos.common.domain.Price;
-import kitchenpos.common.vo.MenuGroupId;
-import kitchenpos.common.vo.ProductId;
 import kitchenpos.menugroup.application.MenuGroupService;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.product.application.ProductService;

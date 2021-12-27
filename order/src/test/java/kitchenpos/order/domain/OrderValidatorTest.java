@@ -22,8 +22,6 @@ import org.springframework.context.ApplicationEventPublisher;
 
 import kitchenpos.common.domain.Price;
 import kitchenpos.common.event.ValidateEmptyTableEvent;
-import kitchenpos.common.vo.MenuId;
-import kitchenpos.common.vo.OrderTableId;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.exception.NotRegistedMenuOrderException;

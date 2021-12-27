@@ -4,8 +4,6 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import kitchenpos.common.vo.OrderTableId;
-
 public interface OrdersRepository extends JpaRepository<Orders, Long> {
     Orders findByOrderTableId(OrderTableId orderTableId);
 

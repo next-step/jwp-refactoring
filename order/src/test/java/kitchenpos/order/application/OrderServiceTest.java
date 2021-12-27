@@ -16,13 +16,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.order.dto.OrderDto;
 import kitchenpos.order.dto.OrderLineItemDto;
-import kitchenpos.common.vo.MenuId;
-import kitchenpos.common.vo.OrderTableId;
 import kitchenpos.order.domain.OrdersValidator;
 import kitchenpos.order.domain.Orders;
+import kitchenpos.order.domain.MenuId;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrdersRepository;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.OrderTableId;
 
 @ExtendWith(MockitoExtension.class)
 public class OrderServiceTest {

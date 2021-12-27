@@ -6,9 +6,6 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import kitchenpos.common.vo.MenuId;
-import kitchenpos.common.vo.OrderTableId;
-
 public class OrdersDomainTest {
     @DisplayName("주문 상태가 변경된다.")
     @Test

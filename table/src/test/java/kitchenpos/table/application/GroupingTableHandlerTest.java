@@ -15,9 +15,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.domain.TableGroupId;
 import kitchenpos.common.event.GroupingOrderTableEvent;
 import kitchenpos.common.event.UngroupOrderTableEvent;
-import kitchenpos.common.vo.TableGroupId;
 
 @ExtendWith(MockitoExtension.class)
 public class GroupingTableHandlerTest {

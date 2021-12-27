@@ -14,10 +14,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.common.vo.TableGroupId;
 import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTables;
+import kitchenpos.table.domain.TableGroupId;
 import kitchenpos.table.dto.OrderTableDto;
 import kitchenpos.tablegroup.dto.TableGroupDto;
 import kitchenpos.order.application.OrderService;

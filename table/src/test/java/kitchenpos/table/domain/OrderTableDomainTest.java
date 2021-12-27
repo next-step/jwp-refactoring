@@ -5,8 +5,6 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import kitchenpos.common.vo.TableGroupId;
-
 public class OrderTableDomainTest {
     @DisplayName("주문테이블이 그룹이 해제된다.")
     @Test
