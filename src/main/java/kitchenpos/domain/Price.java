@@ -3,6 +3,7 @@ package kitchenpos.domain;
 import java.math.BigDecimal;
 import java.util.Objects;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 import kitchenpos.exception.KitchenposErrorCode;
@@ -12,6 +13,7 @@ import kitchenpos.exception.KitchenposException;
 public class Price {
     private static final int ZERO = 0;
 
+    @Column(nullable = false)
     private BigDecimal price;
 
     protected Price() {

@@ -3,6 +3,7 @@ package kitchenpos.domain;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -28,9 +29,11 @@ public class Order {
     private OrderTable orderTable;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private OrderStatus orderStatus;
 
     @CreatedDate
+    @Column(nullable = false)
     private LocalDateTime orderedTime;
 
     @Embedded

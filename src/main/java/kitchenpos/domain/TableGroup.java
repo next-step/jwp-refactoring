@@ -3,6 +3,7 @@ package kitchenpos.domain;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -21,6 +22,7 @@ public class TableGroup {
     private Long id;
 
     @CreatedDate
+    @Column(nullable = false)
     private LocalDateTime createdDate;
 
     @Embedded
