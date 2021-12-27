@@ -61,7 +61,7 @@ public class OrderLineItem {
     }
 
     public Long getOrderId() {
-        if(order == null) {
+        if (order == null) {
             return null;
         }
 

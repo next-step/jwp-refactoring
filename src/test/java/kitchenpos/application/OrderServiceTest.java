@@ -33,7 +33,6 @@ import kitchenpos.dto.OrderLineItemResponse;
 import kitchenpos.dto.OrderRequest;
 import kitchenpos.dto.OrderResponse;
 import kitchenpos.exception.KitchenposException;
-import kitchenpos.exception.KitchenposNotFoundException;
 
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
@@ -99,7 +98,7 @@ class OrderServiceTest {
         // when and then
         assertThatExceptionOfType(KitchenposException.class)
             .isThrownBy(() -> orderService.create(request))
-        .withMessage("주문 항목이 비어있습니다.");
+            .withMessage("주문 항목이 비어있습니다.");
     }
 
     @DisplayName("주문 항목과 메뉴 숫자가 다른 경우(메뉴에 없는 주문 항목) 주문 불가능")
@@ -114,7 +113,7 @@ class OrderServiceTest {
         // when and then
         assertThatExceptionOfType(KitchenposException.class)
             .isThrownBy(() -> orderService.create(request))
-        .withMessage("주문 항목의 개수가 다릅니다.");
+            .withMessage("주문 항목의 개수가 다릅니다.");
     }
 
     @DisplayName("주문 테이블이 빈 테이블인 경우 주문 불가능")
@@ -132,7 +131,7 @@ class OrderServiceTest {
         // when and then
         assertThatExceptionOfType(KitchenposException.class)
             .isThrownBy(() -> orderService.create(request))
-        .withMessage("주문 테이블이 비어있습니다.");
+            .withMessage("주문 테이블이 비어있습니다.");
     }
 
     @DisplayName("주문 조회")
@@ -186,7 +185,7 @@ class OrderServiceTest {
         // when and then
         assertThatExceptionOfType(KitchenposException.class)
             .isThrownBy(() -> orderService.changeOrderStatus(1L, request))
-        .withMessage("완료된 주문의 상태를 바꿀 수 없습니다.");
+            .withMessage("완료된 주문의 상태를 바꿀 수 없습니다.");
     }
 
     private void 주문_ID로_주문_상품_조회(OrderLineItem orderLineItem) {

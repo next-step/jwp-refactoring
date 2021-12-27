@@ -2,7 +2,6 @@ package kitchenpos.application;
 
 import static org.assertj.core.api.Assertions.*;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -117,7 +116,7 @@ class TableServiceTest {
         // when and then
         assertThatExceptionOfType(KitchenposException.class)
             .isThrownBy(() -> tableService.changeEmpty(1L, request))
-        .withMessage("사용중인 테이블이 있습니다.");
+            .withMessage("사용중인 테이블이 있습니다.");
     }
 
     @DisplayName("고객 수 변경")

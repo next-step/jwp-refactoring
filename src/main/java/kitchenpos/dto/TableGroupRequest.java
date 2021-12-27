@@ -11,7 +11,8 @@ public class TableGroupRequest {
     private static final int MIN_SIZE = 2;
     private List<OrderTableIdRequest> orderTables;
 
-    protected TableGroupRequest() {}
+    protected TableGroupRequest() {
+    }
 
     public TableGroupRequest(List<OrderTableIdRequest> orderTables) {
         this.orderTables = orderTables;

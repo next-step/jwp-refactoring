@@ -15,13 +15,12 @@ public class OrderLineItemResponses {
 
     public static OrderLineItemResponses from(List<OrderLineItem> orderLineItems) {
         return new OrderLineItemResponses(orderLineItems.stream()
-        .map(OrderLineItemResponse::from)
-        .collect(Collectors.toList()));
+            .map(OrderLineItemResponse::from)
+            .collect(Collectors.toList()));
     }
 
     public List<OrderLineItemResponse> getOrderLineItemResponses() {
         return Collections.unmodifiableList(orderLineItemResponses);
     }
-
 
 }

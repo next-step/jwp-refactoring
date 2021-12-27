@@ -15,8 +15,8 @@ public class OrderResponses {
 
     public static OrderResponses from(List<Order> orders) {
         return new OrderResponses(orders.stream()
-        .map(OrderResponse::from)
-        .collect(Collectors.toList()));
+            .map(OrderResponse::from)
+            .collect(Collectors.toList()));
     }
 
     public List<OrderResponse> getOrderResponses() {
