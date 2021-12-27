@@ -18,6 +18,7 @@ import java.util.Optional;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuDao;
+import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuGroupDao;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuProductRequest;
@@ -56,12 +57,13 @@ public class MenuServiceTest {
         MenuRequest menuRequest = new MenuRequest(
             menu.getName(),
             16000L,
-            menu.getMenuGroup().getId(),
+            menu.getMenuGroupId(),
             asList(new MenuProductRequest(menuProduct1EA.getId(), menuProduct1EA.getQuantity())
             ));
+        MenuGroup 메뉴그룹_한마리 = 메뉴그룹_한마리();
 
         // mocking
-        when(menuGroupService.findByIdThrow(anyLong())).thenReturn(메뉴그룹_한마리());
+        when(menuGroupService.findByIdThrow(anyLong())).thenReturn(메뉴그룹_한마리.getId());
         when(productService.findByIdThrow(anyLong())).thenReturn(양념치킨());
         when(menuDao.save(any())).thenReturn(menu);
 

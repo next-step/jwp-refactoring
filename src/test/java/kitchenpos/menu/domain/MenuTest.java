@@ -22,9 +22,14 @@ class MenuTest {
      */
     @Test
     void 메뉴생성시_등록한_상품의합보다_큰_금액을_입력시_예외() {
-        Menu menu = Menu.of("양념치킨", Amount.of(20000), 메뉴그룹_한마리());
+        // given
+        MenuGroup 메뉴그룹_한마리 = 메뉴그룹_한마리();
+
+        Menu menu = Menu.of("양념치킨", Amount.of(20000), 메뉴그룹_한마리.getId());
         MenuProduct 양념치킨_1개 = 양념치킨_1개(menu);
         MenuProduct 콜라_1개 = 콜라_1개(menu);
+
+        // then
         Assertions.assertThatThrownBy(() -> {
             menu.withMenuProducts(asList(양념치킨_1개, 콜라_1개));
         }).isInstanceOf(IllegalArgumentException.class);
@@ -34,7 +39,7 @@ class MenuTest {
     void 메뉴_정상등록() {
         // given
         MenuGroup 메뉴그룹_한마리 = 메뉴그룹_한마리();
-        Menu menu = Menu.of("양념치킨", Amount.of(18000), 메뉴그룹_한마리);
+        Menu menu = Menu.of("양념치킨", Amount.of(18000), 메뉴그룹_한마리.getId());
         MenuProduct 양념치킨_1개 = 양념치킨_1개(menu);
         MenuProduct 콜라_1개 = 콜라_1개(menu);
 
@@ -43,7 +48,7 @@ class MenuTest {
 
         // then
         assertAll(() -> {
-            Assertions.assertThat(menu.getMenuGroup().getName()).isEqualTo(메뉴그룹_한마리.getName());
+            Assertions.assertThat(menu.getMenuGroupId()).isEqualTo(메뉴그룹_한마리.getId());
             Assertions.assertThat(menu.getName()).isEqualTo("양념치킨");
             Assertions.assertThat(menu.getPrice().getPrice()).isEqualTo(new BigDecimal("18000"));
             Assertions.assertThat(menu.getProducts()).contains(양념치킨_1개, 콜라_1개);
@@ -53,8 +58,9 @@ class MenuTest {
     @ParameterizedTest
     @NullAndEmptySource
     void 메뉴의_이름값이_빈값이면_예외(String input) {
+        MenuGroup 메뉴그룹_한마리 = 메뉴그룹_한마리();
         Assertions.assertThatThrownBy(() -> {
-                Menu.of(input, Amount.of(10000), MenuGroupFixture.메뉴그룹_한마리());
+                Menu.of(input, Amount.of(10000), 메뉴그룹_한마리.getId());
             }).isInstanceOf(IllegalArgumentException.class)
             .hasMessage(Message.MENU_NAME_IS_NOT_NULL.getMessage());
     }

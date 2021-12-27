@@ -23,9 +23,7 @@ public class Menu {
 
     private String name;
 
-    @ManyToOne
-    @JoinColumn(name = "menu_group_id")
-    private MenuGroup menuGroup;
+    private Long menuGroupId;
 
     @Embedded
     private Amount price;
@@ -33,19 +31,19 @@ public class Menu {
     @Embedded
     private MenuProducts menuProducts = new MenuProducts();
 
-    public static Menu of(Long id, String name, Amount price, MenuGroup menuGroup) {
-        return new Menu(id, name, menuGroup, price);
+    public static Menu of(Long id, String name, Amount price, Long menuGroupId) {
+        return new Menu(id, name, menuGroupId, price);
     }
 
-    public static Menu of(String name, Amount price, MenuGroup menuGroup) {
-        return new Menu(null, name, menuGroup, price);
+    public static Menu of(String name, Amount price, Long menuGroupId) {
+        return new Menu(null, name, menuGroupId, price);
     }
 
-    private Menu(Long id, String name, MenuGroup menuGroup, Amount price) {
+    private Menu(Long id, String name, Long menuGroupId, Amount price) {
         validIsNotNull(name);
         this.id = id;
         this.name = name;
-        this.menuGroup = menuGroup;
+        this.menuGroupId = menuGroupId;
         this.price = price;
     }
 
@@ -78,8 +76,8 @@ public class Menu {
         return name;
     }
 
-    public MenuGroup getMenuGroup() {
-        return menuGroup;
+    public Long getMenuGroupId() {
+        return menuGroupId;
     }
 
     public Amount getPrice() {

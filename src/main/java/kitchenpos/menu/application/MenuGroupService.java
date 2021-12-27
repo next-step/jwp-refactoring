@@ -30,8 +30,9 @@ public class MenuGroupService {
         return MenuGroupResponse.ofList(menuGroups);
     }
 
-    public MenuGroup findByIdThrow(Long id) {
-        return menuGroupDao.findById(id)
+    public Long findByIdThrow(Long id) {
+        MenuGroup menuGroup = menuGroupDao.findById(id)
             .orElseThrow(NoResultDataException::new);
+        return menuGroup.getId();
     }
 }
