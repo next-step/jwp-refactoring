@@ -40,7 +40,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         // 메뉴 조회
         Menu menu = Menu.of(
                 "소고기+소고기",
-                BigDecimal.valueOf(50000),
+                50000,
                 추천메뉴.getId(),
                 Arrays.asList(MenuProduct.of(소고기한우.getId(), 2L))
         );
@@ -89,7 +89,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     }
 
     public static Menu 메뉴_등록되어있음(String name, int price, Long menuGroupId, List<MenuProduct> menuProducts) {
-        Menu menu = Menu.of(name, BigDecimal.valueOf(price), menuGroupId, menuProducts);
+        Menu menu = Menu.of(name, price, menuGroupId, menuProducts);
         return 메뉴_생성_요청(menu, "/api/menus").as(Menu.class);
     }
 }

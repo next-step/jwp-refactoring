@@ -20,8 +20,8 @@ public class Menu {
         this.menuProducts = menuProducts;
     }
 
-    public static Menu of(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
-        return new Menu(name, price, menuGroupId, menuProducts);
+    public static Menu of(String name, int price, Long menuGroupId, List<MenuProduct> menuProducts) {
+        return new Menu(name, BigDecimal.valueOf(price), menuGroupId, menuProducts);
     }
 
 
@@ -76,5 +76,9 @@ public class Menu {
     @Override
     public int hashCode() {
         return Objects.hash(id, name, price, menuGroupId, menuProducts);
+    }
+
+    public void createId(Long id) {
+        this.id = id;
     }
 }

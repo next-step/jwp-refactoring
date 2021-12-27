@@ -64,4 +64,8 @@ public class MenuProduct {
     public int hashCode() {
         return Objects.hash(seq, menuId, productId, quantity);
     }
+
+    public void createId(Long id) {
+        this.seq = id;
+    }
 }
