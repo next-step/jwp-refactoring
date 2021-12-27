@@ -63,14 +63,9 @@ class MenuServiceTest {
     @Test
     void create() {
         // given
-        Mockito.when(menuGroupDao.findById(Mockito.anyLong()))
-            .thenReturn(Optional.of(menuGroup));
-
-        Mockito.when(productDao.findById(Mockito.anyLong()))
-            .thenReturn(Optional.of(product));
-
-        Mockito.when(menuDao.save(Mockito.any()))
-            .thenReturn(menu);
+        ID로_메뉴_그룹_조회(Optional.of(menuGroup));
+        ID로_상품_조회(Optional.of(product));
+        메뉴_저장();
 
         MenuRequest request = new MenuRequest("menu", BigDecimal.ONE, 1L, Arrays.asList(menuProductRequest));
 
@@ -88,11 +83,8 @@ class MenuServiceTest {
     @Test
     void createErrorWhenPriceIsBiggerThanSum() {
         // given
-        Mockito.when(menuGroupDao.findById(Mockito.anyLong()))
-            .thenReturn(Optional.of(menuGroup));
-
-        Mockito.when(productDao.findById(Mockito.anyLong()))
-            .thenReturn(Optional.of(product));
+        ID로_메뉴_그룹_조회(Optional.of(menuGroup));
+        ID로_상품_조회(Optional.of(product));
 
         MenuRequest request =
             new MenuRequest("name", BigDecimal.valueOf(3), 1L, Arrays.asList(menuProductRequest));
@@ -107,14 +99,12 @@ class MenuServiceTest {
     @Test
     void createErrorWhenProductNotExists() {
         // given
-        Mockito.when(menuGroupDao.findById(Mockito.anyLong()))
-            .thenReturn(Optional.of(menuGroup));
-
-        Mockito.when(productDao.findById(Mockito.anyLong()))
-            .thenReturn(Optional.empty());
+        ID로_메뉴_그룹_조회(Optional.of(menuGroup));
+        ID로_상품_조회(Optional.empty());
 
         MenuRequest request =
             new MenuRequest("name", BigDecimal.ONE, 1L, Arrays.asList(menuProductRequest));
+
         // when and then
         assertThatExceptionOfType(KitchenposNotFoundException.class)
             .isThrownBy(() -> menuService.create(request));
@@ -144,8 +134,7 @@ class MenuServiceTest {
     @Test
     void createErrorWhenMenuGroupNotExists() {
         // given
-        Mockito.when(menuGroupDao.findById(Mockito.anyLong()))
-            .thenReturn(Optional.empty());
+        ID로_메뉴_그룹_조회(Optional.empty());
 
         MenuRequest menu = new MenuRequest("name", BigDecimal.ONE, 1L, Arrays.asList(menuProductRequest));
 
@@ -173,5 +162,20 @@ class MenuServiceTest {
             () -> assertThat(actual.getMenuResponses().get(0).getMenuProducts().get(0))
                 .isEqualTo(MenuProductResponse.from(menuProduct))
         );
+    }
+
+    private void 메뉴_저장() {
+        Mockito.when(menuDao.save(Mockito.any()))
+            .thenReturn(menu);
+    }
+
+    private void ID로_상품_조회(Optional<Product> product) {
+        Mockito.when(productDao.findById(Mockito.anyLong()))
+            .thenReturn(product);
+    }
+
+    private void ID로_메뉴_그룹_조회(Optional<MenuGroup> menuGroup) {
+        Mockito.when(menuGroupDao.findById(Mockito.anyLong()))
+            .thenReturn(menuGroup);
     }
 }

@@ -33,18 +33,17 @@ class ProductServiceTest {
     @Test
     void create() {
         // given
-        ProductRequest request = new ProductRequest("name", BigDecimal.valueOf(10000));
         Product product = new Product(1L, "name", BigDecimal.valueOf(10000));
-        ProductResponse expected = ProductResponse.from(product);
-
         Mockito.when(productDao.save(Mockito.any()))
             .thenReturn(product);
+
+        ProductRequest request = new ProductRequest("name", BigDecimal.valueOf(10000));
 
         // when
         ProductResponse result = productService.create(request);
 
         // then
-        assertThat(result).isEqualTo(expected);
+        assertThat(result).isEqualTo(ProductResponse.from(product));
     }
 
     @DisplayName("가격이 null인 상품 생성시 에러")

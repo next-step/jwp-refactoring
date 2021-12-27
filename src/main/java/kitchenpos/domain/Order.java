@@ -2,7 +2,6 @@ package kitchenpos.domain;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -12,9 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 
-import kitchenpos.application.OrderService;
 import kitchenpos.exception.KitchenposErrorCode;
 import kitchenpos.exception.KitchenposException;
 
@@ -33,10 +30,6 @@ public class Order {
     private OrderLineItems orderLineItems = new OrderLineItems();
 
     protected Order() {
-    }
-
-    public Order(Long id) {
-        this.id = id;
     }
 
     public Order(Long id, OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime,
@@ -82,7 +75,7 @@ public class Order {
     }
 
     public Long getOrderTableId() {
-        if(orderTable == null) {
+        if (orderTable == null) {
             return null;
         }
 

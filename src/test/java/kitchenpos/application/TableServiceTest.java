@@ -2,10 +2,12 @@ package kitchenpos.application;
 
 import static org.assertj.core.api.Assertions.*;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,31 +35,35 @@ class TableServiceTest {
     @InjectMocks
     private TableService tableService;
 
+    private OrderTable orderTable1;
+    private OrderTable orderTable2;
+
+    @BeforeEach
+    void setUp() {
+        orderTable1 = new OrderTable(1L, null, 4, false);
+        orderTable2 = new OrderTable(2L, null, 2, false);
+    }
+
     @DisplayName("테이블 생성")
     @Test
     void create() {
         // given
-        OrderTable expected = new OrderTable(1L, new TableGroup(1L), 4, false);
-        Mockito.when(orderTableDao.save(Mockito.any()))
-            .thenReturn(expected);
+        저장시_예상된_결과_반환(orderTable1);
 
-        OrderTableRequest orderTable = new OrderTableRequest(4, false);
+        OrderTableRequest request = new OrderTableRequest(4, false);
 
         // when
-        OrderTableResponse actual = tableService.create(orderTable);
+        OrderTableResponse actual = tableService.create(request);
 
         // then
-        assertThat(actual).isEqualTo(OrderTableResponse.from(expected));
+        assertThat(actual).isEqualTo(OrderTableResponse.from(orderTable1));
     }
 
     @DisplayName("테이블 목록 조회")
     @Test
     void list() {
         // given
-        OrderTable orderTable1 = new OrderTable(new TableGroup(1L), 4);
-        OrderTable orderTable2 = new OrderTable(new TableGroup(1L), 2);
         List<OrderTable> orderTables = Arrays.asList(orderTable1, orderTable2);
-
         Mockito.when(orderTableDao.findAll())
             .thenReturn(orderTables);
 
@@ -72,21 +78,13 @@ class TableServiceTest {
     @Test
     void changeEmpty() {
         // given
-        OrderTable orderTable = new OrderTable(1L, null, 4, false);
+        아이디로_조회시_주문테이블을_반환(orderTable1);
+        식사_혹은_준비중인_테이블_존재여부_반환(false);
 
-        Mockito.when(orderTableDao.findById(Mockito.anyLong()))
-            .thenReturn(Optional.of(orderTable));
-        Mockito.when(orderDao.existsByOrderTable_IdAndOrderStatusIn(Mockito.anyLong(), Mockito.anyList()))
-            .thenReturn(false);
-
-        OrderTable expected = new OrderTable(1L, new TableGroup(1L), 4, true);
-        Mockito.when(orderTableDao.save(Mockito.any()))
-            .thenReturn(expected);
-
-        OrderTableRequest request = new OrderTableRequest(true);
+        저장시_예상된_결과_반환(new OrderTable(1L, null, 4, true));
 
         // when
-        OrderTableResponse actual = tableService.changeEmpty(1L, request);
+        OrderTableResponse actual = tableService.changeEmpty(1L, new OrderTableRequest(true));
 
         // then
         assertThat(actual.isEmpty()).isTrue();
@@ -96,10 +94,8 @@ class TableServiceTest {
     @Test
     void changeEmptyFailWhenTableGroupExists() {
         // given
-        OrderTable orderTable = new OrderTable(1L, new TableGroup(1L), 4, false);
-
-        Mockito.when(orderTableDao.findById(Mockito.anyLong()))
-            .thenReturn(Optional.of(orderTable));
+        OrderTable orderTable = new OrderTable(1L, new TableGroup(LocalDateTime.now()), 4, false);
+        아이디로_조회시_주문테이블을_반환(orderTable);
 
         OrderTableRequest request = new OrderTableRequest(true);
 
@@ -113,12 +109,8 @@ class TableServiceTest {
     @Test
     void changeEmptyFailWhenCookingOrMeal() {
         // given
-        OrderTable orderTable = new OrderTable(1L, null, 4, false);
-
-        Mockito.when(orderTableDao.findById(Mockito.anyLong()))
-            .thenReturn(Optional.of(orderTable));
-        Mockito.when(orderDao.existsByOrderTable_IdAndOrderStatusIn(Mockito.anyLong(), Mockito.anyList()))
-            .thenReturn(true);
+        아이디로_조회시_주문테이블을_반환(orderTable1);
+        식사_혹은_준비중인_테이블_존재여부_반환(true);
 
         OrderTableRequest request = new OrderTableRequest(true);
 
@@ -131,18 +123,11 @@ class TableServiceTest {
     @Test
     void changeNumberOfGuests() {
         // given
-        OrderTable orderTable = new OrderTable(1L, null, 2, false);
-        Mockito.when(orderTableDao.findById(Mockito.anyLong()))
-            .thenReturn(Optional.of(orderTable));
-
-        OrderTable expected = new OrderTable(1L, new TableGroup(1L), 4, false);
-        Mockito.when(orderTableDao.save(Mockito.any()))
-            .thenReturn(expected);
-
-        OrderTableRequest request = new OrderTableRequest(4);
+        아이디로_조회시_주문테이블을_반환(orderTable1);
+        저장시_예상된_결과_반환(new OrderTable(1L, null, 4, false));
 
         // when
-        OrderTableResponse actual = tableService.changeNumberOfGuests(1L, request);
+        OrderTableResponse actual = tableService.changeNumberOfGuests(1L, new OrderTableRequest(4));
 
         // then
         assertThat(actual.getNumberOfGuests()).isEqualTo(4);
@@ -165,8 +150,7 @@ class TableServiceTest {
     void modifyNumberOfGuestFailWhenTableNotExists() {
         // given
         OrderTable orderTable = new OrderTable(1L, null, 2, true);
-        Mockito.when(orderTableDao.findById(Mockito.anyLong()))
-            .thenReturn(Optional.of(orderTable));
+        아이디로_조회시_주문테이블을_반환(orderTable);
 
         OrderTableRequest request = new OrderTableRequest(4);
 
@@ -174,5 +158,20 @@ class TableServiceTest {
         assertThatExceptionOfType(KitchenposException.class)
             .isThrownBy(() -> tableService.changeNumberOfGuests(1L, request))
             .withMessage("주문 테이블이 비어있습니다.");
+    }
+
+    private void 아이디로_조회시_주문테이블을_반환(OrderTable orderTable) {
+        Mockito.when(orderTableDao.findById(Mockito.anyLong()))
+            .thenReturn(Optional.of(orderTable));
+    }
+
+    private void 저장시_예상된_결과_반환(OrderTable expected) {
+        Mockito.when(orderTableDao.save(Mockito.any()))
+            .thenReturn(expected);
+    }
+
+    private void 식사_혹은_준비중인_테이블_존재여부_반환(boolean b) {
+        Mockito.when(orderDao.existsByOrderTable_IdAndOrderStatusIn(Mockito.anyLong(), Mockito.anyList()))
+            .thenReturn(b);
     }
 }

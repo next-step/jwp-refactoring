@@ -4,12 +4,11 @@ import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -48,26 +47,29 @@ class OrderServiceTest {
     @InjectMocks
     private OrderService orderService;
 
+    private OrderTable orderTable;
+    private OrderLineItemRequest orderLineItemRequest;
+    private Order order;
+
+    @BeforeEach
+    void setUp() {
+        orderTable = new OrderTable(1L, new TableGroup(1L), 4, false);
+        orderLineItemRequest = new OrderLineItemRequest(1L, 1);
+        order = new Order(1L, new OrderTable(1L), OrderStatus.COOKING, LocalDateTime.now(),
+            new OrderLineItems(Collections.singletonList(orderLineItemRequest)));
+    }
+
     @DisplayName("주문 생성")
     @Test
     void create() {
         // given
-        Mockito.when(menuDao.countByIdIn(Mockito.anyList()))
-            .thenReturn(1L);
-
-        OrderTable orderTable = new OrderTable(1L, new TableGroup(1L), 4, false);
-        Mockito.when(orderTableDao.findById(Mockito.anyLong()))
-            .thenReturn(Optional.of(orderTable));
-
+        메뉴_개수_반환(1L);
+        조회한_주문_테이블_반환(orderTable);
         OrderLineItemRequest orderLineItem = new OrderLineItemRequest(1L, 1);
 
-        Order order = new Order(1L, new OrderTable(1L), OrderStatus.COOKING, LocalDateTime.now(),
-            new OrderLineItems(Collections.singletonList(orderLineItem)));
-        Mockito.when(orderDao.save(Mockito.any()))
-            .thenReturn(order);
+        주문_저장(order);
 
-        OrderLineItemRequest requestOrderLineItem = new OrderLineItemRequest(1L, 1);
-        OrderRequest request = new OrderRequest(1L, Collections.singletonList(requestOrderLineItem));
+        OrderRequest request = new OrderRequest(1L, Collections.singletonList(orderLineItemRequest));
 
         // when
         OrderResponse actual = orderService.create(request);
@@ -98,11 +100,9 @@ class OrderServiceTest {
     @Test
     void createOrderFailWhenItemNotExists() {
         // given
-        Mockito.when(menuDao.countByIdIn(Mockito.anyList()))
-            .thenReturn(2L);
+        메뉴_개수_반환(2L);
 
-        OrderLineItemRequest requestOrderLineItem = new OrderLineItemRequest(1L, 1);
-        OrderRequest request = new OrderRequest(1L, Collections.singletonList(requestOrderLineItem));
+        OrderRequest request = new OrderRequest(1L, Collections.singletonList(orderLineItemRequest));
 
         // when and then
         assertThatExceptionOfType(KitchenposException.class)
@@ -114,15 +114,12 @@ class OrderServiceTest {
     @Test
     void createOrderFailWhenTableNotExists() {
         // given
-        Mockito.when(menuDao.countByIdIn(Mockito.anyList()))
-            .thenReturn(1L);
+        메뉴_개수_반환(1L);
 
         OrderTable orderTable = new OrderTable(1L, new TableGroup(1L), 4, true);
-        Mockito.when(orderTableDao.findById(Mockito.anyLong()))
-            .thenReturn(Optional.of(orderTable));
+        조회한_주문_테이블_반환(orderTable);
 
-        OrderLineItemRequest requestOrderLineItem = new OrderLineItemRequest(1L, 1);
-        OrderRequest request = new OrderRequest(1L, Collections.singletonList(requestOrderLineItem));
+        OrderRequest request = new OrderRequest(1L, Collections.singletonList(orderLineItemRequest));
 
         // when and then
         assertThatExceptionOfType(KitchenposException.class)
@@ -134,11 +131,7 @@ class OrderServiceTest {
     @Test
     void list() {
         // given
-        OrderLineItemRequest orderLineItem = new OrderLineItemRequest(1L, 1);
-
-        Order order = new Order(1L, new OrderTable(1L), OrderStatus.COOKING, LocalDateTime.now(), new OrderLineItems(Collections.singletonList(orderLineItem)));
-        Mockito.when(orderDao.findAll())
-            .thenReturn(Collections.singletonList(order));
+        주문_전쳬_조회();
 
         // when
         List<OrderResponse> actual = orderService.list().getOrderResponses();
@@ -150,7 +143,7 @@ class OrderServiceTest {
             () -> assertThat(actual.get(0).getOrderTableId()).isEqualTo(1L),
             () -> assertThat(actual.get(0).getOrderStatus()).isEqualTo("COOKING"),
             () -> assertThat(actual.get(0).getOrderLineItems()).isEqualTo(Collections.singletonList(
-                OrderLineItemResponse.from(orderLineItem.toEntity())))
+                OrderLineItemResponse.from(orderLineItemRequest.toEntity())))
         );
     }
 
@@ -158,13 +151,10 @@ class OrderServiceTest {
     @Test
     void changeOrderStatus() {
         // given
-        Order order = new Order(1L, new OrderTable(1L), OrderStatus.COOKING, LocalDateTime.now(), new OrderLineItems());
-        Mockito.when(orderDao.findById(Mockito.anyLong()))
-            .thenReturn(Optional.of(order));
+        ID로_주문_조회(order);
 
-        OrderLineItem orderLineItem = new OrderLineItem(1L, new Order(1L), 1L, 1);
-        Mockito.when(orderLineItemDao.findAllByOrder_Id(Mockito.anyLong()))
-            .thenReturn(Collections.singletonList(orderLineItem));
+        OrderLineItem orderLineItem = new OrderLineItem(1L, order, 1L, 1);
+        주문_ID로_주문_상품_조회(orderLineItem);
 
         OrderRequest request = new OrderRequest(1L, "MEAL");
 
@@ -178,11 +168,10 @@ class OrderServiceTest {
 
     @DisplayName("이미 완료상태이면 변경 불가능")
     @Test
-    void modifyOrderStatusFailWhenAlreadyCompleted() {
+    void changeOrderStatusFailWhenAlreadyCompleted() {
         // given
         Order order = new Order(1L, new OrderTable(1L), OrderStatus.COMPLETION, LocalDateTime.now(), new OrderLineItems());
-        Mockito.when(orderDao.findById(Mockito.anyLong()))
-            .thenReturn(Optional.of(order));
+        ID로_주문_조회(order);
 
         OrderRequest request = new OrderRequest(1L, "MEAL");
 
@@ -190,5 +179,35 @@ class OrderServiceTest {
         assertThatExceptionOfType(KitchenposException.class)
             .isThrownBy(() -> orderService.changeOrderStatus(1L, request))
         .withMessage("완료된 주문의 상태를 바꿀 수 없습니다.");
+    }
+
+    private void 주문_ID로_주문_상품_조회(OrderLineItem orderLineItem) {
+        Mockito.when(orderLineItemDao.findAllByOrder_Id(Mockito.anyLong()))
+            .thenReturn(Collections.singletonList(orderLineItem));
+    }
+
+    private void ID로_주문_조회(Order order) {
+        Mockito.when(orderDao.findById(Mockito.anyLong()))
+            .thenReturn(Optional.of(order));
+    }
+
+    private void 주문_저장(Order order) {
+        Mockito.when(orderDao.save(Mockito.any()))
+            .thenReturn(order);
+    }
+
+    private void 조회한_주문_테이블_반환(OrderTable orderTable) {
+        Mockito.when(orderTableDao.findById(Mockito.anyLong()))
+            .thenReturn(Optional.of(orderTable));
+    }
+
+    private void 메뉴_개수_반환(long l) {
+        Mockito.when(menuDao.countByIdIn(Mockito.anyList()))
+            .thenReturn(l);
+    }
+
+    private void 주문_전쳬_조회() {
+        Mockito.when(orderDao.findAll())
+            .thenReturn(Collections.singletonList(order));
     }
 }

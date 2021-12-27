@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -38,19 +39,25 @@ class TableGroupServiceTest {
     @InjectMocks
     private TableGroupService tableGroupService;
 
+    private List<OrderTable> orderTables;
+    private TableGroup tableGroup;
+
+    @BeforeEach
+    void setUp() {
+        orderTables = Arrays.asList(
+            new OrderTable(1L, null, 4, true),
+            new OrderTable(2L, null, 2, true));
+
+        tableGroup = new TableGroup(1L, LocalDateTime.now(), new OrderTables(orderTables));
+
+    }
+
     @DisplayName("테이블 그룹 생성")
     @Test
     void create() {
         // given
-        List<OrderTable> orderTables = Arrays.asList(
-            new OrderTable(1L, null, 4, true),
-            new OrderTable(2L, null, 2, true));
-        Mockito.when(orderTableDao.findAllByIdIn(Mockito.anyList()))
-            .thenReturn(orderTables);
-
-        TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), new OrderTables(orderTables));
-        Mockito.when(tableGroupDao.save(Mockito.any()))
-            .thenReturn(tableGroup);
+        테이블_조회_결과_반환(orderTables);
+        테이블_그룹_저장_결과_반환();
 
         List<OrderTableIdRequest> requestTables = Arrays.asList(
             new OrderTableIdRequest(1L),
@@ -87,8 +94,7 @@ class TableGroupServiceTest {
         // given
         List<OrderTable> orderTables = Arrays.asList(
             new OrderTable(2L, null, 2, true));
-        Mockito.when(orderTableDao.findAllByIdIn(Mockito.anyList()))
-            .thenReturn(orderTables);
+        테이블_조회_결과_반환(orderTables);
 
         List<OrderTableIdRequest> requestTables = Arrays.asList(
             new OrderTableIdRequest(1L),
@@ -107,8 +113,7 @@ class TableGroupServiceTest {
         List<OrderTable> orderTables = Arrays.asList(
             new OrderTable(1L, null, 4, false),
             new OrderTable(2L, null, 2, true));
-        Mockito.when(orderTableDao.findAllByIdIn(Mockito.anyList()))
-            .thenReturn(orderTables);
+        테이블_조회_결과_반환(orderTables);
 
         List<OrderTableIdRequest> requestTables = Arrays.asList(
             new OrderTableIdRequest(1L),
@@ -127,9 +132,8 @@ class TableGroupServiceTest {
         // given
         List<OrderTable> orderTables = Arrays.asList(
             new OrderTable(1L, null, 4, true),
-            new OrderTable(2L, new TableGroup(1L), 2, true));
-        Mockito.when(orderTableDao.findAllByIdIn(Mockito.anyList()))
-            .thenReturn(orderTables);
+            new OrderTable(2L, new TableGroup(LocalDateTime.now()), 2, true));
+        테이블_조회_결과_반환(orderTables);
 
         List<OrderTableIdRequest> requestTables = Arrays.asList(
             new OrderTableIdRequest(1L),
@@ -149,11 +153,9 @@ class TableGroupServiceTest {
         List<OrderTable> orderTables = Arrays.asList(
             new OrderTable(1L, null, 4, true),
             new OrderTable(2L, null, 2, true));
-        Mockito.when(orderTableDao.findAllByTableGroup_Id(Mockito.anyLong()))
-            .thenReturn(orderTables);
+        테이블_그룹_ID로_조회_결과_반환(orderTables);
 
-        Mockito.when(orderDao.existsByOrderTable_IdInAndOrderStatusIn(Mockito.anyList(), Mockito.anyList()))
-            .thenReturn(false);
+        요리_또는_식사중인_테이블_존재_여부_반환(false);
 
         // when
         tableGroupService.ungroup(1L);
@@ -161,19 +163,37 @@ class TableGroupServiceTest {
 
     @DisplayName("요리 중이나 식사 중인 주문 테이블을 포함하고 있다면 삭제 불가능")
     @Test
-    void deleteTableGroupFailWhenContainsMealOrCooking() {
+    void unGroupFailWhenContainsMealOrCooking() {
         // given
         List<OrderTable> orderTables = Arrays.asList(
             new OrderTable(1L, null, 4, true),
             new OrderTable(2L, null, 2, true));
-        Mockito.when(orderTableDao.findAllByTableGroup_Id(Mockito.anyLong()))
-            .thenReturn(orderTables);
+        테이블_그룹_ID로_조회_결과_반환(orderTables);
 
-        Mockito.when(orderDao.existsByOrderTable_IdInAndOrderStatusIn(Mockito.anyList(), Mockito.anyList()))
-            .thenReturn(true);
+        요리_또는_식사중인_테이블_존재_여부_반환(true);
 
         // when and then
         assertThatExceptionOfType(IllegalArgumentException.class)
             .isThrownBy(() -> tableGroupService.ungroup(1L));
+    }
+
+    private void 테이블_그룹_저장_결과_반환() {
+        Mockito.when(tableGroupDao.save(Mockito.any()))
+            .thenReturn(tableGroup);
+    }
+
+    private void 테이블_조회_결과_반환(List<OrderTable> orderTables) {
+        Mockito.when(orderTableDao.findAllByIdIn(Mockito.anyList()))
+            .thenReturn(orderTables);
+    }
+
+    private void 테이블_그룹_ID로_조회_결과_반환(List<OrderTable> orderTables) {
+        Mockito.when(orderTableDao.findAllByTableGroup_Id(Mockito.anyLong()))
+            .thenReturn(orderTables);
+    }
+
+    private void 요리_또는_식사중인_테이블_존재_여부_반환(boolean b) {
+        Mockito.when(orderDao.existsByOrderTable_IdInAndOrderStatusIn(Mockito.anyList(), Mockito.anyList()))
+            .thenReturn(b);
     }
 }

@@ -1,5 +1,6 @@
 package kitchenpos.dto;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -20,7 +21,7 @@ public class MenuProductResponses {
     }
 
     public List<MenuProductResponse> getMenuProductResponses() {
-        return menuProductResponses;
+        return Collections.unmodifiableList(menuProductResponses);
     }
 
     @Override

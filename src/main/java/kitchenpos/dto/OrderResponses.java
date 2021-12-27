@@ -1,5 +1,6 @@
 package kitchenpos.dto;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,6 +20,6 @@ public class OrderResponses {
     }
 
     public List<OrderResponse> getOrderResponses() {
-        return orderResponses;
+        return Collections.unmodifiableList(orderResponses);
     }
 }
