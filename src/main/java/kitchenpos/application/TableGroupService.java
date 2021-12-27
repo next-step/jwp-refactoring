@@ -17,6 +17,8 @@ import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.OrderTableIdRequest;
 import kitchenpos.dto.TableGroupRequest;
 import kitchenpos.dto.TableGroupResponse;
+import kitchenpos.exception.KitchenposErrorCode;
+import kitchenpos.exception.KitchenposException;
 
 @Service
 @Transactional(readOnly = true)
@@ -62,7 +64,7 @@ public class TableGroupService {
 
         if (orderDao.existsByOrderTable_IdInAndOrderStatusIn(
             orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException();
+            throw new KitchenposException(KitchenposErrorCode.CONTAINS_USED_TABLE);
         }
 
         orderTables.unGroup();

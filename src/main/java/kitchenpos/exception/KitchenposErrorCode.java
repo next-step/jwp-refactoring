@@ -10,7 +10,8 @@ public enum KitchenposErrorCode {
     CONTAINS_USED_TABLE("사용중인 테이블이 있습니다."),
     EMPTY_ORDER_LINE_ITEMS("주문 항목이 비어있습니다."),
     INVALID_ORDER_LINE_ITEM_SIZE("주문 항목의 개수가 다릅니다."),
-    CANNOT_UPDATE_COMPLETED_ORDER("완료된 주문의 상태를 바꿀 수 없습니다.");
+    CANNOT_UPDATE_COMPLETED_ORDER("완료된 주문의 상태를 바꿀 수 없습니다."),
+    INVALID_TABLE_SIZE("주문 테이블의 개수가 다릅니다.");
 
     private final String message;
 

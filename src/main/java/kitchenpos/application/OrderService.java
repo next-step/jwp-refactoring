@@ -73,7 +73,7 @@ public class OrderService {
     @Transactional
     public OrderResponse changeOrderStatus(final Long orderId, final OrderRequest request) {
         final Order savedOrder = orderDao.findById(orderId)
-            .orElseThrow(IllegalArgumentException::new);
+            .orElseThrow(KitchenposNotFoundException::new);
 
         final OrderStatus orderStatus = OrderStatus.valueOf(request.getOrderStatus());
         savedOrder.updateOrderStatus(orderStatus);

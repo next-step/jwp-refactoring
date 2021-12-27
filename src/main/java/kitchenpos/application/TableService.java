@@ -14,6 +14,8 @@ import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.OrderTableRequest;
 import kitchenpos.dto.OrderTableResponse;
 import kitchenpos.dto.OrderTableResponses;
+import kitchenpos.exception.KitchenposErrorCode;
+import kitchenpos.exception.KitchenposException;
 import kitchenpos.exception.KitchenposNotFoundException;
 
 @Service
@@ -49,7 +51,7 @@ public class TableService {
 
         if (orderDao.existsByOrderTable_IdAndOrderStatusIn(
             orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException();
+            throw new KitchenposException(KitchenposErrorCode.CONTAINS_USED_TABLE);
         }
 
         orderTable.updateEmpty(request.isEmpty());

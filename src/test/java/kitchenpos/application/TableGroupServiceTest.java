@@ -102,8 +102,9 @@ class TableGroupServiceTest {
         TableGroupRequest request = new TableGroupRequest(requestTables);
 
         // when and then
-        assertThatExceptionOfType(IllegalArgumentException.class)
-            .isThrownBy(() -> tableGroupService.create(request));
+        assertThatExceptionOfType(KitchenposException.class)
+            .isThrownBy(() -> tableGroupService.create(request))
+            .withMessage("주문 테이블의 개수가 다릅니다.");
     }
 
     @DisplayName("사용중인 테이블이 포함되어 있는 경우 생성 불가능")
@@ -173,8 +174,9 @@ class TableGroupServiceTest {
         요리_또는_식사중인_테이블_존재_여부_반환(true);
 
         // when and then
-        assertThatExceptionOfType(IllegalArgumentException.class)
-            .isThrownBy(() -> tableGroupService.ungroup(1L));
+        assertThatExceptionOfType(KitchenposException.class)
+            .isThrownBy(() -> tableGroupService.ungroup(1L))
+            .withMessage("사용중인 테이블이 있습니다.");
     }
 
     private void 테이블_그룹_저장_결과_반환() {

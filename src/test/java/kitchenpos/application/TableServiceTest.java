@@ -115,8 +115,9 @@ class TableServiceTest {
         OrderTableRequest request = new OrderTableRequest(true);
 
         // when and then
-        assertThatExceptionOfType(IllegalArgumentException.class)
-            .isThrownBy(() -> tableService.changeEmpty(1L, request));
+        assertThatExceptionOfType(KitchenposException.class)
+            .isThrownBy(() -> tableService.changeEmpty(1L, request))
+        .withMessage("사용중인 테이블이 있습니다.");
     }
 
     @DisplayName("고객 수 변경")

@@ -25,7 +25,7 @@ public class OrderTables {
 
     public void checkSameSize(int size) {
         if (size != orderTables.size()) {
-            throw new IllegalArgumentException();
+            throw new KitchenposException(KitchenposErrorCode.INVALID_TABLE_SIZE);
         }
     }
 
