@@ -1,17 +1,15 @@
 package kitchenpos.acceptance;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
+import kitchenpos.TestApiClient;
 import kitchenpos.domain.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -31,10 +29,10 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
 
-        추천메뉴 = MenuAcceptanceTest.메뉴그룹_등록되어있음(MenuGroup.of("추천메뉴"));
-        소고기한우 = MenuAcceptanceTest.상품_등록되어있음(Product.of("소고기한우", 30000));
-        메뉴 = MenuAcceptanceTest.메뉴_등록되어있음("소고기+소고기",50000,추천메뉴.getId(),Arrays.asList(MenuProduct.of(소고기한우.getId(), 2L)));
-        테이블 = TableAcceptanceTest.테이블_등록되어_있음(OrderTable.of(4, false));
+        추천메뉴 = MenuAcceptanceTest.메뉴그룹_등록되어있음(MenuGroup.of("추천메뉴"), "/api/menu-groups");
+        소고기한우 = MenuAcceptanceTest.상품_등록되어있음(Product.of("소고기한우", 30000), "/api/products");
+        메뉴 = MenuAcceptanceTest.메뉴_등록되어있음("소고기+소고기", 50000, 추천메뉴.getId(), Arrays.asList(MenuProduct.of(소고기한우.getId(), 2L)));
+        테이블 = TableAcceptanceTest.테이블_등록되어_있음(OrderTable.of(4, false), "/api/tables");
     }
 
 
@@ -48,11 +46,11 @@ public class OrderAcceptanceTest extends AcceptanceTest {
                         OrderLineItem.of(메뉴.getId(), 2)
                 )
         );
-        ExtractableResponse<Response> createResponse = 주문_생성_요청(order);
+        ExtractableResponse<Response> createResponse = 주문_생성_요청(order, "/api/orders");
         Order savedOrder = 주문_생성_확인(createResponse);
 
         // 주문 조회
-        ExtractableResponse<Response> findResponse = 모든_주문_조회_요청();
+        ExtractableResponse<Response> findResponse = 모든_주문_조회_요청("/api/orders");
         모든_주문_조회_확인(findResponse, savedOrder);
 
         // 주문 상태 변경
@@ -88,36 +86,20 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 주문_상태_변경_요청(Long id, Order changeOrder) {
-        return RestAssured
-                .given().log().all()
-                .body(changeOrder)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().put("/api/orders/" + id + "/order-status")
-                .then().log().all()
-                .extract();
+        return TestApiClient.update(changeOrder, "/api/orders/" + id + "/order-status");
     }
 
-    private ExtractableResponse<Response> 모든_주문_조회_요청() {
-        return RestAssured
-                .given().log().all()
-                .when().get("/api/orders")
-                .then().log().all()
-                .extract();
+    private ExtractableResponse<Response> 모든_주문_조회_요청(String path) {
+        return TestApiClient.get(path);
     }
 
-    private static ExtractableResponse<Response> 주문_생성_요청(Order order) {
-        return RestAssured
-                .given().log().all()
-                .body(order)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().post("/api/orders")
-                .then().log().all()
-                .extract();
+    private static ExtractableResponse<Response> 주문_생성_요청(Order order, String path) {
+        return TestApiClient.create(order, path);
     }
 
     public static Order 주문_생성됨(Long orderTableId, List<OrderLineItem> orderLineItems) {
         Order order = Order.of(orderTableId, orderLineItems);
-        return 주문_생성_요청(order).as(Order.class);
+        return 주문_생성_요청(order, "/api/orders").as(Order.class);
     }
 
 }
