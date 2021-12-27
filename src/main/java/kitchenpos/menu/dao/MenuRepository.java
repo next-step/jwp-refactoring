@@ -8,5 +8,5 @@ import kitchenpos.menu.domain.Menu;
 
 public interface MenuRepository extends JpaRepository<Menu, Long> {
 
-    long countByIdIn(List<Long> ids);
+    List<Menu> findAllByIds(List<Long> ids);
 }

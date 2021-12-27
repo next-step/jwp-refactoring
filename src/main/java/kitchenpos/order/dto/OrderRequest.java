@@ -10,27 +10,23 @@ import kitchenpos.order.domain.OrderTable;
 public class OrderRequest {
     private Long orderTableId;
     private OrderStatus orderStatus;
-    private List<OrderLineItem> orderLineItems;
+    private List<OrderLineItemRequest> orderLineItemRequests;
     
     private OrderRequest() {
     }
 
-    private OrderRequest(Long orderTableId, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
+    private OrderRequest(Long orderTableId, OrderStatus orderStatus, List<OrderLineItemRequest> orderLineItemRequests) {
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
-        this.orderLineItems = orderLineItems;
+        this.orderLineItemRequests = orderLineItemRequests;
     }
     
-    public static OrderRequest of(Long orderTableId, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
-        return new OrderRequest(orderTableId, orderStatus, orderLineItems);
+    public static OrderRequest of(Long orderTableId, OrderStatus orderStatus, List<OrderLineItemRequest> orderLineItemRequests) {
+        return new OrderRequest(orderTableId, orderStatus, orderLineItemRequests);
     }
     
-    public static OrderRequest from(Order order) {
-        return new OrderRequest(order.getOrderTableId(), order.getOrderStatus(), order.getOrderLineItems());
-    }
-    
-    public Order toOrder(OrderTable orderTable) {
-        return Order.of(orderTable, orderStatus);
+    public Order toOrder(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
+        return Order.of(orderTable, orderStatus, orderLineItems);
     }
 
     public Long getOrderTableId() {
@@ -41,8 +37,8 @@ public class OrderRequest {
         return orderStatus;
     }
 
-    public List<OrderLineItem> getOrderLineItems() {
-        return orderLineItems;
+    public List<OrderLineItemRequest> getOrderLineItems() {
+        return orderLineItemRequests;
     }
 
 }

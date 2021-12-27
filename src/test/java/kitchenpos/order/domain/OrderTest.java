@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,8 +18,11 @@ public class OrderTest {
     @Test
     void 조리중_상태_변경() {
         // given
+        Menu 메뉴 = Menu.of("메뉴", 5000L, MenuGroup.from("메뉴그룹"));
+        OrderLineItem 주문_항목 = OrderLineItem.of(메뉴, 3L);
+        
         OrderTable 테이블 = OrderTable.of(3, false);
-        Order 주문 = Order.of(테이블, OrderStatus.COOKING);
+        Order 주문 = Order.of(테이블, OrderStatus.COOKING, Arrays.asList(주문_항목));
         
         // when
         주문.changeOrderStatus(OrderStatus.MEAL);
@@ -34,8 +36,11 @@ public class OrderTest {
     @Test
     void 식사중_상태_변경() {
         // given
+        Menu 메뉴 = Menu.of("메뉴", 5000L, MenuGroup.from("메뉴그룹"));
+        OrderLineItem 주문_항목 = OrderLineItem.of(메뉴, 3L);
+        
         OrderTable 테이블 = OrderTable.of(3, false);
-        Order 주문 = Order.of(테이블, OrderStatus.MEAL);
+        Order 주문 = Order.of(테이블, OrderStatus.MEAL, Arrays.asList(주문_항목));
         
         // when
         주문.changeOrderStatus(OrderStatus.COMPLETION);
@@ -49,8 +54,11 @@ public class OrderTest {
     @Test
     void 완료_주문_상태_변경_불가() {
         // given
+        Menu 메뉴 = Menu.of("메뉴", 5000L, MenuGroup.from("메뉴그룹"));
+        OrderLineItem 주문_항목 = OrderLineItem.of(메뉴, 3L);
+        
         OrderTable 테이블 = OrderTable.of(3, false);
-        Order 주문 = Order.of(테이블, OrderStatus.COMPLETION);
+        Order 주문 = Order.of(테이블, OrderStatus.COMPLETION, Arrays.asList(주문_항목));
     
         // when, then
         assertThatThrownBy(() -> {
@@ -60,33 +68,16 @@ public class OrderTest {
     
     }
     
-    @DisplayName("주문에 메뉴를 추가한다")
-    @Test
-    void 주문_메뉴_추가() {
-        // given
-        OrderTable 테이블 = OrderTable.of(3, false);
-        Order 주문 = Order.of(테이블, OrderStatus.COOKING);
-        List<OrderLineItem> 주문_메뉴 = Arrays.asList(OrderLineItem.of(주문, Menu.of("메뉴", 5000L, MenuGroup.from("메뉴그룹")), 2L));
-        
-        // when
-        주문.addOrderLineItems(주문_메뉴);
-        
-        // then
-        assertThat(주문.getOrderLineItems().size()).isEqualTo(1);
-    
-    }
     
     @DisplayName("주문에 메뉴가 있어야 한다")
     @Test
     void 주문_메뉴_확인() {
         // given
         OrderTable 테이블 = OrderTable.of(3, false);
-        Order 주문 = Order.of(테이블, OrderStatus.COOKING);
-        List<OrderLineItem> 주문_메뉴 = new ArrayList<OrderLineItem>();
         
         // when, then
         assertThatThrownBy(() -> {
-            주문.addOrderLineItems(주문_메뉴);
+            Order.of(테이블, OrderStatus.COOKING, new ArrayList<OrderLineItem>());
         }).isInstanceOf(IllegalArgumentException.class)
         .hasMessage("주문에 메뉴가 없습니다");
     

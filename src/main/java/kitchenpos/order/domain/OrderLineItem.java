@@ -1,7 +1,5 @@
 package kitchenpos.order.domain;
 
-import java.util.Objects;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -31,14 +29,13 @@ public class OrderLineItem {
     protected OrderLineItem() {
     }
     
-    private OrderLineItem(Order order, Menu menu, long quantity) {
-        this.order = order;
+    private OrderLineItem(Menu menu, long quantity) {
         this.menu = menu;
         this.quantity = quantity;
     }
     
-    public static OrderLineItem of(Order order, Menu menu, long quantity) {
-        return new OrderLineItem(order, menu, quantity);
+    public static OrderLineItem of(Menu menu, long quantity) {
+        return new OrderLineItem(menu, quantity);
     }
 
     public Long getSeq() {

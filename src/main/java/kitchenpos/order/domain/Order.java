@@ -48,14 +48,19 @@ public class Order {
     protected Order() {
     }
     
-    public Order(OrderTable orderTable, OrderStatus orderStatus) {
+    public Order(OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
         this.orderLineItems = new ArrayList<OrderLineItem>();
+        addOrderLineItems(orderLineItems);
     }
 
-    public static Order of(OrderTable orderTable, OrderStatus orderStatus) {
-        return new Order(orderTable, orderStatus);
+    public static Order of(OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
+        return new Order(orderTable, orderStatus, orderLineItems);
+    }
+    
+    public static Order of(OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
+        return new Order(null, orderStatus, orderLineItems);
     }
     
     public Long getId() {
@@ -98,16 +103,6 @@ public class Order {
         this.orderTable = orderTable;
     }
 
-    public void addOrderLineItems(final List<OrderLineItem> orderLineItems) {
-        checkOrderLineItems(orderLineItems);
-        
-        orderLineItems.stream()
-        .forEach(orderLineItem -> {
-            orderLineItem.setOrder(this);
-            this.orderLineItems.add(orderLineItem);
-        });
-    }
-    
     public void checkCompletionStatus() {
         if (isCompletion()) {
             throw new IllegalArgumentException("계산이 완료된 주문은 상태를 변경 할 수 없습니다");
@@ -126,10 +121,20 @@ public class Order {
         return this.orderStatus.equals(OrderStatus.COOKING);
     }
     
-    public void checkMenuCount(Long menuCount) {
+    public void validateMenu(Long menuCount) {
         if (orderLineItems.size() != menuCount) {
             throw new IllegalArgumentException("등록된 메뉴만 주문할 수 있습니다");
         }
+    }
+    
+    private void addOrderLineItems(final List<OrderLineItem> orderLineItems) {
+        checkOrderLineItems(orderLineItems);
+        
+        orderLineItems.stream()
+        .forEach(orderLineItem -> {
+            orderLineItem.setOrder(this);
+            this.orderLineItems.add(orderLineItem);
+        });
     }
     
     private void checkOrderLineItems(List<OrderLineItem> orderLineItems) {

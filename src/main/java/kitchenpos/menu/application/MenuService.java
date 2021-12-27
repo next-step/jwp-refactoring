@@ -55,11 +55,6 @@ public class MenuService {
                 .collect(Collectors.toList());
     }
     
-    @Transactional
-    public Long countByIdIn(final List<Long> menuIds) {
-        return menuRepository.countByIdIn(menuIds);
-    }
-    
     @Transactional(readOnly = true)
     private MenuProducts createMenuProducts(List<MenuProductRequest> request) {
         List<MenuProduct> result = new ArrayList<MenuProduct>();
@@ -79,5 +74,10 @@ public class MenuService {
         }
 
         return MenuProducts.from(result);
+    }
+    
+    @Transactional(readOnly = true)
+    public List<Menu> findAllByIds(List<Long> ids) {
+        return menuRepository.findAllByIds(ids);
     }
 }
