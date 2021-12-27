@@ -17,6 +17,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.dto.OrderTableRequest;
+import kitchenpos.dto.OrderTableResponse;
+import kitchenpos.dto.OrderTableResponses;
 
 @ExtendWith(MockitoExtension.class)
 class TableServiceTest {
@@ -36,13 +39,13 @@ class TableServiceTest {
         Mockito.when(orderTableDao.save(Mockito.any()))
             .thenReturn(expected);
 
-        OrderTable orderTable = new OrderTable(1L, 4);
+        OrderTableRequest orderTable = new OrderTableRequest(4, false);
 
         // when
-        OrderTable actual = tableService.create(orderTable);
+        OrderTableResponse actual = tableService.create(orderTable);
 
         // then
-        assertThat(actual).isEqualTo(expected);
+        assertThat(actual).isEqualTo(OrderTableResponse.from(expected));
     }
 
     @DisplayName("테이블 목록 조회")
@@ -57,10 +60,10 @@ class TableServiceTest {
             .thenReturn(orderTables);
 
         // when
-        List<OrderTable> actual = tableService.list();
+        OrderTableResponses actual = tableService.list();
 
         // then
-        assertThat(actual).isEqualTo(orderTables);
+        assertThat(actual).isEqualTo(OrderTableResponses.from(orderTables));
     }
 
     @DisplayName("테이블 빈 테이블 여부 변경")
@@ -78,11 +81,10 @@ class TableServiceTest {
         Mockito.when(orderTableDao.save(Mockito.any()))
             .thenReturn(expected);
 
-        OrderTable request = new OrderTable();
-        request.setEmpty(true);
+        OrderTableRequest request = new OrderTableRequest(true);
 
         // when
-        OrderTable actual = tableService.changeEmpty(1L, request);
+        OrderTableResponse actual = tableService.changeEmpty(1L, request);
 
         // then
         assertThat(actual.isEmpty()).isTrue();
@@ -97,8 +99,7 @@ class TableServiceTest {
         Mockito.when(orderTableDao.findById(Mockito.anyLong()))
             .thenReturn(Optional.of(orderTable));
 
-        OrderTable request = new OrderTable();
-        request.setEmpty(true);
+        OrderTableRequest request = new OrderTableRequest(true);
 
         // when and then
         assertThatExceptionOfType(IllegalArgumentException.class)
@@ -116,8 +117,7 @@ class TableServiceTest {
         Mockito.when(orderDao.existsByOrderTableIdAndOrderStatusIn(Mockito.anyLong(), Mockito.anyList()))
             .thenReturn(true);
 
-        OrderTable request = new OrderTable();
-        request.setEmpty(true);
+        OrderTableRequest request = new OrderTableRequest(true);
 
         // when and then
         assertThatExceptionOfType(IllegalArgumentException.class)
@@ -136,11 +136,10 @@ class TableServiceTest {
         Mockito.when(orderTableDao.save(Mockito.any()))
             .thenReturn(expected);
 
-        OrderTable request = new OrderTable();
-        request.setNumberOfGuests(4);
+        OrderTableRequest request = new OrderTableRequest(4);
 
         // when
-        OrderTable actual = tableService.changeNumberOfGuests(1L, request);
+        OrderTableResponse actual = tableService.changeNumberOfGuests(1L, request);
 
         // then
         assertThat(actual.getNumberOfGuests()).isEqualTo(4);
@@ -150,8 +149,7 @@ class TableServiceTest {
     @Test
     void modifyNumberOfGuestFailWhenLessThanZero() {
         // given
-        OrderTable request = new OrderTable();
-        request.setNumberOfGuests(-1);
+        OrderTableRequest request = new OrderTableRequest(-1);
 
         // when and then
         assertThatExceptionOfType(IllegalArgumentException.class)
@@ -166,8 +164,7 @@ class TableServiceTest {
         Mockito.when(orderTableDao.findById(Mockito.anyLong()))
             .thenReturn(Optional.of(orderTable));
 
-        OrderTable request = new OrderTable();
-        request.setNumberOfGuests(4);
+        OrderTableRequest request = new OrderTableRequest(4);
 
         // when and then
         assertThatExceptionOfType(IllegalArgumentException.class)
