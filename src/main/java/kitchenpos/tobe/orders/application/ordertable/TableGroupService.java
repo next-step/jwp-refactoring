@@ -43,7 +43,7 @@ public class TableGroupService {
     @Transactional
     public void ungroup(final Long tableGroupId) {
         final TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
-            .orElseThrow(NoSuchElementException::new);
+            .orElseThrow(() -> new NoSuchElementException("존재하지 않는 단체를 해제할 수 없습니다."));
         tableGroup.ungroup(validator);
     }
 }

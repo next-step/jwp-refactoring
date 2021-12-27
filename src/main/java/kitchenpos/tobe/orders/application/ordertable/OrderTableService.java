@@ -41,7 +41,7 @@ public class OrderTableService {
         final OrderTableChangeEmptyRequest request
     ) {
         final OrderTable orderTable = orderTableRepository.findById(orderTableId)
-            .orElseThrow(IllegalArgumentException::new);
+            .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 주문 테이블을 변경할 수 없습니다."));
         if (request.isEmpty()) {
             orderTable.clear(validator);
         }
@@ -57,7 +57,7 @@ public class OrderTableService {
         final OrderTableChangeNumberOfGuestsRequest request
     ) {
         final OrderTable orderTable = orderTableRepository.findById(orderTableId)
-            .orElseThrow(IllegalArgumentException::new);
+            .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 주문 테이블을 변경할 수 없습니다."));
         orderTable.changeNumberOfGuests(request.getNumberOfGuests());
         return OrderTableResponse.of(orderTable);
     }

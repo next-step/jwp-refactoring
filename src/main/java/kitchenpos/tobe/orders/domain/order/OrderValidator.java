@@ -43,7 +43,7 @@ public class OrderValidator implements Validator<Order> {
 
     private void validateOrderTable(final Order order) {
         final OrderTable orderTable = orderTableRepository.findById(order.getOrderTableId())
-            .orElseThrow(NoSuchElementException::new);
+            .orElseThrow(() -> new NoSuchElementException("등록되지 않은 주문 테이블에 주문을 등록할 수 없습니다."));
 
         if (orderTable.isEmpty()) {
             throw new IllegalStateException("빈 테이블에는 매장 주문을 등록할 수 없습니다.");

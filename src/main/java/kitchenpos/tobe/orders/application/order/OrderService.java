@@ -42,7 +42,7 @@ public class OrderService {
         final OrderChangeStatusRequest request
     ) {
         final Order order = orderRepository.findById(orderId)
-            .orElseThrow(NoSuchElementException::new);
+            .orElseThrow(() -> new NoSuchElementException("요청되지 않은 주문을 변경할 수 없습니다."));
         order.changeStatus(request.getStatus());
         return OrderResponse.of(order);
     }
