@@ -57,11 +57,11 @@ class OrderServiceTest {
 
     @BeforeEach
     void setUp() {
-        orderTable = new OrderTable(1L, new TableGroup(1L), 4, false);
+        orderTable = new OrderTable(1L, new TableGroup(), 4, false);
         orderLineItemRequest = new OrderLineItemRequest(1L, 1);
-        menu = new Menu(1L);
+        menu = new Menu();
         orderLineItem = new OrderLineItem(menu, 1);
-        order = new Order(1L, new OrderTable(1L), OrderStatus.COOKING, LocalDateTime.now(),
+        order = new Order(1L, orderTable, OrderStatus.COOKING, LocalDateTime.now(),
             new OrderLineItems(Collections.singletonList(orderLineItem)));
     }
 
@@ -161,7 +161,7 @@ class OrderServiceTest {
         // given
         ID로_주문_조회(order);
 
-        OrderLineItem orderLineItem = new OrderLineItem(1L, order, new Menu(1L), 1);
+        OrderLineItem orderLineItem = new OrderLineItem(1L, order, new Menu(), 1);
         주문_ID로_주문_상품_조회(orderLineItem);
 
         OrderRequest request = new OrderRequest(1L, "MEAL");
@@ -178,7 +178,7 @@ class OrderServiceTest {
     @Test
     void changeOrderStatusFailWhenAlreadyCompleted() {
         // given
-        Order order = new Order(1L, new OrderTable(1L), OrderStatus.COMPLETION, LocalDateTime.now(), new OrderLineItems());
+        Order order = new Order(1L, orderTable, OrderStatus.COMPLETION, LocalDateTime.now(), new OrderLineItems());
         ID로_주문_조회(order);
 
         OrderRequest request = new OrderRequest(1L, "MEAL");

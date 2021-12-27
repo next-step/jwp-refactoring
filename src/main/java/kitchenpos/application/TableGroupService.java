@@ -1,6 +1,5 @@
 package kitchenpos.application;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -50,7 +49,7 @@ public class TableGroupService {
         savedOrderTables.checkSameSize(orderTableIds.size());
         savedOrderTables.checkNotContainsUsedTable();
 
-        TableGroup tableGroup = new TableGroup(LocalDateTime.now());
+        TableGroup tableGroup = new TableGroup();
         tableGroup.addOrderTables(savedOrderTables);
 
         return tableGroup;

@@ -13,6 +13,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
+import org.springframework.data.annotation.CreatedDate;
+
 import kitchenpos.exception.KitchenposErrorCode;
 import kitchenpos.exception.KitchenposException;
 
@@ -28,6 +30,7 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
 
+    @CreatedDate
     private LocalDateTime orderedTime;
 
     @Embedded
@@ -47,10 +50,7 @@ public class Order {
 
     public Order(OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime,
         OrderLineItems orderLineItems) {
-        this.orderTable = orderTable;
-        this.orderStatus = orderStatus;
-        this.orderedTime = orderedTime;
-        addOrderLineItems(orderLineItems.getOrderLineItems());
+        this(null, orderTable, orderStatus, orderedTime, orderLineItems);
     }
 
     public Long getId() {

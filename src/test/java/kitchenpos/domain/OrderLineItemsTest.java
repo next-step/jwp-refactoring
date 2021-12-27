@@ -14,7 +14,7 @@ class OrderLineItemsTest {
     @DisplayName("사이즈 값이 맞는지 확인")
     @Test
     void validateSize() {
-        OrderLineItem orderLineItem = new OrderLineItem(new Menu(1L), 1);
+        OrderLineItem orderLineItem = new OrderLineItem(new Menu(), 1);
         OrderLineItems orderLineItems = new OrderLineItems(Collections.singletonList(orderLineItem));
 
         assertThatExceptionOfType(KitchenposException.class)

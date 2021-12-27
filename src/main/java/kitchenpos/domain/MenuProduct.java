@@ -21,17 +21,10 @@ public class MenuProduct {
 
     private long quantity;
 
-    public MenuProduct() {
+    protected MenuProduct() {
     }
 
     public MenuProduct(Product product, long quantity) {
-        this.product = product;
-        this.quantity = quantity;
-    }
-
-    public MenuProduct(Long seq, Menu menu, Product product, long quantity) {
-        this.seq = seq;
-        this.menu = menu;
         this.product = product;
         this.quantity = quantity;
     }

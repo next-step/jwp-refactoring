@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import kitchenpos.application.TableService;
-import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.OrderTableRequest;
 import kitchenpos.dto.OrderTableResponse;
 import kitchenpos.dto.OrderTableResponses;
@@ -30,16 +29,14 @@ public class TableRestController {
         final OrderTableResponse created = tableService.create(request);
         final URI uri = URI.create("/api/tables/" + created.getId());
         return ResponseEntity.created(uri)
-            .body(created)
-            ;
+            .body(created);
     }
 
     @GetMapping("/api/tables")
     public ResponseEntity<List<OrderTableResponse>> list() {
         OrderTableResponses orderTableResponses = tableService.list();
         return ResponseEntity.ok()
-            .body(orderTableResponses.getOrderTableResponses())
-            ;
+            .body(orderTableResponses.getOrderTableResponses());
     }
 
     @PutMapping("/api/tables/{orderTableId}/empty")
@@ -48,8 +45,7 @@ public class TableRestController {
         @RequestBody final OrderTableRequest request
     ) {
         return ResponseEntity.ok()
-            .body(tableService.changeEmpty(orderTableId, request))
-            ;
+            .body(tableService.changeEmpty(orderTableId, request));
     }
 
     @PutMapping("/api/tables/{orderTableId}/number-of-guests")
@@ -58,7 +54,6 @@ public class TableRestController {
         @RequestBody final OrderTableRequest request
     ) {
         return ResponseEntity.ok()
-            .body(tableService.changeNumberOfGuests(orderTableId, request))
-            ;
+            .body(tableService.changeNumberOfGuests(orderTableId, request));
     }
 }

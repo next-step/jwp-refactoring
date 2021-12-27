@@ -54,7 +54,7 @@ class MenuServiceTest {
     void setUp() {
         menuProductRequest = new MenuProductRequest(1L, 2);
         product = new Product(1L, "product", BigDecimal.ONE);
-        menuProduct = new MenuProduct(1L, menu, product, 2);
+        menuProduct = new MenuProduct(product, 2);
         menuGroup = new MenuGroup(1L, "menuGroup");
         menu = new Menu(1L, "menu", BigDecimal.ONE, menuGroup, Arrays.asList(menuProduct));
     }

@@ -25,11 +25,7 @@ public class OrderTable {
     private NumberOfGuests numberOfGuests;
     private boolean empty;
 
-    public OrderTable() {
-    }
-
-    public OrderTable(Long id) {
-        this.id = id;
+    protected OrderTable() {
     }
 
     public OrderTable(TableGroup tableGroup, int numberOfGuests) {

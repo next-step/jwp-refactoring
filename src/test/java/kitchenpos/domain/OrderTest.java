@@ -15,9 +15,10 @@ class OrderTest {
     @DisplayName("주문 완료 상태에서 업데이트시 에러")
     @Test
     void updateOrderStatus() {
-        OrderLineItem orderLineItem = new OrderLineItem(new Menu(1L), 1);
+        OrderLineItem orderLineItem = new OrderLineItem(new Menu(), 1);
+        OrderTable orderTable = new OrderTable(1L, new TableGroup(1L), 4, false);
 
-        Order order = new Order(1L, new OrderTable(1L), OrderStatus.COMPLETION, LocalDateTime.now(),
+        Order order = new Order(orderTable, OrderStatus.COMPLETION, LocalDateTime.now(),
             new OrderLineItems(Collections.singletonList(orderLineItem)));
 
         assertThatExceptionOfType(KitchenposException.class)

@@ -23,6 +23,7 @@ import kitchenpos.dto.OrderResponses;
 import kitchenpos.exception.KitchenposNotFoundException;
 
 @Service
+@Transactional(readOnly = true)
 public class OrderService {
     private final MenuDao menuDao;
     private final OrderDao orderDao;

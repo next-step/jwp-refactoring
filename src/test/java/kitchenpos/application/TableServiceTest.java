@@ -94,7 +94,7 @@ class TableServiceTest {
     @Test
     void changeEmptyFailWhenTableGroupExists() {
         // given
-        OrderTable orderTable = new OrderTable(1L, new TableGroup(LocalDateTime.now()), 4, false);
+        OrderTable orderTable = new OrderTable(1L, new TableGroup(), 4, false);
         아이디로_조회시_주문테이블을_반환(orderTable);
 
         OrderTableRequest request = new OrderTableRequest(true);

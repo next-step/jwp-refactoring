@@ -48,7 +48,7 @@ class TableGroupServiceTest {
             new OrderTable(1L, null, 4, true),
             new OrderTable(2L, null, 2, true));
 
-        tableGroup = new TableGroup(1L, LocalDateTime.now(), new OrderTables(orderTables));
+        tableGroup = new TableGroup(1L, new OrderTables(orderTables));
 
     }
 
@@ -133,7 +133,7 @@ class TableGroupServiceTest {
         // given
         List<OrderTable> orderTables = Arrays.asList(
             new OrderTable(1L, null, 4, true),
-            new OrderTable(2L, new TableGroup(LocalDateTime.now()), 2, true));
+            new OrderTable(2L, new TableGroup(), 2, true));
         테이블_조회_결과_반환(orderTables);
 
         List<OrderTableIdRequest> requestTables = Arrays.asList(
