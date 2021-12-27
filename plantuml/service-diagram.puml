@@ -1,136 +1,95 @@
 @startuml
 
-MenuGroupDao <-- MenuGroupService
+MenuGroupRepository <-- MenuGroupService
 
-MenuDao <-- MenuService
-MenuGroupDao <-- MenuService
-MenuProductDao <-- MenuService
-ProductDao <-- MenuService
+MenuRepository <-- MenuService
+MenuValidator <-- MenuService
 
-ProductDao <-- ProductService
-
-MenuDao <-- OrderService
-OrderDao <-- OrderService
-OrderLineItemDao <-- OrderService
-OrderTableDao <-- OrderService
-
-OrderDao <-- TableGroupService
-OrderTableDao <-- TableGroupService
-TableGroupDao <-- TableGroupService
-
-
-OrderDao <-- TableService
-OrderTableDao <-- TableService
+ProductRepository <-- ProductService
 
 
 class MenuGroupService {
-    - MenuGroupDao menuGroupDao
+    - MenuGroupRepository menuGroupRepository
 
-    + create(menuGroup)
+    + create(request)
     + list()
 }
 
 class MenuService {
-    - MenuDao menuDao
-    - MenuGroupDao menuGroupDao
-    - MenuProductDao menuProductDao
-    - ProductDao productDao
+    - MenuRepository menuRepository
+    - MenuValidator menuValidator
 
-    + create(menu)
+    + create(request)
     + list()
 }
 
 class ProductService {
-    - ProductDao productDao
+    - ProductRepository productRepository
 
-    + create(product)
+    + create(request)
     + list()
 }
 
-class OrderService {
-    - MenuDao menuDao
-    - OrderDao orderDao
-    - OrderLineItemDao orderLineItemDao
-    - OrderTableDao orderTableDao
 
-    + create(order)
+interface MenuGroupRepository {
+}
+
+interface MenuRepository {
+}
+
+interface ProductRepository {
+}
+
+@enduml
+
+@startuml
+OrderRepository <-- OrderService
+OrderValidator <-- OrderService
+
+TableRepository <-- TableGroupService
+TableGroupRepository <-- TableGroupService
+ApplicationEventPublisher <-- TableGroupService
+TableGroupValidator <-- TableGroupService
+
+TableRepository <-- TableService
+TableValidator <-- TableService
+
+class OrderService {
+    - OrderRepository orderRepository
+    - OrderValidator orderValidator
+
+    + create(request)
     + list()
-    + changeOrderStatus(orderId, order)
+    + changeOrderStatus(orderId, request)
 }
 
 class TableGroupService {
-    - OrderDao orderDao
-    - OrderTableDao orderTableDao
-    - TableGroupDao tableGroupDao
+    - TableRepository tableRepository
+    - TableGroupRepository tableGroupRepository
+    - TableGroupValidator tableGroupValidator
+    - ApplicationEventPublisher eventPublisher
 
-    + create(tableGroup)
+    + create(request)
     + ungroup(tableGroupId)
 }
 
 class TableService {
-    - OrderDao orderDao
-    - OrderTableDao orderTableDao
+    - TableRepository tableRepository
+    - TableValidator tableValidator;
 
-    + create(orderTable)
-    + changeEmpty(orderTableId,orderTable)
-    + changeNumberOfGuests(orderTableId, orderTable)
+    + create(request)
+    + list()
+    + changeEmpty(tableId)
+    + changeNumberOfGuests(tableId, request)
 }
 
-
-interface MenuGroupDao {
-    + MenuGroup save(menuGroup)
-    + Optional<MenuGroup> findById(id)
-    + List<MenuGroup> findAll()
-    + boolean existsById(id)
+interface OrderRepository {
 }
 
-interface MenuDao {
-    + Menu save(menu)
-    + Optional<Menu> findById(id)
-    + List<Menu> findAll()
-    + long countByIdIn(ids)
+interface TableRepository {
+    + findByTableGroupId(tableGroupId))
 }
 
-interface MenuProductDao {
-    + MenuProduct save(menuProduct)
-    + Optional<MenuProduct> findById(id)
-    + List<MenuProduct> findAll()
-    + List<MenuProduct> findAllByMenuId(menuId)
+interface TableGroupRepository {
 }
-
-interface ProductDao {
-    + Product save(product)
-    + Optional<Product> findById(id)
-    + List<Product> findAll()
-}
-
-interface OrderDao {
-    + Order save(order)
-    + Optional<Order> findById(id)
-    + List<Order> findAll()
-    + boolean existsByOrderTableIdAndOrderStatusIn(orderTableId, orderStatuses)
-    + boolean existsByOrderTableIdInAndOrderStatusIn(orderTableIds, orderStatuses)
-}
-
-interface OrderLineItemDao {
-    + OrderLineItem save(orderLineItem)
-    + Optional<OrderLineItem> findById(id)
-    + List<OrderLineItem> findAll()
-    + List<OrderLineItem> findAllByOrderId(orderId)
-}
-
-interface OrderTableDao {
-    + OrderTable save(orderTable)
-    + Optional<OrderTable> findById(id)
-    + List<OrderTable> findAll()
-    + List<OrderTable> findAllByIdIn(ids)
-    + List<OrderTable> findAllByTableGroupId(tableGroupId)
-}
-
-interface TableGroupDao {
-    + TableGroup save(tableGroup)
-    + Optional<TableGroup> findById(id)
-    + List<TableGroup> findAll()
-}
-
 @enduml

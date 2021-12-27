@@ -1,10 +1,13 @@
 package kitchenpos.menu.dto;
 
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.Product;
+
+import javax.validation.constraints.NotNull;
 
 public class MenuProductRequest {
+    @NotNull
     private Long productId;
+    @NotNull
     private Long quantity;
 
     public MenuProductRequest(Long productId, Long quantity) {
@@ -12,8 +15,8 @@ public class MenuProductRequest {
         this.quantity = quantity;
     }
 
-    public MenuProduct toEntity(Product product) {
-        return new MenuProduct(product, quantity);
+    public MenuProduct toEntity() {
+        return new MenuProduct(productId, quantity);
     }
 
     public Long getProductId() {

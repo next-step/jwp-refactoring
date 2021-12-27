@@ -2,7 +2,10 @@ package kitchenpos.menu.dto;
 
 import kitchenpos.menu.domain.MenuGroup;
 
+import javax.validation.constraints.NotNull;
+
 public class MenuGroupRequest {
+    @NotNull
     private String name;
 
     public MenuGroupRequest() {

@@ -3,8 +3,8 @@ package kitchenpos.order.ui;
 import kitchenpos.common.BindingException;
 import kitchenpos.order.application.TableService;
 import kitchenpos.order.dto.OrderStatusRequest;
-import kitchenpos.order.dto.OrderTableRequest;
-import kitchenpos.order.dto.OrderTableResponse;
+import kitchenpos.order.dto.TableRequest;
+import kitchenpos.order.dto.TableResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -23,25 +23,28 @@ public class TableRestController {
     }
 
     @PostMapping
-    public ResponseEntity<OrderTableResponse> create(@RequestBody final OrderTableRequest request) {
-        final OrderTableResponse created = tableService.create(request);
+    public ResponseEntity<TableResponse> create(@RequestBody @Valid final TableRequest request, BindingResult bs) {
+        if (bs.hasErrors()) {
+            throw new BindingException();
+        }
+        final TableResponse created = tableService.create(request);
         final URI uri = URI.create("/api/tables/" + created.getId());
         return ResponseEntity.created(uri).body(created);
     }
 
     @GetMapping
-    public ResponseEntity<List<OrderTableResponse>> list() {
+    public ResponseEntity<List<TableResponse>> list() {
         return ResponseEntity.ok().body(tableService.list());
     }
 
     @PutMapping("/{orderTableId}/empty")
-    public ResponseEntity<OrderTableResponse> changeEmpty(@PathVariable final Long orderTableId) {
+    public ResponseEntity<TableResponse> changeEmpty(@PathVariable final Long orderTableId) {
         return ResponseEntity.ok().body(tableService.changeEmpty(orderTableId));
     }
 
     @PutMapping("/{orderTableId}/number-of-guests")
-    public ResponseEntity<OrderTableResponse> changeGuests(@PathVariable final Long orderTableId,
-                                                           @RequestBody @Valid final OrderTableRequest request, BindingResult bs) {
+    public ResponseEntity<TableResponse> changeGuests(@PathVariable final Long orderTableId,
+                                                      @RequestBody @Valid final TableRequest request, BindingResult bs) {
         if (bs.hasErrors()) {
             throw new BindingException();
         }
@@ -49,7 +52,7 @@ public class TableRestController {
     }
 
     @PutMapping("/{tableId}/order-status")
-    public ResponseEntity<OrderTableResponse> changeOrderStatus(@PathVariable final Long tableId,
+    public ResponseEntity<TableResponse> changeOrderStatus(@PathVariable final Long tableId,
                                                            @RequestBody final OrderStatusRequest request) {
         return ResponseEntity.ok(tableService.changeOrderStatus(tableId, request));
     }

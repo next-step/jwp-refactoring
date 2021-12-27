@@ -1,22 +1,23 @@
 package kitchenpos.menu.dto;
 
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MenuRequest {
+    @NotNull
     public String name;
     @NotNull
     @Min(0)
     public BigDecimal price;
     @NotNull
     public Long menuGroupId;
-
+    @NotNull
     public List<MenuProductRequest> menuProducts;
 
     public MenuRequest(String name, BigDecimal price, Long menuGroupId, List<MenuProductRequest> menuProducts) {
@@ -30,8 +31,14 @@ public class MenuRequest {
         return new MenuRequest(name, price, menuGroupId, menuProducts);
     }
 
-    public Menu toEntity(MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        return Menu.of(name, price, menuGroup, menuProducts);
+    public Menu toEntity() {
+        return Menu.of(name, price, menuGroupId, menuProductsToEntities());
+    }
+
+    private List<MenuProduct> menuProductsToEntities() {
+        return menuProducts.stream()
+                .map(MenuProductRequest::toEntity)
+                .collect(Collectors.toList());
     }
 
     public void setName(String name) {

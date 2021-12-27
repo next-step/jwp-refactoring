@@ -1,16 +1,10 @@
 @startuml
 
-MenuGroup <-- Menu
-MenuProduct "N "}--"1 " Menu
-Product <-- MenuProduct
+MenuProduct "N "}--" " Menu
 
-OrderTable <-- Order
-OrderStatus <-- Order
 OrderLineItem "N "}--"1 " Order
-
-Menu <-- OrderLineItem
-
-OrderTable "N "}--"1 " TableGroup
+OrderStatus <-- Order
+OrderStatus <-- OrderTable
 
 class MenuGroup {
     - Long id
@@ -29,7 +23,7 @@ class MenuProduct {
     - Long seq
     - Long menuId
     - Long productId
-    - long quantity
+    - Long quantity
 }
 
 class Product {
@@ -47,6 +41,7 @@ class Order {
 }
 
 enum OrderStatus {
+    READY
     COOKING
     MEAL
     COMPLETION
@@ -56,7 +51,7 @@ class OrderLineItem {
     - Long seq
     - Long orderId
     - Long menuId
-    - long quantity
+    - Long quantity
 }
 
 class OrderTable {
@@ -64,11 +59,11 @@ class OrderTable {
     - Long tableGroupId
     - int numberOfGuests
     - boolean empty
+    - String orderStatus
 }
 
 class TableGroup {
     - Long id
     - LocalDateTime createdDate
-    - List<OrderTable> orderTables
 }
 @enduml

@@ -2,11 +2,11 @@ package kitchenpos.order.dto;
 
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderTable;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static kitchenpos.order.domain.OrderStatus.COOKING;
 
@@ -25,8 +25,14 @@ public class OrderRequest {
         return new OrderRequest(orderTableId, items);
     }
 
-    public Order toEntity(OrderTable orderTable, List<OrderLineItem> items) {
-        return new Order(orderTable, COOKING, items);
+    public Order toEntity() {
+        return Order.of(tableId, COOKING, getOrderLineItems(items));
+    }
+
+    private List<OrderLineItem> getOrderLineItems(List<OrderLineItemRequest> requests) {
+        return requests.stream()
+                .map(OrderLineItemRequest::toEntity)
+                .collect(Collectors.toList());
     }
 
     public Long getTableId() {

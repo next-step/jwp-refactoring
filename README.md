@@ -71,9 +71,9 @@
             - 주문 테이블이 빈 테이블인 경우 예외가 발생한다.
 
 ## 다이어그램
-
 ![클래스 다이어그램](./plantuml/domain-diagram.png)
-![서비스 다이어그램](./plantuml/service-diagram.png)
+![서비스 다이어그램](./plantuml/service-diagram-1.png)
+![서비스 다이어그램](./plantuml/service-diagram-2.png)
 
 ![주문 플로우](./plantuml/flow/flow-order-1.png)
 ![주문 플로우](./plantuml/flow/flow-order-2.png)

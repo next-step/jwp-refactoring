@@ -1,12 +1,11 @@
 package kitchenpos.order.application;
 
 import kitchenpos.order.application.exception.TableNotFoundException;
-import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.domain.OrderTableRepository;
+import kitchenpos.order.domain.TableRepository;
 import kitchenpos.order.dto.OrderStatusRequest;
-import kitchenpos.order.dto.OrderTableRequest;
-import kitchenpos.order.dto.OrderTableResponse;
+import kitchenpos.order.dto.TableRequest;
+import kitchenpos.order.dto.TableResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,49 +14,52 @@ import java.util.List;
 @Service
 @Transactional(readOnly = true)
 public class TableService {
-    private final OrderRepository orderRepository;
-    private final OrderTableRepository orderTableRepository;
+    private final TableRepository tableRepository;
+    private final TableValidator tableValidator;
 
-    public TableService(final OrderRepository orderRepository,
-                        final OrderTableRepository orderTableRepository) {
-        this.orderRepository = orderRepository;
-        this.orderTableRepository = orderTableRepository;
+    public TableService(final TableRepository tableRepository, final TableValidator tableValidator) {
+        this.tableRepository = tableRepository;
+        this.tableValidator = tableValidator;
     }
 
     @Transactional
-    public OrderTableResponse create(final OrderTableRequest request) {
-        OrderTable save = orderTableRepository.save(request.toEntity());
-        return OrderTableResponse.of(save);
+    public TableResponse create(final TableRequest request) {
+        OrderTable save = tableRepository.save(request.toEntity());
+        return TableResponse.of(save);
     }
 
-    public List<OrderTableResponse> list() {
-        List<OrderTable> orderTables = orderTableRepository.findAll();
-        return OrderTableResponse.ofList(orderTables);
+    public List<TableResponse> list() {
+        List<OrderTable> orderTables = tableRepository.findAll();
+        return TableResponse.ofList(orderTables);
     }
 
     @Transactional
-    public OrderTableResponse changeEmpty(final Long tableId) {
+    public TableResponse changeEmpty(final Long tableId) {
         final OrderTable orderTable = getTable(tableId);
+        tableValidator.validate(orderTable);
+
         orderTable.changeEmpty();
-        return OrderTableResponse.of(orderTable);
+        return TableResponse.of(orderTable);
     }
 
     @Transactional
-    public OrderTableResponse changeGuests(final Long tableId, final OrderTableRequest request) {
+    public TableResponse changeGuests(final Long tableId, final TableRequest request) {
         final OrderTable orderTable = getTable(tableId);
+        tableValidator.validateTableState(orderTable);
+
         orderTable.changeGuests(request.getNumberOfGuests());
-        return OrderTableResponse.of(orderTable);
+        return TableResponse.of(orderTable);
     }
 
     private OrderTable getTable(Long tableId) {
-        return orderTableRepository.findById(tableId)
+        return tableRepository.findById(tableId)
                 .orElseThrow(TableNotFoundException::new);
     }
 
     @Transactional
-    public OrderTableResponse changeOrderStatus(Long tableId, OrderStatusRequest request) {
+    public TableResponse changeOrderStatus(Long tableId, OrderStatusRequest request) {
         final OrderTable orderTable = getTable(tableId);
         orderTable.changeStatus(request.getOrderStatus());
-        return OrderTableResponse.of(orderTable);
+        return TableResponse.of(orderTable);
     }
 }

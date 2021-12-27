@@ -1,11 +1,6 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.menu.domain.Menu;
-
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
@@ -17,19 +12,25 @@ public class OrderLineItem {
     private Long seq;
 
     @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "order_id", foreignKey = @ForeignKey(name = "fk_order_line_item_order"))
     private Order order;
 
-    @ManyToOne(fetch = LAZY)
-    private Menu menu;
+    @Column(nullable = false)
+    private Long menuId;
 
+    @Column(nullable = false)
     private Long quantity;
 
     protected OrderLineItem() {
     }
 
-    public OrderLineItem(Menu menu, Long quantity) {
-        this.menu = menu;
+    private OrderLineItem(Long menuId, Long quantity) {
+        this.menuId = menuId;
         this.quantity = quantity;
+    }
+
+    public static OrderLineItem of(Long menuId, Long quantity) {
+        return new OrderLineItem(menuId, quantity);
     }
 
     public void setOrder(Order order) {
@@ -44,12 +45,8 @@ public class OrderLineItem {
         return seq;
     }
 
-    public Order getOrder() {
-        return order;
-    }
-
-    public Menu getMenu() {
-        return menu;
+    public Long getMenuId() {
+        return menuId;
     }
 
     public Long getQuantity() {
