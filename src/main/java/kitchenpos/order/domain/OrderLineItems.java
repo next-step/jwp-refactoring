@@ -3,7 +3,6 @@ package kitchenpos.order.domain;
 import static java.util.stream.Collectors.toList;
 
 import java.util.List;
-import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import org.springframework.util.CollectionUtils;
@@ -11,7 +10,7 @@ import org.springframework.util.CollectionUtils;
 @Embeddable
 public class OrderLineItems {
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "orderId")
     private List<OrderLineItem> orderLineItems;
 
     protected OrderLineItems() {
@@ -19,11 +18,6 @@ public class OrderLineItems {
 
     private OrderLineItems(List<OrderLineItem> orderLineItems) {
         this.orderLineItems = orderLineItems;
-    }
-
-    public static OrderLineItems of(Order order, List<OrderLineItem> orderLineItems) {
-        orderLineItems.forEach(orderLineItem -> orderLineItem.setOrder(order));
-        return new OrderLineItems(orderLineItems);
     }
 
     public static OrderLineItems of(List<OrderLineItem> orderLineItems) {

@@ -13,6 +13,7 @@ import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderLineItemRepository;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderResponse;
@@ -37,6 +38,9 @@ class OrderServiceTest {
     private OrderRepository orderRepository;
 
     @Mock
+    private OrderLineItemRepository orderLineItemRepository;
+
+    @Mock
     private OrderTableRepository orderTableRepository;
 
     @InjectMocks
@@ -55,6 +59,7 @@ class OrderServiceTest {
         given(menuRepository.countByIdIn(anyList())).willReturn(orderLineItems.size());
         given(orderTableRepository.findById(1L)).willReturn(Optional.of(orderTable));
         given(orderRepository.save(any())).willReturn(order);
+        given(orderLineItemRepository.saveAll(anyList())).willReturn(orderLineItems);
 
         // when
         OrderResponse result = orderService.create(order);

@@ -63,7 +63,7 @@
   - step2 종료후 관계도
   ![before.png](before.png)
   - [X] Menu -> MenuProduct 단방향 연관관계로 변경 (MenuProduct -> Menu id로 참조)
-  - [ ] Order <- OrderLineItem 단반향 연관관계로 변경
+  - [X] Order -> OrderLineItem 단반향 연관관계로 변경 (OrderLineItem -> Order id로 참조)
   - [ ] order <=> table 패키지 의존관계 수정
 ### step2 요구사항
 
