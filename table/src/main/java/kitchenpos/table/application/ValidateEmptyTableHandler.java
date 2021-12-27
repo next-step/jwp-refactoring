@@ -3,9 +3,9 @@ package kitchenpos.table.application;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
+import kitchenpos.order.event.ValidateEmptyTableEvent;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.common.event.ValidateEmptyTableEvent;
 import kitchenpos.table.exception.EmptyOrderTableException;
 import kitchenpos.table.exception.NotFoundOrderTableException;
 

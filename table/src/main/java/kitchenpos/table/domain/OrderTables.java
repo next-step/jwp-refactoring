@@ -65,6 +65,14 @@ public final class OrderTables {
         return this.orderTables.size() != size;
     }
 
+    public void groupingTable(TableGroupId tableGroupId) {
+        this.orderTables.forEach(orderTable -> orderTable.groupingTable(tableGroupId));
+    }
+
+    public void unGroupTable() {
+        this.orderTables.forEach(orderTable -> orderTable.unGroupTable());
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == this)

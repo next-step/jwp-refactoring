@@ -2,11 +2,11 @@ package kitchenpos.tablegroup.application;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.nullable;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
 
+import org.assertj.core.api.Assertions;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,16 +14,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.context.ApplicationEventPublisher;
 
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTables;
+import kitchenpos.table.domain.TableGroupId;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
 import kitchenpos.table.dto.OrderTableDto;
 import kitchenpos.tablegroup.dto.TableGroupDto;
-import kitchenpos.common.event.GroupingOrderTableEvent;
-import kitchenpos.common.event.UngroupOrderTableEvent;
 import kitchenpos.tablegroup.domain.TableGroupValidator;
 
 @ExtendWith(MockitoExtension.class)
@@ -33,9 +31,6 @@ public class TableGroupServiceTest {
     
     @Mock
     private TableGroupValidator tableGroupValidator;
-
-    @Mock
-    private ApplicationEventPublisher eventPublisher;
 
     @InjectMocks
     private TableGroupService tableGroupService;
@@ -50,15 +45,16 @@ public class TableGroupServiceTest {
         List<OrderTable> 조회된_주문테이블_리스트 = List.of(치킨_주문_단체테이블, 치킨2_주문_단체테이블);
 
         when(tableGroupValidator.getValidatedOrderTables(any(TableGroupDto.class))).thenReturn(OrderTables.of(조회된_주문테이블_리스트));
-        when(tableGroupRepository.save(any(TableGroup.class))).thenReturn(TableGroup.of());
+        when(tableGroupRepository.save(any(TableGroup.class))).thenReturn(TableGroup.of(1L));
 
         TableGroupDto 단체지정_요청전문 = TableGroupDto.of(List.of(OrderTableDto.of(치킨_주문_단체테이블), OrderTableDto.of(치킨2_주문_단체테이블)));
 
         // when
-        tableGroupService.create(단체지정_요청전문);
+        TableGroupDto tableGroupDto = tableGroupService.create(단체지정_요청전문);
 
         // then
-        verify(eventPublisher).publishEvent(any(GroupingOrderTableEvent.class));
+        Assertions.assertThat(tableGroupDto.getOrderTables().get(0).getTableGroupId()).isEqualTo(1L);
+        Assertions.assertThat(tableGroupDto.getOrderTables().get(1).getTableGroupId()).isEqualTo(1L);
     }
 
     @DisplayName("단체지정이 해제된다.")
@@ -68,17 +64,22 @@ public class TableGroupServiceTest {
         OrderTable 치킨_주문_단체테이블 = OrderTable.of(10, false);
         OrderTable 치킨2_주문_단체테이블 = OrderTable.of(10, false);
 
+        OrderTables 주문테이블들 = OrderTables.of(Lists.newArrayList(치킨_주문_단체테이블, 치킨2_주문_단체테이블));
         치킨_주문_단체테이블.changeEmpty(true);
         치킨2_주문_단체테이블.changeEmpty(true);
 
-        TableGroup 단체주문테이블 = TableGroup.of();
+        TableGroup 단체주문테이블 = TableGroup.of(1L);
 
-        when(tableGroupValidator.getComplateOrderTable(nullable(Long.class))).thenReturn(OrderTables.of(Lists.newArrayList(치킨_주문_단체테이블, 치킨2_주문_단체테이블)));
+        주문테이블들.groupingTable(TableGroupId.of(단체주문테이블.getId()));
+
+
+        when(tableGroupValidator.getComplateOrderTable(nullable(Long.class))).thenReturn(주문테이블들);
         
         // when
         tableGroupService.ungroup(단체주문테이블.getId());
 
         // then
-        verify(eventPublisher).publishEvent(any(UngroupOrderTableEvent.class));
+        Assertions.assertThat(치킨_주문_단체테이블.getTableGroupId()).isNull();
+        Assertions.assertThat(치킨2_주문_단체테이블.getTableGroupId()).isNull();
     }
 }

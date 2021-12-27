@@ -21,13 +21,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
 
 import kitchenpos.common.domain.Price;
-import kitchenpos.common.event.ValidateEmptyTableEvent;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.exception.NotRegistedMenuOrderException;
 import kitchenpos.order.dto.OrderDto;
 import kitchenpos.order.exception.EmptyOrderLineItemOrderException;
 import kitchenpos.order.exception.NotChangableOrderStatusException;
+import kitchenpos.order.event.ValidateEmptyTableEvent;
 
 @ExtendWith(MockitoExtension.class)
 public class OrderValidatorTest {

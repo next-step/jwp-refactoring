@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
-import kitchenpos.common.event.ValidateEmptyTableEvent;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menus;
 import kitchenpos.menu.exception.NotRegistedMenuOrderException;
@@ -15,6 +14,7 @@ import kitchenpos.order.dto.OrderLineItemDto;
 import kitchenpos.order.exception.EmptyOrderLineItemOrderException;
 import kitchenpos.order.exception.NotChangableOrderStatusException;
 import kitchenpos.order.exception.NotFoundOrderException;
+import kitchenpos.order.event.ValidateEmptyTableEvent;
 
 @Component
 public class OrdersValidator {
