@@ -10,12 +10,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import kitchenpos.common.Price;
 import kitchenpos.product.domain.Product;
 
 @DataJpaTest
 class MenuProductRepositoryTest {
 
-	private static Product product = new Product(1L, "양념치킨", new BigDecimal(15000));
+	private static Product product = new Product(1L, "양념치킨", new Price(new BigDecimal(15000)));
 	private static Menu menu = new Menu(1L);
 
 

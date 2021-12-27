@@ -8,16 +8,13 @@ import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
-import kitchenpos.menu.dto.MenuProductRequest;
-import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.common.Price;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.product.domain.Product;
 
 class MenuTest {
 
-	private static Product product = new Product(1L, "양념치킨", new BigDecimal(15000));
+	private static Product product = new Product(1L, "양념치킨", new Price(new BigDecimal(15000)));
 	private static MenuProduct menuProduct = new MenuProduct(null, product, 2);
 	private static MenuGroup menuGroup = new MenuGroup(1L, "신메뉴");
 

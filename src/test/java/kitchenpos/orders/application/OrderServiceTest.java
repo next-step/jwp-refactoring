@@ -1,34 +1,21 @@
 package kitchenpos.orders.application;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderLineItemDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.orders.application.OrderService;
 import kitchenpos.orders.domain.Order;
-import kitchenpos.orders.domain.OrderLineItem;
 import kitchenpos.orders.domain.OrderStatus;
 import kitchenpos.orders.dto.OrderLineItemRequest;
 import kitchenpos.orders.dto.OrderRequest;
 import kitchenpos.orders.dto.OrderResponse;
-import kitchenpos.ordertable.domain.OrderTable;
 
 @Transactional
 @SpringBootTest
@@ -114,10 +101,10 @@ class OrderServiceTest {
 	public void findAllOrderList() {
 		//given
 		//when
-		List<OrderResponse> orderResponses = orderService.list();
+		List<Order> orders = orderService.list();
 
 		//then
-		assertThat(orderResponses).hasSize(7);
+		assertThat(orders).hasSize(7);
 	}
 
 	@Test
