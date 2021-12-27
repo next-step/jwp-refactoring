@@ -1,6 +1,6 @@
 package kitchenpos.table.domain;
 
-import kitchenpos.menu.exception.IllegalQuantityException;
+import kitchenpos.table.exception.IllegalGuestNumberException;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -17,7 +17,7 @@ import java.util.Objects;
 @Embeddable
 public class NumberOfGuests {
     @Transient
-    private static final Integer MIN_GUESTS = 0;
+    public static final Integer MIN_GUESTS = 0;
 
     @Column(nullable = false)
     private Integer numberOfGuests;
@@ -32,7 +32,7 @@ public class NumberOfGuests {
 
     private void validate(Integer value) {
         if (Objects.isNull(value) || value < MIN_GUESTS) {
-            throw new IllegalQuantityException();
+            throw new IllegalGuestNumberException();
         }
     }
 

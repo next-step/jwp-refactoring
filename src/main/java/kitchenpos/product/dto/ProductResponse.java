@@ -14,16 +14,15 @@ import static java.util.stream.Collectors.toList;
  * date : 2021-12-21
  * description :
  */
-//FIXME 생성자 제한하기
 public class ProductResponse {
     private Long id;
     private String name;
     private BigDecimal price;
 
-    public ProductResponse() {
+    private ProductResponse() {
     }
 
-    public ProductResponse(Long id, String name, BigDecimal price) {
+    private ProductResponse(Long id, String name, BigDecimal price) {
         this.id = id;
         this.name = name;
         this.price = price;

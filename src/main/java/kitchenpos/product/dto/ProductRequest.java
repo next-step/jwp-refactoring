@@ -11,15 +11,14 @@ import java.math.BigDecimal;
  * date : 2021/12/21
  * description :
  */
-//FIXME 생성자 제한하기
 public class ProductRequest {
     private String name;
     private BigDecimal price;
 
-    public ProductRequest() {
+    private ProductRequest() {
     }
 
-    public ProductRequest(String name, BigDecimal price) {
+    private ProductRequest(String name, BigDecimal price) {
         this.name = name;
         this.price = price;
     }

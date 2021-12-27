@@ -1,8 +1,6 @@
 package kitchenpos.order.domain;
 
 
-import kitchenpos.menu.domain.Quantity;
-
 import javax.persistence.*;
 
 @Entity
@@ -15,14 +13,14 @@ public class OrderLineItem {
     private Long menuId;
 
     @Embedded
-    private Quantity quantity;
+    private OrderQuantity quantity;
 
     protected OrderLineItem() {
     }
 
     public OrderLineItem(Long menuId, Long quantity) {
         this.menuId = menuId;
-        this.quantity = Quantity.of(quantity);
+        this.quantity = OrderQuantity.of(quantity);
     }
 
     public Long getId() {
@@ -33,7 +31,7 @@ public class OrderLineItem {
         return menuId;
     }
 
-    public Quantity getQuantity() {
+    public OrderQuantity getQuantity() {
         return quantity;
     }
 }

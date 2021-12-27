@@ -1,12 +1,13 @@
 package kitchenpos.menu.application;
 
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.exception.IllegalMenuPriceException;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuValidator;
 import kitchenpos.menu.exception.LimitPriceException;
 import kitchenpos.menugroup.exception.MenuGroupNotFoundException;
-import kitchenpos.menu.exception.ProductNotFoundException;
+import kitchenpos.product.exception.ProductNotFoundException;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.exception.IllegalPriceException;
 import org.assertj.core.util.Lists;
@@ -60,7 +61,7 @@ public class MenuValidatorTest {
                 Lists.newArrayList(
                         new MenuProduct(1L, 2L)
                 )
-        )).isInstanceOf(IllegalPriceException.class);
+        )).isInstanceOf(IllegalMenuPriceException.class);
     }
 
     @Test
@@ -72,7 +73,7 @@ public class MenuValidatorTest {
                 null,
                 null,
                 null)
-        ).isInstanceOf(IllegalPriceException.class);
+        ).isInstanceOf(IllegalMenuPriceException.class);
     }
 
     @Test

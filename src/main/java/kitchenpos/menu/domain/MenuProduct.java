@@ -15,14 +15,14 @@ public class MenuProduct {
     private Long productId;
 
     @Embedded
-    private Quantity quantity;
+    private MenuQuantity quantity;
 
     protected MenuProduct() {
     }
 
     public MenuProduct(Long productId, Long quantity) {
         this.productId = productId;
-        this.quantity = Quantity.of(quantity);
+        this.quantity = MenuQuantity.of(quantity);
     }
 
     public Long getId() {

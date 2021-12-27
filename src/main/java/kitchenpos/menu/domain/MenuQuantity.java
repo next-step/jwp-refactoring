@@ -1,6 +1,6 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.menu.exception.IllegalQuantityException;
+import kitchenpos.menu.exception.IllegalMenuQuantityException;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -15,29 +15,29 @@ import java.util.Objects;
  * description :
  */
 @Embeddable
-public class Quantity {
+public class MenuQuantity {
     @Transient
     public static final Long MIN_QUANTITY = 0L;
 
     @Column(nullable = false)
     private Long quantity;
 
-    protected Quantity() {
+    protected MenuQuantity() {
     }
 
-    public Quantity(Long value) {
+    public MenuQuantity(Long value) {
         validate(value);
         this.quantity = value;
     }
 
     private void validate(Long value) {
         if (Objects.isNull(value) || value < MIN_QUANTITY) {
-            throw new IllegalQuantityException();
+            throw new IllegalMenuQuantityException();
         }
     }
 
-    public static Quantity of(Long value) {
-        return new Quantity(value);
+    public static MenuQuantity of(Long value) {
+        return new MenuQuantity(value);
     }
 
     public Long value() {

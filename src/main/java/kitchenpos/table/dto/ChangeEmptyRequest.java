@@ -7,15 +7,18 @@ package kitchenpos.table.dto;
  * date : 2021-12-21
  * description :
  */
-//FIXME 생성자 제한하기
 public class ChangeEmptyRequest {
     private boolean empty;
 
-    public ChangeEmptyRequest() {
+    private ChangeEmptyRequest() {
     }
 
-    public ChangeEmptyRequest(boolean empty) {
+    private ChangeEmptyRequest(boolean empty) {
         this.empty = empty;
+    }
+
+    public static ChangeEmptyRequest of(boolean empty) {
+        return new ChangeEmptyRequest(empty);
     }
 
     public boolean isEmpty() {

@@ -1,7 +1,5 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.product.domain.Price;
-
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
@@ -16,7 +14,7 @@ public class Menu {
     private String name;
 
     @Embedded
-    private Price price;
+    private MenuPrice price;
 
     @JoinColumn(name = "menu_group_id", foreignKey = @ForeignKey(name = "fk_menu_menu_group"))
     private Long menuGroupId;
@@ -29,7 +27,7 @@ public class Menu {
 
     public Menu(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
         this.name = name;
-        this.price = Price.of(price);
+        this.price = MenuPrice.of(price);
         this.menuGroupId = menuGroupId;
         this.menuProducts.add(menuProducts);
     }
@@ -42,7 +40,7 @@ public class Menu {
         return name;
     }
 
-    public Price getPrice() {
+    public MenuPrice getPrice() {
         return price;
     }
 

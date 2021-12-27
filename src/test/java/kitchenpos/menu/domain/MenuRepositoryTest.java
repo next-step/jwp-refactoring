@@ -1,5 +1,6 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.menu.exception.IllegalMenuPriceException;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.product.exception.IllegalPriceException;
@@ -102,7 +103,7 @@ class MenuRepositoryTest {
                 illegalPrice,
                 메뉴그룹.getId(),
                 Lists.newArrayList(양념치킨메뉴상품, 후라이드메뉴상품))
-        ).isInstanceOf(IllegalPriceException.class);
+        ).isInstanceOf(IllegalMenuPriceException.class);
     }
 
     @Test
@@ -114,7 +115,7 @@ class MenuRepositoryTest {
                 null,
                 메뉴그룹.getId(),
                 Lists.newArrayList(양념치킨메뉴상품, 후라이드메뉴상품))
-        ).isInstanceOf(IllegalPriceException.class);
+        ).isInstanceOf(IllegalMenuPriceException.class);
     }
 
     @Test

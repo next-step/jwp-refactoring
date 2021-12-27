@@ -42,7 +42,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
     @DisplayName("상품 금액이 0보다 작은 경우 등록할 수 없다.")
     public void createFail() throws Exception {
         //given
-        final ProductRequest 금액이_0보다_작은경우 = new ProductRequest("양념치킨", new BigDecimal(-1));
+        final ProductRequest 금액이_0보다_작은경우 = ProductRequest.of("양념치킨", new BigDecimal(-1));
 
         //when
         final ExtractableResponse<Response> response = 상품_등록_요청함(금액이_0보다_작은경우);
@@ -53,9 +53,9 @@ public class ProductAcceptanceTest extends AcceptanceTest {
 
     @Test
     @DisplayName("상품 금액이 null인 경우 등록할 수 없다.")
-    public void createFailNull() throws Exception {
+    public void createFailNull() {
         //given
-        final ProductRequest 금액이_널값인_경우 = new ProductRequest("양념치킨", null);
+        final ProductRequest 금액이_널값인_경우 = ProductRequest.of("양념치킨", null);
 
         //when
         final ExtractableResponse<Response> response = 상품_등록_요청함(금액이_널값인_경우);

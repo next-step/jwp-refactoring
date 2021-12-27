@@ -351,11 +351,10 @@ completePayment() vs setOrderState()
 
 ### 의존성 리팩토링 목표
 
-- [ ] 양방향 의존성을 제거하기
-- [ ] 다중성이 적은 방향을 선택하기
-- [ ] 의존성이 필요 없으면 제거
-- [ ] 패키지 사이의 의존성 사이클을 제거 
-
+- [x] 양방향 의존성을 제거하기
+- [x] 다중성이 적은 방향을 선택하기
+- [x] 의존성이 필요 없으면 제거
+- [x] 패키지 사이의 의존성 사이클을 제거 
 
 
 ### 문제점 파악하기 
@@ -380,18 +379,42 @@ completePayment() vs setOrderState()
                                                      [MenuGroup]
                                                          ↑ (1)  
                                                          |
-                                                         | (1)  
+                                             (v)         | (1)  
   [Product] (1) <---- (*) [MenuProduct] (*) -----> (1) [Menu]  
                                                          ↑ (1)
                                                          |
                                                          | (*)
                                                   [OrderLineItem]
                                                          ↑ (*)
-                                                         |
-                                                 (v)  (v)| (1)
+                                                      (v)|
+                    (v)                        (v)       | (1)
   [TableGroup] (1) <--- (*) [OrderTable] (1) <---- (*) [Order]
   ```
-  
- - 양방향 의존 제거하기
-   - `Order`에서 `OrderLineItem`을 의존한다
-   - `Order`에서 `OrderTable`을 의존한다
+   
+ - 불필요한 객체 참조를 제거한다. 
+   - `OrderLineItem.Order` => `OrderLineItem.orderId`
+   - `OrderLineItem.Menu` => `OrderLineItem.menuId`
+   - `Order.OrderTable` => `Order.orderTableId` 
+   - `Menu.MenuGroup` => `Menu.menuGroupId`
+   - `MenuProduct.Menu` => `MenuProduct.menuId`
+   - `Order.OrderTable` => `Order.orderTableId`
+   - `OrderTable.orders` => `제거`
+   - `OrderTable.TableGroup` => `OrderTable.tableGroupId`
+   - `TableGroup.orderTables` => `제거` 
+
+### 변경 사항
+  - Validator 사용 
+    - MenuValidator: Product, MenuGroup 의존성 사이클을 제거한다.
+    - OrderValidator: Menu, OrderTable 의존성 사이클을 제거한다.
+    - TableValidator: Order 와 의존성 사잌르을 제거한다.
+    - TableGroupValidator: Order, OrderTable 의존성 사이클을 제거한다.
+    
+  - Event 사용
+    - TableGroup event publish  
+    - Table event Listener
+
+### 엔티티 릴레이션 
+![image info](./images/entityRelation.png)
+
+### 패키지 분리 
+![image info](./images/packages.png)

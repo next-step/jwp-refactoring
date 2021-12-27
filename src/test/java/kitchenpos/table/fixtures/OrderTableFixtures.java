@@ -55,23 +55,23 @@ public class OrderTableFixtures {
         return new OrderTable(3, false);
     }
     public static ChangeEmptyRequest 주문불가로_변경요청() {
-        return new ChangeEmptyRequest(true);
+        return ChangeEmptyRequest.of(true);
     }
 
     public static ChangeEmptyRequest 주문가능으로_변경요청() {
-        return new ChangeEmptyRequest(false);
+        return ChangeEmptyRequest.of(false);
     }
 
     public static ChangeGuestNumberRequest 다섯명으로_변경요청() {
-        return new ChangeGuestNumberRequest(5);
+        return ChangeGuestNumberRequest.of(5);
     }
 
     public static ChangeGuestNumberRequest 두명으로_변경요청() {
-        return new ChangeGuestNumberRequest(2);
+        return ChangeGuestNumberRequest.of(2);
     }
 
     public static ChangeGuestNumberRequest 사용자수_변경요청(Integer numberOfGuests) {
-        return new ChangeGuestNumberRequest(numberOfGuests);
+        return ChangeGuestNumberRequest.of(numberOfGuests);
     }
 
     public static OrderTableRequest 테이블_그룹요청() {

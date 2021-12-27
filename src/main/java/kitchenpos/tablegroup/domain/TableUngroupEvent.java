@@ -8,7 +8,7 @@ package kitchenpos.tablegroup.domain;
  * description :
  */
 public class TableUngroupEvent {
-    private Long tableGroupId;
+    private final Long tableGroupId;
 
     public TableUngroupEvent(Long tableGroupId) {
         this.tableGroupId = tableGroupId;

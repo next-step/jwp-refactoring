@@ -34,10 +34,10 @@ public class OrderFixtures {
     }
 
     public static OrderStatusUpdateRequest 식사중으로_변경요청() {
-        return new OrderStatusUpdateRequest(OrderStatus.MEAL);
+        return OrderStatusUpdateRequest.of(OrderStatus.MEAL);
     }
 
     public static OrderStatusUpdateRequest 식사완료로_변경요청() {
-        return new OrderStatusUpdateRequest(OrderStatus.COMPLETION);
+        return OrderStatusUpdateRequest.of(OrderStatus.COMPLETION);
     }
 }

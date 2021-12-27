@@ -1,7 +1,5 @@
 package kitchenpos.tablegroup.domain;
 
-import kitchenpos.table.dto.OrderTableRequest;
-
 import java.util.List;
 
 /**

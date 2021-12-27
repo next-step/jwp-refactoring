@@ -35,7 +35,8 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, final ChangeEmptyRequest request) {
-        OrderTable orderTable = orderTableRepository.findById(orderTableId).orElseThrow(OrderTableNotFoundException::new);
+        OrderTable orderTable = orderTableRepository.findById(orderTableId)
+                .orElseThrow(OrderTableNotFoundException::new);
         tableValidator.validateChangeEmpty(orderTable);
         orderTable.changeEmpty(request.isEmpty());
         return OrderTableResponse.of(orderTable);
@@ -43,7 +44,8 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final ChangeGuestNumberRequest request) {
-        OrderTable orderTable = orderTableRepository.findById(orderTableId).orElseThrow(OrderTableNotFoundException::new);
+        OrderTable orderTable = orderTableRepository.findById(orderTableId)
+                .orElseThrow(OrderTableNotFoundException::new);
         orderTable.updateNumberOfGuests(request.getNumberOfGuests());
         return OrderTableResponse.of(orderTable);
     }

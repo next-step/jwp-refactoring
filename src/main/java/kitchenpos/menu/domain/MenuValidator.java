@@ -2,10 +2,9 @@ package kitchenpos.menu.domain;
 
 import kitchenpos.menu.exception.LimitPriceException;
 import kitchenpos.menu.exception.MenuProductNotFoundException;
-import kitchenpos.menu.exception.ProductNotFoundException;
+import kitchenpos.product.exception.ProductNotFoundException;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.menugroup.exception.MenuGroupNotFoundException;
-import kitchenpos.product.domain.Price;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import org.springframework.stereotype.Component;
@@ -48,7 +47,7 @@ public class MenuValidator {
         return menuGroupRepository.existsById(menu.getMenuGroupId());
     }
 
-    private boolean invalidMenuPrice(Price price, List<MenuProduct> menuProducts) {
+    private boolean invalidMenuPrice(MenuPrice price, List<MenuProduct> menuProducts) {
         return price.value().compareTo(getTotalPrice(menuProducts)) > 0;
     }
 

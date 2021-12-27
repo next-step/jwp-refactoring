@@ -1,6 +1,6 @@
-package kitchenpos.product.domain;
+package kitchenpos.menu.domain;
 
-import kitchenpos.product.exception.IllegalPriceException;
+import kitchenpos.menu.exception.IllegalMenuPriceException;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -9,36 +9,36 @@ import java.math.BigDecimal;
 import java.util.Objects;
 
 /**
- * packageName : kitchenpos.product.domain
+ * packageName : kitchenpos.menu.domain
  * fileName : Price
  * author : haedoang
  * date : 2021/12/20
  * description :
  */
 @Embeddable
-public class Price {
+public class MenuPrice {
     @Transient
     public static final BigDecimal MIN_PRICE = BigDecimal.ZERO;
 
     @Column(nullable = false)
     private BigDecimal price;
 
-    protected Price() {
+    protected MenuPrice() {
     }
 
-    public Price(BigDecimal value) {
+    public MenuPrice(BigDecimal value) {
         validate(value);
         this.price = value;
     }
 
     private void validate(BigDecimal value) {
         if (Objects.isNull(value) || MIN_PRICE.compareTo(value) > 0) {
-            throw new IllegalPriceException();
+            throw new IllegalMenuPriceException();
         }
     }
 
-    public static Price of(BigDecimal value) {
-        return new Price(value);
+    public static MenuPrice of(BigDecimal value) {
+        return new MenuPrice(value);
     }
 
     public BigDecimal value() {

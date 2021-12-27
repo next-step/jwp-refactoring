@@ -5,9 +5,9 @@ import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.dto.OrderTableSaveRequest;
-import kitchenpos.menu.exception.IllegalQuantityException;
+import kitchenpos.table.exception.IllegalGuestNumberException;
+import kitchenpos.table.exception.IllegalQuantityException;
 import kitchenpos.table.exception.OrderTableNotFoundException;
-import kitchenpos.table.exception.TableEmptyUpdateException;
 import kitchenpos.table.exception.TableGuestNumberUpdateException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,7 +18,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,7 +26,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 
 /**
@@ -137,7 +135,7 @@ class TableServiceTest {
         given(orderTableRepository.findById(any(Long.class))).willReturn(Optional.of(주문가능_다섯명테이블));
 
         //then
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, 사용자수_변경요청(candidate))).isInstanceOf(IllegalQuantityException.class);
+        assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, 사용자수_변경요청(candidate))).isInstanceOf(IllegalGuestNumberException.class);
     }
 
     @Test
