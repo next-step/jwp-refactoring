@@ -17,7 +17,7 @@ import kitchenpos.product.domain.Amount;
 public class MenuProducts {
 
     @OneToMany(fetch = LAZY, cascade = ALL, orphanRemoval = true)
-    @JoinColumn(name="menu_id", foreignKey = @ForeignKey(name = "fk_menu_products_menu"), nullable = false)
+    @JoinColumn(name="menu_id", foreignKey = @ForeignKey(name = "fk_menu_products_menu"), nullable = false, updatable = false)
     private List<MenuProduct> menuProducts = new ArrayList<>();
 
     public static MenuProducts of(List<MenuProduct> menuProducts) {

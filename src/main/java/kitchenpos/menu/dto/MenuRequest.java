@@ -3,11 +3,8 @@ package kitchenpos.menu.dto;
 import static java.util.stream.Collectors.toList;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProducts;
-import kitchenpos.menu.domain.ProductId;
 import kitchenpos.product.domain.Amount;
 
 public class MenuRequest {

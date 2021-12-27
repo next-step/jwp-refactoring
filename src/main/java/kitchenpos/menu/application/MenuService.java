@@ -38,7 +38,7 @@ public class MenuService {
         return MenuResponse.ofList(menuDao.findAll());
     }
 
-    public Long findMenuNoById(Long id) {
+    public Long findById(Long id) {
         Menu menu = menuDao.findById(id)
             .orElseThrow(NoResultDataException::new);
         return menu.getId();
