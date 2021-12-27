@@ -10,6 +10,7 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.product.application.ProductService;
@@ -23,8 +24,10 @@ public class MenuService {
 	private final MenuGroupService menuGroupService;
 	private final ProductService productService;
 
-	public MenuService(final MenuRepository menuRepository, final MenuGroupService menuGroupService,
-		ProductService productService) {
+	public MenuService(final MenuRepository menuRepository,
+		final MenuGroupService menuGroupService,
+		final ProductService productService) {
+
 		this.menuRepository = menuRepository;
 		this.menuGroupService = menuGroupService;
 		this.productService = productService;
@@ -33,14 +36,18 @@ public class MenuService {
 	public MenuResponse create(final MenuRequest request) {
 		MenuGroup menuGroup = menuGroupService.getById(request.getMenuGroupId());
 		Menu menu = request.toEntity(menuGroup);
-		final Menu persistMenu = menuRepository.save(menu);
-		List<MenuProduct> menuProducts = request.getMenuProducts().stream()
-			.map(menuProductRequest -> {
-				Product product = productService.getById(menuProductRequest.getProductId());
-				return menuProductRequest.toEntity(persistMenu, product);
-			}).collect(Collectors.toList());
-		menu.addMenuProducts(menuProducts);
-		return new MenuResponse(menu);
+		createMenuProducts(request.getMenuProducts(), menu);
+		menu.checkOverPrice();
+		return new MenuResponse(menuRepository.save(menu));
+	}
+
+	private void createMenuProducts(List<MenuProductRequest> menuProductRequests, Menu menu) {
+		menuProductRequests.forEach(request -> createMenuProduct(request, menu));
+	}
+
+	private void createMenuProduct(MenuProductRequest request, Menu menu) {
+		Product product = productService.getById(request.getProductId());
+		MenuProduct.create(menu, product, request.getQuantity());
 	}
 
 	@Transactional(readOnly = true)

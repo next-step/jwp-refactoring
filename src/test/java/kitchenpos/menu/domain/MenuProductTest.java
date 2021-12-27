@@ -5,6 +5,8 @@ import static org.assertj.core.api.Assertions.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import kitchenpos.exception.AppException;
+import kitchenpos.exception.ErrorCode;
 import kitchenpos.product.domain.ProductTest;
 
 @DisplayName("메뉴-제품 도메인 테스트")
@@ -17,6 +19,30 @@ public class MenuProductTest {
 	void createTest() {
 		assertThat(MenuProduct.of(1L, null, null, 0L))
 			.isEqualTo(MenuProduct.of(1L, null, null, 0L));
+	}
+
+	@DisplayName("생성 시, 메뉴 정보가 필요합니다")
+	@Test
+	void validateTest1() {
+		assertThatThrownBy(() -> MenuProduct.create(null, ProductTest.후라이드, 2L))
+			.isInstanceOf(AppException.class)
+			.hasMessage(ErrorCode.WRONG_INPUT.getMessage());
+	}
+
+	@DisplayName("생성 시, 상품 정보가 필요합니다")
+	@Test
+	void validateTest2() {
+		assertThatThrownBy(() -> MenuProduct.create(MenuTest.후라이드둘, null, 2L))
+			.isInstanceOf(AppException.class)
+			.hasMessage(ErrorCode.WRONG_INPUT.getMessage());
+	}
+
+	@DisplayName("생성 시, 수량 정보가 0 이상이어야 합니다")
+	@Test
+	void validateTest3() {
+		assertThatThrownBy(() -> MenuProduct.create(MenuTest.후라이드둘, ProductTest.후라이드, -1L))
+			.isInstanceOf(AppException.class)
+			.hasMessage(ErrorCode.WRONG_INPUT.getMessage());
 	}
 
 }

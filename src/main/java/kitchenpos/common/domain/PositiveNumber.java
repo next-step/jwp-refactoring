@@ -27,7 +27,7 @@ public class PositiveNumber {
 		return PositiveNumber.of(number);
 	}
 
-	public static void validate(Long number) {
+	private static void validate(Long number) {
 		if (Objects.isNull(number)) {
 			throw new AppException(ErrorCode.WRONG_INPUT, "Null 일 수 없습니다");
 		}
@@ -40,4 +40,20 @@ public class PositiveNumber {
 		return number;
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
+
+		PositiveNumber that = (PositiveNumber)o;
+
+		return number.equals(that.number);
+	}
+
+	@Override
+	public int hashCode() {
+		return number.hashCode();
+	}
 }

@@ -1,4 +1,4 @@
-package kitchenpos.menu.acceptance;
+package kitchenpos.menu.acceptance.step;
 
 import static kitchenpos.testutils.RestAssuredUtils.*;
 import static org.assertj.core.api.Assertions.*;

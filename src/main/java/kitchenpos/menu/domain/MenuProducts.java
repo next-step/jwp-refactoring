@@ -31,13 +31,15 @@ public class MenuProducts {
 		return new MenuProducts(new ArrayList<>());
 	}
 
-	public Price getTotalPrice() {
-		return menuProducts.stream().map(MenuProduct::getTotalPrice)
+	public boolean isOverPrice(Price price) {
+		Price totalPrice = menuProducts.stream()
+			.map(MenuProduct::getTotalPrice)
 			.reduce(Price.ZERO, Price::add);
+		return price.isGreaterThan(totalPrice);
 	}
 
-	public void addAll(MenuProducts others) {
-		this.menuProducts.addAll(others.menuProducts);
+	public void add(MenuProduct menuProduct) {
+		this.menuProducts.add(menuProduct);
 	}
 
 	public List<MenuProduct> toList() {
@@ -60,4 +62,5 @@ public class MenuProducts {
 	public int hashCode() {
 		return menuProducts.hashCode();
 	}
+
 }

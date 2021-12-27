@@ -1,7 +1,6 @@
 package kitchenpos.menu.domain;
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.Embedded;
@@ -55,6 +54,18 @@ public class Menu {
 		return new Menu(id, name, price, menuGroup);
 	}
 
+	public static Menu create(String name, BigDecimal price, MenuGroup menuGroup) {
+		return of(null, Name.of(name), Price.of(price), menuGroup);
+	}
+
+	public static Menu of(Long id, String name, BigDecimal price, MenuGroup menuGroup) {
+		return of(id, Name.of(name), Price.of(price), menuGroup);
+	}
+
+	public static Menu of(String name, int price, MenuGroup menuGroup) {
+		return of(null, Name.of(name), Price.valueOf(price), menuGroup);
+	}
+
 	private static void validate(Name name, Price price, MenuGroup menuGroup) {
 		if (Objects.isNull(name)) {
 			throw new AppException(ErrorCode.WRONG_INPUT, "메뉴 이름 입력이 필요합니다");
@@ -67,23 +78,8 @@ public class Menu {
 		}
 	}
 
-	public static Menu of(Long id, String name, BigDecimal price, MenuGroup menuGroup) {
-		return Menu.of(id, Name.of(name), Price.of(price), menuGroup);
-	}
-
-	public static Menu create(String name, BigDecimal price, MenuGroup menuGroup) {
-		return Menu.of(null, Name.of(name), Price.of(price), menuGroup);
-	}
-
-	public void addMenuProducts(List<MenuProduct> otherList) {
-		MenuProducts others = MenuProducts.of(otherList);
-		validateAddMenuProducts(others);
-		this.menuProducts.addAll(others);
-	}
-
-	private void validateAddMenuProducts(MenuProducts others) {
-		Price totalPrice = others.getTotalPrice();
-		if (price.isGreaterThan(totalPrice)) {
+	public void checkOverPrice() {
+		if (menuProducts.isOverPrice(price)) {
 			throw new AppException(ErrorCode.WRONG_INPUT, "메뉴 가격은 구성상품들의 총합보다 작거나 같아야 합니다");
 		}
 	}

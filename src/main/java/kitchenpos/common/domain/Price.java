@@ -37,10 +37,6 @@ public class Price {
 		return of(BigDecimal.valueOf(price));
 	}
 
-	public BigDecimal toBigDecimal() {
-		return price;
-	}
-
 	public static void validate(BigDecimal price) {
 		if (Objects.isNull(price)) {
 			throw new AppException(ErrorCode.WRONG_INPUT, "가격은 Null 일 수 없습니다");
@@ -61,6 +57,10 @@ public class Price {
 
 	public boolean isGreaterThan(Price other) {
 		return price.compareTo(other.price) > 0;
+	}
+
+	public BigDecimal toBigDecimal() {
+		return price;
 	}
 
 	@Override

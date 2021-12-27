@@ -129,7 +129,6 @@ public class MenuServiceTest {
 
 		given(productService.getById(any())).willReturn(null);
 		given(menuGroupService.getById(any())).willReturn(MenuGroupTest.추천메뉴);
-		given(menuRepository.save(any())).willReturn(MenuTest.후라이드둘);
 
 		// when, then
 		assertThatThrownBy(() -> menuService.create(request))
@@ -150,7 +149,6 @@ public class MenuServiceTest {
 
 		given(productService.getById(any())).willReturn(ProductTest.후라이드);
 		given(menuGroupService.getById(any())).willReturn(MenuGroupTest.추천메뉴);
-		given(menuRepository.save(any())).willReturn(request.toEntity(MenuGroupTest.추천메뉴));
 
 		// when, then
 		assertThatThrownBy(() -> menuService.create(request))
