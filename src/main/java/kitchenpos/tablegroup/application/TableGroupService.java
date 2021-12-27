@@ -41,7 +41,6 @@ public class TableGroupService {
                 .orElseThrow(TableGroupNotFoundException::new);
         tableGroupValidator.validateUngroup(tableGroup);
         tableGroupRepository.delete(tableGroup);
-
-        //FIXME Table쪽으로 이벤트발행하기 groupId 삭제
+        eventPublisher.publishEvent(new TableUngroupEvent(tableGroup.getId()));
     }
 }

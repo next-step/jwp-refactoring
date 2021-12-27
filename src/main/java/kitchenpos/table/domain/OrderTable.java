@@ -1,7 +1,6 @@
 package kitchenpos.table.domain;
 
 import kitchenpos.table.exception.TableGuestNumberUpdateException;
-import kitchenpos.tablegroup.domain.TableGroup;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -36,8 +35,13 @@ public class OrderTable {
         this.numberOfGuests = NumberOfGuests.of(newNumberOfGuests);
     }
 
+    public void ungroup() {
+        this.tableGroupId = null;
+    }
+
     public void groupBy(Long tableGroupId) {
         this.tableGroupId = tableGroupId;
+        this.empty = false;
     }
 
     public boolean isGrouped() {

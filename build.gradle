@@ -14,20 +14,16 @@ repositories {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    //implementation 'org.springframework.boot:spring-boot-starter-jdbc'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.flywaydb:flyway-core'
-
-    //query log
-    implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.7.1'
-
 
     //구아바
     implementation 'com.google.guava:guava:28.1-jre'
 
     runtimeOnly 'com.h2database:h2'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
     //인수테스트
     testImplementation 'io.rest-assured:rest-assured:3.3.0'
 }

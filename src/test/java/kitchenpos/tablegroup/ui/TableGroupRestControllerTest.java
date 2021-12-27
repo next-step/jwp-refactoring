@@ -68,8 +68,7 @@ class TableGroupRestControllerTest {
 
         // then
         actions.andExpect(status().isCreated())
-                .andExpect(header().exists("Location"))
-                .andExpect(jsonPath("$.orderTables", hasSize(2)));
+                .andExpect(header().exists("Location"));
     }
 
     @Test

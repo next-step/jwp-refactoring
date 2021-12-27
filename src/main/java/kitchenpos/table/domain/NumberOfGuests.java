@@ -43,4 +43,17 @@ public class NumberOfGuests {
     public Integer value() {
         return numberOfGuests;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        NumberOfGuests that = (NumberOfGuests) o;
+        return numberOfGuests.intValue() == that.numberOfGuests.intValue();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(numberOfGuests);
+    }
 }
