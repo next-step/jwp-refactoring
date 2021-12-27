@@ -11,14 +11,14 @@ public class Quantity extends Value<Quantity> {
 	protected Quantity() {
 	}
 
-	public static Quantity of(Long quantity) {
-		if (quantity == null || quantity < 0) {
+	public static Quantity from(Long value) {
+		if (value == null || value < 0) {
 			throw new IllegalArgumentException("수량은 0 이상이어야 합니다.");
 		}
 
-		Quantity menuProductQuantity = new Quantity();
-		menuProductQuantity.value = quantity;
-		return menuProductQuantity;
+		Quantity quantity = new Quantity();
+		quantity.value = value;
+		return quantity;
 	}
 
 	public long getValue() {

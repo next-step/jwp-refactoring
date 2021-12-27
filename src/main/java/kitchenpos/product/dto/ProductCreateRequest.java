@@ -35,6 +35,6 @@ public class ProductCreateRequest {
 	}
 
 	public Product toProduct() {
-		return Product.of(Name.of(name), Price.of(price));
+		return Product.of(Name.from(name), Price.from(price));
 	}
 }

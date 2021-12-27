@@ -23,14 +23,14 @@ public class MenuGroupService {
 	@Transactional
 	public MenuGroupDto create(MenuGroupCreateRequest request) {
 		MenuGroup menuGroup = menuGroupRepository.save(request.toMenuGroup());
-		return MenuGroupDto.of(menuGroup);
+		return MenuGroupDto.from(menuGroup);
 	}
 
 	public List<MenuGroupDto> list() {
 		List<MenuGroup> menuGroups = menuGroupRepository.findAll();
 
 		return menuGroups.stream()
-			.map(MenuGroupDto::of)
+			.map(MenuGroupDto::from)
 			.collect(Collectors.toList());
 	}
 }

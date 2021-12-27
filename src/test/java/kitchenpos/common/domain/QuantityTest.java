@@ -9,33 +9,31 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import kitchenpos.common.domain.Quantity;
-
 @DisplayName("수량")
 class QuantityTest {
 
 	@DisplayName("생성")
 	@Test
-	void of() {
+	void from() {
 		// given
-		long quantity = 2;
+		long value = 2;
 
 		// when
-		Quantity menuProductQuantity = Quantity.of(quantity);
+		Quantity quantity = Quantity.from(value);
 
 		// then
-		assertThat(menuProductQuantity.getValue()).isEqualTo(quantity);
+		assertThat(quantity.getValue()).isEqualTo(value);
 	}
 
 	@DisplayName("생성 실패 - 수량이 없거나 음수인 경우")
 	@ParameterizedTest
 	@NullSource
 	@ValueSource(strings = {"-1"})
-	void ofFailOnNullOrNegativeQuantity(Long quantity) {
+	void fromFailOnNullOrNegativeQuantity(Long quantity) {
 		// given
 
 		// when
-		ThrowingCallable throwingCallable = () -> Quantity.of(quantity);
+		ThrowingCallable throwingCallable = () -> Quantity.from(quantity);
 
 		// then
 		assertThatThrownBy(throwingCallable).isInstanceOf(IllegalArgumentException.class);
@@ -48,8 +46,8 @@ class QuantityTest {
 		long quantity = 2;
 
 		// when
-		Quantity actual = Quantity.of(quantity);
-		Quantity expected = Quantity.of(quantity);
+		Quantity actual = Quantity.from(quantity);
+		Quantity expected = Quantity.from(quantity);
 
 		// then
 		assertThat(actual).isEqualTo(expected);

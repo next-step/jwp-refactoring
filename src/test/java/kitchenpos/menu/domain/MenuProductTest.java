@@ -1,14 +1,11 @@
 package kitchenpos.menu.domain;
 
+import static kitchenpos.product.ProductFixture.*;
 import static org.assertj.core.api.Assertions.*;
-
-import java.math.BigDecimal;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import kitchenpos.common.domain.Name;
-import kitchenpos.common.domain.Price;
 import kitchenpos.common.domain.Quantity;
 import kitchenpos.product.domain.Product;
 
@@ -19,14 +16,14 @@ public class MenuProductTest {
 	@Test
 	void of() {
 		// given
-		Product product = Product.of(Name.of("강정치킨"), Price.of(BigDecimal.valueOf(17000)));
-		Quantity quantity = Quantity.of(2L);
+		Product product = 강정치킨_상품();
+		Quantity quantity = Quantity.from(1L);
 
 		// when
-		MenuProduct menuProduct = MenuProduct.of(product, quantity);
+		MenuProduct menuProduct = MenuProduct.of(product.getId(), quantity);
 
 		// then
-		assertThat(menuProduct.getProduct()).isEqualTo(product);
+		assertThat(menuProduct.getProductId()).isEqualTo(product.getId());
 		assertThat(menuProduct.getQuantity()).isEqualTo(quantity);
 	}
 }

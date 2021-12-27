@@ -1,17 +1,19 @@
 package kitchenpos.menu.domain;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import kitchenpos.common.domain.Name;
 import kitchenpos.common.domain.Price;
-import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.common.domain.Quantity;
+import kitchenpos.menu.dto.MenuProductDto;
 
 @Table(name = "menu")
 @Entity
@@ -26,9 +28,7 @@ public class Menu {
 	@Embedded
 	private Price price;
 
-	@ManyToOne(optional = false)
-	@JoinColumn(name = "menu_group_id")
-	private MenuGroup menuGroup;
+	private Long menuGroupId;
 
 	@Embedded
 	private MenuProducts menuProducts;
@@ -36,21 +36,46 @@ public class Menu {
 	protected Menu() {
 	}
 
-	public static Menu of(Name name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
-		throwOnPriceInvalid(price, menuProducts);
+	private Menu(
+		Long id,
+		Name name,
+		Price price,
+		Long menuGroupId,
+		List<MenuProductDto> menuProductDtos,
+		MenuValidator validator
+	) {
+		validator.validateMenuGroupExist(menuGroupId);
+		validator.validateProductsExist(menuProductDtos);
+		validator.validateMenuPriceIsLessThanOrEqualToTotalMenuProductsPrice(price, menuProductDtos);
 
-		Menu menu = new Menu();
-		menu.name = name;
-		menu.price = price;
-		menu.menuGroup = menuGroup;
-		menu.menuProducts = menuProducts;
-		return menu;
+		this.id = id;
+		this.name = name;
+		this.price = price;
+		this.menuGroupId = menuGroupId;
+		this.menuProducts = MenuProducts.from(menuProductDtos.stream()
+			.map(dto -> MenuProduct.of(dto.getProductId(), Quantity.from(dto.getQuantity())))
+			.collect(Collectors.toList()));
 	}
 
-	private static void throwOnPriceInvalid(Price price, MenuProducts menuProducts) {
-		if (price.compareTo(menuProducts.getTotalPrice()) > 0) {
-			throw new IllegalArgumentException("메뉴의 가격은 메뉴상품들의 전체 가격보다 적거나 같아야 합니다.");
-		}
+	public static Menu of(
+		Long id,
+		Name name,
+		Price price,
+		Long menuGroupId,
+		List<MenuProductDto> menuProductDtos,
+		MenuValidator validator
+	) {
+		return new Menu(id, name, price, menuGroupId, menuProductDtos, validator);
+	}
+
+	public static Menu of(
+		Name name,
+		Price price,
+		Long menuGroupId,
+		List<MenuProductDto> menuProductDtos,
+		MenuValidator validator
+	) {
+		return new Menu(null, name, price, menuGroupId, menuProductDtos, validator);
 	}
 
 	public Long getId() {
@@ -65,8 +90,8 @@ public class Menu {
 		return price;
 	}
 
-	public MenuGroup getMenuGroup() {
-		return menuGroup;
+	public Long getMenuGroupId() {
+		return menuGroupId;
 	}
 
 	public MenuProducts getMenuProducts() {

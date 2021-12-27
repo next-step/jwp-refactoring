@@ -1,24 +1,18 @@
 package kitchenpos.order.domain;
 
+import static kitchenpos.order.OrderLineItemFixture.*;
+import static kitchenpos.ordertable.OrderTableFixture.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.ThrowableAssert.*;
 
-import java.math.BigDecimal;
 import java.util.Collections;
+import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import kitchenpos.common.domain.Name;
-import kitchenpos.common.domain.Price;
-import kitchenpos.common.domain.Quantity;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuProducts;
-import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.ordertable.domain.NumberOfGuests;
+import kitchenpos.order.dto.OrderLineItemDto;
 import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.product.domain.Product;
 
 @DisplayName("주문")
 class OrderTest {
@@ -26,20 +20,15 @@ class OrderTest {
 	@Test
 	void of() {
 		// given
-		OrderTable orderTable = OrderTable.of(NumberOfGuests.of(4), false);
-		OrderLineItems orderLineItems = OrderLineItems.of(Collections.singletonList(OrderLineItem.of(
-			Menu.of(
-				Name.of("후라이드+후라이드"),
-				Price.of(BigDecimal.valueOf(25000)),
-				MenuGroup.of(Name.of("추천메뉴")),
-				MenuProducts.of(Collections.singletonList(
-					MenuProduct.of(
-						Product.of(Name.of("후라이드치킨"), Price.of(BigDecimal.valueOf(17000))),
-						Quantity.of(2L))))),
-			Quantity.of(1L))));
+		OrderTable orderTable = 비어있지않은_주문_테이블_1번();
+		List<OrderLineItemDto> orderLineItemDtos = Collections.singletonList(
+			OrderLineItemDto.from(후라이드후라이드_메뉴_주문_항목()));
 
 		// when
-		Order order = Order.of(orderTable, orderLineItems);
+		Order order = Order.of(
+			orderTable.getId(),
+			orderLineItemDtos,
+			new ValidOrderValidator());
 
 		// then
 		assertThat(order).isNotNull();
@@ -49,20 +38,15 @@ class OrderTest {
 	@Test
 	void ofFailOnEmptyOrderTable() {
 		// given
-		OrderTable orderTable = OrderTable.of(NumberOfGuests.of(4), true);
-		OrderLineItems orderLineItems = OrderLineItems.of(Collections.singletonList(OrderLineItem.of(
-			Menu.of(
-				Name.of("후라이드+후라이드"),
-				Price.of(BigDecimal.valueOf(25000)),
-				MenuGroup.of(Name.of("추천메뉴")),
-				MenuProducts.of(Collections.singletonList(
-					MenuProduct.of(
-						Product.of(Name.of("후라이드치킨"), Price.of(BigDecimal.valueOf(17000))),
-						Quantity.of(2L))))),
-			Quantity.of(1L))));
+		OrderTable orderTable = 비어있지않은_주문_테이블_1번();
+		List<OrderLineItemDto> orderLineItemDtos = Collections.singletonList(
+			OrderLineItemDto.from(후라이드후라이드_메뉴_주문_항목()));
 
 		// when
-		ThrowingCallable throwingCallable = () -> Order.of(orderTable, orderLineItems);
+		ThrowingCallable throwingCallable = () -> Order.of(
+			orderTable.getOrderTableGroupId(),
+			orderLineItemDtos,
+			new OrderTableEmptyOrderValidator());
 
 		// then
 		assertThatThrownBy(throwingCallable).isInstanceOf(IllegalArgumentException.class);

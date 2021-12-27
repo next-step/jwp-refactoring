@@ -1,6 +1,5 @@
 package kitchenpos.menu.domain;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,8 +7,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
-
-import kitchenpos.common.domain.Price;
 
 @Embeddable
 public class MenuProducts {
@@ -20,7 +17,7 @@ public class MenuProducts {
 	protected MenuProducts() {
 	}
 
-	public static MenuProducts of(List<MenuProduct> values) {
+	public static MenuProducts from(List<MenuProduct> values) {
 		if (values == null || values.isEmpty()) {
 			throw new IllegalArgumentException("메뉴 상품들은 한개 이상이어야 합니다.");
 		}
@@ -34,15 +31,7 @@ public class MenuProducts {
 		return values;
 	}
 
-	public Price getTotalPrice() {
-		return values.stream()
-			.map(menuProduct -> {
-				BigDecimal price = menuProduct.getProduct().getPrice().getValue();
-				BigDecimal quantity = BigDecimal.valueOf(menuProduct.getQuantity().getValue());
-				return price.multiply(quantity);
-			})
-			.reduce(BigDecimal::add)
-			.map(Price::of)
-			.get();
+	public int size() {
+		return values.size();
 	}
 }

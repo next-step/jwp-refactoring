@@ -23,13 +23,13 @@ public class ProductService {
 	@Transactional
 	public ProductDto create(ProductCreateRequest request) {
 		Product product = productRepository.save(request.toProduct());
-		return ProductDto.of(product);
+		return ProductDto.from(product);
 	}
 
 	public List<ProductDto> list() {
 		List<Product> products = productRepository.findAll();
 		return products.stream()
-			.map(ProductDto::of)
+			.map(ProductDto::from)
 			.collect(Collectors.toList());
 	}
 }

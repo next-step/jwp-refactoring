@@ -10,6 +10,11 @@ public class MenuProductDto {
 	public MenuProductDto() {
 	}
 
+	public MenuProductDto(Long productId, long quantity) {
+		this.productId = productId;
+		this.quantity = quantity;
+	}
+
 	public MenuProductDto(Long seq, Long productId, long quantity) {
 		this.seq = seq;
 		this.productId = productId;
@@ -28,10 +33,10 @@ public class MenuProductDto {
 		return quantity;
 	}
 
-	public static MenuProductDto of(MenuProduct menuProduct) {
+	public static MenuProductDto from(MenuProduct menuProduct) {
 		MenuProductDto dto = new MenuProductDto();
 		dto.seq = menuProduct.getSeq();
-		dto.productId = menuProduct.getProduct().getId();
+		dto.productId = menuProduct.getProductId();
 		dto.quantity = menuProduct.getQuantity().getValue();
 		return dto;
 	}

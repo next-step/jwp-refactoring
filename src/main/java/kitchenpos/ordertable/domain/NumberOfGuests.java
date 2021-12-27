@@ -13,7 +13,7 @@ public class NumberOfGuests extends Value<NumberOfGuests> {
 	protected NumberOfGuests() {
 	}
 
-	public static NumberOfGuests of(Integer value) {
+	public static NumberOfGuests from(Integer value) {
 		if (value == null || value < 0) {
 			throw new IllegalArgumentException("손님 수는 0보다 같거나 커야 합니다.");
 		}

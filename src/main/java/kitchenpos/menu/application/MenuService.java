@@ -9,60 +9,38 @@ import org.springframework.transaction.annotation.Transactional;
 import kitchenpos.common.domain.Name;
 import kitchenpos.common.domain.Price;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.common.domain.Quantity;
-import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.domain.MenuValidator;
 import kitchenpos.menu.dto.MenuCreateRequest;
 import kitchenpos.menu.dto.MenuDto;
-import kitchenpos.menu.dto.MenuProductDto;
-import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.menugroup.domain.MenuGroupRepository;
-import kitchenpos.product.domain.Product;
-import kitchenpos.product.domain.ProductRepository;
 
 @Service
 @Transactional(readOnly = true)
 public class MenuService {
 	private final MenuRepository menuRepository;
-	private final MenuGroupRepository menuGroupRepository;
-	private final ProductRepository productRepository;
+	private final MenuValidator menuValidator;
 
-	public MenuService(
-		MenuRepository menuRepository,
-		MenuGroupRepository menuGroupRepository,
-		ProductRepository productRepository
-	) {
+	public MenuService(MenuRepository menuRepository, MenuValidator menuValidator) {
 		this.menuRepository = menuRepository;
-		this.menuGroupRepository = menuGroupRepository;
-		this.productRepository = productRepository;
+		this.menuValidator = menuValidator;
 	}
 
 	@Transactional
-	public MenuDto create(final MenuCreateRequest request) {
-		Name name = Name.of(request.getName());
-		Price price = Price.of(request.getPrice());
-		MenuGroup menuGroup = menuGroupRepository.findById(request.getMenuGroupId())
-			.orElseThrow(IllegalArgumentException::new);
-		MenuProducts menuProducts = MenuProducts.of(request.getMenuProducts()
-			.stream()
-			.map(this::findMenuProduct)
-			.collect(Collectors.toList()));
-		Menu menu = menuRepository.save(Menu.of(name, price, menuGroup, menuProducts));
-		return MenuDto.of(menu);
+	public MenuDto create(MenuCreateRequest request) {
+		Menu menu = menuRepository.save(
+			Menu.of(
+				Name.from(request.getName()),
+				Price.from(request.getPrice()),
+				request.getMenuGroupId(),
+				request.getMenuProducts(),
+				menuValidator));
+		return MenuDto.from(menu);
 	}
 
 	public List<MenuDto> list() {
 		List<Menu> menus = menuRepository.findAll();
 		return menus.stream()
-			.map(MenuDto::of)
+			.map(MenuDto::from)
 			.collect(Collectors.toList());
-	}
-
-	private MenuProduct findMenuProduct(MenuProductDto menuProductDto) {
-		Product product = productRepository.findById(menuProductDto.getProductId())
-			.orElseThrow(IllegalArgumentException::new);
-		Quantity quantity = Quantity.of(menuProductDto.getQuantity());
-		return MenuProduct.of(product, quantity);
 	}
 }

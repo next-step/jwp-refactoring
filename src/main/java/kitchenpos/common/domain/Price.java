@@ -14,7 +14,7 @@ public class Price extends Value<Price> {
 
 	}
 
-	public static Price of(BigDecimal value) {
+	public static Price from(BigDecimal value) {
 		if (value == null || value.compareTo(BigDecimal.ZERO) < 0) {
 			throw new IllegalArgumentException("가격은 0 이상이어야 합니다.");
 		}
@@ -30,5 +30,13 @@ public class Price extends Value<Price> {
 
 	public int compareTo(Price price) {
 		return value.compareTo(price.value);
+	}
+
+	public Price add(Price price) {
+		return from(value.add(price.value));
+	}
+
+	public Price multiply(Quantity quantity) {
+		return from(value.multiply(BigDecimal.valueOf(quantity.getValue())));
 	}
 }

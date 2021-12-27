@@ -1,6 +1,8 @@
 package kitchenpos.order.domain;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -11,14 +13,13 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.common.domain.Quantity;
+import kitchenpos.order.dto.OrderLineItemDto;
 
 @Table(name = "orders")
 @Entity
@@ -28,9 +29,7 @@ public class Order {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@OneToOne(optional = false)
-	@JoinColumn(name = "order_table_id")
-	private OrderTable orderTable;
+	private Long orderTableId;
 
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
@@ -46,32 +45,41 @@ public class Order {
 	protected Order() {
 	}
 
-	private Order(OrderTable orderTable, OrderLineItems orderLineItems) {
-		throwOnEmptyOrderTable(orderTable);
+	private Order(Long id, Long orderTableId, List<OrderLineItemDto> orderLineItemDtos, OrderValidator validator) {
+		validator.validateOrderTableExistAndNotEmpty(orderTableId);
+		validator.validateMenusExist(orderLineItemDtos);
 
-		this.orderTable = orderTable;
+		this.id = id;
+		this.orderTableId = orderTableId;
 		this.orderStatus = OrderStatus.COOKING;
-		this.orderLineItems = orderLineItems;
-
-		this.orderTable.setOrder(this);
+		this.orderLineItems = OrderLineItems.from(orderLineItemDtos.stream()
+			.map(dto -> OrderLineItem.of(dto.getMenuId(), Quantity.from(dto.getQuantity())))
+			.collect(Collectors.toList()));
 	}
 
-	public static Order of(OrderTable orderTable, OrderLineItems orderLineItems) {
-		return new Order(orderTable, orderLineItems);
+	public static Order of(
+		Long id,
+		Long orderTableId,
+		List<OrderLineItemDto> orderLineItemDtos,
+		OrderValidator validator
+	) {
+		return new Order(id, orderTableId, orderLineItemDtos, validator);
 	}
 
-	private void throwOnEmptyOrderTable(OrderTable orderTable) {
-		if (orderTable.isEmpty()) {
-			throw new IllegalArgumentException("주문 테이블이 비어있으면 주문을 생성할 수 없습니다.");
-		}
+	public static Order of(
+		Long orderTableId,
+		List<OrderLineItemDto> orderLineItemDtos,
+		OrderValidator validator
+	) {
+		return new Order(null, orderTableId, orderLineItemDtos, validator);
 	}
 
 	public Long getId() {
 		return id;
 	}
 
-	public OrderTable getOrderTable() {
-		return orderTable;
+	public Long getOrderTableId() {
+		return orderTableId;
 	}
 
 	public OrderStatus getOrderStatus() {

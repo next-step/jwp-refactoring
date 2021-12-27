@@ -18,7 +18,7 @@ public class OrderTableDto {
 		this.empty = empty;
 	}
 
-	public static OrderTableDto of(OrderTable orderTable) {
+	public static OrderTableDto from(OrderTable orderTable) {
 		OrderTableDto dto = new OrderTableDto();
 		dto.id = orderTable.getId();
 		dto.tableGroupId = orderTable.getOrderTableGroupId();

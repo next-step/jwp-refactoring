@@ -26,16 +26,16 @@ public class OrderDto {
 		this.orderLineItems = orderLineItems;
 	}
 
-	public static OrderDto of(Order order) {
+	public static OrderDto from(Order order) {
 		OrderDto dto = new OrderDto();
 		dto.id = order.getId();
-		dto.orderTableId = order.getOrderTable().getId();
+		dto.orderTableId = order.getOrderTableId();
 		dto.orderStatus = order.getOrderStatus();
 		dto.orderedTime = order.getOrderedTime();
 		dto.orderLineItems = order.getOrderLineItems()
 			.getValues()
 			.stream()
-			.map(OrderLineItemDto::of)
+			.map(OrderLineItemDto::from)
 			.collect(Collectors.toList());
 		return dto;
 	}

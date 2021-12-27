@@ -18,7 +18,7 @@ public class ProductDto {
 		this.price = price;
 	}
 
-	public static ProductDto of(Product product) {
+	public static ProductDto from(Product product) {
 		ProductDto dto = new ProductDto();
 		dto.id = product.getId();
 		dto.name = product.getName().getValue();

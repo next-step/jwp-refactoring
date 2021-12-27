@@ -15,11 +15,11 @@ class NumberOfGuestsTest {
 	@DisplayName("생성")
 	@ParameterizedTest
 	@ValueSource(strings = {"0", "4"})
-	void of(int value) {
+	void from(int value) {
 		// given
 
 		// when
-		NumberOfGuests numberOfGuests = NumberOfGuests.of(value);
+		NumberOfGuests numberOfGuests = NumberOfGuests.from(value);
 
 		// then
 		assertThat(numberOfGuests.getValue()).isEqualTo(value);
@@ -29,11 +29,11 @@ class NumberOfGuestsTest {
 	@ParameterizedTest
 	@NullSource
 	@ValueSource(strings = {"-1"})
-	void ofFailOnNullOrNegativeNumberOfGuests(Integer value) {
+	void fromFailOnNullOrNegativeNumberOfGuests(Integer value) {
 		// given
 
 		// when
-		ThrowingCallable throwingCallable = () -> NumberOfGuests.of(value);
+		ThrowingCallable throwingCallable = () -> NumberOfGuests.from(value);
 
 		// then
 		assertThatThrownBy(throwingCallable).isInstanceOf(IllegalArgumentException.class);
@@ -46,8 +46,8 @@ class NumberOfGuestsTest {
 		int value = 4;
 
 		// when
-		NumberOfGuests aNumberOfGuests = NumberOfGuests.of(value);
-		NumberOfGuests bNumberOfGuests = NumberOfGuests.of(value);
+		NumberOfGuests aNumberOfGuests = NumberOfGuests.from(value);
+		NumberOfGuests bNumberOfGuests = NumberOfGuests.from(value);
 
 		// then
 		assertThat(aNumberOfGuests).isEqualTo(bNumberOfGuests);

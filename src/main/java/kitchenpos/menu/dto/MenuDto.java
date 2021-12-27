@@ -44,16 +44,16 @@ public class MenuDto {
 		return menuProducts;
 	}
 
-	public static MenuDto of(Menu menu) {
+	public static MenuDto from(Menu menu) {
 		MenuDto dto = new MenuDto();
 		dto.id = menu.getId();
 		dto.name = menu.getName().getValue();
 		dto.price = menu.getPrice().getValue();
-		dto.menuGroupId = menu.getMenuGroup().getId();
+		dto.menuGroupId = menu.getMenuGroupId();
 		dto.menuProducts = menu.getMenuProducts()
 			.getValues()
 			.stream()
-			.map(MenuProductDto::of)
+			.map(MenuProductDto::from)
 			.collect(Collectors.toList());
 		return dto;
 	}

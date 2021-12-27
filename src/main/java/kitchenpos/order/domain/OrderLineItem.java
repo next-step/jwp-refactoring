@@ -5,12 +5,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import kitchenpos.common.domain.Quantity;
-import kitchenpos.menu.domain.Menu;
 
 @Table(name = "order_line_item")
 @Entity
@@ -19,9 +16,7 @@ public class OrderLineItem {
 	@Id
 	private Long seq;
 
-	@ManyToOne(optional = false)
-	@JoinColumn(name = "menu_id")
-	private Menu menu;
+	private Long menuId;
 
 	@Embedded
 	private Quantity quantity;
@@ -29,9 +24,17 @@ public class OrderLineItem {
 	protected OrderLineItem() {
 	}
 
-	public static OrderLineItem of(Menu menu, Quantity quantity) {
+	public static OrderLineItem of(Long seq, Long menuId, Quantity quantity) {
 		OrderLineItem orderLineItem = new OrderLineItem();
-		orderLineItem.menu = menu;
+		orderLineItem.seq = seq;
+		orderLineItem.menuId = menuId;
+		orderLineItem.quantity = quantity;
+		return orderLineItem;
+	}
+
+	public static OrderLineItem of(Long menuId, Quantity quantity) {
+		OrderLineItem orderLineItem = new OrderLineItem();
+		orderLineItem.menuId = menuId;
 		orderLineItem.quantity = quantity;
 		return orderLineItem;
 	}
@@ -40,8 +43,8 @@ public class OrderLineItem {
 		return seq;
 	}
 
-	public Menu getMenu() {
-		return menu;
+	public Long getMenuId() {
+		return menuId;
 	}
 
 	public Quantity getQuantity() {

@@ -11,18 +11,16 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import kitchenpos.common.domain.Price;
-
 @DisplayName("가격")
 class PriceTest {
 	@DisplayName("생성")
 	@ParameterizedTest
 	@ValueSource(strings = {"0", "17000"})
-	void of(BigDecimal value) {
+	void from(BigDecimal value) {
 		// given
 
 		// when
-		Price price = Price.of(value);
+		Price price = Price.from(value);
 
 		// then
 		assertThat(price.getValue()).isEqualTo(value);
@@ -32,11 +30,11 @@ class PriceTest {
 	@ParameterizedTest
 	@NullSource
 	@ValueSource(strings = {"-10000"})
-	void ofFailOnNullOrNegativePrice(BigDecimal value) {
+	void fromFailOnNullOrNegativePrice(BigDecimal value) {
 		// given
 
 		// when
-		ThrowingCallable throwingCallable = () -> Price.of(value);
+		ThrowingCallable throwingCallable = () -> Price.from(value);
 
 		// then
 		assertThatThrownBy(throwingCallable).isInstanceOf(IllegalArgumentException.class);
@@ -49,10 +47,38 @@ class PriceTest {
 		BigDecimal value = BigDecimal.valueOf(10000);
 
 		// when
-		Price aPrice = Price.of(value);
-		Price bPrice = Price.of(value);
+		Price aPrice = Price.from(value);
+		Price bPrice = Price.from(value);
 
 		// then
 		assertThat(aPrice).isEqualTo(bPrice);
+	}
+
+	@DisplayName("더하기")
+	@Test
+	void add() {
+		// given
+		Price augend = Price.from(BigDecimal.valueOf(10000));
+		Price addend = Price.from(BigDecimal.valueOf(20000));
+
+		// when
+		Price sum = augend.add(addend);
+
+		// then
+		assertThat(sum).isEqualTo(Price.from(BigDecimal.valueOf(30000)));
+	}
+
+	@DisplayName("곱하기")
+	@Test
+	void multiply() {
+		// given
+		Price multiplicand = Price.from(BigDecimal.valueOf(10000));
+		Quantity multiplier = Quantity.from(2L);
+
+		// when
+		Price product = multiplicand.multiply(multiplier);
+
+		// then
+		assertThat(product).isEqualTo(Price.from(BigDecimal.valueOf(20000)));
 	}
 }
