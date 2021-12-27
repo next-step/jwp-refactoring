@@ -65,6 +65,7 @@
   - [X] Menu -> MenuProduct 단방향 연관관계로 변경 (MenuProduct -> Menu id로 참조)
   - [X] Order -> OrderLineItem 단반향 연관관계로 변경 (OrderLineItem -> Order id로 참조)
   - [ ] order <=> table 패키지 의존관계 수정
+    - [X] 테이블 그룹해제 이벤트 적용 
 ### step2 요구사항
 
 - [X] 상품 관리 리팩토링

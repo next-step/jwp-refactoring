@@ -5,9 +5,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import org.springframework.data.domain.AbstractAggregateRoot;
 
 @Entity
-public class TableGroup {
+public class TableGroup extends AbstractAggregateRoot<TableGroup> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -47,4 +48,8 @@ public class TableGroup {
         return createdDate;
     }
 
+    public void Ungroup(OrderTables orderTables) {
+        orderTables.ungroup();
+        registerEvent(orderTables);
+    }
 }
