@@ -1,6 +1,7 @@
-package kitchenpos.common;
+package kitchenpos.common.domain;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 import javax.persistence.Embeddable;
 
@@ -21,10 +22,17 @@ public class Price {
 	}
 
 	public static Price valueOf(final BigDecimal price) {
+		validatePrice(price);
 		return new Price(price);
 	}
 
-	public boolean lessThanZero() {
+	private static void validatePrice(BigDecimal price) {
+		if (Objects.isNull(price) || lessThanZero(price)) {
+			throw new IllegalArgumentException("가격은 0보다 작을 수 없습니다");
+		}
+	}
+
+	private static boolean lessThanZero(BigDecimal price) {
 		return price.compareTo(BigDecimal.ZERO) == LESS_THAN_COMPARE_VALUE;
 	}
 
@@ -34,5 +42,20 @@ public class Price {
 
 	public boolean greaterThan(Price sum) {
 		return price.compareTo(sum.price) == GREATER_THAN_COMPARE_VALUE;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
+		Price price1 = (Price)o;
+		return Objects.equals(price, price1.price);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(price);
 	}
 }

@@ -24,6 +24,7 @@ import javax.persistence.Table;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.util.CollectionUtils;
 
 import kitchenpos.ordertable.domain.OrderTable;
 
@@ -37,9 +38,8 @@ public class Order {
 	@Column(columnDefinition = "bigint(20)")
 	private Long id;
 
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "order_table_id", nullable = false,columnDefinition = "bigint(20)")
-	private OrderTable orderTable;
+	@Column(name = "order_table_id", nullable = false, columnDefinition = "bigint(20)")
+	private Long orderTableId;
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
@@ -55,13 +55,13 @@ public class Order {
 	public Order() {
 	}
 
-	public Order(OrderTable orderTable, OrderStatus orderStatus, OrderLineItems orderLineItems) {
-		this(null, orderTable, orderStatus, orderLineItems);
+	public Order(Long orderTableId, OrderStatus orderStatus, OrderLineItems orderLineItems) {
+		this(null, orderTableId, orderStatus, orderLineItems);
 	}
 
-	public Order(Long id, OrderTable orderTable, OrderStatus orderStatus, OrderLineItems orderLineItems) {
+	public Order(Long id, Long orderTableId, OrderStatus orderStatus, OrderLineItems orderLineItems) {
 		this.id = id;
-		this.orderTable = orderTable;
+		this.orderTableId = orderTableId;
 		this.orderStatus = orderStatus;
 		this.orderLineItems = orderLineItems.setOrder(this);
 	}
@@ -85,8 +85,8 @@ public class Order {
 		return id;
 	}
 
-	public OrderTable getOrderTable() {
-		return orderTable;
+	public Long getOrderTableId() {
+		return orderTableId;
 	}
 
 	public OrderStatus getOrderStatus() {
@@ -101,8 +101,7 @@ public class Order {
 		return orderLineItems.value();
 	}
 
-	public Long getOrderTableId() {
-		return this.orderTable.getId();
+	public boolean isEmptyOrderLineItems() {
+		return orderLineItems.isEmpty();
 	}
-
 }

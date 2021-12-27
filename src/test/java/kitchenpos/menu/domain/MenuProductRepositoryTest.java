@@ -10,7 +10,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import kitchenpos.common.Price;
+import kitchenpos.common.domain.Price;
+import kitchenpos.common.domain.Quantity;
 import kitchenpos.product.domain.Product;
 
 @DataJpaTest
@@ -27,7 +28,7 @@ class MenuProductRepositoryTest {
 	public void saveMenuProductTest() {
 		//given
 		//when
-		MenuProduct menuProduct = new MenuProduct(menu, product, 2);
+		MenuProduct menuProduct = new MenuProduct(menu, 1L, Quantity.valueOf(2L));
 
 		//when
 		MenuProduct save = menuProductRepository.save(menuProduct);

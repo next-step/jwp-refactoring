@@ -81,7 +81,7 @@ class TableGroupServiceTest {
 		OrderTable orderTable = orderTableService.findById(9L);
 
 		//then
-		assertThat(orderTable.getTableGroup()).isNull();
+		assertThat(orderTable.getTableGroupId()).isEqualTo(-1L);
 	}
 
 	@Test

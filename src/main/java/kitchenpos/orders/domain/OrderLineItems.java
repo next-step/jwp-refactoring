@@ -9,6 +9,9 @@ import javax.persistence.Embeddable;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 
+import org.springframework.util.CollectionUtils;
+
+
 @Embeddable
 public class OrderLineItems {
 
@@ -24,11 +27,15 @@ public class OrderLineItems {
 
 	public OrderLineItems setOrder(Order order) {
 		return new OrderLineItems(orderLineItems.stream()
-			.map(ol -> new OrderLineItem(order, ol.getMenu(), ol.getQuantity()))
+			.map(ol -> new OrderLineItem(order, ol.getMenuId(), ol.getQuantity()))
 			.collect(Collectors.toList()));
 	}
 
 	public List<OrderLineItem> value() {
 		return new ArrayList<>(orderLineItems);
+	}
+
+	public boolean isEmpty() {
+		return CollectionUtils.isEmpty(orderLineItems);
 	}
 }

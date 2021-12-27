@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import kitchenpos.common.Price;
+import kitchenpos.common.domain.Price;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.dto.ProductRequest;
 
@@ -39,7 +39,7 @@ class ProductServiceTest {
 	public void createProductFailTest() {
 		assertThatThrownBy(() -> productService.create(new ProductRequest(NAME, new BigDecimal(-1))))
 			.isInstanceOf(IllegalArgumentException.class)
-			.hasMessage("상품 가격은 0이상의 값을 가져야합니다.");
+			.hasMessage("가격은 0보다 작을 수 없습니다");
 	}
 
 	@Test

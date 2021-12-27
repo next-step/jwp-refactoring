@@ -77,7 +77,7 @@ class MenuAcceptanceTest extends AcceptanceTest {
 		ExtractableResponse<Response> response = 메뉴_생성_요청(가격이_0보다_작은_메뉴);
 
 		//then
-		메뉴_생성_실패(response, "메뉴의 가격은 0보다 작을 수 없습니다");
+		메뉴_생성_실패(response, "가격은 0보다 작을 수 없습니다");
 	}
 
 	@Test

@@ -3,9 +3,7 @@ package kitchenpos.tablegroup.dto;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.dto.OrderTableRequest;
-import kitchenpos.tablegroup.domain.OrderTables;
 import kitchenpos.tablegroup.domain.TableGroup;
 
 public class TableGroupRequest {
@@ -22,9 +20,8 @@ public class TableGroupRequest {
 		return orderTableRequests;
 	}
 
-
-	public TableGroup toTableGroup(OrderTables orderTables) {
-		return new TableGroup(orderTables);
+	public TableGroup toTableGroup() {
+		return new TableGroup();
 	}
 
 	public List<Long> extractOrderTableIds() {

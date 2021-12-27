@@ -1,9 +1,11 @@
 package kitchenpos.orders.dto;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.util.CollectionUtils;
 
+import kitchenpos.common.domain.Quantity;
 import kitchenpos.orders.domain.Order;
 import kitchenpos.orders.domain.OrderLineItem;
 import kitchenpos.orders.domain.OrderLineItems;
@@ -39,8 +41,15 @@ public class OrderRequest {
 		return orderLineItemRequests;
 	}
 
-	public Order toOrder(OrderTable orderTable, OrderLineItems orderLineItems) {
-		return new Order(orderTable, OrderStatus.COOKING, orderLineItems);
+	public Order toOrder() {
+		return new Order(orderTableId, OrderStatus.COOKING, createOrderLineItems());
+	}
+
+	private OrderLineItems createOrderLineItems() {
+		return new OrderLineItems(orderLineItemRequests
+			.stream()
+			.map(ol -> new OrderLineItem(ol.getMenuId(), Quantity.valueOf(ol.getQuantity())))
+			.collect(Collectors.toList()));
 	}
 }
 

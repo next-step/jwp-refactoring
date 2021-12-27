@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import kitchenpos.common.Price;
+import kitchenpos.common.domain.Price;
 
 class ProductTest {
 
@@ -25,9 +25,9 @@ class ProductTest {
 	@DisplayName("상품 가격정보가 없어서 생성 실패")
 	public void createProductFailPriceIsNullTest() {
 		//when
-		assertThatThrownBy(() -> new Product("로제치킨", null))
+		assertThatThrownBy(() -> new Product("로제치킨", Price.valueOf(null)))
 			.isInstanceOf(IllegalArgumentException.class)
-			.hasMessage("상품 가격은 0이상의 값을 가져야합니다.");
+			.hasMessage("가격은 0보다 작을 수 없습니다");
 	}
 
 	@Test
@@ -36,7 +36,7 @@ class ProductTest {
 		//when
 		assertThatThrownBy(() -> new Product("로제치킨", Price.valueOf(new BigDecimal(-1))))
 			.isInstanceOf(IllegalArgumentException.class)
-			.hasMessage("상품 가격은 0이상의 값을 가져야합니다.");
+			.hasMessage("가격은 0보다 작을 수 없습니다");
 	}
 
 }
