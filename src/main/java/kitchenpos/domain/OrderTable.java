@@ -10,6 +10,12 @@ public class OrderTable {
 
     public OrderTable() {}
 
+    public OrderTable(Long tableGroupId, int numberOfGuests, boolean empty) {
+        this.tableGroupId = tableGroupId;
+        this.numberOfGuests = numberOfGuests;
+        this.empty = empty;
+    }
+
     public OrderTable(int numberOfGuests, boolean empty) {
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
@@ -25,6 +31,10 @@ public class OrderTable {
 
     public static OrderTable of(int numberOfGuests, boolean empty) {
         return new OrderTable(numberOfGuests, empty);
+    }
+
+    public static OrderTable of(Long tableGroupId, int numberOfGuests, boolean empty) {
+        return new OrderTable(tableGroupId, numberOfGuests, empty);
     }
 
     public static OrderTable of(int numberOfGuests) {

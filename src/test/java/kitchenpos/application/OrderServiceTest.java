@@ -23,7 +23,6 @@ class OrderServiceTest {
     private final OrderTableDao orderTableDao = new FakeOrderTableDao();
     private final OrderService orderService = new OrderService(menuDao, orderDao, orderLineItemDao, orderTableDao);
 
-    private final MenuProductDao menuProductDao = new FakeMenuProductDao();
     private Menu 소고기메뉴;
 
     @BeforeEach

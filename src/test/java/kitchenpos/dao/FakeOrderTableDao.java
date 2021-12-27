@@ -2,10 +2,8 @@ package kitchenpos.dao;
 
 import kitchenpos.domain.OrderTable;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class FakeOrderTableDao implements OrderTableDao {
     private Map<Long, OrderTable> map = new HashMap<>();
@@ -13,6 +11,10 @@ public class FakeOrderTableDao implements OrderTableDao {
 
     @Override
     public OrderTable save(OrderTable orderTable) {
+        if (map.containsKey(orderTable.getId())) {
+            map.put(orderTable.getId(), orderTable);
+            return orderTable;
+        }
         orderTable.createId(key);
         map.put(key, orderTable);
         key++;
@@ -26,16 +28,21 @@ public class FakeOrderTableDao implements OrderTableDao {
 
     @Override
     public List<OrderTable> findAll() {
-        return null;
+        return new ArrayList<>(map.values());
     }
 
     @Override
     public List<OrderTable> findAllByIdIn(List<Long> ids) {
-        return null;
+        return map.entrySet().stream()
+                .filter(entry -> ids.contains(entry.getKey()))
+                .map(entry -> entry.getValue())
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<OrderTable> findAllByTableGroupId(Long tableGroupId) {
-        return null;
+        return map.values().stream()
+                .filter(orderTable -> tableGroupId.equals(orderTable.getTableGroupId()))
+                .collect(Collectors.toList());
     }
 }

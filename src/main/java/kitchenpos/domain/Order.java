@@ -11,7 +11,8 @@ public class Order {
     private LocalDateTime orderedTime;
     private List<OrderLineItem> orderLineItems;
 
-    public Order() {}
+    public Order() {
+    }
 
     public Order(Long id, Long orderTableId, String orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
         this.id = id;
@@ -28,6 +29,10 @@ public class Order {
 
     public Order(String orderStatus) {
         this.orderStatus = orderStatus;
+    }
+
+    public static Order of(Long id, Long orderTableId, String orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
+        return new Order(id, orderTableId, orderStatus, orderedTime, orderLineItems);
     }
 
     public static Order of(Long orderTableId, List<OrderLineItem> orderLineItems) {

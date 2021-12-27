@@ -42,4 +42,8 @@ public class TableGroup {
     public void setOrderTables(final List<OrderTable> orderTables) {
         this.orderTables = orderTables;
     }
+
+    public void createId(Long id) {
+        this.id = id;
+    }
 }
