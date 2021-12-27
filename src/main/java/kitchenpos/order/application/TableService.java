@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 import kitchenpos.common.exception.BadRequestException;
 import kitchenpos.common.exception.NotFoundException;
 import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.domain.OrderTableValidator;
 import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.order.dto.OrderTableResponse;
 import kitchenpos.order.repository.OrderTableRepository;
@@ -19,12 +18,9 @@ import kitchenpos.order.repository.OrderTableRepository;
 @Service
 public class TableService {
 
-    private final OrderTableValidator orderTableValidator;
     private final OrderTableRepository orderTableRepository;
 
-    public TableService(OrderTableValidator orderTableValidator,
-        OrderTableRepository orderTableRepository) {
-        this.orderTableValidator = orderTableValidator;
+    public TableService(OrderTableRepository orderTableRepository) {
         this.orderTableRepository = orderTableRepository;
     }
 
@@ -36,7 +32,7 @@ public class TableService {
 
     @Transactional(readOnly = true)
     public List<OrderTableResponse> list() {
-        List<OrderTable> orderTables = orderTableRepository.findAll();
+        List<OrderTable> orderTables = orderTableRepository.findOrderTables();
         return orderTables.stream()
             .map(OrderTableResponse::of)
             .collect(Collectors.toList());
@@ -46,8 +42,8 @@ public class TableService {
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         final OrderTable findOrderTable = orderTableRepository.findById(orderTableId)
             .orElseThrow(() -> new NotFoundException(NOT_FOUND_DATA));
-        orderTableValidator.validateChangeEmpty(findOrderTable);
 
+        findOrderTable.validateNotCompletionOrderStatus();
         findOrderTable.changeEmpty(orderTableRequest.isEmpty());
         return OrderTableResponse.of(findOrderTable);
     }
@@ -60,7 +56,6 @@ public class TableService {
         return OrderTableResponse.of(findOrderTable);
     }
 
-    @Transactional(readOnly = true)
     public List<OrderTable> findByOrderTableIds(List<Long> orderTableIds) {
         final List<OrderTable> findOrderTables = orderTableRepository.findAllByIdIn(orderTableIds);
         if (orderTableIds.size() != findOrderTables.size()) {

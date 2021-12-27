@@ -101,6 +101,12 @@ public class Order {
             .collect(Collectors.toList());
     }
 
+    public void validateNotCompletionOrderStatus() {
+        if (!orderStatus.isCompletion()) {
+            throw new BadRequestException(CANNOT_CHANGE_STATUS);
+        }
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o)
