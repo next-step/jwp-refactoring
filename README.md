@@ -126,11 +126,20 @@
 - [X] 메뉴 그룹
     - [X] jpa 적용
     - [X] model과 Dto 분리
-- [ ] 메뉴
+- [X] 메뉴
+    - [X] jpa 적용
+        - [X] menuProduct
+        - [X] menu
+        - [X] product
+        - [X] menuGroup
+    - [X] model과 Dto 분리
+    - [X] price 분리
+    - [X] menuService 리팩토링
+- [ ] 주문 테이블
     - [ ] jpa 적용
-        - [ ] menuProduct
-        - [ ] menu
-        - [ ] product
-        - [ ] menuGroup
+        - [ ] 주문 테이블
+        - [ ] 주문 테이블 그룹
     - [ ] model과 Dto 분리
-    - [ ] price 분리
+    - [ ] 손님수 분리
+    - [ ] 주문 로직 도메인으로 이동
+    
