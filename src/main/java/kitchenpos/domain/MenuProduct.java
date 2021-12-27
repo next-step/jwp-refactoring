@@ -47,7 +47,7 @@ public class MenuProduct {
         return menu;
     }
 
-    public void setMenu(Menu menu) {
+    public void groupToMenu(Menu menu) {
         this.menu = menu;
     }
 

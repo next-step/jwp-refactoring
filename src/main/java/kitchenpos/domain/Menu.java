@@ -75,15 +75,14 @@ public class Menu {
         return menuProducts;
     }
 
-    public void setMenuProducts(final MenuProducts menuProducts) {
-        menuProducts.setMenu(this);
+    private void setMenuProducts(final MenuProducts menuProducts) {
+        menuProducts.groupToMenu(this);
         this.menuProducts = menuProducts;
     }
 
     public void validateMenuPrice(MenuProducts menuProducts, Price menuPrice) {
-        if (Objects.isNull(menuPrice)
-            || menuProducts.getMenuProductsSum().isLessThan(menuPrice)) {
-            throw new IllegalArgumentException();
+        if (Objects.isNull(menuPrice) || menuProducts.priceSumIsLessThan(menuPrice)) {
+            throw new IllegalArgumentException("메뉴 가격이 유효하지 않습니다.");
         }
     }
 }

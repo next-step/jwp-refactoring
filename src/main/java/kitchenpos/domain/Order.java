@@ -1,7 +1,6 @@
 package kitchenpos.domain;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -14,7 +13,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -29,7 +27,6 @@ public class Order {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(nullable = false)
     private OrderTable orderTable;
 
     @Enumerated(EnumType.STRING)
@@ -70,6 +67,10 @@ public class Order {
 
     public OrderStatus getOrderStatus() {
         return orderStatus;
+    }
+
+    public boolean isOrderStatus(OrderStatus status) {
+        return orderStatus.equals(status);
     }
 
     public void changeOrderStatus(final OrderStatus orderStatus) {

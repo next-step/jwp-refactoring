@@ -3,7 +3,6 @@ package kitchenpos.domain;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.FetchType;
@@ -13,9 +12,13 @@ import javax.persistence.OneToMany;
 public class MenuProducts {
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "menu", orphanRemoval = true, cascade = CascadeType.ALL)
-    private final List<MenuProduct> menuProducts = new ArrayList<>();
+    private List<MenuProduct> menuProducts = new ArrayList<>();
 
-    public MenuProducts() {
+    protected MenuProducts() {
+    }
+
+    public MenuProducts(List<MenuProduct> menuProducts) {
+        this.menuProducts = menuProducts;
     }
 
     public List<MenuProduct> getMenuProducts() {
@@ -35,10 +38,14 @@ public class MenuProducts {
         menuProducts.add(menuProduct);
     }
 
-    public void setMenu(Menu menu) {
+    public void groupToMenu(Menu menu) {
         for (final MenuProduct menuProduct : menuProducts) {
-            menuProduct.setMenu(menu);
+            menuProduct.groupToMenu(menu);
         }
+    }
+
+    public boolean priceSumIsLessThan(Price price) {
+        return getMenuProductsSum().isLessThan(price);
     }
 
 }

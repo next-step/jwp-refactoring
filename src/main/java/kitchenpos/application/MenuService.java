@@ -1,8 +1,10 @@
 package kitchenpos.application;
 
+import java.util.ArrayList;
 import java.util.List;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.MenuProducts;
 import kitchenpos.domain.Product;
 import kitchenpos.dto.MenuProductRequest;
@@ -38,7 +40,7 @@ public class MenuService {
     public MenuResponse create(final MenuRequest menuRequest) {
 
         MenuGroup menuGroup = menuGroupRepository.findById(menuRequest.getMenuGroupId())
-            .orElseThrow(IllegalArgumentException::new);
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 메뉴 그룹입니다."));
 
         MenuProducts menuProducts = menuProductsFromRequest(menuRequest.getMenuProducts());
 
@@ -52,13 +54,13 @@ public class MenuService {
     }
 
     private MenuProducts menuProductsFromRequest(List<MenuProductRequest> requests) {
-        final MenuProducts menuProducts = new MenuProducts();
+        final List<MenuProduct> menuProducts = new ArrayList<>();
 
         for (final MenuProductRequest menuProductRequest : requests) {
             final Product product = productRepository.findById(menuProductRequest.getProductId())
                 .orElseThrow(IllegalArgumentException::new);
             menuProducts.add(menuProductRequest.toEntity(product));
         }
-        return menuProducts;
+        return new MenuProducts(menuProducts);
     }
 }

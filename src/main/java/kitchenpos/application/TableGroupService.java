@@ -35,15 +35,12 @@ public class TableGroupService {
 
         final List<Long> orderTableIds = tableGroupRequest.getOrderTableIds();
 
-        if (CollectionUtils.isEmpty(orderTableIds) || orderTableIds.size() < 2) {
-            throw new IllegalArgumentException();
-        }
-
         final OrderTables savedOrderTables = new OrderTables(
             orderTableRepository.findAllByIdIn(orderTableIds));
 
         if (!savedOrderTables.sameSizeAs(orderTableIds.size())) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("table 목록이 유효하지 않습니다. "
+                + "존재하지 않는 테이블이 있거나, 목록이 unique 하지 않습니다.");
         }
 
         final TableGroup savedTableGroup = tableGroupRepository.save(tableGroupRequest.toEntity());
@@ -67,4 +64,5 @@ public class TableGroupService {
 
         orderTables.ungroup();
     }
+
 }

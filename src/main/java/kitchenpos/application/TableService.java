@@ -1,9 +1,6 @@
 package kitchenpos.application;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
-import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.TableRequest;
 import kitchenpos.dto.TableResponse;
@@ -15,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class TableService {
     private final OrderRepository orderRepository;
-    private OrderTableRepository orderTableRepository;
+    private final OrderTableRepository orderTableRepository;
 
     public TableService(final OrderRepository orderRepository,
         OrderTableRepository orderTableRepository) {
@@ -37,19 +34,9 @@ public class TableService {
     @Transactional
     public TableResponse changeEmpty(final Long orderTableId, final TableRequest orderTable) {
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 테이블입니다."));
 
-        if (Objects.nonNull(savedOrderTable.getTableGroup())) {
-            throw new IllegalArgumentException();
-        }
-
-        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
-                orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException();
-        }
-
-        savedOrderTable.setEmpty(orderTable.isEmpty());
-
+        savedOrderTable.changeEmpty(orderTable.isEmpty());
         return TableResponse.from(orderTableRepository.save(savedOrderTable));
     }
 
@@ -68,7 +55,7 @@ public class TableService {
             throw new IllegalArgumentException();
         }
 
-        savedOrderTable.setNumberOfGuests(numberOfGuests);
+        savedOrderTable.changeNumberOfGuests(numberOfGuests);
 
         return TableResponse.from(orderTableRepository.save(savedOrderTable));
     }

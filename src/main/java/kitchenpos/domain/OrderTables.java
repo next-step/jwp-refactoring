@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import javax.persistence.Embeddable;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import org.springframework.util.CollectionUtils;
 
 @Embeddable
 public class OrderTables {
@@ -18,6 +19,7 @@ public class OrderTables {
     }
 
     public OrderTables(List<OrderTable> orderTables) {
+        validate(orderTables);
         this.orderTables = orderTables;
     }
 
@@ -29,26 +31,49 @@ public class OrderTables {
         return orderTables.size() == size;
     }
 
+    private void validate(List<OrderTable> orderTables) {
+        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
+            throw new IllegalArgumentException();
+        }
+    }
+
     public void validateTableGroupCreatable() {
         for (final OrderTable orderTable : orderTables) {
-            if (!orderTable.isEmpty() || Objects.nonNull(orderTable.getTableGroup())) {
-                throw new IllegalArgumentException();
+            if (!orderTable.isEmpty()) {
+                throw new IllegalArgumentException("빈테이블은 단체 지정할 수 없습니다.");
+            }
+            if (Objects.nonNull(orderTable.getTableGroup())) {
+                throw new IllegalArgumentException("이미 단체가 있으면 단체 지정할 수 없습니다.");
             }
         }
+    }
+
+    private void validateUngroupPossible() {
+        if (!isUngroupPossible()) {
+            throw new IllegalArgumentException("MEAL 이나 COOKING 상태인 주문이 있으면 단체 해제할 수 없습니다.");
+        }
+    }
+
+    private boolean isUngroupPossible() {
+        return orderTables.stream()
+            .noneMatch(orderTable ->
+                orderTable.hasOrderWithStatus(OrderStatus.MEAL)
+                    || orderTable.hasOrderWithStatus(OrderStatus.COOKING));
     }
 
     public void toGroup(TableGroup tableGroup) {
         validateTableGroupCreatable();
         for (final OrderTable orderTable : orderTables) {
-            orderTable.setTableGroup(tableGroup);
-            orderTable.setEmpty(false);
+            orderTable.changeEmpty(false);
+            orderTable.toGroup(tableGroup);
         }
         tableGroup.setOrderTables(this);
     }
 
     public void ungroup() {
+        validateUngroupPossible();
         for (final OrderTable orderTable : orderTables) {
-            orderTable.setTableGroup(null);
+            orderTable.toGroup(null);
         }
     }
 
