@@ -7,12 +7,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class OrderTableExceptionHandler {
 
-    @ExceptionHandler(GroupTablesException.class)
-    public ResponseEntity handleGroupTablesException(
-        GroupTablesException e) {
-        return ResponseEntity.badRequest().build();
-    }
-
     @ExceptionHandler(IllegalNumberOfGuests.class)
     public ResponseEntity handleIllegalNumberOfGuests(
         IllegalNumberOfGuests e) {
@@ -22,12 +16,6 @@ public class OrderTableExceptionHandler {
     @ExceptionHandler(TableChangeNumberOfGuestsException.class)
     public ResponseEntity handleTableChangeNumberOfGuestsException(
         TableChangeNumberOfGuestsException e) {
-        return ResponseEntity.badRequest().build();
-    }
-
-    @ExceptionHandler(TableGroupNotFoundException.class)
-    public ResponseEntity handleTableGroupNotFoundException(
-        TableGroupNotFoundException e) {
         return ResponseEntity.badRequest().build();
     }
 
@@ -42,10 +30,9 @@ public class OrderTableExceptionHandler {
         TableUpdateStateException e) {
         return ResponseEntity.badRequest().build();
     }
-
-    @ExceptionHandler(UngroupTablesException.class)
-    public ResponseEntity handleUngroupTablesException(
-        UngroupTablesException e) {
+    
+    @ExceptionHandler(OrderIsNotCompleteException.class)
+    public ResponseEntity handleOrderIsNotCompleteException(OrderIsNotCompleteException e) {
         return ResponseEntity.badRequest().build();
     }
 }

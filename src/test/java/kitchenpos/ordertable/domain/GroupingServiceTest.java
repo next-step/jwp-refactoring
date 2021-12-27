@@ -5,12 +5,13 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.Arrays;
 import java.util.List;
-import kitchenpos.ordertable.event.GroupEvent;
-import kitchenpos.ordertable.event.GroupInfo;
-import kitchenpos.ordertable.event.UngroupEvent;
-import kitchenpos.ordertable.exception.GroupTablesException;
 import kitchenpos.ordertable.testfixtures.TableTestFixtures;
 import kitchenpos.ordertable.vo.NumberOfGuests;
+import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.event.GroupEvent;
+import kitchenpos.tablegroup.event.GroupInfo;
+import kitchenpos.tablegroup.event.UngroupEvent;
+import kitchenpos.tablegroup.exception.GroupTablesException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

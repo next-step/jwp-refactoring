@@ -1,10 +1,10 @@
 package kitchenpos.ordertable.domain;
 
 import java.util.List;
-import kitchenpos.ordertable.event.GroupEvent;
-import kitchenpos.ordertable.event.GroupInfo;
-import kitchenpos.ordertable.event.UngroupEvent;
-import kitchenpos.ordertable.exception.GroupTablesException;
+import kitchenpos.tablegroup.event.GroupEvent;
+import kitchenpos.tablegroup.event.GroupInfo;
+import kitchenpos.tablegroup.event.UngroupEvent;
+import kitchenpos.tablegroup.exception.GroupTablesException;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -33,7 +33,7 @@ public class GroupingService {
         List<OrderTable> orderTables = orderTableRepository.findByIdIn(orderTableIds);
         validateAtLeastTwoDistinctTables(orderTables, orderTableIds);
         validateGroupingCondition(orderTables);
-        
+
         groupTables(orderTables, groupInfo.getTableGroupId());
     }
 

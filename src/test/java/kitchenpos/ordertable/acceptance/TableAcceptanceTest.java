@@ -7,7 +7,7 @@ import java.util.List;
 import kitchenpos.common.AcceptanceTest;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
-import kitchenpos.ordertable.testfixtures.acceptance.TableAcceptanceFixtures;
+import kitchenpos.ordertable.testfixtures.TableAcceptanceFixtures;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -28,7 +28,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
         //then
         테이블_생성_정상_확인(테이블_생성_결과);
     }
-    
+
     @DisplayName("주문테이블 전체 조회")
     @Test
     void list() {

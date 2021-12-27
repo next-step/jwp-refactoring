@@ -30,7 +30,7 @@ class OrderTest {
         //then
         assertThat(order.getOrderTableId()).isEqualTo(orderTable.getId());
     }
-    
+
     @DisplayName("주문 상태 변경")
     @Test
     void changeOrderStatus() {

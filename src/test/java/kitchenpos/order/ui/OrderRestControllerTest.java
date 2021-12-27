@@ -17,7 +17,7 @@ import kitchenpos.common.CommonTestFixtures;
 import kitchenpos.common.vo.Price;
 import kitchenpos.common.vo.Quantity;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;

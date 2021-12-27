@@ -17,11 +17,6 @@ public class KitchenposExceptionHandler {
         return ResponseEntity.badRequest().build();
     }
 
-    @ExceptionHandler(OrderIsNotCompleteException.class)
-    public ResponseEntity handleOrderIsNotCompleteException(OrderIsNotCompleteException e) {
-        return ResponseEntity.badRequest().build();
-    }
-
     @ExceptionHandler(PriceNotAcceptableException.class)
     public ResponseEntity handlePriceNotAcceptableException(PriceNotAcceptableException e) {
         return ResponseEntity.badRequest().build();

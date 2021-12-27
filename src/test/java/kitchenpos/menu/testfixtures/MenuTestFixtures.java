@@ -12,6 +12,7 @@ import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menugroup.testfixtures.MenuGroupTestFixtures;
 
 public class MenuTestFixtures {
 
