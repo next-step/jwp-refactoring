@@ -4,9 +4,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,7 +19,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.dao.MenuProductDao;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
@@ -31,6 +28,8 @@ import kitchenpos.domain.MenuProductResponse;
 import kitchenpos.domain.MenuRequest;
 import kitchenpos.domain.MenuResponse;
 import kitchenpos.domain.Product;
+import kitchenpos.exception.KitchenposException;
+import kitchenpos.exception.KitchenposNotFoundException;
 
 @ExtendWith(MockitoExtension.class)
 class MenuServiceTest {
@@ -39,23 +38,24 @@ class MenuServiceTest {
     @Mock
     private MenuGroupDao menuGroupDao;
     @Mock
-    private MenuProductDao menuProductDao;
-    @Mock
     private ProductDao productDao;
 
     @InjectMocks
     private MenuService menuService;
 
+    private MenuGroup menuGroup;
+    private Menu menu;
+    private Product product;
     private MenuProduct menuProduct;
     private MenuProductRequest menuProductRequest;
 
     @BeforeEach
     void setUp() {
         menuProductRequest = new MenuProductRequest(1L, 2);
-        MenuGroup menuGroup = new MenuGroup(1L, "name");
-        Menu menu = new Menu(1L, "name", BigDecimal.ONE, menuGroup, new ArrayList<>());
-        Product product = new Product(1L, "name", BigDecimal.ONE);
+        product = new Product(1L, "product", BigDecimal.ONE);
         menuProduct = new MenuProduct(1L, menu, product, 2);
+        menuGroup = new MenuGroup(1L, "menuGroup");
+        menu = new Menu(1L, "menu", BigDecimal.ONE, menuGroup, Arrays.asList(menuProduct));
     }
 
     @DisplayName("메뉴 생성")
@@ -63,31 +63,23 @@ class MenuServiceTest {
     void create() {
         // given
         Mockito.when(menuGroupDao.findById(Mockito.anyLong()))
-            .thenReturn(Optional.of(new MenuGroup(1L, "name")));
+            .thenReturn(Optional.of(menuGroup));
 
-        Product product = new Product(1L, "name", BigDecimal.TEN);
         Mockito.when(productDao.findById(Mockito.anyLong()))
             .thenReturn(Optional.of(product));
 
-        MenuProduct expectedMenuProduct = new MenuProduct(2L,
-            new Menu(2L, "name2", BigDecimal.TEN, new MenuGroup(1L, "name"), new ArrayList<>()),
-            new Product(2L, "name2", BigDecimal.TEN), 2);
-        Mockito.when(menuProductDao.save(Mockito.any()))
-            .thenReturn(expectedMenuProduct);
-
-        Menu expectedMenu = new Menu(1L, "name", BigDecimal.ONE, new MenuGroup(1L, "name"), Collections.emptyList());
         Mockito.when(menuDao.save(Mockito.any()))
-            .thenReturn(expectedMenu);
+            .thenReturn(menu);
 
-        MenuRequest menu = new MenuRequest("name", BigDecimal.ONE, 1L, Arrays.asList(menuProductRequest));
+        MenuRequest request = new MenuRequest("menu", BigDecimal.ONE, 1L, Arrays.asList(menuProductRequest));
 
         // when
-        MenuResponse actual = menuService.create(menu);
+        MenuResponse actual = menuService.create(request);
 
         // then
         assertAll(
             () -> assertThat(actual.getMenuProducts()).hasSize(1),
-            () -> assertThat(actual.getMenuProducts().get(0).getMenuId()).isEqualTo(2L)
+            () -> assertThat(actual.getMenuProducts().get(0).getMenuId()).isEqualTo(1L)
         );
     }
 
@@ -96,26 +88,26 @@ class MenuServiceTest {
     void createErrorWhenPriceIsBiggerThanSum() {
         // given
         Mockito.when(menuGroupDao.findById(Mockito.anyLong()))
-            .thenReturn(Optional.of(new MenuGroup(1L, "name")));
+            .thenReturn(Optional.of(menuGroup));
 
-        Product product = new Product(1L, "name", BigDecimal.TEN);
         Mockito.when(productDao.findById(Mockito.anyLong()))
             .thenReturn(Optional.of(product));
 
         MenuRequest request =
-            new MenuRequest("name", BigDecimal.valueOf(21), 1L, Arrays.asList(menuProductRequest));
+            new MenuRequest("name", BigDecimal.valueOf(3), 1L, Arrays.asList(menuProductRequest));
 
         // when and then
-        assertThatExceptionOfType(IllegalArgumentException.class)
-            .isThrownBy(() -> menuService.create(request));
+        assertThatExceptionOfType(KitchenposException.class)
+            .isThrownBy(() -> menuService.create(request))
+            .withMessage("각 상품 가격의 합보다 많은 가격입니다.");
     }
 
-    @DisplayName("메뉴 상품 가격의 합과 입력받은 가격 비교하여 입력받은 가격이 더 크면 에러")
+    @DisplayName("메뉴 상품이 없을 시 에러")
     @Test
     void createErrorWhenProductNotExists() {
         // given
         Mockito.when(menuGroupDao.findById(Mockito.anyLong()))
-            .thenReturn(Optional.of(new MenuGroup(1L, "name")));
+            .thenReturn(Optional.of(menuGroup));
 
         Mockito.when(productDao.findById(Mockito.anyLong()))
             .thenReturn(Optional.empty());
@@ -123,7 +115,7 @@ class MenuServiceTest {
         MenuRequest request =
             new MenuRequest("name", BigDecimal.ONE, 1L, Arrays.asList(menuProductRequest));
         // when and then
-        assertThatExceptionOfType(IllegalArgumentException.class)
+        assertThatExceptionOfType(KitchenposNotFoundException.class)
             .isThrownBy(() -> menuService.create(request));
     }
 
@@ -133,7 +125,7 @@ class MenuServiceTest {
         MenuRequest menu = new MenuRequest("name", null, 1L, Arrays.asList(menuProductRequest));
 
         // when and then
-        assertThatExceptionOfType(IllegalArgumentException.class)
+        assertThatExceptionOfType(KitchenposNotFoundException.class)
             .isThrownBy(() -> menuService.create(menu));
     }
 
@@ -143,7 +135,7 @@ class MenuServiceTest {
         MenuRequest menu = new MenuRequest("name", BigDecimal.valueOf(-1), 1L, Arrays.asList(menuProductRequest));
 
         // when and then
-        assertThatExceptionOfType(IllegalArgumentException.class)
+        assertThatExceptionOfType(KitchenposNotFoundException.class)
             .isThrownBy(() -> menuService.create(menu));
     }
 
@@ -157,7 +149,7 @@ class MenuServiceTest {
         MenuRequest menu = new MenuRequest("name", BigDecimal.ONE, 1L, Arrays.asList(menuProductRequest));
 
         // when and then
-        assertThatExceptionOfType(IllegalArgumentException.class)
+        assertThatExceptionOfType(KitchenposNotFoundException.class)
             .isThrownBy(() -> menuService.create(menu));
     }
 
@@ -165,14 +157,11 @@ class MenuServiceTest {
     @Test
     void list() {
         // given
-        Menu menu1 = new Menu(1L, "name1", BigDecimal.ONE, new MenuGroup(1L, "name"), Collections.emptyList());
-        Menu menu2 = new Menu(2L, "name2", BigDecimal.TEN, new MenuGroup(1L, "name"), Collections.emptyList());
+        Menu menu1 = new Menu(1L, "name1", BigDecimal.ONE, menuGroup, Arrays.asList(menuProduct));
+        Menu menu2 = new Menu(2L, "name2", BigDecimal.ONE, menuGroup, Arrays.asList(menuProduct));
         List<Menu> menus = Arrays.asList(menu1, menu2);
         Mockito.when(menuDao.findAll())
             .thenReturn(menus);
-
-        Mockito.when(menuProductDao.findAllByMenuId(Mockito.anyLong()))
-            .thenReturn(Arrays.asList(menuProduct));
 
         // when
         List<MenuResponse> actual = menuService.list();

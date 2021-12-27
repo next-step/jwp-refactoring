@@ -31,4 +31,23 @@ public class Price {
     public BigDecimal multiply(BigDecimal value) {
         return this.price.multiply(value);
     }
+
+    public boolean isBiggerThan(Price price) {
+        return this.price.compareTo(price.price) > 0;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (!(o instanceof Price))
+            return false;
+        Price price1 = (Price)o;
+        return Objects.equals(price, price1.price);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(price);
+    }
 }

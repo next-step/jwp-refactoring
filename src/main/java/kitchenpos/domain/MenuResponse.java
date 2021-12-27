@@ -21,10 +21,10 @@ public class MenuResponse {
     }
 
     public static MenuResponse from(Menu menu) {
-        List<MenuProductResponse> productResponses = menu.getMenuProducts().stream()
+        List<MenuProductResponse> productResponses = menu.getMenuProductList().stream()
             .map(MenuProductResponse::from)
             .collect(Collectors.toList());
-        return new MenuResponse(menu.getId(), menu.getName(), menu.getPrice(), menu.getMenuGroup().getId(), productResponses);
+        return new MenuResponse(menu.getId(), menu.getName(), menu.getPriceValue(), menu.getMenuGroupId(), productResponses);
     }
 
     public Long getId() {

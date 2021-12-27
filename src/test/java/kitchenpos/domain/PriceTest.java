@@ -25,4 +25,22 @@ class PriceTest {
             .isThrownBy(() -> new Price(BigDecimal.valueOf(-1)))
             .withMessage("0 이상의 가격만 입력 가능합니다.");
     }
+
+    @DisplayName("가격이 더 큰지 확인")
+    @Test
+    void isBiggerThanReturnTrue() {
+        Price one = new Price(BigDecimal.ONE);
+        Price zero = new Price(BigDecimal.ZERO);
+
+        assertThat(one.isBiggerThan(zero)).isTrue();
+    }
+
+    @DisplayName("가격이 더 크지 않은지 확인")
+    @Test
+    void isBiggerThanReturnFalse() {
+        Price one = new Price(BigDecimal.ONE);
+        Price zero = new Price(BigDecimal.ZERO);
+
+        assertThat(zero.isBiggerThan(one)).isFalse();
+    }
 }
