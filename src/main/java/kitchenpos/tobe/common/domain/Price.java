@@ -28,11 +28,11 @@ public class Price implements Comparable<Price> {
 
     private void validate(final BigDecimal price) {
         if (Objects.isNull(price)) {
-            throw new IllegalArgumentException("상품의 가격이 올바르지 않으면 상품을 등록할 수 없습니다.");
+            throw new IllegalArgumentException("가격이 올바르지 않으면 상품을 등록할 수 없습니다.");
         }
 
         if (isLessThanLowerBound(price)) {
-            throw new IllegalArgumentException("상품의 가격은 " + MIN_PRICE + "원 이상이어야 합니다.");
+            throw new IllegalArgumentException("가격은 " + MIN_PRICE + "원 이상이어야 합니다.");
         }
     }
 
