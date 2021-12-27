@@ -49,6 +49,10 @@ public class TableGroup {
         return orderTables.getOrderTables();
     }
 
+    public List<Long> getOrderTableIds() {
+        return orderTables.getTableIds();
+    }
+
     public void ungroup() {
         orderTables.ungroup();
         orderTables = new OrderTables();

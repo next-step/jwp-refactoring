@@ -8,22 +8,24 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Collections;
 
 import static kitchenpos.product.domain.ProductTest.양념치킨_상품;
-import static kitchenpos.menu.domain.MenuProductTest.양념치킨;
-import static kitchenpos.menu.domain.MenuProductTest.후라이드;
 import static kitchenpos.menu.domain.MenuTest.치킨세트;
+import static kitchenpos.product.domain.ProductTest.후라이드_상품;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class MenuProductsTest {
     private MenuProducts 메뉴_상품_리스트;
+    private MenuProduct 메뉴_상품 = new MenuProduct(1L, 치킨세트, 후라이드_상품.getId(), 1L);
 
     @BeforeEach
     void setUp() {
+
         메뉴_상품_리스트 = new MenuProducts();
-        메뉴_상품_리스트.add(후라이드);
+        메뉴_상품_리스트.add(메뉴_상품);
     }
 
     @Test
@@ -31,7 +33,7 @@ public class MenuProductsTest {
     void create() {
         // given
         // when
-        MenuProducts actual = MenuProducts.of(Collections.singletonList(후라이드));
+        MenuProducts actual = MenuProducts.of(Collections.singletonList(메뉴_상품));
         // then
         assertThat(actual).isEqualTo(메뉴_상품_리스트);
     }
@@ -40,10 +42,11 @@ public class MenuProductsTest {
     @DisplayName("메뉴 상품 추가")
     void addTest() {
         // given
+        MenuProduct 추가_상품 = new MenuProduct(2L, 치킨세트, 양념치킨_상품.getId(), 2L);
         // when
-        메뉴_상품_리스트.add(양념치킨);
+        메뉴_상품_리스트.add(추가_상품);
         // then
-        assertThat(메뉴_상품_리스트.getMenuProducts()).containsExactly(후라이드, 양념치킨);
+        assertThat(메뉴_상품_리스트.getMenuProducts()).containsExactly(메뉴_상품, 추가_상품);
     }
 
     @ParameterizedTest
@@ -54,10 +57,12 @@ public class MenuProductsTest {
     void totalPriceTest(long quantity, Long menuPrice) {
         // given
         // when
-        메뉴_상품_리스트.add(new MenuProduct(1L, 치킨세트, 양념치킨_상품, quantity));
+        메뉴_상품_리스트.add(new MenuProduct(2L, 치킨세트, 양념치킨_상품.getId(), quantity));
         // then
-        assertThatThrownBy(() -> 메뉴_상품_리스트.validateOverPrice(BigDecimal.valueOf(menuPrice)))
-                .isInstanceOf(OverMenuPriceException.class);
+        assertThrows(OverMenuPriceException.class,
+                () -> 메뉴_상품_리스트.validateOverPrice(
+                        BigDecimal.valueOf(menuPrice)
+                        , Arrays.asList(후라이드_상품, 양념치킨_상품)));
     }
 
 

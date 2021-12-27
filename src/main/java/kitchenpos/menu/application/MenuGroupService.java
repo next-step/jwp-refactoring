@@ -31,4 +31,8 @@ public class MenuGroupService {
                 .map(MenuGroupResponse::of)
                 .collect(Collectors.toList());
     }
+
+    public boolean existsById(Long id) {
+        return menuGroupRepository.existsById(id);
+    }
 }

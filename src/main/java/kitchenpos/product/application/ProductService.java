@@ -1,5 +1,6 @@
 package kitchenpos.product.application;
 
+import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
@@ -7,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -18,7 +18,6 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-
     @Transactional
     public ProductResponse create(final ProductRequest productRequest) {
         return ProductResponse.of(
@@ -28,5 +27,9 @@ public class ProductService {
 
     public List<ProductResponse> list() {
         return ProductResponse.ofList(productRepository.findAll());
+    }
+
+    public List<Product> findAllByIdIn(List<Long> productIds) {
+        return productRepository.findAllById(productIds);
     }
 }

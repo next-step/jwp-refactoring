@@ -1,12 +1,9 @@
 package kitchenpos.table.domain;
 
-import kitchenpos.common.exception.InvalidOrderStatusException;
 import kitchenpos.common.exception.IsEmptyTableException;
 import kitchenpos.common.exception.IsNotNullTableGroupException;
-import kitchenpos.order.domain.OrderStatus;
 
 import javax.persistence.*;
-import java.util.Arrays;
 import java.util.Objects;
 
 @Entity

@@ -10,6 +10,7 @@ import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Embeddable
 public class OrderTables {
@@ -17,7 +18,7 @@ public class OrderTables {
     @OneToMany(mappedBy = "tableGroup", cascade = CascadeType.MERGE)
     private final List<OrderTable> orderTables;
 
-    protected OrderTables(){
+    protected OrderTables() {
         this.orderTables = new ArrayList<>();
     }
 
@@ -62,6 +63,12 @@ public class OrderTables {
 
     public List<OrderTable> getOrderTables() {
         return orderTables;
+    }
+
+    public List<Long> getTableIds() {
+        return orderTables.stream()
+                .map(OrderTable::getId)
+                .collect(Collectors.toList());
     }
 
     @Override

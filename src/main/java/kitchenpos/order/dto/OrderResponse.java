@@ -42,7 +42,7 @@ public class OrderResponse {
                 .collect(Collectors.toList());
         return new OrderResponse(
                 order.getId()
-                ,  order.getOrderTableId()
+                , order.getOrderTableId()
                 , order.getOrderStatus()
                 , order.getOrderedTime()
                 , orderLineItemResponses
