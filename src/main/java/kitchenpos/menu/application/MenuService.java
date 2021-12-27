@@ -26,7 +26,6 @@ public class MenuService {
 
     public MenuService(MenuRepository menuRepository, MenuGroupService menuGroupService,
         MenuProductValidator menuProductValidator) {
-
         this.menuRepository = menuRepository;
         this.menuGroupService = menuGroupService;
         this.menuProductValidator = menuProductValidator;
