@@ -3,31 +3,29 @@ package kitchenpos.order.domain;
 import kitchenpos.order.exceptions.InputTableDataErrorCode;
 import kitchenpos.order.exceptions.InputTableDataException;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
+@Entity
 public class TableGroup {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private LocalDateTime createdDate;
-    private List<OrderTable> orderTables;
 
-    public TableGroup(Long id, LocalDateTime createdDate, List<OrderTable> orderTables) {
-        this(createdDate, orderTables);
-        this.id = id;
+    @Embedded
+    private OrderTables orderTables;
+
+    protected TableGroup() {
+
     }
 
-    public TableGroup(Long id, LocalDateTime createdDateTime) {
-        this.id = id;
-        this.createdDate = createdDateTime;
-        this.orderTables = new ArrayList<>();
-    }
-
-    public TableGroup(LocalDateTime createdDate, List<OrderTable> orderTables) {
-        validateEnrolledTable(orderTables);
-        this.createdDate = createdDate;
+    public TableGroup(OrderTables orderTables, LocalDateTime createdDate) {
+        validateEnrolledTable(orderTables.getOrderTables());
         this.orderTables = orderTables;
+        this.createdDate = createdDate;
     }
 
     public Long getId() {
@@ -39,21 +37,11 @@ public class TableGroup {
     }
 
     public List<OrderTable> getOrderTables() {
-        return orderTables;
-    }
-
-    public void createDate() {
-        this.createdDate = LocalDateTime.now();
-    }
-
-    public void receiveOrderTables(List<OrderTable> savedOrderTables) {
-        this.orderTables = savedOrderTables;
+        return orderTables.getOrderTables();
     }
 
     public void cancleGroup() {
-        this.orderTables.stream()
-                .forEach(it -> it.emptyTableGroupId());
-        this.orderTables = Collections.emptyList();
+        this.orderTables.cancleGroup();
     }
 
     private void validateEnrolledTable(List<OrderTable> orderTables) {
