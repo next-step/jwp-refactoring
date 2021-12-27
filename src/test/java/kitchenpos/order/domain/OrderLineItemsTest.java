@@ -20,8 +20,6 @@ import static org.junit.jupiter.api.Assertions.assertAll;
  */
 @DisplayName("OrderLineItems 일급컬렉션 테스트")
 class OrderLineItemsTest {
-    @Mock
-    private Order order;
 
     @Test
     @DisplayName("일급컬렉션을 생성한다.")
@@ -31,14 +29,10 @@ class OrderLineItemsTest {
         OrderLineItems orderLineItems = new OrderLineItems();
 
         // when
-        orderLineItems.add(order, given);
+        orderLineItems.add(given);
 
         // then
-        assertAll(
-                () -> assertThat(orderLineItems.value()).hasSize(3),
-                () -> assertThat(orderLineItems.value()).extracting(OrderLineItem::getOrder).isNotNull()
-        );
-
+        assertThat(orderLineItems.value()).hasSize(3);
     }
 
 }

@@ -10,11 +10,15 @@ package kitchenpos.table.dto;
 public class ChangeGuestNumberRequest {
     private Integer numberOfGuests;
 
-    public ChangeGuestNumberRequest() {
+    private ChangeGuestNumberRequest() {
     }
 
-    public ChangeGuestNumberRequest(Integer numberOfGuests) {
+    private ChangeGuestNumberRequest(Integer numberOfGuests) {
         this.numberOfGuests = numberOfGuests;
+    }
+
+    public static ChangeGuestNumberRequest of(Integer numberOfGuests) {
+        return new ChangeGuestNumberRequest(numberOfGuests);
     }
 
     public Integer getNumberOfGuests() {

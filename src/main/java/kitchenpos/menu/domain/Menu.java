@@ -1,14 +1,11 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.menu.exception.LimitPriceException;
-
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
 public class Menu {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -17,11 +14,10 @@ public class Menu {
     private String name;
 
     @Embedded
-    private Price price;
+    private MenuPrice price;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "menu_group_id")
-    private MenuGroup menuGroup;
+    @JoinColumn(name = "menu_group_id", foreignKey = @ForeignKey(name = "fk_menu_menu_group"))
+    private Long menuGroupId;
 
     @Embedded
     private final MenuProducts menuProducts = new MenuProducts();
@@ -29,27 +25,11 @@ public class Menu {
     protected Menu() {
     }
 
-    public Menu(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+    public Menu(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
         this.name = name;
-        this.price = Price.of(price);
-        this.menuGroup = menuGroup;
-        addMenuProducts(menuProducts);
-    }
-
-    private void addMenuProducts(List<MenuProduct> newMenuProducts) {
-        comparePrice(newMenuProducts);
-        menuProducts.add(this, newMenuProducts);
-    }
-
-    private void comparePrice(List<MenuProduct> menuProducts) {
-        if (price.value().compareTo(totalPrice(menuProducts)) > 0) {
-            throw new LimitPriceException();
-        }
-    }
-
-    private BigDecimal totalPrice(List<MenuProduct> menuProducts) {
-        return menuProducts.stream().map(MenuProduct::price)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        this.price = MenuPrice.of(price);
+        this.menuGroupId = menuGroupId;
+        this.menuProducts.add(menuProducts);
     }
 
     public Long getId() {
@@ -60,12 +40,12 @@ public class Menu {
         return name;
     }
 
-    public Price getPrice() {
+    public MenuPrice getPrice() {
         return price;
     }
 
-    public MenuGroup getMenuGroup() {
-        return menuGroup;
+    public Long getMenuGroupId() {
+        return menuGroupId;
     }
 
     public List<MenuProduct> getMenuProducts() {

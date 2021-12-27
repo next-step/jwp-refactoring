@@ -10,11 +10,15 @@ package kitchenpos.table.dto;
 public class OrderTableRequest {
     private Long id;
 
-    public OrderTableRequest() {
+    private OrderTableRequest() {
     }
 
-    public OrderTableRequest(Long id) {
+    private OrderTableRequest(Long id) {
         this.id = id;
+    }
+
+    public static OrderTableRequest of(Long id) {
+        return new OrderTableRequest(id);
     }
 
     public Long getId() {

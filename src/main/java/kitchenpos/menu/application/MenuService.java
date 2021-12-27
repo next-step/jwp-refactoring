@@ -1,47 +1,35 @@
 package kitchenpos.menu.application;
 
-import kitchenpos.menu.domain.*;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.domain.MenuValidator;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.menu.exception.MenuGroupNotFoundException;
-import kitchenpos.menu.exception.ProductNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
 public class MenuService {
     private final MenuRepository menuRepository;
-    private final ProductRepository productRepository;
-    private final MenuGroupRepository menuGroupRepository;
+    private final MenuValidator menuValidator;
 
-    public MenuService(MenuRepository menuRepository, ProductRepository productRepository, MenuGroupRepository menuGroupRepository) {
+    public MenuService(
+        MenuRepository menuRepository,
+        MenuValidator menuValidator
+    ) {
         this.menuRepository = menuRepository;
-        this.productRepository = productRepository;
-        this.menuGroupRepository = menuGroupRepository;
+        this.menuValidator = menuValidator;
     }
 
     @Transactional
     public MenuResponse create(final MenuRequest request) {
-        final MenuGroup menuGroup = menuGroupRepository.findById(request.getMenuGroupId())
-                .orElseThrow(MenuGroupNotFoundException::new);
-        final List<MenuProduct> menuProducts = toMenuProducts(request);
-        final Menu menu = menuRepository.save(request.toEntity(menuGroup, menuProducts));
+        Menu menu = request.toEntity();
+        menuValidator.validate(menu);
+        menuRepository.save(menu);
         return MenuResponse.of(menu);
-    }
-
-    private List<MenuProduct> toMenuProducts(MenuRequest request) {
-        return request.getMenuProducts()
-                .stream()
-                .map(it -> {
-                    final Product product = productRepository.findById(it.getProductId())
-                            .orElseThrow(ProductNotFoundException::new);
-                    return new MenuProduct(product, it.getQuantity());
-                })
-                .collect(Collectors.toList());
     }
 
     public List<MenuResponse> list() {

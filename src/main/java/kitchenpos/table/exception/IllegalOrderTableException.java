@@ -11,9 +11,8 @@ import kitchenpos.common.exception.ServiceException;
  */
 public class IllegalOrderTableException extends ServiceException {
     private static final Long serialVersionUID = 1L;
-    public static final String message = "테이블 정보가 올바르지 않습니다.";
 
-    public IllegalOrderTableException() {
+    public IllegalOrderTableException(String message) {
         super(message);
     }
 }

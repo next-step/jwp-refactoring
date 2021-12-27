@@ -1,7 +1,9 @@
 package kitchenpos.order.dto;
 
-import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.domain.OrderLineItem;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * packageName : kitchenpos.dto
@@ -14,12 +16,16 @@ public class OrderLineItemSaveRequest {
     private Long menuId;
     private Long quantity;
 
-    public OrderLineItemSaveRequest() {
+    private OrderLineItemSaveRequest() {
     }
 
-    public OrderLineItemSaveRequest(Long menuId, Long quantity) {
+    private OrderLineItemSaveRequest(Long menuId, Long quantity) {
         this.menuId = menuId;
         this.quantity = quantity;
+    }
+
+    public static OrderLineItemSaveRequest of(Long menuId, Long quantity) {
+        return new OrderLineItemSaveRequest(menuId, quantity);
     }
 
     public Long getMenuId() {
@@ -30,7 +36,13 @@ public class OrderLineItemSaveRequest {
         return quantity;
     }
 
-    public OrderLineItem toEntity(Menu menu) {
-        return new OrderLineItem(menu, quantity);
+    public OrderLineItem toEntity() {
+        return new OrderLineItem(menuId, quantity);
+    }
+
+    public static List<OrderLineItem> toEntities(List<OrderLineItemSaveRequest> orderLineItemSaveRequests) {
+        return orderLineItemSaveRequests.stream()
+                .map(OrderLineItemSaveRequest::toEntity)
+                .collect(Collectors.toList());
     }
 }

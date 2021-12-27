@@ -16,5 +16,4 @@ public class OrderLineItemNotFoundException extends ServiceException {
     public OrderLineItemNotFoundException() {
         super(message);
     }
-
 }

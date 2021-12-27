@@ -10,7 +10,6 @@ import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.ui.OrderRestController;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -26,12 +25,12 @@ import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 
-import static kitchenpos.menu.fixtures.MenuGroupFixtures.메뉴그룹;
+import static kitchenpos.menugroup.fixtures.MenuGroupFixtures.메뉴그룹;
 import static kitchenpos.order.fixtures.OrderFixtures.식사중으로_변경요청;
 import static kitchenpos.order.fixtures.OrderFixtures.주문등록요청;
 import static kitchenpos.table.fixtures.OrderTableFixtures.주문가능_다섯명테이블;
-import static kitchenpos.menu.fixtures.ProductFixtures.양념치킨;
-import static kitchenpos.menu.fixtures.ProductFixtures.후라이드;
+import static kitchenpos.product.fixtures.ProductFixtures.양념치킨;
+import static kitchenpos.product.fixtures.ProductFixtures.후라이드;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -64,14 +63,14 @@ class OrderRestControllerTest {
     void setUp() {
         BigDecimal 메뉴가격 = new BigDecimal(32000);
 
-        MenuProduct 양념치킨메뉴상품 = new MenuProduct(양념치킨(), 1L);
-        MenuProduct 후라이드메뉴상품 = new MenuProduct(후라이드(), 1L);
+        MenuProduct 양념치킨메뉴상품 = new MenuProduct(양념치킨().getId(), 1L);
+        MenuProduct 후라이드메뉴상품 = new MenuProduct(후라이드().getId(), 1L);
 
-        Menu 후라이드반양념반메뉴 = new Menu("후라이드반양념반메뉴", 메뉴가격, 메뉴그룹("반반메뉴"), Lists.newArrayList(양념치킨메뉴상품, 후라이드메뉴상품));
+        Menu 후라이드반양념반메뉴 = new Menu("후라이드반양념반메뉴", 메뉴가격, 메뉴그룹("반반메뉴").getId(), Lists.newArrayList(양념치킨메뉴상품, 후라이드메뉴상품));
 
-        OrderLineItem 주문정보_후라이드양념반두개 = new OrderLineItem(후라이드반양념반메뉴, 2L);
+        OrderLineItem 주문정보_후라이드양념반두개 = new OrderLineItem(후라이드반양념반메뉴.getId(), 2L);
 
-        Order 후라이드반양념반두개주문 = new Order(주문가능_다섯명테이블(), Lists.newArrayList(주문정보_후라이드양념반두개));
+        Order 후라이드반양념반두개주문 = new Order(주문가능_다섯명테이블().getId(), Lists.newArrayList(주문정보_후라이드양념반두개));
         response = OrderResponse.of(후라이드반양념반두개주문);
 
         후라이드반양념반두개주문.changeStatus(OrderStatus.COMPLETION);

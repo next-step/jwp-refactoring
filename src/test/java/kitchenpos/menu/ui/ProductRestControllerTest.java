@@ -1,10 +1,10 @@
 package kitchenpos.menu.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kitchenpos.menu.application.ProductService;
-import kitchenpos.menu.dto.ProductRequest;
-import kitchenpos.menu.dto.ProductResponse;
-import kitchenpos.menu.ui.ProductRestController;
+import kitchenpos.product.application.ProductService;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
+import kitchenpos.product.ui.ProductRestController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,7 +18,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import java.util.Arrays;
 import java.util.List;
 
-import static kitchenpos.menu.fixtures.ProductFixtures.후라이드요청;
+import static kitchenpos.product.fixtures.ProductFixtures.후라이드요청;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;

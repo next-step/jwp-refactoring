@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 /**
- * packageName : kitchenpos.domain
+ * packageName : kitchenpos.menu.domain
  * fileName : MenuRepository
  * author : haedoang
  * date : 2021/12/21
@@ -14,7 +14,6 @@ import java.util.List;
  */
 public interface MenuRepository extends JpaRepository<Menu, Long> {
     @Query(value = "select distinct m from Menu m " +
-            "left join fetch m.menuProducts mp " +
-            "left join fetch m.menuGroup mg ")
+            "left join fetch m.menuProducts mp ")
     List<Menu> findAllJoinFetch();
 }

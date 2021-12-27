@@ -1,7 +1,12 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.menu.exception.IllegalPriceException;
+import kitchenpos.menu.exception.IllegalMenuPriceException;
+import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menugroup.domain.MenuGroupRepository;
+import kitchenpos.product.exception.IllegalPriceException;
 import kitchenpos.menu.exception.LimitPriceException;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -14,12 +19,11 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import java.math.BigDecimal;
 import java.util.List;
 
-import static kitchenpos.menu.fixtures.MenuGroupFixtures.반반메뉴그룹요청;
-import static kitchenpos.menu.fixtures.ProductFixtures.양념치킨요청;
-import static kitchenpos.menu.fixtures.ProductFixtures.후라이드요청;
+import static kitchenpos.menugroup.fixtures.MenuGroupFixtures.반반메뉴그룹요청;
+import static kitchenpos.product.fixtures.ProductFixtures.양념치킨요청;
+import static kitchenpos.product.fixtures.ProductFixtures.후라이드요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 /**
  * packageName : kitchenpos.domain
@@ -51,9 +55,9 @@ class MenuRepositoryTest {
         Product 양념치킨 = productRepository.save(양념치킨요청().toEntity());
         Product 후라이드 = productRepository.save(후라이드요청().toEntity());
         메뉴그룹 = menuGroupRepository.save(반반메뉴그룹요청().toEntity());
-        양념치킨메뉴상품 = new MenuProduct(양념치킨, 1L);
-        후라이드메뉴상품 = new MenuProduct(후라이드, 1L);
-        menu = new Menu("후라이드반양념반메뉴", 메뉴가격, 메뉴그룹, Lists.newArrayList(양념치킨메뉴상품, 후라이드메뉴상품));
+        양념치킨메뉴상품 = new MenuProduct(양념치킨.getId(), 1L);
+        후라이드메뉴상품 = new MenuProduct(후라이드.getId(), 1L);
+        menu = new Menu("후라이드반양념반메뉴", 메뉴가격, 메뉴그룹.getId(), Lists.newArrayList(양념치킨메뉴상품, 후라이드메뉴상품));
     }
 
     @Test
@@ -83,9 +87,7 @@ class MenuRepositoryTest {
         final Menu actual = menuRepository.save(menu);
 
         //then
-        assertAll(
-                () -> assertThat(actual.getId()).isNotNull()
-        );
+        assertThat(actual.getId()).isNotNull();
     }
 
     @ParameterizedTest(name = "value: " + ParameterizedTest.ARGUMENTS_PLACEHOLDER)
@@ -99,9 +101,9 @@ class MenuRepositoryTest {
         assertThatThrownBy(() -> new Menu(
                 "가격불일치메뉴",
                 illegalPrice,
-                메뉴그룹,
+                메뉴그룹.getId(),
                 Lists.newArrayList(양념치킨메뉴상품, 후라이드메뉴상품))
-        ).isInstanceOf(IllegalPriceException.class);
+        ).isInstanceOf(IllegalMenuPriceException.class);
     }
 
     @Test
@@ -111,20 +113,24 @@ class MenuRepositoryTest {
         assertThatThrownBy(() -> new Menu(
                 "가격불일치메뉴",
                 null,
-                메뉴그룹,
+                메뉴그룹.getId(),
                 Lists.newArrayList(양념치킨메뉴상품, 후라이드메뉴상품))
-        ).isInstanceOf(IllegalPriceException.class);
+        ).isInstanceOf(IllegalMenuPriceException.class);
     }
 
     @Test
     @DisplayName("메뉴의 가격은 메뉴상품들의 수량과 가격의 합과 일치하여야 한다.")
     public void createFailByMenusPrices() {
-        //then
-        assertThatThrownBy(() -> new Menu(
+        // given
+        MenuValidator menuValidator = new MenuValidator(menuGroupRepository, productRepository);
+
+        Menu 가격불일치메뉴 = new Menu(
                 "가격불일치메뉴",
                 new BigDecimal(Long.MAX_VALUE),
-                메뉴그룹,
-                Lists.newArrayList(양념치킨메뉴상품, 후라이드메뉴상품))
-        ).isInstanceOf(LimitPriceException.class);
+                메뉴그룹.getId(),
+                Lists.newArrayList(양념치킨메뉴상품, 후라이드메뉴상품));
+
+        //then
+        assertThatThrownBy(() -> menuValidator.validate(가격불일치메뉴)).isInstanceOf(LimitPriceException.class);
     }
 }

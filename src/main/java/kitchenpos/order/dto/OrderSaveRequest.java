@@ -1,5 +1,7 @@
 package kitchenpos.order.dto;
 
+import kitchenpos.order.domain.Order;
+
 import java.util.List;
 
 /**
@@ -13,12 +15,16 @@ public class OrderSaveRequest {
     private Long orderTableId;
     private List<OrderLineItemSaveRequest> orderLineItems;
 
-    public OrderSaveRequest() {
+    private OrderSaveRequest() {
     }
 
-    public OrderSaveRequest(Long orderTableId, List<OrderLineItemSaveRequest> orderLineItems) {
+    private OrderSaveRequest(Long orderTableId, List<OrderLineItemSaveRequest> orderLineItems) {
         this.orderTableId = orderTableId;
         this.orderLineItems = orderLineItems;
+    }
+
+    public static OrderSaveRequest of(Long orderTableId, List<OrderLineItemSaveRequest> orderLineItems) {
+        return new OrderSaveRequest(orderTableId, orderLineItems);
     }
 
     public Long getOrderTableId() {
@@ -27,5 +33,9 @@ public class OrderSaveRequest {
 
     public List<OrderLineItemSaveRequest> getOrderLineItems() {
         return orderLineItems;
+    }
+
+    public Order toEntity() {
+        return new Order(orderTableId, OrderLineItemSaveRequest.toEntities(orderLineItems));
     }
 }

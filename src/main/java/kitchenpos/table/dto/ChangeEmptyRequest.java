@@ -10,11 +10,15 @@ package kitchenpos.table.dto;
 public class ChangeEmptyRequest {
     private boolean empty;
 
-    public ChangeEmptyRequest() {
+    private ChangeEmptyRequest() {
     }
 
-    public ChangeEmptyRequest(boolean empty) {
+    private ChangeEmptyRequest(boolean empty) {
         this.empty = empty;
+    }
+
+    public static ChangeEmptyRequest of(boolean empty) {
+        return new ChangeEmptyRequest(empty);
     }
 
     public boolean isEmpty() {

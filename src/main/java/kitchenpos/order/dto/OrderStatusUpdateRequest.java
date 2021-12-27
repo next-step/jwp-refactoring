@@ -12,11 +12,15 @@ import kitchenpos.order.domain.OrderStatus;
 public class OrderStatusUpdateRequest {
     private OrderStatus orderStatus;
 
-    public OrderStatusUpdateRequest() {
+    private OrderStatusUpdateRequest() {
     }
 
-    public OrderStatusUpdateRequest(OrderStatus orderStatus) {
+    private OrderStatusUpdateRequest(OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
+    }
+
+    public static OrderStatusUpdateRequest of(OrderStatus orderstatus) {
+        return new OrderStatusUpdateRequest(orderstatus);
     }
 
     public OrderStatus getOrderStatus() {

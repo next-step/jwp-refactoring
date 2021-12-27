@@ -15,22 +15,20 @@ import static java.util.stream.Collectors.toList;
  */
 public class OrderLineItemResponse {
     private Long id;
-    private Long orderId;
     private Long menuId;
     private Long quantity;
 
-    public OrderLineItemResponse() {
+    private OrderLineItemResponse() {
     }
 
-    public OrderLineItemResponse(Long id, Long orderId, Long menuId, Long quantity) {
+    private OrderLineItemResponse(Long id, Long menuId, Long quantity) {
         this.id = id;
-        this.orderId = orderId;
         this.menuId = menuId;
         this.quantity = quantity;
     }
 
     public static OrderLineItemResponse of(OrderLineItem orderLineItem) {
-        return new OrderLineItemResponse(orderLineItem.getId(), orderLineItem.getOrder().getId(), orderLineItem.getMenu().getId(), orderLineItem.getQuantity().value());
+        return new OrderLineItemResponse(orderLineItem.getId(), orderLineItem.getMenuId(), orderLineItem.getQuantity().value());
     }
 
     public static List<OrderLineItemResponse> ofList(List<OrderLineItem> orderLineItems) {
@@ -41,10 +39,6 @@ public class OrderLineItemResponse {
 
     public Long getId() {
         return id;
-    }
-
-    public Long getOrderId() {
-        return orderId;
     }
 
     public Long getMenuId() {

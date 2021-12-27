@@ -22,10 +22,10 @@ public class OrderResponse {
     private LocalDateTime orderedTime;
     private List<OrderLineItemResponse> orderLineItems;
 
-    public OrderResponse() {
+    private OrderResponse() {
     }
 
-    public OrderResponse(Long id, Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItemResponse> orderLineItems) {
+    private OrderResponse(Long id, Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItemResponse> orderLineItems) {
         this.id = id;
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
@@ -35,7 +35,7 @@ public class OrderResponse {
 
     public static OrderResponse of(Order order) {
         List<OrderLineItemResponse> orderLineItemResponses = OrderLineItemResponse.ofList(order.getOrderLineItems());
-        return new OrderResponse(order.getId(), order.getOrderTable().getId(), order.getOrderStatus(), order.getOrderedTime(), orderLineItemResponses);
+        return new OrderResponse(order.getId(), order.getOrderTableId(), order.getOrderStatus(), order.getOrderedTime(), orderLineItemResponses);
     }
 
     public static List<OrderResponse> ofList(List<Order> orders) {

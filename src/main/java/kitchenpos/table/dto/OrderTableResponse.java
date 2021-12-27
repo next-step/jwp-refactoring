@@ -25,28 +25,18 @@ public class OrderTableResponse {
 
     private boolean empty;
 
-    public OrderTableResponse() {
+    private OrderTableResponse() {
     }
 
-    public OrderTableResponse(Long id, Long tableGroupId, Integer numberOfGuests, Boolean empty) {
+    private OrderTableResponse(Long id, Long tableGroupId, Integer numberOfGuests, Boolean empty) {
         this.id = id;
         this.tableGroupId = tableGroupId;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
     }
 
-    public OrderTableResponse(Long id, Integer numberOfGuests, Boolean empty) {
-        this.id = id;
-        this.numberOfGuests = numberOfGuests;
-        this.empty = empty;
-    }
-
     public static OrderTableResponse of(OrderTable orderTable) {
-        if (Objects.isNull(orderTable.getTableGroup())) {
-            return new OrderTableResponse(orderTable.getId(), orderTable.getNumberOfGuests(), orderTable.isEmpty());
-        }
-
-        return new OrderTableResponse(orderTable.getId(), orderTable.getTableGroup().getId(), orderTable.getNumberOfGuests(), orderTable.isEmpty());
+        return new OrderTableResponse(orderTable.getId(), orderTable.getId(), orderTable.getNumberOfGuests(), orderTable.isEmpty());
     }
 
     public static List<OrderTableResponse> ofList(List<OrderTable> orderTables) {

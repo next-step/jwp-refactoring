@@ -8,9 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static kitchenpos.menu.fixtures.MenuProductFixtures.메뉴상품;
-import static kitchenpos.menu.fixtures.ProductFixtures.양념치킨;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 /**
  * packageName : kitchenpos.menu.domain
@@ -29,18 +27,18 @@ class MenuProductsTest {
     @DisplayName("일급 컬렉션을 생성한다.")
     public void create() throws Exception {
         // given
-        List<MenuProduct> given = Arrays.asList(메뉴상품(양념치킨(), 1L), 메뉴상품(양념치킨(), 1L), 메뉴상품(양념치킨(), 1L));
+        List<MenuProduct> given = Arrays.asList(
+                메뉴상품(1L, 1L),
+                메뉴상품(2L, 1L),
+                메뉴상품(3L, 1L)
+        );
         MenuProducts menuProducts = new MenuProducts();
 
         // when
-        menuProducts.add(menu, given);
+        menuProducts.add(given);
 
         // then
-        assertAll(
-                () -> assertThat(menuProducts.value()).hasSize(3),
-                () -> assertThat(menuProducts.value()).extracting(MenuProduct::getMenu).isNotNull()
-        );
-
+        assertThat(menuProducts.value()).hasSize(3);
     }
 
 }

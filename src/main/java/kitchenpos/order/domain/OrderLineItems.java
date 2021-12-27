@@ -1,8 +1,6 @@
 package kitchenpos.order.domain;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Embeddable;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,14 +13,16 @@ import java.util.List;
  */
 @Embeddable
 public class OrderLineItems {
-    @OneToMany(mappedBy = "order", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "order_id", foreignKey = @ForeignKey(name = "fk_order_line_item_menu"))
     private final List<OrderLineItem> orderLineItems = new ArrayList<>();
+
+    public void add(List<OrderLineItem> orderLineItems) {
+        this.orderLineItems.addAll(orderLineItems);
+    }
 
     public List<OrderLineItem> value() {
         return orderLineItems;
-    }
-
-    public void add(Order order, List<OrderLineItem> orderLineItems) {
-        orderLineItems.forEach(it -> this.orderLineItems.add(it.in(order)));
     }
 }

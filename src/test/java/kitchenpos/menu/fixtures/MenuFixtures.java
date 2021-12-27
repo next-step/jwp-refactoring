@@ -1,7 +1,6 @@
 package kitchenpos.menu.fixtures;
 
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
@@ -23,7 +22,7 @@ public class MenuFixtures {
                 "양념치킨두마리메뉴",
                 new BigDecimal(32000),
                 1L,
-                Lists.newArrayList(new MenuProductRequest(2L, 2L))
+                Lists.newArrayList(MenuProductRequest.of(2L, 2L))
         );
     }
 
@@ -32,12 +31,12 @@ public class MenuFixtures {
                 "두마리메뉴",
                 new BigDecimal(32000),
                 3L,
-                Lists.newArrayList(new MenuProductRequest(1L, 2L))
+                Lists.newArrayList(MenuProductRequest.of(1L, 2L))
         );
     }
 
-    public static Menu 메뉴(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        return new Menu(name, price, menuGroup, menuProducts);
+    public static Menu 메뉴(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
+        return new Menu(name, price, menuGroupId, menuProducts);
     }
 
     public static MenuRequest 후라이드두마리메뉴요청(BigDecimal price, Long menuGroupId, List<MenuProductRequest> menuProductRequests) {
@@ -65,6 +64,10 @@ public class MenuFixtures {
                 menuGroupId,
                 menuProductRequests
         );
+    }
+
+    public static Menu 양념치킨두마리메뉴() {
+        return 양념치킨두마리메뉴요청().toEntity();
     }
 }
 

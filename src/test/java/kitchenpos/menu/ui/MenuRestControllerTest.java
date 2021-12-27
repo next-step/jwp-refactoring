@@ -5,7 +5,6 @@ import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.menu.ui.MenuRestController;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,9 +20,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import static kitchenpos.menu.fixtures.MenuFixtures.*;
-import static kitchenpos.menu.fixtures.MenuGroupFixtures.메뉴그룹;
+import static kitchenpos.menugroup.fixtures.MenuGroupFixtures.메뉴그룹;
 import static kitchenpos.menu.fixtures.MenuProductFixtures.*;
-import static kitchenpos.menu.fixtures.ProductFixtures.양념치킨;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
@@ -43,7 +41,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DisplayName("메뉴 컨트롤러 테스트")
 @WebMvcTest(MenuRestController.class)
 class MenuRestControllerTest {
-    private final Menu menu = 메뉴("양념치킨두마리메뉴", new BigDecimal(32000), 메뉴그룹("두마리메뉴그룹"), Lists.newArrayList(메뉴상품(양념치킨(), 2L)));
+    private final Menu menu = 메뉴("양념치킨두마리메뉴", new BigDecimal(32000), 메뉴그룹("두마리메뉴그룹").getId(), Lists.newArrayList(메뉴상품(1L, 2L)));
     private final MenuRequest request = 양념치킨두마리메뉴요청();
     private final MenuResponse response = MenuResponse.of(menu);
 

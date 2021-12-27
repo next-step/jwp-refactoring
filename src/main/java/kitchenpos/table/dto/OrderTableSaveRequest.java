@@ -13,10 +13,10 @@ public class OrderTableSaveRequest {
     private Integer numberOfGuest;
     private boolean empty;
 
-    public OrderTableSaveRequest() {
+    private OrderTableSaveRequest() {
     }
 
-    public OrderTableSaveRequest(Integer numberOfGuest, boolean empty) {
+    private OrderTableSaveRequest(Integer numberOfGuest, boolean empty) {
         this.numberOfGuest = numberOfGuest;
         this.empty = empty;
     }
