@@ -10,7 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import kitchenpos.common.vo.Quantity;
+import kitchenpos.menu.domain.Menu;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 @EnableJpaAuditing
@@ -26,7 +26,9 @@ public class OrderLineItem {
     @ManyToOne(fetch = FetchType.LAZY)
     private Order order;
 
-    private Long menuId;
+    @JoinColumn(name = "menu_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Menu menu;
 
     @Embedded
     @Column(nullable = false)
@@ -35,8 +37,8 @@ public class OrderLineItem {
     protected OrderLineItem() {
     }
 
-    public OrderLineItem(Long menuId, Quantity quantity) {
-        this.menuId = menuId;
+    public OrderLineItem(Menu menu, Quantity quantity) {
+        this.menu = menu;
         this.quantity = quantity;
     }
 
@@ -52,8 +54,8 @@ public class OrderLineItem {
         return order;
     }
 
-    public Long getMenuId() {
-        return menuId;
+    public Menu getMenu() {
+        return menu;
     }
 
     public Quantity getQuantity() {

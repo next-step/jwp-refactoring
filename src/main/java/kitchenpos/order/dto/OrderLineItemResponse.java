@@ -1,22 +1,22 @@
 package kitchenpos.order.dto;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
+import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.order.domain.OrderLineItem;
 
 public class OrderLineItemResponse {
 
     private Long id;
-    private Long menuId;
+    private MenuResponse menu;
     private long quantity;
 
     private OrderLineItemResponse() {
     }
 
-    public OrderLineItemResponse(Long seq, Long menuId, long quantity) {
+    public OrderLineItemResponse(Long seq, MenuResponse menu, long quantity) {
         this.id = seq;
-        this.menuId = menuId;
+        this.menu = menu;
         this.quantity = quantity;
     }
 
@@ -29,7 +29,7 @@ public class OrderLineItemResponse {
 
     public static OrderLineItemResponse from(OrderLineItem orderLineItem) {
         return new OrderLineItemResponse(orderLineItem.getId(),
-            orderLineItem.getMenuId(),
+            MenuResponse.from(orderLineItem.getMenu()),
             orderLineItem.getQuantityVal());
     }
 
@@ -37,29 +37,13 @@ public class OrderLineItemResponse {
         return id;
     }
 
-    public Long getMenuId() {
-        return menuId;
+    public MenuResponse getMenu() {
+        return menu;
     }
 
     public long getQuantity() {
         return quantity;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        OrderLineItemResponse that = (OrderLineItemResponse) o;
-        return getQuantity() == that.getQuantity() && Objects.equals(getId(), that.getId())
-            && Objects.equals(getMenuId(), that.getMenuId());
-    }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(getId(), getMenuId(), getQuantity());
-    }
 }

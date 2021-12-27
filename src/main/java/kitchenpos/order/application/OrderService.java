@@ -1,17 +1,19 @@
 package kitchenpos.order.application;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import kitchenpos.common.vo.Quantity;
+import javax.persistence.EntityNotFoundException;
+import kitchenpos.menu.application.MenuService;
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderMenuValidator;
 import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.Quantity;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.order.exception.OrderNotFoundException;
-import kitchenpos.ordertable.domain.OrderTableValidator;
+import kitchenpos.ordertable.application.TableService;
+import kitchenpos.ordertable.domain.OrderTable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -21,44 +23,41 @@ import org.springframework.util.CollectionUtils;
 public class OrderService {
 
     private static final String ERROR_MESSAGE_NO_ITEMS = "주문 항목이 없습니다.";
+    private static final String ERROR_MESSAGE_NOT_EXIST_ORDER = "존재하지 않는 주문입니다.";
 
     private final OrderRepository orderRepository;
-    private final OrderMenuValidator orderMenuValidator;
-    private final OrderTableValidator orderTableValidator;
+    private final TableService tableService;
+    private final MenuService menuService;
 
-    public OrderService(OrderRepository orderRepository, OrderMenuValidator orderMenuValidator,
-        OrderTableValidator orderTableValidator) {
+    public OrderService(OrderRepository orderRepository,
+        TableService tableService, MenuService menuService) {
         this.orderRepository = orderRepository;
-        this.orderMenuValidator = orderMenuValidator;
-        this.orderTableValidator = orderTableValidator;
+        this.tableService = tableService;
+        this.menuService = menuService;
     }
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
-        Long orderTableId = orderRequest.getOrderTableId();
-        orderTableValidator.validateNotOrderClosedTable(orderTableId);
+        final List<OrderLineItemRequest> orderLineItemRequests = orderRequest.getOrderLineItems();
+        validateExistOrderLineItems(orderLineItemRequests);
+        List<OrderLineItem> orderLineItems = createOrderLineItems(orderLineItemRequests);
 
-        List<OrderLineItemRequest> requestOrderLineItems = orderRequest.getOrderLineItems();
-        orderMenuValidator.validateOrderLineItems(requestOrderLineItems);
-        List<OrderLineItem> orderLineItems = createOrderLineItems(requestOrderLineItems);
+        final OrderTable orderTable = tableService.findOrderTable(orderRequest.getOrderTableId());
 
-        Order order = new Order(orderTableId, orderLineItems);
+        Order order = new Order(orderTable, orderLineItems);
         final Order savedOrder = orderRepository.save(order);
         return OrderResponse.from(savedOrder);
     }
 
     private List<OrderLineItem> createOrderLineItems(
         List<OrderLineItemRequest> orderLineItemRequests) {
-        validateExistOrderLineItems(orderLineItemRequests);
-
-        return orderLineItemRequests.stream()
-            .map(orderLineItemRequest -> createOrderLineItem(orderLineItemRequest))
-            .collect(Collectors.toList());
-    }
-
-    private OrderLineItem createOrderLineItem(OrderLineItemRequest orderLineItemRequest) {
-        return new OrderLineItem(orderLineItemRequest.getMenuId(),
-            new Quantity(orderLineItemRequest.getQuantity()));
+        List<OrderLineItem> orderLineItems = new ArrayList<>();
+        for (OrderLineItemRequest orderLineItemRequest : orderLineItemRequests) {
+            Menu menu = menuService.findMenu(orderLineItemRequest.getMenuId());
+            orderLineItems.add(
+                new OrderLineItem(menu, new Quantity(orderLineItemRequest.getQuantity())));
+        }
+        return orderLineItems;
     }
 
     private void validateExistOrderLineItems(List<OrderLineItemRequest> orderLineItemRequests) {
@@ -76,11 +75,12 @@ public class OrderService {
     public OrderResponse changeOrderStatus(final Long orderId, final OrderRequest orderRequest) {
         final Order order = findOrder(orderId);
         order.changeOrderStatus(orderRequest.getOrderStatus());
+
         return OrderResponse.from(order);
     }
 
     public Order findOrder(Long orderId) {
         return orderRepository.findById(orderId)
-            .orElseThrow(OrderNotFoundException::new);
+            .orElseThrow(() -> new EntityNotFoundException(ERROR_MESSAGE_NOT_EXIST_ORDER));
     }
 }

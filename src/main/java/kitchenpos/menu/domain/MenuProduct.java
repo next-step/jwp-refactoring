@@ -1,5 +1,6 @@
 package kitchenpos.menu.domain;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,7 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import kitchenpos.common.vo.Quantity;
+import kitchenpos.product.domain.Product;
 
 @Entity
 public class MenuProduct {
@@ -23,26 +24,28 @@ public class MenuProduct {
     @ManyToOne(fetch = FetchType.LAZY)
     private Menu menu;
 
-    private Long productId;
+    @JoinColumn(name = "product_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Product product;
 
     @Column(nullable = false)
-    private Quantity quantity;
+    private long quantity;
 
     protected MenuProduct() {
     }
 
-    public MenuProduct(Long productId, Quantity quantity) {
-        this(null, null, productId, quantity);
+    public MenuProduct(Product product, long quantity) {
+        this(null, null, product, quantity);
     }
 
-    public MenuProduct(Menu menu, Long productId, Quantity quantity) {
-        this(null, menu, productId, quantity);
+    public MenuProduct(Menu menu, Product product, long quantity) {
+        this(null, menu, product, quantity);
     }
 
-    public MenuProduct(Long id, Menu menu, Long productId, Quantity quantity) {
+    public MenuProduct(Long id, Menu menu, Product product, long quantity) {
         this.id = id;
         this.menu = menu;
-        this.productId = productId;
+        this.product = product;
         this.quantity = quantity;
     }
 
@@ -58,16 +61,16 @@ public class MenuProduct {
         return menu;
     }
 
-    public Quantity getQuantity() {
+    public Product getProduct() {
+        return product;
+    }
+
+    public long getQuantity() {
         return quantity;
     }
 
-    public long getQuantityVal() {
-        return quantity.getQuantity();
-    }
-
-    public Long getProductId() {
-        return productId;
+    public BigDecimal getMenuProductPrice() {
+        return product.getPriceVal().multiply(BigDecimal.valueOf(quantity));
     }
 
     @Override

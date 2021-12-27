@@ -18,14 +18,6 @@ public class OrderTableRequest {
         this.id = id;
     }
 
-    public OrderTableRequest(int numberOfGuests) {
-        this.numberOfGuests = numberOfGuests;
-    }
-
-    public OrderTableRequest(boolean orderClose) {
-        this.orderClose = orderClose;
-    }
-
     public int getNumberOfGuests() {
         return numberOfGuests;
     }
@@ -33,7 +25,7 @@ public class OrderTableRequest {
     public boolean isOrderClose() {
         return orderClose;
     }
-
+    
     public Long getId() {
         return id;
     }

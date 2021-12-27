@@ -15,10 +15,7 @@ import java.util.List;
 import kitchenpos.common.CommonTestFixtures;
 import kitchenpos.ordertable.application.TableService;
 import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
-import kitchenpos.ordertable.testfixtures.TableTestFixtures;
-import kitchenpos.ordertable.vo.NumberOfGuests;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,12 +39,11 @@ class TableRestControllerTest {
     @Test
     void create() throws Exception {
         //given
-        int numberOfGuests = 6;
+        int numOfGuests = 6;
         boolean orderClose = false;
-        OrderTableRequest requestOrderTable = TableTestFixtures.convertToOrderTableRequest(
-            numberOfGuests, orderClose);
+        OrderTable requestOrderTable = new OrderTable(numOfGuests, orderClose);
         OrderTableResponse expectedOrderTable = OrderTableResponse.from(
-            new OrderTable(1L, new NumberOfGuests(numberOfGuests), orderClose));
+            new OrderTable(1L, numOfGuests, orderClose));
         given(tableService.create(any())).willReturn(expectedOrderTable);
 
         //when, then
@@ -63,8 +59,8 @@ class TableRestControllerTest {
     void list() throws Exception {
         //given
         List<OrderTableResponse> expectedOrderTables = OrderTableResponse.fromList(Arrays.asList(
-            new OrderTable(1L, new NumberOfGuests(6), false),
-            new OrderTable(2L, new NumberOfGuests(3), false)
+            new OrderTable(1L, 6, false),
+            new OrderTable(2L, 3, false)
         ));
 
         given(tableService.list()).willReturn(expectedOrderTables);
@@ -86,10 +82,9 @@ class TableRestControllerTest {
     void changeEmpty() throws Exception {
         //given
         boolean changeEmpty = false;
-        OrderTableRequest requestOrderTable = TableTestFixtures.convertToIsOrderCloseChangeRequest(
-            changeEmpty);
+        OrderTable requestOrderTable = new OrderTable(changeEmpty);
         OrderTableResponse expectedOrderTable = OrderTableResponse.from(
-            new OrderTable(1L, new NumberOfGuests(6), changeEmpty));
+            new OrderTable(1L, 6, changeEmpty));
         given(tableService.changeEmpty(any(), any())).willReturn(expectedOrderTable);
 
         //when,then
@@ -106,11 +101,9 @@ class TableRestControllerTest {
     void changeNumberOfGuests() throws Exception {
         //given
         int numberOfGuests = 5;
-        OrderTableRequest requestOrderTable = TableTestFixtures.convertToNumberOfGuestsChangeRequest(
-            numberOfGuests);
-
+        OrderTable requestOrderTable = new OrderTable(numberOfGuests);
         OrderTableResponse expectedOrderTable = OrderTableResponse.from(
-            new OrderTable(1L, new NumberOfGuests(numberOfGuests), false));
+            new OrderTable(1L, numberOfGuests, false));
         given(tableService.changeNumberOfGuests(any(), any())).willReturn(expectedOrderTable);
 
         //when,then

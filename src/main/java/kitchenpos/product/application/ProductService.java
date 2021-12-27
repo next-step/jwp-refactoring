@@ -1,12 +1,12 @@
 package kitchenpos.product.application;
 
 import java.util.List;
-import kitchenpos.common.vo.Price;
+import javax.persistence.EntityNotFoundException;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductPrice;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
-import kitchenpos.product.exception.ProductNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class ProductService {
 
+    private static final String ERROR_MESSAGE_NOT_EXIST_PRODUCT = "상품 정보가 존재하지 않습니다.";
     private final ProductRepository productRepository;
 
     public ProductService(ProductRepository productRepository) {
@@ -23,7 +24,7 @@ public class ProductService {
     @Transactional
     public ProductResponse create(final ProductRequest productRequest) {
         Product product = new Product(productRequest.getName(),
-            Price.valueOf(productRequest.getPrice()));
+            new ProductPrice(productRequest.getPrice()));
         Product savedProduct = productRepository.save(product);
         return ProductResponse.from(savedProduct);
     }
@@ -35,6 +36,6 @@ public class ProductService {
 
     public Product findProduct(long productId) {
         return productRepository.findById(productId)
-            .orElseThrow(ProductNotFoundException::new);
+            .orElseThrow(() -> new EntityNotFoundException(ERROR_MESSAGE_NOT_EXIST_PRODUCT));
     }
 }

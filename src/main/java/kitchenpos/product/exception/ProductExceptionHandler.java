@@ -6,10 +6,10 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class ProductExceptionHandler {
-
-    @ExceptionHandler(ProductNotFoundException.class)
-    public ResponseEntity handleProductNotFoundException(
-        ProductNotFoundException e) {
+    
+    @ExceptionHandler(ProductPriceNotAcceptableException.class)
+    public ResponseEntity handleProductPriceNotAcceptableException(
+        ProductPriceNotAcceptableException e) {
         return ResponseEntity.badRequest().build();
     }
 }

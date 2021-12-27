@@ -3,10 +3,14 @@ package kitchenpos.ordertable.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import kitchenpos.ordertable.exception.IllegalNumberOfGuests;
+import java.util.Arrays;
+import java.util.List;
+import kitchenpos.menu.testfixtures.MenuTestFixtures;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.Quantity;
 import kitchenpos.ordertable.exception.TableChangeNumberOfGuestsException;
 import kitchenpos.ordertable.exception.TableUpdateStateException;
-import kitchenpos.ordertable.vo.NumberOfGuests;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -16,8 +20,8 @@ class OrderTableTest {
     @Test
     void constructor() {
         //given, when
-        OrderTable orderTable = new OrderTable(new NumberOfGuests(6), false);
-        OrderTable expectedTable = new OrderTable(new NumberOfGuests(6), false);
+        OrderTable orderTable = new OrderTable(6, false);
+        OrderTable expectedTable = new OrderTable(6, false);
 
         //then
         assertThat(orderTable.getNumberOfGuests()).isEqualTo(expectedTable.getNumberOfGuests());
@@ -27,7 +31,7 @@ class OrderTableTest {
     @Test
     void updateEmpty() {
         //given
-        OrderTable orderTable = new OrderTable(new NumberOfGuests(6), false);
+        OrderTable orderTable = new OrderTable(6, false);
 
         //when
         orderTable.updateTableStatus(true);
@@ -40,21 +44,39 @@ class OrderTableTest {
     @Test
     void updateEmpty_exception1() {
         //given
-        OrderTable orderTable = new OrderTable(1L, new NumberOfGuests(6), true);
-        orderTable.groupIn(1L);
+        OrderTable orderTable1 = new OrderTable(1L, 6, true);
+        OrderTable orderTable2 = new OrderTable(2L, 3, true);
+        TableGroup tableGroup = new TableGroup();
+        tableGroup.groupTables(Arrays.asList(orderTable1, orderTable2));
 
         //when,then
-        assertThatThrownBy(() -> orderTable.updateTableStatus(true))
+        assertThatThrownBy(() -> orderTable1.updateTableStatus(true))
             .isInstanceOf(TableUpdateStateException.class);
     }
 
+    @DisplayName("주문상태가 계산완료가 아닌 주문이 있는 경우 업데이트 불가")
+    @Test
+    void updateEmpty_exception2() {
+        //given
+        OrderTable orderTable = new OrderTable(6, false);
+        List<OrderLineItem> orderLineItems = Arrays.asList(
+            new OrderLineItem(MenuTestFixtures.서비스군만두, new Quantity(5L))
+        );
+
+        //when
+        Order order = new Order(orderTable, orderLineItems);
+
+        //then
+        assertThatThrownBy(() -> orderTable.updateTableStatus(true))
+            .isInstanceOf(TableUpdateStateException.class);
+    }
 
     @DisplayName("테이블 방문 손님 수 변경")
     @Test
     void changeNumberOfGuests() {
         //given
-        OrderTable orderTable = new OrderTable(1L, new NumberOfGuests(6), false);
-        NumberOfGuests changeNumber = new NumberOfGuests(4);
+        OrderTable orderTable = new OrderTable(6, false);
+        int changeNumber = 4;
 
         //when
         orderTable.changeNumberOfGuests(changeNumber);
@@ -67,21 +89,22 @@ class OrderTableTest {
     @Test
     void changeNumberOfGuests_exception1() {
         //given
-        OrderTable orderTable = new OrderTable(1L, new NumberOfGuests(6), false);
+        OrderTable orderTable = new OrderTable(6, false);
+        int changeNumber = -1;
+
         //when, then
-        assertThatThrownBy(() -> orderTable.changeNumberOfGuests(new NumberOfGuests(-1)))
-            .isInstanceOf(IllegalNumberOfGuests.class);
+        assertThatThrownBy(() -> orderTable.changeNumberOfGuests(changeNumber))
+            .isInstanceOf(TableChangeNumberOfGuestsException.class);
     }
 
     @DisplayName("주문종료 상태의 테이블은 방문손님 수를 변경할 수 없다.")
     @Test
     void changeNumberOfGuests_exception2() {
         //given
-        OrderTable orderTable = new OrderTable(new NumberOfGuests(6), true);
-        NumberOfGuests changeNumber = new NumberOfGuests(2);
+        OrderTable orderTable = new OrderTable(6, true);
 
         //when, then
-        assertThatThrownBy(() -> orderTable.changeNumberOfGuests(changeNumber))
+        assertThatThrownBy(() -> orderTable.changeNumberOfGuests(2))
             .isInstanceOf(TableChangeNumberOfGuestsException.class);
     }
 }

@@ -40,7 +40,7 @@ public class TableRestController {
     }
 
     @PutMapping("/{orderTableId}/order_close")
-    public ResponseEntity<OrderTableResponse> changeOrderClose(
+    public ResponseEntity<OrderTableResponse> changeEmpty(
         @PathVariable final Long orderTableId,
         @RequestBody final OrderTableRequest orderTable
     ) {

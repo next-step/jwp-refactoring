@@ -6,8 +6,8 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.common.vo.Price;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductPrice;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
@@ -34,7 +34,7 @@ class ProductServiceTest {
         // given
         String name = "타코야끼";
         BigDecimal price = BigDecimal.valueOf(12000);
-        Product product = new Product(1L, name, Price.valueOf(price));
+        Product product = new Product(1L, name, new ProductPrice(price));
         ProductTestFixtures.상품_생성_결과_모킹(productRepository, product);
 
         //when
@@ -49,8 +49,8 @@ class ProductServiceTest {
     void list() {
         //given
         List<Product> products = Arrays.asList(
-            new Product("타코야끼", Price.valueOf(BigDecimal.valueOf(12000))),
-            new Product("뿌링클", Price.valueOf(BigDecimal.valueOf(22000))));
+            new Product("타코야끼", new ProductPrice(BigDecimal.valueOf(12000))),
+            new Product("뿌링클", new ProductPrice(BigDecimal.valueOf(22000))));
         ProductTestFixtures.상품_전체_조회_모킹(productRepository, products);
 
         //when

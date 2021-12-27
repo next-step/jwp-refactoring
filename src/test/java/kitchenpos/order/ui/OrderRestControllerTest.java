@@ -14,19 +14,18 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import kitchenpos.common.CommonTestFixtures;
-import kitchenpos.common.vo.Price;
-import kitchenpos.common.vo.Quantity;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuPrice;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.Quantity;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.testfixtures.OrderTestFixtures;
 import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.vo.NumberOfGuests;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -54,9 +53,9 @@ class OrderRestControllerTest {
     @BeforeEach
     void setUp() {
         MenuGroup 신상메뉴그룹 = new MenuGroup("신상메뉴그룹");
-        테이블1번 = new OrderTable(1L, new NumberOfGuests(5), false);
-        혼술세트 = new Menu(1L, "혼술세트", Price.valueOf(BigDecimal.ZERO), 신상메뉴그룹);
-        이달의메뉴 = new Menu(2L, "이달의메뉴", Price.valueOf(BigDecimal.ZERO), 신상메뉴그룹);
+        테이블1번 = new OrderTable(1L, 5, false);
+        혼술세트 = new Menu(1L, "혼술세트", new MenuPrice(BigDecimal.ZERO), 신상메뉴그룹);
+        이달의메뉴 = new Menu(2L, "이달의메뉴", new MenuPrice(BigDecimal.ZERO), 신상메뉴그룹);
     }
 
     @DisplayName("주문 등록")
@@ -64,13 +63,12 @@ class OrderRestControllerTest {
     void create() throws Exception {
         //given
         List<OrderLineItem> orderLineItems = Arrays.asList(
-            new OrderLineItem(혼술세트.getId(), new Quantity(1L)),
-            new OrderLineItem(이달의메뉴.getId(), new Quantity(3L)));
+            new OrderLineItem(혼술세트, new Quantity(1L)),
+            new OrderLineItem(이달의메뉴, new Quantity(3L)));
         OrderRequest requestOrder = OrderTestFixtures.convertToOrderRequest(
-            new Order(테이블1번.getId(), orderLineItems));
-        OrderResponse expectedOrder = OrderResponse.from(
-            new Order(1L, 테이블1번.getId(), OrderStatus.COOKING,
-                orderLineItems));
+            new Order(테이블1번, orderLineItems));
+        OrderResponse expectedOrder = OrderResponse.from(new Order(1L, 테이블1번, OrderStatus.COOKING,
+            orderLineItems));
         given(orderService.create(any()))
             .willReturn(expectedOrder);
 
@@ -80,7 +78,7 @@ class OrderRestControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isCreated())
             .andExpect(jsonPath("$.id").value(expectedOrder.getId()))
-            .andExpect(jsonPath("$.orderTableId").value(expectedOrder.getOrderTableId()));
+            .andExpect(jsonPath("$.orderTable.id").value(expectedOrder.getOrderTable().getId()));
     }
 
     @DisplayName("주문 목록 조회")
@@ -88,16 +86,16 @@ class OrderRestControllerTest {
     void list() throws Exception {
         //given
         List<OrderLineItem> orderLineItems1 = Arrays.asList(
-            new OrderLineItem(혼술세트.getId(), new Quantity(1L)),
-            new OrderLineItem(이달의메뉴.getId(), new Quantity(3L)));
+            new OrderLineItem(혼술세트, new Quantity(1L)),
+            new OrderLineItem(이달의메뉴, new Quantity(3L)));
 
         List<OrderLineItem> orderLineItems2 = Arrays.asList(
-            new OrderLineItem(혼술세트.getId(), new Quantity(2L)),
-            new OrderLineItem(이달의메뉴.getId(), new Quantity(2L)));
+            new OrderLineItem(혼술세트, new Quantity(2L)),
+            new OrderLineItem(이달의메뉴, new Quantity(2L)));
 
         List<OrderResponse> expectedOrders = OrderResponse.fromList(Arrays.asList(
-            new Order(1L, 테이블1번.getId(), OrderStatus.MEAL, orderLineItems1),
-            new Order(2L, 테이블1번.getId(), OrderStatus.COOKING, orderLineItems2)));
+            new Order(1L, 테이블1번, OrderStatus.MEAL, orderLineItems1),
+            new Order(2L, 테이블1번, OrderStatus.COOKING, orderLineItems2)));
 
         given(orderService.list())
             .willReturn(expectedOrders);
@@ -119,14 +117,13 @@ class OrderRestControllerTest {
     void changeOrderStatus() throws Exception {
         //given
         List<OrderLineItem> orderLineItems = Arrays.asList(
-            new OrderLineItem(혼술세트.getId(), new Quantity(1L)),
-            new OrderLineItem(이달의메뉴.getId(), new Quantity(3L)));
+            new OrderLineItem(혼술세트, new Quantity(1L)),
+            new OrderLineItem(이달의메뉴, new Quantity(3L)));
         OrderStatus changeOrderStatus = OrderStatus.MEAL;
-        OrderRequest requestOrder = OrderTestFixtures.convertToChangeOrderStatusRequest(
-            changeOrderStatus);
+        OrderRequest requestOrder = new OrderRequest(changeOrderStatus);
 
         OrderResponse expectedOrder = OrderResponse.from(
-            new Order(1L, 테이블1번.getId(), changeOrderStatus, orderLineItems));
+            new Order(1L, 테이블1번, changeOrderStatus, orderLineItems));
         given(orderService.changeOrderStatus(any(), any()))
             .willReturn(expectedOrder);
 
