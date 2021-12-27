@@ -15,6 +15,7 @@ import kitchenpos.domain.Price;
 
 @Entity
 public class Menu {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -33,20 +34,11 @@ public class Menu {
     public Menu() {
     }
 
-    private Menu(Long id) {
-        this.id = id;
-    }
-
-    private Menu(String name, Integer price, Long menuGroupId,
-        List<MenuProduct> menuProducts) {
+    private Menu(String name, Integer price, Long menuGroupId, List<MenuProduct> menuProducts) {
         this.name = Name.of(name);
         this.price = Price.of(price);
         this.menuGroup = MenuGroup.of(menuGroupId);
-        this.menuProducts = MenuProducts.of(this, menuProducts);
-    }
-
-    public static Menu of(Long id) {
-        return new Menu(id);
+        this.menuProducts = MenuProducts.of(menuProducts);
     }
 
     public static Menu of(String name, Integer price, Long menuGroupId,
@@ -89,6 +81,7 @@ public class Menu {
     }
 
     public void setMenuProducts(final MenuProducts menuProducts) {
+        menuProducts.getValues().forEach(menuProduct -> menuProduct.setMenuId(getId()));
         this.menuProducts = menuProducts;
     }
 }

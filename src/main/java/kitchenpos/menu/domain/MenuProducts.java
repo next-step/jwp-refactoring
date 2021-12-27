@@ -3,7 +3,6 @@ package kitchenpos.menu.domain;
 import static java.util.stream.Collectors.toList;
 
 import java.util.List;
-import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import kitchenpos.domain.Price;
@@ -11,7 +10,7 @@ import kitchenpos.domain.Price;
 @Embeddable
 public class MenuProducts {
 
-    @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "menuId")
     private List<MenuProduct> menuProducts;
 
     protected MenuProducts() {
@@ -21,8 +20,7 @@ public class MenuProducts {
         this.menuProducts = menuProducts;
     }
 
-    public static MenuProducts of(Menu menu, List<MenuProduct> menuProducts) {
-        menuProducts.forEach(menuProduct -> menuProduct.setMenu(menu));
+    public static MenuProducts of(List<MenuProduct> menuProducts) {
         return new MenuProducts(menuProducts);
     }
 

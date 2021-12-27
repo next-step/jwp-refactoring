@@ -12,6 +12,7 @@ import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProductRepository;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.product.domain.Product;
@@ -30,6 +31,9 @@ public class MenuServiceTest {
 
     @Mock
     private MenuRepository menuRepository;
+
+    @Mock
+    private MenuProductRepository menuProductRepository;
 
     @Mock
     private MenuGroupRepository menuGroupRepository;
@@ -57,13 +61,15 @@ public class MenuServiceTest {
     @Test
     void 메뉴_생성() {
         // given
+        List<MenuProduct> menuProducts = Lists.newArrayList(menuProduct1, menuProduct2);
         Menu menu = Menu.of("후라이드+양념", 34000, 1L,
-            Lists.newArrayList(menuProduct1, menuProduct2));
+            menuProducts);
 
         given(menuGroupRepository.existsById(any())).willReturn(true);
         given(productRepository.findAllById(anyList())).willReturn(
             Lists.newArrayList(product1, product2));
         given(menuRepository.save(menu)).willReturn(menu);
+        given(menuProductRepository.saveAll(anyList())).willReturn(menuProducts);
 
         // when
         MenuResponse result = menuService.create(menu);

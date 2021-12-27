@@ -9,6 +9,7 @@ import java.util.function.Function;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProductRepository;
 import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuResponse;
@@ -21,13 +22,16 @@ import org.springframework.transaction.annotation.Transactional;
 public class MenuService {
 
     private final MenuRepository menuRepository;
+    private final MenuProductRepository menuProductRepository;
     private final MenuGroupRepository menuGroupRepository;
     private final ProductRepository productRepository;
 
     public MenuService(final MenuRepository menuRepository,
+        final MenuProductRepository menuProductRepository,
         final MenuGroupRepository menuGroupRepository,
         final ProductRepository productRepository) {
         this.menuRepository = menuRepository;
+        this.menuProductRepository = menuProductRepository;
         this.menuGroupRepository = menuGroupRepository;
         this.productRepository = productRepository;
     }
@@ -40,6 +44,8 @@ public class MenuService {
         menu.validateMenuPrice(menuProducts.getTotalPrice());
 
         final Menu savedMenu = menuRepository.save(menu);
+        savedMenu.setMenuProducts(menuProducts);
+        menuProductRepository.saveAll(menuProducts.getValues());
 
         return MenuResponse.from(savedMenu);
     }

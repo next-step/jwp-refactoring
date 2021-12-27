@@ -18,9 +18,8 @@ public class MenuProduct {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
     @JoinColumn(name = "menu_id", foreignKey = @ForeignKey(name = "fk_menu_product_menu"))
-    private Menu menu;
+    private Long menuId;
 
     @ManyToOne
     @JoinColumn(name = "product_id", foreignKey = @ForeignKey(name = "fk_menu_product_product"))
@@ -33,7 +32,7 @@ public class MenuProduct {
     }
 
     private MenuProduct(Long menuId, Long productId, long quantity) {
-        this.menu = Menu.of(menuId);
+        this.menuId = menuId;
         this.product = Product.of(productId);
         this.quantity = Quantity.of(quantity);
     }
@@ -59,12 +58,8 @@ public class MenuProduct {
         return id;
     }
 
-    public Menu getMenu() {
-        return menu;
-    }
-
-    void setMenu(Menu menu) {
-        this.menu = menu;
+    void setMenuId(Long menuId) {
+        this.menuId = menuId;
     }
 
     public Long getProductId() {

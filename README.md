@@ -62,7 +62,7 @@
 - [ ] 클래스, 패키지 사이 의존 관계는 단방향으로 구현
   - step2 종료후 관계도
   ![before.png](before.png)
-  - [ ] Menu <- MenuProduct 단방향 연관관계로 변경
+  - [X] Menu -> MenuProduct 단방향 연관관계로 변경 (MenuProduct -> Menu id로 참조)
   - [ ] Order <- OrderLineItem 단반향 연관관계로 변경
   - [ ] order <=> table 패키지 의존관계 수정
 ### step2 요구사항

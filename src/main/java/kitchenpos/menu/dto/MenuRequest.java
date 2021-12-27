@@ -29,13 +29,9 @@ public class MenuRequest {
     }
 
     public Menu toEntity() {
-        Menu menu = Menu.of(name, price, menuGroupId);
-        List<MenuProduct> menuProducts = this.menuProducts.stream()
+        return Menu.of(name, price, menuGroupId, menuProducts.stream()
             .map(MenuProductRequest::toEntity)
-            .collect(toList());
-        menu.setMenuProducts(MenuProducts.of(menu, menuProducts));
-
-        return menu;
+            .collect(toList()));
     }
 
     public String getName() {
