@@ -1,5 +1,6 @@
 package kitchenpos.menu.group.application;
 
+import kitchenpos.exception.NotExistEntityException;
 import kitchenpos.menu.group.domain.MenuGroup;
 import kitchenpos.menu.group.domain.MenuGroupRepository;
 import kitchenpos.menu.group.dto.MenuGroupRequest;
@@ -31,7 +32,7 @@ public class MenuGroupService {
 
     public MenuGroup findById(Long menuGroupId) {
         final MenuGroup menuGroup = menuGroupRepository.findById(menuGroupId)
-                .orElseThrow(() -> new EntityNotFoundException("MenuGroup이 존재하지 않습니다. MenuGroupId = " + menuGroupId));
+                .orElseThrow(() -> new NotExistEntityException("MenuGroup이 존재하지 않습니다. MenuGroupId = " + menuGroupId));
         return menuGroup;
     }
 

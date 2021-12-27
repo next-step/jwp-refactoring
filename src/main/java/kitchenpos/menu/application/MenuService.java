@@ -1,5 +1,6 @@
 package kitchenpos.menu.application;
 
+import kitchenpos.exception.NotExistEntityException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuPrice;
 import kitchenpos.menu.domain.MenuRepository;
@@ -67,7 +68,7 @@ public class MenuService {
         final List<Menu> menus = menuRepository.findAllById(menuIds);
 
         if (menus.size() != menus.size()) {
-            throw new IllegalArgumentException("일부 메뉴가 존재하지 않습니다.");
+            throw new NotExistEntityException("일부 메뉴가 존재하지 않습니다.");
         }
 
         return menus;

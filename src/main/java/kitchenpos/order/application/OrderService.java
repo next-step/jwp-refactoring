@@ -1,5 +1,6 @@
 package kitchenpos.order.application;
 
+import kitchenpos.exception.NotExistEntityException;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
@@ -62,7 +63,7 @@ public class OrderService {
     @Transactional
     public OrderResponse changeOrderStatus(final Long orderId) {
         final Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new EntityNotFoundException("주문이 존재하지 않습니다. orderId = " + orderId));
+                .orElseThrow(() -> new NotExistEntityException("주문이 존재하지 않습니다. orderId = " + orderId));
 
         order.nextOrderStatus();
         return OrderResponse.of(order);

@@ -1,5 +1,6 @@
 package kitchenpos.table.application;
 
+import kitchenpos.exception.NotExistEntityException;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableRequest;
@@ -51,14 +52,14 @@ public class TableService {
 
     public OrderTable findById(Long orderTableId) {
         return orderTableRepository.findById(orderTableId)
-                .orElseThrow(() -> new EntityNotFoundException("주문 테이블을 찾을 수 없습니다. orderTableId = " + orderTableId));
+                .orElseThrow(() -> new NotExistEntityException("주문 테이블을 찾을 수 없습니다. orderTableId = " + orderTableId));
     }
 
     public List<OrderTable> findAllByIds(List<Long> orderTableIds) {
         final List<OrderTable> savedOrderTables = orderTableRepository.findAllById(orderTableIds);
 
         if (orderTableIds.size() != savedOrderTables.size()) {
-            throw new EntityNotFoundException("일부 주문 테이블을 찾을 수 없습니다.");
+            throw new NotExistEntityException("일부 주문 테이블을 찾을 수 없습니다.");
         }
 
         return savedOrderTables;

@@ -1,5 +1,6 @@
 package kitchenpos.table.application;
 
+import kitchenpos.exception.NotExistEntityException;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
@@ -39,7 +40,7 @@ public class TableGroupService {
     public void ungroup(final Long tableGroupId) {
 
         final TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
-                .orElseThrow(() -> new EntityNotFoundException("지정된 단체를 찾을 수 없습니다."));
+                .orElseThrow(() -> new NotExistEntityException("지정된 단체를 찾을 수 없습니다."));
 
         tableGroup.unGrouping();
     }
