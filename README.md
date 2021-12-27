@@ -145,11 +145,11 @@
 - [X] 테이블 그룹
     - [X] model과 Dto 분리
     - [X] 테이블 그룹 로직 도메인으로 이동
-- [ ] 주문 테이블
-    - [ ] model과 Dto 분리
-    - [ ] jpa 적용
-        - [ ] order
-        - [ ] orderLineItem 
-    - [ ] 로직 도메인으로 이동
-        - [ ] orderLineItems 추가
+- [X] 주문
+    - [X] model과 Dto 분리
+    - [X] jpa 적용
+        - [X] order
+        - [X] orderLineItem 
+    - [X] 로직 도메인으로 이동
+        - [X] orderLineItems 추가
     
