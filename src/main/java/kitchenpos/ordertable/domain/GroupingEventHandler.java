@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 @Component
-public class GroupingService {
+public class GroupingEventHandler {
 
     private static final String ERROR_MESSAGE_NOT_ENOUGH_TABLES = "주문 테이블이 2개 이상일때 그룹화 가능 합니다.";
     private static final String ERROR_MESSAGE_NOT_EMPTY_TABLE = "그룹화를 위해선 테이블들이 주문종료 상태여야 합니다.";
@@ -20,7 +20,7 @@ public class GroupingService {
 
     private final OrderTableRepository orderTableRepository;
 
-    public GroupingService(OrderTableRepository orderTableRepository) {
+    public GroupingEventHandler(OrderTableRepository orderTableRepository) {
         this.orderTableRepository = orderTableRepository;
     }
 

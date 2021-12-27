@@ -20,13 +20,13 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class GroupingServiceTest {
+class GroupingEventHandlerTest {
 
     @Mock
     private OrderTableRepository orderTableRepository;
 
     @InjectMocks
-    private GroupingService groupingService;
+    private GroupingEventHandler groupingEventHandler;
 
     @DisplayName("그룹 설정")
     @Test
@@ -42,7 +42,7 @@ class GroupingServiceTest {
         //when
         GroupEvent groupEvent = new GroupEvent(this,
             new GroupInfo(tableGroup.getId(), orderTableIds));
-        groupingService.handleGroupTables(groupEvent);
+        groupingEventHandler.handleGroupTables(groupEvent);
 
         //then
         주문테이블_그룹핑_결과_확인(orderTables);
@@ -60,7 +60,7 @@ class GroupingServiceTest {
 
         //when
         UngroupEvent ungroupEvent = new UngroupEvent(this, tableGroup.getId());
-        groupingService.handleUnGroupTables(ungroupEvent);
+        groupingEventHandler.handleUnGroupTables(ungroupEvent);
 
         //then
         주문테이블_그룹해제_확인(orderTables);
@@ -81,7 +81,7 @@ class GroupingServiceTest {
             new GroupInfo(tableGroup.getId(), orderTableIds));
 
         //then
-        assertThatThrownBy(() -> groupingService.handleGroupTables(groupEvent))
+        assertThatThrownBy(() -> groupingEventHandler.handleGroupTables(groupEvent))
             .isInstanceOf(GroupTablesException.class);
     }
 
@@ -101,7 +101,7 @@ class GroupingServiceTest {
             new GroupInfo(tableGroup.getId(), orderTableIds));
 
         //then
-        assertThatThrownBy(() -> groupingService.handleGroupTables(groupEvent))
+        assertThatThrownBy(() -> groupingEventHandler.handleGroupTables(groupEvent))
             .isInstanceOf(GroupTablesException.class);
     }
 
@@ -121,7 +121,7 @@ class GroupingServiceTest {
             new GroupInfo(tableGroup.getId(), orderTableIds));
 
         //then
-        assertThatThrownBy(() -> groupingService.handleGroupTables(groupEvent))
+        assertThatThrownBy(() -> groupingEventHandler.handleGroupTables(groupEvent))
             .isInstanceOf(GroupTablesException.class);
     }
 
@@ -141,7 +141,7 @@ class GroupingServiceTest {
             new GroupInfo(tableGroup.getId(), orderTableIds));
 
         //then
-        assertThatThrownBy(() -> groupingService.handleGroupTables(groupEvent))
+        assertThatThrownBy(() -> groupingEventHandler.handleGroupTables(groupEvent))
             .isInstanceOf(GroupTablesException.class);
     }
 
