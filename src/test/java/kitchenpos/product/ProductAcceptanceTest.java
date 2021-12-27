@@ -4,6 +4,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.domain.Product;
+import kitchenpos.dto.ProductCreateRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -20,7 +21,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
     @DisplayName("상품을 등록할 수 있다.")
     void createProduct() {
         // given
-        Product 후라이드 = new Product("후라이드", BigDecimal.valueOf(17000));
+        ProductCreateRequest 후라이드 = new ProductCreateRequest("후라이드", BigDecimal.valueOf(17000));
 
         // when
         ExtractableResponse<Response> 상품_등록_요청_응답 = 상품_등록을_요청(후라이드);
@@ -40,7 +41,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
         );
     }
 
-    public ExtractableResponse<Response> 상품_등록을_요청(Product product) {
-        return post("/api/products", product);
+    public ExtractableResponse<Response> 상품_등록을_요청(ProductCreateRequest request) {
+        return post("/api/products", request);
     }
 }

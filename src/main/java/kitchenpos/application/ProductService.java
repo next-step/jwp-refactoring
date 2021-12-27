@@ -1,39 +1,41 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.ProductDao;
+import kitchenpos.repository.ProductRepository;
 import kitchenpos.domain.Product;
+import kitchenpos.dto.ProductCreateRequest;
+import kitchenpos.dto.ProductResponse;
+import kitchenpos.mapper.ProductMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
-import java.math.BigDecimal;
 import java.util.List;
-import java.util.Objects;
 
 @Service
+@Transactional
 public class ProductService {
-    private final ProductDao productDao;
+    private final ProductRepository productRepository;
 
-    public ProductService(final ProductDao productDao) {
-        this.productDao = productDao;
+    public ProductService(final ProductRepository productRepository) {
+        this.productRepository = productRepository;
     }
 
-    @Transactional
-    public Product create(final Product product) {
-        if (!StringUtils.hasText(product.getName())) {
-            throw new IllegalArgumentException();
-        }
+    public ProductResponse create(final ProductCreateRequest request) {
+        final Product product = new Product(request.getName(), request.getPrice());
 
-        final BigDecimal price = product.getPrice();
+        final Product savedProduct = productRepository.save(product);
 
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException();
-        }
-
-        return productDao.save(product);
+        return ProductMapper.toProductResponse(savedProduct);
     }
 
-    public List<Product> list() {
-        return productDao.findAll();
+    @Transactional(readOnly = true)
+    public List<Product> findProducts(List<Long> id) {
+        return productRepository.findByIdIn(id);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ProductResponse> list() {
+        final List<Product> products = productRepository.findAll();
+
+        return ProductMapper.toProductResponses(products);
     }
 }

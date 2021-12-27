@@ -1,47 +1,72 @@
 package kitchenpos.tablegroup;
 
-import kitchenpos.application.TableGroupService;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.dao.TableGroupDao;
+import kitchenpos.domain.Order;
+import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.exception.TableGroupNotAvailableException;
+import kitchenpos.exception.TableNotAvailableException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@ExtendWith(MockitoExtension.class)
 @DisplayName("단체 지정")
 class TableGroupTest {
 
-    @InjectMocks
-    private TableGroupService tableGroupService;
-
-    @Mock
-    private OrderDao orderDao;
-
-    @Mock
-    private OrderTableDao orderTableDao;
-
-    @Mock
-    private TableGroupDao tableGroupDao;
 
     @Test
-    @DisplayName("단체 지정시 테이블의 개수가 2개 미만이면 예외가 발생한다.")
-    void createTableGroupFailBecauseOfTableCountLessThanTwo() {
+    @DisplayName("단체 지정 하고자 하는 테이블의 상태가 사용중이라면 예외가 발생한다.")
+    void createTableGroupFailBecauseOfTableNotEmpty() {
         // given
-        final TableGroup tableGroup = new TableGroup(Arrays.asList(new OrderTable()));
+        OrderTable firstOrderTable = new OrderTable(0, false);
+        OrderTable secondOrderTable = new OrderTable(0, false);
+
+        // when
+        assertThatThrownBy(() -> {
+            final TableGroup tableGroup = TableGroup.builder().build();
+            tableGroup.saveOrderTable(firstOrderTable);
+            tableGroup.saveOrderTable(secondOrderTable);
+        }).isInstanceOf(TableGroupNotAvailableException.class);
+    }
+
+    @Test
+    @DisplayName("단체 지정 하고자 하는 테이블이 단체 지정이 되어 있다면 예외가 발생한다.")
+    void createTableGroupFailBecauseOfAlreadyTableGroup() {
+        // given
+        OrderTable firstOrderTable = new OrderTable(0, true);
+        OrderTable secondOrderTable = new OrderTable(0, false);
+        final TableGroup existTableGroup = TableGroup.builder().build();
+        existTableGroup.saveOrderTable(firstOrderTable);
+
+        // when
+        assertThatThrownBy(() -> {
+            final TableGroup tableGroup = TableGroup.builder().build();
+            tableGroup.saveOrderTable(firstOrderTable);
+            tableGroup.saveOrderTable(secondOrderTable);
+        }).isInstanceOf(TableGroupNotAvailableException.class);
+    }
+
+    @Test
+    @DisplayName("단체 지정 해제시 테이블의 주문 상태가 조리 또는 식사 상태면 변경이 불가능하다.")
+    void ungroupFailBecauseOfOrderStatusCookingOrMeal() {
+        // given
+        OrderTable firstOrderTable = new OrderTable(0, true);
+        OrderTable secondOrderTable = new OrderTable(0, true);
+        firstOrderTable.addOrder(new Order(OrderStatus.COOKING));
+        secondOrderTable.addOrder(new Order(OrderStatus.COMPLETION));
+
+        final TableGroup tableGroup = TableGroup.builder().build();
+        tableGroup.saveOrderTable(firstOrderTable);
+        tableGroup.saveOrderTable(secondOrderTable);
+
 
         // when
         assertThatIllegalArgumentException().isThrownBy(() -> {
-            tableGroupService.create(tableGroup);
+            tableGroup.getOrderTables().forEach(orderTable -> {
+                orderTable.ungroup();
+            });
         });
     }
 }

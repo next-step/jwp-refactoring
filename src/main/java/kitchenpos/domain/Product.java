@@ -1,16 +1,26 @@
 package kitchenpos.domain;
 
+import javax.persistence.*;
 import java.math.BigDecimal;
 
-public class Product {
+@Entity
+@Table(name = "product")
+public class Product extends BaseTimeEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", length = 20)
     private Long id;
+
+    @Column(name = "name", nullable = false)
     private String name;
+
+    @Column(name = "price", precision = 19, scale = 2, nullable = false)
     private BigDecimal price;
 
-    public Product() {
+    protected Product() {
     }
 
-    public Product(String name, BigDecimal price) {
+    public Product(final String name, final BigDecimal price) {
         this.name = name;
         this.price = price;
     }
@@ -19,23 +29,12 @@ public class Product {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public void setName(final String name) {
-        this.name = name;
     }
 
     public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(final BigDecimal price) {
-        this.price = price;
-    }
 }

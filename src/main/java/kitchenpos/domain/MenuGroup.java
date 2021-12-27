@@ -1,18 +1,22 @@
 package kitchenpos.domain;
 
-public class MenuGroup {
+import javax.persistence.*;
+
+@Entity
+@Table(name = "menu_group")
+public class MenuGroup extends BaseTimeEntity{
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", length = 20)
     private Long id;
+
+    @Column(name = "name", nullable = false)
     private String name;
 
-    public MenuGroup() {
+    protected MenuGroup() {
     }
 
-    public MenuGroup(Long id, String name) {
-        this(name);
-        this.id = id;
-    }
-
-    public MenuGroup(String name) {
+    public MenuGroup(final String name) {
         this.name = name;
     }
 
@@ -20,15 +24,8 @@ public class MenuGroup {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public String getName() {
         return name;
     }
 
-    public void setName(final String name) {
-        this.name = name;
-    }
 }

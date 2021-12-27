@@ -1,75 +1,68 @@
 package kitchenpos.domain;
 
-import java.time.LocalDateTime;
+import kitchenpos.exception.CannotChangeOrderStatusException;
+
+import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
-public class Order {
+@Entity
+@Table(name = "orders")
+public class Order extends BaseTimeEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", length = 20)
     private Long id;
-    private Long orderTableId;
-    private String orderStatus;
-    private LocalDateTime orderedTime;
-    private List<OrderLineItem> orderLineItems;
 
-    public Order() {
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "order_table_id")
+    private OrderTable orderTable;
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<OrderLineItem> orderLineItems = new ArrayList<>();
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "order_status", nullable = false)
+    private OrderStatus orderStatus;
+
+    protected Order() {
     }
 
-    public Order(final List<OrderLineItem> orderLineItems) {
-        this.orderLineItems = orderLineItems;
-    }
-
-    public Order(final String orderStatus) {
+    public Order(final OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
     }
 
-    public Order(final Long orderTableId, final List<OrderLineItem> orderLineItems) {
-        this.orderTableId = orderTableId;
-        this.orderLineItems = orderLineItems;
+    public void saveOrderLineItem(OrderLineItem orderLineItem) {
+        this.orderLineItems.add(orderLineItem);
+        orderLineItem.addOrder(this);
     }
 
-    public Order(final Long orderTableId, final String orderStatus, final LocalDateTime orderedTime, final List<OrderLineItem> orderLineItems) {
-        this.orderTableId = orderTableId;
-        this.orderStatus = orderStatus;
-        this.orderedTime = orderedTime;
-        this.orderLineItems = orderLineItems;
+    public void changeOrderStatus(OrderStatus changeOrderStatus) {
+        if (OrderStatus.COMPLETION.equals(this.orderStatus)) {
+            throw new CannotChangeOrderStatusException(String.format("order status is %s", orderStatus.name()));
+        }
+        this.orderStatus = changeOrderStatus;
+    }
+
+    public void saveOrderTable(OrderTable orderTable) {
+        this.orderTable = orderTable;
+        orderTable.addOrder(this);
     }
 
     public Long getId() {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
-    public Long getOrderTableId() {
-        return orderTableId;
-    }
-
-    public void setOrderTableId(final Long orderTableId) {
-        this.orderTableId = orderTableId;
-    }
-
-    public String getOrderStatus() {
-        return orderStatus;
-    }
-
-    public void setOrderStatus(final String orderStatus) {
-        this.orderStatus = orderStatus;
-    }
-
-    public LocalDateTime getOrderedTime() {
-        return orderedTime;
-    }
-
-    public void setOrderedTime(final LocalDateTime orderedTime) {
-        this.orderedTime = orderedTime;
+    public OrderTable getOrderTable() {
+        return orderTable;
     }
 
     public List<OrderLineItem> getOrderLineItems() {
         return orderLineItems;
     }
 
-    public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
-        this.orderLineItems = orderLineItems;
+    public OrderStatus getOrderStatus() {
+        return orderStatus;
     }
+
 }

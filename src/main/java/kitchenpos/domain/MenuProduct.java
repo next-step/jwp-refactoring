@@ -1,49 +1,53 @@
 package kitchenpos.domain;
 
-public class MenuProduct {
+import javax.persistence.*;
+
+@Entity
+@Table(name = "menu_product")
+public class MenuProduct extends BaseTimeEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "seq", length = 20)
     private Long seq;
-    private Long menuId;
-    private Long productId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "menu_id")
+    private Menu menu;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id")
+    private Product product;
+
+    @Column(name = "quantity", length = 20, nullable = false)
     private long quantity;
 
-    public MenuProduct() {
+    protected MenuProduct() {
     }
 
-    public MenuProduct(Long productId, long quantity) {
-        this.productId = productId;
+    public MenuProduct(final Product product, final long quantity) {
+        this.product = product;
         this.quantity = quantity;
     }
 
+    public void addMenu(Menu menu) {
+        this.menu = menu;
+    }
 
     public Long getSeq() {
         return seq;
     }
 
-    public void setSeq(final Long seq) {
-        this.seq = seq;
+    public Menu getMenu() {
+        return menu;
     }
 
-    public Long getMenuId() {
-        return menuId;
-    }
-
-    public void setMenuId(final Long menuId) {
-        this.menuId = menuId;
-    }
-
-    public Long getProductId() {
-        return productId;
-    }
-
-    public void setProductId(final Long productId) {
-        this.productId = productId;
+    public Product getProduct() {
+        return product;
     }
 
     public long getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(final long quantity) {
-        this.quantity = quantity;
-    }
 }
