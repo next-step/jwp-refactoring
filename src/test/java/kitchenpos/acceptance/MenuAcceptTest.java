@@ -16,13 +16,13 @@ import kitchenpos.acceptance.step.ProductAcceptStep;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Product;
+import kitchenpos.product.dto.ProductResponse;
 
 @DisplayName("메뉴 인수 테스트")
 public class MenuAcceptTest extends AcceptanceTest {
 
 	private MenuGroup 추천메뉴;
-	private Product 후라이드;
+	private ProductResponse 후라이드;
 
 	@BeforeEach
 	void setup() {

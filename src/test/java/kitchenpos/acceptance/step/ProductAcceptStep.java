@@ -14,16 +14,18 @@ import io.restassured.mapper.TypeRef;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.domain.Product;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 
 public class ProductAcceptStep {
 
 	private static final String BASE_URL = "/api/products";
 
-	public static ExtractableResponse<Response> 상품_등록_요청(Product product) {
+	public static ExtractableResponse<Response> 상품_등록_요청(ProductRequest.Create product) {
 		return post(BASE_URL, product);
 	}
 
-	public static Product 상품_등록_확인(ExtractableResponse<Response> 등록_응답, Product 등록_요청_상품) {
+	public static Product 상품_등록_확인(ExtractableResponse<Response> 등록_응답, ProductRequest.Create 등록_요청_상품) {
 		Product 등록된_상품 = 등록_응답.as(Product.class);
 		assertAll(
 			() -> assertThat(등록_응답.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
@@ -32,7 +34,7 @@ public class ProductAcceptStep {
 		return 등록된_상품;
 	}
 
-	private static Consumer<Product> 등록된_상품_확인(Product 등록_요청_데이터) {
+	private static Consumer<Product> 등록된_상품_확인(ProductRequest.Create 등록_요청_데이터) {
 		return product -> {
 			assertThat(product.getId()).isNotNull();
 			assertThat(product.getName()).isEqualTo(등록_요청_데이터.getName());
@@ -66,11 +68,10 @@ public class ProductAcceptStep {
 		};
 	}
 
-	public static Product 상품이_등록되어_있음(String name, int price) {
-		Product 상품_등록_요청_데이터 = new Product();
-		상품_등록_요청_데이터.setName(name);
-		상품_등록_요청_데이터.setPrice(BigDecimal.valueOf(price));
+	public static ProductResponse 상품이_등록되어_있음(String name, int price) {
+		ProductRequest.Create 상품_등록_요청_데이터 = new ProductRequest
+			.Create(name, BigDecimal.valueOf(price));
 
-		return 상품_등록_요청(상품_등록_요청_데이터).as(Product.class);
+		return 상품_등록_요청(상품_등록_요청_데이터).as(ProductResponse.class);
 	}
 }

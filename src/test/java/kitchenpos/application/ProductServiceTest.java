@@ -15,14 +15,19 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.dao.ProductDao;
-import kitchenpos.domain.Product;
+import kitchenpos.exception.AppException;
+import kitchenpos.exception.ErrorCode;
+import kitchenpos.product.application.ProductService;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 
 @ExtendWith(MockitoExtension.class)
 public class ProductServiceTest {
 
 	@Mock
-	private ProductDao productDao;
+	private ProductRepository productDao;
 
 	@InjectMocks
 	private ProductService productService;
@@ -31,25 +36,20 @@ public class ProductServiceTest {
 	@Test
 	void createTest() {
 		// given
-		Product request = new Product();
-		request.setName("강정치킨");
-		request.setPrice(new BigDecimal(17000));
+		ProductRequest.Create request = new ProductRequest.Create("강정치킨", new BigDecimal(17000));
 
-		Product persist = new Product();
-		persist.setId(1L);
-		persist.setName("강정치킨");
-		persist.setPrice(new BigDecimal(17000));
+		Product persist = Product.of(1L, "강정치킨", new BigDecimal(17000));
 
 		given(productDao.save(any())).willReturn(persist);
 
 		// when
-		Product result = productService.create(request);
+		ProductResponse result = productService.create(request);
 
 		// then
 		assertAll(
 			() -> assertThat(result.getId()).isEqualTo(persist.getId()),
-			() -> assertThat(result.getPrice()).isEqualTo(persist.getPrice()),
-			() -> assertThat(result.getName()).isEqualTo(persist.getName())
+			() -> assertThat(result.getPrice()).isEqualTo(persist.getPrice().toBigDecimal()),
+			() -> assertThat(result.getName()).isEqualTo(persist.getName().toText())
 		);
 	}
 
@@ -57,13 +57,12 @@ public class ProductServiceTest {
 	@Test
 	void createFailTest1() {
 		// given
-		Product request = new Product();
-		request.setName("강정치킨");
-		request.setPrice(new BigDecimal(-1));
+		ProductRequest.Create request = new ProductRequest.Create("강정치킨", new BigDecimal(-1));
 
 		// when, then
 		assertThatThrownBy(() -> productService.create(request))
-			.isInstanceOf(IllegalArgumentException.class);
+			.isInstanceOf(AppException.class)
+			.hasMessage(ErrorCode.WRONG_INPUT.getMessage());
 	}
 
 	@DisplayName("상품 목록을 조회한다")
@@ -71,20 +70,18 @@ public class ProductServiceTest {
 	void listTest() {
 		// given
 		List<Product> persist = new ArrayList<>();
-		Product product1 = new Product();
-		product1.setId(1L);
-		Product product2 = new Product();
-		product1.setId(2L);
+		Product product1 = Product.of(1L, "후라이드", BigDecimal.ZERO);
+		Product product2 = Product.of(2L, "양념", BigDecimal.ZERO);
 		persist.add(product1);
 		persist.add(product2);
 
 		given(productDao.findAll()).willReturn(persist);
 
 		// when
-		List<Product> result = productService.list();
+		List<ProductResponse> result = productService.getList();
 
 		// then
-		assertThat(result).containsAll(persist);
+		assertThat(result.size()).isEqualTo(persist.size());
 	}
 
 }

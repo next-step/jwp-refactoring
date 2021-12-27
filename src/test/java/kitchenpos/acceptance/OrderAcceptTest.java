@@ -21,7 +21,7 @@ import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.Product;
+import kitchenpos.product.dto.ProductResponse;
 
 @DisplayName("주문 인수테스트")
 public class OrderAcceptTest extends AcceptanceTest {
@@ -33,7 +33,7 @@ public class OrderAcceptTest extends AcceptanceTest {
 
 	@BeforeEach
 	void setup() {
-		Product 후라이드 = ProductAcceptStep.상품이_등록되어_있음("후라이드", 15_000);
+		ProductResponse 후라이드 = ProductAcceptStep.상품이_등록되어_있음("후라이드", 15_000);
 		MenuGroup 추천메뉴 = MenuGroupAcceptStep.메뉴_그룹이_등록되어_있음("추천메뉴");
 		MenuProduct 메뉴_상품 = new MenuProduct();
 		메뉴_상품.setProductId(후라이드.getId());

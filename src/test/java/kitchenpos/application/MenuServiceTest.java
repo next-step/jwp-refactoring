@@ -5,7 +5,7 @@ import static org.mockito.BDDMockito.*;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,10 +19,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
-import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Product;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 
 @ExtendWith(MockitoExtension.class)
 public class MenuServiceTest {
@@ -40,7 +40,7 @@ public class MenuServiceTest {
 	private MenuGroupDao menuGroupDao;
 
 	@Mock
-	private ProductDao productDao;
+	private ProductRepository productDao;
 
 	@DisplayName("메뉴 목록을 조회한다")
 	@Test
@@ -65,9 +65,7 @@ public class MenuServiceTest {
 	@Test
 	void createTest() {
 		// given
-		Product product1 = new Product();
-		product1.setId(1L);
-		product1.setPrice(new BigDecimal(10_000));
+		Product product1 = Product.of(1L, "후라이드", new BigDecimal(10_000));
 		MenuProduct menuProduct1 = new MenuProduct();
 		menuProduct1.setSeq(1L);
 		menuProduct1.setMenuId(1L);
@@ -78,13 +76,13 @@ public class MenuServiceTest {
 		persist.setName("후라이드+양념");
 		persist.setPrice(new BigDecimal(10_000));
 		persist.setMenuGroupId(1L);
-		persist.setMenuProducts(Arrays.asList(menuProduct1));
+		persist.setMenuProducts(Collections.singletonList(menuProduct1));
 
 		Menu request = new Menu();
 		request.setName("후라이드+양념");
 		request.setPrice(new BigDecimal(10_000));
 		request.setMenuGroupId(1L);
-		request.setMenuProducts(Arrays.asList(menuProduct1));
+		request.setMenuProducts(Collections.singletonList(menuProduct1));
 
 		given(menuGroupDao.existsById(any())).willReturn(true);
 		given(productDao.findById(any()))
@@ -143,7 +141,7 @@ public class MenuServiceTest {
 		request.setName("후라이드+양념");
 		request.setPrice(new BigDecimal(10_000));
 		request.setMenuGroupId(1L);
-		request.setMenuProducts(Arrays.asList(menuProduct1));
+		request.setMenuProducts(Collections.singletonList(menuProduct1));
 
 		given(menuGroupDao.existsById(any())).willReturn(true);
 		given(productDao.findById(any()))
@@ -158,9 +156,7 @@ public class MenuServiceTest {
 	@Test
 	void createTest5() {
 		// given
-		Product product1 = new Product();
-		product1.setId(1L);
-		product1.setPrice(new BigDecimal(10_000));
+		Product product1 = Product.of(1L, "후라이드", new BigDecimal(10_000));
 
 		MenuProduct menuProduct1 = new MenuProduct();
 		menuProduct1.setSeq(1L);
@@ -172,7 +168,7 @@ public class MenuServiceTest {
 		request.setName("후라이드+양념");
 		request.setPrice(new BigDecimal(90_000));
 		request.setMenuGroupId(1L);
-		request.setMenuProducts(Arrays.asList(menuProduct1));
+		request.setMenuProducts(Collections.singletonList(menuProduct1));
 
 		given(menuGroupDao.existsById(any())).willReturn(true);
 		given(productDao.findById(any()))

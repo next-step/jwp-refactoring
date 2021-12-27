@@ -11,6 +11,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.domain.Product;
+import kitchenpos.product.dto.ProductRequest;
 
 @DisplayName("상품 인수테스트")
 public class ProductAcceptTest extends AcceptanceTest {
@@ -19,9 +20,8 @@ public class ProductAcceptTest extends AcceptanceTest {
 	@Test
 	void 상품을_관리한다() {
 		// given
-		Product 등록_요청_상품 = new Product();
-		등록_요청_상품.setName("후라이드 치킨");
-		등록_요청_상품.setPrice(BigDecimal.valueOf(15_000));
+		ProductRequest.Create 등록_요청_상품 = new ProductRequest
+			.Create("후라이드 치킨", BigDecimal.valueOf(15_000));
 
 		// when
 		ExtractableResponse<Response> 상품_등록_응답 = 상품_등록_요청(등록_요청_상품);
