@@ -1,8 +1,13 @@
 package kitchenpos;
 
+import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootApplication
-public class ApplicationTest {
-    public void contextLoads() {}
+class ApplicationTest {
+
+    @Test
+    void contextLoads() {
+    }
 }

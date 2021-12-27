@@ -106,10 +106,10 @@
 * Gradle의 멀티 모듈 개념을 적용해 자유롭게 서로 다른 프로젝트로 분리해 본다.
     - [ ] 컨텍스트 간의 독립된 모듈로 만들 수 있다.
   > 긴밀하게 연관된 도메인을 묶는다. menu-product, order-table, 공통 모듈(VO, BaseEntity, Exception)
-    - [ ] 계층간 독립된 모듈로 만들 수 있다.
-  > ui, domain 계층으로 나눈다.
+    - [ ] ~~계층간 독립된 모듈로 만들 수 있다.~~
+  ~~> ui, domain 계층으로 나눈다.~~
   
 모듈별로 배포가 가능하도록 요구사항 변경이 서로 영향을 줄거 같은 도메인들끼리 모듈화함.
 
 
-![multi-module](uml/multi-module_v0.0.2.png)
+![multi-module](uml/multi-module_v0.0.3.png)
