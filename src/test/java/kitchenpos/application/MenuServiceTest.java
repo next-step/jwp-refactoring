@@ -17,10 +17,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 
@@ -37,10 +37,10 @@ public class MenuServiceTest {
 	private MenuProductDao menuProductDao;
 
 	@Mock
-	private MenuGroupDao menuGroupDao;
+	private MenuGroupRepository menuGroupRepository;
 
 	@Mock
-	private ProductRepository productDao;
+	private ProductRepository productRepository;
 
 	@DisplayName("메뉴 목록을 조회한다")
 	@Test
@@ -84,8 +84,8 @@ public class MenuServiceTest {
 		request.setMenuGroupId(1L);
 		request.setMenuProducts(Collections.singletonList(menuProduct1));
 
-		given(menuGroupDao.existsById(any())).willReturn(true);
-		given(productDao.findById(any()))
+		given(menuGroupRepository.existsById(any())).willReturn(true);
+		given(productRepository.findById(any()))
 			.willReturn(Optional.of(product1));
 		given(menuDao.save(any())).willReturn(persist);
 		given(menuProductDao.save(any())).willReturn(menuProduct1);
@@ -120,7 +120,7 @@ public class MenuServiceTest {
 		request.setName("후라이드+양념");
 		request.setPrice(new BigDecimal(10_000));
 
-		given(menuGroupDao.existsById(any())).willReturn(false);
+		given(menuGroupRepository.existsById(any())).willReturn(false);
 
 		// when, then
 		assertThatThrownBy(() -> menuService.create(request))
@@ -143,8 +143,8 @@ public class MenuServiceTest {
 		request.setMenuGroupId(1L);
 		request.setMenuProducts(Collections.singletonList(menuProduct1));
 
-		given(menuGroupDao.existsById(any())).willReturn(true);
-		given(productDao.findById(any()))
+		given(menuGroupRepository.existsById(any())).willReturn(true);
+		given(productRepository.findById(any()))
 			.willReturn(Optional.empty());
 
 		// when, then
@@ -170,8 +170,8 @@ public class MenuServiceTest {
 		request.setMenuGroupId(1L);
 		request.setMenuProducts(Collections.singletonList(menuProduct1));
 
-		given(menuGroupDao.existsById(any())).willReturn(true);
-		given(productDao.findById(any()))
+		given(menuGroupRepository.existsById(any())).willReturn(true);
+		given(productRepository.findById(any()))
 			.willReturn(Optional.of(product1));
 
 		// when, then

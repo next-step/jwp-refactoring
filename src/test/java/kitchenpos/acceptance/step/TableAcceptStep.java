@@ -12,7 +12,7 @@ import io.restassured.mapper.TypeRef;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.domain.OrderTable;
-import kitchenpos.utils.RestAssuredUtils;
+import kitchenpos.testutils.RestAssuredUtils;
 
 public class TableAcceptStep {
 

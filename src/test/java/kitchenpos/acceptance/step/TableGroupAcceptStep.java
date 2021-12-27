@@ -12,7 +12,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
-import kitchenpos.utils.RestAssuredUtils;
+import kitchenpos.testutils.RestAssuredUtils;
 
 public class TableGroupAcceptStep {
 

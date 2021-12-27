@@ -1,6 +1,6 @@
 package kitchenpos.acceptance.step;
 
-import static kitchenpos.utils.RestAssuredUtils.*;
+import static kitchenpos.testutils.RestAssuredUtils.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 

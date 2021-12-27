@@ -1,4 +1,4 @@
-package kitchenpos.utils;
+package kitchenpos.testutils;
 
 import org.springframework.http.MediaType;
 

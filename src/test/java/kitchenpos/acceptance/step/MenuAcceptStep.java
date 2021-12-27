@@ -14,9 +14,9 @@ import io.restassured.mapper.TypeRef;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
-import kitchenpos.utils.RestAssuredUtils;
+import kitchenpos.menu.dto.MenuGroupResponse;
+import kitchenpos.testutils.RestAssuredUtils;
 
 public class MenuAcceptStep {
 
@@ -81,7 +81,7 @@ public class MenuAcceptStep {
 		};
 	}
 
-	public static Menu 메뉴가_등록되어_있음(String menuName, int price, MenuGroup 추천메뉴, MenuProduct 메뉴_상품) {
+	public static Menu 메뉴가_등록되어_있음(String menuName, int price, MenuGroupResponse 추천메뉴, MenuProduct 메뉴_상품) {
 		Menu menu = new Menu();
 		menu.setName(menuName);
 		menu.setMenuGroupId(추천메뉴.getId());

@@ -27,7 +27,7 @@ import kitchenpos.product.dto.ProductResponse;
 public class ProductServiceTest {
 
 	@Mock
-	private ProductRepository productDao;
+	private ProductRepository productRepository;
 
 	@InjectMocks
 	private ProductService productService;
@@ -40,7 +40,7 @@ public class ProductServiceTest {
 
 		Product persist = Product.of(1L, "강정치킨", new BigDecimal(17000));
 
-		given(productDao.save(any())).willReturn(persist);
+		given(productRepository.save(any())).willReturn(persist);
 
 		// when
 		ProductResponse result = productService.create(request);
@@ -75,7 +75,7 @@ public class ProductServiceTest {
 		persist.add(product1);
 		persist.add(product2);
 
-		given(productDao.findAll()).willReturn(persist);
+		given(productRepository.findAll()).willReturn(persist);
 
 		// when
 		List<ProductResponse> result = productService.getList();

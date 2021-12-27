@@ -13,7 +13,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
-import kitchenpos.utils.RestAssuredUtils;
+import kitchenpos.testutils.RestAssuredUtils;
 
 public class OrderAcceptStep {
 
