@@ -11,11 +11,11 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.acceptance.step.MenuAcceptStep;
-import kitchenpos.acceptance.step.MenuGroupAcceptStep;
-import kitchenpos.acceptance.step.ProductAcceptStep;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
+import kitchenpos.menu.acceptance.MenuGroupAcceptStep;
 import kitchenpos.menu.dto.MenuGroupResponse;
+import kitchenpos.product.acceptance.ProductAcceptStep;
 import kitchenpos.product.dto.ProductResponse;
 
 @DisplayName("메뉴 인수 테스트")

@@ -1,4 +1,4 @@
-package kitchenpos.application;
+package kitchenpos.product.application;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -17,7 +17,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.exception.AppException;
 import kitchenpos.exception.ErrorCode;
-import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.dto.ProductRequest;

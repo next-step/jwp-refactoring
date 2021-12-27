@@ -12,15 +12,15 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.acceptance.step.MenuAcceptStep;
-import kitchenpos.acceptance.step.MenuGroupAcceptStep;
-import kitchenpos.acceptance.step.ProductAcceptStep;
 import kitchenpos.acceptance.step.TableAcceptStep;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.menu.acceptance.MenuGroupAcceptStep;
 import kitchenpos.menu.dto.MenuGroupResponse;
+import kitchenpos.product.acceptance.ProductAcceptStep;
 import kitchenpos.product.dto.ProductResponse;
 
 @DisplayName("주문 인수테스트")
