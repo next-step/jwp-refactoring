@@ -1,5 +1,7 @@
 package kitchenpos.order.application;
 
+import kitchenpos.order.application.event.TableGroupingEvent;
+import kitchenpos.order.application.event.TableUnGroupingEvent;
 import kitchenpos.order.application.exception.TableGroupNotFoundException;
 import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.TableGroupRequest;
