@@ -60,7 +60,7 @@ public class TableGroupService {
         final TableGroup savedTableGroup = tableGroupDao.save(tableGroup);
 
         for (final OrderTable savedOrderTable : savedOrderTables) {
-            savedOrderTable.setTableGroup(savedTableGroup);
+            savedOrderTable.referenceTableGroup(savedTableGroup);
             savedOrderTable.updateEmpty(false);
             orderTableDao.save(savedOrderTable);
         }
@@ -83,7 +83,7 @@ public class TableGroupService {
         }
 
         for (final OrderTable orderTable : orderTables) {
-            orderTable.setTableGroup(null);
+            orderTable.referenceTableGroup(null);
             orderTableDao.save(orderTable);
         }
     }

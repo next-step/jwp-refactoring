@@ -56,7 +56,7 @@ public class OrderTable {
         return tableGroup;
     }
 
-    public void setTableGroup(TableGroup tableGroup) {
+    public void referenceTableGroup(TableGroup tableGroup) {
         this.tableGroup = tableGroup;
     }
 
