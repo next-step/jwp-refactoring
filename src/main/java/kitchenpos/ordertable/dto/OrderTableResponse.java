@@ -13,14 +13,17 @@ public class OrderTableResponse {
 
     private boolean orderClose;
 
+    private Long tableGroupId;
+
     private OrderTableResponse() {
     }
 
-    private OrderTableResponse(Long id, int numberOfGuests,
-        boolean orderClose) {
+    public OrderTableResponse(Long id, int numberOfGuests, boolean orderClose,
+        Long tableGroupId) {
         this.id = id;
         this.numberOfGuests = numberOfGuests;
         this.orderClose = orderClose;
+        this.tableGroupId = tableGroupId;
     }
 
     public static List<OrderTableResponse> fromList(List<OrderTable> orderTables) {
@@ -31,7 +34,7 @@ public class OrderTableResponse {
 
     public static OrderTableResponse from(OrderTable orderTable) {
         return new OrderTableResponse(orderTable.getId(), orderTable.getNumberOfGuestsVal(),
-            orderTable.isOrderClose());
+            orderTable.isOrderClose(), orderTable.getTableGroupId());
     }
 
     public Long getId() {
@@ -44,6 +47,10 @@ public class OrderTableResponse {
 
     public boolean isOrderClose() {
         return orderClose;
+    }
+
+    public Long getTableGroupId() {
+        return tableGroupId;
     }
 
     @Override

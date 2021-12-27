@@ -4,12 +4,9 @@ import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import kitchenpos.ordertable.exception.TableChangeNumberOfGuestsException;
 import kitchenpos.ordertable.exception.TableUpdateStateException;
 import kitchenpos.ordertable.vo.NumberOfGuests;
@@ -24,9 +21,7 @@ public class OrderTable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @JoinColumn(name = "table_group_id")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private TableGroup tableGroup;
+    private Long tableGroupId;
 
     @Embedded
     @Column(nullable = false)
@@ -58,16 +53,16 @@ public class OrderTable {
         this(id, null, numberOfGuests, orderClose);
     }
 
-    public OrderTable(Long id, TableGroup tableGroup, NumberOfGuests numberOfGuests,
+    public OrderTable(Long id, Long tableGroupId, NumberOfGuests numberOfGuests,
         boolean orderClose) {
         this.id = id;
-        this.tableGroup = tableGroup;
+        this.tableGroupId = tableGroupId;
         this.numberOfGuests = numberOfGuests;
         this.orderClose = orderClose;
     }
 
     public void updateTableStatus(boolean orderClose) {
-        if (Objects.nonNull(tableGroup)) {
+        if (Objects.nonNull(tableGroupId)) {
             throw new TableUpdateStateException(ERROR_MESSAGE_TABLE_IN_GROUP);
         }
         this.orderClose = orderClose;
@@ -81,12 +76,17 @@ public class OrderTable {
         this.numberOfGuests = numberOfGuests;
     }
 
-    public void groupIn(TableGroup tableGroup) {
-        this.tableGroup = tableGroup;
+    public void groupIn(Long tableGroupId) {
+        this.tableGroupId = tableGroupId;
+        changeOrderClose(false);
+    }
+
+    public boolean hasGroup() {
+        return Objects.nonNull(tableGroupId);
     }
 
     public void unGroup() {
-        this.tableGroup = null;
+        this.tableGroupId = null;
     }
 
     public void changeOrderClose(final boolean orderClose) {
@@ -101,8 +101,8 @@ public class OrderTable {
         return id;
     }
 
-    public TableGroup getTableGroup() {
-        return tableGroup;
+    public Long getTableGroupId() {
+        return tableGroupId;
     }
 
     public NumberOfGuests getNumberOfGuests() {
@@ -131,4 +131,5 @@ public class OrderTable {
     public int hashCode() {
         return Objects.hash(getId());
     }
+
 }

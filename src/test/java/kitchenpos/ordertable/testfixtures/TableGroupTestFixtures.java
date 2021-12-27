@@ -4,7 +4,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.TableGroup;
@@ -25,11 +24,5 @@ public class TableGroupTestFixtures {
             .map(orderTable -> new OrderTableRequest(orderTable.getId()))
             .collect(Collectors.toList());
         return new TableGroupRequest(orderTableRequests);
-    }
-
-    public static void 특정_테이블그룹_조회_모킹(TableGroupRepository tableGroupRepository,
-        TableGroup tableGroup) {
-        given(tableGroupRepository.findById(any()))
-            .willReturn(Optional.ofNullable(tableGroup));
     }
 }

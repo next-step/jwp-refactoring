@@ -64,7 +64,7 @@ class OrderTableValidatorTest {
             .isInstanceOf(OrderIsNotCompleteException.class);
     }
 
-    void 특정_테이블의_전체주문_조회_모킹(List<Order> expectedOrders) {
+    private void 특정_테이블의_전체주문_조회_모킹(List<Order> expectedOrders) {
         given(orderRepository.findAllByOrderTableId(any()))
             .willReturn(expectedOrders);
     }

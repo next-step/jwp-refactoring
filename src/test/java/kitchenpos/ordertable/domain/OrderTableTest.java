@@ -3,7 +3,6 @@ package kitchenpos.ordertable.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import java.util.Arrays;
 import kitchenpos.ordertable.exception.IllegalNumberOfGuests;
 import kitchenpos.ordertable.exception.TableChangeNumberOfGuestsException;
 import kitchenpos.ordertable.exception.TableUpdateStateException;
@@ -41,16 +40,15 @@ class OrderTableTest {
     @Test
     void updateEmpty_exception1() {
         //given
-        OrderTable orderTable1 = new OrderTable(1L, new NumberOfGuests(6), true);
-        OrderTable orderTable2 = new OrderTable(2L, new NumberOfGuests(3), true);
-        TableGroup tableGroup = new TableGroup(Arrays.asList(orderTable1, orderTable2));
+        OrderTable orderTable = new OrderTable(1L, new NumberOfGuests(6), true);
+        orderTable.groupIn(1L);
 
         //when,then
-        assertThatThrownBy(() -> orderTable1.updateTableStatus(true))
+        assertThatThrownBy(() -> orderTable.updateTableStatus(true))
             .isInstanceOf(TableUpdateStateException.class);
     }
 
-  
+
     @DisplayName("테이블 방문 손님 수 변경")
     @Test
     void changeNumberOfGuests() {
