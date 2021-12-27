@@ -4,7 +4,6 @@ import kitchenpos.common.exception.OrderTableEmptyException;
 import kitchenpos.order.application.OrderTableValidateEvent;
 import kitchenpos.table.domain.OrderTable;
 import org.springframework.context.event.EventListener;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,7 +17,6 @@ public class OrderTableHandler {
         this.tableService = tableService;
     }
 
-    @Async
     @EventListener
     public void validateOrder(OrderTableValidateEvent event) {
         Long orderTableId = event.getOrderTableId();
