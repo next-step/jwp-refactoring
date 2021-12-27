@@ -16,7 +16,7 @@ import kitchenpos.product.domain.Product;
 @DataJpaTest
 class MenuProductRepositoryTest {
 
-	private static Product product = new Product(1L, "양념치킨", new Price(new BigDecimal(15000)));
+	private static Product product = new Product(1L, "양념치킨", Price.valueOf(new BigDecimal(15000)));
 	private static Menu menu = new Menu(1L);
 
 

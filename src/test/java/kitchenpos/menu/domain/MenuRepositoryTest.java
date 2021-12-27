@@ -18,7 +18,7 @@ import kitchenpos.product.domain.Product;
 @DataJpaTest
 class MenuRepositoryTest {
 
-	private static Product product = new Product(1L, "양념치킨", new Price(new BigDecimal(15000)));
+	private static Product product = new Product(1L, "양념치킨", Price.valueOf(new BigDecimal(15000)));
 	private static MenuProduct menuProduct = new MenuProduct(null, product, 2);
 	private static MenuGroup menuGroup = new MenuGroup(1L, "신메뉴");
 
@@ -30,7 +30,7 @@ class MenuRepositoryTest {
 	public void saveMenuTest() {
 		//given
 		//when
-		Menu menu = new Menu("신양념", new BigDecimal(20000), menuGroup, Lists.newArrayList(menuProduct));
+		Menu menu = new Menu("신양념", Price.valueOf(new BigDecimal(20000)), menuGroup, Lists.newArrayList(menuProduct));
 
 		//when
 		Menu save = menuRepository.save(menu);

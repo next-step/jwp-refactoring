@@ -16,7 +16,7 @@ public class ProductRequest {
 	}
 
 	public Product toProduct() {
-		return new Product(name, new Price(price));
+		return new Product(name, Price.valueOf(price));
 	}
 
 	public String getName() {

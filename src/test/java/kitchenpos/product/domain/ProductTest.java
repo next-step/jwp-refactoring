@@ -15,10 +15,10 @@ class ProductTest {
 	@DisplayName("상품 생성 테스트")
 	public void createProductTest() {
 		//when
-		Product product = new Product("로제치킨", new Price(new BigDecimal(15000)));
+		Product product = new Product("로제치킨", Price.valueOf(new BigDecimal(15000)));
 		//then
 		assertThat(product).isNotNull();
-		assertThat(product).isEqualTo( new Product("로제치킨", new Price(new BigDecimal(15000))));
+		assertThat(product).isEqualTo( new Product("로제치킨", Price.valueOf(new BigDecimal(15000))));
 	}
 
 	@Test
@@ -34,7 +34,7 @@ class ProductTest {
 	@DisplayName("상품 가격이 0보다 작아서 생성 살패")
 	public void createProductFailPriceLessThanZeroTest() {
 		//when
-		assertThatThrownBy(() -> new Product("로제치킨", new Price(new BigDecimal(-1))))
+		assertThatThrownBy(() -> new Product("로제치킨", Price.valueOf(new BigDecimal(-1))))
 			.isInstanceOf(IllegalArgumentException.class)
 			.hasMessage("상품 가격은 0이상의 값을 가져야합니다.");
 	}

@@ -9,12 +9,16 @@ public class Price {
 
 	private final BigDecimal price;
 
-	public Price() {
+	protected Price() {
 		this.price = BigDecimal.ZERO;
 	}
 
-	public Price(final BigDecimal price) {
+	private Price(final BigDecimal price) {
 		this.price = BigDecimal.valueOf(price.longValue());
+	}
+
+	public static Price valueOf(final BigDecimal price) {
+		return new Price(price);
 	}
 
 	public boolean lessThanZero() {
@@ -23,5 +27,9 @@ public class Price {
 
 	public BigDecimal value() {
 		return BigDecimal.valueOf(price.intValue());
+	}
+
+	public boolean greaterThan(BigDecimal sum) {
+		return price.compareTo(sum) > 0;
 	}
 }

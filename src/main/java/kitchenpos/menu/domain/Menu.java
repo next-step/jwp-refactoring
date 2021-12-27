@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -17,6 +18,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import kitchenpos.common.Price;
 import kitchenpos.menugroup.domain.MenuGroup;
 
 @Entity
@@ -29,8 +31,9 @@ public class Menu {
 	@Column(nullable = false)
 	private String name;
 
+	@Embedded
 	@Column(length = 19, scale = 2, nullable = false)
-	private BigDecimal price;
+	private Price price;
 
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "menuGroupId", columnDefinition = "bigint(20)", nullable = false)
@@ -46,11 +49,11 @@ public class Menu {
 		this.id = id;
 	}
 
-	public Menu(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+	public Menu(String name, Price price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
 		this(null, name, price, menuGroup, menuProducts);
 	}
 
-	public Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+	public Menu(Long id, String name, Price price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
 		validateMenuPriceIsNullOrLessThanZero(price);
 		validateMenuPriceSumGreaterThanProductsSum(menuProducts, price);
 
@@ -67,18 +70,18 @@ public class Menu {
 			.collect(Collectors.toList());
 	}
 
-	private void validateMenuPriceSumGreaterThanProductsSum(List<MenuProduct> menuProducts, BigDecimal price) {
+	private void validateMenuPriceSumGreaterThanProductsSum(List<MenuProduct> menuProducts, Price price) {
 		BigDecimal sum = menuProducts.stream()
 			.map(mp -> mp.getProductPrice().multiply(BigDecimal.valueOf(mp.getQuantity())))
 			.reduce(BigDecimal::add)
 			.orElseThrow(IllegalArgumentException::new);
-		if (price.compareTo(sum) > 0) {
+		if (price.greaterThan(sum)) {
 			throw new IllegalArgumentException("메뉴의 가격은 상품들의 가격합보다 작거나 같아야 합니다");
 		}
 	}
 
-	private void validateMenuPriceIsNullOrLessThanZero(BigDecimal price) {
-		if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
+	private void validateMenuPriceIsNullOrLessThanZero(Price price) {
+		if (Objects.isNull(price) || price.lessThanZero()) {
 			throw new IllegalArgumentException("메뉴의 가격은 0보다 작을 수 없습니다");
 		}
 	}
@@ -92,7 +95,7 @@ public class Menu {
 	}
 
 	public BigDecimal getPrice() {
-		return price;
+		return price.value();
 	}
 
 	public MenuGroup getMenuGroup() {

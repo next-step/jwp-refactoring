@@ -31,7 +31,7 @@ class ProductServiceTest {
 		//when
 		Product product = productService.create(new ProductRequest(NAME, PRICE));
 		//then
-		assertThat(product).isEqualTo(new Product(product.getId(), NAME, new Price(PRICE)));
+		assertThat(product).isEqualTo(new Product(product.getId(), NAME, Price.valueOf(PRICE)));
 	}
 
 	@Test
