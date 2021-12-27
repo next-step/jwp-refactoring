@@ -6,7 +6,6 @@ import kitchenpos.tablegroup.event.GroupInfo;
 import kitchenpos.tablegroup.event.UngroupEvent;
 import kitchenpos.tablegroup.exception.GroupTablesException;
 import org.springframework.context.event.EventListener;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -75,7 +74,6 @@ public class GroupingService {
 
     @EventListener
     @Transactional
-    @Async
     public void handleUnGroupTables(UngroupEvent ungroupEvent) {
         Long tableGroupId = ungroupEvent.getTableGroupId();
         ungroupTables(tableGroupId);
