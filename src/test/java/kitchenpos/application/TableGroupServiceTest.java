@@ -20,6 +20,10 @@ import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.dto.OrderTableIdRequest;
+import kitchenpos.dto.TableGroupRequest;
+import kitchenpos.dto.TableGroupResponse;
+import kitchenpos.exception.KitchenposException;
 
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
@@ -47,18 +51,18 @@ class TableGroupServiceTest {
         Mockito.when(tableGroupDao.save(Mockito.any()))
             .thenReturn(tableGroup);
 
-        List<OrderTable> requestTables = Arrays.asList(
-            new OrderTable(1L),
-            new OrderTable(2L));
-        TableGroup request = new TableGroup(requestTables);
+        List<OrderTableIdRequest> requestTables = Arrays.asList(
+            new OrderTableIdRequest(1L),
+            new OrderTableIdRequest(2L));
+        TableGroupRequest request = new TableGroupRequest(requestTables);
 
         // when
-        TableGroup actual = tableGroupService.create(request);
+        TableGroupResponse actual = tableGroupService.create(request);
 
         // then
         assertAll(
             () -> assertThat(actual.getOrderTables()).hasSize(2),
-            () -> assertThat(actual.getOrderTables().get(0).getTableGroupId()).isEqualTo(1),
+            () -> assertThat(actual.getOrderTables().get(0)).isNotNull(),
             () -> assertThat(actual.getOrderTables().get(0).isEmpty()).isFalse()
         );
         Mockito.verify(orderTableDao, Mockito.times(2)).save(Mockito.any());
@@ -68,12 +72,13 @@ class TableGroupServiceTest {
     @Test
     void createTableGroupFailWhenOrderTablesSizeIsLessThanTwo() {
         // given
-        List<OrderTable> requestTables = Arrays.asList(new OrderTable(2L));
-        TableGroup request = new TableGroup(requestTables);
+        List<OrderTableIdRequest> requestTables = Arrays.asList(new OrderTableIdRequest(2L));
+        TableGroupRequest request = new TableGroupRequest(requestTables);
 
         // when and then
-        assertThatExceptionOfType(IllegalArgumentException.class)
-            .isThrownBy(() -> tableGroupService.create(request));
+        assertThatExceptionOfType(KitchenposException.class)
+            .isThrownBy(() -> tableGroupService.create(request))
+            .withMessage("테이블 그룹을 생성하기 위해 2개 이상의 테이블이 필요합니다.");
     }
 
     @DisplayName("입력받은 주문 테이블 개수와 실제 주문 테이블 개수가 다른 경우(메뉴에 없는 주문 테이블) 생성 불가능")
@@ -85,10 +90,10 @@ class TableGroupServiceTest {
         Mockito.when(orderTableDao.findAllByIdIn(Mockito.anyList()))
             .thenReturn(orderTables);
 
-        List<OrderTable> requestTables = Arrays.asList(
-            new OrderTable(1L),
-            new OrderTable(2L));
-        TableGroup request = new TableGroup(requestTables);
+        List<OrderTableIdRequest> requestTables = Arrays.asList(
+            new OrderTableIdRequest(1L),
+            new OrderTableIdRequest(2L));
+        TableGroupRequest request = new TableGroupRequest(requestTables);
 
         // when and then
         assertThatExceptionOfType(IllegalArgumentException.class)
@@ -105,10 +110,10 @@ class TableGroupServiceTest {
         Mockito.when(orderTableDao.findAllByIdIn(Mockito.anyList()))
             .thenReturn(orderTables);
 
-        List<OrderTable> requestTables = Arrays.asList(
-            new OrderTable(1L),
-            new OrderTable(2L));
-        TableGroup request = new TableGroup(requestTables);
+        List<OrderTableIdRequest> requestTables = Arrays.asList(
+            new OrderTableIdRequest(1L),
+            new OrderTableIdRequest(2L));
+        TableGroupRequest request = new TableGroupRequest(requestTables);
 
         // when and then
         assertThatExceptionOfType(IllegalArgumentException.class)
@@ -125,10 +130,10 @@ class TableGroupServiceTest {
         Mockito.when(orderTableDao.findAllByIdIn(Mockito.anyList()))
             .thenReturn(orderTables);
 
-        List<OrderTable> requestTables = Arrays.asList(
-            new OrderTable(1L),
-            new OrderTable(2L));
-        TableGroup request = new TableGroup(requestTables);
+        List<OrderTableIdRequest> requestTables = Arrays.asList(
+            new OrderTableIdRequest(1L),
+            new OrderTableIdRequest(2L));
+        TableGroupRequest request = new TableGroupRequest(requestTables);
 
         // when and then
         assertThatExceptionOfType(IllegalArgumentException.class)

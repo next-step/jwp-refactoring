@@ -24,6 +24,10 @@ public class TableGroup {
     public TableGroup() {
     }
 
+    public TableGroup(LocalDateTime createdDate) {
+        this.createdDate = createdDate;
+    }
+
     public TableGroup(Long id) {
         this.id = id;
     }
