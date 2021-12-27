@@ -26,8 +26,8 @@ class ProductServiceTest {
     @DisplayName("상품 생성하기")
     @Test
     void createTest() {
-        when(productDao.save(product1)).thenReturn(product1);
-        assertThat(productService.create(product1)).isEqualTo(product1);
+        when(productDao.save(후라이드치킨)).thenReturn(후라이드치킨);
+        assertThat(productService.create(후라이드치킨)).isEqualTo(후라이드치킨);
     }
 
     @DisplayName("상품 금액이 음수이면 예외 발생")
@@ -51,7 +51,7 @@ class ProductServiceTest {
     @DisplayName("상품 목록 조회시 저장된 상품 목록 얻기")
     @Test
     void listTest() {
-        when(productDao.findAll()).thenReturn(Lists.newArrayList(product1, product2, product3));
-        assertThat(productService.list()).isEqualTo(Lists.newArrayList(product1, product2, product3));
+        when(productDao.findAll()).thenReturn(Lists.newArrayList(후라이드치킨, 양념치킨, 반반치킨));
+        assertThat(productService.list()).isEqualTo(Lists.newArrayList(후라이드치킨, 양념치킨, 반반치킨));
     }
 }

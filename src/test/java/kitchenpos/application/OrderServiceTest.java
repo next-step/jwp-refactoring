@@ -1,15 +1,13 @@
 package kitchenpos.application;
 
 import static kitchenpos.fixture.MenuFixture.menu1;
-import static kitchenpos.fixture.MenuGroupFixture.menuGroup2;
+import static kitchenpos.fixture.MenuGroupFixture.한마리메뉴_그룹;
 import static kitchenpos.fixture.OrderFixture.order;
 import static kitchenpos.fixture.OrderLineItemsFixture.orderLineItems;
 import static kitchenpos.fixture.OrderTableFixture.orderTable1;
-import static kitchenpos.fixture.TableGroupFixture.tableGroup;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import java.math.*;
 import java.time.*;
 import java.util.*;
 import java.util.stream.*;
@@ -37,7 +35,7 @@ class OrderServiceTest {
         orderTableDao = mock(OrderTableDao.class);
         orderService = new OrderService(menuDao, orderDao, orderLineItemDao, orderTableDao);
 
-        menu1.setMenuGroupId(menuGroup2.getId());
+        menu1.setMenuGroupId(한마리메뉴_그룹.getId());
         orderTable1.setEmpty(false);
         order.setOrderLineItems(orderLineItems);
     }

@@ -23,15 +23,15 @@ class MenuGroupServiceTest {
     @DisplayName("메뉴그룹 생성하기")
     @Test
     void createTest() {
-        when(menuGroupDao.save(menuGroup1)).thenReturn(menuGroup1);
-        assertThat(menuGroupService.create(menuGroup1)).isEqualTo(menuGroup1);
+        when(menuGroupDao.save(두마리메뉴_그룹)).thenReturn(두마리메뉴_그룹);
+        assertThat(menuGroupService.create(두마리메뉴_그룹)).isEqualTo(두마리메뉴_그룹);
     }
 
     @DisplayName("메뉴그룹 목록 반환하기")
     @Test
     void listTest() {
-        when(menuGroupDao.findAll()).thenReturn(Lists.newArrayList(menuGroup1, menuGroup2, menuGroup3));
-        assertThat(menuGroupService.list()).isEqualTo(Lists.newArrayList(menuGroup1, menuGroup2, menuGroup3));
+        when(menuGroupDao.findAll()).thenReturn(Lists.newArrayList(두마리메뉴_그룹, 한마리메뉴_그룹, 순살파닭두마리메뉴_그룹));
+        assertThat(menuGroupService.list()).isEqualTo(Lists.newArrayList(두마리메뉴_그룹, 한마리메뉴_그룹, 순살파닭두마리메뉴_그룹));
     }
 
 }
