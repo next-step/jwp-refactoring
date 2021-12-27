@@ -2,7 +2,7 @@ package kitchenpos.ordertable.vo;
 
 import java.util.Objects;
 import javax.persistence.Embeddable;
-import kitchenpos.ordertable.exception.IllegalNumberOfGuests;
+import kitchenpos.ordertable.exception.IllegalNumberOfGuestsException;
 
 @Embeddable
 public class NumberOfGuests {
@@ -19,7 +19,7 @@ public class NumberOfGuests {
 
     private void validateNumberOfGuests(int inputNumberOfGuest) {
         if (inputNumberOfGuest < 0) {
-            throw new IllegalNumberOfGuests();
+            throw new IllegalNumberOfGuestsException();
         }
     }
 

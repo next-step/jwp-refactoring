@@ -3,7 +3,7 @@ package kitchenpos.ordertable.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import kitchenpos.ordertable.exception.IllegalNumberOfGuests;
+import kitchenpos.ordertable.exception.IllegalNumberOfGuestsException;
 import kitchenpos.ordertable.exception.TableChangeNumberOfGuestsException;
 import kitchenpos.ordertable.exception.TableUpdateStateException;
 import kitchenpos.ordertable.vo.NumberOfGuests;
@@ -70,7 +70,7 @@ class OrderTableTest {
         OrderTable orderTable = new OrderTable(1L, new NumberOfGuests(6), false);
         //when, then
         assertThatThrownBy(() -> orderTable.changeNumberOfGuests(new NumberOfGuests(-1)))
-            .isInstanceOf(IllegalNumberOfGuests.class);
+            .isInstanceOf(IllegalNumberOfGuestsException.class);
     }
 
     @DisplayName("주문종료 상태의 테이블은 방문손님 수를 변경할 수 없다.")

@@ -3,7 +3,7 @@ package kitchenpos.ordertable.vo;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import kitchenpos.ordertable.exception.IllegalNumberOfGuests;
+import kitchenpos.ordertable.exception.IllegalNumberOfGuestsException;
 import org.junit.jupiter.api.Test;
 
 class NumberOfGuestsTest {
@@ -18,7 +18,7 @@ class NumberOfGuestsTest {
     @Test
     void constructor_exception() {
         assertThatThrownBy(() -> new NumberOfGuests(-1))
-            .isInstanceOf(IllegalNumberOfGuests.class);
+            .isInstanceOf(IllegalNumberOfGuestsException.class);
     }
 
 }

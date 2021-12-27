@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class OrderTableExceptionHandler {
 
-    @ExceptionHandler(IllegalNumberOfGuests.class)
+    @ExceptionHandler(IllegalNumberOfGuestsException.class)
     public ResponseEntity handleIllegalNumberOfGuests(
-        IllegalNumberOfGuests e) {
+        IllegalNumberOfGuestsException e) {
         return ResponseEntity.badRequest().build();
     }
 
@@ -30,7 +30,7 @@ public class OrderTableExceptionHandler {
         TableUpdateStateException e) {
         return ResponseEntity.badRequest().build();
     }
-    
+
     @ExceptionHandler(OrderIsNotCompleteException.class)
     public ResponseEntity handleOrderIsNotCompleteException(OrderIsNotCompleteException e) {
         return ResponseEntity.badRequest().build();
