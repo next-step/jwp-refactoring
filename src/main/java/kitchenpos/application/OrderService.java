@@ -2,6 +2,7 @@ package kitchenpos.application;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,7 +11,9 @@ import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
+import kitchenpos.domain.Menu;
 import kitchenpos.domain.Order;
+import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderLineItems;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
@@ -49,7 +52,15 @@ public class OrderService {
     }
 
     private OrderLineItems makeOrderLineItems(OrderRequest orderRequest) {
-        OrderLineItems orderLineItems = new OrderLineItems(orderRequest.getOrderLineItems());
+        List<OrderLineItem> items = orderRequest.getOrderLineItems().stream()
+            .map(orderLineItemRequest -> {
+                Menu menu = menuDao.findById(orderLineItemRequest.getMenuId())
+                    .orElseThrow(KitchenposNotFoundException::new);
+                return new OrderLineItem(menu, orderLineItemRequest.getQuantity());
+            })
+            .collect(Collectors.toList());
+
+        OrderLineItems orderLineItems = new OrderLineItems(items);
 
         final List<Long> menuIds = orderLineItems.getIds();
         orderLineItems.validateSize(menuDao.countByIdIn(menuIds));

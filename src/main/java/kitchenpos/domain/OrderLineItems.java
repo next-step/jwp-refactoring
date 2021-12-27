@@ -9,7 +9,6 @@ import javax.persistence.OneToMany;
 
 import org.springframework.util.CollectionUtils;
 
-import kitchenpos.dto.OrderLineItemRequest;
 import kitchenpos.exception.KitchenposErrorCode;
 import kitchenpos.exception.KitchenposException;
 
@@ -21,10 +20,8 @@ public class OrderLineItems {
     public OrderLineItems() {
     }
 
-    public OrderLineItems(List<OrderLineItemRequest> orderLineItemRequests) {
-        this.orderLineItems = orderLineItemRequests.stream()
-            .map(OrderLineItemRequest::toEntity)
-            .collect(Collectors.toList());
+    public OrderLineItems(List<OrderLineItem> orderLineItemRequests) {
+        this.orderLineItems = new ArrayList<>(orderLineItemRequests);
         checkNotEmpty();
     }
 

@@ -21,6 +21,7 @@ import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
+import kitchenpos.domain.Menu;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderLineItems;
@@ -32,6 +33,7 @@ import kitchenpos.dto.OrderLineItemResponse;
 import kitchenpos.dto.OrderRequest;
 import kitchenpos.dto.OrderResponse;
 import kitchenpos.exception.KitchenposException;
+import kitchenpos.exception.KitchenposNotFoundException;
 
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
@@ -48,15 +50,19 @@ class OrderServiceTest {
     private OrderService orderService;
 
     private OrderTable orderTable;
+    private OrderLineItem orderLineItem;
     private OrderLineItemRequest orderLineItemRequest;
     private Order order;
+    private Menu menu;
 
     @BeforeEach
     void setUp() {
         orderTable = new OrderTable(1L, new TableGroup(1L), 4, false);
         orderLineItemRequest = new OrderLineItemRequest(1L, 1);
+        menu = new Menu(1L);
+        orderLineItem = new OrderLineItem(menu, 1);
         order = new Order(1L, new OrderTable(1L), OrderStatus.COOKING, LocalDateTime.now(),
-            new OrderLineItems(Collections.singletonList(orderLineItemRequest)));
+            new OrderLineItems(Collections.singletonList(orderLineItem)));
     }
 
     @DisplayName("주문 생성")
@@ -65,7 +71,7 @@ class OrderServiceTest {
         // given
         메뉴_개수_반환(1L);
         조회한_주문_테이블_반환(orderTable);
-        OrderLineItemRequest orderLineItem = new OrderLineItemRequest(1L, 1);
+        ID로_메뉴_조회(menu);
 
         주문_저장(order);
 
@@ -80,7 +86,7 @@ class OrderServiceTest {
             () -> assertThat(actual.getOrderStatus()).isEqualTo("COOKING"),
             () -> assertThat(actual.getOrderTableId()).isEqualTo(1L),
             () -> assertThat(actual.getOrderLineItems()).isEqualTo(Collections.singletonList(
-                OrderLineItemResponse.from(orderLineItem.toEntity())))
+                OrderLineItemResponse.from(orderLineItem)))
         );
     }
 
@@ -100,6 +106,7 @@ class OrderServiceTest {
     @Test
     void createOrderFailWhenItemNotExists() {
         // given
+        ID로_메뉴_조회(menu);
         메뉴_개수_반환(2L);
 
         OrderRequest request = new OrderRequest(1L, Collections.singletonList(orderLineItemRequest));
@@ -114,6 +121,7 @@ class OrderServiceTest {
     @Test
     void createOrderFailWhenTableNotExists() {
         // given
+        ID로_메뉴_조회(menu);
         메뉴_개수_반환(1L);
 
         OrderTable orderTable = new OrderTable(1L, new TableGroup(1L), 4, true);
@@ -143,7 +151,7 @@ class OrderServiceTest {
             () -> assertThat(actual.get(0).getOrderTableId()).isEqualTo(1L),
             () -> assertThat(actual.get(0).getOrderStatus()).isEqualTo("COOKING"),
             () -> assertThat(actual.get(0).getOrderLineItems()).isEqualTo(Collections.singletonList(
-                OrderLineItemResponse.from(orderLineItemRequest.toEntity())))
+                OrderLineItemResponse.from(orderLineItem)))
         );
     }
 
@@ -153,7 +161,7 @@ class OrderServiceTest {
         // given
         ID로_주문_조회(order);
 
-        OrderLineItem orderLineItem = new OrderLineItem(1L, order, 1L, 1);
+        OrderLineItem orderLineItem = new OrderLineItem(1L, order, new Menu(1L), 1);
         주문_ID로_주문_상품_조회(orderLineItem);
 
         OrderRequest request = new OrderRequest(1L, "MEAL");
@@ -194,6 +202,11 @@ class OrderServiceTest {
     private void 주문_저장(Order order) {
         Mockito.when(orderDao.save(Mockito.any()))
             .thenReturn(order);
+    }
+
+    private void ID로_메뉴_조회(Menu menu) {
+        Mockito.when(menuDao.findById(Mockito.anyLong()))
+            .thenReturn(Optional.of(menu));
     }
 
     private void 조회한_주문_테이블_반환(OrderTable orderTable) {

@@ -8,7 +8,6 @@ import java.util.Collections;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import kitchenpos.dto.OrderLineItemRequest;
 import kitchenpos.exception.KitchenposException;
 
 class OrderTest {
@@ -16,7 +15,7 @@ class OrderTest {
     @DisplayName("주문 완료 상태에서 업데이트시 에러")
     @Test
     void updateOrderStatus() {
-        OrderLineItemRequest orderLineItem = new OrderLineItemRequest(1L, 1);
+        OrderLineItem orderLineItem = new OrderLineItem(new Menu(1L), 1);
 
         Order order = new Order(1L, new OrderTable(1L), OrderStatus.COMPLETION, LocalDateTime.now(),
             new OrderLineItems(Collections.singletonList(orderLineItem)));

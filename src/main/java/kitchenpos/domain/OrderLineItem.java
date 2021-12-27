@@ -14,21 +14,22 @@ public class OrderLineItem {
 
     @ManyToOne
     private Order order;
-    private Long menuId;
+    @ManyToOne
+    private Menu menu;
     private long quantity;
 
     protected OrderLineItem() {
     }
 
-    public OrderLineItem(Long menuId, long quantity) {
-        this.menuId = menuId;
+    public OrderLineItem(Menu menu, long quantity) {
+        this.menu = menu;
         this.quantity = quantity;
     }
 
-    public OrderLineItem(Long seq, Order order, Long menuId, long quantity) {
+    public OrderLineItem(Long seq, Order order, Menu menu, long quantity) {
         this.seq = seq;
         this.order = order;
-        this.menuId = menuId;
+        this.menu = menu;
         this.quantity = quantity;
     }
 
@@ -40,16 +41,20 @@ public class OrderLineItem {
         return order;
     }
 
+    public Menu getMenu() {
+        return menu;
+    }
+
     public void referenceOrder(Order order) {
         this.order = order;
     }
 
-    public Long getMenuId() {
-        return menuId;
-    }
-
     public long getQuantity() {
         return quantity;
+    }
+
+    public Long getMenuId() {
+        return menu.getId();
     }
 
     public Long getOrderId() {
