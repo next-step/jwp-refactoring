@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
@@ -13,7 +14,7 @@ import kitchenpos.common.domain.Price;
 @Embeddable
 public class MenuProducts {
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "menu")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "menu", cascade = CascadeType.PERSIST)
 	private List<MenuProduct> menuProducts = new ArrayList<>();
 
 	protected MenuProducts() {

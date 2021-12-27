@@ -1,10 +1,10 @@
 package kitchenpos.menu.domain;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.AttributeOverride;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -38,7 +38,7 @@ public class Menu {
 	@AttributeOverride(name = "price", column = @Column(name = "price", nullable = false))
 	private Price price;
 
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "menu_group_id", foreignKey = @ForeignKey(name = "fk_menu_menu_group"), nullable = false)
 	private MenuGroup menuGroup;
 
@@ -82,6 +82,15 @@ public class Menu {
 		if (Objects.isNull(menuGroup)) {
 			throw new AppException(ErrorCode.WRONG_INPUT, "메뉴 그룹 입력이 필요합니다");
 		}
+	}
+
+	public void addMenuProducts(List<MenuProduct> menuProductList) {
+		menuProductList.forEach(this::addMenuProduct);
+	}
+
+	private void addMenuProduct(MenuProduct menuProduct) {
+		menuProduct.setMenu(this);
+		menuProducts.add(menuProduct);
 	}
 
 	public void checkOverPrice() {

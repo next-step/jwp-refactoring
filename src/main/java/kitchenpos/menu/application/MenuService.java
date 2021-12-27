@@ -36,18 +36,20 @@ public class MenuService {
 	public MenuResponse create(final MenuRequest request) {
 		MenuGroup menuGroup = menuGroupService.getById(request.getMenuGroupId());
 		Menu menu = request.toEntity(menuGroup);
-		createMenuProducts(request.getMenuProducts(), menu);
+		List<MenuProduct> menuProductList = getMenuProductList(request.getMenuProducts());
+		menu.addMenuProducts(menuProductList);
 		menu.checkOverPrice();
 		return new MenuResponse(menuRepository.save(menu));
 	}
 
-	private void createMenuProducts(List<MenuProductRequest> menuProductRequests, Menu menu) {
-		menuProductRequests.forEach(request -> createMenuProduct(request, menu));
+	private List<MenuProduct> getMenuProductList(List<MenuProductRequest> menuProductRequests) {
+		return menuProductRequests.stream().map(this::getMenuProduct)
+			.collect(Collectors.toList());
 	}
 
-	private void createMenuProduct(MenuProductRequest request, Menu menu) {
+	private MenuProduct getMenuProduct(MenuProductRequest request) {
 		Product product = productService.getById(request.getProductId());
-		MenuProduct.create(menu, product, request.getQuantity());
+		return request.toEntity(product);
 	}
 
 	@Transactional(readOnly = true)

@@ -51,30 +51,23 @@ public class MenuProduct {
 		this.quantity = quantity;
 	}
 
-	public static MenuProduct create(Menu menu, Product product, Long quantity) {
-		validateCreate(menu, product);
-		MenuProduct menuProduct = new MenuProduct(null, menu, product, PositiveNumber.valueOf(quantity));
-		menuProduct.menu.getMenuProducts().add(menuProduct);
-		return menuProduct;
-	}
-
-	public static MenuProduct create(Long seq, Menu menu, Product product, Long quantity) {
-		MenuProduct menuProduct = create(menu, product, quantity);
-		menuProduct.seq = seq;
-		return menuProduct;
+	public static MenuProduct create(Product product, Long quantity) {
+		validateCreate(product);
+		return new MenuProduct(null, null, product, PositiveNumber.valueOf(quantity));
 	}
 
 	public static MenuProduct of(Long seq, Menu menu, Product product, Long quantity) {
 		return new MenuProduct(seq, menu, product, PositiveNumber.valueOf(quantity));
 	}
 
-	private static void validateCreate(Menu menu, Product product) {
-		if (Objects.isNull(menu)) {
-			throw new AppException(ErrorCode.WRONG_INPUT, "MenuProduct 은 Menu 가 필수입니다");
-		}
+	private static void validateCreate(Product product) {
 		if (Objects.isNull(product)) {
 			throw new AppException(ErrorCode.WRONG_INPUT, "MenuProduct 은 Product 이 필수입니다");
 		}
+	}
+
+	public void setMenu(Menu menu) {
+		this.menu = menu;
 	}
 
 	public Price getTotalPrice() {

@@ -14,6 +14,9 @@ public class PositiveNumber {
 
 	private Long number;
 
+	protected PositiveNumber() {
+	}
+
 	private PositiveNumber(Long number) {
 		this.number = number;
 	}

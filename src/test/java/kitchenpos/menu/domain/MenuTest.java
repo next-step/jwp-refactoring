@@ -52,7 +52,7 @@ public class MenuTest {
 	void checkOverPriceTest() {
 		// given
 		Menu menu = Menu.of(1L, "후라이드들", BigDecimal.valueOf(50_000), MenuGroupTest.추천메뉴);
-		MenuProduct.create(1L, menu, ProductTest.후라이드, 2L);
+		MenuProduct.of(1L, menu, ProductTest.후라이드, 2L);
 
 		// when, then
 		assertThatThrownBy(menu::checkOverPrice)
