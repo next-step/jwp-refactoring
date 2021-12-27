@@ -1,6 +1,8 @@
 package kitchenpos.tablegroup.domain;
 
+import kitchenpos.tablegroup.application.TableGroupEvent;
 import kitchenpos.tablegroup.application.TableGroupValidator;
+import kitchenpos.tablegroup.application.TableUngroupEvent;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.domain.AbstractAggregateRoot;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;

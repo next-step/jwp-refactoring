@@ -1,14 +1,15 @@
-package kitchenpos.tablegroup.domain;
+package kitchenpos.tablegroup.application;
 
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
-import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.event.TransactionalEventListener;
 
 import java.util.List;
 
+@Transactional(readOnly = true)
 @Component
 public class TableGroupHandler {
 
@@ -19,7 +20,7 @@ public class TableGroupHandler {
     }
 
     @Async
-    @EventListener
+    @TransactionalEventListener
     @Transactional
     public void group(TableGroupEvent event) {
         Long tableGroupId = event.getTableGroupId();
@@ -33,7 +34,7 @@ public class TableGroupHandler {
     }
 
     @Async
-    @EventListener
+    @TransactionalEventListener
     @Transactional
     public void ungroup(TableUngroupEvent event) {
         Long tableGroupId = event.getTableGroupId();
