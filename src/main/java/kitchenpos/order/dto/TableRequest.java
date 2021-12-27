@@ -27,7 +27,7 @@ public class TableRequest {
     }
 
     public OrderTable toEntity() {
-        return new OrderTable(numberOfGuests, new TableState(empty));
+        return OrderTable.of(numberOfGuests, new TableState(empty));
     }
 
     public int getNumberOfGuests() {

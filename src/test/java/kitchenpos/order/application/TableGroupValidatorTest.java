@@ -37,9 +37,9 @@ class TableGroupValidatorTest {
 
     @BeforeEach
     void setUp() {
-        테이블1 = new OrderTable(2, new TableState(false));
-        테이블2 = new OrderTable(2, new TableState(false));
-        빈테이블 = new OrderTable(0, new TableState(true));
+        테이블1 = OrderTable.of(2, new TableState(false));
+        테이블2 = OrderTable.of(2, new TableState(false));
+        빈테이블 = OrderTable.of(0, new TableState(true));
     }
 
     @Test

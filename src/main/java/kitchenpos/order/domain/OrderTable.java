@@ -29,10 +29,14 @@ public class OrderTable {
     protected OrderTable() {
     }
 
-    public OrderTable(int numberOfGuests, TableState tableState) {
+    private OrderTable(int numberOfGuests, TableState tableState) {
         this.guests = new Guests(numberOfGuests);
         this.tableState = tableState;
         this.orderStatus = READY;
+    }
+
+    public static OrderTable of(int numberOfGuests, TableState tableState) {
+        return new OrderTable(numberOfGuests, tableState);
     }
 
     public void group(Long newTableGroup) {
@@ -84,9 +88,5 @@ public class OrderTable {
 
     public OrderStatus getOrderStatus() {
         return orderStatus;
-    }
-
-    public boolean isEmpty() {
-        return tableState.isEmpty();
     }
 }

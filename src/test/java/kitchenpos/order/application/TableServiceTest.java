@@ -39,8 +39,8 @@ class TableServiceTest {
 
     @BeforeEach
     void setUp() {
-        테이블 = new OrderTable(3, new TableState(false));
-        빈테이블 = new OrderTable(0, new TableState(true));
+        테이블 = OrderTable.of(3, new TableState(false));
+        빈테이블 = OrderTable.of(0, new TableState(true));
     }
 
     @Test

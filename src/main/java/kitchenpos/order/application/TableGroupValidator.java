@@ -5,6 +5,7 @@ import kitchenpos.order.application.exception.InvalidTableState;
 import kitchenpos.order.application.exception.TableNotFoundException;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.TableRepository;
+import kitchenpos.order.domain.TableState;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -43,7 +44,8 @@ public class TableGroupValidator {
 
     private void validateEmptyTable(List<OrderTable> orderTables) {
         boolean isEmpty = orderTables.stream()
-                .anyMatch(OrderTable::isEmpty);
+                .map(OrderTable::getTableState)
+                .anyMatch(TableState::isEmpty);
 
         if (isEmpty) {
             throw new InvalidTableState("빈 테이블을 일행으로 지정할 수 없습니다.");

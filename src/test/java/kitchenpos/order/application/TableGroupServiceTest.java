@@ -38,8 +38,8 @@ class TableGroupServiceTest {
 
     @BeforeEach
     void setUp() {
-        테이블1 = new OrderTable(3, new TableState(false));
-        테이블2 = new OrderTable(3, new TableState(false));
+        테이블1 = OrderTable.of(3, new TableState(false));
+        테이블2 = OrderTable.of(3, new TableState(false));
     }
 
     @Test
