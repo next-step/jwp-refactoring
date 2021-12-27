@@ -14,9 +14,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.order.domain.OrderRepository;
 
 @ExtendWith(MockitoExtension.class)
 public class TableServiceTest {
@@ -28,7 +28,7 @@ public class TableServiceTest {
 	private OrderTableDao orderTableDao;
 
 	@Mock
-	private OrderDao orderDao;
+	private OrderRepository orderRepository;
 
 	@DisplayName("주문 테이블을 생성한다")
 	@Test
@@ -82,7 +82,7 @@ public class TableServiceTest {
 		persist.setNumberOfGuests(0);
 
 		given(orderTableDao.findById(requestId)).willReturn(Optional.of(persist));
-		given(orderDao.existsByOrderTableIdAndOrderStatusIn(any(), any())).willReturn(false);
+		given(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), any())).willReturn(false);
 		given(orderTableDao.save(any())).willReturn(persist);
 
 		// when
@@ -125,7 +125,7 @@ public class TableServiceTest {
 		persist.setNumberOfGuests(0);
 
 		given(orderTableDao.findById(requestId)).willReturn(Optional.of(persist));
-		given(orderDao.existsByOrderTableIdAndOrderStatusIn(any(), any())).willReturn(true);
+		given(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), any())).willReturn(true);
 
 		// when, then
 		assertThatThrownBy(() -> tableService.changeEmpty(requestId, request))

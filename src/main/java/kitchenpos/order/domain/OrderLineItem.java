@@ -13,7 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import kitchenpos.common.domain.PositiveNumber;
+import kitchenpos.common.domain.Quantity;
 import kitchenpos.menu.domain.Menu;
 
 @Entity
@@ -33,21 +33,29 @@ public class OrderLineItem {
 	private Menu menu;
 
 	@Embedded
-	@AttributeOverride(name = "number", column = @Column(name = "quantity", nullable = false))
-	private PositiveNumber quantity;
+	@AttributeOverride(name = "quantity", column = @Column(name = "quantity", nullable = false))
+	private Quantity quantity;
 
 	protected OrderLineItem() {
 	}
 
-	private OrderLineItem(Long seq, Order order, Menu menu, PositiveNumber quantity) {
+	private OrderLineItem(Long seq, Order order, Menu menu, Quantity quantity) {
 		this.seq = seq;
 		this.order = order;
 		this.menu = menu;
 		this.quantity = quantity;
 	}
 
-	public static OrderLineItem create(Order order, Menu menu, PositiveNumber quantity) {
-		return new OrderLineItem(null, order, menu, quantity);
+	public static OrderLineItem create(Menu menu, Long quantity) {
+		return new OrderLineItem(null, null, menu, Quantity.of(quantity));
+	}
+
+	public static OrderLineItem of(Long id, Menu menu, Long quantity) {
+		return new OrderLineItem(id, null, menu, Quantity.of(quantity));
+	}
+
+	public void setOrder(Order order) {
+		this.order = order;
 	}
 
 	public Long getSeq() {
@@ -62,7 +70,7 @@ public class OrderLineItem {
 		return menu;
 	}
 
-	public PositiveNumber getQuantity() {
+	public Quantity getQuantity() {
 		return quantity;
 	}
 
@@ -82,4 +90,5 @@ public class OrderLineItem {
 	public int hashCode() {
 		return seq.hashCode();
 	}
+
 }

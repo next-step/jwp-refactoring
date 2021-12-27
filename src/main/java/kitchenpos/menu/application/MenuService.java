@@ -6,6 +6,8 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import kitchenpos.exception.AppException;
+import kitchenpos.exception.ErrorCode;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
@@ -56,5 +58,10 @@ public class MenuService {
 	public List<MenuResponse> list() {
 		List<Menu> menuList = menuRepository.findAll();
 		return menuList.stream().map(MenuResponse::new).collect(Collectors.toList());
+	}
+
+	public Menu getById(Long menuId) {
+		return menuRepository.findById(menuId)
+			.orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "해당 메뉴를 찾을 수 없습니디다"));
 	}
 }

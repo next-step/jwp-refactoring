@@ -13,11 +13,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.order.domain.OrderRepository;
 
 @ExtendWith(MockitoExtension.class)
 public class TableGroupServiceTest {
@@ -32,7 +32,7 @@ public class TableGroupServiceTest {
 	private TableGroupDao tableGroupDao;
 
 	@Mock
-	private OrderDao orderDao;
+	private OrderRepository orderRepository;
 
 	@DisplayName("단체 지정을 생성한다")
 	@Test
@@ -133,7 +133,7 @@ public class TableGroupServiceTest {
 	@Test
 	void ungroupTest() {
 		// given
-		given(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(), any()))
+		given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any()))
 			.willReturn(false);
 
 		// when
@@ -144,7 +144,7 @@ public class TableGroupServiceTest {
 	@Test
 	void ungroupTest2() {
 		// given
-		given(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(), any()))
+		given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any()))
 			.willReturn(true);
 
 		// when

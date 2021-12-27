@@ -39,6 +39,26 @@ public class OrderTable {
 		this.empty = empty;
 	}
 
+	public static OrderTable of(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
+		return new OrderTable(id, tableGroup, numberOfGuests, empty);
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public TableGroup getTableGroup() {
+		return tableGroup;
+	}
+
+	public int getNumberOfGuests() {
+		return numberOfGuests;
+	}
+
+	public boolean isEmpty() {
+		return empty;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o)

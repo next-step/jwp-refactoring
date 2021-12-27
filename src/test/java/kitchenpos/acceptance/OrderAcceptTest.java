@@ -12,21 +12,21 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.acceptance.step.TableAcceptStep;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.menu.acceptance.step.MenuAcceptStep;
 import kitchenpos.menu.acceptance.step.MenuGroupAcceptStep;
 import kitchenpos.menu.dto.MenuGroupResponse;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.order.dto.OrderUpdateRequest;
 import kitchenpos.product.acceptance.ProductAcceptStep;
 import kitchenpos.product.dto.ProductResponse;
 
 @DisplayName("주문 인수테스트")
 public class OrderAcceptTest extends AcceptanceTest {
-
-	private static final String BASE_URL = "/api/orders";
 
 	private MenuResponse 후라이드둘;
 	private OrderTable 테이블;
@@ -45,19 +45,15 @@ public class OrderAcceptTest extends AcceptanceTest {
 	@Test
 	void 주문_관리() {
 		// given
-		OrderLineItem 주문_항목 = new OrderLineItem();
-		주문_항목.setMenuId(후라이드둘.getId());
-		주문_항목.setQuantity(1);
+		OrderLineItemRequest 주문_항목 = new OrderLineItemRequest(후라이드둘.getId(), 1);
 
-		Order 등록_요청_데이터 = new Order();
-		등록_요청_데이터.setOrderTableId(테이블.getId());
-		등록_요청_데이터.setOrderLineItems(Collections.singletonList(주문_항목));
+		OrderRequest 등록_요청_데이터 = new OrderRequest(테이블.getId(), Collections.singletonList(주문_항목));
 
 		// when
 		ExtractableResponse<Response> 주문_생성_응답 = 주문_생성_요청(등록_요청_데이터);
 
 		// then
-		Order 생성된_주문 = 주문_등록_확인(주문_생성_응답, 등록_요청_데이터);
+		OrderResponse 생성된_주문 = 주문_등록_확인(주문_생성_응답, 등록_요청_데이터);
 
 		// when
 		ExtractableResponse<Response> 주문_목록_조회_응답 = 주문_목록_조회_요청();
@@ -66,8 +62,7 @@ public class OrderAcceptTest extends AcceptanceTest {
 		주문_목록_조회_확인(주문_목록_조회_응답, 생성된_주문);
 
 		// given
-		Order 상태_변경_요청_데이터 = new Order();
-		상태_변경_요청_데이터.setOrderStatus("MEAL");
+		OrderUpdateRequest 상태_변경_요청_데이터 = new OrderUpdateRequest("MEAL");
 
 		// when
 		ExtractableResponse<Response> 주문_상태_변경_응답 = 주문_상태_변경_요청(주문_생성_응답, 상태_변경_요청_데이터);

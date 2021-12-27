@@ -12,6 +12,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.springframework.data.annotation.CreatedDate;
+
 @Entity
 @Table(name = "table_group")
 public class TableGroup {
@@ -21,8 +23,33 @@ public class TableGroup {
 	private Long id;
 
 	@Column(nullable = false)
+	@CreatedDate
 	private LocalDateTime createdDate;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "tableGroup")
 	private List<OrderTable> orderTables;
+
+	protected TableGroup() {
+	}
+
+	private TableGroup(Long id, List<OrderTable> orderTables) {
+		this.id = id;
+		this.orderTables = orderTables;
+	}
+
+	public static TableGroup of(Long id, List<OrderTable> orderTables) {
+		return new TableGroup(id, orderTables);
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public LocalDateTime getCreatedDate() {
+		return createdDate;
+	}
+
+	public List<OrderTable> getOrderTables() {
+		return orderTables;
+	}
 }

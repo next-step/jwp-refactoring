@@ -11,16 +11,19 @@ import org.springframework.http.HttpStatus;
 import io.restassured.mapper.TypeRef;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderLineItemResponse;
+import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.order.dto.OrderUpdateRequest;
 import kitchenpos.testutils.RestAssuredUtils;
 
 public class OrderAcceptStep {
 
 	private static final String BASE_URL = "/api/orders";
 
-	public static void 주문_상태_변경_확인(ExtractableResponse<Response> 주문_상태_변경_응답, Order 상태_변경_요청_데이터) {
-		Order 변경된_테이블 = 주문_상태_변경_응답.as(Order.class);
+	public static void 주문_상태_변경_확인(ExtractableResponse<Response> 주문_상태_변경_응답, OrderUpdateRequest 상태_변경_요청_데이터) {
+		OrderResponse 변경된_테이블 = 주문_상태_변경_응답.as(OrderResponse.class);
 
 		assertAll(
 			() -> assertThat(주문_상태_변경_응답.statusCode()).isEqualTo(HttpStatus.OK.value()),
@@ -29,13 +32,13 @@ public class OrderAcceptStep {
 	}
 
 	public static ExtractableResponse<Response> 주문_상태_변경_요청(ExtractableResponse<Response> 주문_생성_응답,
-		Order 상태_변경_요청_데이터) {
+		OrderUpdateRequest 상태_변경_요청_데이터) {
 		String url = 주문_생성_응답.header("Location") + "/order-status";
 		return RestAssuredUtils.put(url, 상태_변경_요청_데이터);
 	}
 
-	public static void 주문_목록_조회_확인(ExtractableResponse<Response> 주문_목록_조회_응답, Order 생성된_주문) {
-		List<Order> 조회된_주문_목록 = 주문_목록_조회_응답.as(new TypeRef<List<Order>>() {
+	public static void 주문_목록_조회_확인(ExtractableResponse<Response> 주문_목록_조회_응답, OrderResponse 생성된_주문) {
+		List<OrderResponse> 조회된_주문_목록 = 주문_목록_조회_응답.as(new TypeRef<List<OrderResponse>>() {
 		});
 
 		assertAll(
@@ -44,7 +47,7 @@ public class OrderAcceptStep {
 		);
 	}
 
-	private static Consumer<List<? extends Order>> 조회된_테이블_목록_확인(Order 생성된_주문) {
+	private static Consumer<List<? extends OrderResponse>> 조회된_테이블_목록_확인(OrderResponse 생성된_주문) {
 		return orders -> {
 			assertThat(orders.size()).isOne();
 			assertThat(orders).first()
@@ -52,7 +55,6 @@ public class OrderAcceptStep {
 					assertThat(order.getId()).isEqualTo(생성된_주문.getId());
 					assertThat(order.getOrderTableId()).isEqualTo(생성된_주문.getOrderTableId());
 					assertThat(order.getOrderStatus()).isEqualTo(생성된_주문.getOrderStatus());
-					주문_항목_확인(order, 생성된_주문);
 				});
 		};
 	}
@@ -61,8 +63,8 @@ public class OrderAcceptStep {
 		return RestAssuredUtils.get(BASE_URL);
 	}
 
-	public static Order 주문_등록_확인(ExtractableResponse<Response> 주문_생성_응답, Order 등록_요청_데이터) {
-		Order 생성된_주문 = 주문_생성_응답.as(Order.class);
+	public static OrderResponse 주문_등록_확인(ExtractableResponse<Response> 주문_생성_응답, OrderRequest 등록_요청_데이터) {
+		OrderResponse 생성된_주문 = 주문_생성_응답.as(OrderResponse.class);
 
 		assertAll(
 			() -> assertThat(주문_생성_응답.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
@@ -72,7 +74,7 @@ public class OrderAcceptStep {
 		return 생성된_주문;
 	}
 
-	public static Consumer<Order> 생성된_주문_확인(Order 등록_요청_데이터) {
+	public static Consumer<OrderResponse> 생성된_주문_확인(OrderRequest 등록_요청_데이터) {
 		return order -> {
 			assertThat(order.getId()).isNotNull();
 			assertThat(order.getOrderTableId()).isEqualTo(등록_요청_데이터.getOrderTableId());
@@ -81,9 +83,9 @@ public class OrderAcceptStep {
 		};
 	}
 
-	public static void 주문_항목_확인(Order 생성된_데이터, Order 생성_요청_데이터) {
-		OrderLineItem 생성한_주문_항목 = 생성된_데이터.getOrderLineItems().get(0);
-		OrderLineItem 요청한_주문_항목 = 생성_요청_데이터.getOrderLineItems().get(0);
+	public static void 주문_항목_확인(OrderResponse 생성된_데이터, OrderRequest 생성_요청_데이터) {
+		OrderLineItemResponse 생성한_주문_항목 = 생성된_데이터.getOrderLineItems().get(0);
+		OrderLineItemRequest 요청한_주문_항목 = 생성_요청_데이터.getOrderLineItems().get(0);
 		assertAll(
 			() -> assertThat(생성한_주문_항목.getSeq()).isNotNull(),
 			() -> assertThat(생성한_주문_항목.getOrderId()).isNotNull(),
@@ -92,7 +94,7 @@ public class OrderAcceptStep {
 		);
 	}
 
-	public static ExtractableResponse<Response> 주문_생성_요청(Order 등록_요청_데이터) {
+	public static ExtractableResponse<Response> 주문_생성_요청(OrderRequest 등록_요청_데이터) {
 		return RestAssuredUtils.post(BASE_URL, 등록_요청_데이터);
 	}
 }
