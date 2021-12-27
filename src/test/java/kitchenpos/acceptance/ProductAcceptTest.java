@@ -10,8 +10,8 @@ import org.junit.jupiter.api.Test;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.Product;
 import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 
 @DisplayName("상품 인수테스트")
 public class ProductAcceptTest extends AcceptanceTest {
@@ -27,7 +27,7 @@ public class ProductAcceptTest extends AcceptanceTest {
 		ExtractableResponse<Response> 상품_등록_응답 = 상품_등록_요청(등록_요청_상품);
 
 		//then
-		Product 등록된_상품 = 상품_등록_확인(상품_등록_응답, 등록_요청_상품);
+		ProductResponse 등록된_상품 = 상품_등록_확인(상품_등록_응답, 등록_요청_상품);
 
 		// when
 		ExtractableResponse<Response> 상품_목록_조회_응답 = 상품_목록_조회_요청();

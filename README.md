@@ -24,10 +24,10 @@
 ## 도메인 설계
 
 - 공통
-    - Name
-    - Price
+    - [x] Name
+    - [x] Price
 - 상품
-    - Product
+    - [x] Product
 - 메뉴
     - Menu
     - MenuGroup
