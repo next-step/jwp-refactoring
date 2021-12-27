@@ -21,7 +21,23 @@
 - 3개 이상의 인스턴스 변수를 가진 클래스 금지
 - 비니지스 로직은 도메인 객체에 둬서 구현하기
 
-## 기능 목록
+## 도메인 설계
+
+- 공통
+    - Name
+    - Price
+- 상품
+    - Product
+- 메뉴
+    - Menu
+    - MenuGroup
+    - MenuProduct
+- 주문
+    - OrderLineItem
+    - Order
+- 테이블
+    - TableGroup
+    - OrderTable
 
 # 1단계 - 테스트를 통한 코드 보호
 
