@@ -8,13 +8,16 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.Embeddable;
+import javax.persistence.ForeignKey;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import kitchenpos.product.domain.Amount;
 
 @Embeddable
 public class MenuProducts {
 
-    @OneToMany(mappedBy = "menu", fetch = LAZY, cascade = ALL, orphanRemoval = true)
+    @OneToMany(fetch = LAZY, cascade = ALL, orphanRemoval = true)
+    @JoinColumn(name="menu_id", foreignKey = @ForeignKey(name = "fk_menu_products_menu"), nullable = false)
     private List<MenuProduct> menuProducts = new ArrayList<>();
 
     public static MenuProducts of(List<MenuProduct> menuProducts) {
@@ -26,16 +29,6 @@ public class MenuProducts {
     }
 
     protected MenuProducts() {
-    }
-
-    public void addAll(List<MenuProduct> menuProducts) {
-        this.menuProducts.addAll(menuProducts);
-    }
-
-    public Amount sum() {
-        return menuProducts.stream()
-            .map(MenuProduct::multiply)
-            .reduce(Amount.ZERO, Amount::add);
     }
 
     public List<MenuProduct> getMenuProducts() {

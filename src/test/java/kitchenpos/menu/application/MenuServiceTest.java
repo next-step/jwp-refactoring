@@ -10,22 +10,20 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.atMost;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
-import java.util.Optional;
-import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuDao;
 import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuGroupDao;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuValidation;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.product.application.ProductService;
-import kitchenpos.product.domain.ProductDao;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -38,21 +36,17 @@ public class MenuServiceTest {
     @Mock
     private MenuDao menuDao;
 
-    @Mock
-    private MenuGroupService menuGroupService;
-
-    @Mock
-    private ProductService productService;
-
     @InjectMocks
     private MenuService menuService;
+
+    @Mock
+    private MenuValidation menuValidation;
 
     @Test
     void 메뉴_저장() {
         // given
         Menu menu = 메뉴_양념치킨();
-        MenuProduct menuProduct1EA = 양념치킨_1개(menu);
-        menu.withMenuProducts(asList(menuProduct1EA));
+        MenuProduct menuProduct1EA = 양념치킨_1개();
 
         MenuRequest menuRequest = new MenuRequest(
             menu.getName(),
@@ -60,12 +54,10 @@ public class MenuServiceTest {
             menu.getMenuGroupId(),
             asList(new MenuProductRequest(menuProduct1EA.getId(), menuProduct1EA.getQuantity())
             ));
-        MenuGroup 메뉴그룹_한마리 = 메뉴그룹_한마리();
 
         // mocking
-        when(menuGroupService.findByIdThrow(anyLong())).thenReturn(메뉴그룹_한마리.getId());
-        when(productService.findByIdThrow(anyLong())).thenReturn(양념치킨());
         when(menuDao.save(any())).thenReturn(menu);
+        doNothing().when(menuValidation).valid(any());
 
         // when
         menuService.create(menuRequest);

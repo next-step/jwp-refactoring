@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import kitchenpos.common.exception.Message;
+import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.product.domain.Amount;
 import org.apache.logging.log4j.util.Strings;
 
@@ -56,16 +57,8 @@ public class Menu {
         }
     }
 
-    public void withMenuProducts(List<MenuProduct> menuProducts) {
-        if (price.grateThan(sumAmount(menuProducts))) {
-            throw new IllegalArgumentException(Message.MENU_AMOUNT_IS_TOO_LAGE.getMessage());
-        }
-        this.menuProducts.addAll(menuProducts);
-    }
-
-    private Amount sumAmount(List<MenuProduct> menuProducts) {
-        return MenuProducts.of(menuProducts)
-            .sum();
+    public void addMenuProducts(MenuProducts menuProducts) {
+        this.menuProducts = menuProducts;
     }
 
     public Long getId() {
