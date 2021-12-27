@@ -1,14 +1,11 @@
 package kitchenpos.ordertablegroup.application;
 
-import java.util.List;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.ordertablegroup.domain.OrderTableGroup;
 import kitchenpos.ordertablegroup.domain.OrderTableGroupRepository;
+import kitchenpos.ordertablegroup.domain.OrderTableGroupValidator;
 import kitchenpos.ordertablegroup.dto.OrderTableGroupCreateRequest;
 import kitchenpos.ordertablegroup.dto.OrderTableGroupDto;
 
@@ -16,36 +13,29 @@ import kitchenpos.ordertablegroup.dto.OrderTableGroupDto;
 @Transactional(readOnly = true)
 public class OrderTableGroupService {
 	private final OrderTableGroupRepository orderTableGroupRepository;
-	private final OrderTableRepository orderTableRepository;
+	private final OrderTableGroupValidator orderTableGroupValidator;
 
 	public OrderTableGroupService(
 		OrderTableGroupRepository orderTableGroupRepository,
-		OrderTableRepository orderTableRepository
+		OrderTableGroupValidator orderTableGroupValidator
 	) {
 		this.orderTableGroupRepository = orderTableGroupRepository;
-		this.orderTableRepository = orderTableRepository;
+		this.orderTableGroupValidator = orderTableGroupValidator;
 	}
 
 	@Transactional
 	public OrderTableGroupDto create(OrderTableGroupCreateRequest request) {
-		List<OrderTable> orderTables = findOrderTablesBy(request.getOrderTableIds());
-		OrderTableGroup orderTableGroup = orderTableGroupRepository.save(OrderTableGroup.from(orderTables));
+		OrderTableGroup orderTableGroup = orderTableGroupRepository.save(OrderTableGroup.newInstance());
+		orderTableGroup.group(request.getOrderTableIds(), orderTableGroupValidator);
+		orderTableGroupRepository.save(orderTableGroup);
 		return OrderTableGroupDto.from(orderTableGroup);
-	}
-
-	private List<OrderTable> findOrderTablesBy(List<Long> orderTableIds) {
-		List<OrderTable> orderTables = orderTableRepository.findAllByIdIn(orderTableIds);
-		if (orderTables.size() != orderTableIds.size()) {
-			throw new IllegalArgumentException();
-		}
-		return orderTables;
 	}
 
 	@Transactional
 	public void ungroup(Long id) {
 		OrderTableGroup orderTableGroup = orderTableGroupRepository.findById(id)
 			.orElseThrow(IllegalArgumentException::new);
-
-		orderTableGroup.ungroup();
+		orderTableGroup.ungroup(orderTableGroupValidator);
+		orderTableGroupRepository.save(orderTableGroup);
 	}
 }

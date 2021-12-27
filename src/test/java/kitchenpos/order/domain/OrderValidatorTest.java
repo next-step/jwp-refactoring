@@ -64,11 +64,11 @@ class OrderValidatorTest {
 	@Test
 	void validateOrderTableExistAndNotEmptyFailOnEmpty() {
 		// given
-		orderTableRepository.save(빈_주문_테이블_2번());
+		orderTableRepository.save(빈_주문_테이블_3번());
 
 		// when
 		ThrowingCallable throwingCallable = () -> orderValidator.validateOrderTableExistAndNotEmpty(
-			빈_주문_테이블_2번().getId());
+			빈_주문_테이블_3번().getId());
 
 		// then
 		assertThatThrownBy(throwingCallable).isInstanceOf(IllegalArgumentException.class);

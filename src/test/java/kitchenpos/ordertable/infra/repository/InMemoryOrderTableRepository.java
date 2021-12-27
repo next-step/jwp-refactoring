@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -34,6 +35,14 @@ public class InMemoryOrderTableRepository implements OrderTableRepository {
 		return orderTables.values()
 			.stream()
 			.filter(orderTable -> ids.contains(orderTable.getId()))
+			.collect(Collectors.toList());
+	}
+
+	@Override
+	public List<OrderTable> findByOrderTableGroupId(Long orderTableGroupId) {
+		return orderTables.values()
+			.stream()
+			.filter(orderTable -> Objects.equals(orderTable.getOrderTableGroupId(), orderTableGroupId))
 			.collect(Collectors.toList());
 	}
 }

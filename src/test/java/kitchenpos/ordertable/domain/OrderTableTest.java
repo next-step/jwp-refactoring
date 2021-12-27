@@ -1,15 +1,12 @@
 package kitchenpos.ordertable.domain;
 
+import static kitchenpos.ordertable.OrderTableFixture.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
-
-import java.util.Arrays;
 
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import kitchenpos.ordertablegroup.domain.OrderTableGroup;
 
 @DisplayName("주문 테이블")
 class OrderTableTest {
@@ -34,7 +31,7 @@ class OrderTableTest {
 	@Test
 	void changeEmpty() {
 		// given
-		OrderTable orderTable = OrderTable.of(NumberOfGuests.from(4), false);
+		OrderTable orderTable = 비어있지않은_주문_테이블_1번();
 
 		// when
 		orderTable.changeEmpty(true, new ValidOrderTableValidator());
@@ -47,12 +44,10 @@ class OrderTableTest {
 	@Test
 	void changeEmptyFailOnBelongToOrderTableGroup() {
 		// given
-		OrderTable orderTable1 = OrderTable.of(NumberOfGuests.from(4), true);
-		OrderTable orderTable2 = OrderTable.of(NumberOfGuests.from(4), true);
-		OrderTableGroup.from(Arrays.asList(orderTable1, orderTable2));
+		OrderTable orderTable = 그룹핑된_주문_테이블_5번();
 
 		// when
-		ThrowingCallable throwingCallable = () -> orderTable1.changeEmpty(true, new ValidOrderTableValidator());
+		ThrowingCallable throwingCallable = () -> orderTable.changeEmpty(true, new ValidOrderTableValidator());
 
 		// then
 		assertThatThrownBy(throwingCallable).isInstanceOf(IllegalStateException.class);
@@ -62,7 +57,7 @@ class OrderTableTest {
 	@Test
 	void changeEmptyFailOnOrderNotCompleted() {
 		// given
-		OrderTable orderTable = OrderTable.of(NumberOfGuests.from(4), false);
+		OrderTable orderTable = 비어있지않은_주문_테이블_1번();
 
 		// when
 		ThrowingCallable throwingCallable = () -> orderTable.changeEmpty(
@@ -77,7 +72,7 @@ class OrderTableTest {
 	@Test
 	void changeNumberOfGuests() {
 		// given
-		OrderTable orderTable = OrderTable.of(NumberOfGuests.from(4), false);
+		OrderTable orderTable = 비어있지않은_주문_테이블_1번();
 		NumberOfGuests numberOfGuests = NumberOfGuests.from(6);
 
 		// when
@@ -91,7 +86,7 @@ class OrderTableTest {
 	@Test
 	void changeNumberOfGuestsFailOnEmpty() {
 		// given
-		OrderTable orderTable = OrderTable.of(NumberOfGuests.from(4), true);
+		OrderTable orderTable = 빈_주문_테이블_3번();
 		NumberOfGuests numberOfGuests = NumberOfGuests.from(6);
 
 		// when

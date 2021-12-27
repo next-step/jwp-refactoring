@@ -1,9 +1,8 @@
 package kitchenpos.ordertablegroup.domain;
 
-import static kitchenpos.order.OrderLineItemFixture.*;
+import static kitchenpos.ordertable.OrderTableFixture.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.ThrowableAssert.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -11,38 +10,35 @@ import java.util.Collections;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItems;
-import kitchenpos.ordertable.domain.NumberOfGuests;
-import kitchenpos.ordertable.domain.OrderTable;
-
 @DisplayName("주문 테이블 그룹")
 class OrderTableGroupTest {
 
-	@DisplayName("생성")
+	@DisplayName("그룹 생성")
 	@Test
-	void from() {
+	void group() {
 		// given
-		OrderTable orderTable1 = OrderTable.of(NumberOfGuests.from(4), true);
-		OrderTable orderTable2 = OrderTable.of(NumberOfGuests.from(4), true);
+		OrderTableGroup orderTableGroup = OrderTableGroup.newInstance();
 
 		// when
-		OrderTableGroup orderTableGroup = OrderTableGroup.from(Arrays.asList(
-			orderTable1,
-			orderTable2));
+		orderTableGroup.group(Arrays.asList(
+				빈_주문_테이블_3번().getId(),
+				빈_주문_테이블_4번().getId()),
+			new ValidOrderTableGroupValidator());
 
 		// then
 		assertThat(orderTableGroup).isNotNull();
 	}
 
-	@DisplayName("생성 실패 - 주문 테이블이 2개 미만인 경우")
+	@DisplayName("그룹 생성 실패 - 주문 테이블이 2개 미만인 경우")
 	@Test
-	void fromFailOnLessThenTwo() {
+	void groupFailOnLessThenTwo() {
 		// given
-		OrderTable orderTable = OrderTable.of(NumberOfGuests.from(4), true);
+		OrderTableGroup orderTableGroup = OrderTableGroup.newInstance();
 
 		// when
-		ThrowingCallable throwingCallable = () -> OrderTableGroup.from(Collections.singletonList(orderTable));
+		ThrowingCallable throwingCallable = () -> orderTableGroup.group(Collections.singletonList(
+				빈_주문_테이블_3번().getId()),
+			new CountInvalidOrderTableGroupValidator());
 
 		// then
 		assertThatThrownBy(throwingCallable).isInstanceOf(IllegalArgumentException.class);
@@ -50,15 +46,15 @@ class OrderTableGroupTest {
 
 	@DisplayName("생성 실패 - 이미 주문 테이블 그룹이 있는 경우")
 	@Test
-	void fromFailOnAlreadyHavingOrderTableGroup() {
+	void groupFailOnAlreadyHavingOrderTableGroup() {
 		// given
-		OrderTable orderTable1 = OrderTable.of(NumberOfGuests.from(4), true);
-		OrderTable orderTable2 = OrderTable.of(NumberOfGuests.from(4), true);
-		OrderTable orderTable3 = OrderTable.of(NumberOfGuests.from(4), true);
-		OrderTableGroup.from(Arrays.asList(orderTable1, orderTable2));
+		OrderTableGroup orderTableGroup = OrderTableGroup.newInstance();
 
 		// when
-		ThrowingCallable throwingCallable = () -> OrderTableGroup.from(Arrays.asList(orderTable1, orderTable3));
+		ThrowingCallable throwingCallable = () -> orderTableGroup.group(Arrays.asList(
+				빈_주문_테이블_3번().getId(),
+				그룹핑된_주문_테이블_5번().getId()),
+			new AlreadyGroupedOrderTableGroupValidator());
 
 		// then
 		assertThatThrownBy(throwingCallable).isInstanceOf(IllegalArgumentException.class);
@@ -66,13 +62,15 @@ class OrderTableGroupTest {
 
 	@DisplayName("생성 실패 - 주문 테이블이 비어있지 않은 경우")
 	@Test
-	void fromFailOnNotEmpty() {
+	void groupFailOnNotEmpty() {
 		// given
-		OrderTable orderTable1 = OrderTable.of(NumberOfGuests.from(4), false);
-		OrderTable orderTable2 = OrderTable.of(NumberOfGuests.from(4), false);
+		OrderTableGroup orderTableGroup = OrderTableGroup.newInstance();
 
 		// when
-		ThrowingCallable throwingCallable = () -> OrderTableGroup.from(Arrays.asList(orderTable1, orderTable2));
+		ThrowingCallable throwingCallable = () -> orderTableGroup.group(Arrays.asList(
+				비어있지않은_주문_테이블_1번().getId(),
+				빈_주문_테이블_3번().getId()),
+			new NotEmptyOrderTableGroupValidator());
 
 		// then
 		assertThatThrownBy(throwingCallable).isInstanceOf(IllegalArgumentException.class);
@@ -82,32 +80,31 @@ class OrderTableGroupTest {
 	@Test
 	void ungroup() {
 		// given
-		OrderTable orderTable1 = OrderTable.of(NumberOfGuests.from(4), true);
-		OrderTable orderTable2 = OrderTable.of(NumberOfGuests.from(4), true);
-		OrderTableGroup orderTableGroup = OrderTableGroup.from(Arrays.asList(orderTable1, orderTable2));
+		OrderTableGroup orderTableGroup = OrderTableGroup.newInstance();
+		orderTableGroup.group(Arrays.asList(
+				빈_주문_테이블_3번().getId(),
+				빈_주문_테이블_4번().getId()),
+			new ValidOrderTableGroupValidator());
 
 		// when
-		orderTableGroup.ungroup();
+		orderTableGroup.ungroup(new ValidOrderTableGroupValidator());
 
 		// then
-		assertAll(
-			() -> assertThat(orderTableGroup.getOrderTables()).isEmpty(),
-			() -> assertThat(orderTable1.getOrderTableGroup()).isNull(),
-			() -> assertThat(orderTable2.getOrderTableGroup()).isNull());
 	}
 
 	@DisplayName("그룹 해제 실패 - 주문 테이블에 완료되지 않은 주문이 있는 경우")
 	@Test
 	void ungroupFailOnHavingNotCompletedOrder() {
 		// given
-		OrderTable orderTable1 = OrderTable.of(NumberOfGuests.from(4), true);
-		OrderTable orderTable2 = OrderTable.of(NumberOfGuests.from(4), true);
-		OrderTableGroup orderTableGroup = OrderTableGroup.from(Arrays.asList(orderTable1, orderTable2));
-		// TODO : fix this
-		// Order.of(orderTable1, OrderLineItems.from(Collections.singletonList(후라이드후라이드_메뉴_주문_항목())));
+		OrderTableGroup orderTableGroup = OrderTableGroup.newInstance();
+		orderTableGroup.group(Arrays.asList(
+				빈_주문_테이블_3번().getId(),
+				빈_주문_테이블_4번().getId()),
+			new ValidOrderTableGroupValidator());
 
 		// when
-		ThrowingCallable throwingCallable = orderTableGroup::ungroup;
+		ThrowingCallable throwingCallable = () -> orderTableGroup.ungroup(
+			new NotCompletedOrderExistOrderTableGroupValidator());
 
 		// then
 		assertThatThrownBy(throwingCallable).isInstanceOf(IllegalStateException.class);
