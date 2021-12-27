@@ -15,13 +15,13 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.common.exception.ErrorCode;
+import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.tablegroup.exception.TableGroupException;
 
-@DisplayName("테이블 그룹 : Validator 테스")
+@DisplayName("테이블 그룹 : Validator 테스트")
 @ExtendWith(MockitoExtension.class)
 class TableGroupValidatorTest {
 
@@ -33,6 +33,9 @@ class TableGroupValidatorTest {
 
 	@Mock
 	OrderTable orderTable;
+
+	@Mock
+	Order order;
 
 	@InjectMocks
 	private TableGroupValidator tableGroupValidator;
@@ -93,13 +96,15 @@ class TableGroupValidatorTest {
 		List<Long> ids = Arrays.asList(0L, 0L);
 
 		// when
-		when(orderRepository.existsByOrderTableIdInAndOrderStatusIn(ids, OrderStatus.notCompletionStatus())).thenReturn(
-			true);
+		when(orderRepository.findAllByOrderTableIdIn(ids)).thenReturn(
+			Arrays.asList(order, order));
+		doThrow(TableGroupException.class)
+			.when(order)
+			.isNotCompletion();
 
 		// then
 		assertThatThrownBy(() -> {
 			tableGroupValidator.findCompletionOrderTables(anyLong());
-		}).isInstanceOf(TableGroupException.class)
-			.hasMessageContaining(ErrorCode.ORDER_IS_NOT_COMPLETION.getMessage());
+		}).isInstanceOf(TableGroupException.class);
 	}
 }

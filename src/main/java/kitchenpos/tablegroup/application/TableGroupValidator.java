@@ -5,8 +5,8 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 import kitchenpos.common.exception.ErrorCode;
+import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.OrderTables;
 import kitchenpos.tablegroup.exception.TableGroupException;
@@ -49,8 +49,7 @@ public class TableGroupValidator {
 	}
 
 	private void validateCompletionOrderTables(List<Long> ids) {
-		if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(ids, OrderStatus.notCompletionStatus())) {
-			throw new TableGroupException(ErrorCode.ORDER_IS_NOT_COMPLETION);
-		}
+		orderRepository.findAllByOrderTableIdIn(ids)
+			.forEach(Order::isNotCompletion);
 	}
 }
