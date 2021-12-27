@@ -38,8 +38,4 @@ public class ProductService {
         return productRepository.findById(productId)
                 .orElseThrow(NoSuchElementException::new);
     }
-
-    public List<Product> findByIdIn(List<Long> productIds) {
-        return productRepository.findByIdIn(productIds);
-    }
 }

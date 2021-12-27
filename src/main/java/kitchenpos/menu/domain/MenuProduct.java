@@ -1,7 +1,6 @@
 package kitchenpos.menu.domain;
 
 import kitchenpos.common.domain.Quantity;
-import kitchenpos.product.domain.Product;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,8 +9,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
-import java.math.BigDecimal;
 
 @Entity
 public class MenuProduct {
@@ -24,8 +21,7 @@ public class MenuProduct {
     @ManyToOne(fetch = FetchType.LAZY)
     private Menu menu;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    private Product product;
+    private Long productId;
 
     private Quantity quantity;
 
@@ -40,40 +36,34 @@ public class MenuProduct {
         return menu;
     }
 
-    public Product getProduct() {
-        return product;
+    public Long getProductId() {
+        return productId;
     }
 
     public Quantity getQuantity() {
         return quantity;
     }
 
-    private MenuProduct(Product product, Quantity quantity) {
-        this.product = product;
+    private MenuProduct(Long productId, Quantity quantity) {
+        this.productId = productId;
         this.quantity = quantity;
     }
 
-    private MenuProduct(Long id, Menu menu, Product product, Quantity quantity) {
-        this(product, quantity);
+    private MenuProduct(Long id, Menu menu, Long productId, Quantity quantity) {
+        this(productId, quantity);
         this.id = id;
         this.menu = menu;
     }
 
-    public static MenuProduct of(Product product, Quantity quantity) {
-        return new MenuProduct(product, quantity);
+    public static MenuProduct of(Long productId, Quantity quantity) {
+        return new MenuProduct(productId, quantity);
     }
 
-    public static MenuProduct of(Long id, Menu menu, Product product, Quantity quantity) {
-        return new MenuProduct(id, menu, product, quantity);
+    public static MenuProduct of(Long id, Menu menu, Long productId, Quantity quantity) {
+        return new MenuProduct(id, menu, productId, quantity);
     }
 
     public void setMenu(Menu menu) {
         this.menu = menu;
-    }
-
-    public BigDecimal getTotalPrice() {
-        BigDecimal price = product.getPrice();
-        BigDecimal bigDecimal = BigDecimal.valueOf(quantity.getQuantity());
-        return price.multiply(bigDecimal);
     }
 }

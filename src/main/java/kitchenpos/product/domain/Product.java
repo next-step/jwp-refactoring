@@ -52,7 +52,7 @@ public class Product {
         return name.getName();
     }
 
-    public BigDecimal getPrice() {
-        return price.getPrice();
+    public Price getPrice() {
+        return price;
     }
 }

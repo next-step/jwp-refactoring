@@ -1,7 +1,6 @@
 package kitchenpos.order.domain;
 
 import kitchenpos.common.domain.Quantity;
-import kitchenpos.menu.domain.Menu;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -23,8 +22,8 @@ public class OrderLineItem {
     @ManyToOne(fetch = FetchType.LAZY)
     private Order order;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Menu menu;
+    @Column
+    private Long menuId;
 
     @Embedded
     private Quantity quantity;
@@ -32,32 +31,32 @@ public class OrderLineItem {
     protected OrderLineItem() {
     }
 
-    public OrderLineItem(Menu menu, Quantity quantity) {
-        this.menu = menu;
+    public OrderLineItem(Long menuId, Quantity quantity) {
+        this.menuId = menuId;
         this.quantity = quantity;
     }
 
-    public OrderLineItem(Order order, Menu menu, Quantity quantity) {
+    public OrderLineItem(Order order, Long menuId, Quantity quantity) {
         this.order = order;
-        this.menu = menu;
+        this.menuId = menuId;
         this.quantity = quantity;
     }
 
-    public OrderLineItem(Long id, Order order, Menu menu, Quantity quantity) {
-        this(order, menu, quantity);
+    public OrderLineItem(Long id, Order order, Long menuId, Quantity quantity) {
+        this(order, menuId, quantity);
         this.id = id;
     }
 
-    public static OrderLineItem of(Menu menu, Quantity quantity) {
-        return new OrderLineItem(menu, quantity);
+    public static OrderLineItem of(Long menuId, Quantity quantity) {
+        return new OrderLineItem(menuId, quantity);
     }
 
-    public static OrderLineItem of(Order order, Menu menu, Quantity quantity) {
-        return new OrderLineItem(order, menu, quantity);
+    public static OrderLineItem of(Order order, Long menuId, Quantity quantity) {
+        return new OrderLineItem(order, menuId, quantity);
     }
 
-    public static OrderLineItem of(Long id, Order order, Menu menu, Quantity quantity) {
-        return new OrderLineItem(id, order, menu, quantity);
+    public static OrderLineItem of(Long id, Order order, Long menuId, Quantity quantity) {
+        return new OrderLineItem(id, order, menuId, quantity);
     }
 
     public Long getId() {
@@ -72,8 +71,8 @@ public class OrderLineItem {
         this.order = order;
     }
 
-    public Menu getMenu() {
-        return menu;
+    public Long getMenuId() {
+        return menuId;
     }
 
     public Quantity getQuantity() {

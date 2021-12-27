@@ -34,6 +34,10 @@ public class Price implements Comparable<Price> {
         return price;
     }
 
+    public Price multiply(BigDecimal value) {
+        return Price.of(price.multiply(value));
+    }
+
     public boolean isMoreExpensive(Price totalPrice) {
         return price.compareTo(totalPrice.getPrice()) > 0;
     }

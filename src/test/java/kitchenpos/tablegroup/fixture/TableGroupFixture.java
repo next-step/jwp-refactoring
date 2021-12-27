@@ -1,11 +1,8 @@
 package kitchenpos.tablegroup.fixture;
 
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTables;
 import kitchenpos.tablegroup.domain.TableGroup;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 public class TableGroupFixture {
 
@@ -13,7 +10,7 @@ public class TableGroupFixture {
         throw new UnsupportedOperationException();
     }
 
-    public static TableGroup create(Long id, LocalDateTime createdDate, List<OrderTable> orderTables) {
-        return TableGroup.of(id, createdDate, OrderTables.of(orderTables));
+    public static TableGroup create(Long id, LocalDateTime createdDate) {
+        return TableGroup.of(id, createdDate);
     }
 }
