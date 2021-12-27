@@ -7,6 +7,8 @@ import kitchenpos.common.fixtrue.OrderTableFixture;
 import kitchenpos.common.fixtrue.ProductFixture;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.product.domain.Product;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,12 +35,12 @@ class OrderTest {
     void setUp() {
         Product 후라이드치킨 = ProductFixture.of("후라이드치킨", BigDecimal.valueOf(16000));
         MenuGroup 두마리치킨 = MenuGroupFixture.from("두마리치킨");
+        MenuProduct 후라이드_메뉴_상품 = MenuProductFixture.of(후라이드치킨, 2);
         후라이드_후라이드 = MenuFixture.of(
                 "후라이드+후라이드",
                 BigDecimal.valueOf(31000),
-                두마리치킨);
-
-        후라이드_후라이드.addMenuProduct(Collections.singletonList(MenuProductFixture.of(후라이드치킨, 2)));
+                두마리치킨,
+                MenuProducts.from(Collections.singletonList(후라이드_메뉴_상품)));
         주문_항목들 = Collections.singletonList(OrderLineItem.of(후라이드_후라이드, 1L));
         주문_테이블 = OrderTableFixture.of(4, false);
     }

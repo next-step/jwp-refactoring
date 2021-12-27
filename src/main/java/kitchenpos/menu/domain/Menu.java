@@ -36,23 +36,18 @@ public class Menu {
     protected Menu() {
     }
 
-    private Menu(String name, BigDecimal price, MenuGroup menuGroup) {
+    private Menu(String name, BigDecimal price, MenuGroup menuGroup, MenuProducts menuProducts) {
         validatePrice(price);
+        validateTotalPrice(price, menuProducts);
         this.name = Objects.requireNonNull(name, "메뉴명은 필수입니다.");
         this.price = price;
         this.menuGroup = menuGroup;
+        this.menuProducts = menuProducts;
+        menuProducts.changeMenu(this);
     }
 
-    public static Menu of(String name, BigDecimal price, MenuGroup menuGroup) {
-        return new Menu(name, price, menuGroup);
-    }
-
-    public void addMenuProduct(List<MenuProduct> menuProducts) {
-        menuProducts.forEach(menuProduct -> {
-            validateTotalPrice(menuProduct);
-            this.menuProducts.add(menuProduct);
-            menuProduct.changeMenu(this);
-        });
+    public static Menu of(String name, BigDecimal price, MenuGroup menuGroup, MenuProducts menuProducts) {
+        return new Menu(name, price, menuGroup, menuProducts);
     }
 
     public Long getId() {
@@ -75,8 +70,8 @@ public class Menu {
         return menuProducts.getMenuProducts();
     }
 
-    private void validateTotalPrice(MenuProduct menuProduct) {
-        if (price.compareTo(menuProduct.calculateTotalPrice()) > 0) {
+    private void validateTotalPrice(BigDecimal price, MenuProducts menuProducts) {
+        if (price.compareTo(menuProducts.calculatorTotalPrice()) > 0) {
             throw new IllegalArgumentException("메뉴의 가격은 " +
                     "메뉴 상품들의 수량 * 상품의 가격을 모두 더한 금액 보다 작거나 같아야 합니다.");
         }

@@ -8,6 +8,7 @@ import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
@@ -75,8 +76,8 @@ class MenuServiceTest {
         후라이드_후라이드 = Menu.of(
                 후라이드_후라이드_요청.getName(),
                 후라이드_후라이드_요청.getPrice(),
-                두마리치킨);
-        후라이드_후라이드.addMenuProduct(Collections.singletonList(후라이드_후라이드_메뉴_상품));
+                두마리치킨,
+                MenuProducts.from(Collections.singletonList(후라이드_후라이드_메뉴_상품)));
         후라이드_후라이드_응답 = MenuResponse.from(후라이드_후라이드);
     }
 

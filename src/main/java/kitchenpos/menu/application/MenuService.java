@@ -2,6 +2,7 @@ package kitchenpos.menu.application;
 
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
@@ -35,8 +36,8 @@ public class MenuService {
         final Menu savedMenu = Menu.of(
                 menuRequest.getName(),
                 menuRequest.getPrice(),
-                menuGroupService.findMenuGroupById(menuRequest.getMenuGroupId()));
-        savedMenu.addMenuProduct(findMenuProducts(menuRequest.getMenuProducts()));
+                menuGroupService.findMenuGroupById(menuRequest.getMenuGroupId()),
+                findMenuProducts(menuRequest.getMenuProducts()));
         return MenuResponse.from(menuRepository.save(savedMenu));
     }
 
@@ -56,11 +57,12 @@ public class MenuService {
                 .collect(Collectors.toList());
     }
 
-    private List<MenuProduct> findMenuProducts(List<MenuProductRequest> menuProducts) {
-        return menuProducts.stream()
+    private MenuProducts findMenuProducts(List<MenuProductRequest> menuProducts) {
+        return MenuProducts.from(menuProducts
+                .stream()
                 .map(menuProductRequest ->
                         MenuProduct.of(productService
                                 .findProductById(menuProductRequest.getProductId()), menuProductRequest.getQuantity()))
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()));
     }
 }
