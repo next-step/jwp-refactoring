@@ -7,7 +7,10 @@ public enum KitchenposErrorCode {
     INVALID_PRICE("0 이상의 가격만 입력 가능합니다."),
     INVALID_MENU_PRICE("각 상품 가격의 합보다 많은 가격입니다."),
     INVALID_TABLE_GROUP_REQUEST("테이블 그룹을 생성하기 위해 2개 이상의 테이블이 필요합니다."),
-    CONTAINS_USED_TABLE("사용중인 테이블이 있습니다.");
+    CONTAINS_USED_TABLE("사용중인 테이블이 있습니다."),
+    EMPTY_ORDER_LINE_ITEMS("주문 항목이 비어있습니다."),
+    INVALID_ORDER_LINE_ITEM_SIZE("주문 항목의 개수가 다릅니다."),
+    CANNOT_UPDATE_COMPLETED_ORDER("완료된 주문의 상태를 바꿀 수 없습니다.");
 
     private final String message;
 

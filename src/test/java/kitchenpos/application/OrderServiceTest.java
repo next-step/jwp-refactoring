@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -23,12 +24,15 @@ import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
+import kitchenpos.domain.OrderLineItems;
+import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.OrderLineItemRequest;
 import kitchenpos.dto.OrderLineItemResponse;
 import kitchenpos.dto.OrderRequest;
 import kitchenpos.dto.OrderResponse;
+import kitchenpos.exception.KitchenposException;
 
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
@@ -55,10 +59,10 @@ class OrderServiceTest {
         Mockito.when(orderTableDao.findById(Mockito.anyLong()))
             .thenReturn(Optional.of(orderTable));
 
-        OrderLineItem orderLineItem = new OrderLineItem(1L, new Order(1L), 1L, 1);
+        OrderLineItemRequest orderLineItem = new OrderLineItemRequest(1L, 1);
 
-        Order order = new Order(1L, new OrderTable(1L), "COOKING", LocalDateTime.now(),
-            Collections.singletonList(orderLineItem));
+        Order order = new Order(1L, new OrderTable(1L), OrderStatus.COOKING, LocalDateTime.now(),
+            new OrderLineItems(Collections.singletonList(orderLineItem)));
         Mockito.when(orderDao.save(Mockito.any()))
             .thenReturn(order);
 
@@ -74,7 +78,7 @@ class OrderServiceTest {
             () -> assertThat(actual.getOrderStatus()).isEqualTo("COOKING"),
             () -> assertThat(actual.getOrderTableId()).isEqualTo(1L),
             () -> assertThat(actual.getOrderLineItems()).isEqualTo(Collections.singletonList(
-                OrderLineItemResponse.from(orderLineItem)))
+                OrderLineItemResponse.from(orderLineItem.toEntity())))
         );
     }
 
@@ -85,8 +89,9 @@ class OrderServiceTest {
         OrderRequest request = new OrderRequest(1L, Collections.emptyList());
 
         // when and then
-        assertThatExceptionOfType(IllegalArgumentException.class)
-            .isThrownBy(() -> orderService.create(request));
+        assertThatExceptionOfType(KitchenposException.class)
+            .isThrownBy(() -> orderService.create(request))
+        .withMessage("주문 항목이 비어있습니다.");
     }
 
     @DisplayName("주문 항목과 메뉴 숫자가 다른 경우(메뉴에 없는 주문 항목) 주문 불가능")
@@ -100,8 +105,9 @@ class OrderServiceTest {
         OrderRequest request = new OrderRequest(1L, Collections.singletonList(requestOrderLineItem));
 
         // when and then
-        assertThatExceptionOfType(IllegalArgumentException.class)
-            .isThrownBy(() -> orderService.create(request));
+        assertThatExceptionOfType(KitchenposException.class)
+            .isThrownBy(() -> orderService.create(request))
+        .withMessage("주문 항목의 개수가 다릅니다.");
     }
 
     @DisplayName("주문 테이블이 빈 테이블인 경우 주문 불가능")
@@ -119,21 +125,20 @@ class OrderServiceTest {
         OrderRequest request = new OrderRequest(1L, Collections.singletonList(requestOrderLineItem));
 
         // when and then
-        assertThatExceptionOfType(IllegalArgumentException.class)
-            .isThrownBy(() -> orderService.create(request));
+        assertThatExceptionOfType(KitchenposException.class)
+            .isThrownBy(() -> orderService.create(request))
+        .withMessage("주문 테이블이 비어있습니다.");
     }
 
     @DisplayName("주문 조회")
     @Test
     void list() {
         // given
-        Order order = new Order(1L, new OrderTable(1L), "COOKING", LocalDateTime.now(), new ArrayList<>());
+        OrderLineItemRequest orderLineItem = new OrderLineItemRequest(1L, 1);
+
+        Order order = new Order(1L, new OrderTable(1L), OrderStatus.COOKING, LocalDateTime.now(), new OrderLineItems(Collections.singletonList(orderLineItem)));
         Mockito.when(orderDao.findAll())
             .thenReturn(Collections.singletonList(order));
-
-        OrderLineItem orderLineItem = new OrderLineItem(1L, new Order(1L), 1L, 1);
-        Mockito.when(orderLineItemDao.findAllByOrder_Id(Mockito.anyLong()))
-            .thenReturn(Collections.singletonList(orderLineItem));
 
         // when
         List<OrderResponse> actual = orderService.list().getOrderResponses();
@@ -145,7 +150,7 @@ class OrderServiceTest {
             () -> assertThat(actual.get(0).getOrderTableId()).isEqualTo(1L),
             () -> assertThat(actual.get(0).getOrderStatus()).isEqualTo("COOKING"),
             () -> assertThat(actual.get(0).getOrderLineItems()).isEqualTo(Collections.singletonList(
-                OrderLineItemResponse.from(orderLineItem)))
+                OrderLineItemResponse.from(orderLineItem.toEntity())))
         );
     }
 
@@ -153,7 +158,7 @@ class OrderServiceTest {
     @Test
     void changeOrderStatus() {
         // given
-        Order order = new Order(1L, new OrderTable(1L), "COOKING", LocalDateTime.now(), new ArrayList<>());
+        Order order = new Order(1L, new OrderTable(1L), OrderStatus.COOKING, LocalDateTime.now(), new OrderLineItems());
         Mockito.when(orderDao.findById(Mockito.anyLong()))
             .thenReturn(Optional.of(order));
 
@@ -175,14 +180,15 @@ class OrderServiceTest {
     @Test
     void modifyOrderStatusFailWhenAlreadyCompleted() {
         // given
-        Order order = new Order(1L, new OrderTable(1L), "COMPLETION", LocalDateTime.now(), new ArrayList<>());
+        Order order = new Order(1L, new OrderTable(1L), OrderStatus.COMPLETION, LocalDateTime.now(), new OrderLineItems());
         Mockito.when(orderDao.findById(Mockito.anyLong()))
             .thenReturn(Optional.of(order));
 
         OrderRequest request = new OrderRequest(1L, "MEAL");
 
         // when and then
-        assertThatExceptionOfType(IllegalArgumentException.class)
-            .isThrownBy(() -> orderService.changeOrderStatus(1L, request));
+        assertThatExceptionOfType(KitchenposException.class)
+            .isThrownBy(() -> orderService.changeOrderStatus(1L, request))
+        .withMessage("완료된 주문의 상태를 바꿀 수 없습니다.");
     }
 }

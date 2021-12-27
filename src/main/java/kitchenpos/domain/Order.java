@@ -2,13 +2,21 @@ package kitchenpos.domain;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+
+import kitchenpos.application.OrderService;
+import kitchenpos.exception.KitchenposErrorCode;
+import kitchenpos.exception.KitchenposException;
 
 @Entity(name = "orders")
 public class Order {
@@ -17,11 +25,12 @@ public class Order {
     private Long id;
     @ManyToOne
     private OrderTable orderTable;
-    private String orderStatus;
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus;
     private LocalDateTime orderedTime;
 
-    @OneToMany(mappedBy = "order")
-    private List<OrderLineItem> orderLineItems;
+    @Embedded
+    private OrderLineItems orderLineItems = new OrderLineItems();
 
     protected Order() {
     }
@@ -30,8 +39,8 @@ public class Order {
         this.id = id;
     }
 
-    public Order(Long id, OrderTable orderTable, String orderStatus, LocalDateTime orderedTime,
-        List<OrderLineItem> orderLineItems) {
+    public Order(Long id, OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime,
+        OrderLineItems orderLineItems) {
         this.id = id;
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
@@ -39,8 +48,8 @@ public class Order {
         this.orderLineItems = orderLineItems;
     }
 
-    public Order(OrderTable orderTable, String orderStatus, LocalDateTime orderedTime,
-        List<OrderLineItem> orderLineItems) {
+    public Order(OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime,
+        OrderLineItems orderLineItems) {
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
@@ -51,19 +60,16 @@ public class Order {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public OrderTable getOrderTable() {
         return orderTable;
     }
 
-    public String getOrderStatus() {
+    public OrderStatus getOrderStatus() {
         return orderStatus;
     }
 
-    public void setOrderStatus(final String orderStatus) {
+    public void updateOrderStatus(final OrderStatus orderStatus) {
+        checkStatusNotCompleted();
         this.orderStatus = orderStatus;
     }
 
@@ -71,13 +77,9 @@ public class Order {
         return orderedTime;
     }
 
-    public List<OrderLineItem> getOrderLineItems() {
+    public OrderLineItems getOrderLineItems() {
         return orderLineItems;
     }
-
-    // public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
-    //     this.orderLineItems = orderLineItems;
-    // }
 
     public Long getOrderTableId() {
         if(orderTable == null) {
@@ -95,6 +97,16 @@ public class Order {
     public void addOrderLineItems(List<OrderLineItem> orderLineItems) {
         for (OrderLineItem orderLineItem : orderLineItems) {
             addOrderLineItem(orderLineItem);
+        }
+    }
+
+    public List<OrderLineItem> getOrderLineItemValues() {
+        return orderLineItems.getOrderLineItems();
+    }
+
+    private void checkStatusNotCompleted() {
+        if (OrderStatus.COMPLETION == orderStatus) {
+            throw new KitchenposException(KitchenposErrorCode.CANNOT_UPDATE_COMPLETED_ORDER);
         }
     }
 }

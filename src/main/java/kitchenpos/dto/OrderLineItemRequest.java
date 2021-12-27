@@ -1,5 +1,7 @@
 package kitchenpos.dto;
 
+import kitchenpos.domain.OrderLineItem;
+
 public class OrderLineItemRequest {
     private Long menuId;
     private long quantity;
@@ -18,5 +20,9 @@ public class OrderLineItemRequest {
 
     public long getQuantity() {
         return quantity;
+    }
+
+    public OrderLineItem toEntity() {
+        return new OrderLineItem(menuId, quantity);
     }
 }

@@ -69,7 +69,7 @@ public class OrderTable {
         this.numberOfGuests = numberOfGuests;
     }
 
-    private void checkNotEmpty() {
+    public void checkNotEmpty() {
         if (empty) {
             throw new KitchenposException(KitchenposErrorCode.TABLE_IS_EMPTY);
         }
