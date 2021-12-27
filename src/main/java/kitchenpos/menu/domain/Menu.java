@@ -33,13 +33,13 @@ public class Menu {
     protected Menu() {
     }
     
-    private Menu(String name, int price, MenuGroup menuGroup) {
+    private Menu(String name, Long price, MenuGroup menuGroup) {
         this.name = name;
         this.price = Price.from(price);
         this.menuGroup = menuGroup;
     }
 
-    public static Menu of(String name, int price, MenuGroup menuGroup) {
+    public static Menu of(String name, Long price, MenuGroup menuGroup) {
         return new Menu(name, price, menuGroup);
     }
 

@@ -12,7 +12,7 @@ public class ProductTest {
     void 상품_가격_0원_이상() {
         // given, when, then
         assertThatThrownBy(() -> {
-            Product.of("치킨", -6000);
+            Product.of("치킨", -6000L);
         }).isInstanceOf(IllegalArgumentException.class)
         .hasMessage("가격은 0원 이상이어야 합니다");
     }

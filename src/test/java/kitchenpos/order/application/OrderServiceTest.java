@@ -49,7 +49,7 @@ public class OrderServiceTest {
     @Test
     void 주문_등록() {
         // given
-        Menu 메뉴 = Menu.of("메뉴", 5000, MenuGroup.from("메뉴그룹"));
+        Menu 메뉴 = Menu.of("메뉴", 5000L, MenuGroup.from("메뉴그룹"));
         
         OrderTable 첫번째_테이블 = OrderTable.of(3, false);
         OrderTable 두번째_테이블 = OrderTable.of(5, false);
@@ -97,7 +97,7 @@ public class OrderServiceTest {
         TableGroup 단체지정 = TableGroup.from(Arrays.asList(첫번째_테이블, 두번째_테이블));
         
         Order 주문 = Order.of(첫번째_테이블, OrderStatus.COOKING);
-        Menu 메뉴 = Menu.of("햄버거", 5500, MenuGroup.from("메뉴그룹"));
+        Menu 메뉴 = Menu.of("햄버거", 5500L, MenuGroup.from("메뉴그룹"));
         
         OrderLineItem 주문_메뉴 = OrderLineItem.of(주문, 메뉴, 1L);
         주문.addOrderLineItems(Arrays.asList(주문_메뉴));
@@ -134,10 +134,10 @@ public class OrderServiceTest {
     void 주문_상태_변경() {
         // given
         Order 저장된_주문 = Order.of(null, OrderStatus.MEAL);
-        저장된_주문.addOrderLineItems(Arrays.asList(OrderLineItem.of(저장된_주문, Menu.of("메뉴", 3000, null), 2L)));
+        저장된_주문.addOrderLineItems(Arrays.asList(OrderLineItem.of(저장된_주문, Menu.of("메뉴", 3000L, null), 2L)));
         
         Order 변경할_주문 = Order.of(null, OrderStatus.COMPLETION);
-        변경할_주문.addOrderLineItems(Arrays.asList(OrderLineItem.of(변경할_주문, Menu.of("메뉴", 3000, null), 2L)));
+        변경할_주문.addOrderLineItems(Arrays.asList(OrderLineItem.of(변경할_주문, Menu.of("메뉴", 3000L, null), 2L)));
         
         given(orderRepository.findById(nullable(Long.class))).willReturn(Optional.of(저장된_주문));
         given(orderRepository.save(any())).willReturn(변경할_주문);
@@ -154,7 +154,7 @@ public class OrderServiceTest {
     void 계산_완료_주문_변경_불가() {
         // given
         Order 저장된_주문 = Order.of(null, OrderStatus.COMPLETION);
-        저장된_주문.addOrderLineItems(Arrays.asList(OrderLineItem.of(저장된_주문, Menu.of("메뉴", 3000, null), 2L)));
+        저장된_주문.addOrderLineItems(Arrays.asList(OrderLineItem.of(저장된_주문, Menu.of("메뉴", 3000L, null), 2L)));
         given(orderRepository.findById(nullable(Long.class))).willReturn(Optional.of(저장된_주문));
     
         // when, then

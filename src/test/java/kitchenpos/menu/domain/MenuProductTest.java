@@ -11,7 +11,7 @@ public class MenuProductTest {
     @DisplayName("메뉴 상품의 수량 반영 가격을 확인한다")
     @ParameterizedTest
     @CsvSource(value = { "3000:2:6000", "5000:1:5000" }, delimiter = ':')
-    void 메뉴_상품_가격(int price, int quantity, int expected) {
+    void 메뉴_상품_가격(Long price, int quantity, int expected) {
         // given
         Menu 메뉴 = Menu.of("치킨", price, MenuGroup.from("메뉴그룹"));
         Product 상품 = Product.of("치킨", price);
@@ -21,7 +21,7 @@ public class MenuProductTest {
         Price 메뉴_상품_가격 = 메뉴_상품.getPrice();
         
         // then
-        assertThat(메뉴_상품_가격.intValue()).isEqualTo(expected);
+        assertThat(메뉴_상품_가격.getValue()).isEqualTo(expected);
     }
 
 }

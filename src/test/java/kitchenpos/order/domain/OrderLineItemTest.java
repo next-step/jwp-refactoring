@@ -16,7 +16,7 @@ public class OrderLineItemTest {
         // given
         OrderTable 테이블 = OrderTable.of(3, false);
         Order 주문 = Order.of(테이블, OrderStatus.COOKING);
-        Menu 메뉴 = Menu.of("메뉴", 5000, MenuGroup.from("메뉴그룹"));
+        Menu 메뉴 = Menu.of("메뉴", 5000L, MenuGroup.from("메뉴그룹"));
         OrderLineItem 주문_항목 = OrderLineItem.of(주문, 메뉴, 3L);
         
         // when

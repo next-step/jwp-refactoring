@@ -23,12 +23,12 @@ public class Product {
     protected Product() {
     }
     
-    private Product(String name, int price) {
+    private Product(String name, Long price) {
         this.name = name;
         this.price = Price.from(price);
     }
 
-    public static Product of(String name, int price) {
+    public static Product of(String name, Long price) {
         return new Product(name, price);
     }
 

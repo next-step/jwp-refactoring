@@ -66,7 +66,7 @@ public class OrderTest {
         // given
         OrderTable 테이블 = OrderTable.of(3, false);
         Order 주문 = Order.of(테이블, OrderStatus.COOKING);
-        List<OrderLineItem> 주문_메뉴 = Arrays.asList(OrderLineItem.of(주문, Menu.of("메뉴", 5000, MenuGroup.from("메뉴그룹")), 2L));
+        List<OrderLineItem> 주문_메뉴 = Arrays.asList(OrderLineItem.of(주문, Menu.of("메뉴", 5000L, MenuGroup.from("메뉴그룹")), 2L));
         
         // when
         주문.addOrderLineItems(주문_메뉴);

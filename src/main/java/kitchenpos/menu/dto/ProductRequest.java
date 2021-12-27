@@ -4,17 +4,17 @@ import kitchenpos.menu.domain.Product;
 
 public class ProductRequest {
     private String name;
-    private int price;
+    private Long price;
     
     private ProductRequest() {
     }
 
-    private ProductRequest(String name, int price) {
+    private ProductRequest(String name, Long price) {
         this.name = name;
         this.price = price;
     }
     
-    public static ProductRequest of(String name, int price) {
+    public static ProductRequest of(String name, Long price) {
         return new ProductRequest(name, price);
     }
     
@@ -26,7 +26,7 @@ public class ProductRequest {
         return name;
     }
 
-    public int getPrice() {
+    public Long getPrice() {
         return price;
     }
 

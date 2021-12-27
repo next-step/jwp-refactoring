@@ -46,13 +46,13 @@ public class MenuServiceTest {
     @Test
     void 메뉴_등록() {
         // given
-        Menu 메뉴 = Menu.of("짜장면", 6000, MenuGroup.from("중식"));
-        Product 상품 = Product.of("짜장면", 6000);
+        Menu 메뉴 = Menu.of("짜장면", 6000L, MenuGroup.from("중식"));
+        Product 상품 = Product.of("짜장면", 6000L);
         MenuProduct 메뉴상품 = MenuProduct.of(상품, 1L);
         메뉴.addMenuProducts(Arrays.asList(메뉴상품));
         
         MenuProductRequest 메뉴_상품_요청 = MenuProductRequest.of(1L, 1L);
-        MenuRequest 메뉴_생성_요청 = MenuRequest.of("짜장면", 6000, 1L, Arrays.asList(메뉴_상품_요청));
+        MenuRequest 메뉴_생성_요청 = MenuRequest.of("짜장면", 6000L, 1L, Arrays.asList(메뉴_상품_요청));
         
         given(menuGroupService.findById(anyLong())).willReturn(메뉴.getMenuGroup());
         given(productService.findAllByIds(anyList())).willReturn(Arrays.asList(상품));
@@ -74,9 +74,9 @@ public class MenuServiceTest {
     @Test
     void 메뉴_목록_조회() {
         // given
-        Menu 첫번째_메뉴 = Menu.of("짜장면", 6000, MenuGroup.from("짜장면_메뉴그룹"));
+        Menu 첫번째_메뉴 = Menu.of("짜장면", 6000L, MenuGroup.from("짜장면_메뉴그룹"));
         
-        Menu 두번째_메뉴 = Menu.of("짬뽕", 7000, MenuGroup.from("짬뽕_메뉴그룹"));
+        Menu 두번째_메뉴 = Menu.of("짬뽕", 7000L, MenuGroup.from("짬뽕_메뉴그룹"));
     
         given(menuRepository.findAll()).willReturn(Arrays.asList(첫번째_메뉴, 두번째_메뉴));
     

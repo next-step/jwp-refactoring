@@ -1,6 +1,5 @@
 package kitchenpos.menu.domain;
 
-import java.math.BigDecimal;
 import java.util.Objects;
 
 import javax.persistence.Column;
@@ -10,46 +9,42 @@ import javax.persistence.Embeddable;
 public class Price {
 
     @Column(name = "price")
-    private BigDecimal value;
+    private Long value;
     
     protected Price() {
     }
     
-    private Price(int value) {
-        checkPrice(value);
-        this.value = new BigDecimal(value);
+    private Price(Long value) {
+        validatePrice(value);
+        this.value = value;
     }
     
-    public static Price from(int value) {
+    public static Price from(Long value) {
         return new Price(value);
     }
     
-    public BigDecimal getValue() {
+    public Long getValue() {
         return this.value;
     }
     
-    public int intValue() {
-        return this.value.intValue();
-    }
-    
-    public Price multiply(long quantity) {
-        return new Price(this.value.multiply(BigDecimal.valueOf(quantity)).intValue());
+    public Price multiply(Long quantity) {
+        return new Price(this.value * quantity);
     }
     
     public Price add(Price price) {
-        return new Price(this.intValue() + price.intValue());
+        return new Price(this.value + price.getValue());
     }
     
     public int compareTo(Price targetPrice) {
-        return this.value.compareTo(targetPrice.value);
+        return this.value.compareTo(targetPrice.getValue());
     }
     
-    private void checkPrice(int value) {
+    private void validatePrice(Long value) {
         if (Objects.isNull(value) || value < 0) {
             throw new IllegalArgumentException("가격은 0원 이상이어야 합니다");
         }
     }
-
+    
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

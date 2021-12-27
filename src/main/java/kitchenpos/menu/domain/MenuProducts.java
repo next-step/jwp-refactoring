@@ -32,7 +32,7 @@ public class MenuProducts {
     }
 
     public Price getTotalPrice() {
-        Price sum = Price.from(0);
+        Price sum = Price.from(0L);
         for (MenuProduct menuProduct : this.menuProducts) {
             sum = sum.add(menuProduct.getPrice());
         }

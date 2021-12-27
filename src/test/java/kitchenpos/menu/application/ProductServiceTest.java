@@ -37,16 +37,16 @@ public class ProductServiceTest {
     @Test
     void 상품_등록() {
         // given
-        Product 상품 = Product.of("치킨", 18000);
+        Product 상품 = Product.of("치킨", 18000L);
         given(productRepository.save(any())).willReturn(상품);
 
         // when
-        ProductResponse 등록_결과 = productService.create(ProductRequest.of("치킨", 18000));
+        ProductResponse 등록_결과 = productService.create(ProductRequest.of("치킨", 18000L));
 
         // then
         assertAll(
                 () -> assertThat(등록_결과.getName()).isEqualTo("치킨"),
-                () ->assertThat(등록_결과.getPrice()).isEqualTo(18000)
+                () ->assertThat(등록_결과.getPrice()).isEqualTo(18000L)
         );
 
     }
@@ -55,8 +55,8 @@ public class ProductServiceTest {
     @Test
     void 상품_목록_조회() {
         // given
-        Product 첫번째_상품 = Product.of("치킨", 18000);
-        Product 두번째_상품 = Product.of("삼겹살", 20000);
+        Product 첫번째_상품 = Product.of("치킨", 18000L);
+        Product 두번째_상품 = Product.of("삼겹살", 20000L);
         
         given(productRepository.findAll()).willReturn(Arrays.asList(첫번째_상품, 두번째_상품));
     
@@ -71,7 +71,7 @@ public class ProductServiceTest {
     @Test
     void 상품_조회() {
         // given
-        Product 상품 = Product.of("치킨", 18000);
+        Product 상품 = Product.of("치킨", 18000L);
         
         given(productRepository.findById(nullable(Long.class))).willReturn(Optional.of(상품));
     
@@ -81,7 +81,7 @@ public class ProductServiceTest {
         // then
         assertAll(
                 () -> assertThat(저장된_상품.getName()).isEqualTo("치킨"),
-                () ->assertThat(저장된_상품.getPrice().getValue()).isEqualTo(new BigDecimal("18000"))
+                () ->assertThat(저장된_상품.getPrice().getValue()).isEqualTo(18000L)
         );
     }
     
@@ -89,7 +89,7 @@ public class ProductServiceTest {
     @Test
     void 미등록_상품_조회() {
         // given
-        Product 상품 = Product.of("치킨", 18000);
+        Product 상품 = Product.of("치킨", 18000L);
         
         given(productRepository.findById(nullable(Long.class))).willReturn(Optional.empty());
     
