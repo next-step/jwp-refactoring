@@ -1,13 +1,12 @@
 package kitchenpos.menu.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.BDDMockito.given;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -46,7 +45,7 @@ public class ProductServiceTest {
         // then
         assertAll(
                 () -> assertThat(등록_결과.getName()).isEqualTo("치킨"),
-                () ->assertThat(등록_결과.getPrice()).isEqualTo(18000L)
+                () -> assertThat(등록_결과.getPrice()).isEqualTo(18000L)
         );
 
     }
@@ -81,7 +80,7 @@ public class ProductServiceTest {
         // then
         assertAll(
                 () -> assertThat(저장된_상품.getName()).isEqualTo("치킨"),
-                () ->assertThat(저장된_상품.getPrice().getValue()).isEqualTo(18000L)
+                () -> assertThat(저장된_상품.getPrice().getValue()).isEqualTo(18000L)
         );
     }
     

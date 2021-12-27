@@ -21,7 +21,7 @@ public class OrderLineItemTest {
         OrderLineItem 주문_항목 = OrderLineItem.of(메뉴, 3L);
         
         // when
-        Order 주문 = Order.of(테이블, OrderStatus.COOKING, Arrays.asList(주문_항목));
+        Order 주문 = Order.createOrder(테이블, Arrays.asList(주문_항목));
         
         // then
         assertThat(주문_항목.getOrder()).isEqualTo(주문);
