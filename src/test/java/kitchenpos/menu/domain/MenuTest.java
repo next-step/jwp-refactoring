@@ -1,8 +1,6 @@
 package kitchenpos.menu.domain;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.Arrays;
 
@@ -10,19 +8,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 public class MenuTest {
-    
-    @Test
-    @DisplayName("메뉴가 생성된다")
-    void 메뉴_생성() {
-        // given, when
-        Menu 메뉴 = Menu.of("치킨", 17000, MenuGroup.from("메뉴그룹"));
-        
-        // then
-        assertAll(
-                () -> assertThat(메뉴.getName()).isEqualTo("치킨"),
-                () ->assertThat(메뉴.getPrice()).isEqualTo(Price.from(17000))
-        );
-    }
     
     @DisplayName("메뉴 가격은 0원 이상이어야한다")
     @Test

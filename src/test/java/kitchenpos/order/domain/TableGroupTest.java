@@ -4,29 +4,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 public class TableGroupTest {
-    
-    @Test
-    @DisplayName("단체지정을 생성한다")
-    void 단체지정_생성() {
-        // given
-        List<OrderTable> 주문_테이블_목록 = new ArrayList<OrderTable>();
-        주문_테이블_목록.add(OrderTable.of(3, true));
-        주문_테이블_목록.add(OrderTable.of(5, true));
-        
-        // when
-        TableGroup 단체_지정 = TableGroup.from(주문_테이블_목록);
-        
-        // then
-        assertThat(단체_지정).isEqualTo(TableGroup.from(주문_테이블_목록));
-    }
     
     @DisplayName("단체지정은 최소 두 테이블 이상만 가능하다")
     @Test

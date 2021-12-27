@@ -1,8 +1,6 @@
 package kitchenpos.order.domain;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.Arrays;
 
@@ -10,20 +8,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 public class OrderTableTest {
-    
-    @DisplayName("주문 테이블을 생성한다")
-    @Test
-    void 주문_테이블_생성() {
-        // when
-        OrderTable 테이블 = OrderTable.of(3, false);
-        
-        // then
-        assertAll(
-                () -> assertThat(테이블.getNumberOfGuests()).isEqualTo(3),
-                () -> assertThat(테이블.isEmpty()).isFalse(),
-                () -> assertThat(테이블).isEqualTo(OrderTable.of(3, false))
-        );
-    }
     
     @DisplayName("조리중이거나 식사중인 테이블은 빈 테이블로 변경할 수 없다")
     @Test

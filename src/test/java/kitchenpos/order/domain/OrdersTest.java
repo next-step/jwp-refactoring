@@ -10,21 +10,6 @@ import org.junit.jupiter.api.Test;
 
 public class OrdersTest {
     
-    @DisplayName("주문 목록을 생성한다")
-    @Test
-    void 주문_목록_생성() {
-        // given
-        OrderTable 테이블 = OrderTable.of(3, false);
-        Order 첫번째_주문 = Order.of(테이블, OrderStatus.COOKING);
-        Order 두번째_주문 = Order.of(테이블, OrderStatus.MEAL);
-        
-        // when
-        Orders 주문_목록 = Orders.from(Arrays.asList(첫번째_주문, 두번째_주문));
-        
-        // then
-        assertThat(주문_목록.getOrders()).containsExactlyElementsOf(Arrays.asList(첫번째_주문, 두번째_주문));
-    }
-    
     @DisplayName("주문 목록에 주문을 추가한다")
     @Test
     void 주문_추가() {

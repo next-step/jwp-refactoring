@@ -15,17 +15,6 @@ import kitchenpos.menu.domain.MenuGroup;
 
 public class OrderTest {
     
-    @DisplayName("주문을 생성한다")
-    @Test
-    void 주문_생성() {
-        // when
-        OrderTable 테이블 = OrderTable.of(3, false);
-        Order 주문 = Order.of(테이블, OrderStatus.COOKING);
-        
-        // then
-        assertThat(주문).isEqualTo(Order.of(테이블, OrderStatus.COOKING));
-    }
-    
     @DisplayName("조리중일때는 주문 상태를 변경할 수 있다")
     @Test
     void 조리중_상태_변경() {

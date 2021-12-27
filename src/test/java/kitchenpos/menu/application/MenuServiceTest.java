@@ -86,20 +86,4 @@ public class MenuServiceTest {
         // then
         assertThat(메뉴_목록).containsExactly(MenuResponse.from(첫번째_메뉴), MenuResponse.from(두번째_메뉴));
     }
-    
-    @DisplayName("등록된 메뉴를 셀 수 있다")
-    @Test
-    void 등록_메뉴_카운트() {
-        // given
-        Menu 첫번째_메뉴 = Menu.of("짜장면", 6000, MenuGroup.from("짜장면_메뉴그룹"));
-        Menu 두번째_메뉴 = Menu.of("짬뽕", 7000, MenuGroup.from("짬뽕_메뉴그룹"));
-    
-        given(menuRepository.countByIdIn(anyList())).willReturn(2L);
-    
-        // when
-        Long 등록_메뉴 = menuService.countByIdIn(Arrays.asList(1L, 2L));
-    
-        // then
-        assertThat(등록_메뉴).isEqualTo(Arrays.asList(첫번째_메뉴, 두번째_메뉴).size());
-    }
 }

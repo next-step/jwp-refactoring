@@ -12,23 +12,6 @@ import org.junit.jupiter.api.Test;
 
 public class OrderTablesTest {
     
-    @DisplayName("주문 테이블 목록을 생성한다")
-    @Test
-    void 주문_테이블_목록_생성() {
-        // given
-        OrderTable 첫번째_테이블 = OrderTable.of(5, false);
-        OrderTable 두번째_테이블 = OrderTable.of(3, false);
-        
-        // when
-        OrderTables 주문_테이블_목록 = OrderTables.from(Arrays.asList(첫번째_테이블, 두번째_테이블));
-        
-        // then
-        assertAll(
-                () -> assertThat(주문_테이블_목록.getOrderTables().size()).isEqualTo(2),
-                () -> assertThat(주문_테이블_목록).isEqualTo(OrderTables.from(Arrays.asList(첫번째_테이블, 두번째_테이블)))
-        );
-    }
-    
     @DisplayName("목록에 새 주문 테이블을 추가한다")
     @Test
     void 주문_테이블_추가() {

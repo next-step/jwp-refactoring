@@ -10,17 +10,6 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 public class PriceTest {
     
-    @DisplayName("가격이 생성된다")
-    @ParameterizedTest
-    @CsvSource(value = { "3000:3000", "5000:5000" }, delimiter = ':')
-    void 가격_생성(int price, int expected) {
-        // given, when
-        Price 가격 = Price.from(price);
-        
-        // then
-        assertThat(가격.intValue()).isEqualTo(expected);
-    }
-    
     @DisplayName("가격은 0원 이상이어야한다")
     @Test
     void 가격_0원_이상() {
@@ -45,7 +34,7 @@ public class PriceTest {
         assertThat(수량에_따른_가격.intValue()).isEqualTo(expected);
     }
     
-    @DisplayName("가격끼리 비교가 잘 되는지 확인한다")
+    @DisplayName("가격끼리 비교할 수 있다")
     @ParameterizedTest
     @CsvSource(value = { "3000:5000:-1", "200:6:1" }, delimiter = ':')
     void 가격_비교(int price, int targetPrice, int expected) {
