@@ -19,6 +19,7 @@ import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.OrderTables;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.OrderTableIdRequest;
 import kitchenpos.dto.TableGroupRequest;
@@ -47,7 +48,7 @@ class TableGroupServiceTest {
         Mockito.when(orderTableDao.findAllByIdIn(Mockito.anyList()))
             .thenReturn(orderTables);
 
-        TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), orderTables);
+        TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), new OrderTables(orderTables));
         Mockito.when(tableGroupDao.save(Mockito.any()))
             .thenReturn(tableGroup);
 
@@ -65,7 +66,6 @@ class TableGroupServiceTest {
             () -> assertThat(actual.getOrderTables().get(0)).isNotNull(),
             () -> assertThat(actual.getOrderTables().get(0).isEmpty()).isFalse()
         );
-        Mockito.verify(orderTableDao, Mockito.times(2)).save(Mockito.any());
     }
 
     @DisplayName("주문 테이블이 없거나 2개 미만일 시 생성 불가능")
@@ -116,8 +116,9 @@ class TableGroupServiceTest {
         TableGroupRequest request = new TableGroupRequest(requestTables);
 
         // when and then
-        assertThatExceptionOfType(IllegalArgumentException.class)
-            .isThrownBy(() -> tableGroupService.create(request));
+        assertThatExceptionOfType(KitchenposException.class)
+            .isThrownBy(() -> tableGroupService.create(request))
+            .withMessage("사용중인 테이블이 있습니다.");
     }
 
     @DisplayName("다른 그룹에 등록되어 있는 주문 테이블이 포함되어 있는 경우 생성 불가능")
@@ -136,8 +137,9 @@ class TableGroupServiceTest {
         TableGroupRequest request = new TableGroupRequest(requestTables);
 
         // when and then
-        assertThatExceptionOfType(IllegalArgumentException.class)
-            .isThrownBy(() -> tableGroupService.create(request));
+        assertThatExceptionOfType(KitchenposException.class)
+            .isThrownBy(() -> tableGroupService.create(request))
+            .withMessage("사용중인 테이블이 있습니다.");
     }
 
     @DisplayName("테이블 그룹 삭제")
@@ -155,9 +157,6 @@ class TableGroupServiceTest {
 
         // when
         tableGroupService.ungroup(1L);
-
-        // then
-        Mockito.verify(orderTableDao, Mockito.times(2)).save(Mockito.any());
     }
 
     @DisplayName("요리 중이나 식사 중인 주문 테이블을 포함하고 있다면 삭제 불가능")

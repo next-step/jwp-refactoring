@@ -18,7 +18,7 @@ public class TableGroupResponse {
     }
 
     public static TableGroupResponse from(TableGroup tableGroup) {
-        OrderTableResponses orderTableResponses = OrderTableResponses.from(tableGroup.getOrderTables());
+        OrderTableResponses orderTableResponses = OrderTableResponses.from(tableGroup.getOrderTableValues());
         return new TableGroupResponse(tableGroup.getId(), tableGroup.getCreatedDate(),
             orderTableResponses.getOrderTableResponses());
     }

@@ -1,14 +1,13 @@
 package kitchenpos.domain;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 
 @Entity
 public class TableGroup {
@@ -18,10 +17,10 @@ public class TableGroup {
 
     private LocalDateTime createdDate;
 
-    @OneToMany(mappedBy = "tableGroup")
-    private List<OrderTable> orderTables = new ArrayList<>();
+    @Embedded
+    private OrderTables orderTables = new OrderTables();
 
-    public TableGroup() {
+    protected TableGroup() {
     }
 
     public TableGroup(LocalDateTime createdDate) {
@@ -32,11 +31,7 @@ public class TableGroup {
         this.id = id;
     }
 
-    public TableGroup(List<OrderTable> orderTables) {
-        this.orderTables = orderTables;
-    }
-
-    public TableGroup(Long id, LocalDateTime createdDate, List<OrderTable> orderTables) {
+    public TableGroup(Long id, LocalDateTime createdDate, OrderTables orderTables) {
         this.id = id;
         this.createdDate = createdDate;
         this.orderTables = orderTables;
@@ -46,23 +41,27 @@ public class TableGroup {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public LocalDateTime getCreatedDate() {
         return createdDate;
     }
 
-    public void setCreatedDate(final LocalDateTime createdDate) {
-        this.createdDate = createdDate;
-    }
-
-    public List<OrderTable> getOrderTables() {
+    public OrderTables getOrderTables() {
         return orderTables;
     }
 
-    public void setOrderTables(final List<OrderTable> orderTables) {
-        this.orderTables = orderTables;
+    public List<OrderTable> getOrderTableValues() {
+        return orderTables.getOrderTables();
+    }
+
+    private void addOrderTable(OrderTable orderTable) {
+        this.orderTables.add(orderTable);
+        orderTable.updateEmpty(false);
+        orderTable.referenceTableGroup(this);
+    }
+
+    public void addOrderTables(OrderTables orderTables) {
+        for (final OrderTable orderTable : orderTables.getOrderTables()) {
+            addOrderTable(orderTable);
+        }
     }
 }
