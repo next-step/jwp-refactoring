@@ -136,6 +136,7 @@ class MenuServiceTest {
         for (int i=0 ; i < savedMenuProducts.size() ; i++) {
             MenuProduct resultMenuProduct = savedMenuProducts.get(i);
             MenuProduct menuProduct = menuProducts.get(i);
+            assertThat(resultMenuProduct.getSeq()).isNotNull();
             assertThat(resultMenuProduct.getProductId()).isEqualTo(menuProduct.getProductId());
             assertThat(resultMenuProduct.getQuantity()).isEqualTo(menuProduct.getQuantity());
             assertThat(resultMenuProduct.getMenuId()).isEqualTo(resultMenu.getId());

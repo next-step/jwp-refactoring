@@ -63,4 +63,8 @@ public class OrderLineItem {
     public int hashCode() {
         return Objects.hash(seq, orderId, menuId, quantity);
     }
+
+    public void createId(Long seq) {
+        this.seq = seq;
+    }
 }

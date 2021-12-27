@@ -13,6 +13,14 @@ public class Order {
 
     public Order() {}
 
+    public Order(Long id, Long orderTableId, String orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
+        this.id = id;
+        this.orderTableId = orderTableId;
+        this.orderStatus = orderStatus;
+        this.orderedTime = orderedTime;
+        this.orderLineItems = orderLineItems;
+    }
+
     private Order(Long orderTableId, List<OrderLineItem> orderLineItems) {
         this.orderTableId = orderTableId;
         this.orderLineItems = orderLineItems;
@@ -81,5 +89,9 @@ public class Order {
     @Override
     public int hashCode() {
         return Objects.hash(id, orderTableId, orderStatus, orderedTime, orderLineItems);
+    }
+
+    public void createId(Long id) {
+        this.id = id;
     }
 }

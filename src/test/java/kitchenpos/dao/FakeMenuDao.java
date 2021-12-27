@@ -29,6 +29,9 @@ public class FakeMenuDao implements MenuDao {
 
     @Override
     public long countByIdIn(List<Long> ids) {
-        return 0;
+        return map.entrySet().stream()
+                .filter(entry -> ids.contains(entry.getKey()))
+                .distinct()
+                .count();
     }
 }

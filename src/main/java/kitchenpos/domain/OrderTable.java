@@ -79,4 +79,8 @@ public class OrderTable {
     public int hashCode() {
         return Objects.hash(id, tableGroupId, numberOfGuests, empty);
     }
+
+    public void createId(Long id) {
+        this.id = id;
+    }
 }
