@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
+import kitchenpos.domain.NumberOfGuests;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.OrderTableRequest;
@@ -60,10 +61,7 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final OrderTableRequest request) {
-        int numberOfGuests = request.getNumberOfGuests();
-        if (numberOfGuests < 0) {
-            throw new IllegalArgumentException();
-        }
+        NumberOfGuests numberOfGuests = new NumberOfGuests(request.getNumberOfGuests());
 
         final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
             .orElseThrow(IllegalArgumentException::new);

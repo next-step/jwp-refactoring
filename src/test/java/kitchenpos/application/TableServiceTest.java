@@ -21,6 +21,7 @@ import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.OrderTableRequest;
 import kitchenpos.dto.OrderTableResponse;
 import kitchenpos.dto.OrderTableResponses;
+import kitchenpos.exception.KitchenposException;
 
 @ExtendWith(MockitoExtension.class)
 class TableServiceTest {
@@ -153,8 +154,9 @@ class TableServiceTest {
         OrderTableRequest request = new OrderTableRequest(-1);
 
         // when and then
-        assertThatExceptionOfType(IllegalArgumentException.class)
-            .isThrownBy(() -> tableService.changeNumberOfGuests(1L, request));
+        assertThatExceptionOfType(KitchenposException.class)
+            .isThrownBy(() -> tableService.changeNumberOfGuests(1L, request))
+            .withMessage("0 이상의 고객수만 입력 가능합니다.");
     }
 
     @DisplayName("주문 테이블이 비어있을 시 변경 불가능")

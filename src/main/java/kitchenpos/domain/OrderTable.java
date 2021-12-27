@@ -1,5 +1,6 @@
 package kitchenpos.domain;
 
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -14,7 +15,8 @@ public class OrderTable {
 
     @ManyToOne
     private TableGroup tableGroup;
-    private int numberOfGuests;
+    @Embedded
+    private NumberOfGuests numberOfGuests;
     private boolean empty;
 
     public OrderTable() {
@@ -26,18 +28,18 @@ public class OrderTable {
 
     public OrderTable(TableGroup tableGroup, int numberOfGuests) {
         this.tableGroup = tableGroup;
-        this.numberOfGuests = numberOfGuests;
+        this.numberOfGuests = new NumberOfGuests(numberOfGuests);
     }
 
     public OrderTable(int numberOfGuests, boolean empty) {
-        this.numberOfGuests = numberOfGuests;
+        this.numberOfGuests = new NumberOfGuests(numberOfGuests);
         this.empty = empty;
     }
 
     public OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
         this.id = id;
         this.tableGroup = tableGroup;
-        this.numberOfGuests = numberOfGuests;
+        this.numberOfGuests = new NumberOfGuests(numberOfGuests);
         this.empty = empty;
     }
 
@@ -53,11 +55,11 @@ public class OrderTable {
         this.tableGroup = tableGroup;
     }
 
-    public int getNumberOfGuests() {
+    public NumberOfGuests getNumberOfGuests() {
         return numberOfGuests;
     }
 
-    public void updateNumberOfGuests(final int numberOfGuests) {
+    public void updateNumberOfGuests(final NumberOfGuests numberOfGuests) {
         this.numberOfGuests = numberOfGuests;
     }
 
@@ -74,5 +76,9 @@ public class OrderTable {
             return null;
         }
         return tableGroup.getId();
+    }
+
+    public int getGuestNumber() {
+        return numberOfGuests.getNumberOfGuests();
     }
 }

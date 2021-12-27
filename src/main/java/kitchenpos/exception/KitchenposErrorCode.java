@@ -1,6 +1,7 @@
 package kitchenpos.exception;
 
 public enum KitchenposErrorCode {
+    INVALID_NUMBER_OF_GUESTS("0 이상의 고객수만 입력 가능합니다."),
     INVALID_PRICE("0 이상의 가격만 입력 가능합니다."),
     INVALID_MENU_PRICE("각 상품 가격의 합보다 많은 가격입니다.");
 
