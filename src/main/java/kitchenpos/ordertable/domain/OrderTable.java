@@ -14,9 +14,6 @@ import kitchenpos.ordertable.vo.NumberOfGuests;
 @Entity
 public class OrderTable {
 
-    private static final String ERROR_MESSAGE_TABLE_IN_GROUP = "테이블 그룹에 속해있는 테이블은 상태를 변경할 수 없습니다.";
-    private static final String ERROR_MESSAGE_CANNOT_CHANGE_NUM_OF_GUESTS_WHEN_ORDER_CLOSED = "주문 종료 상태에선 방문 손님 수를 변경할 수 없습니다.";
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -63,15 +60,14 @@ public class OrderTable {
 
     public void updateTableStatus(boolean orderClose) {
         if (Objects.nonNull(tableGroupId)) {
-            throw new TableUpdateStateException(ERROR_MESSAGE_TABLE_IN_GROUP);
+            throw new TableUpdateStateException();
         }
         this.orderClose = orderClose;
     }
 
     public void changeNumberOfGuests(NumberOfGuests numberOfGuests) {
         if (isOrderClose()) {
-            throw new TableChangeNumberOfGuestsException(
-                ERROR_MESSAGE_CANNOT_CHANGE_NUM_OF_GUESTS_WHEN_ORDER_CLOSED);
+            throw new TableChangeNumberOfGuestsException();
         }
         this.numberOfGuests = numberOfGuests;
     }

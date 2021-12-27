@@ -19,9 +19,9 @@ public class OrderExceptionHandler {
         return ResponseEntity.badRequest().build();
     }
 
-    @ExceptionHandler(InvalidMenuInOrderLineItems.class)
+    @ExceptionHandler(DuplicateMenuInOrderLineItems.class)
     public ResponseEntity handleInvalidMenuInOrderLineItems(
-        InvalidMenuInOrderLineItems e) {
+        DuplicateMenuInOrderLineItems e) {
         return ResponseEntity.badRequest().build();
     }
 

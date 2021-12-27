@@ -10,6 +10,7 @@ import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.order.exception.NotFoundOrderLineItemException;
 import kitchenpos.order.exception.OrderNotFoundException;
 import kitchenpos.ordertable.domain.OrderTableValidator;
 import org.springframework.stereotype.Service;
@@ -19,9 +20,7 @@ import org.springframework.util.CollectionUtils;
 @Transactional(readOnly = true)
 @Service
 public class OrderService {
-
-    private static final String ERROR_MESSAGE_NO_ITEMS = "주문 항목이 없습니다.";
-
+    
     private final OrderRepository orderRepository;
     private final OrderMenuValidator orderMenuValidator;
     private final OrderTableValidator orderTableValidator;
@@ -63,7 +62,7 @@ public class OrderService {
 
     private void validateExistOrderLineItems(List<OrderLineItemRequest> orderLineItemRequests) {
         if (CollectionUtils.isEmpty(orderLineItemRequests)) {
-            throw new IllegalArgumentException(ERROR_MESSAGE_NO_ITEMS);
+            throw new NotFoundOrderLineItemException();
         }
     }
 

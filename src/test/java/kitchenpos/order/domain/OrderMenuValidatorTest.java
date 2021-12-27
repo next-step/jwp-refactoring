@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.dto.OrderLineItemRequest;
-import kitchenpos.order.exception.InvalidMenuInOrderLineItems;
+import kitchenpos.order.exception.DuplicateMenuInOrderLineItems;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -41,7 +41,7 @@ class OrderMenuValidatorTest {
         //when, then
         assertThatThrownBy(
             () -> orderMenuValidator.validateOrderLineItems(orderLineItemRequests))
-            .isInstanceOf(InvalidMenuInOrderLineItems.class);
+            .isInstanceOf(DuplicateMenuInOrderLineItems.class);
     }
 
     @DisplayName("없는 메뉴 ID가 존재해서는 안된다.")
@@ -60,7 +60,7 @@ class OrderMenuValidatorTest {
         //when, then
         assertThatThrownBy(
             () -> orderMenuValidator.validateOrderLineItems(orderLineItemRequests))
-            .isInstanceOf(InvalidMenuInOrderLineItems.class);
+            .isInstanceOf(DuplicateMenuInOrderLineItems.class);
     }
 
     private void 메뉴_개수_조회_모킹(long expectedResult) {

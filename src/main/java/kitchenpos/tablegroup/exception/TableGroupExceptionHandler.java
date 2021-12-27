@@ -7,9 +7,21 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class TableGroupExceptionHandler {
 
-    @ExceptionHandler(GroupTablesException.class)
-    public ResponseEntity handleGroupTablesException(
-        GroupTablesException e) {
+    @ExceptionHandler(DuplicateTablesException.class)
+    public ResponseEntity handleDuplicateTablesException(
+        DuplicateTablesException e) {
+        return ResponseEntity.badRequest().build();
+    }
+
+    @ExceptionHandler(IllegalGroupingTableStateException.class)
+    public ResponseEntity handleIllegalGroupingTableStateException(
+        IllegalGroupingTableStateException e) {
+        return ResponseEntity.badRequest().build();
+    }
+
+    @ExceptionHandler(NotEnoughTablesException.class)
+    public ResponseEntity handleNotEnoughTablesException(
+        NotEnoughTablesException e) {
         return ResponseEntity.badRequest().build();
     }
 

@@ -11,7 +11,9 @@ import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.event.GroupEvent;
 import kitchenpos.tablegroup.event.GroupInfo;
 import kitchenpos.tablegroup.event.UngroupEvent;
-import kitchenpos.tablegroup.exception.GroupTablesException;
+import kitchenpos.tablegroup.exception.DuplicateTablesException;
+import kitchenpos.tablegroup.exception.IllegalGroupingTableStateException;
+import kitchenpos.tablegroup.exception.NotEnoughTablesException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -82,7 +84,7 @@ class GroupingEventHandlerTest {
 
         //then
         assertThatThrownBy(() -> groupingEventHandler.handleGroupTables(groupEvent))
-            .isInstanceOf(GroupTablesException.class);
+            .isInstanceOf(NotEnoughTablesException.class);
     }
 
     @DisplayName("주문 가능한 테이블은 그룹이 될 수 없다.")
@@ -102,7 +104,7 @@ class GroupingEventHandlerTest {
 
         //then
         assertThatThrownBy(() -> groupingEventHandler.handleGroupTables(groupEvent))
-            .isInstanceOf(GroupTablesException.class);
+            .isInstanceOf(IllegalGroupingTableStateException.class);
     }
 
     @DisplayName("그룹 대상 테이블 리스트에 중복이 존재해서는 안된다.")
@@ -122,7 +124,7 @@ class GroupingEventHandlerTest {
 
         //then
         assertThatThrownBy(() -> groupingEventHandler.handleGroupTables(groupEvent))
-            .isInstanceOf(GroupTablesException.class);
+            .isInstanceOf(DuplicateTablesException.class);
     }
 
     @DisplayName("이미 그룹에 소속된 테이블은 그룹화 할 수 없다.")
@@ -142,7 +144,7 @@ class GroupingEventHandlerTest {
 
         //then
         assertThatThrownBy(() -> groupingEventHandler.handleGroupTables(groupEvent))
-            .isInstanceOf(GroupTablesException.class);
+            .isInstanceOf(IllegalGroupingTableStateException.class);
     }
 
     private void 주문테이블_그룹핑_결과_확인(List<OrderTable> orderTables) {
