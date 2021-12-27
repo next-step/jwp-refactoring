@@ -55,6 +55,7 @@ public class Order {
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
         this.orderLineItems = orderLineItems;
+        orderTable.addOrder(this);
     }
 
     private void validate(OrderTable orderTable) {
@@ -114,13 +115,12 @@ public class Order {
         if (o == null || getClass() != o.getClass())
             return false;
         Order order = (Order)o;
-        return Objects.equals(id, order.id) && Objects.equals(orderTable, order.orderTable)
-            && orderStatus == order.orderStatus && Objects.equals(orderedTime, order.orderedTime)
-            && Objects.equals(orderLineItems, order.orderLineItems);
+        return Objects.equals(id, order.id) && orderStatus == order.orderStatus && Objects.equals(
+            orderedTime, order.orderedTime) && Objects.equals(orderLineItems, order.orderLineItems);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, orderTable, orderStatus, orderedTime, orderLineItems);
+        return Objects.hash(id, orderStatus, orderedTime, orderLineItems);
     }
 }

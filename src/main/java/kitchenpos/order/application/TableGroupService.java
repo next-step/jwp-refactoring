@@ -40,7 +40,6 @@ public class TableGroupService {
         TableGroup findTableGroup = tableGroupRepository.findById(tableGroupId)
             .orElseThrow(() -> new NotFoundException(NOT_FOUND_DATA));
 
-        findTableGroup.validateUngroup();
         findTableGroup.ungroup();
         tableGroupRepository.delete(findTableGroup);
     }
