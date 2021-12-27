@@ -3,7 +3,7 @@ package kitchenpos.order.acceptance;
 import static kitchenpos.menu.acceptance.MenuAcceptanceTest.*;
 import static kitchenpos.menu.acceptance.MenuGroupAcceptanceTest.*;
 import static kitchenpos.menu.acceptance.ProductAcceptanceTest.*;
-import static kitchenpos.ordertable.acceptance.TableAcceptanceTest.*;
+import static kitchenpos.order.acceptance.TableAcceptanceTest.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.math.BigDecimal;
@@ -33,8 +33,8 @@ import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusRequest;
-import kitchenpos.ordertable.dto.OrderTableRequest;
-import kitchenpos.ordertable.dto.OrderTableResponse;
+import kitchenpos.order.dto.OrderTableRequest;
+import kitchenpos.order.dto.OrderTableResponse;
 
 @DisplayName("주문 관련 기능")
 class OrderAcceptanceTest extends AcceptanceTest {

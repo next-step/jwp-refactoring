@@ -10,7 +10,6 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import kitchenpos.common.exception.BadRequestException;
 import kitchenpos.common.exception.ExceptionMessage;
-import kitchenpos.ordertable.domain.OrderTable;
 
 class OrderTableTest {
 

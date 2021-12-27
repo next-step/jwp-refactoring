@@ -1,4 +1,4 @@
-package kitchenpos.ordertable.domain;
+package kitchenpos.order.domain;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -17,6 +17,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import kitchenpos.common.exception.BadRequestException;
 import kitchenpos.common.exception.ExceptionMessage;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.domain.OrderTableValidator;
 import kitchenpos.order.repository.OrderRepository;
 
 @ExtendWith(MockitoExtension.class)

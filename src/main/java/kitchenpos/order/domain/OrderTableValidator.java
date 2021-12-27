@@ -1,4 +1,4 @@
-package kitchenpos.ordertable.domain;
+package kitchenpos.order.domain;
 
 import static kitchenpos.common.exception.ExceptionMessage.*;
 
@@ -7,7 +7,6 @@ import java.util.Arrays;
 import org.springframework.stereotype.Component;
 
 import kitchenpos.common.exception.BadRequestException;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.repository.OrderRepository;
 
 @Component

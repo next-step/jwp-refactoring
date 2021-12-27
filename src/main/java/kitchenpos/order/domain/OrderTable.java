@@ -1,4 +1,4 @@
-package kitchenpos.ordertable.domain;
+package kitchenpos.order.domain;
 
 import static kitchenpos.common.exception.ExceptionMessage.*;
 
@@ -12,7 +12,6 @@ import javax.persistence.Id;
 
 import kitchenpos.common.domain.Empty;
 import kitchenpos.common.exception.BadRequestException;
-import kitchenpos.order.domain.NumberOfGuests;
 
 @Entity
 public class OrderTable {

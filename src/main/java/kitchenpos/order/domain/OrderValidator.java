@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import kitchenpos.common.exception.ExceptionMessage;
 import kitchenpos.common.exception.NotFoundException;
 import kitchenpos.menu.repository.MenuRepository;
-import kitchenpos.ordertable.repository.OrderTableRepository;
+import kitchenpos.order.repository.OrderTableRepository;
 
 @Component
 public class OrderValidator {

@@ -1,4 +1,4 @@
-package kitchenpos.tablegroup.domain;
+package kitchenpos.order.domain;
 
 public class TableUngroupEvent {
 

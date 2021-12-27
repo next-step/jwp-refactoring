@@ -1,4 +1,4 @@
-package kitchenpos.tablegroup.domain;
+package kitchenpos.order.domain;
 
 import static kitchenpos.common.exception.ExceptionMessage.*;
 
@@ -12,8 +12,8 @@ import org.springframework.util.CollectionUtils;
 import kitchenpos.common.exception.BadRequestException;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.repository.OrderRepository;
-import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.repository.OrderTableRepository;
+import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.repository.OrderTableRepository;
 
 @Component
 public class TableGroupValidator {

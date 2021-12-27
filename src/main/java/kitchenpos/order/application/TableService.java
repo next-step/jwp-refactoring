@@ -1,4 +1,4 @@
-package kitchenpos.ordertable.application;
+package kitchenpos.order.application;
 
 import static kitchenpos.common.exception.ExceptionMessage.*;
 
@@ -8,12 +8,13 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import kitchenpos.common.exception.BadRequestException;
 import kitchenpos.common.exception.NotFoundException;
-import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.domain.OrderTableValidator;
-import kitchenpos.ordertable.dto.OrderTableRequest;
-import kitchenpos.ordertable.dto.OrderTableResponse;
-import kitchenpos.ordertable.repository.OrderTableRepository;
+import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.domain.OrderTableValidator;
+import kitchenpos.order.dto.OrderTableRequest;
+import kitchenpos.order.dto.OrderTableResponse;
+import kitchenpos.order.repository.OrderTableRepository;
 
 @Service
 public class TableService {
@@ -57,5 +58,14 @@ public class TableService {
             .orElseThrow(() -> new NotFoundException(NOT_FOUND_DATA));
         findOrderTable.changeNumberOfGuests(orderTable.getNumberOfGuests());
         return OrderTableResponse.of(findOrderTable);
+    }
+
+    @Transactional(readOnly = true)
+    public List<OrderTable> findByOrderTableIds(List<Long> orderTableIds) {
+        final List<OrderTable> findOrderTables = orderTableRepository.findAllByIdIn(orderTableIds);
+        if (orderTableIds.size() != findOrderTables.size()) {
+            throw new BadRequestException(WRONG_VALUE);
+        }
+        return findOrderTables;
     }
 }
