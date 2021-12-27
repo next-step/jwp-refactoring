@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import kitchenpos.application.MenuGroupService;
 import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.MenuGroupRequest;
+import kitchenpos.dto.MenuGroupRequest;
 
 @RestController
 public class MenuGroupRestController {

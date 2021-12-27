@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.MenuGroupRequest;
+import kitchenpos.dto.MenuGroupRequest;
 
 @Service
 @Transactional(readOnly = true)

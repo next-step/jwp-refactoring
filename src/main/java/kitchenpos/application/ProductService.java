@@ -8,8 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
-import kitchenpos.domain.ProductRequest;
-import kitchenpos.domain.ProductResponse;
+import kitchenpos.dto.ProductRequest;
+import kitchenpos.dto.ProductResponse;
 
 @Service
 @Transactional(readOnly = true)

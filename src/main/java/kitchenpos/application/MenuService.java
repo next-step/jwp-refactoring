@@ -12,10 +12,10 @@ import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.MenuProductRequest;
+import kitchenpos.dto.MenuProductRequest;
 import kitchenpos.domain.MenuProducts;
-import kitchenpos.domain.MenuRequest;
-import kitchenpos.domain.MenuResponse;
+import kitchenpos.dto.MenuRequest;
+import kitchenpos.dto.MenuResponse;
 import kitchenpos.domain.Product;
 import kitchenpos.exception.KitchenposNotFoundException;
 

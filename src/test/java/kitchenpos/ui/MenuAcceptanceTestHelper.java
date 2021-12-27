@@ -12,8 +12,7 @@ import org.springframework.http.MediaType;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuResponse;
+import kitchenpos.dto.MenuResponse;
 
 public class MenuAcceptanceTestHelper {
     private MenuAcceptanceTestHelper() {
