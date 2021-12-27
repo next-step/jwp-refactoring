@@ -72,4 +72,8 @@ public class TableService {
     public List<OrderTable> findAllByTableGroupId(Long tableGroupId) {
         return orderTableRepository.findAllByTableGroupId(tableGroupId);
     }
+
+    public boolean existsById(Long orderTableId) {
+        return orderTableRepository.existsById(orderTableId);
+    }
 }
