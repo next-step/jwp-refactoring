@@ -13,7 +13,7 @@ public class MenuProductResponse {
 
     public MenuProductResponse(MenuProduct menuProduct, Long menuId) {
         this(menuProduct.getId(), menuId,
-            menuProduct.getProductId(), menuProduct.getQuantity().getValue());
+            menuProduct.getProduct().getId(), menuProduct.getQuantity().getValue());
     }
 
     public MenuProductResponse(Long id, Long menuId, Long productId, long quantity) {

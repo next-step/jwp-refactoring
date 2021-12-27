@@ -6,12 +6,15 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 
-import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 import kitchenpos.common.domain.Name;
 import kitchenpos.common.domain.Price;
@@ -30,8 +33,9 @@ public class Menu {
     @Embedded
     private Price price;
 
-    @Column(nullable = false)
-    private Long menuGroupId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "menu_group_id", foreignKey = @ForeignKey(name = "fk_menu_menu_group"))
+    private MenuGroup menuGroup;
 
     @Embedded
     private MenuProducts menuProducts;
@@ -39,23 +43,30 @@ public class Menu {
     protected Menu() {
     }
 
-    private Menu(Long id, String name, BigDecimal price, Long menuGroupId,
+    private Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup,
         List<MenuProduct> menuProducts) {
-        validate(menuGroupId, menuProducts);
+        validate(menuGroup, menuProducts, price);
         this.id = id;
         this.name = new Name(name);
         this.price = new Price(price);
-        this.menuGroupId = menuGroupId;
+        this.menuGroup = menuGroup;
         this.menuProducts = new MenuProducts(menuProducts);
     }
 
-    public static Menu of(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
-        return new Menu(null, name, price, menuGroupId, menuProducts);
+    public static Menu of(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+        return new Menu(null, name, price, menuGroup, menuProducts);
     }
 
-    private void validate(Long menuGroupId, List<MenuProduct> menuProducts) {
+    private void validate(MenuGroup menuGroup, List<MenuProduct> menuProducts, BigDecimal price) {
+        validateMenuGroup(menuGroup);
         validateMenuProducts(menuProducts);
-        validateMenuGroupId(menuGroupId);
+        validateMenuPrice(new Price(price), menuProducts);
+    }
+
+    private void validateMenuGroup(MenuGroup menuGroup) {
+        if (Objects.isNull(menuGroup)) {
+            throw new BadRequestException(WRONG_VALUE);
+        }
     }
 
     private void validateMenuProducts(List<MenuProduct> menuProducts) {
@@ -64,10 +75,17 @@ public class Menu {
         }
     }
 
-    private void validateMenuGroupId(Long menuGroupId) {
-        if (Objects.isNull(menuGroupId)) {
+    private void validateMenuPrice(Price price, List<MenuProduct> menuProducts) {
+        BigDecimal sumPrice = sumProductsPrice(menuProducts);
+        if (price.isGreaterThanSumPrice(sumPrice)) {
             throw new BadRequestException(WRONG_VALUE);
         }
+    }
+
+    private BigDecimal sumProductsPrice(List<MenuProduct> menuProducts) {
+        return menuProducts.stream()
+            .map(MenuProduct::multiplyQuantityToPrice)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     public Long getId() {
@@ -82,8 +100,8 @@ public class Menu {
         return price;
     }
 
-    public Long getMenuGroupId() {
-        return menuGroupId;
+    public MenuGroup getMenuGroup() {
+        return menuGroup;
     }
 
     public MenuProducts getMenuProducts() {
@@ -98,12 +116,12 @@ public class Menu {
             return false;
         Menu menu = (Menu)o;
         return Objects.equals(id, menu.id) && Objects.equals(name, menu.name)
-            && Objects.equals(price, menu.price) && Objects.equals(menuGroupId, menu.menuGroupId)
+            && Objects.equals(price, menu.price) && Objects.equals(menuGroup, menu.menuGroup)
             && Objects.equals(menuProducts, menu.menuProducts);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, price, menuGroupId, menuProducts);
+        return Objects.hash(id, name, price, menuGroup, menuProducts);
     }
 }
