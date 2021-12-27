@@ -1,5 +1,8 @@
 package kitchenpos.menu.dto;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import kitchenpos.menu.domain.MenuProduct;
 
 public class MenuProductResponse {
@@ -22,6 +25,12 @@ public class MenuProductResponse {
 	public static MenuProductResponse of(MenuProduct menuProduct) {
 		return new MenuProductResponse(menuProduct.getSeq(), menuProduct.getMenuId(), menuProduct.getProductId(),
 			menuProduct.getQuantity());
+	}
+
+	public static List<MenuProductResponse> ofList(List<MenuProduct> menuProducts) {
+		return menuProducts.stream()
+			.map(MenuProductResponse::of)
+			.collect(Collectors.toList());
 	}
 
 	public long getSeq() {

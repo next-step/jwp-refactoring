@@ -1,7 +1,5 @@
 package kitchenpos.ordertable.application;
 
-import kitchenpos.orders.application.OrderService;
-import kitchenpos.orders.domain.Order;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.ordertable.dto.OrderTableRequest;
@@ -11,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class OrderTableService {
@@ -27,11 +24,9 @@ public class OrderTableService {
 		return orderTableRepository.save(orderTable);
 	}
 
-	public List<OrderTableResponse> list() {
-		return orderTableRepository.findAll()
-			.stream()
-			.map(OrderTableResponse::of)
-			.collect(Collectors.toList());
+	@Transactional(readOnly = true)
+	public List<OrderTable> list() {
+		return orderTableRepository.findAll();
 	}
 
 	@Transactional

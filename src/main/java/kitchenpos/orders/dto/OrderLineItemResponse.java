@@ -1,5 +1,8 @@
 package kitchenpos.orders.dto;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.persistence.Column;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
@@ -26,6 +29,17 @@ public class OrderLineItemResponse {
 		this.quantity = quantity;
 	}
 
+	public static OrderLineItemResponse of(OrderLineItem orderLineItem) {
+		return new OrderLineItemResponse(orderLineItem.getSeq(), orderLineItem.getOrderId(), orderLineItem.getMenuId(),
+			orderLineItem.getQuantity());
+	}
+
+	public static List<OrderLineItemResponse> ofList(List<OrderLineItem> orderLineItems) {
+		return orderLineItems.stream()
+			.map(OrderLineItemResponse::of)
+			.collect(Collectors.toList());
+	}
+
 	public long getSeq() {
 		return seq;
 	}
@@ -42,8 +56,4 @@ public class OrderLineItemResponse {
 		return quantity;
 	}
 
-	public static OrderLineItemResponse of(OrderLineItem orderLineItem) {
-		return new OrderLineItemResponse(orderLineItem.getSeq(), orderLineItem.getOrderId(), orderLineItem.getMenuId(),
-			orderLineItem.getQuantity());
-	}
 }

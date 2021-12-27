@@ -27,10 +27,14 @@ public class MenuResponse {
 	}
 
 	public static MenuResponse of(Menu menu) {
-		List<MenuProductResponse> menuProductResponses = menu.getMenuProducts().stream()
-			.map(MenuProductResponse::of)
-			.collect(Collectors.toList());
+		List<MenuProductResponse> menuProductResponses = MenuProductResponse.ofList(menu.getMenuProducts());
 		return new MenuResponse(menu.getId(), menu.getName(), menu.getPrice(), menu.getMenuGroupId(), menuProductResponses);
+	}
+
+	public static List<MenuResponse> ofList(List<Menu> Menus) {
+		return Menus.stream()
+			.map(MenuResponse::of)
+			.collect(Collectors.toList());
 	}
 
 	public Long getId() {

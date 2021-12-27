@@ -4,6 +4,7 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.application.MenuGroupService;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.product.application.ProductService;
@@ -39,6 +40,7 @@ public class MenuService {
 		return menuRepository.save(menu);
 	}
 
+	@Transactional(readOnly = true)
 	public List<Menu> list() {
 		return menuRepository.findAll();
 	}
@@ -49,6 +51,7 @@ public class MenuService {
 			.collect(Collectors.toList());
 	}
 
+	@Transactional(readOnly = true)
 	public Menu findById(long menuId) {
 		return menuRepository.findById(menuId)
 			.orElseThrow(() -> new IllegalArgumentException("메뉴가 존재하지 않습니다"));

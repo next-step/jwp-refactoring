@@ -62,11 +62,9 @@ public class OrderService {
         return CollectionUtils.isEmpty(orderRequest.getOrderLineItemRequests());
     }
 
-    public List<OrderResponse> list() {
-        return orderRepository.findAll()
-            .stream()
-            .map(OrderResponse::of)
-            .collect(Collectors.toList());
+    @Transactional(readOnly = true)
+    public List<Order> list() {
+        return orderRepository.findAll();
     }
 
     @Transactional
@@ -76,6 +74,7 @@ public class OrderService {
         savedOrder.changeOrderStatus(orderRequest.getOrderStatus());
         return savedOrder;
     }
+
 
     private void validateOrderIsCompletion(Order order) {
         if (order.isCompletion()) {
