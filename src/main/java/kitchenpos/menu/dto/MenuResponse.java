@@ -4,13 +4,17 @@ import kitchenpos.menu.domain.Menu;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
 
 public class MenuResponse {
-    private final Long id;
-    private final String name;
-    private final BigDecimal price;
-    private final MenuGroupResponse menuGroup;
-    private final List<MenuProductResponse> menuProducts;
+    private Long id;
+    private String name;
+    private BigDecimal price;
+    private MenuGroupResponse menuGroup;
+    private List<MenuProductResponse> menuProducts;
+
+    public MenuResponse() {
+    }
 
     public MenuResponse(Long id, String name, BigDecimal price, MenuGroupResponse menuGroupResponse, List<MenuProductResponse> menuProducts) {
         this.id = id;
@@ -42,5 +46,18 @@ public class MenuResponse {
 
     public List<MenuProductResponse> getMenuProducts() {
         return menuProducts;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MenuResponse that = (MenuResponse) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

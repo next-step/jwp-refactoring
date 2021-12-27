@@ -62,10 +62,10 @@ class MenuServiceTest {
         product = Product.of(1L, "후라이드치킨", new BigDecimal(16000.00));
         product2 = Product.of(2L, "양념치킨", new BigDecimal(16000.00));
         menuGroup = MenuGroup.of(1L, "메뉴그룹1");
-        menu = Menu.of(1L, "후라이드치킨", new BigDecimal(16000.00), menuGroup, Arrays.asList(menuProduct));
-        menu2 = Menu.of(2L, "양념치킨", new BigDecimal(16000.00), menuGroup, Arrays.asList(menuProduct2));
         menuProduct = MenuProduct.of(1L, menu, product, 1);
         menuProduct2 = MenuProduct.of(2L, menu2, product2, 1);
+        menu = Menu.of(1L, "후라이드치킨", new BigDecimal(16000.00), menuGroup, Arrays.asList(menuProduct));
+        menu2 = Menu.of(2L, "양념치킨", new BigDecimal(16000.00), menuGroup, Arrays.asList(menuProduct2));
         menuProductRequest = new MenuProductRequest(1L, 1);
         menuRequest = new MenuRequest("후라이드치킨", new BigDecimal(16000.00), 1L, Arrays.asList(menuProductRequest));
     }

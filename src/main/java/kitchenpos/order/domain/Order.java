@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
+@Table(name = "orders")
 public class Order {
     private static final String INVALID_ORDER_STATUS = "완료 상태의 주문은 변경할 수 없습니다.";
     private static final String INVALID_ORDER_TABLE = "빈 주문 테이블을 주문 등록 할 수 없습니다.";
@@ -28,8 +29,8 @@ public class Order {
 
     private LocalDateTime orderedTime;
 
-    @OneToMany(mappedBy = "order")
-    private List<OrderLineItem> orderLineItems;
+    @Embedded
+    private OrderLineItems orderLineItems = new OrderLineItems();
 
     public Order() {
     }
@@ -41,7 +42,8 @@ public class Order {
         addOrderTable(orderTable);
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
-        this.orderLineItems = orderLineItems;
+        this.orderLineItems = OrderLineItems.of(orderLineItems);
+        this.orderLineItems.addOrder(this);
     }
 
     private void addOrderTable(OrderTable orderTable) {
@@ -95,8 +97,8 @@ public class Order {
         orderTable.setId(orderTableId);
     }
 
-    public String getOrderStatus() {
-        return orderStatus.name();
+    public OrderStatus getOrderStatus() {
+        return orderStatus;
     }
 
     public LocalDateTime getOrderedTime() {
@@ -108,11 +110,7 @@ public class Order {
     }
 
     public List<OrderLineItem> getOrderLineItems() {
-        return orderLineItems;
-    }
-
-    public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
-        this.orderLineItems = orderLineItems;
+        return orderLineItems.getOrderLineItems();
     }
 
     public OrderTable getOrderTable() {

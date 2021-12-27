@@ -1,14 +1,15 @@
 package kitchenpos.order.application;
 
 import kitchenpos.exception.MenuNotFoundException;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.domain.*;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.product.domain.Product;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
@@ -22,6 +23,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -62,10 +64,10 @@ class OrderServiceTest {
     @BeforeEach
     void setUp() {
         orderTable = OrderTable.of(1L, null, 2, false);
-        orderLineItem = OrderLineItem.of(1L, null, null, 1);
+        menu = Menu.of(1L, "메뉴", BigDecimal.TEN, MenuGroup.of("메뉴그룹"), new ArrayList<>());
+        orderLineItem = OrderLineItem.of(1L, null, menu, 1);
         order = Order.of(1L, orderTable, null, null, Arrays.asList(orderLineItem));
         order2 = Order.of(2L, orderTable, null, null, Arrays.asList(orderLineItem));
-        menu = Menu.of(1L, "메뉴", BigDecimal.TEN, null, null);
         orderLineItemRequest = new OrderLineItemRequest(1L, 1);
         orderRequest = new OrderRequest(1L, OrderStatus.MEAL, Arrays.asList(orderLineItemRequest));
     }
@@ -79,7 +81,7 @@ class OrderServiceTest {
         when(orderRepository.save(any())).thenReturn(order);
 
         //when
-        Order expected = orderService.create(orderRequest);
+        OrderResponse expected = orderService.create(orderRequest);
 
         //then
         assertThat(order.getId()).isEqualTo(expected.getId());
@@ -105,7 +107,7 @@ class OrderServiceTest {
         when(orderRepository.findAll()).thenReturn(actual);
 
         //when
-        List<Order> expected = orderService.list();
+        List<OrderResponse> expected = orderService.list();
 
         //then
         assertThat(actual.size()).isEqualTo(expected.size());
@@ -119,9 +121,9 @@ class OrderServiceTest {
         when(orderRepository.findById(1L)).thenReturn(Optional.of(조리중_주문));
 
         //when
-        Order expected = orderService.changeOrderStatus(order.getId(), orderRequest);
+        OrderResponse expected = orderService.changeOrderStatus(order.getId(), orderRequest);
 
         //then
-        assertThat(OrderStatus.MEAL.name()).isEqualTo(expected.getOrderStatus());
+        assertThat(OrderStatus.MEAL).isEqualTo(expected.getOrderStatus());
     }
 }

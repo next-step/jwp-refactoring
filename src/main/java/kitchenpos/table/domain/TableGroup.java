@@ -18,8 +18,8 @@ public class TableGroup {
 
     private LocalDateTime createdDate;
 
-    @OneToMany(mappedBy = "tableGroup")
-    private List<OrderTable> orderTables;
+    @Embedded
+    private OrderTables orderTables = new OrderTables();
 
     public TableGroup() {
     }
@@ -28,7 +28,7 @@ public class TableGroup {
         validate(orderTables);
         this.id = id;
         this.createdDate = createdDate;
-        this.orderTables = orderTables;
+        this.orderTables = OrderTables.of(orderTables);
     }
 
     private void validate(List<OrderTable> orderTables) {
@@ -41,12 +41,12 @@ public class TableGroup {
         }
     }
 
-    public static TableGroup of(Long id, LocalDateTime createdDate, List<OrderTable> orderTables) {
-        return new TableGroup(id, createdDate, orderTables);
+    public static TableGroup of(Long id, List<OrderTable> orderTables) {
+        return new TableGroup(id, LocalDateTime.now(), orderTables);
     }
 
     public static TableGroup of(List<OrderTable> orderTables) {
-        return new TableGroup(null, null, orderTables);
+        return new TableGroup(null, LocalDateTime.now(), orderTables);
     }
 
     public Long getId() {
@@ -66,11 +66,7 @@ public class TableGroup {
     }
 
     public List<OrderTable> getOrderTables() {
-        return orderTables;
-    }
-
-    public void setOrderTables(final List<OrderTable> orderTables) {
-        this.orderTables = orderTables;
+        return orderTables.getOrderTables();
     }
 
     public void validateUngroup() {
@@ -80,7 +76,7 @@ public class TableGroup {
     }
 
     private boolean isCompleted() {
-        return orderTables.stream()
+        return orderTables.getOrderTables().stream()
                 .allMatch(orderTable -> orderTable.isCompleteOrders());
     }
 }

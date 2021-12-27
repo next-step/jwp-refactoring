@@ -23,10 +23,10 @@ class TableGroupTest {
         //then
         assertAll(
                 () -> assertThatThrownBy(
-                        () -> TableGroup.of(1L, null, Arrays.asList(orderTable))
+                        () -> TableGroup.of(1L, Arrays.asList(orderTable))
                 ).isInstanceOf(InvalidTableGroupException.class),
                 () -> assertThatThrownBy(
-                        () -> TableGroup.of(1L, null, new ArrayList<>())
+                        () -> TableGroup.of(1L, new ArrayList<>())
                 ).isInstanceOf(InvalidTableGroupException.class)
         );
     }
@@ -39,7 +39,7 @@ class TableGroupTest {
         OrderTable orderTable2 = OrderTable.of(2L, null, 4, false);
         OrderLineItem orderLineItem = OrderLineItem.of(1L, null, null, 1);
         Order.of(orderTable, OrderStatus.COOKING, Arrays.asList(orderLineItem));
-        TableGroup tableGroup = TableGroup.of(1L, null, Arrays.asList(orderTable, orderTable2));
+        TableGroup tableGroup = TableGroup.of(1L, Arrays.asList(orderTable, orderTable2));
 
         // then
         assertThatThrownBy(

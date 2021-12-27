@@ -5,6 +5,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.menu.dto.*;
+import kitchenpos.product.ProductAcceptanceTest;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -55,6 +56,22 @@ public class MenuAcceptanceTest extends AcceptanceTest {
 
     private ExtractableResponse<Response> 메뉴_목록_조회됨() {
         return ofRequest(Method.GET, "/api/menus");
+    }
+
+    public static MenuResponse 메뉴_생성됨(MenuRequest menuRequest) {
+        return 메뉴_생성_요청(menuRequest)
+                .as(MenuResponse.class);
+    }
+
+    public static MenuResponse 메뉴_생성되어_있음() {
+        MenuGroupResponse 한마리메뉴 = 메뉴_그룹_생성됨(MenuGroupRequest.of("한마리메뉴"));
+        ProductResponse 후라이드치킨 = 상품_생성됨(ProductRequest.of("후라이드치킨", new BigDecimal(160000)));
+        MenuRequest menuRequest = MenuRequest.of("치킨세트",
+                BigDecimal.valueOf(35000),
+                한마리메뉴.getId(),
+                Collections.singletonList(MenuProductRequest.of(후라이드치킨.getId(), 2)));
+
+        return MenuAcceptanceTest.메뉴_생성됨(menuRequest);
     }
 }
 

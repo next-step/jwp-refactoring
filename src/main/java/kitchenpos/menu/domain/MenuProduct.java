@@ -80,4 +80,8 @@ public class MenuProduct {
     public Price calculate() {
         return product.multiply(quantity.getQuantity());
     }
+
+    public void addMenu(Menu menu) {
+        this.menu = menu;
+    }
 }

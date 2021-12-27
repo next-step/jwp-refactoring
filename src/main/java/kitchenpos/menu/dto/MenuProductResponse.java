@@ -4,6 +4,7 @@ import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.product.dto.ProductResponse;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class MenuProductResponse {
@@ -40,5 +41,18 @@ public class MenuProductResponse {
 
     public Long getQuantity() {
         return quantity;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MenuProductResponse that = (MenuProductResponse) o;
+        return Objects.equals(seq, that.seq);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(seq);
     }
 }

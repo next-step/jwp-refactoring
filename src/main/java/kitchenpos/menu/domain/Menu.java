@@ -27,7 +27,7 @@ public class Menu {
     private MenuGroup menuGroup;
 
     @Embedded
-    private MenuProducts menuProducts;
+    private MenuProducts menuProducts = new MenuProducts();
 
     public Menu() {
 
@@ -47,6 +47,7 @@ public class Menu {
         this.price = Price.of(price);
         this.menuGroup = menuGroup;
         this.menuProducts = MenuProducts.of(menuProducts);
+        this.menuProducts.addMenu(this);
     }
 
     private void validatePrice(BigDecimal price, List<MenuProduct> menuProducts) {

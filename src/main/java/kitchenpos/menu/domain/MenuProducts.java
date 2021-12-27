@@ -31,4 +31,8 @@ public class MenuProducts {
     public void add(MenuProduct menuProduct) {
         this.menuProducts.add(menuProduct);
     }
+
+    public void addMenu(Menu menu) {
+        menuProducts.forEach(menuProduct -> menuProduct.addMenu(menu));
+    }
 }

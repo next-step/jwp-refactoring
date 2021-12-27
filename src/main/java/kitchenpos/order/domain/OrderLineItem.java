@@ -71,4 +71,12 @@ public class OrderLineItem {
     public void setQuantity(final long quantity) {
         this.quantity = Quantity.of(quantity);
     }
+
+    public Menu getMenu() {
+        return menu;
+    }
+
+    public void addOrder(Order order) {
+        this.order = order;
+    }
 }

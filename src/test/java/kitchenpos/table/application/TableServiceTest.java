@@ -3,6 +3,7 @@ package kitchenpos.table.application;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -47,7 +48,7 @@ class TableServiceTest {
         when(orderTableRepository.save(any())).thenReturn(orderTable);
 
         //when
-        OrderTable expected = tableService.create(orderTableRequest);
+        OrderTableResponse expected = tableService.create(orderTableRequest);
 
         //then
         assertThat(orderTable.getId()).isEqualTo(expected.getId());
@@ -61,7 +62,7 @@ class TableServiceTest {
         when(orderTableRepository.findAll()).thenReturn(actual);
 
         //when
-        List<OrderTable> expected = tableService.list();
+        List<OrderTableResponse> expected = tableService.list();
 
         //then
         assertThat(actual.size()).isEqualTo(expected.size());
@@ -74,7 +75,7 @@ class TableServiceTest {
         when(orderTableRepository.findById(any())).thenReturn(Optional.of(orderTable));
 
         //when
-        OrderTable expected = tableService.changeEmpty(orderTable.getId(), orderTableRequest);
+        OrderTableResponse expected = tableService.changeEmpty(orderTable.getId(), orderTableRequest);
 
         //then
         assertThat(orderTableRequest.getEmpty()).isEqualTo(expected.isEmpty());
@@ -87,7 +88,7 @@ class TableServiceTest {
         when(orderTableRepository.findById(any())).thenReturn(Optional.of(orderTable));
 
         //when
-        OrderTable expected = tableService.changeNumberOfGuests(orderTable.getId(), orderTableRequest);
+        OrderTableResponse expected = tableService.changeNumberOfGuests(orderTable.getId(), orderTableRequest);
 
         //then
         assertThat(orderTableRequest.getNumberOfGuests()).isEqualTo(expected.getNumberOfGuests());

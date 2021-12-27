@@ -15,6 +15,10 @@ public class TableGroupRequest {
         this.orderTableIds = orderTableIds;
     }
 
+    public static TableGroupRequest of(List<Long> orderTableIds) {
+        return new TableGroupRequest(orderTableIds);
+    }
+
     public List<Long> getOrderTableIds() {
         return orderTableIds;
     }

@@ -2,9 +2,14 @@ package kitchenpos.menu.dto;
 
 import kitchenpos.menu.domain.MenuGroup;
 
+import java.util.Objects;
+
 public class MenuGroupResponse {
-    private final Long id;
-    private final String name;
+    private Long id;
+    private String name;
+
+    public MenuGroupResponse() {
+    }
 
     public MenuGroupResponse(Long id, String name) {
         this.id = id;
@@ -21,5 +26,18 @@ public class MenuGroupResponse {
 
     public String getName() {
         return name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MenuGroupResponse that = (MenuGroupResponse) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

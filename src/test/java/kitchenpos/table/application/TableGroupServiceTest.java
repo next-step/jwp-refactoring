@@ -8,6 +8,7 @@ import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.domain.TableGroupRepository;
 import kitchenpos.table.dto.TableGroupRequest;
+import kitchenpos.table.dto.TableGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -53,7 +54,7 @@ class TableGroupServiceTest {
         Order.of(orderTable, OrderStatus.COMPLETION, Arrays.asList(orderLineItem));
         Order.of(orderTable2, OrderStatus.COMPLETION, Arrays.asList(orderLineItem));
         orderTables = Arrays.asList(orderTable, orderTable2);
-        tableGroup = TableGroup.of(1L, null, orderTables);
+        tableGroup = TableGroup.of(1L, orderTables);
         tableGroupRequest = new TableGroupRequest(Arrays.asList(1L, 2L));
     }
 
@@ -65,7 +66,7 @@ class TableGroupServiceTest {
         when(tableGroupRepository.save(any())).thenReturn(tableGroup);
 
         // when
-        TableGroup expected = tableGroupService.create(tableGroupRequest);
+        TableGroupResponse expected = tableGroupService.create(tableGroupRequest);
 
         // then
         assertThat(tableGroup.getId()).isEqualTo(expected.getId());
