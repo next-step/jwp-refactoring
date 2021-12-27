@@ -25,6 +25,9 @@ public class TableGroupSaveRequest {
         this.orderTables = orderTables;
     }
 
+    public static TableGroupSaveRequest of(List<OrderTableRequest> orderTables) {
+        return new TableGroupSaveRequest(orderTables);
+    }
     public List<Long> getTableIds() {
         return orderTables.stream().map(OrderTableRequest::getId).collect(toList());
     }

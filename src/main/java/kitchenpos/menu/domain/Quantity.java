@@ -8,7 +8,7 @@ import javax.persistence.Transient;
 import java.util.Objects;
 
 /**
- * packageName : kitchenpos.domain
+ * packageName : kitchenpos.menu.domain
  * fileName : Quantity
  * author : haedoang
  * date : 2021/12/21

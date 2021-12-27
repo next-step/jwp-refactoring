@@ -1,10 +1,10 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.common.exception.NotFoundException;
 import kitchenpos.menu.exception.LimitPriceException;
+import kitchenpos.menu.exception.MenuProductNotFoundException;
+import kitchenpos.menu.exception.ProductNotFoundException;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.menugroup.exception.MenuGroupNotFoundException;
-import kitchenpos.menu.exception.ProductNotFoundException;
 import kitchenpos.product.domain.Price;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
@@ -32,16 +32,20 @@ public class MenuValidator {
 
     public void validate(Menu menu) {
         if (menu.getMenuProducts().isEmpty()) {
-            throw new NotFoundException("메뉴 항목이 비어있습니다.");
+            throw new MenuProductNotFoundException("메뉴 항목이 비어있습니다.");
         }
 
-        if (!menuGroupRepository.existsById(menu.getMenuGroupId())) {
+        if (!isExistMenuGroup(menu)) {
             throw new MenuGroupNotFoundException();
         }
 
         if (invalidMenuPrice(menu.getPrice(), menu.getMenuProducts())) {
             throw new LimitPriceException();
         }
+    }
+
+    private boolean isExistMenuGroup(Menu menu) {
+        return menuGroupRepository.existsById(menu.getMenuGroupId());
     }
 
     private boolean invalidMenuPrice(Price price, List<MenuProduct> menuProducts) {
@@ -51,10 +55,10 @@ public class MenuValidator {
     private BigDecimal getTotalPrice(List<MenuProduct> menuProducts) {
         return menuProducts.stream()
                 .map(
-                    menuProduct ->  {
-                        Product product = getProduct(menuProduct.getProductId());
-                        return menuProduct.price(product.getPrice());
-                    }
+                        menuProduct -> {
+                            Product product = getProduct(menuProduct.getProductId());
+                            return menuProduct.price(product.getPrice());
+                        }
                 ).reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 

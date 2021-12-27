@@ -49,8 +49,7 @@ class TableGroupRestControllerTest {
 
     @BeforeEach
     void setUp() {
-        TableGroup tableGroup = new TableGroup(Lists.newArrayList(주문불가_다섯명테이블(), 주문불가_두명테이블()));
-        response = TableGroupResponse.of(tableGroup);
+        response = TableGroupResponse.of(new TableGroup());
     }
 
     @Test

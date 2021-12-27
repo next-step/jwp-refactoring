@@ -1,10 +1,13 @@
 package kitchenpos.tablegroup.application;
 
 import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.domain.TableGroupEvent;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
+import kitchenpos.tablegroup.domain.TableUngroupEvent;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
 import kitchenpos.tablegroup.dto.TableGroupSaveRequest;
 import kitchenpos.tablegroup.exception.TableGroupNotFoundException;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,18 +15,23 @@ import org.springframework.transaction.annotation.Transactional;
 public class TableGroupService {
     private final TableGroupRepository tableGroupRepository;
     private final TableGroupValidator tableGroupValidator;
+    private final ApplicationEventPublisher eventPublisher;
 
-    public TableGroupService(TableGroupRepository tableGroupRepository, TableGroupValidator tableGroupValidator) {
+    public TableGroupService(
+            TableGroupRepository tableGroupRepository,
+            TableGroupValidator tableGroupValidator,
+            ApplicationEventPublisher eventPublisher
+    ) {
         this.tableGroupRepository = tableGroupRepository;
         this.tableGroupValidator = tableGroupValidator;
+        this.eventPublisher = eventPublisher;
     }
 
     @Transactional
     public TableGroupResponse create(final TableGroupSaveRequest request) {
         tableGroupValidator.validateGroup(request.getTableIds());
         TableGroup tableGroup = tableGroupRepository.save(new TableGroup());
-
-        //FIXME Table쪽으로 이벤트 발행하기 groupId추가 empty false
+        eventPublisher.publishEvent(new TableGroupEvent(request.getTableIds(), tableGroup.getId()));
         return TableGroupResponse.of(tableGroup);
     }
 

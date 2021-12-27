@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-import static kitchenpos.tablegroup.domain.TableGroup.MIN__NUMBER_TABLES;
+import static kitchenpos.tablegroup.domain.TableGroup.MIN_NUMBER_TABLES;
 
 /**
  * packageName : kitchenpos.tablegroup.application
@@ -32,27 +32,34 @@ public class TableGroupValidator {
     public void validateGroup(List<Long> tableIds) {
         List<OrderTable> orderTables = getTables(tableIds);
 
-        if (orderTables.isEmpty() || orderTables.size() < MIN__NUMBER_TABLES) {
-            throw new IllegalOrderTableException();
+        if (orderTables.isEmpty() || orderTables.size() < MIN_NUMBER_TABLES) {
+            throw new IllegalOrderTableException("테이블의 개수가 작습니다.");
         }
-        if (isEmpty(orderTables)) {
-            throw new IllegalOrderTableException();
+        if (!allEmpty(orderTables)) {
+            throw new IllegalOrderTableException("테이블 상태가 빈 테이블이 아닙니다.");
         }
+        if (!ungrouped(orderTables)) {
+            throw new IllegalOrderTableException("그룹된 테이블이 존재합니다.");
+        }
+    }
+
+    private boolean ungrouped(List<OrderTable> orderTables) {
+        return orderTables.stream().noneMatch(OrderTable::isGrouped);
     }
 
     public void validateUngroup(TableGroup tableGroup) {
         List<OrderTable> orderTables = getTables(tableGroup);
 
-        if (!usingTable(orderTables)) {
+        if (existUsingTable(orderTables)) {
             throw new NotSupportUngroupException();
         }
     }
 
-    private boolean usingTable(List<OrderTable> orderTables) {
-        return orderTables.stream().noneMatch(tableValidator::usingTable);
+    private boolean existUsingTable(List<OrderTable> orderTables) {
+        return orderTables.stream().anyMatch(tableValidator::usingTable);
     }
 
-    private boolean isEmpty(List<OrderTable> orderTables) {
+    private boolean allEmpty(List<OrderTable> orderTables) {
         return orderTables.stream()
                 .allMatch(OrderTable::isEmpty);
     }

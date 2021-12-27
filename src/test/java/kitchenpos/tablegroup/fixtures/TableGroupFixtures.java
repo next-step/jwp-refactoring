@@ -17,19 +17,15 @@ import static kitchenpos.table.fixtures.OrderTableFixtures.*;
  * description :
  */
 public class TableGroupFixtures {
-    public static TableGroup 주문불가_5인_2인_그룹테이블() {
-        return new TableGroup(Lists.newArrayList(주문불가_다섯명테이블(), 주문불가_두명테이블()));
-    }
-
     public static TableGroupSaveRequest 그룹테이블_그룹요청() {
-        return new TableGroupSaveRequest(Lists.newArrayList(테이블_그룹요청(), 테이블_그룹요청()));
+        return TableGroupSaveRequest.of(Lists.newArrayList(테이블_그룹요청(), 테이블_그룹요청()));
     }
 
     public static TableGroupSaveRequest 그룹테이블_그룹요청(List<OrderTableRequest> orderTableRequests) {
-        return new TableGroupSaveRequest(orderTableRequests);
+        return  TableGroupSaveRequest.of(orderTableRequests);
     }
 
     public static TableGroupSaveRequest 그룹테이블_그룹요청_예외_테이블한개() {
-        return new TableGroupSaveRequest(Lists.newArrayList(테이블_그룹요청()));
+        return TableGroupSaveRequest.of(Lists.newArrayList(테이블_그룹요청()));
     }
 }

@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 /**
- * packageName : kitchenpos.domain
+ * packageName : kitchenpos.menu.domain
  * fileName : MenuRepository
  * author : haedoang
  * date : 2021/12/21

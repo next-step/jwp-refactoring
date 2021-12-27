@@ -27,49 +27,21 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 @DataJpaTest
 @DisplayName("그룹테이블 리파지토리 테스트")
 class TableGroupRepositoryTest {
-    private OrderTable 주문가능_다섯명테이블;
-    private OrderTable 주문가능_두명테이블;
-    private OrderTable 주문불가_다섯명테이블;
-    private OrderTable 주문불가_두명테이블;
-
-    @Autowired
-    private OrderTableRepository orderTableRepository;
-
     @Autowired
     private TableGroupRepository tableGroupRepository;
-
-    @BeforeEach
-    void setUp() {
-        // not working
-        주문가능_다섯명테이블 = orderTableRepository.save(주문가능_다섯명테이블());
-        주문가능_두명테이블 = orderTableRepository.save(주문가능_두명테이블());
-
-        // working
-        주문불가_다섯명테이블 = orderTableRepository.save(주문불가_다섯명테이블());
-        주문불가_두명테이블 = orderTableRepository.save(주문불가_두명테이블());
-    }
 
     @Test
     @DisplayName("그룹 테이블을 생성한다.")
     public void create() {
         // given
-        TableGroup tableGroup = new TableGroup(Lists.newArrayList(주문불가_다섯명테이블, 주문불가_두명테이블));
+        TableGroup tableGroup = new TableGroup();
 
         // when
         TableGroup actual = tableGroupRepository.save(tableGroup);
 
         // then
-        assertAll(
-                () -> assertThat(actual.getId()).isNotNull(),
-                () -> assertThat(actual.getOrderTables()).hasSize(2)
-        );
+        assertThat(actual.getId()).isNotNull();
     }
 
-    @Test
-    @DisplayName("테이블이 사용가능인 경우 그룹 테이블로 사용할 수 없다.")
-    public void createFail() {
-        //then
-        assertThatThrownBy(() -> new TableGroup(Lists.newArrayList(주문가능_다섯명테이블, 주문가능_두명테이블)))
-                .isInstanceOf(IllegalOrderTableException.class);
-    }
+
 }

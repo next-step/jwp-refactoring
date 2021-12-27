@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 @Entity
 public class TableGroup {
     @Transient
-    public static final int MIN__NUMBER_TABLES = 2;
+    public static final int MIN_NUMBER_TABLES = 2;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

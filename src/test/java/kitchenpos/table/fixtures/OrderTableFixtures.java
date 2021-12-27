@@ -47,7 +47,9 @@ public class OrderTableFixtures {
     }
 
     public static OrderTable 그룹화된_테이블() {
-        return new OrderTable(3, false, 1L);
+        OrderTable orderTable = new OrderTable(3, false);
+        orderTable.groupBy(1L);
+        return orderTable;
     }
     public static OrderTable 그룹화되지_않은_테이블() {
         return new OrderTable(3, false);
@@ -73,11 +75,11 @@ public class OrderTableFixtures {
     }
 
     public static OrderTableRequest 테이블_그룹요청() {
-        return new OrderTableRequest();
+        return OrderTableRequest.of(1L);
     }
 
     public static OrderTableRequest 테이블_그룹요청(Long tableId) {
-        return new OrderTableRequest(tableId);
+        return OrderTableRequest.of(tableId);
     }
 }
 
