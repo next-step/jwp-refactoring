@@ -60,7 +60,7 @@ public class TableGroupService {
 
         final List<Long> orderTableIds = orderTables.getIds();
 
-        if (orderDao.existsByOrderTableIdInAndOrderStatusIn(
+        if (orderDao.existsByOrderTable_IdInAndOrderStatusIn(
             orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
             throw new IllegalArgumentException();
         }
