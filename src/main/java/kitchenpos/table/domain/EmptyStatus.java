@@ -1,7 +1,9 @@
 package kitchenpos.table.domain;
 
+import javax.persistence.Embeddable;
 import java.util.Objects;
 
+@Embeddable
 public class EmptyStatus {
     private boolean empty;
 
