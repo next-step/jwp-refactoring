@@ -11,7 +11,6 @@ import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -31,7 +30,7 @@ public class MenuService {
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
         final List<Long> productIds = menuRequest.getProductIds();
-        validateInputValue(menuRequest, productIds);
+        validateInputValue(menuRequest);
         List<Product> products = findProducts(productIds);
         Menu createMenu = new Menu(menuRequest.getName(), menuRequest.getPrice(), menuRequest.getMenuGroupId(), menuRequest.toMenuProducts(products));
         Menu persistMenu = menuRepository.save(createMenu);
@@ -52,11 +51,7 @@ public class MenuService {
         return products;
     }
 
-    private void validateInputValue(MenuRequest menuRequest, List<Long> productIds) {
-        if (CollectionUtils.isEmpty(productIds)) {
-            throw new InputMenuDataException(InputMenuDataErrorCode.THE_PRODUCT_IS_EMPTY);
-        }
-
+    private void validateInputValue(MenuRequest menuRequest) {
         if (!menuGroupRepository.existsById(menuRequest.getMenuGroupId())) {
             throw new InputMenuDataException(InputMenuDataErrorCode.THE_MENU_GROUP_CAN_NOT_SEARCH);
         }

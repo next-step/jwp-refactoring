@@ -4,6 +4,7 @@ import kitchenpos.common.domain.Name;
 import kitchenpos.common.domain.Price;
 import kitchenpos.menu.exceptions.InputMenuDataErrorCode;
 import kitchenpos.menu.exceptions.InputMenuDataException;
+import org.springframework.util.CollectionUtils;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -27,7 +28,6 @@ public class Menu {
     @Column(name = "menuGroupId")
     private Long menuGroupId;
 
-
     @Embedded
     private MenuProducts menuProducts = new MenuProducts();
 
@@ -35,13 +35,9 @@ public class Menu {
 
     }
 
-    public Menu(Long id, String name, BigDecimal price, Long menuGroupId) {
-        this(name, price, menuGroupId);
-        this.id = id;
-    }
-
     public Menu(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
         this(name, price, menuGroupId);
+        checkValidMenuProducts(menuProducts);
         this.menuProducts = new MenuProducts(menuProducts);
     }
 
@@ -51,7 +47,7 @@ public class Menu {
     }
 
     public Menu(String name, BigDecimal price, Long menuGroupId) {
-        checkValidValue(price, menuGroupId);
+        checkValidMenuGroup(menuGroupId);
         this.name = new Name(name);
         this.price = new Price(price);
         this.menuGroupId = menuGroupId;
@@ -59,20 +55,6 @@ public class Menu {
 
     public static Menu of(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
         return new Menu(id, name, price, menuGroupId, menuProducts);
-    }
-
-    private void checkValidValue(BigDecimal price, Long menuGroupId) {
-        if (price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new InputMenuDataException(InputMenuDataErrorCode.IT_CAN_NOT_INPUT_MENU_PRICE_LESS_THAN_ZERO);
-        }
-
-        if (menuGroupId == null) {
-            throw new InputMenuDataException(InputMenuDataErrorCode.YOU_MUST_INPUT_MENU_GROUP_ID);
-        }
-
-        if (menuGroupId < 0) {
-            throw new InputMenuDataException(InputMenuDataErrorCode.THE_MENU_GROUP_ID_IS_LESS_THAN_ZERO);
-        }
     }
 
     public Long getId() {
@@ -100,6 +82,22 @@ public class Menu {
         BigDecimal amount = this.getPrice().getPrice();
         if (amount.compareTo(sumPrice) > 0) {
             throw new InputMenuDataException(InputMenuDataErrorCode.THE_SUM_OF_MENU_PRICE_IS_LESS_THAN_SUM_OF_PRODUCTS);
+        }
+    }
+
+    private void checkValidMenuGroup(Long menuGroupId) {
+        if (menuGroupId == null) {
+            throw new InputMenuDataException(InputMenuDataErrorCode.YOU_MUST_INPUT_MENU_GROUP_ID);
+        }
+
+        if (menuGroupId < 0) {
+            throw new InputMenuDataException(InputMenuDataErrorCode.THE_MENU_GROUP_ID_IS_LESS_THAN_ZERO);
+        }
+    }
+
+    private void checkValidMenuProducts(List<MenuProduct> menuProducts) {
+        if (CollectionUtils.isEmpty(menuProducts)) {
+            throw new InputMenuDataException(InputMenuDataErrorCode.THE_MENU_MUST_HAVE_PRODUCT);
         }
     }
 

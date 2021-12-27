@@ -1,12 +1,13 @@
 package kitchenpos.menu.application;
 
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroupRepository;
-import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.common.exception.InputDataErrorCode;
+import kitchenpos.common.exception.InputDataException;
+import kitchenpos.menu.domain.*;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.exceptions.InputMenuDataErrorCode;
 import kitchenpos.menu.exceptions.InputMenuDataException;
+import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -21,7 +22,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.*;
 
 @DisplayName("메뉴 서비스 테스트")
@@ -41,6 +44,15 @@ class MenuServiceTest {
     private MenuService menuService;
 
     @Test
+    @DisplayName("메뉴를 등록한다.")
+    void saveMenuTest(){
+        Product newProduct = new Product(1L, "신양념치킨", new BigDecimal(50000));
+        MenuProduct menuProduct = new MenuProduct(newProduct, 5);
+        Menu menu = new Menu(1L, "스페셜치킨", new BigDecimal(10000), 1L, Arrays.asList(menuProduct));
+        checkValidMenu(menu);
+    }
+
+    @Test
     @DisplayName("메뉴 조회한다.")
     void findMenusTest() {
         //given
@@ -54,39 +66,30 @@ class MenuServiceTest {
     @DisplayName("잘못된 가격의 메뉴를 등록하면 에러처리한다.")
     void saveWrongPriceMenuTest() {
         //given
-        Menu menu = mock(Menu.class);
+        MenuRequest menu = mock(MenuRequest.class);
+        when(menu.getName()).thenReturn("치킨세트");
+        when(menu.getPrice()).thenReturn(new BigDecimal(-1000));
+        when(menuGroupRepository.existsById(anyLong())).thenReturn(true);
         //when
         //then
         Assertions.assertThatThrownBy(() -> {
-                    new Menu("치킨", new BigDecimal(-100), 1L, null);
-                }).isInstanceOf(InputMenuDataException.class)
-                .hasMessageContaining(InputMenuDataErrorCode.IT_CAN_NOT_INPUT_MENU_PRICE_LESS_THAN_ZERO.errorMessage());
+                    menuService.create(menu);
+                }).isInstanceOf(InputDataException.class)
+                .hasMessageContaining(InputDataErrorCode.THE_PRICE_CAN_NOT_INPUT_LESS_THAN_ZERO.errorMessage());
     }
 
     @Test
-    @DisplayName("menuGroupId를 입력하지 않았을 때 에러처리한다.")
-    void saveEmptyMenuGroupIdPriceMenuTest() {
+    @DisplayName("menuGroupId를 존재하지 않았을 때 에러처리한다.")
+    void saveNotExistMenuGroupIdPriceMenuTest() {
         //given
-        Menu menu = mock(Menu.class);
+        MenuRequest menu = mock(MenuRequest.class);
+        when(menu.getMenuGroupId()).thenReturn(null);
         //when
         //then
         Assertions.assertThatThrownBy(() -> {
-                    new Menu("치킨", new BigDecimal(100), null, null);
+                    menuService.create(menu);
                 }).isInstanceOf(InputMenuDataException.class)
-                .hasMessageContaining(InputMenuDataErrorCode.YOU_MUST_INPUT_MENU_GROUP_ID.errorMessage());
-    }
-
-    @Test
-    @DisplayName("menuGroupId가 0보다 작을 경우 에러처리한다.")
-    void saveWrongMenuGroupIdPriceMenuTest() {
-        //given
-        Menu menu = mock(Menu.class);
-        //when
-        //then
-        Assertions.assertThatThrownBy(() -> {
-                    new Menu(1L, "치킨", new BigDecimal(100), -2L);
-                }).isInstanceOf(InputMenuDataException.class)
-                .hasMessageContaining(InputMenuDataErrorCode.THE_MENU_GROUP_ID_IS_LESS_THAN_ZERO.errorMessage());
+                .hasMessageContaining(InputMenuDataErrorCode.THE_MENU_GROUP_CAN_NOT_SEARCH.errorMessage());
     }
 
     @Test
@@ -107,5 +110,14 @@ class MenuServiceTest {
             menuService.create(menuRequest);
         }).isInstanceOf(InputMenuDataException.class)
                 .hasMessageContaining(InputMenuDataErrorCode.THE_PRODUCT_IS_NOT_REGISTERED.errorMessage());
+    }
+
+    private void checkValidMenu(Menu menu) {
+        assertAll(
+                () -> assertThat(menu.getId()).isEqualTo(1L),
+                () -> assertThat(menu.getName().getName()).isEqualTo("스페셜치킨"),
+                () -> assertThat(menu.getPrice().getPrice()).isEqualTo(new BigDecimal("10000")),
+                () -> assertThat(menu.getMenuGroupId()).isEqualTo(1L)
+        );
     }
 }
