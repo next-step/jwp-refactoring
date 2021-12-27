@@ -1,7 +1,5 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.order.exception.CannotChangeOrderStatusException;
 import kitchenpos.global.BaseTimeEntity;
 
 import javax.persistence.*;
@@ -16,9 +14,8 @@ public class Order extends BaseTimeEntity {
     @Column(name = "id", length = 20)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "order_table_id")
-    private OrderTable orderTable;
+    @Column(name = "order_table_id", length = 20, nullable = false)
+    private Long orderTable;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<OrderLineItem> orderLineItems = new ArrayList<>();
@@ -30,32 +27,35 @@ public class Order extends BaseTimeEntity {
     protected Order() {
     }
 
+    public Order(final Long orderTable, final List<OrderLineItem> orderLineItems, final OrderStatus orderStatus) {
+        this.orderTable = orderTable;
+        this.orderLineItems = orderLineItems;
+        this.orderStatus = orderStatus;
+    }
+
     public Order(final OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
     }
 
-    public void saveOrderLineItem(OrderLineItem orderLineItem) {
-        this.orderLineItems.add(orderLineItem);
-        orderLineItem.addOrder(this);
+    public void addOrder() {
+        orderLineItems.stream()
+                .forEach(orderLineItem -> orderLineItem.addOrder(this));
     }
 
-    public void changeOrderStatus(OrderStatus changeOrderStatus) {
-        if (OrderStatus.COMPLETION.equals(this.orderStatus)) {
-            throw new CannotChangeOrderStatusException(String.format("order status is %s", orderStatus.name()));
-        }
+    public void changeOrderStatus(OrderStatus changeOrderStatus, OrderValidator orderValidator) {
+        orderValidator.changeOrderStatusValidator(this);
         this.orderStatus = changeOrderStatus;
     }
 
-    public void saveOrderTable(OrderTable orderTable) {
-        this.orderTable = orderTable;
-        orderTable.addOrder(this);
+    public static Order toOrderCooking(final Long orderTable, final List<OrderLineItem> orderLineItems) {
+        return new Order(orderTable, orderLineItems, OrderStatus.COOKING);
     }
 
     public Long getId() {
         return id;
     }
 
-    public OrderTable getOrderTable() {
+    public Long getOrderTable() {
         return orderTable;
     }
 

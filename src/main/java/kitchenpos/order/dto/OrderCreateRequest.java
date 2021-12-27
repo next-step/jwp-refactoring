@@ -1,8 +1,11 @@
 package kitchenpos.order.dto;
 
+import kitchenpos.order.domain.Order;
+
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class OrderCreateRequest {
 
@@ -47,5 +50,13 @@ public class OrderCreateRequest {
         public Long getQuantity() {
             return quantity;
         }
+    }
+
+    public Order toEntity() {
+        final List<kitchenpos.order.domain.OrderLineItem> orderLineItems = this.orderLineItems.stream()
+                .map(orderLineItem -> new kitchenpos.order.domain.OrderLineItem(orderLineItem.getMenuId(), orderLineItem.getQuantity()))
+                .collect(Collectors.toList());
+
+        return Order.toOrderCooking(orderTableId, orderLineItems);
     }
 }

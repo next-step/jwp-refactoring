@@ -1,7 +1,6 @@
 package kitchenpos.order.domain;
 
 import kitchenpos.global.BaseTimeEntity;
-import kitchenpos.menu.domain.Menu;
 
 import javax.persistence.*;
 
@@ -16,9 +15,8 @@ public class OrderLineItem extends BaseTimeEntity {
     @JoinColumn(name = "order_id")
     private Order order;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "menu_id")
-    private Menu menu;
+    @Column(name = "menu_id", length = 20, nullable = false)
+    private Long menu;
 
     @Column(name = "quantity", length = 20, nullable = false)
     private long quantity;
@@ -26,7 +24,7 @@ public class OrderLineItem extends BaseTimeEntity {
     protected OrderLineItem() {
     }
 
-    public OrderLineItem(final Menu menu, final long quantity) {
+    public OrderLineItem(final Long menu, final long quantity) {
         this.menu = menu;
         this.quantity = quantity;
     }
@@ -43,7 +41,7 @@ public class OrderLineItem extends BaseTimeEntity {
         return order;
     }
 
-    public Menu getMenu() {
+    public Long getMenu() {
         return menu;
     }
 
