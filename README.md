@@ -103,8 +103,8 @@
 | --- | --- |
 | create | **새로운 주문을 등록한다.** |
 | create | 주문 항목은 반드시 존재한다. |
-| create | 메뉴에 존재하는 상품들은 모두 존재해야 한다. |
-| create | 주문 항목의 개수가 동일해야 한다. |
+| create | 메뉴에 존재하는 상품들은 모두 존재해야 한다. - jpa 보장이라고 생각 - |
+| create | 주문 항목의 개수가 동일해야 한다. - jpa 보장이라고 생각 - |
 | create | 주문 테이블이 존재해야 한다. |
 | create | 주문 테이블은 비어있지 않아야 한다. |
 | create | 주문 항목에 주문 id를 등록한다. |
@@ -140,7 +140,7 @@
 
 ---
 
-### 테이블
+### 주문 테이블
 
 - 컨트롤러
 
@@ -159,7 +159,7 @@
 | list | **테이블 목록을 조회한다.** |
 | changeEmpty | **빈 테이블로 변경한다.** |
 | changeEmpty | 주문 테이블이 반드시 존재한다. |
-| changeEmpty | 주문 테이블에 테이블 그룹 아이디가 없어야 한다. |
+| changeEmpty | 테이블 그룹이 아닌 주문 테이블만 빈 테이블로 변경 가능하다. |
 | changeEmpty | 주문 상태는 cooking이나 meal이 아니어야 한다. |
 | changeNumberOfGuests | **테이블 게스트 숫자를 변경한다.** |
 | changeNumberOfGuests | 테이블 게스트 숫자는 0 이하일 수 없다. |
@@ -171,3 +171,26 @@
   
 
   ![image](https://user-images.githubusercontent.com/17772475/146971725-05a656c6-22ca-48ab-923f-7ee8180344fa.png)
+  
+
+## 2단계 할 일
+- [x] Dao 기반 -> Repository 기반 (spring-data-jpa) 로 변경
+- [x] Entity 설정
+- [x] Dao 제거
+- [x] 디렉토리 정리 (도메인 기반)
+- [x] mock 제거 -> inside-out 기반 테스트 작성 -> 취소 (직접 작성해보니 도메인 테스트에서 inside-out 방식으로 거르고 service 테스트 시에는 mock이 더 영속성에 제약이 없었다.)
+- [x] getter setter 제거
+- [x] 한글로 변수명 바꾸기
+- [x] 도메인 테스트로 더 단단하게 보호하기
+- [x] 인수테스트 작성 (시간이 있으면.. 12시까지) - 시간 부족으로 인해... delay
+
+## 2 단계 의문 정리
+- product는 menu에 속하기만 하는 것 같은데 product와 menuproduct 둘 다 필요할까..?
+- menu와 menuProduct도 겹치는 것 같은 느낌인데 그럴까..?
+- menu 를 생성하면서 menuproduct를 생성하는데 menuproduct는 menu를 가지는 것이 필수다 => 여기 설정 부분이 자꾸 꼬인다.
+_ menuGroup은 왜 필수일까..?
+- jpa 연결 이후 보장되는 것 같아서 생략한 `주문 항목의 개수가 동일해야 한다.` 는 정말 보장될까? (내가 생각하지 못한 예외가 있는 것이 아닐까 생각 중)
+- changeEmpty 와 changeNumbersOfGuest의 애매모호함 때문에 부딪히는 면이 있는 것 같다.
+
+## 주요 변화 기록
+- TableService -> OrderTableService로 변경
