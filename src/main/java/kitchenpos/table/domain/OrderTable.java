@@ -53,32 +53,12 @@ public class OrderTable {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
-    public Long getTableGroupId() {
-        return tableGroup.getId();
-    }
-
-    public void setTableGroupId(final Long tableGroupId) {
-        this.tableGroup.setId(tableGroupId);
-    }
-
     public int getNumberOfGuests() {
         return numberOfGuests.getNumberOfGuests();
     }
 
-    public void setNumberOfGuests(final int numberOfGuests) {
-        this.numberOfGuests = NumberOfGuests.of(numberOfGuests);
-    }
-
     public boolean isEmpty() {
         return empty;
-    }
-
-    public void setEmpty(final boolean empty) {
-        this.empty = empty;
     }
 
     public TableGroup getTableGroup() {

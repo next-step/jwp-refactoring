@@ -89,24 +89,12 @@ public class Order {
         this.id = id;
     }
 
-    public Long getOrderTableId() {
-        return orderTable.getId();
-    }
-
-    public void setOrderTableId(final Long orderTableId) {
-        orderTable.setId(orderTableId);
-    }
-
     public OrderStatus getOrderStatus() {
         return orderStatus;
     }
 
     public LocalDateTime getOrderedTime() {
         return orderedTime;
-    }
-
-    public void setOrderedTime(final LocalDateTime orderedTime) {
-        this.orderedTime = orderedTime;
     }
 
     public List<OrderLineItem> getOrderLineItems() {

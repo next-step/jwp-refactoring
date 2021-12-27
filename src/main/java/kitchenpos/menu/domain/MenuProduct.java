@@ -46,37 +46,14 @@ public class MenuProduct {
         return seq;
     }
 
-    public void setSeq(final Long seq) {
-        this.seq = seq;
-    }
-
-    public Long getMenuId() {
-        return menu.getId();
-    }
-
-    public void setMenuId(final Long menuId) {
-        menu.setId(menuId);
-    }
-
-    public Long getProductId() {
-        return product.getId();
-    }
-
-    public void setProductId(final Long productId) {
-        product.setId(productId);
-    }
-
     public long getQuantity() {
         return quantity.getQuantity();
-    }
-
-    public void setQuantity(final long quantity) {
-        this.quantity = Quantity.of(quantity);
     }
 
     public Product getProduct() {
         return product;
     }
+
     public Price calculate() {
         return product.multiply(quantity.getQuantity());
     }
