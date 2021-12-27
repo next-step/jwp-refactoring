@@ -8,10 +8,12 @@ import java.util.Arrays;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.repo.OrderRepository;
+import kitchenpos.ordertable.domain.domain.OrderTable;
+import kitchenpos.ordertable.domain.service.OrderTableExternalValidator;
 import kitchenpos.ordertable.exception.CanNotEditOrderTableEmptyByGroupException;
 import kitchenpos.ordertable.exception.CanNotEditOrderTableNumberOfGuestsByEmptyException;
-import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.domain.domain.TableGroup;
 
 class OrderTableTest {
 

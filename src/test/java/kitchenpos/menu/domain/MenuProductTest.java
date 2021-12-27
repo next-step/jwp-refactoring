@@ -8,7 +8,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import kitchenpos.common.Price;
-import kitchenpos.product.domain.Product;
+import kitchenpos.menu.domain.domain.MenuProduct;
+import kitchenpos.product.domain.domain.Product;
 
 class MenuProductTest {
 

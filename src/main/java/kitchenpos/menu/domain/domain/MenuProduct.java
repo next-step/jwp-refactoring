@@ -1,4 +1,4 @@
-package kitchenpos.menu.domain;
+package kitchenpos.menu.domain.domain;
 
 import java.util.Objects;
 
@@ -16,7 +16,7 @@ import javax.persistence.Table;
 
 import kitchenpos.common.Price;
 import kitchenpos.common.Quantity;
-import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.domain.Product;
 import kitchenpos.product.exception.NotFoundProductException;
 
 @Entity

@@ -6,9 +6,9 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.domain.OrderTableRepository;
-import kitchenpos.ordertable.domain.OrderTableExternalValidator;
+import kitchenpos.ordertable.domain.domain.OrderTable;
+import kitchenpos.ordertable.domain.repo.OrderTableRepository;
+import kitchenpos.ordertable.domain.service.OrderTableExternalValidator;
 import kitchenpos.ordertable.dto.OrderTableAddRequest;
 import kitchenpos.ordertable.dto.OrderTableEmptyRequest;
 import kitchenpos.ordertable.dto.OrderTableNumberOfGuestsRequest;

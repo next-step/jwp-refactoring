@@ -1,4 +1,4 @@
-package kitchenpos.menu.domain;
+package kitchenpos.menu.domain.domain;
 
 import java.util.ArrayList;
 import java.util.Collections;

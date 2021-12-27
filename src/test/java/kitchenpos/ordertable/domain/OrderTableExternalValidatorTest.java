@@ -10,7 +10,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.repo.OrderRepository;
+import kitchenpos.ordertable.domain.domain.OrderTable;
+import kitchenpos.ordertable.domain.service.OrderTableExternalValidator;
 import kitchenpos.ordertable.exception.CanNotEditOrderTableEmptyByStatusException;
 
 @ExtendWith(MockitoExtension.class)

@@ -5,12 +5,12 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.domain.OrderTableRepository;
+import kitchenpos.ordertable.domain.domain.OrderTable;
+import kitchenpos.ordertable.domain.repo.OrderTableRepository;
 import kitchenpos.ordertable.exception.NotFoundOrderTableException;
-import kitchenpos.tablegroup.domain.TableGroup;
-import kitchenpos.tablegroup.domain.TableGroupExternalValidator;
-import kitchenpos.tablegroup.domain.TableGroupRepository;
+import kitchenpos.tablegroup.domain.domain.TableGroup;
+import kitchenpos.tablegroup.domain.service.TableGroupExternalValidator;
+import kitchenpos.tablegroup.domain.repo.TableGroupRepository;
 import kitchenpos.tablegroup.dto.TableGroupAddRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
 import kitchenpos.tablegroup.exception.NotFoundTableGroupException;

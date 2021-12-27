@@ -16,23 +16,23 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.domain.domain.Menu;
+import kitchenpos.menu.domain.domain.MenuProduct;
+import kitchenpos.menu.domain.repo.MenuRepository;
 import kitchenpos.menu.exception.NotFoundMenuException;
-import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.menugroup.domain.domain.MenuGroup;
+import kitchenpos.order.domain.domain.Order;
+import kitchenpos.order.domain.domain.OrderLineItem;
+import kitchenpos.order.domain.repo.OrderRepository;
+import kitchenpos.order.domain.domain.OrderStatus;
 import kitchenpos.order.dto.OrderAddRequest;
 import kitchenpos.order.dto.OrderLineItemAddRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusRequest;
-import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.domain.OrderTableRepository;
+import kitchenpos.ordertable.domain.domain.OrderTable;
+import kitchenpos.ordertable.domain.repo.OrderTableRepository;
 import kitchenpos.ordertable.exception.NotFoundOrderTableException;
-import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.domain.Product;
 
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {

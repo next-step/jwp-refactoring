@@ -9,14 +9,17 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menu.domain.domain.Menu;
+import kitchenpos.menu.domain.domain.MenuProduct;
+import kitchenpos.menugroup.domain.domain.MenuGroup;
+import kitchenpos.order.domain.domain.Order;
+import kitchenpos.order.domain.domain.OrderLineItem;
+import kitchenpos.order.domain.domain.OrderStatus;
 import kitchenpos.order.exception.CanNotEditOrderStatusException;
 import kitchenpos.order.exception.InvalidOrderTableException;
 import kitchenpos.order.exception.NotFoundOrderLineItemsException;
-import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.product.domain.Product;
+import kitchenpos.ordertable.domain.domain.OrderTable;
+import kitchenpos.product.domain.domain.Product;
 
 class OrderTest {
 

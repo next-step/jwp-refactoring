@@ -12,8 +12,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.menugroup.domain.MenuGroupRepository;
+import kitchenpos.menugroup.domain.domain.MenuGroup;
+import kitchenpos.menugroup.domain.repo.MenuGroupRepository;
 import kitchenpos.menugroup.dto.MenuGroupAddRequest;
 import kitchenpos.menugroup.dto.MenuGroupResponse;
 

@@ -2,8 +2,8 @@ package kitchenpos.tablegroup.dto;
 
 import java.util.List;
 
-import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.ordertable.domain.domain.OrderTable;
+import kitchenpos.tablegroup.domain.domain.TableGroup;
 
 public class TableGroupAddRequest {
 

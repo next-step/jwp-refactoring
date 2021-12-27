@@ -13,8 +13,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.product.domain.Product;
-import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.product.domain.domain.Product;
+import kitchenpos.product.domain.repo.ProductRepository;
 import kitchenpos.product.dto.ProductAddRequest;
 import kitchenpos.product.dto.ProductResponse;
 

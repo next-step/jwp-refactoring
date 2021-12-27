@@ -16,18 +16,18 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.domain.domain.Menu;
+import kitchenpos.menu.domain.domain.MenuProduct;
+import kitchenpos.menu.domain.repo.MenuRepository;
 import kitchenpos.menu.dto.MenuAddRequest;
 import kitchenpos.menu.dto.MenuProductAddRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.exception.NotFoundMenuProductException;
-import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.menugroup.domain.MenuGroupRepository;
+import kitchenpos.menugroup.domain.domain.MenuGroup;
+import kitchenpos.menugroup.domain.repo.MenuGroupRepository;
 import kitchenpos.menugroup.exception.NotFoundMenuGroupException;
-import kitchenpos.product.domain.Product;
-import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.product.domain.domain.Product;
+import kitchenpos.product.domain.repo.ProductRepository;
 
 @ExtendWith(MockitoExtension.class)
 class MenuServiceTest {

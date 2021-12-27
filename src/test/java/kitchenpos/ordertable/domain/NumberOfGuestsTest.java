@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import kitchenpos.ordertable.domain.domain.NumberOfGuests;
 import kitchenpos.ordertable.exception.InvalidNumberOfGuestsException;
 
 class NumberOfGuestsTest {

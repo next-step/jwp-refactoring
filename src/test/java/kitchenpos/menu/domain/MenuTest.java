@@ -8,9 +8,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import kitchenpos.common.Price;
+import kitchenpos.menu.domain.domain.Menu;
+import kitchenpos.menu.domain.domain.MenuProduct;
 import kitchenpos.menu.exception.InvalidMenuPriceException;
-import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.product.domain.Product;
+import kitchenpos.menugroup.domain.domain.MenuGroup;
+import kitchenpos.product.domain.domain.Product;
 
 class MenuTest {
 

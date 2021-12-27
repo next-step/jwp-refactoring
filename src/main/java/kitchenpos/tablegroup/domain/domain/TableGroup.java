@@ -1,4 +1,4 @@
-package kitchenpos.tablegroup.domain;
+package kitchenpos.tablegroup.domain.domain;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -11,7 +11,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.domain.domain.OrderTable;
+import kitchenpos.tablegroup.domain.service.TableGroupExternalValidator;
 
 @Entity
 @Table(name = "table_group")

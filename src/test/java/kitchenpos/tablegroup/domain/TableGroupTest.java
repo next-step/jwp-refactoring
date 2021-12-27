@@ -11,8 +11,10 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.order.domain.repo.OrderRepository;
+import kitchenpos.ordertable.domain.domain.OrderTable;
+import kitchenpos.tablegroup.domain.domain.TableGroup;
+import kitchenpos.tablegroup.domain.service.TableGroupExternalValidator;
 import kitchenpos.tablegroup.exception.CanNotGroupByEmptyException;
 import kitchenpos.tablegroup.exception.CanNotGroupByGroupingAlreadyException;
 import kitchenpos.tablegroup.exception.InvalidOrderTablesException;

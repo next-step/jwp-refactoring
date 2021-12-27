@@ -1,4 +1,4 @@
-package kitchenpos.ordertable.domain;
+package kitchenpos.ordertable.domain.domain;
 
 import java.util.Objects;
 
@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import kitchenpos.ordertable.domain.service.OrderTableExternalValidator;
 import kitchenpos.ordertable.exception.CanNotEditOrderTableEmptyByGroupException;
 import kitchenpos.ordertable.exception.CanNotEditOrderTableNumberOfGuestsByEmptyException;
 import kitchenpos.tablegroup.exception.CanNotGroupByEmptyException;

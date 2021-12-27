@@ -1,6 +1,6 @@
 package kitchenpos.tablegroup.exception;
 
-import kitchenpos.tablegroup.domain.OrderTables;
+import kitchenpos.tablegroup.domain.domain.OrderTables;
 
 public class InvalidOrderTablesException extends IllegalArgumentException {
 

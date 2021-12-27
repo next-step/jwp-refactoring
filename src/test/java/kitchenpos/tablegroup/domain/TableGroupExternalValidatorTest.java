@@ -12,8 +12,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.order.domain.repo.OrderRepository;
+import kitchenpos.ordertable.domain.domain.OrderTable;
+import kitchenpos.tablegroup.domain.domain.TableGroup;
+import kitchenpos.tablegroup.domain.service.TableGroupExternalValidator;
 import kitchenpos.tablegroup.exception.CanNotUngroupByOrderStatusException;
 
 @ExtendWith(MockitoExtension.class)

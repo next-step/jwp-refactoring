@@ -1,4 +1,4 @@
-package kitchenpos.order.domain;
+package kitchenpos.order.domain.domain;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -20,7 +20,7 @@ import javax.persistence.Table;
 
 import kitchenpos.order.exception.CanNotEditOrderStatusException;
 import kitchenpos.order.exception.InvalidOrderTableException;
-import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.domain.domain.OrderTable;
 
 @Entity
 @Table(name = "orders")

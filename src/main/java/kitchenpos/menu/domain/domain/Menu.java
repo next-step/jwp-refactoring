@@ -1,4 +1,4 @@
-package kitchenpos.menu.domain;
+package kitchenpos.menu.domain.domain;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -17,7 +17,7 @@ import javax.persistence.Table;
 
 import kitchenpos.common.Price;
 import kitchenpos.menu.exception.InvalidMenuPriceException;
-import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menugroup.domain.domain.MenuGroup;
 
 @Entity
 @Table(name = "menu")

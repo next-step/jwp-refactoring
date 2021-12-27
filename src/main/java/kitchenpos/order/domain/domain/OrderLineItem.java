@@ -1,4 +1,4 @@
-package kitchenpos.order.domain;
+package kitchenpos.order.domain.domain;
 
 import java.util.Objects;
 
@@ -15,7 +15,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import kitchenpos.common.Quantity;
-import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.domain.Menu;
 import kitchenpos.menu.exception.NotFoundMenuException;
 
 @Entity

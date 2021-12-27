@@ -1,4 +1,4 @@
-package kitchenpos.tablegroup.domain;
+package kitchenpos.tablegroup.domain.domain;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,7 +13,8 @@ import javax.persistence.OneToMany;
 
 import org.springframework.util.CollectionUtils;
 
-import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.domain.domain.OrderTable;
+import kitchenpos.tablegroup.domain.service.TableGroupExternalValidator;
 import kitchenpos.tablegroup.exception.InvalidOrderTablesException;
 import kitchenpos.tablegroup.exception.NotFoundOrderTablesException;
 
