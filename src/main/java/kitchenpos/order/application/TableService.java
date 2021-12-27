@@ -4,6 +4,7 @@ import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.OrderTableRepository;
 import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.order.dto.OrderTableResponse;
+import kitchenpos.order.dto.TableGroupRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,7 +22,9 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse create(final OrderTableRequest orderTableRequest) {
-        return OrderTableResponse.from(orderTableRepository.save(OrderTable.of(orderTableRequest.getNumberOfGuests(), orderTableRequest.isEmpty())));
+        return OrderTableResponse.from(
+                orderTableRepository.save(
+                        OrderTable.of(orderTableRequest.getNumberOfGuests(), orderTableRequest.isEmpty())));
     }
 
     public List<OrderTableResponse> list() {
@@ -45,5 +48,18 @@ public class TableService {
                 .orElseThrow(IllegalArgumentException::new);
         savedOrderTable.changeNumberOfGuests(orderTableRequest.getNumberOfGuests());
         return OrderTableResponse.from(savedOrderTable);
+    }
+
+    public List<OrderTable> findOrderTables(final TableGroupRequest tableGroupRequest) {
+        List<Long> requestOrderTableIds = tableGroupRequest.getOrderTableIds();
+        List<OrderTable> savedOrderTable = orderTableRepository.findAllById(requestOrderTableIds);
+        if (requestOrderTableIds.size() != savedOrderTable.size()) {
+            throw new IllegalArgumentException("등록하려는 주문 테이블이 등록되어있지 않습니다.");
+        }
+        return savedOrderTable;
+    }
+
+    public List<OrderTable> findAllByTableGroupId(final Long tableGroupId) {
+        return orderTableRepository.findAllByTableGroupId(tableGroupId);
     }
 }

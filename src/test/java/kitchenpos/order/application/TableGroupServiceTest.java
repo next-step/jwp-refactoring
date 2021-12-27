@@ -1,7 +1,6 @@
 package kitchenpos.order.application;
 
 import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.domain.OrderTableRepository;
 import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.order.dto.TableGroupRequest;
 import org.assertj.core.api.Assertions;
@@ -25,7 +24,7 @@ import static org.mockito.BDDMockito.given;
 class TableGroupServiceTest {
 
     @Mock
-    OrderTableRepository orderTableRepository;
+    TableService tableService;
 
     @InjectMocks
     TableGroupService tableGroupService;
@@ -46,7 +45,7 @@ class TableGroupServiceTest {
     @Test
     void 단체_지정_시_등록하려는_주문_테이블은_주문테이블에_등록되어있어야_한다() {
         // given
-        given(orderTableRepository.findAllById(단체_지정_요청.getOrderTableIds())).willReturn(new ArrayList<>());
+        given(tableService.findOrderTables(any())).willReturn(new ArrayList<>());
 
         // when
         ThrowingCallable throwingCallable = () -> tableGroupService.create(단체_지정_요청);
@@ -63,7 +62,7 @@ class TableGroupServiceTest {
                 OrderTable.of(2, false),
                 OrderTable.of(3, false));
 
-        given(orderTableRepository.findAllById(any())).willReturn(orderTables);
+        given(tableService.findOrderTables(any())).willReturn(orderTables);
 
         // when
         ThrowingCallable throwingCallable = () -> tableGroupService.create(단체_지정_요청);
@@ -82,7 +81,7 @@ class TableGroupServiceTest {
                 firstOrderTable,
                 secondOrderTable);
 
-        given(orderTableRepository.findAllByTableGroupId(any())).willReturn(orderTables);
+        given(tableService.findAllByTableGroupId(any())).willReturn(orderTables);
 
         // when
         tableGroupService.ungroup(any());
