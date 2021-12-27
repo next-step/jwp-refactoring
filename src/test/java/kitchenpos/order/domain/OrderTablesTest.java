@@ -26,7 +26,7 @@ public class OrderTablesTest {
         // then
         assertAll(
                 () -> assertThat(주문_테이블_목록.getOrderTables().size()).isEqualTo(2),
-                () -> assertThat(주문_테이블_목록).isEqualTo(OrderTables.from(Arrays.asList(첫번째_테이블, 두번째_테이블)))
+                () -> assertThat(주문_테이블_목록.getOrderTables()).isEqualTo(Arrays.asList(첫번째_테이블, 두번째_테이블))
         );
     }
     

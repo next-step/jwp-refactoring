@@ -84,6 +84,6 @@ public class MenuServiceTest {
         List<MenuResponse> 메뉴_목록 = menuService.list();
     
         // then
-        assertThat(메뉴_목록).containsExactly(MenuResponse.from(첫번째_메뉴), MenuResponse.from(두번째_메뉴));
+        assertThat(메뉴_목록.size()).isEqualTo(2);
     }
 }
