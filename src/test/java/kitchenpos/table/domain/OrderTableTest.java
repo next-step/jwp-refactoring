@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class OrderTableTest {
     public static final OrderTable 빈자리 = OrderTable.ofEmptyTable();
-    public static final OrderTable 이인석 = new OrderTable(1L, 테이블그룹, 2, false);
+    public static final OrderTable 이인석 = new OrderTable(1L, 1L, 2, false);
 
     private OrderTable 임시자리;
 
@@ -40,9 +40,9 @@ public class OrderTableTest {
     public void assignTableGroupTest() {
         // given
         // when
-        임시자리.assignTableGroup(테이블그룹);
+        임시자리.initTableGroup(테이블그룹.getId());
         // then
-        assertThat(임시자리.getTableGroup()).isEqualTo(테이블그룹);
+        assertThat(임시자리.getTableGroupId()).isEqualTo(테이블그룹.getId());
     }
 
     @Test
@@ -78,7 +78,7 @@ public class OrderTableTest {
 
     private static Stream<Arguments> isNotNullTableGroupTestParam() {
         return Stream.of(
-                Arguments.of(true, 테이블그룹),
+                Arguments.of(true, 1L),
                 Arguments.of(false, null)
         );
     }
@@ -86,7 +86,7 @@ public class OrderTableTest {
     @ParameterizedTest
     @MethodSource("isNotNullTableGroupTestParam")
     @DisplayName("주문 테이블의 테이블 그룹(null):false, 테이블 그룹(not Null):true")
-    public void isNotNullTableGroupTest(boolean status, TableGroup tableGroup) {
+    public void isNotNullTableGroupTest(boolean status, Long tableGroup) {
         // given
         OrderTable orderTable = new OrderTable(tableGroup, 0, false);
         // when

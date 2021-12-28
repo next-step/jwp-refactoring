@@ -11,7 +11,6 @@ import java.util.Collections;
 
 import static kitchenpos.table.domain.OrderTableTest.빈자리;
 import static kitchenpos.table.domain.OrderTableTest.이인석;
-import static kitchenpos.table.domain.TableGroupTest.테이블그룹;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -30,9 +29,9 @@ public class OrderTablesTest {
         // given
 
         // when
-        OrderTables orderTables = new OrderTables(Arrays.asList(임시자리, 임시자리));
+        OrderTables orderTables = OrderTables.ofCreate(Arrays.asList(임시자리, 임시자리));
         // then
-        assertThat(orderTables).isEqualTo(new OrderTables(Arrays.asList(임시자리, 임시자리)));
+        assertThat(orderTables).isEqualTo(OrderTables.ofCreate(Arrays.asList(임시자리, 임시자리)));
     }
 
     @DisplayName("테이블 그룹을 등록할 경우")
@@ -43,7 +42,7 @@ public class OrderTablesTest {
             // given
             // when
             // then
-            assertThatThrownBy(() -> new OrderTables(Collections.singletonList(빈자리)))
+            assertThatThrownBy(() -> OrderTables.ofCreate(Collections.singletonList(빈자리)))
                     .isInstanceOf(InvalidTableGroupSizeException.class);
         }
 
@@ -53,7 +52,7 @@ public class OrderTablesTest {
             // given
             // when
             // then
-            assertThatThrownBy(() -> new OrderTables(Arrays.asList(이인석, 빈자리)))
+            assertThatThrownBy(() -> OrderTables.ofCreate(Arrays.asList(이인석, 빈자리)))
                     .isInstanceOf(InvalidOrderTableException.class);
         }
 
@@ -63,7 +62,7 @@ public class OrderTablesTest {
             // given
             // when
             // then
-            assertThatThrownBy(() -> new OrderTables(Arrays.asList(new OrderTable(테이블그룹, 2, true), 빈자리)))
+            assertThatThrownBy(() -> OrderTables.ofCreate(Arrays.asList(new OrderTable(1L, 2, true), 빈자리)))
                     .isInstanceOf(InvalidOrderTableException.class);
         }
     }
@@ -72,11 +71,11 @@ public class OrderTablesTest {
     @DisplayName("테이블 그룹 지정")
     public void initTableGroupTest() {
         // given
-        OrderTables orderTables = new OrderTables(Arrays.asList(임시자리, 임시자리));
+        OrderTables orderTables = OrderTables.ofCreate(Arrays.asList(임시자리, 임시자리));
         // when
-        orderTables.initTableGroup(테이블그룹);
+        orderTables.initTableGroup(1L, Arrays.asList(1L, 2L));
         // then
-        assertThat(orderTables.getOrderTables()).contains(new OrderTable(테이블그룹, 0, false));
+        assertThat(orderTables.getOrderTables()).contains(new OrderTable(1L, 0, false));
     }
 
     @Test
@@ -84,13 +83,13 @@ public class OrderTablesTest {
     public void ungroupTest() {
         // given
         OrderTable 임시자리 = new OrderTable(0, true);
-        OrderTables orderTables = new OrderTables(Arrays.asList(임시자리, 임시자리));
-        orderTables.initTableGroup(테이블그룹);
+        OrderTables orderTables = OrderTables.ofCreate(Arrays.asList(임시자리, 임시자리));
+        orderTables.initTableGroup(1L, Arrays.asList(1L, 2L));
         // when
         orderTables.ungroup();
         // then
         for (OrderTable orderTable : orderTables.getOrderTables()) {
-            assertThat(orderTable.getTableGroup()).isNull();
+            assertThat(orderTable.getTableGroupId()).isNull();
         }
     }
 

@@ -5,7 +5,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -19,22 +18,12 @@ public class TableGroup {
     @CreatedDate
     private LocalDateTime createdDate;
 
-    @Embedded
-    private OrderTables orderTables;
-
-    protected TableGroup() {
+    public TableGroup() {
     }
 
     public TableGroup(Long id, LocalDateTime createdDate) {
         this.id = id;
         this.createdDate = createdDate;
-        this.orderTables = new OrderTables();
-    }
-
-    public TableGroup(OrderTables orderTables) {
-        this.createdDate = LocalDateTime.now();
-        this.orderTables = orderTables;
-        orderTables.initTableGroup(this);
     }
 
     public Long getId() {
@@ -43,19 +32,6 @@ public class TableGroup {
 
     public LocalDateTime getCreatedDate() {
         return createdDate;
-    }
-
-    public List<OrderTable> getOrderTables() {
-        return orderTables.getOrderTables();
-    }
-
-    public List<Long> getOrderTableIds() {
-        return orderTables.getTableIds();
-    }
-
-    public void ungroup() {
-        orderTables.ungroup();
-        orderTables = new OrderTables();
     }
 
     @Override

@@ -6,31 +6,30 @@ import java.util.Objects;
 
 public class OrderTableResponse {
     private Long id;
-    private OrderTableGroupResponse tableGroup;
+    private Long tableGroupId;
     private int numberOfGuests;
     private boolean empty;
 
     protected OrderTableResponse() {
     }
 
-    public OrderTableResponse(Long id, OrderTableGroupResponse tableGroup, int numberOfGuests, boolean empty) {
+    public OrderTableResponse(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
         this.id = id;
-        this.tableGroup = tableGroup;
+        this.tableGroupId = tableGroupId;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
     }
 
     public static OrderTableResponse of(OrderTable table) {
-        OrderTableGroupResponse orderTableGroup = OrderTableGroupResponse.of(table.getTableGroup());
-        return new OrderTableResponse(table.getId(), orderTableGroup, table.getNumberOfGuests(), table.isEmpty());
+        return new OrderTableResponse(table.getId(), table.getTableGroupId(), table.getNumberOfGuests(), table.isEmpty());
     }
 
     public Long getId() {
         return id;
     }
 
-    public OrderTableGroupResponse getOrderTableGroup() {
-        return tableGroup;
+    public Long getTableGroupId() {
+        return tableGroupId;
     }
 
     public boolean isEmpty() {
@@ -49,11 +48,11 @@ public class OrderTableResponse {
         return numberOfGuests == that.numberOfGuests
                 && empty == that.empty
                 && Objects.equals(id, that.id)
-                && Objects.equals(tableGroup, that.tableGroup);
+                && Objects.equals(tableGroupId, that.tableGroupId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, tableGroup, numberOfGuests, empty);
+        return Objects.hash(id, tableGroupId, numberOfGuests, empty);
     }
 }

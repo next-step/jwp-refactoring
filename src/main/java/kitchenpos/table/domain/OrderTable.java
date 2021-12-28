@@ -13,9 +13,8 @@ public class OrderTable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "table_group_id")
-    private TableGroup tableGroup;
+    @Column(name = "table_group_id")
+    private Long tableGroupId;
 
     @Embedded
     private NumberOfGuests numberOfGuests;
@@ -26,14 +25,14 @@ public class OrderTable {
     protected OrderTable() {
     }
 
-    public OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
-        this(tableGroup, numberOfGuests, empty);
+    public OrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
+        this(tableGroupId, numberOfGuests, empty);
         this.id = id;
     }
 
-    public OrderTable(TableGroup tableGroup, int numberOfGuests, boolean empty) {
+    public OrderTable(Long tableGroupId, int numberOfGuests, boolean empty) {
         this(numberOfGuests, empty);
-        this.tableGroup = tableGroup;
+        this.tableGroupId = tableGroupId;
     }
 
     public OrderTable(int numberOfGuests, boolean empty) {
@@ -49,12 +48,8 @@ public class OrderTable {
         return id;
     }
 
-    public TableGroup getTableGroup() {
-        return tableGroup;
-    }
-
-    public void assignTableGroup(final TableGroup tableGroup) {
-        this.tableGroup = tableGroup;
+    public Long getTableGroupId() {
+        return tableGroupId;
     }
 
     public int getNumberOfGuests() {
@@ -88,16 +83,20 @@ public class OrderTable {
     }
 
     public boolean isNotNullTableGroup() {
-        return !Objects.isNull(tableGroup);
+        return !Objects.isNull(tableGroupId);
     }
 
-    public void initTableGroup(TableGroup tableGroup) {
-        assignTableGroup(tableGroup);
+    public void initTableGroup(Long tableGroupId) {
+        this.tableGroupId = tableGroupId;
         this.empty = EmptyStatus.ofFalse();
     }
 
     public void unTableGroup() {
-        tableGroup = null;
+        tableGroupId = null;
+    }
+
+    public boolean isNotEmptyOrNonNullTableGroup() {
+        return !isEmpty() || Objects.nonNull(tableGroupId);
     }
 
     @Override
@@ -106,13 +105,13 @@ public class OrderTable {
         if (o == null || getClass() != o.getClass()) return false;
         OrderTable that = (OrderTable) o;
         return Objects.equals(id, that.id)
-                && Objects.equals(tableGroup, that.tableGroup)
+                && Objects.equals(tableGroupId, that.tableGroupId)
                 && Objects.equals(numberOfGuests, that.numberOfGuests)
                 && Objects.equals(empty, that.empty);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, tableGroup, numberOfGuests, empty);
+        return Objects.hash(id, tableGroupId, numberOfGuests, empty);
     }
 }

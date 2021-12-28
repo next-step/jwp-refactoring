@@ -1,31 +1,28 @@
 package kitchenpos.table.application;
 
-import kitchenpos.common.exception.InvalidOrderStatusException;
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.ChangeEmptyRequest;
 import kitchenpos.table.dto.ChangeGuestsRequest;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.validator.OrderTableValidator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
 public class TableService {
-    private final OrderRepository orderRepository;
+    private final OrderTableValidator orderTableValidator;
     private final OrderTableRepository orderTableRepository;
 
     public TableService(
-            final OrderRepository orderRepository,
+            final OrderTableValidator orderTableValidator,
             final OrderTableRepository orderTableRepository) {
-        this.orderRepository = orderRepository;
+        this.orderTableValidator = orderTableValidator;
         this.orderTableRepository = orderTableRepository;
     }
 
@@ -47,17 +44,10 @@ public class TableService {
     public OrderTableResponse changeEmpty(final Long orderTableId, final ChangeEmptyRequest changeEmptyRequest) {
         final OrderTable savedOrderTable = orderTableRepository.findByIdElseThrow(orderTableId);
 
-        checkTableOrderStatus(savedOrderTable);
+        orderTableValidator.checkTableOrderStatus(savedOrderTable);
         savedOrderTable.changeEmpty(changeEmptyRequest.isEmpty());
 
         return OrderTableResponse.of(savedOrderTable);
-    }
-
-    private void checkTableOrderStatus(OrderTable orderTable) {
-        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
-                orderTable.getId(), Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new InvalidOrderStatusException();
-        }
     }
 
     @Transactional

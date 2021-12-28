@@ -2,6 +2,7 @@ package kitchenpos.table.domain;
 
 import kitchenpos.common.exception.InvalidOrderTableException;
 import kitchenpos.common.exception.InvalidTableGroupSizeException;
+import kitchenpos.common.exception.NotFoundOrderTableException;
 import org.springframework.util.CollectionUtils;
 
 import javax.persistence.CascadeType;
@@ -22,12 +23,20 @@ public class OrderTables {
         this.orderTables = new ArrayList<>();
     }
 
-    public OrderTables(final List<OrderTable> orderTables) {
-        validateOrderTable(orderTables);
+    private OrderTables(final List<OrderTable> orderTables) {
         this.orderTables = orderTables;
     }
 
-    public void validateOrderTable(final List<OrderTable> orderTables) {
+    public static OrderTables ofCreate(final List<OrderTable> orderTables) {
+        validateOrderTable(orderTables);
+        return new OrderTables(orderTables);
+    }
+
+    public static OrderTables ofUngroup(final List<OrderTable> orderTables) {
+        return new OrderTables(orderTables);
+    }
+
+    public static void validateOrderTable(final List<OrderTable> orderTables) {
         if (isInvalidTableSize(orderTables)) {
             throw new InvalidTableGroupSizeException();
         }
@@ -36,21 +45,24 @@ public class OrderTables {
         }
     }
 
-    private boolean isInvalidTableSize(final List<OrderTable> orderTables) {
+    private static boolean isInvalidTableSize(final List<OrderTable> orderTables) {
         return CollectionUtils.isEmpty(orderTables) || orderTables.size() < MIN_TABLE_SIZE;
     }
 
-    private boolean validateOrderTables(final List<OrderTable> orderTables) {
+    private static boolean validateOrderTables(final List<OrderTable> orderTables) {
         return orderTables.stream()
-                .anyMatch(this::isNotEmptyOrNonNullTableGroup);
+                .anyMatch(OrderTable::isNotEmptyOrNonNullTableGroup);
     }
 
-    private boolean isNotEmptyOrNonNullTableGroup(final OrderTable orderTable) {
-        return !orderTable.isEmpty() || Objects.nonNull(orderTable.getTableGroup());
+    public void initTableGroup(final Long tableGroupId, List<Long> orderTableIds) {
+        if (isNotFoundOrderTables(orderTableIds)) {
+            throw new NotFoundOrderTableException();
+        }
+        orderTables.forEach(orderTable -> orderTable.initTableGroup(tableGroupId));
     }
 
-    public void initTableGroup(final TableGroup tableGroup) {
-        orderTables.forEach(orderTable -> orderTable.initTableGroup(tableGroup));
+    private boolean isNotFoundOrderTables(List<Long> orderTableIds) {
+        return orderTableIds.size() != orderTables.size();
     }
 
     public int size() {
