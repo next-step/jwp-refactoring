@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import kitchenpos.table.application.OrderValidator;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.tablegroup.application.TableGroupService;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
@@ -29,6 +30,8 @@ class TableGroupServiceTest {
     @Mock
     private TableGroupRepository tableGroupRepository;
 
+    private OrderValidator orderValidator;
+
     @DisplayName("테이블이 1개 있는 테이블 그룹을 생성한다")
     @Test
     void oneOrderTableCreateTest() {
@@ -36,7 +39,7 @@ class TableGroupServiceTest {
         TableGroupRequest oneTableTableGroupRequest = new TableGroupRequest(Collections.singletonList(1L));
 
         // when
-        TableGroupService tableGroupService = new TableGroupService(orderTableRepository, tableGroupRepository);
+        TableGroupService tableGroupService = new TableGroupService(orderTableRepository, tableGroupRepository, orderValidator);
 
         // then
         assertThatThrownBy(() -> tableGroupService.create(oneTableTableGroupRequest))
@@ -50,7 +53,7 @@ class TableGroupServiceTest {
         TableGroupRequest nullTableGroupRequest = new TableGroupRequest(Collections.singletonList(null));
 
         // when
-        TableGroupService tableGroupService = new TableGroupService(orderTableRepository, tableGroupRepository);
+        TableGroupService tableGroupService = new TableGroupService(orderTableRepository, tableGroupRepository, orderValidator);
 
         // then
         assertThatThrownBy(() -> tableGroupService.create(nullTableGroupRequest))
@@ -70,7 +73,7 @@ class TableGroupServiceTest {
         when(orderTableRepository.findByIdIn(any())).thenReturn(orderTables);
 
         // when
-        TableGroupService tableGroupService = new TableGroupService(orderTableRepository, tableGroupRepository);
+        TableGroupService tableGroupService = new TableGroupService(orderTableRepository, tableGroupRepository, orderValidator);
 
         // then
         assertThatThrownBy(() -> tableGroupService.create(tableGroupRequest))
@@ -81,7 +84,7 @@ class TableGroupServiceTest {
     @Test
     void tableGroupTableCreateTest() {
         // given
-        OrderTable tableGroupOrderTable = new OrderTable(new TableGroup(), 1, true);
+        OrderTable tableGroupOrderTable = new OrderTable(1L, 1, true);
         OrderTable nullTableGroupOrderTable = new OrderTable(null, 1, true);
         List<OrderTable> orderTables = Arrays.asList(tableGroupOrderTable, nullTableGroupOrderTable);
         List<Long> orderTableIds = Arrays.asList(tableGroupOrderTable.getId(), nullTableGroupOrderTable.getId());
@@ -89,7 +92,7 @@ class TableGroupServiceTest {
         when(orderTableRepository.findByIdIn(any())).thenReturn(orderTables);
 
         // when
-        TableGroupService tableGroupService = new TableGroupService(orderTableRepository, tableGroupRepository);
+        TableGroupService tableGroupService = new TableGroupService(orderTableRepository, tableGroupRepository, orderValidator);
 
         // then
         assertThatThrownBy(() -> tableGroupService.create(tableGroupRequest))

@@ -1,5 +1,6 @@
 package kitchenpos.tablegroup.application;
 
+import kitchenpos.table.application.OrderValidator;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
 import kitchenpos.table.domain.OrderTable;
@@ -18,9 +19,12 @@ public class TableGroupService {
 
     private final TableGroupRepository tableGroupRepository;
 
-    public TableGroupService(OrderTableRepository orderTableRepository, TableGroupRepository tableGroupRepository) {
+    private final OrderValidator orderValidator;
+
+    public TableGroupService(OrderTableRepository orderTableRepository, TableGroupRepository tableGroupRepository, OrderValidator orderValidator) {
         this.orderTableRepository = orderTableRepository;
         this.tableGroupRepository = tableGroupRepository;
+        this.orderValidator = orderValidator;
     }
 
     @Transactional
@@ -36,6 +40,6 @@ public class TableGroupService {
     @Transactional
     public void ungroup(final Long tableGroupId) {
         TableGroup tableGroup = tableGroupRepository.findById(tableGroupId).orElseThrow(NoTableGroupException::new);
-        tableGroup.ungroup();
+        tableGroup.ungroup(orderValidator);
     }
 }

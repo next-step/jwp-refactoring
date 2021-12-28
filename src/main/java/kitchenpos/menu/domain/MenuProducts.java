@@ -14,7 +14,7 @@ public class MenuProducts {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "seq")
-    List<MenuProduct> menuProducts;
+    private List<MenuProduct> menuProducts;
 
     public MenuProducts(List<MenuProduct> menuProducts) {
         this.menuProducts = menuProducts;

@@ -1,14 +1,15 @@
 package kitchenpos.table.domain;
 
 import kitchenpos.order.domain.Order;
+import kitchenpos.order.exception.NegativeNumberOfGuestsException;
 import kitchenpos.table.application.OrderValidator;
-import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.table.exception.CannotChangeEmptyException;
 import kitchenpos.table.exception.CannotChangeNumberOfGuestsException;
-import kitchenpos.table.exception.CannotUngroupException;
-import kitchenpos.order.exception.NegativeNumberOfGuestsException;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.util.Objects;
 
 @Entity
@@ -19,8 +20,7 @@ public class OrderTable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private TableGroup tableGroup = new TableGroup();
+    private Long tableGroupId;
 
     private int numberOfGuests;
 
@@ -29,8 +29,8 @@ public class OrderTable {
     public OrderTable() {
     }
 
-    public OrderTable(TableGroup tableGroup, int numberOfGuests, boolean empty) {
-        this.tableGroup = tableGroup;
+    public OrderTable(Long tableGroupId, int numberOfGuests, boolean empty) {
+        this.tableGroupId = tableGroupId;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
     }
@@ -39,12 +39,13 @@ public class OrderTable {
         return id;
     }
 
-    public TableGroup getTableGroup() {
-        return tableGroup;
+    public Long getTableGroupId() {
+        return tableGroupId;
     }
 
-    public void changeTableGroup(TableGroup tableGroup) {
-        this.tableGroup = tableGroup;
+    public void changeTableGroup(Long tableGroupId) {
+        this.empty = false;
+        this.tableGroupId = tableGroupId;
     }
 
     public int getNumberOfGuests() {
@@ -75,16 +76,13 @@ public class OrderTable {
     }
 
     private void validateChangeEmpty(OrderValidator orderValidator) {
-        if (Objects.nonNull(this.tableGroup)) {
+        if (Objects.nonNull(this.tableGroupId)) {
             throw new CannotChangeEmptyException();
         }
         orderValidator.canUngroupOrChange(this.id);
     }
 
     public void ungroup() {
-        if (!orderValidator.canUngroupOrChange(this.id)) {
-            throw new CannotUngroupException();
-        }
-        this.tableGroup = null;
+        this.tableGroupId = null;
     }
 }

@@ -21,13 +21,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class TableServiceTest {
     @Mock
     private OrderTableRepository orderTableRepository;
 
+    @Mock
     private OrderValidator orderValidator;
 
     private OrderTable orderTable;
@@ -43,6 +44,7 @@ class TableServiceTest {
         // given
         OrderTableRequest orderTableRequest = new OrderTableRequest(1, true);
         when(orderTableRepository.findById(1L)).thenReturn(java.util.Optional.ofNullable(orderTable));
+        doNothing().when(orderValidator).canUngroupOrChange(null);
 
         // when
         TableService tableService = new TableService(orderTableRepository, orderValidator);
@@ -55,7 +57,7 @@ class TableServiceTest {
     @Test
     void changeEmptyTableInTableGroupTest() {
         // given
-        orderTable.changeTableGroup(new TableGroup());
+        orderTable.changeTableGroup(1L);
         when(orderTableRepository.findById(1L)).thenReturn(java.util.Optional.ofNullable(orderTable));
         OrderTableRequest orderTableRequest = new OrderTableRequest(1, true);
 
@@ -71,9 +73,10 @@ class TableServiceTest {
     @Test
     void changeEmptyTableInCookingOrMeal() {
         // given
-        orderTable.addOrder(Order.of(orderTable, OrderStatus.COOKING));
+//        orderTable.addOrder(Order.of(orderTable, OrderStatus.COOKING));
         OrderTableRequest orderTableRequest = new OrderTableRequest(1, true);
         when(orderTableRepository.findById(1L)).thenReturn(java.util.Optional.ofNullable(orderTable));
+        doThrow(new CannotChangeEmptyException()).when(orderValidator).canUngroupOrChange(null);
 
         // when
         TableService tableService = new TableService(orderTableRepository, orderValidator);
