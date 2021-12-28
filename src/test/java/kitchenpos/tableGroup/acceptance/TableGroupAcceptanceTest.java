@@ -1,4 +1,4 @@
-package kitchenpos.table.acceptance;
+package kitchenpos.tableGroup.acceptance;
 
 import static java.util.Arrays.asList;
 import static kitchenpos.table.acceptance.OrderTableAcceptanceTest.주문테이블_생성_요청;
@@ -12,9 +12,9 @@ import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.table.domain.NumberOfGuests;
 import kitchenpos.table.dto.OrderTableRequest;
-import kitchenpos.table.dto.OrderTableResponse;
-import kitchenpos.table.dto.TableGroupRequest;
-import kitchenpos.table.dto.TableGroupResponse;
+import kitchenpos.tableGroup.OrderTableResponse;
+import kitchenpos.tableGroup.dto.TableGroupRequest;
+import kitchenpos.tableGroup.dto.TableGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
