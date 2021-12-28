@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import static kitchenpos.fixture.ProductFixture.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -15,28 +16,21 @@ import kitchenpos.domain.*;
 class ProductServiceTest {
     private ProductDao productDao;
     private ProductService productService;
-    private Product product1;
-    private Product product2;
-    private Product product3;
 
     @BeforeEach
     void setUp() {
         productDao = mock(ProductDao.class);
         productService = new ProductService(productDao);
-
-        product1 = Product.of(1L, "짜장면", BigDecimal.valueOf(10000L));
-        product2 = Product.of(2L, "짬뽕", BigDecimal.valueOf(12000L));
-        product3 = Product.of(3L, "탕수육", BigDecimal.valueOf(30000L));
     }
 
-    @DisplayName("create메서드에 생성을 원하는 Product 객체를 인자로 하여 호출하면, 생성된 객체를 반환한다.")
+    @DisplayName("상품 생성하기")
     @Test
     void createTest() {
-        when(productDao.save(product1)).thenReturn(product1);
-        assertThat(productService.create(product1)).isEqualTo(product1);
+        when(productDao.save(후라이드치킨)).thenReturn(후라이드치킨);
+        assertThat(productService.create(후라이드치킨)).isEqualTo(후라이드치킨);
     }
 
-    @DisplayName("create메서드에 금액이 음수인 Product 객체를 인자로 하여 호출하면, 예외를 던진다.")
+    @DisplayName("상품 금액이 음수이면 예외 발생")
     @Test
     void exceptionTest1() {
         Product badProduct = Product.of(4L, "썩은 탕수육", BigDecimal.valueOf(-30000L));
@@ -45,7 +39,7 @@ class ProductServiceTest {
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("create메서드에 금액이 null인 Product 객체를 인자로 하여 호출하면, 예외를 던진다.")
+    @DisplayName("상품 생성시 금액 정보가 없다면 예외 발생")
     @Test
     void exceptionTest2() {
         Product nullPriceProduct = Product.of(4L, "썩은 탕수육", null);
@@ -54,10 +48,10 @@ class ProductServiceTest {
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("list메서드를 호출하면, 기 생성된 Product 목록을 반환한다.")
+    @DisplayName("상품 목록 조회시 저장된 상품 목록 얻기")
     @Test
     void listTest() {
-        when(productDao.findAll()).thenReturn(Lists.newArrayList(product1, product2, product3));
-        assertThat(productService.list()).isEqualTo(Lists.newArrayList(product1, product2, product3));
+        when(productDao.findAll()).thenReturn(Lists.newArrayList(후라이드치킨, 양념치킨, 반반치킨));
+        assertThat(productService.list()).isEqualTo(Lists.newArrayList(후라이드치킨, 양념치킨, 반반치킨));
     }
 }

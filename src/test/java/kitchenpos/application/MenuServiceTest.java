@@ -1,5 +1,11 @@
 package kitchenpos.application;
 
+import static kitchenpos.fixture.MenuFixture.menu1;
+import static kitchenpos.fixture.MenuFixture.menu2;
+import static kitchenpos.fixture.MenuGroupFixture.한마리메뉴_그룹;
+import static kitchenpos.fixture.MenuProductsFixture.menuProducts1;
+import static kitchenpos.fixture.MenuProductsFixture.menuProducts2;
+import static kitchenpos.fixture.ProductFixture.후라이드치킨;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -20,14 +26,6 @@ class MenuServiceTest {
     private ProductDao productDao;
     private MenuService menuService;
 
-    private Product product1;
-    private Product product2;
-    private Menu menu1;
-    private Menu menu2;
-    private MenuGroup menuGroup;
-    private List<MenuProduct> menuProducts1;
-    private List<MenuProduct> menuProducts2;
-
     @BeforeEach
     void setUp() {
         menuDao = mock(MenuDao.class);
@@ -36,65 +34,56 @@ class MenuServiceTest {
         productDao = mock(ProductDao.class);
         menuService = new MenuService(menuDao, menuGroupDao, menuProductDao, productDao);
 
-        menuGroup = MenuGroup.of(2L, "한마리메뉴");
-
-        product1 = Product.of(1L, "후라이드치킨", BigDecimal.valueOf(16000L));
-        menu1 = Menu.of(1L, product1.getName(), product1.getPrice(), menuGroup.getId(), null);
-        menuProducts1 = Lists.newArrayList(MenuProduct.of(1L, menu1.getId(), product1.getId(), 1L));
         menu1.setMenuProducts(menuProducts1);
-
-        product2 = Product.of(2L, "양념치킨", BigDecimal.valueOf(16000L));
-        menu2 = Menu.of(1L, product2.getName(), product2.getPrice(), menuGroup.getId(), null);
-        menuProducts2 = Lists.newArrayList(MenuProduct.of(2L, menu2.getId(), product2.getId(), 1L));
         menu2.setMenuProducts(menuProducts2);
     }
 
-    @DisplayName("create메서드에 생성을 원하는 Menu 객체를 인자로 하여 호출하면, 생성된 객체를 반환한다.")
+    @DisplayName("메뉴 생성하기")
     @Test
     void createTest() {
         when(menuGroupDao.existsById(2L)).thenReturn(true);
-        when(productDao.findById(1L)).thenReturn(Optional.of(product1));
+        when(productDao.findById(1L)).thenReturn(Optional.of(후라이드치킨));
         when(menuDao.save(menu1)).thenReturn(menu1);
         assertThat(menuService.create(menu1)).isEqualTo(menu1);
     }
 
-    @DisplayName("메뉴의 가격이 0원 미만인 상품을 포함하는 메뉴를 생성시도 하면 예외를 던진다.")
+    @DisplayName("메뉴 가격이 0원 미만시 예외 발생")
     @Test
     void exceptionTest1() {
         BigDecimal wrongPrice = BigDecimal.valueOf(-16000L);
-        Menu wrongMenu = Menu.of(3L, product1.getName(), wrongPrice, menuGroup.getId(), menuProducts1);
+        Menu wrongMenu = Menu.of(3L, 후라이드치킨.getName(), wrongPrice, 한마리메뉴_그룹.getId(), menuProducts1);
         assertThatThrownBy(() -> menuService.create(wrongMenu)).isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("메뉴의 메뉴그룹 식별자가 없는 메뉴를 생성시도 하면 예외를 던진다.")
+    @DisplayName("메뉴의 메뉴그룹 없을 때, 예외 발생")
     @Test
     void exceptionTest2() {
         Long wrongId = 100L;
-        Menu wrongMenu = Menu.of(3L, product1.getName(), product1.getPrice(), wrongId, menuProducts1);
+        Menu wrongMenu = Menu.of(3L, 후라이드치킨.getName(), 후라이드치킨.getPrice(), wrongId, menuProducts1);
         assertThatThrownBy(() -> menuService.create(wrongMenu)).isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("메뉴상품 목록의 메뉴상품 식별자가 없는 메뉴를 생성시도 하면 예외를 던진다.")
+    @DisplayName("저장되지 않은 메뉴상품을 가진 메뉴 생성시 예외 발생")
     @Test
     void exceptionTest3() {
         Long wrongId = 100L;
-        Menu wrongMenu = Menu.of(3L, product1.getName(), product1.getPrice(), menuGroup.getId(), null);
-        List<MenuProduct> menuProducts = Lists.newArrayList(MenuProduct.of(1L, wrongMenu.getId(), wrongId, 1L));
-        wrongMenu.setMenuProducts(menuProducts);
+        Menu wrongMenu = Menu.of(3L, 후라이드치킨.getName(), 후라이드치킨.getPrice(), 한마리메뉴_그룹.getId(), null);
+        List<MenuProduct> wrongMenuProducts = Lists.newArrayList(MenuProduct.of(1L, wrongMenu.getId(), wrongId, 1L));
+        wrongMenu.setMenuProducts(wrongMenuProducts);
 
         assertThatThrownBy(
             () -> menuService.create(wrongMenu)
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("메뉴상품 목록의 메뉴상품 금액의 합이 메뉴 금액보다 작은 메뉴를 생성시도 하면 예외를 던진다.")
+    @DisplayName("메뉴상품 목록의 금액의 총합보다 작은 메뉴를 생성시 예외 발생")
     @Test
     void exceptionTest4() {
-        Menu wrongMenu = Menu.of(3L, product1.getName(), product1.getPrice().add(BigDecimal.ONE), menuGroup.getId(), menuProducts1);
+        Menu wrongMenu = Menu.of(3L, 후라이드치킨.getName(), 후라이드치킨.getPrice().add(BigDecimal.ONE), 한마리메뉴_그룹.getId(), menuProducts1);
         assertThatThrownBy(() -> menuService.create(wrongMenu)).isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("list메서드를 호출하면, 기 생성된 MenuGroup 목록을 반환한다.")
+    @DisplayName("목록 조회시, 저장된 메뉴그룹 목록 얻기")
     @Test
     void listTest() {
         when(menuDao.findAll()).thenReturn(Lists.newArrayList(menu1, menu2));
