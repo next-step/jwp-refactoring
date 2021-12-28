@@ -9,14 +9,15 @@ import kitchenpos.menu.domain.*;
 @Embeddable
 public class OrderLineItems {
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "order_id")
     private List<OrderLineItem> orderLineItems = new ArrayList<>();
 
     public OrderLineItems() {
     }
 
-    public void add(Order order, Menu menu, int quantity) {
-        orderLineItems.add(new OrderLineItem(order, menu, quantity));
+    public void add(Long orderId, Menu menu, int quantity) {
+        orderLineItems.add(new OrderLineItem(orderId, menu, quantity));
     }
 
     public List<OrderLineItem> getOrderLineItems() {

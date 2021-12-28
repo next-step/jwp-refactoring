@@ -81,6 +81,6 @@ public class Order {
     }
 
     public void addOrderLineItem(Menu menu, int quantity) {
-        orderLineItems.add(this, menu, quantity);
+        orderLineItems.add(this.id, menu, quantity);
     }
 }
