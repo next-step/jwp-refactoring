@@ -231,10 +231,12 @@
     - [x] 0보다 작을 수 없습니다.
 
 ----
-#의존성 문제를 해결해보자 
 
-## 의존성을 살펴보자 
+## Step3 의존성 리팩터링
 
-
-
+### 개선 전 
 ![img.png](src/main/resources/static/img.png)
+
+### 개선 후
+
+![img.png](src/main/resources/static/after.png)
