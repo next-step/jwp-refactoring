@@ -1,7 +1,6 @@
 package kitchenpos.order.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import kitchenpos.domain.OrderStatus;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
