@@ -13,6 +13,9 @@ import java.util.Objects;
 
 @Entity
 public class Menu {
+    private static final int MIN_GROUP_ID = 0;
+    private static final int MIN_PRICE = 0;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -80,7 +83,7 @@ public class Menu {
 
     public void validSum(BigDecimal sumPrice) {
         BigDecimal amount = this.getPrice().getPrice();
-        if (amount.compareTo(sumPrice) > 0) {
+        if (amount.compareTo(sumPrice) > MIN_PRICE) {
             throw new InputMenuDataException(InputMenuDataErrorCode.THE_SUM_OF_MENU_PRICE_IS_LESS_THAN_SUM_OF_PRODUCTS);
         }
     }
@@ -90,7 +93,7 @@ public class Menu {
             throw new InputMenuDataException(InputMenuDataErrorCode.YOU_MUST_INPUT_MENU_GROUP_ID);
         }
 
-        if (menuGroupId < 0) {
+        if (menuGroupId < MIN_GROUP_ID) {
             throw new InputMenuDataException(InputMenuDataErrorCode.THE_MENU_GROUP_ID_IS_LESS_THAN_ZERO);
         }
     }

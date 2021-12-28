@@ -13,6 +13,7 @@ import java.util.List;
 
 @Embeddable
 public class MenuProducts implements Iterable<MenuProduct> {
+    private static final int MIN_PRICE = 0;
 
     @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MenuProduct> menuProducts = new ArrayList<>();
@@ -40,7 +41,7 @@ public class MenuProducts implements Iterable<MenuProduct> {
 
     public void validSum(BigDecimal menuPrice) {
         BigDecimal productAmount = calculateMenuProductPrice();
-        if (menuPrice.compareTo(productAmount) > 0) {
+        if (menuPrice.compareTo(productAmount) > MIN_PRICE) {
             throw new InputMenuDataException(InputMenuDataErrorCode.THE_SUM_OF_MENU_PRICE_IS_LESS_THAN_SUM_OF_PRODUCTS);
         }
     }
