@@ -1,5 +1,7 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.table.domain.OrderTable;
+
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;

@@ -1,6 +1,7 @@
 package kitchenpos.order.domain;
 
 import kitchenpos.common.fixtrue.OrderTableFixture;
+import kitchenpos.table.domain.OrderTable;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

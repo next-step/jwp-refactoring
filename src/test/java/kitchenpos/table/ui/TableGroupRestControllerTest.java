@@ -1,15 +1,16 @@
-package kitchenpos.order.ui;
+package kitchenpos.table.ui;
 
 import kitchenpos.common.fixtrue.OrderTableFixture;
 import kitchenpos.common.fixtrue.TableGroupFixture;
 import kitchenpos.common.ui.RestControllerTest;
-import kitchenpos.order.application.TableGroupService;
-import kitchenpos.order.domain.OrderTable;
+import kitchenpos.table.application.TableGroupService;
+import kitchenpos.table.domain.OrderTable;
 import kitchenpos.order.domain.OrderTables;
-import kitchenpos.order.domain.TableGroup;
-import kitchenpos.order.dto.OrderTableRequest;
-import kitchenpos.order.dto.TableGroupRequest;
-import kitchenpos.order.dto.TableGroupResponse;
+import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.TableGroupRequest;
+import kitchenpos.table.dto.TableGroupResponse;
+import kitchenpos.table.ui.TableGroupRestController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
