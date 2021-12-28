@@ -33,11 +33,11 @@
     - [x] MenuGroup
     - [x] MenuProduct
 - 주문
-    - [ ] OrderLineItem
-    - [ ] Order
+    - [x] OrderLineItem
+    - [x] Order
 - 테이블
-    - [ ] TableGroup
-    - [ ] OrderTable
+    - [x] TableGroup
+    - [x] OrderTable
 
 # 1단계 - 테스트를 통한 코드 보호
 
