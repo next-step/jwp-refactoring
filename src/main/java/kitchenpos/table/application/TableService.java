@@ -2,6 +2,7 @@ package kitchenpos.table.application;
 
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.domain.OrderTableValidator;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import org.springframework.stereotype.Service;
@@ -15,16 +16,18 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class TableService {
     private final OrderTableRepository orderTableRepository;
+    private final OrderTableValidator orderTableValidator;
 
-    public TableService(OrderTableRepository orderTableRepository) {
+    public TableService(OrderTableRepository orderTableRepository, OrderTableValidator orderTableValidator) {
         this.orderTableRepository = orderTableRepository;
+        this.orderTableValidator = orderTableValidator;
     }
 
     @Transactional
     public OrderTableResponse create(final OrderTableRequest orderTableRequest) {
-        final OrderTable orderTable = orderTableRepository.save(orderTableRequest.toOrderTable());
+        final OrderTable orderTable = orderTableRequest.toOrderTable();
 
-        return OrderTableResponse.of(orderTable);
+        return OrderTableResponse.of(orderTableRepository.save(orderTable));
     }
 
     public List<OrderTableResponse> list() {
@@ -38,7 +41,7 @@ public class TableService {
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         final OrderTable persistOrderTable = findOrderTableById(orderTableId);
-        persistOrderTable.changeEmpty(orderTableRequest.getEmpty());
+        persistOrderTable.changeEmpty(orderTableValidator, orderTableRequest.getEmpty());
 
         return OrderTableResponse.of(persistOrderTable);
     }
@@ -46,7 +49,7 @@ public class TableService {
     @Transactional
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         final OrderTable persistOrderTable = findOrderTableById(orderTableId);
-        persistOrderTable.changeNumberOfGuests(orderTableRequest.getNumberOfGuests());
+        persistOrderTable.changeNumberOfGuests(orderTableValidator, orderTableRequest.getNumberOfGuests());
 
         return OrderTableResponse.of(persistOrderTable);
     }

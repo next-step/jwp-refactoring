@@ -1,14 +1,12 @@
 package kitchenpos.table.domain;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Embeddable;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Embeddable
 public class OrderTables {
-    @OneToMany(mappedBy = "tableGroup", cascade = CascadeType.ALL)
+
     private List<OrderTable> orderTables = new ArrayList<>();
 
     protected OrderTables() {}
@@ -25,16 +23,8 @@ public class OrderTables {
         orderTables.add(orderTable);
     }
 
-    public void group(TableGroup tableGroup) {
-        for (OrderTable orderTable : orderTables) {
-            orderTable.addGroup(tableGroup);
-        }
-    }
-
-    public void ungroup() {
-        for (OrderTable orderTable : orderTables) {
-            orderTable.removeGroup();
-        }
+    public void clear() {
+        orderTables.clear();
     }
 
     public List<OrderTable> asList() {
