@@ -10,6 +10,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import kitchenpos.common.exception.CommonErrorCode;
 import kitchenpos.common.exception.InvalidParameterException;
+import kitchenpos.tablegroup.domain.event.TableGroupingEvent;
+import kitchenpos.tablegroup.domain.event.TableUnGroupingEvent;
 import org.springframework.data.domain.AbstractAggregateRoot;
 
 @Entity

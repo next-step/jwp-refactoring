@@ -1,13 +1,15 @@
-package kitchenpos.tablegroup.domain;
+package kitchenpos.tablegroup.domain.event;
 
 import java.util.List;
+import org.springframework.context.ApplicationEvent;
 
-public class TableGroupingEvent {
+public class TableGroupingEvent extends ApplicationEvent {
 
     private final Long tableGroupId;
     private final List<Long> orderTableIds;
 
     public TableGroupingEvent(Long tableGroupId, List<Long> orderTableIds) {
+        super(tableGroupId);
         this.tableGroupId = tableGroupId;
         this.orderTableIds = orderTableIds;
     }
