@@ -10,10 +10,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import org.springframework.data.domain.AbstractAggregateRoot;
 
 @Entity
-public class OrderTable extends AbstractAggregateRoot<OrderTable> {
+public class OrderTable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -61,8 +60,6 @@ public class OrderTable extends AbstractAggregateRoot<OrderTable> {
 
     public void changeEmpty() {
         validateHasNotTableGroup();
-
-        registerEvent(new TableClearedEvent(this));
 
         this.empty = Empty.of(true);
     }

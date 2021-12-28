@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
+import kitchenpos.common.domain.Price;
 
 @Embeddable
 public class MenuProducts {

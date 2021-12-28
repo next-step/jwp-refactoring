@@ -12,8 +12,8 @@ import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,18 +22,18 @@ public class OrderService {
 
     private final MenuService menuService;
     private final OrderRepository orderRepository;
-    private final TableService tableService;
+    private final OrderTableRepository orderTableRepository;
 
     public OrderService(final MenuService menuService, final OrderRepository orderRepository,
-        final TableService tableService) {
+        final OrderTableRepository orderTableRepository) {
         this.menuService = menuService;
         this.orderRepository = orderRepository;
-        this.tableService = tableService;
+        this.orderTableRepository = orderTableRepository;
     }
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
-        final OrderTable orderTable = tableService.findById(orderRequest.getOrderTableId());
+        final OrderTable orderTable = findOrderTableById(orderRequest.getOrderTableId());
 
         final Order order = new Order(orderTable);
         order.addOrderLineItems(makeOrderLineItems(order, orderRequest.getOrderLineItems()));
@@ -65,14 +65,33 @@ public class OrderService {
             .orElseThrow(IllegalArgumentException::new);
     }
 
+    @Transactional(readOnly = true)
+    public OrderTable findOrderTableById(final Long orderTableId) {
+        return orderTableRepository.findById(orderTableId)
+            .orElseThrow(IllegalArgumentException::new);
+    }
+
+    @Transactional(readOnly = true)
+    public boolean isAllOrderStatusCompleted(final List<Long> orderTableIds) {
+        return orderTableIds.stream()
+            .allMatch(this::isOrderStatusCompleted);
+    }
+
+    @Transactional(readOnly = true)
+    public boolean isOrderStatusCompleted(final Long orderTableId) {
+        List<Order> orders = orderRepository.findAllByOrderTableId(orderTableId);
+
+        return orders.stream()
+            .allMatch(Order::isCompleteStatus);
+    }
+
     private List<OrderLineItem> makeOrderLineItems(final Order order,
         final List<OrderLineItemRequest> orderLineItemRequests) {
         final List<OrderLineItem> orderLineItems = new ArrayList<>();
 
         for (final OrderLineItemRequest orderLineItemRequest : orderLineItemRequests) {
             Menu menu = menuService.findById(orderLineItemRequest.getMenuId());
-            orderLineItems.add(
-                new OrderLineItem(order, menu.getId(), orderLineItemRequest.getQuantity()));
+            orderLineItems.add(new OrderLineItem(order, menu.getId(), orderLineItemRequest.getQuantity()));
         }
 
         return orderLineItems;
