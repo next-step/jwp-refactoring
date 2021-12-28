@@ -2,7 +2,6 @@ package kitchenpos.domain;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
@@ -29,14 +28,10 @@ public class OrderTables {
     }
 
     public void checkNotContainsUsedTable() {
-        if (containsUsedTable()) {
+        if (orderTables.stream()
+            .anyMatch(OrderTable::cannotBeGrouped)) {
             throw new KitchenposException(KitchenposErrorCode.CONTAINS_USED_TABLE);
         }
-    }
-
-    private boolean containsUsedTable() {
-        return orderTables.stream()
-            .anyMatch(orderTable -> !orderTable.isEmpty() || Objects.nonNull(orderTable.getTableGroup()));
     }
 
     public List<OrderTable> getOrderTables() {

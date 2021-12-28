@@ -1,6 +1,5 @@
 package kitchenpos.domain;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,11 +24,9 @@ public class MenuProducts {
     }
 
     public Price calculateSum() {
-        return new Price(menuProducts.stream()
-            .map(menuProduct -> menuProduct.getProduct()
-                .getPrice()
-                .multiply(BigDecimal.valueOf(menuProduct.getQuantity())))
-            .reduce(BigDecimal.ZERO, BigDecimal::add));
+        return menuProducts.stream()
+            .map(MenuProduct::calculateTotal)
+            .reduce(Price.ZERO, Price::add);
     }
 
     public void add(MenuProduct menuProduct) {

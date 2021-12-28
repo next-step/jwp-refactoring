@@ -43,4 +43,20 @@ class PriceTest {
 
         assertThat(zero.isBiggerThan(one)).isFalse();
     }
+
+    @DisplayName("가격 곱하기")
+    @Test
+    void multiply() {
+        Price ten = new Price(BigDecimal.TEN);
+
+        assertThat(ten.multiply(BigDecimal.valueOf(5))).isEqualTo(new Price(BigDecimal.valueOf(50)));
+    }
+
+    @Test
+    void add() {
+        Price one = new Price(BigDecimal.ONE);
+        Price ten = new Price(BigDecimal.TEN);
+
+        assertThat(Price.add(one, ten)).isEqualTo(new Price(BigDecimal.valueOf(11)));
+    }
 }

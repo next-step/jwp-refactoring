@@ -23,7 +23,7 @@ public class OrderResponse {
 
     public static OrderResponse from(Order order) {
         OrderLineItemResponses orderLineItemResponses = OrderLineItemResponses.from(order.getOrderLineItemValues());
-        return new OrderResponse(order.getId(), order.getOrderTableId(), order.getOrderStatus().name(),
+        return new OrderResponse(order.getId(), order.getOrderTableId(), order.getOrderStatusName(),
             orderLineItemResponses.getOrderLineItemResponses(), order.getOrderedTime());
     }
 

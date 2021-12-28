@@ -11,7 +11,8 @@ import kitchenpos.exception.KitchenposException;
 
 @Embeddable
 public class Price {
-    private static final int ZERO = 0;
+    public static final Price ZERO = new Price(BigDecimal.ZERO);
+    private static final int ZERO_NUM = 0;
 
     @Column(nullable = false)
     private BigDecimal price;
@@ -20,7 +21,7 @@ public class Price {
     }
 
     public Price(BigDecimal price) {
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < ZERO) {
+        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < ZERO_NUM) {
             throw new KitchenposException(KitchenposErrorCode.INVALID_PRICE);
         }
         this.price = price;
@@ -30,12 +31,12 @@ public class Price {
         return price;
     }
 
-    public BigDecimal multiply(BigDecimal value) {
-        return this.price.multiply(value);
+    public Price multiply(BigDecimal value) {
+        return new Price(this.price.multiply(value));
     }
 
     public boolean isBiggerThan(Price price) {
-        return this.price.compareTo(price.price) > ZERO;
+        return this.price.compareTo(price.price) > ZERO_NUM;
     }
 
     @Override
@@ -51,5 +52,9 @@ public class Price {
     @Override
     public int hashCode() {
         return Objects.hash(price);
+    }
+
+    public static Price add(Price price1, Price price2) {
+        return new Price(price1.price.add(price2.price));
     }
 }

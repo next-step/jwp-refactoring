@@ -1,6 +1,5 @@
 package kitchenpos.application;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -70,7 +69,7 @@ public class TableGroupService {
 
     private void checkContainsCookingOrMealTable(OrderTables orderTables) {
         if (orderRepository.existsByOrderTableInAndOrderStatusIn(
-            orderTables.getOrderTables(), Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
+            orderTables.getOrderTables(), OrderStatus.NOT_COMPLETED_LIST)) {
             throw new KitchenposException(KitchenposErrorCode.CONTAINS_USED_TABLE);
         }
     }

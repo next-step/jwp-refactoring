@@ -59,10 +59,6 @@ public class OrderTable {
         this.tableGroup = tableGroup;
     }
 
-    public NumberOfGuests getNumberOfGuests() {
-        return numberOfGuests;
-    }
-
     public void updateNumberOfGuests(final NumberOfGuests numberOfGuests) {
         checkNotEmpty();
         this.numberOfGuests = numberOfGuests;
@@ -97,5 +93,9 @@ public class OrderTable {
         if (Objects.nonNull(tableGroup)) {
             throw new KitchenposException(KitchenposErrorCode.TABLE_IS_IN_GROUP);
         }
+    }
+
+    public boolean cannotBeGrouped() {
+        return !empty || Objects.nonNull(tableGroup);
     }
 }

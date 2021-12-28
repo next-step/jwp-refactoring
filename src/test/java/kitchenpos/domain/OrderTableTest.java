@@ -1,6 +1,7 @@
 package kitchenpos.domain;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,5 +28,25 @@ class OrderTableTest {
         assertThatExceptionOfType(KitchenposException.class)
             .isThrownBy(() -> orderTable.checkNotEmpty())
             .withMessage("주문 테이블이 비어있습니다.");
+    }
+
+    @DisplayName("그룹화할 수 없는 테이블인지 확인")
+    @Test
+    void cannotBeGroupedTrue() {
+        OrderTable orderTable1 = new OrderTable(4, false);
+        OrderTable orderTable2 = new OrderTable(new TableGroup(1L), 4);
+
+        assertAll(
+            () -> assertThat(orderTable1.cannotBeGrouped()).isTrue(),
+            () -> assertThat(orderTable2.cannotBeGrouped()).isTrue()
+        );
+    }
+
+    @DisplayName("그룹화할 수 있는 테이블인지 확인")
+    @Test
+    void cannotBeGroupedFalse() {
+        OrderTable orderTable1 = new OrderTable(4, true);
+
+        assertThat(orderTable1.cannotBeGrouped()).isFalse();
     }
 }

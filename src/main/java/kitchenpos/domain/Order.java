@@ -60,17 +60,15 @@ public class Order {
         return id;
     }
 
-    public OrderTable getOrderTable() {
-        return orderTable;
-    }
-
-    public OrderStatus getOrderStatus() {
-        return orderStatus;
-    }
-
     public void updateOrderStatus(final OrderStatus orderStatus) {
         checkStatusNotCompleted();
         this.orderStatus = orderStatus;
+    }
+
+    private void checkStatusNotCompleted() {
+        if (orderStatus.isCompletion()) {
+            throw new KitchenposException(KitchenposErrorCode.CANNOT_UPDATE_COMPLETED_ORDER);
+        }
     }
 
     public LocalDateTime getOrderedTime() {
@@ -100,9 +98,7 @@ public class Order {
         return orderLineItems.getOrderLineItems();
     }
 
-    private void checkStatusNotCompleted() {
-        if (OrderStatus.COMPLETION == orderStatus) {
-            throw new KitchenposException(KitchenposErrorCode.CANNOT_UPDATE_COMPLETED_ORDER);
-        }
+    public String getOrderStatusName() {
+        return orderStatus.name();
     }
 }

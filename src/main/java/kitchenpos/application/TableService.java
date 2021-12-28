@@ -1,6 +1,5 @@
 package kitchenpos.application;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -58,7 +57,7 @@ public class TableService {
 
     private void checkTableCookingOrMeal(OrderTable orderTable) {
         if (orderRepository.existsByOrderTableAndOrderStatusIn(orderTable,
-            Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
+            OrderStatus.NOT_COMPLETED_LIST)) {
             throw new KitchenposException(KitchenposErrorCode.CONTAINS_USED_TABLE);
         }
     }

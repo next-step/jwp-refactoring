@@ -52,10 +52,6 @@ public class TableGroup {
         return createdDate;
     }
 
-    public OrderTables getOrderTables() {
-        return orderTables;
-    }
-
     public List<OrderTable> getOrderTableValues() {
         return orderTables.getOrderTables();
     }

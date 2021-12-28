@@ -68,18 +68,6 @@ public class Menu {
         return name;
     }
 
-    public Price getPrice() {
-        return price;
-    }
-
-    public MenuGroup getMenuGroup() {
-        return menuGroup;
-    }
-
-    public MenuProducts getMenuProducts() {
-        return menuProducts;
-    }
-
     public List<MenuProduct> getMenuProductList() {
         return menuProducts.getMenuProducts();
     }
