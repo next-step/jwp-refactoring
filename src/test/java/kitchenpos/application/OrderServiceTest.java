@@ -19,7 +19,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.Order;
@@ -40,8 +39,6 @@ class OrderServiceTest {
     private MenuDao menuDao;
     @Mock
     private OrderDao orderDao;
-    @Mock
-    private OrderLineItemDao orderLineItemDao;
     @Mock
     private OrderTableDao orderTableDao;
 
@@ -160,9 +157,6 @@ class OrderServiceTest {
         // given
         ID로_주문_조회(order);
 
-        OrderLineItem orderLineItem = new OrderLineItem(1L, order, new Menu(), 1);
-        주문_ID로_주문_상품_조회(orderLineItem);
-
         OrderRequest request = new OrderRequest(1L, "MEAL");
 
         // when
@@ -186,11 +180,6 @@ class OrderServiceTest {
         assertThatExceptionOfType(KitchenposException.class)
             .isThrownBy(() -> orderService.changeOrderStatus(1L, request))
             .withMessage("완료된 주문의 상태를 바꿀 수 없습니다.");
-    }
-
-    private void 주문_ID로_주문_상품_조회(OrderLineItem orderLineItem) {
-        Mockito.when(orderLineItemDao.findAllByOrder_Id(Mockito.anyLong()))
-            .thenReturn(Collections.singletonList(orderLineItem));
     }
 
     private void ID로_주문_조회(Order order) {

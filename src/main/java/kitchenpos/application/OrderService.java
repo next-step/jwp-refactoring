@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.Order;
@@ -27,18 +26,15 @@ import kitchenpos.exception.KitchenposNotFoundException;
 public class OrderService {
     private final MenuDao menuDao;
     private final OrderDao orderDao;
-    private final OrderLineItemDao orderLineItemDao;
     private final OrderTableDao orderTableDao;
 
     public OrderService(
         final MenuDao menuDao,
         final OrderDao orderDao,
-        final OrderLineItemDao orderLineItemDao,
         final OrderTableDao orderTableDao
     ) {
         this.menuDao = menuDao;
         this.orderDao = orderDao;
-        this.orderLineItemDao = orderLineItemDao;
         this.orderTableDao = orderTableDao;
     }
 
@@ -91,8 +87,6 @@ public class OrderService {
         savedOrder.updateOrderStatus(orderStatus);
 
         orderDao.save(savedOrder);
-
-        savedOrder.addOrderLineItems(orderLineItemDao.findAllByOrder_Id(orderId));
 
         return OrderResponse.from(savedOrder);
     }
