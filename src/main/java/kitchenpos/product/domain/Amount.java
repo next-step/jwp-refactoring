@@ -21,10 +21,6 @@ public class Amount {
     @Column(nullable = false)
     private BigDecimal price;
 
-    public Amount getZERO() {
-        return ZERO;
-    }
-
     public static <T extends Number> Amount of(T price) {
         validPriceIsNotEmpty(price);
         validPriceIsNotLessThanZero(price);
