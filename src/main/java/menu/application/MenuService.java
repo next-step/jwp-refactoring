@@ -1,6 +1,7 @@
 package menu.application;
 
 import java.util.*;
+import java.util.function.*;
 import java.util.stream.*;
 
 import org.springframework.stereotype.*;
@@ -24,13 +25,26 @@ public class MenuService {
     public MenuResponse save(MenuRequest request) {
         MenuGroup menuGroup = menuGroupService.findById(request.getMenuGroupId());
         Menu menu = Menu.of(request.getName(), request.getPrice(), menuGroup);
+
+        Map<Long, Product> idToProduct = getProducts(request);
         request.getMenuProductRequests()
             .forEach(menuProductRequest -> menu.addMenuProduct(
-                productService.findById(menuProductRequest.getProductId()),
+                idToProduct.get(menuProductRequest.getProductId()),
                 menuProductRequest.getQuantity()
             ));
 
         return MenuResponse.from(menuRepository.save(menu));
+    }
+
+    private Map<Long, Product> getProducts(MenuRequest request) {
+        List<Long> menuProductIds = request.getMenuProductRequests()
+            .stream()
+            .map(MenuProductRequest::getProductId)
+            .collect(Collectors.toList());
+
+        return productService.findByIdIn(menuProductIds)
+            .stream()
+            .collect(Collectors.toMap(Product::getId, Function.identity()));
     }
 
     public List<MenuResponse> findAll() {

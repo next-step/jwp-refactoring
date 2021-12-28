@@ -28,6 +28,10 @@ public class ProductService {
             );
     }
 
+    public List<Product> findByIdIn(List<Long> ids) {
+        return productRepository.findAllById(ids);
+    }
+
     public ProductResponse save(ProductRequest request) {
         Product product = productRepository.save(
             Product.of(request.getName(), request.getPrice())
