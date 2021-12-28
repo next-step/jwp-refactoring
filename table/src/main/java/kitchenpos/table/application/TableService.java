@@ -41,20 +41,22 @@ public class TableService {
 
     @Transactional
     public OrderTableDto changeEmpty(final Long orderTableId, final OrderTableDto orderTableDto) {
-        OrderTable validatedOrderTable = tableValidator.getValidatedOrderTableForChangeEmpty(orderTableId);
+        final OrderTable orderTable = orderTableRepository.findById(orderTableId)
+                                                            .orElseThrow(NotFoundOrderTableException::new);
 
-        validatedOrderTable.changeEmpty(orderTableDto.isEmpty());
+        orderTable.changeEmpty(orderTableDto.isEmpty(), tableValidator);
 
-        return OrderTableDto.of(validatedOrderTable);
+        return OrderTableDto.of(orderTable);
     }
 
     @Transactional
     public OrderTableDto changeNumberOfGuests(final Long orderTableId, final OrderTableDto orderTableDto) {
-        final OrderTable validatedOrderTable = tableValidator.getValidatedOrderTableForChangeNumberOfGuests(orderTableId, orderTableDto.getNumberOfGuests());
+        final OrderTable orderTable = orderTableRepository.findById(orderTableId)
+                                                            .orElseThrow(NotFoundOrderTableException::new);
 
-        validatedOrderTable.changeNumberOfGuests(orderTableDto.getNumberOfGuests());
+        orderTable.changeNumberOfGuests(orderTableDto.getNumberOfGuests(), tableValidator);
 
-        return OrderTableDto.of(validatedOrderTable);
+        return OrderTableDto.of(orderTable);
     }
 
     public OrderTable findById(OrderTableId orderTableId) {

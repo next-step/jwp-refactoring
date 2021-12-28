@@ -2,11 +2,11 @@ package kitchenpos.table.application;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -75,10 +75,10 @@ public class TableServiceTest {
         // given
         OrderTable 치킨_주문_개인테이블 =  OrderTable.of(10, false);
 
-        when(tableValidator.getValidatedOrderTableForChangeEmpty(nullable(Long.class))).thenReturn(치킨_주문_개인테이블);
-
         OrderTableDto 주문테이블_빈테이블전환_요청전문 = OrderTableDto.of(0);
 
+        when(orderTableRepository.findById(nullable(Long.class))).thenReturn(Optional.of(치킨_주문_개인테이블));
+                                                            
         // when
         OrderTableDto changedOrderTable = tableService.changeEmpty(치킨_주문_개인테이블.getId(), 주문테이블_빈테이블전환_요청전문);
 
@@ -92,10 +92,10 @@ public class TableServiceTest {
         // given
         OrderTable 치킨_주문테이블 = OrderTable.of(10, false);
 
-        when(tableValidator.getValidatedOrderTableForChangeNumberOfGuests(nullable(Long.class), anyInt())).thenReturn(치킨_주문테이블);
-
         OrderTableDto 손님수변경_요청전문 = OrderTableDto.of(3);
 
+        when(orderTableRepository.findById(nullable(Long.class))).thenReturn(Optional.of(치킨_주문테이블));
+       
         // when
         OrderTableDto changedOrderTableDto = tableService.changeNumberOfGuests(치킨_주문테이블.getId(), 손님수변경_요청전문);
 

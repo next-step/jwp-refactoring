@@ -68,11 +68,25 @@ public class OrderTable {
         this.numberOfGuests = numberOfGuests;
     }
 
+    public void changeNumberOfGuests(int numberOfGuests, TableValidator tableValidator) {
+        tableValidator.checkEmptyTable(this);
+        tableValidator.checkPositiveOfNumberOfGuests(numberOfGuests);
+
+        this.numberOfGuests = numberOfGuests;
+    }
+
     public boolean getEmpty() {
         return this.empty;
     }
 
     public void changeEmpty(boolean empty) {
+        this.empty = empty;
+    }
+
+    public void changeEmpty(boolean empty, TableValidator tableValidator) {
+        tableValidator.checkHasTableGroup(this);
+        tableValidator.checkOrderStatusOfOrderTable(this.id);
+        
         this.empty = empty;
     }
 
