@@ -91,10 +91,6 @@ public class Order {
         return orderLineItems;
     }
     
-    public void received() {
-        changeOrderStatus(OrderStatus.COOKING);
-    }
-    
     public void onMealing() {
         changeOrderStatus(OrderStatus.MEAL);
     }
