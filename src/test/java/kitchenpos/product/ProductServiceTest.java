@@ -4,6 +4,7 @@ import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,20 +32,21 @@ public class ProductServiceTest {
 
     @InjectMocks
     private ProductService productService;
-    private ProductRequest product;
+    private ProductRequest productRequest;
 
     @BeforeEach
     void setUp() {
-        product = 상품_등록("짜장면", new BigDecimal(5000));
+        productRequest = 상품_등록("짜장면", new BigDecimal(5000));
     }
 
     @Test
     @DisplayName("상품을 등록한다.")
     void createProduct() {
+        Product product = new Product("짜장면", new BigDecimal(5000));
         given(productRepository.save(any())).willReturn(product);
 
         // when
-        Product createProduct = productService.create(product);
+        ProductResponse createProduct = productService.create(productRequest);
 
         // then
         assertThat(createProduct).isNotNull();
@@ -64,7 +66,7 @@ public class ProductServiceTest {
     @DisplayName("상품을 조회한다.")
     void getProduct() {
         // when
-        List<Product> products = productService.list();
+        List<ProductResponse> products = productService.list();
 
         // then
         assertThat(products).isNotNull();

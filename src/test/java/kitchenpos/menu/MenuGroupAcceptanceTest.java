@@ -25,7 +25,7 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(initResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(initResponse.jsonPath().getList(".")).hasSize(4);
+        assertThat(initResponse.jsonPath().getList(".")).hasSize(0);
 
         // when
         ExtractableResponse<Response> response = 메뉴_그룹_등록_요청("두마리메뉴");
@@ -38,7 +38,7 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(getResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(getResponse.jsonPath().getList(".")).hasSize(5);
+        assertThat(getResponse.jsonPath().getList(".")).hasSize(1);
     }
 
     private ExtractableResponse<Response> 메뉴_그룹_조회_요청() {

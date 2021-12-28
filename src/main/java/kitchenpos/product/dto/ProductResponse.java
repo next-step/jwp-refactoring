@@ -15,6 +15,10 @@ public class ProductResponse {
         this.price = price;
     }
 
+    public static ProductResponse of(Product product) {
+        return new ProductResponse(product.getId(), product.getName(), product.getPrice());
+    }
+
     public Long getId() {
         return id;
     }
@@ -27,7 +31,4 @@ public class ProductResponse {
         return price;
     }
 
-    public Product toProduct() {
-        return new Product(this.name, this.price);
-    }
 }

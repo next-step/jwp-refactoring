@@ -27,13 +27,8 @@ public class OrderTable {
         this.empty = empty;
     }
 
-
     public Long getId() {
         return id;
-    }
-
-    public void setId(final Long id) {
-        this.id = id;
     }
 
     public Long getTableGroupId() {

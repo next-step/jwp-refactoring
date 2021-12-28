@@ -1,8 +1,8 @@
 package kitchenpos.table;
 
 
-import kitchenpos.domain.OrderRepository;
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
@@ -134,7 +134,7 @@ public class TableServiceTest {
         return new OrderTableRequest(id, numberOfGuests, empty);
     }
 
-    private OrderTable 테이블_등록(Long id, int numberOfGuests, boolean empty) {
+    public static OrderTable 테이블_등록(Long id, int numberOfGuests, boolean empty) {
         return new OrderTable(id, numberOfGuests, empty);
     }
 

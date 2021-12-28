@@ -18,8 +18,4 @@ public class MenuGroupResponse {
     public String getName() {
         return name;
     }
-
-    public MenuGroup toMenuGroup() {
-        return new MenuGroup(this.name);
-    }
 }
