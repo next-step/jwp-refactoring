@@ -5,10 +5,12 @@ import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.MenuGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.BDDMockito;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("메뉴 그룹 테스트")
 class MenuGroupServiceTest {
@@ -20,8 +22,10 @@ class MenuGroupServiceTest {
     void create() {
         MenuGroup menuGroup = MenuGroup.of("추천메뉴");
         MenuGroup result = menuGroupService.create(menuGroup);
-        assertThat(result.getId()).isEqualTo(1L);
-        assertThat(result.getName()).isEqualTo(menuGroup.getName());
+        assertAll(
+                () -> assertThat(result.getId()).isEqualTo(1L),
+                () -> assertThat(result.getName()).isEqualTo(menuGroup.getName())
+        );
     }
 
     @DisplayName("모든 메뉴 그룹 조회")

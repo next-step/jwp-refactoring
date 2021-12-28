@@ -83,6 +83,10 @@ public class Order {
         this.orderLineItems = orderLineItems;
     }
 
+    public void createId(Long id) {
+        this.id = id;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -96,7 +100,4 @@ public class Order {
         return Objects.hash(id, orderTableId, orderStatus, orderedTime, orderLineItems);
     }
 
-    public void createId(Long id) {
-        this.id = id;
-    }
 }

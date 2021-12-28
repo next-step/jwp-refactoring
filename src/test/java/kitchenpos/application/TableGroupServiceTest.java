@@ -11,6 +11,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 class TableGroupServiceTest {
     private final OrderDao orderDao = new FakeOrderDao();
@@ -72,10 +73,14 @@ class TableGroupServiceTest {
 
         TableGroup result = tableGroupService.create(tableGroup);
         List<OrderTable> resultOrderTables = result.getOrderTables();
-        for (OrderTable orderTable : resultOrderTables) {
-            assertThat(orderTable.getTableGroupId()).isEqualTo(result.getId());
-            assertThat(orderTable.isEmpty()).isFalse();
-        }
+        assertAll(
+                () -> {
+                    for (OrderTable orderTable : resultOrderTables) {
+                        assertThat(orderTable.getTableGroupId()).isEqualTo(result.getId());
+                        assertThat(orderTable.isEmpty()).isFalse();
+                    }
+                }
+        );
     }
 
     @DisplayName("주문 상태가 COOKING, MEAL 이면 단체 해지를 할 수 없다.")
@@ -112,8 +117,10 @@ class TableGroupServiceTest {
         TableGroup tableGroup = TableGroup.of(Arrays.asList(savedOrderTable1, savedOrderTable2));
         TableGroup result = tableGroupService.create(tableGroup);
 
-        assertThat(savedOrderTable1.getTableGroupId()).isEqualTo(tableGroup.getId());
-        assertThat(savedOrderTable2.getTableGroupId()).isEqualTo(tableGroup.getId());
+        assertAll(
+                () -> assertThat(savedOrderTable1.getTableGroupId()).isEqualTo(tableGroup.getId()),
+                () -> assertThat(savedOrderTable2.getTableGroupId()).isEqualTo(tableGroup.getId())
+        );
 
         Order order1 = new Order(1L,
                 savedOrderTable1.getId(),
@@ -132,8 +139,10 @@ class TableGroupServiceTest {
 
         tableGroupService.ungroup(result.getId());
 
-        assertThat(savedOrderTable1.getTableGroupId()).isNull();
-        assertThat(savedOrderTable2.getTableGroupId()).isNull();
+        assertAll(
+                () -> assertThat(savedOrderTable1.getTableGroupId()).isNull(),
+                () -> assertThat(savedOrderTable2.getTableGroupId()).isNull()
+        );
     }
 
 }

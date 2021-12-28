@@ -17,6 +17,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("주문 테이블 테스트")
 class TableServiceTest {
@@ -29,8 +30,10 @@ class TableServiceTest {
     void create() {
         OrderTable orderTable = new OrderTable(10, true);
         OrderTable result = tableService.create(orderTable);
-        assertThat(result.getTableGroupId()).isNull();
-        assertThat(result.getNumberOfGuests()).isEqualTo(10);
+        assertAll(
+                () -> assertThat(result.getTableGroupId()).isNull(),
+                () -> assertThat(result.getNumberOfGuests()).isEqualTo(10)
+        );
     }
 
     @DisplayName("모든 주문 테이블 조회")
@@ -84,14 +87,16 @@ class TableServiceTest {
         orderDao.save(order);
 
         OrderTable result = tableService.changeEmpty(savedOrderTable.getId(), new OrderTable(false));
-        assertThat(result.getNumberOfGuests()).isEqualTo(10);
-        assertThat(result.isEmpty()).isFalse();
+        assertAll(
+                () -> assertThat(result.getNumberOfGuests()).isEqualTo(10),
+                () -> assertThat(result.isEmpty()).isFalse()
+        );
     }
 
     @DisplayName("주문 테이블 손님 수가 0보다 작게 바꿀 수 없다")
     @Test
     void notChangeNumberOfGuestLessThanZero() {
-        OrderTable savedOrderTable = orderTableDao.save(OrderTable.of(-1, true));
+        orderTableDao.save(OrderTable.of(-1, true));
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> tableService.changeNumberOfGuests(1L, new OrderTable(-1)));
     }

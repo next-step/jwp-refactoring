@@ -77,6 +77,10 @@ public class OrderTable {
         this.empty = empty;
     }
 
+    public void createId(Long id) {
+        this.id = id;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -90,7 +94,4 @@ public class OrderTable {
         return Objects.hash(id, tableGroupId, numberOfGuests, empty);
     }
 
-    public void createId(Long id) {
-        this.id = id;
-    }
 }

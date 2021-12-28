@@ -13,6 +13,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("메뉴 테스트")
 class MenuServiceTest {
@@ -92,8 +93,10 @@ class MenuServiceTest {
         );
 
         Menu resultMenu = menuService.create(menu);
-        equalsMenu(resultMenu, savedMenuGroup.getId(), menu);
-        equalsMenuProduct(resultMenu, menu);
+        assertAll(
+                () -> equalsMenu(resultMenu, savedMenuGroup.getId(), menu),
+                () -> equalsMenuProduct(resultMenu, menu)
+        );
     }
 
     @DisplayName("모든 메뉴 조회")
@@ -121,13 +124,18 @@ class MenuServiceTest {
         Menu resultMenu2 = menuService.create(menu2);
 
         List<Menu> list = menuService.list();
-        assertThat(list.size()).isEqualTo(2);
-        long count = list.stream()
+        long count = getMenuProductCount(list);
+        assertAll(
+                () -> assertThat(list.size()).isEqualTo(2),
+                () -> assertThat(count).isEqualTo(resultMenu1.getMenuProducts().size() + resultMenu2.getMenuProducts().size())
+        );
+    }
+
+    private long getMenuProductCount(List<Menu> list) {
+        return list.stream()
                 .map(menu -> menu.getMenuProducts())
                 .flatMap(menuProducts -> menuProducts.stream())
                 .count();
-        assertThat(count).isEqualTo(resultMenu1.getMenuProducts().size() + resultMenu2.getMenuProducts().size());
-
     }
 
     private void equalsMenuProduct(Menu resultMenu, Menu menu) {

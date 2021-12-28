@@ -52,6 +52,10 @@ public class MenuProduct {
         this.quantity = quantity;
     }
 
+    public void createId(Long id) {
+        this.seq = id;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -65,7 +69,4 @@ public class MenuProduct {
         return Objects.hash(seq, menuId, productId, quantity);
     }
 
-    public void createId(Long id) {
-        this.seq = id;
-    }
 }

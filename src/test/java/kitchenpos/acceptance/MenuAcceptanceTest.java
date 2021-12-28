@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("메뉴 관련 기능")
 public class MenuAcceptanceTest extends AcceptanceTest {
@@ -28,8 +29,8 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        추천메뉴 = 메뉴그룹_등록되어있음(MenuGroup.of("추천메뉴"), "/api/menu-groups");
-        소고기한우 = 상품_등록되어있음(Product.of("소고기한우", 30000), "/api/products");
+        추천메뉴 = 메뉴그룹_등록되어있음(MenuGroup.of("추천메뉴"));
+        소고기한우 = 상품_등록되어있음(Product.of("소고기한우", 30000));
     }
 
     @DisplayName("메뉴 관리")
@@ -42,10 +43,10 @@ public class MenuAcceptanceTest extends AcceptanceTest {
                 Arrays.asList(MenuProduct.of(소고기한우.getId(), 2L))
         );
 
-        ExtractableResponse<Response> createResponse = 메뉴_생성_요청(menu, "/api/menus");
+        ExtractableResponse<Response> createResponse = 메뉴_생성_요청(menu);
         Menu savedMenu = 메뉴_생성_확인(createResponse);
 
-        ExtractableResponse<Response> findResponse = 모든_메뉴_조회_요청("/api/menus");
+        ExtractableResponse<Response> findResponse = 모든_메뉴_조회_요청();
         모든_메뉴_조회_확인(findResponse, savedMenu);
 
     }
@@ -57,12 +58,14 @@ public class MenuAcceptanceTest extends AcceptanceTest {
                 .map(menu -> menu.getMenuProducts())
                 .flatMap(menuProducts -> menuProducts.stream())
                 .collect(Collectors.toList());
-        assertThat(menus).contains(expected);
-        assertThat(menuProductList).containsAll(expected.getMenuProducts());
+        assertAll(
+                () -> assertThat(menus).contains(expected),
+                () -> assertThat(menuProductList).containsAll(expected.getMenuProducts())
+        );
     }
 
-    private ExtractableResponse<Response> 모든_메뉴_조회_요청(String path) {
-        return TestApiClient.get(path);
+    private ExtractableResponse<Response> 모든_메뉴_조회_요청() {
+        return TestApiClient.get("/api/menus");
     }
 
     private Menu 메뉴_생성_확인(ExtractableResponse<Response> createResponse) {
@@ -72,20 +75,20 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         return createResponse.as(Menu.class);
     }
 
-    public static MenuGroup 메뉴그룹_등록되어있음(MenuGroup menuGroup, String path) {
-        return TestApiClient.create(menuGroup, path).as(MenuGroup.class);
+    public static MenuGroup 메뉴그룹_등록되어있음(MenuGroup menuGroup) {
+        return TestApiClient.create(menuGroup, "/api/menu-groups").as(MenuGroup.class);
     }
 
-    public static Product 상품_등록되어있음(Product product, String path) {
-        return TestApiClient.create(product, path).as(Product.class);
+    public static Product 상품_등록되어있음(Product product) {
+        return TestApiClient.create(product, "/api/products").as(Product.class);
     }
 
-    public static ExtractableResponse<Response> 메뉴_생성_요청(Menu menu, String path) {
-        return TestApiClient.create(menu, path);
+    public static ExtractableResponse<Response> 메뉴_생성_요청(Menu menu) {
+        return TestApiClient.create(menu, "/api/menus");
     }
 
     public static Menu 메뉴_등록되어있음(String name, int price, Long menuGroupId, List<MenuProduct> menuProducts) {
         Menu menu = Menu.of(name, price, menuGroupId, menuProducts);
-        return 메뉴_생성_요청(menu, "/api/menus").as(Menu.class);
+        return 메뉴_생성_요청(menu).as(Menu.class);
     }
 }

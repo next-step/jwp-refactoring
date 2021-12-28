@@ -13,6 +13,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("주문 테스트")
 class OrderServiceTest {
@@ -82,9 +83,11 @@ class OrderServiceTest {
         );
 
         Order result = orderService.create(order);
-        assertThat(result.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
-        assertThat(result.getOrderTableId()).isEqualTo(orderTable.getId());
-        equalOrderLineItem(result, order);
+        assertAll(
+                () -> assertThat(result.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name()),
+                () -> assertThat(result.getOrderTableId()).isEqualTo(orderTable.getId()),
+                () -> equalOrderLineItem(result, order)
+        );
     }
 
     @DisplayName("모든 주문 조회")
@@ -108,12 +111,11 @@ class OrderServiceTest {
 
         List<Order> list = orderService.list();
 
-        assertThat(list.size()).isEqualTo(2);
-        long count = list.stream()
-                .map(order -> order.getOrderLineItems())
-                .flatMap(orderLineItems -> orderLineItems.stream())
-                .count();
-        assertThat(count).isEqualTo(resultOrder1.getOrderLineItems().size() + resultOrder2.getOrderLineItems().size());
+        long count = getOrderLineItemCount(list);
+        assertAll(
+                () -> assertThat(list.size()).isEqualTo(2),
+                () -> assertThat(count).isEqualTo(resultOrder1.getOrderLineItems().size() + resultOrder2.getOrderLineItems().size())
+        );
     }
 
     @DisplayName("주문이 없으면 예외가 발생한다.")
@@ -150,8 +152,18 @@ class OrderServiceTest {
         Order result = orderService.create(order);
         Order resultOrder = orderService.changeOrderStatus(result.getId(), Order.of(OrderStatus.COMPLETION.name()));
 
-        assertThat(resultOrder.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION.name());
-        equalOrderLineItem(result, order);
+        assertAll(
+                () -> assertThat(resultOrder.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION.name()),
+                () -> equalOrderLineItem(result, order)
+        );
+    }
+
+    private long getOrderLineItemCount(List<Order> list) {
+        long count = list.stream()
+                .map(order -> order.getOrderLineItems())
+                .flatMap(orderLineItems -> orderLineItems.stream())
+                .count();
+        return count;
     }
 
     private void equalOrderLineItem(Order result, Order order) {

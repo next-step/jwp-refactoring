@@ -10,6 +10,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("상품 테스트")
 class ProductServiceTest {
@@ -28,8 +29,10 @@ class ProductServiceTest {
     void save() {
         Product product = Product.of("소고기", 30000);
         Product result = productService.create(product);
-        assertThat(result.getName()).isEqualTo(product.getName());
-        assertThat(result.getPrice()).isEqualTo(product.getPrice());
+        assertAll(
+                () -> assertThat(result.getName()).isEqualTo(product.getName()),
+                () -> assertThat(result.getPrice()).isEqualTo(product.getPrice())
+        );
     }
 
     @DisplayName("모든 상품 조회 성공")
