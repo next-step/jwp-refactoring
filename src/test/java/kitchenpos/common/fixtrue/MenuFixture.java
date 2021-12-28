@@ -1,10 +1,10 @@
 package kitchenpos.common.fixtrue;
 
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuProduct;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuProducts;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 
 public class MenuFixture {
 
@@ -12,13 +12,7 @@ public class MenuFixture {
 
     }
 
-    public static Menu of(long id, String name, BigDecimal price, Long menuGroupId, MenuProduct... menuProducts) {
-        Menu menu = new Menu();
-        menu.setId(id);
-        menu.setName(name);
-        menu.setPrice(price);
-        menu.setMenuGroupId(menuGroupId);
-        menu.setMenuProducts(Arrays.asList(menuProducts));
-        return menu;
+    public static Menu of(String name, BigDecimal price, MenuGroup menuGroup, MenuProducts menuProducts) {
+        return Menu.of(name, price, menuGroup, menuProducts);
     }
 }

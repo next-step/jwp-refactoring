@@ -1,6 +1,6 @@
 package kitchenpos.common.fixtrue;
 
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuGroup;
 
 public class MenuGroupFixture {
 
@@ -8,10 +8,7 @@ public class MenuGroupFixture {
 
     }
 
-    public static MenuGroup of(long id, String name) {
-        MenuGroup menuGroup = new MenuGroup();
-        menuGroup.setId(id);
-        menuGroup.setName(name);
-        return menuGroup;
+    public static MenuGroup from(String name) {
+        return MenuGroup.from(name);
     }
 }

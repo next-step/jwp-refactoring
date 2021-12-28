@@ -1,6 +1,6 @@
 package kitchenpos.common.fixtrue;
 
-import kitchenpos.domain.OrderTable;
+import kitchenpos.table.domain.OrderTable;
 
 public class OrderTableFixture {
 
@@ -8,12 +8,7 @@ public class OrderTableFixture {
 
     }
 
-    public static OrderTable of(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
-        OrderTable orderTable = new OrderTable();
-        orderTable.setId(id);
-        orderTable.setTableGroupId(tableGroupId);
-        orderTable.setNumberOfGuests(numberOfGuests);
-        orderTable.setEmpty(empty);
-        return orderTable;
+    public static OrderTable of(int numberOfGuests, boolean empty) {
+        return OrderTable.of(numberOfGuests, empty);
     }
 }

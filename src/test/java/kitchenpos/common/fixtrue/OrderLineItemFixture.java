@@ -1,6 +1,7 @@
 package kitchenpos.common.fixtrue;
 
-import kitchenpos.domain.OrderLineItem;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.order.domain.OrderLineItem;
 
 public class OrderLineItemFixture {
 
@@ -8,12 +9,8 @@ public class OrderLineItemFixture {
 
     }
 
-    public static OrderLineItem of(Long seq, Long orderId, Long menuId, long quantity) {
-        OrderLineItem orderLineItem = new OrderLineItem();
-        orderLineItem.setSeq(seq);
-        orderLineItem.setOrderId(orderId);
-        orderLineItem.setMenuId(menuId);
-        orderLineItem.setQuantity(quantity);
-        return orderLineItem;
+    public static OrderLineItem of(Menu menu, long quantity) {
+        return OrderLineItem.of(menu, quantity);
     }
+
 }

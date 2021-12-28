@@ -1,20 +1,14 @@
 package kitchenpos.common.fixtrue;
 
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
-
-import java.util.Arrays;
+import kitchenpos.order.domain.OrderTables;
+import kitchenpos.table.domain.TableGroup;
 
 public class TableGroupFixture {
 
     private TableGroupFixture() {
     }
 
-    public static TableGroup of(Long id, OrderTable... orderTables) {
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.setId(id);
-        tableGroup.setCreatedDate(null);
-        tableGroup.setOrderTables(Arrays.asList(orderTables));
-        return tableGroup;
+    public static TableGroup from(OrderTables orderTables) {
+        return TableGroup.from(orderTables);
     }
 }
