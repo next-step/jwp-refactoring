@@ -2,9 +2,9 @@ package kitchenpos.tobe.fixture;
 
 import java.util.Arrays;
 import kitchenpos.tobe.common.domain.Quantity;
-import kitchenpos.tobe.orders.domain.order.OrderLineItem;
-import kitchenpos.tobe.orders.domain.order.OrderLineItems;
-import kitchenpos.tobe.orders.dto.order.OrderLineItemRequest;
+import kitchenpos.tobe.orders.order.domain.OrderLineItem;
+import kitchenpos.tobe.orders.order.domain.OrderLineItems;
+import kitchenpos.tobe.orders.order.dto.OrderLineItemRequest;
 
 public class OrderLineItemFixture {
 

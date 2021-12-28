@@ -1,10 +1,10 @@
 package kitchenpos.tobe.fixture;
 
 import java.util.Arrays;
-import kitchenpos.tobe.orders.domain.ordertable.OrderTable;
-import kitchenpos.tobe.orders.domain.ordertable.OrderTables;
-import kitchenpos.tobe.orders.dto.ordertable.OrderTableChangeEmptyRequest;
-import kitchenpos.tobe.orders.dto.ordertable.OrderTableChangeNumberOfGuestsRequest;
+import kitchenpos.tobe.orders.ordertable.domain.OrderTable;
+import kitchenpos.tobe.orders.ordertable.domain.OrderTables;
+import kitchenpos.tobe.orders.ordertable.dto.OrderTableChangeEmptyRequest;
+import kitchenpos.tobe.orders.ordertable.dto.OrderTableChangeNumberOfGuestsRequest;
 
 public class OrderTableFixture {
 

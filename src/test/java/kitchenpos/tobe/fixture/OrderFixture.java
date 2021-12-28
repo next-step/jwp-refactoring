@@ -2,12 +2,12 @@ package kitchenpos.tobe.fixture;
 
 import java.util.List;
 import kitchenpos.tobe.common.domain.Validator;
-import kitchenpos.tobe.orders.domain.order.Order;
-import kitchenpos.tobe.orders.domain.order.OrderLineItems;
-import kitchenpos.tobe.orders.domain.order.OrderStatus;
-import kitchenpos.tobe.orders.dto.order.OrderChangeStatusRequest;
-import kitchenpos.tobe.orders.dto.order.OrderLineItemRequest;
-import kitchenpos.tobe.orders.dto.order.OrderRequest;
+import kitchenpos.tobe.orders.order.domain.Order;
+import kitchenpos.tobe.orders.order.domain.OrderLineItems;
+import kitchenpos.tobe.orders.order.domain.OrderStatus;
+import kitchenpos.tobe.orders.order.dto.OrderChangeStatusRequest;
+import kitchenpos.tobe.orders.order.dto.OrderLineItemRequest;
+import kitchenpos.tobe.orders.order.dto.OrderRequest;
 
 public class OrderFixture {
 

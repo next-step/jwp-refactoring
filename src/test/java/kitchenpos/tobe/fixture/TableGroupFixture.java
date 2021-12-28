@@ -1,8 +1,8 @@
 package kitchenpos.tobe.fixture;
 
 import java.util.List;
-import kitchenpos.tobe.orders.domain.ordertable.TableGroup;
-import kitchenpos.tobe.orders.dto.ordertable.TableGroupRequest;
+import kitchenpos.tobe.orders.ordertable.domain.TableGroup;
+import kitchenpos.tobe.orders.ordertable.dto.TableGroupRequest;
 
 public class TableGroupFixture {
 
