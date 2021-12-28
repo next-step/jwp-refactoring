@@ -29,11 +29,14 @@ public class OrderTables {
     }
 
     public void checkNotContainsUsedTable() {
-        for (final OrderTable orderTable : orderTables) {
-            if (!orderTable.isEmpty() || Objects.nonNull(orderTable.getTableGroup())) {
-                throw new KitchenposException(KitchenposErrorCode.CONTAINS_USED_TABLE);
-            }
+        if (containsUsedTable()) {
+            throw new KitchenposException(KitchenposErrorCode.CONTAINS_USED_TABLE);
         }
+    }
+
+    private boolean containsUsedTable() {
+        return orderTables.stream()
+            .anyMatch(orderTable -> !orderTable.isEmpty() || Objects.nonNull(orderTable.getTableGroup()));
     }
 
     public List<OrderTable> getOrderTables() {
