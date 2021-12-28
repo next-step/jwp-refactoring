@@ -17,7 +17,7 @@ public class NumberOfGuests {
     }
 
     private NumberOfGuests(int numberOfGuests) {
-        valid(numberOfGuests);
+        validate(numberOfGuests);
         this.numberOfGuests = numberOfGuests;
     }
 
@@ -25,7 +25,7 @@ public class NumberOfGuests {
         return new NumberOfGuests(numberOfGuests);
     }
 
-    private void valid(int numberOfGuests) {
+    private void validate(int numberOfGuests) {
         if (numberOfGuests < MIN) {
             throw new InvalidParameterException(
                 OrderErrorCode.NUMBER_OF_GUESTS_MIN_UNDER_EXCEPTION);

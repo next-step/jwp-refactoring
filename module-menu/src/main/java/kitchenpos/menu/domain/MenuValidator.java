@@ -25,25 +25,25 @@ public class MenuValidator {
         this.productRepository = productRepository;
     }
 
-    public void registerValidate(Menu menu) {
-        existMenuGroupValid(menu);
-        emptyValid(menu);
-        greaterThanMinPriceValid(menu);
+    public void validateRegister(Menu menu) {
+        validateExistMenuGroup(menu);
+        validateEmpty(menu);
+        validateRegisterGreaterThanMinPrice(menu);
     }
 
-    private void existMenuGroupValid(Menu menu) {
+    private void validateExistMenuGroup(Menu menu) {
         if (!menuGroupRepository.existsById(menu.getMenuGroupId())) {
             throw new NotFoundException(MenuErrorCode.MENU_GROUP_NOT_FOUND_EXCEPTION);
         }
     }
 
-    private void emptyValid(Menu menu) {
+    private void validateEmpty(Menu menu) {
         if (Objects.isNull(menu.getName())) {
             throw new InvalidParameterException(CommonErrorCode.NOT_EMPTY);
         }
     }
 
-    private void greaterThanMinPriceValid(Menu menu) {
+    private void validateRegisterGreaterThanMinPrice(Menu menu) {
         BigDecimal totalPrice = calculateTotalPrice(menu);
         Price menuPrice = menu.getPrice();
         if (menuPrice.greaterThanOf(totalPrice)) {

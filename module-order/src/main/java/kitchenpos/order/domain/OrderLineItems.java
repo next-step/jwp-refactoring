@@ -23,7 +23,7 @@ public class OrderLineItems {
     }
 
     private OrderLineItems(List<OrderLineItem> orderLineItems) {
-        validEmpty(orderLineItems);
+        validateEmpty(orderLineItems);
         this.orderLineItems = orderLineItems;
     }
 
@@ -41,7 +41,7 @@ public class OrderLineItems {
             .collect(Collectors.toList());
     }
 
-    private void validEmpty(List<OrderLineItem> orderLineItems) {
+    private void validateEmpty(List<OrderLineItem> orderLineItems) {
         if (CollectionUtils.isEmpty(orderLineItems)) {
             throw new InvalidParameterException(CommonErrorCode.NOT_EMPTY);
         }

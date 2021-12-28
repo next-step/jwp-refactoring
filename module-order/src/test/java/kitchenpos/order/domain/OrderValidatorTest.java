@@ -43,7 +43,7 @@ class OrderValidatorTest {
         given(orderTableRepository.findById(any())).willReturn(Optional.of(주문테이블));
 
         // when
-        ThrowableAssert.ThrowingCallable actual = () -> orderValidator.registerValidate(주문);
+        ThrowableAssert.ThrowingCallable actual = () -> orderValidator.validateRegister(주문);
 
         // then
         assertThatThrownBy(actual).isInstanceOf(InvalidParameterException.class);
@@ -58,7 +58,7 @@ class OrderValidatorTest {
         Order 주문 = Order.of(1L, Collections.singletonList(주문항목));
 
         // when
-        ThrowableAssert.ThrowingCallable actual = () -> orderValidator.registerValidate(주문);
+        ThrowableAssert.ThrowingCallable actual = () -> orderValidator.validateRegister(주문);
 
         // then
         assertThatThrownBy(actual).isInstanceOf(NotFoundException.class);

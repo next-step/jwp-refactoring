@@ -54,13 +54,13 @@ public class OrderTable {
     }
 
     public void changeNumberOfGuests(int changeNumberOfGuests) {
-        empty.validNotEmpty();
+        empty.validateNotEmpty();
         this.numberOfGuests = numberOfGuests.changeNumberOfGuests(changeNumberOfGuests);
     }
 
     public void changeEmpty(TableValidator tableValidator, boolean empty) {
-        notIncludeTableGroupValid();
-        tableValidator.completedOrderValid(this);
+        validateNotIncludeTableGroup();
+        tableValidator.validateCompletedOrder(this);
 
         this.empty.changeEmpty(empty);
     }
@@ -74,7 +74,7 @@ public class OrderTable {
     }
 
     public void group(Long tableGroupId) {
-        notIncludeTableGroupValid();
+        validateNotIncludeTableGroup();
         this.tableGroupId = tableGroupId;
     }
 
@@ -82,7 +82,7 @@ public class OrderTable {
         return Objects.nonNull(tableGroupId);
     }
 
-    private void notIncludeTableGroupValid() {
+    private void validateNotIncludeTableGroup() {
         if (Objects.nonNull(tableGroupId)) {
             throw new InvalidParameterException(
                 OrderErrorCode.ORDER_TABLE_EXISTS_TABLE_GROUP_EXCEPTION);

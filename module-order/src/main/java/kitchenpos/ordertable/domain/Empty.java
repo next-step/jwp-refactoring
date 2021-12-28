@@ -3,7 +3,6 @@ package kitchenpos.ordertable.domain;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import kitchenpos.common.OrderErrorCode;
-import kitchenpos.exception.CommonErrorCode;
 import kitchenpos.exception.InvalidParameterException;
 
 @Embeddable
@@ -31,7 +30,7 @@ public class Empty {
         this.empty = empty;
     }
 
-    public void validNotEmpty() {
+    public void validateNotEmpty() {
         if (!isEmpty()) {
             throw new InvalidParameterException(OrderErrorCode.TABLE_NOT_EMPTY_EXCEPTION);
         }

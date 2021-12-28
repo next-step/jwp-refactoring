@@ -23,12 +23,12 @@ public class OrderValidator {
         this.orderTableRepository = orderTableRepository;
     }
 
-    public void registerValidate(Order order) {
-        existAndEmptyOrderTableValidate(order.getOrderTableId());
-        existMenuValidate(order.getMenuIds());
+    public void validateRegister(Order order) {
+        validateExistAndEmptyOrderTable(order.getOrderTableId());
+        validateExistMenu(order.getMenuIds());
     }
 
-    private void existAndEmptyOrderTableValidate(Long orderTableId) {
+    private void validateExistAndEmptyOrderTable(Long orderTableId) {
         OrderTable orderTable = orderTableRepository.findById(orderTableId)
             .orElseThrow(
                 () -> new NotFoundException(OrderErrorCode.ORDER_TABLE_NOT_FOUND_EXCEPTION));
@@ -38,7 +38,7 @@ public class OrderValidator {
         }
     }
 
-    private void existMenuValidate(List<Long> menuIds) {
+    private void validateExistMenu(List<Long> menuIds) {
         Long count = menuRepository.countAllByIdIn(menuIds);
 
         if (count != menuIds.size()) {

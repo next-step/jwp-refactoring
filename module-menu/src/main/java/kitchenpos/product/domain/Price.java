@@ -19,7 +19,7 @@ public class Price {
     }
 
     public Price(BigDecimal price) {
-        validMin(price);
+        validateMinPrice(price);
         this.price = price;
     }
 
@@ -35,7 +35,7 @@ public class Price {
         return price.multiply(BigDecimal.valueOf(quantity));
     }
 
-    private void validMin(BigDecimal price) {
+    private void validateMinPrice(BigDecimal price) {
         if (Objects.isNull(price) || price.compareTo(MIN) < 0) {
             throw new InvalidParameterException(CommonErrorCode.NOT_EMPTY);
         }

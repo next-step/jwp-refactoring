@@ -37,7 +37,7 @@ class TableValidatorTest {
             Collections.singletonList(요리중_주문_of()));
 
         // when
-        ThrowableAssert.ThrowingCallable actual = () -> tableValidator.completedOrderValid(
+        ThrowableAssert.ThrowingCallable actual = () -> tableValidator.validateCompletedOrder(
             단체지정된_주문테이블);
 
         // then
@@ -53,7 +53,7 @@ class TableValidatorTest {
             Collections.singletonList(요리중_주문_of()));
 
         // when
-        ThrowableAssert.ThrowingCallable actual = () -> tableValidator.completedOrderValid(
+        ThrowableAssert.ThrowingCallable actual = () -> tableValidator.validateCompletedOrder(
             한명_주문테이블);
 
         // then

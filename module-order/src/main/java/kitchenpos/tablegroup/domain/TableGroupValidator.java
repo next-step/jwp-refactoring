@@ -24,7 +24,7 @@ public class TableGroupValidator {
         this.orderTableRepository = orderTableRepository;
     }
 
-    public void groupExistValidate(List<Long> orderTableIds) {
+    public void validateGroupExist(List<Long> orderTableIds) {
         List<OrderTable> orderTables = orderTableRepository.findAllById(orderTableIds);
         if (orderTables.size() != orderTableIds.size()) {
             throw new InvalidParameterException(OrderErrorCode.TABLE_NOT_CREATED_EXCEPTION);
@@ -39,7 +39,7 @@ public class TableGroupValidator {
         }
     }
 
-    public void completedOrdersValid(TableGroup tableGroup) {
+    public void validateCompletedOrders(TableGroup tableGroup) {
         List<OrderTable> orderTables = orderTableRepository.findAllByTableGroupId(
             tableGroup.getId());
 

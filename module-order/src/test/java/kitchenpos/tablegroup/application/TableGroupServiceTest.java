@@ -5,7 +5,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 import java.util.Optional;
-import kitchenpos.tablegroup.domain.TableGroupValidator;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
@@ -23,8 +22,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
 
-    @Mock
-    private TableGroupValidator tableGroupValidator;
     @Mock
     private TableGroupRepository tableGroupRepository;
 

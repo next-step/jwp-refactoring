@@ -5,7 +5,6 @@ import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import kitchenpos.common.MenuErrorCode;
-import kitchenpos.exception.CommonErrorCode;
 import kitchenpos.exception.InvalidParameterException;
 
 @Embeddable
@@ -20,7 +19,7 @@ public class Price {
     }
 
     private Price(BigDecimal price) {
-        minValid(price);
+        validateMinPrice(price);
         this.price = price;
     }
 
@@ -36,7 +35,7 @@ public class Price {
         return this.price.compareTo(price) > 0;
     }
 
-    private void minValid(BigDecimal price) {
+    private void validateMinPrice(BigDecimal price) {
         if (Objects.isNull(price) || price.compareTo(MIN) < 0) {
             throw new InvalidParameterException(
                 MenuErrorCode.MENU_PRICE_MIN_UNDER_EXCEPTION);

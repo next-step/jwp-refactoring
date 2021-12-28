@@ -41,7 +41,7 @@ class MenuValidatorTest {
         given(menuGroupRepository.existsById(1L)).willReturn(false);
 
         // when
-        ThrowableAssert.ThrowingCallable actual = () -> menuValidator.registerValidate(menu);
+        ThrowableAssert.ThrowingCallable actual = () -> menuValidator.validateRegister(menu);
 
         // then
         assertThatThrownBy(actual).isInstanceOf(NotFoundException.class);
@@ -57,7 +57,7 @@ class MenuValidatorTest {
         given(productRepository.findById(1L)).willReturn(Optional.of(product));
 
         // when
-        ThrowableAssert.ThrowingCallable actual = () -> menuValidator.registerValidate(menu);
+        ThrowableAssert.ThrowingCallable actual = () -> menuValidator.validateRegister(menu);
 
         // then
         assertThatThrownBy(actual).isInstanceOf(InvalidParameterException.class);

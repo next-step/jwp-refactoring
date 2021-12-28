@@ -66,7 +66,7 @@ public class Menu {
     }
 
     public void registerMenu(MenuValidator menuValidator) {
-        menuValidator.registerValidate(this);
+        menuValidator.validateRegister(this);
     }
 
     @Override

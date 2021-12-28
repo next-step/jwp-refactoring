@@ -13,7 +13,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import kitchenpos.common.OrderErrorCode;
-import kitchenpos.exception.CommonErrorCode;
 import kitchenpos.exception.InvalidParameterException;
 
 @Entity
@@ -91,7 +90,7 @@ public class Order {
     }
 
     public void registerOrder(OrderValidator orderValidator) {
-        orderValidator.registerValidate(this);
+        orderValidator.validateRegister(this);
     }
 
     @Override

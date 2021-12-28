@@ -39,7 +39,7 @@ class TableGroupValidatorTest {
 
         // when
         when(orderTableRepository.findAllById(any())).thenReturn(손님있는_테이블);
-        ThrowableAssert.ThrowingCallable actual = () -> tableGroupValidator.groupExistValidate(
+        ThrowableAssert.ThrowingCallable actual = () -> tableGroupValidator.validateGroupExist(
             Arrays.asList(1L, 2L));
 
         // then
@@ -57,7 +57,7 @@ class TableGroupValidatorTest {
         when(orderRepository.existsAllByOrderTableIdInAndOrderStatusIn(any(), any())).thenReturn(
             true);
 
-        ThrowableAssert.ThrowingCallable actual = () -> tableGroupValidator.completedOrdersValid(
+        ThrowableAssert.ThrowingCallable actual = () -> tableGroupValidator.validateCompletedOrders(
             TableGroup.of());
 
         // then

@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Optional;
 import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.domain.TableValidator;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
 import org.assertj.core.api.Assertions;
@@ -27,8 +26,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class TableServiceTest {
 
-    @Mock
-    private TableValidator tableValidator;
     @Mock
     private OrderTableRepository orderTableRepository;
 

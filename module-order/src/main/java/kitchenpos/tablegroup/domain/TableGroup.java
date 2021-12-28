@@ -51,17 +51,17 @@ public class TableGroup extends AbstractAggregateRoot<TableGroup> {
     }
 
     public void group(TableGroupValidator tableGroupValidator, List<Long> tableIds) {
-        minOrderTableValid(tableIds);
-        tableGroupValidator.groupExistValidate(tableIds);
+        validateMinOrderTable(tableIds);
+        tableGroupValidator.validateGroupExist(tableIds);
         registerEvent(new TableGroupingEvent(id, tableIds));
     }
 
     public void ungroup(TableGroupValidator tableGroupValidator) {
-        tableGroupValidator.completedOrdersValid(this);
+        tableGroupValidator.validateCompletedOrders(this);
         registerEvent(new TableUnGroupingEvent(id));
     }
 
-    private void minOrderTableValid(List<Long> tableIds) {
+    private void validateMinOrderTable(List<Long> tableIds) {
         if (tableIds.size() < ORDER_TABLES_MIN_SIZE) {
             throw new InvalidParameterException(OrderErrorCode.ORDER_TABLES_MIN_UNDER_EXCEPTION);
         }

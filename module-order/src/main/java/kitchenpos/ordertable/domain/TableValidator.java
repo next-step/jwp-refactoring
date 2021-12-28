@@ -16,7 +16,7 @@ public class TableValidator {
         this.orderRepository = orderRepository;
     }
 
-    public void completedOrderValid(OrderTable orderTable) {
+    public void validateCompletedOrder(OrderTable orderTable) {
         List<Order> orders = getOrders(orderTable.getId());
         boolean isAllCompleted = orders.stream()
             .allMatch(Order::isComplete);

@@ -10,15 +10,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderValidator;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.product.domain.Product;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
@@ -35,8 +32,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
 
-    @Mock
-    private OrderValidator orderValidator;
     @Mock
     private OrderRepository orderRepository;
 
@@ -101,10 +96,6 @@ class OrderServiceTest {
     }
 
     private Menu 메뉴() {
-//        Product 치킨 = 후리이드치킨();
-//        MenuProduct 메뉴_치킨 = 메뉴상품(치킨);
-//        MenuGroup 메뉴_그룹 = 메뉴그룹_치킨류();
-//        return Menu.of("메뉴이름", 14000, 메뉴_그룹.getId(), Collections.singletonList(메뉴_치킨));
         return Menu.of("메뉴이름", 14000, 1L, Collections.singletonList(MenuProduct.of(1L, 1L)));
     }
 }
