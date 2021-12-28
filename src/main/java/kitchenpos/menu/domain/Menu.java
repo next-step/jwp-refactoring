@@ -60,7 +60,7 @@ public class Menu {
     }
 
     public void addMenuProduct(Product product, Long quantity) {
-        menuProducts.add(this, product, quantity);
+        menuProducts.add(this.id, product, quantity);
     }
 
     public Long getId() {

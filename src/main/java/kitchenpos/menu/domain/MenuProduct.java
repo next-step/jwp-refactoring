@@ -16,9 +16,8 @@ public class MenuProduct {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "menu_id")
-    private Menu menu;
+    @Column(name = "menu_id")
+    private Long menuId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
@@ -30,22 +29,18 @@ public class MenuProduct {
 
     }
 
-    public MenuProduct(Menu menu, Product product, long quantity) {
-        validate(menu, product, quantity);
-        this.menu = menu;
+    public MenuProduct(Long menuId, Product product, long quantity) {
+        validate(product, quantity);
+        this.menuId = menuId;
         this.product = product;
         this.quantity = quantity;
     }
 
-    public static MenuProduct of(Menu menu, Product product, long quantity) {
-        return new MenuProduct(menu, product, quantity);
+    public static MenuProduct of(Long menuId, Product product, long quantity) {
+        return new MenuProduct(menuId, product, quantity);
     }
 
-    private void validate(Menu menu, Product product, long quantity) {
-        if (Objects.isNull(menu)) {
-            throw new WrongValueException(MENU);
-        }
-
+    private void validate(Product product, long quantity) {
         if (Objects.isNull(product)) {
             throw new WrongValueException(PRODUCT);
         }
@@ -59,8 +54,8 @@ public class MenuProduct {
         return seq;
     }
 
-    public Menu getMenu() {
-        return menu;
+    public Long getMenuId() {
+        return menuId;
     }
 
     public Product getProduct() {

@@ -7,11 +7,12 @@ import javax.persistence.*;
 @Embeddable
 public class MenuProducts {
 
-    @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "menu_id")
     private List<MenuProduct> menuProducts = new ArrayList<>();
 
-    public void add(Menu menu, Product product, Long quantity) {
-        menuProducts.add(new MenuProduct(menu, product, quantity));
+    public void add(Long menuId, Product product, Long quantity) {
+        menuProducts.add(new MenuProduct(menuId, product, quantity));
     }
 
     public List<MenuProduct> getMenuProducts() {
