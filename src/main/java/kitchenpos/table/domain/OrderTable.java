@@ -1,16 +1,15 @@
 package kitchenpos.table.domain;
 
-import kitchenpos.tablegroup.domain.TableGroup;
-import kitchenpos.table.exception.CannotChangeTableEmptyException;
-import kitchenpos.tablegroup.exception.TableGroupNotAvailableException;
-import kitchenpos.table.exception.TableNotAvailableException;
 import kitchenpos.global.BaseTimeEntity;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.table.exception.TableNotAvailableException;
+import kitchenpos.tablegroup.exception.TableGroupNotAvailableException;
 
-import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.util.Objects;
 
 @Entity
@@ -21,12 +20,8 @@ public class OrderTable extends BaseTimeEntity {
     @Column(name = "id", length = 20)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "table_group_id")
-    private TableGroup tableGroup;
-
-    @OneToMany(mappedBy = "orderTable", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<Order> orders = new ArrayList<>();
+    @Column(name = "table_group_id", length = 20, nullable = true)
+    private Long tableGroup;
 
     @Column(name = "number_of_guests", length = 11, nullable = false)
     private int numberOfGuests;
@@ -42,9 +37,9 @@ public class OrderTable extends BaseTimeEntity {
         this.empty = empty;
     }
 
-    public void addTableGroup(final TableGroup tableGroup) {
+    public OrderTable(Long tableGroup, int numberOfGuests, boolean empty) {
+        this(numberOfGuests, empty);
         this.tableGroup = tableGroup;
-        this.empty=false;
     }
 
     public void checkAvailability() {
@@ -59,39 +54,18 @@ public class OrderTable extends BaseTimeEntity {
         }
     }
 
-    public void initTableGroup() {
-        this.tableGroup = null;
-    }
-
-    public void changeEmpty(boolean empty) {
-        if (this.getTableGroup() != null) {
-            throw new CannotChangeTableEmptyException(String.format("table id is %d", this.id));
-        }
-        checkOrderStatus();
-
+    public void changeEmpty(boolean empty, OrderTableValidator orderTableValidator) {
+        orderTableValidator.changeEmptyValidator(this);
         this.empty = empty;
     }
 
-    private void checkOrderStatus() {
-        this.orders.stream()
-                .map(Order::getOrderStatus)
-                .filter(orderStatus -> orderStatus.equals(OrderStatus.COOKING) || orderStatus.equals(OrderStatus.MEAL))
-                .findFirst()
-                .ifPresent(orderStatus -> {
-                    throw new IllegalArgumentException();
-                });
-    }
-
-    public void addOrder(final Order order) {
-        this.orders.add(order);
-    }
-
     public void changeNumberOfGuest(final int numberOfGuests) {
+        checkAvailability();
         this.numberOfGuests = numberOfGuests;
     }
 
-    public void ungroup() {
-        checkOrderStatus();
+    public void ungroup(OrderTableValidator orderTableValidator) {
+        orderTableValidator.ungroupValidator(this);
         this.tableGroup = null;
     }
 
@@ -99,7 +73,7 @@ public class OrderTable extends BaseTimeEntity {
         return id;
     }
 
-    public TableGroup getTableGroup() {
+    public Long getTableGroup() {
         return tableGroup;
     }
 

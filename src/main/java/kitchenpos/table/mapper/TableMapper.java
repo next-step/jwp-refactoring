@@ -17,7 +17,7 @@ public class TableMapper {
 
     public static List<TableResponse> toOrderTables(List<OrderTable> orderTables) {
         return orderTables.stream()
-                .map(orderTable -> new TableResponse(orderTable.getId(), orderTable.getTableGroup().getId(), orderTable.getNumberOfGuests(), orderTable.isEmpty()))
+                .map(orderTable -> new TableResponse(orderTable.getId(), orderTable.getTableGroup(), orderTable.getNumberOfGuests(), orderTable.isEmpty()))
                 .collect(Collectors.toList());
     }
 }

@@ -61,7 +61,7 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
         return post("/api/table-groups", tableGroupCreateRequest);
     }
 
-    @Test
+/*    @Test
     @DisplayName("단체 지정을 해제 할 수 있다.")
     void ungroup() {
         // given
@@ -84,5 +84,5 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
 
     private TableGroupResponse 생성된_단체(final TableGroupCreateRequest request) {
         return 단쳬_지정_요청(request).as(TableGroupResponse.class);
-    }
+    }*/
 }

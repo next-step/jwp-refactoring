@@ -47,7 +47,7 @@ class TableGroupTest {
         }).isInstanceOf(TableGroupNotAvailableException.class);
     }
 
-    @Test
+/*    @Test
     @DisplayName("단체 지정 해제시 테이블의 주문 상태가 조리 또는 식사 상태면 변경이 불가능하다.")
     void ungroupFailBecauseOfOrderStatusCookingOrMeal() {
         // given
@@ -67,5 +67,5 @@ class TableGroupTest {
                 orderTable.ungroup();
             });
         });
-    }
+    }*/
 }

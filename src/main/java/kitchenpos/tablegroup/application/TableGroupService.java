@@ -49,9 +49,9 @@ public class TableGroupService {
         }
     }
 
-    @Transactional
+/*    @Transactional
     public void ungroup(final Long tableGroupId) {
         tableService.findAllByTableGroupId(tableGroupId)
                 .forEach(OrderTable::ungroup);
-    }
+    }*/
 }

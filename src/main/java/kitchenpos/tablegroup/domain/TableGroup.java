@@ -18,13 +18,12 @@ public class TableGroup extends BaseTimeEntity {
     @OneToMany(mappedBy = "tableGroup", fetch = FetchType.LAZY)
     private List<OrderTable> orderTables = new ArrayList<>();
 
-    protected TableGroup() {
+    public TableGroup() {
     }
 
     public void saveOrderTable(OrderTable orderTable) {
         orderTable.checkAvailabilityTableGroup();
         this.orderTables.add(orderTable);
-        orderTable.addTableGroup(this);
     }
 
     public Long getId() {

@@ -1,5 +1,6 @@
 package kitchenpos.table.application;
 
+import kitchenpos.table.domain.OrderTableValidator;
 import kitchenpos.table.repository.OrderTableRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.dto.TableChangeEmptyRequest;
@@ -17,14 +18,15 @@ import java.util.List;
 @Transactional
 public class TableService {
     private final OrderTableRepository orderTableRepository;
+    private final OrderTableValidator orderTableValidator;
 
-    public TableService(final OrderTableRepository orderTableRepository) {
+    public TableService(OrderTableRepository orderTableRepository, OrderTableValidator orderTableValidator) {
         this.orderTableRepository = orderTableRepository;
+        this.orderTableValidator = orderTableValidator;
     }
 
     public TableResponse create(final TableCreateRequest request) {
-        final OrderTable orderTable = new OrderTable(request.getNumberOfGuest(), request.isEmpty());
-        orderTable.initTableGroup();
+        final OrderTable orderTable = request.toEntity();
 
         final OrderTable savedOrderTable = orderTableRepository.save(orderTable);
 
@@ -41,7 +43,7 @@ public class TableService {
     public OrderTable changeEmpty(final Long orderTableId, final TableChangeEmptyRequest request) {
         final OrderTable savedOrderTable = findOrderTable(orderTableId);
 
-        savedOrderTable.changeEmpty(request.isEmpty());
+        savedOrderTable.changeEmpty(request.isEmpty(), orderTableValidator);
 
         return savedOrderTable;
     }
@@ -49,7 +51,6 @@ public class TableService {
     public OrderTable changeNumberOfGuests(final Long orderTableId, final TableChangeNumberOfGuestRequest request) {
         final OrderTable savedOrderTable = findOrderTable(orderTableId);
 
-        savedOrderTable.checkAvailability();
         savedOrderTable.changeNumberOfGuest(request.getNumberOfGuests());
 
         return savedOrderTable;
@@ -68,6 +69,6 @@ public class TableService {
 
     @Transactional(readOnly = true)
     public List<OrderTable> findAllByTableGroupId(final Long tableGroupId) {
-        return orderTableRepository.findAllByTableGroupId(tableGroupId);
+        return orderTableRepository.findAllByTableGroup(tableGroupId);
     }
 }
