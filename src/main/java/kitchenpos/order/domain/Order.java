@@ -5,6 +5,7 @@ import static kitchenpos.common.exception.ExceptionMessage.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -54,7 +55,6 @@ public class Order {
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
         this.orderLineItems = orderLineItems;
-        orderLineItems.changeOrder(this);
         orderTable.addOrder(this);
     }
 
@@ -96,6 +96,12 @@ public class Order {
         this.orderStatus = orderStatus;
     }
 
+    public List<Long> getMenuIds() {
+        return orderLineItems.getValue().stream()
+            .map(OrderLineItem::getMenuId)
+            .collect(Collectors.toList());
+    }
+
     public void validateNotCompletionOrderStatus() {
         if (!orderStatus.isCompletion()) {
             throw new BadRequestException(CANNOT_CHANGE_STATUS);
@@ -109,12 +115,12 @@ public class Order {
         if (o == null || getClass() != o.getClass())
             return false;
         Order order = (Order)o;
-        return Objects.equals(id, order.id) && Objects.equals(orderTable, order.orderTable)
-            && orderStatus == order.orderStatus && Objects.equals(orderedTime, order.orderedTime);
+        return Objects.equals(id, order.id) && orderStatus == order.orderStatus && Objects.equals(
+            orderedTime, order.orderedTime) && Objects.equals(orderLineItems, order.orderLineItems);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, orderTable, orderStatus, orderedTime);
+        return Objects.hash(id, orderStatus, orderedTime, orderLineItems);
     }
 }

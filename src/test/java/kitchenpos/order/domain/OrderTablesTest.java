@@ -16,7 +16,6 @@ import kitchenpos.common.exception.BadRequestException;
 import kitchenpos.common.exception.ExceptionMessage;
 
 class OrderTablesTest {
-
     private List<OrderTable> orderTables;
 
     @BeforeEach

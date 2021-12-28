@@ -21,7 +21,7 @@ import kitchenpos.order.dto.TableGroupRequest;
 import kitchenpos.order.dto.TableGroupResponse;
 
 @DisplayName("단체 지정 관련 기능")
-class TableGroupAcceptanceTest extends AcceptanceTest {
+public class TableGroupAcceptanceTest extends AcceptanceTest {
 
     private OrderTableResponse orderTableResponse1;
     private OrderTableResponse orderTableResponse2;

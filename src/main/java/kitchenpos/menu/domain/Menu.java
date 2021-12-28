@@ -3,7 +3,6 @@ package kitchenpos.menu.domain;
 import static kitchenpos.common.exception.ExceptionMessage.*;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -46,7 +45,7 @@ public class Menu {
 
     private Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup,
         List<MenuProduct> menuProducts) {
-        validate(menuGroup);
+        validate(menuGroup, menuProducts, price);
         this.id = id;
         this.name = new Name(name);
         this.price = new Price(price);
@@ -54,14 +53,39 @@ public class Menu {
         this.menuProducts = new MenuProducts(menuProducts);
     }
 
-    public static Menu of(String name, BigDecimal price, MenuGroup menuGroup) {
-        return new Menu(null, name, price, menuGroup, new ArrayList<>());
+    public static Menu of(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+        return new Menu(null, name, price, menuGroup, menuProducts);
     }
 
-    private void validate(MenuGroup menuGroup) {
+    private void validate(MenuGroup menuGroup, List<MenuProduct> menuProducts, BigDecimal price) {
+        validateMenuGroup(menuGroup);
+        validateMenuProducts(menuProducts);
+        validateMenuPrice(new Price(price), menuProducts);
+    }
+
+    private void validateMenuGroup(MenuGroup menuGroup) {
         if (Objects.isNull(menuGroup)) {
             throw new BadRequestException(WRONG_VALUE);
         }
+    }
+
+    private void validateMenuProducts(List<MenuProduct> menuProducts) {
+        if (menuProducts == null || menuProducts.isEmpty()) {
+            throw new BadRequestException(WRONG_VALUE);
+        }
+    }
+
+    private void validateMenuPrice(Price price, List<MenuProduct> menuProducts) {
+        BigDecimal sumPrice = sumProductsPrice(menuProducts);
+        if (price.isGreaterThanSumPrice(sumPrice)) {
+            throw new BadRequestException(WRONG_VALUE);
+        }
+    }
+
+    private BigDecimal sumProductsPrice(List<MenuProduct> menuProducts) {
+        return menuProducts.stream()
+            .map(MenuProduct::multiplyQuantityToPrice)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     public Long getId() {
@@ -84,17 +108,6 @@ public class Menu {
         return menuProducts;
     }
 
-    public void addMenuProduct(MenuProduct menuProduct) {
-        this.menuProducts.getValue().add(menuProduct);
-        if (menuProduct.getMenu() != this) {
-            menuProduct.changeMenu(this);
-        }
-    }
-
-    public void validateMenuPrice() {
-        menuProducts.validateMenuPrice(price);
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o)
@@ -103,11 +116,12 @@ public class Menu {
             return false;
         Menu menu = (Menu)o;
         return Objects.equals(id, menu.id) && Objects.equals(name, menu.name)
-            && Objects.equals(price, menu.price) && Objects.equals(menuGroup, menu.menuGroup);
+            && Objects.equals(price, menu.price) && Objects.equals(menuGroup, menu.menuGroup)
+            && Objects.equals(menuProducts, menu.menuProducts);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, price, menuGroup);
+        return Objects.hash(id, name, price, menuGroup, menuProducts);
     }
 }

@@ -14,7 +14,6 @@ import kitchenpos.common.exception.BadRequestException;
 
 @Embeddable
 public class OrderTables {
-
     public static final int ORDER_TABLE_MIN_SIZE = 2;
 
     @OneToMany(mappedBy = "tableGroup")

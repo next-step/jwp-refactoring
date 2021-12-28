@@ -5,6 +5,7 @@ import java.util.List;
 
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuProduct;
 
 public class MenuRequest {
 
@@ -40,7 +41,7 @@ public class MenuRequest {
         return menuProducts;
     }
 
-    public Menu toEntity(MenuGroup menuGroup) {
-        return Menu.of(name, price, menuGroup);
+    public Menu toEntity(MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+        return Menu.of(name, price, menuGroup, menuProducts);
     }
 }

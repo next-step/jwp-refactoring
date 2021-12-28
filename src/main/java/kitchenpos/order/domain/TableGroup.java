@@ -59,6 +59,7 @@ public class TableGroup {
     }
 
     public void ungroup() {
+        validateUngroup();
         orderTables.ungroup();
     }
 

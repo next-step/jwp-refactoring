@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import kitchenpos.common.exception.NotFoundException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.Product;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
@@ -37,19 +38,19 @@ public class MenuService {
         MenuGroup findMenuGroup = menuGroupRepository.findById(menuRequest.getMenuGroupId())
             .orElseThrow(() -> new NotFoundException(NOT_FOUND_DATA));
 
-        Menu menu = menuRequest.toEntity(findMenuGroup);
-        addMenuProduct(menuRequest.getMenuProducts(), menu);
-        menu.validateMenuPrice();
-
+        List<MenuProduct> menuProducts = findMenuProducts(menuRequest.getMenuProducts());
+        Menu menu = menuRequest.toEntity(findMenuGroup, menuProducts);
         return new MenuResponse(menuRepository.save(menu));
     }
 
-    private void addMenuProduct(List<MenuProductRequest> menuProducts, Menu menu) {
-        for (final MenuProductRequest menuProduct : menuProducts) {
-            final Product product = productRepository.findById(menuProduct.getProductId())
-                .orElseThrow(() -> new NotFoundException(NOT_FOUND_DATA));
-            menu.addMenuProduct(menuProduct.toEntity(menu, product));
-        }
+    private List<MenuProduct> findMenuProducts(List<MenuProductRequest> menuProducts) {
+        return menuProducts.stream().map(menuProduct ->
+                menuProduct.toEntity(findProduct(menuProduct.getProductId())))
+            .collect(Collectors.toList());
+    }
+
+    private Product findProduct(Long productId) {
+        return productRepository.findById(productId).orElseThrow(() -> new NotFoundException(NOT_FOUND_DATA));
     }
 
     @Transactional(readOnly = true)

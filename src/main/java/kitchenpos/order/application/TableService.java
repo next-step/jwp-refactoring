@@ -17,6 +17,7 @@ import kitchenpos.order.repository.OrderTableRepository;
 
 @Service
 public class TableService {
+
     private final OrderTableRepository orderTableRepository;
 
     public TableService(OrderTableRepository orderTableRepository) {
@@ -42,7 +43,6 @@ public class TableService {
         final OrderTable findOrderTable = orderTableRepository.findById(orderTableId)
             .orElseThrow(() -> new NotFoundException(NOT_FOUND_DATA));
 
-        findOrderTable.validateNotCompletionOrderStatus();
         findOrderTable.changeEmpty(orderTableRequest.isEmpty());
         return OrderTableResponse.of(findOrderTable);
     }

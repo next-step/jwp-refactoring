@@ -7,7 +7,6 @@ import static kitchenpos.order.acceptance.TableAcceptanceTest.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 

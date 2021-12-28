@@ -23,10 +23,6 @@ public class MenuProduct {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "menu_id", foreignKey = @ForeignKey(name = "fk_menu_product_menu"))
-    private Menu menu;
-
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", foreignKey = @ForeignKey(name = "fk_menu_product_product"))
     private Product product;
 
@@ -36,23 +32,18 @@ public class MenuProduct {
     protected MenuProduct() {
     }
 
-    private MenuProduct(Long id, Menu menu, Product product, long quantity) {
+    public MenuProduct(Long id, Product product, long quantity) {
         this.id = id;
-        this.menu = menu;
         this.product = product;
         this.quantity = new Quantity(quantity);
     }
 
-    public static MenuProduct of(Menu menu, Product product, long quantity) {
-        return new MenuProduct(null, menu, product, quantity);
+    public static MenuProduct of(Product product, long quantity) {
+        return new MenuProduct(null, product, quantity);
     }
 
     public Long getId() {
         return id;
-    }
-
-    public Menu getMenu() {
-        return menu;
     }
 
     public Product getProduct() {
@@ -61,10 +52,6 @@ public class MenuProduct {
 
     public Quantity getQuantity() {
         return quantity;
-    }
-
-    public void changeMenu(Menu menu) {
-        this.menu = menu;
     }
 
     public BigDecimal multiplyQuantityToPrice() {
@@ -78,12 +65,12 @@ public class MenuProduct {
         if (o == null || getClass() != o.getClass())
             return false;
         MenuProduct that = (MenuProduct)o;
-        return Objects.equals(id, that.id) && Objects.equals(menu, that.menu)
-            && Objects.equals(product, that.product) && Objects.equals(quantity, that.quantity);
+        return Objects.equals(id, that.id) && Objects.equals(product, that.product)
+            && Objects.equals(quantity, that.quantity);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, menu, product, quantity);
+        return Objects.hash(id, product, quantity);
     }
 }

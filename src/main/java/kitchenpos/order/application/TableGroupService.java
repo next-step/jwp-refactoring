@@ -16,6 +16,7 @@ import kitchenpos.order.repository.TableGroupRepository;
 
 @Service
 public class TableGroupService {
+
     private final TableService tableService;
     private final TableGroupRepository tableGroupRepository;
 
@@ -39,7 +40,6 @@ public class TableGroupService {
         TableGroup findTableGroup = tableGroupRepository.findById(tableGroupId)
             .orElseThrow(() -> new NotFoundException(NOT_FOUND_DATA));
 
-        findTableGroup.validateUngroup();
         findTableGroup.ungroup();
         tableGroupRepository.delete(findTableGroup);
     }

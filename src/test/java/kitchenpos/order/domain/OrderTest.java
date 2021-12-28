@@ -18,41 +18,22 @@ class OrderTest {
     @Test
     void createOrderEmptyOrderTable() {
         // given
-        OrderTable orderTable = OrderTable.of(0, true);
         List<OrderLineItem> orderLineItems = Collections.emptyList();
 
         // when && then
-        assertThatThrownBy(() -> Order.of(orderTable, orderLineItems))
+        assertThatThrownBy(() -> Order.of(null, orderLineItems))
             .isInstanceOf(BadRequestException.class)
             .hasMessage(WRONG_VALUE.getMessage());
-    }
-
-    @DisplayName("주문 생성시 주문 항목에 주문이 등록된다.")
-    @Test
-    void createOrderAddToOrderLineItems() {
-        // given
-        OrderTable orderTable = OrderTable.of(0, false);
-        List<OrderLineItem> orderLineItems = Arrays.asList(
-            OrderLineItem.of(null, 1),
-            OrderLineItem.of(null, 2));
-
-        // when
-        Order order = Order.of(orderTable, orderLineItems);
-
-        // then
-        assertThat(order.getOrderLineItems().getValue())
-            .extracting("order")
-            .containsExactlyElementsOf(Arrays.asList(order, order));
     }
 
     @DisplayName("주문 상태 갱신은 계산 완료가 아니어야 가능하다.")
     @Test
     void changeOrderStatusCompletion() {
         // given
-        OrderTable orderTable = OrderTable.of(0, false);
+        OrderTable orderTable = OrderTable.of(1L, null, 0, false);
         List<OrderLineItem> orderLineItems = Arrays.asList(
-            OrderLineItem.of(null, 1),
-            OrderLineItem.of(null, 2));
+            OrderLineItem.of(1L, 1),
+            OrderLineItem.of(2L, 2));
         Order order = Order.of(orderTable, orderLineItems);
         order.changeOrderStatus(OrderStatus.COMPLETION);
 
