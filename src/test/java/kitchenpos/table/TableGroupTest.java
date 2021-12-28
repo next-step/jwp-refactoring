@@ -9,6 +9,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.List;
 
+import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -21,7 +22,7 @@ public class TableGroupTest {
         //given
 
         //when
-        TableGroup tableGroup = TableGroup.create();
+        TableGroup tableGroup = TableGroup.setUp();
 
         //then
         assertThat(tableGroup).isNotNull();
@@ -32,7 +33,7 @@ public class TableGroupTest {
     void findOrderTable() {
 
         //given
-        TableGroup tableGroup = TableGroup.create();
+        TableGroup tableGroup = TableGroup.setUp();
         OrderTable orderTableA = OrderTable.create(10, true);
         ReflectionTestUtils.setField(orderTableA, "id", 1L);
 
@@ -54,7 +55,7 @@ public class TableGroupTest {
     void findOrderTableIds() {
 
         //given
-        TableGroup tableGroup = TableGroup.create();
+        TableGroup tableGroup = TableGroup.setUp();
         OrderTable orderTableA = OrderTable.create(10, true);
         ReflectionTestUtils.setField(orderTableA, "id", 1L);
 
@@ -65,7 +66,9 @@ public class TableGroupTest {
         tableGroup.addOrderTable(orderTableB);
 
         //when
-        List<Long> ids = tableGroup.findOrderTableIds();
+        List<Long> ids = tableGroup.findOrderTables().stream()
+                .map(OrderTable::getId)
+                .collect(toList());
 
         //then
         assertThat(ids).contains(1L, 2L);
@@ -76,7 +79,7 @@ public class TableGroupTest {
     void unGroup() {
 
         //given
-        TableGroup tableGroup = TableGroup.create();
+        TableGroup tableGroup = TableGroup.setUp();
         OrderTable orderTableA = OrderTable.create(10, true);
         ReflectionTestUtils.setField(orderTableA, "id", 1L);
         tableGroup.addOrderTable(orderTableA);
@@ -101,7 +104,7 @@ public class TableGroupTest {
     void unGroupByOrderStatusCookingAndMeal() {
 
         //given
-        TableGroup tableGroup = TableGroup.create();
+        TableGroup tableGroup = TableGroup.setUp();
 
         OrderTable orderTableA = OrderTable.create(10, true);
         ReflectionTestUtils.setField(orderTableA, "id", 1L);

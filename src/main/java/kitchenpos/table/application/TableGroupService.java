@@ -2,16 +2,13 @@ package kitchenpos.table.application;
 
 import kitchenpos.exception.NotExistEntityException;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.domain.TableGroupRepository;
-import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 @Service
@@ -31,8 +28,8 @@ public class TableGroupService {
 
         final List<OrderTable> savedOrderTables = tableService.findAllByIds(tableGroupRequest.toOrderTableIds());
 
+        tableGroup.addAllOrderTables(savedOrderTables);
         TableGroup saveTableGroup = tableGroupRepository.save(tableGroup);
-        saveTableGroup.addAllOrderTables(savedOrderTables);
         return TableGroupResponse.of(saveTableGroup);
     }
 

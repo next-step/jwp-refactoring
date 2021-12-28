@@ -26,7 +26,7 @@ public class Menu {
     private MenuPrice menuPrice;
 
     @Embedded
-    private MenuProducts menuProducts;
+    private MenuProducts menuProducts = new MenuProducts();;
 
     private Long menuGroupId;
 
@@ -37,7 +37,6 @@ public class Menu {
     private Menu(String name, BigDecimal price) {
         this.name = name;
         this.menuPrice = new MenuPrice(price);
-        this.menuProducts = new MenuProducts();
     }
 
     public static Menu prepared(String name, BigDecimal price) {
@@ -75,8 +74,8 @@ public class Menu {
         }
     }
 
-    public void grouping(MenuGroup menuGroup) {
-        this.menuGroupId = menuGroup.getId();
+    public void grouping(Long menuGroupId) {
+        this.menuGroupId = menuGroupId;
     }
 
     public void addProducts(Map<Product, Long> menuProducts) {
@@ -89,7 +88,7 @@ public class Menu {
     }
 
     private void addProduct(Product product, Long quantity) {
-        this.menuProducts.add(this, product, quantity);
+        this.menuProducts.add(product, quantity);
     }
 
     @Override

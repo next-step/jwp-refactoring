@@ -104,7 +104,7 @@ public class OrderTableServiceTest {
         final int numberOfGuests = 10;
         final boolean empty = true;
         final OrderTable originOrderTable = OrderTable.create(numberOfGuests, empty);
-        final TableGroup tableGroup = TableGroup.create();
+        final TableGroup tableGroup = TableGroup.setUp();
         originOrderTable.full();
         originOrderTable.grouping(tableGroup);
         ReflectionTestUtils.setField(originOrderTable, "id", 1L);

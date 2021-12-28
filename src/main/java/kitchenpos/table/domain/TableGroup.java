@@ -23,7 +23,7 @@ public class TableGroup extends BaseEntity {
     protected TableGroup() {
     }
 
-    public static TableGroup create() {
+    public static TableGroup setUp() {
         return new TableGroup();
     }
 
@@ -38,7 +38,6 @@ public class TableGroup extends BaseEntity {
     public void addOrderTable(OrderTable orderTable) {
         orderTable.validateFullAndTableGrouping();
         orderTable.full();
-        orderTable.grouping(this);
         this.orderTables.add(orderTable);
     }
 
@@ -46,12 +45,6 @@ public class TableGroup extends BaseEntity {
         for(OrderTable orderTable : orderTables) {
             addOrderTable(orderTable);
         }
-    }
-
-    public List<Long> findOrderTableIds() {
-        return this.orderTables.find().stream()
-                .map(OrderTable::getId)
-                .collect(toList());
     }
 
     public List<OrderTable> findOrderTables() {

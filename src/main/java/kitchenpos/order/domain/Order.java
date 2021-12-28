@@ -107,6 +107,6 @@ public class Order {
     }
 
     public void addItem(Menu menu, long quantity) {
-        this.orderLineItems.add(OrderLineItem.create(this, menu, quantity));
+        this.orderLineItems.add(OrderLineItem.create(menu, quantity));
     }
 }

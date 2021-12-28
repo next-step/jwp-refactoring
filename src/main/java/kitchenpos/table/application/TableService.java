@@ -8,10 +8,7 @@ import kitchenpos.table.dto.OrderTableResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityNotFoundException;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @Transactional(readOnly = true)

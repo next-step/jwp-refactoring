@@ -2,22 +2,17 @@ package kitchenpos.menu.application;
 
 import kitchenpos.exception.NotExistEntityException;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuPrice;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.group.application.MenuGroupService;
 import kitchenpos.menu.group.domain.MenuGroup;
-import kitchenpos.menu.group.domain.MenuGroupRepository;
 import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
-import kitchenpos.product.domain.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityNotFoundException;
-import java.math.BigDecimal;
 import java.util.*;
 
 @Service
@@ -43,7 +38,7 @@ public class MenuService {
         final MenuGroup menuGroup = menuGroupService.findById(menuRequest.getMenuGroupId());
 
         final Menu menu = menuRequest.toEntity();
-        menu.grouping(menuGroup);
+        menu.grouping(menuGroup.getId());
 
         final List<Product> products = productService.findAllByIds(menuRequest.getProductIds());
 

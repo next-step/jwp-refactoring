@@ -22,7 +22,7 @@ public class TableGroupRequest {
     }
 
     public TableGroup toEntity() {
-        return TableGroup.create();
+        return TableGroup.setUp();
     }
 
     public List<Long> toOrderTableIds() {

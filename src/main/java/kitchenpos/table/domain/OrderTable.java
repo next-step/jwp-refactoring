@@ -122,4 +122,5 @@ public class OrderTable {
         validateChangeNumberOfGuestsByIsEmpty();
         this.numberOfGuests = new TableGuest(numberOfGuests);
     }
+
 }

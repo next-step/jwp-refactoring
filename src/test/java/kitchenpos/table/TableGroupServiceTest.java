@@ -68,6 +68,7 @@ public class TableGroupServiceTest {
                 .collect(toList());
 
         when(tableService.findAllByIds(anyList())).thenReturn(orderTables);
+        tableGroup.addAllOrderTables(orderTables);
         when(tableGroupRepository.save(any())).thenReturn(tableGroup);
 
         //when
@@ -91,7 +92,7 @@ public class TableGroupServiceTest {
     void unGroupingTable() {
 
         //given
-        TableGroup tableGroup = TableGroup.create();
+        TableGroup tableGroup = TableGroup.setUp();
         ReflectionTestUtils.setField(tableGroup, "id", 1L);
 
         OrderTable orderTableA = OrderTable.create(10, true);
@@ -110,8 +111,7 @@ public class TableGroupServiceTest {
         tableGroupService.ungroup(tableGroup.getId());
 
         //then
-        assertThat(orderTableA.getTableGroup()).isNull();
-        assertThat(orderTableB.getTableGroup()).isNull();
+        assertThat(tableGroup.findOrderTables().size()).isEqualTo(0);
     }
 
 }

@@ -35,7 +35,7 @@ public class OrderTableTest {
         final boolean empty = true;
 
         OrderTable orderTable = OrderTable.create(numberOfGuests, empty);
-        TableGroup tableGroup = TableGroup.create();
+        TableGroup tableGroup = TableGroup.setUp();
 
         //when
         orderTable.grouping(tableGroup);

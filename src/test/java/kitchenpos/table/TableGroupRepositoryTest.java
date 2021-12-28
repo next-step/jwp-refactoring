@@ -25,7 +25,7 @@ public class TableGroupRepositoryTest {
     void groupingTable() {
 
         //given
-        TableGroup tableGroup = TableGroup.create();
+        TableGroup tableGroup = TableGroup.setUp();
 
         //when
         TableGroup actualTableGroup = tableGroupRepository.save(tableGroup);
@@ -43,7 +43,7 @@ public class TableGroupRepositoryTest {
         OrderTable orderTableA = OrderTable.create(3, true);
         OrderTable orderTableB = OrderTable.create(5, true);
 
-        TableGroup tableGroup = TableGroup.create();
+        TableGroup tableGroup = TableGroup.setUp();
         tableGroup.addOrderTable(orderTableA);
         tableGroup.addOrderTable(orderTableB);
         TableGroup actualTableGroup = tableGroupRepository.save(tableGroup);
