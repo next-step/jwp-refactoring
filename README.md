@@ -121,5 +121,31 @@
 
 ### 4단계
 
-- 멀티모듈 적용하기
+- [X] 멀티모듈 적용하기
     - `Gradle`의 모듈 개념을 적용해 자유롭게 프로젝트로 분리해 본다.
+
+#### 모듈
+
+- module-common :
+    - `예외처리`
+    - `aop` 로깅
+    - `flyway` 마이그레이션
+- module-order : order 관련
+    - domain
+        - `Order`
+        - `OrderTable`
+        - `TableGroup`
+- module-menu : menu 관련
+    - domain
+        - `Menu`
+        - `MenuGroup`
+        - `Product`
+
+#### 모듈 추가
+
+- `settings.gradle` 서브 모듈 추가
+- `build.gradle` 모듈 추가 `ex) project(':module-common')`
+
+#### 로깅 처리
+
+이벤트 관련 로깅 처리는 `@EventLoggingAop` 으로 관리됩니다.
