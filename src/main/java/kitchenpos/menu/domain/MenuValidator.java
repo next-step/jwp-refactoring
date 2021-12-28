@@ -19,6 +19,7 @@ import java.util.List;
  * date : 2021/12/26
  * description :
  */
+//TODO : DDD 도메인 서비스에 대한 이해
 @Component
 public class MenuValidator {
     private final MenuGroupRepository menuGroupRepository;

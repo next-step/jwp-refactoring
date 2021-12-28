@@ -36,16 +36,26 @@ public class OrderValidator {
     }
 
     private void validate(Order order, OrderTable orderTable, List<Menu> menus) {
+        validateOrder(order);
+        validateOrderTable(orderTable);
+        validateOrderMenu(order, menus);
+    }
+
+    private void validateOrder(Order order) {
         if(order.getOrderLineItems().isEmpty()) {
             throw new OrderLineItemNotFoundException();
         }
+    }
 
-        if (orderTable.isEmpty()) {
-            throw new InvalidTableException();
-        }
-
+    private void validateOrderMenu(Order order, List<Menu> menus) {
         if(order.getOrderLineItems().size() > menus.size()) {
             throw new MenuNotFoundException();
+        }
+    }
+
+    private void validateOrderTable(OrderTable orderTable) {
+        if (orderTable.isEmpty()) {
+            throw new InvalidTableException();
         }
     }
 
