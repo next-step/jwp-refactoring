@@ -1,6 +1,7 @@
 package kitchenpos.ordertable.domain.event;
 
 import java.util.List;
+import kitchenpos.config.EventLoggingAop;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.tablegroup.domain.event.TableGroupingEvent;
@@ -20,9 +21,9 @@ public class TableGroupingEventListener implements ApplicationListener<TableGrou
         this.orderTableRepository = orderTableRepository;
     }
 
+    @EventLoggingAop
     @TransactionalEventListener
     public void onApplicationEvent(TableGroupingEvent event) {
-        logger.warn("onApplicationEvent");
         List<OrderTable> orderTables = orderTableRepository.findAllById(event.getOrderTableIds());
         orderTables.forEach(orderTable -> orderTable.group(event.getTableGroupId()));
 

@@ -1,6 +1,7 @@
 package kitchenpos.ordertable.domain.event;
 
 import java.util.List;
+import kitchenpos.config.EventLoggingAop;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.tablegroup.domain.event.TableUnGroupingEvent;
@@ -20,6 +21,7 @@ public class TableUnGroupingEventListener implements ApplicationListener<TableUn
         this.orderTableRepository = orderTableRepository;
     }
 
+    @EventLoggingAop
     @TransactionalEventListener
     public void onApplicationEvent(TableUnGroupingEvent event) {
         List<OrderTable> orderTables = orderTableRepository.findAllByTableGroupId(

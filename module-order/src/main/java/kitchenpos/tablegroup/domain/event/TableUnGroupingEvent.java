@@ -14,4 +14,12 @@ public class TableUnGroupingEvent extends ApplicationEvent {
     public Long getTableGroupId() {
         return tableGroupId;
     }
+
+    @Override
+    public String toString() {
+        return "TableUnGroupingEvent{" +
+            "tableGroupId=" + tableGroupId +
+            ", source=" + source +
+            '}';
+    }
 }

@@ -21,4 +21,12 @@ public class TableGroupingEvent extends ApplicationEvent {
     public List<Long> getOrderTableIds() {
         return orderTableIds;
     }
+
+    @Override
+    public String toString() {
+        return "TableGroupingEvent{" +
+            "tableGroupId=" + tableGroupId +
+            ", orderTableIds=" + orderTableIds +
+            '}';
+    }
 }
