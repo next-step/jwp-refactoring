@@ -3,7 +3,6 @@ package kitchenpos.tablegroup.application;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.*;
-import static org.mockito.Mockito.*;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -19,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import kitchenpos.common.exception.ErrorCode;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.tablegroup.exception.TableGroupException;
@@ -98,15 +98,12 @@ class TableGroupValidatorTest {
 		List<Long> ids = Arrays.asList(0L, 0L);
 
 		// when
-		when(orderRepository.findAllByOrderTableIdIn(ids)).thenReturn(
-			Arrays.asList(order, order));
-		doThrow(TableGroupException.class)
-			.when(order)
-			.isNotCompletion();
+		when(orderRepository.existsByOrderTableIdInAndOrderStatusNot(ids, OrderStatus.COMPLETION)).thenReturn(true);
 
 		// then
 		assertThatThrownBy(() -> {
 			tableGroupValidator.findCompletionOrderTables(anyLong());
-		}).isInstanceOf(TableGroupException.class);
+		}).isInstanceOf(TableGroupException.class)
+			.hasMessageContaining(ErrorCode.ORDER_IS_NOT_COMPLETION.getMessage());
 	}
 }
