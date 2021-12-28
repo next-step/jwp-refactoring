@@ -17,7 +17,7 @@ public class OrderLineItems {
 	}
 
 	private OrderLineItems(List<OrderLineItem> orderLineItems) {
-		this.orderLineItems = orderLineItems;
+		this.orderLineItems.addAll(orderLineItems);
 	}
 
 	public static OrderLineItems of(List<OrderLineItem> orderLineItemList) {
@@ -34,5 +34,22 @@ public class OrderLineItems {
 
 	public List<OrderLineItem> toList() {
 		return Collections.unmodifiableList(orderLineItems);
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
+
+		OrderLineItems that = (OrderLineItems)o;
+
+		return orderLineItems.equals(that.orderLineItems);
+	}
+
+	@Override
+	public int hashCode() {
+		return orderLineItems.hashCode();
 	}
 }

@@ -15,8 +15,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import kitchenpos.common.domain.PositiveNumber;
 import kitchenpos.common.domain.Price;
+import kitchenpos.common.domain.Quantity;
 import kitchenpos.exception.AppException;
 import kitchenpos.exception.ErrorCode;
 import kitchenpos.product.domain.Product;
@@ -38,13 +38,13 @@ public class MenuProduct {
 	private Product product;
 
 	@Embedded
-	@AttributeOverride(name = "number", column = @Column(name = "quantity", nullable = false))
-	private PositiveNumber quantity;
+	@AttributeOverride(name = "quantity", column = @Column(name = "quantity", nullable = false))
+	private Quantity quantity;
 
 	protected MenuProduct() {
 	}
 
-	private MenuProduct(Long seq, Menu menu, Product product, PositiveNumber quantity) {
+	private MenuProduct(Long seq, Menu menu, Product product, Quantity quantity) {
 		this.seq = seq;
 		this.menu = menu;
 		this.product = product;
@@ -53,11 +53,11 @@ public class MenuProduct {
 
 	public static MenuProduct create(Product product, Long quantity) {
 		validateCreate(product);
-		return new MenuProduct(null, null, product, PositiveNumber.valueOf(quantity));
+		return new MenuProduct(null, null, product, Quantity.valueOf(quantity));
 	}
 
 	public static MenuProduct of(Long seq, Menu menu, Product product, Long quantity) {
-		return new MenuProduct(seq, menu, product, PositiveNumber.valueOf(quantity));
+		return new MenuProduct(seq, menu, product, Quantity.valueOf(quantity));
 	}
 
 	private static void validateCreate(Product product) {
@@ -67,7 +67,7 @@ public class MenuProduct {
 	}
 
 	public static MenuProduct of(Product product, Long quantity) {
-		return new MenuProduct(null, null, product, PositiveNumber.valueOf(quantity));
+		return new MenuProduct(null, null, product, Quantity.valueOf(quantity));
 	}
 
 	public void setMenu(Menu menu) {
@@ -90,7 +90,7 @@ public class MenuProduct {
 		return product;
 	}
 
-	public PositiveNumber getQuantity() {
+	public Quantity getQuantity() {
 		return quantity;
 	}
 

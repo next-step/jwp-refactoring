@@ -1,4 +1,4 @@
-package kitchenpos.common.domain;
+package kitchenpos.table.domain;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -8,20 +8,20 @@ import org.junit.jupiter.api.Test;
 import kitchenpos.exception.AppException;
 import kitchenpos.exception.ErrorCode;
 
-@DisplayName("양의 정수 도메인 테스트")
-public class PositiveNumberTest {
+@DisplayName("손님 인원 도메인 테스트")
+public class NumberOfGuestsTest {
 
 	@DisplayName("생성 테스트")
 	@Test
 	void createTest() {
-		assertThat(PositiveNumber.valueOf(123L))
-			.isEqualTo(PositiveNumber.valueOf(123L));
+		assertThat(NumberOfGuests.of(123))
+			.isEqualTo(NumberOfGuests.of(123));
 	}
 
 	@DisplayName("최소값 0 이상이어야 한다")
 	@Test
 	void validateTest() {
-		assertThatThrownBy(() -> PositiveNumber.valueOf(-1L))
+		assertThatThrownBy(() -> NumberOfGuests.of(-1))
 			.isInstanceOf(AppException.class)
 			.hasMessage(ErrorCode.WRONG_INPUT.getMessage());
 	}
@@ -29,7 +29,7 @@ public class PositiveNumberTest {
 	@DisplayName("null 이면 안된다")
 	@Test
 	void validateTest2() {
-		assertThatThrownBy(() -> PositiveNumber.valueOf(null))
+		assertThatThrownBy(() -> NumberOfGuests.of(null))
 			.isInstanceOf(AppException.class)
 			.hasMessage(ErrorCode.WRONG_INPUT.getMessage());
 	}

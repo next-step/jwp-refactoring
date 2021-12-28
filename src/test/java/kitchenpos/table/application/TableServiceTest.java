@@ -55,7 +55,7 @@ public class TableServiceTest {
 		MenuGroup 추천메뉴 = MenuGroup.of(1L, "추천메뉴");
 		MenuProduct 메뉴_상품 = MenuProduct.of(후라이드치킨, 2L);
 
-		후라이드둘세트 = Menu.of(1L, "더블강정", BigDecimal.valueOf(32_000), 추천메뉴);
+		후라이드둘세트 = Menu.of(1L, "후라이드 둘 세트", BigDecimal.valueOf(32_000), 추천메뉴);
 		후라이드둘세트.addMenuProducts(Collections.singletonList(메뉴_상품));
 		테이블 = OrderTable.of(1L, 4, false);
 		빈_테이블 = OrderTable.of(2L, 4, true);

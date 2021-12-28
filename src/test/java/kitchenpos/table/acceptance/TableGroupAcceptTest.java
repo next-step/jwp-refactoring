@@ -1,6 +1,6 @@
 package kitchenpos.table.acceptance;
 
-import static kitchenpos.table.acceptance.TableGroupAcceptStep.*;
+import static kitchenpos.table.acceptance.step.TableGroupAcceptStep.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
+import kitchenpos.table.acceptance.step.TableAcceptStep;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableResponse;
 

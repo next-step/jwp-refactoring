@@ -1,6 +1,6 @@
 package kitchenpos.order.acceptance;
 
-import static kitchenpos.order.acceptance.OrderAcceptStep.*;
+import static kitchenpos.order.acceptance.step.OrderAcceptStep.*;
 
 import java.util.Collections;
 
@@ -20,9 +20,9 @@ import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderUpdateRequest;
-import kitchenpos.product.acceptance.ProductAcceptStep;
+import kitchenpos.product.acceptance.step.ProductAcceptStep;
 import kitchenpos.product.dto.ProductResponse;
-import kitchenpos.table.acceptance.TableAcceptStep;
+import kitchenpos.table.acceptance.step.TableAcceptStep;
 import kitchenpos.table.dto.TableResponse;
 
 @DisplayName("주문 인수테스트")

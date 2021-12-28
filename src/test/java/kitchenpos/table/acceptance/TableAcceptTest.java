@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
+import kitchenpos.table.acceptance.step.TableAcceptStep;
 import kitchenpos.table.dto.TableEmptyUpdateRequest;
 import kitchenpos.table.dto.TableGuestsUpdateRequest;
 import kitchenpos.table.dto.TableRequest;

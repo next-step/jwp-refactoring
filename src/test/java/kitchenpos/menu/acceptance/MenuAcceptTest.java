@@ -16,7 +16,7 @@ import kitchenpos.menu.dto.MenuGroupResponse;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.product.acceptance.ProductAcceptStep;
+import kitchenpos.product.acceptance.step.ProductAcceptStep;
 import kitchenpos.product.dto.ProductResponse;
 
 @DisplayName("메뉴 인수 테스트")

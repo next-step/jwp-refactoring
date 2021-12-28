@@ -1,6 +1,6 @@
 package kitchenpos.product.acceptance;
 
-import static kitchenpos.product.acceptance.ProductAcceptStep.*;
+import static kitchenpos.product.acceptance.step.ProductAcceptStep.*;
 
 import java.math.BigDecimal;
 

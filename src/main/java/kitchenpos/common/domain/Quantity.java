@@ -35,6 +35,10 @@ public class Quantity {
 		}
 	}
 
+	public static Quantity valueOf(Long quantity) {
+		return of(quantity);
+	}
+
 	public Long toLong() {
 		return quantity;
 	}

@@ -17,8 +17,8 @@ public class MenuProductTest {
 	@DisplayName("생성 테스트")
 	@Test
 	void createTest() {
-		assertThat(MenuProduct.of(1L, null, null, 0L))
-			.isEqualTo(MenuProduct.of(1L, null, null, 0L));
+		assertThat(MenuProduct.of(1L, null, null, 1L))
+			.isEqualTo(MenuProduct.of(1L, null, null, 1L));
 	}
 
 	@DisplayName("생성 시, 상품 정보가 필요합니다")
