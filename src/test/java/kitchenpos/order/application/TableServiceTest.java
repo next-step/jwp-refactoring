@@ -71,7 +71,6 @@ public class TableServiceTest {
         OrderTable 테이블 = OrderTable.of(3, false);
         
         given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(테이블));
-        given(orderTableRepository.save(테이블)).willReturn(OrderTable.of(3, true));
     
         // when
         OrderTableResponse 상태_변경후_테이블 = tableService.changeEmpty(1L, true);
@@ -120,7 +119,6 @@ public class TableServiceTest {
         OrderTable 손님_수_변경_테이블 = OrderTable.of(3, false);
         
         given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(테이블));
-        given(orderTableRepository.save(테이블)).willReturn(손님_수_변경_테이블);
     
         // when
         OrderTableResponse 손님_수_변경후_테이블 = tableService.changeNumberOfGuests(1L, 3);

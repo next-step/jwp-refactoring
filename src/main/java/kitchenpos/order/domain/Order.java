@@ -122,11 +122,14 @@ public class Order {
     }
     
     private void changeOrderStatus(OrderStatus orderStatus) {
-        checkCompletionStatus();
+        validateOrderStatus(orderStatus);
         this.orderStatus = orderStatus;
     }
 
-    private void checkCompletionStatus() {
+    private void validateOrderStatus(OrderStatus orderStatus) {
+        if (isMeal() && orderStatus.equals(OrderStatus.COOKING)) {
+            throw new IllegalArgumentException("식사중인 주문은 조리중으로 상태를 변경 할 수 없습니다");
+        }
         if (isCompletion()) {
             throw new IllegalArgumentException("계산이 완료된 주문은 상태를 변경 할 수 없습니다");
         }

@@ -126,7 +126,6 @@ public class OrderServiceTest {
         Order 조리중_주문 = Order.of(테이블, OrderStatus.COOKING, Arrays.asList(주문_항목));
         
         given(orderRepository.findById(anyLong())).willReturn(Optional.of(조리중_주문));
-        given(orderRepository.save(any())).willReturn(조리중_주문);
         
         // when
         OrderResponse 변경후_주문 = orderService.onMealing(1L);
@@ -144,7 +143,6 @@ public class OrderServiceTest {
         Order 식사중_주문 = Order.of(테이블, OrderStatus.MEAL, Arrays.asList(주문_항목));
         
         given(orderRepository.findById(anyLong())).willReturn(Optional.of(식사중_주문));
-        given(orderRepository.save(any())).willReturn(식사중_주문);
         
         // when
         OrderResponse 변경후_주문 = orderService.completed(1L);
