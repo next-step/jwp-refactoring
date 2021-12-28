@@ -6,9 +6,6 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kitchenpos.repository.OrderRepository;
-import kitchenpos.repository.OrderTableRepository;
-import kitchenpos.repository.TableGroupRepository;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTables;
 import kitchenpos.domain.TableGroup;
@@ -18,6 +15,9 @@ import kitchenpos.dto.TableGroupResponse;
 import kitchenpos.exception.KitchenposErrorCode;
 import kitchenpos.exception.KitchenposException;
 import kitchenpos.exception.KitchenposNotFoundException;
+import kitchenpos.repository.OrderRepository;
+import kitchenpos.repository.OrderTableRepository;
+import kitchenpos.repository.TableGroupRepository;
 
 @Service
 @Transactional(readOnly = true)
@@ -44,8 +44,8 @@ public class TableGroupService {
 
     private List<Long> makeOrderTableIds(TableGroupRequest request) {
         return request.getOrderTables().stream()
-                .map(OrderTableIdRequest::getId)
-                .collect(Collectors.toList());
+            .map(OrderTableIdRequest::getId)
+            .collect(Collectors.toList());
     }
 
     private TableGroup makeTableGroup(List<Long> orderTableIds) {
