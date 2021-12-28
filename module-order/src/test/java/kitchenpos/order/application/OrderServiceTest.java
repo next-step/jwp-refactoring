@@ -5,6 +5,7 @@ import static kitchenpos.ordertable.application.fixture.OrderTableFixture.한명
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 
 import java.util.Collections;
 import java.util.List;
@@ -53,6 +54,7 @@ class OrderServiceTest {
 
         // then
         assertThat(생성된_주문).isNotNull();
+        verify(orderValidator).validateRegister(any(Order.class));
     }
 
     @Test

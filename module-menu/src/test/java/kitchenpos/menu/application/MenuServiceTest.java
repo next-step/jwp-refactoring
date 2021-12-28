@@ -9,6 +9,7 @@ import static kitchenpos.product.application.fixture.ProductFixture.후리이드
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 
 import java.util.Collections;
 import java.util.List;
@@ -40,8 +41,6 @@ class MenuServiceTest {
     private MenuGroupRepository menuGroupRepository;
     @Mock
     private ProductRepository productRepository;
-
-
     @Mock
     private MenuValidator menuValidator;
 
@@ -65,6 +64,7 @@ class MenuServiceTest {
         MenuResponse 등록된_메뉴 = menuService.create(menuRequest);
 
         // then
+        메뉴생성_검증_됨();
         메뉴등록_됨(등록된_메뉴);
     }
 
@@ -92,5 +92,9 @@ class MenuServiceTest {
 
     private void 메뉴목록_조회됨(List<MenuResponse> 메뉴목록) {
         assertThat(메뉴목록).isNotEmpty();
+    }
+
+    private void 메뉴생성_검증_됨() {
+        verify(menuValidator).validateRegister(any(Menu.class));
     }
 }

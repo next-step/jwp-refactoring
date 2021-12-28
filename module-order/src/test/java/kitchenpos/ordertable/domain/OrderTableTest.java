@@ -1,15 +1,24 @@
 package kitchenpos.ordertable.domain;
 
 import static kitchenpos.ordertable.application.fixture.OrderTableFixture.단체지정된_주문테이블;
+import static kitchenpos.ordertable.application.fixture.OrderTableFixture.빈_테이블;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.verify;
 
 import kitchenpos.exception.InvalidParameterException;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 @DisplayName("OrderTable 클래스")
+@ExtendWith(MockitoExtension.class)
 class OrderTableTest {
+
+    @Mock
+    private TableValidator tableValidator;
 
     @Test
     @DisplayName("`주문 테이블`의 `방문한 손님 수`는 0명 이상이어야 변경할 수 있다.")
@@ -35,5 +44,18 @@ class OrderTableTest {
 
         // then
         assertThatThrownBy(actual).isInstanceOf(InvalidParameterException.class);
+    }
+
+    @Test
+    @DisplayName("빈테이블 상태 변경시 주문완료여부 검증을 호출해야한다.")
+    void 빈테이블_상태_변경() {
+        // given
+        OrderTable 주문테이블 = 빈_테이블();
+
+        // when
+        주문테이블.changeEmpty(tableValidator, false);
+
+        // then
+        verify(tableValidator).validateCompletedOrder(주문테이블);
     }
 }

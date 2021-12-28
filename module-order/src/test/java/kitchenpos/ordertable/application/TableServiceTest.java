@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 
 import java.util.Collections;
 import java.util.List;
@@ -77,6 +78,7 @@ class TableServiceTest {
 
         // then
         빈테이블_변경_검증(빈테이블_변경_결과);
+        주문완료_됨();
     }
 
     @Test
@@ -114,5 +116,9 @@ class TableServiceTest {
 
     private void 방문손님수_변경_검증(int expect, OrderTableResponse orderTableResponse) {
         assertThat(orderTableResponse.getNumberOfGuests()).isEqualTo(expect);
+    }
+
+    private void 주문완료_됨() {
+        verify(tableValidator).validateCompletedOrder(any(OrderTable.class));
     }
 }
