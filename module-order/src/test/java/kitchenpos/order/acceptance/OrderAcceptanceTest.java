@@ -46,23 +46,12 @@ class OrderAcceptanceTest extends AcceptanceTest {
     }
 
     private OrderRequest 치킨_주문_파라미터() {
-//        Long 치킨상품_번호 = 상품_등록됨(양념치킨());
-        Long 치킨상품_번호 = 1L;
         Long 치킨메뉴_번호 = 1L;
-//        Long 치킨메뉴_번호 = 치킨메뉴_등록됨(치킨상품_번호);
         Long 주문테이블_번호 = 주문테이블_생성됨(1, false);
         OrderLineItemRequest 주문항목 = new OrderLineItemRequest(치킨메뉴_번호, 1);
 
         return new OrderRequest(주문테이블_번호, Collections.singletonList(주문항목));
     }
-
-//    private Long 치킨메뉴_등록됨(Long 상품_번호) {
-////        MenuGroupResponse 치킨류 = 메뉴그룹_등록됨(new MenuGroupRequest("치킨류"));
-//        MenuGroupResponse 치킨류 = new MenuGroupResponse(1L, "치킨류");
-//        MenuRequest 메뉴등록_요청_파라미터 = new MenuRequest("치킨메뉴", 16000, 치킨류.getId(),
-//            Collections.singletonList(new MenuProductRequest(상품_번호, 1L)));
-//        return 메뉴_등록됨(메뉴등록_요청_파라미터);
-//    }
 
     private OrderStatusRequest 요리중_요청_파라미터() {
         return new OrderStatusRequest(OrderStatus.MEAL);
