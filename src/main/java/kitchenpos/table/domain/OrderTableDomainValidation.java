@@ -3,11 +3,11 @@ package kitchenpos.table.domain;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
+import kitchenpos.common.annotation.DomainService;
 import kitchenpos.common.exception.Message;
-import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
-@Component
+@DomainService
 public class OrderTableDomainValidation {
 
     private static final int MIN_TABLE_SIZE = 2;

@@ -1,14 +1,11 @@
 package kitchenpos.tableGroup.application;
 
-import static common.OrderTableFixture.from;
 import static common.OrderTableFixture.단체지정_두번째_주문테이블;
 import static common.OrderTableFixture.단체지정_첫번째_주문테이블;
-import static common.TableGroupFixture.단체테이블_첫번째_두번째;
 import static io.restassured.RestAssured.given;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockConstruction;
@@ -18,21 +15,13 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
-import kitchenpos.table.application.TableGroupService;
 import kitchenpos.table.domain.OrderTableDao;
 import kitchenpos.table.domain.OrderTableDomainService;
-import kitchenpos.tableGroup.domain.TableGroupDao;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.tableGroup.domain.TableGroup;
 import kitchenpos.table.dto.OrderTableRequest;
-import kitchenpos.tableGroup.domain.TableGroupValidation;
 import kitchenpos.tableGroup.dto.TableGroupRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;

@@ -1,14 +1,14 @@
 package kitchenpos.table.domain;
 
 import java.util.List;
+import kitchenpos.common.annotation.DomainService;
 import kitchenpos.table.domain.event.GroupByEvent;
 import kitchenpos.table.domain.event.GroupTable;
 import kitchenpos.table.domain.event.UnGroupByEvent;
 import org.springframework.context.event.EventListener;
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-@Component
+@DomainService
 public class OrderTableDomainService {
 
     private final OrderTableDao orderTableDao;
