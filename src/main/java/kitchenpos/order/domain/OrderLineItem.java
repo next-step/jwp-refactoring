@@ -10,11 +10,10 @@ public class OrderLineItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Order order;
-
     @ManyToOne
     private Menu menu;
+
+    private Long orderId;
 
     private long quantity;
 
@@ -36,7 +35,6 @@ public class OrderLineItem {
     }
 
     public void makeOrder(Order order) {
-        this.order = order;
         order.addOrderLineItem(this);
     }
 
