@@ -22,13 +22,13 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class GroupingEventHandlerTest {
+class GroupingEventListenerTest {
 
     @Mock
     private OrderTableRepository orderTableRepository;
 
     @InjectMocks
-    private GroupingEventHandler groupingEventHandler;
+    private GroupingEventListener groupingEventHandler;
 
     @DisplayName("그룹 설정")
     @Test

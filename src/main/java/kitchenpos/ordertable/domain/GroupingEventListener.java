@@ -13,13 +13,13 @@ import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
 @Component
-public class GroupingEventHandler {
+public class GroupingEventListener {
 
     private static final int MIN_NUMBER_OF_TABLES_IN_GROUP = 2;
 
     private final OrderTableRepository orderTableRepository;
 
-    public GroupingEventHandler(OrderTableRepository orderTableRepository) {
+    public GroupingEventListener(OrderTableRepository orderTableRepository) {
         this.orderTableRepository = orderTableRepository;
     }
 
