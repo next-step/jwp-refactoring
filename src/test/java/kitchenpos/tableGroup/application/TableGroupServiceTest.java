@@ -16,7 +16,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 import kitchenpos.table.domain.OrderTableDao;
-import kitchenpos.table.domain.OrderTableDomainService;
+import kitchenpos.table.ui.OrderTableEvent;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.tableGroup.dto.TableGroupRequest;
@@ -34,7 +34,7 @@ public class TableGroupServiceTest {
     private TableGroupService tableGroupService;
 
     @SpyBean
-    OrderTableDomainService orderTableDomainService;
+    OrderTableEvent orderTableDomainService;
 
     @MockBean
     OrderTableDao orderTableDao;

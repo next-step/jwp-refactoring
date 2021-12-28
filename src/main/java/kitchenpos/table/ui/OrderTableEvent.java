@@ -1,20 +1,23 @@
-package kitchenpos.table.domain;
+package kitchenpos.table.ui;
 
 import java.util.List;
-import kitchenpos.common.annotation.DomainService;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableDao;
+import kitchenpos.table.domain.OrderTableDomainValidation;
 import kitchenpos.table.domain.event.GroupByEvent;
 import kitchenpos.table.domain.event.GroupTable;
 import kitchenpos.table.domain.event.UnGroupByEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-@DomainService
-public class OrderTableDomainService {
+@Component
+public class OrderTableEvent {
 
     private final OrderTableDao orderTableDao;
     private final OrderTableDomainValidation orderTablesValidation;
 
-    public OrderTableDomainService(OrderTableDao orderTableDao,
+    public OrderTableEvent(OrderTableDao orderTableDao,
         OrderTableDomainValidation tablesValidation) {
         this.orderTableDao = orderTableDao;
         this.orderTablesValidation = tablesValidation;
@@ -36,7 +39,8 @@ public class OrderTableDomainService {
     @EventListener
     @Transactional
     public void unGroupByOrderTable(UnGroupByEvent unGroupByEvent) {
-        List<OrderTable> orderTables = orderTableDao.findTableGroupById(unGroupByEvent.getGroupTableId());
+        List<OrderTable> orderTables = orderTableDao.findTableGroupById(
+            unGroupByEvent.getGroupTableId());
         orderTables.forEach(OrderTable::unGroup);
     }
 }
