@@ -3,7 +3,6 @@ package kitchenpos.domain;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
@@ -43,12 +42,6 @@ public class OrderTables {
 
     public void add(OrderTable orderTable) {
         orderTables.add(orderTable);
-    }
-
-    public List<Long> getIds() {
-        return orderTables.stream()
-            .map(OrderTable::getId)
-            .collect(Collectors.toList());
     }
 
     public void unGroup() {

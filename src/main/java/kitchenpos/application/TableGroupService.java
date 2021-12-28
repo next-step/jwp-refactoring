@@ -18,6 +18,7 @@ import kitchenpos.dto.TableGroupRequest;
 import kitchenpos.dto.TableGroupResponse;
 import kitchenpos.exception.KitchenposErrorCode;
 import kitchenpos.exception.KitchenposException;
+import kitchenpos.exception.KitchenposNotFoundException;
 
 @Service
 @Transactional(readOnly = true)
@@ -57,12 +58,12 @@ public class TableGroupService {
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
-        OrderTables orderTables = new OrderTables(orderTableDao.findAllByTableGroup_Id(tableGroupId));
+        TableGroup tableGroup = tableGroupDao.findById(tableGroupId)
+            .orElseThrow(KitchenposNotFoundException::new);
+        OrderTables orderTables = new OrderTables(orderTableDao.findAllByTableGroup(tableGroup));
 
-        final List<Long> orderTableIds = orderTables.getIds();
-
-        if (orderDao.existsByOrderTable_IdInAndOrderStatusIn(
-            orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
+        if (orderDao.existsByOrderTableInAndOrderStatusIn(
+            orderTables.getOrderTables(), Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
             throw new KitchenposException(KitchenposErrorCode.CONTAINS_USED_TABLE);
         }
 

@@ -171,7 +171,7 @@ class TableServiceTest {
     }
 
     private void 식사_혹은_준비중인_테이블_존재여부_반환(boolean b) {
-        Mockito.when(orderDao.existsByOrderTable_IdAndOrderStatusIn(Mockito.anyLong(), Mockito.anyList()))
+        Mockito.when(orderDao.existsByOrderTableAndOrderStatusIn(Mockito.any(), Mockito.anyList()))
             .thenReturn(b);
     }
 }

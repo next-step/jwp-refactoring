@@ -150,9 +150,10 @@ class TableGroupServiceTest {
     @Test
     void ungroup() {
         // given
+        테이블_그룹_ID로_테이블_그룹_조회(tableGroup);
         List<OrderTable> orderTables = Arrays.asList(
-            new OrderTable(1L, null, 4, true),
-            new OrderTable(2L, null, 2, true));
+            new OrderTable(1L, tableGroup, 4, true),
+            new OrderTable(2L, tableGroup, 2, true));
         테이블_그룹_ID로_조회_결과_반환(orderTables);
 
         요리_또는_식사중인_테이블_존재_여부_반환(false);
@@ -165,9 +166,11 @@ class TableGroupServiceTest {
     @Test
     void unGroupFailWhenContainsMealOrCooking() {
         // given
+        테이블_그룹_ID로_테이블_그룹_조회(tableGroup);
+
         List<OrderTable> orderTables = Arrays.asList(
-            new OrderTable(1L, null, 4, true),
-            new OrderTable(2L, null, 2, true));
+            new OrderTable(1L, tableGroup, 4, true),
+            new OrderTable(2L, tableGroup, 2, true));
         테이블_그룹_ID로_조회_결과_반환(orderTables);
 
         요리_또는_식사중인_테이블_존재_여부_반환(true);
@@ -189,12 +192,17 @@ class TableGroupServiceTest {
     }
 
     private void 테이블_그룹_ID로_조회_결과_반환(List<OrderTable> orderTables) {
-        Mockito.when(orderTableDao.findAllByTableGroup_Id(Mockito.anyLong()))
+        Mockito.when(orderTableDao.findAllByTableGroup(Mockito.any()))
             .thenReturn(orderTables);
     }
 
     private void 요리_또는_식사중인_테이블_존재_여부_반환(boolean b) {
-        Mockito.when(orderDao.existsByOrderTable_IdInAndOrderStatusIn(Mockito.anyList(), Mockito.anyList()))
+        Mockito.when(orderDao.existsByOrderTableInAndOrderStatusIn(Mockito.anyList(), Mockito.anyList()))
             .thenReturn(b);
+    }
+
+    private void 테이블_그룹_ID로_테이블_그룹_조회(TableGroup tableGroup) {
+        Mockito.when(tableGroupDao.findById(Mockito.anyLong()))
+            .thenReturn(java.util.Optional.ofNullable(tableGroup));
     }
 }

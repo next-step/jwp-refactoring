@@ -49,8 +49,8 @@ public class TableService {
 
         orderTable.checkNotGrouped();
 
-        if (orderDao.existsByOrderTable_IdAndOrderStatusIn(
-            orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
+        if (orderDao.existsByOrderTableAndOrderStatusIn(
+            orderTable, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
             throw new KitchenposException(KitchenposErrorCode.CONTAINS_USED_TABLE);
         }
 
