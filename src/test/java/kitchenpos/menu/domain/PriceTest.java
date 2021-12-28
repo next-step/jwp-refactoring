@@ -20,10 +20,10 @@ public class PriceTest {
         .hasMessage("가격은 0원 이상이어야 합니다");
     }
     
-    @DisplayName("수량에 따라 총 가격이 잘 만들어지는지 확인한다")
+    @DisplayName("가격은 곱셈이 가능하다")
     @ParameterizedTest
     @CsvSource(value = { "3000:1:3000", "200:6:1200" }, delimiter = ':')
-    void 수량별_가격(Long price, Long quantity, Long expected) {
+    void 가격_곱셈(Long price, Long quantity, Long expected) {
         // given
         Price 가격 = Price.from(price);
         
