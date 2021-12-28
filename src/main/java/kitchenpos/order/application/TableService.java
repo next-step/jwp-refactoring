@@ -57,7 +57,8 @@ public class TableService {
     }
 
     @Transactional
-    public void grouped(Long tableGroupId, List<OrderTable> orderTables) {
+    public void grouped(Long tableGroupId, List<Long> orderTableIds) {
+        List<OrderTable> orderTables = findAllByIdIn(orderTableIds);
         orderTables.forEach(orderTable -> {
             orderTable.group(tableGroupId);
         });

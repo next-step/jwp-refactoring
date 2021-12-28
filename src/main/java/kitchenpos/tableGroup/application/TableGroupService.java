@@ -44,7 +44,7 @@ public class TableGroupService {
 
         final TableGroup saved = tableGroupRepository.save(TableGroup.empty());
 
-        eventPublisher.publishEvent(OrderTableGrouped.from(saved.getId(), orderTables));
+        eventPublisher.publishEvent(OrderTableGrouped.from(saved.getId(), orderTableIds));
 
         return TableGroupResponse.of(saved, orderTables);
     }

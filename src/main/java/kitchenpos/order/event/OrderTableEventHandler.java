@@ -17,9 +17,9 @@ public class OrderTableEventHandler {
 
     @EventListener
     public void grouped(OrderTableGrouped event) {
-        List<OrderTable> orderTables = event.getOrderTables();
+        List<Long> orderTableIds = event.getOrderTableIds();
 
-        tableService.grouped(event.getTableGroupId(), orderTables);
+        tableService.grouped(event.getTableGroupId(), orderTableIds);
     }
 
     @EventListener

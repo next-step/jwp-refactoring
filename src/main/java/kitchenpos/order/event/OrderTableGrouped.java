@@ -6,22 +6,22 @@ import java.util.List;
 
 public class OrderTableGrouped {
     private Long tableGroupId;
-    private List<OrderTable> orderTables;
+    private List<Long> orderTableIds;
 
-    private OrderTableGrouped(Long tableGroupId, List<OrderTable> orderTables) {
+    public OrderTableGrouped(Long tableGroupId, List<Long> orderTableIds) {
         this.tableGroupId = tableGroupId;
-        this.orderTables = orderTables;
+        this.orderTableIds = orderTableIds;
     }
 
-    public static OrderTableGrouped from(Long tableGroupId, List<OrderTable> orderTables) {
-        return new OrderTableGrouped(tableGroupId, orderTables);
+    public static OrderTableGrouped from(Long tableGroupId, List<Long> orderTableIds) {
+        return new OrderTableGrouped(tableGroupId, orderTableIds);
     }
 
     public Long getTableGroupId() {
         return tableGroupId;
     }
 
-    public List<OrderTable> getOrderTables() {
-        return orderTables;
+    public List<Long> getOrderTableIds() {
+        return orderTableIds;
     }
 }

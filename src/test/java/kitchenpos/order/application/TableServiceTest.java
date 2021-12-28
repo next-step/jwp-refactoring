@@ -18,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -45,10 +46,10 @@ public class TableServiceTest {
 
     @BeforeEach
     void setUp() {
-        주문테이블 = OrderTableFixture.생성(0,false);
-        주문테이블_Request =OrderTableFixture.샘플_Request();
-        테이블1번 = OrderTableFixture.생성(0,true);
-        테이블2번 = OrderTableFixture.생성(0,true);
+        주문테이블 = OrderTableFixture.생성(0, false);
+        주문테이블_Request = OrderTableFixture.샘플_Request();
+        테이블1번 = OrderTableFixture.생성(0, true);
+        테이블2번 = OrderTableFixture.생성(0, true);
         orderTables = Arrays.asList(테이블1번, 테이블2번);
         단체_지정 = TableGroup.empty();
     }
@@ -79,12 +80,12 @@ public class TableServiceTest {
     @DisplayName("주문 테이블 상태를 변경한다.")
     @Test
     void changeEmpty() {
-        OrderTable 빈주문테이블 = OrderTableFixture.생성(0,true);
+        OrderTable 빈주문테이블 = OrderTableFixture.생성(0, true);
 
         given(orderTableRepository.findById(any())).willReturn(java.util.Optional.of(빈주문테이블));
         given(orderTableRepository.save(any())).willReturn(빈주문테이블);
 
-        OrderTableResponse changeOrderTable = tableService.changeEmpty(any(), OrderTableFixture.생성_Request(0,false));
+        OrderTableResponse changeOrderTable = tableService.changeEmpty(any(), OrderTableFixture.생성_Request(0, false));
 
         assertThat(changeOrderTable.isEmpty()).isFalse();
 
@@ -93,13 +94,13 @@ public class TableServiceTest {
     @DisplayName("주문 테이블 상태를 요리중이거나 식사중일땐 바꿀 수 없다.")
     @Test
     void changeError() {
-        OrderTable 빈주문테이블 = OrderTableFixture.생성(0,true);
+        OrderTable 빈주문테이블 = OrderTableFixture.생성(0, true);
         Order order = OrderFixture.생성(빈주문테이블);
         given(orderTableRepository.findById(any())).willReturn(java.util.Optional.of(주문테이블));
         doThrow(IllegalArgumentException.class).when(tableValidator).validateCompletion((OrderTable) any());
 
         assertThatThrownBy(
-                () -> tableService.changeEmpty(any(), OrderTableFixture.생성_Request(0,false))
+                () -> tableService.changeEmpty(any(), OrderTableFixture.생성_Request(0, false))
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -109,7 +110,7 @@ public class TableServiceTest {
         given(orderTableRepository.findById(any())).willReturn(java.util.Optional.ofNullable(주문테이블));
         given(orderTableRepository.save(any())).willReturn(주문테이블);
 
-        OrderTableResponse changeNumberOfGuests = tableService.changeNumberOfGuests(any(), OrderTableFixture.생성_Request(10,true));
+        OrderTableResponse changeNumberOfGuests = tableService.changeNumberOfGuests(any(), OrderTableFixture.생성_Request(10, true));
 
         assertThat(changeNumberOfGuests.getNumberOfGuests()).isEqualTo(10);
     }
@@ -117,19 +118,22 @@ public class TableServiceTest {
     @DisplayName("0명부터 가능하다.")
     @Test
     void changeNumberOfGuestsError() {
-        OrderTable 주문테이블_손님_수_변경 = OrderTableFixture.생성(-10,true);
+        OrderTable 주문테이블_손님_수_변경 = OrderTableFixture.생성(-10, true);
 
         assertThatThrownBy(
-                () -> tableService.changeNumberOfGuests(any(), OrderTableFixture.생성_Request(-10,true))
-         ).isInstanceOf(IllegalArgumentException.class);
+                () -> tableService.changeNumberOfGuests(any(), OrderTableFixture.생성_Request(-10, true))
+        ).isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("단체 지정")
     @Test
     void group() {
+        given(orderTableRepository.findAllByIdIn(any())).willReturn(orderTables);
         given(orderTableRepository.saveAll(any())).willReturn(orderTables);
-
-        tableService.grouped(1L, orderTables);
+        List<Long> orderTableIds = orderTables.stream()
+                .map(OrderTable::getId)
+                .collect(Collectors.toList());
+        tableService.grouped(1L, orderTableIds);
 
         assertThat(orderTables.get(0).getTableGroupId()).isEqualTo(1L);
         assertThat(orderTables.get(1).getTableGroupId()).isEqualTo(1L);
