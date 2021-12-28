@@ -1,0 +1,14 @@
+
+bootJar {
+    enabled=false
+}
+
+jar {
+    enabled=true
+}
+
+dependencies {
+    compile project(':module-domain')
+    testImplementation(testFixtures(project(":module-domain")))
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+}
