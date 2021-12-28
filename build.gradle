@@ -29,7 +29,6 @@ subprojects {
         implementation 'org.springframework.boot:spring-boot-starter-actuator'
         implementation 'org.springframework.boot:spring-boot-starter-jdbc'
         implementation 'org.springframework.boot:spring-boot-starter-web'
-        implementation 'org.flywaydb:flyway-core'
         runtimeOnly 'com.h2database:h2'
         // handlebars
         implementation 'pl.allegro.tech.boot:handlebars-spring-boot-starter:0.3.0'
@@ -45,6 +44,7 @@ test {
 
 project(':module-common') {
     dependencies {
+        implementation 'org.flywaydb:flyway-core'
     }
 }
 
