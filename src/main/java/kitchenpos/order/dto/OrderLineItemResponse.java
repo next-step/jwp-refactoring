@@ -11,7 +11,7 @@ public class OrderLineItemResponse {
     private MenuResponse menuResponse;
     private Long quantity;
 
-    public OrderLineItemResponse() {
+    protected OrderLineItemResponse() {
     }
 
     public OrderLineItemResponse(Long seq, MenuResponse menuResponse, Long quantity) {

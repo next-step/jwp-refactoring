@@ -21,7 +21,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
     @Test
     void createProduct() {
         // given
-        ProductRequest 후라이드치킨 = ProductRequest.of("후라이드치킨", new BigDecimal(16000.00));
+        ProductRequest 후라이드치킨 = ProductRequest.of("후라이드치킨", 16000L);
 
         // when
         ExtractableResponse<Response> response = 상품_생성_요청(후라이드치킨);

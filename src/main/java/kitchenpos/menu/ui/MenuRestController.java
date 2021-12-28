@@ -24,6 +24,7 @@ public class MenuRestController {
     public ResponseEntity<MenuResponse> create(@RequestBody final MenuRequest menuRequest) {
         final MenuResponse created = menuService.create(menuRequest);
         final URI uri = URI.create("/api/menus/" + created.getId());
+
         return ResponseEntity.created(uri)
                 .body(created);
     }

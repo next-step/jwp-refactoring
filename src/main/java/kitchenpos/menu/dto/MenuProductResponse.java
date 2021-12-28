@@ -12,7 +12,7 @@ public class MenuProductResponse {
     private ProductResponse product;
     private Long quantity;
 
-    public MenuProductResponse() {
+    protected MenuProductResponse() {
     }
 
     public MenuProductResponse(Long seq, ProductResponse productResponse, Long quantity) {

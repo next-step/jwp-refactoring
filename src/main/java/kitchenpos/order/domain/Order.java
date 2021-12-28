@@ -13,8 +13,10 @@ import java.util.Objects;
 @Table(name = "orders")
 public class Order {
     private static final String INVALID_ORDER_STATUS = "완료 상태의 주문은 변경할 수 없습니다.";
+    private static final String INVALID_REVERSE_ORDER_STATUS = "거꾸로 주문을 변경할 수 없습니다.";
     private static final String INVALID_ORDER_TABLE = "빈 주문 테이블을 주문 등록 할 수 없습니다.";
     private static final String INVALID_ORDER_LINE = "주문 라인은 비어있을 수 없습니다.";
+    private static final int zero = 0;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,21 +34,22 @@ public class Order {
     @Embedded
     private OrderLineItems orderLineItems = new OrderLineItems();
 
-    public Order() {
+    protected Order() {
     }
 
     private Order(Long id, OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
         validateOrderTable(orderTable);
         validateOrderLineItems(orderLineItems);
+        assignOrderTable(orderTable);
+
         this.id = id;
-        addOrderTable(orderTable);
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
         this.orderLineItems = OrderLineItems.of(orderLineItems);
         this.orderLineItems.addOrder(this);
     }
 
-    private void addOrderTable(OrderTable orderTable) {
+    private void assignOrderTable(OrderTable orderTable) {
         if (!equalsOrderTable(orderTable)) {
             this.orderTable = orderTable;
             orderTable.addOrder(this);
@@ -85,10 +88,6 @@ public class Order {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public OrderStatus getOrderStatus() {
         return orderStatus;
     }
@@ -107,7 +106,14 @@ public class Order {
 
     public void changeOrderStatus(OrderStatus orderStatus) {
         validateOrderStatus();
+        validateReverseOrderStatus(orderStatus);
         this.orderStatus = orderStatus;
+    }
+
+    private void validateReverseOrderStatus(OrderStatus orderStatus) {
+        if(this.orderStatus.compareTo(orderStatus) > zero){
+            throw new InvalidOrderStatusException(INVALID_REVERSE_ORDER_STATUS);
+        }
     }
 
     private void validateOrderStatus() {

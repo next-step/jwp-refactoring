@@ -10,7 +10,7 @@ public class Quantity {
     private static final Long QUANTITY_MIN_VALUE = 1L;
     private static final String INVALID_QUANTITY_EXCEPTION = "수량은 최소 1개입니다.";
 
-    @Column(name = "quantity")
+    @Column(name = "quantity", nullable = false)
     private Long quantity;
 
     protected Quantity() {

@@ -30,7 +30,7 @@ public class OrderTable {
 
     private boolean empty;
 
-    public OrderTable() {
+    protected OrderTable() {
 
     }
 

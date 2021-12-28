@@ -5,7 +5,6 @@ import kitchenpos.domain.Price;
 import kitchenpos.exception.InvalidPriceException;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
@@ -29,28 +28,21 @@ public class Menu {
     @Embedded
     private MenuProducts menuProducts = new MenuProducts();
 
-    public Menu() {
+    protected Menu() {
 
     }
 
-    private Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+    private Menu(Long id, String name, Long price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
         this.id = id;
         this.name = Name.of(name);
         this.price = Price.of(price);
         this.menuGroup = menuGroup;
         this.menuProducts = MenuProducts.of(menuProducts);
-    }
-
-    private Menu(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        validatePrice(price, menuProducts);
-        this.name = Name.of(name);
-        this.price = Price.of(price);
-        this.menuGroup = menuGroup;
-        this.menuProducts = MenuProducts.of(menuProducts);
         this.menuProducts.addMenu(this);
+        validatePrice(price, menuProducts);
     }
 
-    private void validatePrice(BigDecimal price, List<MenuProduct> menuProducts) {
+    private void validatePrice(Long price, List<MenuProduct> menuProducts) {
         Price sum = menuProducts.stream()
                 .map(MenuProduct::calculate)
                 .reduce(Price::sum)
@@ -61,12 +53,12 @@ public class Menu {
         }
     }
 
-    public static Menu of(Long id, String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+    public static Menu of(Long id, String name, Long price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
         return new Menu(id, name, price, menuGroup, menuProducts);
     }
 
-    public static Menu of(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        return new Menu(name, price, menuGroup, menuProducts);
+    public static Menu of(String name, Long price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+        return new Menu(null, name, price, menuGroup, menuProducts);
     }
 
     public Long getId() {
@@ -77,7 +69,7 @@ public class Menu {
         return name.getName();
     }
 
-    public BigDecimal getPrice() {
+    public Long getPrice() {
         return price.getPrice();
     }
 

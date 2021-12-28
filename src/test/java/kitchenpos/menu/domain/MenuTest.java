@@ -17,11 +17,11 @@ class MenuTest {
     void create() {
         assertAll(
                 () -> assertThatThrownBy(
-                        () -> Menu.of(1L,"후라이드치킨", new BigDecimal(-1000), null, null)
-                ).isInstanceOf(IllegalArgumentException.class),
+                        () -> Menu.of(1L,"후라이드치킨", -1000L, null, null)
+                ).isInstanceOf(InvalidPriceException.class),
                 () -> assertThatThrownBy(
                         () -> Menu.of(1L,"후라이드치킨", null, null, null)
-                ).isInstanceOf(IllegalArgumentException.class)
+                ).isInstanceOf(InvalidPriceException.class)
         );
     }
 
@@ -29,14 +29,14 @@ class MenuTest {
     @Test
     void create2() {
         // given
-        Product product = Product.of(1L, "후라이드치킨", new BigDecimal(16000.00));
-        Product product2 = Product.of(2L, "양념치킨", new BigDecimal(16000.00));
+        Product product = Product.of(1L, "후라이드치킨", 16000L);
+        Product product2 = Product.of(2L, "양념치킨", 16000L);
         MenuProduct menuProduct = MenuProduct.of(1L, null, product, 1);
         MenuProduct menuProduct2 = MenuProduct.of(2L, null, product2, 1);
 
         //then
         assertThatThrownBy(
-                () -> Menu.of("후라이드치킨", new BigDecimal(33000.00), null, Arrays.asList(menuProduct, menuProduct2))
+                () -> Menu.of("후라이드치킨", 33000L, null, Arrays.asList(menuProduct, menuProduct2))
         ).isInstanceOf(InvalidPriceException.class);
     }
 }

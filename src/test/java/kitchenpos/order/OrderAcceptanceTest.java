@@ -26,11 +26,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DisplayName("주문 인수 테스트")
 public class OrderAcceptanceTest extends AcceptanceTest {
 
+    private static final OrderStatus 요리중 = OrderStatus.COOKING;
+    private static final OrderStatus 식사중 = OrderStatus.MEAL;
+    private static final OrderStatus 계산완료 = OrderStatus.COMPLETION;
+
     @DisplayName("주문을 생성 한다.")
     @Test
     void createOrder() {
         // given
-        OrderRequest orderRequest = 주문_생성_정보_입력됨();
+        OrderRequest orderRequest = 주문_생성_정보_입력됨(요리중);
 
         // when
         ExtractableResponse<Response> response = 주문_생성_요청(orderRequest);
@@ -49,12 +53,12 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    @DisplayName("주문 상태를 변경한다.")
+    @DisplayName("식사 중인 주문을 계산완료 상태로 변경한다.")
     @Test
     void changeOrderStatus() {
         // given
-        OrderResponse orderResponse = 주문_생성되어_있음();
-        OrderRequest orderRequest = new OrderRequest(null, OrderStatus.COMPLETION, null);
+        OrderResponse orderResponse = 주문_생성되어_있음(식사중);
+        OrderRequest orderRequest = 계산완료_변경();
 
         // when
         ExtractableResponse<Response> response = 주문_상태_변경_요청(orderResponse.getId(), orderRequest);
@@ -63,13 +67,17 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    private OrderResponse 주문_생성되어_있음() {
-        OrderRequest orderRequest = 주문_생성_정보_입력됨();
+    private OrderRequest 계산완료_변경() {
+        return new OrderRequest(null,  계산완료, null);
+    }
+
+    private OrderResponse 주문_생성되어_있음(OrderStatus orderStatus) {
+        OrderRequest orderRequest = 주문_생성_정보_입력됨(orderStatus);
 
         return 주문_생성_요청(orderRequest).as(OrderResponse.class);
     }
 
-    private OrderRequest 주문_생성_정보_입력됨() {
+    private OrderRequest 주문_생성_정보_입력됨(OrderStatus orderStatus) {
         OrderTableRequest orderTableRequest = new OrderTableRequest(10, false);
         OrderTableResponse orderTableResponse = TableAcceptanceTest.주문_테이블_생성됨(orderTableRequest);
 
@@ -77,7 +85,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
 
         OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(menuResponse.getId(), 2);
 
-        return new OrderRequest(orderTableResponse.getId(), null, Collections.singletonList(orderLineItemRequest));
+        return new OrderRequest(orderTableResponse.getId(), orderStatus, Collections.singletonList(orderLineItemRequest));
     }
 
     private ExtractableResponse<Response> 주문_상태_변경_요청(Long orderId, OrderRequest orderRequest) {

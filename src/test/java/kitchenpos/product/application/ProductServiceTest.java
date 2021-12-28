@@ -36,9 +36,9 @@ class ProductServiceTest {
 
     @BeforeEach
     void setUp() {
-        product = Product.of(1L, "후라이드치킨", new BigDecimal(16000.00));
-        product2 = Product.of(2L, "양념치킨", new BigDecimal(16000.00));
-        productRequest = new ProductRequest("후라이드치킨", new BigDecimal(16000.00));
+        product = Product.of(1L, "후라이드치킨", 16000L);
+        product2 = Product.of(2L, "양념치킨", 16000L);
+        productRequest = new ProductRequest("후라이드치킨", 16000L);
     }
 
     @DisplayName("상품을 등록한다.")

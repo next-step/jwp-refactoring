@@ -27,9 +27,9 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     void createMenu() {
         // given
         MenuGroupResponse 한마리메뉴 = 메뉴_그룹_생성됨(MenuGroupRequest.of("한마리메뉴"));
-        ProductResponse 후라이드치킨 = 상품_생성됨(ProductRequest.of("후라이드치킨", new BigDecimal(160000)));
+        ProductResponse 후라이드치킨 = 상품_생성됨(ProductRequest.of("후라이드치킨", 160000L));
         MenuRequest 치킨세트 = MenuRequest.of("치킨세트",
-                BigDecimal.valueOf(35000),
+                35000L,
                 한마리메뉴.getId(),
                 Collections.singletonList(MenuProductRequest.of(후라이드치킨.getId(), 2)));
 
@@ -65,9 +65,9 @@ public class MenuAcceptanceTest extends AcceptanceTest {
 
     public static MenuResponse 메뉴_생성되어_있음() {
         MenuGroupResponse 한마리메뉴 = 메뉴_그룹_생성됨(MenuGroupRequest.of("한마리메뉴"));
-        ProductResponse 후라이드치킨 = 상품_생성됨(ProductRequest.of("후라이드치킨", new BigDecimal(160000)));
+        ProductResponse 후라이드치킨 = 상품_생성됨(ProductRequest.of("후라이드치킨", 160000L));
         MenuRequest menuRequest = MenuRequest.of("치킨세트",
-                BigDecimal.valueOf(35000),
+                35000L,
                 한마리메뉴.getId(),
                 Collections.singletonList(MenuProductRequest.of(후라이드치킨.getId(), 2)));
 

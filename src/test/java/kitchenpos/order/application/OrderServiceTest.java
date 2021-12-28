@@ -64,7 +64,7 @@ class OrderServiceTest {
     @BeforeEach
     void setUp() {
         orderTable = OrderTable.of(1L, null, 2, false);
-        menu = Menu.of(1L, "메뉴", BigDecimal.TEN, MenuGroup.of("메뉴그룹"), new ArrayList<>());
+        menu = Menu.of(1L, "메뉴", 0L, MenuGroup.of("메뉴그룹"), new ArrayList<>());
         orderLineItem = OrderLineItem.of(1L, null, menu, 1);
         order = Order.of(1L, orderTable, null, null, Arrays.asList(orderLineItem));
         order2 = Order.of(2L, orderTable, null, null, Arrays.asList(orderLineItem));

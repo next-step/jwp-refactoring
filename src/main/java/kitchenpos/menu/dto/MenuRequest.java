@@ -4,26 +4,25 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 public class MenuRequest {
     private String name;
-    private BigDecimal price;
+    private Long price;
     private Long menuGroupId;
     private List<MenuProductRequest> menuProductRequests;
 
-    public MenuRequest() {
+    protected MenuRequest() {
     }
 
-    public MenuRequest(String name, BigDecimal price, long menuGroupId, List<MenuProductRequest> menuProductRequests) {
+    public MenuRequest(String name, Long price, long menuGroupId, List<MenuProductRequest> menuProductRequests) {
         this.name = name;
         this.price = price;
         this.menuGroupId = menuGroupId;
         this.menuProductRequests = menuProductRequests;
     }
 
-    public static MenuRequest of (String name, BigDecimal price, long menuGroupId, List<MenuProductRequest> menuProductRequests) {
+    public static MenuRequest of(String name, Long price, long menuGroupId, List<MenuProductRequest> menuProductRequests) {
         return new MenuRequest(name, price, menuGroupId, menuProductRequests);
     }
 
@@ -35,7 +34,7 @@ public class MenuRequest {
         return name;
     }
 
-    public BigDecimal getPrice() {
+    public Long getPrice() {
         return price;
     }
 

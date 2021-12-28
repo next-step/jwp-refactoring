@@ -21,6 +21,7 @@ public class OrderRestController {
     public ResponseEntity<OrderResponse> create(@RequestBody final OrderRequest orderRequest) {
         final OrderResponse created = orderService.create(orderRequest);
         final URI uri = URI.create("/api/orders/" + created.getId());
+
         return ResponseEntity.created(uri)
                 .body(created);
     }

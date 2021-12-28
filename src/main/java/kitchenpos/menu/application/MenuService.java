@@ -36,10 +36,14 @@ public class MenuService {
 
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
-        final MenuGroup menuGroup = getMenuGroup(menuRequest.getMenuGroupId());
-        final List<MenuProduct> menuProducts = getMenuProducts(menuRequest.getMenuProductRequests());
-        Menu menu = menuRequest.toMenu(menuGroup, menuProducts);
+        final Long menuGroupId = menuRequest.getMenuGroupId();
+        final List<MenuProductRequest> menuProductRequests = menuRequest.getMenuProductRequests();
+        final MenuGroup menuGroup = getMenuGroup(menuGroupId);
+        final List<MenuProduct> menuProducts = getMenuProducts(menuProductRequests);
+
+        final Menu menu = menuRequest.toMenu(menuGroup, menuProducts);
         final Menu persistMenu = menuRepository.save(menu);
+
         return MenuResponse.of(persistMenu);
     }
 
@@ -56,7 +60,10 @@ public class MenuService {
     }
 
     private MenuProduct getMenuProduct(MenuProductRequest request) {
-        return MenuProduct.of(getProduct(request.getProductId()), request.getQuantity());
+        final long productId = request.getProductId();
+        final int quantity = request.getQuantity();
+
+        return MenuProduct.of(getProduct(productId), quantity);
     }
 
     @Transactional(readOnly = true)
@@ -68,6 +75,7 @@ public class MenuService {
 
     public List<MenuResponse> list() {
         List<Menu> menus = menuRepository.findAll();
+
         return menus.stream()
                 .map(MenuResponse::of)
                 .collect(Collectors.toList());

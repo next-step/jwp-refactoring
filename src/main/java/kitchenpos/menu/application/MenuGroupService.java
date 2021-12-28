@@ -20,12 +20,13 @@ public class MenuGroupService {
 
     @Transactional
     public MenuGroupResponse create(final MenuGroupRequest menuGroupRequest) {
-        MenuGroup persistMenuGroup = menuGroupRepository.save(menuGroupRequest.toMenuGroup());
+        final MenuGroup persistMenuGroup = menuGroupRepository.save(menuGroupRequest.toMenuGroup());
+
         return MenuGroupResponse.of(persistMenuGroup);
     }
 
     public List<MenuGroupResponse> list() {
-        List<MenuGroup> menuGroups = menuGroupRepository.findAll();
+        final List<MenuGroup> menuGroups = menuGroupRepository.findAll();
 
         return menuGroups.stream()
                 .map(MenuGroupResponse::of)

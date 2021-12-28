@@ -24,7 +24,7 @@ public class MenuProduct {
     @Embedded
     private Quantity quantity;
 
-    public MenuProduct() {
+    protected MenuProduct() {
     }
 
     private MenuProduct(Long seq, Menu menu, Product product, long quantity) {

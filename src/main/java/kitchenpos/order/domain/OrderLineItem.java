@@ -20,9 +20,10 @@ public class OrderLineItem {
     @JoinColumn(name = "menu_id", nullable = false)
     private Menu menu;
 
+    @Embedded
     private Quantity quantity;
 
-    public OrderLineItem() {
+    protected OrderLineItem() {
     }
 
     private OrderLineItem(Long seq, Order order, Menu menu, long quantity) {

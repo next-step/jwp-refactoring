@@ -24,6 +24,7 @@ public class MenuGroupRestController {
     public ResponseEntity<MenuGroupResponse> create(@RequestBody final MenuGroupRequest menuGroupRequest) {
         final MenuGroupResponse created = menuGroupService.create(menuGroupRequest);
         final URI uri = URI.create("/api/menu-groups/" + created.getId());
+
         return ResponseEntity.created(uri)
                 .body(created);
     }

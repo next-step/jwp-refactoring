@@ -50,4 +50,18 @@ class OrderTest {
                 () -> 계산완료_주문.changeOrderStatus(OrderStatus.COOKING)
         ).isInstanceOf(InvalidOrderStatusException.class);
     }
+
+    @DisplayName("식사중에서 조리중으로 주문상태를 거꾸로 변경할 수 없다.")
+    @Test
+    void changeOrderStatus2() {
+        // given
+        OrderTable orderTable = OrderTable.of(1L, null, 2, false);
+        OrderLineItem orderLineItem = OrderLineItem.of(1L, null, null, 1);
+        Order 식사중_주문 = Order.of(1L, orderTable, OrderStatus.MEAL, LocalDateTime.now(), Arrays.asList(orderLineItem));
+
+        //then
+        assertThatThrownBy(
+                () -> 식사중_주문.changeOrderStatus(OrderStatus.COOKING)
+        ).isInstanceOf(InvalidOrderStatusException.class);
+    }
 }

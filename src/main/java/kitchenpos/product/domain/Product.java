@@ -4,7 +4,6 @@ import kitchenpos.domain.Name;
 import kitchenpos.domain.Price;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
 
 @Entity
 public class Product {
@@ -18,20 +17,20 @@ public class Product {
     @Embedded
     private Price price;
 
-    public Product() {
+    protected Product() {
     }
 
-    private Product(Long id, String name, BigDecimal price) {
+    private Product(Long id, String name, Long price) {
         this.id = id;
         this.name = Name.of(name);
         this.price = Price.of(price);
     }
 
-    public static Product of(Long id, String name, BigDecimal price) {
+    public static Product of(Long id, String name, Long price) {
         return new Product(id, name, price);
     }
 
-    public static Product of(String name, BigDecimal price) {
+    public static Product of(String name, Long price) {
         return new Product(null, name, price);
     }
 
@@ -43,7 +42,7 @@ public class Product {
         return name.getName();
     }
 
-    public BigDecimal getPrice() {
+    public Long getPrice() {
         return price.getPrice();
     }
 

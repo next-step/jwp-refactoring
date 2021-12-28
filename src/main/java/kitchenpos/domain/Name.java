@@ -6,14 +6,14 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class Name {
     @Column(name = "name", nullable = false)
-    private String name;
-
-    protected Name() {
-
-    }
+    private final String name;
 
     private Name(String name) {
         this.name = name;
+    }
+
+    protected Name() {
+        name = null;
     }
 
     public static Name of(String name) {

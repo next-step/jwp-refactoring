@@ -13,7 +13,7 @@ public class MenuGroup {
     @Embedded
     private Name name;
 
-    public MenuGroup() {
+    protected MenuGroup() {
     }
 
     private MenuGroup(Long id, String name) {

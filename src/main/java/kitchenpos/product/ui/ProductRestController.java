@@ -24,6 +24,7 @@ public class ProductRestController {
     public ResponseEntity<ProductResponse> create(@RequestBody final ProductRequest productRequest) {
         final ProductResponse created = productService.create(productRequest);
         final URI uri = URI.create("/api/products/" + created.getId());
+
         return ResponseEntity.created(uri)
                 .body(created);
     }

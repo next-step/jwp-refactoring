@@ -8,7 +8,7 @@ public class MenuGroupResponse {
     private Long id;
     private String name;
 
-    public MenuGroupResponse() {
+    protected MenuGroupResponse() {
     }
 
     public MenuGroupResponse(Long id, String name) {

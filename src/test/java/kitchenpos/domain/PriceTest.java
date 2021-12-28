@@ -13,7 +13,7 @@ class PriceTest {
     @Test
     void validate() {
         assertThatThrownBy(
-                () -> Price.of(new BigDecimal(-1))
+                () -> Price.of(-1L)
         ).isInstanceOf(InvalidPriceException.class);
     }
 

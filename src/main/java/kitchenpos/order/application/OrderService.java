@@ -37,9 +37,12 @@ public class OrderService {
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
-        final OrderTable orderTable = findOrderTableById(orderRequest.getOrderTableId());
-        final List<OrderLineItem> orderLineItems = getOrderLineItems(orderRequest.getOrderLineItemRequests());
-        Order order = orderRequest.toOrder(orderTable, orderLineItems);
+        final Long orderTableId = orderRequest.getOrderTableId();
+        final List<OrderLineItemRequest> orderLineItemRequests = orderRequest.getOrderLineItemRequests();
+        final OrderTable orderTable = findOrderTableById(orderTableId);
+        final List<OrderLineItem> orderLineItems = getOrderLineItems(orderLineItemRequests);
+
+        final Order order = orderRequest.toOrder(orderTable, orderLineItems);
         final Order persistOrder = orderRepository.save(order);
 
         return OrderResponse.of(persistOrder);
@@ -73,6 +76,7 @@ public class OrderService {
     public OrderResponse changeOrderStatus(final Long orderId, final OrderRequest orderRequest) {
         final Order order = findOrderById(orderId);
         order.changeOrderStatus(orderRequest.getOrderStatus());
+
         return OrderResponse.of(order);
     }
 
