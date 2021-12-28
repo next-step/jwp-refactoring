@@ -1,7 +1,7 @@
 package kitchenpos.table.domain;
 
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.Orders;
+import kitchenpos.table.application.OrderValidator;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.table.exception.CannotChangeEmptyException;
 import kitchenpos.table.exception.CannotChangeNumberOfGuestsException;
@@ -26,9 +26,6 @@ public class OrderTable {
 
     private boolean empty;
 
-    @Embedded
-    private Orders orders;
-
     public OrderTable() {
     }
 
@@ -36,7 +33,6 @@ public class OrderTable {
         this.tableGroup = tableGroup;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
-        this.orders = new Orders();
     }
 
     public Long getId() {
@@ -73,28 +69,22 @@ public class OrderTable {
         return empty;
     }
 
-    public void changeEmpty(final boolean empty) {
-        validateChangeEmpty();
+    public void changeEmpty(OrderValidator orderValidator, final boolean empty) {
+        validateChangeEmpty(orderValidator);
         this.empty = empty;
     }
 
-    private void validateChangeEmpty() {
-        if (Objects.nonNull(getTableGroup())) {
+    private void validateChangeEmpty(OrderValidator orderValidator) {
+        if (Objects.nonNull(this.tableGroup)) {
             throw new CannotChangeEmptyException();
         }
-        if (this.orders.canUngroupOrChange()) {
-            throw new CannotChangeEmptyException();
-        }
+        orderValidator.canUngroupOrChange(this.id);
     }
 
     public void ungroup() {
-        if (!orders.canUngroupOrChange()) {
+        if (!orderValidator.canUngroupOrChange(this.id)) {
             throw new CannotUngroupException();
         }
         this.tableGroup = null;
-    }
-
-    public void addOrder(Order order) {
-        this.orders.add(order);
     }
 }

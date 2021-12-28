@@ -1,6 +1,6 @@
 package kitchenpos.application;
 
-import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.table.application.OrderValidator;
 import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.order.domain.Order;
@@ -28,6 +28,8 @@ class TableServiceTest {
     @Mock
     private OrderTableRepository orderTableRepository;
 
+    private OrderValidator orderValidator;
+
     private OrderTable orderTable;
 
     @BeforeEach
@@ -43,7 +45,7 @@ class TableServiceTest {
         when(orderTableRepository.findById(1L)).thenReturn(java.util.Optional.ofNullable(orderTable));
 
         // when
-        TableService tableService = new TableService(orderTableRepository);
+        TableService tableService = new TableService(orderTableRepository, orderValidator);
         OrderTableResponse returnedOrderTable = tableService.changeEmpty(1L, orderTableRequest);
 
         assertThat(returnedOrderTable.isEmpty()).isTrue();
@@ -58,7 +60,7 @@ class TableServiceTest {
         OrderTableRequest orderTableRequest = new OrderTableRequest(1, true);
 
         // when
-        TableService tableService = new TableService(orderTableRepository);
+        TableService tableService = new TableService(orderTableRepository, orderValidator);
 
         // then
         assertThatThrownBy(() -> tableService.changeEmpty(1L, orderTableRequest))
@@ -74,7 +76,7 @@ class TableServiceTest {
         when(orderTableRepository.findById(1L)).thenReturn(java.util.Optional.ofNullable(orderTable));
 
         // when
-        TableService tableService = new TableService(orderTableRepository);
+        TableService tableService = new TableService(orderTableRepository, orderValidator);
 
         // then
         assertThatThrownBy(() -> tableService.changeEmpty(1L, orderTableRequest))
@@ -89,7 +91,7 @@ class TableServiceTest {
         when(orderTableRepository.findById(1L)).thenReturn(java.util.Optional.ofNullable(orderTable));
 
         // when
-        TableService tableService = new TableService(orderTableRepository);
+        TableService tableService = new TableService(orderTableRepository, orderValidator);
         OrderTableResponse returnedOrderTable = tableService.changeNumberOfGuests(1L, orderTableRequest);
 
         // then
@@ -104,7 +106,7 @@ class TableServiceTest {
         when(orderTableRepository.findById(1L)).thenReturn(java.util.Optional.ofNullable(orderTable));
 
         // when
-        TableService tableService = new TableService(orderTableRepository);
+        TableService tableService = new TableService(orderTableRepository, orderValidator);
 
         // then
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, orderTableRequest))
@@ -119,7 +121,7 @@ class TableServiceTest {
         OrderTableRequest orderTableRequest = new OrderTableRequest(2, true);
         when(orderTableRepository.findById(1L)).thenReturn(java.util.Optional.ofNullable(orderTable));
         // when
-        TableService tableService = new TableService(orderTableRepository);
+        TableService tableService = new TableService(orderTableRepository, orderValidator);
 
         // then
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, orderTableRequest))

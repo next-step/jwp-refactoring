@@ -19,7 +19,7 @@ class OrderTableTest {
     @Test
     void changeEmptyTest() {
         OrderTable orderTable = new OrderTable(null, 1, false);
-        orderTable.changeEmpty(true);
+        orderTable.changeEmpty(orderValidator, true);
 
         assertThat(orderTable.isEmpty()).isTrue();
     }
@@ -29,7 +29,7 @@ class OrderTableTest {
     public void inTableGroupChangeEmptyTest() {
         OrderTable tableGroupOrderTable = new OrderTable(new TableGroup(), 1, false);
 
-        assertThatThrownBy(() -> tableGroupOrderTable.changeEmpty(true)).isInstanceOf(CannotChangeEmptyException.class);
+        assertThatThrownBy(() -> tableGroupOrderTable.changeEmpty(orderValidator, true)).isInstanceOf(CannotChangeEmptyException.class);
     }
 
     @DisplayName("조리 중이거나 식사 중인 테이블은 빈 테이블로 변경할 수 없다")
@@ -38,7 +38,7 @@ class OrderTableTest {
         OrderTable CookingOrderTable = new OrderTable(null, 1, false);
         CookingOrderTable.addOrder(Order.of(CookingOrderTable, OrderStatus.COOKING));
 
-        assertThatThrownBy(() -> CookingOrderTable.changeEmpty(true)).isInstanceOf(CannotChangeEmptyException.class);
+        assertThatThrownBy(() -> CookingOrderTable.changeEmpty(orderValidator, true)).isInstanceOf(CannotChangeEmptyException.class);
     }
 
     @DisplayName("주문 테이블의 손님 수를 지정한다")
