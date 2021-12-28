@@ -1,14 +1,14 @@
 package kitchenpos.application;
 
 import kitchenpos.order.domain.OrderValidatorImpl;
+import kitchenpos.order.exception.NegativeNumberOfGuestsException;
 import kitchenpos.table.application.TableService;
-import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.exception.CannotChangeEmptyException;
 import kitchenpos.table.exception.CannotChangeNumberOfGuestsException;
-import kitchenpos.order.exception.NegativeNumberOfGuestsException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

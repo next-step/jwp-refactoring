@@ -1,10 +1,10 @@
 package kitchenpos.application;
 
 import kitchenpos.order.domain.OrderValidatorImpl;
+import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.tablegroup.application.TableGroupService;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
-import kitchenpos.table.domain.OrderTable;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.exception.IllegalOrderTablesException;
 import org.junit.jupiter.api.DisplayName;
