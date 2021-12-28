@@ -26,10 +26,10 @@ public class MenuService {
         MenuGroup menuGroup = menuGroupService.findById(request.getMenuGroupId());
         Menu menu = Menu.of(request.getName(), request.getPrice(), menuGroup);
 
-        Map<Long, Product> idToProduct = getProducts(request);
+        Map<Long, Product> productById = getProducts(request);
         request.getMenuProductRequests()
             .forEach(menuProductRequest -> menu.addMenuProduct(
-                idToProduct.get(menuProductRequest.getProductId()),
+                productById.get(menuProductRequest.getProductId()),
                 menuProductRequest.getQuantity()
             ));
 
