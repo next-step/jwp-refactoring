@@ -1,11 +1,11 @@
 package kitchenpos.order.domain;
 
 import kitchenpos.global.exception.EntityNotFoundException;
-import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.order.exception.CannotChangeOrderStatusException;
-import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.repository.OrderTableRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -14,12 +14,12 @@ import java.util.stream.Collectors;
 @Component
 public class OrderValidator {
 
-    private final MenuService menuService;
-    private final TableService tableService;
+    private final MenuRepository menuRepository;
+    private final OrderTableRepository orderTableRepository;
 
-    public OrderValidator(final MenuService menuService, final TableService tableService) {
-        this.menuService = menuService;
-        this.tableService = tableService;
+    public OrderValidator(MenuRepository menuRepository, OrderTableRepository orderTableRepository) {
+        this.menuRepository = menuRepository;
+        this.orderTableRepository = orderTableRepository;
     }
 
     public void orderCreateValidator(Order order) {
@@ -35,14 +35,17 @@ public class OrderValidator {
     }
 
     public void existTableValidator(Order order) {
-        final OrderTable orderTable = tableService.findOrderTable(order.getOrderTable());
+        final OrderTable orderTable = orderTableRepository.findById(order.getOrderTable())
+                .orElseThrow(() -> new EntityNotFoundException(String.format("order not found. find order id is %d", order.getOrderTable())));
         orderTable.checkAvailability();
     }
 
     private List<Menu> getMenus(final List<OrderLineItem> orderLineItems) {
-        return menuService.findMenus(orderLineItems.stream()
+        List<Long> menuIds = orderLineItems.stream()
                 .map(OrderLineItem::getMenu)
-                .collect(Collectors.toList()));
+                .collect(Collectors.toList());
+
+        return menuRepository.findByIdIn(menuIds);
     }
 
     private void existMenu(final List<Menu> menus, final OrderLineItem orderLineItem) {

@@ -1,11 +1,13 @@
 package kitchenpos.order;
 
 import kitchenpos.menu.application.MenuService;
+import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderValidator;
 import kitchenpos.order.exception.CannotChangeOrderStatusException;
 import kitchenpos.table.application.TableService;
+import kitchenpos.table.repository.OrderTableRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,9 +26,9 @@ class OrderTest {
     @DisplayName("주문 상태 변경 시 주문이 완료 상태면 예외가 발생한다.")
     void changeOrderStatusFailBecauseOfOrderStatusCompletion() {
         // given
-        final MenuService menuService = mock(MenuService.class);
-        final TableService tableService = mock(TableService.class);
-        final OrderValidator orderValidator = new OrderValidator(menuService, tableService);
+        final MenuRepository menuRepository = mock(MenuRepository.class);
+        final OrderTableRepository orderTableRepository = mock(OrderTableRepository.class);
+        final OrderValidator orderValidator = new OrderValidator(menuRepository, orderTableRepository);
 
 
         final Order order = new Order(OrderStatus.COMPLETION);
