@@ -36,11 +36,8 @@ public class TableService {
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         final OrderTable foundOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(() -> new InputTableDataException(InputTableDataErrorCode.THE_TABLE_CAN_NOT_FIND));
-        if (orderTableRequest.isEmpty()) {
-            foundOrderTable.leaveGuest();
-            return OrderTableResponse.of(orderTableRepository.save(foundOrderTable));
-        }
-        foundOrderTable.enterGuest();
+
+        foundOrderTable.updateEmpty(orderTableRequest.isEmpty());
         return OrderTableResponse.of(orderTableRepository.save(foundOrderTable));
     }
 

@@ -23,9 +23,15 @@ public class TableGroup {
     }
 
     public TableGroup(OrderTables orderTables, LocalDateTime createdDate) {
-        validateEnrolledTable(orderTables.getOrderTables());
+        validateTable(orderTables);
         this.orderTables = orderTables;
         this.createdDate = createdDate;
+        allocateTableGroup();
+    }
+
+    private void allocateTableGroup() {
+        this.orderTables.getOrderTables().stream()
+                .forEach(it -> it.allocateTableGroup(this));
     }
 
     public Long getId() {
@@ -44,8 +50,8 @@ public class TableGroup {
         this.orderTables.cancleGroup();
     }
 
-    private void validateEnrolledTable(List<OrderTable> orderTables) {
-        if (hasEmptyTable(orderTables)) {
+    private void validateTable(OrderTables orderTables) {
+        if (hasEmptyTable(orderTables.getOrderTables())) {
             throw new InputTableDataException(InputTableDataErrorCode.THE_TABLE_CAN_NOT_REGISTER_GROUP_BECAUSE_OF_EMPTY_STATUS);
         }
     }

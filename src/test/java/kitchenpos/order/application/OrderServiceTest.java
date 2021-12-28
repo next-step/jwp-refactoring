@@ -3,7 +3,7 @@ package kitchenpos.order.application;
 import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.exceptions.InputOrderDataErrorCode;
-import kitchenpos.order.exceptions.InputOrderDateException;
+import kitchenpos.order.exceptions.InputOrderDataException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -41,7 +41,7 @@ class OrderServiceTest {
                 .thenReturn(Optional.of(order));
 
         orderService.changeOrderStatus(1L, OrderStatus.MEAL);
-        verify(order).startMeal();
+        verify(order).updateOrderStatus(OrderStatus.MEAL);
     }
 
     @Test
@@ -55,7 +55,7 @@ class OrderServiceTest {
                 .thenReturn(Optional.of(order));
 
         orderService.changeOrderStatus(1L, OrderStatus.COMPLETION);
-        verify(order).endOrder();
+        verify(order).updateOrderStatus(OrderStatus.COMPLETION);
     }
 
     @Test
@@ -76,7 +76,26 @@ class OrderServiceTest {
 
     @Test
     @DisplayName("주문상태를 변경한다. 완료 후에 다시 상태를 변경 할 수 없다.  완료 -> 요리중")
-    void modifyOrderStatusErrorTest() {
+    void modifyCompletionToCookingOrderStatusErrorTest() {
+
+        //given
+        OrderLineItems orderLineItems = new OrderLineItems(Arrays.asList(new OrderLineItem(1L, 5)));
+
+        Order order = new Order(new OrderTable(4, false), orderLineItems);
+        order.endOrder();
+        //when
+        when(orderRepository.findById(anyLong()))
+                .thenReturn(Optional.of(order));
+
+        assertThatThrownBy(() -> {
+            orderService.changeOrderStatus(1L, OrderStatus.COOKING);
+        }).isInstanceOf(InputOrderDataException.class)
+                .hasMessageContaining(InputOrderDataErrorCode.THE_ORDER_STATUS_DO_NOT_CHANGE_COMPLETION_TO_ANY_OTHER.errorMessage());
+    }
+
+    @Test
+    @DisplayName("주문상태를 변경한다. 완료 후에 다시 상태를 변경 할 수 없다.  완료 -> 식사중")
+    void modifyCompletionToEatingOrderStatusErrorTest() {
 
         //given
         OrderLineItems orderLineItems = new OrderLineItems(Arrays.asList(new OrderLineItem(1L, 5)));
@@ -89,7 +108,7 @@ class OrderServiceTest {
 
         assertThatThrownBy(() -> {
             orderService.changeOrderStatus(1L, OrderStatus.MEAL);
-        }).isInstanceOf(InputOrderDateException.class)
+        }).isInstanceOf(InputOrderDataException.class)
                 .hasMessageContaining(InputOrderDataErrorCode.THE_ORDER_STATUS_DO_NOT_CHANGE_COMPLETION_TO_ANY_OTHER.errorMessage());
     }
 }

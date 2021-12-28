@@ -42,6 +42,7 @@ public class Menu {
         this(name, price, menuGroupId);
         checkValidMenuProducts(menuProducts);
         this.menuProducts = new MenuProducts(menuProducts);
+        this.menuProducts.validSum(price);
     }
 
     public Menu(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
@@ -80,13 +81,6 @@ public class Menu {
         return menuGroupId;
     }
 
-
-    public void validSum(BigDecimal sumPrice) {
-        BigDecimal amount = this.getPrice().getPrice();
-        if (amount.compareTo(sumPrice) > MIN_PRICE) {
-            throw new InputMenuDataException(InputMenuDataErrorCode.THE_SUM_OF_MENU_PRICE_IS_LESS_THAN_SUM_OF_PRODUCTS);
-        }
-    }
 
     private void checkValidMenuGroup(Long menuGroupId) {
         if (menuGroupId == null) {
