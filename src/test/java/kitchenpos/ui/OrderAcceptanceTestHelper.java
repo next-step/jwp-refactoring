@@ -12,7 +12,7 @@ import org.springframework.http.MediaType;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.Order;
+import kitchenpos.dto.OrderResponse;
 
 public class OrderAcceptanceTestHelper {
     private OrderAcceptanceTestHelper() {
@@ -58,7 +58,7 @@ public class OrderAcceptanceTestHelper {
     }
 
     public static void 주문_조회_갯수_예상과_일치(ExtractableResponse<Response> response, int expected) {
-        List<Order> result = response.jsonPath().getList(".", Order.class);
+        List<OrderResponse> result = response.jsonPath().getList(".", OrderResponse.class);
         assertThat(result).hasSize(expected);
     }
 
@@ -84,7 +84,7 @@ public class OrderAcceptanceTestHelper {
     }
 
     public static void 주문_상태_예상과_일치(ExtractableResponse<Response> response, String expected) {
-        Order result = response.as(Order.class);
+        OrderResponse result = response.as(OrderResponse.class);
         assertThat(result.getOrderStatus()).isEqualTo(expected);
     }
 

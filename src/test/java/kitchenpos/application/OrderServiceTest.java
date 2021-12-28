@@ -4,11 +4,11 @@ import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,9 +21,18 @@ import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
+import kitchenpos.domain.Menu;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
+import kitchenpos.domain.OrderLineItems;
+import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.TableGroup;
+import kitchenpos.dto.OrderLineItemRequest;
+import kitchenpos.dto.OrderLineItemResponse;
+import kitchenpos.dto.OrderRequest;
+import kitchenpos.dto.OrderResponse;
+import kitchenpos.exception.KitchenposException;
 
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
@@ -39,38 +48,44 @@ class OrderServiceTest {
     @InjectMocks
     private OrderService orderService;
 
+    private OrderTable orderTable;
+    private OrderLineItem orderLineItem;
+    private OrderLineItemRequest orderLineItemRequest;
+    private Order order;
+    private Menu menu;
+
+    @BeforeEach
+    void setUp() {
+        orderTable = new OrderTable(1L, new TableGroup(), 4, false);
+        orderLineItemRequest = new OrderLineItemRequest(1L, 1);
+        menu = new Menu();
+        orderLineItem = new OrderLineItem(menu, 1);
+        order = new Order(1L, orderTable, OrderStatus.COOKING, LocalDateTime.now(),
+            new OrderLineItems(Collections.singletonList(orderLineItem)));
+    }
+
     @DisplayName("주문 생성")
     @Test
     void create() {
         // given
-        OrderLineItem requestOrderLineItem = new OrderLineItem(1L, 1);
+        메뉴_개수_반환(1L);
+        조회한_주문_테이블_반환(orderTable);
+        ID로_메뉴_조회(menu);
 
-        Mockito.when(menuDao.countByIdIn(Mockito.anyList()))
-            .thenReturn(1L);
+        주문_저장(order);
 
-        OrderTable orderTable = new OrderTable(1L, 1L, 4, false);
-        Mockito.when(orderTableDao.findById(Mockito.anyLong()))
-            .thenReturn(Optional.of(orderTable));
-
-        Order order = new Order(1L, 1L, "COOKING", LocalDateTime.now(), new ArrayList<>());
-        Mockito.when(orderDao.save(Mockito.any()))
-            .thenReturn(order);
-
-        OrderLineItem orderLineItem = new OrderLineItem(1L, 1L, 1L, 1);
-        Mockito.when(orderLineItemDao.save(Mockito.any()))
-            .thenReturn(orderLineItem);
-
-        Order request = new Order(1L, Collections.singletonList(requestOrderLineItem));
+        OrderRequest request = new OrderRequest(1L, Collections.singletonList(orderLineItemRequest));
 
         // when
-        Order actual = orderService.create(request);
+        OrderResponse actual = orderService.create(request);
 
         // then
         assertAll(
             () -> assertThat(actual.getId()).isNotNull(),
             () -> assertThat(actual.getOrderStatus()).isEqualTo("COOKING"),
             () -> assertThat(actual.getOrderTableId()).isEqualTo(1L),
-            () -> assertThat(actual.getOrderLineItems()).isEqualTo(Collections.singletonList(orderLineItem))
+            () -> assertThat(actual.getOrderLineItems()).isEqualTo(Collections.singletonList(
+                OrderLineItemResponse.from(orderLineItem)))
         );
     }
 
@@ -78,62 +93,55 @@ class OrderServiceTest {
     @Test
     void createOrderFailWhenNoItem() {
         // given
-        Order request = new Order(1L, Collections.emptyList());
+        OrderRequest request = new OrderRequest(1L, Collections.emptyList());
 
         // when and then
-        assertThatExceptionOfType(IllegalArgumentException.class)
-            .isThrownBy(() -> orderService.create(request));
+        assertThatExceptionOfType(KitchenposException.class)
+            .isThrownBy(() -> orderService.create(request))
+            .withMessage("주문 항목이 비어있습니다.");
     }
 
     @DisplayName("주문 항목과 메뉴 숫자가 다른 경우(메뉴에 없는 주문 항목) 주문 불가능")
     @Test
     void createOrderFailWhenItemNotExists() {
         // given
-        OrderLineItem requestOrderLineItem = new OrderLineItem(1L, 1);
+        ID로_메뉴_조회(menu);
+        메뉴_개수_반환(2L);
 
-        Mockito.when(menuDao.countByIdIn(Mockito.anyList()))
-            .thenReturn(2L);
-
-        Order request = new Order(1L, Collections.singletonList(requestOrderLineItem));
+        OrderRequest request = new OrderRequest(1L, Collections.singletonList(orderLineItemRequest));
 
         // when and then
-        assertThatExceptionOfType(IllegalArgumentException.class)
-            .isThrownBy(() -> orderService.create(request));
+        assertThatExceptionOfType(KitchenposException.class)
+            .isThrownBy(() -> orderService.create(request))
+            .withMessage("주문 항목의 개수가 다릅니다.");
     }
 
     @DisplayName("주문 테이블이 빈 테이블인 경우 주문 불가능")
     @Test
     void createOrderFailWhenTableNotExists() {
         // given
-        OrderLineItem requestOrderLineItem = new OrderLineItem(1L, 1);
+        ID로_메뉴_조회(menu);
+        메뉴_개수_반환(1L);
 
-        Mockito.when(menuDao.countByIdIn(Mockito.anyList()))
-            .thenReturn(1L);
+        OrderTable orderTable = new OrderTable(1L, new TableGroup(1L), 4, true);
+        조회한_주문_테이블_반환(orderTable);
 
-        OrderTable orderTable = new OrderTable(1L, 1L, 4, true);
-        Mockito.when(orderTableDao.findById(Mockito.anyLong()))
-            .thenReturn(Optional.of(orderTable));
-
-        Order request = new Order(1L, Collections.singletonList(requestOrderLineItem));
+        OrderRequest request = new OrderRequest(1L, Collections.singletonList(orderLineItemRequest));
 
         // when and then
-        assertThatExceptionOfType(IllegalArgumentException.class)
-            .isThrownBy(() -> orderService.create(request));
+        assertThatExceptionOfType(KitchenposException.class)
+            .isThrownBy(() -> orderService.create(request))
+            .withMessage("주문 테이블이 비어있습니다.");
     }
 
     @DisplayName("주문 조회")
     @Test
     void list() {
         // given
-        Order order = new Order(1L, 1L, "COOKING", LocalDateTime.now(), new ArrayList<>());
-        Mockito.when(orderDao.findAll())
-            .thenReturn(Collections.singletonList(order));
+        주문_전쳬_조회();
 
-        OrderLineItem orderLineItem = new OrderLineItem(1L, 1L, 1L, 1);
-        Mockito.when(orderLineItemDao.findAllByOrderId(Mockito.anyLong()))
-            .thenReturn(Collections.singletonList(orderLineItem));
         // when
-        List<Order> actual = orderService.list();
+        List<OrderResponse> actual = orderService.list().getOrderResponses();
 
         // then
         assertAll(
@@ -141,7 +149,8 @@ class OrderServiceTest {
             () -> assertThat(actual.get(0).getId()).isEqualTo(1L),
             () -> assertThat(actual.get(0).getOrderTableId()).isEqualTo(1L),
             () -> assertThat(actual.get(0).getOrderStatus()).isEqualTo("COOKING"),
-            () -> assertThat(actual.get(0).getOrderLineItems()).isEqualTo(Collections.singletonList(orderLineItem))
+            () -> assertThat(actual.get(0).getOrderLineItems()).isEqualTo(Collections.singletonList(
+                OrderLineItemResponse.from(orderLineItem)))
         );
     }
 
@@ -149,19 +158,15 @@ class OrderServiceTest {
     @Test
     void changeOrderStatus() {
         // given
-        Order order = new Order(1L, 1L, "COOKING", LocalDateTime.now(), new ArrayList<>());
-        Mockito.when(orderDao.findById(Mockito.anyLong()))
-            .thenReturn(Optional.of(order));
+        ID로_주문_조회(order);
 
-        OrderLineItem orderLineItem = new OrderLineItem(1L, 1L, 1L, 1);
-        Mockito.when(orderLineItemDao.findAllByOrderId(Mockito.anyLong()))
-            .thenReturn(Collections.singletonList(orderLineItem));
+        OrderLineItem orderLineItem = new OrderLineItem(1L, order, new Menu(), 1);
+        주문_ID로_주문_상품_조회(orderLineItem);
 
-        Order request = new Order();
-        request.setOrderStatus("MEAL");
+        OrderRequest request = new OrderRequest(1L, "MEAL");
 
         // when
-        Order actual = orderService.changeOrderStatus(1L, request);
+        OrderResponse actual = orderService.changeOrderStatus(1L, request);
 
         // then
         assertThat(actual.getOrderStatus()).isEqualTo("MEAL");
@@ -170,17 +175,51 @@ class OrderServiceTest {
 
     @DisplayName("이미 완료상태이면 변경 불가능")
     @Test
-    void modifyOrderStatusFailWhenAlreadyCompleted() {
+    void changeOrderStatusFailWhenAlreadyCompleted() {
         // given
-        Order order = new Order(1L, 1L, "COMPLETION", LocalDateTime.now(), new ArrayList<>());
-        Mockito.when(orderDao.findById(Mockito.anyLong()))
-            .thenReturn(Optional.of(order));
+        Order order = new Order(1L, orderTable, OrderStatus.COMPLETION, LocalDateTime.now(), new OrderLineItems());
+        ID로_주문_조회(order);
 
-        Order request = new Order();
-        request.setOrderStatus("MEAL");
+        OrderRequest request = new OrderRequest(1L, "MEAL");
 
         // when and then
-        assertThatExceptionOfType(IllegalArgumentException.class)
-            .isThrownBy(() -> orderService.changeOrderStatus(1L, request));
+        assertThatExceptionOfType(KitchenposException.class)
+            .isThrownBy(() -> orderService.changeOrderStatus(1L, request))
+            .withMessage("완료된 주문의 상태를 바꿀 수 없습니다.");
+    }
+
+    private void 주문_ID로_주문_상품_조회(OrderLineItem orderLineItem) {
+        Mockito.when(orderLineItemDao.findAllByOrder_Id(Mockito.anyLong()))
+            .thenReturn(Collections.singletonList(orderLineItem));
+    }
+
+    private void ID로_주문_조회(Order order) {
+        Mockito.when(orderDao.findById(Mockito.anyLong()))
+            .thenReturn(Optional.of(order));
+    }
+
+    private void 주문_저장(Order order) {
+        Mockito.when(orderDao.save(Mockito.any()))
+            .thenReturn(order);
+    }
+
+    private void ID로_메뉴_조회(Menu menu) {
+        Mockito.when(menuDao.findById(Mockito.anyLong()))
+            .thenReturn(Optional.of(menu));
+    }
+
+    private void 조회한_주문_테이블_반환(OrderTable orderTable) {
+        Mockito.when(orderTableDao.findById(Mockito.anyLong()))
+            .thenReturn(Optional.of(orderTable));
+    }
+
+    private void 메뉴_개수_반환(long l) {
+        Mockito.when(menuDao.countByIdIn(Mockito.anyList()))
+            .thenReturn(l);
+    }
+
+    private void 주문_전쳬_조회() {
+        Mockito.when(orderDao.findAll())
+            .thenReturn(Collections.singletonList(order));
     }
 }

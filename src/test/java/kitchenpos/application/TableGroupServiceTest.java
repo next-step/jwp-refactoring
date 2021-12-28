@@ -3,10 +3,10 @@ package kitchenpos.application;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,7 +19,12 @@ import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.OrderTables;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.dto.OrderTableIdRequest;
+import kitchenpos.dto.TableGroupRequest;
+import kitchenpos.dto.TableGroupResponse;
+import kitchenpos.exception.KitchenposException;
 
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
@@ -33,47 +38,53 @@ class TableGroupServiceTest {
     @InjectMocks
     private TableGroupService tableGroupService;
 
+    private List<OrderTable> orderTables;
+    private TableGroup tableGroup;
+
+    @BeforeEach
+    void setUp() {
+        orderTables = Arrays.asList(
+            new OrderTable(1L, null, 4, true),
+            new OrderTable(2L, null, 2, true));
+
+        tableGroup = new TableGroup(1L, new OrderTables(orderTables));
+
+    }
+
     @DisplayName("테이블 그룹 생성")
     @Test
     void create() {
         // given
-        List<OrderTable> orderTables = Arrays.asList(
-            new OrderTable(1L, null, 4, true),
-            new OrderTable(2L, null, 2, true));
-        Mockito.when(orderTableDao.findAllByIdIn(Mockito.anyList()))
-            .thenReturn(orderTables);
+        테이블_조회_결과_반환(orderTables);
+        테이블_그룹_저장_결과_반환();
 
-        TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), orderTables);
-        Mockito.when(tableGroupDao.save(Mockito.any()))
-            .thenReturn(tableGroup);
-
-        List<OrderTable> requestTables = Arrays.asList(
-            new OrderTable(1L),
-            new OrderTable(2L));
-        TableGroup request = new TableGroup(requestTables);
+        List<OrderTableIdRequest> requestTables = Arrays.asList(
+            new OrderTableIdRequest(1L),
+            new OrderTableIdRequest(2L));
+        TableGroupRequest request = new TableGroupRequest(requestTables);
 
         // when
-        TableGroup actual = tableGroupService.create(request);
+        TableGroupResponse actual = tableGroupService.create(request);
 
         // then
         assertAll(
             () -> assertThat(actual.getOrderTables()).hasSize(2),
-            () -> assertThat(actual.getOrderTables().get(0).getTableGroupId()).isEqualTo(1),
+            () -> assertThat(actual.getOrderTables().get(0)).isNotNull(),
             () -> assertThat(actual.getOrderTables().get(0).isEmpty()).isFalse()
         );
-        Mockito.verify(orderTableDao, Mockito.times(2)).save(Mockito.any());
     }
 
     @DisplayName("주문 테이블이 없거나 2개 미만일 시 생성 불가능")
     @Test
     void createTableGroupFailWhenOrderTablesSizeIsLessThanTwo() {
         // given
-        List<OrderTable> requestTables = Arrays.asList(new OrderTable(2L));
-        TableGroup request = new TableGroup(requestTables);
+        List<OrderTableIdRequest> requestTables = Arrays.asList(new OrderTableIdRequest(2L));
+        TableGroupRequest request = new TableGroupRequest(requestTables);
 
         // when and then
-        assertThatExceptionOfType(IllegalArgumentException.class)
-            .isThrownBy(() -> tableGroupService.create(request));
+        assertThatExceptionOfType(KitchenposException.class)
+            .isThrownBy(() -> tableGroupService.create(request))
+            .withMessage("테이블 그룹을 생성하기 위해 2개 이상의 테이블이 필요합니다.");
     }
 
     @DisplayName("입력받은 주문 테이블 개수와 실제 주문 테이블 개수가 다른 경우(메뉴에 없는 주문 테이블) 생성 불가능")
@@ -82,17 +93,17 @@ class TableGroupServiceTest {
         // given
         List<OrderTable> orderTables = Arrays.asList(
             new OrderTable(2L, null, 2, true));
-        Mockito.when(orderTableDao.findAllByIdIn(Mockito.anyList()))
-            .thenReturn(orderTables);
+        테이블_조회_결과_반환(orderTables);
 
-        List<OrderTable> requestTables = Arrays.asList(
-            new OrderTable(1L),
-            new OrderTable(2L));
-        TableGroup request = new TableGroup(requestTables);
+        List<OrderTableIdRequest> requestTables = Arrays.asList(
+            new OrderTableIdRequest(1L),
+            new OrderTableIdRequest(2L));
+        TableGroupRequest request = new TableGroupRequest(requestTables);
 
         // when and then
-        assertThatExceptionOfType(IllegalArgumentException.class)
-            .isThrownBy(() -> tableGroupService.create(request));
+        assertThatExceptionOfType(KitchenposException.class)
+            .isThrownBy(() -> tableGroupService.create(request))
+            .withMessage("주문 테이블의 개수가 다릅니다.");
     }
 
     @DisplayName("사용중인 테이블이 포함되어 있는 경우 생성 불가능")
@@ -102,17 +113,17 @@ class TableGroupServiceTest {
         List<OrderTable> orderTables = Arrays.asList(
             new OrderTable(1L, null, 4, false),
             new OrderTable(2L, null, 2, true));
-        Mockito.when(orderTableDao.findAllByIdIn(Mockito.anyList()))
-            .thenReturn(orderTables);
+        테이블_조회_결과_반환(orderTables);
 
-        List<OrderTable> requestTables = Arrays.asList(
-            new OrderTable(1L),
-            new OrderTable(2L));
-        TableGroup request = new TableGroup(requestTables);
+        List<OrderTableIdRequest> requestTables = Arrays.asList(
+            new OrderTableIdRequest(1L),
+            new OrderTableIdRequest(2L));
+        TableGroupRequest request = new TableGroupRequest(requestTables);
 
         // when and then
-        assertThatExceptionOfType(IllegalArgumentException.class)
-            .isThrownBy(() -> tableGroupService.create(request));
+        assertThatExceptionOfType(KitchenposException.class)
+            .isThrownBy(() -> tableGroupService.create(request))
+            .withMessage("사용중인 테이블이 있습니다.");
     }
 
     @DisplayName("다른 그룹에 등록되어 있는 주문 테이블이 포함되어 있는 경우 생성 불가능")
@@ -121,18 +132,18 @@ class TableGroupServiceTest {
         // given
         List<OrderTable> orderTables = Arrays.asList(
             new OrderTable(1L, null, 4, true),
-            new OrderTable(2L, 1L, 2, true));
-        Mockito.when(orderTableDao.findAllByIdIn(Mockito.anyList()))
-            .thenReturn(orderTables);
+            new OrderTable(2L, new TableGroup(), 2, true));
+        테이블_조회_결과_반환(orderTables);
 
-        List<OrderTable> requestTables = Arrays.asList(
-            new OrderTable(1L),
-            new OrderTable(2L));
-        TableGroup request = new TableGroup(requestTables);
+        List<OrderTableIdRequest> requestTables = Arrays.asList(
+            new OrderTableIdRequest(1L),
+            new OrderTableIdRequest(2L));
+        TableGroupRequest request = new TableGroupRequest(requestTables);
 
         // when and then
-        assertThatExceptionOfType(IllegalArgumentException.class)
-            .isThrownBy(() -> tableGroupService.create(request));
+        assertThatExceptionOfType(KitchenposException.class)
+            .isThrownBy(() -> tableGroupService.create(request))
+            .withMessage("사용중인 테이블이 있습니다.");
     }
 
     @DisplayName("테이블 그룹 삭제")
@@ -142,34 +153,48 @@ class TableGroupServiceTest {
         List<OrderTable> orderTables = Arrays.asList(
             new OrderTable(1L, null, 4, true),
             new OrderTable(2L, null, 2, true));
-        Mockito.when(orderTableDao.findAllByTableGroupId(Mockito.anyLong()))
-            .thenReturn(orderTables);
+        테이블_그룹_ID로_조회_결과_반환(orderTables);
 
-        Mockito.when(orderDao.existsByOrderTableIdInAndOrderStatusIn(Mockito.anyList(), Mockito.anyList()))
-            .thenReturn(false);
+        요리_또는_식사중인_테이블_존재_여부_반환(false);
 
         // when
         tableGroupService.ungroup(1L);
-
-        // then
-        Mockito.verify(orderTableDao, Mockito.times(2)).save(Mockito.any());
     }
 
     @DisplayName("요리 중이나 식사 중인 주문 테이블을 포함하고 있다면 삭제 불가능")
     @Test
-    void deleteTableGroupFailWhenContainsMealOrCooking() {
+    void unGroupFailWhenContainsMealOrCooking() {
         // given
         List<OrderTable> orderTables = Arrays.asList(
             new OrderTable(1L, null, 4, true),
             new OrderTable(2L, null, 2, true));
-        Mockito.when(orderTableDao.findAllByTableGroupId(Mockito.anyLong()))
-            .thenReturn(orderTables);
+        테이블_그룹_ID로_조회_결과_반환(orderTables);
 
-        Mockito.when(orderDao.existsByOrderTableIdInAndOrderStatusIn(Mockito.anyList(), Mockito.anyList()))
-            .thenReturn(true);
+        요리_또는_식사중인_테이블_존재_여부_반환(true);
 
         // when and then
-        assertThatExceptionOfType(IllegalArgumentException.class)
-            .isThrownBy(() -> tableGroupService.ungroup(1L));
+        assertThatExceptionOfType(KitchenposException.class)
+            .isThrownBy(() -> tableGroupService.ungroup(1L))
+            .withMessage("사용중인 테이블이 있습니다.");
+    }
+
+    private void 테이블_그룹_저장_결과_반환() {
+        Mockito.when(tableGroupDao.save(Mockito.any()))
+            .thenReturn(tableGroup);
+    }
+
+    private void 테이블_조회_결과_반환(List<OrderTable> orderTables) {
+        Mockito.when(orderTableDao.findAllByIdIn(Mockito.anyList()))
+            .thenReturn(orderTables);
+    }
+
+    private void 테이블_그룹_ID로_조회_결과_반환(List<OrderTable> orderTables) {
+        Mockito.when(orderTableDao.findAllByTableGroup_Id(Mockito.anyLong()))
+            .thenReturn(orderTables);
+    }
+
+    private void 요리_또는_식사중인_테이블_존재_여부_반환(boolean b) {
+        Mockito.when(orderDao.existsByOrderTable_IdInAndOrderStatusIn(Mockito.anyList(), Mockito.anyList()))
+            .thenReturn(b);
     }
 }

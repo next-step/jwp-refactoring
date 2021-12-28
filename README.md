@@ -115,3 +115,41 @@
     - [X] 테이블 그룹 삭제
         - [X] 요리 중이나 식사 중인 주문 테이블을 포함하고 있다면 삭제 불가능
         - [X] 주문 테이블에서 테이블 그룹id 제거
+        
+## 2단계
+### 기능 요구 사항
+#### 단위 테스트하기 쉽도록 분리
+- [X] 상품
+    - [X] 가격 분리
+    - [X] jpa 적용
+    - [X] model과 Dto 분리
+- [X] 메뉴 그룹
+    - [X] jpa 적용
+    - [X] model과 Dto 분리
+- [X] 메뉴
+    - [X] jpa 적용
+        - [X] menuProduct
+        - [X] menu
+        - [X] product
+        - [X] menuGroup
+    - [X] model과 Dto 분리
+    - [X] price 분리
+    - [X] menuService 리팩토링
+- [X] 주문 테이블
+    - [X] jpa 적용
+        - [X] 주문 테이블
+        - [X] 주문 테이블 그룹
+    - [X] model과 Dto 분리
+    - [X] 손님수 분리
+    - [X] 주문 테이블 로직 도메인으로 이동
+- [X] 테이블 그룹
+    - [X] model과 Dto 분리
+    - [X] 테이블 그룹 로직 도메인으로 이동
+- [X] 주문
+    - [X] model과 Dto 분리
+    - [X] jpa 적용
+        - [X] order
+        - [X] orderLineItem 
+    - [X] 로직 도메인으로 이동
+        - [X] orderLineItems 추가
+    

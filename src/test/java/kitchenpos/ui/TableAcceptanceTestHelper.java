@@ -13,7 +13,7 @@ import org.springframework.http.MediaType;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.dto.OrderTableResponse;
 
 public class TableAcceptanceTestHelper {
     private TableAcceptanceTestHelper() {
@@ -47,7 +47,7 @@ public class TableAcceptanceTestHelper {
     }
 
     public static void 테이블_갯수_예상과_일치(ExtractableResponse<Response> response, int expected) {
-        List<OrderTable> actual = response.jsonPath().getList(".", OrderTable.class);
+        List<OrderTableResponse> actual = response.jsonPath().getList(".", OrderTableResponse.class);
 
         assertThat(actual).hasSize(expected);
     }
@@ -65,7 +65,7 @@ public class TableAcceptanceTestHelper {
     public static void 테이블_손님_명수_변경됨(ExtractableResponse<Response> response, int expected) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 
-        OrderTable result = response.as(OrderTable.class);
+        OrderTableResponse result = response.as(OrderTableResponse.class);
         assertThat(result.getNumberOfGuests()).isEqualTo(expected);
     }
 
@@ -89,7 +89,7 @@ public class TableAcceptanceTestHelper {
     public static void 테이블_빈_테이블_여부_변경됨(ExtractableResponse<Response> response, boolean expected) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 
-        OrderTable result = response.as(OrderTable.class);
+        OrderTableResponse result = response.as(OrderTableResponse.class);
         assertThat(result.isEmpty()).isEqualTo(expected);
     }
 

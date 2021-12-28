@@ -15,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.dto.MenuGroupRequest;
 
 @ExtendWith(MockitoExtension.class)
 class MenuGroupServiceTest {
@@ -28,13 +29,13 @@ class MenuGroupServiceTest {
     @Test
     void create() {
         // given
-        MenuGroup menuGroup = new MenuGroup("name");
+        MenuGroupRequest request = new MenuGroupRequest("name");
         MenuGroup expected = new MenuGroup(1L, "name");
         Mockito.when(menuGroupDao.save(Mockito.any()))
             .thenReturn(expected);
 
         // when
-        MenuGroup actual = menuGroupService.create(menuGroup);
+        MenuGroup actual = menuGroupService.create(request);
 
         // then
         assertThat(actual).isEqualTo(expected);

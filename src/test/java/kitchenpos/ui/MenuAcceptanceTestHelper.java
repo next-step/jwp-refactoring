@@ -12,7 +12,7 @@ import org.springframework.http.MediaType;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.Menu;
+import kitchenpos.dto.MenuResponse;
 
 public class MenuAcceptanceTestHelper {
     private MenuAcceptanceTestHelper() {
@@ -48,7 +48,7 @@ public class MenuAcceptanceTestHelper {
     }
 
     public static void 메뉴_갯수_예상과_일치(ExtractableResponse<Response> response, int expected) {
-        List<Menu> actual = response.jsonPath().getList(".", Menu.class);
+        List<MenuResponse> actual = response.jsonPath().getList(".", MenuResponse.class);
 
         assertThat(actual).hasSize(expected);
     }
